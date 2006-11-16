@@ -45,8 +45,7 @@ public class TekenVeelvlakOpdr extends Applet implements ScormAppletIF, ActionLi
 	}
 	
 	public void init()
-	{	
-		String variantString = super.getParameter("variant");
+	{	String variantString = super.getParameter("variant");
 		int variant = 0;
 		if(variantString!=null) variant = Integer.parseInt(variantString);
 		
@@ -154,6 +153,7 @@ public class TekenVeelvlakOpdr extends Applet implements ScormAppletIF, ActionLi
 		uitlegButton.setBounds(660,getSize().height-60,90,20);
 		uitlegButton.setFrameBackground(getBackground());
 		add(uitlegButton,0);
+		
 		
 	}
 	
