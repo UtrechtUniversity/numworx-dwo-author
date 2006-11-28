@@ -1,4 +1,5 @@
 var scormApi;
+var initialized;
 
 function ScanParentsForApi(win) 
 { 
@@ -30,7 +31,7 @@ function GetAPI()
 }
 
 function LMSGetValue(iDataModelElement)
-{	
+{	if(!initialized)scormApi.LMSInitialize("");
 	return scormApi.LMSGetValue(iDataModelElement);
 }
 
