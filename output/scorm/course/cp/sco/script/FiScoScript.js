@@ -54,6 +54,7 @@ function init()
 	} else
 	{
 		scormApi.LMSInitialize("");
+		initialized = true;
 	}
 }
 
