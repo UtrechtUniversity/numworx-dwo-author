@@ -25,6 +25,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	Font f;
 	FontMetrics fm;
 	private PopupMenu popup;
+	private PlusMinKnop plusMinKnop;
+	boolean scrollable;
+	int scrollCorr = 0;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -81,6 +84,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		verborgenExpressie = new BasisExpressie("x");
 		
+		if(!links)
+		{	plusMinKnop = new PlusMinKnop(b-12,1,10,h-2, PlusMinKnop.VERTIKAAL);
+		}
+		else
+		{	plusMinKnop = new PlusMinKnop(b-22,1,10,h-2, PlusMinKnop.VERTIKAAL);
+		}
+		plusMinKnop.addActionListener(this);
+		add(plusMinKnop);
 	}
 	
 	public Hashtable getState()
@@ -126,7 +137,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		zetMaat();
 		
     }
-	
+    public void zetScroll(boolean b)
+	{	scrollable = b;
+		zetMaat();
+	}
+    
 	public void zetLinks(boolean b)
 	{	links = b;
 		label.zetLinks(b);
@@ -136,6 +151,12 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	pijlUit[i].zetLinks(b);
 			if(!links)pijlUit[i].zetPlaats(getLocation().x + getSize().width+9 ,getLocation().y + 10 );
 			else pijlUit[i].zetPlaats(getLocation().x - 10 ,getLocation().y + 10 );
+		}
+		if(!links)
+		{	plusMinKnop.setLocation(getSize().width-12,1);
+		}
+		else
+		{	plusMinKnop.setLocation(getSize().width-22,1);
 		}
 		schuifveld.tekenOpnieuw();
 
@@ -159,15 +180,15 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			if(tabelZichtbaar)tabelCorr = 152;
 			
 			g.setColor(achtergrondkleur);
-			g.fillRect(12,labelCorr+2,getSize().width-15,getSize().height-labelCorr-tabelCorr-5);
+			g.fillRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 			g.setColor(Color.black);
-			g.drawRect(12,labelCorr+2,getSize().width-15,getSize().height-labelCorr-tabelCorr-5);
+			g.drawRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 		
 			g.setFont(f);
 			if(expressie!=null)
 			{	expressie.zetMaat(fm);
-				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, 5+(getSize().width-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
-				else expressie.teken(g, 5+(getSize().width-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
+				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, 5+(getSize().width-scrollCorr-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
+				else expressie.teken(g, 5+(getSize().width-scrollCorr-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
 			}
 				
 		}
@@ -184,15 +205,15 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			if(labelZichtbaar)labelCorr = 20;
 			if(tabelZichtbaar)tabelCorr = 152;
 			g.setColor(achtergrondkleur);
-			g.fillRect(2,labelCorr+2,getSize().width-15,getSize().height-labelCorr-tabelCorr-5);
+			g.fillRect(2,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 			g.setColor(Color.black);
-			g.drawRect(2,labelCorr+2,getSize().width-15,getSize().height-labelCorr-tabelCorr-5);
+			g.drawRect(2,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 		
 			g.setFont(f);
 			if(expressie!=null)
 			{	expressie.zetMaat(fm);
-				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, -5+(getSize().width-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
-				else expressie.teken(g, -5+(getSize().width-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
+				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, -5+(getSize().width-scrollCorr-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
+				else expressie.teken(g, -5+(getSize().width-scrollCorr-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
 			}
 		}	
 		
@@ -260,18 +281,19 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	}
 	
 	public void zetMaat()
-	{	int b = 50;
+	{	
+		int b = 50+scrollCorr;
 		int h = 20;
 		int corr = 0;
 		if(expressie!=null)
-		{	b = expressie.breedte;
+		{	b = expressie.breedte+scrollCorr;
 			h = expressie.hoogte;
 			if(toonWaarde && expressie.geefWaarde()!=null)
-			{	b = fm.stringWidth(waardeString);
+			{	b = fm.stringWidth(waardeString)+scrollCorr;
 				h = 0;
 			}
 			if(b > 26)b = b+24;
-			else b = 50;
+			else b = 50+scrollCorr;
 			if(h > 12)h = 10+((h+5)/10)*10;
 			else h = 20;
 		}
@@ -289,11 +311,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		if(!links)
 		{	tabel.setBounds(10,h-152,b-10,152);
-			tf.setBounds(12,corr,b-15,20);
+			tf.setBounds(12,corr,b-15-scrollCorr,20);
+			plusMinKnop.setLocation(b-12,1);
 		}
 		else
 		{	tabel.setBounds(0,h-152,b-10,152);
-			tf.setBounds(2,corr,b-15,20);
+			tf.setBounds(2,corr,b-15-scrollCorr,20);
+			plusMinKnop.setLocation(b-22,1);
 		}	
 
 	}
@@ -308,12 +332,23 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	
 	public void zetVeranderd(int max)
 	{	if(pijlIn1!=null)
-		{	expressie = pijlIn1.zender.geefUitvoer(20);
+		{	remove(plusMinKnop);
+			scrollCorr = 0;
+			expressie = pijlIn1.zender.geefUitvoer(20);
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
 			((AlgebraSchuifVeld)getParent()).zetTabellen(0,999,"x",1);
 		}
 		else 
-		{	expressie = beginw;
+		{	if(scrollable  && expressie!=null && expressie.geefWaarde()!=null)
+			{	if(scrollCorr==0)
+				add(plusMinKnop);
+				scrollCorr = 10;
+			}
+			else
+			{	scrollCorr = 0;
+				remove(plusMinKnop);
+			}
+			expressie = beginw;
 			verborgenExpressie = new BasisExpressie("x");
 		}
 		
@@ -398,6 +433,17 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	{	if(e.getSource()==tf)
 		{	zetInvulWaarde();
 		}		
+		if(e.getSource()==plusMinKnop)
+		{	if(beginw.geefWaarde()!=null)
+			{	double w = beginw.geefWaarde().doubleValue();
+				if(e.getActionCommand().equals("min"))w -= 1;
+				if(e.getActionCommand().equals("plus"))w += 1;
+				waardeString = Expressie.df.format(w);
+				beginw = new BasisExpressie(waardeString);
+				tf.setText(waardeString);
+				zetVeranderd(20);
+			}
+		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))
 		{	toonLabel(true);
 		}

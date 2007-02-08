@@ -323,16 +323,19 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	
 	public void maakStapel()
 	{	aantalSc = 0;
+		int b = 50;
+		int h = 20;
 		schuifcomponenten = new AlgebraSchuifComponent[200];
-		schuifcomponenten[aantalSc] = new UitvoerSchuifComponent(this,20,45,50,20);
-		((UitvoerSchuifComponent)schuifcomponenten[aantalSc]).zetTabelAan(tabelCheckbox.getState());aantalSc++;
-		schuifcomponenten[aantalSc] = new OptelSchuifComponent(this,20,110,50,20);			aantalSc++;
-		schuifcomponenten[aantalSc] = new AftrekSchuifComponent(this,20,135,50,20);			aantalSc++;
-		schuifcomponenten[aantalSc] = new VermenigvuldigSchuifComponent(this,20,160,50,20);	aantalSc++;
-		schuifcomponenten[aantalSc] = new DeelSchuifComponent(this,20,185,50,20);			aantalSc++;
-		schuifcomponenten[aantalSc] = new OmkeringSchuifComponent(this,20,210,50,20);		aantalSc++;
-		schuifcomponenten[aantalSc] = new WortelSchuifComponent(this,20,235,50,20);			aantalSc++;
-		schuifcomponenten[aantalSc] = new MachtSchuifComponent(this,20,260,50,20);			aantalSc++;
+		schuifcomponenten[aantalSc] = new UitvoerSchuifComponent(this,20,45,b,h);
+		((UitvoerSchuifComponent)schuifcomponenten[aantalSc]).zetTabelAan(tabelCheckbox.getState());
+		((UitvoerSchuifComponent)schuifcomponenten[aantalSc]).zetScroll(true);				aantalSc++;
+		schuifcomponenten[aantalSc] = new OptelSchuifComponent(this,20,110,b,h);			aantalSc++;
+		schuifcomponenten[aantalSc] = new AftrekSchuifComponent(this,20,135,b,h);			aantalSc++;
+		schuifcomponenten[aantalSc] = new VermenigvuldigSchuifComponent(this,20,160,b,h);	aantalSc++;
+		schuifcomponenten[aantalSc] = new DeelSchuifComponent(this,20,185,b,h);			aantalSc++;
+		schuifcomponenten[aantalSc] = new OmkeringSchuifComponent(this,20,210,b,h);		aantalSc++;
+		schuifcomponenten[aantalSc] = new WortelSchuifComponent(this,20,235,b,h);			aantalSc++;
+		schuifcomponenten[aantalSc] = new MachtSchuifComponent(this,20,260,b,h);			aantalSc++;
 		
 		int max = aantalSc;
 		for(int i=0 ; i<max ; i++)
