@@ -292,7 +292,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			{	b = fm.stringWidth(waardeString)+scrollCorr;
 				h = 0;
 			}
-			if(b > 26)b = b+24;
+			if(b > 26)b = b+24+scrollCorr;
 			else b = 50+scrollCorr;
 			if(h > 12)h = 10+((h+5)/10)*10;
 			else h = 20;
