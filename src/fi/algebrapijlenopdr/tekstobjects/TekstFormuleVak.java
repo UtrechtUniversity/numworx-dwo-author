@@ -8,7 +8,7 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 public class TekstFormuleVak extends TekstElement implements ActionListener
 {
 	private FormuleVak formuleVak;
-	private Font font = new Font("TimesRoman",Font.PLAIN,16);
+	private Font font = new Font("TimesRoman",Font.PLAIN,13);
 	private FontMetrics fm;
 	private boolean selected = false;
 	

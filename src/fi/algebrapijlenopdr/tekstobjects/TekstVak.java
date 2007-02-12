@@ -17,7 +17,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	private TekstRegel actieveRegel;
 	
 		
-	private Font font = new Font("TimesRoman",Font.PLAIN,14);
+	private Font font = new Font("SansSerif",Font.PLAIN,12);
 	private FontMetrics fm;
 	
 	private boolean selectable = true;
@@ -56,6 +56,10 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		
 		//formules = new Vector();
 		
+	}
+	
+	public Font getFont()
+	{	return font;
 	}
 	
 	public void zetTekst(String s)
@@ -250,7 +254,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		//ashoogte = regels[0].ashoogte;
 		//if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 		
-		setSize(breedte,hoogte+20);
+		setSize(breedte,hoogte);
 		if(getParent()instanceof TekstArea)((TekstArea)getParent()).resize();
 	}
 	

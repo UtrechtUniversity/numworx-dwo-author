@@ -43,13 +43,13 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		add(as);
 		
 		antwoordFormuleVak = new AntwoordFormuleVak();
-		antwoordFormuleVak.setBounds(5,h-77,190,97);
+		antwoordFormuleVak.setBounds(10,h-77,190,97);
 		antwoordFormuleVak.addActionListener(this);
 		add(antwoordFormuleVak);
 		antwoordFormuleVak.setVisible(false);
 		
 		antwoordTekstVak = new TekstArea();
-		antwoordTekstVak.setBounds(5,h-77,190,97);
+		antwoordTekstVak.setBounds(15,h-77,180,97);
 		antwoordTekstVak.setEditable(true);
 		add(antwoordTekstVak);
 		
@@ -104,7 +104,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		tekstArea.setText(tekst);
 		tekstArea.resize();
 		
-		antwoordTekstVak.setBounds(antwoordTekstVak.getLocation().x,70+tekstArea.getSize().height,199,40);
+		antwoordTekstVak.setBounds(antwoordTekstVak.getLocation().x,70+tekstArea.getSize().height,190,40);
 		antwoordFormuleVak.setBounds(antwoordFormuleVak.getLocation().x,70+tekstArea.getSize().height,199,97);
 		
 		this.gewensteAntwoordString = antwoordString;
