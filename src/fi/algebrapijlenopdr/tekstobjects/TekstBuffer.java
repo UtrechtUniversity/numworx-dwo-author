@@ -21,10 +21,23 @@ public class TekstBuffer
 		int toevoegNr = formules.size()-1;
 		for(int i=completeString.length()-1 ; i>-1; i--)
 		{	if(completeString.charAt(i)=='@')
-			{	int index = completeString.lastIndexOf("$f");
-				TekstFormuleVak tfv = new TekstFormuleVak(tekstVak);
+			{	int indexF = completeString.lastIndexOf("$f");
+				int indexA = completeString.lastIndexOf("$A");
+				int index = -1;
+				TekstDeelVak tfv = null;
+				if(indexF > indexA)
+				{	tfv = new TekstFormuleVak(tekstVak);
+					index = indexF;
+				}
+				else if(indexA > indexF)
+				{	tfv = new TekstAntwoordVak(tekstVak);
+					tfv.setEditable(true);
+					index = indexA;
+				}
+				if(index==-1) break;
 				String formString = completeString.substring(index,i+1);
-				tfv.vulVak(formString);
+				if(indexF > indexA)	tfv.vulVak(formString);
+				else tfv.vulVak(formString.substring(2,formString.length()-1));
 				completeString = ""+completeString.substring(0,index)+"@"+completeString.substring(i+1);
 				formules.insertElementAt(tfv,0);
 				i=index;
@@ -56,7 +69,12 @@ public class TekstBuffer
 		insert(index,c);
 	}
 	
-	public void insertFormule(int pos, TekstFormuleVak tfv)
+	public void insertFormuleVak(int pos, TekstFormuleVak tfv)
+	{	int formNr = geefAantalFormules(pos);
+		formules.insertElementAt(tfv,formNr);
+	}
+	
+	public void insertAntwoordVak(int pos, TekstAntwoordVak tfv)
 	{	int formNr = geefAantalFormules(pos);
 		formules.insertElementAt(tfv,formNr);
 	}
@@ -80,7 +98,7 @@ public class TekstBuffer
 		int toevoegNr = formules.size()-1;
 		for(int i=completeString.length()-1 ; i>-1; i--)
 		{	if(completeString.charAt(i)=='@')
-			{	String formString = ((TekstFormuleVak)formules.elementAt(toevoegNr)).toString();
+			{	String formString = ((TekstDeelVak)formules.elementAt(toevoegNr)).toString();
 				completeString = ""+completeString.substring(0,i)+ formString + completeString.substring(i+1);
 				toevoegNr--;
 			}
@@ -127,8 +145,8 @@ public class TekstBuffer
 	    return teller;
 	}
 	
-	public TekstFormuleVak geefFormule(int nr)
-	{	return (TekstFormuleVak)formules.elementAt(nr);
+	public TekstDeelVak geefDeelVak(int nr)
+	{	return (TekstDeelVak)formules.elementAt(nr);
 	}
 	
 	public int geefAantalFormules()

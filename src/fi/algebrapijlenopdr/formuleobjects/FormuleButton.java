@@ -9,7 +9,7 @@ public class FormuleButton extends Panel implements MouseListener
 	private Graphics gIm;
 	
 	protected String code;
-	private Font defaultfont = new Font("SansSerif", Font.PLAIN, 16);
+	private Font defaultfont = new Font("TimesRoman", Font.BOLD, 16);
 	private FontMetrics fm;
 	protected Color bgColor = new Color(210,210,210);	
 	protected Color fgColor = Color.black;
@@ -122,7 +122,10 @@ public class FormuleButton extends Panel implements MouseListener
 			g.drawRect(3,3,3,6);
 		}
 		if(code.equals("formule"))
-		{	g.drawString("F",7,15);
+		{	g.drawString("F",5,15);
+		}
+		if(code.equals("antwoord"))
+		{	g.drawString("A",5,15);
 		}
 	}
 	

@@ -17,7 +17,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	private TekstRegel actieveRegel;
 	
 		
-	private Font font = new Font("SansSerif",Font.PLAIN,12);
+	private Font font = new Font("SansSerif",Font.PLAIN,11);
 	private FontMetrics fm;
 	
 	private boolean selectable = true;
@@ -81,7 +81,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		while(tok.hasMoreTokens())
 		{	String woord = tok.nextToken();
 			int formVakBreedte = 0;
-			if(woord.equals("@") && tekst.geefAantalFormules()>formNr)formVakBreedte = tekst.geefFormule(formNr).getSize().width; 
+			if(woord.equals("@") && tekst.geefAantalFormules()>formNr)formVakBreedte = tekst.geefDeelVak(formNr).getSize().width; 
 			
 			if(regelInhouden[regelNr]==null)regelInhouden[regelNr]="";
 			if(regelInhouden[regelNr+1]==null)regelInhouden[regelNr+1]="";
@@ -152,7 +152,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	    	for(int j=0 ; regelInhouden[i]!=null && j<regelInhouden[i].length(); j++)
 			{	char c = regelInhouden[i].charAt(j);
 				if(c=='@')
-				{	regels[i].insert(tekst.geefFormule(formNr));
+				{	regels[i].insert(tekst.geefDeelVak(formNr));
 					formNr++;
 				}
 				else 
@@ -223,11 +223,19 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	public void insertFormuleVak()
 	{	tekst.insert(caretPos,'@');
 		TekstFormuleVak tfvNieuw = new TekstFormuleVak(this);
-		tekst.insertFormule(caretPos,tfvNieuw);
+		tekst.insertFormuleVak(caretPos,tfvNieuw);
 		vulVak(tekst.toString());
 		formuleVak = tfvNieuw.geefFormuleVak();
 		actieveRegel.setCaretVisible(false);
 		formuleVak.requestFocus();
+		repaint();
+	}
+	
+	public void insertAntwoordVak()
+	{	tekst.insert(caretPos,'@');
+		TekstAntwoordVak tfvNieuw = new TekstAntwoordVak(this);
+		tekst.insertAntwoordVak(caretPos,tfvNieuw);
+		vulVak(tekst.toString());
 		repaint();
 	}
 	
@@ -252,7 +260,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	    	hoogte += regels[i].getSize().height;
 	    }
 		//ashoogte = regels[0].ashoogte;
-		//if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
+		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 		
 		setSize(breedte,hoogte);
 		if(getParent()instanceof TekstArea)((TekstArea)getParent()).resize();
@@ -500,7 +508,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
     	if (editable)
 		{   if (kt == KeyEvent.VK_ENTER)
             {	if(tekst.charAt(caretPos)==' ')tekst.replace(caretPos,'\n');
-            	else if(tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');
+            	else if(caretPos>0 && tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');
             	else tekst.insert(caretPos,'\n');
             	caretPos++;
 			}

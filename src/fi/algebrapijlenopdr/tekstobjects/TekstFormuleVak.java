@@ -5,7 +5,7 @@ import java.awt.event.*;
 import fi.algebrapijlenopdr.formuleobjects.*;
 import fi.algebrapijlenopdr.tekstobjects.*;
 
-public class TekstFormuleVak extends TekstElement implements ActionListener
+public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 {
 	private FormuleVak formuleVak;
 	private Font font = new Font("TimesRoman",Font.PLAIN,13);
@@ -13,9 +13,7 @@ public class TekstFormuleVak extends TekstElement implements ActionListener
 	private boolean selected = false;
 	
 	public TekstFormuleVak(TekstVak tv)
-	{	setLayout(null);
-		setBackground(getBackground());
-		tekstVak = tv;
+	{	super(tv);
 	
 		formuleVak = new FormuleVak();
 		formuleVak.setLocation(0,0);

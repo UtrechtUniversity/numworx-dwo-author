@@ -10,7 +10,7 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 	private Image im;
 	private Graphics gIm;
 	
-	private FormuleButton formuleKnop,wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, haakjesKnop;
+	private FormuleButton formuleKnop, antwoordVakKnop, wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, haakjesKnop;
 	protected TekstVak tekstVak;
 	protected FormuleVak formuleVak;
 	private boolean actief;
@@ -46,6 +46,11 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 		formuleKnop.setBounds(12,2,20,20);
 		formuleKnop.addActionListener(this);
 		if(form)super.add(formuleKnop);
+		
+		antwoordVakKnop = new FormuleButton("antwoord");
+		antwoordVakKnop.setBounds(38,2,20,20);
+		antwoordVakKnop.addActionListener(this);
+		if(form)super.add(antwoordVakKnop);
 		
 		wortelKnop = new FormuleButton("wortel");
 		wortelKnop.setBounds(12,2,20,20);
@@ -322,6 +327,7 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 	{	formMode = b;
 		if(b)
 		{	formuleKnop.setVisible(false);
+			antwoordVakKnop.setVisible(false);
 			wortelKnop.setVisible(true);
 			machtKnop.setVisible(true);
 			kwadraatKnop.setVisible(true);
@@ -331,6 +337,7 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 		}
 		else
 		{	formuleKnop.setVisible(true);
+			antwoordVakKnop.setVisible(true);
 			wortelKnop.setVisible(false);
 			machtKnop.setVisible(false);
 			kwadraatKnop.setVisible(false);
@@ -345,6 +352,9 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 		{	zetFormMode(true);
 			tekstVak.insertFormuleVak();
 			formuleVak = tekstVak.geefFormuleVak();
+		}
+		if(e.getSource()==antwoordVakKnop)
+		{	tekstVak.insertAntwoordVak();
 		}
 		else if(e.getSource()==wortelKnop)
 		{	if(formuleVak!=null)

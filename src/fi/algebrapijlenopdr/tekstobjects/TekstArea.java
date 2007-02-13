@@ -2,7 +2,7 @@ package fi.algebrapijlenopdr.tekstobjects;
 
 import java.awt.*;
 
-public class TekstArea extends Panel
+public class TekstArea extends Container
 {	
 	private Image im;
 	private Graphics gIm;
@@ -85,6 +85,9 @@ public class TekstArea extends Panel
 	public void resize()
 	{	resized = true;
 		super.setSize(getSize().width, tekstVak.getSize().height);
+		
+		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
+		
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
