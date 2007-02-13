@@ -62,9 +62,9 @@ public class OpdrNavStruct extends Panel implements ActionListener
 		this.api = api;
 		this.editMode = editMode;
 		
-		orPosX = 360;
+		orPosX = 380;
 		orPosY = h-60;
-		actKeuzePanelX = 220;
+		actKeuzePanelX = 240;
 		actKeuzePanelY = orPosY-aantalActiviteiten*20-15;
 		
 		nakijkKnop = new Button("Kijk na");

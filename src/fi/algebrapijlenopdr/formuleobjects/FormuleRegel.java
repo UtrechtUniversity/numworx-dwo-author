@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
+import fi.algebrapijlenopdr.tekstobjects.TekstElement;
+
 
 public class FormuleRegel extends FormuleElement implements MouseListener, MouseMotionListener,KeyListener, FocusListener
 {	
@@ -281,7 +283,8 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		int h1=0;
 		int h2=0;
 		for(int i=0 ; i<getComponentCount()  ; i++)
-		{	int hoogte = getComponent(i).getSize().height;
+		{	((FormuleElement)getComponent(i)).setFont(f);
+			int hoogte = getComponent(i).getSize().height;
 			int ash = ((FormuleElement)getComponent(i)).ashoogte;
 			if(ash>h1)h1=ash;
 			if(hoogte-ash>h2)h2=hoogte-ash;

@@ -8,17 +8,19 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 public class TekstAntwoordVak extends TekstDeelVak implements ActionListener
 {
 	private TekstArea antwoordVak;
-	private Font font = new Font("TimesRoman",Font.PLAIN,13);
+	private Font font = new Font("TimesRoman",Font.PLAIN,11);
 	private FontMetrics fm;
 	private boolean selected = false;
 	
 	public TekstAntwoordVak(TekstVak tv)
 	{	super(tv);
+		setFont(font);
+		fm = getFontMetrics(getFont());
 	
 		antwoordVak = new TekstArea();
 		antwoordVak.setBounds(0,0,tv.getSize().width-10,20);
 		antwoordVak.setEditable(true);
-		setFont(font);
+		
 		add(antwoordVak);
 				
 		

@@ -30,7 +30,7 @@ public class FormuleVak extends RegelVak implements MouseListener
 		fm = getFontMetrics(getFont());
 			
 		kind1 = new FormuleRegel(this);
-		kind1.setLocation(5,0);
+		kind1.setLocation(0,0);
 		add(kind1);
 		
 		actieveRegel = kind1;
@@ -47,10 +47,11 @@ public class FormuleVak extends RegelVak implements MouseListener
 	
 	public void setFont(Font f)
 	{	super.setFont(f);
-		fm = getFontMetrics(getFont());
+		defaultFont = f;
+		fm = getFontMetrics(f);
 		kind1.setFont(f);
 		setSize(kind1.getSize().width+10, kind1.getSize().height);
-		kind1.setLocation(5,0);
+		kind1.setLocation(0,0);
 		ashoogte = kind1.ashoogte;
 	}
 	

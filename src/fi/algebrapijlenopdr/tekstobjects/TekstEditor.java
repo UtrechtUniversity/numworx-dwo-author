@@ -140,6 +140,10 @@ public class TekstEditor extends Panel implements ActionListener, MouseListener,
 		
 	}
 	
+	public void setFont(Font font)
+	{	tekstVak.setFont(font);
+	}
+	
 	public void destroy()
 	{	remove(contentPane);
 		contentPane.destroy();

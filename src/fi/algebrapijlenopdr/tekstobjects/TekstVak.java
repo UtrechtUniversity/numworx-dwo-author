@@ -17,7 +17,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	private TekstRegel actieveRegel;
 	
 		
-	private Font font = new Font("SansSerif",Font.PLAIN,11);
+	private Font font = new Font("SansSerif",Font.PLAIN,12);
 	private FontMetrics fm;
 	
 	private boolean selectable = true;
@@ -58,6 +58,14 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		
 	}
 	
+	public void setFont(Font font)
+	{	this.font = font;
+		fm = getFontMetrics(font);
+		super.setFont(font);
+		for(int i=0 ; i<aantalRegels; i++)
+		{	regels[i].setFont(font);
+		}
+	}
 	public Font getFont()
 	{	return font;
 	}
@@ -141,6 +149,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		for(int i=0 ; i<aantalGevuld+1; i++)
 	    {	if(regels[i]==null)
 	    	{	regels[i] = new TekstRegel(this);
+	    		//regels[i].setFont(font);
 	    		if(i==0)regels[i].setLocation(5,0);
 	    		else regels[i].setLocation(5,regels[i-1].getLocation().y + regels[i-1].getSize().height);
 				add(regels[i]);
@@ -512,7 +521,9 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
             	else tekst.insert(caretPos,'\n');
             	caretPos++;
 			}
-			else if ((kt != KeyEvent.VK_ESCAPE) &&
+			else if ((kt != '@') &&
+					(kt != '$') &&
+					(kt != KeyEvent.VK_ESCAPE) &&
 					(kt != KeyEvent.VK_DELETE) &&
 					(kt != KeyEvent.VK_END) &&
 					(kt != KeyEvent.VK_HOME) &&

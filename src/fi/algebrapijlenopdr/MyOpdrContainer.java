@@ -29,13 +29,13 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		
 		titelLabel = new Label("");
 		titelLabel.setBounds(15,10,200,30);
-		titelLabel.setFont(new Font("SansSerif",Font.PLAIN,20));
+		titelLabel.setFont(new Font("SansSerif",Font.BOLD,16));
 		add(titelLabel);
 				
 		//tekstArea = new TekstEditor(true,true);
 		tekstArea = new TekstArea();
-		tekstArea.setBounds(10,50,200,h-200);
-		tekstArea.setFont(new Font("SansSerif",Font.PLAIN,13));
+		tekstArea.setBounds(10,40,200,h-200);
+		tekstArea.setFont(new Font("SansSerif",Font.PLAIN,11));
 		add(tekstArea);
 				
 		as = new AlgebraSchuifVeld(218,10,b-220,h-94);

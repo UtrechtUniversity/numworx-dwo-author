@@ -8,7 +8,7 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 {
 	private FormuleVak formuleVak;
-	private Font font = new Font("TimesRoman",Font.PLAIN,13);
+	private Font font = new Font("TimesRoman",Font.PLAIN,12);
 	private FontMetrics fm;
 	private boolean selected = false;
 	
@@ -18,13 +18,19 @@ public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 		formuleVak = new FormuleVak();
 		formuleVak.setLocation(0,0);
 		formuleVak.addActionListener(this);
-		setFont(font);
+		setFont(tv.getFont());
 		add(formuleVak);
 				
 		
 				
 		setSize(formuleVak.getSize().width,formuleVak.getSize().height);
-		ashoogte = formuleVak.ashoogte;
+		ashoogte = formuleVak.ashoogte+1;
+	}
+	
+	public void setFont(Font font)
+	{	Font f = new Font("TimesRoman", font.getStyle(), font.getSize()+1);
+		super.setFont(f);
+		formuleVak.setFont(f);
 	}
 	
 	public void vulVak(String s)
@@ -58,7 +64,7 @@ public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 	public void zetMaat()
 	{	setSize(formuleVak.getSize().width, formuleVak.getSize().height);
 		formuleVak.setLocation(0,0);
-		ashoogte = formuleVak.ashoogte;
+		ashoogte = formuleVak.ashoogte+1;
 		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 	}

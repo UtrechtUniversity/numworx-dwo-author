@@ -52,7 +52,8 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		int h1=0;
 		int h2=0;
 		for(int i=0 ; i<getComponentCount()  ; i++)
-		{	int hoogte = getComponent(i).getSize().height;
+		{	((TekstElement)getComponent(i)).setFont(f);
+			int hoogte = getComponent(i).getSize().height;
 			int ash = ((TekstElement)getComponent(i)).ashoogte;
 			if(ash>h1)h1=ash;
 			if(hoogte-ash>h2)h2=hoogte-ash;
@@ -85,7 +86,9 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		//Bij 'italic' fonts vallen ze namelijk soms buiten het component.
 		for(int i=0 ; i<getComponentCount()  ; i++)
 		{	if(getComponent(i)instanceof TekstTeken)
-			{	TekstTeken tt = (TekstTeken)getComponent(i);
+			{	
+				TekstTeken tt = (TekstTeken)getComponent(i);
+				tt.setFont(tekstVak.getFont());
 				tt.paint(g,tt.getLocation().x,tt.getLocation().y);
 			}
 		}

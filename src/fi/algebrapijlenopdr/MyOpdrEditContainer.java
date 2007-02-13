@@ -22,13 +22,13 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 	{	setLayout(null);
 		super.setSize(790,500); //voor dwo
 		
-		as = new AlgebraSchuifVeld(220,10,550,395);
+		as = new AlgebraSchuifVeld(240,10,550,395);
 		add(as);
 		
 		titelEditor = new TekstArea();
-		titelEditor.setBounds(5,10,210,55);
+		titelEditor.setBounds(5,10,230,55);
 		titelEditor.setEditable(true);
-		titelEditor.setFont(new Font("SansSerif",Font.PLAIN,20));
+		titelEditor.setFont(new Font("SansSerif",Font.BOLD,16));
 		add(titelEditor);
 		
 		//tekstEditor = new TekstArea();
@@ -37,11 +37,12 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 		//add(tekstEditor);
 		
 		tekstEditor = new TekstEditor(true,true);
-		tekstEditor.setBounds(5,70,210,240);
+		tekstEditor.setFont(new Font("SansSerif",Font.PLAIN,11));
+		tekstEditor.setBounds(5,40,230,305);
 		add(tekstEditor);
 		
 		antwoordFormuleVak = new AntwoordFormuleVak();
-		antwoordFormuleVak.setBounds(5,320,210,97);
+		antwoordFormuleVak.setBounds(5,350,230,97);
 		add(antwoordFormuleVak);
 		antwoordFormuleVak.setVisible(false);
 		
@@ -54,12 +55,12 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 		add(kopieerKnopCheckbox);
 		
 		antwoordTekstCheckbox = new Checkbox("Antwoordvak tekst");
-		antwoordTekstCheckbox.setBounds(5,getSize().height-45,210,20);
+		antwoordTekstCheckbox.setBounds(5,getSize().height-45,230,20);
 		antwoordTekstCheckbox.addItemListener(this);
 		add(antwoordTekstCheckbox);
 		
 		antwoordFormuleCheckbox = new Checkbox("Antwoordvak getal/formule");
-		antwoordFormuleCheckbox.setBounds(5,getSize().height-20,210,20);
+		antwoordFormuleCheckbox.setBounds(5,getSize().height-20,230,20);
 		antwoordFormuleCheckbox.addItemListener(this);
 		add(antwoordFormuleCheckbox);
 	}
@@ -141,6 +142,7 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 	
 	public void start()
 	{	as.tekenOpnieuw();
+		tekstEditor.zetScrollBar();
 	}
 	
 	public void destroy()
