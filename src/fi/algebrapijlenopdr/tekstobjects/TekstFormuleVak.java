@@ -8,7 +8,7 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 {
 	private FormuleVak formuleVak;
-	private Font font = new Font("TimesRoman",Font.PLAIN,12);
+	private Font font = new Font("TimesRoman",Font.PLAIN,14);
 	private FontMetrics fm;
 	private boolean selected = false;
 	
@@ -18,7 +18,9 @@ public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 		formuleVak = new FormuleVak();
 		formuleVak.setLocation(0,0);
 		formuleVak.addActionListener(this);
-		setFont(tv.getFont());
+		Font f = new Font("TimesRoman", tv.getFont().getStyle(), tv.getFont().getSize()+2);
+		
+		setFont(f);
 		add(formuleVak);
 				
 		
@@ -28,7 +30,7 @@ public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 	}
 	
 	public void setFont(Font font)
-	{	Font f = new Font("TimesRoman", font.getStyle(), font.getSize()+1);
+	{	Font f = new Font("TimesRoman", font.getStyle(), font.getSize()+2);
 		super.setFont(f);
 		formuleVak.setFont(f);
 	}

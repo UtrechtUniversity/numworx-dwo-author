@@ -37,7 +37,7 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 		//add(tekstEditor);
 		
 		tekstEditor = new TekstEditor(true,true);
-		tekstEditor.setFont(new Font("SansSerif",Font.PLAIN,11));
+		tekstEditor.setFont(new Font("SansSerif",Font.PLAIN,12));
 		tekstEditor.setBounds(5,40,230,305);
 		add(tekstEditor);
 		

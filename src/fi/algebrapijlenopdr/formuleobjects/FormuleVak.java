@@ -10,7 +10,7 @@ public class FormuleVak extends RegelVak implements MouseListener
 {	
 	protected static String clipboard;
 
-	private Font defaultFont = new Font("TimesRoman",Font.PLAIN,16);
+	private Font defaultFont = new Font("TimesRoman",Font.PLAIN,14);
 	private FontMetrics fm;
 	
 	private FormuleRegel actieveRegel;

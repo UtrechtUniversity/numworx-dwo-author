@@ -8,7 +8,7 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 public class TekstAntwoordVak extends TekstDeelVak implements ActionListener
 {
 	private TekstArea antwoordVak;
-	private Font font = new Font("TimesRoman",Font.PLAIN,11);
+	private Font font = new Font("TimesRoman",Font.PLAIN,12);
 	private FontMetrics fm;
 	private boolean selected = false;
 	

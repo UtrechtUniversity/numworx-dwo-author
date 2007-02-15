@@ -35,7 +35,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		//tekstArea = new TekstEditor(true,true);
 		tekstArea = new TekstArea();
 		tekstArea.setBounds(10,40,200,h-200);
-		tekstArea.setFont(new Font("SansSerif",Font.PLAIN,11));
+		tekstArea.setFont(new Font("SansSerif",Font.PLAIN,12));
 		add(tekstArea);
 				
 		as = new AlgebraSchuifVeld(218,10,b-220,h-94);
@@ -50,6 +50,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		
 		antwoordTekstVak = new TekstArea();
 		antwoordTekstVak.setBounds(15,h-77,180,97);
+		antwoordTekstVak.setFont(new Font("SansSerif",Font.PLAIN,12));
 		antwoordTekstVak.setEditable(true);
 		add(antwoordTekstVak);
 		
