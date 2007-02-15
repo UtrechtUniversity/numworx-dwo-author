@@ -75,8 +75,10 @@ public class TekstBuffer
 	}
 	
 	public void insertAntwoordVak(int pos, TekstAntwoordVak tfv)
-	{	int formNr = geefAantalFormules(pos);
+	{	insert(pos+1, '\n');
+		int formNr = geefAantalFormules(pos);
 		formules.insertElementAt(tfv,formNr);
+	
 	}
 	
 	public void deleteCharAt(int index)
