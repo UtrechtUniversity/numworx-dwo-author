@@ -33,6 +33,7 @@ public class TekstFormuleVak extends TekstDeelVak implements ActionListener
 	{	Font f = new Font("TimesRoman", font.getStyle(), font.getSize()+2);
 		super.setFont(f);
 		formuleVak.setFont(f);
+		ashoogte = formuleVak.ashoogte+1;
 	}
 	
 	public void vulVak(String s)
