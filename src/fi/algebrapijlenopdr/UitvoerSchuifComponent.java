@@ -336,7 +336,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			scrollCorr = 0;
 			expressie = pijlIn1.zender.geefUitvoer(20);
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
-			((AlgebraSchuifVeld)getParent()).zetTabellen(0,999,"x",1);
+			//((AlgebraSchuifVeld)getParent()).zetTabellen(0,999,"x",1);
 		}
 		else 
 		{	if(scrollable  && expressie!=null && expressie.geefWaarde()!=null)
