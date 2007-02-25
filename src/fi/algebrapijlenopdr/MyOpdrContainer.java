@@ -118,14 +118,17 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 	{	Hashtable APState = null;
 		String antwoordString = null;
 		String antwoordFormuleString = null;
+		String tekst = null;
 	
 		if(h.containsKey("APState")) APState = (Hashtable)h.get("APState");
 		if(h.containsKey("antwoordString")) antwoordString = (String)h.get("antwoordString");
 		if(h.containsKey("antwoordFormuleString")) antwoordFormuleString = (String)h.get("antwoordFormuleString");
+		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
 		
 		as.setState(APState);
 		if(antwoordString!=null) antwoordTekstVak.setText(antwoordString);
 		if(antwoordFormuleString!=null) antwoordFormuleVak.vulVak(antwoordFormuleString);
+		if(tekst!=null)tekstArea.setText(tekst);
 		
 	}
 	
@@ -138,15 +141,18 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 	{	Hashtable APState=null;
 		String antwoordString=null;
 		String antwoordFormuleString = null;
+		String tekst = null;
 		
 		APState = as.getState();
 		antwoordString = antwoordTekstVak.getText();
 		antwoordFormuleString = antwoordFormuleVak.toString();
+		tekst = tekstArea.getText();
 			    
 	    Hashtable h = new Hashtable();
 	    h.put("APState", APState);
 	    h.put("antwoordString", antwoordString);
 	    h.put("antwoordFormuleString", antwoordFormuleString);
+	    h.put("tekst",tekst);
 	    
 	    return h;
 	}
