@@ -68,7 +68,7 @@ public class GeomAlgebra extends Applet implements  ScormAppletIF, ActionListene
 		lv.addActionListener(this);
 		add(lv);
 		
-		fiButton = new FIButton("Geometrische Algebra",new String[]{"","versie-info: 20050815",
+		fiButton = new FIButton("Geometrische Algebra",new String[]{"","versie-info: 20070227",
 													"auteurs: Gerard Koolstra, Peter Boon",
 													"          en Martin Kindt",
 													"programmeur: Peter Boon",
