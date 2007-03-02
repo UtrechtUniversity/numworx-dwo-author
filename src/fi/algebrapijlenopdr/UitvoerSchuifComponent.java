@@ -312,12 +312,12 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if(!links)
 		{	tabel.setBounds(10,h-152,b-10,152);
 			tf.setBounds(12,corr,b-15-scrollCorr,20);
-			plusMinKnop.setLocation(b-12,1);
+			plusMinKnop.setLocation(b-12,1+corr);
 		}
 		else
 		{	tabel.setBounds(0,h-152,b-10,152);
 			tf.setBounds(2,corr,b-15-scrollCorr,20);
-			plusMinKnop.setLocation(b-22,1);
+			plusMinKnop.setLocation(b-22,1+corr);
 		}	
 
 	}
