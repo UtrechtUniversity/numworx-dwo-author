@@ -102,7 +102,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
 		
-		fiButton = new fi.beans.copyright.FIButton("Algebra Pijlen Opdrachten",new String[]{"","versie-info: 200700302",
+		fiButton = new fi.beans.copyright.FIButton("Algebra Pijlen Opdrachten",new String[]{"","versie-info: 20070303",
 																	"auteur: Peter Boon",
 																	"programmeur: Peter Boon",
 																	"Freudenthal Instituut",
@@ -160,10 +160,10 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		{	maakOpdrachten();
 			Panel p = new Panel();
 			p.setLayout(null);
-			p.setBounds(180,0,20,30);
+			p.setBounds(getSize().width-20,getSize().height-30,20,30);
 			fiButton.setBounds(0,0,20,30);
 			p.add(fiButton);
-			add(p);
+			add(p,0);
 		}
 		
 		

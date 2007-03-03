@@ -87,7 +87,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 		
 		scoreLabel = new Label("score");
 		scoreLabel.setBounds(orPosX-50,orPosY+25,50,24);
-		if(!editMode)add(scoreLabel);
+		//if(!editMode)add(scoreLabel);
 
 		activiteitNr = 0;
 		opdrachtNr = 0;
