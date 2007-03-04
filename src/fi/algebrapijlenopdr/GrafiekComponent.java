@@ -56,9 +56,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	private Font font = new Font("SansSerif", Font.PLAIN, 10);
 	
+	private boolean resize;
+	private boolean trace;
+	
+	private int tracex;
+	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
-		setBounds(x,y,b,h);
+		super.setBounds(x,y,b,h);
 		setLayout(null);
 		setBackground(Color.white);
 		
@@ -147,6 +152,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		
 		
 			
+	}
+	
+	public void setSize(int b, int h)
+	{	
+		super.setSize(b,h);
+		veldb = b-60;
+		veldh = h-70;
+		gv.setSize(veldb,veldh);
 	}
 	
 	public Hashtable getState()
@@ -469,6 +482,16 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		{	startxv = e.getX();
 			startyv = e.getY();
 		}
+		else if(e.getX()>getSize().width-10 && e.getY()>getSize().height-10)
+		{	resize = true;
+			startx = e.getX();
+			starty = e.getY();
+		}
+		//else if(e.getX()>40 && e.getX()<getSize().width-10 && e.getY()>getSize().height-10)
+		//{	trace = true;
+		//	startx = e.getX();
+		//	starty = e.getY();
+		//}
 		else super.mousePressed(e);
 	}	
 	
@@ -488,6 +511,15 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			startyv = e.getY();
 			
 		}
+		else if(resize)
+		{	int dx = e.getX() - startx;
+			int dy = e.getY() - starty;
+			setSize(getSize().width + dx, getSize().height + dy);
+			schuifveld.tekenOpnieuw();
+			startx = e.getX();
+			starty = e.getY();
+			
+		}
 		else
 		{	super.mouseDragged(e);
 			int dx = e.getX() - startx;
@@ -499,7 +531,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if(e.getSource()==gv)
+	{	resize = false;
+		trace = false;
+		if(e.getSource()==gv)
 		{	beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
 			if(aantalPijlenIn>0)
@@ -725,7 +759,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 		public GrafiekVeld(int x, int y, int b, int h)
 		{	
-			setBounds(x,y,b,h);
+			super.setBounds(x,y,b,h);
 			veranderd = true;
 		}
 		
@@ -733,7 +767,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		{	int breedte = getSize().width;
 			int hoogte = getSize().height;
 			if(veranderd)			
-			{	if (im == null)
+			{	if (im == null || resize)
 				{	im = createImage(breedte, hoogte);
 					gIm = im.getGraphics();
 				}
@@ -743,6 +777,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				veranderd = false;
 			}
 			g.drawImage(im, 0, 0, null);
+		}
+		
+		public void setSize(int b, int h)
+		{	super.setSize(b,h);
+			tekenOpnieuw();
 		}
 		
 		public void tekenOpnieuw()
@@ -809,6 +848,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						g.fillOval(x-2,y-2,5,5);
 						g.drawLine(x,y,x,hoogte);
 						g.drawLine(x,y,0,y);
+					}
+					if(trace)
+					{
+						
 					}
 				}
 				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null)
