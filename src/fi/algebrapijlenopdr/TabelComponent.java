@@ -1,9 +1,10 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
+
+
 import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
@@ -86,10 +87,10 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 			g.setColor(Color.black);
 			g.drawRect(3,15,breedteInv,hoogte - 31);
 			
-			g.setColor(new Color(220,220,220));
-			g.fillRect(3,0,breedteInv,15);
-			g.setColor(Color.black);
-			g.drawRect(3,0,breedteInv,15);
+			//g.setColor(new Color(220,220,220));
+			//g.fillRect(3,0,breedteInv,15);
+			//g.setColor(Color.black);
+			//g.drawRect(3,0,breedteInv,15);
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
 			{	g.setColor(new Color(255,200,200));
@@ -99,7 +100,7 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 				g.drawRect(breedteInv+6,15+selectnummer*15,breedteUitv,16);
 				g.drawRect(3,15+selectnummer*15,breedteInv,16);
 			}
-			pijlPlusContain = new Polygon();
+			/*pijlPlusContain = new Polygon();
 			pijlPlusContain.addPoint(breedteInv+6+breedteUitv/2-25,12);
 			pijlPlusContain.addPoint(breedteInv+6+breedteUitv/2+25,12);
 			pijlPlusContain.addPoint(breedteInv+6+breedteUitv/2,0);
@@ -121,11 +122,48 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 			pijlMin.addPoint(breedteInv+6+breedteUitv/2+5,hoogte-13);
 			pijlMin.addPoint(breedteInv+6+breedteUitv/2,hoogte-5);
 			g.fillPolygon(pijlMin);
+			g.drawPolygon(pijlMin);	*/
+			
+			int knopPlusX = 15;
+			int knopPlusY = 4;
+			int knopMinX = 15;
+			int knopMinY = hoogte-5;
+			
+			//if(AlgebraPijlen.formule)
+			//{	knopPlusX = 15;
+			//	knopPlusY = hoogte-13;
+			//	knopMinX = 40;
+			//	knopMinY = hoogte-5;
+			//}
+			
+			pijlPlusContain = new Polygon();
+			pijlPlusContain.addPoint(knopPlusX-10,knopPlusY+8);
+			pijlPlusContain.addPoint(knopPlusX+10,knopPlusY+8);
+			pijlPlusContain.addPoint(knopPlusX,knopPlusY-4);
+				
+			pijlPlus = new Polygon();
+			pijlPlus.addPoint(knopPlusX-5,knopPlusY+8);
+			pijlPlus.addPoint(knopPlusX+5,knopPlusY+8);
+			pijlPlus.addPoint(knopPlusX,knopPlusY);
+			g.fillPolygon(pijlPlus);
+			g.drawPolygon(pijlPlus);
+		
+			pijlMinContain = new Polygon();
+			pijlMinContain.addPoint(knopMinX-10,knopMinY-8);
+			pijlMinContain.addPoint(knopMinX+10,knopMinY-8);
+			pijlMinContain.addPoint(knopMinX,knopMinY+5);
+			
+			pijlMin = new Polygon();
+			pijlMin.addPoint(knopMinX-5,knopMinY-8);
+			pijlMin.addPoint(knopMinX+5,knopMinY-8);
+			pijlMin.addPoint(knopMinX,knopMinY);
+			g.fillPolygon(pijlMin);
 			g.drawPolygon(pijlMin);	
+			
 			if(exp!=null)
 			{	String s = exp.geefVarNaam();
 				if(s!=null && !s.equals(""))
-				{	g.drawString(s,5,12);
+				{	//g.drawString(s,5,12);
 					for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));

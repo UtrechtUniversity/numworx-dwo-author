@@ -28,6 +28,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private PlusMinKnop plusMinKnop;
 	boolean scrollable;
 	int scrollCorr = 0;
+	public boolean kettingZichtbaar = true;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -185,10 +186,15 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			g.drawRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 		
 			g.setFont(f);
-			if(expressie!=null)
+			if(expressie!=null && kettingZichtbaar)
 			{	expressie.zetMaat(fm);
 				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, 5+(getSize().width-scrollCorr-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
 				else expressie.teken(g, 5+(getSize().width-scrollCorr-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
+			}
+			else if(expressie!=null && !kettingZichtbaar)
+			{	Expressie functie = new Functie(new BasisExpressie(expressie.geefVarNaam()),expressie);
+				functie.zetMaat(fm);
+				functie.teken(g, 5+(getSize().width-scrollCorr-functie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - functie.hoogte)/2);
 			}
 				
 		}
@@ -285,9 +291,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		int b = 50+scrollCorr;
 		int h = 20;
 		int corr = 0;
+		Expressie expFunctie = expressie;
+		if(!(expressie instanceof Functie) && !kettingZichtbaar && expressie!=null) 
+		{	expFunctie = new Functie(new BasisExpressie(expressie.geefVarNaam()),expressie);
+			expFunctie.zetMaat(fm);
+		}
 		if(expressie!=null)
-		{	b = expressie.breedte+scrollCorr;
-			h = expressie.hoogte;
+		{	b = expFunctie.breedte+scrollCorr;
+			h = expFunctie.hoogte;
 			if(toonWaarde && expressie.geefWaarde()!=null)
 			{	b = fm.stringWidth(waardeString)+scrollCorr;
 				h = 0;
@@ -459,6 +470,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
 		{	if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(true);
 			open = true;
+			kettingZichtbaar = true;
 			tabel.zetDubbel(false);
 			zetMaat();
 			schuifveld.tekenOpnieuw();
@@ -466,6 +478,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
 		{	if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(false);
 			open = false;
+			kettingZichtbaar = false;
 			tabel.zetDubbel(true);
 			zetMaat();
 			schuifveld.tekenOpnieuw();
