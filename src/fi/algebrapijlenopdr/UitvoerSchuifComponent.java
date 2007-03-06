@@ -191,7 +191,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				if(toonWaarde && expressie.geefWaarde()!=null)g.drawString(waardeString, 5+(getSize().width-scrollCorr-fm.stringWidth(waardeString))/2, getSize().height-tabelCorr-5);
 				else expressie.teken(g, 5+(getSize().width-scrollCorr-expressie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - expressie.hoogte)/2);
 			}
-			else if(expressie!=null && !kettingZichtbaar)
+			else if(expressie!=null && expressie.geefVarNaam()!=null && !(expressie instanceof Functie) && !kettingZichtbaar)
 			{	Expressie functie = new Functie(new BasisExpressie(expressie.geefVarNaam()),expressie);
 				functie.zetMaat(fm);
 				functie.teken(g, 5+(getSize().width-scrollCorr-functie.breedte)/2, 7 + (labelCorr+getSize().height-tabelCorr-15 - functie.hoogte)/2);
@@ -292,7 +292,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		int h = 20;
 		int corr = 0;
 		Expressie expFunctie = expressie;
-		if(!(expressie instanceof Functie) && !kettingZichtbaar && expressie!=null) 
+		if(expressie!=null && expressie.geefVarNaam()!=null && !(expressie instanceof Functie) && !kettingZichtbaar) 
 		{	expFunctie = new Functie(new BasisExpressie(expressie.geefVarNaam()),expressie);
 			expFunctie.zetMaat(fm);
 		}
