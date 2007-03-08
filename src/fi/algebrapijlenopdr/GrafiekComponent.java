@@ -314,7 +314,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		{	new Expressie();
 			String getal = df.format(schaalFactorX*(i));
 			woordbreedte = fm.stringWidth(getal);
-			if(schaalFactorX>0.5 && schaalFactorX<5)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
+			if(schaalFactorX>0.5 && schaalFactorX<5 && woordbreedte<eenheidx)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
 			else if((i+imin -beginwaarde-1)%2==0)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
 		}
 		for(int j=jmin+1 ; j<jmax ; j++)
@@ -592,7 +592,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				schaalFactorX = 1;
 				schaalFactorY = 1;
 				beginwaarde = 0;
-				
+				selectnummer = 999;
 				if(aantalPijlenIn>0)
 				{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 				}
@@ -738,7 +738,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				//repaint();
 				schuifveld.tekenOpnieuw();
 			}
-			
+			selectnummer = 999;
 			if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 			}
