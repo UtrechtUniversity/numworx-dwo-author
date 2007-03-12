@@ -345,7 +345,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			while(asc.pijlIn1 !=null && teller > 0)
 			{	teller--;
 				asc = asc.pijlIn1.zender;
-				puntXWaarde[nr] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
+				if(asc.geefUitvoer(teller).geefWaarde()!=null)puntXWaarde[nr] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
 				isPuntGrafiek[nr] = true;
 			}
 			exp = e;
