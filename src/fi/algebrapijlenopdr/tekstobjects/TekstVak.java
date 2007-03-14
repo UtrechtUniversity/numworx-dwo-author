@@ -248,6 +248,14 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		repaint();
 	}
 	
+	public void insertLinkVak()
+	{	tekst.insert(caretPos,'@');
+		TekstLinkVak tfvNieuw = new TekstLinkVak(this);
+		tekst.insertLinkVak(caretPos,tfvNieuw);
+		vulVak(tekst.toString());
+		repaint();
+	}
+	
 	public void paint(Graphics g)
 	{	super.paint(g);
 	}

@@ -23,20 +23,26 @@ public class TekstBuffer
 		{	if(completeString.charAt(i)=='@')
 			{	int indexF = completeString.lastIndexOf("$f");
 				int indexA = completeString.lastIndexOf("$A");
+				int indexL = completeString.lastIndexOf("$L");
 				int index = -1;
 				TekstDeelVak tfv = null;
-				if(indexF > indexA)
+				if(indexF > indexA && indexF > indexL)
 				{	tfv = new TekstFormuleVak(tekstVak);
 					index = indexF;
 				}
-				else if(indexA > indexF)
+				else if(indexA > indexF && indexA > indexL)
 				{	tfv = new TekstAntwoordVak(tekstVak);
 					tfv.setEditable(true);
 					index = indexA;
 				}
+				else if(indexL > indexF && indexL > indexA)
+				{	tfv = new TekstAntwoordVak(tekstVak);
+					tfv.setEditable(true);
+					index = indexL;
+				}
 				if(index==-1) break;
 				String formString = completeString.substring(index,i+1);
-				if(indexF > indexA)	tfv.vulVak(formString);
+				if(indexF > indexA && indexF > indexL)	tfv.vulVak(formString);
 				else tfv.vulVak(formString.substring(2,formString.length()-1));
 				completeString = ""+completeString.substring(0,index)+"@"+completeString.substring(i+1);
 				formules.insertElementAt(tfv,0);
@@ -77,6 +83,12 @@ public class TekstBuffer
 	public void insertAntwoordVak(int pos, TekstAntwoordVak tfv)
 	{	insert(pos+1, '\n');
 		int formNr = geefAantalFormules(pos);
+		formules.insertElementAt(tfv,formNr);
+	
+	}
+	
+	public void insertLinkVak(int pos, TekstLinkVak tfv)
+	{	int formNr = geefAantalFormules(pos);
 		formules.insertElementAt(tfv,formNr);
 	
 	}

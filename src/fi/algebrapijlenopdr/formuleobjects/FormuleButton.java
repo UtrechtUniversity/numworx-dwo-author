@@ -109,7 +109,8 @@ public class FormuleButton extends Panel implements MouseListener
 			g.drawRect(8,12,4,5);
 		}
 		if(code.equals("haakjes"))
-		{	g.drawString("(",3,15);
+		{	g.setFont(new Font("SansSerif",Font.PLAIN, 16));
+			g.drawString("(",3,15);
 			g.drawString(")",13,15);
 			g.drawRect(8,5,4,10);
 		}
@@ -126,6 +127,9 @@ public class FormuleButton extends Panel implements MouseListener
 		}
 		if(code.equals("antwoord"))
 		{	g.drawString("A",5,15);
+		}
+		if(code.equals("link"))
+		{	g.drawString("L",5,15);
 		}
 	}
 	
