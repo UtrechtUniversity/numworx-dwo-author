@@ -7,8 +7,8 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 
 public class TekstLinkVak extends TekstDeelVak implements ActionListener
 {
-	private TekstArea antwoordVak;
-	private Font font = new Font("SansSerif",Font.PLAIN,12);
+	private TekstRegel tekstVak;
+	private Font font = new Font("SansSerif",Font.BOLD,12);
 	private FontMetrics fm;
 	private boolean selected = false;
 	
@@ -17,37 +17,39 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		setFont(font);
 		fm = getFontMetrics(getFont());
 	
-		antwoordVak = new TekstArea();
-		antwoordVak.setBounds(0,0,30,20);
-		antwoordVak.setEditable(true);
+		tekstVak = new TekstRegel();
+		tekstVak.setFont(font);
+		tekstVak.setForeground(Color.blue);
+		tekstVak.setLocation(0,0);
+		tekstVak.setEditable(true);
 		
-		add(antwoordVak);
+		add(tekstVak);
 				
-		setSize(antwoordVak.getSize().width,antwoordVak.getSize().height);
-		//ashoogte = antwoordVak.getSize().height;
+		setSize(tekstVak.getSize().width,tekstVak.getSize().height);
+		ashoogte = tekstVak.ashoogte;
 	}
 	
 	public void vulVak(String s)
-	{	antwoordVak.setText(s);
+	{	tekstVak.vulVak(s);
 	}
 	
-	public TekstArea geefAntwoordVak()
-	{	return antwoordVak;
+	public FormuleVak geefTekstVak()
+	{	return tekstVak;
 	}
 	
 	public void setEditable(boolean b)
-	{	antwoordVak.setEditable(true);
+	{	tekstVak.setEditable(true);
 	}
 	
 	public void zetMaat()
-	{	setSize(antwoordVak.getSize().width, antwoordVak.getSize().height);
-		antwoordVak.setLocation(0,0);
-		//ashoogte = antwoordVak.getSize().height;
+	{	setSize(tekstVak.getSize().width, tekstVak.getSize().height);
+		tekstVak.setLocation(0,0);
+		ashoogte = tekstVak.ashoogte;
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 	}
 	
 	public String toString()
-	{	return "$L" + antwoordVak.getText() + "@";
+	{	return "$L" + tekstVak.toString() + "@";
 	}
 	
 	public void actionPerformed(ActionEvent e)
