@@ -142,14 +142,15 @@ class VaktekPanel extends Container
 		{	setBounds(0,0,breedte,hoogte);
 		}
 		public void paint(Graphics g)
-		{	if(aantalViews==2)
+		{	Font f = new Font("SansSerrif", Font.BOLD, 12);
+			if(vakBreedte<70)f = new Font("SansSerrif", Font.PLAIN, 10);
+			if(aantalViews==2)
 			{	g.setColor(Color.black);
 				//g.drawRect(breedte/2-vakBreedte, hoogte/2-vakBreedte, vakBreedte, vakBreedte);
 				//g.drawRect(breedte/2-vakBreedte, hoogte/2, vakBreedte, vakBreedte);
 				//g.drawRect(breedte/2, hoogte/2, vakBreedte, vakBreedte);
 				g.drawRect(breedte/2-vakBreedte, 0, vakBreedte, vakBreedte);
 				g.drawRect(breedte/2, 0, vakBreedte, vakBreedte);
-				Font f = new Font("SansSerrif", Font.BOLD, 12);
 				g.setFont(f);
 				FontMetrics fm = getFontMetrics(f);
 				String sVoor = NabouwenAanzichten.rb.getString("voorLabel");
@@ -163,7 +164,7 @@ class VaktekPanel extends Container
 				//g.drawString(sVoor, (breedte-vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
 				//g.drawString(sRechts, (breedte+vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
 				g.drawString(sVoor, (breedte-vakBreedte-wv)/2,vakBreedte+h);
-				g.drawString(sRechts, (breedte+vakBreedte-wv)/2,vakBreedte+h);
+				g.drawString(sRechts, (breedte+vakBreedte-wr)/2,vakBreedte+h);
 			}
 			else if(aantalViews==3)
 			{	g.setColor(Color.black);
@@ -171,7 +172,6 @@ class VaktekPanel extends Container
 				g.drawRect(breedte/2-vakBreedte, hoogte/2-vakBreedte, vakBreedte, vakBreedte);
 				g.drawRect(breedte/2-vakBreedte, hoogte/2, vakBreedte, vakBreedte);
 				g.drawRect(breedte/2, hoogte/2, vakBreedte, vakBreedte);
-				Font f = new Font("SansSerrif", Font.BOLD, 12);
 				g.setFont(f);
 				FontMetrics fm = getFontMetrics(f);
 				String sVoor = NabouwenAanzichten.rb.getString("voorLabel");
@@ -180,10 +180,10 @@ class VaktekPanel extends Container
 				int wv = fm.stringWidth(sVoor);
 				int wr = fm.stringWidth(sRechts);
 				int wb = fm.stringWidth(sBoven);
-				int h = fm.getHeight();
-				g.drawString(sBoven, (breedte-vakBreedte-wv)/2,hoogte/2-vakBreedte-3);
+				int h = fm.getAscent();
+				g.drawString(sBoven, (breedte-vakBreedte-wb)/2,hoogte/2-vakBreedte-3);
 				g.drawString(sVoor, (breedte-vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
-				g.drawString(sRechts, (breedte+vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
+				g.drawString(sRechts, (breedte+vakBreedte-wr)/2,hoogte/2+vakBreedte+h);
 			}
 			
 		}

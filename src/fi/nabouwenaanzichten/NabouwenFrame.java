@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
 import java.awt.event.*;
+import fi.beans.mainframe.MainFrame;
 
 public class NabouwenFrame extends MainFrame implements ActionListener
 {	

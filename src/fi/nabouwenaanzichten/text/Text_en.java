@@ -13,6 +13,8 @@ public class Text_en extends java.util.ListResourceBundle
                 { "volLeegKnopLabel2" , "Remove all" },
 				{ "aanzichtenKnopLabel1" , "Show views" },
 				{ "aanzichtenKnopLabel2" , "Hide views" },
+				{ "opdrachtKnopLabel1" , "Problem" },
+				{ "opdrachtKnopLabel2" , "Start" },
 				{ "ipRegel1Label" , "Build" },
 				{ "ipRegel2Label" , "Break down" },
 				{ "fig1" , "Figure 1" },

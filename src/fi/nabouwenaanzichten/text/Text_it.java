@@ -13,6 +13,8 @@ public class Text_it extends java.util.ListResourceBundle
                 { "volLeegKnopLabel2" , "Cancellare tutto" },
 				{ "aanzichtenKnopLabel1" , "Show views" },
 				{ "aanzichtenKnopLabel2" , "Hide views" },
+				{ "opdrachtKnopLabel1" , "Problem" },
+				{ "opdrachtKnopLabel2" , "Start" },
 				{ "ipRegel1Label" , "Costruire" },
 				{ "ipRegel2Label" , "Togliere" },
 				{ "fig1" , "Figure 1" },

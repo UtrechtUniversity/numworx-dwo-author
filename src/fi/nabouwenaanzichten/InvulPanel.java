@@ -21,7 +21,7 @@ class InvulPanel extends Panel implements ItemListener
 		aantalCheckboxen = 0;
 		checkboxen = new Checkbox[items.length];
 		for(int i=0 ; i<items.length ; i++)
-		{	addCheckbox(items[i],0,20*i,b,20);
+		{	addCheckbox(items[i],0,h/2*i,b,h/2);
 		}
 		keuze = 1;
 		checkboxen[0].setState(true);
@@ -31,7 +31,7 @@ class InvulPanel extends Panel implements ItemListener
 	private void addCheckbox(String naam, int x, int y, int b, int h)
 	{	checkboxen[aantalCheckboxen] = new Checkbox(naam, g, false);
 		checkboxen[aantalCheckboxen].setBounds(x,y,b,h);
-		checkboxen[aantalCheckboxen].setFont(new Font("SansSerif",Font.PLAIN,14));
+		checkboxen[aantalCheckboxen].setFont(new Font("SansSerif",Font.PLAIN,h/2+3));
 		checkboxen[aantalCheckboxen].addItemListener(this);
 		add(checkboxen[aantalCheckboxen]);
 		aantalCheckboxen++;

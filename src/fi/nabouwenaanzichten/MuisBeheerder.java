@@ -53,7 +53,7 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	eigenaar.muisLosActie();
+	{	eigenaar.muisLosActie(e);
 		//if(animatieWasAan)
 		//{	animatieWasAan = false;
 		//	ab.beginAnimatie();

@@ -233,7 +233,8 @@ public class Viewer3d extends Container
 		if(im==null)
 		{	breedte = getSize().width;
 			hoogte = getSize().height;	
-			double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
+			// breedte/400 ipv breedte/500, dan past de langwerpige kr beter
+			double startschaal = Math.min((double)breedte/400,(double)hoogte/500);
 			mat.initialiseer(0,0,0,startschaal);	
 			startpunt = new Punt3D(breedte/2,hoogte/2,0);
 			for(int i=0 ; i<5 ; i++)
@@ -489,12 +490,12 @@ public class Viewer3d extends Container
 			tekenOpnieuw();
 		}
 	}
-	public void muisKkActie()
+	public void muisKkActie(MouseEvent e)
 	{	
 		for(int q=aantalKv-1 ; q>-1 ; q--)
 		{	int n = sorteerRij[q];
 			if(kv[n].m == 6 && kv[n].k == 0 && p[kv[n].i][kv[n].j].contains(mb.geefDrukx(),mb.geefDruky()))
-			{	if(eigenaar.isBouwen())
+			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || pressDuration>500))
 				{	kr.voegKubusToe(kv[n].i,kv[n].j,0);
 					if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
 				}
@@ -505,7 +506,7 @@ public class Viewer3d extends Container
 				return;
 			}
 			else if(kv[n].m != 6 && pp[kv[n].i][kv[n].j][kv[n].k][kv[n].m].contains(mb.geefDrukx(),mb.geefDruky()))
-			{	if(eigenaar.isBouwen())
+			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || pressDuration>500))
 				{	
 					if(kv[n].m==0)
 					{	kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k+1);
@@ -535,12 +536,24 @@ public class Viewer3d extends Container
 			}
 		}
 	}
-	public void muisDrukActie(){}
+	
+	
+	long pressStart = 0;
+    long pressDuration = 0;
+    
+	public void muisDrukActie(){
+        pressStart = System.currentTimeMillis();
+        
+    }
 	public void muisKlikActie(){}
-	public void muisLosActie()
-	{	if((klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 10) )
-		{	muisKkActie();
+	public void muisLosActie(MouseEvent e)
+	{	transferFocus();
+        pressDuration = System.currentTimeMillis() - pressStart;
+		if((klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 10) )
+		{	muisKkActie(e);
 		}
+        pressStart = 0;
+        pressDuration = 0;
 		eigenaar.zetVeranderd();
 	}
 }

@@ -9,6 +9,8 @@ import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 
+
+
 /**
  * @author Peter Boon
  */
@@ -56,6 +58,10 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	private int mode = 2;
 	private Hashtable defaultParamValues;
 	
+	private boolean mobileVersion;
+	private Button opdrachtKnop;
+	
+	
 	public static void main(String[] args)    
 	{	int width = 800;
         int height = 600;
@@ -102,13 +108,16 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		if(bgColorArg!=null)bgcolor = new Color(Integer.parseInt(bgColorArg.substring(1),16));
 		setBackground(bgcolor);
 		
-		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20060615",
+		String mobileVersionString = getParameter("mobileVersion");
+	    if(mobileVersionString!=null && mobileVersionString.equals("true"))mobileVersion = true;
+	       
+		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20070317",
 											"auteur: Peter Boon",
 											"programmeur: Peter Boon",
 											"Freudenthal Instituut",
 																																	"www.fi.uu.nl",""});
 		fiButton.setBounds(2,2,20,30);
-		add(fiButton);
+		//add(fiButton);
 		
 		String modeString = getParameter("mode");
 		if ( modeString == null) modeString = "1";
@@ -136,13 +145,16 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			tp1.setText(7,NabouwenAanzichten.rb.getString("textPanelRegel1_7"));
 		}
 		tp2 = new TekstPanel(15,30,35,380,120);
+		if(mobileVersion)tp2 = new TekstPanel(10,10,30,220,100);
 		tp2.setBackground(getBackground());
 		{	tp2.setText(0,NabouwenAanzichten.rb.getString("textPanelRegel2_0"));
 			tp2.setText(1,NabouwenAanzichten.rb.getString("textPanelRegel2_1"));
 			tp2.setText(2,NabouwenAanzichten.rb.getString("textPanelRegel2_2"));
 			tp2.setText(3,NabouwenAanzichten.rb.getString("textPanelRegel2_3"));
 			tp2.setText(4,NabouwenAanzichten.rb.getString("textPanelRegel2_4"));
-			tp2.setText(5,NabouwenAanzichten.rb.getString("textPanelRegel2_5"));
+			if(mobileVersion)tp2.setText(5,NabouwenAanzichten.rb.getString("textPanelRegel2_5"));
+			if(mobileVersion)tp2.setText(6,NabouwenAanzichten.rb.getString("textPanelRegel2_6"));
+			if(mobileVersion)tp2.setText(7,NabouwenAanzichten.rb.getString("textPanelRegel2_7"));
 		}
 		
 		selectieNummer = 0;
@@ -156,13 +168,28 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		volLeegKnop = new Button(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 		volLeegKnop.addActionListener(this);
 		volLeegKnop.setBounds(510,420,80,24);
+		if(mobileVersion) 
+        {  volLeegKnop.setFont(new Font("SansSerif", Font.PLAIN, 10));
+           volLeegKnop.setBounds(145,180,55,15);
+        }
 		add(volLeegKnop);
+		
+		opdrachtKnop = new Button(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1"));
+		opdrachtKnop.addActionListener(this);
+		opdrachtKnop.setBounds(510,420,80,24);
+		if(mobileVersion) 
+        {  opdrachtKnop.setFont(new Font("SansSerif", Font.PLAIN, 10));
+	        opdrachtKnop.setBounds(5,10,50,15);
+	        add(opdrachtKnop);
+        }
+		
 		
 		String[] activiteitNamen = null;
 		
 		if(mode==0)
 		{	add(tp0);
-			vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
+			if(mobileVersion) vWerk = new Viewer3d(kr, 0, -15, 50, 200, this);
+	        else vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
 			vWerk.zetAchtergrond(bgcolor);
 			vWerk.zetAfstand(10000000);
 			vWerk.zetSchaduw(false);
@@ -187,7 +214,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			activiteitNamen = new String[aantalActiviteiten];
 			activiteitNamen[0] = NabouwenAanzichten.rb.getString("niveau")+ "1";
 			
-			invulPanel = new InvulPanel(activiteitNamen,100,140,180,80);
+			invulPanel = new InvulPanel(activiteitNamen,100,140,180,40);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
 			if(activiteitNamen.length>1)add(invulPanel);
@@ -229,7 +256,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			activiteitNamen = new String[aantalActiviteiten];
 			activiteitNamen[0] = NabouwenAanzichten.rb.getString("niveau")+ "1";
 			
-			invulPanel = new InvulPanel(activiteitNamen,100,180,180,80);
+			invulPanel = new InvulPanel(activiteitNamen,100,180,180,40);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
 			if(activiteitNamen.length>1)add(invulPanel);
@@ -244,12 +271,15 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		}
 		else if(mode==2)
 		{	add(tp2);
-			vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
+			if(mobileVersion) tp2.setVisible(false); 
+			if(mobileVersion) vWerk = new Viewer3d(kr, 60, -15, 180, 200, this);
+	        else vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
 			vWerk.zetAchtergrond(bgcolor);
 			vWerk.zetBeginHoeken(30,-30);
 			add(vWerk);
 			
-			vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), 40, 150, 250, 250,3, this);
+			if(mobileVersion) vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), -15, 130, 140, 130,3, this);
+	        else vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), 40, 150, 250, 250,3, this);
 			vVoorbeeld.zetAchtergrond(Color.white);
 			vVoorbeeld.zetKlikAan(false);
 			vVoorbeeld.ra.zetPijlAan(false);
@@ -259,16 +289,19 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			activiteitNr = 0;
 	
 			aantalActiviteiten = 2;
+			if(mobileVersion)aantalActiviteiten = 1;
+				
 			activiteitNr = 0;
 			aantalOpdrachten = new int[aantalActiviteiten];
-			aantalOpdrachten[0] = 10;
-			aantalOpdrachten[1] = 10;
-			
 			activiteitNamen = new String[aantalActiviteiten];
-			activiteitNamen[0] = NabouwenAanzichten.rb.getString("niveau")+ "1";
-			activiteitNamen[1] = NabouwenAanzichten.rb.getString("niveau")+ "2";
-
-			invulPanel = new InvulPanel(activiteitNamen,200,180,180,80);
+			
+			for(int i=0 ; i<aantalActiviteiten ; i++)
+			{	aantalOpdrachten[i] = 10;
+				activiteitNamen[i] = NabouwenAanzichten.rb.getString("niveau")+ (i+1);
+			}
+			
+			invulPanel = new InvulPanel(activiteitNamen,200,180,180,40);
+			if(mobileVersion) invulPanel = new InvulPanel(activiteitNamen,120,240,180,30);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
 			if(activiteitNamen.length>1)add(invulPanel);
@@ -278,6 +311,11 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		    {	scores[i] = new Label(NabouwenAanzichten.rb.getString("scoreLabel")+0);
 		    	scores[i].setBounds(280,180 + i*20,140,20);
 		    	scores[i].setFont(new Font("SansSerif",Font.PLAIN,14));
+		    	if(mobileVersion)
+		    	{	scores[i].setBounds(150,240 + i*15,140,20);
+		    		scores[i].setFont(new Font("SansSerif",Font.PLAIN,10));
+		    		
+		    	}
 		    	add(scores[i],0);
 		    }
 		}
@@ -305,6 +343,10 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		aantalKLabel = new Label(NabouwenAanzichten.rb.getString("aantalKLabel")+ 0);
 		aantalKLabel.setBounds(600,420,180,20);
 		aantalKLabel.setFont(new Font("SansSerif",Font.PLAIN,14));
+		if(mobileVersion) 
+        {  aantalKLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        	aantalKLabel.setBounds(125,200,120,12);
+        }
 		add(aantalKLabel);
 		
 		aantalKLabelVb = new Label(NabouwenAanzichten.rb.getString("aantalKLabel")+ 0);
@@ -326,6 +368,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		or = new OpdrachtNrRij[aantalActiviteiten];
 		for(int i=0 ; i<aantalActiviteiten ; i++)
 		{	or[i] = new OpdrachtNrRij(aantalOpdrachten[i], 90,420);
+			if(mobileVersion) or[i] = new OpdrachtNrRij_m(aantalOpdrachten[i], 20,270);
 			or[i].addActionListener(this);
 			or[i].setBackground(getBackground());
 			or[i].setSelected(1);
@@ -725,6 +768,26 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 				}
 				volLeegKnop.setLabel(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 				zetVeranderd();
+			}
+		}
+		else if(e.getSource()==opdrachtKnop)
+		{	if(opdrachtKnop.getLabel().equals(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1")))
+			{	if(mode==0)tp0.setVisible(true);
+				if(mode==1)tp1.setVisible(true);
+				if(mode==2)tp2.setVisible(true);
+				vWerk.setVisible(false);
+				volLeegKnop.setVisible(false);
+				aantalKLabel.setVisible(false);
+				opdrachtKnop.setLabel(NabouwenAanzichten.rb.getString("opdrachtKnopLabel2"));
+			}
+			else
+			{	if(mode==0)tp0.setVisible(false);
+				if(mode==1)tp1.setVisible(false);
+				if(mode==2)tp2.setVisible(false);
+				vWerk.setVisible(true);
+				volLeegKnop.setVisible(true);
+				aantalKLabel.setVisible(true);
+				opdrachtKnop.setLabel(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1"));
 			}
 		}
 		else if(e.getSource() == orActief)

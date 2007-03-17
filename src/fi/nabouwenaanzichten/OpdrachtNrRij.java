@@ -10,6 +10,9 @@ class OpdrachtNrRij extends Container implements ActionListener
 	private int aantalOpdr;
 	private ActionListener actionListener;
 
+	public OpdrachtNrRij()
+	{
+	}
 	
 	public OpdrachtNrRij(int n, int x, int y)
 	{	setLayout(null);
