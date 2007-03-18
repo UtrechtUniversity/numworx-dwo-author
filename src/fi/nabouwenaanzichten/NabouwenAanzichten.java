@@ -800,6 +800,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		{	opdrachtNr = Integer.parseInt(e.getActionCommand())-1;
 			kubusRoosterActief = kubusRoosters[activiteitNr][opdrachtNr];
 			kubusTekenRoosterActief = kubusTekenRoosters[activiteitNr][opdrachtNr];
+			String s = NabouwenAanzichten.rb.getString("aantalKLabel")+ kubusTekenRoosterActief.geefAantalK();
+			aantalKLabel.setText(s);
 			if(mode==1 || mode==2)
 			{	vVoorbeeld.zetKubusRooster(kubusRoosterActief);
 				if(mode==2)vWerk.zetBeginHoeken(30,-30);
