@@ -3,7 +3,6 @@ package fi.nabouwenaanzichten;
 import java.awt.*;
 import java.awt.event.*;
 
-
 public class Viewer3d extends Container
 {
 	private NabouwenAanzichtenIF eigenaar;
@@ -30,7 +29,9 @@ public class Viewer3d extends Container
 	KubusRooster kr;
 	private double k, xhoek,yhoek, beginx, beginy;
 	private int[] sorteerRij;
-	
+	private CubeRemoveThread cubeRemoveThread;
+	private boolean removed = false;
+	private boolean removing = false;
 	
 	
 	public Viewer3d(KubusRooster kr, int x, int y,int b, int h, NabouwenAanzichtenIF hb)
@@ -249,7 +250,8 @@ public class Viewer3d extends Container
   	}
 	
   	public void tekenOpImage(boolean wis)
-  	{ 	beginpunt = new Punt3D(startpunt);
+  	{ 	if(gIm==null)return;
+  		beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
 		//mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
@@ -482,7 +484,8 @@ public class Viewer3d extends Container
 	public void animatie(){}
 	
 	public void muisSleepActie()
-	{	if(muisAan)
+	{	if(removed) return;
+		if(muisAan)
 		{	xhoek -= 0.5*mb.geefSleepdy();
 			if(xhoek>90-beginx)xhoek=90-beginx;
 			if(xhoek<0-beginx)xhoek=0-beginx;
@@ -490,12 +493,12 @@ public class Viewer3d extends Container
 			tekenOpnieuw();
 		}
 	}
-	public void muisKkActie(MouseEvent e)
+	public void muisKkActie(MouseEvent e, boolean remove)
 	{	
 		for(int q=aantalKv-1 ; q>-1 ; q--)
 		{	int n = sorteerRij[q];
 			if(kv[n].m == 6 && kv[n].k == 0 && p[kv[n].i][kv[n].j].contains(mb.geefDrukx(),mb.geefDruky()))
-			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || pressDuration>500))
+			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || remove))
 				{	kr.voegKubusToe(kv[n].i,kv[n].j,0);
 					if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
 				}
@@ -506,7 +509,7 @@ public class Viewer3d extends Container
 				return;
 			}
 			else if(kv[n].m != 6 && pp[kv[n].i][kv[n].j][kv[n].k][kv[n].m].contains(mb.geefDrukx(),mb.geefDruky()))
-			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || pressDuration>500))
+			{	if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() |remove))
 				{	
 					if(kv[n].m==0)
 					{	kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k+1);
@@ -536,25 +539,53 @@ public class Viewer3d extends Container
 			}
 		}
 	}
-	
-	
-	long pressStart = 0;
-    long pressDuration = 0;
-    
-	public void muisDrukActie(){
-        pressStart = System.currentTimeMillis();
+	public void muisDrukActie(MouseEvent e){
+		if(removing) return;
+		removing = true;
+        if(cubeRemoveThread!=null)
+		{	cubeRemoveThread.maakDood();
+			cubeRemoveThread=null;
+		}
+        cubeRemoveThread = new CubeRemoveThread(e);
+        cubeRemoveThread.start();
+		
         
     }
 	public void muisKlikActie(){}
 	public void muisLosActie(MouseEvent e)
-	{	transferFocus();
-        pressDuration = System.currentTimeMillis() - pressStart;
-		if((klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 10) )
-		{	muisKkActie(e);
+	{	removing = false;
+        if(!removed && (klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 16) )
+		{	muisKkActie(e, false);
+			eigenaar.zetVeranderd();
 		}
-        pressStart = 0;
-        pressDuration = 0;
-		eigenaar.zetVeranderd();
+		removed = false;
+    }
+	
+	class CubeRemoveThread extends Thread 
+	{	
+		final MouseEvent ee;
+		boolean dood = false;
+		
+		public CubeRemoveThread(MouseEvent e)
+		{	ee = e;
+		}
+		
+		public void run()
+		{	try
+    		{   sleep(500);
+			}
+    		catch(InterruptedException e)    
+			{ }
+    		if((removing && !dood && klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 16) )
+    		{	removed = true;
+    			muisKkActie(ee, true);
+    			eigenaar.zetVeranderd();	
+    		}
+    		removing = false;
+		}
+		public void maakDood()
+		{	dood = true;
+		}
 	}
 }
 

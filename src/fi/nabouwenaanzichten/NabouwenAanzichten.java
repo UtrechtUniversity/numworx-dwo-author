@@ -60,6 +60,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	
 	private boolean mobileVersion;
 	private Button opdrachtKnop;
+	private int deelSerie = 0;
 	
 	
 	public static void main(String[] args)    
@@ -111,7 +112,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		String mobileVersionString = getParameter("mobileVersion");
 	    if(mobileVersionString!=null && mobileVersionString.equals("true"))mobileVersion = true;
 	       
-		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20070317",
+		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20070318",
 											"auteur: Peter Boon",
 											"programmeur: Peter Boon",
 											"Freudenthal Instituut",
@@ -121,8 +122,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		
 		String modeString = getParameter("mode");
 		if ( modeString == null) modeString = "1";
-		mode = Integer.parseInt(modeString);
-		
+		mode = Integer.parseInt(modeString.substring(0,1));
+		if(modeString.length()>1)deelSerie = Integer.parseInt(modeString.substring(1,2));
 				
 		tp0 = new TekstPanel(15,30,35,380,100);
 		tp0.setBackground(getBackground());
@@ -518,8 +519,12 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		boolean[][][][][] booleanKRs = (boolean[][][][][])o;
 		
 		for(int i=0 ; i<aantalActiviteiten ; i++)
-		{	for(int j=0 ; j<aantalOpdrachten[i] ; j++)
-			{	kubusRoosters[i][j] = new KubusRooster(booleanKRs[i][j],1);
+		{	//deelserie uit hoger niveau komt in het eerste niveau. 
+			//Alleen te gebruiken bij mobileVersion.
+			//Werkt alleen als de niveaus een gelijk aantal opdrachten hebben
+			if(!mobileVersion) deelSerie = 0;
+			for(int j=0 ; j<aantalOpdrachten[i] ; j++)
+			{	kubusRoosters[i][j] = new KubusRooster(booleanKRs[i+deelSerie][j],1);
 			}
 		}
 	}
@@ -772,12 +777,13 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		}
 		else if(e.getSource()==opdrachtKnop)
 		{	if(opdrachtKnop.getLabel().equals(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1")))
-			{	if(mode==0)tp0.setVisible(true);
-				if(mode==1)tp1.setVisible(true);
-				if(mode==2)tp2.setVisible(true);
-				vWerk.setVisible(false);
+			{	vWerk.setVisible(false);
 				volLeegKnop.setVisible(false);
 				aantalKLabel.setVisible(false);
+				if(mode==0)tp0.setVisible(true);
+				if(mode==1)tp1.setVisible(true);
+				if(mode==2)tp2.setVisible(true);
+				
 				opdrachtKnop.setLabel(NabouwenAanzichten.rb.getString("opdrachtKnopLabel2"));
 			}
 			else

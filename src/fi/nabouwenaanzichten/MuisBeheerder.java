@@ -39,7 +39,7 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 		eerstey = e.getY();
 		laatstex = e.getX();
 		laatstey = e.getY();
-		eigenaar.muisDrukActie();
+		eigenaar.muisDrukActie(e);
 	}
 	
 	public void mouseDragged(MouseEvent e)
