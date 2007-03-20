@@ -253,6 +253,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		TekstLinkVak tfvNieuw = new TekstLinkVak(this);
 		tekst.insertLinkVak(caretPos,tfvNieuw);
 		vulVak(tekst.toString());
+		tfvNieuw.requestFocus();
 		repaint();
 	}
 	

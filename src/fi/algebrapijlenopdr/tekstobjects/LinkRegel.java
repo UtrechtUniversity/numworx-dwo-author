@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
-public class TekstRegel extends TekstElement implements MouseListener, MouseMotionListener,KeyListener//, FocusListener
+public class LinkRegel extends TekstElement implements MouseListener, MouseMotionListener,KeyListener, FocusListener
 {	
 	private FontMetrics fm;
 	private boolean caretVisible = false;
@@ -26,16 +26,10 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		
 	Color bgColor = new Color(255,255,255);
 	
-	public TekstRegel()
-	{	
-	}
-	
-	public TekstRegel(TekstVak tv)
+	public LinkRegel(TekstLinkVak tv)
 	{	bgColor = getBackground();
-		tekstVak = tv;
-		editable = tv.isEditable();
-		selectable = tv.isSelectable();
-		
+		//tekstVak = tv;
+				
 		setLayout(null);
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -92,7 +86,7 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		{	if(getComponent(i)instanceof TekstTeken)
 			{	
 				TekstTeken tt = (TekstTeken)getComponent(i);
-				tt.setFont(tekstVak.getFont());
+				tt.setFont(getFont());
 				tt.paint(g,tt.getLocation().x,tt.getLocation().y);
 			}
 		}
@@ -160,7 +154,7 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 
 	public void neemFocus(String richting, TekstElement fe)
 	{	requestFocus();
-		tekstVak.zetActieveRegel(this);
+		//tekstVak.zetActieveRegel(this);
 		for(int i=0 ; i<getComponentCount()  ; i++)
 		{	if(getComponent(i)==fe)
 			{	if(richting.equals("rechts"))
@@ -177,7 +171,7 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 	
 	public void neemFocus(String richting)
 	{	requestFocus();
-		tekstVak.zetActieveRegel(this);
+		//tekstVak.zetActieveRegel(this);
 		if(richting.equals("rechts"))
 		{	caretPos = 0;
 			caretX = 0;
@@ -238,7 +232,6 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 			posX += getComponent(i) .getSize().width;
 		}
 		deSelect();
-		tekstVak.setCaretPosition(this,caretPos);
     }
 	
 	public void setSelection(int x1, int x2)
@@ -404,18 +397,19 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 	{	return caretPos >= getComponentCount();
 	}*/
 	
+	
 	public void mousePressed(MouseEvent e)
-	{	if(selectable)
-		{	tekstVak.zetTekstFocus();
-			startx = e.getX();
-			starty = e.getY();
-			if(e.getSource()==this)setCaretPosition(e.getX());
-		}		
+	{	requestFocus();
+		startx = e.getX();
+		starty = e.getY();
+			setCaretPosition(e.getX());
+			setSelected(false);
+			caretVisible = true;	
 	}
 	
 	public void mouseDragged(MouseEvent e)
 	{	if(selectable)
-		{	/*if(e.getX()<0 || e.getX()>getSize().width || e.getY()<0 || e.getY()>getSize().height)
+		{	if(e.getX()<0 || e.getX()>getSize().width || e.getY()<0 || e.getY()>getSize().height)
 			{	terug = false;
 				
 				if(getParent().getParent()instanceof TekstRegel)
@@ -427,28 +421,17 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 					}
 					((TekstRegel)getParent().getParent()).mouseDragged(en);
 				}
-			}*/
-			if(e.getY()>getSize().height)
-			{	TekstRegel volg = tekstVak.geefVolgendeRegel(this);
-				if(volg==null) return;
-				setSelection(startx,this.getSize().width);
-				MouseEvent en = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), 0,0,1,false);
-				MouseEvent ed = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()-getSize().height,1,false);
-				
-				if(eersteKeer)
-				{	volg.mousePressed(en);
-					eersteKeer=false;
-				}
-				volg.mouseDragged(ed);	
 			}
 			else
 			{	terug = true;
-				tekstVak.setSelected(false);
-				tekstVak.requestFocus();
-				tekstVak.zetActieveRegel(this);
+				setSelected(false);
+				requestFocus();
+				//formuleVak.zetActieveRegel(this);
 				if(e.getX() < startx)setSelection(e.getX(),startx);
 				else setSelection(startx,e.getX());
+				
 			}
+			
 		}
 	}
 		
@@ -557,10 +540,11 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		{   // kc initialized by keyPressed
             int kt = e.getKeyChar();
             if (kt == KeyEvent.VK_ENTER)
-            {	tekstVak.finish();
+            {	//tekstVak.finish();
 			}
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
 	                (kt != KeyEvent.VK_BACK_SPACE) &&
+	                (kt != KeyEvent.VK_DELETE) &&
                		(kc != KeyEvent.VK_ENTER)
                     && (kc != KeyEvent.VK_SHIFT)
                     
@@ -568,10 +552,14 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
       		{	if(!caretVisible)
 				{	deleteSelection();
 				}
-				add(new TekstTeken((char)kt),caretPos);
-				caretX += getComponent(caretPos) .getSize().width;
-				caretPos++;
-				int nr = caretPos;
+				TekstTeken tekstTeken = new TekstTeken((char)kt);
+				//tekstTeken.setFont(getFont());
+				insert(tekstTeken);	
+				tekstTeken.setFont(getFont());
+				//add(new TekstTeken((char)kt),caretPos);
+				//caretX += getComponent(caretPos) .getSize().width;
+				//caretPos++;
+				//int nr = caretPos;
             } 
             
             zetMaat();   
@@ -579,7 +567,7 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 		}
 	}
 	
-	/*public void focusGained(FocusEvent e)
+	public void focusGained(FocusEvent e)
     {   if (selectable)
 		{	if(kd!=null)
 			{	kd.maakDood();
@@ -598,12 +586,12 @@ public class TekstRegel extends TekstElement implements MouseListener, MouseMoti
 			{	kd.maakDood();
 				kd=null;
 			}
-			//tekstVak.focusLost(this);
+			//tekstVak.focusLost(e);
 			caretVisible = false;
 			hasFocus = false;
 			repaint();
 		}  
-	}*/
+	}
 	
 	
 	public String toString()

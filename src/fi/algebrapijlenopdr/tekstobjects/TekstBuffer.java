@@ -36,7 +36,7 @@ public class TekstBuffer
 					index = indexA;
 				}
 				else if(indexL > indexF && indexL > indexA)
-				{	tfv = new TekstAntwoordVak(tekstVak);
+				{	tfv = new TekstLinkVak(tekstVak);
 					tfv.setEditable(true);
 					index = indexL;
 				}

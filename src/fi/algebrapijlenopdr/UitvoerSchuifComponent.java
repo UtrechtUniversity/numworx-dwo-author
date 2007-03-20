@@ -445,7 +445,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	zetInvulWaarde();
 		}		
 		else if(e.getSource()==plusMinKnop)
-		{	if(beginw.geefWaarde()!=null)
+		{	if(beginw!=null && beginw.geefWaarde()!=null)
 			{	double w = beginw.geefWaarde().doubleValue();
 				if(e.getActionCommand().equals("min"))w -= 1;
 				if(e.getActionCommand().equals("plus"))w += 1;

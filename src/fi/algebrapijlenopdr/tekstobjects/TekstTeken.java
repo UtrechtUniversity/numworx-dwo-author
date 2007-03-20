@@ -53,9 +53,9 @@ public class TekstTeken extends TekstElement
 	
 	public void paint(Graphics g, int x, int y)
 	{	if(selected)g.setColor(Color.white);
-		else g.setColor(Color.black);
+		else g.setColor(getForeground());
 		
-		g.setFont(getFont());
+		//g.setFont(g.getFont());
 		if(teken!=null)g.drawString(teken,x,y+fm.getAscent());
 		else if(character=='*')
 		{	g.drawLine(x+fm.getAscent()/6,y+5*fm.getAscent()/8,x+fm.getAscent()/6,y+5*fm.getAscent()/8);
