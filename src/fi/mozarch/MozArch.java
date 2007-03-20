@@ -20,6 +20,7 @@ public class MozArch extends TekenApplet implements ActionListener
 	private int beginFigAantalPz;
 	
 	private Color bgcolor = Color.white;
+    private boolean beginFig;
 	
 	public static void main(String[] args)    
 	{	int width = 780;
@@ -32,11 +33,11 @@ public class MozArch extends TekenApplet implements ActionListener
 	}
 	
 	public void initialiseer()
-	{	Panel panel = new Panel();		panel.setBounds(1,471,600,28);
+	{	Panel panel = new Panel();		panel.setBounds(1,getSize().height-28,600,28);
 		panel.setLayout(null);
 		panel.setBackground(new Color(220,220,160));		add(panel);
 		
-		InfoButton infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20021017",											"Copyright: Peter Boon"});
+		InfoButton infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20070320",											"Copyright: Peter Boon"});
 		infoButton.setBounds(10,4,30,20);
 		infoButton.setBackground(new Color(190,190,130));
 		panel.add(infoButton);
@@ -46,24 +47,24 @@ public class MozArch extends TekenApplet implements ActionListener
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.mozarch.text.Text",language);
 		
-		setBackground(bgcolor);
+		bgcolor = Color.white;
 		String kleurcode = getParameter("bgcolor");
 		if(kleurcode!=null)
 		{	bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
-			setBackground(bgcolor);
+			//setBackground(bgcolor);
 		}
 		
 		inzendenKnop = new LWButton(MozArch.rb.getString("opstuurKnopLabel"));
 		inzendenKnop.addActionListener(this);
 		inzendenKnop.setBounds(100,4,160,20);
 		inzendenKnop.setBackground(new Color(190,190,130));
-		panel.add(inzendenKnop);
+		//panel.add(inzendenKnop);
 		
 		bestandenKnop = new LWButton(MozArch.rb.getString("bestandenKnopLabel"));
 		bestandenKnop.addActionListener(this);
 		bestandenKnop.setBounds(280,4,240,20);
 		bestandenKnop.setBackground(new Color(190,190,130));
-		panel.add(bestandenKnop);
+		//panel.add(bestandenKnop);
 		
 		//inzendPanel = new InzendPanel();
 		//inzendPanel.addActionListener(this);
@@ -87,7 +88,7 @@ public class MozArch extends TekenApplet implements ActionListener
 		volgorde = new int[200];
 		
 		
-		boolean beginFig = true;
+		beginFig = true;
 		beginFigAantalHp = 12;
 		beginFigAantalPz = 2;
 		String beginCode = getParameter("startFiguur");
@@ -96,16 +97,15 @@ public class MozArch extends TekenApplet implements ActionListener
 		{	int grens = beginCode.indexOf(",");
 			beginFigAantalHp = Integer.parseInt(beginCode.substring(0,grens));
 			beginFigAantalPz = Integer.parseInt(beginCode.substring(grens+1));
-			
 		}
-		maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-100.5,0.5,new Color(230,230,230));
-		
+		if(!beginFig)maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-600.5,0.5,new Color(230,230,230));
+        else maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-100.5,0.5,new Color(230,230,230));
 		maakVeelhoek(1,3,300,220,new Color(255,0,0));
 		maakVeelhoek(1,4,300,160,new Color(255,255,0));
 		maakVeelhoek(1,6,300,80,new Color(0,255,0));
 		maakVeelhoek(1,8,300,-20,new Color(0,255,255));
 		maakVeelhoek(1,12,300,-160,new Color(0,0,255));
-		vlakdelen[0].nieuw = false;
+        if(beginFig)vlakdelen[0].nieuw = false;
 		
 		String startFile = getParameter("stfile");
 		if(startFile!=null && !startFile.equals(""))zetVlakdelen(startFile);
@@ -448,14 +448,15 @@ public class MozArch extends TekenApplet implements ActionListener
 	public void wis()
 	{	aantalVlakdelen = 0;
 		actiefVlakdeel = null;
-		maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-100.5,0.5,new Color(230,230,230));
-		maakVeelhoek(1,3,300,220,new Color(255,0,0));
+        if(!beginFig)maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-600.5,0.5,new Color(230,230,230));
+        else maakVeelhoek(beginFigAantalPz,beginFigAantalHp,-100.5,0.5,new Color(230,230,230));
+        maakVeelhoek(1,3,300,220,new Color(255,0,0));
 		maakVeelhoek(1,4,300,160,new Color(255,255,0));
 		maakVeelhoek(1,6,300,80,new Color(0,255,0));
 		maakVeelhoek(1,8,300,-20,new Color(0,255,255));
 		maakVeelhoek(1,12,300,-160,new Color(0,0,255));
 		tekenOpnieuw();
-		vlakdelen[0].nieuw = false;
+        if(!beginFig)vlakdelen[0].nieuw = false;
 	}
 	
 	public void actionPerformed(ActionEvent e)
