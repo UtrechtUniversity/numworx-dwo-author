@@ -51,7 +51,8 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		setSize(fm.getAscent()/2,fm.getAscent()+fm.getDescent());
 		ashoogte = fm.getAscent()/2;
 		
-		AppletContext ac = applet.getAppletContext();
+        AppletContext ac = null;
+		if(applet!=null) ac = applet.getAppletContext();
 		Applet ap = null;
 		if(ac!=null) ap = ac.getApplet("API");
 
@@ -346,7 +347,8 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	
 	public void mousePressed(MouseEvent e)
 	{	if(editable && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
-		{	link = AddLinkDialog.editLink(this,link);
+		{	Link newLink = AddLinkDialog.editLink(this,link);
+            if(newLink!=null)link = newLink;
 			return;
 		}
 		else if(!editable)
