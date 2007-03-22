@@ -7,7 +7,7 @@ import fi.algebrapijlenopdr.tekstobjects.*;
 
 public class TekstLinkVak extends TekstDeelVak implements ActionListener
 {
-	private LinkRegel link;
+	private LinkRegel linkRegel;
 	private Font font = new Font("SansSerif",Font.BOLD,12);
 	private FontMetrics fm;
 	private boolean selected = false;
@@ -17,51 +17,64 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		setFont(font);
 		fm = getFontMetrics(getFont());
 	
-		link = new LinkRegel(this);
-		link.addKeyListener(link);
-		link.addFocusListener(link);
-		link.setFont(font);
-		link.setForeground(Color.blue);
-		link.setLocation(0,0);
-		link.setEditable(true);
+		linkRegel = new LinkRegel(this);
+		linkRegel.addKeyListener(linkRegel);
+		linkRegel.addFocusListener(linkRegel);
+		linkRegel.setFont(font);
+		linkRegel.setForeground(Color.blue);
+		linkRegel.setLocation(0,0);
+		linkRegel.setEditable(true);
 		
-		add(link);
+		add(linkRegel);
 				
-		setSize(link.getSize().width,link.getSize().height);
-		ashoogte = link.ashoogte;
+		setSize(linkRegel.getSize().width,linkRegel.getSize().height);
+		ashoogte = linkRegel.ashoogte;
 	}
 	
 	public void requestFocus()
-	{	link.requestFocus();
+	{	linkRegel.requestFocus();
 	}
 	
 	public void vulVak(String s)
-	{	for(int i=0 ; i<s.length() ; i++) 
-		link.insert(new TekstTeken(s.charAt(i)));
+	{	
+		for(int i=0 ; i<s.length()&& i<s.indexOf("$") ; i++) 
+		linkRegel.insert(new TekstTeken(s.charAt(i)));
 	
 	}
 	
 	public LinkRegel geefTekstVak()
-	{	return link;
+	{	return linkRegel;
 	}
 	
 	public void setEditable(boolean b)
-	{	link.setEditable(b);
+	{	linkRegel.setEditable(b);
 	}
 	
 	public void setSelectable(boolean b)
-	{	link.setSelectable(b);
+	{	linkRegel.setSelectable(b);
 	}
 	
 	public void zetMaat()
-	{	setSize(link.getSize().width, link.getSize().height);
-		link.setLocation(0,0);
-		ashoogte = link.ashoogte;
+	{	setSize(linkRegel.getSize().width, linkRegel.getSize().height);
+		linkRegel.setLocation(0,0);
+		ashoogte = linkRegel.ashoogte;
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 	}
 	
 	public String toString()
-	{	return "$L" + link.toString() + "@";
+	{	return "$L" + linkRegel.toString() + "@";
+	}
+	
+	public String getUrl()
+	{	return linkRegel.getLink().getUrl();
+	}
+	
+	public int getWidth()
+	{	return linkRegel.getLink().getWidth();
+	}
+	
+	public int getHeight()
+	{	return linkRegel.getLink().getHeight();
 	}
 	
 	public void actionPerformed(ActionEvent e)

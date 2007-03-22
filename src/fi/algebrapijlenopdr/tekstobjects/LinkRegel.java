@@ -25,6 +25,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	private boolean terug=true;
 		
 	Color bgColor = new Color(255,255,255);
+	private Link link = new Link("",0,0);
 	
 	public LinkRegel(TekstLinkVak tv)
 	{	bgColor = getBackground();
@@ -41,6 +42,14 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		setSize(fm.getAscent()/2,fm.getAscent()+fm.getDescent());
 		ashoogte = fm.getAscent()/2;
 		
+	}
+	
+	public Link getLink()
+	{	return link;
+	}
+	
+	public void setLink(Link link)
+	{	this.link = link;
 	}
 	
 	public void setFont(Font f)
@@ -69,7 +78,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 			ashoogte = fm.getAscent()/2;
 		}
 	}
-		
+	
 	public void paint(Graphics g)
 	{	g.setColor(getBackground());
 		if(selected)g.setColor(Color.black);
@@ -285,40 +294,6 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		}
 	}
 	
-	/*public int geefLengteEersteW()
-	{	int lengte = 0;
-		for(int i=0 ; i<getComponentCount(); i++)
-		{	if(((TekstElement)getComponent(i)).isSpatie())
-			{	return lengte;
-			}
-			else
-			{	lengte += getComponent(i).getSize().width;
-			}
-		}
-		return lengte;
-	}
-	
-	public void wrapTerug()
-	{	TekstElement[] overflow;
-		int aantalLetters = 0;
-		for(int i=0 ; i<getComponentCount(); i++)
-		{	if(((TekstElement)getComponent(i)).isSpatie())
-			{	break;
-			}
-			else
-			{	aantalLetters++;
-			}
-		}
-		overflow = new TekstElement[aantalLetters];
-		for(int i=0 ; i<aantalLetters; i++)
-		{	overflow[i] = (TekstElement)getComponent(0);
-			remove(getComponent(0));
-		}
-		//zetMaat();
-		tekstVak.wrapTerug(this,overflow);		
-		
-	}*/
-	
 	public void deleteSelection()
 	{	for(int i=getComponentCount() -1 ; i>-1 ; i--)
 		{	if(((TekstElement)getComponent(i)).isSelected())
@@ -349,57 +324,17 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		}
 	}
 	
-	/*public void wrap()
-	{	System.out.println("wrap");
-		TekstElement[] overflow;
-		int wrapPositie = getComponentCount();
-		int spatieIndex1 = 0;
-		int spatieIndex2 = 0;
-		TekstElement te1 = null;
-		TekstElement te2 = null;
-		for(int i=getComponentCount()-1 ; i>-1 ; i--)
-		{	TekstElement te = (TekstElement)getComponent(i);
-			if(((TekstElement)getComponent(i)).isSpatie() && te.getLocation().x > tekstVak.getSize().width)
-			{	te1 = te;
-				spatieIndex1 = i;
-			}
-			else if (((TekstElement)getComponent(i)).isSpatie() && te.getLocation().x <= tekstVak.getSize().width)
-			{	if(te2==null)
-				{	te2 = te;
-					spatieIndex2 = i;
-				}
-			}
-		}
-		if(te1==null && te2!=null)
-		{	wrapPositie = spatieIndex2;
-		}
-		else if(te1!=null)
-		{	wrapPositie = spatieIndex1;
-		}
-		else return;
-		int max = getComponentCount();
-		overflow = new TekstElement[max - wrapPositie];
-		int aantalOverflow = 0;
-		for(int i=wrapPositie ; i<max ; i++)
-		{	if(i>wrapPositie)
-			{	overflow[aantalOverflow] = (TekstElement)getComponent(wrapPositie);
-				aantalOverflow++;
-			}
-			remove(wrapPositie);
-			if(caretPos > getComponentCount())caretPos--;
-		}
-		caretVisible = true;
-		zetMaat();
-		//tekstVak.wrap(this,overflow);
-	}
-	
-	public boolean caretAanEind()
-	{	return caretPos >= getComponentCount();
-	}*/
-	
 	
 	public void mousePressed(MouseEvent e)
-	{	requestFocus();
+	{	if(editable && e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+		{	link = AddLinkDialog.editLink(this,link);
+			return;
+		}
+		else
+		{
+			
+		}
+		requestFocus();
 		startx = e.getX();
 		starty = e.getY();
 			setCaretPosition(e.getX());
@@ -599,6 +534,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		for(int i=0 ; i<getComponentCount()  ; i++)
 		{	s = s + ((TekstElement)getComponent(i)).toString();
 		}
+		s = s + link.toString();
 		return s;
 	}
 	
