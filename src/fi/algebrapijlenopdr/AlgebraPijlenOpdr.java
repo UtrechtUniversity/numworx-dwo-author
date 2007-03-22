@@ -5,6 +5,7 @@ import java.util.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.text.*;
 import fi.algebrapijlenopdr.opdrnav.*;
+import fi.algebrapijlenopdr.tekstobjects.*;
 import java.applet.Applet;
 import fi.beans.copyright.*;
 import fi.beans.base64code.*;
@@ -147,6 +148,8 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		viewButton = new Button ("View");
 		viewButton.setBounds(getSize().width-60, getSize().height-60, 60,20);
 		viewButton.addActionListener(this);
+		
+		LinkRegel.setApplet(this);
 		
 		if(getParent() instanceof ScormEditMainFrame)
 		{	scormEditComponent = getEditComponent(defaultParamValues);

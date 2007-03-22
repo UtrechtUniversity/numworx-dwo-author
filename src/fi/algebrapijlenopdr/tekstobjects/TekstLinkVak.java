@@ -39,6 +39,20 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	{	
 		for(int i=0 ; i<s.length()&& i<s.indexOf("$") ; i++) 
 		linkRegel.insert(new TekstTeken(s.charAt(i)));
+		
+		int urlStart = s.indexOf("$U");
+		int urlEnd = s.indexOf("@",urlStart);
+		String url = s.substring(urlStart,urlEnd);
+		
+		int widthStart = s.indexOf("$W");
+		int widthEnd = s.indexOf("@",widthStart);
+		int width = Integer.parseInt(s.substring(widthStart,widthEnd));
+		
+		int heightStart = s.indexOf("$H");
+		int heightEnd = s.indexOf("@",heightStart);
+		int height = Integer.parseInt(s.substring(heightStart,heightEnd));
+		
+		linkRegel.setLink(new Link(url,width,height));
 	
 	}
 	

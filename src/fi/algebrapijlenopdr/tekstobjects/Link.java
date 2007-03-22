@@ -25,6 +25,6 @@ public class Link
 	}
 	
 	public String toString()
-	{	return "$U" + url + "," + width + "," + height + "@";
+	{	return "$U" + url + "@$W" + width + "@$W" + height + "@";
 	}
 }

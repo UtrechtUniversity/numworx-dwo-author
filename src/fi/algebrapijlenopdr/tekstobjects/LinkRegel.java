@@ -1,11 +1,16 @@
 package fi.algebrapijlenopdr.tekstobjects;
 
 import java.awt.*;
+import java.applet.*;
 import java.awt.event.*;
 import java.util.Vector;
 
+import netscape.javascript.JSObject;
+
 public class LinkRegel extends TekstElement implements MouseListener, MouseMotionListener,KeyListener, FocusListener
 {	
+	private static Applet applet;
+	private JSObject window;
 	private FontMetrics fm;
 	private boolean caretVisible = false;
 	private KnipperDraad kd;
@@ -27,6 +32,10 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	Color bgColor = new Color(255,255,255);
 	private Link link = new Link("",0,0);
 	
+	public static void setApplet(Applet applet)
+	{	LinkRegel.applet = applet;
+	}
+	
 	public LinkRegel(TekstLinkVak tv)
 	{	bgColor = getBackground();
 		//tekstVak = tv;
@@ -42,6 +51,16 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		setSize(fm.getAscent()/2,fm.getAscent()+fm.getDescent());
 		ashoogte = fm.getAscent()/2;
 		
+		AppletContext ac = applet.getAppletContext();
+		Applet ap = null;
+		if(ac!=null) ap = ac.getApplet("API");
+
+		try
+	    {	if(ap!=null) window = JSObject.getWindow(ap);
+	    } 
+	    catch( Exception e )
+    	{	e.printStackTrace(); 
+    	}
 	}
 	
 	public Link getLink()
@@ -326,20 +345,33 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	
 	
 	public void mousePressed(MouseEvent e)
-	{	if(editable && e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+	{	if(editable && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
 		{	link = AddLinkDialog.editLink(this,link);
 			return;
 		}
-		else
-		{
+		else if(!editable)
+		{	Object[] args = new Object[5];
+	        args[0] = link.getUrl();
+	        args[1] = "name";
+	        args[2] = ""+link.getWidth();
+	        args[3] = ""+link.getWidth();
+	        args[4] = "yes";
+	        String result = null;
+			if(window!=null) result = (String) window.call("NewPopUp", args);
+	        //popUpVisible = true;
 			
+			System.out.println(args[0]);
+			System.out.println(args[2]);
+			System.out.println(args[3]);
 		}
-		requestFocus();
-		startx = e.getX();
-		starty = e.getY();
+		else
+		{	requestFocus();
+			startx = e.getX();
+			starty = e.getY();
 			setCaretPosition(e.getX());
 			setSelected(false);
 			caretVisible = true;	
+		}
 	}
 	
 	public void mouseDragged(MouseEvent e)
