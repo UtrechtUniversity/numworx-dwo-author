@@ -30,6 +30,8 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	private FormuleVak formuleVak;
 	private boolean formMode; 
 	
+	private String accent;
+	
 	public TekstVak()
 	{	setLayout(null);
 		addMouseListener(this);
@@ -529,6 +531,25 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
             	else if(caretPos>0 && tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');
             	else tekst.insert(caretPos,'\n');
             	caretPos++;
+            	accent = null;
+			}
+			else if(e.isControlDown())
+			{	//if(kt == ',')
+				{	accent = ",";
+				tekst.insert(caretPos,'\u2264');
+				caretPos++;
+				accent = null;
+				}
+				
+			}
+			else if(accent!=null)
+			{	if(kt == 'e')
+				{	deleteSelection();
+	      			tekst.insert(caretPos,'\u2264');
+					caretPos++;
+					accent = null;
+				}
+				
 			}
 			else if ((kt != '@') &&
 					(kt != '$') &&
@@ -544,6 +565,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
       		{	deleteSelection();
       			tekst.insert(caretPos,(char)kt);
 				caretPos++;
+				accent = null;
             } 
             
             repaint();

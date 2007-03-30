@@ -356,7 +356,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	        args[0] = link.getUrl();
 	        args[1] = "name";
 	        args[2] = ""+link.getWidth();
-	        args[3] = ""+link.getWidth();
+	        args[3] = ""+link.getHeight();
 	        args[4] = "yes";
 	        String result = null;
 			if(window!=null) result = (String) window.call("NewPopUp", args);
