@@ -18,17 +18,22 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		fm = getFontMetrics(getFont());
 	
 		linkRegel = new LinkRegel(this);
-		linkRegel.addKeyListener(linkRegel);
-		linkRegel.addFocusListener(linkRegel);
+		//linkRegel.addKeyListener(linkRegel);
+		//linkRegel.addFocusListener(linkRegel);
 		linkRegel.setFont(font);
 		linkRegel.setForeground(Color.blue);
 		linkRegel.setLocation(0,0);
 		linkRegel.setEditable(true);
+		linkRegel.setSelectable(false);
 		
 		add(linkRegel);
 				
 		setSize(linkRegel.getSize().width,linkRegel.getSize().height);
 		ashoogte = linkRegel.ashoogte;
+	}
+	
+	public void editLink()
+	{	linkRegel.editLink();
 	}
 	
 	public void requestFocus()
@@ -39,6 +44,10 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	{	
 		for(int i=0 ; i<s.length()&& i<s.indexOf("$") ; i++) 
 		linkRegel.insert(new TekstTeken(s.charAt(i)));
+		
+		int linkTekstStart = 0;
+		int linkTekstEnd = s.indexOf("$");
+		String linkTekst = s.substring(linkTekstStart,linkTekstEnd);
 		
 		int urlStart = s.indexOf("$U")+2;
 		int urlEnd = s.indexOf("@",urlStart);
@@ -52,7 +61,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		int heightEnd = s.indexOf("@",heightStart);
 		int height = Integer.parseInt(s.substring(heightStart,heightEnd));
 		
-		linkRegel.setLink(new Link(url,width,height));
+		linkRegel.setLink(new Link(linkTekst,url,width,height));
 	
 	}
 	

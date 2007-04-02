@@ -254,6 +254,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 	{	tekst.insert(caretPos,'@');
 		TekstLinkVak tfvNieuw = new TekstLinkVak(this);
 		tekst.insertLinkVak(caretPos,tfvNieuw);
+		tfvNieuw.editLink();
 		vulVak(tekst.toString());
 		tfvNieuw.requestFocus();
 		repaint();
@@ -533,24 +534,24 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
             	caretPos++;
             	accent = null;
 			}
-			else if(e.isControlDown())
-			{	//if(kt == ',')
-				{	accent = ",";
-				tekst.insert(caretPos,'\u2264');
-				caretPos++;
-				accent = null;
+		/*else if(e.isControlDown())
+			{	if(kt == KeyEvent.VK_QUOTE)
+				{	accent = "'";
+				//tekst.insert(caretPos,'é');
+				//caretPos++;
+				//accent = null;
 				}
 				
 			}
-			else if(accent!=null)
-			{	if(kt == 'e')
+			else if(accent!=null)// && accent.equals("'") && kt == KeyEvent.VK_E)
+			{	//if(kt == KeyEvent.VK_DEAD_ACUTE)
 				{	deleteSelection();
-	      			tekst.insert(caretPos,'\u2264');
+	      			tekst.insert(caretPos,'é');
 					caretPos++;
 					accent = null;
 				}
 				
-			}
+			}*/
 			else if ((kt != '@') &&
 					(kt != '$') &&
 					(kt != KeyEvent.VK_ESCAPE) &&

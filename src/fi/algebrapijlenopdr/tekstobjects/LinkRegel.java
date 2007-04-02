@@ -30,7 +30,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	private boolean terug=true;
 		
 	Color bgColor = new Color(255,255,255);
-	private Link link = new Link("",0,0);
+	private Link link = new Link("link","",0,0);
 	
 	public static void setApplet(Applet applet)
 	{	LinkRegel.applet = applet;
@@ -344,11 +344,19 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		}
 	}
 	
+	public void editLink()
+	{	Link newLink = AddLinkDialog.editLink(this,link);
+        if(newLink!=null)link = newLink;
+        removeAll();
+        String s = link.getLinkTekst();
+        for(int i=0 ; i<s.length(); i++) 
+    	insert(new TekstTeken(s.charAt(i)));
+	}
 	
 	public void mousePressed(MouseEvent e)
 	{	if(editable && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
-		{	Link newLink = AddLinkDialog.editLink(this,link);
-            if(newLink!=null)link = newLink;
+		{	editLink();
+            
 			return;
 		}
 		else if(!editable)

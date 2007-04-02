@@ -12,10 +12,12 @@ import java.awt.event.WindowListener;
 public class AddLinkDialog extends Dialog implements ActionListener,
         WindowListener {
 
+	private String linkTekst="link";
 	private String url="";
     private int height;
     private int width;
      	
+    private TextField linkTekstField;
     private TextField urlField;
     private TextField widthField;
     private TextField heightField;
@@ -29,11 +31,12 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 
     
 
-    public AddLinkDialog(Component owner, String windowTitle, String url, int width, int height) {
+    public AddLinkDialog(Component owner, String windowTitle, String linkTekst, String url, int width, int height) {
         super((owner instanceof Frame) ? (Frame) owner : new Frame(),
                 windowTitle, true);
         this.setLayout(null);
         this.setBackground(new Color(230,230,230));
+        this.linkTekst = linkTekst;
         this.url = url;
         this.height = height;
         this.width = width;
@@ -44,7 +47,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         FontMetrics fm;
 
         /* schoolName label */
-        l = new Label("URL");
+        l = new Label("Tekst");
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
@@ -55,8 +58,24 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         l.setVisible(true);
 
         /* schoolName field */
+        linkTekstField = new TextField(linkTekst);
+        linkTekstField.setBounds(150, 28, 300, 20);
+        this.add(linkTekstField);
+        
+        /* schoolName label */
+        l = new Label("URL");
+        l.setForeground(Color.black);
+        l.setFont(font);
+        fm = l.getFontMetrics(l.getFont());
+        l.setLocation(10, 60);
+        l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
+        l.setVisible(false);
+        this.add(l);
+        l.setVisible(true);
+
+        /* schoolName field */
         urlField = new TextField(url);
-        urlField.setBounds(150, 28, 300, 20);
+        urlField.setBounds(150, 58, 300, 20);
         this.add(urlField);
         
         /* schoolLogin label */
@@ -64,7 +83,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
-        l.setLocation(10, 80);
+        l.setLocation(10, 90);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
         l.setVisible(false);
         this.add(l);
@@ -72,7 +91,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 
         /* schoolLogin field */
         widthField = new TextField(""+width);
-        widthField.setBounds(150, 78, 150, 20);
+        widthField.setBounds(150, 88, 150, 20);
         this.add(widthField);
         
         /* studentPasswd label */
@@ -80,7 +99,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
-        l.setLocation(10, 110);
+        l.setLocation(10, 120);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
         l.setVisible(false);
         this.add(l);
@@ -88,7 +107,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 
         /* studentPasswd field */
         heightField = new TextField(""+height);
-        heightField.setBounds(150, 108, 150, 20);
+        heightField.setBounds(150, 118, 150, 20);
         this.add(heightField);
         
         
@@ -98,13 +117,13 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 
         /* Register button */
         okButton = new Button("OK");
-        okButton.setBounds(50,150,80,20);
+        okButton.setBounds(50,160,80,20);
         okButton.addActionListener(this);
         add(okButton);
         
         /* Reset button */
         cancelButton = new Button("Cancel");
-        cancelButton.setBounds(150,150,80,20);
+        cancelButton.setBounds(150,160,80,20);
         cancelButton.addActionListener(this);
         add(cancelButton);
         
@@ -119,10 +138,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
      * @return fi.dwo.client.domain.Sco
      */
     public static Link addLink(Component owner) {
-        AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "", 0, 0);
+        AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", "", 0, 0);
         asd.show();
         if (asd.isConfirmed()) {
-            Link link = new Link(asd.getUrl(), asd.getWidth(), asd.getHeight());
+            Link link = new Link(asd.getLinkTekst(), asd.getUrl(), asd.getWidth(), asd.getHeight());
             if(link == null) { //something went wrong, reshow the dialog
                 link = addLink(owner);
             }
@@ -140,16 +159,17 @@ public class AddLinkDialog extends Dialog implements ActionListener,
      * @return fi.dwo.client.domain.Sco
      */
     public static Link editLink(Component owner, Link link)  {
+        String linkTekst = link.getLinkTekst();
         String url = link.getUrl();
         int height = link.getHeight();
         int width = link.getWidth();
         if(url==null) url = "";
         
                 
-        AddLinkDialog asd = new AddLinkDialog(owner, "URLgegevens wijzigen", url, width, height);
+        AddLinkDialog asd = new AddLinkDialog(owner, "URLgegevens wijzigen", linkTekst, url, width, height);
         asd.show();
         if (asd.isConfirmed()) {
-        	Link newLink = new Link(asd.getUrl(), asd.getWidth(), asd.getHeight());
+        	Link newLink = new Link(asd.getLinkTekst(), asd.getUrl(), asd.getWidth(), asd.getHeight());
             if(newLink == null) { //something went wrong, reshow the dialog
             	newLink = editLink(owner, newLink);
             }
@@ -170,7 +190,8 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         if (e.getSource() == cancelButton) {
             this.setVisible(false);
         } else if (e.getSource() == okButton) {
-            url = urlField.getText();
+        	linkTekst = linkTekstField.getText();
+        	url = urlField.getText();
             try {width = Integer.parseInt(widthField.getText());}
             catch(Exception ex){}
             try {height = Integer.parseInt(heightField.getText());}
@@ -223,6 +244,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 
     public boolean isConfirmed() {
         return confirmed;
+    }
+    
+    public String getLinkTekst() {
+        return linkTekst;
     }
     
     public String getUrl() {

@@ -311,7 +311,7 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		plaatsOpGridEind();
 		for(int i=0 ; i<schuifveld.aantalSc ; i++)
 		{	boolean b = false;
-			if(!schuifveld.schuifcomponenten[i].isStapel && !zender.isStapel && schuifveld.schuifcomponenten[i].links==links)
+			if(schuifveld.schuifcomponenten[i].isVisible() && !schuifveld.schuifcomponenten[i].isStapel && !zender.isStapel && schuifveld.schuifcomponenten[i].links==links)
 			{	if(!links)b = schuifveld.schuifcomponenten[i].meldAan(this,x1+10,y1);
 				else b = schuifveld.schuifcomponenten[i].meldAan(this,x1-10,y1);
 			}
