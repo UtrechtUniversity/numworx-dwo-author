@@ -1,9 +1,9 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
+
 import java.util.Hashtable;
 
 public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements ActionListener, FocusListener
@@ -12,6 +12,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	TextField tf;
 	Font f;
 	FontMetrics fm;
+	protected PlusMinKnop plusMinKnop;
 	
 	
 	public BewerkingSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
@@ -22,12 +23,22 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		beginw = new BasisExpressie("3");
 		
 		tf = new TextField();
-		if(!links)tf.setBounds(30,1,19,18);
-		else tf.setBounds(20,1,19,18);
+		if(!links)tf.setBounds(20,1,19,18);
+		else tf.setBounds(10,1,19,18);
 		tf.addActionListener(this);
 		tf.addFocusListener(this);
 		tf.setVisible(false);
 		tf.setEnabled(false);
+		
+		if(!links)
+		{	plusMinKnop = new PlusMinKnop(b-12,2,10,h-4, PlusMinKnop.VERTIKAAL);
+		}
+		else
+		{	plusMinKnop = new PlusMinKnop(b-22,2,10,h-4, PlusMinKnop.VERTIKAAL);
+		}
+		plusMinKnop.addActionListener(this);
+		plusMinKnop.setColor(new Color(255,150,0));
+		add(plusMinKnop,0);
 	}
 	
 	public Hashtable getState()
@@ -64,12 +75,17 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 			if(!links)pijlUit[i].zetPlaats(getLocation().x + getSize().width+9 ,getLocation().y + 10 );
 			else pijlUit[i].zetPlaats(getLocation().x - 10 ,getLocation().y + 10 );
 		}
+		if(!links)
+		{	plusMinKnop.setLocation(getSize().width-12,1);
+		}
+		else
+		{	plusMinKnop.setLocation(getSize().width-22,1);
+		}
 		schuifveld.tekenOpnieuw();
-
 	}
 	
 	public void paint(Graphics g)
-  	{ 	super.paint(g);
+  	{ 	
 		if(!links)
 		{	g.setColor(Color.orange);
 			g.fillRoundRect(10,0,getSize().width-11,getSize().height-1,8,8);
@@ -82,6 +98,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 			g.setColor(Color.black);
 			g.drawRoundRect(0,0,getSize().width-11,getSize().height-1,8,8);
 		}	
+		super.paint(g);
 	}
 	
 	public void zetMaat()
@@ -96,9 +113,16 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		}
 		
 		setSize(b,h);
-		tf.setBounds(30,1,b-31,18);
-		if(!links)tf.setBounds(30,1,b-31,18);
-		else tf.setBounds(20,1,b-31,18);
+		tf.setBounds(20,1,b-31,18);
+				
+		if(!links)
+		{	tf.setBounds(20,1,b-31,18);
+			plusMinKnop.setLocation(b-12,2);
+		}
+		else
+		{	tf.setBounds(10,1,b-31,18);
+			plusMinKnop.setLocation(b-22,2);
+		}	
 
 	}
 	public void mouseClicked(MouseEvent e)
@@ -142,6 +166,20 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	{	if(e.getSource()==tf)
 		{	zetInvulWaarde();
 		}
+	else if(e.getSource()==plusMinKnop)
+	{	if(beginw!=null && beginw.geefWaarde()!=null)
+		{	double w = beginw.geefWaarde().doubleValue();
+			if(e.getActionCommand().equals("min"))w -= 1;
+			if(e.getActionCommand().equals("plus"))w += 1;
+			String waardeString = Expressie.df.format(w);
+			beginw = new BasisExpressie(waardeString);
+			tf.setText(waardeString);
+			zetVeranderd(20);
+			beginw.zetMaat(fm);
+			zetMaat();
+			schuifveld.tekenOpnieuw();
+		}
+	}
 		/*BasisExpressie ex = new BasisExpressie( tf.getText());
 		if(ex.isWaarde)beginw = ex;
 		else tf.setText("");

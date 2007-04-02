@@ -9,6 +9,7 @@ public class PlusMinKnop extends Component implements MouseListener
 	protected ActionListener actionListener = null;
 	public static int VERTIKAAL = 0;
 	public static int HORIZONTAAL = 1;
+	private Color color = Color.black;
 	
 	
 	public PlusMinKnop(int x, int y, int b, int h, int soort)
@@ -36,8 +37,13 @@ public class PlusMinKnop extends Component implements MouseListener
 		}
 		
 	}
+	
+	public void setColor(Color color)
+	{	this.color = color;
+	}
+	
 	public void paint(Graphics g)
-	{	g.setColor(Color.black);
+	{	g.setColor(color);
 		g.fillPolygon(pijlPlus);
 		g.drawPolygon(pijlPlus);
 		g.fillPolygon(pijlMin);
@@ -52,19 +58,21 @@ public class PlusMinKnop extends Component implements MouseListener
  	}
   
 	public void mousePressed(MouseEvent e)
+	{	
+	}	
+	public void mouseDragged(MouseEvent e){;}
+	public void mouseReleased(MouseEvent e)
 	{	if(pijlPlus.contains(e.getX(),e.getY()))
 		{	if (actionListener != null)
- 			{	actionListener.actionPerformed( new ActionEvent(this, 0, "plus") );
- 			}
+			{	actionListener.actionPerformed( new ActionEvent(this, 0, "plus") );
+			}
 		}
 		else if(pijlMin.contains(e.getX(),e.getY()))
 		{	if (actionListener != null)
- 			{	actionListener.actionPerformed( new ActionEvent(this, 0, "min") );
- 			}
+				{	actionListener.actionPerformed( new ActionEvent(this, 0, "min") );
+				}
 		}
-	}	
-	public void mouseDragged(MouseEvent e){;}
-	public void mouseReleased(MouseEvent e){;}
+	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}
 	public void mouseClicked(MouseEvent e){;}

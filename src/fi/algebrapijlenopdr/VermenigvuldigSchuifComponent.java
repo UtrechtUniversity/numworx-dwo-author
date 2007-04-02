@@ -22,8 +22,8 @@ public class VermenigvuldigSchuifComponent extends BewerkingSchuifComponent
 		g.setFont(f);
 		FontMetrics fm = g.getFontMetrics();
 		int w = fm.stringWidth(s); 
-		if(!links)g.drawString(s,5+(getSize().width-w)/2,getSize().height-4);
-		else g.drawString(s,-5+(getSize().width-w)/2,getSize().height-4);
+		if(!links)g.drawString(s,5+(getSize().width-w-10)/2,getSize().height-4);
+		else g.drawString(s,-5+(getSize().width-w-10)/2,getSize().height-4);
 	}
 	
 	

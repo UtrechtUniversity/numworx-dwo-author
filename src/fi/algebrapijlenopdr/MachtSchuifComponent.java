@@ -30,6 +30,12 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 			if(!links)pijlUit[i].zetPlaats(getLocation().x + getSize().width+9 ,getLocation().y + 10 );
 			else pijlUit[i].zetPlaats(getLocation().x - 10 ,getLocation().y + 10 );
 		}
+		if(!links)
+		{	plusMinKnop.setLocation(getSize().width-12,1);
+		}
+		else
+		{	plusMinKnop.setLocation(getSize().width-22,1);
+		}
 		schuifveld.tekenOpnieuw();
 	}
 	
@@ -46,15 +52,15 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 		
 		if(!links)
 		{	g.setFont(f1);
-			g.drawString(s1,20,getSize().height-4);
+			g.drawString(s1,15,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,35,getSize().height-8);
+			g.drawString(s2,30,getSize().height-8);
 		}
 		else 
 		{	g.setFont(f1);
-			g.drawString(s1,10,getSize().height-4);
+			g.drawString(s1,0,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,25,getSize().height-8);
+			g.drawString(s2,15,getSize().height-8);
 		}
 	}
 	
@@ -70,8 +76,14 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 		}
 		
 		setSize(b,h);
-		if(!links)tf.setBounds(30,1,b-31,15);
-		else tf.setBounds(20,1,b-31,15);
+		if(!links)
+		{	tf.setBounds(30,1,b-31,15);
+			plusMinKnop.setLocation(b-12,2);
+		}
+		else 
+		{	tf.setBounds(20,1,b-31,15);
+			plusMinKnop.setLocation(b-22,2);
+		}
 
 	}
 	
