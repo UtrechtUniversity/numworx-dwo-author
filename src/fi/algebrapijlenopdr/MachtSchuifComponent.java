@@ -50,17 +50,19 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 		Font f2 = new Font("SansSerrif",Font.PLAIN,10);
 		g.setFont(f);
 		
+		int sccrollCorr = 0;
+		if(scrollable)sccrollCorr = 5;
 		if(!links)
 		{	g.setFont(f1);
-			g.drawString(s1,15,getSize().height-4);
+			g.drawString(s1,20-sccrollCorr,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,30,getSize().height-8);
+			g.drawString(s2,35-sccrollCorr,getSize().height-8);
 		}
 		else 
 		{	g.setFont(f1);
-			g.drawString(s1,0,getSize().height-4);
+			g.drawString(s1,10-sccrollCorr,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,15,getSize().height-8);
+			g.drawString(s2,25-sccrollCorr,getSize().height-8);
 		}
 	}
 	

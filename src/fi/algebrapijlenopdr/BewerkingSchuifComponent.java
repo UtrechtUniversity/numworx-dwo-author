@@ -13,6 +13,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	Font f;
 	FontMetrics fm;
 	protected PlusMinKnop plusMinKnop;
+	protected boolean scrollable;
 	
 	
 	public BewerkingSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
@@ -38,7 +39,12 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		}
 		plusMinKnop.addActionListener(this);
 		plusMinKnop.setColor(new Color(255,150,0));
-		add(plusMinKnop,0);
+	}
+	
+	public void setScrollable(boolean b)
+	{	scrollable = b;
+		if(b)add(plusMinKnop,0);
+		else remove(plusMinKnop);
 	}
 	
 	public Hashtable getState()
@@ -115,12 +121,14 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		setSize(b,h);
 		tf.setBounds(20,1,b-31,18);
 				
+		int sccrollCorr = 0;
+		if(scrollable)sccrollCorr = 10;
 		if(!links)
-		{	tf.setBounds(20,1,b-31,18);
+		{	tf.setBounds(30-sccrollCorr,1,b-31,18);
 			plusMinKnop.setLocation(b-12,2);
 		}
 		else
-		{	tf.setBounds(10,1,b-31,18);
+		{	tf.setBounds(20-sccrollCorr,1,b-31,18);
 			plusMinKnop.setLocation(b-22,2);
 		}	
 
