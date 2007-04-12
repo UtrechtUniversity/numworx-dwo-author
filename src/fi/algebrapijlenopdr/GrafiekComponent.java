@@ -58,9 +58,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	private boolean resize;
 	private boolean trace=true;
+	private boolean tracing=false;
 	
 	private Slider slider;
-	private int tracex;
+	private int tracex=-2;
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
@@ -152,7 +153,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		add(zoomUitY);
 		
 		slider = new Slider(veldb,0);
-		slider.setLocation(veldx-5,h-11);
+		slider.setLocation(veldx-5,h-13);
 		slider.addActionListener(this);
 		slider.setBackground(new Color(210,210,210));
 		add(slider);
@@ -163,10 +164,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	
 		super.setSize(b,h);
 		veldb = b-60;
-		veldh = h-70;
+		veldh = h-75;
 		gv.setSize(veldb,veldh);
 		slider.zetLengte(veldb);
-		slider.setLocation(veldx-5,h-11);
+		slider.setLocation(veldx-5,h-13);
 	}
 	
 	public Hashtable getState()
@@ -385,6 +386,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			beginx = eenheidx-eenheidx*beginwaarde;
 			this.selectnummer = selectnummer;
 			this.schaalFactorX = schaalFactorX;
+			if(selectnummer!=999)tracing = false;
 			gv.tekenOpnieuw();
 		}
 	}
@@ -509,6 +511,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		
 			beginx = beginx+dx;
 			beginy = beginy-dy;
+			if(trace && tracex!=-2) {
+				tracex = tracex+dx;
+				slider.zetStand(tracex);
+			}
+			
 			int b = beginwaarde;
 			beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 			selectnummer = selectnummer + b - beginwaarde;
@@ -541,15 +548,21 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	resize = false;
 		//trace = false;
 		if(e.getSource()==gv)
-		{	beginx = eenheidx*Math.round(beginx/eenheidx);
+		{	double beginxR = beginx;
+			beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
+			if(trace && tracex!=-2) {
+				tracex += beginx-beginxR;
+				slider.zetStand(tracex);
+			}
 			if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+				
 			}
 			gv.tekenOpnieuw();
-
+			schuifveld.tekenOpnieuw();
 		}
-		super.mouseReleased(e);
+		else super.mouseReleased(e);
 	}
 	
 	public void mouseMoved(MouseEvent e){;}
@@ -603,6 +616,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				if(aantalPijlenIn>0)
 				{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 				}
+				
+				tracex=-2;
+				slider.zetStand(tracex);
+				
 				gv.tekenOpnieuw();
 				schuifveld.tekenOpnieuw();
 				
@@ -611,9 +628,15 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			
 		}
 		if(e.getSource()==slider)
-		{ 	tracex = slider.geefStand();
+		{ 	if(e.getActionCommand().equals("start")) 
+			{	tracing = true;
+				((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde, 999, varNaam, schaalFactorX);
+			}
+			//else if(e.getActionCommand().equals("stop")) tracing = false;
+			tracex = slider.geefStand();
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
+			
 		}
 		//repaint();
 		//gv.tekenOpnieuw();
@@ -644,6 +667,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			
 			int middenx = eenheidx;
 			int middeny = eenheidy;
+			
+			double tracexD = tracex;
+			double beginxOud = beginx;
 			
 			if(in && x)
 			{	if(factorRijNummerX%3==2)
@@ -694,8 +720,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				}
 			}
 			
+			//if(factorx!=1)
+			//{	tracex=-2;
+			//	slider.zetStand(tracex);
+			//}
 			stapx= Math.pow(factorx,0.1);
 			stapy= Math.pow(factory,0.1);
+			
 			
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
@@ -710,8 +741,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				eenheidyD = eenheidyD/stapy;
 				eenheidx = (int) Math.round(eenheidxD);
 				eenheidy = (int) Math.round(eenheidyD);
+				double beginxVorig = beginx;
 				beginx =  middenx -(middenx - beginx)/stapx;
 				beginy =  middeny -(middeny - beginy)/stapy;
+				
+				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
+				tracex = (int)(tracexD);
+				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				gv.tekenOpnieuw();
 				//repaint();
@@ -731,6 +767,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			eenheidxD = eenheidxD*factorx;
 			eenheidyD = eenheidyD*factory;
 			
+			
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
 				long t = System.currentTimeMillis();
@@ -744,17 +781,26 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				eenheidyD = eenheidyD/stapy;
 				eenheidx = (int) Math.round(eenheidxD);
 				eenheidy = (int) Math.round(eenheidyD);
+				double beginxVorig = beginx;
 				beginx =  middenx -(middenx - beginx)/stapx;
 				beginy =  middeny -(middeny - beginy)/stapy;
+				
+				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
+				tracex = (int)(tracexD);
+				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				gv.tekenOpnieuw();
 				//repaint();
 				schuifveld.tekenOpnieuw();
 			}
+			
 			selectnummer = 999;
 			if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 			}
+			
+			//tracex = (int)(beginx+(tracexD-beginxOud)/factorx);
+			
 			schuifveld.tekenOpnieuw();
 			
 		}
@@ -856,19 +902,23 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
 					int x = (int)d;
 					double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
-					if(!Double.isNaN(d0) && selectnummer<8 && selectnummer>-1)
+					if(!tracing && !Double.isNaN(d0) && selectnummer<8 && selectnummer>-1)
 					{	int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 						g.fillOval(x-2,y-2,5,5);
 						g.drawLine(x,y,x,hoogte);
 						g.drawLine(x,y,0,y);
+						tracex = x;
+						slider.zetStand(tracex);
 					}
-					if(trace)
+					else if(trace)
 					{	double dTraceX = tracex;
 						double dTraceY = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*dTraceX/eenheidxD);//dd0.doubleValue();
-						int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-						g.fillOval(tracex-2,tracey-2,5,5);
-						g.drawLine(tracex,tracey,tracex,hoogte);
-						g.drawLine(tracex,tracey,0,tracey);
+						if(!Double.isNaN(dTraceY) && tracex<veldb)
+						{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
+							g.fillOval(tracex-2,tracey-2,5,5);
+							g.drawLine(tracex,tracey,tracex,hoogte);
+							g.drawLine(tracex,tracey,0,tracey);
+						}
 						
 					}
 				}
@@ -896,7 +946,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				    g.setColor(new Color(255,0,0));
 					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
 					int x = (int)d;
-					if(expressies[j].isWaarde((selectnummer+beginwaarde)*schaalFactorX) && selectnummer<8 && selectnummer>-1)
+					if(!tracing && expressies[j].isWaarde((selectnummer+beginwaarde)*schaalFactorX) && selectnummer<8 && selectnummer>-1)
 					{	double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
 						int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 						g.fillOval(x-2,y-2,5,5);

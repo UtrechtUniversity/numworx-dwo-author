@@ -6,7 +6,7 @@ import java.awt.event.*;
 public class Slider	extends Panel implements MouseListener, MouseMotionListener
 {	private Image im;
 	private Graphics gIm;
-	
+	private boolean resize;
 	protected ActionListener actionListener = null;
 	
 	private int lengte;
@@ -27,10 +27,12 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 	public void zetLengte(int aantalPix)
 	{	lengte = aantalPix;
 		setSize(lengte+10,10);
+		resize = true;
+		repaint();
 	}
 		
 	public void paint(Graphics g)
-	{	{ 	if(im==null)
+	{	{ 	if(im==null || resize)
 			{	im = createImage(getSize().width,getSize().height);
   				gIm = im.getGraphics();
 			}
@@ -88,15 +90,21 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	raak = (new Rectangle(stand+5,0,10,20)).contains(e.getX(), e.getY());
+	{	raak = (new Rectangle(stand,0,10,20)).contains(e.getX(), e.getY());
 		muisStartX = e.getX();
 		muisStartY = e.getY();
+		if (raak && actionListener != null)
+		{	actionListener.actionPerformed( new ActionEvent(this, 0, "start") );
+		}
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(!raak && new Rectangle(stand+5,0,10,20).contains(e.getX(), e.getY()))
+	{	if(!raak && new Rectangle(stand,0,10,20).contains(e.getX(), e.getY()))
 		{	raak = true;
 			muisStartX = e.getX();
+			if (raak && actionListener != null)
+			{	actionListener.actionPerformed( new ActionEvent(this, 0, "start") );
+			}
 		}
 		if(raak)
 		{	int x = e.getX();
@@ -108,7 +116,7 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 			else if(stand<minimum) 
 			{	stand = minimum;
 			}
-			if(x<10 || x>lengte+20)
+			if(x<5 || x>lengte+20)
 			{	raak = false;
 			}
 			repaint();
@@ -119,9 +127,15 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 		}
 	}
 	
-	public void mouseReleased(MouseEvent e){;}
+	public void mouseReleased(MouseEvent e)
+	{	//if (actionListener != null)
+		//{	actionListener.actionPerformed( new ActionEvent(this, 0, "stop") );
+		//}
+	}
 	public void mouseClicked(MouseEvent e){;}
-	public void mouseExited(MouseEvent e){;}
+	public void mouseExited(MouseEvent e)
+	{	//raak = false;
+	}
 	public void mouseEntered(MouseEvent e){;}
 	public void mouseMoved(MouseEvent e){;}
 }
