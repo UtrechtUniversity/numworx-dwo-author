@@ -57,8 +57,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private Font font = new Font("SansSerif", Font.PLAIN, 10);
 	
 	private boolean resize;
-	private boolean trace;
+	private boolean trace=true;
 	
+	private Slider slider;
 	private int tracex;
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
@@ -95,9 +96,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		beginx = eenheidx;
 		beginy = eenheidy;
 		veldx = 40;
-		veldy = 50;
+		veldy = 45;
 		veldb = b-60;
-		veldh = h-70;
+		veldh = h-75;
 		schaalFactorY = 1;
 		factorRijNummerY = 99;
 		schaalFactorX = 1;
@@ -150,7 +151,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		zoomUitY.addActionListener(this);
 		add(zoomUitY);
 		
-		
+		slider = new Slider(veldb,0);
+		slider.setLocation(veldx-5,h-11);
+		slider.addActionListener(this);
+		slider.setBackground(new Color(210,210,210));
+		add(slider);
 			
 	}
 	
@@ -160,6 +165,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		veldb = b-60;
 		veldh = h-70;
 		gv.setSize(veldb,veldh);
+		slider.zetLengte(veldb);
+		slider.setLocation(veldx-5,h-11);
 	}
 	
 	public Hashtable getState()
@@ -532,7 +539,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	public void mouseReleased(MouseEvent e)
 	{	resize = false;
-		trace = false;
+		//trace = false;
 		if(e.getSource()==gv)
 		{	beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
@@ -601,6 +608,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				
 				
 			}
+			
+		}
+		if(e.getSource()==slider)
+		{ 	tracex = slider.geefStand();
+			gv.tekenOpnieuw();
+			schuifveld.tekenOpnieuw();
 		}
 		//repaint();
 		//gv.tekenOpnieuw();
@@ -850,7 +863,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						g.drawLine(x,y,0,y);
 					}
 					if(trace)
-					{
+					{	double dTraceX = tracex;
+						double dTraceY = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*dTraceX/eenheidxD);//dd0.doubleValue();
+						int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
+						g.fillOval(tracex-2,tracey-2,5,5);
+						g.drawLine(tracex,tracey,tracex,hoogte);
+						g.drawLine(tracex,tracey,0,tracey);
 						
 					}
 				}
