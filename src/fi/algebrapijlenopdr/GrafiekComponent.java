@@ -62,6 +62,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	private Slider slider;
 	private int tracex=-2;
+	private double tracexD = tracex;
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
@@ -387,6 +388,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			this.selectnummer = selectnummer;
 			this.schaalFactorX = schaalFactorX;
 			if(selectnummer!=999)tracing = false;
+			else
+			{	//tracexD = beginx+1.0*((selectnummer+beginwaarde)*eenheidx);
+				//tracex = (int)Math.round(tracexD);
+				//slider.zetStand(tracex);
+			}
 			gv.tekenOpnieuw();
 		}
 	}
@@ -512,6 +518,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			beginx = beginx+dx;
 			beginy = beginy-dy;
 			if(trace && tracex!=-2) {
+				tracexD = tracexD+dx;
 				tracex = tracex+dx;
 				slider.zetStand(tracex);
 			}
@@ -552,6 +559,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
 			if(trace && tracex!=-2) {
+				tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
 				slider.zetStand(tracex);
 			}
@@ -634,6 +642,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			}
 			//else if(e.getActionCommand().equals("stop")) tracing = false;
 			tracex = slider.geefStand();
+			tracexD = tracex;
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
 			
@@ -668,7 +677,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			int middenx = eenheidx;
 			int middeny = eenheidy;
 			
-			double tracexD = tracex;
 			double beginxOud = beginx;
 			
 			if(in && x)
@@ -746,7 +754,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				beginy =  middeny -(middeny - beginy)/stapy;
 				
 				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
-				tracex = (int)(tracexD);
+				tracex = (int)Math.round(tracexD);
+				slider.zetStand(tracex);
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				gv.tekenOpnieuw();
@@ -787,6 +796,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				
 				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
 				tracex = (int)(tracexD);
+				slider.zetStand(tracex);
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				gv.tekenOpnieuw();
@@ -854,7 +864,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			g.setClip(0,0,breedte,hoogte);
 			int imin = -(int)Math.round(beginx/eenheidx); 
 			int imax = 1+breedte/eenheidx-(int)Math.round(beginx/eenheidx);
-			int bx = (int)beginx;
+			int bx = (int)(beginx);
 			for(int i=imin ; i<imax ; i++)
 			{	g.setColor(Color.lightGray);
 				g.drawLine((int)(bx+i*eenheidxD),0,(int)(bx+i*eenheidxD),hoogte);
@@ -900,19 +910,20 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					}
 					g.setColor(new Color(255,0,0));
 					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
-					int x = (int)d;
+					int x = (int)Math.round(d);
 					double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
 					if(!tracing && !Double.isNaN(d0) && selectnummer<8 && selectnummer>-1)
 					{	int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 						g.fillOval(x-2,y-2,5,5);
 						g.drawLine(x,y,x,hoogte);
 						g.drawLine(x,y,0,y);
+						tracexD = d;
 						tracex = x;
 						slider.zetStand(tracex);
 					}
 					else if(trace)
-					{	double dTraceX = tracex;
-						double dTraceY = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*dTraceX/eenheidxD);//dd0.doubleValue();
+					{	
+						double dTraceY = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD);//dd0.doubleValue();
 						if(!Double.isNaN(dTraceY) && tracex<veldb)
 						{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
 							g.fillOval(tracex-2,tracey-2,5,5);
