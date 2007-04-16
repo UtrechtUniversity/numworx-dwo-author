@@ -664,7 +664,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		}
 		
 		public void run()
-		{	eenheidxD = eenheid;
+		{	selectnummer = 999;
+            eenheidxD = eenheid;
 			eenheidyD = eenheid;
 			eenheidx = eenheid;
 			eenheidy = eenheid;
@@ -756,13 +757,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				tracexD = middenx -(middenx - tracexD)/stapx;
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
-				/*double beginwaardeD = 1.0-(beginx/eenheidx);
-				tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
+				//double beginwaardeD = 1.0-(beginx/eenheidx);
+				//tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
 				tracex = (int) Math.round(tracexD);
-				slider.zetStand(tracex);*/
+				slider.zetStand(tracex);
 				
 				gv.tekenOpnieuw();
-				//repaint();
 				schuifveld.tekenOpnieuw();
 				
 			}
@@ -798,17 +798,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				beginy =  middeny -(middeny - beginy)/stapy;
 				
 				tracexD = middenx -(middenx - tracexD)/stapx;
-				//tracexD = (beginx+(tracexD-beginxVorig)/stapx);
-				// tracex = (int) Math.round(tracexD);
-				//slider.zetStand(tracex);
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
-				/*double beginwaardeD = 1.0-(beginx/eenheidx);
-				tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
+				//double beginwaardeD = 1.0-(beginx/eenheidx);
+				//tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
 				tracex = (int) Math.round(tracexD);
-				slider.zetStand(tracex);*/
+				slider.zetStand(tracex);
 				gv.tekenOpnieuw();
-				//repaint();
 				schuifveld.tekenOpnieuw();
 			}
 			
