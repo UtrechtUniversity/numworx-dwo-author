@@ -674,8 +674,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			//int middenx = veldb/2/eenheidx*eenheidx;
 			//int middeny = veldh/2/eenheidy*eenheidy;
 			
-			int middenx = eenheidx;
-			int middeny = eenheidy;
+			double middenx = eenheidx;
+			double middeny = eenheidy;
 			
 			double beginxOud = beginx;
 			
@@ -753,11 +753,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				beginx =  middenx -(middenx - beginx)/stapx;
 				beginy =  middeny -(middeny - beginy)/stapy;
 				
-				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
-				tracex = (int)Math.round(tracexD);
-				slider.zetStand(tracex);
+				tracexD = middenx -(middenx - tracexD)/stapx;
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
+				/*double beginwaardeD = 1.0-(beginx/eenheidx);
+				tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
+				tracex = (int) Math.round(tracexD);
+				slider.zetStand(tracex);*/
+				
 				gv.tekenOpnieuw();
 				//repaint();
 				schuifveld.tekenOpnieuw();
@@ -794,23 +797,39 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				beginx =  middenx -(middenx - beginx)/stapx;
 				beginy =  middeny -(middeny - beginy)/stapy;
 				
-				tracexD = (beginx+(tracexD-beginxVorig)/stapx);
-				tracex = (int)(tracexD);
-				slider.zetStand(tracex);
+				tracexD = middenx -(middenx - tracexD)/stapx;
+				//tracexD = (beginx+(tracexD-beginxVorig)/stapx);
+				// tracex = (int) Math.round(tracexD);
+				//slider.zetStand(tracex);
 				
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
+				/*double beginwaardeD = 1.0-(beginx/eenheidx);
+				tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
+				tracex = (int) Math.round(tracexD);
+				slider.zetStand(tracex);*/
 				gv.tekenOpnieuw();
 				//repaint();
 				schuifveld.tekenOpnieuw();
 			}
+			
+			
+			
+			beginwaarde = 1-(int)Math.round(beginx/eenheidx);
+			double beginwaardeD = 1.0-(beginx/eenheidx);
+			System.out.println(""+beginx);
+			System.out.println(""+eenheidx);
+			System.out.println(""+beginwaardeD);
+			
+			tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
+			tracex = (int) Math.round(tracexD);
+			slider.zetStand(tracex);
 			
 			selectnummer = 999;
 			if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 			}
 			
-			//tracex = (int)(beginx+(tracexD-beginxOud)/factorx);
-			
+			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
 			
 		}
@@ -864,14 +883,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			g.setClip(0,0,breedte,hoogte);
 			int imin = -(int)Math.round(beginx/eenheidx); 
 			int imax = 1+breedte/eenheidx-(int)Math.round(beginx/eenheidx);
-			int bx = (int)(beginx);
+			int bx = (int)Math.round(beginx);
 			for(int i=imin ; i<imax ; i++)
 			{	g.setColor(Color.lightGray);
 				g.drawLine((int)(bx+i*eenheidxD),0,(int)(bx+i*eenheidxD),hoogte);
 			}
 			int jmin = -(int)Math.round(beginy/eenheidy); 
 			int jmax = 1+hoogte/eenheidy-(int)Math.round(beginy/eenheidy);
-			int by = (int)beginy;
+			int by = (int)Math.round(beginy);
 			for(int j=jmin ; j<jmax ; j++)
 			{	g.setColor(Color.lightGray);
 				g.drawLine(0,(int)(hoogte-(by+j*eenheidyD)),breedte,(int)(hoogte-(by+j*eenheidyD)));
