@@ -57,12 +57,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private Font font = new Font("SansSerif", Font.PLAIN, 10);
 	
 	private boolean resize;
-	private boolean trace=true;
+	private boolean trace=false;
 	private boolean tracing=false;
 	
 	private Slider slider;
 	private int tracex=-2;
 	private double tracexD = tracex;
+	private LWCheckbox traceCheckbox;
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
@@ -158,8 +159,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		slider.setLocation(veldx-5,h-13);
 		slider.addActionListener(this);
 		slider.setBackground(new Color(210,210,210));
+		slider.setVisible(trace);
 		add(slider);
-			
+		
+		traceCheckbox = new LWCheckbox();
+		traceCheckbox.setBounds(13,getSize().height-13,10,10);
+		traceCheckbox.setBackground(Color.white);
+		traceCheckbox.addActionListener(this);
+		add(traceCheckbox);
 	}
 	
 	public void setSize(int b, int h)
@@ -170,6 +177,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		gv.setSize(veldb,veldh);
 		slider.zetLengte(veldb);
 		slider.setLocation(veldx-5,h-13);
+		traceCheckbox.setBounds(13,getSize().height-13,10,10);
 	}
 	
 	public Hashtable getState()
@@ -332,6 +340,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			woordbreedte = fm.stringWidth(getal);
 			g.drawString(getal,veldx-5-woordbreedte,(int)(veldy+veldh+5-(beginy+j*eenheidyD)));
 		}
+		g.drawString("trace",12,hoogte-15);
 		super.paint(g);	
 	}	
 		
@@ -651,6 +660,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			schuifveld.tekenOpnieuw();
 			
 		}
+		if(e.getSource()==traceCheckbox)
+		{	trace = traceCheckbox.aan;
+			slider.setVisible(trace);
+			schuifveld.tekenOpnieuw();
+		}
 		//repaint();
 		//gv.tekenOpnieuw();
 	}
@@ -939,6 +953,27 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						tracexD = d;
 						tracex = x;
 						slider.zetStand(tracex);
+						
+						double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
+						double dTraceY = expressies[j].geefW(dTraceX);
+						int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
+						
+						String xWaarde = dfTrace.format(dTraceX);
+						String yWaarde = dfTrace.format(dTraceY);
+						g.setFont(font);
+						fm = g.getFontMetrics();
+						int woordBreedteX = fm.stringWidth(xWaarde);
+						int woordHoogteX = fm.getAscent();
+						int woordBreedteY = fm.stringWidth(yWaarde);
+						int woordHoogteY = fm.getAscent();
+						g.setColor(new Color(255,255,200));
+						g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+						g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+						g.setColor(Color.black);
+						g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
+						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
 					}
 					else if(trace)
 					{	double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
