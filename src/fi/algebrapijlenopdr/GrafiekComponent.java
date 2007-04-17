@@ -43,7 +43,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private GrafiekVeld gv;
 	 
 	private DecimalFormatSymbols dfs;
-	private DecimalFormat df;
+	private DecimalFormat df, dfTrace;
 	private FontMetrics fm;
 	
 	Pijl[] pijlenIn;
@@ -111,6 +111,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		dfs = new DecimalFormatSymbols();
 		dfs.setDecimalSeparator('.');
 		df = new DecimalFormat("0.####", dfs);
+		dfTrace = new DecimalFormat("0.##",dfs);
 		
 		gv = new GrafiekVeld(veldx,veldy,veldb,veldh);
 		gv.addMouseListener(this);
@@ -613,8 +614,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			else if(e.getSource()==zoomStandaard)
 			{	//beginx = veldb/2/eenheidx*eenheidx;
 				//beginy = veldh/2/eenheidy*eenheidy;
+				double beginxVorig = beginx;
 				beginx = eenheidx;
 				beginy = eenheidy;
+				tracexD = beginx -(beginxVorig - tracexD)*schaalFactorX;
 				factorRijNummerX = 99;
 				factorRijNummerY = 99;
 				schaalFactorX = 1;
@@ -625,7 +628,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 				}
 				
-				tracex=-2;
+				tracex = (int) Math.round(tracexD);
+				//tracex=-2;
 				slider.zetStand(tracex);
 				
 				gv.tekenOpnieuw();
@@ -937,15 +941,31 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						slider.zetStand(tracex);
 					}
 					else if(trace)
-					{	
-						double dTraceY = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD);//dd0.doubleValue();
-						if(!Double.isNaN(dTraceY) && tracex<veldb)
+					{	double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
+						double dTraceY = expressies[j].geefW(dTraceX);
+						if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
 						{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
 							g.fillOval(tracex-2,tracey-2,5,5);
 							g.drawLine(tracex,tracey,tracex,hoogte);
 							g.drawLine(tracex,tracey,0,tracey);
-						}
 						
+							String xWaarde = dfTrace.format(dTraceX);
+							String yWaarde = dfTrace.format(dTraceY);
+							g.setFont(font);
+							fm = g.getFontMetrics();
+							int woordBreedteX = fm.stringWidth(xWaarde);
+							int woordHoogteX = fm.getAscent();
+							int woordBreedteY = fm.stringWidth(yWaarde);
+							int woordHoogteY = fm.getAscent();
+							g.setColor(new Color(255,255,200));
+							g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+							g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+							g.setColor(Color.black);
+							g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+							g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+							g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
+							g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
+						}
 					}
 				}
 				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null)
