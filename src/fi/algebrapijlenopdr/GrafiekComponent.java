@@ -683,7 +683,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		}
 		
 		public void run()
-		{	selectnummer = 999;
+		{	if(in || x) selectnummer = 999;
             eenheidxD = eenheid;
 			eenheidyD = eenheid;
 			eenheidx = eenheid;
@@ -839,7 +839,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			tracex = (int) Math.round(tracexD);
 			slider.zetStand(tracex);
 			
-			selectnummer = 999;
+			if(in||x)selectnummer = 999;
 			if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 			}
@@ -942,7 +942,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 							g.drawLine(x0,y0,x1,y1);
 						}
 					}
-					g.setColor(new Color(255,0,0));
+					/*g.setColor(new Color(255,0,0));
 					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
 					int x = (int)Math.round(d);
 					double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
@@ -1002,7 +1002,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 							g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
 							g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
 						}
-					}
+					}*/
 				}
 				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null)
 				{	double d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
@@ -1025,7 +1025,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 							g.fillOval(x-2,y-2,5,5);
 						}
 				    }
-				    g.setColor(new Color(255,0,0));
+				    /*g.setColor(new Color(255,0,0));
 					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
 					int x = (int)d;
 					if(!isLijnGrafiek[j] && !tracing && expressies[j].isWaarde((selectnummer+beginwaarde)*schaalFactorX) && selectnummer<8 && selectnummer>-1)
@@ -1059,10 +1059,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
 						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
 						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
-					}
+					}*/
 					
 					if(isPuntGrafiek[j])
-					{	d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
+					{	double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
+                        int x = (int)d;
+                        d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
 						x = (int)d;
 						double d0 = expressies[j].geefW((puntXWaarde[j]));
 						int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
@@ -1071,32 +1073,46 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					}
 							
 				}
-				else if(trace || selectnummer<8 && selectnummer>-1)
-				{	double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
-					double dTraceY = expressies[j].geefW(dTraceX);
-					if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
-					{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-						g.fillOval(tracex-2,tracey-2,5,5);
-						g.drawLine(tracex,tracey,tracex,hoogte);
-						g.drawLine(tracex,tracey,0,tracey);
-					
-						String xWaarde = dfTrace.format(dTraceX);
-						String yWaarde = dfTrace.format(dTraceY);
-						g.setFont(font);
-						fm = g.getFontMetrics();
-						int woordBreedteX = fm.stringWidth(xWaarde);
-						int woordHoogteX = fm.getAscent();
-						int woordBreedteY = fm.stringWidth(yWaarde);
-						int woordHoogteY = fm.getAscent();
-						g.setColor(new Color(255,255,200));
-						g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.setColor(Color.black);
-						g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
-						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
-					}
+				if(expressies[j]!=null && trace || selectnummer<8 && selectnummer>-1)
+				{	double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
+                    int x = (int)Math.round(d);
+                    if(!tracing && selectnummer<8 && selectnummer>-1)
+                    {   tracexD = d;
+                        tracex = x;
+                        slider.zetStand(tracex);
+                    }
+                    if ((isLijnGrafiek[j]&& trace && !isPuntGrafiek[j] || isMeerPuntenGrafiek[j]))
+                    {   slider.zetStand(tracex);
+                        double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
+    					double dTraceY = expressies[j].geefW(dTraceX);
+    					if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
+    					{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
+                            g.setColor(new Color(255,0,0));
+                            g.fillOval(tracex-2,tracey-2,5,5);
+    						g.drawLine(tracex,tracey,tracex,hoogte);
+    						g.drawLine(tracex,tracey,0,tracey);
+    					
+                            if ((isLijnGrafiek[j] || isMeerPuntenGrafiek[j])&& trace && !isPuntGrafiek[j])
+                            {    
+        						String xWaarde = dfTrace.format(dTraceX);
+        						String yWaarde = dfTrace.format(dTraceY);
+        						g.setFont(font);
+        						fm = g.getFontMetrics();
+        						int woordBreedteX = fm.stringWidth(xWaarde);
+        						int woordHoogteX = fm.getAscent();
+        						int woordBreedteY = fm.stringWidth(yWaarde);
+        						int woordHoogteY = fm.getAscent();
+        						g.setColor(new Color(255,255,200));
+        						g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+        						g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+        						g.setColor(Color.black);
+        						g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
+        						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+        						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
+        						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
+                            }
+    					}
+                    }
 				}
 			}
 			
