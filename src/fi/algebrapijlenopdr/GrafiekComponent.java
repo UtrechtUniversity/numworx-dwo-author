@@ -596,8 +596,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		if(e.getActionCommand().equals("focus")) schuifveld.tekenOpnieuw();
 		else 
 		{	if(e.getSource()==zoomUitY && factorRijNummerY<120)
-			{	
-				zoomDraad = new ZoomDraad(false,true,false);
+			{	zoomDraad = new ZoomDraad(false,true,false);
 				zoomDraad.start();
 			}
 			else if(e.getSource()==zoomInY  && factorRijNummerY>87)
@@ -683,7 +682,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		}
 		
 		public void run()
-		{	if(in || x) selectnummer = 999;
+		{	if(x) selectnummer = 999;
             eenheidxD = eenheid;
 			eenheidyD = eenheid;
 			eenheidx = eenheid;
@@ -839,8 +838,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			tracex = (int) Math.round(tracexD);
 			slider.zetStand(tracex);
 			
-			if(in||x)selectnummer = 999;
-			if(aantalPijlenIn>0)
+			if(x)selectnummer = 999;
+            if(aantalPijlenIn>0)
 			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 			}
 			
@@ -1019,7 +1018,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					for (int k = 0; k<8; k++) 
 					{	double d = bx+1.0*((k+beginwaarde)*eenheidx);
 						int x = (int)d;
-						if(expressies[j].isWaarde((k+beginwaarde)*schaalFactorX) && k<8 && selectnummer>-1)
+						if(expressies[j].isWaarde((k+beginwaarde)*schaalFactorX) && k<8 )
 						{	double d0 = expressies[j].geefW((k+beginwaarde)*schaalFactorX);
 							int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 							g.fillOval(x-2,y-2,5,5);
