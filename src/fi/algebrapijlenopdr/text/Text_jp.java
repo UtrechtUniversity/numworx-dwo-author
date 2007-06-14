@@ -36,7 +36,8 @@ public class Text_jp extends java.util.ListResourceBundle
 				{ "popup2Label2" , //"Copy to clipboard",
 				  "\uFF78\uFF98\uFF6F\uFF8C\uFF9F\uFF8E\uFF9E\u002D\uFF84\uFF9E\u306B\uFF7A\uFF8B\uFF9F\u002D\u3059\u308B" },
 				{ "terugKnopLabel" , "Back" },
-				{ "heenKnopLabel" , "Forth" }
+				{ "heenKnopLabel" , "Forth" },
+				{ "kopieerKnopLabel" , " " }
         };
 }
 

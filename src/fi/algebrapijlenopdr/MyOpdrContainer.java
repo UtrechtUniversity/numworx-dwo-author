@@ -54,7 +54,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		antwoordTekstVak.setEditable(true);
 		add(antwoordTekstVak);
 		
-		kopieerKnop = new Button("Kopieer vorige opdracht");
+		kopieerKnop = new Button(AlgebraPijlenOpdr.rb.getString("kopieerKnopLabel"));
 		kopieerKnop.setBounds(350,h-107,160,20);
 		kopieerKnop.addActionListener(this);
 		add(kopieerKnop,0);

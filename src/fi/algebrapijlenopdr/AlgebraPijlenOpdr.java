@@ -229,7 +229,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		return h;*/
 		
 		Hashtable h = new Hashtable();
-		h.put("language","nl");
+		h.put("language","en");
 		h.put("bgcolor","#DDEEFF");
 		
 		Hashtable defaultEditModeLaunchData = new Hashtable();

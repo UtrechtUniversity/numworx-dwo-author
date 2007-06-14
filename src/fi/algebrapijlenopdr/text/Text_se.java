@@ -21,7 +21,8 @@ public class Text_se extends java.util.ListResourceBundle
 				{ "popup2Label1" , "Select" },
 				{ "popup2Label2" , "Copy to clipboard" },
 				{ "terugKnopLabel" , "Bakåt" },
-				{ "heenKnopLabel" , "Framåt" }
+				{ "heenKnopLabel" , "Framåt" },
+				{ "kopieerKnopLabel" , " " }
         };
 }
 

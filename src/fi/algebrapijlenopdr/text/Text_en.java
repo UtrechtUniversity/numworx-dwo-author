@@ -16,12 +16,14 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "popup1Label2" , "Hide label" },
 				{ "popup1Label3" , "Show table" },
 				{ "popup1Label4" , "Hide table" },
-				{ "popup1Label5" , "Show Arrow string" },
-				{ "popup1Label6" , "Hide Arrow string" },
+				{ "popup1Label5" , "Show Arrow chain" },
+				{ "popup1Label6" , "Hide Arrow chain" },
 				{ "popup2Label1" , "Select" },
 				{ "popup2Label2" , "Copy to clipboard" },
 				{ "terugKnopLabel" , "Back" },
-				{ "heenKnopLabel" , "Forth" }
+				{ "heenKnopLabel" , "Forth" },
+				{ "kopieerKnopLabel" , "Copy from previous task" }
+				
         };
 }
 

@@ -21,7 +21,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "popup2Label1" , "Selecteer" },
 				{ "popup2Label2" , "Naar klembord" },
 				{ "terugKnopLabel" , "Terug" },
-				{ "heenKnopLabel" , "Heen" }
+				{ "heenKnopLabel" , "Heen" },
+				{ "kopieerKnopLabel" , "Kopieer vorige opdracht" }
         };
 }
 
