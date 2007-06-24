@@ -42,10 +42,7 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		heksNieuw.setLocation(5,0);
 		add(heksNieuw,0);
 				
-		opnieuwKnop = new ImageButton(opnieuwknop);
-		opnieuwKnop.setBounds(20,300,270,35);
-		opnieuwKnop.addActionListener(this);
-		add(opnieuwKnop);
+		
 		
 		titelLabel = new ScLabel(10,20,290,40,"Emmers met blokjes");
 		//add(titelLabel);
@@ -101,6 +98,11 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		textArea.setVisible(false);
 		//add(werkKnop);
 		
+		opnieuwKnop = new ImageButton(opnieuwknop);
+		opnieuwKnop.setBounds(20,300,150,24);
+		opnieuwKnop.addActionListener(this);
+		add(opnieuwKnop,0);
+		
 				
 	}
 	
@@ -134,7 +136,7 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		emmerTeller.zetWaarde(0);
 		emmerTeller.setVisible(false);
 		maalLabel.setVisible(false);
-		opnieuwKnop.setVisible(false);
+		//opnieuwKnop.setVisible(false);
 	}
 	
 	public void stop()
@@ -175,7 +177,7 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 			emmerTeller.zetWaarde(0);
 			emmerTeller.setVisible(false);
 			maalLabel.setVisible(false);
-			opnieuwKnop.setVisible(false);
+			//opnieuwKnop.setVisible(false);
 		}
 		else if(e.getSource()==oefenTafereelPanel)
 		{	if(opdracht.isVisible())return;

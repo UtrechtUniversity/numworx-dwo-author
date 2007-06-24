@@ -61,7 +61,14 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		tr.addImage(opnieuwknop,0);
 		try{tr.waitForAll();} catch(Exception e) {}
 		
+		ImageComponent heksNieuw = new ImageComponent(heksnieuw);
+		heksNieuw.setLocation(15,0);
+		add(heksNieuw,0);
 		
+		opnieuwKnop = new ImageButton(opnieuwknop);
+		opnieuwKnop.setBounds(20,300,150,24);
+		opnieuwKnop.addActionListener(this);
+		add(opnieuwKnop);
 		
 		//plons = au.getAudioClip("resources/watersplash.au");
 		//bubbel = au.getAudioClip("resources/bubble.au");
@@ -85,10 +92,7 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		sleeppanel.addMouseMotionListener(this);
 		achtergrond = new AchtergrondContainer(0,0,b-300,h-5);
 		
-		opnieuwKnop = new ImageButton(opnieuwknop);
-		opnieuwKnop.setBounds(20,300,270,35);
-		opnieuwKnop.addActionListener(this);
-		add(opnieuwKnop);
+		
 		
 		pot = new Tekening(40,260,350,300,au,"potnieuw.gif");
 		achtergrond.add(pot);
@@ -210,9 +214,7 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		textArea.setVisible(false);
 		//add(werkKnop);
 		
-		ImageComponent heksNieuw = new ImageComponent(heksnieuw);
-		heksNieuw.setLocation(15,0);
-		add(heksNieuw,0);
+		
 	}
 	
 	public void setState(Hashtable h)

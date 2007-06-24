@@ -35,8 +35,10 @@ public class KrommeTek extends TekenObjectTek
 	}
 	
 	public void paint(Graphics g)
-	{	
-		g.setColor(lijnkleur);
+	{	//Graphics g = (Graphics2D)gr;
+    	//((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+    	g.setColor(lijnkleur);
 		for(int i=0 ; i<aantalTPunten-1 ; i++)
 		{	g.drawLine(tekenpunten[i].x, tekenpunten[i].y, tekenpunten[i+1].x, tekenpunten[i+1].y);
 		}

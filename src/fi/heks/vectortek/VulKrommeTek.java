@@ -47,7 +47,10 @@ public class VulKrommeTek extends TekenObjectTek
 	}
 	
 	public void paint(Graphics g)
-	{	if(isGevuld && vulkleur!=null)
+	{	//Graphics g = (Graphics2D)gr;
+    	//((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+    	if(isGevuld && vulkleur!=null)
 		{	g.setColor(vulkleur);
 			g.fillPolygon(buigPolygon);
 		}

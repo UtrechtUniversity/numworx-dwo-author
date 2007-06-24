@@ -220,6 +220,8 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		
 	}
 	
+	
+	
 	public String getState()
 	{	Hashtable tpState = null;
 		
