@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.applet.*;
 import fi.heks.scobjects.*;
 import fi.beans.scorm.*;
+import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import fi.beans.copyright.*;
 
@@ -13,7 +14,7 @@ import fi.beans.copyright.*;
 public class Heks extends Applet implements ScormAppletIF,  ComponentListener 
 {	public double schaal;
 	private ScPanel tp;
-	private int bladNummer;
+	static int bladNummer;
 	
 	protected static ResourceBundle rb;
 	
@@ -47,7 +48,8 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		setLayout(null);
 		addComponentListener(this);
 		
-		Color bgcolor = new Color(230,240,255);
+		//Color bgcolor = new Color(230,240,255);
+		Color bgcolor = Color.white;
 		String kleurcode = getParameter("bgcolor");
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
@@ -66,7 +68,7 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		catch(NumberFormatException e)
 		{	bladNummer = 1;
 		}
-		bladNummer = 3;
+		//bladNummer = 3;
 		
 		if(bladNummer==1)tp = new TafereelPanel2(5,5,790,565,this);
 		else if(bladNummer==2)tp = new TafereelPanel(5,5,790,565,this);
@@ -84,15 +86,31 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		else if(bladNummer==14)tp = new BlokjesEruitPanelExtra(5,5,790,565,this);
 		else if(bladNummer==15)tp = new BlokjesMaalPanel(5,5,790,565,this);
 		else if(bladNummer==16)tp = new BlokjesMaalPanelExtra(5,5,790,565,this);
+		else if(bladNummer==21)tp = new TafereelPanel2_WN(5,5,790,665,this);
+		else if(bladNummer==22)tp = new TafereelPanel_WN(5,5,790,665,this);
+		else if(bladNummer==23)tp = new TafereelPanelEmmer_WN(5,5,790,665,this);
+		else if(bladNummer==24)tp = new TafereelPanelHulpKetel_WN(5,5,240,240,this);
 
-		double sx = ((1.0*getSize().width-10) / 790);
-		double sy = ((1.0*getSize().height-20) / 565);
+		double sx = ((1.0*getSize().width-10) / tp.getSize().width);
+		double sy = ((1.0*getSize().height-20) / tp.getSize().height);
 		double schaal = Math.min(sx,sy);
 		tp.schaal(schaal);
-		int x = (int)((sx-schaal)*395);
-		int y = (int)((sy-schaal)*282);
+		int x = (int)((sx-schaal)*tp.getSize().width/2);
+		int y = (int)((sy-schaal)*tp.getSize().height/2);
 		tp.setLocation(x+5,y+15);
 		add(tp);
+		
+		AppletUtil au = new AppletUtil(this);
+		
+		Image mwlogo = au.getImage("resources/MW_logo.gif");
+		MediaTracker tr = new MediaTracker(this);
+		tr.addImage(mwlogo,0);
+		try{tr.waitForAll();} catch(Exception e) {}
+		
+		ImageComponent MWLogo = new ImageComponent(mwlogo);
+		MWLogo.setBackground(getBackground());
+		MWLogo.setLocation(getSize().width-35,0);
+		if(bladNummer<20) add(MWLogo,0);
 		
 		FIButton fiButton = new FIButton("De Heks",new String[]{"","versie-info: 20060131",
 													"auteur: Peter Boon ea.",
@@ -120,8 +138,8 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 	private Hashtable makeDefaultParamValues(int variant)
 	{	Hashtable h = new Hashtable();
 		h.put("language","nl");
-		h.put("bgcolor","#DDEEFF");
-		h.put("color_01","#FFFFEE");
+		h.put("bgcolor","#FFFFFF");
+		h.put("color_01","#FFFFFF");
 		h.put("blad",""+(variant+1));
 		
 		return h;
@@ -256,13 +274,13 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 	}
 	
 	public void componentResized(ComponentEvent e)
-	{	double sx = (1.0*getSize().width - 10)  / (790);
-		double sy = (1.0*getSize().height - 10)  / (565);
+	{	double sx = (1.0*getSize().width - 10)  / tp.getSize().width;
+		double sy = (1.0*getSize().height - 10)  / tp.getSize().height;
 		schaal = Math.min(sx,sy);
 		tp.schaal(schaal);
 		
-		int x = (int)((sx-schaal)*395);
-		int y = (int)((sy-schaal)*282);
+		int x = (int)((sx-schaal)*tp.getSize().width/2);
+		int y = (int)((sy-schaal)*tp.getSize().height/2);
 		tp.setLocation(x+5,y+5);
 	}
 	public void componentMoved(ComponentEvent e){}

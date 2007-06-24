@@ -20,6 +20,8 @@ public class BlokjesContainer extends ScContainer
 	private Tekening plusblokje,minblokje;
 	private GetalComponent getalPlus, getalMin;
 	
+	private int maxRijen = 4;
+	
 	public BlokjesContainer(int x, int y, int b, int h, Applet applet)
 	{	super(x,y,b,h);
 		eigenaar = applet;
@@ -51,6 +53,10 @@ public class BlokjesContainer extends ScContainer
 		alsGetal = false;
 	}
 	
+	public void zetMaxRijen(int maxR)
+	{ 	maxRijen = maxR;
+	}
+	
 	public void toonAlsGetal(boolean bool)
 	{	alsGetal = bool;
 	}
@@ -64,17 +70,17 @@ public class BlokjesContainer extends ScContainer
 		
 		if(bool)
 		{	getalPlus.verhoog();System.out.println("test");
-			if(aantalBlokjes<20 && !alsGetal)
+			if(aantalBlokjes<5*maxRijen && !alsGetal)
 			{	blokjes[aantalBlokjes] = new Tekening(x,y,b,h,au,"blokjePlus.gif");
 				blokjes[aantalBlokjes].schaal(schaal);
 				add(blokjes[aantalBlokjes]);
 			}
-			else if(aantalBlokjes==20)
+			else if(aantalBlokjes==5*maxRijen)
 			{	plusblokje.setVisible(true);
 				getalPlus.setVisible(true);
 				minblokje.setVisible(true);
 				getalMin.setVisible(true);
-				for(int i=0 ; i<20 ; i++)
+				for(int i=0 ; i<5*maxRijen ; i++)
 				{	blokjes[i].setVisible(false);
 				}
 			}
@@ -86,17 +92,17 @@ public class BlokjesContainer extends ScContainer
 		}
 		else
 		{	getalMin.verhoog();
-			if(aantalBlokjes<20 && !alsGetal)
+			if(aantalBlokjes<5*maxRijen && !alsGetal)
 			{	blokjes[aantalBlokjes] = new Tekening(x,y,b,h,au,"blokjeMin.gif");
 				blokjes[aantalBlokjes].schaal(schaal);
 				add(blokjes[aantalBlokjes]);
 			}
-			else if(aantalBlokjes==20)
+			else if(aantalBlokjes==5*maxRijen)
 			{	plusblokje.setVisible(true);
 				getalPlus.setVisible(true);
 				minblokje.setVisible(true);
 				getalMin.setVisible(true);
-				for(int i=0 ; i<20 ; i++)
+				for(int i=0 ; i<5*maxRijen ; i++)
 				{	blokjes[i].setVisible(false);
 				}
 			}
@@ -115,16 +121,16 @@ public class BlokjesContainer extends ScContainer
 	{	aantalBlokjes--;
 		if(soorten[aantalBlokjes])getalPlus.verlaag();
 		else getalMin.verlaag();
-		if(aantalBlokjes==20 && !alsGetal)
+		if(aantalBlokjes==5*maxRijen && !alsGetal)
 		{	plusblokje.setVisible(false);
 			getalPlus.setVisible(false);
 			minblokje.setVisible(false);
 			getalMin.setVisible(false);
-			for(int i=0 ; i<20 ; i++)
+			for(int i=0 ; i<5*maxRijen ; i++)
 			{	blokjes[i].setVisible(true);
 			}
 		}
-		else if(aantalBlokjes<20)
+		else if(aantalBlokjes<5*maxRijen)
 		{	if(blokjes[aantalBlokjes]!=null)remove(blokjes[aantalBlokjes]);
 		}
 		if(alsGetal && getalMin.geefWaarde()==0)

@@ -100,7 +100,7 @@ public class OefenTafereelPanelEmmer extends ScPanel implements  MouseListener, 
 		potinhoud = new Tekening(40,210,350,300,au,"inhoudnieuw.gif");
 		sleeppanel.add(potinhoud, 0);
 		
-		vloer = new Tekening(0,365,490,160, au,"vloer.gif");
+		vloer = new Tekening(0,365,430,160, au,"vloer.gif");
 		achtergrond.add(vloer);
 		
 		tc = new GetalComponent(360,300,130,50);
