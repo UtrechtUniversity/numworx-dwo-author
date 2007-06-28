@@ -30,9 +30,9 @@ public class LijnstukTek extends TekenObjectTek
 		//lijnkleur = Color.black;
 	}
 	
-	public void paint(Graphics g)
-	{	//Graphics g = (Graphics2D)gr;
-    	//((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	public void paint(Graphics gr)
+	{	Graphics g = (Graphics2D)gr;
+    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
     	g.setColor(lijnkleur);
 		g.drawLine(punten[0].x, punten[0].y, punten[1].x, punten[1].y);

@@ -63,7 +63,7 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		
 		ImageComponent heksNieuw = new ImageComponent(heksnieuw);
 		heksNieuw.setLocation(15,0);
-		add(heksNieuw,0);
+		//add(heksNieuw,0);
 		
 		opnieuwKnop = new ImageButton(opnieuwknop);
 		opnieuwKnop.setBounds(20,300,150,24);
@@ -86,31 +86,30 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		String kleurcode = applet.getParameter("color_01");
 		if(kleurcode!=null)color_01 = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		
-		sleeppanel = new ScPanel(370,30,b-300,h-5);
+		sleeppanel = new ScPanel(350,30,b-320,h-5);
 		sleeppanel.setBackground(color_01);
 		sleeppanel.addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
 		achtergrond = new AchtergrondContainer(0,0,b-300,h-5);
 		
 		
-		
-		pot = new Tekening(40,260,350,300,au,"potnieuw.gif");
+		pot = new Tekening(20,280,380,330,au,"potnieuw.gif");
 		achtergrond.add(pot);
 		
-		vloer = new Tekening(0,420,420,160, au,"vloer.gif");
+		vloer = new Tekening(-10,450,430,175, au,"vloer.gif");
 		achtergrond.add(vloer);
 		
-		beginTemp = new GetalComponent(170,250,80,40);
+		beginTemp = new GetalComponent(170,50,80,40);
 		beginTemp.zetInstelbaar(true);
 		beginTemp.zetAlsTemp(true);
 		beginTemp.addActionListener(this);
 		add(beginTemp);
 		
-		beginLabel = new ScLabel(50,255,60,30,"begin");
+		beginLabel = new ScLabel(50,55,60,30,"begin");
 		beginLabel.addMouseListener(this);
 		add(beginLabel);
 		
-		beginPot = new Tekening(35,235,90,65,au,"potzwart.gif");
+		beginPot = new Tekening(35,35,90,65,au,"potzwart.gif");
 		add(beginPot);
 		
 		//schrijfheks = new Tekening(145,0,140,140,au,"schrijfheks.gif");
@@ -119,40 +118,40 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		werkheks = new Tekening(180,0,150,150,au,"werkheks.gif");
 		//achtergrond.add(werkheks);
 		
-		erinLabel = new ScLabel(65,355,60,30,"er in");
+		erinLabel = new ScLabel(50,155,60,30,"er in");
 		add(erinLabel);
 		
-		potErin = new Tekening(30,310,100,90,au,"potErin.gif");
+		potErin = new Tekening(15,110,100,90,au,"potErin.gif");
 		add(potErin);
 		
-		eruitLabel = new ScLabel(35,455,60,30,"er uit");
+		eruitLabel = new ScLabel(52,255,60,30,"er uit");
 		add(eruitLabel);
 		
-		potEruit = new Tekening(30,410,100,90,au,"potEruit.gif");
+		potEruit = new Tekening(45,210,100,90,au,"potEruit.gif");
 		add(potEruit);
 		
-		eindTemp = new GetalComponent(170,520,80,40);
+		eindTemp = new GetalComponent(170,320,80,40);
 		eindTemp.zetAlsTemp(true);
 		add(eindTemp);
 		
-		eindLabel = new ScLabel(50,535,60,30,"eind");
+		eindLabel = new ScLabel(50,335,60,30,"eind");
 		add(eindLabel);
 		
-		eindPot = new Tekening(35,515,90,65 ,au,"potzwart.gif");
+		eindPot = new Tekening(35,315,90,65 ,au,"potzwart.gif");
 		add(eindPot);
 		
-		erinContainer = new BlokjesContainer(180,330,165, 85,applet);
+		erinContainer = new BlokjesContainer(180,130,165, 85,applet);
 		erinContainer.zetMaxRijen(2);
 		add(erinContainer);
 		
-		eruitContainer = new BlokjesContainer(180,430,165,85,applet);
+		eruitContainer = new BlokjesContainer(180,230,165,85,applet);
 		eruitContainer.zetMaxRijen(2);
 		add(eruitContainer);
 				
-		blokjePlus = new Tekening(350,80,60,60,au,"blokjePlus.gif");
+		blokjePlus = new Tekening(350,80,65,65,au,"blokjePlus.gif");
 		achtergrond.add(blokjePlus);
 						
-		blokjeMin = new Tekening(350,150,60,60,au,"blokjeMin.gif");
+		blokjeMin = new Tekening(350,150,65,65,au,"blokjeMin.gif");
 		achtergrond.add(blokjeMin);
 		
 		uitleg = new ScTekstContainer(5,5,285,20,5,"Gooi blokjes in de ketel./Wat gebeurt er met de temperatuur?/Wil je een andere begintemperatuur, /klik dat op de begintemperatuur en/vul een ander getal in.");
@@ -170,20 +169,20 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		za = new ZinkAnimatie(110,290,210,200,applet);
 		sleeppanel.add(za,0);
 		
-		blokjeSleep = new Tekening(350,80,60,60,au,"blokjePlus.gif");
+		blokjeSleep = new Tekening(350,80,65,65,au,"blokjePlus.gif");
 		sleeppanel.add(blokjeSleep,0);
 		
-		blokjeSleepMin = new Tekening(350,150,60,60,au,"blokjeMin.gif");
+		blokjeSleepMin = new Tekening(350,150,65,65,au,"blokjeMin.gif");
 		sleeppanel.add(blokjeSleepMin,0);
 		
-		potinhoud = new Tekening(40,260,350,300,au,"inhoudnieuw.gif");
+		potinhoud = new Tekening(20,305,375,300,au,"inhoudnieuw.gif");
 		sleeppanel.add(potinhoud, 0);
 		
-		tc = new GetalComponent(320,340,120,40);
+		tc = new GetalComponent(320,360,120,40);
 		tc.zetAlsTemp(true);
 		sleeppanel.add(tc,0);
 		
-		tm = new Thermometer(120,0, 50,360);
+		tm = new Thermometer(100,0, 55,400);
 		sleeppanel.add(tm,0);
 		
 		sleeppanel.add(achtergrond);

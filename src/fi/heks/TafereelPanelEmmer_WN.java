@@ -13,8 +13,8 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 	private AppletUtil au;
 	private ScLWButton  opdrachtKnop, werkKnop;
 	private ScLabel titelLabel, maalLabel, opdrachtTitel;
-	private OefenTafereelPanelEmmer oefenTafereelPanel;
-	private Emmer emmer;
+	private OefenTafereelPanelEmmer_WN oefenTafereelPanel;
+	private EmmerPanel emmer;
 	private GetalComponent emmerTeller;
 	private ScTekstContainer uitleg, opdracht;
 	ScTextArea textArea;
@@ -40,7 +40,7 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		
 		ImageComponent heksNieuw = new ImageComponent(heksnieuw);
 		heksNieuw.setLocation(5,0);
-		add(heksNieuw,0);
+		//add(heksNieuw,0);
 				
 		
 		
@@ -58,20 +58,20 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		uitleg.lijnUit(ScLabel.LINKS);
 		//add(uitleg);
 		
-		oefenTafereelPanel = new OefenTafereelPanelEmmer(320,40,b-300,h-5, applet);
+		oefenTafereelPanel = new OefenTafereelPanelEmmer_WN(150,-25,b-200,h-5, applet);
 		oefenTafereelPanel.addActionListener(this);
 		add(oefenTafereelPanel);
 		
-		emmer = new Emmer(150,370,110,125,applet);
+		emmer = new EmmerPanel(150,10,110,125,applet);
 		emmer.zetInstelbaar(false);
-		add(emmer);
+		add(emmer,0);
 		emmer.setVisible(false);
 		
-		maalLabel = new ScLabel(100,420,50,50,"X");
+		maalLabel = new ScLabel(100,60,50,50,"X");
 		add(maalLabel);
 		maalLabel.setVisible(false);
 		
-		emmerTeller = new GetalComponent(50,420,50,50);
+		emmerTeller = new GetalComponent(50,60,50,50);
 		emmerTeller.zetWaarde(0);
 		add(emmerTeller);
 		emmerTeller.setVisible(false);

@@ -89,15 +89,15 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		else if(bladNummer==21)tp = new TafereelPanel2_WN(5,5,790,665,this);
 		else if(bladNummer==22)tp = new TafereelPanel_WN(5,5,790,665,this);
 		else if(bladNummer==23)tp = new TafereelPanelEmmer_WN(5,5,790,665,this);
-		else if(bladNummer==24)tp = new TafereelPanelHulpKetel_WN(5,5,240,240,this);
+		else if(bladNummer==24)tp = new TafereelPanelHulpKetel_WN(5,5,3*266/2,3*151/2,this);
 
-		double sx = ((1.0*getSize().width-10) / tp.getSize().width);
-		double sy = ((1.0*getSize().height-20) / tp.getSize().height);
+		double sx = ((1.0*getSize().width) / tp.getSize().width);
+		double sy = ((1.0*getSize().height) / tp.getSize().height);
 		double schaal = Math.min(sx,sy);
 		tp.schaal(schaal);
 		int x = (int)((sx-schaal)*tp.getSize().width/2);
 		int y = (int)((sy-schaal)*tp.getSize().height/2);
-		tp.setLocation(x+5,y+15);
+		tp.setLocation(x,y);
 		add(tp);
 		
 		AppletUtil au = new AppletUtil(this);

@@ -44,9 +44,9 @@ public class VeelhoekTek extends TekenObjectTek
 		catch(IOException io){}
 	}
 	
-	public void paint(Graphics g)
-	{	//Graphics g = (Graphics2D)gr;
-    	//((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	public void paint(Graphics gr)
+	{	Graphics g = (Graphics2D)gr;
+    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
     	if(isGevuld && vulkleur!=null)
 		{	g.setColor(vulkleur);

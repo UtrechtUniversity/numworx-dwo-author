@@ -45,7 +45,7 @@ public class TafereelPanelHulpKetel_WN extends ScPanel implements  MouseListener
 		setBackground(getBackground());
 		zetVastePlaats(true);
 		
-		OefenTafereelPanel oefenTafereelPanel = new OefenTafereelPanel(0,0,b,h,applet);
+		OefenTafereelPanel_WN oefenTafereelPanel = new OefenTafereelPanel_WN(0,0,b,h,applet);
 		oefenTafereelPanel.zetInstelbaar(true);
 		oefenTafereelPanel.addActionListener(this);
 		//oefenTafereelPanel.zetEruitMogelijk(false);
