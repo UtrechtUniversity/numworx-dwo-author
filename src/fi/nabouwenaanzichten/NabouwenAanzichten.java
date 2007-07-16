@@ -112,7 +112,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		String mobileVersionString = getParameter("mobileVersion");
 	    if(mobileVersionString!=null && mobileVersionString.equals("true"))mobileVersion = true;
 	       
-		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20070318",
+		fiButton = new FIButton("Nabouwen Aanzichten",new String[]{"","versie-info: 20070716",
 											"auteur: Peter Boon",
 											"programmeur: Peter Boon",
 											"Freudenthal Instituut",
