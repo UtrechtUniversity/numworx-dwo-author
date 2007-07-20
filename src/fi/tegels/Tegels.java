@@ -66,7 +66,7 @@ public class Tegels extends Applet implements MouseListener, MouseMotionListener
 		addMouseMotionListener(this);
 		
 		String langArg = getParameter("language");
-		if ( langArg == null || ! langArg.equals("en") ) langArg = "nl";
+		if ( langArg == null) langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.tegels.text.Text",language);
 		
