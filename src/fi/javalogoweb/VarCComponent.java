@@ -12,7 +12,6 @@ import fi.javalogoweb.expressies.*;
 
 public class VarCComponent extends CommandComponent implements ActionListener
 {
-	private GetalComponent gc;
 	
 	public VarCComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);

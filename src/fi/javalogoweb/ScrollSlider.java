@@ -28,7 +28,7 @@ public class ScrollSlider	extends Panel implements MouseListener, MouseMotionLis
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		if (horizontaal) setSize(lengte+10,10);
-		else setSize(20,lengte+45);
+		else setSize(20,lengte+10);
 	}
 	
 	public static void zetScrollPlaatjes(Image sk0, Image sk1, Image sk2)
@@ -40,7 +40,7 @@ public class ScrollSlider	extends Panel implements MouseListener, MouseMotionLis
 	public void zetLengte(int aantalPix)
 	{	lengte = aantalPix;
 		if (horizontaal) setSize(lengte+10,10);
-		else setSize(20,lengte+45);
+		else setSize(20,lengte+10);
 		resize = true;
 		repaint();
 	}
@@ -73,7 +73,7 @@ public class ScrollSlider	extends Panel implements MouseListener, MouseMotionLis
 		}
 		else
 		{	g.setColor(Color.black);
-			g.drawRect(8,5,3,lengte+35);
+			g.drawRect(8,5,3,lengte);
 			g.setColor(Color.red);
 			g.fillOval(2, 5+stand-3, 16, 6);
 			g.setColor(Color.black);

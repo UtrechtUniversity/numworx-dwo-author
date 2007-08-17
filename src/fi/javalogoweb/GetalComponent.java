@@ -12,7 +12,7 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 	private boolean isTemp,instelbaar, bekend, leeg;
 	private ActionListener actionListener;
 	private int standaardBreedte = 35;
-	private Font f;
+	private Font font;
 	private FontMetrics fm;
 	
 	
@@ -30,14 +30,18 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 		beginWaardeTf.setVisible(false);
 		beginWaardeTf.setEnabled(false);
 		//beginWaardeTf.setLocation(getLocation().x, getLocation().y);
-		f = new Font("SansSerif", Font.PLAIN, (int)(3*getSize().height/5));
-		fm = getFontMetrics(f);
+		font = new Font("SansSerif", Font.PLAIN, 12);//(int)(3*getSize().height/5));
+		fm = getFontMetrics(font);
 		
+	}
+	
+	public void setFont(Font f)
+	{	font = f;		
 	}
 	
 	public void paint(Graphics g)
 	{	g.setColor(getForeground());
-		g.setFont(f);
+		g.setFont(font);
 		String s;
 		if(bekend)
 		{	if(isTemp)s = waarde.toString()+"°C";
@@ -49,7 +53,7 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 			else s = "...";
 		}
 		s = beginWaardeTf.getText();
-		FontMetrics fm = g.getFontMetrics();
+		FontMetrics fm = g.getFontMetrics(font);
 		int woordbreedte = fm.stringWidth(s);
 		g.drawString(s,(getSize().width-woordbreedte)/2, (getSize().height + fm.getHeight())/2 - fm.getDescent()+1);
 		super.paint(g);
@@ -67,6 +71,19 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 		waarde = new BasisExpressie(d);
 		beginWaardeTf.setText(waarde.toString());
 		repaint();
+	}
+	
+	public void zetTekst(String s)
+	{	zetBekend(true);
+		waarde = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+s+"@")));
+		beginWaardeTf.setText(s);
+		setSize(fm.stringWidth(beginWaardeTf.getText()),getSize().height);
+		repaint();
+	}
+	
+	public String geefTekst()
+	{
+		return beginWaardeTf.getText();
 	}
 	
 	public void zetWaarde(Expressie e)
@@ -127,7 +144,8 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 	}
 	
 	public void vulIn()
-	{	int breedte = Math.max(standaardBreedte, fm.stringWidth(beginWaardeTf.getText())+20);
+	{	fm = getFontMetrics(font);
+		int breedte = Math.max(standaardBreedte, fm.stringWidth(beginWaardeTf.getText())+20);
 		setSize(breedte,getSize().height);
 		beginWaardeTf.setBounds(2,2,breedte-4 ,getSize().height-4);
 		if(instelbaar)
@@ -137,8 +155,10 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 			beginWaardeTf.selectAll();
 			beginWaardeTf.requestFocus();
 		}
-		((CommandComponent)getParent()).zetMaat();
-		((CommandComponent)getParent()).tekenOpnieuw();
+		if(getParent() instanceof CommandComponent)
+		{	((CommandComponent)getParent()).zetMaat();
+			((CommandComponent)getParent()).tekenOpnieuw();
+		}
 		repaint();
 	}
 	
@@ -175,10 +195,12 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 			{	actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""+this));
 			}
 		}
-		
+		fm = getFontMetrics(font);
 		setSize(fm.stringWidth(beginWaardeTf.getText()),getSize().height);
-		((CommandComponent)getParent()).zetMaat();
-		((CommandComponent)getParent()).tekenOpnieuw();
+		if(getParent() instanceof CommandComponent)
+		{	((CommandComponent)getParent()).zetMaat();
+			((CommandComponent)getParent()).tekenOpnieuw();
+		}
 		
 		
 	}
@@ -207,9 +229,12 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 			{	actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""+this));
 			}
 		}
+		fm = getFontMetrics(font);
 		setSize(fm.stringWidth(beginWaardeTf.getText()),getSize().height);
-		((CommandComponent)getParent()).zetMaat();
-		((CommandComponent)getParent()).tekenOpnieuw();
+		if(getParent() instanceof CommandComponent)
+		{	((CommandComponent)getParent()).zetMaat();
+			((CommandComponent)getParent()).tekenOpnieuw();
+		}
 		
 	}
 	public void focusGained(FocusEvent e){;	}

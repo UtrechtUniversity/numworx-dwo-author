@@ -6,16 +6,18 @@ import java.applet.*;
 import java.util.*;
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
+import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import logotekenap.*;
 
-public class JavaLogoWeb extends Applet implements ScormAppletIF, ActionListener
+public class JavaLogoWeb extends Applet implements ScormAppletIF
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
 	private Tekenblad tekenblad;
-	private Button runButton;
+	
+	public static Image editImage;
 	
 	
 	public static void main(String[] args)    
@@ -60,19 +62,24 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF, ActionListener
 		fiButton.setBounds(0,0,20,30);
 		//add(fiButton);
 		
-		//Test-textfield
-		javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 400, getSize().height);
+		AppletUtil au = new AppletUtil(this);
+		editImage = au.getImage("resources/edit.gif");
+		MediaTracker tr = new MediaTracker(this);
+		tr.addImage(editImage,0);
+		try{tr.waitForAll();} catch(Exception e) {}
+		
+		
+		tekenblad = new Tekenblad(this);
+		tekenblad.setBounds(420, 0, 380, getSize().height);
+		add(tekenblad);
+		
+		javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 420, getSize().height, tekenblad);
 		add(javaLogoSchuifVeld);
 		javaLogoSchuifVeld.initialize();
 		
-		tekenblad = new Tekenblad(this);
-		tekenblad.setBounds(400, 0, 400, getSize().height);
-		add(tekenblad);
 		
-		runButton = new Button("Run");
-		runButton.setBounds(170,450,200,25);
-		runButton.addActionListener(this);
-		add(runButton,0);
+		
+		
 		
 	}
 	
@@ -156,7 +163,4 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF, ActionListener
     {	return null;
     }
     
-    public void actionPerformed(ActionEvent e)
-    {	tekenblad.tekenOpnieuw();
-    }
 }

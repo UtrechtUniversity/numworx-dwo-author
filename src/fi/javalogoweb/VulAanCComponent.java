@@ -8,19 +8,20 @@ import java.awt.event.ActionListener;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
+import fi.javalogoweb.expressies.*;
 
 public class VulAanCComponent extends CommandComponent implements ActionListener
 {
 	
 	public VulAanCComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
-		commandString = "vulAan (";
+		commandString = "vulAan (\"";
 		kommaString = null;
-		haakjeString = ") ";
+		haakjeString = "\") ";
 		
-		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("0"),21);
+		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("k"),21);
 		gc1.zetInstelbaar(true);
-		gc1.zetWaarde(0);
+		gc1.zetWaarde(new BasisExpressie("k"));
 		gc1.addActionListener(this);
 		add(gc1,0);
 				
@@ -40,7 +41,9 @@ public class VulAanCComponent extends CommandComponent implements ActionListener
 	}
 	
 	public void teken(Tekenblad tb, VarSet varSet)
-	{	tb.vulAan("zwart");
+	{	String s = gc1.geefExpressie().toString();
+		if(s!=null)tb.vulAan(s);
+		else tb.vulAan("zwart");
 	}
 	
 	public void actionPerformed(ActionEvent e)

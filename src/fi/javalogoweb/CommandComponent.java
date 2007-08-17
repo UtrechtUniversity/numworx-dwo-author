@@ -100,6 +100,7 @@ public class CommandComponent extends SchuifComponent
 		if(x<180 && !isStapel)
 		{	((JavaLogoSchuifVeld)schuifveld).verwijder(this);
 		}
+		zetMaat();
 
 	}
 	
@@ -115,7 +116,8 @@ public class CommandComponent extends SchuifComponent
 	}
 	
 	public void zetMaat()
-	{	locationC = 20;
+	{	locationC = 10;
+		if(getParent() instanceof CommandComponent)locationC = 20;
 		locationGc1 = locationC + fm.stringWidth(commandString);
 		if(gc2 != null)
 		{	locationK = locationGc1 + gc1.getSize().width;
