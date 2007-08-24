@@ -148,7 +148,7 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 		int breedte = Math.max(standaardBreedte, fm.stringWidth(beginWaardeTf.getText())+20);
 		setSize(breedte,getSize().height);
 		beginWaardeTf.setBounds(2,2,breedte-4 ,getSize().height-4);
-		if(instelbaar)
+		//if(instelbaar)
 		{	add(beginWaardeTf);
 			beginWaardeTf.setVisible(true);
 			beginWaardeTf.setEnabled(true);

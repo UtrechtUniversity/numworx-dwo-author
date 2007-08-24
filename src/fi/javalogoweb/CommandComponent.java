@@ -31,6 +31,12 @@ public class CommandComponent extends SchuifComponent
 	
 	protected GetalComponent gc1, gc2;
 	protected Font font = new Font("SansSerif", Font.PLAIN, 12);
+	protected boolean editing;
+	protected boolean dragging;
+	protected MouseEvent me;
+	protected int startx,starty,dx,dy;
+	public boolean traceKleur;
+	public Color traceActiveColor = new Color(255,200,200);
 	
 	public CommandComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
@@ -77,30 +83,55 @@ public class CommandComponent extends SchuifComponent
 	}
 	public void mousePressed(MouseEvent e)
 	{	requestFocus();
-		if(!vast)super.mousePressed(e);
+		if(vast)return;
+		startx=e.getX()+getLocation().x;
+		starty=e.getY()+getLocation().y;
+		dx = 0;
+		dy = 0;
+		me = e;
+		editing = true;
+		dragging = false;
+		//super.mousePressed(e);
 	}
 	
 	public void mouseDragged(MouseEvent e)
 	{	if(vast)return;
-		if(isStapel)
-		{	((JavaLogoSchuifVeld)schuifveld).zetStapel(this);
-			isStapel = false;
-			schuifveld.tekenOpnieuw();
+		dx = e.getX()+getLocation().x-startx;
+		dy = e.getY()+getLocation().y-starty;
+		//System.out.println("dx = "+dx);
+		//System.out.println("dy = "+dx);
+		if(dx*dx+dy*dy>=20 || dragging) 
+		{	dragging = true;
+			super.mousePressed(me);
+			if(isStapel)
+			{	((JavaLogoSchuifVeld)schuifveld).zetStapel(this);
+				isStapel = false;
+				schuifveld.tekenOpnieuw();
+			}
+			((JavaLogoSchuifVeld)schuifveld).traceComponent(this);
+			super.mouseDragged(e);
+			editing = false;
 		}
-		((JavaLogoSchuifVeld)schuifveld).traceComponent(this);
-		super.mouseDragged(e);
-		
+		else editing = true;
 	}
 	
 	public void mouseReleased(MouseEvent e)
 	{	if(vast)return;
-		int x=getLocation().x+getSize().width/2;
-		super.mouseReleased(e);
-		((JavaLogoSchuifVeld)schuifveld).traceComponent(this);
-		if(x<180 && !isStapel)
-		{	((JavaLogoSchuifVeld)schuifveld).verwijder(this);
+		if(editing) 
+		{	if(gc2!=null && e.getX()>gc2.getLocation().x)gc2.vulIn();
+			else if(gc1!=null)gc1.vulIn();
+			
+			editing = false;
 		}
-		zetMaat();
+		else
+		{ 	int x=getLocation().x+getSize().width/2;
+			super.mouseReleased(e);
+			((JavaLogoSchuifVeld)schuifveld).traceComponent(this);
+			if(x<180 && !isStapel)
+			{	((JavaLogoSchuifVeld)schuifveld).verwijder(this);
+			}
+			zetMaat();
+		}
 
 	}
 	
@@ -147,14 +178,15 @@ public class CommandComponent extends SchuifComponent
 		//if(caretUp)g.drawLine(2,2,getSize().width-3,2);
 		//if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
 		//if(label!=null)g.drawString(label,20,20);
+		g.setFont(font);
 		if(commandString != null)g.drawString(commandString,locationC,18);
 		if(kommaString != null) g.drawString(kommaString,locationK,18);
 		if(haakjeString != null) g.drawString(haakjeString,locationH,18);
 		super.paint(g);
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
-	{	
+	public boolean teken(Tekenblad tb, VarSet varSet)
+	{	return false;
 	}
 	
 	public void mouseMoved(MouseEvent e){;}

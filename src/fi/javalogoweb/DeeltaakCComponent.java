@@ -74,6 +74,7 @@ public class DeeltaakCComponent  extends CommandComponent implements ActionListe
 	
 	public void paint(Graphics g)
 	{	g.setColor(new Color(240,240,240));
+		if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
@@ -87,8 +88,9 @@ public class DeeltaakCComponent  extends CommandComponent implements ActionListe
 		super.paint(g);
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
-	{	deeltaakContainer.teken(tb, varSet);
+	public boolean teken(Tekenblad tb, VarSet varSet)
+	{	traceKleur  = deeltaakContainer.teken(tb, varSet);
+		return traceKleur;
 	}
 	
 	

@@ -34,6 +34,7 @@ public class ProgrammaComponent extends CommandContainer
 	}
 	public void paint(Graphics g)
 	{	g.setColor(Color.white);
+		//if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,12,getSize().width-1,getSize().height-25);
 		g.setColor(Color.black);
 		g.drawRect(0,12,getSize().width-1,getSize().height-25);
@@ -71,10 +72,14 @@ public class ProgrammaComponent extends CommandContainer
 		((JavaLogoSchuifVeld)schuifveld).scroll(caretPos==getComponentCount());
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
+	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	for(int i=0 ; i<getComponentCount() ; i++)
 		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent)((CommandComponent)c).teken(tb, varSet);
+			if(c instanceof CommandComponent)
+			{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+				if(tracekleur)return true;
+			}
 		}
+		return false;
 	}
 }

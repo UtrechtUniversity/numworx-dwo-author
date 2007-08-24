@@ -436,9 +436,11 @@ public class FormuleParser
 		}
 		
 		//is het een letter?		
+		boolean startMetLetter = true;
+		startMetLetter = Character.isLetter(s.charAt(0));
 		boolean basisString = true;
-		for(int i=0 ; i<s.length() ; i++)
-		{	basisString = Character.isLetter(s.charAt(i));
+		for(int i=1 ; i<s.length() ; i++)
+		{	basisString = startMetLetter && (Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)));
 			if(!basisString) break;
 		}
 		

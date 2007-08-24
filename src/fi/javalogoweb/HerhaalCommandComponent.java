@@ -22,7 +22,7 @@ public class HerhaalCommandComponent extends CommandContainer  implements Action
 		haakjeString = " keer ";
 		
 		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("0"),21);
-		gc1.zetInstelbaar(true);
+		//gc1.zetInstelbaar(true);
 		gc1.zetWaarde(0);
 		gc1.addActionListener(this);
 		add(gc1,0);
@@ -98,25 +98,49 @@ public class HerhaalCommandComponent extends CommandContainer  implements Action
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
 		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		if(caretUp)g.drawLine(2,2,getSize().width-3,2);
-		if(caretIn)g.drawLine(27,27,getSize().width-3,27);
-		if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+		//if(caretUp)g.drawLine(2,2,getSize().width-3,2);
+		//if(caretIn)g.drawLine(27,27,getSize().width-3,27);
+		//if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+		if(caretUp)
+		{	g.drawLine(2,2,getSize().width-3,2);
+			g.drawLine(2,3,getSize().width-3,3);
+		}
+		if(caretIn)
+		{
+			g.drawLine(27,27,getSize().width-3,27);
+			g.drawLine(27,28,getSize().width-3,28);
+			
+		}
+		if(caretDown)
+		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
+		}
 		if(label!=null)g.drawString(label,20,18);
 		g.drawRect(25,25,getSize().width-26,getSize().height-26);
 		g.drawRect(26,26,getSize().width-28,getSize().height-28);
 		super.paint(g);
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
+	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	double value = gc1.geefWaarde();
 		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))return;
+		if(Double.isNaN(value))return false;
 		for(int i=0 ; i<value ; i++)
-		{	for(int j=0 ; j<getComponentCount() ; j++)
+		{	CommandComponent cc = null;
+			for(int j=0 ; j<getComponentCount() ; j++)
 			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent)((CommandComponent)c).teken(tb, varSet);
+				if(c instanceof CommandComponent)
+				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+					if(tracekleur) return true;
+					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
+					//{	cc = (CommandComponent)c;
+					//	break;
+					//}
+				}
 			}
+			if(cc!=null) break;
 		}
+		return false;
 	}
 	
 	public void actionPerformed(ActionEvent e)

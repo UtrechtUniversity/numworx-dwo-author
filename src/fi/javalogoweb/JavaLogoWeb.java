@@ -45,7 +45,7 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		rb = ResourceBundle.getBundle("fi.javalogoweb.text.Text",language);
 		
 		//instelling achtergrondkleur
-		Color bgcolor = new Color(255,255,255);
+		Color bgcolor = new Color(230,240,255);
 		String kleurcode = getParameter("bgcolor");
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
@@ -67,18 +67,23 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(editImage,0);
 		try{tr.waitForAll();} catch(Exception e) {}
-		
-		
+				
 		tekenblad = new Tekenblad(this);
-		tekenblad.setBounds(420, 0, 380, getSize().height);
+		tekenblad.setBounds(420, 10, getSize().width-431, getSize().height-71);
 		add(tekenblad);
 		
-		javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 420, getSize().height, tekenblad);
+		javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 418, getSize().height-2, tekenblad);
+		javaLogoSchuifVeld.setBackground(getBackground());
 		add(javaLogoSchuifVeld);
 		javaLogoSchuifVeld.initialize();
 		
+		TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
+		trb.setBounds(418,getSize().height-59,getSize().width-419,58);
+		trb.addActionListener(javaLogoSchuifVeld);
+		add(trb);
 		
-		
+		tekenblad.meldTraceBeheerder(trb);
+		//trb.naarBegin();
 		
 		
 	}
@@ -87,7 +92,7 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 	{	javaLogoSchuifVeld.teken(tekenblad);
 		
 	}
-
+	
 	public void start()
 	{	if(api!=null)
 		{	String s = api.LMSGetValue("cmi.suspend_data");
@@ -111,8 +116,11 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 	}
 	
 	public void paint(Graphics g) 
-	{	g.drawString(JavaLogoWeb.rb.getString("welkomTekst"), 50, 60 );
-		super.paint(g);
+	{	super.paint(g);
+		g.setColor(Color.black);
+		g.drawRect(0,0,getSize().width-1, getSize().height-1);
+		//g.drawLine(419, getSize().height-60, getSize().width, getSize().height-60);
+	
 	}
 	
 	public void setState(String s)

@@ -21,6 +21,13 @@ public class Expressie
 		dfs.setDecimalSeparator('.');
 		df = new DecimalFormat("0.##########", dfs);
 	}
+	public static String format(double d)
+	{	dfs = new DecimalFormatSymbols();
+		dfs.setDecimalSeparator('.');
+		df = new DecimalFormat("0.##########", dfs);
+		return df.format(d);
+		
+	}
 	public void zetMaat(FontMetrics fm)
   	{
 	}

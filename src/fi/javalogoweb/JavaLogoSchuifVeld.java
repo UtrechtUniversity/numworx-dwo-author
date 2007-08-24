@@ -30,7 +30,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	
 	public JavaLogoSchuifVeld(int x, int y, int b, int h, Tekenblad tb)
 	{	super(x,y,b,h);
-		setBackground(Color.lightGray);
+		
 		tekenblad = tb;
 		commandComponents = new CommandComponent[1000];
 		
@@ -43,7 +43,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	
 	public void initialize()
 	{	pcSizeWidthDefault = 200;
-		pcSizeHeightDefault = 400;
+		pcSizeHeightDefault = 395;
 		pcLocXDefault = 190;
 		pcLocYDefault = 38;
 		
@@ -54,19 +54,19 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		pcActief = programmaComponent;
 		
 		Panel pBoven = new Panel();
-		pBoven.setBackground(Color.lightGray);
+		pBoven.setBackground(getBackground());
 		pBoven.setBounds(pcLocXDefault,0,pcSizeWidthDefault,pcLocYDefault);
 		add(pBoven);
 		
 		Panel pOnder = new Panel();
-		pOnder.setBackground(Color.lightGray);
+		pOnder.setBackground(getBackground());
 		pOnder.setBounds(pcLocXDefault,pcLocYDefault + pcSizeHeightDefault,pcSizeWidthDefault,500);
 		add(pOnder);
 		
-		tekenProgrammaLabel = new Label("tekenprogramma");
-		tekenProgrammaLabel.setBackground(Color.lightGray);
+		tekenProgrammaLabel = new Label("tekenalgoritme");
+		tekenProgrammaLabel.setBackground(getBackground());
 		tekenProgrammaLabel.setAlignment(Label.CENTER);
-		tekenProgrammaLabel.setFont(new Font("SansSerif",Font.BOLD, 20));
+		tekenProgrammaLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
 		tekenProgrammaLabel.setBounds(pcLocXDefault,10,pcSizeWidthDefault, pcLocYDefault-10);
 		add(tekenProgrammaLabel,0);
 		
@@ -76,16 +76,16 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		opdrLocYDefault = 50;
 		
 		Label opdrLabel = new Label("opdrachten");
-		opdrLabel.setBackground(Color.lightGray);
+		opdrLabel.setBackground(getBackground());
 		opdrLabel.setAlignment(Label.CENTER);
-		opdrLabel.setFont(new Font("SansSerif",Font.BOLD, 20));
+		opdrLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
 		opdrLabel.setBounds(opdrLocXDefault,10,opdrSizeWidthDefault, opdrLocYDefault-22);
 		add(opdrLabel,0);
 		
 		Label deeltaakLabel = new Label("deeltaken");
-		deeltaakLabel.setBackground(Color.lightGray);
+		deeltaakLabel.setBackground(getBackground());
 		deeltaakLabel.setAlignment(Label.CENTER);
-		deeltaakLabel.setFont(new Font("SansSerif",Font.BOLD, 20));
+		deeltaakLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
 		deeltaakLabel.setBounds(opdrLocXDefault,280,opdrSizeWidthDefault, opdrLocYDefault-22);
 		add(deeltaakLabel,0);
 		
@@ -306,8 +306,10 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	{	Dimension dd = getSize();
 		g.setColor(getBackground());
 		g.fillRect(0,0,dd.width,dd.height);
-		g.setColor(Color.lightGray);
+		g.setColor(getBackground());
 		g.fillRect(0, 0, dd.width, dd.height);
+		g.setColor(Color.black);
+		//g.drawLine(dd.width-1, 0, dd.width-1, dd.height-59);
 	}
 	
 	public CommandContainer getCommandContainerAt(int x, int y)
@@ -331,7 +333,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	}
 	
 	public void losSchuiver(SchuifComponent sc)
-	{	int x = sc.getLocation().x + sc.getSize().width/2;
+	{	int x = sc.getLocation().x;// + sc.getSize().width/2;
 		int y = sc.getLocation().y + sc.getSize().height/2;
 		boolean terugOpVeld = true;
 		Component cc = getCommandContainerAt(x,y);
@@ -379,7 +381,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	}
 	
 	public void traceComponent(CommandComponent sc)
-	{	int x = sc.getLocation().x + sc.getSize().width/2;
+	{	int x = sc.getLocation().x;//sc.getLocation().x + sc.getSize().width/2;
 		int y = sc.getLocation().y + sc.getSize().height/2;
 		
 		for(int i=0 ; i<aantalCC; i++)

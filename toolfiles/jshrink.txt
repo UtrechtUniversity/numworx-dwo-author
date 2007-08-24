@@ -1,6 +1,6 @@
 -classpath %JAVA_HOME%\jre\lib\rt.jar
 -manifestMain
 ..\output\classes\fi
--keepInterface fi.?
+..\output\classes\logotekenap
 -o ..\output\jar\javalogoweb.jar
 

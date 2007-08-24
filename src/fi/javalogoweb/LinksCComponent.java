@@ -18,7 +18,7 @@ public class LinksCComponent  extends CommandComponent implements ActionListener
 		haakjeString = ") ";
 		
 		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("0"),21);
-		gc1.zetInstelbaar(true);
+		//gc1.zetInstelbaar(true);
 		gc1.zetWaarde(0);
 		gc1.addActionListener(this);
 		add(gc1,0);
@@ -28,21 +28,30 @@ public class LinksCComponent  extends CommandComponent implements ActionListener
 	
 	public void paint(Graphics g)
 	{	g.setColor(new Color(240,240,240));
+		if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
 		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		if(caretUp)g.drawLine(2,2,getSize().width-3,2);
-		if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+		if(caretUp)
+		{	g.drawLine(2,2,getSize().width-3,2);
+			g.drawLine(2,3,getSize().width-3,3);
+		}
+		if(caretDown)
+		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
+		}
 		if(label!=null)g.drawString(label,20,18);
 		super.paint(g);
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
+	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	double value = gc1.geefWaarde();
 		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))return;
-		tb.mat.draai(value);
+		if(Double.isNaN(value))return false;
+		traceKleur = tb.links(value);
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		return traceKleur;
 	}
 	
 	public void actionPerformed(ActionEvent e)

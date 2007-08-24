@@ -20,7 +20,7 @@ public class VulAanCComponent extends CommandComponent implements ActionListener
 		haakjeString = "\") ";
 		
 		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("k"),21);
-		gc1.zetInstelbaar(true);
+		//gc1.zetInstelbaar(true);
 		gc1.zetWaarde(new BasisExpressie("k"));
 		gc1.addActionListener(this);
 		add(gc1,0);
@@ -30,20 +30,29 @@ public class VulAanCComponent extends CommandComponent implements ActionListener
 	
 	public void paint(Graphics g)
 	{	g.setColor(new Color(240,240,240));
+		if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
 		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		if(caretUp)g.drawLine(2,2,getSize().width-3,2);
-		if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+		if(caretUp)
+		{	g.drawLine(2,2,getSize().width-3,2);
+			g.drawLine(2,3,getSize().width-3,3);
+		}
+		if(caretDown)
+		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
+			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
+		}
 		if(label!=null)g.drawString(label,20,18);
 		super.paint(g);
 	}
 	
-	public void teken(Tekenblad tb, VarSet varSet)
+	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	String s = gc1.geefExpressie().toString();
-		if(s!=null)tb.vulAan(s);
-		else tb.vulAan("zwart");
+		if(s!=null)traceKleur = tb.vulAan(s);
+		else traceKleur = tb.vulAan("zwart");
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		return traceKleur;
 	}
 	
 	public void actionPerformed(ActionEvent e)

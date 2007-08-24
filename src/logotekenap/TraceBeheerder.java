@@ -1,8 +1,6 @@
 package logotekenap;
 
-import java.awt.Button;
-import java.awt.Panel;
-import java.awt.TextField;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,23 +17,32 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 	private Thread loop;
 	
 	public TraceBeheerder(Tekenblad tb, Regelaar rg)
-	{	beginKnop = new Button("begin");
+	{	setLayout(null);
+		setBackground(getBackground());
+		beginKnop = new Button("begin");
+		beginKnop.setBounds(20,5,40,20);
 		beginKnop.addActionListener(this);
 		add(beginKnop);
 		stapKnop = new Button("stap");
+		stapKnop.setBounds(70,5,40,20);
 		stapKnop.addActionListener(this);
 		add(stapKnop);
 		terugKnop = new Button("terug");
+		terugKnop.setBounds(120,5,40,20);
 		terugKnop.addActionListener(this);
 		add(terugKnop);
 		methodeVeld = new TextField("",15);
+		methodeVeld.setBounds(170,5,120,20);
 		add(methodeVeld);
 		loopKnop = new Button("loop");
+		loopKnop.setBounds(300,5,40,20);
 		loopKnop.addActionListener(this);
-		add(loopKnop);
+		//add(loopKnop);
 		traceKnop = new Button("trace aanschakelen");
+		traceKnop.setBounds(130,30,120,25);
 		traceKnop.addActionListener(this);
 		add(traceKnop);
+		
 		
 		aantalStappen = 0;
 		maxAantalStappen = 0;
@@ -44,8 +51,10 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 		this.rg = rg;
 		loopAan = false;
 		traceAan = false;
+		naarBegin();
+		
 	}
-	void naarBegin()
+	public void naarBegin()
 	{	methodeVeld.setVisible(false);
 		beginKnop.setVisible(false);
 		stapKnop.setVisible(false);
@@ -83,16 +92,19 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 	//met de terugKnop wordt maxAantalStappen telkens een verlaagd, waardoor de tekening stap voor
 	//stap terugloopt
 	//-------------------------------------------------------------------------------------------
-	public void volgendeMethode(String naam)
+	public boolean volgendeMethode(String naam)
 	{	aantalStappen++;
+		boolean traceStap = false;
 		if(aantalStappen == maxAantalStappen && traceAan)
 		{	tb.tekenCursor();
 			tb.tekenTraceImage();
 			if(!loopAan)methodeVeld.setText(naam);
 			else methodeVeld.setText("");
+			traceStap = true;
 		}
 		aantalStappenTekening = aantalStappen;
 		if(!traceAan)naarBegin();
+		return traceStap;
 	}
 	//-------------------------------------------------------------------------------------------
 	//afhandeling van de knopacties, en het starten van de loopdraad 
@@ -130,11 +142,12 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 			maxAantalStappen = 1;
 			aantalStappen = 0;
 			tb.tekenOpnieuw();
+			produceAction("changed");
 		}
 		if(e.getSource() == traceKnop)
 		{	if(!traceAan)
 			{	traceAan = true;
-				rg.setEnableAll(false);
+				//rg.setEnableAll(false);
 				if(ab!=null)ab.setEnableAnimatieKnop(false);
 				if(mb!=null)mb.setEnableMuisActie(false);
 				traceKnop.setLabel("trace uitschakelen");
@@ -148,7 +161,7 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 			else
 			{	traceAan = false;
 				loopAan = false;
-				rg.setEnableAll(true);
+				//rg.setEnableAll(true);
 				if(ab!=null)ab.setEnableAnimatieKnop(true);
 				if(mb!=null)mb.setEnableMuisActie(true);
 				tb.tekenOpnieuw();
@@ -158,11 +171,14 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 				loopKnop.setVisible(false);
 				terugKnop.setVisible(false);
 				traceKnop.setLabel("trace aanschakelen");
+				produceAction("changed");
 			}
 				
 			maxAantalStappen = 1;
 			aantalStappen = 0;
 			tb.tekenOpnieuw();
+			repaint();
+			
 		}
 	}
 	public void run()
@@ -180,4 +196,22 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 		loopKnop.setLabel("loop");
 		if(aantalStappenTekening<maxAantalStappen)maxAantalStappen = 0; 
 	}
+	
+//	ActionProducer
+	private ActionListener actionListener = null;
+	
+	public void addActionListener(ActionListener l) 
+ 	{	actionListener = AWTEventMulticaster.add(actionListener,l);
+ 	}
+ 	
+ 	public void removeActionListener(ActionListener l)
+ 	{	actionListener = AWTEventMulticaster.remove(actionListener, l);
+ 	}	
+ 	
+ 	public void produceAction(String command)
+ 	{	if (actionListener != null)
+ 		{	actionListener.actionPerformed( new ActionEvent(this, 0, command) );
+ 		}
+ 	}
+ 	//end ActionProducer
 }

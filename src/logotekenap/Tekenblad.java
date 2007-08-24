@@ -63,7 +63,13 @@ public class Tekenblad extends Canvas
     	mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
     	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
-    	penAan(0,0,0);
+    	gIm.setColor(Color.black);
+    	gIm.drawRect(0, 0, breedte-1, hoogte-1);
+    	//penAan(0,0,0);
+    	pen = true;
+    	penkleur = Color.black;
+    	gIm.setColor(penkleur);
+    	penAan();
 		vul = false;
     	vulkleur = Color.black;
     	eigenaar.tekenprogramma();
@@ -125,7 +131,108 @@ public class Tekenblad extends Canvas
  	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "tekenprogramma()" 
 	//-------------------------------------------------------------------------------------------
-	public void penAan()
+	public boolean links(double dHoek)
+	{	mat.draai(dHoek);
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("links("+Integer.toString((int)Math.rint(dHoek))+")");
+		else return false;
+	}
+  	public boolean rechts(double dHoek)
+	{	mat.draai(-dHoek);		
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("rechts("+Integer.toString((int)Math.rint(dHoek))+")");
+		else return false;
+	}
+	public boolean vooruit(double dy)
+	{	naarVolgendPunt(0,-dy);	
+		if(trb!=null)
+			return trb.volgendeMethode("vooruit("+Integer.toString((int)Math.rint(dy))+")");
+		else return false;
+	}
+	public boolean stapy(double dy)
+	{	naarVolgendPunt(0,-dy);		
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("stapy("+Integer.toString((int)Math.rint(dy))+")");
+		else return false;
+	}
+	public boolean stapx(double dx)
+	{	naarVolgendPunt(dx,0);		
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("stapx("+Integer.toString((int)Math.rint(dx))+")");
+		else return false;
+	}
+	public boolean stap(double dx,double dy)
+	{	naarVolgendPunt(dx,-dy);
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("stap("+Integer.toString((int)Math.rint(dx))+","+Integer.toString((int)Math.rint(dy))+")");
+		else return false;
+	}
+	public boolean penAan()
+	{	pen = true;							
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("penAan()");
+		else return false;
+	}
+	public boolean penAan(String kl)
+	{	pen = true;
+		penkleur = maakKleur(kl);
+		gIm.setColor(penkleur);			
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("penAan("+kl+")");
+		else return false;
+	}
+	public boolean penAan(int r, int g, int b)
+	{	pen = true;
+		penkleur = new Color(r,g,b);
+		gIm.setColor(penkleur);
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("penAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+		else return false;
+	}
+	public boolean penUit()
+	{	pen = false;							
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("penUit()");
+		else return false;
+	}
+	public boolean vulAan()
+	{	vul = true;
+		veelvlak = new Polygon();							
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("vulAan()");
+		else return false;
+	}
+	public boolean vulAan(String kl)
+	{	vul = true;	
+		vulkleur = maakKleur(kl);
+		veelvlak = new Polygon();				
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("vulAan("+kl+")");
+		else return false;
+	}
+	public boolean vulAan(int r, int g, int b)
+	{	vul = true;	
+		vulkleur = new Color(r,g,b);
+		veelvlak = new Polygon();	
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("vulAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+		else return false;
+	}
+	public boolean vulUit()
+	{	tekenPolygon();
+		vul = false;							
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("vulUit()");
+		else return false;
+	}
+	
+	public boolean varAanpassing(String varNaam, String varValue)
+	{	if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode(varNaam + " = " + varValue);
+		else return false;
+	}
+	
+	/*public void penAan()
 	{	pen = true;
 	}
 	public void penAan(String kl)
@@ -158,7 +265,7 @@ public class Tekenblad extends Canvas
 	public void vulUit()
 	{	tekenPolygon();
 		vul = false;
-	}
+	}*/
 	void achtergrondkleur(String kl)
 	{	achtergrondkleur = maakKleur(kl);
 	}
