@@ -11,7 +11,7 @@ public class UitlegButton extends Button implements ActionListener
 	private Color frameBackgroundColor;
 	
 	public UitlegButton (String titel,Image image) 
-	{	super("Uitleg");
+	{	super(titel);
 		this.titel = titel;
 		this.image = image;
 		addActionListener(this);

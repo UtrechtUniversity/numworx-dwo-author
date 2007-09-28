@@ -391,7 +391,15 @@ public class Table
                                 
                                 
                             
-        {"decSep",          ",", ".", ""},                                                        
+        {"decSep",          ",", ".", ""},  
+        
+        // ViewPanel
+        {"startButtonViewerText", "Start programma voor bewerken", 
+        						  "Start program for editing", ""},
+        {"opnieuwButtonViewerText", "Opnieuw", 
+            						"Again", ""},
+        {"uitlegButtonViewerText", "Uitleg", 
+                				   "Help", ""},
                             
         
     };

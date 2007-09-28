@@ -231,7 +231,7 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 			tr.addImage(uitleg,0);
 			try{tr.waitForAll();} 
 			catch(Exception e) {}
-			UitlegButton uitlegButton = new UitlegButton("Uitleg",uitleg);
+			UitlegButton uitlegButton = new UitlegButton(Table.lookUp("uitlegButtonViewerText"),uitleg);
 			uitlegButton.setBounds(630,getSize().height-30,90,20);
 			uitlegButton.setFrameBackground(getBackground());
 			add(uitlegButton,0);

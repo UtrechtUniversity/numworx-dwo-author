@@ -60,13 +60,13 @@ public class ViewPanel extends Panel implements ViewerIF
 		viewPanel3D.addMouseListener(mListener);
 		viewPanel3D.addMouseMotionListener(mListener);	
 		
-		startButton = new Button("Figuur bewerken met Doorzien");
+		startButton = new Button(Table.lookUp("startButtonViewerText"));
 		startButton.setBounds(b-theFM.stringWidth(startButton.getLabel())-20, h-20, theFM.stringWidth(startButton.getLabel())+20,20);
 		add(startButton);
 		AL listener = new AL();
 		startButton.addActionListener(listener);
 		
-		opnieuwButton = new Button("Opnieuw");
+		opnieuwButton = new Button(Table.lookUp("opnieuwButtonViewerText"));
 		opnieuwButton.setBounds(0, h-20, 80,20);
 		add(opnieuwButton);
 		opnieuwButton.addActionListener(listener);
