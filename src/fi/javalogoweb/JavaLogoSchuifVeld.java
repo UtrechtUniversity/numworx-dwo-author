@@ -172,7 +172,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		aantalCC = 17;
 		
 		scrollSlider = new ScrollSlider(pcSizeHeightDefault-25,0,false);
-		scrollSlider.setBackground(Color.lightGray);
+		scrollSlider.setBackground(getBackground());
 		scrollSlider.zetStand(0);
 		scrollSlider.setLocation(pcSizeWidthDefault+pcLocXDefault+5,pcLocYDefault+12);
 		scrollSlider.addActionListener(this);
