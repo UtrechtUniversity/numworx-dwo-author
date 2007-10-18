@@ -52,7 +52,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 	private boolean editMode;
 	private PlusMinKnop aantalNivKnop;
 	private PlusMinKnop aantalOpdrKnop;
-	
+	private PlusMinKnop opdrPositieKnop;
 
 	public OpdrNavStruct(int aantalActiviteiten, int[] aantalOpdrachten, String[] activiteitNamen, int x, int y, int b, int h, SCORM12APIInterface api, boolean editMode) 
 	{	setLayout(null);
@@ -126,6 +126,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 		for(int i=0 ; i<aantalActiviteiten ; i++)
 		{	or[i] = new OpdrachtNrRij(aantalOpdrachten[i], orPosX,orPosY);
 			or[i].addActionListener(this);
+			if(editMode) or[i].setSize(or[i].getSize().width,25);
 			or[i].setBackground(getBackground());
 			or[i].setSelected(1);
 			or[i].setVisible(false);
@@ -149,6 +150,11 @@ public class OpdrNavStruct extends Panel implements ActionListener
 	    	aantalOpdrKnop = new PlusMinKnop(orPosX+25*aantalOpdrachten[activiteitNr]+5 ,orPosY+2,20,16,PlusMinKnop.HORIZONTAAL);
 	    	aantalOpdrKnop.addActionListener(this);
 	    	add(aantalOpdrKnop);
+	    		    	
+	    	opdrPositieKnop = new PlusMinKnop(orPosX ,orPosY+30,20,16,PlusMinKnop.HORIZONTAAL);
+	    	opdrPositieKnop.addActionListener(this);
+	    	add(opdrPositieKnop);
+	    	
 	    }
 	}
 
@@ -434,6 +440,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 		{	opdrContainerActief.stop();
 			opdrachtNr = Integer.parseInt(e.getActionCommand())-1;
 			if(opdrContainerActief!=null)opdrContainerActief.setVisible(false);
+			if(editMode)opdrPositieKnop.setLocation(orPosX+25*opdrachtNr,orPosY+30);
 			opdrContainerActief = opdrContainers[activiteitNr][opdrachtNr];
 			opdrContainerActief.setVisible(true);
 			opdrContainerActief.start();
@@ -453,6 +460,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 				orActief.setSelected(1);
 				orActief.setVisible(true);
 				opdrachtNr = 0;
+				if(editMode)opdrPositieKnop.setLocation(orPosX+25*opdrachtNr,orPosY+30);
 				if(opdrContainerActief!=null)opdrContainerActief.setVisible(false);
 				opdrContainerActief = opdrContainers[activiteitNr][opdrachtNr];
 				opdrContainerActief.setVisible(true);
@@ -498,6 +506,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 				orActief = null;
 				or[activiteitNr] = new OpdrachtNrRij(aantalOpdrachten[activiteitNr], orPosX,orPosY);
 				or[activiteitNr].addActionListener(this);
+				if(editMode) or[activiteitNr].setSize(or[activiteitNr].getSize().width,25);
 				or[activiteitNr].setBackground(getBackground());
 				or[activiteitNr].setSelected(opdrachtNr+1);
 				orActief = or[activiteitNr];
@@ -518,6 +527,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 				orActief = null;
 				or[activiteitNr] = new OpdrachtNrRij(aantalOpdrachten[activiteitNr], orPosX,orPosY);
 				or[activiteitNr].addActionListener(this);
+				if(editMode) or[activiteitNr].setSize(or[activiteitNr].getSize().width,25);
 				or[activiteitNr].setBackground(getBackground());
 				or[activiteitNr].setSelected(opdrachtNr+1);
 				orActief = or[activiteitNr];
@@ -590,6 +600,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 				or = orNieuw;
 				or[aantalActiviteiten-1] = new OpdrachtNrRij(aantalOpdrachten[aantalActiviteiten-1], orPosX,orPosY);
 				or[aantalActiviteiten-1].addActionListener(this);
+				if(editMode) or[activiteitNr].setSize(or[activiteitNr].getSize().width,25);
 				or[aantalActiviteiten-1].setBackground(getBackground());
 				or[aantalActiviteiten-1].setSelected(1);
 				or[aantalActiviteiten-1].setVisible(false);
@@ -602,8 +613,26 @@ public class OpdrNavStruct extends Panel implements ActionListener
 				actKeuzePanel.setBackground(getBackground());
 				add(actKeuzePanel,0);
 				
+			}
+			
+		}
+		else if(e.getSource() == opdrPositieKnop)
+		{	if(e.getActionCommand().equals("min") && opdrachtNr>0)
+			{	OpdrContainer oc = opdrContainers[activiteitNr][opdrachtNr];
+				opdrContainers[activiteitNr][opdrachtNr] = opdrContainers[activiteitNr][opdrachtNr-1];
+				opdrContainers[activiteitNr][opdrachtNr-1] = oc;
+				opdrachtNr--;
+				or[activiteitNr].setSelected(opdrachtNr+1);
+				opdrPositieKnop.setLocation(orPosX+25*opdrachtNr,orPosY+30);
 				
-				
+			}
+			if(e.getActionCommand().equals("plus") && opdrachtNr<aantalOpdrachten[activiteitNr]-1)
+			{	OpdrContainer oc = opdrContainers[activiteitNr][opdrachtNr];
+				opdrContainers[activiteitNr][opdrachtNr] = opdrContainers[activiteitNr][opdrachtNr+1];
+				opdrContainers[activiteitNr][opdrachtNr+1] = oc;
+				opdrachtNr++;
+				or[activiteitNr].setSelected(opdrachtNr+1);
+				opdrPositieKnop.setLocation(orPosX+25*opdrachtNr,orPosY+30);
 			}
 		}
 	}

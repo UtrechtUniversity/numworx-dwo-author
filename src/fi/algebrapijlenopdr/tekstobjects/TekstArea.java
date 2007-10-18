@@ -68,7 +68,9 @@ public class TekstArea extends Container
 			gIm.setColor(getBackground());
 			gIm.fillRect(0,0,getSize().width,getSize().height);
 			if(editable)
-			{	gIm.setColor(Color.black);
+			{	gIm.setColor(Color.white);
+				gIm.fillRect(0,0,getSize().width,getSize().height);
+				gIm.setColor(Color.black);
 				gIm.drawRect(0,0,getSize().width-1,getSize().height-1);
 			}
 			super.paint(gIm);
