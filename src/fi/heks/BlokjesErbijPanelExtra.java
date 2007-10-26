@@ -39,17 +39,17 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		
 		au = new AppletUtil(applet);
 		
-		volgendeKnop = new ScLWButton(80,480,160,25,"Volgende opdracht");
+		volgendeKnop = new ScLWButton(80,480,160,25,Heks.rb.getString("volgendeKnopLabel"));
 		volgendeKnop.addActionListener(this);
 		volgendeKnop.setVisible(false);
 		add(volgendeKnop);
 		
-		opnieuwKnop = new ScLWButton(110,400,100,25,"Opnieuw");
+		opnieuwKnop = new ScLWButton(110,400,100,25,Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		opnieuwKnop.setVisible(false);
 		
-		helemaalOpnieuwKnop = new ScLWButton(80,480,160,25,"Helemaal opnieuw");
+		helemaalOpnieuwKnop = new ScLWButton(80,480,160,25,Heks.rb.getString("helemaalOpnieuwKnopLabel"));
 		helemaalOpnieuwKnop.addActionListener(this);
 		add(helemaalOpnieuwKnop);
 		helemaalOpnieuwKnop.setVisible(false);
@@ -81,7 +81,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		beginTemp.zetAlsTemp(true);
 		tabelContainer.add(beginTemp);
 		
-		beginLabel = new ScTekstContainer(2,30,110,25,2,"begin/temperatuur");
+		beginLabel = new ScTekstContainer(2,30,110,25,2,Heks.rb.getString("beginTempLabel"));
 		tabelContainer.add(beginLabel);
 		
 		beginPot = new Tekening(10,110,90,80,au,"potzwart.gif");
@@ -90,14 +90,14 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		term1 = new GetalComponent(30,210,60,40);
 		tabelContainer.add(term1);
 				
-		erinLabel = new ScLabel(135,50,60,25,"er in");
+		erinLabel = new ScLabel(135,50,60,25,Heks.rb.getString("erinLabel"));
 		tabelContainer.add(erinLabel);
 		
-		erinOefenLabel = new ScLabel(415,310,100,35,"er in:");
+		erinOefenLabel = new ScLabel(415,310,100,35,Heks.rb.getString("erinOefenLabel"));
 		erinOefenLabel.setVisible(false);
 		add(erinOefenLabel);
 		
-		aantalBlLabel = new ScTekstContainer(220,20,110,25,3,"aantal/warme/blokjes");
+		aantalBlLabel = new ScTekstContainer(220,20,110,25,3,Heks.rb.getString("aantalWBlokjesLabel"));
 		tabelContainer.add(aantalBlLabel);
 		
 		//wordtLabel = new ScLabel(355,50,60,25,"wordt");
@@ -120,7 +120,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		eindTemp.addActionListener(this);
 		tabelContainer.add(eindTemp);
 		
-		eindLabel = new ScTekstContainer(440,30,110,25,2,"eind/temperatuur");
+		eindLabel = new ScTekstContainer(440,30,110,25,2,Heks.rb.getString("eindTempLabel"));
 		tabelContainer.add(eindLabel);
 		
 		eindPot = new Tekening(445,110,90,80,au,"potzwart.gif");
@@ -147,8 +147,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		
 		add(tabelContainer);		
 		
-		uitleg = new ScTekstContainer(45,310,400,20,3,
-		"Bereken het antwoord van de opdracht hierboven./Klik op de stippels en vul in./Zorg voor een score van 10 punten.");
+		uitleg = new ScTekstContainer(45,310,400,20,3,Heks.rb.getString("blokjesErbijExtraUitleg"));
 		
 
 
@@ -167,7 +166,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 		oefenTafereelPanel.zetBeginTemp(huidigeSom.geefTerm1());
 		
 		scoreLabel = new ScLabel(30,220,150,40,"test");
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 		add(scoreLabel);
 		
 	}
@@ -177,7 +176,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 				
 		this.aantalPunten = aantalPunten;
 		score = 2*aantalPunten;
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel.setLabel(Heks.rb.getString("blokjesErbijExtraUitleg") + Integer.toString(score));
 		if(score==10)
 		{	helemaalOpnieuwKnop.setVisible(true);
 			uitkomst.zetInstelbaar(false);
@@ -229,8 +228,8 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 			term2.zetWaarde(som.geefTerm2());
 			String op = som.geefOperator();
 			plusMinLabel.setLabel(op);
-			if(term2.geefWaarde()>0) aantalBlLabel.setText("warme",1);
-			else aantalBlLabel.setText("koude",1);
+			if(term2.geefWaarde()>0) aantalBlLabel.setText(Heks.rb.getString("warmeLabel"),1);
+			else aantalBlLabel.setText(Heks.rb.getString("koudeLabel"),1);
 			uitkomst.zetBekend(false);
 			vraagteken.setVisible(true);
 			uitkomst.repaint();
@@ -248,7 +247,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 			uitkomst.zetWaarde(som.geefUitkomst());
 			String op = som.geefOperator();
 			plusMinLabel.setLabel(op);
-			aantalBlLabel.setText("warme/koude",1);
+			aantalBlLabel.setText(Heks.rb.getString("warmeKoudeLabel"),1);
 			term2.zetBekend(false);
 			term2.zetInstelbaar(true);
 			vraagteken.setVisible(true);
@@ -281,7 +280,7 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 			//eindTemp.zetInstelbaar(true);
 			aantalPunten = 0;
 			score = 2*aantalPunten;
-			scoreLabel.setLabel("Score: " + Integer.toString(score));
+			scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 			helemaalOpnieuwKnop.setVisible(false);
 		}
 		else if(e.getSource()==opnieuwKnop)
@@ -312,32 +311,32 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 				boolean b = huidigeSom.evalueer(uitkomst.geefWaarde());
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(false);
 					afdekking.setVisible(true); 
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)
 					{	helemaalOpnieuwKnop.setVisible(true);
-						goedFoutLabel.setLabel("Prima gedaan! Je heb een score van 10.");
+						goedFoutLabel.setLabel(Heks.rb.getString("klaarFeedback"));
 						uitkomst.zetInstelbaar(false);
 					}
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT. Bekijk de toverdrank en probeer opnieuw.");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutFeedbackBlokjes"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(true);
 					afdekking.setVisible(false);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 				uitkomst.zetInstelbaar(false);
 			
@@ -358,32 +357,32 @@ public class BlokjesErbijPanelExtra extends ScPanel implements ActionListener
 				boolean b = term2.geefWaarde() == huidigeSom.geefTerm2(); 
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(false);
 					afdekking.setVisible(true); 
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)
 					{	helemaalOpnieuwKnop.setVisible(true);
-						goedFoutLabel.setLabel("Prima gedaan! Je heb een score van 10.");
+						goedFoutLabel.setLabel(Heks.rb.getString("klaarFeedback"));
 						term2.zetInstelbaar(false);
 					}
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT. Bekijk de toverdrank en probeer opnieuw.");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutFeedbackBlokjes"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(true);
 					afdekking.setVisible(false);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 				term2.zetInstelbaar(false);
 			

@@ -14,8 +14,8 @@ public class BlokjesEruitPanelExtra extends BlokjesErbijPanelExtra
 				
 		titelLabel.setLabel("Blokjes er uit");
 			
-		erinLabel.setLabel("er uit");
-		erinOefenLabel.setLabel("er uit:");
+		erinLabel.setLabel(Heks.rb.getString("erinLabel"));
+		erinOefenLabel.setLabel(Heks.rb.getString("eruitOefenLabel"));
 		
 		tabelContainer.remove(potErin); 
 		potEruit = new Tekening(115,105,100,90,au,"potEruit.gif");
@@ -72,7 +72,7 @@ public class BlokjesEruitPanelExtra extends BlokjesErbijPanelExtra
 			//eindTemp.zetInstelbaar(true);
 			aantalPunten = 0;
 			score = 2*aantalPunten;
-			scoreLabel.setLabel("Score: " + Integer.toString(score));
+			scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 			helemaalOpnieuwKnop.setVisible(false);
 		}
 		else if(e.getSource()==opnieuwKnop)
@@ -100,32 +100,32 @@ public class BlokjesEruitPanelExtra extends BlokjesErbijPanelExtra
 				boolean b = huidigeSom.evalueer(uitkomst.geefWaarde());
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(false);
 					afdekking.setVisible(true);
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)
 					{	helemaalOpnieuwKnop.setVisible(true);
-						goedFoutLabel.setLabel("Prima gedaan! Je heb een score van 10.");
+						goedFoutLabel.setLabel(Heks.rb.getString("klaarFeedback"));
 						uitkomst.zetInstelbaar(false);
 					}
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT. Bekijk de toverdrank en probeer opnieuw.");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutFeedbackBlokjes"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(true);
 					afdekking.setVisible(false);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 				eindTemp.zetInstelbaar(false);
 			
@@ -146,32 +146,32 @@ public class BlokjesEruitPanelExtra extends BlokjesErbijPanelExtra
 				boolean b = term2.geefWaarde() == huidigeSom.geefTerm2(); 
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(false);
 					afdekking.setVisible(true); 
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)
 					{	helemaalOpnieuwKnop.setVisible(true);
-						goedFoutLabel.setLabel("Prima gedaan! Je heb een score van 10.");
+						goedFoutLabel.setLabel(Heks.rb.getString("klaarFeedback"));
 						term2.zetInstelbaar(false);
 					}
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT. Bekijk de toverdrank en probeer opnieuw.");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutFeedbackBlokjes"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(true);
 					afdekking.setVisible(false);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 				term2.zetInstelbaar(false);
 			

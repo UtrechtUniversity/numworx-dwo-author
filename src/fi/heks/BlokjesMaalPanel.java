@@ -26,7 +26,16 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 	ScLabel scoreLabel;
 	int score;
 	int aantalPunten;
-	String[] getalWoorden = {"nul","een","twee","drie","vier","vijf","zes","zeven","acht","negen"};
+	String[] getalWoorden = {Heks.rb.getString("int0Label"),
+			Heks.rb.getString("int1Label"),
+			Heks.rb.getString("int2Label"),
+			Heks.rb.getString("int3Label"),
+			Heks.rb.getString("int4Label"),
+			Heks.rb.getString("int5Label"),
+			Heks.rb.getString("int6Label"),
+			Heks.rb.getString("int7Label"),
+			Heks.rb.getString("int8Label"),
+			Heks.rb.getString("int9Label")};
 	Emmer emmer;
 	
 	
@@ -40,17 +49,17 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		
 		au = new AppletUtil(applet);
 		
-		volgendeKnop = new ScLWButton(80,480,160,25,"Volgende opdracht");
+		volgendeKnop = new ScLWButton(80,480,160,25,Heks.rb.getString("volgendeKnopLabel"));
 		volgendeKnop.addActionListener(this);
 		volgendeKnop.setVisible(false);
 		add(volgendeKnop);
 		
-		opnieuwKnop = new ScLWButton(110,400,100,25,"Opnieuw");
+		opnieuwKnop = new ScLWButton(110,400,100,25,Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		opnieuwKnop.setVisible(false);
 		
-		helemaalOpnieuwKnop = new ScLWButton(80,480,160,25,"Helemaal opnieuw");
+		helemaalOpnieuwKnop = new ScLWButton(80,480,160,25,Heks.rb.getString("helemaalOpnieuwKnopLabel"));
 		helemaalOpnieuwKnop.addActionListener(this);
 		add(helemaalOpnieuwKnop);
 		helemaalOpnieuwKnop.setVisible(false);
@@ -59,7 +68,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		schrijfheks = new Tekening(30,70,160,160,au,"schrijfheks.gif");
 		add(schrijfheks);
 		
-		goedFoutLabel = new ScLabel(110,430,100,40, "");
+		goedFoutLabel = new ScLabel(110,430,120,40, "");
 		add(goedFoutLabel);
 		
 		titelLabel = new ScLabel(20,20,200,40,"Werken met emmers");
@@ -67,7 +76,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		
 		tabelContainer = new ScContainer(230,55,550,250);
 		
-		aantalBlLabel = new ScTekstContainer(220,15,110,25,3,"aantal/warme/blokjes");
+		aantalBlLabel = new ScTekstContainer(220,15,110,25,3,Heks.rb.getString("aantalWBlokjesLabel"));
 		tabelContainer.add(aantalBlLabel);
 		
 		beginKeerLabel = new ScTekstContainer(2,30,110,25,2,"");
@@ -80,7 +89,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		tabelContainer.add(maalLabel);
 		
 		
-		eindLabel = new ScTekstContainer(440,30,110,25,2,"temperatuur/verandering");
+		eindLabel = new ScTekstContainer(440,30,110,25,2,Heks.rb.getString("tempVeranderingLabel"));
 		tabelContainer.add(eindLabel);
 		
 		uitkomst = new GetalComponent(465,150,60,40);
@@ -104,8 +113,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		
 		add(tabelContainer);		
 		
-		uitleg = new ScTekstContainer(45,310,400,20,3,
-		"Bereken het antwoord van de opdracht hierboven./Vul je antwoord in bij stippel./Zorg voor een score van 10 punten.");
+		uitleg = new ScTekstContainer(45,310,400,20,3,Heks.rb.getString("BlokjesMaalPanelUitleg"));
 		
 
 
@@ -117,8 +125,8 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 		huidigeSom = new Som(Som.MAAL);
 		zetSom(huidigeSom);
 		
-		scoreLabel = new ScLabel(30,220,150,40,"test");
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel = new ScLabel(30,220,150,40,"");
+		scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 		add(scoreLabel);
 		
 	}
@@ -128,7 +136,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 				
 		this.aantalPunten = aantalPunten;
 		score = 2*aantalPunten;
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 		if(score==10)helemaalOpnieuwKnop.setVisible(true);
 	}
 	
@@ -157,11 +165,11 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 	public void zetSom(Som som)
 	{	goedFoutLabel.setLabel("");
 		boolean teken = som.geefTerm1()>0;
-		if(teken)beginKeerLabel.setText("" + getalWoorden[som.geefTerm1()] + " keer/erbij");
-		else beginKeerLabel.setText("" + getalWoorden[-som.geefTerm1()] + " keer/eruit");
+		if(teken)beginKeerLabel.setText("" + getalWoorden[som.geefTerm1()] + Heks.rb.getString("keerErbijLabel"));
+		else beginKeerLabel.setText("" + getalWoorden[-som.geefTerm1()] + Heks.rb.getString("keerEruitLabel"));
 		teken = som.geefTerm2()>0;
-		if(teken)aantalBlLabel.setText("" + getalWoorden[som.geefTerm2()] + " warme/blokjes");
-		else aantalBlLabel.setText("" + getalWoorden[-som.geefTerm2()] + " koude/blokjes");
+		if(teken)aantalBlLabel.setText("" + getalWoorden[som.geefTerm2()] + Heks.rb.getString("warmeBlokjesLabel"));
+		else aantalBlLabel.setText("" + getalWoorden[-som.geefTerm2()] + Heks.rb.getString("koudeBlokjesLabel"));
 		emmer.zetInhoud(som.geefTerm2());
 		term1.zetWaarde(som.geefTerm1());
 		term2.zetWaarde(som.geefTerm2());
@@ -183,7 +191,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 			volgendeKnop.setVisible(false);
 			aantalPunten = 0;
 			score = 2*aantalPunten;
-			scoreLabel.setLabel("Score: " + Integer.toString(score));
+			scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 			helemaalOpnieuwKnop.setVisible(false);
 		}
 		else if(e.getSource()==opnieuwKnop)
@@ -202,24 +210,24 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener
 				boolean b = huidigeSom.evalueer(uitkomst.geefWaarde());
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					opnieuwKnop.setVisible(false);
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)helemaalOpnieuwKnop.setVisible(true);
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutLabel"));
 					opnieuwKnop.setVisible(true);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 			
 			}

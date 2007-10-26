@@ -14,8 +14,8 @@ public class BlokjesEruitPanel extends BlokjesErbijPanel
 				
 		titelLabel.setLabel("Blokjes er uit");
 			
-		erinLabel.setLabel("er uit");
-		erinOefenLabel.setLabel("er uit:");
+		erinLabel.setLabel(Heks.rb.getString("eruitLabel"));
+		erinOefenLabel.setLabel(Heks.rb.getString("eruitOefenLabel"));
 		
 		tabelContainer.remove(potErin); 
 		potEruit = new Tekening(115,105,100,90,au,"potEruit.gif");
@@ -106,26 +106,26 @@ public class BlokjesEruitPanel extends BlokjesErbijPanel
 				boolean b = huidigeSom.evalueer(uitkomst.geefWaarde());
 				if(b)
 				{	goedFoutLabel.setForeground(new Color(0,150,0));
-					goedFoutLabel.setLabel("GOED");
+					goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(false);
 					
 					if(score<10)aantalPunten++;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 					
 					if(score<10)volgendeKnop.setVisible(true);
 					if(score==10)helemaalOpnieuwKnop.setVisible(true);
 				}
 				else 
 				{	goedFoutLabel.setForeground(new Color(255,0,0));
-					goedFoutLabel.setLabel("FOUT");
+					goedFoutLabel.setLabel(Heks.rb.getString("foutLabel"));
 					vraagteken.setVisible(false);
 					opnieuwKnop.setVisible(true);
 					
 					if(aantalPunten>0)aantalPunten--;
 					score = 2*aantalPunten;
-					scoreLabel.setLabel("Score: " + Integer.toString(score));
+					scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 				}
 				eindTemp.zetInstelbaar(false);
 				uitkomst.zetInstelbaar(false);

@@ -29,7 +29,7 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener
 				
 		au = new AppletUtil(applet);
 				
-		opnieuwKnop = new ScLWButton(110,425,100,25,"Opnieuw");
+		opnieuwKnop = new ScLWButton(110,425,100,25,Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		opnieuwKnop.setVisible(false);
 		add(opnieuwKnop);
@@ -37,8 +37,7 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener
 		titelLabel = new ScLabel(10,20,290,40,"Emmers met blokjes");
 		//add(titelLabel);
 		
-		uitleg = new ScTekstContainer(5,10,400,20,9,
-		"Met een emmer kun je meer blokjes /tegelijk in de ketel doen of er uit halen. /De emmer in de ketel gebruik je om /blokjes uit de ketel te halen./De emmer boven de ketel gebruik je om /blokjes in de ketel te doen./Klik op de emmer en vul het aantal /blokjes in. Voor koude blokjes vul je/een negatief getal in.");
+		uitleg = new ScTekstContainer(5,10,400,20,9,Heks.rb.getString("TafereelPanelEmmerUitleg"));
 		 
 		//"Met een emmer kun je meer blokjes /tegelijk in de ketel doen of eruit halen./ /
 		//Klik op de emmer boven de ketel. Vul er een aantal warme of koude blokjes in. Gooi een aantal emmers in de ketel en kijk wat er gebeurt.
@@ -66,11 +65,11 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener
 		add(emmerTeller);
 		emmerTeller.setVisible(false);
 		
-		opdrachtTitel = new ScLabel(20,200,200,40,"Opdracht");
+		opdrachtTitel = new ScLabel(20,200,200,40,Heks.rb.getString("opdrachtTitelLabel"));
 		opdrachtTitel.setVisible(false);
 		add(opdrachtTitel);
 		
-		opdracht = new ScTekstContainer(5,250,285,20,4,"Als met de emmers werkt, dan kun je/vier soorten vermenigvuldigingen krijgen. /Leg uit welke vier en hoe je die krijgt.");
+		opdracht = new ScTekstContainer(5,250,285,20,4,Heks.rb.getString("TafereelPanelEmmerOpdracht"));
 		opdracht.lijnUit(ScLabel.LINKS);
 		opdracht.setVisible(false);
 		add(opdracht);
@@ -79,11 +78,11 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener
 		textArea.setVisible(false);
 		add(textArea);
 			
-		opdrachtKnop = new ScLWButton(5,510,270,35,"Maak de opdracht");
+		opdrachtKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("opdrachtKnopLabel"));
 		opdrachtKnop.addActionListener(this);
 		add(opdrachtKnop);
 		
-		werkKnop = new ScLWButton(5,510,270,35,"Werk met de emmers");
+		werkKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("werkEmmersKnopLabel"));
 		werkKnop.addActionListener(this);
 		textArea.setVisible(false);
 		add(werkKnop);

@@ -68,7 +68,7 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		achtergrond = new AchtergrondContainer(0,0,b-300,h-5);
 		
 
-		opnieuwKnop = new ScLWButton(150,145,100,25,"Opnieuw");
+		opnieuwKnop = new ScLWButton(150,145,100,25,Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		
@@ -84,7 +84,7 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		beginTemp.addActionListener(this);
 		add(beginTemp);
 		
-		beginLabel = new ScLabel(50,205,60,30,"begin");
+		beginLabel = new ScLabel(50,205,60,30,Heks.rb.getString("beginLabel"));
 		beginLabel.addMouseListener(this);
 		add(beginLabel);
 		
@@ -97,13 +97,13 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		werkheks = new Tekening(180,0,150,150,au,"werkheks.gif");
 		achtergrond.add(werkheks);
 		
-		erinLabel = new ScLabel(65,315,60,30,"er in");
+		erinLabel = new ScLabel(65,315,60,30,Heks.rb.getString("erinLabel"));
 		add(erinLabel);
 		
 		potErin = new Tekening(30,270,100,90,au,"potErin.gif");
 		add(potErin);
 		
-		eruitLabel = new ScLabel(35,465,60,30,"er uit");
+		eruitLabel = new ScLabel(35,465,60,30,Heks.rb.getString("eruitLabel"));
 		//add(eruitLabel);
 		
 		potEruit = new Tekening(30,360,100,90,au,"potEruit.gif");
@@ -113,7 +113,7 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		eindTemp.zetAlsTemp(true);
 		add(eindTemp);
 		
-		eindLabel = new ScLabel(50,405,60,30,"eind");
+		eindLabel = new ScLabel(50,405,60,30,Heks.rb.getString("eindLabel"));
 		add(eindLabel);
 		
 		eindPot = new Tekening(35,385,90,65 ,au,"potzwart.gif");
@@ -131,7 +131,7 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		blokjeMin = new Tekening(400,100,60,60,au,"blokjeMin.gif");
 		achtergrond.add(blokjeMin);
 		
-		uitleg = new ScTekstContainer(5,5,285,20,5,"Gooi blokjes in de ketel./Wat gebeurt er met de temperatuur?/Wil je een andere begintemperatuur, /klik dat op de begintemperatuur en/vul een ander getal in.");
+		uitleg = new ScTekstContainer(5,5,285,20,5,Heks.rb.getString("TafereelPanel2Uitleg"));
 		uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);
 		
@@ -168,11 +168,11 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		//textArea = new ScTextArea(5,450,270,110,0,0,TextArea.SCROLLBARS_VERTICAL_ONLY,""); 
 		//add(textArea);
 		
-		opdrachtTitel = new ScLabel(20,200,200,40,"Opdracht");
+		opdrachtTitel = new ScLabel(20,200,200,40,Heks.rb.getString("opdrachtTitelLabel"));
 		opdrachtTitel.setVisible(false);
 		add(opdrachtTitel);
 		
-		opdracht = new ScTekstContainer(5,250,285,20,4,"Beschrijf hieronder nauwkeurig hoe je de/temperatuur kunt regelen met blokjes.");
+		opdracht = new ScTekstContainer(5,250,285,20,4,Heks.rb.getString("TafereelPanel2Opdracht"));
 		opdracht.lijnUit(ScLabel.LINKS);
 		opdracht.setVisible(false);
 		add(opdracht);
@@ -181,11 +181,11 @@ public class TafereelPanel2 extends ScPanel implements  MouseListener, MouseMoti
 		textArea.setVisible(false);
 		add(textArea);
 			
-		opdrachtKnop = new ScLWButton(5,510,270,35,"Maak de opdracht");
+		opdrachtKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("opdrachtKnopLabel"));
 		opdrachtKnop.addActionListener(this);
 		add(opdrachtKnop);
 		
-		werkKnop = new ScLWButton(5,510,270,35,"Werk met de blokjes");
+		werkKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("werkKnopLabel"));
 		werkKnop.addActionListener(this);
 		textArea.setVisible(false);
 		add(werkKnop);

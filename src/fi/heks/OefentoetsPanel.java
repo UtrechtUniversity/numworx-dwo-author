@@ -34,11 +34,11 @@ public class OefentoetsPanel extends ScPanel implements ActionListener
 		
 		au = new AppletUtil(applet);
 		
-		kijkNaKnop = new ScLWButton(590,400,140,25,"Kijk na");
+		kijkNaKnop = new ScLWButton(590,400,140,25,Heks.rb.getString("kijkNaKnopLabel"));
 		kijkNaKnop.addActionListener(this);
 		add(kijkNaKnop);
 		
-		opnieuwKnop = new ScLWButton(590,450,140,25,"Nieuwe toets");
+		opnieuwKnop = new ScLWButton(590,450,140,25,Heks.rb.getString("nieuwToetsKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		
@@ -51,14 +51,16 @@ public class OefentoetsPanel extends ScPanel implements ActionListener
 		else titelLabel = new ScLabel(20,20,200,40,"Oefentoets 1");
 		//add(titelLabel);
 		
-		hulpLabel = new ScLabel(550,260,170,20,"Aantal keren hulp:");
+		hulpLabel = new ScLabel(550,260,170,20,Heks.rb.getString("aantalHulpLabel"));
+		if(Heks.rb.getLocale().toString().equals("en")) hulpLabel = new ScLabel(530,260,160,20,Heks.rb.getString("aantalHulpLabel"));
 		add(hulpLabel);
 		
 		kerenHulp = new GetalComponent(720,260,20,20);
+		if(Heks.rb.getLocale().toString().equals("en")) kerenHulp = new GetalComponent(610,260,20,20);
 		kerenHulp.zetWaarde(0);
 		add(kerenHulp);
 		
-		nakijkLabel = new ScLabel(550,300,170,20,"Aantal keren nagekeken:");
+		nakijkLabel = new ScLabel(550,300,170,20,Heks.rb.getString("aantalNakijkLabel"));
 		nakijkLabel.setVisible(false);
 		add(nakijkLabel);
 		
@@ -76,7 +78,7 @@ public class OefentoetsPanel extends ScPanel implements ActionListener
 		
 		
 		uitleg = new ScTekstContainer(250,70,270,20,9,
-									  "Maak de opdrachten hieronder./Vul de antwoorden op de plaats/van de stippeltjes in./Als je de ketel gebruikt, vul dan/eerst de begintemperatuur in./Je score wordt dan wel minder hoog.");
+									  Heks.rb.getString("OefenToetsPanelUitleg"));
 		
  		uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);

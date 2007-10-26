@@ -33,11 +33,11 @@ public class OefentoetsPanelExtra extends ScPanel implements ActionListener
 		
 		au = new AppletUtil(applet);
 		
-		kijkNaKnop = new ScLWButton(570,380,140,25,"Kijk na");
+		kijkNaKnop = new ScLWButton(570,380,140,25,Heks.rb.getString("kijkNaKnopLabel"));
 		kijkNaKnop.addActionListener(this);
 		add(kijkNaKnop);
 		
-		opnieuwKnop = new ScLWButton(570,430,140,25,"Nieuwe toets");
+		opnieuwKnop = new ScLWButton(570,430,140,25,Heks.rb.getString("nieuwToetsKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		
@@ -49,11 +49,12 @@ public class OefentoetsPanelExtra extends ScPanel implements ActionListener
 		else if(soort == Som.MAAL && !rechtsInv)titelLabel = new ScLabel(20,20,200,40,"Oefentoets 6");
 		//add(titelLabel);
 		
-		nakijkLabel = new ScLabel(530,300,170,20,"Aantal keren nagekeken:");
+		nakijkLabel = new ScLabel(530,300,170,20,Heks.rb.getString("aantalNakijkLabel"));
 		nakijkLabel.setVisible(false);
 		add(nakijkLabel);
 		
 		kerenNagekeken = new GetalComponent(700,300,20,20);
+		if(Heks.rb.getLocale().toString().equals("en")) kerenNagekeken = new GetalComponent(600,300,20,20);
 		kerenNagekeken.zetWaarde(0);
 		kerenNagekeken.setVisible(false);
 		add(kerenNagekeken);
@@ -64,7 +65,7 @@ public class OefentoetsPanelExtra extends ScPanel implements ActionListener
 		
 		
 		uitleg = new ScTekstContainer(50,40,400,20,6,
-									  "Maak de opdrachten hieronder./Klik op de stippeltjes en vul in./Als je klaar bent, klik dan op de nakijkknop/om de score te bepalen./Vaker nakijken mag, maar kost punten.");
+				Heks.rb.getString("OefenToetsPanelExtraUitleg"));
 		uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);
 

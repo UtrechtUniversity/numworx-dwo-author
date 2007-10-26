@@ -60,6 +60,7 @@ public class BlokjesErbijPanel extends ScPanel implements ActionListener
 		add(schrijfheks);
 		
 		goedFoutLabel = new ScLabel(110,430,100,40, "");
+		if(Heks.rb.getLocale().toString().equals("en")) goedFoutLabel = new ScLabel(90,430,140,40, "");
 		add(goedFoutLabel);
 		
 		titelLabel = new ScLabel(20,20,200,40,Heks.rb.getString("blokjesErinTitelLabel"));

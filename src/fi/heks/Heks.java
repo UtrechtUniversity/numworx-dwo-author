@@ -68,7 +68,7 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		catch(NumberFormatException e)
 		{	bladNummer = 1;
 		}
-		//bladNummer = 3;
+		//bladNummer = 16;
 		
 		if(bladNummer==1)tp = new TafereelPanel2(5,5,790,565,this);
 		else if(bladNummer==2)tp = new TafereelPanel(5,5,790,565,this);

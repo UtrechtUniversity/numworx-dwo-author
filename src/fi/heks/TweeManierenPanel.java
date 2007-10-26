@@ -37,16 +37,16 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 		au = new AppletUtil(applet);
 		//klappen = au.getAudioClip("resources/klappen.au");
 		
-		opnieuwKnop = new ScLWButton(360,470,120,25,"Opnieuw");
+		opnieuwKnop = new ScLWButton(360,470,120,25,Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 		
-		helemaalOpnieuwKnop = new ScLWButton(360,470,160,25,"Helemaal opnieuw");
+		helemaalOpnieuwKnop = new ScLWButton(360,470,160,25,Heks.rb.getString("helemaalOpnieuwKnopLabel"));
 		helemaalOpnieuwKnop.addActionListener(this);
 		add(helemaalOpnieuwKnop);
 		helemaalOpnieuwKnop.setVisible(false);
 		
-		volgendeKnop = new ScLWButton(340,470,160,25,"Volgende opdracht");
+		volgendeKnop = new ScLWButton(340,470,160,25,Heks.rb.getString("volgendeKnopLabel"));
 		volgendeKnop.addActionListener(this);
 		volgendeKnop.setVisible(false);
 		add(volgendeKnop);
@@ -68,20 +68,19 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 		gewensteTemp.zetAlsTemp(true);
 		add(gewensteTemp);
 		
-		uitleg = new ScTekstContainer(30,60,400,20,4,
-		"Maak in beide ketels de temperatuur die hieronder staat./Bij de bovenste ketel kunnen er alleen blokjes in./Bij de onderste ketel kunnen er alleen blokjes uit./Zorg voor een score van 10.");
-		
+		uitleg = new ScTekstContainer(30,60,400,20,4,Heks.rb.getString("TweeManierenPanelUitleg"));
 
 
 
 		uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);
 		
-		erinOefenLabel = new ScLabel(440,85,100,35,"er in:");
+		erinOefenLabel = new ScLabel(440,85,100,35,Heks.rb.getString("erinGedaanLabel"));
 		erinOefenLabel.setVisible(false);
 		add(erinOefenLabel);
 		
-		eruitOefenLabel = new ScLabel(440,345,100,35,"er uit:");
+		eruitOefenLabel = new ScLabel(440,345,100,35,Heks.rb.getString("eruitGehaaldLabel"));
+		if(Heks.rb.getLocale().toString().equals("en")) eruitOefenLabel = new ScLabel(420,345,120,35,Heks.rb.getString("eruitGehaaldLabel"));
 		eruitOefenLabel.setVisible(false);
 		add(eruitOefenLabel);
 		
@@ -104,13 +103,13 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 		add(oefenTafereelPanel2);
 		//oefenTafereelPanel2.repaint();
 		
-		scoreLabel = new ScLabel(130,470,150,40,"test");
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel = new ScLabel(130,470,150,40,"");
+		scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 		add(scoreLabel);
 		
 		zetTemps();
 		
-		opdrachtTitel = new ScLabel(20,0,200,40,"Opdracht");
+		opdrachtTitel = new ScLabel(20,0,200,40,Heks.rb.getString("opdrachtTitelLabel"));
 		add(opdrachtTitel);
 				
 	}
@@ -120,7 +119,7 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 				
 		this.aantalPunten = aantalPunten;
 		score = 2*aantalPunten;
-		scoreLabel.setLabel("Score: " + Integer.toString(score));
+		scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 		if(score==10)helemaalOpnieuwKnop.setVisible(true);
 	}
 	
@@ -151,18 +150,18 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 	public void controleer()
 	{	if(gewensteTemp.geefWaarde()==oefenTafereelPanel1.geefTemp() 
 			&& gewensteTemp.geefWaarde()==oefenTafereelPanel2.geefTemp()) 
-		{	goedFoutLabel.setLabel("GOED");
+		{	goedFoutLabel.setLabel(Heks.rb.getString("goedLabel"));
 			//klappen.play();
 			opnieuwKnop.setVisible(false);
 			aantalPunten++;
 			score = 2*aantalPunten;
-			scoreLabel.setLabel("Score: " + Integer.toString(score));
+			scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 			if(score<10)
 			{	volgendeKnop.setVisible(true);
 			}		
 			else if(score==10)
 			{	helemaalOpnieuwKnop.setVisible(true);
-				goedFoutLabel.setLabel("Klaar");
+				goedFoutLabel.setLabel(Heks.rb.getString("klaarLabel"));
 				erinOefenContainer.removeAll();
 				eruitOefenContainer.removeAll();
 				erinOefenLabel.setVisible(false);
@@ -211,7 +210,7 @@ public class TweeManierenPanel extends ScPanel implements ActionListener
 			oefenTafereelPanel2.zetBeginTemp(beginTemp);
 			aantalPunten = 0;
 			score = 2*aantalPunten;
-			scoreLabel.setLabel("Score: " + Integer.toString(score));
+			scoreLabel.setLabel(Heks.rb.getString("scoreLabel") + Integer.toString(score));
 			helemaalOpnieuwKnop.setVisible(false);
 		}
 		else if(e.getSource()==volgendeKnop)
