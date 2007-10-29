@@ -185,30 +185,49 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		double beginy  = 0;
 		double schaalFactorX  = 0;
 		double schaalFactorY  = 0;
+		int beginwaarde = 0;
+		int selectNummer = 999;
 				
 		beginx = this.beginx;
 		beginy = this.beginy;
 		schaalFactorX = this.schaalFactorX;
 		schaalFactorY = this.schaalFactorY;
+		beginwaarde = this.beginwaarde;
+		selectnummer = this.selectnummer;
 				
 		Hashtable h = super.getState();
 	    h.put("beginx", new Double(beginx));
 	    h.put("beginy", new Double(beginy));
 	    h.put("schaalFactorX", new Double(schaalFactorX));
 	    h.put("schaalFactorY", new Double(schaalFactorY));
+	    h.put("beginwaarde", new Integer(beginwaarde));
+	    h.put("selectnummer", new Integer(selectnummer));
 	    return h;
 	}
+	
+	
 
     public void setState(Hashtable h)
-    {	double beginx = ((Double)h.get("beginx")).doubleValue();
-    	double beginy = ((Double)h.get("beginy")).doubleValue();
-    	double schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
-    	double schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
-    				
+    {	double beginx = 0;
+		double beginy = 0;
+		double schaalFactorX = 1;
+		double schaalFactorY = 1;
+		int beginwaarde = 0;
+		int selectNummer = 999;
+	    	
+    	if(h.containsKey("beginx")) beginx = ((Double)h.get("beginx")).doubleValue();
+    	if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
+    	if(h.containsKey("schaalFactorX")) schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
+    	if(h.containsKey("schaalFactorY")) schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
+    	if(h.containsKey("beginwaarde")) beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
+    	if(h.containsKey("selectnummer")) selectnummer = ((Integer)h.get("selectnummer")).intValue();
+    			
 		this.beginx = beginx;
 		this.beginy = beginy;
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
+		this.beginwaarde = beginwaarde;
+		this.selectnummer = selectnummer;
 		
 		int b = beginwaarde;
 		beginwaarde = 1-(int)Math.round(beginx/eenheidx);
@@ -217,6 +236,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		
 		super.setState(h);
     }
+    
+    
+	
     /*
     public void paint(Graphics g)
 	{	
