@@ -99,6 +99,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	{	String basisExp  = null;
 		boolean tabelAan = false;
 		boolean labelZichtbaar = false;
+        boolean kettingZichtbaar = true;
 		String labelTekst = null;
 		Hashtable tabelState = null;
 				
@@ -106,6 +107,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		else basisExp = "";
 		tabelAan = this.tabelAan;
 		labelZichtbaar = this.labelZichtbaar;
+        kettingZichtbaar = this.kettingZichtbaar;
 		labelTekst = label.geefTekst();
 		tabelState = tabel.getState();
 
@@ -113,25 +115,33 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	    h.put("basisExp", basisExp);
 	    h.put("tabelAan", new Boolean(tabelAan));
 	    h.put("labelZichtbaar", new Boolean(labelZichtbaar));
-	    h.put("labelTekst", labelTekst);
+        h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
+        h.put("labelTekst", labelTekst);
 	    h.put("tabelState", tabelState);
 	    return h;
 	}
 
     public void setState(Hashtable h)
-    {	
+    {	String basisExp  = null;
+        boolean tabelAan = false;
+        boolean labelZichtbaar = false;
+        boolean kettingZichtbaar = true;
+        String labelTekst = null;
+        Hashtable tabelState = null;
     	
-    	String basisExp = (String)h.get("basisExp");
-		boolean tabelAan = ((Boolean)h.get("tabelAan")).booleanValue();		
-		boolean labelZichtbaar = ((Boolean)h.get("labelZichtbaar")).booleanValue();
-		String labelTekst = (String)h.get("labelTekst");
-		Hashtable tabelState = (Hashtable)h.get("tabelState");	
-		
+    	if(h.containsKey("basisExp")) basisExp = (String)h.get("basisExp");
+        if(h.containsKey("tabelAan")) tabelAan = ((Boolean)h.get("tabelAan")).booleanValue();		
+        if(h.containsKey("labelZichtbaar")) labelZichtbaar = ((Boolean)h.get("labelZichtbaar")).booleanValue();
+        if(h.containsKey("kettingZichtbaar")) kettingZichtbaar = ((Boolean)h.get("kettingZichtbaar")).booleanValue();
+        if(h.containsKey("labelTekst")) labelTekst = (String)h.get("labelTekst");
+        if(h.containsKey("tabelState")) tabelState = (Hashtable)h.get("tabelState");	
+        
 		if(!basisExp.equals(""))beginw = new BasisExpressie(basisExp);
 		zetTabelAan(tabelAan);
 		zetLabel(labelZichtbaar);
 		label.zetLabelTekst(labelTekst);
 		tabel.setState(tabelState);
+        zetKettingZichtbaarHier(kettingZichtbaar);
 		
 		super.setState(h);
 		
@@ -439,6 +449,16 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		tf.setVisible(false);
 		schuifveld.tekenOpnieuw();
 	}
+    
+    public void zetKettingZichtbaarHier(boolean b)
+    {   if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(b);
+        open = b;
+        kettingZichtbaar = b;
+        tabel.zetDubbel(!b);
+        zetMaat();
+        schuifveld.tekenOpnieuw();
+        
+    }
 	
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==tf)
@@ -468,20 +488,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	zetTabelAan(false);
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
-		{	if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(true);
-			open = true;
-			kettingZichtbaar = true;
-			tabel.zetDubbel(false);
-			zetMaat();
-			schuifveld.tekenOpnieuw();
+		{	zetKettingZichtbaarHier(true);
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
-		{	if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(false);
-			open = false;
-			kettingZichtbaar = false;
-			tabel.zetDubbel(true);
-			zetMaat();
-			schuifveld.tekenOpnieuw();
+		{	zetKettingZichtbaarHier(false);
 		}
 	}
 	
