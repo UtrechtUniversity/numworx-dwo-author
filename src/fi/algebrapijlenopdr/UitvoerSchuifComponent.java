@@ -501,18 +501,31 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				zetVeranderd(20);
 			}
 		}
-		else if(e.getSource()==zoomInKnop)
+		else if(e.getSource()==zoomUitKnop)
 		{	if(!e.getActionCommand().equals("knop")) return;
-			if(factorRijNummerX%3==1)schaalFactorX*=2.5;
-			else schaalFactorX*=2;
+			if(factorRijNummerX%3==1)
+			{	schaalFactorX*=2.5;
+				beginwaarde = (int)(((double)beginwaarde)/2.5);
+			}
+			else 
+			{	schaalFactorX*=2;
+				beginwaarde = (int)(((double)beginwaarde)/2);
+			}
 			factorRijNummerX++;
 			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
 			schuifveld.tekenOpnieuw();
 		}
-		else if(e.getSource()==zoomUitKnop)
+		else if(e.getSource()==zoomInKnop)
 		{	if(!e.getActionCommand().equals("knop")) return;
-			if(factorRijNummerX%3==2)schaalFactorX/=2.5;
-			else schaalFactorX/=2;
+			if(factorRijNummerX%3==2)
+			{	schaalFactorX/=2.5;
+				beginwaarde = (int)(((double)beginwaarde)*2.5);
+			}
+			else 
+			{	schaalFactorX/=2;
+				beginwaarde = (int)(((double)beginwaarde)*2);
+			}
+		
 			factorRijNummerX--;
 			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
 			schuifveld.tekenOpnieuw();
