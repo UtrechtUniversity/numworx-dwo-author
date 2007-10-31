@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
-public class TabelComponent extends Component implements MouseListener, MouseMotionListener
+public class TabelComponent extends Container implements ActionListener, MouseListener, MouseMotionListener
 {	
 	 private Polygon pijlPlus, pijlMin, pijlPlusContain, pijlMinContain;
 	 private Expressie exp;
@@ -23,6 +23,7 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 	 FontMetrics fm;
 	 private boolean dubbel;
 	 private int starty;
+	 
 	 
 	
 	public TabelComponent()
@@ -40,6 +41,7 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 		breedteUitv = 33;
 		
 		exp = new BasisExpressie("x");
+		
 	}
 	
 	public Hashtable getState()
@@ -78,9 +80,9 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 		{	breedteUitv = breedte-10-breedteInv;
 			
 			g.setColor(Color.white);
-			g.fillRect(breedteInv+6,15,breedteUitv,hoogte - 31);
+			g.fillRect(breedteInv+6,15,breedteUitv-10,hoogte - 31);
 			g.setColor(Color.black);
-			g.drawRect(breedteInv+6,15,breedteUitv,hoogte - 31);
+			g.drawRect(breedteInv+6,15,breedteUitv-10,hoogte - 31);
 
 			g.setColor(Color.white);
 			g.fillRect(3,15,breedteInv,hoogte - 31);
@@ -94,10 +96,10 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
 			{	g.setColor(new Color(255,200,200));
-				g.fillRect(breedteInv+6,15+selectnummer*15,breedteUitv,16);
+				g.fillRect(breedteInv+6,15+selectnummer*15,breedteUitv-10,16);
 				g.fillRect(3,15+selectnummer*15,breedteInv,16);
 				g.setColor(Color.black);
-				g.drawRect(breedteInv+6,15+selectnummer*15,breedteUitv,16);
+				g.drawRect(breedteInv+6,15+selectnummer*15,breedteUitv-10,16);
 				g.drawRect(3,15+selectnummer*15,breedteInv,16);
 			}
 			/*pijlPlusContain = new Polygon();
@@ -178,15 +180,15 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 		else
 		{	breedteUitv = breedte-10;
 			g.setColor(Color.white);
-			g.fillRect(3,15,breedte-7,hoogte - 31);
+			g.fillRect(3,15,breedte-17,hoogte - 31);
 			g.setColor(Color.black);
-			g.drawRect(3,15,breedte-7,hoogte - 31);
+			g.drawRect(3,15,breedte-17,hoogte - 31);
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
 			{	g.setColor(new Color(255,200,200));
-				g.fillRect(3,15+selectnummer*15,breedte-7,16);
+				g.fillRect(3,15+selectnummer*15,breedte-17,16);
 				g.setColor(Color.black);
-				g.drawRect(3,15+selectnummer*15,breedte-7,16);
+				g.drawRect(3,15+selectnummer*15,breedte-17,16);
 			}
 			
 			pijlPlusContain = new Polygon();
@@ -225,6 +227,7 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 				}
 			}
 		}
+		super.paint(g);
 	}
 	
 	public void zetDubbel(boolean b)
@@ -256,7 +259,7 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 	public int geefBreedte()
 	{	if(dubbel)
 		{	breedteInv = 20;
-			breedteUitv = 33;
+			breedteUitv = 23;
 			if(exp!=null)
 			{	varNaam = exp.geefVarNaam();
 				if(varNaam!=null && !varNaam.equals(""))
@@ -273,11 +276,11 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 					}
 				}
 			}
-			int b = breedteInv + breedteUitv + 10;
+			int b = breedteInv + breedteUitv + 20;
 			return b;	
 		}
 		else
-		{	breedteUitv = 30;
+		{	breedteUitv = 20;
 			if(exp!=null)
 			{	varNaam = exp.geefVarNaam();
 				if(varNaam!=null && !varNaam.equals(""))
@@ -291,9 +294,16 @@ public class TabelComponent extends Component implements MouseListener, MouseMot
 					}
 				}
 			}
-			int b = breedteUitv + 10;
+			int b = breedteUitv + 20;
 			return b;	
 		}
+		
+	
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		
 	}
 	
 	public void mousePressed(MouseEvent e)

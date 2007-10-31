@@ -80,16 +80,40 @@ public class ZoomKnop extends Component implements MouseListener
 			g.drawLine(15,19,12,22);
 			g.drawLine(9,18,12,21);
 			g.drawLine(15,18,12,21);
+		}
+		else if(code.equals("zoominysmal"))
+		{	g.drawLine(4,3,1,6);
+			g.drawLine(4,3,7,6);
+			g.drawLine(4,4,1,7);
+			g.drawLine(4,4,7,7);
+			g.drawLine(4,3,4,10);
+			g.drawLine(4,15,4,22);
+			g.drawLine(1,19,4,22);
+			g.drawLine(7,19,4,22);
+			g.drawLine(1,18,4,21);
+			g.drawLine(7,18,4,21);
 		}		else if(code.equals("zoomuity"))		{	g.drawLine(9,7,12,10);
 			g.drawLine(15,7,12,10);
 			g.drawLine(9,6,12,9);
 			g.drawLine(15,6,12,9);
 			g.drawLine(12,3,12,10);
 			g.drawLine(12,15,12,22);
-			g.drawLine(9,18,12,15);
-			g.drawLine(15,18,12,15);
+			g.drawLine(9,19,12,15);
+			g.drawLine(15,19,12,15);
 			g.drawLine(9,19,12,18);
 			g.drawLine(15,19,12,18);
+		}
+		else if(code.equals("zoomuitysmal"))
+		{	g.drawLine(1,7,4,10);
+			g.drawLine(7,7,4,10);
+			g.drawLine(1,6,4,9);
+			g.drawLine(7,6,4,9);
+			g.drawLine(4,3,4,10);
+			g.drawLine(4,15,4,22);
+			g.drawLine(1,19,4,15);
+			g.drawLine(7,19,4,15);
+			g.drawLine(1,18,4,18);
+			g.drawLine(7,18,4,18);
 		}		else if(code.equals("zoomin"))		{	g.drawOval(4,4,12,12);
 			g.drawLine(7,10,13,10);
 			g.drawLine(10,7,10,13);

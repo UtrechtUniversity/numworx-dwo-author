@@ -1,9 +1,9 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
+
 import fi.algebrapijlenopdr.expressies_ap.*;
 
 public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements ActionListener, FocusListener
@@ -29,6 +29,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	boolean scrollable;
 	int scrollCorr = 0;
 	public boolean kettingZichtbaar = true;
+	
+	private ZoomKnop zoomInKnop;
+	private ZoomKnop zoomUitKnop;
+	private double schaalFactorX=1;
+	private int factorRijNummerX=99;
+	private int beginwaarde;
+	private int selectnummer;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -93,6 +100,16 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		}
 		plusMinKnop.addActionListener(this);
 		add(plusMinKnop);
+		
+		zoomInKnop	= new ZoomKnop("zoominysmal");
+		zoomInKnop.setBounds(0,50,10,25);
+		zoomInKnop.addActionListener(this);
+		add(zoomInKnop);
+		
+		zoomUitKnop	= new ZoomKnop("zoomuitysmal");
+		zoomUitKnop.setBounds(0,100,10,25);
+		zoomUitKnop.addActionListener(this);
+		add(zoomUitKnop);
 	}
 	
 	public Hashtable getState()
@@ -334,11 +351,17 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	tabel.setBounds(10,h-152,b-10,152);
 			tf.setBounds(12,corr,b-15-scrollCorr,20);
 			plusMinKnop.setLocation(b-12,1+corr);
+			zoomInKnop.setBounds(b-12,h-120,10,25);
+			zoomUitKnop.setBounds(b-12,h-70,10,25);
+			
 		}
 		else
 		{	tabel.setBounds(0,h-152,b-10,152);
 			tf.setBounds(2,corr,b-15-scrollCorr,20);
 			plusMinKnop.setLocation(b-22,1+corr);
+			zoomInKnop.setBounds(b-22,h-120,10,25);
+			zoomUitKnop.setBounds(b-22,h-70,10,25);
+			
 		}	
 
 	}
@@ -395,8 +418,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	//}
 	
 	public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
-	{	if(tabelZichtbaar)
-		{	tabel.zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
+	{	this.beginwaarde = beginwaarde;
+		this.selectnummer = selectnummer;
+		if(tabelZichtbaar)
+		{	
+			tabel.zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
 			if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
 		}
 		zetMaat();
@@ -474,6 +500,22 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				tf.setText(waardeString);
 				zetVeranderd(20);
 			}
+		}
+		else if(e.getSource()==zoomInKnop)
+		{	if(!e.getActionCommand().equals("knop")) return;
+			if(factorRijNummerX%3==1)schaalFactorX*=2.5;
+			else schaalFactorX*=2;
+			factorRijNummerX++;
+			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
+			schuifveld.tekenOpnieuw();
+		}
+		else if(e.getSource()==zoomUitKnop)
+		{	if(!e.getActionCommand().equals("knop")) return;
+			if(factorRijNummerX%3==2)schaalFactorX/=2.5;
+			else schaalFactorX/=2;
+			factorRijNummerX--;
+			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
+			schuifveld.tekenOpnieuw();
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))
 		{	toonLabel(true);
