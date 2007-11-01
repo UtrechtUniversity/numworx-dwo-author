@@ -119,6 +119,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         boolean kettingZichtbaar = true;
 		String labelTekst = null;
 		Hashtable tabelState = null;
+		double schaalFactorX  = 0;
+		int beginwaarde = 0;
+		int selectnummer = 999;
+		int factorRijNummerX = 99;
 				
 		if(beginw != null)basisExp = this.beginw.basisString;
 		else basisExp = "";
@@ -127,6 +131,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         kettingZichtbaar = this.kettingZichtbaar;
 		labelTekst = label.geefTekst();
 		tabelState = tabel.getState();
+		schaalFactorX = this.schaalFactorX;
+		beginwaarde = this.beginwaarde;
+		selectnummer = this.selectnummer;
+		factorRijNummerX = this.factorRijNummerX;
 
 		Hashtable h = super.getState();
 	    h.put("basisExp", basisExp);
@@ -135,6 +143,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
         h.put("labelTekst", labelTekst);
 	    h.put("tabelState", tabelState);
+	    h.put("schaalFactorX", new Double(schaalFactorX));
+	    h.put("beginwaarde", new Integer(beginwaarde));
+	    h.put("selectnummer", new Integer(selectnummer));
+	    h.put("factorRijNummerX", new Integer(factorRijNummerX));
 	    return h;
 	}
 
@@ -145,6 +157,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         boolean kettingZichtbaar = true;
         String labelTekst = null;
         Hashtable tabelState = null;
+        double schaalFactorX = this.schaalFactorX;
+		int beginwaarde = this.beginwaarde;
+		int selectnummer = this.selectnummer;
+		int factorRijNummerX = this.factorRijNummerX;
     	
     	if(h.containsKey("basisExp")) basisExp = (String)h.get("basisExp");
         if(h.containsKey("tabelAan")) tabelAan = ((Boolean)h.get("tabelAan")).booleanValue();		
@@ -152,6 +168,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         if(h.containsKey("kettingZichtbaar")) kettingZichtbaar = ((Boolean)h.get("kettingZichtbaar")).booleanValue();
         if(h.containsKey("labelTekst")) labelTekst = (String)h.get("labelTekst");
         if(h.containsKey("tabelState")) tabelState = (Hashtable)h.get("tabelState");	
+        if(h.containsKey("schaalFactorX")) schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
+    	if(h.containsKey("beginwaarde")) beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
+    	if(h.containsKey("selectnummer")) selectnummer = ((Integer)h.get("selectnummer")).intValue();
+    	if(h.containsKey("factorRijNummerX")) factorRijNummerX = ((Integer)h.get("factorRijNummerX")).intValue();
+    	
         
 		if(!basisExp.equals(""))beginw = new BasisExpressie(basisExp);
 		zetTabelAan(tabelAan);
@@ -159,6 +180,12 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		label.zetLabelTekst(labelTekst);
 		tabel.setState(tabelState);
         zetKettingZichtbaarHier(kettingZichtbaar);
+        this.schaalFactorX = schaalFactorX;
+		this.beginwaarde = beginwaarde;
+		this.selectnummer = selectnummer;
+		this.factorRijNummerX = factorRijNummerX;
+		((AlgebraSchuifVeld)schuifveld).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
+		
 		
 		super.setState(h);
 		

@@ -186,7 +186,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		double schaalFactorX  = 0;
 		double schaalFactorY  = 0;
 		int beginwaarde = 0;
-		int selectNummer = 999;
+		int selectnummer = 999;
+		int factorRijNummerX = 99;
+		int factorRijNummerY = 99;
 				
 		beginx = this.beginx;
 		beginy = this.beginy;
@@ -194,6 +196,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		schaalFactorY = this.schaalFactorY;
 		beginwaarde = this.beginwaarde;
 		selectnummer = this.selectnummer;
+		factorRijNummerX = this.factorRijNummerX;
+		factorRijNummerY = this.factorRijNummerY;
 				
 		Hashtable h = super.getState();
 	    h.put("beginx", new Double(beginx));
@@ -202,6 +206,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	    h.put("schaalFactorY", new Double(schaalFactorY));
 	    h.put("beginwaarde", new Integer(beginwaarde));
 	    h.put("selectnummer", new Integer(selectnummer));
+	    h.put("factorRijNummerX", new Integer(factorRijNummerX));
+	    h.put("factorRijNummerY", new Integer(factorRijNummerY));
 	    return h;
 	}
 	
@@ -213,7 +219,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		double schaalFactorX = 1;
 		double schaalFactorY = 1;
 		int beginwaarde = 0;
-		int selectNummer = 999;
+		int selectnummer = 999;
+		int factorRijNummerX = 99;
+		int factorRijNummerY = 99;
 	    	
     	if(h.containsKey("beginx")) beginx = ((Double)h.get("beginx")).doubleValue();
     	if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
@@ -221,6 +229,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
     	if(h.containsKey("schaalFactorY")) schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
     	if(h.containsKey("beginwaarde")) beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
     	if(h.containsKey("selectnummer")) selectnummer = ((Integer)h.get("selectnummer")).intValue();
+    	if(h.containsKey("factorRijNummerX")) factorRijNummerX = ((Integer)h.get("factorRijNummerX")).intValue();
+    	if(h.containsKey("factorRijNummerY")) factorRijNummerY = ((Integer)h.get("factorRijNummerY")).intValue();
     			
 		this.beginx = beginx;
 		this.beginy = beginy;
@@ -228,6 +238,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		this.schaalFactorY = schaalFactorY;
 		this.beginwaarde = beginwaarde;
 		this.selectnummer = selectnummer;
+		this.factorRijNummerX = factorRijNummerX;
+		this.factorRijNummerY = factorRijNummerY;
 		
 		int b = beginwaarde;
 		beginwaarde = 1-(int)Math.round(beginx/eenheidx);
