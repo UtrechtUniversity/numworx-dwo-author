@@ -86,7 +86,9 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	}
 	
 	public boolean contains(int x, int y)
-	{	if(!links)return (new Rectangle(10,0,getSize().width-10,getSize().height)).contains(x,y);
+	{	if(new Rectangle(0,getSize().height-120,10,25).contains(x,y))return true;
+		if(new Rectangle(0,getSize().height-70,10,25).contains(x,y))return true;
+		if(!links)return (new Rectangle(10,0,getSize().width-10,getSize().height)).contains(x,y);
 		else return (new Rectangle(0,0,getSize().width-10,getSize().height)).contains(x,y);
 	}
 	

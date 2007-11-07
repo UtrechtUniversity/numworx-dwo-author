@@ -378,8 +378,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	tabel.setBounds(10,h-152,b-10,152);
 			tf.setBounds(12,corr,b-15-scrollCorr,20);
 			plusMinKnop.setLocation(b-12,1+corr);
-			zoomInKnop.setBounds(b-12,h-120,10,25);
-			zoomUitKnop.setBounds(b-12,h-70,10,25);
+			zoomInKnop.setBounds(0,h-120,10,25);
+			zoomUitKnop.setBounds(0,h-70,10,25);
 			
 		}
 		else
@@ -453,6 +453,23 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
 		}
 		zetMaat();
+		
+	}
+	
+	public void setZoomState(String varnaam, ZoomState zoomState)
+	{	if(expressie!=null && expressie.geefVarNaam()!=null && expressie.geefVarNaam().equals(varnaam)
+			|| verborgenExpressie!=null && verborgenExpressie.geefVarNaam()!=null && verborgenExpressie.geefVarNaam().equals(varnaam))
+		{	this.beginwaarde = zoomState.getBeginwaarde();
+			this.selectnummer = zoomState.getSelectnummer();
+			this.schaalFactorX = zoomState.getSchaalFactorX();
+			this.factorRijNummerX = zoomState.getFactorRijNummerX();
+			if(tabelZichtbaar)
+			{	
+				tabel.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
+				if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
+			}
+			zetMaat();
+		}
 		
 	}
 	

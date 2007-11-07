@@ -441,6 +441,26 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		}
 	}
 	
+	public void setZoomState(String varNaam, ZoomState zoomState)
+	{	if(varNaam.equals(this.varNaam))
+		{	this.beginwaarde = zoomState.getBeginwaarde();
+			this.selectnummer = zoomState.getSelectnummer();
+			this.schaalFactorX = zoomState.getSchaalFactorX();
+			this.schaalFactorY = zoomState.getSchaalFactorY();
+			this.factorRijNummerX = zoomState.getFactorRijNummerX();
+			this.factorRijNummerY = zoomState.getFactorRijNummerY();
+			
+			beginx = eenheidx-eenheidx*beginwaarde;
+			if(selectnummer!=999)tracing = false;
+			else
+			{	//tracexD = beginx+1.0*((selectnummer+beginwaarde)*eenheidx);
+				//tracex = (int)Math.round(tracexD);
+				//slider.zetStand(tracex);
+			}
+			gv.tekenOpnieuw();
+		}
+	}
+	
 	public void zetVeranderd(int max)
 	{	
 		for(int i=0 ; i<aantalPijlenIn ; i++)

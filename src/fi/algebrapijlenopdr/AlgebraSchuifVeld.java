@@ -27,6 +27,8 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	boolean fixed = false;
 	private Panel hidePanel;
 	
+	public static ZoomStateHolder zoomStateHolder;
+	
 	//private Button kopieerKnop;
 	
 	
@@ -35,6 +37,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
+		zoomStateHolder = new ZoomStateHolder(this);
 		
 		ip = new InvulPanel(this,8,399,90,45);
 		ip.setBackground(Color.lightGray);
@@ -535,6 +538,17 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 				}
 				if(schuifcomponenten[i]instanceof GrafiekComponent)
 				{	((GrafiekComponent)schuifcomponenten[i]).zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
+				}
+			}
+	}
+	
+	public void setZoomStates(String varnaam, ZoomState zoomState)
+	{	for(int i=0 ; i<aantalSc ; i++)
+			{	if(schuifcomponenten[i]instanceof UitvoerSchuifComponent)
+				{	((UitvoerSchuifComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
+				}
+				if(schuifcomponenten[i]instanceof GrafiekComponent)
+				{	((GrafiekComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
 				}
 			}
 	}
