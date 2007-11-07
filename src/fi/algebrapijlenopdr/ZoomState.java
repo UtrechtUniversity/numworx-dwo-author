@@ -17,11 +17,11 @@ public class ZoomState
 	{	this.schaalFactorY = schaalFactorY;
 	}
 	
-	public void setFactorRijNrX(int factorRijNummerX)
+	public void setFactorRijNummerX(int factorRijNummerX)
 	{	this.factorRijNummerX = factorRijNummerX;
 	}
 	
-	public void setFactorRijNrY(int factorRijNummerY)
+	public void setFactorRijNummerY(int factorRijNummerY)
 	{	this.factorRijNummerY = factorRijNummerY;
 	}
 	

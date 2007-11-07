@@ -556,8 +556,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				beginwaarde = (int)(((double)beginwaarde)/2);
 			}
 			factorRijNummerX++;
-			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
-			schuifveld.tekenOpnieuw();
+            String varnaam = null;
+            if(expressie!=null) varnaam = expressie.geefVarNaam();
+            if(varnaam==null && verborgenExpressie!=null) varnaam = verborgenExpressie.geefVarNaam();
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varnaam, beginwaarde);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varnaam, schaalFactorX);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varnaam, factorRijNummerX);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varnaam);
+            schuifveld.tekenOpnieuw();
 		}
 		else if(e.getSource()==zoomInKnop)
 		{	if(!e.getActionCommand().equals("knop")) return;
@@ -571,8 +577,15 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			}
 		
 			factorRijNummerX--;
-			((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
-			schuifveld.tekenOpnieuw();
+			//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
+            String varnaam = null;
+            if(expressie!=null) varnaam = expressie.geefVarNaam();
+            if(varnaam==null && verborgenExpressie!=null) varnaam = verborgenExpressie.geefVarNaam();
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varnaam, beginwaarde);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varnaam, schaalFactorX);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varnaam, factorRijNummerX);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varnaam);
+            schuifveld.tekenOpnieuw();
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))
 		{	toonLabel(true);

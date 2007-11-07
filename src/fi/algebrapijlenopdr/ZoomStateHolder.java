@@ -8,56 +8,56 @@ public class ZoomStateHolder {
 	
 	public ZoomStateHolder(AlgebraSchuifVeld asv)
 	{	this.asv = asv;
+        zoomStates = new Hashtable();
 	}
 	
 	private Hashtable zoomStates;
 	
 	public void setSchaalFactorX(String varnaam, double schaalFactorX)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setSchaalFactorX(schaalFactorX);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setSchaalFactorX(schaalFactorX);
-		}
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setSchaalFactorX(schaalFactorX);
+        zoomStates.put(varnaam, zs);
 	}
 	
 	public void setSchaalFactorY(String varnaam, double schaalFactorY)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setSchaalFactorY(schaalFactorY);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setSchaalFactorY(schaalFactorY);
-		}
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setSchaalFactorY(schaalFactorY);
+        zoomStates.put(varnaam, zs);
+    }
+	public void setFactorRijNummerX(String varnaam, int factorRijNummerX)
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setFactorRijNummerX(factorRijNummerX);
+        zoomStates.put(varnaam, zs);
 	}
 	
-	public void setFactorRijNrX(String varnaam, int factorRijNummerX)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setFactorRijNrX(factorRijNummerX);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setFactorRijNrX(factorRijNummerX);
-		}
-	}
-	
-	public void setFactorRijNrY(String varnaam, int factorRijNummerY)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setFactorRijNrY(factorRijNummerY);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setFactorRijNrY(factorRijNummerY);
-		}
+	public void setFactorRijNummerY(String varnaam, int factorRijNummerY)
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setFactorRijNummerY(factorRijNummerY);
+        zoomStates.put(varnaam, zs);
 	}
 	
 	public void setBeginwaarde(String varnaam, int beginwaarde)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setBeginwaarde(beginwaarde);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setBeginwaarde(beginwaarde);
-		}
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setBeginwaarde(beginwaarde);
+        zoomStates.put(varnaam, zs);
 	}
 	
 	public void setSelectnummer(String varnaam, int selectnummer)
-	{	if(zoomStates.containsKey(varnaam))((ZoomState)zoomStates.get(varnaam)).setSelectnummer(selectnummer);
-		else 
-		{	zoomStates.put(varnaam, new ZoomState());
-			((ZoomState)zoomStates.get(varnaam)).setSelectnummer(selectnummer);
-		}
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setSelectnummer(selectnummer);
+        zoomStates.put(varnaam, zs);
 	}
 	
 	public void setZoomStates(String varnaam)
