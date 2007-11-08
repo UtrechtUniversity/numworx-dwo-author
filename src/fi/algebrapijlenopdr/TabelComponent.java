@@ -248,6 +248,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		{	this.beginwaarde = beginwaarde;
 			this.selectnummer = selectnummer;
 			this.schaalFactorX = schaalFactorX;
+			System.out.println("test6");
 			repaint();
 		}
 	}

@@ -546,6 +546,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	{	for(int i=0 ; i<aantalSc ; i++)
 			{	if(schuifcomponenten[i]instanceof UitvoerSchuifComponent)
 				{	((UitvoerSchuifComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
+					System.out.println("test2");
 				}
 				if(schuifcomponenten[i]instanceof GrafiekComponent)
 				{	((GrafiekComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
