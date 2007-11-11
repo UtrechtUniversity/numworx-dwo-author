@@ -14,7 +14,7 @@ public class BlokjesEruitPanelExtra extends BlokjesErbijPanelExtra
 				
 		titelLabel.setLabel("Blokjes er uit");
 			
-		erinLabel.setLabel(Heks.rb.getString("erinLabel"));
+		erinLabel.setLabel(Heks.rb.getString("eruitLabel"));
 		erinOefenLabel.setLabel(Heks.rb.getString("eruitOefenLabel"));
 		
 		tabelContainer.remove(potErin); 
