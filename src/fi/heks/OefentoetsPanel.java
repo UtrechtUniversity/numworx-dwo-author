@@ -12,7 +12,7 @@ public class OefentoetsPanel extends ScPanel implements ActionListener
 {	
 	AppletUtil au;
 
-	Tekening  goedkrul, foutkruis, schrijfheks;
+	Tekening schrijfheks;
 	ScLWButton kijkNaKnop, opnieuwKnop;
 	ScLabel titelLabel, hulpLabel, nakijkLabel, scoreLabel;
 	GetalComponent kerenHulp, kerenNagekeken;

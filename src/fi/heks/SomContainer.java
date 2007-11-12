@@ -213,8 +213,9 @@ public class SomContainer extends ScContainer implements ActionListener
 		   || (vaknr==0 &&  term1.geefWaarde() == huidigeSom.geefTerm1()))		//&& term1.isBekend()
 		{	//goedkrul.setVisible(true);
 			goedFoutContainer.removeAll();
-			goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul.gif");
-			goedFoutTeken.schaal(schaal);
+			if(Heks.rb.getLocale().toString().equals("nl")) goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul.gif");
+            else goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul_en.gif");
+            goedFoutTeken.schaal(schaal);
 			goedFoutContainer.add(goedFoutTeken,0);
 			goedFoutContainer.repaint();
 			return true;
