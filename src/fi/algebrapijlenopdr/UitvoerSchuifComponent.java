@@ -459,16 +459,16 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	public void setZoomState(String varnaam, ZoomState zoomState)
 	{	System.out.println("test3");
 	
-		if(expressie!=null && expressie.geefVarNaam()!=null && expressie.geefVarNaam().equals(varnaam)
-			|| verborgenExpressie!=null && verborgenExpressie.geefVarNaam()!=null && verborgenExpressie.geefVarNaam().equals(varnaam))
+		//if(expressie!=null && expressie.geefVarNaam()!=null && expressie.geefVarNaam().equals(varnaam)
+		//	|| verborgenExpressie!=null && verborgenExpressie.geefVarNaam()!=null && verborgenExpressie.geefVarNaam().equals(varnaam))
 		{	this.beginwaarde = zoomState.getBeginwaarde();
 			this.selectnummer = zoomState.getSelectnummer();
 			this.schaalFactorX = zoomState.getSchaalFactorX();
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
-			System.out.println("test4");
+			System.out.println("test4"+schaalFactorX);
 			
-			if(tabelZichtbaar)
-			{	System.out.println("test5");
+			//if(tabelZichtbaar)
+			{	System.out.println("test5"+schaalFactorX);
 				tabel.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
 				if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
 			}
