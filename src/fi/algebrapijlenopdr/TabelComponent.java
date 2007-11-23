@@ -40,7 +40,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		else breedteInv = 20;
 		breedteUitv = 33;
 		
-		exp = new BasisExpressie("x");
+		exp = new BasisExpressie("qq");
 		
 	}
 	
@@ -215,11 +215,9 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			g.fillPolygon(pijlMin);
 			g.drawPolygon(pijlMin);	
 			if(exp!=null)
-			{	System.out.println("test7");
-				String s = exp.geefVarNaam();
+			{	String s = exp.geefVarNaam();
 				if(s!=null && !s.equals(""))
-				{	System.out.println("test8 "+schaalFactorX);
-					for(int i=0 ; i<8 ; i++)
+				{	for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
 							g.drawString(exp.df.format(d),8,28+i*15);
@@ -242,18 +240,19 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			varNaam = e.geefVarNaam();
 		}
 		else //exp = null;
-		{	exp = new BasisExpressie("x"); 
-		varNaam = "x";
+		{	exp = new BasisExpressie("qq"); 
+			varNaam = "qq";
 		}
 	}
 	
 	public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
 	{	varNaam = exp.geefVarNaam();
+	System.out.println("test3"+varNaam +varN);
+	
 		if(varNaam.equals(varN))
 		{	this.beginwaarde = beginwaarde;
 			this.selectnummer = selectnummer;
 			this.schaalFactorX = schaalFactorX;
-			System.out.println("test6 "+schaalFactorX + exp.toString());
 			repaint();
 		}
 	}

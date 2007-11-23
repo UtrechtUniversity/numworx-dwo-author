@@ -27,7 +27,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	boolean fixed = false;
 	private Panel hidePanel;
 	
-	public static ZoomStateHolder zoomStateHolder;
+	public ZoomStateHolder zoomStateHolder;
 	
 	//private Button kopieerKnop;
 	
@@ -240,8 +240,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		      	}
 		    }
 	      	catch(Exception e)
-	      	{	System.out.println(e.toString());
-	      		System.out.println(classNames[i]);	
+	      	{	
 	      	}
 	    }
 	    
@@ -546,7 +545,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	{	for(int i=0 ; i<aantalSc ; i++)
 			{	if(schuifcomponenten[i]instanceof UitvoerSchuifComponent)
 				{	((UitvoerSchuifComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
-					System.out.println("test2");
+					
 				}
 				if(schuifcomponenten[i]instanceof GrafiekComponent)
 				{	((GrafiekComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);

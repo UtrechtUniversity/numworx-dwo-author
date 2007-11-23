@@ -90,7 +90,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		add(popup);
 		
-		verborgenExpressie = new BasisExpressie("x");
+		verborgenExpressie = new BasisExpressie("qq");
 		
 		if(!links)
 		{	plusMinKnop = new PlusMinKnop(b-12,1,10,h-2, PlusMinKnop.VERTIKAAL);
@@ -184,7 +184,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		this.beginwaarde = beginwaarde;
 		this.selectnummer = selectnummer;
 		this.factorRijNummerX = factorRijNummerX;
-		((AlgebraSchuifVeld)schuifveld).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
+		//((AlgebraSchuifVeld)schuifveld).zetTabellen(beginwaarde,selectnummer, "x", schaalFactorX);
 		
 		
 		super.setState(h);
@@ -420,7 +420,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				remove(plusMinKnop);
 			}
 			expressie = beginw;
-			verborgenExpressie = new BasisExpressie("x");
+			verborgenExpressie = new BasisExpressie("qq");
 		}
 		
 		if(expressie!=null && expressie.geefVarNaam()!=null)tabel.zetExpressie(expressie);
@@ -457,19 +457,16 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	}
 	
 	public void setZoomState(String varnaam, ZoomState zoomState)
-	{	System.out.println("test3");
-	
-		//if(expressie!=null && expressie.geefVarNaam()!=null && expressie.geefVarNaam().equals(varnaam)
-		//	|| verborgenExpressie!=null && verborgenExpressie.geefVarNaam()!=null && verborgenExpressie.geefVarNaam().equals(varnaam))
+	{	System.out.println("test2"+varnaam);
+		if(expressie!=null && expressie.geefVarNaam()!=null && expressie.geefVarNaam().equals(varnaam)
+			|| expressie==null && varnaam.equals("qq"))
 		{	this.beginwaarde = zoomState.getBeginwaarde();
 			this.selectnummer = zoomState.getSelectnummer();
 			this.schaalFactorX = zoomState.getSchaalFactorX();
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
-			System.out.println("test4"+schaalFactorX);
 			
-			//if(tabelZichtbaar)
-			{	System.out.println("test5"+schaalFactorX);
-				tabel.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
+			if(tabelZichtbaar)
+			{	tabel.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
 				if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
 			}
 			zetMaat();
@@ -589,7 +586,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varnaam, schaalFactorX);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varnaam, factorRijNummerX);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varnaam);
-            System.out.println("test1");
+            System.out.println("test1"+varnaam);
             schuifveld.tekenOpnieuw();
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))

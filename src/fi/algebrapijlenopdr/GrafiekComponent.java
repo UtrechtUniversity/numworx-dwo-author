@@ -687,7 +687,17 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				beginwaarde = 0;
 				selectnummer = 999;
 				if(aantalPijlenIn>0)
-				{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+				{	//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+					//String varnaam = null;
+		            //if(expressie!=null) varnaam = expressie.geefVarNaam();
+		            //if(varnaam==null && verborgenExpressie!=null) varnaam = verborgenExpressie.geefVarNaam();
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varNaam, schaalFactorX);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varNaam, factorRijNummerX);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorY(varNaam, schaalFactorY);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerY(varNaam, factorRijNummerY);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+		            
 				}
 				
 				tracex = (int) Math.round(tracexD);
@@ -894,7 +904,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			
 			if(x)selectnummer = 999;
             if(aantalPijlenIn>0)
-			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+			{	//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+            	((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varNaam, schaalFactorX);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varNaam, factorRijNummerX);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorY(varNaam, schaalFactorY);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerY(varNaam, factorRijNummerY);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+	            
 			}
 			
 			gv.tekenOpnieuw();
