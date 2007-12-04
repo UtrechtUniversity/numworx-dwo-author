@@ -25,6 +25,11 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	 private int starty;
 	 
 	 
+	 private int beginx;
+	 private int eenheidx= 14;
+	 private boolean raak=true;
+	 
+	 
 	
 	public TabelComponent()
 	{	addMouseListener(this);
@@ -37,7 +42,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		selectMogelijk = true;
 		dubbel = false;
 		if(dubbel)breedteInv = 20;
-		else breedteInv = 20;
+		else breedteInv = 30;
 		breedteUitv = 33;
 		
 		exp = new BasisExpressie("qq");
@@ -169,10 +174,10 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 					for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
-							g.drawString(exp.df.format(d),breedteInv+8,28+i*15);
+							g.drawString(exp.df.format(d),breedteInv+8,28+i*15+beginx);
 						}
 						else g.drawString("-",breedteInv+8,28+i*15);
-						g.drawString(exp.df.format(schaalFactorX*(i+beginwaarde)),5,28+i*15);
+						//g.drawString(exp.df.format(schaalFactorX*(i+beginwaarde)),5,28+i*15+beginx);
 					}
 				}
 			}
@@ -218,11 +223,12 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			{	String s = exp.geefVarNaam();
 				if(s!=null && !s.equals(""))
 				{	for(int i=0 ; i<8 ; i++)
-					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
+					{	int w = -(int)Math.round(beginx/eenheidx); 
+						if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
-							g.drawString(exp.df.format(d),8,28+i*15);
+							g.drawString(exp.df.format(d),8,28+i*15+beginx%eenheidx);
 						}
-						else g.drawString("-",8,28+i*15);
+						else g.drawString("-",8,28+i*15+beginx);
 					}
 				}
 			}
@@ -285,7 +291,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			return b;	
 		}
 		else
-		{	breedteUitv = 20;
+		{	breedteUitv = 30;
 			if(exp!=null)
 			{	varNaam = exp.geefVarNaam();
 				if(varNaam!=null && !varNaam.equals(""))
@@ -312,7 +318,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	if(pijlPlusContain.contains(e.getX(),e.getY()))
+	{	starty = e.getY();
+		if(pijlPlusContain.contains(e.getX(),e.getY()))
 		{	beginwaarde--;
 			selectnummer++;
 			((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam,schaalFactorX);
@@ -336,12 +343,36 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		}
 		((SchuifComponent)getParent()).mousePressed(e);
 	}	
+	
+	/*public void mousePressed(MouseEvent e)
+	{	requestFocus();
+		starty = e.getY();
+		raak = contains(e.getX(),e.getY());
+	}	*/
+	
 	public void mouseDragged(MouseEvent e)
-	{	((SchuifComponent)getParent()).mouseDragged(e);
+	{	if(raak)
+		{
+			int dy =  e.getY() - starty;
+		
+			beginx = beginx+dy;
+			int b = beginwaarde;
+			beginwaarde = -(int)Math.round(beginx/eenheidx);
+			selectnummer = selectnummer + b - beginwaarde;
+			repaint();
+			starty = e.getY();
+			
+		}
+
 	}
+	/*public void mouseDragged(MouseEvent e)
+	{	
+		
+	}*/
 	
 	public void mouseReleased(MouseEvent e)
-	{	((SchuifComponent)getParent()).mouseReleased(e);
+	{	beginx=0;
+		((SchuifComponent)getParent()).mouseReleased(e);
 	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}

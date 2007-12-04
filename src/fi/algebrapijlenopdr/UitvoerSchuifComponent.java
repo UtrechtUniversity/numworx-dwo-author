@@ -375,7 +375,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		label.setSize(b-10,20);
 		
 		if(!links)
-		{	tabel.setBounds(10,h-152,b-10,152);
+		{	tabel.setBounds(20,h-152,b-10,152);
 			tf.setBounds(12,corr,b-15-scrollCorr,20);
 			plusMinKnop.setLocation(b-12,1+corr);
 			zoomInKnop.setBounds(0,h-120,10,25);
@@ -383,7 +383,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			
 		}
 		else
-		{	tabel.setBounds(0,h-152,b-10,152);
+		{	tabel.setBounds(10,h-152,b-10,152);
 			tf.setBounds(2,corr,b-15-scrollCorr,20);
 			plusMinKnop.setLocation(b-22,1+corr);
 			zoomInKnop.setBounds(b-22,h-120,10,25);
@@ -513,6 +513,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	beginw = null;
 		}
 		expressie = beginw;
+		
+		if(expressie!=null && expressie.geefVarNaam()!=null)tabel.zetExpressie(expressie);
+		else tabel.zetExpressie(verborgenExpressie);
+		
 		zetMaat();
 		zetVeranderd(20);
 		tf.setEnabled(false);

@@ -9,6 +9,13 @@ public class ZoomStateHolder {
 	public ZoomStateHolder(AlgebraSchuifVeld asv)
 	{	this.asv = asv;
         zoomStates = new Hashtable();
+        setBeginwaarde("", 0);
+        setSchaalFactorX("", 1);
+        setFactorRijNummerX("", 99);
+        setSchaalFactorY("", 1);
+        setFactorRijNummerY("", 99);
+        setZoomStates("");
+        
 	}
 	
 	private Hashtable zoomStates;
@@ -61,9 +68,11 @@ public class ZoomStateHolder {
 	}
 	
 	public void setZoomStates(String varnaam)
-	{	
-		
-		asv.setZoomStates(varnaam, (ZoomState)zoomStates.get(varnaam));
+	{	asv.setZoomStates(varnaam, (ZoomState)zoomStates.get(varnaam));
+	}
+	
+	public ZoomState getZoomState(String varnaam)
+	{	return (ZoomState)zoomStates.get(varnaam);
 	}
 	
 	

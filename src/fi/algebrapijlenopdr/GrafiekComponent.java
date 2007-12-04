@@ -494,7 +494,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			}
 			
 		}
-		super.zetVeranderd(max);
+		
+		if(getParent()!=null)setZoomState(varNaam,((AlgebraSchuifVeld)getParent()).zoomStateHolder.getZoomState(varNaam));
+        super.zetVeranderd(max);
 	}
 	
 	public void verbind(Pijl p, int nr)
@@ -547,7 +549,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		//((UitvoerSchuifComponent)p.zender).zetGrafiek(false,this);
 		selectnummer = 999;
 		if(aantalPijlenIn==0)
-		{	((AlgebraSchuifVeld)getParent()).zetTabellen(0,selectnummer, varNaam, 1);
+		{	//((AlgebraSchuifVeld)getParent()).zetTabellen(0,selectnummer, varNaam, 1);
 			zetTabel(0,selectnummer, varNaam, 1);
 			varNaam = "";
 			formuleNaam = "";
@@ -628,8 +630,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				slider.zetStand(tracex);
 			}
 			if(aantalPijlenIn>0)
-			{	((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
-				
+			{	//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+				((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+	            
 			}
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
