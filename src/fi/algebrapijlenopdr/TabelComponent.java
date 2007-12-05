@@ -319,6 +319,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	
 	public void mousePressed(MouseEvent e)
 	{	starty = e.getY();
+		beginx = -beginwaarde*eenheidx;
 		if(pijlPlusContain.contains(e.getX(),e.getY()))
 		{	beginwaarde--;
 			selectnummer++;
@@ -371,7 +372,9 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	}*/
 	
 	public void mouseReleased(MouseEvent e)
-	{	beginx=0;
+	{	beginx=(beginx+eenheidx/2)/eenheidx*eenheidx;
+		beginwaarde = -(int)Math.round(beginx/eenheidx);
+	
 		((SchuifComponent)getParent()).mouseReleased(e);
 	}
 	public void mouseMoved(MouseEvent e){;}
