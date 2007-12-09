@@ -408,6 +408,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			expressie = pijlIn1.zender.geefUitvoer(20);
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
 			//((AlgebraSchuifVeld)getParent()).zetTabellen(0,999,"x",1);
+			zoomInKnop.setVisible(false);
+			zoomUitKnop.setVisible(false);
 		}
 		else 
 		{	if(scrollable  && expressie!=null && expressie.geefWaarde()!=null)
@@ -421,6 +423,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			}
 			expressie = beginw;
 			verborgenExpressie = new BasisExpressie("qq");
+			zoomInKnop.setVisible(true);
+			zoomUitKnop.setVisible(true);
 		}
 		
 		if(expressie!=null && expressie.geefVarNaam()!=null)tabel.zetExpressie(expressie);
