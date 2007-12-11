@@ -24,7 +24,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private boolean gevuld;
 	private int beginwaarde;
 	private int selectnummer;
-	private String varNaam;
+	private String varNaam="qq";
 	private String formuleNaam;
 	private int xmin, xmax, ymin, ymax;
 	private double beginx, beginy;
@@ -106,7 +106,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		factorRijNummerY = 99;
 		schaalFactorX = 1;
 		factorRijNummerX = 99;
-		varNaam = "";
+		varNaam = "qq";
 		formuleNaam = "";
 		
 		dfs = new DecimalFormatSymbols();
@@ -180,7 +180,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		traceCheckbox.setBounds(13,getSize().height-13,10,10);
 	}
 	
-	public Hashtable getState()
+	/*public Hashtable getState()
 	{	double beginx  = 0;
 		double beginy  = 0;
 		double schaalFactorX  = 0;
@@ -247,7 +247,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
 		
 		super.setState(h);
-    }
+    }*/
     
     
 	
@@ -345,7 +345,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		g.setColor(Color.black);
 		FontMetrics fm = g.getFontMetrics();
 		int woordbreedte = fm.stringWidth(varNaam);
-		g.drawString(varNaam, veldx+veldb+5,veldy+veldh+5);
+		boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
+		if(!b) g.drawString(varNaam, veldx+veldb+5,veldy+veldh+5);
 		g.drawString(formuleNaam,veldx,veldy-8);
 		
 		//if(exp!=null && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals("") && selectnummer>-1 && selectnummer<11)
@@ -367,7 +368,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			String getal = df.format(schaalFactorX*(i));
 			woordbreedte = fm.stringWidth(getal);
 			if(schaalFactorX>0.5 && schaalFactorX<5 && woordbreedte<eenheidx)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
-			else if((i+imin -beginwaarde-1)%2==0)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
+			else if(i%2==0)g.drawString(getal,(int)(veldx+beginx+i*eenheidxD-woordbreedte/2),veldy+veldh+15);
 		}
 		for(int j=jmin+1 ; j<jmax ; j++)
 		{	String getal = df.format(schaalFactorY*(j));
@@ -387,7 +388,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	Expressie exp = null;
 		if(e!=null && e.geefVarNaam()!=null )
 		{	exp = e;
-			if(varNaam.equals("")|| aantalPijlenIn==1)varNaam = e.geefVarNaam();
+			if(varNaam.equals("qq")|| aantalPijlenIn==1)varNaam = e.geefVarNaam();
 			isPuntGrafiek[nr] = false;
 		}
 		else if(e!=null && e.geefWaarde()!=null && pijlenIn[nr]!=null)
@@ -425,7 +426,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		repaint();
 	}*/
 	
-	public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
+	/*public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
 	{	if(varNaam.equals(varN))
 		{	this.beginwaarde = beginwaarde;
 			beginx = eenheidx-eenheidx*beginwaarde;
@@ -439,18 +440,39 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			}
 			gv.tekenOpnieuw();
 		}
-	}
+	}*/
 	
 	public void setZoomState(String varNaam, ZoomState zoomState)
-	{	if(varNaam.equals(this.varNaam))
-		{	this.beginwaarde = zoomState.getBeginwaarde();
+	{	if(varNaam.equals(this.varNaam) && zoomState!=null)
+		{	double beginxOud = beginx;
+			double factorXOud = schaalFactorX;
+			System.out.println("beginx3 = "+beginx);
+			this.beginwaarde = zoomState.getBeginwaarde();
 			this.selectnummer = zoomState.getSelectnummer();
 			this.schaalFactorX = zoomState.getSchaalFactorX();
 			this.schaalFactorY = zoomState.getSchaalFactorY();
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
 			this.factorRijNummerY = zoomState.getFactorRijNummerY();
+			this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
+			this.beginy = (double)zoomState.getBeginy();
+			//this.tracexD = (double)zoomState.getTracexD();
 			
-			beginx = eenheidx-eenheidx*beginwaarde;
+			System.out.println("dx = "+beginwaarde);
+			System.out.println("dx = "+beginx);
+			
+			double dx  = beginx-beginxOud;
+			double factor = schaalFactorX/factorXOud;
+			
+			if(trace && tracex!=-2) {
+				tracexD = beginx+(tracexD-beginx)/factor+dx;
+				tracex = (int)Math.round(tracexD);
+				slider.zetStand(tracex);
+			}
+			
+			
+			
+			
+			//beginx = eenheidx-eenheidx*beginwaarde;
 			if(selectnummer!=999)tracing = false;
 			else
 			{	//tracexD = beginx+1.0*((selectnummer+beginwaarde)*eenheidx);
@@ -462,8 +484,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	}
 	
 	public void zetVeranderd(int max)
-	{	
-		for(int i=0 ; i<aantalPijlenIn ; i++)
+	{	for(int i=0 ; i<aantalPijlenIn ; i++)
 		{	Expressie e = pijlenIn[i].zender.geefUitvoer(20);
 			Expressie ev = pijlenIn[i].zender.geefVerborgenUitvoer(20);
 			zetExpressie(i,e);
@@ -516,7 +537,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			asc = asc.pijlIn1.zender;
 			e = asc.geefUitvoer(teller);
 		}
-		if(e!=null && e.geefVarNaam()!=null && varNaam!="" && !e.geefVarNaam().equals(varNaam)) return false;
+		if(e!=null && e.geefVarNaam()!=null && varNaam!="qq" && !e.geefVarNaam().equals(varNaam)) return false;
 					
 		//if(p.zender.geefUitvoer(20)!=null && !varNaam.equals("") && !varNaam.equals(p.zender.geefUitvoer(20).geefVarNaam()))return false;
 		Rectangle ingang = new Rectangle(-10,0,getSize().width+10, getSize().height);
@@ -550,8 +571,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		selectnummer = 999;
 		if(aantalPijlenIn==0)
 		{	//((AlgebraSchuifVeld)getParent()).zetTabellen(0,selectnummer, varNaam, 1);
-			zetTabel(0,selectnummer, varNaam, 1);
-			varNaam = "";
+			//zetTabel(0,selectnummer, varNaam, 1);
+			((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, eenheidy);
+            varNaam = "qq";
 			formuleNaam = "";
 			beginy = eenheidy;
 		}
@@ -562,6 +584,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		if(e.getSource()==gv)
 		{	startxv = e.getX();
 			startyv = e.getY();
+			setCursor(new Cursor(Cursor.MOVE_CURSOR));
 		}
 		else if(e.getX()>getSize().width-10 && e.getY()>getSize().height-10)
 		{	resize = true;
@@ -578,7 +601,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	public void mouseDragged(MouseEvent e)
 	{	if(e.getSource()==gv)
-		{	int dx = e.getX() - startxv;
+		{	
+			
+			int dx = e.getX() - startxv;
 			int dy =  e.getY() - startyv;
 		
 			beginx = beginx+dx;
@@ -589,14 +614,28 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				slider.zetStand(tracex);
 			}
 			
+			
 			int b = beginwaarde;
-			beginwaarde = 1-(int)Math.round(beginx/eenheidx);
+			if(beginx>0)beginwaarde = 1-(int)Math.round((beginx-eenheidx/2)/eenheidx);
+			else beginwaarde = 1-(int)Math.round((beginx+eenheidx/2)/eenheidx);
 			selectnummer = selectnummer + b - beginwaarde;
-			gv.tekenOpnieuw();
-			schuifveld.tekenOpnieuw();
+			
+			//gv.tekenOpnieuw();
+			//schuifveld.tekenOpnieuw();
+			System.out.println("beginx1 = "+beginx);
+			((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginx(varNaam, ((beginx-eenheid)*14)/eenheid);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, beginy);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setTracexD(varNaam, tracexD);
+			((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+            System.out.println("beginx2 = "+beginx);
+			
+            
 			startxv = e.getX();
 			startyv = e.getY();
 			
+			 
 		}
 		else if(resize)
 		{	int dx = e.getX() - startx;
@@ -621,9 +660,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	resize = false;
 		//trace = false;
 		if(e.getSource()==gv)
-		{	double beginxR = beginx;
+		{	setCursor(new Cursor(Cursor.HAND_CURSOR));
+			
+			double beginxR = beginx;
 			beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
+			
 			if(trace && tracex!=-2) {
 				tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
@@ -631,8 +673,18 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			}
 			if(aantalPijlenIn>0)
 			{	//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
+				
+				
 				((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
-	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorX(varNaam, schaalFactorX);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varNaam, factorRijNummerX);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorY(varNaam, schaalFactorY);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerY(varNaam, factorRijNummerY);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginx(varNaam, Math.round(beginx-eenheidx)*14/16);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, Math.round(beginy));
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setTracexD(varNaam, tracexD);
+				((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
 	            
 			}
 			gv.tekenOpnieuw();
@@ -641,8 +693,15 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		else super.mouseReleased(e);
 	}
 	
-	public void mouseMoved(MouseEvent e){;}
-	public void mouseExited(MouseEvent e){;}
+	public void mouseMoved(MouseEvent e)
+	{	
+	}
+	public void mouseExited(MouseEvent e)
+	{	if(e.getSource()==gv)
+		{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR ));
+			gv.tekenOpnieuw();
+		}
+	}
 	public void mouseClicked(MouseEvent e){;}
 	
 	public void actionPerformed(ActionEvent e)
@@ -700,7 +759,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varNaam, factorRijNummerX);
 		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorY(varNaam, schaalFactorY);
 		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerY(varNaam, factorRijNummerY);
-		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginx(varNaam, (beginx-eenheidx)*14/16);
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, Math.round(beginy));
+		            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setTracexD(varNaam, tracexD);
+					((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
 		            
 				}
 				
@@ -737,7 +800,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		//gv.tekenOpnieuw();
 	}
 	
-	public void mouseEntered(MouseEvent e){;}	
+	public void mouseEntered(MouseEvent e)
+	{	if(e.getSource()==gv)
+		{	setCursor(new Cursor(Cursor.HAND_CURSOR ));
+			//gv.tekenOpnieuw();
+			schuifveld.tekenOpnieuw();
+			
+		}
+	}	
 	
 	class ZoomDraad extends Thread 
 	{	boolean dood = false;
@@ -894,7 +964,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				schuifveld.tekenOpnieuw();
 			}
 			
-			
+			//beginx = Math.round(beginx/eenheid)*eenheid;
 			
 			beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 			double beginwaardeD = 1.0-(beginx/eenheidx);
@@ -907,6 +977,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			slider.zetStand(tracex);
 			
 			if(x)selectnummer = 999;
+			
+			beginx = eenheidx-eenheidx*beginwaarde;
+			
             if(aantalPijlenIn>0)
 			{	//((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
             	((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
@@ -914,7 +987,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerX(varNaam, factorRijNummerX);
 	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSchaalFactorY(varNaam, schaalFactorY);
 	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setFactorRijNummerY(varNaam, factorRijNummerY);
-	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginx(varNaam, (beginx-eenheid)*14/eenheid);
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, Math.round(beginy));
+	            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setTracexD(varNaam, tracexD);
+				((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
 	            
 			}
 			
@@ -996,7 +1073,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			g.drawString("O",bx-10,hoogte-by+12);
 			
 			for(int j=0 ; j<aantalPijlenIn ; j++)
-			{	if(isLijnGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()!=null && varNaam.equals(expressies[j].geefVarNaam())&& !expressies[j].geefVarNaam().equals(""))// && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals(""))
+			{	if(isLijnGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()!=null && varNaam.equals(expressies[j].geefVarNaam())&& !expressies[j].geefVarNaam().equals("qq"))// && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals(""))
 				{	g.setColor(Color.black);
 					for(int i=0 ; i<breedte ; i++)
 					{	double ii = i;

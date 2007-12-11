@@ -5,6 +5,7 @@ import java.util.*;
 public class ZoomStateHolder {
 	
 	private AlgebraSchuifVeld asv;
+	private Hashtable zoomStates;
 	
 	public ZoomStateHolder(AlgebraSchuifVeld asv)
 	{	this.asv = asv;
@@ -18,8 +19,31 @@ public class ZoomStateHolder {
         
 	}
 	
-	private Hashtable zoomStates;
+	public Enumeration keys()
+	{	return zoomStates.keys();
+	}
 	
+	public Hashtable getState()
+	{	Hashtable h = new Hashtable();
+		Enumeration en = zoomStates.keys();
+		while(en.hasMoreElements())
+		{	String key = (String)en.nextElement();
+			h.put(key, ((ZoomState)zoomStates.get(key)).getState());
+		}
+		return h;
+	}
+
+    public void setState(Hashtable h)
+    {	if(h==null) return;
+    	Enumeration en = h.keys();
+		while(en.hasMoreElements())
+		{	String key = (String)en.nextElement();
+			ZoomState zs = new ZoomState();
+			zs.setState((Hashtable)h.get(key));
+			zoomStates.put(key, zs);
+		}
+    }
+    
 	public void setSchaalFactorX(String varnaam, double schaalFactorX)
 	{	ZoomState zs = null;
         if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
@@ -64,6 +88,30 @@ public class ZoomStateHolder {
         if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
         if(zs ==null) zs = new ZoomState();
         zs.setSelectnummer(selectnummer);
+        zoomStates.put(varnaam, zs);
+	}
+	
+	public void setBeginx(String varnaam, double beginx)
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setBeginx(beginx);
+        zoomStates.put(varnaam, zs);
+	}
+	
+	public void setBeginy(String varnaam, double beginy)
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setBeginy(beginy);
+        zoomStates.put(varnaam, zs);
+	}
+	
+	public void setTracexD(String varnaam, double tracexD)
+	{	ZoomState zs = null;
+        if(zoomStates.containsKey(varnaam)) zs = (ZoomState)zoomStates.get(varnaam);
+        if(zs ==null) zs = new ZoomState();
+        zs.setTracexD(tracexD);
         zoomStates.put(varnaam, zs);
 	}
 	

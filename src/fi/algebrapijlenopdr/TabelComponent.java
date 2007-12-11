@@ -27,7 +27,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	 
 	 private int beginx;
 	 private int eenheidx= 14;
-	 private boolean raak=true;
+	 private boolean raak=false;
 	 
 	 
 	
@@ -49,7 +49,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		
 	}
 	
-	public Hashtable getState()
+	/*public Hashtable getState()
 	{	int beginwaarde  = 0;
 		int selectnummer  = 0;
 		double schaalFactorX  = 1;
@@ -73,7 +73,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		this.beginwaarde = beginwaarde;
 		this.selectnummer = selectnummer;
 		this.schaalFactorX = schaalFactorX;
-    }
+    }*/
     
 	public void paint(Graphics g)
 	{	int breedte = getSize().width;
@@ -250,14 +250,16 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		}
 	}
 	
-	public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
+	public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX, double beginx)
 	{	varNaam = exp.geefVarNaam();
-	System.out.println("test3"+varNaam +varN);
+		//System.out.println("test3"+varNaam +varN);
 	
 		if(varNaam.equals(varN))
 		{	this.beginwaarde = beginwaarde;
 			this.selectnummer = selectnummer;
 			this.schaalFactorX = schaalFactorX;
+			this.beginx = (int)Math.round(beginx);
+			
 			repaint();
 		}
 	}
@@ -318,7 +320,10 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	
 	public void mousePressed(MouseEvent e)
 	{	starty = e.getY();
+		raak = (new Rectangle(4,17,getSize().width-9,115)).contains(e.getX(),e.getY());
+		setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 		
+				
 		if(pijlPlusContain.contains(e.getX(),e.getY()))
 		{	beginwaarde--;
 			selectnummer++;
@@ -338,7 +343,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		//((AlgebraSchuifVeld)getParent().getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
         //((AlgebraSchuifVeld)getParent().getParent()).zoomStateHolder.setZoomStates(varNaam);
         
-		((SchuifComponent)getParent()).mousePressed(e);
+		if(!raak)((SchuifComponent)getParent()).mousePressed(e);
 	}	
 	
 	/*public void mousePressed(MouseEvent e)
@@ -356,8 +361,13 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			int b = beginwaarde;
 			beginwaarde = -(int)Math.round(beginx/eenheidx);
 			selectnummer = selectnummer + b - beginwaarde;
-			repaint();
+			//repaint();
 			starty = e.getY();
+			
+			((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
+	        ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+	        ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setBeginx(varNaam, beginx);
+	        ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setZoomStates(varNaam);
 			
 		}
 
@@ -368,11 +378,13 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	}*/
 	
 	public void mouseReleased(MouseEvent e)
-	{	//beginx = -beginwaarde*eenheidx;
+	{	setCursor(new Cursor(Cursor.HAND_CURSOR));
 		int beginxOud = beginx;
+		int b = beginwaarde;
 		if(beginx>0)beginx = (beginx+eenheidx/2)/eenheidx*eenheidx;
 		else beginx = (beginx-eenheidx/2)/eenheidx*eenheidx;
 		beginwaarde = -(int)Math.round(beginx/eenheidx);
+		selectnummer = selectnummer + b - beginwaarde;
 		beginx = -beginwaarde*eenheidx;
 		
 		
@@ -389,13 +401,20 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		}
 		((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
         ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
+        ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setBeginx(varNaam, beginx);
         ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setZoomStates(varNaam);
         
         
 		
 	}
 	public void mouseMoved(MouseEvent e){;}
-	public void mouseExited(MouseEvent e){;}
+	public void mouseExited(MouseEvent e)
+	{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	
+	}
 	public void mouseClicked(MouseEvent e){;}
-	public void mouseEntered(MouseEvent e){;}	
+	public void mouseEntered(MouseEvent e)
+	{	setCursor(new Cursor(Cursor.HAND_CURSOR));
+	
+	}	
 }

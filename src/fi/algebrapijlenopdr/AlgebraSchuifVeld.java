@@ -3,6 +3,8 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
+
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.lang.reflect.Constructor;
 
@@ -124,6 +126,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		boolean grafiek = false;
 		boolean expressie = false;
 		boolean links = false;
+		Hashtable zoomStateHolderState = null;
 	
 		aantalSc = this.aantalSc;
 		classNames = new String[aantalSc];
@@ -149,7 +152,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	    grafiek = grafiekCheckbox.getState();
 	    expressie = ip.isExpr();
 	    links = this.links;
-	    
+	    zoomStateHolderState = zoomStateHolder.getState();
 	    	
 	    graphConnections = new int[10];
 	    for(int i=0 ; i<10; i++)
@@ -176,6 +179,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	    h.put("grafiek", new Boolean(grafiek));
 	    h.put("expressie", new Boolean(expressie));
 	    h.put("links", new Boolean(links));
+	    h.put("zoomStateHolderState", zoomStateHolderState);
 	    return h;
 	}
 	
@@ -197,6 +201,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		boolean grafiek = false;
 		boolean expressie = false;
 		boolean links = false;
+		Hashtable zoomStateHolderState = null;
 		
 		try{
 		
@@ -211,8 +216,11 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		grafiek = ((Boolean)h.get("grafiek")).booleanValue();
 		expressie = ((Boolean)h.get("expressie")).booleanValue();
 		links = ((Boolean)h.get("links")).booleanValue();
+		zoomStateHolderState = (Hashtable)h.get("zoomStateHolderState");
 		}
 		catch(Exception ex){return;}
+		
+		zoomStateHolder.setState(zoomStateHolderState);
 		
 		int n = this.aantalSc;
 		for(int i=0 ; i<n ; i++)
@@ -313,6 +321,14 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 				}
 			}
 		}
+	    
+	    
+	    Enumeration en = zoomStateHolder.keys();
+		while(en.hasMoreElements())
+		{	String key = (String)en.nextElement();
+			setZoomStates(key,zoomStateHolder.getZoomState(key));
+		}
+	    
     }
 	
 	public void paint(Graphics g)
@@ -531,14 +547,14 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	}
 	
 	public void zetTabellen(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
-	{	for(int i=0 ; i<aantalSc ; i++)
+	{	/*for(int i=0 ; i<aantalSc ; i++)
 			{	if(schuifcomponenten[i]instanceof UitvoerSchuifComponent)
 				{	((UitvoerSchuifComponent)schuifcomponenten[i]).zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
 				}
 				if(schuifcomponenten[i]instanceof GrafiekComponent)
 				{	((GrafiekComponent)schuifcomponenten[i]).zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
 				}
-			}
+			}*/
 	}
 	
 	public void setZoomStates(String varnaam, ZoomState zoomState)
@@ -551,6 +567,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 				{	((GrafiekComponent)schuifcomponenten[i]).setZoomState(varnaam, zoomState);
 				}
 			}
+		tekenOpnieuw();
 	}
 	
 	public void actionPerformed(ActionEvent e)

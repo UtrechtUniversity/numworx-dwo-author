@@ -50,7 +50,7 @@ public class ZoomKnop extends Component implements MouseListener
 				g.drawLine(0,getSize().height-1,getSize().width-1,getSize().height-1);
 			}		}		int b = getSize().width;
 		int h = getSize().height;		g.setColor(Color.black);
-		if(code.equals("zoominx"))		{	g.drawLine(3,12,6,9);
+		if(code.equals("zoominx"))		{	/*g.drawLine(3,12,6,9);
 			g.drawLine(3,12,6,15);
 			g.drawLine(4,12,7,9);
 			g.drawLine(4,12,7,15);
@@ -59,8 +59,18 @@ public class ZoomKnop extends Component implements MouseListener
 			g.drawLine(19,9,22,12);
 			g.drawLine(19,15,22,12);
 			g.drawLine(18,9,21,12);
-			g.drawLine(18,15,21,12);
-		}		else if(code.equals("zoomuitx"))		{	g.drawLine(7,9,10,12);
+			g.drawLine(18,15,21,12);*/
+			
+			g.drawOval(8,3,8,8);
+			g.drawLine(12,5,12,9);
+			g.drawLine(10,7,14,7);
+			
+			g.drawLine(8,18,17,18);
+			g.drawLine(8,18,10,16);
+			g.drawLine(8,18,10,20);
+			g.drawLine(17,18,15,16);
+			g.drawLine(17,18,15,20);
+		}		else if(code.equals("zoomuitx"))		{	/*g.drawLine(7,9,10,12);
 			g.drawLine(7,15,10,12);
 			g.drawLine(6,9,9,12);
 			g.drawLine(6,15,9,12);
@@ -69,7 +79,18 @@ public class ZoomKnop extends Component implements MouseListener
 			g.drawLine(18,9,15,12);
 			g.drawLine(18,15,15,12);
 			g.drawLine(19,9,16,12);
-			g.drawLine(19,15,16,12);
+			g.drawLine(19,15,16,12);*/
+			
+			g.drawOval(8,3,8,8);
+			g.drawLine(10,7,14,7);
+			
+			g.drawLine(8,18,17,18);
+			g.drawLine(8,18,10,16);
+			g.drawLine(8,18,10,20);
+			g.drawLine(17,18,15,16);
+			g.drawLine(17,18,15,20);
+			
+			
 		}		else if(code.equals("zoominy"))		{	g.drawLine(12,3,9,6);
 			g.drawLine(12,3,15,6);
 			g.drawLine(12,4,9,7);
@@ -114,6 +135,28 @@ public class ZoomKnop extends Component implements MouseListener
 			g.drawLine(7,19,4,15);
 			g.drawLine(1,18,4,18);
 			g.drawLine(7,18,4,18);
+		}
+		else if(code.equals("zoominxsmal"))
+		{	g.drawOval(1,3,8,8);
+			g.drawLine(5,5,5,9);
+			g.drawLine(3,7,7,7);
+			
+			g.drawLine(1,18,10,18);
+			g.drawLine(1,18,3,16);
+			g.drawLine(1,18,3,20);
+			g.drawLine(10,18,8,16);
+			g.drawLine(10,18,8,20);
+			
+		}
+		else if(code.equals("zoomuitxsmal"))
+		{	g.drawOval(1,3,8,8);
+			g.drawLine(3,7,7,7);
+			
+			g.drawLine(1,18,10,18);
+			g.drawLine(1,18,3,16);
+			g.drawLine(1,18,3,20);
+			g.drawLine(10,18,8,16);
+			g.drawLine(10,18,8,20);
 		}		else if(code.equals("zoomin"))		{	g.drawOval(4,4,12,12);
 			g.drawLine(7,10,13,10);
 			g.drawLine(10,7,10,13);
