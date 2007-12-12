@@ -37,6 +37,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private int beginwaarde;
 	private int selectnummer;
 	private double beginx;
+	private String defaultVarnaam = "qq"+1000*Math.random();
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -50,6 +51,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		label = new InUitvoerLabel();
 		tabel = new TabelComponent();
+		tabel.setDefaultVarnaam(defaultVarnaam);
 		
 		tf = new TextField();
 		if(!links)tf.setBounds(12,0,35,20);
@@ -91,7 +93,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		add(popup);
 		
-		verborgenExpressie = new BasisExpressie("qq");
+		verborgenExpressie = new BasisExpressie(defaultVarnaam);
 		
 		if(!links)
 		{	plusMinKnop = new PlusMinKnop(b-12,1,10,h-2, PlusMinKnop.VERTIKAAL);
@@ -424,7 +426,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				remove(plusMinKnop);
 			}
 			expressie = beginw;
-			verborgenExpressie = new BasisExpressie("qq"+1000*Math.random());
+			verborgenExpressie = new BasisExpressie(defaultVarnaam);
 			zoomInKnop.setVisible(true);
 			zoomUitKnop.setVisible(true);
 		}

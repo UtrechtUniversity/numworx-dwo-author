@@ -29,6 +29,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	 private int eenheidx= 14;
 	 private boolean raak=false;
 	 
+	 private String defaultVarnaam;
+	 
 	 
 	
 	public TabelComponent()
@@ -45,8 +47,13 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		else breedteInv = 30;
 		breedteUitv = 33;
 		
-		exp = new BasisExpressie("qq");
 		
+		
+	}
+	
+	public void setDefaultVarnaam(String s)
+	{	defaultVarnaam = s;
+		exp = new BasisExpressie(defaultVarnaam);
 	}
 	
 	/*public Hashtable getState()
@@ -245,8 +252,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			varNaam = e.geefVarNaam();
 		}
 		else //exp = null;
-		{	exp = new BasisExpressie("qq"); 
-			varNaam = "qq";
+		{	exp = new BasisExpressie(defaultVarnaam); 
+			varNaam = defaultVarnaam;
 		}
 	}
 	
@@ -321,7 +328,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	public void mousePressed(MouseEvent e)
 	{	starty = e.getY();
 		raak = (new Rectangle(4,17,getSize().width-9,115)).contains(e.getX(),e.getY());
-		setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+		if(new Rectangle(0,17,getSize().width-5,getSize().height-34).contains(e.getX(), e.getY()))
+			setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 		
 				
 		if(pijlPlusContain.contains(e.getX(),e.getY()))
@@ -414,7 +422,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	}
 	public void mouseClicked(MouseEvent e){;}
 	public void mouseEntered(MouseEvent e)
-	{	setCursor(new Cursor(Cursor.HAND_CURSOR));
+	{	//if(new Rectangle(0,17,getSize().width-5,getSize().height-34).contains(e.getX(), e.getY()))
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
 	
 	}	
 }
