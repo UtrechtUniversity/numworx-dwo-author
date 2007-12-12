@@ -184,7 +184,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 							if(i<7 && beginx>0 || i>0 && beginx<0 ||beginx%eenheidx==0) g.drawString(exp.df.format(d),breedteInv+8,28+i*15+beginx%eenheidx);
 						}
 						else g.drawString("-",breedteInv+8,28+i*15+beginx%eenheidx);
-						//g.drawString(exp.df.format(schaalFactorX*(i+beginwaarde)),5,28+i*15+beginx);
+						g.drawString(exp.df.format(schaalFactorX*(i+beginwaarde)),5,28+i*15+beginx%eenheidx);
 					}
 				}
 			}

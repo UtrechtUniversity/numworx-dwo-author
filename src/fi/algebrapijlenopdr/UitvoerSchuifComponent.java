@@ -431,6 +431,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			zoomUitKnop.setVisible(true);
 		}
 		
+		if(!kettingZichtbaar)
+		{	zoomInKnop.setVisible(true);
+			zoomUitKnop.setVisible(true);
+		}
+		
 		if(expressie!=null && expressie.geefVarNaam()!=null)tabel.zetExpressie(expressie);
 		else tabel.zetExpressie(verborgenExpressie);
 		
@@ -638,9 +643,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
 		{	zetKettingZichtbaarHier(true);
+			zoomInKnop.setVisible(false);
+			zoomUitKnop.setVisible(false);
 		}
 		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
 		{	zetKettingZichtbaarHier(false);
+			zoomInKnop.setVisible(true);
+			zoomUitKnop.setVisible(true);
 		}
 	}
 	
