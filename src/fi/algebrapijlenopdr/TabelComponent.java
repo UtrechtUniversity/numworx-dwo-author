@@ -282,7 +282,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			if(exp!=null)
 			{	varNaam = exp.geefVarNaam();
 				if(varNaam!=null && !varNaam.equals(""))
-				{	breedteInv = Math.max(breedteInv,fm.stringWidth(varNaam)+4);
+				{	boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
+					if(!b)breedteInv = Math.max(breedteInv,fm.stringWidth(varNaam)+4);
 					
 					for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*i+beginwaarde))

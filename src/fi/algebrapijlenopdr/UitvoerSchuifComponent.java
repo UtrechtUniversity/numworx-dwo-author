@@ -182,7 +182,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		zetLabel(labelZichtbaar);
 		label.zetLabelTekst(labelTekst);
 		//tabel.setState(tabelState);
-        zetKettingZichtbaarHier(kettingZichtbaar);
+        if(!kettingZichtbaar)zetKettingZichtbaarHier(kettingZichtbaar);
         //this.schaalFactorX = schaalFactorX;
 		//this.beginwaarde = beginwaarde;
 		//this.selectnummer = selectnummer;
@@ -558,7 +558,6 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         tabel.zetDubbel(!b);
         zetMaat();
         schuifveld.tekenOpnieuw();
-        
     }
 	
 	public void actionPerformed(ActionEvent e)

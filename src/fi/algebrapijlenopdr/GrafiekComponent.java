@@ -65,6 +65,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private double tracexD = tracex;
 	private LWCheckbox traceCheckbox;
 	
+	private PopupMenu popup;
+	private boolean kettingZichtbaar;
+	private int movex, movey;
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
 		super.setBounds(x,y,b,h);
@@ -167,6 +170,20 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		traceCheckbox.setBackground(Color.white);
 		traceCheckbox.addActionListener(this);
 		add(traceCheckbox);
+		//if(((AlgebraSchuifVeld)schuifveld).fixed)traceCheckbox.setVisible(false);
+		
+		
+		popup = new PopupMenu();
+		
+		MenuItem mi = new MenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label5"));
+		mi.addActionListener(this);
+		popup.add(mi);
+		
+		mi = new MenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label6"));
+		mi.addActionListener(this);
+		popup.add(mi);
+		
+		add(popup);
 	}
 	
 	public void setSize(int b, int h)
@@ -179,6 +196,62 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		slider.setLocation(veldx-5,h-13);
 		traceCheckbox.setBounds(13,getSize().height-13,10,10);
 	}
+	
+	public Hashtable getState()
+	{	int sizeB = 0;
+		int sizeH = 0;
+		boolean trace = false;
+		double tracexD = 0;
+		double beginy = 0;
+		boolean kettingZichtbaar = true;
+							
+		sizeB = getSize().width;
+		sizeH = getSize().height;
+		trace = this.trace;
+		tracexD = this.tracexD;
+		beginy = this.beginy;
+		kettingZichtbaar = this.kettingZichtbaar;
+		
+		Hashtable h = super.getState();
+	    h.put("sizeB", new Integer(sizeB));
+	    h.put("sizeH", new Integer(sizeH));
+	    h.put("trace", new Boolean(trace));
+	    h.put("tracexD", new Double(tracexD));
+	    h.put("beginy", new Double(beginy));
+	    h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
+	    return h;
+	}
+	
+	public void setState(Hashtable h)
+    {	int sizeB = 0;
+		int sizeH = 0;
+		boolean trace = false;
+		double tracexD = 0;
+		double beginy = 0;
+		boolean kettingZichtbaar = true;
+		
+		if(h.containsKey("sizeB")) sizeB = ((Integer)h.get("sizeB")).intValue();
+    	if(h.containsKey("sizeH")) sizeH = ((Integer)h.get("sizeH")).intValue();
+    	if(h.containsKey("trace")) trace = ((Boolean)h.get("trace")).booleanValue();
+    	if(h.containsKey("tracexD")) tracexD = ((Double)h.get("tracexD")).doubleValue();
+    	if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
+    	if(h.containsKey("kettingZichtbaar")) kettingZichtbaar = ((Boolean)h.get("kettingZichtbaar")).booleanValue();
+    	
+		
+		setSize(sizeB,sizeH);
+		this.trace = trace;
+		this.tracexD = tracexD;
+		this.beginy = beginy;
+		tracex = (int)Math.round(tracexD);
+		slider.zetStand(tracex);
+		this.kettingZichtbaar = kettingZichtbaar;
+		if(!kettingZichtbaar)zetKettingZichtbaarHier(kettingZichtbaar);
+        
+		
+		traceCheckbox.aan = trace;
+		slider.setVisible(trace);
+		
+    }
 	
 	/*public Hashtable getState()
 	{	double beginx  = 0;
@@ -454,7 +527,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
 			this.factorRijNummerY = zoomState.getFactorRijNummerY();
 			this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
-			this.beginy = (double)zoomState.getBeginy();
+			//this.beginy = (double)zoomState.getBeginy();
 			//this.tracexD = (double)zoomState.getTracexD();
 			
 			System.out.println("dx = "+beginwaarde);
@@ -482,6 +555,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			gv.tekenOpnieuw();
 		}
 	}
+	
+	public void zetKettingZichtbaarHier(boolean b)
+    {   for(int i=0 ; i<aantalPijlenIn ; i++)
+		{	if(pijlenIn[i]!=null)pijlenIn[i].zender.zetKettingZichtbaar(b);
+	        kettingZichtbaar = b;
+	        schuifveld.tekenOpnieuw();
+	    }
+    }
 	
 	public void zetVeranderd(int max)
 	{	for(int i=0 ; i<aantalPijlenIn ; i++)
@@ -581,6 +662,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	public void mousePressed(MouseEvent e)
 	{	requestFocus();
+		
+		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+		{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
+			popup.show(this,e.getX(),e.getY());
+			return;
+		}
 		if(e.getSource()==gv)
 		{	startxv = e.getX();
 			startyv = e.getY();
@@ -694,8 +781,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	}
 	
 	public void mouseMoved(MouseEvent e)
-	{	
+	{	movex = e.getX();
+		movey = e.getY();
+		gv.tekenOpnieuw();
+		schuifveld.tekenOpnieuw();
 	}
+	
 	public void mouseExited(MouseEvent e)
 	{	if(e.getSource()==gv)
 		{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR ));
@@ -712,7 +803,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		//}
 		if(e.getActionCommand().equals("focus")) schuifveld.tekenOpnieuw();
 		else 
-		{	if(e.getSource()==zoomUitY && factorRijNummerY<120)
+		{	if(e.getSource()instanceof MenuItem && ((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
+			{	zetKettingZichtbaarHier(true);
+			}
+			else if(e.getSource()instanceof MenuItem && ((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
+			{	zetKettingZichtbaarHier(false);
+			}
+			else if(e.getSource()==zoomUitY && factorRijNummerY<120)
 			{	zoomDraad = new ZoomDraad(false,true,false);
 				zoomDraad.start();
 			}
@@ -791,7 +888,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			
 		}
 		if(e.getSource()==traceCheckbox)
-		{	trace = traceCheckbox.aan;
+		{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
+			trace = traceCheckbox.aan;
 			slider.setVisible(trace);
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
@@ -801,7 +899,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	}
 	
 	public void mouseEntered(MouseEvent e)
-	{	if(e.getSource()==gv)
+	{	requestFocus();
+	
+		if(e.getSource()==gv)
 		{	setCursor(new Cursor(Cursor.HAND_CURSOR ));
 			//gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
@@ -1163,7 +1263,18 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					g.setColor(Color.black);
 					g.fillOval(x-2,y-2,5,5);
 					
-							
+					g.setFont(font);
+					fm = g.getFontMetrics();
+					String xString = df.format(puntXWaarde[j]);
+					String yString = df.format(d0);
+					int woordBreedte = 40;
+					if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
+					g.setColor(new Color(255,255,225));
+					g.fillRect(x+2,y-17,woordBreedte+20,15);
+					g.setColor(Color.black);
+					//g.drawRect(x+10,y-20,40,15);
+					g.drawString("(" + xString + " , " + yString + ")", x+4,y-5);
+					
 				}
 				if(isMeerPuntenGrafiek[j] && expressies[j]!=null)
 				{	g.setColor(Color.black);
@@ -1174,6 +1285,21 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						{	double d0 = expressies[j].geefW((k+beginwaarde)*schaalFactorX);
 							int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 							g.fillOval(x-2,y-2,5,5);
+							
+							if(new Rectangle(x-2,y-2,5,5).contains(movex, movey))
+							{	g.setFont(font);
+							fm = g.getFontMetrics();
+							String xString = df.format(puntXWaarde[j]);
+							String yString = df.format(d0);
+							int woordBreedte = 40;
+							if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
+							g.setColor(new Color(255,255,225));
+							g.fillRect(x+2,y-17,woordBreedte+20,15);
+							g.setColor(Color.black);
+							//g.drawRect(x+10,y-20,40,15);
+							g.drawString("(" + xString + " , " + yString + ")", x+4,y-5);
+								
+							}
 						}
 				    }
 				    /*g.setColor(new Color(255,0,0));
