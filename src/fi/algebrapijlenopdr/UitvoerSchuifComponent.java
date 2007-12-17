@@ -577,7 +577,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			}
 		}
 		else if(e.getSource()==zoomUitKnop)
-		{	if(!e.getActionCommand().equals("knop")) return;
+		{	if(!e.getActionCommand().equals("knop") || factorRijNummerX>120) return;
 			if(factorRijNummerX%3==1)
 			{	schaalFactorX*=2.5;
 				beginx = beginx/2.5;
@@ -601,7 +601,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
             schuifveld.tekenOpnieuw();
 		}
 		else if(e.getSource()==zoomInKnop)
-		{	if(!e.getActionCommand().equals("knop")) return;
+		{	if(!e.getActionCommand().equals("knop") || factorRijNummerX<87) return;
 			if(factorRijNummerX%3==2)
 			{	schaalFactorX/=2.5;
 				beginx = beginx*2.5;

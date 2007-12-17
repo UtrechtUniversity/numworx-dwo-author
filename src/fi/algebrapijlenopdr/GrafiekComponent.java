@@ -1265,15 +1265,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					
 					g.setFont(font);
 					fm = g.getFontMetrics();
-					String xString = df.format(puntXWaarde[j]);
-					String yString = df.format(d0);
+					String xString = dfTrace.format(puntXWaarde[j]);
+					String yString = dfTrace.format(d0);
 					int woordBreedte = 40;
 					if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
 					g.setColor(new Color(255,255,225));
-					g.fillRect(x+2,y-17,woordBreedte+20,15);
+					g.fillRect(x+6,y-7,woordBreedte+20,15);
 					g.setColor(Color.black);
-					//g.drawRect(x+10,y-20,40,15);
-					g.drawString("(" + xString + " , " + yString + ")", x+4,y-5);
+					g.drawString("(" + xString + " , " + yString + ")", x+8,y+5);
 					
 				}
 				if(isMeerPuntenGrafiek[j] && expressies[j]!=null)
@@ -1285,20 +1284,26 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						{	double d0 = expressies[j].geefW((k+beginwaarde)*schaalFactorX);
 							int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 							g.fillOval(x-2,y-2,5,5);
+						}
+				    }
+					for (int k = 0; k<8; k++) 
+					{	double d = bx+1.0*((k+beginwaarde)*eenheidx);
+						int x = (int)d;
+						if(expressies[j].isWaarde((k+beginwaarde)*schaalFactorX) && k<8 )
+						{	double d0 = expressies[j].geefW((k+beginwaarde)*schaalFactorX);
+							int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 							
 							if(new Rectangle(x-2,y-2,5,5).contains(movex, movey))
 							{	g.setFont(font);
-							fm = g.getFontMetrics();
-							String xString = df.format(puntXWaarde[j]);
-							String yString = df.format(d0);
-							int woordBreedte = 40;
-							if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
-							g.setColor(new Color(255,255,225));
-							g.fillRect(x+2,y-17,woordBreedte+20,15);
-							g.setColor(Color.black);
-							//g.drawRect(x+10,y-20,40,15);
-							g.drawString("(" + xString + " , " + yString + ")", x+4,y-5);
-								
+								fm = g.getFontMetrics();
+								String xString = dfTrace.format((k+beginwaarde)*schaalFactorX);
+								String yString = dfTrace.format(d0);
+								int woordBreedte = 40;
+								if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
+								g.setColor(new Color(255,255,225));
+								g.fillRect(x+6,y-7,woordBreedte+20,15);
+								g.setColor(Color.black);
+								g.drawString("(" + xString + " , " + yString + ")", x+8,y+5);	
 							}
 						}
 				    }
