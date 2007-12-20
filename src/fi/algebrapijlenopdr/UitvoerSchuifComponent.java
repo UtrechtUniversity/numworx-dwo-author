@@ -39,6 +39,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private double beginx;
 	private String defaultVarnaam = "qq"+1000*Math.random();
 	
+	private Color vakKleur;
+	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
 		
@@ -221,6 +223,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 
 	}
 	
+	public void zetVakKleur(Color color)
+	{	vakKleur = color;
+		if(color==Color.black) vakKleur = null;
+	}
+	
 	public void paint(Graphics g)
   	{ 	Color achtergrondkleur = Color.white;
 		if(pijlIn1!=null)achtergrondkleur = new Color(220,220,220);
@@ -238,7 +245,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			if(labelZichtbaar)labelCorr = 20;
 			if(tabelZichtbaar)tabelCorr = 152;
 			
-			g.setColor(achtergrondkleur);
+			if(vakKleur!=null) g.setColor(vakKleur);
+			else g.setColor(achtergrondkleur);
 			g.fillRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 			g.setColor(Color.black);
 			g.drawRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
@@ -268,7 +276,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			tabelCorr = 0;
 			if(labelZichtbaar)labelCorr = 20;
 			if(tabelZichtbaar)tabelCorr = 152;
-			g.setColor(achtergrondkleur);
+			if(vakKleur!=null) g.setColor(vakKleur);
+			else g.setColor(achtergrondkleur);
 			g.fillRect(2,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 			g.setColor(Color.black);
 			g.drawRect(2,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);

@@ -16,7 +16,7 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 	boolean actief, vast;
 	private boolean isStapel;
 	private boolean links = false;
-
+	private Color color = Color.black;
 	
 	public Pijl(AlgebraSchuifVeld asv)
 	{	schuifveld = asv;
@@ -34,11 +34,20 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 	{	links = b;
 	}
 	
+	public void setColor(Color color)
+	{	this.color = color;
+		zender.zetVakKleur(color);
+	}
+	
+	public Color getColor()
+	{	return color;
+	}
+	
 	public void paint(Graphics gIm)
   	{ 	
 		//gIm.setClip(Math.min(x0,x1)-7,Math.min(y0,y1)-20,Math.abs(x1-x0)+15,Math.abs(y1-y0)+41);
 		if(!links)
-		{	gIm.setColor(Color.black);
+		{	gIm.setColor(color);
 			double dx = x1-x0; double dy = y1-y0;
 			int teken = (int)((dy/Math.abs(dy)));
 			double s = Math.sqrt(dx*dx + dy*dy);
@@ -57,8 +66,8 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				xc1 = x1;
 				yc1 = y1-r1*teken;
 				booghoek = (int)((2*a - Math.PI)*180/Math.PI);
-				gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
-				gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
+				if(color==Color.black)gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
+				if(color==Color.black)gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
 			}
 			else if(Math.abs(dy)>1 && dx<0)
 			{	r0 = (int)Math.abs(dy/4);
@@ -70,14 +79,14 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				xc1 = x1;
 				yc1 = y1-r1*teken;
 				booghoek = -180;
-				gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
-				gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
-				gIm.drawLine(x0,yc0+teken*r0,x1,yc1-teken*r1);
+				if(color==Color.black)gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
+				if(color==Color.black)gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
+				if(color==Color.black)gIm.drawLine(x0,yc0+teken*r0,x1,yc1-teken*r1);
 			}
 			else
-			{	gIm.drawLine(x0,y0,x1,y1);
+			{	if(color==Color.black)gIm.drawLine(x0,y0,x1,y1);
 			}
-			if(vast)gIm.setColor(Color.red);
+			if(vast)gIm.setColor(color);
 			else gIm.setColor(Color.gray);
 		
 			pijlpuntBegin = new Polygon();
@@ -85,6 +94,10 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 			pijlpuntBegin.addPoint(x0-10, y0-7);
 			pijlpuntBegin.addPoint(x0-10, y0+7);
 			gIm.fillPolygon(pijlpuntBegin);
+			if(color!=Color.black)
+			{	//gIm.fillRect(x0-10, y0-10,20,20);
+				//gIm.drawString(AlgebraPijlenOpdr.rb.getString("grafiekLabel"),x0+12,y0);
+			}
 		
 			pijlpuntEind = new Polygon();
 			pijlpuntEind.addPoint(x1+10, y1);
@@ -97,7 +110,7 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 			pijlpuntKlik.addPoint(x1-2, y1-13);
 			pijlpuntKlik.addPoint(x1-2, y1+13);
 		
-			if(vast)gIm.setColor(Color.black);
+			if(vast)gIm.setColor(color);
 			else gIm.setColor(Color.gray);
 			gIm.fillPolygon(pijlpuntBegin);
 			gIm.fillPolygon(pijlpuntEind);

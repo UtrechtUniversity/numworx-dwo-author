@@ -1,6 +1,5 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
@@ -65,6 +64,10 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	{	label = b;
 		if(b)setLocation(getLocation().x, getLocation().y - 20);
 		else setLocation(getLocation().x, getLocation().y + 20);
+	}
+	
+	public void zetVakKleur(Color color)
+	{	
 	}
 	
 	public void paint(Graphics gIm)

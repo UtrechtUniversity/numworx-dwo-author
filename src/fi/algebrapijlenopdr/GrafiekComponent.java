@@ -68,6 +68,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private PopupMenu popup;
 	private boolean kettingZichtbaar;
 	private int movex, movey;
+	
+	private Color[] colors;
+	private Color traceKleur = Color.black;
+	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
 		super.setBounds(x,y,b,h);
@@ -87,8 +91,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		isMeerPuntenGrafiek = new boolean[10];
 		puntXWaarde = new double[10];
 		isLijnGrafiek = new boolean[10];
-		
-		
+				
 		beginwaarde = 0;
 		selectnummer = 999;
 		xmin = 0; 
@@ -184,6 +187,19 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		popup.add(mi);
 		
 		add(popup);
+		
+		colors = new Color[10];
+		
+		colors[0] = new Color(100,100,255);
+		colors[1] = new Color(50,230,50);
+		colors[2] = new Color(255,100,100);
+		colors[3] = new Color(100,255,255);
+		colors[4] = new Color(255,100,255);
+		colors[5] = Color.yellow;
+		colors[6] = Color.black;
+		colors[7] = Color.black;
+		colors[8] = Color.black;
+		colors[9] = Color.black;
 	}
 	
 	public void setSize(int b, int h)
@@ -581,7 +597,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					while(asc.pijlIn1 !=null && teller > 0)
 					{	teller--;
 						asc = asc.pijlIn1.zender;
-						puntXWaarde[i] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
+						Double d = asc.geefUitvoer(teller).geefWaarde();
+						if(d!=null) puntXWaarde[i] = d.doubleValue();
 						isPuntGrafiek[i] = true;
 					}
 				}
@@ -605,6 +622,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	pijlenIn[nr] = p;
 		p.zetEind(getLocation().x , getLocation().y+10+nr*15);
 		aantalPijlenIn++;
+		pijlenIn[nr].setColor(colors[nr]);
 	}
 
 	public boolean meldAan(Pijl p, int x, int y)
@@ -629,6 +647,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			if(e!=null && e.geefVarNaam() != null) varNaam = e.geefVarNaam();
 			
 			zetVeranderd(20);
+			if(p!=null) p.setColor(colors[aantalPijlenIn-1]);
 			schuifveld.tekenOpnieuw();
 			return true;
 		}
@@ -637,12 +656,19 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	
 	public void maakLos(Pijl p)
 	{	for(int i=0 ; i<aantalPijlenIn ; i++)
-		{	if(p==pijlenIn[i])
-			{	for(int j=i ; j<aantalPijlenIn-1 ; j++)
+		{	p.setColor(Color.black);
+			
+			if(p==pijlenIn[i])
+			{	
+				Color colorRes = colors[i];
+				for(int j=i ; j<aantalPijlenIn-1 ; j++)
 				{	pijlenIn[j] = pijlenIn[j+1];
+					colors[j] = colors[j+1];
 					pijlenIn[j].zetEind(getLocation().x , getLocation().y+10+j*15);
 					expressies[j] = expressies[j+1];
 				}
+				colors[aantalPijlenIn-1] = colorRes;
+				
 				pijlenIn[aantalPijlenIn-1]=null;
 				aantalPijlenIn--;
 				break;
@@ -1174,7 +1200,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			
 			for(int j=0 ; j<aantalPijlenIn ; j++)
 			{	if(isLijnGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()!=null && varNaam.equals(expressies[j].geefVarNaam())&& !expressies[j].geefVarNaam().equals("qq"))// && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals(""))
-				{	g.setColor(Color.black);
+				{	g.setColor(pijlenIn[j].getColor());
 					for(int i=0 ; i<breedte ; i++)
 					{	double ii = i;
 						double d0 = expressies[j].geefW(schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*ii/eenheidxD);//dd0.doubleValue();
@@ -1260,7 +1286,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					int x = (int)d;
 					double d0 = expressies[j].geefW((puntXWaarde[j])*schaalFactorX);
 					int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
-					g.setColor(Color.black);
+					g.setColor(pijlenIn[j].getColor());
 					g.fillOval(x-2,y-2,5,5);
 					
 					g.setFont(font);
@@ -1276,7 +1302,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					
 				}
 				if(isMeerPuntenGrafiek[j] && expressies[j]!=null)
-				{	g.setColor(Color.black);
+				{	g.setColor(pijlenIn[j].getColor());
 					for (int k = 0; k<8; k++) 
 					{	double d = bx+1.0*((k+beginwaarde)*eenheidx);
 						int x = (int)d;
@@ -1369,7 +1395,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
     					double dTraceY = expressies[j].geefW(dTraceX);
     					if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
     					{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-                            g.setColor(new Color(255,0,0));
+                            g.setColor(traceKleur);
                             g.fillOval(tracex-2,tracey-2,5,5);
     						g.drawLine(tracex,tracey,tracex,hoogte);
     						g.drawLine(tracex,tracey,0,tracey);

@@ -31,6 +31,8 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 	 
 	 private String defaultVarnaam;
 	 
+	 private Color traceKleur = new Color(220,220,220);
+	 
 	 
 	
 	public TabelComponent()
@@ -107,7 +109,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			//g.drawRect(3,0,breedteInv,15);
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
-			{	g.setColor(new Color(255,200,200));
+			{	g.setColor(traceKleur);
 				g.fillRect(breedteInv+6,15+selectnummer*15+beginx%eenheidx,breedteUitv-10,16);
 				g.fillRect(3,15+selectnummer*15+beginx%eenheidx,breedteInv,16);
 				g.setColor(Color.black);
@@ -197,7 +199,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 			g.drawRect(3,15,breedte-17,hoogte - 31);
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
-			{	g.setColor(new Color(255,200,200));
+			{	g.setColor(traceKleur);
 				if(selectnummer<7 && beginx>0 || selectnummer>0 && beginx<0 ||beginx%eenheidx==0)g.fillRect(3,15+selectnummer*15+beginx%eenheidx,breedte-17,16);
 				g.setColor(Color.black);
 				if(selectnummer<7 && beginx>0 || selectnummer>0 && beginx<0 ||beginx%eenheidx==0)g.drawRect(3,15+selectnummer*15+beginx%eenheidx,breedte-17,16);
