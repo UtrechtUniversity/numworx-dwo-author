@@ -399,6 +399,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		g.setColor(Color.black);
 		g.drawRect(10,0,breedte-11,hoogte - 1);
 		
+		g.setColor(Color.white);
+		g.drawLine(breedte-10, hoogte-2, breedte-2, hoogte-10);
+		g.drawLine(breedte-7, hoogte-2, breedte-2, hoogte-7);
+		
+		g.setColor(Color.gray.darker());
+		g.drawLine(breedte-9, hoogte-2, breedte-2, hoogte-9);
+		g.drawLine(breedte-6, hoogte-2, breedte-2, hoogte-6);
+		
 		/*g.setColor(Color.white);
 		g.drawLine(11,1,breedte-1,1);
 		g.drawLine(11,1,11,hoogte-1);
@@ -535,16 +543,35 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	{	if(varNaam.equals(this.varNaam) && zoomState!=null)
 		{	double beginxOud = beginx;
 			double factorXOud = schaalFactorX;
+			int factorRijNummerXOud = factorRijNummerX;
 			System.out.println("beginx3 = "+beginx);
-			this.beginwaarde = zoomState.getBeginwaarde();
-			this.selectnummer = zoomState.getSelectnummer();
-			this.schaalFactorX = zoomState.getSchaalFactorX();
+			//this.beginwaarde = zoomState.getBeginwaarde();
+			//this.selectnummer = zoomState.getSelectnummer();
+			//this.schaalFactorX = zoomState.getSchaalFactorX();
 			this.schaalFactorY = zoomState.getSchaalFactorY();
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
 			this.factorRijNummerY = zoomState.getFactorRijNummerY();
-			this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
+			//this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
 			//this.beginy = (double)zoomState.getBeginy();
 			//this.tracexD = (double)zoomState.getTracexD();
+			
+			if(factorRijNummerX-factorRijNummerXOud==1)
+			{	factorRijNummerX--;
+				zoomDraad = new ZoomDraad(true,false,false);
+				zoomDraad.start();
+			}
+			else if(factorRijNummerX-factorRijNummerXOud==-1)
+			{	factorRijNummerX++;
+				zoomDraad = new ZoomDraad(true,false,true);
+				zoomDraad.start();
+			}
+			else
+			{	this.schaalFactorX = zoomState.getSchaalFactorX();
+				this.beginwaarde = zoomState.getBeginwaarde();
+				this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
+				this.selectnummer = zoomState.getSelectnummer();
+				
+			}
 			
 			System.out.println("dx = "+beginwaarde);
 			System.out.println("dx = "+beginx);
@@ -557,6 +584,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				tracex = (int)Math.round(tracexD);
 				slider.zetStand(tracex);
 			}
+			
 			
 			
 			
@@ -703,6 +731,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		{	resize = true;
 			startx = e.getX();
 			starty = e.getY();
+			setCursor(new Cursor(Cursor.NW_RESIZE_CURSOR));
 		}
 		//else if(e.getX()>40 && e.getX()<getSize().width-10 && e.getY()>getSize().height-10)
 		//{	trace = true;
@@ -809,15 +838,22 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	public void mouseMoved(MouseEvent e)
 	{	movex = e.getX();
 		movey = e.getY();
+		if(e.getX()>getSize().width-10 && e.getY()>getSize().height-10)
+		{	setCursor(new Cursor(Cursor.NW_RESIZE_CURSOR));
+		}
+		else if(e.getX()>getSize().width-20 && e.getY()>getSize().height-20)
+		{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
 		gv.tekenOpnieuw();
 		schuifveld.tekenOpnieuw();
 	}
 	
 	public void mouseExited(MouseEvent e)
-	{	if(e.getSource()==gv)
+	{	//if(e.getSource()==gv)
 		{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR ));
 			gv.tekenOpnieuw();
 		}
+	
 	}
 	public void mouseClicked(MouseEvent e){;}
 	
@@ -1381,7 +1417,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 					}
 							
 				}
-				if(expressies[j]!=null && trace || selectnummer<8 && selectnummer>-1)
+				if(expressies[j]!=null && trace || expressies[j]!=null && selectnummer<8 && selectnummer>-1)
 				{	double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
                     int x = (int)Math.round(d);
                     if(!tracing && selectnummer<8 && selectnummer>-1)
