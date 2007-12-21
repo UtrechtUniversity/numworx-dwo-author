@@ -70,6 +70,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private int movex, movey;
 	
 	private Color[] colors;
+    private Color[] colorsSoft;
 	private Color traceKleur = Color.black;
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
@@ -189,8 +190,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		add(popup);
 		
 		colors = new Color[10];
+        colorsSoft = new Color[10];
 		
-		colors[0] = new Color(100,100,255);
+		colors[0] = new Color(0,0,255);
 		colors[1] = new Color(50,230,50);
 		colors[2] = new Color(255,100,100);
 		colors[3] = new Color(100,255,255);
@@ -200,6 +202,17 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		colors[7] = Color.black;
 		colors[8] = Color.black;
 		colors[9] = Color.black;
+        
+        colorsSoft[0] = new Color(100,100,255);
+        colorsSoft[1] = new Color(50,230,50);
+        colorsSoft[2] = new Color(255,100,100);
+        colorsSoft[3] = new Color(100,255,255);
+        colorsSoft[4] = new Color(255,100,255);
+        colorsSoft[5] = Color.yellow;
+        colorsSoft[6] = Color.black;
+        colorsSoft[7] = Color.black;
+        colorsSoft[8] = Color.black;
+        colorsSoft[9] = Color.black;
 	}
 	
 	public void setSize(int b, int h)
