@@ -52,7 +52,7 @@ public class Vermenigvuldiging extends Expressie
 	public String toString()
 	{	String s1 = kind1.toString();
 		String s2 = kind2.toString();
-		String op = "";
+		String op = "*";
 		
 		Vector v1 = Algebra.geefFactorenBeperkt(kind1,new Vector());
 		Vector v2 = Algebra.geefFactorenBeperkt(kind2,new Vector());

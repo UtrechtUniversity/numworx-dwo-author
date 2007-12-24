@@ -143,6 +143,22 @@ public class HerhaalCommandComponent extends CommandContainer  implements Action
 		return false;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "Herhaal " + gc1.geefWaardeString() + " keer" + "\n" + tab +"{";
+		String tabExtra = "      ";
+		String tabNieuw = tab + tabExtra;
+		for(int i=0 ; i<getComponentCount() ; i++)
+		{	Component c = getComponent(i);
+			if(c instanceof CommandComponent)
+			{	if(i==0) s = s +((CommandComponent)c).getCode(tabExtra.substring(2));
+				else s = s +((CommandComponent)c).getCode(tabNieuw);
+				
+			}
+		}
+		s = s + tab + "}\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

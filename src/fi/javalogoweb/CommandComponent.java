@@ -48,6 +48,16 @@ public class CommandComponent extends SchuifComponent
 		
 	}
 	
+	public void setParam1(String param)
+	{	gc1.zetTekst(param);
+		zetMaat();
+	}
+	
+	public void setParam2(String param)
+	{	gc2.zetTekst(param);
+		zetMaat();
+	}
+	
 	public void setLabel (String s)
 	{	label = s;
 	}
@@ -187,6 +197,21 @@ public class CommandComponent extends SchuifComponent
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	return false;
+	}
+	
+	public String getCode(String tab)
+	{	String s = "";
+		
+		for(int i=0 ; i<getComponentCount() ; i++)
+		{	Component c = getComponent(i);
+			if(c instanceof CommandComponent)
+			{	s = s + ((CommandComponent)c).getCode(tab);
+				
+			}
+		}
+		
+	
+		return s;
 	}
 	
 	public void mouseMoved(MouseEvent e){;}

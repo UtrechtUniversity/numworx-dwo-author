@@ -46,6 +46,11 @@ public class PenAanCComponent extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "penAan()"  + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

@@ -45,6 +45,12 @@ public class PenUitCComponent extends CommandComponent implements ActionListener
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}
+	
+	public String getCode(String tab)
+	{	String s = tab + "penUit()"  + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

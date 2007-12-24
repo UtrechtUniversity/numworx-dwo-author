@@ -54,6 +54,11 @@ public class LinksCComponent  extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "links(" + gc1.geefWaardeString() + ")" + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

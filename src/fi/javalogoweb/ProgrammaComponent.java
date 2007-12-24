@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 
 import logotekenap.*;
 
+import fi.beans.stringutils.*;
 import fi.javalogoweb.schuifobjects.SchuifVeld;
 
 public class ProgrammaComponent extends CommandContainer
@@ -81,5 +82,22 @@ public class ProgrammaComponent extends CommandContainer
 			}
 		}
 		return false;
+	}
+	
+	
+	
+	public String getCode(String tab)
+	{	String s = "";
+		
+		for(int i=0 ; i<getComponentCount() ; i++)
+		{	Component c = getComponent(i);
+			if(c instanceof CommandComponent)
+			{	s = s + ((CommandComponent)c).getCode(tab);
+				
+			}
+		}
+		
+	
+		return s;
 	}
 }

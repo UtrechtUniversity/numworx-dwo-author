@@ -55,6 +55,11 @@ public class VulAanCComponent extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "vulAan(\"" + gc1.geefExpressie().toString() + "\")" + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

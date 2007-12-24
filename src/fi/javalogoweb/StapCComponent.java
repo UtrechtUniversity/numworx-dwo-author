@@ -63,6 +63,11 @@ public class StapCComponent extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "stap(" + gc1.geefWaardeString() + " , " + gc2.geefWaardeString() + ")" + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

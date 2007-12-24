@@ -73,6 +73,11 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 		repaint();
 	}
 	
+	public String geefWaardeString()
+	{
+		return waarde.toString();
+	}
+	
 	public void zetTekst(String s)
 	{	zetBekend(true);
 		waarde = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+s+"@")));

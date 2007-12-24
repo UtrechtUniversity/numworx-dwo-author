@@ -64,6 +64,11 @@ public class VooruitCComponent extends CommandComponent implements ActionListene
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "vooruit(" + gc1.geefWaardeString() + ")" + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		//schuifveld.tekenOpnieuw();

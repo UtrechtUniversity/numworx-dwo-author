@@ -72,6 +72,11 @@ public class DeeltaakCComponent  extends CommandComponent implements ActionListe
 	{	return commandString ;	
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + commandString + "\n";
+		return s;
+	}
+	
 	public void paint(Graphics g)
 	{	g.setColor(new Color(240,240,240));
 		if(traceKleur)g.setColor(traceActiveColor);

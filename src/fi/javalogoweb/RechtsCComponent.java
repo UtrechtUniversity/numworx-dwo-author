@@ -55,6 +55,11 @@ public class RechtsCComponent extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + "rechts(" + gc1.geefWaardeString() + ")" + "\n";
+		return s;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		schuifveld.tekenOpnieuw();

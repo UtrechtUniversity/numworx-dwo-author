@@ -3,6 +3,7 @@ package fi.javalogoweb;
 import java.awt.*;
 import java.awt.event.*;
 
+import fi.beans.stringutils.StringUtils;
 import fi.javalogoweb.schuifobjects.*;
 
 
@@ -89,7 +90,170 @@ public class CommandContainer extends CommandComponent
 		}
 	}
 	
+	public void setCode(String code)
+	{	code = code.trim();
+		String[] codeCommandStrings = StringUtils.split(code, "\n");
+		int indexStartBody = -1;
+		int indexEindBody = -1;
+		int level=0;
+		String s = "";
+		for(int i=0 ; i<codeCommandStrings.length ; i++)
+		{	if(codeCommandStrings[i] != null)
+			{	codeCommandStrings[i] = codeCommandStrings[i].trim();
+				if(codeCommandStrings[i].charAt(0)=='{')
+				{	level++;
+					if(level==1)indexStartBody = i;
+				}
+				
+				if(level==0) s = codeCommandStrings[i];
+				else s = s + "\n" + codeCommandStrings[i];
+				
+				if(codeCommandStrings[i].charAt(0)=='}')
+				{	level--;
+					if(level==0)indexEindBody = i;
+				}
+				if(level==0 && !(s.equals(codeCommandStrings[i]) && s.length()>7 && s.substring(0,7).equals("Herhaal")))
+				{	makeCommandComponent(s);
+					System.out.println(s);
+				}
+			}
+		}
+		schuifveld.tekenOpnieuw();
+	}
 	
+	public void makeCommandComponent(String commandCode)
+	{	CommandComponent cc = null;
+		String param1;
+		String param2;
+		int index = -1;
+		if(commandCode.length()>8 && commandCode.substring(0,8).equals("vooruit("))
+		{	cc = new VooruitCComponent(-100,-100,25,25, schuifveld);
+			index = 8;
+		}
+		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("rechts("))
+		{	cc = new RechtsCComponent(-100,-100,25,25, schuifveld);
+			index = 7;
+		}
+		else if(commandCode.length()>6 && commandCode.substring(0,6).equals("links("))
+		{	cc = new LinksCComponent(-100,-100,25,25, schuifveld);
+			index = 6;
+		}
+		else if(commandCode.length()>5 && commandCode.substring(0,5).equals("stap("))
+		{	cc = new StapCComponent(-100,-100,25,25, schuifveld);
+			index = 5;
+		}
+		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("penAan("))
+		{	cc = new PenAanCComponent(-100,-100,25,25, schuifveld);
+			index = 7;
+		}
+		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("penUit("))
+		{	cc = new PenUitCComponent(-100,-100,25,25, schuifveld);
+			index = 7;
+		}
+		else if(commandCode.length()>8 && commandCode.substring(0,8).equals("vulAan(\""))
+		{	cc = new VulAanCComponent(-100,-100,25,25, schuifveld);
+			index = 8;
+		}
+		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("vulUit("))
+		{	cc = new VulUitCComponent(-100,-100,25,25, schuifveld);
+			index = 7;
+		}
+		else if(commandCode.indexOf("=")>-1) 
+		{	cc = new VarCComponent(-100,-100,25,25, schuifveld);
+			index = commandCode.indexOf("=");
+		}
+		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("Herhaal"))
+		{	cc = new HerhaalCommandComponent(-100,-100,25,50, schuifveld);
+			index = 7;
+		}
+		else
+		{	DeeltaakCComponent[] dtcs = ((JavaLogoSchuifVeld)schuifveld).geefDtcCommands();
+			String command0 = dtcs[0].getCommandName();
+			String command1 = dtcs[1].getCommandName();
+			String command2 = dtcs[2].getCommandName();
+			String dtNaam = commandCode.trim();
+			int nr = -1;
+			if(dtNaam.equals(command0)) nr = 0;
+			else if(dtNaam.equals(command1)) nr = 1;
+			else if(dtNaam.equals(command2)) nr = 2;
+			if(nr!=-1)
+			{	cc = new DeeltaakCComponent(-100,-100,25,25, schuifveld);
+				((DeeltaakCComponent)cc).setCommandName(dtNaam);
+				((DeeltaakCComponent)cc).zetDeeltaakContainer(dtcs[nr].geefProgrammaComponent());
+			}
+		}
+	
+		
+		if(cc!=null && cc instanceof HerhaalCommandComponent)
+		{	((JavaLogoSchuifVeld)schuifveld).voegToe(cc);
+			cc.isStapel = false;
+			String[] params = StringUtils.split(commandCode," ");
+			if(params.length>2)
+			{	param1 = params[1];
+				cc.setParam1(param1);
+			}
+			add(cc);
+			
+			int indexStartBody = -1;
+			int indexEindBody = -1;
+			int level=0;
+			String s = "";
+			for(int i=0 ; i<commandCode.length() ; i++)
+			{	if(commandCode.charAt(i)=='{')
+				{	level++;
+					if(level==1)indexStartBody = i;
+				}
+				if(commandCode.charAt(i)=='}')
+				{	level--;
+					if(level==0)indexEindBody = i;
+				}
+				if(indexStartBody<indexEindBody && level==0)
+				{	((CommandContainer)cc).setCode(commandCode.substring(indexStartBody+1,indexEindBody));
+					System.out.println(commandCode.substring(indexStartBody+1,indexEindBody));
+					break;
+				}
+			}	
+		}
+		else if(cc!=null && cc instanceof VarCComponent)
+		{	((JavaLogoSchuifVeld)schuifveld).voegToe(cc);
+			cc.isStapel = false;
+			String[] params = StringUtils.split(commandCode,"=");
+			if(params.length>0)
+			{	param1 = params[0];
+				cc.setParam1(param1);
+			}
+			if(params.length>1)
+			{	param2 = params[1];
+				cc.setParam2(param2);
+			}
+			add(cc);
+		}
+		else if(cc!=null && cc instanceof DeeltaakCComponent)
+		{	((JavaLogoSchuifVeld)schuifveld).voegToe(cc);
+			cc.isStapel = false;
+			((DeeltaakCComponent)cc).setCommandName(commandCode);
+			add(cc);
+		}
+		else if(cc!=null)
+		{
+			((JavaLogoSchuifVeld)schuifveld).voegToe(cc);
+			cc.isStapel = false;
+			int indexEind = commandCode.indexOf(")",index);
+			if(cc instanceof VulAanCComponent) indexEind = commandCode.indexOf("\"",index);
+			if(indexEind>-1) 
+			{	String[] params = StringUtils.split(commandCode.substring(index,indexEind),",");
+				if(params.length>0)
+				{	param1 = params[0];
+					if(param1!=null && !param1.equals("")) cc.setParam1(param1);
+				}
+				if(params.length>1)
+				{	param2 = params[1];
+					if(!param2.equals("")) cc.setParam2(param2);
+				}	
+			}
+			add(cc);
+		}
+	}
 	
 	
 }

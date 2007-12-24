@@ -1,6 +1,7 @@
 package fi.javalogoweb;
 
 import fi.javalogoweb.schuifobjects.*;
+import fi.beans.stringutils.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -24,6 +25,8 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	private Label tekenProgrammaLabel;
 	private ImageButton editButton1, editButton2, editButton3;
 	private Button runButton;
+	private Button exportButton;
+	private Button importButton;
 	private Tekenblad tekenblad;
 	private DeeltaakHeader deeltaakHeader;
 	
@@ -180,9 +183,19 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		scrollSlider.setVisible(false);
 		
 		runButton = new Button("Run");
-		runButton.setBounds(190,450,200,25);
+		runButton.setBounds(190,430,200,25);
 		runButton.addActionListener(this);
 		add(runButton,0);
+		
+		importButton = new Button("Import code");
+		importButton.setBounds(190,460,95,25);
+		importButton.addActionListener(this);
+		add(importButton,0);
+		
+		exportButton = new Button("Export code");
+		exportButton.setBounds(295,460,95,25);
+		exportButton.addActionListener(this);
+		add(exportButton,0);
 		
 		deeltaakHeader = new DeeltaakHeader(pcLocXDefault,pcLocYDefault-11, pcSizeWidthDefault, 25);
 		deeltaakHeader.zetDeeltaakCComponent(dtc1);
@@ -286,6 +299,11 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		}
 		
 		
+	}
+	
+	public void voegToe(CommandComponent cc)
+	{	commandComponents[aantalCC] = cc;
+		aantalCC++;
 	}
 	
 	public void verwijder(CommandComponent cc)
@@ -398,11 +416,93 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		
 	}
 	
+	private void exportFrame(String contents) {
+		final TextArea area = new TextArea(contents, 0, 0, TextArea.SCROLLBARS_NONE);
+		Frame f = new Frame("Code van het algoritme");
+		f.setLayout(new BorderLayout());
+		f.add(area,BorderLayout.CENTER);
+		f.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				area.requestFocus();
+				area.setCaretPosition(0);
+			}
+			public void windowActivated(WindowEvent e) {
+				area.selectAll();
+			}
+			public void windowClosing(WindowEvent e) {
+					e.getWindow().dispose();
+			} });
+		f.pack();
+		f.setVisible(true);
+		f.toFront();
+	}
 	
+	private void importFrame(String contents) {
+		final TextArea area = new TextArea(contents, 0, 0, TextArea.SCROLLBARS_NONE);
+		Frame f = new Frame("Code van het algoritme");
+		f.setLayout(new BorderLayout());
+		f.add(area,BorderLayout.CENTER);
+		f.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				area.requestFocus();
+				area.setCaretPosition(0);
+			}
+			public void windowActivated(WindowEvent e) {
+				area.selectAll();
+			}
+			public void windowClosing(WindowEvent e) {
+				setCode(area.getText());	
+				e.getWindow().dispose();
+			} });
+		f.pack();
+		f.setVisible(true);
+		f.toFront();
+	}
+	
+	public DeeltaakCComponent[] geefDtcCommands()
+	{
+		DeeltaakCComponent[] dtcs = new DeeltaakCComponent[3];
+		dtcs[0] = dtc1;
+		dtcs[1] = dtc2;
+		dtcs[2] = dtc3;
+		return dtcs;
+	}
+	
+	public void setCode(String code)
+	{	code += "\n";
+		String[] codeParts = StringUtils.split(code,"Deeltaak:");
+		if(codeParts.length>1)
+		{	dtc1.setCommandName(codeParts[1].substring(0,codeParts[1].indexOf("\n")).trim());
+			dtc1.geefProgrammaComponent().setCode(codeParts[1].substring(codeParts[1].indexOf("\n")+1));
+		}
+		if(codeParts.length>2)
+		{	dtc2.setCommandName(codeParts[2].substring(0,codeParts[2].indexOf("\n")).trim());
+			dtc2.geefProgrammaComponent().setCode(codeParts[2].substring(codeParts[2].indexOf("\n")+1));
+		}
+		if(codeParts.length>3)
+		{	dtc3.setCommandName(codeParts[3].substring(0,codeParts[3].indexOf("\n")).trim());
+			dtc3.geefProgrammaComponent().setCode(codeParts[3].substring(codeParts[3].indexOf("\n")+1));
+		}
+		programmaComponent.setCode(codeParts[0]);
+	}
+	
+	public String getCode()
+	{	String s0 = programmaComponent.getCode("");
+		String s1 = "\nDeeltaak: " + dtc1.commandString + "\n" + dtc1.geefProgrammaComponent().getCode("");
+		String s2 = "\nDeeltaak: " + dtc2.commandString + "\n" + dtc2.geefProgrammaComponent().getCode("");
+		String s3 = "\nDeeltaak: " + dtc3.commandString + "\n" + dtc3.geefProgrammaComponent().getCode("");
+		return s0+s1+s2+s3+"\n";
+	}
 	
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==runButton)
 		{	tekenblad.tekenOpnieuw();
+		}
+		else if(e.getSource()==importButton)
+		{	importFrame("");
+		}
+		else if(e.getSource()==exportButton)
+		{	exportFrame(getCode());
 		}
 		else if(e.getSource()==scrollSlider)
 		{

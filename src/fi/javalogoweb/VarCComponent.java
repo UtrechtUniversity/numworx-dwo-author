@@ -67,6 +67,11 @@ public class VarCComponent extends CommandComponent implements ActionListener
 		return traceKleur;
 	}
 	
+	public String getCode(String tab)
+	{	String s = tab + gc1.geefExpressie().toString() + " = " + gc2.geefExpressie().toString() +  "\n";
+		return s;
+	}
+	
 	
 	public void actionPerformed(ActionEvent e)
 	{
