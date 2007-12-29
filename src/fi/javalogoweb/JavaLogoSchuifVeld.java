@@ -12,7 +12,9 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	private CommandComponent[] commandComponents;
 	private int aantalCC;
 	private ProgrammaComponent programmaComponent, pcActief;
-	private DeeltaakCComponent dtc1, dtc2, dtc3;
+	//private DeeltaakCComponent dtc1, dtc2, dtc3;
+	private DeeltaakCComponent[] deeltaakComponenten;
+	private int aantalDeeltaakComponenten = 5;
 	private int pcSizeHeightDefault;
 	private int pcSizeWidthDefault;
 	private int pcLocXDefault;
@@ -24,6 +26,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	private ScrollSlider scrollSlider;
 	private Label tekenProgrammaLabel;
 	private ImageButton editButton1, editButton2, editButton3;
+	private ImageButton[] editButtons;
 	private Button runButton;
 	private Button exportButton;
 	private Button importButton;
@@ -125,7 +128,27 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		commandComponents[10] = new VarCComponent(opdrLocXDefault,opdrLocYDefault+190,opdrSizeWidthDefault,25, this);
 		add(commandComponents[10],0);
 		
-		dtc1 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+270,opdrSizeWidthDefault-30,25, this);
+		deeltaakComponenten = new DeeltaakCComponent[aantalDeeltaakComponenten];
+		editButtons = new ImageButton[aantalDeeltaakComponenten];
+		for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
+		{
+			deeltaakComponenten[i] = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+270+30*i,opdrSizeWidthDefault-30,25, this);
+			deeltaakComponenten[i].setCommandName("deeltaak"+i);
+			add(deeltaakComponenten[i]);
+			commandComponents[10+2*i] = deeltaakComponenten[i];
+			
+			ProgrammaComponent pc = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
+			pc.zetVast(true);
+			deeltaakComponenten[i].zetDeeltaakContainer(pc);
+			commandComponents[11+2*i]= pc;
+			
+			editButtons[i] = new ImageButton(JavaLogoWeb.editImage);
+			editButtons[i].setBounds(opdrLocXDefault,opdrLocYDefault+275+30*i,20,20);
+			editButtons[i].addActionListener(this);
+			add(editButtons[i]);
+		}
+		
+		/*dtc1 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+270,opdrSizeWidthDefault-30,25, this);
 		dtc1.setCommandName("deeltaak1");
 		add(dtc1);
 		commandComponents[11] = dtc1;
@@ -169,7 +192,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		editButton3.setBounds(opdrLocXDefault,opdrLocYDefault+335,20,20);
 		editButton3.addActionListener(this);
 		add(editButton3);
-		
+		*/
 		
 		
 		aantalCC = 17;
@@ -198,9 +221,9 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		add(exportButton,0);
 		
 		deeltaakHeader = new DeeltaakHeader(pcLocXDefault,pcLocYDefault-11, pcSizeWidthDefault, 25);
-		deeltaakHeader.zetDeeltaakCComponent(dtc1);
+		//deeltaakHeader.zetDeeltaakCComponent(dtc1);
 		deeltaakHeader.addActionListener(this);
-		//add(deeltaakHeader,0);
+		
 	}
 	
 	public void scroll(boolean adjustLocation)
@@ -461,17 +484,27 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	
 	public DeeltaakCComponent[] geefDtcCommands()
 	{
-		DeeltaakCComponent[] dtcs = new DeeltaakCComponent[3];
-		dtcs[0] = dtc1;
-		dtcs[1] = dtc2;
-		dtcs[2] = dtc3;
-		return dtcs;
+		//DeeltaakCComponent[] dtcs = new DeeltaakCComponent[3];
+		//dtcs[0] = dtc1;
+		//dtcs[1] = dtc2;
+		//dtcs[2] = dtc3;
+		//return dtcs;
+		
+		return deeltaakComponenten;
 	}
 	
 	public void setCode(String code)
 	{	code += "\n";
 		String[] codeParts = StringUtils.split(code,"Deeltaak:");
-		if(codeParts.length>1)
+		for(int i=1 ; i<codeParts.length ; i++)
+		{
+			if(codeParts.length>i)
+			{	deeltaakComponenten[i-1].setCommandName(codeParts[i].substring(0,codeParts[i].indexOf("\n")).trim());
+				deeltaakComponenten[i-1].geefProgrammaComponent().setCode(codeParts[i].substring(codeParts[i].indexOf("\n")+1));
+			}
+		}
+		
+		/*if(codeParts.length>1)
 		{	dtc1.setCommandName(codeParts[1].substring(0,codeParts[1].indexOf("\n")).trim());
 			dtc1.geefProgrammaComponent().setCode(codeParts[1].substring(codeParts[1].indexOf("\n")+1));
 		}
@@ -482,20 +515,38 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		if(codeParts.length>3)
 		{	dtc3.setCommandName(codeParts[3].substring(0,codeParts[3].indexOf("\n")).trim());
 			dtc3.geefProgrammaComponent().setCode(codeParts[3].substring(codeParts[3].indexOf("\n")+1));
-		}
+		}*/
 		programmaComponent.setCode(codeParts[0]);
 	}
 	
 	public String getCode()
 	{	String s0 = programmaComponent.getCode("");
-		String s1 = "\nDeeltaak: " + dtc1.commandString + "\n" + dtc1.geefProgrammaComponent().getCode("");
-		String s2 = "\nDeeltaak: " + dtc2.commandString + "\n" + dtc2.geefProgrammaComponent().getCode("");
-		String s3 = "\nDeeltaak: " + dtc3.commandString + "\n" + dtc3.geefProgrammaComponent().getCode("");
-		return s0+s1+s2+s3+"\n";
+		for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
+		{	String s = "\nDeeltaak: " + deeltaakComponenten[i].commandString + "\n" + deeltaakComponenten[i].geefProgrammaComponent().getCode("");
+			s0 = s0 + s;
+		}
+		//String s1 = "\nDeeltaak: " + dtc1.commandString + "\n" + dtc1.geefProgrammaComponent().getCode("");
+		//String s2 = "\nDeeltaak: " + dtc2.commandString + "\n" + dtc2.geefProgrammaComponent().getCode("");
+		//String s3 = "\nDeeltaak: " + dtc3.commandString + "\n" + dtc3.geefProgrammaComponent().getCode("");
+		//return s0+s1+s2+s3+"\n";
+		return s0+"\n";
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==runButton)
+	{	for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
+		{	if(e.getSource()==editButtons[i])
+			{	remove(pcActief);
+				tekenProgrammaLabel.setVisible(false);
+				runButton.setVisible(false);
+				deeltaakComponenten[i].addDeeltaakContainer();
+				pcActief = deeltaakComponenten[i].geefProgrammaComponent();
+				deeltaakHeader.zetDeeltaakCComponent(deeltaakComponenten[i]);
+				add(deeltaakHeader,0);
+				scroll(true);
+			}
+			
+		}
+		if(e.getSource()==runButton)
 		{	tekenblad.tekenOpnieuw();
 		}
 		else if(e.getSource()==importButton)
@@ -509,7 +560,8 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			pcActief.setLocation(pcActief.getLocation().x, pcLocYDefault - scrollSlider.geefStand());
 			tekenOpnieuw();
 		}
-		else if(e.getSource()==editButton1)
+		
+		/*else if(e.getSource()==editButton1)
 		{	remove(pcActief);
 			tekenProgrammaLabel.setVisible(false);
 			runButton.setVisible(false);
@@ -535,7 +587,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			pcActief = dtc3.geefProgrammaComponent();
 			deeltaakHeader.zetDeeltaakCComponent(dtc3);
 			add(deeltaakHeader,0);
-		}
+		}*/
 		else  if(e.getSource()==deeltaakHeader)
 		{	if(e.getActionCommand().equals("close"))
 			{	remove(deeltaakHeader);
@@ -544,6 +596,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 				add(pcActief,0);
 				tekenProgrammaLabel.setVisible(true);
 				runButton.setVisible(true);
+				scroll(true);
 			}
 			else
 			{	for(int i=0 ; i<aantalCC; i++)

@@ -36,7 +36,8 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 	}
 	
 	public void setFont(Font f)
-	{	font = f;		
+	{	font = f;
+		fm = getFontMetrics(font);
 	}
 	
 	public void paint(Graphics g)
