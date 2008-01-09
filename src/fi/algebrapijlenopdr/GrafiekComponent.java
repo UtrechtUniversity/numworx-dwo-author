@@ -1434,6 +1434,17 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 						int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
 						g.setColor(Color.black);
 						g.fillOval(x-2,y-2,5,5);
+                        
+                        g.setFont(font);
+                        fm = g.getFontMetrics();
+                        String xString = dfTrace.format(puntXWaarde[j]);
+                        String yString = dfTrace.format(d0);
+                        int woordBreedte = 40;
+                        if(fm!=null) woordBreedte = fm.stringWidth(xString+yString);
+                        g.setColor(new Color(255,255,225));
+                        g.fillRect(x+6,y-7,woordBreedte+20,15);
+                        g.setColor(Color.black);
+                        g.drawString("(" + xString + " , " + yString + ")", x+8,y+5);
 					}
 							
 				}
