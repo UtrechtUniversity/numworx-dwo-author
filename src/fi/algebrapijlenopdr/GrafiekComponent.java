@@ -66,12 +66,12 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private LWCheckbox traceCheckbox;
 	
 	private PopupMenu popup;
-	private boolean kettingZichtbaar;
+	private boolean kettingZichtbaar = true;
 	private int movex, movey;
 	
 	private Color[] colors;
-    private Color[] colorsSoft;
-	private Color traceKleur = Color.black;
+	private Color traceKleur = Color.red;
+
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
@@ -190,8 +190,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		add(popup);
 		
 		colors = new Color[10];
-        colorsSoft = new Color[10];
-		
+        
 		colors[0] = new Color(0,0,255);
 		colors[1] = new Color(50,230,50);
 		colors[2] = new Color(255,100,100);
@@ -203,16 +202,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		colors[8] = Color.black;
 		colors[9] = Color.black;
         
-        colorsSoft[0] = new Color(100,100,255);
-        colorsSoft[1] = new Color(50,230,50);
-        colorsSoft[2] = new Color(255,100,100);
-        colorsSoft[3] = new Color(100,255,255);
-        colorsSoft[4] = new Color(255,100,255);
-        colorsSoft[5] = Color.yellow;
-        colorsSoft[6] = Color.black;
-        colorsSoft[7] = Color.black;
-        colorsSoft[8] = Color.black;
-        colorsSoft[9] = Color.black;
 	}
 	
 	public void setSize(int b, int h)
@@ -401,6 +390,24 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		}
 		super.paint(g);	
 	}*/	
+	
+	public void drawDottedLine(Graphics g, int x0, int y0, int x1, int y1)
+	{
+		int dx = 3;
+		double length = Math.sqrt((double)((x1-x0)*(x1-x0)) + (double)((y1-y0)*(y1-y0)));
+		System.out.println(""+length);
+		int n = (int)Math.round(length/dx);
+		System.out.println(""+n);
+		for(int i=0 ; i<n ; i+=2)
+		{
+			int xn0 = x0 + (int)Math.round((double)(x1-x0)*i/n);
+			int yn0 = y0 + (int)Math.round((double)(y1-y0)*i/n);
+			int xn1 = x0 + (int)Math.round((double)(x1-x0)*(i+1)/n);
+			int yn1 = y0 + (int)Math.round((double)(y1-y0)*(i+1)/n);
+			g.drawLine(xn0,yn0,xn1,yn1);
+			
+		}
+	}
      
 	public void paint(Graphics g)
 	{	g.setFont(font);
@@ -1446,8 +1453,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
     					{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
                             g.setColor(traceKleur);
                             g.fillOval(tracex-2,tracey-2,5,5);
-    						g.drawLine(tracex,tracey,tracex,hoogte);
-    						g.drawLine(tracex,tracey,0,tracey);
+    						drawDottedLine(g,tracex,hoogte,tracex,tracey);
+    						drawDottedLine(g,0,tracey,tracex,tracey);
     					
                             if ((isLijnGrafiek[j] || isMeerPuntenGrafiek[j])&& trace && !isPuntGrafiek[j])
                             {    
