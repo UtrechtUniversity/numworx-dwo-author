@@ -39,7 +39,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private double beginx;
 	private String defaultVarnaam = "qq"+1000*Math.random();
 	
-	private Color vakKleur;
+	private Color vakKleur, vakKleurSoft;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -225,6 +225,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	
 	public void zetVakKleur(Color color)
 	{	vakKleur = color;
+	 	vakKleurSoft = new Color((color.getRed()+765)/4, (color.getGreen()+765)/4, (color.getBlue()+765)/4);
 		if(color==Color.black) vakKleur = null;
 	}
 	
@@ -245,7 +246,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			if(labelZichtbaar)labelCorr = 20;
 			if(tabelZichtbaar)tabelCorr = 152;
 			
-			if(vakKleur!=null) g.setColor(vakKleur);
+			if(vakKleur!=null) g.setColor(vakKleurSoft);
 			else g.setColor(achtergrondkleur);
 			g.fillRect(12,labelCorr+2,getSize().width-15-scrollCorr,getSize().height-labelCorr-tabelCorr-5);
 			g.setColor(Color.black);

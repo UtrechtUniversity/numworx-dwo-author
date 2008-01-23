@@ -51,8 +51,8 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 	public static void main(String[] args)    
 	{	int width = 800;
         int height = 550;
-        //ScormEditMainFrame mf = new ScormEditMainFrame(new AlgebraPijlenOpdr(),width, height);
-        ScormMainFrame mf = new ScormMainFrame(new AlgebraPijlenOpdr(),width, height);
+        ScormEditMainFrame mf = new ScormEditMainFrame(new AlgebraPijlenOpdr(),width, height);
+        //ScormMainFrame mf = new ScormMainFrame(new AlgebraPijlenOpdr(),width, height);
 		mf.setTitle("AlgebraPijlenOpdr");
 		mf.pack();
 		mf.show();
@@ -87,6 +87,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		}
 		
 		setLayout(null);
+		ToolTipManager ttm = new ToolTipManager(this);
 		
 		//JVMChecker jvmc = new JVMChecker(this);
 		//jvmc.check();
@@ -102,7 +103,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
 		
-		fiButton = new fi.beans.copyright.FIButton("Algebra Pijlen Opdrachten",new String[]{"","versie-info: 20071221",
+		fiButton = new fi.beans.copyright.FIButton("Algebra Pijlen Opdrachten",new String[]{"","versie-info: 20080123",
 																	"auteur: Peter Boon",
 																	"programmeur: Peter Boon",
 																	"Freudenthal Instituut",
@@ -228,7 +229,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		return h;*/
 		
 		Hashtable h = new Hashtable();
-		h.put("language","en");
+		h.put("language","nl");
 		h.put("bgcolor","#DDEEFF");
 		
 		Hashtable defaultEditModeLaunchData = new Hashtable();

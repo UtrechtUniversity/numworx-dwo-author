@@ -9,7 +9,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "ipRegel2Label" , "waarde" },
 				{ "invoerVakLabel" , "In-/Uitvoer" },
 				{ "bewerkingenLabel" , "Bewerkingen" },
-				{ "grafiekLabel" , "Grafiek" },
+				{ "grafiekLabel" , "Grafiekenvak" },
 				{ "tabelLabel" , "Tabel" },
 				{ "wisKnopLabel" , "Wis" },
 				{ "popup1Label1" , "Toon label" },

@@ -3,17 +3,35 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ZoomKnop extends Component implements MouseListener	
+import fi.beans.tooltip.ToolTipIF;
+import fi.beans.tooltip.ToolTipManager;
+
+public class ZoomKnop extends Component implements ToolTipIF, MouseListener	
 {		private Image im;
 	private Graphics gIm;		protected String code;
 	private Font defaultfont = new Font("SansSerif", Font.PLAIN, 16);	private FontMetrics fm;
 	protected Color bgColor = new Color(210,210,210);		
 	protected Color fgColor = Color.black;	protected boolean focus = false;
-	protected boolean actief = false;	
+	protected boolean actief = false;
+	
+	private String toolTip;	
 				public ZoomKnop(String s)
 	{	code = s;
 		addMouseListener(this);		setFont(defaultfont);
 		fm = this.getFontMetrics(defaultfont);	}
+	
+	public void setToolTip(String toolTip)
+	{	this.toolTip = toolTip;
+       	ToolTipManager.registerComponent(this);
+	}
+	
+	public String getToolTip() 
+	{	return toolTip;
+    }
+    
+    public Component getComponent() 
+	{	return this;
+    }
 	
 		
 	public void zetActief(boolean b)

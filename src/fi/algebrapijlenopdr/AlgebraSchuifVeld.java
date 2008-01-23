@@ -48,12 +48,14 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		
 		grafiekCheckbox = new Checkbox(AlgebraPijlenOpdr.rb.getString("grafiekLabel"));
 		grafiekCheckbox.addItemListener(this);
-		grafiekCheckbox.setBounds( 8,340,80,20);
+		grafiekCheckbox.setFont(new Font("SansSerif", Font.PLAIN,12));
+		grafiekCheckbox.setBounds( 8,340,100,20);
 		grafiekCheckbox.setBackground(Color.lightGray);
 		add(grafiekCheckbox);
 		
 		tabelCheckbox = new Checkbox(AlgebraPijlenOpdr.rb.getString("tabelLabel"));
 		tabelCheckbox.addItemListener(this);
+		tabelCheckbox.setFont(new Font("SansSerif", Font.PLAIN,12));
 		tabelCheckbox.setBounds( 8,320,80,20);
 		tabelCheckbox.setBackground(Color.lightGray);
 		add(tabelCheckbox);
@@ -396,7 +398,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		//g.drawString(Integer.toString(intresized),80,40);
 		
 		//g.drawString("Invoer",35,25);
-		
+		g.setFont(new Font("SansSerif", Font.PLAIN,12));
 		FontMetrics fm = g.getFontMetrics();
 		String s = AlgebraPijlenOpdr.rb.getString("invoerVakLabel");
 		int lengte = fm.stringWidth(s);

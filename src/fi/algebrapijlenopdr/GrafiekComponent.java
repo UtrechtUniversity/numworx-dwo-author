@@ -3,6 +3,7 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
+import fi.beans.tooltip.*;
 
 
 import java.text.*;
@@ -130,36 +131,43 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		zoomStandaard	= new ZoomKnop("standaard");
 		zoomStandaard.setBounds(32,2,25,25);
 		zoomStandaard.addActionListener(this);
+		zoomStandaard.setToolTip("Standaard weergave");
 		add(zoomStandaard);
 		
 		zoomIn	= new ZoomKnop("zoomin");
 		zoomIn.setBounds(57,2,25,25);
 		zoomIn.addActionListener(this);
+		zoomIn.setToolTip("Zoom in");
 		add(zoomIn);
 		
 		zoomUit	= new ZoomKnop("zoomuit");
 		zoomUit.setBounds(82,2,25,25);
 		zoomUit.addActionListener(this);
+		zoomUit.setToolTip("Zoom uit");
 		add(zoomUit);	
 		
 		zoomInX	= new ZoomKnop("zoominx");
 		zoomInX.setBounds(107,2,25,25);
 		zoomInX.addActionListener(this);
+		zoomInX.setToolTip("Zoom in horizontaal");
 		add(zoomInX);
 		
 		zoomUitX= new ZoomKnop("zoomuitx");
 		zoomUitX.setBounds(132,2,25,25);
 		zoomUitX.addActionListener(this);
+		zoomUitX.setToolTip("Zoom uit horizontaal");
 		add(zoomUitX);
 		
 		zoomInY	= new ZoomKnop("zoominy");
 		zoomInY.setBounds(157,2,25,25);
 		zoomInY.addActionListener(this);
+		zoomInY.setToolTip("Zoom in vertikaal");
 		add(zoomInY);
 		
 		zoomUitY= new ZoomKnop("zoomuity");
 		zoomUitY.setBounds(182,2,25,25);
 		zoomUitY.addActionListener(this);
+		zoomUitY.setToolTip("Zoom uit vertikaal");
 		add(zoomUitY);
 		
 		slider = new Slider(veldb,0);
@@ -192,11 +200,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		colors = new Color[10];
         
 		colors[0] = new Color(0,0,255);
-		colors[1] = new Color(50,230,50);
-		colors[2] = new Color(255,100,100);
-		colors[3] = new Color(100,255,255);
-		colors[4] = new Color(255,100,255);
-		colors[5] = Color.yellow;
+		colors[1] = new Color(0,200,0);
+		colors[2] = new Color(255,50,50);
+		colors[3] = new Color(00,220,220);
+		colors[4] = new Color(220,0,220);
+		colors[5] = new Color(200,200,0);
 		colors[6] = Color.black;
 		colors[7] = Color.black;
 		colors[8] = Color.black;
@@ -676,6 +684,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	public boolean meldAan(Pijl p, int x, int y)
 	{	if(!(p.zender instanceof UitvoerSchuifComponent))return false;
 	
+		for(int i=0 ; i<aantalPijlenIn ; i++)
+		{	if(pijlenIn[i].zender == p.zender) return false;
+		}
 		AlgebraSchuifComponent asc = p.zender;
 		int teller = 20;
 		Expressie e = asc.geefUitvoer(teller);
@@ -1456,11 +1467,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
                         tracex = x;
                         slider.zetStand(tracex);
                     }
-                    if ((isLijnGrafiek[j]&& trace && !isPuntGrafiek[j] || isMeerPuntenGrafiek[j]))
+                    boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
+            		
+                    if ((isLijnGrafiek[j])&& trace && !isPuntGrafiek[j] || isMeerPuntenGrafiek[j])
                     {   slider.zetStand(tracex);
                         double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
     					double dTraceY = expressies[j].geefW(dTraceX);
-    					if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
+    					if(!b && !Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
     					{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
                             g.setColor(traceKleur);
                             g.fillOval(tracex-2,tracey-2,5,5);

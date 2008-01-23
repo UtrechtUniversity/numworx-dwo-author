@@ -28,7 +28,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 	
 	private String[] activiteitNamen;
 	
-	private int maxAantalOpdrachten = 10;
+	private int maxAantalOpdrachten = 15;
 	private int[] aantalOpdrachten;
 	private int opdrachtNr;
 	
