@@ -501,7 +501,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
 			this.beginx = zoomState.getBeginx();
 			
-			if(tabelZichtbaar)
+			//if(tabelZichtbaar)
 			{	tabel.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX, beginx);
 				//if(grafiekComponent!=null)grafiekComponent.zetTabel(beginwaarde, selectnummer, varnaam, schaalFactorX);
 			}

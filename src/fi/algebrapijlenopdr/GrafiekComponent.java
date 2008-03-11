@@ -37,7 +37,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private double schaalFactorX;
 	private int factorRijNummerX;
 	private ZoomDraad zoomDraad;
-	 
+		 
 	int startxv = 0;
 	int startyv = 0;
 	 
@@ -576,14 +576,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			//this.beginwaarde = zoomState.getBeginwaarde();
 			//this.selectnummer = zoomState.getSelectnummer();
 			//this.schaalFactorX = zoomState.getSchaalFactorX();
-			this.schaalFactorY = zoomState.getSchaalFactorY();
+			//this.schaalFactorY = zoomState.getSchaalFactorY();
 			this.factorRijNummerX = zoomState.getFactorRijNummerX();
-			this.factorRijNummerY = zoomState.getFactorRijNummerY();
+			//this.factorRijNummerY = zoomState.getFactorRijNummerY();
 			//this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
 			//this.beginy = (double)zoomState.getBeginy();
 			//this.tracexD = (double)zoomState.getTracexD();
 			
-			if(factorRijNummerX-factorRijNummerXOud==1)
+			/*if(factorRijNummerX-factorRijNummerXOud==1)
 			{	factorRijNummerX--;
 				zoomDraad = new ZoomDraad(true,false,false);
 				zoomDraad.start();
@@ -593,7 +593,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				zoomDraad = new ZoomDraad(true,false,true);
 				zoomDraad.start();
 			}
-			else
+			else*/
 			{	this.schaalFactorX = zoomState.getSchaalFactorX();
 				this.beginwaarde = zoomState.getBeginwaarde();
 				this.beginx = ((double)zoomState.getBeginx()*eenheid)/14+eenheid;
@@ -1187,10 +1187,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 				((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
 	            
 			}
-			
+            
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
-			
 		}
 		public void maakDood()
 		{	dood = true;
