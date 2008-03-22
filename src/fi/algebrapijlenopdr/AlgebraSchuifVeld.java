@@ -586,6 +586,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 					aantalSc++;
 					add(grafiekComponent);
 				}
+				zoomStateHolder = new ZoomStateHolder(this);
 			}
 			else
 			{	setState(editmodeState);
