@@ -119,6 +119,10 @@ public class ZoomStateHolder {
 	{	asv.setZoomStates(varnaam, (ZoomState)zoomStates.get(varnaam));
 	}
 	
+	public void copyZoomState(String varnaam, ZoomState zs)
+	{	zoomStates.put(varnaam, zs);
+	}
+	
 	public ZoomState getZoomState(String varnaam)
 	{	return (ZoomState)zoomStates.get(varnaam);
 	}

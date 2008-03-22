@@ -51,8 +51,8 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 	public static void main(String[] args)    
 	{	int width = 800;
         int height = 550;
-        //ScormEditMainFrame mf = new ScormEditMainFrame(new AlgebraPijlenOpdr(),width, height);
-        ScormMainFrame mf = new ScormMainFrame(new AlgebraPijlenOpdr(),width, height);
+        ScormEditMainFrame mf = new ScormEditMainFrame(new AlgebraPijlenOpdr(),width, height);
+        //ScormMainFrame mf = new ScormMainFrame(new AlgebraPijlenOpdr(),width, height);
 		mf.setTitle("AlgebraPijlenOpdr");
 		mf.pack();
 		mf.show();

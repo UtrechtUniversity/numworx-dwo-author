@@ -119,6 +119,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	
 	public Hashtable getState()
 	{	String basisExp  = null;
+		String defaultVarnaam = null;
 		boolean tabelAan = false;
 		boolean labelZichtbaar = false;
         boolean kettingZichtbaar = true;
@@ -131,6 +132,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 				
 		if(beginw != null)basisExp = this.beginw.basisString;
 		else basisExp = "";
+		defaultVarnaam = this.defaultVarnaam;
 		tabelAan = this.tabelAan;
 		labelZichtbaar = this.labelZichtbaar;
         kettingZichtbaar = this.kettingZichtbaar;
@@ -143,6 +145,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 
 		Hashtable h = super.getState();
 	    h.put("basisExp", basisExp);
+	    h.put("defaultVarnaam", defaultVarnaam);
 	    h.put("tabelAan", new Boolean(tabelAan));
 	    h.put("labelZichtbaar", new Boolean(labelZichtbaar));
         h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
@@ -157,6 +160,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 
     public void setState(Hashtable h)
     {	String basisExp  = null;
+   		String defaultVarnaam = null;
         boolean tabelAan = false;
         boolean labelZichtbaar = false;
         boolean kettingZichtbaar = true;
@@ -168,6 +172,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		//int factorRijNummerX = this.factorRijNummerX;
     	
     	if(h.containsKey("basisExp")) basisExp = (String)h.get("basisExp");
+    	if(h.containsKey("defaultVarnaam")) defaultVarnaam = (String)h.get("defaultVarnaam");
         if(h.containsKey("tabelAan")) tabelAan = ((Boolean)h.get("tabelAan")).booleanValue();		
         if(h.containsKey("labelZichtbaar")) labelZichtbaar = ((Boolean)h.get("labelZichtbaar")).booleanValue();
         if(h.containsKey("kettingZichtbaar")) kettingZichtbaar = ((Boolean)h.get("kettingZichtbaar")).booleanValue();
@@ -180,6 +185,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
     	
         
 		if(!basisExp.equals(""))beginw = new BasisExpressie(basisExp);
+		if(defaultVarnaam!=null) 
+		{	this.defaultVarnaam = defaultVarnaam;
+			verborgenExpressie = new BasisExpressie(defaultVarnaam);
+		}
 		zetTabelAan(tabelAan);
 		zetLabel(labelZichtbaar);
 		label.zetLabelTekst(labelTekst);
@@ -519,7 +528,18 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	}
 	
 	public void zetInvulWaarde()
-	{	boolean isGeldigeInvoer=true;
+	{	
+		ZoomState zs= null;
+		if(expressie!=null && expressie.geefVarNaam()!=null && getParent() instanceof AlgebraSchuifVeld )
+		{	zs = ((AlgebraSchuifVeld)getParent()).zoomStateHolder.getZoomState(expressie.geefVarNaam());
+			//naam  = expressie.geefVarNaam();
+		}
+		else if(verborgenExpressie!=null && verborgenExpressie.geefVarNaam()!=null && getParent() instanceof AlgebraSchuifVeld )
+		{	zs =((AlgebraSchuifVeld)getParent()).zoomStateHolder.getZoomState(verborgenExpressie.geefVarNaam());
+			//naam  = verborgenExpressie.geefVarNaam();
+		}
+				
+		boolean isGeldigeInvoer=true;
 		{	try
 			{	String s = tf.getText();
 				s = s.replace(',','.');
@@ -553,6 +573,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if(expressie!=null && expressie.geefVarNaam()!=null)tabel.zetExpressie(expressie);
 		else tabel.zetExpressie(verborgenExpressie);
 		
+		if(zs!=null && expressie!=null && expressie.geefVarNaam()!=null)((AlgebraSchuifVeld)getParent()).zoomStateHolder.copyZoomState(expressie.geefVarNaam(),zs);
+		else if(zs!=null) ((AlgebraSchuifVeld)getParent()).zoomStateHolder.copyZoomState(defaultVarnaam,zs);
+			
 		zetMaat();
 		zetVeranderd(20);
 		tf.setEnabled(false);
