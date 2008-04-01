@@ -68,7 +68,7 @@ public class VarCComponent extends CommandComponent implements ActionListener
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + gc1.geefExpressie().toString() + " = " + gc2.geefExpressie().toString() +  "\n";
+	{	String s = tab + gc1.geefTekst() + " = " + gc2.geefTekst() +  "\n";
 		return s;
 	}
 	

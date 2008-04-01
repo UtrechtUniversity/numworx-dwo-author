@@ -144,7 +144,7 @@ public class HerhaalCommandComponent extends CommandContainer  implements Action
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "Herhaal " + gc1.geefWaardeString() + " keer" + "\n" + tab +"{";
+	{	String s = tab + "Herhaal " + gc1.geefTekst() + " keer" + "\n" + tab +"{";
 		String tabExtra = "      ";
 		String tabNieuw = tab + tabExtra;
 		for(int i=0 ; i<getComponentCount() ; i++)

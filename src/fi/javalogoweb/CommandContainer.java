@@ -238,7 +238,8 @@ public class CommandContainer extends CommandComponent
 		{
 			((JavaLogoSchuifVeld)schuifveld).voegToe(cc);
 			cc.isStapel = false;
-			int indexEind = commandCode.indexOf(")",index);
+			int indexEind = commandCode.lastIndexOf(")");
+			//int indexEind = commandCode.indexOf(")",index);
 			if(cc instanceof VulAanCComponent) indexEind = commandCode.indexOf("\"",index);
 			if(indexEind>-1) 
 			{	String[] params = StringUtils.split(commandCode.substring(index,indexEind),",");

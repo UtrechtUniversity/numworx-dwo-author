@@ -56,7 +56,7 @@ public class VulAanCComponent extends CommandComponent implements ActionListener
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "vulAan(\"" + gc1.geefExpressie().toString() + "\")" + "\n";
+	{	String s = tab + "vulAan(\"" + gc1.geefTekst() + "\")" + "\n";
 		return s;
 	}
 	

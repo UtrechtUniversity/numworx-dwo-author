@@ -65,7 +65,7 @@ public class VooruitCComponent extends CommandComponent implements ActionListene
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "vooruit(" + gc1.geefWaardeString() + ")" + "\n";
+	{	String s = tab + "vooruit(" + gc1.geefTekst() + ")" + "\n";
 		return s;
 	}
 	

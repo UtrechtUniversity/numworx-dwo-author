@@ -55,7 +55,7 @@ public class LinksCComponent  extends CommandComponent implements ActionListener
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "links(" + gc1.geefWaardeString() + ")" + "\n";
+	{	String s = tab + "links(" + gc1.geefTekst() + ")" + "\n";
 		return s;
 	}
 	

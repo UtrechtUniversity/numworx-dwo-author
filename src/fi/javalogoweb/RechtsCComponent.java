@@ -56,7 +56,7 @@ public class RechtsCComponent extends CommandComponent implements ActionListener
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "rechts(" + gc1.geefWaardeString() + ")" + "\n";
+	{	String s = tab + "rechts(" + gc1.geefTekst() + ")" + "\n";
 		return s;
 	}
 	

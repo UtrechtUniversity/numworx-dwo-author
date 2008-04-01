@@ -179,6 +179,8 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 	
 	public void actionPerformed(ActionEvent e)
 	{	String s = beginWaardeTf.getText();
+		s = s.replace(',', '.');
+		beginWaardeTf.setText(s);
 		int w;
 		try
 		{	waarde = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+s+"@")));
@@ -213,6 +215,8 @@ public class GetalComponent extends Container implements ActionListener, FocusLi
 	
 	public void focusLost(FocusEvent e)
 	{	String s = beginWaardeTf.getText();
+		s = s.replace(',', '.');
+		beginWaardeTf.setText(s);
 		//int w;
 		try
 		{	//w = Integer.parseInt(s);
