@@ -55,7 +55,13 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		//bubbel = au.getAudioClip("resources/bubble.au");
 		
 		Image heksnieuw = au.getImage("resources/heksnieuwklein.jpg");
-		Image opnieuwknop = au.getImage("resources/opnieuwknop.gif");
+		Image opnieuwknop = null;
+		if(Heks.rb.getLocale().getLanguage().equals("nl"))
+		{	opnieuwknop = au.getImage("resources/opnieuwknop.gif");
+		}
+		else
+		{	opnieuwknop = au.getImage("resources/againKnop.gif");
+		}	
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(heksnieuw,0);
 		tr.addImage(opnieuwknop,0);
@@ -105,7 +111,7 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		beginTemp.addActionListener(this);
 		add(beginTemp);
 		
-		beginLabel = new ScLabel(50,55,60,30,"begin");
+		beginLabel = new ScLabel(50,55,60,30,Heks.rb.getString("beginLabel"));
 		beginLabel.addMouseListener(this);
 		add(beginLabel);
 		
@@ -118,13 +124,13 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		werkheks = new Tekening(180,0,150,150,au,"werkheks.gif");
 		//achtergrond.add(werkheks);
 		
-		erinLabel = new ScLabel(50,155,60,30,"er in");
+		erinLabel = new ScLabel(50,155,60,30,Heks.rb.getString("erinLabel"));
 		add(erinLabel);
 		
 		potErin = new Tekening(15,110,100,90,au,"potErin.gif");
 		add(potErin);
 		
-		eruitLabel = new ScLabel(52,255,60,30,"er uit");
+		eruitLabel = new ScLabel(52,255,60,30,Heks.rb.getString("eruitLabel"));
 		add(eruitLabel);
 		
 		potEruit = new Tekening(45,210,100,90,au,"potEruit.gif");
@@ -134,7 +140,7 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		eindTemp.zetAlsTemp(true);
 		add(eindTemp);
 		
-		eindLabel = new ScLabel(50,335,60,30,"eind");
+		eindLabel = new ScLabel(50,335,60,30,Heks.rb.getString("eindLabel"));
 		add(eindLabel);
 		
 		eindPot = new Tekening(35,315,90,65 ,au,"potzwart.gif");

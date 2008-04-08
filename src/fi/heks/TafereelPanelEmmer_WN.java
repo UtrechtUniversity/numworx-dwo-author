@@ -32,7 +32,13 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener
 		au = new AppletUtil(applet);
 		
 		Image heksnieuw = au.getImage("resources/heksnieuw.jpg");
-		Image opnieuwknop = au.getImage("resources/opnieuwknop.gif");
+		Image opnieuwknop = null;
+		if(Heks.rb.getLocale().getLanguage().equals("nl"))
+		{	opnieuwknop = au.getImage("resources/opnieuwknop.gif");
+		}
+		else
+		{	opnieuwknop = au.getImage("resources/againKnop.gif");
+		}	
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(heksnieuw,0);
 		tr.addImage(opnieuwknop,0);
