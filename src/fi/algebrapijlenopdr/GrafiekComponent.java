@@ -230,6 +230,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		double tracexD = 0;
 		double beginy = 0;
 		boolean kettingZichtbaar = true;
+		double schaalFactorY  = 1;
+		int factorRijNummerY = 99;
 							
 		sizeB = getSize().width;
 		sizeH = getSize().height;
@@ -237,6 +239,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		tracexD = this.tracexD;
 		beginy = this.beginy;
 		kettingZichtbaar = this.kettingZichtbaar;
+		schaalFactorY = this.schaalFactorY;
+		factorRijNummerY = this.factorRijNummerY;
 		
 		Hashtable h = super.getState();
 	    h.put("sizeB", new Integer(sizeB));
@@ -245,6 +249,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	    h.put("tracexD", new Double(tracexD));
 	    h.put("beginy", new Double(beginy));
 	    h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
+	    h.put("schaalFactorY", new Double(schaalFactorY));
+	    h.put("factorRijNummerY", new Integer(factorRijNummerY));
 	    return h;
 	}
 	
@@ -255,6 +261,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		double tracexD = 0;
 		double beginy = 0;
 		boolean kettingZichtbaar = true;
+		double schaalFactorY  = 1;
+		int factorRijNummerY = 99;
 		
 		if(h.containsKey("sizeB")) sizeB = ((Integer)h.get("sizeB")).intValue();
     	if(h.containsKey("sizeH")) sizeH = ((Integer)h.get("sizeH")).intValue();
@@ -262,6 +270,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
     	if(h.containsKey("tracexD")) tracexD = ((Double)h.get("tracexD")).doubleValue();
     	if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
     	if(h.containsKey("kettingZichtbaar")) kettingZichtbaar = ((Boolean)h.get("kettingZichtbaar")).booleanValue();
+    	if(h.containsKey("schaalFactorY")) schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
+    	if(h.containsKey("factorRijNummerY")) factorRijNummerY = ((Integer)h.get("factorRijNummerY")).intValue();
     	
 		
 		setSize(sizeB,sizeH);
@@ -272,6 +282,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		slider.zetStand(tracex);
 		this.kettingZichtbaar = kettingZichtbaar;
 		if(!kettingZichtbaar)zetKettingZichtbaarHier(kettingZichtbaar);
+		this.schaalFactorY = schaalFactorY;
+		this.factorRijNummerY = factorRijNummerY;
         
 		
 		traceCheckbox.aan = trace;
