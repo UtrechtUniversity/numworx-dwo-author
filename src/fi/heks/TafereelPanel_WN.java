@@ -124,16 +124,23 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		werkheks = new Tekening(180,0,150,150,au,"werkheks.gif");
 		//achtergrond.add(werkheks);
 		
+		
 		erinLabel = new ScLabel(50,155,60,30,Heks.rb.getString("erinLabel"));
 		add(erinLabel);
 		
 		potErin = new Tekening(15,110,100,90,au,"potErin.gif");
 		add(potErin);
 		
-		eruitLabel = new ScLabel(52,255,60,30,Heks.rb.getString("eruitLabel"));
+		if(Heks.rb.getLocale().getLanguage().equals("nl"))
+			eruitLabel = new ScLabel(52,255,60,30,Heks.rb.getString("eruitLabel"));
+		else
+			eruitLabel = new ScLabel(37,255,90,30,Heks.rb.getString("eruitLabel"));
 		add(eruitLabel);
 		
-		potEruit = new Tekening(45,210,100,90,au,"potEruit.gif");
+		if(Heks.rb.getLocale().getLanguage().equals("nl"))
+			potEruit = new Tekening(45,210,100,90,au,"potEruit.gif");
+		else
+			potEruit = new Tekening(30,210,140,90,au,"potEruit.gif");
 		add(potEruit);
 		
 		eindTemp = new GetalComponent(170,320,80,40);
