@@ -3,6 +3,7 @@ package fi.javalogoweb;
 import java.awt.*;
 import java.awt.event.*;
 import java.applet.*;
+import java.net.URL;
 import java.util.*;
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
@@ -37,6 +38,13 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		catch(Exception e){}
 		
 		setLayout(null);
+		
+		URL url = this.getCodeBase();
+		if(url!=null && (url.getHost().equals("www.informatica-actief.nl"))){
+			System.out.println(url.toString());
+			System.out.println(url.getHost());
+		}
+		else return;
 		
 		//instelling taal
 		String langArg = getParameter("language");

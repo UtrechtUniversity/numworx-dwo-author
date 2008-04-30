@@ -64,7 +64,7 @@ public class StapCComponent extends CommandComponent implements ActionListener
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "stap(" + gc1.geefTekst() + " , " + gc2.geefWaardeString() + ")" + "\n";
+	{	String s = tab + "stap(" + gc1.geefTekst() + " , " + gc2.geefTekst() + ")" + "\n";
 		return s;
 	}
 	

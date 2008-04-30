@@ -158,14 +158,15 @@ public class CommandContainer extends CommandComponent
 		{	cc = new VulUitCComponent(-100,-100,25,25, schuifveld);
 			index = 7;
 		}
-		else if(commandCode.indexOf("=")>-1) 
-		{	cc = new VarCComponent(-100,-100,25,25, schuifveld);
-			index = commandCode.indexOf("=");
-		}
 		else if(commandCode.length()>7 && commandCode.substring(0,7).equals("Herhaal"))
 		{	cc = new HerhaalCommandComponent(-100,-100,25,50, schuifveld);
 			index = 7;
 		}
+		else if(commandCode.indexOf("=")>-1) 
+		{	cc = new VarCComponent(-100,-100,25,25, schuifveld);
+			index = commandCode.indexOf("=");
+		}
+		
 		else
 		{	DeeltaakCComponent[] dtcs = ((JavaLogoSchuifVeld)schuifveld).geefDtcCommands();
 			String command0 = dtcs[0].getCommandName();
@@ -242,7 +243,9 @@ public class CommandContainer extends CommandComponent
 			//int indexEind = commandCode.indexOf(")",index);
 			if(cc instanceof VulAanCComponent) indexEind = commandCode.indexOf("\"",index);
 			if(indexEind>-1) 
-			{	String[] params = StringUtils.split(commandCode.substring(index,indexEind),",");
+			{	String[] params = new String[1];
+				params[0] = commandCode.substring(index,indexEind);
+				if(cc instanceof StapCComponent)  params = StringUtils.split(commandCode.substring(index,indexEind),",");
 				if(params.length>0)
 				{	param1 = params[0];
 					if(param1!=null && !param1.equals("")) cc.setParam1(param1);

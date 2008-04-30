@@ -97,12 +97,12 @@ public class BasisExpressie extends Expressie
 	}
 	
 	public String toString()
-	{	basisString = basisString.replace('.',',');
+	{	//basisString = basisString.replace('.',',');
 		return basisString;
 	}
 	
 	public String toStringStrikt()
-	{	basisString = basisString.replace('.',',');
+	{	//basisString = basisString.replace('.',',');
 		return basisString;
 	}
 
