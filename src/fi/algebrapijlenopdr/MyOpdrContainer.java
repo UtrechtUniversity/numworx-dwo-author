@@ -6,6 +6,7 @@ import java.util.*;
 import fi.beans.base64code.*;
 import fi.algebrapijlenopdr.tekstobjects.*;
 import fi.algebrapijlenopdr.opdrnav.*;
+import fi.algebrapijlenopdr.opdrnav.PlusMinKnop;
 
 public class MyOpdrContainer extends OpdrContainer implements ActionListener 
 {
@@ -22,13 +23,15 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 	
 	private String gewensteAntwoordString;
 	
+	private PlusMinKnop scrollKnop;
+	
 	
 	public MyOpdrContainer(int x, int y, int b, int h)
 	{	setLayout(null);
 		setBounds(x,y,b,h);
 		
 		titelLabel = new Label("");
-		titelLabel.setBounds(15,10,200,30);
+		titelLabel.setBounds(15,0,200,40);
 		titelLabel.setFont(new Font("SansSerif",Font.BOLD,16));
 		add(titelLabel);
 				
@@ -59,7 +62,9 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		kopieerKnop.addActionListener(this);
 		add(kopieerKnop,0);
 	
-		
+		scrollKnop = new PlusMinKnop(218,h-74,24,30,PlusMinKnop.VERTIKAAL);
+		scrollKnop.addActionListener(this);
+    	add(scrollKnop);
 	}
 	
 	public void zetOpdracht(String s)
@@ -215,6 +220,11 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 				correct = antwoordFormuleVak.isCorrect();
 				produceAction("changed");
 			}
+		}
+		if(e.getSource() == scrollKnop)
+		{	if(e.getActionCommand().equals("plus"))tekstArea.setLocation(tekstArea.getLocation().x, tekstArea.getLocation().y+=5);
+			else tekstArea.setLocation(tekstArea.getLocation().x, tekstArea.getLocation().y-=5);
+		
 		}
 	}
 	
