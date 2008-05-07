@@ -30,6 +30,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	private Panel hidePanel;
 	
 	public ZoomStateHolder zoomStateHolder;
+	private Font font;
 	
 	//private Button kopieerKnop;
 	
@@ -38,6 +39,9 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	{	super(x,y,b,h);
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		
+		font = new Font("SansSerif", Font.PLAIN,12);
+		if(AlgebraPijlenOpdr.rb.getLocale().toString().equals("en"))font = new Font("SansSerif", Font.PLAIN,11);
 		
 		zoomStateHolder = new ZoomStateHolder(this);
 		
@@ -48,30 +52,33 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		
 		grafiekCheckbox = new Checkbox(AlgebraPijlenOpdr.rb.getString("grafiekLabel"));
 		grafiekCheckbox.addItemListener(this);
-		grafiekCheckbox.setFont(new Font("SansSerif", Font.PLAIN,12));
+		grafiekCheckbox.setFont(font);
 		grafiekCheckbox.setBounds( 8,340,100,20);
 		grafiekCheckbox.setBackground(Color.lightGray);
 		add(grafiekCheckbox);
 		
 		tabelCheckbox = new Checkbox(AlgebraPijlenOpdr.rb.getString("tabelLabel"));
 		tabelCheckbox.addItemListener(this);
-		tabelCheckbox.setFont(new Font("SansSerif", Font.PLAIN,12));
+		tabelCheckbox.setFont(font);
 		tabelCheckbox.setBounds( 8,320,80,20);
 		tabelCheckbox.setBackground(Color.lightGray);
 		add(tabelCheckbox);
 		
 		wisKnop = new Button(AlgebraPijlenOpdr.rb.getString("wisKnopLabel"));
+		wisKnop.setFont(font);
 		wisKnop.setBounds(18,370,70,20);
 		wisKnop.addActionListener(this);
 		add(wisKnop);
 		
 		terugKnop = new Button(AlgebraPijlenOpdr.rb.getString("terugKnopLabel"));
 		terugKnop.setBounds(8,290,45,20);
+		terugKnop.setFont(font);
 		terugKnop.addActionListener(this);
 		add(terugKnop);
 		
 		heenKnop = new Button(AlgebraPijlenOpdr.rb.getString("heenKnopLabel"));
 		heenKnop.setBounds(58,290,45,20);
+		heenKnop.setFont(font);
 		heenKnop.addActionListener(this);
 		add(heenKnop);
 		
@@ -398,7 +405,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		//g.drawString(Integer.toString(intresized),80,40);
 		
 		//g.drawString("Invoer",35,25);
-		g.setFont(new Font("SansSerif", Font.PLAIN,12));
+		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		String s = AlgebraPijlenOpdr.rb.getString("invoerVakLabel");
 		int lengte = fm.stringWidth(s);

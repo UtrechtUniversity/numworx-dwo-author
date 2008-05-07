@@ -21,7 +21,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "popup2Label1" , "Select" },
 				{ "popup2Label2" , "Copy to clipboard" },
 				{ "terugKnopLabel" , "Back" },
-				{ "heenKnopLabel" , "Forth" },
+				{ "heenKnopLabel" , "Forward" },
 				{ "kopieerKnopLabel" , "Copy from previous task" }
 				
         };
