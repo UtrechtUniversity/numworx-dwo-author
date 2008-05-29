@@ -32,28 +32,29 @@ public class SomContainer extends ScContainer implements ActionListener
 		rechtsInvullen = rechtsinv;
 		
 		int hg = h*4/5;
+		int bb = h*2/3;
 		
-		term1 = new GetalComponent(0,0,2*hg,h);
+		term1 = new GetalComponent(0,0,2*bb,h);
 		term1.addActionListener(this);
 		add(term1);
 		
-		plusMinLabel = new ScLabel(2*hg,0,hg,h,"");
+		plusMinLabel = new ScLabel(2*bb,0,bb,h,"");
 		add(plusMinLabel);
 		
-		term2 = new GetalComponent(3*hg,0,2*hg,h);
+		term2 = new GetalComponent(3*bb,0,2*bb,h);
 		term2.addActionListener(this);
 		add(term2);
 		
-		isLabel = new ScLabel(5*hg,0,hg,h,"=");
+		isLabel = new ScLabel(5*bb,0,bb,h,"=");
 		add(isLabel);
 		
-		uitkomst = new GetalComponent(6*hg,0,2*hg,h);
+		uitkomst = new GetalComponent(6*bb,0,3*bb,h);
 		uitkomst.addActionListener(this);
 		uitkomst.zetBekend(false);
 		uitkomst.zetInstelbaar(true);
 		add(uitkomst);
 		
-		goedFoutContainer = new ScContainer(8*hg,0,h,h);
+		goedFoutContainer = new ScContainer(8*bb,0,h,h);
 		add(goedFoutContainer);
 		
 		//huidigeSom = new Som(soort);
@@ -213,8 +214,9 @@ public class SomContainer extends ScContainer implements ActionListener
 		   || (vaknr==0 &&  term1.geefWaarde() == huidigeSom.geefTerm1()))		//&& term1.isBekend()
 		{	//goedkrul.setVisible(true);
 			goedFoutContainer.removeAll();
-			if(Heks.rb.getLocale().toString().equals("nl")) goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul.gif");
-            else goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul_en.gif");
+			//if(Heks.rb.getLocale().toString().equals("nl")) goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"goedkrul.gif");
+            //else 
+            	goedFoutTeken = new Tekening(16,8,(int)relh-16,(int)relh-16,au,"goedkrul_en.gif");
             goedFoutTeken.schaal(schaal);
 			goedFoutContainer.add(goedFoutTeken,0);
 			goedFoutContainer.repaint();
@@ -223,7 +225,7 @@ public class SomContainer extends ScContainer implements ActionListener
 		else
 		{	//foutkruis.setVisible(true);
 			goedFoutContainer.removeAll();
-			goedFoutTeken = new Tekening(0,0,(int)relh,(int)relh,au,"foutkruis.gif");
+			goedFoutTeken = new Tekening(16,8,(int)relh-16,(int)relh-16,au,"foutkruis.gif");
 			goedFoutTeken.schaal(schaal);
 			goedFoutContainer.add(goedFoutTeken,0);
 			goedFoutContainer.repaint();

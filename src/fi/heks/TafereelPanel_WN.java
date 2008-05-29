@@ -229,6 +229,8 @@ public class TafereelPanel_WN extends ScPanel implements  MouseListener, MouseMo
 		
 	}
 	
+	
+	
 	public void setState(Hashtable h)
 	{	String tekst = (String)h.get("tekst");
 				
