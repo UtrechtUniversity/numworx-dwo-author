@@ -16,8 +16,8 @@ public class OefentoetsPanel_WN extends ScPanel implements ActionListener
 	AppletUtil au;
 
 	Tekening schrijfheks;
-	ScLWButton  opnieuwKnop;
-	ImageButton kijkNaKnop;
+	//ScLWButton  ;
+	ImageButton kijkNaKnop,opnieuwKnop;
 	ScLabel titelLabel, hulpLabel, nakijkLabel;//, scoreLabel;
 	GetalComponent kerenHulp, kerenNagekeken;
 	ScTekstContainer uitleg;
@@ -46,9 +46,12 @@ public class OefentoetsPanel_WN extends ScPanel implements ActionListener
 		au = new AppletUtil(applet);
 		
 		Image controleerknop = null;
+		Image volgendeknop = null;
 		controleerknop = au.getImage("resources/controleerknop.gif");
+		volgendeknop = au.getImage("resources/volgendeknop.gif");
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(controleerknop,0);
+		tr.addImage(volgendeknop,0);
 		try{tr.waitForAll();} catch(Exception e) {}
 		
 		
@@ -61,9 +64,10 @@ public class OefentoetsPanel_WN extends ScPanel implements ActionListener
 		//kijkNaKnop.addActionListener(this);
 		//add(kijkNaKnop);
 		
-		opnieuwKnop = new ScLWButton(590,450,140,25,Heks.rb.getString("nieuwToetsKnopLabel"));
+		opnieuwKnop = new ImageButton(volgendeknop);
+		opnieuwKnop.setBounds(20,300,96,24);
 		opnieuwKnop.addActionListener(this);
-		//add(opnieuwKnop);
+		add(opnieuwKnop);
 		
 		schrijfheks = new Tekening(30,70,160,160,au,"schrijfheks.gif");
 		//add(schrijfheks);
@@ -283,7 +287,9 @@ public class OefentoetsPanel_WN extends ScPanel implements ActionListener
 				sommen[i].zetSom(s);
 			}
 			oefenTafereelPanel.zetGebruikt(0);
-			scoreLabel.setVisible(false);
+			//scoreLabel.setVisible(false);
+			aantalGoedLabel.setText("0");
+			aantalFoutLabel.setText("0");
 		}
 		oefenTafereelPanel.zetActief(false);
 		kerenHulp.zetWaarde(oefenTafereelPanel.geefGebruikt());

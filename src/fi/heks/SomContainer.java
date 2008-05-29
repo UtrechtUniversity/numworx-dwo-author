@@ -128,6 +128,7 @@ public class SomContainer extends ScContainer implements ActionListener
 			
 		
 		}
+		repaint();
 	}
 	
 	//public void vernieuw()
