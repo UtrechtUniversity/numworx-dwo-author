@@ -7,7 +7,9 @@ import java.util.*;
 import java.io.*;
 import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
+import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.base64code.*;
+import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
 
 
 
@@ -636,6 +638,10 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		return parameters;
 
 	}
+	
+	public InteractiePanel getInteractiePanel()
+    { 	return new NabouwenAanzichtenInteractiePanel();	
+    }
 	
 	public void update(Graphics g)
 	{	paint(g);

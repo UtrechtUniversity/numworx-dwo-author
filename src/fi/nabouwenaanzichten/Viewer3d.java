@@ -311,7 +311,7 @@ public class Viewer3d extends Container
 	{	bezigMetTekenen = true;
 		tekenOpImage(true);
 		Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null); 
+		if(g!=null)g.drawImage(im, 0, 0, null); 
 		bezigMetTekenen = false;
 	}
   
