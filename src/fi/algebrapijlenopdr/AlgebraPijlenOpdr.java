@@ -14,6 +14,8 @@ import fi.beans.mainframe.*;
 import fi.beans.stringutils.*;
 import fi.beans.appletutil.*;
 import fi.beans.tooltip.ToolTipManager;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+
 
 /**
  * @author Peter Boon
@@ -126,6 +128,8 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		String SimplifyString = getParameter("simplify");
 		if ( SimplifyString != null && SimplifyString.equals("false")) simplify = false;
 		else simplify = true;
+		
+		
 																	
 		//AppletUtil au = new AppletUtil(this);
 		//Image uitleg = au.getImage("resources/help.gif");
@@ -169,7 +173,9 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 			add(p,0);
 		}
 		
-		
+		//InteractiePanel inp = getInteractiePanel();
+		//inp.setBounds(0, 0, 500, 300);
+		//add((Component)inp,0);
 	}
 	
 	public void maakOpdrachten()
@@ -364,6 +370,10 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 		return parameters;
 
 	}
+	
+	public InteractiePanel getInteractiePanel()
+    { 	return new AlgebraPijlenOpdrInteractiePanel();	
+    }
 
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==viewButton)
