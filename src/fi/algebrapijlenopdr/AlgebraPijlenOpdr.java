@@ -14,6 +14,7 @@ import fi.beans.mainframe.*;
 import fi.beans.stringutils.*;
 import fi.beans.appletutil.*;
 import fi.beans.tooltip.ToolTipManager;
+
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
@@ -375,6 +376,8 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
     { 	return new AlgebraPijlenOpdrInteractiePanel();	
     }
 
+	 
+	
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==viewButton)
 		{	if(viewButton.getLabel().equals("View"))
