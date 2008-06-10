@@ -8,6 +8,7 @@ import java.io.*;
 import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
 import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
 
@@ -17,7 +18,7 @@ import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
  * @author Peter Boon
  */
 
-public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionListener, NabouwenAanzichtenIF 
+public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionListener, NabouwenAanzichtenIF, WiskOpdrApplet
 {	
 	private Image im;
   	private Graphics gIm;
@@ -75,11 +76,14 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		mf.setSize(width, height);
 	}
 	
+	public NabouwenAanzichten(Locale language)
+	{	rb = ResourceBundle.getBundle("fi.nabouwenaanzichten.text.Text",language);
+	}
+	
 	public NabouwenAanzichten()
 	{	Locale language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.nabouwenaanzichten.text.Text",language);
 	}
-	
 	
 	public void init()
 	{	
