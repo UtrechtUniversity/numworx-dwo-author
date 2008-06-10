@@ -75,6 +75,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends Panel implements Interacti
 	
 	public int getScore(){return 0;}
 	
+	public int getScoreMax(){return 0;}
+	
 	public boolean isCorrect(){return true;}
 	
 	public boolean isFout(){return false;}
