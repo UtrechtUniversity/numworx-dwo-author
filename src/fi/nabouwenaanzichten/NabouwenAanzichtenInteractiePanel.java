@@ -165,6 +165,11 @@ public class NabouwenAanzichtenInteractiePanel extends Panel implements Interact
 	{	//hier wordt de score berekend
 		return 0;
 	}
+	
+	public int getScoreMax()
+	{	//hier wordt de score berekend
+		return 0;
+	}
     
     public boolean hasEditMode()
     {   return false;
