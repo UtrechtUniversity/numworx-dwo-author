@@ -16,13 +16,14 @@ import fi.beans.appletutil.*;
 import fi.beans.tooltip.ToolTipManager;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
 
 /**
  * @author Peter Boon
  */
 
-public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionListener
+public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionListener, WiskOpdrApplet
 {	
 	private SCORM12APIInterface api;
 	
@@ -65,6 +66,10 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 	public AlgebraPijlenOpdr()
 	{	Locale language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text",language);
+	}
+	
+	public AlgebraPijlenOpdr(Locale language)
+	{	rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text",language);
 	}
 	
 	public void init()
