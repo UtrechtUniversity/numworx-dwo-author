@@ -29,6 +29,8 @@ public interface InteractiePanel
 	
 	public int getScore();
 	
+	public int getScoreMax();
+	
 	public boolean isCorrect();
 	
 	public boolean isFout();
