@@ -5,6 +5,8 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
+import javax.swing.*;
+
 import fi.beans.scorm.*;
 import fi.beans.copyright.*;
 import fi.beans.base64code.*;
@@ -16,7 +18,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  * @author Peter Boon
  */
 
-public class NabouwenAanzichtenInteractiePanel extends Panel implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener
+public class NabouwenAanzichtenInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener
 {	
 	protected SCORM12APIInterface api;
 	
@@ -97,9 +99,9 @@ public class NabouwenAanzichtenInteractiePanel extends Panel implements Interact
 	
 	public void setBackground(Color color)
 	{	bgcolor = color;
-		v.zetAchtergrond(color);
-		vp.zetAchtergrond(color);
-		ip.setBackground(color);
+		if(v!=null)v.zetAchtergrond(color);
+		if(vp!=null)vp.zetAchtergrond(color);
+		if(ip!=null)ip.setBackground(color);
 		super.setBackground(color);
 	}
 	

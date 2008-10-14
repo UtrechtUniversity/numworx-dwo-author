@@ -126,6 +126,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		fiButton.setBounds(2,2,20,30);
 		//add(fiButton);
 		
+		
 		String modeString = getParameter("mode");
 		if ( modeString == null) modeString = "1";
 		mode = Integer.parseInt(modeString.substring(0,1));
@@ -327,7 +328,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		    }
 		}
 		
-		
+		//add((Component)getInteractiePanel(),0);
 		
 	    
 	    opdrachtNr = 0;

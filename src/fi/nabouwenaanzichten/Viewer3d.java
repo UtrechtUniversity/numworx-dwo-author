@@ -3,7 +3,9 @@ package fi.nabouwenaanzichten;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Viewer3d extends Container
+import javax.swing.*;
+
+public class Viewer3d extends JComponent
 {
 	private NabouwenAanzichtenIF eigenaar;
 	private GetalRooster gr;
