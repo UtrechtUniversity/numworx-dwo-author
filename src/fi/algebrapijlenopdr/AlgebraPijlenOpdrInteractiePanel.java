@@ -67,6 +67,11 @@ public class AlgebraPijlenOpdrInteractiePanel extends Panel implements Interacti
 		}
 		algebraSchuifVeld.start();
 	}
+	
+	public void zetBreedte(int b){}
+	
+	public void zetHoogte(int h){}
+	
 	public void wis(){}
 	
 	public void zetMaat(){}
