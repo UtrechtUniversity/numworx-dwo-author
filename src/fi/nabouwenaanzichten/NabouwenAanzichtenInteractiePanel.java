@@ -97,6 +97,11 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel implements Interac
 		super.setBounds(x,y,b,h);
 	}
 	
+	public void zetBreedte(int b){}
+	
+	public void zetHoogte(int h){}
+	
+	
 	public void setBackground(Color color)
 	{	bgcolor = color;
 		if(v!=null)v.zetAchtergrond(color);
