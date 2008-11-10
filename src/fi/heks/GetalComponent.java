@@ -28,8 +28,12 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		add(beginWaardeTf);
 	}
 	
-	public void paint(Graphics g)
-	{	Font f = new Font("SansSerif", Font.PLAIN, (int)(3*schaal*relh/4));
+	public void paint(Graphics gr)
+	{	
+		Graphics g = (Graphics2D)gr;
+    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		Font f = new Font("SansSerif", Font.PLAIN, (int)(3*schaal*relh/4));
 		g.setColor(getForeground());
 		g.setFont(f);
 		String s;
