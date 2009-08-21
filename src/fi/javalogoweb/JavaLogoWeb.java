@@ -40,11 +40,11 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		setLayout(null);
 		
 		URL url = this.getCodeBase();
-		if(url!=null && (url.getHost().equals("www.informatica-actief.nl"))){
+		if(url!=null && (url.getHost().equals("www.informatica-actief.stoas.nl"))){
 			System.out.println(url.toString());
 			System.out.println(url.getHost());
 		}
-		else return;
+		//else return;
 		
 		//instelling taal
 		String langArg = getParameter("language");

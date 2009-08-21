@@ -446,8 +446,8 @@ public class FormuleParser
 		
 		//if(s.length()==1 && Character.isLetter(s.charAt(0)))
 		if(basisString)
-		{	if(s.charAt(0)=='e')exp = new E();
-			else if(s.charAt(0)=='\u03C0')exp = new PI();
+		{	if(s.length()==1 && s.charAt(0)=='e')exp = new E();
+			else if(s.length()==1 && s.charAt(0)=='\u03C0')exp = new PI();
 			else exp = new BasisExpressie(s);
 			return exp;
 		}
