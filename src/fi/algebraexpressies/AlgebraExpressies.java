@@ -1,6 +1,5 @@
 package fi.algebraexpressies;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
@@ -8,6 +7,7 @@ import fi.algebraexpressies.text.*;
 import java.applet.Applet;
 import fi.beans.mainframe.*;
 import fi.beans.scorm.*;
+import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.*;
 
 /**
@@ -68,6 +68,35 @@ public class AlgebraExpressies extends Applet implements ScormAppletIF
 	public void setState(String s)
 	{
 	}
+	
+	public void start()
+	{	Thread pauze = new Thread()
+			{	public void run()
+				{	try
+    				{   sleep(100);
+					}
+    				catch(InterruptedException e)    
+					{ }
+					as.tekenOpnieuw();
+				}
+			};
+		pauze.start();
+	}
+    public boolean hasEditMode()
+    {	return false;
+    }
+
+    public ScormEditComponentIF getEditComponent(Hashtable launchdata)
+    {	return null;
+    }
+
+    public Parameter[] getEditableParameters()
+    {	return null;
+    }
+
+    public Parameter[] getAllParameters()
+    {	return null;
+    }
 	
 	public void setSize(int b, int h)
 	{	super.setSize(b,h);

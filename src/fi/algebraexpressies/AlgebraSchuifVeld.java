@@ -14,7 +14,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	GrafiekComponent grafiekComponent;
 	int aantalSc;
 	
-	
+	boolean buttonsAdded;
 	
 	public AlgebraSchuifVeld(int x, int y, int b, int h)
 	{	super(x,y,b,h);
@@ -64,6 +64,9 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		{	schuifcomponenten[i].voegPijlToe(new Pijl(this));
 			add(schuifcomponenten[i]);
 		}
+		add(grafiekCheckbox,0);
+		add(wisKnop,0);
+		add(ip,0);
 	}
 	
 	public void tekenAchtergrond(Graphics g)
@@ -186,7 +189,16 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		schuifcomponenten[aantalSc].voegPijlToe(new Pijl(this));
 		add(schuifcomponenten[aantalSc]);
 		aantalSc++;
+		
+		if(!buttonsAdded)
+		{	getParent().add(grafiekCheckbox,0);
+			getParent().add(wisKnop,0);
+			getParent().add(ip,0);
+			buttonsAdded = true;
+		}
 	}
+	
+	
 	
 	public void verwijder(AlgebraSchuifComponent sc)
 	{	for(int i=0 ; i<aantalSc ; i++)
