@@ -33,6 +33,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 	private Font font;
 	
 	//private Button kopieerKnop;
+	private boolean buttonsAdded;
 	
 	
 	public AlgebraSchuifVeld(int x, int y, int b, int h)
@@ -338,6 +339,22 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 			setZoomStates(key,zoomStateHolder.getZoomState(key));
 		}
 		
+		if(!buttonsAdded)
+		{	grafiekCheckbox.setLocation(grafiekCheckbox.getLocation().x + getLocation().x , grafiekCheckbox.getLocation().y + getLocation().y);
+			tabelCheckbox.setLocation(tabelCheckbox.getLocation().x + getLocation().x , tabelCheckbox.getLocation().y + getLocation().y);
+			wisKnop.setLocation(wisKnop.getLocation().x + getLocation().x , wisKnop.getLocation().y + getLocation().y);
+			terugKnop.setLocation(terugKnop.getLocation().x + getLocation().x , terugKnop.getLocation().y + getLocation().y);
+			heenKnop.setLocation(heenKnop.getLocation().x + getLocation().x , heenKnop.getLocation().y + getLocation().y);
+			ip.setLocation(ip.getLocation().x + getLocation().x , ip.getLocation().y + getLocation().y);
+			
+			getParent().add(grafiekCheckbox,0);
+			getParent().add(tabelCheckbox,0);
+			getParent().add(wisKnop,0);
+			getParent().add(terugKnop,0);
+			getParent().add(heenKnop,0);
+			getParent().add(ip,0);
+			buttonsAdded = true;
+		}
     }
 	
 	public void paint(Graphics g)
@@ -495,6 +512,23 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		schuifcomponenten[aantalSc].voegPijlToe(p);
 		add(schuifcomponenten[aantalSc]);
 		aantalSc++;
+		
+		if(!buttonsAdded)
+		{	grafiekCheckbox.setLocation(grafiekCheckbox.getLocation().x + getLocation().x , grafiekCheckbox.getLocation().y + getLocation().y);
+			tabelCheckbox.setLocation(tabelCheckbox.getLocation().x + getLocation().x , tabelCheckbox.getLocation().y + getLocation().y);
+			wisKnop.setLocation(wisKnop.getLocation().x + getLocation().x , wisKnop.getLocation().y + getLocation().y);
+			terugKnop.setLocation(terugKnop.getLocation().x + getLocation().x , terugKnop.getLocation().y + getLocation().y);
+			heenKnop.setLocation(heenKnop.getLocation().x + getLocation().x , heenKnop.getLocation().y + getLocation().y);
+			ip.setLocation(ip.getLocation().x + getLocation().x , ip.getLocation().y + getLocation().y);
+			
+			getParent().add(grafiekCheckbox,0);
+			getParent().add(tabelCheckbox,0);
+			getParent().add(wisKnop,0);
+			getParent().add(terugKnop,0);
+			getParent().add(heenKnop,0);
+			getParent().add(ip,0);
+			buttonsAdded = true;
+		}
 	}
 	
 	public void verwijder(AlgebraSchuifComponent sc)
