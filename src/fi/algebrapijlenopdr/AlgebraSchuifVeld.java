@@ -55,32 +55,32 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		grafiekCheckbox.setFont(font);
 		grafiekCheckbox.setBounds( 8,340,100,20);
 		grafiekCheckbox.setBackground(Color.lightGray);
-		add(grafiekCheckbox);
+		add(grafiekCheckbox,0);
 		
 		tabelCheckbox = new Checkbox(AlgebraPijlenOpdr.rb.getString("tabelLabel"));
 		tabelCheckbox.addItemListener(this);
 		tabelCheckbox.setFont(font);
 		tabelCheckbox.setBounds( 8,320,80,20);
 		tabelCheckbox.setBackground(Color.lightGray);
-		add(tabelCheckbox);
+		add(tabelCheckbox,0);
 		
 		wisKnop = new Button(AlgebraPijlenOpdr.rb.getString("wisKnopLabel"));
 		wisKnop.setFont(font);
 		wisKnop.setBounds(18,370,70,20);
 		wisKnop.addActionListener(this);
-		add(wisKnop);
+		add(wisKnop,0);
 		
 		terugKnop = new Button(AlgebraPijlenOpdr.rb.getString("terugKnopLabel"));
 		terugKnop.setBounds(8,290,45,20);
 		terugKnop.setFont(font);
 		terugKnop.addActionListener(this);
-		add(terugKnop);
+		add(terugKnop,0);
 		
 		heenKnop = new Button(AlgebraPijlenOpdr.rb.getString("heenKnopLabel"));
 		heenKnop.setBounds(58,290,45,20);
 		heenKnop.setFont(font);
 		heenKnop.addActionListener(this);
-		add(heenKnop);
+		add(heenKnop,0);
 		
 		maakStapel();
 		
@@ -337,7 +337,7 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 		{	String key = (String)en.nextElement();
 			setZoomStates(key,zoomStateHolder.getZoomState(key));
 		}
-	    
+		
     }
 	
 	public void paint(Graphics g)
@@ -376,6 +376,11 @@ public class AlgebraSchuifVeld extends SchuifVeld implements ItemListener, Mouse
 			schuifcomponenten[i].voegPijlToe(p);
 			add(schuifcomponenten[i]);
 		}
+		add(grafiekCheckbox,0);
+		add(tabelCheckbox,0);
+		add(wisKnop,0);
+		add(terugKnop,0);
+		add(heenKnop,0);
 	}
 	
 	public void tekenAchtergrond(Graphics g)
