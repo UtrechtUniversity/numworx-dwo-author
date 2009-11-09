@@ -225,7 +225,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			invulPanel = new InvulPanel(activiteitNamen,100,140,180,40);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
-			if(activiteitNamen.length>1)add(invulPanel);
+			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];
 			for(int i=0 ; i<aantalActiviteiten; i++)
@@ -267,7 +267,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			invulPanel = new InvulPanel(activiteitNamen,100,180,180,40);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
-			if(activiteitNamen.length>1)add(invulPanel);
+			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];
 			for(int i=0 ; i<aantalActiviteiten; i++)
@@ -312,7 +312,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			if(mobileVersion) invulPanel = new InvulPanel(activiteitNamen,120,240,180,30);
 			invulPanel.addActionListener(this);
 			invulPanel.setBackground(getBackground());
-			if(activiteitNamen.length>1)add(invulPanel);
+			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];
 			for(int i=0 ; i<aantalActiviteiten; i++)
