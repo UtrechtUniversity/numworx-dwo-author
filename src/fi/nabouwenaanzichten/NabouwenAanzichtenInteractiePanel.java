@@ -167,6 +167,9 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel implements Interac
 	    return h;
 	}
 	
+	public int getIpId(){return 0;}
+	
+	public String getIpExpString(){return null;}
 	
 	public int getScore()
 	{	//hier wordt de score berekend
