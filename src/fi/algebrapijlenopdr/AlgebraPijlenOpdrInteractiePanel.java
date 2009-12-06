@@ -78,6 +78,10 @@ public class AlgebraPijlenOpdrInteractiePanel extends Panel implements Interacti
 	
 	public int geefAsHoogte(){return 0;}
 	
+	public int getIpId(){return 0;}
+	
+	public String getIpExpString(){return null;}
+	
 	public int getScore(){return 0;}
 	
 	public int getScoreMax(){return 0;}
