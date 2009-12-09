@@ -27,6 +27,10 @@ public interface InteractiePanel
 	
 	public int geefAsHoogte();
 	
+	public int getIpId();
+	
+	public String getIpExpString();
+		
 	public int getScore();
 	
 	public int getScoreMax();
