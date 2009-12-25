@@ -7,6 +7,7 @@ import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 
 
+
 public class ScormEditComponent extends Panel implements ScormEditComponentIF, ItemListener
 {
 	private Hashtable launchData;
@@ -95,8 +96,8 @@ public class ScormEditComponent extends Panel implements ScormEditComponentIF, I
 	public Hashtable getLaunchData()
     {   String language = getParameter("language");
     	String bgcolor = getParameter("bgcolor");
-    	String editModeState = viewPanel.getState();
-    	String exampleState = viewPanelExample.getState();
+    	String editModeState = viewPanel.getStateString();
+    	String exampleState = viewPanelExample.getStateString();
     	String tekst = textArea.getText();
     	String example = exampleCB.getState() ? "true" : "false";
     	String draaibaar = muisCB.getState() ? "true" : "false";

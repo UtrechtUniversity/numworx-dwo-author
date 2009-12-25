@@ -5,11 +5,13 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.Serializable;
 
+import javax.swing.*;
+
 // class for main drawing area
 // a Panel containing one or more objects to be drawn in
 // such as an Object3DContainer or others
 // also contains all control routines
-public class DrawingPanel extends Panel
+public class DrawingPanel extends JPanel
 {   // applet frame
     DoorzienFrame owner;
     // defined colors
@@ -101,7 +103,7 @@ public class DrawingPanel extends Panel
 
     // drawing
     boolean startUp = true;
-    Image offscreen = null;
+    //Image offscreen = null;
 
     // code of originalObject
 //    int modelCode = 0;
@@ -926,15 +928,15 @@ public static void showTime(String comment)
                               getSize().width / 2, getSize().height);                    
             cutPanel.resetModel();
             panel3D.resetModel();                              
-            cutPanel.offscreen = null;
-            panel3D.offscreen = null;
+            //cutPanel.offscreen = null;
+            //panel3D.offscreen = null;
             add(cutPanel);        
         }    
         else // remove
         {   remove(cutPanel);
             panel3D.setBounds(0, 0, getSize().width, getSize().height);        
             panel3D.resetModel();    
-            panel3D.offscreen = null;            
+            //panel3D.offscreen = null;            
         }
         if (slider != null)            
             slider.setLocation(
@@ -4836,16 +4838,16 @@ panel3D.testString = "";
         {
             panel3D.setBounds(getSize().width / 2, 0, 
                               getSize().width / 2, getSize().height);
-            panel3D.offscreen = null;    
+            //panel3D.offscreen = null;    
             panel3D.resetModel();
             cutPanel.setBounds(0, 0, getSize().width / 2, getSize().height);
-            cutPanel.offscreen = null;    
+            //cutPanel.offscreen = null;    
             cutPanel.resetModel();
         }    
         else
         {
             panel3D.setBounds(0, 0, getSize().width, getSize().height);
-            panel3D.offscreen = null;    
+            //panel3D.offscreen = null;    
             panel3D.resetModel();
         }
         if (slider != null)            
@@ -4920,29 +4922,29 @@ panel3D.testString = "";
         return result;
     }     
 
-    public void update(Graphics g)
-    {   paint(g);
-        
-    }    
+    //public void update(Graphics g)
+    //{   paint(g);
+     //   
+    //}    
 
     public void invalidate()
     {   super.invalidate();
-        offscreen = null;
+        //offscreen = null;
     }
 
     // paint
-    public void paint(Graphics g)
+    /*public void paint(Graphics g)
     {   
-        if (offscreen == null)
-            offscreen = createImage(getSize().width, getSize().height);
-        Graphics og = offscreen.getGraphics();
-        og.setClip(0, 0, getSize().width, getSize().height);
-        super.paint(og);               
-        g.drawImage(offscreen, 0, 0, null);
-        og.dispose();
+        //if (offscreen == null)
+         //   offscreen = createImage(getSize().width, getSize().height);
+        //Graphics og = offscreen.getGraphics();
+        g.setClip(0, 0, getSize().width, getSize().height);
+        super.paint(g);               
+        //g.drawImage(offscreen, 0, 0, null);
+        //og.dispose();
 
                    
-    } // paint
+    }*/ // paint
 
     public boolean vertexAllowed(FacetWithVertex fwv)
     {
@@ -5030,7 +5032,7 @@ panel3D.testString = "";
                 return;
             }    
             requestFocus(); // waar is dit voor?
-            offscreen = null;
+            //offscreen = null;
             updateWork();
             
         }    
@@ -6018,8 +6020,8 @@ panel3D.testString = "";
                     panel3D.updateHelpLine(new Point(e.getX(), e.getY()));
 //                panel3D.rotateBy(theta, axis);
 //                panel3D.rotateCake(xTheta, yTheta);
-                    panel3D.paint(panel3D.getGraphics());
-                
+                    //panel3D.paint(panel3D.getGraphics());
+                    panel3D.repaint();
                 
                     panel3D.oldX = e.getX();
                     panel3D.oldY = e.getY();
@@ -6061,8 +6063,8 @@ panel3D.testString = "";
                     panel3D.rotateByZ(zTheta);
                     panel3D.updateHelpPoint(new Point(e.getX(), e.getY()));                    
                     panel3D.updateHelpLine(new Point(e.getX(), e.getY()));                    
-                    panel3D.paint(panel3D.getGraphics());
-                
+                    //panel3D.paint(panel3D.getGraphics());
+                    panel3D.repaint();
                 
                     panel3D.oldX = e.getX();
                     panel3D.oldY = e.getY();
@@ -6179,7 +6181,8 @@ panel3D.testString = "";
                     zTheta = xTheta;
                     
                 cutPanel.rotateByZ(zTheta);
-                cutPanel.paint(cutPanel.getGraphics());
+                //cutPanel.paint(cutPanel.getGraphics());
+                cutPanel.repaint();
                 cutPanel.oldX = e.getX();
                 cutPanel.oldY = e.getY();
             }
@@ -6330,17 +6333,17 @@ class Slider extends Component //implements Observer
 		           
 	}
     // avoid flickering
-	public void update(Graphics g)
-	{   paint(g);
-	}
+	//public void update(Graphics g)
+	//{   paint(g);
+	//}
 	// draw offscreen
 	public void paint(Graphics g)
-	{   Image offscreen = createImage(getSize().width, getSize().height);
-	    Graphics og = offscreen.getGraphics();
-	    og.setClip(0, 0, getSize().width, getSize().height);
-	    paintSlider(og);
-	    g.drawImage(offscreen, 0, 0, null);
-	    og.dispose();
+	{   //Image offscreen = createImage(getSize().width, getSize().height);
+	    //Graphics og = offscreen.getGraphics();
+	    g.setClip(0, 0, getSize().width, getSize().height);
+	    paintSlider(g);
+	    //g.drawImage(offscreen, 0, 0, null);
+	    //og.dispose();
 	}
 	// change parameter value, prevent button from leaving
 	// rectangle
@@ -6487,17 +6490,17 @@ class ViewSlider extends Component //implements Observer
 		           
 	}
     // avoid flickering
-	public void update(Graphics g)
-	{   paint(g);
-	}
+	//public void update(Graphics g)
+	//{   paint(g);
+	//}
 	// draw offscreen
 	public void paint(Graphics g)
-	{   Image offscreen = createImage(getSize().width, getSize().height);
-	    Graphics og = offscreen.getGraphics();
-	    og.setClip(0, 0, getSize().width, getSize().height);
-	    paintSlider(og);
-	    g.drawImage(offscreen, 0, 0, null);
-	    og.dispose();
+	{   //Image offscreen = createImage(getSize().width, getSize().height);
+	    //Graphics og = offscreen.getGraphics();
+	    g.setClip(0, 0, getSize().width, getSize().height);
+	    paintSlider(g);
+	    //g.drawImage(offscreen, 0, 0, null);
+	    //og.dispose();
 	}
 	// change parameter value, prevent button from leaving
 	// rectangle

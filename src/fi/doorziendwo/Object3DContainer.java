@@ -4,9 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import javax.swing.*;
+
 // class representing the drawing area (a Canvas), also initializes and
 // manipulates the 3D model
-public class Object3DContainer extends Container
+public class Object3DContainer extends JPanel
 {       
     // the 3D object(s) in worldspace
     ObjectGroup3D model, previewModel;
@@ -58,7 +60,7 @@ public class Object3DContainer extends Container
     double zoomFactor = 9e-1d;
     boolean retransform = true;
     
-    Image offscreen = null;
+    //Image offscreen = null;
     
     Vector3D helpStart;
     Point pt1 = new Point();
@@ -87,6 +89,7 @@ public static String testString = "";
     Object3DContainer()
     {   mat = new Matrix3D();
         setLayout(null);
+        //setOpaque(false);
     }
 
     // assen extern maken en toevoegen    
@@ -130,17 +133,24 @@ public static String testString = "";
             
         }
 
-        Graphics gg = getGraphics();
-        if (gg != null)
-            paint(getGraphics());
-        else
+        //Graphics gg = getGraphics();
+        //if (gg != null)
+        //    paint(getGraphics());
+        //else
             repaint();
     }
+    
+    public void setBackground(Color c)
+    {	if(bordered) bgColor = Color.white;
+    	else bgColor = c;
+	    super.setBackground(c);
+	}
     
     public void setBordered(boolean b)
     {	bordered = b;
     	if(!b) bgColor = getBackground();
     	else bgColor = Color.white;
+    	
     }
     
     
@@ -179,7 +189,7 @@ public static String testString = "";
     public void resetModel()
     {   //model.findCenter();
         //model.findDiameter();
-
+    	if(model==null) return;
         
         double wFac = zoomFactor * 
             ((double) getSize().width) / model.diameter;
@@ -199,12 +209,12 @@ public static String testString = "";
     }
 
 
-    public void update(Graphics g)
-    {   paint(g);
-        
-    }    
+    //public void update(Graphics g)
+    //{   paint(g);
+    //    
+    //}    
 
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {   
 
 		if (model == null)
@@ -221,73 +231,72 @@ public static String testString = "";
         if (projection == PARALLELPROJ)    
             distance = MAXDISTANCE;
 //System.out.println("dis = " + distance);        
-        if (offscreen == null)
-            offscreen = createImage(getSize().width, getSize().height);
-        Graphics og = offscreen.getGraphics();
-        og.setClip(0, 0, getSize().width, getSize().height);   
+        //if (offscreen == null)
+            //offscreen = createImage(getSize().width, getSize().height);
+        //Graphics og = g;//offscreen.getGraphics();
+        //g.setClip(0, 0, getSize().width, getSize().height);   
         // background
-        og.setColor(bgColor);
-        og.fillRect(0,0,getSize().width, getSize().height);
+        g.setColor(bgColor);
+        g.fillRect(0,0,getSize().width, getSize().height);
 
-        og.setFont(vertexFont);
+        g.setFont(vertexFont);
         if (previewModel == null)
-            model.paintObject3D(og, shadow, showInside, distance, mat, paintType,
-                                retransform);
+            model.paintObject3D(g, shadow, showInside, distance, mat, paintType, retransform);
                                    
                                 
                                     
         if (previewModel != null)
-        {    previewModel.paintObject3D(og, shadow, showInside, distance, mat, paintType,
+        {    previewModel.paintObject3D(g, shadow, showInside, distance, mat, paintType,
                                        retransform);
              //model.fixFacetArray();
              //model.transformBy(mat, true);
         }
         if (helpLine)
-        {   og.setColor(helpLineColor);
-            drawDashedLine(og, pt1.x, pt1.y, pt2.x, pt2.y);
+        {   g.setColor(helpLineColor);
+            drawDashedLine(g, pt1.x, pt1.y, pt2.x, pt2.y);
         }    
 
         if (helpPoint)
-        {   og.setColor(helpPointColor);
+        {   g.setColor(helpPointColor);
         
 /*        
             og.drawOval(pt1.x - POINT / 2, pt1.y - POINT / 2, 
                         POINT, POINT);
 */
-            og.drawLine(hp.x, hp.y - POINT / 2, 
+            g.drawLine(hp.x, hp.y - POINT / 2, 
                         hp.x, hp.y + POINT / 2 - 1);
-            og.drawLine(hp.x - POINT / 2, hp.y, 
+            g.drawLine(hp.x - POINT / 2, hp.y, 
                         hp.x + POINT / 2 - 1, hp.y);
                         
                         
         }    
         // outline
-        og.setColor(Color.black);
-        if (bordered)og.drawRect(0,0,getSize().width-1, getSize().height-1 );
+        g.setColor(Color.gray);
+        if (bordered)g.drawRect(0,0,getSize().width-1, getSize().height-1 );
 /*        
 og.drawLine(0, getSize().height / 2, getSize().width - 1, getSize().height /2);
 og.drawLine(getSize().width / 2, 0, getSize().width / 2, getSize().height -1);
 */        
         
-        super.paint(og);
+        //super.paint(og);
 
 // testing        
-og.setFont(textFont);       
-og.setColor(Color.black);
-og.drawString(testString, 10, 15);
+g.setFont(textFont);       
+g.setColor(Color.black);
+g.drawString(testString, 10, 15);
 
-         g.drawImage(offscreen, 0, 0, null);
-         og.dispose();
+         //g.drawImage(offscreen, 0, 0, null);
+         //og.dispose();
   
 
     }
 
     public void setPreviewModel(ObjectGroup3D pvModel)
     {   previewModel = pvModel;
-        Graphics gg = getGraphics();
-        if (gg != null)
-            paint(getGraphics());
-        else
+        //Graphics gg = getGraphics();
+        //if (gg != null)
+         //   paint(getGraphics());
+        //else
             repaint();
 
     }
@@ -329,10 +338,10 @@ og.drawString(testString, 10, 15);
     public void vwRotate(Vector3D v, Vector3D w)
     {   
         mat.vwRotate(v, w);        
-        Graphics gg = getGraphics();
-        if (gg != null)
-            paint(getGraphics());
-        else
+        //Graphics gg = getGraphics();
+        //if (gg != null)
+        //    paint(getGraphics());
+        //else
             repaint();
     }
 

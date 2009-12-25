@@ -3,6 +3,8 @@ package fi.doorziendwo;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.*;
 
 import fi.beans.appletutil.*;
@@ -17,6 +19,8 @@ public class DoorzienFrame extends Frame
     public static final int EPN = 0;
     public static final int FI = 1;
     public static int version = EPN;
+    
+    
     
     // the applet with starter button
 	DoorzienDWO starter;
@@ -307,6 +311,56 @@ public class DoorzienFrame extends Frame
 	// right
 	boolean conDraw = true;
 
+	
+	protected String[] imageNames = {
+			"rotate.gif",
+			"wireframe.gif",
+			"solid.gif",
+			"zoomin.gif",
+			"zoominoff.gif",
+			"zoomout.gif",
+			"zoomoutoff.gif",
+			"condraw.gif",
+			"figure.gif",
+			"drawline.gif",
+			"drawlineoff.gif",
+			"deleteline.gif",
+			"deletelineoff.gif",
+			"lenglines.gif",
+			"lenglinesoff.gif",
+			"shortlines.gif",
+			"shortlinesoff.gif",
+			"drawplane.gif",
+			"drawplaneoff.gif",
+			"parplane.gif",
+			"parplaneoff.gif",
+			"deleteplane.gif",
+			"deleteplaneoff.gif",
+			"planesfilled.gif",
+			"planesfilledoff.gif",
+			"planesempty.gif",
+			"transplane.gif",
+			"transplaneoff.gif",
+			"notransplane.gif",
+			"rotplane.gif",
+			"rotplaneoff.gif",
+			"norotplane.gif",
+			"showcut.gif",
+			"showcutoff.gif",
+			"hidecut.gif",
+			"cut.gif",
+			"cutoff.gif",
+			"glue.gif",
+			"undo.gif",
+			"undooff.gif",
+			"redo.gif",
+			"redooff.gif",
+			"EPNlogo.gif"};
+	
+	
+	
+	protected static Hashtable images;
+	
 
     // constructor
 	public DoorzienFrame(DoorzienDWO s, ViewerIF v, ScormedObject3D scormedObject3D)
@@ -316,58 +370,65 @@ public class DoorzienFrame extends Frame
 	    viewer = v;
 	    
 	    // read all parameter strings
-	    figureString = starter.figureString;
-	    toolString = starter.toolString;
+	    figureString = null;//starter.figureString;
+	    toolString = null;//starter.toolString;
 
 	    // find images for buttons
 	    // right tool bar
-	    rotateImage = starter.rotate;
-		wireFrameImage = starter.wireFrame;
-		solidImage = starter.solid;
-		zoomInImage = starter.zoomIn;
-		zoomInOffImage = starter.zoomInOff;
-		zoomOutImage = starter.zoomOut;
-		zoomOutOffImage = starter.zoomOutOff;
-		conDrawImage = starter.conDraw;
-		figureImage = starter.figure;
-        drawLineImage = starter.drawLine;
-        drawLineOffImage = starter.drawLineOff;
-        deleteLineImage = starter.deleteLine;
-        deleteLineOffImage = starter.deleteLineOff;
-        lengLinesImage = starter.lengLines;
-        lengLinesOffImage = starter.lengLinesOff;
-        shortLinesImage = starter.shortLines;
-        shortLinesOffImage = starter.shortLinesOff;
+	    
+	    if(images==null)
+		{	images = new Hashtable();
+			DoorzienDWO.loadImages(images,imageNames);
+		}
+	    
+	    
+	    rotateImage = getImage("rotate.gif");
+		wireFrameImage = getImage("wireframe.gif");
+		solidImage = getImage("solid.gif");
+		zoomInImage = getImage("zoomin.gif");
+		zoomInOffImage = getImage("zoominoff.gif");
+		zoomOutImage = getImage("zoomout.gif");
+		zoomOutOffImage = getImage("zoomoutoff.gif");
+		conDrawImage = getImage("condraw.gif");
+		figureImage = getImage("figure.gif");
+        drawLineImage = getImage("drawline.gif");
+        drawLineOffImage = getImage("drawlineoff.gif");
+        deleteLineImage = getImage("deleteline.gif");
+        deleteLineOffImage = getImage("deletelineoff.gif");
+        lengLinesImage = getImage("lenglines.gif");
+        lengLinesOffImage = getImage("lenglinesoff.gif");
+        shortLinesImage = getImage("shortlines.gif");
+        shortLinesOffImage = getImage("shortlinesoff.gif");
         
-        drawPlaneImage = starter.drawPlane;
-        drawPlaneOffImage = starter.drawPlaneOff;
-        parPlaneImage = starter.parPlane;        
-        parPlaneOffImage = starter.parPlaneOff;        
-        deletePlaneImage = starter.deletePlane;
-        deletePlaneOffImage = starter.deletePlaneOff;
-        planesFilledImage = starter.planesFilled;
-        planesFilledOffImage = starter.planesFilledOff;        
-        planesEmptyImage = starter.planesEmpty;        
-        transPlaneImage = starter.transPlane;
-        transPlaneOffImage = starter.transPlaneOff;
-        noTransPlaneImage = starter.noTransPlane;
-        rotPlaneImage = starter.rotPlane;
-        rotPlaneOffImage = starter.rotPlaneOff;
-        noRotPlaneImage = starter.noRotPlane;
-        showCutImage = starter.showCut;
-        showCutOffImage = starter.showCutOff;
-        hideCutImage = starter.hideCut;
-        cutImage = starter.cut;
-        cutOffImage = starter.cutOff;
-        glueImage = starter.glue;        
-        undoImage = starter.undo;
-        undoOffImage = starter.undoOff;
-        redoImage = starter.redo;
-        redoOffImage = starter.redoOff;
+        drawPlaneImage = getImage("drawplane.gif");
+        drawPlaneOffImage = getImage("drawplaneoff.gif");
+        parPlaneImage = getImage("parplane.gif");        
+        parPlaneOffImage = getImage("parplaneoff.gif");        
+        deletePlaneImage = getImage("deleteplane.gif");
+        deletePlaneOffImage = getImage("deleteplaneoff.gif");
+        planesFilledImage = getImage("planesfilled.gif");
+        planesFilledOffImage = getImage("planesfilledoff.gif");        
+        planesEmptyImage = getImage("planesempty.gif");        
+        transPlaneImage = getImage("transplane.gif");
+        transPlaneOffImage = getImage("transplaneoff.gif");
+        noTransPlaneImage = getImage("notransplane.gif");
+        rotPlaneImage = getImage("rotplane.gif");
+        rotPlaneOffImage = getImage("rotplaneoff.gif");
+        noRotPlaneImage = getImage("norotplane.gif");
+        showCutImage = getImage("showcut.gif");
+        showCutOffImage = getImage("showcutoff.gif");
+        hideCutImage = getImage("hidecut.gif");
+        cutImage = getImage("cut.gif");
+        cutOffImage = getImage("cutoff.gif");
+        glueImage = getImage("glue.gif");        
+        undoImage = getImage("undo.gif");
+        undoOffImage = getImage("undooff.gif");
+        redoImage = getImage("redo.gif");
+        redoOffImage = getImage("redooff.gif");
 	    
-	    epnImage = starter.epnLogo;
+	    epnImage = getImage("EPNlogo.gif");
 	    
-	    if(rotateImage==null)
+	    /*if(rotateImage==null)
 	    {	AppletUtil au = new AppletUtil(starter);
 	    	
 	    	rotateImage = au.getImage("resources/rotate.gif");	    
@@ -417,6 +478,7 @@ public class DoorzienFrame extends Frame
 			
 			epnImage = au.getImage("resources/EPNlogo.gif");	 
 	    }
+*/
 	    
 		setTitle(tt("titelText"));
         // create instance of MenuItem Action and ItemListener here and pass
@@ -672,6 +734,10 @@ public class DoorzienFrame extends Frame
 		
 
 	} // constructor
+	
+	public static Image getImage(String name)
+	{	return(Image)images.get(name);
+	}
 	
     public Vector processSelection(String s)
     {   Vector result = new Vector();
@@ -2099,7 +2165,7 @@ class RightToolBar extends Panel
         int currentX = owner.offSet;
         int currentY = owner.offSet;
         
-        rotateButton = new ImageButton(owner.rotateImage, null);
+        rotateButton = new ImageButton(DoorzienFrame.getImage("rotateImage.gif"), null);
         rotateButton.setLocation(currentX, currentY);
 /*        
         add(rotateButton);
@@ -2107,7 +2173,7 @@ class RightToolBar extends Panel
         rotateButton.addMouseListener(new RotateML());
         currentY += buttonHeight + 2 * owner.offSet;
 */        
-        wireSolidButton = new ImageButton(owner.solidImage, null);
+        wireSolidButton = new ImageButton(DoorzienFrame.getImage("solidImage.gif"), null);
         wireSolidButton.setLocation(currentX, currentY);
         add(wireSolidButton);
         // listener

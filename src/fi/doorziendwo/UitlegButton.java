@@ -3,7 +3,9 @@ package fi.doorziendwo;
 import java.awt.*;
 import java.awt.event.*;
 
-public class UitlegButton extends Button implements ActionListener
+import javax.swing.*;
+
+public class UitlegButton extends JButton implements ActionListener
 {	
 	private Image image;
 	private String titel;

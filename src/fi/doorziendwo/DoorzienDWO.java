@@ -9,7 +9,11 @@ import java.awt.event.*;
 import java.applet.*;
 import java.util.*;
 import java.net.URL;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+
+import javax.swing.*;
 
 // plaatjes, i.h.b. in de scormtest
 import fi.beans.appletutil.AppletUtil;
@@ -18,9 +22,10 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.tekstobjects.*;	
+import fi.beans.wiskopdrbeans.*;
 
 // main applet class with start button
-public class DoorzienDWO extends Applet implements ScormAppletIF
+public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApplet
 {   // attributes
 
     // scorm
@@ -35,6 +40,8 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 
     AppletUtil au;
     
+    public static Applet applet;
+    
     // language string
     static String langArg;
     // the langage lookup table
@@ -46,11 +53,12 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
     String toolString = null;
     
 	// images right tool bar top to bottom
-    static Image rotate, wireFrame, solid,
-          zoomIn, zoomInOff, zoomOut, zoomOutOff, 
-          conDraw, figure 
+   // static Image rotate, wireFrame, solid,
+   //       zoomIn, zoomInOff, zoomOut, zoomOutOff, 
+    //      conDraw, figure 
           ;
     // images top toolbar left to right
+    /*
     static Image drawLine, drawLineOff,
           deleteLine, deleteLineOff,  
           lengLines, lengLinesOff,
@@ -67,9 +75,9 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
           redo, redoOff
           ;  
           
-    Image epnLogo;          
+    Image epnLogo;  */        
     // button to start the main applet frame
-    Button startButton;
+    JButton startButton;
     // flag to indicate if main applet frame has started
 	boolean frameStarted = false;
 	// main applet frame
@@ -90,6 +98,12 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 	
 	public DoorzienDWO()
 	{	textTable = new Table("nl");
+		applet = this;
+	}
+	
+	public DoorzienDWO(Locale lang)
+	{	textTable = new Table(lang.toString());
+		applet = this;
 	}
 	
 	public void init()
@@ -126,6 +140,7 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
         figureString = getParameter("figures");
         toolString = getParameter("tools");
 
+        /*
         // find images
         rotate = au.getImage("resources/rotate.gif");	    
 		wireFrame = au.getImage("resources/wireframe.gif");	    
@@ -173,16 +188,16 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 		redoOff = au.getImage("resources/redooff.gif");	    																		
 		
 		epnLogo = au.getImage("resources/EPNlogo.gif");	    																				
-		
+		*/
 		Color bgcolor = new Color(230,240,255);
 			String kleurcode = getParameter("bgcolor");
 			if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
-			setBackground(bgcolor);
+			getContentPane().setBackground(bgcolor);
 		
 		if(getParent() instanceof ScormEditMainFrame)
 		{	scormEditComponent = getEditComponent(defaultParamValues);
 			((ScormEditMainFrame)getParent()).setScormEditComponent(scormEditComponent);
-			add(scormEditComponent.getComponent(),0);
+			getContentPane().add(scormEditComponent.getComponent(),0);
 			scormEditComponent.getComponent().setSize(getSize().width,getSize().height);
 			
 		} 
@@ -190,7 +205,8 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 		{	
 			viewPanel = new ViewPanel(300,15,startWidth-315,startHeight-65);
 			viewPanel.setApplet(this);
-			add(viewPanel);
+			viewPanel.setBackground(getBackground());
+			getContentPane().add(viewPanel);
 			
 			String editModeState = getParameter("editModeState");
 			viewPanel.setState(editModeState);
@@ -205,11 +221,12 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 			
 			if(example)
 			{	viewPanelExample = new ViewPanel(15,15,260,200);
-				add(viewPanelExample);
+				getContentPane().add(viewPanelExample);
 				viewPanelExample.setApplet(this);
 				viewPanelExample.setBordered(false);
 				viewPanelExample.setMouse(draaibaar);
 				viewPanelExample.setChangeable(false);	
+				viewPanelExample.setBackground(getContentPane().getBackground());
 				
 				String exampleState = getParameter("exampleState");
 				viewPanelExample.setState(exampleState);
@@ -219,7 +236,7 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 			if(example) tekstArea.setBounds(15,230,280,250);
 			else tekstArea.setBounds(15,15,280,250);
 			tekstArea.setText(getParameter("tekst"));		
-			add(tekstArea);
+			getContentPane().add(tekstArea);
 			tekstArea.resize();	
 			
 			AppletUtil au = new AppletUtil(this);
@@ -234,13 +251,70 @@ public class DoorzienDWO extends Applet implements ScormAppletIF
 			UitlegButton uitlegButton = new UitlegButton(Table.lookUp("uitlegButtonViewerText"),uitleg);
 			uitlegButton.setBounds(630,getSize().height-30,90,20);
 			uitlegButton.setFrameBackground(getBackground());
-			add(uitlegButton,0);
+			getContentPane().add(uitlegButton,0);
 		}
 	}
-
-	public void update(Graphics g)
-	{	paint(g);
+	
+	public void setBackground(Color c)
+	{
+		if(viewPanel!=null)viewPanel.setBackground(c);
+		if(viewPanelExample!=null)viewPanelExample.setBackground(c);
+		super.setBackground(c);
+		
 	}
+	
+	public static void loadImages(Hashtable images,String[] imageNames)
+	{	//AppletUtil au = new AppletUtil(applet);
+		MediaTracker tr = new MediaTracker(applet);
+		Image[] image = new Image[imageNames.length];
+		for(int i=0 ; i<imageNames.length ; i++)
+		{	image[i] = makeImage("resources/" + imageNames[i]);
+			tr.addImage(image[i], 0);
+		}
+		try{tr.waitForAll();} catch(Exception e) {};
+		for(int i=0 ; i<imageNames.length ; i++)
+		{	images.put(imageNames[i], image[i]);
+		}
+		
+	}
+	
+	private static Image makeImage(String resourceName)
+	{	byte[] buffer;
+		try 
+		{
+		    InputStream in = applet.getClass().getResourceAsStream(resourceName);
+		    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		     buffer = new byte[1024]; 
+		    int len;
+		    do { 
+			len = in.read(buffer);
+	//System.out.println("read " + len);
+		        if(len > 0) bos.write(buffer, 0, len);
+		    }
+		    while(len > 0);
+		    buffer = bos.toByteArray();
+		    in.close();
+		    bos.close();
+		    	    
+		}  catch(Exception e)
+		{   e.printStackTrace();
+		    return null;
+		}
+		return applet.getToolkit().createImage(buffer); 
+	}
+	
+	public InteractiePanel getInteractiePanel()
+	{
+		ViewPanel viewPanel = new ViewPanel(0,0,500,500);
+		String editModeState = "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";
+		
+		viewPanel.setState(editModeState);
+		return viewPanel;
+	}
+
+	//public void update(Graphics g)
+	//{	paint(g);
+	//}
 
 	
 	// scormTest
@@ -449,9 +523,9 @@ class ScormedObject3D implements Serializable
 		
 }
 
-class DummyPanel extends Panel
-{	
-	public void update(Graphics g)
-	{	paint(g);
-	}
-}
+//class DummyPanel extends Panel
+//{	
+//	public void update(Graphics g)
+//	{	paint(g);
+//	}
+//}

@@ -1,14 +1,32 @@
 package fi.doorziendwo;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import fi.beans.scorm.*;
-import fi.beans.base64code.*;
+import java.awt.Button;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FontMetrics;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.util.Hashtable;
 
-public class ViewPanel extends Panel implements ViewerIF
+import javax.swing.JLayeredPane;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+
+import fi.beans.base64code.StringCodeObject;
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+
+public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel, ActionListener
 {	
-	Button startButton, opnieuwButton;
+	JButton startButton, opnieuwButton;
+	NewSlider vouwSlider;
 	boolean frameStarted = false;
 	
 	Object3DContainer viewPanel3D;
@@ -43,33 +61,76 @@ public class ViewPanel extends Panel implements ViewerIF
     
     String startFiguurString;
 	
+    private boolean rotateOption;
+	private boolean borderOption;
+	private boolean designOption;
+	private boolean resetOption;
+	private boolean foldOption;
+	
+	protected String[] imageNames = {
+			"reseticon.gif",
+			"tools.gif"};
+	
+	protected static Hashtable images;
+    
 	public ViewPanel(int x, int y, int b, int h)
 	{	
 		setLayout(null);
 		setBounds(x,y,b,h);
+		//setOpaque(false);
+		if(images==null)
+		{	images = new Hashtable();
+			DoorzienDWO.loadImages(images,imageNames);
+		}
+		
+		rotateOption = true;
+		borderOption = false;
+		designOption = false;
+		resetOption = false;
+		foldOption = false;
 		
 		theFont = getFont();
 		if(theFont==null) theFont = new Font("SansSerif",Font.PLAIN,12);
 		theFM = getFontMetrics(theFont);
 		
 		viewPanel3D = new Object3DContainer();
-		viewPanel3D.setBounds(0, 0, b, h-25);
+		viewPanel3D.setBounds(0, 0, b, h);
 		add(viewPanel3D);
 			
 		mListener = new MLMML();
 		viewPanel3D.addMouseListener(mListener);
 		viewPanel3D.addMouseMotionListener(mListener);	
 		
-		startButton = new Button(Table.lookUp("startButtonViewerText"));
-		startButton.setBounds(b-theFM.stringWidth(startButton.getLabel())-20, h-20, theFM.stringWidth(startButton.getLabel())+20,20);
+		startButton = new JButton(new ImageIcon(getImage("tools.gif")));
+		//startButton.setBounds(b-theFM.stringWidth(startButton.getText())-50, h-20, theFM.stringWidth(startButton.getText())+50,20);
+		startButton.setBounds(b-35,h-35,32,32);
+		startButton.setOpaque(false);
+		startButton.setBorder(BorderFactory.createEmptyBorder());
+		setLayer((Component)startButton, JLayeredPane.PALETTE_LAYER.intValue());
 		add(startButton);
 		AL listener = new AL();
 		startButton.addActionListener(listener);
 		
-		opnieuwButton = new Button(Table.lookUp("opnieuwButtonViewerText"));
-		opnieuwButton.setBounds(0, h-20, 80,20);
+		opnieuwButton = new JButton(new ImageIcon(getImage("reseticon.gif")));
+		opnieuwButton.setBounds(b-23, 7, 15,16);
+		opnieuwButton.setOpaque(false);
+		opnieuwButton.setBorder(BorderFactory.createEmptyBorder());
+		setLayer((Component)opnieuwButton, JLayeredPane.PALETTE_LAYER.intValue());
 		add(opnieuwButton);
 		opnieuwButton.addActionListener(listener);
+		//opnieuwButton.setVisible(false);
+		
+		vouwSlider = new NewSlider(200,10);
+		vouwSlider.setLocation(b/2-105,h-14);
+		vouwSlider.setOpaque(false);
+		setLayer((Component)vouwSlider, JLayeredPane.PALETTE_LAYER.intValue());
+		vouwSlider.addActionListener(this);
+		vouwSlider.setVisible(false);
+		add(vouwSlider);
+	}
+	
+	public static Image getImage(String name)
+	{	return(Image)images.get(name);
 	}
 	
 	public void setApplet(DoorzienDWO d)
@@ -77,21 +138,34 @@ public class ViewPanel extends Panel implements ViewerIF
 	}
 	
 	public void setMouse(boolean b)
-    {	if(!b)
-	    {  	viewPanel3D.removeMouseListener(mListener);
-			viewPanel3D.removeMouseMotionListener(mListener);
+    {	rotateOption = b;
+		viewPanel3D.removeMouseListener(mListener);
+		viewPanel3D.removeMouseMotionListener(mListener);
+		
+		if(b)
+	    {  	viewPanel3D.addMouseListener(mListener);
+			viewPanel3D.addMouseMotionListener(mListener);
 			
 		}
     }
     
+	public void setBackground(Color c)
+    {	if(viewPanel3D!=null) viewPanel3D.setBackground(c);
+   		if(startButton!=null)startButton.setBackground(viewPanel3D.getBackground());
+   		if(opnieuwButton!=null)opnieuwButton.setBackground(viewPanel3D.getBackground());
+	    super.setBackground(c);
+	}
+	
     public void setBordered(boolean b)
-    {	if(!b)
+    {	borderOption = b;
+    	//if(!b)
 	    { 	viewPanel3D.setBordered(b);
 	    }
 	}
 	
 	public void setChangeable(boolean b)
-    {	startButton.setVisible(b);
+    {	designOption = b;
+		startButton.setVisible(b);
     	opnieuwButton.setVisible(b);
 	}
 	
@@ -103,7 +177,7 @@ public class ViewPanel extends Panel implements ViewerIF
 		if(scormedObject3D!=null)showScormedObject3D();
 	}
 	
-	public String getState()
+	public String getStateString()
 	{	scormedObject3D.mat = Matrix3D.copy(viewPanel3D.mat);
 		String s = StringCodeObject.encodeObjectToString(scormedObject3D);
 	    return s;
@@ -173,9 +247,11 @@ public class ViewPanel extends Panel implements ViewerIF
 		if (scormedObject3D.mode == dp.FOLDOUT)
 		{	viewGroup3D = (ObjectGroup3D) scormedObject3D.theFoldOutGroup.deepCopy();
 //			setStartFacetCopy(viewGroup3D);
-			setSlider(true, scormedObject3D.angle, 0, 1);
+			//setSlider(true, scormedObject3D.angle, 0, 1);
 			// niet nodig?
 //			flattened 
+		
+			vouwSlider.zetStand((int)Math.round((scormedObject3D.angle * vouwSlider.geeflengte())));
 		}
 		else if (scormedObject3D.mode == dp.CUTOBJECT)
 		{	viewGroup3D = (ObjectGroup3D) scormedObject3D.theCutObjectGroup.deepCopy();
@@ -193,6 +269,8 @@ public class ViewPanel extends Panel implements ViewerIF
 		viewPanel3D.showInside = scormedObject3D.showInside;					
 		viewPanel3D.setZoomFactor(scormedObject3D.zoomFactor);					
 		viewPanel3D.repaint();
+		
+		
 			
 		//rotateString = textTable.lookUp("rotateText");
 
@@ -220,7 +298,8 @@ public class ViewPanel extends Panel implements ViewerIF
 		dp.llFactor = scormedObject3D.lengthFactor;
 		// dit betekent dat er zeker lijnen zijn!
 		if (dp.llFactor > 0)
-		{	doorzienFrame.topToolBar.shortLinesButton.setImage(DoorzienDWO.shortLines);		
+		{	//doorzienFrame.topToolBar.shortLinesButton.setImage(DoorzienDWO.shortLines);		
+			doorzienFrame.topToolBar.shortLinesButton.setImage(doorzienFrame.getImage("shortLines.gif"));		
 			doorzienFrame.topToolBar.shortLinesButton.enabled = true;
             if (dp.llFactor >= (dp.MAXLLFACTOR - dp.LLSTEP / 10))
                 doorzienFrame.topToolBar.lengLinesButton.setOn(false);    
@@ -262,14 +341,15 @@ public class ViewPanel extends Panel implements ViewerIF
 		// dit EERST
 		dp.setFilled(scormedObject3D.filled);
 		if (dp.filled)
-			doorzienFrame.rightToolBar.wireSolidButton.setImage(DoorzienDWO.wireFrame);
+			//doorzienFrame.rightToolBar.wireSolidButton.setImage(DoorzienDWO.wireFrame);
+			doorzienFrame.rightToolBar.wireSolidButton.setImage(doorzienFrame.getImage("wireframe.gif"));
 		// else niet nodig
 					
 		dp.fillPlanes(scormedObject3D.planesFilled);
 		// als true dan zijn er zeker vlakken
 		if (dp.planesFilled)
-			doorzienFrame.topToolBar.planesFilledButton.setImage(DoorzienDWO.planesEmpty);
-
+			//doorzienFrame.topToolBar.planesFilledButton.setImage(DoorzienDWO.planesEmpty);
+			doorzienFrame.topToolBar.planesFilledButton.setImage(doorzienFrame.getImage("planesempty.gif"));
 		// dit is altijd de currentObjectGroup
      	dp.addToHistory();
        	doorzienFrame.helpBar.setText(doorzienFrame.tt("rotateText"));
@@ -299,7 +379,8 @@ public class ViewPanel extends Panel implements ViewerIF
             dp.setSlider(true, dp.currentFoldOut, 0, 1);        
             // hier!
             dp.flattened = scormedObject3D.flattened;
-            doorzienFrame.rightToolBar.conDrawButton.setImage(DoorzienDWO.figure);
+            //doorzienFrame.rightToolBar.conDrawButton.setImage(DoorzienDWO.figure);
+            doorzienFrame.rightToolBar.conDrawButton.setImage(doorzienFrame.getImage("figure.gif"));
 		}
 		
 		if (dp.mouseMode == dp.CUTOBJECT)
@@ -312,13 +393,16 @@ public class ViewPanel extends Panel implements ViewerIF
             doorzienFrame.helpBar.setText(doorzienFrame.tt("selectCutFigureText"));
             doorzienFrame.topToolBar.disableLineButtons();            
             doorzienFrame.topToolBar.disablePlaneButtons();
-            doorzienFrame.topToolBar.cutButton.setOn(true);            
-            doorzienFrame.topToolBar.cutButton.setImage(DoorzienDWO.glue);                
+            doorzienFrame.topToolBar.cutButton.setOn(true); 
+            
+            //doorzienFrame.topToolBar.cutButton.setImage(DoorzienDWO.glue);  
+            doorzienFrame.topToolBar.cutButton.setImage(doorzienFrame.getImage("glue.gif")); 
             doorzienFrame.topToolBar.undoButton.setOn(false);
             doorzienFrame.topToolBar.redoButton.setOn(false);
 			
 		}
 
+		
 			
 		dp.panel3D.repaint();
 		
@@ -334,6 +418,8 @@ public class ViewPanel extends Panel implements ViewerIF
 		{	viewGroup3D = (ObjectGroup3D) scormedObject3D.theFoldOutGroup.deepCopy();
 //			setStartFacetCopy(viewGroup3D);		
 			//setSlider(true, scormedObject3D.angle, 0, 1);
+		
+			vouwSlider.zetStand((int)Math.round((scormedObject3D.angle * vouwSlider.geeflengte())));
 		}
 		else if (scormedObject3D.mode == CUTOBJECT)
 		{	viewGroup3D = (ObjectGroup3D) scormedObject3D.theCutObjectGroup.deepCopy();
@@ -352,9 +438,11 @@ public class ViewPanel extends Panel implements ViewerIF
 		viewPanel3D.setZoomFactor(scormedObject3D.zoomFactor);					
 		viewPanel3D.repaint();
 		//rotateString = textTable.lookUp("rotateText");
+		
+		
 
 	}
-	
+	/*
 	public void setSlider(boolean b, double init, double min, double max)
     {   if (b)
         {   sliderValue = init;
@@ -386,10 +474,11 @@ public class ViewPanel extends Panel implements ViewerIF
                 remove(flatButton); 
             flatButton = null;    
         }    
-    }
+    }*/
     
 	public void processSlider(double newValue)
 	{	sliderValue = newValue;
+	
 		scormedObject3D.angle = newValue;    
 //System.out.println("newValue = " + UF.format(newValue, 2));    
 //        currentFoldOut = sliderValue;
@@ -466,6 +555,189 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 		}
 		
 	}
+	
+	// methodes interface InteractiePanel
+	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
+	{
+		String startFiguurString = null;
+		boolean rotateOption = true;
+		boolean borderOption = false;
+		boolean designOption = false;
+		boolean resetOption = false;
+		boolean foldOption = false;
+		
+		if(h.containsKey("startFiguurString")) startFiguurString = (String)h.get("startFiguurString");
+		if(h.containsKey("rotateOption")) rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
+		if(h.containsKey("borderOption")) borderOption = ((Boolean)h.get("borderOption")).booleanValue();
+		if(h.containsKey("designOption")) designOption = ((Boolean)h.get("designOption")).booleanValue();
+		if(h.containsKey("resetOption")) resetOption = ((Boolean)h.get("resetOption")).booleanValue();
+		if(h.containsKey("foldOption")) foldOption = ((Boolean)h.get("foldOption")).booleanValue();
+	    
+		this.startFiguurString = startFiguurString;
+		this.rotateOption = rotateOption;
+		this.borderOption = borderOption;
+		this.designOption = designOption;
+		this.resetOption = resetOption;
+		this.foldOption = foldOption;
+		
+		setState(startFiguurString);
+		setMouse(rotateOption);
+		setBordered(borderOption);
+		setChangeable(designOption);
+		opnieuwButton.setVisible(resetOption);
+		vouwSlider.setVisible(foldOption);
+	}
+	
+	public void setState(Hashtable h)
+	{
+		String stateString = null;
+		
+		if(h.containsKey("stateString")) stateString = (String)h.get("stateString");
+		
+		setState(stateString);
+		
+	}
+	
+	public void setEditState(Hashtable h)
+	{
+		String startFiguurString = null;
+		boolean rotateOption = true;
+		boolean borderOption = false;
+		boolean designOption = false;
+		boolean resetOption = false;
+		boolean foldOption = false;
+		
+		if(h.containsKey("startFiguurString")) startFiguurString = (String)h.get("startFiguurString");
+		if(h.containsKey("rotateOption")) rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
+		if(h.containsKey("borderOption")) borderOption = ((Boolean)h.get("borderOption")).booleanValue();
+		if(h.containsKey("designOption")) designOption = ((Boolean)h.get("designOption")).booleanValue();
+		if(h.containsKey("resetOption")) resetOption = ((Boolean)h.get("resetOption")).booleanValue();
+		if(h.containsKey("foldOption")) foldOption = ((Boolean)h.get("foldOption")).booleanValue();
+	   
+		this.rotateOption = rotateOption;
+		this.borderOption = borderOption;
+		this.designOption = designOption;
+		this.resetOption = resetOption;
+		this.foldOption = foldOption;
+		
+		setState(startFiguurString);
+		setMouse(rotateOption);
+		setBordered(borderOption);
+		setChangeable(designOption);
+		opnieuwButton.setVisible(resetOption);
+		vouwSlider.setVisible(foldOption);
+		
+	}
+	
+	public Hashtable getState()
+	{	
+		String stateString = null;
+		
+		stateString = getStateString();
+		
+		Hashtable h = new Hashtable();
+		h.put("stateString", stateString);
+		
+		return h;
+	
+	}
+	
+	public Hashtable getEditState()
+	{
+		String startFiguurString = null;
+		boolean rotateOption;
+		boolean borderOption;
+		boolean designOption;
+		boolean resetOption;
+		boolean foldOption;
+	    
+		startFiguurString = getStateString();
+		rotateOption = this.rotateOption;
+		borderOption = this.borderOption;
+		designOption = this.designOption;
+		resetOption = this.resetOption;
+		foldOption = this.foldOption;
+		
+	    Hashtable h = new Hashtable();
+		h.put("startFiguurString",startFiguurString);
+		h.put("rotateOption", new Boolean(rotateOption));
+		h.put("borderOption", new Boolean(borderOption));
+		h.put("designOption", new Boolean(designOption));
+		h.put("resetOption", new Boolean(resetOption));
+		h.put("foldOption", new Boolean(foldOption));
+		
+		return h;
+	}
+	
+	public InteractieEditPanel getEditPanel(){return new DoorzienInteractieEditPanel();}
+		
+	public void setBounds(int x, int y, int b, int h)
+	{	if(viewPanel3D!=null) 
+		{	viewPanel3D.setBounds(0, 0, b, h);
+			viewPanel3D.resetModel();
+		}
+		if(startButton!=null)startButton.setBounds(b-35,h-35,32,32);
+		if(opnieuwButton!=null)opnieuwButton.setBounds(b-22, 7, 15,16);
+		
+		if(vouwSlider!=null)
+		{	int lengte = Math.min(200, b-70);
+			vouwSlider.zetLengte(lengte);
+			vouwSlider.setLocation((b-lengte-10)/2, h-14);
+		}
+		
+		super.setBounds(x,y,b,h);
+	}
+	
+	public void wis(){}
+	
+	public void zetMaat(){}
+	
+	public int geefAsHoogte(){return 0;}
+	
+	public int getIpId(){return 0;}
+	
+	public String getIpExpString(){return null;}
+	
+	public int getScore(){return 0;}
+	
+	public int getScoreMax(){return 0;}
+	
+	public boolean isCorrect(){return true;}
+	
+	public boolean isFout(){return false;}
+	
+	public void zetMode(int mode){}
+	
+	public void zetNagekeken(boolean b){}
+	
+    public void stop(){}
+    
+    public void start(){}
+    
+    public void destroy(){}
+    
+    public void opnieuw(){}
+    
+    public void kijkNa(){}
+    
+    public void kijkNa(int stapNr){}
+    
+    public void addActionListener(ActionListener al){}
+    
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource()==vouwSlider && scormedObject3D.mode == FOLDOUT)
+		{
+			double vouwPerc = (double)vouwSlider.geefStand()/(double)vouwSlider.geeflengte();
+			processSlider(vouwPerc);
+		}
+	}
+	
+	public void zetBreedte(int b){}
+	
+	public void zetHoogte(int h){}
+	
+	
 	
 	class AL implements ActionListener
 	{   public void actionPerformed(ActionEvent e)
@@ -572,8 +844,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                     double yTheta = (viewPanel3D.oldX - e.getX()) * 180.0d /
                                      viewPanel3D.getSize().height;
                     viewPanel3D.rotateBy(xTheta, yTheta);
-                    viewPanel3D.paint(viewPanel3D.getGraphics());
-                
+                    //viewPanel3D.paint(viewPanel3D.getGraphics());
+                    viewPanel3D.repaint();
                 
                     viewPanel3D.oldX = e.getX();
                     viewPanel3D.oldY = e.getY();
@@ -608,8 +880,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                         zTheta = xTheta;
                     
                     viewPanel3D.rotateByZ(zTheta);
-                    viewPanel3D.paint(viewPanel3D.getGraphics());
-                
+                    //viewPanel3D.paint(viewPanel3D.getGraphics());
+                    viewPanel3D.repaint();
                 
                     viewPanel3D.oldX = e.getX();
                     viewPanel3D.oldY = e.getY();
