@@ -1,0 +1,5 @@
+-classpath %JAVA_HOME%\jre\lib\rt.jar
+-manifestMain
+..\output\classes\fi
+-keepInterface fi.?
+-o ..\output\jar\verknippen.jar

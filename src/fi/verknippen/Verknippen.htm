@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+<APPLET
+	code	= "fi.verknippen.Verknippen.class"
+	width	= "790"
+	height	= "485"
+	archive = "verknippen.jar">
+	<!-- internationalisatie -->	
+	<PARAM name="language" value="nl"/>
+	<!-- achtergrondkleur -->	
+	<PARAM name="bgcolor" value="#FFFFC6"/>
+	
+	<!-- het nummer van de taak, elke taak heeft zijn
+		 eigen html 
+		 er zijn twee taaknummers mogelijk:
+		 1: de tangramversie van Frans
+		 2: de oppervlakteversie van Monica 
+		 default 1 -->
+	<PARAM name="taaknummer" value="3"/>		
+
+	<!-- toon het rooster, default no
+		  -->
+	<PARAM name="toonrooster" value="no"/>		
+
+	<!-- toon een schaduw van de beginfiguur
+		 default no -->
+	<PARAM name="toonschaduw" value="yes"/>			 
+	
+	<!-- toon de afmetingen van de schaduw 
+		 van de beginfiguur, je moet dan wel 
+		 toonschaduw op yes zetten!! 
+		 default no -->
+	<PARAM name="toonafmetingen" value="yes"/>			 
+
+	<!-- voor de RSI-ers en wijndrinkers 
+		 grotere balletjes, makkelijker aanklikken 
+		 default no -->
+	<PARAM name="groteballetjes" value="yes"/>			 			 		
+
+	<!-- het aantal figuren voor deze taak 
+		 maximum 10 -->
+	<PARAM name="aantalfiguren" value="6"/>		
+	
+	<!-- de figuren voor deze taak 
+		 geef de roostercoordinaten als 2 getallen gescheiden
+		 door een komma, zet tussen de paren een |-teken 
+		 volgorde paren: loop met de klok mee langs de rand!! 
+		 je mag elke figuur een eigen grid-size meegeven
+		 >= 10 en <= 50, liefst een even getal
+		 default gridsize is 20 pixels -->
+		 
+	<PARAM name="figuur1" value="0,0|2,0|2,2|8,2|8,4|5,4|5,7|3,7|3,6|0,6"/>				
+	<PARAM name="grid1" value="26"/>			
+	<PARAM name="oppervlakte1" value="32"/>					
+	
+	<PARAM name="figuur2" value="0,0|2,0|2,2|8,2|8,4|6,4|6,6|4,6|4,8|2,8|2,4|0,4"/>					
+	<PARAM name="grid2" value="24"/>	
+	<PARAM name="oppervlakte2" value="32"/>						
+	
+	<PARAM name="figuur3" value="3,0|11,0|8,8|0,8"/>											
+	<PARAM name="grid3" value="24"/>		
+	<PARAM name="oppervlakte3" value="64"/>							
+	
+	<PARAM name="figuur4" value="3,0|11,3|11,11|0,11|3,3"/>											
+	<PARAM name="grid4" value="20"/>		
+	<PARAM name="oppervlakte4" value="88"/>							
+	
+	<PARAM name="figuur5" value="0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6"/>							
+	<PARAM name="grid5" value="26"/>	
+	<PARAM name="oppervlakte5" value="28"/>								
+
+	<PARAM name="figuur6" value="0,2|4,2|4,0|8,0|8,4|0,6"/>							
+	<PARAM name="grid6" value="36"/>	
+	<PARAM name="oppervlakte6" value="32"/>								
+
+</APPLET>
+</BODY>
+</HTML>
