@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.ImageProducer;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		setLayout( new BorderLayout() );
 		add( "Center", (Component)applet );
 		//launchData = new Hashtable();
-		launchData = ((Verknippen)getApplet()).getDefaultParameters();
+		launchData = ((WiskOpdrParamEditApplet)getApplet()).getDefaultParameters();
 	}
 	
 	public ScormAppletIF getApplet()
@@ -99,6 +100,8 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		start();
 		applet.setState(appletEditState);
 		
+		
+		
 	}
 	
 	public Hashtable getState()
@@ -129,8 +132,9 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		return new InteractieEditPanelAdapter(this);
 	}
 	public void setBounds(int x, int y, int b, int h)
-	{
+	{	
 		super.setBounds(x,y,b,h);
+		//((Component)applet).setBounds(0,0,b,h);
 		
 	}
 	public void wis()
@@ -188,9 +192,42 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 			((Applet)applet).setSize(getSize());
 	    	((Applet)applet).init();
 	    	((Applet)applet).start();
-	    	((Verknippen)applet).setSingleComponent();
+	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
 	    	initiated = true;
 		}
+	}
+    public void restart()
+	{
+    	if(!initiated)
+		{
+			((Applet)applet).setSize(getSize());
+	    	((Applet)applet).init();
+	    	((Applet)applet).start();
+	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
+	    	initiated = true;
+		}
+    	else 
+    	{	
+    		String className = applet.getClass().getName();
+    		Locale locale = ((Applet)applet).getLocale();
+    		try
+    		{	Class c = Class.forName(className);
+    	    	Constructor cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
+    	    	Object o = cc.newInstance(new Object[] { locale } );
+    	    	remove((Component)applet);
+    	    	applet = (ScormAppletIF)o;
+    	    	((Applet)applet).setStub( this );
+    	    	add( "Center", (Component)applet );
+    	    	((Applet)applet).setSize(getSize());
+    	    	((Applet)applet).init();
+    	    	((Applet)applet).start();
+    	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
+    	    	initiated = true;
+    		}
+    		catch(Exception e)
+    		{	
+    		}
+    	}
 	}
     public void destroy()
 	{

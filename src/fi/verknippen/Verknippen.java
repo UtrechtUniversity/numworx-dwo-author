@@ -14,7 +14,7 @@ import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
 import fi.verknippen.InteractiePanelAdapter;
 
-public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrApplet
+public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParamEditApplet
 {
 	// scormgebeuren
 	protected static ResourceBundle rb;
@@ -717,17 +717,17 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		Object o = StringCodeObject.decodeStringToObject(s);
 		Hashtable h = (Hashtable)o;
 		//haal de data uit de hashtabel
-		String text = (String)h.get("text");
+		//String text = (String)h.get("text");
 	    //herstel de state van het applet
-	    textField.setText(text);
+	    //textField.setText(text);
 	}
 	public String getState()
 	{	String text = null;
 		//vraag de gegevens op die de state bepalen
-	    text = textField.getText();
+	    //text = textField.getText();
 	    Hashtable h = new Hashtable();
 	    //voeg de gegeven toe aan de hashtable
-	    h.put("text", text);
+	    //h.put("text", text);
 	    //codeer de hashtable tot string
 	    String s = StringCodeObject.encodeObjectToString(h);
 	    return s;
