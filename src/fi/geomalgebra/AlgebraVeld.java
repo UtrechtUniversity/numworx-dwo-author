@@ -1,9 +1,10 @@
 package fi.geomalgebra;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
+
+import fi.beans.base64code.StringCodeObject;
 import fi.geomalgebra.text.*;
 import java.applet.Applet;
 import java.text.*;
@@ -50,6 +51,12 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	PopupMenu popup;
 	MenuItem mi;
 	
+	private boolean varWaardeZichtbaar;
+	private boolean oppWaardeZichtbaar;
+	private boolean formuleZichtbaar = true;
+	private boolean constructieTools = true;
+	private boolean alleenOppervlaktes;
+	
 	public AlgebraVeld(int b, int h)
 	{	hoogte = h;
 		breedte = b;
@@ -85,6 +92,7 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		gesplitst = true;
 		muisAan = true;
 		maakLos = false;
+		
 						
 		var = new int[4];
 		var[1] = 84;
@@ -164,14 +172,16 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
   	}
 	 
   	public void tekenOpImage()
-  	{ 	gIm.setColor(new Color(220,220,220));
+  	{ 	if(gIm==null)return;
+  		gIm.setColor(new Color(220,220,220));
     	gIm.fillRect(0, 0, breedte, hoogte);
 		gIm.setColor(Color.white);
-    	gIm.fillRect(42, 0, breedte-40, hoogte-82);
+    	if(constructieTools)gIm.fillRect(42, 0, breedte-40, hoogte-82);
+    	else gIm.fillRect(0, 0, breedte, hoogte);
 		tekenprogramma();
 		gIm.setColor(Color.black);
 		gIm.drawRect(0, 0, breedte-1, hoogte-1);
-		gIm.drawLine(1,hoogte-42,breedte-1,hoogte-42);
+		if(constructieTools)gIm.drawLine(1,hoogte-42,breedte-1,hoogte-42);
 	}
 	
  	void tekenOpnieuw()
@@ -181,28 +191,60 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	}	
 	
 	public void tekenprogramma()
-	{	tekenFiguur(basisFiguurX);
-		tekenFiguur(basisFiguurY);
-		tekenVarPunt();
+	{	if(constructieTools)
+		{	tekenFiguur(basisFiguurX);
+			tekenFiguur(basisFiguurY);
+			tekenVarPunt();
+		}
+		
 		//if(actiefFg!=null)tekenFiguur(actiefFg);
 		tekenFiguren();
 		gIm.setColor(new Color(220,220,220));
-    	gIm.fillRect(0, 0, breedte-1, 25);
+		if(formuleZichtbaar)gIm.fillRect(0, 0, breedte-1, 25);
 		gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		gIm.setColor(Color.black);
-		if(formule!=null)tekenFormule(formule, 50,20);
-		gIm.setColor(new Color(220,220,220));
-    	gIm.fillRect(breedte-125, 0, 125, 100);
-		gIm.setColor(Color.black);
-		gIm.drawRect(breedte-125, 0, 125, 100);
-		gIm.drawLine(breedte-125,25,breedte,25);
-		gIm.drawString( GeomAlgebra.rb.getString("oppLabel") + " = " + df.format(oppervlakte),breedte-120,20);
-		gIm.drawString( "    x = " + df.format(1.0*var[1]/24),breedte-120,50);
-		gIm.drawString( "    y = " + df.format(1.0*var[2]/24),breedte-120,70);
-		gIm.drawString( "    z = " + df.format(1.0*var[3]/24),breedte-120,90);
+		if(formule!=null && formuleZichtbaar)tekenFormule(formule, 50,20);
+		
+		//gIm.setColor(Color.black);
+		//gIm.drawRect(breedte-125, 0, 125, 100);
+		//gIm.drawLine(breedte-125,25,breedte,25);
+		if(oppWaardeZichtbaar)
+		{	gIm.setColor(Color.black);
+			gIm.drawRect(breedte-125, 0, 125, 25);
+			gIm.drawString( GeomAlgebra.rb.getString("oppLabel") + " = " + df.format(oppervlakte),breedte-120,20);
+		}
+		if(varWaardeZichtbaar)
+		{	gIm.setColor(new Color(220,220,220));
+    		gIm.fillRect(breedte-125, 25, 125, 75);
+    		gIm.setColor(Color.black);
+    		gIm.drawRect(breedte-125, 25, 125, 75);
+			gIm.drawString( "    x = " + df.format(1.0*var[1]/24),breedte-120,50);
+			gIm.drawString( "    y = " + df.format(1.0*var[2]/24),breedte-120,70);
+			gIm.drawString( "    z = " + df.format(1.0*var[3]/24),breedte-120,90);
+		}
 		if(!muisAan)gIm.drawString("is gedaan",20,50);
 		gIm.setFont(new Font("Helvetica", Font.PLAIN, 10));
 		if(maakLos)gIm.drawString(GeomAlgebra.rb.getString("menuMLLabel"),cursorx,cursory+30);
+	}
+	
+	public void zetFormuleZichtbaar(boolean b)
+	{	formuleZichtbaar = b;
+	}
+	
+	public void zetVarWaardeZichtbaar(boolean b)
+	{	varWaardeZichtbaar = b;
+	}
+	
+	public void zetOppWaardeZichtbaar(boolean b)
+	{	oppWaardeZichtbaar = b;
+	}
+	
+	public void zetConstructieTools(boolean b)
+	{	constructieTools = b;
+	}
+	
+	public void zetAlleenOppervlaktes(boolean b)
+	{	alleenOppervlaktes = b;
 	}
 	
 	/*public void zetOpdracht(Opdracht opdr)
@@ -327,7 +369,7 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 				if(fg[i].aantalx!=1 || fg[i].aantaly!=1)formule += ")";
 			}
 		}
-		gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
+		if(gIm!=null) gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		
 		oppervlakte = 0;
 		for(int i=0 ; i<aantalFg ; i++)
@@ -399,15 +441,16 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		for(int i=0 ; i<f.aantalx ; i++)
 		{	if(i==0)f.lsx[i].zetPositie(f.positie.x, f.positie.y);
 			else f.lsx[i].zetPositie(f.lsx[i-1].positie.x + f.lsx[i-1].d , f.lsx[i-1].positie.y);
-			tekenLijnstuk(f.lsx[i], f);
+			if(!alleenOppervlaktes)tekenLijnstuk(f.lsx[i], f);
 		}
 		
 		for(int i=0 ; i<f.aantaly ; i++)
 		{	if(i==0)f.lsy[i].zetPositie(f.positie.x, f.positie.y);
 			else f.lsy[i].zetPositie(f.lsy[i-1].positie.x, f.lsy[i-1].positie.y - f.lsy[i-1].d );
-			tekenLijnstuk(f.lsy[i], f);
+			if(!alleenOppervlaktes)tekenLijnstuk(f.lsy[i], f);
 		}
 	
+		gIm.setFont(fl);
 		
 		for(int j=1 ; j<f.aantalx+1 ; j++)
 		{	for(int k=1 ; k<f.aantaly+1 ; k++)
@@ -646,8 +689,31 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 			tekenOpnieuw();
 		}
 	}
-	
-		
+	void setState(State s)
+	{	if(s==null)return;
+		else
+		{	aantalFg = s.geefAantalFiguren();
+			fg = s.geefFigurenRij();
+			var = s.geefVars();
+			basisLijnstukX.zetVar(varHuidig, var[varHuidig]);
+			basisLijnstukY.zetVar(varHuidig, var[varHuidig]);
+			maakFormule();
+			buffer.voegToe(new State(aantalFg,fg,var));
+		}
+	}
+	void setState(String s)
+	{	
+		Object o = StringCodeObject.decodeStringToObject(s);
+		if(o==null)return;
+		State state = (State)o;
+		if(state!=null) setState(state);
+	}
+	String getState()
+	{	State state = buffer.geefHuidigeState();
+		String s = StringCodeObject.encodeObjectToString(state);
+		return s;
+	}
+			
 	void breekFiguur(Figuur f)
 	{	for(int i=0 ; i<f.aantalx ; i++)
 		{	for(int j=0 ; j<f.aantaly ; j++)
@@ -771,29 +837,31 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		
 		
 		selectFiguur  = null;
-		if(varHuidig!=0 && basisFiguurX.raakStaartX(e.getX(),e.getY()))
-		{	veranderVar = true;
-			basisLijnstuk = basisLijnstukX;
-			return;
-		}
-		if(varHuidig!=0 && basisFiguurY.raakStaartY(e.getX(),e.getY()))
-		{	veranderVar = true;
-			basisLijnstuk = basisLijnstukY;
-			return;
-		}
 		
-				
-		if(basisFiguurX.raakKop(e.getX(),e.getY()) || basisFiguurX.raakRechthoek(e.getX(),e.getY()) )
-		{	maakLos = false;
-			pak = true;
-			basisFiguur = basisFiguurX;
-			return;
-		}
-		if(basisFiguurY.raakKop(e.getX(),e.getY()) || basisFiguurY.raakRechthoek(e.getX(),e.getY()))
-		{	maakLos = false;
-			pak = true;
-			basisFiguur = basisFiguurY;
-			return;
+		if(!alleenOppervlaktes)
+		{	if(varHuidig!=0 && basisFiguurX.raakStaartX(e.getX(),e.getY()))
+			{	veranderVar = true;
+				basisLijnstuk = basisLijnstukX;
+				return;
+			}
+			if(varHuidig!=0 && basisFiguurY.raakStaartY(e.getX(),e.getY()))
+			{	veranderVar = true;
+				basisLijnstuk = basisLijnstukY;
+				return;
+			}
+					
+			if(basisFiguurX.raakKop(e.getX(),e.getY()) || basisFiguurX.raakRechthoek(e.getX(),e.getY()) )
+			{	maakLos = false;
+				pak = true;
+				basisFiguur = basisFiguurX;
+				return;
+			}
+			if(basisFiguurY.raakKop(e.getX(),e.getY()) || basisFiguurY.raakRechthoek(e.getX(),e.getY()))
+			{	maakLos = false;
+				pak = true;
+				basisFiguur = basisFiguurY;
+				return;
+			}
 		}
 		
 		for(int i=0 ; i<aantalFg ; i++)
@@ -904,7 +972,7 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		if(actiefFg!=null)actiefFg.plaatsOpGrid();
 		
 		
-		if(actiefFg!=null && !new Rectangle(42, 0, breedte-43, hoogte-82).contains(e.getX(),e.getY()))
+		if(constructieTools && actiefFg!=null && !new Rectangle(42, 0, breedte-43, hoogte-82).contains(e.getX(),e.getY()))
 		{	actiefFg = null;
 			fg[0] = null;
 			for(int j=0 ; j<aantalFg-1 ; j++)

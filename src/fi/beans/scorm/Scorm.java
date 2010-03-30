@@ -16,12 +16,13 @@ public abstract class Scorm
       return (SCORM12APIInterface)applet.getParent();
 
     String API = applet.getParameter( "API" );
+    if (API != null && API.equals("fi.beans.scorm.JSScormAPI")) return new JSScormAPI(applet);
     if (API != null) {
       // sequence for new API(applet);
       Class c = Class.forName( API );
       Constructor cc = c.getDeclaredConstructor(new Class[] { Applet.class } );
       Object o = cc.newInstance(new Object[] { applet } );
-      return (SCORM12APIInterface  ) o;
+      return (SCORM12APIInterface) o;
     }
     //Hier komt de oude Scorm.findAPI(applet)....
     return null;

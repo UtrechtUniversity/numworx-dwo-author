@@ -19,6 +19,8 @@ public interface ScormEditComponentIF {
      */
     public Hashtable getLaunchData();
     
+    public void setState(Hashtable launchData);
+    
     public void end();
     
     public void reset();

@@ -36,12 +36,12 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 		
 		
 		wisknop = new Button(GeomAlgebra.rb.getString("wisknopLabel"));
-		wisknop.setBounds(700,10,70,20);
+		wisknop.setBounds(30,10,70,20);
 		add(wisknop);
 		wisknop.addActionListener(this);
 		
 		vorigeKnop = new Button(GeomAlgebra.rb.getString("terugknopLabel"));
-		vorigeKnop.setBounds(620,10,70,20);
+		vorigeKnop.setBounds(120,10,70,20);
 		add(vorigeKnop);
 		vorigeKnop.addActionListener(this);
 		
@@ -71,7 +71,7 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 		
 		dop = new Checkbox(GeomAlgebra.rb.getString("DScheckboxLabel"));
 		dop.addItemListener(this);
-		dop.setBounds(500,10,140,20);
+		dop.setBounds(210,10,140,20);
 		add(dop);
 	}
 	

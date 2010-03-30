@@ -1,6 +1,8 @@
 package fi.geomalgebra;
 
-public class State
+import java.io.Serializable; 
+
+public class State implements Serializable
 {
 	private Figuur[] figurenrij;
 	private int aantalFg;
@@ -65,6 +67,11 @@ class Buffer
 	public State geefVorigeState()
 	{	if(aantalStates == 1)return null;
 		aantalStates--;
+		return states[aantalStates-1];
+	}
+	
+	public State geefHuidigeState()
+	{	if(aantalStates == 0)return null;
 		return states[aantalStates-1];
 	}
 	

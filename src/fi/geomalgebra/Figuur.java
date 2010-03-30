@@ -4,13 +4,16 @@ import java.awt.Polygon;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
+import java.io.Serializable; 
 import fi.geomalgebra.text.*;
 
-class Figuur
+class Figuur  implements Serializable
 {	int aantalx, aantaly;
 	Lijnstuk[] lsx, lsy;
 	Point positie, posx, posy; 
 	int minx,maxx,miny,maxy;
+	static boolean geslotenVeld;
+	static int breedte = 500, hoogte = 350;
 	
 	public Figuur(int x, int y)
 	{	aantalx = 0;
@@ -36,6 +39,15 @@ class Figuur
 		for(int i=0 ; i<aantaly ; i++)
 		{	lsy[i] = new Lijnstuk(f.lsy[i]);
 		}
+	}
+	
+	static void zetVeldSizes(int b, int h)
+	{	breedte = b;
+		hoogte = h;
+	}
+	
+	static void zetGeslotenVeld(boolean b)
+	{	geslotenVeld = b;
 	}
 	
 	public void voegToe(Lijnstuk ls)
@@ -320,7 +332,7 @@ class Figuur
 	}
 	
 	public void veranderPositie(int dx,int dy)
-	{	positie.x = positie.x + dx;
+	{	/*positie.x = positie.x + dx;
 		positie.y = positie.y + dy;
 		
 		for(int i=0 ; i<aantalx ; i++)
@@ -330,6 +342,37 @@ class Figuur
 		for(int i=0 ; i<aantaly ; i++)
 		{	lsy[i].positie.x = lsy[i].positie.x + dx;
 			lsy[i].positie.y = lsy[i].positie.y + dy;
+		}
+		*/
+		
+		positie.x = positie.x + dx;
+		positie.y = positie.y + dy;
+		
+		posx.x = posx.x + dx;
+		posy.x = posy.x + dx;
+		posx.y = posx.y + dy;
+		posy.y = posy.y + dy;
+		
+		maxx = maxx + dx;
+		minx = minx + dx;
+		
+		maxy = maxy + dy;
+		miny = miny + dy;
+		
+		for(int i=0 ; i<aantalx ; i++)
+		{	lsx[i].positie.x = lsx[i].positie.x + dx;
+			lsx[i].positie.y = lsx[i].positie.y + dy;
+		}
+		for(int i=0 ; i<aantaly ; i++)
+		{	lsy[i].positie.x = lsy[i].positie.x + dx;
+			lsy[i].positie.y = lsy[i].positie.y + dy;
+		}
+		if(geslotenVeld)
+		{
+			if(maxx > breedte)veranderPositie(breedte-maxx,0);
+			if(minx < 0)veranderPositie(-minx,0);
+			if(maxy > hoogte)veranderPositie(0,hoogte-maxy);
+			if(miny < 25)veranderPositie(0,25-miny);
 		}
 	}
 	public void plaatsOpGrid()

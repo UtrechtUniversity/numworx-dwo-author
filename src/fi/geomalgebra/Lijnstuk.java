@@ -1,12 +1,13 @@
 package fi.geomalgebra;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
+import java.io.Serializable;
+
 import fi.geomalgebra.text.*;
 
-class Lijnstuk 
+class Lijnstuk  implements Serializable
 {	
 	public static int HOR = 1;
 	public static int VER = 2;
