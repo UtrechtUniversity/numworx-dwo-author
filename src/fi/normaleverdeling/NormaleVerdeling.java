@@ -31,8 +31,9 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 
 
 	public NormaleVerdeling(Locale language)
-    {   rb = ResourceBundle.getBundle("fi.normaleverdeling.text.Text", language);
-        bgColor = new Color(Integer.parseInt("DDEEFF", 16));
+    {   langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.normaleverdeling.text.Text", language);
+        //bgColor = new Color(Integer.parseInt("DDEEFF", 16));
     }
     
    
@@ -40,7 +41,7 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 	{	langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.normaleverdeling.text.Text", language);
-		bgColor = new Color(Integer.parseInt("DDEEFF", 16));
+		//bgColor = new Color(Integer.parseInt("DDEEFF", 16));
 	}
 	
 	public void init() 

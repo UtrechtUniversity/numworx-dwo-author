@@ -22,9 +22,24 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "muTekst" ,           "\u03BC" },       
 			{ "sigmaTekst" ,        "\u03C3" },       			
 			{ "kansOptiesTekst" ,   "Chance options" },  
-			{ "berekenbaarTekst" ,  "Calculatable" },      
-			{ "vasteWaardeTekst" ,  "Value fixed" },      
-			
+			{ "berekenbaarTekst" ,  "Calculatable" }, 
+			{ "berekenbaarZichtbaarTekst" ,  "Visible" },
+			{ "vasteWaardeTekst" ,  "Value fixed" },  
+			{ "sliderLabelTekst" ,  "Sliders" },
+			{ "muSliderTekst" ,     "Slider for \u03BC" },       
+			{ "sigmaSliderTekst" ,  "Slider for \u03C3" },
+			{ "grensSliderTekst" ,   "Slider for border" },
+			{ "kansSliderTekst" ,   "Slider for Chance" },
+			{ "waardenLabelTekst" ,  "Values zichtbaar" },
+			{ "muZichtbaarTekst" ,     "\u03BC visible" },       
+			{ "sigmaZichtbaarTekst" ,  "\u03C3 visible" },
+			{ "grensZichtbaarTekst" ,   "Grens visible" },
+			{ "kansZichtbaarTekst" ,   "Kans visible" },
+			{ "waardenFigLabelTekst" ,  "Values in figure" },
+			{ "muZichtbaarFigTekst" ,     "\u03BC visible" },       
+			{ "sigmaZichtbaarFigTekst" ,  "\u03C3 visible" },
+			{ "grensZichtbaarFigTekst" ,   "Grens visible" },
+			{ "kansZichtbaarFigTekst" ,   "Kans visible" },
 		            
 		
 		};

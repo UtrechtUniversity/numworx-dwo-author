@@ -31,13 +31,31 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 			  tweeGrenzenOptieBox;
 			  
 	JLabel berekenbaarLabel;
-	JCheckBox muBerekenbaarBox,
+	JCheckBox berekenbaarZichtbaarBox,
+			  muBerekenbaarBox,
 			  sigmaBerekenbaarBox;
 			  
 	JLabel vasteWaardeLabel;
 	JCheckBox muVastBox,
 			  sigmaVastBox;
-			  			  
+	
+	JLabel sliderLabel;
+	JCheckBox muSliderBox,
+				sigmaSliderBox,
+				grensSliderBox,
+				kansSliderBox;
+	
+	JLabel waardenLabel;
+	JCheckBox muZichtbaarBox,
+				sigmaZichtbaarBox,
+				grensZichtbaarBox,
+				kansZichtbaarBox;
+	
+	JLabel waardenFigLabel;
+	JCheckBox muZichtbaarFigBox,
+				sigmaZichtbaarFigBox,
+				grensZichtbaarFigBox,
+				kansZichtbaarFigBox;
 
 
 	public NormaalEditPanel(int w, int h)
@@ -110,6 +128,17 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		berekenbaarLabel.setSize(width, height);
 		add(berekenbaarLabel);
 		
+		berekenbaarZichtbaarBox = new JCheckBox(
+				NormaleVerdeling.rb.getString("berekenbaarZichtbaarTekst"));
+		berekenbaarZichtbaarBox.setFont(theFont);
+		berekenbaarZichtbaarBox.setBackground(bgColor);
+			width = theFM.stringWidth(berekenbaarZichtbaarBox.getText()) + 30;
+			height = 3 * theFM.getHeight() / 2;
+			berekenbaarZichtbaarBox.setSize(width, height);
+			add(berekenbaarZichtbaarBox);
+			berekenbaarZichtbaarBox.addActionListener(new BerekenbaarZichtbaarAL());
+			berekenbaarZichtbaarBox.setSelected(true);
+			
 		muBerekenbaarBox = new JCheckBox(
 			NormaleVerdeling.rb.getString("muTekst"));
 		muBerekenbaarBox.setFont(theFont);
@@ -158,6 +187,148 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		add(sigmaVastBox);
 		sigmaVastBox.addActionListener(new SigmaVastAL());				
 		
+		sliderLabel = new JLabel(
+			NormaleVerdeling.rb.getString("sliderLabelTekst"));
+		sliderLabel.setFont(theBoldFont);
+		width = theBoldFM.stringWidth(sliderLabel.getText());
+		height = 3 * theBoldFM.getHeight() / 2;
+		sliderLabel.setSize(width, height);
+		add(sliderLabel);
+		
+		muSliderBox = new JCheckBox(
+			NormaleVerdeling.rb.getString("muSliderTekst"));
+		muSliderBox.setFont(theFont);
+		muSliderBox.setBackground(bgColor);
+		width = theFM.stringWidth(muSliderBox.getText()) + 30;
+		height = 3 * theFM.getHeight() / 2;
+		muSliderBox.setSize(width, height);
+		add(muSliderBox);
+		muSliderBox.addActionListener(new MuSliderAL());		
+			sigmaSliderBox = new JCheckBox(
+			NormaleVerdeling.rb.getString("sigmaSliderTekst"));
+		sigmaSliderBox.setFont(theFont);
+		sigmaSliderBox.setBackground(bgColor);
+		width = theFM.stringWidth(sigmaSliderBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		sigmaSliderBox.setSize(width, height);
+		add(sigmaSliderBox);
+		sigmaSliderBox.addActionListener(new SigmaSliderAL());
+		
+		grensSliderBox = new JCheckBox(
+				NormaleVerdeling.rb.getString("grensSliderTekst"));
+		grensSliderBox.setFont(theFont);
+		grensSliderBox.setBackground(bgColor);
+		width = theFM.stringWidth(grensSliderBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		grensSliderBox.setSize(width, height);
+		add(grensSliderBox);
+		grensSliderBox.addActionListener(new GrensSliderAL());
+		
+		kansSliderBox = new JCheckBox(
+				NormaleVerdeling.rb.getString("kansSliderTekst"));
+		kansSliderBox.setFont(theFont);
+		kansSliderBox.setBackground(bgColor);
+		width = theFM.stringWidth(kansSliderBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		kansSliderBox.setSize(width, height);
+		add(kansSliderBox);
+		kansSliderBox.addActionListener(new KansSliderAL());
+				
+		waardenLabel = new JLabel(NormaleVerdeling.rb.getString("waardenLabelTekst"));
+		waardenLabel.setFont(theBoldFont);
+		width = theBoldFM.stringWidth(waardenLabel.getText());
+		height = 3 * theBoldFM.getHeight() / 2;
+		waardenLabel.setSize(width, height);
+		add(waardenLabel);	
+		
+		muZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"));
+		muZichtbaarBox.setFont(theFont);
+		muZichtbaarBox.setBackground(bgColor);
+		width = theFM.stringWidth(muZichtbaarBox.getText()) + 30;
+		height = 3 * theFM.getHeight() / 2;
+		muZichtbaarBox.setSize(width, height);
+		add(muZichtbaarBox);
+		muZichtbaarBox.addActionListener(new WaardenAL());	
+		muZichtbaarBox.setSelected(true);
+		
+		sigmaZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"));
+		sigmaZichtbaarBox.setFont(theFont);
+		sigmaZichtbaarBox.setBackground(bgColor);
+		width = theFM.stringWidth(sigmaZichtbaarBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		sigmaZichtbaarBox.setSize(width, height);
+		add(sigmaZichtbaarBox);
+		sigmaZichtbaarBox.addActionListener(new WaardenAL());
+		sigmaZichtbaarBox.setSelected(true);
+		
+		
+		grensZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarTekst"));
+		grensZichtbaarBox.setFont(theFont);
+		grensZichtbaarBox.setBackground(bgColor);
+		width = theFM.stringWidth(grensSliderBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		grensZichtbaarBox.setSize(width, height);
+		add(grensZichtbaarBox);
+		grensZichtbaarBox.addActionListener(new WaardenAL());
+		grensZichtbaarBox.setSelected(true);
+		
+		kansZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarTekst"));
+		kansZichtbaarBox.setFont(theFont);
+		kansZichtbaarBox.setBackground(bgColor);
+		width = theFM.stringWidth(kansZichtbaarBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		kansZichtbaarBox.setSize(width, height);
+		add(kansZichtbaarBox);
+		kansZichtbaarBox.addActionListener(new WaardenAL());
+		kansZichtbaarBox.setSelected(true);
+		
+		waardenFigLabel = new JLabel(NormaleVerdeling.rb.getString("waardenFigLabelTekst"));
+		waardenFigLabel.setFont(theBoldFont);
+		width = theBoldFM.stringWidth(waardenFigLabel.getText());
+		height = 3 * theBoldFM.getHeight() / 2;
+		waardenFigLabel.setSize(width, height);
+		add(waardenFigLabel);	
+		
+		muZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"));
+		muZichtbaarFigBox.setFont(theFont);
+		muZichtbaarFigBox.setBackground(bgColor);
+		width = theFM.stringWidth(muZichtbaarFigBox.getText()) + 30;
+		height = 3 * theFM.getHeight() / 2;
+		muZichtbaarFigBox.setSize(width, height);
+		add(muZichtbaarFigBox);
+		muZichtbaarFigBox.addActionListener(new WaardenAL());	
+		muZichtbaarFigBox.setSelected(true);
+		
+		sigmaZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarFigTekst"));
+		sigmaZichtbaarFigBox.setFont(theFont);
+		sigmaZichtbaarFigBox.setBackground(bgColor);
+		width = theFM.stringWidth(sigmaZichtbaarFigBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		sigmaZichtbaarFigBox.setSize(width, height);
+		add(sigmaZichtbaarFigBox);
+		sigmaZichtbaarFigBox.addActionListener(new WaardenAL());
+		sigmaZichtbaarFigBox.setSelected(true);
+		
+		grensZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarFigTekst"));
+		grensZichtbaarFigBox.setFont(theFont);
+		grensZichtbaarFigBox.setBackground(bgColor);
+		width = theFM.stringWidth(grensZichtbaarFigBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		grensZichtbaarFigBox.setSize(width, height);
+		add(grensZichtbaarFigBox);
+		grensZichtbaarFigBox.addActionListener(new WaardenAL());
+		grensZichtbaarFigBox.setSelected(true);
+		
+		kansZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarFigTekst"));
+		kansZichtbaarFigBox.setFont(theFont);
+		kansZichtbaarFigBox.setBackground(bgColor);
+		width = theFM.stringWidth(kansZichtbaarFigBox.getText()) + 30;
+		//height = 3 * theFM.getHeight() / 2;
+		kansZichtbaarFigBox.setSize(width, height);
+		add(kansZichtbaarFigBox);
+		kansZichtbaarFigBox.addActionListener(new WaardenAL());
+		kansZichtbaarFigBox.setSelected(true);
+			
 		plaatsComponenten();
 	}
 	
@@ -176,9 +347,12 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		berekenbaarLabel.setLocation(editX + offset, 
 			tweeGrenzenOptieBox.getLocation().y + 
 			tweeGrenzenOptieBox.getSize().height + offset);
-		muBerekenbaarBox.setLocation(editX + offset, 			
+		berekenbaarZichtbaarBox.setLocation(editX + offset, 			
 			berekenbaarLabel.getLocation().y + 
 			berekenbaarLabel.getSize().height);
+		muBerekenbaarBox.setLocation(editX + offset, 			
+				berekenbaarZichtbaarBox.getLocation().y + 
+				berekenbaarZichtbaarBox.getSize().height);
 		sigmaBerekenbaarBox.setLocation(editX + offset, 			
 			muBerekenbaarBox.getLocation().y + 
 			muBerekenbaarBox.getSize().height);
@@ -192,6 +366,54 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		sigmaVastBox.setLocation(editX + offset, 			
 			muVastBox.getLocation().y + 
 			muVastBox.getSize().height);
+		
+		sliderLabel.setLocation(editX + offset, 
+				sigmaVastBox.getLocation().y + 
+				sigmaVastBox.getSize().height + offset);
+		muSliderBox.setLocation(editX + offset, 			
+				sliderLabel.getLocation().y + 
+				sliderLabel.getSize().height);
+		sigmaSliderBox.setLocation(editX + offset, 			
+				muSliderBox.getLocation().y + 
+				muSliderBox.getSize().height);
+		grensSliderBox.setLocation(editX + offset, 			
+				sigmaSliderBox.getLocation().y + 
+				sigmaSliderBox.getSize().height);
+		kansSliderBox.setLocation(editX + offset, 			
+				grensSliderBox.getLocation().y + 
+				grensSliderBox.getSize().height);
+		
+		waardenLabel.setLocation(editX + offset, 
+				kansSliderBox.getLocation().y + 
+				kansSliderBox.getSize().height + offset);
+		muZichtbaarBox.setLocation(editX + offset, 			
+				waardenLabel.getLocation().y + 
+				waardenLabel.getSize().height);
+		sigmaZichtbaarBox.setLocation(editX + offset, 			
+				muZichtbaarBox.getLocation().y + 
+				muZichtbaarBox.getSize().height);
+		grensZichtbaarBox.setLocation(editX + offset, 			
+				sigmaZichtbaarBox.getLocation().y + 
+				sigmaZichtbaarBox.getSize().height);
+		kansZichtbaarBox.setLocation(editX + offset, 			
+				grensZichtbaarBox.getLocation().y + 
+				grensZichtbaarBox.getSize().height);
+		
+		waardenFigLabel.setLocation(editX + offset, 
+				kansZichtbaarBox.getLocation().y + 
+				kansZichtbaarBox.getSize().height + offset);
+		muZichtbaarFigBox.setLocation(editX + offset, 			
+				waardenFigLabel.getLocation().y + 
+				waardenFigLabel.getSize().height);
+		sigmaZichtbaarFigBox.setLocation(editX + offset, 			
+				muZichtbaarFigBox.getLocation().y + 
+				muZichtbaarFigBox.getSize().height);
+		grensZichtbaarFigBox.setLocation(editX + offset, 			
+				sigmaZichtbaarFigBox.getLocation().y + 
+				sigmaZichtbaarFigBox.getSize().height);
+		kansZichtbaarFigBox.setLocation(editX + offset, 			
+				grensZichtbaarFigBox.getLocation().y + 
+				grensZichtbaarFigBox.getSize().height);
 			
 	}
 
@@ -238,6 +460,13 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 	
+	class BerekenbaarZichtbaarAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	boolean berekenbaarZichtbaar = berekenbaarZichtbaarBox.isSelected();
+			normaalPanel.zetberekenbaarZichtbaar(berekenbaarZichtbaar);		
+		}
+	}
+	
 	class MuBerekenbaarAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
 		{	boolean muBerekenbaarOptie = muBerekenbaarBox.isSelected();
@@ -278,6 +507,60 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 	
+	class MuSliderAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	boolean muSliderOptie = muSliderBox.isSelected();
+			//if (muSliderOptie)
+				//muBerekenbaarBox.setSelected(false);
+				
+			normaalPanel.zetMuSliderOptie(muSliderOptie);	
+		}
+	}
+	
+	class SigmaSliderAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	boolean sigmaSliderOptie = sigmaSliderBox.isSelected();
+			//if (sigmaSliderOptie)
+				//muBerekenbaarBox.setSelected(false);
+				
+			normaalPanel.zetSigmaSliderOptie(sigmaSliderOptie);	
+		}
+	}
+	
+	class GrensSliderAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	boolean grensSliderOptie = grensSliderBox.isSelected();
+			//if (kansSliderOptie)
+				//muBerekenbaarBox.setSelected(false);
+				
+			normaalPanel.zetGrensSliderOptie(grensSliderOptie);	
+		}
+	}
+	
+	class KansSliderAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	boolean kansSliderOptie = kansSliderBox.isSelected();
+			//if (kansSliderOptie)
+				//muBerekenbaarBox.setSelected(false);
+				
+			normaalPanel.zetKansSliderOptie(kansSliderOptie);	
+		}
+	}
+	
+	class WaardenAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	if(e.getSource()==muZichtbaarBox)normaalPanel.zetMuZichtbaarOptie(muZichtbaarBox.isSelected());	
+			if(e.getSource()==sigmaZichtbaarBox)normaalPanel.zetSigmaZichtbaarOptie(sigmaZichtbaarBox.isSelected());	
+			if(e.getSource()==grensZichtbaarBox)normaalPanel.zetGrensZichtbaarOptie(grensZichtbaarBox.isSelected());	
+			if(e.getSource()==kansZichtbaarBox)normaalPanel.zetKansZichtbaarOptie(kansZichtbaarBox.isSelected());
+			if(e.getSource()==muZichtbaarFigBox)normaalPanel.zetMuZichtbaarFigOptie(muZichtbaarFigBox.isSelected());	
+			if(e.getSource()==sigmaZichtbaarFigBox)normaalPanel.zetSigmaZichtbaarFigOptie(sigmaZichtbaarFigBox.isSelected());	
+			if(e.getSource()==grensZichtbaarFigBox)normaalPanel.zetGrensZichtbaarFigOptie(grensZichtbaarFigBox.isSelected());	
+			if(e.getSource()==kansZichtbaarFigBox)normaalPanel.zetKansZichtbaarFigOptie(kansZichtbaarFigBox.isSelected());
+		}
+	}
+	
+	
 	
 	public void setEditState(Hashtable b)
 	{	boolean kansLinksOptie = true;
@@ -311,12 +594,9 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		boolean muVastOptie = false;
 		boolean sigmaVastOptie = false;
 		
-		if (b.containsKey("muvastoptie"))
-			muVastOptie = 
-				((Boolean) b.get("muvastoptie")).booleanValue();
-		if (b.containsKey("sigmavastoptie"))
-			sigmaVastOptie = 
-				((Boolean) b.get("sigmavastoptie")).booleanValue();
+		if (b.containsKey("muvastoptie"))muVastOptie = 	((Boolean) b.get("muvastoptie")).booleanValue();
+		if (b.containsKey("sigmavastoptie"))sigmaVastOptie = 	((Boolean) b.get("sigmavastoptie")).booleanValue();
+				
 				
 		if (muBerekenbaarOptie)
 			muVastOptie = false;
@@ -326,7 +606,30 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 					
 		
 		muVastBox.setSelected(muVastOptie);		
-		sigmaVastBox.setSelected(sigmaVastOptie);				
+		sigmaVastBox.setSelected(sigmaVastOptie);		
+		
+		boolean muSliderOptie = false;
+		boolean sigmaSliderOptie = false;
+		boolean kansSliderOptie = false;
+		boolean grensSliderOptie = true;
+		
+		if (b.containsKey("muSliderOptie")) muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
+		if (b.containsKey("sigmaSliderOptie")) sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
+		if (b.containsKey("kansSliderOptie")) kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
+		if (b.containsKey("grensSliderOptie")) grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
+				
+				
+		if (muBerekenbaarOptie)
+			muVastOptie = false;
+			
+		if (sigmaBerekenbaarOptie)
+			sigmaVastOptie = false;
+					
+		
+		muSliderBox.setSelected(muSliderOptie);		
+		sigmaSliderBox.setSelected(sigmaSliderOptie);	
+		grensSliderBox.setSelected(grensSliderOptie);	
+		kansSliderBox.setSelected(kansSliderOptie);
 		
 
 		if (!kansLinksOptieBox.isSelected() &&
@@ -337,6 +640,36 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		else
 		{	enableBerekenbaarOpties(true);
 		}	
+		
+		boolean muZichtbaarOptie = true;
+		boolean sigmaZichtbaarOptie = true;
+		boolean kansZichtbaarOptie = true;
+		boolean grensZichtbaarOptie = true;
+		
+		if (b.containsKey("muZichtbaarOptie")) muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarOptie")) sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarOptie")) kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarOptie")) grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
+		
+		muZichtbaarBox.setSelected(muZichtbaarOptie);		
+		sigmaZichtbaarBox.setSelected(sigmaZichtbaarOptie);	
+		grensZichtbaarBox.setSelected(grensZichtbaarOptie);	
+		kansZichtbaarBox.setSelected(kansZichtbaarOptie);
+		
+		boolean muZichtbaarFigOptie = true;
+		boolean sigmaZichtbaarFigOptie = true;
+		boolean kansZichtbaarFigOptie = true;
+		boolean grensZichtbaarFigOptie = true;
+		
+		if (b.containsKey("muZichtbaarFigOptie")) muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarFigOptie")) sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarFigOptie")) kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarFigOptie")) grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
+		
+		muZichtbaarFigBox.setSelected(muZichtbaarFigOptie);		
+		sigmaZichtbaarFigBox.setSelected(sigmaZichtbaarFigOptie);	
+		grensZichtbaarFigBox.setSelected(kansZichtbaarFigOptie);	
+		kansZichtbaarFigBox.setSelected(grensZichtbaarFigOptie);
 		
 		
 		normaalPanel.setEditState(b);
