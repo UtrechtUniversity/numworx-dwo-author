@@ -10,7 +10,7 @@ import fi.beans.wiskopdrbeans.*;
 
 public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 {	
-	protected static int editBreedte = 150;	
+	protected static int editBreedte = 290;	
 	protected static Color bgColor = new Color(Integer.parseInt("DDEEFF", 16));
 
 	protected NormaalPanel normaalPanel;
@@ -23,7 +23,7 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 	FontMetrics theBoldFM;
 
 	int offset = 15;
-	int editX;
+	int editX, editX2;
 
 	JLabel kansOptiesLabel;
 	JCheckBox kansLinksOptieBox,
@@ -56,6 +56,21 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 				sigmaZichtbaarFigBox,
 				grensZichtbaarFigBox,
 				kansZichtbaarFigBox;
+	
+	JLabel checkOptiesLabel;
+	JCheckBox checkMuBox,
+			checkSigmaBox,
+			checkGrensBox,
+			checkGrensLinksBox,
+			checkGrensRechtsBox,
+			checkKansBox;
+	
+	JTextField checkMuWaardeVeld,
+			checkSigmaWaardeVeld,
+			checkGrensWaardeVeld,
+			checkGrensLinksWaardeVeld,
+			checkGrensRechtsWaardeVeld,
+			checkKansWaardeVeld;
 
 
 	public NormaalEditPanel(int w, int h)
@@ -71,11 +86,12 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		theBoldFM = getFontMetrics(theBoldFont);
 		
 		
-		normaalPanel = new NormaalPanel(w - editBreedte, h);
+		normaalPanel = new NormaalPanel(500,450);
 		normaalPanel.setLocation(0, 0);
 		add(normaalPanel);
 		
 		editX = getSize().width - editBreedte;
+		editX2 = getSize().width - editBreedte/2;
 		
 		kansOptiesLabel = new JLabel(
 			NormaleVerdeling.rb.getString("kansOptiesTekst"));
@@ -85,251 +101,101 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		kansOptiesLabel.setSize(width, height);
 		add(kansOptiesLabel);
 		
-		kansLinksOptieBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("kansLinksTekst"));
-		kansLinksOptieBox.setFont(theFont);
-		kansLinksOptieBox.setBackground(bgColor);
-		width = theFM.stringWidth(kansLinksOptieBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		kansLinksOptieBox.setSize(width, height);
-		add(kansLinksOptieBox);
-		kansLinksOptieBox.setSelected(true);
+		ActionListener listener = new KansOptiesAL();
 		
-		kansRechtsOptieBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("kansRechtsTekst"));
-		kansRechtsOptieBox.setFont(theFont);
-		kansRechtsOptieBox.setBackground(bgColor);
-		width = theFM.stringWidth(kansRechtsOptieBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		kansRechtsOptieBox.setSize(width, height);
-		add(kansRechtsOptieBox);
-		kansRechtsOptieBox.setSelected(true);
+		kansLinksOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("kansLinksTekst"), true, listener);
+		kansRechtsOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("kansRechtsTekst"), true, listener);
+		tweeGrenzenOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("tweeGrenzenTekst"), true, listener);
 		
-		tweeGrenzenOptieBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("tweeGrenzenTekst"));
-		tweeGrenzenOptieBox.setFont(theFont);
-		tweeGrenzenOptieBox.setBackground(bgColor);
-		width = theFM.stringWidth(tweeGrenzenOptieBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		tweeGrenzenOptieBox.setSize(width, height);
-		add(tweeGrenzenOptieBox);
-		tweeGrenzenOptieBox.setSelected(true);
-
-		KansOptiesAL listener = new KansOptiesAL();
-		kansLinksOptieBox.addActionListener(listener);
-		kansRechtsOptieBox.addActionListener(listener);
-		tweeGrenzenOptieBox.addActionListener(listener);
-	
-		berekenbaarLabel = new JLabel(
-			NormaleVerdeling.rb.getString("berekenbaarTekst"));
-		berekenbaarLabel.setFont(theBoldFont);
-		width = theBoldFM.stringWidth(berekenbaarLabel.getText());
-		height = 3 * theBoldFM.getHeight() / 2;
-		berekenbaarLabel.setSize(width, height);
-		add(berekenbaarLabel);
+		berekenbaarLabel = maakLabel(NormaleVerdeling.rb.getString("berekenbaarTekst"));
 		
-		berekenbaarZichtbaarBox = new JCheckBox(
-				NormaleVerdeling.rb.getString("berekenbaarZichtbaarTekst"));
-		berekenbaarZichtbaarBox.setFont(theFont);
-		berekenbaarZichtbaarBox.setBackground(bgColor);
-			width = theFM.stringWidth(berekenbaarZichtbaarBox.getText()) + 30;
-			height = 3 * theFM.getHeight() / 2;
-			berekenbaarZichtbaarBox.setSize(width, height);
-			add(berekenbaarZichtbaarBox);
-			berekenbaarZichtbaarBox.addActionListener(new BerekenbaarZichtbaarAL());
-			berekenbaarZichtbaarBox.setSelected(true);
-			
-		muBerekenbaarBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("muTekst"));
-		muBerekenbaarBox.setFont(theFont);
-		muBerekenbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(muBerekenbaarBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		muBerekenbaarBox.setSize(width, height);
-		add(muBerekenbaarBox);
-		muBerekenbaarBox.addActionListener(new MuBerekenbaarAL());
-
-		sigmaBerekenbaarBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("sigmaTekst"));
-		sigmaBerekenbaarBox.setFont(theFont);
-		sigmaBerekenbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(sigmaBerekenbaarBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		sigmaBerekenbaarBox.setSize(width, height);
-		add(sigmaBerekenbaarBox);
-		sigmaBerekenbaarBox.addActionListener(new SigmaBerekenbaarAL());		
+		berekenbaarZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("berekenbaarZichtbaarTekst"), true, new BerekenbaarZichtbaarAL());
+		muBerekenbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuBerekenbaarAL());
+		sigmaBerekenbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaBerekenbaarAL());
 		
-		vasteWaardeLabel = new JLabel(
-			NormaleVerdeling.rb.getString("vasteWaardeTekst"));
-		vasteWaardeLabel.setFont(theBoldFont);
-		width = theBoldFM.stringWidth(vasteWaardeLabel.getText());
-		height = 3 * theBoldFM.getHeight() / 2;
-		vasteWaardeLabel.setSize(width, height);
-		add(vasteWaardeLabel);
+		vasteWaardeLabel = maakLabel(NormaleVerdeling.rb.getString("vasteWaardeTekst"));
 		
-		muVastBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("muTekst"));
-		muVastBox.setFont(theFont);
-		muVastBox.setBackground(bgColor);
-		width = theFM.stringWidth(muVastBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		muVastBox.setSize(width, height);
-		add(muVastBox);
-		muVastBox.addActionListener(new MuVastAL());		
-
-		sigmaVastBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("sigmaTekst"));
-		sigmaVastBox.setFont(theFont);
-		sigmaVastBox.setBackground(bgColor);
-		width = theFM.stringWidth(sigmaVastBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		sigmaVastBox.setSize(width, height);
-		add(sigmaVastBox);
-		sigmaVastBox.addActionListener(new SigmaVastAL());				
+		muVastBox = maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuVastAL());
+		sigmaVastBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaVastAL());
 		
-		sliderLabel = new JLabel(
-			NormaleVerdeling.rb.getString("sliderLabelTekst"));
-		sliderLabel.setFont(theBoldFont);
-		width = theBoldFM.stringWidth(sliderLabel.getText());
-		height = 3 * theBoldFM.getHeight() / 2;
-		sliderLabel.setSize(width, height);
-		add(sliderLabel);
+		sliderLabel = maakLabel(NormaleVerdeling.rb.getString("sliderLabelTekst"));
 		
-		muSliderBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("muSliderTekst"));
-		muSliderBox.setFont(theFont);
-		muSliderBox.setBackground(bgColor);
-		width = theFM.stringWidth(muSliderBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		muSliderBox.setSize(width, height);
-		add(muSliderBox);
-		muSliderBox.addActionListener(new MuSliderAL());		
-			sigmaSliderBox = new JCheckBox(
-			NormaleVerdeling.rb.getString("sigmaSliderTekst"));
-		sigmaSliderBox.setFont(theFont);
-		sigmaSliderBox.setBackground(bgColor);
-		width = theFM.stringWidth(sigmaSliderBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		sigmaSliderBox.setSize(width, height);
-		add(sigmaSliderBox);
-		sigmaSliderBox.addActionListener(new SigmaSliderAL());
+		muSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("muSliderTekst"), false, new MuSliderAL());
+		sigmaSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaSliderTekst"), false, new SigmaSliderAL());
+		grensSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("grensSliderTekst"), false, new GrensSliderAL());
+		kansSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("kansSliderTekst"), false, new KansSliderAL());
 		
-		grensSliderBox = new JCheckBox(
-				NormaleVerdeling.rb.getString("grensSliderTekst"));
-		grensSliderBox.setFont(theFont);
-		grensSliderBox.setBackground(bgColor);
-		width = theFM.stringWidth(grensSliderBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		grensSliderBox.setSize(width, height);
-		add(grensSliderBox);
-		grensSliderBox.addActionListener(new GrensSliderAL());
+		waardenLabel = maakLabel(NormaleVerdeling.rb.getString("waardenLabelTekst"));
 		
-		kansSliderBox = new JCheckBox(
-				NormaleVerdeling.rb.getString("kansSliderTekst"));
-		kansSliderBox.setFont(theFont);
-		kansSliderBox.setBackground(bgColor);
-		width = theFM.stringWidth(kansSliderBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		kansSliderBox.setSize(width, height);
-		add(kansSliderBox);
-		kansSliderBox.addActionListener(new KansSliderAL());
-				
-		waardenLabel = new JLabel(NormaleVerdeling.rb.getString("waardenLabelTekst"));
-		waardenLabel.setFont(theBoldFont);
-		width = theBoldFM.stringWidth(waardenLabel.getText());
-		height = 3 * theBoldFM.getHeight() / 2;
-		waardenLabel.setSize(width, height);
-		add(waardenLabel);	
+		listener = new CheckOptiesAL();
 		
-		muZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"));
-		muZichtbaarBox.setFont(theFont);
-		muZichtbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(muZichtbaarBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		muZichtbaarBox.setSize(width, height);
-		add(muZichtbaarBox);
-		muZichtbaarBox.addActionListener(new WaardenAL());	
-		muZichtbaarBox.setSelected(true);
+		muZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"), true, listener);
+		sigmaZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"), true, listener);
+		grensZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarTekst"), true, listener);
+		kansZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarTekst"), true, listener);
 		
-		sigmaZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"));
-		sigmaZichtbaarBox.setFont(theFont);
-		sigmaZichtbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(sigmaZichtbaarBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		sigmaZichtbaarBox.setSize(width, height);
-		add(sigmaZichtbaarBox);
-		sigmaZichtbaarBox.addActionListener(new WaardenAL());
-		sigmaZichtbaarBox.setSelected(true);
+		waardenFigLabel = maakLabel(NormaleVerdeling.rb.getString("waardenFigLabelTekst"));
+		
+		muZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("muZichtbaarFigTekst"), true, listener);
+		sigmaZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarFigTekst"), true, listener);
+		grensZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarFigTekst"), true, listener);
+		kansZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarFigTekst"), true, listener);
+		
+		checkOptiesLabel = maakLabel(NormaleVerdeling.rb.getString("checkOptiesLabelTekst"));
+		
+		checkMuBox = maakCheckBox(NormaleVerdeling.rb.getString("checkMuTekst"), false, listener);
+		checkSigmaBox = maakCheckBox(NormaleVerdeling.rb.getString("checkSigmaTekst"), false, listener);
+		checkGrensBox = maakCheckBox(NormaleVerdeling.rb.getString("checkGrensTekst"), false, listener);
+		checkGrensLinksBox = maakCheckBox(NormaleVerdeling.rb.getString("checkGrensLinksTekst"), false, listener);
+		checkGrensRechtsBox = maakCheckBox(NormaleVerdeling.rb.getString("checkGrensRechtsTekst"), false, listener);
+		checkKansBox = maakCheckBox(NormaleVerdeling.rb.getString("checkKansTekst"), false, listener);
+		
+		listener = new CheckValuesAL();
+		
+		checkMuWaardeVeld = maakTextField(60,20, true, listener);
+		checkSigmaWaardeVeld = maakTextField(60,20, true, listener);
+		checkGrensWaardeVeld = maakTextField(60,20, true, listener);
+		checkGrensLinksWaardeVeld = maakTextField(60,20, true, listener);
+		checkGrensRechtsWaardeVeld = maakTextField(60,20, true, listener);
+		checkKansWaardeVeld = maakTextField(60,20, true, listener);
 		
 		
-		grensZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarTekst"));
-		grensZichtbaarBox.setFont(theFont);
-		grensZichtbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(grensSliderBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		grensZichtbaarBox.setSize(width, height);
-		add(grensZichtbaarBox);
-		grensZichtbaarBox.addActionListener(new WaardenAL());
-		grensZichtbaarBox.setSelected(true);
 		
-		kansZichtbaarBox = new JCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarTekst"));
-		kansZichtbaarBox.setFont(theFont);
-		kansZichtbaarBox.setBackground(bgColor);
-		width = theFM.stringWidth(kansZichtbaarBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		kansZichtbaarBox.setSize(width, height);
-		add(kansZichtbaarBox);
-		kansZichtbaarBox.addActionListener(new WaardenAL());
-		kansZichtbaarBox.setSelected(true);
-		
-		waardenFigLabel = new JLabel(NormaleVerdeling.rb.getString("waardenFigLabelTekst"));
-		waardenFigLabel.setFont(theBoldFont);
-		width = theBoldFM.stringWidth(waardenFigLabel.getText());
-		height = 3 * theBoldFM.getHeight() / 2;
-		waardenFigLabel.setSize(width, height);
-		add(waardenFigLabel);	
-		
-		muZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"));
-		muZichtbaarFigBox.setFont(theFont);
-		muZichtbaarFigBox.setBackground(bgColor);
-		width = theFM.stringWidth(muZichtbaarFigBox.getText()) + 30;
-		height = 3 * theFM.getHeight() / 2;
-		muZichtbaarFigBox.setSize(width, height);
-		add(muZichtbaarFigBox);
-		muZichtbaarFigBox.addActionListener(new WaardenAL());	
-		muZichtbaarFigBox.setSelected(true);
-		
-		sigmaZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarFigTekst"));
-		sigmaZichtbaarFigBox.setFont(theFont);
-		sigmaZichtbaarFigBox.setBackground(bgColor);
-		width = theFM.stringWidth(sigmaZichtbaarFigBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		sigmaZichtbaarFigBox.setSize(width, height);
-		add(sigmaZichtbaarFigBox);
-		sigmaZichtbaarFigBox.addActionListener(new WaardenAL());
-		sigmaZichtbaarFigBox.setSelected(true);
-		
-		grensZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarFigTekst"));
-		grensZichtbaarFigBox.setFont(theFont);
-		grensZichtbaarFigBox.setBackground(bgColor);
-		width = theFM.stringWidth(grensZichtbaarFigBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		grensZichtbaarFigBox.setSize(width, height);
-		add(grensZichtbaarFigBox);
-		grensZichtbaarFigBox.addActionListener(new WaardenAL());
-		grensZichtbaarFigBox.setSelected(true);
-		
-		kansZichtbaarFigBox = new JCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarFigTekst"));
-		kansZichtbaarFigBox.setFont(theFont);
-		kansZichtbaarFigBox.setBackground(bgColor);
-		width = theFM.stringWidth(kansZichtbaarFigBox.getText()) + 30;
-		//height = 3 * theFM.getHeight() / 2;
-		kansZichtbaarFigBox.setSize(width, height);
-		add(kansZichtbaarFigBox);
-		kansZichtbaarFigBox.addActionListener(new WaardenAL());
-		kansZichtbaarFigBox.setSelected(true);
-			
 		plaatsComponenten();
+	}
+	
+	private JCheckBox maakCheckBox(String s, boolean selected, ActionListener al)
+	{	JCheckBox checkbox = new JCheckBox(s);
+		checkbox.setFont(theFont);
+		checkbox.setBackground(bgColor);
+		int width = theFM.stringWidth(s) + 30;
+		int height = 3 * theFM.getHeight() / 2;
+		checkbox.setSize(width,height);
+		checkbox.setSelected(selected);
+		checkbox.addActionListener(al);
+		add(checkbox);
+		
+		return checkbox;
+	}
+	
+	private JLabel maakLabel (String s)
+	{	JLabel label = new JLabel(s);
+		label.setFont(theBoldFont);
+		int width = theBoldFM.stringWidth(s);
+		int height = 3 * theBoldFM.getHeight() / 2;
+		label.setSize(width, height);
+		add(label);
+		return label;
+	}
+	
+	private JTextField maakTextField(int b, int h, boolean visible, ActionListener al)
+	{	JTextField textField = new JTextField();
+		textField.setFont(theFont);
+		textField.setSize(b,h);
+		textField.addActionListener(al);
+		add(textField);
+		
+		return textField;
 	}
 	
 	public void plaatsComponenten()
@@ -383,37 +249,78 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 				grensSliderBox.getLocation().y + 
 				grensSliderBox.getSize().height);
 		
-		waardenLabel.setLocation(editX + offset, 
-				kansSliderBox.getLocation().y + 
-				kansSliderBox.getSize().height + offset);
-		muZichtbaarBox.setLocation(editX + offset, 			
+		waardenLabel.setLocation(editX2 + offset, offset);
+		muZichtbaarBox.setLocation(editX2 + offset, 			
 				waardenLabel.getLocation().y + 
 				waardenLabel.getSize().height);
-		sigmaZichtbaarBox.setLocation(editX + offset, 			
+		sigmaZichtbaarBox.setLocation(editX2 + offset, 			
 				muZichtbaarBox.getLocation().y + 
 				muZichtbaarBox.getSize().height);
-		grensZichtbaarBox.setLocation(editX + offset, 			
+		grensZichtbaarBox.setLocation(editX2 + offset, 			
 				sigmaZichtbaarBox.getLocation().y + 
 				sigmaZichtbaarBox.getSize().height);
-		kansZichtbaarBox.setLocation(editX + offset, 			
+		kansZichtbaarBox.setLocation(editX2 + offset, 			
 				grensZichtbaarBox.getLocation().y + 
 				grensZichtbaarBox.getSize().height);
 		
-		waardenFigLabel.setLocation(editX + offset, 
+		waardenFigLabel.setLocation(editX2 + offset, 
 				kansZichtbaarBox.getLocation().y + 
 				kansZichtbaarBox.getSize().height + offset);
-		muZichtbaarFigBox.setLocation(editX + offset, 			
+		muZichtbaarFigBox.setLocation(editX2 + offset, 			
 				waardenFigLabel.getLocation().y + 
 				waardenFigLabel.getSize().height);
-		sigmaZichtbaarFigBox.setLocation(editX + offset, 			
+		sigmaZichtbaarFigBox.setLocation(editX2 + offset, 			
 				muZichtbaarFigBox.getLocation().y + 
 				muZichtbaarFigBox.getSize().height);
-		grensZichtbaarFigBox.setLocation(editX + offset, 			
+		grensZichtbaarFigBox.setLocation(editX2 + offset, 			
 				sigmaZichtbaarFigBox.getLocation().y + 
 				sigmaZichtbaarFigBox.getSize().height);
-		kansZichtbaarFigBox.setLocation(editX + offset, 			
+		kansZichtbaarFigBox.setLocation(editX2 + offset, 			
 				grensZichtbaarFigBox.getLocation().y + 
 				grensZichtbaarFigBox.getSize().height);
+		
+		checkOptiesLabel.setLocation(editX2 + offset, 
+				kansZichtbaarFigBox.getLocation().y + 
+				kansZichtbaarFigBox.getSize().height + offset);
+		checkMuBox.setLocation(editX2 + offset, 			
+				checkOptiesLabel.getLocation().y + 
+				checkOptiesLabel.getSize().height);
+		checkSigmaBox.setLocation(editX2 + offset, 			
+				checkMuBox.getLocation().y + 
+				checkMuBox.getSize().height);
+		checkGrensBox.setLocation(editX2 + offset, 			
+				checkSigmaBox.getLocation().y + 
+				checkSigmaBox.getSize().height);
+		checkGrensLinksBox.setLocation(editX2 + offset, 			
+				checkGrensBox.getLocation().y + 
+				checkGrensBox.getSize().height);
+		checkGrensRechtsBox.setLocation(editX2 + offset, 			
+				checkGrensLinksBox.getLocation().y + 
+				checkGrensLinksBox.getSize().height);
+		checkKansBox.setLocation(editX2 + offset, 			
+				checkGrensRechtsBox.getLocation().y + 
+				checkGrensRechtsBox.getSize().height);
+		
+		checkMuWaardeVeld.setLocation(checkMuBox.getLocation().x + checkMuBox.getSize().width, 			
+				checkOptiesLabel.getLocation().y + 
+				checkOptiesLabel.getSize().height);
+		checkSigmaWaardeVeld.setLocation(checkSigmaBox.getLocation().x + checkSigmaBox.getSize().width, 			
+				checkMuBox.getLocation().y + 
+				checkMuBox.getSize().height);
+		checkGrensWaardeVeld.setLocation(checkGrensBox.getLocation().x + checkGrensBox.getSize().width, 			
+				checkSigmaBox.getLocation().y + 
+				checkSigmaBox.getSize().height);
+		checkGrensLinksWaardeVeld.setLocation(checkGrensLinksBox.getLocation().x + checkGrensLinksBox.getSize().width, 			
+				checkGrensBox.getLocation().y + 
+				checkGrensBox.getSize().height);
+		checkGrensRechtsWaardeVeld.setLocation(checkGrensRechtsBox.getLocation().x + checkGrensRechtsBox.getSize().width, 			
+				checkGrensLinksBox.getLocation().y + 
+				checkGrensLinksBox.getSize().height);
+		checkKansWaardeVeld.setLocation(checkKansBox.getLocation().x + checkKansBox.getSize().width, 			
+				checkGrensRechtsBox.getLocation().y + 
+				checkGrensRechtsBox.getSize().height);
+		
+		
 			
 	}
 
@@ -560,6 +467,30 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 	
+	class CheckOptiesAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	//if(e.getSource()==checkMuBox)normaalPanel.zetCheckMuOptie(checkMuBox.isSelected());	
+			//if(e.getSource()==checkSigmaBox)normaalPanel.zetCheckSigmaOptie(checkSigmaBox.isSelected());	
+			//if(e.getSource()==checkGrensBox)normaalPanel.zetCheckGrensOptie(checkGrensBox.isSelected());	
+			//if(e.getSource()==checkGrensLinksBox)normaalPanel.zetCheckGrensLinksOptie(checkGrensLinksBox.isSelected());
+			//if(e.getSource()==checkGrensRechtsBox)normaalPanel.zetCheckGrensRechtsOptie(checkGrensRechtsBox.isSelected());	
+			//if(e.getSource()==checkKansBox)normaalPanel.zetCheckKansOptie(checkKansBox.isSelected());	
+			
+		}
+	}
+	
+	class CheckValuesAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	//if(e.getSource()==checkMuBox)normaalPanel.zetCheckMuOptie(checkMuBox.isSelected());	
+			//if(e.getSource()==checkSigmaBox)normaalPanel.zetCheckSigmaOptie(checkSigmaBox.isSelected());	
+			//if(e.getSource()==checkGrensBox)normaalPanel.zetCheckGrensOptie(checkGrensBox.isSelected());	
+			//if(e.getSource()==checkGrensLinksBox)normaalPanel.zetCheckGrensLinksOptie(checkGrensLinksBox.isSelected());
+			//if(e.getSource()==checkGrensRechtsBox)normaalPanel.zetCheckGrensRechtsOptie(checkGrensRechtsBox.isSelected());	
+			//if(e.getSource()==checkKansBox)normaalPanel.zetCheckKansOptie(checkKansBox.isSelected());	
+			
+		}
+	}
+	
 	
 	
 	public void setEditState(Hashtable b)
@@ -689,20 +620,20 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 	{	super.setBounds(x, y, b, h);
 	
 		editX = getSize().width - editBreedte;
-	
+		editX2 = getSize().width - editBreedte/2;
 		// dit alleen als alles al geconstrueerd is
 		if (normaalPanel != null)
-		{	normaalPanel.setBounds(0, 0, b - editBreedte, h);
+		{	//normaalPanel.setBounds(0, 0, b - editBreedte, h);
 			plaatsComponenten();	
 		}	
 	}
 
 	public void zetBreedte(int b)
-	{	setBounds(getLocation().x, getLocation().y, b, getSize().height);
+	{	normaalPanel.setBounds(normaalPanel.getLocation().x, normaalPanel.getLocation().y, b, normaalPanel.getSize().height);
 	}
 	
 	public void zetHoogte(int h)
-	{	setBounds(getLocation().x, getLocation().y, getSize().width, h);
+	{	normaalPanel.setBounds(normaalPanel.getLocation().x, normaalPanel.getLocation().y, normaalPanel.getSize().width, h);
 	}
 
 	public void wis()

@@ -34,13 +34,19 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "muZichtbaarTekst" ,     "\u03BC visible" },       
 			{ "sigmaZichtbaarTekst" ,  "\u03C3 visible" },
 			{ "grensZichtbaarTekst" ,   "Grens visible" },
-			{ "kansZichtbaarTekst" ,   "Kans visible" },
+			{ "kansZichtbaarTekst" ,   "Chance visible" },
 			{ "waardenFigLabelTekst" ,  "Values in figure" },
 			{ "muZichtbaarFigTekst" ,     "\u03BC visible" },       
 			{ "sigmaZichtbaarFigTekst" ,  "\u03C3 visible" },
 			{ "grensZichtbaarFigTekst" ,   "Grens visible" },
 			{ "kansZichtbaarFigTekst" ,   "Kans visible" },
-		            
+			{ "checkOptiesLabelTekst" ,  "Check Options" },
+			{ "checkMuTekst" ,     "\u03BC =" },       
+			{ "checkSigmaTekst" ,  "\u03C3 =" },
+			{ "checkGrensTekst" ,   "border =" },
+			{ "checkGrensLinksTekst" ,   "left border =" },
+			{ "checkGrensRechtsTekst" ,   "right border =" },
+			{ "checkKansTekst" ,   "chance =" },        
 		
 		};
 }

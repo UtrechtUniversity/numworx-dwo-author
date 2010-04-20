@@ -40,6 +40,13 @@ public class Text_nl extends java.util.ListResourceBundle
 			{ "sigmaZichtbaarFigTekst" ,  "\u03C3 zichtbaar" },
 			{ "grensZichtbaarFigTekst" ,   "Grens zichtbaar" },
 			{ "kansZichtbaarFigTekst" ,   "Kans zichtbaar" },
+			{ "checkOptiesLabelTekst" ,  "CheckOpties" },
+			{ "checkMuTekst" ,     "\u03BC =" },       
+			{ "checkSigmaTekst" ,  "\u03C3 =" },
+			{ "checkGrensTekst" ,   "gr =" },
+			{ "checkGrensLinksTekst" ,   "Lgr =" },
+			{ "checkGrensRechtsTekst" ,   "Rgr =" },
+			{ "checkKansTekst" ,   "k =" },
 					
 		};
 }
