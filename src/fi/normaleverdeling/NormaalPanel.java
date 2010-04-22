@@ -1689,7 +1689,11 @@ if (grensLinks > minMuX + NZERO)
 		grensRechtsButton.setVisible(b && kansKeuze == TWEEGRENZEN);
 		grensButton.setVisible(b && kansKeuze != TWEEGRENZEN);
 		kansButton.setVisible(b);
+		muButton.setVisible(b && muBerekenbaarOptie);
+		sigmaButton.setVisible(b && sigmaBerekenbaarOptie);
 		bgPanel6.setVisible(b);
+		
+		plaatsComponenten();
 	}
 	
 	public void zetMuBerekenbaarOptie(boolean b)
@@ -1700,7 +1704,7 @@ if (grensLinks > minMuX + NZERO)
 			actualMuBerekenbaarOptie = (kansKeuze != TWEEGRENZEN);
 			
 		//if (actualMuBerekenbaarOptie)	
-		muButton.setVisible(actualMuBerekenbaarOptie);
+		muButton.setVisible(actualMuBerekenbaarOptie && berekenbaarZichtbaar);
 
 		// uitschakelen met berekenKeuze==BEREKENMU
 		if (!b && (berekenKeuze == BEREKENMU))
@@ -1725,7 +1729,7 @@ if (grensLinks > minMuX + NZERO)
 			actualSigmaBerekenbaarOptie = (kansKeuze != TWEEGRENZEN);
 			
 		//if (actualSigmaBerekenbaarOptie)	
-		sigmaButton.setVisible(actualSigmaBerekenbaarOptie);
+		sigmaButton.setVisible(actualSigmaBerekenbaarOptie && berekenbaarZichtbaar);
 			
 		// uitschakelen met berekenKeuze==BEREKENSIGMA
 		if (!b && (berekenKeuze == BEREKENSIGMA))
@@ -3261,28 +3265,7 @@ if (grensLinks > minMuX + NZERO)
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
 		h.put("tweegrenzenoptie", new Boolean(tweeGrenzenOptie));	    	    	    
 		
-		h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));		
-	    h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
-	    h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));			    
-	    
-	    h.put("muvastoptie", new Boolean(muVastOptie));		
-	    h.put("sigmavastoptie", new Boolean(sigmaVastOptie));
-	    
-	    h.put("muSliderOptie", new Boolean(muSliderOptie));
-		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));
-		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	
-		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
 		
-		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
-		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
-		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
-		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
-		
-		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
-		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
-		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
-		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
-	    
 		return h;
 	}
 
@@ -3310,6 +3293,29 @@ if (grensLinks > minMuX + NZERO)
 	    h.put("grensLinksString", grensLinksString);
 	    h.put("grensRechtsString", grensRechtsString);
 	    h.put("kansString", kansString);
+	    
+	    h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));		
+	    h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
+	    h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));			    
+	    
+	    h.put("muvastoptie", new Boolean(muVastOptie));		
+	    h.put("sigmavastoptie", new Boolean(sigmaVastOptie));
+	    
+	    h.put("muSliderOptie", new Boolean(muSliderOptie));
+		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));
+		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	
+		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
+		
+		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
+		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
+		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
+		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
+		
+		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
+		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
+		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
+		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
+	    
 	    
 
 	    return h;

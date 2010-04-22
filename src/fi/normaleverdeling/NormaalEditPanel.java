@@ -127,7 +127,7 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		
 		waardenLabel = maakLabel(NormaleVerdeling.rb.getString("waardenLabelTekst"));
 		
-		listener = new CheckOptiesAL();
+		listener = new WaardenAL();
 		
 		muZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"), true, listener);
 		sigmaZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"), true, listener);
@@ -142,6 +142,8 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		kansZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarFigTekst"), true, listener);
 		
 		checkOptiesLabel = maakLabel(NormaleVerdeling.rb.getString("checkOptiesLabelTekst"));
+		
+		listener = new CheckOptiesAL();
 		
 		checkMuBox = maakCheckBox(NormaleVerdeling.rb.getString("checkMuTekst"), false, listener);
 		checkSigmaBox = maakCheckBox(NormaleVerdeling.rb.getString("checkSigmaTekst"), false, listener);
@@ -509,16 +511,15 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		kansRechtsOptieBox.setSelected(kansRechtsOptie);	
 		tweeGrenzenOptieBox.setSelected(tweeGrenzenOptie);
 		
+		boolean berekenbaarZichtbaar = false;
 		boolean muBerekenbaarOptie = false;
 		boolean sigmaBerekenbaarOptie = false;
 		
-		if (b.containsKey("muberekenbaaroptie"))
-			muBerekenbaarOptie = 
-				((Boolean) b.get("muberekenbaaroptie")).booleanValue();
-		if (b.containsKey("sigmaberekenbaaroptie"))
-			sigmaBerekenbaarOptie = 
-				((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
+		if (b.containsKey("berekenbaarZichtbaar"))berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
+		if (b.containsKey("muberekenbaaroptie"))muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
+		if (b.containsKey("sigmaberekenbaaroptie"))	sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
 		
+		berekenbaarZichtbaarBox.setSelected(berekenbaarZichtbaar);
 		muBerekenbaarBox.setSelected(muBerekenbaarOptie);		
 		sigmaBerekenbaarBox.setSelected(sigmaBerekenbaarOptie);				
 		

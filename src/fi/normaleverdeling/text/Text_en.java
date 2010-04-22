@@ -43,9 +43,9 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "checkOptiesLabelTekst" ,  "Check Options" },
 			{ "checkMuTekst" ,     "\u03BC =" },       
 			{ "checkSigmaTekst" ,  "\u03C3 =" },
-			{ "checkGrensTekst" ,   "border =" },
-			{ "checkGrensLinksTekst" ,   "left border =" },
-			{ "checkGrensRechtsTekst" ,   "right border =" },
+			{ "checkGrensTekst" ,   "brdr =" },
+			{ "checkGrensLinksTekst" ,   "bL =" },
+			{ "checkGrensRechtsTekst" ,   "bR=" },
 			{ "checkKansTekst" ,   "chance =" },        
 		
 		};
