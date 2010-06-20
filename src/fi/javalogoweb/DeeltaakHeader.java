@@ -3,9 +3,11 @@ package fi.javalogoweb;
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.JPanel;
+
 import fi.javalogoweb.expressies.BasisExpressie;
 
-public class DeeltaakHeader extends Panel implements ActionListener
+public class DeeltaakHeader extends JPanel implements ActionListener
 {
 	private GetalComponent gc;
 	private Button closeButton;
@@ -36,14 +38,14 @@ public class DeeltaakHeader extends Panel implements ActionListener
 		
 	}
 	
-	public void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{	g.setColor(new Color(255,255,200));
 		g.fillRect(0,0,getSize().width,getSize().height);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
 		g.drawRect(1,1,getSize().width-3,getSize().height-3);
 		
-		super.paint(g);
+		//super.paint(g);
 	}
 	
 	public void actionPerformed(ActionEvent e)

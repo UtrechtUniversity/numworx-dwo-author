@@ -3,7 +3,9 @@ package fi.javalogoweb;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ScrollSlider	extends Panel implements MouseListener, MouseMotionListener
+import javax.swing.JPanel;
+
+public class ScrollSlider	extends JPanel implements MouseListener, MouseMotionListener
 {	private Image im;
 	private Graphics gIm;
 	private boolean resize;

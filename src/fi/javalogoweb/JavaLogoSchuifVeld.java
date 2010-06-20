@@ -5,6 +5,10 @@ import fi.beans.stringutils.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+
 import logotekenap.*;
 
 public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
@@ -24,12 +28,12 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	private int opdrLocXDefault;
 	private int opdrLocYDefault;
 	private ScrollSlider scrollSlider;
-	private Label tekenProgrammaLabel;
-	private ImageButton editButton1, editButton2, editButton3;
+	private JLabel tekenProgrammaLabel;
+	//private ImageButton editButton1, editButton2, editButton3;
 	private ImageButton[] editButtons;
-	private Button runButton;
-	private Button exportButton;
-	private Button importButton;
+	private JButton runButton;
+	private JButton exportButton;
+	private JButton importButton;
 	private Tekenblad tekenblad;
 	private DeeltaakHeader deeltaakHeader;
 	
@@ -59,21 +63,21 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		add(commandComponents[0],0);
 		pcActief = programmaComponent;
 		
-		Panel pBoven = new Panel();
+		JPanel pBoven = new JPanel();
 		pBoven.setBackground(getBackground());
 		pBoven.setBounds(pcLocXDefault,0,pcSizeWidthDefault,pcLocYDefault);
-		add(pBoven);
+		add(pBoven,0);
 		
-		Panel pOnder = new Panel();
+		JPanel pOnder = new JPanel();
 		pOnder.setBackground(getBackground());
 		pOnder.setBounds(pcLocXDefault,pcLocYDefault + pcSizeHeightDefault,pcSizeWidthDefault,500);
-		add(pOnder);
+		add(pOnder,0);
 		
-		tekenProgrammaLabel = new Label("tekenalgoritme");
+		tekenProgrammaLabel = new JLabel("tekenalgoritme");
 		tekenProgrammaLabel.setBackground(getBackground());
-		tekenProgrammaLabel.setAlignment(Label.CENTER);
+		//tekenProgrammaLabel.setAlignment(Label.CENTER);
 		tekenProgrammaLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		tekenProgrammaLabel.setBounds(pcLocXDefault,10,pcSizeWidthDefault, pcLocYDefault-10);
+		tekenProgrammaLabel.setBounds(pcLocXDefault+40,10,pcSizeWidthDefault, pcLocYDefault-10);
 		add(tekenProgrammaLabel,0);
 		
 		opdrSizeWidthDefault = 160;
@@ -81,18 +85,18 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		opdrLocXDefault = 10;
 		opdrLocYDefault = 50;
 		
-		Label opdrLabel = new Label("opdrachten");
+		JLabel opdrLabel = new JLabel("opdrachten");
 		opdrLabel.setBackground(getBackground());
-		opdrLabel.setAlignment(Label.CENTER);
+		//opdrLabel.setAlignment(Label.CENTER);
 		opdrLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		opdrLabel.setBounds(opdrLocXDefault,10,opdrSizeWidthDefault, opdrLocYDefault-22);
+		opdrLabel.setBounds(opdrLocXDefault+40,10,opdrSizeWidthDefault, opdrLocYDefault-22);
 		add(opdrLabel,0);
 		
-		Label deeltaakLabel = new Label("deeltaken");
+		JLabel deeltaakLabel = new JLabel("deeltaken");
 		deeltaakLabel.setBackground(getBackground());
-		deeltaakLabel.setAlignment(Label.CENTER);
+		//deeltaakLabel.setAlignment(Label.CENTER);
 		deeltaakLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		deeltaakLabel.setBounds(opdrLocXDefault,280,opdrSizeWidthDefault, opdrLocYDefault-22);
+		deeltaakLabel.setBounds(opdrLocXDefault+40,280,opdrSizeWidthDefault, opdrLocYDefault-22);
 		add(deeltaakLabel,0);
 		
 		
@@ -145,7 +149,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			editButtons[i] = new ImageButton(JavaLogoWeb.editImage);
 			editButtons[i].setBounds(opdrLocXDefault,opdrLocYDefault+275+30*i,20,20);
 			editButtons[i].addActionListener(this);
-			add(editButtons[i]);
+			add(editButtons[i],0);
 		}
 		
 		/*dtc1 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+270,opdrSizeWidthDefault-30,25, this);
@@ -205,18 +209,21 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		super.add(scrollSlider);
 		scrollSlider.setVisible(false);
 		
-		runButton = new Button("Run");
+		runButton = new JButton("Run");
 		runButton.setBounds(190,430,200,25);
+		runButton.setMargin(new Insets(3,5,3,5));
 		runButton.addActionListener(this);
 		add(runButton,0);
 		
-		importButton = new Button("Import code");
+		importButton = new JButton("Import code");
 		importButton.setBounds(190,460,95,25);
+		importButton.setMargin(new Insets(3,5,3,5));
 		importButton.addActionListener(this);
 		add(importButton,0);
 		
-		exportButton = new Button("Export code");
+		exportButton = new JButton("Export code");
 		exportButton.setBounds(295,460,95,25);
+		exportButton.setMargin(new Insets(3,5,3,5));
 		exportButton.addActionListener(this);
 		add(exportButton,0);
 		
@@ -500,7 +507,9 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		{
 			if(codeParts.length>i)
 			{	deeltaakComponenten[i-1].setCommandName(codeParts[i].substring(0,codeParts[i].indexOf("\n")).trim());
+				deeltaakComponenten[i-1].geefProgrammaComponent().removeAll();
 				deeltaakComponenten[i-1].geefProgrammaComponent().setCode(codeParts[i].substring(codeParts[i].indexOf("\n")+1));
+				
 			}
 		}
 		
@@ -516,6 +525,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		{	dtc3.setCommandName(codeParts[3].substring(0,codeParts[3].indexOf("\n")).trim());
 			dtc3.geefProgrammaComponent().setCode(codeParts[3].substring(codeParts[3].indexOf("\n")+1));
 		}*/
+		programmaComponent.removeAll();
 		programmaComponent.setCode(codeParts[0]);
 	}
 	

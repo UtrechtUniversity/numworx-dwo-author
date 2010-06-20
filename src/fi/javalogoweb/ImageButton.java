@@ -1,9 +1,10 @@
 package fi.javalogoweb;
 
 import java.awt.*;
+import javax.swing.JPanel;
 import java.awt.event.*;
 
-public class ImageButton extends Panel implements MouseListener
+public class ImageButton extends JPanel implements MouseListener
 {
     private Font defaultfont = new Font("SansSerif", Font.BOLD, 12);
     private Color bgColor = new Color(180, 180, 180);       

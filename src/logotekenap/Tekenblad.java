@@ -1,6 +1,6 @@
 package logotekenap;
 
-import java.awt.Canvas;
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,7 +8,7 @@ import java.awt.Image;
 import java.awt.Polygon;
 import fi.javalogoweb.*;
 
-public class Tekenblad extends Canvas
+public class Tekenblad extends JPanel
 {
 	private int breedte,hoogte;
 	private Punt beginpunt,eindpunt,startpunt;
@@ -41,7 +41,7 @@ public class Tekenblad extends Canvas
 	//van de image, metbehulp van het door de leerlingen geimplementeerde "tekenprogramma()",
 	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
 	//-------------------------------------------------------------------------------------------
-  	public void paint(Graphics g)
+  	public void paintComponent(Graphics g)
   	{ 	bezigMetTekenen = true;
 		if(im==null)
 		{	breedte = getSize().width;

@@ -4,10 +4,12 @@ import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.JPanel;
+
 import logotekenap.Tekenblad;
 
 
-public class ProgrammaEditor extends Panel implements  ActionListener, MouseListener
+public class ProgrammaEditor extends JPanel implements  ActionListener, MouseListener
 {	
 	private Image im;
 	private Graphics gIm;
@@ -146,7 +148,7 @@ public class ProgrammaEditor extends Panel implements  ActionListener, MouseList
 	{	randVerhoging = b;
 	}
 	
-	public void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{	{ 	if(im==null || resized)
 			{	im = createImage(getSize().width,getSize().height);
   				gIm = im.getGraphics();
@@ -159,9 +161,9 @@ public class ProgrammaEditor extends Panel implements  ActionListener, MouseList
   		}
 	}
 	
-	public void update(Graphics g)
-	{	paint(g);
-	}
+	//public void update(Graphics g)
+	//{	paint(g);
+	//}
 	public void paintBuffer(Graphics g)
 	{	
 		
@@ -169,7 +171,7 @@ public class ProgrammaEditor extends Panel implements  ActionListener, MouseList
 		g.fillRect(0,9,getSize().width-4, getSize().height-9);
 		g.setColor(Color.white);
 		g.fillRect(getSize().width-4,9,4, getSize().height-9);
-		super.paint(g);
+		//super.paint(g);
 		g.fillRect(0,0,getSize().width, 9);
 		g.setColor(new Color(240,240,240));
 		g.fillRect(0,9,getSize().width-4, 30);

@@ -179,7 +179,7 @@ public class CommandComponent extends SchuifComponent
 	{	schuifveld.tekenOpnieuw();
 	}
 	
-	public void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{	g.setColor(Color.orange);
 		//g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.black);
@@ -192,7 +192,7 @@ public class CommandComponent extends SchuifComponent
 		if(commandString != null)g.drawString(commandString,locationC,18);
 		if(kommaString != null) g.drawString(kommaString,locationK,18);
 		if(haakjeString != null) g.drawString(haakjeString,locationH,18);
-		super.paint(g);
+		//super.paint(g);
 	}
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)

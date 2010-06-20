@@ -6,7 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Panel;
 
-public class Regelaar extends Panel
+import javax.swing.JPanel;
+
+public class Regelaar extends JPanel
 {	
 	private TekenApplet eigenaar;
 	private GridBagLayout gridbag;

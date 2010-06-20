@@ -1,8 +1,9 @@
 package fi.javalogoweb.schuifobjects;
 
 import java.awt.*;
+import javax.swing.JPanel;
 
-public class SchuifVeld extends Panel
+public class SchuifVeld extends JPanel
 {
 	private Image im, imb ;
   	private Graphics gIm, gImb;

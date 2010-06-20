@@ -52,6 +52,14 @@ public class CommandContainer extends CommandComponent
 		
 		return this;
 	}
+	
+	public void removeAll()
+	{
+		super.removeAll();
+		reArange();
+		caretPos = getComponentCount();
+	}
+	
 	public void remove(Component c)
 	{	super.remove(c);
 		reArange();
@@ -172,11 +180,15 @@ public class CommandContainer extends CommandComponent
 			String command0 = dtcs[0].getCommandName();
 			String command1 = dtcs[1].getCommandName();
 			String command2 = dtcs[2].getCommandName();
+			String command3 = dtcs[3].getCommandName();
+			String command4 = dtcs[4].getCommandName();
 			String dtNaam = commandCode.trim();
 			int nr = -1;
 			if(dtNaam.equals(command0)) nr = 0;
 			else if(dtNaam.equals(command1)) nr = 1;
 			else if(dtNaam.equals(command2)) nr = 2;
+			else if(dtNaam.equals(command3)) nr = 3;
+			else if(dtNaam.equals(command4)) nr = 4;
 			if(nr!=-1)
 			{	cc = new DeeltaakCComponent(-100,-100,25,25, schuifveld);
 				((DeeltaakCComponent)cc).setCommandName(dtNaam);

@@ -5,13 +5,17 @@ import java.awt.event.*;
 import java.applet.*;
 import java.net.URL;
 import java.util.*;
+
+import javax.swing.JApplet;
+
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
+import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import logotekenap.*;
 
-public class JavaLogoWeb extends Applet implements ScormAppletIF
+public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParamEditApplet
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
@@ -22,13 +26,25 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 	
 	
 	public static void main(String[] args)    
-	{	int width = 800;
+	{	int width = 900;
         int height = 600;
 		ScormMainFrame mf = new ScormMainFrame(new JavaLogoWeb(),width, height);
 		mf.setTitle("JavaLogoWeb");
 		mf.pack();
 		mf.show();
 		mf.setSize(width, height);
+	}
+	
+	public JavaLogoWeb()
+	{	Locale language = new Locale ("nl", "");
+		//applet=this;
+		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+	}
+	
+	public JavaLogoWeb(Locale language)
+	{	
+		//applet=this;
+		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
 	}
 	
 	public void init() 
@@ -46,6 +62,7 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		}
 		//else return;
 		
+		
 		//instelling taal
 		String langArg = getParameter("language");
 		if ( langArg == null) langArg = "nl";
@@ -55,7 +72,8 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		//instelling achtergrondkleur
 		Color bgcolor = new Color(230,240,255);
 		String kleurcode = getParameter("bgcolor");
-		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+		//if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+		getContentPane().setBackground(bgcolor);
 		setBackground(bgcolor);
 		
 		//Fi-logo, copyright
@@ -87,13 +105,44 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		
 		TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
 		trb.setBounds(418,getSize().height-59,getSize().width-419,58);
+		trb.setBackground(getBackground());
 		trb.addActionListener(javaLogoSchuifVeld);
 		add(trb);
+		
+		Label versieLabel = new Label("v20100620");
+		versieLabel.setFont(new Font("SansSerif",Font.PLAIN,10));
+		versieLabel.setBounds(getSize().width-60,getSize().height-20,60,15);
+		add(versieLabel,0);
 		
 		tekenblad.meldTraceBeheerder(trb);
 		//trb.naarBegin();
 		
 		
+	}
+	
+	public Hashtable getDefaultParameters()
+    {
+    	Hashtable h = new Hashtable();
+    	/*
+    	h.put("varWaarde","true");
+    	h.put("expWaarde","true");
+    	h.put("zoomOptie","true");
+    	h.put("constructieTools","true");
+    	h.put("variabeleX","true");
+    	h.put("variabeleY","false");
+    	h.put("variabeleZ","false");
+    	h.put("lineaal","true");
+    	h.put("resultaatVak","true");
+    	*/
+    	return h;
+    }
+	
+	public void setSingleComponent()
+	{	
+	}
+	
+	public InteractiePanel getInteractiePanel()
+	{	return new InteractiePanelAdapter(this);
 	}
 	
 	public void tekenprogramma()
@@ -123,38 +172,35 @@ public class JavaLogoWeb extends Applet implements ScormAppletIF
 		}
 	}
 	
-	public void paint(Graphics g) 
-	{	super.paint(g);
+	/*public void paintComponent(Graphics g) 
+	{	//super.paint(g);
+		g.setColor(getBackground());
+		g.fillRect(0,0,getSize().width-1, getSize().height-1);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1, getSize().height-1);
 		//g.drawLine(419, getSize().height-60, getSize().width, getSize().height-60);
 	
-	}
+	}*/
 	
 	public void setState(String s)
-	{	//decodeer de string
-		Object o = StringCodeObject.decodeStringToObject(s);
+	{	Object o = StringCodeObject.decodeStringToObject(s);
 		Hashtable h = (Hashtable)o;
 		
-		//haal de data uit de hashtabel
-		String text = (String)h.get("text");
+		String code = "";
 		
-	    //herstel de state van het applet
-	    //textField.setText(text);
+		if(h.containsKey("code")) code = (String)h.get("code");
+		
+		javaLogoSchuifVeld.setCode(code);
 	}
 	
 	public String getState()
-	{	String text = null;
+	{	String code = "";
 	
-		//vraag de gegevens op die de state bepalen
-	    //text = textField.getText();
-	    
+		code = javaLogoSchuifVeld.getCode();
+		 
 	    Hashtable h = new Hashtable();
+	    h.put("code", code);
 	    
-	    //voeg de gegeven toe aan de hashtable
-	    //h.put("text", text);
-	      
-	    //codeer de hashtable tot string
 	    String s = StringCodeObject.encodeObjectToString(h);
 	    return s;
 	}

@@ -33,7 +33,7 @@ public class ProgrammaComponent extends CommandContainer
 		caretPos = getComponentCount();
 		return comp;
 	}
-	public void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{	g.setColor(Color.white);
 		//if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,12,getSize().width-1,getSize().height-25);
@@ -43,7 +43,7 @@ public class ProgrammaComponent extends CommandContainer
 		if(caretUp)g.drawLine(0,11,getSize().width-1,11);
 		if(caretDown)g.drawLine(0,getSize().height-12,getSize().width-1,getSize().height-12);
 		if(label!=null)g.drawString(label,20,18);
-		super.paint(g);
+		//super.paint(g);
 	}
 	
 	public void showCaret(int x, int y, boolean b)

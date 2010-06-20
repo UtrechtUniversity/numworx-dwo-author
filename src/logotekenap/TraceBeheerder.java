@@ -4,10 +4,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TraceBeheerder extends Panel implements ActionListener,Runnable
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+
+
+public class TraceBeheerder extends JPanel implements ActionListener,Runnable
 {
-	private Button stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
-	private TextField methodeVeld;
+	private JButton stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
+	private JTextField methodeVeld;
 	private int maxAantalStappen,aantalStappen,aantalStappenTekening;
 	private Regelaar rg;
 	private Tekenblad tb;
@@ -18,28 +23,34 @@ public class TraceBeheerder extends Panel implements ActionListener,Runnable
 	
 	public TraceBeheerder(Tekenblad tb, Regelaar rg)
 	{	setLayout(null);
-		setBackground(getBackground());
-		beginKnop = new Button("begin");
+		//setBackground(getBackground());
+		beginKnop = new JButton("begin");
 		beginKnop.setBounds(20,5,40,20);
+		beginKnop.setMargin(new Insets(0,0,0,0));
 		beginKnop.addActionListener(this);
 		add(beginKnop);
-		stapKnop = new Button("stap");
+		stapKnop = new JButton("stap");
 		stapKnop.setBounds(70,5,40,20);
+		stapKnop.setMargin(new Insets(0,0,0,0));
 		stapKnop.addActionListener(this);
 		add(stapKnop);
-		terugKnop = new Button("terug");
+		terugKnop = new JButton("terug");
 		terugKnop.setBounds(120,5,40,20);
+		terugKnop.setMargin(new Insets(0,0,0,0));
 		terugKnop.addActionListener(this);
 		add(terugKnop);
-		methodeVeld = new TextField("",15);
+		methodeVeld = new JTextField("",15);
 		methodeVeld.setBounds(170,5,120,20);
+		methodeVeld.setMargin(new Insets(0,0,0,0));
 		add(methodeVeld);
-		loopKnop = new Button("loop");
+		loopKnop = new JButton("loop");
 		loopKnop.setBounds(300,5,40,20);
+		loopKnop.setMargin(new Insets(0,0,0,0));
 		loopKnop.addActionListener(this);
 		//add(loopKnop);
-		traceKnop = new Button("trace aanschakelen");
-		traceKnop.setBounds(130,30,120,25);
+		traceKnop = new JButton("trace aanschakelen");
+		traceKnop.setBounds(130,30,140,25);
+		traceKnop.setMargin(new Insets(0,0,0,0));
 		traceKnop.addActionListener(this);
 		add(traceKnop);
 		

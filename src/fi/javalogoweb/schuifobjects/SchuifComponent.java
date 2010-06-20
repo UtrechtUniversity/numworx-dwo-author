@@ -4,9 +4,10 @@ import java.awt.*;
 import java.applet.*;
 import java.awt.event.*;
 import fi.beans.appletutil.*;
+import javax.swing.JPanel;
 
 
-public class SchuifComponent extends Container implements MouseListener, MouseMotionListener
+public class SchuifComponent extends JPanel implements MouseListener, MouseMotionListener
 {	
 	public SchuifVeld schuifveld;
 	private int startx = 0;
