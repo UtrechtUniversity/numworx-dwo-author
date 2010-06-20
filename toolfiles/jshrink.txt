@@ -2,5 +2,7 @@
 -manifestMain
 ..\output\classes\fi
 ..\output\classes\logotekenap
+-keepInterface fi.?
+-keepInterface logotekenap.?
 -o ..\output\jar\javalogoweb.jar
 
