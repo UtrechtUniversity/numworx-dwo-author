@@ -22,18 +22,18 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 	protected static Color bgColor;
 
 	protected static int bigWidth = 790;
-	protected static int bigHeight = 365;
-	protected static int editBreedte = 150;	
+	protected static int bigHeight = 450;
+	protected static int editBreedte = 290;	
 	
 	NormaalPanel normaalPanel;
+
 // tijdelijk	
-//	NormaalEditPanel normaalEditPanel;
+	NormaalEditPanel normaalEditPanel;
 
 
 	public NormaleVerdeling(Locale language)
     {   langArg = language.getLanguage();
 		rb = ResourceBundle.getBundle("fi.normaleverdeling.text.Text", language);
-        //bgColor = new Color(Integer.parseInt("DDEEFF", 16));
     }
     
    
@@ -41,7 +41,6 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 	{	langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.normaleverdeling.text.Text", language);
-		//bgColor = new Color(Integer.parseInt("DDEEFF", 16));
 	}
 	
 	public void init() 
@@ -82,7 +81,7 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		FIButton fiButton = new FIButton("info",
 			new String[]
 			{	"NormaleVerdeling",
-				"versie-info: 20100407",
+				"versie-info: 20100702",
 				"auteur: Peter Boon",
 				"programmeur: Huub Nilwik",
 				"Freudenthal Instituut",
@@ -105,13 +104,32 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		double kansValue = 6e-1d;		
 		int kansKeuzeValue = NormaalPanel.KANSLINKS;		
 		int berekenKeuzeValue = NormaalPanel.BEREKENKANS;		
+
 		boolean kansLinksOptie = true;
 		boolean kansRechtsOptie = true;
 		boolean tweeGrenzenOptie = true;
+
+		boolean berekenbaarZichtbaar = true;	
 		boolean muBerekenbaarOptie = false;
 		boolean sigmaBerekenbaarOptie = false;
+
 		boolean muVastOptie = false;
 		boolean sigmaVastOptie = false;
+
+		boolean muSliderOptie = false;
+		boolean sigmaSliderOptie = false;
+		boolean grensSliderOptie = true;
+		boolean kansSliderOptie = false;
+
+		boolean muZichtbaarOptie = true;
+		boolean sigmaZichtbaarOptie = true;
+		boolean grensZichtbaarOptie = true;
+		boolean kansZichtbaarOptie = true;
+	
+		boolean muZichtbaarFigOptie = true;
+		boolean sigmaZichtbaarFigOptie = true;
+		boolean grensZichtbaarFigOptie = true;
+		boolean kansZichtbaarFigOptie = true;
 
 		// mu
 		String muString = getParameter("mu");
@@ -326,6 +344,13 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		if (!kansLinksOptie && !kansRechtsOptie && !tweeGrenzenOptie)
 		{	kansLinksOptie = true;
 		}
+
+		// berekenbaarZichtbaar
+		String berekenbaarZichtbaarString = getParameter("berekenbaarzichtbaar");
+		if ((berekenbaarZichtbaarString != null) && 
+		     berekenbaarZichtbaarString.equals("no"))
+		{	berekenbaarZichtbaar = false;
+		}
 		
 		// muBerekenbaarOptie
 		String muBerekenbaarOptieString = getParameter("muberekenbaaroptie");
@@ -360,6 +385,74 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		{	sigmaVastOptie = true;
 		}
 
+		// slider opties
+		// muSliderOptie
+		String muSliderOptieString = getParameter("muslideroptie");
+		if ((muSliderOptieString != null) && muSliderOptieString.equals("yes"))
+		{	muSliderOptie = true;
+		}
+		// sigmaSliderOptie
+		String sigmaSliderOptieString = getParameter("sigmaslideroptie");
+		if ((sigmaSliderOptieString != null) && sigmaSliderOptieString.equals("yes"))
+		{	sigmaSliderOptie = true;
+		}
+		// grensSliderOptie
+		String grensSliderOptieString = getParameter("grensslideroptie");
+		if ((grensSliderOptieString != null) && grensSliderOptieString.equals("no"))
+		{	grensSliderOptie = false;
+		}
+		
+		// kansSliderOptie
+		String kansSliderOptieString = getParameter("kansslideroptie");
+		if ((kansSliderOptieString != null) && kansSliderOptieString.equals("yes"))
+		{	kansSliderOptie = true;
+		}
+		
+		// muZichtbaarOptie
+		String muZichtbaarOptieString = getParameter("muzichtbaaroptie");
+		if ((muZichtbaarOptieString != null) && muZichtbaarOptieString.equals("no"))
+		{	muZichtbaarOptie = false;
+		}
+		// sigmaZichtbaarOptie
+		String sigmaZichtbaarOptieString = getParameter("sigmazichtbaaroptie");
+		if ((sigmaZichtbaarOptieString != null) && sigmaZichtbaarOptieString.equals("no"))
+		{	sigmaZichtbaarOptie = false;
+		}
+		// grensZichtbaarOptie
+		String grensZichtbaarOptieString = getParameter("grenszichtbaaroptie");
+		if ((grensZichtbaarOptieString != null) && grensZichtbaarOptieString.equals("no"))
+		{	grensZichtbaarOptie = false;
+		}
+		// kansZichtbaarOptie
+		String kansZichtbaarOptieString = getParameter("kanszichtbaaroptie");
+		if ((kansZichtbaarOptieString != null) && kansZichtbaarOptieString.equals("no"))
+		{	kansZichtbaarOptie = false;
+		}
+		
+		// muZichtbaarFigOptie
+		String muZichtbaarFigOptieString = getParameter("muzichtbaarfigoptie");
+		if ((muZichtbaarFigOptieString != null) && muZichtbaarFigOptieString.equals("no"))
+		{	muZichtbaarFigOptie = false;
+		}
+		// sigmaZichtbaarFigOptie
+		String sigmaZichtbaarFigOptieString = getParameter("sigmazichtbaarfigoptie");
+		if ((sigmaZichtbaarFigOptieString != null) && sigmaZichtbaarFigOptieString.equals("no"))
+		{	sigmaZichtbaarFigOptie = false;
+		}
+		// grensZichtbaarFigOptie
+		String grensZichtbaarFigOptieString = getParameter("grenszichtbaarfigoptie");
+		if ((grensZichtbaarFigOptieString != null) && grensZichtbaarFigOptieString.equals("no"))
+		{	grensZichtbaarFigOptie = false;
+		}
+		// kansZichtbaarFigOptie
+		String kansZichtbaarFigOptieString = getParameter("kanszichtbaarfigoptie");
+		if ((kansZichtbaarFigOptieString != null) && kansZichtbaarFigOptieString.equals("no"))
+		{	kansZichtbaarFigOptie = false;
+		}
+		
+	
+		
+
 		h.put("mu", new Double(muValue));
 		h.put("sigma", new Double(sigmaValue));
 		h.put("grens", new Double(grensValue));
@@ -371,13 +464,33 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		h.put("kanslinksoptie", new Boolean(kansLinksOptie));
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));
 		h.put("tweegrenzenoptie", new Boolean(tweeGrenzenOptie));		
+		
+		h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));				
 		h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
 		h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));		
 		h.put("muvastoptie", new Boolean(muVastOptie));				
 		h.put("sigmavastoptie", new Boolean(sigmaVastOptie));				
 
+	    h.put("muSliderOptie", new Boolean(muSliderOptie));
+		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));	  
+		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	  		  	    
+		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
+		
+		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
+		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
+		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
+		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
+		
+		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
+		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
+		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
+		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
+		
+
 // testing
 //normaalEditPanel.setEditState(h);
+
+// definitieve versie
 		normaalPanel.setEditState(h);
 		
 	} // init

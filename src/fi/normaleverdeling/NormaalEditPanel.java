@@ -85,13 +85,12 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		theBoldFont = new Font("Dialog", Font.BOLD, 12);
 		theBoldFM = getFontMetrics(theBoldFont);
 		
-		
-		normaalPanel = new NormaalPanel(500,450);
+		normaalPanel = new NormaalPanel(500, 450);
 		normaalPanel.setLocation(0, 0);
 		add(normaalPanel);
 		
 		editX = getSize().width - editBreedte;
-		editX2 = getSize().width - editBreedte/2;
+		editX2 = getSize().width - editBreedte / 2;
 		
 		kansOptiesLabel = new JLabel(
 			NormaleVerdeling.rb.getString("kansOptiesTekst"));
@@ -103,36 +102,52 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		
 		ActionListener listener = new KansOptiesAL();
 		
-		kansLinksOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("kansLinksTekst"), true, listener);
-		kansRechtsOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("kansRechtsTekst"), true, listener);
-		tweeGrenzenOptieBox = maakCheckBox(NormaleVerdeling.rb.getString("tweeGrenzenTekst"), true, listener);
+		kansLinksOptieBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("kansLinksTekst"), true, listener);
+		kansRechtsOptieBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("kansRechtsTekst"), true, listener);
+		tweeGrenzenOptieBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("tweeGrenzenTekst"), true, listener);
 		
 		berekenbaarLabel = maakLabel(NormaleVerdeling.rb.getString("berekenbaarTekst"));
 		
-		berekenbaarZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("berekenbaarZichtbaarTekst"), true, new BerekenbaarZichtbaarAL());
-		muBerekenbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuBerekenbaarAL());
-		sigmaBerekenbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaBerekenbaarAL());
+		berekenbaarZichtbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("berekenbaarZichtbaarTekst"), true, new BerekenbaarZichtbaarAL());
+		muBerekenbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuBerekenbaarAL());
+		sigmaBerekenbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaBerekenbaarAL());
 		
 		vasteWaardeLabel = maakLabel(NormaleVerdeling.rb.getString("vasteWaardeTekst"));
 		
-		muVastBox = maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuVastAL());
-		sigmaVastBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaVastAL());
+		muVastBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("muTekst"), false, new MuVastAL());
+		sigmaVastBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("sigmaTekst"), false, new SigmaVastAL());
 		
 		sliderLabel = maakLabel(NormaleVerdeling.rb.getString("sliderLabelTekst"));
 		
-		muSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("muSliderTekst"), false, new MuSliderAL());
-		sigmaSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaSliderTekst"), false, new SigmaSliderAL());
-		grensSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("grensSliderTekst"), false, new GrensSliderAL());
-		kansSliderBox = maakCheckBox(NormaleVerdeling.rb.getString("kansSliderTekst"), false, new KansSliderAL());
+		muSliderBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("muSliderTekst"), false, new MuSliderAL());
+		sigmaSliderBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("sigmaSliderTekst"), false, new SigmaSliderAL());
+		grensSliderBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("grensSliderTekst"), false, new GrensSliderAL());
+		kansSliderBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("kansSliderTekst"), false, new KansSliderAL());
 		
 		waardenLabel = maakLabel(NormaleVerdeling.rb.getString("waardenLabelTekst"));
 		
 		listener = new WaardenAL();
 		
-		muZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"), true, listener);
-		sigmaZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"), true, listener);
-		grensZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarTekst"), true, listener);
-		kansZichtbaarBox = maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarTekst"), true, listener);
+		muZichtbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("muZichtbaarTekst"), true, listener);
+		sigmaZichtbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("sigmaZichtbaarTekst"), true, listener);
+		grensZichtbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("grensZichtbaarTekst"), true, listener);
+		kansZichtbaarBox = 
+			maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarTekst"), true, listener);
 		
 		waardenFigLabel = maakLabel(NormaleVerdeling.rb.getString("waardenFigLabelTekst"));
 		
@@ -142,8 +157,6 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		kansZichtbaarFigBox = maakCheckBox(NormaleVerdeling.rb.getString("kansZichtbaarFigTekst"), true, listener);
 		
 		checkOptiesLabel = maakLabel(NormaleVerdeling.rb.getString("checkOptiesLabelTekst"));
-		
-		listener = new CheckOptiesAL();
 		
 		checkMuBox = maakCheckBox(NormaleVerdeling.rb.getString("checkMuTekst"), false, listener);
 		checkSigmaBox = maakCheckBox(NormaleVerdeling.rb.getString("checkSigmaTekst"), false, listener);
@@ -458,14 +471,23 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 	
 	class WaardenAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	if(e.getSource()==muZichtbaarBox)normaalPanel.zetMuZichtbaarOptie(muZichtbaarBox.isSelected());	
-			if(e.getSource()==sigmaZichtbaarBox)normaalPanel.zetSigmaZichtbaarOptie(sigmaZichtbaarBox.isSelected());	
-			if(e.getSource()==grensZichtbaarBox)normaalPanel.zetGrensZichtbaarOptie(grensZichtbaarBox.isSelected());	
-			if(e.getSource()==kansZichtbaarBox)normaalPanel.zetKansZichtbaarOptie(kansZichtbaarBox.isSelected());
-			if(e.getSource()==muZichtbaarFigBox)normaalPanel.zetMuZichtbaarFigOptie(muZichtbaarFigBox.isSelected());	
-			if(e.getSource()==sigmaZichtbaarFigBox)normaalPanel.zetSigmaZichtbaarFigOptie(sigmaZichtbaarFigBox.isSelected());	
-			if(e.getSource()==grensZichtbaarFigBox)normaalPanel.zetGrensZichtbaarFigOptie(grensZichtbaarFigBox.isSelected());	
-			if(e.getSource()==kansZichtbaarFigBox)normaalPanel.zetKansZichtbaarFigOptie(kansZichtbaarFigBox.isSelected());
+		{	if (e.getSource() == muZichtbaarBox)
+				normaalPanel.zetMuZichtbaarOptie(muZichtbaarBox.isSelected());	
+			if (e.getSource() == sigmaZichtbaarBox)
+				normaalPanel.zetSigmaZichtbaarOptie(sigmaZichtbaarBox.isSelected());	
+			if (e.getSource() == grensZichtbaarBox)
+				normaalPanel.zetGrensZichtbaarOptie(grensZichtbaarBox.isSelected());	
+			if (e.getSource() == kansZichtbaarBox)
+				normaalPanel.zetKansZichtbaarOptie(kansZichtbaarBox.isSelected());
+
+			if (e.getSource() == muZichtbaarFigBox)
+				normaalPanel.zetMuZichtbaarFigOptie(muZichtbaarFigBox.isSelected());	
+			if (e.getSource() == sigmaZichtbaarFigBox)
+				normaalPanel.zetSigmaZichtbaarFigOptie(sigmaZichtbaarFigBox.isSelected());	
+			if (e.getSource() == grensZichtbaarFigBox)
+				normaalPanel.zetGrensZichtbaarFigOptie(grensZichtbaarFigBox.isSelected());	
+			if (e.getSource() == kansZichtbaarFigBox)
+				normaalPanel.zetKansZichtbaarFigOptie(kansZichtbaarFigBox.isSelected());
 		}
 	}
 	
@@ -496,7 +518,8 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 	
 	
 	public void setEditState(Hashtable b)
-	{	boolean kansLinksOptie = true;
+	{	
+		boolean kansLinksOptie = true;
 		boolean kansRechtsOptie = true;
 		boolean tweeGrenzenOptie = true;
 		
@@ -510,14 +533,17 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		kansLinksOptieBox.setSelected(kansLinksOptie);
 		kansRechtsOptieBox.setSelected(kansRechtsOptie);	
 		tweeGrenzenOptieBox.setSelected(tweeGrenzenOptie);
-		
-		boolean berekenbaarZichtbaar = false;
+	
+		boolean berekenbaarZichtbaar = true;	
 		boolean muBerekenbaarOptie = false;
 		boolean sigmaBerekenbaarOptie = false;
 		
-		if (b.containsKey("berekenbaarZichtbaar"))berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
-		if (b.containsKey("muberekenbaaroptie"))muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
-		if (b.containsKey("sigmaberekenbaaroptie"))	sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
+		if (b.containsKey("berekenbaarZichtbaar"))
+			berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
+		if (b.containsKey("muberekenbaaroptie"))
+			muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
+		if (b.containsKey("sigmaberekenbaaroptie"))
+			sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
 		
 		berekenbaarZichtbaarBox.setSelected(berekenbaarZichtbaar);
 		muBerekenbaarBox.setSelected(muBerekenbaarOptie);		
@@ -526,9 +552,10 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		boolean muVastOptie = false;
 		boolean sigmaVastOptie = false;
 		
-		if (b.containsKey("muvastoptie"))muVastOptie = 	((Boolean) b.get("muvastoptie")).booleanValue();
-		if (b.containsKey("sigmavastoptie"))sigmaVastOptie = 	((Boolean) b.get("sigmavastoptie")).booleanValue();
-				
+		if (b.containsKey("muvastoptie"))
+			muVastOptie = ((Boolean) b.get("muvastoptie")).booleanValue();
+		if (b.containsKey("sigmavastoptie"))
+			sigmaVastOptie = ((Boolean) b.get("sigmavastoptie")).booleanValue();
 				
 		if (muBerekenbaarOptie)
 			muVastOptie = false;
@@ -536,7 +563,6 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		if (sigmaBerekenbaarOptie)
 			sigmaVastOptie = false;
 					
-		
 		muVastBox.setSelected(muVastOptie);		
 		sigmaVastBox.setSelected(sigmaVastOptie);		
 		
@@ -545,25 +571,20 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		boolean kansSliderOptie = false;
 		boolean grensSliderOptie = true;
 		
-		if (b.containsKey("muSliderOptie")) muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
-		if (b.containsKey("sigmaSliderOptie")) sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
-		if (b.containsKey("kansSliderOptie")) kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
-		if (b.containsKey("grensSliderOptie")) grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
-				
-				
-		if (muBerekenbaarOptie)
-			muVastOptie = false;
-			
-		if (sigmaBerekenbaarOptie)
-			sigmaVastOptie = false;
-					
+		if (b.containsKey("muSliderOptie")) 
+			muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
+		if (b.containsKey("sigmaSliderOptie")) 
+			sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
+		if (b.containsKey("kansSliderOptie")) 
+			kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
+		if (b.containsKey("grensSliderOptie")) 
+			grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
 		
 		muSliderBox.setSelected(muSliderOptie);		
 		sigmaSliderBox.setSelected(sigmaSliderOptie);	
 		grensSliderBox.setSelected(grensSliderOptie);	
 		kansSliderBox.setSelected(kansSliderOptie);
 		
-
 		if (!kansLinksOptieBox.isSelected() &&
 			!kansRechtsOptieBox.isSelected() &&
 			tweeGrenzenOptieBox.isSelected())
@@ -578,10 +599,14 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		boolean kansZichtbaarOptie = true;
 		boolean grensZichtbaarOptie = true;
 		
-		if (b.containsKey("muZichtbaarOptie")) muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarOptie")) sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarOptie")) kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarOptie")) grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
+		if (b.containsKey("muZichtbaarOptie")) 
+			muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarOptie")) 
+			sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarOptie")) 
+			kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarOptie")) 
+			grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
 		
 		muZichtbaarBox.setSelected(muZichtbaarOptie);		
 		sigmaZichtbaarBox.setSelected(sigmaZichtbaarOptie);	
@@ -593,15 +618,19 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 		boolean kansZichtbaarFigOptie = true;
 		boolean grensZichtbaarFigOptie = true;
 		
-		if (b.containsKey("muZichtbaarFigOptie")) muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarFigOptie")) sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarFigOptie")) kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarFigOptie")) grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("muZichtbaarFigOptie")) 
+			muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarFigOptie")) 
+			sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarFigOptie")) 
+			kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarFigOptie")) 
+			grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
 		
 		muZichtbaarFigBox.setSelected(muZichtbaarFigOptie);		
 		sigmaZichtbaarFigBox.setSelected(sigmaZichtbaarFigOptie);	
-		grensZichtbaarFigBox.setSelected(kansZichtbaarFigOptie);	
-		kansZichtbaarFigBox.setSelected(grensZichtbaarFigOptie);
+		grensZichtbaarFigBox.setSelected(grensZichtbaarFigOptie);	
+		kansZichtbaarFigBox.setSelected(kansZichtbaarFigOptie);
 		
 		
 		normaalPanel.setEditState(b);

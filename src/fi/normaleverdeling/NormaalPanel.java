@@ -20,7 +20,7 @@ public class NormaalPanel extends JPanel implements
 													InteractieEditPanel,
 													ActionListener
 {	
-	protected static int editBreedte = 150;	
+	protected static int editBreedte = 290;	
 
 	// fonts
 	Font theFont;
@@ -119,6 +119,7 @@ public class NormaalPanel extends JPanel implements
 	// parameters
 	double mu = 0;
 	int muDecimals = 2;
+	String muString = "";
 	double muMin = -10000;
 	double muMax = 10000;
 	double muSliderMin = mu - 1;
@@ -193,7 +194,7 @@ public class NormaalPanel extends JPanel implements
 	boolean sigmaZichtbaarFigOptie = true;
 	boolean grensZichtbaarFigOptie = true;
 	boolean kansZichtbaarFigOptie = true;
-	
+
 	boolean berekenbaarZichtbaar = true;
 	
 	RoundedPanel bgPanel1, bgPanel2, bgPanel3, bgPanel4, bgPanel5, bgPanel6;
@@ -312,7 +313,6 @@ public class NormaalPanel extends JPanel implements
 		grensLinksButton.addActionListener(new BerekenKeuzeAL());		
 		add(grensRechtsButton);
 		grensRechtsButton.addActionListener(new BerekenKeuzeAL());		
-		
 		
 		int height = 3 * theFM.getHeight() / 2;		
 
@@ -479,7 +479,9 @@ public class NormaalPanel extends JPanel implements
 		muMetWaardeLabel.setFont(theFont);
 		width = theFM.stringWidth(muMetWaardeLabel.getText()) + 3;		
 		muMetWaardeLabel.setSize(width, cHeight);
-		if(muZichtbaarFigOptie)add(muMetWaardeLabel);	
+		
+//		if (muZichtbaarFigOptie) 
+//			add(muMetWaardeLabel);	
 
 		bgPanel1 = new RoundedPanel(10);
 		add(bgPanel1);
@@ -499,7 +501,6 @@ public class NormaalPanel extends JPanel implements
 		size = new Dimension(w, h);
 		
 //		plaatsComponenten();
-
 		
 		zetMu(mu, false, false);
 		zetSigma(sigma, false, false);
@@ -543,14 +544,18 @@ public class NormaalPanel extends JPanel implements
 		tweeGrenzenButton.setLocation(offSet,
 							      	  getSize().height - cHeight);
 
-		bgPanel5.setBounds(0,tweeGrenzenButton.getY(),getWidth(),getHeight()-tweeGrenzenButton.getY()+6);
-		if(!rechtsButton.isVisible() && !tweeGrenzenButton.isVisible()) bgPanel5.setVisible(false);
+		bgPanel5.setBounds(0, tweeGrenzenButton.getY(),
+						   getWidth(),
+						   getHeight() - tweeGrenzenButton.getY() + 6);
+		
+		if (!rechtsButton.isVisible() && !tweeGrenzenButton.isVisible()) 
+			bgPanel5.setVisible(false);
 		
 		int yPos = 3;
 
 		// berekenGroup
 		
-		if(berekenbaarZichtbaar)
+		if (berekenbaarZichtbaar)
 		{	berekenLabel.setLocation(getSize().width - berekenLabel.getSize().width, yPos);
 			yPos += cHeight;						 	
 			
@@ -590,7 +595,7 @@ public class NormaalPanel extends JPanel implements
 		// parameters
 		yPos = 3;
 		
-		if(muZichtbaarOptie)
+		if (muZichtbaarOptie)
 		{	muLabel.setLocation(offSet, yPos);
 			muTextField.setLocation(muLabel.getLocation().x + muLabel.getSize().width, yPos);
 			muWaardeLabel.setLocation(muLabel.getLocation().x + muLabel.getSize().width, yPos);
@@ -610,7 +615,7 @@ public class NormaalPanel extends JPanel implements
 			bgPanel1.setVisible(false);
 		}
 		
-		if(sigmaZichtbaarOptie)
+		if (sigmaZichtbaarOptie)
 		{	sigmaLabel.setLocation(offSet, yPos);
 			sigmaTextField.setLocation(sigmaLabel.getLocation().x + sigmaLabel.getSize().width,	yPos);
 			sigmaWaardeLabel.setLocation(sigmaLabel.getLocation().x + sigmaLabel.getSize().width, yPos);
@@ -630,7 +635,7 @@ public class NormaalPanel extends JPanel implements
 			bgPanel2.setVisible(false);
 		}
 		
-		if(grensZichtbaarOptie)
+		if (grensZichtbaarOptie)
 		{	if (kansKeuze == TWEEGRENZEN)
 			{	grensLinksLabel.setLocation(offSet, yPos);
 				grensLinksTextField.setLocation(grensLinksLabel.getLocation().x + grensLinksLabel.getSize().width, yPos);
@@ -650,7 +655,8 @@ public class NormaalPanel extends JPanel implements
 			}
 			yPos += 10;
 			bgPanel3.setBounds(0,grensLabel.getY()-3,180,yPos-grensLabel.getY()-4);
-			if (kansKeuze == TWEEGRENZEN)bgPanel3.setBounds(0,grensLinksLabel.getY()-3,180,yPos-grensLinksLabel.getY()-4);
+			if (kansKeuze == TWEEGRENZEN)
+				bgPanel3.setBounds(0,grensLinksLabel.getY()-3,180,yPos-grensLinksLabel.getY()-4);
 		}
 		else
 		{	grensLabel.setVisible(false);
@@ -664,7 +670,7 @@ public class NormaalPanel extends JPanel implements
 			grensRechtsWaardeLabel.setVisible(false);
 			bgPanel3.setVisible(false);
 		}
-		if(kansZichtbaarOptie)
+		if (kansZichtbaarOptie)
 		{	// kansLabel kan meerdere labels hebben
 			int width = theFM.stringWidth(kansLabel.getText()) + 3;
 			kansLabel.setBounds(offSet, yPos, width, cHeight); 
@@ -712,6 +718,11 @@ public class NormaalPanel extends JPanel implements
 		
 		fastPaint();
 	}
+
+	public double round(double d, int decs)
+	{	double factor = Math.pow(10, decs);
+		return Math.round(d * factor) / factor;
+	}	
 	
 	public void zetMu(double waarde, boolean bereken, boolean resetSlider)
 	{	
@@ -727,23 +738,86 @@ public class NormaalPanel extends JPanel implements
 		
 		mu = muWaarde;		
 				
-		minMuX = minX + mu;
-		maxMuX = maxX + mu;
-	
+		//minMuX = minX + mu;
+		//maxMuX = maxX + mu;
+
+		// input via TextField
+		if (resetSlider)
+		{	
+		
+			minMuX = minX + mu;
+			maxMuX = maxX + mu;
+
+			// zet nieuwe grenzen voor de muSlider
+			muSliderMin = minMuX;
+			muSliderMax = maxMuX;
+
+/*		
+			// zet nieuwe grenzen voor de muSlider
+			if (Math.abs(mu) < (2 - NZERO))
+			{	muSliderMin = mu - 1;
+				muSliderMax = mu + 1;
+			}
+			else if (Math.abs(mu) < (20 - NZERO))
+			{	muSliderMin = mu - 5;
+				muSliderMax = mu + 5;
+			}
+			else
+			{	if ((mu + 10) > (muMax - NZERO))
+				{	muSliderMax = muMax;
+					muSliderMin = muMax - 20;
+				}
+				else if ((mu - 10) < (muMin + NZERO))
+				{	muSliderMin = muMin;
+					muSliderMax = muMin + 20;
+				}
+				else
+				{	muSliderMin = mu - 10;
+					muSliderMax = mu + 10;	
+				}
+			}
+*/			
+			zetMuSlider();
+		}
+		// input via slider, afrondingsfouten
+		//if (!bereken && !resetSlider)
+		else
+		{		
+			//minMuX = minX;// + mu;
+			//maxMuX = maxX;// + mu;
+		
+			if (mu < (muSliderMin + NZERO))
+			{	mu = muSliderMin;
+			}
+			else if (mu > (muSliderMax - NZERO))
+			{	mu = muSliderMax;
+			}
+			zetMuSlider();
+		}
+
 		// muDecimals aanpassen
 		
-		String muString = df3.format(mu);
+		muString = df3.format(mu);
 		
-		if (Math.abs(mu) < 2) muString = df3.format(mu);
-			//muDecimals = 3;
-		else if (Math.abs(mu) < 20)muString = df2.format(mu);
-		else if (Math.abs(mu) < 200)muString = df1.format(mu);
-			//muDecimals = 2;
-		else muString = df.format(mu);
-			//muDecimals = 1;	
+		if (Math.abs(mu) < 2) 
+		{	muString = df3.format(mu);
+			muDecimals = 3;
+		}	
+		else if (Math.abs(mu) < 20)
+		{	muString = df2.format(mu);
+			muDecimals = 2;
+		}
+		else if (Math.abs(mu) < 200)
+		{	muString = df1.format(mu);
+			muDecimals = 1;
+		}	
+		else 
+		{	muString = df.format(mu);
+			muDecimals = 0;	
+		}	
 		
 		
-	
+		mu = round(mu, muDecimals);	
 		//String muString = UF.format(mu, muDecimals);
 		//String muString = df.format(mu);
 		
@@ -768,54 +842,18 @@ public class NormaalPanel extends JPanel implements
 			if (deltaMu > NZERO)
 			{	zetGrensLinks(grensLinks, false);
 				zetGrensRechts(grensRechts, true);
-// dit gaat fout bij BEREKENMU??				
+
 			}
 			// nieuwe waarde kleiner, grenzen schuiven naar rechts
 			else if (deltaMu < - NZERO)
 			{	zetGrensRechts(grensRechts, false);
 				zetGrensLinks(grensLinks, true);
-// dit gaat fout bij BEREKENMU??								
-			}			
-		}
 
-		// input via TextField
-		if (resetSlider)
-		{	if (Math.abs(mu) < (2 - NZERO))
-			{	muSliderMin = mu - 1;
-				muSliderMax = mu + 1;
-			}
-			else if (Math.abs(mu) < (20 - NZERO))
-			{	muSliderMin = mu - 5;
-				muSliderMax = mu + 5;
-			}
+			}			
 			else
-			{	if ((mu + 10) > (muMax - NZERO))
-				{	muSliderMax = muMax;
-					muSliderMin = muMax - 20;
-				}
-				else if ((mu - 10) < (muMin + NZERO))
-				{	muSliderMin = muMin;
-					muSliderMax = muMin + 20;
-				}
-				else
-				{	muSliderMin = mu - 10;
-					muSliderMax = mu + 10;	
-				}
+			{	zetGrensLinks(grensLinks, false);
+				zetGrensRechts(grensRechts, true);
 			}
-			
-			zetMuSlider();
-		}
-		// input via slider, afrondingsfouten
-		//if (!bereken && !resetSlider)
-		else
-		{		
-			if (mu < (muSliderMin + NZERO))
-			{	mu = muSliderMin;
-			}
-			else if (mu > (muSliderMax - NZERO))
-			{	mu = muSliderMax;
-			}
-			zetMuSlider();
 		}
 
 		if (bereken)
@@ -837,58 +875,44 @@ public class NormaalPanel extends JPanel implements
 
 
 	public void zetSigma(double waarde, boolean bereken, boolean resetSlider)
-	{	sigma = waarde;
-
+	{	
+		sigma = waarde;
 				
 		if (sigma > sigmaMax - NZERO)
 		{	sigma = sigmaMax;
-
 			if (berekenKeuze == BEREKENSIGMA)
-			{
-				berekenKeuze = BEREKENGRENS;
+			{	berekenKeuze = BEREKENGRENS;
 				bereken();
 				berekenKeuze = BEREKENSIGMA;
 			}	
-			
 		}
 		if (sigma < sigmaMin + NZERO)
 		{	sigma = sigmaMin;
-
-			
 			if (berekenKeuze == BEREKENSIGMA)
-			{			
-				berekenKeuze = BEREKENGRENS;
+			{	berekenKeuze = BEREKENGRENS;
 				bereken();
 				berekenKeuze = BEREKENSIGMA;
 			}	
-
 		}
-				
-		// sigmaDecimals aanpassen
-		if (sigma < 5 - NZERO)
-			sigmaDecimals = 2;
-		else
-			sigmaDecimals = 1;	
-		
-
-		String sigmaString = UF.format(sigma, sigmaDecimals);
-		
-		if (NormaleVerdeling.langArg.equals("nl"))
-			sigmaString = sigmaString.replace('.', ',');
-			
-		sigmaTextField.setText(sigmaString);
-		sigmaWaardeLabel.setText(sigmaString);
-
-// grenzen blijven op hun plaats, maar raken mogelijk buiten beeld!!
-
-// dit hoeft niet want gebeurt al
-//		if ((kansKeuze == KANSLINKS) || (kansKeuze == KANSRECHTS))
-//		{	zetGrens(grens, false);
-//		}
-
 
 		if (resetSlider)
-		{	if (sigma < (15e-1d - NZERO))
+		{	
+		
+			minX = -45e-1d * sigma;
+			maxX = 45e-1d * sigma;
+			minY = 0;
+			maxY = 6e-1d / sigma;
+		
+			minMuX = minX + mu;
+			maxMuX = maxX + mu;		
+
+			// zet nieuwe grenzen voor de muSlider
+			muSliderMin = minMuX;
+			muSliderMax = maxMuX;
+
+			zetMuSlider();		
+		
+			if (sigma < (15e-1d - NZERO))
 			{	if ((sigma - 5e-1d) < (sigmaMin + NZERO))
 				{	sigmaSliderMin = sigmaMin;
 					sigmaSliderMax = sigmaMin + 1;
@@ -926,9 +950,41 @@ public class NormaalPanel extends JPanel implements
 			}
 			zetSigmaSlider();
 		}
+				
+		// sigmaDecimals aanpassen
+		if (sigma < 5 - NZERO)
+			sigmaDecimals = 2;
+		else
+			sigmaDecimals = 1;	
+		
+
+		sigma = round(sigma, sigmaDecimals);	
+
+		String sigmaString = UF.format(sigma, sigmaDecimals);
+		
+		if (NormaleVerdeling.langArg.equals("nl"))
+			sigmaString = sigmaString.replace('.', ',');
+			
+		sigmaTextField.setText(sigmaString);
+		sigmaWaardeLabel.setText(sigmaString);
+
+		// grenzen blijven niet noodzakelijk op hun plaats, 
+		// en raken mogelijk buiten beeld!!
+
+		if ((kansKeuze == KANSLINKS) || (kansKeuze == KANSRECHTS))
+		{	zetGrens(grens, false);
+		}
+
+		if (kansKeuze == TWEEGRENZEN)
+		{		
+			zetGrensLinks(grensLinks, false);
+			zetGrensRechts(grensRechts, true);
+
+		}
 
 		if (bereken)
-			bereken(resetSlider);
+			bereken();
+		//	bereken(resetSlider);
 
 		fastPaint();	
 	}
@@ -943,24 +999,27 @@ public class NormaalPanel extends JPanel implements
 		
 		fastPaint();
 	}	
-
+/*
 	public void zetGrens(double waarde, boolean bereken)
 	{
 		zetGrens(waarde, bereken, false);
 	}
-	
-	public void zetGrens(double waarde, boolean bereken, boolean start)
-	{	grens = waarde;
-	
-		if(start)
+*/	
+//	public void zetGrens(double waarde, boolean bereken, boolean start)
+	public void zetGrens(double waarde, boolean bereken)
+	{	
+		grens = waarde;
+/*	
+		if (start)
 		{	minX = -45e-1d * sigma;
 			maxX = 45e-1d * sigma;
 			minY = 0;
-			maxY = 6e-1d/sigma;
+			maxY = 6e-1d / sigma;
 		
 			minMuX = minX + mu;
 			maxMuX = maxX + mu;
 		}
+*/		
 		double grensMax = maxMuX;
 		double grensMin = minMuX;
 		
@@ -998,7 +1057,9 @@ public class NormaalPanel extends JPanel implements
 			}
 		
 		}
-			
+
+		grens = round(grens, grensDecimals);
+					
 		String grensString = UF.format(grens, grensDecimals);
 		
 		if (NormaleVerdeling.langArg.equals("nl"))
@@ -1016,7 +1077,7 @@ public class NormaalPanel extends JPanel implements
 	}
 	
 	public void zetGrensSlider()
-	{	minMuX = minX + mu;
+	{	//minMuX = minX + mu;
 		int sliderPos = (int) Math.round(
 						    (grens - minMuX) / (maxX - minX) * (xMax - xMin));
 		grensSlider.zetStand(sliderPos);				    
@@ -1029,8 +1090,8 @@ public class NormaalPanel extends JPanel implements
 		// kontrole op waarden	
 		grensLinks = waarde;
 
-		minMuX = minX + mu;
-		maxMuX = maxX + mu;
+//		minMuX = minX + mu;
+//		maxMuX = maxX + mu;
 
 		double minDis = 
 			((double) tweeGrenzenSlider.pixDis) / (xMax - xMin) * (maxX - minX);
@@ -1074,6 +1135,8 @@ public class NormaalPanel extends JPanel implements
 			}			
 		}
 
+		grensLinks = round(grensLinks, grensDecimals);
+		
 		String grensLinksString = UF.format(grensLinks, grensDecimals);
 		
 		if (NormaleVerdeling.langArg.equals("nl"))
@@ -1092,7 +1155,7 @@ public class NormaalPanel extends JPanel implements
 	}
 
 	public void zetGrensLinksSlider()
-	{	minMuX = minX + mu;
+	{	//minMuX = minX + mu;
 		int sliderPos = (int) Math.round(
 						    (grensLinks - minMuX) / (maxX - minX) * (xMax - xMin));
 		tweeGrenzenSlider.zetStandLinks(sliderPos);				    
@@ -1106,8 +1169,8 @@ public class NormaalPanel extends JPanel implements
 		// kontrole op waarden
 		grensRechts = waarde;
 		
-		minMuX = minX + mu;
-		maxMuX = maxX + mu;
+//		minMuX = minX + mu;
+//		maxMuX = maxX + mu;
 		
 		if (grensRechts > maxMuX - NZERO)
 		{	grensRechts = maxMuX;
@@ -1145,6 +1208,8 @@ if (grensLinks > minMuX + NZERO)
 
 		}
 		
+		grensRechts = round(grensRechts, grensDecimals);				
+		
 		String grensRechtsString = UF.format(grensRechts, grensDecimals);
 		
 		if (NormaleVerdeling.langArg.equals("nl"))
@@ -1162,7 +1227,7 @@ if (grensLinks > minMuX + NZERO)
 	}
 
 	public void zetGrensRechtsSlider()
-	{	minMuX = minX + mu;
+	{	//minMuX = minX + mu;
 		int sliderPos = (int) Math.round(
 						    (grensRechts - minMuX) / (maxX - minX) * (xMax - xMin));
 		tweeGrenzenSlider.zetStandRechts(sliderPos);				    
@@ -1174,14 +1239,18 @@ if (grensLinks > minMuX + NZERO)
 	{	
 	
 		double kansWaarde = waarde;
+		
 		if (kansWaarde > 1 - NZERO)
 			kansWaarde = 1;
 		if (kansWaarde < NZERO)
 			kansWaarde = 0;	
 
-		minMuX = minX + mu;
-		maxMuX = maxX + mu;
+		//minMuX = minX + mu;
+		//maxMuX = maxX + mu;
 
+		// kans wordt veranderd, mu wordt berekend
+		// en mu komt over maximum heen:
+		// fixeer kans
 		if ((berekenKeuze == BEREKENMU) &&
 			(mu > (muMax - NZERO)))
 		{	int oldBerekenKeuze = berekenKeuze;
@@ -1195,7 +1264,9 @@ if (grensLinks > minMuX + NZERO)
 			{	kans = kansWaarde;
 			}		
 		}	
-
+		// kans wordt veranderd, mu wordt berekend
+		// en mu komt beneden minimum:
+		// fixeer kans
 		else if ((berekenKeuze == BEREKENMU) &&
 			(mu < (muMin + NZERO)))
 		{	int oldBerekenKeuze = berekenKeuze;
@@ -1210,8 +1281,10 @@ if (grensLinks > minMuX + NZERO)
 			}		
 		}	
 
-
-		
+		// kans wordt veranderd, grensLinks wordt berekend
+		// en grensLinks komt links buiten beeld, i.e.
+		// wordt kleiner dan minMuX
+		// fixeer kans
 		else if ((berekenKeuze == BEREKENGRENSLINKS) &&
 			(grensLinks < (minMuX + NZERO)) 
 		   )
@@ -1233,7 +1306,10 @@ if (grensLinks > minMuX + NZERO)
 				}
 			//}
 		}
-		
+		// kans wordt veranderd, grensRechts wordt berekend
+		// en grensRechts komt rechts buiten beeld, i.e.
+		// wordt groter dan maxMuX
+		// fixeer kans
 		else if ((berekenKeuze == BEREKENGRENSRECHTS) &&
 			(grensRechts > (maxMuX - NZERO)) //&&
 		   )
@@ -1258,7 +1334,9 @@ if (grensLinks > minMuX + NZERO)
 		}
 		else	
 			kans = kansWaarde;
-	
+
+		kans = round(kans, kansDecimals);
+			
 		String kansString = UF.format(kans, kansDecimals);
 		
 		if (NormaleVerdeling.langArg.equals("nl"))
@@ -1324,9 +1402,10 @@ if (grensLinks > minMuX + NZERO)
 
 		grensLabel.setForeground(Color.black);
 		grensLabel.setOpaque(false);
-		grensLabel.setVisible(true);
+		//grensLabel.setVisible(true);
 		if (kansKeuze != TWEEGRENZEN)
-		{	grensTextField.setVisible(true);		
+		{	grensLabel.setVisible(true);
+			grensTextField.setVisible(true);		
 			grensSlider.zetEnabled(true);
 			grensSlider.setVisible(grensSliderOptie);
 		}
@@ -1343,15 +1422,20 @@ if (grensLinks > minMuX + NZERO)
 
 		grensLinksLabel.setForeground(Color.black);
 		grensLinksLabel.setOpaque(false);
+		//grensLinksLabel.setVisible(true);
 		if (kansKeuze == TWEEGRENZEN)
+		{	grensLinksLabel.setVisible(true);
 			grensLinksTextField.setVisible(true);		
+		}
 		grensLinksWaardeLabel.setVisible(false);
 		grensLinksWaardeLabel.setOpaque(false);
 
 		grensRechtsLabel.setForeground(Color.black);
 		grensRechtsLabel.setOpaque(false);
+		//grensRechtsLabel.setVisible(true);		
 		if (kansKeuze == TWEEGRENZEN)
-		{	grensRechtsTextField.setVisible(true);		
+		{	grensRechtsLabel.setVisible(true);		
+			grensRechtsTextField.setVisible(true);		
 			tweeGrenzenSlider.setVisible(grensSliderOptie);
 			grensLabel.setVisible(false);
 			grensTextField.setVisible(false);
@@ -1577,6 +1661,18 @@ if (grensLinks > minMuX + NZERO)
 			}
 			
 			zetBerekenKeuze();			
+
+
+			if (grens > (mu + 1 - NZERO))
+			{	zetGrensRechts(grens, false);
+				zetGrensLinks(- grens, true);	
+			}
+			else
+			{	zetGrensRechts(grens + 2, false);
+				zetGrensLinks(grens, true);	
+			}
+			
+
 			
 		} 
 		else // KANSLINKS of KANSRECHTS
@@ -1624,8 +1720,8 @@ if (grensLinks > minMuX + NZERO)
 			
 			actualMuBerekenbaarOptie = muBerekenbaarOptie;
 			actualSigmaBerekenbaarOptie = sigmaBerekenbaarOptie;
-			muButton.setVisible(muBerekenbaarOptie);
-			sigmaButton.setVisible(sigmaBerekenbaarOptie);
+			muButton.setVisible(muBerekenbaarOptie && berekenbaarZichtbaar);
+			sigmaButton.setVisible(sigmaBerekenbaarOptie && berekenbaarZichtbaar);
 						
 			zetBerekenKeuze();			
 			plaatsComponenten();			
@@ -1638,25 +1734,33 @@ if (grensLinks > minMuX + NZERO)
 
 	public void zetKansOpties()
 	{	// booleans zijn al gezet
-	
+
+		boolean override = false;
+			
 		// override kansKeuze als nodig		
 		if (!kansLinksOptie && (kansKeuze == KANSLINKS))
 		{	if (kansRechtsOptie)
 				kansKeuze = KANSRECHTS;
 			else
 				kansKeuze = TWEEGRENZEN;	
+				
+			override = true;	
 		}
 		if (!kansRechtsOptie && (kansKeuze == KANSRECHTS))
 		{	if (kansLinksOptie)
 				kansKeuze = KANSLINKS;
 			else
-				kansKeuze = TWEEGRENZEN;	
+				kansKeuze = TWEEGRENZEN;
+				
+			override = true;			
 		}
 		if (!tweeGrenzenOptie && (kansKeuze == TWEEGRENZEN))
 		{	if (kansLinksOptie)
 				kansKeuze = KANSLINKS;
 			else
 				kansKeuze = KANSRECHTS;	
+				
+			override = true;		
 		}
 		
 		// als maar 1 optie geselecteerd geen box
@@ -1675,7 +1779,8 @@ if (grensLinks > minMuX + NZERO)
 			tweeGrenzenButton.setVisible(tweeGrenzenOptie);
 		}
 		
-		zetKansKeuze();
+		if (override)
+			zetKansKeuze();
 		
 		plaatsComponenten();
 		
@@ -1685,12 +1790,13 @@ if (grensLinks > minMuX + NZERO)
 	{	berekenbaarZichtbaar = b;
 		berekenLabel.setVisible(b);
 		
+		muButton.setVisible(b && muBerekenbaarOptie && !muVastOptie);
+		sigmaButton.setVisible(b && sigmaBerekenbaarOptie && !sigmaVastOptie);
+		
 		grensLinksButton.setVisible(b && kansKeuze == TWEEGRENZEN);
 		grensRechtsButton.setVisible(b && kansKeuze == TWEEGRENZEN);
 		grensButton.setVisible(b && kansKeuze != TWEEGRENZEN);
 		kansButton.setVisible(b);
-		muButton.setVisible(b && muBerekenbaarOptie);
-		sigmaButton.setVisible(b && sigmaBerekenbaarOptie);
 		bgPanel6.setVisible(b);
 		
 		plaatsComponenten();
@@ -1704,7 +1810,7 @@ if (grensLinks > minMuX + NZERO)
 			actualMuBerekenbaarOptie = (kansKeuze != TWEEGRENZEN);
 			
 		//if (actualMuBerekenbaarOptie)	
-		muButton.setVisible(actualMuBerekenbaarOptie && berekenbaarZichtbaar);
+		muButton.setVisible(actualMuBerekenbaarOptie);
 
 		// uitschakelen met berekenKeuze==BEREKENMU
 		if (!b && (berekenKeuze == BEREKENMU))
@@ -1729,7 +1835,7 @@ if (grensLinks > minMuX + NZERO)
 			actualSigmaBerekenbaarOptie = (kansKeuze != TWEEGRENZEN);
 			
 		//if (actualSigmaBerekenbaarOptie)	
-		sigmaButton.setVisible(actualSigmaBerekenbaarOptie && berekenbaarZichtbaar);
+		sigmaButton.setVisible(actualSigmaBerekenbaarOptie);
 			
 		// uitschakelen met berekenKeuze==BEREKENSIGMA
 		if (!b && (berekenKeuze == BEREKENSIGMA))
@@ -1767,78 +1873,6 @@ if (grensLinks > minMuX + NZERO)
 		
 		plaatsComponenten();
 	}
-	
-	public void zetMuSliderOptie(boolean b)
-	{	muSliderOptie = b;
-		muSlider.setVisible(b && !muVastOptie);
-		plaatsComponenten();
-	}
-	
-	public void zetSigmaSliderOptie(boolean b)
-	{	sigmaSliderOptie = b;
-		sigmaSlider.setVisible(b && !sigmaVastOptie);
-		plaatsComponenten();
-	}
-	
-	public void zetGrensSliderOptie(boolean b)
-	{	grensSliderOptie = b;
-		grensSlider.setVisible(b);
-		plaatsComponenten();
-	}
-	
-	public void zetKansSliderOptie(boolean b)
-	{	kansSliderOptie = b;
-		kansSlider.setVisible(b);
-		plaatsComponenten();
-	}
-	
-	public void zetMuZichtbaarOptie(boolean b)
-	{	muZichtbaarOptie = b;
-		resetParameters();
-		plaatsComponenten();
-	}
-	
-	public void zetSigmaZichtbaarOptie(boolean b)
-	{	sigmaZichtbaarOptie = b;
-		resetParameters();
-		plaatsComponenten();
-	}
-	
-	public void zetGrensZichtbaarOptie(boolean b)
-	{	grensZichtbaarOptie = b;
-		resetParameters();
-		plaatsComponenten();
-	}
-	
-	public void zetKansZichtbaarOptie(boolean b)
-	{	kansZichtbaarOptie = b;
-		resetParameters();
-		plaatsComponenten();
-	}
-	
-	public void zetMuZichtbaarFigOptie(boolean b)
-	{	muZichtbaarFigOptie = b;
-		muMetWaardeLabel.setVisible(b);
-		plaatsComponenten();
-	}
-	
-	public void zetSigmaZichtbaarFigOptie(boolean b)
-	{	sigmaZichtbaarFigOptie = b;
-		//sigmaSlider.setVisible(b && !sigmaVastOptie);
-		plaatsComponenten();
-	}
-	
-	public void zetGrensZichtbaarFigOptie(boolean b)
-	{	grensZichtbaarFigOptie = b;
-		//grensSlider.setVisible(b);
-		plaatsComponenten();
-	}
-	
-	public void zetKansZichtbaarFigOptie(boolean b)
-	{	kansZichtbaarFigOptie = b;
-		//kansSlider.setVisible(b);
-		plaatsComponenten();
-	}
 
 	public void zetSigmaVastOptie(boolean b)
 	{	sigmaVastOptie = b;
@@ -1857,6 +1891,89 @@ if (grensLinks > minMuX + NZERO)
 		sigmaSlider.setVisible(!b && sigmaSliderOptie);
 
 		plaatsComponenten();		
+	}
+
+	
+	public void zetMuSliderOptie(boolean b)
+	{	muSliderOptie = b;
+		muSlider.setVisible(b && !muVastOptie && (berekenKeuze != BEREKENMU));
+		plaatsComponenten();
+	}
+	
+	public void zetSigmaSliderOptie(boolean b)
+	{	sigmaSliderOptie = b;
+		sigmaSlider.setVisible(b && !sigmaVastOptie && (berekenKeuze != BEREKENSIGMA));
+		plaatsComponenten();
+	}
+	
+	public void zetGrensSliderOptie(boolean b)
+	{	grensSliderOptie = b;
+	
+		grensSlider.setVisible(b && (berekenKeuze != BEREKENGRENS) &&
+			(kansKeuze != TWEEGRENZEN));
+		
+		tweeGrenzenSlider.setVisible(b && (berekenKeuze != BEREKENGRENSLINKS) &&
+			(berekenKeuze != BEREKENGRENSRECHTS) && (kansKeuze == TWEEGRENZEN));
+		plaatsComponenten();
+	}
+	
+	public void zetKansSliderOptie(boolean b)
+	{	kansSliderOptie = b;
+		kansSlider.setVisible(b && (berekenKeuze != BEREKENKANS));
+		plaatsComponenten();
+	}
+	
+	public void zetMuZichtbaarOptie(boolean b)
+	{	muZichtbaarOptie = b;
+		//resetParameters();
+		zetBerekenKeuze();
+		plaatsComponenten();
+	}
+	
+	public void zetSigmaZichtbaarOptie(boolean b)
+	{	sigmaZichtbaarOptie = b;
+		//resetParameters();
+		zetBerekenKeuze();
+		plaatsComponenten();
+	}
+	
+	public void zetGrensZichtbaarOptie(boolean b)
+	{	grensZichtbaarOptie = b;
+		//resetParameters();
+		zetBerekenKeuze();
+		plaatsComponenten();
+	}
+	
+	public void zetKansZichtbaarOptie(boolean b)
+	{	kansZichtbaarOptie = b;
+//		resetParameters();
+		zetBerekenKeuze();
+		plaatsComponenten();
+	}
+	
+	public void zetMuZichtbaarFigOptie(boolean b)
+	{	muZichtbaarFigOptie = b;
+		muMetWaardeLabel.setVisible(b);
+		//plaatsComponenten();
+		fastPaint();
+	}
+	
+	public void zetSigmaZichtbaarFigOptie(boolean b)
+	{	sigmaZichtbaarFigOptie = b;
+		//plaatsComponenten();
+		fastPaint();
+	}
+	
+	public void zetGrensZichtbaarFigOptie(boolean b)
+	{	grensZichtbaarFigOptie = b;
+		//plaatsComponenten();
+		fastPaint();
+	}
+	
+	public void zetKansZichtbaarFigOptie(boolean b)
+	{	kansZichtbaarFigOptie = b;
+		//plaatsComponenten();
+		fastPaint();
 	}
 
 	public void processMuSlider()
@@ -1882,7 +1999,7 @@ if (grensLinks > minMuX + NZERO)
 	}
 
 	public void processGrensSlider()
-	{	minMuX = minX + mu;
+	{	//minMuX = minX + mu;
 		int stand = grensSlider.geefStand();
 		double grensWaarde = minMuX + 
 			((double) stand) / (xMax - xMin) * (maxX - minX);
@@ -1890,7 +2007,7 @@ if (grensLinks > minMuX + NZERO)
 	}
 
 	public void processTweeGrenzenSlider(boolean links)
-	{	minMuX = minX + mu;
+	{	//minMuX = minX + mu;
 		if (links)
 		{	int standLinks = tweeGrenzenSlider.geefStandLinks();
 			double grensLinksWaarde = minMuX + 
@@ -1959,20 +2076,54 @@ if (grensLinks > minMuX + NZERO)
 	
 	public void paintMuLine(Graphics g)
 	{	// centreren
-		minMuX = minX + mu;
+//		minMuX = minX + mu;
+
+		// middenin				
+		//int xPos = xMin + (xMax - xMin) / 2;
+
+		int xPos = xMin + (int) Math.round(
+								(mu - minMuX) / (maxX - minX) * (xMax - xMin));
+
+		//double x = minMuX + ((double) (xPos - xMin)) / (xMax - xMin) * (maxX - minX);
+
+		//double fx = normalDF(x);
 		
-		int xPos = xMin + (xMax - xMin) / 2;
-		double x = minMuX + ((double) (xPos - xMin)) / (xMax - xMin) * (maxX - minX);
-		double fx = normalDF(x);
+		double fx = normalDF(mu);		
+
 		int y = yMin - (int) Math.round(
 								(fx - minY) / (maxY - minY) * (yMin - yMax));
 		g.setColor(muLineColor);
 		g.drawLine(xPos, y, xPos, yMin);		
+		
+		String muWaarde = NormaleVerdeling.rb.getString("muTekst") + 
+								                        " = " + muString;
+		
+		//String muWaarde = UF.format(mu, muDecimals);
+		int width = theFM.stringWidth(muWaarde);
+		int bx = xPos - width / 2;
+		if (bx < 2)
+			bx = 2;
+			
+		if ((bx + width) > (getSize().width - 2))
+			bx = getSize().width - width - 2;	
+		
+		int by = yMin + 2 * theFM.getHeight();
+		int by2 = yMin + theFM.getHeight();
+		
+		boolean lower = lowerGrensLabels || lowerGrensLinksLabels ||
+						lowerGrensRechtsLabels;
+		
+		g.setColor(Color.black);
+		if (muZichtbaarFigOptie && lower)
+			g.drawString(muWaarde, bx, by2);	
+		else if (muZichtbaarFigOptie && !lower)	
+			g.drawString(muWaarde, bx, by);	
+		
 	}
 
 	public void paintDistribution(Graphics g)
 	{	// centreren
-		minMuX = minX + mu;
+		//minMuX = minX + mu;
 	
 // stroke zetten
 	
@@ -1996,7 +2147,7 @@ if (grensLinks > minMuX + NZERO)
 
 	public void paintArea(Graphics g)
 	{	// centreren
-		minMuX = minX + mu;
+//		minMuX = minX + mu;
 //		maxMuX = maxX + mu;
 		
 		int xStart = 0;
@@ -2046,7 +2197,7 @@ if (grensLinks > minMuX + NZERO)
 
 	public void paintLabels(Graphics g)
 	{	// centreren
-		minMuX = minX + mu;
+//		minMuX = minX + mu;
 	
 		int hOffset = 5;		
 	
@@ -2071,15 +2222,16 @@ if (grensLinks > minMuX + NZERO)
 				
 			g.setFont(theFont);
 			g.setColor(Color.black);
-			if(grensZichtbaarFigOptie)g.drawString(grensWaarde, grensWaardePos,
-						 yMin + vSpace);
+			if (grensZichtbaarFigOptie)
+				g.drawString(grensWaarde, grensWaardePos, yMin + vSpace);
 			
 			String gString = NormaleVerdeling.rb.getString("gTekst");			 
 			width = theFM.stringWidth(gString);
 			int gPos = grensPos + hOffset;
 			if (gPos + width > getSize().width)
 				gPos -= gPos + width - getSize().width;	
-			if(grensZichtbaarFigOptie)g.drawString(gString, gPos, yMin - theFM.getDescent());			 					  	  
+			if (grensZichtbaarFigOptie)
+				g.drawString(gString, gPos, yMin - theFM.getDescent());			 					  	  
 			
 			String kansWaarde = UF.format(kans, kansDecimals);
 			width = theFM.stringWidth(kansWaarde);
@@ -2088,8 +2240,8 @@ if (grensLinks > minMuX + NZERO)
 				kansPos = 0;
 			
 			g.setColor(kansColor);
-			if(kansZichtbaarFigOptie)g.drawString(kansWaarde, kansPos,
-					     yMin - theFM.getHeight());
+			if (kansZichtbaarFigOptie)
+				g.drawString(kansWaarde, kansPos, yMin - theFM.getHeight());
 			
 			
 		}
@@ -2114,16 +2266,16 @@ if (grensLinks > minMuX + NZERO)
 
 			g.setFont(theFont);
 			g.setColor(Color.black);
-			if(grensZichtbaarFigOptie)g.drawString(grensWaarde, 
-						 grensWaardePos,
-						 yMin + vSpace);
+			if (grensZichtbaarFigOptie)
+				g.drawString(grensWaarde, grensWaardePos, yMin + vSpace);
 			
 			String gString = NormaleVerdeling.rb.getString("gTekst");			 
 			width = theFM.stringWidth(gString);
 			int gPos = grensPos - hOffset - width;
 			if (gPos < 0)
 				gPos = 0;
-			if(grensZichtbaarFigOptie)g.drawString(gString, gPos, yMin - theFM.getDescent());			 					  	  
+			if (grensZichtbaarFigOptie)
+				g.drawString(gString, gPos, yMin - theFM.getDescent());			 					  	  
 			
 			String kansWaarde = UF.format(kans, kansDecimals);
 			width = theFM.stringWidth(kansWaarde);
@@ -2133,8 +2285,8 @@ if (grensLinks > minMuX + NZERO)
 				kansPos -= kansPos + width - getSize().width;
 			
 			g.setColor(kansColor);
-			if(kansZichtbaarFigOptie)g.drawString(kansWaarde, kansPos,
-					     yMin - theFM.getHeight());
+			if (kansZichtbaarFigOptie)
+				g.drawString(kansWaarde, kansPos, yMin - theFM.getHeight());
 		}
 		else // kansKeuze == TWEEGRENZEN
 		{	String grensLinksWaarde = UF.format(grensLinks, grensDecimals);
@@ -2195,11 +2347,11 @@ if (grensLinks > minMuX + NZERO)
 				
 			g.setFont(theFont);
 			g.setColor(Color.black);
-			if(grensZichtbaarFigOptie)g.drawString(grensLinksWaarde, 
-						 grensLinksWaardePos,
+			if (grensZichtbaarFigOptie)
+				g.drawString(grensLinksWaarde, grensLinksWaardePos,
 						 yMin + vLinksSpace);
-			if(grensZichtbaarFigOptie)g.drawString(grensRechtsWaarde, 
-						 grensRechtsWaardePos,
+			if (grensZichtbaarFigOptie)
+				g.drawString(grensRechtsWaarde, grensRechtsWaardePos,
 						 yMin + vRechtsSpace);
 			
 			String lString = NormaleVerdeling.rb.getString("lTekst");			 
@@ -2216,8 +2368,10 @@ if (grensLinks > minMuX + NZERO)
 			if (rPos + rWidth > getSize().width)
 				rPos -= rPos + rWidth - getSize().width;
 			
-			if(grensZichtbaarFigOptie)g.drawString(lString, lPos, yMin - theFM.getDescent());			 					  	  
-			if(grensZichtbaarFigOptie)g.drawString(rString, rPos, yMin - theFM.getDescent());			 					  	  			
+			if (grensZichtbaarFigOptie)
+				g.drawString(lString, lPos, yMin - theFM.getDescent());			 					  	  
+			if (grensZichtbaarFigOptie)
+				g.drawString(rString, rPos, yMin - theFM.getDescent());			 					  	  			
 			
 			String kansWaarde = UF.format(kans, kansDecimals);
 			int width = theFM.stringWidth(kansWaarde);
@@ -2229,20 +2383,22 @@ if (grensLinks > minMuX + NZERO)
 				kansPos -= kansPos + width - getSize().width;	
 			
 			g.setColor(kansColor);
-			if(kansZichtbaarFigOptie)g.drawString(kansWaarde, kansPos,
-					     yMin - theFM.getHeight());
+			if (kansZichtbaarFigOptie)
+				g.drawString(kansWaarde, kansPos, yMin - theFM.getHeight());
 		}
 	}
 	
 	// rekenen
-	
+/*	
 	public void bereken()
 	{
 		bereken(false);
 	}
-
-	public void bereken(boolean sigmaInput)
+*/
+//	public void bereken(boolean sigmaInput)
+	public void bereken()
 	{	
+/*	
 		if(sigmaInput)
 		{	minX = -45e-1d * sigma;
 			maxX = 45e-1d * sigma;
@@ -2254,6 +2410,7 @@ if (grensLinks > minMuX + NZERO)
 			
 			zetGrensSlider();
 		}
+*/		
 		if (berekenKeuze == BEREKENKANS)
 		{	if (kansKeuze == KANSLINKS)
 			{	zetKans(phi((grens - mu) / sigma), false);
@@ -2445,35 +2602,30 @@ if (grensLinks > minMuX + NZERO)
 	}
 
 	// distribution function voor standaard normale verdeling
-	// let op: de benadering met erf is alleen valide voor z>=0
-	// voor negatieve z gebruik phi(z)=1-phi(-z)
-	// merk op: erf(-z)=erf(z) 
 	public double phi(double z)
 	{	if (Math.abs(z) < NZERO)
 			return 5e-1d;
-		else if (z >= NZERO)	
+		else 
 			return (1 + erf(z / Math.sqrt(2))) / 2;
-		else // z <= -NZERO)
-			return 1 - (1 + erf(z / Math.sqrt(2))) / 2;	
 	}
 
 	// een benadering voor de error function
 	public double erf(double x)
-	{	double a = 8 * (Math.PI - 3) / (3 * Math.PI * (4 - Math.PI));
-	
-		double erfx = 
-			Math.sqrt(1 - 
-					  Math.exp(- x * x * ((4 / Math.PI) + a * x * x) /
-					           (1 + a * x * x)));
-					           
+	{	
+		double erfx = StatUtil.erf(x);
+
 		return erfx;
 	}
 	
 	// inverse distribution function voor standaard normale verdeling
 	public double phiInv(double p)
-	{	return Math.sqrt(2) * erfInv(2 * p - 1);
-	}
+	{	
+		double phiInvp = StatUtil.getInvCDF(p, true);
 	
+		return phiInvp;
+	
+	}
+/*	
 	// een benadering voor de inverse van de error function
 	public double erfInv(double x)
 	{	double a = 8 * (Math.PI - 3) / (3 * Math.PI * (4 - Math.PI));
@@ -2491,7 +2643,7 @@ if (grensLinks > minMuX + NZERO)
 		return erfInvx;			  
 					
 	}
-	
+*/	
 	// inner classes
 	class KansKeuzeAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
@@ -2580,6 +2732,7 @@ if (grensLinks > minMuX + NZERO)
 			{	error = true;
 			}
 			// dit zou niet moeten gebeuren
+			// Peter: nu wel bij de definitie van een random variabele ipv een double			
 			if (error)
 				return;
 
@@ -2743,11 +2896,9 @@ if (grensLinks > minMuX + NZERO)
 			String txt = inputTextField.getText();
 			
 			//om randomvariabele in te kunnen vullen
-			if(isLegal(txt))return;
+			if (isLegal(txt))
+				return;
 
-//			if (langArg.equals("nl"))
-//				txt = txt.replace(',', '.');		
-				
 //System.out.println(txt);
 				
 			boolean corrected = false;
@@ -2770,8 +2921,6 @@ if (grensLinks > minMuX + NZERO)
 			}
 			
 //System.out.println(txt);			
-//			if (NormaleVerdeling.langArg.equals("nl"))
-//			{	
 			
 			// dubbele decimale komma
 			// voldoende er twee te zoeken
@@ -2782,10 +2931,6 @@ if (grensLinks > minMuX + NZERO)
 				txt = removeCharAt(txt, pIndex2);
 				corrected = true;
 			}
-
-//			}
-//			else
-//			{
 
 			// dubbele decimale punt
 			// voldoende er twee te zoeken
@@ -2815,15 +2960,12 @@ if (grensLinks > minMuX + NZERO)
 				corrected = true;
 			}
 			
-//			}	
-			
 			// proberen een legaal karakter voor het
 			// minteken (dit staat dan op plek 1) in te vullen
 			if (txt.indexOf('-') == 1)
 			{	txt = removeCharAt(txt, 0);
 				corrected = true;
 			}
-			
 			
 			// minteken
 			// alleen vooraan if any
@@ -2850,14 +2992,9 @@ if (grensLinks > minMuX + NZERO)
 				corrected = true;
 			}
 			
-// trailing zeros na(!) decimale punt oplossen 
-// bij actionPerformed of focusLost			
+			// trailing zeros na(!) decimale punt oplossen 
+			// bij actionPerformed of focusLost			
 
-//			if (langArg.equals("nl"))
-//			{	txt = txt.replace('.', ',');		
-//				corrected = true;
-//			}
-			
 			if (corrected)
 			{	
 //System.out.println("corr " + txt);							
@@ -2869,24 +3006,18 @@ if (grensLinks > minMuX + NZERO)
 		
 		public boolean isLegal(String s)
 		{	
-			if(s!=null && s.length()>0)return s.charAt(0)=='#';
-			else return false;
+			if (s != null && s.length() > 0)
+				return s.charAt(0) == '#';
+			else 
+				return false;
 		}
 		
 		public boolean isLegal(char c)
-		{	//if (NormaleVerdeling.langArg.equals("nl"))
-			//{	
+		{	
 			if (minusAllowed)
 				return Character.isDigit(c) || (c == ',') || (c == '.') || (c == '-');
 			else	
 				return Character.isDigit(c) || (c == ',') || (c == '.');
-			//}
-			//else
-			//{	if (minusAllowed)
-			//		return Character.isDigit(c) || (c == '.') || (c == '-');
-			//	else
-			//		return Character.isDigit(c) || (c == '.');
-			//}
 		}
 	}	
 
@@ -2908,31 +3039,27 @@ if (grensLinks > minMuX + NZERO)
 		int kansKeuze = KANSLINKS;
 		int berekenKeuze = BEREKENKANS;
 		
-		if (b.containsKey("mu"))mu = ((Double) b.get("mu")).doubleValue();
-		if (b.containsKey("sigma"))sigma = ((Double) b.get("sigma")).doubleValue();	
-		if (b.containsKey("grens"))grens = ((Double) b.get("grens")).doubleValue();	
-		if (b.containsKey("grenslinks"))grensLinks = ((Double) b.get("grenslinks")).doubleValue();	
-		if (b.containsKey("grensrechts"))grensRechts = ((Double) b.get("grensrechts")).doubleValue();	
-		if (b.containsKey("kans"))kans = ((Double) b.get("kans")).doubleValue();	
+		if (b.containsKey("mu"))
+			mu = ((Double) b.get("mu")).doubleValue();
+		if (b.containsKey("sigma"))
+			sigma = ((Double) b.get("sigma")).doubleValue();	
+		if (b.containsKey("grens"))
+			grens = ((Double) b.get("grens")).doubleValue();	
+		if (b.containsKey("grenslinks"))
+			grensLinks = ((Double) b.get("grenslinks")).doubleValue();	
+		if (b.containsKey("grensrechts"))
+			grensRechts = ((Double) b.get("grensrechts")).doubleValue();	
+		if (b.containsKey("kans"))
+			kans = ((Double) b.get("kans")).doubleValue();	
 		
-		if (b.containsKey("kanskeuze"))kansKeuze = ((Integer) b.get("kanskeuze")).intValue();	
-		if (b.containsKey("berekenkeuze"))berekenKeuze = ((Integer) b.get("berekenkeuze")).intValue();	
+		if (b.containsKey("kanskeuze"))
+			kansKeuze = ((Integer) b.get("kanskeuze")).intValue();	
+		if (b.containsKey("berekenkeuze"))
+			berekenKeuze = ((Integer) b.get("berekenkeuze")).intValue();	
 
 		this.kansKeuze = kansKeuze;
 		this.berekenKeuze = berekenKeuze;	
 
-		/*zetSigma(sigma, false, true);
-		zetMu(mu, false, true);
-		zetGrens(grens, false, true);		
-		zetGrensLinks(grensLinks, false);				
-		zetGrensRechts(grensRechts, false);						
-		zetKans(kans, false);*/
-		
-//System.out.println("k = " + kans);		
-		
-		zetKansKeuze();
-		zetBerekenKeuze();
-		
 		boolean kansLinksOptie = true;
 		boolean kansRechtsOptie = true;
 		boolean tweeGrenzenOptie = true;
@@ -2966,40 +3093,70 @@ if (grensLinks > minMuX + NZERO)
 		String grensRechtsString = "";
 		String kansString = "";
 		
-		if (b.containsKey("kanslinksoptie"))kansLinksOptie = ((Boolean) b.get("kanslinksoptie")).booleanValue();
-		if (b.containsKey("kansrechtsoptie"))kansRechtsOptie = ((Boolean) b.get("kansrechtsoptie")).booleanValue();
-		if (b.containsKey("tweegrenzenoptie"))tweeGrenzenOptie = ((Boolean) b.get("tweegrenzenoptie")).booleanValue();
+		if (b.containsKey("kanslinksoptie"))
+			kansLinksOptie = ((Boolean) b.get("kanslinksoptie")).booleanValue();
+		if (b.containsKey("kansrechtsoptie"))
+			kansRechtsOptie = ((Boolean) b.get("kansrechtsoptie")).booleanValue();
+		if (b.containsKey("tweegrenzenoptie"))
+			tweeGrenzenOptie = ((Boolean) b.get("tweegrenzenoptie")).booleanValue();
 		
-		if (b.containsKey("berekenbaarZichtbaar"))berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
-		if (b.containsKey("muberekenbaaroptie"))muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
-		if (b.containsKey("sigmaberekenbaaroptie"))	sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
+		if (b.containsKey("berekenbaarZichtbaar"))
+			berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
+		if (b.containsKey("muberekenbaaroptie"))
+			muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
+		if (b.containsKey("sigmaberekenbaaroptie"))	
+			sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
 		
-		if (b.containsKey("muvastoptie"))muVastOptie = ((Boolean) b.get("muvastoptie")).booleanValue();
-		if (b.containsKey("sigmavastoptie"))sigmaVastOptie = ((Boolean) b.get("sigmavastoptie")).booleanValue();
+		if (b.containsKey("muvastoptie"))
+			muVastOptie = ((Boolean) b.get("muvastoptie")).booleanValue();
+		if (b.containsKey("sigmavastoptie"))
+			sigmaVastOptie = ((Boolean) b.get("sigmavastoptie")).booleanValue();
 		
-		if (b.containsKey("muSliderOptie")) muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
-		if (b.containsKey("sigmaSliderOptie")) sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
-		if (b.containsKey("kansSliderOptie")) kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
-		if (b.containsKey("grensSliderOptie")) grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
-		if (b.containsKey("muZichtbaarFigOptie")) muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarFigOptie")) sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarFigOptie")) grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarFigOptie")) kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("muZichtbaarOptie")) muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarOptie")) sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarOptie")) grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarOptie")) kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
+		if (b.containsKey("muSliderOptie")) 
+			muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
+		if (b.containsKey("sigmaSliderOptie")) 
+			sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
+		if (b.containsKey("kansSliderOptie")) 
+			kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
+		if (b.containsKey("grensSliderOptie")) 
+			grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
+
+		if (b.containsKey("muZichtbaarFigOptie")) 
+			muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarFigOptie")) 
+			sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarFigOptie")) 
+			grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarFigOptie")) 
+			kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
+
+		if (b.containsKey("muZichtbaarOptie")) 
+			muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarOptie")) 
+			sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarOptie")) 
+			grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarOptie")) 
+			kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
 		
-		if (b.containsKey("muString"))muString = (String) b.get("muString");
-		if (b.containsKey("sigmaString"))sigmaString = (String) b.get("sigmaString");
-		if (b.containsKey("grensString"))grensString = (String) b.get("grensString");
-		if (b.containsKey("grensLinksString"))grensLinksString = (String) b.get("grensLinksString");
-		if (b.containsKey("grensRechtsString"))grensRechtsString = (String) b.get("grensRechtsString");
-		if (b.containsKey("kansString"))kansString = (String) b.get("kansString");
+		if (b.containsKey("muString"))
+			muString = (String) b.get("muString");
+		if (b.containsKey("sigmaString"))
+			sigmaString = (String) b.get("sigmaString");
+		if (b.containsKey("grensString"))
+			grensString = (String) b.get("grensString");
+		if (b.containsKey("grensLinksString"))
+			grensLinksString = (String) b.get("grensLinksString");
+		if (b.containsKey("grensRechtsString"))
+			grensRechtsString = (String) b.get("grensRechtsString");
+		if (b.containsKey("kansString"))
+			kansString = (String) b.get("kansString");
 		
-		if(muString.length()>0 && muString.charAt(0)=='#'&& muString.charAt(muString.length()-1)=='#') 
+		if (muString.length() > 0 && muString.charAt(0) == '#' && 
+			muString.charAt(muString.length() - 1) == '#') 
 			mu = substitueerRandom(mu, muString, randomVars, randomValues);
-		if(sigmaString.length()>0 && sigmaString.charAt(0)=='#'&& sigmaString.charAt(sigmaString.length()-1)=='#') 
+		if (sigmaString.length() > 0 && sigmaString.charAt(0) == '#' && 
+			sigmaString.charAt(sigmaString.length() - 1) == '#') 
 			sigma = substitueerRandom(sigma, sigmaString, randomVars, randomValues);
 		if(grensString.length()>0 && grensString.charAt(0)=='#'&& grensString.charAt(grensString.length()-1)=='#') 
 			grens = substitueerRandom(grens, grensString, randomVars, randomValues);
@@ -3010,14 +3167,22 @@ if (grensLinks > minMuX + NZERO)
 		if(kansString.length()>0 && kansString.charAt(0)=='#'&& kansString.charAt(kansString.length()-1)=='#') 
 			kans = substitueerRandom(kans,kansString, randomVars, randomValues);
 		
-		
+		zetMu(mu, false, true);		
 		zetSigma(sigma, false, true);
-		zetMu(mu, false, true);
-		zetGrens(grens, false, true);
-		this.grensRechts = grensRechts;
+		zetGrens(grens, false);
 		zetGrensLinks(grensLinks, false);				
 		zetGrensRechts(grensRechts, false);						
 		zetKans(kans, false);
+
+		zetKansKeuze();
+		
+		if (this.kansKeuze == TWEEGRENZEN)
+		{	zetGrensLinks(grensLinks, false);				
+			zetGrensRechts(grensRechts, false);						
+		}
+		
+		zetBerekenKeuze();
+		
 		/*
 		muTextField.setText(muString);
 		sigmaTextField.setText(sigmaString);
@@ -3026,6 +3191,7 @@ if (grensLinks > minMuX + NZERO)
 		grensRechtsTextField.setText(grensRechtsString);
 		kansTextField.setText(kansString);
 		*/
+		
 		this.kansLinksOptie = kansLinksOptie;
 		this.kansRechtsOptie = kansRechtsOptie;		
 		this.tweeGrenzenOptie = tweeGrenzenOptie;
@@ -3033,6 +3199,7 @@ if (grensLinks > minMuX + NZERO)
 		this.muBerekenbaarOptie = muBerekenbaarOptie;
 		this.berekenbaarZichtbaar = berekenbaarZichtbaar;
 		this.sigmaBerekenbaarOptie = sigmaBerekenbaarOptie;
+		
 		this.muVastOptie = muVastOptie;
 		this.sigmaVastOptie = sigmaVastOptie;
 		
@@ -3051,7 +3218,6 @@ if (grensLinks > minMuX + NZERO)
 		this.grensZichtbaarFigOptie = grensZichtbaarFigOptie;
 		this.kansZichtbaarFigOptie = kansZichtbaarFigOptie;
 		
-				
 		zetKansOpties();
 		
 		zetMuBerekenbaarOptie(this.muBerekenbaarOptie);
@@ -3062,30 +3228,49 @@ if (grensLinks > minMuX + NZERO)
 
 		zetSigmaVastOptie(this.sigmaVastOptie);						
 		
+		zetMuSliderOptie(this.muSliderOptie);
+		zetSigmaSliderOptie(this.sigmaSliderOptie);
+		zetGrensSliderOptie(this.grensSliderOptie);		
+		zetKansSliderOptie(this.kansSliderOptie);
 
+		zetMuZichtbaarOptie(this.muZichtbaarOptie);
+		zetSigmaZichtbaarOptie(this.sigmaZichtbaarOptie);
+		zetGrensZichtbaarOptie(this.grensZichtbaarOptie);
+		zetKansZichtbaarOptie(this.kansZichtbaarOptie);
+		
+		zetMuZichtbaarFigOptie(this.muZichtbaarFigOptie);
+		zetSigmaZichtbaarFigOptie(this.sigmaZichtbaarFigOptie);
+		zetGrensZichtbaarFigOptie(this.grensZichtbaarFigOptie);
+		zetKansZichtbaarFigOptie(this.kansZichtbaarFigOptie);
+		
 
-		bereken(true);
+		zetBerekenKeuze();
+
+		bereken();
 		
 	}
 	
 	public static double substitueerRandom(double def, String s, String[] randomVars, Hashtable randomValues) 
 	{	double d = Double.NaN;
-		s = s.substring(1,s.length()-1);
-		String[] delen = StringUtils.split(s,"/");
+		s = s.substring(1, s.length() - 1);
+		String[] delen = StringUtils.split(s, "/");
 		int decFactor = 1;
-		for(int j=0 ; j<randomVars.length; j++)
-		{	if(randomVars[j].equals(delen[0])) d = ((Integer)randomValues.get(randomVars[j])).intValue();
+		for (int j = 0 ; j < randomVars.length; j++)
+		{	if (randomVars[j].equals(delen[0])) 
+				d = ((Integer) randomValues.get(randomVars[j])).intValue();
 		}
-		if(delen.length>1)
+		if (delen.length > 1)
 		{	decFactor = Integer.parseInt(delen[1]);
-			d = d/decFactor;
+			d = d / decFactor;
 		}
-		if(Double.isNaN(d)) d = def;
+		if (Double.isNaN(d)) 
+			d = def;
 		return d;
 	}
 
 	public void setState(Hashtable b)
-	{	double mu = 0;
+	{	
+		double mu = 0;
 		double sigma = 1;
 		double grens = mu + 1;
 		double grensLinks = mu - 1;
@@ -3094,23 +3279,33 @@ if (grensLinks > minMuX + NZERO)
 		int kansKeuze = KANSLINKS;
 		int berekenKeuze = BEREKENKANS;
 		
-		if (b.containsKey("mu"))mu = ((Double) b.get("mu")).doubleValue();
-		if (b.containsKey("sigma"))sigma = ((Double) b.get("sigma")).doubleValue();	
-		if (b.containsKey("grens"))grens = ((Double) b.get("grens")).doubleValue();	
-		if (b.containsKey("grenslinks"))grensLinks = ((Double) b.get("grenslinks")).doubleValue();	
-		if (b.containsKey("grensrechts"))grensRechts = ((Double) b.get("grensrechts")).doubleValue();	
-		if (b.containsKey("kans"))kans = ((Double) b.get("kans")).doubleValue();	
+		if (b.containsKey("mu"))
+			mu = ((Double) b.get("mu")).doubleValue();
+		if (b.containsKey("sigma"))
+			sigma = ((Double) b.get("sigma")).doubleValue();	
+		if (b.containsKey("grens"))
+			grens = ((Double) b.get("grens")).doubleValue();	
+		if (b.containsKey("grenslinks"))
+			grensLinks = ((Double) b.get("grenslinks")).doubleValue();	
+		if (b.containsKey("grensrechts"))
+			grensRechts = ((Double) b.get("grensrechts")).doubleValue();	
+		if (b.containsKey("kans"))
+			kans = ((Double) b.get("kans")).doubleValue();	
 		
-		if (b.containsKey("kanskeuze"))kansKeuze = ((Integer) b.get("kanskeuze")).intValue();	
-		if (b.containsKey("berekenkeuze"))berekenKeuze = ((Integer) b.get("berekenkeuze")).intValue();	
+		if (b.containsKey("kanskeuze"))
+			kansKeuze = ((Integer) b.get("kanskeuze")).intValue();	
+		if (b.containsKey("berekenkeuze"))
+			berekenKeuze = ((Integer) b.get("berekenkeuze")).intValue();	
 
 		this.kansKeuze = kansKeuze;
 		this.berekenKeuze = berekenKeuze;	
 
-		zetSigma(sigma, false, true);
 		zetMu(mu, false, true);
-		zetGrens(grens, false, true);
-		this.grensRechts = grensRechts;
+		zetSigma(sigma, false, true);
+		zetGrens(grens, false);
+		
+//		this.grensRechts = grensRechts;
+		
 		zetGrensLinks(grensLinks, false);				
 		zetGrensRechts(grensRechts, false);						
 		zetKans(kans, false);
@@ -3118,9 +3313,15 @@ if (grensLinks > minMuX + NZERO)
 //System.out.println("k = " + kans);		
 		
 		zetKansKeuze();
+		
+		if (this.kansKeuze == TWEEGRENZEN)
+		{	zetGrensLinks(grensLinks, false);				
+			zetGrensRechts(grensRechts, false);						
+		}
+		
 		zetBerekenKeuze();
 		
-		
+		bereken();
 	}
 	
 	public void setEditState(Hashtable b)
@@ -3160,43 +3361,77 @@ if (grensLinks > minMuX + NZERO)
 		String grensRechtsString = "";
 		String kansString = "";
 		
-		if (b.containsKey("kanslinksoptie"))kansLinksOptie = ((Boolean) b.get("kanslinksoptie")).booleanValue();
-		if (b.containsKey("kansrechtsoptie"))kansRechtsOptie = ((Boolean) b.get("kansrechtsoptie")).booleanValue();
-		if (b.containsKey("tweegrenzenoptie"))tweeGrenzenOptie = ((Boolean) b.get("tweegrenzenoptie")).booleanValue();
+		if (b.containsKey("kanslinksoptie"))
+			kansLinksOptie = ((Boolean) b.get("kanslinksoptie")).booleanValue();
+		if (b.containsKey("kansrechtsoptie"))
+			kansRechtsOptie = ((Boolean) b.get("kansrechtsoptie")).booleanValue();
+		if (b.containsKey("tweegrenzenoptie"))
+			tweeGrenzenOptie = ((Boolean) b.get("tweegrenzenoptie")).booleanValue();
 		
-		if (b.containsKey("berekenbaarZichtbaar"))berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
-		if (b.containsKey("muberekenbaaroptie"))muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
-		if (b.containsKey("sigmaberekenbaaroptie"))	sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
+		if (b.containsKey("berekenbaarZichtbaar"))
+			berekenbaarZichtbaar = ((Boolean) b.get("berekenbaarZichtbaar")).booleanValue();
+		if (b.containsKey("muberekenbaaroptie"))
+			muBerekenbaarOptie = ((Boolean) b.get("muberekenbaaroptie")).booleanValue();
+		if (b.containsKey("sigmaberekenbaaroptie"))	
+			sigmaBerekenbaarOptie = ((Boolean) b.get("sigmaberekenbaaroptie")).booleanValue();
 		
-		if (b.containsKey("muvastoptie"))muVastOptie = ((Boolean) b.get("muvastoptie")).booleanValue();
-		if (b.containsKey("sigmavastoptie"))sigmaVastOptie = ((Boolean) b.get("sigmavastoptie")).booleanValue();
+		if (b.containsKey("muvastoptie"))
+			muVastOptie = ((Boolean) b.get("muvastoptie")).booleanValue();
+		if (b.containsKey("sigmavastoptie"))
+			sigmaVastOptie = ((Boolean) b.get("sigmavastoptie")).booleanValue();
 		
-		if (b.containsKey("muSliderOptie")) muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
-		if (b.containsKey("sigmaSliderOptie")) sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
-		if (b.containsKey("kansSliderOptie")) kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
-		if (b.containsKey("grensSliderOptie")) grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();
-		if (b.containsKey("muZichtbaarFigOptie")) muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarFigOptie")) sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarFigOptie")) grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarFigOptie")) kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
-		if (b.containsKey("muZichtbaarOptie")) muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
-		if (b.containsKey("sigmaZichtbaarOptie")) sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
-		if (b.containsKey("grensZichtbaarOptie")) grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
-		if (b.containsKey("kansZichtbaarOptie")) kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
+		if (b.containsKey("muSliderOptie")) 
+			muSliderOptie = ((Boolean) b.get("muSliderOptie")).booleanValue();
+		if (b.containsKey("sigmaSliderOptie")) 
+			sigmaSliderOptie = ((Boolean) b.get("sigmaSliderOptie")).booleanValue();
+		if (b.containsKey("grensSliderOptie")) 
+			grensSliderOptie = ((Boolean) b.get("grensSliderOptie")).booleanValue();			
+		if (b.containsKey("kansSliderOptie")) 
+			kansSliderOptie = ((Boolean) b.get("kansSliderOptie")).booleanValue();
+
+		if (b.containsKey("muZichtbaarFigOptie")) 
+			muZichtbaarFigOptie = ((Boolean) b.get("muZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarFigOptie")) 
+			sigmaZichtbaarFigOptie = ((Boolean) b.get("sigmaZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarFigOptie")) 
+			grensZichtbaarFigOptie = ((Boolean) b.get("grensZichtbaarFigOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarFigOptie")) 
+			kansZichtbaarFigOptie = ((Boolean) b.get("kansZichtbaarFigOptie")).booleanValue();
+
+		if (b.containsKey("muZichtbaarOptie")) 
+			muZichtbaarOptie = ((Boolean) b.get("muZichtbaarOptie")).booleanValue();
+		if (b.containsKey("sigmaZichtbaarOptie")) 
+			sigmaZichtbaarOptie = ((Boolean) b.get("sigmaZichtbaarOptie")).booleanValue();
+		if (b.containsKey("grensZichtbaarOptie")) 
+			grensZichtbaarOptie = ((Boolean) b.get("grensZichtbaarOptie")).booleanValue();
+		if (b.containsKey("kansZichtbaarOptie")) 
+			kansZichtbaarOptie = ((Boolean) b.get("kansZichtbaarOptie")).booleanValue();
 		
-		if (b.containsKey("muString"))muString = (String) b.get("muString");
-		if (b.containsKey("sigmaString"))sigmaString = (String) b.get("sigmaString");
-		if (b.containsKey("grensString"))grensString = (String) b.get("grensString");
-		if (b.containsKey("grensLinksString"))grensLinksString = (String) b.get("grensLinksString");
-		if (b.containsKey("grensRechtsString"))grensRechtsString = (String) b.get("grensRechtsString");
-		if (b.containsKey("kansString"))kansString = (String) b.get("kansString");
+		if (b.containsKey("muString"))
+			muString = (String) b.get("muString");
+		if (b.containsKey("sigmaString"))
+			sigmaString = (String) b.get("sigmaString");
+		if (b.containsKey("grensString"))
+			grensString = (String) b.get("grensString");
+		if (b.containsKey("grensLinksString"))
+			grensLinksString = (String) b.get("grensLinksString");
+		if (b.containsKey("grensRechtsString"))
+			grensRechtsString = (String) b.get("grensRechtsString");
+		if (b.containsKey("kansString"))
+			kansString = (String) b.get("kansString");
 		
-		if(!muString.equals(""))muTextField.setText(muString);
-		if(!muString.equals(""))sigmaTextField.setText(sigmaString);
-		if(!muString.equals(""))grensTextField.setText(grensString);
-		if(!muString.equals(""))grensLinksTextField.setText(grensLinksString);
-		if(!muString.equals(""))grensRechtsTextField.setText(grensRechtsString);
-		if(!muString.equals(""))kansTextField.setText(kansString);
+		if (!muString.equals(""))
+			muTextField.setText(muString);
+		if (!muString.equals(""))
+			sigmaTextField.setText(sigmaString);
+		if (!muString.equals(""))
+			grensTextField.setText(grensString);
+		if (!muString.equals(""))
+			grensLinksTextField.setText(grensLinksString);
+		if (!muString.equals(""))
+			grensRechtsTextField.setText(grensRechtsString);
+		if (!muString.equals(""))
+			kansTextField.setText(kansString);
 		
 		this.kansLinksOptie = kansLinksOptie;
 		this.kansRechtsOptie = kansRechtsOptie;		
@@ -3241,9 +3476,27 @@ if (grensLinks > minMuX + NZERO)
 
 		zetSigmaVastOptie(this.sigmaVastOptie);						
 		
+		zetMuSliderOptie(this.muSliderOptie);
+		zetSigmaSliderOptie(this.sigmaSliderOptie);
+		zetGrensSliderOptie(this.grensSliderOptie);		
+		zetKansSliderOptie(this.kansSliderOptie);
+
+		zetMuZichtbaarOptie(this.muZichtbaarOptie);
+		zetSigmaZichtbaarOptie(this.sigmaZichtbaarOptie);
+		zetGrensZichtbaarOptie(this.grensZichtbaarOptie);
+		zetKansZichtbaarOptie(this.kansZichtbaarOptie);
+		
+		zetMuZichtbaarFigOptie(this.muZichtbaarFigOptie);
+		zetSigmaZichtbaarFigOptie(this.sigmaZichtbaarFigOptie);
+		zetGrensZichtbaarFigOptie(this.grensZichtbaarFigOptie);
+		zetKansZichtbaarFigOptie(this.kansZichtbaarFigOptie);
 
 
-		bereken(true);
+
+		zetBerekenKeuze();
+
+
+		bereken();
 		
 	}
 
@@ -3265,7 +3518,28 @@ if (grensLinks > minMuX + NZERO)
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
 		h.put("tweegrenzenoptie", new Boolean(tweeGrenzenOptie));	    	    	    
 		
+		h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));		
+	    h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
+	    h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));			    
+	    
+	    h.put("muvastoptie", new Boolean(muVastOptie));		
+	    h.put("sigmavastoptie", new Boolean(sigmaVastOptie));
+	    
+	    h.put("muSliderOptie", new Boolean(muSliderOptie));
+		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));
+		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	
+		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
 		
+		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
+		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
+		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
+		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
+		
+		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
+		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
+		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
+		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
+	    
 		return h;
 	}
 
@@ -3293,29 +3567,6 @@ if (grensLinks > minMuX + NZERO)
 	    h.put("grensLinksString", grensLinksString);
 	    h.put("grensRechtsString", grensRechtsString);
 	    h.put("kansString", kansString);
-	    
-	    h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));		
-	    h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
-	    h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));			    
-	    
-	    h.put("muvastoptie", new Boolean(muVastOptie));		
-	    h.put("sigmavastoptie", new Boolean(sigmaVastOptie));
-	    
-	    h.put("muSliderOptie", new Boolean(muSliderOptie));
-		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));
-		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	
-		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
-		
-		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
-		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
-		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
-		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
-		
-		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
-		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
-		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
-		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
-	    
 	    
 
 	    return h;
@@ -3371,9 +3622,13 @@ if (grensLinks > minMuX + NZERO)
 	public void start()
 	{}
 	
-	public int getIpId(){return 0;}
+	public int getIpId()
+	{	return 0;
+	}
     
-    public String getIpExpString(){return null;}
+    public String getIpExpString()
+    {	return null;
+    }
 
     public void destroy()
     {}
@@ -3406,16 +3661,19 @@ if (grensLinks > minMuX + NZERO)
 			e.getActionCommand().equals("verschoven"))
 		{	processGrensSlider();
 		}		
+		
 		if ((e.getSource() == grensSlider) &&
 			e.getActionCommand().equals("start"))
 		{	lowerGrensLabels = true;
-			muMetWaardeLabel.setVisible(false);
+			//muMetWaardeLabel.setVisible(false);
+			
 			fastPaint();
 		}
 		if ((e.getSource() == grensSlider) &&
 			e.getActionCommand().equals("stop"))
 		{	lowerGrensLabels = false;
-			muMetWaardeLabel.setVisible(muZichtbaarFigOptie);
+			//muMetWaardeLabel.setVisible(muZichtbaarFigOptie);
+
 			fastPaint();
 		}
 		
@@ -3426,6 +3684,7 @@ if (grensLinks > minMuX + NZERO)
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("startLinks"))
 		{	lowerGrensLinksLabels = true;
+			lowerGrensRechtsLabels = true;
 			fastPaint();
 		}    
 		if ((e.getSource() == tweeGrenzenSlider) &&
@@ -3434,13 +3693,16 @@ if (grensLinks > minMuX + NZERO)
 		}    
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("startRechts"))
-		{	lowerGrensRechtsLabels = true;
+		{	lowerGrensLinksLabels = true;
+			lowerGrensRechtsLabels = true;
+	
 			fastPaint();
 		}    
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("stop"))
 		{	lowerGrensLinksLabels = false;
 			lowerGrensRechtsLabels = false;
+			
 //System.out.println("l = " + tweeGrenzenSlider.geefStandLinks());
 //System.out.println("r = " + tweeGrenzenSlider.geefStandRechts());			
 			fastPaint();
