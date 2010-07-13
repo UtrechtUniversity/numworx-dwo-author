@@ -3,13 +3,16 @@ package fi.binomverdeling;
 import java.awt.*;
 import java.applet.*;
 import java.util.*;
+
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
+import fi.beans.wiskopdrbeans.*;
 
-public class BinomVerdeling extends Applet implements ScormAppletIF 
+public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApplet
 {
 	protected static ResourceBundle rb;
+	private String langArg;
 	protected SCORM12APIInterface api;
 	private TextField textField;
 	
@@ -22,6 +25,19 @@ public class BinomVerdeling extends Applet implements ScormAppletIF
 		mf.show();
 		mf.setSize(width, height);
 	}
+	
+	public BinomVerdeling(Locale language)
+    {   langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
+    }
+    
+   
+	public BinomVerdeling()
+	{	langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
+	}
+	
 	
 	public void init() 
 	{	try
@@ -134,5 +150,10 @@ public class BinomVerdeling extends Applet implements ScormAppletIF
 
     public Parameter[] getAllParameters()
     {	return null;
+    }
+    
+    public InteractiePanel getInteractiePanel()
+    {
+    	return new BVInteractiePanel();
     }
 }
