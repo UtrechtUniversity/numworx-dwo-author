@@ -1,0 +1,1 @@
+..\..\..\tools\WZZIP -rp ..\output\scorm\course\binomverdeling.zip ..\output\scorm\course\cp\*.*
