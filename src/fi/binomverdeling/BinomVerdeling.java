@@ -1,13 +1,24 @@
 package fi.binomverdeling;
 
-import java.awt.*;
-import java.applet.*;
-import java.util.*;
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.TextField;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-import fi.beans.copyright.*;
-import fi.beans.scorm.*;
-import fi.beans.base64code.*;
-import fi.beans.wiskopdrbeans.*;
+import oefening.BVController;
+import fi.beans.base64code.StringCodeObject;
+import fi.beans.copyright.FIButton;
+import fi.beans.scorm.Parameter;
+import fi.beans.scorm.SCORM12APIInterface;
+import fi.beans.scorm.Scorm;
+import fi.beans.scorm.ScormAppletIF;
+import fi.beans.scorm.ScormEditComponentIF;
+import fi.beans.scorm.ScormMainFrame;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
 public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApplet {
 	protected static ResourceBundle rb;
@@ -16,6 +27,7 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private TextField textField;
 
 	public static void main(String[] args) {
+		System.out.println("test");
 		int width = 800;
 		int height = 600;
 		ScormMainFrame mf = new ScormMainFrame(new BinomVerdeling(), width,	height);
