@@ -7,15 +7,21 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class BVInteractiePanelView extends JPanel implements Observer {
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+
+/**
+ * invullen.
+ */
+public class BVInteractiePanelView extends JPanel implements InteractiePanel, Observer{
 	private int staafbreedte;
 	private JPanel centerpanel;
 	private final int EDITHEIGHT = 30;
@@ -125,7 +131,118 @@ public class BVInteractiePanelView extends JPanel implements Observer {
 		return this.ktext.getText();
 	}
 	
-	public JPanel getPanel() {
-		return this;
+	
+	
+	//============================================================================
+	//Interface implementatie
+	//============================================================================
+	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
+	{
+		
 	}
+	
+	public void setState(Hashtable h)
+	{
+		
+	}
+	
+	
+	public void setEditState(Hashtable h)
+	{
+		
+	}
+	
+	public Hashtable getState()
+	{
+		Hashtable h = new Hashtable();
+		return h;
+	}
+	
+	public Hashtable getEditState()
+	{
+		Hashtable h = new Hashtable();
+		return h;
+	}
+	
+	public InteractieEditPanel getEditPanel()
+	{
+		return new BVInteractieEditPanel();
+	}
+	public void setBounds(int x, int y, int b, int h)
+	{	
+		//super.setBounds(x,y,b,h);
+	}
+	public void wis()
+	{
+		
+	}
+	public void zetMaat()
+	{
+	
+	}
+	public int geefAsHoogte()
+	{
+		return 0;
+	}
+	public int getIpId()
+	{
+		return 0;
+	}
+	
+	public int getScore()
+	{
+		return 0;
+	}
+	public int getScoreMax()
+	{
+		return 0;
+	}
+	public boolean isCorrect()
+	{
+		return true;
+	}
+	public boolean isFout()
+	{
+		return false;
+	}
+	public void zetMode(int mode)
+	{
+	
+	}
+	public void zetNagekeken(boolean b)
+	{
+	
+	}
+    public void stop()
+	{
+	
+	}
+    public void start()
+	{
+    	
+	}
+   
+    public void destroy()
+	{
+	
+	}
+    public void opnieuw()
+	{
+	
+	}
+    public void kijkNa()
+	{
+	
+	}
+    public void kijkNa(int stapNr)
+	{
+	
+	}
+    public void addActionListener(ActionListener al)
+	{
+	
+	}
+	
+	
+	
 }

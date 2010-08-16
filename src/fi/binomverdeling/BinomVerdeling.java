@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import oefening.BVController;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.FIButton;
 import fi.beans.scorm.Parameter;
@@ -25,6 +24,7 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private String langArg;
 	protected SCORM12APIInterface api;
 	private TextField textField;
+	private BVInteractiePanelController bvipcontroller;
 
 	public static void main(String[] args) {
 		System.out.println("test");
@@ -40,12 +40,14 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	public BinomVerdeling(Locale language) {
 		langArg = language.getLanguage();
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
+		this.bvipcontroller = new BVInteractiePanelController();
 	}
 
 	public BinomVerdeling() {
 		langArg = "nl";
 		Locale language = new Locale(langArg, "");
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
+		this.bvipcontroller = new BVInteractiePanelController();
 	}
 
 	public void init() {
