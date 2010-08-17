@@ -37,14 +37,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JLabel plabel;
 	private JLabel totalekanslabel;
 	
-	//De nog ongebruikte variabelen:
-	private boolean showxas;
-	private boolean showyas;
-	
 	private boolean nveranderbaar;
 	private boolean pveranderbaar;
 	private boolean successenveranderbaar;
 	
+	//De nog ongebruikte variabelen:
+	private boolean showxas;
+	private boolean showyas;
 	
 	/**
 	 * Constructor
