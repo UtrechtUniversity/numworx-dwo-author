@@ -3,6 +3,7 @@ package fi.binomverdeling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -21,7 +22,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 /**
  * invullen.
  */
-public class BVInteractiePanelView extends JPanel implements InteractiePanel, Observer{
+public class BVInteractiePanelView extends JPanel implements InteractiePanel, Observer {
 	private int staafbreedte;
 	private JPanel centerpanel;
 	private final int EDITHEIGHT = 30;

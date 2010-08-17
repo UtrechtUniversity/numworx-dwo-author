@@ -1,12 +1,16 @@
 package fi.binomverdeling;
 
 import java.applet.Applet;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.TextField;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import javax.swing.JFrame;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.FIButton;
@@ -24,9 +28,16 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private String langArg;
 	protected SCORM12APIInterface api;
 	private TextField textField;
-	private BVInteractiePanelController bvipcontroller;
 
 	public static void main(String[] args) {
+		//bezig
+		JFrame testframe = new JFrame("testframe");
+		testframe.setSize(500,500);
+		BVInteractiePanel testpanel = new BVInteractiePanel();
+		testframe.setContentPane(testpanel);
+		testframe.setVisible(true);
+		//eindbezig
+		
 		System.out.println("test");
 		int width = 800;
 		int height = 600;
@@ -40,14 +51,12 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	public BinomVerdeling(Locale language) {
 		langArg = language.getLanguage();
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
-		this.bvipcontroller = new BVInteractiePanelController();
 	}
 
 	public BinomVerdeling() {
 		langArg = "nl";
 		Locale language = new Locale(langArg, "");
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
-		this.bvipcontroller = new BVInteractiePanelController();
 	}
 
 	public void init() {

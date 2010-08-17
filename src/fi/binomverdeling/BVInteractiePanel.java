@@ -3,13 +3,15 @@ package fi.binomverdeling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Hashtable;
-import java.util.Observable;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,7 +24,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  * InteractiePanel van BinomVerdeling
  * Model, view en controller nu bij elkaar gevoegd.
  */
-public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener {
+public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener, ComponentListener {
 	private double p; //succeskans
 	private int n; //aantal herhalingen
 	private int successen;
@@ -50,6 +52,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public BVInteractiePanel() {
 		super();
+		//super.setPreferredSize(new Dimension(500,500));
+		System.out.println("debug: height: " + this.getHeight() + "   width: " + this.getWidth());
 		super.setLayout(new BorderLayout());
 		
 		this.n = 30;
@@ -93,8 +97,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         this.centerpanel = new JPanel();
         super.add(this.centerpanel, BorderLayout.CENTER);
-        
+
+        this.addComponentListener(this);
         super.setVisible(true);
+        
 	}
 	
 	/**
@@ -145,6 +151,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * Update de view
 	 */
 	public void update() {
+		System.out.println("debug: height: " + this.getHeight() + "   width: " + this.getWidth());
 		this.ntext.setText(Integer.toString(this.n));
 		this.ntext.setEditable(this.nveranderbaar);
 		
@@ -279,8 +286,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 
 	@Override
 	public InteractieEditPanel getEditPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BVInteractieEditPanel();
 	}
 
 	@Override
@@ -466,6 +472,31 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	@Override
 	public void zetOpdracht(Hashtable b, String[] randomVars,
 			Hashtable randomValues) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//============================ ComponentListener implementatie
+	@Override
+	public void componentHidden(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentResized(ComponentEvent arg0) {
+		this.update();
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
