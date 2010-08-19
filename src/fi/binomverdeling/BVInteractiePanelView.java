@@ -3,7 +3,6 @@ package fi.binomverdeling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -12,18 +11,19 @@ import java.util.Hashtable;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
 
 /**
  * invullen.
  */
-public class BVInteractiePanelView extends JPanel implements InteractiePanel, Observer {
+public class BVInteractiePanelView extends JFrame implements Observer {
 	private int staafbreedte;
+	
 	private JPanel centerpanel;
 	private final int EDITHEIGHT = 30;
 	private JTextField ntext;
@@ -34,16 +34,19 @@ public class BVInteractiePanelView extends JPanel implements InteractiePanel, Ob
 	private JLabel plabel;	
 	private BVInteractiePanelModel model;
 	private JLabel totalekanslabel;
+	private Container content;
 	
 	public BVInteractiePanelView(BVInteractiePanelModel model) {
-		super();
+		super("Binom MVC");
+		super.setSize(500,500);
 		this.model = model;
 		this.model.addObserver(this);
 		
-        super.setLayout(new BorderLayout());
+		this.content = this.getContentPane();
+        this.content.setLayout(new BorderLayout());
         
         this.totalekanslabel = new JLabel("P(X <= " + this.model.getSuccessen() + ") = " + this.model.berekenKansCumulatief());
-		super.add(this.totalekanslabel, BorderLayout.SOUTH);
+		this.content.add(this.totalekanslabel, BorderLayout.SOUTH);
         this.ntext = new JTextField(5);
         this.ntext.setActionCommand("ntextupdate");
         this.ntext.setText(Integer.toString(this.model.getN()));
@@ -68,12 +71,12 @@ public class BVInteractiePanelView extends JPanel implements InteractiePanel, Ob
         editbalk.add(this.ktext);
         editbalk.add(this.plabel);
         editbalk.add(this.ptext);
-        super.add(editbalk, BorderLayout.NORTH);
+        this.content.add(editbalk, BorderLayout.NORTH);
         
         this.centerpanel = new JPanel();
-        super.add(this.centerpanel, BorderLayout.CENTER);
+        this.content.add(this.centerpanel, BorderLayout.CENTER);
         
-        super.setVisible(true);
+        this.setVisible(true);
 	}
 	
 	public void paintStaafje(int k) {
@@ -130,120 +133,5 @@ public class BVInteractiePanelView extends JPanel implements InteractiePanel, Ob
 	}
 	public String getKText() {
 		return this.ktext.getText();
-	}
-	
-	
-	
-	//============================================================================
-	//Interface implementatie
-	//============================================================================
-	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
-	{
-		
-	}
-	
-	public void setState(Hashtable h)
-	{
-		
-	}
-	
-	
-	public void setEditState(Hashtable h)
-	{
-		
-	}
-	
-	public Hashtable getState()
-	{
-		Hashtable h = new Hashtable();
-		return h;
-	}
-	
-	public Hashtable getEditState()
-	{
-		Hashtable h = new Hashtable();
-		return h;
-	}
-	
-	public InteractieEditPanel getEditPanel()
-	{
-		return new BVInteractieEditPanel();
-	}
-	public void setBounds(int x, int y, int b, int h)
-	{	
-		//super.setBounds(x,y,b,h);
-	}
-	public void wis()
-	{
-		
-	}
-	public void zetMaat()
-	{
-	
-	}
-	public int geefAsHoogte()
-	{
-		return 0;
-	}
-	public int getIpId()
-	{
-		return 0;
-	}
-	
-	public int getScore()
-	{
-		return 0;
-	}
-	public int getScoreMax()
-	{
-		return 0;
-	}
-	public boolean isCorrect()
-	{
-		return true;
-	}
-	public boolean isFout()
-	{
-		return false;
-	}
-	public void zetMode(int mode)
-	{
-	
-	}
-	public void zetNagekeken(boolean b)
-	{
-	
-	}
-    public void stop()
-	{
-	
-	}
-    public void start()
-	{
-    	
-	}
-   
-    public void destroy()
-	{
-	
-	}
-    public void opnieuw()
-	{
-	
-	}
-    public void kijkNa()
-	{
-	
-	}
-    public void kijkNa(int stapNr)
-	{
-	
-	}
-    public void addActionListener(ActionListener al)
-	{
-	
-	}
-	
-	
-	
+	}	
 }

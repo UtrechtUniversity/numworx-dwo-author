@@ -54,6 +54,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		super();
 		//super.setPreferredSize(new Dimension(500,500));
 		System.out.println("debug: height: " + this.getHeight() + "   width: " + this.getWidth());
+		this.setSize(400,400);
 		super.setLayout(new BorderLayout());
 		
 		this.n = 30;

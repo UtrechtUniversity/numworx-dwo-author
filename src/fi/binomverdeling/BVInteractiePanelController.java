@@ -77,7 +77,4 @@ public class BVInteractiePanelController implements ActionListener{
 			this.model.setSuccessen(k);
 		}
 	}
-	public InteractiePanel getInteractiePanel() {
-		return this.view;
-	}
 }
