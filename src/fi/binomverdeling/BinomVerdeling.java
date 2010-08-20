@@ -31,7 +31,8 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 
 	public static void main(String[] args) {
 		//bezig
-		BVInteractiePanelController controller = new BVInteractiePanelController();
+		//BVInteractiePanelController controller = new BVInteractiePanelController();
+		
 		JFrame testframe = new JFrame("testframe");
 		testframe.setSize(500,500);
 		BVInteractiePanel testpanel = new BVInteractiePanel();
@@ -39,7 +40,6 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 		testframe.setVisible(true);
 		//eindbezig
 		
-		System.out.println("test");
 		int width = 800;
 		int height = 600;
 		ScormMainFrame mf = new ScormMainFrame(new BinomVerdeling(), width,	height);
@@ -175,6 +175,9 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 		return null;
 	}
 
+	/**
+	 * Geeft een InteractiePanel van de Binomiale Verdeling
+	 */
 	public InteractiePanel getInteractiePanel() {
 		return new BVInteractiePanel();
 	}
