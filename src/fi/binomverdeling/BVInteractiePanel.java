@@ -6,15 +6,12 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -35,14 +32,25 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JTextField pText;
 	private JLabel pLabel;
 	private JLabel totaleKansLabel;
+	private Slider nSlider;
+	private Slider pSlider;
+	private Slider successenSlider;
+	
+	public static final int N_MIN = 1;
+	public static final int N_MAX = 100;
 	
 	private boolean nVeranderbaar;
 	private boolean pVeranderbaar;
 	private boolean successenVeranderbaar;
 	
+	private String nString;
+	private String pString;
+	private String successenString;
+	
 	//De nog ongebruikte variabelen:
 	private boolean showXAs;
 	private boolean showYAs;
+	
 	
 	/**
 	 * Constructor
@@ -60,6 +68,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.nVeranderbaar = true;
 		this.pVeranderbaar = true;
 		this.successenVeranderbaar = true;
+		
+		this.nString = Integer.toString(this.n);
+		this.pString = Double.toString(this.p);
+		this.successenString = Integer.toString(this.successen);
 		
         this.totaleKansLabel = new JLabel("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
 		super.add(this.totaleKansLabel, BorderLayout.SOUTH);
@@ -84,15 +96,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         JPanel editBalk = new JPanel();
         editBalk.setBackground(Color.WHITE);
-        LayoutManager layout = new GridLayout(0,6);
-        editBalk.setLayout(layout);
+        editBalk.setLayout(new GridLayout(1,6));
         editBalk.add(this.nLabel);
         editBalk.add(this.nText);
         editBalk.add(this.successenLabel);
         editBalk.add(this.successenText);
         editBalk.add(this.pLabel);
-        editBalk.add(this.pText);
-        super.add(editBalk, BorderLayout.NORTH);
+        editBalk.add(this.pText); 
+        
+        
+        JPanel noordBalk = new JPanel();
+        noordBalk.setLayout(new GridLayout(2,1));
+        super.add(noordBalk, BorderLayout.NORTH);
+        
+        noordBalk.add(editBalk);
+        
+        JPanel sliderBalk = new JPanel();
+        sliderBalk.setLayout(new GridLayout(1,3));
+        
         
         this.staafjesPanel = new BVStaafjesPanel(this);
         super.add(this.staafjesPanel, BorderLayout.CENTER);
@@ -100,21 +121,53 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.nText.addActionListener(this);
         this.pText.addActionListener(this);
         this.successenText.addActionListener(this);
-        super.setVisible(true);
         
+        this.nSlider = new Slider(100,50);
+        this.pSlider = new Slider(100,50);
+        this.successenSlider = new Slider(100,50);
+        
+        this.nSlider.addActionListener(this);
+        this.pSlider.addActionListener(this);
+        this.successenSlider.addActionListener(this);
+        
+        sliderBalk.add(this.nSlider);
+        sliderBalk.add(this.successenSlider);
+        sliderBalk.add(this.pSlider);
+        sliderBalk.setBackground(Color.WHITE);
+        
+        noordBalk.add(sliderBalk);
+        
+        this.add(noordBalk, BorderLayout.NORTH);
+	}
+	
+	private double getPercentageFromSlider(Slider slider) {
+		double d = (double)(slider.geefStand()-slider.getMinimum()) / (double)(slider.getMaximum()-slider.getMinimum());
+		int i = (int)(d*10000);
+		return i/10000.0;
+	}
+	
+	private void setPSlider() {
+		this.pSlider.zetStand((int)(this.p * (this.pSlider.getMaximum()-this.pSlider.getMinimum()) + this.pSlider.getMinimum()));
+	}
+	
+	private int getNFromSlider() {
+		return 0; //TODO
 	}
 	
 	/**
 	 * Update de view
 	 */
 	public void update() {
+		
 		this.nText.setText(Integer.toString(this.n));
+		//this.nText.setText(this.nString);
 		this.nText.setEditable(this.nVeranderbaar);
 		
 		this.pText.setText(Double.toString(this.p));
+		//this.pText.setText(this.pString);
 		this.pText.setEditable(this.pVeranderbaar);
 		
-		this.successenText.setText(Integer.toString(this.successen));
+		this.successenText.setText(this.successenString);
 		this.successenText.setEditable(this.successenVeranderbaar);
 		
 		this.totaleKansLabel.setText("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
@@ -177,12 +230,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		return this.n;
 	}
 	
+	/*
 	public void setN(int n) {
 		if(n >= 0) {
 			this.n = n;
 		}
 		this.update();
 	}
+	*/
 	
 	public int getSuccessen() {
 		return this.successen;
@@ -218,38 +273,84 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().equals("ntextupdate")) {
-			int n;
+			//TODO this.setNSlider();
+			
+			this.nString = this.nText.getText();
 			try {
-				n = Integer.parseInt(this.nText.getText());
-				this.setN(n);
+				this.n = Integer.parseInt(this.nString);
 			}
 			catch (NumberFormatException e) {
-				//n = this.n;
-				//this.setN(n);
+				//if (!(nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#')) {
+				//	this.nString = Integer.toString(this.n);
+				//}
 			}
 		}
 		if (arg0.getActionCommand().equals("ptextupdate")) {
-			double p;
+			this.setPSlider();
+			this.pString = this.pText.getText();
 			try {
-				p = Double.parseDouble(this.pText.getText());
-				this.setP(p);
+				this.p = Double.parseDouble(this.pString);
 			}
 			catch (NumberFormatException e) {
-				//p = this.p;
-				//this.setP(p);
+				//if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
+				//	this.pString = Double.toString(this.p);
+				//}
 			}
 		}
 		if (arg0.getActionCommand().equals("successentextupdate")) {
-			int k;
+			//TODO this.setSuccessenSlider();
+			this.successenString = this.successenText.getText();
 			try {
-				k = Integer.parseInt(this.successenText.getText());
-				this.setSuccessen(k);
+				this.successen = Integer.parseInt(this.successenString);
 			}
 			catch (NumberFormatException e) {
-				//k = this.successen;
-				//this.setSuccessen(k);
+				//if (!(successenString.length() >= 3 && successenString.charAt(0) == '#' && successenString.charAt(successenString.length()-1) == '#')) {
+				//	this.successenString = Integer.toString(this.successen);
+				//}
 			}
 		}
+		if (arg0.getSource() == this.nSlider) {
+			this.n = (int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN);
+		}
+		
+		if (arg0.getSource() == this.pSlider) {
+			this.p = this.getPercentageFromSlider(this.pSlider);
+		}
+		
+		if (arg0.getSource() == this.successenSlider) {
+			this.successen = (int)(this.getPercentageFromSlider(this.successenSlider)*BVInteractiePanel.N_MAX);
+		}
+		
+		this.update();
+	}
+	
+	/**
+	 * Gekopiëerd uit Normale Verdeling
+	 */
+	public static double substitueerRandom(double def, String s, String[] randomVars, Hashtable randomValues) {
+		double d = Double.NaN;
+		s = s.substring(1, s.length() - 1);
+		//String[] delen = StringUtils.split(s, "/");
+		String[] delen = s.split("/");
+		int decFactor = 1;
+		for (int j = 0 ; j < randomVars.length; j++) {
+			if (randomVars[j].equals(delen[0])) {
+				d = ((Integer) randomValues.get(randomVars[j])).intValue();
+			}
+		}
+		System.out.println("Debug:");
+		for (String a: delen) {
+			System.out.println(a);
+		}
+		System.out.println(delen.length);
+		if (delen.length > 1) {
+			decFactor = Integer.parseInt(delen[1]);
+			d = d / decFactor;
+		}
+		if (Double.isNaN(d)) {
+			d = def;
+		}
+		return d;
 	}
 	
 	//=========================================================================
@@ -286,9 +387,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("p", new Double(this.p));
 		h.put("successen", new Integer(this.successen));
 		
-		h.put("nString", new String(this.nText.getText()));
-		h.put("pString", new String(this.pText.getText()));
-		h.put("successenString", new String(this.successenText.getText()));
+		h.put("nString", new String(this.nString));
+		h.put("pString", new String(this.pString));
+		h.put("successenString", new String(this.successenString));
 		
 		return h;
 	}
@@ -323,13 +424,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.successenVeranderbaar = ((Boolean)b.get("successenVeranderbaar")).booleanValue();
 		}
 		if (b.containsKey("nString")) {
-			this.nText.setText(new String((String)b.get("nString")));
+			this.nString = (String)b.get("nString");
 		}
 		if (b.containsKey("pString")) {
-			this.pText.setText(new String((String)b.get("pString")));
+			this.pString = (String)b.get("pString");
 		}
 		if (b.containsKey("successenString")) {
-			this.successenText.setText(new String((String)b.get("successenString")));
+			this.successenString = (String)b.get("successenString");
 		}
 		
 		this.update();
@@ -367,6 +468,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("pVeranderbaar", new Boolean(this.pVeranderbaar));
 		h.put("successenVeranderbaar", new Boolean(this.successenVeranderbaar));
 		
+		h.put("nString", this.nString);
+		h.put("pString", this.pString);
+		h.put("successenString", this.successenString);
 		return h;
 	}
 
@@ -398,6 +502,15 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("successenVeranderbaar")) {
 			this.successenVeranderbaar = ((Boolean)b.get("successenVeranderbaar")).booleanValue();
+		}
+		if (b.contains("nString")) {
+			this.nString = (String)b.get("nString");
+		}
+		if (b.contains("pString")) {
+			this.pString = (String)b.get("pString");
+		}
+		if (b.contains("successenString")) {
+			this.successenString = (String)b.get("successenString");
 		}
 		
 		this.update();
@@ -450,6 +563,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * @param randomValues de waarden van alle random variabelen
 	 */
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
+		//zet gegevens uit getEditState hashtable
 		if (b.containsKey("n")) {
 			this.n = ((Integer)b.get("n")).intValue();
 		}
@@ -475,14 +589,34 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.successenVeranderbaar = ((Boolean)b.get("successenVeranderbaar")).booleanValue();
 		}
 		
-		/*
+		//vul randomvars in en zet textboxes
 		if(b.containsKey("nString")) {
 			String nString = new String((String)b.get("nString"));
-			if ()
+			this.nText.setText(nString);
+			if (nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#') {
+				this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, nString, randomVars, randomValues);
+			}
 		}
-		*/
-		//TODO randomvars
+		if(b.containsKey("pString")) {
+			String pString = new String((String)b.get("pString"));
+			this.pText.setText(pString);
+			if (pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#') {
+				this.p = BVInteractiePanel.substitueerRandom(this.p, pString, randomVars, randomValues);
+			}
+		}
+		if(b.containsKey("successenString")) {
+			String successenString = new String((String)b.get("successenString"));
+			this.successenText.setText(successenString);
+			if (successenString.length() >= 3 && successenString.charAt(0) == '#' && successenString.charAt(successenString.length()-1) == '#') {
+				this.successen = (int)BVInteractiePanel.substitueerRandom((double)this.successen, successenString, randomVars, randomValues);
+			}
+		}
 		
+		this.nString = Integer.toString(this.n);
+		this.pString = Double.toString(this.p);
+		this.successenString = Integer.toString(this.successen);
+		
+		//update
 		this.update();
 	}
 }

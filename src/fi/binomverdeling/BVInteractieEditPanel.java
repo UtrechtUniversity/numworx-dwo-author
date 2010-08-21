@@ -1,6 +1,5 @@
 package fi.binomverdeling;
 
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,7 +62,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.yAsWeergaveBox.setActionCommand("yasweergaveboxupdate");
 		this.yAsWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.yAsWeergaveBox);
-				
+		
+		Slider slider = new Slider(100,10);
+		this.settingsPanel.add(slider);
 		this.add(this.settingsPanel);
 	}
 
@@ -71,43 +72,31 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	 * Zet de al gemaakte instellingen om deze te kunnen bewerken.
 	 */
 	public void setEditState(Hashtable h) {
-		/*
-		Werkt niet goed.
-		Als ik in WiskOpdr een BinomVerdeling maak, in het Edit Panel alle instellingen afvink,
-		dan op OK klik, en dan weer op het interactiepanel klik om mijn instellingen te wijzigen,
-		worden de vinkjes niet goed teruggezet. Dat moet in deze methode worden gedaan, dus deze 
-		methode werkt niet goed.
-		
-		Het gaat fout omdat ik met if statements check of de keys wel in de Hashtable zitten.
-		
-		Ik blijk niet in de if-statements te komen, terwijl die keys wel in de hashtable voorkomen..
-		Hoe kan dit?
-		*/
-		
-		//check om te zien of setEditState wel aangeroepen wordt
-		System.out.println(" setEditState aangeroepen"); //TODO debugregels wegen.
-		
 		this.interactiePanel.setEditState(h);
 		
-		//lees zonder controle iets uit de hashtable, geen error dus nVeranderbaar zit in de hashtable
-		this.nVeranderbaarBox.setSelected(((Boolean)h.get("nVeranderbaar")).booleanValue());
+		Object o;
+		o = h.get("nVeranderbaar");
+		if (o != null) {
+			this.nVeranderbaarBox.setSelected(((Boolean)o).booleanValue());
+		}
 		
-		//maar ik kom niet in dit if statement?
-		if(h.contains("nVeranderbaar")) {
-			System.out.println("debug: in if-statement");
-			this.nVeranderbaarBox.setSelected(((Boolean)h.get("nVeranderbaar")).booleanValue());
+		o = h.get("pVeranderbaar");
+		if (o != null) {
+			this.pVeranderbaarBox.setSelected(((Boolean)o).booleanValue());
 		}
-		if(h.contains("pVeranderbaar")) {
-			this.pVeranderbaarBox.setSelected(((Boolean)h.get("pVeranderbaar")).booleanValue());
+		
+		o = h.get("successenVeranderbaar");
+		if (o != null) {
+			this.successenVeranderbaarBox.setSelected(((Boolean)o).booleanValue());
 		}
-		if(h.contains("successenVeranderbaar")) {
-			this.successenVeranderbaarBox.setSelected(((Boolean)h.get("successenVeranderbaar")).booleanValue());
+		
+		o = h.get("showXAs");
+		if (o != null) {
+			this.xAsWeergaveBox.setSelected(((Boolean)o).booleanValue());
 		}
-		if(h.contains("showXAs")) {
-			this.xAsWeergaveBox.setSelected(((Boolean)h.get("showXAs")).booleanValue());
-		}
-		if(h.contains("showYAs")) {
-			this.yAsWeergaveBox.setSelected(((Boolean)h.get("showYAs")).booleanValue());
+		o = h.get("showYAs");
+		if (o != null) {
+			this.yAsWeergaveBox.setSelected(((Boolean)o).booleanValue());
 		}
 	}
 

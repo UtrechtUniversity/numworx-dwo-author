@@ -11,7 +11,7 @@ import javax.swing.JPanel;
  */
 public class BVStaafjesPanel extends JPanel {
 	private BVInteractiePanel interactiepanel;
-	private int staafbreedte;
+	private double staafbreedte;
 
 	public BVStaafjesPanel(BVInteractiePanel interactiepanel) {
 		this.interactiepanel = interactiepanel;
@@ -22,7 +22,7 @@ public class BVStaafjesPanel extends JPanel {
 	 * de breedte van het panel
 	 */
 	private void berekenStaafBreedte() {
-		this.staafbreedte = this.getWidth()/(this.interactiepanel.getN()+1);
+		this.staafbreedte = (double)this.getWidth()/(double)(this.interactiepanel.getN()+1);
 		//this.staafbreedte = this.getWidth()/(2*this.interactiepanel.getN()+3);
 	}
 
@@ -32,32 +32,14 @@ public class BVStaafjesPanel extends JPanel {
 	 * @param k Het nummer van het te tekenen staafje
 	 */
 	public void paintStaafje(Graphics g, int k) {
-		//Graphics g = this.getGraphics();
 		if(k<=this.interactiepanel.getSuccessen()) {
 			g.setColor(Color.BLACK);
 		}
 		else {
 			g.setColor(Color.GRAY);
 		}
-		g.fillRect(k*this.staafbreedte, this.getHeight() - (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)+this.interactiepanel.EDITHEIGHT),this.staafbreedte, (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)));
+		g.fillRect((int)(k*this.staafbreedte), this.getHeight() - (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)+this.interactiepanel.EDITHEIGHT),(int)((k+1)*this.staafbreedte) - (int)(k*this.staafbreedte), (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)));
 		//g.fillRoundRect((2*k+1)*this.staafbreedte, this.getHeight() - (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)+this.interactiepanel.EDITHEIGHT), this.staafbreedte, (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)),this.staafbreedte/3,this.staafbreedte/3);
-	}
-	
-	/**
-	 * Paint een enkel staafje, vergroot met een multiplier
-	 * @param k Het nummer van het te tekenen staafje
-	 * @param multiplier Het getal waarmee de lengte van het staafje vermenigvuldigd wordt
-	 */
-	public void paintStaafjeSchaal(int k,double multiplier) {
-		Graphics g = this.getGraphics();
-		if(k<=this.interactiepanel.getSuccessen()) {
-			g.setColor(Color.GRAY);
-		}
-		else {
-			g.setColor(Color.BLACK);
-		}
-		g.fillRect((2*k+1)*this.staafbreedte, this.getHeight() - (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT)+this.interactiepanel.EDITHEIGHT), this.staafbreedte, (int)(multiplier * (int)(this.interactiepanel.berekenKansK(k)*(this.getHeight()-this.interactiepanel.EDITHEIGHT))));
-	
 	}
 	
 	/**
