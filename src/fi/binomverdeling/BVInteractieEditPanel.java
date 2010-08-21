@@ -23,7 +23,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private JCheckBox xAsWeergaveBox;
 	private JCheckBox yAsWeergaveBox;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public BVInteractieEditPanel() {		
 		this.setLayout(new GridLayout(0,2));
 		this.interactiePanel = new BVInteractiePanel();
@@ -65,8 +67,34 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.add(this.settingsPanel);
 	}
 
+	/**
+	 * Zet de al gemaakte instellingen om deze te kunnen bewerken.
+	 */
 	public void setEditState(Hashtable h) {
+		/*
+		Werkt niet goed.
+		Als ik in WiskOpdr een BinomVerdeling maak, in het Edit Panel alle instellingen afvink,
+		dan op OK klik, en dan weer op het interactiepanel klik om mijn instellingen te wijzigen,
+		worden de vinkjes niet goed teruggezet. Dat moet in deze methode worden gedaan, dus deze 
+		methode werkt niet goed.
+		
+		Het gaat fout omdat ik met if statements check of de keys wel in de Hashtable zitten.
+		
+		Ik blijk niet in de if-statements te komen, terwijl die keys wel in de hashtable voorkomen..
+		Hoe kan dit?
+		*/
+		
+		//check om te zien of setEditState wel aangeroepen wordt
+		System.out.println(" setEditState aangeroepen"); //TODO debugregels wegen.
+		
+		this.interactiePanel.setEditState(h);
+		
+		//lees zonder controle iets uit de hashtable, geen error dus nVeranderbaar zit in de hashtable
+		this.nVeranderbaarBox.setSelected(((Boolean)h.get("nVeranderbaar")).booleanValue());
+		
+		//maar ik kom niet in dit if statement?
 		if(h.contains("nVeranderbaar")) {
+			System.out.println("debug: in if-statement");
 			this.nVeranderbaarBox.setSelected(((Boolean)h.get("nVeranderbaar")).booleanValue());
 		}
 		if(h.contains("pVeranderbaar")) {
@@ -83,7 +111,11 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 
+	/**
+	 * Geef alle instellingen in de vorm van een hashtable
+	 */
 	public Hashtable getEditState() {
+		
 		//haal de edit gegevens uit het InteractiePanel
 		Hashtable h = this.interactiePanel.getEditState();
 		
