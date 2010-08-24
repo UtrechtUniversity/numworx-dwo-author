@@ -3,7 +3,6 @@ package fi.binomverdeling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -12,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -24,7 +24,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private int n; //aantal herhalingen
 	private int successen;
 	private BVStaafjesPanel staafjesPanel;
-	public final int EDITHEIGHT = 0;
 	private JTextField nText;
 	private JLabel nLabel;
 	private JTextField successenText;
@@ -36,7 +35,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private Slider pSlider;
 	private Slider successenSlider;
 	
-	public static final int N_MIN = 1;
+	public static final int N_MIN = 0; //min en max van n voor de sliders
 	public static final int N_MAX = 100;
 	
 	private boolean nVeranderbaar;
@@ -51,11 +50,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String pString;
 	private String successenString;
 	
-	//De nog ongebruikte variabelen:
-	private boolean showXAs;
-	private boolean showYAs;
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -67,8 +61,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.p = 0.5;
 		this.successen = 10;
         
-		this.showXAs = true;
-		this.showYAs = true;
 		this.nVeranderbaar = true;
 		this.pVeranderbaar = true;
 		this.successenVeranderbaar = true;
@@ -98,7 +90,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.nLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         this.pLabel = new JLabel("p: ");
         this.pLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.successenLabel = new JLabel("k: ");
+        this.successenLabel = new JLabel("successen: ");
         this.successenLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         
         
@@ -152,14 +144,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.add(noordBalk, BorderLayout.NORTH);
 	}
 	
+	/**
+	 * Hulpfunctie om de stand van een slider te krijgen
+	 * @param slider de Slider waarvan je de stand wil weten
+	 * @return op welk deel de slider staat, dus in[0;1]
+	 */
 	private double getPercentageFromSlider(Slider slider) {
 		double d = (double)(slider.geefStand()-slider.getMinimum()) / (double)(slider.getMaximum()-slider.getMinimum());
 		int i = (int)(d*10000);
 		return i/10000.0;
 	}
 	
-	private void setSlider(Slider slider, double percentage) {
-		slider.zetStand((int)(percentage * (slider.getMaximum()-slider.getMinimum()) + slider.getMinimum()));
+	/**
+	 * Hulpfunctie om de slider te zetten
+	 * @param slider De slider die je gaat zetten
+	 * @param deel Het deel van de gehele lengte van de slider waarop je hem zet, moet element zijn van [0;1];
+	 */
+	private void setSlider(Slider slider, double deel) {
+		slider.zetStand((int)(deel * (slider.getMaximum()-slider.getMinimum()) + slider.getMinimum()));
 	}
 	
 	/**
@@ -191,6 +193,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.nSlider.setVisible(this.showNSlider);
 		this.pSlider.setVisible(this.showPSlider);
 		this.successenSlider.setVisible(this.showSuccessenSlider);
+		this.nSlider.setEditable(this.nVeranderbaar);
+		this.pSlider.setEditable(this.pVeranderbaar);
+		this.successenSlider.setEditable(this.successenVeranderbaar);
 		
 		this.totaleKansLabel.setText("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
 		this.repaint();
@@ -281,12 +286,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.vernieuw();
 	}
 	public void setShowXAs(boolean b) {
-		this.showXAs = b;
-		//TODO implementeer
+		this.staafjesPanel.setShowXAs(b);
 	}
 	public void setShowYAs(boolean b) {
-		this.showYAs = b;
-		//TODO implementeer
+		this.staafjesPanel.setShowYAs(b);
 	}
 	public void setShowNSlider(boolean b) {
 		this.showNSlider = b;
@@ -360,24 +363,19 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	/**
-	 * Gekopiëerd uit Normale Verdeling
+	 * Gekopiëerd uit Normale Verdeling, kleine aanpassingen gemaakt
 	 */
 	public static double substitueerRandom(double def, String s, String[] randomVars, Hashtable randomValues) {
 		double d = Double.NaN;
 		s = s.substring(1, s.length() - 1);
 		//String[] delen = StringUtils.split(s, "/");
-		String[] delen = s.split("/"); //TODO doubles werkend maken
+		String[] delen = s.split("/");
 		int decFactor = 1;
 		for (int j = 0 ; j < randomVars.length; j++) {
 			if (randomVars[j].equals(delen[0])) {
 				d = ((Integer) randomValues.get(randomVars[j])).intValue();
 			}
 		}
-		System.out.println("Debug:");
-		for (String a: delen) {
-			System.out.println(a);
-		}
-		System.out.println(delen.length);
 		if (delen.length > 1) {
 			decFactor = Integer.parseInt(delen[1]);
 			d = d / decFactor;
@@ -388,20 +386,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		return d;
 	}
 	
-	//=========================================================================
-	//==================Interface methoden=====================================
-	//=========================================================================
+	//====================================================================================================
+	//==================Interface methoden================================================================
+	//====================================================================================================
 	
 	public void addActionListener(ActionListener al) {
 		
 	}
 
-	
 	public void destroy() {
 		
 	}
 
-	
 	public int geefAsHoogte() {
 		return 0;
 	}
@@ -410,7 +406,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public InteractieEditPanel getEditPanel() {
 		return new BVInteractieEditPanel();
 	}
-
 	
 	/**
 	 * Wordt aangeroepen door getEditState van BVInteractieEditPanel, omdat een deel
@@ -435,65 +430,15 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public void setEditState(Hashtable b) {
 		this.setState(b);
-		/*
-		if (b.containsKey("n")) {
-			this.n = ((Integer)b.get("n")).intValue();
-		}
-		if (b.containsKey("p")) {
-			this.p = ((Double)b.get("p")).doubleValue();
-		}
-		if (b.containsKey("successen")) {
-			this.successen = ((Integer)b.get("successen")).intValue();
-		}
-		if (b.containsKey("showXAs")) {
-			this.showXAs = ((Boolean)b.get("showXAs")).booleanValue();
-		}
-		if (b.containsKey("showYAs")) {
-			this.showYAs = ((Boolean)b.get("showYAs")).booleanValue();
-		}
-		if (b.containsKey("nVeranderbaar")) {
-			this.nVeranderbaar = ((Boolean)b.get("nVeranderbaar")).booleanValue();
-		}
-		if (b.containsKey("pVeranderbaar")) {
-			this.pVeranderbaar = ((Boolean)b.get("pVeranderbaar")).booleanValue();
-		}
-		if (b.containsKey("successenVeranderbaar")) {
-			this.successenVeranderbaar = ((Boolean)b.get("successenVeranderbaar")).booleanValue();
-		}
-		if (b.containsKey("nString")) {
-			this.nString = (String)b.get("nString");
-		}
-		if (b.containsKey("pString")) {
-			this.pString = (String)b.get("pString");
-		}
-		if (b.containsKey("successenString")) {
-			this.successenString = (String)b.get("successenString");
-		}
-		if (b.containsKey("showNSlider")) {
-			System.out.println("test");
-			this.showNSlider = ((Boolean)b.get("showNSlider")).booleanValue();
-		}
-		if (b.containsKey("showPSlider")) {
-			this.showPSlider = ((Boolean)b.get("showPSlider")).booleanValue();
-		}
-		if (b.containsKey("showSuccessenSlider")) {
-			this.showSuccessenSlider = ((Boolean)b.get("showSuccessenSlider")).booleanValue();
-		}
-		*/
-		
-		//this.vernieuw();
 	}
 
-	
 	public int getIpId() {
 		return 0;
 	}
-
 	
 	public int getScore() {
 		return 0;
 	}
-
 	
 	public int getScoreMax() {
 		return 0;
@@ -502,15 +447,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Geeft de volledige toestand in de vorm van een Hashtable
 	 */
-	
 	public Hashtable getState() {
 		Hashtable h = new Hashtable();
 		
 		h.put("n", new Integer(this.n));
 		h.put("p", new Double(this.p));
 		h.put("successen", new Integer(this.successen));
-		h.put("showXAs", new Boolean(this.showXAs));
-		h.put("showYAs", new Boolean(this.showYAs));
+		h.put("showXAs", new Boolean(this.staafjesPanel.getShowXAs()));
+		h.put("showYAs", new Boolean(this.staafjesPanel.getShowYAs()));
 		
 		h.put("nVeranderbaar", new Boolean(this.nVeranderbaar));
 		h.put("pVeranderbaar", new Boolean(this.pVeranderbaar));
@@ -529,7 +473,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Zet de toestand naar de inhoud van de hashtable b
 	 */
-	
 	public void setState(Hashtable b) {
 		if (b.containsKey("n")) {
 			this.n = ((Integer)b.get("n")).intValue();
@@ -541,10 +484,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.successen = ((Integer)b.get("successen")).intValue();
 		}
 		if (b.containsKey("showXAs")) {
-			this.showXAs = ((Boolean)b.get("showXAs")).booleanValue();
+			this.staafjesPanel.setShowXAs(((Boolean)b.get("showXAs")).booleanValue());
 		}
 		if (b.containsKey("showYAs")) {
-			this.showYAs = ((Boolean)b.get("showYAs")).booleanValue();
+			this.staafjesPanel.setShowYAs(((Boolean)b.get("showYAs")).booleanValue());
 		}
 		if (b.containsKey("nVeranderbaar")) {
 			this.nVeranderbaar = ((Boolean)b.get("nVeranderbaar")).booleanValue();
@@ -565,7 +508,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.successenString = (String)b.get("successenString");
 		}
 		if (b.containsKey("showNSlider")) {
-			System.out.println("test");
 			this.showNSlider = ((Boolean)b.get("showNSlider")).booleanValue();
 		}
 		if (b.containsKey("showPSlider")) {
@@ -596,7 +538,21 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public void opnieuw() {
 	}
 	
+	/**
+	 * Override setBounds, zet naast het panel ook de sliders op de juiste grootte
+	 */
 	public void setBounds(int x, int y, int b, int h) {
+		//resize de sliders
+		this.nSlider.zetLengte(b/3 - 10);
+		this.pSlider.zetLengte(b/3 - 10);
+		this.successenSlider.zetLengte(b/3 - 10);
+		
+		//zet de sliders weer op de goede stand
+		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+		this.setSlider(this.pSlider, this.p);
+		this.setSlider(this.successenSlider, (double)this.successen / (double)BVInteractiePanel.N_MAX);
+		
+		//zet bounds van panel
 		super.setBounds(x, y, b, h);
 	}
 
@@ -627,32 +583,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
 		//zet gegevens uit getEditState hashtable
 		this.setState(b);
-		/*
-		if (b.containsKey("n")) {
-			this.n = ((Integer)b.get("n")).intValue();
-		}
-		if (b.containsKey("p")) {
-			this.p = ((Double)b.get("p")).doubleValue();
-		}
-		if (b.containsKey("successen")) {
-			this.successen = ((Integer)b.get("successen")).intValue();
-		}
-		if (b.containsKey("showXAs")) {
-			this.showXAs = ((Boolean)b.get("showXAs")).booleanValue();
-		}
-		if (b.containsKey("showYAs")) {
-			this.showYAs = ((Boolean)b.get("showYAs")).booleanValue();
-		}
-		if (b.containsKey("nVeranderbaar")) {
-			this.nVeranderbaar = ((Boolean)b.get("nVeranderbaar")).booleanValue();
-		}
-		if (b.containsKey("pVeranderbaar")) {
-			this.pVeranderbaar = ((Boolean)b.get("pVeranderbaar")).booleanValue();
-		}
-		if (b.containsKey("successenVeranderbaar")) {
-			this.successenVeranderbaar = ((Boolean)b.get("successenVeranderbaar")).booleanValue();
-		}
-		*/
 		
 		//vul randomvars in en zet textboxes
 		if(b.containsKey("nString")) {
@@ -677,6 +607,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 		}
 		
+		//zet de ..String variabelen goed
 		this.nString = Integer.toString(this.n);
 		this.pString = Double.toString(this.p);
 		this.successenString = Integer.toString(this.successen);

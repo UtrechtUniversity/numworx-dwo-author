@@ -30,9 +30,7 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private TextField textField;
 
 	public static void main(String[] args) {
-		//bezig
-		//BVInteractiePanelController controller = new BVInteractiePanelController();
-		
+		//bezig		
 		JFrame testframe = new JFrame("testframe");
 		testframe.setSize(500,500);
 		BVInteractiePanel testpanel = new BVInteractiePanel();

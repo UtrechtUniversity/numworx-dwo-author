@@ -11,6 +11,9 @@ import javax.swing.JPanel;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
+/**
+ * InteractieEditPanel van de Binomiale Verdeling
+ */
 public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
 	private JPanel settingsPanel;
 	private BVInteractiePanel interactiePanel;
@@ -34,7 +37,7 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.add(this.interactiePanel);
 		
 		this.settingsPanel = new JPanel();
-		this.settingsPanel.setLayout(new GridLayout(10,2));
+		this.settingsPanel.setLayout(new GridLayout(10,1));
 		this.veranderbaarLabel = new JLabel("aanpasbaarheid instellingen");
 		this.settingsPanel.add(this.veranderbaarLabel);
 		
@@ -73,8 +76,6 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.successenSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.successenSliderWeergaveBox);
 		
-		Slider slider = new Slider(100,10);
-		this.settingsPanel.add(slider);
 		this.add(this.settingsPanel);
 	}
 
@@ -161,6 +162,10 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	}
 	
+	/**
+	 * Implementatie voor ActionListener
+	 * Verwerkt de user-interaction
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.nVeranderbaarBox) {
 			this.interactiePanel.setNVeranderbaar(this.nVeranderbaarBox.isSelected()); //zet instelling in interactiePanel om de preview aan te passen
