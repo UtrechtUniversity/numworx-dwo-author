@@ -1,9 +1,7 @@
 package fi.binomverdeling;
 
 import java.applet.Applet;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.TextField;
 import java.util.Hashtable;
@@ -11,6 +9,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.FIButton;

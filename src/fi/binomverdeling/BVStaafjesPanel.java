@@ -2,6 +2,8 @@ package fi.binomverdeling;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
@@ -9,27 +11,64 @@ import javax.swing.JPanel;
  * Dit is een panel dat een grafische weergave van een binomiale verdeling geeft
  * door middel van een staafdiagram.
  */
-public class BVStaafjesPanel extends JPanel {
+public class BVStaafjesPanel extends JPanel implements ActionListener {
 	private BVInteractiePanel interactiePanel;
 	private double staafBreedte;
-
+	private double multiplier; //vermenigvuldigingsfactor tov de x-as;
+	
+	private static final double VULHOOGTE = 0.8; //welk deel van het staafjespanel het grootste staafje inneemt
+	
+	private int sliderOffset = 5;
+	
 	public static final int XASBALKHEIGHT = 20;
-	public static final int YASBALKWIDTH = 25;
+	public static final int YASBALKWIDTH = 35;
 
+	private int grensLinks;
+	private int grensRechts;
+	
+	private boolean tweeGrenzen; //true = twee grenzen, false = 1 grens
+	private GrenzenOptie grenzenOptie;
+	
 	private boolean showXAs;
 	private boolean showYAs;
-
+	private boolean showGrensSlider;
+	
+	private Slider successenSlider;
+	private DoubleSlider successenDoubleSlider;
+	
+	private static int debug = 0;
+	
 	/**
 	 * Constructor
 	 * @param interactiePanel Het BVInteractiePanel dat de gegevens geeft voor dit BVStaafjesPanel
 	 */
-	public BVStaafjesPanel(BVInteractiePanel interactiePanel) {
+	public BVStaafjesPanel(BVInteractiePanel interactiePanel, GrenzenOptie grenzenOptie) {
+		this.setLayout(null);
 		this.interactiePanel = interactiePanel;
 		this.showXAs = true;
 		this.showYAs = true;
 		
-		this.setLayout(null);
+		this.tweeGrenzen = false;
+		this.grenzenOptie = grenzenOptie;
+		this.showGrensSlider = true;
+		
+		//maak de sliders aan, maar doe er verder nog niets mee
+		this.successenDoubleSlider = new DoubleSlider(10,5,8);
+		//this.successenDoubleSlider.setVisible(false);
+		//this.add(this.successenDoubleSlider);
+		
+		this.successenSlider = new Slider(10,5);
+		//this.successenSlider.setVisible(false);
+		//this.add(this.successenSlider);
+		
+		this.successenDoubleSlider.addActionListener(this);
+		this.successenSlider.addActionListener(this);
+		
+		this.multiplier = 1.0;
+
+		this.addRightSlider();
 	}
+	
 	
 	/**
 	 * Bereken de breedte van de staafjes aan de hand van het aantal staafjes en 
@@ -42,10 +81,41 @@ public class BVStaafjesPanel extends JPanel {
 			asRuimte = BVStaafjesPanel.YASBALKWIDTH;
 		}
 		
-		//teken staafje
+		//bereken staafbreedte
 		this.staafBreedte = (double)(this.getWidth()-asRuimte)/(double)(this.interactiePanel.getN()+1);
+		
 	}
 	
+	public void bepaalGrenzenMetSlider() {
+        if(this.tweeGrenzen) {
+        	this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
+			this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
+        }
+        else {
+        	this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
+        }
+	}
+	
+	private void berekenMultiplier() {
+		int modus = (int)((this.interactiePanel.getN()+1)*this.interactiePanel.getP());
+		double maxHoogte = this.interactiePanel.berekenKansK(modus);
+		
+		this.multiplier = 1/(maxHoogte/this.VULHOOGTE);
+	}
+	public void setTweeGrenzen(boolean tweeGrenzen) {
+		this.tweeGrenzen = tweeGrenzen;
+		this.addRightSlider();
+	}
+	public boolean getTweeGrenzen() {
+		return this.tweeGrenzen;
+	}
+	public void setGrenzenOptie(GrenzenOptie grenzenOptie) {
+		this.grenzenOptie = grenzenOptie;
+		this.repaint();
+	}
+	public GrenzenOptie getGrenzenOptie() {
+		return this.grenzenOptie;
+	}
 	public boolean getShowXAs() {
 		return this.showXAs;
 	}
@@ -60,23 +130,86 @@ public class BVStaafjesPanel extends JPanel {
 		this.showYAs = b;
 		this.repaint();
 	}
+	public void setShowGrensSlider(boolean b) {
+		this.showGrensSlider = b;
+	}
+	public boolean getShowGrensSlider() {
+		return this.showGrensSlider;
+	}
+	public int getGrensLinks() {
+		return this.grensLinks;
+	}
+	public int getGrensRechts() {
+		return this.grensRechts;
+	}
+	public void setGrensLinks(int grensLinks) {
+		this.grensLinks = grensLinks;
+	}
+	public void setGrensRechts(int grensRechts) {
+		this.grensRechts = grensRechts;
+	}
+	
+	/**
+	 * Zorgt dat de juiste slider aan het panel toegevoegd is, en deze slider de juiste maat en location heeft.
+	 */
+	private void addRightSlider() { //TODO zorg dat de goeie slider meteen de 1e keer klopt!
+		if(this.showGrensSlider) {
+			int x;
+			int y;
+			int lengte;
+			
+			x = BVStaafjesPanel.YASBALKWIDTH-5;			
+			y = this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT-5;
+			lengte = this.getWidth()-BVStaafjesPanel.YASBALKWIDTH-5;
+
+			if (!this.showXAs) {
+				y = this.getHeight() - 8;
+			}
+			if (!this.showYAs) {
+				lengte += BVStaafjesPanel.YASBALKWIDTH;
+				x = 0;
+			}
+			
+			if (this.tweeGrenzen) {
+				//this.successenSlider.setVisible(false);
+				this.remove(this.successenSlider);
+				
+				this.successenDoubleSlider.zetLengte(lengte);
+				this.successenDoubleSlider.setLocation(x, y);
+				
+				this.add(this.successenDoubleSlider);
+			}
+			
+			else {
+				//this.successenDoubleSlider.setVisible(false);
+				this.remove(this.successenDoubleSlider);
+				
+				this.successenSlider.zetLengte(lengte);
+				this.successenSlider.setLocation(x, y);
+				
+				//this.successenSlider.setVisible(true);
+				this.add(this.successenSlider);
+			}
+		}
+	}
 	
 	/**
 	 * Paint de y-as met schaal 
 	 * @param g Het Graphics object waarin de as getekend gaat worden
+	 * @param multiplier De factor waarmee de staafjes vermenigvuldigd zijn, en de schaal dus ook vermenigvuldigd moet worden
 	 */
-	private void paintYAs(Graphics g) {
+	private void paintYAs(Graphics g, double multiplier) {
 		if(this.showYAs) {
-			g.setColor(Color.CYAN);
-			
-			//teken de as zelf
-			g.fillRect(BVStaafjesPanel.YASBALKWIDTH-2, 0, 2, this.getHeight());
+			g.setColor(Color.BLACK);
 			
 			//bepaal de lengte van de as
 			int asHoogte = this.getHeight();
 			if(this.showXAs) {
 				asHoogte -= BVStaafjesPanel.XASBALKHEIGHT;
 			}
+
+			//teken de as zelf
+			g.fillRect(BVStaafjesPanel.YASBALKWIDTH-1, 0, 1, asHoogte);
 			
 			//teken de streepjes op de as
 			for(int i = 1; i <= 10; i++) {
@@ -86,7 +219,8 @@ public class BVStaafjesPanel extends JPanel {
 			//teken de tekst bij de streepjes op de as
 			g.setColor(Color.BLACK);
 			for(int i = 1; i <= 10; i++) {
-				g.drawString(Double.toString((double)i/10.0), 0, asHoogte - (int)(i*(double)asHoogte/(double)10)+9);
+				int j = (int)(i*10/this.multiplier);
+				g.drawString(Double.toString((double)j/100.0), 0, asHoogte - (int)(i*(double)asHoogte/(double)10)+9);
 			}
 		}
 	}
@@ -97,9 +231,19 @@ public class BVStaafjesPanel extends JPanel {
 	 */
 	private void paintXAs(Graphics g) {
 		if(this.showXAs) {
-			g.setColor(Color.CYAN);
+			g.setColor(Color.BLACK);
+			
 			//teken de as zelf
-			g.fillRect(0, this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT, this.getWidth(), 2);
+			//als de slider niet getekend wordt, teken dan een lijn
+			if(showXAs) {
+				g.setColor(Color.BLACK);
+				if(this.showYAs){
+					g.fillRect(BVStaafjesPanel.YASBALKWIDTH-1, this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT, this.getWidth()- BVStaafjesPanel.YASBALKWIDTH +1, 1);
+				}
+				else {
+					g.fillRect(0, this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT, this.getWidth(), 1);
+				}
+			}
 			
 			//bepaal de lengte van de as en waar de as begint
 			int asLengte = this.getWidth();
@@ -109,11 +253,12 @@ public class BVStaafjesPanel extends JPanel {
 				xOffset = BVStaafjesPanel.YASBALKWIDTH;
 			}
 			
-			
 			//bepaal per hoeveel staafjes er een streepje en tekst komt
 			int streepjesFrequentie = 1;
-			while ((double)(this.interactiePanel.getN()+1)/ (double)streepjesFrequentie >= 15) {
-				streepjesFrequentie++;
+			if ((this.interactiePanel.getN()+1) > 15) {
+				while ((double)(this.interactiePanel.getN()+1)/ (double)streepjesFrequentie >= 15) {
+					streepjesFrequentie++;
+				}
 			}
 			
 			//teken de streepjes op de as
@@ -129,23 +274,32 @@ public class BVStaafjesPanel extends JPanel {
 		}
 	}
 
+	private Color bepaalStaafKleur(int k) {
+		if ((this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensLinks) ||
+			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k>= this.grensLinks && k<= this.grensRechts) ||
+			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensRechts) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k==this.grensRechts) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts)) {
+			return this.interactiePanel.STAAFJE_TELT;
+		}
+		else {
+			return this.interactiePanel.STAAFJE_TELT_NIET;
+		}
+	}
+	
 	/**
 	 * Paint een enkel staafje
 	 * @param g Het Graphics object waarin het staafje getekend moet worden
 	 * @param k Het nummer van het te tekenen staafje
 	 */
-	public void paintStaafje(Graphics g, int k) {
+	public void paintStaafje(Graphics g, int k, double multiplier) {
 		//kies de kleur
-		if(k<=this.interactiePanel.getSuccessen()) {
-			g.setColor(Color.BLACK);
-		}
-		else {
-			g.setColor(Color.GRAY);
-		}
+		g.setColor(this.bepaalStaafKleur(k));
 		
 		//hou indien nodig ruimte vrij om de assen te tekenen
 		int xOffset = 0;
-		int yOffset = 0;
+		int yOffset = 3;
 		if(this.showYAs) {
 			xOffset = BVStaafjesPanel.YASBALKWIDTH;
 		}
@@ -154,7 +308,7 @@ public class BVStaafjesPanel extends JPanel {
 		}
 		
 		//teken het staafje
-		g.fillRect((int)(k*this.staafBreedte+xOffset), this.getHeight() - (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)+yOffset),(int)((k+1)*this.staafBreedte+xOffset) - (int)(k*this.staafBreedte+xOffset), (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)));
+		g.fillRect((int)(k*this.staafBreedte+xOffset), this.getHeight() - (int)(this.interactiePanel.berekenKansK(k)*multiplier*(this.getHeight()-yOffset)+yOffset),(int)((k+1)*this.staafBreedte+xOffset) - (int)(k*this.staafBreedte+xOffset), (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)*this.multiplier));
 	}
 	
 	/**
@@ -162,13 +316,34 @@ public class BVStaafjesPanel extends JPanel {
 	 */
 	//Override
 	public void paintComponent(Graphics g) {
+		BVStaafjesPanel.debug++;
+		System.out.println(BVStaafjesPanel.debug);
+		
         this.berekenStaafBreedte();
+        this.berekenMultiplier();
+        
         g.clearRect(0, 0, this.getWidth(), this.getHeight());
+        
         this.paintXAs(g);
-        this.paintYAs(g);
+        this.paintYAs(g,this.multiplier);
         
 		for(int k = 0; k <= this.interactiePanel.getN(); k++) {
-			this.paintStaafje(g,k);
+			this.paintStaafje(g,k,this.multiplier);
 		}
+	}
+
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == this.successenSlider) {
+			this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
+			//this.interactiePanel.setGrensRechts(this.grensRechts);
+		}
+		if(e.getSource() == this.successenDoubleSlider) {
+			this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
+			this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
+			//this.interactiePanel.setGrensLinks(this.grensLinks);
+			//this.interactiePanel.setGrensRechts(this.grensRechts);
+		}
+		this.repaint();
 	}
 }

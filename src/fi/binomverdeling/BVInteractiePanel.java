@@ -7,8 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -23,6 +26,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private double p; //succeskans
 	private int n; //aantal herhalingen
 	private int successen;
+	//private int grensLinks; //gebruikt als voor tweegrenzen is gekozen
+	//private int grensRechts; //geld als grens in geval van 1 grens, geld als linkergrens in geval van twee grenzen
+	
+	private GrenzenOptie grenzenOptie;
+	private boolean tweeGrenzen; //true = 2 grenzen, false = 1 grens
+	
 	private BVStaafjesPanel staafjesPanel;
 	private JTextField nText;
 	private JLabel nLabel;
@@ -30,10 +39,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JLabel successenLabel;
 	private JTextField pText;
 	private JLabel pLabel;
-	private JLabel totaleKansLabel;
+	private JRadioButton kansLabelLinks;
+	private JRadioButton kansLabelMidden;
+	private JRadioButton kansLabelRechts;
 	private Slider nSlider;
 	private Slider pSlider;
 	private Slider successenSlider;
+	private JCheckBox grenzenBox;
 	
 	public static final int N_MIN = 0; //min en max van n voor de sliders
 	public static final int N_MAX = 100;
@@ -50,6 +62,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String pString;
 	private String successenString;
 	
+	public final Color STAAFJE_TELT = new Color(110,5,165);
+	public final Color STAAFJE_TELT_NIET = new Color(234,229,255);
+	public final Color LABEL_BACKGROUND = new Color(240,247,255);	
+	public final Color LABEL_ACTIEF = new Color(200,227,255);
+	
 	/**
 	 * Constructor
 	 */
@@ -60,7 +77,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.n = 30;
 		this.p = 0.5;
 		this.successen = 10;
-        
+				
+		this.grenzenOptie = GrenzenOptie.LINKS;
+		
 		this.nVeranderbaar = true;
 		this.pVeranderbaar = true;
 		this.successenVeranderbaar = true;
@@ -73,8 +92,42 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pString = Double.toString(this.p);
 		this.successenString = Integer.toString(this.successen);
 		
-        this.totaleKansLabel = new JLabel("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
-		super.add(this.totaleKansLabel, BorderLayout.SOUTH);
+		//maak het paneel wat in de center van de BorderLayout komt
+        this.staafjesPanel = new BVStaafjesPanel(this, this.grenzenOptie);
+        this.staafjesPanel.setGrensLinks(5);
+        this.staafjesPanel.setGrensRechts(10);
+        super.add(this.staafjesPanel, BorderLayout.CENTER);
+		
+		JPanel zuidBalk = new JPanel();
+		zuidBalk.setLayout(new GridLayout(2,3));
+		zuidBalk.setBackground(Color.WHITE);
+		this.kansLabelLinks = new JRadioButton(this.kansLabelLinksTekst(), true);
+		this.kansLabelMidden = new JRadioButton(this.kansLabelMiddenTekst(), false);
+		this.kansLabelRechts = new JRadioButton(this.kansLabelRechtsTekst(), false);
+		this.kansLabelLinks.addActionListener(this);
+		this.kansLabelMidden.addActionListener(this);
+		this.kansLabelRechts.addActionListener(this);
+		this.kansLabelLinks.setBackground(this.LABEL_ACTIEF);
+		this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
+		this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(this.kansLabelLinks);
+		buttonGroup.add(this.kansLabelMidden);
+		buttonGroup.add(this.kansLabelRechts);
+		
+		zuidBalk.add(this.kansLabelLinks);
+		zuidBalk.add(this.kansLabelMidden);
+		zuidBalk.add(this.kansLabelRechts);
+		this.grenzenBox = new JCheckBox("Twee grenswaarden", false);
+		this.grenzenBox.setBackground(Color.WHITE);
+		this.grenzenBox.addActionListener(this);
+		zuidBalk.add(this.grenzenBox);
+		zuidBalk.add(new JLabel(""));
+		zuidBalk.add(new JLabel(""));
+				
+        //this.totaleKansLabel = new JLabel("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
+		super.add(zuidBalk, BorderLayout.SOUTH);
         this.nText = new JTextField(5);
         this.nText.setActionCommand("ntextupdate");
         this.nText.setText(Integer.toString(this.n));
@@ -104,7 +157,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         editBalk.add(this.pLabel);
         editBalk.add(this.pText); 
         
-        
+        //maak het paneel wat in het NORTH gebied van de BorderLayout komt
         JPanel noordBalk = new JPanel();
         noordBalk.setLayout(new GridLayout(2,1));
         super.add(noordBalk, BorderLayout.NORTH);
@@ -113,10 +166,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         JPanel sliderBalk = new JPanel();
         sliderBalk.setLayout(new GridLayout(1,3));
-        
-        
-        this.staafjesPanel = new BVStaafjesPanel(this);
-        super.add(this.staafjesPanel, BorderLayout.CENTER);
         
         this.nText.addActionListener(this);
         this.pText.addActionListener(this);
@@ -142,6 +191,39 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         noordBalk.add(sliderBalk);
         
         this.add(noordBalk, BorderLayout.NORTH);
+        
+	}
+	
+	private String kansLabelLinksTekst() {
+		int grens = this.staafjesPanel.getGrensRechts();
+		if(this.tweeGrenzen) {
+			grens = this.staafjesPanel.getGrensLinks();
+		}
+		System.out.println(grens);
+		double kans = this.berekenKansCumulatief(0, grens);
+		int hulp = (int)(10000*kans);
+		kans = (double)hulp/10000;
+		
+		return ("P(X<=" + grens + ") = " + kans);
+	}
+	
+	private String kansLabelMiddenTekst() {
+		if(this.tweeGrenzen) {
+			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
+			kans = (double)(int)(kans*10000)/10000.0;
+			return "P(" + this.staafjesPanel.getGrensLinks() + "<=X<=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+		}
+		else {
+			double kans = this.berekenKansK(this.staafjesPanel.getGrensRechts());
+			kans = (double)(int)(kans*10000)/10000.0;
+			return "P(X=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+		}
+	}
+	
+	private String kansLabelRechtsTekst() {
+		double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
+		kans = (double)(int)(kans*10000)/10000.0;
+		return "P(X>=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 	}
 	
 	/**
@@ -178,6 +260,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.successenString = Integer.toString(this.successen);
 		}
 		
+		this.kansLabelLinks.setText(this.kansLabelLinksTekst());
+		this.kansLabelMidden.setText(this.kansLabelMiddenTekst());
+		this.kansLabelRechts.setText(this.kansLabelRechtsTekst());
+		
 		//this.nText.setText(Integer.toString(this.n));
 		this.nText.setText(this.nString);
 		this.nText.setEditable(this.nVeranderbaar);
@@ -197,7 +283,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pSlider.setEditable(this.pVeranderbaar);
 		this.successenSlider.setEditable(this.successenVeranderbaar);
 		
-		this.totaleKansLabel.setText("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
+		//this.totaleKansLabel.setText("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
 		this.repaint();
 	}
 	
@@ -224,26 +310,29 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * @return P(X=k)
 	 */
 	public double berekenKansK(int k) {
-		return BVInteractiePanelModel.binom(n, k) * (double)Math.pow(p,k) * (double)Math.pow(1-p, n-k);
+		if (k > this.n) {
+			return 0.0;
+		}
+		return BVInteractiePanelModel.binom(this.n, k) * (double)Math.pow(this.p,k) * (double)Math.pow(1-this.p, this.n-k);
 	}
 	
 	/**
 	 * Komt neer op BinomCDF
 	 * @return P(X<=this.successen)
 	 */
-	public double berekenKansCumulatief() {
-		if(this.successen >= this.n) { //als successen >= n, dan telt alles mee, dus is de som 1
+	public double berekenKansCumulatief(int van, int tot) {
+		if(van <= 0 && tot >= this.n) { //als alles meetelt is de som dus 1
 			return 1.0;
 		}
 		else {
 			double som = 0;
-			for (int count = 0; count <= Math.min(this.successen, this.n); count++) {
+			for (int count = van; count <= Math.min(tot, this.n); count++) {
 				som += this.berekenKansK(count);
 			}
 			return som;
 		}
 	}
-
+	
 	public double getP() {
 		return this.p;
 	}
@@ -265,14 +354,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.vernieuw();
 	}
 	
-	public int getSuccessen() {
-		return this.successen;
-	}
-	
-	public void setSuccessen(int successen) {
-		this.successen = successen;
-		this.vernieuw();
-	}
 	public void setNVeranderbaar(boolean b) {
 		this.nVeranderbaar = b;
 		this.vernieuw();
@@ -290,6 +371,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	public void setShowYAs(boolean b) {
 		this.staafjesPanel.setShowYAs(b);
+	}
+	public void setGrenzenOptie(GrenzenOptie grenzenOptie) {
+		this.grenzenOptie = grenzenOptie;
+		this.staafjesPanel.setGrenzenOptie(grenzenOptie);
 	}
 	public void setShowNSlider(boolean b) {
 		this.showNSlider = b;
@@ -312,6 +397,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.nString = this.nText.getText();
 			try {
 				this.n = Integer.parseInt(this.nString);
+				this.staafjesPanel.bepaalGrenzenMetSlider();
 			}
 			catch (NumberFormatException e) {
 				//wordt nu gedaan in update
@@ -349,6 +435,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (arg0.getSource() == this.nSlider) {
 			this.n = (int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN);
+			this.staafjesPanel.bepaalGrenzenMetSlider();
 		}
 		
 		if (arg0.getSource() == this.pSlider) {
@@ -357,6 +444,32 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		if (arg0.getSource() == this.successenSlider) {
 			this.successen = (int)(this.getPercentageFromSlider(this.successenSlider)*BVInteractiePanel.N_MAX);
+		}
+		
+		if (arg0.getSource() == this.grenzenBox) {
+			this.tweeGrenzen = this.grenzenBox.isSelected();
+			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
+		}
+		if (arg0.getSource() == this.kansLabelLinks) {
+			this.grenzenOptie = GrenzenOptie.LINKS;
+			this.staafjesPanel.setGrenzenOptie(this.grenzenOptie);
+			this.kansLabelLinks.setBackground(this.LABEL_ACTIEF);
+			this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
+			this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+		}
+		if (arg0.getSource() == this.kansLabelMidden) {
+			this.grenzenOptie = GrenzenOptie.GELIJK;
+			this.staafjesPanel.setGrenzenOptie(this.grenzenOptie);
+			this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
+			this.kansLabelMidden.setBackground(this.LABEL_ACTIEF);
+			this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+		}
+		if (arg0.getSource() == this.kansLabelRechts) {
+			this.grenzenOptie = GrenzenOptie.RECHTS;
+			this.staafjesPanel.setGrenzenOptie(this.grenzenOptie);
+			this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
+			this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
+			this.kansLabelRechts.setBackground(this.LABEL_ACTIEF);
 		}
 		
 		this.vernieuw();
@@ -412,6 +525,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * van de editgegevens in BVInteractiePanel staan.
 	 */
 	public Hashtable getEditState() {
+		/*
 		Hashtable h = new Hashtable();
 		h.put("n", new Integer(this.n));
 		h.put("p", new Double(this.p));
@@ -422,6 +536,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("successenString", new String(this.successenString));
 		
 		return h;
+		*/
+		return this.getState();
 	}
 	
 	/**
@@ -467,6 +583,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("showNSlider", new Boolean(this.showNSlider));
 		h.put("showPSlider", new Boolean(this.showPSlider));
 		h.put("showSuccessenSlider", new Boolean(this.showSuccessenSlider));
+		
+		h.put("grensLinks", this.staafjesPanel.getGrensLinks());
+		h.put("grensRechts", this.staafjesPanel.getGrensRechts());
+		h.put("grenzenOptie", this.grenzenOptie);
+		h.put("tweeGrenzen", this.tweeGrenzen);
+		h.put("showGrensSlider", this.staafjesPanel.getShowGrensSlider());
 		return h;
 	}
 
@@ -515,6 +637,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("showSuccessenSlider")) {
 			this.showSuccessenSlider = ((Boolean)b.get("showSuccessenSlider")).booleanValue();
+		}
+		
+		if (b.containsKey("grensLinks")) {
+			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
+		}
+		if (b.containsKey("grensRechts")) {
+			this.staafjesPanel.setGrensRechts(((Integer)b.get("grensRechts")).intValue());
+		}
+		if (b.containsKey("grenzenOptie")) {
+			this.grenzenOptie = (GrenzenOptie)b.get("grenzenOptie");
+			this.staafjesPanel.setGrenzenOptie(this.grenzenOptie);
+		}
+		if (b.containsKey("tweeGrenzen")) {
+			this.tweeGrenzen = ((Boolean)b.get("tweeGrenzen")).booleanValue();
+			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
+		}
+		if (b.containsKey("showGrensSlider")) {
+			this.staafjesPanel.setShowGrensSlider(((Boolean)b.get("showGrensSlider")).booleanValue());
 		}
 		
 		this.vernieuw();
