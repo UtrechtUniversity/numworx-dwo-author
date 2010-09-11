@@ -19,14 +19,13 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private BVInteractiePanel interactiePanel;
 	private JCheckBox nVeranderbaarBox;
 	private JCheckBox pVeranderbaarBox;
-	private JCheckBox successenVeranderbaarBox;
 	private JLabel veranderbaarLabel;
 	private JLabel weergaveLabel;
 	private JCheckBox xAsWeergaveBox;
 	private JCheckBox yAsWeergaveBox;
 	private JCheckBox nSliderWeergaveBox;
 	private JCheckBox pSliderWeergaveBox;
-	private JCheckBox successenSliderWeergaveBox;
+	private JCheckBox grensSliderWeergaveBox;
 	
 	/**
 	 * Constructor
@@ -48,10 +47,6 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.pVeranderbaarBox = new JCheckBox("p veranderbaar", true);
 		this.pVeranderbaarBox.addActionListener(this);
 		this.settingsPanel.add(this.pVeranderbaarBox);
-				
-		this.successenVeranderbaarBox = new JCheckBox("successen veranderbaar", true);
-		this.successenVeranderbaarBox.addActionListener(this);
-		this.settingsPanel.add(this.successenVeranderbaarBox);
 		
 		this.weergaveLabel = new JLabel("weergave instellingen");
 		this.settingsPanel.add(this.weergaveLabel);
@@ -72,9 +67,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.pSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.pSliderWeergaveBox);
 		
-		this.successenSliderWeergaveBox = new JCheckBox("Geef slider voor successen weer", true);
-		this.successenSliderWeergaveBox.addActionListener(this);
-		this.settingsPanel.add(this.successenSliderWeergaveBox);
+		this.grensSliderWeergaveBox = new JCheckBox("Geef slider voor successen weer", true);
+		this.grensSliderWeergaveBox.addActionListener(this);
+		this.settingsPanel.add(this.grensSliderWeergaveBox);
 		
 		this.add(this.settingsPanel);
 	}
@@ -91,9 +86,6 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if (h.containsKey("pVeranderbaar")) {
 			this.pVeranderbaarBox.setSelected(((Boolean)h.get("pVeranderbaar")).booleanValue());
 		}
-		if (h.containsKey("successenVeranderbaar")) {
-			this.successenVeranderbaarBox.setSelected(((Boolean)h.get("successenVeranderbaar")).booleanValue());
-		}
 		if (h.containsKey("showXAs")) {
 			this.xAsWeergaveBox.setSelected(((Boolean)h.get("showXAs")).booleanValue());
 		}
@@ -106,8 +98,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if (h.containsKey("showPSlider")) {
 			this.pSliderWeergaveBox.setSelected(((Boolean)h.get("showPSlider")).booleanValue());
 		}
-		if (h.containsKey("showSuccessenSlider")) {
-			this.successenSliderWeergaveBox.setSelected(((Boolean)h.get("showSuccessenSlider")).booleanValue());
+		if (h.containsKey("showGrensSlider")) {
+			this.grensSliderWeergaveBox.setSelected(((Boolean)h.get("showGrensSlider")).booleanValue());
 		}
 	}
 
@@ -122,12 +114,11 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//en voeg de editgegevens uit het InteractieEditPanel er aan toe.
 		h.put("nVeranderbaar", new Boolean(this.nVeranderbaarBox.isSelected()));
 		h.put("pVeranderbaar", new Boolean(this.pVeranderbaarBox.isSelected()));
-		h.put("successenVeranderbaar", new Boolean(this.successenVeranderbaarBox.isSelected()));
 		h.put("showXAs", new Boolean(this.xAsWeergaveBox.isSelected()));
 		h.put("showYAs", new Boolean(this.yAsWeergaveBox.isSelected()));
 		h.put("showNSlider", new Boolean(this.nSliderWeergaveBox.isSelected()));
 		h.put("showPSlider", new Boolean(this.pSliderWeergaveBox.isSelected()));
-		h.put("showSuccessenSlider", new Boolean(this.successenSliderWeergaveBox.isSelected()));
+		h.put("showGrensSlider", new Boolean(this.grensSliderWeergaveBox.isSelected()));
 		
 		return h;
 	}
@@ -173,9 +164,6 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(e.getSource() == this.pVeranderbaarBox) {
 			this.interactiePanel.setPVeranderbaar(this.pVeranderbaarBox.isSelected()); //zet instelling in interactiePanel om de preview aan te passen
 		}
-		if(e.getSource() == this.successenVeranderbaarBox) {
-			this.interactiePanel.setSuccessenVeranderbaar(this.successenVeranderbaarBox.isSelected()); //zet instelling in interactiePanel om de preview aan te passen
-		}
 		if(e.getSource() == this.xAsWeergaveBox) {
 			this.interactiePanel.setShowXAs(this.xAsWeergaveBox.isSelected());
 		}
@@ -188,8 +176,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(e.getSource() == this.pSliderWeergaveBox) {
 			this.interactiePanel.setShowPSlider(this.pSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.successenSliderWeergaveBox) {
-			this.interactiePanel.setShowSuccessenSlider(this.successenSliderWeergaveBox.isSelected());
+		if(e.getSource() == this.grensSliderWeergaveBox) {
+			this.interactiePanel.setShowGrensSlider(this.grensSliderWeergaveBox.isSelected());
 		}
 	}
 }

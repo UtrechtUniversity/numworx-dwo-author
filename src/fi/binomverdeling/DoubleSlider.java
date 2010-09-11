@@ -5,6 +5,9 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+/**
+ * Gekopieerd uit Normale Verdeling, aangepast door Manu: getMinimums toegevoegd.
+ */
 public class DoubleSlider extends JComponent implements MouseListener, 
 						 						        MouseMotionListener
 {	private Image im;
@@ -61,7 +64,15 @@ public class DoubleSlider extends JComponent implements MouseListener,
 		resize = true;
 		repaint();
 	}
-
+	
+	public int getMinimumRechts() {
+		return this.minimumRechts;
+	}
+	
+	public int getMinimumLinks() {
+		return this.minimumLinks;
+	}
+	
 	public int getLengte()
 	{	return lengte;
 	}		
