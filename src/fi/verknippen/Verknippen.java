@@ -7,28 +7,43 @@ import java.util.*;
 
 import javax.swing.*;
 
+import fi.beans.appletutil.AppletUtil;
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
+import fi.beans.base64code.*;
+
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-import fi.beans.base64code.*;
-import fi.verknippen.InteractiePanelAdapter;
+//import fi.verknippen.InteractiePanelAdapter;
 
 public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParamEditApplet
 {
 	// scormgebeuren
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
-	private TextField textField;
+	boolean scormed = false;
+	boolean reviewMode = false;	
+	
+	// DWO-component-gebeuren
+	boolean isDWOComponent = false;
+	
 	
 	public static void main(String[] args)    
 	{	int width = 790;
         int height = 485;
-		ScormMainFrame mf = new ScormMainFrame(new Verknippen(),width, height);
+        Verknippen verknippen = new Verknippen();
+        verknippen.scormed = true;
+		ScormMainFrame mf = new ScormMainFrame(verknippen, width, height);
 		mf.setTitle("Verknippen Scormed");
 		mf.pack();
 		mf.show();
-		mf.setSize(width, height);
+
+		verknippen.setLocation(mf.getInsets().left, mf.getInsets().top);		
+		
+		int framebreedte = width + mf.getInsets().left + mf.getInsets().right;
+		int framehoogte = height + mf.getInsets().top + mf.getInsets().bottom;
+		mf.setSize(framebreedte, framehoogte);
+
 	}
 	
 	Color bgColor;
@@ -37,34 +52,39 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	
 	DrawingPanel drawingPanel;
 	BottomPanel bottomPanel;
-	int bottomHeight = 50;
+	int bottomHeight = 55;
 	int offSet = 10;
 	
-	int maxTaken = 3;
+	int maxTaken = 4;
 	int taakNummer = 1;
 	// maximum aantal figuren binnen een taak
 	int maxFiguren = 10;
 	int aantalFiguren = 1;
 	String defaultFiguurString = "0,0|8,0|8,8|0,8";
+	String defaultGrijsFiguurString = "0,0|8,0|8,8|0,8";	
+	
 	OpdrachtSelector selector;
 	Opdracht[] opdrachten;
 	Opdracht currentOpdracht;
 	int currentNum;
 	
-	JLabel opdrachtLabel;
-	//JButton opnieuwButton;
+	JLabel opdrachtLabel, opdrachtLabel2;
 	Button opnieuwButton;
 	TextField oppervlakteTextField;
+	Button okButton;
+	
+	
+	Choice vergelijkChoice;
 	
 	int minGrid = 16;
 	int maxGrid = 50;
-	//int gridSize = 30;
+	// default gridSize wordt gezet in elke opdracht
+	//int gridSize = 20;
 
 	// parametrisatie
 	boolean showGrid = false;
 	boolean showShadow = false;
 	boolean showSizes = false;
-	
 	boolean largeOvals = false;
 	
 	// fonts
@@ -74,6 +94,9 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	FontMetrics theBoldFM;
 
 	Color buttonColor = Color.yellow;
+
+	AppletUtil au;	
+	Image foutKruis, goedVink;
 
 	public Verknippen()
 	{	Locale language = new Locale ("nl", "");
@@ -94,6 +117,18 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 		catch(Exception e){}
 		
 		getContentPane().setLayout(null);
+
+		au = new AppletUtil(this);
+		
+		MediaTracker tr = new MediaTracker(this);		
+		foutKruis = au.getImage("resources/foutkruis.gif");
+		tr.addImage(foutKruis, 0);
+		goedVink = au.getImage("resources/goedkrul_en.gif");
+		tr.addImage(goedVink, 1);		
+	    try
+	    {	tr.waitForAll();
+	    } 
+	    catch(Exception e) {}		
 
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -152,6 +187,13 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 		String largeOvalsString = getParameter("groteballetjes");
 		if ((largeOvalsString != null) && largeOvalsString.equals("yes"))
 			largeOvals = true;
+
+if (scormed)
+{	bgColor = new Color(Integer.parseInt("FFFFC6", 16));
+	taakNummer = 4;
+	showGrid = true;
+	largeOvals = true;
+}
 	
 		// aantal figuren
 		String aantalString = getParameter("aantalfiguren");
@@ -168,6 +210,11 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 			{	aantalFiguren = num;
 			}
 		}		
+		// default 1 figuur
+		
+if (scormed)
+{	aantalFiguren = 2;
+}		
 		
 		opdrachten = new Opdracht[aantalFiguren];
 		for (int oCnt = 0; oCnt < aantalFiguren; oCnt++)
@@ -175,7 +222,7 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 			// opdrachtnummer
 			opdrachten[oCnt] = new Opdracht(oCnt + 1);
 			
-			// lees figuur vor deze opdracht			
+			// lees de rode figuur voor deze opdracht			
 			String figString = getParameter("figuur" + opdrachten[oCnt].opdrachtNum);
 			if ((figString != null) && !figString.equals(""))
 			{	Vector figCoords = processFiguurString(figString);
@@ -191,6 +238,24 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 			{	opdrachten[oCnt].figuurCoordinaten = 
 					processFiguurString(defaultFiguurString);
 			}
+			
+			// lees de grijze figuur voor deze opdracht			
+			String grijsFigString = getParameter("figuurgrijs" + opdrachten[oCnt].opdrachtNum);
+			if ((grijsFigString != null) && !grijsFigString.equals(""))
+			{	Vector grijsFigCoords = processFiguurString(grijsFigString);
+				if (grijsFigCoords.size() > 0)
+				{	opdrachten[oCnt].grijsFiguurCoordinaten = grijsFigCoords;
+				}
+				else
+				{	grijsFigCoords = processFiguurString(defaultGrijsFiguurString);
+					opdrachten[oCnt].grijsFiguurCoordinaten = grijsFigCoords;
+				}
+			}
+			else 
+			{	opdrachten[oCnt].grijsFiguurCoordinaten = 
+					processFiguurString(defaultGrijsFiguurString);
+			}
+			
 			
 			// lees gridSize voor deze opdracht
 			String gridString = getParameter("grid" + opdrachten[oCnt].opdrachtNum);
@@ -208,7 +273,7 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 				}	
 			}	
 			
-			// lees oppervlakte voor deze opdracht
+			// lees oppervlakte van de rode figuur voor deze opdracht
 			String oppervlakteString = getParameter(
     								   "oppervlakte" + opdrachten[oCnt].opdrachtNum);
 			if ((oppervlakteString != null) && !oppervlakteString.equals(""))
@@ -224,6 +289,45 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 				{	opdrachten[oCnt].oppervlakte = oppervlakteNum;
 				}	
 			}	
+
+			// lees oppervlakte van de grijze figuur voor deze opdracht
+			String oppervlakteGrijsString = getParameter(
+    								   "oppervlaktegrijs" + opdrachten[oCnt].opdrachtNum);
+			if ((oppervlakteGrijsString != null) && !oppervlakteGrijsString.equals(""))
+			{	int oppervlakteGrijsNum = 0;
+				boolean error = false;
+				try
+				{	oppervlakteGrijsNum = Integer.parseInt(oppervlakteGrijsString);
+				}
+				catch (NumberFormatException nfe)
+				{	error = true;
+				}	
+				if (!error && (oppervlakteGrijsNum > 0))
+				{	opdrachten[oCnt].oppervlakteGrijs = oppervlakteGrijsNum;
+				}	
+			}	
+
+if (scormed)
+{	if (oCnt == 0)
+	{	opdrachten[oCnt].figuurCoordinaten = 
+			processFiguurString("0,0|2,0|2,2|8,2|8,4|5,4|5,7|3,7|3,6|0,6");
+		opdrachten[oCnt].grijsFiguurCoordinaten = 
+			processFiguurString("3,0|8,0|8,2|7,2|7,4|5,4|5,5|3,5|3,6|0,6|0,2|3,2");	
+		opdrachten[oCnt].gridSize = 26;
+		opdrachten[oCnt].oppervlakte = 32;
+		opdrachten[oCnt].oppervlakteGrijs = 32;	
+	}
+	if (oCnt == 1)
+	{	opdrachten[oCnt].figuurCoordinaten = 
+			processFiguurString("0,0|2,0|2,2|8,2|8,4|6,4|6,6|4,6|4,8|2,8|2,4|0,4");
+		opdrachten[oCnt].grijsFiguurCoordinaten = 
+			processFiguurString("0,0|3,0|3,1|5,1|5,0|8,0|8,2|6,2|6,6|2,6|2,2|0,2");	
+		opdrachten[oCnt].gridSize = 24;	
+		opdrachten[oCnt].oppervlakte = 32;
+		opdrachten[oCnt].oppervlakteGrijs = 30;
+	}
+	
+}
 			
 			// maak drawingPanel voor deze opdracht
 			opdrachten[oCnt].drawingPanel = new DrawingPanel(this, largeOvals);
@@ -235,23 +339,52 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 			opdrachten[oCnt].drawingPanel.showGrid = showGrid;
 			// zet de gridsize
 			opdrachten[oCnt].drawingPanel.gridSize = opdrachten[oCnt].gridSize;
-			// zet de figuur	
-			KnipPolygon kp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
-								 opdrachten[oCnt].figuurCoordinaten);
-								 
-if ((taakNummer == 2) || (taakNummer == 3))
-	kp.setLabelPoint();
-								 
-			opdrachten[oCnt].drawingPanel.addKnipPolygon(kp);
-			// schaduw figuur
-			if (showShadow)
-			{	KnipPolygon sp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
-								 	opdrachten[oCnt].figuurCoordinaten);
-				opdrachten[oCnt].drawingPanel.shadowPolygon = sp;				 	
-				if (showSizes)
-					opdrachten[oCnt].drawingPanel.showSizes = true;
-			}
 			
+			if (taakNummer < 4)
+			{
+				// zet de figuur	
+				KnipPolygon kp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
+									 opdrachten[oCnt].figuurCoordinaten,
+									 KnipPolygon.CENTER);
+								 
+				if ((taakNummer == 2) || (taakNummer == 3))
+					kp.setLabelPoint();
+								 
+				opdrachten[oCnt].drawingPanel.addKnipPolygon(kp);
+				// schaduw figuur
+				if (showShadow)
+				{	KnipPolygon sp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
+									 	opdrachten[oCnt].figuurCoordinaten,
+									 	KnipPolygon.CENTER);
+					opdrachten[oCnt].drawingPanel.shadowPolygon = sp;				 	
+					if (showSizes)
+						opdrachten[oCnt].drawingPanel.showSizes = true;
+				}
+			}
+			else
+			{	// zet de rode figuur	
+				KnipPolygon kp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
+									 opdrachten[oCnt].figuurCoordinaten,
+									 KnipPolygon.RIGHTAL);
+									 
+				opdrachten[oCnt].drawingPanel.addKnipPolygon(kp);									 
+				// schaduw figuur
+				if (showShadow)
+				{	KnipPolygon sp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
+									 	opdrachten[oCnt].figuurCoordinaten,
+									 	KnipPolygon.RIGHTAL);
+					opdrachten[oCnt].drawingPanel.shadowPolygon = sp;				 	
+					if (showSizes)
+						opdrachten[oCnt].drawingPanel.showSizes = true;
+				}				
+				
+				// zet de grijze figuur
+				KnipPolygon gp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
+									 opdrachten[oCnt].grijsFiguurCoordinaten,
+									 KnipPolygon.LEFTAL);
+				
+				opdrachten[oCnt].drawingPanel.grijsPolygon = gp;				 					
+			}
 			
 		} // for	
 
@@ -267,7 +400,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 
 		//Fi-logo, copyright
 		FIButton fiButton = new FIButton("Verknippen",new String[]
-			{	"versie-info: 20090909",
+			{	"versie-info: 20100810",
 				"auteurs: Monica Wijers, Frans van Galen",
 				"programmeur: Huub Nilwik",
 				"Freudenthal Instituut",
@@ -281,7 +414,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		opnieuwButton = new Button(rb.getString("opnieuwTekst"));
 		opnieuwButton.setBackground(buttonColor);
 		opnieuwButton.setFont(theFont);
-		int width = theFM.stringWidth(rb.getString("opnieuwTekst")) + 55;
+		int width = theFM.stringWidth(rb.getString("opnieuwTekst")) + 35;
 
 		if (taakNummer == 1)
 			opnieuwButton.setBounds(
@@ -301,7 +434,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		oppervlakteTextField.setFont(theBoldFont);		
 		width = theBoldFM.stringWidth("XXXXXX") + 15;
 		oppervlakteTextField.setBounds(
-			opnieuwButton.getLocation().x - offSet - width,
+			opnieuwButton.getLocation().x - 2 * offSet - width,
 			offSet,
 			width, 3 * theFM.getHeight() / 2);
 
@@ -311,6 +444,37 @@ if ((taakNummer == 2) || (taakNummer == 3))
 			oppervlakteTextField.addActionListener(new TextAL());
 			oppervlakteTextField.addKeyListener(new InputKL());
 		}		
+
+		vergelijkChoice = new Choice();
+		vergelijkChoice.add(rb.getString("groterTekst"));
+		vergelijkChoice.add(rb.getString("kleinerTekst"));
+		vergelijkChoice.add(rb.getString("evengrootTekst"));
+		vergelijkChoice.setFont(theBoldFont);		
+		vergelijkChoice.setBackground(Color.white);		
+		width = Math.max(theBoldFM.stringWidth(rb.getString("groterTekst")),
+					Math.max(theBoldFM.stringWidth(rb.getString("kleinerTekst")),
+							 theBoldFM.stringWidth(rb.getString("evengrootTekst"))))
+				+ 30;
+		vergelijkChoice.setBounds(
+			opnieuwButton.getLocation().x - 2 * offSet - width,
+			offSet / 2,
+			width, 3 * theFM.getHeight() / 2);
+		vergelijkChoice.addItemListener(new VergelijkIL());	
+
+		okButton = new Button("ok");
+		okButton.setBackground(buttonColor);
+		okButton.setFont(theFont);
+		width = theFM.stringWidth("ok") + 35;
+		okButton.setBounds(
+			vergelijkChoice.getLocation().x + vergelijkChoice.getSize().width -
+			width,
+			vergelijkChoice.getLocation().y + vergelijkChoice.getSize().height - 2,
+			width, 3 * theFM.getHeight() / 2);
+		okButton.addActionListener(new OkAL());	
+			
+		if (taakNummer == 4)
+		{	bottomPanel.add(vergelijkChoice);
+		}	
 		
 		// width ad hoc voor maximum 10
 		selector = new OpdrachtSelector(aantalFiguren);		
@@ -320,9 +484,14 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		
 		opdrachtLabel = new JLabel();
 		opdrachtLabel.setFont(theBoldFont);
-		opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
 //opdrachtLabel.setOpaque(true);
 //opdrachtLabel.setBackground(Color.orange);		
+
+		opdrachtLabel2 = new JLabel();
+		opdrachtLabel2.setFont(theBoldFont);
+//opdrachtLabel2.setOpaque(true);
+//opdrachtLabel2.setBackground(Color.orange);		
+
 
 		if (taakNummer == 1)
 		{	opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
@@ -335,29 +504,79 @@ if ((taakNummer == 2) || (taakNummer == 3))
 				3 * theBoldFM.getHeight() / 2);
 			
 		}	
-		else // taakNummer==2 of taakNummer==3
+		else if ((taakNummer == 2) || (taakNummer == 3))
 		{	opdrachtLabel.setText(rb.getString("watIsOppervlakteTekst"));
 			opdrachtLabel.setBounds(
-				selector.getLocation().x + selector.getSize().width + 2 * offSet,
+				selector.getLocation().x + selector.getSize().width + 3 * offSet,
 				offSet,
 				getSize().width - 
-				(selector.getSize().width + 2 * offSet +
+				(selector.getSize().width + 3 * offSet +
 				 getSize().width - oppervlakteTextField.getLocation().x + 2 * offSet),
 				3 * theBoldFM.getHeight() / 2);
 		
 		}
+		else if (taakNummer == 4)
+		{	
+			opdrachtLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+			opdrachtLabel.setText(rb.getString("oppervlakteRoodTekst"));
+			opdrachtLabel.setBounds(
+				selector.getLocation().x + selector.getSize().width + 2 * offSet,
+				offSet / 2 - 2,
+				getSize().width - 
+				(selector.getSize().width + 2 * offSet +
+				 getSize().width - vergelijkChoice.getLocation().x + offSet),
+				3 * theBoldFM.getHeight() / 2);
+				
+			opdrachtLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
+			opdrachtLabel2.setText(rb.getString("oppervlakteGrijsTekst"));	
+			opdrachtLabel2.setBounds(
+				opdrachtLabel.getLocation().x,
+				opdrachtLabel.getLocation().y + opdrachtLabel.getSize().height,
+				opdrachtLabel.getSize().width,
+				3 * theBoldFM.getHeight() / 2);
+				
+			bottomPanel.add(opdrachtLabel2);
+			bottomPanel.add(okButton);
+		}
 
 		bottomPanel.add(opdrachtLabel);	
-		
-		//Test-textfield
-		textField = new TextField();
-		textField.setBounds(50,100,200,25);
-		//add(textField);
+
+
+		if (aantalFiguren == 1)
+			setSingleComponent();
+
 	}
 	
 	public void setSingleComponent()
-	{	if(bottomPanel!=null) getContentPane().remove(bottomPanel); 
-		if(currentOpdracht!=null)currentOpdracht.drawingPanel.setBounds(0, 0, getSize().width, getSize().height);
+	{	
+/*	
+		if (bottomPanel != null) 
+			getContentPane().remove(bottomPanel); 
+		if (currentOpdracht != null)
+			currentOpdracht.drawingPanel.setBounds(
+				0, 0, getSize().width, getSize().height);
+*/				
+
+		isDWOComponent = true;
+		bottomPanel.remove(selector);
+		opdrachtLabel.setLocation(2 * offSet, opdrachtLabel.getLocation().y);
+		opdrachtLabel2.setLocation(opdrachtLabel.getLocation().x, 
+								   opdrachtLabel2.getLocation().y);
+								   
+		oppervlakteTextField.setLocation(
+			opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width + offSet,
+			offSet);
+
+
+		vergelijkChoice.setLocation(
+			opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width,
+			offSet / 2);
+								   
+		okButton.setLocation(
+			vergelijkChoice.getLocation().x + vergelijkChoice.getSize().width -
+			okButton.getSize().width,
+			vergelijkChoice.getLocation().y + vergelijkChoice.getSize().height - 2);
+								   
 	}
 
 	public Vector processFiguurString(String fString)
@@ -440,21 +659,82 @@ if ((taakNummer == 2) || (taakNummer == 3))
         currentOpdracht.drawingPanel.setVisible(true);
         if (taakNummer == 1)
         {
-	        if (currentOpdracht.drawingPanel.figureIsRectangle)
+	        //if (currentOpdracht.drawingPanel.figureIsRectangle)
+	        if (currentOpdracht.antwoordOK)
 	        {	opdrachtLabel.setText(rb.getString("rechthoekTekst"));
     	    }
 	        else
     	    {	opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
         	}
         }
-        else // taakNummer==2 of taakNummer==3
+        else if ((taakNummer == 2) || (taakNummer == 3))
         {
 			// antwoord invullen        	
 			if (currentOpdracht.antwoord > 0)
-				oppervlakteTextField.setText("" + currentOpdracht.antwoord);
-			else
-				oppervlakteTextField.setText("");
-        }	
+			{	oppervlakteTextField.setText("" + currentOpdracht.antwoord);
+				
+				if (isDWOComponent)
+				{	if (currentOpdracht.antwoordOK)
+					{	bottomPanel.showGoed = true;
+						bottomPanel.showFout = false;
+					}
+					else
+					{	bottomPanel.showGoed = false;
+						bottomPanel.showFout = true;
+					}
+				}
+			
+			
+			}
+			else // geen antwoord gegeven
+			{	oppervlakteTextField.setText("");
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = false;
+					bottomPanel.showFout = false;
+				}
+			}
+		}		
+        else if (taakNummer == 4)
+        {	if (currentOpdracht.antwoord > 0)
+        	{	vergelijkChoice.select(currentOpdracht.antwoord - 1);
+        
+        		if (isDWOComponent)
+				{	
+/*				
+					boolean ok = false;
+					if ((currentOpdracht.antwoord == 1) &&
+			    	    (currentOpdracht.oppervlakte > currentOpdracht.oppervlakteGrijs))
+					{	ok = true;    
+					}
+					if ((currentOpdracht.antwoord == 2) &&
+				    	(currentOpdracht.oppervlakte < currentOpdracht.oppervlakteGrijs))
+					{	ok = true;    
+					}
+					if ((currentOpdracht.antwoord == 3) &&
+				    	(currentOpdracht.oppervlakte == currentOpdracht.oppervlakteGrijs))
+					{	ok = true;    
+					}
+*/			
+//					if (ok)
+					if (currentOpdracht.antwoordOK)
+					{	bottomPanel.showGoed = true;
+						bottomPanel.showFout = false;
+					}
+					else
+					{	bottomPanel.showGoed = false;
+						bottomPanel.showFout = true;
+					}
+        		}
+        	}
+        	else // geen antwoord gegeven
+        	{	vergelijkChoice.select(0);
+        		if (isDWOComponent)
+				{	bottomPanel.showGoed = false;
+					bottomPanel.showFout = false;
+				}
+        		
+        	}
+        }
     }
 
 
@@ -464,28 +744,104 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		}
 	}
 
+	class VergelijkIL implements ItemListener
+	{	public void itemStateChanged(ItemEvent e)
+		{	selector.setState(currentNum, selector.INITIAL);
+			currentOpdracht.antwoord = 0;
+			currentOpdracht.antwoordOK = false;
+			if (isDWOComponent)
+			{	bottomPanel.showGoed = false;
+				bottomPanel.showFout = false;
+			}	
+			
+			repaint();
+
+		}
+	}
+
+	class OkAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{	String choice = vergelijkChoice.getSelectedItem();
+			currentOpdracht.antwoord = vergelijkChoice.getSelectedIndex() + 1;
+			boolean ok = false;
+			if (choice.equals(rb.getString("evengrootTekst")) &&
+			    (currentOpdracht.oppervlakte == currentOpdracht.oppervlakteGrijs))
+			{	ok = true;    
+			}
+			if (choice.equals(rb.getString("groterTekst")) &&
+			    (currentOpdracht.oppervlakte > currentOpdracht.oppervlakteGrijs))
+			{	ok = true;    
+			}
+			if (choice.equals(rb.getString("kleinerTekst")) &&
+			    (currentOpdracht.oppervlakte < currentOpdracht.oppervlakteGrijs))
+			{	ok = true;    
+			}
+			if (ok)
+			{	selector.setState(currentNum, selector.GREEN);
+				currentOpdracht.antwoordOK = true;
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = true;
+					bottomPanel.showFout = false;
+				}	
+			}
+			else
+			{	selector.setState(currentNum, selector.RED);	
+				currentOpdracht.antwoordOK = false;
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = false;
+					bottomPanel.showFout = true;
+				}	
+			
+			}
+			
+			repaint();
+		}
+	}	
+
 	class OpnieuwAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	currentOpdracht.drawingPanel.removeAllKnipPolygons();
+		{	
+			currentOpdracht.drawingPanel.removeAllKnipPolygons();
+			
 			KnipPolygon kp = new KnipPolygon(currentOpdracht.drawingPanel, 
-											 currentOpdracht.figuurCoordinaten);
-if ((taakNummer == 2) || (taakNummer == 3))
-	kp.setLabelPoint();
+											 currentOpdracht.figuurCoordinaten,
+											 KnipPolygon.CENTER);
+											 
+			if (taakNummer == 4)
+			{	kp = new KnipPolygon(currentOpdracht.drawingPanel, 
+											 currentOpdracht.figuurCoordinaten,
+											 KnipPolygon.RIGHTAL);
+			}												 
+			if ((taakNummer == 2) || (taakNummer == 3))
+				kp.setLabelPoint();
 											 
 			currentOpdracht.drawingPanel.addKnipPolygon(kp);        
+
 			currentOpdracht.drawingPanel.oval1Pos = null;
 			currentOpdracht.drawingPanel.oval2Pos = null;			        
 			currentOpdracht.drawingPanel.oval3Pos = null;
 			currentOpdracht.drawingPanel.repaint();
 			currentOpdracht.drawingPanel.figureIsRectangle = false;
+
+			currentOpdracht.antwoordOK = false;
+			currentOpdracht.antwoord = 0;
+
 			if (taakNummer == 1)
-				opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
-			else // taakNummer == 2 of taakNummer==3
+			{	opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
+			}
+			else // taakNummer==2 of taakNummer==3 of taakNummer==4
 			{	currentOpdracht.antwoord = 0;
 				oppervlakteTextField.setText("");
 			}	
+			
 			selector.setState(currentNum, selector.INITIAL);
-
+			
+			if (isDWOComponent)
+			{	bottomPanel.showGoed = false;
+				bottomPanel.showFout = false;
+			}	
+			
+			repaint();
 		}
 	}
 
@@ -514,9 +870,22 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		if (!error)
 		{	currentOpdracht.antwoord = oNum;
 			if (currentOpdracht.antwoord == currentOpdracht.oppervlakte)
-				selector.setState(currentNum, selector.GREEN);
+			{	selector.setState(currentNum, selector.GREEN);
+				currentOpdracht.antwoordOK = true;
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = true;
+					bottomPanel.showFout = false;
+				}	
+			}
 			else
-				selector.setState(currentNum, selector.RED);
+			{	selector.setState(currentNum, selector.RED);
+				currentOpdracht.antwoordOK = false;
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = false;
+					bottomPanel.showFout = true;
+				}	
+
+			}
 //System.out.println("o = " + oNum);			
 		}	
 			
@@ -557,9 +926,22 @@ if ((taakNummer == 2) || (taakNummer == 3))
 			if (!error)
 			{	currentOpdracht.antwoord = oNum;
 				if (currentOpdracht.antwoord == currentOpdracht.oppervlakte)
-					selector.setState(currentNum, selector.GREEN);
+				{	selector.setState(currentNum, selector.GREEN);
+					currentOpdracht.antwoordOK = true;
+					if (isDWOComponent)
+					{	bottomPanel.showGoed = true;
+						bottomPanel.showFout = false;
+					}	
+				}
 				else
-					selector.setState(currentNum, selector.RED);			
+				{	selector.setState(currentNum, selector.RED);			
+					currentOpdracht.antwoordOK = false;
+					if (isDWOComponent)
+					{	bottomPanel.showGoed = false;
+						bottomPanel.showFout = true;
+					}	
+
+				}
 			}	
 			
 			repaint();
@@ -631,43 +1013,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 			{	txt = removeCharAt(txt, index);
 				corrected = true;
 			}
-/*			
-			// dubbele decimale punt
-			// voldoende er twee te zoeken
-			int pIndex1 = txt.indexOf('.');
-			int pIndex2 = txt.lastIndexOf('.');
-			if ((pIndex1 >= 0) && (pIndex2 >= 0) && (pIndex1 != pIndex2))
-			{	// verwijderen
-				txt = removeCharAt(txt, pIndex2);
-				corrected = true;
-			}
-*/
-/*			
-			// proberen een legaal karakter voor het
-			// minteken (dit staat dan op plek 1) in te vullen
-			if (txt.indexOf('-') == 1)
-			{	txt = removeCharAt(txt, 0);
-				corrected = true;
-			}
-*/			
-/*
-			// minteken
-			// alleen vooraan if any
-			int minIndex = txt.lastIndexOf('-');
-			if (minIndex > 0)
-			{	txt = removeCharAt(txt, minIndex);
-				corrected = true;
-			}
-*/			
 			// leading zeros, leiden niet tot een NumberFormatException
-/*			
-			// geval met minteken
-			if ((txt.indexOf('-') == 0) && (txt.length() >= 3) &&
-				(txt.charAt(1) == '0') && Character.isDigit(txt.charAt(2)))
-			{	txt = removeCharAt(txt, 1);
-				corrected = true;
-			}
-*/			
 			// geen minteken
 			if (//(txt.indexOf('-') < 0) && 
 				(txt.length() >= 2) &&
@@ -678,7 +1024,6 @@ if ((taakNummer == 2) || (taakNummer == 3))
 			
 // trailing zeros na(!) decimale punt oplossen 
 // bij actionPerformed of focusLost			
-
 			
 			if (corrected)
 				oppervlakteTextField.setText(txt);
@@ -686,7 +1031,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		}
 		
 		public boolean isLegal(char c)
-		{	return Character.isDigit(c); // || (c == '-') || (c == '.');
+		{	return Character.isDigit(c); 
 		}
 	}
 
@@ -704,34 +1049,86 @@ if ((taakNummer == 2) || (taakNummer == 3))
 	{	stop();
 		api = null;
 	}
+
 	public void stop()
-	{	if(api != null)
+	{	if (api != null)
 		{	String s = getState();
 			String d = new Double(getScore()).toString();
 			api.LMSSetValue("cmi.core.score.raw",d);
 			api.LMSSetValue("cmi.suspend_data",s);
 		}
 	}
+
 	public void setState(String s)
-	{	//decodeer de string
+	{	// decodeer de string
 		Object o = StringCodeObject.decodeStringToObject(s);
-		Hashtable h = (Hashtable)o;
-		//haal de data uit de hashtabel
-		//String text = (String)h.get("text");
-	    //herstel de state van het applet
-	    //textField.setText(text);
+		// cast
+		Vector scormOpdrachten = (Vector) o;
+	    // herstel de state van het applet
+	    for (int oCnt = 0; oCnt < aantalFiguren; oCnt++)
+	    {	ScormOpdracht scoOpdracht = 
+	    		(ScormOpdracht) scormOpdrachten.elementAt(oCnt);
+	    	if (scoOpdracht.isCurrent)	
+	    		currentNum = oCnt;
+	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord;
+	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    	
+	    	opdrachten[oCnt].drawingPanel.knipPolygons.removeAllElements();
+			for (int pCnt = 0; pCnt < scoOpdracht.figuurPolygons.size(); pCnt++)
+	    	{	ScormPolygon sp = 
+	    			(ScormPolygon) scoOpdracht.figuurPolygons.elementAt(pCnt);
+	    		KnipPolygon kp = new KnipPolygon(sp.realPoints, 
+	    							opdrachten[oCnt].drawingPanel);
+	    		
+	    		kp.oppervlakte = sp.oppervlakte;
+	    		
+	    		opdrachten[oCnt].drawingPanel.knipPolygons.addElement(kp);
+	    		
+	    		if ((taakNummer == 2) || (taakNummer == 3))
+	    			kp.setLabelPoint();
+	    		
+	    		
+	    	}	    	
+	    		
+	    	if ((opdrachten[oCnt].antwoord > 0) && opdrachten[oCnt].antwoordOK)
+	    		selector.setState(currentNum, selector.GREEN);
+	    	else if ((opdrachten[oCnt].antwoord > 0) && !opdrachten[oCnt].antwoordOK)
+	    		selector.setState(currentNum, selector.RED);
+	    }
+
+		// dit zet de antwoorden
+		select(currentNum);
+
 	}
+
 	public String getState()
-	{	String text = null;
-		//vraag de gegevens op die de state bepalen
-	    //text = textField.getText();
-	    Hashtable h = new Hashtable();
-	    //voeg de gegeven toe aan de hashtable
-	    //h.put("text", text);
-	    //codeer de hashtable tot string
-	    String s = StringCodeObject.encodeObjectToString(h);
+	{	
+		// creeer de gegevens die de state bepalen
+		Vector scormOpdrachten = new Vector();
+	    
+	    for (int oCnt = 0; oCnt < aantalFiguren; oCnt++)
+	    {	ScormOpdracht scoOpdracht = new ScormOpdracht(oCnt + 1);
+	    	if (currentNum == oCnt)
+	    		scoOpdracht.isCurrent = true;
+	    	scoOpdracht.antwoord = opdrachten[oCnt].antwoord;
+	    	scoOpdracht.antwoordOK = opdrachten[oCnt].antwoordOK;	    	
+	    	Vector knipPolygons = opdrachten[oCnt].drawingPanel.knipPolygons;
+	    	for (int pCnt = 0; pCnt < knipPolygons.size(); pCnt++)
+	    	{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(pCnt);
+	    		ScormPolygon sp = new ScormPolygon(kp.realPoints);
+	    		sp.oppervlakte = kp.oppervlakte;
+	    		scoOpdracht.figuurPolygons.addElement(sp);
+	    	}	 
+	    		
+	    	scormOpdrachten.addElement(scoOpdracht);	
+	    }
+		
+
+	    // codeer deze gegevens tot een string
+	    String s = StringCodeObject.encodeObjectToString(scormOpdrachten);
+
 	    return s;
 	}
+
 	public double getScore()
 	{	return 0.5;
 	}
@@ -744,6 +1141,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 	public boolean hasEditMode()
 	{	return false;
 	}
+
     public ScormEditComponentIF getEditComponent(Hashtable launchdata)
     {	return null;
     }
@@ -751,22 +1149,30 @@ if ((taakNummer == 2) || (taakNummer == 3))
     public Hashtable getDefaultParameters()
     {
     	Hashtable h = new Hashtable();
-    	h.put("taaknummer","1");
-    	h.put("toonrooster","no");
-    	h.put("groteballetjes","no");
-    	h.put("toonschaduw","no");
-    	h.put("toonafmetingen","no");
+
+    	h.put("taaknummer", "1");
+    	h.put("toonrooster", "no");
+    	h.put("groteballetjes", "no");
+    	h.put("toonschaduw", "no");
+    	h.put("toonafmetingen", "no");
     	h.put("figuur1", "0,0|8,0|8,8|0,8");
+    	h.put("grid1", "20");    	
+    	h.put("oppervlakte1", "64");    	
+    	h.put("figuurgrijs1", "0,0|8,0|8,8|0,8");    	
+    	h.put("oppervlaktegrijs1", "64");    	    	
+    	
     	
     	return h;
     }
     
     public Parameter[] getEditableParameters()
 	{	
-    	Parameter[] parameters = new Parameter[6];
+    	Parameter[] parameters = new Parameter[10];
 		
 		DataType type = new ScormString();
+		
 		Parameter param = new Parameter("taaknummer", "Nummer van de taak", type);
+		param.setHelpText("1 (rechthoek), 2, 3 (oppervlakte) of 4 (vergelijken)");		
 		parameters[0] = param;
 		
 		param = new Parameter("toonrooster", "Rooster zichtbaar", type);
@@ -774,6 +1180,7 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		parameters[1] = param;
 		
 		param = new Parameter("groteballetjes", "Grote balletjes", type);
+		param.setHelpText("vul in: yes of no");		
 		parameters[2] = param;
 
 		param = new Parameter("toonschaduw", "Schaduw zichtbaar", type);
@@ -781,14 +1188,34 @@ if ((taakNummer == 2) || (taakNummer == 3))
 		parameters[3] = param;
 		
 		param = new Parameter("toonafmetingen", "Afmetingen zichtbaar", type);
-		param.setHelpText("vul in: yes of no");
+		param.setHelpText("vul in: yes of no, yes alleen als toonschaduw = yes");
 		parameters[4] = param;
 		
-		param = new Parameter("figuur1", "Figuur", type);
+		// aantal figuren wordt gefixeerd op 1
+		
+		param = new Parameter("figuur1", "(Rode) figuur", type);
 		param.setHelpText("vul bv in: 0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6");
 		parameters[5] = param;
+		
+		param = new Parameter("grid1", "Grid afmeting in pixels", type);
+		param.setHelpText("minimum 16, maximum 50, even getal");
+		parameters[6] = param;
+		
+		param = new Parameter("oppervlakte1", "Oppervlakte (rode) figuur", type);
+		param.setHelpText("oppervlakte rode figuur in grid-eenheden");
+		parameters[7] = param;
+		
+		param = new Parameter("figuurgrijs1", "Grijze figuur (taaknummer 4)", type);
+		param.setHelpText("vul bv in: 0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6");
+		parameters[8] = param;
+		
+		param = new Parameter("oppervlaktegrijs1", "Oppervlakte grijze figuur", type);
+		param.setHelpText("oppervlakte grijze figuur in grid-eenheden");
+		parameters[9] = param;
+		
 		return parameters;
     }
+
     public Parameter[] getAllParameters()
     {	return null;
     }

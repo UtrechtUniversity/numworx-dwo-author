@@ -11,6 +11,12 @@ public class Text_en extends java.util.ListResourceBundle
             { "opnieuwTekst", "reset" }, 	 			
             { "rechthoekTekst" , "Hurray, a rectangle!!!" },            
             { "watIsOppervlakteTekst" , "What is the surface area of this figure?" },                        
+            { "oppervlakteRoodTekst" , "The surface area of the red figure " },                                    
+			{ "groterTekst" , "is larger than" },            
+			{ "kleinerTekst" , "is smaller than" },            
+			{ "evengrootTekst" , "equals" },            
+            { "oppervlakteGrijsTekst" , "the surface area of the gray figure." },                        		
+            
 		};
 }
 

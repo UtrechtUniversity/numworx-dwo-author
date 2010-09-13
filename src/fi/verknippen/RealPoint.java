@@ -2,8 +2,9 @@ package fi.verknippen;
 
 import java.util.*;
 import java.awt.Point;
+import java.io.Serializable;
 
-public class RealPoint
+public class RealPoint implements Serializable
 {	
     // a small number
     public static final double NZero = 1e-5d; //1e-9d;

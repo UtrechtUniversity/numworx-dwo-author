@@ -2,6 +2,7 @@ package fi.verknippen;
 
 import java.awt.*;
 import java.util.*;
+import java.io.Serializable;
 
 import javax.swing.*;
 
@@ -35,10 +36,14 @@ public class KnipPolygon
 	
 	static int labelWidth;
 	static int labelHeight;
+
+	static final int CENTER = 0;
+	static final int LEFTAL = 1;
+	static final int RIGHTAL = 2;
 	
 	// constructor voor ingelezen figuur
 	// de coordinaten zijn grid-coordinaten!!
-	public KnipPolygon(DrawingPanel o, Vector intPts)
+	public KnipPolygon(DrawingPanel o, Vector intPts, int align)
 	{	owner = o;
 	
 		labelWidth = owner.labelWidth;
@@ -65,7 +70,12 @@ public class KnipPolygon
 				aPoint.x * owner.gridSize, aPoint.y * owner.gridSize);
 		}
 		maakIntPolygon();
-		centreer();
+		if (align == CENTER)
+			centreer();
+		else if (align == LEFTAL)
+			links();
+		else if (align == RIGHTAL)
+			rechts();		
 	}
 
 	// overloaded
@@ -137,6 +147,27 @@ public class KnipPolygon
 		// space in grid-units
 		int hSpace = (owner.getSize().width / owner.gridSize -
 					  bBox.width / owner.gridSize) / 2;
+		int vSpace = (owner.getSize().height / owner.gridSize -
+					  bBox.height / owner.gridSize) / 2;
+		translate(hSpace * owner.gridSize - bBox.x, 
+				  vSpace * owner.gridSize - bBox.y);					  
+	}	
+
+	public void links()
+	{	Rectangle bBox = intPolygon.getBounds();
+		// space in grid-units
+		int hSpace = 1;
+		int vSpace = (owner.getSize().height / owner.gridSize -
+					  bBox.height / owner.gridSize) / 2;
+		translate(hSpace * owner.gridSize - bBox.x, 
+				  vSpace * owner.gridSize - bBox.y);					  
+	}	
+	
+	public void rechts()
+	{	Rectangle bBox = intPolygon.getBounds();
+		// space in grid-units
+		int hSpace = (owner.getSize().width / owner.gridSize -
+					  bBox.width / owner.gridSize) - 1;
 		int vSpace = (owner.getSize().height / owner.gridSize -
 					  bBox.height / owner.gridSize) / 2;
 		translate(hSpace * owner.gridSize - bBox.x, 
@@ -315,24 +346,7 @@ public class KnipPolygon
 		return rotationPoint;
 		//return insidePoint;
 	}
-/*	
-// niet meer gebruikt 
-	public boolean isConvex()
-	{	if (aantalPunten == 3)
-			return true;
-		boolean result = true;
-		for (int pCnt = 0; pCnt < aantalPunten; pCnt++)
-		{	RealPoint aVertex = realPoints[pCnt];
-			RealPoint aVertexPlusTwo = realPoints[(pCnt + 2) % aantalPunten];
-			RealPoint midPoint = new RealPoint(
-				(aVertex.x + aVertexPlusTwo.x) / 2,
-				(aVertex.y + aVertexPlusTwo.y) / 2);
-			Point midP = midPoint.toPoint();
-			result = result && contains(midP);	
-		}
-		return result;
-	}
-*/	
+
 	// roteer dh graden om het rotatiepunt tegen de klok in
 	public void rotate (double dh)
 	{	RealPoint rp = getRotationPoint();
@@ -519,81 +533,19 @@ public class KnipPolygon
 		return bbEdges;
 	}
 
-/*
-// niet gebruikt	
-	// de langste edge op een kant van de bounding box
-	// zonder constraints van nabijgelegen stukjes	
-	public Point getEdgeOnBoundingBox()
-	{	Vector topEdges = getEdgesOnBoundingBox(TOP);
-		Vector rightEdges = getEdgesOnBoundingBox(RIGHT);
-		Vector bottomEdges = getEdgesOnBoundingBox(BOTTOM);
-		Vector leftEdges = getEdgesOnBoundingBox(LEFT);
-		int topLength = -1;
-		int topIndex = -1; 
-		for (int eCnt = 0; eCnt < topEdges.size(); eCnt++)
-		{	Point topPt = (Point) topEdges.elementAt(eCnt);
-			if (topPt.y > topLength)
-			{	topLength = topPt.y;
-				topIndex = topPt.x;
-			}
-		}
-		int rightLength = -1;
-		int rightIndex = -1; 
-		for (int eCnt = 0; eCnt < rightEdges.size(); eCnt++)
-		{	Point rightPt = (Point) rightEdges.elementAt(eCnt);
-			if (rightPt.y > rightLength)
-			{	rightLength = rightPt.y;
-				rightIndex = rightPt.x;
-			}
-		}
-		int bottomLength = -1;
-		int bottomIndex = -1; 
-		for (int eCnt = 0; eCnt < bottomEdges.size(); eCnt++)
-		{	Point bottomPt = (Point) bottomEdges.elementAt(eCnt);
-			if (bottomPt.y > bottomLength)
-			{	bottomLength = bottomPt.y;
-				bottomIndex = bottomPt.x;
-			}
-		}
-		int leftLength = -1;
-		int leftIndex = -1; 
-		for (int eCnt = 0; eCnt < leftEdges.size(); eCnt++)
-		{	Point leftPt = (Point) leftEdges.elementAt(eCnt);
-			if (leftPt.y > leftLength)
-			{	leftLength = leftPt.y;
-				leftIndex = leftPt.x;
-			}
-		}
-		// geen gevonden
-		if ((topLength < 0) && (rightLength < 0) && 
-			(bottomLength < 0) && (leftLength < 0))
-			return null;
-		// topLength is de grootste
-		if ((topLength >= rightLength) && (topLength >= bottomLength) &&
-			(topLength >= leftLength))	
-			return new Point(topIndex, TOP);
-		// rightLength is de grootste
-		if ((rightLength >= bottomLength) && (rightLength >= leftLength) &&
-			(rightLength >= topLength))	
-			return new Point(rightIndex, RIGHT);
-		// bottomLength is de grootste
-		if ((bottomLength >= leftLength) && (bottomLength >= topLength) &&
-			(bottomLength >= rightLength))	
-			return new Point(bottomIndex, BOTTOM);
-		// leftLength is de grootste
-		if ((leftLength >= topLength) && (leftLength >= rightLength) &&
-			(leftLength >= bottomLength))	
-			return new Point(leftIndex, LEFT);
-	
-		return null;
-	}	
-*/
 
 	public Rectangle growBorder(Rectangle r, int bSize)
 	{	return new Rectangle(r.x - bSize, r.y - bSize,
 						     r.width + 2 * bSize, r.height + 2 * bSize);
 	}
 
+
+	// let op:
+	// deze methode berekent niet alleen de positie van het balletje
+	// dat het label tevoorschijn laat komen bij taaknummer 2,
+	// maar ook de optimale positie van het label zelf;
+	// i.h.b. moet je deze methode dus ook gebruiken bij taaknummer 3
+	// ook al wordt daar het labelPoint niet getekend
 	public void setLabelPoint()
 	{	
 		int offSet = 5;
@@ -759,142 +711,22 @@ public class KnipPolygon
 		}
 	}
 	
-/*	
-	// oude versie	
-	public void setLabelPoint2()	
-	{	
-		int offSet = 5;
-	
-		Point labelSpec = getEdgeOnBoundingBox();
-		if (labelSpec != null)
-		{	int edgeIndex = labelSpec.x;
-			labelPos = labelSpec.y;
-			if (labelPos == TOP)
-			{	labelPoint = new RealPoint(
-					intPoints[edgeIndex].x + owner.gridSize / 4,
-					intPoints[edgeIndex].y + owner.gridSize / 4);
-				labelRect = new Rectangle(
-					intPoints[edgeIndex].x, 
-					intPoints[edgeIndex].y - offSet - labelHeight,
-					labelWidth, labelHeight);	
-//labelVisible = true;					
-			}		
-			else if (labelPos == RIGHT)
-			{	labelPoint = new RealPoint(
-					intPoints[edgeIndex].x - owner.gridSize / 4,
-					intPoints[edgeIndex].y + owner.gridSize / 4);
-				labelRect = new Rectangle(
-					intPoints[edgeIndex].x + offSet, 
-					intPoints[edgeIndex].y,
-					labelWidth, labelHeight);		
-//labelVisible = true;										
-					
-			}		
-			else if (labelPos == BOTTOM)
-			{	labelPoint = new RealPoint(
-					intPoints[edgeIndex].x - owner.gridSize / 4,
-					intPoints[edgeIndex].y - owner.gridSize / 4);
-				labelRect = new Rectangle(
-					intPoints[edgeIndex].x - labelWidth, 
-					intPoints[edgeIndex].y + offSet,
-					labelWidth, labelHeight);		
-//labelVisible = true;										
-					
-			}		
-			else if (labelPos == LEFT)
-			{	labelPoint = new RealPoint(
-					intPoints[edgeIndex].x + owner.gridSize / 4,
-					intPoints[edgeIndex].y - owner.gridSize / 4);
-				labelRect = new Rectangle(
-					intPoints[edgeIndex].x - offSet - labelWidth, 
-					intPoints[edgeIndex].y - labelHeight,
-					labelWidth, labelHeight);		
-//labelVisible = true;										
-					
-					
-			}
-		}	
-		
-	}
-*/
 
-/*	
-// niet gebruikt 
-	public Vector getCornerVerticesOnBB()
-	{	Rectangle bb = getBoundingBox();
-		Vector result = new Vector();
-		for (int vCnt = 0; vCnt < aantalPunten; vCnt++)
-		{	// de vertex voor intPoints[vCnt]
-			int e0x = intPoints[(vCnt + aantalPunten - 1) % aantalPunten].x;
-			int e0y = intPoints[(vCnt + aantalPunten - 1) % aantalPunten].y;
-			// de vertex intPoints[vCnt]
-			int e1x = intPoints[vCnt].x;
-			int e1y = intPoints[vCnt].y;
-			// de vertex na intPoints[vCnt]
-			int e2x = intPoints[(vCnt + 1) % aantalPunten].x;
-			int e2y = intPoints[(vCnt + 1) % aantalPunten].y;
-			// bovenkant bounding box
-			// topleft
-			if ((e0x == e1x) && (e1y == bb.y) && (e2y == e1y))
-			{	Point p = new Point(vCnt, TOPLEFT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// topright
-			if ((e0y == e1y) && (e1y == bb.y) && (e2x == e1x))
-			{	Point p = new Point(vCnt, TOPRIGHT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// rechterkant bounding box
-			// topright
-			if ((e0y == e1y) && 
-				(e1x == (bb.x + bb.width)) && (e2x == e1x))
-			{	Point p = new Point(vCnt, TOPRIGHT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// bottomright
-			if ((e0x == e1x) && 
-				(e1x == (bb.x + bb.width)) && (e2y == e1y))
-			{	Point p = new Point(vCnt, BOTTOMRIGHT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// onderkant bounding box
-			// bottomright
-			if ((e0x == e1x) && 
-				(e1y == (bb.y + bb.height)) && (e2y == e1y))
-			{	Point p = new Point(vCnt, BOTTOMRIGHT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// bottomleft
-			if ((e0y == e1y) && 
-				(e1y == (bb.y + bb.height)) && (e2x == e1x))
-			{	Point p = new Point(vCnt, BOTTOMLEFT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// linkerkant bounding box
-			// bottomleft
-			if ((e0y == e1y) && 
-				(e1x == bb.x) && (e2x == e1x))
-			{	Point p = new Point(vCnt, BOTTOMLEFT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-			// topleft
-			if ((e0x == e1x) && 
-				(e1x == bb.x) && (e2y == e1y))
-			{	Point p = new Point(vCnt, TOPLEFT);
-				if (!result.contains(p))
-					result.addElement(p);
-			}
-		}
-	
-		return result;
-	}
-*/	
 	
 }
+
+class ScormPolygon implements Serializable
+{
+	Vector realPoints = new Vector(0);
+	int oppervlakte;
+	
+	
+	public ScormPolygon(RealPoint[] rPoints)
+	{	
+		for (int pCnt = 0; pCnt < rPoints.length; pCnt++)
+		{	realPoints.addElement(new RealPoint(rPoints[pCnt]));
+		}
+	}
+	
+}
+

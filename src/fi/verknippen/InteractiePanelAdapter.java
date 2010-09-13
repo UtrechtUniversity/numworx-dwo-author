@@ -130,6 +130,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	public InteractieEditPanel getEditPanel()
 	{
 		return new InteractieEditPanelAdapter(this);
+		//return null;
 	}
 	public void setBounds(int x, int y, int b, int h)
 	{	

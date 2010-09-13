@@ -11,7 +11,11 @@ public class Text_nl extends java.util.ListResourceBundle
             { "opnieuwTekst", "opnieuw" }, 	 	
             { "rechthoekTekst" , "Hoera, een rechthoek!!!" },
             { "watIsOppervlakteTekst" , "Wat is de oppervlakte van deze figuur?" },            
-		
+            { "oppervlakteRoodTekst" , "De oppervlakte van de rode figuur is " },                        
+			{ "groterTekst" , "groter dan" },            
+			{ "kleinerTekst" , "kleiner dan" },            
+			{ "evengrootTekst" , "even groot als" },            
+            { "oppervlakteGrijsTekst" , "de oppervlakte van de grijze figuur." },                        		
 		};
 }
 

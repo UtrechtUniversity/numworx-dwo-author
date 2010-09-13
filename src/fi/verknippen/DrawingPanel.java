@@ -17,6 +17,7 @@ public class DrawingPanel extends JPanel
 	Color gridColor = Color.lightGray;
 	Color polyColor = new Color(255, 0, 0, 175);
 	Color shadowColor = Color.lightGray;
+	Color grijsPolyColor = Color.gray;
 	Color sizeColor = Color.lightGray; //Color.black;	
 	Color labelColor = Color.green;
 	
@@ -27,6 +28,7 @@ public class DrawingPanel extends JPanel
 	int gridSize = 20;
 
 	KnipPolygon shadowPolygon;
+	KnipPolygon grijsPolygon;
 	boolean showSizes = false;
 
 	Vector knipPolygons = new Vector();
@@ -1030,6 +1032,11 @@ System.out.println("f & !o & !i pol2 from stack");
 		if (showGrid && !gridOnTop)
 			paintGrid(g);
 
+		if (grijsPolygon != null)
+		{	g.setColor(grijsPolyColor);
+			g.fillPolygon(grijsPolygon.intPolygon);
+		}
+
 		if (shadowPolygon != null)
 			paintShadowPolygon(g);	
 		
@@ -1072,6 +1079,7 @@ System.out.println("f & !o & !i pol2 from stack");
 							hSpace = 0;
 						int bx = kp.labelRect.x + hSpace;	
 						g.setColor(Color.black);
+						g.setFont(owner.theBoldFont);
 						g.drawString(oString, bx, 
 							kp.labelRect.y + owner.theBoldFM.getHeight());
 							
@@ -1114,6 +1122,7 @@ System.out.println("f & !o & !i pol2 from stack");
 						//	hSpace = 0;
 						int bx = kp.labelRect.x + hSpace;	
 						g.setColor(Color.black);
+						g.setFont(owner.theBoldFont);
 						g.drawString(oString, bx, 
 							kp.labelRect.y + owner.theBoldFM.getHeight());
 							
@@ -1136,6 +1145,7 @@ System.out.println("f & !o & !i pol2 from stack");
 						//	hSpace = 0;
 						int bx = kp.labelRect.x + hSpace;	
 						g.setColor(Color.black);
+						g.setFont(owner.theBoldFont);
 						g.drawString(oString, bx, 
 							kp.labelRect.y + owner.theBoldFM.getHeight());
 						       
@@ -1344,6 +1354,8 @@ int chkCnt = 0;
 			{	figureIsRectangle = true;
 				owner.opdrachtLabel.setText(owner.rb.getString("rechthoekTekst"));
 				owner.selector.setState(owner.currentNum, owner.selector.GREEN);
+				owner.currentOpdracht.antwoord = 1;
+				owner.currentOpdracht.antwoordOK = true;
 
 //System.out.println("rectangle");				
 			}
@@ -1351,6 +1363,8 @@ int chkCnt = 0;
 			{	figureIsRectangle = false;
 				owner.opdrachtLabel.setText(owner.rb.getString("maakRechthoekTekst"));			
 				owner.selector.setState(owner.currentNum, owner.selector.INITIAL);
+				owner.currentOpdracht.antwoord = 0;
+				owner.currentOpdracht.antwoordOK = false;
 			}			
 		
 
