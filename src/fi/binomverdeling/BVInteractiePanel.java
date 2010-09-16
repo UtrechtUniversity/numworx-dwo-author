@@ -3,6 +3,7 @@ package fi.binomverdeling;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -66,6 +67,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public final Color STAAFJE_TELT_NIET = new Color(234,229,255);
 	public final Color LABEL_BACKGROUND = new Color(240,247,255);	
 	public final Color LABEL_ACTIEF = new Color(200,227,255);
+	
+	private Rectangle lastBounds; //om bij te houden wanneer de maat bounds veranderen
+	private static int debug2 = 0;
 	
 	/**
 	 * Constructor
@@ -191,15 +195,17 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	private String kansLabelLinksTekst() {
+		
 		int grens = this.staafjesPanel.getGrensRechts();
 		if(this.tweeGrenzen) {
 			grens = this.staafjesPanel.getGrensLinks();
 		}
+		
 		double kans = this.berekenKansCumulatief(0, grens);
 		int hulp = (int)(10000*kans);
 		kans = (double)hulp/10000;
 		
-		return ("P(X<=" + grens + ") = " + kans);
+		return new String("P(X<=" + grens + ") = " + kans);
 	}
 	
 	private String kansLabelMiddenTekst() {
@@ -242,9 +248,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public void updateLabels() {
-		this.kansLabelLinks.setText(this.kansLabelLinksTekst());
-		this.kansLabelMidden.setText(this.kansLabelMiddenTekst());
-		this.kansLabelRechts.setText(this.kansLabelRechtsTekst());
+		this.kansLabelLinks.setText(this.kansLabelLinksTekst()); //TODO zet this.kansLabelLinksTekst() als argument
+		//this.kansLabelMidden.setText(this.kansLabelMiddenTekst()); //TODO enable
+		//this.kansLabelRechts.setText(this.kansLabelRechtsTekst()); //TODO enable
 	}
 	
 	
@@ -261,11 +267,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		this.updateLabels();
 		
-		//this.nText.setText(Integer.toString(this.n));
 		this.nText.setText(this.nString);
 		this.nText.setEditable(this.nVeranderbaar);
 		
-		//this.pText.setText(Double.toString(this.p));
 		this.pText.setText(this.pString);
 		this.pText.setEditable(this.pVeranderbaar);
 		
@@ -275,7 +279,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.nSlider.setEditable(this.nVeranderbaar);
 		this.pSlider.setEditable(this.pVeranderbaar);
 		
-		//this.totaleKansLabel.setText("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
 		this.repaint();
 	}
 	
@@ -645,17 +648,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * Override setBounds, zet naast het panel ook de sliders op de juiste grootte
 	 */
 	public void setBounds(int x, int y, int b, int h) {
-		//resize de sliders
-		this.nSlider.zetLengte(b/3 - 10);
-		this.nSlider.setLocation(0, 0);
-		this.pSlider.zetLengte(b/3 - 10);
-		this.pSlider.setLocation(2*b/3, 0);
-		
-		//zet de sliders weer op de goede stand
-		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
-		this.setSlider(this.pSlider, this.p);
-		//zet bounds van panel
-		super.setBounds(x, y, b, h);
+		Rectangle r = new Rectangle(x,y,b,h);
+		if(!r.equals(this.lastBounds)) {
+			
+			System.out.println("BVInteractiePanel.setBounds(" + x + "," + y + "," + b + "," + h);
+			
+			//resize de sliders
+			this.nSlider.zetLengte(b/3 - 10);
+			this.nSlider.setLocation(0, 0);
+			this.pSlider.zetLengte(b/3 - 10);
+			this.pSlider.setLocation(2*b/3, 0);
+			
+			//zet de sliders weer op de goede stand
+			this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+			this.setSlider(this.pSlider, this.p);
+			//zet bounds van panel
+			super.setBounds(x, y, b, h);
+		}
+		this.lastBounds = r;
 	}
 
 	public void start() {

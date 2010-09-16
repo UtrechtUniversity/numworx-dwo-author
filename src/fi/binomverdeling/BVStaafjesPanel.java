@@ -37,8 +37,9 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	private Slider successenSlider;
 	private DoubleSlider successenDoubleSlider;
 	
-	private static int debug = 0;
 	private Rectangle lastBounds; //laatst gezette bounds, om een resize te kunnen merken
+	
+	private static int debug = 0;
 	
 	/**
 	 * Constructor
@@ -168,6 +169,8 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	 * zet de locatie en lengte voor de slider
 	 */
 	private void updateSliderBounds() {
+		System.out.println("updateSliderBounds() aangeroepen. " + BVStaafjesPanel.debug++);
+		
 		this.berekenStaafBreedte(); //update de staafbreedte
 		
 		int x;
@@ -188,7 +191,11 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 			
 		this.successenDoubleSlider.zetLengte(lengte);
 		this.successenDoubleSlider.setLocation(x, y);
+		
+		//TODO deze regel geeft problemen..
 		this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
+		
+		
 		
 		this.successenSlider.zetLengte(lengte);
 		this.successenSlider.setLocation(x, y);
@@ -352,10 +359,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	 * Paint gehele component
 	 */
 	//Override
-	public void paintComponent(Graphics g) {
-		BVStaafjesPanel.debug++;
-		System.out.println(BVStaafjesPanel.debug);
-		
+	public void paintComponent(Graphics g) {		
         this.berekenStaafBreedte();
         this.berekenMultiplier();
         
@@ -371,31 +375,39 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	
 	//Override
 	public void setBounds(int x, int y, int b, int h) {
-		super.setBounds(x,y,b,h);
-		
-		this.updateSliderBounds();
+		//check of de bounds daadwerkelijk worden veranderd
 		Rectangle r = new Rectangle(x,y,b,h);
 		if(!r.equals(this.lastBounds)) {
+
 			System.out.println("BVStaafjesPanel.setBounds(" + x + "," + y + "," + b + "," + h);//TODO weghalen
+			
+			super.setBounds(x,y,b,h);
+			this.updateSliderBounds();
 			this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
 			this.successenDoubleSlider.zetStandLinks((int)((this.grensLinks)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
 			this.successenSlider.zetStand((int)((this.grensRechts)*this.staafBreedte) - this.successenSlider.getMinimum());
 		}
+		
+		//noteer dat deze bounds zijn gezet
 		this.lastBounds = r;
 		
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		
 		if(e.getSource() == this.successenSlider) {
 			this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
 			this.interactiePanel.updateLabels();
 		}
+		
 		if(e.getSource() == this.successenDoubleSlider) {
 			this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
 			this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
 			
 			this.interactiePanel.updateLabels();
 		}
+		
 		this.repaint();
+		
 	}
 }

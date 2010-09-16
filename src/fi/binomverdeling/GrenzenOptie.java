@@ -23,5 +23,4 @@ public class GrenzenOptie {
     public String toString(){
         return this.name;
     }
-
 }
