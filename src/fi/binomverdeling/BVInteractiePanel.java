@@ -248,9 +248,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public void updateLabels() {
-		this.kansLabelLinks.setText(this.kansLabelLinksTekst()); //TODO zet this.kansLabelLinksTekst() als argument
-		//this.kansLabelMidden.setText(this.kansLabelMiddenTekst()); //TODO enable
-		//this.kansLabelRechts.setText(this.kansLabelRechtsTekst()); //TODO enable
+		this.kansLabelLinks.setText(this.kansLabelLinksTekst());
+		this.kansLabelMidden.setText(this.kansLabelMiddenTekst());
+		this.kansLabelRechts.setText(this.kansLabelRechtsTekst());
 	}
 	
 	
@@ -565,7 +565,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		h.put("grensLinks", this.staafjesPanel.getGrensLinks());
 		h.put("grensRechts", this.staafjesPanel.getGrensRechts());
-		h.put("grenzenOptie", this.grenzenOptie);
+		h.put("grenzenOptie", this.grenzenOptie); //TODO fix error
 		h.put("tweeGrenzen", this.tweeGrenzen);
 		h.put("showGrensSlider", this.staafjesPanel.getShowGrensSlider());
 		return h;
