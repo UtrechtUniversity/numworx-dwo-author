@@ -297,6 +297,18 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 				g.drawString(Integer.toString(i*streepjesFrequentie), xOffset + (int)(((double)i*(double)streepjesFrequentie+0.5)*this.staafBreedte), this.getHeight());
 			}
 		}
+		else {
+			//teken lijn als er geen slider getekend wordt
+			if(!this.showGrensSlider) {
+				g.setColor(Color.BLACK);
+				if(this.showYAs) {
+					g.drawLine(BVStaafjesPanel.YASBALKWIDTH, this.getHeight()-3, this.getWidth()-BVStaafjesPanel.YASBALKWIDTH, this.getHeight()-3);
+				}
+				else {
+					g.drawLine(0, this.getHeight()-3, this.getWidth(), this.getHeight()-3);
+				}
+			}
+		}
 	}
 
 	private Color bepaalStaafKleur(int k) {

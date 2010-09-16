@@ -160,23 +160,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         noordBalk.add(editBalk);
         
         JPanel sliderBalk = new JPanel();
-        sliderBalk.setLayout(new GridLayout(1,3));
+        sliderBalk.setLayout(null);
         
         this.nText.addActionListener(this);
         this.pText.addActionListener(this);
-        //this.successenText.addActionListener(this);
         
         this.nSlider = new Slider(100,50);
         this.pSlider = new Slider(100,50);
-        //this.successenSlider = new Slider(100,50);
+        
+        this.nSlider.zetLengte(this.getWidth()/3);
+        this.pSlider.zetLengte(this.getWidth()/3);
+        this.nSlider.setLocation(0, 0);
+        this.pSlider.setLocation(this.getWidth()/3 * 2, 0);
         
         this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
         this.setSlider(this.pSlider, this.p);
-        //this.setSlider(this.successenSlider, (double)this.successen / (double)BVInteractiePanel.N_MAX);
         
         this.nSlider.addActionListener(this);
         this.pSlider.addActionListener(this);
-        //this.successenSlider.addActionListener(this);
         
         sliderBalk.add(this.nSlider);
         sliderBalk.add(new JLabel(""));
@@ -646,7 +647,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public void setBounds(int x, int y, int b, int h) {
 		//resize de sliders
 		this.nSlider.zetLengte(b/3 - 10);
+		this.nSlider.setLocation(0, 0);
 		this.pSlider.zetLengte(b/3 - 10);
+		this.pSlider.setLocation(2*b/3, 0);
 		
 		//zet de sliders weer op de goede stand
 		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
