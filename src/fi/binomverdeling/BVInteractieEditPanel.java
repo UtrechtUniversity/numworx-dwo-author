@@ -1,5 +1,6 @@
 package fi.binomverdeling;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +27,7 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private JCheckBox nSliderWeergaveBox;
 	private JCheckBox pSliderWeergaveBox;
 	private JCheckBox grensSliderWeergaveBox;
+	private Font font;
 	
 	/**
 	 * Constructor
@@ -35,39 +37,50 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.interactiePanel = new BVInteractiePanel();
 		this.add(this.interactiePanel);
 		
+		this.font = new Font("Dialog", Font.PLAIN, 12);
+		
 		this.settingsPanel = new JPanel();
 		this.settingsPanel.setLayout(new GridLayout(10,1));
 		this.veranderbaarLabel = new JLabel("aanpasbaarheid instellingen");
+		this.veranderbaarLabel.setFont(this.font);
 		this.settingsPanel.add(this.veranderbaarLabel);
 		
 		this.nVeranderbaarBox = new JCheckBox("n veranderbaar", true);
+		this.nVeranderbaarBox.setFont(this.font);
 		this.nVeranderbaarBox.addActionListener(this);
 		this.settingsPanel.add(this.nVeranderbaarBox);
 		
 		this.pVeranderbaarBox = new JCheckBox("p veranderbaar", true);
+		this.pVeranderbaarBox.setFont(this.font);
 		this.pVeranderbaarBox.addActionListener(this);
 		this.settingsPanel.add(this.pVeranderbaarBox);
 		
 		this.weergaveLabel = new JLabel("weergave instellingen");
+		this.weergaveLabel.setFont(this.font);
 		this.settingsPanel.add(this.weergaveLabel);
 		
 		this.xAsWeergaveBox = new JCheckBox("geef X-as weer", true);
+		this.xAsWeergaveBox.setFont(this.font);
 		this.xAsWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.xAsWeergaveBox);
 		
 		this.yAsWeergaveBox = new JCheckBox("Geef Y-as weer", true);
+		this.yAsWeergaveBox.setFont(this.font);
 		this.yAsWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.yAsWeergaveBox);
 		
 		this.nSliderWeergaveBox = new JCheckBox("Geef slider voor n weer", true);
+		this.nSliderWeergaveBox.setFont(this.font);
 		this.nSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.nSliderWeergaveBox);
 		
 		this.pSliderWeergaveBox = new JCheckBox("Geef slider voor p weer", true);
+		this.pSliderWeergaveBox.setFont(this.font);
 		this.pSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.pSliderWeergaveBox);
 		
 		this.grensSliderWeergaveBox = new JCheckBox("Geef slider voor successen weer", true);
+		this.grensSliderWeergaveBox.setFont(this.font);
 		this.grensSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.grensSliderWeergaveBox);
 		

@@ -2,6 +2,8 @@ package fi.binomverdeling;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -9,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,7 +47,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JLabel kansLabelMidden;
 	private JLabel kansLabelRechts;
 	
-	
 	private JPanel kansBalk;
 	
 	private Slider nSlider;
@@ -64,6 +64,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private String nString;
 	private String pString;
+		
+	private Font font;
+	private FontMetrics fontMetrics;
 	
 	public final Color STAAFJE_TELT = new Color(110,5,165);
 	public final Color STAAFJE_TELT_NIET = new Color(234,229,255);
@@ -78,6 +81,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public BVInteractiePanel() {
 		super();
 		super.setLayout(new BorderLayout());
+		
+		this.font = new Font("Dialog", Font.PLAIN, 12);
+		this.fontMetrics = getFontMetrics(this.font);
 		
 		this.n = 30;
 		this.p = 0.5;
@@ -104,12 +110,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.kansLabelLinks = new JLabel();
         this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
         this.kansLabelLinks.setOpaque(true);
+        this.kansLabelLinks.setFont(this.font);
+        this.kansLabelLinks.setHorizontalAlignment(SwingConstants.CENTER);
         this.kansLabelMidden = new JLabel();
         this.kansLabelMidden.setBackground(this.LABEL_ACTIEF);
         this.kansLabelMidden.setOpaque(true);
+        this.kansLabelMidden.setFont(this.font);
+        this.kansLabelMidden.setHorizontalAlignment(SwingConstants.CENTER);
         this.kansLabelRechts = new JLabel();
         this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
         this.kansLabelRechts.setOpaque(true);
+        this.kansLabelRechts.setFont(this.font);
+        this.kansLabelRechts.setHorizontalAlignment(SwingConstants.CENTER);
         
         JPanel zuidBalk = new JPanel();
         zuidBalk.setLayout(new GridLayout(2,1));
@@ -120,9 +132,19 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.kansRadioLinks = new JRadioButton(this.kansLabelLinksTekst(), true);
 		this.kansRadioMidden = new JRadioButton(this.kansLabelMiddenTekst(), false);
 		this.kansRadioRechts = new JRadioButton(this.kansLabelRechtsTekst(), false);
+
+		this.kansRadioLinks.setFont(this.font);
+		this.kansRadioMidden.setFont(this.font);
+		this.kansRadioRechts.setFont(this.font);
+		
+		this.kansRadioLinks.setHorizontalAlignment(SwingConstants.CENTER);
+		this.kansRadioMidden.setHorizontalAlignment(SwingConstants.CENTER);
+		this.kansRadioRechts.setHorizontalAlignment(SwingConstants.CENTER);
+		
 		this.kansRadioLinks.addActionListener(this);
 		this.kansRadioMidden.addActionListener(this);
 		this.kansRadioRechts.addActionListener(this);
+		
 		this.kansRadioLinks.setBackground(this.LABEL_ACTIEF);
 		this.kansRadioMidden.setBackground(this.LABEL_BACKGROUND);
 		this.kansRadioRechts.setBackground(this.LABEL_BACKGROUND);
@@ -138,6 +160,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		zuidBalk.add(this.kansBalk);
 		
 		this.grenzenBox = new JCheckBox("Twee grenswaarden", false);
+		this.grenzenBox.setFont(this.font);
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
 		zuidBalk.add(this.grenzenBox);
@@ -153,8 +176,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.pText.setText(Double.toString(this.p));
         
         this.nLabel = new JLabel("n = ");
+        this.nLabel.setFont(this.font);
         this.nLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         this.pLabel = new JLabel("p = ");
+        this.pLabel.setFont(this.font);
         this.pLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         
         
@@ -268,7 +293,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			int hulp = (int)(10000*kans);
 			kans = (double)hulp/10000;
 			
-			return new String("P(X<=" + grens + ") = " + kans);
+			return new String("P(X\u2264" + grens + ") = " + kans);
 		}
 	}
 	
@@ -276,7 +301,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(this.tweeGrenzen) {
 			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
 			kans = (double)(int)(kans*10000)/10000.0;
-			return "P(" + this.staafjesPanel.getGrensLinks() + "<=X<=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+			return "P(" + this.staafjesPanel.getGrensLinks() + "\u2264X\u2264" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		else {
 			double kans = this.berekenKansK(this.staafjesPanel.getGrensRechts());
@@ -294,7 +319,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
 			kans = (double)(int)(kans*10000)/10000.0;
-			return "P(X>=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+			return "P(X\u2265" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		
 	}
