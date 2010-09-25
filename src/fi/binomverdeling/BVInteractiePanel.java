@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,16 +37,20 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private BVStaafjesPanel staafjesPanel;
 	private JTextField nText;
 	private JLabel nLabel;
-	//private JTextField successenText;
-	private JLabel successenLabel;
 	private JTextField pText;
 	private JLabel pLabel;
-	private JRadioButton kansLabelLinks;
-	private JRadioButton kansLabelMidden;
-	private JRadioButton kansLabelRechts;
+	private JRadioButton kansRadioLinks;
+	private JRadioButton kansRadioMidden;
+	private JRadioButton kansRadioRechts;
+	private JLabel kansLabelLinks;
+	private JLabel kansLabelMidden;
+	private JLabel kansLabelRechts;
+	
+	
+	private JPanel kansBalk;
+	
 	private Slider nSlider;
 	private Slider pSlider;
-	//private Slider successenSlider;
 	private JCheckBox grenzenBox;
 	
 	public static final int N_MIN = 0; //min en max van n voor de sliders
@@ -53,15 +58,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private boolean nVeranderbaar;
 	private boolean pVeranderbaar;
-	//private boolean successenVeranderbaar;
 	
 	private boolean showNSlider;
 	private boolean showPSlider;
-	//private boolean showSuccessenSlider;
 	
 	private String nString;
 	private String pString;
-	//private String successenString;
 	
 	public final Color STAAFJE_TELT = new Color(110,5,165);
 	public final Color STAAFJE_TELT_NIET = new Color(234,229,255);
@@ -69,7 +71,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public final Color LABEL_ACTIEF = new Color(200,227,255);
 	
 	private Rectangle lastBounds; //om bij te houden wanneer de maat bounds veranderen
-	private static int debug2 = 0;
 	
 	/**
 	 * Constructor
@@ -100,36 +101,49 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.staafjesPanel = new BVStaafjesPanel(this, this.grenzenOptie);
         super.add(this.staafjesPanel, BorderLayout.CENTER);
 		
-		JPanel zuidBalk = new JPanel();
-		zuidBalk.setLayout(new GridLayout(2,3));
-		zuidBalk.setBackground(Color.WHITE);
-		this.kansLabelLinks = new JRadioButton(this.kansLabelLinksTekst(), true);
-		this.kansLabelMidden = new JRadioButton(this.kansLabelMiddenTekst(), false);
-		this.kansLabelRechts = new JRadioButton(this.kansLabelRechtsTekst(), false);
-		this.kansLabelLinks.addActionListener(this);
-		this.kansLabelMidden.addActionListener(this);
-		this.kansLabelRechts.addActionListener(this);
-		this.kansLabelLinks.setBackground(this.LABEL_ACTIEF);
-		this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
-		this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+        this.kansLabelLinks = new JLabel();
+        this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
+        this.kansLabelLinks.setOpaque(true);
+        this.kansLabelMidden = new JLabel();
+        this.kansLabelMidden.setBackground(this.LABEL_ACTIEF);
+        this.kansLabelMidden.setOpaque(true);
+        this.kansLabelRechts = new JLabel();
+        this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+        this.kansLabelRechts.setOpaque(true);
+        
+        JPanel zuidBalk = new JPanel();
+        zuidBalk.setLayout(new GridLayout(2,1));
+                
+		this.kansBalk = new JPanel();
+		kansBalk.setLayout(new GridLayout(1,3));
+		//kansBalk.setBackground(this.LABEL_BACKGROUND);
+		this.kansRadioLinks = new JRadioButton(this.kansLabelLinksTekst(), true);
+		this.kansRadioMidden = new JRadioButton(this.kansLabelMiddenTekst(), false);
+		this.kansRadioRechts = new JRadioButton(this.kansLabelRechtsTekst(), false);
+		this.kansRadioLinks.addActionListener(this);
+		this.kansRadioMidden.addActionListener(this);
+		this.kansRadioRechts.addActionListener(this);
+		this.kansRadioLinks.setBackground(this.LABEL_ACTIEF);
+		this.kansRadioMidden.setBackground(this.LABEL_BACKGROUND);
+		this.kansRadioRechts.setBackground(this.LABEL_BACKGROUND);
 		
 		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(this.kansLabelLinks);
-		buttonGroup.add(this.kansLabelMidden);
-		buttonGroup.add(this.kansLabelRechts);
+		buttonGroup.add(this.kansRadioLinks);
+		buttonGroup.add(this.kansRadioMidden);
+		buttonGroup.add(this.kansRadioRechts);
 		
-		zuidBalk.add(this.kansLabelLinks);
-		zuidBalk.add(this.kansLabelMidden);
-		zuidBalk.add(this.kansLabelRechts);
+		this.kansBalk.add(this.kansRadioLinks);
+		this.kansBalk.add(this.kansRadioMidden);
+		this.kansBalk.add(this.kansRadioRechts);
+		zuidBalk.add(this.kansBalk);
+		
 		this.grenzenBox = new JCheckBox("Twee grenswaarden", false);
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
 		zuidBalk.add(this.grenzenBox);
-		zuidBalk.add(new JLabel(""));
-		zuidBalk.add(new JLabel(""));
-				
-        //this.totaleKansLabel = new JLabel("P(X <= " + this.successen + ") = " + this.berekenKansCumulatief());
+		
 		super.add(zuidBalk, BorderLayout.SOUTH);
+		
         this.nText = new JTextField(5);
         this.nText.setActionCommand("ntextupdate");
         this.nText.setText(Integer.toString(this.n));
@@ -138,21 +152,23 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.pText.setActionCommand("ptextupdate");
         this.pText.setText(Double.toString(this.p));
         
-        this.nLabel = new JLabel("n: ");
+        this.nLabel = new JLabel("n = ");
         this.nLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.pLabel = new JLabel("p: ");
+        this.pLabel = new JLabel("p = ");
         this.pLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.successenLabel = new JLabel("successen: ");
-        this.successenLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         
         
         JPanel editBalk = new JPanel();
-        editBalk.setBackground(Color.WHITE);
+        editBalk.setBackground(this.LABEL_BACKGROUND);
         editBalk.setLayout(new GridLayout(1,6));
         editBalk.add(this.nLabel);
         editBalk.add(this.nText);
-        editBalk.add(new JLabel(""));
-        editBalk.add(new JLabel(""));
+        JPanel leeg1 = new JPanel();
+        leeg1.setBackground(Color.WHITE);
+        JPanel leeg2 = new JPanel();
+        leeg2.setBackground(Color.WHITE);
+        editBalk.add(leeg1);
+        editBalk.add(leeg2);
         editBalk.add(this.pLabel);
         editBalk.add(this.pText); 
         
@@ -164,7 +180,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         noordBalk.add(editBalk);
         
         JPanel sliderBalk = new JPanel();
-        sliderBalk.setLayout(null);
+        sliderBalk.setBackground(this.LABEL_BACKGROUND);
+        sliderBalk.setLayout(new GridLayout(1,3));
         
         this.nText.addActionListener(this);
         this.pText.addActionListener(this);
@@ -184,9 +201,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.pSlider.addActionListener(this);
         
         sliderBalk.add(this.nSlider);
-        sliderBalk.add(new JLabel(""));
+        JPanel leeg3 = new JPanel();
+        leeg3.setBackground(Color.WHITE);
+        sliderBalk.add(leeg3);
         sliderBalk.add(this.pSlider);
-        sliderBalk.setBackground(Color.WHITE);
         
         noordBalk.add(sliderBalk);
         
@@ -194,18 +212,64 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
 	}
 	
-	private String kansLabelLinksTekst() {
-		
-		int grens = this.staafjesPanel.getGrensRechts();
-		if(this.tweeGrenzen) {
-			grens = this.staafjesPanel.getGrensLinks();
+	/**
+	 * Update de kansbalk, zet JLabels neer als tweeGrenzen waar is, anders de JRadioButtons, en zet de teksten goed
+	 */
+	public void updateKansBalk() {
+		if(this.tweeGrenzen) {	
+			this.kansBalk.remove(this.kansRadioLinks);
+			this.kansBalk.remove(this.kansRadioMidden);
+			this.kansBalk.remove(this.kansRadioRechts);
+			
+			this.kansLabelLinks.setText(this.kansLabelLinksTekst());
+			this.kansLabelMidden.setText(this.kansLabelMiddenTekst());
+			this.kansLabelRechts.setText(this.kansLabelRechtsTekst());
+			
+			
+			this.kansBalk.add(this.kansLabelLinks);
+			this.kansBalk.add(this.kansLabelMidden);
+			this.kansBalk.add(this.kansLabelRechts);
+			
+			this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
+			this.kansLabelMidden.setBackground(this.LABEL_ACTIEF);
+			this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+			
+			this.kansBalk.validate();
 		}
-		
-		double kans = this.berekenKansCumulatief(0, grens);
-		int hulp = (int)(10000*kans);
-		kans = (double)hulp/10000;
-		
-		return new String("P(X<=" + grens + ") = " + kans);
+		else {
+			this.kansBalk.remove(this.kansLabelLinks);
+			this.kansBalk.remove(this.kansLabelMidden);
+			this.kansBalk.remove(this.kansLabelRechts);
+			
+			this.kansRadioLinks.setText(this.kansLabelLinksTekst());			
+			this.kansRadioMidden.setText(this.kansLabelMiddenTekst());
+			this.kansRadioRechts.setText(this.kansLabelRechtsTekst());
+						
+			this.kansBalk.add(this.kansRadioLinks);
+			this.kansBalk.add(this.kansRadioMidden);
+			this.kansBalk.add(this.kansRadioRechts);
+			
+			this.kansBalk.validate();
+		}
+	}
+	
+	private String kansLabelLinksTekst() {
+		if(this.tweeGrenzen) {
+			int grens = this.staafjesPanel.getGrensLinks();
+			double kans = this.berekenKansCumulatief(0, grens-1);
+			int hulp = (int)(10000*kans);
+			kans = (double)hulp/10000;
+			
+			return new String("P(X<" + grens + ") = " + kans);
+		}
+		else {
+			int grens = this.staafjesPanel.getGrensRechts();
+			double kans = this.berekenKansCumulatief(0, grens);
+			int hulp = (int)(10000*kans);
+			kans = (double)hulp/10000;
+			
+			return new String("P(X<=" + grens + ") = " + kans);
+		}
 	}
 	
 	private String kansLabelMiddenTekst() {
@@ -222,9 +286,17 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	private String kansLabelRechtsTekst() {
-		double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
-		kans = (double)(int)(kans*10000)/10000.0;
-		return "P(X>=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+		if(this.tweeGrenzen) {
+			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
+			kans = (double)(int)(kans*10000)/10000.0;
+			return "P(X>" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+		}
+		else {
+			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
+			kans = (double)(int)(kans*10000)/10000.0;
+			return "P(X>=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
+		}
+		
 	}
 	
 	/**
@@ -248,9 +320,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public void updateLabels() {
-		this.kansLabelLinks.setText(this.kansLabelLinksTekst());
-		this.kansLabelMidden.setText(this.kansLabelMiddenTekst());
-		this.kansLabelRechts.setText(this.kansLabelRechtsTekst());
+		this.kansRadioLinks.setText(this.kansLabelLinksTekst());
+		this.kansRadioMidden.setText(this.kansLabelMiddenTekst());
+		this.kansRadioRechts.setText(this.kansLabelRechtsTekst());
 	}
 	
 	
@@ -264,9 +336,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
 			this.pString = Double.toString(this.p);
 		}
-		
-		this.updateLabels();
-		
+				
 		this.nText.setText(this.nString);
 		this.nText.setEditable(this.nVeranderbaar);
 		
@@ -278,6 +348,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pSlider.setVisible(this.showPSlider);
 		this.nSlider.setEditable(this.nVeranderbaar);
 		this.pSlider.setEditable(this.pVeranderbaar);
+
+		this.updateKansBalk();
 		
 		this.repaint();
 	}
@@ -288,15 +360,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public static double binom(int n, int k)
 	{
-		double[] b = new double[n+1];
-		b[0] = 1;
-		for(int i=1 ; i<n+1 ; i++)
-		{	b[i] = 1;
-			for(int j=i-1 ; j>0 ; j--)
-			{	b[j] += b[j-1];
-			}
+		if (k>n) {
+			return 0.0;
 		}
-		return b[k];
+		else if(n == k) {
+			return 1.0;
+		}
+		else {
+			double[] b = new double[n+1];
+			b[0] = 1;
+			for(int i=1 ; i<n+1 ; i++)
+			{	b[i] = 1;
+				for(int j=i-1 ; j>0 ; j--)
+				{	b[j] += b[j-1];
+				}
+			}
+			return b[k];
+		}
+		
 	}
 	
 	/**
@@ -370,22 +451,22 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.staafjesPanel.setGrenzenOptie(grenzenOptie);
 		
 		if (this.grenzenOptie == GrenzenOptie.LINKS) {
-			this.kansLabelLinks.setSelected(true);
-			this.kansLabelLinks.setBackground(this.LABEL_ACTIEF);
-			this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
-			this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioLinks.setSelected(true);
+			this.kansRadioLinks.setBackground(this.LABEL_ACTIEF);
+			this.kansRadioMidden.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioRechts.setBackground(this.LABEL_BACKGROUND);
 		}
 		if (this.grenzenOptie == GrenzenOptie.GELIJK) {
-			this.kansLabelMidden.setSelected(true);
-			this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
-			this.kansLabelMidden.setBackground(this.LABEL_ACTIEF);
-			this.kansLabelRechts.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioMidden.setSelected(true);
+			this.kansRadioLinks.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioMidden.setBackground(this.LABEL_ACTIEF);
+			this.kansRadioRechts.setBackground(this.LABEL_BACKGROUND);
 		}
 		if (this.grenzenOptie == GrenzenOptie.RECHTS) {
-			this.kansLabelRechts.setSelected(true);
-			this.kansLabelLinks.setBackground(this.LABEL_BACKGROUND);
-			this.kansLabelMidden.setBackground(this.LABEL_BACKGROUND);
-			this.kansLabelRechts.setBackground(this.LABEL_ACTIEF);
+			this.kansRadioRechts.setSelected(true);
+			this.kansRadioLinks.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioMidden.setBackground(this.LABEL_BACKGROUND);
+			this.kansRadioRechts.setBackground(this.LABEL_ACTIEF);
 		}
 	}
 	
@@ -399,6 +480,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	public void setShowGrensSlider(boolean b) {
 		this.staafjesPanel.setShowGrensSlider(b);
+	}
+	
+	public void setTweeGrenzen(boolean tweeGrenzen) {
+		this.tweeGrenzen = tweeGrenzen;
+		this.grenzenBox.setSelected(tweeGrenzen);
+		this.staafjesPanel.setTweeGrenzen(tweeGrenzen);
+		this.updateKansBalk();
 	}
 	
 	/**
@@ -445,13 +533,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.tweeGrenzen = this.grenzenBox.isSelected();
 			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
 		}
-		if (arg0.getSource() == this.kansLabelLinks) {
+		if (arg0.getSource() == this.kansRadioLinks) {
 			this.setGrenzenOptie(GrenzenOptie.LINKS);
 		}
-		if (arg0.getSource() == this.kansLabelMidden) {
+		if (arg0.getSource() == this.kansRadioMidden) {
 			this.setGrenzenOptie(GrenzenOptie.GELIJK);
 		}
-		if (arg0.getSource() == this.kansLabelRechts) {
+		if (arg0.getSource() == this.kansRadioRechts) {
 			this.setGrenzenOptie(GrenzenOptie.RECHTS);
 		}
 		
@@ -563,11 +651,20 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("showNSlider", new Boolean(this.showNSlider));
 		h.put("showPSlider", new Boolean(this.showPSlider));
 		
-		h.put("grensLinks", this.staafjesPanel.getGrensLinks());
-		h.put("grensRechts", this.staafjesPanel.getGrensRechts());
-		h.put("grenzenOptie", this.grenzenOptie); //TODO fix error
-		h.put("tweeGrenzen", this.tweeGrenzen);
-		h.put("showGrensSlider", this.staafjesPanel.getShowGrensSlider());
+		h.put("grensLinks", new Integer(this.staafjesPanel.getGrensLinks()));
+		h.put("grensRechts", new Integer(this.staafjesPanel.getGrensRechts()));
+		
+		if(this.grenzenOptie == GrenzenOptie.LINKS) {
+			h.put("grenzenOptie", new Integer(0));
+		}
+		if(this.grenzenOptie == GrenzenOptie.GELIJK) {
+			h.put("grenzenOptie", new Integer(1));
+		}
+		if(this.grenzenOptie == GrenzenOptie.RECHTS) {
+			h.put("grenzenOptie", new Integer(2));
+		}
+		h.put("tweeGrenzen", new Boolean(this.tweeGrenzen));
+		h.put("showGrensSlider", new Boolean(this.staafjesPanel.getShowGrensSlider()));
 		return h;
 	}
 
@@ -605,19 +702,28 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (b.containsKey("showPSlider")) {
 			this.showPSlider = ((Boolean)b.get("showPSlider")).booleanValue();
 		}
-		
 		if (b.containsKey("grensLinks")) {
 			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
 		}
 		if (b.containsKey("grensRechts")) {
 			this.staafjesPanel.setGrensRechts(((Integer)b.get("grensRechts")).intValue());
 		}
+		
 		if (b.containsKey("grenzenOptie")) {
-			this.setGrenzenOptie((GrenzenOptie)b.get("grenzenOptie"));
+			int optie = ((Integer)b.get("grenzenOptie")).intValue();
+			if (optie == 0) {
+				this.setGrenzenOptie(GrenzenOptie.LINKS);
+			}
+			if (optie == 1) {
+				this.setGrenzenOptie(GrenzenOptie.GELIJK);
+			}
+			if (optie == 2) {
+				this.setGrenzenOptie(GrenzenOptie.RECHTS);
+			}
 		}
 		if (b.containsKey("tweeGrenzen")) {
 			this.tweeGrenzen = ((Boolean)b.get("tweeGrenzen")).booleanValue();
-			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
+			this.setTweeGrenzen(this.tweeGrenzen);
 		}
 		if (b.containsKey("showGrensSlider")) {
 			this.staafjesPanel.setShowGrensSlider(((Boolean)b.get("showGrensSlider")).booleanValue());

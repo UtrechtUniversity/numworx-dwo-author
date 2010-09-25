@@ -12,12 +12,12 @@ package fi.binomverdeling;
 public class GrenzenOptie {
     private final String name;
     
-    public static final GrenzenOptie LINKS =new GrenzenOptie("GrenzenOptie Links");
-    public static final GrenzenOptie GELIJK =new GrenzenOptie("GrenzenOptie Gelijk");
-    public static final GrenzenOptie RECHTS =new GrenzenOptie("GrenzenOpte Rechts");
+    public static final GrenzenOptie LINKS = new GrenzenOptie("GrenzenOptie Links");
+    public static final GrenzenOptie GELIJK = new GrenzenOptie("GrenzenOptie Gelijk");
+    public static final GrenzenOptie RECHTS = new GrenzenOptie("GrenzenOpte Rechts");
     
     private GrenzenOptie(String name){
-        this.name =name;
+        this.name = name;
     }
     
     public String toString(){

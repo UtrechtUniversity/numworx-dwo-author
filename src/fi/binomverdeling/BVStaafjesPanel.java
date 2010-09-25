@@ -155,31 +155,37 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	public int getGrensLinks() {
 		return this.grensLinks;
 	}
+		
 	public int getGrensRechts() {
 		return this.grensRechts;
 	}
 	public void setGrensLinks(int grensLinks) {
+		//System.out.println(this.getWidth());
+		//this.berekenStaafBreedte();
 		this.grensLinks = grensLinks;
+		//this.successenDoubleSlider.zetStandLinks((int)(this.grensLinks*this.staafBreedte+this.successenDoubleSlider.getMinimumLinks()));
 	}
 	public void setGrensRechts(int grensRechts) {
+		//System.out.println(this.getWidth());
+		//this.berekenStaafBreedte();
 		this.grensRechts = grensRechts;
+		//this.successenDoubleSlider.zetStandRechts((int)(this.grensRechts*this.staafBreedte+this.successenDoubleSlider.getMinimumLinks()));
+		//this.successenSlider.zetStand((int)(this.grensRechts*this.staafBreedte+this.successenSlider.getMinimum()));
 	}
 	
 	/**
 	 * zet de locatie en lengte voor de slider
 	 */
 	private void updateSliderBounds() {
-		System.out.println("updateSliderBounds() aangeroepen. " + BVStaafjesPanel.debug++);
-		
 		this.berekenStaafBreedte(); //update de staafbreedte
 		
 		int x;
 		int y;
 		int lengte;
 		
-		x = BVStaafjesPanel.YASBALKWIDTH-5;			
+		x = BVStaafjesPanel.YASBALKWIDTH-6;			
 		y = this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT-5;
-		lengte = this.getWidth()-BVStaafjesPanel.YASBALKWIDTH-5;
+		lengte = this.getWidth()-BVStaafjesPanel.YASBALKWIDTH;
 
 		if (!this.showXAs) {
 			y = this.getHeight() - 8;
@@ -192,7 +198,6 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		this.successenDoubleSlider.zetLengte(lengte);
 		this.successenDoubleSlider.setLocation(x, y);
 		
-		//TODO deze regel geeft problemen..
 		this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
 		
 		
@@ -209,7 +214,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		if(this.showGrensSlider) {
 			if (this.tweeGrenzen) {
 				this.remove(this.successenSlider);
-				this.successenDoubleSlider.zetStandRechts(this.successenSlider.geefStand());
+				this.successenDoubleSlider.zetStandRechts(this.successenSlider.geefStand());				
 				this.add(this.successenDoubleSlider);
 			}
 
@@ -319,12 +324,24 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	}
 
 	private Color bepaalStaafKleur(int k) {
+		/* oude versie
 		if ((this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensLinks) ||
 			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k>= this.grensLinks && k<= this.grensRechts) ||
 			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts) ||
 			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensRechts) ||
 			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k==this.grensRechts) ||
 			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts)) {
+			return this.interactiePanel.STAAFJE_TELT;
+		}
+		else {
+			return this.interactiePanel.STAAFJE_TELT_NIET;
+		}
+		*/
+		
+		if ((this.tweeGrenzen && k <= this.grensRechts && k >= this.grensLinks) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensRechts) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k==this.grensRechts) ||
+			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts))	{
 			return this.interactiePanel.STAAFJE_TELT;
 		}
 		else {
@@ -378,8 +395,6 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		//check of de bounds daadwerkelijk worden veranderd
 		Rectangle r = new Rectangle(x,y,b,h);
 		if(!r.equals(this.lastBounds)) {
-
-			System.out.println("BVStaafjesPanel.setBounds(" + x + "," + y + "," + b + "," + h);//TODO weghalen
 			
 			super.setBounds(x,y,b,h);
 			this.updateSliderBounds();
@@ -396,17 +411,19 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == this.successenSlider) {
-			this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
-			this.interactiePanel.updateLabels();
+			//this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
+			//this.interactiePanel.updateLabels();
+			this.bepaalGrenzenMetSlider();
 		}
 		
 		if(e.getSource() == this.successenDoubleSlider) {
-			this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
-			this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
+			//this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
+			//this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
 			
-			this.interactiePanel.updateLabels();
+			//this.interactiePanel.updateLabels();
+			this.bepaalGrenzenMetSlider();
 		}
-		
+		this.interactiePanel.updateKansBalk();
 		this.repaint();
 		
 	}
