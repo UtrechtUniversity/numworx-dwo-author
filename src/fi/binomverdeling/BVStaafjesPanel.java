@@ -310,6 +310,11 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 					g.drawLine(xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+2);
 				}
 			}
+			else {
+				for(int i = 0; i < (this.interactiePanel.getN()+1)/5; i++) {
+					g.drawLine(xOffset + (int)((double)(5*i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)((double)(5*i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+2);
+				}
+			}
 			for(int i = 0; i < 15; i++) {
 				g.drawLine(xOffset + (int)(((double)i*(double)streepjesFrequentie+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)(((double)i*(double)streepjesFrequentie+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+5);
 			}
