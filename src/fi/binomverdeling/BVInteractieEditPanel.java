@@ -27,9 +27,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private JCheckBox nSliderWeergaveBox;
 	private JCheckBox pSliderWeergaveBox;
 	private JCheckBox grensSliderWeergaveBox;
-	private JCheckBox showToggleGrenzenBox;
+	private JCheckBox showTweeGrenzenKeuzeBox;
 	private JCheckBox showKansBalkBox;
-	private JCheckBox showNPanelBox;
+	private JCheckBox showNoordBalkBox;
 	private Font font;
 	
 	/**
@@ -87,15 +87,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.grensSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.grensSliderWeergaveBox);
 		
-		this.showToggleGrenzenBox = new JCheckBox("Geef keuze tussen één en twee grenzen",true);
-		this.showToggleGrenzenBox.setFont(this.font);
-		this.showToggleGrenzenBox.addActionListener(this);
-		this.settingsPanel.add(this.showToggleGrenzenBox);
+		this.showTweeGrenzenKeuzeBox = new JCheckBox("Geef keuze tussen één en twee grenzen",true);
+		this.showTweeGrenzenKeuzeBox.setFont(this.font);
+		this.showTweeGrenzenKeuzeBox.addActionListener(this);
+		this.settingsPanel.add(this.showTweeGrenzenKeuzeBox);
 		
-		this.showNPanelBox = new JCheckBox("Geef N-paneel weer", true);
-		this.showNPanelBox.setFont(this.font);
-		this.showNPanelBox.addActionListener(this);
-		this.settingsPanel.add(this.showNPanelBox);
+		this.showNoordBalkBox = new JCheckBox("Geef noordbalk weer", true);
+		this.showNoordBalkBox.setFont(this.font);
+		this.showNoordBalkBox.addActionListener(this);
+		this.settingsPanel.add(this.showNoordBalkBox);
 		
 		this.showKansBalkBox = new JCheckBox("Geef kansenbalk weer", true);
 		this.showKansBalkBox.setFont(this.font);
@@ -132,6 +132,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if (h.containsKey("showGrensSlider")) {
 			this.grensSliderWeergaveBox.setSelected(((Boolean)h.get("showGrensSlider")).booleanValue());
 		}
+		if(h.containsKey("showKansBalk")) {
+			this.showKansBalkBox.setSelected(((Boolean)h.get("showKansBalk")).booleanValue());
+		}
+		if(h.containsKey("showNoordBalk")) {
+			this.showNoordBalkBox.setSelected(((Boolean)h.get("showNoordBalk")).booleanValue());
+		}
+		if(h.containsKey("showTweeGrenzenKeuze")) {
+			this.showTweeGrenzenKeuzeBox.setSelected(((Boolean)h.get("showTweeGrenzenKeuze")).booleanValue());
+		}
 	}
 
 	/**
@@ -150,6 +159,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		h.put("showNSlider", new Boolean(this.nSliderWeergaveBox.isSelected()));
 		h.put("showPSlider", new Boolean(this.pSliderWeergaveBox.isSelected()));
 		h.put("showGrensSlider", new Boolean(this.grensSliderWeergaveBox.isSelected()));
+		h.put("showKansBalk", new Boolean(this.showKansBalkBox.isSelected()));
+		h.put("showNoordBalk", new Boolean(this.showNoordBalkBox.isSelected()));
+		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuzeBox.isSelected()));
 		
 		return h;
 	}
@@ -210,11 +222,11 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(e.getSource() == this.grensSliderWeergaveBox) {
 			this.interactiePanel.setShowGrensSlider(this.grensSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.showToggleGrenzenBox) {
-			this.interactiePanel.setShowTweeGrenzenKeuze(this.showToggleGrenzenBox.isSelected());
+		if(e.getSource() == this.showTweeGrenzenKeuzeBox) {
+			this.interactiePanel.setShowTweeGrenzenKeuze(this.showTweeGrenzenKeuzeBox.isSelected());
 		}
-		if(e.getSource() == this.showNPanelBox) {
-			this.interactiePanel.setShowNPanel(this.showNPanelBox.isSelected());
+		if(e.getSource() == this.showNoordBalkBox) {
+			this.interactiePanel.setShowNoordBalk(this.showNoordBalkBox.isSelected());
 		}
 		if(e.getSource() == this.showKansBalkBox) {
 			this.interactiePanel.setShowKansBalk(this.showKansBalkBox.isSelected());

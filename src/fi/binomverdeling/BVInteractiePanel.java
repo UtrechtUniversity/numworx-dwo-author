@@ -51,8 +51,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JPanel kansBalk;
 	private JPanel zuidBalk;
 	private JPanel noordBalk;
-	private JPanel nSliderPanel;
-	private JPanel pSliderPanel;
 	
 	private Slider nSlider;
 	private Slider pSlider;
@@ -70,8 +68,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String nString;
 	private String pString;
 	
-	private boolean showNPanel;
-	private boolean showPPanel;
+	private boolean showNoordBalk;
 	private boolean showTweeGrenzenKeuze;
 	private boolean showKansBalk;
 		
@@ -110,8 +107,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.nString = Integer.toString(this.n);
 		this.pString = Double.toString(this.p);
 		
-		this.showNPanel = true;
-		this.showPPanel = true;
+		this.showNoordBalk = true;
 		this.showTweeGrenzenKeuze = true;
 		this.showKansBalk = true;
 		
@@ -239,11 +235,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.nText.addActionListener(this);
         this.pText.addActionListener(this);
         
-        this.nSliderPanel = new JPanel();
-        this.nSliderPanel.setBackground(this.LABEL_BACKGROUND);
-        this.pSliderPanel = new JPanel();
-        this.pSliderPanel.setBackground(this.LABEL_BACKGROUND);
-        
         this.nSlider = new Slider(100,50);
         this.pSlider = new Slider(100,50);
         
@@ -257,15 +248,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         this.nSlider.addActionListener(this);
         this.pSlider.addActionListener(this);
-        
-        this.nSliderPanel.add(this.nSlider);
-        this.pSliderPanel.add(this.pSlider);
-        
-        sliderBalk.add(this.nSliderPanel);
+                
+        sliderBalk.add(this.nSlider);
         JPanel leeg3 = new JPanel();
         leeg3.setBackground(Color.WHITE);
         sliderBalk.add(leeg3);
-        sliderBalk.add(this.pSliderPanel);
+        sliderBalk.add(this.pSlider);
         
         this.noordBalk.add(sliderBalk);
         
@@ -551,17 +539,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.updateKansBalk();
 	}
 	
-	public void setShowNPanel(boolean show) {
-		if (!show) {
-			if(this.showPPanel) {
-				this.nSlider.setVisible(false);
-				this.nSlider.setBackground(Color.WHITE);
-			}
-			else {
-				this.remove(this.noordBalk);
-			}
-		}
+	public void setShowNoordBalk (boolean show) {
+		this.showNoordBalk = show;
 		
+		if(show) {
+			this.remove(this.noordBalk);
+			this.add(this.noordBalk, BorderLayout.NORTH);
+		}
+		else {
+			this.remove(this.noordBalk);
+		}
+		this.revalidate();
+		this.repaint();
 	}
 
 	/**
@@ -808,6 +797,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		h.put("tweeGrenzen", new Boolean(this.tweeGrenzen));
 		h.put("showGrensSlider", new Boolean(this.staafjesPanel.getShowGrensSlider()));
+		h.put("showNoordBalk", new Boolean(this.showNoordBalk));
+		h.put("showKansBalk", new Boolean(this.showKansBalk));
+		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuze));
 		return h;
 	}
 
@@ -870,6 +862,15 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("showGrensSlider")) {
 			this.staafjesPanel.setShowGrensSlider(((Boolean)b.get("showGrensSlider")).booleanValue());
+		}
+		if(b.containsKey("showKansBalk")) {
+			this.setShowKansBalk(((Boolean)b.get("showKansBalk")).booleanValue());
+		}
+		if(b.containsKey("showNoordBalk")) {
+			this.setShowNoordBalk(((Boolean)b.get("showNoordBalk")).booleanValue());
+		}
+		if(b.containsKey("showTweeGrenzenKeuze")) {
+			this.setShowTweeGrenzenKeuze(((Boolean)b.get("showTweeGrenzenKeuze")).booleanValue());
 		}
 		
 		this.vernieuw();
