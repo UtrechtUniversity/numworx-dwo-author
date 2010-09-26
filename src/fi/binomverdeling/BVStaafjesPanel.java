@@ -26,6 +26,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	public static final int XASBALKHEIGHT = 25;
 	public static final int YASBALKWIDTH = 35;
 	public static final int MAX_STREEPJES = 10;
+	public static final int YAS_INKORTEN = 10;
 
 	private int grensLinks;
 	private int grensRechts;
@@ -100,11 +101,11 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	public void bepaalGrenzenMetSlider() {
 		if(this.showGrensSlider) {
 			if(this.tweeGrenzen) {
-	        	this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenDoubleSlider.getMinimumLinks())/this.staafBreedte);
-				this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenDoubleSlider.getMinimumLinks())/this.staafBreedte);
+	        	this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts())/this.staafBreedte);
+				this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks())/this.staafBreedte);
 	        }
 	        else {
-	        	this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
+	        	this.grensRechts = (int)((double)(this.successenSlider.geefStand())/this.staafBreedte);
 	        }
 		}
 	}
@@ -244,24 +245,25 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 			g.setColor(Color.BLACK);
 			
 			//bepaal de lengte van de as
-			int asHoogte = this.getHeight();
+			int asHoogte = this.getHeight() - BVStaafjesPanel.YAS_INKORTEN;
 			if(this.showXAs) {
 				asHoogte -= BVStaafjesPanel.XASBALKHEIGHT;
 			}
 
 			//teken de as zelf
-			g.fillRect(BVStaafjesPanel.YASBALKWIDTH-1, 0, 1, asHoogte);
+			g.drawLine(BVStaafjesPanel.YASBALKWIDTH-1, BVStaafjesPanel.YAS_INKORTEN, BVStaafjesPanel.YASBALKWIDTH-1, BVStaafjesPanel.YAS_INKORTEN+asHoogte);
+			//g.fillRect(BVStaafjesPanel.YASBALKWIDTH-1-BVStaafjesPanel.YAS_INKORTEN, 0, 1, asHoogte);
 			
 			//teken de streepjes op de as
 			for(int i = 1; i <= 10; i++) {
-				g.drawLine(BVStaafjesPanel.YASBALKWIDTH-6, asHoogte - (int)(i*(double)asHoogte/(double)10), BVStaafjesPanel.YASBALKWIDTH-2, asHoogte - (int)(i*(double)asHoogte/(double)10));
+				g.drawLine(BVStaafjesPanel.YASBALKWIDTH-6, asHoogte - (int)(i*(double)asHoogte/(double)10)+BVStaafjesPanel.YAS_INKORTEN, BVStaafjesPanel.YASBALKWIDTH-2, asHoogte - (int)(i*(double)asHoogte/(double)10)+BVStaafjesPanel.YAS_INKORTEN);
 			}
 			
 			//teken de tekst bij de streepjes op de as
 			g.setColor(Color.BLACK);
 			for(int i = 1; i <= 10; i++) {
-				int j = (int)(i*10/this.multiplier);
-				g.drawString(Double.toString((double)j/100.0), 0, asHoogte - (int)(i*(double)asHoogte/(double)10)+9);
+				int j = (int)(i*10.0*asHoogte/(asHoogte+BVStaafjesPanel.YAS_INKORTEN)/this.multiplier);
+				g.drawString(Double.toString((double)j/100.0), 1, asHoogte + BVStaafjesPanel.YAS_INKORTEN - (int)(1.0*i*(double)asHoogte/10.0 - (1.0 * this.fontMetrics.getHeight() / 2.0))-2);
 			}
 		}
 	}
@@ -303,8 +305,10 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 			}
 						
 			//teken de streepjes op de as
-			for(int i = 0; i < this.interactiePanel.getN()+1; i++) {
-				g.drawLine(xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+2);
+			if(this.interactiePanel.getN() <= 100) {
+				for(int i = 0; i < this.interactiePanel.getN()+1; i++) {
+					g.drawLine(xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)((double)(i+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+2);
+				}
 			}
 			for(int i = 0; i < 15; i++) {
 				g.drawLine(xOffset + (int)(((double)i*(double)streepjesFrequentie+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+1, xOffset + (int)(((double)i*(double)streepjesFrequentie+0.5)*this.staafBreedte), this.getHeight()-BVStaafjesPanel.XASBALKHEIGHT+5);
@@ -430,19 +434,20 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		
 		if(e.getSource() == this.successenSlider) {
-			//this.grensRechts = (int)((double)(this.successenSlider.geefStand()-this.successenSlider.getMinimum())/this.staafBreedte);
-			//this.interactiePanel.updateLabels();
 			this.bepaalGrenzenMetSlider();
+			if(e.getActionCommand().equals("stop")) {
+				System.out.println("successenSlider: event mouseRelease");
+				this.successenSlider.zetStand((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
+			}
 		}
 		
 		if(e.getSource() == this.successenDoubleSlider) {
-			//this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts()-this.successenSlider.getMinimum())/this.staafBreedte);
-			//this.grensLinks = (int)((double)(this.successenDoubleSlider.geefStandLinks()-this.successenSlider.getMinimum())/this.staafBreedte);
-			
-			//this.interactiePanel.updateLabels();
 			this.bepaalGrenzenMetSlider();
+			if(e.getActionCommand().equals("stop")) {
+				this.successenDoubleSlider.zetStandRechts((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
+				this.successenDoubleSlider.zetStandLinks((int)((1.0*this.grensLinks+0.5)*this.staafBreedte)+1);
+			}
 		}
 		this.interactiePanel.updateKansBalk();
 		this.repaint();

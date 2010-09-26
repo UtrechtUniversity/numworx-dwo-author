@@ -27,6 +27,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private JCheckBox nSliderWeergaveBox;
 	private JCheckBox pSliderWeergaveBox;
 	private JCheckBox grensSliderWeergaveBox;
+	private JCheckBox showToggleGrenzenBox;
+	private JCheckBox showKansBalkBox;
+	private JCheckBox showNPanelBox;
 	private Font font;
 	
 	/**
@@ -83,6 +86,21 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.grensSliderWeergaveBox.setFont(this.font);
 		this.grensSliderWeergaveBox.addActionListener(this);
 		this.settingsPanel.add(this.grensSliderWeergaveBox);
+		
+		this.showToggleGrenzenBox = new JCheckBox("Geef keuze tussen één en twee grenzen",true);
+		this.showToggleGrenzenBox.setFont(this.font);
+		this.showToggleGrenzenBox.addActionListener(this);
+		this.settingsPanel.add(this.showToggleGrenzenBox);
+		
+		this.showNPanelBox = new JCheckBox("Geef N-paneel weer", true);
+		this.showNPanelBox.setFont(this.font);
+		this.showNPanelBox.addActionListener(this);
+		this.settingsPanel.add(this.showNPanelBox);
+		
+		this.showKansBalkBox = new JCheckBox("Geef kansenbalk weer", true);
+		this.showKansBalkBox.setFont(this.font);
+		this.showKansBalkBox.addActionListener(this);
+		this.settingsPanel.add(this.showKansBalkBox);
 		
 		this.add(this.settingsPanel);
 	}
@@ -191,6 +209,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		if(e.getSource() == this.grensSliderWeergaveBox) {
 			this.interactiePanel.setShowGrensSlider(this.grensSliderWeergaveBox.isSelected());
+		}
+		if(e.getSource() == this.showToggleGrenzenBox) {
+			this.interactiePanel.setShowTweeGrenzenKeuze(this.showToggleGrenzenBox.isSelected());
+		}
+		if(e.getSource() == this.showNPanelBox) {
+			this.interactiePanel.setShowNPanel(this.showNPanelBox.isSelected());
+		}
+		if(e.getSource() == this.showKansBalkBox) {
+			this.interactiePanel.setShowKansBalk(this.showKansBalkBox.isSelected());
 		}
 	}
 }

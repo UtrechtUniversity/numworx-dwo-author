@@ -30,7 +30,8 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	private Color knopColor = Color.red;
 
 	private boolean enabled = true;
-
+	public static final int HOOGTE = 13;
+	
 	public Slider(int aantalPix, int beginst) {
 		lengte = aantalPix;
 		maximum = lengte;
@@ -38,13 +39,13 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 		stand = beginst;
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		setSize(lengte + 10, 13);
+		setSize(lengte + 10, Slider.HOOGTE);
 	}
 
 	public void zetLengte(int aantalPix) {
 		lengte = aantalPix;
 		maximum = lengte;
-		setSize(lengte + 10, 13);
+		setSize(lengte + 10, Slider.HOOGTE);
 		resize = true;
 		repaint();
 	}
@@ -81,19 +82,31 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 		paint(g);
 	}
 
-	public void tekenSlider(Graphics g) {
-		g.setColor(Color.black);
 
+	public void tekenSlider(Graphics g) {
+		 g.setColor(Color.black);
+		 	
+		 
 		if (showLine)
 			g.drawLine(5, 5, lengte + 5, 5);
-
+		
 		if (enabled) {
 			g.setColor(knopColor);
 			g.fillOval(5 + stand - 3, 2, 6, 6);
 			g.setColor(Color.black);
 			g.drawOval(5 + stand - 3, 2, 6, 6);
 		}
-
+		/*
+		if (showLine)
+				g.drawLine(5, 8, lengte + 5, 8);
+			
+		if (enabled) {
+			g.setColor(knopColor);
+			g.fillOval(5 + stand - 3, 5, 6, 6);
+			g.setColor(Color.black);
+			g.drawOval(5 + stand - 3, 5, 6, 6);
+		}
+		*/
 		/*
 		 * g.drawRect(5,7,lengte,6); schuifKnop = new Polygon();
 		 * schuifKnop.addPoint(5+stand,0); schuifKnop.addPoint(5+stand+3,5);
@@ -141,7 +154,7 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	public int getMinimum() {
 		return this.minimum;
 	}
-
+	
 	public void mousePressed(MouseEvent e) {
 		if (this.editable) {
 			raak = enabled && (new Rectangle(stand, 0, 10, 20)).contains(e.getX(), e.getY());
