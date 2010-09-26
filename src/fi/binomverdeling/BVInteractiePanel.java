@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -127,8 +129,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         zuidBalk.setLayout(new GridLayout(2,1));
                 
 		this.kansBalk = new JPanel();
-		kansBalk.setLayout(new GridLayout(1,3));
-		//kansBalk.setBackground(this.LABEL_BACKGROUND);
+		this.kansBalk.setLayout(new GridLayout(1,3));
 		this.kansRadioLinks = new JRadioButton(this.kansLabelLinksTekst(), true);
 		this.kansRadioMidden = new JRadioButton(this.kansLabelMiddenTekst(), false);
 		this.kansRadioRechts = new JRadioButton(this.kansLabelRechtsTekst(), false);
@@ -185,17 +186,31 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         JPanel editBalk = new JPanel();
         editBalk.setBackground(this.LABEL_BACKGROUND);
-        editBalk.setLayout(new GridLayout(1,6));
-        editBalk.add(this.nLabel);
-        editBalk.add(this.nText);
-        JPanel leeg1 = new JPanel();
-        leeg1.setBackground(Color.WHITE);
-        JPanel leeg2 = new JPanel();
-        leeg2.setBackground(Color.WHITE);
-        editBalk.add(leeg1);
-        editBalk.add(leeg2);
-        editBalk.add(this.pLabel);
-        editBalk.add(this.pText); 
+        
+        editBalk.setLayout(new GridLayout(1,3));
+        JPanel grid1 = new JPanel();
+        grid1.setLayout(new GridLayout(1,3));
+        grid1.setBackground(this.LABEL_BACKGROUND);
+        grid1.add(this.nLabel);
+        grid1.add(this.nText);
+        JPanel p = new JPanel();
+        p.setOpaque(false);
+        grid1.add(p);
+        
+        editBalk.add(grid1);
+        JPanel grid2 = new JPanel();
+        grid2.setBackground(Color.WHITE);
+        editBalk.add(grid2);
+        
+        JPanel grid3 = new JPanel();
+        grid3.setBackground(this.LABEL_BACKGROUND);
+        grid3.setLayout(new GridLayout(1,3));
+        grid3.add(this.pLabel);
+        grid3.add(this.pText);
+        p = new JPanel();
+        p.setOpaque(false);
+        grid3.add(p);
+        editBalk.add(grid3);
         
         //maak het paneel wat in het NORTH gebied van de BorderLayout komt
         JPanel noordBalk = new JPanel();
@@ -206,6 +221,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         JPanel sliderBalk = new JPanel();
         sliderBalk.setBackground(this.LABEL_BACKGROUND);
+        
         sliderBalk.setLayout(new GridLayout(1,3));
         
         this.nText.addActionListener(this);
