@@ -94,7 +94,7 @@ public class BVInteractiePanelView extends JFrame implements Observer {
 		g.fillRect((2*k+1)*this.staafbreedte, this.centerpanel.getHeight() - (int)(model.berekenKansK(k)*this.centerpanel.getHeight()*multiplier), this.staafbreedte, (int)(model.berekenKansK(k)*this.centerpanel.getHeight()*multiplier));
 	}
 	
-	@Override
+	//@Override
 	public void paint(Graphics g) {
 		super.paint(g);
         this.berekenStaafBreedte();

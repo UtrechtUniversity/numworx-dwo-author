@@ -44,7 +44,7 @@ public class BVInteractiePanelController implements ActionListener{
 	}
 	*/
 
-	@Override
+	//@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().equals("ntextupdate")) {
 			int n;

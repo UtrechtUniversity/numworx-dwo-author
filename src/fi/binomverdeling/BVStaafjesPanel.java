@@ -388,7 +388,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		//bepaal grootte
 		int x = (int)(k*this.staafBreedte+xOffset);
 		int y = this.getHeight() - (int)(this.interactiePanel.berekenKansK(k)*multiplier*(this.getHeight()-yOffset)+yOffset);
-		int width = (int)((k+1)*this.staafBreedte+xOffset) - (int)(k*this.staafBreedte+xOffset);
+		int width = (int)((k+1)*this.staafBreedte+xOffset) - (int)(k*this.staafBreedte+xOffset)+1;
 		int height = (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)*this.multiplier);
 		
 		if(width > 0 && height > 0) {

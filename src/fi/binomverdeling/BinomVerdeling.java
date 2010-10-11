@@ -96,7 +96,11 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 		// Test-textfield
 		textField = new TextField();
 		textField.setBounds(50, 100, 200, 25);
-		add(textField);
+		//add(textField);
+		
+		BVInteractiePanel bvip = new BVInteractiePanel();
+		bvip.setBounds(getBounds());
+		add(bvip);
 	}
 
 	public void start() {
@@ -124,7 +128,7 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	}
 
 	public void paint(Graphics g) {
-		g.drawString(BinomVerdeling.rb.getString("welkomTekst"), 50, 60);
+		//g.drawString(BinomVerdeling.rb.getString("welkomTekst"), 50, 60);
 		super.paint(g);
 	}
 
