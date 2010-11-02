@@ -23,6 +23,7 @@ public class Emmer extends ScContainer implements ActionListener//, FocusListene
 		
 		etiket = new GetalComponent(b/6,h*3/7,b*2/3,h/3);
 		etiket.zetInstelbaar(true);
+		etiket.setEnabled(true);
 		etiket.zetBekend(false);
 		etiket.addActionListener(this);
 		add(etiket,0);

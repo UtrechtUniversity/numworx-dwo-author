@@ -24,8 +24,8 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 	private Hashtable defaultParamValues;
 	
 	public static void main(String[] args)    
-	{	int width = 750;
-        int height = 500;
+	{	int width = 800;
+        int height = 475;
 		ScormMainFrame mf = new ScormMainFrame(new Heks(),width, height);
 		mf.setSize(width, height);
 		mf.show();
@@ -33,7 +33,7 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 	
 	public void init()
 	{	String variantString = super.getParameter("variant");
-		int variant = 0;
+		int variant = 1;
 		if(variantString!=null) variant = Integer.parseInt(variantString);
 		
 		defaultParamValues = makeDefaultParamValues(variant);
@@ -46,7 +46,7 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		}
 		
 		setLayout(null);
-		addComponentListener(this);
+		//addComponentListener(this);
 		
 		//Color bgcolor = new Color(230,240,255);
 		Color bgcolor = Color.white;
@@ -68,7 +68,7 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		catch(NumberFormatException e)
 		{	bladNummer = 1;
 		}
-		//bladNummer = 25;
+		//bladNummer = 10;
 		
 		if(bladNummer==1)tp = new TafereelPanel2(5,5,790,565,this);
 		else if(bladNummer==2)tp = new TafereelPanel(5,5,790,565,this);
