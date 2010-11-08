@@ -101,6 +101,9 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 		BVInteractiePanel bvip = new BVInteractiePanel();
 		bvip.setBounds(getBounds());
 		add(bvip);
+		
+		BVInteractiePanelView biv = new BVInteractiePanelView(new BVInteractiePanelModel(0.5,20,5));
+		add(biv);
 	}
 
 	public void start() {
