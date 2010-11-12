@@ -2,13 +2,14 @@ package fi.binomverdeling;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
@@ -26,7 +27,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  * InteractiePanel van BinomVerdeling
  * Model, view en controller nu bij elkaar gevoegd.
  */
-public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener {
+public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener, FocusListener {
 	private double p; //succeskans
 	private int n; //aantal herhalingen
 	//private int successen;
@@ -94,7 +95,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		this.n = 30;
 		this.p = 0.5;
-		
 		
 		this.grenzenOptie = GrenzenOptie.LINKS;
 		
@@ -222,7 +222,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         
         //maak het paneel wat in het NORTH gebied van de BorderLayout komt
         this.noordBalk = new JPanel();
-        this.noordBalk.setLayout(new GridLayout(2,1));
+        this.noordBalk.setLayout(new GridLayout(2,1)); //TODO
+        
         super.add(this.noordBalk, BorderLayout.NORTH);
         
         this.noordBalk.add(editBalk);
@@ -233,7 +234,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         sliderBalk.setLayout(new GridLayout(1,3));
         
         this.nText.addActionListener(this);
+        this.nText.addFocusListener(this);
         this.pText.addActionListener(this);
+        this.pText.addFocusListener(this);
         
         this.nSlider = new Slider(100,50);
         this.pSlider = new Slider(100,50);
@@ -427,7 +430,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 			return b[k];
 		}
-		
 	}
 	
 	/**
@@ -622,45 +624,64 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	/**
-	 * Verwerkt de user interaction
+	 * Verwerk een verandering in het nTextField
 	 */
+	private void nTextUpdate() {
+		this.nString = this.nText.getText();
+		try {
+			this.setN(Integer.parseInt(this.nString));
+			this.staafjesPanel.bepaalGrenzenMetSlider();
+		}
+		catch (NumberFormatException e) {
+			//wordt nu gedaan in update
+			//if (!(nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#')) {
+			//	this.nString = Integer.toString(this.n);
+			//}
+		}
+		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+	}
+	/**
+	 * Verwerk een verandering in het pTextField
+	 */
+	private void pTextUpdate() {
+		this.pString = this.pText.getText();
+		try {
+			this.p = Double.parseDouble(this.pString);
+		}
+		catch (NumberFormatException e) {
+			//wordt nu gedaan in update
+			//if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
+			//	this.pString = Double.toString(this.p);
+			//}
+		}
+		this.setSlider(this.pSlider, this.p);
+	}
+	public void focusGained(FocusEvent e) {
+		//niet nodig, implementatie voor interface
+	}
+	
+	public void focusLost(FocusEvent e) {
+		if(e.getSource() == this.nText) {
+			this.nTextUpdate();
+		}
+		if(e.getSource() == this.pText) {
+			this.pTextUpdate();
+		}
+	}
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().equals("ntextupdate")) {
-			this.nString = this.nText.getText();
-			try {
-				this.setN(Integer.parseInt(this.nString));
-				this.staafjesPanel.bepaalGrenzenMetSlider();
-			}
-			catch (NumberFormatException e) {
-				//wordt nu gedaan in update
-				//if (!(nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#')) {
-				//	this.nString = Integer.toString(this.n);
-				//}
-			}
-			this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+			this.nTextUpdate();
 		}
 		if (arg0.getActionCommand().equals("ptextupdate")) {
-			this.pString = this.pText.getText();
-			try {
-				this.p = Double.parseDouble(this.pString);
-			}
-			catch (NumberFormatException e) {
-				//wordt nu gedaan in update
-				//if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
-				//	this.pString = Double.toString(this.p);
-				//}
-			}
-			this.setSlider(this.pSlider, this.p);
+			this.pTextUpdate();
 		}
 		if (arg0.getSource() == this.nSlider) {
 			this.setN((int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN));
 			this.staafjesPanel.bepaalGrenzenMetSlider();
-		}
-		
+		}		
 		if (arg0.getSource() == this.pSlider) {
 			this.p = this.getPercentageFromSlider(this.pSlider);
 		}
-		
 		if (arg0.getSource() == this.grenzenBox) {
 			this.tweeGrenzen = this.grenzenBox.isSelected();
 			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
