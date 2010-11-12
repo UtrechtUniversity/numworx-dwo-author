@@ -2,6 +2,7 @@ package fi.binomverdeling;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
@@ -30,12 +31,18 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener, FocusListener {
 	private double p; //succeskans
 	private int n; //aantal herhalingen
+	
+	private int M; //voor hypergeometrisch
+	private int greep; //voor hypergeometrisch
+	
 	//private int successen;
 	//private int grensLinks; //gebruikt als voor tweegrenzen is gekozen
 	//private int grensRechts; //geld als grens in geval van 1 grens, geld als linkergrens in geval van twee grenzen
 	
 	private GrenzenOptie grenzenOptie;
 	private boolean tweeGrenzen; //true = 2 grenzen, false = 1 grens
+	
+	private boolean hypergeometrisch; //true: Hypergeometrisch, false: Binomiaal
 	
 	private BVStaafjesPanel staafjesPanel;
 	private JTextField nText;
@@ -56,6 +63,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private Slider nSlider;
 	private Slider pSlider;
 	private JCheckBox grenzenBox;
+	private JCheckBox hypergeometrischBox;
 	
 	public static final int N_MIN = 0; //min en max van n voor de sliders
 	public static final int N_MAX = 100;
@@ -81,6 +89,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public final Color LABEL_BACKGROUND = new Color(240,247,255);	
 	public final Color LABEL_ACTIEF = new Color(200,227,255);
 	
+	private JPanel noordLinks;
+	private JPanel noordRechts;
+	public final int NOORDBALKHEIGHT = 43;
+	
 	private Rectangle lastBounds; //om bij te houden wanneer de maat bounds veranderen
 	
 	/**
@@ -95,6 +107,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		this.n = 30;
 		this.p = 0.5;
+		
+		this.hypergeometrisch = false;
+		this.M = 0;
 		
 		this.grenzenOptie = GrenzenOptie.LINKS;
 		
@@ -173,15 +188,22 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setFont(this.font);
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
+		
+		this.hypergeometrischBox = new JCheckBox("Hypergeometrisch", false);
+		this.hypergeometrischBox.setFont(this.font);
+		this.hypergeometrischBox.setBackground(Color.WHITE);
+		this.hypergeometrischBox.addActionListener(this);
+		//TODO Bezig met hyperBox, moet in zuidBalk er bij
+		
 		this.zuidBalk.add(this.grenzenBox);
 		
 		super.add(this.zuidBalk, BorderLayout.SOUTH);
 		
-        this.nText = new JTextField(5);
+        this.nText = new JTextField(4);
         this.nText.setActionCommand("ntextupdate");
         this.nText.setText(Integer.toString(this.n));
         
-        this.pText = new JTextField(5);
+        this.pText = new JTextField(4);
         this.pText.setActionCommand("ptextupdate");
         this.pText.setText(Double.toString(this.p));
         
@@ -191,47 +213,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.pLabel = new JLabel("p = ");
         this.pLabel.setFont(this.font);
         this.pLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        
-        JPanel editBalk = new JPanel();
-        editBalk.setBackground(this.LABEL_BACKGROUND);
-        
-        editBalk.setLayout(new GridLayout(1,3));
-        JPanel grid1 = new JPanel();
-        grid1.setLayout(new GridLayout(1,3));
-        grid1.setBackground(this.LABEL_BACKGROUND);
-        grid1.add(this.nLabel);
-        grid1.add(this.nText);
-        JPanel p = new JPanel();
-        p.setOpaque(false);
-        grid1.add(p);
-        
-        editBalk.add(grid1);
-        JPanel grid2 = new JPanel();
-        grid2.setBackground(Color.WHITE);
-        editBalk.add(grid2);
-        
-        JPanel grid3 = new JPanel();
-        grid3.setBackground(this.LABEL_BACKGROUND);
-        grid3.setLayout(new GridLayout(1,3));
-        grid3.add(this.pLabel);
-        grid3.add(this.pText);
-        p = new JPanel();
-        p.setOpaque(false);
-        grid3.add(p);
-        editBalk.add(grid3);
-        
-        //maak het paneel wat in het NORTH gebied van de BorderLayout komt
-        this.noordBalk = new JPanel();
-        this.noordBalk.setLayout(new GridLayout(2,1)); //TODO
-        
-        super.add(this.noordBalk, BorderLayout.NORTH);
-        
-        this.noordBalk.add(editBalk);
-        
-        JPanel sliderBalk = new JPanel();
-        sliderBalk.setBackground(this.LABEL_BACKGROUND);
-        
-        sliderBalk.setLayout(new GridLayout(1,3));
         
         this.nText.addActionListener(this);
         this.nText.addFocusListener(this);
@@ -252,16 +233,35 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.nSlider.addActionListener(this);
         this.pSlider.addActionListener(this);
                 
-        sliderBalk.add(this.nSlider);
-        JPanel leeg3 = new JPanel();
-        leeg3.setBackground(Color.WHITE);
-        sliderBalk.add(leeg3);
-        sliderBalk.add(this.pSlider);
+        //maak het paneel wat in het NORTH gebied van de BorderLayout komt
+        this.noordBalk = new JPanel();
+        this.noordBalk.setLayout(null);
+        this.noordBalk.setPreferredSize(new Dimension(this.getWidth(), this.NOORDBALKHEIGHT));
+        this.noordBalk.setBackground(Color.WHITE);
         
-        this.noordBalk.add(sliderBalk);
+        this.noordLinks = new JPanel();
+        this.noordLinks.setBackground(this.LABEL_BACKGROUND);
+        this.noordLinks.setLayout(null);
+        this.noordLinks.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
+        this.noordLinks.setLocation(0, 0);
+        this.noordLinks.add(this.nSlider);
+        this.noordLinks.add(this.nLabel);
+        this.noordLinks.add(this.nText);
         
-        this.add(this.noordBalk, BorderLayout.NORTH);
+        this.noordRechts = new JPanel();
+        this.noordRechts.setBackground(this.LABEL_BACKGROUND);
+        this.noordRechts.setLayout(null);
+        this.noordRechts.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
+        this.noordRechts.setLocation(this.getWidth()/3, 0);
+        this.noordRechts.add(this.pSlider);
+        this.noordRechts.add(this.pLabel);
+        this.noordRechts.add(this.pText);
         
+        this.noordBalk.add(this.noordLinks);
+        this.noordBalk.add(this.noordRechts);
+                
+        this.plaatsComponentenNoordBalk(this.getWidth());
+        super.add(this.noordBalk, BorderLayout.NORTH);               
 	}
 	
 	/**
@@ -351,6 +351,23 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 	}
 	
+	private void plaatsComponentenNoordBalk(int breedte) {
+		this.noordLinks.setBounds(0,0,breedte/3,this.NOORDBALKHEIGHT);
+		this.noordRechts.setBounds(2*breedte/3,0,breedte/3,this.NOORDBALKHEIGHT);
+		
+		//noordBalkLinks:
+		this.nSlider.setLocation(0, 28);
+		this.nLabel.setBounds((int)(breedte/6.0)-this.nLabel.getPreferredSize().width -10, 10, this.nLabel.getPreferredSize().width, 15);
+		this.nText.setBounds((int)(breedte/6.0) -10, 7, this.nText.getPreferredSize().width, 20);
+		
+		//noordBalkRechts
+		this.pSlider.setLocation(0, 28);
+		this.pLabel.setBounds((int)(breedte/6.0)-this.pLabel.getPreferredSize().width -10, 10, this.pLabel.getPreferredSize().width, 15);
+		this.pText.setBounds((int)(breedte/6.0) -10, 7, this.pText.getPreferredSize().width, 20);
+				
+		System.out.println(this.noordRechts.getComponentCount());
+	}
+	
 	/**
 	 * Hulpfunctie om de stand van een slider te krijgen
 	 * @param slider de Slider waarvan je de stand wil weten
@@ -370,14 +387,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private void setSlider(Slider slider, double deel) {
 		slider.zetStand((int)(deel * (slider.getMaximum()-slider.getMinimum()) + slider.getMinimum()));
 	}
-	
-	/*
-	public void updateLabels() {
-		this.kansRadioLinks.setText(this.kansLabelLinksTekst());
-		this.kansRadioMidden.setText(this.kansLabelMiddenTekst());
-		this.kansRadioRechts.setText(this.kansLabelRechtsTekst());
-	}
-	*/
 	
 	/**
 	 * Update de view
@@ -453,12 +462,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			return 1.0;
 		}
 		else {
-			double som = 0;
+			double som = 0.0;
 			for (int count = van; count <= Math.min(tot, this.n); count++) {
 				som += this.berekenKansK(count);
 			}
 			return som;
 		}
+	}
+	
+	public double berekenHyperKansK(int k) {
+		return BVInteractiePanel.binom(this.M, k) * BVInteractiePanel.binom(this.n - this.greep, this.n - k) / BVInteractiePanel.binom(this.n, this.greep);
+	}
+	
+	public double berekenHyperKansCumulatief(int van, int tot) {
+		double som = 0.0;
+		for(int count = van; count <= tot; count++) {
+			som += this.berekenHyperKansK(count);
+		}
+		return som;
 	}
 	
 	public double getP() {
@@ -663,9 +684,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public void focusLost(FocusEvent e) {
 		if(e.getSource() == this.nText) {
 			this.nTextUpdate();
+			this.vernieuw();
 		}
 		if(e.getSource() == this.pText) {
 			this.pTextUpdate();
+			this.vernieuw();
 		}
 	}
 	public void actionPerformed(ActionEvent arg0) {
@@ -933,6 +956,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			//zet de sliders weer op de goede stand
 			this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
 			this.setSlider(this.pSlider, this.p);
+			
+			this.plaatsComponentenNoordBalk(b);
+			
 			//zet bounds van panel
 			super.setBounds(x, y, b, h);
 		}
