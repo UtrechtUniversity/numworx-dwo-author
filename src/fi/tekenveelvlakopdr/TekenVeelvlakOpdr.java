@@ -11,12 +11,13 @@ import fi.beans.scorm.*;
 import fi.beans.appletutil.*;
 import fi.beans.base64code.*;
 import fi.beans.tekstobjects.*;
+import fi.beans.wiskopdrbeans.*;
 import fi.tekenveelvlakopdr.opdrnav.*;
 
 //import grnuminput.*;
 
 
-public class TekenVeelvlakOpdr extends Applet implements ScormAppletIF, ActionListener
+public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAppletIF, ActionListener
 {	
 	protected SCORM12APIInterface api;
 	private long sessionStartTime;
@@ -42,6 +43,15 @@ public class TekenVeelvlakOpdr extends Applet implements ScormAppletIF, ActionLi
 		mf.pack();
 		mf.show();
 		mf.setSize(width, height);
+	}
+	
+	public TekenVeelvlakOpdr()
+	{	Locale language = new Locale ("nl", "");
+		rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
+	}
+	
+	public TekenVeelvlakOpdr(Locale language)
+	{	rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
 	}
 	
 	public void init()
@@ -155,6 +165,14 @@ public class TekenVeelvlakOpdr extends Applet implements ScormAppletIF, ActionLi
 		add(uitlegButton,0);
 		
 		
+	}
+	
+	public InteractiePanel getInteractiePanel()
+	{
+		TekenVeelvlak tekenVeelvlak = new TekenVeelvlak();
+		tekenVeelvlak.setSize(500,400);
+		tekenVeelvlak.init();
+		return tekenVeelvlak;
 	}
 	
 	public Hashtable getDefaultParamValues(int variant)

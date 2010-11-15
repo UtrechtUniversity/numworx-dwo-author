@@ -55,7 +55,12 @@ public class TekenApplet3D extends Applet
 		
 	}	
 
-	
+	public void setBounds(int x, int y, int b, int h)
+	{
+		super.setBounds(x,y,b,h);
+		if(tb!=null)tb.setBounds(0,0,getSize().width-150,getSize().height);
+		if(rg!=null)rg.setBounds(getSize().width-140,0,130,getSize().height);
+	}
 		
 	public void stop()
 	{	if(animatieStatus())onderbreekAnimatie();		

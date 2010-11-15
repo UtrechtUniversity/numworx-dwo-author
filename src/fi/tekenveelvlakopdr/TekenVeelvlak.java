@@ -9,12 +9,13 @@ import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.tekstobjects.*;
+import fi.beans.wiskopdrbeans.*;
 import fi.tekenveelvlakopdr.opdrnav.*;
 
 //import grnuminput.*;
 
 
-public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,ItemListener
+public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,ItemListener, InteractiePanel, InteractieEditPanel
 {	
 	Slider zijdeSl;
 	Matrix3D matrot, matres,mateenh;
@@ -100,7 +101,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		matres = new Matrix3D();
 		mateenh = new Matrix3D();
 		tb.mat = matres;
-		k=180;
+		k=80;
 		begin=true;
 		basisZichtbaar=true;
 		maakLijn=true;
@@ -150,8 +151,12 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		}
 		//tv.voegHoekpuntToe(hoekpuntenNieuw[0].x, hoekpuntenNieuw[0].y, hoekpuntenNieuw[0].z);//dubieuze toevoeging zou niet nodig moeten zijn.
 	}
-	
 
+	public void setBounds(int x, int y, int b, int h)
+	{	k=180.0/500*Math.min(b-90, h);
+		super.setBounds(x,y,b,h);
+	}
+	
 	public void setState(Hashtable h)
 	{	
 		double[] hoekpunten = null;
@@ -766,5 +771,127 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		}
 		if(!animatieStatus())tekenOpnieuw();
 		if(animatieWasAan)beginAnimatie();
+	}
+
+
+	public void addActionListener(ActionListener al) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	public int geefAsHoogte() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public InteractieEditPanel getEditPanel() {
+		return this;
+	}
+
+
+	public Hashtable getEditState() {
+		return getState();
+	}
+
+
+	public int getIpId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public int getScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public int getScoreMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	public boolean isCorrect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean isFout() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public void kijkNa() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void kijkNa(int stapNr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void opnieuw() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setEditState(Hashtable h) {
+		setState(h);
+		rg.add(kiesV);
+		
+	}
+
+
+	public void wis() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void zetMaat() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void zetMode(int mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void zetNagekeken(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void zetOpdracht(Hashtable h, String[] randomVars,
+			Hashtable randomValues) {
+		setState(h);
+		rg.remove(kiesV);
+		
+	}
+
+
+	public void zetBreedte(int b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void zetHoogte(int h) {
+		// TODO Auto-generated method stub
+		
 	}
 }
