@@ -2,9 +2,11 @@ package fi.tekenveelvlakopdr.opdrnav;
 
 import java.awt.*;
 import java.util.*;
-import java.awt.event.*;;
+import java.awt.event.*;
 
-public class OpdrContainer extends Panel 
+import javax.swing.JPanel;
+
+public class OpdrContainer extends JPanel 
 {
 	protected static int OEFENEN = 0;
 	protected static int OEFENEN_STRAFPUNTEN = 1;

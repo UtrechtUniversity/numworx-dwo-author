@@ -104,6 +104,7 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 		
 		tekenVeelvlak = new TekenVeelvlak();
 		tekenVeelvlak.setBounds(200,10,getSize().width-200,getSize().height-80);
+		tekenVeelvlak.setBackground(bgcolor);
 		tekenVeelvlak.init();
 		
 		String aantalActiviteitenString = this.getParameter("aantalActiviteiten");
@@ -117,6 +118,7 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 			}
 			
 			ons = new OpdrNavStruct(aantalActiviteiten,aantalOpdrachten,activiteitNamen,0,0,getSize().width, getSize().height, api, false);
+			ons.setBackground(bgcolor);
 			ons.addActionListener(this);
 			add(ons);
 			for(int i=0 ; i<aantalActiviteiten ; i++)
@@ -169,10 +171,12 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 	
 	public InteractiePanel getInteractiePanel()
 	{
-		TekenVeelvlak tekenVeelvlak = new TekenVeelvlak();
+	    return new TekenVeelvlakInteractiePanel();
+		
+	    /*TekenVeelvlak tekenVeelvlak = new TekenVeelvlak();
 		tekenVeelvlak.setSize(500,400);
 		tekenVeelvlak.init();
-		return tekenVeelvlak;
+		return tekenVeelvlak;*/
 	}
 	
 	public Hashtable getDefaultParamValues(int variant)

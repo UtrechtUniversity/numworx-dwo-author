@@ -4,10 +4,12 @@ package fi.tekenveelvlakopdr;
 import java.awt.*;
 import java.awt.event.*;
 import java.applet.Applet;
+
+import javax.swing.JPanel;
 //import grnuminput.*;
 
 
-public class TekenApplet3D extends Applet
+public class TekenApplet3D extends JPanel
 {
 	Regelaar rg;
 	Tekenblad3D tb;
@@ -221,7 +223,7 @@ class Regelaar extends Panel
 		}
 }*/
 
-class Regelaar extends Panel
+class Regelaar extends JPanel
 {	
 	private TekenApplet3D eigenaar;
 	public GridBagLayout gridbag;
@@ -257,7 +259,7 @@ class Regelaar extends Panel
 	}	
 }
 
-class Tekenblad3D extends Panel
+class Tekenblad3D extends JPanel
 {
 	public int breedte,hoogte;
 	private Punt3D beginpunt,eindpunt,startpunt;

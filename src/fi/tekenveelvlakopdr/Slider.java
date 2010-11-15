@@ -3,7 +3,9 @@ package fi.tekenveelvlakopdr;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Slider	extends Panel implements MouseListener, MouseMotionListener
+import javax.swing.JPanel;
+
+public class Slider	extends JPanel implements MouseListener, MouseMotionListener
 {	private Image im;
 	private Graphics gIm;
 	
@@ -21,6 +23,7 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		setSize(lengte+10,20);
+		setOpaque(true);
 	}
 		
 	public void paint(Graphics g)

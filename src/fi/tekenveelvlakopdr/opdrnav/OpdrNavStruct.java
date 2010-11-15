@@ -3,9 +3,12 @@ package fi.tekenveelvlakopdr.opdrnav;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
+
+import javax.swing.JPanel;
+
 import fi.beans.scorm.*;
 
-public class OpdrNavStruct extends Panel implements ActionListener
+public class OpdrNavStruct extends JPanel implements ActionListener
 {
 	public static int OEFENEN = 0;
 	public static int OEFENEN_STRAFPUNTEN = 1;
@@ -108,7 +111,7 @@ public class OpdrNavStruct extends Panel implements ActionListener
 	    {	scores[i] = new Label("Score: "+0);
 	    	scores[i].setBounds(actKeuzePanelX+140,actKeuzePanelY + i*20,100,20);
 	    	scores[i].setFont(new Font("SansSerif",Font.PLAIN,14));
-	    	//if(!editMode)add(scores[i]);
+	    	if(!editMode)add(scores[i]);
 	    }
 	 	
 	 	aantalNakijken = new int[aantalActiviteiten];

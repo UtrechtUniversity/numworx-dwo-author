@@ -22,6 +22,8 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 	public MyOpdrContainer(int x, int y, int b, int h, TekenVeelvlak tvv, Viewer3d v)
 	{	setLayout(null);
 		setBounds(x,y,b,h);
+		setOpaque(false);
+        //setBackground(getBackground());
 		
 		tekenveelvlak = tvv;
 		viewer = v;

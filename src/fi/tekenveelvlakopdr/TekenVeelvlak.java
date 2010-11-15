@@ -5,6 +5,10 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
@@ -15,7 +19,7 @@ import fi.tekenveelvlakopdr.opdrnav.*;
 //import grnuminput.*;
 
 
-public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,ItemListener, InteractiePanel, InteractieEditPanel
+public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,ItemListener
 {	
 	Slider zijdeSl;
 	Matrix3D matrot, matres,mateenh;
@@ -28,72 +32,84 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	Hoekpunt[] hoekpuntenNieuw;
 	Punt[] trefpuntenNieuw;
 	boolean begin, basisZichtbaar,maakLijn, maakVlak, vaktekening;
-	Button basisKnop, terugKnop, wisKnop, wisVKnop, lijnKnop, vlakKnop, vaktekKnop;
-	Choice kiesV;
-	Label l;
+	JButton basisKnop, terugKnop, wisKnop, wisVKnop, lijnKnop, vlakKnop, vaktekKnop;
+	JComboBox kiesV;
+	JLabel l;
 	
 	int aantalPuntenRood, puntnr1, puntnr2;
 	int[] puntnr;	
 	
+	Font font = new Font ("SansSerif",Font.PLAIN,12);
+	Font fontBold = new Font ("SansSerif",Font.BOLD,12);
+	
 	public void initialiseer()
-	{	
-		
+	{	setOpaque(true);
+	    setBackground(getBackground());
 		maakMuisActieMogelijk();
 		
-		kiesV = new Choice();
-		kiesV.addItemListener(this);
+		kiesV = new JComboBox();
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("dodecaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("kubusLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("octaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("icosaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("tetraederLabel"));
+		kiesV.addItemListener(this);
+        
 		kiesV.setBounds(25,50,100,25);
-		//rg.add(kiesV);
+		rg.add(kiesV);
 		rg.setBackground(new Color(180,217,255));
 		
-		l = new Label(TekenVeelvlakOpdr.rb.getString("zijdeLabel"));
-		l.setAlignment(Label.CENTER);
-		l.setBounds(25,60,100,20);
+		l = new JLabel(TekenVeelvlakOpdr.rb.getString("zijdeLabel"));
+		l.setFont(font);
+		l.setAlignmentX(JLabel.CENTER);
+		l.setBounds(45,60,100,20);
 		rg.add(l);
 		
 		zijdeSl = new Slider(100,40);
 		zijdeSl.addActionListener(this);
 		zijdeSl.setBounds(10,90,110,20);
+		zijdeSl.setBackground(new Color(180,217,255));
 		rg.add(zijdeSl);
 		
-		lijnKnop = new Button(TekenVeelvlakOpdr.rb.getString("lijnKnopLabel"));
+		lijnKnop = new JButton(TekenVeelvlakOpdr.rb.getString("lijnKnopLabel"));
+		lijnKnop.setFont(fontBold);
 		lijnKnop.addActionListener(this);
 		lijnKnop.setBounds(8,140,114,25);
 		rg.add(lijnKnop);
-		lijnKnop.setBackground(Color.white);
+		//lijnKnop.setBackground(Color.white);
 		
-		vlakKnop = new Button(TekenVeelvlakOpdr.rb.getString("vlakKnopLabel"));
-		vlakKnop.addActionListener(this);
+		vlakKnop = new JButton(TekenVeelvlakOpdr.rb.getString("vlakKnopLabel"));
+		vlakKnop.setFont(font);
+        vlakKnop.addActionListener(this);
 		vlakKnop.setBounds(8,170,114,25);
 		rg.add(vlakKnop);
 		
-		basisKnop = new Button(TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"));
-		basisKnop.addActionListener(this);
+		basisKnop = new JButton(TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"));
+		basisKnop.setFont(font);
+        basisKnop.addActionListener(this);
 		basisKnop.setBounds(8,200,114,25);
 		rg.add(basisKnop);
 		
-		terugKnop = new Button(TekenVeelvlakOpdr.rb.getString("terugKnopLabel"));
-		terugKnop.addActionListener(this);
+		terugKnop = new JButton(TekenVeelvlakOpdr.rb.getString("terugKnopLabel"));
+		terugKnop.setFont(font);
+        terugKnop.addActionListener(this);
 		terugKnop.setBounds(8,230,114,25);
 		rg.add(terugKnop);
 		
-		wisKnop = new Button(TekenVeelvlakOpdr.rb.getString("wisLijnKnopLabel"));
-		wisKnop.addActionListener(this);
+		wisKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisLijnKnopLabel"));
+		wisKnop.setFont(font);
+        wisKnop.addActionListener(this);
 		wisKnop.setBounds(8,260,114,25);
 		rg.add(wisKnop);
 		
-		wisVKnop = new Button(TekenVeelvlakOpdr.rb.getString("wisVlakKnopLabel"));
-		wisVKnop.addActionListener(this);
+		wisVKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisVlakKnopLabel"));
+		wisVKnop.setFont(font);
+        wisVKnop.addActionListener(this);
 		wisVKnop.setBounds(8,290,114,25);
 		rg.add(wisVKnop);
 		
 		
-		vaktekKnop = new Button("vaktekening");
+		vaktekKnop = new JButton("vaktekening");
 		vaktekKnop.addActionListener(this);
 		//rg.add(vaktekKnop);
 		
@@ -101,7 +117,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		matres = new Matrix3D();
 		mateenh = new Matrix3D();
 		tb.mat = matres;
-		k=80;
+		k=180;
 		begin=true;
 		basisZichtbaar=true;
 		maakLijn=true;
@@ -477,16 +493,20 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 			else if(e.getSource()==lijnKnop)
 			{	maakLijn = true;
 				maakVlak = false;
-				lijnKnop.setBackground(Color.white);
-				vlakKnop.setBackground(Color.lightGray);
+				//lijnKnop.setBackground(Color.white);
+				//vlakKnop.setBackground(Color.lightGray);
+				lijnKnop.setFont(fontBold);
+                vlakKnop.setFont(font);
 				aantalPuntenRood=0;
 				wisTrefpunten();
 			}
 			else if(e.getSource()==vlakKnop)
 			{	maakLijn = false;
 				maakVlak = true;
-				lijnKnop.setBackground(Color.lightGray);
-				vlakKnop.setBackground(Color.white);
+				//lijnKnop.setBackground(Color.lightGray);
+				//vlakKnop.setBackground(Color.white);
+				lijnKnop.setFont(font);
+                vlakKnop.setFont(fontBold);
 				aantalPuntenRood=0;
 				wisTrefpunten();
 			}
@@ -520,7 +540,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 	public void nieuw()
-	{	String soortV = kiesV.getSelectedItem();
+	{	String soortV = (String)kiesV.getSelectedItem();
 
 		if (soortV==TekenVeelvlakOpdr.rb.getString("kubusLabel"))v = new Kubus(1);
 		else if (soortV==TekenVeelvlakOpdr.rb.getString("octaederLabel"))v = (new Kubus(Math.sqrt(3))).dualiseer();
@@ -787,9 +807,9 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 
-	public InteractieEditPanel getEditPanel() {
-		return this;
-	}
+	//public InteractieEditPanel getEditPanel() {
+	//	return this;
+	//}
 
 
 	public Hashtable getEditState() {
