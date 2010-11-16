@@ -97,7 +97,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		
 		launchData = appletLaunchData;
 		
-		start();
+		restart();
 		applet.setState(appletEditState);
 		
 		
