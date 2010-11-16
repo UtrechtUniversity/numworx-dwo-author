@@ -29,13 +29,15 @@ public class BottomPanel extends JPanel
 		else if (owner.taakNummer == 4)
 			vOffSet = owner.offSet / 2;	
 		
-		if (showGoed)
-		{	g.drawImage(owner.goedVink, 370, vOffSet, null);
-		}
+		int x = owner.vergelijkChoice.getLocation().x + owner.vergelijkChoice.getSize().width;
 		
 		if (showFout)
-		{	g.drawImage(owner.foutKruis, 370, vOffSet, null);
+		{	g.drawImage(owner.foutKruis, x, vOffSet, null);
 		}
+		if (showGoed)
+		{	g.drawImage(owner.goedVink, x, vOffSet, null);
+		}
+		
 		
 	}
 	

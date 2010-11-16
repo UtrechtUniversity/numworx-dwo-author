@@ -18,7 +18,7 @@ public class DrawingPanel extends JPanel
 	Color polyColor = new Color(255, 0, 0, 175);
 	Color shadowColor = Color.lightGray;
 	Color grijsPolyColor = Color.gray;
-	Color sizeColor = Color.lightGray; //Color.black;	
+	Color sizeColor = Color.black;	
 	Color labelColor = Color.green;
 	
 	boolean showGrid = true;
@@ -1198,7 +1198,7 @@ System.out.println("f & !o & !i pol2 from stack");
 	{	g.setColor(shadowColor);
 		g.fillPolygon(shadowPolygon.intPolygon);
 		if (showSizes)
-		{
+		{	
 			for (int eCnt = 0; eCnt < shadowPolygon.aantalPunten; eCnt++)
 			{	Point e1 = shadowPolygon.intPoints[eCnt];
 				Point e2 = shadowPolygon.intPoints[

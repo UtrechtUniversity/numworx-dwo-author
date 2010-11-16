@@ -57,7 +57,7 @@ public class KnipPolygon
 			if (!newIntPts.contains(iPoint))
 				newIntPts.addElement(iPoint);
 		}
-		// opschone voor collineariteit
+		// opschonen voor collineariteit
 		Vector cleanedPts = cleanPoints(newIntPts);
 		aantalPunten = cleanedPts.size();
 		intPoints = new Point[aantalPunten];
@@ -156,7 +156,8 @@ public class KnipPolygon
 	public void links()
 	{	Rectangle bBox = intPolygon.getBounds();
 		// space in grid-units
-		int hSpace = 1;
+		int hSpace = owner.getSize().width / owner.gridSize / 2 -
+					 bBox.width / owner.gridSize - 1;
 		int vSpace = (owner.getSize().height / owner.gridSize -
 					  bBox.height / owner.gridSize) / 2;
 		translate(hSpace * owner.gridSize - bBox.x, 
@@ -166,8 +167,9 @@ public class KnipPolygon
 	public void rechts()
 	{	Rectangle bBox = intPolygon.getBounds();
 		// space in grid-units
-		int hSpace = (owner.getSize().width / owner.gridSize -
-					  bBox.width / owner.gridSize) - 1;
+		int hSpace = owner.getSize().width / owner.gridSize / 2 + 1;
+					//(owner.getSize().width / owner.gridSize -
+					 // bBox.width / owner.gridSize) - 1;
 		int vSpace = (owner.getSize().height / owner.gridSize -
 					  bBox.height / owner.gridSize) / 2;
 		translate(hSpace * owner.gridSize - bBox.x, 

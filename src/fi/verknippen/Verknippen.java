@@ -63,6 +63,8 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	String defaultFiguurString = "0,0|8,0|8,8|0,8";
 	String defaultGrijsFiguurString = "0,0|8,0|8,8|0,8";	
 	
+	FIButton fiButton;
+	
 	OpdrachtSelector selector;
 	Opdracht[] opdrachten;
 	Opdracht currentOpdracht;
@@ -72,8 +74,7 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	Button opnieuwButton;
 	TextField oppervlakteTextField;
 	Button okButton;
-	
-	
+		
 	Choice vergelijkChoice;
 	
 	int minGrid = 16;
@@ -143,10 +144,10 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 		rb = ResourceBundle.getBundle("fi.verknippen.text.Text",language);
 		
 		//instelling achtergrondkleur
-		bgColor = new Color(255,255,255);
+		bgColor = new Color(255, 255, 198);
 		String kleurcode = getParameter("bgcolor");
 		if	(kleurcode != null)
-			bgColor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+			bgColor = new Color(Integer.parseInt(kleurcode.substring(1), 16));
 		//setBackground(bgColor);
 		getContentPane().setBackground(bgColor);
 		
@@ -399,7 +400,7 @@ if (scormed)
 		getContentPane().add(bottomPanel);
 
 		//Fi-logo, copyright
-		FIButton fiButton = new FIButton("Verknippen",new String[]
+		fiButton = new FIButton("Verknippen",new String[]
 			{	"versie-info: 20100810",
 				"auteurs: Monica Wijers, Frans van Galen",
 				"programmeur: Huub Nilwik",
@@ -559,15 +560,64 @@ if (scormed)
 
 		isDWOComponent = true;
 		bottomPanel.remove(selector);
-		opdrachtLabel.setLocation(2 * offSet, opdrachtLabel.getLocation().y);
+		bottomPanel.remove(fiButton);
+		
+		opnieuwButton.setLocation(
+			getSize().width - opnieuwButton.getSize().width - offSet,
+			offSet);
+		
+		
+		if (taakNummer == 1)
+		{	
+			opdrachtLabel.setBounds(
+				offSet, offSet,
+				//getSize().width - 
+				//	(getSize().width - opnieuwButton.getLocation().x + 2 * offSet),
+				theBoldFM.stringWidth(opdrachtLabel.getText()) + 10,
+				3 * theBoldFM.getHeight() / 2);
+		}
+		else if ((taakNummer == 2) || (taakNummer == 3))
+		{
+			opdrachtLabel.setBounds(
+				offSet, offSet,
+				//getSize().width - 
+				//	(getSize().width - oppervlakteTextField.getLocation().x + 2 * offSet),
+				theBoldFM.stringWidth(opdrachtLabel.getText()) + 10,
+				3 * theBoldFM.getHeight() / 2);
+			oppervlakteTextField.setLocation(
+				opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width + offSet,
+				offSet);
+			
+		}
+		else if (taakNummer == 4)
+		{
+			opdrachtLabel.setBounds(
+				offSet / 2, offSet / 2 - 2,
+				//getSize().width - 
+				//	(getSize().width - vergelijkChoice.getLocation().x + offSet),
+				theBoldFM.stringWidth(opdrachtLabel.getText()) + 10,	
+				3 * theBoldFM.getHeight() / 2);
+			
+			vergelijkChoice.setLocation(
+				opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width + offSet,
+				vergelijkChoice.getLocation().y);
+			
+			opdrachtLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+			opdrachtLabel2.setSize(theBoldFM.stringWidth(opdrachtLabel2.getText()) + 10, 3 * theBoldFM.getHeight() / 2);
+			opdrachtLabel2.setLocation(
+				opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width -
+				opdrachtLabel2.getSize().width, 
+				opdrachtLabel2.getLocation().y);
+			
+			okButton.setLocation(vergelijkChoice.getLocation().x + vergelijkChoice.getSize().width -
+				                 okButton.getSize().width, okButton.getLocation().y);
+
+		}
+/*		
+		
 		opdrachtLabel2.setLocation(opdrachtLabel.getLocation().x, 
 								   opdrachtLabel2.getLocation().y);
 								   
-		oppervlakteTextField.setLocation(
-			opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width + offSet,
-			offSet);
-
-
 		vergelijkChoice.setLocation(
 			opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width,
 			offSet / 2);
@@ -576,7 +626,7 @@ if (scormed)
 			vergelijkChoice.getLocation().x + vergelijkChoice.getSize().width -
 			okButton.getSize().width,
 			vergelijkChoice.getLocation().y + vergelijkChoice.getSize().height - 2);
-								   
+*/								   
 	}
 
 	public Vector processFiguurString(String fString)
@@ -700,25 +750,13 @@ if (scormed)
         
         		if (isDWOComponent)
 				{	
-/*				
-					boolean ok = false;
-					if ((currentOpdracht.antwoord == 1) &&
-			    	    (currentOpdracht.oppervlakte > currentOpdracht.oppervlakteGrijs))
-					{	ok = true;    
-					}
-					if ((currentOpdracht.antwoord == 2) &&
-				    	(currentOpdracht.oppervlakte < currentOpdracht.oppervlakteGrijs))
-					{	ok = true;    
-					}
-					if ((currentOpdracht.antwoord == 3) &&
-				    	(currentOpdracht.oppervlakte == currentOpdracht.oppervlakteGrijs))
-					{	ok = true;    
-					}
-*/			
-//					if (ok)
-					if (currentOpdracht.antwoordOK)
+					if (currentOpdracht.antwoordOK && (currentOpdracht.antwoordenFout == 0))
 					{	bottomPanel.showGoed = true;
 						bottomPanel.showFout = false;
+					}
+					if (currentOpdracht.antwoordOK && (currentOpdracht.antwoordenFout > 0))
+					{	bottomPanel.showGoed = true;
+						bottomPanel.showFout = true;
 					}
 					else
 					{	bottomPanel.showGoed = false;
@@ -776,7 +814,7 @@ if (scormed)
 			    (currentOpdracht.oppervlakte < currentOpdracht.oppervlakteGrijs))
 			{	ok = true;    
 			}
-			if (ok)
+			if (ok && (currentOpdracht.antwoordenFout == 0))
 			{	selector.setState(currentNum, selector.GREEN);
 				currentOpdracht.antwoordOK = true;
 				if (isDWOComponent)
@@ -784,8 +822,18 @@ if (scormed)
 					bottomPanel.showFout = false;
 				}	
 			}
+			else if (ok && (currentOpdracht.antwoordenFout > 0))
+			{	selector.setState(currentNum, selector.ORANGE);
+				currentOpdracht.antwoordOK = true;
+				if (isDWOComponent)
+				{	bottomPanel.showGoed = true;
+					bottomPanel.showFout = true;
+				}	
+				
+			}
 			else
-			{	selector.setState(currentNum, selector.RED);	
+			{	currentOpdracht.antwoordenFout++;
+				selector.setState(currentNum, selector.RED);	
 				currentOpdracht.antwoordOK = false;
 				if (isDWOComponent)
 				{	bottomPanel.showGoed = false;
@@ -825,6 +873,7 @@ if (scormed)
 
 			currentOpdracht.antwoordOK = false;
 			currentOpdracht.antwoord = 0;
+			currentOpdracht.antwoordenFout = 0;
 
 			if (taakNummer == 1)
 			{	opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
@@ -1041,7 +1090,13 @@ if (scormed)
 	{	if (api != null)
 		{	String s = api.LMSGetValue("cmi.suspend_data");
 			if (s != null && !s.equals(""))
-				setState(s);
+			{	setState(s);
+//System.out.println("api setState");			
+			}
+		}
+		else
+		{
+//System.out.println("api not setState");			
 		}
 	}
 	
@@ -1060,7 +1115,11 @@ if (scormed)
 	}
 
 	public void setState(String s)
-	{	// decodeer de string
+	{	
+		
+//System.out.println("setState");		
+		
+		// decodeer de string
 		Object o = StringCodeObject.decodeStringToObject(s);
 		// cast
 		Vector scormOpdrachten = (Vector) o;
@@ -1071,7 +1130,8 @@ if (scormed)
 	    	if (scoOpdracht.isCurrent)	
 	    		currentNum = oCnt;
 	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord;
-	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    	
+	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    
+	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoordenFout;
 	    	opdrachten[oCnt].drawingPanel.knipPolygons.removeAllElements();
 			for (int pCnt = 0; pCnt < scoOpdracht.figuurPolygons.size(); pCnt++)
 	    	{	ScormPolygon sp = 
@@ -1089,8 +1149,10 @@ if (scormed)
 	    		
 	    	}	    	
 	    		
-	    	if ((opdrachten[oCnt].antwoord > 0) && opdrachten[oCnt].antwoordOK)
+	    	if ((opdrachten[oCnt].antwoord > 0) && (opdrachten[oCnt].antwoordenFout == 0) && opdrachten[oCnt].antwoordOK)
 	    		selector.setState(currentNum, selector.GREEN);
+	    	else if ((opdrachten[oCnt].antwoord > 0) && (opdrachten[oCnt].antwoordenFout > 0) && opdrachten[oCnt].antwoordOK)
+	    		selector.setState(currentNum, selector.ORANGE);
 	    	else if ((opdrachten[oCnt].antwoord > 0) && !opdrachten[oCnt].antwoordOK)
 	    		selector.setState(currentNum, selector.RED);
 	    }
@@ -1110,7 +1172,8 @@ if (scormed)
 	    	if (currentNum == oCnt)
 	    		scoOpdracht.isCurrent = true;
 	    	scoOpdracht.antwoord = opdrachten[oCnt].antwoord;
-	    	scoOpdracht.antwoordOK = opdrachten[oCnt].antwoordOK;	    	
+	    	scoOpdracht.antwoordOK = opdrachten[oCnt].antwoordOK;
+	    	scoOpdracht.antwoordenFout = opdrachten[oCnt].antwoordenFout;
 	    	Vector knipPolygons = opdrachten[oCnt].drawingPanel.knipPolygons;
 	    	for (int pCnt = 0; pCnt < knipPolygons.size(); pCnt++)
 	    	{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(pCnt);

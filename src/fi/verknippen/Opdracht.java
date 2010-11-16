@@ -17,6 +17,8 @@ public class Opdracht
 	int antwoord = 0;
 	boolean antwoordOK = false;
 	
+	int antwoordenFout = 0;
+	
 	DrawingPanel drawingPanel;
 		
 	public Opdracht(int num)
@@ -32,7 +34,8 @@ class ScormOpdracht implements Serializable
 	boolean isCurrent = false;
 	Vector figuurPolygons = new Vector();
 	int antwoord = 0;
-	boolean antwoordOK = false;	
+	boolean antwoordOK = false;
+	int antwoordenFout = 0;	
 
 	public ScormOpdracht(int num)
 	{	opdrachtNum = num;
