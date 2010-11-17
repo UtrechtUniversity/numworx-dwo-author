@@ -25,12 +25,15 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         add(tekenVeelvlak);
         
         viewer = new Viewer3d(10,10,180,180);
+        viewer.setVisible(false);
+        add(viewer);
     }
     
     public void setBackground(Color c)
     {
         super.setBackground(c);
         if(tekenVeelvlak!=null)tekenVeelvlak.setBackground(c);
+        if(viewer!=null)viewer.setBackground(c);
     }
     
     public void addActionListener(ActionListener al) {
@@ -120,21 +123,41 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     public void setBounds(int x, int y, int b, int h) {
         super.setBounds(x,y,b,h);
         tekenVeelvlak.setBounds(0,0,b,h);
+        tekenVeelvlak.setButtonHeights(h/2-170);
+        viewer.setBounds(0,0,b,h);
     }
 
     
     public void setEditState(Hashtable h) {
-        Hashtable tvState = new Hashtable();
-        boolean viewerOnly = false; 
-        boolean moveable = true;
-        
-        if(h.containsKey("tvState"))tvState = (Hashtable)h.get("tvState");
-        if(h.containsKey("viewerOnly"))viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
-        if(h.containsKey("moveable"))moveable = ((Boolean)h.get("moveable")).booleanValue();
-        
-        tekenVeelvlak.setEditState(tvState);
-        //viewerOnlyCB.setSelected(viewerOnly);
-        //moveableCB.setSelected(moveable);
+    	 Hashtable tvState = new Hashtable();
+         boolean viewerOnly = false; 
+         boolean moveable = true;
+         int basisFiguur = 1;
+         int aantalHulppunten = 0;
+         
+         if(h.containsKey("tvState"))tvState = (Hashtable)h.get("tvState");
+         if(h.containsKey("viewerOnly"))viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
+         if(h.containsKey("moveable"))moveable = ((Boolean)h.get("moveable")).booleanValue();
+         if(h.containsKey("basisFiguur"))basisFiguur = ((Integer)h.get("basisFiguur")).intValue();
+         if(h.containsKey("aantalHulppunten"))aantalHulppunten = ((Integer)h.get("aantalHulppunten")).intValue();
+         
+         if(viewerOnly)
+         {	 tekenVeelvlak.setVisible(false);
+        	 viewer.setVisible(true);
+        	 viewer.setState(tvState);
+         }
+         else
+         {
+        	 viewer.setVisible(false);
+        	 tekenVeelvlak.setVisible(true);
+        	 tekenVeelvlak.zetKiesV(basisFiguur);
+        	 tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
+	         tekenVeelvlak.setState(tvState);
+	         tekenVeelvlak.begin = true;
+	         tekenVeelvlak.tekenOpnieuw();
+	         
+	         
+         }
         
     }
 
@@ -185,12 +208,30 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         Hashtable tvState = new Hashtable();
         boolean viewerOnly = false; 
         boolean moveable = true;
+        int basisFiguur = 1;
+        int aantalHulppunten = 0;
         
         if(h.containsKey("tvState"))tvState = (Hashtable)h.get("tvState");
         if(h.containsKey("viewerOnly"))viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
         if(h.containsKey("moveable"))moveable = ((Boolean)h.get("moveable")).booleanValue();
+        if(h.containsKey("basisFiguur"))basisFiguur = ((Integer)h.get("basisFiguur")).intValue();
+        if(h.containsKey("aantalHulppunten"))aantalHulppunten = ((Integer)h.get("aantalHulppunten")).intValue();
         
-        tekenVeelvlak.setState(tvState);
+        if(viewerOnly)
+        {	 tekenVeelvlak.setVisible(false);
+	       	 viewer.setVisible(true);
+	       	 viewer.setState(tvState);
+	       	 viewer.zetMuisAan(moveable);
+        }
+        else
+        {
+	       	 viewer.setVisible(false);
+	       	 tekenVeelvlak.setVisible(true);
+	       	 tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
+	         tekenVeelvlak.zetOpdracht(tvState,randomVars,randomValues);
+	         tekenVeelvlak.begin = true;
+	         tekenVeelvlak.tekenOpnieuw();
+        }
         
     }
 

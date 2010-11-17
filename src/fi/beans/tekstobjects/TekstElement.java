@@ -2,7 +2,9 @@ package fi.beans.tekstobjects;
 
 import java.awt.*;
 
-public class TekstElement extends Container
+import javax.swing.JPanel;
+
+public class TekstElement extends JPanel
 {
 	public int ashoogte;
 	public TekstVak tekstVak;

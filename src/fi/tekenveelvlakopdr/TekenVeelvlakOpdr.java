@@ -88,11 +88,14 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 		fiButton.setBounds(5,5,20,30);
 		add(fiButton);
 		
+		Panel p1 = new Panel();
+		p1.setLayout(null);
+		p1.setBounds(10,10,180,180);
+		add(p1);
 		
-		
-		viewer = new Viewer3d(10,10,180,180);
+		viewer = new Viewer3d(0,0,180,180);
 		viewer.setBackground(bgcolor);
-		add(viewer);
+		p1.add(viewer);
 		//viewer.setState("H4sIAAAAAAAAAF1UTUwTQRSe7vaX/1IqLFCqMZjogcTExAOVVYJESDwYb3iwCzS2ZdNiu62YGDSKEQET48ULiQYjkaAXTyroXDx4wZOKxgtGDgaU+AchJoq73W+W2TZ5nfe9782b773Z3YffiCubIYGkkldaclpCbTmmZOOa0qvGAnOVzbu6l5+IROgkJWpa6e9U+rR0pov4tHgmlo2n1f6hQfkwMX7ec179v1Q3p0YqepVsItuT6ItrvYqS0ev7C/VVJXWmpT2dVmNKamFn5tLbyT9rAnH0EFdeUXOxoUGiEbeaSKZiqVyGCKe6jj+L7smvPL4vEKKThDST7Z8Xqw+rU7cS3UTocOlWppsDMS94J3C1bgHwxurH6tZNAC+ghgC+FrwHtYyzSzVSEk/HBgZzKQ26O9qmJ2pm+3qamO4offV6/8LIgRvySsfGyzubu+nn4OaXB1fG5aXIkUly+R6Ly4u3+9/dEqPydzOOfdfn75pNym/8yRNtK/9YnK59mj3542pEXjbiq4SiDsunqCMjPzK9uO/D35+PqFlni8Vl1KHQw+pQU89p89xVB7XntyJ/itr1K8gbtfoy+52wMNOPuHWePT6G+UzJdj1R+cXM0Zlf7V9RZxTxXvZwyB/nCj9rDqZ+wTp3Ya+0PuxJUsyN1Y+w/CI9ln4TX6P2e5yQ3xfiY+DH54cPnn96sfsC7muL2s8dpKb+DWrXH4VOUbbfbys160+wOhF7XwT5I7JZP4X5/GbzsZ4r5FN7vlp8L+h3HDqXrDmwOuiT2u933Jq3Of/nkZsm1ognryoDA/oLcpYMF96hdd0O4V0s161Ct0rgClwjwwSxKuAqcITDfi7fqFeDPSL8Ug6XIhbkcJDjWZxhw3YU4SBiIr4LFUW4isuvBcf0G9+UuiJcxe0vg18H7ALPY4nb7wIncfOQMBMRq8TNpwS+xOH6Il5CTMTq4HgH5sfjesRExIvn30DM7yjDAjdnATzDjcA1XH45d54xGw83Dyf2NpDtb32Iw43Qx3A9cni+huvXCz8E7AaWOBzi8t3gWH4IuBpYglaGq4FZvg8+6yeAHtk8mqA1xGHDD3M4zPUTBu/jsI+rH4bv4bCHbD9/YfgBTk+QO8+Js3hs+MGh/xeIEPRQCAAA");
 		
 		
@@ -102,8 +105,12 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 		//add(tekstArea);
 		tekstArea.resize();
 		
+		Panel p2 = new Panel();
+		p2.setLayout(null);
+		p2.setBounds(200,10,getSize().width-200,getSize().height-80);
+		add(p2);
 		tekenVeelvlak = new TekenVeelvlak();
-		tekenVeelvlak.setBounds(200,10,getSize().width-200,getSize().height-80);
+		tekenVeelvlak.setBounds(0,0,getSize().width-200,getSize().height-80);
 		tekenVeelvlak.setBackground(bgcolor);
 		tekenVeelvlak.init();
 		
@@ -126,13 +133,14 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 				for(int j=0 ; j<aantalOpdrachten[i] ; j++)
 				{	String opdracht = 	this.getParameter("opdracht_"+(i+1)+"_"+(j+1));
 					MyOpdrContainer opdrContainer = new MyOpdrContainer(0,0,getSize().width, getSize().height, tekenVeelvlak, viewer);
+					opdrContainer.setBackground(bgcolor);
 					opdrContainer.zetOpdracht(opdracht);
 					ons.zetOpdrContainer(opdrContainer,i,j);
 				}
 			}
 		
 		
-		add(tekenVeelvlak,0);
+		p2.add(tekenVeelvlak,0);
 		
 		/*String optieUitlegString = getParameter("optieuitleg");
 		if ( optieUitlegString.equals("true")) uitleg = true;

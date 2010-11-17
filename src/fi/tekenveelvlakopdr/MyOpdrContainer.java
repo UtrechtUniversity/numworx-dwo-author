@@ -3,6 +3,9 @@ package fi.tekenveelvlakopdr;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
+import javax.swing.JCheckBox;
+
 import fi.beans.base64code.*;
 import fi.beans.tekstobjects.*;
 
@@ -16,7 +19,7 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 	private Viewer3d viewer;
 	private int basisFiguur;
 	private int aantalHulpPunten;
-	private Checkbox klaarCB;
+	private JCheckBox klaarCB;
 	private boolean klaar;
 	
 	public MyOpdrContainer(int x, int y, int b, int h, TekenVeelvlak tvv, Viewer3d v)
@@ -30,13 +33,21 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 		
 		tekstArea = new TekstArea();
 		tekstArea.setBounds(10,200,180,150);
+		tekstArea.setBackground(getBackground());
 		add(tekstArea);
 		
-		klaarCB = new Checkbox("Klaar");
+		klaarCB = new JCheckBox("Klaar");
 		klaarCB.setBounds(580,getSize().height-70,90,20);
 		klaarCB.addItemListener(this);
 		add(klaarCB,0);
 		
+	}
+	
+	public void setBackground(Color c)
+	{
+		super.setBackground(c);
+		if(tekstArea!=null)tekstArea.setBackground(c);
+		if(klaarCB!=null)klaarCB.setBackground(c);
 	}
 	
 	public void zetOpdracht(String s)
@@ -70,7 +81,7 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 		tekenveelvlak.zetBasis(basisFiguur,aantalHulpPunten);
 		
 		this.klaar = klaar;
-		klaarCB.setState(klaar);
+		klaarCB.setSelected(klaar);
 	}
 
 	public Hashtable geefvoorbeeldState()
@@ -86,7 +97,7 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 		
 		this.veelvlakState = veelvlakState;
 		this.klaar = klaar;
-		klaarCB.setState(klaar);
+		klaarCB.setSelected(klaar);
 
 		//tekenveelvlak.setState(veelvlakState);
 	}
@@ -111,18 +122,20 @@ public class MyOpdrContainer extends OpdrContainer implements ItemListener
 	}
 	
 	public void start()
-	{	tekenveelvlak.zetBasis(basisFiguur,aantalHulpPunten);
+	{	
+		tekenveelvlak.zetBasis(basisFiguur,aantalHulpPunten);
 		tekenveelvlak.setState(veelvlakState);
 		tekenveelvlak.begin = true;
 		tekenveelvlak.tekenOpnieuw();
 		viewer.setState(voorbeeldState);
 		viewer.zetBeginHoeken(20,-20);
 		viewer.tekenOpnieuw();
+		
 	}
 	
 	public void itemStateChanged(ItemEvent e)
 	{	if(e.getSource()==klaarCB)
-		{	klaar = klaarCB.getState();
+		{	klaar = klaarCB.isSelected();
 			if(klaar)
 			{	score = 10;
 				correct = true;

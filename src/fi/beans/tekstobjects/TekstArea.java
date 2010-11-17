@@ -2,7 +2,9 @@ package fi.beans.tekstobjects;
 
 import java.awt.*;
 
-public class TekstArea extends Panel
+import javax.swing.JPanel;
+
+public class TekstArea extends JPanel
 {	
 	public static int CENTER = 0;
 	public static int LEFT = 1;
@@ -26,9 +28,14 @@ public class TekstArea extends Panel
 		//tekstVak.setEditable(false);
 		//tekstVak.setSelectable(false);
 	}
-	
+	public void setBackground(Color c)
+	{
+		super.setBackground(c);
+		if(tekstVak!=null)tekstVak.setBackground(c);
+		
+	}
 	public void setFont(Font font)
-	{	tekstVak.setFont(font);
+	{	if(tekstVak!=null)tekstVak.setFont(font);
 	}
 	
 	public void setText(String s)

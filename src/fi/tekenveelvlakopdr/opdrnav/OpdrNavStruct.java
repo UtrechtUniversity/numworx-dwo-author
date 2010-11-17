@@ -111,7 +111,7 @@ public class OpdrNavStruct extends JPanel implements ActionListener
 	    {	scores[i] = new Label("Score: "+0);
 	    	scores[i].setBounds(actKeuzePanelX+140,actKeuzePanelY + i*20,100,20);
 	    	scores[i].setFont(new Font("SansSerif",Font.PLAIN,14));
-	    	if(!editMode)add(scores[i]);
+	    	if(!editMode && aantalActiviteiten>1)add(scores[i]);
 	    }
 	 	
 	 	aantalNakijken = new int[aantalActiviteiten];
@@ -153,6 +153,20 @@ public class OpdrNavStruct extends JPanel implements ActionListener
 	    	aantalOpdrKnop.addActionListener(this);
 	    	add(aantalOpdrKnop);
 	    }
+	}
+	
+	public void setBackground(Color c)
+	{
+		super.setBackground(c);
+		if(or!=null && or[0]!=null)or[0].setBackground(c);
+		if(scores!=null && scores[0]!=null)scores[0].setBackground(c);
+		if(opdrContainers!=null && opdrContainers[0]!=null)
+		{	for(int j=0 ; j<aantalOpdrachten[0]; j++)
+		    {	if(opdrContainers[0][j]!=null)opdrContainers[0][j].setBackground(c);
+		    	
+		    }
+		}
+		
 	}
 
 	public void setState(Hashtable h)
@@ -456,7 +470,8 @@ public class OpdrNavStruct extends JPanel implements ActionListener
 			opdrContainerActief.setVisible(true);
 			opdrContainerActief.repaint();
 			opdrContainerActief.start();
-			produceAction("select");
+			//produceAction("select");
+			
 		}
 		else if(e.getSource()== actKeuzePanel)
 		{	if(e.getActionCommand().equals("editLabel"))

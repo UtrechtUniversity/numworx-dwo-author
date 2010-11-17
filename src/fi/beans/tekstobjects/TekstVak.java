@@ -59,6 +59,18 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		
 	}
 	
+	public void setBackground(Color c)
+	{
+		super.setBackground(c);
+		if(regels!=null && regels[0]!=null)
+		{	for(int j=0 ; j<aantalRegels; j++)
+		    {	if(regels[j]!=null)regels[j].setBackground(c);
+		    	
+		    }
+		}
+		
+	}
+	
 	public void zetTekst(String s)
 	{	tekst = new TekstBuffer(this,s);
 		vulVak(tekst.toString());
@@ -121,6 +133,7 @@ public class TekstVak extends TekstElement implements MouseListener, MouseMotion
 		for(int i=0 ; i<aantalGevuld+1; i++)
 	    {	if(regels[i]==null)
 	    	{	regels[i] = new TekstRegel(this);
+	    	regels[i].setBackground(getBackground());
 	    		if(i==0)regels[i].setLocation(5,0);
 	    		else regels[i].setLocation(5,regels[i-1].getLocation().y + regels[i-1].getSize().height);
 				add(regels[i]);

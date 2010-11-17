@@ -4,10 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import javax.swing.JPanel;
+
 import fi.beans.base64code.*;
 
 
-public class Viewer3d extends Panel
+public class Viewer3d extends JPanel
 {
 	private AnimatieBeheerder ab;
 	private MuisBeheerder mb;
@@ -55,7 +57,7 @@ public class Viewer3d extends Panel
 		{	mb.meldAnimatieBeheerder(ab);		
 		}
 		//vv = new Kubus(1);
-		k=230;
+		k=200;
 		xhoek = 0;
 		yhoek = 0;
 		beginx = 30;

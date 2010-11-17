@@ -3,6 +3,8 @@ package fi.tekenveelvlakopdr;
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.JButton;
+
 public class UitlegButton extends Button implements ActionListener
 {	
 	private Image image;

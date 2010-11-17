@@ -39,8 +39,10 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	int aantalPuntenRood, puntnr1, puntnr2;
 	int[] puntnr;	
 	
-	Font font = new Font ("SansSerif",Font.PLAIN,12);
-	Font fontBold = new Font ("SansSerif",Font.BOLD,12);
+	Font font = new Font ("SansSerif",Font.PLAIN,11);
+	Font fontBold = new Font ("SansSerif",Font.BOLD,11);
+	
+	int bStarH = 30;
 	
 	public void initialiseer()
 	{	setOpaque(true);
@@ -48,64 +50,70 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		maakMuisActieMogelijk();
 		
 		kiesV = new JComboBox();
-		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("dodecaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("kubusLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("octaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("icosaederLabel"));
+		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("dodecaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("tetraederLabel"));
 		kiesV.addItemListener(this);
         
-		kiesV.setBounds(25,50,100,25);
+		kiesV.setBounds(15,bStarH,100,25);
 		rg.add(kiesV);
 		rg.setBackground(new Color(180,217,255));
 		
 		l = new JLabel(TekenVeelvlakOpdr.rb.getString("zijdeLabel"));
 		l.setFont(font);
 		l.setAlignmentX(JLabel.CENTER);
-		l.setBounds(45,60,100,20);
+		l.setBounds(45,bStarH+40,100,20);
 		rg.add(l);
 		
 		zijdeSl = new Slider(100,40);
 		zijdeSl.addActionListener(this);
-		zijdeSl.setBounds(10,90,110,20);
+		zijdeSl.setBounds(10,bStarH+60,110,20);
 		zijdeSl.setBackground(new Color(180,217,255));
 		rg.add(zijdeSl);
 		
 		lijnKnop = new JButton(TekenVeelvlakOpdr.rb.getString("lijnKnopLabel"));
 		lijnKnop.setFont(fontBold);
+		lijnKnop.setMargin(new Insets(4,10,4,10));
 		lijnKnop.addActionListener(this);
-		lijnKnop.setBounds(8,140,114,25);
+		lijnKnop.setBounds(8,bStarH+110,114,25);
 		rg.add(lijnKnop);
 		//lijnKnop.setBackground(Color.white);
 		
 		vlakKnop = new JButton(TekenVeelvlakOpdr.rb.getString("vlakKnopLabel"));
 		vlakKnop.setFont(font);
-        vlakKnop.addActionListener(this);
-		vlakKnop.setBounds(8,170,114,25);
+		vlakKnop.setMargin(new Insets(4,10,4,10));
+		vlakKnop.addActionListener(this);
+		vlakKnop.setBounds(8,bStarH+140,114,25);
 		rg.add(vlakKnop);
 		
 		basisKnop = new JButton(TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"));
 		basisKnop.setFont(font);
-        basisKnop.addActionListener(this);
-		basisKnop.setBounds(8,200,114,25);
+		basisKnop.setMargin(new Insets(4,4,4,4));
+		basisKnop.addActionListener(this);
+		basisKnop.setBounds(8,bStarH+170,114,25);
 		rg.add(basisKnop);
 		
 		terugKnop = new JButton(TekenVeelvlakOpdr.rb.getString("terugKnopLabel"));
 		terugKnop.setFont(font);
-        terugKnop.addActionListener(this);
-		terugKnop.setBounds(8,230,114,25);
+		terugKnop.setMargin(new Insets(4,10,4,10));
+		terugKnop.addActionListener(this);
+		terugKnop.setBounds(8,bStarH+200,114,25);
 		rg.add(terugKnop);
 		
 		wisKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisLijnKnopLabel"));
 		wisKnop.setFont(font);
-        wisKnop.addActionListener(this);
-		wisKnop.setBounds(8,260,114,25);
+		wisKnop.setMargin(new Insets(4,10,4,10));
+		wisKnop.addActionListener(this);
+		wisKnop.setBounds(8,bStarH+230,114,25);
 		rg.add(wisKnop);
 		
 		wisVKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisVlakKnopLabel"));
 		wisVKnop.setFont(font);
-        wisVKnop.addActionListener(this);
-		wisVKnop.setBounds(8,290,114,25);
+		wisVKnop.setMargin(new Insets(4,10,4,10));
+		wisVKnop.addActionListener(this);
+		wisVKnop.setBounds(8,bStarH+260,114,25);
 		rg.add(wisVKnop);
 		
 		
@@ -132,8 +140,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		aantalPuntenRood = 0;
 		puntnr = new int[20];
 		
-		v = (new Icosaeder(1.3)).dualiseer();
-		//v = (new Kubus(1.3));
+		//v = (new Icosaeder(1.3)).dualiseer();
+		v = (new Kubus(1.3));
 		
 		int n = 0;
 		int aantalHp = 8;
@@ -205,6 +213,20 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		
 	}
 	
+	public void setButtonHeights(int h)
+	{	bStarH = h;
+		kiesV.setBounds(15,bStarH,100,25);
+		l.setBounds(45,bStarH+55,100,20);
+		zijdeSl.setBounds(10,bStarH+75,110,20);
+		lijnKnop.setBounds(8,bStarH+110,114,25);
+		vlakKnop.setBounds(8,bStarH+140,114,25);
+		basisKnop.setBounds(8,bStarH+170,114,25);
+		terugKnop.setBounds(8,bStarH+200,114,25);
+		wisKnop.setBounds(8,bStarH+230,114,25);
+		wisVKnop.setBounds(8,bStarH+260,114,25);
+		
+	}
+	
 	public Hashtable getState()
 	{	double[] hoekpunten = null;
 		int[] vlakken = null;
@@ -224,6 +246,15 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		h.put("basisZichtbaar", new Boolean(basisZichtbaar));
 		
 		return h;
+	}
+	
+	public int geefBasisFiguur()
+	{	return kiesV.getSelectedIndex();
+	}
+	
+	public void zetKiesV(int basisFiguur)
+	{
+		kiesV.setSelectedIndex(basisFiguur);
 	}
 	
 	public void tekenprogramma()

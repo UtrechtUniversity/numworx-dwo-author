@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
@@ -15,14 +17,9 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     
     private JCheckBox viewerOnlyCB;
     private JCheckBox moveableCB;
-    private JCheckBox pijlOmlaagCB;
-    private JCheckBox pijlZichtbaarCB;
-    private JCheckBox vijftallenZichtbaarCB;
-    private JCheckBox tientallenZichtbaarCB;
-    private JCheckBox horizontaalCB;
-    private JCheckBox eenhedenNummersCB;
-    private JCheckBox tientallenNummersCB;
-    private JCheckBox vijftallenNummersCB;
+    
+    private JLabel hulppuntenLabel;
+    private JTextField hulppuntenTF;
     
     private JPanel cp;
     
@@ -32,15 +29,17 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         tekenVeelvlak = new TekenVeelvlak();
         tekenVeelvlak.setBounds(20,20,500,400);
         tekenVeelvlak.init();
+        
+        
         add(tekenVeelvlak);
         
         cp = new JPanel();
         cp.setLayout(null);
         cp.setOpaque(false);
-        cp.setBounds(400,150,400,650);
+        cp.setBounds(600,150,400,650);
         add(cp);
         
-        viewerOnlyCB = new JCheckBox("Viewer");
+        viewerOnlyCB = new JCheckBox("Alleen viewer");
         viewerOnlyCB.setBounds(0,100,150,20);
         viewerOnlyCB.setOpaque(false);
         cp.add(viewerOnlyCB);
@@ -48,7 +47,18 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         moveableCB = new JCheckBox("Draaibaar");
         moveableCB.setBounds(0,130,150,20);
         moveableCB.setOpaque(false);
+        moveableCB.setSelected(true);
         cp.add(moveableCB);
+        
+        hulppuntenLabel = new JLabel("hulppunten bij kubus");
+        hulppuntenLabel.setBounds(0,170,140,20);
+		cp.add(hulppuntenLabel);
+		
+		hulppuntenTF = new JTextField("0");
+		hulppuntenTF.setBounds(140,170,60,20);
+		//hulppuntenTF.addActionListener(this);
+		//hulppuntenTF.addFocusListener(this);
+		cp.add(hulppuntenTF);
     }
     
     public void actionPerformed(ActionEvent e) {
@@ -67,22 +77,34 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         Hashtable tvState = new Hashtable();
         boolean viewerOnly = false; 
         boolean moveable = true;
+        int basisFiguur = 1;
+        int aantalHulppunten = 0;
         
         tvState = tekenVeelvlak.getState();
         viewerOnly = viewerOnlyCB.isSelected();
         moveable = moveableCB.isSelected();
+        basisFiguur = tekenVeelvlak.geefBasisFiguur();
+        try{
+        	aantalHulppunten = Integer.parseInt(hulppuntenTF.getText());
+        }
+        catch(Exception e){
+        	aantalHulppunten = 0;
+        }
         
         Hashtable h = new Hashtable();
         h.put("tvState", tvState);
         h.put("viewerOnly", new Boolean(viewerOnly));
         h.put("moveable", new Boolean(moveable));
-        
+        h.put("basisFiguur", new Integer(basisFiguur));
+        h.put("aantalHulppunten", new Integer(aantalHulppunten));
         return h;
     }
 
     
     public void setBounds(int x, int y, int b, int h) {
         super.setBounds(x,y,b,h);
+        tekenVeelvlak.setBounds(20,20,500,400);
+        setEditState(getEditState());
         
     }
 
@@ -91,19 +113,27 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         Hashtable tvState = new Hashtable();
         boolean viewerOnly = false; 
         boolean moveable = true;
+        int basisFiguur = 1;
+        int aantalHulppunten = 0;
         
         if(h.containsKey("tvState"))tvState = (Hashtable)h.get("tvState");
         if(h.containsKey("viewerOnly"))viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
         if(h.containsKey("moveable"))moveable = ((Boolean)h.get("moveable")).booleanValue();
+        if(h.containsKey("basisFiguur"))basisFiguur = ((Integer)h.get("basisFiguur")).intValue();
+        if(h.containsKey("aantalHulppunten"))aantalHulppunten = ((Integer)h.get("aantalHulppunten")).intValue();
         
-        tekenVeelvlak.setEditState(tvState);
-        viewerOnlyCB.setSelected(viewerOnly);
-        moveableCB.setSelected(moveable);
-        
-        
-        
-        
-        
+        //tekenVeelvlak.setBounds(20,20,500,400);
+        tekenVeelvlak.zetKiesV(basisFiguur);
+       	 tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
+	     tekenVeelvlak.setState(tvState);
+	     tekenVeelvlak.begin = true;
+	     tekenVeelvlak.tekenOpnieuw();
+	     //tekenVeelvlak.setEditState(tvState);
+	     
+	     
+	     viewerOnlyCB.setSelected(viewerOnly);
+	     moveableCB.setSelected(moveable);
+	     hulppuntenTF.setText(""+aantalHulppunten);
     }
 
     
