@@ -177,7 +177,10 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 	        
 	        ipa.setLaunchData(launchData);
 	        ipa.setEditState(ipa.getEditState());
-	        //ipa.restart();
+	        
+	        // dit moet wel!
+	        ipa.restart();
+	        
 	        revalidate();
 	        
 		}

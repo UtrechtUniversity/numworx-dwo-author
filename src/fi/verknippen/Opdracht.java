@@ -35,7 +35,7 @@ class ScormOpdracht implements Serializable
 	Vector figuurPolygons = new Vector();
 	int antwoord = 0;
 	boolean antwoordOK = false;
-	int antwoordenFout = 0;	
+	//int antwoordenFout = 0;	
 
 	public ScormOpdracht(int num)
 	{	opdrachtNum = num;

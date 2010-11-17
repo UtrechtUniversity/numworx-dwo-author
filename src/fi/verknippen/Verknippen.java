@@ -27,6 +27,8 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	// DWO-component-gebeuren
 	boolean isDWOComponent = false;
 	
+	InteractiePanelAdapter ipa = null;
+	
 	
 	public static void main(String[] args)    
 	{	int width = 790;
@@ -846,9 +848,58 @@ if (scormed)
 		}
 	}	
 
+	public void opnieuwAction()
+	{
+		currentOpdracht.drawingPanel.removeAllKnipPolygons();
+		
+		KnipPolygon kp = new KnipPolygon(currentOpdracht.drawingPanel, 
+										 currentOpdracht.figuurCoordinaten,
+										 KnipPolygon.CENTER);
+										 
+		if (taakNummer == 4)
+		{	kp = new KnipPolygon(currentOpdracht.drawingPanel, 
+										 currentOpdracht.figuurCoordinaten,
+										 KnipPolygon.RIGHTAL);
+		}												 
+		if ((taakNummer == 2) || (taakNummer == 3))
+			kp.setLabelPoint();
+										 
+		currentOpdracht.drawingPanel.addKnipPolygon(kp);        
+
+		currentOpdracht.drawingPanel.oval1Pos = null;
+		currentOpdracht.drawingPanel.oval2Pos = null;			        
+		currentOpdracht.drawingPanel.oval3Pos = null;
+		currentOpdracht.drawingPanel.repaint();
+		currentOpdracht.drawingPanel.figureIsRectangle = false;
+
+		currentOpdracht.antwoordOK = false;
+		currentOpdracht.antwoord = 0;
+		currentOpdracht.antwoordenFout = 0;
+
+		if (taakNummer == 1)
+		{	opdrachtLabel.setText(rb.getString("maakRechthoekTekst"));
+		}
+		else // taakNummer==2 of taakNummer==3 of taakNummer==4
+		{	currentOpdracht.antwoord = 0;
+			oppervlakteTextField.setText("");
+		}	
+		
+		selector.setState(currentNum, selector.INITIAL);
+		
+		if (isDWOComponent)
+		{	bottomPanel.showGoed = false;
+			bottomPanel.showFout = false;
+		}	
+		
+		repaint();
+		
+	}
+	
 	class OpnieuwAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	
+		{
+			opnieuwAction();
+/*		
 			currentOpdracht.drawingPanel.removeAllKnipPolygons();
 			
 			KnipPolygon kp = new KnipPolygon(currentOpdracht.drawingPanel, 
@@ -891,6 +942,7 @@ if (scormed)
 			}	
 			
 			repaint();
+*/			
 		}
 	}
 
@@ -1131,7 +1183,7 @@ if (scormed)
 	    		currentNum = oCnt;
 	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord;
 	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    
-	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoordenFout;
+//	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoordenFout;
 	    	opdrachten[oCnt].drawingPanel.knipPolygons.removeAllElements();
 			for (int pCnt = 0; pCnt < scoOpdracht.figuurPolygons.size(); pCnt++)
 	    	{	ScormPolygon sp = 
@@ -1173,7 +1225,7 @@ if (scormed)
 	    		scoOpdracht.isCurrent = true;
 	    	scoOpdracht.antwoord = opdrachten[oCnt].antwoord;
 	    	scoOpdracht.antwoordOK = opdrachten[oCnt].antwoordOK;
-	    	scoOpdracht.antwoordenFout = opdrachten[oCnt].antwoordenFout;
+//	    	scoOpdracht.antwoordenFout = opdrachten[oCnt].antwoordenFout;
 	    	Vector knipPolygons = opdrachten[oCnt].drawingPanel.knipPolygons;
 	    	for (int pCnt = 0; pCnt < knipPolygons.size(); pCnt++)
 	    	{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(pCnt);
@@ -1197,8 +1249,11 @@ if (scormed)
 	}
 	
 	public InteractiePanel getInteractiePanel()
-	{
-		return new InteractiePanelAdapter(this);
+	{	if (ipa == null)
+			ipa = new InteractiePanelAdapter(this);
+		
+		return ipa;
+		//return new InteractiePanelAdapter(this);
 	}
 	
 	public boolean hasEditMode()

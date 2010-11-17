@@ -4,6 +4,7 @@ import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AppletStub;
 import java.applet.AudioClip;
+import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Component;
@@ -34,11 +35,11 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	public InteractiePanelAdapter(ScormAppletIF applet)
 	{
 		this.applet = applet;
-		((Applet)applet).setStub( this );
-		setLayout( new BorderLayout() );
-		add( "Center", (Component)applet );
+		((Applet) applet).setStub(this);
+		setLayout(new BorderLayout());
+		add("Center", (Component) applet);
 		//launchData = new Hashtable();
-		launchData = ((WiskOpdrParamEditApplet)getApplet()).getDefaultParameters();
+		launchData = ((WiskOpdrParamEditApplet) getApplet()).getDefaultParameters();
 	}
 	
 	public ScormAppletIF getApplet()
@@ -56,8 +57,10 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		Hashtable appletLaunchData = null;
 		String appletEditState = null;
 		
-		if(h.containsKey("appletLaunchData")) appletLaunchData = (Hashtable)h.get("appletLaunchData");
-		if(h.containsKey("appletEditState")) appletEditState = (String)h.get("appletEditState");
+		if (h.containsKey("appletLaunchData")) 
+			appletLaunchData = (Hashtable) h.get("appletLaunchData");
+		if (h.containsKey("appletEditState")) 
+			appletEditState = (String) h.get("appletEditState");
 		
 		launchData = appletLaunchData;
 		start();
@@ -70,7 +73,8 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	{
 		String appletState = null;
 		
-		if(h.containsKey("appletState")) appletState = (String)h.get("appletState");
+		if (h.containsKey("appletState")) 
+			appletState = (String) h.get("appletState");
 		
 		applet.setState(appletState);
 	
@@ -92,8 +96,10 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		Hashtable appletLaunchData = null;
 		String appletEditState = null;
 		
-		if(h.containsKey("appletLaunchData")) appletLaunchData = (Hashtable)h.get("appletLaunchData");
-		if(h.containsKey("appletEditState")) appletEditState = (String)h.get("appletEditState");
+		if (h.containsKey("appletLaunchData")) 
+			appletLaunchData = (Hashtable) h.get("appletLaunchData");
+		if (h.containsKey("appletEditState")) 
+			appletEditState = (String) h.get("appletEditState");
 		
 		launchData = appletLaunchData;
 		
@@ -118,11 +124,13 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	{
 		Hashtable appletLaunchData = launchData;
 		String appletEditState = null;
-		if(initiated) appletEditState = applet.getState();
+		if (initiated) 
+			appletEditState = applet.getState();
 		
 		Hashtable h = new Hashtable();
 		h.put("appletLaunchData", appletLaunchData);
-		if(appletEditState!=null)h.put("appletEditState", appletEditState);
+		if (appletEditState != null)
+			h.put("appletEditState", appletEditState);
 		
 		return h;
 	}
@@ -168,7 +176,10 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
 	public boolean isCorrect()
 	{
-		return true;
+		if (((Verknippen) applet).taakNummer == 1)
+			return ((Verknippen) applet).drawingPanel.figureIsRectangle;
+		else	
+			return true;
 	}
 	public boolean isFout()
 	{
@@ -188,41 +199,41 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
     public void start()
 	{
-    	if(!initiated)
+    	if (!initiated)
 		{
 			((Applet)applet).setSize(getSize());
 	    	((Applet)applet).init();
 	    	((Applet)applet).start();
-	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
+	    	((WiskOpdrParamEditApplet) applet).setSingleComponent();
 	    	initiated = true;
 		}
 	}
     public void restart()
 	{
-    	if(!initiated)
+    	if (!initiated)
 		{
-			((Applet)applet).setSize(getSize());
-	    	((Applet)applet).init();
-	    	((Applet)applet).start();
-	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
+			((Applet) applet).setSize(getSize());
+	    	((Applet) applet).init();
+	    	((Applet) applet).start();
+	    	((WiskOpdrParamEditApplet) applet).setSingleComponent();
 	    	initiated = true;
 		}
     	else 
     	{	
     		String className = applet.getClass().getName();
-    		Locale locale = ((Applet)applet).getLocale();
+    		Locale locale = ((Applet) applet).getLocale();
     		try
     		{	Class c = Class.forName(className);
     	    	Constructor cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
     	    	Object o = cc.newInstance(new Object[] { locale } );
-    	    	remove((Component)applet);
-    	    	applet = (ScormAppletIF)o;
-    	    	((Applet)applet).setStub( this );
-    	    	add( "Center", (Component)applet );
-    	    	((Applet)applet).setSize(getSize());
-    	    	((Applet)applet).init();
-    	    	((Applet)applet).start();
-    	    	((WiskOpdrParamEditApplet)applet).setSingleComponent();
+    	    	remove((Component) applet);
+    	    	applet = (ScormAppletIF) o;
+    	    	((Applet) applet).setStub(this);
+    	    	add("Center", (Component) applet );
+    	    	((Applet) applet).setSize(getSize());
+    	    	((Applet) applet).init();
+    	    	((Applet) applet).start();
+    	    	((WiskOpdrParamEditApplet) applet).setSingleComponent();
     	    	initiated = true;
     		}
     		catch(Exception e)
@@ -235,7 +246,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	
 	}
     public void opnieuw()
-	{
+	{	((Verknippen) applet).opnieuwAction();
 	
 	}
     public void kijkNa()
@@ -246,14 +257,33 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	{
 	
 	}
-    public void addActionListener(ActionListener al)
-	{
+    //public void addActionListener(ActionListener al)
+	//{
 	
-	}
+	//}
 	public void actionPerformed(ActionEvent e)
 	{
 	
 	}
+	
+	//ActionProducer
+	private ActionListener actionListener = null;
+	
+	public void addActionListener(ActionListener al) 
+ 	{	actionListener = AWTEventMulticaster.add(actionListener, al);
+ 	}
+ 	
+ 	public void removeActionListener(ActionListener al)
+ 	{	actionListener = AWTEventMulticaster.remove(actionListener, al);
+ 	}	
+ 	
+ 	public void produceAction(String command)
+ 	{	if (actionListener != null)
+ 		{	actionListener.actionPerformed(new ActionEvent(this, 0, command));
+ 		}
+ 	}
+ 	//end ActionProducer
+	
 	
 	// AppletStub methodes
     public boolean isActive(){return true;}
