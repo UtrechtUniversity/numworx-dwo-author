@@ -74,8 +74,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private boolean showNSlider;
 	private boolean showPSlider;
 	
-	private String nString;
-	private String pString;
+	private BVInvoer nInvoer;
+	private BVInvoer pInvoer;
+	
+	//private String nString;
+	//private String pString;
 	
 	private boolean showNoordBalk;
 	private boolean showTweeGrenzenKeuze;
@@ -108,6 +111,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.n = 30;
 		this.p = 0.5;
 		
+		this.nInvoer = new BVInvoer("30");
+		this.pInvoer = new BVInvoer("0.5");
+		
 		this.hypergeometrisch = false;
 		this.M = 0;
 		
@@ -118,10 +124,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		this.showNSlider = true;
 		this.showPSlider = true;
-		
-		this.nString = Integer.toString(this.n);
-		this.pString = Double.toString(this.p);
-		
+				
 		this.showNoordBalk = true;
 		this.showTweeGrenzenKeuze = true;
 		this.showKansBalk = true;
@@ -309,7 +312,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(this.tweeGrenzen) {
 			int grens = this.staafjesPanel.getGrensLinks();
 			double kans = this.berekenKansCumulatief(0, grens-1);
-			int hulp = (int)(10000*kans);
+			int hulp = (int) Math.round(10000*kans);
 			kans = (double)hulp/10000;
 			
 			return new String("P(X<" + grens + ") = " + kans);
@@ -317,7 +320,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			int grens = this.staafjesPanel.getGrensRechts();
 			double kans = this.berekenKansCumulatief(0, grens);
-			int hulp = (int)(10000*kans);
+			int hulp = (int)Math.round(10000*kans);
 			kans = (double)hulp/10000;
 			
 			return new String("P(X\u2264" + grens + ") = " + kans);
@@ -327,12 +330,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String kansLabelMiddenTekst() {
 		if(this.tweeGrenzen) {
 			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
-			kans = (double)(int)(kans*10000)/10000.0;
+			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(" + this.staafjesPanel.getGrensLinks() + "\u2264X\u2264" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		else {
 			double kans = this.berekenKansK(this.staafjesPanel.getGrensRechts());
-			kans = (double)(int)(kans*10000)/10000.0;
+			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 	}
@@ -340,12 +343,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String kansLabelRechtsTekst() {
 		if(this.tweeGrenzen) {
 			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
-			kans = (double)(int)(kans*10000)/10000.0;
+			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X>" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		else {
 			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
-			kans = (double)(int)(kans*10000)/10000.0;
+			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X\u2265" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		
@@ -391,18 +394,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Update de view
 	 */
-	public void vernieuw() {
-		if (!(nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#')) {
-			this.nString = Integer.toString(this.n);
+	public void vernieuw() {		
+		if(!(this.nInvoer.isBreuk() || this.nInvoer.isRandomInput())) {
+			this.nInvoer.setInput(Integer.toString(this.n));
 		}
-		if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
-			this.pString = Double.toString(this.p);
+		if(!(this.pInvoer.isBreuk() || this.pInvoer.isRandomInput())) {
+			this.pInvoer.setInput(Double.toString(this.p));
 		}
 				
-		this.nText.setText(this.nString);
+		this.nText.setText(this.nInvoer.getInput());
 		this.nText.setEditable(this.nVeranderbaar);
 		
-		this.pText.setText(this.pString);
+		this.pText.setText(this.pInvoer.getInput());
 		this.pText.setEditable(this.pVeranderbaar);
 		
 		
@@ -647,6 +650,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Verwerk een verandering in het nTextField
 	 */
+	/*
 	private void nTextUpdate() {
 		this.nString = this.nText.getText();
 		try {
@@ -661,9 +665,31 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
 	}
+	*/
+	
+	private void nTextUpdate() {
+		BVInvoer invoer = new BVInvoer(this.nText.getText());
+		if(invoer.isValidIntInput()) {
+			this.nInvoer.setInput(this.nText.getText());
+			if(!this.nInvoer.isRandomInput()) {
+				try {
+					this.setN((int)Math.round(Double.parseDouble(this.nInvoer.getInput())));
+				}
+				catch (NumberFormatException e){
+					System.out.println("NumberFormatException in nTextUpdate! " + e.toString());
+				}
+			}
+			this.staafjesPanel.bepaalGrenzenMetSlider();
+		}
+		else {
+			this.nText.setText(this.nInvoer.getInput());
+		}
+		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+	}
 	/**
 	 * Verwerk een verandering in het pTextField
 	 */
+	/*
 	private void pTextUpdate() {
 		this.pString = this.pText.getText();
 		try {
@@ -677,6 +703,36 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		this.setSlider(this.pSlider, this.p);
 	}
+	*/
+	private void pTextUpdate() {
+		BVInvoer invoer = new BVInvoer(this.pText.getText());
+		if(invoer.isValidDoubleInput()) {
+			this.pInvoer.setInput(this.pText.getText());
+			if(!this.pInvoer.isRandomInput()) {
+				if(!this.pInvoer.isBreuk()) {
+					try {
+						this.p = Double.parseDouble(this.pInvoer.getInput());
+					}
+					catch (NumberFormatException e){
+						System.out.println("NumberFormatException in pTextUpdate! " + e.toString());
+					}
+				}
+				else {
+					try {
+						this.p = Double.parseDouble(this.pInvoer.getTellerString()) / Double.parseDouble(this.pInvoer.getNoemerString());
+					}
+					catch (NumberFormatException e) {
+						System.out.println("NumberFormatException in pTextUpdate! " + e.toString());
+					}
+				}
+			}
+		}
+		else {
+			this.pText.setText(this.pInvoer.getInput());
+		}
+		this.setSlider(this.pSlider, this.p);
+	}
+	
 	public void focusGained(FocusEvent e) {
 		//niet nodig, implementatie voor interface
 	}
@@ -701,9 +757,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (arg0.getSource() == this.nSlider) {
 			this.setN((int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN));
 			this.staafjesPanel.bepaalGrenzenMetSlider();
+			if(!this.nInvoer.isRandomInput()) {
+				this.nInvoer.setInput(Integer.toString(this.n));
+			}
+			if(arg0.getActionCommand().equals("stop")) {
+				this.staafjesPanel.updateSuccessenSliderPosition();
+			}
 		}		
 		if (arg0.getSource() == this.pSlider) {
 			this.p = this.getPercentageFromSlider(this.pSlider);
+			if(!this.pInvoer.isRandomInput()) {
+				this.pInvoer.setInput(Double.toString(this.p));
+			}
 		}
 		if (arg0.getSource() == this.grenzenBox) {
 			this.tweeGrenzen = this.grenzenBox.isSelected();
@@ -821,8 +886,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("nVeranderbaar", new Boolean(this.nVeranderbaar));
 		h.put("pVeranderbaar", new Boolean(this.pVeranderbaar));
 		
-		h.put("nString", this.nString);
-		h.put("pString", this.pString);
+		h.put("nInvoer", this.nInvoer.getInput());
+		h.put("pInvoer", this.pInvoer.getInput());
 		
 		h.put("showNSlider", new Boolean(this.showNSlider));
 		h.put("showPSlider", new Boolean(this.showPSlider));
@@ -869,11 +934,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (b.containsKey("pVeranderbaar")) {
 			this.pVeranderbaar = ((Boolean)b.get("pVeranderbaar")).booleanValue();
 		}
-		if (b.containsKey("nString")) {
-			this.nString = (String)b.get("nString");
+		if (b.containsKey("nInvoer")) {
+			this.nInvoer = new BVInvoer((String)b.get("nInvoer"));
 		}
-		if (b.containsKey("pString")) {
-			this.pString = (String)b.get("pString");
+		if (b.containsKey("pInvoer")) {
+			this.pInvoer = new BVInvoer((String)b.get("pInvoer"));
 		}
 		if (b.containsKey("showNSlider")) {
 			this.showNSlider = ((Boolean)b.get("showNSlider")).booleanValue();
@@ -994,6 +1059,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.setState(b);
 		
 		//vul randomvars in en zet textboxes
+		/*
 		if(b.containsKey("nString")) {
 			String nString = new String((String)b.get("nString"));
 			this.nText.setText(nString);
@@ -1008,11 +1074,43 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				this.p = BVInteractiePanel.substitueerRandom(this.p, pString, randomVars, randomValues);
 			}
 		}
+		*/
 		
-		//zet de ..String variabelen goed
-		this.nString = Integer.toString(this.n);
-		this.pString = Double.toString(this.p);
+		if(this.nInvoer.isRandomInput()) {
+			this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, this.nInvoer.getInput(), randomVars, randomValues);
+			this.nInvoer.setInput(Integer.toString(this.n));
+		}
 		
+		if(this.pInvoer.isRandomInput()) {
+			if(!this.pInvoer.isBreuk()) {
+				this.p = BVInteractiePanel.substitueerRandom(this.p, this.pInvoer.getInput(), randomVars, randomValues);
+				this.pInvoer.setInput(Double.toString(this.p));
+			}
+			else {
+				double teller;
+				double noemer;
+				if(BVInvoer.isRandomVar(this.pInvoer.getTellerString())) {
+					teller = BVInteractiePanel.substitueerRandom(this.p, this.pInvoer.getTellerString(), randomVars, randomValues);
+				}
+				else{
+					teller = Double.parseDouble(this.pInvoer.getTellerString());
+				}
+				
+				if(BVInvoer.isRandomVar(this.pInvoer.getNoemerString())) {
+					noemer = BVInteractiePanel.substitueerRandom(1.0, this.pInvoer.getNoemerString(), randomVars, randomValues);
+				}
+				else {
+					noemer = Double.parseDouble(this.pInvoer.getNoemerString());
+				}
+				
+				this.p = teller/noemer;
+				if(this.p > 1.0) { //kansen groter dan 1.0 zijn onzin
+					this.p = 1.0;
+				}
+				this.pInvoer.setInput(Double.toString(teller) + "/" + Double.toString(noemer));
+			}
+		}
+				
 		//update
 		this.vernieuw();
 	}

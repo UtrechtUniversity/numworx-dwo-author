@@ -80,6 +80,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		this.multiplier = 1.0;
 
 		this.addRightSlider();
+		this.updateSuccessenSliderPosition();
 	}
 	
 	/**
@@ -110,6 +111,9 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 	}
 	
+	/**
+	 * @return De modus van de binomiale verdeling
+	 */
 	private int getMode() {
 		if(this.interactiePanel.getP() == 1.0) {
 			return this.interactiePanel.getN();
@@ -119,6 +123,9 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Bepaal hoeveel alle staafjes vergroot moeten worden om het scherm goed te vullen
+	 */
 	private void berekenMultiplier() {
 		int modus = this.getMode();
 		double maxHoogte = this.interactiePanel.berekenKansK(modus);
@@ -343,21 +350,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	private Color bepaalStaafKleur(int k) {
-		/* oude versie, even houden voor evt. verandering
-		if ((this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensLinks) ||
-			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k>= this.grensLinks && k<= this.grensRechts) ||
-			(this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts) ||
-			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensRechts) ||
-			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k==this.grensRechts) ||
-			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.RECHTS && k>=this.grensRechts)) {
-			return this.interactiePanel.STAAFJE_TELT;
-		}
-		else {
-			return this.interactiePanel.STAAFJE_TELT_NIET;
-		}
-		*/
-		
+	private Color bepaalStaafKleur(int k) {		
 		if ((this.tweeGrenzen && k <= this.grensRechts && k >= this.grensLinks) ||
 			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.LINKS && k<=this.grensRechts) ||
 			(!this.tweeGrenzen && this.grenzenOptie == GrenzenOptie.GELIJK && k==this.grensRechts) ||
@@ -428,30 +421,38 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 			
 			super.setBounds(x,y,b,h);
 			this.updateSliderBounds();
-			this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
-			this.successenDoubleSlider.zetStandLinks((int)((this.grensLinks)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
-			this.successenSlider.zetStand((int)((this.grensRechts)*this.staafBreedte) - this.successenSlider.getMinimum());
+			this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts+0.5)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
+			this.successenDoubleSlider.zetStandLinks((int)((this.grensLinks+0.5)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
+			this.successenSlider.zetStand((int)((this.grensRechts+0.5)*this.staafBreedte) - this.successenSlider.getMinimum());
 		}
 		
 		//noteer dat deze bounds zijn gezet
 		this.lastBounds = r;
 		
 	}
-
+	
+	/**
+	 * Zet de slidergrenzen weer midden onder het staafje
+	 */
+	public void updateSuccessenSliderPosition() {
+		this.successenSlider.zetStand((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
+		this.successenDoubleSlider.zetStandRechts((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
+		this.successenDoubleSlider.zetStandLinks((int)((1.0*this.grensLinks+0.5)*this.staafBreedte)+1);
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.successenSlider) {
 			this.bepaalGrenzenMetSlider();
 			if(e.getActionCommand().equals("stop")) {
 				System.out.println("successenSlider: event mouseRelease");
-				this.successenSlider.zetStand((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
+				this.updateSuccessenSliderPosition();
 			}
 		}
 		
 		if(e.getSource() == this.successenDoubleSlider) {
 			this.bepaalGrenzenMetSlider();
 			if(e.getActionCommand().equals("stop")) {
-				this.successenDoubleSlider.zetStandRechts((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
-				this.successenDoubleSlider.zetStandLinks((int)((1.0*this.grensLinks+0.5)*this.staafBreedte)+1);
+				this.updateSuccessenSliderPosition();
 			}
 		}
 		this.interactiePanel.updateKansBalk();

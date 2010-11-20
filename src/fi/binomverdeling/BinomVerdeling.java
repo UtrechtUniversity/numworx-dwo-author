@@ -28,13 +28,17 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	protected SCORM12APIInterface api;
 	private TextField textField;
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		JFrame testframe = new JFrame("testframe");
 		testframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		testframe.setSize(500,500);
 		BVInteractiePanel testpanel = new BVInteractiePanel();
 		testframe.setContentPane(testpanel);
 		testframe.setVisible(true);
+		
+		
+		//BVInvoer invoer = new BVInvoer("5.0/6.0");
+		//System.out.println(invoer.isValidDoubleInput());
 	}
 
 	public BinomVerdeling(Locale language) {
