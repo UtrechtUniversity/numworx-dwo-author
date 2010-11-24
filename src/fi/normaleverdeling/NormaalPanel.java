@@ -151,6 +151,7 @@ public class NormaalPanel extends JPanel implements
     Color areaColor = veryLightPurperBlue;
     Color kansColor = pinkRed;
     Color muLineColor = Color.lightGray;
+    Color sigmaLineColor = Color.gray;    
     
     Graphics ng;
     Graphics og;
@@ -911,7 +912,18 @@ public class NormaalPanel extends JPanel implements
 			muSliderMax = maxMuX;
 
 			zetMuSlider();		
-		
+
+			// zet de grenzen voor de sigmaslider
+			sigmaSliderMin = sigma - sigma / 2;
+			sigmaSliderMax = sigma + sigma / 2;
+			if (sigmaSliderMin < (sigmaMin + NZERO))
+			{	sigmaSliderMin = sigmaMin;
+			}
+			if (sigmaSliderMax > (sigmaMax - NZERO))
+			{	sigmaSliderMax = sigmaMax;
+			}
+			
+/*		
 			if (sigma < (15e-1d - NZERO))
 			{	if ((sigma - 5e-1d) < (sigmaMin + NZERO))
 				{	sigmaSliderMin = sigmaMin;
@@ -936,6 +948,7 @@ public class NormaalPanel extends JPanel implements
 					sigmaSliderMax = sigma + 2;
 				}
 			}
+*/			
 			zetSigmaSlider();
 			
 		}
@@ -952,10 +965,12 @@ public class NormaalPanel extends JPanel implements
 		}
 				
 		// sigmaDecimals aanpassen
-		if (sigma < 5 - NZERO)
+		if (sigma < 10 - NZERO)
 			sigmaDecimals = 2;
-		else
+		else if (sigma < 100 - NZERO)
 			sigmaDecimals = 1;	
+		else
+			sigmaDecimals = 0;		
 		
 
 		sigma = round(sigma, sigmaDecimals);	
@@ -2060,6 +2075,9 @@ if (grensLinks > minMuX + NZERO)
 
 		paintArea(og);
 		paintMuLine(og);
+		
+		paintSigmaLines(og);
+		
 		paintXAxis(og);
 		paintDistribution(og);
 		paintLabels(og);	
@@ -2118,6 +2136,59 @@ if (grensLinks > minMuX + NZERO)
 			g.drawString(muWaarde, bx, by2);	
 		else if (muZichtbaarFigOptie && !lower)	
 			g.drawString(muWaarde, bx, by);	
+		
+	}
+
+	public void paintSigmaLines(Graphics g)
+	{	// left
+	
+		int xStartLeft = xMin + (int) Math.round(
+							(mu - sigma - minMuX) / (maxX - minX) * (xMax - xMin));
+		int xEndLeft = xMin + (int) Math.round(
+						(mu - minMuX) / (maxX - minX) * (xMax - xMin)) - 1;
+						
+		int xStartRight = xEndLeft + 2;
+		
+		int xEndRight = xMin + (int) Math.round(
+							(mu + sigma - minMuX) / (maxX - minX) * (xMax - xMin));
+						
+						
+		double fx = normalDF(mu - sigma);				
+		
+		int y = yMin - (int) Math.round(
+								(fx - minY) / (maxY - minY) * (yMin - yMax));
+
+		String sigmaWaarde = NormaleVerdeling.rb.getString("sigmaTekst") + 
+							 	" = " + UF.format(sigma, sigmaDecimals);
+		
+		int width = theFM.stringWidth(sigmaWaarde);
+		
+		int bxLeft = (xStartLeft + xEndLeft) / 2 - width / 2;
+		int bxRight = (xStartRight + xEndRight) / 2 - width / 2;
+		int by = y + theFM.getHeight();
+
+		if (sigmaZichtbaarFigOptie)
+		{	
+			g.setColor(sigmaLineColor);
+			g.drawLine(xStartLeft, y, xEndLeft, y);
+			g.drawLine(xStartLeft, y, xStartLeft + 5, y - 5);	
+			g.drawLine(xStartLeft, y, xStartLeft + 5, y + 5);		
+			g.drawLine(xEndLeft, y, xEndLeft - 5, y - 5);	
+			g.drawLine(xEndLeft, y, xEndLeft - 5, y + 5);		
+			
+			g.drawLine(xStartRight, y, xEndRight, y);
+			g.drawLine(xStartRight, y, xStartRight + 5, y - 5);	
+			g.drawLine(xStartRight, y, xStartRight + 5, y + 5);		
+			g.drawLine(xEndRight, y, xEndRight - 5, y - 5);	
+			g.drawLine(xEndRight, y, xEndRight - 5, y + 5);					
+
+			g.setColor(Color.black);	
+			if ((bxRight + width) < getSize().width)		
+				g.drawString(sigmaWaarde, bxRight, by);
+			else
+				g.drawString(sigmaWaarde, bxLeft, by);
+		}
+
 		
 	}
 
@@ -3513,6 +3584,53 @@ if (grensLinks > minMuX + NZERO)
 	    
 	    h.put("kanskeuze", new Integer(kansKeuze));
 	    h.put("berekenkeuze", new Integer(berekenKeuze));
+/*
+	    h.put("kanslinksoptie", new Boolean(kansLinksOptie));
+		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
+		h.put("tweegrenzenoptie", new Boolean(tweeGrenzenOptie));	    	    	    
+		
+		h.put("berekenbaarZichtbaar", new Boolean(berekenbaarZichtbaar));		
+	    h.put("muberekenbaaroptie", new Boolean(muBerekenbaarOptie));		
+	    h.put("sigmaberekenbaaroptie", new Boolean(sigmaBerekenbaarOptie));			    
+	    
+	    h.put("muvastoptie", new Boolean(muVastOptie));		
+	    h.put("sigmavastoptie", new Boolean(sigmaVastOptie));
+	    
+	    h.put("muSliderOptie", new Boolean(muSliderOptie));
+		h.put("sigmaSliderOptie", new Boolean(sigmaSliderOptie));
+		h.put("grensSliderOptie", new Boolean(grensSliderOptie));	
+		h.put("kansSliderOptie", new Boolean(kansSliderOptie));	
+		
+		h.put("muZichtbaarOptie", new Boolean(muZichtbaarOptie));
+		h.put("sigmaZichtbaarOptie", new Boolean(sigmaZichtbaarOptie));
+		h.put("grensZichtbaarOptie", new Boolean(grensZichtbaarOptie));	
+		h.put("kansZichtbaarOptie", new Boolean(kansZichtbaarOptie));	
+		
+		h.put("muZichtbaarFigOptie", new Boolean(muZichtbaarFigOptie));
+		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
+		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
+		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
+*/	    
+		return h;
+	}
+
+	public Hashtable getEditState()
+	{	
+		String muString = "";
+		String sigmaString = "";
+		String grensString = "";
+		String grensLinksString = "";
+		String grensRechtsString = "";
+		String kansString = "";
+		
+		muString = muTextField.getText();
+		sigmaString = sigmaTextField.getText();
+		grensString = grensTextField.getText();
+		grensLinksString = grensLinksTextField.getText();
+		grensRechtsString = grensRechtsTextField.getText();
+		kansString = kansTextField.getText();
+		
+	    Hashtable h = getState();
 
 	    h.put("kanslinksoptie", new Boolean(kansLinksOptie));
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
@@ -3539,28 +3657,7 @@ if (grensLinks > minMuX + NZERO)
 		h.put("sigmaZichtbaarFigOptie", new Boolean(sigmaZichtbaarFigOptie));
 		h.put("grensZichtbaarFigOptie", new Boolean(grensZichtbaarFigOptie));	
 		h.put("kansZichtbaarFigOptie", new Boolean(kansZichtbaarFigOptie));	
-	    
-		return h;
-	}
 
-	public Hashtable getEditState()
-	{	
-		String muString = "";
-		String sigmaString = "";
-		String grensString = "";
-		String grensLinksString = "";
-		String grensRechtsString = "";
-		String kansString = "";
-		
-		muString = muTextField.getText();
-		sigmaString = sigmaTextField.getText();
-		grensString = grensTextField.getText();
-		grensLinksString = grensLinksTextField.getText();
-		grensRechtsString = grensRechtsTextField.getText();
-		kansString = kansTextField.getText();
-		
-	    Hashtable h = getState();
-	    
 	    h.put("muString", muString);
 	    h.put("sigmaString", sigmaString);
 	    h.put("grensString", grensString);
