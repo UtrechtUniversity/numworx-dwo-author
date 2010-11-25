@@ -6,10 +6,11 @@ import java.awt.event.*;
 import java.applet.Applet;
 import fi.beans.grnuminput.*;
 
+import javax.swing.*;
 
-public class TekenApplet extends Applet 
+public class TekenApplet extends JApplet 
 {
-	 Regelaar rg;
+	Regelaar rg;
 	Tekenblad tb;
 	private AnimatieBeheerder ab;
 	private MuisBeheerder mb;
@@ -21,26 +22,28 @@ public class TekenApplet extends Applet
 	// initalisatie
 	//-----------------------------------------------------------------------------------------
 	public void init()
-	{	tb = new Tekenblad(this);
+	{	
+		tb = new Tekenblad(this);
 		//rg = new Regelaar(this);
-		this.setLayout(new BorderLayout(0,0));
+		this.setLayout(new BorderLayout(0, 0));
+		
 		initializing = true;
 		initialiseer();							// wordt geimplementeerd in leerlingprogramma
 		initializing = false;
-		add(tb,"Center");
+		add(tb, "Center");
 		//add(rg,"East");
 		
-		if(trb!=null)							//
+		if (trb != null)						//
 		{	tb.meldTraceBeheerder(trb);			//
 		}										//
-		if(trb!=null && ab!=null)				//
+		if (trb != null && ab != null)			//
 		{	trb.meldAnimatieBeheerder(ab);		//
-			ab.meldTraceBeheerder(trb);			//de verschillende objecten leren elkaar kennen
+			ab.meldTraceBeheerder(trb);			// de verschillende objecten leren elkaar kennen
 		}										//
-		if(mb!=null && ab!=null)				//
+		if (mb != null && ab != null)			//
 		{	mb.meldAnimatieBeheerder(ab);		// 
 		}										//
-		if(trb!=null && mb!=null)				//
+		if (trb != null && mb != null)			//
 		{	trb.meldMuisBeheerder(mb);			//
 		}										//
 	}												
@@ -48,13 +51,13 @@ public class TekenApplet extends Applet
 	//deze methoden kunnen alleen worden gebruikt in  "initialiseer()" van leerling-applet
 	//-------------------------------------------------------------------------------------------
 	public void maakAnimatieMogelijk()					
-	{	if(initializing)						 
+	{	if (initializing)						 
 		{	ab = new AnimatieBeheerder(this);	
-			add(ab,"North");					
+			add(ab, "North");					
 		}										
 	}											
 	public void maakMuisActieMogelijk()
-	{	if(initializing) 
+	{	if (initializing) 
 		{	mb = new MuisBeheerder(this);
 			tb.addMouseListener(mb);
 			tb.addMouseMotionListener(mb);
@@ -72,23 +75,42 @@ public class TekenApplet extends Applet
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de muishandler en  doorgegeven aan MuisBeheerder mb
 	//-------------------------------------------------------------------------------------------
-	public int geefSleepdx(){return mb.geefSleepdx();}
-	public int geefSleepdy(){return mb.geefSleepdy();}
-	public int geefDrukx(){return mb.geefDrukx();}
-	public int geefDruky(){return mb.geefDruky();}
+	public int geefSleepdx()
+	{	return mb.geefSleepdx();
+	}
+	public int geefSleepdy()
+	{	return mb.geefSleepdy();
+	}
+	public int geefDrukx()
+	{	return mb.geefDrukx();
+	}
+	public int geefDruky()
+	{	return mb.geefDruky();
+	}
 
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de animatiehandler en doorgegeven aan AnimatieBeheerder ab
 	//-------------------------------------------------------------------------------------------
-	public void pauze(int millisec){ab.pauze(millisec);}
-	public boolean animatieStatus(){if (ab!=null)return ab.animatieStatus();else return false;}
+	public void pauze(int millisec)
+	{	ab.pauze(millisec);
+	}
+	public boolean animatieStatus()
+	{	if (ab != null)
+			return ab.animatieStatus();
+		else 
+			return false;
+	}
 
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de animatiehandler en muishandlers en doogegeven aan 
 	//Tekenblad
 	//-------------------------------------------------------------------------------------------
-	public void tekenOpnieuw(){tb.tekenOpnieuw();}
-	public void tekenErbij(){tb.tekenErbij();}
+	public void tekenOpnieuw()
+	{	tb.tekenOpnieuw();
+	}
+	public void tekenErbij()
+	{	tb.tekenErbij();
+	}
 	
   	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "initialiseer" en doorgegeven aan Tekenblad tb (of 
@@ -109,33 +131,33 @@ public class TekenApplet extends Applet
 	//-------------------------------------------------------------------------------------------
  	public void links(double dHoek)
 	{	tb.mat.draai(dHoek);
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("links("+Integer.toString((int)Math.rint(dHoek))+")");
+		if (trb != null && trb.geefTraceStatus())
+			trb.volgendeMethode("links(" + Integer.toString((int) Math.rint(dHoek)) + ")");
 	}
   	public void rechts(double dHoek)
 	{	tb.mat.draai(-dHoek);		
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("rechts("+Integer.toString((int)Math.rint(dHoek))+")");
+		if( trb != null && trb.geefTraceStatus())
+			trb.volgendeMethode("rechts(" + Integer.toString((int) Math.rint(dHoek)) + ")");
 	}
 	public void vooruit(double dy)
-	{	tb.naarVolgendPunt(0,-dy);	
-		if(trb!=null)
-		trb.volgendeMethode("vooruit("+Integer.toString((int)Math.rint(dy))+")");
+	{	tb.naarVolgendPunt(0, -dy);	
+		if (trb!=null)
+			trb.volgendeMethode("vooruit(" + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void stapy(double dy)
-	{	tb.naarVolgendPunt(0,-dy);		
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("stapy("+Integer.toString((int)Math.rint(dy))+")");
+	{	tb.naarVolgendPunt(0, -dy);		
+		if (trb != null && trb.geefTraceStatus())
+			trb.volgendeMethode("stapy(" + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void stapx(double dx)
 	{	tb.naarVolgendPunt(dx,0);		
 		if(trb!=null && trb.geefTraceStatus())
 		trb.volgendeMethode("stapx("+Integer.toString((int)Math.rint(dx))+")");
 	}
-	public void stap(double dx,double dy)
-	{	tb.naarVolgendPunt(dx,-dy);
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("stap("+Integer.toString((int)Math.rint(dx))+","+Integer.toString((int)Math.rint(dy))+")");
+	public void stap(double dx, double dy)
+	{	tb.naarVolgendPunt(dx, -dy);
+		if (trb != null && trb.geefTraceStatus())
+			trb.volgendeMethode("stap(" + Integer.toString((int)Math.rint(dx)) + "," + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void penAan()
 	{	tb.penAan();							
@@ -179,13 +201,13 @@ public class TekenApplet extends Applet
 	}
 	public void vulAan(int r, int g, int b)
 	{	tb.vulAan(r, g, b);	
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("vulAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+		if (trb != null && trb.geefTraceStatus())
+		 trb.volgendeMethode("vulAan(" + Integer.toString(r) + Integer.toString(g) + Integer.toString(b) + ")");
 	}
 	public void vulUit()
 	{	tb.vulUit();							
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("vulUit()");
+		if (trb != null && trb.geefTraceStatus())
+			trb.volgendeMethode("vulUit()");
 	}
 	public Polygon geefVlak()
 	{	return tb.geefVlak();
@@ -196,16 +218,22 @@ public class TekenApplet extends Applet
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden geimplemeteerd in het leerlingenprogramma
 	//-------------------------------------------------------------------------------------------
-	public void tekenprogramma(){}
-	public void initialiseer(){}
-	public void animatie(){}
-	public void muisSleepActie(){}
-	public void muisDrukActie(){}
-	public void muisLosActie(){}
+	public void tekenprogramma()
+	{}
+	public void initialiseer()
+	{}
+	public void animatie()
+	{}
+	public void muisSleepActie()
+	{}
+	public void muisDrukActie()
+	{}
+	public void muisLosActie()
+	{}
 	//public void invoerVarActie(InvoerVariabele iv){}
 }		
 	
-class Regelaar extends Panel
+class Regelaar extends JPanel
 {	
 	private TekenApplet eigenaar;
 	private GridBagLayout gridbag;
@@ -246,13 +274,13 @@ class Regelaar extends Panel
 	// wordt gebruikt door de tracebeheerder om de InvoerVariabelen tijdens de trace uit te zetten
 	//-----------------------------------------------------------------------------------------
 	public void setEnableInvVars(boolean b)
-	{	for(int i=0 ; i<aantalInvoerVars ; i++)
+	{	for (int i = 0; i < aantalInvoerVars; i++)
 		{	invoerComponenten[i].setEnabled(b);
 		}
 	}
 }
 
-class Tekenblad extends Canvas
+class Tekenblad extends JPanel//Canvas
 {
 	private int breedte,hoogte;
 	private Punt beginpunt,eindpunt,startpunt;
@@ -263,10 +291,13 @@ class Tekenblad extends Canvas
 	private TekenApplet eigenaar;
 	private TraceBeheerder trb;
 	private boolean pen, vul;
-  	private Color penkleur,vulkleur,achtergrondkleur;
+  	private Color penkleur, vulkleur, achtergrondkleur;
 	  
 	public Tekenblad(TekenApplet ap)
-	{	achtergrondkleur = Color.white;
+	{	
+		setLayout(null);
+		
+		achtergrondkleur = Color.white;
 		veelvlak = new Polygon();
 		eigenaar = ap;
 		mat = new Matrix2D();					// zorgt voor de tekenrichting
@@ -279,21 +310,28 @@ class Tekenblad extends Canvas
 	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
 	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
 	//zorgt "tekenOpnieuw()" of "tekenErbij()" hiervoor. "TekenOpImage()" zorgt voor het vullen 
-	//van de image, metbehulp van het door de leerlingen geimplementeerde "tekenprogramma()",
+	//van de image, met behulp van het door de leerlingen geimplementeerde "tekenprogramma()",
 	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
 	//-------------------------------------------------------------------------------------------
-  	public void paint(Graphics g)
-  	{ 	if(im==null)
+  	public void paintComponent(Graphics g)
+  	{ 	if (im == null)
 		{	breedte = getSize().width;
-			hoogte = getSize().height;	
+			hoogte = getSize().height;
+			
+//System.out.println("b = " + breedte);
+//System.out.println("h = " + hoogte);
+			
 			//double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
 			///mat.initialiseer(0,startschaal);	
-			startpunt = new Punt(breedte/2,hoogte/2);
- 			im = createImage(breedte,hoogte);
+			startpunt = new Punt(breedte / 2, hoogte / 2);
+ 			im = createImage(breedte, hoogte);
   			gIm = im.getGraphics();
 			tekenOpImage(true);
+			
+			//super.paint(gIm);
 		}
-    	if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
+    	if (trb == null || !trb.geefTraceStatus())
+    		g.drawImage(im, 0, 0, null);
   	}
 	  
   	public void tekenOpImage(boolean wis)
@@ -301,11 +339,14 @@ class Tekenblad extends Canvas
     	eindpunt = new Punt(beginpunt);
     	mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
-    	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
-    	penAan(0,0,0);
+    	if (wis)
+    		gIm.fillRect(0, 0, breedte, hoogte);
+    	penAan(0, 0, 0);
 		vul = false;
     	vulkleur = Color.black;
     	eigenaar.tekenprogramma();
+    	
+    	paintComponents(gIm);
 	}
 	public void zetStart()
 	{	beginpunt = new Punt(startpunt);
@@ -317,20 +358,24 @@ class Tekenblad extends Canvas
  	void tekenOpnieuw()
 	{	tekenOpImage(true);
 		Graphics g = getGraphics();
-		if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
+		if (trb == null || !trb.geefTraceStatus())
+			g.drawImage(im, 0, 0, null);
 	}
   	void tekenErbij()
 	{	tekenOpImage(false);
 		Graphics g = getGraphics();
-		if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
+		if (trb == null || !trb.geefTraceStatus())
+			g.drawImage(im, 0, 0, null);
 	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad om de lijnen en vlakken te tekenen
 	//-------------------------------------------------------------------------------------------
-	void naarVolgendPunt(double dx,double dy)
-	{	eindpunt = mat.geefVolgendPunt(beginpunt,dx,dy);
-		if(pen)gIm.drawLine((int)beginpunt.x,(int)beginpunt.y,(int)eindpunt.x,(int)eindpunt.y);
-		if(vul) veelvlak.addPoint((int)beginpunt.x,(int)beginpunt.y);
+	void naarVolgendPunt(double dx, double dy)
+	{	eindpunt = mat.geefVolgendPunt(beginpunt, dx, dy);
+		if (pen)
+			gIm.drawLine((int) beginpunt.x,(int) beginpunt.y,(int) eindpunt.x,(int) eindpunt.y);
+		if (vul)
+			veelvlak.addPoint((int) beginpunt.x,(int) beginpunt.y);
 		beginpunt.x = eindpunt.x;
 		beginpunt.y = eindpunt.y;
 	}
@@ -338,7 +383,8 @@ class Tekenblad extends Canvas
 	{	gIm.setColor(vulkleur);
 		gIm.fillPolygon(veelvlak);
 		gIm.setColor(penkleur);
-		if(pen)gIm.drawPolygon(veelvlak);
+		if (pen)
+			gIm.drawPolygon(veelvlak);
 	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door de TraceBeheerder
@@ -350,15 +396,15 @@ class Tekenblad extends Canvas
 	void tekenCursor()
 	{	Polygon cursor = new Polygon();
 		Punt p;
-		p = mat.geefVolgendPunt(beginpunt,10,0);
-		cursor.addPoint((int)p.x,(int)p.y);
-		p = mat.geefVolgendPunt(p,-10,-10);
-		cursor.addPoint((int)p.x,(int)p.y);
-		p = mat.geefVolgendPunt(p,-10,10);
-		cursor.addPoint((int)p.x,(int)p.y);
-		gIm.setColor(new Color(255,255,0));
+		p = mat.geefVolgendPunt(beginpunt, 10, 0);
+		cursor.addPoint((int) p.x,(int) p.y);
+		p = mat.geefVolgendPunt(p, -10, -10);
+		cursor.addPoint((int) p.x,(int) p.y);
+		p = mat.geefVolgendPunt(p, -10, 10);
+		cursor.addPoint((int) p.x,(int) p.y);
+		gIm.setColor(new Color(255, 255, 0));
 		gIm.fillPolygon(cursor);
-		gIm.setColor(new Color(0,0,255));
+		gIm.setColor(new Color(0, 0, 255));
 		gIm.drawPolygon(cursor);
 	}
  	//-------------------------------------------------------------------------------------------
@@ -379,7 +425,7 @@ class Tekenblad extends Canvas
 	}
 	void penAan(int r, int g, int b)
 	{	pen = true;
-		penkleur = new Color(r,g,b);
+		penkleur = new Color(r, g, b);
 		gIm.setColor(penkleur);
 	}
 	void penUit()
@@ -401,7 +447,7 @@ class Tekenblad extends Canvas
 	}
 	void vulAan(int r, int g, int b)
 	{	vul = true;	
-		vulkleur = new Color(r,g,b);
+		vulkleur = new Color(r, g, b);
 		veelvlak = new Polygon();
 	}
 	void vulUit()
@@ -412,7 +458,7 @@ class Tekenblad extends Canvas
 	{	achtergrondkleur = maakKleur(kl);
 	}
 	void achtergrondkleur(int r, int g, int b)
-	{	achtergrondkleur = new Color(r,g,b);
+	{	achtergrondkleur = new Color(r, g, b);
 	}
 	Polygon geefVlak()							// geeft de laatst getekende Polygon
 	{	return veelvlak;
@@ -421,7 +467,7 @@ class Tekenblad extends Canvas
 	{	return beginpunt;
 	}
 	void schrijf(String s)
-	{	gIm.drawString(s, (int)beginpunt.x, (int)beginpunt.y);
+	{	gIm.drawString(s, (int) beginpunt.x, (int) beginpunt.y);
 	}
  	//-------------------------------------------------------------------------------------------
 	//deze methode wordt gebruikt een kleur in de vorm van een string om te zetten in een Color
@@ -444,7 +490,7 @@ class Tekenblad extends Canvas
 }
 
 
-class AnimatieBeheerder extends Panel implements ActionListener, Runnable
+class AnimatieBeheerder extends JPanel implements ActionListener, Runnable
 {
   	private Button animatieknop;
   	private Thread animatie;
@@ -550,8 +596,8 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 	//afhandeling van de muis gebeurtenissen 
 	//-------------------------------------------------------------------------------------------
 	public void mousePressed(MouseEvent e)
-	{	if(actief)
-		{	if(ab!=null && ab.animatieStatus())
+	{	if (actief)
+		{	if (ab != null && ab.animatieStatus())
 			{	animatieWasAan = true;
 				ab.onderbreekAnimatie();
 			}
@@ -564,21 +610,20 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(actief)
+	{	if (actief)
 		{	int x = e.getX();
 			int y = e.getY();
 			dx = x - laatstex;
-			dy = laatstey -y;
+			dy = laatstey - y;
 			eigenaar.muisSleepActie();
 			laatstex = x;
 			laatstey = y;	
 		}
 	}
 	public void mouseReleased(MouseEvent e)
-	{	if(animatieWasAan)
+	{	if (animatieWasAan)
 		{	animatieWasAan = false;
 			ab.beginAnimatie();
-			
 		}
 		eigenaar.muisLosActie();
 	}
@@ -618,7 +663,7 @@ class Matrix2D
 	//-------------------------------------------------------------------------------------------
 	
 	private double  starthoek, hoek, radHoek, cosHoek, sinHoek, startschaal, schaal;
-	private double a11,a12,a21,a22;
+	private double a11, a12, a21, a22;
  	private static double pi = Math.PI;
 
 	public Matrix2D()
@@ -636,7 +681,7 @@ class Matrix2D
 	{	initialiseer(hk, schl);
 	}
 	
-	public void initialiseer(double hk,double schl)
+	public void initialiseer(double hk, double schl)
 	{	starthoek = hk;
 		startschaal = schl;
 		initialiseer();
@@ -649,32 +694,32 @@ class Matrix2D
 	}
 	
 	private void maakMatrix()
-	{	a11 = schaal*cosHoek;
-		a12 = -schaal*sinHoek;
-		a21 = schaal*sinHoek;
-		a22 = schaal*cosHoek;
+	{	a11 =  schaal * cosHoek;
+		a12 = -schaal * sinHoek;
+		a21 =  schaal * sinHoek;
+		a22 =  schaal * cosHoek;
 	}
 	
 	public void draai(double dHoek)
 	{ 	hoek = hoek - dHoek;
-		radHoek = hoek/180*pi;
-		cosHoek = (double)Math.cos(radHoek);
-		sinHoek = (double)Math.sin(radHoek);
+		radHoek = hoek / 180 * pi;
+		cosHoek = (double) Math.cos(radHoek);
+		sinHoek = (double) Math.sin(radHoek);
 		maakMatrix();
 	}
 	
 	public void schaal(double s)
-	{	schaal = startschaal*s;
+	{	schaal = startschaal * s;
 		maakMatrix();
 	}
 	
 	public Punt geefVolgendPunt(Punt beginp, double dx, double dy)
-	{	Punt eindp = new Punt(beginp.x + a11*dx + a12*dy , beginp.y + a21*dx + a22*dy);
+	{	Punt eindp = new Punt(beginp.x + a11 * dx + a12 * dy , beginp.y + a21 * dx + a22 * dy);
 		return eindp;
 	}	
 }	
 
-class TraceBeheerder extends Panel implements ActionListener,Runnable
+class TraceBeheerder extends JPanel implements ActionListener,Runnable
 {
 	private Button stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
 	private TextField methodeVeld;

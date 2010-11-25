@@ -16,9 +16,14 @@ public class MainFrame extends Frame   implements WindowListener, AppletStub, Ap
 	{	this.applet = applet;
 		addWindowListener(this);
 		applet.setStub( this );
-		setLayout( new BorderLayout() );
-		add( "Center", applet );
+
+		//setLayout( new BorderLayout() );
+		//add( "Center", applet );
+		
+		setLayout(null);
 		applet.setSize( width, height );
+		add(applet);
+		
 		applet.init();
 		applet.start();
 	}
