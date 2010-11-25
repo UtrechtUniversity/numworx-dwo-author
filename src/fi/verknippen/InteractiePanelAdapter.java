@@ -175,9 +175,19 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		return 0;
 	}
 	public boolean isCorrect()
-	{
+	{	if (applet == null)
+			return true;
+		
 		if (((Verknippen) applet).taakNummer == 1)
-			return ((Verknippen) applet).drawingPanel.figureIsRectangle;
+		{	
+			if (((Verknippen) applet).drawingPanel != null)
+			
+				return ((Verknippen) applet).drawingPanel.figureIsRectangle;
+			
+			else 
+				return true;
+		
+		}
 		else	
 			return true;
 	}
