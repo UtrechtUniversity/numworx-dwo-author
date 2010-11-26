@@ -831,12 +831,12 @@ if (scormed)
 			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
 			tekenOpnieuw();
         
-			if (!beginFig)
+			if (beginFig)
 				vlakdelen[0].nieuw = false;
 		}
 		else
 		{
-//---->
+
 			if (!beginFig)
 			{	maakFractiel(beginFractielType, beginFigAantalPz, dummyX, startY, new Color(230, 230, 230));
 			}
@@ -920,14 +920,17 @@ if (scormed)
 		{	vlakdelenVector = (Vector) h.get("vlakdelenVector");
 			tempAantalVlakdelen = vlakdelenVector.size();
 		}
+		
+		if (tempAantalVlakdelen == 0)
+			return;
 
-		int[] tempVolgorde = new int[aantalVlakdelen];
-		Vlakdeel[] tempVlakdelen = new Vlakdeel[aantalVlakdelen];
+		int[] tempVolgorde = new int[tempAantalVlakdelen];
+		Vlakdeel[] tempVlakdelen = new Vlakdeel[tempAantalVlakdelen];
 		for (int i = 0; i < tempAantalVlakdelen; i++)
 		{	
 			Hashtable hv = (Hashtable) vlakdelenVector.elementAt(i);
 			
-			int fractielType = 0;
+			int fractielType = 3;
 			if (hv.contains("fractielType"))
 				fractielType = ((Integer) hv.get("fractielType")).intValue();
 			int aantalPunten = 4;
@@ -952,9 +955,63 @@ if (scormed)
 			}
 			tempVlakdelen[i] = vlakdelen[0];	
 			aantalVlakdelen = 0;
+			
+			double orientatie = 0;
+			if (hv.contains("orientatie"))
+				orientatie = ((Double) hv.get("orientatie")).doubleValue();
+			tempVlakdelen[i].orientatie = orientatie;
+
+			boolean nieuw = true;
+			if (hv.contains("nieuw"))
+				nieuw = ((Boolean) hv.get("nieuw")).booleanValue();
+			tempVlakdelen[i].nieuw = nieuw;
+			
+			int beginnummer = 0;
+			if (hv.contains("beginnummer"))
+				beginnummer = ((Integer) hv.get("beginnummer")).intValue();
+			tempVlakdelen[i].beginnummer = beginnummer;
+			
+			int volgorde = 0; 
+			if (hv.contains("volgorde"))
+				volgorde = ((Integer) hv.get("volgorde")).intValue();
+			tempVolgorde[i] = volgorde;
+			
+			Vector hoekpuntenVector = new Vector();
+			if (hv.contains("hoekpuntenVector"))
+				hoekpuntenVector = ((Vector) hv.get("hoekpuntenVector"));
+			for (int j = 0; j < hoekpuntenVector.size(); j++)
+			{	Punt punt = (Punt) hoekpuntenVector.elementAt(j);
+				tempVlakdelen[i].hoekpunten[j] = new HoekpuntMoz(punt.x, punt.y);
+				
+			}		
+			
 
 		}
-		
+/*		
+		aantalVlakdelen = invoer.readShort(); OK
+		for (int i = 0 ; i < aantalVlakdelen; i++)
+		{	int aantalPunten = invoer.readShort(); OK
+			double posx = invoer.readDouble(); OK
+			double posy = invoer.readDouble(); OK
+			double orientatie = invoer.readDouble(); OK
+			boolean nieuw = invoer.readBoolean(); OK
+			int beginnummer = invoer.readShort(); OK
+			int rood = invoer.readByte() + 128; OK
+			int groen = invoer.readByte() + 128; OK
+			int blauw = invoer.readByte() + 128; OK
+			volgorde[i] = invoer.readShort(); OK
+			Color c = new Color(rood,groen,blauw); OK
+			vlakdelen[i] = new Vlakdeel(this, aantalPunten, posx, posy, c); OK
+			vlakdelen[i].orientatie = orientatie; OK
+			vlakdelen[i].beginnummer = beginnummer; OK
+			vlakdelen[i].nieuw = nieuw; OK
+			for (int j = 0; j < aantalPunten + 1; j++)
+			{	double x = invoer.readDouble(); Ok
+				double y = invoer.readDouble(); OK 
+				vlakdelen[i].hoekpunten[j] = new HoekpuntMoz(x,y); OK
+			}
+		}
+*/				
 		
 	}
 
@@ -976,6 +1033,13 @@ if (scormed)
 			hv.put("beginnummer", new Integer(vlakdelen[i].beginnummer));
 			hv.put("volgorde", new Integer(volgorde[i]));
 			
+			Vector hoekpuntenVector = new Vector();
+			for (int j = 0; j < vlakdelen[i].aantalPunten + 1; j++)
+			{	hoekpuntenVector.addElement(
+					new Punt(vlakdelen[i].hoekpunten[j].x, vlakdelen[i].hoekpunten[j].y));	
+			}
+			hv.put("hoekpuntenVector", hoekpuntenVector);
+			
 			vlakdelenVector.addElement(hv);
 		}
 
@@ -995,8 +1059,8 @@ if (scormed)
 			uitvoer.writeByte((byte)(vlakdelen[i].kleur.getBlue()-128)); OK
 			uitvoer.writeShort((short)(volgorde[i])); OK
 			for(int j=0 ; j<vlakdelen[i].aantalPunten+1 ; j++)
-			{	uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].x);
-				uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].y);
+			{	uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].x); OK
+				uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].y); OK
 			}
 */	    
 
