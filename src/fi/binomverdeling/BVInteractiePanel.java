@@ -18,6 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -59,7 +60,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JPanel kansBalk;
 	private JPanel zuidBalk;
 	private JPanel noordBalk;
-	
+		
 	private Slider nSlider;
 	private Slider pSlider;
 	private JCheckBox grenzenBox;
@@ -114,7 +115,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.nInvoer = new BVInvoer("30");
 		this.pInvoer = new BVInvoer("0.5");
 		
-		this.hypergeometrisch = false;
+		this.hypergeometrisch = true;
 		this.M = 0;
 		
 		this.grenzenOptie = GrenzenOptie.LINKS;
@@ -264,7 +265,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.noordBalk.add(this.noordRechts);
                 
         this.plaatsComponentenNoordBalk(this.getWidth());
-        super.add(this.noordBalk, BorderLayout.NORTH);               
+        super.add(this.noordBalk, BorderLayout.NORTH);
+        
 	}
 	
 	/**
@@ -311,7 +313,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private String kansLabelLinksTekst() {
 		if(this.tweeGrenzen) {
 			int grens = this.staafjesPanel.getGrensLinks();
-			double kans = this.berekenKansCumulatief(0, grens-1);
+			double kans;
+			if (this.hypergeometrisch) {
+				kans = this.berekenHyperKansCumulatief(0, grens-1);
+			}
+			else {
+				kans = this.berekenKansCumulatief(0, grens-1);
+			}
 			int hulp = (int) Math.round(10000*kans);
 			kans = (double)hulp/10000;
 			
@@ -319,7 +327,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		else {
 			int grens = this.staafjesPanel.getGrensRechts();
-			double kans = this.berekenKansCumulatief(0, grens);
+			double kans;
+			if (this.hypergeometrisch) {
+				kans = this.berekenHyperKansCumulatief(0, grens);
+			}
+			else {
+				kans = this.berekenKansCumulatief(0, grens);
+			}
 			int hulp = (int)Math.round(10000*kans);
 			kans = (double)hulp/10000;
 			
@@ -329,12 +343,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private String kansLabelMiddenTekst() {
 		if(this.tweeGrenzen) {
-			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
+			double kans;
+			if(this.hypergeometrisch) {
+				kans = this.berekenHyperKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
+			}
+			else {
+				kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensLinks(), this.staafjesPanel.getGrensRechts());
+			}
 			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(" + this.staafjesPanel.getGrensLinks() + "\u2264X\u2264" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		else {
-			double kans = this.berekenKansK(this.staafjesPanel.getGrensRechts());
+			double kans;
+			if(this.hypergeometrisch) {
+				kans = this.berekenHyperKansK(this.staafjesPanel.getGrensRechts());
+			}
+			else {
+				kans = this.berekenKansK(this.staafjesPanel.getGrensRechts());
+			}
 			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X=" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
@@ -342,16 +368,27 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private String kansLabelRechtsTekst() {
 		if(this.tweeGrenzen) {
-			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
+			double kans;
+			if(this.hypergeometrisch) {
+				kans = this.berekenHyperKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
+			}
+			else {
+				kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts()+1, this.n);
+			}
 			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X>" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
 		else {
-			double kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
+			double kans;
+			if (this.hypergeometrisch) {
+				kans = this.berekenHyperKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
+			}
+			else {
+				kans = this.berekenKansCumulatief(this.staafjesPanel.getGrensRechts(), this.n);
+			}
 			kans = (double)Math.round(kans*10000)/10000.0;
 			return "P(X\u2265" + this.staafjesPanel.getGrensRechts() + ") = " + kans;
 		}
-		
 	}
 	
 	private void plaatsComponentenNoordBalk(int breedte) {
@@ -1110,7 +1147,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				this.pInvoer.setInput(Double.toString(teller) + "/" + Double.toString(noemer));
 			}
 		}
-				
+		this.pInvoer.haalPuntNulWeg();
+		
 		//update
 		this.vernieuw();
 	}

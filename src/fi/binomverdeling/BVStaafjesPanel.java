@@ -204,7 +204,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 		if (!this.showYAs) {
 			lengte += BVStaafjesPanel.YASBALKWIDTH;
-			x = 0;
+			x = -6;
 		}
 			
 		this.successenDoubleSlider.zetLengte(lengte);

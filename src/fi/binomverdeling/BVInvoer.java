@@ -30,8 +30,12 @@ public class BVInvoer {
 	 * Kijkt of de invoer een breuk is
 	 */
 	public boolean isBreuk() {
+		boolean inRandomDeel = false;
 		for(char c:this.input.toCharArray()) {
-			if(c == '/') {
+			if (c == '#') {
+				inRandomDeel = !inRandomDeel;
+			}
+			else if(c == '/' && !inRandomDeel) {
 				return true;
 			}
 		}
@@ -67,8 +71,12 @@ public class BVInvoer {
 	 */
 	public String getTellerString() {
 		int i;
+		boolean inRandomDeel = false;
 		for (i = 0; i < this.input.length(); i++) {
-			if (this.input.charAt(i) == '/') {
+			if (this.input.charAt(i) == '#') {
+				inRandomDeel = !inRandomDeel;
+			}
+			else if (!inRandomDeel && this.input.charAt(i) == '/') {
 				break;
 			}
 		}		
@@ -80,8 +88,12 @@ public class BVInvoer {
 	 */
 	public String getNoemerString() {
 		int i;
+		boolean inRandomDeel = false;
 		for (i = 0; i < this.input.length(); i++) {
-			if (this.input.charAt(i) == '/') {
+			if (this.input.charAt(i) == '#') {
+				inRandomDeel = !inRandomDeel;
+			}
+			else if (!inRandomDeel && this.input.charAt(i) == '/') {
 				break;
 			}
 		}		
@@ -136,7 +148,7 @@ public class BVInvoer {
 	/**
 	 * kijkt of de niet-breuk substring valide positieve integer invoer is
 	 */
-	private boolean isValidIntSubstring(String substring) {
+	private static boolean isValidIntSubstring(String substring) {
 		if(BVInvoer.isRandomVar(substring)) {
 			return true;
 		}
@@ -157,7 +169,7 @@ public class BVInvoer {
 	 */
 	public boolean isValidIntInput() {
 		if(!this.isBreuk()) {
-			return this.isValidIntSubstring(this.input);
+			return BVInvoer.isValidIntSubstring(this.input);
 		}
 		else {
 			return false;
@@ -174,6 +186,34 @@ public class BVInvoer {
 		}
 		else {
 			return BVInvoer.isRandomVar(this.getTellerString()) || BVInvoer.isRandomVar(this.getNoemerString());
+		}
+	}
+	
+	/**
+	 * haal de .0 achter getallen weg
+	 */
+	public void haalPuntNulWeg() {
+		if(this.isBreuk()) {
+			if(!BVInvoer.isRandomVar(this.getTellerString())) {
+				double temp = Double.parseDouble(this.getTellerString());
+				if((double)(int)temp == temp) {
+					this.setInput(Integer.toString((int)temp) + "/" + this.getNoemerString());
+				}
+			}
+			if(!BVInvoer.isRandomVar(this.getNoemerString())) {
+				double temp = Double.parseDouble(this.getTellerString());
+				if((double)(int)temp == temp) {
+					this.setInput(this.getTellerString() + "/" + Integer.toString((int)temp));
+				}
+			}
+		}
+		else {
+			if(!BVInvoer.isRandomVar(this.input)) {
+				double temp = Double.parseDouble(this.input);
+				if((double)(int)temp == temp) {
+					this.setInput(Integer.toString((int)temp));
+				}
+			}
 		}
 	}
 }

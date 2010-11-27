@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.FIButton;
@@ -18,7 +18,6 @@ import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.Scorm;
 import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormEditComponentIF;
-import fi.beans.scorm.ScormMainFrame;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
@@ -29,16 +28,14 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private TextField textField;
 
 	public static void main(String[] args) {
+		
 		JFrame testframe = new JFrame("testframe");
 		testframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		testframe.setSize(500,500);
 		BVInteractiePanel testpanel = new BVInteractiePanel();
+		
 		testframe.setContentPane(testpanel);
 		testframe.setVisible(true);
-		
-		
-		//BVInvoer invoer = new BVInvoer("5.0/6.0");
-		//System.out.println(invoer.isValidDoubleInput());
 	}
 
 	public BinomVerdeling(Locale language) {
