@@ -15,7 +15,7 @@ import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
-import javax.swing.*;
+//import javax.swing.*;
 
 public class MozArch extends TekenApplet implements ActionListener,
 													ScormAppletIF, WiskOpdrParamEditApplet				
@@ -124,11 +124,11 @@ if (scormed)
 }
 		
 		if (fractielen)
-		{	infoButton = new InfoButton("Fractielen",new String[]{"versie-info: 20101125",
+		{	infoButton = new InfoButton("Fractielen",new String[]{"versie-info: 20101130",
 		    						    "Copyright: Peter Boon, Huub Nilwik"});
 		}
 		else
-		{	infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20101125",			  						    "Copyright: Peter Boon"});
+		{	infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20101130",			  						    "Copyright: Peter Boon"});
 		}
 		
 		if (fractielen)
@@ -136,7 +136,7 @@ if (scormed)
 
 		veldXMax = getSize().width - rightWidth;
 		
-		JPanel panel = new JPanel();
+		Panel panel = new Panel();
 		if (fractielen)
 		{	panel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
 			veldYMax = getSize().height - 10;
@@ -147,7 +147,8 @@ if (scormed)
 		}
 		panel.setLayout(null);
 		panel.setBackground(new Color(220, 220, 160));
-		tb.add(panel);
+		add(panel);
+		//tb.add(panel);
 		
 		if (fractielen)
 			infoButton.setBounds(5, 4, 40, 20);

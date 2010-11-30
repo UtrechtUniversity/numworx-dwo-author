@@ -6,9 +6,9 @@ import java.awt.event.*;
 import java.applet.Applet;
 import fi.beans.grnuminput.*;
 
-import javax.swing.*;
+//import javax.swing.*;
 
-public class TekenApplet extends JApplet 
+public class TekenApplet extends Applet 
 {
 	Regelaar rg;
 	Tekenblad tb;
@@ -233,7 +233,7 @@ public class TekenApplet extends JApplet
 	//public void invoerVarActie(InvoerVariabele iv){}
 }		
 	
-class Regelaar extends JPanel
+class Regelaar extends Panel
 {	
 	private TekenApplet eigenaar;
 	private GridBagLayout gridbag;
@@ -280,7 +280,7 @@ class Regelaar extends JPanel
 	}
 }
 
-class Tekenblad extends JPanel//Canvas
+class Tekenblad extends Canvas
 {
 	private int breedte,hoogte;
 	private Punt beginpunt,eindpunt,startpunt;
@@ -295,7 +295,7 @@ class Tekenblad extends JPanel//Canvas
 	  
 	public Tekenblad(TekenApplet ap)
 	{	
-		setLayout(null);
+		//setLayout(null);
 		
 		achtergrondkleur = Color.white;
 		veelvlak = new Polygon();
@@ -313,7 +313,7 @@ class Tekenblad extends JPanel//Canvas
 	//van de image, met behulp van het door de leerlingen geimplementeerde "tekenprogramma()",
 	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
 	//-------------------------------------------------------------------------------------------
-  	public void paintComponent(Graphics g)
+  	public void paint(Graphics g)
   	{ 	if (im == null)
 		{	breedte = getSize().width;
 			hoogte = getSize().height;
@@ -346,7 +346,7 @@ class Tekenblad extends JPanel//Canvas
     	vulkleur = Color.black;
     	eigenaar.tekenprogramma();
     	
-    	paintComponents(gIm);
+ //   	paintComponents(gIm);
 	}
 	public void zetStart()
 	{	beginpunt = new Punt(startpunt);
@@ -490,7 +490,7 @@ class Tekenblad extends JPanel//Canvas
 }
 
 
-class AnimatieBeheerder extends JPanel implements ActionListener, Runnable
+class AnimatieBeheerder extends Panel implements ActionListener, Runnable
 {
   	private Button animatieknop;
   	private Thread animatie;
@@ -719,7 +719,7 @@ class Matrix2D
 	}	
 }	
 
-class TraceBeheerder extends JPanel implements ActionListener,Runnable
+class TraceBeheerder extends Panel implements ActionListener,Runnable
 {
 	private Button stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
 	private TextField methodeVeld;
