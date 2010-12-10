@@ -15,10 +15,10 @@ import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -31,10 +31,10 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  */
 public class BVInteractiePanel extends JPanel implements InteractiePanel, ActionListener, FocusListener {
 	private double p; //succeskans
-	private int n; //aantal herhalingen
+	private int n; //aantal herhalingen (BV), grootte greep (Hypergeometrisch)
 	
-	private int M; //voor hypergeometrisch
-	private int greep; //voor hypergeometrisch
+	private int M; //voor hypergeometrisch, succesgevallen in populatie
+	private int populatie; //voor hypergeometrisch, grootte van populatie
 	
 	//private int successen;
 	//private int grensLinks; //gebruikt als voor tweegrenzen is gekozen
@@ -50,6 +50,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JLabel nLabel;
 	private JTextField pText;
 	private JLabel pLabel;
+	private JTextField MText;
+	private JLabel MLabel;
+	private JTextField populatieText;
+	private JLabel populatieLabel;
 	private JRadioButton kansRadioLinks;
 	private JRadioButton kansRadioMidden;
 	private JRadioButton kansRadioRechts;
@@ -63,20 +67,31 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 	private Slider nSlider;
 	private Slider pSlider;
+	private Slider MSlider;
+	private Slider populatieSlider;
+	
 	private JCheckBox grenzenBox;
-	private JCheckBox hypergeometrischBox;
+	private JComboBox hyperComboBox;
 	
 	public static final int N_MIN = 0; //min en max van n voor de sliders
 	public static final int N_MAX = 100;
+	public static final int POPULATIE_MIN = 1;
+	public static final int POPULATIE_MAX = 100;
 	
 	private boolean nVeranderbaar;
 	private boolean pVeranderbaar;
+	private boolean MVeranderbaar; //TODO in editpanel
+	private boolean populatieVeranderbaar; //TODO in editpanel
 	
 	private boolean showNSlider;
 	private boolean showPSlider;
+	private boolean showMSlider;
+	private boolean showPopulatieSlider;
 	
 	private BVInvoer nInvoer;
 	private BVInvoer pInvoer;
+	private BVInvoer MInvoer;
+	private BVInvoer populatieInvoer;
 	
 	//private String nString;
 	//private String pString;
@@ -94,8 +109,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public final Color LABEL_ACTIEF = new Color(200,227,255);
 	
 	private JPanel noordLinks;
-	private JPanel noordRechts;
+	private JPanel noordMidden;
+	private JPanel noordRechtsBV;
+	private JPanel noordRechtsHyp;
 	public final int NOORDBALKHEIGHT = 43;
+	public final int NOORDBALKGAP = 4;
+	public final int COMBOBOXHEIGHT = 20;
 	
 	private Rectangle lastBounds; //om bij te houden wanneer de maat bounds veranderen
 	
@@ -111,20 +130,27 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		this.n = 30;
 		this.p = 0.5;
+		this.M = 50;
+		this.populatie = 100;
 		
 		this.nInvoer = new BVInvoer("30");
 		this.pInvoer = new BVInvoer("0.5");
+		this.MInvoer = new BVInvoer("50");
+		this.populatieInvoer = new BVInvoer("100");
 		
-		this.hypergeometrisch = true;
-		this.M = 0;
+		this.hypergeometrisch = false;
 		
 		this.grenzenOptie = GrenzenOptie.LINKS;
 		
 		this.nVeranderbaar = true;
 		this.pVeranderbaar = true;
+		this.populatieVeranderbaar = true;
+		this.MVeranderbaar = true;
 		
 		this.showNSlider = true;
 		this.showPSlider = true;
+		this.showMSlider = true;
+		this.showPopulatieSlider = true;
 				
 		this.showNoordBalk = true;
 		this.showTweeGrenzenKeuze = true;
@@ -193,12 +219,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
 		
-		this.hypergeometrischBox = new JCheckBox("Hypergeometrisch", false);
-		this.hypergeometrischBox.setFont(this.font);
-		this.hypergeometrischBox.setBackground(Color.WHITE);
-		this.hypergeometrischBox.addActionListener(this);
-		//TODO Bezig met hyperBox, moet in zuidBalk er bij
-		
 		this.zuidBalk.add(this.grenzenBox);
 		
 		super.add(this.zuidBalk, BorderLayout.SOUTH);
@@ -211,33 +231,61 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.pText.setActionCommand("ptextupdate");
         this.pText.setText(Double.toString(this.p));
         
+        this.MText = new JTextField(4);
+        this.MText.setActionCommand("Mtextupdate");
+        this.MText.setText(Integer.toString(this.M));
+        
+        this.populatieText = new JTextField(4);
+        this.populatieText.setActionCommand("populatietextupdate");
+        this.populatieText.setText(Integer.toString(this.populatie));
+        
         this.nLabel = new JLabel("n = ");
         this.nLabel.setFont(this.font);
         this.nLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        this.MLabel = new JLabel("M = ");
+        this.MLabel.setFont(this.font);
+        this.MLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        this.populatieLabel = new JLabel("populatie = ");
+        this.populatieLabel.setFont(this.font);
+        this.populatieLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         this.pLabel = new JLabel("p = ");
         this.pLabel.setFont(this.font);
         this.pLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         
         this.nText.addActionListener(this);
         this.nText.addFocusListener(this);
+        this.MText.addActionListener(this);
+        this.MText.addFocusListener(this);
+        this.populatieText.addActionListener(this);
+        this.populatieText.addFocusListener(this);
         this.pText.addActionListener(this);
         this.pText.addFocusListener(this);
         
         this.nSlider = new Slider(100,50);
         this.pSlider = new Slider(100,50);
+        this.MSlider = new Slider(100,50);
+        this.populatieSlider = new Slider(100,50);
         
         this.nSlider.zetLengte(this.getWidth()/3);
         this.pSlider.zetLengte(this.getWidth()/3);
-        this.nSlider.setLocation(0, 0);
-        this.pSlider.setLocation(this.getWidth()/3 * 2, 0);
+        this.MSlider.zetLengte(this.getWidth()/3);
+        this.populatieSlider.zetLengte(this.getWidth()/3);
         
-        this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
-        this.setSlider(this.pSlider, this.p);
+        //this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+        //this.setSlider(this.pSlider, this.p);
         
         this.nSlider.addActionListener(this);
         this.pSlider.addActionListener(this);
+        this.MSlider.addActionListener(this);
+        this.populatieSlider.addActionListener(this);
                 
         //maak het paneel wat in het NORTH gebied van de BorderLayout komt
+        String[] keuzes = {"Binomiaal", "Hypergeometrisch"};
+        this.hyperComboBox = new JComboBox(keuzes);
+        this.hyperComboBox.setBounds(0,0,this.getWidth(), this.COMBOBOXHEIGHT);
+        this.hyperComboBox.setBackground(this.LABEL_BACKGROUND);
+        this.hyperComboBox.addActionListener(this);
+        
         this.noordBalk = new JPanel();
         this.noordBalk.setLayout(null);
         this.noordBalk.setPreferredSize(new Dimension(this.getWidth(), this.NOORDBALKHEIGHT));
@@ -247,22 +295,46 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.noordLinks.setBackground(this.LABEL_BACKGROUND);
         this.noordLinks.setLayout(null);
         this.noordLinks.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
-        this.noordLinks.setLocation(0, 0);
+        this.noordLinks.setLocation(0, this.COMBOBOXHEIGHT);
         this.noordLinks.add(this.nSlider);
         this.noordLinks.add(this.nLabel);
         this.noordLinks.add(this.nText);
         
-        this.noordRechts = new JPanel();
-        this.noordRechts.setBackground(this.LABEL_BACKGROUND);
-        this.noordRechts.setLayout(null);
-        this.noordRechts.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
-        this.noordRechts.setLocation(this.getWidth()/3, 0);
-        this.noordRechts.add(this.pSlider);
-        this.noordRechts.add(this.pLabel);
-        this.noordRechts.add(this.pText);
+        this.noordMidden = new JPanel();
+        this.noordMidden.setBackground(this.LABEL_BACKGROUND);
+        this.noordMidden.setLayout(null);
+        this.noordMidden.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
+        this.noordMidden.setLocation(this.getWidth()/3, this.COMBOBOXHEIGHT);
+        this.noordMidden.add(this.MSlider);
+        this.noordMidden.add(this.MLabel);
+        this.noordMidden.add(this.MText);
         
+        this.noordRechtsHyp = new JPanel();
+        this.noordRechtsHyp.setBackground(this.LABEL_BACKGROUND);
+        this.noordRechtsHyp.setLayout(null);
+        this.noordRechtsHyp.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
+        this.noordRechtsHyp.setLocation(this.getWidth()/3*2, this.COMBOBOXHEIGHT);
+        this.noordRechtsHyp.add(this.populatieSlider);
+        this.noordRechtsHyp.add(this.populatieLabel);
+        this.noordRechtsHyp.add(this.populatieText);
+        
+        this.noordRechtsBV = new JPanel();
+        this.noordRechtsBV.setBackground(this.LABEL_BACKGROUND);
+        this.noordRechtsBV.setLayout(null);
+        this.noordRechtsBV.setSize(this.getWidth()/3, this.NOORDBALKHEIGHT);
+        this.noordRechtsBV.setLocation(this.getWidth()/3*2, this.COMBOBOXHEIGHT);
+        this.noordRechtsBV.add(this.pSlider);
+        this.noordRechtsBV.add(this.pLabel);
+        this.noordRechtsBV.add(this.pText);
+        
+        this.noordBalk.add(this.hyperComboBox);
         this.noordBalk.add(this.noordLinks);
-        this.noordBalk.add(this.noordRechts);
+        this.noordBalk.add(this.noordRechtsBV);
+        
+        this.noordRechtsHyp.setVisible(false);
+        this.noordMidden.setVisible(false);
+        this.noordBalk.add(this.noordRechtsHyp);
+        this.noordBalk.add(this.noordMidden);
                 
         this.plaatsComponentenNoordBalk(this.getWidth());
         super.add(this.noordBalk, BorderLayout.NORTH);
@@ -392,20 +464,34 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	private void plaatsComponentenNoordBalk(int breedte) {
-		this.noordLinks.setBounds(0,0,breedte/3,this.NOORDBALKHEIGHT);
-		this.noordRechts.setBounds(2*breedte/3,0,breedte/3,this.NOORDBALKHEIGHT);
+		this.noordBalk.setPreferredSize(new Dimension(breedte, this.NOORDBALKHEIGHT+this.COMBOBOXHEIGHT));
+		
+		this.noordLinks.setBounds(0,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordMidden.setBounds(breedte/3+(int)(0.5*this.NOORDBALKGAP),this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordRechtsBV.setBounds(2*breedte/3+this.NOORDBALKGAP,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordRechtsHyp.setBounds(2*breedte/3+this.NOORDBALKGAP,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		
+		this.hyperComboBox.setBounds(0, 0, breedte, this.COMBOBOXHEIGHT);
 		
 		//noordBalkLinks:
 		this.nSlider.setLocation(0, 28);
 		this.nLabel.setBounds((int)(breedte/6.0)-this.nLabel.getPreferredSize().width -10, 10, this.nLabel.getPreferredSize().width, 15);
 		this.nText.setBounds((int)(breedte/6.0) -10, 7, this.nText.getPreferredSize().width, 20);
 		
-		//noordBalkRechts
+		//noordBalkMidden:
+		this.MSlider.setLocation(0,28);
+		this.MLabel.setBounds((int)(breedte/6.0)-this.MLabel.getPreferredSize().width -10, 10, this.MLabel.getPreferredSize().width, 15);
+		this.MText.setBounds((int)(breedte/6.0) -10, 7, this.MText.getPreferredSize().width, 20);
+		
+		//noordBalkRechtsBV
 		this.pSlider.setLocation(0, 28);
 		this.pLabel.setBounds((int)(breedte/6.0)-this.pLabel.getPreferredSize().width -10, 10, this.pLabel.getPreferredSize().width, 15);
 		this.pText.setBounds((int)(breedte/6.0) -10, 7, this.pText.getPreferredSize().width, 20);
-				
-		System.out.println(this.noordRechts.getComponentCount());
+		
+		//noordBalkRechtsHyp
+		this.populatieSlider.setLocation(0, 28);
+		this.populatieLabel.setBounds((int)(breedte/6.0)-this.populatieLabel.getPreferredSize().width -10, 10, this.populatieLabel.getPreferredSize().width, 15);
+		this.populatieText.setBounds((int)(breedte/6.0) -10, 7, this.populatieText.getPreferredSize().width, 20);
 	}
 	
 	/**
@@ -438,6 +524,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(!(this.pInvoer.isBreuk() || this.pInvoer.isRandomInput())) {
 			this.pInvoer.setInput(Double.toString(this.p));
 		}
+		if(!(this.populatieInvoer.isBreuk() || this.populatieInvoer.isRandomInput())) {
+			this.populatieInvoer.setInput(Integer.toString(this.populatie));
+		}
+		if(!(this.MInvoer.isBreuk() || this.MInvoer.isRandomInput())) {
+			this.MInvoer.setInput(Integer.toString(this.M));
+		}
 				
 		this.nText.setText(this.nInvoer.getInput());
 		this.nText.setEditable(this.nVeranderbaar);
@@ -445,11 +537,20 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pText.setText(this.pInvoer.getInput());
 		this.pText.setEditable(this.pVeranderbaar);
 		
+		this.populatieText.setText(this.populatieInvoer.getInput());
+		this.populatieText.setEditable(this.populatieVeranderbaar);
+		
+		this.MText.setText(this.MInvoer.getInput());
+		this.MText.setEditable(this.MVeranderbaar);
 		
 		this.nSlider.setVisible(this.showNSlider);
 		this.pSlider.setVisible(this.showPSlider);
+		this.populatieSlider.setVisible(this.showPopulatieSlider);
+		this.MSlider.setVisible(this.showMSlider);
 		this.nSlider.setEditable(this.nVeranderbaar);
 		this.pSlider.setEditable(this.pVeranderbaar);
+		this.populatieSlider.setEditable(this.populatieVeranderbaar);
+		this.MSlider.setEditable(this.MVeranderbaar);
 
 		this.updateKansBalk();
 		
@@ -511,7 +612,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public double berekenHyperKansK(int k) {
-		return BVInteractiePanel.binom(this.M, k) * BVInteractiePanel.binom(this.n - this.greep, this.n - k) / BVInteractiePanel.binom(this.n, this.greep);
+		return BVInteractiePanel.binom(this.M, k) * BVInteractiePanel.binom(this.populatie - this.M, this.n - k) / BVInteractiePanel.binom(this.populatie, this.n);
 	}
 	
 	public double berekenHyperKansCumulatief(int van, int tot) {
@@ -524,6 +625,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	public double getP() {
 		return this.p;
+	}
+	public int getM() {
+		return this.M;
+	}
+	public int getPopulatie() {
+		return this.populatie;
 	}
 	
 	public void setP(double p) {
@@ -600,6 +707,24 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setSelected(tweeGrenzen);
 		this.staafjesPanel.setTweeGrenzen(tweeGrenzen);
 		this.updateKansBalk();
+	}
+	
+	private void setHypergeometrisch(boolean hypergeometrisch) {
+		this.hypergeometrisch = hypergeometrisch;
+		if(this.hypergeometrisch) {
+			this.noordRechtsBV.setVisible(false);
+			this.noordRechtsHyp.setVisible(true);
+			this.noordMidden.setVisible(true);
+		}
+		else {
+			this.noordMidden.setVisible(false);
+			this.noordRechtsHyp.setVisible(false);
+			this.noordRechtsBV.setVisible(true);
+		}
+	}
+	
+	public boolean getHypergeometrisch() {
+		return this.hypergeometrisch;
 	}
 	
 	public void setShowNoordBalk (boolean show) {
@@ -686,24 +811,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	/**
 	 * Verwerk een verandering in het nTextField
-	 */
-	/*
-	private void nTextUpdate() {
-		this.nString = this.nText.getText();
-		try {
-			this.setN(Integer.parseInt(this.nString));
-			this.staafjesPanel.bepaalGrenzenMetSlider();
-		}
-		catch (NumberFormatException e) {
-			//wordt nu gedaan in update
-			//if (!(nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#')) {
-			//	this.nString = Integer.toString(this.n);
-			//}
-		}
-		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
-	}
-	*/
-	
+	 */	
 	private void nTextUpdate() {
 		BVInvoer invoer = new BVInvoer(this.nText.getText());
 		if(invoer.isValidIntInput()) {
@@ -726,21 +834,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Verwerk een verandering in het pTextField
 	 */
-	/*
-	private void pTextUpdate() {
-		this.pString = this.pText.getText();
-		try {
-			this.p = Double.parseDouble(this.pString);
-		}
-		catch (NumberFormatException e) {
-			//wordt nu gedaan in update
-			//if (!(pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#')) {
-			//	this.pString = Double.toString(this.p);
-			//}
-		}
-		this.setSlider(this.pSlider, this.p);
-	}
-	*/
 	private void pTextUpdate() {
 		BVInvoer invoer = new BVInvoer(this.pText.getText());
 		if(invoer.isValidDoubleInput()) {
@@ -770,6 +863,52 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.setSlider(this.pSlider, this.p);
 	}
 	
+	/**
+	 * Verwerk een verandering in het populatieTextField
+	 */
+	private void populatieTextUpdate() {
+		BVInvoer invoer = new BVInvoer(this.populatieText.getText());
+		if(invoer.isValidIntInput()) {
+			this.populatieInvoer.setInput(this.populatieText.getText());
+			if(!this.populatieInvoer.isRandomInput()) {
+				try {
+					this.populatie = ((int)Math.round(Double.parseDouble(this.populatieInvoer.getInput()))); //TODO
+				}
+				catch (NumberFormatException e){
+					System.out.println("NumberFormatException in populatieTextUpdate! " + e.toString());
+				}
+			}
+			this.staafjesPanel.bepaalGrenzenMetSlider();
+		}
+		else {
+			this.populatieText.setText(this.populatieInvoer.getInput());
+		}
+		this.setSlider(this.populatieSlider, (double)(this.populatie)/(double)(BVInteractiePanel.POPULATIE_MAX));
+	}
+	
+	/**
+	 * Verwerk verandering in MTextField
+	 */
+	private void MTextUpdate() {
+		BVInvoer invoer = new BVInvoer(this.MText.getText());
+		if(invoer.isValidIntInput()) {
+			this.MInvoer.setInput(this.MText.getText());
+			if(!this.MInvoer.isRandomInput()) {
+				try {
+					this.M = ((int)Math.round(Double.parseDouble(this.MInvoer.getInput()))); //TODO
+				}
+				catch (NumberFormatException e){
+					System.out.println("NumberFormatException in MTextUpdate! " + e.toString());
+				}
+			}
+			this.staafjesPanel.bepaalGrenzenMetSlider();
+		}
+		else {
+			this.MText.setText(this.MInvoer.getInput());
+		}
+		this.setSlider(this.MSlider, (double)(this.M-BVInteractiePanel.POPULATIE_MIN)/(double)(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN));
+	}
+	
 	public void focusGained(FocusEvent e) {
 		//niet nodig, implementatie voor interface
 	}
@@ -783,6 +922,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.pTextUpdate();
 			this.vernieuw();
 		}
+		if(e.getSource() == this.MText) {
+			this.MTextUpdate();
+			this.vernieuw();
+		}
+		if(e.getSource() == this.populatieText) {
+			this.populatieTextUpdate();
+			this.vernieuw();
+		}
 	}
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().equals("ntextupdate")) {
@@ -790,6 +937,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (arg0.getActionCommand().equals("ptextupdate")) {
 			this.pTextUpdate();
+		}
+		if (arg0.getActionCommand().equals("populatietextupdate")) {
+			this.populatieTextUpdate();
+		}
+		if (arg0.getActionCommand().equals("Mtextupdate")) {
+			this.populatieTextUpdate();
 		}
 		if (arg0.getSource() == this.nSlider) {
 			this.setN((int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN));
@@ -807,6 +960,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				this.pInvoer.setInput(Double.toString(this.p));
 			}
 		}
+		if (arg0.getSource() == this.MSlider) {
+			this.M = (int)(this.getPercentageFromSlider(this.MSlider)*(BVInteractiePanel.POPULATIE_MAX));
+			if(!this.MInvoer.isRandomInput()) {
+				this.MInvoer.setInput(Integer.toString(this.M));
+			}
+		}
+		if(arg0.getSource() == this.populatieSlider) {
+			this.populatie = (int)(this.getPercentageFromSlider(this.populatieSlider)*(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN) + BVInteractiePanel.POPULATIE_MIN);
+			if(!this.populatieInvoer.isRandomInput()) {
+				this.populatieInvoer.setInput(Integer.toString(this.populatie));
+			}
+		}
 		if (arg0.getSource() == this.grenzenBox) {
 			this.tweeGrenzen = this.grenzenBox.isSelected();
 			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
@@ -819,6 +984,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (arg0.getSource() == this.kansRadioRechts) {
 			this.setGrenzenOptie(GrenzenOptie.RECHTS);
+		}
+		if (arg0.getSource() == this.hyperComboBox) {
+			this.setHypergeometrisch(this.hyperComboBox.getSelectedIndex() == 1);
 		}
 		
 		this.vernieuw();
@@ -1050,14 +1218,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			System.out.println("BVInteractiePanel.setBounds(" + x + "," + y + "," + b + "," + h);
 			
 			//resize de sliders
-			this.nSlider.zetLengte(b/3 - 10);
-			//this.nSlider.setLocation(0, 5);
-			this.pSlider.zetLengte(b/3 - 10);
-			//this.pSlider.setLocation(2*b/3, 5);
+			this.nSlider.zetLengte(b/3 - 10 - this.NOORDBALKGAP);
+			this.pSlider.zetLengte(b/3 - 10 - this.NOORDBALKGAP);
+			this.MSlider.zetLengte(b/3 - 10 - this.NOORDBALKGAP);
+			this.populatieSlider.zetLengte(b/3 - 10 - this.NOORDBALKGAP);
 			
 			//zet de sliders weer op de goede stand
 			this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
 			this.setSlider(this.pSlider, this.p);
+			this.setSlider(this.MSlider, (double)(this.M)/(double)(BVInteractiePanel.POPULATIE_MAX));
+			this.setSlider(this.populatieSlider, (double)(this.populatie-BVInteractiePanel.POPULATIE_MIN)/(double)(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN));
 			
 			this.plaatsComponentenNoordBalk(b);
 			

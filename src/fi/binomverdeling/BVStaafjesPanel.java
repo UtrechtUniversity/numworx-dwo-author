@@ -114,7 +114,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	/**
 	 * @return De modus van de binomiale verdeling
 	 */
-	private int getMode() {
+	private int getModeBV() {
 		if(this.interactiePanel.getP() == 1.0) {
 			return this.interactiePanel.getN();
 		}
@@ -123,12 +123,29 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 	}
 	
+	private int getModeHyp() {
+		if(this.interactiePanel.getM() >= this.interactiePanel.getPopulatie()) {
+			return this.interactiePanel.getN();
+		}
+		else {
+			return (int)((this.interactiePanel.getN() + 1) * (this.interactiePanel.getM() + 1)/(this.interactiePanel.getPopulatie()+2));
+		}
+	}
+	
 	/**
 	 * Bepaal hoeveel alle staafjes vergroot moeten worden om het scherm goed te vullen
 	 */
 	private void berekenMultiplier() {
-		int modus = this.getMode();
-		double maxHoogte = this.interactiePanel.berekenKansK(modus);
+		int modus;
+		double maxHoogte;
+		if(!this.interactiePanel.getHypergeometrisch()) {
+			modus = this.getModeBV();
+			maxHoogte = this.interactiePanel.berekenKansK(modus);
+		}
+		else {
+			modus = this.getModeHyp();
+			maxHoogte = this.interactiePanel.berekenHyperKansK(modus);
+		}
 		
 		this.multiplier = 1/(maxHoogte/BVStaafjesPanel.VULHOOGTE);
 	}
@@ -380,9 +397,18 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		
 		//bepaal grootte
 		int x = (int)(k*this.staafBreedte+xOffset);
-		int y = this.getHeight() - (int)(this.interactiePanel.berekenKansK(k)*multiplier*(this.getHeight()-yOffset)+yOffset);
+		int y;
+		int height;
+		if(!this.interactiePanel.getHypergeometrisch()) {
+			y = this.getHeight() - (int)(this.interactiePanel.berekenKansK(k)*multiplier*(this.getHeight()-yOffset)+yOffset);
+			height = (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)*this.multiplier);
+		}
+		else {
+			y = this.getHeight() - (int)(this.interactiePanel.berekenHyperKansK(k)*multiplier*(this.getHeight()-yOffset)+yOffset);
+			height = (int)(this.interactiePanel.berekenHyperKansK(k)*(this.getHeight()-yOffset)*this.multiplier);
+		}
 		int width = (int)((k+1)*this.staafBreedte+xOffset) - (int)(k*this.staafBreedte+xOffset)+1;
-		int height = (int)(this.interactiePanel.berekenKansK(k)*(this.getHeight()-yOffset)*this.multiplier);
+		
 		
 		if(width > 0 && height > 0) {
 			//teken omleining
