@@ -702,6 +702,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private void setHypergeometrisch(boolean hypergeometrisch) {
 		this.hypergeometrisch = hypergeometrisch;
 		if(this.hypergeometrisch) {
+			this.hyperComboBox.setSelectedIndex(1);
+		}
+		else {
+			this.hyperComboBox.setSelectedIndex(0);
+		}
+		if(this.hypergeometrisch) {
 			this.noordRechtsBV.setVisible(false);
 			this.noordRechtsHyp.setVisible(true);
 			this.noordMidden.setVisible(true);
@@ -1134,17 +1140,26 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		h.put("n", new Integer(this.n));
 		h.put("p", new Double(this.p));
+		h.put("M", new Integer(this.M));
+		h.put("populatie", new Integer(this.populatie));
+		
 		h.put("showXAs", new Boolean(this.staafjesPanel.getShowXAs()));
 		h.put("showYAs", new Boolean(this.staafjesPanel.getShowYAs()));
-		
+				
 		h.put("nVeranderbaar", new Boolean(this.nVeranderbaar));
 		h.put("pVeranderbaar", new Boolean(this.pVeranderbaar));
+		h.put("populatieVeranderbaar", new Boolean(this.populatieVeranderbaar));
+		h.put("MVeranderbaar", new Boolean(this.MVeranderbaar));
 		
 		h.put("nInvoer", this.nInvoer.getInput());
 		h.put("pInvoer", this.pInvoer.getInput());
+		h.put("MInvoer", this.MInvoer.getInput());
+		h.put("populatieInvoer", this.populatieInvoer.getInput());
 		
 		h.put("showNSlider", new Boolean(this.showNSlider));
 		h.put("showPSlider", new Boolean(this.showPSlider));
+		h.put("showMSlider", new Boolean(this.showMSlider));
+		h.put("showPopulatieSlider", new Boolean(this.showPopulatieSlider));
 		
 		h.put("grensLinks", new Integer(this.staafjesPanel.getGrensLinks()));
 		h.put("grensRechts", new Integer(this.staafjesPanel.getGrensRechts()));
@@ -1163,6 +1178,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("showNoordBalk", new Boolean(this.showNoordBalk));
 		h.put("showKansBalk", new Boolean(this.showKansBalk));
 		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuze));
+		
+		h.put("hypergeometrisch", new Boolean(this.hypergeometrisch));
 		return h;
 	}
 
@@ -1175,6 +1192,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("p")) {
 			this.p = ((Double)b.get("p")).doubleValue();
+		}
+		if (b.containsKey("M")) {
+			this.M = ((Integer)b.get("M")).intValue();
+		}
+		if (b.containsKey("populatie")) {
+			this.populatie = ((Integer)b.get("populatie")).intValue();
 		}
 		if (b.containsKey("showXAs")) {
 			this.staafjesPanel.setShowXAs(((Boolean)b.get("showXAs")).booleanValue());
@@ -1194,11 +1217,23 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (b.containsKey("pInvoer")) {
 			this.pInvoer = new BVInvoer((String)b.get("pInvoer"));
 		}
+		if (b.containsKey("MInvoer")) {
+			this.MInvoer = new BVInvoer((String)b.get("MInvoer"));
+		}
+		if (b.containsKey("populateInvoer")) {
+			this.populatieInvoer = new BVInvoer((String)b.get("populatieInvoer"));
+		}
 		if (b.containsKey("showNSlider")) {
 			this.showNSlider = ((Boolean)b.get("showNSlider")).booleanValue();
 		}
 		if (b.containsKey("showPSlider")) {
 			this.showPSlider = ((Boolean)b.get("showPSlider")).booleanValue();
+		}
+		if (b.containsKey("showMSlider")) {
+			this.showMSlider = ((Boolean)b.get("showMSlider")).booleanValue();
+		}
+		if (b.containsKey("showPopulatieSlider")) {
+			this.showPopulatieSlider = ((Boolean)b.get("showPopulatieSlider")).booleanValue();
 		}
 		if (b.containsKey("grensLinks")) {
 			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
@@ -1235,8 +1270,15 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(b.containsKey("showTweeGrenzenKeuze")) {
 			this.setShowTweeGrenzenKeuze(((Boolean)b.get("showTweeGrenzenKeuze")).booleanValue());
 		}
-		
+		if(b.containsKey("hypergeometrisch")) {
+			this.setHypergeometrisch(((Boolean)b.get("hypergeometrisch")).booleanValue());
+		}
+
 		this.vernieuw();
+		this.setMSlider();
+		this.setNSlider();
+		this.setPopulatieSlider();
+		this.setPSlider();
 	}
 	
 	public boolean isCorrect() {
