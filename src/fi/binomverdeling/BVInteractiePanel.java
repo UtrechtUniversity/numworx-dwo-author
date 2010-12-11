@@ -642,16 +642,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public int getN() {
 		return this.n;
 	}
-	
-	public void setN(int n) {
-		if(n >= 0) {
-			this.n = n;
-		}
-		this.staafjesPanel.berekenStaafBreedte();
-		this.staafjesPanel.bepaalGrenzenMetSlider();
-		this.vernieuw();
-	}
-	
 	public void setNVeranderbaar(boolean b) {
 		this.nVeranderbaar = b;
 		this.vernieuw();
@@ -740,7 +730,65 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.revalidate();
 		this.repaint();
 	}
+	
+	private void setMSlider() {
+		this.setSlider(this.MSlider, (double)(this.M-BVInteractiePanel.POPULATIE_MIN)/(double)(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN));
+	}
+	
+	private void setNSlider() {
+		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+	}
+	
+	private void setPSlider() {
+		this.setSlider(this.pSlider, this.p);
+	}
+	
+	private void setPopulatieSlider() {
+		this.setSlider(this.populatieSlider, (double)(this.populatie)/(double)(BVInteractiePanel.POPULATIE_MAX));
+	}
+	
+	private void setM(int M) {
+		if (M >= 0) {
+			this.M = M;
+			
+			//kijk of M niet groter wordt dan de gehele populatie
+			if(this.M > this.populatie) {
+				this.setPopulatie(this.M);
+				this.setPopulatieSlider();
+			}
+		}
+	}
+	
+	private void setPopulatie(int populatie) {
+		if (populatie > 0) {
+			this.populatie = populatie;
+			
+			if(this.populatie < this.M) {
+				this.setM(this.populatie);
+				this.setMSlider();
+			}
+			if(this.n > this.populatie) {
+				this.setN(this.populatie);
+				this.setNSlider();
+			}
+		}
+	}
 
+	public void setN(int n) {
+		if(n >= 0) {
+			this.n = n;
+			
+			if(this.n > this.populatie) {
+				this.setPopulatie(this.n);
+				this.setPopulatieSlider();
+			}
+			
+			this.staafjesPanel.berekenStaafBreedte();
+			this.staafjesPanel.bepaalGrenzenMetSlider();
+			this.vernieuw();
+		}
+		
+	}
 	/**
 	 * Verander of de kansenbalk zichtbaar is of niet
 	 * @param show true als kansenbalk zichtbaar moet zijn, anders false
@@ -829,7 +877,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			this.nText.setText(this.nInvoer.getInput());
 		}
-		this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
+		this.setNSlider();
 	}
 	/**
 	 * Verwerk een verandering in het pTextField
@@ -860,7 +908,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			this.pText.setText(this.pInvoer.getInput());
 		}
-		this.setSlider(this.pSlider, this.p);
+		this.setPSlider();
 	}
 	
 	/**
@@ -872,7 +920,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.populatieInvoer.setInput(this.populatieText.getText());
 			if(!this.populatieInvoer.isRandomInput()) {
 				try {
-					this.populatie = ((int)Math.round(Double.parseDouble(this.populatieInvoer.getInput()))); //TODO
+					this.setPopulatie((int)Math.round(Double.parseDouble(this.populatieInvoer.getInput()))); //TODO
 				}
 				catch (NumberFormatException e){
 					System.out.println("NumberFormatException in populatieTextUpdate! " + e.toString());
@@ -883,7 +931,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			this.populatieText.setText(this.populatieInvoer.getInput());
 		}
-		this.setSlider(this.populatieSlider, (double)(this.populatie)/(double)(BVInteractiePanel.POPULATIE_MAX));
+		this.setPopulatieSlider();
 	}
 	
 	/**
@@ -895,7 +943,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.MInvoer.setInput(this.MText.getText());
 			if(!this.MInvoer.isRandomInput()) {
 				try {
-					this.M = ((int)Math.round(Double.parseDouble(this.MInvoer.getInput()))); //TODO
+					this.setM((int)Math.round(Double.parseDouble(this.MInvoer.getInput()))); //TODO
 				}
 				catch (NumberFormatException e){
 					System.out.println("NumberFormatException in MTextUpdate! " + e.toString());
@@ -906,7 +954,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		else {
 			this.MText.setText(this.MInvoer.getInput());
 		}
-		this.setSlider(this.MSlider, (double)(this.M-BVInteractiePanel.POPULATIE_MIN)/(double)(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN));
+		this.setMSlider();
 	}
 	
 	public void focusGained(FocusEvent e) {
@@ -942,7 +990,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.populatieTextUpdate();
 		}
 		if (arg0.getActionCommand().equals("Mtextupdate")) {
-			this.populatieTextUpdate();
+			this.MTextUpdate();
 		}
 		if (arg0.getSource() == this.nSlider) {
 			this.setN((int)(this.getPercentageFromSlider(this.nSlider)*(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN) + BVInteractiePanel.N_MIN));
@@ -961,13 +1009,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 		}
 		if (arg0.getSource() == this.MSlider) {
-			this.M = (int)(this.getPercentageFromSlider(this.MSlider)*(BVInteractiePanel.POPULATIE_MAX));
+			this.setM((int)(this.getPercentageFromSlider(this.MSlider)*(BVInteractiePanel.POPULATIE_MAX)));
 			if(!this.MInvoer.isRandomInput()) {
 				this.MInvoer.setInput(Integer.toString(this.M));
 			}
+			
 		}
 		if(arg0.getSource() == this.populatieSlider) {
-			this.populatie = (int)(this.getPercentageFromSlider(this.populatieSlider)*(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN) + BVInteractiePanel.POPULATIE_MIN);
+			this.setPopulatie((int)(this.getPercentageFromSlider(this.populatieSlider)*(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN) + BVInteractiePanel.POPULATIE_MIN));
 			if(!this.populatieInvoer.isRandomInput()) {
 				this.populatieInvoer.setInput(Integer.toString(this.populatie));
 			}
@@ -1224,10 +1273,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.populatieSlider.zetLengte(b/3 - 10 - this.NOORDBALKGAP);
 			
 			//zet de sliders weer op de goede stand
-			this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
-			this.setSlider(this.pSlider, this.p);
-			this.setSlider(this.MSlider, (double)(this.M)/(double)(BVInteractiePanel.POPULATIE_MAX));
-			this.setSlider(this.populatieSlider, (double)(this.populatie-BVInteractiePanel.POPULATIE_MIN)/(double)(BVInteractiePanel.POPULATIE_MAX - BVInteractiePanel.POPULATIE_MIN));
+			this.setMSlider();
+			this.setNSlider();
+			this.setPopulatieSlider();
+			this.setPSlider();
 			
 			this.plaatsComponentenNoordBalk(b);
 			
