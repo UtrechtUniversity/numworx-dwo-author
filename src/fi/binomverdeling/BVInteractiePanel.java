@@ -99,7 +99,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private boolean showNoordBalk;
 	private boolean showTweeGrenzenKeuze;
 	private boolean showKansBalk;
-		
+	private boolean showHyperKeuze;
+	
 	private Font font;
 	private FontMetrics fontMetrics;
 	
@@ -139,6 +140,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.populatieInvoer = new BVInvoer("100");
 		
 		this.hypergeometrisch = false;
+		this.showHyperKeuze = true;
 		
 		this.grenzenOptie = GrenzenOptie.LINKS;
 		
@@ -464,14 +466,22 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	private void plaatsComponentenNoordBalk(int breedte) {
-		this.noordBalk.setPreferredSize(new Dimension(breedte, this.NOORDBALKHEIGHT+this.COMBOBOXHEIGHT));
+		int comboHeight;
+		if(this.showHyperKeuze) {
+			comboHeight = this.COMBOBOXHEIGHT;
+		}
+		else {
+			comboHeight = 0;
+		}
 		
-		this.noordLinks.setBounds(0,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
-		this.noordMidden.setBounds(breedte/3+(int)(0.5*this.NOORDBALKGAP),this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
-		this.noordRechtsBV.setBounds(2*breedte/3+this.NOORDBALKGAP,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
-		this.noordRechtsHyp.setBounds(2*breedte/3+this.NOORDBALKGAP,this.COMBOBOXHEIGHT,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordBalk.setPreferredSize(new Dimension(breedte, this.NOORDBALKHEIGHT+comboHeight));
 		
-		this.hyperComboBox.setBounds(0, 0, breedte, this.COMBOBOXHEIGHT);
+		this.noordLinks.setBounds(0,comboHeight,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordMidden.setBounds(breedte/3+(int)(0.5*this.NOORDBALKGAP),comboHeight,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordRechtsBV.setBounds(2*breedte/3+this.NOORDBALKGAP,comboHeight,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		this.noordRechtsHyp.setBounds(2*breedte/3+this.NOORDBALKGAP,comboHeight,breedte/3-this.NOORDBALKGAP,this.NOORDBALKHEIGHT);
+		
+		this.hyperComboBox.setBounds(0, 0, breedte, comboHeight);
 		
 		//noordBalkLinks:
 		this.nSlider.setLocation(0, 28);
@@ -650,6 +660,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pVeranderbaar = b;
 		this.vernieuw();
 	}
+	public void setMVeranderbaar(boolean b) {
+		this.MVeranderbaar = b;
+		this.vernieuw();
+	}
+	public void setPopulatieVeranderbaar(boolean b) {
+		this.populatieVeranderbaar = b;
+		this.vernieuw();
+	}
 	public void setShowXAs(boolean b) {
 		this.staafjesPanel.setShowXAs(b);
 	}
@@ -679,7 +697,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.kansRadioRechts.setBackground(this.LABEL_ACTIEF);
 		}
 	}
-	
+	public void setShowMSlider(boolean b) {
+		this.showMSlider = b;
+		this.vernieuw();
+	}
+	public void setShowPopulatieSlider(boolean b) {
+		this.showPopulatieSlider = b;
+		this.vernieuw();
+	}
 	public void setShowNSlider(boolean b) {
 		this.showNSlider = b;
 		this.vernieuw();
@@ -723,6 +748,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		return this.hypergeometrisch;
 	}
 	
+	public void setShowHyperKeuze(boolean b) {
+		this.showHyperKeuze = b;
+		this.hyperComboBox.setVisible(this.showHyperKeuze);
+		this.plaatsComponentenNoordBalk(this.getWidth());
+	}
+	
 	public void setShowNoordBalk (boolean show) {
 		this.showNoordBalk = show;
 		
@@ -759,8 +790,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			
 			//kijk of M niet groter wordt dan de gehele populatie
 			if(this.M > this.populatie) {
-				this.setPopulatie(this.M);
-				this.setPopulatieSlider();
+				if(this.populatieVeranderbaar) {
+					this.setPopulatie(this.M);
+					this.setPopulatieSlider();
+				}
+				else {
+					this.M = this.populatie;
+					this.setMSlider();
+				}
 			}
 		}
 	}
@@ -769,14 +806,21 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (populatie > 0) {
 			this.populatie = populatie;
 			
-			if(this.populatie < this.M) {
-				this.setM(this.populatie);
-				this.setMSlider();
+			if((this.populatie < this.M && !this.MVeranderbaar) || (this.populatie < this.n && !this.nVeranderbaar)) {
+				this.populatie = Math.max(this.n, this.M);
+				this.setPopulatieSlider();
 			}
-			if(this.n > this.populatie) {
-				this.setN(this.populatie);
-				this.setNSlider();
+			else {
+				if(this.populatie < this.M) {
+					this.setM(this.populatie);
+					this.setMSlider();
+				}
+				if(this.n > this.populatie) {
+					this.setN(this.populatie);
+					this.setNSlider();
+				}
 			}
+			
 		}
 	}
 
@@ -785,8 +829,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.n = n;
 			
 			if(this.n > this.populatie) {
-				this.setPopulatie(this.n);
-				this.setPopulatieSlider();
+				if(this.populatieVeranderbaar) {
+					this.setPopulatie(this.n);
+					this.setPopulatieSlider();
+				}
+				else {
+					this.n = this.populatie;
+					this.setNSlider();
+				}
 			}
 			
 			this.staafjesPanel.berekenStaafBreedte();
@@ -1178,6 +1228,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("showNoordBalk", new Boolean(this.showNoordBalk));
 		h.put("showKansBalk", new Boolean(this.showKansBalk));
 		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuze));
+		h.put("showHyperKeuze", new Boolean(this.showHyperKeuze));
 		
 		h.put("hypergeometrisch", new Boolean(this.hypergeometrisch));
 		return h;
@@ -1269,6 +1320,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if(b.containsKey("showTweeGrenzenKeuze")) {
 			this.setShowTweeGrenzenKeuze(((Boolean)b.get("showTweeGrenzenKeuze")).booleanValue());
+		}
+		if(b.containsKey("showHyperKeuze")) {
+			this.setShowHyperKeuze(((Boolean)b.get("showHyperKeuze")).booleanValue());
 		}
 		if(b.containsKey("hypergeometrisch")) {
 			this.setHypergeometrisch(((Boolean)b.get("hypergeometrisch")).booleanValue());
