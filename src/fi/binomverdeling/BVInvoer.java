@@ -218,4 +218,17 @@ public class BVInvoer {
 			}
 		}
 	}
+	
+	/**
+	 * override equals
+	 */
+	public boolean equals(Object o) {
+		if(o == null || o.getClass() != BVInvoer.class) {
+			return false;
+		}
+		else {
+			BVInvoer other = (BVInvoer) o;
+			return this.input.equals(other.input);
+		}
+	}
 }
