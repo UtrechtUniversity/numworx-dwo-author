@@ -31,7 +31,9 @@ public class BVInvoer {
 	 */
 	public boolean isBreuk() {
 		boolean inRandomDeel = false;
-		for(char c:this.input.toCharArray()) {
+		char c;
+		for(int i = 0; i < this.input.length(); i++) {
+			c = this.input.charAt(i);
 			if (c == '#') {
 				inRandomDeel = !inRandomDeel;
 			}
