@@ -1,10 +1,11 @@
 package fi.binomverdeling;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Hashtable;
 
 import javax.swing.JCheckBox;
@@ -19,7 +20,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 /**
  * InteractieEditPanel van de Binomiale Verdeling
  */
-public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
+public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener {
 	private JPanel settingsPanel;
 	
 	private BVInteractiePanel interactiePanel;
@@ -46,6 +47,11 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	
 	
 	//nakijkdeel:
+	private BVInvoer nInvoer;
+	private BVInvoer pInvoer;
+	private BVInvoer MInvoer;
+	private BVInvoer populatieInvoer;
+	
 	private JPanel nakijkHelft;
 	private JCheckBox nakijkenBox;
 	
@@ -98,7 +104,7 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.nVeranderbaarBox.setFont(this.font);
 		this.nVeranderbaarBox.addActionListener(this);
 		this.aanpassingenHelft.add(this.nVeranderbaarBox);
-		
+				
 		this.pVeranderbaarBox = new JCheckBox("p veranderbaar", true);
 		this.pVeranderbaarBox.setFont(this.font);
 		this.pVeranderbaarBox.addActionListener(this);
@@ -235,12 +241,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.nField.setText("30");
 		this.nField.setFont(this.font);
 		this.nField.setVisible(false);
+		this.nField.addActionListener(this);
+		this.nField.addFocusListener(this);
 		this.checkNPanel = new JPanel(new GridLayout(1,2));
 		this.checkNPanel.add(this.kijkNNa);
 		this.checkNPanel.add(this.nField);
 		this.checkNPanel.setVisible(false);
 		this.nakijkHelft.add(this.checkNPanel);
 		
+		this.nInvoer = new BVInvoer("30");
 		
 		this.kijkPNa = new JCheckBox("Kijk p na", false);
 		this.kijkPNa.setFont(this.font);
@@ -249,12 +258,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.pField.setText("0.5");
 		this.pField.setFont(this.font);
 		this.pField.setVisible(false);
+		this.pField.addActionListener(this);
+		this.pField.addFocusListener(this);
 		this.checkPPanel = new JPanel(new GridLayout(1,2));
 		this.checkPPanel.add(this.kijkPNa);
 		this.checkPPanel.add(this.pField);
 		this.checkPPanel.setVisible(false);
 		this.nakijkHelft.add(this.checkPPanel);
 		
+		this.pInvoer = new BVInvoer("0.5");
 		
 		this.kijkPopulatieNa = new JCheckBox("Kijk populatie na", false);
 		this.kijkPopulatieNa.setFont(this.font);
@@ -263,12 +275,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.populatieField.setText("100");
 		this.populatieField.setFont(this.font);
 		this.populatieField.setVisible(false);
+		this.populatieField.addActionListener(this);
+		this.populatieField.addFocusListener(this);
 		this.checkPopulatiePanel = new JPanel(new GridLayout(1,2));
 		this.checkPopulatiePanel.add(this.kijkPopulatieNa);
 		this.checkPopulatiePanel.add(this.populatieField);
 		this.checkPopulatiePanel.setVisible(false);
 		this.nakijkHelft.add(this.checkPopulatiePanel);
 		
+		this.populatieInvoer = new BVInvoer("100");
 		
 		this.kijkMNa = new JCheckBox("Kijk M na", false);
 		this.kijkMNa.setFont(this.font);
@@ -277,13 +292,16 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.MField.setText("50");
 		this.MField.setFont(this.font);
 		this.MField.setVisible(false);
+		this.MField.addActionListener(this);
+		this.MField.addFocusListener(this);
 		this.checkMPanel = new JPanel(new GridLayout(1,2));
 		this.checkMPanel.add(this.kijkMNa);
 		this.checkMPanel.add(this.MField);
 		this.checkMPanel.setVisible(false);
 		this.nakijkHelft.add(this.checkMPanel);
 		
-		
+		this.MInvoer = new BVInvoer("50");
+				
 		this.settingsPanel.add(this.nakijkHelft);
 		this.add(this.settingsPanel);
 	}
@@ -293,7 +311,7 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.verdelingComboBox.setVisible(this.nakijkenBox.isSelected() && this.kijkVerdelingNa.isSelected());
 		
 		this.checkGrenzenPanel.setVisible(this.nakijkenBox.isSelected());
-		this.checkGrenzenHulpPanel.setVisible(this.nakijkenBox.isSelected() && this.kijkVerdelingNa.isSelected() && this.kijkGrenzenNa.isSelected());
+		this.checkGrenzenHulpPanel.setVisible(this.nakijkenBox.isSelected() && this.kijkGrenzenNa.isSelected());
 		
 		this.checkNPanel.setVisible(this.nakijkenBox.isSelected());
 		this.nField.setVisible(this.nakijkenBox.isSelected() && this.kijkNNa.isSelected());
@@ -308,6 +326,43 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.populatieField.setVisible(this.nakijkenBox.isSelected() && this.kijkVerdelingNa.isSelected() && this.verdelingComboBox.getSelectedIndex() == 1 && this.kijkPopulatieNa.isSelected());
 	}
 	
+	private void nFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.nField.getText());
+		if(invoer.isValidIntInput()) {
+			this.nInvoer = invoer;
+		}
+		else {
+			this.nField.setText(this.nInvoer.getInput());
+		}
+	}
+	private void pFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.pField.getText());
+		if(invoer.isValidDoubleInput()) {
+			this.pInvoer = invoer;
+		}
+		else {
+			this.pField.setText(this.pInvoer.getInput());
+		}
+	}
+	private void MFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.MField.getText());
+		if(invoer.isValidIntInput()) {
+			this.MInvoer = invoer;
+		}
+		else {
+			this.MField.setText(this.MInvoer.getInput());
+		}
+	}
+	private void populatieFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.populatieField.getText());
+		if(invoer.isValidIntInput()) {
+			this.populatieInvoer = invoer;
+		}
+		else {
+			this.populatieField.setText(this.populatieInvoer.getInput());
+		}
+	}
+	
 	/**
 	 * Implementatie voor ActionListener
 	 * Verwerkt de user-interaction
@@ -316,50 +371,90 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(e.getSource() == this.nVeranderbaarBox) {
 			this.interactiePanel.setNVeranderbaar(this.nVeranderbaarBox.isSelected()); //zet instelling in interactiePanel om de preview aan te passen
 		}
-		if(e.getSource() == this.pVeranderbaarBox) {
+		else if(e.getSource() == this.pVeranderbaarBox) {
 			this.interactiePanel.setPVeranderbaar(this.pVeranderbaarBox.isSelected()); //zet instelling in interactiePanel om de preview aan te passen
 		}
-		if (e.getSource() == this.populatieVeranderbaarBox) {
+		else if (e.getSource() == this.populatieVeranderbaarBox) {
 			this.interactiePanel.setPopulatieVeranderbaar(this.populatieVeranderbaarBox.isSelected());
 		}
-		if(e.getSource() == this.MVeranderbaarBox) {
+		else if(e.getSource() == this.MVeranderbaarBox) {
 			this.interactiePanel.setMVeranderbaar(this.MVeranderbaarBox.isSelected());
 		}
-		if(e.getSource() == this.xAsWeergaveBox) {
+		else if(e.getSource() == this.xAsWeergaveBox) {
 			this.interactiePanel.setShowXAs(this.xAsWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.yAsWeergaveBox) {
+		else if(e.getSource() == this.yAsWeergaveBox) {
 			this.interactiePanel.setShowYAs(this.yAsWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.nSliderWeergaveBox) {
+		else if(e.getSource() == this.nSliderWeergaveBox) {
 			this.interactiePanel.setShowNSlider(this.nSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.pSliderWeergaveBox) {
+		else if(e.getSource() == this.pSliderWeergaveBox) {
 			this.interactiePanel.setShowPSlider(this.pSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.MSliderWeergaveBox) {
+		else if(e.getSource() == this.MSliderWeergaveBox) {
 			this.interactiePanel.setShowMSlider(this.MSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.populatieSliderWeergaveBox) {
+		else if(e.getSource() == this.populatieSliderWeergaveBox) {
 			this.interactiePanel.setShowPopulatieSlider(this.populatieSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.grensSliderWeergaveBox) {
+		else if(e.getSource() == this.grensSliderWeergaveBox) {
 			this.interactiePanel.setShowGrensSlider(this.grensSliderWeergaveBox.isSelected());
 		}
-		if(e.getSource() == this.showTweeGrenzenKeuzeBox) {
+		else if(e.getSource() == this.showTweeGrenzenKeuzeBox) {
 			this.interactiePanel.setShowTweeGrenzenKeuze(this.showTweeGrenzenKeuzeBox.isSelected());
 		}
-		if(e.getSource() == this.showNoordBalkBox) {
+		else if(e.getSource() == this.showNoordBalkBox) {
 			this.interactiePanel.setShowNoordBalk(this.showNoordBalkBox.isSelected());
 		}
-		if(e.getSource() == this.showKansBalkBox) {
+		else if(e.getSource() == this.showKansBalkBox) {
 			this.interactiePanel.setShowKansBalk(this.showKansBalkBox.isSelected());
 		}
-		if(e.getSource() == this.showHyperKeuzeBox) {
+		else if(e.getSource() == this.showHyperKeuzeBox) {
 			this.interactiePanel.setShowHyperKeuze(this.showHyperKeuzeBox.isSelected());
 		}
+		else if(e.getSource() == this.nField) {
+			this.nFieldUpdate();
+		}
+		else if(e.getSource() == this.pField) {
+			this.pFieldUpdate();
+		}
+		else if(e.getSource() == this.MField) {
+			this.MFieldUpdate();
+		}
+		else if(e.getSource() == this.populatieField) {
+			this.populatieFieldUpdate();
+		}
 		
-		this.showRightItems();
+		else {
+			this.showRightItems();
+		}
+		
+	}
+	
+	/**
+	 * Lege invulling voor implementatie FocusListener
+	 */
+	public void focusGained(FocusEvent e) {
+		//doe niets
+	}
+	
+	/**
+	 * Implementatie FocusListener
+	 */
+	public void focusLost(FocusEvent e) {
+		if(e.getSource() == this.nField) {
+			this.nFieldUpdate();
+		}
+		else if(e.getSource() == this.pField) {
+			this.pFieldUpdate();
+		}
+		else if(e.getSource() == this.MField) {
+			this.MFieldUpdate();
+		}
+		else if(e.getSource() == this.populatieField) {
+			this.populatieFieldUpdate();
+		}
 	}
 	
 	/**
@@ -413,6 +508,90 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(h.containsKey("showHyperKeuze")) {
 			this.showHyperKeuzeBox.setSelected(((Boolean)h.get("showHyperKeuze")).booleanValue());
 		}
+		
+		if(h.containsKey("kijkNa")) {
+			this.nakijkenBox.setSelected(((Boolean)h.get("kijkNa")).booleanValue());
+			
+			if(this.nakijkenBox.isSelected()) {
+				if(h.containsKey("antwoordN")) {
+					this.kijkNNa.setSelected(true);
+					this.nField.setText((String)h.get("antwoordN"));
+					this.nInvoer.setInput((String)h.get("antwoordN"));
+				}
+				else {
+					this.kijkNNa.setSelected(false);
+				}
+				
+				if(h.containsKey("antwoordGrenzenVan") && h.containsKey("antwoordGrenzenTot")) {
+					this.kijkGrenzenNa.setSelected(true);
+					this.grensLinksField.setText((String)h.get("antwoordGrenzenVan"));
+					this.grensRechtsField.setText((String)h.get("antwoordGrenzenTot"));
+				}
+				else {
+					this.kijkGrenzenNa.setSelected(false);
+				}
+				
+				if(h.containsKey("antwoordVerdeling")) {
+					this.kijkVerdelingNa.setSelected(true);
+					this.verdelingComboBox.setSelectedIndex(((Integer)h.get("antwoordVerdeling")).intValue());
+					
+					if(this.verdelingComboBox.getSelectedIndex() == 0) {
+						//er moet een binomiale verdeling worden nagekeken
+						if(h.containsKey("antwoordP")) {
+							this.kijkPNa.setSelected(true);
+							this.pInvoer.setInput((String)h.get("antwoordP"));
+							this.pField.setText((String)h.get("antwoordP"));
+						}
+						else {
+							this.kijkPNa.setSelected(false);
+						}
+					}
+					else {
+						//er moet een hypergeometrische verdeling worden nagekeken
+						if(h.containsKey("antwoordM")) {
+							this.kijkMNa.setSelected(true);
+							this.MInvoer.setInput((String)h.get("antwoordM"));
+							this.MField.setText((String)h.get("antwoordM"));
+						}
+						else {
+							this.kijkMNa.setSelected(false);
+						}
+						
+						if(h.containsKey("antwoordPopulatie")) {
+							this.kijkPopulatieNa.setSelected(true);
+							this.populatieInvoer.setInput((String)h.get("antwoordPopulatie"));
+							this.populatieField.setText((String)h.get("antwoordPopulatie"));
+						}
+						else {
+							this.kijkPopulatieNa.setSelected(false);
+						}
+					}
+				}
+				else {
+					this.kijkVerdelingNa.setSelected(false);
+				}
+				
+			}
+			else {
+				this.kijkGrenzenNa.setSelected(false);
+				this.kijkMNa.setSelected(false);
+				this.kijkNNa.setSelected(false);
+				this.kijkPNa.setSelected(false);
+				this.kijkPopulatieNa.setSelected(false);
+				this.kijkVerdelingNa.setSelected(false);
+			}
+			
+		}
+		else {
+			this.kijkGrenzenNa.setSelected(false);
+			this.kijkMNa.setSelected(false);
+			this.kijkNNa.setSelected(false);
+			this.kijkPNa.setSelected(false);
+			this.kijkPopulatieNa.setSelected(false);
+			this.kijkVerdelingNa.setSelected(false);
+		}
+		
+		this.showRightItems();
 	}
 
 	/**
@@ -437,9 +616,43 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuzeBox.isSelected()));
 		*/
 		
+		if(this.nakijkenBox.isSelected()) {
+			h.put("kijkNa", new Boolean(true));
+			if(this.kijkNNa.isSelected()) {
+				h.put("antwoordN", this.nInvoer.getInput());
+			}
+			if(this.kijkGrenzenNa.isSelected()) {
+				h.put("antwoordGrenzenVan", this.grensLinksField.getText());
+				h.put("antwoordGrenzenTot", this.grensRechtsField.getText());
+			}
+			if(this.kijkVerdelingNa.isSelected()) {
+				h.put("antwoordVerdeling", this.verdelingComboBox.getSelectedIndex());
+				
+				if(this.verdelingComboBox.getSelectedIndex() == 0) {
+					//er wordt een binomiale verdeling nagekeken
+					if(this.kijkPNa.isSelected()) {
+						h.put("antwoordP", this.pInvoer.getInput());
+					}
+				}
+				else {
+					//er wordt een hypergeometrische verdeling nagekeken
+					if(this.kijkPopulatieNa.isSelected()) {
+						h.put("antwoordPopulatie",this.populatieInvoer.getInput());
+					}
+					if(this.kijkMNa.isSelected()) {
+						h.put("antwoordM", this.MInvoer.getInput());
+					}
+				}
+			}
+		}
+		else {
+			h.put("kijkNa", new Boolean(false));
+		}
+		
 		return h;
 	}
-
+	
+	//override setBounds
 	public void setBounds(int x, int y, int b, int h) {
 		super.setBounds(x, y, b, h);
 	}
