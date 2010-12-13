@@ -80,8 +80,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private boolean nVeranderbaar;
 	private boolean pVeranderbaar;
-	private boolean MVeranderbaar; //TODO in editpanel
-	private boolean populatieVeranderbaar; //TODO in editpanel
+	private boolean MVeranderbaar;
+	private boolean populatieVeranderbaar;
 	
 	private boolean showNSlider;
 	private boolean showPSlider;
@@ -976,7 +976,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.populatieInvoer.setInput(this.populatieText.getText());
 			if(!this.populatieInvoer.isRandomInput()) {
 				try {
-					this.setPopulatie((int)Math.round(Double.parseDouble(this.populatieInvoer.getInput()))); //TODO
+					this.setPopulatie((int)Math.round(Double.parseDouble(this.populatieInvoer.getInput())));
 				}
 				catch (NumberFormatException e){
 					System.out.println("NumberFormatException in populatieTextUpdate! " + e.toString());
@@ -999,7 +999,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.MInvoer.setInput(this.MText.getText());
 			if(!this.MInvoer.isRandomInput()) {
 				try {
-					this.setM((int)Math.round(Double.parseDouble(this.MInvoer.getInput()))); //TODO
+					this.setM((int)Math.round(Double.parseDouble(this.MInvoer.getInput())));
 				}
 				catch (NumberFormatException e){
 					System.out.println("NumberFormatException in MTextUpdate! " + e.toString());
@@ -1427,6 +1427,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 		}
 		*/
+		
+		//TODO nakijkopties inlezen, daarna kijkna
 		
 		if(this.nInvoer.isRandomInput()) {
 			this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, this.nInvoer.getInput(), randomVars, randomValues);
