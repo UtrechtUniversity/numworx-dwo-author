@@ -573,7 +573,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public static double binom(int n, int k)
 	{
-		if (k>n) {
+		if(n < 0 || k < 0) {
+			System.out.println("Error! n < 0 || k < 0");
+			return 0.0;
+		}
+		else if (k>n) {
+			System.out.println("Error! k > n");
 			return 0.0;
 		}
 		else if(n == k) {
@@ -601,7 +606,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (k > this.n) {
 			return 0.0;
 		}
-		return BVInteractiePanelModel.binom(this.n, k) * (double)Math.pow(this.p,k) * (double)Math.pow(1-this.p, this.n-k);
+		return BVInteractiePanel.binom(this.n, k) * (double)Math.pow(this.p,k) * (double)Math.pow(1-this.p, this.n-k);
 	}
 	
 	/**
@@ -722,6 +727,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setSelected(tweeGrenzen);
 		this.staafjesPanel.setTweeGrenzen(tweeGrenzen);
 		this.updateKansBalk();
+		this.staafjesPanel.bepaalGrenzenMetSlider();
 	}
 	
 	private void setHypergeometrisch(boolean hypergeometrisch) {
@@ -1080,6 +1086,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (arg0.getSource() == this.grenzenBox) {
 			this.tweeGrenzen = this.grenzenBox.isSelected();
 			this.staafjesPanel.setTweeGrenzen(this.tweeGrenzen);
+			this.staafjesPanel.repaint();
 		}
 		if (arg0.getSource() == this.kansRadioLinks) {
 			this.setGrenzenOptie(GrenzenOptie.LINKS);
@@ -1286,6 +1293,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (b.containsKey("showPopulatieSlider")) {
 			this.showPopulatieSlider = ((Boolean)b.get("showPopulatieSlider")).booleanValue();
 		}
+		if (b.containsKey("showGrensSlider")) {
+			this.staafjesPanel.setShowGrensSlider(((Boolean)b.get("showGrensSlider")).booleanValue());
+		}
 		if (b.containsKey("grensLinks")) {
 			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
 		}
@@ -1309,9 +1319,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.tweeGrenzen = ((Boolean)b.get("tweeGrenzen")).booleanValue();
 			this.setTweeGrenzen(this.tweeGrenzen);
 		}
-		if (b.containsKey("showGrensSlider")) {
-			this.staafjesPanel.setShowGrensSlider(((Boolean)b.get("showGrensSlider")).booleanValue());
-		}
+		
 		if(b.containsKey("showKansBalk")) {
 			this.setShowKansBalk(((Boolean)b.get("showKansBalk")).booleanValue());
 		}

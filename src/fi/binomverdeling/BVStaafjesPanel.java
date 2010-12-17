@@ -74,6 +74,9 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		this.successenDoubleSlider = new DoubleSlider(100,40,80);
 		this.successenSlider = new Slider(100,40);
 		
+		this.add(this.successenDoubleSlider);
+		this.add(this.successenSlider);
+		
 		this.successenDoubleSlider.addActionListener(this);
 		this.successenSlider.addActionListener(this);
 		
@@ -108,6 +111,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	        else {
 	        	this.grensRechts = (int)((double)(this.successenSlider.geefStand())/this.staafBreedte);
 	        }
+		
 		}
 	}
 	
@@ -153,6 +157,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		this.tweeGrenzen = tweeGrenzen;
 		this.updateSliderBounds();
 		this.addRightSlider();
+		this.updateSuccessenSliderPosition();
 	}
 	public boolean getTweeGrenzen() {
 		return this.tweeGrenzen;
@@ -197,9 +202,11 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	}
 	public void setGrensLinks(int grensLinks) {
 		this.grensLinks = grensLinks;
+		this.updateSuccessenSliderPosition();
 	}
 	public void setGrensRechts(int grensRechts) {
 		this.grensRechts = grensRechts;
+		this.updateSuccessenSliderPosition();
 	}
 	
 	/**
@@ -239,6 +246,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	 * Zorgt dat de juiste slider aan het panel toegevoegd is.
 	 */
 	private void addRightSlider() {
+		/*
 		this.berekenStaafBreedte();
 		if(this.showGrensSlider) {
 			if (this.tweeGrenzen) {
@@ -256,7 +264,26 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		else {
 			this.remove(this.successenDoubleSlider);
 			this.remove(this.successenSlider);
+		}*/
+		this.berekenStaafBreedte();
+		if(this.showGrensSlider) {
+			if (this.tweeGrenzen) {
+				this.successenSlider.setVisible(false);
+				this.successenDoubleSlider.zetStandRechts(this.successenSlider.geefStand());				
+				this.successenDoubleSlider.setVisible(true);
+			}
+
+			else {
+				this.successenDoubleSlider.setVisible(false);
+				this.successenSlider.zetStand(this.successenDoubleSlider.geefStandRechts());
+				this.successenSlider.setVisible(true);
+			}
 		}
+		else {
+			this.successenDoubleSlider.setVisible(false);
+			this.successenSlider.setVisible(false);
+		}
+		
 	}
 	
 	/**
@@ -461,16 +488,20 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	 * Zet de slidergrenzen weer midden onder het staafje
 	 */
 	public void updateSuccessenSliderPosition() {
+		/*
 		this.successenSlider.zetStand((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
 		this.successenDoubleSlider.zetStandRechts((int)((1.0*this.grensRechts+0.5)*this.staafBreedte)+1);
 		this.successenDoubleSlider.zetStandLinks((int)((1.0*this.grensLinks+0.5)*this.staafBreedte)+1);
+		*/
+		this.successenDoubleSlider.zetStandRechts((int)((this.grensRechts+0.5)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
+		this.successenDoubleSlider.zetStandLinks((int)((this.grensLinks+0.5)*this.staafBreedte) - this.successenDoubleSlider.getMinimumLinks());
+		this.successenSlider.zetStand((int)((this.grensRechts+0.5)*this.staafBreedte) - this.successenSlider.getMinimum());
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.successenSlider) {
 			this.bepaalGrenzenMetSlider();
 			if(e.getActionCommand().equals("stop")) {
-				System.out.println("successenSlider: event mouseRelease");
 				this.updateSuccessenSliderPosition();
 			}
 		}

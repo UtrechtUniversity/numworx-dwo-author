@@ -28,6 +28,7 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 	private TextField textField;
 
 	public static void main(String[] args) {
+		System.out.println(BVInteractiePanel.binom(30, 26));
 		JFrame testframe = new JFrame("testframe");
 		testframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		testframe.setSize(500,500);
