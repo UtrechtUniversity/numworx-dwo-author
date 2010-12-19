@@ -11,9 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -64,7 +67,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private JPanel kansBalk;
 	private JPanel zuidBalk;
 	private JPanel noordBalk;
-		
+	private JPanel keuzeBalk;
+	
 	private Slider nSlider;
 	private Slider pSlider;
 	private Slider MSlider;
@@ -101,6 +105,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private boolean showKansBalk;
 	private boolean showHyperKeuze;
 	
+	private JButton kijkNaButton;
+	private JPanel kijkNaPanel;
+	
 	private Font font;
 	private FontMetrics fontMetrics;
 	
@@ -118,6 +125,27 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public final int COMBOBOXHEIGHT = 20;
 	
 	private Rectangle lastBounds; //om bij te houden wanneer de maat bounds veranderen
+	
+	private ArrayList<ActionListener> listeners;
+	
+	//nakijken:
+	private boolean kijkOpdrachtNa;
+	private int maxScore;
+	private boolean kijkGrenzenNa;
+	private int antwoordGrensLinks;
+	private int antwoordGrensRechts;
+	private boolean kijkVerdelingNa;
+	private int antwoordVerdeling; //0 = BV, 1 = Hyp
+	private boolean kijkNNa;
+	private int antwoordN;
+	private boolean kijkPNa;
+	private double antwoordP;
+	private boolean kijkMNa;
+	private int antwoordM;
+	private boolean kijkPopulatieNa;
+	private int antwoordPopulatie;
+	
+	private int score;
 	
 	/**
 	 * Constructor
@@ -142,6 +170,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.hypergeometrisch = false;
 		this.showHyperKeuze = true;
 		
+		this.kijkOpdrachtNa = false;
+		
 		this.grenzenOptie = GrenzenOptie.LINKS;
 		
 		this.nVeranderbaar = true;
@@ -157,6 +187,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.showNoordBalk = true;
 		this.showTweeGrenzenKeuze = true;
 		this.showKansBalk = true;
+		
 		
 		//maak het paneel wat in de center van de BorderLayout komt
         this.staafjesPanel = new BVStaafjesPanel(this, this.grenzenOptie);
@@ -221,7 +252,18 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
 		
-		this.zuidBalk.add(this.grenzenBox);
+		this.kijkNaButton = new JButton("Kijk Na");
+		this.kijkNaButton.setFont(this.font);
+		this.kijkNaButton.addActionListener(this);
+		this.kijkNaPanel = new JPanel(new GridLayout(1,2));
+		this.kijkNaPanel.add(this.kijkNaButton);
+		this.kijkNaPanel.setVisible(this.kijkOpdrachtNa);
+		
+		this.keuzeBalk = new JPanel(new GridLayout(1,2));
+		this.keuzeBalk.setBackground(Color.WHITE);
+		this.keuzeBalk.add(this.grenzenBox);
+		this.keuzeBalk.add(this.kijkNaPanel);
+		this.zuidBalk.add(this.keuzeBalk);
 		
 		super.add(this.zuidBalk, BorderLayout.SOUTH);
 		
@@ -341,6 +383,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.plaatsComponentenNoordBalk(this.getWidth());
         super.add(this.noordBalk, BorderLayout.NORTH);
         
+        this.listeners = new ArrayList<ActionListener>();
 	}
 	
 	/**
@@ -540,7 +583,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(!(this.MInvoer.isBreuk() || this.MInvoer.isRandomInput())) {
 			this.MInvoer.setInput(Integer.toString(this.M));
 		}
-				
+		
+		this.showRightComponentsZuidBalk();
+		
+		
 		this.nText.setText(this.nInvoer.getInput());
 		this.nText.setEditable(this.nVeranderbaar);
 		
@@ -561,7 +607,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.pSlider.setEditable(this.pVeranderbaar);
 		this.populatieSlider.setEditable(this.populatieVeranderbaar);
 		this.MSlider.setEditable(this.MVeranderbaar);
-
+		
+		this.grenzenBox.setVisible(this.showTweeGrenzenKeuze);
+		this.kijkNaPanel.setVisible(this.kijkOpdrachtNa);
+		
 		this.updateKansBalk();
 		
 		this.repaint();
@@ -578,10 +627,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			return 0.0;
 		}
 		else if (k>n) {
-			System.out.println("Error! k > n");
 			return 0.0;
 		}
-		else if(n == k) {
+		if(n == k) {
 			return 1.0;
 		}
 		else {
@@ -627,7 +675,12 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public double berekenHyperKansK(int k) {
-		return BVInteractiePanel.binom(this.M, k) * BVInteractiePanel.binom(this.populatie - this.M, this.n - k) / BVInteractiePanel.binom(this.populatie, this.n);
+		if(k > this.M) {
+			return 0.0;
+		}
+		else {
+			return BVInteractiePanel.binom(this.M, k) * BVInteractiePanel.binom(this.populatie - this.M, this.n - k) / BVInteractiePanel.binom(this.populatie, this.n);
+		}
 	}
 	
 	public double berekenHyperKansCumulatief(int van, int tot) {
@@ -727,7 +780,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.grenzenBox.setSelected(tweeGrenzen);
 		this.staafjesPanel.setTweeGrenzen(tweeGrenzen);
 		this.updateKansBalk();
-		this.staafjesPanel.bepaalGrenzenMetSlider();
+		//this.staafjesPanel.bepaalGrenzenMetSlider();
 	}
 	
 	private void setHypergeometrisch(boolean hypergeometrisch) {
@@ -830,6 +883,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 
+	public void setKijkOpdrachtNa(boolean b) {
+		this.kijkOpdrachtNa = b;
+		this.vernieuw();
+	}
+	
 	public void setN(int n) {
 		if(n >= 0) {
 			this.n = n;
@@ -851,38 +909,39 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		
 	}
+	
+	private void showRightComponentsZuidBalk() {
+		this.remove(this.keuzeBalk);
+		this.remove(this.zuidBalk);
+		this.remove(this.kansBalk);
+		this.zuidBalk.removeAll();
+		
+		if(this.showKansBalk) {
+			if(this.showTweeGrenzenKeuze || this.kijkOpdrachtNa) {
+				this.zuidBalk.add(this.kansBalk);
+				this.zuidBalk.add(this.keuzeBalk);
+				this.add(this.zuidBalk, BorderLayout.SOUTH);
+			}
+			else {
+				this.add(this.kansBalk, BorderLayout.SOUTH);
+			}
+		}
+		else {
+			if(this.showTweeGrenzenKeuze || this.kijkOpdrachtNa) {
+				this.add(this.keuzeBalk, BorderLayout.SOUTH);
+			}
+		}
+		this.revalidate();
+		this.repaint();
+	}
+	
 	/**
 	 * Verander of de kansenbalk zichtbaar is of niet
 	 * @param show true als kansenbalk zichtbaar moet zijn, anders false
 	 */
 	public void setShowKansBalk(boolean show) {
 		this.showKansBalk = show;
-		if(show) {
-			if(this.showTweeGrenzenKeuze) {
-				this.remove(this.grenzenBox);
-				this.remove(this.zuidBalk);
-				this.zuidBalk.removeAll();
-				this.zuidBalk.add(this.kansBalk);
-				this.zuidBalk.add(this.grenzenBox);
-				this.add(this.zuidBalk, BorderLayout.SOUTH);
-			}
-			else {
-				this.remove(this.kansBalk);
-				this.add(this.kansBalk, BorderLayout.SOUTH);
-			}
-		}
-		else {
-			if(this.showTweeGrenzenKeuze) {
-				this.remove(this.zuidBalk);
-				this.remove(this.grenzenBox);
-				this.add(this.grenzenBox, BorderLayout.SOUTH);
-			}
-			else {
-				this.remove(this.kansBalk);
-			}
-		}
-		this.revalidate();
-		this.repaint();
+		this.vernieuw();
 	}
 	
 	/**
@@ -891,32 +950,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	public void setShowTweeGrenzenKeuze(boolean show) {
 		this.showTweeGrenzenKeuze = show;
-		if(!show) {
-			if (this.showKansBalk) {
-				this.remove(this.kansBalk);
-				this.remove(this.zuidBalk);
-				this.add(this.kansBalk, BorderLayout.SOUTH);
-			}
-			else {
-				this.remove(this.grenzenBox);
-			}
-		}
-		else {
-			if(this.showKansBalk) {
-				this.remove(this.kansBalk);
-				this.remove(this.zuidBalk);
-				this.zuidBalk.removeAll();
-				this.zuidBalk.add(this.kansBalk);
-				this.zuidBalk.add(this.grenzenBox);
-				this.add(this.zuidBalk, BorderLayout.SOUTH);
-			}
-			else {
-				this.remove(this.grenzenBox);
-				this.add(this.grenzenBox, BorderLayout.SOUTH);
-			}
-		}
-		this.revalidate();
-		this.repaint();
+		this.vernieuw();
 	}
 	
 	/**
@@ -1101,6 +1135,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.setHypergeometrisch(this.hyperComboBox.getSelectedIndex() == 1);
 		}
 		
+		if(arg0.getSource() == this.kijkNaButton) {
+			this.kijkNa();
+		}
 		this.vernieuw();
 	}
 	
@@ -1133,7 +1170,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	//====================================================================================================
 	
 	public void addActionListener(ActionListener al) {
-		
+		this.listeners.add(al);
 	}
 
 	public void destroy() {
@@ -1154,18 +1191,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * van de editgegevens in BVInteractiePanel staan.
 	 */
 	public Hashtable getEditState() {
-		/*
-		Hashtable h = new Hashtable();
-		h.put("n", new Integer(this.n));
-		h.put("p", new Double(this.p));
-		h.put("successen", new Integer(this.successen));
-		
-		h.put("nString", new String(this.nString));
-		h.put("pString", new String(this.pString));
-		h.put("successenString", new String(this.successenString));
-		
-		return h;
-		*/
 		return this.getState();
 	}
 	
@@ -1182,11 +1207,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public int getScore() {
-		return 0;
+		return this.score;
 	}
 	
 	public int getScoreMax() {
-		return 0;
+		return this.maxScore;
 	}
 
 	/**
@@ -1298,9 +1323,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("grensLinks")) {
 			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
+			System.out.println("GrensLinks set to " + this.staafjesPanel.getGrensLinks());
 		}
 		if (b.containsKey("grensRechts")) {
 			this.staafjesPanel.setGrensRechts(((Integer)b.get("grensRechts")).intValue());
+			System.out.println("GrensRechts set to " + this.staafjesPanel.getGrensRechts());
 		}
 		
 		if (b.containsKey("grenzenOptie")) {
@@ -1344,15 +1371,73 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	public boolean isCorrect() {
-		return false;
+		return this.score == this.maxScore;
 	}
 	
 	public boolean isFout() {
-		
-		return false;
+		return this.score != this.maxScore;
 	}
 	
+	/**
+	 * Vergelijk de ingevulde waarden met het opgegeven antwoordmodel, zet de score in this.score en vuur een actionEvent naar alle listeners.
+	 */
 	public void kijkNa() {
+		boolean correct = true;
+		if(this.kijkOpdrachtNa) {
+			if(this.kijkGrenzenNa) {
+				if(this.tweeGrenzen) {
+					correct = correct && (this.staafjesPanel.getGrensLinks() == this.antwoordGrensLinks && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts);
+				}
+				else {
+					if(this.antwoordGrensLinks == this.antwoordGrensRechts) {
+						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts && this.grenzenOptie == GrenzenOptie.GELIJK;
+					}
+					else if(this.antwoordGrensLinks == 0) {
+						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts && this.grenzenOptie == GrenzenOptie.LINKS;
+					}
+					else if(this.antwoordGrensRechts == this.n) {
+						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensLinks && this.grenzenOptie == GrenzenOptie.RECHTS;
+					}
+					else {
+						correct = false;
+					}
+				}
+			}
+			
+			if(this.kijkVerdelingNa) {
+				correct = correct && this.hypergeometrisch == (this.antwoordVerdeling == 1);
+			}
+			
+			if(this.kijkNNa) {
+				correct = correct && this.n == this.antwoordN;
+			}
+			
+			if(this.kijkMNa) {
+				correct = correct && this.M == this.antwoordM;
+			}
+			
+			if(this.kijkPopulatieNa) {
+				correct = correct && this.populatie == this.antwoordPopulatie;
+			}
+			
+			if(this.kijkPNa) {
+				correct = correct && Math.round(1000.0 * this.p) == Math.round(1000.0*this.antwoordP);
+			}
+		}
+		if(correct) {
+			this.score = this.maxScore;
+		}
+		else {
+			this.score = 0;
+		}
+		
+		System.out.println("Nagekeken. Score: " + this.score);
+		//fire actionEvent
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		Iterator<ActionListener> iterator = this.listeners.iterator();
+		while(iterator.hasNext()) {
+			iterator.next().actionPerformed(event);
+		}
 	}
 	
 	public void kijkNa(int stapNr) {
@@ -1418,26 +1503,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		//zet gegevens uit getEditState hashtable
 		this.setState(b);
 		
-		//vul randomvars in en zet textboxes
-		/*
-		if(b.containsKey("nString")) {
-			String nString = new String((String)b.get("nString"));
-			this.nText.setText(nString);
-			if (nString.length() >= 3 && nString.charAt(0) == '#' && nString.charAt(nString.length()-1) == '#') {
-				this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, nString, randomVars, randomValues);
-			}
-		}
-		if(b.containsKey("pString")) {
-			String pString = new String((String)b.get("pString"));
-			this.pText.setText(pString);
-			if (pString.length() >= 3 && pString.charAt(0) == '#' && pString.charAt(pString.length()-1) == '#') {
-				this.p = BVInteractiePanel.substitueerRandom(this.p, pString, randomVars, randomValues);
-			}
-		}
-		*/
-		
-		//TODO nakijkopties inlezen, daarna kijkna
-		
+		//vul de randomwaarden in
 		if(this.nInvoer.isRandomInput()) {
 			this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, this.nInvoer.getInput(), randomVars, randomValues);
 			this.nInvoer.setInput(Integer.toString(this.n));
@@ -1473,6 +1539,137 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 		}
 		this.pInvoer.haalPuntNulWeg();
+		
+		
+		//zet nakijkopties
+		if(b.containsKey("kijkNa")) {
+			BVInvoer invoer = new BVInvoer("");
+			
+			this.kijkOpdrachtNa = ((Boolean)b.get("kijkNa")).booleanValue();
+			
+			if(b.containsKey("maxScore")) {
+				this.maxScore = Integer.parseInt((String)b.get("maxScore"));
+			}
+			
+			if(this.kijkOpdrachtNa) {
+				if(b.containsKey("antwoordN")) {
+					this.kijkNNa = true;
+					invoer.setInput((String)b.get("antwoordN"));
+					if(invoer.isRandomInput()) {
+						this.antwoordN = (int) BVInteractiePanel.substitueerRandom(30, invoer.getInput(), randomVars, randomValues);
+					}
+					else {
+						this.antwoordN = Integer.parseInt(invoer.getInput());
+					}
+				}
+				else {
+					this.kijkNNa = false;
+				}
+				
+				if(b.containsKey("antwoordGrenzenVan") && b.containsKey("antwoordGrenzenTot")) {
+					this.kijkGrenzenNa = true;
+					this.antwoordGrensLinks = Integer.parseInt((String)b.get("antwoordGrenzenVan"));
+					this.antwoordGrensRechts = Integer.parseInt((String)b.get("antwoordGrenzenTot"));
+				}
+				else {
+					this.kijkGrenzenNa = false;
+				}
+				
+				if(b.containsKey("antwoordVerdeling")) {
+					this.kijkVerdelingNa = true;
+					this.antwoordVerdeling = (((Integer)b.get("antwoordVerdeling")).intValue());
+					
+					if(this.antwoordVerdeling == 0) {
+						//er moet een binomiale verdeling worden nagekeken
+						if(b.containsKey("antwoordP")) {
+							this.kijkPNa = true;
+							invoer.setInput((String)b.get("antwoordP"));
+							if(invoer.isRandomInput()) {
+								if(invoer.isBreuk()) {
+									double teller;
+									double noemer;
+									if(BVInvoer.isRandomVar(invoer.getTellerString())) {
+										teller = BVInteractiePanel.substitueerRandom(1, invoer.getTellerString(), randomVars, randomValues);
+									}
+									else {
+										teller = Double.parseDouble(invoer.getTellerString());
+									}
+									if(BVInvoer.isRandomVar(invoer.getNoemerString())) {
+										noemer = BVInteractiePanel.substitueerRandom(1, invoer.getNoemerString(), randomVars, randomValues);
+									}
+									else {
+										noemer = Double.parseDouble(invoer.getNoemerString());
+									}
+									this.antwoordP = teller/noemer;
+								}
+								else {
+									this.antwoordP = BVInteractiePanel.substitueerRandom(0.5, invoer.getInput(), randomVars, randomValues);
+								}
+							}
+							else {
+								this.antwoordP = Double.parseDouble(invoer.getInput());
+							}
+						}
+						else {
+							this.kijkPNa = false;
+						}
+					}
+					else {
+						//er moet een hypergeometrische verdeling worden nagekeken
+						if(b.containsKey("antwoordM")) {
+							this.kijkMNa = true;
+							invoer.setInput((String)b.get("antwoordM"));
+							if(invoer.isRandomInput()) {
+								this.antwoordM = (int) BVInteractiePanel.substitueerRandom(50, invoer.getInput(), randomVars, randomValues);
+							}
+							else {
+								this.antwoordM = Integer.parseInt(invoer.getInput());
+							}
+						}
+						else {
+							this.kijkMNa = false;
+						}
+						
+						if(b.containsKey("antwoordPopulatie")) {
+							this.kijkPopulatieNa = true;
+							invoer.setInput((String)b.get("antwoordPopulatie"));
+							if(invoer.isRandomInput()) {
+								this.antwoordPopulatie = (int) BVInteractiePanel.substitueerRandom(100, invoer.getInput(), randomVars, randomValues);
+							}
+							else {
+								this.antwoordPopulatie = Integer.parseInt(invoer.getInput());
+							}
+						}
+						else {
+							this.kijkPopulatieNa = false;
+						}
+					}
+				}
+				else {
+					this.kijkVerdelingNa = false;
+				}
+				
+			}
+			else {
+				this.kijkGrenzenNa = false;
+				this.kijkMNa = false;
+				this.kijkNNa = false;
+				this.kijkPNa = false;
+				this.kijkPopulatieNa = false;
+				this.kijkVerdelingNa = false;
+			}
+			
+		}
+		else {
+			this.kijkOpdrachtNa = false;
+			this.kijkGrenzenNa = false;
+			this.kijkNNa = false;
+			this.kijkMNa = false;
+			this.kijkVerdelingNa = false;
+			this.kijkPopulatieNa = false;
+			this.kijkPNa = false;
+		}
+		
 		
 		//update
 		this.vernieuw();

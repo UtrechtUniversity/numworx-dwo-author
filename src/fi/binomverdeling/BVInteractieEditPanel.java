@@ -54,6 +54,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	
 	private JPanel nakijkHelft;
 	private JCheckBox nakijkenBox;
+	private JPanel nakijkenHulpPanel;
+	private JLabel maxScoreLabel;
+	private JTextField maxScoreField;
 	
 	private JCheckBox kijkMNa;
 	private JTextField MField;
@@ -188,7 +191,20 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.nakijkenBox = new JCheckBox("Kijk deze opdracht na", false);
 		this.nakijkenBox.setFont(this.font);
 		this.nakijkenBox.addActionListener(this);
-		this.nakijkHelft.add(this.nakijkenBox);
+		JPanel panel = new JPanel(new GridLayout(1,2));
+		panel.add(this.nakijkenBox);
+		this.nakijkenHulpPanel = new JPanel(new GridLayout(1,2));
+		this.maxScoreLabel = new JLabel("Maximale score: ");
+		this.maxScoreLabel.setFont(this.font);
+		this.maxScoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		this.nakijkenHulpPanel.add(this.maxScoreLabel);
+		this.maxScoreField = new JTextField("10");
+		this.maxScoreField.setFont(this.font);
+		this.maxScoreField.addActionListener(this);
+		this.maxScoreField.addFocusListener(this);
+		this.nakijkenHulpPanel.add(this.maxScoreField);
+		panel.add(this.nakijkenHulpPanel);
+		this.nakijkHelft.add(panel);
 		
 		
 		this.kijkVerdelingNa = new JCheckBox("Kijk het soort verdeling na", false);
@@ -307,6 +323,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	}
 	
 	private void showRightItems() {
+		this.nakijkenHulpPanel.setVisible(this.nakijkenBox.isSelected());
+		
 		this.checkVerdelingPanel.setVisible(this.nakijkenBox.isSelected());
 		this.verdelingComboBox.setVisible(this.nakijkenBox.isSelected() && this.kijkVerdelingNa.isSelected());
 		
@@ -360,6 +378,18 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		else {
 			this.populatieField.setText(this.populatieInvoer.getInput());
+		}
+	}
+	
+	private void maxScoreFieldUpdate() {
+		try {
+			int i = Integer.parseInt(this.maxScoreField.getText());
+			if(i<0) {
+				this.maxScoreField.setText("10");
+			}
+		}
+		catch (NumberFormatException e) {
+			this.maxScoreField.setText("10");
 		}
 	}
 	
@@ -425,7 +455,13 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		else if(e.getSource() == this.populatieField) {
 			this.populatieFieldUpdate();
 		}
-		
+		else if(e.getSource() == this.maxScoreField) {
+			this.maxScoreFieldUpdate();
+		}
+		else if(e.getSource() == this.nakijkenBox) {
+			this.interactiePanel.setKijkOpdrachtNa(this.nakijkenBox.isSelected());
+			this.showRightItems();
+		}
 		else {
 			this.showRightItems();
 		}
@@ -454,6 +490,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		else if(e.getSource() == this.populatieField) {
 			this.populatieFieldUpdate();
+		}
+		else if(e.getSource() == this.maxScoreField) {
+			this.maxScoreFieldUpdate();
 		}
 	}
 	
@@ -511,6 +550,10 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		
 		if(h.containsKey("kijkNa")) {
 			this.nakijkenBox.setSelected(((Boolean)h.get("kijkNa")).booleanValue());
+			
+			if(h.containsKey("maxScore")) {
+				this.maxScoreField.setText((String)h.get("maxScore"));
+			}
 			
 			if(this.nakijkenBox.isSelected()) {
 				if(h.containsKey("antwoordN")) {
@@ -618,6 +661,9 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		
 		if(this.nakijkenBox.isSelected()) {
 			h.put("kijkNa", new Boolean(true));
+			
+			h.put("maxScore", this.maxScoreField.getText());
+			
 			if(this.kijkNNa.isSelected()) {
 				h.put("antwoordN", this.nInvoer.getInput());
 			}
