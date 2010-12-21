@@ -1,5 +1,6 @@
 package fi.binomverdeling;
 
+import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -43,6 +44,13 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private JCheckBox showKansBalkBox;
 	private JCheckBox showNoordBalkBox;
 	private JCheckBox showHyperKeuzeBox;
+	
+	private JLabel successenSliderLinksLabel;
+	private JLabel successenSliderRechtsLabel;
+	private JTextField successenSliderLinksField;
+	private JTextField successenSliderRechtsField;
+	
+	
 	private Font font;
 	
 	
@@ -102,6 +110,7 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//aanpassingenhelft
 		this.aanpassingenHelft = new JPanel();
 		this.aanpassingenHelft.setLayout(new GridLayout(10,1));
+		this.aanpassingenHelft.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
 		this.nVeranderbaarBox = new JCheckBox("n veranderbaar", true);
 		this.nVeranderbaarBox.setFont(this.font);
@@ -177,6 +186,35 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.showKansBalkBox.setFont(this.font);
 		this.showKansBalkBox.addActionListener(this);
 		this.aanpassingenHelft.add(this.showKansBalkBox);
+		
+		
+		
+		this.successenSliderLinksLabel = new JLabel("Initiële grens links: ");
+		this.successenSliderLinksLabel.setFont(this.font);
+		this.successenSliderLinksField = new JTextField();
+		this.successenSliderLinksField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensLinks()));
+		this.successenSliderLinksField.setFont(this.font);
+		this.successenSliderLinksField.addActionListener(this);
+		this.successenSliderLinksField.addFocusListener(this);
+		JPanel successenSliderLinksPanel = new JPanel(new GridLayout(1,2));
+		successenSliderLinksPanel.add(this.successenSliderLinksLabel);
+		successenSliderLinksPanel.add(this.successenSliderLinksField);
+		this.aanpassingenHelft.add(successenSliderLinksPanel);
+		
+		this.successenSliderRechtsLabel = new JLabel("Initiële grens rechts: ");
+		this.successenSliderRechtsLabel.setFont(this.font);
+		this.successenSliderRechtsField = new JTextField();
+		this.successenSliderRechtsField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensRechts()));
+		this.successenSliderRechtsField.setFont(this.font);
+		this.successenSliderRechtsField.addActionListener(this);
+		this.successenSliderRechtsField.addFocusListener(this);
+		JPanel successenSliderRechtsPanel = new JPanel(new GridLayout(1,2));
+		successenSliderRechtsPanel.add(this.successenSliderRechtsLabel);
+		successenSliderRechtsPanel.add(this.successenSliderRechtsField);
+		this.aanpassingenHelft.add(successenSliderRechtsPanel);
+		
+		this.interactiePanel.getStaafjesPanel().addSuccessenSliderListener(this);
+		this.interactiePanel.addNSliderListener(this);
 		
 		this.settingsPanel.add(this.aanpassingenHelft);
 		
@@ -393,6 +431,31 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 	
+	private void successenSliderLinksFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.successenSliderLinksField.getText());
+		if(!invoer.isValidIntInput()) {
+			this.successenSliderLinksField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensLinks()));
+		}
+	}
+	
+	private void successenSliderRechtsFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.successenSliderRechtsField.getText());
+		if(!invoer.isValidIntInput()) {
+			this.successenSliderRechtsField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensRechts()));
+		}
+	}
+	
+	private void setSuccessenSliderFields() {
+		BVInvoer invoer = new BVInvoer(this.successenSliderLinksField.getText());
+		if(!invoer.isRandomInput()) {
+			this.successenSliderLinksField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensLinks()));
+		}
+		invoer.setInput(this.successenSliderRechtsField.getText());
+		if(!invoer.isRandomInput()) {
+			this.successenSliderRechtsField.setText(String.valueOf(this.interactiePanel.getStaafjesPanel().getGrensRechts()));
+		}
+	}
+	
 	/**
 	 * Implementatie voor ActionListener
 	 * Verwerkt de user-interaction
@@ -462,8 +525,15 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 			this.interactiePanel.setKijkOpdrachtNa(this.nakijkenBox.isSelected());
 			this.showRightItems();
 		}
+		else if(e.getSource() == this.successenSliderLinksField) {
+			this.successenSliderLinksFieldUpdate();
+		}
+		else if(e.getSource() == this.successenSliderRechtsField) {
+			this.successenSliderRechtsFieldUpdate();
+		}
 		else {
 			this.showRightItems();
+			this.setSuccessenSliderFields();
 		}
 		
 	}
@@ -493,6 +563,12 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		else if(e.getSource() == this.maxScoreField) {
 			this.maxScoreFieldUpdate();
+		}
+		else if(e.getSource() == this.successenSliderLinksField) {
+			this.successenSliderLinksFieldUpdate();
+		}
+		else if(e.getSource() == this.successenSliderRechtsField) {
+			this.successenSliderRechtsFieldUpdate();
 		}
 	}
 	
@@ -546,6 +622,12 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		if(h.containsKey("showHyperKeuze")) {
 			this.showHyperKeuzeBox.setSelected(((Boolean)h.get("showHyperKeuze")).booleanValue());
+		}
+		if(h.containsKey("initGrensLinks")) {
+			this.successenSliderLinksField.setText((String)h.get("initGrensLinks"));
+		}
+		if(h.containsKey("initGrensRechts")) {
+			this.successenSliderRechtsField.setText((String)h.get("initGrensRechts"));
 		}
 		
 		if(h.containsKey("kijkNa")) {
@@ -645,19 +727,10 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//haal de edit gegevens uit het InteractiePanel
 		Hashtable h = this.interactiePanel.getEditState();
 		
-		//en voeg de editgegevens uit het InteractieEditPanel er aan toe.
-		/*
-		h.put("nVeranderbaar", new Boolean(this.nVeranderbaarBox.isSelected()));
-		h.put("pVeranderbaar", new Boolean(this.pVeranderbaarBox.isSelected()));
-		h.put("showXAs", new Boolean(this.xAsWeergaveBox.isSelected()));
-		h.put("showYAs", new Boolean(this.yAsWeergaveBox.isSelected()));
-		h.put("showNSlider", new Boolean(this.nSliderWeergaveBox.isSelected()));
-		h.put("showPSlider", new Boolean(this.pSliderWeergaveBox.isSelected()));
-		h.put("showGrensSlider", new Boolean(this.grensSliderWeergaveBox.isSelected()));
-		h.put("showKansBalk", new Boolean(this.showKansBalkBox.isSelected()));
-		h.put("showNoordBalk", new Boolean(this.showNoordBalkBox.isSelected()));
-		h.put("showTweeGrenzenKeuze", new Boolean(this.showTweeGrenzenKeuzeBox.isSelected()));
-		*/
+		
+		
+		h.put("initGrensLinks", this.successenSliderLinksField.getText());
+		h.put("initGrensRechts", this.successenSliderRechtsField.getText());
 		
 		if(this.nakijkenBox.isSelected()) {
 			h.put("kijkNa", new Boolean(true));

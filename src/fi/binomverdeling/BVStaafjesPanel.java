@@ -87,6 +87,14 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	}
 	
 	/**
+	 * Geef anderen de mogelijkheid om de events van de successensliders te volgen. Wordt gebruikt in EditPanel.
+	 */
+	public void addSuccessenSliderListener(ActionListener al) {
+		this.successenSlider.addActionListener(al);
+		this.successenDoubleSlider.addActionListener(al);
+	}
+	
+	/**
 	 * Bereken de breedte van de staafjes aan de hand van het aantal staafjes en 
 	 * de breedte van het panel
 	 */

@@ -255,9 +255,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.kijkNaButton = new JButton("Kijk Na");
 		this.kijkNaButton.setFont(this.font);
 		this.kijkNaButton.addActionListener(this);
-		this.kijkNaPanel = new JPanel(new GridLayout(1,2));
+		this.kijkNaPanel = new JPanel(null);
+		this.kijkNaPanel.setBackground(Color.WHITE);
 		this.kijkNaPanel.add(this.kijkNaButton);
 		this.kijkNaPanel.setVisible(this.kijkOpdrachtNa);
+		this.plaatsComponentenKijkNaPanel(this.getWidth());
 		
 		this.keuzeBalk = new JPanel(new GridLayout(1,2));
 		this.keuzeBalk.setBackground(Color.WHITE);
@@ -508,6 +510,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	private void plaatsComponentenKijkNaPanel(int breedte) {
+		this.kijkNaButton.setBounds((breedte/2)-140, 4, 100, 17);
+	}
+	
 	private void plaatsComponentenNoordBalk(int breedte) {
 		int comboHeight;
 		if(this.showHyperKeuze) {
@@ -689,6 +695,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			som += this.berekenHyperKansK(count);
 		}
 		return som;
+	}
+	
+	public BVStaafjesPanel getStaafjesPanel() {
+		return this.staafjesPanel;
+	}
+	
+	public void addNSliderListener(ActionListener al) {
+		this.nSlider.addActionListener(al);
 	}
 	
 	public double getP() {
@@ -1468,6 +1482,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.setPSlider();
 			
 			this.plaatsComponentenNoordBalk(b);
+			this.plaatsComponentenKijkNaPanel(b);
 			
 			//zet bounds van panel
 			super.setBounds(x, y, b, h);
@@ -1500,10 +1515,31 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * @param randomValues de waarden van alle random variabelen
 	 */
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
+		BVInvoer invoer = new BVInvoer("");
+		
 		//zet gegevens uit getEditState hashtable
 		this.setState(b);
 		
 		//vul de randomwaarden in
+		if(b.containsKey("initGrensLinks")) {
+			invoer.setInput((String)b.get("initGrensLinks"));
+			if(invoer.isRandomInput()) {
+				this.staafjesPanel.setGrensLinks((int)BVInteractiePanel.substitueerRandom(0, invoer.getInput(), randomVars, randomValues));
+			}
+			else {
+				this.staafjesPanel.setGrensLinks(Integer.parseInt(invoer.getInput()));
+			}
+		}
+		if(b.containsKey("initGrensRechts")) {
+			invoer.setInput((String)b.get("initGrensRechts"));
+			if(invoer.isRandomInput()) {
+				this.staafjesPanel.setGrensRechts((int)BVInteractiePanel.substitueerRandom(10, invoer.getInput(), randomVars, randomValues));
+			}
+			else {
+				this.staafjesPanel.setGrensRechts(Integer.parseInt(invoer.getInput()));
+			}
+		}
+		
 		if(this.nInvoer.isRandomInput()) {
 			this.n = (int) BVInteractiePanel.substitueerRandom((double)this.n, this.nInvoer.getInput(), randomVars, randomValues);
 			this.nInvoer.setInput(Integer.toString(this.n));
@@ -1542,9 +1578,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		
 		//zet nakijkopties
-		if(b.containsKey("kijkNa")) {
-			BVInvoer invoer = new BVInvoer("");
-			
+		if(b.containsKey("kijkNa")) {			
 			this.kijkOpdrachtNa = ((Boolean)b.get("kijkNa")).booleanValue();
 			
 			if(b.containsKey("maxScore")) {
