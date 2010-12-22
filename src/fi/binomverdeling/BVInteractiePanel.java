@@ -40,10 +40,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private int M; //voor hypergeometrisch, succesgevallen in populatie
 	private int populatie; //voor hypergeometrisch, grootte van populatie
 	
-	//private int successen;
-	//private int grensLinks; //gebruikt als voor tweegrenzen is gekozen
-	//private int grensRechts; //geld als grens in geval van 1 grens, geld als linkergrens in geval van twee grenzen
-	
 	private GrenzenOptie grenzenOptie;
 	private boolean tweeGrenzen; //true = 2 grenzen, false = 1 grens
 	
@@ -97,9 +93,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private BVInvoer pInvoer;
 	private BVInvoer MInvoer;
 	private BVInvoer populatieInvoer;
-	
-	//private String nString;
-	//private String pString;
 	
 	private boolean showNoordBalk;
 	private boolean showTweeGrenzenKeuze;
@@ -341,9 +334,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.MSlider.zetLengte(this.getWidth()/3);
         this.populatieSlider.zetLengte(this.getWidth()/3);
         
-        //this.setSlider(this.nSlider, (double)(this.n-BVInteractiePanel.N_MIN)/(double)(BVInteractiePanel.N_MAX - BVInteractiePanel.N_MIN));
-        //this.setSlider(this.pSlider, this.p);
-        
         this.nSlider.addActionListener(this);
         this.pSlider.addActionListener(this);
         this.MSlider.addActionListener(this);
@@ -453,6 +443,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * @return De string die op het linker kanslabel moet komen te staan.
+	 */
 	private String kansLabelLinksTekst() {
 		if(this.tweeGrenzen) {
 			int grens = this.staafjesPanel.getGrensLinks();
@@ -484,6 +477,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * @return De string die op het middelste kanslabel moet komen te staan.
+	 */
 	private String kansLabelMiddenTekst() {
 		if(this.tweeGrenzen) {
 			double kans;
@@ -509,6 +505,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * @return De string die op het rechter kanslabel moet komen te staan.
+	 */
 	private String kansLabelRechtsTekst() {
 		if(this.tweeGrenzen) {
 			double kans;
@@ -534,12 +533,20 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * Procedure om alle componenten in het kijkNaPanel goed te plaatsen
+	 * @param breedte De (eventueel nieuwe) breedte van het gehele BVInteractiePanel
+	 */
 	private void plaatsComponentenKijkNaPanel(int breedte) {
 		this.kijkNaButton.setBounds((breedte/2)-140, 4, 100, 17);
 		this.vinkjeLabel.setBounds((breedte/2)-40, 0, 20, 20);
 		this.kruisjeLabel.setBounds((breedte/2)-40, 0, 20, 20);
 	}
 	
+	/**
+	 * Procedure om alle componenten in de noordBalk goed te plaatsen
+	 * @param breedte De (eventueel nieuwe) breedte van het gehele BVInteractiePanel
+	 */
 	private void plaatsComponentenNoordBalk(int breedte) {
 		int comboHeight;
 		if(this.showHyperKeuze) {
@@ -691,7 +698,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	/**
 	 * Komt neer op BinomCDF
-	 * @return P(X<=this.successen)
+	 * @return P(van <= X <= tot)
 	 */
 	public double berekenKansCumulatief(int van, int tot) {
 		if(van <= 0 && tot >= this.n) { //als alles meetelt is de som dus 1
@@ -706,6 +713,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * Bepaal de kans op k successen in een hypergeometrische verdeling
+	 * @param k Het aantal te behalen successen
+	 * @return P(X = k)
+	 */
 	public double berekenHyperKansK(int k) {
 		if(k > this.M) {
 			return 0.0;
@@ -715,6 +727,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 	}
 	
+	/**
+	 * Bepaal de kans op een aantal successen uit [van;tot] in een hypergeometrische verdeling
+	 * @return P(van <= X <= tot)
+	 */
 	public double berekenHyperKansCumulatief(int van, int tot) {
 		double som = 0.0;
 		for(int count = van; count <= tot; count++) {
@@ -823,6 +839,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		//this.staafjesPanel.bepaalGrenzenMetSlider();
 	}
 	
+	/**
+	 * Kies tussen binomiale en hypergeometrische verdeling
+	 * @param hypergeometrisch true voor hypergeometrisch, false voor binomiaal
+	 */
 	private void setHypergeometrisch(boolean hypergeometrisch) {
 		this.hypergeometrisch = hypergeometrisch;
 		if(this.hypergeometrisch) {
@@ -905,6 +925,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (populatie > 0) {
 			this.populatie = populatie;
 			
+			//controleer of de populatie niet kleiner wordt dan een onveranderbaar succesdeel,
+			//of kleiner wordt dan een onveranderbare n.
 			if((this.populatie < this.M && !this.MVeranderbaar) || (this.populatie < this.n && !this.nVeranderbaar)) {
 				this.populatie = Math.max(this.n, this.M);
 				this.setPopulatieSlider();
@@ -932,7 +954,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(n >= 0) {
 			this.n = n;
 			
+			//kijk of n niet groter wordt dan de gehele populatie
 			if(this.n > this.populatie) {
+				//kijk of je de populatie wel kunt aanpassen
 				if(this.populatieVeranderbaar) {
 					this.setPopulatie(this.n);
 					this.setPopulatieSlider();
@@ -950,6 +974,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 	}
 	
+	/**
+	 * Procedure om de juiste componenten toe te voegen aan de zuidBalk;
+	 */
 	private void showRightComponentsZuidBalk() {
 		this.remove(this.keuzeBalk);
 		this.remove(this.zuidBalk);
@@ -1115,6 +1142,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.vernieuw();
 		}
 	}
+	
+	/**
+	 * Verwerk ActionEvents
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().equals("ntextupdate")) {
 			this.nTextUpdate();
@@ -1206,9 +1237,13 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	//====================================================================================================
-	//==================Interface methoden================================================================
+	//===========InteractiePanel Interface methoden=======================================================
 	//====================================================================================================
 	
+	/**
+	 * Geef anderen de mogelijkheid om naar dit BVInteractiePanel te luisteren
+	 * -> vuurt allen event bij nakijken
+	 */
 	public void addActionListener(ActionListener al) {
 		this.listeners.add(al);
 	}
@@ -1220,8 +1255,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public int geefAsHoogte() {
 		return 0;
 	}
-
-	
+		
+	/**
+	 * Methode om een EditPanel op te vragen
+	 * @return een nieuw BVInteractieEditPanel
+	 */
 	public InteractieEditPanel getEditPanel() {
 		return new BVInteractieEditPanel();
 	}
@@ -1246,10 +1284,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		return 0;
 	}
 	
+	/**
+	 * @return De huidige score voor deze opgave
+	 */
 	public int getScore() {
 		return this.score;
 	}
 	
+	/**
+	 * @return De te behalen score voor deze opgave
+	 */
 	public int getScoreMax() {
 		return this.maxScore;
 	}
@@ -1496,7 +1540,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	}
 	
 	/**
-	 * Override setBounds, zet naast het panel ook de sliders op de juiste grootte
+	 * Override setBounds om bepaalde componenten goed te plaatsen en te resizen
 	 */
 	public void setBounds(int x, int y, int b, int h) {
 		Rectangle r = new Rectangle(x,y,b,h);
@@ -1547,7 +1591,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 * Initialiseer zoals in de BVInteractieEditPanel is ingesteld, met evt. randomvars.
 	 * @param b De hashtable die uit getEditState() komt
 	 * @param randomVars De namen van de random variabelen
-	 * @param randomValues de waarden van alle random variabelen
+	 * @param randomValues De waarden van alle random variabelen
 	 */
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
 		BVInvoer invoer = new BVInvoer("");
