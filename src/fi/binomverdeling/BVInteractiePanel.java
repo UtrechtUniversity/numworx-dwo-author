@@ -16,6 +16,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -107,6 +108,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private JButton kijkNaButton;
 	private JPanel kijkNaPanel;
+	private JLabel vinkjeLabel;
+	private JLabel kruisjeLabel;
 	
 	private Font font;
 	private FontMetrics fontMetrics;
@@ -255,9 +258,30 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.kijkNaButton = new JButton("Kijk Na");
 		this.kijkNaButton.setFont(this.font);
 		this.kijkNaButton.addActionListener(this);
+		
+		java.net.URL imageURL = BinomVerdeling.class.getResource("resources/goedkrul_en_klein.gif");
+		if (imageURL != null) {
+		    this.vinkjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading goedkrul_en_klein.gif.");
+			this.vinkjeLabel = new JLabel();
+		}
+		imageURL = BinomVerdeling.class.getResource("resources/foutkruis_klein.gif");
+		if (imageURL != null) {
+		    this.kruisjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading foutkruis_klein.gif.");
+			this.kruisjeLabel = new JLabel();
+		}
+		this.vinkjeLabel.setVisible(false);
+		this.kruisjeLabel.setVisible(false);
 		this.kijkNaPanel = new JPanel(null);
 		this.kijkNaPanel.setBackground(Color.WHITE);
 		this.kijkNaPanel.add(this.kijkNaButton);
+		this.kijkNaPanel.add(this.vinkjeLabel);
+		this.kijkNaPanel.add(this.kruisjeLabel);
 		this.kijkNaPanel.setVisible(this.kijkOpdrachtNa);
 		this.plaatsComponentenKijkNaPanel(this.getWidth());
 		
@@ -512,6 +536,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	
 	private void plaatsComponentenKijkNaPanel(int breedte) {
 		this.kijkNaButton.setBounds((breedte/2)-140, 4, 100, 17);
+		this.vinkjeLabel.setBounds((breedte/2)-40, 0, 20, 20);
+		this.kruisjeLabel.setBounds((breedte/2)-40, 0, 20, 20);
 	}
 	
 	private void plaatsComponentenNoordBalk(int breedte) {
@@ -1445,7 +1471,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.score = 0;
 		}
 		
+		this.vinkjeLabel.setVisible(correct);
+		this.kruisjeLabel.setVisible(!correct);
+		
 		System.out.println("Nagekeken. Score: " + this.score);
+		
 		//fire actionEvent
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		Iterator<ActionListener> iterator = this.listeners.iterator();
