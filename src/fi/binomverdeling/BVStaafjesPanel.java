@@ -111,7 +111,7 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	}
 	
 	public void bepaalGrenzenMetSlider() {
-		System.out.println("bepaal grenzen met sliders");
+		//System.out.println("bepaal grenzen met sliders");
 		if(this.showGrensSlider) {
 			if(this.tweeGrenzen) {
 	        	this.grensRechts = (int)((double)(this.successenDoubleSlider.geefStandRechts())/this.staafBreedte);

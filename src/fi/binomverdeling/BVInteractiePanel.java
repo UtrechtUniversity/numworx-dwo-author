@@ -1474,7 +1474,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.vinkjeLabel.setVisible(correct);
 		this.kruisjeLabel.setVisible(!correct);
 		
-		System.out.println("Nagekeken. Score: " + this.score);
 		
 		//fire actionEvent
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
