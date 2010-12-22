@@ -14,26 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/fi/binomverdeling/resources/foutkruis.gif</name>
-			<type>1</type>
-			<location>C:/Users/Manu_PC/Desktop/foutkruis.gif</location>
-		</link>
-		<link>
-			<name>src/fi/binomverdeling/resources/foutkruis_klein.gif</name>
-			<type>1</type>
-			<location>C:/Users/Manu_PC/Desktop/foutkruis_klein.gif</location>
-		</link>
-		<link>
-			<name>src/fi/binomverdeling/resources/goedkrul_en.gif</name>
-			<type>1</type>
-			<location>C:/Users/Manu_PC/Desktop/goedkrul_en.gif</location>
-		</link>
-		<link>
-			<name>src/fi/binomverdeling/resources/goedkrul_en_klein.gif</name>
-			<type>1</type>
-			<location>C:/Users/Manu_PC/Desktop/goedkrul_en_klein.gif</location>
-		</link>
-	</linkedResources>
 </projectDescription>
