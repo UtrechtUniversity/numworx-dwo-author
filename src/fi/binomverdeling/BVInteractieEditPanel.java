@@ -737,6 +737,10 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 			
 			h.put("maxScore", this.maxScoreField.getText());
 			
+			//Fix Peter: WiskOpdr verwacht dat er een Integer wordt weggeschreven onder de sleutel:"scoreMax"
+			h.put("scoreMax", new Integer(Integer.parseInt(this.maxScoreField.getText())));
+			//Einde Fix
+			
 			if(this.kijkNNa.isSelected()) {
 				h.put("antwoordN", this.nInvoer.getInput());
 			}
