@@ -1658,8 +1658,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if(b.containsKey("kijkNa")) {			
 			this.kijkOpdrachtNa = ((Boolean)b.get("kijkNa")).booleanValue();
 			
-			if(b.containsKey("maxScore")) {
-				this.maxScore = Integer.parseInt((String)b.get("maxScore"));
+			if(b.containsKey("scoreMax")) {
+				this.maxScore = ((Integer)b.get("scoreMax")).intValue();
 			}
 			
 			if(this.kijkOpdrachtNa) {

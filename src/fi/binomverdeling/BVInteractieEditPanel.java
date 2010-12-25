@@ -672,8 +672,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		if(h.containsKey("kijkNa")) {
 			this.nakijkenBox.setSelected(((Boolean)h.get("kijkNa")).booleanValue());
 			
-			if(h.containsKey("maxScore")) {
-				this.maxScoreField.setText((String)h.get("maxScore"));
+			if(h.containsKey("scoreMax")) {
+				this.maxScoreField.setText(((Integer)h.get("scoreMax")).toString());
 			}
 			
 			if(this.nakijkenBox.isSelected()) {
@@ -768,19 +768,14 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//haal de edit gegevens uit het InteractiePanel
 		Hashtable h = this.interactiePanel.getEditState();
 		
-		
-		
 		h.put("initGrensLinks", this.successenSliderLinksField.getText());
 		h.put("initGrensRechts", this.successenSliderRechtsField.getText());
 		
 		if(this.nakijkenBox.isSelected()) {
 			h.put("kijkNa", new Boolean(true));
 			
-			h.put("maxScore", this.maxScoreField.getText());
-			
-			//Fix Peter: WiskOpdr verwacht dat er een Integer wordt weggeschreven onder de sleutel:"scoreMax"
+			//schrijf de maximale score in de hashtable, deze wordt ook gelezen door WiskOpdr
 			h.put("scoreMax", new Integer(Integer.parseInt(this.maxScoreField.getText())));
-			//Einde Fix
 			
 			if(this.kijkNNa.isSelected()) {
 				h.put("antwoordN", this.nInvoer.getInput());
