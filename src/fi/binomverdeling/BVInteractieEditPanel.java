@@ -59,6 +59,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 	private BVInvoer pInvoer;
 	private BVInvoer MInvoer;
 	private BVInvoer populatieInvoer;
+	private BVInvoer grensLinksInvoer;
+	private BVInvoer grensRechtsInvoer;
 	
 	private JPanel nakijkHelft;
 	private JCheckBox nakijkenBox;
@@ -269,12 +271,18 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		this.grensLinksField = new JTextField(3);
 		this.grensLinksField.setFont(this.font);
 		this.grensLinksField.addActionListener(this);
+		this.grensLinksField.addFocusListener(this);
+		this.grensLinksField.setText("5");
+		this.grensLinksInvoer = new BVInvoer("5");
 		this.grensTotLabel = new JLabel("tot:");
 		this.grensTotLabel.setFont(this.font);
 		this.grensTotLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		this.grensRechtsField = new JTextField(3);
 		this.grensRechtsField.setFont(this.font);
 		this.grensRechtsField.addActionListener(this);
+		this.grensRechtsField.addFocusListener(this);
+		this.grensRechtsField.setText("10");
+		this.grensRechtsInvoer = new BVInvoer("10");
 		this.checkGrenzenPanel = new JPanel(new GridLayout(1,2));
 		this.checkGrenzenPanel.add(this.kijkGrenzenNa);
 		this.checkGrenzenHulpPanel = new JPanel(new GridLayout(1,4));
@@ -431,6 +439,25 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 	}
 	
+	private void grensLinksFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.grensLinksField.getText());
+		if(invoer.isValidIntInput()) {
+			this.grensLinksInvoer.setInput(invoer.getInput());
+		}
+		else {
+			this.grensLinksField.setText(this.grensLinksInvoer.getInput());
+		}
+	}
+	
+	private void grensRechtsFieldUpdate() {
+		BVInvoer invoer = new BVInvoer(this.grensRechtsField.getText());
+		if(invoer.isValidIntInput()) {
+			this.grensRechtsInvoer = invoer;
+		}
+		else {
+			this.grensRechtsField.setText(this.grensRechtsInvoer.getInput());
+		}
+	}
 	private void successenSliderLinksFieldUpdate() {
 		BVInvoer invoer = new BVInvoer(this.successenSliderLinksField.getText());
 		if(!invoer.isValidIntInput()) {
@@ -525,6 +552,12 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 			this.interactiePanel.setKijkOpdrachtNa(this.nakijkenBox.isSelected());
 			this.showRightItems();
 		}
+		else if(e.getSource() == this.grensLinksField) {
+			this.grensLinksFieldUpdate();
+		}
+		else if(e.getSource() == this.grensRechtsField) {
+			this.grensRechtsFieldUpdate();
+		}
 		else if(e.getSource() == this.successenSliderLinksField) {
 			this.successenSliderLinksFieldUpdate();
 		}
@@ -569,6 +602,12 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 		}
 		else if(e.getSource() == this.successenSliderRechtsField) {
 			this.successenSliderRechtsFieldUpdate();
+		}
+		else if(e.getSource() == this.grensLinksField) {
+			this.grensLinksFieldUpdate();
+		}
+		else if(e.getSource() == this.grensRechtsField) {
+			this.grensRechtsFieldUpdate();
 		}
 	}
 	
@@ -649,8 +688,10 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 				
 				if(h.containsKey("antwoordGrenzenVan") && h.containsKey("antwoordGrenzenTot")) {
 					this.kijkGrenzenNa.setSelected(true);
-					this.grensLinksField.setText((String)h.get("antwoordGrenzenVan"));
-					this.grensRechtsField.setText((String)h.get("antwoordGrenzenTot"));
+					this.grensLinksInvoer.setInput((String)h.get("antwoordGrenzenVan"));
+					this.grensLinksField.setText(this.grensLinksInvoer.getInput());
+					this.grensRechtsInvoer.setInput((String)h.get("antwoordGrenzenTot"));
+					this.grensRechtsField.setText(this.grensRechtsInvoer.getInput());
 				}
 				else {
 					this.kijkGrenzenNa.setSelected(false);
@@ -745,8 +786,8 @@ public class BVInteractieEditPanel extends JPanel implements InteractieEditPanel
 				h.put("antwoordN", this.nInvoer.getInput());
 			}
 			if(this.kijkGrenzenNa.isSelected()) {
-				h.put("antwoordGrenzenVan", this.grensLinksField.getText());
-				h.put("antwoordGrenzenTot", this.grensRechtsField.getText());
+				h.put("antwoordGrenzenVan", this.grensLinksInvoer.getInput());
+				h.put("antwoordGrenzenTot", this.grensRechtsInvoer.getInput());
 			}
 			if(this.kijkVerdelingNa.isSelected()) {
 				h.put("antwoordVerdeling", this.verdelingComboBox.getSelectedIndex());

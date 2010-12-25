@@ -1798,6 +1798,5 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		//update
 		this.vernieuw();
-		
 	}
 }
