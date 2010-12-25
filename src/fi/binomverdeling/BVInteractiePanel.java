@@ -1413,11 +1413,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		if (b.containsKey("grensLinks")) {
 			this.staafjesPanel.setGrensLinks(((Integer)b.get("grensLinks")).intValue());
-			System.out.println("GrensLinks set to " + this.staafjesPanel.getGrensLinks());
 		}
 		if (b.containsKey("grensRechts")) {
 			this.staafjesPanel.setGrensRechts(((Integer)b.get("grensRechts")).intValue());
-			System.out.println("GrensRechts set to " + this.staafjesPanel.getGrensRechts());
 		}
 		
 		if (b.containsKey("grenzenOptie")) {
@@ -1681,8 +1679,22 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				
 				if(b.containsKey("antwoordGrenzenVan") && b.containsKey("antwoordGrenzenTot")) {
 					this.kijkGrenzenNa = true;
-					this.antwoordGrensLinks = Integer.parseInt((String)b.get("antwoordGrenzenVan"));
-					this.antwoordGrensRechts = Integer.parseInt((String)b.get("antwoordGrenzenTot"));
+					invoer.setInput((String)b.get("antwoordGrenzenVan"));
+					if(invoer.isRandomInput()) {
+						this.antwoordGrensLinks = (int) BVInteractiePanel.substitueerRandom(5, invoer.getInput(), randomVars, randomValues);
+					}
+					else {
+						this.antwoordGrensLinks = Integer.parseInt((String)b.get("antwoordGrenzenVan"));
+					}
+					
+					invoer.setInput((String)b.get("antwoordGrenzenTot"));
+					if(invoer.isRandomInput()) {
+						this.antwoordGrensRechts = (int) BVInteractiePanel.substitueerRandom(10, invoer.getInput(), randomVars, randomValues);
+					}
+					else {
+						this.antwoordGrensRechts = Integer.parseInt((String)b.get("antwoordGrenzenTot"));
+					}
+					
 				}
 				else {
 					this.kijkGrenzenNa = false;
@@ -1786,5 +1798,6 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		//update
 		this.vernieuw();
+		
 	}
 }
