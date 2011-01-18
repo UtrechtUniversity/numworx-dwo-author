@@ -1440,6 +1440,20 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		
 		return result;
 	}
+	
+	public KnipPolygon knipPolygonLabelPointContains(RealPoint realClicked)
+	{	KnipPolygon result = null;
+	
+		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
+		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+			if ((kp.labelPoint != null) && (owner.taakNummer == 2) && 
+				(realClicked.distance(kp.labelPoint) < clickDis))
+				result = kp;
+		}
+		
+		return result;
+	}
+	
 
 	public boolean knipPolygonIntersects(Rectangle r, KnipPolygon skip)
 	{	boolean result = false;
@@ -1551,8 +1565,9 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 							startY = e.getY();
 						} // draggPolygon != null
 						
-						else // kijk of er op een label geklikt is
-						{	KnipPolygon labelPoly = knipPolygonLabelContains(e.getX(), e.getY());
+						else // kijk of er op een label of op een deel van een labelpunt buiten het polygon geklikt is
+						{	
+							KnipPolygon labelPoly = knipPolygonLabelContains(e.getX(), e.getY());
 							if (labelPoly != null)
 							{	
 //System.out.println("label");							
@@ -1581,7 +1596,23 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 							}
 							else
 							{
-//System.out.println("null");															
+								RealPoint realClicked = new RealPoint(e.getX(), e.getY());							
+								
+								// kijk of het labelPoint van een draggPolygon aangeklikt is
+								KnipPolygon labelPointPolygon = knipPolygonLabelPointContains(realClicked);
+								
+								if ((owner.taakNummer == 2) && (labelPointPolygon != null))
+								{	//if (realClicked.distance(
+									//		draggPolygon.labelPoint) < clickDis)
+									//{	
+									labelPointPolygon.labelVisible =
+										!labelPointPolygon.labelVisible;
+									repaint();	
+									
+									return;
+									//}	
+								}
+															
 							}
 						}
 						

@@ -568,31 +568,33 @@ public class KnipPolygon
 			// probeer eerst linksboven
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[topIndex].x + owner.gridSize / 4,
-					intPoints[topIndex].y + owner.gridSize / 4);
+					intPoints[topIndex].x + owner.ovalSize, //owner.gridSize / 4,
+					intPoints[topIndex].y + owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[topIndex].x, 
 					intPoints[topIndex].y - offSet - labelHeight,
 					labelWidth, labelHeight);	
 				iRect = growBorder(lRect, offSet);	
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());		
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());		
 				labelAlign = LEFT;		
+//System.out.println("linksboven");				
 			}
 			// dan rechtsboven
 			int topIndex2 = (topPt.x + 1) % aantalPunten;
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[topIndex2].x - owner.gridSize / 4,
-					intPoints[topIndex2].y + owner.gridSize / 4);
+					intPoints[topIndex2].x - owner.ovalSize, //owner.gridSize / 4,
+					intPoints[topIndex2].y + owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[topIndex2].x - labelWidth, 
 					intPoints[topIndex2].y - offSet - labelHeight,
 					labelWidth, labelHeight);	
 				iRect = growBorder(lRect, offSet);						
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());		
-				labelAlign = RIGHT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());		
+				labelAlign = RIGHT;
+//System.out.println("rechtsboven");				
 			}
 			
 				
@@ -605,31 +607,33 @@ public class KnipPolygon
 			// eerst boven rechts
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[rightIndex].x - owner.gridSize / 4,
-					intPoints[rightIndex].y + owner.gridSize / 4);
+					intPoints[rightIndex].x - owner.ovalSize, //owner.gridSize / 4,
+					intPoints[rightIndex].y + owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[rightIndex].x + offSet, 
 					intPoints[rightIndex].y,
 					labelWidth, labelHeight);		
 				iRect = growBorder(lRect, offSet);							
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());					
-				labelAlign = LEFT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());					
+				labelAlign = LEFT;
+//System.out.println("boven rechts");				
 			}
 			// dan onder rechts
 			int rightIndex2 = (rightPt.x + 1) % aantalPunten;			
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[rightIndex2].x - owner.gridSize / 4,
-					intPoints[rightIndex2].y - owner.gridSize / 4);
+					intPoints[rightIndex2].x - owner.ovalSize, //owner.gridSize / 4,
+					intPoints[rightIndex2].y - owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[rightIndex2].x + offSet, 
 					intPoints[rightIndex2].y - labelHeight,
 					labelWidth, labelHeight);		
 				iRect = growBorder(lRect, offSet);							
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());					
-				labelAlign = LEFT;								
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());					
+				labelAlign = LEFT;
+//System.out.println("onder rechts");				
 			}
 			
 		}		
@@ -640,31 +644,33 @@ public class KnipPolygon
 			// eerst rechtsonder
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[bottomIndex].x - owner.gridSize / 4,
-					intPoints[bottomIndex].y - owner.gridSize / 4);
+					intPoints[bottomIndex].x - owner.ovalSize, //owner.gridSize / 4,
+					intPoints[bottomIndex].y - owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[bottomIndex].x - labelWidth, 
 					intPoints[bottomIndex].y + offSet,
 					labelWidth, labelHeight);
 				iRect = growBorder(lRect, offSet);										
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());						
-				labelAlign = RIGHT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());						
+				labelAlign = RIGHT;
+//System.out.println("rechtsonder");				
 			}
 			// dan linksonder
 			int bottomIndex2 = (bottomPt.x + 1) % aantalPunten;
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[bottomIndex2].x + owner.gridSize / 4,
-					intPoints[bottomIndex2].y - owner.gridSize / 4);
+					intPoints[bottomIndex2].x + owner.ovalSize, //owner.gridSize / 4,
+					intPoints[bottomIndex2].y - owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[bottomIndex2].x, 
 					intPoints[bottomIndex2].y + offSet,
 					labelWidth, labelHeight);
 				iRect = growBorder(lRect, offSet);										
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());						
-				labelAlign = LEFT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());						
+				labelAlign = LEFT;
+//System.out.println("linksonder");				
 			}
 
 		}		
@@ -675,31 +681,33 @@ public class KnipPolygon
 			// eerst onder links
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[leftIndex].x + owner.gridSize / 4,
-					intPoints[leftIndex].y - owner.gridSize / 4);
+					intPoints[leftIndex].x + owner.ovalSize,//owner.gridSize / 4,
+					intPoints[leftIndex].y - owner.ovalSize);//owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[leftIndex].x - offSet - labelWidth, 
 					intPoints[leftIndex].y - labelHeight,
 					labelWidth, labelHeight);
 				iRect = growBorder(lRect, offSet);													
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());		;					
-				labelAlign = RIGHT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());							
+				labelAlign = RIGHT;
+//System.out.println("onder links");				
 			}
 			// dan boven links
 			int leftIndex2 = (leftPt.x + 1) % aantalPunten;			
 			if (!found)
 			{	lPoint = new RealPoint(
-					intPoints[leftIndex].x + owner.gridSize / 4,
-					intPoints[leftIndex].y + owner.gridSize / 4);
+					intPoints[leftIndex].x + owner.ovalSize, //owner.gridSize / 4,
+					intPoints[leftIndex].y + owner.ovalSize); //owner.gridSize / 4);
 				lRect = new Rectangle(
 					intPoints[leftIndex].x - offSet - labelWidth, 
 					intPoints[leftIndex].y,
 					labelWidth, labelHeight);		
 				iRect = growBorder(lRect, offSet);											
-				found = !owner.knipPolygonIntersects(iRect, this) &&
-						intPolygon.contains(lPoint.toPoint());		;					
-				labelAlign = RIGHT;				
+				found = !owner.knipPolygonIntersects(iRect, this);// &&
+						//intPolygon.contains(lPoint.toPoint());							
+				labelAlign = RIGHT;
+//System.out.println("boven links");				
 			}
 		
 		}	
@@ -710,6 +718,7 @@ public class KnipPolygon
 		else
 		{	labelPoint = null;
 			labelRect = null;
+//System.out.println("geen");			
 		}
 	}
 	

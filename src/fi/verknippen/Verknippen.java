@@ -403,7 +403,7 @@ if (scormed)
 
 		//Fi-logo, copyright
 		fiButton = new FIButton("Verknippen",new String[]
-			{	"versie-info: 20100810",
+			{	"versie-info: 20110118",
 				"auteurs: Monica Wijers, Frans van Galen",
 				"programmeur: Huub Nilwik",
 				"Freudenthal Instituut",
