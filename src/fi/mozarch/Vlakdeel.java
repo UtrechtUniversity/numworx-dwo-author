@@ -1,5 +1,6 @@
 package fi.mozarch;
 
+import java.io.Serializable;
 
 import java.awt.Polygon;
 import java.awt.Color;
@@ -8,6 +9,8 @@ import java.applet.Applet;
 public class Vlakdeel
 {	
 	public int aantalPunten;
+	public int aantalHoekpunten;
+	public int aantalPuntenPerZijde;
 	public HoekpuntMoz[] hoekpunten;
 	public Punt sleeppunt, draaipunt;
 	public double orientatie;
@@ -20,6 +23,8 @@ public class Vlakdeel
 	
 	public double positiex, positiey;
 	//public boolean tekenbaar;
+	
+	//boolean isHeap = false;
 	
 	public int fractielType = 0;
 	
@@ -82,7 +87,7 @@ public class Vlakdeel
 	}
 }
 
-class HoekpuntMoz
+class HoekpuntMoz implements Serializable
 {
 	public Punt tekenpunt;
 	public double x, y;

@@ -123,7 +123,8 @@ public class TekenApplet extends Applet
 	{	tb.achtergrondkleur(kl);
 	}
 	public void achtergrondkleur(int r, int g, int b)
-	{	tb.achtergrondkleur(r, g, b);
+	{	if (tb != null)
+			tb.achtergrondkleur(r, g, b);
 	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "tekenprogramma()" en doorgegeven aan Tekenblad tb (of 
@@ -338,8 +339,11 @@ class Tekenblad extends Canvas
   	{ 	beginpunt = new Punt(startpunt);
     	eindpunt = new Punt(beginpunt);
     	mat.initialiseer();
-	  	gIm.setColor(achtergrondkleur);
-    	if (wis)
+	  	
+    	if (achtergrondkleur != null)
+    		gIm.setColor(achtergrondkleur);
+    	
+	  	if (wis)
     		gIm.fillRect(0, 0, breedte, hoogte);
     	penAan(0, 0, 0);
 		vul = false;
@@ -352,6 +356,10 @@ class Tekenblad extends Canvas
 	{	beginpunt = new Punt(startpunt);
     	eindpunt = new Punt(beginpunt);
 	}
+	public void zetStartPunt(int px, int py)
+	{	startpunt = new Punt(px, py);
+	}
+
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
 	//-------------------------------------------------------------------------------------------

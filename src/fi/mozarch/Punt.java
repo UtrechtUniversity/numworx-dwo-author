@@ -1,7 +1,10 @@
 package fi.mozarch;
 
+import java.io.Serializable;
 
-public class Punt
+
+
+public class Punt implements Serializable
 {	
 	double x, y;
 		

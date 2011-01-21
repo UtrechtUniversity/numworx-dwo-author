@@ -42,11 +42,12 @@ public class MozArch extends TekenApplet implements ActionListener,
 	
 	private InfoButton infoButton;
 	private LWButton wisKnop, inzendenKnop, bestandenKnop;
+	private Panel knopPanel;
 	
 	private BestandenFrame bestandenFrame;
-	
+
 	private int beginFigAantalHp;
-	private int beginFigAantalPz;
+	private int beginFigAantalPz = 1;
 	private int beginFractielType;
 	
 	// parametrisatie
@@ -120,15 +121,15 @@ public class MozArch extends TekenApplet implements ActionListener,
 
 if (scormed)
 {
-	fractielen = true;
+	//fractielen = true;
 }
 		
 		if (fractielen)
-		{	infoButton = new InfoButton("Fractielen",new String[]{"versie-info: 20101130",
+		{	infoButton = new InfoButton("Fractielen",new String[]{"versie-info: 20110121",
 		    						    "Copyright: Peter Boon, Huub Nilwik"});
 		}
 		else
-		{	infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20101130",			  						    "Copyright: Peter Boon"});
+		{	infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20110121",			  						    "Copyright: Peter Boon"});
 		}
 		
 		if (fractielen)
@@ -136,18 +137,18 @@ if (scormed)
 
 		veldXMax = getSize().width - rightWidth;
 		
-		Panel panel = new Panel();
+		knopPanel = new Panel();
 		if (fractielen)
-		{	panel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
+		{	knopPanel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
 			veldYMax = getSize().height - 10;
 		}
 		else	
-		{	panel.setBounds(1, getSize().height - 28, getSize().width - rightWidth, 27);
+		{	knopPanel.setBounds(1, getSize().height - 28, getSize().width - rightWidth, 27);
 			veldYMax = getSize().height - 30;
 		}
-		panel.setLayout(null);
-		panel.setBackground(new Color(220, 220, 160));
-		add(panel);
+		knopPanel.setLayout(null);
+		knopPanel.setBackground(new Color(220, 220, 160));
+		add(knopPanel);
 		//tb.add(panel);
 		
 		if (fractielen)
@@ -155,16 +156,16 @@ if (scormed)
 		else	
 			infoButton.setBounds(10, 4, 40, 20);
 		infoButton.setBackground(new Color(190, 190, 130));
-		panel.add(infoButton);
+		knopPanel.add(infoButton);
 
 		wisKnop = new LWButton(MozArch.rb.getString("wisKnopLabel"));
 		if (fractielen)
-			wisKnop.setBounds(panel.getSize().width - 40 - 5, 4, 40, 20);
+			wisKnop.setBounds(knopPanel.getSize().width - 40 - 5, 4, 40, 20);
 		else	
-			wisKnop.setBounds(panel.getSize().width - 40, 4, 40, 20);
+			wisKnop.setBounds(knopPanel.getSize().width - 40, 4, 40, 20);
 		wisKnop.setBackground(new Color(190,190,130));
 		wisKnop.addActionListener(this);
-		panel.add(wisKnop);
+		knopPanel.add(wisKnop);
 		
 		inzendenKnop = new LWButton(MozArch.rb.getString("opstuurKnopLabel"));
 		inzendenKnop.addActionListener(this);
@@ -185,6 +186,8 @@ if (scormed)
 		//inzendPanel.setVisible(false);
 		
 		achtergrondkleur(bgcolor.getRed(), bgcolor.getGreen(), bgcolor.getBlue());
+		
+		
 		maakMuisActieMogelijk();
 		
 		aantalVlakdelen = 0;
@@ -196,6 +199,8 @@ if (scormed)
 
 		cX = getSize().width / 2;
 		cY = getSize().height / 2;
+		
+		//tb.zetStartPunt(cX, cY);
 		
 		stapelX = getSize().width - rightWidth / 2 - cX;
 		
@@ -215,9 +220,16 @@ if (scormed)
 		
 			if (beginFig)
 			{	int grens = beginCode.indexOf(",");
-				beginFigAantalHp = Integer.parseInt(beginCode.substring(0, grens));
-				beginFigAantalPz = Integer.parseInt(beginCode.substring(grens + 1));
-			}
+				if (grens > 0)
+				{	beginFigAantalHp = Integer.parseInt(beginCode.substring(0, grens));
+					beginFigAantalPz = Integer.parseInt(beginCode.substring(grens + 1));
+				}
+				else
+				{	
+					beginFigAantalHp = Integer.parseInt(beginCode);
+					beginFigAantalPz = 1;
+				}
+			}	
 			
 			if (!beginFig)
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, dummyX, startY, new Color(230, 230, 230));
@@ -295,6 +307,73 @@ if (scormed)
 
 		}
  	}
+	
+
+	public void init2()
+	{	
+		veldXMax = getSize().width - rightWidth;
+		
+		if (fractielen)
+		{	knopPanel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
+			veldYMax = getSize().height - 10;
+		}
+		else	
+		{	knopPanel.setBounds(1, getSize().height - 28, getSize().width - rightWidth, 27);
+			veldYMax = getSize().height - 30;
+		}
+
+		if (fractielen)
+			wisKnop.setBounds(knopPanel.getSize().width - 40 - 5, 4, 40, 20);
+		else	
+			wisKnop.setBounds(knopPanel.getSize().width - 40, 4, 40, 20);
+		
+		cX = getSize().width / 2;
+		cY = getSize().height / 2;
+		
+		stapelX = getSize().width - rightWidth / 2 - cX;
+		
+		dummyX = - 2 * cX; 
+		startX = - cX + (veldXMax + veldXMin) / 2; 	
+		startY = cY - (veldYMax - veldYMin) / 2;
+		
+		// originele versie
+		if (!fractielen)
+		{	
+			
+			if (!beginFig)
+				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, dummyX, startY, new Color(230, 230, 230));
+			else 
+				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, startX, startY, new Color(230, 230, 230));
+			
+			maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
+			maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
+			maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
+			maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
+			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+			
+		}
+		else // versie met fractielen
+		{	
+			
+			if (!beginFig)
+			{	maakFractiel(beginFractielType, beginFigAantalPz, dummyX, startY, new Color(230, 230, 230));
+			}
+			else 
+			{	maakFractiel(beginFractielType, beginFigAantalPz, startX, startY, new Color(230, 230, 230));
+			}
+			
+			// stukje 1 heeft ry=60, dus centrum op 10+60=70
+			// stukje 2 heeft ry=55, dus centrum op 70+60+10+55=195
+			// stukje 3 heeft ry=50, dus centrum op 195+55+10+50=310
+			
+			maakFractiel(1, 1, stapelX, cY - 70, new Color(255, 0, 0));
+			maakFractiel(2, 1, stapelX, cY - 195, new Color(255, 255, 0));
+			maakFractiel(3, 1, stapelX, cY - 310, new Color(0, 0, 255));
+		
+
+		}
+ 	}
+	
 	
 	public void tekenprogramma()
 	{	
@@ -398,7 +477,13 @@ if (scormed)
 	void maakFractiel(int type, int aantalPerZijde, double x, double y, Color k)
 	{
 		vlakdelen[aantalVlakdelen] = new Vlakdeel(this, aantalPerZijde * 4 + 1, x, y, k);
+		vlakdelen[aantalVlakdelen].aantalHoekpunten = 4;
+		vlakdelen[aantalVlakdelen].aantalPuntenPerZijde = aantalPerZijde;
 		vlakdelen[aantalVlakdelen].fractielType = type;
+		
+//		if (((int) Math.round(x)) == stapelX)
+//			vlakdelen[aantalVlakdelen].isHeap = true;
+		
 		volgorde[aantalVlakdelen] = aantalVlakdelen;
 		vlakdelen[aantalVlakdelen].hoekpunten[0] = new HoekpuntMoz(0,0);
 		
@@ -446,6 +531,12 @@ if (scormed)
 		double r = zijde * aantalPerZijde / (2 * Math.sin(Math.PI / n));
 		
 		vlakdelen[aantalVlakdelen] = new Vlakdeel(this, aantalPerZijde * n + 1, x, y, k);
+		vlakdelen[aantalVlakdelen].aantalHoekpunten = n;
+		vlakdelen[aantalVlakdelen].aantalPuntenPerZijde = aantalPerZijde;
+		
+//		if (((int) Math.round(x)) == stapelX)
+//			vlakdelen[aantalVlakdelen].isHeap = true;
+		
 		volgorde[aantalVlakdelen] = aantalVlakdelen;
 		vlakdelen[aantalVlakdelen].hoekpunten[0] = new HoekpuntMoz(0,0);
 	
@@ -812,6 +903,8 @@ if (scormed)
 		actiefVlakdeel = null;
 		tekenOpnieuw();
 	}
+
+
 	
 	public void wis()
 	{	aantalVlakdelen = 0;
@@ -891,7 +984,9 @@ if (scormed)
 	{	if (api != null)
 		{	String s = api.LMSGetValue("cmi.suspend_data");
 			if (s != null && !s.equals(""))
-				setState(s);
+			{	setState(s);
+//System.out.println("set state");			
+			}
 		}
 	}
 	
@@ -901,6 +996,7 @@ if (scormed)
 			String d = new Double(getScore()).toString();
 			api.LMSSetValue("cmi.core.score.raw",d);
 			api.LMSSetValue("cmi.suspend_data",s);
+//System.out.println("get state");			
 		}
 	}
 
@@ -910,17 +1006,32 @@ if (scormed)
 	}
 
 	public void setState(String s)
-	{	// decodeer de string
+	{	
+//System.out.println("set: sl = " + s.length());
+
+//init2();		
+		
+		// decodeer de string
 		Object o = StringCodeObject.decodeStringToObject(s);
 		// cast
 		Hashtable h = (Hashtable) o;
 		
+if (h == null)
+{
+System.out.println("set h = null");	
+	return;
+
+}
+		
 		int tempAantalVlakdelen = 0;
 		Vector vlakdelenVector = new Vector();
-		if (h.contains("vlakdelenVector"))
+		if (h.containsKey("vlakdelenVector"))
 		{	vlakdelenVector = (Vector) h.get("vlakdelenVector");
 			tempAantalVlakdelen = vlakdelenVector.size();
+//System.out.println("set: h contains vv");			
 		}
+		
+//System.out.println("set: tav = " + tempAantalVlakdelen);		
 		
 		if (tempAantalVlakdelen == 0)
 			return;
@@ -932,87 +1043,106 @@ if (scormed)
 			Hashtable hv = (Hashtable) vlakdelenVector.elementAt(i);
 			
 			int fractielType = 3;
-			if (hv.contains("fractielType"))
+			if (hv.containsKey("fractielType"))
 				fractielType = ((Integer) hv.get("fractielType")).intValue();
-			int aantalPunten = 4;
-			if (hv.contains("aantalPunten"))
-				aantalPunten = ((Integer) hv.get("aantalPunten")).intValue();
+			int aantalHoekpunten = 4;
+			if (hv.containsKey("aantalHoekpunten"))
+				aantalHoekpunten = ((Integer) hv.get("aantalHoekpunten")).intValue();
+			
+//System.out.println("set: ap - i = " + aantalHoekpunten);
+
+			int aantalPuntenPerZijde = 1;
+			if (hv.containsKey("aantalPuntenPerZijde"))
+				aantalPuntenPerZijde = ((Integer) hv.get("aantalPuntenPerZijde")).intValue();
+
 			double positiex = startX;
-			if (hv.contains("positiex"))
+			if (hv.containsKey("positiex"))
 				positiex = ((Double) hv.get("positiex")).doubleValue();
 			double positiey = startY;
-			if (hv.contains("positiey"))
+			if (hv.containsKey("positiey"))
 				positiey = ((Double) hv.get("positiey")).doubleValue();
 			Color kleur = Color.lightGray;
-			if (hv.contains("kleur"))
+			if (hv.containsKey("kleur"))
 				kleur = (Color) hv.get("kleur");
 			
 			aantalVlakdelen = 0;
 			if (fractielType == 0)
-			{	maakVeelhoek(beginFigAantalPz, aantalPunten, positiex, positiey, kleur);
+			{	maakVeelhoek(aantalPuntenPerZijde, aantalHoekpunten, positiex, positiey, kleur);
+				
 			}
 			else
-			{	maakFractiel(fractielType, beginFigAantalPz, positiex, positiey, kleur);
+			{	maakFractiel(fractielType, aantalPuntenPerZijde, positiex, positiey, kleur);
 			}
-			tempVlakdelen[i] = vlakdelen[0];	
+			tempVlakdelen[i] = vlakdelen[0];
 			aantalVlakdelen = 0;
-			
+
+/*			
+			boolean isHeap = false;
+			if (hv.containsKey("isHeap"))
+				isHeap = ((Boolean) hv.get("isHeap")).booleanValue();
+			tempVlakdelen[i].isHeap = isHeap;
+*/			
 			double orientatie = 0;
-			if (hv.contains("orientatie"))
+			if (hv.containsKey("orientatie"))
 				orientatie = ((Double) hv.get("orientatie")).doubleValue();
 			tempVlakdelen[i].orientatie = orientatie;
 
 			boolean nieuw = true;
-			if (hv.contains("nieuw"))
+			if (hv.containsKey("nieuw"))
 				nieuw = ((Boolean) hv.get("nieuw")).booleanValue();
 			tempVlakdelen[i].nieuw = nieuw;
 			
 			int beginnummer = 0;
-			if (hv.contains("beginnummer"))
+			if (hv.containsKey("beginnummer"))
 				beginnummer = ((Integer) hv.get("beginnummer")).intValue();
 			tempVlakdelen[i].beginnummer = beginnummer;
-			
-			int volgorde = 0; 
-			if (hv.contains("volgorde"))
-				volgorde = ((Integer) hv.get("volgorde")).intValue();
-			tempVolgorde[i] = volgorde;
+
+/*			
+			int aantalHoekpuntenVast = 0;
+			if (hv.containsKey("aantalHoekpuntenVast"))
+				aantalHoekpuntenVast = ((Integer) hv.get("aantalHoekpuntenVast")).intValue();
+			tempVlakdelen[i].aantalHoekpuntenVast = aantalHoekpuntenVast;
+*/			
+			int tVolgorde = 0; 
+			if (hv.containsKey("volgorde"))
+				tVolgorde = ((Integer) hv.get("volgorde")).intValue();
+			tempVolgorde[i] = tVolgorde;
 			
 			Vector hoekpuntenVector = new Vector();
-			if (hv.contains("hoekpuntenVector"))
+			if (hv.containsKey("hoekpuntenVector"))
 				hoekpuntenVector = ((Vector) hv.get("hoekpuntenVector"));
 			for (int j = 0; j < hoekpuntenVector.size(); j++)
-			{	Punt punt = (Punt) hoekpuntenVector.elementAt(j);
+			{
+				// zonder5 plakken
+				Punt punt = (Punt) hoekpuntenVector.elementAt(j);
 				tempVlakdelen[i].hoekpunten[j] = new HoekpuntMoz(punt.x, punt.y);
 				
+				// met plakken
+				//tempVlakdelen[i].hoekpunten[j] = (HoekpuntMoz) hoekpuntenVector.elementAt(j);
 			}		
 			
+//System.out.println("set: hv = " + hoekpuntenVector.size());
 
-		}
+		} // for
+
 /*		
-		aantalVlakdelen = invoer.readShort(); OK
-		for (int i = 0 ; i < aantalVlakdelen; i++)
-		{	int aantalPunten = invoer.readShort(); OK
-			double posx = invoer.readDouble(); OK
-			double posy = invoer.readDouble(); OK
-			double orientatie = invoer.readDouble(); OK
-			boolean nieuw = invoer.readBoolean(); OK
-			int beginnummer = invoer.readShort(); OK
-			int rood = invoer.readByte() + 128; OK
-			int groen = invoer.readByte() + 128; OK
-			int blauw = invoer.readByte() + 128; OK
-			volgorde[i] = invoer.readShort(); OK
-			Color c = new Color(rood,groen,blauw); OK
-			vlakdelen[i] = new Vlakdeel(this, aantalPunten, posx, posy, c); OK
-			vlakdelen[i].orientatie = orientatie; OK
-			vlakdelen[i].beginnummer = beginnummer; OK
-			vlakdelen[i].nieuw = nieuw; OK
-			for (int j = 0; j < aantalPunten + 1; j++)
-			{	double x = invoer.readDouble(); Ok
-				double y = invoer.readDouble(); OK 
-				vlakdelen[i].hoekpunten[j] = new HoekpuntMoz(x,y); OK
-			}
+		for (int vCnt = 0; vCnt < tempAantalVlakdelen; vCnt++)
+		{	volgorde[vCnt] = vCnt;
 		}
-*/				
+*/		
+
+		
+		for (int tCnt = 0; tCnt < tempAantalVlakdelen; tCnt++)
+		{
+			vlakdelen[tCnt] = tempVlakdelen[tCnt];
+			aantalVlakdelen++;
+		
+			
+			//aantalVlakdelen++;
+			//actiefVlakdeel = vlakdelen[tCnt];
+			
+			volgorde[tCnt] = tempVolgorde[tCnt];
+		}
 		
 	}
 
@@ -1025,46 +1155,39 @@ if (scormed)
 		for (int i = 0; i < aantalVlakdelen; i++)
 		{	Hashtable hv = new Hashtable();
 			hv.put("fractielType", new Integer(vlakdelen[i].fractielType));
-			hv.put("aantalPunten", new Integer(vlakdelen[i].aantalPunten));
-			hv.put("positiex", new Double(vlakdelen[i].positiex));
-			hv.put("positiey", new Double(vlakdelen[i].positiey));
+			hv.put("aantalHoekpunten", new Integer(vlakdelen[i].aantalHoekpunten));
+			hv.put("aantalPuntenPerZijde", new Integer(vlakdelen[i].aantalPuntenPerZijde));
+			hv.put("positiex", new Double(vlakdelen[i].draaipunt.x));
+			hv.put("positiey", new Double(vlakdelen[i].draaipunt.y));
 			hv.put("kleur", vlakdelen[i].kleur);
 			hv.put("orientatie", new Double(vlakdelen[i].orientatie));
 			hv.put("nieuw", new Boolean(vlakdelen[i].nieuw));
 			hv.put("beginnummer", new Integer(vlakdelen[i].beginnummer));
+//			hv.put("aantalHoekpuntenVast", new Integer(vlakdelen[i].aantalHoekpuntenVast));
+//			hv.put("isHeap", new Boolean(vlakdelen[i].isHeap));
+			
 			hv.put("volgorde", new Integer(volgorde[i]));
 			
 			Vector hoekpuntenVector = new Vector();
 			for (int j = 0; j < vlakdelen[i].aantalPunten + 1; j++)
 			{	hoekpuntenVector.addElement(
-					new Punt(vlakdelen[i].hoekpunten[j].x, vlakdelen[i].hoekpunten[j].y));	
+					
+					// zonder plakken
+					new Punt(vlakdelen[i].hoekpunten[j].x, vlakdelen[i].hoekpunten[j].y));
+			
+					// met plakken
+					//vlakdelen[i].hoekpunten[j]);
 			}
 			hv.put("hoekpuntenVector", hoekpuntenVector);
+
+//System.out.println("get: hv = " + hoekpuntenVector.size());			
 			
 			vlakdelenVector.addElement(hv);
 		}
+//System.out.println("get: vv = " + vlakdelenVector.size());
 
 		h.put("vlakdelenVector", vlakdelenVector);
 		
-/*
-		uitvoer.writeShort((short)(aantalVlakdelen)); OK
-		for(int i=0 ; i<aantalVlakdelen ; i++) OK
-		{	uitvoer.writeShort((short)(vlakdelen[i].aantalPunten)); OK
-			uitvoer.writeDouble(vlakdelen[i].draaipunt.x); OK
-			uitvoer.writeDouble(vlakdelen[i].draaipunt.y); OK
-			uitvoer.writeDouble(vlakdelen[i].orientatie); OK
-			uitvoer.writeBoolean(vlakdelen[i].nieuw); OK
-			uitvoer.writeShort((short)(vlakdelen[i].beginnummer)); OK
-			uitvoer.writeByte((byte)(vlakdelen[i].kleur.getRed()-128)); OK
-			uitvoer.writeByte((byte)(vlakdelen[i].kleur.getGreen()-128)); OK
-			uitvoer.writeByte((byte)(vlakdelen[i].kleur.getBlue()-128)); OK
-			uitvoer.writeShort((short)(volgorde[i])); OK
-			for(int j=0 ; j<vlakdelen[i].aantalPunten+1 ; j++)
-			{	uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].x); OK
-				uitvoer.writeDouble(vlakdelen[i].hoekpunten[j].y); OK
-			}
-*/	    
-
 	    // codeer deze gegevens tot een string
 	    String s = StringCodeObject.encodeObjectToString(h);
 
@@ -1124,7 +1247,7 @@ if (scormed)
 	{	
 		isDWOComponent = true;
 		infoButton.setVisible(false);
-								   
+		
 	}
     
 }

@@ -84,13 +84,12 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 		ipa.setEditState(h);
 		launchData = ipa.getLaunchData();
 		
-		
-		
 		parameterPanel.remove(parameterComponent);
 		
 		parameters = ipa.getApplet().getEditableParameters();
         if(parameters == null)parameters = new Parameter[0];
 		Hashtable tmp = launchData;
+
 		ConvertorIF convertor = ConvertorCreator.createConverter(ConvertorCreator.CONV_LAUNCHDATA);
         tmp = (Hashtable) convertor.convertHashtable(tmp, parameters);
         parameterComponent = new MainParameterComponent(parameters, tmp);
@@ -126,16 +125,19 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 	}
 	
 	public void zetBreedte(int b)
-	{	if(b == ipa.getSize().width) return;
+	{	if(b == ipa.getSize().width) 
+		return;
 		ipa.setBounds(0,0,b, ipa.getSize().height);
-		ipa.restart();
+//		ipa.restart();
+		ipa.setEditState(ipa.getEditState());		
 		revalidate();
 	}
 	
 	public void zetHoogte(int h)
 	{	if(h == ipa.getSize().height) return;
 		ipa.setBounds(0,0,ipa.getSize().width, h);
-		ipa.restart();
+//		ipa.restart();
+		ipa.setEditState(ipa.getEditState());		
 		revalidate();
 	}
 	
@@ -175,6 +177,8 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 	        launchData = (Hashtable) convertor.createHashtable(launchData, parameters);
 	        
 	        ipa.setLaunchData(launchData);
+			ipa.setEditState(ipa.getEditState());
+			
 	        ipa.restart();
 	        revalidate();
 	        
