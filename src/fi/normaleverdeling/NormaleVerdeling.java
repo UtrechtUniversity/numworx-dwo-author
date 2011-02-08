@@ -81,7 +81,7 @@ public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 		FIButton fiButton = new FIButton("info",
 			new String[]
 			{	"NormaleVerdeling",
-				"versie-info: 20100716",
+				"versie-info: 20110208",
 				"auteur: Peter Boon",
 				"programmeur: Huub Nilwik",
 				"Freudenthal Instituut",

@@ -40,13 +40,15 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "sigmaZichtbaarFigTekst" ,  "\u03C3 visible" },
 			{ "grensZichtbaarFigTekst" ,   "Grens visible" },
 			{ "kansZichtbaarFigTekst" ,   "Kans visible" },
-			{ "checkOptiesLabelTekst" ,  "Check Options" },
+			{ "checkOptiesBoxTekst" ,  "Check options" },
 			{ "checkMuTekst" ,     "\u03BC =" },       
 			{ "checkSigmaTekst" ,  "\u03C3 =" },
 			{ "checkGrensTekst" ,   "brdr =" },
 			{ "checkGrensLinksTekst" ,   "bL =" },
 			{ "checkGrensRechtsTekst" ,   "bR=" },
-			{ "checkKansTekst" ,   "chance =" },        
+			{ "checkKansTekst" ,   "chance =" },
+			{ "maxScoreTekst" ,   "Maximum Score" },
+			{ "kijkNaTekst" ,   "Check" },			
 		
 		};
 }

@@ -202,6 +202,32 @@ public class NormaalPanel extends JPanel implements
 	
 	static DecimalFormatSymbols dfs;
 	public static DecimalFormat df,df1,df2,df3;
+
+	//nakijken:
+	boolean kijkOpdrachtNa = false;
+
+	boolean kijkMuNa;
+	double antwoordMu;
+	boolean kijkSigmaNa;
+	double antwoordSigma;
+	boolean kijkGrensNa;
+	double antwoordGrens;
+	boolean kijkGrensLinksNa;
+	double antwoordGrensLinks;
+	boolean kijkGrensRechtsNa;
+	double antwoordGrensRechts;
+	boolean kijkKansNa;
+	double antwoordKans;
+	
+	int maxScore;	
+	int score;
+	
+	JButton kijkNaButton;
+	JPanel kijkNaPanel;
+	JLabel vinkjeLabel;
+	JLabel kruisjeLabel;
+	
+	Vector listeners = new Vector();
 	
 	public NormaalPanel(int w, int h)
 	{	
@@ -518,7 +544,53 @@ public class NormaalPanel extends JPanel implements
 		bereken();
 		
 		
+		kijkNaButton = new JButton(NormaleVerdeling.rb.getString("kijkNaTekst"));
+		kijkNaButton.setFont(theFont);
+		kijkNaButton.setBounds(0, 0, 100, 20);
+		kijkNaButton.addActionListener(new KijkNaAL());
 		
+		java.net.URL imageURL = NormaleVerdeling.class.getResource("resources/goedkrul_en_klein.gif");
+		if (imageURL != null) {
+		    vinkjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading goedkrul_en_klein.gif.");
+			vinkjeLabel = new JLabel();
+		}
+		vinkjeLabel.setBounds(100, 0, 20, 20);
+		imageURL = NormaleVerdeling.class.getResource("resources/foutkruis_klein.gif");
+		if (imageURL != null) {
+		    kruisjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading foutkruis_klein.gif.");
+			kruisjeLabel = new JLabel();
+		}
+		kruisjeLabel.setBounds(100, 0, 20, 20);
+		
+		vinkjeLabel.setVisible(false);
+		kruisjeLabel.setVisible(false);
+		
+		kijkNaPanel = new JPanel(null);
+		kijkNaPanel.setBackground(Color.WHITE);
+		kijkNaPanel.setSize(120, 20);
+		kijkNaPanel.add(kijkNaButton);
+		kijkNaPanel.add(vinkjeLabel);
+		kijkNaPanel.add(kruisjeLabel);
+		kijkNaPanel.setVisible(kijkOpdrachtNa);
+		
+		add(kijkNaPanel);
+		
+		plaatsComponenten();
+
+	}
+	
+	public void zetKijkOpdrachtNa(boolean b)
+	{
+		kijkOpdrachtNa = b;
+		kijkNaPanel.setVisible(kijkOpdrachtNa);
+		
+		plaatsComponenten();
 	}
 	
 	public void plaatsComponenten()
@@ -582,7 +654,10 @@ public class NormaalPanel extends JPanel implements
 		    kansButton.setLocation(getSize().width - kansButton.getSize().width, yPos);
 		    yPos += cHeight;	
 	
-		    bgPanel6.setBounds(getSize().width - berekenLabel.getSize().width-10,berekenLabel.getY()-3,berekenLabel.getSize().width+10,yPos-berekenLabel.getY()+11);
+		    bgPanel6.setBounds(getSize().width - berekenLabel.getSize().width - 10,
+		    				   berekenLabel.getY() - 3,
+		    				   berekenLabel.getSize().width + 10,
+		    				   yPos - berekenLabel.getY() + 11);
 		}
 		else
 		{
@@ -593,6 +668,15 @@ public class NormaalPanel extends JPanel implements
 			kansButton.setVisible(false);
 			bgPanel6.setVisible(false);
 		}
+		
+		if (kijkOpdrachtNa && (kijkNaPanel != null))
+		{
+			int y = 50;
+			if (berekenbaarZichtbaar)
+				y = bgPanel6.getLocation().y + bgPanel6.getSize().height + 50;
+			kijkNaPanel.setLocation(getSize().width - kijkNaPanel.getSize().width - 20, y);
+		}
+		
 		// parameters
 		yPos = 3;
 		
@@ -1073,6 +1157,10 @@ public class NormaalPanel extends JPanel implements
 		
 		}
 
+		
+grensDecimals = findGrensDecimals();		
+		
+		
 		grens = round(grens, grensDecimals);
 					
 		String grensString = UF.format(grens, grensDecimals);
@@ -1090,6 +1178,32 @@ public class NormaalPanel extends JPanel implements
 
 		fastPaint();		
 	}
+	
+	public int findGrensDecimals()
+	{	int result = 2;
+		
+		// aantal eenheden x-as per pixel
+		double xUnitsPerPixel = (maxX - minX) / (xMax - xMin);
+		
+//System.out.println("xup = " + xUnitsPerPixel);		
+		
+		if (xUnitsPerPixel < 1e-4d + NZERO)
+			result = 5;
+		else if (xUnitsPerPixel < 1e-3d + NZERO)
+			result = 4;
+		else if (xUnitsPerPixel < 1e-2d + NZERO)
+			result = 3;
+		else if (xUnitsPerPixel < 1e-1d + NZERO)
+			result = 2;
+		else if (xUnitsPerPixel < 1 + NZERO)
+			result = 1;
+		else 
+			result = 0;
+		
+	
+		return result;
+	}
+	
 	
 	public void zetGrensSlider()
 	{	//minMuX = minX + mu;
@@ -1149,6 +1263,8 @@ public class NormaalPanel extends JPanel implements
 						
 			}			
 		}
+
+grensDecimals = findGrensDecimals();
 
 		grensLinks = round(grensLinks, grensDecimals);
 		
@@ -1222,6 +1338,8 @@ if (grensLinks > minMuX + NZERO)
 			}
 
 		}
+		
+grensDecimals = findGrensDecimals();
 		
 		grensRechts = round(grensRechts, grensDecimals);				
 		
@@ -2753,7 +2871,14 @@ if (grensLinks > minMuX + NZERO)
 		}
 	}
 
-
+	class KijkNaAL implements ActionListener
+	{	public void actionPerformed(ActionEvent e)
+		{
+			kijkNa();
+		}
+		
+	}
+	
 	class TextFL implements FocusListener
 	{		
 		JTextField inputTextField;
@@ -3318,7 +3443,95 @@ if (grensLinks > minMuX + NZERO)
 		zetBerekenKeuze();
 
 		bereken();
+
+		if (b.containsKey("kijkNa"))
+			kijkOpdrachtNa = ((Boolean) b.get("kijkNa")).booleanValue();
+
+		zetKijkOpdrachtNa(kijkOpdrachtNa);
 		
+		if (kijkOpdrachtNa)
+		{
+		
+			antwoordMu = 0;
+			if (b.containsKey("kijkMuNa"))
+			{	kijkMuNa = ((Boolean) b.get("kijkMuNa")).booleanValue();
+				if (b.containsKey("checkMu"))
+				{	String checkMu = (String) b.get("checkMu");
+					if (!checkMu.equals(""))
+						antwoordMu = Double.parseDouble(checkMu);
+				}
+			}
+			antwoordSigma = 1;
+			if (b.containsKey("kijkSigmaNa"))
+			{	kijkSigmaNa = ((Boolean) b.get("kijkSigmaNa")).booleanValue();
+				if (b.containsKey("checkSigma"))
+				{	String checkSigma = (String) b.get("checkSigma");
+					if (!checkSigma.equals(""))
+						antwoordSigma = Double.parseDouble(checkSigma);
+				}
+			}
+			antwoordGrens = antwoordMu - 1;
+			if (b.containsKey("kijkGrensNa"))
+			{	kijkGrensNa = ((Boolean) b.get("kijkGrensNa")).booleanValue();
+				if (b.containsKey("checkGrens"))
+				{	String checkGrens = (String) b.get("checkGrens");
+					if (!checkGrens.equals(""))
+						antwoordGrens = Double.parseDouble(checkGrens);
+				}
+			}
+			antwoordGrensLinks = antwoordMu - 1;
+			if (b.containsKey("kijkGrensLinksNa"))
+			{	kijkGrensLinksNa = ((Boolean) b.get("kijkGrensLinksNa")).booleanValue();
+				if (b.containsKey("checkGrensLinks"))
+				{	String checkGrensLinks = (String) b.get("checkGrensLinks");
+					if (!checkGrensLinks.equals(""))
+						antwoordGrensLinks = Double.parseDouble(checkGrensLinks);
+				}
+			}
+			antwoordGrensRechts = antwoordMu + 1;
+			if (b.containsKey("kijkGrensRechtsNa"))
+			{	kijkGrensRechtsNa = ((Boolean) b.get("kijkGrensRechtsNa")).booleanValue();
+				if (b.containsKey("checkGrensRechts"))
+				{	String checkGrensRechts = (String) b.get("checkGrensRechts");
+					if (!checkGrensRechts.equals(""))
+						antwoordGrensRechts = Double.parseDouble(checkGrensRechts);
+				}
+			}
+			antwoordKans = 25e-2d;
+			if (b.containsKey("kijkKansNa"))
+			{	kijkKansNa = ((Boolean) b.get("kijkKansNa")).booleanValue();
+				if (b.containsKey("checkKans"))
+				{	String checkKans = (String) b.get("checkKans");
+					if (!checkKans.equals(""))
+						antwoordKans = Double.parseDouble(checkKans);
+				}
+			}
+			maxScore = 0;
+			if (b.containsKey("maxScore"))
+			{	String maxScoreStr = (String) b.get("maxScore");
+				if (!maxScoreStr.equals(""))
+					maxScore = Integer.parseInt(maxScoreStr);
+			}
+			
+			
+			
+			
+		}
+		
+/*		
+
+		boolean kijkGrensNa;
+		double antwoordGrens;
+		boolean kijkGrensLinksNa;
+		double antwoordGrensLinks;
+		boolean kijkGrensRechtsNa;
+		double antwoordGrensRechts;
+		boolean kijkKansNa;
+		double antwoordKans;
+		
+		int maxScore;	
+		int score;
+*/		
 	}
 	
 	public static double substitueerRandom(double def, String s, String[] randomVars, Hashtable randomValues) 
@@ -3569,6 +3782,32 @@ if (grensLinks > minMuX + NZERO)
 
 		bereken();
 		
+		
+// is dit allemaal nodig??
+// zie zetOpdracht		
+		
+//		if (b.containsKey("kijkNa"))
+//			kijkOpdrachtNa = ((Boolean) b.get("kijkNa")).booleanValue();
+
+/*	
+		
+
+		boolean kijkMuNa;
+		double antwoordMu;
+		boolean kijkSigmaNa;
+		double antwoordSigma;
+		boolean kijkGrensNa;
+		double antwoordGrens;
+		boolean kijkGrensLinksNa;
+		double antwoordGrensLinks;
+		boolean kijkGrensRechtsNa;
+		double antwoordGrensRechts;
+		boolean kijkKansNa;
+		double antwoordKans;
+		
+		int maxScore;	
+		int score;
+*/		
 	}
 
 	public Hashtable getState()
@@ -3692,19 +3931,19 @@ if (grensLinks > minMuX + NZERO)
 	}
 
 	public int getScore()
-	{	return 0;
+	{	return score;
 	}
 	
 	public int getScoreMax()
-	{	return 0;
+	{	return maxScore;
 	}
 	
 	public boolean isCorrect()
-	{	return false;
+	{	return score == maxScore;
 	}
 	
 	public boolean isFout()
-	{	return false;
+	{	return score != maxScore;
 	}
 	
 	public void zetMode(int mode)
@@ -3734,13 +3973,84 @@ if (grensLinks > minMuX + NZERO)
     {}
     
     public void kijkNa()
-    {}
+    {
+		boolean correct = true;
+		if (kijkOpdrachtNa) 
+		{
+			if (kijkMuNa)
+			{	double muIn = round(mu, muDecimals);
+				double muAn = round(antwoordMu, muDecimals);
+				correct = correct && (Math.abs(muIn - muAn) < NZERO);
+			}
+			
+			if (kijkSigmaNa)
+			{	double sigmaIn = round(sigma, sigmaDecimals);
+				double sigmaAn = round(antwoordSigma, sigmaDecimals);
+				correct = correct && (Math.abs(sigmaIn - sigmaAn) < NZERO);
+			}
+
+			if (kijkGrensNa)
+			{	double grensIn = round(grens, grensDecimals);
+				double grensAn = round(antwoordGrens, grensDecimals);
+				correct = correct && (Math.abs(grensIn - grensAn) < NZERO);
+			}
+
+			if (kijkGrensLinksNa)
+			{	double grensLinksIn = round(grensLinks, grensDecimals);
+				double grensLinksAn = round(antwoordGrensLinks, grensDecimals);
+				correct = correct && (Math.abs(grensLinksIn - grensLinksAn) < NZERO);
+			}
+
+			if (kijkGrensRechtsNa)
+			{	double grensRechtsIn = round(grensRechts, grensDecimals);
+				double grensRechtsAn = round(antwoordGrensRechts, grensDecimals);
+				correct = correct && (Math.abs(grensRechtsIn - grensRechtsAn) < NZERO);
+			}
+			
+			if (kijkKansNa)
+			{	double kansIn = round(kans, kansDecimals);
+				double kansAn = round(antwoordKans, kansDecimals);
+				correct = correct && (Math.abs(kansIn - kansAn) < NZERO);
+			}
+			
+			
+		}
+		
+		if (correct) 
+		{	score = maxScore;
+		}
+		else 
+		{	score = 0;
+		}
+		vinkjeLabel.setVisible(correct);
+		kruisjeLabel.setVisible(!correct);
+		
+		
+		//fire actionEvent
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		{
+			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		}
+		
+		
+/*		
+		Iterator<ActionListener> iterator = this.listeners.iterator();
+		while(iterator.hasNext()) 
+		{
+			iterator.next().actionPerformed(event);
+		}
+*/		
+	}
+    	
     
     public void kijkNa(int stapNr)
     {}
 	
     public void addActionListener(ActionListener al)
-    {}
+    {
+    	listeners.addElement(al);
+    }
     
 	public void actionPerformed(ActionEvent e)
 	{	

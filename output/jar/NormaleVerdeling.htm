@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+<APPLET
+	code	= "fi.normaleverdeling.NormaleVerdeling.class"
+	width	= "500"
+	height	= "450"
+	archive = "normaleverdeling.jar">
+	<PARAM name="language" value="nl"/>
+	<PARAM name="bgcolor" value="#DDEEFF"/>
+
+	<!-- startwaarden van de parameters
+	     de waarde van de te berekenen parameter
+	     (zie verder) wordt opnieuw berekend 
+		 bij decimale getallen mag zowel een punt als een 
+		 komma gebruikt worden -->	
+
+	<!-- mu, minimum: -100, maximum: 100 
+		 mag kommagetal zijn, default 0 -->     
+	<PARAM name="mu" value="0"/>		
+
+	<!-- sigma, minimum: 0,1, maximum: 10 
+		 mag kommagetal zijn, default 1 -->     
+	<PARAM name="sigma" value="1"/>		
+
+	<!-- geval 1 grens, minimum mu-7,5 
+		 maximum mu+7,5, mag kommagetal zijn
+		 default mu+1 -->	
+	<PARAM name="grens" value="1"/>		
+
+	<!-- geval 2 grenzen, 
+		 minimum grenslinks m-7,5
+		 maximum grenslinks m+1
+		 default m-1
+		 minimum grensrechts grenslinks+0,5
+		 maximum grensrechts m+7,5
+		 default m+1
+		 kommagetallen verwacht -->
+	<PARAM name="grenslinks" value="-1"/>		
+	<PARAM name="grensrechts" value="1"/>			
+
+	<!-- kans, minimum: 0, maximum: 1 
+		 moet kommagetal zijn, default 0,6 -->     
+	<PARAM name="kans" value="0,6"/>		
+	
+	<!-- welke kanskeuze is geselecteerd bij opstarten?
+		 0: kans links
+		 1: kans rechts
+		 2: twee grenzen
+		 default kans links 
+		 zie ook kansopties -->
+	<PARAM name="kanskeuze" value="0"/>			 
+
+	<!-- welke berekenkeuze is geselecteerd bij opstarten?
+		 0: mu
+		 1: sigma
+		 2: grens
+		 3: kans
+		 4: grenslinks
+		 5: grensrechts
+		 default kans 
+		 Opmerkingen: 
+		 1) bij berekenkeuze 4:grensLinks of 5:grensRechts 
+		    wordt de berekenkeuze op 2:grens gezet wanneer de 
+		    kanskeuze niet gespecificeerd is als 2:twee grenzen 
+		 2) bij berekenkeuze 0:mu of 1: sigma en kanskeuze
+		    2:twee grenzen wordt de berekenkeuze op 3:kans
+		    gezet omdat (vooralsnog) mu en sigma niet berekend
+		    kunnen worden in het geval van kanskeuze 2:twee grenzen  
+		    -->	
+	<PARAM name="berekenkeuze" value="3"/>			 		 
+	
+	<!-- edit state opties -->
+		
+	<!-- kans opties
+		 is de optie kans links beschikbaar?
+		 default yes 	
+		 is de optie kans rechts beschikbaar?
+		 default yes
+		 is de optie twee grenzen beschikbaar?
+		 default yes
+		 Opmerkingen:
+		 1) minimaal 1 optie moet value "yes" hebben
+		 	als niet, dan krijgt "kanslinksoptie"
+		 	value "yes"
+		 2) als de kanskeuze hierboven geen optie is,
+		    dan wordt een andere kanskeuze genomen
+		    die wel optie is	
+		  -->	
+	<PARAM name="kanslinksoptie" value="yes"/>
+	<PARAM name="kansrechtsoptie" value="yes"/>				 		 		  
+	<PARAM name="tweegrenzenoptie" value="yes"/>
+	
+	<!-- berekenbaar opties
+		 is de berekenbaar-tabel zichtbaar?
+		 default yes
+		 is mu berekenbaar?
+		 default no
+		 is sigma berekenbaar?
+		 default no 
+		 als de berekenkeuze hierboven geen optie is,
+		 dan wordt een andere berekenkeuze genomen die wel
+		 optie is -->	
+	<PARAM name="berekenbaarzichtbaar" value="yes"/>	     	 
+	<PARAM name="muberekenbaaroptie" value="no"/>	     
+	<PARAM name="sigmaberekenbaaroptie" value="no"/>	     
+
+	<!-- vaste waarde opties
+		 is mu vast, i.e. kan niet veranderd worden?
+		 default no
+		 is sigma vast, i.e. kan niet veranderd worden?
+		 default no 
+		 Opmerking:
+		 1) een parameter die vast is, kan niet berekend worden
+		    als de berekenkeuze hierboven een vaste parameter is,
+		    dan wordt een andere berekenkeuze genomen die niet
+		    vast is
+		 2) analoog: als de berekenbaaroptie hierboven een vaste
+		    parameter is, dan wordt deze berekenbaaroptie weer
+		    uitgeschakeld    
+		    -->	
+	<PARAM name="muvastoptie" value="no"/>	     
+	<PARAM name="sigmavastoptie" value="no"/>	     
+
+	<!-- slider opties 
+	 	 hebben de parameters mu, sigma, grens en kans in het geval van een
+	 	 invoerveld ook een slider?
+	 	 default no voor mu, sigma en kans, yes voor grens -->
+	<PARAM name="muslideroptie" value="yes"/>
+	<PARAM name="sigmaslideroptie" value="yes"/>		     
+	<PARAM name="grensslideroptie" value="yes"/>		     
+	<PARAM name="kansslideroptie" value="no"/>		     
+
+	<!-- zichtbaarheid linksboven opties 
+	 	 zijn de parameters mu, sigma, grens en kans linksboven zichtbaar?
+	 	 default yes -->
+	<PARAM name="muzichtbaaroptie" value="yes"/>
+	<PARAM name="sigmazichtbaaroptie" value="yes"/>		     
+	<PARAM name="grenszichtbaaroptie" value="yes"/>		     
+	<PARAM name="kanszichtbaaroptie" value="yes"/>		     
+	
+	<!-- zichtbaarheid in figuur opties 
+	 	 zijn de parameters mu, sigma, grens en kans zichtbaar in de figuur?
+	 	 default yes -->
+	<PARAM name="muzichtbaarfigoptie" value="yes"/>
+	<PARAM name="sigmazichtbaarfigoptie" value="yes"/>		     
+	<PARAM name="grenszichtbaarfigoptie" value="yes"/>		     
+	<PARAM name="kanszichtbaarfigoptie" value="yes"/>		     
+		 	 
+
+</APPLET>
+</BODY>
+</HTML>
