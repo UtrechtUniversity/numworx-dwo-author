@@ -218,10 +218,16 @@ System.out.println("dc != null");
     {   if (resizing)
         {   // save old workSpace
         	oldWorkSpace = workSpace;
-        }    
+        }
+/*    
         workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
                                   getSize().width - 2 * GRIDSIZE,
                                   getSize().height - 2 * GRIDSIZE);
+*/
+    	workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
+    							  owner.getSize().width - 2 * GRIDSIZE,
+    							  owner.getSize().height - owner.bottomHeight - 2 * GRIDSIZE);
+    
         if (oldWorkSpace == null)
         	oldWorkSpace = workSpace;	                          
         setLayerDistance();                          

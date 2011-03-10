@@ -222,12 +222,13 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
         getContentPane().add(bPanel, BorderLayout.SOUTH);        
         // for BorderLayout
         validate();
-        
+/*        
         if (scormed)
         {	drawingPanel.setSize(700, 427);	
 //        	System.out.println("dpw = " + drawingPanel.getSize().width);
 //        	System.out.println("dph = " + drawingPanel.getSize().height);
         }
+*/        
         // now sizes are known, so initialize
         drawingPanel.initialize();
         
@@ -400,24 +401,24 @@ System.out.println("diagramcopy encoded");
 		
 		DataType type = new ScormString();
 		
-		Parameter param = new Parameter("berekenmenu", "Toon menu Berekeningen", type);
+		Parameter param = new Parameter("berekenmenu", "menu Berekeningen", type);
 		param.setHelpText("vul in: yes of no");		
 		parameters[0] = param;
 		
-		param = new Parameter("breuken", "berekeningen in breuken", type);
+		param = new Parameter("breuken", "bereken in breuken", type);
 		param.setHelpText("vul in: yes of no");		
 		parameters[1] = param;
 
-		param = new Parameter("stroommenu", "Toon menu Stroombreedte", type);
+		param = new Parameter("stroommenu", "menu Stroombreedte", type);
 		param.setHelpText("vul in: yes of no");		
 		parameters[2] = param;
 		
-		param = new Parameter("absoluut", "stroombreedte absoluut", type);
+		param = new Parameter("absoluut", "strbreedte absoluut", type);
 		param.setHelpText("vul in: yes of no");		
 		parameters[3] = param;
 		
 		
-		return null; //parameters;
+		return parameters;
     }
 
     public Parameter[] getAllParameters()
