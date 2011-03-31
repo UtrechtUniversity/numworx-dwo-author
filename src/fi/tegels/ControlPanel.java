@@ -130,9 +130,13 @@ class ControlPanel extends JPanel implements ActionListener
 		
 		kleurenV = new JButton[12];
 		for (int i = 0; i < 12; i++)
-		{	kleurenV[i] = new JButton("");
-			kleurenV[i].setBackground(kleuren[i]);
-			//kleurenV[i].setBounds(330+15*i,20,15,20);
+		{	final Color buttonColor = kleuren[i];
+			kleurenV[i] = new JButton()
+			{	public void paintComponent(Graphics g)
+				{	g.setColor(buttonColor);
+					g.fillRect(0,0,getWidth(),getHeight());
+				}
+			};
 			kleurenV[i].setBounds(offset + 20 * i, 
 						          draaiknop.getLocation().y + draaiknop.getSize().height + offset, 20 , 20);
 			add(kleurenV[i]);
