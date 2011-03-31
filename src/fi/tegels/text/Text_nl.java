@@ -14,7 +14,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "menuDraaiLabel", "Draai"},
 				{ "menuSpiegelLabel", "Spiegel"},
 				{ "menuKleurLabel", "Kleur"},
-				{ "menuKopieerLabel", "Kopieer"}
+				{ "menuKopieerLabel", "Kopieer"},
+				{ "fijnRasterTekst", "Fijn raster"},
+				{ "grofRasterTekst", "Grof raster"},
         };
 }
 

@@ -14,7 +14,10 @@ public class Text_ca extends java.util.ListResourceBundle
 				{ "menuDraaiLabel", "Gira"},
 				{ "menuSpiegelLabel", "Mirall"},
 				{ "menuKleurLabel", "Color"},
-				{ "menuKopieerLabel", "Duplica"}
+				{ "menuKopieerLabel", "Duplica"},
+				{ "fijnRasterTekst", "Small grid"},
+				{ "grofRasterTekst", "Large grid"},
+				
         };
 }
 

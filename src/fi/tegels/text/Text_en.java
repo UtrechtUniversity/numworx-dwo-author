@@ -10,11 +10,14 @@ public class Text_en extends java.util.ListResourceBundle
                 { "tekenknopLabel", "Make shape"},
 				{ "legknopLabel", "Make tiling"},
 				{ "terugknopLabel", "One step back"},
-				{ "wisTegelknopLabel", "new shape"},
+				{ "wisTegelknopLabel", "New shape"},
 				{ "menuDraaiLabel", "Rotate"},
 				{ "menuSpiegelLabel", "Mirror"},
 				{ "menuKleurLabel", "Color"},
-				{ "menuKopieerLabel", "Duplicate"}
+				{ "menuKopieerLabel", "Duplicate"},
+				{ "fijnRasterTekst", "Small grid"},
+				{ "grofRasterTekst", "Large grid"},
+				
         };
 }
 
