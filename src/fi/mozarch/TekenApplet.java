@@ -3,19 +3,13 @@ package fi.mozarch;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.Applet;
-import fi.beans.grnuminput.*;
 
-//import javax.swing.*;
+import javax.swing.*;
 
-public class TekenApplet extends Applet 
+public class TekenApplet extends JApplet 
 {
-	Regelaar rg;
 	Tekenblad tb;
-	private AnimatieBeheerder ab;
 	private MuisBeheerder mb;
-	private TraceBeheerder trb;
-	
 	private boolean initializing;
 	
 	//-----------------------------------------------------------------------------------------
@@ -24,38 +18,22 @@ public class TekenApplet extends Applet
 	public void init()
 	{	
 		tb = new Tekenblad(this);
-		//rg = new Regelaar(this);
-		this.setLayout(new BorderLayout(0, 0));
+	
+		getContentPane().setLayout(null);
 		
 		initializing = true;
 		initialiseer();							// wordt geimplementeerd in leerlingprogramma
 		initializing = false;
-		add(tb, "Center");
-		//add(rg,"East");
 		
-		if (trb != null)						//
-		{	tb.meldTraceBeheerder(trb);			//
-		}										//
-		if (trb != null && ab != null)			//
-		{	trb.meldAnimatieBeheerder(ab);		//
-			ab.meldTraceBeheerder(trb);			// de verschillende objecten leren elkaar kennen
-		}										//
-		if (mb != null && ab != null)			//
-		{	mb.meldAnimatieBeheerder(ab);		// 
-		}										//
-		if (trb != null && mb != null)			//
-		{	trb.meldMuisBeheerder(mb);			//
-		}										//
+		
+		tb.setBounds(0, 0, getSize().width, getSize().height);
+		
+		getContentPane().add(tb);
+		
 	}												
 	//-------------------------------------------------------------------------------------------
 	//deze methoden kunnen alleen worden gebruikt in  "initialiseer()" van leerling-applet
 	//-------------------------------------------------------------------------------------------
-	public void maakAnimatieMogelijk()					
-	{	if (initializing)						 
-		{	ab = new AnimatieBeheerder(this);	
-			add(ab, "North");					
-		}										
-	}											
 	public void maakMuisActieMogelijk()
 	{	if (initializing) 
 		{	mb = new MuisBeheerder(this);
@@ -63,15 +41,6 @@ public class TekenApplet extends Applet
 			tb.addMouseMotionListener(mb);
 		}
 	}
-	//public void maakTraceMogelijk()
-	//{	if(initializing) 
-	//	{	trb = new TraceBeheerder(tb,rg);
-	//		add(trb,"South");
-	//	}
-	//}
-	//public InvoerVariabele nieuweInvoerVariabele(String n, double mn, double mx, double val)
-	//{	return rg.nieuweInvoerVariabele( n,  mn,  mx,  val);
-	//}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de muishandler en  doorgegeven aan MuisBeheerder mb
 	//-------------------------------------------------------------------------------------------
@@ -88,31 +57,12 @@ public class TekenApplet extends Applet
 	{	return mb.geefDruky();
 	}
 
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatiehandler en doorgegeven aan AnimatieBeheerder ab
-	//-------------------------------------------------------------------------------------------
-	public void pauze(int millisec)
-	{	ab.pauze(millisec);
-	}
-	public boolean animatieStatus()
-	{	if (ab != null)
-			return ab.animatieStatus();
-		else 
-			return false;
+	// het hele applet!!
+	public void tekenOpnieuw()
+	{	repaint();
 	}
 
 	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatiehandler en muishandlers en doogegeven aan 
-	//Tekenblad
-	//-------------------------------------------------------------------------------------------
-	public void tekenOpnieuw()
-	{	tb.tekenOpnieuw();
-	}
-	public void tekenErbij()
-	{	tb.tekenErbij();
-	}
-	
-  	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "initialiseer" en doorgegeven aan Tekenblad tb (of 
 	//Matrix2d) 
 	//-------------------------------------------------------------------------------------------
@@ -132,83 +82,77 @@ public class TekenApplet extends Applet
 	//-------------------------------------------------------------------------------------------
  	public void links(double dHoek)
 	{	tb.mat.draai(dHoek);
-		if (trb != null && trb.geefTraceStatus())
-			trb.volgendeMethode("links(" + Integer.toString((int) Math.rint(dHoek)) + ")");
 	}
   	public void rechts(double dHoek)
 	{	tb.mat.draai(-dHoek);		
-		if( trb != null && trb.geefTraceStatus())
-			trb.volgendeMethode("rechts(" + Integer.toString((int) Math.rint(dHoek)) + ")");
 	}
 	public void vooruit(double dy)
 	{	tb.naarVolgendPunt(0, -dy);	
-		if (trb!=null)
-			trb.volgendeMethode("vooruit(" + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void stapy(double dy)
 	{	tb.naarVolgendPunt(0, -dy);		
-		if (trb != null && trb.geefTraceStatus())
-			trb.volgendeMethode("stapy(" + Integer.toString((int)Math.rint(dy)) + ")");
+		//if (trb != null && trb.geefTraceStatus())
+			//trb.volgendeMethode("stapy(" + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void stapx(double dx)
 	{	tb.naarVolgendPunt(dx,0);		
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("stapx("+Integer.toString((int)Math.rint(dx))+")");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("stapx("+Integer.toString((int)Math.rint(dx))+")");
 	}
 	public void stap(double dx, double dy)
 	{	tb.naarVolgendPunt(dx, -dy);
-		if (trb != null && trb.geefTraceStatus())
-			trb.volgendeMethode("stap(" + Integer.toString((int)Math.rint(dx)) + "," + Integer.toString((int)Math.rint(dy)) + ")");
+		//if (trb != null && trb.geefTraceStatus())
+			//trb.volgendeMethode("stap(" + Integer.toString((int)Math.rint(dx)) + "," + Integer.toString((int)Math.rint(dy)) + ")");
 	}
 	public void penAan()
 	{	tb.penAan();							
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("penAan()");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("penAan()");
 	}
 	public void penAan(String kl)
 	{	tb.penAan(kl);				
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("penAan("+kl+")");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("penAan("+kl+")");
 	}
 	public void penAan(Color kl)
 	{	tb.penAan(kl);				
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("penAan()");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("penAan()");
 	}
 	public void penAan(int r, int g, int b)
 	{	tb.penAan(r, g, b);	
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("penAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("penAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
 	}
 	public void penUit()
 	{	tb.penUit();							
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("penUit()");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("penUit()");
 	}
 	public void vulAan()
 	{	tb.vulAan();							
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("vulAan()");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("vulAan()");
 	}
 	public void vulAan(String kl)
 	{	tb.vulAan(kl);				
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("vulAan("+kl+")");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("vulAan("+kl+")");
 	}
 	public void vulAan(Color kl)
 	{	tb.vulAan(kl);				
-		if(trb!=null && trb.geefTraceStatus())
-		trb.volgendeMethode("vulAan()");
+		//if(trb!=null && trb.geefTraceStatus())
+		//trb.volgendeMethode("vulAan()");
 	}
 	public void vulAan(int r, int g, int b)
 	{	tb.vulAan(r, g, b);	
-		if (trb != null && trb.geefTraceStatus())
-		 trb.volgendeMethode("vulAan(" + Integer.toString(r) + Integer.toString(g) + Integer.toString(b) + ")");
+		//if (trb != null && trb.geefTraceStatus())
+		//trb.volgendeMethode("vulAan(" + Integer.toString(r) + Integer.toString(g) + Integer.toString(b) + ")");
 	}
 	public void vulUit()
 	{	tb.vulUit();							
-		if (trb != null && trb.geefTraceStatus())
-			trb.volgendeMethode("vulUit()");
+		//if (trb != null && trb.geefTraceStatus())
+		//trb.volgendeMethode("vulUit()");
 	}
 	public Polygon geefVlak()
 	{	return tb.geefVlak();
@@ -223,8 +167,6 @@ public class TekenApplet extends Applet
 	{}
 	public void initialiseer()
 	{}
-	public void animatie()
-	{}
 	public void muisSleepActie()
 	{}
 	public void muisDrukActie()
@@ -233,64 +175,15 @@ public class TekenApplet extends Applet
 	{}
 	//public void invoerVarActie(InvoerVariabele iv){}
 }		
-	
-class Regelaar extends Panel
-{	
-	private TekenApplet eigenaar;
-	private GridBagLayout gridbag;
-	private GridBagConstraints c;
-	private int aantalInvoerVars;
-	private int maxAantalInvoerVars;
-	private NumberArrow[] invoerComponenten;
-	
-	public Regelaar(TekenApplet ap)
-	{	eigenaar = ap;
-		maxAantalInvoerVars = 10;
-		invoerComponenten = new NumberArrow[maxAantalInvoerVars];
-		aantalInvoerVars = 0;
-		gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
-		setLayout(gridbag);
-		c.insets = new Insets(5, 5, 5, 5); 			
-		c.anchor = GridBagConstraints.NORTHWEST;
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.weighty = 0.0;
-		c.weightx = 0.0;
-	}	
-	//-----------------------------------------------------------------------------------------
-	// nieuwe InvoerVariabelen worden hier gemaakt, en op het panel geplaatst 
-	//-----------------------------------------------------------------------------------------
-	public InvoerVariabele nieuweInvoerVariabele(String n, double mn, double mx, double val)
-	{	InvoerVariabele iv = new InvoerVariabele(n,mn,mx,val);
-		iv.ontvangEigenaar(eigenaar);
-		NumberArrow invoercomp = new NumberArrow(iv.geefMin(), iv.geefMax(), iv.geefWaarde(), 1, 0, iv.geefNaam(), "");
-		invoerComponenten[aantalInvoerVars] = invoercomp;
-		aantalInvoerVars++;
-		invoercomp.addNumberListener(iv);
-		gridbag.setConstraints(invoercomp, c);
-		add(invoercomp);
-		return iv;
-	}
-	//-----------------------------------------------------------------------------------------
-	// wordt gebruikt door de tracebeheerder om de InvoerVariabelen tijdens de trace uit te zetten
-	//-----------------------------------------------------------------------------------------
-	public void setEnableInvVars(boolean b)
-	{	for (int i = 0; i < aantalInvoerVars; i++)
-		{	invoerComponenten[i].setEnabled(b);
-		}
-	}
-}
 
-class Tekenblad extends Canvas
+class Tekenblad extends JPanel
 {
 	private int breedte,hoogte;
 	private Punt beginpunt,eindpunt,startpunt;
   	private Polygon veelvlak;
-  	private Image im ;
   	private Graphics gIm ;
 	public Matrix2D mat;  
 	private TekenApplet eigenaar;
-	private TraceBeheerder trb;
 	private boolean pen, vul;
   	private Color penkleur, vulkleur, achtergrondkleur;
 	  
@@ -304,53 +197,29 @@ class Tekenblad extends Canvas
 		mat = new Matrix2D();					// zorgt voor de tekenrichting
 	}
 	
-	public void meldTraceBeheerder(TraceBeheerder trb)
-	{	this.trb = trb;
+	public void paintComponent(Graphics g)
+	{	breedte = getSize().width;
+		hoogte = getSize().height;
+		startpunt = new Punt(breedte / 2, hoogte / 2);
+
+		gIm = g;
+		tekenOpImage(g);
 	}
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
-	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
-	//zorgt "tekenOpnieuw()" of "tekenErbij()" hiervoor. "TekenOpImage()" zorgt voor het vullen 
-	//van de image, met behulp van het door de leerlingen geimplementeerde "tekenprogramma()",
-	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
-	//-------------------------------------------------------------------------------------------
-  	public void paint(Graphics g)
-  	{ 	if (im == null)
-		{	breedte = getSize().width;
-			hoogte = getSize().height;
-			
-//System.out.println("b = " + breedte);
-//System.out.println("h = " + hoogte);
-			
-			//double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
-			///mat.initialiseer(0,startschaal);	
-			startpunt = new Punt(breedte / 2, hoogte / 2);
- 			im = createImage(breedte, hoogte);
-  			gIm = im.getGraphics();
-			tekenOpImage(true);
-			
-			//super.paint(gIm);
-		}
-    	if (trb == null || !trb.geefTraceStatus())
-    		g.drawImage(im, 0, 0, null);
-  	}
-	  
-  	public void tekenOpImage(boolean wis)
+  	
+	public void tekenOpImage(Graphics g)
   	{ 	beginpunt = new Punt(startpunt);
     	eindpunt = new Punt(beginpunt);
     	mat.initialiseer();
 	  	
     	if (achtergrondkleur != null)
-    		gIm.setColor(achtergrondkleur);
-    	
-	  	if (wis)
-    		gIm.fillRect(0, 0, breedte, hoogte);
-    	penAan(0, 0, 0);
+    		g.setColor(achtergrondkleur);
+    	g.fillRect(0, 0, breedte, hoogte);
+
+	  	penAan(0, 0, 0);
 		vul = false;
     	vulkleur = Color.black;
     	eigenaar.tekenprogramma();
     	
- //   	paintComponents(gIm);
 	}
 	public void zetStart()
 	{	beginpunt = new Punt(startpunt);
@@ -363,19 +232,13 @@ class Tekenblad extends Canvas
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
 	//-------------------------------------------------------------------------------------------
+	
  	void tekenOpnieuw()
-	{	tekenOpImage(true);
-		Graphics g = getGraphics();
-		if (trb == null || !trb.geefTraceStatus())
-			g.drawImage(im, 0, 0, null);
+	{	
+ 		repaint();
 	}
-  	void tekenErbij()
-	{	tekenOpImage(false);
-		Graphics g = getGraphics();
-		if (trb == null || !trb.geefTraceStatus())
-			g.drawImage(im, 0, 0, null);
-	}
-	//-------------------------------------------------------------------------------------------
+
+ 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad om de lijnen en vlakken te tekenen
 	//-------------------------------------------------------------------------------------------
 	void naarVolgendPunt(double dx, double dy)
@@ -387,6 +250,7 @@ class Tekenblad extends Canvas
 		beginpunt.x = eindpunt.x;
 		beginpunt.y = eindpunt.y;
 	}
+	
 	void tekenPolygon()
 	{	gIm.setColor(vulkleur);
 		gIm.fillPolygon(veelvlak);
@@ -394,27 +258,7 @@ class Tekenblad extends Canvas
 		if (pen)
 			gIm.drawPolygon(veelvlak);
 	}
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt door de TraceBeheerder
-	//-------------------------------------------------------------------------------------------
-	void tekenTraceImage()
-	{	Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null);
-	}
-	void tekenCursor()
-	{	Polygon cursor = new Polygon();
-		Punt p;
-		p = mat.geefVolgendPunt(beginpunt, 10, 0);
-		cursor.addPoint((int) p.x,(int) p.y);
-		p = mat.geefVolgendPunt(p, -10, -10);
-		cursor.addPoint((int) p.x,(int) p.y);
-		p = mat.geefVolgendPunt(p, -10, 10);
-		cursor.addPoint((int) p.x,(int) p.y);
-		gIm.setColor(new Color(255, 255, 0));
-		gIm.fillPolygon(cursor);
-		gIm.setColor(new Color(0, 0, 255));
-		gIm.drawPolygon(cursor);
-	}
+	
  	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "tekenprogramma()" 
 	//-------------------------------------------------------------------------------------------
@@ -498,90 +342,10 @@ class Tekenblad extends Canvas
 }
 
 
-class AnimatieBeheerder extends Panel implements ActionListener, Runnable
-{
-  	private Button animatieknop;
-  	private Thread animatie;
-  	boolean animatieAan;
-	TekenApplet eigenaar;
-	TraceBeheerder trb;
-
-	public AnimatieBeheerder(TekenApplet ap)
-	{	eigenaar = ap;
-		animatieAan = false;
-		animatieknop = new Button("animatie");
-		animatieknop.addActionListener(this);
-		add(animatieknop);
-	}
-	//-------------------------------------------------------------------------------------------
-	//de TraceBeheerder maakt zich met deze methode kenbaar aan de AnimatieBeheerder 
-	//-------------------------------------------------------------------------------------------
-	public void meldTraceBeheerder(TraceBeheerder trb)
-	{	this.trb = trb;
-	}
-	//-------------------------------------------------------------------------------------------
-	//afhandeling van de animatieknop actie, en het starten van de animatiedraad 
-	//-------------------------------------------------------------------------------------------
-  	public void actionPerformed(ActionEvent e)
-	{	if(animatie==null)
-		{	beginAnimatie();
-		}
-		else
-		{	onderbreekAnimatie();
-			if(trb!=null)trb.setEnableTraceKnop(true);
-			animatieknop.setLabel("animatie");
-		}
-	}
-	
-	public void run()
-	{	eigenaar.animatie();
-		onderbreekAnimatie();
-		if(trb!=null)trb.setEnableTraceKnop(true);
-		animatieknop.setLabel("animatie");
-	}
-		
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden behalve door de Animatiebeheerder zelf, ook gebruikt door de 
-	//TraceBeheerder en MuisBeheerder 
-	//-------------------------------------------------------------------------------------------
-	public void onderbreekAnimatie()
-	{	animatieAan=false;
-		pauze(200);
-		animatie = null;
-	}
-		public void beginAnimatie()
-	{	animatieAan=true;
-		pauze(200);
-		animatie = new Thread(this);
-		animatie.start();
-		if(trb!=null)trb.setEnableTraceKnop(false);
-			animatieknop.setLabel("stoppen");
-	}	
-	void setEnableAnimatieKnop(boolean b)
-	{	animatieknop.setEnabled(b);
-	}
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatie- en muishandlers van het leerlingenprogramma.
-	//"animatieStatus()" wordt ook gebruikt door de TraceBeheerder en MuisBeheerder.
-	//-------------------------------------------------------------------------------------------
-	public boolean animatieStatus()
-	{	return animatieAan;
-	}
-	public void pauze(int millisec)
-	{  try
-    	{   Thread.sleep(millisec);
-		}
-    	catch(InterruptedException e)    // geen ;
-		{   }
-	}
-}
-
 class MuisBeheerder implements MouseListener, MouseMotionListener
 {
 	private int eerstex, laatstex, eerstey, laatstey, dx, dy;
 	private TekenApplet eigenaar;
-	private AnimatieBeheerder ab;
-	private boolean animatieWasAan;
 	private boolean actief;
 	
 	public MuisBeheerder(TekenApplet ap)
@@ -595,20 +359,11 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 		dy = 0;
 	}
 	//-------------------------------------------------------------------------------------------
-	//de AnimatieBeheerder maakt zich met deze methode kenbaar aan de Muisbeheerder  
-	//-------------------------------------------------------------------------------------------
-	public void meldAnimatieBeheerder(AnimatieBeheerder ab)
-	{	this.ab = ab;
-	}
-	//-------------------------------------------------------------------------------------------
 	//afhandeling van de muis gebeurtenissen 
 	//-------------------------------------------------------------------------------------------
 	public void mousePressed(MouseEvent e)
 	{	if (actief)
-		{	if (ab != null && ab.animatieStatus())
-			{	animatieWasAan = true;
-				ab.onderbreekAnimatie();
-			}
+		{	
 			eerstex = e.getX();
 			eerstey = e.getY();
 			laatstex = e.getX();
@@ -629,10 +384,7 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 		}
 	}
 	public void mouseReleased(MouseEvent e)
-	{	if (animatieWasAan)
-		{	animatieWasAan = false;
-			ab.beginAnimatie();
-		}
+	{	
 		eigenaar.muisLosActie();
 	}
 	public void mouseExited(MouseEvent e){;}
@@ -726,179 +478,3 @@ class Matrix2D
 		return eindp;
 	}	
 }	
-
-class TraceBeheerder extends Panel implements ActionListener,Runnable
-{
-	private Button stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
-	private TextField methodeVeld;
-	private int maxAantalStappen,aantalStappen,aantalStappenTekening;
-	private Regelaar rg;
-	private Tekenblad tb;
-	private AnimatieBeheerder ab;
-	private MuisBeheerder mb;
-	private boolean loopAan,traceAan;
-	private Thread loop;
-	
-	public TraceBeheerder(Tekenblad tb, Regelaar rg)
-	{	beginKnop = new Button("begin");
-		beginKnop.addActionListener(this);
-		add(beginKnop);
-		stapKnop = new Button("stap");
-		stapKnop.addActionListener(this);
-		add(stapKnop);
-		terugKnop = new Button("terug");
-		terugKnop.addActionListener(this);
-		add(terugKnop);
-		methodeVeld = new TextField("",15);
-		add(methodeVeld);
-		loopKnop = new Button("loop");
-		loopKnop.addActionListener(this);
-		add(loopKnop);
-		traceKnop = new Button("trace aanschakelen");
-		traceKnop.addActionListener(this);
-		add(traceKnop);
-		
-		aantalStappen = 0;
-		maxAantalStappen = 0;
-		aantalStappenTekening = 1;
-		this.tb = tb;
-		this.rg = rg;
-		loopAan = false;
-		traceAan = false;
-	}
-	void naarBegin()
-	{	methodeVeld.setVisible(false);
-		beginKnop.setVisible(false);
-		stapKnop.setVisible(false);
-		loopKnop.setVisible(false);
-		terugKnop.setVisible(false);
-	}
-	//-------------------------------------------------------------------------------------------
-	//de AnimatieBeheerder en Muisbeheerder maken zich met deze methoden bekend 
-	//-------------------------------------------------------------------------------------------
-	public void meldAnimatieBeheerder(AnimatieBeheerder ab)
-	{	this.ab = ab;
-	}
-	public void meldMuisBeheerder(MuisBeheerder mb)
-	{	this.mb = mb;
-	}
-	//-------------------------------------------------------------------------------------------
-	// het Tekenblad vraagt hiermee op of de Tracefunctie aanstaat 
-	//-------------------------------------------------------------------------------------------
-	public boolean geefTraceStatus()
-	{	return traceAan;
-	}
-	//-------------------------------------------------------------------------------------------
-	//de AnimatieBeheerder kan de TraceKnop hiermee disabelen  
-	//-------------------------------------------------------------------------------------------
-	public void setEnableTraceKnop(boolean b)
-	{	traceKnop.setEnabled(b);
-	}
-	//-------------------------------------------------------------------------------------------
-	//het TekenApplet geeft bij het doorlopen van tekenprogramma() de namen van de uitgevoerde
-	//stappen (tekenopdrachten) door aan TraceBeheerder.
-	//Wanneer het aantal stappen gelijk is aan maxAantalStappen, dan wordt het tot dan toe 
-	//voltooide deel van de tekening op het image via de methode tekenTraceImage()op Tekenblad 
-	//gezet . De variabele maxAantalStappen wordt met de stapKnop (of met de loopKnop
-	//in een Thread) steeds met een verhoogd, waardoor de tekening stap voor stap wordt opgebouwd.
-	//met de terugKnop wordt maxAantalStappen telkens een verlaagd, waardoor de tekening stap voor
-	//stap terugloopt
-	//-------------------------------------------------------------------------------------------
-	public void volgendeMethode(String naam)
-	{	aantalStappen++;
-		if(aantalStappen == maxAantalStappen && traceAan)
-		{	tb.tekenCursor();
-			tb.tekenTraceImage();
-			if(!loopAan)methodeVeld.setText(naam);
-			else methodeVeld.setText("");
-		}
-		aantalStappenTekening = aantalStappen;
-		if(!traceAan)naarBegin();
-	}
-	//-------------------------------------------------------------------------------------------
-	//afhandeling van de knopacties, en het starten van de loopdraad 
-	//-------------------------------------------------------------------------------------------
-	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource() == stapKnop)
-		{	loopAan=false;
-			maxAantalStappen++;
-			aantalStappen = 0;
-			tb.tekenOpnieuw();
-		}
-		if(e.getSource() == terugKnop)
-		{	loopAan=false;
-			maxAantalStappen--;
-			if(maxAantalStappen<0)maxAantalStappen=0;
-			aantalStappen = 0;
-			tb.tekenOpnieuw();
-		}
-		if(e.getSource() == loopKnop)
-		{	if(loop==null)
-			{	loopAan=true;
-				loop = new Thread(this);
-				loop.start();
-				loopKnop.setLabel("stop");
-			}
-		
-			else
-			{	loopAan=false;
-				loop = null;
-				loopKnop.setLabel("loop");
-			}
-		}
-		if(e.getSource() == beginKnop)
-		{	loopAan=false;
-			maxAantalStappen = 1;
-			aantalStappen = 0;
-			tb.tekenOpnieuw();
-		}
-		if(e.getSource() == traceKnop)
-		{	if(!traceAan)
-			{	traceAan = true;
-				//rg.setEnableInvVars(false);
-				if(ab!=null)ab.setEnableAnimatieKnop(false);
-				if(mb!=null)mb.setEnableMuisActie(false);
-				traceKnop.setLabel("trace uitschakelen");
-				methodeVeld.setVisible(true);
-				beginKnop.setVisible(true);
-				stapKnop.setVisible(true);
-				terugKnop.setVisible(true);
-				loopKnop.setVisible(true);
-				
-			}
-			else
-			{	traceAan = false;
-				loopAan = false;
-				//rg.setEnableInvVars(true);
-				if(ab!=null)ab.setEnableAnimatieKnop(true);
-				if(mb!=null)mb.setEnableMuisActie(true);
-				tb.tekenOpnieuw();
-				methodeVeld.setVisible(false);
-				beginKnop.setVisible(false);
-				stapKnop.setVisible(false);
-				loopKnop.setVisible(false);
-				terugKnop.setVisible(false);
-				traceKnop.setLabel("trace aanschakelen");
-			}
-				
-			maxAantalStappen = 1;
-			aantalStappen = 0;
-			tb.tekenOpnieuw();
-		}
-	}
-	public void run()
-	{	while(loopAan && aantalStappenTekening>maxAantalStappen)
-		{	maxAantalStappen++;
-			aantalStappen = 0;
-			tb.tekenOpnieuw();
-			try	
-			{   loop.sleep(100);
-			}
-    		catch(InterruptedException e) {   }
-		}
-		loopAan=false;
-		loop = null;
-		loopKnop.setLabel("loop");
-		if(aantalStappenTekening<maxAantalStappen)maxAantalStappen = 0; 
-	}
-}

@@ -5,17 +5,13 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
-import fi.beans.base64code.StringCodeObject;
+import fi.beans.base64code.*;
+import fi.beans.copyright.*;
 import fi.beans.scorm.*;
-//DataType;
-//import fi.beans.scorm.Parameter;
-//import fi.beans.scorm.SCORM12APIInterface;
-//import fi.beans.scorm.ScormEditComponentIF;
-//import fi.beans.scorm.ScormString;
-import fi.beans.wiskopdrbeans.InteractiePanel;
-import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
-//import javax.swing.*;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+
+import javax.swing.*;
 
 public class MozArch extends TekenApplet implements ActionListener,
 													ScormAppletIF, WiskOpdrParamEditApplet				
@@ -33,16 +29,16 @@ public class MozArch extends TekenApplet implements ActionListener,
 	private Vlakdeel[] vlakdelen;
 	private Vlakdeel actiefVlakdeel; //,vorigActiefVlakdeel;
 
-	// aantal wordt niet gebruikt
+// aantal wordt niet gebruikt
 	private int aantal;
 	private int aantalVlakdelen, actiefVlakdeelNummer;
 	double trek, trekx = 0,treky = 0; 
 	double zijde;
 	int[] volgorde;
 	
-	private InfoButton infoButton;
+	private FIButton infoButton;
 	private LWButton wisKnop, inzendenKnop, bestandenKnop;
-	private Panel knopPanel;
+	private JPanel knopPanel;
 	
 	private BestandenFrame bestandenFrame;
 
@@ -123,13 +119,22 @@ if (scormed)
 {
 	//fractielen = true;
 }
+/*
+fiButton = new FIButton("Tegels",new String[]{"","versie-info: 20110331",
+		"auteurs: Peter Boon, Frans van Galen",
+		"programmeur: Peter Boon",
+		"Freudenthal Instituut",
+		"www.fi.uu.nl",""});
+*/
 		
 		if (fractielen)
-		{	infoButton = new InfoButton("Fractielen",new String[]{"versie-info: 20110121",
-		    						    "Copyright: Peter Boon, Huub Nilwik"});
+		{	infoButton = new FIButton("Info", new String[]{"Fractielen", "versie-info: 20110406",
+		    						  "auteur: Peter Boon", "programmeurs: Peter Boon, Huub Nilwik",
+		    						  "Freudenthal Instituut", "www.fi.uu.nl"});
 		}
 		else
-		{	infoButton = new InfoButton("Mozaik",new String[]{"versie-info: 20110121",			  						    "Copyright: Peter Boon"});
+		{	infoButton = new FIButton("Info", new String[]{"Mozaiek", "versie-info: 20110406",									  "auteur: Peter Boon", "programmeur: Peter Boon",
+									  "Freudenthal Instituut", "www.fi.uu.nl"});
 		}
 		
 		if (fractielen)
@@ -137,9 +142,9 @@ if (scormed)
 
 		veldXMax = getSize().width - rightWidth;
 		
-		knopPanel = new Panel();
+		knopPanel = new JPanel();
 		if (fractielen)
-		{	knopPanel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
+		{	knopPanel.setBounds(getSize().width - rightWidth + 1, getSize().height - 58, rightWidth - 2, 57);
 			veldYMax = getSize().height - 10;
 		}
 		else	
@@ -148,21 +153,25 @@ if (scormed)
 		}
 		knopPanel.setLayout(null);
 		knopPanel.setBackground(new Color(220, 220, 160));
-		add(knopPanel);
-		//tb.add(panel);
+		getContentPane().add(knopPanel);
+		//tb.add(knopPanel);
 		
+				
 		if (fractielen)
-			infoButton.setBounds(5, 4, 40, 20);
+			infoButton.setBounds((knopPanel.getSize().width - 20) / 2, 22, 20, 30);
 		else	
-			infoButton.setBounds(10, 4, 40, 20);
-		infoButton.setBackground(new Color(190, 190, 130));
+			infoButton.setBounds(10, 1, 20, 30);
+		//infoButton.setBackground(new Color(190, 190, 130));
 		knopPanel.add(infoButton);
 
 		wisKnop = new LWButton(MozArch.rb.getString("wisKnopLabel"));
+		FontMetrics fm = getFontMetrics(wisKnop.getFont());
+		int width = fm.stringWidth(wisKnop.getLabel()) + 55;
 		if (fractielen)
-			wisKnop.setBounds(knopPanel.getSize().width - 40 - 5, 4, 40, 20);
+			//wisKnop.setBounds(knopPanel.getSize().width - width - 5, 4, width, 20);
+			wisKnop.setBounds((knopPanel.getSize().width - width) / 2, 4, width, 20);
 		else	
-			wisKnop.setBounds(knopPanel.getSize().width - 40, 4, 40, 20);
+			wisKnop.setBounds(knopPanel.getSize().width - width, 4, width, 20);
 		wisKnop.setBackground(new Color(190,190,130));
 		wisKnop.addActionListener(this);
 		knopPanel.add(wisKnop);
@@ -178,12 +187,6 @@ if (scormed)
 		bestandenKnop.setBounds(280,4,240,20);
 		bestandenKnop.setBackground(new Color(190,190,130));
 		//panel.add(bestandenKnop);
-		
-		//inzendPanel = new InzendPanel();
-		//inzendPanel.addActionListener(this);
-		//inzendPanel.setBounds(10,10,760,481);
-		//add(inzendPanel,0);
-		//inzendPanel.setVisible(false);
 		
 		achtergrondkleur(bgcolor.getRed(), bgcolor.getGreen(), bgcolor.getBlue());
 		
@@ -306,77 +309,18 @@ if (scormed)
 				vlakdelen[0].nieuw = false;
 
 		}
+ 	} // initialiseer
+	
+	
+ 	public void update(Graphics g)
+ 	{
+ 		paint(g);
  	}
-	
 
-	public void init2()
-	{	
-		veldXMax = getSize().width - rightWidth;
-		
-		if (fractielen)
-		{	knopPanel.setBounds(getSize().width - rightWidth + 1, getSize().height - 28, rightWidth - 2, 27);
-			veldYMax = getSize().height - 10;
-		}
-		else	
-		{	knopPanel.setBounds(1, getSize().height - 28, getSize().width - rightWidth, 27);
-			veldYMax = getSize().height - 30;
-		}
-
-		if (fractielen)
-			wisKnop.setBounds(knopPanel.getSize().width - 40 - 5, 4, 40, 20);
-		else	
-			wisKnop.setBounds(knopPanel.getSize().width - 40, 4, 40, 20);
-		
-		cX = getSize().width / 2;
-		cY = getSize().height / 2;
-		
-		stapelX = getSize().width - rightWidth / 2 - cX;
-		
-		dummyX = - 2 * cX; 
-		startX = - cX + (veldXMax + veldXMin) / 2; 	
-		startY = cY - (veldYMax - veldYMin) / 2;
-		
-		// originele versie
-		if (!fractielen)
-		{	
-			
-			if (!beginFig)
-				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, dummyX, startY, new Color(230, 230, 230));
-			else 
-				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, startX, startY, new Color(230, 230, 230));
-			
-			maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
-			maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
-			maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
-			maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
-			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
-			
-		}
-		else // versie met fractielen
-		{	
-			
-			if (!beginFig)
-			{	maakFractiel(beginFractielType, beginFigAantalPz, dummyX, startY, new Color(230, 230, 230));
-			}
-			else 
-			{	maakFractiel(beginFractielType, beginFigAantalPz, startX, startY, new Color(230, 230, 230));
-			}
-			
-			// stukje 1 heeft ry=60, dus centrum op 10+60=70
-			// stukje 2 heeft ry=55, dus centrum op 70+60+10+55=195
-			// stukje 3 heeft ry=50, dus centrum op 195+55+10+50=310
-			
-			maakFractiel(1, 1, stapelX, cY - 70, new Color(255, 0, 0));
-			maakFractiel(2, 1, stapelX, cY - 195, new Color(255, 255, 0));
-			maakFractiel(3, 1, stapelX, cY - 310, new Color(0, 0, 255));
-		
-
-		}
- 	}
-	
-	
 	public void tekenprogramma()
 	{	
+		
+//System.out.println("tekenprogramma");		
 		for (int i = aantalVlakdelen - 1; i > -1; i--)
 		{	if (volgorde[i] != -1 && !vlakdelen[volgorde[i]].nieuw)
 				tekenVlakdeel(vlakdelen[volgorde[i]]);
@@ -394,6 +338,9 @@ if (scormed)
 	
 	void tekenKader()
 	{			
+		
+//System.out.println("tekenKader");		
+		
 		penUit();
 
 		// pen staat in (390,250)
