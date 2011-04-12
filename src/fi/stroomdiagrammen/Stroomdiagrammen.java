@@ -102,11 +102,10 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
     boolean toonStroomMenu = true;
     boolean absoluut = false;
     
-/*    
     boolean toonOptiesMenu = true;
     boolean labels = false;
-    boolean extraBron = false;
-*/    
+    int numRoots = 1;
+    
 	public Stroomdiagrammen()
 	{	langArg = "nl";
 		Locale language = new Locale (langArg, "");
@@ -159,6 +158,30 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
 		if ((absoluutString != null) && absoluutString.equals("yes"))
 			absoluut = true;
 		
+		String toonOptiesMenuString = getParameter("optiesmenu");
+		if ((toonOptiesMenuString != null) && toonOptiesMenuString.equals("no"))
+			toonOptiesMenu = false;
+		
+		String labelsString = getParameter("labels");
+		if ((labelsString != null) && labelsString.equals("yes"))
+			labels = true;
+		
+		String bronnenString = getParameter("bronnen");
+		if ((bronnenString != null) && !bronnenString.equals(""))
+		{	int nRoots = 0;
+			boolean error = false;
+			try
+			{	nRoots = Integer.parseInt(bronnenString);
+				
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error && (nRoots >= 1) && (nRoots <= 4))
+			{	numRoots = nRoots;
+			}
+		}	
+		
 		// menubalk
 		menuBar = new JMenuBar();
 		MenuListener menuListener = new MenuListener();
@@ -200,17 +223,19 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
 		// optiesMenu
 		optiesMenu = new JMenu(rb.getString("optionsText"));
 		cbLabelsItem = new JCheckBoxMenuItem(rb.getString("labelsText"));
+		cbLabelsItem.setSelected(labels);
 		optiesMenu.add(cbLabelsItem);
 		cbLabelsItem.addActionListener(menuListener);
 		addRootItem = new JMenuItem(rb.getString("addRootText"));
 		optiesMenu.add(addRootItem);
 		addRootItem.addActionListener(menuListener);
-		
+
 		if (toonBerekenMenu)
 			menuBar.add(berekeningenMenu);
 		if (toonStroomMenu)
 			menuBar.add(stroombreedteMenu);
-		menuBar.add(optiesMenu);
+		if (toonOptiesMenu)
+			menuBar.add(optiesMenu);
 		
 		setJMenuBar(menuBar);
 
@@ -271,7 +296,7 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
 					drawingPanel.diagramManager.setVertexLabels(false);
 			}
 			else if (e.getSource() == addRootItem)
-			{	drawingPanel.addNewRoot();
+			{	drawingPanel.addNewRoot(true);
 				
 			}
 		}
@@ -387,17 +412,16 @@ System.out.println("diagramcopy encoded");
     	h.put("stroommenu", "yes");
     	h.put("absoluut", "no");
     	
-/*    	
     	h.put("optiesmenu", "yes");
     	h.put("labels", "no");
-*/    	
+    	h.put("bronnen", "1");
     	
     	return h;
     }
     
     public Parameter[] getEditableParameters()
 	{	
-    	Parameter[] parameters = new Parameter[4];
+    	Parameter[] parameters = new Parameter[7];
 		
 		DataType type = new ScormString();
 		
@@ -417,6 +441,17 @@ System.out.println("diagramcopy encoded");
 		param.setHelpText("vul in: yes of no");		
 		parameters[3] = param;
 		
+		param = new Parameter("optiesmenu", "menu Opties", type);
+		param.setHelpText("vul in: yes of no");		
+		parameters[4] = param;
+		
+		param = new Parameter("labels", "vertices met labels", type);
+		param.setHelpText("vul in: yes of no");		
+		parameters[5] = param;
+
+		param = new Parameter("bronnen", "aantal bronnen", type);
+		param.setHelpText("vul in: 1, 2, 3 of 4");		
+		parameters[6] = param;
 		
 		return parameters;
     }

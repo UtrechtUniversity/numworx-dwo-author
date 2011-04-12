@@ -2,8 +2,10 @@ package fi.stroomdiagrammen;
 
 import java.awt.*;
 
+import javax.swing.*;
+
 // a Light Weight Button with an arrow on it
-public class LWArrowButton extends LWContainer
+public class LWArrowButton extends JButton //LWContainer
 {   // the direction of the arrow 0 = up, 1 = right, 2 = down, 3 = left
     int direction;
     // polygon for the arrow
@@ -21,12 +23,13 @@ public class LWArrowButton extends LWContainer
             direction = 0;
         bgColor = bg;    
     }
-    
+/*    
     public LWContainer getCopy()
     {   return null;
-    }    
+    }
+*/        
     // paint
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {   g.setColor(bgColor);
         g.fillRect(0, 0, getSize().width, getSize().height);
         // construct arrow
@@ -79,6 +82,7 @@ public class LWArrowButton extends LWContainer
             g.fillPolygon(p);
         else
             g.drawPolygon(p);
+        
         // paint button outline
         g.setColor(Color.white);
         g.drawLine(0, 0, getSize().width - 1, 0);
@@ -94,7 +98,9 @@ public class LWArrowButton extends LWContainer
                    getSize().width - 1, getSize().height - 1);
         g.drawLine(getSize().width - 2, 1,
                    getSize().width - 2, getSize().height - 2);
+                   
     } // paint
+
     // redefined method
     public void setEnabled(boolean b)
     {   enabled = b;

@@ -8,7 +8,8 @@ import java.io.Serializable;
 import javax.swing.*;
 
 // class for main drawing area
-public class DrawingPanel extends Container implements Runnable
+//public class DrawingPanel extends Container implements Runnable
+public class DrawingPanel extends JPanel implements Runnable
 {   // applet frame
     //FlowFrame owner;
 	Stroomdiagrammen owner;
@@ -22,12 +23,12 @@ public class DrawingPanel extends Container implements Runnable
     public static int arrowButtonWidth = 15;    
     public static int vertexHeight = 26;
     // proposed label height
-    public static int LABELHEIGHT = 18;
+    public static int LABELHEIGHT = 20;
     // actual label height
     public static int labelHeight = 0;
     // dimensions for numbers in edges
-    public static int edgeNumberWidth = 38;    
-    public static int edgeNumberHeight = 25;    
+    public static int edgeNumberWidth = 50;//38;    
+    public static int edgeNumberHeight = 28;//25;    
     // maximum width between layers
     public static int maxLayerDistance = 110;
     // actual width between layers
@@ -163,6 +164,7 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
     // initialization of components etc.
     public void initialize()
     {   
+    	defineSpaces(false);
     	
     	if (owner.breuken)
     		flowMode = fracMode;
@@ -170,15 +172,31 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
     	if (owner.absoluut)
     		thickMode = absMode;
     	
+    	if (owner.labels)
+    		diagramManager.setVertexLabels(true);
+    	else
+    		diagramManager.setVertexLabels(false);
+    	
     	//dpSize = getSize();
         // set size of storageHeight
         // workSpace.height the rest 
         // takes care of borders
-        defineSpaces(false);
+        //defineSpaces(false);
         if (owner.diagramCopy == null)
 		{
-System.out.println("dc = null");        	
-	        // create and add root vertex        
+//System.out.println("dc = null");        	
+	        // create and add root vertex(vertices)
+        	if (owner.toonOptiesMenu)
+        	{	addNewRoot(true);
+        	}
+        	else
+        	{	for (int rCnt = 1; rCnt <= owner.numRoots; rCnt++)
+        		{	addNewRoot(false);
+        		}
+        		addToHistory();
+        		
+        	}
+/*        	
     	    Vertex root = new Vertex(true, 0);
 	        roots.addElement(root);
     	    root.addEdgeButton.addMouseListener(new AddEdgeML());
@@ -187,11 +205,12 @@ System.out.println("dc = null");
         	root.flowField.addMouseMotionListener(lis);
 	        diagramManager.insertVertex(root, null);
     	    addToHistory();
+*/    	    
     	}
     	else
     	{	
     		
-System.out.println("dc != null");    		
+//System.out.println("dc != null");    		
     		// truckje
     		owner.setSize(owner.getSize().width, owner.getSize().height + 1);
     		diagramManager.recreateDiagram(owner.diagramCopy);
@@ -202,7 +221,7 @@ System.out.println("dc != null");
         
     }  // initialize  
 
-    public void addNewRoot()
+    public void addNewRoot(boolean toHistory)
     {   Vertex newRoot = new Vertex(true, 0);
         roots.addElement(newRoot);
         newRoot.addEdgeButton.addMouseListener(new AddEdgeML());
@@ -210,7 +229,8 @@ System.out.println("dc != null");
         newRoot.flowField.addMouseListener(lis);
         newRoot.flowField.addMouseMotionListener(lis);
         diagramManager.insertVertex(newRoot, null);
-        addToHistory();
+        if (toHistory)
+        	addToHistory();
     }    
 
     // sets areas at initialize and after resizing
@@ -252,7 +272,7 @@ System.out.println("dc != null");
     
 
     // check if r Rectangle r contains lwc    
-    public boolean rectangleContains(Rectangle r, LWContainer lwc)
+    public boolean rectangleContains(Rectangle r, JPanel lwc) //LWContainer lwc)
     {   return ((r.x <= lwc.getLocation().x) &&
                 (r.y <= lwc.getLocation().y) &&
                 ((lwc.getLocation().x + lwc.getSize().width) <=
@@ -446,7 +466,7 @@ System.out.println("dc != null");
 	}
 */
     // paint
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {   // paint backgrounds
         // workspace
         g.setColor(Stroomdiagrammen.workBackground);
@@ -510,7 +530,7 @@ System.out.println("dc != null");
         
         
         // paint vertices and edge capacity fields
-        super.paint(g);               
+        //super.paint(g);               
 
         // fill borders to prevent drawing objects
         // outside predefined areas
@@ -782,25 +802,31 @@ System.out.println("dc != null");
     } // class MLMML        
 } // class DrawingPanel
 
+
 // use Container
 abstract class LWContainer extends Container
 {   boolean selectable = false;
     boolean selected = false;
     boolean highlighted = false;
     Color lwcColor;
-    public int getRight()
-    {   return getLocation().x + getSize().width;
-    }    
-    public int getBottom()
-    {   return getLocation().y  + getSize().height;
-    }    
-    public boolean isSelected()
-    {   return selected;
-    }    
-    public void setSelected(boolean b)
-    {   selected = b;
-        repaint();
-    }    
+    
+//    public int getRight()
+//    {   return getLocation().x + getSize().width;
+//    }
+
+//    public int getBottom()
+//    {   return getLocation().y  + getSize().height;
+//    }
+
+//    public boolean isSelected()
+//    {   return selected;
+//    }
+    
+//    public void setSelected(boolean b)
+//    {   selected = b;
+//        repaint();
+//    }
+        
 }
 
 class VertexCopy implements Serializable
@@ -828,13 +854,16 @@ class VertexCopy implements Serializable
         labelText = lText;
     }
 }
-class Vertex extends LWContainer
+class Vertex extends JPanel //LWContainer
 {   // attributes
 
 	int code;
     int layerNum;
     Rational flow = DrawingPanel.unDef;
-    NumberField flowField, vLabel;
+    //NumberField flowField;
+    JTextField flowField;
+    //NumberField vLabel;
+    JTextField vLabel;
     int decimals = 2;
     LWArrowButton colorButton;
     LWArrowButton addEdgeButton;
@@ -844,6 +873,8 @@ class Vertex extends LWContainer
     // constructor
     public Vertex(boolean rt, int ln)
     {   
+    	setLayout(null);
+    	
     	code = DrawingPanel.vertexCode;
     	DrawingPanel.vertexCode++;
     	root = rt;
@@ -858,27 +889,39 @@ class Vertex extends LWContainer
                         getSize().height - 1 - DrawingPanel.labelHeight);
             add(colorButton);
             currentX += colorButton.getSize().width;
-            flowField = new NumberField(
-                root, 
-                getSize().width - 
-                    DrawingPanel.leftButtonWidth -
-                    DrawingPanel.arrowButtonWidth,
-                getSize().height - DrawingPanel.labelHeight);
-            flowField.setLocation(currentX - 1, DrawingPanel.labelHeight);
+
+//          flowField = new NumberField(root, 
+//                getSize().width - DrawingPanel.leftButtonWidth - DrawingPanel.arrowButtonWidth,
+//                getSize().height - DrawingPanel.labelHeight);
+            
+            flowField = new JTextField();
+            flowField.setEditable(false);
+            flowField.setHorizontalAlignment(JTextField.CENTER);
+            flowField.setSize(
+                  getSize().width - DrawingPanel.leftButtonWidth - DrawingPanel.arrowButtonWidth,
+                  getSize().height - DrawingPanel.labelHeight - 2);
+            
+            flowField.setLocation(currentX - 1, DrawingPanel.labelHeight + 1);
             flowField.setBackground(new Color(255, 255, 150));
             add(flowField);
             currentX += flowField.getSize().width;
         }
         else // root of diagram
-        {   flowField = new NumberField(
-                root, 
-                getSize().width - DrawingPanel.arrowButtonWidth,
-                getSize().height - DrawingPanel.labelHeight);
-            flowField.setLocation(currentX - 1, DrawingPanel.labelHeight);
+        {   
+//        	flowField = new NumberField(root, 
+//                getSize().width - DrawingPanel.arrowButtonWidth,
+//                getSize().height - DrawingPanel.labelHeight);
+        	
+        	flowField = new JTextField();
+        	flowField.setSize(
+        			getSize().width - DrawingPanel.arrowButtonWidth - 1,
+                    getSize().height - DrawingPanel.labelHeight - 2);
+        	
+            flowField.setLocation(currentX, DrawingPanel.labelHeight + 1);
             add(flowField);
-            VertexIAL kfListener = new VertexIAL();
-            flowField.addKeyListener(kfListener);
-            flowField.addFocusListener(kfListener);
+            VertexIAL listener = new VertexIAL();
+            flowField.addActionListener(listener);
+            flowField.addFocusListener(listener);
             currentX += flowField.getSize().width;
         }    
         addEdgeButton = new LWArrowButton(1, Color.lightGray);
@@ -886,14 +929,22 @@ class Vertex extends LWContainer
                       DrawingPanel.arrowButtonWidth, 
                       getSize().height - 1 - DrawingPanel.labelHeight);
         add(addEdgeButton);
-        vLabel = new NumberField(true, DrawingPanel.vertexWidth,
-                                 DrawingPanel.LABELHEIGHT);
-        vLabel.addFocusListener(new VertexLabelIAL());                         
-        vLabel.olColor = Color.red;                                 
-        vLabel.setLocation(0, 0);              
+//        vLabel = new NumberField(true, DrawingPanel.vertexWidth,
+//                                 DrawingPanel.LABELHEIGHT);
+        vLabel = new JTextField();
+        vLabel.setSize(DrawingPanel.vertexWidth - 2,
+        			   DrawingPanel.LABELHEIGHT - 2);
+        VertexLabelIAL listener = new VertexLabelIAL();
+        vLabel.addFocusListener(listener);
+        vLabel.addActionListener(listener);
+        //vLabel.olColor = Color.red;                                 
+        vLabel.setLocation(1, 1);
+        vLabel.setVisible(false);
+        add(vLabel);
         if (DrawingPanel.labelHeight > 0)
-            add(vLabel);
-        
+        {	vLabel.setVisible(true);
+            //add(vLabel);
+        }
     }    
     
     public void setLabel(boolean b)
@@ -908,11 +959,13 @@ class Vertex extends LWContainer
                 flowField.getLocation().y + DrawingPanel.LABELHEIGHT);
             addEdgeButton.setLocation(addEdgeButton.getLocation().x,
                 addEdgeButton.getLocation().y + DrawingPanel.LABELHEIGHT);
-            add(vLabel);
-            //vLabel.setText("");
+            vLabel.setVisible(true);
+            
+            //add(vLabel);
         }
         else // remove label
-        {   remove(vLabel);
+        {   //remove(vLabel);
+        	vLabel.setVisible(false);
             setSize(DrawingPanel.vertexWidth,
                     DrawingPanel.vertexHeight);
             if (!root)
@@ -1124,11 +1177,19 @@ class Vertex extends LWContainer
         return result;
     }
     
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {   g.setColor(Color.black);
         g.drawRect(0, 0, getSize().width - 1, 
-                         getSize().height - 1); 
-        super.paint(g);   
+                         getSize().height - 1);
+        
+        if (vLabel.isVisible())
+        {	g.setColor(Color.red);
+        	g.drawRect(0, 0, getSize().width - 1,
+        			   DrawingPanel.LABELHEIGHT - 1);
+        	
+        }
+        
+        //super.paint(g);   
 /*        
         g.setColor(Color.black);
         g.drawRoundRect(0, 0, getSize().width - 1, 
@@ -1298,36 +1359,41 @@ class Vertex extends LWContainer
     
     // inner class for root numberfield (later all vertices??)
     // starts calculations on Enter
-    class VertexIAL extends KeyAdapter implements FocusListener
-    {   public void keyPressed(KeyEvent e)
-        {   // Vertex v = (Vertex) e.getComponent().getParent();
-//            boolean error = false;
-//            double value = 0;
-            // only action at Enter
-            int kc = e.getKeyCode();
-            if (kc == KeyEvent.VK_ENTER)
-            {   processInput();
-                
-            }  // if (kc == VK_ENTER)  
-             
-        } // keyPressed   
+    class VertexIAL implements FocusListener, ActionListener
+    {      
         public void focusGained(FocusEvent e)
         {}
         public void focusLost(FocusEvent e)
         {   processInput();
         }
+        public void actionPerformed(ActionEvent e)
+        {   processInput();
+        }
+        
         
     } // inner class VertexIAL   
     
     // inner class vertex labels
-    class VertexLabelIAL implements FocusListener
-    {   
+    class VertexLabelIAL implements FocusListener, ActionListener
+    {   	
+    	String labelText;
+    	
         public void focusGained(FocusEvent e)
-        {}
+        {	labelText = vLabel.getText();
+        }
         public void focusLost(FocusEvent e)
-        {   if (vLabel.textValueChanged)
-                //((DrawingPanel) getParent()).addToHistory();
-                ((DrawingPanel) getParent()).updateHistoryLabels();
+        {   if (!labelText.equals(vLabel.getText()))
+        	{	
+        		((DrawingPanel) getParent()).updateHistoryLabels();
+        		labelText = vLabel.getText();
+        	}
+        }
+        public void actionPerformed(ActionEvent e)
+        {	if (!labelText.equals(vLabel.getText()))
+    	{	
+    		((DrawingPanel) getParent()).updateHistoryLabels();
+    		labelText = vLabel.getText();
+    	}
         }
         
     } // inner class VertexIAL       
@@ -1351,7 +1417,10 @@ class EdgeCopy implements Serializable
 class Edge 
 {   DrawingPanel owner;
     Vertex fromVertex, toVertex;
-    NumberField capacityField;
+    
+    //NumberField capacityField;
+    CapacityPanel capacityField;
+    
     Point edgeStart = new Point(), edgeEnd = new Point();
     // angle (edgeEnd.y - edgeStart.y) / (edgeEnd.x - edgeStart.x)
     double alpha;
@@ -1393,15 +1462,25 @@ class Edge
         fromVertex = from;
         toVertex = to;
         capacity = new Rational(c);
-        capacityField = new NumberField(
-            true, DrawingPanel.edgeNumberWidth, 
-            DrawingPanel.edgeNumberHeight);
-        capacityField.rounded = true;    
-        capacityField.setText(UF.format(capacity.decVal, DrawingPanel.capDecs));    
-        EdgeIAL kfListener = new EdgeIAL();
-        capacityField.addKeyListener(kfListener);
-        capacityField.addFocusListener(kfListener);
+
+//        capacityField = new NumberField(
+//            true, DrawingPanel.edgeNumberWidth, 
+//            DrawingPanel.edgeNumberHeight);
+//        capacityField.rounded = true;
+        
+        
+        capacityField = new CapacityPanel(
+        		DrawingPanel.edgeNumberWidth, 
+        		DrawingPanel.edgeNumberHeight);
+        
+        
+        capacityField.setText(UF.format(capacity.decVal, DrawingPanel.capDecs));
+        
+        EdgeIAL listener = new EdgeIAL();
+        capacityField.capacityTextField.addActionListener(listener);
+        capacityField.capacityTextField.addFocusListener(listener);
         capacityField.addMouseListener(new DelEdgeML());
+        
         from.outEdges.addElement(this);
         to.inEdges.addElement(this);
         thickMode = owner.thickMode;
@@ -1983,30 +2062,17 @@ class Edge
     
     
     
-    class EdgeIAL extends KeyAdapter implements FocusListener
-    {   public void keyPressed(KeyEvent e)
-        {   // only action at Enter
-            int kc = e.getKeyCode();
-            if (kc == KeyEvent.VK_ENTER)
-            {   processInput();
-/*                
-                // get current text
-                String t = capacityField.getText();
-                // undo wrapping
-                capacityField.setText(t);
-                if ((mode == DrawingPanel.decMode) ||
-                    (mode == DrawingPanel.percMode))
-                    processDouble(t);
-                else // mode == DrawingPanel.fracMode    
-                    processRational(t);
-*/                    
-            }  // if (kc == VK_ENTER)  
-        } // keyPressed   
+    class EdgeIAL implements FocusListener, ActionListener
+    {      
         public void focusGained(FocusEvent e)
         {}
         public void focusLost(FocusEvent e)
         {   processInput();
         }
+        public void actionPerformed(ActionEvent e)
+        {   processInput();
+        }
+        
         
     } // inner class InputAL   
 } // class Edge   
@@ -2167,7 +2233,11 @@ class DiagramManager
     // vertices are put in the same vertical order as in
     // vertexLayers[layerNum]
     public void updateVertexLayer(int layerNum)
-    {   // horizontal position
+    {   
+    	if (owner.workSpace == null)
+    		owner.defineSpaces(false);
+    	
+    	// horizontal position
         int horPos = owner.workSpace.x + owner.leftSpace +
                      layerNum * (owner.vertexWidth + owner.layerDistance);
         // vertical positioning
@@ -2355,7 +2425,7 @@ class DiagramManager
         }        
         return result;
     }    
-  
+/*  
     public boolean vertexLabelsChanged()
     {   boolean result = false;
         // zoek in alle vertices    
@@ -2367,7 +2437,7 @@ class DiagramManager
         }    
         return result;
     }
-    
+*/    
     // check if v intersects any other vertex
     public boolean intersectsVertex(Vertex v)
     {   boolean result = false;
@@ -2633,7 +2703,14 @@ class DiagramManager
         {   // clear history
             owner.history.removeAllElements();
             owner.owner.bPanel.previousButton.setEnabled(false);
-            owner.addNewRoot();
+            if (owner.owner.toonOptiesMenu)
+            	owner.addNewRoot(true);
+            else
+            {	for (int rCnt = 1; rCnt <= owner.owner.numRoots; rCnt++)
+            	{	owner.addNewRoot(false);
+            	}
+            	owner.addToHistory();
+            }
         }
         owner.repaint();    
     }    
@@ -3033,7 +3110,7 @@ class DiagramCopy implements Serializable
     
 }    
 
-
+/*
 // light weight button
 class LWButton extends LWContainer
 {   // attributes
@@ -3093,6 +3170,7 @@ class LWButton extends LWContainer
         g.drawString(s, bx, by);    
     }    
 } // class LWButton   
+*/
 
 // light weight textfield/label
 class NumberField extends LWTextField

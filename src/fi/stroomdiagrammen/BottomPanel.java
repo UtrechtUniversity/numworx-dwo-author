@@ -24,6 +24,8 @@ public class BottomPanel extends JPanel
     JButton newButton, bubbleButton, previousButton;
     // copyright
     FIButton fiButton;
+
+JTextField test;    
     
     // constructor
     public BottomPanel(Stroomdiagrammen o)
@@ -52,11 +54,14 @@ public class BottomPanel extends JPanel
         previousButton.setEnabled(false);
         previousButton.addActionListener(new PreviousAL());
   
+//test = new JTextField();
+//add(test);
+        
 		//Fi-logo, copyright
 		fiButton = new FIButton("Info",
 			new String[]
 			{	owner.rb.getString("titelText"),
-				owner.rb.getString("versionText") + "20110303",
+				owner.rb.getString("versionText") + "20110412",
 				owner.rb.getString("authorText"),
 				owner.rb.getString("programText"),
 				owner.rb.getString("fiText"),
@@ -99,6 +104,8 @@ public class BottomPanel extends JPanel
         	width, 3 * fm1.getHeight() / 2);	
             //2 * vGap);
         currentX += previousButton.getSize().width + 4 * hGap;
+        
+//test.setBounds(currentX, currentY, 2 * width, 3 * fm1.getHeight() / 2);        
         
         currentX = rect.x + rect.width - hGap - 20;
         currentY = rect.y + vGap;
