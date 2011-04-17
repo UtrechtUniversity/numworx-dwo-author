@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="output/jar/algebraexpressies.jar"/>
-	<classpathentry kind="lib" path="output/scorm/course/cp/sco/algebraexpressies.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/_base/codebase" sourcepath="C:/java/beans"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>
