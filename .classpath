@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/_base/codebase" sourcepath="C:/java/beans"/>
-	<classpathentry kind="lib" path="/DWO-Swing/output/classes"/>
+	<classpathentry kind="lib" path="/DWO/output/classes"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>
