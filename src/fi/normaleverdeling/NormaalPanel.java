@@ -2199,7 +2199,7 @@ grensDecimals = findGrensDecimals();
 		paintXAxis(og);
 		paintDistribution(og);
 		paintLabels(og);	
-		paintComponents(og);
+		//paintComponents(og);
 		
 		//g.drawImage(im, 0, 0, null);
 	}
