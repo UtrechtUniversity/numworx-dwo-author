@@ -1,5 +1,9 @@
 package fi.heks.scobjects;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
 public class ScTekstContainer extends ScContainer
 {	
 	private String tekst;
@@ -22,6 +26,8 @@ public class ScTekstContainer extends ScContainer
 			add(regels[i]);
 		}
 	}
+	
+	
 	
 	private void maakDeelteksten()
 	{	deelteksten = new String[aantalRegels];

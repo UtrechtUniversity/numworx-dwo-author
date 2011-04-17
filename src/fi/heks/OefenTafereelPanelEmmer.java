@@ -64,7 +64,7 @@ public class OefenTafereelPanelEmmer extends ScPanel implements  MouseListener, 
 		if(kleurcode!=null)color_01 = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		
 		sleeppanel = new ScPanel(0,0,b,h-5);
-		sleeppanel.setBackground(color_01);
+		//sleeppanel.setBackground(color_01);
 		sleeppanel.addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
 		achtergrond = new AchtergrondContainer(0,0,b,h-5);
@@ -105,7 +105,7 @@ public class OefenTafereelPanelEmmer extends ScPanel implements  MouseListener, 
 		
 		
 		vloer = new Tekening(0,365,430,160, au,"vloer.gif");
-		achtergrond.add(vloer);
+		//achtergrond.add(vloer);
 		
 		tc = new GetalComponent(360,300,130,50);
 		tc.zetAlsTemp(true);

@@ -61,7 +61,7 @@ public class OefenTafereelPanel extends ScPanel implements  MouseListener, Mouse
 		if(kleurcode!=null)color_01 = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		
 		sleeppanel = new ScPanel(0,0,b,h-5);
-		sleeppanel.setBackground(color_01);
+		//sleeppanel.setBackground(color_01);
 		sleeppanel.addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
 		achtergrond = new AchtergrondContainer(0,0,b,h-5);

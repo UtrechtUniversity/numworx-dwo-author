@@ -26,6 +26,8 @@ public class ScLabel extends Component implements  ScObject
 		
 	}
 	
+	
+	
 	public String getLabel()
 	{	return opschrift;
 	}
@@ -33,8 +35,19 @@ public class ScLabel extends Component implements  ScObject
 	public void setLabel(String label)
 	{	opschrift = label;		repaint();
 	}
-	public void paint(Graphics g)
-	{			g.setColor(this.getForeground());
+	public void paint(Graphics gr)
+	{	
+		Graphics g ;
+	    {   g = (Graphics2D)gr;
+	    	if(System.getProperty("java.specification.version").equals("1.6"))
+			{	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, new Integer(100));
+		    }
+	    	else
+	    	{	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	    	}
+	     }
+	    		g.setColor(this.getForeground());
 		Font f = new Font("SansSerif", Font.PLAIN, (int)(3*schaal*relh/4));
 		g.setFont(f);
 		FontMetrics fm = g.getFontMetrics();

@@ -67,7 +67,7 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 		if(kleurcode!=null)color_01 = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		
 		sleeppanel = new ScPanel(300,0,b-300,h-5);
-		sleeppanel.setBackground(color_01);
+		//sleeppanel.setBackground(color_01);
 		sleeppanel.addMouseListener(this);
 		addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
@@ -82,7 +82,7 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 		achtergrond.add(pot);
 		
 		vloer = new Tekening(0,370,490,160, au,"vloer.gif");
-		achtergrond.add(vloer);
+		//achtergrond.add(vloer);
 		
 		beginTemp = new GetalComponent(170,130,80,40);
 		beginTemp.zetInstelbaar(true);

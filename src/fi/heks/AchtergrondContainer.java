@@ -21,8 +21,8 @@ public class AchtergrondContainer extends ScContainer
 		{	bufferimage = createImage(dd.width, dd.height);
 			gIm = bufferimage.getGraphics();			gIm.setColor(getBackground());			gIm.fillRect(0,0,dd.width,dd.height);
 			gIm.setColor(Color.black);			if(Heks.bladNummer<20) 
-			{	gIm.drawRect(0,0,dd.width-1,dd.height-1);
-				gIm.drawRect(1,1,dd.width-3,dd.height-3);
+			{	//gIm.drawRect(0,0,dd.width-1,dd.height-1);
+				//gIm.drawRect(1,1,dd.width-3,dd.height-3);
 			}			super.paint(gIm);
 			gIm.dispose();			resized = false;
 		}

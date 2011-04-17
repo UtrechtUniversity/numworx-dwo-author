@@ -90,6 +90,8 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener
 				
 	}
 	
+	
+	
 	public void setState(Hashtable h)
 	{	String tekst = (String)h.get("tekst");
 				

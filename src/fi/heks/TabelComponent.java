@@ -23,7 +23,7 @@ public class TabelComponent extends ScComponent
 		
 		int afwijkingBoven = (int)(schaal*-10);
 		int afwijkingOnder = (int)(schaal*-30);
-		g.setColor(new Color(255,255,240));
+		g.setColor(new Color(235,245,255));
 		g.fillRect(0,-afwijkingBoven,b,h+afwijkingOnder+afwijkingBoven);
 		g.setColor(Color.black);
 		g.drawRect(1,-afwijkingBoven+1,b-2,h+afwijkingOnder+afwijkingBoven-2);
