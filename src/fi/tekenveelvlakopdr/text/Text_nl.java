@@ -17,7 +17,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "tetraederLabel" , "tetraeder" },
 				{ "dodecaederLabel" , "dodecaeder" },
 				{ "octaederLabel" , "octaeder" },
-                { "icosaederLabel" , "icosaeder" }
+                { "icosaederLabel" , "icosaeder" },
+                { "prismaLabel" , "prisma" },
+                { "ruiten12Label" , "rombendodecahedron" }
 				
         };
 }

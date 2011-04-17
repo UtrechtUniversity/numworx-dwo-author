@@ -17,7 +17,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "tetraederLabel" , "tetrahedron" },
 				{ "dodecaederLabel" , "dodecahedron" },
 				{ "octaederLabel" , "octahedron" },
-                { "icosaederLabel" , "icosahedron" }
+                { "icosaederLabel" , "icosahedron" },
+                { "prismaLabel" , "prisma" },
+                { "ruiten12Label" , "ruiten12vlak" }
         };
 }
 

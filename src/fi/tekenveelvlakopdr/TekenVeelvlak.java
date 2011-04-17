@@ -55,6 +55,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("icosaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("dodecaederLabel"));
 		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("tetraederLabel"));
+		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("prismaLabel"));
+		kiesV.addItem(TekenVeelvlakOpdr.rb.getString("ruiten12Label"));
 		kiesV.addItemListener(this);
         
 		kiesV.setBounds(15,bStarH,100,25);
@@ -578,6 +580,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		else if (soortV==TekenVeelvlakOpdr.rb.getString("icosaederLabel"))v = new Icosaeder(1);
 		else if (soortV==TekenVeelvlakOpdr.rb.getString("dodecaederLabel"))v = (new Icosaeder(1.3)).dualiseer();
 		else if (soortV==TekenVeelvlakOpdr.rb.getString("tetraederLabel"))v = new Tetraeder(1);
+		else if (soortV==TekenVeelvlakOpdr.rb.getString("prismaLabel"))v = new Prisma(0.7,6,1);
+		else if (soortV==TekenVeelvlakOpdr.rb.getString("ruiten12Label"))v = new Kuboctaeder(1.8).dualiseerb();
 		
 		for(int i=0 ; i<v.aantalVlakken ; i++)
 		{	v.vlakken[i].vulkleur = "transparant";
@@ -618,13 +622,121 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 				}
 			}
 		}
-		
-		
-		
-		else if(figNr==1)v = (new Kubus(Math.sqrt(3))).dualiseer();
-		else if(figNr==2)v = new Icosaeder(1);
-		else if(figNr==3)v = (new Icosaeder(1.3)).dualiseer();
-		else if(figNr==4)v = new Tetraeder(1);
+		else if(figNr==1)
+		{
+			v = (new Kubus(Math.sqrt(3))).dualiseer();
+			int n = aantalRibPunten;
+			int aantalHp = 6;
+			int aantalRib = 12;
+			
+			Hoekpunt[] hp = new Hoekpunt[v.aantalHoekpunten+n*aantalRib];
+			for(int i=0 ; i<v.aantalHoekpunten ; i++)
+			{	hp[i]=v.hoekpunten[i];
+			}
+			v.hoekpunten = hp;
+			v.aantalHoekpunten+=n*aantalRib;
+			
+			int[] rib = {0,1,0,2,0,3,0,4,1,2,2,3,3,4,4,1,5,1,5,2,5,3,5,4};
+			for(int i=0 ; i<aantalRib ; i++)
+			{	for(int j=0 ; j<n ; j++)
+				{	v.hoekpunten[aantalHp+n*i+j] = new Hoekpunt(((n-j)*v.hoekpunten[rib[2*i]].x + (j+1)*v.hoekpunten[rib[2*i+1]].x)/(n+1),  
+															((n-j)*v.hoekpunten[rib[2*i]].y + (j+1)*v.hoekpunten[rib[2*i+1]].y)/(n+1),
+															((n-j)*v.hoekpunten[rib[2*i]].z + (j+1)*v.hoekpunten[rib[2*i+1]].z)/(n+1));
+				}
+			}
+		}
+		else if(figNr==2)
+		{	
+			v = new Icosaeder(1);
+			int n = aantalRibPunten;
+			int aantalHp = 12;
+			int aantalRib = 30;
+			aantalGetekendeHoekpunten = aantalHp + n*aantalRib;
+			Hoekpunt[] hp = new Hoekpunt[v.aantalHoekpunten+n*aantalRib];
+			for(int i=0 ; i<v.aantalHoekpunten ; i++)
+			{	hp[i]=v.hoekpunten[i];
+			}
+			v.hoekpunten = hp;
+			v.aantalHoekpunten+=n*aantalRib;
+			
+			int[] rib = {0,1,0,2,0,3,0,4,0,5,
+						 1,2,2,3,3,4,4,5,5,1,
+						 1,10,1,6,2,6,2,7,3,7,
+						 3,8,4,8,4,9,5,9,5,10,
+						 
+						 6,7,7,8,8,9,9,10,10,6,
+						 6,11,7,11,8,11,9,11,10,11				 
+			};
+			for(int i=0 ; i<aantalRib ; i++)
+			{	for(int j=0 ; j<n ; j++)
+				{	v.hoekpunten[aantalHp+n*i+j] = new Hoekpunt(((n-j)*v.hoekpunten[rib[2*i]].x + (j+1)*v.hoekpunten[rib[2*i+1]].x)/(n+1),  
+															((n-j)*v.hoekpunten[rib[2*i]].y + (j+1)*v.hoekpunten[rib[2*i+1]].y)/(n+1),
+															((n-j)*v.hoekpunten[rib[2*i]].z + (j+1)*v.hoekpunten[rib[2*i+1]].z)/(n+1));
+				}
+			}
+		}
+		else if(figNr==3)
+		{
+			v = (new Icosaeder(1.3)).dualiseer();
+			int n = aantalRibPunten;
+			int aantalHp = 20;
+			int aantalRib = 30;
+			aantalGetekendeHoekpunten = aantalHp + n*aantalRib;
+			Hoekpunt[] hp = new Hoekpunt[v.aantalHoekpunten+n*aantalRib];
+			for(int i=0 ; i<v.aantalHoekpunten ; i++)
+			{	hp[i]=v.hoekpunten[i];
+			}
+			v.hoekpunten = hp;
+			v.aantalHoekpunten+=n*aantalRib;
+			
+			int[] rib = {0,1,1,2,2,3,3,4,4,0,
+						 0,5,1,6,2,7,3,8,4,9,
+						 5,10,6,11,7,12,8,13,9,14,
+						 10,6,11,7,12,8,13,9,14,5,
+						 10,15,11,16,12,17,13,18,14,19,
+						 15,16,16,17,17,18,18,19,19,15				 
+			};
+			for(int i=0 ; i<aantalRib ; i++)
+			{	for(int j=0 ; j<n ; j++)
+				{	v.hoekpunten[aantalHp+n*i+j] = new Hoekpunt(((n-j)*v.hoekpunten[rib[2*i]].x + (j+1)*v.hoekpunten[rib[2*i+1]].x)/(n+1),  
+															((n-j)*v.hoekpunten[rib[2*i]].y + (j+1)*v.hoekpunten[rib[2*i+1]].y)/(n+1),
+															((n-j)*v.hoekpunten[rib[2*i]].z + (j+1)*v.hoekpunten[rib[2*i+1]].z)/(n+1));
+				}
+			}
+		}
+		else if(figNr==4)
+		{
+			v = new Tetraeder(1);
+			int n = aantalRibPunten;
+			int aantalHp = 4;
+			int aantalRib = 6;
+			
+			Hoekpunt[] hp = new Hoekpunt[v.aantalHoekpunten+n*aantalRib];
+			for(int i=0 ; i<v.aantalHoekpunten ; i++)
+			{	hp[i]=v.hoekpunten[i];
+			}
+			v.hoekpunten = hp;
+			v.aantalHoekpunten+=n*aantalRib;
+			
+			int[] rib = {0,1,0,2,0,3,1,2,1,3,2,3};
+			for(int i=0 ; i<aantalRib ; i++)
+			{	for(int j=0 ; j<n ; j++)
+				{	v.hoekpunten[aantalHp+n*i+j] = new Hoekpunt(((n-j)*v.hoekpunten[rib[2*i]].x + (j+1)*v.hoekpunten[rib[2*i+1]].x)/(n+1),  
+															((n-j)*v.hoekpunten[rib[2*i]].y + (j+1)*v.hoekpunten[rib[2*i+1]].y)/(n+1),
+															((n-j)*v.hoekpunten[rib[2*i]].z + (j+1)*v.hoekpunten[rib[2*i+1]].z)/(n+1));
+				}
+			}
+		}
+		else if(figNr==5)
+		{
+			v = new Prisma(0.7,6,1);
+			
+		}
+		else if(figNr==6)
+		{
+			v = new Kuboctaeder(1.8).dualiseerb();
+			
+		}
 		
 		for(int i=0 ; i<v.aantalVlakken ; i++)
 		{	v.vlakken[i].vulkleur = "transparant";

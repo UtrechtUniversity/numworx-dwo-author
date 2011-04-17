@@ -50,7 +50,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         moveableCB.setSelected(true);
         cp.add(moveableCB);
         
-        hulppuntenLabel = new JLabel("hulppunten bij kubus");
+        hulppuntenLabel = new JLabel("aantal hulppunten");
         hulppuntenLabel.setBounds(0,170,140,20);
 		cp.add(hulppuntenLabel);
 		
