@@ -1393,7 +1393,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		if (b.containsKey("MInvoer")) {
 			this.MInvoer = new BVInvoer((String)b.get("MInvoer"));
 		}
-		if (b.containsKey("populateInvoer")) {
+		if (b.containsKey("populatieInvoer")) {
 			this.populatieInvoer = new BVInvoer((String)b.get("populatieInvoer"));
 		}
 		if (b.containsKey("showNSlider")) {
