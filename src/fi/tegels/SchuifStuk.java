@@ -3,7 +3,9 @@ package fi.tegels;
 import java.awt.*;
 import java.awt.Polygon;
 
-class SchuifStuk 
+import java.io.Serializable;
+
+class SchuifStuk implements Serializable 
 {	
 	int aantalPunten;
 	Point[] punten;
@@ -11,15 +13,23 @@ class SchuifStuk
 	Point positie;
 	Polygon pol;
 	
-	public SchuifStuk(int n, Point[] ptn , Point pos, Color kl)
-	{	aantalPunten = n;
+	boolean transVersion = false;
+	
+	public SchuifStuk(boolean version, int n, Point[] ptn, Point pos, Color kl)
+	{	
+		transVersion = version;
+		
+		aantalPunten = n;
 		punten = ptn;
 		kleur = kl;
 		positie = new Point(pos);
 		maakPol();
 	}
-	public SchuifStuk(SchuifStuk s, int x, int y)
-	{	aantalPunten = s.aantalPunten;
+	public SchuifStuk(boolean version, SchuifStuk s, int x, int y)
+	{	
+		transVersion = version;		
+		
+		aantalPunten = s.aantalPunten;
 		punten = new Point[aantalPunten];
 		for (int i = 0; i < aantalPunten; i++)
 		{	punten[i] = new Point(s.punten[i]);
@@ -28,16 +38,32 @@ class SchuifStuk
 		kleur = new Color(s.kleur.getRGB());
 		maakPol();
 	}
-	public SchuifStuk(int n, Point[] ptn , Color kl)
-	{	aantalPunten = n;
+	public SchuifStuk(boolean version, int n, Point[] ptn, Color kl)
+	{	
+		transVersion = version;		
+		
+		aantalPunten = n;
 		punten = ptn;
 		kleur = kl;
 		positie = new Point(0,0);
 		maakPol();
 	}
+	
+	public boolean equals(Object o)
+	{	if (o instanceof SchuifStuk)
+		{	SchuifStuk ss = (SchuifStuk) o;
+		
+			return ss.pol.equals(pol) && ss.kleur.equals(kleur);
+		
+		}
+		else
+			return false;
+	}
+	
+	
 	public void maakPol()
 	{	
-		if (Tegels.transVersion)
+		if (transVersion)
 		{
 			pol = new Polygon();
 			for(int i = 0; i < aantalPunten; i++)
@@ -61,7 +87,7 @@ class SchuifStuk
 	}
 	public void draaiVorm()
 	{	
-		if (Tegels.transVersion)
+		if (transVersion)
 		{
 			for (int i = 0; i < aantalPunten; i++)
 			{	int nx = -punten[i].y;
@@ -84,7 +110,7 @@ class SchuifStuk
 	}
 	public void spiegel()
 	{	
-		if (Tegels.transVersion)
+		if (transVersion)
 		{
 			for (int i = 0; i < aantalPunten; i++)
 			{	punten[i].x = -(punten[i].x + punten[i].y);
@@ -114,7 +140,7 @@ class SchuifStuk
 	}
 	public void plaatsOpGrid()
 	{	
-		if (Tegels.transVersion)
+		if (transVersion)
 		{
 			int x = positie.x + 300;
 			int y = positie.y + 300;

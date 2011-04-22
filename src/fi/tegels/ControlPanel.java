@@ -8,7 +8,7 @@ import javax.swing.*;
 
 class ControlPanel extends JPanel implements ActionListener
 {	
-	private FIButton fiButton;
+	FIButton fiButton;
 	JTextField codeveld;
 	JButton draaiknop,wisknop,tekenknop,legknop,terugknop,wisTegelknop;
 	Tegels eigenaar;
@@ -23,6 +23,8 @@ class ControlPanel extends JPanel implements ActionListener
 	FontMetrics fm;
 	
 	int offset = 10;
+	int arrowButtonWidth = 20;
+	LWArrowButton upButton, downButton;
 	
 	public ControlPanel(Tegels gv)
 	{	
@@ -33,10 +35,23 @@ class ControlPanel extends JPanel implements ActionListener
 		
 		setBackground(Color.lightGray);
 		
-		fiButton = new FIButton("Tegels",new String[]{"","versie-info: 20110331",											"auteurs: Peter Boon, Frans van Galen",
+		fiButton = new FIButton("Tegels",new String[]{"","versie-info: 20110422",											"auteurs: Peter Boon, Frans van Galen",
 											"programmeur: Peter Boon",											"Freudenthal Instituut",											"www.fi.uu.nl",""});
 		//fiButton.setBounds(0,30,20,30);
 		//add(fiButton);
+		
+		upButton = new LWArrowButton(0, new Color(230, 230, 230));
+		upButton.setBounds(0, 0, arrowButtonWidth, arrowButtonWidth);
+		upButton.setEnabled(false);
+		upButton.addActionListener(this);
+		add(upButton);
+		
+		downButton = new LWArrowButton(2, new Color(230, 230, 230));
+		downButton.setBounds(0, eigenaar.controlHoogte - arrowButtonWidth, arrowButtonWidth, arrowButtonWidth);
+		downButton.setEnabled(false);	
+		downButton.addActionListener(this);
+		add(downButton);
+		
 		
 		int width = Math.max(fm.stringWidth(Tegels.rb.getString("draaiknopLabel")), 
 				             fm.stringWidth(Tegels.rb.getString("wisTegelknopLabel"))) + 45;
@@ -45,7 +60,7 @@ class ControlPanel extends JPanel implements ActionListener
 		draaiknop = new JButton(Tegels.rb.getString("draaiknopLabel"));
 		draaiknop.setFont(font);
 		//draaiknop.setBounds(30,20,80,20);
-		draaiknop.setBounds(offset, offset, width, height);
+		draaiknop.setBounds(arrowButtonWidth + offset, offset, width, height);
 		add(draaiknop);
 		draaiknop.addActionListener(this);
 
@@ -137,7 +152,7 @@ class ControlPanel extends JPanel implements ActionListener
 					g.fillRect(0,0,getWidth(),getHeight());
 				}
 			};
-			kleurenV[i].setBounds(offset + 20 * i, 
+			kleurenV[i].setBounds(arrowButtonWidth + offset + 20 * i, 
 						          draaiknop.getLocation().y + draaiknop.getSize().height + offset, 20 , 20);
 			add(kleurenV[i]);
 			kleurenV[i].addActionListener(this);
@@ -153,7 +168,7 @@ class ControlPanel extends JPanel implements ActionListener
 		
 		//gridKeuze = new ActKeuzePanel(items, 400, 10, 200, 40);
 		gridKeuze = new ActKeuzePanel(items, 
-									  legknop.getLocation().x + legknop.getSize().width + 2 * offset, 
+									  legknop.getLocation().x + legknop.getSize().width + offset, 
 									  offset, width, 2 * height, getBackground());
 		
 		//gridKeuze.setBackground(Color.lightGray);
@@ -197,7 +212,13 @@ class ControlPanel extends JPanel implements ActionListener
 		wisTegelknop.setVisible(true);
 	}
 	public void actionPerformed(ActionEvent e)
-	{	if (e.getSource() == draaiknop)
+	{	if (e.getSource() == upButton)
+		{	eigenaar.vorigeBasisVorm();
+		}
+		if (e.getSource() == downButton)
+		{	eigenaar.volgendeBasisVorm();
+		}
+		if (e.getSource() == draaiknop)
 		{	eigenaar.draaiBasisvorm();
 		}
 		if (e.getSource() == wisknop)

@@ -3,32 +3,43 @@ package fi.tegels;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
-//import java.applet.Applet;
-import fi.beans.mainframe.*;
+
+import fi.beans.base64code.*;
+import fi.beans.scorm.*;
+
+import fi.beans.wiskopdrbeans.InteractiePanel;
 
 import javax.swing.*;
 /**
  * @author Peter Boon
  */
 
-public class Tegels extends JApplet implements MouseListener, MouseMotionListener, ActionListener
+public class Tegels extends JApplet implements MouseListener, MouseMotionListener, ActionListener,
+											   ScormAppletIF, WiskOpdrParamEditApplet	
 {	
+	// scormgebeuren
 	protected static ResourceBundle rb;
+	protected SCORM12APIInterface api;
+	boolean scormed = false;
+	boolean reviewMode = false;	
+	
+	// DWO-component-gebeuren
+	boolean isDWOComponent = false;
+	
 	private ControlPanel cp;
 	TekenPanel tekenPanel;
 	private String langArg;
 	
 	int breedte, hoogte;
-//	private Image im;
-// 	private Graphics imGr;
 	
 	int aantalSs;
 	private int laatstex = 0;
 	private int laatstey = 0;
 	
 	SchuifStuk[] ss;
-	SchuifStuk actiefSs, basisv, basisvOud;
-//	private Image plaatje, plaatjeBasis;
+	SchuifStuk actiefSs;
+	SchuifStuk basisv;
+	SchuifStuk basisvOud;
 	Point posBasis;
 	
 	int aantalNieuwHp;
@@ -44,33 +55,56 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 	JMenuItem mi;
 	
 	// parametrisatie
-	// toon de transversie (het vroegere applet TegelsTr
+	// toon de transversie (het vroegere applet TegelsTr)
 	// default false
-	static boolean transVersion = false;
+	boolean transVersion = false;
+	// toon de demo-versie (alleen nuttig voor de DWO)
+	boolean demoVersion = false;
 	
 	int hokBreedte = 180;
 	int controlHoogte = 70;//60;
 
+	Vector basisVormen = new Vector();
+	int actualBasisVorm = 0;
+	
 	public static void main(String[] args)    
-	{	int width = 710;
-        int height = 500;
-		Tegels g = new Tegels();
-		MainFrame mf = new MainFrame(g,width, height);
-		mf.setTitle("Tegels");
+	{	int width = 700;
+        int height = 450;
+		
+        Tegels tegels = new Tegels();
+		ScormMainFrame mf = new ScormMainFrame(tegels, width, height);
+		mf.setTitle("Tegels Scormed");
 		mf.pack();
 		mf.show();
-		mf.setSize(width, height);
+		
+		tegels.setLocation(mf.getInsets().left, mf.getInsets().top);		
+		
+		int framebreedte = width + mf.getInsets().left + mf.getInsets().right;
+		int framehoogte = height + mf.getInsets().top + mf.getInsets().bottom;
+		mf.setSize(framebreedte, framehoogte);
+
 		
 	}
-	
+
+    public Tegels()
+    {	Locale language = new Locale ("nl", "");
+    }
+    public Tegels(Locale language)
+    {
+    }
+
 	public void init()
-	{	hoogte = getSize().height;
+	{	
+		
+		try
+		{	api = Scorm.findAPI(this);
+		}
+		catch(Exception e){}
+		
+		hoogte = getSize().height;
 		breedte = getSize().width;
 		
 		getContentPane().setLayout(null);
-		
-		//getContentPane().setBackground(null);
-		//setBackground(null);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -86,6 +120,12 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 			(versionString.equals("yes") || versionString.equals("true")))
 			transVersion = true;
 		
+		String demoString = getParameter("demoversion");
+		if (demoString != null && 
+			(demoString.equals("yes") || demoString.equals("true")))
+			demoVersion = true;
+		
+		
 		tekenPanel = new TekenPanel(this);
 		tekenPanel.setBounds(0, 0, breedte, hoogte);
 //		getContentPane().add(tekenPanel);
@@ -94,6 +134,8 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		cp.setLayout(null);
 		//cp.setBounds(181, hoogte - 61, breedte - 182, 60);
 		cp.setBounds(hokBreedte + 1, hoogte - controlHoogte - 1, breedte - hokBreedte - 2, controlHoogte);
+		if (demoVersion)
+			cp.setVisible(false);
 		getContentPane().add(cp);
 	
 		// deze HIER!!
@@ -126,8 +168,8 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		}
 		Point[] pnt = {p1, p2, p3, p4};
 		
-		basisv = new SchuifStuk(4, pnt, Color.red);
-		basisvOud = new SchuifStuk(4, pnt, new Color(230, 230, 230));
+		basisv = new SchuifStuk(transVersion, 4, pnt, Color.red);
+		basisvOud = new SchuifStuk(transVersion, 4, pnt, new Color(230, 230, 230));
 		basisv.zetPositie(posBasis.x, posBasis.y);
 		basisvOud.zetPositie(posBasis.x, posBasis.y);
 		nieuwHp = new Point[50];
@@ -140,6 +182,9 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		aantalNieuwHp++;
 		tegelKlaar = true;
 		maakCodeString();
+		
+		basisVormen.addElement(new SchuifStuk(transVersion, basisv.aantalPunten, basisv.punten,
+				               posBasis, basisv.kleur));
 		
 		int n = 10 / Trans.factor;
 		zeshok = new Polygon();
@@ -173,47 +218,9 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		getContentPane().add(popup);
 	}
 	
-//	public void paint(Graphics g)
-//  	{ 	
-			
-/*		
-		if (im == null)
-		{	im = createImage(breedte, hoogte);
-  			imGr = im.getGraphics();
-			tekenOpImage(imGr);
-		}
-*/   
 
-//		paintComponents(g);
-//		tekenOpImage(g);
-//  	}
-	 
-  	public void tekenOpImage(Graphics g)
-  	{ 	
-  		
-  		g.setColor(Color.white);
-  		g.setColor(Color.yellow);
-    	g.fillRect(0, 0, breedte, hoogte - controlHoogte - 2);
-  		//g.fillRect(0, 0, breedte, hoogte - 2);
-		tekenprogramma(g);
-		
-		
-		g.setColor(Color.black);
-		g.drawRect(0, 0, breedte - 1, hoogte - 1);
-		// lijn boven control panel 
-		//gIm.drawLine(181, hoogte - 62, breedte - 1, hoogte - 62);
-		g.drawLine(hokBreedte + 1, hoogte - controlHoogte - 2, breedte - 1, hoogte - controlHoogte - 2);
-		
-		//super.paint(g);
-	}
-	
  	void tekenOpnieuw()
 	{	
-/* 		
- 		tekenOpImage();
-		Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null);
-*/		
  		repaint();
 	}	
 	
@@ -221,158 +228,14 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
  	{
  		paint(g);
  	}
-	
-	public void tekenprogramma(Graphics g)
-	{	tekenStukken(g);
-		tekenHok(g);
-		if (!maakVorm && basisv != null)
-			tekenStapel(g);
-		
-		if (actiefSs != null)
-			tekenSs(actiefSs, g);
-		
-		if (maakVorm)
-		{	tekenRoosterHok(g);
-			tekenPunten(g);
-			tekenLijnen(g);
-		}
-		
-	}
-	
-	void tekenStapel(Graphics g)
-	{	tekenSs(new SchuifStuk(basisv, basisv.positie.x - 3, basisv.positie.y - 3), g);
-		if (!transVersion)
-			tekenSs(basisv, g);
-	}
-	
-	void tekenHok(Graphics gIm)
-	{	gIm.setColor(Color.lightGray);
-		//gIm.fillRect(0, hoogte - 181, 180, 180);
-		gIm.fillRect(0, hoogte - hokBreedte - 1, hokBreedte, hokBreedte);
-		gIm.setColor(Color.black);
-		//gIm.drawRect(0, hoogte - 181, 180, 180);
-		gIm.drawRect(0, hoogte - hokBreedte - 1, hokBreedte, hokBreedte);
-	}
-	
-	void tekenRoosterHok(Graphics gIm)
-	{	
-		if (transVersion)
-		{
-			gIm.setColor(Color.white);
-			gIm.fillPolygon(zeshok);
-			gIm.setColor(Color.black);
-			gIm.drawPolygon(zeshok);
-			
-			if (basisvOud != null)
-			{	gIm.setColor(basisvOud.kleur);
-				gIm.fillPolygon(basisvOud.pol);
-			}
-			
-			gIm.setColor(Color.black);
-			int n = 10 / Trans.factor;
-			for (int i = -n; i < n+1; i++)
-			{	for (int j = -n; j < n + 1; j++)
-				{	int x = Trans.geefx(i, j);
-					int y = Trans.geefy(i, j);
-					if (Math.abs(i + j) <= n)
-						gIm.drawLine(85 + x, hoogte - 85 - y, 85 + x, hoogte - 85 - y);
-				}
-			}
-						
-		}
-		else
-		{	
-			gIm.setColor(Color.white);
-			gIm.fillRect(15, hoogte - 165, 160, 160);
-		
-			if (basisvOud != null)
-			{	gIm.setColor(basisvOud.kleur);
-				gIm.fillPolygon(basisvOud.pol);
-			}
-		
-			gIm.setColor(Color.black);
-			for (int j = 0; j < 9; j++)	
-				gIm.drawLine(15, hoogte - 5 - 20 * j, 175, hoogte - 5 - 20 * j);
-			for (int j = 0; j < 9; j++)	
-				gIm.drawLine(15 + 20 * j, hoogte - 5, 15 + 20*j, hoogte - 165);
-		
-			for (int i = 0; i < 9; i++)	
-			{	gIm.drawString(abc[i], 13 + 20 * i, hoogte - 168);
-			}
-			for (int i = 0; i < 9 ; i++)	
-			{	gIm.drawString(Integer.toString(i + 1), 5, hoogte - 162 + 20 * i);
-			}
-		}
-	}
-	
-	void tekenStukken(Graphics g)
-	{	for(int i = aantalSs - 1; i > -1; i--)
-		{	tekenSs(ss[i], g);
-		}
-	}	
-	
-	void tekenSs(SchuifStuk s, Graphics gIm)
-	{	gIm.setColor(s.kleur);
-		gIm.fillPolygon(s.pol);
-		gIm.setColor(Color.black);
-		gIm.drawPolygon(s.pol);
-	}
-	
-	void tekenPunten(Graphics gIm)
-	{	
-		if (transVersion)
-		{	for (int i = 0; i < aantalNieuwHp; i++)
-			{	int x = Trans.geefx(nieuwHp[i].x, nieuwHp[i].y);
-				int y = Trans.geefy(nieuwHp[i].x, nieuwHp[i].y);
-			   
-				gIm.fillOval(posBasis.x + x - 3, posBasis.y + y - 3, 6, 6);
-			}
-		}
-		else
-		{	
-			for (int i = 0; i < aantalNieuwHp; i++)
-			{	gIm.fillOval(posBasis.x + nieuwHp[i].x - 3, posBasis.y + nieuwHp[i].y - 3, 6, 6);
-			}
-		}
-	}
-	
 	void vermenigvuldigPunten(double factor)
 	{	for (int i = 0; i < aantalNieuwHp; i++)
 		{	nieuwHp[i].x *= factor;
 			nieuwHp[i].y *= factor;
 		}
-		basisv = new SchuifStuk(aantalNieuwHp, nieuwHp, posBasis, Color.red);
+		basisv = new SchuifStuk(transVersion, aantalNieuwHp, nieuwHp, posBasis, Color.red);
 	}
-	
-	void tekenLijnen(Graphics gIm)
-	{	
-		if (transVersion)
-		{	if (aantalNieuwHp > 1)
-			{	gIm.setColor(Color.red);
-			for (int i = 0; i < aantalNieuwHp - 1; i++)
-			{	int x = Trans.geefx(nieuwHp[i].x, nieuwHp[i].y);
-				int y = Trans.geefy(nieuwHp[i].x, nieuwHp[i].y);
-				int xn = Trans.geefx(nieuwHp[i + 1].x, nieuwHp[i + 1].y);
-				int yn = Trans.geefy(nieuwHp[i + 1].x, nieuwHp[i + 1].y);
-				gIm.drawLine(posBasis.x + xn , posBasis.y + yn ,posBasis.x + x, posBasis.y + y);
-			}
-			gIm.setColor(Color.black);
-	}
-			
-		}
-		else
-		{
-			if (aantalNieuwHp > 1)
-			{	gIm.setColor(Color.red);
-				for (int i = 0; i < aantalNieuwHp - 1; i++)
-				{	gIm.drawLine(posBasis.x + nieuwHp[i + 1].x ,posBasis.y + nieuwHp[i + 1].y ,
-								 posBasis.x + nieuwHp[i].x, posBasis.y + nieuwHp[i].y);
-				}
-				gIm.setColor(Color.black);
-			}
-		}
-	}
-	
+
 	void zetTekenen()
 	{	maakVorm = true;
 		//if(basisv!=null)
@@ -381,16 +244,51 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		//}
 		tekenOpnieuw();
 	}
-	
+
 	void zetLeggen()
 	{	maakVorm = false;
 		wisTegelEerst = false;
 		if (tegelKlaar)
-		{	basisvOud = new SchuifStuk(aantalNieuwHp, nieuwHp, posBasis, new Color(230, 230, 230));
+		{	basisvOud = new SchuifStuk(transVersion, aantalNieuwHp, nieuwHp, posBasis, new Color(230, 230, 230));
+		
+			if (!basisVormen.contains(basisv))
+			{	basisVormen.addElement(
+					new SchuifStuk(transVersion, basisv.aantalPunten, basisv.punten, posBasis, basisv.kleur));
+				actualBasisVorm = basisVormen.size() - 1;
+				cp.downButton.setEnabled(false);
+				cp.upButton.setEnabled(true);
+			
+			}
+		
 		}
 		tekenOpnieuw();
 	}
 	
+	void vorigeBasisVorm()
+	{	if (actualBasisVorm > 0)
+		{	actualBasisVorm--;
+			zetBasisVorm((SchuifStuk) basisVormen.elementAt(actualBasisVorm));
+			if (actualBasisVorm == 0)
+				cp.upButton.setEnabled(false);
+			if (basisVormen.size() > 1)
+				cp.downButton.setEnabled(true);
+			tekenOpnieuw();
+		}
+		
+	}
+	
+	void volgendeBasisVorm()
+	{	if (actualBasisVorm < (basisVormen.size() - 1))
+		{	actualBasisVorm++;
+			zetBasisVorm((SchuifStuk) basisVormen.elementAt(actualBasisVorm));
+			if (actualBasisVorm == (basisVormen.size() - 1))
+				cp.downButton.setEnabled(false);
+			if (basisVormen.size() > 1)
+				cp.upButton.setEnabled(true);
+			tekenOpnieuw();
+		}
+		
+	}
 	void draaiBasisvorm()
 	{	if (basisv != null)
 			basisv.draaiVorm();
@@ -480,14 +378,39 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 			for (int i = 0; i < aantalNieuwHp; i++)
 			{	hp[i] = new Point(nieuwHp[i]);
 			}
-			basisv = new SchuifStuk(aantalNieuwHp, hp, posBasis, Color.red);
+			basisv = new SchuifStuk(transVersion, aantalNieuwHp, hp, posBasis, Color.red);
 			tekenOpnieuw();
+			
+			// toevoegen aan basisVormen mits nog niet gemaakt
+//			if (!basisVormen.contains(basisv))
+//				basisVormen.addElement(basisv);
+			
 		}
 		maakCodeString();
 	}
 	
+	public void zetBasisVorm(SchuifStuk bVorm)
+	{
+		aantalNieuwHp = bVorm.aantalPunten;
+		for (int i = 0; i < bVorm.aantalPunten; i++)
+		{	nieuwHp[i] = new Point(bVorm.punten[i]);
+		}
+		basisv = new SchuifStuk(transVersion, bVorm.aantalPunten, bVorm.punten, 
+				                posBasis, bVorm.kleur);
+		basisvOud = new SchuifStuk(transVersion, bVorm.aantalPunten, bVorm.punten, 
+                				posBasis, new Color(230, 230, 230));
+		
+		maakCodeString();
+	}
+	
+	
 	public void mousePressed(MouseEvent e)
-	{	laatstex = e.getX();
+	{	
+		
+		if (demoVersion)
+			return;
+		
+		laatstex = e.getX();
 		laatstey = e.getY();
 		
 		if (transVersion)
@@ -554,10 +477,15 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		}
 	}	
 	public void mouseDragged(MouseEvent e)
-	{	int dx = e.getX() - laatstex;
+	{	
+		
+		if (demoVersion)
+			return;
+		
+		int dx = e.getX() - laatstex;
 		int dy = e.getY() - laatstey;
 		if (pak)
-		{	ss[aantalSs] = new SchuifStuk(basisv, posBasis.x, posBasis.y);
+		{	ss[aantalSs] = new SchuifStuk(transVersion, basisv, posBasis.x, posBasis.y);
 			actiefSs = ss[aantalSs];
 			for (int j = aantalSs; j > 0; j--)
 			{	ss[j] = ss[j - 1];
@@ -574,7 +502,11 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if (new Rectangle(0, hoogte - 180, 180, 180).contains(e.getX(), e.getY()) && actiefSs != null)
+	{	
+		if (demoVersion)
+			return;
+		
+		if (new Rectangle(0, hoogte - 180, 180, 180).contains(e.getX(), e.getY()) && actiefSs != null)
 		{	for (int j = 1; j < aantalSs; j++)
 			{	ss[j - 1] = ss[j];
 			}
@@ -605,7 +537,7 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		{	ss[0].zetKleur(basisv.kleur);
 		}
 		if (((JMenuItem) e.getSource()).getText().indexOf(Tegels.rb.getString("menuKopieerLabel")) > -1)
-		{	ss[aantalSs] = new SchuifStuk(ss[0], ss[0].positie.x + 20 ,ss[0].positie.y - 20);
+		{	ss[aantalSs] = new SchuifStuk(transVersion, ss[0], ss[0].positie.x + 20 ,ss[0].positie.y - 20);
 			actiefSs = ss[aantalSs];
 			for (int j = aantalSs; j > 0; j--)
 			{	ss[j] = ss[j - 1];
@@ -615,5 +547,171 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		}
 		tekenOpnieuw();
 	}
+	
+	// scormgebeuren
+
+	public void start()
+	{	if (api != null)
+		{	String s = api.LMSGetValue("cmi.suspend_data");
+			if (s != null && !s.equals(""))
+			{	setState(s);
+//System.out.println("set state");			
+			}
+		}
+	}
+	
+	public void stop()
+	{	if (api != null)
+		{	String s = getState();
+			String d = new Double(getScore()).toString();
+			api.LMSSetValue("cmi.core.score.raw",d);
+			api.LMSSetValue("cmi.suspend_data",s);
+//System.out.println("get state");			
+		}
+	}
+
+	public void stopSco()
+	{	stop();
+		api = null;
+	}
+
+	public void setState(String s)
+	{	
+//System.out.println("set: sl = " + s.length());
+	
+		// decodeer de string
+		Object o = StringCodeObject.decodeStringToObject(s);
+		// cast
+		Hashtable h = (Hashtable) o;
+		
+		boolean stateVersion = transVersion;
+		
+		if (h.containsKey("stateversion"))
+			stateVersion = ((Boolean) h.get("stateversion")).booleanValue();
+		
+		if (stateVersion == transVersion)
+		{	
+		
+			Vector schuifStukkenVector = new Vector();
+			if (h.containsKey("schuifstukken"))
+				schuifStukkenVector = (Vector) h.get("schuifstukken");
+		
+			aantalSs = schuifStukkenVector.size();
+			for (int sCnt = 0; sCnt < aantalSs; sCnt++)
+			{	ss[sCnt] = (SchuifStuk) schuifStukkenVector.elementAt(sCnt);
+			}
+
+			Vector basisVormenVector = new Vector();
+			if (h.containsKey("basisvormen"))
+				basisVormenVector = (Vector) h.get("basisvormen");
+
+			basisVormen = new Vector();
+			for (int bCnt = 0; bCnt < basisVormenVector.size(); bCnt++)
+			{	basisVormen.addElement((SchuifStuk) basisVormenVector.elementAt(bCnt));
+			}
+			
+			if (basisVormen.size() >= 1)
+			{
+				zetBasisVorm((SchuifStuk) basisVormen.elementAt(0));
+				if (basisVormen.size() > 1)
+					cp.downButton.setEnabled(true);
+			}
+
+		}
+		
+/*		
+if (h == null)
+{
+System.out.println("set h = null");	
+	return;
+
+}
+*/		
+	}
+
+	public String getState()
+	{	
+		// creeer de gegevens die de state bepalen
+		Hashtable h = new Hashtable();
+	
+		boolean stateVersion = transVersion;
+		
+		h.put("stateversion", new Boolean(stateVersion));
+		
+		Vector schuifStukkenVector = new Vector();
+		for (int sCnt = 0; sCnt < aantalSs; sCnt++)
+		{	schuifStukkenVector.addElement(ss[sCnt]);
+		}
+		h.put("schuifstukken", schuifStukkenVector);
+		
+		Vector basisVormenVector = new Vector();
+		for (int bCnt = 0; bCnt < basisVormen.size(); bCnt++)
+		{	basisVormenVector.addElement((SchuifStuk) basisVormen.elementAt(bCnt));
+		}
+		h.put("basisvormen", basisVormenVector);
+		
+	    // codeer deze gegevens tot een string
+	    String s = StringCodeObject.encodeObjectToString(h);
+
+	    return s;
+	}
+
+	public double getScore()
+	{	return 0.5;
+	}
+	
+	public InteractiePanel getInteractiePanel()
+	{
+		return new InteractiePanelAdapter(this);
+	}	
+	
+	public boolean hasEditMode()
+	{	return false;
+	}
+
+    public ScormEditComponentIF getEditComponent(Hashtable launchdata)
+    {	return null;
+    }
+	
+	
+    public Parameter[] getEditableParameters()
+	{	
+    	Parameter[] parameters = new Parameter[2];
+		
+		DataType type = new ScormString();
+		
+		Parameter param = new Parameter("transversion", "versie TegelsTr", type);
+		param.setHelpText("vul in: yes of no");		
+		parameters[0] = param;
+
+		param = new Parameter("demoversion", "demo versie", type);
+		param.setHelpText("vul in: yes of no");		
+		parameters[1] = param;
+		
+		return parameters;
+    }
+	
+    public Parameter[] getAllParameters()
+    {	return null;
+    }
+	
+    // wiskOpdrParamEditApplet
+    public Hashtable getDefaultParameters()
+    {
+    	Hashtable h = new Hashtable();
+    	
+    	h.put("transversion", "no");
+    	h.put("demoversion", "no");
+    	
+    	return h;
+    }
+    
+	public void setSingleComponent()
+	{	
+		isDWOComponent = true;
+		cp.fiButton.setVisible(false);
+		
+	}
+	
 }
 

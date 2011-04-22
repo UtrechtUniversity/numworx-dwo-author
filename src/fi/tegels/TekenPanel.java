@@ -31,10 +31,12 @@ public class TekenPanel extends JPanel
 		
 		g.setColor(Color.black);
 		g.drawRect(0, 0, owner.breedte - 1, owner.hoogte - 1);
+
 		// lijn boven control panel 
 		//gIm.drawLine(181, owner.hoogte - 62, owner.breedte - 1, owner.hoogte - 62);
-		g.drawLine(owner.hokBreedte + 1, owner.hoogte - owner.controlHoogte - 2, 
-				   owner.breedte - 1, owner.hoogte - owner.controlHoogte - 2);
+		if (!owner.demoVersion)
+			g.drawLine(owner.hokBreedte + 1, owner.hoogte - owner.controlHoogte - 2, 
+					   owner.breedte - 1, owner.hoogte - owner.controlHoogte - 2);
 		
 		//super.paint(g);
 	}
@@ -56,23 +58,26 @@ public class TekenPanel extends JPanel
 */	
 	public void tekenprogramma(Graphics g)
 	{	tekenStukken(g);
-		tekenHok(g);
-		if (!owner.maakVorm && owner.basisv != null)
-			tekenStapel(g);
+	
+		if (!owner.demoVersion)
+		{	
+			tekenHok(g);
+			if (!owner.maakVorm && owner.basisv != null)
+				tekenStapel(g);
 		
-		if (owner.actiefSs != null)
-			tekenSs(owner.actiefSs, g);
+			if (owner.actiefSs != null)
+				tekenSs(owner.actiefSs, g);
 		
-		if (owner.maakVorm)
-		{	tekenRoosterHok(g);
-			tekenPunten(g);
-			tekenLijnen(g);
+			if (owner.maakVorm)
+			{	tekenRoosterHok(g);
+				tekenPunten(g);
+				tekenLijnen(g);
+			}
 		}
-		
 	}
 	
 	void tekenStapel(Graphics g)
-	{	tekenSs(new SchuifStuk(owner.basisv, owner.basisv.positie.x - 3, owner.basisv.positie.y - 3), g);
+	{	tekenSs(new SchuifStuk(owner.transVersion, owner.basisv, owner.basisv.positie.x - 3, owner.basisv.positie.y - 3), g);
 		if (!owner.transVersion)
 			tekenSs(owner.basisv, g);
 	}
