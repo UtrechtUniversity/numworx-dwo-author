@@ -46,6 +46,8 @@ class InvulPanel extends JPanel implements ActionListener //ItemListener
 		checkboxen[aantalCheckboxen].setFont(new Font("SansSerif",Font.PLAIN,h/2+3));
 		//checkboxen[aantalCheckboxen].addItemListener(this);
 		checkboxen[aantalCheckboxen].addActionListener(this);
+		checkboxen[aantalCheckboxen].setOpaque(false);
+        
 		add(checkboxen[aantalCheckboxen]);
 		aantalCheckboxen++;
 	}

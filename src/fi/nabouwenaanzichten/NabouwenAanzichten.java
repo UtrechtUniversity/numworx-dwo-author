@@ -10,6 +10,7 @@ import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
+import fi.beans.copyright.*;
 import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
 
 
@@ -88,7 +89,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	public void init()
 	{	
 		String variantString = super.getParameter("variant");
-		int variant = 0;
+		int variant = 2;
 		if (variantString != null) 
 			variant = Integer.parseInt(variantString);
 		
@@ -200,7 +201,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 				vWerk = new Viewer3d(kr, 0, -15, 50, 200, this);
 	        else 
 	        	vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
-			vWerk.zetAchtergrond(bgcolor);
+			//vVoorbeeld.zetAchtergrond(Color.white);
+            //vVoorbeeld.setBackground(bgcolor);
 			vWerk.zetAfstand(10000000);
 			vWerk.zetSchaduw(false);
 			vWerk.zetBeginHoeken(90,0);
@@ -226,7 +228,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			
 			invulPanel = new InvulPanel(activiteitNamen,100,140,180,40);
 			invulPanel.addActionListener(this);
-			invulPanel.setBackground(getBackground());
+			invulPanel.setBackground(bgcolor);
 			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];
@@ -250,6 +252,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			
 			vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), 60, 250, 300, 170,2, this);
 			vVoorbeeld.zetAchtergrond(Color.white);
+			vVoorbeeld.setBackground(bgcolor);
 			vVoorbeeld.zetKlikAan(false);
 			vVoorbeeld.ra.zetPijlAan(false);
 			add(vVoorbeeld);
@@ -268,7 +271,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			
 			invulPanel = new InvulPanel(activiteitNamen,100,180,180,40);
 			invulPanel.addActionListener(this);
-			invulPanel.setBackground(getBackground());
+			invulPanel.setBackground(bgcolor);
 			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];
@@ -291,6 +294,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			if(mobileVersion) vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), -15, 130, 140, 130,3, this);
 	        else vVoorbeeld = new VaktekPanel(new KubusRooster(4,1), 40, 150, 250, 250,3, this);
 			vVoorbeeld.zetAchtergrond(Color.white);
+			vVoorbeeld.setBackground(bgcolor);
 			vVoorbeeld.zetKlikAan(false);
 			vVoorbeeld.ra.zetPijlAan(false);
 			add(vVoorbeeld);
@@ -313,7 +317,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			invulPanel = new InvulPanel(activiteitNamen,200,180,180,40);
 			if(mobileVersion) invulPanel = new InvulPanel(activiteitNamen,120,240,180,30);
 			invulPanel.addActionListener(this);
-			invulPanel.setBackground(getBackground());
+			invulPanel.setBackground(bgcolor);
 			if(activiteitNamen.length>1)add(invulPanel,0);
 			
 			scores = new Label[aantalActiviteiten];

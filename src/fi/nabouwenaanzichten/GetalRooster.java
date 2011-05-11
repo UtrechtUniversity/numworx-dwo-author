@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class GetalRooster //extends JComponent
+public class GetalRooster extends JComponent
 {	
 	private double zijde;
 	private int aantal;
@@ -18,7 +18,7 @@ public class GetalRooster //extends JComponent
 		lx = x;
 		ly = y;
 		
-		//setBounds(x, y, b, b);
+		setBounds(x, y, b, b);
 		this.aantal = aantal;
 		hoogten = new int[aantal][aantal];
 		for (int i = 0; i < aantal; i++)

@@ -25,7 +25,8 @@ class VaktekPanel extends JPanel //Container
 	{	this.aantalViews = aantalViews;
 		setBounds(x, y, b, h);
 		setLayout(null);
-		setOpaque(false);
+		setOpaque(true);
+		setBackground(Color.white);
 		kr = k;
 		eigenaar = bd;
 		breedte = b;
@@ -165,8 +166,9 @@ class VaktekPanel extends JPanel //Container
 	
 		remove(vr);
 		
-		vakBreedte = Math.min(breedte - 80, hoogte - 80);
-		
+		//vakBreedte = Math.min(breedte - 80, hoogte - 80);
+		vakBreedte = Math.min(breedte, hoogte);
+        
 		if (type == BOVEN)
 		{
 			ba = new Viewer3d(kr, (breedte - vakBreedte) / 2, (hoogte - vakBreedte) /2, 
@@ -203,13 +205,13 @@ class VaktekPanel extends JPanel //Container
 		}
 
 		vr = new VaktekRooster();
-		add(vr);
+		//add(vr);
 		
 		repaint();
 
 	}
 	public void zetAchtergrond(Color c)
-	{	setBackground(c);
+	{	//setBackground(c);
 		va.zetAchtergrond(c);
 		ra.zetAchtergrond(c);
 		la.zetAchtergrond(c);

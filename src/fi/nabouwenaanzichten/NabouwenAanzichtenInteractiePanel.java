@@ -124,7 +124,6 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	}
 	
 	
-	
 	public void setBounds(int x, int y, int b, int h)
 	{	
 		
@@ -145,7 +144,12 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		{	//v.remove(ip);
 			remove(v);
 		}
-		v = new Viewer3d(kr, 0, 0, b, h, this);
+		int vpX = Math.max(0,(b-h)/2);
+        int vpY = Math.max(0,(h-b)/2);
+        int vpZijde = Math.min(b,h);
+		//if(bovenAanzichtMetHoogtes)
+		    v = new Viewer3d(kr, vpX, vpY, vpZijde, vpZijde, this);
+		//else v = new Viewer3d(kr, 0, 0, b, h, this);
 		v.zetAchtergrond(bgcolor);
 	    v.zetBeginHoeken(beginHoekX, beginHoekY);
 		add(v);
@@ -255,7 +259,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if (perspectief)
 			v.zetAfstand(1000);
 		else
-			v.zetAfstand(10000000);
+			v.zetAfstand(1000000000);
 		
 		v.tekenOpnieuw();
 	}
@@ -281,7 +285,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	public void zetBovenAanzichtMetHoogtes(boolean b)
 	{	bovenAanzichtMetHoogtes = b;
 		if (bovenAanzichtMetHoogtes)
-		{	
+		{	zetPerspectief(false);
 			if (vp.isVisible())
 			{	noSetBounds = true;
 				vp.setVisible(false);
@@ -295,7 +299,6 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		}
 	
 		v.zetGetalRooster2(bovenAanzichtMetHoogtes);
-		
 		
 		if (!bovenAanzichtMetHoogtes)
 		{	v.zetSchaduw(true);
