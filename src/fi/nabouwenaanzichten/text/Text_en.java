@@ -71,7 +71,30 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "textPanelRegel2_9" , "" },
 				{ "textPanelRegel2_10" , "" },
 				{ "textPanelRegel2_11" , "" },
-				{ "textPanelRegel2_12" , "" }
+				{ "textPanelRegel2_12" , "" },
+				
+				// edit state opties
+				{ "rotatieVast" , "No rotation" },
+				{ "bouwSloopKeuze", "Choice build/break down"},
+				{ "isVoorbeeld", "No building/breaking down"},
+				
+				{ "zwartePijl", "Front: black arrow" },
+				{ "rodeBalk", "Front: red beam" },
+				{ "geenVoorkant", "No indication of front" },
+
+				{ "perspectief", "Perspective" },
+				{ "plattegrond", "Grid with" },
+				{ "plattegrond2", "       heights" },				
+				
+				{ "blokkenbouwsel", "Block building" },
+				{ "3Aanzichten", "3 views" },
+				{ "bovenAanzicht", "View from above" },
+				{ "voorAanzicht", "Frontal view" },
+				{ "rechtsAanzicht", "View from the right" },
+				
+				{ "roosterGrootte", "Grid size (2 - 15)" },				
+				
+				
         };
 }
 

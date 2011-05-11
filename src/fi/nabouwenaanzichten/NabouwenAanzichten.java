@@ -89,7 +89,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	{	
 		String variantString = super.getParameter("variant");
 		int variant = 0;
-		if(variantString!=null) variant = Integer.parseInt(variantString);
+		if (variantString != null) 
+			variant = Integer.parseInt(variantString);
 		
 		defaultParamValues = makeDefaultParamValues(variant);
 		
@@ -100,19 +101,18 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		
 		setLayout(null);
 		
-		
-		
-		
 		au = new AppletUtil(this);
 		
 		langArg = getParameter("language");
-		if ( langArg == null) langArg = "nl";
+		if (langArg == null) 
+			langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.nabouwenaanzichten.text.Text",language);
 		
 		Color bgcolor = new Color(230,240,255);
 		bgColorArg = getParameter("bgcolor");
-		if(bgColorArg!=null)bgcolor = new Color(Integer.parseInt(bgColorArg.substring(1),16));
+		if (bgColorArg != null) 
+			bgcolor = new Color(Integer.parseInt(bgColorArg.substring(1),16));
 		setBackground(bgcolor);
 		
 		String mobileVersionString = getParameter("mobileVersion");
@@ -167,7 +167,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		
 		selectieNummer = 0;
 		
-		ip = new InvulKeuzePanel(390,400,100,50);
+		ip = new InvulKeuzePanel(390,420,100,50);
 		ip.setBackground(bgcolor);
 		add(ip);
 		
@@ -196,8 +196,10 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 		
 		if(mode==0)
 		{	add(tp0);
-			if(mobileVersion) vWerk = new Viewer3d(kr, 0, -15, 50, 200, this);
-	        else vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
+			if (mobileVersion) 
+				vWerk = new Viewer3d(kr, 0, -15, 50, 200, this);
+	        else 
+	        	vWerk = new Viewer3d(kr, 351, -30, 450, 450, this);
 			vWerk.zetAchtergrond(bgcolor);
 			vWerk.zetAfstand(10000000);
 			vWerk.zetSchaduw(false);
@@ -400,7 +402,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	
 	public String getParameter(String name)
 	{	String value = super.getParameter(name);
-		if(value==null)value = (String)defaultParamValues.get(name);
+		if (value == null)
+			value = (String) defaultParamValues.get(name);
 		return value;
 	}
 	
@@ -670,8 +673,8 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	{	vWerk.tekenOpnieuw();
 		//v.tekenOpnieuw();
 		String s = "";
-		if(kubusRoosterActief!=null)
-		{	if(mode==0)
+		if (kubusRoosterActief != null)
+		{	if (mode == 0)
 			{	if(kubusTekenRoosterActief.isGelijk(kubusRoosterActief))
 				{	orActief.zetGemaakt(opdrachtNr+1,true);
 					orActief.zetScore(opdrachtNr+1,10);
@@ -681,7 +684,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 					orActief.zetScore(opdrachtNr+1,0);
 				}
 			}
-			else if(mode==1)
+			else if (mode == 1)
 			{	s = NabouwenAanzichten.rb.getString("aantalKLabel")+ kubusTekenRoosterActief.geefAantalK();
 				if(kubusTekenRoosterActief.isGelijkAanzichtenVB(kubusRoosterActief) && kubusTekenRoosterActief.aantalKubussen <= kubusRoosterActief.aantalKubussen)
 				{	orActief.zetGemaakt(opdrachtNr+1,true);
@@ -696,7 +699,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 					orActief.zetScore(opdrachtNr+1,0);
 				}
 			}
-			else if(mode==2)
+			else if (mode == 2)
 			{	s = NabouwenAanzichten.rb.getString("aantalKLabel")+ kubusTekenRoosterActief.geefAantalK();
 				if(kubusTekenRoosterActief.isGelijkAanzichten(kubusRoosterActief) && kubusTekenRoosterActief.aantalKubussen <= kubusRoosterActief.aantalKubussen)
 				{	orActief.zetGemaakt(opdrachtNr+1,true);
@@ -745,22 +748,23 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	}
 	
 	public void zetKubusRooster(KubusRooster k)
-	{	if(mode==1 || mode==2)
+	{	if (mode==1 || mode==2)
 		{	vVoorbeeld.zetKubusRooster(k);
 			vVoorbeeld.tekenOpnieuw();
 		}
 		
-		else if(mode==0)
+		else if (mode==0)
 		{	vVoorbeeld0.zetKubusRooster(k);
 			vVoorbeeld0.tekenOpnieuw();
 		}
 		volLeegKnop.setLabel("Maak vol");
-		if(mode==2)vWerk.zetBeginHoeken(30,-30);
+		if (mode==2) 
+			vWerk.zetBeginHoeken(30,-30);
 		zetVeranderd();
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==volLeegKnop)
+	{	if (e.getSource() == volLeegKnop)
 		{	if(volLeegKnop.getLabel().equals(NabouwenAanzichten.rb.getString("volLeegKnopLabel1")))
 			{	if(kubusTekenRoosterActief==null)
 				{	vWerk.kr.maakVol();
@@ -786,7 +790,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 				zetVeranderd();
 			}
 		}
-		else if(e.getSource()==opdrachtKnop)
+		else if (e.getSource() == opdrachtKnop)
 		{	if(opdrachtKnop.getLabel().equals(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1")))
 			{	vWerk.setVisible(false);
 				volLeegKnop.setVisible(false);
@@ -807,7 +811,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 				opdrachtKnop.setLabel(NabouwenAanzichten.rb.getString("opdrachtKnopLabel1"));
 			}
 		}
-		else if(e.getSource() == orActief)
+		else if (e.getSource() == orActief)
 		{	opdrachtNr = Integer.parseInt(e.getActionCommand())-1;
 			kubusRoosterActief = kubusRoosters[activiteitNr][opdrachtNr];
 			kubusTekenRoosterActief = kubusTekenRoosters[activiteitNr][opdrachtNr];
@@ -823,7 +827,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 			vWerk.zetKubusRooster(kubusTekenRoosterActief);
 			vWerk.tekenOpnieuw();
 		}
-		else if(e.getSource()== invulPanel)
+		else if (e.getSource()== invulPanel)
 		{	if(activiteitNr==invulPanel.geefKeuze()-1)return;
 			orActief.setVisible(false);
 			activiteitNr = invulPanel.geefKeuze()-1;

@@ -9,7 +9,7 @@ class Matrix3D
 
 	private Rotatie3D[] rotatieRij;
 	private int aantalRotaties;
-	private double starthoekx,starthoeky,starthoekz,startschaal;
+	private double starthoekx, starthoeky, starthoekz, startschaal;
 	private double xx, xy, xz ;
 	private double yx, yy, yz;
 	private double zx, zy, zz;
@@ -29,9 +29,9 @@ class Matrix3D
 	void initialiseer()
 	{	rotatieRij = new Rotatie3D[150];
 		aantalRotaties = 0;
-		xx=1;xy=0;xz=0;
-		yx=0;yy=1;yz=0;
-		zx=0;zy=0;zz=1;
+		xx=1; xy=0; xz=0;
+		yx=0; yy=1; yz=0;
+		zx=0; zy=0; zz=1;
 		schaal(startschaal);
 		ydraaiAbs(starthoeky);
 		xdraaiAbs(starthoekx);
@@ -45,7 +45,11 @@ class Matrix3D
 		startschaal = schl;
 		initialiseer();
 	}	
-			
+
+//	int getAantalRotaties()
+//	{	return aantalRotaties;
+//	}
+	
 	void schaal(double f) 
 	{
 		xx *= f;
@@ -60,35 +64,45 @@ class Matrix3D
    }
 
 	void xdraai(double theta) 
-	{	voegRotatieToe(1,theta);
+	{	voegRotatieToe(1, theta);
 	}
 	void ydraai(double theta) 
-	{	voegRotatieToe(2,theta);
+	{	voegRotatieToe(2, theta);
 	}
 	void zdraai(double theta) 
-	{	voegRotatieToe(3,theta);
+	{	voegRotatieToe(3, theta);
 	}
 	public void voegRotatieToe(int as, double rotatieHoek)
-	{	Rotatie3D r = new Rotatie3D(as,rotatieHoek);
-		for(int i = 0; i<aantalRotaties ; i++)
+	{	Rotatie3D r = new Rotatie3D(as, rotatieHoek);
+		for (int i = 0; i < aantalRotaties; i++)
 		{	Rotatie3D rt = rotatieRij[i];
-			if(rt.as == 1)xdraaiAbs(-rt.rotatieHoek);
-			else if(rt.as == 2)ydraaiAbs(-rt.rotatieHoek);
-			else if(rt.as == 3)zdraaiAbs(-rt.rotatieHoek);
+			if (rt.as == 1)
+				xdraaiAbs(-rt.rotatieHoek);
+			else if (rt.as == 2)
+				ydraaiAbs(-rt.rotatieHoek);
+			else if (rt.as == 3)
+				zdraaiAbs(-rt.rotatieHoek);
 		}
-		if(r.as == 1)xdraaiAbs(rotatieHoek);
-		else if(r.as == 2)ydraaiAbs(rotatieHoek);
-		else if(r.as == 3)zdraaiAbs(rotatieHoek);
-		for(int i = aantalRotaties ; i>0 ; i--)
-		{	Rotatie3D rt = rotatieRij[i-1];
-			if(rt.as == 1)xdraaiAbs(rt.rotatieHoek);
-			else if(rt.as == 2)ydraaiAbs(rt.rotatieHoek);
-			else if(rt.as == 3)zdraaiAbs(rt.rotatieHoek);
+		if (r.as == 1)
+			xdraaiAbs(rotatieHoek);
+		else if (r.as == 2)
+			ydraaiAbs(rotatieHoek);
+		else if (r.as == 3)
+			zdraaiAbs(rotatieHoek);
+		for (int i = aantalRotaties; i > 0; i--)
+		{	Rotatie3D rt = rotatieRij[i - 1];
+			if (rt.as == 1)
+				xdraaiAbs(rt.rotatieHoek);
+			else if (rt.as == 2)
+				ydraaiAbs(rt.rotatieHoek);
+			else if (rt.as == 3)
+				zdraaiAbs(rt.rotatieHoek);
 		}
 		
-		if(aantalRotaties>0 && (rotatieRij[aantalRotaties-1].as == as))
-		{	rotatieRij[aantalRotaties-1].rotatieHoek += rotatieHoek;
-			if(rotatieRij[aantalRotaties-1].rotatieHoek%360 == 0) aantalRotaties--;
+		if (aantalRotaties > 0 && (rotatieRij[aantalRotaties - 1].as == as))
+		{	rotatieRij[aantalRotaties - 1].rotatieHoek += rotatieHoek;
+			if (rotatieRij[aantalRotaties - 1].rotatieHoek % 360 == 0) 
+				aantalRotaties--;
 		}
 		else 
 		{	rotatieRij[aantalRotaties] = r;
@@ -189,7 +203,7 @@ class Matrix3D
 
 	Punt3D geefVolgendPunt(Punt3D bp, double dx, double dy, double dz)
 	{
-		Punt3D ep = new Punt3D(0,0,0);
+		Punt3D ep = new Punt3D(0, 0, 0);
 		ep.x = bp.x + dx*xx + dy*xy + dz*xz;
 		ep.y = bp.y + dx*yx + dy*yy + dz*yz;
 		ep.z = bp.z + dx*zx + dy*zy + dz*zz;

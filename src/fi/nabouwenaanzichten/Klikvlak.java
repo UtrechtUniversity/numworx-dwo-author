@@ -1,9 +1,9 @@
 package fi.nabouwenaanzichten;
 
 public class Klikvlak
-{	int i,j,k,m;
+{	int i, j, k, m;
 	
-	public Klikvlak(int i,int j,int k,int m)
+	public Klikvlak(int i, int j, int k, int m)
 	{	this.i = i;
 		this.j = j;
 		this.k = k;

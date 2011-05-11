@@ -13,6 +13,7 @@ public class KubusRooster
 	RVierkant[][] vierkanten;
 	double beginpos;
 	RVierkant grondvlak;
+	RBalk balk;
 	Veelvlak pijl;
 	String vulkleur;
 	
@@ -21,19 +22,21 @@ public class KubusRooster
 		aantalKubussen = 0;
 		maxAantal = maxn;
 		totLengte = totL;
-		ribLengte = totLengte/maxAantal;
-		beginpos = -(totLengte-ribLengte)/2;
+		ribLengte = totLengte / maxAantal;
+		beginpos = -(totLengte - ribLengte) / 2;
 		grondvlak = new RVierkant(1.2, 0, -0.5, 0);
+		balk = new RBalk(1.2, 0.1, 0, -0.5, 0);
 		pijl = maakPijl();
 		kubussen = new RKubus[maxAantal][maxAantal][maxAantal];
 		//isZichtbaar = new boolean[maxAantal][maxAantal][maxAantal];
 		//isOnbedekt = new boolean[maxAantal][maxAantal][maxAantal][6];
 		vierkanten = new RVierkant[maxAantal][maxAantal];
 		maxy = new int[maxAantal][maxAantal];
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	maxy[i][j]=0;
-				vierkanten[i][j]=new RVierkant(ribLengte, beginpos + i*ribLengte, -totLengte/2, beginpos + j*ribLengte);
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	maxy[i][j] = 0;
+				vierkanten[i][j] = new RVierkant(ribLengte, beginpos + i * ribLengte, -totLengte/2, 
+															beginpos + j * ribLengte);
 				//for(int k=0 ; k<maxAantal ; k++)
 				//{	//kubussen[i][j][k] = new RKubus(ribLengte, beginpos + i*ribLengte, beginpos + k*ribLengte, beginpos + j*ribLengte);
 					//isZichtbaar[i][j][k] = false;
@@ -49,24 +52,26 @@ public class KubusRooster
 	{	aantalKubussen = 0;
 		maxAantal = rooster.length;
 		totLengte = totL;
-		ribLengte = totLengte/maxAantal;
-		beginpos = -(totLengte-ribLengte)/2;
+		ribLengte = totLengte / maxAantal;
+		beginpos = -(totLengte - ribLengte) / 2;
 		grondvlak = new RVierkant(1.2, 0, -0.5, 0);
+		balk = new RBalk(1.2, 0.1, 0, -0.5, 0);
 		pijl = maakPijl();
 		kubussen = new RKubus[maxAantal][maxAantal][maxAantal];
 		vierkanten = new RVierkant[maxAantal][maxAantal];
 		maxy = new int[maxAantal][maxAantal];
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	maxy[i][j]=0;
-				vierkanten[i][j]=new RVierkant(ribLengte, beginpos + i*ribLengte, -totLengte/2, beginpos + j*ribLengte);
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0 ; j < maxAantal; j++)
+			{	maxy[i][j] = 0;
+				vierkanten[i][j] = new RVierkant(ribLengte, beginpos + i * ribLengte, -totLengte/2, 
+															beginpos + j * ribLengte);
 			}
 		}
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(rooster[i][j][k])
-					{	voegKubusToe(i,j,k);
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (rooster[i][j][k])
+					{	voegKubusToe(i, j, k);
 					}
 				}
 			}
@@ -75,11 +80,11 @@ public class KubusRooster
 	
 	public boolean[][][] geefBooleanRooster()
 	{	boolean[][][] rooster = new boolean[maxAantal][maxAantal][maxAantal];
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kubussen[i][j][k] != null)
-					{	rooster[i][j][k]=true;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null)
+					{	rooster[i][j][k] = true;
 					}
 				}
 			}
@@ -98,18 +103,18 @@ public class KubusRooster
 					4,	0,3,2,1,
 					3,	3,4,5,
 					3,	3,5,4};
-		Veelvlak v = new Veelvlak(hp,vl);
-		for(int i=0 ; i<v.aantalVlakken ; i++)
-		{	v.vlakken[i].vulkleur="zwart";
+		Veelvlak v = new Veelvlak(hp, vl);
+		for (int i = 0; i < v.aantalVlakken; i++)
+		{	v.vlakken[i].vulkleur = "zwart";
 		}
 		return v;
 	}
 	
 	public void zetVulkleur(String kleur)
 	{	vulkleur = kleur;
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
 				{	if(kubussen[i][j][k] != null)
 					{	kubussen[i][j][k].zetVulkleur(vulkleur);
 					}
@@ -121,8 +126,8 @@ public class KubusRooster
 
 	
 	public void voegKubusToe(int x, int z, int y)
-	{	if(x<maxAantal && y<maxAantal && z<maxAantal && x>-1 && y>-1 && z>-1)
-		{	kubussen[x][z][y] = new RKubus(ribLengte, beginpos + x*ribLengte, beginpos + y*ribLengte, beginpos + z*ribLengte);
+	{	if (x < maxAantal && y < maxAantal && z < maxAantal && x > -1 && y > -1 && z > -1)
+		{	kubussen[x][z][y] = new RKubus(ribLengte, beginpos + x * ribLengte, beginpos + y * ribLengte, beginpos + z * ribLengte);
 			aantalKubussen++;
 			if(y>0 && kubussen[x][z][y-1] !=null)
 			{	kubussen[x][z][y-1].isOnbedekt[0] = false;
@@ -218,7 +223,8 @@ public class KubusRooster
 	
 	public boolean isGelijk(KubusRooster kr)
 	{	
-		if(maxAantal!=kr.maxAantal)return false;
+		if (maxAantal != kr.maxAantal)
+			return false;
 		for(int i=0 ; i<maxAantal ; i++)
 		{	for(int j=0 ; j<maxAantal ; j++)
 			{	for(int k=0 ; k<maxAantal ; k++)

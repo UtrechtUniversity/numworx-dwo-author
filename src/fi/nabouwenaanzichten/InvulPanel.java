@@ -3,11 +3,16 @@ package fi.nabouwenaanzichten;
 import java.awt.*;
 import java.awt.event.*;
 
-class InvulPanel extends Panel implements ItemListener
+import javax.swing.*;
+
+class InvulPanel extends JPanel implements ActionListener //ItemListener
 {
-	private CheckboxGroup g;
-	private Checkbox cGeen;
-	private Checkbox[] checkboxen;
+	//private CheckboxGroup g;
+	private ButtonGroup g;
+	//private Checkbox cGeen;
+	private JRadioButton cGeen;
+	//private Checkbox[] checkboxen;
+	private JRadioButton[] checkboxen;
 	private int aantalCheckboxen;
 	private int keuze;
 	private ActionListener actionListener;
@@ -17,31 +22,47 @@ class InvulPanel extends Panel implements ItemListener
 	{	setLayout(null);
 		setBackground(Color.white);
 		setBounds(x,y,b,h);
-		g = new CheckboxGroup();
+		//g = new CheckboxGroup();
+		g = new ButtonGroup();
 		aantalCheckboxen = 0;
-		checkboxen = new Checkbox[items.length];
+		//checkboxen = new Checkbox[items.length];
+		checkboxen = new JRadioButton[items.length];
 		for(int i=0 ; i<items.length ; i++)
 		{	addCheckbox(items[i],0,h/2*i,b,h/2);
 		}
 		keuze = 1;
-		checkboxen[0].setState(true);
-		cGeen = new Checkbox("", g, false);
+		//checkboxen[0].setState(true);
+		checkboxen[0].setSelected(true);
+		//cGeen = new Checkbox("", g, false);
+		cGeen = new JRadioButton("");
+		g.add(cGeen);
 	}
 		
 	private void addCheckbox(String naam, int x, int y, int b, int h)
-	{	checkboxen[aantalCheckboxen] = new Checkbox(naam, g, false);
+	{	//checkboxen[aantalCheckboxen] = new Checkbox(naam, g, false);
+		checkboxen[aantalCheckboxen] = new JRadioButton(naam);
+		g.add(checkboxen[aantalCheckboxen]);
 		checkboxen[aantalCheckboxen].setBounds(x,y,b,h);
 		checkboxen[aantalCheckboxen].setFont(new Font("SansSerif",Font.PLAIN,h/2+3));
-		checkboxen[aantalCheckboxen].addItemListener(this);
+		//checkboxen[aantalCheckboxen].addItemListener(this);
+		checkboxen[aantalCheckboxen].addActionListener(this);
 		add(checkboxen[aantalCheckboxen]);
 		aantalCheckboxen++;
 	}
 	
-	public void itemStateChanged(ItemEvent e)
-	{	Checkbox cSelect = g.getSelectedCheckbox();
-		for(int i=0 ; i<aantalCheckboxen ; i++)
-		{	if (cSelect==checkboxen[i])keuze = i+1;
+	//public void itemStateChanged(ItemEvent e)
+	public void actionPerformed(ActionEvent e)
+	{	//Checkbox cSelect = g.getSelectedCheckbox();
+		//for(int i=0 ; i<aantalCheckboxen ; i++)
+		//{	if (cSelect==checkboxen[i])keuze = i+1;
+		//}
+		
+		for (int i = 0; i < aantalCheckboxen;  i++)
+		{	if (checkboxen[i].isSelected())
+				keuze = i+1;
 		}
+		
+		
 		if(actionListener!=null)
 		{	actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 		}
@@ -53,13 +74,18 @@ class InvulPanel extends Panel implements ItemListener
 	
 	public void setItem(int n)
 	{	for(int i=0 ; i<aantalCheckboxen; i++)
-		{	if(n==i)checkboxen[i].setState(true);
-			else checkboxen[i].setState(false);
+		{	if (n == i)
+				checkboxen[i].setSelected(true);
+				//checkboxen[i].setState(true);
+			else 
+				checkboxen[i].setSelected(false);
+				//checkboxen[i].setState(false);
 		}
 	}
 	
 	public void maakLeeg()
-	{	cGeen.setState(true);
+	{	//cGeen.setState(true);
+		cGeen.setSelected(true);
 		keuze = 0;
 	}
 	
