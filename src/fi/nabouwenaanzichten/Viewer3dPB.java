@@ -5,7 +5,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class Viewer3d extends JComponent
+public class Viewer3dPB extends JComponent
 {
 	private NabouwenAanzichtenIF eigenaar;
 	private GetalRooster gr;
@@ -36,7 +36,7 @@ public class Viewer3d extends JComponent
 	private boolean removing = false;
 	
 	
-	public Viewer3d(KubusRooster kr, int x, int y,int b, int h, NabouwenAanzichtenIF hb)
+	public Viewer3dPB(KubusRooster kr, int x, int y,int b, int h, NabouwenAanzichtenIF hb)
 	{	setBounds(x,y,b,h);
 		breedte = getSize().width;
 		hoogte = getSize().height;	

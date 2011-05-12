@@ -289,14 +289,16 @@ public class KubusRooster
 	
 	public boolean isGelijkAanzichtenVB(KubusRooster kr)
 	{	
-		if(maxAantal!=kr.maxAantal)return false;
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kubussen[i][j][k]!=null) 
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
 					{   boolean bb = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bb) bb = kr.kubussen[i][j][m]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
 						}
 						boolean bv = false;
 						for(int m=0 ; m<maxAantal ; m++)

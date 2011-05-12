@@ -34,7 +34,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	private NumberArrow na;
 	private Label aantalKLabel;
 	private boolean aanzichten;
-	InvulKeuzePanel ip;
+	InvulKeuzePanel2 ip;
 	private Color bgcolor = Color.white;
     private boolean mobileVersion;
     
@@ -70,7 +70,8 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		aanzichten = true;
 
 		// checkboxen bouwen/slopen
-        ip = new InvulKeuzePanel(40,360,100,50);
+        //ip = new InvulKeuzePanel(40,360,100,50);
+		ip = new InvulKeuzePanel2(0,300,300,24);
 		ip.setBackground(bgcolor);
 
 		ip.setOpaque(false);
@@ -144,9 +145,11 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		{	//v.remove(ip);
 			remove(v);
 		}
-		int vpX = Math.max(0,(b-h)/2);
-        int vpY = Math.max(0,(h-b)/2);
-        int vpZijde = Math.min(b,h);
+		//int vpX = Math.max(0,(b-h)/2);
+        //int vpY = Math.max(0,(h-b)/2);
+        int vpZijde = Math.min(b,h-24);
+        int vpX = (b - vpZijde) / 2;
+        int vpY = (h - 24 - vpZijde) / 2;
 		//if(bovenAanzichtMetHoogtes)
 		    v = new Viewer3d(kr, vpX, vpY, vpZijde, vpZijde, this);
 		//else v = new Viewer3d(kr, 0, 0, b, h, this);
@@ -165,9 +168,9 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		
 		super.setBounds(x, y, b, h);
 	
-		remove(ip);
-		ip.setLocation(20, getSize().height - 20 - ip.getSize().height);
-		add(ip, 0);
+		//remove(ip);
+		ip.setBounds(vpX, vpY + vpZijde, vpZijde, 24);
+		//add(ip, 0);
 		
 		zetPerspectief(perspectief);
 		zetRotatieVast(rotatieVast);

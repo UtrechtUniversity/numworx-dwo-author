@@ -336,7 +336,9 @@ public class Viewer3d extends JComponent
         gIm.setColor(achtergrondkleur);
         if(wis)gIm.fillRect(0, 0, breedte, hoogte);
         penAan(0,0,0);
-        //gIm.drawRect(0, 0, breedte-1, hoogte-1);
+        
+//gIm.drawRect(0, 0, breedte-1, hoogte-1);
+
         vul = false;
         tekenprogramma();
         for(int i=0 ; i<5 ; i++)
