@@ -299,11 +299,21 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
     public boolean isActive(){return true;}
     public URL getDocumentBase(){return null;}
 	public URL getCodeBase(){return null;}
-	public String getParameter(String name){
+	
+	public String getParameter(String name)
+	{
 		String value = null;
-        if(launchData!=null)value = (String)launchData.get(name);
-		return value;}
-    public void appletResize( int width, int height ){}
+        if (launchData != null)
+        {	
+        	value = (String) launchData.get(name);
+if (name.equals("taaknummer"))        
+System.out.println("ld not null tn = " + value);        
+        	
+        }	
+		return value;
+	}
+    
+	public void appletResize( int width, int height ){}
     public AppletContext getAppletContext(){return this;}
     	
     // AppletContext methodes
