@@ -311,7 +311,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 			kijkNaPanel.setVisible(true);
 			
 		}
-System.out.println("setBounds naip b = " + b + " h = " + h);		
+//System.out.println("setBounds naip b = " + b + " h = " + h);		
 		
 	}
 	

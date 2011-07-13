@@ -702,7 +702,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		plaatsComponenten();
 		
-System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
+//System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
 		
 	}
 	
