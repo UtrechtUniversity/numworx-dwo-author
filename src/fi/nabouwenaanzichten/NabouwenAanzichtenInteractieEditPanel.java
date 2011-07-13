@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.Hashtable;
 
 import javax.swing.*;
+import javax.swing.event.*;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 //import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -24,6 +25,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	
 	int offset = 10;
 	boolean componentsCreated = false;
+	
+	// viewerOptiesPanel
 	JCheckBox rotatieVastBox;
 	JCheckBox nietBouwenSlopenBox;
 	JCheckBox keuzeBouwenSlopenBox;
@@ -33,10 +36,27 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	JCheckBox plattegrondBox;
 	JLabel plattegrondLabel;
 	ButtonGroup aanzichtGroup;
-	JRadioButton bouwselButton, drieButton, bovenButton, voorButton, rechtsButton;
+	JRadioButton bouwselButton, drieButton, voorZijButton, bovenButton, voorButton, rechtsButton;
 	JLabel roosterLabel;
 	JTextField roosterTextField;
 	
+	// nakijkOptiesPanel
+	JCheckBox nakijkBox;
+	JLabel checkLabel;
+	ButtonGroup checkAanzichtGroup;
+	JRadioButton checkBouwselButton, checkDrieButton, checkVoorZijButton, checkBovenVoorButton,   
+				 checkBovenZijButton, checkBovenButton, checkVoorButton, checkRechtsButton;
+	JCheckBox aantalKubusBox;
+	//JLabel minKubusLabel;
+
+	JLabel maxScoreLabel;	
+	JTextField maxScoreVeld;	
+	
+	JTabbedPane tabbedPane;
+	
+	JPanel viewerOptiesPanel, nakijkOptiesPanel;
+	
+	boolean noSetBounds = false;
 	
 	public NabouwenAanzichtenInteractieEditPanel()
 	{
@@ -52,7 +72,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		naip.setLocation(0, 0);
 		add(naip);
 
-//System.out.println("naiep w = " + getSize().width);
+		tabbedPane = new JTabbedPane();
+		
+		viewerOptiesPanel = new JPanel();
+		viewerOptiesPanel.setLayout(null);
+		tabbedPane.addTab(NabouwenAanzichten.rb.getString("viewerOpties"), viewerOptiesPanel);
+		
+		nakijkOptiesPanel = new JPanel();
+		nakijkOptiesPanel.setLayout(null);
+		tabbedPane.addTab(NabouwenAanzichten.rb.getString("nakijkOpties"), nakijkOptiesPanel);
+		
+		tabbedPane.setBounds(getSize().width - editWidth, 0, editWidth, getSize().height);
+		add(tabbedPane);
+		
+		tabbedPane.addChangeListener(new TabbedPaneCL());
+
+		//System.out.println("naiep w = " + getSize().width);
 //System.out.println("naiep h = " + getSize().height);
 		
 		
@@ -61,47 +96,54 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		theBoldFont = new Font("Dialog", Font.BOLD, 12);
 		theBoldFM = getFontMetrics(theBoldFont);
 		
+		// viewerOptiesPanel
+		
 		int width = 0;
 		int height = 3 * theFM.getHeight() / 2;
 		int currentX = naip.getSize().width + offset;
+		int currentX2 = offset;
 		int currentY = offset;
 		
 		rotatieVastBox = new JCheckBox(NabouwenAanzichten.rb.getString("rotatieVast"));
 		rotatieVastBox.setFont(theFont);
-		rotatieVastBox.setBackground(Color.white);
+		//rotatieVastBox.setBackground(Color.white);
 		width = theFM.stringWidth(rotatieVastBox.getText()) + 40;
-		rotatieVastBox.setBounds(currentX, currentY, width, height);
-		add(rotatieVastBox);
+		rotatieVastBox.setBounds(currentX2, currentY, width, height);
+		//add(rotatieVastBox);
+		viewerOptiesPanel.add(rotatieVastBox);
 		rotatieVastBox.addActionListener(this);
 		currentY += height + offset / 2;
 		
 		nietBouwenSlopenBox = new JCheckBox(NabouwenAanzichten.rb.getString("isVoorbeeld"));
 		nietBouwenSlopenBox.setFont(theFont);
-		nietBouwenSlopenBox.setBackground(Color.white);
+		//nietBouwenSlopenBox.setBackground(Color.white);
 		width = theFM.stringWidth(nietBouwenSlopenBox.getText()) + 40;
-		nietBouwenSlopenBox.setBounds(currentX, currentY, width, height);
-		add(nietBouwenSlopenBox);
+		nietBouwenSlopenBox.setBounds(currentX2, currentY, width, height);
+		//add(nietBouwenSlopenBox);
+		viewerOptiesPanel.add(nietBouwenSlopenBox);
 		nietBouwenSlopenBox.addActionListener(this);
 		
 		currentY += height + offset / 2;
 		
 		keuzeBouwenSlopenBox = new JCheckBox(NabouwenAanzichten.rb.getString("bouwSloopKeuze"));
 		keuzeBouwenSlopenBox.setFont(theFont);
-		keuzeBouwenSlopenBox.setBackground(Color.white);
+		//keuzeBouwenSlopenBox.setBackground(Color.white);
 		width = theFM.stringWidth(keuzeBouwenSlopenBox.getText()) + 35;
-		keuzeBouwenSlopenBox.setBounds(currentX, currentY, width, height);
-		add(keuzeBouwenSlopenBox);
+		keuzeBouwenSlopenBox.setBounds(currentX2, currentY, width, height);
+		//add(keuzeBouwenSlopenBox);
+		viewerOptiesPanel.add(keuzeBouwenSlopenBox);
 		keuzeBouwenSlopenBox.addActionListener(this);
 		
 		currentY += height + offset / 2;
 		
 		perspectiefBox = new JCheckBox(NabouwenAanzichten.rb.getString("perspectief"));
 		perspectiefBox.setFont(theFont);
-		perspectiefBox.setBackground(Color.white);
+		//perspectiefBox.setBackground(Color.white);
 		perspectiefBox.setSelected(true);
 		width = theFM.stringWidth(perspectiefBox.getText()) + 40;
-		perspectiefBox.setBounds(currentX, currentY, width, height);
-		add(perspectiefBox);
+		perspectiefBox.setBounds(currentX2, currentY, width, height);
+		//add(perspectiefBox);
+		viewerOptiesPanel.add(perspectiefBox);
 		perspectiefBox.addActionListener(this);
 		
 		currentY += height + offset;
@@ -111,10 +153,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		pijlButton = new JRadioButton(NabouwenAanzichten.rb.getString("zwartePijl"), true);
 		frontGroup.add(pijlButton);
 		pijlButton.setFont(theFont);
-		pijlButton.setBackground(Color.white);
+		//pijlButton.setBackground(Color.white);
 		width = theFM.stringWidth(pijlButton.getText()) + 40;
-		pijlButton.setBounds(currentX, currentY, width, height);
-		add(pijlButton);
+		pijlButton.setBounds(currentX2, currentY, width, height);
+		//add(pijlButton);
+		viewerOptiesPanel.add(pijlButton);
 		pijlButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
@@ -122,10 +165,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		balkButton = new JRadioButton(NabouwenAanzichten.rb.getString("rodeBalk"));
 		frontGroup.add(balkButton);
 		balkButton.setFont(theFont);
-		balkButton.setBackground(Color.white);
+		//balkButton.setBackground(Color.white);
 		width = theFM.stringWidth(balkButton.getText()) + 40;
-		balkButton.setBounds(currentX, currentY, width, height);
-		add(balkButton);
+		balkButton.setBounds(currentX2, currentY, width, height);
+		//add(balkButton);
+		viewerOptiesPanel.add(balkButton);
 		balkButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
@@ -133,30 +177,33 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		geenButton = new JRadioButton(NabouwenAanzichten.rb.getString("geenVoorkant"));
 		frontGroup.add(geenButton);
 		geenButton.setFont(theFont);
-		geenButton.setBackground(Color.white);
+		//geenButton.setBackground(Color.white);
 		width = theFM.stringWidth(geenButton.getText()) + 35;
-		geenButton.setBounds(currentX, currentY, width, height);
-		add(geenButton);
+		geenButton.setBounds(currentX2, currentY, width, height);
+		//add(geenButton);
+		viewerOptiesPanel.add(geenButton);
 		geenButton.addActionListener(this);
 		
 		currentY += height + offset;		
 		
 		plattegrondBox = new JCheckBox(NabouwenAanzichten.rb.getString("plattegrond"));
 		plattegrondBox.setFont(theFont);
-		plattegrondBox.setBackground(Color.white);
+		//plattegrondBox.setBackground(Color.white);
 		width = theFM.stringWidth(plattegrondBox.getText()) + 35;
-		plattegrondBox.setBounds(currentX, currentY, width, theFM.getHeight());
-		add(plattegrondBox);
+		plattegrondBox.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(plattegrondBox);
+		viewerOptiesPanel.add(plattegrondBox);
 		plattegrondBox.addActionListener(this);
 		
 		currentY += theFM.getHeight();
 
 		plattegrondLabel = new JLabel(NabouwenAanzichten.rb.getString("plattegrond2"));
 		plattegrondLabel.setFont(theFont);
-		plattegrondLabel.setBackground(Color.white);
+		//plattegrondLabel.setBackground(Color.white);
 		width = theFM.stringWidth(plattegrondLabel.getText());
-		plattegrondLabel.setBounds(currentX, currentY, width, theFM.getHeight());
-		add(plattegrondLabel);
+		plattegrondLabel.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(plattegrondLabel);
+		viewerOptiesPanel.add(plattegrondLabel);
 		
 		currentY += height + offset;
 		
@@ -165,10 +212,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		bouwselButton = new JRadioButton(NabouwenAanzichten.rb.getString("blokkenbouwsel"), true);
 		aanzichtGroup.add(bouwselButton);
 		bouwselButton.setFont(theFont);
-		bouwselButton.setBackground(Color.white);
+		//bouwselButton.setBackground(Color.white);
 		width = theFM.stringWidth(bouwselButton.getText()) + 40;
-		bouwselButton.setBounds(currentX, currentY, width, height);
-		add(bouwselButton);
+		bouwselButton.setBounds(currentX2, currentY, width, height);
+		//add(bouwselButton);
+		viewerOptiesPanel.add(bouwselButton);
 		bouwselButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
@@ -176,21 +224,35 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		drieButton = new JRadioButton(NabouwenAanzichten.rb.getString("3Aanzichten"));
 		aanzichtGroup.add(drieButton);
 		drieButton.setFont(theFont);
-		drieButton.setBackground(Color.white);
+		//drieButton.setBackground(Color.white);
 		width = theFM.stringWidth(drieButton.getText()) + 40;
-		drieButton.setBounds(currentX, currentY, width, height);
-		add(drieButton);
+		drieButton.setBounds(currentX2, currentY, width, height);
+		//add(drieButton);
+		viewerOptiesPanel.add(drieButton);
 		drieButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
 
+		voorZijButton = new JRadioButton(NabouwenAanzichten.rb.getString("voorZijAanzicht"));
+		aanzichtGroup.add(voorZijButton);
+		voorZijButton.setFont(theFont);
+		//voorZijButton.setBackground(Color.white);
+		width = theFM.stringWidth(voorZijButton.getText()) + 40;
+		voorZijButton.setBounds(currentX2, currentY, width, height);
+		//add(voorZijButton);
+		viewerOptiesPanel.add(voorZijButton);
+		voorZijButton.addActionListener(this);
+		
+		currentY += height; // + offset / 5;		
+		
 		bovenButton = new JRadioButton(NabouwenAanzichten.rb.getString("bovenAanzicht"));
 		aanzichtGroup.add(bovenButton);
 		bovenButton.setFont(theFont);
-		bovenButton.setBackground(Color.white);
+		//bovenButton.setBackground(Color.white);
 		width = theFM.stringWidth(bovenButton.getText()) + 40;
-		bovenButton.setBounds(currentX, currentY, width, height);
-		add(bovenButton);
+		bovenButton.setBounds(currentX2, currentY, width, height);
+		//add(bovenButton);
+		viewerOptiesPanel.add(bovenButton);
 		bovenButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
@@ -198,10 +260,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		voorButton = new JRadioButton(NabouwenAanzichten.rb.getString("voorAanzicht"));
 		aanzichtGroup.add(voorButton);
 		voorButton.setFont(theFont);
-		voorButton.setBackground(Color.white);
+		//voorButton.setBackground(Color.white);
 		width = theFM.stringWidth(voorButton.getText()) + 40;
-		voorButton.setBounds(currentX, currentY, width, height);
-		add(voorButton);
+		voorButton.setBounds(currentX2, currentY, width, height);
+		//add(voorButton);
+		viewerOptiesPanel.add(voorButton);
 		voorButton.addActionListener(this);
 		
 		currentY += height; // + offset / 5;		
@@ -209,20 +272,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		rechtsButton = new JRadioButton(NabouwenAanzichten.rb.getString("rechtsAanzicht"));
 		aanzichtGroup.add(rechtsButton);
 		rechtsButton.setFont(theFont);
-		rechtsButton.setBackground(Color.white);
+		//rechtsButton.setBackground(Color.white);
 		width = theFM.stringWidth(rechtsButton.getText()) + 40;
-		rechtsButton.setBounds(currentX, currentY, width, height);
-		add(rechtsButton);
+		rechtsButton.setBounds(currentX2, currentY, width, height);
+		//add(rechtsButton);
+		viewerOptiesPanel.add(rechtsButton);
 		rechtsButton.addActionListener(this);
-		
+
 		currentY += height + offset;
 		
 		roosterLabel = new JLabel(NabouwenAanzichten.rb.getString("roosterGrootte"));
 		roosterLabel.setFont(theFont);
-		roosterLabel.setBackground(Color.white);
+		//roosterLabel.setBackground(Color.white);
 		width = theFM.stringWidth(roosterLabel.getText());
-		roosterLabel.setBounds(currentX, currentY, width, theFM.getHeight());
-		add(roosterLabel);
+		roosterLabel.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(roosterLabel);
+		viewerOptiesPanel.add(roosterLabel);
 		
 		currentY += height; // + offset;
 
@@ -230,8 +295,9 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		roosterTextField.setFont(theFont);
 		//roosterLabel.setBackground(Color.white);
 		width = theFM.stringWidth("XXXXXX");
-		roosterTextField.setBounds(currentX + 2 * offset, currentY, width, height);
-		add(roosterTextField);
+		roosterTextField.setBounds(currentX2 + 2 * offset, currentY, width, height);
+		//add(roosterTextField);
+		viewerOptiesPanel.add(roosterTextField);
 
 		roosterTextField.addKeyListener(new InputKL(roosterTextField, false, true));
 		roosterTextField.addActionListener(new TextAL(roosterTextField));
@@ -239,6 +305,172 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		currentY += height + offset;
 		
+		// nakijkOptiesPanel
+		
+		currentY = offset;
+
+		nakijkBox = new JCheckBox(NabouwenAanzichten.rb.getString("kijkNa"));
+		nakijkBox.setFont(theFont);
+		//nakijkBox.setBackground(Color.white);
+		width = theFM.stringWidth(nakijkBox.getText()) + 40;
+		nakijkBox.setBounds(currentX2, currentY, width, height);
+		//add(nakijkBox);
+		nakijkOptiesPanel.add(nakijkBox);
+		nakijkBox.addActionListener(this);
+		
+		currentY += height + 3 * offset / 2;
+		
+		checkLabel = new JLabel(NabouwenAanzichten.rb.getString("controleer"));
+		checkLabel.setFont(theFont);
+		//checkLabel.setBackground(Color.white);
+		width = theFM.stringWidth(checkLabel.getText());
+		checkLabel.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(checkLabel);
+		nakijkOptiesPanel.add(checkLabel);
+		
+		currentY += height; // + offset / 2;
+		
+		checkAanzichtGroup = new ButtonGroup();
+
+		checkBouwselButton = new JRadioButton(NabouwenAanzichten.rb.getString("blokkenbouwsel"), true);
+		checkAanzichtGroup.add(checkBouwselButton);
+		checkBouwselButton.setFont(theFont);
+		//checkBouwselButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkBouwselButton.getText()) + 40;
+		checkBouwselButton.setBounds(currentX2, currentY, width, height);
+		//add(checkBouwselButton);
+		nakijkOptiesPanel.add(checkBouwselButton);
+		checkBouwselButton.addActionListener(this);
+		checkBouwselButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+		
+		checkDrieButton = new JRadioButton(NabouwenAanzichten.rb.getString("3Aanzichten"));
+		checkAanzichtGroup.add(checkDrieButton);
+		checkDrieButton.setFont(theFont);
+		//checkDrieButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkDrieButton.getText()) + 40;
+		checkDrieButton.setBounds(currentX2, currentY, width, height);
+		//add(checkDrieButton);
+		nakijkOptiesPanel.add(checkDrieButton);
+		checkDrieButton.addActionListener(this);
+		checkDrieButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+
+		checkVoorZijButton = new JRadioButton(NabouwenAanzichten.rb.getString("voorZijAanzicht"));
+		checkAanzichtGroup.add(checkVoorZijButton);
+		checkVoorZijButton.setFont(theFont);
+		//checkVoorZijButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkVoorZijButton.getText()) + 40;
+		checkVoorZijButton.setBounds(currentX2, currentY, width, height);
+		//add(checkVoorZijButton);
+		nakijkOptiesPanel.add(checkVoorZijButton);
+		checkVoorZijButton.addActionListener(this);
+		checkVoorZijButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+
+		checkBovenVoorButton = new JRadioButton(NabouwenAanzichten.rb.getString("bovenVoorAanzicht"));
+		checkAanzichtGroup.add(checkBovenVoorButton);
+		checkBovenVoorButton.setFont(theFont);
+		//checkBovenVoorButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkBovenVoorButton.getText()) + 40;
+		checkBovenVoorButton.setBounds(currentX2, currentY, width, height);
+		//add(checkBovenVoorButton);
+		nakijkOptiesPanel.add(checkBovenVoorButton);
+		checkBovenVoorButton.addActionListener(this);
+		checkBovenVoorButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+
+		checkBovenZijButton = new JRadioButton(NabouwenAanzichten.rb.getString("bovenZijAanzicht"));
+		checkAanzichtGroup.add(checkBovenZijButton);
+		checkBovenZijButton.setFont(theFont);
+		//checkBovenZijButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkBovenZijButton.getText()) + 40;
+		checkBovenZijButton.setBounds(currentX2, currentY, width, height);
+		//add(checkBovenZijButton);
+		nakijkOptiesPanel.add(checkBovenZijButton);
+		checkBovenZijButton.addActionListener(this);
+		checkBovenZijButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+		
+		checkBovenButton = new JRadioButton(NabouwenAanzichten.rb.getString("bovenAanzicht"));
+		checkAanzichtGroup.add(checkBovenButton);
+		checkBovenButton.setFont(theFont);
+		//checkBovenButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkBovenButton.getText()) + 40;
+		checkBovenButton.setBounds(currentX2, currentY, width, height);
+		//add(checkBovenButton);
+		nakijkOptiesPanel.add(checkBovenButton);
+		checkBovenButton.addActionListener(this);
+		checkBovenButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+
+		checkVoorButton = new JRadioButton(NabouwenAanzichten.rb.getString("voorAanzicht"));
+		checkAanzichtGroup.add(checkVoorButton);
+		checkVoorButton.setFont(theFont);
+		//checkVoorButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkVoorButton.getText()) + 40;
+		checkVoorButton.setBounds(currentX2, currentY, width, height);
+		//add(checkVoorButton);
+		nakijkOptiesPanel.add(checkVoorButton);
+		checkVoorButton.addActionListener(this);
+		checkVoorButton.setEnabled(false);
+		
+		currentY += height; // + offset / 5;		
+
+		checkRechtsButton = new JRadioButton(NabouwenAanzichten.rb.getString("rechtsAanzicht"));
+		checkAanzichtGroup.add(checkRechtsButton);
+		checkRechtsButton.setFont(theFont);
+		//checkRechtsButton.setBackground(Color.white);
+		width = theFM.stringWidth(checkRechtsButton.getText()) + 40;
+		checkRechtsButton.setBounds(currentX2, currentY, width, height);
+		//add(checkRechtsButton);
+		nakijkOptiesPanel.add(checkRechtsButton);
+		checkRechtsButton.addActionListener(this);
+		checkRechtsButton.setEnabled(false);
+
+		currentY += height + offset;
+		
+		aantalKubusBox = new JCheckBox(NabouwenAanzichten.rb.getString("aantalKubus"));
+		aantalKubusBox.setFont(theFont);
+		//aantalKubusBox.setBackground(Color.white);
+		width = theFM.stringWidth(aantalKubusBox.getText()) + 40;
+		aantalKubusBox.setBounds(currentX2, currentY, width, height);
+		//add(aantalKubusBox);
+		nakijkOptiesPanel.add(aantalKubusBox);
+		aantalKubusBox.addActionListener(this);
+		aantalKubusBox.setEnabled(false);
+		
+		currentY += height + 3 * offset / 2;
+
+		maxScoreLabel = new JLabel(NabouwenAanzichten.rb.getString("maxScoreTekst"));
+		maxScoreLabel.setFont(theFont);
+		//maxScoreLabel.setBackground(Color.white);
+		width = theFM.stringWidth(maxScoreLabel.getText());
+		maxScoreLabel.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(maxScoreLabel);
+		nakijkOptiesPanel.add(maxScoreLabel);
+		
+		currentY += height; // + offset;
+		
+		
+		maxScoreVeld = new JTextField("10");
+		maxScoreVeld.setFont(theFont);
+		//maxScoreVeld.setBackground(Color.white);
+		width = theFM.stringWidth("XXXXXX");
+		maxScoreVeld.setBounds(currentX2 + 2 * offset, currentY, width, height);
+		//add(maxScoreVeld);
+		maxScoreVeld.setEditable(false);
+		nakijkOptiesPanel.add(maxScoreVeld);
+
+		maxScoreVeld.addKeyListener(new InputKL(maxScoreVeld, false, true));
+		maxScoreVeld.addActionListener(new TextAL(maxScoreVeld));
+		maxScoreVeld.addFocusListener(new TextFL(maxScoreVeld));
 		
 		componentsCreated = true;
 
@@ -250,34 +482,39 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	public void plaatsComponenten()
 	{
 		if (componentsCreated)
-		{	rotatieVastBox.setLocation(naip.getSize().width + offset, rotatieVastBox.getLocation().y);
-			nietBouwenSlopenBox.setLocation(naip.getSize().width + offset, nietBouwenSlopenBox.getLocation().y);
-			keuzeBouwenSlopenBox.setLocation(naip.getSize().width + offset, keuzeBouwenSlopenBox.getLocation().y);
-			perspectiefBox.setLocation(naip.getSize().width + offset, perspectiefBox.getLocation().y);
+		{	//rotatieVastBox.setLocation(naip.getSize().width + offset, rotatieVastBox.getLocation().y);
+			//nietBouwenSlopenBox.setLocation(naip.getSize().width + offset, nietBouwenSlopenBox.getLocation().y);
+			//keuzeBouwenSlopenBox.setLocation(naip.getSize().width + offset, keuzeBouwenSlopenBox.getLocation().y);
+			//perspectiefBox.setLocation(naip.getSize().width + offset, perspectiefBox.getLocation().y);
 			
-			pijlButton.setLocation(naip.getSize().width + offset, pijlButton.getLocation().y);
-			balkButton.setLocation(naip.getSize().width + offset, balkButton.getLocation().y);
-			geenButton.setLocation(naip.getSize().width + offset, geenButton.getLocation().y);
+			//pijlButton.setLocation(naip.getSize().width + offset, pijlButton.getLocation().y);
+			//balkButton.setLocation(naip.getSize().width + offset, balkButton.getLocation().y);
+			//geenButton.setLocation(naip.getSize().width + offset, geenButton.getLocation().y);
 			
-			plattegrondBox.setLocation(naip.getSize().width + offset, plattegrondBox.getLocation().y);
-			plattegrondLabel.setLocation(naip.getSize().width + offset, plattegrondLabel.getLocation().y);
+			//plattegrondBox.setLocation(naip.getSize().width + offset, plattegrondBox.getLocation().y);
+			//plattegrondLabel.setLocation(naip.getSize().width + offset, plattegrondLabel.getLocation().y);
 			
-			bouwselButton.setLocation(naip.getSize().width + offset, bouwselButton.getLocation().y);
-			drieButton.setLocation(naip.getSize().width + offset, drieButton.getLocation().y);
-			bovenButton.setLocation(naip.getSize().width + offset, bovenButton.getLocation().y);
-			voorButton.setLocation(naip.getSize().width + offset, voorButton.getLocation().y);
-			rechtsButton.setLocation(naip.getSize().width + offset, rechtsButton.getLocation().y);
+			//bouwselButton.setLocation(naip.getSize().width + offset, bouwselButton.getLocation().y);
+			//drieButton.setLocation(naip.getSize().width + offset, drieButton.getLocation().y);
+			//bovenButton.setLocation(naip.getSize().width + offset, bovenButton.getLocation().y);
+			//voorButton.setLocation(naip.getSize().width + offset, voorButton.getLocation().y);
+			//rechtsButton.setLocation(naip.getSize().width + offset, rechtsButton.getLocation().y);
 			
-			roosterLabel.setLocation(naip.getSize().width + offset, roosterLabel.getLocation().y);
-			roosterTextField.setLocation(naip.getSize().width + 3 * offset, roosterTextField.getLocation().y);
+			//roosterLabel.setLocation(naip.getSize().width + offset, roosterLabel.getLocation().y);
+			//roosterTextField.setLocation(naip.getSize().width + 3 * offset, roosterTextField.getLocation().y);
 			
+			tabbedPane.setBounds(naip.getSize().width, 0, editWidth, getSize().height);
 			
+			repaint();
+						
 		}
 	}
 	
 	
 	public void setEditState(Hashtable b)
 	{	
+		// viewerOpties
+		
 		boolean rotatieVast = false;
 		if (b.containsKey("rotatieVast"))
 			rotatieVast = ((Boolean) b.get("rotatieVast")).booleanValue();
@@ -323,6 +560,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			
 			bouwselButton.setEnabled(false);
 			drieButton.setEnabled(false);
+			voorZijButton.setEnabled(false);
 			bovenButton.setEnabled(false);
 			voorButton.setEnabled(false);
 			rechtsButton.setEnabled(false);
@@ -339,6 +577,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		if (b.containsKey("drieAanzichten"))
 			drieAanzichten = ((Boolean) b.get("drieAanzichten")).booleanValue();
 		drieButton.setSelected(drieAanzichten);
+		
+		boolean voorZijAanzicht = false;
+		if (b.containsKey("voorZijAanzicht"))
+			voorZijAanzicht = ((Boolean) b.get("voorZijAanzicht")).booleanValue();
+		voorZijButton.setSelected(voorZijAanzicht);
 		
 		boolean bovenAanzicht = false;
 		if (b.containsKey("bovenAanzicht"))
@@ -361,6 +604,77 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		roosterTextField.setText("" + roosterGrootte);
 		
+		// nakijkOpties
+
+		boolean kijkNaActief = false;
+		if (b.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+		nakijkBox.setSelected(kijkNaActief);
+
+		if (nakijkBox.isSelected())
+		{	checkBouwselButton.setEnabled(true);
+			checkDrieButton.setEnabled(true);
+			checkVoorZijButton.setEnabled(true);
+			checkBovenVoorButton.setEnabled(true);
+			checkBovenZijButton.setEnabled(true);
+			checkBovenButton.setEnabled(true);
+			checkVoorButton.setEnabled(true);
+			checkRechtsButton.setEnabled(true);
+			aantalKubusBox.setEnabled(true);
+			maxScoreVeld.setEditable(true);
+		}
+		
+		boolean checkBlokkenBouwsel = true;
+		if (b.containsKey("checkBlokkenBouwsel"))
+			checkBlokkenBouwsel = ((Boolean) b.get("checkBlokkenBouwsel")).booleanValue();
+		checkBouwselButton.setSelected(checkBlokkenBouwsel);
+
+		boolean checkDrieAanzichten = false;
+		if (b.containsKey("checkDrieAanzichten"))
+			checkDrieAanzichten = ((Boolean) b.get("checkDrieAanzichten")).booleanValue();
+		checkDrieButton.setSelected(checkDrieAanzichten);
+
+		boolean checkVoorZijAanzicht = false;
+		if (b.containsKey("checkVoorZijAanzicht"))
+			checkVoorZijAanzicht = ((Boolean) b.get("checkVoorZijAanzicht")).booleanValue();
+		checkVoorZijButton.setSelected(checkVoorZijAanzicht);
+
+		boolean checkBovenVoorAanzicht = false;
+		if (b.containsKey("checkBovenVoorAanzicht"))
+			checkBovenVoorAanzicht = ((Boolean) b.get("checkBovenVoorAanzicht")).booleanValue();
+		checkBovenVoorButton.setSelected(checkBovenVoorAanzicht);
+
+		boolean checkBovenZijAanzicht = false;
+		if (b.containsKey("checkBovenZijAanzicht"))
+			checkBovenZijAanzicht = ((Boolean) b.get("checkBovenZijAanzicht")).booleanValue();
+		checkBovenZijButton.setSelected(checkBovenZijAanzicht);
+		
+		boolean checkBovenAanzicht = false;
+		if (b.containsKey("checkBovenAanzicht"))
+			checkBovenAanzicht = ((Boolean) b.get("checkBovenAanzicht")).booleanValue();
+		checkBovenButton.setSelected(checkBovenAanzicht);
+		
+		boolean checkVoorAanzicht = false;
+		if (b.containsKey("checkVoorAanzicht"))
+			checkVoorAanzicht = ((Boolean) b.get("checkVoorAanzicht")).booleanValue();
+		checkVoorButton.setSelected(checkVoorAanzicht);
+		
+		boolean checkRechtsAanzicht = false;
+		if (b.containsKey("checkRechtsAanzicht"))
+			checkRechtsAanzicht = ((Boolean) b.get("checkRechtsAanzicht")).booleanValue();
+		checkRechtsButton.setSelected(checkRechtsAanzicht);
+		
+		boolean checkAantalKubus = false;
+		if (b.containsKey("checkAantalKubus"))
+			checkAantalKubus = ((Boolean) b.get("checkAantalKubus")).booleanValue();
+		aantalKubusBox.setSelected(checkAantalKubus);
+
+		int maxScore = 10;
+		if (b.containsKey("maxScore"))
+			maxScore = ((Integer) b.get("maxScore")).intValue();
+		maxScoreVeld.setText("" + maxScore);
+		
+		
 		naip.setEditState(b);
 	}
 	
@@ -375,6 +689,12 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 	public void setBounds(int x, int y, int b, int h)
 	{
+		if (noSetBounds)
+		{
+			noSetBounds = false;
+			return;
+		}
+
 		super.setBounds(x, y, b, h);
 		
 		if (naip != null)
@@ -382,15 +702,21 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		plaatsComponenten();
 		
+System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
+		
 	}
 	
 	public void zetBreedte(int b)
-	{	naip.setBounds(naip.getLocation().x, naip.getLocation().y, Math.max(0, b), naip.getSize().height);
+	{	
+		//naip.kijkNaActiefKlein = true;
+		naip.setBounds(naip.getLocation().x, naip.getLocation().y, Math.max(0, b), naip.getSize().height);
 		plaatsComponenten();
 	}
 	
 	public void zetHoogte(int h)
-	{	naip.setBounds(naip.getLocation().x, naip.getLocation().y, naip.getSize().width, h);
+	{	
+		//naip.kijkNaActiefKlein = true;
+		naip.setBounds(naip.getLocation().x, naip.getLocation().y, naip.getSize().width, h);
 	}
 
 	public void wis()
@@ -412,6 +738,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	{	if (e.getSource() == rotatieVastBox)
 		{	naip.zetRotatieVast(rotatieVastBox.isSelected());
 		}
+	
 		else if (e.getSource() == nietBouwenSlopenBox)
 		{	naip.zetNietBouwenSlopen(nietBouwenSlopenBox.isSelected());
 			if (nietBouwenSlopenBox.isSelected())
@@ -446,6 +773,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 				
 				bouwselButton.setEnabled(false);
 				drieButton.setEnabled(false);
+				voorZijButton.setEnabled(false);
 				bovenButton.setEnabled(false);
 				voorButton.setEnabled(false);
 				rechtsButton.setEnabled(false);
@@ -458,6 +786,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 				
 				bouwselButton.setEnabled(true);
 				drieButton.setEnabled(true);
+				voorZijButton.setEnabled(true);
 				bovenButton.setEnabled(true);
 				voorButton.setEnabled(true);
 				rechtsButton.setEnabled(true);
@@ -469,40 +798,107 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		}
 		else if (e.getSource() == bouwselButton)
 		{	if (bouwselButton.isSelected())
-			{
-				naip.zetBlokkenBouwsel(true);
+			{	naip.zetBlokkenBouwsel(true);
 			}
-			
 		}
 		else if (e.getSource() == drieButton)
 		{	if (drieButton.isSelected())
-			{
-				naip.zetDrieAanzichten(true);
+			{	naip.zetDrieAanzichten(true);
 			}	
-			
+		}
+		else if (e.getSource() == voorZijButton)
+		{	if (voorZijButton.isSelected())
+			{	naip.zetVoorZijAanzicht(true);
+			}	
 		}
 		else if (e.getSource() == bovenButton)
 		{	if (bovenButton.isSelected())
-			{
-				naip.zetBovenAanzicht(true);
+			{	naip.zetBovenAanzicht(true);
 			}	
-			
 		}
-	
 		else if (e.getSource() == voorButton)
 		{	if (voorButton.isSelected())
-			{
-				naip.zetVoorAanzicht(true);
+			{	naip.zetVoorAanzicht(true);
 			}	
-			
 		}
-	
 		else if (e.getSource() == rechtsButton)
 		{	if (rechtsButton.isSelected())
-			{
-				naip.zetRechtsAanzicht(true);
+			{	naip.zetRechtsAanzicht(true);
 			}	
-			
+		}
+	
+		else if (e.getSource() == nakijkBox)
+		{	naip.zetKijkNaActief(nakijkBox.isSelected());
+		
+			if (nakijkBox.isSelected())
+			{	checkBouwselButton.setEnabled(true);
+				checkDrieButton.setEnabled(true);
+				checkVoorZijButton.setEnabled(true);
+				checkBovenVoorButton.setEnabled(true);
+				checkBovenZijButton.setEnabled(true);
+				checkBovenButton.setEnabled(true);
+				checkVoorButton.setEnabled(true);
+				checkRechtsButton.setEnabled(true);
+				aantalKubusBox.setEnabled(true);
+				maxScoreVeld.setEditable(true);
+			}
+			else
+			{	checkBouwselButton.setEnabled(false);
+				checkDrieButton.setEnabled(false);
+				checkVoorZijButton.setEnabled(false);
+				checkBovenVoorButton.setEnabled(false);
+				checkBovenZijButton.setEnabled(false);
+				checkBovenButton.setEnabled(false);
+				checkVoorButton.setEnabled(false);
+				checkRechtsButton.setEnabled(false);
+				aantalKubusBox.setEnabled(false);
+				maxScoreVeld.setEditable(false);
+			}
+		
+		
+		}
+		else if (e.getSource() == checkBouwselButton)
+		{	if (checkBouwselButton.isSelected())
+			{	naip.zetCheckBlokkenBouwsel(true);
+			}
+		}
+		else if (e.getSource() == checkDrieButton)
+		{	if (checkDrieButton.isSelected())
+			{	naip.zetCheckDrieAanzichten(true);
+			}	
+		}
+		else if (e.getSource() == checkVoorZijButton)
+		{	if (checkVoorZijButton.isSelected())
+			{	naip.zetCheckVoorZijAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == checkBovenVoorButton)
+		{	if (checkBovenVoorButton.isSelected())
+			{	naip.zetCheckBovenVoorAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == checkBovenZijButton)
+		{	if (checkBovenZijButton.isSelected())
+			{	naip.zetCheckBovenZijAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == checkBovenButton)
+		{	if (checkBovenButton.isSelected())
+			{	naip.zetCheckBovenAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == checkVoorButton)
+		{	if (checkVoorButton.isSelected())
+			{	naip.zetCheckVoorAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == checkRechtsButton)
+		{	if (checkRechtsButton.isSelected())
+			{	naip.zetCheckRechtsAanzicht(true);
+			}	
+		}
+		else if (e.getSource() == aantalKubusBox)
+		{	naip.zetCheckAantalKubus(aantalKubusBox.isSelected());
 		}
 	
 	
@@ -564,82 +960,35 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			if (error)
 				return;
 			
-			int rGrootte = (int) userInput;
+			if (inputTextField == roosterTextField)
+			{	
+				int rGrootte = (int) userInput;
 
-			if ((rGrootte >= 2) && (rGrootte <= 15))
-			{
-				naip.zetRoosterGrootte(rGrootte);
+				if ((rGrootte >= 2) && (rGrootte <= 15))
+				{	
+					naip.zetRoosterGrootte(rGrootte);
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
 			}
-			else
-			{
-				inputTextField.setText(oldText);
+
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					naip.zetMaxScore(mScore);
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
 			}
 			
-/*
-			if (inputTextField == checkMuWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 0));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 0));
-				}
-			}
-			else if (inputTextField == checkSigmaWaardeVeld)
-			{	if (userInput < normaalPanel.sigmaMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.sigmaMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.sigmaMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.sigmaMax;
-					inputTextField.setText(UF.format(userInput, 0));
-				}
-			}
-			else if (inputTextField == checkGrensWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkGrensLinksWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkGrensRechtsWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkKansWaardeVeld)
-			{	if (userInput < normaalPanel.NZERO)
-				{	userInput = normaalPanel.NZERO;
-					inputTextField.setText(UF.format(userInput, 3));
-				}
-				if (userInput > 1 - normaalPanel.NZERO)
-				{	userInput = 1 - normaalPanel.NZERO;
-					inputTextField.setText(UF.format(userInput, 3));
-				}
-			}
-			else if (inputTextField == maxScoreVeld)
-			{	// nothing to do
-			}			
-*/			
 		} // focusLost
 	}
 
@@ -695,83 +1044,37 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			if (error)
 			{	return;
 			}
-			
-			int rGrootte = (int) userInput;
 
-			if ((rGrootte >= 2) && (rGrootte <= 15))
-			{
-				naip.zetRoosterGrootte(rGrootte);
-			}
-			else
-			{
-				inputTextField.setText(oldText);
+			if (inputTextField == roosterTextField)
+			{	
+			
+				int rGrootte = (int) userInput;
+
+				if ((rGrootte >= 2) && (rGrootte <= 15))
+				{
+					naip.zetRoosterGrootte(rGrootte);
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
 			}
 			
-/*			
-			if (inputTextField == checkMuWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 0));
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					naip.zetMaxScore(mScore);
 				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 0));
-				}
-			}
-			else if (inputTextField == checkSigmaWaardeVeld)
-			{	if (userInput < normaalPanel.sigmaMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.sigmaMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.sigmaMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.sigmaMax;
-					inputTextField.setText(UF.format(userInput, 0));
+				else
+				{
+					inputTextField.setText(oldText);
 				}
 			}
-			else if (inputTextField == checkGrensWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkGrensLinksWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkGrensRechtsWaardeVeld)
-			{	if (userInput < normaalPanel.muMin + normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMin;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-				if (userInput > normaalPanel.muMax - normaalPanel.NZERO)
-				{	userInput = normaalPanel.muMax;
-					inputTextField.setText(UF.format(userInput, 2));
-				}
-			}
-			else if (inputTextField == checkKansWaardeVeld)
-			{	if (userInput < normaalPanel.NZERO)
-				{	userInput = normaalPanel.NZERO;
-					inputTextField.setText(UF.format(userInput, 3));
-				}
-				if (userInput > 1 - normaalPanel.NZERO)
-				{	userInput = 1 - normaalPanel.NZERO;
-					inputTextField.setText(UF.format(userInput, 3));
-				}
-			}
-			else if (inputTextField == maxScoreVeld)
-			{	// nothing to do
-			}			
-*/			
+			
 			
 		} // actionPerformed
 	}
@@ -968,4 +1271,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		}
 	}	
 	
+	class TabbedPaneCL implements ChangeListener
+	{
+		
+		public void stateChanged(ChangeEvent e)
+		{
+			noSetBounds = true;
+			int index = tabbedPane.getSelectedIndex();
+			// terug naar viewerOptionsPanel
+			if (index == 0)
+			{	naip.toonDocentViewer(false);
+				
+			}
+			else // naar nakijkOptiesPanel
+			{	if (nakijkBox.isSelected())
+					naip.toonDocentViewer(true);
+			}
+		}
+	}	
 }

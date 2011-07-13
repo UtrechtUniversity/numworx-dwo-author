@@ -13,7 +13,7 @@ import fi.beans.base64code.*;
 import fi.beans.copyright.*;
 import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
 
-
+import fi.beans.appletutil.*;
 
 /**
  * @author Peter Boon
@@ -65,8 +65,7 @@ public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionL
 	private boolean mobileVersion;
 	private Button opdrachtKnop;
 	private int deelSerie = 0;
-	
-	
+
 	public static void main(String[] args)    
 	{	int width = 800;
         int height = 600;

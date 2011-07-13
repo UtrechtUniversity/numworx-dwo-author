@@ -88,13 +88,27 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "blokkenbouwsel", "Block building" },
 				{ "3Aanzichten", "3 views" },
+				{ "voorZijAanzicht", "Front and side view" },
+				{ "bovenVoorAanzicht", "Top and front view" },
+				{ "bovenZijAanzicht", "Top and side view" },
 				{ "bovenAanzicht", "View from above" },
 				{ "voorAanzicht", "Frontal view" },
 				{ "rechtsAanzicht", "View from the right" },
 				
 				{ "roosterGrootte", "Grid size (2 - 15)" },				
 				
+				{ "viewerOpties", "viewer options" },
+				{ "nakijkOpties", "check options" },
 				
+				{ "kijkNa", "Enable check" },
+				
+				{ "controleer", "Check" },
+				
+				{ "aantalKubus" , "Number of cubes" },
+				
+				{ "kijkNaTekst" , "Check" },
+				
+				{ "maxScoreTekst" , "Maximum score" },				
         };
 }
 

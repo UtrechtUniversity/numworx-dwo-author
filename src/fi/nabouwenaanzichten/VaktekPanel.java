@@ -155,6 +155,56 @@ class VaktekPanel extends JPanel //Container
 
 		repaint();
 	}
+
+	public void zetVoorZijAanzicht()
+	{	aantalViews = 2;
+	
+		remove(ba);
+		remove(va);
+		remove(ra);
+	
+		remove(vr);
+		
+		vakBreedte = Math.min((breedte-6)/2, (hoogte-40));
+		
+		la = new Viewer3d(kr, breedte/2-3*vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, eigenaar);
+		la.zetAfstand(10000000);
+		la.zetSchaduw(false);
+		la.zetBeginHoeken(0,90);
+		la.zetMuisAan(false);
+		//add(la);
+		
+		ba = new Viewer3d(kr, breedte/2-vakBreedte+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1, eigenaar);
+		ba.zetAfstand(10000000);
+		ba.zetSchaduw(false);
+		ba.zetBeginHoeken(90,0);
+		ba.zetMuisAan(false);
+		ba.zetPijlAan(false);
+		//add(ba);
+		
+		va = new Viewer3d(kr, breedte / 2 - vakBreedte + 1, (hoogte - vakBreedte) / 2, 
+						  vakBreedte - 1, vakBreedte - 1, eigenaar);
+		va.zetAfstand(10000000);
+		va.zetSchaduw(false);
+		va.zetBeginHoeken(0,0);
+		va.zetMuisAan(false);
+		add(va);
+		
+		//ra = new Viewer3d(kr, breedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, bd);
+		ra = new Viewer3d(kr, breedte/2 + 1, (hoogte - vakBreedte) / 2, 
+							  vakBreedte - 1, vakBreedte-1, eigenaar);
+		ra.zetAfstand(10000000);
+		ra.zetSchaduw(false);
+		ra.zetBeginHoeken(0,-90);
+		ra.zetMuisAan(false);
+		add(ra);
+		
+		vr = new VaktekRooster();
+		add(vr);
+		
+		repaint();
+		
+	}
 	
 	public void zetEenAanzicht(int type)
 	{	aantalViews = 1;
@@ -285,8 +335,10 @@ class VaktekPanel extends JPanel //Container
 				//g.drawRect(breedte/2-vakBreedte, hoogte/2-vakBreedte, vakBreedte, vakBreedte);
 				//g.drawRect(breedte/2-vakBreedte, hoogte/2, vakBreedte, vakBreedte);
 				//g.drawRect(breedte/2, hoogte/2, vakBreedte, vakBreedte);
-				g.drawRect(breedte/2-vakBreedte, 0, vakBreedte, vakBreedte);
-				g.drawRect(breedte/2, 0, vakBreedte, vakBreedte);
+				g.drawRect(breedte/2-vakBreedte, (hoogte - vakBreedte) / 2 - 1, 
+						   vakBreedte, vakBreedte);
+				g.drawRect(breedte/2, (hoogte - vakBreedte) / 2 - 1, 
+						   vakBreedte, vakBreedte);
 				g.setFont(f);
 				FontMetrics fm = getFontMetrics(f);
 				String sVoor = NabouwenAanzichten.rb.getString("voorLabel");
@@ -299,8 +351,8 @@ class VaktekPanel extends JPanel //Container
 				//g.drawString(sBoven, (breedte-vakBreedte-wv)/2,hoogte/2-vakBreedte-3);
 				//g.drawString(sVoor, (breedte-vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
 				//g.drawString(sRechts, (breedte+vakBreedte-wv)/2,hoogte/2+vakBreedte+h);
-				g.drawString(sVoor, (breedte-vakBreedte-wv)/2,vakBreedte+h);
-				g.drawString(sRechts, (breedte+vakBreedte-wr)/2,vakBreedte+h);
+				g.drawString(sVoor, (breedte-vakBreedte-wv)/2, hoogte / 2 + vakBreedte / 2 + h);
+				g.drawString(sRechts, (breedte+vakBreedte-wr)/2, hoogte / 2 + vakBreedte / 2 + h);
 			}
 			else if (aantalViews == 3)
 			{	g.setColor(Color.black);

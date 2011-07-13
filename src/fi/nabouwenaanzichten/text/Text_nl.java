@@ -88,12 +88,27 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "blokkenbouwsel", "Blokkenbouwsel" },
 				{ "3Aanzichten", "3 aanzichten" },
+				{ "voorZijAanzicht", "Voor- en zijaanzicht" },
+				{ "bovenVoorAanzicht", "Boven- en vooraanzicht" },
+				{ "bovenZijAanzicht", "Boven- en zijaanzicht" },
 				{ "bovenAanzicht", "Aanzicht van boven" },
 				{ "voorAanzicht", "Aanzicht van voren" },
 				{ "rechtsAanzicht", "Aanzicht van rechts" },
 				
-				{ "roosterGrootte", "Grootte rooster (2 - 15)" },				
+				{ "roosterGrootte", "Grootte rooster (2 - 15)" },
 				
+				{ "viewerOpties", "viewer opties" },
+				{ "nakijkOpties", "nakijk opties" },
+				
+				{ "kijkNa", "Kijk na actief" },
+				
+				{ "controleer", "Controleer" },
+				
+				{ "aantalKubus" , "Aantal kubusjes" },
+				
+				{ "kijkNaTekst" , "Kijk na" },
+				
+				{ "maxScoreTekst" , "Maximale score" },				
 				
         };
 }

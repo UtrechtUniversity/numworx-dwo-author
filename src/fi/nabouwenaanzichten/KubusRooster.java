@@ -225,61 +225,71 @@ public class KubusRooster
 	{	
 		if (maxAantal != kr.maxAantal)
 			return false;
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kubussen[i][j][k]==null 
-					   && kr.kubussen[i][j][k]!=null
-					   || kubussen[i][j][k]!=null 
-					   && kr.kubussen[i][j][k]==null)
+		for (int i = 0; i < maxAantal;  i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] == null 
+					   && kr.kubussen[i][j][k] != null
+					   || kubussen[i][j][k] != null 
+					   && kr.kubussen[i][j][k] == null)
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
+
+	// drie aanzichten
 	public boolean isGelijkAanzichten(KubusRooster kr)
 	{	
-		if(maxAantal!=kr.maxAantal)return false;
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kubussen[i][j][k]!=null) 
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
 					{   boolean bb = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bb) bb = kr.kubussen[i][j][m]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
 						}
 						boolean bv = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bv) bv = kr.kubussen[i][m][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
 						}
 						boolean br = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!br) br = kr.kubussen[m][j][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kr.kubussen[m][j][k] != null;
 						}
-						if(!bb || !bv || !br)return false;
+						if (!bb || !bv || !br)
+							return false;
 					}
 				}
 			}
 		}
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kr.kubussen[i][j][k]!=null) 
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0 ; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
 					{   boolean bb = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bb) bb = kubussen[i][j][m]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
 						}
 						boolean bv = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bv) bv = kubussen[i][m][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
 						}
 						boolean br = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!br) br = kubussen[m][j][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kubussen[m][j][k] != null;
 						}
-						if(!bb || !bv || !br)return false;
+						if (!bb || !bv || !br)
+							return false;
 					}
 				}
 			}
@@ -287,6 +297,361 @@ public class KubusRooster
 		return true;
 	}
 	
+	// voor en rechts
+	public boolean isGelijkVoorEnRechtsAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!bv || !br)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!bv || !br)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+
+	// boven en voor
+	public boolean isGelijkBovenEnVoorAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!bb || !bv)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!bb || !bv)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+
+	// boven en rechts
+	public boolean isGelijkBovenEnRechtsAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!bb || !br)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!bb || !br)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+
+	// boven
+	public boolean isGelijkBovenAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!bb)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!bb)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+
+	// voor
+	public boolean isGelijkVoorAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!bv)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!bv)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+	
+	// rechts
+	public boolean isGelijkRechtsAanzicht(KubusRooster kr)
+	{	
+		if (maxAantal != kr.maxAantal)
+			return false;
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kr.kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if (!br)
+							return false;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
+					{   boolean bb = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
+						}
+						boolean bv = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
+						}
+						boolean br = false;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
+						}
+						//if(!bb || !bv || !br)return false;
+						if(!br)return false;
+					}
+				}
+			}
+		}
+		return true;
+	}	
+	
+	// voor en rechts
 	public boolean isGelijkAanzichtenVB(KubusRooster kr)
 	{	
 		if (maxAantal != kr.maxAantal)
@@ -301,34 +666,40 @@ public class KubusRooster
 								bb = kr.kubussen[i][j][m] != null;
 						}
 						boolean bv = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bv) bv = kr.kubussen[i][m][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kr.kubussen[i][m][k] != null;
 						}
 						boolean br = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!br) br = kr.kubussen[m][j][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+							br = kr.kubussen[m][j][k] != null;
 						}
 						//if(!bb || !bv || !br)return false;
-						if(!bv || !br)return false;
+						if (!bv || !br)
+							return false;
 					}
 				}
 			}
 		}
-		for(int i=0 ; i<maxAantal ; i++)
-		{	for(int j=0 ; j<maxAantal ; j++)
-			{	for(int k=0 ; k<maxAantal ; k++)
-				{	if(kr.kubussen[i][j][k]!=null) 
+		for (int i = 0; i < maxAantal; i++)
+		{	for (int j = 0; j < maxAantal; j++)
+			{	for (int k = 0; k < maxAantal; k++)
+				{	if (kr.kubussen[i][j][k] != null) 
 					{   boolean bb = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bb) bb = kubussen[i][j][m]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bb) 
+								bb = kubussen[i][j][m] != null;
 						}
 						boolean bv = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!bv) bv = kubussen[i][m][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!bv) 
+								bv = kubussen[i][m][k] != null;
 						}
 						boolean br = false;
-						for(int m=0 ; m<maxAantal ; m++)
-						{	if(!br) br = kubussen[m][j][k]!=null;
+						for (int m = 0; m < maxAantal; m++)
+						{	if (!br) 
+								br = kubussen[m][j][k] != null;
 						}
 						//if(!bb || !bv || !br)return false;
 						if(!bv || !br)return false;
