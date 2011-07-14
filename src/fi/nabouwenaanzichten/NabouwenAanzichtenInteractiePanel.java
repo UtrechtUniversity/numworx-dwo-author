@@ -84,7 +84,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
     boolean kijkNaActiefKlein = false;
     
     int score = 0;
-    int maxScore = 10;
+    int scoreMax = 10;
     
     Vector listeners = new Vector();
     
@@ -896,7 +896,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
     }
 
     public void zetMaxScore(int ms)
-    {	maxScore = ms;
+    {	scoreMax = ms;
     	
     }
 	
@@ -1066,10 +1066,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if (h.containsKey("checkAantalKubus"))
 			checkAantalKubus = ((Boolean) h.get("checkAantalKubus")).booleanValue();
 		
-		int maxScore = 10;
-		if (h.containsKey("maxScore"))
-			maxScore = ((Integer) h.get("maxScore")).intValue();
-		this.maxScore = maxScore;
+		int scoreMax = 10;
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		this.scoreMax = scoreMax;
 		
 		
 		//zetKijkNaActief(kijkNaActief);
@@ -1163,7 +1163,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	}
 	
 	public int getScoreMax()
-	{	return maxScore;
+	{	return scoreMax;
 	}
     
     public boolean hasEditMode()
@@ -1388,10 +1388,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if (h.containsKey("checkAantalKubus"))
 			checkAantalKubus = ((Boolean) h.get("checkAantalKubus")).booleanValue();
 
-		int maxScore = 10;
-		if (h.containsKey("maxScore"))
-			maxScore = ((Integer) h.get("maxScore")).intValue();
-		this.maxScore = maxScore;
+		int scoreMax = 10;
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		this.scoreMax = scoreMax;
 		
 		//zetKijkNaActief(kijkNaActief);	
 		this.kijkNaActief = kijkNaActief;
@@ -1496,7 +1496,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	    
 	    h.put("checkAantalKubus", new Boolean(checkAantalKubus));	    
 	    
-	    h.put("maxScore", new Integer(maxScore));
+	    h.put("scoreMax", new Integer(scoreMax));
 	    
 		int aantalDocentKR = 0;
 		boolean[][][][] booleanDocentKRs = null;
@@ -1521,7 +1521,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	public int geefAsHoogte(){return 0;}
 	
 	public boolean isCorrect()
-	{	return score == maxScore;
+	{	return score == scoreMax;
 	}
 	
 	public boolean isFout()
@@ -1553,7 +1553,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         	if (!kr.isGelijk(docentKr))
         		score = 0;
         	else
-        		score = maxScore;
+        		score = scoreMax;
         }
         else if (checkDrieAanzichten)
         {	// nog niet goed
@@ -1561,10 +1561,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1575,10 +1575,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1589,10 +1589,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1603,10 +1603,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1617,10 +1617,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1631,10 +1631,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1645,10 +1645,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         		score = 0;
         	else
         	{	if (checkAantalKubus)
-        		{	score = Math.max(maxScore / 2, maxScore - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
+        		{	score = Math.max(scoreMax / 2, scoreMax - Math.abs(kr.aantalKubussen - docentKr.aantalKubussen));
         		}
         		else
-        		{	score = maxScore;
+        		{	score = scoreMax;
         		}
         	}
         	
@@ -1659,10 +1659,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         	geelVinkjeLabel.setVisible(false);
         	groenVinkjeLabel.setVisible(false);
         }
-        else if (score < maxScore)
+        else if (score < scoreMax)
         {	kruisjeLabel.setVisible(false);
         	geelVinkjeLabel.setVisible(true);
-        	groenVinkjeLabel.setVisible(true);
+        	groenVinkjeLabel.setVisible(false);
         }
         else // score==maxScore
         {	kruisjeLabel.setVisible(false);
