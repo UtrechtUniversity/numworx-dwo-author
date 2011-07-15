@@ -669,10 +669,10 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			checkAantalKubus = ((Boolean) b.get("checkAantalKubus")).booleanValue();
 		aantalKubusBox.setSelected(checkAantalKubus);
 
-		int maxScore = 10;
-		if (b.containsKey("maxScore"))
-			maxScore = ((Integer) b.get("maxScore")).intValue();
-		maxScoreVeld.setText("" + maxScore);
+		int scoreMax = 10;
+		if (b.containsKey("scoreMax"))
+			scoreMax = ((Integer) b.get("scoreMax")).intValue();
+		maxScoreVeld.setText("" + scoreMax);
 		
 		
 		naip.setEditState(b);
@@ -702,7 +702,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		plaatsComponenten();
 		
-//System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
+System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
 		
 	}
 	

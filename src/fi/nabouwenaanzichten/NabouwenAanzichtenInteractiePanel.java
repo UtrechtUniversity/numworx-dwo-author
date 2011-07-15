@@ -306,12 +306,13 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if (kijkNaActiefKlein)
 		{	kijkNaActiefKlein = false;
 		}
-		else if (kijkNaActief && !kijkNaPanel.isVisible())
-		{	noSetBounds = true;
+		else if (kijkNaActief && !kijkNaPanel.isVisible() && v.isVisible())
+		{	//noSetBounds = true;
 			kijkNaPanel.setVisible(true);
+System.out.println("kijkNa setVis");			
 			
 		}
-//System.out.println("setBounds naip b = " + b + " h = " + h);		
+System.out.println("setBounds naip b = " + b + " h = " + h);		
 		
 	}
 	
