@@ -64,7 +64,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		setBackground(new Color(230, 240, 255));
 		
 		naip = new NabouwenAanzichtenInteractiePanel();
-		
+
+		naip.naiep = this;
 //System.out.println("naip w = " + naip.getSize().width);
 //System.out.println("naip h = " + naip.getSize().height);
 

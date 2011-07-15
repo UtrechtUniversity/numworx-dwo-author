@@ -29,14 +29,14 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	protected static ResourceBundle rb;
 	private String langArg;
 	private String bgColorArg;
-	private Button volLeegKnop, aanzichtenKnop;
+	private JButton volLeegKnop, aanzichtenKnop;
 	Viewer3d v;
 	Viewer3d docentV;
 	private VaktekPanel vp;
 	private KubusRooster kr;
 	KubusRooster docentKr;
 	private NumberArrow na;
-	private Label aantalKLabel;
+	private JLabel aantalKLabel;
 	private boolean aanzichten;
 	InvulKeuzePanel2 ip;
 	private Color bgcolor = Color.white;
@@ -94,7 +94,8 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	JLabel geelVinkjeLabel;
 	JLabel kruisjeLabel;
 	
-   
+	NabouwenAanzichtenInteractieEditPanel naiep;
+	
 	public NabouwenAanzichtenInteractiePanel()
 	{	setLayout(null);
 		super.setBounds(0, 0, 300, 300);
@@ -117,7 +118,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		add(ip);
 		
         // label aantal kubusjes
-		aantalKLabel = new Label(NabouwenAanzichten.rb.getString("aantalKLabel")+ kr.geefAantalK());
+		aantalKLabel = new JLabel(NabouwenAanzichten.rb.getString("aantalKLabel")+ kr.geefAantalK());
 		aantalKLabel.setBounds(40,460,200,20);
 		aantalKLabel.setFont(new Font("SansSerif",Font.PLAIN,18));
 		//add(aantalKLabel);
@@ -152,7 +153,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         //if(!mobileVersion) add(na);
 		
 		// knop maak vol/maak leeg
-		volLeegKnop = new Button(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		volLeegKnop = new JButton(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
         volLeegKnop.addActionListener(this);
         volLeegKnop.setBounds(40, 415, 80, 24);
         
@@ -303,15 +304,29 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		zetVoorAanzicht(voorAanzicht);
 		zetRechtsAanzicht(rechtsAanzicht);
 		
+		int tabIndex = naiep.tabbedPane.getSelectedIndex();
+		
 		if (kijkNaActiefKlein)
 		{	kijkNaActiefKlein = false;
 		}
-		else if (kijkNaActief && !kijkNaPanel.isVisible() && v.isVisible())
+		else if (kijkNaActief && !kijkNaPanel.isVisible() && v.isVisible() && (tabIndex == 0))
 		{	noSetBounds = true;
 			kijkNaPanel.setVisible(true);
-//System.out.println("kijkNa setVis");			
+//System.out.println("kijkNa setVis true");			
 			
 		}
+		else if (kijkNaActief && (tabIndex == 1))
+		{
+			toonDocentViewer(true);
+		}
+/*		
+		else if (kijkNaActief && kijkNaPanel.isVisible() && docentV.isVisible())
+		{	noSetBounds = true;
+			kijkNaPanel.setVisible(false);
+System.out.println("kijkNa setVis false");			
+			
+		}
+*/		
 System.out.println("setBounds naip b = " + b + " h = " + h);		
 		
 	}
@@ -1236,7 +1251,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		kr = new KubusRooster((int)val,1);
 		v.zetKubusRooster(kr);
 		vp.zetKubusRooster(kr);
-		volLeegKnop.setLabel(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 		zetVeranderd();
 
 	}
@@ -1244,29 +1259,29 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource()==volLeegKnop)
 		{	volLeegKnop.transferFocus(); 
-			if(volLeegKnop.getLabel().equals(NabouwenAanzichten.rb.getString("volLeegKnopLabel1")))
+			if(volLeegKnop.getText().equals(NabouwenAanzichten.rb.getString("volLeegKnopLabel1")))
 			{	kr.maakVol();
-				volLeegKnop.setLabel(NabouwenAanzichten.rb.getString("volLeegKnopLabel2"));
+				volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel2"));
 				zetVeranderd();
 			}
 			else
 			{	kr.maakLeeg();
-				volLeegKnop.setLabel(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+				volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 				zetVeranderd();
 			}
 		}
 		if(e.getSource()==aanzichtenKnop)
 		{	aanzichtenKnop.transferFocus(); 
-			if(aanzichtenKnop.getLabel().equals(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel1")))
+			if(aanzichtenKnop.getText().equals(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel1")))
 			{	vp.setVisible(true);
 				aanzichten = true;
-				aanzichtenKnop.setLabel(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel2"));
+				aanzichtenKnop.setText(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel2"));
 				zetVeranderd();
 			}
 			else
 			{	vp.setVisible(false);
 				aanzichten = false;
-				aanzichtenKnop.setLabel(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel1"));
+				aanzichtenKnop.setText(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel1"));
 				zetVeranderd();
 			}
 		}
