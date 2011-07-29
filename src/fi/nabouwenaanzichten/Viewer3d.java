@@ -19,7 +19,9 @@ public class Viewer3d extends JComponent
     public Matrix3D mat;  
     private boolean pen, vul,leeg, schaduw, grZichtbaar;
     private int lnummer;
-    private Color penkleur,vulkleur,achtergrondkleur;
+    private Color penkleur,
+    			  vulkleur,
+    			  achtergrondkleur;
     public boolean bezigMetTekenen, muisAan, klikAan,pijlAan,balkAan;
     private double afstand;
     int aantalVeelvlakken;
@@ -174,6 +176,12 @@ public class Viewer3d extends JComponent
         
     }
     
+    public void wisHoogtes()
+    {
+    	if (gr != null)
+    		gr.wis();
+    }
+    
     public void zetVeelvlak(Veelvlak v)
     {   vvRij[0] = v;
         tekenOpnieuw();
@@ -192,7 +200,8 @@ public class Viewer3d extends JComponent
             add(gr);
         }
         else
-        {   if(gr!=null)remove(gr);
+        {   if(gr!=null)
+        		remove(gr);
         }
         zetBeginHoeken(90,0);
         zetAfstand(1000000000);
@@ -203,7 +212,8 @@ public class Viewer3d extends JComponent
     public void zetGetalRooster2(boolean bool)
     {   grZichtbaar = bool;
         if (bool)
-        {   int n = kr.maxAantal;
+        {   
+        	int n = kr.maxAantal;
 
             int x = breedte * 80 / 300;
             int y = hoogte * 80 / 300;
@@ -232,10 +242,12 @@ public class Viewer3d extends JComponent
                 gr = null;
             }
         }
-        zetBeginHoeken(90,0);
-        zetAfstand(1000000000);
-        zetMuisAan(false);
-        zetSchaduw(false);
+        if (bool)
+        {	zetBeginHoeken(90,0);
+        	zetAfstand(1000000000);
+        	zetMuisAan(false);
+        	zetSchaduw(false);
+        }
     }
     
     public void voegVeelvlakToe(Veelvlak v)
@@ -308,9 +320,27 @@ public class Viewer3d extends JComponent
         stap(-k*v.punten[0].x, -k*v.punten[0].y, -k*v.punten[0].z);
         
     }
+    
+    public void setSize(int width, int height)
+    {
+    	im = null;
+    	super.setSize(width, height);
+    	breedte = getSize().width;
+    	hoogte = getSize().height;
+    }
+    
+    public void setBounds(int x, int y, int w, int h)
+    {
+    	im = null;
+    	super.setBounds(x, y, w, h);
+    	breedte = getSize().width;
+    	hoogte = getSize().height;
+    	
+    }
+    
     public void paint(Graphics g)
     {   bezigMetTekenen = true;
-        if(im==null)
+        if (im == null)
         {   breedte = getSize().width;
             hoogte = getSize().height;  
             // breedte/400 ipv breedte/500, dan past de langwerpige kr beter
@@ -329,12 +359,14 @@ public class Viewer3d extends JComponent
     }
     
     public void tekenOpImage(boolean wis)
-    {   if(gIm==null)return;
+    {   if (gIm == null)
+    		return;
         beginpunt = new Punt3D(startpunt);
         eindpunt = new Punt3D(beginpunt);
         //mat.initialiseer();
         gIm.setColor(achtergrondkleur);
-        if(wis)gIm.fillRect(0, 0, breedte, hoogte);
+        if (wis) 
+        	gIm.fillRect(0, 0, breedte, hoogte);
         penAan(0,0,0);
         
 //gIm.drawRect(0, 0, breedte-1, hoogte-1);
@@ -394,7 +426,8 @@ public class Viewer3d extends JComponent
     {   bezigMetTekenen = true;
         tekenOpImage(true);
         Graphics g = getGraphics();
-        if(g!=null)g.drawImage(im, 0, 0, null); 
+        if (g != null)
+        	g.drawImage(im, 0, 0, null); 
         bezigMetTekenen = false;
     }
   

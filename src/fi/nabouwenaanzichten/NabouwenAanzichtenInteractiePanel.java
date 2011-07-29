@@ -29,20 +29,25 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	protected static ResourceBundle rb;
 	private String langArg;
 	private String bgColorArg;
-	private JButton volLeegKnop, aanzichtenKnop;
+//	private JButton volLeegKnop, aanzichtenKnop;
 	Viewer3d v;
 	Viewer3d docentV;
 	private VaktekPanel vp;
 	private KubusRooster kr;
 	KubusRooster docentKr;
 	private NumberArrow na;
-	private JLabel aantalKLabel;
+//	private JLabel aantalKLabel;
 	private boolean aanzichten;
 	InvulKeuzePanel2 ip;
+	
+	KnoppenPanel kPanel;
+	
 	private Color bgcolor = Color.white;
     private boolean mobileVersion;
     
     boolean noSetBounds = false;
+    boolean newViewer = false;
+    boolean kCorrected = false;
 	
 	boolean rotatieVast = false;
 	double beginHoekX = 30;
@@ -50,11 +55,15 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	boolean nietBouwenSlopen = false;
 	boolean keuzeBouwenSlopen = false;
 	boolean perspectief = true;
+	boolean volLeegOptie = false;
+	boolean aantalBlokjes = false;
+	
 	boolean pijlAan = true;
 	boolean balkAan = false;
 	boolean bovenAanzichtMetHoogtes = false;
 	
     boolean blokkenBouwsel = true;
+    boolean silhouet = false;
     boolean drieAanzichten = false;
     boolean voorZijAanzicht = false;
     boolean bovenAanzicht = false;
@@ -80,6 +89,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
     boolean vIsVisible = false;
     boolean vpIsVisible = false;
     boolean ipIsVisible = false;
+    boolean kIsVisible = false;
     
     boolean kijkNaActiefKlein = false;
     
@@ -89,7 +99,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
     Vector listeners = new Vector();
     
 	JButton kijkNaButton;
-	JPanel kijkNaPanel;
+//	JPanel kijkNaPanel;
 	JLabel groenVinkjeLabel;
 	JLabel geelVinkjeLabel;
 	JLabel kruisjeLabel;
@@ -107,21 +117,42 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		
 		aanzichten = true;
 
+		kPanel = new KnoppenPanel(0,300,300,24);
+		kPanel.setBackground(bgcolor);
+		kPanel.setOpaque(false);
+		kPanel.setVisible(false);
+		add(kPanel);
+		
 		// checkboxen bouwen/slopen
-        //ip = new InvulKeuzePanel(40,360,100,50);
 		ip = new InvulKeuzePanel2(0,300,300,24);
 		ip.setBackground(bgcolor);
-
 		ip.setOpaque(false);
-		
         ip.setVisible(false);
 		add(ip);
+
+		// knop maak vol/maak leeg
+		kPanel.volLeegKnop = new JButton(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		kPanel.volLeegKnop.setFont(new Font("SansSerif",Font.PLAIN, 12));
+		kPanel.volLeegKnop.addActionListener(this);
+		kPanel.volLeegKnop.setBounds(0, 0, 90, 24);
+		kPanel.volLeegKnop.setVisible(false);
+		kPanel.add(kPanel.volLeegKnop);
+/*        
+        if(mobileVersion) 
+        {  volLeegKnop.setFont(new Font("SansSerif", Font.PLAIN, 10));
+           volLeegKnop.setBounds(145,180,55,15);
+        }
+		//add(volLeegKnop);
+*/		
 		
         // label aantal kubusjes
-		aantalKLabel = new JLabel(NabouwenAanzichten.rb.getString("aantalKLabel")+ kr.geefAantalK());
-		aantalKLabel.setBounds(40,460,200,20);
-		aantalKLabel.setFont(new Font("SansSerif",Font.PLAIN,18));
-		//add(aantalKLabel);
+		kPanel.aantalKLabel = new JLabel("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+		kPanel.aantalKLabel.setBounds(200,0,90,24);
+		kPanel.aantalKLabel.setFont(new Font("SansSerif",Font.PLAIN,14));
+//kPanel.aantalKLabel.setOpaque(true);
+//kPanel.aantalKLabel.setBackground(Color.green);
+		kPanel.aantalKLabel.setVisible(false);
+		kPanel.add(kPanel.aantalKLabel);
 		
         v = new Viewer3d(kr, 0, 0, 300, 300, this);
         v.zetBeginHoeken(beginHoekX, beginHoekY);
@@ -145,77 +176,68 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		vp.setVisible(false);
 		add(vp);
 		
-		
 		na = new NumberArrow(2,15,4,1,0,"","");
 		na.setBounds(120,400,100,50);
 		na.setColumns(1);
 		na.addNumberListener(this);
         //if(!mobileVersion) add(na);
 		
-		// knop maak vol/maak leeg
-		volLeegKnop = new JButton(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
-        volLeegKnop.addActionListener(this);
-        volLeegKnop.setBounds(40, 415, 80, 24);
-        
-        if(mobileVersion) 
-        {  volLeegKnop.setFont(new Font("SansSerif", Font.PLAIN, 10));
-           volLeegKnop.setBounds(145,180,55,15);
-        }
-		//add(volLeegKnop);
-		
 		kijkNaButton = new JButton(NabouwenAanzichten.rb.getString("kijkNaTekst"));
 		kijkNaButton.setFont(new Font("SansSerif",Font.PLAIN, 12));
-		kijkNaButton.setBounds(0, 0, 100, 20);
+		kijkNaButton.setBounds(0, 0, 75, 24);
 		kijkNaButton.addActionListener(new KijkNaAL());
 		
-		java.net.URL imageURL = NabouwenAanzichten.class.getResource("resources/groenvink.gif");
+		java.net.URL imageURL = NabouwenAanzichten.class.getResource("resources/goedkrul_en.gif");
 		if (imageURL != null)
 		{
 		    groenVinkjeLabel = new JLabel(new ImageIcon(imageURL));
 		}
 		else 
 		{
-			System.out.println("Error reading groenvink.gif.");
+			System.out.println("Error reading goedkrul_en.gif.");
 			groenVinkjeLabel = new JLabel();
 		}
-		groenVinkjeLabel.setBounds(100, 0, 20, 20);
+		groenVinkjeLabel.setBounds(76, 2, 20, 20);
 		
-		imageURL = NabouwenAanzichten.class.getResource("resources/geelvink.gif");
-		if (imageURL != null) {
+		imageURL = NabouwenAanzichten.class.getResource("resources/goedkrulhalf.gif");
+		if (imageURL != null) 
+		{
 		    geelVinkjeLabel = new JLabel(new ImageIcon(imageURL));
 		}
 		else 
 		{
-			System.out.println("Error reading geelvink.gif.");
+			System.out.println("Error reading goedkrulhalf.gif.");
 			geelVinkjeLabel = new JLabel();
 		}
-		geelVinkjeLabel.setBounds(100, 0, 20, 20);
+		geelVinkjeLabel.setBounds(76, 2, 20, 20);
 		
 		
 		imageURL = NabouwenAanzichten.class.getResource("resources/foutkruis.gif");
-		if (imageURL != null) {
+		if (imageURL != null) 
+		{
 		    kruisjeLabel = new JLabel(new ImageIcon(imageURL));
 		}
-		else {
+		else 
+		{
 			System.out.println("Error reading foutkruis.gif.");
 			kruisjeLabel = new JLabel();
 		}
-		kruisjeLabel.setBounds(100, 0, 20, 20);
+		kruisjeLabel.setBounds(76, 2, 20, 20);
 		
 		groenVinkjeLabel.setVisible(false);
 		geelVinkjeLabel.setVisible(false);
 		kruisjeLabel.setVisible(false);
 		
-		kijkNaPanel = new JPanel(null);
-		//kijkNaPanel.setBackground(Color.WHITE);
-		kijkNaPanel.setSize(120, 20);
-		kijkNaPanel.add(kijkNaButton);
-		kijkNaPanel.add(groenVinkjeLabel);
-		kijkNaPanel.add(geelVinkjeLabel);
-		kijkNaPanel.add(kruisjeLabel);
-		kijkNaPanel.setVisible(false);
+		kPanel.kijkNaPanel = new JPanel(null);
+		kPanel.kijkNaPanel.setOpaque(false);
+		kPanel.kijkNaPanel.setBounds(90, 0, 95, 24);
+		kPanel.kijkNaPanel.add(kijkNaButton);
+		kPanel.kijkNaPanel.add(groenVinkjeLabel);
+		kPanel.kijkNaPanel.add(geelVinkjeLabel);
+		kPanel.kijkNaPanel.add(kruisjeLabel);
+		kPanel.kijkNaPanel.setVisible(false);
 		
-		add(kijkNaPanel);
+		kPanel.add(kPanel.kijkNaPanel);
 		
 	}
 	
@@ -226,38 +248,48 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if ((x == getLocation().x) && (y == getLocation().y) &&
 			(b == getSize().width) && (h == getSize().height))
 		{	
-//System.out.println("setBounds return");			
+System.out.println("naip setBounds return");			
 			return;
 		}	
 		
 		if (noSetBounds)
 		{	noSetBounds = false;	
-//System.out.println("noSetBounds");			
+System.out.println("noSetBounds");			
 			return;
 		}
 		
 		if (v != null)
-		{	//v.remove(ip);
-			remove(v);
+		{	remove(v);
 		}
-		//int vpX = Math.max(0,(b-h)/2);
-        //int vpY = Math.max(0,(h-b)/2);
-        int vpZijde = Math.min(b, h - 24 - 24);
-        int vpX = (b - vpZijde) / 2;
-        int vpY = (h - 24 - 24 - vpZijde) / 2;
-		//if(bovenAanzichtMetHoogtes)
-		    v = new Viewer3d(kr, vpX, vpY, vpZijde, vpZijde, this);
-		//else v = new Viewer3d(kr, 0, 0, b, h, this);
-		v.zetAchtergrond(bgcolor);
+/*
+		int vpZijde = Math.min(b, h - 24 - 24);
+		int vpX = (b - vpZijde) / 2;
+		int vpY = (h - 24 - 24 - vpZijde) / 2;
+*/		
+
+		int vpZijde = Math.min(b, h);
+		int vpX = (b - vpZijde) / 2;
+		int vpY = (h - vpZijde) / 2;
+		
+//System.out.println("create vpX = " + vpX + " vpY = " + vpY);
+//System.out.println("create vpZijde = " + vpZijde);
+		
+        v = new Viewer3d(kr, vpX, vpY, vpZijde, vpZijde, this);
+        v.zetAchtergrond(bgcolor);
 	    v.zetBeginHoeken(beginHoekX, beginHoekY);
 		add(v);
+
+		newViewer = true;
+		kCorrected = false;
 		
-		kijkNaPanel.setLocation(Math.max(0, (b - kijkNaPanel.getSize().width) / 2),
-							    h - kijkNaPanel.getSize().height); 
+		ip.setBounds(vpX, vpY + vpZijde, vpZijde, 24);
+
+		kPanel.setBounds(vpX, vpY + vpZijde + 24, vpZijde, 24);
+		
+		//kPanel.kijkNaPanel.setLocation((kPanel.getSize().width - kPanel.kijkNaPanel.getSize().width) / 2, 0);
 		
 		if (vp != null)
-		{
-			remove(vp);
+		{	remove(vp);
 		}
 		vp = new VaktekPanel(kr, 0, 0, b, h, 3, this);
 		vp.zetAchtergrond(bgcolor);
@@ -265,17 +297,13 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		add(vp);
 		
 		if (docentV != null)
-		{	//v.remove(ip);
-			remove(docentV);
+		{	remove(docentV);
 		}
-		//int vpX = Math.max(0,(b-h)/2);
-        //int vpY = Math.max(0,(h-b)/2);
-        vpZijde = Math.min(b,h - 24 - 24);
-        vpX = (b - vpZijde) / 2;
-        vpY = (h - 24 - 24 - vpZijde) / 2;
-		//if(bovenAanzichtMetHoogtes)
-		docentV = new Viewer3d(docentKr, vpX, vpY, vpZijde, vpZijde, this);
-		//else v = new Viewer3d(kr, 0, 0, b, h, this);
+
+		int docentVpZijde = Math.min(b, h - 24);
+        int docentVpX = (b - docentVpZijde) / 2;
+        int docentVpY = (h - 24 - docentVpZijde) / 2;
+		docentV = new Viewer3d(docentKr, docentVpX, docentVpY, docentVpZijde, docentVpZijde, this);
 		docentV.zetAchtergrond(bgcolor);
 		docentV.zetBeginHoeken(beginHoekX, beginHoekY);
 		docentV.setVisible(false);
@@ -284,34 +312,61 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		
 		super.setBounds(x, y, Math.min(600, b), h);
 	
-		//remove(ip);
-		ip.setBounds(vpX, vpY + vpZijde, vpZijde, 24);
-		//add(ip, 0);
-		
 		zetPerspectief(perspectief);
 		zetRotatieVast(rotatieVast);
 		zetNietBouwenSlopen(nietBouwenSlopen);
+
+		zetKeuzeBouwenSlopen(keuzeBouwenSlopen);
+
+//System.out.println("kbs vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("kbs vpZijde = " + v.getSize().width);
+		
+		zetVolLeegOptie(volLeegOptie);
+		
+//System.out.println("vlo vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("vlo vpZijde = " + v.getSize().width);
+		
+		zetAantalBlokjes(aantalBlokjes);
+		
+//System.out.println("abl vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("abl vpZijde = " + v.getSize().width);
 		
 		zetPijlAan(pijlAan);
 		zetBalkAan(balkAan);
+
+//System.out.println("pb vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("pb vpZijde = " + v.getSize().width);
 		
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
+
+//System.out.println("bah vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("bah vpZijde = " + v.getSize().width);
 		
 		zetBlokkenBouwsel(blokkenBouwsel);
+		zetSilhouet(silhouet);
 		zetDrieAanzichten(drieAanzichten);
 		zetVoorZijAanzicht(voorZijAanzicht);
 		zetBovenAanzicht(bovenAanzicht);
 		zetVoorAanzicht(voorAanzicht);
 		zetRechtsAanzicht(rechtsAanzicht);
+
+//System.out.println("rec vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("rec vpZijde = " + v.getSize().width);
 		
-		int tabIndex = naiep.tabbedPane.getSelectedIndex();
+		int tabIndex = 0;
+		if (naiep != null)
+			tabIndex = naiep.tabbedPane.getSelectedIndex();
 		
-		if (kijkNaActiefKlein)
-		{	kijkNaActiefKlein = false;
-		}
-		else if (kijkNaActief && !kijkNaPanel.isVisible() && v.isVisible() && (tabIndex == 0))
+//		if (kijkNaActiefKlein)
+//		{	kijkNaActiefKlein = false;
+//		}
+//		else 
+		if (kijkNaActief && !kPanel.isVisible() && v.isVisible() && (tabIndex == 0))
 		{	noSetBounds = true;
-			kijkNaPanel.setVisible(true);
+			kPanel.setVisible(true);
+			
+//HIER
+			
 //System.out.println("kijkNa setVis true");			
 			
 		}
@@ -327,8 +382,13 @@ System.out.println("kijkNa setVis false");
 			
 		}
 */		
-System.out.println("setBounds naip b = " + b + " h = " + h);		
+System.out.println("setBounds naip b = " + b + " h = " + h);
+
+//System.out.println("final vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
+//System.out.println("final vpZijde = " + v.getSize().width);
+
 		
+		newViewer = false;
 	}
 	
 	public void zetBreedte(int b)
@@ -340,7 +400,13 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{
 		//setBounds(getLocation().x, getLocation().y, getSize().width, h);
 	}
-	
+/*	
+	public void paintComponent(Graphics g)
+	{
+		g.setColor(Color.red);
+		g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+	}
+*/	
 	
 	public void setBackground(Color color)
 	{	bgcolor = color;
@@ -350,8 +416,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetAchtergrond(color);
 		if (ip != null)
 			ip.setBackground(color);
-		if (kijkNaPanel != null)
-			kijkNaPanel.setBackground(color);
+		if (kPanel != null)
+			kPanel.setBackground(color);
 		
 		if (docentV != null)
 			docentV.zetAchtergrond(color);
@@ -387,19 +453,93 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetKeuzeBouwenSlopen(boolean b)
 	{
 		keuzeBouwenSlopen = b;
-//System.out.println("ip before");
-/*
+		
 		if (keuzeBouwenSlopen)
-		{	add(ip, 0);
-			validate();
+		{	
+			if (!ip.isVisible())
+			{	
+
+				int vSpace = getSize().height - v.getSize().height - 24;
+				if (kPanel.isVisible())
+					vSpace -= 24;
+				if (vSpace > 0)
+				{	
+					noSetBounds = true;
+					v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+				}
+				else
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+				}
+					
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+				
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			
+				noSetBounds = true;
+				ip.setVisible(true);
+				
+				if (kPanel.isVisible())
+					kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+				
+				
+			}
+			else // ip.isVisible()
+			{
+				if (newViewer)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (kPanel.isVisible())
+						vSpace -= 24;
+					if (vSpace > 0)
+					{	
+						noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}
+					
+				}
+				
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+
+				if (kPanel.isVisible())
+					kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+				
+			}
 		}
 		else
-			remove(ip);
-*/			
-		noSetBounds = true;
-
-		ip.setVisible(b);
-//System.out.println("ip after");
+		{	if (ip.isVisible())
+			{	
+				int hSpace = getSize().width - v.getSize().width;
+				int vSpace = getSize().height - v.getSize().height + 24;
+				if (kPanel.isVisible())
+					vSpace -= 24;
+				if (hSpace > 24)
+				{	
+					noSetBounds = true;
+					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+				}
+				else
+				{
+					//noSetBounds = true;
+					//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+				}
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+			
+				noSetBounds = true;
+				ip.setVisible(false);
+				
+				if (kPanel.isVisible())
+					kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			}
+		}
 	}
 	
 	public void zetPerspectief(boolean b)
@@ -411,6 +551,178 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			v.zetAfstand(1000000000);
 		
 		v.tekenOpnieuw();
+	}
+	
+	public void zetVolLeegOptie(boolean b)
+	{	volLeegOptie = b;
+		
+		noSetBounds = true; 
+		kPanel.volLeegKnop.setVisible(volLeegOptie);
+		kPanel.layoutComponents();
+		
+		boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;
+		if (showKnoppenPanel)// && !kPanel.isVisible())
+		{
+			
+			if (!kPanel.isVisible() || (newViewer && !kCorrected))
+			{
+				int vSpace = getSize().height - v.getSize().height - 24;
+				if (ip.isVisible())
+					vSpace -= 24;
+				if (vSpace > 0)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+				}
+				else
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+				}	
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+				
+			}
+			
+			if (ip.isVisible())
+			{	
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+				
+				noSetBounds = true;
+				kPanel.setBounds(v.getLocation().x, ip.getLocation().y + ip.getSize().height, v.getSize().width, 24);
+			}
+			else
+			{	
+				noSetBounds = true;
+				kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			}
+			
+			if (!kPanel.isVisible())
+			{	
+				noSetBounds = true;
+				kPanel.setVisible(true);
+			}
+			else
+			{
+				kCorrected = true;
+			}
+		}
+		
+		if (!showKnoppenPanel && kPanel.isVisible())
+		{	
+
+			int hSpace = getSize().width - v.getSize().width;
+			int vSpace = getSize().height - v.getSize().height + 24;
+			if (ip.isVisible())
+				vSpace -= 24;
+			if (hSpace > 24)
+			{	
+				noSetBounds = true;
+				v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+			}
+			else
+			{
+				//noSetBounds = true;
+				//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+			}
+			v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+			v.zetHoogtes();
+			
+			noSetBounds = true;
+			kPanel.setVisible(false);
+			
+			if (ip.isVisible())
+			{	
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			}
+			
+			
+		}
+	
+	}
+	
+	public void zetAantalBlokjes(boolean b)
+	{	aantalBlokjes = b;
+	
+		noSetBounds = true;
+		kPanel.aantalKLabel.setVisible(aantalBlokjes);
+		kPanel.layoutComponents();
+		boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;
+		if (showKnoppenPanel)// && !kPanel.isVisible())
+		{	
+			if (!kPanel.isVisible() || (newViewer && !kCorrected))
+			{
+				int vSpace = getSize().height - v.getSize().height - 24;
+				if (ip.isVisible())
+					vSpace -= 24;
+				if (vSpace > 0)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+				}
+				else
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+				}	
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+				
+			}
+			
+			if (ip.isVisible())
+			{	
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+				
+				noSetBounds = true;
+				kPanel.setBounds(v.getLocation().x, ip.getLocation().y + ip.getSize().height, v.getSize().width, 24);
+			}
+			else
+			{	
+				noSetBounds = true;
+				kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			}
+			if (!kPanel.isVisible())
+			{	
+				noSetBounds = true;
+				kPanel.setVisible(true);
+			}
+			else
+			{
+				kCorrected = true;
+			}
+		}
+		
+		if (!showKnoppenPanel && kPanel.isVisible())
+		{	
+
+			int hSpace = getSize().width - v.getSize().width;
+			int vSpace = getSize().height - v.getSize().height + 24;
+			if (ip.isVisible())
+				vSpace -= 24;
+			if (hSpace > 24)
+			{	
+				noSetBounds = true;
+				v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+			}
+			else
+			{
+				//noSetBounds = true;
+				//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+			}
+			v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+			v.zetHoogtes();
+			
+			noSetBounds = true;
+			kPanel.setVisible(false);
+			
+			if (ip.isVisible())
+			{	
+				noSetBounds = true;
+				ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+			}
+			
+			
+		}
 	}
 	
 	public void zetPijlAan(boolean b)
@@ -434,7 +746,10 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetBovenAanzichtMetHoogtes(boolean b)
 	{	bovenAanzichtMetHoogtes = b;
 		if (bovenAanzichtMetHoogtes)
-		{	zetPerspectief(false);
+		{	
+			//zetSilhouet(false);
+			kr.zetVulkleur("geel");
+			//v.zetAfstand(1000000000);
 			if (vp.isVisible())
 			{	noSetBounds = true;
 				vp.setVisible(false);
@@ -444,11 +759,63 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(true);
 				}
-				if (kijkNaPanel.isVisible())
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;		
+				if (showKnoppenPanel)
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
-				}				
+					kPanel.setVisible(true);
+				}			
+				
 			}	
+			else if (v.isVisible() && silhouet && !newViewer)
+			{
+				//zetSilhouet(false);
+				
+				if (keuzeBouwenSlopen)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					noSetBounds = true;
+					ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					noSetBounds = true;
+					ip.setVisible(true);
+				}
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;				
+				if (showKnoppenPanel)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (ip.isVisible())
+						vSpace -= 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					if (ip.isVisible())
+					{	noSetBounds = true;
+						ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+					}
+					else
+					{
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					}	
+					noSetBounds = true;
+					kPanel.setVisible(true);
+				}
+				
+			}
 		}
 	
 		v.zetGetalRooster2(bovenAanzichtMetHoogtes);
@@ -462,7 +829,16 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				zetBeginHoeken(beginHoekX, beginHoekY);
 			zetPerspectief(perspectief);
 			zetRotatieVast(rotatieVast);
+			newViewer = true;
+			zetBlokkenBouwsel(blokkenBouwsel);
+			newViewer = false; 
+			zetSilhouet(silhouet);
 			zetDrieAanzichten(drieAanzichten);
+			zetVoorZijAanzicht(voorZijAanzicht);
+			zetBovenAanzicht(bovenAanzicht);
+			zetVoorAanzicht(voorAanzicht);
+			zetRechtsAanzicht(rechtsAanzicht);
+
 		}
 		else
 			v.zetHoogtes();
@@ -472,7 +848,12 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetBlokkenBouwsel(boolean b)
 	{	blokkenBouwsel = b;
 		if (blokkenBouwsel && !bovenAanzichtMetHoogtes)
-		{	
+		{
+			kr.zetVulkleur("geel");
+			v.zetSchaduw(true);
+			
+			// laatste keuze was een of meer aanzichten
+			// viewer en rest staan al op hun plaats
 			if (vp.isVisible())
 			{	noSetBounds = true;
 				vp.setVisible(false);
@@ -482,12 +863,103 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(true);
 				}
-				if (kijkNaActief)
-				{	noSetBounds = true;
-					kijkNaPanel.setVisible(true);
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;				
+				if (showKnoppenPanel)
+				{	
+					// kijk of er plaats is voor kPanel
+					int plaats = getSize().height - v.getLocation().y - v.getSize().height;
+					if (ip.isVisible())
+						plaats -= 24;
+					if (plaats < 24)
+					{	int vSpace = getSize().height - v.getSize().height - 24;
+						if (ip.isVisible())
+							vSpace -= 24;
+						if (vSpace > 0)
+						{	noSetBounds = true;
+							v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+						}
+						else
+						{	noSetBounds = true;
+							v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+						}	
+						if (ip.isVisible())
+						{	noSetBounds = true;
+							ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+							noSetBounds = true;
+							kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+						}
+						else
+						{
+							noSetBounds = true;
+							kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+						}	
+						noSetBounds = true;
+						kPanel.setVisible(true);
+					}
+					else
+					{
+						noSetBounds = true;
+						kPanel.setVisible(true);
+					}
 				}
 			}
 			
+			// laatste keuze was silhouet
+			else if (v.isVisible() && !newViewer)
+			{	
+				if (keuzeBouwenSlopen)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					noSetBounds = true;
+					ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					noSetBounds = true;
+					ip.setVisible(true);
+				}
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;				
+				if (showKnoppenPanel)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (ip.isVisible())
+						vSpace -= 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					if (ip.isVisible())
+					{	noSetBounds = true;
+						ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+					}
+					else
+					{
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					}	
+					noSetBounds = true;
+					kPanel.setVisible(true);
+				}
+				
+			}
+
+			v.tekenOpnieuw();
+			v.klikAan = !nietBouwenSlopen;
+			
+			// viewer kleiner maken voor ip en kPanel			
+			
+			silhouet = false;
 			drieAanzichten = false;
 			voorZijAanzicht = false;
 			bovenAanzicht = false;
@@ -501,10 +973,89 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		
 	}
 	
+	public void zetSilhouet(boolean b)
+	{	silhouet = b;
+		
+		if (silhouet && !bovenAanzichtMetHoogtes)
+		{
+			kr.zetVulkleur("zwart");
+			v.klikAan = false;
+			v.zetSchaduw(false);
+			
+			// laatste keuze was een of meer aanzichten
+			if (vp.isVisible())
+			{	noSetBounds = true;
+				vp.setVisible(false);
+
+				// viewer maximum afmeting
+				int vpZijde = Math.min(getSize().width, getSize().height);
+				int hSpace = getSize().width - vpZijde;
+				int vSpace = getSize().height - vpZijde;
+				
+				v.setBounds(hSpace / 2, vSpace / 2, vpZijde, vpZijde);
+/*				
+				if (keuzeBouwenSlopen)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
+				}
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;
+				if (showKnoppenPanel)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
+				}
+*/				
+				
+				noSetBounds = true;
+				v.setVisible(true);
+			}			
+			
+			// laatste keuze was blokkenbouwsel
+			else if (v.isVisible())
+			{
+				if (ip.isVisible())
+				{	noSetBounds = true;
+					ip.setVisible(false);
+//					noSetBounds = true;
+//					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
+				}
+				
+				if (kPanel.isVisible())
+				{	noSetBounds = true;
+					kPanel.setVisible(false);
+//					noSetBounds = true;
+//					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
+				}
+				
+				// viewer maximum afmeting
+				int vpZijde = Math.min(getSize().width, getSize().height);
+				int hSpace = getSize().width - vpZijde;
+				int vSpace = getSize().height - vpZijde;
+				
+				if (vpZijde != v.getSize().width)
+					v.setBounds(hSpace / 2, vSpace / 2, vpZijde, vpZijde);
+				
+			}
+			
+//			v.klikAan = false;
+//			v.zetSchaduw(false);
+			v.tekenOpnieuw();
+			
+			blokkenBouwsel = false;
+			drieAanzichten = false;
+			voorZijAanzicht = false;
+			bovenAanzicht = false;
+			voorAanzicht = false;
+			rechtsAanzicht = false;
+			
+		}
+	}
+	
 	public void zetDrieAanzichten(boolean b)
 	{	drieAanzichten = b;
 		if (drieAanzichten && !bovenAanzichtMetHoogtes)
 		{	
+			kr.zetVulkleur("geel");
+			
 			if (v.isVisible())
 			{	
 				noSetBounds = true;
@@ -517,9 +1068,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(false);
 				}
-				if (kijkNaPanel.isVisible())
+				if (kPanel.isVisible())
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
+					kPanel.setVisible(false);
 				}				
 				
 			}
@@ -527,6 +1078,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetDrieAanzichten();			
 			
 			blokkenBouwsel = false;
+			silhouet = false;
 			voorZijAanzicht = false;			
 			bovenAanzicht = false;
 			voorAanzicht = false;
@@ -543,6 +1095,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{	voorZijAanzicht = b;
 		if (voorZijAanzicht && !bovenAanzichtMetHoogtes)
 		{	
+			kr.zetVulkleur("geel");
+			
 			if (v.isVisible())
 			{	
 				noSetBounds = true;
@@ -555,9 +1109,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(false);
 				}
-				if (kijkNaPanel.isVisible())
+				if (kPanel.isVisible())
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
+					kPanel.setVisible(false);
 				}				
 				
 			}
@@ -565,6 +1119,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetVoorZijAanzicht();			
 			
 			blokkenBouwsel = false;
+			silhouet = false;
 			drieAanzichten = false;			
 			bovenAanzicht = false;
 			voorAanzicht = false;
@@ -581,7 +1136,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{	bovenAanzicht = b;
 		if (bovenAanzicht && !bovenAanzichtMetHoogtes)
 		{	
-
+			kr.zetVulkleur("geel");
+			
 			if (v.isVisible())
 			{	
 				noSetBounds = true;
@@ -594,9 +1150,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(false);
 				}
-				if (kijkNaPanel.isVisible())
+				if (kPanel.isVisible())
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
+					kPanel.setVisible(false);
 				}				
 				
 			}
@@ -604,6 +1160,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetEenAanzicht(vp.BOVEN);
 			
 			blokkenBouwsel = false;
+			silhouet = false;
 			drieAanzichten = false;
 			voorZijAanzicht = false;			
 			voorAanzicht = false;
@@ -621,6 +1178,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{	voorAanzicht = b;
 		if (voorAanzicht && !bovenAanzichtMetHoogtes)
 		{	
+			kr.zetVulkleur("geel");
+			
 			if (v.isVisible())
 			{	
 				noSetBounds = true;
@@ -633,9 +1192,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(false);
 				}
-				if (kijkNaPanel.isVisible())
+				if (kPanel.isVisible())
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
+					kPanel.setVisible(false);
 				}				
 				
 			}	
@@ -643,6 +1202,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetEenAanzicht(vp.VOOR);
 			
 			blokkenBouwsel = false;
+			silhouet = false;
 			voorZijAanzicht = false;
 			bovenAanzicht = false;
 			drieAanzichten = false;
@@ -660,6 +1220,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{	rechtsAanzicht = b;
 		if (rechtsAanzicht && !bovenAanzichtMetHoogtes)
 		{	
+			kr.zetVulkleur("geel");
+			
 			if (v.isVisible())
 			{	
 				noSetBounds = true;
@@ -672,9 +1234,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				{	noSetBounds = true;
 					ip.setVisible(false);
 				}
-				if (kijkNaPanel.isVisible())
+				if (kPanel.isVisible())
 				{	noSetBounds = true;
-					kijkNaPanel.setVisible(false);
+					kPanel.setVisible(false);
 				}				
 				
 			}
@@ -682,6 +1244,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetEenAanzicht(vp.RECHTS);				
 
 			blokkenBouwsel = false;
+			silhouet = false;
 			voorZijAanzicht = false;			
 			bovenAanzicht = false;
 			voorAanzicht = false;
@@ -712,11 +1275,18 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			{	noSetBounds = true;
 				v.setVisible(false);
 				vIsVisible = true;
-				noSetBounds = true;
-				kijkNaPanel.setVisible(false);
+//				noSetBounds = true;
+//				kPanel.setVisible(false);
 			}
 			else
 				vIsVisible = false;
+		
+			if (kPanel.isVisible())
+			{
+				noSetBounds = true;
+				kPanel.setVisible(false);
+				kIsVisible = true;
+			}
 		
 			if (vp.isVisible())
 			{	noSetBounds = true;
@@ -727,12 +1297,18 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				vpIsVisible = false;
 	
 			if (!ip.isVisible())
-			{	noSetBounds = true;
+			{	
+				//noSetBounds = true;
+				//ip.setBounds(docentV.getLocation().x, docentV.getLocation().y + docentV.getSize().height, docentV.getSize().width, 24);
+				noSetBounds = true;
 				ip.setVisible(true);
 				ipIsVisible = false;
 			}
 			else
 				ipIsVisible = true;
+			
+			noSetBounds = true;
+			ip.setBounds(docentV.getLocation().x, docentV.getLocation().y + docentV.getSize().height, docentV.getSize().width, 24);
 			
 			if (!docentV.isVisible())
 			{	noSetBounds = true;
@@ -745,23 +1321,127 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			{	noSetBounds = true;
 				docentV.setVisible(false);
 			}
-		
-			if (vIsVisible)
-			{	noSetBounds = true;
-				v.setVisible(true);
-				noSetBounds = true;
-				kijkNaPanel.setVisible(kijkNaActief);
-			}
 
-			if (vpIsVisible)
-			{	noSetBounds = true;
-				vp.setVisible(true);
-			}
-			
 			if (!ipIsVisible)
 			{	noSetBounds = true;
 				ip.setVisible(false);
 			}
+			
+			if (kIsVisible && !vpIsVisible)
+			{
+				noSetBounds = true;
+				kPanel.setVisible(true);
+			}
+		
+			if (vIsVisible & !silhouet)
+			{	//noSetBounds = true;
+				//v.setVisible(true);
+				noSetBounds = true;
+				kPanel.kijkNaPanel.setVisible(kijkNaActief);
+				kPanel.layoutComponents();
+				
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;
+				if (showKnoppenPanel)// && !kPanel.isVisible())
+				{	
+					if (!kPanel.isVisible() || (newViewer && !kCorrected))
+					{
+						
+//System.out.println("!kPanel.isVisible() || (newViewer && !kCorrected");						
+						int vSpace = getSize().height - v.getSize().height - 24;
+						if (ip.isVisible())
+							vSpace -= 24;
+					
+						if (vSpace > 0)
+						{	noSetBounds = true;
+							v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+						}
+						else
+						{	noSetBounds = true;
+							v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+						}	
+						v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+						v.zetHoogtes();
+						
+					}
+					
+					if (ip.isVisible())
+					{	
+						noSetBounds = true;
+						ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+						
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, ip.getLocation().y + ip.getSize().height, v.getSize().width, 24);
+					}
+					else
+					{	
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					}
+					if (!kPanel.isVisible())
+					{	
+						noSetBounds = true;
+						kPanel.setVisible(true);
+						kIsVisible = true;
+					}
+					else
+					{
+						kCorrected = true;
+					}
+				}
+				
+				if (!showKnoppenPanel && kPanel.isVisible())
+				{	
+
+					int hSpace = getSize().width - v.getSize().width;
+					int vSpace = getSize().height - v.getSize().height + 24;
+					if (ip.isVisible())
+						vSpace -= 24;
+					if (hSpace > 24)
+					{	
+						noSetBounds = true;
+						v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+					}
+					else
+					{
+						//noSetBounds = true;
+						//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
+					}
+					v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+					v.zetHoogtes();
+					
+					noSetBounds = true;
+					kPanel.setVisible(false);
+					
+					kIsVisible = false;
+					
+					if (ip.isVisible())
+					{	
+						noSetBounds = true;
+						ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					}
+					
+					
+				}
+				
+				noSetBounds = true;
+				v.setVisible(true);
+			}
+			else if (vIsVisible && silhouet)
+			{
+				noSetBounds = true;
+				v.setVisible(true);
+			}
+
+			if (vpIsVisible)
+			{	
+				kPanel.kijkNaPanel.setVisible(kijkNaActief);
+				kPanel.layoutComponents();
+				
+				noSetBounds = true;
+				vp.setVisible(true);
+				
+			}
+			
 		}
 		
 	}
@@ -943,6 +1623,13 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			v.zetKubusRooster(kr);
 			vp.zetKubusRooster(kr);
 			na.setValue(kr.maxAantal);
+			
+/*			
+			if (silhouet)
+			{
+				kr.zetVulkleur("zwart"); 
+			}
+*/			
 		}
 		
 		String docentState = null;
@@ -965,6 +1652,12 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	
 	public void zetOpdracht(Hashtable h , String[] variables, Hashtable values)
 	{
+		
+//System.out.println("zetOpdracht begin");	
+//if (v!= null)
+//System.out.println("vw = " + v.getSize().width);	
+		
+		
 		// viewer opties
 		
 		boolean rotatieVast = false;
@@ -994,6 +1687,16 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		if (h.containsKey("perspectief"))
 			perspectief = ((Boolean) h.get("perspectief")).booleanValue();
 		zetPerspectief(perspectief);
+
+		boolean volLeegOptie = false;
+		if (h.containsKey("volLeegOptie"))
+			volLeegOptie = ((Boolean) h.get("volLeegOptie")).booleanValue();
+		zetVolLeegOptie(volLeegOptie);
+		
+		boolean aantalBlokjes = false;
+		if (h.containsKey("aantalBlokjes"))
+			aantalBlokjes = ((Boolean) h.get("aantalBlokjes")).booleanValue();
+		zetAantalBlokjes(aantalBlokjes);
 		
 		boolean pijlAan = true;
 		if (h.containsKey("pijlAan"))
@@ -1005,6 +1708,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			balkAan = ((Boolean) h.get("balkAan")).booleanValue();
 		zetBalkAan(balkAan);
 		
+newViewer = true;
+
 		boolean bovenAanzichtMetHoogtes = false;
 		if (h.containsKey("bovenAanzichtMetHoogtes"))
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
@@ -1014,6 +1719,13 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		if (h.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) h.get("blokkenBouwsel")).booleanValue();
 		zetBlokkenBouwsel(blokkenBouwsel);
+
+		boolean silhouet = false;
+		if (h.containsKey("silhouet"))
+			silhouet = ((Boolean) h.get("silhouet")).booleanValue();
+		zetSilhouet(silhouet);
+
+newViewer = false;
 
 		boolean drieAanzichten = false;
 		if (h.containsKey("drieAanzichten"))
@@ -1100,10 +1812,45 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		zetCheckRechtsAanzicht(checkRechtsAanzicht);		
 		zetCheckAantalKubus(checkAantalKubus);
 		
-		if (kijkNaActief && !kijkNaPanel.isVisible())
+		if (kijkNaActief)
 		{	noSetBounds = true;
-			kijkNaPanel.setVisible(true);
+			kPanel.kijkNaPanel.setVisible(true);
+			kPanel.layoutComponents();
+			if (!kPanel.isVisible())
+			{
+				int vSpace = getSize().height - v.getSize().height - 24;
+				if (ip.isVisible())
+					vSpace -= 24;
 			
+				if (vSpace > 0)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+				}
+				else
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+				}	
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+
+				if (ip.isVisible())
+				{	
+					noSetBounds = true;
+					ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					
+					noSetBounds = true;
+					kPanel.setBounds(v.getLocation().x, ip.getLocation().y + ip.getSize().height, v.getSize().width, 24);
+				}
+				else
+				{	
+					noSetBounds = true;
+					kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+				}
+
+				noSetBounds = true;
+				kPanel.setVisible(true);
+
+			}
 		}
 		
 		String state = null;
@@ -1123,6 +1870,11 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetKubusRooster(kr);
 			na.setValue(kr.maxAantal);
 			v.zetAchtergrond(getBackground());
+			
+			if (silhouet && !bovenAanzichtMetHoogtes)
+			{
+				kr.zetVulkleur("zwart"); 
+			}
 		}
 		
 		String docentState = null;
@@ -1142,6 +1894,11 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		
 	    docentV.zetKubusRooster(docentKr);
 	    docentV.zetAchtergrond(getBackground());
+	    
+//System.out.println("zetOpdracht einde");	
+//if (v!= null)
+//System.out.println("vw = " + v.getSize().width);
+
 	    
 	}
 	
@@ -1205,9 +1962,10 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetVeranderd()
 	{	
 		if (v.isVisible())
-			v.tekenOpnieuw();
+		{	v.tekenOpnieuw();
+		}
 		
-		//aantalKLabel.setText(NabouwenAanzichten.rb.getString("aantalKLabel")+ kr.geefAantalK());
+		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
 /*		
 		if (aanzichten)
 		{	vp.ra.tekenOpnieuw();
@@ -1232,7 +1990,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	{	kr = k;
 		v.zetKubusRooster(kr);
 		vp.zetKubusRooster(kr);
-		volLeegKnop.setLabel(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
 		zetVeranderd();
 		na.setValue(kr.maxAantal);
 	}
@@ -1251,25 +2010,30 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		kr = new KubusRooster((int)val,1);
 		v.zetKubusRooster(kr);
 		vp.zetKubusRooster(kr);
-		volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+		kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 		zetVeranderd();
 
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==volLeegKnop)
-		{	volLeegKnop.transferFocus(); 
-			if(volLeegKnop.getText().equals(NabouwenAanzichten.rb.getString("volLeegKnopLabel1")))
+	{	if(e.getSource() == kPanel.volLeegKnop)
+		{	kPanel.volLeegKnop.transferFocus(); 
+			if (kPanel.volLeegKnop.getText().equals(NabouwenAanzichten.rb.getString("volLeegKnopLabel1")))
 			{	kr.maakVol();
-				volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel2"));
+				kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel2"));
+				if(bovenAanzichtMetHoogtes)
+					v.zetHoogtes();
 				zetVeranderd();
 			}
 			else
 			{	kr.maakLeeg();
-				volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+				kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
+				if(bovenAanzichtMetHoogtes)
+					v.wisHoogtes();
 				zetVeranderd();
 			}
 		}
+/*	
 		if(e.getSource()==aanzichtenKnop)
 		{	aanzichtenKnop.transferFocus(); 
 			if(aanzichtenKnop.getText().equals(NabouwenAanzichten.rb.getString("aanzichtenKnopLabel1")))
@@ -1285,6 +2049,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				zetVeranderd();
 			}
 		}
+*/		
 	}
 	
 	public void setEditState(Hashtable h)
@@ -1316,7 +2081,17 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		if (h.containsKey("perspectief"))
 			perspectief = ((Boolean) h.get("perspectief")).booleanValue();
 		zetPerspectief(perspectief);
-
+		
+		boolean volLeegOptie = false;
+		if (h.containsKey("volLeegOptie"))
+			volLeegOptie = ((Boolean) h.get("volLeegOptie")).booleanValue();
+		zetVolLeegOptie(volLeegOptie);
+		
+		boolean aantalBlokjes = false;
+		if (h.containsKey("aantalBlokjes"))
+			aantalBlokjes = ((Boolean) h.get("aantalBlokjes")).booleanValue();
+		zetAantalBlokjes(aantalBlokjes);
+			
 		boolean pijlAan = true;
 		if (h.containsKey("pijlAan"))
 			pijlAan = ((Boolean) h.get("pijlAan")).booleanValue();
@@ -1326,7 +2101,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		if (h.containsKey("balkAan"))
 			balkAan = ((Boolean) h.get("balkAan")).booleanValue();
 		zetBalkAan(balkAan);
-		
+
+newViewer = true;
+
 		boolean bovenAanzichtMetHoogtes = false;
 		if (h.containsKey("bovenAanzichtMetHoogtes"))
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
@@ -1336,7 +2113,14 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		if (h.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) h.get("blokkenBouwsel")).booleanValue();
 		zetBlokkenBouwsel(blokkenBouwsel);
-
+		
+		boolean silhouet = false;
+		if (h.containsKey("silhouet"))
+			silhouet = ((Boolean) h.get("silhouet")).booleanValue();
+		zetSilhouet(silhouet);
+//System.out.println("ses " + silhouet);		
+newViewer = false;
+		
 		boolean drieAanzichten = false;
 		if (h.containsKey("drieAanzichten"))
 			drieAanzichten = ((Boolean) h.get("drieAanzichten")).booleanValue();
@@ -1421,6 +2205,46 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		zetCheckRechtsAanzicht(checkRechtsAanzicht);		
 		zetCheckAantalKubus(checkAantalKubus);
 
+		if (kijkNaActief)
+		{	noSetBounds = true;
+			kPanel.kijkNaPanel.setVisible(true);
+			kPanel.layoutComponents();
+			if (!kPanel.isVisible())
+			{
+				int vSpace = getSize().height - v.getSize().height - 24;
+				if (ip.isVisible())
+					vSpace -= 24;
+			
+				if (vSpace > 0)
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+				}
+				else
+				{	noSetBounds = true;
+					v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+				}	
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+
+				if (ip.isVisible())
+				{	
+					noSetBounds = true;
+					ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					
+					noSetBounds = true;
+					kPanel.setBounds(v.getLocation().x, ip.getLocation().y + ip.getSize().height, v.getSize().width, 24);
+				}
+				else
+				{	
+					noSetBounds = true;
+					kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+				}
+
+				noSetBounds = true;
+				kPanel.setVisible(true);
+
+			}
+		}
 		
 		String state = null;
 		if (h.containsKey("state")) 
@@ -1436,6 +2260,12 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			v.zetKubusRooster(kr);
 			vp.zetKubusRooster(kr);
 			na.setValue(kr.maxAantal);
+			
+			if (silhouet && !bovenAanzichtMetHoogtes)
+			{
+				kr.zetVulkleur("zwart"); 
+			}
+			
 		}
 		
 		String docentState = null;
@@ -1485,12 +2315,16 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	    
 	    h.put("perspectief", new Boolean(perspectief));
 	    
+	    h.put("volLeegOptie", new Boolean(volLeegOptie));
+	    h.put("aantalBlokjes", new Boolean(aantalBlokjes));
+	    
 	    h.put("pijlAan", new Boolean(pijlAan));
 	    h.put("balkAan", new Boolean(balkAan));
 	    
 	    h.put("bovenAanzichtMetHoogtes", new Boolean(bovenAanzichtMetHoogtes));
 	    
 	    h.put("blokkenBouwsel", new Boolean(blokkenBouwsel));
+	    h.put("silhouet", new Boolean(silhouet));
 	    h.put("drieAanzichten", new Boolean(drieAanzichten));
 	    h.put("voorZijAanzicht", new Boolean(voorZijAanzicht));
 	    h.put("bovenAanzicht", new Boolean(bovenAanzicht));

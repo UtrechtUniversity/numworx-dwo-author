@@ -77,16 +77,20 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "rotatieVast" , "No rotation" },
 				{ "bouwSloopKeuze", "Choice build/break down"},
 				{ "isVoorbeeld", "No building/breaking down"},
+				{ "perspectief", "Perspective" },
+				
+				{ "volLeegKnop", "Button fill up/remove all" },
+				{ "aantalBlokjes", "Show number of cubes" },
 				
 				{ "zwartePijl", "Front: black arrow" },
 				{ "rodeBalk", "Front: red beam" },
 				{ "geenVoorkant", "No indication of front" },
 
-				{ "perspectief", "Perspective" },
 				{ "plattegrond", "Grid with" },
 				{ "plattegrond2", "       heights" },				
 				
 				{ "blokkenbouwsel", "Block building" },
+				{ "silhouet", "Building in silhouet" },				
 				{ "3Aanzichten", "3 views" },
 				{ "voorZijAanzicht", "Front and side view" },
 				{ "bovenVoorAanzicht", "Top and front view" },
@@ -108,7 +112,9 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Check" },
 				
-				{ "maxScoreTekst" , "Maximum score" },				
+				{ "maxScoreTekst" , "Maximum score" },
+				
+				{ "blokjesTekst" , "cube(s)" },
         };
 }
 

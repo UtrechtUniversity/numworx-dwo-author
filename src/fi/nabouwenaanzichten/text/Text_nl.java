@@ -77,16 +77,19 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "rotatieVast" , "Geen rotatie" },
 				{ "bouwSloopKeuze", "Keuze bouwen/slopen"},
 				{ "isVoorbeeld", "Niet bouwen/slopen"},
- 
+				{ "perspectief", "Perspectief" },
+				{ "volLeegKnop", "Knop maak vol/leeg" },
+				{ "aantalBlokjes", "Toon aantal blokjes" },
+				
 				{ "zwartePijl", "Voorzijde: zwarte pijl" },
 				{ "rodeBalk", "Voorzijde: rode balk" },
 				{ "geenVoorkant", "Geen indicatie voorzijde" },
 
-				{ "perspectief", "Perspectief" },
 				{ "plattegrond", "Plattegrond met" },				
 				{ "plattegrond2", "       hoogtes" },				
 				
 				{ "blokkenbouwsel", "Blokkenbouwsel" },
+				{ "silhouet", "Bouwsel in silhouet" },				
 				{ "3Aanzichten", "3 aanzichten" },
 				{ "voorZijAanzicht", "Voor- en zijaanzicht" },
 				{ "bovenVoorAanzicht", "Boven- en vooraanzicht" },
@@ -108,7 +111,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Kijk na" },
 				
-				{ "maxScoreTekst" , "Maximale score" },				
+				{ "maxScoreTekst" , "Maximale score" },
+				
+				{ "blokjesTekst" , "blokje(s)" },
 				
         };
 }
