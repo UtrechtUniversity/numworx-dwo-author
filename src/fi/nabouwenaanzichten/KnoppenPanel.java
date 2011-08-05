@@ -74,7 +74,7 @@ public class KnoppenPanel extends JPanel
 		
 		if (volLeegKnop != null)
 		{
-			volLeegKnop.setBackground(c);
+			//volLeegKnop.setBackground(c);
 			kijkNaPanel.setBackground(c);
 		}
 			
