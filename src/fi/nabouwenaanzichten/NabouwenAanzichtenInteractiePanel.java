@@ -1624,12 +1624,12 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			vp.zetKubusRooster(kr);
 			na.setValue(kr.maxAantal);
 			
-/*			
-			if (silhouet)
+			
+			if (silhouet &&  !bovenAanzichtMetHoogtes)
 			{
 				kr.zetVulkleur("zwart"); 
 			}
-*/			
+			/*cpfiw*/			
 		}
 		
 		String docentState = null;
@@ -2371,11 +2371,13 @@ newViewer = false;
 	public int geefAsHoogte(){return 0;}
 	
 	public boolean isCorrect()
-	{	return score == scoreMax;
+	{	if (!kijkNaActief)return true;
+		return score == scoreMax;
 	}
 	
 	public boolean isFout()
-	{	return score == 0;
+	{	if (!kijkNaActief)return false;
+		return score == 0;
 	}
 	
 	public void zetMode(int mode){}
