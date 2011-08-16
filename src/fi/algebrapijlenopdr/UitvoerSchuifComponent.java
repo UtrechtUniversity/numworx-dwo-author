@@ -754,24 +754,24 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
             System.out.println("test1"+varnaam);
             schuifveld.tekenOpnieuw();
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label1")))
 		{	toonLabel(true);
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label2")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label2")))
 		{	toonLabel(false);
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label3")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label3")))
 		{	zetTabelAan(true);
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label4")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label4")))
 		{	zetTabelAan(false);
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
 		{	zetKettingZichtbaarHier(true);
 			zoomInKnop.setVisible(false);
 			zoomUitKnop.setVisible(false);
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
+		else if(((JMenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
 		{	zetKettingZichtbaarHier(false);
 			zoomInKnop.setVisible(true);
 			zoomUitKnop.setVisible(true);
