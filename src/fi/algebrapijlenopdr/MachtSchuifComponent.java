@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
 
+import javax.swing.*;
+
 public class MachtSchuifComponent extends BewerkingSchuifComponent 
 {	
 	public MachtSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
@@ -12,7 +14,8 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 		
 		beginw = new BasisExpressie("2");
 		
-		tf = new TextField();
+		
+		tf = new JTextField("2");
 		if(!links)tf.setBounds(30,1,16,15);
 		else tf.setBounds(20,1,16,15);
 		tf.addActionListener(this);
@@ -52,18 +55,22 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 		
 		int sccrollCorr = 0;
 		if(scrollable)sccrollCorr = 5;
+		
 		if(!links)
 		{	g.setFont(f1);
 			g.drawString(s1,20-sccrollCorr,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,35-sccrollCorr,getSize().height-8);
+			if (!tf.isVisible())
+				g.drawString(s2,35-sccrollCorr,getSize().height-8);
 		}
 		else 
 		{	g.setFont(f1);
 			g.drawString(s1,10-sccrollCorr,getSize().height-4);
 			g.setFont(f2);
-			g.drawString(s2,25-sccrollCorr,getSize().height-8);
+			if (!tf.isVisible())
+				g.drawString(s2,25-sccrollCorr,getSize().height-8);
 		}
+		
 	}
 	
 	public void zetMaat()

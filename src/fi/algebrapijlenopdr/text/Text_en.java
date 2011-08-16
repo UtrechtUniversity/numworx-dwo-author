@@ -20,9 +20,22 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "popup1Label6" , "Hide Arrow chain" },
 				{ "popup2Label1" , "Select" },
 				{ "popup2Label2" , "Copy to clipboard" },
-				{ "terugKnopLabel" , "Back" },
-				{ "heenKnopLabel" , "Forward" },
-				{ "kopieerKnopLabel" , "Copy from previous task" }
+				{ "terugKnopLabel" , "Left" },
+				{ "heenKnopLabel" , "Right" },
+				{ "kopieerKnopLabel" , "Copy from previous task" },
+
+				{ "toolkitTekst" , "Toolkit" },
+				{ "invulTekst" , "Just enter data in chains" },
+				{ "demoTekst" , "Chains are for demo" },
+				
+				{ "brugklasTekst" , "Only +, -, x and /" },
+				{ "terugHeenTekst" , "Buttons Back and Foreward" },
+				{ "tabelTekst" , "Table option" },
+				{ "grafiekTekst" , "Graph option" },
+				
+				{ "scrollTekst" , "Scroll in inputboxes" },
+				{ "zoomTekst" , "Zoom in tables" },
+				
 				
         };
 }

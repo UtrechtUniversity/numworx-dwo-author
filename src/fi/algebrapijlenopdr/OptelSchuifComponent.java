@@ -10,6 +10,7 @@ public class OptelSchuifComponent extends BewerkingSchuifComponent
 	
 	public OptelSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(asv,x,y,b,h);
+		tf.setText("3");
 	}
 	
 	public void paint(Graphics g)
@@ -23,9 +24,24 @@ public class OptelSchuifComponent extends BewerkingSchuifComponent
 		FontMetrics fm = g.getFontMetrics();
 		int w = fm.stringWidth(s); 
 		int sccrollCorr = 0;
-		if(scrollable)sccrollCorr = 10;
-		if(!links)g.drawString(s,5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
-		else g.drawString(s,-5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
+		if (scrollable)
+			sccrollCorr = 10;
+		
+		if (!tf.isVisible())
+		{	
+			if (!links)
+				g.drawString(s,5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
+			else 
+				g.drawString(s,-5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
+		}
+		else
+		{	
+			if (!links)
+				g.drawString("+ ",5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
+			else 
+				g.drawString("+ ",-5+(getSize().width-w-sccrollCorr)/2,getSize().height-4);
+		}
+			
 	}
 	
 	

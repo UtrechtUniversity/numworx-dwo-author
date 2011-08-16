@@ -14,11 +14,11 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	 int aantalPu;
 	 boolean isStapel;
 	 boolean open;
-	 boolean links=false;
+	 boolean links = false;
 	 boolean label = false;
 	
 	public AlgebraSchuifComponent(int srt, SchuifVeld sv, int x, int y, int b, int h)
-	{	super(x,y,b,h,sv);
+	{	super(x, y, b, h, sv);
 		soort = srt;
 		isStapel = true;
 		open = true;
@@ -41,8 +41,8 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	}
 
     public void setState(Hashtable h)
-    {	boolean isStapel = ((Boolean)h.get("isStapel")).booleanValue();
-		boolean links = ((Boolean)h.get("links")).booleanValue();
+    {	boolean isStapel = ((Boolean) h.get("isStapel")).booleanValue();
+		boolean links = ((Boolean) h.get("links")).booleanValue();
 		
 		this.isStapel = isStapel;
 		this.links = links;
@@ -73,16 +73,20 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	public void paint(Graphics gIm)
   	{ 	
 		
-		if(open)
+		if (open)
 		{	gIm.setColor(Color.gray);
-			if(!links)
-			{	if(label)gIm.fillOval(5,28,3,3);
-				else gIm.fillOval(5,8,3,3);
+			if (!links)
+			{	if (label)
+					gIm.fillOval(5,28,3,3);
+				else 
+					gIm.fillOval(5,8,3,3);
 				
 			}
 			else 
-			{	if(label)gIm.fillOval(5,28,3,3);
-				else gIm.fillOval(getSize().width-7,8,3,3);
+			{	if (label)
+					gIm.fillOval(5,28,3,3);
+				else 
+					gIm.fillOval(getSize().width-7,8,3,3);
 			}
 		}
 		super.paint(gIm);
@@ -96,26 +100,32 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	}
 	
 	public void zetKettingZichtbaar(boolean b)
-	{	if(pijlIn1!=null)pijlIn1.zender.zetKettingZichtbaar(b);
+	{	if (pijlIn1 != null)
+			pijlIn1.zender.zetKettingZichtbaar(b);
 		setVisible(b);
-		for(int i=0 ; i<aantalPu ; i++)
+		for (int i = 0; i < aantalPu ; i++)
 		{	pijlUit[i].setVisible(b);
 		}
 		repaint();
 	}
 	
 	public void voegPijlToe(Pijl p)
-	{	if(aantalPu<10)
-		{	if(!links)
-			{	if(label)p.zetPlaats(getLocation().x + getSize().width+9 ,getLocation().y + 30 );
-				else p.zetPlaats(getLocation().x + getSize().width+9 ,getLocation().y + 10 );
+	{	if (aantalPu < 10)
+		{	if (!links)
+			{	if (label)
+					p.zetPlaats(getLocation().x + getSize().width + 9, getLocation().y + 30);
+				else 
+					p.zetPlaats(getLocation().x + getSize().width + 9, getLocation().y + 10);
 			}
 			else 
-			{	if(label)p.zetPlaats(getLocation().x - 10 ,getLocation().y + 30 );
-				else p.zetPlaats(getLocation().x - 10 ,getLocation().y + 10 );
+			{	if (label) 
+					p.zetPlaats(getLocation().x - 10, getLocation().y + 30);
+				else 
+					p.zetPlaats(getLocation().x - 10, getLocation().y + 10);
 			}
 			pijlUit[aantalPu] = p;
-			schuifveld.add(p,0);
+			//schuifveld.add(p,0);
+			schuifveld.add(p);
 			p.zetZender(this);
 			aantalPu++;
 		}
@@ -284,15 +294,29 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
+	{	if (((AlgebraSchuifVeld) schuifveld).fixed)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
+		{	
+//System.out.println("pressed alleenInvullen return");
+//			return;
+		}
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;		
 		requestFocus();
 		super.mousePressed(e);
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
-		if(isStapel)
-		{	((AlgebraSchuifVeld)schuifveld).zetStapel(this);
+	{	if (((AlgebraSchuifVeld) schuifveld).fixed)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;		
+	
+		if (isStapel)
+		{	((AlgebraSchuifVeld) schuifveld).zetStapel(this);
 			isStapel = false;
 			schuifveld.tekenOpnieuw();
 		}
@@ -300,19 +324,35 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		
 		int dx = e.getX() - startx;
 		int dy =  e.getY() - starty;
-		for(int i=0 ; i<aantalPu ; i++)
-		{	if(pijlUit[i]!=null)pijlUit[i].verplaatsBegin(dx,dy);
+		for (int i = 0; i < aantalPu; i++)
+		{	if (pijlUit[i] != null)
+				pijlUit[i].verplaatsBegin(dx, dy);
 		}
-		if(pijlIn1!=null)pijlIn1.verplaatsEind(dx,dy);
-		if(pijlIn2!=null)pijlIn2.verplaatsEind(dx,dy);
+		if (pijlIn1 != null)
+			pijlIn1.verplaatsEind(dx, dy);
+		if (pijlIn2 != null)
+			pijlIn2.verplaatsEind(dx, dy);
+		
+		schuifveld.tekenOpnieuw();		
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
+	{	if (((AlgebraSchuifVeld) schuifveld).fixed)
+			return;
+//		if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
+//			return;
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;		
+
 		super.mouseReleased(e);
-		if(!isStapel && (getLocation().x < 80 || getLocation().x > schuifveld.getSize().width
-						 || getLocation().y < 0 || getLocation().y > schuifveld.getSize().height))
+		if (!isStapel && (getLocation().x < 80 || getLocation().x > schuifveld.getSize().width
+						|| getLocation().y < 0 || getLocation().y > schuifveld.getSize().height))
 		{	((AlgebraSchuifVeld)schuifveld).verwijder(this);
+		}
+		
+		if (!isStapel && this instanceof UitvoerSchuifComponent)
+		{
+			((UitvoerSchuifComponent) this).zetTabelAan(((AlgebraSchuifVeld)schuifveld).tabelCheckbox.isSelected());
 		}
 		
 		schuifveld.tekenOpnieuw();

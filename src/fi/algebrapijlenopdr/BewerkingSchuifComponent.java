@@ -4,12 +4,14 @@ import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
 
+import javax.swing.*;
+
 import java.util.Hashtable;
 
 public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements ActionListener, FocusListener
 {	
 	BasisExpressie beginw;
-	TextField tf;
+	JTextField tf;
 	Font f;
 	FontMetrics fm;
 	protected PlusMinKnop plusMinKnop;
@@ -17,15 +19,17 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	
 	
 	public BewerkingSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
-	{	super(2,asv,x,y,b,h);
+	{	super(2, asv, x, y, b, h);
 		f = new Font("SansSerrif",Font.PLAIN,14);
 		fm = getFontMetrics(f);
 		
 		beginw = new BasisExpressie("3");
 		
-		tf = new TextField();
-		if(!links)tf.setBounds(20,1,19,18);
-		else tf.setBounds(10,1,19,18);
+		tf = new JTextField();
+		if (!links)
+			tf.setBounds(20,1,19,18);
+		else 
+			tf.setBounds(10,1,19,18);
 		tf.addActionListener(this);
 		tf.addFocusListener(this);
 		tf.setVisible(false);
@@ -43,8 +47,10 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	
 	public void setScrollable(boolean b)
 	{	scrollable = b;
-		if(b)add(plusMinKnop,0);
-		else remove(plusMinKnop);
+		if(b)
+			add(plusMinKnop,0);
+		else 
+			remove(plusMinKnop);
 	}
 	
 	public Hashtable getState()
@@ -92,9 +98,9 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	
 	public void paint(Graphics g)
   	{ 	
-		if(!links)
+		if (!links)
 		{	g.setColor(Color.orange);
-			g.fillRoundRect(10,0,getSize().width-11,getSize().height-1,8,8);
+			g.fillRoundRect(10, 0, getSize().width - 11, getSize().height - 1, 8, 8);
 			g.setColor(Color.black);
 			g.drawRoundRect(10,0,getSize().width-11,getSize().height-1,8,8);
 		}
@@ -111,10 +117,12 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	{	int b = 50;
 		int h = 20;
 		int corr = 0;
-		if(beginw!=null)
+		if (beginw != null)
 		{	b = beginw.breedte;
-			if(b > 10)b = b+40;
-			else b = 50;
+			if (b > 10)
+				b = b+40;
+			else 
+				b = 50;
 			
 		}
 		
@@ -122,7 +130,8 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		tf.setBounds(20,1,b-31,18);
 				
 		int sccrollCorr = 0;
-		if(scrollable)sccrollCorr = 10;
+		if (scrollable) 
+			sccrollCorr = 10;
 		if(!links)
 		{	tf.setBounds(30-sccrollCorr,1,b-31,18);
 			plusMinKnop.setLocation(b-12,2);
@@ -134,7 +143,13 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 
 	}
 	public void mouseClicked(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)getParent()).fixed)return;
+	{	if (((AlgebraSchuifVeld)getParent()).fixed)
+			return;
+		if (((AlgebraSchuifVeld)getParent()).isDemo)
+			return;
+		
+//System.out.println("clicked");		
+		
 		add(tf);
 		tf.setVisible(true)	;
 		tf.setEnabled(true);
@@ -142,7 +157,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		tf.requestFocus();
 	}
 	public void zetInvulWaarde()
-	{	boolean isGeldigeInvoer=true;
+	{	boolean isGeldigeInvoer = true;
 		{	try
 			{	String s = tf.getText();
 				s = s.replace(',','.');
@@ -154,7 +169,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 				tf.setText(Expressie.df.format(beginw.geefWaarde()));
 			}
 		}
-		if(isGeldigeInvoer)
+		if (isGeldigeInvoer)
 		{	beginw = new BasisExpressie( tf.getText());
 			beginw.zetMaat(fm);
 		}
@@ -168,6 +183,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		tf.setEnabled(false);
 		remove(tf);
 		tf.setVisible(false);
+		
 		schuifveld.tekenOpnieuw();
 	}
 	public void actionPerformed(ActionEvent e)
@@ -199,6 +215,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 	public void focusLost(FocusEvent e)
 	{	zetInvulWaarde();
 		
+//System.out.println("tf focusLost");	
 		/*BasisExpressie ex = new BasisExpressie( tf.getText());
 		if(ex.isWaarde)beginw = ex;
 		else tf.setText("");

@@ -6,9 +6,12 @@ import java.awt.event.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
 
-public class InUitvoerLabel extends Container implements MouseListener,MouseMotionListener,ActionListener, FocusListener
+import javax.swing.*;
+
+public class InUitvoerLabel extends JPanel//Container 
+						    implements MouseListener,MouseMotionListener,ActionListener, FocusListener
 {	
-	private TextField tf;
+	private JTextField tf;
 	private String tekst;
 	private Font f;
 	private FontMetrics fm;
@@ -17,8 +20,13 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	
 	
 	public InUitvoerLabel()
-	{	if(!links)setBounds(10,0,40,20);
-		else setBounds(0,0,40,20);
+	{	
+		setOpaque(false);
+		
+		if (!links)
+			setBounds(10,0,40,20);
+		else 
+			setBounds(0,0,40,20);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
@@ -29,7 +37,7 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 		
 		tekst = "";
 		
-		tf = new TextField(tekst);
+		tf = new JTextField(tekst);
 		tf.setBounds(2,0,35,20);
 		tf.addActionListener(this);
 		tf.addFocusListener(this);
@@ -100,7 +108,12 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	public void focusGained(FocusEvent e){;	}
 	
 	public void mousePressed(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)return;
+	{	if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)
+			return;
+	
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		
 		requestFocus();
 		muisrechts = false;
 		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
@@ -109,7 +122,12 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 		((SchuifComponent)getParent()).mousePressed(e);
 	}	
 	public void mouseClicked(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)return;
+	{	if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)
+		return;
+	
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+	
 		if(!muisrechts)
 		{	tf.setVisible(true);
 			tf.setEnabled(true);
@@ -119,7 +137,11 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 		//((SchuifComponent)getParent()).mouseClicked(e);
 	}
 	public void mouseReleased(MouseEvent e)
-	{	if(((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)return;
+	{	if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)
+			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+	
 		((SchuifComponent)getParent()).mouseReleased(e);
 	}
 	public void mouseExited(MouseEvent e){;}

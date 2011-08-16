@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
 
+import javax.swing.*;
 
 import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
-public class TabelComponent extends Container implements ActionListener, MouseListener, MouseMotionListener
+public class TabelComponent extends JPanel//Container 
+						    implements ActionListener, MouseListener, MouseMotionListener
 {	
 	 private Polygon pijlPlus, pijlMin, pijlPlusContain, pijlMinContain;
 	 private Expressie exp;
@@ -49,7 +51,7 @@ public class TabelComponent extends Container implements ActionListener, MouseLi
 		else breedteInv = 30;
 		breedteUitv = 33;
 		
-		
+		setOpaque(false);
 		
 	}
 	

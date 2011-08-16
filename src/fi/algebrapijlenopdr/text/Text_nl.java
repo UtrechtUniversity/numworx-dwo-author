@@ -20,9 +20,21 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "popup1Label6" , "Verberg ketting" },
 				{ "popup2Label1" , "Selecteer" },
 				{ "popup2Label2" , "Naar klembord" },
-				{ "terugKnopLabel" , "Terug" },
-				{ "heenKnopLabel" , "Heen" },
-				{ "kopieerKnopLabel" , "Kopieer vorige opdracht" }
+				{ "terugKnopLabel" , "Links" },
+				{ "heenKnopLabel" , "Rechts" },
+				{ "kopieerKnopLabel" , "Kopieer vorige opdracht" },
+				
+				{ "toolkitTekst" , "Toolkit" },
+				{ "invulTekst" , "Kettingen alleen invullen" },
+				{ "demoTekst" , "Kettingen voor demo" },
+
+				{ "brugklasTekst" , "Alleen +, -, x en /" },
+				{ "terugHeenTekst" , "Knopjes Terug en Heen" },
+				{ "tabelTekst" , "Tabeloptie" },
+				{ "grafiekTekst" , "Grafiekoptie" },
+				
+				{ "scrollTekst" , "Scroll in invoervakjes" },
+				{ "zoomTekst" , "Zoom in tabellen" },
         };
 }
 

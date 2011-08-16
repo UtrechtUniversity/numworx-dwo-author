@@ -1,11 +1,15 @@
 package fi.algebrapijlenopdr;
 
 import java.awt.Polygon;
+
+import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
-public class Pijl extends Component implements MouseListener, MouseMotionListener
+public class Pijl extends JComponent 
+				  implements MouseListener, MouseMotionListener
 {	
 	int x0,y0,x1,y1;
 	AlgebraSchuifVeld schuifveld;
@@ -28,6 +32,8 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		addMouseMotionListener(this);
 		pijlpuntEind = new Polygon();
 		pijlpuntKlik = new Polygon();
+		
+		setOpaque(false);
 	}
 	
 	public void zetLinks(boolean b)
@@ -290,7 +296,13 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		zender.voegPijlToe(p);		
 	}
 	public void mousePressed(MouseEvent e)
-	{	if(schuifveld.fixed)return;
+	{	if (schuifveld.fixed)
+			return;
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+
 		schuifveld.start();
 		schuifveld.zetOpSchuifLaag(this);
 		requestFocus();
@@ -303,10 +315,19 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		zender.verwijderPijl();
 		laatstex = e.getX();
 		laatstey = e.getY();
+		
+		schuifveld.tekenOpnieuw();
 	}	
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(schuifveld.fixed)return;
+	{	if(schuifveld.fixed)
+			return;
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+	
+	
 		if(isStapel)return;
 		if(actief)
 		{	int dx = e.getX() - laatstex;
@@ -317,10 +338,18 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 			laatstex = e.getX();
 			laatstey = e.getY();
 		}
+		
+		schuifveld.tekenOpnieuw();
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if(schuifveld.fixed)return;
+	{	if (schuifveld.fixed)
+			return;
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+	
 		plaatsOpGridEind();
 		for(int i=0 ; i<schuifveld.aantalSc ; i++)
 		{	boolean b = false;
@@ -342,6 +371,8 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		if(actief)pijlTerug();
 		actief = false;
 		schuifveld.zetTerugSchuifLaag(this);
+		
+		schuifveld.tekenOpnieuw();
 	}
 	
 	public void mouseMoved(MouseEvent e){;}

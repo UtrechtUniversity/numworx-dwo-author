@@ -18,12 +18,13 @@ import fi.beans.tooltip.ToolTipManager;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
+import javax.swing.*;
 
 /**
  * @author Peter Boon
  */
 
-public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionListener, WiskOpdrApplet
+public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionListener, WiskOpdrApplet
 {	
 	private SCORM12APIInterface api;
 	
@@ -36,7 +37,7 @@ public class AlgebraPijlenOpdr extends Applet implements ScormAppletIF, ActionLi
 	private Hashtable defaultParamValues, launchData;
 	private ScormEditComponentIF scormEditComponent;
 	
-	private Button kopieerKnop;
+//	private Button kopieerKnop;
 	
 	private Button viewButton;
 	

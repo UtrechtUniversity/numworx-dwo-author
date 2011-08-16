@@ -3,7 +3,9 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 
-public class PlusMinKnop extends Component implements MouseListener
+import javax.swing.*;
+
+public class PlusMinKnop extends JComponent implements MouseListener
 {	
 	private Polygon pijlPlus, pijlMin;
 	protected ActionListener actionListener = null;
