@@ -151,7 +151,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if(expressie!=null)
 		{	b = expressie.breedte;
 			h = expressie.hoogte;
-			if(toonWaarde && expressie.geefVarNaam()==null)
+			if(toonWaarde && expressie.geefVarNaam()==null && waardeString!=null)
 			{	b = fm.stringWidth(waardeString);
 				h = 0;
 			}
