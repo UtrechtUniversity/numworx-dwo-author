@@ -2,6 +2,8 @@ package fi.algebrapijlenopdr;
 
 import java.awt.*;
 import java.awt.event.*;
+
+//import fi.beans.appletutil.AppletUtil;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
 import javax.swing.*;
@@ -11,8 +13,11 @@ import java.util.Hashtable;
 import java.lang.reflect.Constructor;
 
 public class AlgebraSchuifVeld extends SchuifVeld 
-							   implements ItemListener, MouseListener, MouseMotionListener, ActionListener
+							   implements //ItemListener, 
+							   			  MouseListener, MouseMotionListener, ActionListener
 {	
+	
+	private ImageIcon GOEDKRUL,FOUTKRUIS, GOEDKRULHALF;	
 	private JButton wisKnop, heenKnop, terugKnop;
 	InvulPanel ip;
 	JCheckBox grafiekCheckbox, tabelCheckbox;
@@ -74,7 +79,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		add(ip);
 		
 		grafiekCheckbox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("grafiekLabel"));
-		grafiekCheckbox.addItemListener(this);
+		//grafiekCheckbox.addItemListener(this);
+		grafiekCheckbox.addActionListener(this);
 		grafiekCheckbox.setFont(font);
 		grafiekCheckbox.setBounds(8, 340, 100, 20);
 		//grafiekCheckbox.setBounds(8, 370, 100, 20);
@@ -82,7 +88,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		add(grafiekCheckbox, 0);
 		
 		tabelCheckbox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("tabelLabel"));
-		tabelCheckbox.addItemListener(this);
+		//tabelCheckbox.addItemListener(this);
+		tabelCheckbox.addActionListener(this);
 		tabelCheckbox.setFont(font);
 		tabelCheckbox.setBounds(8, 320, 80, 20);
 		//tabelCheckbox.setBounds(8, 350, 80, 20);
@@ -140,6 +147,12 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		//kopieerKnop.setBounds(120,370,160,20);
 		//kopieerKnop.addActionListener(this);
 		//add(kopieerKnop);
+	}
+	
+	public void zetPlaatjes(ImageIcon gk, ImageIcon fk, ImageIcon kh)
+	{	GOEDKRUL = gk;
+		GOEDKRULHALF = kh;
+		FOUTKRUIS = fk;
 	}
 	
 	public void setFixed(boolean b)
@@ -493,7 +506,7 @@ this.isDemo = isDemo;
 		      		Object o = cc.newInstance(
 		      			new Object[] {this, new Integer(posX[i]), new Integer(posY[i]), new Integer(breedte), new Integer(hoogte)});
 		      	   	schuifcomponenten[i] = (AlgebraSchuifComponent) o;
-		      	   	grafiekComponent = (GrafiekComponent)schuifcomponenten[i];
+		      	   	grafiekComponent = (GrafiekComponent) schuifcomponenten[i];
 		      	}
 		      	else
 		      	{	Object o = cc.newInstance(
@@ -738,11 +751,14 @@ this.isDemo = isDemo;
 			hidePanel.setBackground(getParent().getParent().getBackground());
 			return;
 		}
+		if (toolkit)
+		{	
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 110, dd.height);
 		g.setColor(Color.black);
 		g.drawLine(110, 0, 110, dd.height - 1);
 		g.drawRect(0, 0, dd.width - 1, dd.height - 1);
+		}
 //System.out.println("achtergrond w = " + dd.width);		
 		
 		//g.drawString(Integer.toString(aantalSc),20,10);
@@ -765,6 +781,13 @@ this.isDemo = isDemo;
 		s = AlgebraPijlenOpdr.rb.getString("bewerkingenLabel");
 		lengte = fm.stringWidth(s);
 		g.drawString(s, 55 - lengte / 2, 100);
+		
+/*		
+if (GOEDKRUL == null)
+System.out.println("null");	
+else		
+GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);	
+*/
 	}
 	
 	public void zetSchuiver(SchuifComponent sc)
@@ -1074,11 +1097,13 @@ this.isDemo = isDemo;
 			}
 		}
 */		
-		else if (((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup2Label1")))
+		else if ((e.getSource() instanceof JMenuItem) &&
+				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup2Label1")))
 		{	selecterenMogelijk = true;
 			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR ));
 		}
-		else if(((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup2Label2")))
+		else if ((e.getSource() instanceof JMenuItem) &&
+				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup2Label2")))
 		{	//if(clipFrame!=null)clipFrame.dispose();
 			//clipFrame = new Frame("clip");
 			//clipFrame.setLayout(new FlowLayout());
@@ -1094,10 +1119,11 @@ this.isDemo = isDemo;
 			//selectieGemaakt = false;
 			//tekenOpnieuw();
 		}
-	}
+//	}
 	
-	public void itemStateChanged(ItemEvent e)
-	{	if (e.getSource() == grafiekCheckbox)
+//	public void itemStateChanged(ItemEvent e)
+//	{	
+		else if (e.getSource() == grafiekCheckbox)
 		{	//boolean b = grafiekCheckbox.getState();
 			boolean b = grafiekCheckbox.isSelected();
 			if (b)

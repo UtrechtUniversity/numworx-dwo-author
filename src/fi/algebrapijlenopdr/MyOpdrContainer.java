@@ -16,7 +16,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 	private String codeString;
 	private String opdrachtString;
 	
-	private AlgebraSchuifVeld as;
+	AlgebraSchuifVeld as;
 	private AntwoordFormuleVak antwoordFormuleVak;
 	private TekstArea antwoordTekstVak;
 	private Button kopieerKnop;

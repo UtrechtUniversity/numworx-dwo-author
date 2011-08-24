@@ -11,18 +11,34 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.*;
 
+import fi.beans.appletutil.AppletUtil;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel
 {	
+	AlgebraPijlenOpdr applet;
+	ImageIcon goedkrul, foutkruis, halfkrul;
+	
 	private AlgebraSchuifVeld algebraSchuifVeld;
 
 	
 	
 	public AlgebraPijlenOpdrInteractiePanel()
-	{	setLayout(null);
+	{	
+		
+		setLayout(null);
 		// echte initiatie vind pas plaats na setBounds
+		
+		java.net.URL imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrul.gif");
+		if (imageURL != null) 
+		{
+		    goedkrul = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrul.gif.");
+		}		
 	
 //System.out.println("APO-IPa");	
 	}
@@ -113,6 +129,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		if (algebraSchuifVeld == null) 
 		{	algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h);
 			add(algebraSchuifVeld, 0);
+			algebraSchuifVeld.zetPlaatjes(goedkrul, foutkruis, halfkrul);
 //System.out.println("as created");			
 		}
 		else

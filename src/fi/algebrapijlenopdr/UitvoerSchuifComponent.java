@@ -23,7 +23,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	boolean zoomInTabel;
 	
 	private boolean grafiek;
-	private boolean muisrechts;
+	boolean muisrechts;
 	private GrafiekComponent grafiekComponent;
 	private TabelComponent tabel;
 	private int tabelCorr;
@@ -787,7 +787,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		requestFocus();
 		muisrechts = false;
 		if (e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
-		{	muisrechts = true;
+		{	
+			muisrechts = true;			
+
+			if (((AlgebraSchuifVeld)schuifveld).alleenInvullen)
+			{	return;
+			}
+			
+			//muisrechts = true;
 			popup.show(this, e.getX(), e.getY());
 			return;
 		}

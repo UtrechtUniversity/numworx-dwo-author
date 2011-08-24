@@ -3,7 +3,9 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Slider	extends Panel implements MouseListener, MouseMotionListener
+import javax.swing.*;
+
+public class Slider	extends JPanel implements MouseListener, MouseMotionListener
 {	private Image im;
 	private Graphics gIm;
 	private boolean resize;
@@ -32,15 +34,21 @@ public class Slider	extends Panel implements MouseListener, MouseMotionListener
 	}
 		
 	public void paint(Graphics g)
-	{	{ 	if(im==null || resize)
-			{	im = createImage(getSize().width,getSize().height);
-  				gIm = im.getGraphics();
-			}
-			gIm.setColor(getBackground());
-			gIm.fillRect(0,0,getSize().width,getSize().height);
-			tekenSlider(gIm);
-			g.drawImage(im, 0, 0, null);
-  		}
+	{	
+/*		
+		if(im==null || resize)
+		{	im = createImage(getSize().width,getSize().height);
+  			gIm = im.getGraphics();
+		}
+		gIm.setColor(getBackground());
+		gIm.fillRect(0,0,getSize().width,getSize().height);
+		tekenSlider(gIm);
+		g.drawImage(im, 0, 0, null);
+*/		
+		g.setColor(getBackground());
+		g.fillRect(0,0,getSize().width,getSize().height);
+		tekenSlider(g);
+  		
 	}
 	
 	public void update(Graphics g)

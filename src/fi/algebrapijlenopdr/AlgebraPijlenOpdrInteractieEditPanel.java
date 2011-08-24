@@ -27,7 +27,6 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	
 	JCheckBox brugklasBox, terugHeenBox, tabelBox, grafiekBox, scrollBox, zoomBox;
 	
-
 	public AlgebraPijlenOpdrInteractieEditPanel()
 	{
 		setLayout(null);

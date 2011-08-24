@@ -315,6 +315,11 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
 			return;		
 	
+		if ((this instanceof UitvoerSchuifComponent) &&
+			(((UitvoerSchuifComponent) this).muisrechts)
+		   )	
+			return;
+		
 		if (isStapel)
 		{	((AlgebraSchuifVeld) schuifveld).zetStapel(this);
 			isStapel = false;
@@ -350,9 +355,12 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		{	((AlgebraSchuifVeld)schuifveld).verwijder(this);
 		}
 		
+// check dit!!
+		
 		if (!isStapel && this instanceof UitvoerSchuifComponent)
-		{
-			((UitvoerSchuifComponent) this).zetTabelAan(((AlgebraSchuifVeld)schuifveld).tabelCheckbox.isSelected());
+		{	boolean tabelNodig = ((AlgebraSchuifVeld) schuifveld).tabelCheckbox.isSelected();
+			if (tabelNodig && !((UitvoerSchuifComponent) this).tabelZichtbaar)
+				((UitvoerSchuifComponent) this).zetTabelAan(true);
 		}
 		
 		schuifveld.tekenOpnieuw();

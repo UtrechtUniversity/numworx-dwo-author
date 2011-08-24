@@ -5,6 +5,7 @@ import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.beans.tooltip.*;
 
+import javax.swing.*;
 
 import java.text.*;
 import java.util.Hashtable;
@@ -64,9 +65,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	private Slider slider;
 	private int tracex=-2;
 	private double tracexD = tracex;
-	private LWCheckbox traceCheckbox;
+	//private LWCheckbox traceCheckbox;
+	private JCheckBox traceCheckbox;
 	
-	private PopupMenu popup;
+	private JPopupMenu popup;
 	private boolean kettingZichtbaar = true;
 	private int movex, movey;
 	
@@ -177,21 +179,23 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		slider.setVisible(trace);
 		add(slider);
 		
-		traceCheckbox = new LWCheckbox();
-		traceCheckbox.setBounds(13,getSize().height-13,10,10);
+		traceCheckbox = new JCheckBox();
+		//traceCheckbox.setBounds(13,getSize().height-13,10,10);
+		traceCheckbox.setBounds(8,getSize().height-13,17,10);
 		traceCheckbox.setBackground(Color.white);
 		traceCheckbox.addActionListener(this);
 		add(traceCheckbox);
+		traceCheckbox.setOpaque(false);
 		//if(((AlgebraSchuifVeld)schuifveld).fixed)traceCheckbox.setVisible(false);
 		
 		
-		popup = new PopupMenu();
+		popup = new JPopupMenu();
 		
-		MenuItem mi = new MenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label5"));
+		JMenuItem mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label5"));
 		mi.addActionListener(this);
 		popup.add(mi);
 		
-		mi = new MenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label6"));
+		mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup1Label6"));
 		mi.addActionListener(this);
 		popup.add(mi);
 		
@@ -220,7 +224,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		gv.setSize(veldb,veldh);
 		slider.zetLengte(veldb);
 		slider.setLocation(veldx-5,h-13);
-		traceCheckbox.setBounds(13,getSize().height-13,10,10);
+		//traceCheckbox.setBounds(13,getSize().height-13,10,10);
+		traceCheckbox.setBounds(8,getSize().height-13,17,10);
 	}
 	
 	public Hashtable getState()
@@ -285,8 +290,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		this.schaalFactorY = schaalFactorY;
 		this.factorRijNummerY = factorRijNummerY;
         
-		
-		traceCheckbox.aan = trace;
+		traceCheckbox.setSelected(trace);
+//		traceCheckbox.aan = trace;
 		slider.setVisible(trace);
 		
     }
@@ -875,7 +880,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
 		}
-		else super.mouseReleased(e);
+		else 
+			super.mouseReleased(e);
 	}
 	
 	public void mouseMoved(MouseEvent e)
@@ -992,9 +998,10 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 			schuifveld.tekenOpnieuw();
 			
 		}
-		if(e.getSource()==traceCheckbox)
-		{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
-			trace = traceCheckbox.aan;
+		if (e.getSource()==traceCheckbox)
+		{	if (((AlgebraSchuifVeld)schuifveld).fixed) return;
+			//trace = traceCheckbox.aan;
+			trace = traceCheckbox.isSelected();
 			slider.setVisible(trace);
 			gv.tekenOpnieuw();
 			schuifveld.tekenOpnieuw();
@@ -1209,7 +1216,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	}
 	
 	
-	class GrafiekVeld extends Component
+	class GrafiekVeld extends JComponent
 	{
 		private Image im;
   		private Graphics gIm;
