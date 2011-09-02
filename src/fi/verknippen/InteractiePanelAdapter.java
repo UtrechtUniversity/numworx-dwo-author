@@ -32,6 +32,9 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	private Hashtable launchData;
 	private boolean initiated;
 	
+	int scoreMax =10;
+	int score = 0;
+	
 	public InteractiePanelAdapter(ScormAppletIF applet)
 	{
 		this.applet = applet;
@@ -129,6 +132,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		
 		Hashtable h = new Hashtable();
 		h.put("appletLaunchData", appletLaunchData);
+		h.put("scoreMax", new Integer(scoreMax));
 		if (appletEditState != null)
 			h.put("appletEditState", appletEditState);
 		
@@ -168,11 +172,12 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
 	public int getScore()
 	{
-		return 0;
+System.out.println("getScore() " + score);	    
+		return score;
 	}
 	public int getScoreMax()
 	{
-		return 0;
+		return scoreMax;
 	}
 	public boolean isCorrect()
 	{	if (applet == null)
@@ -180,10 +185,14 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		
 		if (((Verknippen) applet).taakNummer == 1)
 		{	
-			if (((Verknippen) applet).drawingPanel != null)
-			
-				return ((Verknippen) applet).drawingPanel.figureIsRectangle;
-			
+			if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
+			{    boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+			    if (ok)
+			        score = 10;
+			    else 
+			        score = 0;
+				return ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+			}
 			else 
 				return true;
 		
@@ -261,6 +270,18 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
     public void kijkNa()
 	{
+        
+System.out.println("kijkNa() - 1");        
+        if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
+        {    
+        boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+         if (ok)
+             score = 10;
+         else 
+             score = 0;
+         
+System.out.println("kijkNa() - 2");         
+        } 
 	
 	}
     public void kijkNa(int stapNr)
@@ -272,7 +293,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	
 	//}
 	public void actionPerformed(ActionEvent e)
-	{
+	{   
 	
 	}
 	
@@ -289,7 +310,9 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
  	
  	public void produceAction(String command)
  	{	if (actionListener != null)
- 		{	actionListener.actionPerformed(new ActionEvent(this, 0, command));
+ 		{	kijkNa();
+ 	        actionListener.actionPerformed(new ActionEvent(this, 0, command));
+ 		    
  		}
  	}
  	//end ActionProducer

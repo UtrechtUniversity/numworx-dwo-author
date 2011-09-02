@@ -68,6 +68,8 @@ public class DrawingPanel extends JPanel
 	int labelWidth;
 	int labelHeight;
 	
+	
+	
 	public DrawingPanel(Verknippen o, boolean largeOvals)
 	{	owner = o;
 	
@@ -1358,6 +1360,7 @@ int chkCnt = 0;
 				owner.currentOpdracht.antwoordOK = true;
 				
 				owner.ipa.produceAction("changed");
+				
 
 //System.out.println("rectangle");				
 			}

@@ -1273,7 +1273,7 @@ if (scormed)
     	h.put("groteballetjes", "no");
     	h.put("toonschaduw", "no");
     	h.put("toonafmetingen", "no");
-    	h.put("figuur1", "0,0|8,0|8,8|0,8");
+    	h.put("figuur1", "2,0|10,0|8,8|0,8");
     	h.put("grid1", "20");    	
     	h.put("oppervlakte1", "64");    	
     	h.put("figuurgrijs1", "0,0|8,0|8,8|0,8");    	
