@@ -32,7 +32,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	private Hashtable launchData;
 	private boolean initiated;
 	
-	int scoreMax =10;
+	int scoreMax = 10;
 	int score = 0;
 	
 	public InteractiePanelAdapter(ScormAppletIF applet)
@@ -132,7 +132,9 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 		
 		Hashtable h = new Hashtable();
 		h.put("appletLaunchData", appletLaunchData);
+		
 		h.put("scoreMax", new Integer(scoreMax));
+		
 		if (appletEditState != null)
 			h.put("appletEditState", appletEditState);
 		
@@ -172,7 +174,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
 	public int getScore()
 	{
-System.out.println("getScore() " + score);	    
+//System.out.println("getScore() " + score);	    
 		return score;
 	}
 	public int getScoreMax()
@@ -186,11 +188,14 @@ System.out.println("getScore() " + score);
 		if (((Verknippen) applet).taakNummer == 1)
 		{	
 			if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
-			{    boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+			{    
+/*				
+				boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
 			    if (ok)
 			        score = 10;
 			    else 
 			        score = 0;
+*/			        
 				return ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
 			}
 			else 
@@ -266,21 +271,23 @@ System.out.println("getScore() " + score);
 	}
     public void opnieuw()
 	{	((Verknippen) applet).opnieuwAction();
+		score = 0;
+		produceAction("changed");
 	
 	}
     public void kijkNa()
 	{
         
-System.out.println("kijkNa() - 1");        
+//System.out.println("kijkNa() - 1");        
         if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
         {    
-        boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
-         if (ok)
-             score = 10;
-         else 
-             score = 0;
+        	boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+        	if (ok)
+        		score = 10;
+        	else 
+        		score = 0;
          
-System.out.println("kijkNa() - 2");         
+//System.out.println("kijkNa() - 2");         
         } 
 	
 	}

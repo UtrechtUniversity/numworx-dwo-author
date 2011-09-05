@@ -62,8 +62,8 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	// maximum aantal figuren binnen een taak
 	int maxFiguren = 10;
 	int aantalFiguren = 1;
-	String defaultFiguurString = "0,0|8,0|8,8|0,8";
-	String defaultGrijsFiguurString = "0,0|8,0|8,8|0,8";	
+	String defaultFiguurString = "2,0|10,0|8,8|0,8";
+	String defaultGrijsFiguurString = "2,0|10,0|8,8|0,8";	
 	
 	FIButton fiButton;
 	
@@ -403,7 +403,7 @@ if (scormed)
 
 		//Fi-logo, copyright
 		fiButton = new FIButton("Verknippen",new String[]
-			{	"versie-info: 20110118",
+			{	"versie-info: 20110905",
 				"auteurs: Monica Wijers, Frans van Galen",
 				"programmeur: Huub Nilwik",
 				"Freudenthal Instituut",
@@ -899,6 +899,8 @@ if (scormed)
 	{	public void actionPerformed(ActionEvent e)
 		{
 			opnieuwAction();
+			
+			ipa.produceAction("changed");
 /*		
 			currentOpdracht.drawingPanel.removeAllKnipPolygons();
 			
