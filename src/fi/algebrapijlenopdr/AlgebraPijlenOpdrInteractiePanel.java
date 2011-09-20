@@ -38,7 +38,26 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		else 
 		{
 			System.out.println("Error reading goedkrul.gif.");
-		}		
+		}
+		imageURL = AlgebraPijlenOpdr.class.getResource("resources/foutkruis.gif");
+		if (imageURL != null) 
+		{
+			foutkruis = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading foutkruis.");
+		}
+		imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrulhalf.gif");
+		if (imageURL != null) 
+		{
+			halfkrul = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrulhalf.");
+		}
+		
 	
 //System.out.println("APO-IPa");	
 	}

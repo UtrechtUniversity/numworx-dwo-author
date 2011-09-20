@@ -2,10 +2,7 @@ package fi.algebrapijlenopdr;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Hashtable;
-
 import javax.swing.*;
-
 import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
@@ -24,19 +21,16 @@ public class TabelComponent extends JPanel//Container
 	 Font f;
 	 FontMetrics fm;
 	 private boolean dubbel;
+
 	 private int starty;
-	 
-	 
 	 private int beginx;
-	 private int eenheidx= 14;
-	 private boolean raak=false;
+	 private int eenheidx = 14;
+	 private boolean raak = false;
 	 
 	 private String defaultVarnaam;
 	 
 	 private Color traceKleur = new Color(220,220,220);
 	 
-	 
-	
 	public TabelComponent()
 	{	addMouseListener(this);
 		addMouseMotionListener(this);
@@ -47,8 +41,10 @@ public class TabelComponent extends JPanel//Container
 		schaalFactorX = 1;
 		selectMogelijk = true;
 		dubbel = false;
-		if(dubbel)breedteInv = 20;
-		else breedteInv = 30;
+		if (dubbel)
+			breedteInv = 20;
+		else 
+			breedteInv = 30;
 		breedteUitv = 33;
 		
 		setOpaque(false);
@@ -60,32 +56,6 @@ public class TabelComponent extends JPanel//Container
 		exp = new BasisExpressie(defaultVarnaam);
 	}
 	
-	/*public Hashtable getState()
-	{	int beginwaarde  = 0;
-		int selectnummer  = 0;
-		double schaalFactorX  = 1;
-						
-		beginwaarde = this.beginwaarde;
-		selectnummer = this.selectnummer;
-		schaalFactorX = this.schaalFactorX;
-						
-		Hashtable h = new Hashtable();
-	    h.put("beginwaarde", new Integer(beginwaarde));
-	    h.put("selectnummer", new Integer(selectnummer));
-	    h.put("schaalFactorX", new Double(schaalFactorX));
-	    return h;
-	}
-
-    public void setState(Hashtable h)
-    {	int beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
-    	int selectnummer = ((Integer)h.get("selectnummer")).intValue();
-    	double schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
-    				
-		this.beginwaarde = beginwaarde;
-		this.selectnummer = selectnummer;
-		this.schaalFactorX = schaalFactorX;
-    }*/
-    
 	public void paint(Graphics g)
 	{	int breedte = getSize().width;
 		int hoogte = getSize().height;
@@ -193,18 +163,21 @@ public class TabelComponent extends JPanel//Container
 				}
 			}
 		}
-		else
-		{	breedteUitv = breedte-10;
+		else // !dubbel
+		{	
+			breedteUitv = breedte - 10;
 			g.setColor(Color.white);
-			g.fillRect(3,15,breedte-17,hoogte - 31);
+			g.fillRect(3, 15, breedte - 17, hoogte - 31);
 			g.setColor(Color.black);
-			g.drawRect(3,15,breedte-17,hoogte - 31);
+			g.drawRect(3, 15, breedte - 17, hoogte - 31);
 			
-			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
+			if (selectMogelijk && selectnummer > -1 && selectnummer < 8 && exp != null && !exp.geefVarNaam().equals(""))
 			{	g.setColor(traceKleur);
-				if(selectnummer<7 && beginx>0 || selectnummer>0 && beginx<0 ||beginx%eenheidx==0)g.fillRect(3,15+selectnummer*15+beginx%eenheidx,breedte-17,16);
+				if (selectnummer < 7 && beginx > 0 || selectnummer > 0 && beginx < 0 || beginx % eenheidx == 0)
+					g.fillRect(3, 15 + selectnummer * 15 + beginx % eenheidx, breedte - 17, 16);
 				g.setColor(Color.black);
-				if(selectnummer<7 && beginx>0 || selectnummer>0 && beginx<0 ||beginx%eenheidx==0)g.drawRect(3,15+selectnummer*15+beginx%eenheidx,breedte-17,16);
+				if (selectnummer < 7 && beginx > 0 || selectnummer > 0 && beginx < 0 || beginx % eenheidx == 0)
+					g.drawRect(3, 15 + selectnummer * 15 + beginx % eenheidx, breedte - 17, 16);
 			}
 			
 			pijlPlusContain = new Polygon();
@@ -229,22 +202,27 @@ public class TabelComponent extends JPanel//Container
 			pijlMin.addPoint(breedteUitv/2+5,hoogte-13);
 			pijlMin.addPoint(breedteUitv/2,hoogte-5);
 			g.fillPolygon(pijlMin);
-			g.drawPolygon(pijlMin);	
-			if(exp!=null)
+			g.drawPolygon(pijlMin);
+			
+			if (exp != null)
 			{	String s = exp.geefVarNaam();
-				if(s!=null && !s.equals(""))
-				{	for(int i=0 ; i<8 ; i++)
-					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
-						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
-							if(i<7 && beginx>0 || i>0 && beginx<0 ||beginx%eenheidx==0)g.drawString(exp.df.format(d),8,28+i*15+beginx%eenheidx);
+				if (s != null && !s.equals(""))
+				{	for (int i = 0; i < 8; i++)
+					{	if (exp.isWaarde(schaalFactorX * (i + beginwaarde)))
+						{	double d = exp.geefW(schaalFactorX * (i + beginwaarde));
+							if (i < 7 && beginx > 0 || i > 0 && beginx < 0 || 
+								beginx % eenheidx == 0)
+								g.drawString(exp.df.format(d), 8, 28 + i * 15 + beginx % eenheidx);
 						}
-						else g.drawString("-",8,28+i*15+beginx%eenheidx);
+						else 
+							g.drawString("-", 8, 28 + i * 15 + beginx % eenheidx);
 					}
 				}
 			}
 		}
 		super.paint(g);
 	}
+	
 	
 	public void zetDubbel(boolean b)
 	{	dubbel = b;
@@ -305,15 +283,15 @@ public class TabelComponent extends JPanel//Container
 		}
 		else
 		{	breedteUitv = 30;
-			if(exp!=null)
+			if (exp != null)
 			{	varNaam = exp.geefVarNaam();
-				if(varNaam!=null && !varNaam.equals(""))
+				if (varNaam != null && !varNaam.equals(""))
 				{				
-					for(int i=0 ; i<8 ; i++)
-					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
-						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
+					for (int i = 0; i < 8; i++)
+					{	if (exp.isWaarde(schaalFactorX * (i + beginwaarde)))
+						{	double d = exp.geefW(schaalFactorX * (i + beginwaarde));
 							String sUitv = exp.df.format(d);
-							breedteUitv = Math.max(breedteUitv,fm.stringWidth(sUitv)+4);
+							breedteUitv = Math.max(breedteUitv, fm.stringWidth(sUitv) + 4);
 						}
 					}
 				}
@@ -332,18 +310,18 @@ public class TabelComponent extends JPanel//Container
 	
 	public void mousePressed(MouseEvent e)
 	{	starty = e.getY();
-		raak = (new Rectangle(4,17,getSize().width-9,115)).contains(e.getX(),e.getY());
-		if(new Rectangle(0,17,getSize().width-5,getSize().height-34).contains(e.getX(), e.getY()))
+		raak = (new Rectangle(4, 17, getSize().width - 9, 115)).contains(e.getX(),e.getY());
+		
+		if (new Rectangle(0, 17, getSize().width - 5, getSize().height - 34).contains(e.getX(), e.getY()))
 			setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 		
-				
-		if(pijlPlusContain.contains(e.getX(),e.getY()))
+		if (pijlPlusContain.contains(e.getX(),e.getY()))
 		{	beginwaarde--;
 			selectnummer++;
 			//((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam,schaalFactorX);
 			repaint();
 		}
-		else if(pijlMinContain.contains(e.getX(),e.getY()))
+		else if (pijlMinContain.contains(e.getX(),e.getY()))
 		{	beginwaarde++;
 			selectnummer--;
 			//((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam, schaalFactorX);
@@ -352,27 +330,22 @@ public class TabelComponent extends JPanel//Container
 		else
 		{	
 		}
-		beginx = -beginwaarde*eenheidx;
+		beginx = -beginwaarde * eenheidx;
 		//((AlgebraSchuifVeld)getParent().getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
         //((AlgebraSchuifVeld)getParent().getParent()).zoomStateHolder.setZoomStates(varNaam);
         
-		if(!raak)((SchuifComponent)getParent()).mousePressed(e);
+		if (!raak)
+			((SchuifComponent)getParent()).mousePressed(e);
 	}	
 	
-	/*public void mousePressed(MouseEvent e)
-	{	requestFocus();
-		starty = e.getY();
-		raak = contains(e.getX(),e.getY());
-	}	*/
-	
 	public void mouseDragged(MouseEvent e)
-	{	if(raak)
+	{	if (raak)
 		{
 			int dy =  e.getY() - starty;
 		
-			beginx = beginx+dy;
+			beginx = beginx + dy;
 			int b = beginwaarde;
-			beginwaarde = -(int)Math.round(beginx/eenheidx);
+			beginwaarde = -(int) Math.round(beginx / eenheidx);
 			selectnummer = selectnummer + b - beginwaarde;
 			//repaint();
 			starty = e.getY();
@@ -385,29 +358,27 @@ public class TabelComponent extends JPanel//Container
 		}
 
 	}
-	/*public void mouseDragged(MouseEvent e)
-	{	
-		
-	}*/
-	
 	public void mouseReleased(MouseEvent e)
 	{	setCursor(new Cursor(Cursor.HAND_CURSOR));
 		int beginxOud = beginx;
 		int b = beginwaarde;
-		if(beginx>0)beginx = (beginx+eenheidx/2)/eenheidx*eenheidx;
-		else beginx = (beginx-eenheidx/2)/eenheidx*eenheidx;
-		beginwaarde = -(int)Math.round(beginx/eenheidx);
+		if (beginx > 0)
+			beginx = (beginx + eenheidx / 2) / eenheidx * eenheidx;
+		else 
+			beginx = (beginx - eenheidx / 2) / eenheidx * eenheidx;
+		beginwaarde = -(int) Math.round(beginx / eenheidx);
 		selectnummer = selectnummer + b - beginwaarde;
-		beginx = -beginwaarde*eenheidx;
+		beginx = -beginwaarde * eenheidx;
 		
+		((SchuifComponent) getParent()).mouseReleased(e);
 		
-		((SchuifComponent)getParent()).mouseReleased(e);
-		
-		if(beginx == beginxOud)
-		{	for(int i=0 ; i<8  ; i++)
-			{	if((new Rectangle(4,17+i*15,getSize().width-9,15)).contains(e.getX(),e.getY()))
-				{	if(selectnummer==i)selectnummer=999;
-					else selectnummer = i;
+		if (beginx == beginxOud)
+		{	for (int i = 0; i < 8; i++)
+			{	if ((new Rectangle(4, 17 + i * 15, getSize().width - 9, 15)).contains(e.getX(),e.getY()))
+				{	if (selectnummer == i)
+						selectnummer = 999;
+					else 
+						selectnummer = i;
 					//((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam, schaalFactorX);
 				}
 			}
@@ -417,18 +388,13 @@ public class TabelComponent extends JPanel//Container
         ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setBeginx(varNaam, beginx);
         ((AlgebraSchuifVeld)(getParent().getParent())).zoomStateHolder.setZoomStates(varNaam);
         
-        
-		
 	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e)
 	{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	
 	}
 	public void mouseClicked(MouseEvent e){;}
 	public void mouseEntered(MouseEvent e)
-	{	//if(new Rectangle(0,17,getSize().width-5,getSize().height-34).contains(e.getX(), e.getY()))
-		setCursor(new Cursor(Cursor.HAND_CURSOR));
-	
+	{	setCursor(new Cursor(Cursor.HAND_CURSOR));
 	}	
 }

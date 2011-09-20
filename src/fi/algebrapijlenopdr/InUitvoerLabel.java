@@ -83,7 +83,8 @@ public class InUitvoerLabel extends JPanel//Container
 	public int geefBreedte()
 	{	int b = 32;
 		b = fm.stringWidth(tekst);
-		if(b > 32)b = b+8;
+		if (b > 32)
+			b = b+8;
 		else b = 40;
 		return b;	
 	}

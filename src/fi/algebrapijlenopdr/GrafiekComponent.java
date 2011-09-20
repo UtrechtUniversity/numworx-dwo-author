@@ -11,18 +11,18 @@ import java.text.*;
 import java.util.Hashtable;
 
 
-public class GrafiekComponent extends AlgebraSchuifComponent implements ActionListener, MouseListener, MouseMotionListener
+public class GrafiekComponent extends AlgebraSchuifComponent 
+                              implements ActionListener, MouseListener, MouseMotionListener
 {		
-	private Image im;
-  	private Graphics gIm;
-  	
   	private int eenheid = 16;
 		
 	private PlusMinKnop pmKnopY,pmKnopX; 
 	private ZoomKnop zoomInX, zoomUitX, zoomInY, zoomUitY, zoomIn, zoomUit, zoomStandaard;
+	
 	private Expressie[] expressies;
 	private int aantalExpressies;
 	private int maxAantalExpressies;
+	
 	private boolean gevuld;
 	private int beginwaarde;
 	private int selectnummer;
@@ -130,7 +130,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		
 		add(gv);
 		
-		zoomStandaard	= new ZoomKnop("standaard");
+		zoomStandaard = new ZoomKnop("standaard");
 		zoomStandaard.setBounds(32,2,25,25);
 		zoomStandaard.addActionListener(this);
 		zoomStandaard.setToolTip("Standaard weergave");
@@ -227,6 +227,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		//traceCheckbox.setBounds(13,getSize().height-13,10,10);
 		traceCheckbox.setBounds(8,getSize().height-13,17,10);
 	}
+	
 	
 	public Hashtable getState()
 	{	int sizeB = 0;
@@ -470,6 +471,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 		g.fillRect(veldx-1,veldy-1,veldb+1,veldh+1);
 		//g.setColor(Color.black);
 		//g.drawRect(veldx-1,veldy-1,veldb+1,veldh+1);
+
 		g.setColor(Color.gray.darker());
 		g.drawLine(veldx-1,veldy-1,veldx+veldb,veldy-1);
 		g.drawLine(veldx-1,veldy-1,veldx-1,veldy+veldh);
@@ -907,21 +909,25 @@ public class GrafiekComponent extends AlgebraSchuifComponent implements ActionLi
 	public void mouseClicked(MouseEvent e){;}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(zoomDraad!=null && zoomDraad.isAlive())return;
+	{	if (zoomDraad != null && zoomDraad.isAlive())
+			return;
 		//if(zoomDraad!=null)
 		//{	zoomDraad.maakDood();
 		//	zoomDraad=null;
 		//}
-		if(e.getActionCommand().equals("focus")) schuifveld.tekenOpnieuw();
+		if (e.getActionCommand().equals("focus")) 
+			schuifveld.tekenOpnieuw();
 		else 
-		{	if(e.getSource()instanceof MenuItem && ((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
+		{	if (e.getSource() instanceof JMenuItem && 
+				((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
 			{	zetKettingZichtbaarHier(true);
 			}
-			else if(e.getSource()instanceof MenuItem && ((MenuItem)e.getSource()).getLabel().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
+			else if (e.getSource() instanceof JMenuItem && 
+					((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup1Label6")))
 			{	zetKettingZichtbaarHier(false);
 			}
-			else if(e.getSource()==zoomUitY && factorRijNummerY<120)
-			{	zoomDraad = new ZoomDraad(false,true,false);
+			else if (e.getSource() == zoomUitY && factorRijNummerY < 120)
+			{	zoomDraad = new ZoomDraad(false, true, false);
 				zoomDraad.start();
 			}
 			else if(e.getSource()==zoomInY  && factorRijNummerY>87)

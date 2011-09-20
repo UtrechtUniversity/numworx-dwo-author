@@ -4,15 +4,15 @@ import java.util.Hashtable;
 
 public class ZoomState 
 {
-	private double schaalFactorY=1;
-	private int factorRijNummerY=99;
-	private double schaalFactorX=1;
-	private int factorRijNummerX=99;
-	private int beginwaarde=0;
-	private int selectnummer=999; 
-	private double beginx=14;
-	private double beginy=14;
-	private double tracexD=0;
+	private double schaalFactorY = 1;
+	private int factorRijNummerY = 99;
+	private double schaalFactorX = 1;
+	private int factorRijNummerX = 99;
+	private int beginwaarde = 0;
+	private int selectnummer = 999; 
+	private double beginx = 14;
+	private double beginy = 14;
+	private double tracexD = 0;
 	
 	public Hashtable getState()
 	{	Hashtable h = new Hashtable();
@@ -29,25 +29,34 @@ public class ZoomState
 	}
 
     public void setState(Hashtable h)
-    {	double schaalFactorY=1;
-		int factorRijNummerY=99;
-		double schaalFactorX=1;
-		int factorRijNummerX=99;
-		int beginwaarde=0;
-		int selectnummer=999; 
-		double beginx=0;
-		double beginy=0;
-		double tracexD=0;
+    {	double schaalFactorY = 1;
+		int factorRijNummerY = 99;
+		double schaalFactorX = 1;
+		int factorRijNummerX = 99;
+		int beginwaarde = 0;
+		int selectnummer = 999; 
+		double beginx = 0;
+		double beginy = 0;
+		double tracexD = 0;
 		
-		if(h.containsKey("schaalFactorY")) schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
-		if(h.containsKey("factorRijNummerY")) factorRijNummerY = ((Integer)h.get("factorRijNummerY")).intValue();
-		if(h.containsKey("schaalFactorX")) schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
-		if(h.containsKey("factorRijNummerX")) factorRijNummerX = ((Integer)h.get("factorRijNummerX")).intValue();
-		if(h.containsKey("beginwaarde")) beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
-		if(h.containsKey("selectnummer")) selectnummer = ((Integer)h.get("selectnummer")).intValue();
-		if(h.containsKey("beginx")) beginx = ((Double)h.get("beginx")).doubleValue();
-		if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
-		if(h.containsKey("tracexD")) tracexD = ((Double)h.get("tracexD")).doubleValue();
+		if (h.containsKey("schaalFactorY")) 
+			schaalFactorY = ((Double) h.get("schaalFactorY")).doubleValue();
+		if (h.containsKey("factorRijNummerY")) 
+			factorRijNummerY = ((Integer) h.get("factorRijNummerY")).intValue();
+		if (h.containsKey("schaalFactorX")) 
+			schaalFactorX = ((Double) h.get("schaalFactorX")).doubleValue();
+		if (h.containsKey("factorRijNummerX")) 
+			factorRijNummerX = ((Integer) h.get("factorRijNummerX")).intValue();
+		if (h.containsKey("beginwaarde")) 
+			beginwaarde = ((Integer) h.get("beginwaarde")).intValue();
+		if (h.containsKey("selectnummer")) 
+			selectnummer = ((Integer) h.get("selectnummer")).intValue();
+		if (h.containsKey("beginx")) 
+			beginx = ((Double) h.get("beginx")).doubleValue();
+		if (h.containsKey("beginy")) 
+			beginy = ((Double) h.get("beginy")).doubleValue();
+		if (h.containsKey("tracexD")) 
+			tracexD = ((Double) h.get("tracexD")).doubleValue();
 		
 		this.schaalFactorY = schaalFactorY;
 		this.factorRijNummerY = factorRijNummerY;

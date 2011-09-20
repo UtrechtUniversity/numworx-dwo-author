@@ -1,7 +1,5 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
-
 import javax.swing.*;
 
 import java.awt.*;
@@ -14,7 +12,8 @@ public class Pijl extends JComponent
 	int x0,y0,x1,y1;
 	AlgebraSchuifVeld schuifveld;
 	AlgebraSchuifComponent zender, ontvanger;
-	Polygon pijlpuntBegin, pijlpuntEind, pijlpuntKlik;
+	Polygon pijlpuntBegin, pijlpuntEind;
+	Polygon pijlpuntKlik;
 	private int laatstex = 0;
 	private int laatstey = 0;
 	boolean actief, vast;
@@ -52,6 +51,7 @@ public class Pijl extends JComponent
 	public void paint(Graphics gIm)
   	{ 	
 		//gIm.setClip(Math.min(x0,x1)-7,Math.min(y0,y1)-20,Math.abs(x1-x0)+15,Math.abs(y1-y0)+41);
+		// pijl naar rechts, alleen deze kan je aan de grafiek vastmaken
 		if(!links)
 		{	gIm.setColor(color);
 			double dx = x1-x0; double dy = y1-y0;
@@ -72,8 +72,10 @@ public class Pijl extends JComponent
 				xc1 = x1;
 				yc1 = y1-r1*teken;
 				booghoek = (int)((2*a - Math.PI)*180/Math.PI);
-				if(color==Color.black)gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
-				if(color==Color.black)gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
+				if (color == Color.black)
+					gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
+				if (color == Color.black)
+					gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
 			}
 			else if(Math.abs(dy)>1 && dx<0)
 			{	r0 = (int)Math.abs(dy/4);
@@ -85,15 +87,21 @@ public class Pijl extends JComponent
 				xc1 = x1;
 				yc1 = y1-r1*teken;
 				booghoek = -180;
-				if(color==Color.black)gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
-				if(color==Color.black)gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
-				if(color==Color.black)gIm.drawLine(x0,yc0+teken*r0,x1,yc1-teken*r1);
+				if (color == Color.black)
+					gIm.drawArc(xc0-r0, yc0-r0, 2*r0, 2*r0, teken*90, teken*(booghoek-1));
+				if (color == Color.black)
+					gIm.drawArc(xc1-r1, yc1-r1, 2*r1, 2*r1, teken*270, teken*(booghoek-1));
+				if (color == Color.black)
+					gIm.drawLine(x0,yc0+teken*r0,x1,yc1-teken*r1);
 			}
 			else
-			{	if(color==Color.black)gIm.drawLine(x0,y0,x1,y1);
+			{	if (color == Color.black)
+					gIm.drawLine(x0, y0, x1, y1);
 			}
-			if(vast)gIm.setColor(color);
-			else gIm.setColor(Color.gray);
+			if (vast)
+				gIm.setColor(color);
+			else 
+				gIm.setColor(Color.gray);
 		
 			pijlpuntBegin = new Polygon();
 			pijlpuntBegin.addPoint(x0, y0);
@@ -116,15 +124,17 @@ public class Pijl extends JComponent
 			pijlpuntKlik.addPoint(x1-2, y1-13);
 			pijlpuntKlik.addPoint(x1-2, y1+13);
 		
-			if(vast)gIm.setColor(color);
-			else gIm.setColor(Color.gray);
+			if (vast) 
+				gIm.setColor(color);
+			else 
+				gIm.setColor(Color.gray);
 			gIm.fillPolygon(pijlpuntBegin);
 			gIm.fillPolygon(pijlpuntEind);
 			gIm.setColor(Color.black);
 			gIm.drawPolygon(pijlpuntBegin);
 			gIm.drawPolygon(pijlpuntEind);
 		}
-		else
+		else // pijl naar links
 		{	gIm.setColor(Color.black);
 			double dx = x0-x1; double dy = y0-y1;
 			int teken = (int)((dy/Math.abs(dy)));
@@ -351,11 +361,15 @@ public class Pijl extends JComponent
 			return;
 	
 		plaatsOpGridEind();
-		for(int i=0 ; i<schuifveld.aantalSc ; i++)
+		for (int i = 0 ; i < schuifveld.aantalSc; i++)
 		{	boolean b = false;
-			if(schuifveld.schuifcomponenten[i].isVisible() && !schuifveld.schuifcomponenten[i].isStapel && !zender.isStapel && schuifveld.schuifcomponenten[i].links==links)
-			{	if(!links)b = schuifveld.schuifcomponenten[i].meldAan(this,x1+10,y1);
-				else b = schuifveld.schuifcomponenten[i].meldAan(this,x1-10,y1);
+			if (schuifveld.schuifcomponenten[i].isVisible() && 
+				!schuifveld.schuifcomponenten[i].isStapel && 
+				!zender.isStapel && schuifveld.schuifcomponenten[i].links == links)
+			{	if (!links)
+					b = schuifveld.schuifcomponenten[i].meldAan(this, x1 + 10, y1);
+				else 
+					b = schuifveld.schuifcomponenten[i].meldAan(this, x1 - 10, y1);
 			}
 			if(b)
 			{	 vast = true;
@@ -368,7 +382,8 @@ public class Pijl extends JComponent
 				 return;
 			}
 		}
-		if(actief)pijlTerug();
+		if (actief) 
+			pijlTerug();
 		actief = false;
 		schuifveld.zetTerugSchuifLaag(this);
 		

@@ -62,8 +62,10 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	
 	public void toonLabel(boolean b)
 	{	label = b;
-		if(b)setLocation(getLocation().x, getLocation().y - 20);
-		else setLocation(getLocation().x, getLocation().y + 20);
+		if (b) 
+			setLocation(getLocation().x, getLocation().y - 20);
+		else 
+			setLocation(getLocation().x, getLocation().y + 20);
 	}
 	
 	public void zetVakKleur(Color color)
@@ -146,22 +148,28 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	}
 	
 	public boolean meldAan(Pijl p, int x, int y)
-	{	if(soort==0)
+	{	if (soort == 0)
 		{	return false;
 		}
 		//else if(soort==1)
 		{	Rectangle ingang1;
-			if(!links)ingang1 = new Rectangle(-10,0,getSize().width+10, getSize().height+5);
-			else ingang1 = new Rectangle(0,0,getSize().width+10, getSize().height+5);
-			if(pijlIn1==null && ingang1.contains(x-getLocation().x,y-getLocation().y))
+			if (!links)
+				ingang1 = new Rectangle(-10, 0, getSize().width + 10, getSize().height + 5);
+			else 
+				ingang1 = new Rectangle(0, 0, getSize().width + 10, getSize().height + 5);
+			if (pijlIn1 == null && ingang1.contains(x - getLocation().x, y - getLocation().y))
 			{	pijlIn1 = p;
-				if(!links)
-				{	if(label)pijlIn1.zetEind(getLocation().x  , getLocation().y+30);
-					else pijlIn1.zetEind(getLocation().x  , getLocation().y+10);
+				if (!links)
+				{	if (label) 
+						pijlIn1.zetEind(getLocation().x, getLocation().y + 30);
+					else 
+						pijlIn1.zetEind(getLocation().x, getLocation().y + 10);
 				}
 				else 
-				{	if(label)pijlIn1.zetEind(getLocation().x + getSize().width  , getLocation().y+30);
-					else pijlIn1.zetEind(getLocation().x + getSize().width  , getLocation().y+10);
+				{	if (label) 
+						pijlIn1.zetEind(getLocation().x + getSize().width, getLocation().y + 30);
+					else 
+						pijlIn1.zetEind(getLocation().x + getSize().width, getLocation().y + 10);
 				}
 				zetVeranderd(20);
 				schuifveld.tekenOpnieuw();
@@ -191,13 +199,17 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	
 	public void verbind(Pijl p)
 	{	pijlIn1 = p;
-		if(!links)
-		{	if(label)pijlIn1.zetEind(getLocation().x  , getLocation().y+30);
-			else pijlIn1.zetEind(getLocation().x , getLocation().y+10);
+		if (!links)
+		{	if (label)
+				pijlIn1.zetEind(getLocation().x, getLocation().y + 30);
+			else 
+				pijlIn1.zetEind(getLocation().x, getLocation().y + 10);
 		}
 		else 
-		{	if(label)pijlIn1.zetEind(getLocation().x + getSize().width + 10 , getLocation().y+30);
-			else pijlIn1.zetEind(getLocation().x + getSize().width + 10 , getLocation().y+10);
+		{	if (label)
+				pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 30);
+			else 
+				pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 10);
 		}
 	}
 	

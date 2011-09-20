@@ -24,14 +24,17 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	AlgebraSchuifComponent[] schuifcomponenten;
 	GrafiekComponent grafiekComponent;
 	int aantalSc;
+	
 	private boolean selecterenMogelijk;
 	private boolean selecterenBezig;
 	private boolean selectieGemaakt;
 	private Rectangle clip;
+	
 	private JPopupMenu popup;
 	//private ClipPaster clipPaster;
 	private Frame clipFrame;
 	boolean links = false;
+	
 	private Hashtable editmodeState;
 	
 	boolean fixed = false;
@@ -60,9 +63,6 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	
 	public AlgebraSchuifVeld(int x, int y, int b, int h)
 	{	super(x, y, b, h);
-	
-//		origX = x;
-//		origBreedte = b;
 	
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -1026,22 +1026,7 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 				for (int i = 0; i < n; i++)
 				{	verwijder(schuifcomponenten[0]);
 				}
-/*				
-				grafiekCheckbox.setLocation(8, 340);
-				tabelCheckbox.setLocation(8, 320);
-				wisKnop.setLocation(18, 370);
-				terugKnop.setLocation(8, 290);
-				heenKnop.setLocation(58, 290);
-*/				
-/*				
-				grafiekCheckbox.setLocation(8, 370);
-				tabelCheckbox.setLocation(8, 350);
-				wisKnop.setLocation(18, 400);
-				terugKnop.setLocation(18, 290);
-				heenKnop.setLocation(18, 320);				
-*/				
 				maakStapel();
-//				if (grafiekCheckbox.getState())
 				if (grafiekCheckbox.isSelected())
 				{	schuifcomponenten[aantalSc] = grafiekComponent;
 					aantalSc++;
@@ -1119,13 +1104,8 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 			//selectieGemaakt = false;
 			//tekenOpnieuw();
 		}
-//	}
-	
-//	public void itemStateChanged(ItemEvent e)
-//	{	
 		else if (e.getSource() == grafiekCheckbox)
-		{	//boolean b = grafiekCheckbox.getState();
-			boolean b = grafiekCheckbox.isSelected();
+		{	boolean b = grafiekCheckbox.isSelected();
 			if (b)
 			{	grafiekComponent = new GrafiekComponent(this, 500, 200, 210, 220);
 				schuifcomponenten[aantalSc] = grafiekComponent;

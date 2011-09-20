@@ -6,7 +6,10 @@ import java.awt.event.*;
 import fi.beans.tooltip.ToolTipIF;
 import fi.beans.tooltip.ToolTipManager;
 
-public class ZoomKnop extends Component implements ToolTipIF, MouseListener	
+import javax.swing.*;
+
+public class ZoomKnop extends JComponent //Component 
+					  implements ToolTipIF, MouseListener	
 {		private Image im;
 	private Graphics gIm;		protected String code;
 	private Font defaultfont = new Font("SansSerif", Font.PLAIN, 16);	private FontMetrics fm;
