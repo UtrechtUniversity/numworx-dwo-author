@@ -527,12 +527,16 @@ this.isDemo = isDemo;
 	    
 		int max = aantalSc;
 		for (int i = 0; i < max; i++)
-		{	Pijl p = new Pijl(this);
-			if (schuifcomponenten[i].isStapel) 
-			{	schuifcomponenten[i].zetLinks(links);
-				p.zetLinks(links);
+		{	
+			if (!(schuifcomponenten[i] instanceof GrafiekComponent))
+			{	
+				Pijl p = new Pijl(this);
+				if (schuifcomponenten[i].isStapel) 
+				{	schuifcomponenten[i].zetLinks(links);
+					p.zetLinks(links);
+				}	
+				schuifcomponenten[i].voegPijlToe(p);
 			}	
-			schuifcomponenten[i].voegPijlToe(p);
 			add(schuifcomponenten[i]);
 		}
 		

@@ -155,9 +155,13 @@ public class TabelComponent extends JPanel//Container
 					for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
-							if(i<7 && beginx>0 || i>0 && beginx<0 ||beginx%eenheidx==0) g.drawString(exp.df.format(d),breedteInv+8,28+i*15+beginx%eenheidx);
+							if(i<7 && beginx>0 || i>0 && beginx<0 ||beginx%eenheidx==0) 
+								g.drawString(exp.df.format(d),breedteInv+8,28+i*15+beginx%eenheidx);
 						}
-						else g.drawString("-",breedteInv+8,28+i*15+beginx%eenheidx);
+						else 
+							g.drawString("-",breedteInv+8,28+i*15+beginx%eenheidx);
+
+						if(i<7 && beginx>0 || i>0 && beginx<0 ||beginx%eenheidx==0) 
 						g.drawString(exp.df.format(schaalFactorX*(i+beginwaarde)),5,28+i*15+beginx%eenheidx);
 					}
 				}
@@ -258,23 +262,24 @@ public class TabelComponent extends JPanel//Container
 	}
 	
 	public int geefBreedte()
-	{	if(dubbel)
+	{	if (dubbel)
 		{	breedteInv = 20;
 			breedteUitv = 23;
-			if(exp!=null)
+			if (exp != null)
 			{	varNaam = exp.geefVarNaam();
-				if(varNaam!=null && !varNaam.equals(""))
-				{	boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
-					if(!b)breedteInv = Math.max(breedteInv,fm.stringWidth(varNaam)+4);
+				if (varNaam != null && !varNaam.equals(""))
+				{	boolean b = varNaam.equals("qq") || varNaam.length() > 2 && varNaam.substring(0,2).equals("qq");
+					if(!b)
+						breedteInv = Math.max(breedteInv, fm.stringWidth(varNaam) + 4);
 					
-					for(int i=0 ; i<8 ; i++)
-					{	if(exp.isWaarde(schaalFactorX*i+beginwaarde))
-						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
+					for (int i = 0; i < 8; i++)
+					{	if (exp.isWaarde(schaalFactorX * i + beginwaarde))
+						{	double d = exp.geefW(schaalFactorX * (i + beginwaarde));
 							String sUitv = exp.df.format(d);
-							breedteUitv = Math.max(breedteUitv,fm.stringWidth(sUitv)+4);
+							breedteUitv = Math.max(breedteUitv, fm.stringWidth(sUitv) + 4);
 						}
-						String sInv = exp.df.format(schaalFactorX*(i+beginwaarde));
-						breedteInv = Math.max(breedteInv,fm.stringWidth(sInv)+4);
+						String sInv = exp.df.format(schaalFactorX * (i + beginwaarde));
+						breedteInv = Math.max(breedteInv, fm.stringWidth(sInv) + 4);
 					}
 				}
 			}

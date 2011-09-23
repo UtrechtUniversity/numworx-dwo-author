@@ -127,11 +127,14 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
 		
-		fiButton = new fi.beans.copyright.FIButton("Algebra Pijlen Opdrachten",new String[]{"","versie-info: 20110824",
-																	"auteur: Peter Boon",
-																	"programmeur: Peter Boon",
-																	"Freudenthal Instituut",
-																	"www.fi.uu.nl",""});
+		fiButton = new fi.beans.copyright.FIButton("Info",
+				                                   new String[]
+                                                   {"Algebra Pijlen Opdrachten",
+													"versie-info: 20110923",
+                  									"auteur: Peter Boon",
+													"programmeur: Peter Boon",
+													"Freudenthal Instituut",
+													"www.fi.uu.nl",""});
 		
 		AppletUtil au = new AppletUtil(this);
 		goedkrul = au.getImage("resources/goedkrul.gif");

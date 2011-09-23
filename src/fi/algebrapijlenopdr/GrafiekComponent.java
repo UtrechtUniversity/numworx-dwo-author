@@ -78,6 +78,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	
 	public GrafiekComponent(AlgebraSchuifVeld sv,int x, int y, int b, int h)
 	{	super(1,sv,x,y,b,h);
+		
 		super.setBounds(x,y,b,h);
 		setLayout(null);
 		setBackground(Color.white);
@@ -249,6 +250,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		factorRijNummerY = this.factorRijNummerY;
 		
 		Hashtable h = super.getState();
+		
 	    h.put("sizeB", new Integer(sizeB));
 	    h.put("sizeH", new Integer(sizeH));
 	    h.put("trace", new Boolean(trace));
@@ -297,125 +299,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		
     }
 	
-	/*public Hashtable getState()
-	{	double beginx  = 0;
-		double beginy  = 0;
-		double schaalFactorX  = 0;
-		double schaalFactorY  = 0;
-		int beginwaarde = 0;
-		int selectnummer = 999;
-		int factorRijNummerX = 99;
-		int factorRijNummerY = 99;
-				
-		beginx = this.beginx;
-		beginy = this.beginy;
-		schaalFactorX = this.schaalFactorX;
-		schaalFactorY = this.schaalFactorY;
-		beginwaarde = this.beginwaarde;
-		selectnummer = this.selectnummer;
-		factorRijNummerX = this.factorRijNummerX;
-		factorRijNummerY = this.factorRijNummerY;
-				
-		Hashtable h = super.getState();
-	    h.put("beginx", new Double(beginx));
-	    h.put("beginy", new Double(beginy));
-	    h.put("schaalFactorX", new Double(schaalFactorX));
-	    h.put("schaalFactorY", new Double(schaalFactorY));
-	    h.put("beginwaarde", new Integer(beginwaarde));
-	    h.put("selectnummer", new Integer(selectnummer));
-	    h.put("factorRijNummerX", new Integer(factorRijNummerX));
-	    h.put("factorRijNummerY", new Integer(factorRijNummerY));
-	    return h;
-	}
-	
-	
-
-    public void setState(Hashtable h)
-    {	double beginx = 0;
-		double beginy = 0;
-		double schaalFactorX = 1;
-		double schaalFactorY = 1;
-		int beginwaarde = 0;
-		int selectnummer = 999;
-		int factorRijNummerX = 99;
-		int factorRijNummerY = 99;
-	    	
-    	if(h.containsKey("beginx")) beginx = ((Double)h.get("beginx")).doubleValue();
-    	if(h.containsKey("beginy")) beginy = ((Double)h.get("beginy")).doubleValue();
-    	if(h.containsKey("schaalFactorX")) schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
-    	if(h.containsKey("schaalFactorY")) schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
-    	if(h.containsKey("beginwaarde")) beginwaarde = ((Integer)h.get("beginwaarde")).intValue();
-    	if(h.containsKey("selectnummer")) selectnummer = ((Integer)h.get("selectnummer")).intValue();
-    	if(h.containsKey("factorRijNummerX")) factorRijNummerX = ((Integer)h.get("factorRijNummerX")).intValue();
-    	if(h.containsKey("factorRijNummerY")) factorRijNummerY = ((Integer)h.get("factorRijNummerY")).intValue();
-    			
-		this.beginx = beginx;
-		this.beginy = beginy;
-		this.schaalFactorX = schaalFactorX;
-		this.schaalFactorY = schaalFactorY;
-		this.beginwaarde = beginwaarde;
-		this.selectnummer = selectnummer;
-		this.factorRijNummerX = factorRijNummerX;
-		this.factorRijNummerY = factorRijNummerY;
-		
-		int b = beginwaarde;
-		beginwaarde = 1-(int)Math.round(beginx/eenheidx);
-		selectnummer = selectnummer + b - beginwaarde;
-		((AlgebraSchuifVeld)getParent()).zetTabellen(beginwaarde,selectnummer, varNaam, schaalFactorX);
-		
-		super.setState(h);
-    }*/
-    
-    
-	
-    /*
-    public void paint(Graphics g)
-	{	
-		int breedte = getSize().width;
-		int hoogte = getSize().height;
-		g.setColor(new Color(220,220,220));
-		g.fillRect(10,0,breedte-11,hoogte - 1);
-		g.setColor(Color.black);
-		g.drawRect(10,0,breedte-11,hoogte - 1);
-		g.setColor(Color.white);
-		g.fillRect(veldx-1,veldy-1,veldb+1,veldh+1);
-		g.setColor(Color.black);
-		g.drawRect(veldx-1,veldy-1,veldb+1,veldh+1);
-		
-		FontMetrics fm = g.getFontMetrics();
-		int woordbreedte = fm.stringWidth(varNaam);
-		g.drawString(varNaam, breedte-13-woordbreedte,hoogte-3);
-		g.drawString(formuleNaam,20,20);
-		
-		if(aantalPijlenIn>0 && expressies[0]!=null && expressies[0].geefVarNaam()!=null && !expressies[0].geefVarNaam().equals("") && selectnummer>-1 && selectnummer<11)
-		{	g.setColor(new Color(255,200,200));
-			g.fillRect(veldx+(selectnummer+1)*eenheidx-eenheidx/2,veldy+veldh,eenheidy,eenheidy);
-			g.setColor(Color.black);
-			g.drawRect(veldx+(selectnummer+1)*eenheidx-eenheidx/2,veldy+veldh,eenheidy,eenheidy);
-		}
-		
-		int imin = -(int)Math.round(beginx/eenheidx); 
-		int imax = 1+veldb/eenheidx-(int)Math.round(beginx/eenheidx);
-		int jmin = -(int)Math.round(beginy/eenheidx); 
-		int jmax = 1+veldh/eenheidy-(int)Math.round(beginy/eenheidy);
-		int bx = (int)beginx;
-		int by = (int)beginy;
-		
-		new Expressie();
-		for(int i=1 ; i<1+veldb/eenheidx ; i++)
-		{	
-			String getal = Expressie.df.format(schaalFactorX*(imin+i));
-			woordbreedte = fm.stringWidth(getal);
-			if(schaalFactorX>0.5 && schaalFactorX<5)g.drawString(getal,veldx+i*eenheidx-woordbreedte/2,veldy+veldh+13);
-			else if((i-beginwaarde-1)%2==0)g.drawString(getal,veldx+i*eenheidx-woordbreedte/2,veldy+veldh+13);
-		}
-		for(int j=1 ; j<1+veldh/eenheidy ; j++)
-		{	String getal = Expressie.df.format(schaalFactorY*(jmin+j));
-			woordbreedte = fm.stringWidth(getal);
-			g.drawString(getal,veldx-3-woordbreedte,veldy+veldh+5-(j*eenheidy));
-		}
-		super.paint(g);	
-	}*/	
 	
 	public void drawDottedLine(Graphics g, int x0, int y0, int x1, int y1)
 	{
@@ -453,24 +336,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		g.drawLine(breedte-9, hoogte-2, breedte-2, hoogte-9);
 		g.drawLine(breedte-6, hoogte-2, breedte-2, hoogte-6);
 		
-		/*g.setColor(Color.white);
-		g.drawLine(11,1,breedte-1,1);
-		g.drawLine(11,1,11,hoogte-1);
-		g.setColor(Color.gray.darker());
-		g.drawLine(11,hoogte-2,breedte-2,hoogte-2);
-		g.drawLine(10,hoogte-1,breedte-1,hoogte-1);
-		g.drawLine(breedte-1,0,breedte-1,hoogte-1);
-		g.drawLine(breedte-2,1,breedte-2,hoogte-2);
-		
-		g.setColor(Color.white);
-		g.drawLine(15,30,breedte-16,30);
-		g.setColor(Color.gray.darker());
-		g.drawLine(15,29,breedte-16,29);*/
-		
 		g.setColor(Color.white);
 		g.fillRect(veldx-1,veldy-1,veldb+1,veldh+1);
-		//g.setColor(Color.black);
-		//g.drawRect(veldx-1,veldy-1,veldb+1,veldh+1);
 
 		g.setColor(Color.gray.darker());
 		g.drawLine(veldx-1,veldy-1,veldx+veldb,veldy-1);
@@ -483,22 +350,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		g.setColor(Color.white);//new Color(230,230,230));
 		g.drawLine(veldx+veldb+1,veldy-1,veldx+veldb+1,veldy+veldh);
 		g.drawLine(veldx-1,veldy+veldh+1,veldx+veldb,veldy+veldh+1);
-		//g.drawLine(veldx+veldb+2,veldy-1,veldx+veldb+2,veldy+veldh+1);
-		//g.drawLine(veldx-1,veldy+veldh+2,veldx+veldb+1,veldy+veldh+2);
 		
 		g.setColor(Color.black);
 		FontMetrics fm = g.getFontMetrics();
 		int woordbreedte = fm.stringWidth(varNaam);
 		boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
-		if(!b) g.drawString(varNaam, veldx+veldb+5,veldy+veldh+5);
+		if(!b) 
+			g.drawString(varNaam, veldx+veldb+5,veldy+veldh+5);
 		g.drawString(formuleNaam,veldx,veldy-8);
-		
-		//if(exp!=null && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals("") && selectnummer>-1 && selectnummer<11)
-		//{	g.setColor(new Color(255,200,200));
-		//	g.fillRect(veldx+(selectnummer+1)*eenheidx-eenheidx/2,veldy+veldh,eenheidx,eenheidy);
-		//	g.setColor(Color.black);
-		//	g.drawRect(veldx+(selectnummer+1)*eenheidx-eenheidx/2,veldy+veldh,eenheidx,eenheidy);
-		//}
 		
 		int imin = -(int)Math.round(beginx/eenheidx); 
 		int imax = 1+veldb/eenheidx-(int)Math.round(beginx/eenheidx);
@@ -556,35 +415,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		gv.tekenOpnieuw();
 	}
 	
-	/*public void zetVoorbeeld(Expressie e)
-	{	if(e!=null)// && e.geefWaarde()==null )
-		{	expVoorbeeld = e;
-			varNaam = e.geefVarNaam();
-		}
-		else 
-		{	expVoorbeeld = null;
-			varNaam = "x";
-			formuleNaam = "f(x)";
-		}
-		gv.tekenOpnieuw();
-		repaint();
-	}*/
-	
-	/*public void zetTabel(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
-	{	if(varNaam.equals(varN))
-		{	this.beginwaarde = beginwaarde;
-			beginx = eenheidx-eenheidx*beginwaarde;
-			this.selectnummer = selectnummer;
-			this.schaalFactorX = schaalFactorX;
-			if(selectnummer!=999)tracing = false;
-			else
-			{	//tracexD = beginx+1.0*((selectnummer+beginwaarde)*eenheidx);
-				//tracex = (int)Math.round(tracexD);
-				//slider.zetStand(tracex);
-			}
-			gv.tekenOpnieuw();
-		}
-	}*/
 	
 	public void setZoomState(String varNaam, ZoomState zoomState)
 	{	if(varNaam.equals(this.varNaam) && zoomState!=null)
@@ -701,31 +531,37 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	}
 
 	public boolean meldAan(Pijl p, int x, int y)
-	{	if(!(p.zender instanceof UitvoerSchuifComponent))return false;
+	{	if (!(p.zender instanceof UitvoerSchuifComponent))
+			return false;
 	
-		for(int i=0 ; i<aantalPijlenIn ; i++)
-		{	if(pijlenIn[i].zender == p.zender) return false;
+		for (int i = 0; i < aantalPijlenIn; i++)
+		{	if (pijlenIn[i].zender == p.zender) 
+				return false;
 		}
 		AlgebraSchuifComponent asc = p.zender;
 		int teller = 20;
 		Expressie e = asc.geefUitvoer(teller);
-		while(asc.pijlIn1 !=null && teller > 0)
+		while (asc.pijlIn1 != null && teller > 0)
 		{	teller--;
 			asc = asc.pijlIn1.zender;
 			e = asc.geefUitvoer(teller);
 		}
-		if(e!=null && e.geefVarNaam()!=null && varNaam!="qq" && !e.geefVarNaam().equals(varNaam)) return false;
+		
+		if (e != null && e.geefVarNaam() != null && varNaam != "qq" && !e.geefVarNaam().equals(varNaam)) 
+			return false;
 					
 		//if(p.zender.geefUitvoer(20)!=null && !varNaam.equals("") && !varNaam.equals(p.zender.geefUitvoer(20).geefVarNaam()))return false;
-		Rectangle ingang = new Rectangle(-10,0,getSize().width+10, getSize().height);
-		if(aantalPijlenIn <10 && ingang.contains(x-getLocation().x,y-getLocation().y))
-		{	p.zetEind(getLocation().x , getLocation().y+10+aantalPijlenIn*15);
+		Rectangle ingang = new Rectangle(-10, 0, getSize().width + 10, getSize().height);
+		if (aantalPijlenIn < 10 && ingang.contains(x - getLocation().x, y - getLocation().y))
+		{	p.zetEind(getLocation().x , getLocation().y + 10 + aantalPijlenIn * 15);
 			pijlenIn[aantalPijlenIn] = p;
 			aantalPijlenIn++;
-			if(e!=null && e.geefVarNaam() != null) varNaam = e.geefVarNaam();
+			if (e != null && e.geefVarNaam() != null) 
+				varNaam = e.geefVarNaam();
 			
 			zetVeranderd(20);
-			if(p!=null) p.setColor(colors[aantalPijlenIn-1]);
+			if (p != null) 
+				p.setColor(colors[aantalPijlenIn - 1]);
 			schuifveld.tekenOpnieuw();
 			return true;
 		}
@@ -768,16 +604,23 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	{	requestFocus();
 		
 		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
-		{	if(((AlgebraSchuifVeld)schuifveld).fixed)return;
+		{	if (((AlgebraSchuifVeld) schuifveld).fixed)
+				return;
+			if (((AlgebraSchuifVeld) schuifveld).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
+				return;
+			
 			popup.show(this,e.getX(),e.getY());
 			return;
 		}
-		if(e.getSource()==gv)
+		
+		if (e.getSource() == gv)
 		{	startxv = e.getX();
 			startyv = e.getY();
 			setCursor(new Cursor(Cursor.MOVE_CURSOR));
 		}
-		else if(e.getX()>getSize().width-10 && e.getY()>getSize().height-10)
+		else if (e.getX() > getSize().width - 10 && e.getY()> getSize().height - 10)
 		{	resize = true;
 			startx = e.getX();
 			starty = e.getY();
@@ -788,45 +631,45 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		//	startx = e.getX();
 		//	starty = e.getY();
 		//}
-		else super.mousePressed(e);
+		else 
+			super.mousePressed(e);
 	}	
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(e.getSource()==gv)
-		{	
-			
-			int dx = e.getX() - startxv;
+	{	if (e.getSource() == gv)
+		{	int dx = e.getX() - startxv;
 			int dy =  e.getY() - startyv;
 		
-			beginx = beginx+dx;
-			beginy = beginy-dy;
-			if(trace && tracex!=-2) {
+			beginx = beginx + dx;
+			beginy = beginy - dy;
+			
+			if(trace && tracex!=-2) 
+			{
 				tracexD = tracexD+dx;
 				tracex = tracex+dx;
 				slider.zetStand(tracex);
 			}
 			
-			
 			int b = beginwaarde;
-			if(beginx>0)beginwaarde = 1-(int)Math.round((beginx-eenheidx/2)/eenheidx);
-			else beginwaarde = 1-(int)Math.round((beginx+eenheidx/2)/eenheidx);
+			if (beginx > 0) 
+				beginwaarde = 1 - (int) Math.round((beginx - eenheidx / 2) / eenheidx);
+			else 
+				beginwaarde = 1 - (int) Math.round((beginx + eenheidx / 2) / eenheidx);
 			selectnummer = selectnummer + b - beginwaarde;
 			
 			//gv.tekenOpnieuw();
 			//schuifveld.tekenOpnieuw();
-			System.out.println("beginx1 = "+beginx);
+//			System.out.println("beginx1 = "+beginx);
 			((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginwaarde(varNaam, beginwaarde);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varNaam, selectnummer);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginx(varNaam, ((beginx-eenheid)*14)/eenheid);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setBeginy(varNaam, beginy);
             ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setTracexD(varNaam, tracexD);
 			((AlgebraSchuifVeld)getParent()).zoomStateHolder.setZoomStates(varNaam);
-            System.out.println("beginx2 = "+beginx);
-			
+            //System.out.println("beginx2 = "+beginx);
             
 			startxv = e.getX();
 			startyv = e.getY();
-			
 			 
 		}
 		else if(resize)
@@ -858,7 +701,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			beginx = eenheidx*Math.round(beginx/eenheidx);
 			beginy = eenheidy*Math.round(beginy/eenheidy);
 			
-			if(trace && tracex!=-2) {
+			if(trace && tracex!=-2) 
+			{
 				tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
 				slider.zetStand(tracex);
@@ -918,7 +762,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		if (e.getActionCommand().equals("focus")) 
 			schuifveld.tekenOpnieuw();
 		else 
-		{	if (e.getSource() instanceof JMenuItem && 
+		{	
+			if (e.getSource() instanceof JMenuItem && 
 				((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup1Label5")))
 			{	zetKettingZichtbaarHier(true);
 			}
@@ -1237,7 +1082,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		public void paint(Graphics g)
 		{	int breedte = getSize().width;
 			int hoogte = getSize().height;
-			if(veranderd)			
+			if (veranderd)			
 			{	if (im == null || resize)
 				{	im = createImage(breedte, hoogte);
 					gIm = im.getGraphics();
@@ -1263,13 +1108,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		public void	tekenFunctie(Graphics g)
 		{	int breedte = getSize().width;
 			int hoogte = getSize().height;
-			g.setClip(0,0,breedte,hoogte);
-			int imin = -(int)Math.round(beginx/eenheidx); 
-			int imax = 1+breedte/eenheidx-(int)Math.round(beginx/eenheidx);
-			int bx = (int)Math.round(beginx);
-			for(int i=imin ; i<imax ; i++)
+			g.setClip(0, 0, breedte, hoogte);
+			int imin = - (int) Math.round(beginx / eenheidx); 
+			int imax = 1 + breedte / eenheidx - (int) Math.round(beginx / eenheidx);
+			int bx = (int) Math.round(beginx);
+			for (int i = imin; i < imax; i++)
 			{	g.setColor(Color.lightGray);
-				g.drawLine((int)(bx+i*eenheidxD),0,(int)(bx+i*eenheidxD),hoogte);
+				g.drawLine((int)(bx + i * eenheidxD), 0, (int)(bx + i * eenheidxD), hoogte);
 			}
 			int jmin = -(int)Math.round(beginy/eenheidy); 
 			int jmax = 1+hoogte/eenheidy-(int)Math.round(beginy/eenheidy);
@@ -1310,67 +1155,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 							g.drawLine(x0,y0,x1,y1);
 						}
 					}
-					/*g.setColor(new Color(255,0,0));
-					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
-					int x = (int)Math.round(d);
-					double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
-					if(!tracing && !Double.isNaN(d0) && selectnummer<8 && selectnummer>-1)
-					{	int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
-						g.fillOval(x-2,y-2,5,5);
-						g.drawLine(x,y,x,hoogte);
-						g.drawLine(x,y,0,y);
-						tracexD = d;
-						tracex = x;
-						slider.zetStand(tracex);
-						
-						double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
-						double dTraceY = expressies[j].geefW(dTraceX);
-						int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-						
-						String xWaarde = dfTrace.format(dTraceX);
-						String yWaarde = dfTrace.format(dTraceY);
-						g.setFont(font);
-						fm = g.getFontMetrics();
-						int woordBreedteX = fm.stringWidth(xWaarde);
-						int woordHoogteX = fm.getAscent();
-						int woordBreedteY = fm.stringWidth(yWaarde);
-						int woordHoogteY = fm.getAscent();
-						g.setColor(new Color(255,255,200));
-						g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.setColor(Color.black);
-						g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
-						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
-					}
-					else if(trace)
-					{	double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
-						double dTraceY = expressies[j].geefW(dTraceX);
-						if(!Double.isNaN(dTraceY) && tracex<veldb && tracex>-1)
-						{	int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-							g.fillOval(tracex-2,tracey-2,5,5);
-							g.drawLine(tracex,tracey,tracex,hoogte);
-							g.drawLine(tracex,tracey,0,tracey);
-						
-							String xWaarde = dfTrace.format(dTraceX);
-							String yWaarde = dfTrace.format(dTraceY);
-							g.setFont(font);
-							fm = g.getFontMetrics();
-							int woordBreedteX = fm.stringWidth(xWaarde);
-							int woordHoogteX = fm.getAscent();
-							int woordBreedteY = fm.stringWidth(yWaarde);
-							int woordHoogteY = fm.getAscent();
-							g.setColor(new Color(255,255,200));
-							g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-							g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-							g.setColor(Color.black);
-							g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-							g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-							g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
-							g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
-						}
-					}*/
 				}
 				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null)
 				{	double d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
@@ -1424,41 +1208,6 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 							}
 						}
 				    }
-				    /*g.setColor(new Color(255,0,0));
-					double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
-					int x = (int)d;
-					if(!isLijnGrafiek[j] && !tracing && expressies[j].isWaarde((selectnummer+beginwaarde)*schaalFactorX) && selectnummer<8 && selectnummer>-1)
-					{	double d0 = expressies[j].geefW((selectnummer+beginwaarde)*schaalFactorX);
-						int y = (int)Math.round(hoogte -(beginy+eenheidy*d0/schaalFactorY));
-						g.fillOval(x-2,y-2,5,5);
-						g.drawLine(x,y,x,hoogte);
-						g.drawLine(x,y,0,y);
-						
-						tracexD = d;
-						tracex = x;
-						slider.zetStand(tracex);
-						
-						double dTraceX = schaalFactorX*(-beginx)/eenheidxD + schaalFactorX*tracexD/eenheidxD;
-						double dTraceY = expressies[j].geefW(dTraceX);
-						int tracey = (int)Math.round(hoogte -(beginy+eenheidy*dTraceY/schaalFactorY));
-						
-						String xWaarde = dfTrace.format(dTraceX);
-						String yWaarde = dfTrace.format(dTraceY);
-						g.setFont(font);
-						fm = g.getFontMetrics();
-						int woordBreedteX = fm.stringWidth(xWaarde);
-						int woordHoogteX = fm.getAscent();
-						int woordBreedteY = fm.stringWidth(yWaarde);
-						int woordHoogteY = fm.getAscent();
-						g.setColor(new Color(255,255,200));
-						g.fillRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.fillRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.setColor(Color.black);
-						g.drawRect(tracex-woordBreedteX/2-2, hoogte-woordHoogteX-2, woordBreedteX+4, woordHoogteX+2);
-						g.drawRect(0, tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-						g.drawString(xWaarde, tracex-woordBreedteX/2, hoogte-2);
-						g.drawString(yWaarde, 2, tracey+woordHoogteY/2);
-					}*/
 					
 					if(isPuntGrafiek[j])
 					{	double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
@@ -1526,7 +1275,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
     					}
                     }
 				}
-			}
+			} // for
 			
 		}
 	}

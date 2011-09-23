@@ -794,17 +794,22 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			return;
 	
 		if (!muisrechts && pijlIn1 == null)
-		{	add(tf);
-			tf.setVisible(true)	;
-			tf.setEnabled(true);
-			tf.selectAll();
-			tf.requestFocus();
+		{	
+			if (new Rectangle(tf.getLocation().x, tf.getLocation().y,
+					          tf.getSize().width, tf.getSize().height).contains(e.getX(), e.getY())
+				)
+			{
+				add(tf);
+				tf.setVisible(true)	;
+				tf.setEnabled(true);
+				tf.selectAll();
+				tf.requestFocus();
 			
-			if (scrollCorr == 0)
-				remove(plusMinKnop);
-			
-//System.out.println("tfw = " + tf.getSize().width);			
-			schuifveld.tekenOpnieuw();			
+//				if (scrollCorr == 0)
+//					remove(plusMinKnop);
+		
+				schuifveld.tekenOpnieuw();
+			}
 		}
 	}
 	public void mouseReleased(MouseEvent e)
