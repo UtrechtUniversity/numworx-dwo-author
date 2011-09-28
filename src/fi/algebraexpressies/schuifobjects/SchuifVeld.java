@@ -2,7 +2,9 @@ package fi.algebraexpressies.schuifobjects;
 
 import java.awt.*;
 
-public class SchuifVeld extends Panel
+import javax.swing.*;
+
+public class SchuifVeld extends JPanel //Panel
 {
 	private Image im, imb ;
   	private Graphics gIm, gImb;
@@ -11,11 +13,11 @@ public class SchuifVeld extends Panel
 	private boolean gesloten;
 	public boolean resized;
 	public boolean start = true;
-	public boolean imklaar = true;
+//	public boolean imklaar = true;
 	
 	
 	public SchuifVeld()
-	{
+	{	setOpaque(false);
 	}
 	
 	public SchuifVeld(int x, int y, int b, int h)
@@ -27,8 +29,11 @@ public class SchuifVeld extends Panel
 		veranderd = true;
 		gesloten = false;
 		resized = true;
+		
+		setOpaque(false);
 	}
-	
+
+/*
 	public void paint(Graphics g)
 	{	if(veranderd  || resized)
 		{	Dimension dd = getSize();				
@@ -51,6 +56,15 @@ public class SchuifVeld extends Panel
 		schuiflaag.paint(gImb);
 		schuiflaag.zetActief(false);
 		g.drawImage(imb, 0, 0, null);
+	}
+*/	
+	public void paintComponent(Graphics g)
+	{
+//		if (veranderd)
+//		{	
+			tekenAchtergrond(g);
+//			veranderd = false;
+//		}
 	}
 	
 	public Image geefImage()

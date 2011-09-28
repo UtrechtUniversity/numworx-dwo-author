@@ -12,7 +12,7 @@ public class Expressie
 	public String operatorString;
 	boolean isVeelterm;
 	boolean isProdukt;
-	boolean isBasis;
+	public boolean isBasis;
 	boolean isAsym;
 	//boolean isLeeg;
 

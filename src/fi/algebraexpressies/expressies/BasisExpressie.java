@@ -3,7 +3,7 @@ package fi.algebraexpressies.expressies;
 import java.awt.*;
 
 public class BasisExpressie extends Expressie  
-{	String 	basisString;
+{	public String basisString;
 	double w;
 	boolean isWaarde;
 	

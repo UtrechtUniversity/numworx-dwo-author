@@ -1,20 +1,25 @@
 package fi.algebraexpressies;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebraexpressies.schuifobjects.*;
 
-public class Pijl extends Component implements MouseListener, MouseMotionListener
+import javax.swing.*;
+
+public class Pijl extends JComponent //Component 
+				  implements MouseListener, MouseMotionListener
 {	
 	int x0,y0,x1,y1;
 	AlgebraSchuifVeld schuifveld;
 	AlgebraSchuifComponent zender, ontvanger;
 	Polygon pijlpuntBegin, pijlpuntEind;
+	Polygon pijlpuntKlik;
 	private int laatstex = 0;
 	private int laatstey = 0;
 	boolean actief, vast;
 	private boolean isStapel;
+	
+	private Color color = Color.black;	
 	
 	public Pijl(AlgebraSchuifVeld asv)
 	{	schuifveld = asv;
@@ -25,13 +30,26 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		pijlpuntEind = new Polygon();
+		pijlpuntKlik = new Polygon();
+		
+		setOpaque(false);
+	}
+	
+	public void setColor(Color color)
+	{	this.color = color;
+		zender.zetVakKleur(color);
+	}
+
+	public Color getColor()
+	{	return color;
 	}
 	
 	public void paint(Graphics gIm)
 	{ 	gIm.setClip(Math.min(x0,x1)-7,Math.min(y0,y1)-20,Math.abs(x1-x0)+15,Math.abs(y1-y0)+41);
-		gIm.setColor(Color.black);
+		//gIm.setColor(Color.black);
+		gIm.setColor(color);
 		double dx = x1-x0; double dy = y1-y0;
-		if(dx!=0 || dy!=0)
+		if (dx!=0 || dy!=0)
 		{	double s = Math.sqrt(dx*dx + dy*dy);
 			double alpha,beta;
 			int rmax = 20; 
@@ -42,7 +60,8 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 			beta = Math.atan((double)dy/Math.abs(dx));
 			r = (int)(s/(4*Math.cos(beta)));
 			int teken = (int)((dx/Math.abs(dx)));
-			if(r < rmax)rmax = r;
+			if(r < rmax)
+				rmax = r;
 			
 			
 			if((dx<2*rmax && dx>-2*rmax) && dy>=0)
@@ -53,9 +72,11 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				xb1 = x1 - rmax - teken*rmax;
 				yb1 = y0 + (int)h - rmax;
 				booghoek = (int)((Math.PI - 2*alpha)*180/Math.PI);
-				gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
-				gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(booghoek+2));
-				gIm.drawLine(x1, y0+(int)h, x1,y1);
+				if (color == Color.black)
+				{	gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
+					gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(booghoek+2));
+					gIm.drawLine(x1, y0+(int)h, x1,y1);
+				}	
 			}
 			else if(dy>=2*rmax && dy>=0)
 			{	double h = 2*Math.sqrt(rmax*rmax - (rmax - teken*dx/2)*(rmax - teken*dx/2));
@@ -65,10 +86,13 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				xb1 = x1 - rmax - teken*rmax;
 				yb1 = y0 + rmax;
 				booghoek = 90;
-				gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
-				gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(booghoek+2));
-				gIm.drawLine(x1, y0+2*rmax, x1,y1);
-				gIm.drawLine(x0 + teken*rmax, y0 + rmax, x1 - teken*rmax,y0 + rmax);
+				if (color == Color.black)
+				{	
+					gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
+					gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(booghoek+2));
+					gIm.drawLine(x1, y0+2*rmax, x1,y1);
+					gIm.drawLine(x0 + teken*rmax, y0 + rmax, x1 - teken*rmax,y0 + rmax);
+				}	
 			}
 			else if(dy<2*rmax  && dy>=0)
 			{	double b = 2*rmax + 2*Math.sqrt(rmax*rmax - (dy/2)*(dy/2));
@@ -78,10 +102,13 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				xb1 = x1 - rmax - teken*rmax;
 				yb1 = y1 - rmax;
 				booghoek = (int)((Math.PI - 2*alpha)*180/Math.PI);
-				gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
-				gIm.drawArc(xb0+ teken*(int)b-2*teken*rmax, yb1, 2*rmax, 2*rmax, 90, teken*(booghoek-90+2));
-				gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(92));
-				gIm.drawLine(x0 + teken*(int)b - teken*rmax, y1 - rmax, x1-teken*rmax,y1 - rmax);
+				if (color == Color.black)
+				{
+					gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*(booghoek+2));
+					gIm.drawArc(xb0+ teken*(int)b-2*teken*rmax, yb1, 2*rmax, 2*rmax, 90, teken*(booghoek-90+2));
+					gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(92));
+					gIm.drawLine(x0 + teken*(int)b - teken*rmax, y1 - rmax, x1-teken*rmax,y1 - rmax);
+				}	
 			}
 			else
 			{	if(Math.abs(dx/4) < rmax)rmax = Math.abs((int)dx/4);
@@ -89,16 +116,17 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				yb0 = y0 - rmax;
 				xb1 = x1 - rmax - teken*rmax;
 				yb1 = y1 - rmax;
-				gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*182);
-				gIm.drawArc(xb0+ 2*teken*rmax, yb1, 2*rmax, 2*rmax, 90, teken*92);
-				gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(92));
-				gIm.drawLine(xb0 + rmax + teken*rmax , y0 , xb0 + rmax + teken*rmax ,y1 );
-				gIm.drawLine(x0 + 3*teken*rmax , y1-rmax , x1 - teken*rmax, y1-rmax );
+				if (color == Color.black)
+				{	
+					gIm.drawArc(xb0, yb0, 2*rmax, 2*rmax, 90+teken*90, teken*182);
+					gIm.drawArc(xb0+ 2*teken*rmax, yb1, 2*rmax, 2*rmax, 90, teken*92);
+					gIm.drawArc(xb1, yb1, 2*rmax, 2*rmax, -90+teken*90, teken*(92));
+					gIm.drawLine(xb0 + rmax + teken*rmax , y0 , xb0 + rmax + teken*rmax ,y1 );
+					gIm.drawLine(x0 + 3*teken*rmax , y1-rmax , x1 - teken*rmax, y1-rmax );
+				}
 			}
 		}
 
-		
-		
 		pijlpuntBegin = new Polygon();
 		pijlpuntBegin.addPoint(x0, y0);
 		pijlpuntBegin.addPoint(x0-7, y0-10);
@@ -109,13 +137,19 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		pijlpuntEind.addPoint(x1-7, y1);
 		pijlpuntEind.addPoint(x1+7, y1);
 		
-		if(vast)gIm.setColor(Color.black);
-		else gIm.setColor(Color.gray);
+		if (vast)
+			gIm.setColor(color);
+		else 
+			gIm.setColor(Color.gray);
 		gIm.fillPolygon(pijlpuntBegin);
-		if(actief||vast)gIm.fillPolygon(pijlpuntEind);
+		
+		if (actief || vast)
+			gIm.fillPolygon(pijlpuntEind);
+		
 		gIm.setColor(Color.black);
 		gIm.drawPolygon(pijlpuntBegin);
-		if(actief||vast)gIm.drawPolygon(pijlpuntEind);
+		if (actief || vast)
+			gIm.drawPolygon(pijlpuntEind);
 		
 	}
 	public void update(Graphics g)
@@ -173,7 +207,6 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		else verplaatsBegin(10-ex,0);
 		if(ey<5)verplaatsBegin(0,-ey);
 		else verplaatsBegin(0,10-ey);
-		
 	}
 	public void plaatsOpGridEind()
 	{	int x;
@@ -204,8 +237,23 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 		x1 = x0;
 		y1 = y0-10;
 	}
+	
+	public void zetVerbonden(AlgebraSchuifComponent asc)
+	{	vast = true;
+		ontvanger = asc;
+		Pijl p = new Pijl(schuifveld);
+		zender.voegPijlToe(p);		
+	}
+	
 	public void mousePressed(MouseEvent e)
-	{	schuifveld.start();
+	{	
+		
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+		
+		schuifveld.start();
 		schuifveld.zetOpSchuifLaag(this);
 		requestFocus();
 		vast = false;
@@ -220,7 +268,13 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 	}	
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(zender.isStapel)return;
+	{	
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+		
+		if(zender.isStapel)return;
 		if(actief)
 		{	int dx = e.getX() - laatstex;
 			int dy =  e.getY() - laatstey;
@@ -233,8 +287,14 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	plaatsOpGridEind();
-		for(int i=0 ; i<schuifveld.aantalSc ; i++)
+	{	
+		if (schuifveld.alleenInvullen)
+			return;
+		if (schuifveld.isDemo)
+			return;
+		
+		plaatsOpGridEind();
+		for (int i = 0; i < schuifveld.aantalSc; i++)
 		{	boolean b = schuifveld.schuifcomponenten[i].meldAan(this,x1,y1+5);
 			if(b)
 			{	 vast = true;
@@ -245,7 +305,8 @@ public class Pijl extends Component implements MouseListener, MouseMotionListene
 				 return;
 			}
 		}
-		if(actief)pijlTerug();
+		if (actief)
+			pijlTerug();
 		actief = false;
 		schuifveld.zetTerugSchuifLaag(this);
 	}

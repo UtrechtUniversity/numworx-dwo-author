@@ -1,14 +1,16 @@
 package fi.algebraexpressies;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebraexpressies.schuifobjects.*;
 import fi.algebraexpressies.expressies.*;
 
-public class InUitvoerLabel extends Container implements MouseListener,MouseMotionListener,ActionListener, FocusListener
+import javax.swing.*;
+
+public class InUitvoerLabel extends JPanel //Container 
+                            implements MouseListener, MouseMotionListener, ActionListener, FocusListener
 {	
-	private TextField tf;
+	private JTextField tf;
 	private String tekst;
 	private Font f;
 	private FontMetrics fm;
@@ -16,7 +18,10 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	
 	
 	public InUitvoerLabel()
-	{	setBounds(0,10,40,20);
+	{	
+		setOpaque(false);
+		
+		setBounds(0, 10, 40, 20);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
@@ -27,8 +32,8 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 		
 		tekst = "";
 		
-		tf = new TextField(tekst);
-		tf.setBounds(2,0,35,20);
+		tf = new JTextField(tekst);
+		tf.setBounds(2, 0, 35, 20);
 		tf.addActionListener(this);
 		tf.addFocusListener(this);
 		
@@ -52,8 +57,8 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	}
 	
 	public void setSize(int b, int h)
-	{	tf.setSize(b-5,h);
-		super.setSize(b,h);
+	{	tf.setSize(b - 5, h);
+		super.setSize(b, h);
 	}
 	
 	public String geefTekst()
@@ -63,18 +68,28 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	public int geefBreedte()
 	{	int b = 32;
 		b = fm.stringWidth(tekst);
-		if(b > 32)b = b+8;
-		else b = 40;
+		if(b > 32)
+			b = b + 8;
+		else 
+			b = 40;
 		return b;	
+	}
+
+	public void zetLabelTekst(String tekst)
+	{	tf.setText(tekst);
+		zetLabelTekst();
 	}
 	
 	public void zetLabelTekst()
 	{	tekst = tf.getText();
-		((AlgebraSchuifComponent)getParent()).zetMaat();
-		tf.setVisible(false);
-		tf.setEnabled(false);
-		((AlgebraSchuifComponent)getParent()).zetVeranderd(20);
-		((AlgebraSchuifComponent)getParent()).schuifveld.tekenOpnieuw();
+		if (getParent() != null)
+		{	
+			((AlgebraSchuifComponent) getParent()).zetMaat();
+			tf.setVisible(false);
+			tf.setEnabled(false);
+			((AlgebraSchuifComponent) getParent()).zetVeranderd(20);
+			((AlgebraSchuifComponent) getParent()).schuifveld.tekenOpnieuw();
+		}
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -89,15 +104,25 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	requestFocus();
+	{	
+		
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		
+		requestFocus();
 		muisrechts = false;
-		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+		if (e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
 		{	muisrechts = true;
 		}
-		((SchuifComponent)getParent()).mousePressed(e);
+		((SchuifComponent) getParent()).mousePressed(e);
 	}	
 	public void mouseClicked(MouseEvent e)
-	{	if(!muisrechts)
+	{	
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		
+		
+		if (!muisrechts)
 		{	tf.setVisible(true);
 			tf.setEnabled(true);
 			tf.selectAll();
@@ -106,12 +131,16 @@ public class InUitvoerLabel extends Container implements MouseListener,MouseMoti
 		//((SchuifComponent)getParent()).mouseClicked(e);
 	}
 	public void mouseReleased(MouseEvent e)
-	{	((SchuifComponent)getParent()).mouseReleased(e);
+	{	
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		
+		((SchuifComponent) getParent()).mouseReleased(e);
 	}
 	public void mouseExited(MouseEvent e){;}
 	public void mouseEntered(MouseEvent e){;}
 	public void mouseDragged(MouseEvent e)
-	{	((SchuifComponent)getParent()).mouseDragged(e);
+	{	((SchuifComponent) getParent()).mouseDragged(e);
 	}
 	
 	public void mouseMoved(MouseEvent e){;}

@@ -18,7 +18,20 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "popup1Label5" , "Toon boom" },
 				{ "popup1Label6" , "Verberg boom" },
 				{ "popup2Label1" , "Selecteer" },
-				{ "popup2Label2" , "Naar klembord" }
+				{ "popup2Label2" , "Naar klembord" },
+				
+				{ "toolkitTekst" , "Toolkit" },
+				{ "invulTekst" , "Expressies alleen invullen" },
+				{ "demoTekst" , "Expressies voor demo" },
+
+				{ "brugklasTekst" , "Alleen +, -, x en /" },
+				{ "terugHeenTekst" , "Knopjes Terug en Heen" },
+				{ "tabelTekst" , "Tabeloptie" },
+				{ "grafiekTekst" , "Grafiekoptie" },
+				
+				{ "scrollTekst" , "Scroll in invoervakjes" },
+				{ "zoomTekst" , "Zoom in tabellen" },
+				
         };
 }
 

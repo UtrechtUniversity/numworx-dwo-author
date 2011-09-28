@@ -4,8 +4,10 @@ import java.awt.*;
 import java.applet.*;
 import java.awt.event.*;
 
+import javax.swing.*;
 
-public class SchuifComponent extends Container implements MouseListener, MouseMotionListener
+public class SchuifComponent extends JPanel //Container 
+                             implements MouseListener, MouseMotionListener
 {	
 	public SchuifVeld schuifveld;
 	protected int startx = 0;
@@ -16,6 +18,8 @@ public class SchuifComponent extends Container implements MouseListener, MouseMo
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		schuifveld = sv;
+		
+		setOpaque(false);		
 	}
 	
 	public SchuifComponent(int x, int y, int b, int h, SchuifVeld sv)
@@ -24,6 +28,8 @@ public class SchuifComponent extends Container implements MouseListener, MouseMo
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		schuifveld = sv;
+		
+		setOpaque(false);		
 	}
 	
 	/*public void plaatsOpGrid()
