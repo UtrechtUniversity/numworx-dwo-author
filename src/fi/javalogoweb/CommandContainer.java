@@ -17,6 +17,18 @@ public class CommandContainer extends CommandComponent
 		commands = new CommandComponent[200];
 	}
 	
+	public Point getLocationOpSchuifveld()
+    {   int x = getLocation().x;
+        int y = getLocation().y;
+        if(getParent()instanceof SchuifVeld)
+        {   return new Point(x,y);
+        }
+        else
+        {   Point p = ((CommandContainer)getParent()).getLocationOpSchuifveld();
+            return new Point(x + p.x, y + p.y);
+        }
+    }
+	
 	public Component add(Component c)
 	{	if(isStapel)return null;
 		if(caretPos==-1)

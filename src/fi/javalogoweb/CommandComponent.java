@@ -173,6 +173,7 @@ public class CommandComponent extends SchuifComponent
 		}
 		if(gc1!=null)gc1.setLocation(locationGc1, 2);
 		if(gc2!=null)gc2.setLocation(locationGc2, 2);	
+		if(this instanceof KeuzeCommandComponent)gc1.setLocation(getWidth()/2-gc1.getWidth()/2, 0);
 	}
 	
 	public void tekenOpnieuw()
@@ -189,6 +190,7 @@ public class CommandComponent extends SchuifComponent
 		//if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
 		//if(label!=null)g.drawString(label,20,20);
 		g.setFont(font);
+		if(this instanceof KeuzeCommandComponent)return;
 		if(commandString != null)g.drawString(commandString,locationC,18);
 		if(kommaString != null) g.drawString(kommaString,locationK,18);
 		if(haakjeString != null) g.drawString(haakjeString,locationH,18);
