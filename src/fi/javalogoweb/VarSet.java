@@ -36,5 +36,14 @@ public class VarSet
 		}
 		return e.geefWaarde();
 	}
+	
+	public VergelijkingMeerv getSubstEquation(VergelijkingMeerv v)
+	{	for(int i=0 ; i<varNamen.size(); i++)
+		{	Expressie e = new BasisExpressie(((Double)variabelen.get((String)varNamen.elementAt(i))).doubleValue());
+			v = v.substitueer(e,(String)varNamen.elementAt(i));
+			
+		}
+		return v;
+	}
 
 }

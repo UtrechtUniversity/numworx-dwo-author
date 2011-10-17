@@ -26,11 +26,11 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		
 		
 		
-		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("0"),21);
-		//gc1.zetInstelbaar(true);
-		gc1.zetWaarde(0);
-		gc1.addActionListener(this);
-		add(gc1,0);
+		bc = new BooleanComponent(locationGc1,2,fm.stringWidth("0"),21);
+		bc.zetInstelbaar(true);
+		bc.zetTekst("0=0");
+		bc.addActionListener(this);
+		add(bc,0);
 				
 		zetMaat();
 	}
@@ -42,7 +42,7 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		{	return getParent().add(c);
 		}
 		if(c instanceof CommandComponent) {
-		    c.setBounds(c.getX()-getLocationOpSchuifveld().x,25+getComponentCount()*23, getSize().width/2, c.getSize().height);
+		    c.setBounds(c.getX()-getLocationOpSchuifveld().x,25+getComponentCount()*23, getSize().width/2+1, c.getSize().height);
 		}
 		Component comp = super.add(c, caretPos);
 		reArange();
@@ -81,7 +81,7 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	public void setBounds(int x, int y, int b, int h)
 	{	for(int i=0 ; i<getComponentCount() ; i++)
 		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) c.setSize(b/2,c.getSize().height);
+			if(c instanceof CommandComponent) c.setSize(b/2+1,c.getSize().height);
 		}
 		super.setBounds(x,y,b,h);
 	}
@@ -90,25 +90,23 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	{	int hoogteLinks = 25;
 		for(int i=0 ; i<getComponentCount(); i++)
 		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent && c.getX()<getWidth()/2) 
-			{	if(c.getX()<getWidth()/2)c.setLocation(0,hoogteLinks);
-			    else c.setLocation(getWidth()/2+1,hoogteLinks);
-			hoogteLinks += c.getSize().height-2;
+			if(c instanceof CommandComponent && c.getX()<getWidth()/2-3) 
+			{	c.setLocation(0,hoogteLinks);
+			   	hoogteLinks += c.getSize().height-2;
 			}
 		}
 		int hoogteRechts = 25;
 		for(int i=0 ; i<getComponentCount(); i++)
         {   Component c = getComponent(i);
-            if(c instanceof CommandComponent && c.getX()>getWidth()/2-1) 
-            {   if(c.getX()<getWidth()/2)c.setLocation(0,hoogteRechts);
-                else c.setLocation(getWidth()/2+1,hoogteRechts);
-            hoogteRechts += c.getSize().height-2;
+            if(c instanceof CommandComponent && c.getX()>getWidth()/2-4) 
+            {   c.setLocation(getWidth()/2-1,hoogteRechts);
+            	hoogteRechts += c.getSize().height-2;
             }
         }
 		setSize(getSize().width, Math.max(48,Math.max(hoogteLinks,hoogteRechts)+2));
 		if(getParent() instanceof CommandContainer)((CommandContainer)getParent()).reArange();
 		locationGc1 = getSize().width/2-10;
-		gc1.setLocation(locationGc1, 2);
+		bc.setLocation(locationGc1, 2);
 	}
 	
 	public void paint(Graphics g)
@@ -142,8 +140,8 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		g.drawLine(getSize().width,0,getSize().width/2,25);
         g.drawLine(getSize().width,1,getSize().width/2,26);
         g.drawLine(0,25,getSize().width,25);
-        g.drawRect(0,26,getSize().width/2,getSize().height-28);
-		g.drawRect(getSize().width/2+1,26,getSize().width/2-1,getSize().height-28);
+        g.drawRect(0,26,getSize().width/2-1,getSize().height-28);
+		g.drawRect(getSize().width/2,26,getSize().width/2,getSize().height-28);
 		
 		g.drawString(jaString, 10, 20);
 		g.drawString(neeString, getSize().width-30, 20);
@@ -151,14 +149,12 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	}
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))return false;
-		for(int i=0 ; i<value ; i++)
-		{	CommandComponent cc = null;
-			for(int j=0 ; j<getComponentCount() ; j++)
+	{	boolean value = bc.geefWaarde(varSet);
+		CommandComponent cc = null;
+		if(value)
+		{	for(int j=0 ; j<getComponentCount() ; j++)
 			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent)
+				if(c instanceof CommandComponent && c.getX()==0)
 				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
 					if(tracekleur) return true;
 					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
@@ -167,13 +163,28 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 					//}
 				}
 			}
-			if(cc!=null) break;
 		}
+		else
+		{	for(int j=0 ; j<getComponentCount() ; j++)
+			{	Component c = getComponent(j);
+				if(c instanceof CommandComponent && c.getX()>0)
+				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+					if(tracekleur) return true;
+					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
+					//{	cc = (CommandComponent)c;
+					//	break;
+					//}
+				}
+			}
+		}
+		
+		
+		
 		return false;
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "Herhaal " + gc1.geefTekst() + " keer" + "\n" + tab +"{";
+	{	String s = tab + "Keuze " + bc.geefTekst()  + "\n" + tab +"{";
 		String tabExtra = "      ";
 		String tabNieuw = tab + tabExtra;
 		for(int i=0 ; i<getComponentCount() ; i++)

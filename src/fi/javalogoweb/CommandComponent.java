@@ -30,6 +30,7 @@ public class CommandComponent extends SchuifComponent
 	protected FontMetrics fm;
 	
 	protected GetalComponent gc1, gc2;
+	protected BooleanComponent bc;
 	protected Font font = new Font("SansSerif", Font.PLAIN, 12);
 	protected boolean editing;
 	protected boolean dragging;
@@ -173,7 +174,10 @@ public class CommandComponent extends SchuifComponent
 		}
 		if(gc1!=null)gc1.setLocation(locationGc1, 2);
 		if(gc2!=null)gc2.setLocation(locationGc2, 2);	
-		if(this instanceof KeuzeCommandComponent)gc1.setLocation(getWidth()/2-gc1.getWidth()/2, 0);
+		if(this instanceof KeuzeCommandComponent){
+			bc.setLocation(getWidth()/2-bc.getWidth()/2, 0);
+			//((KeuzeCommandComponent)this).reArange();
+		}
 	}
 	
 	public void tekenOpnieuw()

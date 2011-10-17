@@ -30,7 +30,6 @@ public class BooleanComponent extends Container implements ActionListener, Focus
 		beginWaardeTf.addFocusListener(this);
 		beginWaardeTf.setVisible(false);
 		beginWaardeTf.setEnabled(false);
-		//beginWaardeTf.setLocation(getLocation().x, getLocation().y);
 		font = new Font("SansSerif", Font.PLAIN, 12);//(int)(3*getSize().height/5));
 		fm = getFontMetrics(font);
 		
@@ -64,6 +63,16 @@ public class BooleanComponent extends Container implements ActionListener, Focus
 	{	if(waarde!=null )return waarde.isOplossing(new BasisExpressie(1.212131415),"q");
 		else return false;
 	}
+	
+	public boolean geefWaarde(VarSet varSet)
+	{	
+		if(waarde!=null ){
+			VergelijkingMeerv w = varSet.getSubstEquation(waarde);
+			return w.isOplossing(new BasisExpressie(1.212131415),"q");
+		}
+		else return false;
+	}
+	
 	public VergelijkingMeerv geefExpressie()
 	{	return waarde;
 	}
@@ -77,7 +86,9 @@ public class BooleanComponent extends Container implements ActionListener, Focus
 	
 	public void zetTekst(String s)
 	{	zetBekend(true);
+		System.out.println("$f"+s+"@");
 		waarde = FormuleParser.parseVergelijking("$f"+s+"@");
+		System.out.println(""+waarde);
 		beginWaardeTf.setText(s);
 		setSize(fm.stringWidth(beginWaardeTf.getText()),getSize().height);
 		repaint();
