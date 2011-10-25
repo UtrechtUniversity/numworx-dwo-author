@@ -102,6 +102,7 @@ class VaktekPanel extends JPanel //Container
 			ra.zetSchaduw(false);
 			ra.zetBeginHoeken(0,-90);
 			ra.zetMuisAan(false);
+			ra.zetPijlAan(false);
 			add(ra);
 			
 			vr = new VaktekRooster();
