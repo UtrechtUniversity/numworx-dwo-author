@@ -16,6 +16,7 @@ import fi.beans.appletutil.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
+
 /**
  * @author Peter Boon
  */
@@ -103,6 +104,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	JLabel groenVinkjeLabel;
 	JLabel geelVinkjeLabel;
 	JLabel kruisjeLabel;
+	
+	private boolean ingevuld;
+	private boolean nagekeken;
+	private int mode;
 	
 	NabouwenAanzichtenInteractieEditPanel naiep;
 	
@@ -240,7 +245,6 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		kPanel.add(kPanel.kijkNaPanel);
 		
 	}
-	
 	
 	public void setBounds(int x, int y, int b, int h)
 	{	
@@ -1632,6 +1636,11 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			/*cpfiw*/			
 		}
 		
+		if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
+	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
+	    if(ingevuld && (mode==0 || nagekeken)) kijkNa();
+	    
+	    
 		String docentState = null;
 		
 		if (h.containsKey("docentState")) 
@@ -1647,6 +1656,9 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	    {	docentKr = new KubusRooster(booleanDocentKRs[i], 1); //later uitbreiden naar meer kubusroosters
 	    }
 	    docentV.zetKubusRooster(docentKr);
+	    
+	    //System.out.println("ingevuld: "+ingevuld);
+	    //System.out.println("nagekeken: "+nagekeken);
 	    
 	}
 	
@@ -1918,6 +1930,9 @@ newViewer = false;
 	    
 	    h.put("beginHoekX", new Double(getBeginHoekX()));
 	    h.put("beginHoekY", new Double(getBeginHoekY()));
+	    h.put("ingevuld", new Boolean(ingevuld));
+        h.put("nagekeken", new Boolean(nagekeken));
+        
 	    
 	    return h;
 	}
@@ -1966,6 +1981,7 @@ newViewer = false;
 		}
 		
 		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+		ingevuld = kr.geefAantalK()!=0;
 /*		
 		if (aanzichten)
 		{	vp.ra.tekenOpnieuw();
@@ -2380,9 +2396,14 @@ newViewer = false;
 		return score == 0;
 	}
 	
-	public void zetMode(int mode){}
+	public void zetMode(int mode)
+    {   this.mode = mode;
+		kijkNaButton.setVisible(mode==0 || mode==1);
+    }
 	
-	public void zetNagekeken(boolean b){}
+	public void zetNagekeken(boolean b)
+	{	if(ingevuld) nagekeken = b;
+	}
 	
     public void stop(){}
     
@@ -2505,7 +2526,7 @@ newViewer = false;
         	}
         	
         }	
-        
+        ingevuld = kr.geefAantalK()!=0;
         if (score == 0)
         {	kruisjeLabel.setVisible(true);
         	geelVinkjeLabel.setVisible(false);
@@ -2533,8 +2554,9 @@ newViewer = false;
     	
     }
     
-    public void kijkNa(int stapNr){}
-    
+    public void kijkNa(int stapNr)
+    { 	kijkNa();
+    }
 
 	class KijkNaAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
