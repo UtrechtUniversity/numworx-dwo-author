@@ -99,10 +99,11 @@ public class Heks extends Applet implements ScormAppletIF,  ComponentListener
 		double sx = ((1.0*getSize().width) / tp.getSize().width);
 		double sy = ((1.0*getSize().height) / tp.getSize().height);
 		double schaal = Math.min(sx,sy)*0.95;
-		tp.schaal(schaal);
+		tp.schaal(0.80);
 		int x = (int)((sx-schaal)*tp.getSize().width/2);
 		int y = (int)((sy-schaal)*tp.getSize().height/2);
-		tp.setLocation(x,y+10);
+		//tp.setLocation(x,y+10);
+		tp.setLocation(20,20);
 		add(tp);
 		
 		AppletUtil au = new AppletUtil(this);
