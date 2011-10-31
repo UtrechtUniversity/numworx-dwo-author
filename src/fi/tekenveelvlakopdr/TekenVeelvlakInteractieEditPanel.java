@@ -39,18 +39,19 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         cp.setBounds(600,150,400,650);
         add(cp);
         
-        viewerOnlyCB = new JCheckBox("Alleen viewer");
+        viewerOnlyCB = new JCheckBox(TekenVeelvlakOpdr.rb.getString("alleenViewerCBLabel"));
         viewerOnlyCB.setBounds(0,100,150,20);
         viewerOnlyCB.setOpaque(false);
         cp.add(viewerOnlyCB);
         
-        moveableCB = new JCheckBox("Draaibaar");
+        moveableCB = new JCheckBox(TekenVeelvlakOpdr.rb.getString("draaibaarCBLabel"));
         moveableCB.setBounds(0,130,150,20);
         moveableCB.setOpaque(false);
         moveableCB.setSelected(true);
         cp.add(moveableCB);
         
-        hulppuntenLabel = new JLabel("aantal hulppunten");
+        hulppuntenLabel = new JLabel(TekenVeelvlakOpdr.rb.getString("hulpPuntenCBLabel"));
+
         hulppuntenLabel.setBounds(0,170,140,20);
 		cp.add(hulppuntenLabel);
 		
