@@ -28,8 +28,8 @@ public class VarSet
 	public double getExpressionValue(Expressie e)
 	{	for(int i=0 ; i<varNamen.size(); i++)
 		{	double d = ((Double)variabelen.get((String)varNamen.elementAt(i))).doubleValue();
-			System.out.println(""+d);
-			System.out.println(e.toString());
+			//System.out.println(""+d);
+			//System.out.println(e.toString());
 			e = e.substitueer(d,(String)varNamen.elementAt(i));
 			System.out.println(e.toString());
 			

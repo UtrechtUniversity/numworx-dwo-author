@@ -111,6 +111,7 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	
 	public void paint(Graphics g)
 	{	g.setColor(Color.orange);
+		if(traceKleur)g.setColor(traceActiveColor);
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.white);
 		g.fillRect(0,25,getSize().width,getSize().height-26);
@@ -150,6 +151,9 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)
 	{	boolean value = bc.geefWaarde(varSet);
+		traceKleur = tb.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		
 		CommandComponent cc = null;
 		if(value)
 		{	for(int j=0 ; j<getComponentCount() ; j++)

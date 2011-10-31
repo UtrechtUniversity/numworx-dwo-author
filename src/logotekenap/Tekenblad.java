@@ -21,6 +21,7 @@ public class Tekenblad extends JPanel
 	private boolean pen, vul;
   	private Color penkleur,vulkleur,achtergrondkleur;
 	public boolean bezigMetTekenen;
+	public int printX =20, printY = 20;
 	  
 	public Tekenblad(JavaLogoWeb ap)
 	{	achtergrondkleur = Color.white;
@@ -65,6 +66,7 @@ public class Tekenblad extends JPanel
     	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
     	gIm.setColor(Color.black);
     	gIm.drawRect(0, 0, breedte-1, hoogte-1);
+    	printY=20;
     	//penAan(0,0,0);
     	pen = true;
     	penkleur = Color.black;
@@ -232,6 +234,13 @@ public class Tekenblad extends JPanel
 		else return false;
 	}
 	
+	public boolean checkKeuze(String voorwaarde)
+	{	if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode(voorwaarde);
+		else return false;
+	}
+
+	
 	/*public void penAan()
 	{	pen = true;
 	}
@@ -272,8 +281,13 @@ public class Tekenblad extends JPanel
 	void achtergrondkleur(int r, int g, int b)
 	{	achtergrondkleur = new Color(r,g,b);
 	}
-	void schrijf(String s)
-	{	gIm.drawString(s, (int)beginpunt.x, (int)beginpunt.y);
+	public boolean schrijf(String s)
+	{	//gIm.drawString(s, (int)beginpunt.x, (int)beginpunt.y);
+		gIm.drawString(s, printX, printY);
+		printY += 20;
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("print("+s+")");
+		else return false;
 	}
 	void schrijf(String s, Font f)
 	{	gIm.setFont(f);

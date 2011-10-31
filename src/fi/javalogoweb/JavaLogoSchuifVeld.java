@@ -101,10 +101,10 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		
 		
 		
-		commandComponents[1] = new PenAanCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+		commandComponents[1] = new PrintStringCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[1],0);
 		
-		commandComponents[2] = new PenUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+		commandComponents[2] = new PrintVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[2],0);
 		
 		commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
