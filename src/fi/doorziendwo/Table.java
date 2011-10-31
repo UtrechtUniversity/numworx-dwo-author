@@ -400,7 +400,13 @@ public class Table
             						"Again", ""},
         {"uitlegButtonViewerText", "Uitleg", 
                 				   "Help", ""},
-                            
+         
+        //InteractieEditPanel        				   
+        {"EditPanel_draaibaar", "Draaibaar", "Rotatable", ""}, 
+        {"EditPanel_Rand", "Rand", "Border", ""}, 
+        {"EditPanel_ontwerpmogelijkheid", "Ontwerpmogelijkheid", "Design option", ""}, 
+        {"EditPanel_reset-optie", "reset optie", "Reset-option", ""}, 
+        {"EditPanel_vouwslider", "Vouwslider", "Slider for folding", ""}, 
         
     };
     // make the table static so it can be accessed from the static
