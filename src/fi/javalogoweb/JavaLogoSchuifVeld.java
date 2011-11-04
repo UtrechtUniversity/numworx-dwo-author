@@ -35,6 +35,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	private JButton exportButton;
 	private JButton importButton;
 	private Tekenblad tekenblad;
+	private Rekenblad rekenblad ;
 	private DeeltaakHeader deeltaakHeader;
 	
 	
@@ -42,6 +43,15 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	{	super(x,y,b,h);
 		
 		tekenblad = tb;
+		//rekenblad = rb;
+		commandComponents = new CommandComponent[1000];
+		
+	}
+	public JavaLogoSchuifVeld(int x, int y, int b, int h, Rekenblad rb)
+	{	super(x,y,b,h);
+		
+		//tekenblad = tb;
+		rekenblad = rb;
 		commandComponents = new CommandComponent[1000];
 		
 	}
@@ -51,8 +61,13 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		
 	}
 	
+	public void reken(Rekenblad rb)
+	{	programmaComponent.reken(rb, new VarSet());
+		
+	}
+	
 	public void initialize()
-	{	pcSizeWidthDefault = 200;
+	{	pcSizeWidthDefault = 400;
 		pcSizeHeightDefault = 395;
 		pcLocXDefault = 190;
 		pcLocYDefault = 38;
@@ -107,23 +122,32 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		commandComponents[2] = new PrintVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[2],0);
 		
-		commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+		commandComponents[3] = new PrintLStringCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[3],0);
 		
-		commandComponents[4] = new StapCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+		commandComponents[4] = new PrintLVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[4],0);
-	
-		commandComponents[5] = new LinksCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
+		
+		commandComponents[5] = new InvoerCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
 		add(commandComponents[5],0);
 		
+		//commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+		//add(commandComponents[3],0);
+		
+		//commandComponents[4] = new StapCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+		//add(commandComponents[4],0);
+	
+		//commandComponents[5] = new LinksCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
+		//add(commandComponents[5],0);
+		
 		commandComponents[6] = new RechtsCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[6],0);
+		//add(commandComponents[6],0);
 		
 		commandComponents[7] = new VulAanCComponent(opdrLocXDefault,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[7],0);
+		//add(commandComponents[7],0);
 		
 		commandComponents[8] = new VulUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[8],0);
+		//add(commandComponents[8],0);
 		
 		
 		commandComponents[9] = new HerhaalCommandComponent(opdrLocXDefault,opdrLocYDefault+130,opdrSizeWidthDefault,48, this);
@@ -268,6 +292,31 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		//if(asc instanceof InvoerSchuifComponent)
 		//{ schuifcomponenten[aantalSc] = new InvoerSchuifComponent(this ,x,y,b,h);
 		//}
+		if(cc instanceof PrintStringCComponent)
+		{ 	commandComponents[aantalCC] = new PrintStringCComponent(x,y,b,h, this);
+			add(commandComponents[aantalCC],0);
+			aantalCC++;
+		}
+		if(cc instanceof PrintLStringCComponent)
+		{ 	commandComponents[aantalCC] = new PrintLStringCComponent(x,y,b,h, this);
+			add(commandComponents[aantalCC],0);
+			aantalCC++;
+		}
+		if(cc instanceof PrintVarCComponent)
+		{ 	commandComponents[aantalCC] = new PrintVarCComponent(x,y,b,h, this);
+			add(commandComponents[aantalCC],0);
+			aantalCC++;
+		}
+		if(cc instanceof PrintLVarCComponent)
+		{ 	commandComponents[aantalCC] = new PrintLVarCComponent(x,y,b,h, this);
+			add(commandComponents[aantalCC],0);
+			aantalCC++;
+		}
+		if(cc instanceof InvoerCComponent)
+		{ 	commandComponents[aantalCC] = new InvoerCComponent(x,y,b,h, this);
+			add(commandComponents[aantalCC],0);
+			aantalCC++;
+		}
 		if(cc instanceof PenAanCComponent)
 		{ 	commandComponents[aantalCC] = new PenAanCComponent(x,y,b,h, this);
 			add(commandComponents[aantalCC],0);
@@ -565,7 +614,8 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			
 		}
 		if(e.getSource()==runButton)
-		{	tekenblad.tekenOpnieuw();
+		{	rekenblad.init();
+			rekenblad.tekenOpnieuw();
 		}
 		else if(e.getSource()==importButton)
 		{	importFrame("");

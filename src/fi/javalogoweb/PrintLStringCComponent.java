@@ -5,20 +5,20 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import logotekenap.Tekenblad;
 import logotekenap.Rekenblad;
+import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
 import fi.javalogoweb.expressies.*;
 
-public class PrintVarCComponent extends CommandComponent implements ActionListener
+public class PrintLStringCComponent extends CommandComponent implements ActionListener
 {
 	
-	public PrintVarCComponent(int x, int y, int b, int h, SchuifVeld sv)
+	public PrintLStringCComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
-		commandString = "print (";
+		commandString = "println (\"";
 		kommaString = null;
-		haakjeString = ") ";
+		haakjeString = "\") ";
 		
 		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("k"),21);
 		//gc1.zetInstelbaar(true);
@@ -49,24 +49,23 @@ public class PrintVarCComponent extends CommandComponent implements ActionListen
 	}
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))traceKleur = tb.schrijf(gc1.geefTekst());
-		else traceKleur = tb.schrijf(Expressie.format(value));
+	{	
+		String s = gc1.geefTekst();
+		traceKleur = tb.schrijf(s);
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}
-	public boolean reken(Rekenblad tb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))traceKleur = tb.print(gc1.geefTekst());
-		else traceKleur = tb.print(Expressie.format(value));
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	
+		String s = gc1.geefTekst();
+		traceKleur = rb.printl(s);
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "print(\"" + gc1.geefTekst() + "\")" + "\n";
+	{	String s = tab + "println(\"" + gc1.geefTekst() + "\")" + "\n";
 		return s;
 	}
 	

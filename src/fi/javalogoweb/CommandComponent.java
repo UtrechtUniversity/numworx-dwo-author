@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import logotekenap.Tekenblad;
+import logotekenap.Rekenblad;
 
 import fi.javalogoweb.schuifobjects.*;
 
@@ -202,6 +203,10 @@ public class CommandComponent extends SchuifComponent
 	}
 	
 	public boolean teken(Tekenblad tb, VarSet varSet)
+	{	return false;
+	}
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
 	{	return false;
 	}
 	

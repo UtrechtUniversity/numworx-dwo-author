@@ -21,6 +21,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	protected SCORM12APIInterface api;
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
 	private Tekenblad tekenblad;
+	private Rekenblad rekenblad;
 	
 	public static Image editImage;
 	
@@ -96,15 +97,30 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 				
 		tekenblad = new Tekenblad(this);
 		tekenblad.setBounds(420, 10, getSize().width-431, getSize().height-71);
-		add(tekenblad);
+		//add(tekenblad);
 		
-		javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 418, getSize().height-2, tekenblad);
+		rekenblad = new Rekenblad(this);
+		rekenblad.setBounds(620, 10, getSize().width-631, getSize().height-171);
+		add(rekenblad);
+		
+		/*javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, tekenblad);
+		javaLogoSchuifVeld.setBackground(getBackground());
+		add(javaLogoSchuifVeld);
+		javaLogoSchuifVeld.initialize();*/
+		
+		javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, rekenblad);
 		javaLogoSchuifVeld.setBackground(getBackground());
 		add(javaLogoSchuifVeld);
 		javaLogoSchuifVeld.initialize();
 		
-		TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
+		/*TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
 		trb.setBounds(418,getSize().height-59,getSize().width-419,58);
+		trb.setBackground(getBackground());
+		trb.addActionListener(javaLogoSchuifVeld);
+		add(trb);*/
+		
+		TraceBeheerder trb = new TraceBeheerder( rekenblad,null);
+		trb.setBounds(618,getSize().height-59,getSize().width-619,58);
 		trb.setBackground(getBackground());
 		trb.addActionListener(javaLogoSchuifVeld);
 		add(trb);
@@ -114,7 +130,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		versieLabel.setBounds(getSize().width-60,getSize().height-20,60,15);
 		add(versieLabel,0);
 		
-		tekenblad.meldTraceBeheerder(trb);
+		rekenblad.meldTraceBeheerder(trb);
 		//trb.naarBegin();
 		
 		
@@ -147,6 +163,11 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	
 	public void tekenprogramma()
 	{	javaLogoSchuifVeld.teken(tekenblad);
+		
+	}
+	
+	public void rekenprogramma()
+	{	javaLogoSchuifVeld.reken(rekenblad);
 		
 	}
 	

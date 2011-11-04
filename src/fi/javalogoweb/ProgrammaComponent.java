@@ -84,6 +84,17 @@ public class ProgrammaComponent extends CommandContainer
 		return false;
 	}
 	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	for(int i=0 ; i<getComponentCount() ; i++)
+		{	Component c = getComponent(i);
+			if(c instanceof CommandComponent)
+			{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
+				if(tracekleur)return true;
+			}
+		}
+		return false;
+	}
+	
 	
 	
 	public String getCode(String tab)

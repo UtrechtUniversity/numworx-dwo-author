@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import logotekenap.Rekenblad;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
@@ -131,6 +132,28 @@ public class HerhaalCommandComponent extends CommandContainer  implements Action
 			{	Component c = getComponent(j);
 				if(c instanceof CommandComponent)
 				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+					if(tracekleur) return true;
+					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
+					//{	cc = (CommandComponent)c;
+					//	break;
+					//}
+				}
+			}
+			if(cc!=null) break;
+		}
+		return false;
+	}
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	double value = gc1.geefWaarde();
+		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
+		if(Double.isNaN(value))return false;
+		for(int i=0 ; i<value ; i++)
+		{	CommandComponent cc = null;
+			for(int j=0 ; j<getComponentCount() ; j++)
+			{	Component c = getComponent(j);
+				if(c instanceof CommandComponent)
+				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
 					if(tracekleur) return true;
 					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
 					//{	cc = (CommandComponent)c;

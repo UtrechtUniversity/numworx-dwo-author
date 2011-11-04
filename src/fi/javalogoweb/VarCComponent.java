@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import logotekenap.Rekenblad;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
@@ -63,6 +64,20 @@ public class VarCComponent extends CommandComponent implements ActionListener
 		
 		varSet.setVar((gc1.geefExpressie()).toString(), gc2.geefExpressie());
 		traceKleur = tb.varAanpassing(s1,Expressie.format(value));
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		return traceKleur;
+	}
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	double value = gc2.geefWaarde();
+		if(Double.isNaN(value))value = varSet.getExpressionValue(gc2.geefExpressie());
+		if(Double.isNaN(value))return false;
+	
+		String s1 = gc1.geefExpressie().toString();
+		String s2 = gc2.geefExpressie().toString();
+		
+		varSet.setVar((gc1.geefExpressie()).toString(), gc2.geefExpressie());
+		traceKleur = rb.varAanpassing(s1,Expressie.format(value));
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}

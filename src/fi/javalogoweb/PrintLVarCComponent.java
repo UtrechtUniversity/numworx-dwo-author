@@ -11,12 +11,12 @@ import logotekenap.Rekenblad;
 import fi.javalogoweb.schuifobjects.SchuifVeld;
 import fi.javalogoweb.expressies.*;
 
-public class PrintVarCComponent extends CommandComponent implements ActionListener
+public class PrintLVarCComponent extends CommandComponent implements ActionListener
 {
 	
-	public PrintVarCComponent(int x, int y, int b, int h, SchuifVeld sv)
+	public PrintLVarCComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
-		commandString = "print (";
+		commandString = "println (";
 		kommaString = null;
 		haakjeString = ") ";
 		
@@ -59,8 +59,8 @@ public class PrintVarCComponent extends CommandComponent implements ActionListen
 	public boolean reken(Rekenblad tb, VarSet varSet)
 	{	double value = gc1.geefWaarde();
 		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))traceKleur = tb.print(gc1.geefTekst());
-		else traceKleur = tb.print(Expressie.format(value));
+		if(Double.isNaN(value))traceKleur = tb.printl(gc1.geefTekst());
+		else traceKleur = tb.printl(Expressie.format(value));
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}

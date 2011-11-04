@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import logotekenap.Rekenblad;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
@@ -173,6 +174,44 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 			{	Component c = getComponent(j);
 				if(c instanceof CommandComponent && c.getX()>0)
 				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+					if(tracekleur) return true;
+					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
+					//{	cc = (CommandComponent)c;
+					//	break;
+					//}
+				}
+			}
+		}
+		
+		
+		
+		return false;
+	}
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	boolean value = bc.geefWaarde(varSet);
+		traceKleur = rb.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		
+		CommandComponent cc = null;
+		if(value)
+		{	for(int j=0 ; j<getComponentCount() ; j++)
+			{	Component c = getComponent(j);
+				if(c instanceof CommandComponent && c.getX()==0)
+				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
+					if(tracekleur) return true;
+					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
+					//{	cc = (CommandComponent)c;
+					//	break;
+					//}
+				}
+			}
+		}
+		else
+		{	for(int j=0 ; j<getComponentCount() ; j++)
+			{	Component c = getComponent(j);
+				if(c instanceof CommandComponent && c.getX()>0)
+				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
 					if(tracekleur) return true;
 					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
 					//{	cc = (CommandComponent)c;

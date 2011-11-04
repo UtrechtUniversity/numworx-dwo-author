@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import logotekenap.Rekenblad;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
@@ -51,6 +52,14 @@ public class PrintStringCComponent extends CommandComponent implements ActionLis
 	{	
 		String s = gc1.geefTekst();
 		traceKleur = tb.schrijf(s);
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		return traceKleur;
+	}
+	
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	
+		String s = gc1.geefTekst();
+		traceKleur = rb.print(s);
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}

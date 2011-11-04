@@ -11,12 +11,12 @@ import logotekenap.Rekenblad;
 import fi.javalogoweb.schuifobjects.SchuifVeld;
 import fi.javalogoweb.expressies.*;
 
-public class PrintVarCComponent extends CommandComponent implements ActionListener
+public class InvoerCComponent extends CommandComponent implements ActionListener
 {
 	
-	public PrintVarCComponent(int x, int y, int b, int h, SchuifVeld sv)
+	public InvoerCComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
-		commandString = "print (";
+		commandString = "invoer (";
 		kommaString = null;
 		haakjeString = ") ";
 		
@@ -56,17 +56,19 @@ public class PrintVarCComponent extends CommandComponent implements ActionListen
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}
-	public boolean reken(Rekenblad tb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))traceKleur = tb.print(gc1.geefTekst());
-		else traceKleur = tb.print(Expressie.format(value));
+	public boolean reken(Rekenblad rb, VarSet varSet)
+	{	String varNaam = gc1.geefTekst();
+		traceKleur = rb.invoer(gc1.geefTekst());
+		//double value = Double.NaN;
+		//if(traceKleur) 
+		double value = rb.geefInvoer();
+		if(!Double.isNaN(value))varSet.setVar(varNaam, new BasisExpressie(value));
 		if(traceKleur)schuifveld.tekenOpnieuw();
 		return traceKleur;
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + "print(\"" + gc1.geefTekst() + "\")" + "\n";
+	{	String s = tab + "invoer(\"" + gc1.geefTekst() + "\")" + "\n";
 		return s;
 	}
 	
