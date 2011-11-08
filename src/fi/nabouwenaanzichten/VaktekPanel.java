@@ -41,6 +41,7 @@ class VaktekPanel extends JPanel //Container
 			la.zetSchaduw(false);
 			la.zetBeginHoeken(0,90);
 			la.zetMuisAan(false);
+			la.zetPijlAan(false);			
 			//add(la);
 			
 			ba = new Viewer3d(kr, breedte/2-vakBreedte+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1, bd);
@@ -56,6 +57,7 @@ class VaktekPanel extends JPanel //Container
 			va.zetSchaduw(false);
 			va.zetBeginHoeken(0,0);
 			va.zetMuisAan(false);
+			va.zetPijlAan(false);
 			add(va);
 			
 			//ra = new Viewer3d(kr, breedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, bd);
@@ -64,6 +66,7 @@ class VaktekPanel extends JPanel //Container
 			ra.zetSchaduw(false);
 			ra.zetBeginHoeken(0,-90);
 			ra.zetMuisAan(false);
+			ra.zetPijlAan(false);
 			add(ra);
 			
 			vr = new VaktekRooster();
@@ -79,6 +82,7 @@ class VaktekPanel extends JPanel //Container
 			la.zetSchaduw(false);
 			la.zetBeginHoeken(0,90);
 			la.zetMuisAan(false);
+			la.zetPijlAan(false);
 			//add(la);
 			
 			ba = new Viewer3d(kr, breedte/2-vakBreedte+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1, bd);
@@ -95,6 +99,7 @@ class VaktekPanel extends JPanel //Container
 			va.zetSchaduw(false);
 			va.zetBeginHoeken(0,0);
 			va.zetMuisAan(false);
+			va.zetPijlAan(false);
 			add(va);
 			
 			ra = new Viewer3d(kr, breedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, bd);
@@ -127,6 +132,7 @@ class VaktekPanel extends JPanel //Container
 		la.zetSchaduw(false);
 		la.zetBeginHoeken(0,90);
 		la.zetMuisAan(false);
+		la.zetPijlAan(false);
 		//add(la);
 	
 		ba = new Viewer3d(kr, breedte/2-vakBreedte+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1, eigenaar);
@@ -142,6 +148,7 @@ class VaktekPanel extends JPanel //Container
 		va.zetSchaduw(false);
 		va.zetBeginHoeken(0,0);
 		va.zetMuisAan(false);
+		va.zetPijlAan(false);
 		add(va);
 	
 		ra = new Viewer3d(kr, breedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, eigenaar);
@@ -149,6 +156,7 @@ class VaktekPanel extends JPanel //Container
 		ra.zetSchaduw(false);
 		ra.zetBeginHoeken(0,-90);
 		ra.zetMuisAan(false);
+		ra.zetPijlAan(false);
 		add(ra);
 	
 		vr = new VaktekRooster();
@@ -173,6 +181,7 @@ class VaktekPanel extends JPanel //Container
 		la.zetSchaduw(false);
 		la.zetBeginHoeken(0,90);
 		la.zetMuisAan(false);
+		la.zetPijlAan(false);
 		//add(la);
 		
 		ba = new Viewer3d(kr, breedte/2-vakBreedte+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1, eigenaar);
@@ -189,6 +198,7 @@ class VaktekPanel extends JPanel //Container
 		va.zetSchaduw(false);
 		va.zetBeginHoeken(0,0);
 		va.zetMuisAan(false);
+		va.zetPijlAan(false);
 		add(va);
 		
 		//ra = new Viewer3d(kr, breedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1, bd);
@@ -198,6 +208,7 @@ class VaktekPanel extends JPanel //Container
 		ra.zetSchaduw(false);
 		ra.zetBeginHoeken(0,-90);
 		ra.zetMuisAan(false);
+		ra.zetPijlAan(false);
 		add(ra);
 		
 		vr = new VaktekRooster();
@@ -240,6 +251,7 @@ class VaktekPanel extends JPanel //Container
 			va.zetSchaduw(false);
 			va.zetBeginHoeken(0,0);
 			va.zetMuisAan(false);
+			va.zetPijlAan(false);
 			add(va);
 			
 		}
@@ -251,6 +263,7 @@ class VaktekPanel extends JPanel //Container
 			ra.zetSchaduw(false);
 			ra.zetBeginHoeken(0,-90);
 			ra.zetMuisAan(false);
+			ra.zetPijlAan(false);
 			add(ra);
 			
 		}
