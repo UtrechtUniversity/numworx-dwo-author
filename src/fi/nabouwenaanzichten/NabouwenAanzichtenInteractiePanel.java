@@ -258,7 +258,7 @@ System.out.println("naip setBounds return");
 		
 		if (noSetBounds)
 		{	noSetBounds = false;	
-System.out.println("noSetBounds");			
+System.out.println("naip noSetBounds");			
 			return;
 		}
 		
@@ -358,7 +358,7 @@ System.out.println("noSetBounds");
 //System.out.println("rec vpZijde = " + v.getSize().width);
 		
 		int tabIndex = 0;
-		if (naiep != null)
+		if ((naiep != null) && (naiep.tabbedPane != null))
 			tabIndex = naiep.tabbedPane.getSelectedIndex();
 		
 //		if (kijkNaActiefKlein)
@@ -1636,9 +1636,12 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			/*cpfiw*/			
 		}
 		
-		if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
-	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
-	    if(ingevuld && (mode==0 || nagekeken)) kijkNa();
+		if (h.containsKey("ingevuld")) 
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
+	    if (h.containsKey("nagekeken")) 
+	    	nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+	    if (ingevuld && (mode == 0 || nagekeken)) 
+	    	kijkNa();
 	    
 	    
 		String docentState = null;
@@ -1930,6 +1933,7 @@ newViewer = false;
 	    
 	    h.put("beginHoekX", new Double(getBeginHoekX()));
 	    h.put("beginHoekY", new Double(getBeginHoekY()));
+	    
 	    h.put("ingevuld", new Boolean(ingevuld));
         h.put("nagekeken", new Boolean(nagekeken));
         
@@ -1981,7 +1985,7 @@ newViewer = false;
 		}
 		
 		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
-		ingevuld = kr.geefAantalK()!=0;
+		ingevuld = kr.geefAantalK() != 0;
 /*		
 		if (aanzichten)
 		{	vp.ra.tekenOpnieuw();
@@ -2380,29 +2384,38 @@ newViewer = false;
 	    return h;
 	}
 	
-	public InteractieEditPanel getEditPanel(){return new NabouwenAanzichtenInteractieEditPanel();}
+	public InteractieEditPanel getEditPanel()
+	{	return new NabouwenAanzichtenInteractieEditPanel();
+	}
 		
-	public void wis(){}
+	public void wis()
+	{}
 	
-	public int geefAsHoogte(){return 0;}
+	public int geefAsHoogte()
+	{	return 0;
+	}
 	
 	public boolean isCorrect()
-	{	if (!kijkNaActief)return true;
-		return score == scoreMax;
+	{	if (!kijkNaActief)
+			return true;
+		return 
+			score == scoreMax;
 	}
 	
 	public boolean isFout()
-	{	if (!kijkNaActief)return false;
+	{	if (!kijkNaActief)
+			return false;
 		return score == 0;
 	}
 	
 	public void zetMode(int mode)
     {   this.mode = mode;
-		kijkNaButton.setVisible(mode==0 || mode==1);
+		kijkNaButton.setVisible(mode == 0 || mode == 1);
     }
 	
 	public void zetNagekeken(boolean b)
-	{	if(ingevuld) nagekeken = b;
+	{	if (ingevuld) 
+			nagekeken = b;
 	}
 	
     public void stop(){}
@@ -2526,7 +2539,7 @@ newViewer = false;
         	}
         	
         }	
-        ingevuld = kr.geefAantalK()!=0;
+        ingevuld = kr.geefAantalK() != 0;
         if (score == 0)
         {	kruisjeLabel.setVisible(true);
         	geelVinkjeLabel.setVisible(false);

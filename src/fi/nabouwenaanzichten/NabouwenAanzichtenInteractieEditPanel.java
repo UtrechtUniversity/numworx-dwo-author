@@ -17,6 +17,9 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 
 	NabouwenAanzichtenInteractiePanel naip;
 	int editWidth = 180;
+	int editHeight = 550;
+	int naipBreedte = 500;
+	int naipHoogte = 450;
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -543,7 +546,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			//roosterLabel.setLocation(naip.getSize().width + offset, roosterLabel.getLocation().y);
 			//roosterTextField.setLocation(naip.getSize().width + 3 * offset, roosterTextField.getLocation().y);
 			
-			tabbedPane.setBounds(naip.getSize().width, 0, editWidth, getSize().height);
+			//tabbedPane.setBounds(naip.getSize().width, 0, editWidth, getSize().height);
+			tabbedPane.setBounds(naipBreedte, 0, editWidth, getSize().height);
 			
 			repaint();
 						
@@ -732,12 +736,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		
 		naip.setEditState(b);
+		
+		if (b.containsKey("naipBreedte"))
+			naipBreedte = ((Integer) b.get("naipBreedte")).intValue();
+		if (b.containsKey("naipHoogte"))
+			naipHoogte = ((Integer) b.get("naipHoogte")).intValue();
+		
+		setBounds(getLocation().x, getLocation().y, naipBreedte + editWidth, Math.max(naipHoogte, editHeight));
+		
 	}
 	
 	public Hashtable getEditState()
 	{		
 		Hashtable h = naip.getEditState(); 
 	
+		h.put("naipBreedte", new Integer(naipBreedte));
+		h.put("naipHoogte", new Integer(naipHoogte));
 	
 	
 		return h;
@@ -745,35 +759,51 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 	public void setBounds(int x, int y, int b, int h)
 	{
-		
+
+/*		
 		if ((x == getLocation().x) && (y == getLocation().y) &&
 				(b == getSize().width) && (h == getSize().height))
 			{	
 System.out.println("naiep setBounds return");			
 				return;
 			}	
-		
+*/		
 		if (noSetBounds)
 		{
 			noSetBounds = false;
 			return;
 		}
-
+/*
 		super.setBounds(x, y, b, h);
 		
 		if (naip != null)
 			naip.setBounds(0, 0, Math.max(0, b - editWidth), h);
+*/
+		super.setBounds(x, y, naipBreedte + editWidth, Math.max(naipHoogte, editHeight));
+		
+		System.out.println("naiep setBounds " + x + " " + y + " " + (naipBreedte + editWidth) + " " + 
+							Math.max(naipHoogte, editHeight));
+		
+		if (naip != null)
+		{	naip.noSetBounds = false;
+			naip.setBounds(0, 0, naipBreedte, naipHoogte);
+		
+		}
+		
 		
 		plaatsComponenten();
 		
-System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
+//System.out.println("setBounds naiep " + x + " " + y + " " + b + " " + h);		
 		
 	}
 	
 	public void zetBreedte(int b)
 	{	
+		naipBreedte = b;
+		
+		setBounds(getLocation().x, getLocation().y, b + editWidth, getSize().height);		
 		//naip.kijkNaActiefKlein = true;
-		naip.setBounds(naip.getLocation().x, naip.getLocation().y, Math.max(0, b), naip.getSize().height);
+		//naip.setBounds(naip.getLocation().x, naip.getLocation().y, Math.max(0, b), naip.getSize().height);
 		plaatsComponenten();
 		
 System.out.println("zetBreedte naiep " + b);		
@@ -781,8 +811,11 @@ System.out.println("zetBreedte naiep " + b);
 	
 	public void zetHoogte(int h)
 	{	
+		naipHoogte = h;
+		
+		setBounds(getLocation().x, getLocation().y, getSize().width, Math.max(h, editHeight));		
 		//naip.kijkNaActiefKlein = true;
-		naip.setBounds(naip.getLocation().x, naip.getLocation().y, naip.getSize().width, h);
+		//naip.setBounds(naip.getLocation().x, naip.getLocation().y, naip.getSize().width, h);
 		
 System.out.println("zetHoogte naiep " + h);		
 	}
