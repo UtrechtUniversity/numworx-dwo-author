@@ -333,8 +333,9 @@ public class AlgebraSchuifComponent extends SchuifComponent
 			return;
 		
 		if (isStapel)
-		{	((AlgebraSchuifVeld) schuifveld).zetStapel(this);
-			isStapel = false;
+		{	isStapel = false;
+			((AlgebraSchuifVeld) schuifveld).zetStapel(this);
+			//isStapel = false;
 			schuifveld.tekenOpnieuw();
 		}
 		super.mouseDragged(e);

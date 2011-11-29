@@ -421,7 +421,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		{	double beginxOud = beginx;
 			double factorXOud = schaalFactorX;
 			int factorRijNummerXOud = factorRijNummerX;
-			System.out.println("beginx3 = "+beginx);
+			//System.out.println("beginx3 = "+beginx);
 			//this.beginwaarde = zoomState.getBeginwaarde();
 			//this.selectnummer = zoomState.getSelectnummer();
 			//this.schaalFactorX = zoomState.getSchaalFactorX();
@@ -450,8 +450,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 				
 			}
 			
-			System.out.println("dx = "+beginwaarde);
-			System.out.println("dx = "+beginx);
+			//System.out.println("dx = "+beginwaarde);
+			//System.out.println("dx = "+beginx);
 			
 			double dx  = beginx-beginxOud;
 			double factor = schaalFactorX/factorXOud;

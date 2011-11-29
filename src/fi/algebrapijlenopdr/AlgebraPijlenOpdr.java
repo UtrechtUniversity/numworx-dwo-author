@@ -44,6 +44,8 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 	
 	private Button viewButton;
 	
+	public static String clipBoard = "";
+	
 	//AlgebraSchuifVeld as;
 	
 	static Image goedkrul, foutkruis, halfkrul;

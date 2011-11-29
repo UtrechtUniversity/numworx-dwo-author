@@ -35,6 +35,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "scrollTekst" , "Scroll in invoervakjes" },
 				{ "zoomTekst" , "Zoom in tabellen" },
+				
+				{ "kopieerTekst" , "Kopieren" },
+				{ "plakTekst" , "Plakken" },
         };
 }
 

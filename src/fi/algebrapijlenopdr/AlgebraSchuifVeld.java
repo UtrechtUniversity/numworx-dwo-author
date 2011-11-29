@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 //import fi.beans.appletutil.AppletUtil;
 import fi.algebrapijlenopdr.schuifobjects.*;
+import fi.beans.base64code.StringCodeObject;
 
 import javax.swing.*;
 
@@ -31,6 +32,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	private Rectangle clip;
 	
 	private JPopupMenu popup;
+	JMenuItem copyItem; 
 	//private ClipPaster clipPaster;
 	private Frame clipFrame;
 	boolean links = false;
@@ -120,22 +122,30 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		
 		maakStapel();
 		
-		grafiekComponent = new GrafiekComponent(this, 500, 200, 200, 130);
+		grafiekComponent = new GrafiekComponent(this, 400, 200, 200, 130);
 		grafiekComponent.isStapel = false;
 		
 		popup = new JPopupMenu();
 					
-		JMenuItem mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup2Label1"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		//JMenuItem mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup2Label1"));
+		copyItem = new JMenuItem(AlgebraPijlenOpdr.rb.getString("kopieerTekst"));
+		copyItem.addActionListener(this);
+		popup.add(copyItem);
+		if (veldIsLeeg())
+			copyItem.setEnabled(false);
 		
 		popup.addSeparator();
 		
-		mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup2Label2"));
+		//mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("popup2Label2"));
+		JMenuItem mi = new JMenuItem(AlgebraPijlenOpdr.rb.getString("plakTekst"));
 		mi.addActionListener(this);
 		popup.add(mi);
+		if ((AlgebraPijlenOpdr.clipBoard == null) || AlgebraPijlenOpdr.clipBoard.equals(""))
+			mi.setEnabled(false);
+		
+		
 		add(popup);
-		popup.setEnabled(false);
+		//popup.setEnabled(false);
 		
 		hidePanel = new Panel();
 		hidePanel.setBackground(Color.white);
@@ -147,6 +157,42 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		//kopieerKnop.setBounds(120,370,160,20);
 		//kopieerKnop.addActionListener(this);
 		//add(kopieerKnop);
+	}
+	
+	
+	public boolean veldIsLeeg()
+	{	int veldCnt = 0;
+		for (int vCnt = 0; vCnt < aantalSc; vCnt++)
+		{
+			if (!schuifcomponenten[vCnt].isStapel && !(schuifcomponenten[vCnt] instanceof GrafiekComponent))
+			{
+				veldCnt++;
+			}
+		}
+		
+		return (veldCnt == 0);
+	}
+	
+	public int getAantalVeldSc()
+	{
+		int veldCnt = 0;
+		for (int vCnt = 0; vCnt < aantalSc; vCnt++)
+		{
+			if (!schuifcomponenten[vCnt].isStapel)
+			{
+				veldCnt++;
+			}
+		}
+		
+		return veldCnt;
+	}
+	public void maakVeldLeeg()
+	{
+		for (int vCnt = (aantalSc - 1); vCnt >= 0; vCnt--)
+		{
+			if (!schuifcomponenten[vCnt].isStapel)
+				verwijder(schuifcomponenten[vCnt]);
+		}
 	}
 	
 	public void zetPlaatjes(ImageIcon gk, ImageIcon fk, ImageIcon kh)
@@ -372,9 +418,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 			}
 	    }
 	    
-//	    tabel = tabelCheckbox.getState();
 		tabel = tabelCheckbox.isSelected();
-//	    grafiek = grafiekCheckbox.getState();
 		grafiek = grafiekCheckbox.isSelected();
 		
 	    expressie = ip.isExpr();
@@ -420,6 +464,90 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	    
 	    h.put("scrollOptie", new Boolean(scrollOptie));
 	    h.put("zoomOptie", new Boolean(zoomOptie));
+	    
+	    return h;
+	}
+
+	public void copy()
+	{
+//System.out.println("copy");		
+		Hashtable h = getCopyTable();
+		String s = StringCodeObject.encodeObjectToString(h);
+		AlgebraPijlenOpdr.clipBoard = s;
+		
+//if ((s != null) && !s.equals(""))
+//System.out.println("s not null");	
+	}
+	
+	public Hashtable getCopyTable()
+	{	int aantalSc = 0;
+		String[] classNames = null;
+		int[] posX = null;
+		int[] posY = null;
+		Hashtable[] scStates = null;
+		boolean[][] connections = null;
+		int[] graphConnections = null;
+		boolean tabel = false;
+		boolean grafiek = false;
+		//boolean expressie = false;
+		//boolean links = false;
+		Hashtable zoomStateHolderState = null;
+	
+		aantalSc = this.aantalSc;
+		classNames = new String[aantalSc];
+		posX = new int[aantalSc];
+		posY = new int[aantalSc];
+		scStates = new Hashtable[aantalSc];
+		for (int i = 0; i < aantalSc; i++)
+	    {	classNames[i] = schuifcomponenten[i].getClass().getName();
+			posX[i] = schuifcomponenten[i].getLocation().x;
+			posY[i] = schuifcomponenten[i].getLocation().y;
+			scStates[i] = schuifcomponenten[i].getState();
+		}
+
+		connections = new boolean[aantalSc][aantalSc];
+		for (int i = 0; i < aantalSc; i++)
+	    {	for (int j = 0; j < aantalSc; j++)
+			{	connections[i][j] = schuifcomponenten[j].pijlIn1 != null && 
+	    							schuifcomponenten[j].pijlIn1.zender == schuifcomponenten[i];
+			}
+	    	
+	    }
+	    
+		tabel = tabelCheckbox.isSelected();
+		grafiek = grafiekCheckbox.isSelected();
+		
+	    //expressie = ip.isExpr();
+	    //links = this.links;
+	    zoomStateHolderState = zoomStateHolder.getState();
+	    	
+	    graphConnections = new int[10];
+	    for (int i = 0; i < 10; i++)
+		{	graphConnections[i] = -1;
+		}
+		if (grafiek)
+	    {	for (int i = 0; i < 10; i++)
+			{	Pijl p = grafiekComponent.pijlenIn[i];
+				for (int j = 0; j < aantalSc; j++)
+		   		{	if (p != null && schuifcomponenten[j] == p.zender)
+		   				graphConnections[i] = j;
+				}
+			}
+	    }
+		
+		Hashtable h = new Hashtable();
+	    h.put("aantalSc", new Integer(aantalSc));
+	    h.put("classNames", classNames);
+	    h.put("posX", posX);
+	    h.put("posY", posY);
+	    h.put("scStates", scStates);
+	    h.put("connections", connections);
+	    h.put("graphConnections", graphConnections);
+	    h.put("tabel", new Boolean(tabel));
+	    h.put("grafiek", new Boolean(grafiek));
+	    //h.put("expressie", new Boolean(expressie));
+	    //h.put("links", new Boolean(links));
+	    h.put("zoomStateHolderState", zoomStateHolderState);
 	    
 	    return h;
 	}
@@ -580,9 +708,6 @@ this.isDemo = isDemo;
 	    	}
 	    }
 	    
-//	    tabelCheckbox.setState(tabel);
-//	    grafiekCheckbox.setState(grafiek);
-	    
 	    tabelCheckbox.setSelected(tabel);
 	    grafiekCheckbox.setSelected(grafiek);	    
 	    
@@ -603,47 +728,15 @@ this.isDemo = isDemo;
 		{	String key = (String) en.nextElement();
 			setZoomStates(key, zoomStateHolder.getZoomState(key));
 		}
-/*		
-		if (!buttonsAdded && toolkit)
-		{	grafiekCheckbox.setLocation(grafiekCheckbox.getLocation().x + getLocation().x , 
-										grafiekCheckbox.getLocation().y + getLocation().y);
-			tabelCheckbox.setLocation(tabelCheckbox.getLocation().x + getLocation().x , 
-									  tabelCheckbox.getLocation().y + getLocation().y);
-			wisKnop.setLocation(wisKnop.getLocation().x + getLocation().x , wisKnop.getLocation().y + getLocation().y);
-			terugKnop.setLocation(terugKnop.getLocation().x + getLocation().x , terugKnop.getLocation().y + getLocation().y);
-			heenKnop.setLocation(heenKnop.getLocation().x + getLocation().x , heenKnop.getLocation().y + getLocation().y);
-			ip.setLocation(ip.getLocation().x + getLocation().x , ip.getLocation().y + getLocation().y);
-			
-			getParent().add(grafiekCheckbox, 0);
-			getParent().add(tabelCheckbox, 0);
-			getParent().add(wisKnop, 0);
-			getParent().add(terugKnop, 0);
-			getParent().add(heenKnop, 0);
-			getParent().add(ip, 0);
-			buttonsAdded = true;
-		}
-*/		
-//		boolean toolkit = true;
-//		if (h.containsKey("toolkit"))
-//			toolkit = ((Boolean) h.get("toolkit")).booleanValue();
-//		this.toolkit = toolkit;
+		
+		copyItem.setEnabled(!veldIsLeeg());
 		
 		zetToolkit(toolkit);
 //System.out.println("toolkit " + toolkit);		
 		
-//		boolean alleenInvullen = false;
-//		if (h.containsKey("alleenInvullen"))
-//			alleenInvullen = ((Boolean) h.get("alleenInvullen")).booleanValue();
-		//this.alleenInvullen = alleenInvullen;
-		
 		zetAlleenInvullen(alleenInvullen);
 //System.out.println("alleenInvullen " + alleenInvullen);
 
-//		boolean isDemo = false;
-//		if (h.containsKey("isDemo"))
-//			isDemo = ((Boolean) h.get("isDemo")).booleanValue();
-		//this.isDemo = isDemo;
-		
 		zetIsDemo(isDemo);
 //System.out.println("isDemo " + isDemo);		
 
@@ -686,7 +779,196 @@ this.isDemo = isDemo;
 		tekenOpnieuw();
 			
     }
-	
+
+    public void paste()
+    {
+    	if ((AlgebraPijlenOpdr.clipBoard != null) && !AlgebraPijlenOpdr.clipBoard.equals(""))
+    	{
+    		
+//System.out.println("paste");    		
+    		Object o = StringCodeObject.decodeStringToObject(AlgebraPijlenOpdr.clipBoard);
+    		if (o == null)
+    			return;
+    		Hashtable h = (Hashtable) o;
+    		setPasteTable(h);
+//System.out.println("o not null");    		
+    	}
+    }
+    
+    public void setPasteTable(Hashtable h)
+    {	
+
+    	int aantalPasteSc = 0;
+    	String[] classNames = null;
+		int[] posX = null;
+		int[] posY = null;
+		Hashtable[] scStates = null;
+		boolean[][] connections = null;
+		int[] graphConnections = null;
+		boolean tabel = false;
+		boolean grafiek = false;
+//		boolean expressie = false;
+//		boolean links = false;
+		Hashtable zoomStateHolderState = null;
+		
+		try
+		{
+			aantalPasteSc = ((Integer) h.get("aantalSc")).intValue();
+			classNames = (String[]) h.get("classNames");
+			posX = (int[]) h.get("posX");
+			posY = (int[]) h.get("posY");
+			scStates = (Hashtable[]) h.get("scStates");
+			connections = (boolean[][]) h.get("connections");
+			graphConnections = (int[]) h.get("graphConnections");
+//			tabel = ((Boolean) h.get("tabel")).booleanValue();
+			grafiek = ((Boolean) h.get("grafiek")).booleanValue();
+//			expressie = ((Boolean) h.get("expressie")).booleanValue();
+//			links = ((Boolean) h.get("links")).booleanValue();
+			zoomStateHolderState = (Hashtable) h.get("zoomStateHolderState");
+		}
+		catch(Exception ex)
+		{	return;
+		}
+		
+//System.out.println("aantalPasteSc = " + aantalPasteSc);
+
+		zoomStateHolder.setState(zoomStateHolderState);
+/*		
+		int n = this.aantalSc;
+		for (int i = 0; i < n; i++)
+		{	verwijder(schuifcomponenten[0]);
+		}
+*/		
+		int aantalStapels = aantalSc;
+		
+//System.out.println("aantalStapels = " + aantalStapels);
+		
+		//schuifcomponenten = new AlgebraSchuifComponent[200];
+		for (int i = 0; i < aantalPasteSc; i++)
+	    {	try
+		    {  	Class c = Class.forName(classNames[i]);
+		      	Constructor cc = c.getDeclaredConstructor(
+		      			new Class[] { AlgebraSchuifVeld.class, int.class, int.class, int.class, int.class } );
+		      	int breedte = 50;
+		      	int hoogte = 20;
+		      	if (classNames[i].equals("fi.algebrapijlenopdr.GrafiekComponent"))
+		      	{	breedte = 210;
+		      		hoogte = 220;
+		      		Object o = cc.newInstance(
+		      			new Object[] {this, new Integer(posX[i]), new Integer(posY[i]), new Integer(breedte), new Integer(hoogte)});
+		      	   	schuifcomponenten[aantalStapels + i] = (AlgebraSchuifComponent) o;
+		      	   	grafiekComponent = (GrafiekComponent) schuifcomponenten[aantalStapels + i];
+		      	   	aantalSc++;
+		      	}
+		      	else
+		      	{	Object o = cc.newInstance(
+		      			new Object[] {this, new Integer(posX[i]), new Integer(posY[i]), new Integer(breedte), new Integer(hoogte)});
+		      			schuifcomponenten[aantalStapels + i] = (AlgebraSchuifComponent) o;
+		      			aantalSc++;
+		      	}
+		    }
+	      	catch(Exception e)
+	      	{	
+	      	}
+	    }
+	    
+//System.out.println("aantalSc = " + aantalSc);
+
+	    for (int i = 0; i < (aantalSc - aantalStapels); i++)
+	    {	if (!(schuifcomponenten[aantalStapels + i] instanceof GrafiekComponent)) 
+	    		schuifcomponenten[aantalStapels + i].setState(scStates[i]);
+	    	// bij een GrafiekComponent lukt dit niet omdat die bij setState de parent nodig heeft en die heeft ie nog niet
+	    }
+	    
+		int max = aantalSc;
+		for (int i = 0; i < (max - aantalStapels); i++)
+		{	
+			if (!(schuifcomponenten[aantalStapels + i] instanceof GrafiekComponent))
+			{	
+				Pijl p = new Pijl(this);
+				if (schuifcomponenten[aantalStapels + i].isStapel) 
+				{	schuifcomponenten[aantalStapels + i].zetLinks(links);
+					p.zetLinks(links);
+				}	
+				schuifcomponenten[aantalStapels + i].voegPijlToe(p);
+			}	
+			add(schuifcomponenten[aantalStapels + i]);
+		}
+		
+	    
+	    for (int i = 0; i < (aantalSc - aantalStapels); i++)
+	    {	for(int j = 0; j < (aantalSc - aantalStapels); j++)
+			{	if (connections[i][j]) 
+				{	Pijl p = schuifcomponenten[aantalStapels + i].pijlUit[schuifcomponenten[aantalStapels + i].aantalPu - 1];
+					schuifcomponenten[aantalStapels + j].verbind(p);
+					p.zetVerbonden(schuifcomponenten[aantalStapels + j]);
+				}
+			}
+	    }
+	    if (grafiek)
+	    {  	for (int i = 0; i < 10; i++)
+			{	if (graphConnections[i] != -1)
+				{	Pijl p = schuifcomponenten[aantalStapels + graphConnections[i]].pijlUit[schuifcomponenten[aantalStapels + graphConnections[i]].aantalPu - 1];
+					grafiekComponent.verbind(p, i);
+					p.zetVerbonden(grafiekComponent);
+				}
+		    }
+		}
+		
+		for (int i = 0; i < (aantalSc - aantalStapels); i++)
+	    {	schuifcomponenten[aantalStapels + i].setState(scStates[i]);
+	    }
+	    
+	    for (int i = 0; i < (aantalSc - aantalStapels); i++)
+	    {	schuifcomponenten[aantalStapels + i].zetVeranderd(20);
+	    	if (schuifcomponenten[aantalStapels + i] instanceof UitvoerSchuifComponent)
+	    	{	((UitvoerSchuifComponent) schuifcomponenten[aantalStapels + i]).zetToonWaarde(true);
+	    		((UitvoerSchuifComponent) schuifcomponenten[aantalStapels + i]).zetScroll(true);
+	    		schuifcomponenten[aantalStapels + i].zetVeranderd(20);
+	    	}
+	    }
+	    
+	    for (int i = 0; i < (aantalSc - aantalStapels); i++)
+	    {	if (schuifcomponenten[aantalStapels + i] instanceof GrafiekComponent)
+	    	{	schuifcomponenten[aantalStapels + i].setState(scStates[i]);
+	    		schuifcomponenten[aantalStapels + i].zetVeranderd(20);
+	    	}
+	    }
+	    
+	    tabelCheckbox.setSelected(tabel);
+	    grafiekCheckbox.setSelected(grafiek);	    
+	    
+	    //ip.zetExpressie(expressie); // deze optie niet aanwezig
+	    
+/*	    
+	    this.links = links;
+	    if (links)
+		{	for (int i = 0; i < aantalSc; i++)
+			{	if (schuifcomponenten[i].isStapel)
+				{	//schuifcomponenten[i].setLocation(schuifcomponenten[i].getLocation().x+10, schuifcomponenten[i].getLocation().y);
+					schuifcomponenten[i].zetLinks(true);
+				}
+			}
+		}
+*/	    
+	    
+	    Enumeration en = zoomStateHolder.keys();
+		while(en.hasMoreElements())
+		{	String key = (String) en.nextElement();
+			setZoomStates(key, zoomStateHolder.getZoomState(key));
+		}
+		
+		for (int i = (aantalSc - 1); i >= aantalStapels; i--)
+	    {	if (schuifcomponenten[i].isStapel)
+	    		verwijder(schuifcomponenten[i]);
+	    }
+		
+//System.out.println("aantalSc = " + aantalSc);		
+
+		tekenOpnieuw();
+			
+    }
+    
 	public void paint(Graphics g)
 	{	super.paint(g);
 		if ((selecterenBezig || selectieGemaakt) && clip != null)
@@ -733,13 +1015,6 @@ this.isDemo = isDemo;
 			add(schuifcomponenten[i]);
 		}
 
-/*		
-		add(grafiekCheckbox, 0);
-		add(tabelCheckbox, 0);
-		add(wisKnop, 0);
-		add(terugKnop, 0);
-		add(heenKnop, 0);
-*/		
 	}
 	
 	public void tekenAchtergrond(Graphics g)
@@ -765,17 +1040,6 @@ this.isDemo = isDemo;
 		}
 //System.out.println("achtergrond w = " + dd.width);		
 		
-		//g.drawString(Integer.toString(aantalSc),20,10);
-		//g.drawString(Integer.toString(schuiflaag.getComponentCount()),50,10);
-		//g.drawString(Integer.toString(getComponentCount()),80,10);
-		
-		//int intveranderd=0,intresized=0;
-		//if(veranderd)intveranderd=1;
-		//if(resized)intresized=1;
-		///g.drawString(Integer.toString(intveranderd),80,25);
-		//g.drawString(Integer.toString(intresized),80,40);
-		
-		//g.drawString("Invoer",35,25);
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics();
 		String s = AlgebraPijlenOpdr.rb.getString("invoerVakLabel");
@@ -786,12 +1050,6 @@ this.isDemo = isDemo;
 		lengte = fm.stringWidth(s);
 		g.drawString(s, 55 - lengte / 2, 100);
 		
-/*		
-if (GOEDKRUL == null)
-System.out.println("null");	
-else		
-GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);	
-*/
 	}
 	
 	public void zetSchuiver(SchuifComponent sc)
@@ -877,27 +1135,9 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 		add(schuifcomponenten[aantalSc]);
 		aantalSc++;
 
-/*		
-		if (!buttonsAdded)
-		{	grafiekCheckbox.setLocation(grafiekCheckbox.getLocation().x + getLocation().x , 
-				                        grafiekCheckbox.getLocation().y + getLocation().y);
-			tabelCheckbox.setLocation(tabelCheckbox.getLocation().x + getLocation().x , tabelCheckbox.getLocation().y + getLocation().y);
-			wisKnop.setLocation(wisKnop.getLocation().x + getLocation().x , wisKnop.getLocation().y + getLocation().y);
-			terugKnop.setLocation(terugKnop.getLocation().x + getLocation().x , terugKnop.getLocation().y + getLocation().y);
-			heenKnop.setLocation(heenKnop.getLocation().x + getLocation().x , heenKnop.getLocation().y + getLocation().y);
-			ip.setLocation(ip.getLocation().x + getLocation().x , ip.getLocation().y + getLocation().y);
-			
-//System.out.println("wis x = " + wisKnop.getLocation().x);			
-			
-			getParent().add(grafiekCheckbox,0);
-			getParent().add(tabelCheckbox,0);
-			getParent().add(wisKnop,0);
-			getParent().add(terugKnop,0);
-			getParent().add(heenKnop,0);
-			getParent().add(ip,0);
-			buttonsAdded = true;
-		}
-*/		
+		copyItem.setEnabled(!veldIsLeeg());
+		
+//System.out.println("veldleeg = " + veldIsLeeg());		
 	}
 	
 	public void verwijder(AlgebraSchuifComponent sc)
@@ -905,7 +1145,7 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 		{	if (schuifcomponenten[i] == sc)
 			{	if (sc instanceof GrafiekComponent)
 				{	GrafiekComponent gsc = (GrafiekComponent) sc;
-					while(gsc.aantalPijlenIn > 0)
+					while (gsc.aantalPijlenIn > 0)
 					{	Pijl p = gsc.pijlenIn[0];
 						gsc.maakLos(gsc.pijlenIn[0]);
 						p.zender.verwijderPijl();
@@ -939,6 +1179,9 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 				}
 				aantalSc--;
 				tekenOpnieuw();
+				
+				copyItem.setEnabled(!veldIsLeeg());
+				
 				return;
 			}
 		}
@@ -998,15 +1241,9 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 //System.out.println("setSize w = " + b + " h = " + h);		
 	}
 	
+	
 	public void zetTabellen(int beginwaarde, int selectnummer, String varN, double schaalFactorX)
-	{	/*for(int i=0 ; i<aantalSc ; i++)
-			{	if(schuifcomponenten[i]instanceof UitvoerSchuifComponent)
-				{	((UitvoerSchuifComponent)schuifcomponenten[i]).zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
-				}
-				if(schuifcomponenten[i]instanceof GrafiekComponent)
-				{	((GrafiekComponent)schuifcomponenten[i]).zetTabel(beginwaarde, selectnummer, varN, schaalFactorX);
-				}
-			}*/
+	{	
 	}
 	
 	public void setZoomStates(String varnaam, ZoomState zoomState)
@@ -1071,47 +1308,25 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 			}
 			
 		}
-/*	
-		else if (e.getSource() == heenKnop)
-		{	if (links)
-			{	links = false;
-				for (int i = 0; i < aantalSc; i++)
-				{	if (schuifcomponenten[i].isStapel)
-					{	schuifcomponenten[i].setLocation(schuifcomponenten[i].getLocation().x - 10, 
-														 schuifcomponenten[i].getLocation().y);
-						schuifcomponenten[i].zetLinks(false);
-					}
-				}
-				tekenOpnieuw();
+		else if ((e.getSource() instanceof JMenuItem) &&
+				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("kopieerTekst")))
+		{	if (!veldIsLeeg())
+			{
+				copy();
 			}
 		}
-*/		
 		else if ((e.getSource() instanceof JMenuItem) &&
-				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup2Label1")))
-		{	selecterenMogelijk = true;
-			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR ));
-		}
-		else if ((e.getSource() instanceof JMenuItem) &&
-				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("popup2Label2")))
-		{	//if(clipFrame!=null)clipFrame.dispose();
-			//clipFrame = new Frame("clip");
-			//clipFrame.setLayout(new FlowLayout());
-			//ClipCanvas cv = new ClipCanvas(geefImage());
-			//cv.zetClip(clip);
-			//clipFrame.add(cv);
-			//clipFrame.pack();
-			//clipFrame.show();
-			//clipFrame.setSize(0,0);
-			//requestFocus();
-			//clipPaster = new ClipPaster(clipFrame);
-			//ClipPaster.pasteToClipboard(clipPaster);
-			//selectieGemaakt = false;
-			//tekenOpnieuw();
-		}
+				 ((JMenuItem)e.getSource()).getText().equals(AlgebraPijlenOpdr.rb.getString("plakTekst")))
+		{	if ((AlgebraPijlenOpdr.clipBoard != null) && !AlgebraPijlenOpdr.clipBoard.equals(""))
+			{	maakVeldLeeg();  
+			
+				paste();
+			}
+		}	
 		else if (e.getSource() == grafiekCheckbox)
 		{	boolean b = grafiekCheckbox.isSelected();
 			if (b)
-			{	grafiekComponent = new GrafiekComponent(this, 500, 200, 210, 220);
+			{	grafiekComponent = new GrafiekComponent(this, getSize().width - 100, 200, 210, 220);
 				schuifcomponenten[aantalSc] = grafiekComponent;
 				aantalSc++;
 				add(grafiekComponent);
@@ -1137,7 +1352,8 @@ GOEDKRUL.paintIcon(this, g, getSize().width-50, getSize().height-50);
 	public void mousePressed(MouseEvent e)
 	{	requestFocus();
 		if (e.getModifiers() == e.BUTTON3_MASK && e.getX() > 100)
-		{	//if(popup.isEnabled())popup.show(this,e.getX(),e.getY());
+		{	if (popup.isEnabled())
+				popup.show(this, e.getX(), e.getY());
 			
 		}
 		else if (selecterenMogelijk)

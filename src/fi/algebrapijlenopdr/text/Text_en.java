@@ -35,6 +35,9 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "scrollTekst" , "Scroll in inputboxes" },
 				{ "zoomTekst" , "Zoom in tables" },
+
+				{ "kopieerTekst" , "Copy" },
+				{ "plakTekst" , "Paste" },
 				
 				
         };
