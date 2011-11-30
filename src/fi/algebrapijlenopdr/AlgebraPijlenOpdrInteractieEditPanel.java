@@ -188,6 +188,9 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	
 	public void setEditState(Hashtable b)
 	{
+		
+System.out.println("apoiep setEditState");
+
 		boolean toolkit = true;
 		if (b.containsKey("toolkit"))
 			toolkit = ((Boolean) b.get("toolkit")).booleanValue();
@@ -285,8 +288,8 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 
 System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
 
-		if ((h <= 1) || (x < 0) || (b <= 1))
-			return;
+//		if ((h <= 1) || (x < 0) || (b <= 1))
+//			return;
 		
 		super.setBounds(x, y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		

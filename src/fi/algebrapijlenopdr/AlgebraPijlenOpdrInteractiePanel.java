@@ -85,7 +85,13 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	public void setEditState(Hashtable h)
 	{	
 		if (algebraSchuifVeld != null)
-			algebraSchuifVeld.setEditModeState(h);
+		{	algebraSchuifVeld.setEditModeState(h);
+//System.out.println("as not null");		
+		}
+		else
+		{
+//System.out.println("as null");			
+		}
 	}
 	
 	public Hashtable getState()
@@ -150,7 +156,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public void setBounds(int x, int y, int b, int h)
 	{	
-//System.out.println("apoip set bounds");
+System.out.println("apoip set bounds " + b + " " + h);
 		
 		if (h == 1)
 			return;
