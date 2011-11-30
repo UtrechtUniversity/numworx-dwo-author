@@ -31,6 +31,8 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 	
 	boolean scormed = false;
 	
+	public static String clipBoard = "";	
+	
 	static Image goedkrul, foutkruis, halfkrul;	
 	
 	AlgebraSchuifVeld as;

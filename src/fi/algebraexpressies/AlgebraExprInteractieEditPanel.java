@@ -13,6 +13,9 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 {
 	AlgebraExprInteractiePanel apoip;
 	int editWidth = 190;
+	int editHeight = 500; 
+	int apoipBreedte = 500; // startbreedte apoip
+	int apoipHoogte = 450; // starthoogte apoip
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -21,6 +24,8 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 	
 	int offset = 10;
 	boolean componentsCreated = false;
+	
+	boolean noSetBounds = false;	
 	
 	ButtonGroup kettingGroup;
 	JRadioButton toolkitButton, invulButton, demoButton;
@@ -254,29 +259,48 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 		zoomBox.setSelected(zoomOptie);
 		
 		apoip.setEditState(b);
+		
+		if (b.containsKey("apoipBreedte"))
+			apoipBreedte = ((Integer) b.get("apoipBreedte")).intValue();
+		if (b.containsKey("apiepHoogte"))
+			apoipHoogte = ((Integer) b.get("bpipHoogte")).intValue();
+		
+		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
+		
 	}
 	
 	
 	public Hashtable getEditState()
 	{		
 		Hashtable h = apoip.getEditState(); 
-	
+
+		h.put("apoipBreedte", new Integer(apoipBreedte));
+		h.put("apoipHoogte", new Integer(apoipHoogte));
+		
 		return h;
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
-/*		
+		
 		if (noSetBounds)
 		{
 			noSetBounds = false;
 			return;
 		}
-*/
-		super.setBounds(x, y, b, h);
+
+		System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
+
+//		if ((h <= 1) || (x < 0) || (b <= 1))
+//			return;
+		
+		super.setBounds(x, y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
+		
+		System.out.println("apoiep setBounds " + x + " " + y + " " + (apoipBreedte + editWidth) + " " + 
+							Math.max(apoipHoogte, editHeight));
 		
 		if (apoip != null)
-			apoip.setBounds(0, 0, Math.max(0, b - editWidth), h);
+			apoip.setBounds(0, 0, apoipBreedte, apoipHoogte);
 		
 		plaatsComponenten();
 		
@@ -285,14 +309,22 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 	}
 	
 	public void zetBreedte(int b)
-	{	
-		apoip.setBounds(apoip.getLocation().x, apoip.getLocation().y, Math.max(0, b), apoip.getSize().height);
+	{
+		apoipBreedte = b;
+		
+		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));		
+		
+		//apoip.setBounds(apoip.getLocation().x, apoip.getLocation().y, Math.max(0, b), apoip.getSize().height);
 		plaatsComponenten();
 	}
 	
 	public void zetHoogte(int h)
 	{	
-		apoip.setBounds(apoip.getLocation().x, apoip.getLocation().y, apoip.getSize().width, h);
+		apoipHoogte = h;
+		
+		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));		
+		
+		//apoip.setBounds(apoip.getLocation().x, apoip.getLocation().y, apoip.getSize().width, h);
 	}
 
 	public void wis()

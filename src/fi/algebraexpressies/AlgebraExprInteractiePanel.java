@@ -7,6 +7,7 @@ import fi.algebraexpressies.schuifobjects.*;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.lang.reflect.Constructor;
 
 import javax.swing.*;
@@ -22,6 +23,16 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	
 	private AlgebraSchuifVeld algebraSchuifVeld;
 
+	boolean kijkNaActief = false;
+
+	int score = 0;
+    int scoreMax = 10;
+
+    boolean ingevuld;
+	private boolean nagekeken;
+	private int mode;
+	
+    Vector listeners = new Vector();
 	
 	
 	public AlgebraExprInteractiePanel()
@@ -193,24 +204,37 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 	
 	public int getScore()
-	{	return 0;
+	{	return score;
 	}
 	
 	public int getScoreMax()
-	{	return 0;
+	{	return scoreMax;
 	}
 	
 	public boolean isCorrect()
-	{	return true;
+	{	if (!kijkNaActief)
+			return true;
+		return 
+			score == scoreMax;
 	}
 	
 	public boolean isFout()
-	{	return false;
+	{	if (!kijkNaActief)
+			return false;
+		return score == 0;
 	}
 	
-	public void zetMode(int mode){}
+	public void zetMode(int mode)
+    {   this.mode = mode;
+ // HIER !!    
+// 		kijkNaButton.setVisible(mode == 0 || mode == 1);
+     }
 	
-	public void zetNagekeken(boolean b){}
+	public void zetNagekeken(boolean b)
+	{	if (ingevuld) 
+			nagekeken = b;
+	}
+
 	
     public void stop(){}
     
@@ -222,11 +246,31 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
     
     public void opnieuw(){}
     
-    public void kijkNa(){}
+    public void kijkNa()
+    {	if (!kijkNaActief)
+    		return;
+
+ // HIER!! // HIER!! zie NabouwenAanzichten    
+    	// ingevuld = ?????
     
-    public void kijkNa(int stapNr){}
+    	//fire actionEvent
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		{
+			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		}
+    	
+    }
+
     
-    public void addActionListener(ActionListener al){}
+    public void kijkNa(int stapNr)
+    {	kijkNa();
+    }
     
-	public void actionPerformed(ActionEvent e){}
+    public void addActionListener(ActionListener al)
+    {	listeners.addElement(al);
+    }
+    
+	public void actionPerformed(ActionEvent e)
+	{}
 }
