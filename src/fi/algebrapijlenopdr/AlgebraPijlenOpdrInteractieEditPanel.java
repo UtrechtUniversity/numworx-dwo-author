@@ -255,7 +255,7 @@ System.out.println("apoiep setEditState");
 			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
 		zoomBox.setSelected(zoomOptie);
 		
-		apoip.setEditState(b);
+//		apoip.setEditState(b);
 		
 		if (b.containsKey("apoipBreedte"))
 			apoipBreedte = ((Integer) b.get("apoipBreedte")).intValue();
@@ -263,6 +263,9 @@ System.out.println("apoiep setEditState");
 			apoipHoogte = ((Integer) b.get("bpipHoogte")).intValue();
 		
 		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
+		
+		// HIER !!
+		apoip.setEditState(b);		
 		
 	}
 	
@@ -288,8 +291,8 @@ System.out.println("apoiep setEditState");
 
 System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
 
-//		if ((h <= 1) || (x < 0) || (b <= 1))
-//			return;
+		if ((h <= 1) || (x < 0) || (b <= 1))
+			return;
 		
 		super.setBounds(x, y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		
