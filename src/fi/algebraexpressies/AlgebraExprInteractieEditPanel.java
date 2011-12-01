@@ -258,7 +258,7 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
 		zoomBox.setSelected(zoomOptie);
 		
-		apoip.setEditState(b);
+//		apoip.setEditState(b);
 		
 		if (b.containsKey("apoipBreedte"))
 			apoipBreedte = ((Integer) b.get("apoipBreedte")).intValue();
@@ -266,6 +266,9 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 			apoipHoogte = ((Integer) b.get("bpipHoogte")).intValue();
 		
 		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
+		
+		// HIER !!
+		apoip.setEditState(b);
 		
 	}
 	
@@ -291,8 +294,8 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 
 		System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
 
-//		if ((h <= 1) || (x < 0) || (b <= 1))
-//			return;
+		if ((h <= 1) || (x < 0) || (b <= 1))
+			return;
 		
 		super.setBounds(x, y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		
