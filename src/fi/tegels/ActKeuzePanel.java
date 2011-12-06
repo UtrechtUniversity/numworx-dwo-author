@@ -36,7 +36,8 @@ public class ActKeuzePanel extends JPanel implements ActionListener //ItemListen
 		//checkboxen = new Checkbox[items.length];
 		checkboxen = new JRadioButton[items.length];
 		for (int i = 0; i < items.length; i++)
-		{	addCheckbox(items[i], 0, height * i, b, height);
+		{	//addCheckbox(items[i], 0, height * i, b, height);
+			addCheckbox(items[i], (b / items.length) * i, 0, (b / items.length), height);
 		}
 		keuze = 1;
 		//checkboxen[0].setState(true);

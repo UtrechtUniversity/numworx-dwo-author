@@ -679,12 +679,13 @@ System.out.println("set h = null");
     	Parameter[] parameters = new Parameter[2];
 		
 		DataType type = new ScormString();
+		DataType bType = new ScormBoolean();
 		
-		Parameter param = new Parameter("transversion", "versie TegelsTr", type);
+		Parameter param = new Parameter("transversion", "versie TegelsTr", bType);
 		param.setHelpText("vul in: yes of no");		
 		parameters[0] = param;
 
-		param = new Parameter("demoversion", "demo versie", type);
+		param = new Parameter("demoversion", "demo versie", bType);
 		param.setHelpText("vul in: yes of no");		
 		parameters[1] = param;
 		

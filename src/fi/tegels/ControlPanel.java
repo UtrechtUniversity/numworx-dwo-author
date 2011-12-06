@@ -130,9 +130,14 @@ class ControlPanel extends JPanel implements ActionListener
 		
 		if (eigenaar.transVersion)
 		{	
-			fiButton.setBounds(legknop.getLocation().x + legknop.getSize().width - 20,
-							   legknop.getLocation().y + legknop.getSize().height + offset / 2,
+			//fiButton.setBounds(legknop.getLocation().x + legknop.getSize().width - 20,
+			//				   legknop.getLocation().y + legknop.getSize().height + offset / 2,
+			//				   20, 30);
+
+			fiButton.setBounds(legknop.getLocation().x + legknop.getSize().width + 20,
+							   legknop.getLocation().y, // + legknop.getSize().height + offset / 2,
 							   20, 30);
+			
 		}
 		else
 		{
@@ -162,14 +167,17 @@ class ControlPanel extends JPanel implements ActionListener
 		String[] items = {Tegels.rb.getString("fijnRasterTekst"), 
 						  Tegels.rb.getString("grofRasterTekst")};
 
-		width = Math.max(fm.stringWidth(Tegels.rb.getString("fijnRasterTekst")), 
-						 fm.stringWidth(Tegels.rb.getString("grofRasterTekst"))) + 55;
+		//width = Math.max(fm.stringWidth(Tegels.rb.getString("fijnRasterTekst")), 
+		//				 fm.stringWidth(Tegels.rb.getString("grofRasterTekst"))) + 55;
+		width = fm.stringWidth(Tegels.rb.getString("fijnRasterTekst")) +  
+				fm.stringWidth(Tegels.rb.getString("grofRasterTekst")) + offset + 60;
 		
 		
 		//gridKeuze = new ActKeuzePanel(items, 400, 10, 200, 40);
 		gridKeuze = new ActKeuzePanel(items, 
-									  legknop.getLocation().x + legknop.getSize().width + offset, 
-									  offset, width, 2 * height, getBackground());
+									  draaiknop.getLocation().x, // + legknop.getSize().width + offset, 
+									  draaiknop.getLocation().y + draaiknop.getSize().height + offset / 2, 
+									  width, height, getBackground());
 		
 		//gridKeuze.setBackground(Color.lightGray);
 		gridKeuze.addActionListener(this);
