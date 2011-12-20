@@ -1358,8 +1358,8 @@ int chkCnt = 0;
 				owner.selector.setState(owner.currentNum, owner.selector.GREEN);
 				owner.currentOpdracht.antwoord = 1;
 				owner.currentOpdracht.antwoordOK = true;
-				
-				owner.ipa.produceAction("changed");
+				if (owner.ipa != null)
+					owner.ipa.produceAction("changed");
 				
 
 //System.out.println("rectangle");				
@@ -1371,7 +1371,8 @@ int chkCnt = 0;
 				owner.currentOpdracht.antwoord = 0;
 				owner.currentOpdracht.antwoordOK = false;
 				
-				owner.ipa.produceAction("changed");
+				if (owner.ipa != null)				
+					owner.ipa.produceAction("changed");
 			}			
 		
 

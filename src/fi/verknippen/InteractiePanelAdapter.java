@@ -35,6 +35,11 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	int scoreMax = 10;
 	int score = 0;
 	
+	boolean kijkNaActief = false;	
+    boolean ingevuld;
+	private boolean nagekeken;
+	private int mode;
+	
 	public InteractiePanelAdapter(ScormAppletIF applet)
 	{
 		this.applet = applet;
@@ -184,38 +189,46 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	public boolean isCorrect()
 	{	if (applet == null)
 			return true;
+	
+		if (!kijkNaActief)
+			return true;
 		
+		return score == scoreMax;
+
+/*		
 		if (((Verknippen) applet).taakNummer == 1)
-		{	
-			if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
+		{	if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
 			{    
-/*				
-				boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
-			    if (ok)
-			        score = 10;
-			    else 
-			        score = 0;
-*/			        
 				return ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
 			}
 			else 
 				return true;
-		
+		}
+		else if ( (((Verknippen) applet).taakNummer == 2) || 
+				  (((Verknippen) applet).taakNummer == 3)) 
+		{
+			return ((Verknippen) applet).opdrachten[0].antwoordOK;
+		}
+		else if (((Verknippen) applet).taakNummer == 4)
+		{
+			return ((Verknippen) applet).opdrachten[0].antwoordOK;
 		}
 		else	
 			return true;
+*/			
 	}
 	public boolean isFout()
 	{
-		return false;
+		return score == 0;
 	}
 	public void zetMode(int mode)
-	{
-	
-	}
+    {   this.mode = mode;
+    	kijkNaActief = (mode == 0 || mode == 1);
+   
+    }
 	public void zetNagekeken(boolean b)
-	{
-	
+	{	if (ingevuld) 
+			nagekeken = b;
 	}
     public void stop()
 	{
@@ -277,23 +290,53 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
     public void kijkNa()
 	{
-        
-//System.out.println("kijkNa() - 1");        
-        if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
-        {    
-        	boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
-        	if (ok)
-        		score = 10;
-        	else 
-        		score = 0;
+    	if (!kijkNaActief)
+			return;
+//System.out.println("kijkNa() - 1");
+    	
+    	if (((Verknippen) applet).taakNummer == 1)
+    	{	
+    		if (((Verknippen) applet).opdrachten[0].drawingPanel != null)
+    		{    
+    			boolean ok = ((Verknippen) applet).opdrachten[0].drawingPanel.figureIsRectangle;
+    			if (ok)
+    				score = scoreMax;
+    			else 
+    				score = 0;
+    		}	
          
 //System.out.println("kijkNa() - 2");         
         } 
+		else if ( (((Verknippen) applet).taakNummer == 2) || 
+				  (((Verknippen) applet).taakNummer == 3)) 
+		{
+			boolean ok = ((Verknippen) applet).opdrachten[0].antwoordOK;
+			if (ok)
+				score = scoreMax;
+			else 
+				score = 0;
+			ingevuld = ((Verknippen) applet).opdrachten[0].antwoord > 0;
+			
+		}
+		else if (((Verknippen) applet).taakNummer == 4)
+		{
+			boolean ok = ((Verknippen) applet).opdrachten[0].antwoordOK;
+			int fouten = ((Verknippen) applet).opdrachten[0].antwoordenFout;
+			if (ok && (fouten == 0))
+				score = scoreMax;
+			else if (ok & (fouten > 0))
+				score = scoreMax / 2;
+			else
+				score = 0;
+			ingevuld = ((Verknippen) applet).opdrachten[0].antwoord > 0;
+		}
+    	
+    	
 	
 	}
     public void kijkNa(int stapNr)
 	{
-	
+    	kijkNa();
 	}
     //public void addActionListener(ActionListener al)
 	//{

@@ -822,6 +822,10 @@ if (scormed)
 				if (isDWOComponent)
 				{	bottomPanel.showGoed = true;
 					bottomPanel.showFout = false;
+					
+					if (ipa != null)				
+						ipa.produceAction("changed");
+					
 				}	
 			}
 			else if (ok && (currentOpdracht.antwoordenFout > 0))
@@ -830,6 +834,10 @@ if (scormed)
 				if (isDWOComponent)
 				{	bottomPanel.showGoed = true;
 					bottomPanel.showFout = true;
+					
+					if (ipa != null)				
+						ipa.produceAction("changed");
+					
 				}	
 				
 			}
@@ -840,6 +848,10 @@ if (scormed)
 				if (isDWOComponent)
 				{	bottomPanel.showGoed = false;
 					bottomPanel.showFout = true;
+					
+					if (ipa != null)				
+						ipa.produceAction("changed");
+					
 				}	
 			
 			}
@@ -900,7 +912,8 @@ if (scormed)
 		{
 			opnieuwAction();
 			
-			ipa.produceAction("changed");
+			if (ipa != null)
+				ipa.produceAction("changed");
 /*		
 			currentOpdracht.drawingPanel.removeAllKnipPolygons();
 			
@@ -1034,6 +1047,10 @@ if (scormed)
 					if (isDWOComponent)
 					{	bottomPanel.showGoed = true;
 						bottomPanel.showFout = false;
+						
+						if (ipa != null)				
+							ipa.produceAction("changed");
+						
 					}	
 				}
 				else
@@ -1042,6 +1059,10 @@ if (scormed)
 					if (isDWOComponent)
 					{	bottomPanel.showGoed = false;
 						bottomPanel.showFout = true;
+						
+						if (ipa != null)				
+							ipa.produceAction("changed");
+						
 					}	
 
 				}
@@ -1183,9 +1204,9 @@ if (scormed)
 	    		(ScormOpdracht) scormOpdrachten.elementAt(oCnt);
 	    	if (scoOpdracht.isCurrent)	
 	    		currentNum = oCnt;
-	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord;
+	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord % 100;
 	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    
-//	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoordenFout;
+	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoord / 100;
 	    	opdrachten[oCnt].drawingPanel.knipPolygons.removeAllElements();
 			for (int pCnt = 0; pCnt < scoOpdracht.figuurPolygons.size(); pCnt++)
 	    	{	ScormPolygon sp = 
@@ -1225,7 +1246,7 @@ if (scormed)
 	    {	ScormOpdracht scoOpdracht = new ScormOpdracht(oCnt + 1);
 	    	if (currentNum == oCnt)
 	    		scoOpdracht.isCurrent = true;
-	    	scoOpdracht.antwoord = opdrachten[oCnt].antwoord;
+	    	scoOpdracht.antwoord = 100 * opdrachten[oCnt].antwoordenFout + opdrachten[oCnt].antwoord;
 	    	scoOpdracht.antwoordOK = opdrachten[oCnt].antwoordOK;
 //	    	scoOpdracht.antwoordenFout = opdrachten[oCnt].antwoordenFout;
 	    	Vector knipPolygons = opdrachten[oCnt].drawingPanel.knipPolygons;
