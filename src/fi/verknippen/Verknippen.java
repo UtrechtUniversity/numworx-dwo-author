@@ -756,7 +756,7 @@ if (scormed)
 					{	bottomPanel.showGoed = true;
 						bottomPanel.showFout = false;
 					}
-					if (currentOpdracht.antwoordOK && (currentOpdracht.antwoordenFout > 0))
+					else if (currentOpdracht.antwoordOK && (currentOpdracht.antwoordenFout > 0))
 					{	bottomPanel.showGoed = true;
 						bottomPanel.showFout = true;
 					}
@@ -1205,8 +1205,10 @@ if (scormed)
 	    	if (scoOpdracht.isCurrent)	
 	    		currentNum = oCnt;
 	    	opdrachten[oCnt].antwoord = scoOpdracht.antwoord % 100;
+//System.out.println("a = " + opdrachten[oCnt].antwoord);	    	
 	    	opdrachten[oCnt].antwoordOK = scoOpdracht.antwoordOK;	    
 	    	opdrachten[oCnt].antwoordenFout = scoOpdracht.antwoord / 100;
+//System.out.println("afout = " + opdrachten[oCnt].antwoordenFout);	    	
 	    	opdrachten[oCnt].drawingPanel.knipPolygons.removeAllElements();
 			for (int pCnt = 0; pCnt < scoOpdracht.figuurPolygons.size(); pCnt++)
 	    	{	ScormPolygon sp = 
