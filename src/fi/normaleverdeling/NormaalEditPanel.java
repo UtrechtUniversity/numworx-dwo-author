@@ -896,6 +896,13 @@ public class NormaalEditPanel extends JPanel implements InteractieEditPanel
 	    	
 	    	h.put("maxScore", maxScoreVeld.getText());
 	    	
+	    	int scoreMax = 0;
+	    	try{
+	    		scoreMax = Integer.parseInt(maxScoreVeld.getText());
+	    	}
+	    	catch(NumberFormatException e){}
+	    	h.put("scoreMax", new Integer(scoreMax));
+	    	
 	    }
 
 	    return h;
