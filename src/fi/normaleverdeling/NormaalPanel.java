@@ -3226,6 +3226,8 @@ grensDecimals = findGrensDecimals();
 	// interface InteractiePanel
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{	
+		
+//System.out.println("raval " + randomVars.length);		
 		double mu = 0;
 		double sigma = 1;
 		double grens = mu + 1;
@@ -3354,13 +3356,17 @@ grensDecimals = findGrensDecimals();
 		if (sigmaString.length() > 0 && sigmaString.charAt(0) == '#' && 
 			sigmaString.charAt(sigmaString.length() - 1) == '#') 
 			sigma = substitueerRandom(sigma, sigmaString, randomVars, randomValues);
-		if(grensString.length()>0 && grensString.charAt(0)=='#'&& grensString.charAt(grensString.length()-1)=='#') 
+		if (grensString.length() > 0 && grensString.charAt(0) == '#' && 
+			grensString.charAt(grensString.length() - 1) == '#') 
 			grens = substitueerRandom(grens, grensString, randomVars, randomValues);
-		if(grensLinksString.length()>0 && grensLinksString.charAt(0)=='#'&& grensLinksString.charAt(grensLinksString.length()-1)=='#') 
+		if (grensLinksString.length() > 0 && grensLinksString.charAt(0) == '#' && 
+			grensLinksString.charAt(grensLinksString.length() - 1) == '#') 
 			grensLinks = substitueerRandom(grensLinks, grensLinksString, randomVars, randomValues);
-		if(grensRechtsString.length()>0 && grensRechtsString.charAt(0)=='#'&& grensRechtsString.charAt(grensRechtsString.length()-1)=='#') 
+		if (grensRechtsString.length() > 0 && grensRechtsString.charAt(0) == '#' && 
+			grensRechtsString.charAt(grensRechtsString.length() - 1) == '#') 
 			grensRechts = substitueerRandom(grensRechts, grensRechtsString, randomVars, randomValues);
-		if(kansString.length()>0 && kansString.charAt(0)=='#'&& kansString.charAt(kansString.length()-1)=='#') 
+		if (kansString.length() > 0 && kansString.charAt(0) == '#' && 
+			kansString.charAt(kansString.length() - 1) == '#') 
 			kans = substitueerRandom(kans,kansString, randomVars, randomValues);
 		
 		zetMu(mu, false, true);		
@@ -3457,8 +3463,13 @@ grensDecimals = findGrensDecimals();
 			{	kijkMuNa = ((Boolean) b.get("kijkMuNa")).booleanValue();
 				if (b.containsKey("checkMu"))
 				{	String checkMu = (String) b.get("checkMu");
-					if (!checkMu.equals(""))
+					if (checkMu.length() > 0 && checkMu.charAt(0) == '#' && 
+						checkMu.charAt(checkMu.length() - 1) == '#') 
+						antwoordMu = substitueerRandom(antwoordMu, checkMu, randomVars, randomValues);
+					else if (!checkMu.equals(""))
 						antwoordMu = Double.parseDouble(checkMu);
+					
+//System.out.println("am = " + antwoordMu);					
 				}
 			}
 			antwoordSigma = 1;
@@ -3466,7 +3477,10 @@ grensDecimals = findGrensDecimals();
 			{	kijkSigmaNa = ((Boolean) b.get("kijkSigmaNa")).booleanValue();
 				if (b.containsKey("checkSigma"))
 				{	String checkSigma = (String) b.get("checkSigma");
-					if (!checkSigma.equals(""))
+					if (checkSigma.length() > 0 && checkSigma.charAt(0) == '#' && 
+						checkSigma.charAt(checkSigma.length() - 1) == '#') 
+						antwoordSigma = substitueerRandom(antwoordSigma, checkSigma, randomVars, randomValues);
+					else if (!checkSigma.equals(""))
 						antwoordSigma = Double.parseDouble(checkSigma);
 				}
 			}
@@ -3475,7 +3489,10 @@ grensDecimals = findGrensDecimals();
 			{	kijkGrensNa = ((Boolean) b.get("kijkGrensNa")).booleanValue();
 				if (b.containsKey("checkGrens"))
 				{	String checkGrens = (String) b.get("checkGrens");
-					if (!checkGrens.equals(""))
+					if (checkGrens.length() > 0 && checkGrens.charAt(0) == '#' && 
+						checkGrens.charAt(checkGrens.length() - 1) == '#') 
+						antwoordGrens = substitueerRandom(antwoordGrens, checkGrens, randomVars, randomValues);
+					else if (!checkGrens.equals(""))
 						antwoordGrens = Double.parseDouble(checkGrens);
 				}
 			}
@@ -3484,7 +3501,10 @@ grensDecimals = findGrensDecimals();
 			{	kijkGrensLinksNa = ((Boolean) b.get("kijkGrensLinksNa")).booleanValue();
 				if (b.containsKey("checkGrensLinks"))
 				{	String checkGrensLinks = (String) b.get("checkGrensLinks");
-					if (!checkGrensLinks.equals(""))
+					if (checkGrensLinks.length() > 0 && checkGrensLinks.charAt(0) == '#' && 
+						checkGrensLinks.charAt(checkGrensLinks.length() - 1) == '#') 
+						antwoordGrensLinks = substitueerRandom(antwoordGrensLinks, checkGrensLinks, randomVars, randomValues);
+					else if (!checkGrensLinks.equals(""))
 						antwoordGrensLinks = Double.parseDouble(checkGrensLinks);
 				}
 			}
@@ -3493,7 +3513,10 @@ grensDecimals = findGrensDecimals();
 			{	kijkGrensRechtsNa = ((Boolean) b.get("kijkGrensRechtsNa")).booleanValue();
 				if (b.containsKey("checkGrensRechts"))
 				{	String checkGrensRechts = (String) b.get("checkGrensRechts");
-					if (!checkGrensRechts.equals(""))
+					if (checkGrensRechts.length() > 0 && checkGrensRechts.charAt(0) == '#' && 
+						checkGrensRechts.charAt(checkGrensRechts.length() - 1) == '#') 
+						antwoordGrensRechts = substitueerRandom(antwoordGrensRechts, checkGrensRechts, randomVars, randomValues);
+					else if (!checkGrensRechts.equals(""))
 						antwoordGrensRechts = Double.parseDouble(checkGrensRechts);
 				}
 			}
@@ -3502,7 +3525,10 @@ grensDecimals = findGrensDecimals();
 			{	kijkKansNa = ((Boolean) b.get("kijkKansNa")).booleanValue();
 				if (b.containsKey("checkKans"))
 				{	String checkKans = (String) b.get("checkKans");
-					if (!checkKans.equals(""))
+					if (checkKans.length() > 0 && checkKans.charAt(0) == '#' && 
+						checkKans.charAt(checkKans.length() - 1) == '#') 
+						antwoordKans = substitueerRandom(antwoordKans, checkKans, randomVars, randomValues);
+					else if (!checkKans.equals(""))
 						antwoordKans = Double.parseDouble(checkKans);
 				}
 			}
@@ -3539,8 +3565,11 @@ grensDecimals = findGrensDecimals();
 		s = s.substring(1, s.length() - 1);
 		String[] delen = StringUtils.split(s, "/");
 		int decFactor = 1;
+		
 		for (int j = 0 ; j < randomVars.length; j++)
-		{	if (randomVars[j].equals(delen[0])) 
+		{	
+//System.out.println("rava " + j + " " + randomVars[j]);			
+			if (randomVars[j].equals(delen[0])) 
 				d = ((Integer) randomValues.get(randomVars[j])).intValue();
 		}
 		if (delen.length > 1)
