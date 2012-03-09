@@ -13,27 +13,16 @@ import fi.grafiek3dtest.expressies.*;
 public class FunctieEditor extends FormuleEditor implements FocusListener
 {
 	private VergelijkingVak[] functieVakken;
-	private JCheckBox[] checkboxen;
-	private JPanel[] cbPanels;
-	private GrafiekComponent grafiekComponent;
+	CheckComponent[] checks;
+	
 	Grafiek3DComponent grafiek3DComponent;
-	private int maxAantalFuncties=0;
-	private int aantalRegels=1;
-	private String voorbeeld;
-	private static Image GOEDKRUL,FOUTKRUIS;
-	private ImageComponent goedIC, foutIC;
+	
+	private int maxAantalFuncties = 0;
+	private int aantalRegels = 1;
 	private int actiefNummer;
 	
-	//private FormuleButton nieuweRegelKnop;
-	//private FormuleButton verwijderRegelKnop;
+	int functieType = -1;
 	
-	private String varNaam = "x";
-	private String yNaam = "y";
-	String[] namen = {"f","g","h","i","j","k","l","m","n","p"};
-	private boolean formalFunction = true;
-	private Color[] colors;
-	
-	int functieType = 0;
 	String varNaamX = "x";
 	String varNaamY = "y";
 	String paramNaam = "t";
@@ -42,507 +31,840 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	String[] functieNamen = {"f","g","h","i","j","k","l","m","n","p"};
 	String[] parametrisatieNamen = {"x","y","z"};
 	
+	JComboBox functieTypeBox;
 	
+	boolean functieTypeKeuze = true;
 	
-		
+	String graphString = "$f@";
+	String surfaceXString = "$f@";
+	String surfaceYString = "$f@";
+	String surfaceZString = "$f@";
+	String uMinString = "$f@";
+	String uMaxString = "$f@";
+	String uPointsString = "$f@";
+	String vMinString = "$f@";
+	String vMaxString = "$f@";
+	String vPointsString = "$f@";
+	String curveXString = "$f@";
+	String curveYString = "$f@";
+	String curveZString = "$f@";
+	String tMinString = "$f@";
+	String tMaxString = "$f@";
+	String tPointsString = "$f@";
+	
+	final double NZERO = 1e-5d;
+	
 	public FunctieEditor(boolean b)
 	{	super(b);
 		zetGrafiekOfEdit(true);
 		addFocusListener(this);
+		
+		addActionListener(this);
+		
 		remove(formuleVak);
 		formuleVak.removeActionListener(this);
 		setScrollHorizontal(false);
+
+		nieuweRegelKnop.setVisible(false);
+		verwijderRegelKnop.setVisible(false);
 		
-		colors = new Color[10];
-	    
-		colors[0] = new Color(0,0,255);
-		colors[1] = new Color(0,200,0);
-		colors[2] = new Color(255,50,50);
-		colors[3] = new Color(00,220,220);
-		colors[4] = new Color(220,0,220);
-		colors[5] = new Color(200,200,0);
-		colors[6] = Color.black;
-		colors[7] = Color.black;
-		colors[8] = Color.black;
-		colors[9] = Color.black;	
-		
-		goedIC = new ImageComponent(GOEDKRUL);
-		foutIC = new ImageComponent(FOUTKRUIS);
-		
-		//headerPanel.remove(tabletButton);
-		
-		ndewortelKnop = new FormuleButton("ndewortel");
-		ndewortelKnop.setBounds(112,2,20,20);
-		ndewortelKnop.addActionListener(this);
-		//zetOpBalk(ndewortelKnop);
-		
-		ndelogKnop = new FormuleButton("ndelog");
-		ndelogKnop.setBounds(156,2,25,20);
-		ndelogKnop.addActionListener(this);
-		//zetOpBalk(ndelogKnop);
-		
-		absKnop = new FormuleButton("abs");
-		absKnop.setBounds(134,2,20,20);
-		absKnop.addActionListener(this);
-		//zetOpBalk(absKnop);
-		
-		/*nieuweRegelKnop = new FormuleButton("gelijkwaardig");
-		nieuweRegelKnop.setBounds(160,2,20,20);
-		nieuweRegelKnop.addActionListener(this);
-		zetOpBalk(nieuweRegelKnop);
-		
-		verwijderRegelKnop = new FormuleButton("terug");
-		verwijderRegelKnop.setBounds(180,2,20,20);
-		verwijderRegelKnop.addActionListener(this);
-		zetOpBalk(verwijderRegelKnop);*/
-	}
-	
-	
-	public void zetVarNaam(String s)
-	{	varNaam = s;
-		zetVoorvoegsel();
-		if (grafiekComponent != null)
-			grafiekComponent.zetVarNaam(varNaam);
-	}
-	
-	public void zetYAsLabel(String s)
-	{	yNaam = s;
-		zetVoorvoegsel();
-		if (grafiekComponent != null)
-			grafiekComponent.zetYAsLabel(yNaam);
-	}
-	
-	public void zetFormalFunction(boolean b)
-	{	formalFunction = b;
-		zetVoorvoegsel();
+		functieTypeBox = new JComboBox();
+		functieTypeBox.setFont(Grafiek3DTest.tekstFont);
+		FontMetrics tekstFM = getFontMetrics(Grafiek3DTest.tekstFont);
+		functieTypeBox.addItem(Grafiek3DTest.rb.getString("grafiekTekst"));
+		int width = tekstFM.stringWidth(Grafiek3DTest.rb.getString("grafiekTekst"));
+		functieTypeBox.addItem(Grafiek3DTest.rb.getString("oppervlakTekst"));
+		width = Math.max(width, tekstFM.stringWidth(Grafiek3DTest.rb.getString("oppervlakTekst")));
+		functieTypeBox.addItem(Grafiek3DTest.rb.getString("krommeTekst"));
+		width = Math.max(width, tekstFM.stringWidth(Grafiek3DTest.rb.getString("krommeTekst")));
+		functieTypeBox.setBounds(160, 2, width + 35, 20);
+		zetOpBalk(functieTypeBox);
+		functieTypeBox.addActionListener(this);
 		
 	}
 	
-	public void zetVoorvoegsel()
-	{	for (int i = 0; i < maxAantalFuncties; i++)
-		{	if (formalFunction)
-				functieVakken[i].formuleVak1.vulVak("$f" + namen[i] + "(" + varNaam + ")@");
-			else 
-				if (aantalRegels > 1)
-					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-			else 
-				functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
-		}
+	public void zetFunctieTypeKeuze(boolean b)
+	{
+		functieTypeBox.setVisible(b);
 	}
 	
 	public void layoutVakken()
-	{	int hoogte = 10;
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	if(functieVakken[i]!=null)
-			{	functieVakken[i].setLocation(30,hoogte);
-				if(cbPanels!=null && cbPanels[i]!=null)cbPanels[i].setLocation(4,hoogte+functieVakken[i].ashoogte-5);
-				hoogte = hoogte + functieVakken[i].getSize().height + 10;
+	{	int hoogte = 3;
+		for (int i = 0; i < maxAantalFuncties; i++)
+		{	if (functieVakken[i] != null)
+			{	functieVakken[i].setLocation(30, hoogte);
+				int vSpace = (functieVakken[i].getSize().height + 8 - checks[i].getSize().height) / 2;
+				if (vSpace < 0)
+					vSpace = 0;
+				checks[i].setLocation(3, hoogte + vSpace - 2);
+				hoogte = hoogte + functieVakken[i].getSize().height + 8;
 			}
 		}
 		repaint();
 	}
-	
-	public void zetGrafiekComponent(GrafiekComponent gc)
-	{	grafiekComponent = gc;
-	}
-	
+
 	public void zetGrafiek3DComponent(Grafiek3DComponent g3dc)
 	{	grafiek3DComponent = g3dc;
 	}
 	
 	public Hashtable getState()
-	{	String[] expressieStrings = null;
-		boolean[] geselecteerd = null;
-		String varNaam = "x";
-		String yNaam = "y";
-				
-		expressieStrings = new String[maxAantalFuncties];
-		geselecteerd = new boolean[maxAantalFuncties];
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	expressieStrings[i] = functieVakken[i].formuleVak2.toString();
-			geselecteerd[i] = checkboxen[i].isSelected();
-		}
-		varNaam = this.varNaam;
-		yNaam = this.yNaam;
-				
-		Hashtable h = grafiekComponent.getState();
-	    h.put("expressieStrings", expressieStrings);
-	    h.put("geselecteerd", geselecteerd);
-	    h.put("varNaam", varNaam);
-	    h.put("yNaam", yNaam);
-	    return h;
+	{	
+		
+		Hashtable h = new Hashtable();
+		
+		updateExpStrings();
+		
+		// state
+		h.put("functieType", new Integer(functieType));
+		
+		h.put("graphString", graphString);
+
+		h.put("surfaceXString", surfaceXString);
+		h.put("surfaceYString", surfaceYString);
+		h.put("surfaceZString", surfaceZString);
+		h.put("uMinString", uMinString);
+		h.put("uMaxString", uMaxString);
+		h.put("uPointsString", uPointsString);
+		h.put("vMinString", vMinString);
+		h.put("vMaxString", vMaxString);
+		h.put("vPointsString", vPointsString);
+		
+		h.put("curveXString", curveXString);
+		h.put("curveYString", curveYString);
+		h.put("curveZString", curveZString);
+		h.put("tMinString", tMinString);
+		h.put("tMaxString", tMaxString);
+		h.put("tPointsString", tPointsString);
+		
+		return h;
+		
 	}
 	
 	public Hashtable getEditState()
-	{	String[] expressieStrings = null;
-		boolean[] geselecteerd = null;
-		String varNaam = "x";
-		String yNaam = "y";
-		boolean formalFunction = true;
+	{	
+
+		Hashtable h = new Hashtable();
 		
-		expressieStrings = new String[maxAantalFuncties];
-		geselecteerd = new boolean[maxAantalFuncties];
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	expressieStrings[i] = functieVakken[i].formuleVak2.toString();
-			geselecteerd[i] = checkboxen[i].isSelected();
-		}		
+		updateExpStrings();
 		
-		varNaam = this.varNaam;
-		yNaam = this.yNaam;
-		formalFunction = this.formalFunction;
-				
-		Hashtable h = grafiekComponent.getState();
-	    h.put("expressieStrings", expressieStrings);
-	    h.put("geselecteerd", geselecteerd);
-	    h.put("varNaam", varNaam);
-	    h.put("yNaam", yNaam);
-	    h.put("formalFunction", new Boolean(formalFunction));
-	    return h;
+		// editstate
+		h.put("functieTypeKeuze", new Boolean(functieTypeKeuze));
+		
+		// state
+		h.put("functieType", new Integer(functieType));
+		
+		h.put("graphString", graphString);
+
+		h.put("surfaceXString", surfaceXString);
+		h.put("surfaceYString", surfaceYString);
+		h.put("surfaceZString", surfaceZString);
+		h.put("uMinString", uMinString);
+		h.put("uMaxString", uMaxString);
+		h.put("uPointsString", uPointsString);
+		h.put("vMinString", vMinString);
+		h.put("vMaxString", vMaxString);
+		h.put("vPointsString", vPointsString);
+		
+		h.put("curveXString", curveXString);
+		h.put("curveYString", curveYString);
+		h.put("curveZString", curveZString);
+		h.put("tMinString", tMinString);
+		h.put("tMaxString", tMaxString);
+		h.put("tPointsString", tPointsString);
+		
+		return h;
+			
 	}
 	
-	
-
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
-	{	String[] expressieStrings = null;
-    	boolean[] geselecteerd = null;
-    	String varNaam = "x";
-    	String yNaam = "y";
-    	boolean formalFunction = true;
-    
-    	if(h.containsKey("expressieStrings")) expressieStrings = (String[])h.get("expressieStrings");
-    	if(h.containsKey("geselecteerd")) geselecteerd = (boolean[])h.get("geselecteerd");
-    	if(h.containsKey("varNaam")) varNaam = (String)h.get("varNaam");
-    	if(h.containsKey("yNaam")) yNaam = (String)h.get("yNaam");
-    	if(h.containsKey("formalFunction")) formalFunction = ((Boolean)h.get("formalFunction")).booleanValue();
-    	
-    	this.varNaam = varNaam;
-    	this.yNaam = yNaam;
-    	this.formalFunction = formalFunction;
-		grafiekComponent.zetVarNaam(varNaam);
-    	
-    	if(expressieStrings==null) return;
-    	maxAantalFuncties = expressieStrings.length;
-		//expressies = new Expressie[aantalExpressies];
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	if(formalFunction) functieVakken[i].formuleVak1.vulVak("$f"+namen[i]+"(" + varNaam + ")@");
-			else if(aantalRegels>1)functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"$s"+(i+1)+"@@");
-			else functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"@");
-			if(!expressieStrings[i].equals("$f@"))
-			{	
-    			try			
-    			{	expressieStrings[i] = FormuleParser.randomizeString(expressieStrings[i],randomVars,randomValues);
-    			}
-    			catch(Exception e)
-    			{	expressieStrings[i] = "$f???@";
-    				this.zetRandomFout(true);
-    			}
-						
-    			functieVakken[i].formuleVak2.vulVak(expressieStrings[i]);
-    			if(geselecteerd[i]) grafiekComponent.zetExpressie(i,functieVakken[i].formuleVak2.geefExpressie());
-    			add(functieVakken[i],0);
-    			functieVakken[i].setVisible(true);
-				if(geselecteerd!=null)checkboxen[i].setSelected(geselecteerd[i]);
-				checkboxen[i].setVisible(true);
-				add(cbPanels[i],0);
-				aantalRegels = i+1;
-				
-			}
-			
-		}
-		layoutVakken();		
+	{	
+		// edit state
+		if (h.containsKey("functieTypeKeuze")) 
+			functieTypeKeuze = ((Boolean) h.get("functieTypeKeuze")).booleanValue();
+		zetFunctieTypeKeuze(functieTypeKeuze);
 		
-		if(maxAantalFuncties < 9)functieVakken[maxAantalFuncties].setVisible(true);
-		grafiekComponent.setState(h);
-		grafiekComponent.repaint();
+		// state
+		if (h.containsKey("functieType")) 
+			functieType = ((Integer) h.get("functieType")).intValue();
+		
+		if (h.containsKey("graphString")) 
+			graphString = (String) h.get("graphString");
+
+		if (h.containsKey("surfaceXString")) 
+			surfaceXString = (String) h.get("surfaceXString");
+		if (h.containsKey("surfaceYString")) 
+			surfaceYString = (String) h.get("surfaceYString");
+		if (h.containsKey("surfaceZString")) 
+			surfaceZString = (String) h.get("surfaceZString");
+		if (h.containsKey("uMinString")) 
+			uMinString = (String) h.get("uMinString");
+		if (h.containsKey("uMaxString")) 
+			uMaxString = (String) h.get("uMaxString");
+		if (h.containsKey("uPointsString")) 
+			uPointsString = (String) h.get("uPointsString");
+		if (h.containsKey("vMinString")) 
+			vMinString = (String) h.get("vMinString");
+		if (h.containsKey("vMaxString")) 
+			vMaxString = (String) h.get("vMaxString");
+		if (h.containsKey("vPointsString")) 
+			vPointsString = (String) h.get("vPointsString");
+		
+		if (h.containsKey("curveXString")) 
+			curveXString = (String) h.get("curveXString");
+		if (h.containsKey("curveYString")) 
+			curveYString = (String) h.get("curveYString");
+		if (h.containsKey("curveZString")) 
+			curveZString = (String) h.get("curveZString");
+		if (h.containsKey("tMinString")) 
+			tMinString = (String) h.get("tMinString");
+		if (h.containsKey("tMaxString")) 
+			tMaxString = (String) h.get("tMaxString");
+		if (h.containsKey("tPointsString")) 
+			tPointsString = (String) h.get("tPointsString");
+		
+		zetFuncties(functieType, false);
+		
     }
 	
 	public void setEditState(Hashtable h)
-	{	String[] expressieStrings = null;
-    	boolean[] geselecteerd = null;
-    	String varNaam = "x";
-    	String yNaam = "y";
-    	boolean formalFunction = true;
-    
-    	if(h.containsKey("expressieStrings")) expressieStrings = (String[])h.get("expressieStrings");
-    	if(h.containsKey("geselecteerd")) geselecteerd = (boolean[])h.get("geselecteerd");
-    	if(h.containsKey("varNaam")) varNaam = (String)h.get("varNaam");
-    	if(h.containsKey("yNaam")) yNaam = (String)h.get("yNaam");
-    	if(h.containsKey("formalFunction")) formalFunction = ((Boolean)h.get("formalFunction")).booleanValue();
-    	
-    	this.varNaam = varNaam;
-    	this.yNaam = yNaam;
-    	this.formalFunction = formalFunction;
-		grafiekComponent.zetVarNaam(varNaam);
-    	
-    	if(expressieStrings==null) return;
-    	maxAantalFuncties = expressieStrings.length;
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	if(formalFunction) functieVakken[i].formuleVak1.vulVak("$f"+namen[i]+"(" + varNaam + ")@");
-			else if(aantalRegels>1)functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"$s"+(i+1)+"@@");
-			else functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"@");
-			if(!expressieStrings[i].equals("$f@"))
-			{	functieVakken[i].formuleVak2.vulVak(expressieStrings[i]);
-				if(geselecteerd[i]) grafiekComponent.zetExpressie(i,functieVakken[i].formuleVak2.geefExpressie());
-				add(functieVakken[i],0);
-				functieVakken[i].setVisible(true);
-				if(geselecteerd!=null)checkboxen[i].setSelected(geselecteerd[i]);
-				checkboxen[i].setVisible(true);
-				add(cbPanels[i],0);
-				aantalRegels = i+1;
-			}
-		}
-		layoutVakken();	
-		if(maxAantalFuncties < 9)functieVakken[maxAantalFuncties].setVisible(true);
-		grafiekComponent.setState(h);
-		grafiekComponent.repaint();
+	{	
+		// edit state
+		if (h.containsKey("functieTypeKeuze")) 
+			functieTypeKeuze = ((Boolean) h.get("functieTypeKeuze")).booleanValue();
+		zetFunctieTypeKeuze(functieTypeKeuze);
+		
+		// state
+		if (h.containsKey("functieType")) 
+			functieType = ((Integer) h.get("functieType")).intValue();
+		
+		if (h.containsKey("graphString")) 
+			graphString = (String) h.get("graphString");
+
+		if (h.containsKey("surfaceXString")) 
+			surfaceXString = (String) h.get("surfaceXString");
+		if (h.containsKey("surfaceYString")) 
+			surfaceYString = (String) h.get("surfaceYString");
+		if (h.containsKey("surfaceZString")) 
+			surfaceZString = (String) h.get("surfaceZString");
+		if (h.containsKey("uMinString")) 
+			uMinString = (String) h.get("uMinString");
+		if (h.containsKey("uMaxString")) 
+			uMaxString = (String) h.get("uMaxString");
+		if (h.containsKey("uPointsString")) 
+			uPointsString = (String) h.get("uPointsString");
+		if (h.containsKey("vMinString")) 
+			vMinString = (String) h.get("vMinString");
+		if (h.containsKey("vMaxString")) 
+			vMaxString = (String) h.get("vMaxString");
+		if (h.containsKey("vPointsString")) 
+			vPointsString = (String) h.get("vPointsString");
+		
+		if (h.containsKey("curveXString")) 
+			curveXString = (String) h.get("curveXString");
+		if (h.containsKey("curveYString")) 
+			curveYString = (String) h.get("curveYString");
+		if (h.containsKey("curveZString")) 
+			curveZString = (String) h.get("curveZString");
+		if (h.containsKey("tMinString")) 
+			tMinString = (String) h.get("tMinString");
+		if (h.containsKey("tMaxString")) 
+			tMaxString = (String) h.get("tMaxString");
+		if (h.containsKey("tPointsString")) 
+			tPointsString = (String) h.get("tPointsString");
+		
+		zetFuncties(functieType, false);
+		
     }
 	
     public void setState(Hashtable h)
-    {	String[] expressieStrings = null;
-    	boolean[] geselecteerd = null;
-    	String varNaam = this.varNaam;
-		String yNaam = this.yNaam;
+    {
+		// state
+		if (h.containsKey("functieType")) 
+			functieType = ((Integer) h.get("functieType")).intValue();
 		
-		if(h.containsKey("expressieStrings")) expressieStrings = (String[])h.get("expressieStrings");
-    	if(h.containsKey("geselecteerd")) geselecteerd = (boolean[])h.get("geselecteerd");
-    	if(h.containsKey("varNaam")) varNaam = (String)h.get("varNaam");
-    	if(h.containsKey("yNaam")) yNaam = (String)h.get("yNaam");
+		if (h.containsKey("graphString")) 
+			graphString = (String) h.get("graphString");
+
+		if (h.containsKey("surfaceXString")) 
+			surfaceXString = (String) h.get("surfaceXString");
+		if (h.containsKey("surfaceYString")) 
+			surfaceYString = (String) h.get("surfaceYString");
+		if (h.containsKey("surfaceZString")) 
+			surfaceZString = (String) h.get("surfaceZString");
+		if (h.containsKey("uMinString")) 
+			uMinString = (String) h.get("uMinString");
+		if (h.containsKey("uMaxString")) 
+			uMaxString = (String) h.get("uMaxString");
+		if (h.containsKey("uPointsString")) 
+			uPointsString = (String) h.get("uPointsString");
+		if (h.containsKey("vMinString")) 
+			vMinString = (String) h.get("vMinString");
+		if (h.containsKey("vMaxString")) 
+			vMaxString = (String) h.get("vMaxString");
+		if (h.containsKey("vPointsString")) 
+			vPointsString = (String) h.get("vPointsString");
+		
+		if (h.containsKey("curveXString")) 
+			curveXString = (String) h.get("curveXString");
+		if (h.containsKey("curveYString")) 
+			curveYString = (String) h.get("curveYString");
+		if (h.containsKey("curveZString")) 
+			curveZString = (String) h.get("curveZString");
+		if (h.containsKey("tMinString")) 
+			tMinString = (String) h.get("tMinString");
+		if (h.containsKey("tMaxString")) 
+			tMaxString = (String) h.get("tMaxString");
+		if (h.containsKey("tPointsString")) 
+			tPointsString = (String) h.get("tPointsString");
+		
+		zetFuncties(functieType, false);
     	
-    	this.varNaam = varNaam;
-    	this.yNaam = yNaam;
-    	
-    	if(expressieStrings==null) return;
-    	maxAantalFuncties = expressieStrings.length;
-		//expressies = new Expressie[aantalExpressies];
-		for(int i=0 ; i<maxAantalFuncties ; i++)
-		{	if(formalFunction) functieVakken[i].formuleVak1.vulVak("$f"+namen[i]+"(" + varNaam + ")@");
-			else if(aantalRegels>1)functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"$s"+(i+1)+"@@");
-			else functieVakken[i].formuleVak1.vulVak("$f"+yNaam+"@");
-			if(!expressieStrings[i].equals("$f@"))
-			{	functieVakken[i].formuleVak2.vulVak(expressieStrings[i]);
-				if(geselecteerd[i]) grafiekComponent.zetExpressie(i,functieVakken[i].formuleVak2.geefExpressie());
-				add(functieVakken[i],0);
-				functieVakken[i].setVisible(true);
-				if(geselecteerd!=null)checkboxen[i].setSelected(geselecteerd[i]);
-				add(cbPanels[i],0);
-				checkboxen[i].setVisible(true);
-				
-				aantalRegels = i+1;
-			}
-		}
-		
-		
-		if(maxAantalFuncties < 9)functieVakken[maxAantalFuncties].setVisible(true);
-		if (grafiekComponent != null)
-		{	
-			grafiekComponent.setState(h);
-			grafiekComponent.zetVarNaam(varNaam);
-			grafiekComponent.zetYAsLabel(yNaam);
-			grafiekComponent.repaint();
-		}
     }
-    
-	public void zetFuncties()
-	{	maxAantalFuncties = 9; 
-		functieVakken = new VergelijkingVak[maxAantalFuncties];
-		
-		for (int i = 0; i < maxAantalFuncties; i++)
-		{	functieVakken[i] = new VergelijkingVak();
-			functieVakken[i].setFont(Grafiek3DTest.formuleFont0);
-			functieVakken[i].setLocation(30, 10 + 35 * i);
-			functieVakken[i].setOpaque(false);
-			//add(functieVakken[i],0);
-			//functieVakken[i].setVisible(false);
-			if (formalFunction) 
-				functieVakken[i].formuleVak1.vulVak("$f" + namen[i] + "(" + varNaam + ")@");
-			else if(aantalRegels > 1)
-				functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-			else 
-				functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
-			functieVakken[i].formuleVak1.setEditable(false);
-			functieVakken[i].formuleVak1.setSelectable(false);
-			functieVakken[i].formuleVak2.addActionListener(this);
+	public void updateExpStrings()
+	{
+		if (functieType == Grafiek3DComponent.FUNCTION)
+		{	graphString = functieVakken[0].formuleVak2.toString();
+//System.out.println("grStr = " + graphString);		
 		}
-		add(functieVakken[0],0);
-		
-		checkboxen = new JCheckBox[maxAantalFuncties];
-		cbPanels  = new JPanel[maxAantalFuncties];
-		for(int i = 0; i < maxAantalFuncties; i++)
-		{	checkboxen[i] = new JCheckBox();
-			cbPanels[i] = new JPanel();
-			cbPanels[i].setLayout(null);
-			cbPanels[i].setBackground(colors[i]);
-			cbPanels[i].setBounds(2, 10 + 35 * i, 19, 19);
-			checkboxen[i].setBackground(colors[i]);
-			checkboxen[i].setBounds(-1, 1, 17, 17);
-			checkboxen[i].setOpaque(false);
-			checkboxen[i].addActionListener(this);
-			cbPanels[i].add(checkboxen[i]);
-			//checkboxen[i].setVisible(false);
+		else if (functieType == Grafiek3DComponent.SURFACE)
+		{	surfaceXString = functieVakken[0].formuleVak2.toString();
+			surfaceYString = functieVakken[1].formuleVak2.toString();
+			surfaceZString = functieVakken[2].formuleVak2.toString();
+			uMinString = functieVakken[3].formuleVak2.toString();
+			uMaxString = functieVakken[4].formuleVak2.toString();
+			uPointsString = functieVakken[5].formuleVak2.toString();	
+			vMinString = functieVakken[6].formuleVak2.toString();
+			vMaxString = functieVakken[7].formuleVak2.toString();
+			vPointsString = functieVakken[8].formuleVak2.toString();	
+
 		}
-		add(cbPanels[0]);
+		else if (functieType == Grafiek3DComponent.CURVE)
+		{	curveXString = functieVakken[0].formuleVak2.toString();
+			curveYString = functieVakken[1].formuleVak2.toString();
+			curveZString = functieVakken[2].formuleVak2.toString();
+			tMinString = functieVakken[3].formuleVak2.toString();
+			tMaxString = functieVakken[4].formuleVak2.toString();
+			tPointsString = functieVakken[5].formuleVak2.toString();	
+
+			
+		}
 		
-		functieVakken[0].setVisible(true);
-		formuleVak = functieVakken[0].formuleVak2;
-		formuleVak.requestFocus();
-		actiefNummer = 0;
-		
-		checkboxen[0].setVisible(true);	
-		checkboxen[0].setSelected(true);
 	}
 	
-	public void zetFuncties(int funcType)
-	{	functieType = funcType;
+	public void zetFuncties(int funcType, boolean update)
+	{	
+		if (functieType == funcType)
+			return;
+		
+		updateExpStrings();
+
+		if (functieType >= 0)
+			grafiek3DComponent.getHoeken();
+		if (functieType == Grafiek3DComponent.FUNCTION)
+		{	grafiek3DComponent.zetGrafiek3D(null);
+		}
+		else if (functieType == Grafiek3DComponent.SURFACE)
+		{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+		}
+		else if (functieType == Grafiek3DComponent.CURVE)
+		{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);
+		}
+
+		removeFuncties();
+		
+		functieType = funcType;
+		grafiek3DComponent.objectType = functieType;
+		grafiek3DComponent.zetHoeken();
+
+		if (grafiek3DComponent.knoppenPanel != null)
+			grafiek3DComponent.layoutKnoppenPanel();
+		
 		if (functieType == Grafiek3DComponent.FUNCTION)
 		{	
 			maxAantalFuncties = 1; 
 			functieVakken = new VergelijkingVak[maxAantalFuncties];
+			checks = new CheckComponent[maxAantalFuncties];
 		
 			for (int i = 0; i < maxAantalFuncties; i++)
 			{	functieVakken[i] = new VergelijkingVak();
 				functieVakken[i].setFont(Grafiek3DTest.formuleFont0);
-				functieVakken[i].setLocation(30, 10 + 35 * i);
+				functieVakken[i].setLocation(30, 3 + 32 * i);
 				functieVakken[i].setOpaque(false);
-				//add(functieVakken[i],0);
-				//functieVakken[i].setVisible(false);
-				//	if (formalFunction) 
-					functieVakken[i].formuleVak1.vulVak("$f" + functieNamen[i] + "(" + varNaamX + "," + varNaamY + ")@");
-				//	else if(aantalRegels > 1)
-				//		functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-				//	else 
-				//		functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
-					functieVakken[i].formuleVak1.setEditable(false);
-					functieVakken[i].formuleVak1.setSelectable(false);
-					functieVakken[i].formuleVak2.addActionListener(this);
+				add(functieVakken[i], 0);
+				checks[i] = new CheckComponent(3, 3 + 32 * i, 16, 16);
+				add(checks[i], 0);
+				functieVakken[i].formuleVak1.vulVak("$f" + functieNamen[i] + "(" + varNaamX + "," + varNaamY + ")@");
+				functieVakken[i].formuleVak2.vulVak(graphString);
+				functieVakken[i].formuleVak1.setEditable(false);
+				functieVakken[i].formuleVak1.setSelectable(false);
+				functieVakken[i].formuleVak2.addActionListener(this);
 			}
-			add(functieVakken[0], 0);
 
-//			functieVakken[0].setVisible(true);
 			formuleVak = functieVakken[0].formuleVak2;
 			formuleVak.requestFocus();
 			actiefNummer = 0;
 		
-			nieuweRegelKnop.setVisible(false);
-			verwijderRegelKnop.setVisible(false);
+			
+			layoutVakken();			
 
 		}
 		else if (functieType == Grafiek3DComponent.SURFACE)
 		{
-			maxAantalFuncties = 3; 
+			maxAantalFuncties = 9; 
 			functieVakken = new VergelijkingVak[maxAantalFuncties];
+			checks = new CheckComponent[maxAantalFuncties];			
 			
 			for (int i = 0; i < maxAantalFuncties; i++)
 			{	functieVakken[i] = new VergelijkingVak();
 				functieVakken[i].setFont(Grafiek3DTest.formuleFont0);
-				functieVakken[i].setLocation(30, 10 + 35 * i);
+				functieVakken[i].setLocation(30, 3 + 32 * i);
 				functieVakken[i].setOpaque(false);
-				//add(functieVakken[i],0);
-				//functieVakken[i].setVisible(false);
-//				if (formalFunction) 
-					functieVakken[i].formuleVak1.vulVak("$f" + parametrisatieNamen[i] + "(" + paramNaamU + "," + paramNaamV + ")@");
-//				else if(aantalRegels > 1)
-//					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-//				else 
-//					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
+				add(functieVakken[i], 0);
+				checks[i] = new CheckComponent(3, 3 + 32 * i, 16, 16);
+				add(checks[i], 0);
+				
+				if (i < 3)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + parametrisatieNamen[i] + "(" + paramNaamU + "," + paramNaamV + ")@");
+					if (i == 0)
+						functieVakken[i].formuleVak2.vulVak(surfaceXString);
+					else if (i == 1)
+						functieVakken[i].formuleVak2.vulVak(surfaceYString);
+					else
+						functieVakken[i].formuleVak2.vulVak(surfaceZString);
+						
+				}
+				else if (i == 3)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "minimum " + paramNaamU + "@");
+					functieVakken[i].formuleVak2.vulVak(uMinString);
+				}
+				else if (i == 4)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "maximum " + paramNaamU + "@");
+					functieVakken[i].formuleVak2.vulVak(uMaxString);
+				}
+				else if (i == 5)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + Grafiek3DTest.rb.getString("aantalPuntenTekst") + " " + paramNaamU + "@");
+					functieVakken[i].formuleVak2.vulVak(uPointsString);
+				}
+				else if (i == 6)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "minimum " + paramNaamV + "@");
+					functieVakken[i].formuleVak2.vulVak(vMinString);
+				}
+				else if (i == 7)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "maximum " + paramNaamV + "@");
+					functieVakken[i].formuleVak2.vulVak(vMaxString);
+				}
+				else if (i == 8)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + Grafiek3DTest.rb.getString("aantalPuntenTekst") + " " + paramNaamV + "@");
+					functieVakken[i].formuleVak2.vulVak(vPointsString);
+				}
+				
 				functieVakken[i].formuleVak1.setEditable(false);
 				functieVakken[i].formuleVak1.setSelectable(false);
 				functieVakken[i].formuleVak2.addActionListener(this);
 			}
-			add(functieVakken[0], 0);
-			add(functieVakken[1], 0);
-			add(functieVakken[2], 0);
 
-//			functieVakken[0].setVisible(true);
 			formuleVak = functieVakken[0].formuleVak2;
 			formuleVak.requestFocus();
 			actiefNummer = 0;
 			
-			nieuweRegelKnop.setVisible(false);
-			verwijderRegelKnop.setVisible(false);
+			layoutVakken();
 		}
 		else if (functieType == Grafiek3DComponent.CURVE)
 		{
-			maxAantalFuncties = 3; 
+			maxAantalFuncties = 6; 
 			functieVakken = new VergelijkingVak[maxAantalFuncties];
+			checks = new CheckComponent[maxAantalFuncties];			
 			
 			for (int i = 0; i < maxAantalFuncties; i++)
 			{	functieVakken[i] = new VergelijkingVak();
 				functieVakken[i].setFont(Grafiek3DTest.formuleFont0);
-				functieVakken[i].setLocation(30, 10 + 35 * i);
+				functieVakken[i].setLocation(30, 3 + 32 * i);
 				functieVakken[i].setOpaque(false);
-				//add(functieVakken[i],0);
-				//functieVakken[i].setVisible(false);
-//				if (formalFunction) 
-					functieVakken[i].formuleVak1.vulVak("$f" + parametrisatieNamen[i] + "(" + paramNaam + ")@");
-//				else if(aantalRegels > 1)
-//					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-//				else 
-//					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
+				add(functieVakken[i], 0);
+				checks[i] = new CheckComponent(3, 3 + 32 * i, 16, 16);
+				add(checks[i], 0);
+				
+				if (i < 3)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + parametrisatieNamen[i] + "(" + paramNaam + ")@");
+					if (i == 0)
+						functieVakken[i].formuleVak2.vulVak(curveXString);
+					else if (i == 1)
+						functieVakken[i].formuleVak2.vulVak(curveYString);
+					else
+						functieVakken[i].formuleVak2.vulVak(curveZString);
+				
+				}
+				else if (i == 3)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "minimum " + paramNaam + "@");
+					functieVakken[i].formuleVak2.vulVak(tMinString);
+				}
+				else if (i == 4)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + "maximum " + paramNaam + "@");
+					functieVakken[i].formuleVak2.vulVak(tMaxString);
+				}
+				else if (i == 5)
+				{	functieVakken[i].formuleVak1.vulVak("$f" + Grafiek3DTest.rb.getString("aantalPuntenTekst") + " " + paramNaam + "@");
+					functieVakken[i].formuleVak2.vulVak(tPointsString);
+				}
+				
 				functieVakken[i].formuleVak1.setEditable(false);
 				functieVakken[i].formuleVak1.setSelectable(false);
 				functieVakken[i].formuleVak2.addActionListener(this);
 			}
-			add(functieVakken[0], 0);
-			add(functieVakken[1], 0);
-			add(functieVakken[2], 0);
-			
-//			functieVakken[0].setVisible(true);
+
 			formuleVak = functieVakken[0].formuleVak2;
 			formuleVak.requestFocus();
 			actiefNummer = 0;
 			
-			nieuweRegelKnop.setVisible(false);
-			verwijderRegelKnop.setVisible(false);
-			
+			layoutVakken();			
 		}
+		
+		procesInput();
 	}
 	
-	public void procesInput(Expressie exp, int functieVakNr)
-	{	
+	public void removeFuncties()
+	{	for (int i = 0; i < maxAantalFuncties; i++)
+		{	remove(functieVakken[i]);
+			functieVakken[i] = null;
+			remove(checks[i]);
+		}
 		
-//System.out.println("nr = " + functieVakNr);
-
+	}
+	
+	public void procesInput()
+	{	
 		if (functieType == Grafiek3DComponent.FUNCTION)
-		{	
-			if (exp == null)
-			{	
-				grafiek3DComponent.zetGrafiek3D(null);				
-//System.out.println("exp = null");
+		{	Expressie exp = functieVakken[0].formuleVak2.geefExpressie();
+		
+			if ((exp == null) || hasIllegalVarName(exp, varNaamX, varNaamY))
+			{	grafiek3DComponent.zetGrafiek3D(null);	
+				if (graphString.equals("$f@"))
+					checks[0].setNeutral();
+				else
+					checks[0].setWrong();
 			}
-			else // exp != null
-			{
-				String[] varNamen = Algebra.geefVarNamen(exp);
-				boolean illegalVarNaam = false;
-				for (int v = 0; v < varNamen.length; v++)
-				{	if (!varNamen[v].equals(varNaamX) && !varNamen[v].equals(varNaamY))
-						illegalVarNaam = true;
-//System.out.println("vn" + v + " = " + varNamen[v]);
-				}
-				if (!illegalVarNaam)
-				{	// groen rondje
-					grafiek3DComponent.zetGrafiek3D(exp);
+			else // legale situatie
+			{	checks[0].setCorrect();
+				grafiek3DComponent.zetGrafiek3D(exp);
+			}
+				
+		}
+		else if (functieType == Grafiek3DComponent.SURFACE)
+		{	Expressie expX = functieVakken[0].formuleVak2.geefExpressie();
+			boolean expXOK = false;
+			Expressie expY = functieVakken[1].formuleVak2.geefExpressie();
+			boolean expYOK = false;
+			Expressie expZ = functieVakken[2].formuleVak2.geefExpressie();
+			boolean expZOK = false;
+			Expressie expUMin = functieVakken[3].formuleVak2.geefExpressie();
+			boolean expUMinOK = false;
+			Expressie expUMax = functieVakken[4].formuleVak2.geefExpressie();
+			boolean expUMaxOK = false;
+			Expressie expUPoints = functieVakken[5].formuleVak2.geefExpressie();
+			boolean expUPointsOK = false;
+			Expressie expVMin = functieVakken[6].formuleVak2.geefExpressie();
+			boolean expVMinOK = false;
+			Expressie expVMax = functieVakken[7].formuleVak2.geefExpressie();
+			boolean expVMaxOK = false;
+			Expressie expVPoints = functieVakken[8].formuleVak2.geefExpressie();
+			boolean expVPointsOK = false;
+			
+			double uMin = 0;
+			double uMax = 10;
+			int uPoints = 10;
+			double vMin = 0;
+			double vMax = 10;
+			int vPoints = 10;
+			
+			if ((expX == null) || hasIllegalVarName(expX, paramNaamU, paramNaamV))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);	
+				if (surfaceXString.equals("$f@"))
+					checks[0].setNeutral();
+				else
+					checks[0].setWrong();
+			}
+			else // legale situatie
+			{	checks[0].setCorrect();
+				expXOK = true;
+			}
+			if ((expY == null) || hasIllegalVarName(expY, paramNaamU, paramNaamV))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);	
+				if (surfaceYString.equals("$f@"))
+					checks[1].setNeutral();
+				else
+					checks[1].setWrong();
+			}
+			else // legale situatie
+			{	checks[1].setCorrect();
+				expYOK = true;
+			}
+			if ((expZ == null) || hasIllegalVarName(expZ, paramNaamU, paramNaamV))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);	
+				if (surfaceZString.equals("$f@"))
+					checks[2].setNeutral();
+				else
+					checks[2].setWrong();
+			}
+			else // legale situatie
+			{	checks[2].setCorrect();
+				expZOK = true;
+			}
+			if ((expUMin == null) || Double.isNaN(expUMin.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (uMinString.equals("$f@"))
+					checks[3].setNeutral();
+				else
+					checks[3].setWrong();
+			}
+			else // legale situatie
+			{	checks[3].setCorrect();
+				expUMinOK = true;
+				uMin = expUMin.geefWaarde();
+			}
+			if ((expUMax == null) || Double.isNaN(expUMax.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (uMaxString.equals("$f@"))
+					checks[4].setNeutral();
+				else
+					checks[4].setWrong();
+			}
+			else // legale situatie
+			{	checks[4].setCorrect();
+				expUMaxOK = true;
+				uMax = expUMax.geefWaarde();
+			}
+			if ((expUPoints == null) || Double.isNaN(expUPoints.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (uPointsString.equals("$f@"))
+					checks[5].setNeutral();
+				else
+					checks[5].setWrong();
+			}
+			else // soms legale situatie
+			{	double uPointsDouble = expUPoints.geefWaarde();
+//System.out.println("uPD = " + uPointsDouble);			
+				int uPointsInteger = (int) Math.round(uPointsDouble); 
+//System.out.println("uPI = " + uPointsInteger);				
+				if ((Math.abs(uPointsDouble - uPointsInteger) > NZERO) || (uPointsInteger < 3))
+				{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+					if (uPointsString.equals("$f@"))
+						checks[5].setNeutral();
+					else
+						checks[5].setWrong();
 				}
 				else
-				{
-					grafiek3DComponent.zetGrafiek3D(null);					
-//System.out.println("illegalVarNaam " + illegalVarNaam);
-				}
+				{	checks[5].setCorrect();
+					expUPointsOK = true;
+					uPoints = uPointsInteger;
+				}	
 			}
+			
+			
+			
+			if ((expVMin == null) || Double.isNaN(expVMin.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (vMinString.equals("$f@"))
+					checks[6].setNeutral();
+				else
+					checks[6].setWrong();
+			}
+			else // legale situatie
+			{	checks[6].setCorrect();
+				expVMinOK = true;
+				vMin = expVMin.geefWaarde();
+			}
+			if ((expVMax == null) || Double.isNaN(expVMax.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (vMaxString.equals("$f@"))
+					checks[7].setNeutral();
+				else
+					checks[7].setWrong();
+			}
+			else // legale situatie
+			{	checks[7].setCorrect();
+				expVMaxOK = true;
+				vMax = expVMax.geefWaarde();
+			}
+			if ((expVPoints == null) || Double.isNaN(expVPoints.geefWaarde()))
+			{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+				if (vPointsString.equals("$f@"))
+					checks[8].setNeutral();
+				else
+					checks[8].setWrong();
+			}
+			else // soms legale situatie
+			{	double vPointsDouble = expVPoints.geefWaarde();
+				int vPointsInteger = (int) Math.round(vPointsDouble); 
+				if ((Math.abs(vPointsDouble - vPointsInteger) > NZERO) || (vPointsInteger < 3))
+				{	grafiek3DComponent.zetSurface3D(null, null, null, 0, 0, 0, 0, 0, 0);
+					if (vPointsString.equals("$f@"))
+						checks[8].setNeutral();
+					else
+						checks[8].setWrong();
+				}
+				else
+				{	checks[8].setCorrect();
+					expVPointsOK = true;
+					vPoints = vPointsInteger;
+				}	
+			}
+// check nog op uMin>=uMax, vMin>=vMax 		
+			if (uMin > (uMax - NZERO))
+			{	expUMinOK = false;
+				expUMaxOK = false;
+				checks[3].setWrong();
+				checks[4].setWrong();
+			}
+			if (vMin > (vMax - NZERO))
+			{	expVMinOK = false;
+				expVMaxOK = false;
+				checks[6].setWrong();
+				checks[7].setWrong();
+			}
+			
+			if (expXOK && expYOK && expZOK && expUMinOK && expUMaxOK && expUPointsOK &&
+				expVMinOK && expVMaxOK && expVPointsOK)
+			{
+				grafiek3DComponent.zetSurface3D(expX, expY, expZ, uMin, uMax, uPoints, vMin, vMax, vPoints);
+			}
+			
+			
 		}
+		else if (functieType == Grafiek3DComponent.CURVE)
+		{	Expressie expX = functieVakken[0].formuleVak2.geefExpressie();
+			boolean expXOK = false;
+			Expressie expY = functieVakken[1].formuleVak2.geefExpressie();
+			boolean expYOK = false;
+			Expressie expZ = functieVakken[2].formuleVak2.geefExpressie();
+			boolean expZOK = false;
+			Expressie expTMin = functieVakken[3].formuleVak2.geefExpressie();
+			boolean expTMinOK = false;
+			Expressie expTMax = functieVakken[4].formuleVak2.geefExpressie();
+			boolean expTMaxOK = false;
+			Expressie expTPoints = functieVakken[5].formuleVak2.geefExpressie();
+			boolean expTPointsOK = false;
+
+			double tMin = 0;
+			double tMax = 10;
+			int tPoints = 10;
+
+			if ((expX == null) || hasIllegalVarName(expX, paramNaam))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);	
+				if (curveXString.equals("$f@"))
+					checks[0].setNeutral();
+				else
+					checks[0].setWrong();
+			}
+			else // legale situatie
+			{	checks[0].setCorrect();
+				expXOK = true;
+			}
+			if ((expY == null) || hasIllegalVarName(expY, paramNaam))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);	
+				if (curveYString.equals("$f@"))
+					checks[1].setNeutral();
+				else
+					checks[1].setWrong();
+			}
+			else // legale situatie
+			{	checks[1].setCorrect();
+				expYOK = true;
+			}
+			if ((expZ == null) || hasIllegalVarName(expZ, paramNaam))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);	
+				if (curveZString.equals("$f@"))
+					checks[2].setNeutral();
+				else
+					checks[2].setWrong();
+			}
+			else // legale situatie
+			{	checks[2].setCorrect();
+				expZOK = true;
+			}
+			if ((expTMin == null) || Double.isNaN(expTMin.geefWaarde()))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);
+				if (tMinString.equals("$f@"))
+					checks[3].setNeutral();
+				else
+					checks[3].setWrong();
+			}
+			else // legale situatie
+			{	checks[3].setCorrect();
+				expTMinOK = true;
+				tMin = expTMin.geefWaarde();
+			}
+			if ((expTMax == null) || Double.isNaN(expTMax.geefWaarde()))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);
+				if (tMaxString.equals("$f@"))
+					checks[4].setNeutral();
+				else
+					checks[4].setWrong();
+			}
+			else // legale situatie
+			{	checks[4].setCorrect();
+				expTMaxOK = true;
+				tMax = expTMax.geefWaarde();
+			}
+			if ((expTPoints == null) || Double.isNaN(expTPoints.geefWaarde()))
+			{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);
+				if (tPointsString.equals("$f@"))
+					checks[5].setNeutral();
+				else
+					checks[5].setWrong();
+			}
+			else // soms legale situatie
+			{	double tPointsDouble = expTPoints.geefWaarde();
+//System.out.println("uPD = " + uPointsDouble);			
+				int tPointsInteger = (int) Math.round(tPointsDouble); 
+//System.out.println("uPI = " + uPointsInteger);				
+				if ((Math.abs(tPointsDouble - tPointsInteger) > NZERO) || (tPointsInteger < 3))
+				{	grafiek3DComponent.zetCurve3D(null, null, null, 0, 0, 0);
+					if (tPointsString.equals("$f@"))
+						checks[5].setNeutral();
+					else
+						checks[5].setWrong();
+				}
+				else
+				{	checks[5].setCorrect();
+					expTPointsOK = true;
+					tPoints = tPointsInteger;
+				}	
+			}
+			
+			if (expXOK && expYOK && expZOK && expTMinOK && expTMaxOK && expTPointsOK)
+				{
+					grafiek3DComponent.zetCurve3D(expX, expY, expZ, tMin, tMax, tPoints);
+				}
+			
+		}
+		
+		
+		
 	}
 	
-	public static void zetPlaatjes(Image gk, Image fk)
-	{	GOEDKRUL = gk;
-		FOUTKRUIS = fk;
+	
+	public boolean hasIllegalVarName(Expressie exp, String legalName)
+	{	boolean illegalVarNaam = false;
+		String[] varNamen = Algebra.geefVarNamen(exp);
+		for (int v = 0; v < varNamen.length; v++)
+		{	if (!varNamen[v].equals(legalName))
+				illegalVarNaam = true;
+		}
+		return illegalVarNaam;
+	}
+	
+	public boolean hasIllegalVarName(Expressie exp, String legalName1, String legalName2)
+	{	boolean illegalVarNaam = false;
+		String[] varNamen = Algebra.geefVarNamen(exp);
+		for (int v = 0; v < varNamen.length; v++)
+		{	if (!varNamen[v].equals(legalName1) && !varNamen[v].equals(legalName2))
+				illegalVarNaam = true;
+		}
+		return illegalVarNaam;
 	}
 	
 	public FormuleVak geefFormuleVak()
 	{	return formuleVak;
-	}
-	
-	public Expressie geefVoorbeeld()
-	{	FormuleParser p = new FormuleParser();
-		return p.parse(p.schoon(voorbeeld));
 	}
 	
 	public Expressie geefExpressie()
@@ -550,84 +872,54 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 		return formuleVak.geefExpressie();
 	}
 	
-	/*public boolean evalueer()
-	{	
-		FormuleParser p = new FormuleParser();
-		if(formuleVak.geefExpressie()!=null && p.parse(p.schoon(voorbeeld)).isGelijkwaardig(formuleVak.geefExpressie()))
-		{	remove(foutIC);
-			goedIC.setLocation(getSize().width-40,10);
-			add(goedIC);
-			
-			return true;
+	
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+		
+		for (int i = 0; i < maxAantalFuncties; i++)
+		{	if (functieVakken[i] != null)
+			{
+				g.setColor(Color.gray);
+				g.drawRect(0, headerPanel.getLocation().y + headerPanel.getSize().height + 2 +  
+						   functieVakken[i].getLocation().y - 2, 
+						   getSize().width - 1, 
+						   functieVakken[i].getSize().height + 8);
+			}
 		}
-		remove(goedIC);
-		foutIC.setLocation(getSize().width-40,10);
-		add(foutIC);
-		return false;
-	}*/
+	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if (e.getSource() == nieuweRegelKnop && aantalRegels < maxAantalFuncties)
-		{	if (checkboxen[aantalRegels-1].isSelected() && grafiekComponent != null)
-				grafiekComponent.zetExpressie(aantalRegels - 1, functieVakken[aantalRegels - 1].formuleVak2.geefExpressie());
-			add(functieVakken[aantalRegels], 0);
-			add(cbPanels[aantalRegels], 0);
-			layoutVakken();
-			functieVakken[aantalRegels].formuleVak2.requestFocus();
-			aantalRegels++;
-			for(int i = 0; i < maxAantalFuncties; i++)
-			{	if (formalFunction)
-					functieVakken[i].formuleVak1.vulVak("$f" + namen[i] + "(" + varNaam + ")@");
-				else if (aantalRegels > 1)
-					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-				else 
-					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
+	{	
+		if (e.getSource() == functieTypeBox)
+		{
+			String selString = (String) functieTypeBox.getSelectedItem();
+			//removeFuncties();
+			if (selString.equals(Grafiek3DTest.rb.getString("grafiekTekst")))
+			{	
+				zetFuncties(Grafiek3DComponent.FUNCTION, true);
 			}
-			return;
-		}
-		else if (e.getSource() == verwijderRegelKnop && aantalRegels > 1)
-		{	if (grafiekComponent != null)
-				grafiekComponent.zetExpressie(aantalRegels - 1, null);
-			functieVakken[aantalRegels-1].formuleVak2.vulVak("$f@");
-			remove(functieVakken[aantalRegels-1]);
-			remove(cbPanels[aantalRegels-1]);
-			layoutVakken();
-			aantalRegels--;
-			for (int i = 0; i < maxAantalFuncties; i++)
-			{	if (formalFunction)
-					functieVakken[i].formuleVak1.vulVak("$f" + namen[i] + "(" + varNaam + ")@");
-				else if(aantalRegels > 1)
-					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "$s" + (i + 1) + "@@");
-				else 
-					functieVakken[i].formuleVak1.vulVak("$f" + yNaam + "@");
+			else if (selString.equals(Grafiek3DTest.rb.getString("oppervlakTekst")))
+			{	
+				zetFuncties(Grafiek3DComponent.SURFACE, true);
 			}
-			
+			else if (selString.equals(Grafiek3DTest.rb.getString("krommeTekst")))
+			{	
+				zetFuncties(Grafiek3DComponent.CURVE, true);
+			}
+				
 		}
-		
+	
 		for (int i = 0; i < maxAantalFuncties; i++)
 		{	if (e.getSource() == functieVakken[i].formuleVak2 && 
 				(e.getActionCommand().equals("ingevuld") || e.getActionCommand().equals("focuslost")))
 			{	Expressie exp = functieVakken[i].formuleVak2.geefExpressie();
-				if (checkboxen != null && checkboxen[i] != null && checkboxen[i].isSelected() && grafiekComponent != null)
-				{	grafiekComponent.zetExpressie(i,exp);
-					layoutVakken();
-				}
-				if (grafiek3DComponent != null)
-				{	
-					
-					procesInput(exp, i);
-				}
 				
-				/*if(exp!=null)
-				{	functieVakken[i].formuleVak2.vulVak("$f" + exp.toString() + "@");
-					if(i<maxAantalFuncties-1)// && !checkboxen[i+1].isVisible())
-					{	add(checkboxen[i+1],0);
-						add(functieVakken[i+1],0);
-						layoutVakken();	
-						//checkboxen[i+1].setVisible(true);
-						//functieVakken[i+1].setVisible(true);
-					}
-				}*/
+				if (grafiek3DComponent != null)
+				{	layoutVakken();
+					updateExpStrings();
+					procesInput();
+				}
 				
 				break;
 				
@@ -638,17 +930,18 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 		
 		for (int i = 0; i < maxAantalFuncties; i++)
 		{	if (e.getSource() == functieVakken[i].formuleVak2 && e.getActionCommand().equals("focus"))
-			{	if (formuleVak != functieVakken[i].formuleVak2)
+			{	
+//System.out.println("focus " + i);			
+				if (formuleVak != functieVakken[i].formuleVak2)
 				{	formuleVak.deSelect();
-					Expressie exp = formuleVak.geefExpressie();
-					//if(checkboxen[actiefNummer].isAan())grafiekComponent.zetExpressie(exp,actiefNummer);
-					//if(exp!=null)
-					//{	formuleVak.vulVak("$f" + exp.toString() + "@");
-					//	if(actiefNummer<aantalFuncties-1 && !checkboxen[actiefNummer+1].isVisible())
-					//	{	checkboxen[actiefNummer+1].setVisible(true);
-					//		functieVakken[actiefNummer+1].setVisible(true);
-					//	}
-					//}
+
+					if (grafiek3DComponent != null)
+					{
+						layoutVakken();
+						updateExpStrings();
+						procesInput();
+					}	
+					
 					actiefNummer = i;
 					formuleVak = functieVakken[i].formuleVak2;
 					
@@ -658,27 +951,11 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 			
 		}
 		
-		for (int i = 0; i < maxAantalFuncties; i++)
-		{	if (checkboxen != null && checkboxen[i] != null && e.getSource() == checkboxen[i])
-			{	if (checkboxen[i].isSelected() && grafiekComponent != null)
-				{	grafiekComponent.zetExpressie(i,functieVakken[i].formuleVak2.geefExpressie());
-				}
-				else if (grafiekComponent != null)
-				{	grafiekComponent.zetExpressie(i, null);
-				}
-				
-				Expressie exp = formuleVak.geefExpressie();
-				if (checkboxen[actiefNummer].isSelected()  && grafiekComponent != null)
-					grafiekComponent.zetExpressie(actiefNummer, exp);
-					if (exp != null)
-					{	//formuleVak.vulVak("$f" + exp.toString() + "@");
-						
-					}
-				
-				break;
-			}
-			
+		if (e.getActionCommand().equals("knop"))
+		{	layoutVakken();
+//System.out.println("knop");			
 		}
+
 		super.actionPerformed(e);
 	}
 	
@@ -686,14 +963,11 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	{	//boolean focusRequest = false;
 		for (int i = 0; i < aantalRegels; i++)
 		{	int yMin = functieVakken[i].getLocation().y;
-			int yMax = functieVakken[i].getLocation().y + functieVakken[i].getSize().height + 10;
+			int yMax = functieVakken[i].getLocation().y + functieVakken[i].getSize().height;// + 10;
 			if (e.getY() > yMin && e.getY() < yMax)
 			{	//if(formuleVak != functieVakken[i].formuleVak2)
 				{	formuleVak.deSelect();
-					Expressie exp = formuleVak.geefExpressie();
-					if (checkboxen != null && checkboxen[actiefNummer] != null && checkboxen[actiefNummer].isSelected() && 
-						grafiekComponent != null)
-						grafiekComponent.zetExpressie(actiefNummer, exp);
+
 					actiefNummer = i;
 					formuleVak = functieVakken[i].formuleVak2;
 					formuleVak.requestFocus();
@@ -718,13 +992,12 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 //System.out.println("fe focus lost");
 
 		Expressie exp = formuleVak.geefExpressie();
-		if (checkboxen != null && checkboxen != null && checkboxen[actiefNummer].isSelected() && grafiekComponent != null)
-		{	grafiekComponent.zetExpressie(actiefNummer,exp);
 
-		}
 		if (grafiek3DComponent != null)
 		{
-			procesInput(exp, actiefNummer);
+			layoutVakken();
+			updateExpStrings();			
+			procesInput();
 		}
 		if (exp != null)
 		{	formuleVak.vulVak("$f" + exp.toString() + "@");

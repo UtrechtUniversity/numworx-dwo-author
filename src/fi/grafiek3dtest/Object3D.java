@@ -1500,6 +1500,8 @@ System.out.println("" + index + " is not on top of " + cnt);
             }
         }
     }
+    
+    
     // set this object outlined, skip empty and 2-dim facets
     // avoid disappearance
     // REDEFINE
@@ -1522,6 +1524,14 @@ System.out.println("" + index + " is not on top of " + cnt);
                 }
             }
         }
+    }
+    
+    public void setOutlineColor(Color olc)
+    {	for (int i = 0; i < numFacets; i++)
+    	{	facets[i].outlineColor = olc;
+    		facets[i].edgeColors[0] = olc;
+    	}
+    	
     }
     // fill the facets of this object
     // avoid disappearance

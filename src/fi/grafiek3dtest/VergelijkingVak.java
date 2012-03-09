@@ -15,6 +15,8 @@ public class VergelijkingVak extends FormuleElement
 	FormuleVak formuleVak1;
 	FormuleVak formuleVak2;
 	
+	boolean outlined = false;
+	
 	public VergelijkingVak()
 	{	setLayout(null);
 		
@@ -41,11 +43,22 @@ public class VergelijkingVak extends FormuleElement
 		formuleVak2.setFont(f);
 	}
 	
+	public void setOutlined(boolean b)
+	{
+		outlined = b;
+	}
+	
 	public void paint(Graphics g)
 	{	g.setColor(Color.black);
 		g.setFont(getFont());
 		g.drawString(" = ",formuleVak1.getSize().width,ashoogte+fm.getAscent()/2+ fm.getDescent()/2);
 		super.paint(g);
+		
+		if (outlined)
+		{	g.setColor(Color.lightGray);
+			g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+		}	
+			
 	}
 	
 	public void zetMaat()

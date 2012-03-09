@@ -5,7 +5,7 @@ import java.util.Vector;
 
 public class ObjectWithPlane extends ObjectGroup3D
 {
-	public static Color objectColor = Color.yellow;
+	public static Color objectColor = Grafiek3DComponent.graphColor;
     public Color planeColor = Color.yellow;
 
     public static int lineColorIndex = 1;
@@ -42,7 +42,10 @@ public class ObjectWithPlane extends ObjectGroup3D
     public ObjectWithPlane(ObjectGroup3D og, 
                            Vector3D point1, Vector3D point2, Vector3D point3, 
                            int pcIndex, boolean makeCut)
-    {   origObjectGroup = og;
+    {   
+    	objectColor = Grafiek3DComponent.graphColor;
+    	
+    	origObjectGroup = og;
         // objects.elementAt(0)
         addObject3D(origObjectGroup);
         origObject = origObjectGroup.leftMostLeaf();                

@@ -5,6 +5,7 @@ package fi.grafiek3dtest.formuleobjects;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -58,8 +59,6 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	
 	boolean grafiekOfEdit;
     
-	
-	
 	public FormuleEditor(boolean scrollbar)
 	{	setLayout(null);
 		setBackground(new Color(210,210,210));
@@ -570,31 +569,50 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	public void actionPerformed(ActionEvent e)
 	{	if (e.getSource() == wortelKnop)
 		{	if (formuleVak != null && formuleVak.isEditable())
-				formuleVak.zetWortelVak();
+			{	formuleVak.zetWortelVak();
+				if (actionListener != null)
+					actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
+			}
 		}
-		else if(e.getSource()==machtKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetMachtVak();
+		else if (e.getSource() == machtKnop)
+		{	if (formuleVak != null && formuleVak.isEditable())
+			{	formuleVak.zetMachtVak();
+				if (actionListener != null)
+					actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
+			}
 		}
-		else if(e.getSource()==kwadraatKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetKwadraatVak();
+		else if (e.getSource() == kwadraatKnop)
+		{	if (formuleVak != null && formuleVak.isEditable())
+			{	formuleVak.zetKwadraatVak();
+				if (actionListener != null)
+					actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
+			}
 		}
-		else if(e.getSource()==breukKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetBreukVak();
+		else if (e.getSource() == breukKnop)
+		{	if (formuleVak != null && formuleVak.isEditable())
+			{	formuleVak.zetBreukVak();
+				if (actionListener != null)
+					actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
+			}
 		}
-		else if(e.getSource()==haakjesKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetHaakjesVak();
+		else if (e.getSource() == haakjesKnop)
+		{	if (formuleVak != null && formuleVak.isEditable())
+			{	formuleVak.zetHaakjesVak();
+				if (actionListener != null)
+					actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
+			}
 		}
 		else if(e.getSource()==ndewortelKnop)
 		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetNdeWortelVak();
 		}
 		else if(e.getSource()==ndelogKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetNdeLogVak();
+		{	if (formuleVak!=null && formuleVak.isEditable())formuleVak.zetNdeLogVak();
 		}
 		else if(e.getSource()==integraalKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetIntegraalVak();
+		{	if (formuleVak != null && formuleVak.isEditable())formuleVak.zetIntegraalVak();
 		}
 		else if(e.getSource()==prvKnop)
-		{	if(formuleVak!=null && formuleVak.isEditable())
+		{	if(formuleVak != null && formuleVak.isEditable())
 			{	formuleVak.zetPrvVak();
 			}
 		}

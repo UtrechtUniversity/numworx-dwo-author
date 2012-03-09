@@ -34,6 +34,8 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	
 	private ActionListener actionListener;
 	
+	boolean outlined = false;
+	
 	public FormuleVak()
 	{	setLayout(null);
 		setBackground(Color.white);
@@ -141,9 +143,20 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 		}
 	}
 	
+	public void setOutlined(boolean b)
+	{
+		outlined = b;
+	}
+	
 	public void paint(Graphics g)
 	{	
 		super.paint(g);
+		
+		if (outlined)
+		{	g.setColor(Color.black);
+			g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+		}	
+		
 	}
 	
 	public void zetMaat()

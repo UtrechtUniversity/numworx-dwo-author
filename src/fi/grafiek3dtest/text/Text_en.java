@@ -25,6 +25,12 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "eindLabelsTekst" , "end labels" },
 			{ "alleLabelsTekst" , "all labels" },
 			
+			{ "grafiekTekst" , "graph" },
+			{ "oppervlakTekst" , "surface" },
+			{ "krommeTekst" , "curve" },
+			{ "aantalPuntenTekst" , "number of points" },
+			
+			
 
 	};
 }

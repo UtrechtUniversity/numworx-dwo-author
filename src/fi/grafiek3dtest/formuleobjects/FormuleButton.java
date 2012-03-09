@@ -85,7 +85,7 @@ public class FormuleButton extends JButton implements MouseListener
 		setBorder(null);
 		if(images==null)
 		{	images = new Hashtable();
-			Grafiek3DTest.loadImages(images,imageNames);
+			//Grafiek3DTest.loadImages(images,imageNames);
 		}
 		if(soort==BEWERKINGSKNOP)bgColor = new Color(255,150,150);
 		if("MW".equals(Grafiek3DTest.deployVariant) || "GR".equals(Grafiek3DTest.deployVariant))
@@ -771,7 +771,7 @@ public class FormuleButton extends JButton implements MouseListener
  	{	actief = false;
 		if ( isEnabled() )
  		{	if (actionListener != null)
- 			{	actionListener.actionPerformed( new ActionEvent(this, 0, "knop") );
+ 			{	actionListener.actionPerformed(new ActionEvent(this, 0, "knop"));
 //System.out.println("formuleButton knop"); 			
  			}
  		}

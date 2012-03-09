@@ -9,13 +9,18 @@ import javax.swing.*;
 import fi.grafiek3dtest.formuleobjects.FormuleButton;
 
 public class ZoomKnop extends FormuleButton implements MouseListener	
-{		private Image im;
-	private Graphics gIm;		protected String code;
+{		//private Image im;
+	//private Graphics gIm;
+	
+	Image zoomInImage, zoomUitImage;		protected String code;
 	private Font defaultfont = new Font("SansSerif", Font.BOLD, 14);
 	private Font defaultfont2 = new Font("SansSerif", Font.BOLD, 18);
-	private Font defaultfont3 = new Font("SansSerif", Font.PLAIN, 10);	private FontMetrics fm;
+	private Font defaultfont3 = new Font("SansSerif", Font.PLAIN, 10);
+	private Font defaultfont4 = new Font("SansSerif", Font.PLAIN, 12);
+		private FontMetrics fm;
 	private FontMetrics fm2;
 	private FontMetrics fm3;
+	private FontMetrics fm4;
 	protected Color bgColor = new Color(210,210,210);		
 	protected Color fgColor = Color.black;	protected boolean focus = false;
 	protected boolean actief = false;	
@@ -31,18 +36,41 @@ public class ZoomKnop extends FormuleButton implements MouseListener
 	};
 	
 	private static Hashtable images;
-				public ZoomKnop(String s)
+	
+	Image knopImage = null;
+			
+	public ZoomKnop(String s)
 	{	code = s;
-		addMouseListener(this);		
+		addMouseListener(this);
+		
 		setFont(defaultfont);
 		fm = this.getFontMetrics(defaultfont);
 		fm2 = this.getFontMetrics(defaultfont2);
 		fm3 = this.getFontMetrics(defaultfont3);
+		fm4 = this.getFontMetrics(defaultfont4);
 		
 		setBorder(null);
 		if (images == null)
 		{	images = new Hashtable();
-			Grafiek3DTest.loadImages(images, imageNames);
+			//Grafiek3DTest.loadImages(images, imageNames);
+		}
+	}
+		public ZoomKnop(String s, Image knopIm)
+	{	code = s;
+		addMouseListener(this);
+		
+		knopImage = knopIm;
+		
+		setFont(defaultfont);
+		fm = this.getFontMetrics(defaultfont);
+		fm2 = this.getFontMetrics(defaultfont2);
+		fm3 = this.getFontMetrics(defaultfont3);
+		fm4 = this.getFontMetrics(defaultfont4);
+		
+		setBorder(null);
+		if (images == null)
+		{	images = new Hashtable();
+			//Grafiek3DTest.loadImages(images, imageNames);
 		}	}
 	
 	public static Image getImage(String name)
@@ -98,8 +126,10 @@ public class ZoomKnop extends FormuleButton implements MouseListener
 		}		else if(code.equals("zoomuitx"))		{	g.drawImage(getImage("zoomuitxknop.gif"),1,1,null);
 		}		else if(code.equals("zoominy"))		{	g.drawImage(getImage("zoominyknop.gif"),1,1,null);
 		}		else if(code.equals("zoomuity"))		{	g.drawImage(getImage("zoomuityknop.gif"),1,1,null);
-		}		else if(code.equals("zoomin"))		{	g.drawImage(getImage("zoominknop.gif"),1,1,null);
-		}		else if(code.equals("zoomuit"))		{	g.drawImage(getImage("zoomuitknop.gif"),1,1,null);
+		}		else if(code.equals("zoomin"))		{	//g.drawImage(getImage("zoominknop.gif"),1,1,null);
+			g.drawImage(knopImage, 1, 1, null);
+		}		else if(code.equals("zoomuit"))		{	//g.drawImage(getImage("zoomuitknop.gif"),1,1,null);
+			g.drawImage(knopImage, 1, 1, null);			
 		}		else if(code.equals("standaard"))		{	g.drawLine(4,10,16,10);
 			g.drawLine(10,4,10,16);
 		}
@@ -139,18 +169,83 @@ public class ZoomKnop extends FormuleButton implements MouseListener
 			g.drawString("z-" + Grafiek3DTest.rb.getString("asTekst"), (b-w)/2, (h-as)/2 + as - 3);
 			
 		}
+		else if (code.equals("solid"))
+		{	Polygon p = new Polygon();
+			p.addPoint(3, 3);
+			p.addPoint(b-4, 3);
+			p.addPoint(b-4, h-4);
+			p.addPoint(3, h-4);
+			g.setColor(Grafiek3DComponent.graphColor);
+			g.fillPolygon(p);
+			g.setColor(Grafiek3DComponent.graphOutlineColor);
+			g.drawPolygon(p);
+					
+		}
+		else if (code.equals("draad"))
+		{	Polygon p = new Polygon();
+			p.addPoint(3, 3);
+			p.addPoint(b-4, 3);
+			p.addPoint(b-4, h-4);
+			p.addPoint(3, h-4);
+			g.setColor(Grafiek3DComponent.wireFrameColor);
+			g.drawPolygon(p);
+					
+		}
+		else if (code.equals("finerplus"))
+		{	Polygon p = new Polygon();
+			p.addPoint(3, 3);
+			p.addPoint(b-4, 3);
+			p.addPoint(b-4, h-4);
+			p.addPoint(3, h-4);
+			g.setColor(Color.black);
+			g.drawPolygon(p);
+			g.drawLine(b/3, 3, b/3, h-4);
+			g.drawLine(2*b/3-1, 3, 2*b/3-1, h-4);
+			g.drawLine(3, h/3, b-4, h/3);
+			g.drawLine(3, 2*h/3-1, b-4, 2*h/3-1);
+			
+			
+		}
+		else if (code.equals("finermin"))
+		{	Polygon p = new Polygon();
+			p.addPoint(3, 3);
+			p.addPoint(b-4, 3);
+			p.addPoint(b-4, h-4);
+			p.addPoint(3, h-4);
+			if (isEnabled())
+				g.setColor(Color.black);
+			else
+				g.setColor(Color.gray);
+			g.drawPolygon(p);
+			g.drawLine(b/2, 3, b/2, h-4);
+			g.drawLine(3, h/2, b-4, h/2);
+			
+		}
+		
 		else if (code.equals("askeuze"))
-		{	g.setFont(defaultfont3);
+		{	
+/*			
+			g.setFont(defaultfont3);
 			int w = fm3.stringWidth(Grafiek3DTest.rb.getString("assenTekst"));
 			int as = fm3.getAscent();
 			g.drawString(Grafiek3DTest.rb.getString("assenTekst"), (b-w)/2, (h-as)/2 + as - 3);
+*/
+			
+			Graphics2D gr = (Graphics2D) g;
+			gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			//gr.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
+			gr.setStroke(new BasicStroke(1.3f));
+			
+			gr.drawLine(b/2, 0, b/2, h/2);
+			gr.drawLine(b/2, h/2, b, h/2);
+			gr.drawLine(b/2, h/2, 4, h-6);
 			
 		}
 		else if (code.equals("labelkeuze"))
-		{	g.setFont(defaultfont3);
-			int w = fm3.stringWidth("labels");
-			int as = fm3.getAscent();
-			g.drawString("labels", (b-w)/2, (h-as)/2 + as - 3);
+		{	g.setFont(defaultfont4);
+			int w = fm4.stringWidth("1.5");
+			int as = fm4.getAscent();
+			g.drawString("1.5", (b-w)/2, (h-as)/2 + as - 3);
 			
 		}
 		

@@ -95,6 +95,58 @@ public abstract class ParamSurface extends Object3D
     
     abstract public Vector3D getValueAt(double u, double v);
 }
+//a torus
+class Torus extends ParamSurface
+{   
+	public Torus()
+	{
+		
+	}
+	public Torus(double bigC, double smallC1, double smallC2, Color oc)
+    {   
+//        paintType = 1;
+        paramNum = 3;
+        params = new double[3];
+        params[0] = bigC;
+        params[1] = smallC1;
+        params[2] = smallC2;
+        // u-range, v-range
+        uMin = 0;
+        uMax = 2 * Math.PI;
+        vMin = 0;
+        vMax = 2 * Math.PI;
+        // step number
+        uSteps = 20;
+        vSteps = 10;
+        // finds steps
+        uStep = (uMax - uMin) / uSteps;
+        vStep = (vMax - vMin) / vSteps;
+        // find facet number
+        numFacets = uSteps * vSteps;
+        // create facets
+        sColor = oc;
+        create();
+        double d = 2 * (params[0] + params[1]);
+        diameter = d;
+        initObject3D(true, new Vector3D(), false);
+        
+    }
+    // parametrization
+    // [0,2Pi)x[0,2Pi)->space
+    // ( (a+b*cos(v))*cos(u), (a+b*cos(v))*sin(u), c*sin(v) )
+    public Vector3D getValueAt(double u, double v)
+    {   return new Vector3D( (params[0] + params[1] * Math.cos(v)) * Math.cos(u),
+                             (params[0] + params[1] * Math.cos(v)) * Math.sin(u),
+                             params[2] * Math.sin(v));
+    }
+    public Object3D deepCopy()
+    {   Torus copy = new Torus();
+        copyParameters(copy);
+        makeDeepObjectCopy(copy);
+        return copy;        
+    }   
+
+} // class Torus
 
 
 // an ellipsoid

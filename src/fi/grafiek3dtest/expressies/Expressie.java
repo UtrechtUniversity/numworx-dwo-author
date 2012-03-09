@@ -10,8 +10,8 @@ import java.util.*;
 
 import fi.grafiek3dtest.Grafiek3DTest;
 import fi.grafiek3dtest.formuleobjects.*;
-import fi.beans.ideas.IdeasIF;
-import fi.beans.ideas.RuleIF;
+//import fi.beans.ideas.IdeasIF;
+//import fi.beans.ideas.RuleIF;
 import fi.beans.stringutils.StringUtils;;
 
 
@@ -119,7 +119,7 @@ public class Expressie
 		//return evalWithIdeas(e.toStringStrikt());
 	}
 	
-	
+/*	
 	private static Expressie evalWithIdeas(String evalCommand)
 	{
 		Expressie expr = (Expressie) casEvalStrings.get(evalCommand);
@@ -133,13 +133,14 @@ public class Expressie
 			casEvalStrings.put(evalCommand, expr);
 		return expr;
 	}
-	
+*/	
 	/**
 	 * Bereken de (double) waarde van een Expressie via een CAS.
 	 * @param e
 	 * @return waarde
 	 */
 	
+/*	
 	public static double geefWaardeViaIdeas(Expressie e)
 	{
 		RuleIF result = Grafiek3DTest.ideas.interpret(IdeasIF.NUMERIC, e.toStringStrikt());
@@ -147,7 +148,7 @@ public class Expressie
 			return Double.NaN;
 		return Double.parseDouble(result.getExpr());
 	}
-	
+*/	
 	
 	
 	public static Expressie evalWithCAS(String evalCommand)

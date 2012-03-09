@@ -25,7 +25,11 @@ public class Text_nl extends java.util.ListResourceBundle
 			{ "geenLabelsTekst" , "geen labels" },
 			{ "eindLabelsTekst" , "eind labels" },
 			{ "alleLabelsTekst" , "alle labels" },
-        	
+			
+			{ "grafiekTekst" , "grafiek" },
+			{ "oppervlakTekst" , "oppervlak" },
+			{ "krommeTekst" , "kromme" },
+			{ "aantalPuntenTekst" , "aantal punten" },
 	};
  
 }

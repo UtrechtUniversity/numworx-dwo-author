@@ -33,6 +33,8 @@ public class Object3DContainer extends JPanel
     int oldX, oldY;
     // remembering angles
     double angleX, angleY, angleZ;
+    static double angleXStart = 75;
+    static double angleZStart = 25;
     // scaling factor for drawing on the canvas
     // pixels per unit world space, incorporates zoomFactor
     double scaleFac;
@@ -129,12 +131,16 @@ public static String testString = "";
         
         if (newModel)
         {
-            angleX = 80;
+            angleX = angleXStart;
             angleY = 25;        
-            angleZ = 25;
+            angleZ = angleZStart;
             
             mat.zRotateBy(angleZ);
             mat.xRotateBy(angleX);
+//System.out.println("aX = " + angleX);
+//System.out.println("aZ = " + angleZ);
+          
+            
 //            mat.yRotateBy(angleY);
 //            mat.vwRotate(new Vector3D(0, 0, 1),
 //                         new Vector3D(0, 1, 0));
@@ -373,17 +379,24 @@ g.drawString(testString, 10, 15);
     
     public void rotateCake(double xTheta, double yTheta)        
     {
+//System.out.println("rotateCake " + xTheta + " " + yTheta);    	
          angleX += xTheta;
-         angleY += yTheta;
-         if (angleX > 88)
-            angleX = 88;
+         angleZ += yTheta;
+         if (angleX > 180)
+            angleX = 180;
          if (angleX < 0)
             angleX = 0;
          mat.reset();                    
-         mat.zRotateBy(angleY);                    
+         mat.zRotateBy(angleZ);                    
          mat.xRotateBy(angleX);       
     }
 
+    public void zetHoeken(double xAngle, double zAngle)
+    {
+    	angleX = 0;
+    	angleZ = 0;
+    	rotateCake(xAngle, zAngle);
+    }
     // shortcuts
     public Object3D objectClicked(int x, int y)
     {   return model.objectClicked(x, y, distance, mat.origin, paintType);

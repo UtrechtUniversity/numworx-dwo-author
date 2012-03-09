@@ -2,6 +2,7 @@ package fi.grafiek3dtest;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -22,17 +23,33 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 	
     // drawing colors
     public static Color axesColor = Color.black;
+    // floorColor is a dummy
     public static Color floorColor = Color.white;
     public static Color floorOutlineColor = Color.black;
-    public static Color graphColor = Color.yellow;
+    public static Color graphColor = new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 200);
+    //public static Color graphColor = new Color(Color.cyan.getRed(), Color.cyan.getGreen(), Color.cyan.getBlue(), 200);
+    //public static Color graphColor = new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), 200);
+    //public static Color graphColor = new Color(Color.green.getRed(), Color.green.getGreen(), Color.green.getBlue(), 200);
+    public static Color surfaceColor = new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 200);
     public static Color graphOutlineColor = Color.lightGray;
+    public static Color surfaceOutlineColor = Color.lightGray;
+    public static Color curveColor = brownRed;    
+    public static Color curveOutlineColor = brownRed;
+    public static Color wireFrameColor = brownRed;
+    
+	String[] imageNames = 
+	{	"zoominknop.gif",
+		"zoomuitknop.gif",
+	};
+	Hashtable images;
+
 
 	public static Font assenFont = new Font("SansSerif",Font.PLAIN, 10);
 	
     public static double MAXZOOM = 15e-1d;
     public static double MINZOOM = 2e-1d; 
     public static double ZOOMSTEP = 1e-1d;
-    public static double defaultZoom = 8e-1d;
+    public static double defaultZoom = 7e-1d;
     public double zoom = defaultZoom;
     
     // projections
@@ -64,31 +81,85 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     JPanel scrollPanel;
     int scrollPanelWidth = 450;
     int scrollPaneWidth = 470;
+    int scrollBarWidth = 20;
+    
+    // hoeken
+    double angleXG = Object3DContainer.angleXStart;
+    double angleZG = Object3DContainer.angleZStart;
+    double angleXS = Object3DContainer.angleXStart;
+    double angleZS = Object3DContainer.angleZStart;
+    double angleXC = Object3DContainer.angleXStart;
+    double angleZC = Object3DContainer.angleZStart;
     
     // axes
     double xMinBegin = -2, xMaxBegin = 2, xStepBegin = 5e-1d, 
     	   yMinBegin = -2, yMaxBegin = 2, yStepBegin = 5e-1d, 
     	   zMinBegin = -2, zMaxBegin = 2, zStepBegin = 5e-1d;
-    double xMin = -2, xMax = 2, xStep = 5e-1d, 
-           yMin = -2, yMax = 2, yStep = 5e-1d, 
-           zMin = -2, zMax = 2, zStep = 5e-1d;
+    double xMinG = -2, xMaxG = 2, xStepG = 5e-1d, 
+           yMinG = -2, yMaxG = 2, yStepG = 5e-1d, 
+           zMinG = -2, zMaxG = 2, zStepG = 5e-1d;
+    int xFinerStepsBegin = 2;
+    int yFinerStepsBegin = 2;
+	int xFinerStepsG = 2;
+	int yFinerStepsG = 2;
+
+    double xMinS = -2, xMaxS = 2, xStepS = 5e-1d, 
+    	   yMinS = -2, yMaxS = 2, yStepS = 5e-1d, 
+    	   zMinS = -2, zMaxS = 2, zStepS = 5e-1d;
+	int xFinerStepsS = 2;
+	int yFinerStepsS = 2;
     
-	int xFinerSteps = 2;
-	int yFinerSteps = 2;
+    double xMinC = -2, xMaxC = 2, xStepC = 5e-1d, 
+	   	   yMinC = -2, yMaxC = 2, yStepC = 5e-1d, 
+	   	   zMinC = -2, zMaxC = 2, zStepC = 5e-1d;
+	int xFinerStepsC = 2;
+	int yFinerStepsC = 2;
+    
 	
-    int zoomFactor = 0;
-        
-    public boolean noAxes = false;
+	// state
+    int zoomFactorG = 0;
+    int translateXFactorG = 0;
+    int translateYFactorG = 0;
+    int translateZFactorG = 0;
+    int finerFactorG = 0;
+
+    int zoomFactorS = 0;
+    int translateXFactorS = 0;
+    int translateYFactorS = 0;
+    int translateZFactorS = 0;
+    //int finerFactorS = 0;
+    
+    int zoomFactorC = 0;
+    int translateXFactorC = 0;
+    int translateYFactorC = 0;
+    int translateZFactorC = 0;
+    //int finerFactorC = 0;
+    
+    
+    // state    
+    public boolean noAxesG = false;
+    public boolean noAxesS = false;
+    public boolean noAxesC = false;
     
     public static final int NOFLOOR = 0;
     public static final int TRANSFLOOR = 1;
 //    public static final int SOLIDFLOOR = 2;
-    int floorType = NOFLOOR;
+    // state
+    int floorTypeG = NOFLOOR;
+    int floorTypeS = NOFLOOR;
+    int floorTypeC = NOFLOOR;
     
     public static final int NOLABELS = 0;
     public static final int ENDLABELS = 1;
     public static final int ALLLABELS = 2;
-    int labelType = ENDLABELS;
+    // state
+    int labelTypeG = ENDLABELS;
+    int labelTypeS = ENDLABELS;
+    int labelTypeC = ENDLABELS;
+    
+    // state
+    boolean wireFrameG = false;
+    boolean wireFrameS = false;
     
     long lastActionTime = 0;
     
@@ -99,17 +170,20 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     // the function editor
     FunctieEditor functieEditor;
     int functieEditorWidth = 350;
-    int functieEditorHeight = 300;
+    int functieEditorHeight = 500;
+    JPanel knoppenPanel;
+    int knoppenPanelWidth = 40; 
     
-    Object3D originalObject;
     ObjectGroup3D currentObjectGroup;
     
     public static final int FUNCTION = 0;
     public static final int SURFACE = 1;
     public static final int CURVE = 2;
+    // state
     int objectType = FUNCTION;
     
-    FormuleButton zoomStandaard, zoomIn, zoomUit, transPlus, asNaam, transMin, asKeuze, labelKeuze;
+    FormuleButton zoomStandaardButton, zoomInButton, zoomUitButton, transPlusButton, asNaamButton, transMinButton, 
+    			  solidDraadKeuzeButton, finerPlusButton, finerMinButton, asKeuzeButton, labelKeuzeButton;
     
     JPopupMenu assenPopup, labelsPopup;
     
@@ -119,22 +193,58 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 	String paramNaamU = "u";
 	String paramNaamV = "v";
 
+	Axes axesObject;
+	// state
 	Expressie grafiek3DExpressie = null;
+	Grafiek3D grafiek3DObject;
+	// state
+	Expressie surfaceXExpressie;
+	Expressie surfaceYExpressie;
+	Expressie surfaceZExpressie;
+	double uMin = 0;
+	double uMax = 2;
+	int uPoints = 10;
+	double vMin = 0;
+	double vMax = 2;
+	int vPoints = 10;
+	Surface3D surface3DObject;	
 
-	//boolean busy = false;
+	// state
+	Expressie curveXExpressie;
+	Expressie curveYExpressie;
+	Expressie curveZExpressie;
+	double tMin = 0;
+	double tMax = 2;
+	int tPoints = 10;
+	Curve3D curve3DObject;
+
+	// edit state variables
+	boolean zoomOptie = true;
+	boolean translateOptie = true;
+	boolean solidDraadKeuzeOptie = true;
+	boolean finerKeuzeOptie = true;
+	boolean asKeuzeOptie = true;
+	boolean labelKeuzeOptie = true;
 	
-    public Grafiek3DComponent(int x, int y, int w, int h)
+    public Grafiek3DComponent(int x, int y, int w, int h, Hashtable ims, String[] imNames)
     {
     	setBounds(x, y, w, h);
+    	
+    	images = ims;
+    	imageNames = imNames;
     	
     	setBackground(Color.lightGray);
     	
     	setLayout(null);
+    	
+    	panel3DSize = w - 10 - knoppenPanelWidth - scrollBarWidth;    	
 
     	scrollPanel = new JPanel();
     	scrollPanel.setLayout(null);
-    	scrollPanel.setSize(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight);
-    	scrollPanel.setPreferredSize(new Dimension(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight));
+    	//scrollPanel.setSize(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight);
+    	//scrollPanel.setPreferredSize(new Dimension(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight));
+    	scrollPanel.setSize(w - scrollBarWidth, 10 + panel3DSize + functieEditorHeight);
+    	scrollPanel.setPreferredSize(new Dimension(w - scrollBarWidth, 10 + panel3DSize + functieEditorHeight));    	
     	
     	panel3D.setBounds(10, 10, panel3DSize, panel3DSize);
     	scrollPanel.add(panel3D);
@@ -142,56 +252,81 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	functieEditor = new FunctieEditor(false);
     	functieEditor.setBounds(10,
     							panel3D.getLocation().y + panel3D.getSize().height, 
-    							functieEditorWidth, functieEditorHeight);
+    							panel3DSize, functieEditorHeight);
     	functieEditor.zetGrafiek3DComponent(this);
-    	functieEditor.zetFuncties(objectType);
+    	functieEditor.zetFuncties(objectType, false);
     	scrollPanel.add(functieEditor);                        
     	
     	scrollPane = new JScrollPane(scrollPanel);
-    	scrollPane.setBounds(0, 0, scrollPaneWidth, getSize().height);
-    	scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, getSize().height));
+    	scrollPane.setBounds(0, 0, w, h);
+    	scrollPane.setPreferredSize(new Dimension(w, h));
     	add(scrollPane);
     	
-    	zoomStandaard	= new ZoomKnop("standaard");
-		zoomStandaard.setBounds(10 + panel3DSize + 10, 10, 23, 23);
-		zoomStandaard.addActionListener(this);
-		scrollPanel.add(zoomStandaard);
-		
-		zoomIn	= new ZoomKnop("zoomin");
-		zoomIn.setBounds(10 + panel3DSize + 10, 39, 21, 21);
-		zoomIn.addActionListener(this);
-		scrollPanel.add(zoomIn);
-		
-		zoomUit	= new ZoomKnop("zoomuit");
-		zoomUit.setBounds(10 + panel3DSize + 10, 65, 21, 21);
-		zoomUit.addActionListener(this);
-		scrollPanel.add(zoomUit);
-		
-		transPlus = new ZoomKnop("transplus");
-		transPlus.setBounds(10 + panel3DSize + 10, 96, 21, 21);
-		transPlus.addActionListener(this);
-		scrollPanel.add(transPlus);
-		
-		asNaam = new ZoomKnop("xasnaam");
-		asNaam.setBounds(10 + panel3DSize + 5, 122, 31, 21);
-		asNaam.addActionListener(this);
-		scrollPanel.add(asNaam);
-		
-		transMin = new ZoomKnop("transmin");
-		transMin.setBounds(10 + panel3DSize + 10, 148, 21, 21);
-		transMin.addActionListener(this);
-		scrollPanel.add(transMin);
-		
-		asKeuze = new ZoomKnop("askeuze");
-		asKeuze.setBounds(10 + panel3DSize + 5, 179, 31, 21);
-		asKeuze.addActionListener(this);
-		scrollPanel.add(asKeuze);
+    	knoppenPanel = new JPanel();
+    	knoppenPanel.setLayout(null);
+    	knoppenPanel.setOpaque(false);
+    	knoppenPanel.setBounds(10 + panel3DSize, 0, w - panel3DSize - 30, panel3DSize);
+    	scrollPanel.add(knoppenPanel);
+//System.out.println("kpw = " + knoppenPanel.getWidth());    	
+
+    	zoomStandaardButton	= new ZoomKnop("standaard");
+    	zoomStandaardButton.setVisible(false);
+    	knoppenPanel.add(zoomStandaardButton);
+    	zoomStandaardButton.addActionListener(this);
     	
-		labelKeuze = new ZoomKnop("labelkeuze");
-		labelKeuze.setBounds(10 + panel3DSize + 5, 210, 31, 21);
-		labelKeuze.addActionListener(this);
-		scrollPanel.add(labelKeuze);
-    	    	
+		zoomInButton = new ZoomKnop("zoomin", getImage("zoominknop.gif"));
+    	zoomInButton.setVisible(false);
+    	knoppenPanel.add(zoomInButton);
+    	zoomInButton.addActionListener(this);
+		
+		zoomUitButton = new ZoomKnop("zoomuit", getImage("zoomuitknop.gif"));
+    	zoomUitButton.setVisible(false);
+    	knoppenPanel.add(zoomUitButton);
+    	zoomUitButton.addActionListener(this);
+		
+		transPlusButton = new ZoomKnop("transplus");
+    	transPlusButton.setVisible(false);
+    	knoppenPanel.add(transPlusButton);
+    	transPlusButton.addActionListener(this);    	
+		
+		asNaamButton = new ZoomKnop("xasnaam");
+    	asNaamButton.setVisible(false);
+    	knoppenPanel.add(asNaamButton);
+    	asNaamButton.addActionListener(this);        	
+		
+		transMinButton = new ZoomKnop("transmin");
+    	transMinButton.setVisible(false);
+		knoppenPanel.add(transMinButton);
+    	transMinButton.addActionListener(this);    		
+		
+		solidDraadKeuzeButton = new ZoomKnop("draad");
+		solidDraadKeuzeButton.setVisible(false);
+      	knoppenPanel.add(solidDraadKeuzeButton);
+    	solidDraadKeuzeButton.addActionListener(this);
+		
+		finerPlusButton = new ZoomKnop("finerplus");
+    	finerPlusButton.setVisible(false);
+    	knoppenPanel.add(finerPlusButton);
+    	finerPlusButton.addActionListener(this);
+		
+		finerMinButton = new ZoomKnop("finermin");
+    	finerMinButton.setVisible(false);
+    	knoppenPanel.add(finerMinButton);
+    	finerMinButton.addActionListener(this);
+		
+		asKeuzeButton = new ZoomKnop("askeuze");
+    	asKeuzeButton.setVisible(false);
+		knoppenPanel.add(asKeuzeButton);
+       	asKeuzeButton.addActionListener(this);
+
+		labelKeuzeButton = new ZoomKnop("labelkeuze");
+    	labelKeuzeButton.setVisible(false);
+		knoppenPanel.add(labelKeuzeButton);
+    	labelKeuzeButton.addActionListener(this);
+		
+    	
+    	layoutKnoppenPanel();    	
+    	
 		assenPopup = new JPopupMenu();
 		JMenuItem mi = new JMenuItem(Grafiek3DTest.rb.getString("geenAssenTekst"));
 		mi.addActionListener(this);
@@ -224,6 +359,144 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         
         setNewModel(0, true);
     	
+        //setSize(w, h);
+    }
+    
+    public void setSize(int b, int h)
+    {
+    	panel3DSize = b - 10 - knoppenPanelWidth - scrollBarWidth;
+    	
+    	super.setSize(b, h);
+    	// breedtes
+    	scrollPane.setSize(b, h);
+    	scrollPane.setPreferredSize(new Dimension(b, h));
+    	scrollPanel.setSize(b - scrollBarWidth, 10 + panel3DSize + functieEditorHeight);
+    	scrollPanel.setPreferredSize(new Dimension(b - scrollBarWidth, 10 + panel3DSize + functieEditorHeight));
+    	panel3D.setSize(panel3DSize, panel3DSize);
+    	knoppenPanel.setLocation(10 + panel3DSize, getLocation().y);
+    	functieEditor.setBounds(10, 10 + panel3DSize, panel3DSize, functieEditorHeight);
+    	setNewModel(0, false);
+    }
+    
+	public Image getImage(String name)
+	{	
+		return (Image) images.get(name);
+	}
+    
+    public void layoutKnoppenPanel()
+    {
+    	int currentY = 10;
+
+    	if (zoomOptie || translateOptie)
+    	{
+    		zoomStandaardButton.setBounds(10, currentY, 23, 23);
+    		zoomStandaardButton.setVisible(true);
+    		currentY += 29;
+    	}
+    	else
+    	{	zoomStandaardButton.setVisible(false);
+    	}
+
+    	if (zoomOptie)
+    	{	
+    		zoomInButton.setBounds(10, currentY, 21, 21);
+    		zoomInButton.setVisible(true);
+    		currentY += 26;
+		
+    		zoomUitButton.setBounds(10, currentY, 21, 21);
+    		zoomUitButton.setVisible(true);
+    		currentY += 31;
+    	}
+    	else
+    	{	zoomInButton.setVisible(false);
+    		zoomUitButton.setVisible(false);
+    	}
+    	
+    	if (translateOptie)
+    	{	
+    		transPlusButton.setBounds(10, currentY, 21, 21);
+    		transPlusButton.setVisible(true);
+    		currentY += 26;
+		
+    		asNaamButton.setBounds(5, currentY, 31, 21);
+    		asNaamButton.setVisible(true);
+    		currentY += 26;
+		
+    		transMinButton.setBounds(10, currentY, 21, 21);
+    		transMinButton.setVisible(true);
+    		currentY += 31;
+    	}
+    	else
+    	{	transPlusButton.setVisible(false);
+    		asNaamButton.setVisible(false);
+    		transMinButton.setVisible(false);
+    	}
+    	
+    	if (solidDraadKeuzeOptie && (objectType != CURVE))
+    	{	
+    		solidDraadKeuzeButton.setBounds(10, currentY, 21, 21);
+    		solidDraadKeuzeButton.setVisible(true);
+    		currentY += 31;
+    		if (objectType == FUNCTION)
+    		{
+    			if (wireFrameG)
+    				solidDraadKeuzeButton.setCode("solid");
+    			else
+    				solidDraadKeuzeButton.setCode("draad");
+    		}
+    		if (objectType == SURFACE)
+    		{
+    			if (wireFrameS)
+    				solidDraadKeuzeButton.setCode("solid");
+    			else
+    				solidDraadKeuzeButton.setCode("draad");
+    		}
+    		
+    	}
+    	else
+    	{	solidDraadKeuzeButton.setVisible(false);
+    	}
+    	
+    	if (finerKeuzeOptie && (objectType == FUNCTION))
+    	{	
+    		finerPlusButton.setBounds(10, currentY, 21, 21);
+    		finerPlusButton.setVisible(true);
+    		currentY += 26;
+		
+    		finerMinButton.setBounds(10, currentY, 21, 21);
+    		finerMinButton.setVisible(true);
+    		if (xFinerStepsG == 2)
+    			finerMinButton.setEnabled(false);
+    		else
+    			finerMinButton.setEnabled(true);
+    		currentY += 31;
+    	}
+    	else
+    	{	finerPlusButton.setVisible(false);
+			finerMinButton.setVisible(false);
+    	}
+    	
+    	if (asKeuzeOptie)
+    	{	
+    		asKeuzeButton.setBounds(10, currentY, 21, 21);
+    		asKeuzeButton.setVisible(true);
+    		currentY += 31;
+    	}
+    	else
+    	{	asKeuzeButton.setVisible(false);
+    	}
+    	
+    	if (labelKeuzeOptie)
+    	{	
+    		labelKeuzeButton.setBounds(5, currentY, 31, 21);
+    		labelKeuzeButton.setVisible(true);
+    	}
+    	else
+    	{	labelKeuzeButton.setVisible(false);
+    	}
+    	
+    	knoppenPanel.repaint();
+    	
     }
     
     // changing the model to a new one
@@ -241,11 +514,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         mouseMode = INERT;
 //      history.removeAllElements();        
 
+        //zetHoeken();
 			
         currentObjectGroup = makeNewModel(modelCode);        
    	    // HIER!
         //setFilled(false);        
-   	    panel3D.initializeModel(currentObjectGroup, reallyNew);
+   	    panel3D.initializeModel(currentObjectGroup, false);
 
         // reset zooming HERE
    	    zoom = defaultZoom;
@@ -256,9 +530,43 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 //        busy = false;
     }    
     
+    public void zetHoeken()
+    {
+//System.out.println("zetH " + objectType);
+
+        if (objectType == FUNCTION)
+        {	panel3D.zetHoeken(angleXG, angleZG);
+        }
+        else if (objectType == SURFACE)
+        {	panel3D.zetHoeken(angleXS, angleZS);
+        }
+        else if (objectType == CURVE)
+        {	panel3D.zetHoeken(angleXC, angleZC);
+        }
+    	
+    }
+    
+    public void getHoeken()
+    {
+//System.out.println("getH " + objectType);    	
+        if (objectType == FUNCTION)
+        {	angleXG = panel3D.angleX;
+        	angleZG = panel3D.angleZ;
+        }
+        else if (objectType == SURFACE)
+        {	angleXS = panel3D.angleX;
+    		angleZS = panel3D.angleZ;
+        }
+        else if (objectType == CURVE)
+        {	angleXC = panel3D.angleX;
+    		angleZC = panel3D.angleZ;
+        }
+    	
+    }
+    
     public ObjectGroup3D makeNewModel(int code)
-    {   Object3D axesModel;
-    	Object3D graph3DModel;
+    {   //Object3D axesModel;
+    	//Object3D graph3DModel;
         ObjectGroup3D modelGroup = null;
 
         // default?
@@ -267,32 +575,63 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 // is dit ook OK voor filled = false?
         //panel3D.paintType = Object3DContainer.PUREZ;
         
-    	axesModel = makeNewAxes();
+    	axesObject = makeNewAxes();
 //System.out.println("axes diam = " + axesModel.getDiameter());    	
-        
-        if (!noAxes)
+    	//axesModel = new Box(xMax - xMin, yMax - yMin, zMax - zMin, Color.yellow);        
+    	
+        if (((objectType == FUNCTION) && !noAxesG) ||
+        	((objectType == SURFACE) && !noAxesS) ||
+        	((objectType == CURVE) && !noAxesC)
+           )
         {	
-        	//axesModel = makeNewAxes();
-        	modelGroup = new ObjectGroup3D(axesModel, false);
-        	modelGroup.numVertexLabels = axesModel.numVertexLabels;
+        	modelGroup = new ObjectGroup3D(axesObject, false);
+        	modelGroup.numVertexLabels = axesObject.numVertexLabels;
         }
-        
-        //axesModel = new Box(xMax - xMin, yMax - yMin, zMax - zMin, Color.yellow);
         
         if (grafiek3DExpressie != null)
         {
-        	graph3DModel = makeGrafiek3D();
-        	graph3DModel.modelCode = code;
-        	originalObject = graph3DModel;
-        	if (modelGroup == null)
-        	{	graph3DModel.diameter = axesModel.getDiameter();
-        		graph3DModel.diamSet = true;
-        		
-        		modelGroup = new ObjectGroup3D(graph3DModel, false);
-        	
+        	grafiek3DObject = makeGrafiek3D();
+        	grafiek3DObject.modelCode = code;
+        	if (modelGroup == null) // geen assen
+        	{	grafiek3DObject.diameter = axesObject.getDiameter();
+        		grafiek3DObject.diamSet = true;
+        		modelGroup = new ObjectGroup3D(grafiek3DObject, false);
+        	}
+        	else // wel assen
+        	{	modelGroup.addObject3D(grafiek3DObject);
+        	}
+        }
+        
+        if (surfaceXExpressie != null)
+        {	surface3DObject = makeSurface3D();
+        	surface3DObject.modelCode = code;
+        	if (modelGroup == null) // geen assen
+        	{	surface3DObject.diameter = axesObject.getDiameter();
+        		surface3DObject.diamSet = true;
+        		modelGroup = new ObjectGroup3D(surface3DObject, false);
         	}
         	else
-        		modelGroup.addObject3D(graph3DModel);
+        	{	
+// HIER SNIJDEN MET ASSEN        		
+        		modelGroup.addObject3D(surface3DObject);
+        	}
+        	
+        }
+
+        if (curveXExpressie != null)
+        {
+        	curve3DObject = makeCurve3D();
+        	curve3DObject.modelCode = code;
+        	if (modelGroup == null) // geen assen
+        	{	curve3DObject.diameter = axesObject.getDiameter();
+        		curve3DObject.diamSet = true;
+        		modelGroup = new ObjectGroup3D(curve3DObject, false);
+        	}
+        	else
+        	{	
+// HIER SNIJDEN MET ASSEN        		
+        		modelGroup.addObject3D(curve3DObject);
+        	}
         }
         
         //System.out.println("model-numFacets = " + model.numFacets);        
@@ -301,30 +640,50 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         return modelGroup;
     }   
     
-    public Object3D makeNewAxes()
-    {
-    	return new Axes(xMin, xMax, xStep, yMin, yMax, yStep, zMin, zMax, zStep, 
-    					floorType, labelType, xFinerSteps, yFinerSteps);
+    public Axes makeNewAxes()
+    {	Axes axes = null;
+    	
+    	if (objectType == FUNCTION)
+    		return new Axes(xMinG, xMaxG, xStepG, yMinG, yMaxG, yStepG, zMinG, zMaxG, zStepG, 
+    						floorTypeG, labelTypeG, xFinerStepsG, yFinerStepsG);
+    	else if (objectType == SURFACE)
+    		return new Axes(xMinS, xMaxS, xStepS, yMinS, yMaxS, yStepS, zMinS, zMaxS, zStepS, 
+						    floorTypeS, labelTypeS, xFinerStepsS, yFinerStepsS);
+    	else if (objectType == CURVE)
+    		return new Axes(xMinC, xMaxC, xStepC, yMinC, yMaxC, yStepC, zMinC, zMaxC, zStepC, 
+						    floorTypeC, labelTypeC, xFinerStepsC, yFinerStepsC);
+    	
+    	return axes;	
     }
     
-    public Object3D makeGrafiek3D()
-    {	Grafiek3D grafiek3DObject = new Grafiek3D(grafiek3DExpressie, 
-			 					 				  xMin, xMax, xStep, yMin, yMax, yStep, zMin, zMax, zStep, 
-			 					 				  varNaamX, varNaamY, xFinerSteps, yFinerSteps);    	 
+    public Grafiek3D makeGrafiek3D()
+    {	grafiek3DObject = new Grafiek3D(grafiek3DExpressie, 
+					 				    xMinG, xMaxG, xStepG, yMinG, yMaxG, yStepG, zMinG, zMaxG, zStepG, 
+			 					 		varNaamX, varNaamY, xFinerStepsG, yFinerStepsG);    	 
+    
     
     	if (grafiek3DObject.trimTop)
     	{	
 //System.out.println("trimTop");    		
-    		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMax);
+    		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMaxG);
     		ObjectGroup3D grafiek3DObjectGroup = new ObjectGroup3D(grafiek3DObject, false);
     		ObjectGroup3D topTrimmedGroup = cutObjectGroup(grafiek3DObjectGroup, zMaxPlane);
 //System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
 
-// hier nog kiezen !!
+    		// hier nog kiezen !!
+    		
 			grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(0);
-			if (grafiek3DObject.containsVertex(grafiek3DObject.topMaxVertex) >= 0)
-				grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(1);
-				
+			if (grafiek3DObject.insideVertex != null)
+			{	if (grafiek3DObject.containsVertex(grafiek3DObject.insideVertex) < 0)
+					grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (grafiek3DObject.containsVertex(grafiek3DObject.topMaxVertex) >= 0)
+					grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(1);
+			}	
+//System.out.println("topMax = " + grafiek3DObject.topMaxVertex.toString());
+//if (grafiek3DObject.insideVertex != null)
+//System.out.println("inside = " + grafiek3DObject.insideVertex.toString());
 
 //if (grafiek3DObject instanceof Grafiek3D)
 //System.out.println("Grafiek3D");	
@@ -332,17 +691,32 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (grafiek3DObject.trimBottom)
     	{
-    		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMin);
-    		ObjectGroup3D grafiek3DObjectGroup = new ObjectGroup3D(grafiek3DObject, false);
-    		ObjectGroup3D topTrimmedGroup = cutObjectGroup(grafiek3DObjectGroup, zMinPlane);
-
-// hier nog kiezen !!
-			grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(0);
-			if (grafiek3DObject.containsVertex(grafiek3DObject.bottomMinVertex) >= 0)
-				grafiek3DObject = (Grafiek3D) topTrimmedGroup.objects.elementAt(1);
+//System.out.println("trimBottom");    		
     		
+    		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMinG);
+    		ObjectGroup3D grafiek3DObjectGroup = new ObjectGroup3D(grafiek3DObject, false);
+    		ObjectGroup3D bottomTrimmedGroup = cutObjectGroup(grafiek3DObjectGroup, zMinPlane);
+
+    		// hier nog kiezen !!
+    		
+			grafiek3DObject = (Grafiek3D) bottomTrimmedGroup.objects.elementAt(0);
+			if (grafiek3DObject.insideVertex != null)
+			{	if (grafiek3DObject.containsVertex(grafiek3DObject.insideVertex) < 0)
+					grafiek3DObject = (Grafiek3D) bottomTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{
+				if (grafiek3DObject.containsVertex(grafiek3DObject.bottomMinVertex) >= 0)
+					grafiek3DObject = (Grafiek3D) bottomTrimmedGroup.objects.elementAt(1);
+			}	
+//System.out.println("bottomMin = " + grafiek3DObject.bottomMinVertex.toString());    		
     	}
     
+    	grafiek3DObject.setOutlineColor(graphOutlineColor);
+    	
+    	if (wireFrameG)
+    		zetDraadFiguur(true, objectType);
+    	
     	return grafiek3DObject; 
     }
   
@@ -351,11 +725,390 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 //System.out.println("zetGrafiek3D");    	
     	grafiek3DExpressie = exp;
     	
-    	if (noAxes)
-    		setNewModel(0, true);
-    	else
+//    	if (noAxesG)
+//    		setNewModel(0, true);
+//    	else
     		setNewModel(0, false);
     }
+    
+    public Surface3D makeSurface3D()
+    {
+    	surface3DObject = new Surface3D(surfaceXExpressie, surfaceYExpressie, surfaceZExpressie,
+    			                        uMin, uMax, uPoints, vMin, vMax, vPoints,
+    			                        xMinS, xMaxS, yMinS, yMaxS, zMinS, zMaxS,
+    			                        paramNaamU, paramNaamV);
+
+    	if (surface3DObject.trimTop)
+    	{	
+//System.out.println("trimTop");    		
+    		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMaxS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D topTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) topTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) topTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.topMaxVertex) >= 0)
+					surface3DObject = (Surface3D) topTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("topMax = " + surface3DObject.topMaxVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	if (surface3DObject.trimBottom)
+    	{	
+//System.out.println("trimBottom");    		
+    		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMinS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D bottomTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMinPlane);
+//System.out.println("ttsize = " + bottomTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) bottomTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) bottomTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.bottomMinVertex) >= 0)
+					surface3DObject = (Surface3D) bottomTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("bottomMin = " + surface3DObject.bottomMinVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	if (surface3DObject.trimRight)
+    	{	
+//System.out.println("trimRight");    		
+    		Plane3D xMaxPlane = new Plane3D(1, 0, 0, xMaxS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D rightTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) rightTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) rightTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.rightMaxVertex) >= 0)
+					surface3DObject = (Surface3D) rightTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("rightMax = " + surface3DObject.rightMaxVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	if (surface3DObject.trimLeft)
+    	{	
+//System.out.println("trimLeft");    		
+    		Plane3D xMinPlane = new Plane3D(1, 0, 0, xMinS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D leftTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMinPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) leftTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) leftTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.leftMinVertex) >= 0)
+					surface3DObject = (Surface3D) leftTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("leftMin = " + surface3DObject.leftMinVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	if (surface3DObject.trimBack)
+    	{	
+//System.out.println("trimBack");    		
+    		Plane3D yMaxPlane = new Plane3D(0, 1, 0, yMaxS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D backTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) backTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) backTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.backMaxVertex) >= 0)
+					surface3DObject = (Surface3D) backTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("backMax = " + surface3DObject.backMaxVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	if (surface3DObject.trimFront)
+    	{	
+//System.out.println("trimFront");    		
+    		Plane3D yMinPlane = new Plane3D(0, 1, 0, yMinS);
+    		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
+    		ObjectGroup3D frontTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMinPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			surface3DObject = (Surface3D) frontTrimmedGroup.objects.elementAt(0);
+			if (surface3DObject.insideVertex != null)
+			{	if (surface3DObject.containsVertex(surface3DObject.insideVertex) < 0)
+					surface3DObject = (Surface3D) frontTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (surface3DObject.containsVertex(surface3DObject.frontMinVertex) >= 0)
+					surface3DObject = (Surface3D) frontTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("frontMin = " + surface3DObject.frontMinVertex.toString());
+//if (surface3DObject.insideVertex != null)
+//System.out.println("inside = " + surface3DObject.insideVertex.toString());
+
+    	}
+    	
+    	surface3DObject.setOutlineColor(surfaceOutlineColor);
+    	
+    	if (wireFrameS)
+    		zetDraadFiguur(true, objectType);
+
+    	
+    	return surface3DObject;
+    }
+    
+    
+    public Curve3D makeCurve3D()
+    {
+    	curve3DObject = new Curve3D(curveXExpressie, curveYExpressie, curveZExpressie,
+                tMin, tMax, tPoints,
+                xMinC, xMaxC, yMinC, yMaxC, zMinC, zMaxC,
+                paramNaam);
+
+    	if (curve3DObject.trimTop)
+    	{	
+//System.out.println("trimTop");    		
+    		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMaxS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D topTrimmedGroup = cutObjectGroup(curve3DObjectGroup, zMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) topTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) topTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.topMaxVertex) >= 0)
+					curve3DObject = (Curve3D) topTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("topMax = " + curve3DObject.topMaxVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	if (curve3DObject.trimBottom)
+    	{	
+//System.out.println("trimBottom");    		
+    		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMinS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D bottomTrimmedGroup = cutObjectGroup(curve3DObjectGroup, zMinPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) bottomTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) bottomTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.bottomMinVertex) >= 0)
+					curve3DObject = (Curve3D) bottomTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("bottomMin = " + curve3DObject.bottomMinVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	if (curve3DObject.trimRight)
+    	{	
+//System.out.println("trimRight");    		
+    		Plane3D xMaxPlane = new Plane3D(1, 0, 0, xMaxS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D rightTrimmedGroup = cutObjectGroup(curve3DObjectGroup, xMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) rightTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) rightTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.rightMaxVertex) >= 0)
+					curve3DObject = (Curve3D) rightTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("rightMax = " + curve3DObject.rightMaxVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	if (curve3DObject.trimLeft)
+    	{	
+//System.out.println("trimLeft");    		
+    		Plane3D xMinPlane = new Plane3D(1, 0, 0, xMinS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D leftTrimmedGroup = cutObjectGroup(curve3DObjectGroup, xMinPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) leftTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) leftTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.leftMinVertex) >= 0)
+					curve3DObject = (Curve3D) leftTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("leftMin = " + curve3DObject.leftMinVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	if (curve3DObject.trimBack)
+    	{	
+//System.out.println("trimBack");    		
+    		Plane3D yMaxPlane = new Plane3D(0, 1, 0, yMaxS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D backTrimmedGroup = cutObjectGroup(curve3DObjectGroup, yMaxPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) backTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) backTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.backMaxVertex) >= 0)
+					curve3DObject = (Curve3D) backTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("backMax = " + curve3DObject.backMaxVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	if (curve3DObject.trimFront)
+    	{	
+//System.out.println("trimFront");    		
+    		Plane3D yMinPlane = new Plane3D(0, 1, 0, yMinS);
+    		ObjectGroup3D curve3DObjectGroup = new ObjectGroup3D(curve3DObject, false);
+    		ObjectGroup3D frontTrimmedGroup = cutObjectGroup(curve3DObjectGroup, yMinPlane);
+//System.out.println("ttsize = " + topTrimmedGroup.objects.size());    
+
+    		// hier nog kiezen !!
+    		
+			curve3DObject = (Curve3D) frontTrimmedGroup.objects.elementAt(0);
+			if (curve3DObject.insideVertex != null)
+			{	if (curve3DObject.containsVertex(curve3DObject.insideVertex) < 0)
+					curve3DObject = (Curve3D) frontTrimmedGroup.objects.elementAt(1);
+			}
+			else
+			{	if (curve3DObject.containsVertex(curve3DObject.frontMinVertex) >= 0)
+					curve3DObject = (Curve3D) frontTrimmedGroup.objects.elementAt(1);
+			}
+			
+//System.out.println("frontMin = " + curve3DObject.frontMinVertex.toString());
+//if (curve3DObject.insideVertex != null)
+//System.out.println("inside = " + curve3DObject.insideVertex.toString());
+
+    	}
+    	
+    	return curve3DObject;
+
+    }
+    
+    public void zetSurface3D(Expressie xExp, Expressie yExp, Expressie zExp, 
+    						 double uMi, double uMa, int uPo,
+    						 double vMi, double vMa, int vPo)
+    {	if (xExp == null)
+    	{	surfaceXExpressie = xExp;
+    	}
+    	else
+    	{	surfaceXExpressie = xExp;
+    		surfaceYExpressie = yExp;
+    		surfaceZExpressie = zExp;
+    		uMin = uMi;
+    		uMax = uMa;
+    		uPoints = uPo;
+    		vMin = vMi;
+    		vMax = vMa;
+    		vPoints = vPo;
+    		
+    	}
+
+//    	if (noAxesS)
+//    		setNewModel(0, true);
+//    	else
+    		setNewModel(0, false);
+    
+    }
+    
+    public void zetCurve3D(Expressie xExp, Expressie yExp, Expressie zExp, 
+			 			   double tMi, double tMa, int tPo)
+    {	if (xExp == null)
+    	{	curveXExpressie = xExp;
+    	}
+    	else
+    	{	curveXExpressie = xExp;
+    		curveYExpressie = yExp;
+    		curveZExpressie = zExp;
+    		tMin = tMi;
+    		tMax = tMa;
+    		tPoints = tPo;
+
+    	}
+
+//    	if (noAxesC)
+//    		setNewModel(0, true);
+//    	else
+    		setNewModel(0, false);
+
+    }
+    
     
     public void setProjection(int proj)
     {   if (proj == CENTRALPROJ)
@@ -372,137 +1125,552 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     }
 */    
     
-    public void zoomStandaard()
+    public void zoomStandaard(boolean newModel, int objectType)
     {
+    	if (objectType == FUNCTION)
+    	{	
+    		xMinG = xMinBegin;
+    		xMaxG = xMaxBegin;
+    		xStepG = xStepBegin;
+    		yMinG = yMinBegin;
+    		yMaxG = yMaxBegin;
+    		yStepG = yStepBegin;
+    		zMinG = zMinBegin;
+    		zMaxG = zMaxBegin;
+    		zStepG = zStepBegin;
+    		xFinerStepsG = xFinerStepsBegin;
+    		yFinerStepsG = yFinerStepsBegin;
+    		finerMinButton.setEnabled(false);
     	
-    }
-    
-    public void zoomIn()
-    {	
-
-    	double centerX = (xMin + xMax) / 2;
-    	double centerY = (yMin + yMax) / 2;
-    	double centerZ = (zMin + zMax) / 2;
-    	xMax = centerX + (xMax - centerX) / 2;
-    	xMin = centerX - (centerX - xMin) / 2;
-    	yMax = centerY + (yMax - centerY) / 2;
-    	yMin = centerY - (centerY - yMin) / 2;
-    	zMax = centerZ + (zMax - centerZ) / 2;
-    	zMin = centerZ - (centerZ - zMin) / 2;
-    	xStep /= 2;
-    	yStep /= 2;
-    	zStep /= 2;
-
-    	zoomFactor++;
-    	
-    	if (zoomFactor >= 0)
-    	{	xFinerSteps = 2;
-    		yFinerSteps = 2;
+    		zoomFactorG = 0;
+    		translateXFactorG = 0;
+    		translateYFactorG = 0;
+    		translateZFactorG = 0;
+    		finerFactorG = 0;
+    		
+    		angleXG = Object3DContainer.angleXStart;
+    		angleZG = Object3DContainer.angleZStart;
     	}
-    	else
-    	{	xFinerSteps -= 1;
-			yFinerSteps -= 1;
+    	else if (objectType == SURFACE)
+    	{	
+    		xMinS = xMinBegin;
+    		xMaxS = xMaxBegin;
+    		xStepS = xStepBegin;
+    		yMinS = yMinBegin;
+    		yMaxS = yMaxBegin;
+    		yStepS = yStepBegin;
+    		zMinS = zMinBegin;
+    		zMaxS = zMaxBegin;
+    		zStepS = zStepBegin;
+    		xFinerStepsS = xFinerStepsBegin;
+    		yFinerStepsS = yFinerStepsBegin;
+    	
+    		zoomFactorS = 0;
+    		translateXFactorS = 0;
+    		translateYFactorS = 0;
+    		translateZFactorS = 0;
+    		
+    		angleXS = Object3DContainer.angleXStart;
+    		angleZS = Object3DContainer.angleZStart;
     		
     	}
-
-//System.out.println("zf = " + zoomFactor);    	
-//System.out.println("xfs = " + xFinerSteps);    	
+    	else if (objectType == CURVE)
+    	{	
+    		xMinC = xMinBegin;
+    		xMaxC = xMaxBegin;
+    		xStepC = xStepBegin;
+    		yMinC = yMinBegin;
+    		yMaxC = yMaxBegin;
+    		yStepC = yStepBegin;
+    		zMinC = zMinBegin;
+    		zMaxC = zMaxBegin;
+    		zStepC = zStepBegin;
+    		xFinerStepsC = xFinerStepsBegin;
+    		yFinerStepsC = yFinerStepsBegin;
     	
-    	setNewModel(0, false);
-    }
-    
-    public void zoomUit()
-    {
-    	double centerX = (xMin + xMax) / 2;
-    	double centerY = (yMin + yMax) / 2;
-    	double centerZ = (zMin + zMax) / 2;
-    	xMax = centerX + (xMax - centerX) * 2;
-    	xMin = centerX - (centerX - xMin) * 2;
-    	yMax = centerY + (yMax - centerY) * 2;
-    	yMin = centerY - (centerY - yMin) * 2;
-    	zMax = centerZ + (zMax - centerZ) * 2;
-    	zMin = centerZ - (centerZ - zMin) * 2;
-    	xStep *= 2;
-    	yStep *= 2;
-    	zStep *= 2;
-    	
-    	zoomFactor--;
-
-    	if (zoomFactor < 0)
-    	{	xFinerSteps += 1;
-    		yFinerSteps += 1;
+    		zoomFactorC = 0;
+    		translateXFactorC = 0;
+    		translateYFactorC = 0;
+    		translateZFactorC = 0;
+    		
+    		angleXC = Object3DContainer.angleXStart;
+    		angleZC = Object3DContainer.angleZStart;
+    		
     	}
+    	
+    	if (newModel)
+    	{	
+    		zetHoeken();
+    		setNewModel(0, false);
+    	
+    	}
+    }
+    
+    public void zoomIn(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		double centerX = (xMinG + xMaxG) / 2;
+    		double centerY = (yMinG + yMaxG) / 2;
+    		double centerZ = (zMinG + zMaxG) / 2;
+    		xMaxG = centerX + (xMaxG - centerX) / 2;
+    		xMinG = centerX - (centerX - xMinG) / 2;
+    		yMaxG = centerY + (yMaxG - centerY) / 2;
+    		yMinG = centerY - (centerY - yMinG) / 2;
+    		zMaxG = centerZ + (zMaxG - centerZ) / 2;
+    		zMinG = centerZ - (centerZ - zMinG) / 2;
+    		xStepG /= 2;
+    		yStepG /= 2;
+    		zStepG /= 2;
+    		zoomFactorG++;
 
-//System.out.println("zf = " + zoomFactor);    	
-//System.out.println("xfs = " + xFinerSteps);    	
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		double centerX = (xMinS + xMaxS) / 2;
+    		double centerY = (yMinS + yMaxS) / 2;
+    		double centerZ = (zMinS + zMaxS) / 2;
+    		xMaxG = centerX + (xMaxS - centerX) / 2;
+    		xMinG = centerX - (centerX - xMinS) / 2;
+    		yMaxG = centerY + (yMaxS - centerY) / 2;
+    		yMinG = centerY - (centerY - yMinS) / 2;
+    		zMaxG = centerZ + (zMaxS - centerZ) / 2;
+    		zMinG = centerZ - (centerZ - zMinS) / 2;
+    		xStepS /= 2;
+    		yStepS /= 2;
+    		zStepS /= 2;
+    		zoomFactorS++;
+
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		double centerX = (xMinC + xMaxC) / 2;
+    		double centerY = (yMinC + yMaxC) / 2;
+    		double centerZ = (zMinC + zMaxC) / 2;
+    		xMaxG = centerX + (xMaxC - centerX) / 2;
+    		xMinG = centerX - (centerX - xMinC) / 2;
+    		yMaxG = centerY + (yMaxC - centerY) / 2;
+    		yMinG = centerY - (centerY - yMinC) / 2;
+    		zMaxG = centerZ + (zMaxC - centerZ) / 2;
+    		zMinG = centerZ - (centerZ - zMinC) / 2;
+    		xStepC /= 2;
+    		yStepC /= 2;
+    		zStepC /= 2;
+    		zoomFactorC++;
+
+    	}
     	
-    	setNewModel(0, false);    	
+
+    	if (newModel)    	
+		{	setNewModel(0, false);
+		}
     	
     }
     
-    public void transPlusX()
-    {	xMin += xStep;
-    	xMax += xStep;
-    	setNewModel(0, false);
-    	
-    }
-    public void transMinX()
-    {	xMin -= xStep;
-		xMax -= xStep;
-		setNewModel(0, false);
-    	
-    }
-    public void transPlusY()
-    {	yMin += yStep;
-		yMax += yStep;
-		setNewModel(0, false);
-    	
-    }
-    public void transMinY()
-    {	yMin -= yStep;
-		yMax -= yStep;
-		setNewModel(0, false);
-    	
-    }
-    public void transPlusZ()
-    {	zMin += zStep;
-		zMax += zStep;
-		setNewModel(0, false);
-    	
-    }
-    public void transMinZ()
-    {	zMin -= zStep;
-		zMax -= zStep;
-		setNewModel(0, false);
-    	
-    }
-    
-    public void zetGeenAssen()
+    public void zoomUit(boolean newModel, int objectType)
     {
-    	noAxes = true;
-    	setNewModel(0, false);
+    	
+    	if (objectType == FUNCTION)
+    	{	
+    		double centerX = (xMinG + xMaxG) / 2;
+    		double centerY = (yMinG + yMaxG) / 2;
+    		double centerZ = (zMinG + zMaxG) / 2;
+    		xMaxG = centerX + (xMaxG - centerX) * 2;
+    		xMinG = centerX - (centerX - xMinG) * 2;
+    		yMaxG = centerY + (yMaxG - centerY) * 2;
+    		yMinG = centerY - (centerY - yMinG) * 2;
+    		zMaxG = centerZ + (zMaxG - centerZ) * 2;
+    		zMinG = centerZ - (centerZ - zMinG) * 2;
+    		xStepG *= 2;
+    		yStepG *= 2;
+    		zStepG *= 2;
+    		zoomFactorG--;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		double centerX = (xMinS + xMaxS) / 2;
+    		double centerY = (yMinS + yMaxS) / 2;
+    		double centerZ = (zMinS + zMaxS) / 2;
+    		xMaxG = centerX + (xMaxS - centerX) * 2;
+    		xMinG = centerX - (centerX - xMinS) * 2;
+    		yMaxG = centerY + (yMaxS - centerY) * 2;
+    		yMinG = centerY - (centerY - yMinS) * 2;
+    		zMaxG = centerZ + (zMaxS - centerZ) * 2;
+    		zMinG = centerZ - (centerZ - zMinS) * 2;
+    		xStepS *= 2;
+    		yStepS *= 2;
+    		zStepS *= 2;
+    		zoomFactorS--;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		double centerX = (xMinC + xMaxC) / 2;
+    		double centerY = (yMinC + yMaxC) / 2;
+    		double centerZ = (zMinC + zMaxC) / 2;
+    		xMaxG = centerX + (xMaxC - centerX) * 2;
+    		xMinG = centerX - (centerX - xMinC) * 2;
+    		yMaxG = centerY + (yMaxC - centerY) * 2;
+    		yMinG = centerY - (centerY - yMinC) * 2;
+    		zMaxG = centerZ + (zMaxC - centerZ) * 2;
+    		zMinG = centerZ - (centerZ - zMinC) * 2;
+    		xStepC *= 2;
+    		yStepC *= 2;
+    		zStepC *= 2;
+    		zoomFactorC--;
+    	}
+    	
+    	
+		if (newModel)    	
+		{	setNewModel(0, false);
+		}	
+    	
     }
     
-    public void zetxyzAs()
+    public void transPlusX(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		xMinG += xStepG;
+    		xMaxG += xStepG;
+    		translateXFactorG++;
+    	}	
+    	else if (objectType == SURFACE)
+    	{	
+    		xMinS += xStepS;
+    		xMaxS += xStepS;
+    		translateXFactorS++;
+    	}	
+    	else if (objectType == CURVE)
+    	{	
+    		xMinC += xStepC;
+    		xMaxC += xStepC;
+    		translateXFactorC++;
+    	}	
+    	
+    	if (newModel)    	
+    	{	setNewModel(0, false);
+    	}	
+    	
+    	
+    }
+    public void transMinX(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		xMinG -= xStepG;
+    		xMaxG -= xStepG;
+    		translateXFactorG--;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		xMinS -= xStepS;
+    		xMaxS -= xStepS;
+    		translateXFactorS--;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		xMinC -= xStepC;
+    		xMaxC -= xStepC;
+    		translateXFactorC--;
+    	}
+    	
+    	if (newModel)		
+    	{	setNewModel(0, false);
+    	}	
+    	
+    }
+    public void transPlusY(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		yMinG += yStepG;
+    		yMaxG += yStepG;
+    		translateYFactorG++;
+    	}	
+    	else if (objectType == SURFACE)
+    	{	
+    		yMinS += yStepS;
+    		yMaxS += yStepS;
+    		translateYFactorS++;
+    	}	
+    	else if (objectType == CURVE)
+    	{	
+    		yMinC += yStepC;
+    		yMaxC += yStepC;
+    		translateYFactorC++;
+    	}	
+    	
+    	if (newModel)		
+		{	setNewModel(0, false);
+		}		
+    	
+    }
+    public void transMinY(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		yMinG -= yStepG;
+    		yMaxG -= yStepG;
+    		translateYFactorG--;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		yMinS -= yStepS;
+    		yMaxS -= yStepS;
+    		translateYFactorS--;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		yMinC -= yStepC;
+    		yMaxC -= yStepC;
+    		translateYFactorC--;
+    	}
+    	
+   		if (newModel)		
+   		{	setNewModel(0, false);
+		}
+    	
+    }
+    public void transPlusZ(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		zMinG += zStepG;
+    		zMaxG += zStepG;
+    		translateZFactorG++;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		zMinS += zStepS;
+    		zMaxS += zStepS;
+    		translateZFactorS++;
+    	}	
+    	else if (objectType == CURVE)
+    	{	
+    		zMinC += zStepC;
+    		zMaxC += zStepC;
+    		translateZFactorC++;
+    	}	
+    	
+    	
+    	if (newModel)
+    	{	setNewModel(0, false);
+    	}
+    	
+    }
+    public void transMinZ(boolean newModel, int objectType)
+    {	
+    	if (objectType == FUNCTION)
+    	{	
+    		zMinG -= zStepG;
+    		zMaxG -= zStepG;
+    		translateZFactorG--;
+    	}	
+    	else if (objectType == SURFACE)
+    	{	
+    		zMinS -= zStepS;
+    		zMaxS -= zStepS;
+    		translateZFactorS--;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		zMinC -= zStepC;
+    		zMaxC -= zStepC;
+    		translateZFactorC--;
+    	}
+    	
+    	if (newModel)
+    	{	setNewModel(0, false);
+    	}
+    }
+    
+    public void zetDraadFiguur(boolean b, int objectType)
     {
-    	noAxes = false;
-    	floorType = NOFLOOR;
-    	setNewModel(0, false);
+    	if (objectType == FUNCTION)
+    	{	
+    		wireFrameG = b;
+    		if (b)
+    		{	if (grafiek3DObject != null)
+    			{	grafiek3DObject.setFilled(false);
+    				grafiek3DObject.setOutlineColor(wireFrameColor);
+    			}
+    		}
+    		else
+    		{	if (grafiek3DObject != null)
+				{	grafiek3DObject.setFilled(true);
+					grafiek3DObject.setOutlineColor(graphOutlineColor);
+				}
+    		}
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		wireFrameS = b;
+    		if (b)
+    		{	if (surface3DObject != null)
+    			{	surface3DObject.setFilled(false);
+    				surface3DObject.setOutlineColor(wireFrameColor);
+    			}
+    		}
+    		else
+    		{	if (surface3DObject != null)
+    			{	surface3DObject.setFilled(true);
+    				surface3DObject.setOutlineColor(surfaceOutlineColor);
+    			}
+    		}
+    	}
+    		
+    	panel3D.repaint();
     }
     
-    public void zetxyVloer()
+    public void zetFijner(boolean newModel, int objectType)
     {
-    	noAxes = false;
-    	floorType = TRANSFLOOR;
-    	setNewModel(0, false);
+    	if (objectType == FUNCTION)
+    	{	
+    		xFinerStepsG += 1;
+    		yFinerStepsG += 1;
+    		finerMinButton.setEnabled(true);
+    		finerFactorG++;
+    	
+    		if (newModel)
+    		{	setNewModel(0, false);
+    		}
+    	}	
     }
     
-    
-    public void zetLabelKeuze(int type)
+    public void zetGrover(boolean newModel, int objectType)
     {
-    	labelType = type;
-    	setNewModel(0, false);
+    	if (objectType == FUNCTION)
+    	{	
+    		xFinerStepsG -= 1;
+    		yFinerStepsG -= 1;
+    		if (xFinerStepsG == 2)
+    			finerMinButton.setEnabled(false);
+    		finerFactorG--;
+    	
+    		if (newModel)
+    		{	setNewModel(0, false);
+    		}
+    	}	
     }
+    public void zetGeenAssen(boolean newModel, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		noAxesG = true;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		noAxesS = true;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		noAxesC = true;
+    	}
+    	if (newModel)
+    		setNewModel(0, false);
+    }
+    
+    public void zetxyzAs(boolean newModel, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		noAxesG = false;
+    		floorTypeG = NOFLOOR;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		noAxesS = false;
+    		floorTypeS = NOFLOOR;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		noAxesC = false;
+    		floorTypeC = NOFLOOR;
+    	}
+    	if (newModel)
+    		setNewModel(0, false);
+    }
+    
+    public void zetxyVloer(boolean newModel, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		noAxesG = false;
+    		floorTypeG = TRANSFLOOR;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		noAxesS = false;
+    		floorTypeS = TRANSFLOOR;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		noAxesC = false;
+    		floorTypeC = TRANSFLOOR;
+    	}
+    	
+    	
+    	if (newModel)
+    		setNewModel(0, false);
+    }
+    
+    
+    public void zetLabelKeuze(boolean newModel, int type, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		labelTypeG = type;
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		labelTypeS = type;
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		labelTypeS = type;
+    	}
+    	if (newModel)
+    		setNewModel(0, false);
+    }
+
+    
+	public void zetZoomOptie(boolean b)
+	{	zoomOptie = b;
+		zoomUitButton.setVisible(zoomOptie);
+		zoomInButton.setVisible(zoomOptie);
+		
+	}
+	
+	public void zetTranslateOptie(boolean b)
+	{	translateOptie = b;
+		transPlusButton.setVisible(translateOptie);
+		transMinButton.setVisible(translateOptie);
+		asNaamButton.setVisible(translateOptie);
+	}
+	
+	public void zetSolidDraadKeuzeOptie(boolean b)
+	{	solidDraadKeuzeOptie = b;
+		solidDraadKeuzeButton.setVisible(solidDraadKeuzeOptie);
+		
+	}
+	
+	public void zetFinerKeuzeOptie(boolean b)
+	{	finerKeuzeOptie = b;
+		finerPlusButton.setVisible(finerKeuzeOptie);
+		finerMinButton.setVisible(finerKeuzeOptie);
+	}
+	
+	public void zetAsKeuzeOptie(boolean b)
+	{	asKeuzeOptie = b;
+		asKeuzeButton.setVisible(asKeuzeOptie);
+		
+	}
+	
+	public void zetLabelKeuzeOptie(boolean b)
+	{	labelKeuzeOptie = b;
+		labelKeuzeButton.setVisible(labelKeuzeOptie);
+		
+	}
     
     public void actionPerformed(ActionEvent e)
     {	if (e.getActionCommand().equals("focus"))
@@ -522,49 +1690,69 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	
 //System.out.println("at = " + actionTime);    	
 */    
-    	if (e.getSource() == zoomStandaard)
-    	{	zoomStandaard();
+    	if (e.getSource() == zoomStandaardButton)
+    	{	zoomStandaard(true, objectType);
     	}
-    	else if (e.getSource() == zoomIn) 
-    	{	zoomIn();	
+    	else if (e.getSource() == zoomInButton) 
+    	{	zoomIn(true, objectType);	
     	}
-    	else if (e.getSource() == zoomUit) 
-    	{	zoomUit();
+    	else if (e.getSource() == zoomUitButton) 
+    	{	zoomUit(true, objectType);
     	}
-    	else if (e.getSource() == transPlus) 
-    	{	if (asNaam.getCode().equals("xasnaam"))
-			{	transPlusX();
+    	else if (e.getSource() == transPlusButton) 
+    	{	if (asNaamButton.getCode().equals("xasnaam"))
+			{	transPlusX(true, objectType);
 			}
-			else if (asNaam.getCode().equals("yasnaam"))
-			{	transPlusY();
+			else if (asNaamButton.getCode().equals("yasnaam"))
+			{	transPlusY(true, objectType);
 			}
-			else if (asNaam.getCode().equals("zasnaam"))
-			{	transPlusZ();
-			}
-    	}
-    	else if (e.getSource() == transMin) 
-    	{	if (asNaam.getCode().equals("xasnaam"))
-			{	transMinX();
-			}
-			else if (asNaam.getCode().equals("yasnaam"))
-			{	transMinY();
-			}
-			else if (asNaam.getCode().equals("zasnaam"))
-			{	transMinZ();
+			else if (asNaamButton.getCode().equals("zasnaam"))
+			{	transPlusZ(true, objectType);
 			}
     	}
-    	else if (e.getSource() == asNaam) 
-    	{	if (asNaam.getCode().equals("xasnaam"))
-    		{	asNaam.setCode("yasnaam");
+    	else if (e.getSource() == transMinButton) 
+    	{	if (asNaamButton.getCode().equals("xasnaam"))
+			{	transMinX(true, objectType);
+			}
+			else if (asNaamButton.getCode().equals("yasnaam"))
+			{	transMinY(true, objectType);
+			}
+			else if (asNaamButton.getCode().equals("zasnaam"))
+			{	transMinZ(true, objectType);
+			}
+    	}
+    	else if (e.getSource() == asNaamButton) 
+    	{	if (asNaamButton.getCode().equals("xasnaam"))
+    		{	asNaamButton.setCode("yasnaam");
     		}
-    		else if (asNaam.getCode().equals("yasnaam"))
-    		{	asNaam.setCode("zasnaam");
+    		else if (asNaamButton.getCode().equals("yasnaam"))
+    		{	asNaamButton.setCode("zasnaam");
     		}
-    		else if (asNaam.getCode().equals("zasnaam"))
-    		{	asNaam.setCode("xasnaam");
+    		else if (asNaamButton.getCode().equals("zasnaam"))
+    		{	asNaamButton.setCode("xasnaam");
     		}
     	}
-    	else if (e.getSource() == asKeuze) 
+    	else if (e.getSource() == solidDraadKeuzeButton)
+    	{
+    		if (solidDraadKeuzeButton.getCode().equals("solid"))
+    		{	solidDraadKeuzeButton.setCode("draad");
+    			zetDraadFiguur(false, objectType);    			
+    		}
+    		else if (solidDraadKeuzeButton.getCode().equals("draad"))
+    		{	solidDraadKeuzeButton.setCode("solid");
+				zetDraadFiguur(true, objectType);
+    		}
+    	}
+    	else if (e.getSource() == finerPlusButton)
+    	{
+    		zetFijner(true, objectType);
+    	}
+    	else if (e.getSource() == finerMinButton)
+    	{
+    		zetGrover(true, objectType);
+    	}
+    	
+    	else if (e.getSource() == asKeuzeButton) 
     	{
 //System.out.println("pw = " + assenPopup.getSize().width);
 //System.out.println("ph = " + assenPopup.getSize().height);
@@ -572,11 +1760,11 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 			if (assenPopup.getSize().width != 0)
 				width = assenPopup.getSize().width;
 
-    		assenPopup.show(this, asKeuze.getLocation().x - width, asKeuze.getLocation().y);
+    		assenPopup.show(this, asKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, asKeuzeButton.getLocation().y);
 //System.out.println("pw = " + assenPopup.getSize().width);
 //System.out.println("ph = " + assenPopup.getSize().height);
     	}
-    	else if (e.getSource() == labelKeuze) 
+    	else if (e.getSource() == labelKeuzeButton) 
     	{
 //System.out.println("pw = " + labelsPopup.getSize().width);
 //System.out.println("ph = " + labelsPopup.getSize().height);
@@ -584,34 +1772,40 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 			if (labelsPopup.getSize().width != 0)
 				width = labelsPopup.getSize().width;
 
-			labelsPopup.show(this, labelKeuze.getLocation().x - width, labelKeuze.getLocation().y);
+			labelsPopup.show(this, labelKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, labelKeuzeButton.getLocation().y);
 //System.out.println("pw = " + labelsPopup.getSize().width);
 //System.out.println("ph = " + labelsPopup.getSize().height);
     		
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geenAssenTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) && 
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geenAssenTekst")))
     	{
-    		zetGeenAssen();
+    		zetGeenAssen(true, objectType);
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("xyzAsTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("xyzAsTekst")))
     	{
-    		zetxyzAs();
+    		zetxyzAs(true, objectType);
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("xyVloerTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("xyVloerTekst")))
     	{
-    		zetxyVloer();
+    		zetxyVloer(true, objectType);
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geenLabelsTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) &&
+    	        ((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geenLabelsTekst")))
     	{
-    		zetLabelKeuze(NOLABELS);
+    		zetLabelKeuze(true, NOLABELS, objectType);
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("eindLabelsTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) &&
+    	        ((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("eindLabelsTekst")))
     	{
-    		zetLabelKeuze(ENDLABELS);
+    		zetLabelKeuze(true, ENDLABELS, objectType);
     	}
-    	else if (((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("alleLabelsTekst")))
+    	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("alleLabelsTekst")))
     	{
-    		zetLabelKeuze(ALLLABELS);
+    		zetLabelKeuze(true, ALLLABELS, objectType);
     	}
     	
     	
@@ -655,13 +1849,92 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         	((Grafiek3D) left).trimBottom = ((Grafiek3D) start).trimBottom;
         	((Grafiek3D) left).topMaxVertex  = Vector3D.copyVector3D(((Grafiek3D) start).topMaxVertex);
         	((Grafiek3D) left).bottomMinVertex  = Vector3D.copyVector3D(((Grafiek3D) start).bottomMinVertex);
+        	((Grafiek3D) left).insideVertex  = Vector3D.copyVector3D(((Grafiek3D) start).insideVertex);
         	right = new Grafiek3D();
         	((Grafiek3D) right).trimTop = ((Grafiek3D) start).trimTop;
         	((Grafiek3D) right).trimBottom = ((Grafiek3D) start).trimBottom;
         	((Grafiek3D) right).topMaxVertex  = Vector3D.copyVector3D(((Grafiek3D) start).topMaxVertex);
         	((Grafiek3D) right).bottomMinVertex  = Vector3D.copyVector3D(((Grafiek3D) start).bottomMinVertex);
+        	((Grafiek3D) right).insideVertex  = Vector3D.copyVector3D(((Grafiek3D) start).insideVertex);
         	
         }
+        
+        if (start instanceof Surface3D)
+        {
+        	left = new Surface3D();
+        	((Surface3D) left).trimTop = ((Surface3D) start).trimTop;
+        	((Surface3D) left).trimBottom = ((Surface3D) start).trimBottom;
+        	((Surface3D) left).trimFront = ((Surface3D) start).trimFront;
+        	((Surface3D) left).trimBack = ((Surface3D) start).trimBack;
+        	((Surface3D) left).trimLeft = ((Surface3D) start).trimLeft;
+        	((Surface3D) left).trimRight = ((Surface3D) start).trimRight;
+        	
+        	((Surface3D) left).topMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).topMaxVertex);
+        	((Surface3D) left).bottomMinVertex  = Vector3D.copyVector3D(((Surface3D) start).bottomMinVertex);
+        	((Surface3D) left).frontMinVertex  = Vector3D.copyVector3D(((Surface3D) start).frontMinVertex);
+        	((Surface3D) left).backMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).backMaxVertex);
+        	((Surface3D) left).leftMinVertex  = Vector3D.copyVector3D(((Surface3D) start).leftMinVertex);
+        	((Surface3D) left).rightMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).rightMaxVertex);
+        	
+        	((Surface3D) left).insideVertex  = Vector3D.copyVector3D(((Surface3D) start).insideVertex);
+        	
+        	right = new Surface3D();
+        	((Surface3D) right).trimTop = ((Surface3D) start).trimTop;
+        	((Surface3D) right).trimBottom = ((Surface3D) start).trimBottom;
+        	((Surface3D) right).trimFront = ((Surface3D) start).trimFront;
+        	((Surface3D) right).trimBack = ((Surface3D) start).trimBack;
+        	((Surface3D) right).trimLeft = ((Surface3D) start).trimLeft;
+        	((Surface3D) right).trimRight = ((Surface3D) start).trimRight;
+        	
+        	((Surface3D) right).topMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).topMaxVertex);
+        	((Surface3D) right).bottomMinVertex  = Vector3D.copyVector3D(((Surface3D) start).bottomMinVertex);
+        	((Surface3D) right).frontMinVertex  = Vector3D.copyVector3D(((Surface3D) start).frontMinVertex);
+        	((Surface3D) right).backMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).backMaxVertex);
+        	((Surface3D) right).leftMinVertex  = Vector3D.copyVector3D(((Surface3D) start).leftMinVertex);
+        	((Surface3D) right).rightMaxVertex  = Vector3D.copyVector3D(((Surface3D) start).rightMaxVertex);
+        	
+        	((Surface3D) right).insideVertex  = Vector3D.copyVector3D(((Surface3D) start).insideVertex);
+        	
+        }
+
+        if (start instanceof Curve3D)
+        {
+        	left = new Curve3D();
+        	((Curve3D) left).trimTop = ((Curve3D) start).trimTop;
+        	((Curve3D) left).trimBottom = ((Curve3D) start).trimBottom;
+        	((Curve3D) left).trimFront = ((Curve3D) start).trimFront;
+        	((Curve3D) left).trimBack = ((Curve3D) start).trimBack;
+        	((Curve3D) left).trimLeft = ((Curve3D) start).trimLeft;
+        	((Curve3D) left).trimRight = ((Curve3D) start).trimRight;
+        	
+        	((Curve3D) left).topMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).topMaxVertex);
+        	((Curve3D) left).bottomMinVertex  = Vector3D.copyVector3D(((Curve3D) start).bottomMinVertex);
+        	((Curve3D) left).frontMinVertex  = Vector3D.copyVector3D(((Curve3D) start).frontMinVertex);
+        	((Curve3D) left).backMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).backMaxVertex);
+        	((Curve3D) left).leftMinVertex  = Vector3D.copyVector3D(((Curve3D) start).leftMinVertex);
+        	((Curve3D) left).rightMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).rightMaxVertex);
+        	
+        	((Curve3D) left).insideVertex  = Vector3D.copyVector3D(((Curve3D) start).insideVertex);
+        	
+        	right = new Curve3D();
+        	((Curve3D) right).trimTop = ((Curve3D) start).trimTop;
+        	((Curve3D) right).trimBottom = ((Curve3D) start).trimBottom;
+        	((Curve3D) right).trimFront = ((Curve3D) start).trimFront;
+        	((Curve3D) right).trimBack = ((Curve3D) start).trimBack;
+        	((Curve3D) right).trimLeft = ((Curve3D) start).trimLeft;
+        	((Curve3D) right).trimRight = ((Curve3D) start).trimRight;
+        	
+        	((Curve3D) right).topMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).topMaxVertex);
+        	((Curve3D) right).bottomMinVertex  = Vector3D.copyVector3D(((Curve3D) start).bottomMinVertex);
+        	((Curve3D) right).frontMinVertex  = Vector3D.copyVector3D(((Curve3D) start).frontMinVertex);
+        	((Curve3D) right).backMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).backMaxVertex);
+        	((Curve3D) right).leftMinVertex  = Vector3D.copyVector3D(((Curve3D) start).leftMinVertex);
+        	((Curve3D) right).rightMaxVertex  = Vector3D.copyVector3D(((Curve3D) start).rightMaxVertex);
+        	
+        	((Curve3D) right).insideVertex  = Vector3D.copyVector3D(((Curve3D) start).insideVertex);
+        	
+        }
+        
         ObjectGroup3D leftGroup, rightGroup;
   
 /*
@@ -706,8 +1979,24 @@ oud omitted
                         inds[k] = k + firstIndex;
                     Facet3D leftFacet = new Facet3D(left.vertices, inds, owp.facets[i].color);
                     left.addFacet(leftFacet);
-                    Facet3D.copyAttributes(owp.facets[i], leftFacet, false);
-/*                    
+                    if (owp.facets[i].numPoints == leftFacet.numPoints)
+                    	Facet3D.copyAttributes(owp.facets[i], leftFacet, true);
+                    else
+                    	Facet3D.copyAttributes(owp.facets[i], leftFacet, false);
+                    
+                    int inPlaneEdgeIndex = -1;
+                    for (int vCnt = 0; vCnt < leftFacet.numPoints; vCnt++)
+                    {	int pPos1 = plane.planePosition(leftFacet.points[vCnt]);
+                    	int pPos2 = plane.planePosition(leftFacet.points[(vCnt + 1) % leftFacet.numPoints]);
+                    	boolean inPlane = (pPos1 == 0) && (pPos2 == 0);
+                    	if (inPlane)
+                    		inPlaneEdgeIndex = vCnt;
+                    }
+                    if (inPlaneEdgeIndex >= 0)
+                    {	leftFacet.edgeCodes[inPlaneEdgeIndex] = 52;
+//System.out.println("left 52");                    
+                    }
+/* 
 oud omitted
                     for (int m = 0; m < leftFacet.numPoints; m++)
                     {   if (owp.facets[i].vertexLabels[m] != null)
@@ -732,7 +2021,21 @@ oud omitted
                         inds[k] = k + firstIndex;
                     Facet3D rightFacet = new Facet3D(right.vertices, inds, owp.facets[i].color);
                     right.addFacet(rightFacet);
-                    Facet3D.copyAttributes(owp.facets[i], rightFacet, false);
+                    if (owp.facets[i].numPoints == rightFacet.numPoints)
+                    	Facet3D.copyAttributes(owp.facets[i], rightFacet, true);
+                    else
+                    	Facet3D.copyAttributes(owp.facets[i], rightFacet, false);
+                    
+                    int inPlaneEdgeIndex = -1;
+                    for (int vCnt = 0; vCnt < rightFacet.numPoints; vCnt++)
+                    {	int pPos1 = plane.planePosition(rightFacet.points[vCnt]);
+                    	int pPos2 = plane.planePosition(rightFacet.points[(vCnt + 1) % rightFacet.numPoints]);
+                    	boolean inPlane = (pPos1 == 0) && (pPos2 == 0);
+                    	if (inPlane)
+                    		inPlaneEdgeIndex = vCnt;
+                    }
+                    if (inPlaneEdgeIndex >= 0)
+                    	rightFacet.edgeCodes[inPlaneEdgeIndex] = 52;
 /*
 oud omitted                      
                     for (int m = 0; m < rightFacet.numPoints; m++)
@@ -747,8 +2050,14 @@ oud omitted
                     // update cut colors?
                     
                 }    
+                
+// dit gebeurt niet wanneer je geen cut maakt
+                
                 else if ((leftPos == 0) && (rightPos == 0))
-                {   // facet is the cut, add to right
+                {   
+                	
+System.out.println("(leftPos == 0) && (rightPos == 0)");                	
+                	// facet is the cut, add to right
                     int firstIndex = right.numVertices;
                     for (int j = 0; j < owp.facets[i].numPoints; j++)
                         right.addVertex(new Vector3D(owp.facets[i].points[j]), null);
@@ -1341,4 +2650,154 @@ new omitted
         }
         
     } // class MLMML   
+    
+	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
+	{
+		// edit state
+		boolean zoomOptie = true;
+		boolean translateOptie = true;
+		boolean solidDraadKeuzeOptie = true;
+		boolean finerKeuzeOptie = true;
+		boolean asKeuzeOptie = true;
+		boolean labelKeuzeOptie = true;
+		
+		if (b.containsKey("zoomOptie"))
+			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
+		if (b.containsKey("translateOptie"))
+			zoomOptie = ((Boolean) b.get("translateOptie")).booleanValue();
+		if (b.containsKey("solidDraadKeuzeOptie"))
+			zoomOptie = ((Boolean) b.get("solidDraadKeuzeOptie")).booleanValue();
+		if (b.containsKey("finerKeuzeOptie"))
+			zoomOptie = ((Boolean) b.get("finerKeuzeOptie")).booleanValue();
+		if (b.containsKey("asKeuzeOptie"))
+			zoomOptie = ((Boolean) b.get("asKeuzeOptie")).booleanValue();
+		if (b.containsKey("labelKeuzeOptie"))
+			zoomOptie = ((Boolean) b.get("labelKeuzeOptie")).booleanValue();
+
+		zetZoomOptie(zoomOptie);
+		zetTranslateOptie(translateOptie);
+		zetSolidDraadKeuzeOptie(solidDraadKeuzeOptie);
+		zetFinerKeuzeOptie(finerKeuzeOptie);
+		zetAsKeuzeOptie(asKeuzeOptie);
+		zetLabelKeuzeOptie(labelKeuzeOptie);
+		
+		// state
+		
+		int objectType = FUNCTION;
+		
+		double angleXG = Object3DContainer.angleXStart;
+		double angleZG = Object3DContainer.angleZStart;
+		double angleXS = Object3DContainer.angleXStart;
+		double angleZS = Object3DContainer.angleZStart;
+		double angleXC = Object3DContainer.angleXStart;
+		double angleZC = Object3DContainer.angleZStart;
+		
+		int zoomFactorG = 0;
+		int translateXFactorG = 0;
+		int translateYFactorG = 0;
+		int translateZFactorG = 0;
+		int finerFactorG = 0;
+		
+		int zoomFactorS = 0;
+		int translateXFactorS = 0;
+		int translateYFactorS = 0;
+		int translateZFactorS = 0;
+
+		int zoomFactorC = 0;
+		int translateXFactorC = 0;
+		int translateYFactorC = 0;
+		int translateZFactorC = 0;
+
+		if (b.containsKey("objectType"))
+			objectType = ((Integer) b.get("objectType")).intValue();
+		this.objectType = objectType;
+		
+		// FUNCTION
+		if (b.containsKey("angleXG"))
+			angleXG = ((Double) b.get("angleXG")).doubleValue();
+		if (b.containsKey("angleZG"))
+			angleZG = ((Double) b.get("angleZG")).doubleValue();
+		
+		if (b.containsKey("zoomFactorG"))
+			zoomFactorG = ((Integer) b.get("zoomFactorG")).intValue();
+		if (zoomFactorG > 0)
+		{	for (int zUitCnt = 0; zUitCnt < zoomFactorG; zUitCnt++)
+				zoomUit(false, FUNCTION);
+		}
+		if (zoomFactorG < 0)
+		{	for (int zInCnt = zoomFactorG; zInCnt < 0; zInCnt++)
+			zoomIn(false, FUNCTION);
+		}
+		
+		if (b.containsKey("translateXFactorG"))
+			translateXFactorG = ((Integer) b.get("translateXFactorG")).intValue();
+		if (translateXFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorG; tPlusCnt++)
+				transPlusX(false, FUNCTION);
+		}
+		if (translateXFactorG < 0)
+		{	for (int tMinCnt = translateXFactorG; tMinCnt < 0; tMinCnt++)
+				transMinX(false, FUNCTION);
+		}
+		if (b.containsKey("translateYFactorG"))
+			translateYFactorG = ((Integer) b.get("translateYFactorG")).intValue();
+		if (translateYFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorG; tPlusCnt++)
+				transPlusY(false, FUNCTION);
+		}
+		if (translateYFactorG < 0)
+		{	for (int tMinCnt = translateYFactorG; tMinCnt < 0; tMinCnt++)
+				transMinY(false, FUNCTION);
+		}
+		if (b.containsKey("translateZFactorG"))
+			translateZFactorG = ((Integer) b.get("translateZFactorG")).intValue();
+		if (translateZFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorG; tPlusCnt++)
+				transPlusZ(false, FUNCTION);
+		}
+		if (translateZFactorG < 0)
+		{	for (int tMinCnt = translateZFactorG; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, FUNCTION);
+		}
+		
+		
+		// hier, objectType nodig
+		layoutKnoppenPanel();
+		
+		functieEditor.zetOpdracht(b, randomVars, randomValues);
+		
+		// hier !!
+// grafiek oppervlak kromme maken
+// model maken		
+// zetBeginHoeken		
+
+	}
+	
+	public void setState(Hashtable b)
+	{
+		
+		
+		functieEditor.setState(b);
+	}
+	
+	public void setEditState(Hashtable b)
+	{
+		
+		functieEditor.setEditState(b);
+	}
+	
+	public Hashtable getState()
+	{
+		Hashtable h = functieEditor.getState();
+		
+		return h;
+	}
+	
+	public Hashtable getEditState()
+	{
+		Hashtable h = functieEditor.getEditState();
+		
+		return h;
+	}
+    
 }

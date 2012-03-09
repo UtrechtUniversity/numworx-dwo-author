@@ -214,7 +214,10 @@ public class Facet3D implements Serializable
         }
     }
     
-    
+    public void reverseNormal()
+    {
+    	normal = new Vector3D(-normal.x, -normal.y, -normal.z);
+    }
     // average z-coordinate of vertices of trPoints!
     // used after transforming
     public void calculateZValue(Vector3D origin, double distance)
@@ -361,7 +364,7 @@ public class Facet3D implements Serializable
         }
         else // none
             g.setColor(color);
-        if (filled)
+        if (filled && (numPoints >= 3))
             g.fillPolygon(p);
 
 // determine outline color and draw outline
@@ -400,7 +403,12 @@ public class Facet3D implements Serializable
              if (edgesLabeled() || (hiddenOutlineMode != 0))
                  drawPolygon(g, p, visFromD);
              else  
-                 g.drawPolygon(p);
+             {   if (numPoints < 3) 
+            	 	g.drawLine(p.xpoints[0], p.ypoints[0], p.xpoints[1], p.ypoints[1]);
+            	 else
+            		 g.drawPolygon(p);
+             
+             }
         } // if (outlined)
          
         
@@ -715,6 +723,8 @@ extern op UNhidden gezet
             if (edgeCodes[i] >= 0)
             {   boolean hidden = false;
                 boolean highlighted = false;
+                boolean grafiek3D = false;
+                boolean normalHidden = false;
                 // hiding through normal
                 if ((edgeCodes[i] >= 0) && (edgeCodes[i] < 10))
                 {
@@ -766,19 +776,54 @@ extern op UNhidden gezet
                 {   g.setColor(edgeColors[edgeCodes[i] % 40]);
                 }    
 
+                else if (edgeCodes[i] == 50)
+                {
+                	grafiek3D = true;
+                	hidden = false;
+                	normalHidden = !visFromD;
+                	
+                }
+                else if (edgeCodes[i] == 51)
+                {
+                	grafiek3D = true;
+                	hidden = true;
+                }
+                
+                else if (edgeCodes[i] == 52)
+                {
+                	grafiek3D = true;
+                	hidden = false;
+                	if (!filled)
+                		normalHidden = visFromD;
+                	else
+                		normalHidden = !visFromD;
+                }
                 
 // hier hightlighten!!!
 // drawHighlightedLine
 // drawHighlightedDashedLine
-                // drawing    
-                if (!hidden || (hiddenOutlineMode == 0))    
-                    g.drawLine(p.xpoints[i], p.ypoints[i],
-                               p.xpoints[(i+1) % p.npoints], 
-                               p.ypoints[(i+1) % p.npoints]); 
-                else if (hidden && (hiddenOutlineMode != 0))    // dashed
-                    drawDashedLine(g, p.xpoints[i], p.ypoints[i],
-                                      p.xpoints[(i+1) % p.npoints], 
-                                      p.ypoints[(i+1) % p.npoints]); 
+                // drawing
+                if (!grafiek3D)
+                {	
+                	if (!hidden || (hiddenOutlineMode == 0))    
+                		g.drawLine(p.xpoints[i], p.ypoints[i],
+                				   p.xpoints[(i+1) % p.npoints], 
+                                   p.ypoints[(i+1) % p.npoints]); 
+                	else if (hidden && (hiddenOutlineMode != 0))    // dashed
+                		drawDashedLine(g, p.xpoints[i], p.ypoints[i],
+                                       p.xpoints[(i+1) % p.npoints], 
+                                       p.ypoints[(i+1) % p.npoints]);
+                }
+                else // grafiek3D
+                {	if (!normalHidden)
+                		g.setColor(getHiddenOutlineColor(outlineColor));
+                	else
+                		g.setColor(outlineColor);
+                	if (!hidden)    
+            			g.drawLine(p.xpoints[i], p.ypoints[i],
+            					   p.xpoints[(i+1) % p.npoints], 
+                                   p.ypoints[(i+1) % p.npoints]);
+                }
             }                          
         } // for
     }    
@@ -951,7 +996,7 @@ if (blue > 255)
     
     
         
-        return new Color(red, green, blue);
+        return new Color(red, green, blue, f.color.getAlpha());
     }
     // find shadowed grey color, use reverse unitNormal
     public static Color shadowGrayColor(Facet3D f)

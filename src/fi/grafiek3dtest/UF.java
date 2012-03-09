@@ -37,8 +37,9 @@ class UF
                 fractionalString = zeros(decs - fractionalString.length()) +
                                    fractionalString;
             result = integerString +
-            			Grafiek3DTest.rb.getString("decSep");
-                     //Table.lookUp("decSep") + fractionalString;
+            			Grafiek3DTest.rb.getString("decSep") +
+                     	//Table.lookUp("decSep") + 
+            			fractionalString;
         }
         return result;
     }

@@ -13,20 +13,27 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 
 import fi.beans.appletutil.AppletUtil;
-import fi.beans.ideas.IdeasClient;
-import fi.beans.ideas.IdeasIF;
+//import fi.beans.ideas.IdeasClient;
+//import fi.beans.ideas.IdeasIF;
 import fi.beans.openmath.MathematicaLink;
 
-public class Grafiek3DTest extends JApplet  
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+//deze moet vanwege WiskOpdrApplet
+import fi.beans.wiskopdrbeans.InteractiePanel;
+//deze moet vanwege InteractiePanel
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+
+
+public class Grafiek3DTest extends JApplet  implements WiskOpdrApplet  
 {
 	public static ResourceBundle rb;
+	public static String langArg;
 	public static Locale language = new Locale("nl", "");
 	
 	public static String deployVariant = "";
 	public static boolean mobileVersion = false;
 	
 	public static MathematicaLink phrasebook;
-	public static IdeasIF ideas;
 	
 	public static Applet applet;	
 	public static boolean mac = false;
@@ -51,6 +58,28 @@ public class Grafiek3DTest extends JApplet
 	
 	Grafiek3DComponent grafiek3DComponent;
 	
+	Image zoomInImage, zoomUitImage;
+	
+	String[] imageNames = 
+	{	"zoominknop.gif",
+		"zoomuitknop.gif",
+	};
+	Hashtable images;
+	
+	public Grafiek3DTest(Locale language)
+    {   applet = this;
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.grafiek3dtest.text.Text", language);
+    }
+    
+   
+	public Grafiek3DTest()
+	{	applet = this;
+		langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.grafiek3dtest.text.Text", language);
+	}
+	
 	public void init()
 	{
 		applet = this;
@@ -65,13 +94,6 @@ public class Grafiek3DTest extends JApplet
 		rb = ResourceBundle.getBundle("fi.grafiek3dtest.text.Text", language);
 		
 		try 
-		{  	ideas = new IdeasClient(this, IdeasClient.IDEAS);		
-		} 
-		catch (Exception e) 
-		{	e.printStackTrace();
-		}
-		
-		try 
 		{	phrasebook = new MathematicaLink(new URL("http://www.fi.uu.nl/servlet/mathshell/"));
         } 
 		catch (MalformedURLException e) 
@@ -79,11 +101,38 @@ public class Grafiek3DTest extends JApplet
             e.printStackTrace();
         }	
 		
-		grafiek3DComponent = new Grafiek3DComponent(0, 0, getSize().width, getSize().height);
+		if (images == null)
+		{
+			images = new Hashtable();
+			loadImages(images, imageNames);
+		}
+		grafiek3DComponent = new Grafiek3DComponent(0, 0, getSize().width, getSize().height, images, imageNames);
 		getContentPane().add(grafiek3DComponent);
 		
 	}
-
+	
+	public void loadImages(Hashtable images, String[] imageNames)
+	{	AppletUtil au = new AppletUtil(applet);
+		MediaTracker tr = new MediaTracker(applet);
+		Image[] image = new Image[imageNames.length];
+		for (int i = 0; i < imageNames.length; i++)
+		{	image[i] = au.getImage("resources/" + imageNames[i]);
+			tr.addImage(image[i], 0);
+		}
+		try
+		{	tr.waitForAll();
+		} 
+		catch(Exception e)
+		{};
+		for (int i = 0; i < imageNames.length; i++)
+		{	
+//if (image[i] != null)
+//System.out.println("im " + i + " not null");	
+			images.put(imageNames[i], image[i]);
+		}
+		
+	}
+/*
 	public static void loadImages(Hashtable images,String[] imageNames)
 	{	AppletUtil au = new AppletUtil(applet);
 		MediaTracker tr = new MediaTracker(applet);
@@ -102,5 +151,11 @@ public class Grafiek3DTest extends JApplet
 		}
 		
 	}
+*/	
+	// interface WiskOpdrApplet 
+	public InteractiePanel getInteractiePanel()
+	{	return new Grafiek3DInteractiePanel();
+	}
+	
 	
 }

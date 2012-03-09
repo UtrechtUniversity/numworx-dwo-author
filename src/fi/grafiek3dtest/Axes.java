@@ -14,6 +14,8 @@ public class Axes extends Object3D
 	
 	String[] vLabels; 
 	
+	int floorType = Grafiek3DComponent.NOFLOOR;
+	
     public Axes()
     {}
     public Axes(double xMin, double xMax, double xStep, 
@@ -21,6 +23,7 @@ public class Axes extends Object3D
     		    double zMin, double zMax, double zStep,
     		    int floorType, int labelType, int xFinerSteps, int yFinerSteps)
     {
+    	this.floorType = floorType;
     	
 		dfs = new DecimalFormatSymbols();
 		dfs.setDecimalSeparator('.');
@@ -206,7 +209,8 @@ public class Axes extends Object3D
 			
 			// points
 			for (int xMinCnt = 0; xMinCnt < (xFinerSteps + 1); xMinCnt++)
-			{	vertices[xMinCnt] = new Vector3D(xMin + xMinCnt * xStepFine, xAsyPos, xAszPos);
+			{	//vertices[xMinCnt] = new Vector3D(xMin + xMinCnt * xStepFine, xAsyPos, xAszPos);
+				vertices[xMinCnt] = new Vector3D(xMin + xMinCnt * xStepFine, (yMin + yMax) / 2, xAszPos);
 				if (labelType == Grafiek3DComponent.ALLLABELS)
 				{	if (xMinCnt == 0)
 						vLabels[xMinCnt] = "F" + "x = " + df.format(xMin + xMinCnt * xStepFine);
@@ -224,7 +228,8 @@ public class Axes extends Object3D
 			}	
 
 			for (int xMaxCnt = 0; xMaxCnt < (xFinerSteps + 1); xMaxCnt++)
-			{	vertices[(xFinerSteps + 1) + xMaxCnt] = new Vector3D(xMax - xStep + xMaxCnt * xStepFine, xAsyPos, xAszPos);
+			{	//vertices[(xFinerSteps + 1) + xMaxCnt] = new Vector3D(xMax - xStep + xMaxCnt * xStepFine, xAsyPos, xAszPos);
+				vertices[(xFinerSteps + 1) + xMaxCnt] = new Vector3D(xMax - xStep + xMaxCnt * xStepFine, (yMin + yMax) / 2, xAszPos);
 				if (labelType == Grafiek3DComponent.ALLLABELS)
 				{	if (xMaxCnt == xFinerSteps)
 						vLabels[(xFinerSteps + 1) + xMaxCnt] = "F" + "x = " + df.format(xMax - xStep + xMaxCnt * xStepFine);
@@ -242,7 +247,8 @@ public class Axes extends Object3D
 			}	
 
 			for (int yMinCnt = 0; yMinCnt < (yFinerSteps + 1); yMinCnt++)
-			{	vertices[2 * (xFinerSteps + 1) + yMinCnt] = new Vector3D(yAsxPos, yMin + yMinCnt * yStepFine, yAszPos);
+			{	//vertices[2 * (xFinerSteps + 1) + yMinCnt] = new Vector3D(yAsxPos, yMin + yMinCnt * yStepFine, yAszPos);
+				vertices[2 * (xFinerSteps + 1) + yMinCnt] = new Vector3D((xMin + xMax) / 2, yMin + yMinCnt * yStepFine, yAszPos);
 				if (labelType == Grafiek3DComponent.ALLLABELS)
 				{	if (yMinCnt == 0)
 						vLabels[2 * (xFinerSteps + 1) + yMinCnt] = "F" + "y = " + df.format(yMin + yMinCnt * yStepFine);
@@ -261,7 +267,8 @@ public class Axes extends Object3D
 
 			for (int yMaxCnt = 0; yMaxCnt < (yFinerSteps + 1); yMaxCnt++)
 			{	vertices[2 * (xFinerSteps + 1) + (yFinerSteps + 1) + yMaxCnt] = 
-					new Vector3D(yAsxPos, yMax - yStep + yMaxCnt * yStepFine, yAszPos);
+					//new Vector3D(yAsxPos, yMax - yStep + yMaxCnt * yStepFine, yAszPos);
+					new Vector3D((xMin + xMax) / 2, yMax - yStep + yMaxCnt * yStepFine, yAszPos);
 				if (labelType == Grafiek3DComponent.ALLLABELS)
 				{	if (yMaxCnt == yFinerSteps)
 						vLabels[2 * (xFinerSteps + 1) + (yFinerSteps + 1) + yMaxCnt] = 
@@ -438,8 +445,10 @@ public class Axes extends Object3D
 
         // find the center !!
         Vector3D center = new Vector3D((xMin + xMax) / 2, (yMin + yMax) / 2, (zMin + zMax) / 2);
+        Vector3D corner = new Vector3D(xMax, yMax, zMax);
+        double diam = Vector3D.distance(corner, center);
         //initObject3D(true, false);
-        initObject3D(true, center, false);
+        initObject3D(true, center, diam, false);
                 
     	
     }
