@@ -203,7 +203,7 @@ public class BVInvoer {
 				}
 			}
 			if(!BVInvoer.isRandomVar(this.getNoemerString())) {
-				double temp = Double.parseDouble(this.getTellerString());
+				double temp = Double.parseDouble(this.getNoemerString());
 				if((double)(int)temp == temp) {
 					this.setInput(this.getTellerString() + "/" + Integer.toString((int)temp));
 				}

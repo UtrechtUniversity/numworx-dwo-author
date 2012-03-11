@@ -135,7 +135,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private boolean kijkNNa;
 	private int antwoordN;
 	private boolean kijkPNa;
-	private double antwoordP;
+	//private double antwoordP;
+	private BVInvoer antwoordP;
 	private boolean kijkMNa;
 	private int antwoordM;
 	private boolean kijkPopulatieNa;
@@ -1047,12 +1048,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	 */
 	private void pTextUpdate() {
 		BVInvoer invoer = new BVInvoer(this.pText.getText());
+		double newP;
 		if(invoer.isValidDoubleInput()) {
 			this.pInvoer.setInput(this.pText.getText());
 			if(!this.pInvoer.isRandomInput()) {
 				if(!this.pInvoer.isBreuk()) {
 					try {
-						this.p = Double.parseDouble(this.pInvoer.getInput());
+						newP = Double.parseDouble(this.pInvoer.getInput());
+						if(newP >= 0.0 && newP <= 1.0) {
+							this.p = newP;
+						}
 					}
 					catch (NumberFormatException e){
 						System.out.println("NumberFormatException in pTextUpdate! " + e.toString());
@@ -1060,7 +1065,11 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				}
 				else {
 					try {
-						this.p = Double.parseDouble(this.pInvoer.getTellerString()) / Double.parseDouble(this.pInvoer.getNoemerString());
+						System.out.println("P is " + Double.parseDouble(this.pInvoer.getTellerString()) + "/" + Double.parseDouble(this.pInvoer.getNoemerString()));
+						newP = Double.parseDouble(this.pInvoer.getTellerString()) / Double.parseDouble(this.pInvoer.getNoemerString());
+						if(newP >= 0.0 && newP <= 1.0) {
+							this.p = newP;
+						}
 					}
 					catch (NumberFormatException e) {
 						System.out.println("NumberFormatException in pTextUpdate! " + e.toString());
@@ -1215,7 +1224,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	/**
 	 * Gekopiëerd uit Normale Verdeling, kleine aanpassingen gemaakt
 	 */
-	public static double substitueerRandom(double def, String s, String[] randomVars, Hashtable randomValues) {
+	public static double substitueerRandom(double defaultValue, String s, String[] randomVars, Hashtable randomValues) {
+		System.out.println("Randomvalues: " + randomValues);
 		double d = Double.NaN;
 		s = s.substring(1, s.length() - 1);
 		//String[] delen = StringUtils.split(s, "/");
@@ -1231,7 +1241,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			d = d / decFactor;
 		}
 		if (Double.isNaN(d)) {
-			d = def;
+			d = defaultValue;
 		}
 		return d;
 	}
@@ -1509,7 +1519,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			}
 			
 			if(this.kijkPNa) {
-				correct = correct && Math.round(1000.0 * this.p) == Math.round(1000.0*this.antwoordP);
+				//TODO terugzetten?
+				//correct = correct && Math.round(1000.0 * this.p) == Math.round(1000.0*this.antwoordP);
+				//correct = correct && this.p == this.antwoordP;
+				correct = correct && this.checkP(this.antwoordP);
 			}
 		}
 		if(correct) {
@@ -1528,6 +1541,28 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		Iterator<ActionListener> iterator = this.listeners.iterator();
 		while(iterator.hasNext()) {
 			iterator.next().actionPerformed(event);
+		}
+	}
+	
+	private boolean checkP(BVInvoer antwoordP) {
+		System.out.println("CHeck P");
+		if(this.pInvoer.isBreuk() && antwoordP.isBreuk()) {
+			System.out.println("checkP: beide breuk");
+			Double d1 = new Double(Double.parseDouble(pInvoer.getTellerString())/Double.parseDouble(pInvoer.getNoemerString()));
+			Double d2 = new Double(Double.parseDouble(antwoordP.getTellerString())/Double.parseDouble(antwoordP.getNoemerString()));
+			System.out.println(d1 + " en " + d2);
+			return d1.equals(d2);
+		}
+		else {
+			double d;
+			if(antwoordP.isBreuk()) {
+				d = Double.parseDouble(antwoordP.getTellerString())/Double.parseDouble(antwoordP.getNoemerString());
+			}
+			else {
+				d = Double.parseDouble(antwoordP.getInput());
+			}
+			System.out.println(d + " en " + this.p);
+			return d == this.p;
 		}
 	}
 	
@@ -1651,6 +1686,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				this.pInvoer.setInput(Double.toString(teller) + "/" + Double.toString(noemer));
 			}
 		}
+		System.out.println("PInvoer: " + this.pInvoer.getInput());
 		this.pInvoer.haalPuntNulWeg();
 		
 		
@@ -1709,6 +1745,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 						if(b.containsKey("antwoordP")) {
 							this.kijkPNa = true;
 							invoer.setInput((String)b.get("antwoordP"));
+							System.out.println("Kijk P na invoer: " + invoer.getInput());
 							if(invoer.isRandomInput()) {
 								if(invoer.isBreuk()) {
 									double teller;
@@ -1725,14 +1762,21 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 									else {
 										noemer = Double.parseDouble(invoer.getNoemerString());
 									}
-									this.antwoordP = teller/noemer;
+									this.antwoordP = new BVInvoer(Double.toString(teller) + "/" + Double.toString(noemer));
 								}
 								else {
-									this.antwoordP = BVInteractiePanel.substitueerRandom(0.5, invoer.getInput(), randomVars, randomValues);
+									this.antwoordP = new BVInvoer(Double.toString(BVInteractiePanel.substitueerRandom(0.5, invoer.getInput(), randomVars, randomValues)));
 								}
 							}
 							else {
-								this.antwoordP = Double.parseDouble(invoer.getInput());
+								/*
+								if(invoer.isBreuk()) {
+									this.antwoordP = Double.parseDouble(invoer.getTellerString()) / Double.parseDouble(invoer.getNoemerString());
+								}
+								else {
+									this.antwoordP = Double.parseDouble(invoer.getInput());
+								}*/
+								this.antwoordP = new BVInvoer(invoer.getInput());
 							}
 						}
 						else {
@@ -1795,6 +1839,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.kijkPNa = false;
 		}
 		
+		
+		System.out.println("AntwoordP = " + this.antwoordP.getInput());
+		System.out.println("invoerP = " + this.pInvoer.getInput());
 		
 		//update
 		this.vernieuw();
