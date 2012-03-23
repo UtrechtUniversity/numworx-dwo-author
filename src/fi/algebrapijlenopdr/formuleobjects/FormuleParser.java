@@ -328,7 +328,8 @@ public class FormuleParser
 		{	isGetal = false;
 		}
 		if(isGetal)
-		{	exp = new BasisExpressie(Double.valueOf(s).doubleValue());
+		{	
+			exp = new BasisExpressie(Double.valueOf(s).doubleValue());
 			return exp;
 		}
 		

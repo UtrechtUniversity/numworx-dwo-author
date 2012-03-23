@@ -45,7 +45,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private int beginwaarde;
 	private int selectnummer;
 	private double beginx;
-	private String defaultVarnaam = "qq"+1000*Math.random();
+	private String defaultVarnaam = "x"; //"qq"+1000*Math.random();
 	
 	private Color vakKleur, vakKleurSoft;
 	
@@ -290,7 +290,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			g.setFont(f);
 			if (expressie != null && kettingZichtbaar)
 			{	expressie.zetMaat(fm);
-				if (toonWaarde && expressie.geefWaarde() != null)
+				if (toonWaarde && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 					g.drawString(waardeString, 5+(getSize().width-scrollCorr-fm.stringWidth(waardeString))/2, 
 								 getSize().height-tabelCorr-5);
 				else 
@@ -335,7 +335,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			g.setFont(f);
 			if (expressie != null)
 			{	expressie.zetMaat(fm);
-				if (toonWaarde && expressie.geefWaarde() != null)
+				if (toonWaarde && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 					g.drawString(waardeString, -5 + (getSize().width - scrollCorr - fm.stringWidth(waardeString)) / 2, 
 							                   getSize().height - tabelCorr - 5);
 				else 
@@ -420,7 +420,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if (expressie != null)
 		{	b = expFunctie.breedte + scrollCorr;
 			h = expFunctie.hoogte;
-			if (toonWaarde && expressie.geefWaarde() != null)
+			if (toonWaarde && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 			{	b = fm.stringWidth(waardeString) + scrollCorr;
 				h = 0;
 			}
@@ -482,7 +482,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			zoomUitKnop.setVisible(false);
 		}
 		else 
-		{	if (scrollable  && expressie != null && expressie.geefWaarde() != null)
+		{	if (scrollable  && expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 			{	if (scrollCorr == 0)
 					add(plusMinKnop);
 				scrollCorr = 10;
@@ -510,7 +510,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if (expressie != null)
 		{	expressie.zetMaat(fm);
 			Double waarde = expressie.geefWaarde();
-			if (waarde != null)
+			if (!Double.isNaN(waarde.doubleValue()))
 				waardeString = Expressie.df.format(waarde);
 			else 
 				waardeString = "-";
@@ -664,7 +664,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	zetInvulWaarde();
 		}		
 		else if (e.getSource() == plusMinKnop)
-		{	if (beginw != null && beginw.geefWaarde() != null)
+		{	if (beginw != null && !Double.isNaN(beginw.geefWaarde().doubleValue()))
 			{	double w = beginw.geefWaarde().doubleValue();
 				if (e.getActionCommand().equals("min"))
 					w -= 1;
@@ -701,6 +701,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 //System.out.println("vn = " + varnaam);            
             
             ((AlgebraSchuifVeld) getParent()).zoomStateHolder.setBeginwaarde(varnaam, beginwaarde);
+            ((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varnaam, selectnummer);
             ((AlgebraSchuifVeld) getParent()).zoomStateHolder.setSchaalFactorX(varnaam, schaalFactorX);
             ((AlgebraSchuifVeld) getParent()).zoomStateHolder.setFactorRijNummerX(varnaam, factorRijNummerX);
             ((AlgebraSchuifVeld) getParent()).zoomStateHolder.setBeginx(varnaam, beginx);

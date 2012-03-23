@@ -29,12 +29,13 @@ public class Wortel extends Expressie
 	}
 	
 	public Double geefWaarde()
-	{	if(kind1.geefWaarde()!=null)
+	{	//if(kind1.geefWaarde()!=null)
+		if (!Double.isNaN(kind1.geefWaarde().doubleValue()))	
 		{	double d1 = kind1.geefWaarde().doubleValue();
 			if(d1>=0)return new Double(Math.sqrt(d1));
-			else return null;
+			else return new Double(Double.NaN); //null;
 		}
-		else return null;
+		else return new Double(Double.NaN); //null;
 	}
 	
 	public double geefW(double subst)
@@ -45,9 +46,22 @@ public class Wortel extends Expressie
 	{	return kind1.isWaarde(subst) && kind1.geefW(subst)>=0;
 	}
 	
+	public Expressie substitueer(double subst, String var)
+	{	return new Wortel(kind1.substitueer(subst,var));
+	}
+	
 	public String geefVarNaam()
 	{	String s1 = kind1.geefVarNaam();
 		if(s1!=null)return s1;
 		return null;
 	}
+	
+	public String toString()
+	{	return "$w" + kind1.toString() + "@";
+	}
+	
+	public String toStringStrikt()
+	{	return "$w" + kind1.toStringStrikt() + "@";
+	}
+	
 }

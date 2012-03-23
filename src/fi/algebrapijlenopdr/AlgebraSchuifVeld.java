@@ -9,8 +9,8 @@ import fi.beans.base64code.StringCodeObject;
 
 import javax.swing.*;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+//import java.util.Enumeration;
+import java.util.*;
 import java.lang.reflect.Constructor;
 
 public class AlgebraSchuifVeld extends SchuifVeld 
@@ -18,13 +18,14 @@ public class AlgebraSchuifVeld extends SchuifVeld
 							   			  MouseListener, MouseMotionListener, ActionListener
 {	
 	
-	private ImageIcon GOEDKRUL,FOUTKRUIS, GOEDKRULHALF;	
+	private Image GOEDKRUL,FOUTKRUIS, GOEDKRULHALF;	
 	private JButton wisKnop, heenKnop, terugKnop;
 	InvulPanel ip;
 	JCheckBox grafiekCheckbox, tabelCheckbox;
 	AlgebraSchuifComponent[] schuifcomponenten;
 	GrafiekComponent grafiekComponent;
 	int aantalSc;
+	JButton kijkNaKnop;
 	
 	private boolean selecterenMogelijk;
 	private boolean selecterenBezig;
@@ -105,6 +106,14 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		wisKnop.addActionListener(this);
 		add(wisKnop,0);
 		
+		kijkNaKnop = new JButton(AlgebraPijlenOpdr.rb.getString("kijkNaTekst"));
+		kijkNaKnop.setFont(font);
+		kijkNaKnop.setBounds(8, 400, 90, 20);
+//		kijkNaKnop.addActionListener(this);
+		kijkNaKnop.setVisible(false);
+		add(kijkNaKnop,0);
+		
+		
 		terugKnop = new JButton(AlgebraPijlenOpdr.rb.getString("terugKnopLabel"));
 		terugKnop.setBounds(10, 290, 86, 20);
 		terugKnop.setFont(font);
@@ -159,6 +168,44 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		//add(kopieerKnop);
 	}
 	
+	public void disableElements(boolean b)
+	{
+		terugKnop.setEnabled(!b);
+		tabelCheckbox.setEnabled(!b);
+		grafiekCheckbox.setEnabled(!b);
+		wisKnop.setEnabled(!b);
+		kijkNaKnop.setEnabled(!b);
+	}
+	public Vector vindExpressieUVS()
+	{	Vector result = new Vector();
+		
+		for (int sCnt = 0; sCnt < aantalSc; sCnt++)
+		{
+			if (schuifcomponenten[sCnt] instanceof UitvoerSchuifComponent)
+			{	
+	
+				UitvoerSchuifComponent uvs = (UitvoerSchuifComponent) schuifcomponenten[sCnt];
+				if (//(uvs.pijlIn1 != null) &&
+					!uvs.isStapel &&	
+					((uvs.pijlUit[0] == null) || (!uvs.pijlUit[0].actief && !uvs.pijlUit[0].vast))
+				   ) 	
+				{
+//System.out.println("pijlen OK");
+
+					result.addElement(uvs);
+/*					
+					if (uvs.geefUitvoer(0) != null)
+						result.addElement(uvs.geefUitvoer(0));
+					else if (uvs.geefVerborgenUitvoer(0) != null)
+						result.addElement(uvs.geefVerborgenUitvoer(0));
+*/						
+				}
+				
+			}
+		}
+	
+		return result;
+	}
 	
 	public boolean veldIsLeeg()
 	{	int veldCnt = 0;
@@ -195,7 +242,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 	}
 	
-	public void zetPlaatjes(ImageIcon gk, ImageIcon fk, ImageIcon kh)
+	public void zetPlaatjes(Image gk, Image fk, Image kh)
 	{	GOEDKRUL = gk;
 		GOEDKRULHALF = kh;
 		FOUTKRUIS = fk;
@@ -382,6 +429,12 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 		
 		tekenOpnieuw();
+		
+	}
+	
+	public void zetKijkNaActief(boolean b)
+	{
+		kijkNaKnop.setVisible(b);
 		
 	}
 	

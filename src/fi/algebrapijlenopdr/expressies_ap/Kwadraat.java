@@ -2,6 +2,7 @@ package fi.algebrapijlenopdr.expressies_ap;
 
 import java.awt.*;
 
+
 public class Kwadraat extends Expressie  
 {	Expressie operatorExpr;
 	
@@ -55,11 +56,12 @@ public class Kwadraat extends Expressie
 	}
 	
 	public Double geefWaarde()
-	{	if(kind1.geefWaarde()!=null)
+	{	//if(kind1.geefWaarde()!=null)
+		if (!Double.isNaN(kind1.geefWaarde().doubleValue()))
 		{	double d1 = kind1.geefWaarde().doubleValue();
 			return new Double(d1*d1);
 		}
-		else return null;
+		else return new Double(Double.NaN); //null;
 	}
 	public double geefW(double subst)
 	{	return kind1.geefW(subst)*kind1.geefW(subst);
@@ -69,9 +71,31 @@ public class Kwadraat extends Expressie
 	{	return kind1.isWaarde(subst);
 	}
 	
+	public Expressie substitueer(double subst, String var)
+	{	return new Kwadraat(kind1.substitueer(subst,var));
+	}
+	
 	public String geefVarNaam()
 	{	String s1 = kind1.geefVarNaam();
 		if(s1!=null)return s1;
 		return null;
 	}
+	
+	public String toString()
+	{	String s1 = kind1.toString();
+		String s2 = "2";
+	
+		if(!kind1.isBasis)
+			s1 = "$h" + s1 + "@";
+		return s1 + "$m" + s2 + "@";
+	}
+	
+	public String toStringStrikt()
+	{	String s1 = kind1.toStringStrikt();
+		String s2 = "2";
+		if(!kind1.isBasis)
+			s1 = "$h" + s1 + "@";
+		return "$p" + s1 + "$n" + s2 + "@@";
+	}
+	
 }

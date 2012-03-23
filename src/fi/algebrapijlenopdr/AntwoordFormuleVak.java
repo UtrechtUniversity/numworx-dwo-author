@@ -155,7 +155,7 @@ public class AntwoordFormuleVak extends FormuleEditor
 			}
 			else
 			{	FormuleParser p = new FormuleParser();
-				juisteAntwoord = p.parse(p.schoon(p.formuleString(s)));
+				juisteAntwoord = FormuleParser.parse(p.schoon(p.formuleString(s)));
 			}
 		}
 		//formuleVak.vulVak(s);
@@ -301,7 +301,7 @@ public class AntwoordFormuleVak extends FormuleEditor
 		{	String s1 = s.substring(2,n);
 			String s2 = s.substring(n+1,s.length()-1);
 			FormuleParser p = new FormuleParser();
-			Expressie e1 = p.parse(p.schoon(p.formuleString("$f" + s1 + "@")));
+			Expressie e1 = FormuleParser.parse(p.schoon(p.formuleString("$f" + s1 + "@")));
 			Expressie e2 = p.parse(p.schoon(p.formuleString("$f" + s2 + "@")));
 			
 			if(e1!=null && e2!=null)

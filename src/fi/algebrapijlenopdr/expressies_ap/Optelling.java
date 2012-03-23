@@ -2,6 +2,7 @@ package fi.algebrapijlenopdr.expressies_ap;
 
 import java.awt.*;
 
+
 public class Optelling extends Expressie  
 {	
 	
@@ -39,12 +40,15 @@ public class Optelling extends Expressie
 	}
 	
 	public Double geefWaarde()
-	{	if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+	{	//if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+		if (!Double.isNaN(kind1.geefWaarde().doubleValue()) && !Double.isNaN(kind2.geefWaarde().doubleValue()))
 		{	double d1 = kind1.geefWaarde().doubleValue();
 			double d2 = kind2.geefWaarde().doubleValue();
 			return new Double(d1+d2);
 		}
-		else return null;
+		else 
+			return new Double(Double.NaN);
+			//return null;
 	}
 	
 	public double geefW(double subst)
@@ -53,6 +57,10 @@ public class Optelling extends Expressie
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst) && kind2.isWaarde(subst);
+	}
+	
+	public Expressie substitueer(double subst, String var)
+	{	return new Optelling(kind1.substitueer(subst,var),kind2.substitueer(subst,var));
 	}
 	
 	public String geefVarNaam()
@@ -65,4 +73,46 @@ public class Optelling extends Expressie
 		else if(s1==null && s2!=null)return s2;
 		else return null;
 	}
+	
+	
+	public String toString()
+	{	if (kind2 instanceof Deling && kind1 instanceof BasisExpressie && kind2.kind1 instanceof BasisExpressie && kind2.kind2 instanceof BasisExpressie)
+		{	int getal,teller,noemer;
+			boolean integerBreuk = true;
+			try
+			{	getal = Integer.parseInt(((BasisExpressie)kind1).basisString);
+				teller = Integer.parseInt(((BasisExpressie)kind2.kind1).basisString);
+				noemer = Integer.parseInt(((BasisExpressie)kind2.kind2).basisString);
+			}
+			catch(NumberFormatException e)
+			{	integerBreuk = false;
+			}
+			if(integerBreuk)
+			{	isVeelterm = false;
+				return kind1.toString() + kind2.toString();
+			}
+		}
+		return kind1.toString() + "+" + kind2.toString();
+	}
+	
+	public String toStringStrikt()
+	{	if(kind2 instanceof Deling && kind1 instanceof BasisExpressie && kind2.kind1 instanceof BasisExpressie && kind2.kind2 instanceof BasisExpressie)
+		{	int getal,teller,noemer;
+			boolean integerBreuk = true;
+			try
+			{	getal = Integer.parseInt(((BasisExpressie)kind1).basisString);
+				teller = Integer.parseInt(((BasisExpressie)kind2.kind1).basisString);
+				noemer = Integer.parseInt(((BasisExpressie)kind2.kind2).basisString);
+			}
+			catch(NumberFormatException e)
+			{	integerBreuk = false;
+			}
+			if(integerBreuk)
+			{	isVeelterm = false;
+				return kind1.toString() + kind2.toString();
+			}
+		}
+		return "$o" + kind1.toStringStrikt() + "$n" + kind2.toStringStrikt() + "@@";
+	}
+	
 }

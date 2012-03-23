@@ -52,8 +52,10 @@ public class OmkeringSchuifComponent extends AlgebraSchuifComponent
 			if(pijlIn1==null || max<0)return null;
 			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
 			if(e1==null)return null;
-			if(e1 instanceof Deling && e1.kind1.geefWaarde()!=null && e1.kind1.geefWaarde().doubleValue()==1)uitv = e1.kind2;
-			else if(e1 instanceof Deling && e1.kind1.geefWaarde()!=null && e1.kind1.geefWaarde().doubleValue()==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2);
+			if (e1 instanceof Deling && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+				e1.kind1.geefWaarde().doubleValue()==1)uitv = e1.kind2;
+			else if (e1 instanceof Deling && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+				e1.kind1.geefWaarde().doubleValue()==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2);
 			else if(e1 instanceof Deling)uitv = new Deling(e1.kind2,e1.kind1);
 			else uitv = new Deling(new BasisExpressie("1"),e1);
 			return uitv;

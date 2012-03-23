@@ -36,6 +36,8 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 	protected static boolean simplify = false;
 	private String langArg;
 	
+	public static Locale language = new Locale ("nl", "");
+	
 	private OpdrNavStruct ons;
 	private Hashtable defaultParamValues, launchData;
 	private ScormEditComponentIF scormEditComponent;
@@ -72,15 +74,16 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 	}
 	
 	public AlgebraPijlenOpdr()
-	{	Locale language = new Locale ("nl", "");
+	{	language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text",language);
 		
 //System.out.println("constr 1");
 
 	}
 	
-	public AlgebraPijlenOpdr(Locale language)
-	{	rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text",language);
+	public AlgebraPijlenOpdr(Locale lang)
+	{	language = lang;
+		rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text", language);
 
 //System.out.println("constr 2");	
 
@@ -119,8 +122,9 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 		//jvmc.check();
 		
 		String langArg = getParameter("language");
-		if ( langArg == null) langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		if ( langArg == null) 
+			langArg = "nl";
+		language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.algebrapijlenopdr.text.Text",language);
 		
 		//instelling achtergrondkleur
@@ -150,7 +154,7 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 		{	tr.waitForAll();
 		} 
 		catch(Exception e) {}
-		AntwoordFormuleVak.zetPlaatjes(goedkrul,foutkruis,halfkrul);
+//		AntwoordFormuleVak.zetPlaatjes(goedkrul,foutkruis,halfkrul);
 //if (goedkrul != null)
 //System.out.println("not null");	
 		

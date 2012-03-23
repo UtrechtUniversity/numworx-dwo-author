@@ -39,6 +39,11 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "kopieerTekst" , "Copy" },
 				{ "plakTekst" , "Paste" },
 				
+				{ "kijkNaTekst" , "Check" },
+				{ "kijkNaActief" , "Checking active" },
+				{ "maxScoreTekst" , "Maximum score" },
+				{ "toonDocExpTekst" , "Teacher expressions" },
+				
 				
         };
 }

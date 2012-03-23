@@ -3,6 +3,7 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 
+import fi.algebrapijlenopdr.expressies_ap.*;
 import fi.algebrapijlenopdr.schuifobjects.*;
 
 import java.util.Enumeration;
@@ -16,10 +17,12 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel
+public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
+																		ActionListener			
 {	
 	AlgebraPijlenOpdr applet;
-	ImageIcon goedkrul, foutkruis, halfkrul;
+	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon;
+	Image goedkrul, foutkruis, halfkrul;
 	
 	private AlgebraSchuifVeld algebraSchuifVeld;
 
@@ -32,6 +35,9 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	private boolean nagekeken;
 	private int mode;
 	
+	Vector docentExpressieStrings = new Vector();
+	Vector docentExpressies = new Vector();
+	
     Vector listeners = new Vector();
     
 	public AlgebraPijlenOpdrInteractiePanel()
@@ -43,7 +49,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		java.net.URL imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrul.gif");
 		if (imageURL != null) 
 		{
-		    goedkrul = new ImageIcon(imageURL);
+		    goedkrulIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
@@ -52,7 +58,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		imageURL = AlgebraPijlenOpdr.class.getResource("resources/foutkruis.gif");
 		if (imageURL != null) 
 		{
-			foutkruis = new ImageIcon(imageURL);
+			foutkruisIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
@@ -61,31 +67,66 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrulhalf.gif");
 		if (imageURL != null) 
 		{
-			halfkrul = new ImageIcon(imageURL);
+			halfkrulIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
 			System.out.println("Error reading goedkrulhalf.");
 		}
 		
+		goedkrul = goedkrulIcon.getImage();
+		foutkruis = foutkruisIcon.getImage();
+		halfkrul = halfkrulIcon.getImage();
 	
 //System.out.println("APO-IPa");	
 	}
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	
+		if (h.containsKey("docentExpressieStrings"))
+			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
+		
+		if (h.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+		zetKijkNaActief(kijkNaActief);
+
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		
 		algebraSchuifVeld.setEditModeState(h);
 	}
 	
 	public void setState(Hashtable h)
 	{	
+		if (h.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+		zetKijkNaActief(kijkNaActief);
+
+		if (h.containsKey("docentExpressieStrings"))
+			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
+
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		
 		algebraSchuifVeld.setState(h);
 	}
 	
 	public void setEditState(Hashtable h)
 	{	
 		if (algebraSchuifVeld != null)
-		{	algebraSchuifVeld.setEditModeState(h);
+		{
+			if (h.containsKey("docentExpressiesString"))
+				docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
+			
+			if (h.containsKey("kijkNaActief"))
+				kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+			zetKijkNaActief(kijkNaActief);
+
+			if (h.containsKey("scoreMax"))
+				scoreMax = ((Integer) h.get("scoreMax")).intValue();
+			
+			
+			algebraSchuifVeld.setEditModeState(h);
 //System.out.println("as not null");		
 		}
 		else
@@ -101,7 +142,12 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public Hashtable getEditState()
 	{	
-		return algebraSchuifVeld.getState();
+		Hashtable h = algebraSchuifVeld.getState();
+		
+		h.put("kijkNaActief", new Boolean(kijkNaActief));
+		h.put("scoreMax", new Integer(scoreMax));
+		
+		return h;
 	}
 	
 	public void zetToolkit(boolean b)
@@ -149,6 +195,13 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		algebraSchuifVeld.zetZoomOptie(b);
 	}
 	
+	public void zetKijkNaActief(boolean b)
+	{
+		kijkNaActief = b;
+		if (algebraSchuifVeld != null)
+			algebraSchuifVeld.zetKijkNaActief(kijkNaActief);
+
+	}
 	public InteractieEditPanel getEditPanel()
 	{	//return new AlgebraPijlenOpdrInteractiePanel();
 		return new AlgebraPijlenOpdrInteractieEditPanel();
@@ -156,7 +209,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public void setBounds(int x, int y, int b, int h)
 	{	
-System.out.println("apoip set bounds " + b + " " + h);
+//System.out.println("apoip set bounds " + b + " " + h);
 		
 		if (h == 1)
 			return;
@@ -166,6 +219,8 @@ System.out.println("apoip set bounds " + b + " " + h);
 		{	algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h);
 			add(algebraSchuifVeld, 0);
 			algebraSchuifVeld.zetPlaatjes(goedkrul, foutkruis, halfkrul);
+			algebraSchuifVeld.kijkNaKnop.addActionListener(this);
+			//algebraSchuifVeld.zetKijkNaActief(kijkNaActief);
 //System.out.println("as created");			
 		}
 		else
@@ -187,6 +242,11 @@ System.out.println("apoip set bounds " + b + " " + h);
 	{	algebraSchuifVeld.setSize(algebraSchuifVeld.getSize().width, h);
 	
 		algebraSchuifVeld.tekenOpnieuw();
+	}
+	
+	public void disableElements(boolean b)
+	{
+		algebraSchuifVeld.disableElements(b);
 	}
 	
 	public void wis(){}
@@ -228,8 +288,8 @@ System.out.println("apoip set bounds " + b + " " + h);
 	
 	public void zetMode(int mode)
     {   this.mode = mode;
-// HIER !!    
-//		kijkNaButton.setVisible(mode == 0 || mode == 1);
+    	if (kijkNaActief)    
+    		zetKijkNaActief(mode == 0 || mode == 1);
     }
 
 	
@@ -248,22 +308,102 @@ System.out.println("apoip set bounds " + b + " " + h);
     
     public void opnieuw(){}
     
+    public void maakDocentExpressies()
+    {	docentExpressies.removeAllElements();
+    	for (int i = 0; i < docentExpressieStrings.size(); i++)
+    	{	String text = (String) docentExpressieStrings.elementAt(i);
+    		String formuleText = "$f" + text + "@";
+    		Expressie exp = FormuleParser_ap.geefExpressie(formuleText);
+    		docentExpressies.addElement(exp);
+    	}
+    	
+    }
+    
     public void kijkNa()
     {	if (!kijkNaActief)
     		return;
+  
+    	ingevuld = !algebraSchuifVeld.veldIsLeeg();
+    	
+    	if (!ingevuld)
+    		return;
+    	
+    	maakDocentExpressies();
+    	
+    	// geen opdracht, alles goed
+    	if (docentExpressies.size() == 0)
+    	{	score = scoreMax;
+    		fireChangeEvent();
+    		return;
+    	}
+    	
+    	Vector leerlingExpressieUVS = algebraSchuifVeld.vindExpressieUVS();
+//System.out.println("llgUVS = " + leerlingExpressieUVS.size());    	
+//System.out.println("docS = " + docentExpressieStrings.size());
+//System.out.println("docE = " + docentExpressies.size());    
 
-// HIER!! zie NabouwenAanzichten    
-    	// ingevuld = ?????
-    
+		int hits = 0;
+		// hier zijn er docent expressies
+		for (int lCnt = 0; lCnt < leerlingExpressieUVS.size(); lCnt++)
+		{	UitvoerSchuifComponent uvs = (UitvoerSchuifComponent) leerlingExpressieUVS.elementAt(lCnt);
+			Expressie llgExp = null;
+			if (uvs.geefUitvoer(0) != null)
+				llgExp = uvs.geefUitvoer(0);
+			else if (uvs.geefVerborgenUitvoer(0) != null)
+				llgExp = uvs.geefVerborgenUitvoer(0);
+			boolean correct = false;
+			if (llgExp != null)
+			{	
+				for (int dCnt = 0; dCnt < docentExpressies.size(); dCnt++)
+				{	Expressie docExp = (Expressie) docentExpressies.elementAt(dCnt);
+//System.out.println("docExp = " + docExp.toString());
+//System.out.println("llgExp = " + llgExp.toString());
+					if (Algebra.isGelijkwaardig(docExp, llgExp))
+					{	hits++;
+						correct = true;
+					}
+				}
+				
+				if (correct)
+				{	uvs.pijlUit[0].im = goedkrul;
+				}
+				else
+				{
+					uvs.pijlUit[0].im = foutkruis;
+				}
+			}
+		}	
+//System.out.println("hits = " + hits);
+		
+		// leerlingExpressieUVS.size() - hits is aantal foute expressies
+		if (leerlingExpressieUVS.size() >= docentExpressies.size())
+			score = Math.max(0, scoreMax - (leerlingExpressieUVS.size() - hits));
+		else
+			score = Math.max(0, scoreMax - (docentExpressies.size() - leerlingExpressieUVS.size() - hits));
+
+		algebraSchuifVeld.tekenOpnieuw();
+		
+		fireChangeEvent();
+
+/*
     	//fire actionEvent
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
 		{
 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
 		}
+*/		
     	
     }
     
+    public void fireChangeEvent()
+    {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		{
+			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		}
+    	
+    }
     public void kijkNa(int stapNr)
     {	kijkNa();
     }
@@ -273,5 +413,10 @@ System.out.println("apoip set bounds " + b + " " + h);
     }
     
 	public void actionPerformed(ActionEvent e)
-	{}
+	{
+		if (e.getSource() == algebraSchuifVeld.kijkNaKnop)
+		{
+			kijkNa();
+		}
+	}
 }

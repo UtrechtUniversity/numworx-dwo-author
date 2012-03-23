@@ -2,6 +2,7 @@ package fi.algebrapijlenopdr.expressies_ap;
 
 import java.awt.*;
 
+
 public class Macht extends Expressie  
 {		
 	public Macht(Expressie e1, Expressie e2 )
@@ -56,12 +57,13 @@ public class Macht extends Expressie
 	}
 	
 	public Double geefWaarde()
-	{	if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+	{	//if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+		if (!Double.isNaN(kind1.geefWaarde().doubleValue()) && !Double.isNaN(kind2.geefWaarde().doubleValue()))
 		{	double d1 = kind1.geefWaarde().doubleValue();
 			double d2 = kind2.geefWaarde().doubleValue();
 			return new Double(Math.pow(d1,d2));
 		}
-		else return null;
+		else return new Double(Double.NaN); //null;
 	}
 	
 	public double geefW(double subst)
@@ -70,6 +72,9 @@ public class Macht extends Expressie
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst) && kind2.isWaarde(subst);
+	}
+	public Expressie substitueer(double subst, String var)
+	{	return new Macht(kind1.substitueer(subst,var),kind2.substitueer(subst,var));
 	}
 	
 	public String geefVarNaam()
@@ -82,4 +87,22 @@ public class Macht extends Expressie
 		else if(s1==null && s2!=null)return s2;
 		else return null;
 	}
+	
+	public String toString()
+	{	String s1 = kind1.toString();
+		String s2 = kind2.toString();
+	
+		if(!kind1.isBasis)
+			s1 = "$h" + s1 + "@";
+		return s1 + "$m" + s2 + "@";
+	}
+	
+	public String toStringStrikt()
+	{	String s1 = kind1.toStringStrikt();
+		String s2 = kind2.toStringStrikt();
+		if(!kind1.isBasis)
+			s1 = "$h" + s1 + "@";
+		return "$p" + s1 + "$n" + s2 + "@@";
+	}
+	
 }

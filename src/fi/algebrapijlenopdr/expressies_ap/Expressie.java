@@ -47,7 +47,22 @@ public class Expressie
 	public boolean isWaarde(double subst)
 	{	return true;
 	}
+	public boolean isWaarde()
+	{	return !Double.isNaN(geefWaarde().doubleValue());
+	}
 	public String geefVarNaam()
 	{	return null;
 	}
+	public Expressie substitueer(double subst, String var)
+	{	return null;
+	}
+	
+	public String toString()
+	{	return null;
+	}
+    
+	public String toStringStrikt()
+	{	return null;
+	}
+	
 }

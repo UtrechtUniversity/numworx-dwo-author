@@ -16,10 +16,13 @@ public class Pijl extends JComponent
 	Polygon pijlpuntKlik;
 	private int laatstex = 0;
 	private int laatstey = 0;
-	boolean actief, vast;
+	boolean actief;
+	boolean vast;
 	private boolean isStapel;
 	private boolean links = false;
 	private Color color = Color.black;
+	
+	Image im;
 	
 	public Pijl(AlgebraSchuifVeld asv)
 	{	schuifveld = asv;
@@ -133,6 +136,9 @@ public class Pijl extends JComponent
 			gIm.setColor(Color.black);
 			gIm.drawPolygon(pijlpuntBegin);
 			gIm.drawPolygon(pijlpuntEind);
+			
+			if (!isStapel && !vast && !actief && (im != null))
+				gIm.drawImage(im, x0, y0, this);
 		}
 		else // pijl naar links
 		{	gIm.setColor(Color.black);
@@ -194,14 +200,19 @@ public class Pijl extends JComponent
 			pijlpuntKlik.addPoint(x1+2, y1-13);
 			pijlpuntKlik.addPoint(x1+2, y1+13);
 		
-			if(vast)gIm.setColor(Color.black);
-			else gIm.setColor(Color.gray);
+			if(vast)
+				gIm.setColor(Color.black);
+			else 
+				gIm.setColor(Color.gray);
 			gIm.fillPolygon(pijlpuntBegin);
 			gIm.fillPolygon(pijlpuntEind);
 			gIm.setColor(Color.black);
 			gIm.drawPolygon(pijlpuntBegin);
 			gIm.drawPolygon(pijlpuntEind);
-			}	
+			
+			if (!isStapel && !vast && !actief && (im != null))
+				gIm.drawImage(im,x0,y0, this);			
+		}	
 			
 		
 		
@@ -293,6 +304,10 @@ public class Pijl extends JComponent
 	}
 	public void pijlTerug()
 	{	vast = false;
+		
+		if (ontvanger != null && ontvanger.pijlUit != null && ontvanger.pijlUit[0] != null)
+			ontvanger.pijlUit[0].im = null;
+	
 		ontvanger = null;
 		if(!links)x1 = x0 - 10;
         else x1 = x0 + 10;
@@ -318,13 +333,15 @@ public class Pijl extends JComponent
 		requestFocus();
 		vast = false;
 		actief = true;
-		if(ontvanger!=null )
+		if (ontvanger != null)
 		{	ontvanger.maakLos(this);
 			ontvanger.zetVeranderd(20);
 		}
 		zender.verwijderPijl();
 		laatstex = e.getX();
 		laatstey = e.getY();
+		
+		im = null;
 		
 		schuifveld.tekenOpnieuw();
 	}	
@@ -338,7 +355,7 @@ public class Pijl extends JComponent
 			return;
 	
 	
-		if(isStapel)return;
+		if (isStapel) return;
 		if(actief)
 		{	int dx = e.getX() - laatstex;
 			int dy =  e.getY() - laatstey;

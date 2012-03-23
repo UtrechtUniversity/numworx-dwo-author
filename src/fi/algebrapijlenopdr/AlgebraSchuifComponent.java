@@ -9,7 +9,8 @@ import java.util.Hashtable;
 public class AlgebraSchuifComponent extends SchuifComponent 
 {	
 	 int soort;
-	 Pijl pijlIn1, pijlIn2;
+	 Pijl pijlIn1;
+	 Pijl pijlIn2;
 	 Pijl[] pijlUit;
 	 int aantalPu;
 	 boolean isStapel;
@@ -350,6 +351,9 @@ public class AlgebraSchuifComponent extends SchuifComponent
 			pijlIn1.verplaatsEind(dx, dy);
 		if (pijlIn2 != null)
 			pijlIn2.verplaatsEind(dx, dy);
+		
+		if (pijlUit != null && pijlUit[0] != null)
+			pijlUit[0].im = null;
 		
 		schuifveld.tekenOpnieuw();		
 	}

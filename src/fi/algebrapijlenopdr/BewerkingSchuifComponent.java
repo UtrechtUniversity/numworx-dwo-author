@@ -170,7 +170,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 			}
 		}
 		if (isGeldigeInvoer)
-		{	beginw = new BasisExpressie( tf.getText());
+		{	beginw = new BasisExpressie(tf.getText());
 			beginw.zetMaat(fm);
 		}
 		else
@@ -191,7 +191,7 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 		{	zetInvulWaarde();
 		}
 	else if(e.getSource()==plusMinKnop)
-	{	if(beginw!=null && beginw.geefWaarde()!=null)
+	{	if(beginw!=null && !Double.isNaN(beginw.geefWaarde().doubleValue()))
 		{	double w = beginw.geefWaarde().doubleValue();
 			if(e.getActionCommand().equals("min"))w -= 1;
 			if(e.getActionCommand().equals("plus"))w += 1;

@@ -64,7 +64,8 @@ public class DeelSchuifComponent extends BewerkingSchuifComponent
 				else uitv = new Deling(e1,e2);
 				return uitv;
 			}
-			else if(e1 instanceof Aftrekking && e1.kind1.geefWaarde()!=null && e1.kind1.geefWaarde().doubleValue()==0 && e1.kind2 instanceof Vermenigvuldiging)
+			else if(e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					e1.kind1.geefWaarde().doubleValue()==0 && e1.kind2 instanceof Vermenigvuldiging)
 			{	d = -e1.kind2.kind1.geefWaarde().doubleValue() / e2.geefWaarde().doubleValue();
 				double dn = -e2.geefWaarde().doubleValue() / e1.kind2.kind1.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
@@ -80,7 +81,7 @@ public class DeelSchuifComponent extends BewerkingSchuifComponent
 				else uitv = new Deling(e1,e2);
 				return uitv;
 			}
-			else if(e1 instanceof Deling && e1.kind2.geefWaarde()!=null)
+			else if(e1 instanceof Deling && !Double.isNaN(e1.kind2.geefWaarde().doubleValue()))
 			{	d = e2.geefWaarde().doubleValue() * e1.kind2.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
 				if(d==1)uitv = e1.kind1;
@@ -89,7 +90,7 @@ public class DeelSchuifComponent extends BewerkingSchuifComponent
 				else uitv = new Deling(e1.kind1,new BasisExpressie(Expressie.df.format(d)));
 				return uitv;
 			}
-			else if(e1 instanceof Deling && e1.kind2.geefWaarde()==null)
+			else if(e1 instanceof Deling && !Double.isNaN(e1.kind2.geefWaarde().doubleValue()))
 			{	d = e1.kind1.geefWaarde().doubleValue() / e2.geefWaarde().doubleValue();
 				double dn = e2.geefWaarde().doubleValue() / e1.kind1.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");

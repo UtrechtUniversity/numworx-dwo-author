@@ -1,6 +1,9 @@
 package fi.algebrapijlenopdr.expressies_ap;
 
 import java.awt.*;
+import java.util.Vector;
+
+
 
 public class Vermenigvuldiging extends Expressie  
 {	
@@ -78,15 +81,18 @@ public class Vermenigvuldiging extends Expressie
 	}
 	
 	public Double geefWaarde()
-	{	if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+	{	//if (kind1.geefWaarde() != null && kind2.geefWaarde() != null)
+		if (!Double.isNaN(kind1.geefWaarde().doubleValue()) && !Double.isNaN(kind2.geefWaarde().doubleValue()))
 		{	double d1 = kind1.geefWaarde().doubleValue();
 			double d2 = kind2.geefWaarde().doubleValue();
-			return new Double(d1*d2);
+			return new Double(d1 * d2);
 		}
-		else if(kind1 instanceof BasisExpressie && kind1.geefWaarde().doubleValue()==0)
+		else if (kind1 instanceof BasisExpressie && kind1.geefWaarde().doubleValue() == 0)
 		{	return new Double(0);
 		}
-		else return null;
+		else 
+			return new Double(Double.NaN);
+			//return null;
 	}
 	
 	public double geefW(double subst)
@@ -95,6 +101,10 @@ public class Vermenigvuldiging extends Expressie
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst) && kind2.isWaarde(subst);
+	}
+	
+	public Expressie substitueer(double subst, String var)
+	{	return new Vermenigvuldiging(kind1.substitueer(subst,var),kind2.substitueer(subst,var));
 	}
 	
 	public String geefVarNaam()
@@ -107,4 +117,44 @@ public class Vermenigvuldiging extends Expressie
 		else if(s1==null && s2!=null)return s2;
 		else return null;
 	}
+	
+	public String toString()
+	{	String s1 = kind1.toString();
+		String s2 = kind2.toString();
+		String op = "";
+		
+		Vector v1 = Algebra.geefFactorenBeperkt(kind1,new Vector());
+		Vector v2 = Algebra.geefFactorenBeperkt(kind2,new Vector());
+		//Expressie g1 = ((Expressie)v1.elementAt(v1.size()-1));
+		Expressie g2 = null;
+		if (v2.size() > 0) 
+			g2 = ((Expressie) v2.elementAt(0));
+		
+		if (g2 instanceof BasisExpressie && !Double.isNaN(g2.geefWaarde().doubleValue())	//&& !(g2 instanceof PI) 	&& !(g2 instanceof E)
+		   || g2 instanceof Macht && !Double.isNaN(g2.kind1.geefWaarde().doubleValue()) 
+		   || Algebra.isBreukPlusGetal(g2)
+		   //|| FormuleParser_ap.isWoordFormule()
+		   //|| FormuleParser_ap.isTweeHoofdletterVariabele()
+		   )
+		{	op = "*";
+		}
+		
+		//if(kind1.geefWaarde()==1)return s2;
+		if(kind1.isVeelterm)
+			s1 = "$h" + s1 + "@";
+		if(kind2.isVeelterm)
+			s2 = "$h" + s2 + "@";
+		
+		return s1 + op + s2;
+		//return s1 + "*" + s2;
+	}
+	
+	public String toStringStrikt()
+	{	String s1 = kind1.toStringStrikt();
+		String s2 = kind2.toStringStrikt();
+		if(kind1.isVeelterm)s1 = "$h" + s1 + "@";
+		if(kind2.isVeelterm)s2 = "$h" + s2 + "@";
+		return "$v" + s1 + "$n" + s2 + "@@";
+	}
+	
 }
