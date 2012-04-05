@@ -75,10 +75,10 @@ public class TabelComponent extends JPanel//Container
 			g.setColor(Color.black);
 			g.drawRect(3,15,breedteInv,hoogte - 31);
 			
-			//g.setColor(new Color(220,220,220));
-			//g.fillRect(3,0,breedteInv,15);
-			//g.setColor(Color.black);
-			//g.drawRect(3,0,breedteInv,15);
+			g.setColor(new Color(220,220,220));
+			g.fillRect(3,0,breedteInv,15);
+			g.setColor(Color.black);
+			g.drawRect(3,0,breedteInv,15);
 			
 			if(selectMogelijk && selectnummer>-1 && selectnummer<8 && exp!=null && !exp.geefVarNaam().equals(""))
 			{	g.setColor(traceKleur);
@@ -112,9 +112,9 @@ public class TabelComponent extends JPanel//Container
 			g.fillPolygon(pijlMin);
 			g.drawPolygon(pijlMin);	*/
 			
-			int knopPlusX = 15;
+			int knopPlusX = 38;//15;
 			int knopPlusY = 4;
-			int knopMinX = 15;
+			int knopMinX = 38;//15;
 			int knopMinY = hoogte-5;
 			
 			//if(AlgebraPijlen.formule)
@@ -150,8 +150,10 @@ public class TabelComponent extends JPanel//Container
 			
 			if(exp!=null)
 			{	String s = exp.geefVarNaam();
+				boolean b = s.length() >= 2 && s.substring(0,2).equals("qq");
 				if(s!=null && !s.equals(""))
-				{	//g.drawString(s,5,12);
+				{	if (!b)					
+						g.drawString(s,7,12);
 					for(int i=0 ; i<8 ; i++)
 					{	if(exp.isWaarde(schaalFactorX*(i+beginwaarde)))
 						{	double d = exp.geefW(schaalFactorX*(i+beginwaarde));
@@ -320,13 +322,18 @@ public class TabelComponent extends JPanel//Container
 		if (new Rectangle(0, 17, getSize().width - 5, getSize().height - 34).contains(e.getX(), e.getY()))
 			setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 		
-		if (pijlPlusContain.contains(e.getX(),e.getY()))
-		{	beginwaarde--;
+		if (pijlPlusContain.contains(e.getX(),e.getY()) &&
+			!((AlgebraSchuifVeld)getParent().getParent()).isDemo &&
+			!((AlgebraSchuifVeld)getParent().getParent()).frozen)
+		{	
+			beginwaarde--;
 			selectnummer++;
 			//((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam,schaalFactorX);
 			repaint();
 		}
-		else if (pijlMinContain.contains(e.getX(),e.getY()))
+		else if (pijlMinContain.contains(e.getX(),e.getY()) &&
+				!((AlgebraSchuifVeld)getParent().getParent()).isDemo &&
+				!((AlgebraSchuifVeld)getParent().getParent()).frozen)
 		{	beginwaarde++;
 			selectnummer--;
 			//((AlgebraSchuifVeld)getParent().getParent()).zetTabellen(beginwaarde,selectnummer,varNaam, schaalFactorX);

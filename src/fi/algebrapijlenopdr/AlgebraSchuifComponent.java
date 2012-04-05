@@ -112,6 +112,16 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		repaint();
 	}
 	
+	public String geefBronDefaultVarnaam()
+	{	String result = null; 
+		if ((pijlIn1 == null) && (this instanceof UitvoerSchuifComponent))
+			result = ((UitvoerSchuifComponent) this).defaultVarnaam;
+		else if (pijlIn1 != null)
+			result = pijlIn1.zender.geefBronDefaultVarnaam();
+		
+		return result;
+		
+	}
 	public void voegPijlToe(Pijl p)
 	{	if (aantalPu < 10)
 		{	if (!links)
@@ -315,7 +325,11 @@ public class AlgebraSchuifComponent extends SchuifComponent
 //			return;
 		}
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
 			return;		
+		
 		requestFocus();
 		super.mousePressed(e);
 	}
@@ -327,7 +341,10 @@ public class AlgebraSchuifComponent extends SchuifComponent
 			return;
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
 			return;		
-	
+
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;		
+		
 		if ((this instanceof UitvoerSchuifComponent) &&
 			(((UitvoerSchuifComponent) this).muisrechts)
 		   )	
@@ -366,6 +383,9 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
 			return;		
 
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;		
+		
 		super.mouseReleased(e);
 		if (!isStapel && (getLocation().x < 80 || getLocation().x > schuifveld.getSize().width
 						|| getLocation().y < 0 || getLocation().y > schuifveld.getSize().height))

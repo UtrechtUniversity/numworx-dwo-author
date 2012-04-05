@@ -6,6 +6,8 @@ import java.util.Hashtable;
 
 import javax.swing.*;
 
+import fi.algebrapijlenopdr.expressies_ap.Expressie;
+import fi.algebrapijlenopdr.expressies_ap.FormuleParser_ap;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
@@ -30,7 +32,7 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	ButtonGroup kettingGroup;
 	JRadioButton toolkitButton, invulButton, demoButton;
 	
-	JCheckBox brugklasBox, terugHeenBox, tabelBox, grafiekBox, scrollBox, zoomBox;
+	JCheckBox brugklasBox, terugHeenBox, tabelBox, grafiekBox, scrollBox, zoomBox, beginExpBox;
 
 	JCheckBox kijkNaBox;
 	JCheckBox toonDocExpBox;
@@ -39,7 +41,8 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 
 	int scoreMax = 10;
 	
-	ExpressiePanel expressiePanel;
+	ExpressiePanel docentExpressiePanel;
+	ExpressiePanel beginExpressiePanel;
 	
 	public AlgebraPijlenOpdrInteractieEditPanel()
 	{
@@ -47,9 +50,14 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		apoip = new AlgebraPijlenOpdrInteractiePanel();
 		add(apoip);
 		
-		expressiePanel = new ExpressiePanel(10, 30, 360, 255);
-		expressiePanel.setVisible(false);
-		add(expressiePanel, 0);
+		docentExpressiePanel = new ExpressiePanel(10, 10, 360, 255, 6);
+		docentExpressiePanel.setVisible(false);
+		add(docentExpressiePanel, 0);
+		
+		beginExpressiePanel = new ExpressiePanel(10, 10, 360, 49, 1);
+		beginExpressiePanel.setVisible(false);
+		add(beginExpressiePanel, 0);
+		
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -172,6 +180,18 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		//viewerOptiesPanel.add(zoomBox);
 		zoomBox.addActionListener(this);
 
+		currentY += height + offset / 2;
+
+		beginExpBox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("beginExpTekst"));
+		beginExpBox.setFont(theFont);
+		beginExpBox.setBackground(Color.white);
+		width = theFM.stringWidth(beginExpBox.getText()) + 35;
+		beginExpBox.setBounds(currentX, currentY, width, height);
+		beginExpBox.setSelected(false);
+		add(beginExpBox);
+		//viewerOptiesPanel.add(zoomBox);
+		beginExpBox.addActionListener(this);
+		
 		currentY += height + 4 * offset;
 
 		kijkNaBox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("kijkNaActief"));
@@ -235,6 +255,7 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 			grafiekBox.setLocation(apoip.getSize().width + offset, grafiekBox.getLocation().y);
 			scrollBox.setLocation(apoip.getSize().width + offset, scrollBox.getLocation().y);
 			zoomBox.setLocation(apoip.getSize().width + offset, zoomBox.getLocation().y);
+			beginExpBox.setLocation(apoip.getSize().width + offset, beginExpBox.getLocation().y);
 			
 			kijkNaBox.setLocation(apoip.getSize().width + offset, kijkNaBox.getLocation().y);
 			toonDocExpBox.setLocation(apoip.getSize().width + offset, toonDocExpBox.getLocation().y);
@@ -316,6 +337,24 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		if (b.containsKey("zoomOptie"))
 			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
 		zoomBox.setSelected(zoomOptie);
+		
+		// beginExpressie ophalen
+		String[] expStrings = new String[beginExpressiePanel.numInputs];
+		for (int i = 0; i < expStrings.length; i++)
+			expStrings[i] = "";
+		if (b.containsKey("expStrings"))
+			expStrings = (String[]) b.get("expStrings");
+		beginExpressiePanel.zetExpressieStrings(expStrings);
+		
+		String beginExpressie = "";
+		if (b.contains("beginexpressie"))
+			beginExpressie = (String) b.get("beginexpressie");
+// wat hier?		
+		
+		boolean toonBeginExpressie = false;
+		if (b.contains("toonBeginExpressie"))
+			toonBeginExpressie = ((Boolean) b.get("toonBeginExpressie")).booleanValue();
+		beginExpBox.setSelected(toonBeginExpressie);
 
 		boolean kijkNaActief = false;
 		if (b.containsKey("kijkNaActief"))
@@ -323,12 +362,12 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		kijkNaBox.setSelected(kijkNaActief);
 		
 		//altijd expressieStrings ophalen
-		String[] expressieStrings = new String[expressiePanel.numInputs];
+		String[] expressieStrings = new String[docentExpressiePanel.numInputs];
 		for (int i = 0; i < expressieStrings.length; i++)
 			expressieStrings[i] = "";
 		if (b.containsKey("expressieStrings"))
 			expressieStrings = (String[]) b.get("expressieStrings");
-		expressiePanel.zetExpressieStrings(expressieStrings);
+		docentExpressiePanel.zetExpressieStrings(expressieStrings);
 		
 		boolean toonDocExpressies = false;
 		if (b.containsKey("toonDocExpressies"))
@@ -353,14 +392,19 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		
 		// HIER !!
 		if (kijkNaBox.isSelected() && toonDocExpBox.isSelected())
-		{	expressiePanel.setVisible(true);
+		{	docentExpressiePanel.setVisible(true);
 			apoip.disableElements(true);
 		}
 		else if (!kijkNaBox.isSelected() && toonDocExpBox.isSelected())
-		{	expressiePanel.setVisible(false);
+		{	docentExpressiePanel.setVisible(false);
 			apoip.disableElements(false);
 		}
 		
+		if (beginExpBox.isSelected())
+		{	beginExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+			
+		}
 		
 		apoip.setEditState(b);		
 		
@@ -373,13 +417,19 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	
 		
 		h.put("toonDocExpressies", new Boolean(toonDocExpBox.isSelected()));
+		h.put("toonBeginExpressie", new Boolean(beginExpBox.isSelected()));
 		
 		// docentExpressies ophalen
 		// alle
-		h.put("expressieStrings", expressiePanel.getExpressieStrings());
+		h.put("expressieStrings", docentExpressiePanel.getExpressieStrings());
 		// correcte
-		h.put("docentExpressieStrings", expressiePanel.getCorrectExpressieStrings());
+		h.put("docentExpressieStrings", docentExpressiePanel.getCorrectExpressieStrings());
 		
+		h.put("expStrings", beginExpressiePanel.getExpressieStrings());
+		String beginExpressieString = "";
+		if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
+			beginExpressieString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
+		h.put("beginExpressieString", beginExpressieString);
 		
 		h.put("scoreMax", new Integer(scoreMax));
 		
@@ -450,6 +500,11 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
     public void addActionListener(ActionListener al)
     {}
 	
+    public void maakBeginExpressie(String expString)
+    {
+    	
+    }
+    
 	public void actionPerformed(ActionEvent e)
 	{	if (e.getSource() == toolkitButton)
 		{	
@@ -518,6 +573,36 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		{
 			apoip.zetZoomOptie(zoomBox.isSelected());
 		}
+		else if (e.getSource() == beginExpBox)
+		{
+			beginExpressiePanel.setVisible(beginExpBox.isSelected());
+			apoip.disableElements(beginExpBox.isSelected());
+			
+			// beginExpressiePanel zichtbaar gemaakt
+			if (beginExpBox.isSelected())
+			{
+				docentExpressiePanel.setVisible(false);
+				toonDocExpBox.setSelected(false);	
+			}
+			else // beginExpressiePanel "gesloten"
+			{
+				String beginExpString = "";
+				if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
+				{	beginExpString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
+					
+//System.out.println(beginExpString);				
+				
+					beginExpString = "$f" + beginExpString + "@";
+					Expressie beginExp = FormuleParser_ap.geefExpressie(beginExpString);
+					
+//System.out.println(beginExp.toString());					
+					apoip.zetBeginExpressie(beginExp);
+				}
+			}
+			
+		}
+		
+	
 		else if (e.getSource() == kijkNaBox)
 		{
 			toonDocExpBox.setEnabled(kijkNaBox.isSelected());
@@ -526,17 +611,17 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 			apoip.zetKijkNaActief(kijkNaBox.isSelected());
 			
 			if (kijkNaBox.isSelected() && toonDocExpBox.isSelected())
-			{	expressiePanel.setVisible(true);
+			{	docentExpressiePanel.setVisible(true);
 				apoip.disableElements(true);
 			}
 			else if (!kijkNaBox.isSelected() && toonDocExpBox.isSelected())
-			{	expressiePanel.setVisible(false);
+			{	docentExpressiePanel.setVisible(false);
 				apoip.disableElements(false);
 			}
 		}
 		else if (e.getSource() == toonDocExpBox)
 		{
-			expressiePanel.setVisible(toonDocExpBox.isSelected());
+			docentExpressiePanel.setVisible(toonDocExpBox.isSelected());
 			apoip.disableElements(toonDocExpBox.isSelected());
 		}
 	

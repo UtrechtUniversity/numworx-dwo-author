@@ -1,8 +1,8 @@
 package fi.algebrapijlenopdr;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
+
 import fi.algebrapijlenopdr.schuifobjects.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
 
@@ -114,6 +114,8 @@ public class InUitvoerLabel extends JPanel//Container
 	
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
 			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
+			return;
 		
 		requestFocus();
 		muisrechts = false;
@@ -124,9 +126,11 @@ public class InUitvoerLabel extends JPanel//Container
 	}	
 	public void mouseClicked(MouseEvent e)
 	{	if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)
-		return;
+			return;
 	
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
 			return;
 	
 		if(!muisrechts)
@@ -141,6 +145,8 @@ public class InUitvoerLabel extends JPanel//Container
 	{	if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).fixed)
 			return;
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
 			return;
 	
 		((SchuifComponent)getParent()).mouseReleased(e);

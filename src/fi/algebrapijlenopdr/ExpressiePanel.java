@@ -23,10 +23,12 @@ public class ExpressiePanel extends JPanel
 	Font formuleFont = new Font("TimesRoman", Font.BOLD, 16);
 	FontMetrics formuleFM;
 	
-	public ExpressiePanel(int x, int y, int w, int h)
+	public ExpressiePanel(int x, int y, int w, int h, int nInputs)
 	{
 		setBounds(x, y, w, h);
 		setLayout(null);
+
+		numInputs = nInputs;
 		
     	formuleFM = getFontMetrics(formuleFont);
     	int height1 = 3 * formuleFM.getHeight() / 2;

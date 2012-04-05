@@ -99,13 +99,20 @@ public class MachtSchuifComponent extends BewerkingSchuifComponent
 	public Expressie geefUitvoer(int max)
 	{	if(AlgebraPijlenOpdr.simplify)
 		{	Expressie uitv = new Expressie();
-			if(pijlIn1==null)return null;
+			if (pijlIn1 == null)
+				return null;
 			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
 			Expressie e2 = beginw;
-			if(e1==null)return null;
-			if(e2.geefWaarde().doubleValue()==0)uitv = new BasisExpressie("1");
-			else if(e2.geefWaarde().doubleValue()==1)uitv = e1;
-			else uitv = new Macht(e1,e2);
+			if (e1 == null)
+				return null;
+			if (e2.geefWaarde().doubleValue() == 0)
+				uitv = new BasisExpressie("1");
+			else if (e2.geefWaarde().doubleValue() == 1)
+				uitv = e1;
+			else if ((e1 instanceof Wortel) && (e2.geefWaarde().doubleValue() == 2))
+				uitv = e1.kind1;
+			else 
+				uitv = new Macht(e1, e2);
 			return uitv;
 		}
 		else

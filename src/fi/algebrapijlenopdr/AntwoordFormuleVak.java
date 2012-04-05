@@ -250,7 +250,8 @@ public class AntwoordFormuleVak extends FormuleEditor
 					&& (gegevenExp instanceof Macht
 						|| gegevenExp instanceof Aftrekking && gegevenExp.kind1.geefWaarde()==0 && gegevenExp.kind2 instanceof Macht
 						|| gegevenExp instanceof Vermenigvuldiging && !Double.isNaN(gegevenExp.kind1.geefWaarde()) && gegevenExp.kind2 instanceof Macht
-						|| gegevenExp instanceof Aftrekking && gegevenExp.kind1.geefWaarde()==0 && gegevenExp.kind2 instanceof Vermenigvuldiging && !Double.isNaN(gegevenExp.kind2.kind1.geefWaarde())  && gegevenExp.kind2.kind2 instanceof Macht
+						|| gegevenExp instanceof Aftrekking && gegevenExp.kind1.geefWaarde()==0 && gegevenExp.kind2 instanceof Vermenigvuldiging && 
+						!Double.isNaN(gegevenExp.kind2.kind1.geefWaarde())  && gegevenExp.kind2.kind2 instanceof Macht
 						);
 		return herleiding;
 	}

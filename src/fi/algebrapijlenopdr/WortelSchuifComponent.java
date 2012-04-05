@@ -49,12 +49,18 @@ public class WortelSchuifComponent extends AlgebraSchuifComponent
 	
 	
 	public Expressie geefUitvoer(int max)
-	{	if(AlgebraPijlenOpdr.simplify)
+	{	if (AlgebraPijlenOpdr.simplify)
 		{	Expressie uitv = new Expressie();
-			if(pijlIn1==null  || max<0)return null;
-			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
-			if(e1==null)return null;
-			uitv = new Wortel(e1);
+			if (pijlIn1==null  || max < 0)
+				return null;
+			Expressie e1 = pijlIn1.zender.geefUitvoer(max - 1);
+			if (e1 == null)
+				return null;
+			if ((e1 instanceof Macht) && (e1.kind2 instanceof BasisExpressie) && 
+				!Double.isNaN(e1.kind2.geefWaarde().doubleValue()) && (e1.kind2.geefWaarde().doubleValue() == 2))
+				uitv = e1.kind1;
+			else	
+				uitv = new Wortel(e1);
 			return uitv;
 		}
 		else
@@ -69,9 +75,11 @@ public class WortelSchuifComponent extends AlgebraSchuifComponent
 	
 	public Expressie geefVerborgenUitvoer(int max)
 	{	Expressie uitv = new Expressie();
-		if(pijlIn1==null  || max<0)return null;
-		Expressie e1 = pijlIn1.zender.geefVerborgenUitvoer(max-1);
-		if(e1==null)return null;
+		if (pijlIn1 == null  || max < 0)
+			return null;
+		Expressie e1 = pijlIn1.zender.geefVerborgenUitvoer(max - 1);
+		if (e1 == null)
+			return null;
 		uitv = new Wortel(e1);
 		return uitv;
 	}

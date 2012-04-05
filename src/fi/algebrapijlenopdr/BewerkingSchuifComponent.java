@@ -147,6 +147,8 @@ public class BewerkingSchuifComponent extends AlgebraSchuifComponent implements 
 			return;
 		if (((AlgebraSchuifVeld)getParent()).isDemo)
 			return;
+		if (((AlgebraSchuifVeld)getParent()).frozen)
+			return;
 		
 //System.out.println("clicked");		
 		

@@ -195,6 +195,12 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		algebraSchuifVeld.zetZoomOptie(b);
 	}
 	
+	public void zetBeginExpressie(Expressie exp)
+	{
+	
+		algebraSchuifVeld.zetBeginExpressie(exp);
+	}
+	
 	public void zetKijkNaActief(boolean b)
 	{
 		kijkNaActief = b;
@@ -225,6 +231,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		}
 		else
 		{	algebraSchuifVeld.setSize(b, h);
+			algebraSchuifVeld.kijkNaKnop.setLocation(110 + (getSize().width - 110 - 90) / 2, getSize().height - 30);
 //System.out.println("as sized");		
 		}
 		algebraSchuifVeld.start();
@@ -351,9 +358,18 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 				llgExp = uvs.geefUitvoer(0);
 			else if (uvs.geefVerborgenUitvoer(0) != null)
 				llgExp = uvs.geefVerborgenUitvoer(0);
+
+			String llgExpStr = llgExp.toString();
+//System.out.println(llgExpStr);
+//System.out.println(uvs.geefBronDefaultVarnaam());
+			String llgExpStrC = llgExpStr.replaceAll(uvs.geefBronDefaultVarnaam(), "x");
+//System.out.println(llgExpStrC);
+			llgExp = FormuleParser_ap.geefExpressie("$f" + llgExpStrC + "@");
+
 			boolean correct = false;
 			if (llgExp != null)
 			{	
+				
 				for (int dCnt = 0; dCnt < docentExpressies.size(); dCnt++)
 				{	Expressie docExp = (Expressie) docentExpressies.elementAt(dCnt);
 //System.out.println("docExp = " + docExp.toString());
@@ -375,11 +391,21 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		}	
 //System.out.println("hits = " + hits);
 		
+		int scorePerExpressie = scoreMax / docentExpressies.size();
+		if (hits == 0)
+			score = 0;
+		else if (hits == docentExpressies.size())
+			score = scoreMax;
+		else
+			score = hits * scorePerExpressie;
+		
+/*		
 		// leerlingExpressieUVS.size() - hits is aantal foute expressies
 		if (leerlingExpressieUVS.size() >= docentExpressies.size())
 			score = Math.max(0, scoreMax - (leerlingExpressieUVS.size() - hits));
 		else
 			score = Math.max(0, scoreMax - (docentExpressies.size() - leerlingExpressieUVS.size() - hits));
+*/			
 
 		algebraSchuifVeld.tekenOpnieuw();
 		

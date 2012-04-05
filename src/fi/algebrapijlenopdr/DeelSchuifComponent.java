@@ -41,24 +41,33 @@ public class DeelSchuifComponent extends BewerkingSchuifComponent
 	
 	
 	public Expressie geefUitvoer(int max)
-	{	if(AlgebraPijlenOpdr.simplify)
+	{	if (AlgebraPijlenOpdr.simplify)
 		{	Expressie uitv = new Expressie();
-			if(pijlIn1==null)return null;
+			if (pijlIn1 == null)
+				return null;
 			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
 			Expressie e2 = beginw;
-			if(e1==null)return null;
+			if (e1 == null)
+				return null;
 			
 			double d = 1;
-			if(e1 instanceof Vermenigvuldiging)
+			if (e1 instanceof Vermenigvuldiging)
 			{	d = e1.kind1.geefWaarde().doubleValue() / e2.geefWaarde().doubleValue();
 				double dn = e2.geefWaarde().doubleValue() / e1.kind1.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
-				if(d==1)uitv = e1.kind2;
-				else if(d==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2);
-				else if(d>0 && Expressie.isInteger(d))uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind2);
-				else if(d>0 && Expressie.isInteger(dn))uitv = new Deling(e1.kind2,new BasisExpressie(Expressie.df.format(dn)));
-				else if(d<0 && Expressie.isInteger(d))uitv = new Aftrekking(new BasisExpressie("0"),new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)),e1.kind2));
-				else if(d<0 && Expressie.isInteger(dn))uitv = new Deling(e1.kind2,new BasisExpressie(Expressie.df.format(dn)));
+				if (d == 1)
+					uitv = e1.kind2;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind2);
+				else if (d > 0 && Expressie.isInteger(d))
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)), e1.kind2);
+				else if (d > 0 && Expressie.isInteger(dn))
+					uitv = new Deling(e1.kind2, new BasisExpressie(Expressie.df.format(dn)));
+				else if (d <0 && Expressie.isInteger(d))
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)), e1.kind2));
+				else if (d < 0 && Expressie.isInteger(dn))
+					uitv = new Deling(e1.kind2,new BasisExpressie(Expressie.df.format(dn)));
 			
 				//else if(d<0)uitv = new Aftrekking(new BasisExpressie("0"),new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)),e1.kind2));
 				else uitv = new Deling(e1,e2);

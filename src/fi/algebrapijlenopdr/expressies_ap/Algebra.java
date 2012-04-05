@@ -5,7 +5,7 @@ import java.util.*;
 import java.awt.*;
 
 //import fi.wiskopdr.WiskOpdr;
-import fi.algebrapijlenopdr.formuleobjects.*;
+//import fi.algebrapijlenopdr.formuleobjects.*;
 
 public class Algebra
 {	

@@ -25,7 +25,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	
 	private boolean grafiek;
 	boolean muisrechts;
-	private GrafiekComponent grafiekComponent;
+//	private GrafiekComponent grafiekComponent;
 	private TabelComponent tabel;
 	private int tabelCorr;
 	Font f;
@@ -45,9 +45,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private int beginwaarde;
 	private int selectnummer;
 	private double beginx;
-	private String defaultVarnaam = "x"; //"qq"+1000*Math.random();
+	String defaultVarnaam = "qq"+1000*Math.random();
 	
 	private Color vakKleur, vakKleurSoft;
+	
+	boolean isBeginExpressie = false;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
@@ -162,6 +164,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         h.put("scrollable", new Boolean(scrollable));
         h.put("zoomInTabel", new Boolean(zoomInTabel));
         
+        h.put("isBeginExpressie", new Boolean(isBeginExpressie));
+        if (isBeginExpressie)
+        	h.put("beginExpString", expressie.toString());
+        
 	    return h;
 	}
 
@@ -175,6 +181,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         
         boolean scrollable = true;
         boolean zoomInTabel = true;
+        
+        boolean isBeginExpressie = false;
+        String beginExpString = "";
         
     	if (h.containsKey("basisExp")) 
     		basisExp = (String) h.get("basisExp");
@@ -208,6 +217,18 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         
         zetScroll(scrollable);
         zetZoomInTabel(zoomInTabel);
+        
+        if (h.containsKey("isBeginExpressie")) 
+        	isBeginExpressie = ((Boolean) h.get("isBeginExpressie")).booleanValue();
+        this.isBeginExpressie = isBeginExpressie;
+        if (h.containsKey("beginExpString"))
+        	beginExpString = (String) h.get("beginExpString");
+        if (isBeginExpressie && !beginExpString.equals(""))
+        {
+        	beginExpString = "$f" + beginExpString + "@";
+        	Expressie beginExp = FormuleParser_ap.geefExpressie(beginExpString);
+        	zetExpressie(beginExp);
+        }
 
         super.setState(h);
 		
@@ -383,6 +404,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	{	tabelZichtbaar = b;
 		if(b)
 		{	add(tabel);
+			if (isBeginExpressie)
+				tabel.zetDubbel(true);
+		
 			zetMaat();
 		}
 		else 
@@ -390,6 +414,12 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			zetMaat();
 		}
 		schuifveld.tekenOpnieuw();
+
+		GrafiekComponent gc = vindGrafiekComponent();
+		if (gc != null)
+			gc.zetVeranderd(20);
+		
+		
 	}
 	
 	public boolean isLabelZichtbaar()
@@ -464,12 +494,35 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 
 	}
 	
+	public void zetExpressie(Expressie e)
+	{	expressie = e;
+		if (e instanceof BasisExpressie) 
+			beginw = (BasisExpressie) e;
+		expressie.zetMaat(fm);
+		tabel.zetExpressie(expressie);
+		zetMaat();
+				
+	}
+		
+	
+	
 	public Expressie geefUitvoer(int max)
 	{	return expressie;
 	}
 	
 	public Expressie geefVerborgenUitvoer(int max)
 	{	return verborgenExpressie;
+	}
+	
+	public GrafiekComponent vindGrafiekComponent()
+	{	GrafiekComponent gc = null;
+		for (int pCnt = 0; pCnt < pijlUit.length; pCnt++)
+		{
+			if ((pijlUit[pCnt] != null) && (pijlUit[pCnt].ontvanger instanceof GrafiekComponent))
+				gc = (GrafiekComponent) pijlUit[pCnt].ontvanger;
+		}
+	
+		return gc;
 	}
 	
 	public void zetVeranderd(int max)
@@ -481,7 +534,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			zoomInKnop.setVisible(false);
 			zoomUitKnop.setVisible(false);
 		}
-		else 
+		else if (!isBeginExpressie)
 		{	if (scrollable  && expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 			{	if (scrollCorr == 0)
 					add(plusMinKnop);
@@ -532,6 +585,10 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			setZoomState(naam, zs);
 				
 		super.zetVeranderd(max);
+		
+		GrafiekComponent gc = vindGrafiekComponent();
+		if (gc != null)
+			gc.zetVeranderd(max);
 	}
 	
 	//public void zetGrafiek(boolean b, GrafiekComponent gc)
@@ -646,9 +703,25 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		schuifveld.tekenOpnieuw();
 	}
-    
+  
+/*	
+	public String geefBronDefaultVarnaam()
+	{
+		String result = "";
+		if (pijlIn1 != null)
+		{	result = ((UitvoerSchuifComponent) pijlIn1.zender).geefBronDefaultVarnaam();
+		}
+		else
+			result = defaultVarnaam;
+		return result;
+	}
+*/	
     public void zetKettingZichtbaarHier(boolean b)
-    {   if (pijlIn1 != null)
+    {   
+    	if (isBeginExpressie)
+    		return;
+    	
+    	if (pijlIn1 != null)
     		pijlIn1.zender.zetKettingZichtbaar(b);
         open = b;
         kettingZichtbaar = b;
@@ -664,7 +737,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	zetInvulWaarde();
 		}		
 		else if (e.getSource() == plusMinKnop)
-		{	if (beginw != null && !Double.isNaN(beginw.geefWaarde().doubleValue()))
+		{	
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+			return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+
+			
+			if (beginw != null && !Double.isNaN(beginw.geefWaarde().doubleValue()))
 			{	double w = beginw.geefWaarde().doubleValue();
 				if (e.getActionCommand().equals("min"))
 					w -= 1;
@@ -677,7 +757,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			}
 		}
 		else if (e.getSource() == zoomUitKnop)
-		{	if (!e.getActionCommand().equals("knop") || factorRijNummerX > 120) 
+		{	
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+			
+			if (!e.getActionCommand().equals("knop") || factorRijNummerX > 120) 
 				return;
 			if (factorRijNummerX % 3 == 1)
 			{	schaalFactorX *= 2.5;
@@ -710,7 +796,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
             schuifveld.tekenOpnieuw();
 		}
 		else if (e.getSource() == zoomInKnop)
-		{	if (!e.getActionCommand().equals("knop") || factorRijNummerX < 87) 
+		{	
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+			
+			if (!e.getActionCommand().equals("knop") || factorRijNummerX < 87) 
 				return;
 			if (factorRijNummerX % 3 == 2)
 			{	schaalFactorX /= 2.5;
@@ -764,12 +856,22 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		}
 	}
 	
+	public boolean meldAan(Pijl p, int x, int y)
+	{	if (isBeginExpressie)
+			return false;
+		else 
+			return super.meldAan(p, x, y);
+	}
+	
 	public void mousePressed(MouseEvent e)
 	{	if (((AlgebraSchuifVeld)schuifveld).fixed)
 			return;
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
 			return;
-	
+
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;		
+		
 		requestFocus();
 		muisrechts = false;
 		if (e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
@@ -793,8 +895,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			return;
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
 			return;
-	
-		if (!muisrechts && pijlIn1 == null)
+
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;		
+		
+		if (!muisrechts && pijlIn1 == null && !isBeginExpressie)
 		{	
 			if (new Rectangle(tf.getLocation().x, tf.getLocation().y,
 					          tf.getSize().width, tf.getSize().height).contains(e.getX(), e.getY())
@@ -818,11 +923,20 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			return;
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
 			return;
+		
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;		
+		
 		super.mouseReleased(e);
 		
 		
 	}
-	
+/*	
+	public void mouseDragged(MouseEvent e)
+	{	if (!isBeginExpressie)
+			super.mouseDragged(e);
+	}
+*/	
 	public void focusLost(FocusEvent e)
 	{	zetInvulWaarde();
 	}

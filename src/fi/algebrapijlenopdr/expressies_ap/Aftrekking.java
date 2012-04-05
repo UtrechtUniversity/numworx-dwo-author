@@ -19,14 +19,14 @@ public class Aftrekking extends Expressie
 	
 	public void teken(Graphics g, int x, int y)
   	{ 	
-		if(kind1 instanceof BasisExpressie && kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()==0 )
+		if(kind1 instanceof BasisExpressie && !Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()==0 )
 		{	g.drawString(operatorString, x , y + ashoogte-fm.getHeight()/2 + fm.getAscent());
 		}
 		else
 		{	kind1.teken(g, x, y + ashoogte-kind1.ashoogte);
 			g.drawString(operatorString, x + kind1.breedte, y + ashoogte-fm.getHeight()/2 + fm.getAscent());
 		}	
-		if(kind1 instanceof BasisExpressie && kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()==0 )		
+		if(kind1 instanceof BasisExpressie && !Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()==0 )		
 		{	if(kind2.isVeelterm)
 			{	HaakjeLinks hl= new HaakjeLinks(kind2.hoogte+2);
 				HaakjeRechts hr= new HaakjeRechts(kind2.hoogte+2);
@@ -58,7 +58,7 @@ public class Aftrekking extends Expressie
   	{	this.fm = fm;
 		kind1.zetMaat(fm);
 		kind2.zetMaat(fm);
-		if(kind1 instanceof BasisExpressie && kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()==0 )		
+		if(kind1 instanceof BasisExpressie && !Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()==0 )		
 		{	if(kind2.isVeelterm)
 			{	int hb = HaakjeLinks.geefHBreedte(fm);
 				breedte = fm.stringWidth(operatorString) + kind2.breedte + 2*hb;

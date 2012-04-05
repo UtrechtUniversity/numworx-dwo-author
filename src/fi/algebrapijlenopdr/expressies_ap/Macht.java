@@ -18,7 +18,8 @@ public class Macht extends Expressie
   	{ 	HaakjeLinks hl= new HaakjeLinks(kind1.hoogte+2);
 		HaakjeRechts hr= new HaakjeRechts(kind1.hoogte+2);
 		int g1;
-		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		if (!(kind1.isBasis && (Double.isNaN(kind1.geefWaarde().doubleValue()) || 
+				(!Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()>0))))
 		{	hl.teken(g, x, y+ashoogte-kind1.ashoogte-1);
 			g1 = HaakjeLinks.geefHBreedte(fm);
 		}
@@ -26,7 +27,8 @@ public class Macht extends Expressie
 		kind1.teken(g, x+g1, y + ashoogte-kind1.ashoogte);
 		int g2 = g1 + kind1.breedte;
 		int g3;
-		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		if (!(kind1.isBasis && (Double.isNaN(kind1.geefWaarde().doubleValue()) || 
+				(!Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()>0))))
 		{	hr.teken(g, x+g2, y+ashoogte-kind1.ashoogte-1);
 			g3 = g2 + HaakjeLinks.geefHBreedte(fm);
 		}
@@ -38,7 +40,8 @@ public class Macht extends Expressie
   	{	this.fm = fm;
 		kind1.zetMaat(fm);
 		kind2.zetMaat(fm);
-		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		if(!(kind1.isBasis && (Double.isNaN(kind1.geefWaarde().doubleValue()) || 
+				(!Double.isNaN(kind1.geefWaarde().doubleValue()) && kind1.geefWaarde().doubleValue()>0))))
 		{	int hb = HaakjeLinks.geefHBreedte(fm);
 			breedte = kind1.breedte + kind2.breedte + 2*hb;
 			hoogte = kind1.hoogte + 4 + kind2.hoogte-10;

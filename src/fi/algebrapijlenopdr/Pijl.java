@@ -327,6 +327,9 @@ public class Pijl extends JComponent
 			return;
 		if (schuifveld.isDemo)
 			return;
+		if (schuifveld.frozen)
+			return;
+		
 
 		schuifveld.start();
 		schuifveld.zetOpSchuifLaag(this);
@@ -353,6 +356,8 @@ public class Pijl extends JComponent
 			return;
 		if (schuifveld.isDemo)
 			return;
+		if (schuifveld.frozen)
+			return;
 	
 	
 		if (isStapel) return;
@@ -375,6 +380,8 @@ public class Pijl extends JComponent
 		if (schuifveld.alleenInvullen)
 			return;
 		if (schuifveld.isDemo)
+			return;
+		if (schuifveld.frozen)
 			return;
 	
 		plaatsOpGridEind();

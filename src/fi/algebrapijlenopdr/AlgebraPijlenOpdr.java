@@ -33,7 +33,7 @@ public class AlgebraPijlenOpdr extends JApplet implements ScormAppletIF, ActionL
 	
 	private fi.beans.copyright.FIButton fiButton;
 	protected static ResourceBundle rb;
-	protected static boolean simplify = false;
+	protected static boolean simplify = true;
 	private String langArg;
 	
 	public static Locale language = new Locale ("nl", "");

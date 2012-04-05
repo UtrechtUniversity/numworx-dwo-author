@@ -26,7 +26,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	private boolean gevuld;
 	private int beginwaarde;
 	private int selectnummer;
-	private String varNaam="qq";
+	private String varNaam = "qq";
 	private String formuleNaam;
 	private int xmin, xmax, ymin, ymax;
 	private double beginx, beginy;
@@ -354,7 +354,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 		g.setColor(Color.black);
 		FontMetrics fm = g.getFontMetrics();
 		int woordbreedte = fm.stringWidth(varNaam);
-		boolean b = varNaam.equals("qq") || varNaam.length()>2 && varNaam.substring(0,2).equals("qq");
+		boolean b = varNaam.equals("qq") || varNaam.length() > 2 && varNaam.substring(0,2).equals("qq");
 		if(!b) 
 			g.drawString(varNaam, veldx+veldb+5,veldy+veldh+5);
 		g.drawString(formuleNaam,veldx,veldy-8);
@@ -391,10 +391,11 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	{	Expressie exp = null;
 		if(e!=null && e.geefVarNaam()!=null )
 		{	exp = e;
-			if(varNaam.equals("qq")|| aantalPijlenIn==1)varNaam = e.geefVarNaam();
+			if(varNaam.equals("qq")|| aantalPijlenIn==1)
+				varNaam = e.geefVarNaam();
 			isPuntGrafiek[nr] = false;
 		}
-		else if(e!=null && e.geefWaarde()!=null && pijlenIn[nr]!=null)
+		else if(e!=null && !Double.isNaN(e.geefWaarde().doubleValue()) && pijlenIn[nr]!=null)
 		{	
 			AlgebraSchuifComponent asc = pijlenIn[nr].zender;
 			int teller = 20;
@@ -402,7 +403,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			while(asc.pijlIn1 !=null && teller > 0)
 			{	teller--;
 				asc = asc.pijlIn1.zender;
-				if(asc.geefUitvoer(teller).geefWaarde()!=null)puntXWaarde[nr] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
+				if (!Double.isNaN(asc.geefUitvoer(teller).geefWaarde().doubleValue()))
+					puntXWaarde[nr] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
 				isPuntGrafiek[nr] = true;
 			}
 			exp = e;
@@ -491,19 +493,21 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			Expressie ev = pijlenIn[i].zender.geefVerborgenUitvoer(20);
 			zetExpressie(i,e);
 			formuleNaam = ((UitvoerSchuifComponent)pijlenIn[i].zender).geefLabelTekst();
-			if((e==null || e.geefWaarde()!=null) && !(ev instanceof BasisExpressie) && ((UitvoerSchuifComponent)pijlenIn[i].zender).tabelZichtbaar)
+			if ( (e == null || !Double.isNaN(e.geefWaarde().doubleValue())) && 
+				 !(ev instanceof BasisExpressie) && ((UitvoerSchuifComponent) pijlenIn[i].zender).tabelZichtbaar)
 			{	zetExpressie(i,ev);
 				isMeerPuntenGrafiek[i] = true;
 				isLijnGrafiek[i] = false;
-				if(e!=null && e.geefWaarde()!=null) 
+				if (e != null && !Double.isNaN(e.geefWaarde().doubleValue())) 
 				{	AlgebraSchuifComponent asc = pijlenIn[i].zender;
 					int teller = 20;
 					puntXWaarde[i] = asc.geefUitvoer(teller).geefWaarde().doubleValue();
-					while(asc.pijlIn1 !=null && teller > 0)
+					while(asc.pijlIn1 != null && teller > 0)
 					{	teller--;
 						asc = asc.pijlIn1.zender;
 						Double d = asc.geefUitvoer(teller).geefWaarde();
-						if(d!=null) puntXWaarde[i] = d.doubleValue();
+						if(!Double.isNaN(d.doubleValue())) 
+							puntXWaarde[i] = d.doubleValue();
 						isPuntGrafiek[i] = true;
 					}
 				}
@@ -603,13 +607,21 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	public void mousePressed(MouseEvent e)
 	{	requestFocus();
 		
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+	
 		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
 		{	if (((AlgebraSchuifVeld) schuifveld).fixed)
 				return;
-			if (((AlgebraSchuifVeld) schuifveld).isDemo)
-				return;
+			//if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			//	return;
 			if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
 				return;
+
+			//if (((AlgebraSchuifVeld) schuifveld).frozen)
+			//	return;
 			
 			popup.show(this,e.getX(),e.getY());
 			return;
@@ -636,7 +648,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	}	
 	
 	public void mouseDragged(MouseEvent e)
-	{	if (e.getSource() == gv)
+	{	
+		
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
+		if (e.getSource() == gv)
 		{	int dx = e.getX() - startxv;
 			int dy =  e.getY() - startyv;
 		
@@ -692,7 +711,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	resize = false;
+	{	
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
+		
+		resize = false;
 		//trace = false;
 		if(e.getSource()==gv)
 		{	setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -731,7 +757,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	}
 	
 	public void mouseMoved(MouseEvent e)
-	{	movex = e.getX();
+	{	
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
+		
+		movex = e.getX();
 		movey = e.getY();
 		if(e.getX()>getSize().width-10 && e.getY()>getSize().height-10)
 		{	setCursor(new Cursor(Cursor.NW_RESIZE_CURSOR));
@@ -745,7 +778,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	
 	public void mouseExited(MouseEvent e)
 	{	//if(e.getSource()==gv)
-		{	setCursor(new Cursor(Cursor.DEFAULT_CURSOR ));
+		{	
+			if (((AlgebraSchuifVeld) schuifveld).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) schuifveld).frozen)
+				return;
+			
+			
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR ));
 			gv.tekenOpnieuw();
 		}
 	
@@ -753,7 +793,14 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 	public void mouseClicked(MouseEvent e){;}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if (zoomDraad != null && zoomDraad.isAlive())
+	{	
+		if (((AlgebraSchuifVeld) schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
+		
+		if (zoomDraad != null && zoomDraad.isAlive())
 			return;
 		//if(zoomDraad!=null)
 		//{	zoomDraad.maakDood();
@@ -1134,8 +1181,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			}
 			g.drawString("O",bx-10,hoogte-by+12);
 			
-			for(int j=0 ; j<aantalPijlenIn ; j++)
-			{	if(isLijnGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()!=null && varNaam.equals(expressies[j].geefVarNaam())&& !expressies[j].geefVarNaam().equals("qq"))// && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals(""))
+			for (int j = 0; j< aantalPijlenIn; j++)
+			{	if (isLijnGrafiek[j] && expressies[j] != null && expressies[j].geefVarNaam() != null && 
+					varNaam.equals(expressies[j].geefVarNaam()) && !expressies[j].geefVarNaam().equals("qq"))// && exp.geefVarNaam()!=null && !exp.geefVarNaam().equals(""))
 				{	g.setColor(pijlenIn[j].getColor());
 					for(int i=0 ; i<breedte ; i++)
 					{	double ii = i;
@@ -1156,7 +1204,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 						}
 					}
 				}
-				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null)
+				else if(isPuntGrafiek[j] && expressies[j]!=null && expressies[j].geefVarNaam()==null && !Double.isNaN(puntXWaarde[j]))
 				{	double d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
 					int x = (int)d;
 					double d0 = expressies[j].geefW((puntXWaarde[j])*schaalFactorX);
@@ -1209,7 +1257,7 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 						}
 				    }
 					
-					if(isPuntGrafiek[j])
+					if (isPuntGrafiek[j] && !Double.isNaN(puntXWaarde[j]))
 					{	double d = bx+1.0*((selectnummer+beginwaarde)*eenheidx);
                         int x = (int)d;
                         d = bx+1.0*((puntXWaarde[j])*eenheidx/schaalFactorX);
