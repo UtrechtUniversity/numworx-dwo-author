@@ -20,8 +20,17 @@ public class ExpressiePanel extends JPanel
 	int hOffset = 8;
 	int vOffset = 8;
 	
+	int topOffset = 18;
+	
 	Font formuleFont = new Font("TimesRoman", Font.BOLD, 16);
 	FontMetrics formuleFM;
+	
+    Color brownRed = new Color(214, 0, 0);	
+    Font closeFont = new Font("Sanserif", Font.BOLD, 14);
+    
+    JButton closeButton;
+    
+    AlgebraPijlenOpdrInteractieEditPanel apoiep = null;
 	
 	public ExpressiePanel(int x, int y, int w, int h, int nInputs)
 	{
@@ -40,18 +49,26 @@ public class ExpressiePanel extends JPanel
     	expressieStrings = new String[numInputs];
     	
     	for (int i = 0; i < numInputs; i++)
-    	{	checks[i] = new CheckComponent(hOffset + 4, vOffset + 4 + i * height2, height1 - 8, height1 - 8);
+    	{	checks[i] = new CheckComponent(hOffset + 4, topOffset + vOffset + 4 + i * height2, height1 - 8, height1 - 8);
     		add(checks[i]);
     		
     		inputs[i] = new JTextField();
     		inputs[i].setFont(formuleFont);
-    		inputs[i].setBounds(2 * hOffset + height1, vOffset + i * height2, w - height1 - 3 * vOffset, height1);
+    		inputs[i].setBounds(2 * hOffset + height1, topOffset + vOffset + i * height2, w - height1 - 3 * hOffset, height1);
     		add(inputs[i]);
     		inputs[i].addActionListener(new InputAL(i));
     		inputs[i].addFocusListener(new InputFL(i));
     		
     		expressieStrings[i] = "";
     	}
+    	
+    	
+    	closeButton = new JButton("X");
+    	closeButton.setBounds(getSize().width - 55, 0, 45, 20);
+    	closeButton.setBackground(brownRed);
+    	closeButton.setForeground(Color.white);
+    	closeButton.setFont(closeFont);
+    	add(closeButton);
 	}
 	
     public void paintComponent(Graphics g)
@@ -121,6 +138,13 @@ public class ExpressiePanel extends JPanel
     	checks[index].setCorrect();
     	
 //System.out.println(exp.toString());    	
+    	if (apoiep != null)
+    	{	
+    		apoiep.beginExpressiePanel.setVisible(false);
+    		apoiep.maakBeginExpressie();
+    		apoiep.beginExpressiePanel.setVisible(true);
+    		
+    	}
     	
     }
     

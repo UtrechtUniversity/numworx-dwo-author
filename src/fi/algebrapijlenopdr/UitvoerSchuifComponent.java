@@ -404,8 +404,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	{	tabelZichtbaar = b;
 		if(b)
 		{	add(tabel);
-			if (isBeginExpressie)
-				tabel.zetDubbel(true);
+			//if (isBeginExpressie)
+			//	tabel.zetDubbel(true);
 		
 			zetMaat();
 		}
@@ -899,7 +899,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		if (((AlgebraSchuifVeld) schuifveld).frozen)
 			return;		
 		
-		if (!muisrechts && pijlIn1 == null && !isBeginExpressie)
+		if (!muisrechts && pijlIn1 == null && !isBeginExpressie && !isStapel)
 		{	
 			if (new Rectangle(tf.getLocation().x, tf.getLocation().y,
 					          tf.getSize().width, tf.getSize().height).contains(e.getX(), e.getY())

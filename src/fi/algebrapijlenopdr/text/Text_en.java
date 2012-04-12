@@ -43,7 +43,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "kijkNaTekst" , "Check" },
 				{ "kijkNaActief" , "Checking active" },
 				{ "maxScoreTekst" , "Maximum score" },
-				{ "toonDocExpTekst" , "Teacher expressions" },
+				{ "toonDocExpTekst" , "Target expressions" },
 				
 				
         };

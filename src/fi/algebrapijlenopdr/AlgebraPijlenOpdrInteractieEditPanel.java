@@ -34,8 +34,9 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	
 	JCheckBox brugklasBox, terugHeenBox, tabelBox, grafiekBox, scrollBox, zoomBox, beginExpBox;
 
+	JButton beginExpButton;
 	JCheckBox kijkNaBox;
-	JCheckBox toonDocExpBox;
+	JButton toonDocExpButton;
 	JLabel maxScoreLabel;	
 	JTextField maxScoreVeld;	
 
@@ -50,14 +51,16 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		apoip = new AlgebraPijlenOpdrInteractiePanel();
 		add(apoip);
 		
-		docentExpressiePanel = new ExpressiePanel(10, 10, 360, 255, 6);
+		docentExpressiePanel = new ExpressiePanel(10, 10, 360, 275, 6);
 		docentExpressiePanel.setVisible(false);
 		add(docentExpressiePanel, 0);
+		docentExpressiePanel.closeButton.addActionListener(new CloseDocExpAL());
 		
-		beginExpressiePanel = new ExpressiePanel(10, 10, 360, 49, 1);
+		beginExpressiePanel = new ExpressiePanel(10, 100, 360, 69, 1);
 		beginExpressiePanel.setVisible(false);
 		add(beginExpressiePanel, 0);
-		
+		beginExpressiePanel.closeButton.addActionListener(new CloseBeginExpAL());
+		beginExpressiePanel.apoiep = this;
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -188,11 +191,21 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		width = theFM.stringWidth(beginExpBox.getText()) + 35;
 		beginExpBox.setBounds(currentX, currentY, width, height);
 		beginExpBox.setSelected(false);
-		add(beginExpBox);
-		//viewerOptiesPanel.add(zoomBox);
+		//add(beginExpBox);
 		beginExpBox.addActionListener(this);
 		
+		beginExpButton = new JButton(AlgebraPijlenOpdr.rb.getString("beginExpTekst"));
+		beginExpButton.setFont(theFont);
+		//beginExpButton.setBackground(Color.white);
+		width = theFM.stringWidth(beginExpButton.getText()) + 40;
+		beginExpButton.setBounds(currentX, currentY, width, height);
+		//beginExpBox.setSelected(false);
+		add(beginExpButton);
+		beginExpButton.addActionListener(this);
+		
 		currentY += height + 4 * offset;
+		
+		
 
 		kijkNaBox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("kijkNaActief"));
 		kijkNaBox.setFont(theFont);
@@ -202,24 +215,26 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		kijkNaBox.addActionListener(this);
 		
 		currentY += height + offset;
-
-		toonDocExpBox = new JCheckBox(AlgebraPijlenOpdr.rb.getString("toonDocExpTekst"));
-		toonDocExpBox.setFont(theFont);
-		toonDocExpBox.setBackground(Color.white);
-		toonDocExpBox.setBounds(currentX, currentY, editWidth - offset - 3, 3 * theFM.getHeight() / 2);
-		toonDocExpBox.setEnabled(false);
-		add(toonDocExpBox);
-		toonDocExpBox.addActionListener(this);
 		
-		currentY += height + offset;
+		toonDocExpButton = new JButton(AlgebraPijlenOpdr.rb.getString("toonDocExpTekst"));
+		toonDocExpButton.setFont(theFont);
+		int w = theFM.stringWidth(toonDocExpButton.getText()) + 40;
+		currentX = (editWidth - w) / 2;
+		toonDocExpButton.setBounds(currentX, currentY, w, 3 * theFM.getHeight() / 2);
+		toonDocExpButton.setVisible(false);
+		add(toonDocExpButton);
+		toonDocExpButton.addActionListener(this);
 		
+		currentX = apoip.getSize().width + offset;		
+		currentY += height + offset;		
 		
 		maxScoreLabel = new JLabel(AlgebraPijlenOpdr.rb.getString("maxScoreTekst"));
 		maxScoreLabel.setFont(theFont);
 		maxScoreLabel.setBackground(Color.white);
 		width = theFM.stringWidth(maxScoreLabel.getText());
 		maxScoreLabel.setBounds(currentX + offset, currentY + 3, width, theFM.getHeight());
-		maxScoreLabel.setEnabled(false);
+		//maxScoreLabel.setEnabled(false);
+		maxScoreLabel.setVisible(false);
 		add(maxScoreLabel);
 		
 		currentY += height; // + offset;
@@ -232,7 +247,8 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 				//maxScoreLabel.getLocation().x + maxScoreLabel.getSize().width + offset,
 				//currentY, width, height);
 		add(maxScoreVeld);
-		maxScoreVeld.setEditable(false);
+		//maxScoreVeld.setEditable(false);
+		maxScoreVeld.setVisible(false);
 
 		maxScoreVeld.addKeyListener(new InputKL2(maxScoreVeld));
 		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
@@ -255,10 +271,12 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 			grafiekBox.setLocation(apoip.getSize().width + offset, grafiekBox.getLocation().y);
 			scrollBox.setLocation(apoip.getSize().width + offset, scrollBox.getLocation().y);
 			zoomBox.setLocation(apoip.getSize().width + offset, zoomBox.getLocation().y);
-			beginExpBox.setLocation(apoip.getSize().width + offset, beginExpBox.getLocation().y);
+			//beginExpBox.setLocation(apoip.getSize().width + offset, beginExpBox.getLocation().y);
+			beginExpButton.setLocation(apoip.getSize().width + offset, beginExpButton.getLocation().y);
 			
 			kijkNaBox.setLocation(apoip.getSize().width + offset, kijkNaBox.getLocation().y);
-			toonDocExpBox.setLocation(apoip.getSize().width + offset, toonDocExpBox.getLocation().y);
+			//toonDocExpBox.setLocation(apoip.getSize().width + offset, toonDocExpBox.getLocation().y);
+			toonDocExpButton.setLocation(apoip.getSize().width + offset, toonDocExpButton.getLocation().y);
 			
 			maxScoreLabel.setLocation(apoip.getSize().width + 2 * offset, maxScoreLabel.getLocation().y);
 			maxScoreVeld.setLocation(apoip.getSize().width + 3 * offset, maxScoreVeld.getLocation().y);
@@ -372,17 +390,22 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		boolean toonDocExpressies = false;
 		if (b.containsKey("toonDocExpressies"))
 			toonDocExpressies = ((Boolean) b.get("toonDocExpressies")).booleanValue();
-		toonDocExpBox.setSelected(toonDocExpressies);
+		//toonDocExpBox.setSelected(toonDocExpressies);
 		
 		if (b.containsKey("scoreMax"))
 			scoreMax = ((Integer) b.get("scoreMax")).intValue();
 		maxScoreVeld.setText("" + scoreMax);
-		maxScoreVeld.setEditable(kijkNaActief);
+		//maxScoreVeld.setEditable(kijkNaActief);
 		
-		toonDocExpBox.setEnabled(kijkNaBox.isSelected());
-		maxScoreLabel.setEnabled(kijkNaBox.isSelected());
-		maxScoreVeld.setEditable(kijkNaBox.isSelected());
+		//toonDocExpBox.setEnabled(kijkNaBox.isSelected());
+		//maxScoreLabel.setEnabled(kijkNaBox.isSelected());
+		//maxScoreVeld.setEditable(kijkNaBox.isSelected());
 
+		//toonDocExpBox.setVisible(kijkNaBox.isSelected());
+		toonDocExpButton.setVisible(kijkNaBox.isSelected());
+		maxScoreLabel.setVisible(kijkNaBox.isSelected());
+		maxScoreVeld.setVisible(kijkNaBox.isSelected());
+		
 		if (b.containsKey("apoipBreedte"))
 			apoipBreedte = ((Integer) b.get("apoipBreedte")).intValue();
 		if (b.containsKey("apoipHoogte"))
@@ -391,16 +414,17 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		
 		// HIER !!
-		if (kijkNaBox.isSelected() && toonDocExpBox.isSelected())
+		if (kijkNaBox.isSelected() && toonDocExpressies)
 		{	docentExpressiePanel.setVisible(true);
 			apoip.disableElements(true);
 		}
-		else if (!kijkNaBox.isSelected() && toonDocExpBox.isSelected())
+		else if (!kijkNaBox.isSelected())// && toonDocExpBox.isSelected())
 		{	docentExpressiePanel.setVisible(false);
 			apoip.disableElements(false);
 		}
 		
-		if (beginExpBox.isSelected())
+		//if (beginExpBox.isSelected())
+		if (toonBeginExpressie)
 		{	beginExpressiePanel.setVisible(true);
 			apoip.disableElements(true);
 			
@@ -416,8 +440,8 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		Hashtable h = apoip.getEditState(); 
 	
 		
-		h.put("toonDocExpressies", new Boolean(toonDocExpBox.isSelected()));
-		h.put("toonBeginExpressie", new Boolean(beginExpBox.isSelected()));
+		h.put("toonDocExpressies", new Boolean(docentExpressiePanel.isVisible()));
+		h.put("toonBeginExpressie", new Boolean(beginExpressiePanel.isVisible()));
 		
 		// docentExpressies ophalen
 		// alle
@@ -500,8 +524,22 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
     public void addActionListener(ActionListener al)
     {}
 	
-    public void maakBeginExpressie(String expString)
+    public void maakBeginExpressie()
     {
+		String beginExpString = "";
+		if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
+		{	beginExpString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
+			
+//System.out.println(beginExpString);				
+		
+			beginExpString = "$f" + beginExpString + "@";
+			Expressie beginExp = FormuleParser_ap.geefExpressie(beginExpString);
+			
+//System.out.println(beginExp.toString());					
+			apoip.zetBeginExpressie(beginExp);
+			
+			
+		}
     	
     }
     
@@ -573,6 +611,15 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		{
 			apoip.zetZoomOptie(zoomBox.isSelected());
 		}
+	
+		else if (e.getSource() == beginExpButton)
+		{
+			beginExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+			
+			docentExpressiePanel.setVisible(false);
+			
+		}
 		else if (e.getSource() == beginExpBox)
 		{
 			beginExpressiePanel.setVisible(beginExpBox.isSelected());
@@ -582,7 +629,7 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 			if (beginExpBox.isSelected())
 			{
 				docentExpressiePanel.setVisible(false);
-				toonDocExpBox.setSelected(false);	
+				//toonDocExpBox.setSelected(false);	
 			}
 			else // beginExpressiePanel "gesloten"
 			{
@@ -605,11 +652,17 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 	
 		else if (e.getSource() == kijkNaBox)
 		{
-			toonDocExpBox.setEnabled(kijkNaBox.isSelected());
-			maxScoreLabel.setEnabled(kijkNaBox.isSelected());
-			maxScoreVeld.setEditable(kijkNaBox.isSelected());
+			//toonDocExpBox.setEnabled(kijkNaBox.isSelected());
+			//maxScoreLabel.setEnabled(kijkNaBox.isSelected());
+			//maxScoreVeld.setEditable(kijkNaBox.isSelected());
+			//toonDocExpBox.setVisible(kijkNaBox.isSelected());
+			toonDocExpButton.setVisible(kijkNaBox.isSelected());
+			maxScoreLabel.setVisible(kijkNaBox.isSelected());
+			maxScoreVeld.setVisible(kijkNaBox.isSelected());
+			
 			apoip.zetKijkNaActief(kijkNaBox.isSelected());
 			
+/*			
 			if (kijkNaBox.isSelected() && toonDocExpBox.isSelected())
 			{	docentExpressiePanel.setVisible(true);
 				apoip.disableElements(true);
@@ -618,14 +671,40 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 			{	docentExpressiePanel.setVisible(false);
 				apoip.disableElements(false);
 			}
+*/			
 		}
-		else if (e.getSource() == toonDocExpBox)
+		else if (e.getSource() == toonDocExpButton)
 		{
-			docentExpressiePanel.setVisible(toonDocExpBox.isSelected());
-			apoip.disableElements(toonDocExpBox.isSelected());
+			docentExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+			
+			beginExpressiePanel.setVisible(false);
+			maakBeginExpressie();
 		}
 	
 	}
+	
+	class CloseDocExpAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			docentExpressiePanel.setVisible(false);
+			apoip.disableElements(false);
+		}
+		
+	}
+
+	class CloseBeginExpAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			beginExpressiePanel.setVisible(false);
+			maakBeginExpressie();
+			apoip.disableElements(false);
+		}
+		
+	}
+	
 	
 	class TextFL2 implements FocusListener
 	{		
