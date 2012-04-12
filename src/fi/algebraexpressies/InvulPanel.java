@@ -78,4 +78,9 @@ class InvulPanel extends JPanel implements ActionListener //ItemListener
 		}
 	}
 	
+	public void setEnabled(boolean b)
+	{
+		expressieButton.setEnabled(b);
+		waardeButton.setEnabled(b);
+	}
 }

@@ -29,6 +29,8 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 	protected static ResourceBundle rb;
 	private String langArg;
 	
+	public static Locale language = new Locale ("nl", "");	
+	
 	boolean scormed = false;
 	
 	public static String clipBoard = "";	
@@ -36,6 +38,8 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 	static Image goedkrul, foutkruis, halfkrul;	
 	
 	AlgebraSchuifVeld as;
+	
+	public static boolean simplify = true;
 		
 	public static void main(String[] args)    
 	{	int width = 780;
@@ -56,15 +60,16 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 	}
 	
 	public AlgebraExpressies()
-	{	Locale language = new Locale ("nl", "");
+	{	language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.algebraexpressies.text.Text",language);
 		
 //System.out.println("constr 1");
 
 	}
 	
-	public AlgebraExpressies(Locale language)
-	{	rb = ResourceBundle.getBundle("fi.algebraexpressies.text.Text",language);
+	public AlgebraExpressies(Locale lang)
+	{	language = lang;
+		rb = ResourceBundle.getBundle("fi.algebraexpressies.text.Text",language);
 
 //System.out.println("constr 2");	
 
@@ -83,7 +88,7 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 		String langArg = getParameter("language");
 		if (langArg == null) 
 			langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.algebraexpressies.text.Text",language);
 		
 		fiButton = new fi.beans.copyright.FIButton("Info", 

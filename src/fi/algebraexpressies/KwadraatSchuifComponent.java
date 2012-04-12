@@ -3,7 +3,7 @@ package fi.algebraexpressies;
 import java.awt.Polygon;
 import java.awt.*;
 import java.awt.event.*;
-import fi.algebraexpressies.expressies.*;
+import fi.algebraexpressies.expressies_ap.*;
 
 public class KwadraatSchuifComponent extends AlgebraSchuifComponent 
 {	
@@ -45,4 +45,14 @@ public class KwadraatSchuifComponent extends AlgebraSchuifComponent
 		uitv = new Kwadraat(e1);
 		return uitv;
 	}
+	
+	public Expressie geefVerborgenUitvoer(int max)
+	{	Expressie uitv = new Expressie();
+		if(pijlIn1==null || max<0)return null;
+		Expressie e1 = pijlIn1.zender.geefVerborgenUitvoer(max-1);
+		if(e1==null)return null;
+		uitv = new Kwadraat(e1);
+		return uitv;
+	}
+	
 }

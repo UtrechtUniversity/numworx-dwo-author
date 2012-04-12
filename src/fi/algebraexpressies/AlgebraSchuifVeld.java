@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import fi.algebraexpressies.schuifobjects.*;
 import fi.beans.base64code.StringCodeObject;
@@ -16,19 +17,21 @@ public class AlgebraSchuifVeld extends SchuifVeld
 							              MouseListener, MouseMotionListener,ActionListener
 {	
 
-	private ImageIcon GOEDKRUL,FOUTKRUIS, GOEDKRULHALF;	
+	Image GOEDKRUL,FOUTKRUIS, GOEDKRULHALF;	
 	private JButton wisKnop;
 	InvulPanel ip;
 	private JCheckBox grafiekCheckbox;
 	AlgebraSchuifComponent[] schuifcomponenten;
 	GrafiekComponent grafiekComponent;
 	int aantalSc;
+	JButton kijkNaKnop;
 	
 	private Hashtable editmodeState;
 
 	private JPopupMenu popup;
 	JMenuItem copyItem; 
 	
+	boolean frozen = false;
 	//boolean buttonsAdded;
 
 	public ZoomStateHolder zoomStateHolder;
@@ -60,23 +63,32 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		zoomStateHolder = new ZoomStateHolder(this);
 		
 		
-		ip = new InvulPanel(this, 8, 380, 90, 50); // was 400
-		ip.setBackground(Color.lightGray);
+		ip = new InvulPanel(this, 8, 335, 90, 50); // was 380
+		ip.setBackground(new Color(210, 210, 210));
 		add(ip);
 		
 		grafiekCheckbox = new JCheckBox(AlgebraExpressies.rb.getString("grafiekLabel"));
 		grafiekCheckbox.setFont(font);
 		//grafiekCheckbox.addItemListener(this);
 		grafiekCheckbox.addActionListener(this);
-		grafiekCheckbox.setBounds(8, 320, 80, 20); // was 340
-		grafiekCheckbox.setBackground(Color.lightGray);
+		grafiekCheckbox.setBounds(8, 275, 80, 20); // was 320
+		grafiekCheckbox.setBackground(new Color(210, 210, 210));
 		add(grafiekCheckbox);
 		
 		wisKnop = new JButton(AlgebraExpressies.rb.getString("wisKnopLabel"));
 		wisKnop.setFont(font);
-		wisKnop.setBounds(18, 350, 70, 20); // was 370
+		wisKnop.setBounds(18, 305, 70, 20); // was 350
 		wisKnop.addActionListener(this);
 		add(wisKnop);
+		
+		kijkNaKnop = new JButton(AlgebraExpressies.rb.getString("kijkNaTekst"));
+		kijkNaKnop.setFont(font);
+//		kijkNaKnop.setBounds(5, 385, 90, 20);
+		kijkNaKnop.setBounds(110 + (getSize().width - 110 - 90) / 2, getSize().height - 30, 90, 20);		
+//		kijkNaKnop.addActionListener(this);
+		kijkNaKnop.setVisible(false);
+		add(kijkNaKnop,0);
+		
 		
 		add(schuiflaag, 0);		
 		
@@ -106,8 +118,78 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		
 		add(popup);
 		
-		
+		layoutKnoppen();
 	}
+
+	public void layoutKnoppen()
+	{	int currentY = 275;
+		if (brugklas)
+			currentY = 195;
+		if (grafiekOptie)
+		{	grafiekCheckbox.setLocation(grafiekCheckbox.getLocation().x, currentY);
+			currentY += 30;
+		}
+		wisKnop.setLocation(wisKnop.getLocation().x, currentY);
+		ip.setLocation(ip.getLocation().x, currentY + 30);
+	}	
+	
+	public void disableElements(boolean b)
+	{
+//		terugKnop.setEnabled(!b);
+//		tabelCheckbox.setEnabled(!b);
+		ip.setEnabled(!b);
+		grafiekCheckbox.setEnabled(!b);
+		wisKnop.setEnabled(!b);
+		kijkNaKnop.setEnabled(!b);
+		frozen = b;
+	}
+	
+	public boolean isEindUVS(UitvoerSchuifComponent uvs)
+	{	if (uvs.isStapel)
+			return false;
+		if ((uvs.geefUitvoer(0) == null) && (uvs.geefVerborgenUitvoer(0) == null))
+			return false;
+		// dit gebeurt niet?
+		if (uvs.pijlUit[0] == null)
+			return true;
+		boolean einde = true;
+		for (int pCnt = 0; pCnt < uvs.pijlUit.length; pCnt++)
+		{	if ((uvs.pijlUit[pCnt] != null) && uvs.pijlUit[pCnt].vast &&
+				!(uvs.pijlUit[pCnt].ontvanger instanceof GrafiekComponent))
+				einde = false;
+			
+		}
+		return einde;
+	}
+	
+	public Vector vindExpressieUVS()
+	{	Vector result = new Vector();
+		
+		for (int sCnt = 0; sCnt < aantalSc; sCnt++)
+		{
+			if (schuifcomponenten[sCnt] instanceof UitvoerSchuifComponent)
+			{	
+	
+				UitvoerSchuifComponent uvs = (UitvoerSchuifComponent) schuifcomponenten[sCnt];
+				if (//(uvs.pijlIn1 != null) &&
+					//!uvs.isStapel &&	
+					//((uvs.pijlUit[0] == null) || 
+					 //(!uvs.pijlUit[0].actief && (!uvs.pijlUit[0].vast || 
+					  //(uvs.pijlUit[0].vast && (uvs.pijlUit[0].ontvanger instanceof GrafiekComponent)))))
+					isEindUVS(uvs)	
+				   ) 	
+				{
+//System.out.println("pijlen OK");
+
+					result.addElement(uvs);
+				}
+				
+			}
+		}
+	
+		return result;
+	}
+	
 	
 	public boolean veldIsLeeg()
 	{	int veldCnt = 0;
@@ -144,7 +226,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 	}
 	
-	public void zetPlaatjes(ImageIcon gk, ImageIcon fk, ImageIcon kh)
+	public void zetPlaatjes(Image gk, Image fk, Image kh)
 	{	GOEDKRUL = gk;
 		GOEDKRULHALF = kh;
 		FOUTKRUIS = fk;
@@ -243,6 +325,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 				}
 			}
 		}
+		
+		layoutKnoppen();
 		tekenOpnieuw();
 	}
 /*
@@ -256,6 +340,10 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	{
 		grafiekOptie = b;
 		grafiekCheckbox.setVisible(b);
+		
+		layoutKnoppen();
+		tekenOpnieuw();
+		
 	}
 	
 	public void zetScrollOptie(boolean b)
@@ -286,6 +374,12 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 		
 		tekenOpnieuw();
+		
+	}
+	
+	public void zetKijkNaActief(boolean b)
+	{
+		kijkNaKnop.setVisible(b);
 		
 	}
 	
@@ -886,21 +980,21 @@ System.out.println("aantalStapels = " + aantalStapels);
 	public void maakStapel()
 	{	aantalSc = 0;
 		schuifcomponenten = new AlgebraSchuifComponent[200];
-		schuifcomponenten[aantalSc] = new UitvoerSchuifComponent(this, 30, 55, 40, 30); // was 80			
+		schuifcomponenten[aantalSc] = new UitvoerSchuifComponent(this, 30, 30, 40, 30); // was 55			
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new OptelSchuifComponent(this, 7, 130, 40, 30); // was 150			
+		schuifcomponenten[aantalSc] = new OptelSchuifComponent(this, 7, 100, 40, 30); // was 130			
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new AftrekSchuifComponent(this, 54, 130, 40, 30);			
+		schuifcomponenten[aantalSc] = new AftrekSchuifComponent(this, 54, 100, 40, 30);			
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new VermenigvuldigSchuifComponent(this, 7, 170, 40, 30); // was 190	
+		schuifcomponenten[aantalSc] = new VermenigvuldigSchuifComponent(this, 7, 140, 40, 30); // was 170	
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new DeelSchuifComponent(this, 54, 170, 40, 30);			
+		schuifcomponenten[aantalSc] = new DeelSchuifComponent(this, 54, 140, 40, 30);			
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new KwadraatSchuifComponent(this, 7, 210, 40, 30); // was 230		
+		schuifcomponenten[aantalSc] = new KwadraatSchuifComponent(this, 7, 180, 40, 30); // was 210		
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new WortelSchuifComponent(this, 54, 210, 40, 30);			
+		schuifcomponenten[aantalSc] = new WortelSchuifComponent(this, 54, 180, 40, 30);			
 		aantalSc++;
-		schuifcomponenten[aantalSc] = new MachtSchuifComponent(this, 7, 250, 40, 30); // was 270			
+		schuifcomponenten[aantalSc] = new MachtSchuifComponent(this, 7, 220, 40, 30); // was 250			
 		aantalSc++;
 		
 		int max = aantalSc;
@@ -920,9 +1014,11 @@ System.out.println("aantalStapels = " + aantalStapels);
 		g.fillRect(0, 0, dd.width, dd.height);
 		if (toolkit)
 		{	
-			g.setColor(Color.lightGray);
+			//g.setColor(Color.lightGray);
+			g.setColor(new Color(210, 210, 210));
 			g.fillRect(0, 0, 100, dd.height);
-			g.setColor(Color.black);
+			//g.setColor(Color.black);
+			g.setColor(Color.gray);
 			g.drawLine(100, 0, 100, dd.height - 1);
 			g.drawRect(0, 0, dd.width - 1, dd.height - 1);
 		}
@@ -945,7 +1041,7 @@ System.out.println("aantalStapels = " + aantalStapels);
 		String s = null;
 		FontMetrics fm = g.getFontMetrics();
 		int lengte = 0;
-		
+		g.setColor(Color.black);
 		s = AlgebraExpressies.rb.getString("invoerVakLabel");
 		lengte = fm.stringWidth(s);
 		if (lengte > 100) 
@@ -953,7 +1049,7 @@ System.out.println("aantalStapels = " + aantalStapels);
 			fm = g.getFontMetrics();
 			lengte = fm.stringWidth(s);
 		}
-		g.drawString(s, 50 - lengte / 2, 50); // was 80
+		g.drawString(s, 50 - lengte / 2, 25); // was 50
 		
 		s = AlgebraExpressies.rb.getString("bewerkingenLabel");
 		lengte = fm.stringWidth(s);
@@ -962,12 +1058,13 @@ System.out.println("aantalStapels = " + aantalStapels);
 			fm = g.getFontMetrics();
 			lengte = fm.stringWidth(s);
 		}
-		g.drawString(s, 50 - lengte / 2, 125); // was 145
+		g.drawString(s, 50 - lengte / 2, 95); // was 125
 		
 	}
 	
 	public void zetSchuiver(SchuifComponent sc)
-	{	schuiflaag.add(sc, 0);
+	{	add(schuiflaag, 0);
+		schuiflaag.add(sc, 0);
 		AlgebraSchuifComponent asc = (AlgebraSchuifComponent) sc;
 		for (int i = 0; i < asc.aantalPu; i++)
 		{	if (asc.pijlUit[i] != null)
@@ -987,21 +1084,21 @@ System.out.println("aantalStapels = " + aantalStapels);
 	}
 	
 	public void losSchuiver(SchuifComponent sc)
-	{	add(sc); //,0);
+	{	add(sc, 0);
 		AlgebraSchuifComponent asc = (AlgebraSchuifComponent) sc;
 		for (int i = 0; i < asc.aantalPu; i++)
 		{	if (asc.pijlUit[i] != null)
-				add(asc.pijlUit[i]);
+				add(asc.pijlUit[i], 0);
 		}
 		if (asc.pijlIn1 != null)
-			add(asc.pijlIn1);
+			add(asc.pijlIn1, 0);
 		if (asc.pijlIn2 != null)
-			add(asc.pijlIn2);
+			add(asc.pijlIn2, 0);
 		
 		if (asc instanceof GrafiekComponent)
 		{	GrafiekComponent gsc = (GrafiekComponent) asc;
 			for (int i = 0; i < gsc.aantalPijlenIn; i++)
-			{	add(gsc.pijlenIn[i]);
+			{	add(gsc.pijlenIn[i], 0);
 			}
 		}
 		tekenOpnieuw();

@@ -35,6 +35,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "kopieerTekst" , "Kopieren" },
 				{ "plakTekst" , "Plakken" },
 				
+				{ "kijkNaTekst" , "Kijk na" },
+				{ "kijkNaActief" , "Kijk na actief" },
+				{ "maxScoreTekst" , "Maximale score" },
+				{ "toonDocExpTekst" , "Doel expressies" },
+				
+				
         };
 }
 

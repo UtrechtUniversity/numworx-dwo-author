@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
 
-import fi.algebraexpressies.expressies.*;
+import fi.algebraexpressies.expressies_ap.*;
 
 import javax.swing.*;
 
@@ -47,7 +47,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private int beginwaarde;
 	private int selectnummer;
 	private double beginx;
-	private String defaultVarnaam = "q"; //+1000*Math.random();
+	private String defaultVarnaam = "qq" + 1000 * Math.random();
 	
 	private Color vakKleur, vakKleurSoft;	
 	
@@ -145,7 +145,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		plusMinKnop = new PlusMinKnop(b-12,11,10,h-11, PlusMinKnop.VERTIKAAL);
 		plusMinKnop.addActionListener(this);
-plusMinKnop.setVisible(false);		
+		plusMinKnop.setVisible(false);		
 		add(plusMinKnop);
 		
 		zoomInKnop	= new ZoomKnop("zoominxsmal");
@@ -177,6 +177,7 @@ plusMinKnop.setVisible(false);
         kettingZichtbaar = this.kettingZichtbaar;
 		labelTekst = label.geefTekst();
 		
+//System.out.println("get " + kettingZichtbaar);		
 		Hashtable h = super.getState();
 
 		h.put("basisExp", basisExp);
@@ -234,9 +235,12 @@ plusMinKnop.setVisible(false);
 		toonLabel(labelZichtbaar);
 		label.zetLabelTekst(labelTekst);
 
-		if (!kettingZichtbaar)
-        	zetBoomZichtbaar(kettingZichtbaar);
-        	//zetKettingZichtbaarHier(kettingZichtbaar);
+		//this.kettingZichtbaar = kettingZichtbaar;
+		
+		//if (!kettingZichtbaar)
+        //	zetBoomZichtbaar(kettingZichtbaar);
+        	
+		zetBoomZichtbaarHier(kettingZichtbaar);
 
         zetScroll(scrollable);
         zetZoomInTabel(zoomInTabel);
@@ -315,10 +319,13 @@ plusMinKnop.setVisible(false);
 		}
 		
 
-  		if ((soort == 1) && (pijlIn1 == null) && labelZichtbaar)
+  		if ((soort == 1) && 
+  			//(pijlIn1 == null) && 
+  			labelZichtbaar)
   		{	g.setColor(Color.white);
-  			g.fillRect(0, 0, 15, 5);
+  			g.fillRect(0, 0, 12, 5);
   		}
+  		
 		
 	}
 	
@@ -352,6 +359,11 @@ plusMinKnop.setVisible(false);
 			zetMaat();
 		}
 		schuifveld.tekenOpnieuw();
+		
+		GrafiekComponent gc = vindGrafiekComponent();
+		if (gc != null)
+			gc.zetVeranderd(20);
+		
 	}
 	
 	public boolean isLabelZichtbaar()
@@ -428,6 +440,17 @@ plusMinKnop.setVisible(false);
 	public Expressie geefVerborgenUitvoer(int max)
 	{	return verborgenExpressie;
 	}
+
+	public GrafiekComponent vindGrafiekComponent()
+	{	GrafiekComponent gc = null;
+		for (int pCnt = 0; pCnt < pijlUit.length; pCnt++)
+		{
+			if ((pijlUit[pCnt] != null) && (pijlUit[pCnt].ontvanger instanceof GrafiekComponent))
+				gc = (GrafiekComponent) pijlUit[pCnt].ontvanger;
+		}
+	
+		return gc;
+	}
 	
 	public void zetVeranderd(int max)
 	{	if (pijlIn1 != null)
@@ -435,12 +458,20 @@ plusMinKnop.setVisible(false);
 			scrollCorr = 0;
 			expressie = pijlIn1.zender.geefUitvoer(20);
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
+//if (expressie == null)
+//System.out.println("e = null");
+//else
+//System.out.println("e = " + expressie.toString());
+//if (verborgenExpressie == null)
+//System.out.println("ve = null");
+//else
+//System.out.println("ve = " + verborgenExpressie.toString());	
 			//zoomInKnop.setVisible(false);
 			//zoomUitKnop.setVisible(false);
 		}
 		else 
 		{	
-			if (scrollable  && expressie != null && expressie.geefWaarde() != null)
+			if (scrollable  && expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 			{	if (scrollCorr == 0)
 					add(plusMinKnop);
 				scrollCorr = 10;
@@ -470,7 +501,9 @@ plusMinKnop.setVisible(false);
 		if (expressie != null)
 		{	expressie.zetMaat(fm);
 			Double waarde = expressie.geefWaarde();
-			if (waarde != null)
+if (waarde == null)
+System.out.println("w = null");	
+			if (!Double.isNaN(waarde.doubleValue()))
 				waardeString = Expressie.df.format(waarde);
 			else 
 				waardeString = "-";
@@ -478,7 +511,10 @@ plusMinKnop.setVisible(false);
 
 		zetMaat();
 		
-		toonTabel(tabelZichtbaar);
+		if (expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
+			toonTabel(false);
+		else
+			toonTabel(tabelZichtbaar);
 		
 		ZoomState zs = null;
 		String naam = null;
@@ -494,6 +530,11 @@ plusMinKnop.setVisible(false);
 			setZoomState(naam, zs);
 		
 		super.zetVeranderd(max);
+		
+		GrafiekComponent gc = vindGrafiekComponent();
+		if (gc != null)
+			gc.zetVeranderd(20);
+		
 	}
 
 // DIT MOET WEG
@@ -610,7 +651,14 @@ plusMinKnop.setVisible(false);
 		{	zetInvulWaarde();
 		}	
 		else if (e.getSource() == plusMinKnop)
-		{	if (beginw != null && beginw.geefWaarde() != null)
+		{	
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+			
+
+			if (beginw != null && !Double.isNaN(beginw.geefWaarde().doubleValue()))
 			{	double w = beginw.geefWaarde().doubleValue();
 				if (e.getActionCommand().equals("min"))
 					w -= 1;
@@ -624,7 +672,15 @@ plusMinKnop.setVisible(false);
 		}
 	
 		else if (e.getSource() == zoomUitKnop)
-		{	if (!e.getActionCommand().equals("knop") || factorRijNummerX > 120) 
+		{	
+			
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+			
+			
+			if (!e.getActionCommand().equals("knop") || factorRijNummerX > 120) 
 				return;
 			if (factorRijNummerX % 3 == 1)
 			{	schaalFactorX *= 2.5;
@@ -646,6 +702,7 @@ plusMinKnop.setVisible(false);
         		varnaam = verborgenExpressie.geefVarNaam();
         
         	((AlgebraSchuifVeld) getParent()).zoomStateHolder.setBeginwaarde(varnaam, beginwaarde);
+        	((AlgebraSchuifVeld)getParent()).zoomStateHolder.setSelectnummer(varnaam, selectnummer);
         	((AlgebraSchuifVeld) getParent()).zoomStateHolder.setSchaalFactorX(varnaam, schaalFactorX);
         	((AlgebraSchuifVeld) getParent()).zoomStateHolder.setFactorRijNummerX(varnaam, factorRijNummerX);
         	((AlgebraSchuifVeld) getParent()).zoomStateHolder.setBeginx(varnaam, beginx);
@@ -654,7 +711,14 @@ plusMinKnop.setVisible(false);
         	schuifveld.tekenOpnieuw();
 		}
 		else if (e.getSource() == zoomInKnop)
-		{	if (!e.getActionCommand().equals("knop") || factorRijNummerX < 87) 
+		{	
+			if (((AlgebraSchuifVeld) getParent()).isDemo)
+				return;
+			if (((AlgebraSchuifVeld) getParent()).frozen)
+				return;
+
+			
+			if (!e.getActionCommand().equals("knop") || factorRijNummerX < 87) 
 				return;
 			if (factorRijNummerX % 3 == 2)
 			{	schaalFactorX /= 2.5;
@@ -698,25 +762,54 @@ plusMinKnop.setVisible(false);
 		{	toonTabel(false);
 		}
 		else if (((JMenuItem)e.getSource()).getText().equals(AlgebraExpressies.rb.getString("popup1Label5")))
-		{	if (pijlIn1 != null)
+		{
+			zetBoomZichtbaarHier(true);
+/*			
+			if (pijlIn1 != null)
 				pijlIn1.zender.zetBoomZichtbaar(true);
 			if (pijlIn2 != null)
 				pijlIn2.zender.zetBoomZichtbaar(true);
 			open = true;
+			kettingZichtbaar = true;
+*/			
 		}
 		else if (((JMenuItem)e.getSource()).getText().equals(AlgebraExpressies.rb.getString("popup1Label6")))
-		{	if (pijlIn1 != null)
+		{	
+			zetBoomZichtbaarHier(false);
+/*			
+			if (pijlIn1 != null)
 				pijlIn1.zender.zetBoomZichtbaar(false);
 			if (pijlIn2 != null)
 				pijlIn2.zender.zetBoomZichtbaar(false);
 			open = false;
+			kettingZichtbaar = false;
+*/						
 		}
+	}
+	
+	public void zetBoomZichtbaarHier(boolean b)
+	{
+		if (pijlIn1 != null)
+			pijlIn1.zender.zetBoomZichtbaar(b);
+		if (pijlIn2 != null)
+			pijlIn2.zender.zetBoomZichtbaar(b);
+
+		for (int i = 0; i < aantalPu; i++)
+		{	pijlUit[i].setVisible(b);
+		}
+		
+        open = b;
+        kettingZichtbaar = b;
+        
+        schuifveld.tekenOpnieuw();
 	}
 	
 	public void mousePressed(MouseEvent e)
 	{	
 		
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
 			return;
 		
 		muisrechts = false;
@@ -732,7 +825,10 @@ plusMinKnop.setVisible(false);
 			
 			if (pijlIn1 == null)
 				popup3.show(this, e.getX(), e.getY());
-			else if (expressie == null || expressie.geefVarNaam() == null || expressie.isBasis)
+			else if (// getal
+					 (expressie != null && expressie.geefVarNaam() == null) ||
+					 // x
+					 (expressie instanceof BasisExpressie))
 				popup2.show(this, e.getX(), e.getY());
 			else	
 				popup.show(this, e.getX(), e.getY());
@@ -746,8 +842,10 @@ plusMinKnop.setVisible(false);
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
 			return;
 		
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
 		
-		if (!muisrechts && pijlIn1 == null)
+		if (!muisrechts && pijlIn1 == null && !isStapel)
 		{	
 			
 			if (new Rectangle(tf.getLocation().x, tf.getLocation().y,
@@ -767,6 +865,8 @@ plusMinKnop.setVisible(false);
 	public void mouseReleased(MouseEvent e)
 	{	
 		if (((AlgebraSchuifVeld)schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
 			return;
 				
 		super.mouseReleased(e);

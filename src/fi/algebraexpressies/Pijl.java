@@ -21,6 +21,8 @@ public class Pijl extends JComponent //Component
 	
 	private Color color = Color.black;	
 	
+	Image im;
+	
 	public Pijl(AlgebraSchuifVeld asv)
 	{	schuifveld = asv;
 		actief = false;
@@ -33,6 +35,7 @@ public class Pijl extends JComponent //Component
 		pijlpuntKlik = new Polygon();
 		
 		setOpaque(false);
+		
 	}
 	
 	public void setColor(Color color)
@@ -45,7 +48,7 @@ public class Pijl extends JComponent //Component
 	}
 	
 	public void paint(Graphics gIm)
-	{ 	gIm.setClip(Math.min(x0,x1)-7,Math.min(y0,y1)-20,Math.abs(x1-x0)+15,Math.abs(y1-y0)+41);
+	{ 	//gIm.setClip(Math.min(x0,x1)-7,Math.min(y0,y1)-20,Math.abs(x1-x0)+15,Math.abs(y1-y0)+41);
 		//gIm.setColor(Color.black);
 		gIm.setColor(color);
 		double dx = x1-x0; double dy = y1-y0;
@@ -151,6 +154,11 @@ public class Pijl extends JComponent //Component
 		if (actief || vast)
 			gIm.drawPolygon(pijlpuntEind);
 		
+		if (!isStapel && !vast && !actief && (im != null))
+		{	gIm.drawImage(im, x0, y0, this);
+//System.out.println("im");		
+		}
+		
 	}
 	public void update(Graphics g)
 	{	paint(g);
@@ -252,6 +260,10 @@ public class Pijl extends JComponent //Component
 			return;
 		if (schuifveld.isDemo)
 			return;
+		if (schuifveld.frozen)
+			return;
+		
+		
 		
 		schuifveld.start();
 		schuifveld.zetOpSchuifLaag(this);
@@ -273,6 +285,8 @@ public class Pijl extends JComponent //Component
 			return;
 		if (schuifveld.isDemo)
 			return;
+		if (schuifveld.frozen)
+			return;
 		
 		if(zender.isStapel)return;
 		if(actief)
@@ -291,6 +305,8 @@ public class Pijl extends JComponent //Component
 		if (schuifveld.alleenInvullen)
 			return;
 		if (schuifveld.isDemo)
+			return;
+		if (schuifveld.frozen)
 			return;
 		
 		plaatsOpGridEind();

@@ -5,7 +5,7 @@ import java.awt.event.*;
 import java.util.Hashtable;
 
 import fi.algebraexpressies.schuifobjects.*;
-import fi.algebraexpressies.expressies.*;
+import fi.algebraexpressies.expressies_ap.*;
 
 public class AlgebraSchuifComponent extends SchuifComponent 
 {	
@@ -207,6 +207,9 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	{	
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
 			return;		
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
 		
 		requestFocus();
 		super.mousePressed(e);
@@ -217,7 +220,10 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		if (((AlgebraSchuifVeld) schuifveld).alleenInvullen)
 			return;
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
-			return;		
+			return;
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
+		
 
 		if ((this instanceof UitvoerSchuifComponent) &&
 				(((UitvoerSchuifComponent) this).muisrechts)
@@ -247,6 +253,8 @@ public class AlgebraSchuifComponent extends SchuifComponent
 	{	
 		if (((AlgebraSchuifVeld) schuifveld).isDemo)
 			return;		
+		if (((AlgebraSchuifVeld) schuifveld).frozen)
+			return;
 		
 		super.mouseReleased(e);
 		if (!isStapel && (getLocation().x < 80 || getLocation().x > schuifveld.getSize().width

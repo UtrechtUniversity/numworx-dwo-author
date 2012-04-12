@@ -108,6 +108,8 @@ public class InUitvoerLabel extends JPanel //Container
 		
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
 			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
+			return;
 		
 		requestFocus();
 		muisrechts = false;
@@ -119,6 +121,8 @@ public class InUitvoerLabel extends JPanel //Container
 	public void mouseClicked(MouseEvent e)
 	{	
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
 			return;
 		
 		
@@ -133,6 +137,8 @@ public class InUitvoerLabel extends JPanel //Container
 	public void mouseReleased(MouseEvent e)
 	{	
 		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).isDemo)
+			return;
+		if (((AlgebraSchuifVeld)((UitvoerSchuifComponent)getParent()).schuifveld).frozen)
 			return;
 		
 		((SchuifComponent) getParent()).mouseReleased(e);

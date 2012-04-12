@@ -2,8 +2,9 @@ package fi.algebraexpressies;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Vector;
 
-import fi.algebraexpressies.expressies.*;
+import fi.algebraexpressies.expressies_ap.*;
 import fi.algebraexpressies.schuifobjects.*;
 
 import javax.swing.*;
@@ -109,9 +110,23 @@ public class TabelComponent extends JPanel //Component
 		g.drawPolygon(pijlMin);
 		
 		if (exp != null)
-		{	String s = exp.geefVarNaam();
-			if (s != null && !s.equals(""))
-			{	g.drawString(s, 5, 12);
+		{	//String s = exp.geefVarNaam();
+			Vector varNames = Algebra.geefVarN(exp);
+//System.out.println(exp.toString());
+//System.out.println("vn = " + s);
+			boolean bb = false;
+			for (int cnt = 0; cnt < varNames.size(); cnt++)
+			{	String s = (String) varNames.elementAt(cnt);	
+				boolean b = s.equals("qq") || s.length() > 2 && s.substring(0,2).equals("qq");
+				if (b)
+					bb = true;
+			}
+			//if (s != null && !s.equals(""))
+			if (varNames.size() > 0)
+			{	if (!bb)
+				{	//g.drawString(s, 5, 12);
+					g.drawString((String) varNames.elementAt(0), 5, 12);
+				}
 				for (int i = 0; i < 8; i++)
 				{	if (exp.isWaarde(schaalFactorX * (i + beginwaarde)))
 					{	double d = exp.geefW(schaalFactorX * (i + beginwaarde));
@@ -183,7 +198,9 @@ public class TabelComponent extends JPanel //Component
 		if (exp != null)
 		{	varNaam = exp.geefVarNaam();
 			if (varNaam != null && !varNaam.equals(""))
-			{	breedteInv = Math.max(breedteInv, fm.stringWidth(varNaam) + 8);
+			{	boolean b = varNaam.equals("qq") || varNaam.length() > 2 && varNaam.substring(0,2).equals("qq");
+				if(!b)
+					breedteInv = Math.max(breedteInv, fm.stringWidth(varNaam) + 8);
 				
 				for (int i = 0; i < 8; i++)
 				{	if (exp.isWaarde(schaalFactorX * i + beginwaarde))
@@ -209,13 +226,16 @@ public class TabelComponent extends JPanel //Component
 		//	setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 		
 		
-		if (pijlPlus.contains(e.getX(),e.getY()))
-		{	beginwaarde--;
+		if (pijlPlus.contains(e.getX(),e.getY()) && 
+			!((AlgebraSchuifVeld)getParent().getParent()).isDemo)
+		{	
+			beginwaarde--;
 			selectnummer++;
 //			((UitvoerSchuifComponent)getParent()).zetGrafiekTabel(beginwaarde,selectnummer,varNaam,schaalFactorX);
 			repaint();
 		}
-		else if (pijlMin.contains(e.getX(),e.getY()))
+		else if (pijlMin.contains(e.getX(),e.getY()) &&
+				!((AlgebraSchuifVeld)getParent().getParent()).isDemo)
 		{	beginwaarde++;
 			selectnummer--;
 //			((UitvoerSchuifComponent)getParent()).zetGrafiekTabel(beginwaarde,selectnummer,varNaam, schaalFactorX);

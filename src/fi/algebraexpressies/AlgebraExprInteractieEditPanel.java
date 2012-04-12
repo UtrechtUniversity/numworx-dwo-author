@@ -33,11 +33,26 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 	JCheckBox brugklasBox;//, terugHeenBox, tabelBox, 
 	JCheckBox grafiekBox, scrollBox, zoomBox;
 	
+	JCheckBox kijkNaBox;
+	JButton toonDocExpButton;
+	JLabel maxScoreLabel;	
+	JTextField maxScoreVeld;	
+
+	int scoreMax = 10;
+	
+	ExpressiePanel docentExpressiePanel;
+	
+	
 	public AlgebraExprInteractieEditPanel()
 	{
 		setLayout(null);
 		apoip = new AlgebraExprInteractiePanel();
 		add(apoip);
+
+		docentExpressiePanel = new ExpressiePanel(10, 10, 360, 275, 6);
+		docentExpressiePanel.setVisible(false);
+		add(docentExpressiePanel, 0);
+		docentExpressiePanel.closeButton.addActionListener(new CloseDocExpAL());		
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -102,32 +117,6 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 
 		currentY += height + offset / 2;
 		
-/*		
-		terugHeenBox = new JCheckBox(AlgebraExpressies.rb.getString("terugHeenTekst"));
-		terugHeenBox.setFont(theFont);
-		terugHeenBox.setBackground(Color.white);
-		width = theFM.stringWidth(terugHeenBox.getText()) + 35;
-		terugHeenBox.setBounds(currentX, currentY, width, height);
-		terugHeenBox.setSelected(true);
-		add(terugHeenBox);
-		//viewerOptiesPanel.add(terugHeenBox);
-		terugHeenBox.addActionListener(this);
-
-		currentY += height + offset / 2;
-*/
-/*		
-		tabelBox = new JCheckBox(AlgebraExpressies.rb.getString("tabelTekst"));
-		tabelBox.setFont(theFont);
-		tabelBox.setBackground(Color.white);
-		width = theFM.stringWidth(tabelBox.getText()) + 40;
-		tabelBox.setBounds(currentX, currentY, width, height);
-		tabelBox.setSelected(true);
-		add(tabelBox);
-		//viewerOptiesPanel.add(tabelBox);
-		tabelBox.addActionListener(this);
-
-		currentY += height + offset / 2;
-*/
 		grafiekBox = new JCheckBox(AlgebraExpressies.rb.getString("grafiekTekst"));
 		grafiekBox.setFont(theFont);
 		grafiekBox.setBackground(Color.white);
@@ -163,7 +152,56 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 		//viewerOptiesPanel.add(zoomBox);
 		zoomBox.addActionListener(this);
 
-		currentY += height + offset / 2;
+		currentY += height + 4 * offset;
+
+		kijkNaBox = new JCheckBox(AlgebraExpressies.rb.getString("kijkNaActief"));
+		kijkNaBox.setFont(theFont);
+		kijkNaBox.setBackground(Color.white);
+		kijkNaBox.setBounds(currentX, currentY, editWidth - offset - 3, 3 * theFM.getHeight() / 2);
+		add(kijkNaBox);
+		kijkNaBox.addActionListener(this);
+		
+		currentY += height + offset;
+
+		toonDocExpButton = new JButton(AlgebraExpressies.rb.getString("toonDocExpTekst"));
+		toonDocExpButton.setFont(theFont);
+		int w = theFM.stringWidth(toonDocExpButton.getText()) + 40;
+		currentX = (editWidth - w) / 2;
+		toonDocExpButton.setBounds(currentX, currentY, w, 3 * theFM.getHeight() / 2);
+		toonDocExpButton.setVisible(false);
+		add(toonDocExpButton);
+		toonDocExpButton.addActionListener(this);
+		
+		currentX = apoip.getSize().width + offset;		
+		currentY += height + offset;		
+		
+		
+		maxScoreLabel = new JLabel(AlgebraExpressies.rb.getString("maxScoreTekst"));
+		maxScoreLabel.setFont(theFont);
+		maxScoreLabel.setBackground(Color.white);
+		width = theFM.stringWidth(maxScoreLabel.getText());
+		maxScoreLabel.setBounds(currentX + offset, currentY + 3, width, theFM.getHeight());
+		//maxScoreLabel.setEnabled(false);
+		maxScoreLabel.setVisible(false);
+		add(maxScoreLabel);
+		
+		currentY += height; // + offset;
+		
+		maxScoreVeld = new JTextField("" + scoreMax);
+		maxScoreVeld.setFont(theFont);
+		maxScoreVeld.setBackground(Color.white);
+		width = theFM.stringWidth("XXXXXX");
+		maxScoreVeld.setBounds(currentX + 2 * offset, currentY, width, height);
+				//maxScoreLabel.getLocation().x + maxScoreLabel.getSize().width + offset,
+				//currentY, width, height);
+		add(maxScoreVeld);
+		//maxScoreVeld.setEditable(false);
+		maxScoreVeld.setVisible(false);
+
+		maxScoreVeld.addKeyListener(new InputKL2(maxScoreVeld));
+		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
+		maxScoreVeld.addFocusListener(new TextFL2(maxScoreVeld));
+
 		
 		componentsCreated = true;		
 	}
@@ -183,7 +221,13 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 			scrollBox.setLocation(apoip.getSize().width + offset, scrollBox.getLocation().y);
 			zoomBox.setLocation(apoip.getSize().width + offset, zoomBox.getLocation().y);
 			
-//			tabbedPane.setBounds(naip.getSize().width, 0, editWidth, getSize().height);
+			kijkNaBox.setLocation(apoip.getSize().width + offset, kijkNaBox.getLocation().y);
+			//toonDocExpBox.setLocation(apoip.getSize().width + offset, toonDocExpBox.getLocation().y);
+			toonDocExpButton.setLocation(apoip.getSize().width + offset, toonDocExpButton.getLocation().y);
+			
+			maxScoreLabel.setLocation(apoip.getSize().width + 2 * offset, maxScoreLabel.getLocation().y);
+			maxScoreVeld.setLocation(apoip.getSize().width + 3 * offset, maxScoreVeld.getLocation().y);
+
 			
 			repaint();
 						
@@ -258,7 +302,37 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
 		zoomBox.setSelected(zoomOptie);
 		
-//		apoip.setEditState(b);
+
+		boolean kijkNaActief = false;
+		if (b.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+		kijkNaBox.setSelected(kijkNaActief);
+		
+		//altijd expressieStrings ophalen
+		String[] expressieStrings = new String[docentExpressiePanel.numInputs];
+		for (int i = 0; i < expressieStrings.length; i++)
+			expressieStrings[i] = "";
+		if (b.containsKey("expressieStrings"))
+			expressieStrings = (String[]) b.get("expressieStrings");
+		docentExpressiePanel.zetExpressieStrings(expressieStrings);
+		
+		boolean toonDocExpressies = false;
+		if (b.containsKey("toonDocExpressies"))
+			toonDocExpressies = ((Boolean) b.get("toonDocExpressies")).booleanValue();
+		//toonDocExpBox.setSelected(toonDocExpressies);
+		
+		if (b.containsKey("scoreMax"))
+			scoreMax = ((Integer) b.get("scoreMax")).intValue();
+		maxScoreVeld.setText("" + scoreMax);
+		//maxScoreVeld.setEditable(kijkNaActief);
+		
+		//toonDocExpBox.setEnabled(kijkNaBox.isSelected());
+		//maxScoreLabel.setEnabled(kijkNaBox.isSelected());
+		//maxScoreVeld.setEditable(kijkNaBox.isSelected());
+		toonDocExpButton.setVisible(kijkNaBox.isSelected());
+		maxScoreLabel.setVisible(kijkNaBox.isSelected());
+		maxScoreVeld.setVisible(kijkNaBox.isSelected());
+
 		
 		if (b.containsKey("apoipBreedte"))
 			apoipBreedte = ((Integer) b.get("apoipBreedte")).intValue();
@@ -268,6 +342,21 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 		setBounds(getLocation().x, getLocation().y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		
 		// HIER !!
+		if (kijkNaBox.isSelected() && toonDocExpressies)
+		{	docentExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+		}
+		else if (!kijkNaBox.isSelected()) // && toonDocExpBox.isSelected())
+		{	docentExpressiePanel.setVisible(false);
+			apoip.disableElements(false);
+		}
+/*		
+		if (beginExpBox.isSelected())
+		{	beginExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+			
+		}
+*/		
 		apoip.setEditState(b);
 		
 	}
@@ -277,6 +366,24 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 	{		
 		Hashtable h = apoip.getEditState(); 
 
+		h.put("toonDocExpressies", new Boolean(docentExpressiePanel.isVisible()));
+//		h.put("toonBeginExpressie", new Boolean(beginExpBox.isSelected()));
+		
+		// docentExpressies ophalen
+		// alle
+		h.put("expressieStrings", docentExpressiePanel.getExpressieStrings());
+		// correcte
+		h.put("docentExpressieStrings", docentExpressiePanel.getCorrectExpressieStrings());
+	
+/*		
+		h.put("expStrings", beginExpressiePanel.getExpressieStrings());
+		String beginExpressieString = "";
+		if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
+			beginExpressieString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
+		h.put("beginExpressieString", beginExpressieString);
+*/		
+		h.put("scoreMax", new Integer(scoreMax));
+		
 		h.put("apoipBreedte", new Integer(apoipBreedte));
 		h.put("apoipHoogte", new Integer(apoipHoogte));
 		
@@ -292,15 +399,15 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 			return;
 		}
 
-		System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
+//		System.out.println("apoiep setBounds raw " + x + " " + y + " " + b + " " + h);
 
 		if ((h <= 1) || (x < 0) || (b <= 1))
 			return;
 		
 		super.setBounds(x, y, apoipBreedte + editWidth, Math.max(apoipHoogte, editHeight));
 		
-		System.out.println("apoiep setBounds " + x + " " + y + " " + (apoipBreedte + editWidth) + " " + 
-							Math.max(apoipHoogte, editHeight));
+//		System.out.println("apoiep setBounds " + x + " " + y + " " + (apoipBreedte + editWidth) + " " + 
+//							Math.max(apoipHoogte, editHeight));
 		
 		if (apoip != null)
 			apoip.setBounds(0, 0, apoipBreedte, apoipHoogte);
@@ -420,6 +527,247 @@ public class AlgebraExprInteractieEditPanel extends JPanel
 		{
 			apoip.zetZoomOptie(zoomBox.isSelected());
 		}
+	
+		else if (e.getSource() == kijkNaBox)
+		{
+			//toonDocExpBox.setEnabled(kijkNaBox.isSelected());
+			//maxScoreLabel.setEnabled(kijkNaBox.isSelected());
+			//maxScoreVeld.setEditable(kijkNaBox.isSelected());
+			
+			toonDocExpButton.setVisible(kijkNaBox.isSelected());
+			maxScoreLabel.setVisible(kijkNaBox.isSelected());
+			maxScoreVeld.setVisible(kijkNaBox.isSelected());
+			
+			apoip.zetKijkNaActief(kijkNaBox.isSelected());
+			
+/*			
+			if (kijkNaBox.isSelected() && toonDocExpBox.isSelected())
+			{	docentExpressiePanel.setVisible(true);
+				apoip.disableElements(true);
+			}
+			else if (!kijkNaBox.isSelected() && toonDocExpBox.isSelected())
+			{	docentExpressiePanel.setVisible(false);
+				apoip.disableElements(false);
+			}
+*/			
+		}
+		else if (e.getSource() == toonDocExpButton)
+		{
+			docentExpressiePanel.setVisible(true);
+			apoip.disableElements(true);
+		}
+	
+	}
+
+	class CloseDocExpAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			docentExpressiePanel.setVisible(false);
+			apoip.disableElements(false);
+		}
 		
 	}
+	
+	class TextFL2 implements FocusListener
+	{		
+		JTextField inputTextField;
+		
+		public TextFL2(JTextField input)
+		{	inputTextField = input;
+		}
+
+		public void focusGained(FocusEvent e)
+		{
+		}
+		public void focusLost(FocusEvent e)
+		{	// invoer user
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+//System.out.println("nfe");			
+			}
+			// dit zou niet moeten gebeuren
+			// Peter: nu wel bij de definitie van een random variabele ipv een double			
+			if (error)
+				return;
+
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+		} // focusLost
+	}
+
+
+	class TextAL2 implements ActionListener
+	{	
+		JTextField inputTextField;
+		
+		public TextAL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void actionPerformed(ActionEvent e)
+		{	
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			// dit zou niet moeten gebeuren  
+			// Peter: nu wel bij de definitie van een random variabele ipv een double
+			if (error)
+			{	return;
+			}
+
+			
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+			
+		} // actionPerformed
+	}
+	
+	public String trimTrailingZeros(String s, char decSep)
+	{	String txt = new String(s);
+		if (txt.indexOf(decSep) < 0)
+			return txt;
+		char c = txt.charAt(txt.length() - 1);
+		while (c == '0')
+		{	txt = removeCharAt(txt, txt.length() - 1);
+			c = txt.charAt(txt.length() - 1);
+		}	
+		c = txt.charAt(txt.length() - 1);
+		if (c == decSep)
+			txt = removeCharAt(txt, txt.length() - 1);
+		return txt;		
+	}				
+		
+	public String removeCharAt(String s, int index)
+	{	String txt = new String(s);
+		// eerste
+		if (index == 0)
+			txt = txt.substring(1);
+		// laatste	
+		else if (index == (txt.length() - 1))
+			txt = txt.substring(0, txt.length() - 1);
+		// middenin	
+		else
+		{	String txt1 = txt.substring(0, index);
+			String txt2 = txt.substring(index + 1);
+			txt = txt1 + txt2;
+		}
+		return txt;
+	}		
+
+	class InputKL2 extends KeyAdapter
+	{	
+		JTextField inputTextField;
+		
+		public InputKL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void keyReleased(KeyEvent e)
+		{	
+			inputTextField.setForeground(Color.black);
+		
+			String txt = inputTextField.getText();
+			
+//System.out.println(txt);
+				
+			boolean corrected = false;
+
+			// kijk of txt illegale characters bevat
+			// dit zou er maximaal 1 moeten zijn
+			int index = -1;
+			for (int cCnt = 0; cCnt < txt.length(); cCnt++)
+			{	char c = txt.charAt(cCnt);
+				if (!isLegal(c))
+				{	index = cCnt;
+//System.out.println("illegal " + index);				
+				}
+			}	
+			// verwijder illegaal karakter
+			if (index >= 0)
+			{	txt = removeCharAt(txt, index);
+				corrected = true;
+//System.out.println("corr " + txt);							
+			}
+			
+//System.out.println(txt);			
+			
+			// leading zeros, leiden niet tot een NumberFormatException	
+			// geen minteken
+			if ((txt.indexOf('-') < 0) && (txt.length() >= 2) &&
+				(txt.charAt(0) == '0') && Character.isDigit(txt.charAt(1)))
+			{	txt = removeCharAt(txt, 0);
+				corrected = true;
+			}
+			
+			// trailing zeros na(!) decimale punt oplossen 
+			// bij actionPerformed of focusLost			
+
+			if (corrected)
+			{	
+//System.out.println("corr " + txt);							
+				inputTextField.setText(txt);
+			
+			}
+			
+		}
+		
+		
+		public boolean isLegal(char c)
+		{	return Character.isDigit(c);
+		}
+	}	
+	
 }
