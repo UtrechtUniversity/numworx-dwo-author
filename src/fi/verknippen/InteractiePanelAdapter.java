@@ -26,7 +26,7 @@ import fi.beans.wiskopdrbeans.*;
 import fi.dwo.parameters.domain.*;
 import fi.dwo.parameters.gui.*;
 
-public class InteractiePanelAdapter extends Panel implements InteractiePanel, AppletStub, AppletContext
+public class InteractiePanelAdapter extends JPanel implements InteractiePanel, AppletStub, AppletContext
 {
 	private ScormAppletIF applet;
 	private Hashtable launchData;
@@ -184,7 +184,7 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	}
 	public int getScoreMax()
 	{
-		return scoreMax;
+		return ((Verknippen)applet).scoreMax;
 	}
 	public boolean isCorrect()
 	{	if (applet == null)
@@ -292,6 +292,9 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	{
     	if (!kijkNaActief)
 			return;
+    	
+    	if (!((Verknippen) applet).showBottomPanel)
+    		return;
 //System.out.println("kijkNa() - 1");
     	
     	if (((Verknippen) applet).taakNummer == 1)
@@ -379,8 +382,8 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
         if (launchData != null)
         {	
         	value = (String) launchData.get(name);
-if (name.equals("taaknummer"))        
-System.out.println("ld not null tn = " + value);        
+//if (name.equals("taaknummer"))        
+//System.out.println("ld not null tn = " + value);        
         	
         }	
 		return value;

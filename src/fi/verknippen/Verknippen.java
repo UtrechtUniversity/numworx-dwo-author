@@ -65,6 +65,7 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	String defaultFiguurString = "2,0|10,0|8,8|0,8";
 	String defaultGrijsFiguurString = "2,0|10,0|8,8|0,8";	
 	
+	
 	FIButton fiButton;
 	
 	OpdrachtSelector selector;
@@ -89,6 +90,9 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	boolean showShadow = false;
 	boolean showSizes = false;
 	boolean largeOvals = false;
+	
+	boolean showBottomPanel = true;
+	int scoreMax = 10;
 	
 	// fonts
 	Font theFont;
@@ -164,32 +168,58 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 			catch (NumberFormatException nfe)
 			{	error = true;
 			}	
-			if (!error && (taakNum > 0) && (taakNum <= maxTaken))
+			if (!error && (taakNum >= 0) && (taakNum <= maxTaken))
 			{	taakNummer = taakNum;
 			}
 		}		
-	
+
+		
+		// bottomPanel tonen?
+		String showBottomPanelString = getParameter("toonbalk");
+		if ((showBottomPanelString != null) && (showBottomPanelString.equals("no") || showBottomPanelString.equals("false")))
+			showBottomPanel = false;
+		
+		if (!showBottomPanel)
+			bottomHeight = 0;
+		
 		// rooster tonen?
 		String showGridString = getParameter("toonrooster");
-		if ((showGridString != null) && showGridString.equals("yes"))
+		if ((showGridString != null) && (showGridString.equals("yes") || showGridString.equals("true")))
 			showGrid = true;
 
 		// schaduw tonen?
 		String showShadowString = getParameter("toonschaduw");
-		if ((showShadowString != null) && showShadowString.equals("yes"))
+		if ((showShadowString != null) && (showShadowString.equals("yes") || showShadowString.equals("true")))
 			showShadow = true;
 	
 		// afmetingen tonen? alleen als schaduw ook getoond wordt
 		if (showShadow)
 		{	String showSizesString = getParameter("toonafmetingen");
-			if ((showSizesString != null) && showSizesString.equals("yes"))
+			if ((showSizesString != null) && (showSizesString.equals("yes") || showSizesString.equals("true")))
 				showSizes = true;
 		}
 
 		// grotere balletjes
 		String largeOvalsString = getParameter("groteballetjes");
-		if ((largeOvalsString != null) && largeOvalsString.equals("yes"))
+		if ((largeOvalsString != null) && (largeOvalsString.equals("yes") || largeOvalsString.equals("true")))
 			largeOvals = true;
+		
+		// scoreMax
+		String scoreMaxString = getParameter("scoremax");
+		if	((scoreMaxString != null) && !scoreMaxString.equals(""))
+		{	int scoreM = 0;
+			boolean error = false;
+			try
+			{	scoreM = Integer.parseInt(scoreMaxString);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}	
+			if (!error && (scoreM >= 0))
+			{	scoreMax = scoreM;
+			}
+		}		
+		
 
 if (scormed)
 {	bgColor = new Color(Integer.parseInt("FFFFC6", 16));
@@ -364,7 +394,7 @@ if (scormed)
 						opdrachten[oCnt].drawingPanel.showSizes = true;
 				}
 			}
-			else
+			else // taakNummer==4
 			{	// zet de rode figuur	
 				KnipPolygon kp = new KnipPolygon(opdrachten[oCnt].drawingPanel, 
 									 opdrachten[oCnt].figuurCoordinaten,
@@ -399,7 +429,8 @@ if (scormed)
 		bottomPanel = new BottomPanel(this);
 		bottomPanel.setBounds(0, getSize().height - bottomHeight, 
 			getSize().width, bottomHeight);
-		getContentPane().add(bottomPanel);
+		if (showBottomPanel)
+			getContentPane().add(bottomPanel);
 
 		//Fi-logo, copyright
 		fiButton = new FIButton("Verknippen",new String[]
@@ -1294,6 +1325,7 @@ if (scormed)
     	Hashtable h = new Hashtable();
 
     	h.put("taaknummer", "1");
+    	h.put("toonbalk", "true");
     	h.put("toonrooster", "no");
     	h.put("groteballetjes", "no");
     	h.put("toonschaduw", "no");
@@ -1303,58 +1335,67 @@ if (scormed)
     	h.put("oppervlakte1", "64");    	
     	h.put("figuurgrijs1", "0,0|8,0|8,8|0,8");    	
     	h.put("oppervlaktegrijs1", "64");    	    	
-    	
+    	h.put("scoremax", "10");
     	
     	return h;
     }
     
     public Parameter[] getEditableParameters()
 	{	
-    	Parameter[] parameters = new Parameter[10];
+    	Parameter[] parameters = new Parameter[12];
 		
 		DataType type = new ScormString();
+		DataType btype = new ScormBoolean();
 		
 		Parameter param = new Parameter("taaknummer", "Nummer van de taak", type);
 		param.setHelpText("1 (rechthoek), 2, 3 (oppervlakte) of 4 (vergelijken)");		
 		parameters[0] = param;
 		
-		param = new Parameter("toonrooster", "Rooster zichtbaar", type);
-		param.setHelpText("vul in: yes of no");
+		param = new Parameter("toonbalk", "Balk onderaan", btype);
+		//param.setHelpText("vul in: yes of no");
 		parameters[1] = param;
 		
-		param = new Parameter("groteballetjes", "Grote balletjes", type);
-		param.setHelpText("vul in: yes of no");		
+		param = new Parameter("toonrooster", "Rooster zichtbaar", btype);
+		//param.setHelpText("vul in: yes of no");
 		parameters[2] = param;
-
-		param = new Parameter("toonschaduw", "Schaduw zichtbaar", type);
-		param.setHelpText("vul in: yes of no");
-		parameters[3] = param;
 		
-		param = new Parameter("toonafmetingen", "Afmetingen zichtbaar", type);
-		param.setHelpText("vul in: yes of no, yes alleen als toonschaduw = yes");
+		param = new Parameter("groteballetjes", "Grote balletjes", btype);
+		//param.setHelpText("vul in: yes of no");		
+		parameters[3] = param;
+
+		param = new Parameter("toonschaduw", "Schaduw zichtbaar", btype);
+		//param.setHelpText("vul in: yes of no");
 		parameters[4] = param;
+		
+		param = new Parameter("toonafmetingen", "Afmetingen zichtbaar", btype);
+		//param.setHelpText("vul in: yes of no, yes alleen als toonschaduw = yes");
+		parameters[5] = param;
 		
 		// aantal figuren wordt gefixeerd op 1
 		
-		param = new Parameter("figuur1", "(Rode) figuur", type);
+		param = new Parameter("figuur1", "Rode figuur", type);
 		param.setHelpText("vul bv in: 0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6");
-		parameters[5] = param;
-		
-		param = new Parameter("grid1", "Grid afmeting in pixels", type);
-		param.setHelpText("minimum 16, maximum 50, even getal");
 		parameters[6] = param;
 		
-		param = new Parameter("oppervlakte1", "Oppervlakte (rode) figuur", type);
-		param.setHelpText("oppervlakte rode figuur in grid-eenheden");
+		param = new Parameter("grid1", "Grid in pixels", type);
+		param.setHelpText("minimum 16, maximum 50, even getal");
 		parameters[7] = param;
 		
-		param = new Parameter("figuurgrijs1", "Grijze figuur (taaknummer 4)", type);
-		param.setHelpText("vul bv in: 0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6");
+		param = new Parameter("oppervlakte1", "Oppervlakte rood", type);
+		param.setHelpText("oppervlakte rode figuur in grid-eenheden");
 		parameters[8] = param;
 		
-		param = new Parameter("oppervlaktegrijs1", "Oppervlakte grijze figuur", type);
-		param.setHelpText("oppervlakte grijze figuur in grid-eenheden");
+		param = new Parameter("figuurgrijs1", "Grijze figuur (taak 4)", type);
+		param.setHelpText("vul bv in: 0,0|2,0|2,2|5,2|5,4|7,4|7,6|0,6");
 		parameters[9] = param;
+		
+		param = new Parameter("oppervlaktegrijs1", "Oppervlakte grijs", type);
+		param.setHelpText("oppervlakte grijze figuur in grid-eenheden");
+		parameters[10] = param;
+
+		param = new Parameter("scoremax", "Maximum score", type);
+		param.setHelpText("maximum score");		
+		parameters[11] = param;
 		
 		return parameters;
     }
