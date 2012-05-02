@@ -293,7 +293,7 @@ public class InteractiePanelAdapter extends JPanel implements InteractiePanel, A
     	if (!kijkNaActief)
 			return;
     	
-    	if (!((Verknippen) applet).showBottomPanel)
+    	if (!((Verknippen) applet).showBottomPanel && ((Verknippen) applet).taakNummer != 1)
     		return;
 //System.out.println("kijkNa() - 1");
     	
