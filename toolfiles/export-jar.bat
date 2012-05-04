@@ -1,1 +1,2 @@
 copy ..\output\jar\algebraexpressies.jar N:\home\www-dev\InfoGroups\javaclasses\jars\algebraexpressies.jar
+copy ..\output\jar\algebraexpressies.jar N:\home\www-dev\InfoGroups\dwo\jars\algebraexpressies.jar
