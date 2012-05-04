@@ -1840,8 +1840,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		}
 		
 		
-		System.out.println("AntwoordP = " + this.antwoordP.getInput());
-		System.out.println("invoerP = " + this.pInvoer.getInput());
+		//System.out.println("AntwoordP = " + this.antwoordP.getInput());
+		//System.out.println("invoerP = " + this.pInvoer.getInput());
 		
 		//update
 		this.vernieuw();
