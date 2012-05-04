@@ -706,20 +706,20 @@ public class AlgebraSchuifVeld extends SchuifVeld
 //System.out.println("b = " + getSize().width);
 //System.out.println("ob = " + origBreedte);
 
-boolean toolkit = true;
-if ((h != null) && h.containsKey("toolkit"))
-	toolkit = ((Boolean) h.get("toolkit")).booleanValue();
-this.toolkit = toolkit;
-
-boolean alleenInvullen = false;
-if ((h != null) && h.containsKey("alleenInvullen"))
-	alleenInvullen = ((Boolean) h.get("alleenInvullen")).booleanValue();
-this.alleenInvullen = alleenInvullen;
-
-boolean isDemo = false;
-if ((h != null) && h.containsKey("isDemo"))
-	isDemo = ((Boolean) h.get("isDemo")).booleanValue();
-this.isDemo = isDemo;
+		boolean toolkit = true;
+		if ((h != null) && h.containsKey("toolkit"))
+			toolkit = ((Boolean) h.get("toolkit")).booleanValue();
+		this.toolkit = toolkit;
+		
+		boolean alleenInvullen = false;
+		if ((h != null) && h.containsKey("alleenInvullen"))
+			alleenInvullen = ((Boolean) h.get("alleenInvullen")).booleanValue();
+		this.alleenInvullen = alleenInvullen;
+		
+		boolean isDemo = false;
+		if ((h != null) && h.containsKey("isDemo"))
+			isDemo = ((Boolean) h.get("isDemo")).booleanValue();
+		this.isDemo = isDemo;
 
     	int aantalSc = 0;
     	String[] classNames = null;
@@ -860,6 +860,20 @@ this.isDemo = isDemo;
 				{	//schuifcomponenten[i].setLocation(schuifcomponenten[i].getLocation().x+10, schuifcomponenten[i].getLocation().y);
 					schuifcomponenten[i].zetLinks(true);
 				}
+			}
+		}
+	    
+	    // nodig voor backward compatability (bij niet versie staat de stapelcomponenten iets hoger
+	    for (int i = 0; i < aantalSc; i++)
+		{	if (schuifcomponenten[i].isStapel)
+			{	if(schuifcomponenten[i] instanceof UitvoerSchuifComponent)schuifcomponenten[i].zetPlaats(20, 35);
+				if(schuifcomponenten[i] instanceof OptelSchuifComponent)schuifcomponenten[i].zetPlaats(20, 90);
+				if(schuifcomponenten[i] instanceof AftrekSchuifComponent)schuifcomponenten[i].zetPlaats(20, 115);
+				if(schuifcomponenten[i] instanceof VermenigvuldigSchuifComponent)schuifcomponenten[i].zetPlaats(20, 140);
+				if(schuifcomponenten[i] instanceof DeelSchuifComponent)schuifcomponenten[i].zetPlaats(20, 165);
+				if(schuifcomponenten[i] instanceof OmkeringSchuifComponent)schuifcomponenten[i].zetPlaats(20, 190);
+				if(schuifcomponenten[i] instanceof WortelSchuifComponent)schuifcomponenten[i].zetPlaats(20, 215);
+				if(schuifcomponenten[i] instanceof MachtSchuifComponent)schuifcomponenten[i].zetPlaats(20, 240);
 			}
 		}
 	    

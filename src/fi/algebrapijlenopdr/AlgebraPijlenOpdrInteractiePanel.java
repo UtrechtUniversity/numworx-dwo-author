@@ -197,8 +197,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public void zetBeginExpressie(Expressie exp)
 	{
-	
-		algebraSchuifVeld.zetBeginExpressie(exp);
+		if (algebraSchuifVeld != null)
+			algebraSchuifVeld.zetBeginExpressie(exp);
 	}
 	
 	public void zetKijkNaActief(boolean b)

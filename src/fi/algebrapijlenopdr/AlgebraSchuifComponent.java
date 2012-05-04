@@ -208,6 +208,24 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		return false;
 	}
 	
+	public void zetPlaats(int x, int y)
+	{
+		setLocation(x,y);
+		Pijl p = pijlUit[aantalPu-1];
+		if (!links)
+		{	if (label)
+				p.zetPlaats(getLocation().x + getSize().width + 9, getLocation().y + 30);
+			else 
+				p.zetPlaats(getLocation().x + getSize().width + 9, getLocation().y + 10);
+		}
+		else 
+		{	if (label) 
+				p.zetPlaats(getLocation().x - 10, getLocation().y + 30);
+			else 
+				p.zetPlaats(getLocation().x - 10, getLocation().y + 10);
+		}
+	}
+	
 	public void verbind(Pijl p)
 	{	pijlIn1 = p;
 		if (!links)
