@@ -1483,23 +1483,26 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		boolean correct = true;
 		if(this.kijkOpdrachtNa) {
 			if(this.kijkGrenzenNa) {
+				int links, rechts;
 				if(this.tweeGrenzen) {
-					correct = correct && (this.staafjesPanel.getGrensLinks() == this.antwoordGrensLinks && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts);
+					links = this.staafjesPanel.getGrensLinks();
+					rechts = this.staafjesPanel.getGrensRechts();
 				}
 				else {
-					if(this.antwoordGrensLinks == this.antwoordGrensRechts) {
-						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts && this.grenzenOptie == GrenzenOptie.GELIJK;
+					if(this.grenzenOptie == GrenzenOptie.GELIJK) {
+						links = this.staafjesPanel.getGrensRechts();
+						rechts = this.staafjesPanel.getGrensRechts();
 					}
-					else if(this.antwoordGrensLinks == 0) {
-						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensRechts && this.grenzenOptie == GrenzenOptie.LINKS;
-					}
-					else if(this.antwoordGrensRechts == this.n) {
-						correct = correct && this.staafjesPanel.getGrensRechts() == this.antwoordGrensLinks && this.grenzenOptie == GrenzenOptie.RECHTS;
+					else if(this.grenzenOptie == GrenzenOptie.LINKS) {
+						links = 0;
+						rechts = this.staafjesPanel.getGrensRechts();
 					}
 					else {
-						correct = false;
+						links = this.staafjesPanel.getGrensRechts();
+						rechts = this.getN();
 					}
 				}
+				correct = correct && links == this.antwoordGrensLinks && rechts == this.antwoordGrensRechts;
 			}
 			
 			if(this.kijkVerdelingNa) {
