@@ -29,7 +29,8 @@ public class BasisExpressie extends Expressie
 	{	super();
 		waarde = d;
 		basisString = df.format(d);
-		if(!Algebra.withinLongRange((long)waarde))basisString = dfe.format(d);
+		if (!Algebra.withinLongRange((long) waarde))
+			basisString = dfe.format(d);
 		//if(Math.abs(1.0/waarde)>10000000000.0)basisString = dfe.format(d);
 		isVeelterm = false;
 		isProdukt = false;
@@ -101,17 +102,18 @@ public class BasisExpressie extends Expressie
 	}
 	
 	public Expressie substitueer(double subst, String var)
-	{	if(basisString.equals(var))
+	{	if (basisString.equals(var))
 		{	return new BasisExpressie(subst);
 		}
 		else return new BasisExpressie(basisString);
 	}
 	
 	public Expressie substitueer(Expressie subst, String var)
-	{	if(basisString.equals(var))
+	{	if (basisString.equals(var))
 		{	return subst;
 		}
-		else return new BasisExpressie(basisString);
+		else 
+			return new BasisExpressie(basisString);
 	}
 	
 	public boolean isWaarde(double subst)
@@ -157,34 +159,15 @@ public class BasisExpressie extends Expressie
 	
 	public String toString()
 	{	
-		String basisStringUit = StringUtils.replaceStr(basisString,"?(","$s");
-		basisStringUit = StringUtils.replaceStr(basisStringUit,")","@");
+		String basisStringUit = StringUtils.replaceStr(basisString, "?(", "$s");
+		basisStringUit = StringUtils.replaceStr(basisStringUit, ")" , "@");
 		
-		if(!Double.isNaN(waarde) && (!Algebra.withinLongRange((long)waarde) || basisString.indexOf('E')>-1))basisStringUit = StringUtils.replaceStr(basisString,"E","*$p10$n") + "@@";
+		if (!Double.isNaN(waarde) && (!Algebra.withinLongRange((long)waarde) || basisString.indexOf('E') > -1))
+			basisStringUit = StringUtils.replaceStr(basisString, "E", "*$p10$n") + "@@";
 		//if(!Double.isNaN(waarde) && (Math.abs(1.0/waarde)>10000000000.0))basisStringUit = StringUtils.replaceStr(basisString,"E","*$p10$n") + "@@";
         
         if(Grafiek3DTest.language.toString().equals("nl"))basisStringUit = basisStringUit.replace('.',',');
         
-        /*
-        if(isWaarde())
-        {
-        	String[] delen = StringUtils.split(basisStringUit, ",");
-        	String deel0Nieuw;
-        	for(int i = 0 ; i<delen[0].length() ; i++)
-        	{
-        		if(i>1 && i%3==0 && i<delen[0].length()-1)
-        		{	
-        			String sKop = delen[0].substring(0,delen[0].length()-i);
-        			String sStaart = delen[0].substring(delen[0].length()-i);
-        			if(sStaart.length()>0)deel0Nieuw = sKop+" "+sStaart;
-        			else delen[0] = sKop;
-        			i++;
-        		}
-        	}
-        	if(delen.length>1) basisStringUit = delen[0] +","+ delen[1];
-    		else basisStringUit = delen[0];
-        }
-        */
 		 
         return basisStringUit;
 	}
@@ -202,17 +185,6 @@ public class BasisExpressie extends Expressie
 		//basisString = basisString.replace('.',',');
 		//if(isWaarde())
 	    //{
-	    	/*
-	    	 for(int i = 0 ; i<basisString.length() ; i++)
-	    	{
-	    		if(i>0 && i%3==0 && i<basisString.length()-1)
-	    		{	
-	    			String sKop = basisString.substring(0,basisString.length()-1-i);
-	    			String sStaart = basisString.substring(basisString.length()-1-i);
-	    			basisString = sKop+" "+sStaart;
-	    		}
-	    	}
-	    	*/
 	    //}
 		//return basisString;
 	}

@@ -175,7 +175,7 @@ public class ZoomKnop extends FormuleButton implements MouseListener
 			p.addPoint(b-4, 3);
 			p.addPoint(b-4, h-4);
 			p.addPoint(3, h-4);
-			g.setColor(Grafiek3DComponent.graphColor);
+			g.setColor(Grafiek3DComponent.objectColor);
 			g.fillPolygon(p);
 			g.setColor(Grafiek3DComponent.graphOutlineColor);
 			g.drawPolygon(p);
@@ -248,6 +248,27 @@ public class ZoomKnop extends FormuleButton implements MouseListener
 			g.drawString("1.5", (b-w)/2, (h-as)/2 + as - 3);
 			
 		}
+		else if (code.equals("parallel"))
+		{	g.drawLine(b/4, 2, b/4, h - 3);
+			g.drawLine(3 * b/4, 2, 3 * b/4, h - 3);
+			
+		}
+		else if (code.equals("central"))
+		{	g.drawLine(b/2, 2, b/4, h - 3);
+			g.drawLine(b/2, 2, 3 * b/4, h - 3);
+			
+		}
+		else if (code.equals("kleurkeuze"))
+		{	g.setColor(Grafiek3DComponent.transYellow);
+			g.fillRect(2, 1, (b-2)/4, h-2);
+			g.setColor(Grafiek3DComponent.transCyan);
+			g.fillRect((b-2)/4+1, 1, (b-2)/4, h-2);
+			g.setColor(Grafiek3DComponent.transMagenta);
+			g.fillRect((b-2)/2+1, 1, (b-2)/4, h-2);
+			g.setColor(Grafiek3DComponent.transGreen);
+			g.fillRect(3*(b-2)/4+1, 1, (b-2)/4, h-2);
+		}
+		
 		
 		
 	}

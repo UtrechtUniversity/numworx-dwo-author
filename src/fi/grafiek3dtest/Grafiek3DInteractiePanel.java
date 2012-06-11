@@ -58,17 +58,23 @@ public class Grafiek3DInteractiePanel extends JPanel
 
 	
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
-	{}
+	{
+		g3dc.zetOpdracht(b, randomVars, randomValues);
+	}
 	
 	public void setState(Hashtable b)
-	{}
+	{
+		g3dc.setState(b);
+	}
 	
 	public void setEditState(Hashtable b)
-	{}
+	{
+		g3dc.setEditState(b);
+	}
 	
 	public Hashtable getState()
 	{
-		Hashtable h = new Hashtable();
+		Hashtable h = g3dc.getState();
 		
 		return h;
 		
@@ -76,10 +82,59 @@ public class Grafiek3DInteractiePanel extends JPanel
 	
 	public Hashtable getEditState()
 	{
-		Hashtable h = new Hashtable();
+		Hashtable h = g3dc.getEditState();
 		
 		
 		return h;
+	}
+	
+	
+	public void zetZoomOptie(boolean b)
+	{	g3dc.zetZoomOptie(b);
+	}
+	
+	public void zetTranslateOptie(boolean b)
+	{	g3dc.zetTranslateOptie(b);
+	}
+	
+	public void zetSolidDraadKeuzeOptie(boolean b)
+	{	g3dc.zetSolidDraadKeuzeOptie(b);
+	}
+	
+	public void zetFinerKeuzeOptie(boolean b)
+	{	g3dc.zetFinerKeuzeOptie(b);
+	}
+	
+	public void zetAsKeuzeOptie(boolean b)
+	{	g3dc.zetAsKeuzeOptie(b);
+	}
+	
+	public void zetLabelKeuzeOptie(boolean b)
+	{	g3dc.zetLabelKeuzeOptie(b);
+	}
+
+	public void zetProjectieKeuzeOptie(boolean b)
+	{	g3dc.zetProjectieKeuzeOptie(b);
+	}
+
+	public void zetKleurKeuzeOptie(boolean b)
+	{	g3dc.zetKleurKeuzeOptie(b);
+		
+	}
+	
+	public void zetFunctieTypeKeuze(boolean b)
+	{
+		g3dc.zetFunctieTypeKeuze(b);
+	}
+
+	public void zetVoorbeeldenEnabled(boolean b)
+	{
+		g3dc.zetVoorbeeldenEnabled(b);
+	}
+	
+	public void zetFiguurIsDemo(boolean b)
+	{	g3dc.zetFiguurIsDemo(b);
+		
 	}
 	
 	public InteractieEditPanel getEditPanel()
@@ -90,7 +145,7 @@ public class Grafiek3DInteractiePanel extends JPanel
 	public void setBounds(int x, int y, int b, int h)
 	{
 		
-		System.out.println("gip set bounds " + b + " " + h);
+//		System.out.println("gip set bounds " + b + " " + h);
 		
 		if (h == 1)
 			return;
@@ -106,7 +161,7 @@ public class Grafiek3DInteractiePanel extends JPanel
 		{	g3dc.setSize(b, h);
 
 // HIER NEW MODEL?Nee?		
-System.out.println("g3dc sized");		
+//System.out.println("g3dc sized");		
 		}
 	}
 	

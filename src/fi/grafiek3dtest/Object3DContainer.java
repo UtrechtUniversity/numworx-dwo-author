@@ -164,9 +164,9 @@ public static String testString = "";
     
     public void setBordered(boolean b)
     {	bordered = b;
-    	if (!b) 
-    		bgColor = getBackground();
-    	else 
+    	//if (!b) 
+    	//	bgColor = getBackground();
+    	//else 
     		bgColor = Color.white;
     }
     

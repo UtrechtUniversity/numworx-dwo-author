@@ -11,7 +11,7 @@ import fi.grafiek3dtest.expressies.*;
 import fi.grafiek3dtest.formuleobjects.*;
 import fi.grafiek3dtest.tekstobjects.*;
 
-public class Grafiek3DComponent extends JPanel implements ActionListener
+public class Grafiek3DComponent extends JPanel implements ActionListener//, TabletOwner
 {
 
     // defined colors
@@ -21,16 +21,25 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     public static final Color lightRed = new Color(255, 156, 74);
     public static final Color mediumBlue = new Color(99, 198, 222);    
 	
+    public static final Color transYellow = 
+    	new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 200);
+    public static final Color transCyan = 
+    	new Color(Color.cyan.getRed(), Color.cyan.getGreen(), Color.cyan.getBlue(), 200);
+    public static final Color transMagenta = 
+    	new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), 200);
+    public static final Color transGreen = 
+    	new Color(Color.green.getRed(), Color.green.getGreen(), Color.green.getBlue(), 200);
+    
     // drawing colors
     public static Color axesColor = Color.black;
     // floorColor is a dummy
     public static Color floorColor = Color.white;
     public static Color floorOutlineColor = Color.black;
-    public static Color graphColor = new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 200);
-    //public static Color graphColor = new Color(Color.cyan.getRed(), Color.cyan.getGreen(), Color.cyan.getBlue(), 200);
-    //public static Color graphColor = new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), 200);
-    //public static Color graphColor = new Color(Color.green.getRed(), Color.green.getGreen(), Color.green.getBlue(), 200);
-    public static Color surfaceColor = new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 200);
+    
+    public static Color objectColor = transYellow;
+    
+    public static Color graphColor = transYellow;
+    public static Color surfaceColor = transYellow;
     public static Color graphOutlineColor = Color.lightGray;
     public static Color surfaceOutlineColor = Color.lightGray;
     public static Color curveColor = brownRed;    
@@ -78,7 +87,8 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     public static double RADFACTOR = 8e-1d;//1d;
     
     JScrollPane scrollPane;
-    JPanel scrollPanel;
+    //JPanel scrollPanel;
+    ScrollPanel scrollPanel;
     int scrollPanelWidth = 450;
     int scrollPaneWidth = 470;
     int scrollBarWidth = 20;
@@ -161,6 +171,13 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     boolean wireFrameG = false;
     boolean wireFrameS = false;
     
+    boolean centraleProjG = true;
+    boolean centraleProjS = true;
+    boolean centraleProjC = true;
+    
+    //Color colorG = transYellow;
+    //Color colorS = transYellow;
+    
     long lastActionTime = 0;
     
     
@@ -173,7 +190,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     int functieEditorHeight = 500;
     JPanel knoppenPanel;
     int knoppenPanelWidth = 40; 
-    
+ 
     ObjectGroup3D currentObjectGroup;
     
     public static final int FUNCTION = 0;
@@ -183,9 +200,10 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     int objectType = FUNCTION;
     
     FormuleButton zoomStandaardButton, zoomInButton, zoomUitButton, transPlusButton, asNaamButton, transMinButton, 
-    			  solidDraadKeuzeButton, finerPlusButton, finerMinButton, asKeuzeButton, labelKeuzeButton;
+    			  solidDraadKeuzeButton, finerPlusButton, finerMinButton, asKeuzeButton, labelKeuzeButton,
+    			  projectieKeuzeButton, kleurKeuzeButton;
     
-    JPopupMenu assenPopup, labelsPopup;
+    JPopupMenu assenPopup, labelsPopup, kleurenPopup;
     
 	String varNaamX = "x";
 	String varNaamY = "y";
@@ -225,6 +243,9 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 	boolean finerKeuzeOptie = true;
 	boolean asKeuzeOptie = true;
 	boolean labelKeuzeOptie = true;
+	boolean projectieKeuzeOptie = true;
+	boolean kleurKeuzeOptie = true;
+	boolean figuurIsDemo = false;
 	
     public Grafiek3DComponent(int x, int y, int w, int h, Hashtable ims, String[] imNames)
     {
@@ -239,7 +260,8 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	
     	panel3DSize = w - 10 - knoppenPanelWidth - scrollBarWidth;    	
 
-    	scrollPanel = new JPanel();
+    	//scrollPanel = new JPanel();
+    	scrollPanel = new ScrollPanel();
     	scrollPanel.setLayout(null);
     	//scrollPanel.setSize(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight);
     	//scrollPanel.setPreferredSize(new Dimension(scrollPanelWidth, 10 + panel3DSize + functieEditorHeight));
@@ -324,7 +346,16 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 		knoppenPanel.add(labelKeuzeButton);
     	labelKeuzeButton.addActionListener(this);
 		
-    	
+		projectieKeuzeButton = new ZoomKnop("central");
+		projectieKeuzeButton.setVisible(false);
+		knoppenPanel.add(projectieKeuzeButton);
+		projectieKeuzeButton.addActionListener(this);
+
+		kleurKeuzeButton = new ZoomKnop("kleurkeuze");
+		kleurKeuzeButton.setVisible(false);
+		knoppenPanel.add(kleurKeuzeButton);
+		kleurKeuzeButton.addActionListener(this);
+		
     	layoutKnoppenPanel();    	
     	
 		assenPopup = new JPopupMenu();
@@ -352,6 +383,26 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 		labelsPopup.add(mi);
 		
 		add(labelsPopup);
+
+		kleurenPopup = new JPopupMenu();
+		mi = new JMenuItem(Grafiek3DTest.rb.getString("geelTekst"));
+		mi.setBackground(transYellow);
+		mi.addActionListener(this);
+		kleurenPopup.add(mi);
+		mi = new JMenuItem(Grafiek3DTest.rb.getString("cyanTekst"));
+		mi.setBackground(transCyan);
+		mi.addActionListener(this);
+		kleurenPopup.add(mi);
+		mi = new JMenuItem(Grafiek3DTest.rb.getString("magentaTekst"));
+		mi.setBackground(transMagenta);
+		mi.addActionListener(this);
+		kleurenPopup.add(mi);
+		mi = new JMenuItem(Grafiek3DTest.rb.getString("groenTekst"));
+		mi.setBackground(transGreen);
+		mi.addActionListener(this);
+		kleurenPopup.add(mi);
+		
+		add(kleurenPopup);
 		
         MLMML ml = new MLMML();
         panel3D.addMouseListener(ml);
@@ -364,6 +415,9 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     
     public void setSize(int b, int h)
     {
+    	
+//System.out.println("g3dc setSize " + b + " " + h);
+
     	panel3DSize = b - 10 - knoppenPanelWidth - scrollBarWidth;
     	
     	super.setSize(b, h);
@@ -376,6 +430,9 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	knoppenPanel.setLocation(10 + panel3DSize, getLocation().y);
     	functieEditor.setBounds(10, 10 + panel3DSize, panel3DSize, functieEditorHeight);
     	setNewModel(0, false);
+    	
+//System.out.println("fid " + figuurIsDemo);    	
+    	zetFiguurIsDemo(figuurIsDemo);
     }
     
 	public Image getImage(String name)
@@ -490,9 +547,53 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	{	
     		labelKeuzeButton.setBounds(5, currentY, 31, 21);
     		labelKeuzeButton.setVisible(true);
+    		currentY += 31;
     	}
     	else
     	{	labelKeuzeButton.setVisible(false);
+    	}
+    	
+    	if (projectieKeuzeOptie)
+    	{	
+    		projectieKeuzeButton.setBounds(10, currentY, 21, 21);
+    		projectieKeuzeButton.setVisible(true);
+    		currentY += 31;
+    		if (objectType == FUNCTION)
+    		{
+    			if (centraleProjG)
+    				projectieKeuzeButton.setCode("parallel");
+    			else
+    				projectieKeuzeButton.setCode("central");
+    		}
+    		if (objectType == SURFACE)
+    		{
+    			if (centraleProjS)
+    				projectieKeuzeButton.setCode("parallel");
+    			else
+    				projectieKeuzeButton.setCode("central");
+    		}
+    		if (objectType == CURVE)
+    		{
+    			if (centraleProjC)
+    				projectieKeuzeButton.setCode("parallel");
+    			else
+    				projectieKeuzeButton.setCode("central");
+    		}
+    		
+    		
+    	}
+    	else
+    	{	projectieKeuzeButton.setVisible(false);
+    	}
+
+    	if (kleurKeuzeOptie && (objectType != CURVE))
+    	{	
+    		kleurKeuzeButton.setBounds(5, currentY, 31, 21);
+    		kleurKeuzeButton.setVisible(true);
+    		currentY += 31;
+    	}
+    	else
+    	{	kleurKeuzeButton.setVisible(false);
     	}
     	
     	knoppenPanel.repaint();
@@ -576,8 +677,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         //panel3D.paintType = Object3DContainer.PUREZ;
         
     	axesObject = makeNewAxes();
-//System.out.println("axes diam = " + axesModel.getDiameter());    	
-    	//axesModel = new Box(xMax - xMin, yMax - yMin, zMax - zMin, Color.yellow);        
+//System.out.println("axes diam = " + axesObject.getDiameter());    
     	
         if (((objectType == FUNCTION) && !noAxesG) ||
         	((objectType == SURFACE) && !noAxesS) ||
@@ -593,12 +693,18 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         	grafiek3DObject = makeGrafiek3D();
         	grafiek3DObject.modelCode = code;
         	if (modelGroup == null) // geen assen
-        	{	grafiek3DObject.diameter = axesObject.getDiameter();
-        		grafiek3DObject.diamSet = true;
+        	{	
         		modelGroup = new ObjectGroup3D(grafiek3DObject, false);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+//System.out.println("modelGroup diam = " + modelGroup.getDiameter());        		
         	}
         	else // wel assen
-        	{	modelGroup.addObject3D(grafiek3DObject);
+        	{	
+        		modelGroup.addObject3D(grafiek3DObject);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+//System.out.println("modelGroup diam = " + modelGroup.getDiameter());        		
         	}
         }
         
@@ -606,14 +712,19 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         {	surface3DObject = makeSurface3D();
         	surface3DObject.modelCode = code;
         	if (modelGroup == null) // geen assen
-        	{	surface3DObject.diameter = axesObject.getDiameter();
-        		surface3DObject.diamSet = true;
+        	{	
         		modelGroup = new ObjectGroup3D(surface3DObject, false);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+
         	}
         	else
         	{	
 // HIER SNIJDEN MET ASSEN        		
         		modelGroup.addObject3D(surface3DObject);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+
         	}
         	
         }
@@ -623,14 +734,19 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
         	curve3DObject = makeCurve3D();
         	curve3DObject.modelCode = code;
         	if (modelGroup == null) // geen assen
-        	{	curve3DObject.diameter = axesObject.getDiameter();
-        		curve3DObject.diamSet = true;
+        	{	
         		modelGroup = new ObjectGroup3D(curve3DObject, false);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+
         	}
         	else
         	{	
 // HIER SNIJDEN MET ASSEN        		
         		modelGroup.addObject3D(curve3DObject);
+        		modelGroup.diameter = axesObject.getDiameter();
+        		modelGroup.diamSet = true;
+
         	}
         }
         
@@ -661,7 +777,8 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 					 				    xMinG, xMaxG, xStepG, yMinG, yMaxG, yStepG, zMinG, zMaxG, zStepG, 
 			 					 		varNaamX, varNaamY, xFinerStepsG, yFinerStepsG);    	 
     
-    
+    	objectColor = graphColor;
+    	
     	if (grafiek3DObject.trimTop)
     	{	
 //System.out.println("trimTop");    		
@@ -715,7 +832,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	grafiek3DObject.setOutlineColor(graphOutlineColor);
     	
     	if (wireFrameG)
-    		zetDraadFiguur(true, objectType);
+    	{	zetDraadFiguur(true, objectType);
+    	}
+    	if (centraleProjG)
+    		setProjection(CENTRALPROJ);
+    	else
+    		setProjection(PARALLELPROJ);
     	
     	return grafiek3DObject; 
     }
@@ -737,10 +859,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     			                        uMin, uMax, uPoints, vMin, vMax, vPoints,
     			                        xMinS, xMaxS, yMinS, yMaxS, zMinS, zMaxS,
     			                        paramNaamU, paramNaamV);
-
+    	
+    	objectColor = surfaceColor;
+    	
     	if (surface3DObject.trimTop)
     	{	
-//System.out.println("trimTop");    		
+System.out.println("trimTop");    		
     		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D topTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMaxPlane);
@@ -765,7 +889,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (surface3DObject.trimBottom)
     	{	
-//System.out.println("trimBottom");    		
+System.out.println("trimBottom");    		
     		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D bottomTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMinPlane);
@@ -790,7 +914,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (surface3DObject.trimRight)
     	{	
-//System.out.println("trimRight");    		
+System.out.println("trimRight");    		
     		Plane3D xMaxPlane = new Plane3D(1, 0, 0, xMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D rightTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMaxPlane);
@@ -815,7 +939,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (surface3DObject.trimLeft)
     	{	
-//System.out.println("trimLeft");    		
+System.out.println("trimLeft");    		
     		Plane3D xMinPlane = new Plane3D(1, 0, 0, xMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D leftTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMinPlane);
@@ -840,7 +964,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (surface3DObject.trimBack)
     	{	
-//System.out.println("trimBack");    		
+System.out.println("trimBack");    		
     		Plane3D yMaxPlane = new Plane3D(0, 1, 0, yMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D backTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMaxPlane);
@@ -865,7 +989,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     	if (surface3DObject.trimFront)
     	{	
-//System.out.println("trimFront");    		
+System.out.println("trimFront");    		
     		Plane3D yMinPlane = new Plane3D(0, 1, 0, yMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D frontTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMinPlane);
@@ -894,6 +1018,10 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	if (wireFrameS)
     		zetDraadFiguur(true, objectType);
 
+    	if (centraleProjS)
+    		setProjection(CENTRALPROJ);
+    	else
+    		setProjection(PARALLELPROJ);
     	
     	return surface3DObject;
     }
@@ -906,6 +1034,8 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
                 xMinC, xMaxC, yMinC, yMaxC, zMinC, zMaxC,
                 paramNaam);
 
+    	objectColor = curveColor;
+    	
     	if (curve3DObject.trimTop)
     	{	
 //System.out.println("trimTop");    		
@@ -1055,6 +1185,11 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 //if (curve3DObject.insideVertex != null)
 //System.out.println("inside = " + curve3DObject.insideVertex.toString());
 
+	    	if (centraleProjC)
+	    		setProjection(CENTRALPROJ);
+	    	else
+	    		setProjection(PARALLELPROJ);
+			
     	}
     	
     	return curve3DObject;
@@ -1230,12 +1365,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     		double centerX = (xMinS + xMaxS) / 2;
     		double centerY = (yMinS + yMaxS) / 2;
     		double centerZ = (zMinS + zMaxS) / 2;
-    		xMaxG = centerX + (xMaxS - centerX) / 2;
-    		xMinG = centerX - (centerX - xMinS) / 2;
-    		yMaxG = centerY + (yMaxS - centerY) / 2;
-    		yMinG = centerY - (centerY - yMinS) / 2;
-    		zMaxG = centerZ + (zMaxS - centerZ) / 2;
-    		zMinG = centerZ - (centerZ - zMinS) / 2;
+    		xMaxS = centerX + (xMaxS - centerX) / 2;
+    		xMinS = centerX - (centerX - xMinS) / 2;
+    		yMaxS = centerY + (yMaxS - centerY) / 2;
+    		yMinS = centerY - (centerY - yMinS) / 2;
+    		zMaxS = centerZ + (zMaxS - centerZ) / 2;
+    		zMinS = centerZ - (centerZ - zMinS) / 2;
     		xStepS /= 2;
     		yStepS /= 2;
     		zStepS /= 2;
@@ -1247,12 +1382,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     		double centerX = (xMinC + xMaxC) / 2;
     		double centerY = (yMinC + yMaxC) / 2;
     		double centerZ = (zMinC + zMaxC) / 2;
-    		xMaxG = centerX + (xMaxC - centerX) / 2;
-    		xMinG = centerX - (centerX - xMinC) / 2;
-    		yMaxG = centerY + (yMaxC - centerY) / 2;
-    		yMinG = centerY - (centerY - yMinC) / 2;
-    		zMaxG = centerZ + (zMaxC - centerZ) / 2;
-    		zMinG = centerZ - (centerZ - zMinC) / 2;
+    		xMaxC = centerX + (xMaxC - centerX) / 2;
+    		xMinC = centerX - (centerX - xMinC) / 2;
+    		yMaxC = centerY + (yMaxC - centerY) / 2;
+    		yMinC = centerY - (centerY - yMinC) / 2;
+    		zMaxC = centerZ + (zMaxC - centerZ) / 2;
+    		zMinC = centerZ - (centerZ - zMinC) / 2;
     		xStepC /= 2;
     		yStepC /= 2;
     		zStepC /= 2;
@@ -1291,12 +1426,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     		double centerX = (xMinS + xMaxS) / 2;
     		double centerY = (yMinS + yMaxS) / 2;
     		double centerZ = (zMinS + zMaxS) / 2;
-    		xMaxG = centerX + (xMaxS - centerX) * 2;
-    		xMinG = centerX - (centerX - xMinS) * 2;
-    		yMaxG = centerY + (yMaxS - centerY) * 2;
-    		yMinG = centerY - (centerY - yMinS) * 2;
-    		zMaxG = centerZ + (zMaxS - centerZ) * 2;
-    		zMinG = centerZ - (centerZ - zMinS) * 2;
+    		xMaxS = centerX + (xMaxS - centerX) * 2;
+    		xMinS = centerX - (centerX - xMinS) * 2;
+    		yMaxS = centerY + (yMaxS - centerY) * 2;
+    		yMinS = centerY - (centerY - yMinS) * 2;
+    		zMaxS = centerZ + (zMaxS - centerZ) * 2;
+    		zMinS = centerZ - (centerZ - zMinS) * 2;
     		xStepS *= 2;
     		yStepS *= 2;
     		zStepS *= 2;
@@ -1307,12 +1442,12 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     		double centerX = (xMinC + xMaxC) / 2;
     		double centerY = (yMinC + yMaxC) / 2;
     		double centerZ = (zMinC + zMaxC) / 2;
-    		xMaxG = centerX + (xMaxC - centerX) * 2;
-    		xMinG = centerX - (centerX - xMinC) * 2;
-    		yMaxG = centerY + (yMaxC - centerY) * 2;
-    		yMinG = centerY - (centerY - yMinC) * 2;
-    		zMaxG = centerZ + (zMaxC - centerZ) * 2;
-    		zMinG = centerZ - (centerZ - zMinC) * 2;
+    		xMaxC = centerX + (xMaxC - centerX) * 2;
+    		xMinC = centerX - (centerX - xMinC) * 2;
+    		yMaxC = centerY + (yMaxC - centerY) * 2;
+    		yMinC = centerY - (centerY - yMinC) * 2;
+    		zMaxC = centerZ + (zMaxC - centerZ) * 2;
+    		zMinC = centerZ - (centerZ - zMinC) * 2;
     		xStepC *= 2;
     		yStepC *= 2;
     		zStepC *= 2;
@@ -1484,6 +1619,17 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     }
     
+    public void zetDraadFiguur(int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	zetDraadFiguur(wireFrameG, objectType);
+    	}
+    	else if (objectType == SURFACE)
+    	{	zetDraadFiguur(wireFrameS, objectType);
+    	}
+    	
+    }
+    
     public void zetDraadFiguur(boolean b, int objectType)
     {
     	if (objectType == FUNCTION)
@@ -1520,6 +1666,29 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	}
     		
     	panel3D.repaint();
+    }
+
+    public void zetVulKleur(Color fc, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		graphColor = fc;
+    		objectColor = fc;
+    		if (grafiek3DObject != null)
+    		{	grafiek3DObject.setFillColor(graphColor);
+    		}
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		surfaceColor = fc;
+    		objectColor = fc; 
+    		if (surface3DObject != null)
+    		{	surface3DObject.setFillColor(surfaceColor);
+   			}
+    	}
+    		
+    	panel3D.repaint();
+    	knoppenPanel.repaint();
     }
     
     public void zetFijner(boolean newModel, int objectType)
@@ -1633,45 +1802,304 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     		setNewModel(0, false);
     }
 
+    public void zetCentraleProjectie(boolean b, int objectType)
+    {
+    	if (objectType == FUNCTION)
+    	{	
+    		centraleProjG = b;
+    		if (b)
+    			setProjection(CENTRALPROJ);
+    		else
+    			setProjection(PARALLELPROJ);
+    		
+    		
+    	}
+    	else if (objectType == SURFACE)
+    	{	
+    		centraleProjS = b;
+    		if (b)
+    			setProjection(CENTRALPROJ);
+    		else
+    			setProjection(PARALLELPROJ);
+    		
+    	}
+    	else if (objectType == CURVE)
+    	{	
+    		centraleProjC = b;
+    		if (b)
+    			setProjection(CENTRALPROJ);
+    		else
+    			setProjection(PARALLELPROJ);
+    		
+    	}
+    	
+    	panel3D.repaint();
+    	
+    	
+    }
     
 	public void zetZoomOptie(boolean b)
 	{	zoomOptie = b;
-		zoomUitButton.setVisible(zoomOptie);
-		zoomInButton.setVisible(zoomOptie);
-		
+		//zoomUitButton.setVisible(zoomOptie);
+		//zoomInButton.setVisible(zoomOptie);
+		layoutKnoppenPanel();
 	}
 	
 	public void zetTranslateOptie(boolean b)
 	{	translateOptie = b;
-		transPlusButton.setVisible(translateOptie);
-		transMinButton.setVisible(translateOptie);
-		asNaamButton.setVisible(translateOptie);
+		//transPlusButton.setVisible(translateOptie);
+		//transMinButton.setVisible(translateOptie);
+		//asNaamButton.setVisible(translateOptie);
+		layoutKnoppenPanel();
 	}
 	
 	public void zetSolidDraadKeuzeOptie(boolean b)
 	{	solidDraadKeuzeOptie = b;
-		solidDraadKeuzeButton.setVisible(solidDraadKeuzeOptie);
-		
+		//solidDraadKeuzeButton.setVisible(solidDraadKeuzeOptie);
+		layoutKnoppenPanel();
 	}
 	
 	public void zetFinerKeuzeOptie(boolean b)
 	{	finerKeuzeOptie = b;
-		finerPlusButton.setVisible(finerKeuzeOptie);
-		finerMinButton.setVisible(finerKeuzeOptie);
+		//finerPlusButton.setVisible(finerKeuzeOptie);
+		//finerMinButton.setVisible(finerKeuzeOptie);
+		layoutKnoppenPanel();
 	}
 	
 	public void zetAsKeuzeOptie(boolean b)
 	{	asKeuzeOptie = b;
-		asKeuzeButton.setVisible(asKeuzeOptie);
+		//asKeuzeButton.setVisible(asKeuzeOptie);
+		layoutKnoppenPanel();
 		
 	}
 	
 	public void zetLabelKeuzeOptie(boolean b)
 	{	labelKeuzeOptie = b;
-		labelKeuzeButton.setVisible(labelKeuzeOptie);
+		//labelKeuzeButton.setVisible(labelKeuzeOptie);
+		layoutKnoppenPanel();
 		
 	}
+
+	public void zetProjectieKeuzeOptie(boolean b)
+	{	projectieKeuzeOptie = b;
+		//projectieKeuzeButton.setVisible(projectieKeuzeOptie);
+		layoutKnoppenPanel();
+		
+	}
+
+	public void zetKleurKeuzeOptie(boolean b)
+	{	kleurKeuzeOptie = b;
+		//kleurKeuzeButton.setVisible(kleurKeuzeOptie);
+		layoutKnoppenPanel();
+		
+	}
+	
+// SCROLLPANEL ERTUSSENUIT 	
+	public void zetFiguurIsDemo(boolean b)
+	{	figuurIsDemo = b;
+		if (figuurIsDemo)
+		{
+			panel3DSize = getSize().width;// - 10 - knoppenPanelWidth - scrollBarWidth;
+			panel3D.setBounds(0, 0, panel3DSize, panel3DSize);
+			panel3D.setBordered(false);
+			add(panel3D);
+			scrollPane.setVisible(false);
+		}
+		else
+		{
+			panel3DSize = getSize().width - 10 - knoppenPanelWidth - scrollBarWidth;
+			panel3D.setBounds(10, 10, panel3DSize, panel3DSize);
+			panel3D.setBordered(true);
+			scrollPanel.add(panel3D);
+			scrollPane.setVisible(true);
+		}
+		setNewModel(0, false);
+	}
+	
+	// doorsturen naar FunctieEditor
+	public void zetFunctieTypeKeuze(boolean b)
+	{
+		functieEditor.zetFunctieTypeKeuze(b);
+	}
     
+	public void zetVoorbeeldenEnabled(boolean b)
+	{
+		functieEditor.zetVoorbeeldenEnabled(b);
+	}
+	
+	public void zetGrafiekVoorbeeld(GrafiekVoorbeeld gv)
+	{
+		zoomStandaard(false, FUNCTION);
+
+		angleXG = gv.angleXG;
+		angleZG = gv.angleZG;
+		zetHoeken();
+		if (gv.zoomFactorG > 0)
+		{	for (int zUitCnt = 0; zUitCnt < gv.zoomFactorG; zUitCnt++)
+				zoomUit(false, FUNCTION);
+		}
+		if (gv.zoomFactorG < 0)
+		{	for (int zInCnt = gv.zoomFactorG; zInCnt < 0; zInCnt++)
+			zoomIn(false, FUNCTION);
+		}
+		if (gv.translateXFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < gv.translateXFactorG; tPlusCnt++)
+				transPlusX(false, FUNCTION);
+		}
+		if (gv.translateXFactorG < 0)
+		{	for (int tMinCnt = gv.translateXFactorG; tMinCnt < 0; tMinCnt++)
+				transMinX(false, FUNCTION);
+		}
+		if (gv.translateYFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < gv.translateYFactorG; tPlusCnt++)
+				transPlusY(false, FUNCTION);
+		}
+		if (gv.translateYFactorG < 0)
+		{	for (int tMinCnt = gv.translateYFactorG; tMinCnt < 0; tMinCnt++)
+				transMinY(false, FUNCTION);
+		}
+		if (gv.translateZFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < gv.translateZFactorG; tPlusCnt++)
+				transPlusZ(false, FUNCTION);
+		}
+		if (gv.translateZFactorG < 0)
+		{	for (int tMinCnt = gv.translateZFactorG; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, FUNCTION);
+		}
+		wireFrameG = gv.wireFrameG;
+
+		if (gv.finerFactorG > 0)
+		{	for (int fPlusCnt = 0; fPlusCnt < gv.finerFactorG; fPlusCnt++)
+				zetFijner(false, FUNCTION);
+		}
+		if (gv.finerFactorG < 0)
+		{	for (int fMinCnt = gv.finerFactorG; fMinCnt < 0; fMinCnt++)
+				zetGrover(false, FUNCTION);
+		}
+		
+		noAxesG = gv.noAxesG;
+		floorTypeG = gv.floorTypeG;
+
+		labelTypeG = gv.labelTypeG;
+		
+		centraleProjG = gv.centraleProjG;
+		zetCentraleProjectie(centraleProjG, FUNCTION);
+		
+		zetVulKleur(gv.graphColor, FUNCTION);
+		
+		layoutKnoppenPanel();
+		
+	}
+
+	public void zetOppervlakVoorbeeld(OppervlakVoorbeeld ov)
+	{
+		zoomStandaard(false, SURFACE);
+		
+		angleXS = ov.angleXS;
+		angleZS = ov.angleZS;
+		zetHoeken();
+		
+		if (ov.zoomFactorS > 0)
+		{	for (int zUitCnt = 0; zUitCnt < ov.zoomFactorS; zUitCnt++)
+				zoomUit(false, SURFACE);
+		}
+		if (ov.zoomFactorS < 0)
+		{	for (int zInCnt = ov.zoomFactorS; zInCnt < 0; zInCnt++)
+			zoomIn(false, SURFACE);
+		}
+		if (ov.translateXFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < ov.translateXFactorS; tPlusCnt++)
+				transPlusX(false, SURFACE);
+		}
+		if (ov.translateXFactorS < 0)
+		{	for (int tMinCnt = ov.translateXFactorS; tMinCnt < 0; tMinCnt++)
+				transMinX(false, SURFACE);
+		}
+		if (ov.translateYFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < ov.translateYFactorS; tPlusCnt++)
+				transPlusY(false, SURFACE);
+		}
+		if (ov.translateYFactorS < 0)
+		{	for (int tMinCnt = ov.translateYFactorS; tMinCnt < 0; tMinCnt++)
+				transMinY(false, SURFACE);
+		}
+		if (ov.translateZFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < ov.translateZFactorS; tPlusCnt++)
+				transPlusZ(false, SURFACE);
+		}
+		if (ov.translateZFactorS < 0)
+		{	for (int tMinCnt = ov.translateZFactorS; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, SURFACE);
+		}
+		wireFrameS = ov.wireFrameS;
+
+		noAxesS = ov.noAxesS;
+		floorTypeS = ov.floorTypeS;
+
+		labelTypeS = ov.labelTypeS;
+		
+		centraleProjS = ov.centraleProjS;
+		zetCentraleProjectie(centraleProjS, SURFACE);
+		
+		zetVulKleur(ov.surfaceColor, SURFACE);
+		
+		layoutKnoppenPanel();
+		
+	}
+	
+	public void zetKrommeVoorbeeld(KrommeVoorbeeld kv)
+	{
+		zoomStandaard(false, CURVE);
+		
+		angleXC = kv.angleXC;
+		angleZC = kv.angleZC;
+		zetHoeken();
+		
+		if (kv.zoomFactorC > 0)
+		{	for (int zUitCnt = 0; zUitCnt < kv.zoomFactorC; zUitCnt++)
+				zoomUit(false, CURVE);
+		}
+		if (kv.zoomFactorC < 0)
+		{	for (int zInCnt = kv.zoomFactorC; zInCnt < 0; zInCnt++)
+			zoomIn(false, CURVE);
+		}
+		if (kv.translateXFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < kv.translateXFactorC; tPlusCnt++)
+				transPlusX(false, CURVE);
+		}
+		if (kv.translateXFactorC < 0)
+		{	for (int tMinCnt = kv.translateXFactorC; tMinCnt < 0; tMinCnt++)
+				transMinX(false, CURVE);
+		}
+		if (kv.translateYFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < kv.translateYFactorC; tPlusCnt++)
+				transPlusY(false, CURVE);
+		}
+		if (kv.translateYFactorC < 0)
+		{	for (int tMinCnt = kv.translateYFactorC; tMinCnt < 0; tMinCnt++)
+				transMinY(false, CURVE);
+		}
+		if (kv.translateZFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < kv.translateZFactorC; tPlusCnt++)
+				transPlusZ(false, CURVE);
+		}
+		if (kv.translateZFactorC < 0)
+		{	for (int tMinCnt = kv.translateZFactorC; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, CURVE);
+		}
+
+		noAxesC = kv.noAxesC;
+		floorTypeC = kv.floorTypeC;
+
+		labelTypeC = kv.labelTypeC;
+		
+		centraleProjC = kv.centraleProjC;
+		zetCentraleProjectie(centraleProjC, CURVE);
+		
+		layoutKnoppenPanel();
+		
+	}
+	
     public void actionPerformed(ActionEvent e)
     {	if (e.getActionCommand().equals("focus"))
     		return;
@@ -1760,7 +2188,8 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 			if (assenPopup.getSize().width != 0)
 				width = assenPopup.getSize().width;
 
-    		assenPopup.show(this, asKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, asKeuzeButton.getLocation().y);
+    		assenPopup.show(this, asKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, 
+    				              asKeuzeButton.getLocation().y);
 //System.out.println("pw = " + assenPopup.getSize().width);
 //System.out.println("ph = " + assenPopup.getSize().height);
     	}
@@ -1772,11 +2201,38 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
 			if (labelsPopup.getSize().width != 0)
 				width = labelsPopup.getSize().width;
 
-			labelsPopup.show(this, labelKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, labelKeuzeButton.getLocation().y);
+			labelsPopup.show(this, labelKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, 
+								   labelKeuzeButton.getLocation().y);
 //System.out.println("pw = " + labelsPopup.getSize().width);
 //System.out.println("ph = " + labelsPopup.getSize().height);
     		
     	}
+    	else if (e.getSource() == projectieKeuzeButton)
+    	{
+    		if (projectieKeuzeButton.getCode().equals("central"))
+    		{	projectieKeuzeButton.setCode("parallel");
+    			zetCentraleProjectie(true, objectType);    			
+    		}
+    		else if (projectieKeuzeButton.getCode().equals("parallel"))
+    		{	projectieKeuzeButton.setCode("central");
+    			zetCentraleProjectie(false, objectType);
+    		}
+    	}
+       	else if (e.getSource() == kleurKeuzeButton) 
+    	{
+//System.out.println("pw = " + kleurenPopup.getSize().width);
+//System.out.println("ph = " + kleurenPopup.getSize().height);
+			int width = 61;
+			if (kleurenPopup.getSize().width != 0)
+				width = kleurenPopup.getSize().width;
+
+			kleurenPopup.show(this, kleurKeuzeButton.getLocation().x + knoppenPanel.getLocation().x - width, 
+								    kleurKeuzeButton.getLocation().y);
+//System.out.println("pw = " + kleurenPopup.getSize().width);
+//System.out.println("ph = " + kleurenPopup.getSize().height);
+    		
+    	}
+    	
     	else if ((e.getSource() instanceof JMenuItem) && 
     			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geenAssenTekst")))
     	{
@@ -1807,7 +2263,26 @@ public class Grafiek3DComponent extends JPanel implements ActionListener
     	{
     		zetLabelKeuze(true, ALLLABELS, objectType);
     	}
-    	
+      	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("geelTekst")))
+    	{
+    		zetVulKleur(transYellow, objectType);
+    	}
+      	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("cyanTekst")))
+    	{
+    		zetVulKleur(transCyan, objectType);
+    	}
+      	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("magentaTekst")))
+    	{
+    		zetVulKleur(transMagenta, objectType);
+    	}
+      	else if ((e.getSource() instanceof JMenuItem) &&
+    			((JMenuItem) e.getSource()).getText().equals(Grafiek3DTest.rb.getString("groenTekst")))
+    	{
+    		zetVulKleur(transGreen, objectType);
+    	}
     	
     	
     	
@@ -2458,6 +2933,10 @@ new omitted
                 dragging = false;
                 draggStartInCircle = false;
                 draggingOnExit = false;
+                
+System.out.println("angleX = " + panel3D.angleX);
+System.out.println("angleX = " + panel3D.angleZ);
+
             }
 /*            
             else
@@ -2660,19 +3139,31 @@ new omitted
 		boolean finerKeuzeOptie = true;
 		boolean asKeuzeOptie = true;
 		boolean labelKeuzeOptie = true;
+		boolean projectieKeuzeOptie = true;
+		boolean kleurKeuzeOptie = true;
+
+		// functieTypeKeuze in functieEditor
+		boolean figuurIsDemo = false;
 		
 		if (b.containsKey("zoomOptie"))
 			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
 		if (b.containsKey("translateOptie"))
-			zoomOptie = ((Boolean) b.get("translateOptie")).booleanValue();
+			translateOptie = ((Boolean) b.get("translateOptie")).booleanValue();
 		if (b.containsKey("solidDraadKeuzeOptie"))
-			zoomOptie = ((Boolean) b.get("solidDraadKeuzeOptie")).booleanValue();
+			solidDraadKeuzeOptie = ((Boolean) b.get("solidDraadKeuzeOptie")).booleanValue();
 		if (b.containsKey("finerKeuzeOptie"))
-			zoomOptie = ((Boolean) b.get("finerKeuzeOptie")).booleanValue();
+			finerKeuzeOptie = ((Boolean) b.get("finerKeuzeOptie")).booleanValue();
 		if (b.containsKey("asKeuzeOptie"))
-			zoomOptie = ((Boolean) b.get("asKeuzeOptie")).booleanValue();
+			asKeuzeOptie = ((Boolean) b.get("asKeuzeOptie")).booleanValue();
 		if (b.containsKey("labelKeuzeOptie"))
-			zoomOptie = ((Boolean) b.get("labelKeuzeOptie")).booleanValue();
+			labelKeuzeOptie = ((Boolean) b.get("labelKeuzeOptie")).booleanValue();
+		if (b.containsKey("projectieKeuzeOptie"))
+			projectieKeuzeOptie = ((Boolean) b.get("projectieKeuzeOptie")).booleanValue();
+		if (b.containsKey("kleurKeuzeOptie"))
+			kleurKeuzeOptie = ((Boolean) b.get("kleurKeuzeOptie")).booleanValue();
+
+		if (b.containsKey("figuurIsDemo"))
+			figuurIsDemo = ((Boolean) b.get("figuurIsDemo")).booleanValue();
 
 		zetZoomOptie(zoomOptie);
 		zetTranslateOptie(translateOptie);
@@ -2680,9 +3171,13 @@ new omitted
 		zetFinerKeuzeOptie(finerKeuzeOptie);
 		zetAsKeuzeOptie(asKeuzeOptie);
 		zetLabelKeuzeOptie(labelKeuzeOptie);
+		zetProjectieKeuzeOptie(projectieKeuzeOptie);
+		zetKleurKeuzeOptie(kleurKeuzeOptie);
+		
+		this.figuurIsDemo = figuurIsDemo;		
+		//zetFiguurIsDemo(figuurIsDemo);
 		
 		// state
-		
 		int objectType = FUNCTION;
 		
 		double angleXG = Object3DContainer.angleXStart;
@@ -2696,7 +3191,6 @@ new omitted
 		int translateXFactorG = 0;
 		int translateYFactorG = 0;
 		int translateZFactorG = 0;
-		int finerFactorG = 0;
 		
 		int zoomFactorS = 0;
 		int translateXFactorS = 0;
@@ -2707,7 +3201,31 @@ new omitted
 		int translateXFactorC = 0;
 		int translateYFactorC = 0;
 		int translateZFactorC = 0;
-
+		
+		boolean wireFrameG = false;
+		boolean wireFrameS = false;
+		
+		int finerFactorG = 0;
+		
+		boolean noAxesG = false;
+		boolean noAxesS = false;
+		boolean noAxesC = false;
+		
+		int floorTypeG = NOFLOOR;
+		int floorTypeS = NOFLOOR;
+		int floorTypeC = NOFLOOR;
+		
+	    int labelTypeG = ENDLABELS;
+	    int labelTypeS = ENDLABELS;
+	    int labelTypeC = ENDLABELS;
+	    
+	    boolean centraleProjG = true;
+	    boolean centraleProjS = true;
+	    boolean centraleProjC = true;
+	    
+	    Color graphColor = transYellow;
+	    Color surfaceColor = transYellow;
+		
 		if (b.containsKey("objectType"))
 			objectType = ((Integer) b.get("objectType")).intValue();
 		this.objectType = objectType;
@@ -2717,6 +3235,298 @@ new omitted
 			angleXG = ((Double) b.get("angleXG")).doubleValue();
 		if (b.containsKey("angleZG"))
 			angleZG = ((Double) b.get("angleZG")).doubleValue();
+		this.angleXG = angleXG;
+		this.angleZG = angleZG;
+		
+		if (b.containsKey("zoomFactorG"))
+			zoomFactorG = ((Integer) b.get("zoomFactorG")).intValue();
+		if (zoomFactorG < 0)
+		{	for (int zUitCnt = zoomFactorG; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, FUNCTION);
+		}
+		if (zoomFactorG > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorG; zInCnt++)
+			zoomIn(false, FUNCTION);
+		}
+		
+		if (b.containsKey("translateXFactorG"))
+			translateXFactorG = ((Integer) b.get("translateXFactorG")).intValue();
+		if (translateXFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorG; tPlusCnt++)
+				transPlusX(false, FUNCTION);
+		}
+		if (translateXFactorG < 0)
+		{	for (int tMinCnt = translateXFactorG; tMinCnt < 0; tMinCnt++)
+				transMinX(false, FUNCTION);
+		}
+		if (b.containsKey("translateYFactorG"))
+			translateYFactorG = ((Integer) b.get("translateYFactorG")).intValue();
+		if (translateYFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorG; tPlusCnt++)
+				transPlusY(false, FUNCTION);
+		}
+		if (translateYFactorG < 0)
+		{	for (int tMinCnt = translateYFactorG; tMinCnt < 0; tMinCnt++)
+				transMinY(false, FUNCTION);
+		}
+		if (b.containsKey("translateZFactorG"))
+			translateZFactorG = ((Integer) b.get("translateZFactorG")).intValue();
+		if (translateZFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorG; tPlusCnt++)
+				transPlusZ(false, FUNCTION);
+		}
+		if (translateZFactorG < 0)
+		{	for (int tMinCnt = translateZFactorG; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, FUNCTION);
+		}
+		
+		if (b.containsKey("wireFrameG"))
+			wireFrameG = ((Boolean) b.get("wireFrameG")).booleanValue();
+		this.wireFrameG = wireFrameG;
+
+		if (b.containsKey("finerFactorG"))
+			finerFactorG = ((Integer) b.get("finerFactorG")).intValue();
+		if (finerFactorG > 0)
+		{	for (int fPlusCnt = 0; fPlusCnt < finerFactorG; fPlusCnt++)
+				zetFijner(false, FUNCTION);
+		}
+		if (finerFactorG < 0)
+		{	for (int fMinCnt = finerFactorG; fMinCnt < 0; fMinCnt++)
+				zetGrover(false, FUNCTION);
+		}
+		
+		if (b.containsKey("noAxesG"))
+			noAxesG = ((Boolean) b.get("noAxesG")).booleanValue();
+		if (b.containsKey("floorTypeG"))
+			floorTypeG = ((Integer) b.get("floorTypeG")).intValue();
+		this.noAxesG = noAxesG;
+		this.floorTypeG = floorTypeG;
+
+		if (b.containsKey("labelTypeG"))
+			labelTypeG = ((Integer) b.get("labelTypeG")).intValue();
+		this.labelTypeG = labelTypeG;
+		
+		if (b.containsKey("centraleProjG"))
+			centraleProjG = ((Boolean) b.get("centraleProjG")).booleanValue();
+		this.centraleProjG = centraleProjG;
+		
+		if (b.containsKey("graphColor"))
+			graphColor = (Color) b.get("graphColor");
+		this.graphColor = graphColor;
+		
+		// SURFACE
+		if (b.containsKey("angleXS"))
+			angleXS = ((Double) b.get("angleXS")).doubleValue();
+		if (b.containsKey("angleZS"))
+			angleZS = ((Double) b.get("angleZS")).doubleValue();
+		this.angleXS = angleXS;
+		this.angleZS = angleZS;
+		
+		if (b.containsKey("zoomFactorS"))
+			zoomFactorS = ((Integer) b.get("zoomFactorS")).intValue();
+		if (zoomFactorS < 0)
+		{	for (int zUitCnt = zoomFactorS; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, SURFACE);
+		}
+		if (zoomFactorS > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorS; zInCnt++)
+			zoomIn(false, SURFACE);
+		}
+		
+		if (b.containsKey("translateXFactorS"))
+			translateXFactorS = ((Integer) b.get("translateXFactorS")).intValue();
+		if (translateXFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorS; tPlusCnt++)
+				transPlusX(false, SURFACE);
+		}
+		if (translateXFactorS < 0)
+		{	for (int tMinCnt = translateXFactorS; tMinCnt < 0; tMinCnt++)
+				transMinX(false, SURFACE);
+		}
+		if (b.containsKey("translateYFactorS"))
+			translateYFactorS = ((Integer) b.get("translateYFactorS")).intValue();
+		if (translateYFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorS; tPlusCnt++)
+				transPlusY(false, SURFACE);
+		}
+		if (translateYFactorS < 0)
+		{	for (int tMinCnt = translateYFactorS; tMinCnt < 0; tMinCnt++)
+				transMinY(false, SURFACE);
+		}
+		if (b.containsKey("translateZFactorS"))
+			translateZFactorS = ((Integer) b.get("translateZFactorS")).intValue();
+		if (translateZFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorS; tPlusCnt++)
+				transPlusZ(false, SURFACE);
+		}
+		if (translateZFactorS < 0)
+		{	for (int tMinCnt = translateZFactorS; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, SURFACE);
+		}
+		
+		if (b.containsKey("wireFrameS"))
+			wireFrameS = ((Boolean) b.get("wireFrameS")).booleanValue();
+		this.wireFrameS = wireFrameS;
+
+		if (b.containsKey("noAxesS"))
+			noAxesS = ((Boolean) b.get("noAxesS")).booleanValue();
+		if (b.containsKey("floorTypeS"))
+			floorTypeS = ((Integer) b.get("floorTypeS")).intValue();
+		this.noAxesS = noAxesS;
+		this.floorTypeS = floorTypeS;
+
+		if (b.containsKey("labelTypeS"))
+			labelTypeS = ((Integer) b.get("labelTypeS")).intValue();
+		this.labelTypeS = labelTypeS;
+		
+		if (b.containsKey("centraleProjS"))
+			centraleProjS = ((Boolean) b.get("centraleProjS")).booleanValue();
+		this.centraleProjS = centraleProjS;
+		
+		if (b.containsKey("surfaceColor"))
+			surfaceColor = (Color) b.get("surfaceColor");
+		this.surfaceColor = surfaceColor;
+		
+		// CURVE
+		if (b.containsKey("angleXC"))
+			angleXC = ((Double) b.get("angleXC")).doubleValue();
+		if (b.containsKey("angleZC"))
+			angleZC = ((Double) b.get("angleZC")).doubleValue();
+		this.angleXC = angleXC;
+		this.angleZC = angleZC;
+		
+		if (b.containsKey("zoomFactorC"))
+			zoomFactorC = ((Integer) b.get("zoomFactorC")).intValue();
+		if (zoomFactorC < 0)
+		{	for (int zUitCnt = zoomFactorC; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, CURVE);
+		}
+		if (zoomFactorC > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorC; zInCnt++)
+			zoomIn(false, CURVE);
+		}
+		
+		if (b.containsKey("translateXFactorC"))
+			translateXFactorC = ((Integer) b.get("translateXFactorC")).intValue();
+		if (translateXFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorC; tPlusCnt++)
+				transPlusX(false, CURVE);
+		}
+		if (translateXFactorC < 0)
+		{	for (int tMinCnt = translateXFactorC; tMinCnt < 0; tMinCnt++)
+				transMinX(false, CURVE);
+		}
+		if (b.containsKey("translateYFactorC"))
+			translateYFactorC = ((Integer) b.get("translateYFactorC")).intValue();
+		if (translateYFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorC; tPlusCnt++)
+				transPlusY(false, CURVE);
+		}
+		if (translateYFactorC < 0)
+		{	for (int tMinCnt = translateYFactorC; tMinCnt < 0; tMinCnt++)
+				transMinY(false, CURVE);
+		}
+		if (b.containsKey("translateZFactorC"))
+			translateZFactorC = ((Integer) b.get("translateZFactorC")).intValue();
+		if (translateZFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorC; tPlusCnt++)
+				transPlusZ(false, CURVE);
+		}
+		if (translateZFactorC < 0)
+		{	for (int tMinCnt = translateZFactorC; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, CURVE);
+		}
+
+		if (b.containsKey("noAxesC"))
+			noAxesC = ((Boolean) b.get("noAxesC")).booleanValue();
+		if (b.containsKey("floorTypeC"))
+			floorTypeC = ((Integer) b.get("floorTypeC")).intValue();
+		this.noAxesC = noAxesC;
+		this.floorTypeC = floorTypeC;
+		
+		if (b.containsKey("labelTypeC"))
+			labelTypeC = ((Integer) b.get("labelTypeC")).intValue();
+		this.labelTypeC = labelTypeC;
+
+		if (b.containsKey("centraleProjC"))
+			centraleProjC = ((Boolean) b.get("centraleProjC")).booleanValue();
+		this.centraleProjC = centraleProjC;
+		
+		// hier, objectType nodig
+		layoutKnoppenPanel();
+		
+		functieEditor.zetOpdracht(b, randomVars, randomValues);
+		
+		// hier !!
+// grafiek oppervlak kromme maken
+// model maken		
+// zetBeginHoeken		
+
+	}
+	
+	public void setState(Hashtable b)
+	{
+		
+		// state
+		int objectType = FUNCTION;
+		
+		double angleXG = Object3DContainer.angleXStart;
+		double angleZG = Object3DContainer.angleZStart;
+		double angleXS = Object3DContainer.angleXStart;
+		double angleZS = Object3DContainer.angleZStart;
+		double angleXC = Object3DContainer.angleXStart;
+		double angleZC = Object3DContainer.angleZStart;
+		
+		int zoomFactorG = 0;
+		int translateXFactorG = 0;
+		int translateYFactorG = 0;
+		int translateZFactorG = 0;
+		
+		int zoomFactorS = 0;
+		int translateXFactorS = 0;
+		int translateYFactorS = 0;
+		int translateZFactorS = 0;
+
+		int zoomFactorC = 0;
+		int translateXFactorC = 0;
+		int translateYFactorC = 0;
+		int translateZFactorC = 0;
+		
+		boolean wireFrameG = false;
+		boolean wireFrameS = false;
+		
+		int finerFactorG = 0;
+		
+		boolean noAxesG = false;
+		boolean noAxesS = false;
+		boolean noAxesC = false;
+		
+		int floorTypeG = NOFLOOR;
+		int floorTypeS = NOFLOOR;
+		int floorTypeC = NOFLOOR;
+		
+	    int labelTypeG = ENDLABELS;
+	    int labelTypeS = ENDLABELS;
+	    int labelTypeC = ENDLABELS;
+	    
+	    boolean centraleProjG = true;
+	    boolean centraleProjS = true;
+	    boolean centraleProjC = true;
+	    
+	    Color graphColor = transYellow;
+	    Color surfaceColor = transYellow;
+		
+		if (b.containsKey("objectType"))
+			objectType = ((Integer) b.get("objectType")).intValue();
+		this.objectType = objectType;
+		
+		// FUNCTION
+		if (b.containsKey("angleXG"))
+			angleXG = ((Double) b.get("angleXG")).doubleValue();
+		if (b.containsKey("angleZG"))
+			angleZG = ((Double) b.get("angleZG")).doubleValue();
+		this.angleXG = angleXG;
+		this.angleZG = angleZG;
 		
 		if (b.containsKey("zoomFactorG"))
 			zoomFactorG = ((Integer) b.get("zoomFactorG")).intValue();
@@ -2760,21 +3570,181 @@ new omitted
 				transMinZ(false, FUNCTION);
 		}
 		
+		if (b.containsKey("wireFrameG"))
+			wireFrameG = ((Boolean) b.get("wireFrameG")).booleanValue();
+		this.wireFrameG = wireFrameG;
+
+		if (b.containsKey("finerFactorG"))
+			finerFactorG = ((Integer) b.get("finerFactorG")).intValue();
+		if (finerFactorG > 0)
+		{	for (int fPlusCnt = 0; fPlusCnt < finerFactorG; fPlusCnt++)
+				zetFijner(false, FUNCTION);
+		}
+		if (finerFactorG < 0)
+		{	for (int fMinCnt = finerFactorG; fMinCnt < 0; fMinCnt++)
+				zetGrover(false, FUNCTION);
+		}
+		
+		if (b.containsKey("noAxesG"))
+			noAxesG = ((Boolean) b.get("noAxesG")).booleanValue();
+		if (b.containsKey("floorTypeG"))
+			floorTypeG = ((Integer) b.get("floorTypeG")).intValue();
+		this.noAxesG = noAxesG;
+		this.floorTypeG = floorTypeG;
+
+		if (b.containsKey("labelTypeG"))
+			labelTypeG = ((Integer) b.get("labelTypeG")).intValue();
+		this.labelTypeG = labelTypeG;
+		
+		if (b.containsKey("centraleProjG"))
+			centraleProjG = ((Boolean) b.get("centraleProjG")).booleanValue();
+		this.centraleProjG = centraleProjG;
+		
+		if (b.containsKey("graphColor"))
+			graphColor = (Color) b.get("graphColor");
+		this.graphColor = graphColor;
+		
+		
+		// SURFACE
+		if (b.containsKey("angleXS"))
+			angleXS = ((Double) b.get("angleXS")).doubleValue();
+		if (b.containsKey("angleZS"))
+			angleZS = ((Double) b.get("angleZS")).doubleValue();
+		this.angleXS = angleXS;
+		this.angleZS = angleZS;
+		
+		if (b.containsKey("zoomFactorS"))
+			zoomFactorS = ((Integer) b.get("zoomFactorS")).intValue();
+		if (zoomFactorS > 0)
+		{	for (int zUitCnt = 0; zUitCnt < zoomFactorS; zUitCnt++)
+				zoomUit(false, SURFACE);
+		}
+		if (zoomFactorS < 0)
+		{	for (int zInCnt = zoomFactorS; zInCnt < 0; zInCnt++)
+			zoomIn(false, SURFACE);
+		}
+		
+		if (b.containsKey("translateXFactorS"))
+			translateXFactorS = ((Integer) b.get("translateXFactorS")).intValue();
+		if (translateXFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorS; tPlusCnt++)
+				transPlusX(false, SURFACE);
+		}
+		if (translateXFactorS < 0)
+		{	for (int tMinCnt = translateXFactorS; tMinCnt < 0; tMinCnt++)
+				transMinX(false, SURFACE);
+		}
+		if (b.containsKey("translateYFactorS"))
+			translateYFactorS = ((Integer) b.get("translateYFactorS")).intValue();
+		if (translateYFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorS; tPlusCnt++)
+				transPlusY(false, SURFACE);
+		}
+		if (translateYFactorS < 0)
+		{	for (int tMinCnt = translateYFactorS; tMinCnt < 0; tMinCnt++)
+				transMinY(false, SURFACE);
+		}
+		if (b.containsKey("translateZFactorS"))
+			translateZFactorS = ((Integer) b.get("translateZFactorS")).intValue();
+		if (translateZFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorS; tPlusCnt++)
+				transPlusZ(false, SURFACE);
+		}
+		if (translateZFactorS < 0)
+		{	for (int tMinCnt = translateZFactorS; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, SURFACE);
+		}
+		
+		if (b.containsKey("wireFrameS"))
+			wireFrameS = ((Boolean) b.get("wireFrameS")).booleanValue();
+		this.wireFrameS = wireFrameS;
+
+		if (b.containsKey("noAxesS"))
+			noAxesS = ((Boolean) b.get("noAxesS")).booleanValue();
+		if (b.containsKey("floorTypeS"))
+			floorTypeS = ((Integer) b.get("floorTypeS")).intValue();
+		this.noAxesS = noAxesS;
+		this.floorTypeS = floorTypeS;
+
+		if (b.containsKey("labelTypeS"))
+			labelTypeS = ((Integer) b.get("labelTypeS")).intValue();
+		this.labelTypeS = labelTypeS;
+
+		if (b.containsKey("centraleProjS"))
+			centraleProjS = ((Boolean) b.get("centraleProjS")).booleanValue();
+		this.centraleProjS = centraleProjS;
+		
+		if (b.containsKey("surfaceColor"))
+			surfaceColor = (Color) b.get("surfaceColor");
+		this.surfaceColor = surfaceColor;
+		
+		// CURVE
+		if (b.containsKey("angleXC"))
+			angleXC = ((Double) b.get("angleXC")).doubleValue();
+		if (b.containsKey("angleZC"))
+			angleZC = ((Double) b.get("angleZC")).doubleValue();
+		this.angleXC = angleXC;
+		this.angleZC = angleZC;
+		
+		if (b.containsKey("zoomFactorC"))
+			zoomFactorC = ((Integer) b.get("zoomFactorC")).intValue();
+		if (zoomFactorC > 0)
+		{	for (int zUitCnt = 0; zUitCnt < zoomFactorC; zUitCnt++)
+				zoomUit(false, CURVE);
+		}
+		if (zoomFactorC < 0)
+		{	for (int zInCnt = zoomFactorC; zInCnt < 0; zInCnt++)
+			zoomIn(false, CURVE);
+		}
+		
+		if (b.containsKey("translateXFactorC"))
+			translateXFactorC = ((Integer) b.get("translateXFactorC")).intValue();
+		if (translateXFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorC; tPlusCnt++)
+				transPlusX(false, CURVE);
+		}
+		if (translateXFactorC < 0)
+		{	for (int tMinCnt = translateXFactorC; tMinCnt < 0; tMinCnt++)
+				transMinX(false, CURVE);
+		}
+		if (b.containsKey("translateYFactorC"))
+			translateYFactorC = ((Integer) b.get("translateYFactorC")).intValue();
+		if (translateYFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorC; tPlusCnt++)
+				transPlusY(false, CURVE);
+		}
+		if (translateYFactorC < 0)
+		{	for (int tMinCnt = translateYFactorC; tMinCnt < 0; tMinCnt++)
+				transMinY(false, CURVE);
+		}
+		if (b.containsKey("translateZFactorC"))
+			translateZFactorC = ((Integer) b.get("translateZFactorC")).intValue();
+		if (translateZFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorC; tPlusCnt++)
+				transPlusZ(false, CURVE);
+		}
+		if (translateZFactorC < 0)
+		{	for (int tMinCnt = translateZFactorC; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, CURVE);
+		}
+
+		if (b.containsKey("noAxesC"))
+			noAxesC = ((Boolean) b.get("noAxesC")).booleanValue();
+		if (b.containsKey("floorTypeC"))
+			floorTypeC = ((Integer) b.get("floorTypeC")).intValue();
+		this.noAxesC = noAxesC;
+		this.floorTypeC = floorTypeC;
+		
+		if (b.containsKey("labelTypeC"))
+			labelTypeC = ((Integer) b.get("labelTypeC")).intValue();
+		this.labelTypeC = labelTypeC;
+
+		if (b.containsKey("centraleProjC"))
+			centraleProjC = ((Boolean) b.get("centraleProjC")).booleanValue();
+		this.centraleProjC = centraleProjC;
 		
 		// hier, objectType nodig
 		layoutKnoppenPanel();
-		
-		functieEditor.zetOpdracht(b, randomVars, randomValues);
-		
-		// hier !!
-// grafiek oppervlak kromme maken
-// model maken		
-// zetBeginHoeken		
-
-	}
-	
-	public void setState(Hashtable b)
-	{
 		
 		
 		functieEditor.setState(b);
@@ -2782,20 +3752,469 @@ new omitted
 	
 	public void setEditState(Hashtable b)
 	{
+
+System.out.println("g3dc setEditState");
+
+		// edit state
+		boolean zoomOptie = true;
+		boolean translateOptie = true;
+		boolean solidDraadKeuzeOptie = true;
+		boolean finerKeuzeOptie = true;
+		boolean asKeuzeOptie = true;
+		boolean labelKeuzeOptie = true;
+		boolean projectieKeuzeOptie = true;
+		boolean kleurKeuzeOptie = true;
+
+		// functieTypeKeuze in functieEditor
+		boolean figuurIsDemo = false;
+		
+		if (b.containsKey("zoomOptie"))
+			zoomOptie = ((Boolean) b.get("zoomOptie")).booleanValue();
+		if (b.containsKey("translateOptie"))
+			translateOptie = ((Boolean) b.get("translateOptie")).booleanValue();
+		if (b.containsKey("solidDraadKeuzeOptie"))
+			solidDraadKeuzeOptie = ((Boolean) b.get("solidDraadKeuzeOptie")).booleanValue();
+		if (b.containsKey("finerKeuzeOptie"))
+			finerKeuzeOptie = ((Boolean) b.get("finerKeuzeOptie")).booleanValue();
+		if (b.containsKey("asKeuzeOptie"))
+			asKeuzeOptie = ((Boolean) b.get("asKeuzeOptie")).booleanValue();
+		if (b.containsKey("labelKeuzeOptie"))
+			labelKeuzeOptie = ((Boolean) b.get("labelKeuzeOptie")).booleanValue();
+		if (b.containsKey("projectieKeuzeOptie"))
+			projectieKeuzeOptie = ((Boolean) b.get("projectieKeuzeOptie")).booleanValue();
+		if (b.containsKey("kleurKeuzeOptie"))
+			kleurKeuzeOptie = ((Boolean) b.get("kleurKeuzeOptie")).booleanValue();
+
+		if (b.containsKey("figuurIsDemo"))
+			figuurIsDemo = ((Boolean) b.get("figuurIsDemo")).booleanValue();
+
+		zetZoomOptie(zoomOptie);
+		zetTranslateOptie(translateOptie);
+		zetSolidDraadKeuzeOptie(solidDraadKeuzeOptie);
+		zetFinerKeuzeOptie(finerKeuzeOptie);
+		zetAsKeuzeOptie(asKeuzeOptie);
+		zetLabelKeuzeOptie(labelKeuzeOptie);
+		zetProjectieKeuzeOptie(projectieKeuzeOptie);
+		zetKleurKeuzeOptie(kleurKeuzeOptie);
+		
+		this.figuurIsDemo = figuurIsDemo;
+		//zetFiguurIsDemo(figuurIsDemo);		
+		
+		// state
+		int objectType = FUNCTION;
+		
+		double angleXG = Object3DContainer.angleXStart;
+		double angleZG = Object3DContainer.angleZStart;
+		double angleXS = Object3DContainer.angleXStart;
+		double angleZS = Object3DContainer.angleZStart;
+		double angleXC = Object3DContainer.angleXStart;
+		double angleZC = Object3DContainer.angleZStart;
+		
+		int zoomFactorG = 0;
+		int translateXFactorG = 0;
+		int translateYFactorG = 0;
+		int translateZFactorG = 0;
+		
+		int zoomFactorS = 0;
+		int translateXFactorS = 0;
+		int translateYFactorS = 0;
+		int translateZFactorS = 0;
+
+		int zoomFactorC = 0;
+		int translateXFactorC = 0;
+		int translateYFactorC = 0;
+		int translateZFactorC = 0;
+		
+		boolean wireFrameG = false;
+		boolean wireFrameS = false;
+		
+		int finerFactorG = 0;
+		
+		boolean noAxesG = false;
+		boolean noAxesS = false;
+		boolean noAxesC = false;
+		
+		int floorTypeG = NOFLOOR;
+		int floorTypeS = NOFLOOR;
+		int floorTypeC = NOFLOOR;
+		
+	    int labelTypeG = ENDLABELS;
+	    int labelTypeS = ENDLABELS;
+	    int labelTypeC = ENDLABELS;
+	    
+	    boolean centraleProjG = true;
+	    boolean centraleProjS = true;
+	    boolean centraleProjC = true;
+	    
+	    Color graphColor = transYellow;
+	    Color surfaceColor = transYellow;
+	    
+		
+		if (b.containsKey("objectType"))
+			objectType = ((Integer) b.get("objectType")).intValue();
+		this.objectType = objectType;
+
+//System.out.println("ot = " + this.objectType);		
+		// FUNCTION
+		if (b.containsKey("angleXG"))
+			angleXG = ((Double) b.get("angleXG")).doubleValue();
+		if (b.containsKey("angleZG"))
+			angleZG = ((Double) b.get("angleZG")).doubleValue();
+		this.angleXG = angleXG;
+		this.angleZG = angleZG;
+		
+		if (b.containsKey("zoomFactorG"))
+			zoomFactorG = ((Integer) b.get("zoomFactorG")).intValue();
+		if (zoomFactorG < 0)
+		{	for (int zUitCnt = zoomFactorG; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, FUNCTION);
+		}
+		if (zoomFactorG > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorG; zInCnt++)
+			zoomIn(false, FUNCTION);
+		}
+		
+		if (b.containsKey("translateXFactorG"))
+			translateXFactorG = ((Integer) b.get("translateXFactorG")).intValue();
+		if (translateXFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorG; tPlusCnt++)
+				transPlusX(false, FUNCTION);
+		}
+		if (translateXFactorG < 0)
+		{	for (int tMinCnt = translateXFactorG; tMinCnt < 0; tMinCnt++)
+				transMinX(false, FUNCTION);
+		}
+		if (b.containsKey("translateYFactorG"))
+			translateYFactorG = ((Integer) b.get("translateYFactorG")).intValue();
+		if (translateYFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorG; tPlusCnt++)
+				transPlusY(false, FUNCTION);
+		}
+		if (translateYFactorG < 0)
+		{	for (int tMinCnt = translateYFactorG; tMinCnt < 0; tMinCnt++)
+				transMinY(false, FUNCTION);
+		}
+		if (b.containsKey("translateZFactorG"))
+			translateZFactorG = ((Integer) b.get("translateZFactorG")).intValue();
+		if (translateZFactorG > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorG; tPlusCnt++)
+				transPlusZ(false, FUNCTION);
+		}
+		if (translateZFactorG < 0)
+		{	for (int tMinCnt = translateZFactorG; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, FUNCTION);
+		}
+		
+		if (b.containsKey("wireFrameG"))
+		{	wireFrameG = ((Boolean) b.get("wireFrameG")).booleanValue();
+		}
+		this.wireFrameG = wireFrameG;
+		
+		if (b.containsKey("finerFactorG"))
+			finerFactorG = ((Integer) b.get("finerFactorG")).intValue();
+		if (finerFactorG > 0)
+		{	for (int fPlusCnt = 0; fPlusCnt < finerFactorG; fPlusCnt++)
+				zetFijner(false, FUNCTION);
+		}
+		if (finerFactorG < 0)
+		{	for (int fMinCnt = finerFactorG; fMinCnt < 0; fMinCnt++)
+				zetGrover(false, FUNCTION);
+		}
+		
+		if (b.containsKey("noAxesG"))
+			noAxesG = ((Boolean) b.get("noAxesG")).booleanValue();
+		if (b.containsKey("floorTypeG"))
+			floorTypeG = ((Integer) b.get("floorTypeG")).intValue();
+		this.noAxesG = noAxesG;
+		this.floorTypeG = floorTypeG;
+
+		if (b.containsKey("labelTypeG"))
+			labelTypeG = ((Integer) b.get("labelTypeG")).intValue();
+		this.labelTypeG = labelTypeG;
+		
+		if (b.containsKey("centraleProjG"))
+			centraleProjG = ((Boolean) b.get("centraleProjG")).booleanValue();
+		this.centraleProjG = centraleProjG;
+		
+		if (b.containsKey("graphColor"))
+			graphColor = (Color) b.get("graphColor");
+		this.graphColor = graphColor;
+		
+		// SURFACE
+		if (b.containsKey("angleXS"))
+			angleXS = ((Double) b.get("angleXS")).doubleValue();
+		if (b.containsKey("angleZS"))
+			angleZS = ((Double) b.get("angleZS")).doubleValue();
+		this.angleXS = angleXS;
+		this.angleZS = angleZS;
+		
+		if (b.containsKey("zoomFactorS"))
+			zoomFactorS = ((Integer) b.get("zoomFactorS")).intValue();
+		if (zoomFactorS < 0)
+		{	for (int zUitCnt = zoomFactorS; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, SURFACE);
+		}
+		if (zoomFactorS > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorS; zInCnt++)
+			zoomIn(false, SURFACE);
+		}
+		
+		if (b.containsKey("translateXFactorS"))
+			translateXFactorS = ((Integer) b.get("translateXFactorS")).intValue();
+		if (translateXFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorS; tPlusCnt++)
+				transPlusX(false, SURFACE);
+		}
+		if (translateXFactorS < 0)
+		{	for (int tMinCnt = translateXFactorS; tMinCnt < 0; tMinCnt++)
+				transMinX(false, SURFACE);
+		}
+		if (b.containsKey("translateYFactorS"))
+			translateYFactorS = ((Integer) b.get("translateYFactorS")).intValue();
+		if (translateYFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorS; tPlusCnt++)
+				transPlusY(false, SURFACE);
+		}
+		if (translateYFactorS < 0)
+		{	for (int tMinCnt = translateYFactorS; tMinCnt < 0; tMinCnt++)
+				transMinY(false, SURFACE);
+		}
+		if (b.containsKey("translateZFactorS"))
+			translateZFactorS = ((Integer) b.get("translateZFactorS")).intValue();
+		if (translateZFactorS > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorS; tPlusCnt++)
+				transPlusZ(false, SURFACE);
+		}
+		if (translateZFactorS < 0)
+		{	for (int tMinCnt = translateZFactorS; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, SURFACE);
+		}
+		
+		if (b.containsKey("wireFrameS"))
+			wireFrameS = ((Boolean) b.get("wireFrameS")).booleanValue();
+		this.wireFrameS = wireFrameS;
+
+		if (b.containsKey("noAxesS"))
+			noAxesS = ((Boolean) b.get("noAxesS")).booleanValue();
+		if (b.containsKey("floorTypeS"))
+			floorTypeS = ((Integer) b.get("floorTypeS")).intValue();
+		this.noAxesS = noAxesS;
+		this.floorTypeS = floorTypeS;
+
+		if (b.containsKey("labelTypeS"))
+			labelTypeS = ((Integer) b.get("labelTypeS")).intValue();
+		this.labelTypeS = labelTypeS;
+		
+		if (b.containsKey("centraleProjS"))
+			centraleProjS = ((Boolean) b.get("centraleProjS")).booleanValue();
+		this.centraleProjS = centraleProjS;
+		
+		if (b.containsKey("surfaceColor"))
+			surfaceColor = (Color) b.get("surfaceColor");
+		this.surfaceColor = surfaceColor;
+		
+		// CURVE
+		if (b.containsKey("angleXC"))
+			angleXC = ((Double) b.get("angleXC")).doubleValue();
+		if (b.containsKey("angleZC"))
+			angleZC = ((Double) b.get("angleZC")).doubleValue();
+		this.angleXC = angleXC;
+		this.angleZC = angleZC;
+		
+		if (b.containsKey("zoomFactorC"))
+			zoomFactorC = ((Integer) b.get("zoomFactorC")).intValue();
+		if (zoomFactorC < 0)
+		{	for (int zUitCnt = zoomFactorC; zUitCnt < 0; zUitCnt++)
+				zoomUit(false, CURVE);
+		}
+		if (zoomFactorC > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorC; zInCnt++)
+			zoomIn(false, CURVE);
+		}
+		
+		if (b.containsKey("translateXFactorC"))
+			translateXFactorC = ((Integer) b.get("translateXFactorC")).intValue();
+		if (translateXFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateXFactorC; tPlusCnt++)
+				transPlusX(false, CURVE);
+		}
+		if (translateXFactorC < 0)
+		{	for (int tMinCnt = translateXFactorC; tMinCnt < 0; tMinCnt++)
+				transMinX(false, CURVE);
+		}
+		if (b.containsKey("translateYFactorC"))
+			translateYFactorC = ((Integer) b.get("translateYFactorC")).intValue();
+		if (translateYFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateYFactorC; tPlusCnt++)
+				transPlusY(false, CURVE);
+		}
+		if (translateYFactorC < 0)
+		{	for (int tMinCnt = translateYFactorC; tMinCnt < 0; tMinCnt++)
+				transMinY(false, CURVE);
+		}
+		if (b.containsKey("translateZFactorC"))
+			translateZFactorC = ((Integer) b.get("translateZFactorC")).intValue();
+		if (translateZFactorC > 0)
+		{	for (int tPlusCnt = 0; tPlusCnt < translateZFactorC; tPlusCnt++)
+				transPlusZ(false, CURVE);
+		}
+		if (translateZFactorC < 0)
+		{	for (int tMinCnt = translateZFactorC; tMinCnt < 0; tMinCnt++)
+				transMinZ(false, CURVE);
+		}
+
+		if (b.containsKey("noAxesC"))
+			noAxesC = ((Boolean) b.get("noAxesC")).booleanValue();
+		if (b.containsKey("floorTypeC"))
+			floorTypeC = ((Integer) b.get("floorTypeC")).intValue();
+		this.noAxesC = noAxesC;
+		this.floorTypeC = floorTypeC;
+		
+		if (b.containsKey("labelTypeC"))
+			labelTypeC = ((Integer) b.get("labelTypeC")).intValue();
+		this.labelTypeC = labelTypeC;
+
+		if (b.containsKey("centraleProjC"))
+			centraleProjC = ((Boolean) b.get("centraleProjC")).booleanValue();
+		this.centraleProjC = centraleProjC;
+		
+		// hier, objectType nodig
+		layoutKnoppenPanel();
+		
 		
 		functieEditor.setEditState(b);
+		
+		//zetDraadFiguur(objectType);
 	}
 	
 	public Hashtable getState()
 	{
 		Hashtable h = functieEditor.getState();
 		
+		// state
+		h.put("objectType", new Integer(objectType));
+		
+		// update de hoeken van het laatste functieType
+		getHoeken();
+		
+		h.put("angleXG", new Double(angleXG));
+		h.put("angleZG", new Double(angleZG));
+		h.put("angleXS", new Double(angleXS));
+		h.put("angleZS", new Double(angleZS));		
+		h.put("angleXC", new Double(angleXC));
+		h.put("angleZC", new Double(angleZC));
+		
+		h.put("zoomFactorG", new Integer(zoomFactorG));
+		h.put("translateXFactorG", new Integer(translateXFactorG));
+		h.put("translateYFactorG", new Integer(translateYFactorG));
+		h.put("translateZFactorG", new Integer(translateZFactorG));
+		
+		h.put("zoomFactorS", new Integer(zoomFactorS));
+		h.put("translateXFactorS", new Integer(translateXFactorS));
+		h.put("translateYFactorS", new Integer(translateYFactorS));
+		h.put("translateZFactorS", new Integer(translateZFactorS));
+
+		h.put("zoomFactorC", new Integer(zoomFactorC));
+		h.put("translateXFactorC", new Integer(translateXFactorC));
+		h.put("translateYFactorC", new Integer(translateYFactorC));
+		h.put("translateZFactorC", new Integer(translateZFactorC));
+		
+		h.put("wireFrameG", new Boolean(wireFrameG));
+		h.put("wireFrameS", new Boolean(wireFrameS));
+		
+		h.put("finerFactorG", new Integer(finerFactorG));
+		
+		h.put("noAxesG", new Boolean(noAxesG));
+		h.put("noAxesS", new Boolean(noAxesS));
+		h.put("noAxesC", new Boolean(noAxesC));
+		
+		h.put("floorTypeG", new Integer(floorTypeG));
+		h.put("floorTypeS", new Integer(floorTypeS));
+		h.put("floorTypeC", new Integer(floorTypeC));
+		
+		h.put("labelTypeG", new Integer(labelTypeG));
+		h.put("labelTypeS", new Integer(labelTypeS));
+		h.put("labelTypeC", new Integer(labelTypeC));
+		
+		h.put("centraleProjG", new Boolean(centraleProjG));
+		h.put("centraleProjS", new Boolean(centraleProjS));
+		h.put("centraleProjC", new Boolean(centraleProjC));
+		
+		h.put("graphColor", graphColor);
+		h.put("surfaceColor", surfaceColor);
+		
 		return h;
 	}
 	
 	public Hashtable getEditState()
 	{
+		
+System.out.println("g3dc getEditState");
+
 		Hashtable h = functieEditor.getEditState();
+		
+		// edit state
+		h.put("zoomOptie", new Boolean(zoomOptie));
+		h.put("translateOptie", new Boolean(translateOptie));
+		h.put("solidDraadKeuzeOptie", new Boolean(solidDraadKeuzeOptie));
+		h.put("finerKeuzeOptie", new Boolean(finerKeuzeOptie));
+		h.put("asKeuzeOptie", new Boolean(asKeuzeOptie));
+		h.put("labelKeuzeOptie", new Boolean(labelKeuzeOptie));
+		h.put("projectieKeuzeOptie", new Boolean(projectieKeuzeOptie));
+		h.put("kleurKeuzeOptie", new Boolean(kleurKeuzeOptie));
+		h.put("figuurIsDemo", new Boolean(figuurIsDemo));
+
+		// state
+		h.put("objectType", new Integer(objectType));
+		
+		// update de hoeken van het laatste functieType
+		getHoeken();
+		
+		h.put("angleXG", new Double(angleXG));
+		h.put("angleZG", new Double(angleZG));
+		h.put("angleXS", new Double(angleXS));
+		h.put("angleZS", new Double(angleZS));		
+		h.put("angleXC", new Double(angleXC));
+		h.put("angleZC", new Double(angleZC));
+		
+		h.put("zoomFactorG", new Integer(zoomFactorG));
+		h.put("translateXFactorG", new Integer(translateXFactorG));
+		h.put("translateYFactorG", new Integer(translateYFactorG));
+		h.put("translateZFactorG", new Integer(translateZFactorG));
+		
+		h.put("zoomFactorS", new Integer(zoomFactorS));
+		h.put("translateXFactorS", new Integer(translateXFactorS));
+		h.put("translateYFactorS", new Integer(translateYFactorS));
+		h.put("translateZFactorS", new Integer(translateZFactorS));
+
+		h.put("zoomFactorC", new Integer(zoomFactorC));
+		h.put("translateXFactorC", new Integer(translateXFactorC));
+		h.put("translateYFactorC", new Integer(translateYFactorC));
+		h.put("translateZFactorC", new Integer(translateZFactorC));
+		
+		h.put("wireFrameG", new Boolean(wireFrameG));
+		h.put("wireFrameS", new Boolean(wireFrameS));
+//System.out.println("wfG = " + wireFrameG);		
+		h.put("finerFactorG", new Integer(finerFactorG));
+		
+		h.put("noAxesG", new Boolean(noAxesG));
+		h.put("noAxesS", new Boolean(noAxesS));
+		h.put("noAxesC", new Boolean(noAxesC));
+		
+		h.put("floorTypeG", new Integer(floorTypeG));
+		h.put("floorTypeS", new Integer(floorTypeS));
+		h.put("floorTypeC", new Integer(floorTypeC));
+		
+		h.put("labelTypeG", new Integer(labelTypeG));
+		h.put("labelTypeS", new Integer(labelTypeS));
+		h.put("labelTypeC", new Integer(labelTypeC));
+		
+		h.put("centraleProjG", new Boolean(centraleProjG));
+		h.put("centraleProjS", new Boolean(centraleProjS));
+		h.put("centraleProjC", new Boolean(centraleProjC));
+		
+		h.put("graphColor", graphColor);
+		h.put("surfaceColor", surfaceColor);
 		
 		return h;
 	}

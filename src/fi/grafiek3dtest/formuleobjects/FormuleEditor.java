@@ -670,19 +670,19 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	
 	public void activateTablet()
 	{	Container parent = geefFormuleVak();
-		if ("MW".equals(Grafiek3DTest.deployVariant) || "GR".equals(Grafiek3DTest.deployVariant))
-			parent = this;
+		//if ("MW".equals(Grafiek3DTest.deployVariant) || "GR".equals(Grafiek3DTest.deployVariant))
+		//	parent = this;
 		int x = parent.getLocation().x;
 		int y = parent.getLocation().y;
 		int h = parent.getSize().height;
 		for (int i = 0; parent != null && i < 40; i++)
 		{	if (parent instanceof TabletOwner) 
 			{	
-				if ("MW".equals(Grafiek3DTest.deployVariant) || "GR".equals(Grafiek3DTest.deployVariant))
-				{
-					((TabletOwner)parent).addTablet(this, x + getWidth() / 2 - 120, y + getHeight() / 2 - 80); 
-				}
-				else
+				//if ("MW".equals(Grafiek3DTest.deployVariant) || "GR".equals(Grafiek3DTest.deployVariant))
+				//{
+				//	((TabletOwner)parent).addTablet(this, x + getWidth() / 2 - 120, y + getHeight() / 2 - 80); 
+				//}
+				//else
 					((TabletOwner) parent).addTablet(this, x + 20, y + h + 40);
 				break;
 			}
@@ -808,8 +808,25 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
         super.remove(tablet);
         repaint();
 		tabletAdded = false;
-		
 	}
+	
+	public void removeTablet2()
+	{	
+		Container parent = getParent();
+		for (int i = 0; parent != null && i < 40; i++)
+		{	if (parent instanceof TabletOwner) 
+			{	((TabletOwner) parent).removeTablet();
+				break;
+			}
+			else 
+			{	parent = parent.getParent();
+				if (parent==null)
+					return;
+			}	
+		}
+		tabletAdded = false;
+	}
+	
 	
 	public Tablet getTablet()
 	{	return tablet;

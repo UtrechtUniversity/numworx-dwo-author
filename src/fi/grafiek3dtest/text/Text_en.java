@@ -25,11 +25,34 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "eindLabelsTekst" , "end labels" },
 			{ "alleLabelsTekst" , "all labels" },
 			
+			{ "geelTekst" , "yellow" },
+			{ "cyanTekst" , "cyan" },
+			{ "magentaTekst" , "magenta" },
+			{ "groenTekst" , "green" },
+			
 			{ "grafiekTekst" , "graph" },
 			{ "oppervlakTekst" , "surface" },
 			{ "krommeTekst" , "curve" },
 			{ "aantalPuntenTekst" , "number of points" },
 			
+			{ "zoomOptieTekst" , "Zoom option" },
+			{ "transleerOptieTekst" , "Translate option" },
+			{ "wireFrameOptieTekst" , "Choice solid/wireframe figure" },
+			{ "verfijnOptieTekst" , "Refinement option" },
+			{ "assenKeuzeOptieTekst" , "Choice of axes option" },
+			{ "labelKeuzeOptieTekst" , "Choice of labels option" },
+			{ "projectieKeuzeOptieTekst" , "Choice of projection option" },
+			{ "kleurKeuzeOptieTekst" , "Choice of color option" },
+
+			
+			{ "figuurKeuzeOptieTekst" , "Choice of type of figure" },
+			{ "figuurIsDemoTekst" , "Figure is demo" },
+			
+			{ "voorbeeldenOptieTekst" , "Examples option" },			
+			{ "voorbeeldenTekst" , "examples" },
+			{ "paraboloideTekst" , "paraboloide" },
+			{ "cylinderTekst" , "cylinder" },
+			{ "spiraalTekst" , "helix" },
 			
 
 	};

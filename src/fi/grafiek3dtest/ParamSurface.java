@@ -95,6 +95,7 @@ public abstract class ParamSurface extends Object3D
     
     abstract public Vector3D getValueAt(double u, double v);
 }
+/*
 //a torus
 class Torus extends ParamSurface
 {   
@@ -147,8 +148,8 @@ class Torus extends ParamSurface
     }   
 
 } // class Torus
-
-
+*/
+/*
 // an ellipsoid
 class Ellipsoid extends ParamSurface
 {   // "empty" ellipsoid, use for copying
@@ -233,7 +234,9 @@ class Ellipsoid extends ParamSurface
     }   
     
 } // class Ellipsoid
+*/
 
+/*
 // a cylinder
 class Cylinder extends ParamSurface
 {   boolean top, bottom;
@@ -345,22 +348,6 @@ class Cylinder extends ParamSurface
         
     } // constructor
 
-/*    
-    // A is label number 1, Z is number 26
-    // AA is number 27
-    public String getLabel(int i)
-    {   String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        int cycles = (i - 1) / 26;
-        int character = (i - 1) % 26;
-        String result = "";
-        // assume maximum 26*26=676 labels
-        if (cycles >= 1)
-            result += alphabet.charAt(cycles - 1);
-        result += alphabet.charAt(character);
-    
-        return result;
-    }
-*/    
     // parametrization
     // [0,2Pi)x[-height/2,height/2]->space
     // ( radius*cos(u), radius*sin(u), v )
@@ -380,8 +367,8 @@ class Cylinder extends ParamSurface
     }   
     
 } // class Cylinder
-
-
+*/
+/*
 // a (single) cone
 class Cone extends ParamSurface
 {   boolean bottom;
@@ -498,7 +485,7 @@ class Cone extends ParamSurface
     
 } // class Cone
 
-
+*/
 /*
 // a double cone
 class DoubleCone extends ParamSurface

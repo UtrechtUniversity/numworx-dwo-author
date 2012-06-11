@@ -186,6 +186,7 @@ public class Surface3D extends Object3D
 					{	trimTop = true;
 						if ((topMaxVertex == null) || (topMaxVertex.z < (expZWaarde - NZERO)))
 							topMaxVertex = new Vector3D(vertices[uCnt + (uPoints + 1) * vCnt]);
+//System.out.println("ez>zMax " + expZWaarde);						
 					}
 				
 					if (expZWaarde < (zMin - NZERO))
@@ -217,6 +218,7 @@ public class Surface3D extends Object3D
 //System.out.println("insideVertex = null");
 //else
 //System.out.println("insideVertex = " + insideVertex.toString());
+		
 
 		// maximale aantal
 	    int tempNumFacets = 2 * numSurfaceFacets;

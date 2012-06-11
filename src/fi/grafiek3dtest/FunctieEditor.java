@@ -2,7 +2,8 @@ package fi.grafiek3dtest;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Hashtable;
+//import java.util.Hashtable;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -32,6 +33,13 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	String[] parametrisatieNamen = {"x","y","z"};
 	
 	JComboBox functieTypeBox;
+	JLabel functieTypeLabel;
+	
+	JComboBox grafiekVoorbeeldenBox;
+	JComboBox oppervlakVoorbeeldenBox;
+	JComboBox krommeVoorbeeldenBox;
+	
+	boolean voorbeeldenEnabled = true;
 	
 	boolean functieTypeKeuze = true;
 	
@@ -53,6 +61,13 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	String tPointsString = "$f@";
 	
 	final double NZERO = 1e-5d;
+	
+	boolean functieTypeBoxEnabled = true;
+	
+	Vector grafiekVoorbeelden = new Vector();
+	Vector oppervlakVoorbeelden = new Vector();
+	Vector krommeVoorbeelden = new Vector();
+	
 	
 	public FunctieEditor(boolean b)
 	{	super(b);
@@ -81,11 +96,164 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 		zetOpBalk(functieTypeBox);
 		functieTypeBox.addActionListener(this);
 		
+		functieTypeLabel = new JLabel();
+		functieTypeLabel.setBounds(160, 2, functieTypeBox.getSize().width, 20);
+		functieTypeLabel.setVisible(false);
+		zetOpBalk(functieTypeLabel);
+		
+		maakGrafiekVoorbeelden();
+		
+		grafiekVoorbeeldenBox = new JComboBox();
+		grafiekVoorbeeldenBox.setFont(Grafiek3DTest.tekstFont);
+		grafiekVoorbeeldenBox.addItem(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+		width = tekstFM.stringWidth(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+		for (int gCnt = 0; gCnt < grafiekVoorbeelden.size(); gCnt++)
+		{	String name = "noName";
+			if (Grafiek3DTest.langArg.equals("nl"))
+				name = ((GrafiekVoorbeeld) grafiekVoorbeelden.elementAt(gCnt)).nlNaam;
+			else
+				name = ((GrafiekVoorbeeld) grafiekVoorbeelden.elementAt(gCnt)).enNaam;
+			grafiekVoorbeeldenBox.addItem(name);
+			width = Math.max(width, tekstFM.stringWidth(name));
+		}
+		grafiekVoorbeeldenBox.setBounds(160 + functieTypeBox.getSize().width + 30, 2, width + 35, 20);
+		zetOpBalk(grafiekVoorbeeldenBox);
+		grafiekVoorbeeldenBox.addActionListener(this);
+		
+		maakOppervlakVoorbeelden();
+		
+		oppervlakVoorbeeldenBox = new JComboBox();
+		oppervlakVoorbeeldenBox.setFont(Grafiek3DTest.tekstFont);
+		oppervlakVoorbeeldenBox.addItem(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+		width = tekstFM.stringWidth(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+
+//System.out.println("ov = " + oppervlakVoorbeelden.size());
+
+		for (int oCnt = 0; oCnt < oppervlakVoorbeelden.size(); oCnt++)
+		{	String name = "noName";
+			if (Grafiek3DTest.langArg.equals("nl"))
+				name = ((OppervlakVoorbeeld) oppervlakVoorbeelden.elementAt(oCnt)).nlNaam;
+			else
+				name = ((OppervlakVoorbeeld) oppervlakVoorbeelden.elementAt(oCnt)).enNaam;
+//System.out.println("name = " + name);			
+			oppervlakVoorbeeldenBox.addItem(name);
+			width = Math.max(width, tekstFM.stringWidth(name));
+		}
+		
+		oppervlakVoorbeeldenBox.setBounds(160 + functieTypeBox.getSize().width + 30, 2, width + 35, 20);
+		oppervlakVoorbeeldenBox.setVisible(false); 
+		zetOpBalk(oppervlakVoorbeeldenBox);
+		oppervlakVoorbeeldenBox.addActionListener(this);
+
+		maakKrommeVoorbeelden();
+		
+		krommeVoorbeeldenBox = new JComboBox();
+		krommeVoorbeeldenBox.setFont(Grafiek3DTest.tekstFont);
+		krommeVoorbeeldenBox.addItem(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+		width = tekstFM.stringWidth(Grafiek3DTest.rb.getString("voorbeeldenTekst"));
+		
+		for (int kCnt = 0; kCnt < krommeVoorbeelden.size(); kCnt++)
+		{	String name = "noName";
+			if (Grafiek3DTest.langArg.equals("nl"))
+				name = ((KrommeVoorbeeld) krommeVoorbeelden.elementAt(kCnt)).nlNaam;
+			else
+				name = ((KrommeVoorbeeld) krommeVoorbeelden.elementAt(kCnt)).enNaam;
+			krommeVoorbeeldenBox.addItem(name);
+			width = Math.max(width, tekstFM.stringWidth(name));
+		}
+		
+		krommeVoorbeeldenBox.setBounds(160 + functieTypeBox.getSize().width + 30, 2, width + 35, 20);
+		krommeVoorbeeldenBox.setVisible(false); 
+		zetOpBalk(krommeVoorbeeldenBox);
+		krommeVoorbeeldenBox.addActionListener(this);
+		
+	}
+	
+	public void maakGrafiekVoorbeelden()
+	{
+		GrafiekVoorbeeld grafiekVoorbeeld1 = new Paraboloide();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld1);
+		GrafiekVoorbeeld grafiekVoorbeeld2 = new Zadel();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld2);
+		GrafiekVoorbeeld grafiekVoorbeeld3 = new ReciprokeTrumpet();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld3);
+		GrafiekVoorbeeld grafiekVoorbeeld4 = new LnTrumpet();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld4);
+		GrafiekVoorbeeld grafiekVoorbeeld5 = new SineHat();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld5);
+		GrafiekVoorbeeld grafiekVoorbeeld6 = new TangensChaos();
+		grafiekVoorbeelden.addElement(grafiekVoorbeeld6);
+		
+		
+	}
+	
+	public void maakOppervlakVoorbeelden()
+	{
+		OppervlakVoorbeeld oppervlakVoorbeeld1 = new Cylinder();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld1);
+		OppervlakVoorbeeld oppervlakVoorbeeld2 = new Cones();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld2);
+		OppervlakVoorbeeld oppervlakVoorbeeld3 = new Helicoide();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld3);
+		OppervlakVoorbeeld oppervlakVoorbeeld4 = new Sphere();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld4);
+		OppervlakVoorbeeld oppervlakVoorbeeld5 = new Ellipsoid();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld5);
+		OppervlakVoorbeeld oppervlakVoorbeeld6 = new Torus();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld6);
+		OppervlakVoorbeeld oppervlakVoorbeeld7 = new Trumpet();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld7);
+		OppervlakVoorbeeld oppervlakVoorbeeld8 = new EightSurface();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld8);
+		OppervlakVoorbeeld oppervlakVoorbeeld9 = new Shell();
+		oppervlakVoorbeelden.addElement(oppervlakVoorbeeld9);
+		
+	}
+	
+	public void maakKrommeVoorbeelden()
+	{
+		KrommeVoorbeeld krommeVoorbeeld1 = new Helix();
+		krommeVoorbeelden.addElement(krommeVoorbeeld1);
+		KrommeVoorbeeld krommeVoorbeeld2 = new ConeHelix();
+		krommeVoorbeelden.addElement(krommeVoorbeeld2);
+		KrommeVoorbeeld krommeVoorbeeld3 = new TorusHelix();
+		krommeVoorbeelden.addElement(krommeVoorbeeld3);
+		KrommeVoorbeeld krommeVoorbeeld4 = new FlowerLeaves();
+		krommeVoorbeelden.addElement(krommeVoorbeeld4);
+		
 	}
 	
 	public void zetFunctieTypeKeuze(boolean b)
 	{
+		functieTypeKeuze = b;
+		
+		if (functieType == Grafiek3DComponent.FUNCTION)
+		{
+			functieTypeLabel.setText(Grafiek3DTest.rb.getString("grafiekTekst"));
+		}
+		else if (functieType == Grafiek3DComponent.SURFACE)
+		{
+			functieTypeLabel.setText(Grafiek3DTest.rb.getString("oppervlakTekst"));
+		}
+		else // CURVE
+			functieTypeLabel.setText(Grafiek3DTest.rb.getString("krommeTekst"));
+			
 		functieTypeBox.setVisible(b);
+		functieTypeLabel.setVisible(!b);
+	}
+	
+	public void zetVoorbeeldenEnabled(boolean b)
+	{
+		voorbeeldenEnabled = b;
+		
+		if (voorbeeldenEnabled)
+			toonVoorbeeldenBox(functieType);
+		else
+		{
+			grafiekVoorbeeldenBox.setVisible(false);
+			oppervlakVoorbeeldenBox.setVisible(false);
+			krommeVoorbeeldenBox.setVisible(false);
+		}
 	}
 	
 	public void layoutVakken()
@@ -109,6 +277,7 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	
 	public Hashtable getState()
 	{	
+System.out.println("fe getState");		
 		
 		Hashtable h = new Hashtable();
 		
@@ -143,16 +312,19 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	public Hashtable getEditState()
 	{	
 
+System.out.println("fe getEditState");
+
 		Hashtable h = new Hashtable();
 		
 		updateExpStrings();
 		
 		// editstate
 		h.put("functieTypeKeuze", new Boolean(functieTypeKeuze));
+		h.put("voorbeeldenEnabled", new Boolean(voorbeeldenEnabled));
 		
 		// state
 		h.put("functieType", new Integer(functieType));
-		
+
 		h.put("graphString", graphString);
 
 		h.put("surfaceXString", surfaceXString);
@@ -178,14 +350,26 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	
+		int functieType = -1;
+		
 		// edit state
 		if (h.containsKey("functieTypeKeuze")) 
 			functieTypeKeuze = ((Boolean) h.get("functieTypeKeuze")).booleanValue();
-		zetFunctieTypeKeuze(functieTypeKeuze);
+		//zetFunctieTypeKeuze(functieTypeKeuze);
+
+		if (h.containsKey("voorbeeldenEnabled")) 
+			voorbeeldenEnabled = ((Boolean) h.get("voorbeeldenEnabled")).booleanValue();
 		
 		// state
 		if (h.containsKey("functieType")) 
 			functieType = ((Integer) h.get("functieType")).intValue();
+		
+		functieTypeBoxEnabled = false;
+		functieTypeBox.setSelectedIndex(functieType);
+		functieTypeBoxEnabled = true;
+		
+		// HIER		
+//		zetFunctieTypeKeuze(functieTypeKeuze);
 		
 		if (h.containsKey("graphString")) 
 			graphString = (String) h.get("graphString");
@@ -223,19 +407,39 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 			tPointsString = (String) h.get("tPointsString");
 		
 		zetFuncties(functieType, false);
+		toonVoorbeeldenBox(functieType);
+	
+		// HIER		
+		zetFunctieTypeKeuze(functieTypeKeuze);
 		
     }
 	
 	public void setEditState(Hashtable h)
 	{	
+		
+System.out.println("fe setEditState");
+		
+		int functieType = -1;
+
 		// edit state
 		if (h.containsKey("functieTypeKeuze")) 
 			functieTypeKeuze = ((Boolean) h.get("functieTypeKeuze")).booleanValue();
-		zetFunctieTypeKeuze(functieTypeKeuze);
+		//zetFunctieTypeKeuze(functieTypeKeuze);
+
+		if (h.containsKey("voorbeeldenEnabled")) 
+			voorbeeldenEnabled = ((Boolean) h.get("voorbeeldenEnabled")).booleanValue();
+		
 		
 		// state
 		if (h.containsKey("functieType")) 
 			functieType = ((Integer) h.get("functieType")).intValue();
+
+		functieTypeBoxEnabled = false;
+		functieTypeBox.setSelectedIndex(functieType);
+		functieTypeBoxEnabled = true;
+		
+		// HIER		
+//		zetFunctieTypeKeuze(functieTypeKeuze);
 		
 		if (h.containsKey("graphString")) 
 			graphString = (String) h.get("graphString");
@@ -273,6 +477,10 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 			tPointsString = (String) h.get("tPointsString");
 		
 		zetFuncties(functieType, false);
+		toonVoorbeeldenBox(functieType);
+
+		// HIER		
+		zetFunctieTypeKeuze(functieTypeKeuze);
 		
     }
 	
@@ -318,13 +526,15 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 			tPointsString = (String) h.get("tPointsString");
 		
 		zetFuncties(functieType, false);
+		
+		toonVoorbeeldenBox(functieType);
     	
     }
+    
 	public void updateExpStrings()
 	{
 		if (functieType == Grafiek3DComponent.FUNCTION)
 		{	graphString = functieVakken[0].formuleVak2.toString();
-//System.out.println("grStr = " + graphString);		
 		}
 		else if (functieType == Grafiek3DComponent.SURFACE)
 		{	surfaceXString = functieVakken[0].formuleVak2.toString();
@@ -353,12 +563,15 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	
 	public void zetFuncties(int funcType, boolean update)
 	{	
-		if (functieType == funcType)
-			return;
 		
-		updateExpStrings();
+		if (update && (functieType == funcType))
+		{	return;
+		}	
+		
+		if (update)
+			updateExpStrings();
 
-		if (functieType >= 0)
+		if (update && (functieType >= 0))
 			grafiek3DComponent.getHoeken();
 		if (functieType == Grafiek3DComponent.FUNCTION)
 		{	grafiek3DComponent.zetGrafiek3D(null);
@@ -535,6 +748,8 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 	{	
 		if (functieType == Grafiek3DComponent.FUNCTION)
 		{	Expressie exp = functieVakken[0].formuleVak2.geefExpressie();
+
+System.out.println("gs = " + functieVakken[0].formuleVak2.toString());
 		
 			if ((exp == null) || hasIllegalVarName(exp, varNaamX, varNaamY))
 			{	grafiek3DComponent.zetGrafiek3D(null);	
@@ -830,12 +1045,20 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 					tPoints = tPointsInteger;
 				}	
 			}
+
+			if (tMin > (tMax - NZERO))
+			{	expTMinOK = false;
+				expTMaxOK = false;
+				checks[3].setWrong();
+				checks[4].setWrong();
+			}
 			
 			if (expXOK && expYOK && expZOK && expTMinOK && expTMaxOK && expTPointsOK)
-				{
-					grafiek3DComponent.zetCurve3D(expX, expY, expZ, tMin, tMax, tPoints);
-				}
-			
+			{
+				grafiek3DComponent.zetCurve3D(expX, expY, expZ, tMin, tMax, tPoints);
+			}
+//if (expTMin != null)			
+//System.out.println("etmin = " + expTMin.toString());			
 		}
 		
 		
@@ -889,27 +1112,138 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 		}
 	}
 	
+	public void zetGrafiekVoorbeeld(GrafiekVoorbeeld gv)
+	{
+		functieVakken[0].formuleVak2.vulVak(gv.graphString);
+		grafiek3DComponent.zetGrafiekVoorbeeld(gv);
+		procesInput();
+		
+	}
+
+	public void zetOppervlakVoorbeeld(OppervlakVoorbeeld ov)
+	{
+		functieVakken[0].formuleVak2.vulVak(ov.surfaceXString);
+		functieVakken[1].formuleVak2.vulVak(ov.surfaceYString);
+		functieVakken[2].formuleVak2.vulVak(ov.surfaceZString);
+		functieVakken[3].formuleVak2.vulVak(ov.uMinString);
+		functieVakken[4].formuleVak2.vulVak(ov.uMaxString);
+		functieVakken[5].formuleVak2.vulVak(ov.uPointsString);
+		functieVakken[6].formuleVak2.vulVak(ov.vMinString);
+		functieVakken[7].formuleVak2.vulVak(ov.vMaxString);
+		functieVakken[8].formuleVak2.vulVak(ov.vPointsString);
+		
+		grafiek3DComponent.zetOppervlakVoorbeeld(ov);
+		procesInput();
+		
+	}
+
+	public void zetKrommeVoorbeeld(KrommeVoorbeeld kv)
+	{
+			functieVakken[0].formuleVak2.vulVak(kv.curveXString);
+			functieVakken[1].formuleVak2.vulVak(kv.curveYString);
+			functieVakken[2].formuleVak2.vulVak(kv.curveZString);
+			functieVakken[3].formuleVak2.vulVak(kv.tMinString);
+			functieVakken[4].formuleVak2.vulVak(kv.tMaxString);
+			functieVakken[5].formuleVak2.vulVak(kv.tPointsString);
+		
+		grafiek3DComponent.zetKrommeVoorbeeld(kv);
+		procesInput();
+		
+	}
+	
+	public void toonVoorbeeldenBox(int type)
+	{
+		if (!voorbeeldenEnabled)
+		{	grafiekVoorbeeldenBox.setVisible(false);
+			oppervlakVoorbeeldenBox.setVisible(false);
+			krommeVoorbeeldenBox.setVisible(false);
+			
+			return;
+		
+		}
+		
+		if (type == Grafiek3DComponent.FUNCTION)
+		{	grafiekVoorbeeldenBox.setVisible(true);
+			oppervlakVoorbeeldenBox.setVisible(false);
+			krommeVoorbeeldenBox.setVisible(false);
+			
+		}
+		else if (type == Grafiek3DComponent.SURFACE)
+		{	grafiekVoorbeeldenBox.setVisible(false);
+			oppervlakVoorbeeldenBox.setVisible(true);
+			krommeVoorbeeldenBox.setVisible(false);
+			
+		}
+		else if (type == Grafiek3DComponent.CURVE)
+		{	grafiekVoorbeeldenBox.setVisible(false);
+			oppervlakVoorbeeldenBox.setVisible(false);
+			krommeVoorbeeldenBox.setVisible(true);
+			
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{	
 		if (e.getSource() == functieTypeBox)
 		{
+			if (!functieTypeBoxEnabled)
+				return;
+			
 			String selString = (String) functieTypeBox.getSelectedItem();
 			//removeFuncties();
 			if (selString.equals(Grafiek3DTest.rb.getString("grafiekTekst")))
 			{	
 				zetFuncties(Grafiek3DComponent.FUNCTION, true);
+				toonVoorbeeldenBox(Grafiek3DComponent.FUNCTION);
 			}
 			else if (selString.equals(Grafiek3DTest.rb.getString("oppervlakTekst")))
 			{	
 				zetFuncties(Grafiek3DComponent.SURFACE, true);
+				toonVoorbeeldenBox(Grafiek3DComponent.SURFACE);
 			}
 			else if (selString.equals(Grafiek3DTest.rb.getString("krommeTekst")))
 			{	
 				zetFuncties(Grafiek3DComponent.CURVE, true);
+				toonVoorbeeldenBox(Grafiek3DComponent.CURVE);
 			}
-				
+			
+			
+			removeTablet2();
 		}
-	
+		
+		if (e.getSource() == grafiekVoorbeeldenBox)
+		{
+			int grIndex = grafiekVoorbeeldenBox.getSelectedIndex();
+//System.out.println("gvbi = " + grIndex);			
+			if (grIndex >= 1)
+			{
+				GrafiekVoorbeeld gv = (GrafiekVoorbeeld) grafiekVoorbeelden.elementAt(grIndex - 1);
+				zetGrafiekVoorbeeld(gv);
+			}
+		}
+
+		if (e.getSource() == oppervlakVoorbeeldenBox)
+		{
+			int opIndex = oppervlakVoorbeeldenBox.getSelectedIndex();
+//System.out.println("gvbi = " + grIndex);			
+			if (opIndex >= 1)
+			{
+				OppervlakVoorbeeld ov = (OppervlakVoorbeeld) oppervlakVoorbeelden.elementAt(opIndex - 1);
+				zetOppervlakVoorbeeld(ov);
+			}
+		}
+
+		if (e.getSource() == krommeVoorbeeldenBox)
+		{
+			int krIndex = krommeVoorbeeldenBox.getSelectedIndex();
+//System.out.println("gvbi = " + grIndex);			
+			if (krIndex >= 1)
+			{
+				KrommeVoorbeeld kv = (KrommeVoorbeeld) krommeVoorbeelden.elementAt(krIndex - 1);
+				zetKrommeVoorbeeld(kv);
+			}
+		}
+		
 		for (int i = 0; i < maxAantalFuncties; i++)
 		{	if (e.getSource() == functieVakken[i].formuleVak2 && 
 				(e.getActionCommand().equals("ingevuld") || e.getActionCommand().equals("focuslost")))

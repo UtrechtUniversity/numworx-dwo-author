@@ -1533,6 +1533,14 @@ System.out.println("" + index + " is not on top of " + cnt);
     	}
     	
     }
+    
+    public void setFillColor(Color flc)
+    {	for (int i = 0; i < numFacets; i++)
+    	{	facets[i].color = flc;
+    	}
+    	
+    }
+    
     // fill the facets of this object
     // avoid disappearance
     // MUST be redefined to set correctly set the object(group) flaggs
