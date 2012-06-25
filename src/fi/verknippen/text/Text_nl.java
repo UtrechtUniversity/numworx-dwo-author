@@ -12,10 +12,25 @@ public class Text_nl extends java.util.ListResourceBundle
             { "rechthoekTekst" , "Hoera, een rechthoek!!!" },
             { "watIsOppervlakteTekst" , "Wat is de oppervlakte van deze figuur?" },            
             { "oppervlakteRoodTekst" , "De oppervlakte van de rode figuur is " },                        
-			{ "groterTekst" , "groter dan" },            
-			{ "kleinerTekst" , "kleiner dan" },            
-			{ "evengrootTekst" , "even groot als" },            
-            { "oppervlakteGrijsTekst" , "de oppervlakte van de grijze figuur." },                        		
+			{ "groterTekst" , "is groter dan" },            
+			{ "kleinerTekst" , "is kleiner dan" },            
+			{ "evengrootTekst" , "is even groot als" },            
+            { "oppervlakteGrijsTekst" , "de oppervlakte van de grijze figuur." },
+            
+            { "taakNummerTekst" , "Taaknummer" },
+            { "balkOnderaanTekst" , "Balk onderaan" },
+            { "roosterZichtbaarTekst" , "Rooster zichtbaar" },
+            { "groteBalletjesTekst" , "Grote balletjes" },
+            { "schaduwZichtbaarTekst" , "Schaduw zichtbaar" },
+            { "afmetingenZichtbaarTekst" , "Afmetingen schaduw" },
+            { "gridInPixelsTekst" , "Rooster in pixels" },
+            { "maakRodeFiguurTekst" , "Maak rode figuur" },
+            { "oppervlakteRoodTekst" , "Oppervlakte rood" },
+            { "maakGrijzeFiguurTekst" , "Maak grijze figuur" },
+            { "oppervlakteGrijsTekst" , "Oppervlakte grijs" },
+            { "scoreMaxTekst" , "Maximum score" },
+            
+            
 		};
 }
 

@@ -87,7 +87,8 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 		parameterPanel.remove(parameterComponent);
 		
 		parameters = ipa.getApplet().getEditableParameters();
-        if(parameters == null)parameters = new Parameter[0];
+        if (parameters == null)
+        	parameters = new Parameter[0];
 		Hashtable tmp = launchData;
 		
 		ConvertorIF convertor = ConvertorCreator.createConverter(ConvertorCreator.CONV_LAUNCHDATA);

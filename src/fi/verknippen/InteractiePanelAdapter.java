@@ -130,6 +130,8 @@ public class InteractiePanelAdapter extends JPanel implements InteractiePanel, A
 	
 	public Hashtable getEditState()
 	{
+System.out.println("ipa getEditState");
+
 		Hashtable appletLaunchData = launchData;
 		String appletEditState = null;
 		if (initiated) 
@@ -383,7 +385,7 @@ public class InteractiePanelAdapter extends JPanel implements InteractiePanel, A
         {	
         	value = (String) launchData.get(name);
 //if (name.equals("taaknummer"))        
-//System.out.println("ld not null tn = " + value);        
+//System.out.println("" + name + " = " + value);        
         	
         }	
 		return value;

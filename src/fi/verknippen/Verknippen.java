@@ -13,13 +13,16 @@ import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-//import fi.verknippen.InteractiePanelAdapter;
 
-public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParamEditApplet
+public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParamEditApplet, WiskOpdrApplet
 {
 	// scormgebeuren
 	protected static ResourceBundle rb;
+	protected static String langArg;
+	protected static Color bgColor = new Color(255, 255, 198);
+	
 	protected SCORM12APIInterface api;
 	boolean scormed = false;
 	boolean reviewMode = false;	
@@ -28,7 +31,6 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	boolean isDWOComponent = false;
 	
 	InteractiePanelAdapter ipa = null;
-	
 	
 	public static void main(String[] args)    
 	{	int width = 790;
@@ -47,8 +49,6 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 		mf.setSize(framebreedte, framehoogte);
 
 	}
-	
-	Color bgColor;
 	
 	// andere kleuren in DrawingPanel	
 	
@@ -100,21 +100,22 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	Font theBoldFont;
 	FontMetrics theBoldFM;
 
-	Color buttonColor = Color.yellow;
+	static Color buttonColor = Color.yellow;
 
 	AppletUtil au;	
 	Image foutKruis, goedVink;
 
 	public Verknippen()
-	{	Locale language = new Locale ("nl", "");
-		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+	{	
+		langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.verknippen.text.Text", language);	
 	}
 	
 	public Verknippen(Locale language)
 	{	
-		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.verknippen.text.Text", language);	
 	}
 	
 	public void init() 
@@ -518,13 +519,13 @@ if (scormed)
 		
 		opdrachtLabel = new JLabel();
 		opdrachtLabel.setFont(theBoldFont);
-//opdrachtLabel.setOpaque(true);
-//opdrachtLabel.setBackground(Color.orange);		
+opdrachtLabel.setOpaque(true);
+opdrachtLabel.setBackground(Color.orange);		
 
 		opdrachtLabel2 = new JLabel();
 		opdrachtLabel2.setFont(theBoldFont);
-//opdrachtLabel2.setOpaque(true);
-//opdrachtLabel2.setBackground(Color.orange);		
+opdrachtLabel2.setOpaque(true);
+opdrachtLabel2.setBackground(Color.orange);		
 
 
 		if (taakNummer == 1)
@@ -552,7 +553,7 @@ if (scormed)
 		else if (taakNummer == 4)
 		{	
 			opdrachtLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-			opdrachtLabel.setText(rb.getString("oppervlakteRoodTekst"));
+			opdrachtLabel.setText(rb.getString("oppervlakteRoodTekst") + "   ");
 			opdrachtLabel.setBounds(
 				selector.getLocation().x + selector.getSize().width + 2 * offSet,
 				offSet / 2 - 2,
@@ -562,7 +563,7 @@ if (scormed)
 				3 * theBoldFM.getHeight() / 2);
 				
 			opdrachtLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
-			opdrachtLabel2.setText(rb.getString("oppervlakteGrijsTekst"));	
+			opdrachtLabel2.setText(rb.getString("oppervlakteGrijsTekst") + "   ");	
 			opdrachtLabel2.setBounds(
 				opdrachtLabel.getLocation().x,
 				opdrachtLabel.getLocation().y + opdrachtLabel.getSize().height,
@@ -635,11 +636,11 @@ if (scormed)
 				opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width + offSet,
 				vergelijkChoice.getLocation().y);
 			
-			opdrachtLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+			//opdrachtLabel2.setHorizontalAlignment(SwingConstants.LEFT);
 			opdrachtLabel2.setSize(theBoldFM.stringWidth(opdrachtLabel2.getText()) + 10, 3 * theBoldFM.getHeight() / 2);
-			opdrachtLabel2.setLocation(
-				opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width -
-				opdrachtLabel2.getSize().width, 
+			opdrachtLabel2.setLocation(offSet / 2,
+				//opdrachtLabel.getLocation().x + opdrachtLabel.getSize().width -
+				//opdrachtLabel2.getSize().width, 
 				opdrachtLabel2.getLocation().y);
 			
 			okButton.setLocation(vergelijkChoice.getLocation().x + vergelijkChoice.getSize().width -
@@ -1305,11 +1306,14 @@ if (scormed)
 	}
 	
 	public InteractiePanel getInteractiePanel()
-	{	if (ipa == null)
+	{	
+/*		
+		if (ipa == null)
 			ipa = new InteractiePanelAdapter(this);
 		
 		return ipa;
-		//return new InteractiePanelAdapter(this);
+*/		
+		return new VerknippenInteractiePanel();
 	}
 	
 	public boolean hasEditMode()

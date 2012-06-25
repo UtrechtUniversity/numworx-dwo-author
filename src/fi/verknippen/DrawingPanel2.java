@@ -1,5 +1,6 @@
 package fi.verknippen;
 
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -8,9 +9,9 @@ import java.util.*;
 import javax.swing.*;
 
 
-public class DrawingPanel extends JPanel
+public class DrawingPanel2 extends JPanel
 {	
-	Verknippen owner;
+	VerknippenInteractiePanel owner;
 	
 	Color bgColor = Color.white;
 	Color outlineColor = Color.black;
@@ -21,14 +22,14 @@ public class DrawingPanel extends JPanel
 	Color sizeColor = Color.black;	
 	Color labelColor = Color.green;
 	
-	boolean showGrid = true;
+	boolean showGrid = false;
 	
 	boolean gridOnTop = false;
 	// dit is de default
 	int gridSize = 20;
 
-	KnipPolygon shadowPolygon;
-	KnipPolygon grijsPolygon;
+	KnipPolygon2 shadowPolygon;
+	KnipPolygon2 grijsPolygon;
 	boolean showSizes = false;
 
 	Vector knipPolygons = new Vector();
@@ -53,7 +54,7 @@ public class DrawingPanel extends JPanel
 
 	boolean dragging = false;
 
-	KnipPolygon draggPolygon = null;
+	KnipPolygon2 draggPolygon = null;
 	Vector draggVertices = new Vector();
 	Vector rotateVertices = new Vector();	
 
@@ -63,18 +64,18 @@ public class DrawingPanel extends JPanel
 	
 	JTextField invulVeld;
 	
-	KnipPolygon labelPolygon = null;
+	KnipPolygon2 labelPolygon = null;
 
 	int labelWidth;
 	int labelHeight;
 	
+	boolean frozen = false;
 	
-	
-	public DrawingPanel(Verknippen o, boolean largeOvals)
+	public DrawingPanel2(VerknippenInteractiePanel o, boolean largeOvals)
 	{	
 		owner = o;
-		
-		if (owner.largeOvals)
+	
+		if (owner.groteBalletjes)
 		{	clickDis = 7;
 			ovalSize = 13;
 		}
@@ -101,21 +102,36 @@ public class DrawingPanel extends JPanel
 			invulVeld.setBackground(labelColor);
 		invulVeld.setSize(labelWidth, labelHeight);
 		invulVeld.setVisible(false);
-		if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
-			add(invulVeld);
-//		invulVeld.addFocusListener(new TextFL());
+		
+		//if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
+			
+		add(invulVeld);
+//		
+		invulVeld.addFocusListener(new TextFL());
 		invulVeld.addActionListener(new TextAL());
 		invulVeld.addKeyListener(new InputKL());
 		
 		
 	}
 	
-	public void addKnipPolygon(KnipPolygon kp)
+	public void zetBalletjesGrootte()
+	{
+		if (owner.groteBalletjes)
+		{	clickDis = 7;
+			ovalSize = 13;
+		}
+		else
+		{	clickDis = 4;
+			ovalSize = 8;
+		}
+		
+	}
+	public void addKnipPolygon(KnipPolygon2 kp)
 	{	knipPolygons.addElement(kp);
 		repaint();
 	}
 	
-	public void removeKnipPolygon(KnipPolygon kp)
+	public void removeKnipPolygon(KnipPolygon2 kp)
 	{	knipPolygons.removeElement(kp);
 		repaint();
 	}
@@ -125,7 +141,7 @@ public class DrawingPanel extends JPanel
 		repaint();
 	}
 
-	public void putOnTop(KnipPolygon kp)
+	public void putOnTop(KnipPolygon2 kp)
 	{	knipPolygons.removeElement(kp);
 		// maak kp de laatste, dan als laatste getekend
 		knipPolygons.addElement(kp);
@@ -135,10 +151,10 @@ public class DrawingPanel extends JPanel
 	// slepen/selecteren/roteren
 	// dit vindt de laatste die (x,y) bevat, dat is dan
 	// meteen de bovenste
-	public KnipPolygon knipPolygonContains(int x, int y)
-	{	KnipPolygon result = null;
+	public KnipPolygon2 knipPolygonContains(int x, int y)
+	{	KnipPolygon2 result = null;
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			boolean contains = kp.contains(x, y);
 			if (contains)
 				result = kp;
@@ -149,7 +165,7 @@ public class DrawingPanel extends JPanel
 	public int knipPolygonsContain(int x, int y)
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			boolean contains = kp.contains(x, y);
 			if (contains)
 				result.addElement(kp);
@@ -165,7 +181,7 @@ public class DrawingPanel extends JPanel
 	public Vector listRealVertices()
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			for (int pCnt = 0; pCnt < kp.aantalPunten; pCnt++)
 			{	RealPoint aVertex = kp.realPoints[pCnt];
 				if (!result.contains(aVertex))
@@ -194,7 +210,7 @@ public class DrawingPanel extends JPanel
 	public Vector containVertex(RealPoint v)
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			int index = kp.containsVertex(v);
 			if (index >= 0)
 				result.addElement(kp);
@@ -206,7 +222,7 @@ public class DrawingPanel extends JPanel
 	public Vector containVertex(Vector subset, RealPoint v)
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < subset.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) subset.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) subset.elementAt(kpCnt);
 			int index = kp.containsVertex(v);
 			if (index >= 0)
 				result.addElement(kp);
@@ -218,7 +234,7 @@ public class DrawingPanel extends JPanel
 	public Vector containStrictEdgePoint(RealPoint v)
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			int index = kp.edgeStrictlyContainsPoint(v);
 			if (index >= 0)
 				result.addElement(kp);
@@ -230,7 +246,7 @@ public class DrawingPanel extends JPanel
 	public Vector containStrictEdgePoint(Vector subset, RealPoint v)
 	{	Vector result = new Vector();
 		for (int kpCnt = 0; kpCnt < subset.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) subset.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) subset.elementAt(kpCnt);
 			int index = kp.edgeStrictlyContainsPoint(v);
 			if (index >= 0)
 				result.addElement(kp);
@@ -243,7 +259,7 @@ public class DrawingPanel extends JPanel
 	public RealPoint edgeClicked(int clickX, int clickY)
 	{	RealPoint result = null;
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			RealPoint kpResult = kp.edgeClicked(clickX, clickY);
 			if (kpResult != null)
 				result = kpResult;
@@ -256,7 +272,7 @@ public class DrawingPanel extends JPanel
 	public RealPoint gridPointOnEdgeClicked(int clickX, int clickY)
 	{	RealPoint result = null;
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			RealPoint kpResult = kp.gridPointOnEdgeClicked(clickX, clickY);
 			if (kpResult != null)
 				result = kpResult;
@@ -270,7 +286,7 @@ public class DrawingPanel extends JPanel
  		Vector vPolygons = containVertex(firstCutPoint);
 //System.out.println("vpol = " + vPolygons.size()); 		
  		for (int vCnt = 0; vCnt < vPolygons.size(); vCnt++)
- 		{	KnipPolygon kp = (KnipPolygon) vPolygons.elementAt(vCnt);
+ 		{	KnipPolygon2 kp = (KnipPolygon2) vPolygons.elementAt(vCnt);
  			Vector gekniptePolygons = new Vector();
 			// kijk of kp secondCutPoint bevat als vertex or edgepoint
 			if ((kp.containsVertex(secondCutPoint) >= 0) ||
@@ -280,12 +296,12 @@ public class DrawingPanel extends JPanel
  			{	knipPolygons.removeElement(kp);
  				// eerst toevoegen
  				for (int kCnt = 0; kCnt < gekniptePolygons.size(); kCnt++)
- 				{	KnipPolygon knip = (KnipPolygon) gekniptePolygons.elementAt(kCnt);
+ 				{	KnipPolygon2 knip = (KnipPolygon2) gekniptePolygons.elementAt(kCnt);
  					knipPolygons.addElement(knip);
 // aangeven dat deze geknipt zijn? 					
  				}
 				for (int kCnt = 0; kCnt < gekniptePolygons.size(); kCnt++)
- 				{	KnipPolygon knip = (KnipPolygon) gekniptePolygons.elementAt(kCnt);
+ 				{	KnipPolygon2 knip = (KnipPolygon2) gekniptePolygons.elementAt(kCnt);
 if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 knip.setLabelPoint(); 				 				
 				}
@@ -298,7 +314,7 @@ knip.setLabelPoint();
  		Vector ePolygons = containStrictEdgePoint(firstCutPoint);
 //System.out.println("epol = " + ePolygons.size()); 		 		
  		for (int eCnt = 0; eCnt < ePolygons.size(); eCnt++)
- 		{	KnipPolygon kp = (KnipPolygon) ePolygons.elementAt(eCnt);
+ 		{	KnipPolygon2 kp = (KnipPolygon2) ePolygons.elementAt(eCnt);
  			Vector gekniptePolygons = new Vector();
 			// kijk of kp secondCutPoint bevat als vertex or edgepoint
 			if ((kp.containsVertex(secondCutPoint) >= 0) ||
@@ -307,12 +323,12 @@ knip.setLabelPoint();
  			if (gekniptePolygons.size() > 0)
  			{	knipPolygons.removeElement(kp);
  				for (int kCnt = 0; kCnt < gekniptePolygons.size(); kCnt++)
- 				{	KnipPolygon knip = (KnipPolygon) gekniptePolygons.elementAt(kCnt);
+ 				{	KnipPolygon2 knip = (KnipPolygon2) gekniptePolygons.elementAt(kCnt);
  					knipPolygons.addElement(knip);
 // aangeven dat deze geknipt zijn? 					
  				}
 				for (int kCnt = 0; kCnt < gekniptePolygons.size(); kCnt++)
- 				{	KnipPolygon knip = (KnipPolygon) gekniptePolygons.elementAt(kCnt);
+ 				{	KnipPolygon2 knip = (KnipPolygon2) gekniptePolygons.elementAt(kCnt);
 if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 knip.setLabelPoint(); 				 				
 				}
@@ -348,7 +364,7 @@ NB het is niet of-of!!
 */ 	
 	}
 	
-	public Vector knipVanuitPunt(KnipPolygon kp, RealPoint p)
+	public Vector knipVanuitPunt(KnipPolygon2 kp, RealPoint p)
 	{	
 		Vector gekniptePolygons = new Vector();
 		boolean fromVertex = true;	
@@ -499,7 +515,7 @@ if (knipPunten.size() == 2)
 					// en klaar!
 					if (polygon1.size() > 2)
 					{	// maak van polygon1 een knipPolygon
-						KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+						KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 						// voeg het toe aan gekniptePolygons
 						gekniptePolygons.addElement(geknipt);
 					}	
@@ -523,7 +539,7 @@ if (knipPunten.size() == 2)
 					else // we zijn rond
 					{	if (polygon2.size() > 2)
 						{	// maak van polygon2 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -583,7 +599,7 @@ System.out.println("f & !o & !i pol2 from stack");
 					else // we zijn rond
 					{	if (polygon2.size() > 2)
 						{	// maak van polygon2 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -642,7 +658,7 @@ System.out.println("f & !o & !i pol2 from stack");
 					else // we zijn rond
 					{	if (polygon1.size() > 2)
 						{	// maak van polygon1 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -659,7 +675,7 @@ System.out.println("f & !o & !i pol2 from stack");
 
 							if (polygon1.size() > 2)
 							{	// maak van polygon2 een knipPolygon
-								KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+								KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 								// voeg het toe aan gekniptePolygons
 								gekniptePolygons.addElement(geknipt);
 							}	
@@ -698,7 +714,7 @@ System.out.println("f & !o & !i pol2 from stack");
 
 					if (polygon2.size() > 2)
 					{	// maak van polygon2 een knipPolygon
-						KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+						KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 						// voeg het toe aan gekniptePolygons
 						gekniptePolygons.addElement(geknipt);
 					}	
@@ -716,7 +732,7 @@ System.out.println("f & !o & !i pol2 from stack");
 
 							if (polygon2.size() > 2)
 							{	// maak van polygon2 een knipPolygon
-								KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+								KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 								// voeg het toe aan gekniptePolygons
 								gekniptePolygons.addElement(geknipt);
 							}	
@@ -760,7 +776,7 @@ System.out.println("f & !o & !i pol2 from stack");
 					else // we zijn rond
 					{	if (polygon1.size() > 2)
 						{	// maak van polygon2 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -862,7 +878,7 @@ System.out.println("f & !o & !i pol2 from stack");
 				else
 				{	if (polygon1.size() > 2)
 					{	// maak van polygon2 een knipPolygon
-						KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+						KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 						// voeg het toe aan gekniptePolygons
 						gekniptePolygons.addElement(geknipt);
 					}	
@@ -923,7 +939,7 @@ System.out.println("f & !o & !i pol2 from stack");
 
 						if (polygon1.size() > 2)
 						{	// maak van polygon2 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon1, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon1, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -978,7 +994,7 @@ System.out.println("f & !o & !i pol2 from stack");
 				else // we zijn rond
 				{	if (polygon2.size() > 2)
 					{	// maak van polygon2 een knipPolygon
-						KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+						KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 						// voeg het toe aan gekniptePolygons
 						gekniptePolygons.addElement(geknipt);
 					}	
@@ -1007,7 +1023,7 @@ System.out.println("f & !o & !i pol2 from stack");
 
 						if (polygon2.size() > 2)
 						{	// maak van polygon2 een knipPolygon
-							KnipPolygon geknipt = new KnipPolygon(polygon2, this);
+							KnipPolygon2 geknipt = new KnipPolygon2(polygon2, this);
 							// voeg het toe aan gekniptePolygons
 							gekniptePolygons.addElement(geknipt);
 						}	
@@ -1045,7 +1061,7 @@ System.out.println("f & !o & !i pol2 from stack");
 		
 			
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			g.setColor(polyColor);
 			g.fillPolygon(kp.intPolygon);
 			g.setColor(outlineColor);
@@ -1077,7 +1093,7 @@ System.out.println("f & !o & !i pol2 from stack");
 					if (kp.oppervlakte > 0)
 					{	String oString = "" + kp.oppervlakte;
 						int oWidth = owner.theBoldFM.stringWidth(oString);
-						int hSpace = (KnipPolygon.labelWidth - oWidth) / 2;
+						int hSpace = (KnipPolygon2.labelWidth - oWidth) / 2;
 						if (hSpace < 0)
 							hSpace = 0;
 						int bx = kp.labelRect.x + hSpace;	
@@ -1281,7 +1297,7 @@ System.out.println("f & !o & !i pol2 from stack");
 	{	// vindt de bounding box voor alle stukjes op
 		// het werkveld
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			if (kpCnt == 0)
 			{	allPolyRect = kp.intPolygon.getBounds();
 			}	
@@ -1355,31 +1371,32 @@ int chkCnt = 0;
 //System.out.println("chkCnt = " + chkCnt);						
 			if (isRectangle)
 			{	figureIsRectangle = true;
-				owner.opdrachtLabel.setText(owner.rb.getString("rechthoekTekst"));
-				owner.selector.setState(owner.currentNum, owner.selector.GREEN);
-				owner.currentOpdracht.antwoord = 1;
-				owner.currentOpdracht.antwoordOK = true;
-				if (owner.ipa != null)
-					owner.ipa.produceAction("changed");
+				owner.bottomPanel2.opdrachtLabel.setText(Verknippen.rb.getString("rechthoekTekst"));
+				
+				owner.antwoord = 1;
+				owner.antwoordOK = true;
+				
+//				if (owner.ipa != null)
+				owner.produceAction("changed");
 				
 
 //System.out.println("rectangle");				
 			}
 			else
 			{	figureIsRectangle = false;
-				owner.opdrachtLabel.setText(owner.rb.getString("maakRechthoekTekst"));			
-				owner.selector.setState(owner.currentNum, owner.selector.INITIAL);
-				owner.currentOpdracht.antwoord = 0;
-				owner.currentOpdracht.antwoordOK = false;
+				owner.bottomPanel2.opdrachtLabel.setText(Verknippen.rb.getString("maakRechthoekTekst"));			
 				
-				if (owner.ipa != null)				
-					owner.ipa.produceAction("changed");
+				owner.antwoord = 0;
+				owner.antwoordOK = false;
+				
+//				if (owner.ipa != null)				
+				owner.produceAction("changed");
 			}			
 		
 
 	}
 
-	public void handleRotation(KnipPolygon rotatePolygon, RealPoint rotateCenter)
+	public void handleRotation(KnipPolygon2 rotatePolygon, RealPoint rotateCenter)
 	{	rotateVertices.removeAllElements();
 		for (int pCnt = 0; pCnt < rotatePolygon.aantalPunten; pCnt++)
 		{	if (isOnGrid(rotatePolygon.intPoints[pCnt]))
@@ -1432,11 +1449,11 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		repaint();
 	}
 
-	public KnipPolygon knipPolygonLabelContains(int x, int y)
-	{	KnipPolygon result = null;
+	public KnipPolygon2 knipPolygonLabelContains(int x, int y)
+	{	KnipPolygon2 result = null;
 	
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			if ((kp.labelVisible || (owner.taakNummer == 3)) && 
 				(kp.labelRect != null) && 
 				kp.labelRect.contains(x, y))
@@ -1446,11 +1463,11 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		return result;
 	}
 	
-	public KnipPolygon knipPolygonLabelPointContains(RealPoint realClicked)
-	{	KnipPolygon result = null;
+	public KnipPolygon2 knipPolygonLabelPointContains(RealPoint realClicked)
+	{	KnipPolygon2 result = null;
 	
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			if ((kp.labelPoint != null) && (owner.taakNummer == 2) && 
 				(realClicked.distance(kp.labelPoint) < clickDis))
 				result = kp;
@@ -1460,11 +1477,11 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 	}
 	
 
-	public boolean knipPolygonIntersects(Rectangle r, KnipPolygon skip)
+	public boolean knipPolygonIntersects(Rectangle r, KnipPolygon2 skip)
 	{	boolean result = false;
 	
 		for (int kpCnt = 0; kpCnt < knipPolygons.size(); kpCnt++)
-		{	KnipPolygon kp = (KnipPolygon) knipPolygons.elementAt(kpCnt);
+		{	KnipPolygon2 kp = (KnipPolygon2) knipPolygons.elementAt(kpCnt);
 			if (kp != skip)
 			{
 				Rectangle kpBb = kp.getBoundingBox();
@@ -1487,6 +1504,8 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 	
 		public void mousePressed(MouseEvent e)
 		{	
+			if (frozen)
+				return;
 
 			if (invulVeld.isVisible())					
 				focusLostAction();
@@ -1503,7 +1522,7 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 					firstCutPolygons = containVertex(firstCutPoint);
 					firstCutPolygons2 = containStrictEdgePoint(firstCutPoint);
 					for (int pCnt = 0; pCnt < firstCutPolygons2.size(); pCnt++)
-					{	KnipPolygon kp = (KnipPolygon) firstCutPolygons2.elementAt(pCnt);
+					{	KnipPolygon2 kp = (KnipPolygon2) firstCutPolygons2.elementAt(pCnt);
 						firstCutPolygons.addElement(kp);
 					}
 					knippen = true;
@@ -1572,7 +1591,7 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 						
 						else // kijk of er op een label of op een deel van een labelpunt buiten het polygon geklikt is
 						{	
-							KnipPolygon labelPoly = knipPolygonLabelContains(e.getX(), e.getY());
+							KnipPolygon2 labelPoly = knipPolygonLabelContains(e.getX(), e.getY());
 							if (labelPoly != null)
 							{	
 //System.out.println("label");							
@@ -1604,7 +1623,7 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 								RealPoint realClicked = new RealPoint(e.getX(), e.getY());							
 								
 								// kijk of het labelPoint van een draggPolygon aangeklikt is
-								KnipPolygon labelPointPolygon = knipPolygonLabelPointContains(realClicked);
+								KnipPolygon2 labelPointPolygon = knipPolygonLabelPointContains(realClicked);
 								
 								if ((owner.taakNummer == 2) && (labelPointPolygon != null))
 								{	//if (realClicked.distance(
@@ -1691,7 +1710,9 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		}
 		public void mouseReleased(MouseEvent e)
 		{	
-		
+			if (frozen)
+				return;
+			
 			if (knippen && (draggCnt >= 2)) // eerst knippunt is gekozen
 			// nu tweede knippunt
 			{	// kijk eerst of er een vertex onder de mouse-up ligt
@@ -1796,6 +1817,9 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		}
 		public void mouseDragged(MouseEvent e)
 		{	
+			if (frozen)
+				return;
+			
 			draggCnt++;
 		
 			if (knippen)
@@ -1848,7 +1872,11 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			}
 		}
 		public void mouseMoved(MouseEvent e)
-		{	// nog geen eerste punt gekozen, knippen=false
+		{	
+			if (frozen)
+				return;
+			
+			// nog geen eerste punt gekozen, knippen=false
 			if (!knippen)
 			{	RealPoint vertexMoved = vertexClicked(e.getX(), e.getY());
 				if (vertexMoved != null)
@@ -2042,43 +2070,7 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			{	txt = removeCharAt(txt, index);
 				corrected = true;
 			}
-/*			
-			// dubbele decimale punt
-			// voldoende er twee te zoeken
-			int pIndex1 = txt.indexOf('.');
-			int pIndex2 = txt.lastIndexOf('.');
-			if ((pIndex1 >= 0) && (pIndex2 >= 0) && (pIndex1 != pIndex2))
-			{	// verwijderen
-				txt = removeCharAt(txt, pIndex2);
-				corrected = true;
-			}
-*/
-/*			
-			// proberen een legaal karakter voor het
-			// minteken (dit staat dan op plek 1) in te vullen
-			if (txt.indexOf('-') == 1)
-			{	txt = removeCharAt(txt, 0);
-				corrected = true;
-			}
-*/			
-/*
-			// minteken
-			// alleen vooraan if any
-			int minIndex = txt.lastIndexOf('-');
-			if (minIndex > 0)
-			{	txt = removeCharAt(txt, minIndex);
-				corrected = true;
-			}
-*/			
 			// leading zeros, leiden niet tot een NumberFormatException
-/*			
-			// geval met minteken
-			if ((txt.indexOf('-') == 0) && (txt.length() >= 3) &&
-				(txt.charAt(1) == '0') && Character.isDigit(txt.charAt(2)))
-			{	txt = removeCharAt(txt, 1);
-				corrected = true;
-			}
-*/			
 			// geen minteken
 			if (//(txt.indexOf('-') < 0) && 
 				(txt.length() >= 2) &&

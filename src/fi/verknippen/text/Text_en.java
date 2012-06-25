@@ -15,7 +15,21 @@ public class Text_en extends java.util.ListResourceBundle
 			{ "groterTekst" , "is larger than" },            
 			{ "kleinerTekst" , "is smaller than" },            
 			{ "evengrootTekst" , "equals" },            
-            { "oppervlakteGrijsTekst" , "the surface area of the gray figure." },                        		
+            { "oppervlakteGrijsTekst" , "the surface area of the gray figure." },   
+            
+            { "taakNummerTekst" , "Task number" },
+            { "balkOnderaanTekst" , "Bottom panel" },
+            { "roosterZichtbaarTekst" , "Show grid" },
+            { "groteBalletjesTekst" , "Large ovals" },
+            { "schaduwZichtbaarTekst" , "Show schadow" },
+            { "afmetingenZichtbaarTekst" , "Show shadow sizes" },
+            { "gridInPixelsTekst" , "Gridsize (pixels)" },
+            { "maakRodeFiguurTekst" , "Make red figure" },
+            { "oppervlakteRoodTekst" , "Surface area red" },
+            { "maakGrijzeFiguurTekst" , "Make grey figure" },
+            { "oppervlakteGrijsTekst" , "Surface area grey" },
+            { "scoreMaxTekst" , "Maximum score" },
+            
             
 		};
 }
