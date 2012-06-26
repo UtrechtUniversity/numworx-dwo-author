@@ -443,8 +443,8 @@ System.out.println("aLD found");
 				grijzeFiguurInput = (String) appletLaunchData.get("figuurgrijs1");
 			if (appletLaunchData.containsKey("oppervlaktegrijs1"))
 				oppervlakteGrijs = Integer.parseInt((String) appletLaunchData.get("oppervlaktegrijs1"));
-			if (appletLaunchData.containsKey("scoremax"))
-				scoreMax = Integer.parseInt((String) appletLaunchData.get("scoremax"));
+			if (appletLaunchData.containsKey("scoreMax"))
+				scoreMax = Integer.parseInt((String) appletLaunchData.get("scoreMax"));
 			
 			
 		}
