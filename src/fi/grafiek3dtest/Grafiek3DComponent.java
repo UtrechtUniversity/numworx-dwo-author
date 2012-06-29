@@ -864,7 +864,7 @@ public class Grafiek3DComponent extends JPanel implements ActionListener//, Tabl
     	
     	if (surface3DObject.trimTop)
     	{	
-System.out.println("trimTop");    		
+//System.out.println("trimTop");    		
     		Plane3D zMaxPlane = new Plane3D(0, 0, 1, zMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D topTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMaxPlane);
@@ -889,7 +889,7 @@ System.out.println("trimTop");
     	}
     	if (surface3DObject.trimBottom)
     	{	
-System.out.println("trimBottom");    		
+//System.out.println("trimBottom");    		
     		Plane3D zMinPlane = new Plane3D(0, 0, 1, zMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D bottomTrimmedGroup = cutObjectGroup(surface3DObjectGroup, zMinPlane);
@@ -914,7 +914,7 @@ System.out.println("trimBottom");
     	}
     	if (surface3DObject.trimRight)
     	{	
-System.out.println("trimRight");    		
+//System.out.println("trimRight");    		
     		Plane3D xMaxPlane = new Plane3D(1, 0, 0, xMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D rightTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMaxPlane);
@@ -939,7 +939,7 @@ System.out.println("trimRight");
     	}
     	if (surface3DObject.trimLeft)
     	{	
-System.out.println("trimLeft");    		
+//System.out.println("trimLeft");    		
     		Plane3D xMinPlane = new Plane3D(1, 0, 0, xMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D leftTrimmedGroup = cutObjectGroup(surface3DObjectGroup, xMinPlane);
@@ -964,7 +964,7 @@ System.out.println("trimLeft");
     	}
     	if (surface3DObject.trimBack)
     	{	
-System.out.println("trimBack");    		
+//System.out.println("trimBack");    		
     		Plane3D yMaxPlane = new Plane3D(0, 1, 0, yMaxS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D backTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMaxPlane);
@@ -989,7 +989,7 @@ System.out.println("trimBack");
     	}
     	if (surface3DObject.trimFront)
     	{	
-System.out.println("trimFront");    		
+//System.out.println("trimFront");    		
     		Plane3D yMinPlane = new Plane3D(0, 1, 0, yMinS);
     		ObjectGroup3D surface3DObjectGroup = new ObjectGroup3D(surface3DObject, false);
     		ObjectGroup3D frontTrimmedGroup = cutObjectGroup(surface3DObjectGroup, yMinPlane);
@@ -3132,6 +3132,9 @@ System.out.println("angleX = " + panel3D.angleZ);
     
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
+		
+System.out.println("g3dc zetOpdracht");
+
 		// edit state
 		boolean zoomOptie = true;
 		boolean translateOptie = true;
@@ -3246,7 +3249,7 @@ System.out.println("angleX = " + panel3D.angleZ);
 		}
 		if (zoomFactorG > 0)
 		{	for (int zInCnt = 0; zInCnt < zoomFactorG; zInCnt++)
-			zoomIn(false, FUNCTION);
+				zoomIn(false, FUNCTION);
 		}
 		
 		if (b.containsKey("translateXFactorG"))
@@ -3324,13 +3327,16 @@ System.out.println("angleX = " + panel3D.angleZ);
 		
 		if (b.containsKey("zoomFactorS"))
 			zoomFactorS = ((Integer) b.get("zoomFactorS")).intValue();
+		
+//System.out.println("zFS = " + zoomFactorS);
+
 		if (zoomFactorS < 0)
 		{	for (int zUitCnt = zoomFactorS; zUitCnt < 0; zUitCnt++)
 				zoomUit(false, SURFACE);
 		}
 		if (zoomFactorS > 0)
 		{	for (int zInCnt = 0; zInCnt < zoomFactorS; zInCnt++)
-			zoomIn(false, SURFACE);
+				zoomIn(false, SURFACE);
 		}
 		
 		if (b.containsKey("translateXFactorS"))
@@ -3467,6 +3473,8 @@ System.out.println("angleX = " + panel3D.angleZ);
 	public void setState(Hashtable b)
 	{
 		
+System.out.println("g3dc setState");		
+		
 		// state
 		int objectType = FUNCTION;
 		
@@ -3519,6 +3527,8 @@ System.out.println("angleX = " + panel3D.angleZ);
 		if (b.containsKey("objectType"))
 			objectType = ((Integer) b.get("objectType")).intValue();
 		this.objectType = objectType;
+
+		zoomStandaard(false, objectType);
 		
 		// FUNCTION
 		if (b.containsKey("angleXG"))
@@ -3530,13 +3540,13 @@ System.out.println("angleX = " + panel3D.angleZ);
 		
 		if (b.containsKey("zoomFactorG"))
 			zoomFactorG = ((Integer) b.get("zoomFactorG")).intValue();
-		if (zoomFactorG > 0)
-		{	for (int zUitCnt = 0; zUitCnt < zoomFactorG; zUitCnt++)
+		if (zoomFactorG < 0)
+		{	for (int zUitCnt = zoomFactorG; zUitCnt < 0; zUitCnt++)
 				zoomUit(false, FUNCTION);
 		}
-		if (zoomFactorG < 0)
-		{	for (int zInCnt = zoomFactorG; zInCnt < 0; zInCnt++)
-			zoomIn(false, FUNCTION);
+		if (zoomFactorG > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorG; zInCnt++)
+				zoomIn(false, FUNCTION);
 		}
 		
 		if (b.containsKey("translateXFactorG"))
@@ -3615,12 +3625,12 @@ System.out.println("angleX = " + panel3D.angleZ);
 		
 		if (b.containsKey("zoomFactorS"))
 			zoomFactorS = ((Integer) b.get("zoomFactorS")).intValue();
-		if (zoomFactorS > 0)
-		{	for (int zUitCnt = 0; zUitCnt < zoomFactorS; zUitCnt++)
-				zoomUit(false, SURFACE);
-		}
 		if (zoomFactorS < 0)
-		{	for (int zInCnt = zoomFactorS; zInCnt < 0; zInCnt++)
+		{	for (int zUitCnt = zoomFactorS; zUitCnt < 0; zUitCnt++)
+			zoomUit(false, SURFACE);
+		}
+		if (zoomFactorS > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorS; zInCnt++)
 			zoomIn(false, SURFACE);
 		}
 		
@@ -3688,12 +3698,12 @@ System.out.println("angleX = " + panel3D.angleZ);
 		
 		if (b.containsKey("zoomFactorC"))
 			zoomFactorC = ((Integer) b.get("zoomFactorC")).intValue();
-		if (zoomFactorC > 0)
-		{	for (int zUitCnt = 0; zUitCnt < zoomFactorC; zUitCnt++)
+		if (zoomFactorC < 0)
+		{	for (int zUitCnt = zoomFactorC; zUitCnt < 0; zUitCnt++)
 				zoomUit(false, CURVE);
 		}
-		if (zoomFactorC < 0)
-		{	for (int zInCnt = zoomFactorC; zInCnt < 0; zInCnt++)
+		if (zoomFactorC > 0)
+		{	for (int zInCnt = 0; zInCnt < zoomFactorC; zInCnt++)
 			zoomIn(false, CURVE);
 		}
 		
