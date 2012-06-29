@@ -154,7 +154,7 @@ public class TabelComponent extends JPanel //Component
 	}
 */	
 	public void zetExpressie(Expressie e)
-	{	if(e!=null  && e.geefVarNaam()!=null)//&& e.geefWaarde()==null
+	{	if (e != null  && e.geefVarNaam() != null)//&& e.geefWaarde()==null
 		{	exp = e;
 			varNaam = e.geefVarNaam();
 		}

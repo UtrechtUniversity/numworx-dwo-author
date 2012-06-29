@@ -239,8 +239,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		//if (!kettingZichtbaar)
         //	zetBoomZichtbaar(kettingZichtbaar);
-        	
-		zetBoomZichtbaarHier(kettingZichtbaar);
+        
+		if (!kettingZichtbaar)
+			zetBoomZichtbaarHier(kettingZichtbaar);
 
         zetScroll(scrollable);
         zetZoomInTabel(zoomInTabel);
@@ -459,9 +460,9 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			expressie = pijlIn1.zender.geefUitvoer(20);
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
 //if (expressie == null)
-//System.out.println("e = null");
+//System.out.println("USC e = null");
 //else
-//System.out.println("e = " + expressie.toString());
+//System.out.println("USC e = " + expressie.toString());
 //if (verborgenExpressie == null)
 //System.out.println("ve = null");
 //else
@@ -495,14 +496,14 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		
 		if (expressie != null && expressie.geefVarNaam() != null)
 			tabel.zetExpressie(expressie);
-		else 
+		else if (verborgenExpressie != null && verborgenExpressie.geefVarNaam() != null)
 			tabel.zetExpressie(verborgenExpressie);
 		
 		if (expressie != null)
 		{	expressie.zetMaat(fm);
 			Double waarde = expressie.geefWaarde();
-if (waarde == null)
-System.out.println("w = null");	
+//if (waarde == null)
+//System.out.println("w = null");	
 			if (!Double.isNaN(waarde.doubleValue()))
 				waardeString = Expressie.df.format(waarde);
 			else 
@@ -512,6 +513,10 @@ System.out.println("w = null");
 		zetMaat();
 		
 		if (expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
+			toonTabel(false);
+		else if (verborgenExpressie != null && !Double.isNaN(verborgenExpressie.geefWaarde().doubleValue()))
+			toonTabel(false);
+		else if (expressie == null && verborgenExpressie == null)
 			toonTabel(false);
 		else
 			toonTabel(tabelZichtbaar);

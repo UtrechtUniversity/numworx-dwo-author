@@ -34,30 +34,31 @@ public class OptelSchuifComponent extends AlgebraSchuifComponent
 	
 	
 	public Expressie geefUitvoer(int max)
-	{	if (AlgebraExpressies.simplify)
-		{	Expressie uitv = new Expressie();
-			if (pijlIn1 == null || pijlIn2 == null || max < 0)
-				return null;
-			Expressie e1 = pijlIn1.zender.geefUitvoer(max - 1);
-			Expressie e2 = pijlIn2.zender.geefUitvoer(max - 1);
-			if (e1 == null || e2 == null)
-				return null;
-		
-			uitv = new Optelling(e1, e2);
-			return uitv;
-		}
-		else
-		{
+	{	
+//System.out.println("OSC geef uitvoer");		
 			Expressie uitv = new Expressie();
 			if (pijlIn1 == null || pijlIn2 == null || max < 0)
+			{	
+//if (pijlIn1 == null)
+//System.out.println("pi1 = null");
+//if (pijlIn2 == null)
+//System.out.println("pi2 = null");
+			
 				return null;
+			}	
 			Expressie e1 = pijlIn1.zender.geefUitvoer(max - 1);
 			Expressie e2 = pijlIn2.zender.geefUitvoer(max - 1);
+			
+//if (e1 == null)
+//System.out.println("e1 = null");
+//if (e2 == null)
+//System.out.println("e2 = null");
+			
 			if (e1 == null || e2 == null)
 				return null;
 			uitv = new Optelling(e1, e2);
 			return uitv;
-		}
+		
 	}
 	
 	public Expressie geefVerborgenUitvoer(int max)
@@ -68,14 +69,16 @@ public class OptelSchuifComponent extends AlgebraSchuifComponent
 		Expressie e2 = pijlIn2.zender.geefUitvoer(max - 1);
 		Expressie ve1 = pijlIn1.zender.geefVerborgenUitvoer(max - 1);
 		Expressie ve2 = pijlIn2.zender.geefVerborgenUitvoer(max - 1);
-		if (e1 != null && e2 == null)
+		if (e1 != null && e2 == null && ve2 != null)
 		{	uitv = new Optelling(e1, ve2);
 		}
-		else if (e1 == null && e2 != null)
+		else if (e1 == null && ve1 != null && e2 != null)
 		{	uitv = new Optelling(ve1, e2);
 		}
-		else 
+		else if (ve1 != null && ve2 != null)
 			uitv = new Optelling(ve1, ve2);
+		else
+			return null;
 		return uitv;
 	}
 	

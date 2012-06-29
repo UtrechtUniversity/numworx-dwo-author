@@ -54,14 +54,16 @@ public class MachtSchuifComponent extends AlgebraSchuifComponent
 		Expressie e2 = pijlIn2.zender.geefUitvoer(max - 1);
 		Expressie ve1 = pijlIn1.zender.geefVerborgenUitvoer(max - 1);
 		Expressie ve2 = pijlIn2.zender.geefVerborgenUitvoer(max - 1);
-		if (e1 != null && e2 == null)
+		if (e1 != null && e2 == null && ve2 != null)
 		{	uitv = new Macht(e1, ve2);
 		}
-		else if (e1 == null && e2 != null)
+		else if (e1 == null && ve1 != null && e2 != null)
 		{	uitv = new Macht(ve1, e2);
 		}
-		else 
+		else if (ve1 != null && ve2 != null)
 			uitv = new Macht(ve1, ve2);
+		else
+			return null; 
 
 		return uitv;
 	}	

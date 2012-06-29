@@ -584,7 +584,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
     {	
     	
     	
-//System.out.println("setState start");
+//System.out.println("ASV setState");
 //System.out.println("b = " + getSize().width);
 //System.out.println("ob = " + origBreedte);
 
@@ -633,14 +633,20 @@ this.isDemo = isDemo;
 			zoomStateHolderState = (Hashtable) h.get("zoomStateHolderState");
 		}
 		catch(Exception ex)
-		{	return;
+		{	
+//System.out.println("exception");
+
+			return;
 		}
 		
 		zoomStateHolder.setState(zoomStateHolderState);
 		
 		int n = this.aantalSc;
 		for (int i = 0; i < n; i++)
-		{	verwijder(schuifcomponenten[0]);
+		{	
+//System.out.println("te verwijderen " + i);			
+			verwijder(schuifcomponenten[0]);
+//System.out.println("verwijderd " + i);		
 		}
 		
 		this.aantalSc = aantalSc;
@@ -697,16 +703,22 @@ this.isDemo = isDemo;
 			add(schuifcomponenten[i]);
 		}
 		
-	    
+//System.out.println("aantalSc = " + aantalSc);	    
 	    for (int i = 0; i < aantalSc; i++)
 	    {	for(int j = 0; j < aantalSc; j++)
-			{	if (connections[i][j] == 1) 
-				{	Pijl p = schuifcomponenten[i].pijlUit[schuifcomponenten[i].aantalPu - 1];
+			{	
+//System.out.println("[" + i + "]["+ j + "] = " + connections[i][j]);	    	
+	    		if (connections[i][j] == 1) 
+				{	
+//System.out.println("[" + i + "]["+ j + "] = 1");				
+					Pijl p = schuifcomponenten[i].pijlUit[schuifcomponenten[i].aantalPu - 1];
 					schuifcomponenten[j].verbind(p, true);
 					p.zetVerbonden(schuifcomponenten[j]);
 				}
 				if (connections[i][j] == 2) 
-				{	Pijl p = schuifcomponenten[i].pijlUit[schuifcomponenten[i].aantalPu - 1];
+				{	
+//System.out.println("[" + i + "]["+ j + "] = 2");					
+					Pijl p = schuifcomponenten[i].pijlUit[schuifcomponenten[i].aantalPu - 1];
 					schuifcomponenten[j].verbind(p, false);
 					p.zetVerbonden(schuifcomponenten[j]);
 				}
@@ -1185,6 +1197,7 @@ System.out.println("aantalStapels = " + aantalStapels);
 				{	if (sc.pijlUit[k].ontvanger != null)
 					{	AlgebraSchuifComponent as = sc.pijlUit[k].ontvanger;
 						as.maakLos(sc.pijlUit[k]);
+						//if (verander)
 						as.zetVeranderd(20);
 					}					
 					remove(sc.pijlUit[k]);
