@@ -2337,6 +2337,7 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			else
 			{
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				tekenen = false;
 			}
 			
 			repaint();
