@@ -24,6 +24,11 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 									
 {	Image foutKruis, goedKrul, halfKrul;
 	ImageIcon foutKruisIcon, goedKrulIcon, halfKrulIcon;
+	Image penDefault, penRollover, penSelected, gumDefault, gumRollover, gumSelected;
+	ImageIcon penDefaultIcon, penRolloverIcon, penSelectedIcon, gumDefaultIcon, gumRolloverIcon, gumSelectedIcon;
+	Image tekenCursor, gumCursor;
+	ImageIcon tekenCursorIcon, gumCursorIcon; 
+	
 	
 	// fonts
 	Font theFont;
@@ -41,9 +46,12 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	boolean groteBalletjes = false;
 	boolean schaduwZichtbaar = false;
 	boolean afmetingenZichtbaar = false;
+	boolean tekenGumOptie = false;
    	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
    	Vector rodeFiguurCoordinaten = new Vector();
-	int gridSize = 20;    	
+	int gridSize = 20;  
+	int minGrid = 16;
+	int maxGrid = 50;
 	int oppervlakteRood = 64;    	
 	String grijzeFiguurString = "0,0|8,0|8,8|0,8";
 	Vector grijzeFiguurCoordinaten = new Vector();
@@ -66,6 +74,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
     
 	boolean noSetBounds = false;	
 	
+	
 	public VerknippenInteractiePanel()
 	{
 		setLayout(null);
@@ -87,7 +96,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		}
 		else 
 		{
-			System.out.println("Error reading foutkruis.");
+			System.out.println("Error reading foutkruis.gif");
 		}
 		imageURL = Verknippen.class.getResource("resources/goedkrulhalf.gif");
 		if (imageURL != null) 
@@ -96,12 +105,92 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		}
 		else 
 		{
-			System.out.println("Error reading goedkrulhalf.");
+			System.out.println("Error reading goedkrulhalf.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_penknop_default.gif");
+		if (imageURL != null) 
+		{
+			penDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_default.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_penknop_rollover.gif");
+		if (imageURL != null) 
+		{
+			penRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_rollover.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_penknop_selected.gif");
+		if (imageURL != null) 
+		{
+			penSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_selected.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_gumknop_default.gif");
+		if (imageURL != null) 
+		{
+			gumDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_default.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_gumknop_rollover.gif");
+		if (imageURL != null) 
+		{
+			gumRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_rollover.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/teken_gumknop_selected.gif");
+		if (imageURL != null) 
+		{
+			gumSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_selected.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/tekencursor.gif");
+		if (imageURL != null) 
+		{
+			tekenCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading tekencursor.gif");
+		}
+		imageURL = Verknippen.class.getResource("resources/gumcursor.gif");
+		if (imageURL != null) 
+		{
+			gumCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading gumcursor.gif");
 		}
 		
 		goedKrul = goedKrulIcon.getImage();
 		foutKruis = foutKruisIcon.getImage();
 		halfKrul = halfKrulIcon.getImage();
+		penDefault = penDefaultIcon.getImage();
+		penRollover = penRolloverIcon.getImage();
+		penSelected = penSelectedIcon.getImage();
+		gumDefault = gumDefaultIcon.getImage();
+		gumRollover = gumRolloverIcon.getImage();
+		gumSelected = gumSelectedIcon.getImage();
+		tekenCursor = tekenCursorIcon.getImage();
+		gumCursor = gumCursorIcon.getImage();
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -115,6 +204,8 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	public void opnieuwAction()
 	{
 		drawingPanel2.removeAllKnipPolygons();
+		
+		drawingPanel2.rectangles.removeAllElements();
 		
 		KnipPolygon2 kp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten,
 										   KnipPolygon2.CENTER);
@@ -170,6 +261,10 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		
 		if (drawingPanel2.knipPolygons.size() == 0)
 			zetRodeFiguur(rodeFiguurString);
+		else
+		{	rodeFiguurCoordinaten = processFiguurString(rodeFiguurString);
+		}
+		
 		
 		if ((taakNummer == 2) || (taakNummer == 3))
 		{
@@ -213,7 +308,12 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	public void zetSchaduwZichtbaar(boolean b)
 	{	schaduwZichtbaar = b;
 		if (schaduwZichtbaar)
-		{	if (taakNummer < 4)
+		{	Vector rodeFiguurCoordinaten = processFiguurString(rodeFiguurString);
+			if (rodeFiguurCoordinaten == null)
+				return;
+			this.rodeFiguurCoordinaten = rodeFiguurCoordinaten;
+			
+			if (taakNummer < 4)
 			{	KnipPolygon2 sp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.CENTER);
 				drawingPanel2.shadowPolygon = sp;
 			}
@@ -221,6 +321,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 			{	KnipPolygon2 sp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.RIGHTAL);
 				drawingPanel2.shadowPolygon = sp;				 	
 			}	
+			drawingPanel2.repaint();
 		}
 		else
 		{	drawingPanel2.shadowPolygon = null;
@@ -235,10 +336,22 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		drawingPanel2.repaint();
 		
 	}
+
+	public void zetTekenGumOptie(boolean b)
+	{	tekenGumOptie = b;
+		drawingPanel2.zetTekenGumOptie(tekenGumOptie);
+		if (tekenGumOptie)
+			zetRoosterZichtbaar(true);
+		drawingPanel2.repaint();
+		
+	}
 	
 	public void zetGridSize(int gSize)
 	{	gridSize = gSize;
 		drawingPanel2.gridSize = gridSize;
+		zetRodeFiguur(rodeFiguurString);
+		zetGrijzeFiguur(grijzeFiguurString);
+		drawingPanel2.rectangles.removeAllElements();
 		drawingPanel2.repaint();
 	}
 	
@@ -255,6 +368,8 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		else
 			kp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.RIGHTAL);
 		drawingPanel2.addKnipPolygon(kp);
+		
+		zetSchaduwZichtbaar(schaduwZichtbaar);
 	
 	}
 
@@ -367,13 +482,14 @@ System.out.println("vip zetOpdracht");
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
+		boolean tekenGumOptie = false;
 		int gridSize = 20;		
 	   	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
 		String grijzeFiguurString = "0,0|8,0|8,8|0,8";
 		int oppervlakteGrijs = 64;
 		int scoreMax = 10;
-
+		
 		if (b.containsKey("appletLaunchData"))
 		{
 System.out.println("aLD found");
@@ -383,6 +499,16 @@ System.out.println("aLD found");
 			String groteBalletjesString = "false";
 			String schaduwZichtbaarString = "false";
 			String afmetingenZichtbaarString = "false";
+			
+			String grid1String = "";
+			String figuur1String = "";
+			String oppervlakte1String = "";
+			String figuurgrijs1String = "";
+			String oppervlaktegrijs1String = "";
+			String scoreMaxString = "";
+
+			boolean error;
+			
 		
 			if (appletLaunchData.containsKey("taaknummer"))
 				taakNummer = Integer.parseInt((String) appletLaunchData.get("taaknummer"));
@@ -402,22 +528,67 @@ System.out.println("aLD found");
 				schaduwZichtbaarString = (String) appletLaunchData.get("toonschaduw");
 			if (schaduwZichtbaarString.equals("true") || schaduwZichtbaarString.equals("yes"))
 				schaduwZichtbaar = true;
+			
+System.out.println("schaduwZichtbaar = " + schaduwZichtbaar);			
+			
 			if (appletLaunchData.containsKey("toonafmetingen"))
 				afmetingenZichtbaarString = (String) appletLaunchData.get("toonafmetingen");
 			if (afmetingenZichtbaarString.equals("true") || afmetingenZichtbaarString.equals("yes"))
 				afmetingenZichtbaar = true;
 			if (appletLaunchData.containsKey("grid1"))
 				gridSize = Integer.parseInt((String) appletLaunchData.get("grid1"));
+			
+//System.out.println("gridSize = " + gridSize);
+			
+			if ((gridSize < minGrid) || (gridSize > maxGrid))
+				gridSize = 20;
+			
 			if (appletLaunchData.containsKey("figuur1"))
 				rodeFiguurString = (String) appletLaunchData.get("figuur1");
+			
+//System.out.println("rodeFiguurString = " + rodeFiguurString);			
+			
 			if (appletLaunchData.containsKey("oppervlakte1"))
-				oppervlakteRood = Integer.parseInt((String) appletLaunchData.get("oppervlakte1"));
+				oppervlakte1String = (String) appletLaunchData.get("oppervlakte1");
+			int oppervlakte1 = 0;
+			error = false;
+			try
+			{	oppervlakte1 = Integer.parseInt(oppervlakte1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteRood = oppervlakte1;
+			
 			if (appletLaunchData.containsKey("figuurgrijs1"))
 				grijzeFiguurString = (String) appletLaunchData.get("figuurgrijs1");
+			
 			if (appletLaunchData.containsKey("oppervlaktegrijs1"))
-				oppervlakteGrijs = Integer.parseInt((String) appletLaunchData.get("oppervlaktegrijs1"));
+				oppervlaktegrijs1String = (String) appletLaunchData.get("oppervlaktegrijs1");
+			int oppervlaktegrijs1 = 0;
+			error = false;
+			try
+			{	oppervlaktegrijs1 = Integer.parseInt(oppervlaktegrijs1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteGrijs = oppervlaktegrijs1;
+			
 			if (appletLaunchData.containsKey("scoreMax"))
-				scoreMax = Integer.parseInt((String) appletLaunchData.get("scoreMax"));
+				scoreMaxString = (String) appletLaunchData.get("scoreMax");
+			int scMax = 0;
+			error = false;
+			try
+			{	scMax = Integer.parseInt(scoreMaxString);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				scoreMax = scMax;
 			
 
 		}
@@ -437,6 +608,8 @@ System.out.println("aLD found");
 				schaduwZichtbaar = ((Boolean) b.get("schaduwZichtbaar")).booleanValue();
 			if (b.containsKey("afmetingenZichtbaar"))
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
+			if (b.containsKey("tekenGumOptie"))
+				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurString"))
@@ -455,9 +628,12 @@ System.out.println("aLD found");
 		zetBalkOnderaan(balkOnderaan);
 		zetRoosterZichtbaar(roosterZichtbaar);
 		zetGroteBalletjes(groteBalletjes);
-		zetSchaduwZichtbaar(schaduwZichtbaar);
+		//zetSchaduwZichtbaar(schaduwZichtbaar);
+		this.schaduwZichtbaar = schaduwZichtbaar;
 		zetAfmetingenZichtbaar(afmetingenZichtbaar);
+		zetTekenGumOptie(tekenGumOptie);
 		zetGridSize(gridSize);
+		this.rodeFiguurString = rodeFiguurString; 
 		zetOppervlakteRood(oppervlakteRood);
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
@@ -534,6 +710,12 @@ System.out.println("aES found");
 	    		    		
 	    	}	    	
 	    	zetAntwoorden();
+	    	
+	    	Vector rectangles = new Vector();
+			if (b.containsKey("rechthoeken"))			
+				rectangles = (Vector) b.get("rechthoeken");
+			drawingPanel2.rectangles = rectangles;
+	    	
 		}
 
 		// HIER
@@ -620,6 +802,12 @@ System.out.println("aS found");
 	    		    		
 	    	}	    	
 	    	zetAntwoorden();
+	    	
+	    	Vector rectangles = new Vector();
+			if (b.containsKey("rechthoeken"))			
+				rectangles = (Vector) b.get("rechthoeken");
+			drawingPanel2.rectangles = rectangles;
+ 
 		}
 	}
 
@@ -711,6 +899,7 @@ System.out.println("vip setEditState");
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
+		boolean tekenGumOptie = false;
 		int gridSize = 20;		
 	   	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
@@ -727,6 +916,16 @@ System.out.println("aLD found");
 			String groteBalletjesString = "false";
 			String schaduwZichtbaarString = "false";
 			String afmetingenZichtbaarString = "false";
+			
+			String grid1String = "";
+			String figuur1String = "";
+			String oppervlakte1String = "";
+			String figuurgrijs1String = "";
+			String oppervlaktegrijs1String = "";
+			String scoreMaxString = "";
+
+			boolean error;
+			
 		
 			if (appletLaunchData.containsKey("taaknummer"))
 				taakNummer = Integer.parseInt((String) appletLaunchData.get("taaknummer"));
@@ -752,16 +951,60 @@ System.out.println("aLD found");
 				afmetingenZichtbaar = true;
 			if (appletLaunchData.containsKey("grid1"))
 				gridSize = Integer.parseInt((String) appletLaunchData.get("grid1"));
+			
+//System.out.println("gridSize = " + gridSize);			
+			
+			if ((gridSize < minGrid) || (gridSize > maxGrid))
+				gridSize = 20;
+			
 			if (appletLaunchData.containsKey("figuur1"))
 				rodeFiguurString = (String) appletLaunchData.get("figuur1");
+			
+//System.out.println("rodeFiguurString = " + rodeFiguurString);			
+			
 			if (appletLaunchData.containsKey("oppervlakte1"))
-				oppervlakteRood = Integer.parseInt((String) appletLaunchData.get("oppervlakte1"));
+				oppervlakte1String = (String) appletLaunchData.get("oppervlakte1");
+			int oppervlakte1 = 0;
+			error = false;
+			try
+			{	oppervlakte1 = Integer.parseInt(oppervlakte1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteRood = oppervlakte1;
+			
 			if (appletLaunchData.containsKey("figuurgrijs1"))
 				grijzeFiguurString = (String) appletLaunchData.get("figuurgrijs1");
+			
 			if (appletLaunchData.containsKey("oppervlaktegrijs1"))
-				oppervlakteGrijs = Integer.parseInt((String) appletLaunchData.get("oppervlaktegrijs1"));
+				oppervlaktegrijs1String = (String) appletLaunchData.get("oppervlaktegrijs1");
+			int oppervlaktegrijs1 = 0;
+			error = false;
+			try
+			{	oppervlaktegrijs1 = Integer.parseInt(oppervlaktegrijs1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteGrijs = oppervlaktegrijs1;
+			
 			if (appletLaunchData.containsKey("scoreMax"))
-				scoreMax = Integer.parseInt((String) appletLaunchData.get("scoreMax"));
+				scoreMaxString = (String) appletLaunchData.get("scoreMax");
+			int scMax = 0;
+			error = false;
+			try
+			{	scMax = Integer.parseInt(scoreMaxString);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				scoreMax = scMax;
+			
+			
 			
 
 		}
@@ -770,7 +1013,7 @@ System.out.println("aLD found");
 
 			if (b.containsKey("taakNummer"))
 				taakNummer = ((Integer) b.get("taakNummer")).intValue();
-System.out.println("get tn = " + taakNummer);			
+//System.out.println("get tn = " + taakNummer);			
 			if (b.containsKey("balkOnderaan"))
 				balkOnderaan = ((Boolean) b.get("balkOnderaan")).booleanValue();
 			if (b.containsKey("roosterZichtbaar"))
@@ -781,6 +1024,8 @@ System.out.println("get tn = " + taakNummer);
 				schaduwZichtbaar = ((Boolean) b.get("schaduwZichtbaar")).booleanValue();
 			if (b.containsKey("afmetingenZichtbaar"))
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
+			if (b.containsKey("tekenGumOptie"))
+				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurString"))
@@ -799,9 +1044,12 @@ System.out.println("get tn = " + taakNummer);
 		zetBalkOnderaan(balkOnderaan);
 		zetRoosterZichtbaar(roosterZichtbaar);
 		zetGroteBalletjes(groteBalletjes);
-		zetSchaduwZichtbaar(schaduwZichtbaar);
+		//zetSchaduwZichtbaar(schaduwZichtbaar);
+		this.schaduwZichtbaar = schaduwZichtbaar; 
 		zetAfmetingenZichtbaar(afmetingenZichtbaar);
+		zetTekenGumOptie(tekenGumOptie);
 		zetGridSize(gridSize);
+		this.rodeFiguurString = rodeFiguurString;
 		zetOppervlakteRood(oppervlakteRood);
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
@@ -879,6 +1127,14 @@ System.out.println("aES found");
 	    		    		
 	    	}	    	
 	    	zetAntwoorden();
+	    	
+	    	Vector rectangles = new Vector();
+			if (b.containsKey("rechthoeken"))			
+			{	rectangles = (Vector) b.get("rechthoeken");
+System.out.println("rects = " + rectangles.size());			
+			}
+			drawingPanel2.rectangles = rectangles;
+	    	
 		}
 		
 		
@@ -894,7 +1150,7 @@ System.out.println("vip getState");
 		
 		Hashtable h = new Hashtable();
 
-System.out.println("antwoord = " + antwoord);		
+//System.out.println("antwoord = " + antwoord);		
 		
 		ScormOpdracht scormOpdracht = new ScormOpdracht(0);
 		scormOpdracht.antwoord = 100 * antwoordenFout + antwoord;
@@ -908,12 +1164,16 @@ System.out.println("antwoord = " + antwoord);
 		
     	h.put("scormOpdracht", scormOpdracht);
     	
+    	h.put("rechthoeken", drawingPanel2.rectangles);
+    	
 		return h;
 		
 	}
 	
 	public Hashtable getEditState()
 	{
+		
+System.out.println("vip getEditState");	
 		Hashtable h = new Hashtable();
 		
 		h.put("taakNummer", new Integer(taakNummer));
@@ -923,6 +1183,7 @@ System.out.println("antwoord = " + antwoord);
 		h.put("groteBalletjes", new Boolean(groteBalletjes));
 		h.put("schaduwZichtbaar", new Boolean(schaduwZichtbaar));
 		h.put("afmetingenZichtbaar", new Boolean(afmetingenZichtbaar));
+		h.put("tekenGumOptie", new Boolean(tekenGumOptie));
 		h.put("gridSize", new Integer(gridSize));
 		h.put("rodeFiguurString", rodeFiguurString);
 		h.put("oppervlakteRood", new Integer(oppervlakteRood));
@@ -940,6 +1201,9 @@ System.out.println("antwoord = " + antwoord);
     	}		
 		
     	h.put("scormOpdracht", scormOpdracht);
+    	
+    	h.put("rechthoeken", drawingPanel2.rectangles);    	
+System.out.println("put rects = " + drawingPanel2.rectangles.size());    	
 		
 		return h;
 	}
@@ -953,11 +1217,14 @@ System.out.println("antwoord = " + antwoord);
 	public void setBounds(int x, int y, int b, int h)
 	{
 		
-//		System.out.println("gip set bounds " + b + " " + h);
+//System.out.println("vip set bounds " + b + " " + h);
 		
 		if (h == 1)
 			return;
 		
+		if ((getLocation().x == x) && (getLocation().y == y) && 
+			(getSize().width == b) && (getSize().height == h))
+			return;
 		super.setBounds(x, y, b, h);
 		
 		
@@ -980,12 +1247,13 @@ System.out.println("antwoord = " + antwoord);
 			{	bottomPanel2.setVisible(true);
 				bottomPanel2.setSize(getSize().width, bottomHeight);
 				drawingPanel2.setSize(getSize().width, getSize().height - bottomHeight);
+				zetGridSize(gridSize);
 			}
 			else
 			{	bottomPanel2.setVisible(false);
 				bottomPanel2.setSize(b, h);
 				drawingPanel2.setSize(getSize().width, getSize().height);
-			
+				zetGridSize(gridSize);
 			}
 				
 

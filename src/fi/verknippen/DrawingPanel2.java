@@ -71,6 +71,21 @@ public class DrawingPanel2 extends JPanel
 	
 	boolean frozen = false;
 	
+	JPanel tekenGumPanel;
+	JToggleButton tekenButton;
+	JToggleButton gumButton, geenButton;
+	ButtonGroup tekenGumGroup;
+	boolean itemChanged = false;
+	
+	boolean tekenGumOptie = false;
+	
+	boolean tekenen = false;
+	
+	Point gridPointClicked = null;
+	Rectangle draggRectangle = null;
+	Vector rectangles = new Vector();
+	Color rectangleColor = Color.red;
+	
 	public DrawingPanel2(VerknippenInteractiePanel o, boolean largeOvals)
 	{	
 		owner = o;
@@ -96,6 +111,39 @@ public class DrawingPanel2 extends JPanel
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 		
+		tekenGumPanel = new JPanel();
+		tekenGumPanel.setLayout(null);
+		tekenGumPanel.setBounds(4, 4, 47, 25);
+		tekenGumPanel.setBackground(new Color(210,210,210));
+		tekenGumPanel.setVisible(false);
+		add(tekenGumPanel);
+		
+		tekenGumGroup = new ButtonGroup();
+
+		tekenButton = new JToggleButton(new ImageIcon(owner.penDefault), false);
+		tekenButton.setRolloverIcon(new ImageIcon(owner.penRollover));
+		tekenButton.setSelectedIcon(new ImageIcon(owner.penSelected));
+		tekenButton.setBorder(null);
+		tekenButton.setBounds(3, 3, 20, 20);
+		tekenGumPanel.add(tekenButton);		
+		tekenButton.addActionListener(new TekenGumAL());
+		tekenButton.addItemListener(new TekenGumIL());
+
+		gumButton = new JToggleButton(new ImageIcon(owner.gumDefault), false);
+		gumButton.setRolloverIcon(new ImageIcon(owner.gumRollover));
+		gumButton.setSelectedIcon(new ImageIcon(owner.gumRollover));
+		gumButton.setBorder(null);
+		gumButton.setBounds(25, 3, 20, 20);
+		tekenGumPanel.add(gumButton);				
+		gumButton.addActionListener(new TekenGumAL());
+		gumButton.addItemListener(new TekenGumIL());
+		
+		geenButton = new JToggleButton("None selected", true);
+		
+		tekenGumGroup.add(tekenButton);
+		tekenGumGroup.add(gumButton);
+		tekenGumGroup.add(geenButton);
+		
 		invulVeld = new JTextField("");
 		invulVeld.setFont(owner.theBoldFont);
 		if (owner.taakNummer == 2)
@@ -112,6 +160,15 @@ public class DrawingPanel2 extends JPanel
 		invulVeld.addKeyListener(new InputKL());
 		
 		
+	}
+	
+	public void zetTekenGumOptie(boolean b)
+	{
+		tekenGumOptie = b; 
+		tekenGumPanel.setVisible(tekenGumOptie);
+		geenButton.setSelected(true);
+		tekenen = false;
+		repaint();
 	}
 	
 	public void zetBalletjesGrootte()
@@ -190,6 +247,19 @@ public class DrawingPanel2 extends JPanel
 		}
 		return result;
 		
+	}
+	
+	// is het aangeklikte punt voldoende dichtbij een grid point? 
+	public Point gridPointClicked(int clickX, int clickY)
+	{	Point result = null;
+		Vector gridPoints  = findGridPoints();
+		for (int pCnt = 0; pCnt < gridPoints.size(); pCnt++)
+		{	Point gridPoint = (Point) gridPoints.elementAt(pCnt);
+			if (Math.sqrt((gridPoint.x - clickX) * (gridPoint.x - clickX) +
+						  (gridPoint.y - clickY) * (gridPoint.y - clickY)) < clickDis)
+				result = gridPoint;			
+		}
+		return result;
 	}
 	
 	// is het aangeklikte punt voldoende dichtbij een van 
@@ -1202,14 +1272,30 @@ System.out.println("f & !o & !i pol2 from stack");
 			g.drawLine(firstCutPoint.toPoint().x, firstCutPoint.toPoint().y,
 					   cursorPoint.x, cursorPoint.y);
 		}	
-/*		
-		if (allPolyRect != null)
-		{	g.setColor(Color.magenta);
-			g.drawRect(allPolyRect.x, allPolyRect.y, 
-					   allPolyRect.width, allPolyRect.height);
+		
+		if (tekenGumOptie)
+		{	g.setColor(Color.black);
+			g.drawRect(tekenGumPanel.getLocation().x - 1, tekenGumPanel.getLocation().y - 1, 
+					   tekenGumPanel.getSize().width+ 1, tekenGumPanel.getSize().height + 1);
 		}
-*/		
-		paintComponents(g);
+		
+		if (tekenen && draggRectangle != null)
+		{
+			g.setColor(rectangleColor);
+			g.drawRect(draggRectangle.x, draggRectangle.y, draggRectangle.width, draggRectangle.height);
+			g.drawRect(draggRectangle.x - 1, draggRectangle.y - 1, draggRectangle.width, draggRectangle.height);
+			
+		}
+		if (tekenGumOptie)
+		{	g.setColor(rectangleColor);
+			for (int rCnt = 0; rCnt < rectangles.size(); rCnt++)
+			{	Rectangle aRect = (Rectangle) rectangles.elementAt(rCnt);
+				g.drawRect(aRect.x, aRect.y, aRect.width, aRect.height);
+				g.drawRect(aRect.x - 1, aRect.y - 1, aRect.width, aRect.height);				
+			}
+			
+		}
+		//paintComponents(g);
 		
 	}
 	
@@ -1276,6 +1362,39 @@ System.out.println("f & !o & !i pol2 from stack");
 			g.drawString(s, bx, by);
 		} 		
 		
+	}
+	
+	public Vector findGridPoints()
+	{	Vector result = new Vector();
+		int horGridElts = getSize().width / gridSize;
+		int vertGridElts = getSize().height / gridSize;
+		for (int hCnt = 1; hCnt <= horGridElts; hCnt++)
+			for (int vCnt = 1; vCnt <= vertGridElts; vCnt++)
+			{
+				result.addElement(new Point(gridSize * hCnt, gridSize * vCnt));
+			}
+		
+		return result;
+	}
+	
+	public Point findClosestGridPoint(Point p)
+	{	Point result = null;
+		Vector gridPoints = findGridPoints();
+		Point gridPoint = (Point) gridPoints.elementAt(0);
+		result = gridPoint;
+		double dis = Math.sqrt((gridPoint.x - p.x) * (gridPoint.x - p.x) +
+				               (gridPoint.y - p.y) * (gridPoint.y - p.y));
+		for (int pCnt = 1; pCnt < gridPoints.size(); pCnt++)
+		{	gridPoint = (Point) gridPoints.elementAt(pCnt);
+			double pDis = Math.sqrt((gridPoint.x - p.x) * (gridPoint.x - p.x) +
+		                            (gridPoint.y - p.y) * (gridPoint.y - p.y));
+			if (pDis < dis)
+			{	dis = pDis;	
+				result = gridPoint;
+			}
+		}
+	
+		return result;
 	}
 	
 	public void paintGrid(Graphics g)
@@ -1510,6 +1629,17 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			if (invulVeld.isVisible())					
 				focusLostAction();
 			
+			if (tekenen)
+			{
+				gridPointClicked = gridPointClicked(e.getX(), e.getY());
+
+//				if (gridPointClicked != null)
+//				{
+//					draggRectangle = new Rectangle(gridPointClicked.x, gridPointClicked.y, 1, 1);
+//				}
+				return;
+			}
+			
 			draggCnt = 0;	
 			// let op: firstCutPoint kan voor sommige polygons een vertex zijn,
 			// maar voor andere een edgepoint!!
@@ -1713,6 +1843,49 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			if (frozen)
 				return;
 			
+			if (tekenen && gridPointClicked != null)
+			{
+				Point releasePoint = findClosestGridPoint(new Point(e.getX(), e.getY()));
+				if ((gridPointClicked.x != releasePoint.x) && 
+					(gridPointClicked.y != releasePoint.y))
+				{
+					Rectangle aRect = null;
+					if ((releasePoint.x > gridPointClicked.x) &&
+						(releasePoint.y > gridPointClicked.y))
+					{	aRect = new Rectangle(gridPointClicked.x, gridPointClicked.y, 
+											  releasePoint.x - gridPointClicked.x, releasePoint.y - gridPointClicked.y); 
+					}	
+					else if ((releasePoint.x > gridPointClicked.x) &&
+							 (releasePoint.y < gridPointClicked.y))
+					{	aRect = new Rectangle(gridPointClicked.x, releasePoint.y, 
+											  releasePoint.x - gridPointClicked.x, gridPointClicked.y - releasePoint.y); 
+					}	
+					else if ((releasePoint.x < gridPointClicked.x) &&
+							 (releasePoint.y > gridPointClicked.y))
+					{	aRect = new Rectangle(releasePoint.x, gridPointClicked.y, 
+							                  gridPointClicked.x - releasePoint.x, releasePoint.y - gridPointClicked.y); 
+					}	
+					else if ((releasePoint.x < gridPointClicked.x) &&
+							 (releasePoint.y < gridPointClicked.y))
+					{	aRect = new Rectangle(releasePoint.x, releasePoint.y, 
+							                  gridPointClicked.x - releasePoint.x, gridPointClicked.y - releasePoint.y); 
+					}	
+						
+					gridPointClicked = null;
+					draggRectangle = null;
+					
+					rectangles.addElement(aRect);
+					
+					repaint();
+					
+					
+				}
+				
+				
+				
+				return;
+			}
+			
 			if (knippen && (draggCnt >= 2)) // eerst knippunt is gekozen
 			// nu tweede knippunt
 			{	// kijk eerst of er een vertex onder de mouse-up ligt
@@ -1820,6 +1993,34 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 			if (frozen)
 				return;
 			
+			if (tekenen && gridPointClicked != null)
+			{
+				if ((e.getX() > gridPointClicked.x) &&
+					(e.getY() > gridPointClicked.y))
+				{	draggRectangle = new Rectangle(gridPointClicked.x, gridPointClicked.y, 
+						                           e.getX() - gridPointClicked.x, e.getY() - gridPointClicked.y); 
+				}	
+				else if ((e.getX() > gridPointClicked.x) &&
+						 (e.getY() < gridPointClicked.y))
+				{	draggRectangle = new Rectangle(gridPointClicked.x, e.getY(), 
+							                       e.getX() - gridPointClicked.x, gridPointClicked.y - e.getY()); 
+				}	
+				else if ((e.getX() < gridPointClicked.x) &&
+						 (e.getY() > gridPointClicked.y))
+				{	draggRectangle = new Rectangle(e.getX(), gridPointClicked.y, 
+							                       gridPointClicked.x - e.getX(), e.getY() - gridPointClicked.y); 
+				}	
+				else if ((e.getX() < gridPointClicked.x) &&
+						 (e.getY() < gridPointClicked.y))
+				{	draggRectangle = new Rectangle(e.getX(), e.getY(), 
+							                       gridPointClicked.x - e.getX(), gridPointClicked.y - e.getY()); 
+				}	
+				
+				repaint();
+				
+				return;
+			}
+			
 			draggCnt++;
 		
 			if (knippen)
@@ -1875,6 +2076,11 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		{	
 			if (frozen)
 				return;
+			
+			if (tekenen)
+			{
+				return;
+			}
 			
 			// nog geen eerste punt gekozen, knippen=false
 			if (!knippen)
@@ -2093,4 +2299,59 @@ if ((owner.taakNummer == 2) || (owner.taakNummer == 3))
 		}
 	}
 	
+	class TekenGumIL implements ItemListener
+	{
+		public void itemStateChanged(ItemEvent e)
+		{
+			if (frozen)
+				return;
+
+			itemChanged = true;
+			
+			if (tekenButton.isSelected())
+			{  
+				tekenen = true;
+				boolean error = false;
+				Cursor drawCursor = null;
+				try
+				{	
+					drawCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(owner.tekenCursor,
+							new Point(10, 10), "TEKEN_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				//catch (HeadlessException he)
+				{	error = true;
+				}
+				if (!error)
+				{	setCursor(drawCursor);
+				}				
+			}
+			else if (gumButton.isSelected())
+			{
+				tekenen = false;
+				rectangles.removeAllElements();
+				geenButton.setSelected(true);
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			else
+			{
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			
+			repaint();
+		}
+	}
+	
+	class TekenGumAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			if (!itemChanged)
+			{	geenButton.setSelected(true);
+			}
+			
+			itemChanged = false;
+		}
+	}
 }

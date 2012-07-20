@@ -38,6 +38,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 	JLabel taakNummerLabel, gridSizeLabel, oppervlakteRoodLabel, oppervlakteGrijsLabel, scoreMaxLabel;
 	JTextField gridSizeVeld, oppervlakteRoodVeld, oppervlakteGrijsVeld, scoreMaxVeld;
 	JCheckBox balkOnderaanBox, roosterZichtbaarBox, groteBalletjesBox, schaduwZichtbaarBox, afmetingenZichtbaarBox;
+	JCheckBox tekenGumOptieBox;
 	
 	JComboBox taakNummerCombo;
 	
@@ -45,6 +46,8 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 
 	int taakNummer = 1;
 	int gridSize = 20;
+	int minGrid = 16;
+	int maxGrid = 50;
 	String rodeFiguurInput = "";
 	String grijzeFiguurInput = "";
 	int oppervlakteRood = 64;
@@ -102,10 +105,12 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		taakNummerCombo.setFont(theFont);
 		taakNummerCombo.setBackground(Color.white);
 		width = theFM.stringWidth("XXXXXXXXX");
+		taakNummerCombo.addItem("0");
 		taakNummerCombo.addItem("1");
 		taakNummerCombo.addItem("2");
 		taakNummerCombo.addItem("3");
 		taakNummerCombo.addItem("4");
+		taakNummerCombo.setSelectedIndex(1);
 		taakNummerCombo.setBounds(//currentX + 2 * offset, currentY, width, height);
 				taakNummerLabel.getLocation().x + taakNummerLabel.getSize().width + offset,
 				currentY, width, height);
@@ -126,7 +131,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		taakNummerVeld.addActionListener(new TextAL2(taakNummerVeld));
 		taakNummerVeld.addFocusListener(new TextFL2(taakNummerVeld));
 */
-		currentY += height + 3 * offset / 2;
+		currentY += height + offset;
 		
 		width = editWidth - 3 * offset;
 		balkOnderaanBox = new JCheckBox(Verknippen.rb.getString("balkOnderaanTekst"), true);
@@ -136,7 +141,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		add(balkOnderaanBox);
 		balkOnderaanBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height + offset / 2;
 
 		roosterZichtbaarBox = new JCheckBox(Verknippen.rb.getString("roosterZichtbaarTekst"), false);
 		roosterZichtbaarBox.setFont(theFont);
@@ -145,7 +150,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		add(roosterZichtbaarBox);
 		roosterZichtbaarBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height + offset / 2;
 
 		groteBalletjesBox = new JCheckBox(Verknippen.rb.getString("groteBalletjesTekst"), false);
 		groteBalletjesBox.setFont(theFont);
@@ -154,7 +159,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		add(groteBalletjesBox);
 		groteBalletjesBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height + offset / 2;
 		
 		schaduwZichtbaarBox = new JCheckBox(Verknippen.rb.getString("schaduwZichtbaarTekst"), false);
 		schaduwZichtbaarBox.setFont(theFont);
@@ -163,7 +168,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		add(schaduwZichtbaarBox);
 		schaduwZichtbaarBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height + offset / 2;
 		
 		afmetingenZichtbaarBox = new JCheckBox(Verknippen.rb.getString("afmetingenZichtbaarTekst"), false);
 		afmetingenZichtbaarBox.setFont(theFont);
@@ -172,8 +177,17 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		add(afmetingenZichtbaarBox);
 		afmetingenZichtbaarBox.addActionListener(this);
 		
-		currentY += height + 3 * offset / 2;
+		currentY += height + offset;
 
+		tekenGumOptieBox = new JCheckBox(Verknippen.rb.getString("rechthoekenTekenenTekst"), false);
+		tekenGumOptieBox.setFont(theFont);
+		tekenGumOptieBox.setBackground(Color.white);
+		tekenGumOptieBox.setBounds(currentX, currentY, width, height);
+		add(tekenGumOptieBox);
+		tekenGumOptieBox.addActionListener(this);
+		
+		currentY += height + offset;
+		
 		gridSizeLabel = new JLabel(Verknippen.rb.getString("gridInPixelsTekst"));
 		gridSizeLabel.setFont(theFont);
 		gridSizeLabel.setBackground(Color.white);
@@ -213,6 +227,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		oppervlakteRoodLabel.setBackground(Color.white);
 		width = theFM.stringWidth(oppervlakteRoodLabel.getText());
 		oppervlakteRoodLabel.setBounds(currentX + offset, currentY + 3, width, theFM.getHeight());
+		oppervlakteRoodLabel.setEnabled(false);
 		add(oppervlakteRoodLabel);
 
 		//currentY += height; // + offset;
@@ -224,6 +239,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		oppervlakteRoodVeld.setBounds(//currentX + 2 * offset, currentY, width, height);
 				oppervlakteRoodLabel.getLocation().x + oppervlakteRoodLabel.getSize().width + offset,
 				currentY, width, height);
+		oppervlakteRoodVeld.setEnabled(false);
 		add(oppervlakteRoodVeld);
 		
 		oppervlakteRoodVeld.addKeyListener(new InputKL2(oppervlakteRoodVeld));
@@ -266,7 +282,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		oppervlakteGrijsVeld.addActionListener(new TextAL2(oppervlakteGrijsVeld));
 		oppervlakteGrijsVeld.addFocusListener(new TextFL2(oppervlakteGrijsVeld));
 		
-		currentY += height + 3 * offset / 2;
+		currentY += height + offset;
 		
 		scoreMaxLabel = new JLabel(Verknippen.rb.getString("scoreMaxTekst"));
 		scoreMaxLabel.setFont(theFont);
@@ -313,6 +329,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 			groteBalletjesBox.setLocation(vip.getSize().width + 2 * offset, groteBalletjesBox.getLocation().y);
 			schaduwZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, schaduwZichtbaarBox.getLocation().y);
 			afmetingenZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, afmetingenZichtbaarBox.getLocation().y);
+			tekenGumOptieBox.setLocation(vip.getSize().width + 2 * offset, tekenGumOptieBox.getLocation().y);
 
 			gridSizeLabel.setLocation(vip.getSize().width + 2 * offset, gridSizeLabel.getLocation().y);
 			//gridSizeVeld.setLocation(vip.getSize().width + 3 * offset, gridSizeVeld.getLocation().y);
@@ -392,6 +409,7 @@ System.out.println("viep setEditState");
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
+		boolean tekenGumOptie = false; 
 		int gridSize = 20;		
 	   	String rodeFiguurInput =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
@@ -410,7 +428,15 @@ System.out.println("aLD found");
 			String schaduwZichtbaarString = "false";
 			String afmetingenZichtbaarString = "false";
 
-		
+			String grid1String = "";
+			String figuur1String = "";
+			String oppervlakte1String = "";
+			String figuurgrijs1String = "";
+			String oppervlaktegrijs1String = "";
+			String scoreMaxString = "";
+			
+			boolean error;
+			
 			if (appletLaunchData.containsKey("taaknummer"))
 				taakNummer = Integer.parseInt((String) appletLaunchData.get("taaknummer"));
 			if (appletLaunchData.containsKey("toonbalk"))
@@ -435,16 +461,54 @@ System.out.println("aLD found");
 				afmetingenZichtbaar = true;
 			if (appletLaunchData.containsKey("grid1"))
 				gridSize = Integer.parseInt((String) appletLaunchData.get("grid1"));
+			
+			if ((gridSize < minGrid) || (gridSize > maxGrid))
+				gridSize = 20;
+
 			if (appletLaunchData.containsKey("figuur1"))
 				rodeFiguurInput = (String) appletLaunchData.get("figuur1");
+
 			if (appletLaunchData.containsKey("oppervlakte1"))
-				oppervlakteRood = Integer.parseInt((String) appletLaunchData.get("oppervlakte1"));
+				oppervlakte1String = (String) appletLaunchData.get("oppervlakte1");
+			int oppervlakte1 = 0;
+			error = false;
+			try
+			{	oppervlakte1 = Integer.parseInt(oppervlakte1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteRood = oppervlakte1;
+			
 			if (appletLaunchData.containsKey("figuurgrijs1"))
 				grijzeFiguurInput = (String) appletLaunchData.get("figuurgrijs1");
+			
 			if (appletLaunchData.containsKey("oppervlaktegrijs1"))
-				oppervlakteGrijs = Integer.parseInt((String) appletLaunchData.get("oppervlaktegrijs1"));
+				oppervlaktegrijs1String = (String) appletLaunchData.get("oppervlaktegrijs1");
+			int oppervlaktegrijs1 = 0;
+			error = false;
+			try
+			{	oppervlaktegrijs1 = Integer.parseInt(oppervlaktegrijs1String);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				oppervlakteGrijs = oppervlaktegrijs1;
+			
 			if (appletLaunchData.containsKey("scoreMax"))
-				scoreMax = Integer.parseInt((String) appletLaunchData.get("scoreMax"));
+				scoreMaxString = (String) appletLaunchData.get("scoreMax");
+			int scMax = 0;
+			error = false;
+			try
+			{	scMax = Integer.parseInt(scoreMaxString);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			if (!error)
+				scoreMax = scMax;
 			
 			
 		}
@@ -463,6 +527,8 @@ System.out.println("aLD found");
 				schaduwZichtbaar = ((Boolean) b.get("schaduwZichtbaar")).booleanValue();
 			if (b.containsKey("afmetingenZichtbaar"))
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
+			if (b.containsKey("tekenGumOptie"))
+				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurInput"))
@@ -480,13 +546,14 @@ System.out.println("aLD found");
 		this.taakNummer = taakNummer;
 		//taakNummerVeld.setText("" + taakNummer);
 		taakNummerComboEnabled = false;
-		taakNummerCombo.setSelectedIndex(taakNummer - 1);
+		taakNummerCombo.setSelectedIndex(taakNummer);
 		taakNummerComboEnabled = true;
 		balkOnderaanBox.setSelected(balkOnderaan);
 		roosterZichtbaarBox.setSelected(roosterZichtbaar);
 		groteBalletjesBox.setSelected(groteBalletjes);
 		schaduwZichtbaarBox.setSelected(schaduwZichtbaar);
 		afmetingenZichtbaarBox.setSelected(afmetingenZichtbaar);
+		tekenGumOptieBox.setSelected(tekenGumOptie);
 		this.gridSize = gridSize;
 		gridSizeVeld.setText("" + gridSize);
 		this.rodeFiguurInput = rodeFiguurInput;
@@ -509,14 +576,27 @@ System.out.println("aLD found");
 		
 		setBounds(getLocation().x, getLocation().y, vipBreedte + editWidth, Math.max(vipHoogte, editHeight));
 
-		if (taakNummer < 4)
-		{	maakGrijzeFiguurButton.setEnabled(false);
+		if (taakNummer <= 1)
+		{	oppervlakteRoodLabel.setEnabled(false);
+			oppervlakteRoodVeld.setEnabled(false);
+			maakGrijzeFiguurButton.setEnabled(false);
+			oppervlakteGrijsLabel.setEnabled(false);
+			oppervlakteGrijsVeld.setEnabled(false);
+			grijzeFiguurPanel.setVisible(false);
+		}
+		else if ((taakNummer == 2) || (taakNummer == 3))
+		{
+			oppervlakteRoodLabel.setEnabled(true);
+			oppervlakteRoodVeld.setEnabled(true);
+			maakGrijzeFiguurButton.setEnabled(false);
 			oppervlakteGrijsLabel.setEnabled(false);
 			oppervlakteGrijsVeld.setEnabled(false);
 			grijzeFiguurPanel.setVisible(false);
 		}
 		else
-		{	maakGrijzeFiguurButton.setEnabled(true);
+		{	oppervlakteRoodLabel.setEnabled(true);
+			oppervlakteRoodVeld.setEnabled(true);
+			maakGrijzeFiguurButton.setEnabled(true);
 			oppervlakteGrijsLabel.setEnabled(true);
 			oppervlakteGrijsVeld.setEnabled(true);
 		}
@@ -618,15 +698,28 @@ System.out.println("viep getEditState");
 		if (e.getSource() == taakNummerCombo)
 		{	if (!taakNummerComboEnabled)
 				return;
-			zetTaakNummer(taakNummerCombo.getSelectedIndex() + 1);
-			if (taakNummer < 4)
-			{	maakGrijzeFiguurButton.setEnabled(false);
+			zetTaakNummer(taakNummerCombo.getSelectedIndex());
+			if (taakNummer <= 1)
+			{	oppervlakteRoodLabel.setEnabled(false);
+				oppervlakteRoodVeld.setEnabled(false);
+				maakGrijzeFiguurButton.setEnabled(false);
+				oppervlakteGrijsLabel.setEnabled(false);
+				oppervlakteGrijsVeld.setEnabled(false);
+				grijzeFiguurPanel.setVisible(false);
+			}
+			else if ((taakNummer == 2) || (taakNummer == 3))
+			{
+				oppervlakteRoodLabel.setEnabled(true);
+				oppervlakteRoodVeld.setEnabled(true);
+				maakGrijzeFiguurButton.setEnabled(false);
 				oppervlakteGrijsLabel.setEnabled(false);
 				oppervlakteGrijsVeld.setEnabled(false);
 				grijzeFiguurPanel.setVisible(false);
 			}
 			else
-			{	maakGrijzeFiguurButton.setEnabled(true);
+			{	oppervlakteRoodLabel.setEnabled(true);
+				oppervlakteRoodVeld.setEnabled(true);
+				maakGrijzeFiguurButton.setEnabled(true);
 				oppervlakteGrijsLabel.setEnabled(true);
 				oppervlakteGrijsVeld.setEnabled(true);
 			}
@@ -646,6 +739,11 @@ System.out.println("viep getEditState");
 		}
 		else if (e.getSource() == afmetingenZichtbaarBox)
 		{	vip.zetAfmetingenZichtbaar(afmetingenZichtbaarBox.isSelected());
+		}
+		else if (e.getSource() == tekenGumOptieBox)
+		{	vip.zetTekenGumOptie(tekenGumOptieBox.isSelected());
+			if (tekenGumOptieBox.isSelected())
+				roosterZichtbaarBox.setSelected(true);
 		}
 		else if (e.getSource() == maakRodeFiguurButton)
 		{	if (!rodeFiguurPanel.isVisible())
@@ -719,7 +817,7 @@ System.out.println("viep getEditState");
 
 			if (inputTextField == gridSizeVeld)
 			{	int gScore = (int) userInput;
-				if ((gScore >= 16) && (gScore <= 50))
+				if ((gScore >= minGrid) && (gScore <= maxGrid))
 				{	gridSize = gScore;
 					zetGridSize(gridSize);
 				}
@@ -803,7 +901,7 @@ System.out.println("viep getEditState");
 
 			if (inputTextField == gridSizeVeld)
 			{	int gScore = (int) userInput;
-				if ((gScore >= 16) && (gScore <= 50))
+				if ((gScore >= minGrid) && (gScore <= maxGrid))
 				{	gridSize = gScore;
 					zetGridSize(gridSize);
 				}
@@ -948,14 +1046,16 @@ System.out.println("viep getEditState");
 		{
 			if (rodeFiguur)
 			{
+				rodeFiguurPanel.procesInput();
 				rodeFiguurPanel.setVisible(false);
-				maakRodeFiguur();
+				//maakRodeFiguur();
 				vip.drawingPanel2.frozen = false;
 			}
 			else
 			{
+				grijzeFiguurPanel.procesInput();
 				grijzeFiguurPanel.setVisible(false);
-				maakGrijzeFiguur();
+				//maakGrijzeFiguur();
 				vip.drawingPanel2.frozen = false;
 			}
 			

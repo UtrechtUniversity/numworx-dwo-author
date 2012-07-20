@@ -23,6 +23,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "groteBalletjesTekst" , "Grote balletjes" },
             { "schaduwZichtbaarTekst" , "Schaduw zichtbaar" },
             { "afmetingenZichtbaarTekst" , "Afmetingen schaduw" },
+            { "rechthoekenTekenenTekst" , "Rechthoeken tekenen" },
             { "gridInPixelsTekst" , "Rooster in pixels" },
             { "maakRodeFiguurTekst" , "Maak rode figuur" },
             { "oppervlakteRoodTekst" , "Oppervlakte rood" },

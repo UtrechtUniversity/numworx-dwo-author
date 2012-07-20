@@ -23,6 +23,7 @@ public class Text_en extends java.util.ListResourceBundle
             { "groteBalletjesTekst" , "Large ovals" },
             { "schaduwZichtbaarTekst" , "Show schadow" },
             { "afmetingenZichtbaarTekst" , "Show shadow sizes" },
+            { "rechthoekenTekenenTekst" , "Draw rectangles" },            
             { "gridInPixelsTekst" , "Gridsize (pixels)" },
             { "maakRodeFiguurTekst" , "Make red figure" },
             { "oppervlakteRoodTekst" , "Surface area red" },
