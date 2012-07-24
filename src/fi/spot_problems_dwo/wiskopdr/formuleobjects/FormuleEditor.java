@@ -5,7 +5,9 @@ import java.awt.*;
 import java.awt.event.*;
 import fi.spot_problems_dwo.wiskopdr.expressies.*;
 
-public class FormuleEditor extends Panel implements ActionListener, MouseListener, AdjustmentListener
+import javax.swing.*;
+
+public class FormuleEditor extends JPanel implements ActionListener, MouseListener, AdjustmentListener
 {	
 	private Image im;
 	private Graphics gIm;

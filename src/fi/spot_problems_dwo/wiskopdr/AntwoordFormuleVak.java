@@ -232,39 +232,78 @@ public class AntwoordFormuleVak extends FormuleEditor
 		huidigIC.setVisible(true);
 	}
 	
+	
 	public static void zetPlaatjes(Image gk, Image fk, Image hk)
 	{	GOEDKRUL = gk;
 		FOUTKRUIS = fk;
 		HALFKRUL = hk;
 	}
 	
+	public void zetPlaatjes2(Image gk, Image fk, Image hk)
+	{	GOEDKRUL = gk;
+		FOUTKRUIS = fk;
+		HALFKRUL = hk;
+		
+		goedIC = new ImageComponent(GOEDKRUL);
+		goedIC.setLocation(0,0);
+		goedIC.setVisible(false);
+		add(goedIC);
+		
+		foutIC = new ImageComponent(FOUTKRUIS);
+		foutIC.setLocation(0,0);
+		foutIC.setVisible(false);
+		add(foutIC);
+		
+		halfIC = new ImageComponent(HALFKRUL);
+		halfIC.setLocation(0,0);
+		halfIC.setVisible(false);
+		add(halfIC);
+		
+	}
+	
 	public void zetJuisteAntwoord(String s)
 	{	int index = s.indexOf("=");
-		if(index>-1)
-		{	prefix = s.substring(0,index+1)+"@";
+		if (index > -1)
+		{	prefix = s.substring(0, index + 1) + "@";
 			hasPrefix = true;
-			s = "$f"+ s.substring(index+1);
+			s = "$f"+ s.substring(index + 1);
 			prefixVakken[0] = new FormuleVak();
-			prefixVakken[0].setLocation(30,20);
+			prefixVakken[0].setLocation(30, 20);
 			prefixVakken[0].setEditable(false);
 			prefixVakken[0].setSelectable(false);
 			prefixVakken[0].vulVak(prefix);
 			add(prefixVakken[0]);
+			
 			int x = 30 + prefixVakken[0].getSize().width;
-			formuleVakken[0].setLocation(x,20);
+			remove(formuleVakken[0]);
+			formuleVakken[0] = new FormuleVak();
+			formuleVakken[0].setLocation(x, 20);
+			formuleVakken[0].addActionListener(this);
+			add(formuleVakken[0]);
+			formuleVak = formuleVakken[0];
+			zetGoedFout(GEEN);
 		}
-	
-	
 	
 		FormuleParser p = new FormuleParser();
 		juisteAntwoord = p.parse(p.schoon(p.formuleString(s)));
 		//formuleVak.vulVak(s);
 	}
+
+	public String geefAntwoord()
+	{
+		return formuleVakken[0].toString();
+	}
+	
+	public void zetAntwoord(String a)
+	{
+		formuleVakken[0].vulVak(a);
+	}
 	
 	public void stop()
 	{	checkAntwoord();
 		kijkNa();
-		if(ingevuld) produceAction("changed");
+		if (ingevuld) 
+			produceAction("changed");
 			
 	}
 	
@@ -274,12 +313,12 @@ public class AntwoordFormuleVak extends FormuleEditor
 	
 	public void kijkNa()
 	{	checkAntwoord();
-		if(!ingevuld)
+		if (!ingevuld)
 		{	zetGoedFout(GEEN);
 			return;
 		}
-		if(!herleiding && !exact) 
-		{	if(isGelijkwaardig)
+		if (!herleiding && !exact) 
+		{	if (isGelijkwaardig)
 			{	zetGoedFout(GOED);
 				score = puntenGelijkwaardig;
 				correct = true;
@@ -291,7 +330,7 @@ public class AntwoordFormuleVak extends FormuleEditor
 				correct = false;
 			}
 		}
-		else if(herleiding && !exact)
+		else if (herleiding && !exact)
 		{	if(isGelijkwaardig && isHerleid)
 			{	zetGoedFout(GOED);
 				score = puntenGelijkwaardig + puntenHerleiding;
@@ -341,15 +380,19 @@ public class AntwoordFormuleVak extends FormuleEditor
 	
 		ingevuld  = false;	
 		Expressie antwoord = formuleVak.geefExpressie();
-		if(antwoord!=null)
+		if (antwoord != null)
 		{	//formuleVak.vulVak("$f" + antwoord.toString() + "@");
 			ingevuld  = true;
 		}
 		
-		isGelijkwaardig = AntwoordChecker.checkGelijkwaardig(antwoord,juisteAntwoord);
+//System.out.println("ingevuld = " + ingevuld);
+
+		isGelijkwaardig = AntwoordChecker.checkGelijkwaardig(antwoord, juisteAntwoord);
 		isHerleid = AntwoordChecker.checkHerleiding(antwoord,juisteAntwoord, soortHerleiding);
 		isExact = AntwoordChecker.checkExact(antwoord,juisteAntwoord);
 		repaint();
+		
+//System.out.println("isGelijkwaardig = " + isGelijkwaardig);		
 	}	
 	
 	/*public boolean isGelijkwaardig()
@@ -423,9 +466,13 @@ public class AntwoordFormuleVak extends FormuleEditor
 	
 	public void actionPerformed(ActionEvent e)
 	{	super.actionPerformed(e);
-		if(e.getSource()==formuleVak && e.getActionCommand().equals("ingevuld"))
-		{	kijkNa();
-			if(ingevuld)produceAction("changed");
+		if (e.getSource() == formuleVak && e.getActionCommand().equals("ingevuld"))
+		{	
+			
+System.out.println("aVak action");			
+			kijkNa();
+			if (ingevuld)
+				produceAction("changed");
 		}
 		else if(e.getSource()==gelijkwaardigKnop)
 		{	maakStap();

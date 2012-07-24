@@ -8,14 +8,24 @@ import java.awt.*;
 import java.applet.*;
 import java.awt.event.*;
 import java.util.*;
+
 import fi.spot_problems_dwo.wiskopdr.*;
 import fi.beans.base64code.*;
 import fi.beans.scorm.*;
 import fi.beans.copyright.*;
 
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+
 // main applet class
-public class Spot_Problems_dwo extends WiskOpdr
-{   // levels
+public class Spot_Problems_dwo extends WiskOpdr implements WiskOpdrApplet
+{   
+	protected static ResourceBundle rb;
+	protected static String langArg;
+	protected static Color bgColor = new Color(230,240,255);
+	
+	// levels
     public static final int MAXLEVELS = 3;
     // problem numbers
     // random
@@ -168,8 +178,6 @@ public class Spot_Problems_dwo extends WiskOpdr
     Checkbox[] colorBoxes;
     
     // other attributes
-    // language string from html
-    String langArg;
     // language table    
     static LookUpTable languageTable;
 
@@ -187,6 +195,19 @@ public class Spot_Problems_dwo extends WiskOpdr
 		mf.show();
 		mf.setSize(width, height);
 		//mf.doLayout();
+	}
+	
+	public Spot_Problems_dwo()
+	{	
+		langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.spot_problems_dwo.text.Text", language);	
+	}
+	
+	public Spot_Problems_dwo(Locale language)
+	{	
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.spot_problems_dwo.text.Text", language);	
 	}
 	
 	public void init()
@@ -212,10 +233,10 @@ public class Spot_Problems_dwo extends WiskOpdr
 		//setSize(712, 430);
 		//setBackground(new Color(12632256));
 		
-		Color bgcolor = new Color(230,240,255);
 		String kleurcode = getParameter("bgcolor");
-		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
-		setBackground(bgcolor);
+		if (kleurcode != null) 
+			bgColor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+		setBackground(bgColor);
 		
 		//}}
 		
@@ -243,14 +264,14 @@ public class Spot_Problems_dwo extends WiskOpdr
         // buffer panel
 		bufferPanel = new BufferPanel();
 		
-		bufferPanel.setBackground(bgcolor);
+		bufferPanel.setBackground(bgColor);
 		// take width and height as multiples of 
 		// GRIDSIZE
 		bufferPanel.setBounds(250, 10, 528, 320);
 		add(bufferPanel,0);
 		// drawing container
 		drawCon = new DrawingContainer(this);
-		drawCon.setBackground(bgcolor);
+		drawCon.setBackground(bgColor);
 		bufferPanel.add(drawCon, BorderLayout.CENTER);
 		// initialize, problemNumber should be set!
 		drawCon.initialize();
@@ -1248,6 +1269,11 @@ if (questionNumber == 1)
 	}    
 
 
+	public InteractiePanel getInteractiePanel()
+	{	
+		return new SPInteractiePanel();
+	}
+
 } // class Spot_Problems
 
 
@@ -1286,11 +1312,12 @@ class LookUpTable
     //  keys, dutch, english, spanish, japanese   etc.
         
         
-      {{"infoText",  "info",
+      {
+       {"infoText",  "info",
                      "info",
                      "info",                     
                      "info",                                          
-        "\u60C5\u5831"},
+        			 "\u60C5\u5831"},
         
        {"titelText", "Stippelproblemen",
                      "Spot problems",

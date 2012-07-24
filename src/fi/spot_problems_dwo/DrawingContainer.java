@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+import javax.swing.*;
+
 // class representing a grid element with spot
 class GridElement
 {   // attributes
@@ -73,7 +75,7 @@ class GridElement
 } // class GridElement   
 
 // the class where number spotting takes place
-public class DrawingContainer extends Container
+public class DrawingContainer extends JPanel//Container
 {   // attributes
     // the size of a grid element in pixels
     static final int GRIDSIZE = 16;
@@ -124,6 +126,8 @@ public class DrawingContainer extends Container
     
     MLMML listener;
     
+    SPInteractiePanel spip;
+    
     // constructor
     // NOTE: the size of the DrawingContainer instance is not yet known here
     // since it has not yet been added to the BufferPanel instance
@@ -134,6 +138,12 @@ public class DrawingContainer extends Container
         problemNumber = owner.problemNumber;
     } // constructor
     
+    public DrawingContainer(SPInteractiePanel spip)
+    {   setLayout(null);
+        this.spip = spip;
+        problemNumber = 0;
+    } // constructor
+    
     // initialization of attributes
     public void initialize()
     {   // NOTE: get the Size() of the DrawingContainer instance as the Size()
@@ -142,8 +152,17 @@ public class DrawingContainer extends Container
         // it seems that the Size() of the DrawingContainer instance is only
         // set after terminating init() in the main applet
         // initialize the virtual grid 
-        horSize = getParent().getSize().width / GRIDSIZE;
-        vertSize = getParent().getSize().height / GRIDSIZE;        
+    	
+    	if (getParent() != null)
+    	{	
+    		horSize = getParent().getSize().width / GRIDSIZE;
+    		vertSize = getParent().getSize().height / GRIDSIZE;
+    	}
+    	else
+    	{
+    		horSize = getSize().width / GRIDSIZE;
+    		vertSize = getSize().height / GRIDSIZE;
+    	}
         grid = new GridElement[horSize][vertSize];
         for (int i = 0; i < horSize; i++)
             for (int j = 0; j < vertSize; j++)
@@ -152,7 +171,10 @@ public class DrawingContainer extends Container
         listener = new MLMML();
         addMouseListener(listener);
         addMouseMotionListener(listener);
-        initProblem(problemNumber);
+        if (spip == null)
+        	initProblem(problemNumber);
+        else
+        	initDWOProblem(problemNumber);
     } // initialize
 
     public void initProblem(int num)
@@ -940,17 +962,785 @@ public class DrawingContainer extends Container
         }    
     }
     
+    public void initDWOProblem(int num)
+    {   problemNumber = num;
+        removeAll();
+        patternsShown = 0;
+        switch (problemNumber)
+        {   case 0://spip.VNUMBERS: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(8, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(24, 6);
+                basePoints[4] = new Point(7, 15);
+                basePoints[5] = new Point(20,15); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0;
+                }
+            }
+            break;
+            case 1://spip.WNUMBERS: 
+            {   basePoints[0] = new Point(3, 5);
+                basePoints[1] = new Point(11, 5);
+                basePoints[2] = new Point(23, 5);
+                basePoints[3] = new Point(9, 12);
+                basePoints[4] = new Point(20, 18);
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0;
+                }
+            }
+            break;
+            case 2://spip.SQRNUMBERS: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(23, 6);
+                basePoints[4] = new Point(5, 16);
+                basePoints[5] = new Point(14, 16);
+                basePoints[6] = new Point(23, 16);
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = (j % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 102://spip.OBLNUMBERS: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(23, 6);
+                basePoints[4] = new Point(5, 16);
+                basePoints[5] = new Point(15, 16);
+                basePoints[6] = new Point(25, 16);
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = -((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 103://spip.TRIANUMBERS1: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(23, 6);
+                basePoints[4] = new Point(5, 16);
+                basePoints[5] = new Point(14, 16);
+                basePoints[6] = new Point(23, 16);
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = (j % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 104://spip.TRIANUMBERS2: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(8, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(24, 6);
+                basePoints[4] = new Point(7, 15);
+                basePoints[5] = new Point(20,15); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0;
+                }
+            }
+            break;
+            case 203://spip.PENTANUMBERS: 
+            {   basePoints[0] = new Point(2, 6);
+                basePoints[1] = new Point(8, 6);
+                basePoints[2] = new Point(16, 6);
+                basePoints[3] = new Point(26, 8);
+                basePoints[4] = new Point(6, 18);
+                basePoints[5] = new Point(18, 18);
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0;
+                }
+            }
+            break;
+            case 3://spip.BOXNUMBERS: 
+            {   basePoints[0] = new Point(4, 6);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(16, 6);
+                basePoints[3] = new Point(23, 6);
+                basePoints[4] = new Point(6, 17);
+                basePoints[5] = new Point(14,17); 
+                basePoints[6] = new Point(24,17); 
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 4://spip.PLUSNUMBERS: 
+            {   basePoints[0] = new Point(3, 4);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(16, 8);
+                basePoints[3] = new Point(26, 10);
+                basePoints[4] = new Point(6, 17);
+                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 204://spip.SPIRALNUMBERS: 
+            {   basePoints[0] = new Point(2, 6);
+                basePoints[1] = new Point(7, 6);
+                basePoints[2] = new Point(12, 6);
+                basePoints[3] = new Point(19, 6);
+                basePoints[4] = new Point(26, 6);
+                basePoints[5] = new Point(5, 17);
+                basePoints[6] = new Point(14, 17);
+                basePoints[7] = new Point(24, 17);
+                maxPatterns = 8;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = -((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 105://spip.TRIANUMBERS3: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(8, 6);
+                basePoints[2] = new Point(15, 6);
+                basePoints[3] = new Point(24, 6);
+                basePoints[4] = new Point(7, 15);
+                basePoints[5] = new Point(20,15); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0;
+                }
+            }
+            break;
+            case 5://spip.TOWERNUMBERS: 
+            {   basePoints[0] = new Point(3, 7);
+                basePoints[1] = new Point(9, 7);
+                basePoints[2] = new Point(15, 7);
+                basePoints[3] = new Point(21, 7);
+                basePoints[4] = new Point(27, 7);
+                basePoints[5] = new Point(5, 17);
+                basePoints[6] = new Point(14, 17);
+                basePoints[7] = new Point(24, 17);
+                maxPatterns = 8;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; //-((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 205://spip.BLOCKNUMBERS1: 
+            {   basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(7, 6);
+                basePoints[2] = new Point(12, 6);
+                basePoints[3] = new Point(18, 6);
+                basePoints[4] = new Point(26, 6);
+                basePoints[5] = new Point(6, 17);
+                basePoints[6] = new Point(20, 17);
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 6://spip.FNUMBERS1: 
+            {   
+                basePoints[0] = new Point(7, 5);
+                basePoints[1] = new Point(10, 7);
+                basePoints[2] = new Point(14, 9);
+                basePoints[3] = new Point(19, 11);
+                basePoints[4] = new Point(3, 19);
+                basePoints[5] = new Point(25, 19); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 106://spip.FNUMBERS2: 
+            {   
+                basePoints[0] = new Point(1, 5);
+                basePoints[1] = new Point(1, 15);
+                basePoints[2] = new Point(6, 13);
+                basePoints[3] = new Point(13, 17);
+                basePoints[4] = new Point(22, 20);
+//                basePoints[5] = new Point(25, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = - GRIDSIZE / 2; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 7://spip.FLAPNUMBERS: 
+            {   basePoints[0] = new Point(4, 7);
+                basePoints[1] = new Point(9, 7);
+                basePoints[2] = new Point(16, 7);
+                basePoints[3] = new Point(23, 7);
+                basePoints[4] = new Point(6, 18);
+                basePoints[5] = new Point(14,18); 
+                basePoints[6] = new Point(24,18); 
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = - ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 107://spip.FLIPNUMBERS: 
+            {   basePoints[0] = new Point(4, 7);
+                basePoints[1] = new Point(9, 7);
+                basePoints[2] = new Point(16, 7);
+                basePoints[3] = new Point(23, 7);
+                basePoints[4] = new Point(6, 18);
+                basePoints[5] = new Point(14,18); 
+                basePoints[6] = new Point(24,18); 
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = - ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 108://spip.TILENUMBERS1: 
+            {   basePoints[0] = new Point(2, 3);
+                basePoints[1] = new Point(3, 9);
+                basePoints[2] = new Point(4, 17);
+                basePoints[3] = new Point(13, 9);
+                basePoints[4] = new Point(13, 20);
+                basePoints[5] = new Point(25, 16); 
+//                basePoints[6] = new Point(24,18); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = GRIDSIZE / 2; //- ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 109://spip.TILENUMBERS2: 
+            {   basePoints[0] = new Point(5, 4);
+                basePoints[1] = new Point(13, 6);
+                basePoints[2] = new Point(23, 8);
+                basePoints[3] = new Point(8, 17);
+                basePoints[4] = new Point(23, 20);
+//                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 8://spip.HNUMBERS1: 
+            {   basePoints[0] = new Point(3, 5);
+                basePoints[1] = new Point(3, 12);
+                basePoints[2] = new Point(8, 9);
+                basePoints[3] = new Point(13, 11);
+                basePoints[4] = new Point(18, 13);
+                basePoints[5] = new Point(23, 15);
+                basePoints[6] = new Point(28, 17);
+//                basePoints[7] = new Point(24, 17);
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; //-((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 9://spip.HNUMBERS2: 
+            {   
+                basePoints[0] = new Point(2, 4);
+                basePoints[1] = new Point(7, 6);
+                basePoints[2] = new Point(12, 8);
+                basePoints[3] = new Point(19, 10);
+                basePoints[4] = new Point(4, 19);
+                basePoints[5] = new Point(27, 19); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 10://spip.XNUMBERS1: 
+            {   basePoints[0] = new Point(2, 4);
+                basePoints[1] = new Point(7, 6);
+                basePoints[2] = new Point(14, 8);
+                basePoints[3] = new Point(23, 10);
+                basePoints[4] = new Point(6, 19);
+                basePoints[5] = new Point(24, 20); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 100://spip.XNUMBERS2: 
+            {   basePoints[0] = new Point(2, 2);
+                basePoints[1] = new Point(7, 4);
+                basePoints[2] = new Point(14, 6);
+                basePoints[3] = new Point(23, 8);
+                basePoints[4] = new Point(6, 19);
+                basePoints[5] = new Point(21, 20); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = GRIDSIZE; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 11://spip.LNUMBERS1: 
+            {   
+                basePoints[0] = new Point(3, 5);
+                basePoints[1] = new Point(9, 6);
+                basePoints[2] = new Point(15, 7);
+                basePoints[3] = new Point(23, 8);
+                basePoints[4] = new Point(5, 17);
+                basePoints[5] = new Point(15, 18);                 
+                basePoints[6] = new Point(25, 19); 
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = - ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 200://spip.LNUMBERS2: 
+            {   
+                basePoints[0] = new Point(3, 5);
+                basePoints[1] = new Point(3, 18);
+                basePoints[2] = new Point(6, 11);
+                basePoints[3] = new Point(13, 14);
+                basePoints[4] = new Point(22, 17);
+//                basePoints[5] = new Point(25, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = GRIDSIZE / 2; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 206://spip.TILENUMBERS3: 
+            {   basePoints[0] = new Point(5, 4);
+                basePoints[1] = new Point(13, 6);
+                basePoints[2] = new Point(23, 8);
+                basePoints[3] = new Point(8, 18);
+                basePoints[4] = new Point(23, 20);
+//                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 207://spip.TILENUMBERS4: 
+            {   basePoints[0] = new Point(2, 2);
+                basePoints[1] = new Point(3, 8);
+                basePoints[2] = new Point(4, 16);
+                basePoints[3] = new Point(13, 8);
+                basePoints[4] = new Point(13, 19);
+                basePoints[5] = new Point(25, 16); 
+//                basePoints[6] = new Point(24,18); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; //GRIDSIZE / 2; //- ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 101://spip.TABLENUMBERS: 
+            {   basePoints[0] = new Point(3, 5);
+                basePoints[1] = new Point(10, 5);
+                basePoints[2] = new Point(17, 5);
+                basePoints[3] = new Point(26, 5);
+                basePoints[4] = new Point(5, 11);
+                basePoints[5] = new Point(16, 11); 
+                basePoints[6] = new Point(6, 17); 
+                basePoints[7] = new Point(19, 17);                 
+                maxPatterns = 8;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 110://spip.STAIRNUMBERS: 
+            {   basePoints[0] = new Point(2, 2);
+                basePoints[1] = new Point(7, 3);
+                basePoints[2] = new Point(14, 4);
+                basePoints[3] = new Point(23, 5);
+                basePoints[4] = new Point(6, 10);
+                basePoints[5] = new Point(19, 13); 
+                basePoints[6] = new Point(13, 19); 
+                maxPatterns = 7;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 111://spip.ZNUMBERS: 
+            {   
+                basePoints[0] = new Point(3, 6);
+                basePoints[1] = new Point(9, 7);
+                basePoints[2] = new Point(15, 8);
+                basePoints[3] = new Point(23, 9);
+                basePoints[4] = new Point(5, 19);
+                basePoints[5] = new Point(17, 20); 
+                maxPatterns = 6;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 201://spip.INSECTNUMBERS: 
+            {   basePoints[0] = new Point(5, 4);
+                basePoints[1] = new Point(13, 6);
+                basePoints[2] = new Point(23, 8);
+                basePoints[3] = new Point(8, 17);
+                basePoints[4] = new Point(23, 20);
+//                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 202://spip.SPIDERNUMBERS: 
+            {   basePoints[0] = new Point(5, 4);
+                basePoints[1] = new Point(13, 6);
+                basePoints[2] = new Point(23, 8);
+                basePoints[3] = new Point(8, 17);
+                basePoints[4] = new Point(23, 20);
+//                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 208://spip.BLOCKNUMBERS2: 
+            {   basePoints[0] = new Point(9, 3);
+                basePoints[1] = new Point(14, 4);
+                basePoints[2] = new Point(21, 5);
+                basePoints[3] = new Point(3, 9);
+                basePoints[4] = new Point(3, 16);
+//                basePoints[5] = new Point(19, 19); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; // ((j + 1) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 209://spip.BLOCKNUMBERS3: 
+            {   basePoints[0] = new Point(3, 3);
+                basePoints[1] = new Point(4, 12);
+                basePoints[2] = new Point(12, 11);
+                basePoints[3] = new Point(24, 18);
+//                basePoints[4] = new Point(23, 19);
+//                basePoints[5] = new Point(25, 16); 
+//                basePoints[6] = new Point(24,18); 
+                maxPatterns = 4;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; //GRIDSIZE / 2; //- ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 210://spip.TRIANUMBERS4: 
+            {   basePoints[0] = new Point(4, 4);
+                basePoints[1] = new Point(6, 12);
+                basePoints[2] = new Point(17, 9);
+                basePoints[3] = new Point(29, 19);
+//                basePoints[4] = new Point(23, 19);
+//                basePoints[5] = new Point(25, 16); 
+//                basePoints[6] = new Point(24,18); 
+                maxPatterns = 4;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = GRIDSIZE; //- ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            case 211://spip.PIRAMIDNUMBERS: 
+            {   basePoints[0] = new Point(2, 3);
+                basePoints[1] = new Point(4, 9);
+                basePoints[2] = new Point(6, 18);
+                basePoints[3] = new Point(14, 16);
+                basePoints[4] = new Point(25, 17);
+//                basePoints[5] = new Point(25, 16); 
+//                basePoints[6] = new Point(24,18); 
+                maxPatterns = 5;
+                for (int j = 0; j < maxPatterns; j++)
+                {   labels[j] = "n = " + (j + 1);
+                    corrections[j] = 0; //- ((j) % 2) * (GRIDSIZE / 2);
+                }
+            }
+            break;
+            
+            default: // nothing
+        }    
+        showDWOPattern(0);
+        showNextPattern();
+        showNextPattern();
+    }    
+
+    public void showDWOPattern(int n)
+    {   drawColor = spotColors[n];
+        switch(problemNumber)
+        {   case 0://spip.VNUMBERS: // start at n = 1
+            {   drawVNumber(n + 1, basePoints[n].x - (n + 1),
+                    basePoints[n].y - (n + 2));
+            }
+            break;
+            case 1://spip.WNUMBERS: // start at n = 1
+            {   drawWNumber(n + 1, basePoints[n].x - (2 * (n + 1)),
+                    basePoints[n].y - (n + 2));
+            }
+            break;
+            case 2://spip.SQRNUMBERS: // start at n = 1
+            {   drawSquare(n + 1, basePoints[n].x - n / 2 - n % 2,
+                    basePoints[n].y - (n + 1));
+            }
+            break;
+            case 102://spip.OBLNUMBERS: // start at n = 1
+            {   drawOblong(n + 1, basePoints[n].x - n / 2 - n % 2,
+                    basePoints[n].y - (n + 1));
+            }
+            break;
+            case 103://spip.TRIANUMBERS1: // start at n = 1
+            {   drawTriang1Number(n + 2, basePoints[n].x - n / 2 - n % 2,
+                    basePoints[n].y - (n + 1));            
+            }    
+            break;
+            case 104://spip.TRIANUMBERS2: // start at n = 1
+            {   drawTriang2Number(n + 2, basePoints[n].x - n,
+                    basePoints[n].y - (n + 1));
+            }    
+            break;
+            case 203://spip.PENTANUMBERS: // start at n = 1
+            {   // nothing for n = 1
+                drawTriang2Number(n + 1, basePoints[n].x - (n - 1),
+                    basePoints[n].y - (2 * n + 1));
+                // single dot for n = 1   
+                drawSpacedSquare(n + 1, basePoints[n].x - n,
+                    basePoints[n].y - (n + 1));
+            }    
+            break;
+            case 3://spip.BOXNUMBERS: // start at n = 1
+            {   drawBox(n + 1, basePoints[n].x - (n + 1) / 2 - (n + 1) % 2,
+                    basePoints[n].y - (n + 2));
+            }    
+            break;
+            case 4://spip.PLUSNUMBERS: // start at n = 1
+            {   drawPlus(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 204://spip.SPIRALNUMBERS: // start at n = 1
+            {   drawSpiral(n + 1, basePoints[n].x - n / 2 - n % 2,
+                    basePoints[n].y - (n + 1));
+            }
+            break;
+            case 105://spip.TRIANUMBERS3: // start at n = 1
+            {   drawTriang3Number(n + 1, basePoints[n].x - n,
+                    basePoints[n].y - n - 1);
+            }    
+            break;
+            case 5://spip.TOWERNUMBERS: // start at n = 1
+            {   drawTowerNumber(n + 1, basePoints[n].x - 1,
+                    basePoints[n].y - n - 2);
+            }    
+            break;
+            case 205://spip.BLOCKNUMBERS1: // start at n = 1
+            {   switch (n)
+                {   case 0: drawRectangle(2, 1, basePoints[0].x - 1,
+                                basePoints[0].y - 1);
+                    break;
+                    case 1: drawRectangle(2, 2, basePoints[1].x - 1,
+                                basePoints[1].y - 2);
+                    break;
+                    case 2: drawRectangle(4, 2, basePoints[2].x - 2,
+                                basePoints[2].y - 2);
+                    break;
+                    case 3: drawRectangle(4, 4, basePoints[3].x - 2,
+                                basePoints[3].y - 4);
+                    break;
+                    case 4: drawRectangle(8, 4, basePoints[4].x - 4,
+                                basePoints[4].y - 4);
+                    break;
+                    case 5: drawRectangle(8, 8, basePoints[5].x - 4,
+                                basePoints[5].y - 8);
+                    break;
+                    case 6: drawRectangle(16, 8, basePoints[6].x - 8,
+                                basePoints[6].y - 8);
+                    break;
+                    default:
+                }    
+            }    
+            break;
+            case 6://spip.FNUMBERS1: // start at n = 1
+            {   drawFNumber1(n + 1, basePoints[n].x - 1,
+                    basePoints[n].y - (2 * n + 4));
+            }    
+            break;
+            case 106://spip.FNUMBERS2: // start at n = 1
+            {   drawFNumber2(n + 1, basePoints[n].x,
+                    basePoints[n].y - (4 * n + 4));
+            }    
+            break;
+            case 7://spip.FLAPNUMBERS: // start at n = 1
+            {   drawFlapNumber(n + 1, basePoints[n].x - (n + 1) / 2 - (n + 1) % 2,
+                    basePoints[n].y - (n + 3));
+            }    
+            break;
+            case 107://spip.FLIPNUMBERS: // start at n = 1
+            {   drawFlipNumber(n + 1, basePoints[n].x - (n + 1) / 2 - (n + 1) % 2,
+                    basePoints[n].y - (n + 3));
+            }    
+            break;
+            case 108://spip.TILENUMBERS1: // start at n = 1
+            {   drawTileNumber1(n + 1, basePoints[n].x - (2 * n + 1) / 2 - 1,
+                    basePoints[n].y - (2 * n + 2));
+            }    
+            break;
+            case 109://spip.TILENUMBERS2: // start at n = 1
+            {   drawTileNumber2(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2 - 1,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 8://spip.HNUMBERS1: // start at n = 1
+            {   drawHNumber1(n + 1, basePoints[n].x - 1,
+                    basePoints[n].y - 2 * n - 3);
+            }    
+            break;
+            case 9://spip.HNUMBERS2: // start at n = 1
+            {   drawHNumber2(n + 1, basePoints[n].x - ((n + 2) / 2) - ((n + 2) % 2),
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 10://spip.XNUMBERS1: // start at n = 1
+            {   drawXNumber1(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 100://spip.XNUMBERS2: // start at n = 0
+            {   drawXNumber1(n, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2,
+                    basePoints[n].y - (2 * n + 1));
+            }    
+            break;
+            case 11://spip.LNUMBERS1: // start at n = 1
+            {   drawLNumber1(n + 1, basePoints[n].x - (n / 2) - (n % 2),
+                    basePoints[n].y - (n + 3));
+            }    
+            break;
+            case 200://spip.LNUMBERS2: // start at n = 1
+            {   drawLNumber2(n + 1, basePoints[n].x - 1,
+                    basePoints[n].y - (3 * n + 3));
+            }    
+            break;
+            case 206://spip.TILENUMBERS3: // start at n = 1
+            {   drawTileNumber3(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2 - 1,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 207://spip.TILENUMBERS4: // start at n = 1
+            {   drawTileNumber4(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2,
+                    basePoints[n].y - (2 * n + 1));
+            }    
+            break;
+            case 101://spip.TABLENUMBERS: // start at n = 1
+            {   drawTableNumber(n + 1, basePoints[n].x - (n + 2) / 2 - (n + 2) % 2,
+                    basePoints[n].y - 3);
+            }    
+            break;
+            case 110://spip.STAIRNUMBERS: // start at n = 1
+            {   drawStairNumber(n + 1, basePoints[n].x - n,
+                    basePoints[n].y - n - 1);
+            }    
+            break;
+            case 111://spip.ZNUMBERS: // start at n = 1
+            {   drawZNumber(n + 1, basePoints[n].x - (n + 2) / 2 - (n + 2) % 2,
+                    basePoints[n].y - (n + 5));
+            }    
+            break;
+            case 201://spip.INSECTNUMBERS: // start at n = 1
+            {   drawInsectNumber(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2 - 1,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 202://spip.SPIDERNUMBERS: // start at n = 1
+            {   drawSpiderNumber(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2 - 1,
+                    basePoints[n].y - (2 * n + 3));
+            }    
+            break;
+            case 208://spip.BLOCKNUMBERS2: // start at n = 1
+            {   drawBlockNumber2(n + 1, basePoints[n].x, // - (n * n) / 2 - (n * n) % 2,
+                    basePoints[n].y - (n + 1));
+            }    
+            break;
+            case 209://spip.BLOCKNUMBERS3: // start at n = 1
+            {   drawBlockNumber3(n + 1, basePoints[n].x - (2 * n + 1) / 2 - (2 * n + 1) % 2,
+                    basePoints[n].y - (n * n + 2 * n + 1));
+            }    
+            break;
+            case 210://spip.TRIANUMBERS4: // start at n = 1
+            {   int width = (int) Math.pow(2, n + 2) - 1;
+                int height = (int) Math.pow(2, n + 1) - 1;
+                drawTriang4Number(n + 1, basePoints[n].x - (width) / 2 - (width) % 2,
+                    basePoints[n].y - (height + 1));
+            }    
+            break;
+            case 211://owner.PIRAMIDNUMBERS: // start at n = 1
+            {   int width = (n + 1) * (n + 2) / 2;
+                int height = (n + 1) * (n + 2) / 2;
+                drawPiramidNumber(n + 1, basePoints[n].x - (width - n - 1) - (width - n - 1) % 2,
+                    basePoints[n].y - (height));
+            }    
+            break;
+            
+            
+            default: // nothing
+        }    
+    }    
     public void showNextPattern()
     {   patternsShown++;
         if (patternsShown < maxPatterns)
-        {   showPattern(patternsShown);
+        {   if (spip == null)
+        		showPattern(patternsShown);
+        	else
+        		showDWOPattern(patternsShown);
             repaint();
         }    
     }    
     
     public void showAllPatterns()
     {   for (int i = patternsShown + 1; i < maxPatterns; i++)
-        {   showPattern(i);
+        {   if (spip == null)
+    			showPattern(i);
+        	else
+        		showDWOPattern(patternsShown);
         }    
         patternsShown = maxPatterns - 1;
         repaint();
@@ -958,7 +1748,7 @@ public class DrawingContainer extends Container
     
     
     // paint method
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {   // white background
         g.setColor(getBackground());
         g.fillRect(0, 0, getSize().width, getSize().height);
@@ -1501,6 +2291,31 @@ public class DrawingContainer extends Container
     } // updateCounts    
 */
 
+    public Vector getUserSpots()
+    {	
+    	Vector result = new Vector();
+    	
+    	for (int hCnt = 0; hCnt < horSize; hCnt++)
+    		for (int vCnt = 0; vCnt < vertSize; vCnt++)
+    		{
+    			if (grid[hCnt][vCnt].visible && grid[hCnt][vCnt].gColor.equals(Color.lightGray))
+    				result.addElement(new Point(grid[hCnt][vCnt].gX, grid[hCnt][vCnt].gY));
+    		}
+    	
+    	return result;
+    }
+    
+    public void setUserSpots(Vector v)
+    {
+    	for (int sCnt = 0; sCnt < v.size(); sCnt++)
+   		{
+    		Point p = (Point) v.elementAt(sCnt);
+    		grid[p.x][p.y].visible = true;
+    		grid[p.x][p.y].gColor = Color.lightGray;
+   		}
+    	
+    }
+    
    // inner class processing mouse events
     class MLMML extends MouseAdapter implements MouseMotionListener
     {   // mouse pressed events
