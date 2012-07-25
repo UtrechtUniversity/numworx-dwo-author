@@ -7,6 +7,7 @@ import fi.geomalgebra.text.*;
 
 
 import java.applet.Applet;
+import javax.swing.*;
 
 import fi.beans.mainframe.*;
 import fi.beans.copyright.*;
@@ -17,7 +18,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  * @author Peter Boon
  */
 
-public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletIF, WiskOpdrParamEditApplet
+public class GeomAlgebra extends JApplet implements  ActionListener, ScormAppletIF, WiskOpdrParamEditApplet
 {	
 	protected SCORM12APIInterface api;
 	private long sessionStartTime;
@@ -28,11 +29,13 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
   	private Graphics gIm ;
 	
 	protected static ResourceBundle rb;
-	private ControlPanel cp;
+	protected static String langArg;
+	
+	ControlPanel cp;
 	private LineaalHor lh;
 	private LineaalVer lv;
 	private AlgebraVeld av;
-	private String langArg;
+	//private String langArg;
 	
 	private boolean varWaardeZichtbaar;
 	private boolean oppWaardeZichtbaar;
@@ -52,14 +55,13 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
 	
 	public GeomAlgebra()
 	{	Locale language = new Locale ("nl", "");
-		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text",language);
 	}
 	
 	public GeomAlgebra(Locale language)
 	{	
-		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text", language);	
 	}
 	
 	public void init()
@@ -73,50 +75,63 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
 		
 		setLayout(null);
 		
-		String langArg = getParameter("language");
-		if (langArg == null) langArg = "nl";
+		langArg = getParameter("language");
+		if (langArg == null) 
+			langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text",language);
 		
 		String varWaardeString = getParameter("varWaarde");
-		if(varWaardeString != null && varWaardeString.equals("true")) varWaardeZichtbaar = true;
+		if (varWaardeString != null && varWaardeString.equals("true")) 
+			varWaardeZichtbaar = true;
 		
 		String oppWaardeString = getParameter("oppWaarde");
-		if(oppWaardeString != null && oppWaardeString.equals("true")) oppWaardeZichtbaar = true;
+		if (oppWaardeString != null && oppWaardeString.equals("true")) 
+			oppWaardeZichtbaar = true;
 		
 		String formuleString = getParameter("formule");
-		if(formuleString != null && formuleString.equals("false")) formuleZichtbaar = false;
+		if (formuleString != null && formuleString.equals("false")) 
+			formuleZichtbaar = false;
 		
 		String constructieToolsString = getParameter("constructieTools");
-		if(constructieToolsString != null && constructieToolsString.equals("false")) constructieTools = false;
+		if (constructieToolsString != null && constructieToolsString.equals("false")) 
+			constructieTools = false;
 	
 		String alleenOppervlaktesString = getParameter("alleenOppervlaktes");
-		if(alleenOppervlaktesString != null && alleenOppervlaktesString.equals("true")) alleenOppervlaktes = true;
+		if (alleenOppervlaktesString != null && alleenOppervlaktesString.equals("true")) 
+			alleenOppervlaktes = true;
 		
-		av = new AlgebraVeld(breedte,hoogte);
+		av = new AlgebraVeld(breedte, hoogte);
 		av.setLocation(0,0);
 		av.zetVarWaardeZichtbaar(varWaardeZichtbaar);
 		av.zetOppWaardeZichtbaar(oppWaardeZichtbaar);
 		av.zetFormuleZichtbaar(formuleZichtbaar);
 		av.zetConstructieTools(constructieTools);
 		av.zetAlleenOppervlaktes(alleenOppervlaktes);
-		add(av);
+		getContentPane().add(av);
 		
 		Figuur.zetGeslotenVeld(!constructieTools || alleenOppervlaktes);
 		Figuur.zetVeldSizes(breedte, hoogte);
 		
 		cp = new ControlPanel(av);
 		cp.setLayout(null);
-		cp.setBounds(1,hoogte-41,breedte-2,40);
-		if(constructieTools) add(cp,0);
+		cp.setBounds(1, hoogte - 41, breedte - 2, 40);
+		if (constructieTools) 
+			av.add(cp, 0);
+			//getContentPane().add(cp, 0);
 		
 		lh = new LineaalHor(breedte, hoogte);
 		lh.addActionListener(this);
-		if(constructieTools) add(lh,0);
+		if (constructieTools) 
+			av.add(lh, 0);
+			//getContentPane().add(lh, 0);
+			
 		
 		lv = new LineaalVer(breedte, hoogte);
 		lv.addActionListener(this);
-		if(constructieTools) add(lv,0);
+		if (constructieTools) 
+			av.add(lv, 0);
+			//getContentPane().add(lv, 0);
 		
 		fiButton = new FIButton("Geometrische Algebra",new String[]{"","versie-info: 20070227",
 													"auteurs: Gerard Koolstra, Peter Boon",
@@ -124,7 +139,8 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
 													"programmeur: Peter Boon",
 													"Freudenthal Instituut",
 													"www.fi.uu.nl",""});
-		fiButton.setBounds(2,18,15,20);
+		//fiButton.setBounds(2,18,15,20);
+		fiButton.setBounds(cp.getSize().width - 5 - 15,18,15,20);
 		cp.add(fiButton);
 	}
 	
@@ -141,7 +157,7 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
     }
 	
 	public void setSingleComponent()
-	{	
+	{	fiButton.setVisible(false);	
 	}
 	
 	public String getSessionTime()
@@ -210,7 +226,8 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
 	
 	public InteractiePanel getInteractiePanel()
 	{
-		return new InteractiePanelAdapter(this);
+		//return new InteractiePanelAdapter(this);
+		return new GAInteractiePanel();
 	}
 
     public boolean hasEditMode()
@@ -258,7 +275,7 @@ public class GeomAlgebra extends Applet implements  ActionListener, ScormAppletI
 	public void actionPerformed(ActionEvent e)
 	{	String command = e.getActionCommand();
 		int modifier = e.getModifiers();
-		if(command.equals("maakBasis"))
+		if (command.equals("maakBasis"))
 		{	av.zetBasis(modifier);
 		}
 	}

@@ -6,7 +6,9 @@ import java.util.*;
 import java.awt.event.*;
 import fi.geomalgebra.text.*;
 
-class LineaalVer extends Panel  implements MouseListener 
+import javax.swing.*;
+
+class LineaalVer extends JPanel  implements MouseListener 
 {	
 	int schaal = 24;
 	int aantal;
@@ -34,7 +36,8 @@ class LineaalVer extends Panel  implements MouseListener
 		max = aantal+2-(nulPositie-hoogte/2)/(schaal);
 	}
 	
-	public void paint(Graphics g)
+	//public void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{	g.drawLine(breedte-1,0,breedte-1,hoogte);
 		aantal = hoogte/(2*schaal);
 		for(int i=min ; i<max-3 ; i++)

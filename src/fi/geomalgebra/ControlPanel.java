@@ -6,12 +6,18 @@ import java.util.*;
 import java.awt.event.*;
 import fi.geomalgebra.text.*;
 
-class ControlPanel extends Panel implements ActionListener , ItemListener
+import javax.swing.*;
+
+class ControlPanel extends JPanel implements ActionListener , ItemListener
 {	
 	AlgebraVeld eigenaar;
+	// constantKnoppen worden niet gebruikt
 	Button[] constantKnoppen;
-	Button minknop,xknop,yknop,zknop,wisknop,vorigeKnop, volgendeKnop;
-	Checkbox dop;
+	// minknop en volgendeknop worden niet gebruikt
+	Button minknop, volgendeKnop;
+	//Button minknop,xknop,yknop,zknop,wisknop,vorigeKnop, volgendeKnop;
+	JButton xknop, yknop, zknop, wisknop, vorigeKnop;
+	JCheckBox dop;
 	//NumberSlider ns;
 
 	
@@ -19,7 +25,7 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 	{	
 		eigenaar = av;
 		
-		setBackground(new Color(150,150,150));
+		setBackground(new Color(150, 150, 150));
 		
 		//ns = new NumberSlider(0,400,150,0,"","");
 		//ns.setValue(150);
@@ -35,28 +41,28 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 		minknop.addActionListener(this);
 		
 		
-		wisknop = new Button(GeomAlgebra.rb.getString("wisknopLabel"));
-		wisknop.setBounds(30,10,70,20);
+		wisknop = new JButton(GeomAlgebra.rb.getString("wisknopLabel"));
+		wisknop.setBounds(10,10,70,20);
 		add(wisknop);
 		wisknop.addActionListener(this);
 		
-		vorigeKnop = new Button(GeomAlgebra.rb.getString("terugknopLabel"));
-		vorigeKnop.setBounds(120,10,70,20);
+		vorigeKnop = new JButton(GeomAlgebra.rb.getString("terugknopLabel"));
+		vorigeKnop.setBounds(95,10,70,20);
 		add(vorigeKnop);
 		vorigeKnop.addActionListener(this);
 		
-		xknop = new Button("x");
-		xknop.setBounds(400,10,20,20);
+		xknop = new JButton("x");
+		xknop.setBounds(345,10,45,20);
 		add(xknop);
 		xknop.addActionListener(this);
 		
-		yknop = new Button("y");
-		yknop.setBounds(425,10,20,20);
+		yknop = new JButton("y");
+		yknop.setBounds(395,10,45,20);
 		add(yknop);
 		yknop.addActionListener(this);
 		
-		zknop = new Button("z");
-		zknop.setBounds(450,10,20,20);
+		zknop = new JButton("z");
+		zknop.setBounds(445,10,45,20);
 		add(zknop);
 		zknop.addActionListener(this);
 		
@@ -69,9 +75,10 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 			constantKnoppen[i].setVisible(true);
 		}
 		
-		dop = new Checkbox(GeomAlgebra.rb.getString("DScheckboxLabel"));
+		dop = new JCheckBox(GeomAlgebra.rb.getString("DScheckboxLabel"));
+		dop.setBackground(getBackground());
 		dop.addItemListener(this);
-		dop.setBounds(210,10,140,20);
+		dop.setBounds(180,10,150,20);
 		add(dop);
 	}
 	
@@ -105,6 +112,7 @@ class ControlPanel extends Panel implements ActionListener , ItemListener
 		}
 	}
 	public void itemStateChanged(ItemEvent e)
-	{	eigenaar.zetDirectOptellen(dop.getState());
+	{	//eigenaar.zetDirectOptellen(dop.getState());
+		eigenaar.zetDirectOptellen(dop.isSelected());
 	}
 }

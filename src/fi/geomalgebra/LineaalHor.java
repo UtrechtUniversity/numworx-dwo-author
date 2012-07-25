@@ -6,7 +6,9 @@ import java.util.*;
 import java.awt.event.*;
 import fi.geomalgebra.text.*;
 
-class LineaalHor extends Panel  implements MouseListener 
+import javax.swing.*;
+
+class LineaalHor extends JPanel  implements MouseListener 
 {	
 	int schaal = 24;
 	int aantal;
@@ -23,9 +25,9 @@ class LineaalHor extends Panel  implements MouseListener
 	public LineaalHor(int x, int y)
 	{	addMouseListener(this);
 		hoogte = 20;
-		breedte = x-hoogte;
+		breedte = x - hoogte;
 		setBackground(new Color(220,220,220));
-		setBounds(hoogte/2,y-hoogte-42,breedte+hoogte/2-1,hoogte);
+		setBounds(hoogte /2, y - hoogte - 42, breedte + hoogte / 2 - 1, hoogte);
 		
 		aantal = breedte/(2*schaal)+2;
 		getalknoppen = new Rectangle[2*aantal+1];
@@ -34,8 +36,13 @@ class LineaalHor extends Panel  implements MouseListener
 		min = -aantal+2-(nulPositie-breedte/2)/(schaal);
 		max = aantal+2-(nulPositie-breedte/2)/(schaal);
 	}
-	public void paint(Graphics g)
-	{	g.drawLine(0,0,breedte,0);
+	
+	//public void paint(Graphics g)
+	public void paintComponent(Graphics g)
+	{	
+//g.setColor(Color.orange);
+//g.fillRect(0, 0, getSize().width, getSize().height);
+		g.drawLine(0, 0, breedte, 0);
 		aantal = breedte/(2*schaal);
 		for(int i=min ; i<max-3 ; i++)
 		{	int dx = breedte/2 + i*schaal;
@@ -50,6 +57,7 @@ class LineaalHor extends Panel  implements MouseListener
 		g.setFont(new Font("SansSerif", Font.BOLD, 12));
 		g.drawString(Integer.toString(0),breedte/2-3,18);
 	}
+	
 	public void addActionListener(ActionListener l) 
  	{	actionListener = AWTEventMulticaster.add(actionListener,l);
  	}

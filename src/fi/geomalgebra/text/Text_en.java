@@ -19,7 +19,14 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "menuVSLabel", "Join"},
 				{ "menuMLLabel", "Separate"},
 				{ "menuMALLabel", "Separate completely"},
-				{ "oppLabel", "area"}
+				{ "oppLabel", "area"},
+				
+				{ "varWaardeTekst", "Show values of variables" },
+				{ "oppWaardeTekst", "Show value of area" },
+				{ "formuleTekst", "Show formule for area" },
+				{ "constructieToolsTekst", "Construction toolbox" },
+				{ "alleenOppervlaktesTekst", "Show only areas" },
+				
         };
 }
 

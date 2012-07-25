@@ -19,7 +19,13 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "menuVSLabel", "Voeg samen"},
 				{ "menuMLLabel", "Maak los"},
 				{ "menuMALLabel", "Maak alles los"},
-				{ "oppLabel", "opp"}
+				{ "oppLabel", "opp"},
+				
+				{ "varWaardeTekst", "Toon waarden variabelen" },
+				{ "oppWaardeTekst", "Toon waarde oppervlakte" },
+				{ "formuleTekst", "Toon formule oppervlakte" },
+				{ "constructieToolsTekst", "Constructie toolbox" },
+				{ "alleenOppervlaktesTekst", "Alleen oppervlaktes" },
         };
 }
 

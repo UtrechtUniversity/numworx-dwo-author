@@ -9,8 +9,9 @@ import fi.geomalgebra.text.*;
 import java.applet.Applet;
 import java.text.*;
 
+import javax.swing.*;
 
-public class AlgebraVeld extends Component implements MouseListener, MouseMotionListener, ActionListener
+public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionListener, ActionListener
 {	
 	private int breedte, hoogte;
 	private Image im ;
@@ -57,11 +58,13 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	private boolean constructieTools = true;
 	private boolean alleenOppervlaktes;
 	
+	
 	public AlgebraVeld(int b, int h)
 	{	hoogte = h;
 		breedte = b;
 		setSize(breedte, hoogte);
 		//Figuur.zetBH(breedte, hoogte);
+		setLayout(null);
 		
 		dfs = new DecimalFormatSymbols();
 		dfs.setDecimalSeparator('.');
@@ -69,20 +72,18 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
-	
-		
-		
+
 		//buffer = new Buffer(50);
 		
-		basisPosX = new Point(breedte/2,hoogte-69);
-		basisPosY = new Point(28,(hoogte-60)/2);
-		basisLijnstukX = new Lijnstuk(0,3,Lijnstuk.HOR, basisPosX.x, basisPosX.y);
+		basisPosX = new Point(breedte / 2, hoogte - 69);
+		basisPosY = new Point(28,(hoogte - 60) / 2);
+		basisLijnstukX = new Lijnstuk(0, 3, Lijnstuk.HOR, basisPosX.x, basisPosX.y);
 		basisFiguurX = new Figuur(basisPosX.x, basisPosX.y);
 		basisFiguurX.voegToe(basisLijnstukX);
-		basisLijnstukY = new Lijnstuk(0,3,Lijnstuk.VER, basisPosY.x, basisPosY.y);
+		basisLijnstukY = new Lijnstuk(0, 3, Lijnstuk.VER, basisPosY.x, basisPosY.y);
 		basisFiguurY = new Figuur(basisPosY.x, basisPosY.y);
 		basisFiguurY.voegToe(basisLijnstukY);
+		
 		fg = new Figuur[200];
 		fgNieuw = new Figuur[200];
 		aantalFg = 0;
@@ -102,8 +103,6 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		varTek[1] = 1;
 		varTek[2] = 1;
 		varTek[3] = 1;
-		
-		
 		
 		buffer = new Buffer(50);
 		buffer.voegToe(new State(aantalFg, fg, var));
@@ -160,38 +159,72 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		
 	}
 	
+	public void setSize(int b, int h)
+	{
+		if ((getSize().width == b) && (getSize().height == h))
+			return;
+		
+		hoogte = h;
+		breedte = b;
+		
+		basisPosX = new Point(breedte / 2, hoogte - 69);
+		basisPosY = new Point(28,(hoogte - 60) / 2);
+		basisLijnstukX = new Lijnstuk(0, 3, Lijnstuk.HOR, basisPosX.x, basisPosX.y);
+		basisFiguurX = new Figuur(basisPosX.x, basisPosX.y);
+		basisFiguurX.voegToe(basisLijnstukX);
+		basisLijnstukY = new Lijnstuk(0, 3, Lijnstuk.VER, basisPosY.x, basisPosY.y);
+		basisFiguurY = new Figuur(basisPosY.x, basisPosY.y);
+		basisFiguurY.voegToe(basisLijnstukY);
+		
+		super.setSize(b, h);
+		
+	}
 	
-	
-	public void paint(Graphics g)
-  	{ 	if(im==null)
+	//public void paint(Graphics g)
+	public void paintComponent(Graphics g)
+  	{
+/*		
+		if(im==null)
 		{	im = createImage(breedte,hoogte);
   			gIm = im.getGraphics();
 			tekenOpImage();
 		}
     	g.drawImage(im, 0, 0, null);
+*/
+		gIm = g;
+		tekenOpImage();
+		
+		//paintComponents(g);
   	}
 	 
   	public void tekenOpImage()
-  	{ 	if(gIm==null)return;
-  		gIm.setColor(new Color(220,220,220));
+  	{ 	if (gIm == null)
+  			return;
+  		gIm.setColor(new Color(220, 220, 220));
     	gIm.fillRect(0, 0, breedte, hoogte);
 		gIm.setColor(Color.white);
-    	if(constructieTools)gIm.fillRect(42, 0, breedte-40, hoogte-82);
-    	else gIm.fillRect(0, 0, breedte, hoogte);
+    	if (constructieTools) 
+    		gIm.fillRect(42, 0, breedte - 40, hoogte - 82);
+    	else 
+    		gIm.fillRect(0, 0, breedte, hoogte);
 		tekenprogramma();
 		gIm.setColor(Color.black);
-		gIm.drawRect(0, 0, breedte-1, hoogte-1);
-		if(constructieTools)gIm.drawLine(1,hoogte-42,breedte-1,hoogte-42);
+		gIm.drawRect(0, 0, breedte - 1, hoogte - 1);
+		if (constructieTools)
+			gIm.drawLine(1, hoogte - 42, breedte - 1, hoogte - 42);
 	}
 	
  	void tekenOpnieuw()
-	{	tekenOpImage();
-		Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null);
+	{	repaint();
+ 		
+ 		//tekenOpImage();
+		
+ 		//Graphics g = getGraphics();
+		//g.drawImage(im, 0, 0, null);
 	}	
 	
 	public void tekenprogramma()
-	{	if(constructieTools)
+	{	if (constructieTools)
 		{	tekenFiguur(basisFiguurX);
 			tekenFiguur(basisFiguurY);
 			tekenVarPunt();
@@ -199,52 +232,61 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		
 		//if(actiefFg!=null)tekenFiguur(actiefFg);
 		tekenFiguren();
-		gIm.setColor(new Color(220,220,220));
-		if(formuleZichtbaar)gIm.fillRect(0, 0, breedte-1, 25);
+		gIm.setColor(new Color(220, 220, 220));
+		if (formuleZichtbaar)
+			gIm.fillRect(0, 0, breedte - 1, 25);
 		gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		gIm.setColor(Color.black);
-		if(formule!=null && formuleZichtbaar)tekenFormule(formule, 50,20);
+		if (formule != null && formuleZichtbaar)
+			tekenFormule(formule, 50, 20);
 		
 		//gIm.setColor(Color.black);
 		//gIm.drawRect(breedte-125, 0, 125, 100);
 		//gIm.drawLine(breedte-125,25,breedte,25);
-		if(oppWaardeZichtbaar)
+		if (oppWaardeZichtbaar)
 		{	gIm.setColor(Color.black);
-			gIm.drawRect(breedte-125, 0, 125, 25);
-			gIm.drawString( GeomAlgebra.rb.getString("oppLabel") + " = " + df.format(oppervlakte),breedte-120,20);
+			gIm.drawRect(breedte - 125, 0, 125, 25);
+			gIm.drawString( GeomAlgebra.rb.getString("oppLabel") + " = " + df.format(oppervlakte), breedte - 120, 20);
 		}
-		if(varWaardeZichtbaar)
-		{	gIm.setColor(new Color(220,220,220));
-    		gIm.fillRect(breedte-125, 25, 125, 75);
+		if (varWaardeZichtbaar)
+		{	gIm.setColor(new Color(220, 220, 220));
+    		gIm.fillRect(breedte - 125, 25, 125, 75);
     		gIm.setColor(Color.black);
-    		gIm.drawRect(breedte-125, 25, 125, 75);
-			gIm.drawString( "    x = " + df.format(1.0*var[1]/24),breedte-120,50);
-			gIm.drawString( "    y = " + df.format(1.0*var[2]/24),breedte-120,70);
-			gIm.drawString( "    z = " + df.format(1.0*var[3]/24),breedte-120,90);
+    		gIm.drawRect(breedte - 125, 25, 125, 75);
+			gIm.drawString( "    x = " + df.format(1.0 * var[1] / 24), breedte - 120, 50);
+			gIm.drawString( "    y = " + df.format(1.0 * var[2] / 24), breedte - 120, 70);
+			gIm.drawString( "    z = " + df.format(1.0 * var[3] / 24), breedte - 120, 90);
 		}
-		if(!muisAan)gIm.drawString("is gedaan",20,50);
+		if (!muisAan)
+			gIm.drawString("is gedaan", 20, 50);
 		gIm.setFont(new Font("Helvetica", Font.PLAIN, 10));
-		if(maakLos)gIm.drawString(GeomAlgebra.rb.getString("menuMLLabel"),cursorx,cursory+30);
+		if (maakLos)
+			gIm.drawString(GeomAlgebra.rb.getString("menuMLLabel"), cursorx, cursory + 30);
 	}
 	
 	public void zetFormuleZichtbaar(boolean b)
 	{	formuleZichtbaar = b;
+		repaint();
 	}
 	
 	public void zetVarWaardeZichtbaar(boolean b)
 	{	varWaardeZichtbaar = b;
+		repaint();
 	}
 	
 	public void zetOppWaardeZichtbaar(boolean b)
 	{	oppWaardeZichtbaar = b;
+		repaint();
 	}
 	
 	public void zetConstructieTools(boolean b)
 	{	constructieTools = b;
+		repaint();	
 	}
 	
 	public void zetAlleenOppervlaktes(boolean b)
 	{	alleenOppervlaktes = b;
+		repaint();
 	}
 	
 	/*public void zetOpdracht(Opdracht opdr)
@@ -395,21 +437,21 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		}
 	}
 	void tekenVarPunt()
-	{	if(varHuidig!=0)
+	{	if (varHuidig != 0)
 		{	int xp = basisFiguurX.lsx[0].d;
 			int yp = 0;
 			gIm.setColor(Color.green);
-			gIm.fillOval(basisFiguurX.positie.x+xp-2,basisFiguurX.positie.y-yp-2,5,5);
+			gIm.fillOval(basisFiguurX.positie.x + xp - 2, basisFiguurX.positie.y - yp - 2, 5, 5);
 			
 			xp = 0;
 			yp = basisFiguurY.lsy[0].d;
 			gIm.setColor(Color.green);
-			gIm.fillOval(basisFiguurY.positie.x+xp-2,basisFiguurY.positie.y-yp-2,5,5);
+			gIm.fillOval(basisFiguurY.positie.x + xp - 2, basisFiguurY.positie.y - yp - 2, 5, 5);
 		}
 	}
 	
 	void tekenFiguren()
-	{	for(int i=aantalFg-1 ; i>-1 ; i--)
+	{	for (int i = aantalFg - 1; i > -1; i--)
 		{	tekenFiguur(fg[i]);
 		}
 	}
@@ -417,8 +459,8 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	void tekenFiguur(Figuur f)	
 	{	f.maxx = f.minx = f.positie.x;
 		f.maxy = f.miny = f.positie.y;			 
-		int[]posx = new int[f.aantalx+1];
-		int[]posy = new int[f.aantaly+1];
+		int[]posx = new int[f.aantalx + 1];
+		int[]posy = new int[f.aantaly + 1];
 		posx[0] = f.positie.x;
 		posy[0] = f.positie.y;
 		
@@ -438,16 +480,23 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		f.posy = new Point(posx[0],posy[f.aantaly]) ;
 		
 		
-		for(int i=0 ; i<f.aantalx ; i++)
-		{	if(i==0)f.lsx[i].zetPositie(f.positie.x, f.positie.y);
-			else f.lsx[i].zetPositie(f.lsx[i-1].positie.x + f.lsx[i-1].d , f.lsx[i-1].positie.y);
-			if(!alleenOppervlaktes)tekenLijnstuk(f.lsx[i], f);
+		for (int i = 0; i < f.aantalx; i++)
+		{	if (i == 0)
+				f.lsx[i].zetPositie(f.positie.x, f.positie.y);
+			else 
+				f.lsx[i].zetPositie(f.lsx[i - 1].positie.x + f.lsx[i - 1].d , f.lsx[i - 1].positie.y);
+			if (!alleenOppervlaktes)
+				tekenLijnstuk(f.lsx[i], f);
 		}
 		
-		for(int i=0 ; i<f.aantaly ; i++)
-		{	if(i==0)f.lsy[i].zetPositie(f.positie.x, f.positie.y);
-			else f.lsy[i].zetPositie(f.lsy[i-1].positie.x, f.lsy[i-1].positie.y - f.lsy[i-1].d );
-			if(!alleenOppervlaktes)tekenLijnstuk(f.lsy[i], f);
+		for (int i = 0; i < f.aantaly; i++)
+		{	if (i == 0)
+				f.lsy[i].zetPositie(f.positie.x, f.positie.y);
+			else 
+				f.lsy[i].zetPositie(f.lsy[i - 1].positie.x, f.lsy[i - 1].positie.y - f.lsy[i - 1].d );
+			if (!alleenOppervlaktes)
+				tekenLijnstuk(f.lsy[i], f);
+			
 		}
 	
 		gIm.setFont(fl);
@@ -648,8 +697,10 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		tekenOpnieuw();
 	}
 	void pasAanVar(int varnr, int waarde)
-	{	if(varTek[varnr] ==1)var[varnr] +=waarde;
-		else var[varnr] -=waarde;
+	{	if (varTek[varnr] == 1)
+		 var[varnr] += waarde;
+		else 
+		 var[varnr] -=waarde;
 		
 		basisLijnstukX.zetVar(varnr, var[varnr]);
 		basisLijnstukY.zetVar(varnr, var[varnr]);
@@ -690,7 +741,8 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		}
 	}
 	void setState(State s)
-	{	if(s==null)return;
+	{	if (s == null)
+			return;
 		else
 		{	aantalFg = s.geefAantalFiguren();
 			fg = s.geefFigurenRij();
@@ -704,10 +756,17 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	void setState(String s)
 	{	
 		Object o = StringCodeObject.decodeStringToObject(s);
-		if(o==null)return;
-		State state = (State)o;
-		if(state!=null) setState(state);
+		if (o == null)
+			return;
+		State state = (State) o;
+		if (state != null) 
+			setState(state);
 	}
+	State getStateState()
+	{	State state = buffer.geefHuidigeState();
+		return state;
+	}
+	
 	String getState()
 	{	State state = buffer.geefHuidigeState();
 		String s = StringCodeObject.encodeObjectToString(state);
@@ -821,7 +880,8 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	if(!muisAan)return;
+	{	if (!muisAan)
+			return;
 		
 		
 		laatstex = e.getX();
@@ -961,15 +1021,18 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		
 		pak = false;
 		if(veranderVar)
-		{	if(var[varHuidig]>breedte/2-20)var[varHuidig]=breedte/2-20;
-			if(var[varHuidig]<-breedte/2+20) var[varHuidig]=-breedte/2+20;
+		{	if(var[varHuidig]>breedte/2-20)
+				var[varHuidig]=breedte/2-20;
+			if(var[varHuidig]<-breedte/2+20) 
+				var[varHuidig]=-breedte/2+20;
 			int x = var[varHuidig]+900;
 			int ex = x%6;
 			if(ex<3)pasAanVar(varHuidig,-ex);
 			else pasAanVar(varHuidig,6-ex);
 		}
 		veranderVar = false;
-		if(actiefFg!=null)actiefFg.plaatsOpGrid();
+		if(actiefFg!=null)
+			actiefFg.plaatsOpGrid();
 		
 		
 		if(constructieTools && actiefFg!=null && !new Rectangle(42, 0, breedte-43, hoogte-82).contains(e.getX(),e.getY()))
@@ -987,7 +1050,7 @@ public class AlgebraVeld extends Component implements MouseListener, MouseMotion
 		
 		boolean b = true;
 		while(b)
-		{b = zoekEnKlikVast();
+		{	b = zoekEnKlikVast();
 		}
 		
 		actiefFg = null;
