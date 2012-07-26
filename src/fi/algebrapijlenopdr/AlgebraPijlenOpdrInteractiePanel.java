@@ -98,6 +98,12 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public void setState(Hashtable h)
 	{	
+		if (h.containsKey("nagekeken"))
+			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+		
+		if (h.containsKey("ingevuld"))
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
+		
 		if (h.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		zetKijkNaActief(kijkNaActief);
@@ -108,7 +114,11 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
+		if (h.containsKey("kijkNaActief"))
+			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+		
 		algebraSchuifVeld.setState(h);
+		if(ingevuld && (mode==0 || nagekeken)) kijkNa();
 	}
 	
 	public void setEditState(Hashtable h)
@@ -137,7 +147,17 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	
 	public Hashtable getState()
 	{	
-		return algebraSchuifVeld.getState();
+		boolean nagekeken = false;
+		boolean ingevuld = false;
+	    
+		nagekeken = this.nagekeken;
+		ingevuld = this.ingevuld;
+		
+		Hashtable h = algebraSchuifVeld.getState();
+		h.put("nagekeken",new Boolean(nagekeken));
+		h.put("ingevuld",new Boolean(ingevuld));
+		
+		return h;
 	}
 	
 	public Hashtable getEditState()
@@ -305,7 +325,10 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 			nagekeken = b;
 	}
 	
-    public void stop(){}
+    public void stop()
+    {
+    	kijkNa();
+    }
     
     public void start()
     {	algebraSchuifVeld.tekenOpnieuw();
