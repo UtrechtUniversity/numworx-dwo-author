@@ -2,6 +2,8 @@ package fi.spot_problems_dwo.wiskopdr.formuleobjects;
 
 import java.awt.*;
 
+import javax.swing.*;
+
 public class FormuleElement extends Container
 {	
 	public int ashoogte;

@@ -15,11 +15,16 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	private FormuleButton wortelKnop, machtKnop, kwadraatKnop, breukKnop, haakjesKnop, ndewortelKnop;
 	protected FormuleVak formuleVak;
 	private boolean actief;
+	
 	private ScrollPane scrollPane;
 	private boolean scrollbar;
-	private BufferedPanel contentPane; 
+	
+	//private BufferedPanel contentPane;
+	public JPanel contentPane;
+	
 	private Panel contentPaneNep; //truc om een buffered scrollpane te krijgen.
 	private Panel p1,p2,p3,p4;
+	
 	private boolean formMode = true;
 	
 	public FormuleEditor(boolean scrollbar)
@@ -28,15 +33,20 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 		setBackground(Color.lightGray);
 		
 		this.scrollbar = scrollbar;
-		if(scrollbar)scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_ALWAYS);
-		else scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_NEVER);
+		if (scrollbar)
+			scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_ALWAYS);
+		else 
+			scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_NEVER);
 		scrollPane.setBackground(Color.white);
-		super.add(scrollPane);
+		//super.add(scrollPane);
 		scrollPane.getVAdjustable().addAdjustmentListener(this);
 		
-		contentPane = new BufferedPanel();
+		//contentPane = new BufferedPanel();
+		contentPane = new JPanel();
 		contentPane.setLayout(null);
 		contentPane.setBackground(Color.white);
+		//contentPane.setOpaque(false);
+		//contentPane.setBackground(Color.orange);
 		super.add(contentPane);
 		
 		contentPaneNep = new Panel();
@@ -46,32 +56,36 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 		wortelKnop = new FormuleButton("wortel");
 		wortelKnop.setBounds(12,2,20,20);
 		wortelKnop.addActionListener(this);
-		super.add(wortelKnop);
+		//super.add(wortelKnop);
 		
 		machtKnop = new FormuleButton("macht");
-		machtKnop.setBounds(38,2,20,20);
+		//machtKnop.setBounds(38,2,20,20);
+		machtKnop.setBounds(12,2,20,20);
 		machtKnop.addActionListener(this);
 		super.add(machtKnop);
 		
 		kwadraatKnop = new FormuleButton("kwadraat");
-		kwadraatKnop.setBounds(64,2,20,20);
+		//kwadraatKnop.setBounds(64,2,20,20);
+		kwadraatKnop.setBounds(38,2,20,20);
 		kwadraatKnop.addActionListener(this);
 		super.add(kwadraatKnop);
 		
 		breukKnop = new FormuleButton("breuk");
-		breukKnop.setBounds(90,2,20,20);
+		//breukKnop.setBounds(90,2,20,20);
+		breukKnop.setBounds(64,2,20,20);
 		breukKnop.addActionListener(this);
 		super.add(breukKnop);
 		
 		haakjesKnop = new FormuleButton("haakjes");
-		haakjesKnop.setBounds(116,2,20,20);
+		//haakjesKnop.setBounds(116,2,20,20);
+		haakjesKnop.setBounds(90,2,20,20);
 		haakjesKnop.addActionListener(this);
 		super.add(haakjesKnop);
 		
 		ndewortelKnop = new FormuleButton("ndewortel");
 		ndewortelKnop.setBounds(142,2,20,20);
 		ndewortelKnop.addActionListener(this);
-		super.add(ndewortelKnop);
+		//super.add(ndewortelKnop);
 		
 		formuleVak = new FormuleVak();
 		formuleVak.setLocation(10,20);
@@ -79,19 +93,19 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 		
 		p1 = new Panel();
 		p1.setBackground(new Color(210,210,210));
-		super.add(p1,0);
+		//super.add(p1,0);
 		
 		p2 = new Panel();
 		p2.setBackground(Color.gray.darker());
-		super.add(p2,0);
+		//super.add(p2,0);
 		
 		p3 = new Panel();
 		p3.setBackground(Color.white);
-		super.add(p3,0);
+		//super.add(p3,0);
 		
 		p4 = new Panel();
 		p4.setBackground(Color.white);
-		super.add(p4,0);
+		//super.add(p4,0);
 	}
 	
 	public void zetFormMode(boolean b)
@@ -118,10 +132,12 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	public void zetScrollOptie(boolean scrollbar)
 	{	super.remove(scrollPane);
 		this.scrollbar = scrollbar;
-		if(scrollbar)scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-		else scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_NEVER);
+		if (scrollbar)
+			scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+		else 
+			scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_NEVER);
 		scrollPane.setBackground(Color.white);
-		super.add(scrollPane);
+		//super.add(scrollPane);
 		scrollPane.getVAdjustable().addAdjustmentListener(this);
 		
 		scrollPane.add(contentPaneNep);
@@ -131,7 +147,7 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	
 	public void destroy()
 	{	remove(contentPane);
-		contentPane.destroy();
+		//contentPane.destroy();
 		contentPane = null;
 		if(gIm!=null)
 		{	gIm.dispose();
@@ -140,9 +156,13 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
-	{	if(scrollbar)scrollPane.setBounds(b-30,23,20,h-17);
-		else scrollPane.setBounds(b,23,20,h-5);
-		contentPane.setBounds(10,25,b-20,h-37);
+	{	if (scrollbar)
+			scrollPane.setBounds(b-30,23,20,h-17);
+		else 
+			scrollPane.setBounds(b,23,20,h-5);
+	
+		contentPane.setBounds(10, 25, b - 20, h - 37);
+		
 		contentPaneNep.setBounds(10,2,b-40,h-37);
 		p1.setBounds(b-30,h-12,20,12);
 		p2.setBounds(b-30,h-2,20,2);
@@ -161,18 +181,21 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	
 	public Component add(Component c)
 	{	Component comp = contentPane.add(c);
-		contentPane.setSize(getSize().width, geefBenodigdeHoogte());
+//		contentPane.setSize(contentPane.getSize().width, geefBenodigdeHoogte());
+		
 		contentPaneNep.setSize(getSize().width, geefBenodigdeHoogte());
 		scrollPane.doLayout();
 		contentPaneNep.setSize(getSize().width, geefBenodigdeHoogte());
 		scrollPane.setScrollPosition(0,contentPane.getSize().height-scrollPane.getSize().height+20); 
+		
 		contentPane.repaint();
 		return comp;
 	}
 	
 	public Component add(Component c,int n)
 	{	Component comp = contentPane.add(c,n);
-		contentPane.setSize(contentPane.getSize().width, geefBenodigdeHoogte());
+		//contentPane.setSize(contentPane.getSize().width, geefBenodigdeHoogte());
+
 		contentPaneNep.setSize(contentPaneNep.getSize().width, geefBenodigdeHoogte());
 		scrollPane.doLayout();
 		contentPaneNep.setSize(contentPaneNep.getSize().width, geefBenodigdeHoogte());
@@ -183,7 +206,8 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	
 	public void remove(Component c)
 	{	contentPane.remove(c);
-		contentPane.setSize(contentPane.getSize().width, geefBenodigdeHoogte());
+//		contentPane.setSize(contentPane.getSize().width, geefBenodigdeHoogte());
+		
 		contentPaneNep.setSize(contentPaneNep.getSize().width, geefBenodigdeHoogte());
 		scrollPane.doLayout();
 		contentPaneNep.setSize(contentPaneNep.getSize().width, geefBenodigdeHoogte());
@@ -192,46 +216,54 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	}
 	
 	public int geefBenodigdeHoogte()
-	{	int max = scrollPane.getSize().height-20;
-		for(int i=0 ; i<contentPane.getComponentCount() ; i++)
+	{	int max = scrollPane.getSize().height - 20;
+		for(int i = 0; i < contentPane.getComponentCount(); i++)
 		{	Component c = contentPane.getComponent(i);
 			int h = c.getLocation().y + c.getSize().height + 50;
-			if(h>max) max = h;
+			if (h > max) 
+				max = h;
 		}
 		return max;
 	}
 		
 	
-	public void paint(Graphics g)
-	{	{ 	if(im==null)
-			{	im = createImage(getSize().width,getSize().height);
-  				gIm = im.getGraphics();
-			}
+	public void paintComponent(Graphics g)
+	{	{ 	
+			//if(im==null)
+			//{	im = createImage(getSize().width,getSize().height);
+  			//	gIm = im.getGraphics();
+			//}
+			gIm = g;
 			gIm.setColor(getBackground());
-			gIm.fillRect(0,0,getSize().width,getSize().height);
+//System.out.println("bg = " + getBackground().toString());			
+			//gIm.fillRect(0,0,getSize().width,getSize().height);
 			paintBuffer(gIm);
-			g.drawImage(im, 0, 0, null);
+			
+			//g.drawImage(im, 0, 0, null);
   		}
 	}
 	
-	public void update(Graphics g)
-	{	paint(g);
-	}
+	
+//	public void update(Graphics g)
+//	{	paint(g);
+//	}
+	
 	public void paintBuffer(Graphics g)
-	{	g.setColor(Color.white);
-		g.fillRect(0,23,getSize().width-1, getSize().height-23);
+	{	//g.setColor(Color.white);
+		g.setColor(Color.orange);
+		//g.fillRect(0, 23, getSize().width - 1, getSize().height - 23);
 		
-		super.paint(g);
+		//super.paint(g);
 		
-		g.setColor(new Color(210,210,210));
-		g.fillRect(0,0,getSize().width, 23);
-		g.fillRect(0,0,10,getSize().height);
-		g.fillRect(getSize().width-12,0,12,getSize().height);
-		g.fillRect(0,getSize().height-12,getSize().width, 12);
+		g.setColor(new Color(210, 210, 210));
+		g.fillRect(0, 0, getSize().width, 23);
+		g.fillRect(0, 0, 10, getSize().height);
+		g.fillRect(getSize().width - 12, 0, 12, getSize().height);
+		g.fillRect(0, getSize().height - 12, getSize().width, 12);
 		
 		g.setColor(Color.white);
-		g.drawLine(1,1,getSize().width-1,1);
-		g.drawLine(1,1,1,getSize().height-1);
+		g.drawLine(1, 1, getSize().width - 1, 1);
+		g.drawLine(1, 1, 1, getSize().height - 1);
 		g.setColor(Color.gray.darker());
 		g.drawLine(1,getSize().height-2,getSize().width-2,getSize().height-2);
 		g.drawLine(0,getSize().height-1,getSize().width-1,getSize().height-1);
@@ -290,23 +322,35 @@ public class FormuleEditor extends JPanel implements ActionListener, MouseListen
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==wortelKnop)
-		{	if(formuleVak!=null)formuleVak.zetWortelVak();
+	{	if(e.getSource() == wortelKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetWortelVak();
+			repaint();
 		}
-		else if(e.getSource()==machtKnop)
-		{	if(formuleVak!=null)formuleVak.zetMachtVak();
+		else if (e.getSource() == machtKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetMachtVak();
+			repaint();		
 		}
-		else if(e.getSource()==kwadraatKnop)
-		{	if(formuleVak!=null)formuleVak.zetKwadraatVak();
+		else if(e.getSource() == kwadraatKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetKwadraatVak();
+			repaint();		
 		}
-		else if(e.getSource()==breukKnop)
-		{	if(formuleVak!=null)formuleVak.zetBreukVak();
+		else if(e.getSource() == breukKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetBreukVak();
+			repaint();
 		}
-		else if(e.getSource()==haakjesKnop)
-		{	if(formuleVak!=null)formuleVak.zetHaakjesVak();
+		else if(e.getSource() == haakjesKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetHaakjesVak();
+			repaint();
 		}
-		else if(e.getSource()==ndewortelKnop)
-		{	if(formuleVak!=null)formuleVak.zetNdeWortelVak();
+		else if (e.getSource() == ndewortelKnop)
+		{	if (formuleVak != null)
+				formuleVak.zetNdeWortelVak();
+			repaint();
 		}
 		
 	}

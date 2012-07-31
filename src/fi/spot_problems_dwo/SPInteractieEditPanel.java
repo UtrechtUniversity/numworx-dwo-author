@@ -38,6 +38,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 	boolean level2ComboEnabled = true;
 	boolean level3ComboEnabled = true;
 	
+	JCheckBox kijkNaBox;	
 	JLabel scoreMaxLabel;
 	JTextField scoreMaxVeld;
 	
@@ -141,7 +142,18 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		add(level3Combo);
 		level3Combo.addActionListener(this);
 		
+		currentY += height + 3 * offset;
+		
+		
+		kijkNaBox = new JCheckBox(Spot_Problems_dwo.rb.getString("kijkNaActiefTekst"), true);
+		kijkNaBox.setFont(theFont);
+		kijkNaBox.setBackground(Color.white);
+		kijkNaBox.setBounds(currentX, currentY, editWidth - offset - 3, 3 * theFM.getHeight() / 2);
+		add(kijkNaBox);
+		kijkNaBox.addActionListener(this);
+		
 		currentY += height + offset;
+		
 		
 		scoreMaxLabel = new JLabel(Spot_Problems_dwo.rb.getString("scoreMaxTekst"));
 		scoreMaxLabel.setFont(theFont);
@@ -177,6 +189,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		level2Combo.setLocation(spip.getSize().width + 2 * offset, level2Combo.getLocation().y);
 		level3Combo.setLocation(spip.getSize().width + 2 * offset, level3Combo.getLocation().y);
 		
+		kijkNaBox.setLocation(spip.getSize().width + 2 * offset, kijkNaBox.getLocation().y);
 		scoreMaxLabel.setLocation(spip.getSize().width + 2 * offset, scoreMaxLabel.getLocation().y);
 		scoreMaxVeld.setLocation(spip.getSize().width + 3 * offset, scoreMaxVeld.getLocation().y);
 		
@@ -240,6 +253,24 @@ System.out.println("spiep setEditState");
 		spip.zetLevel3Keuze(level3Keuze);
 		// HIER
 		spip.zetLevel(level);
+		
+		boolean kijkNaActief = true;
+		if (b.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+		kijkNaBox.setSelected(kijkNaActief);
+		if (!kijkNaActief)
+		{
+			scoreMaxLabel.setEnabled(false);
+			scoreMaxVeld.setEnabled(false);
+		}
+			
+		
+		
+		int scoreMax = 10;
+		if (b.containsKey("scoreMax"))
+			scoreMax = ((Integer) b.get("scoreMax")).intValue();
+		scoreMaxVeld.setText("" + scoreMax);
+		this.scoreMax = scoreMax;
 		
 		
 		if (b.containsKey("spipBreedte"))
@@ -340,6 +371,12 @@ System.out.println("spiep getEditState");
 		}
 		else if (e.getSource() == level3Combo)
 		{	spip.zetLevel3Keuze(level3Combo.getSelectedIndex() + 1);
+			
+		}
+		else if (e.getSource() == kijkNaBox)
+		{	spip.zetKijkNaActief(kijkNaBox.isSelected());
+			scoreMaxLabel.setEnabled(kijkNaBox.isSelected());
+			scoreMaxVeld.setEnabled(kijkNaBox.isSelected());
 			
 		}
 		

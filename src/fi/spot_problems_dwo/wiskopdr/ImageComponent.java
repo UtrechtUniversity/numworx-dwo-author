@@ -2,7 +2,9 @@ package fi.spot_problems_dwo.wiskopdr;
 
 import java.awt.*;
 
-public class ImageComponent extends Component
+import javax.swing.*;
+
+public class ImageComponent extends JComponent
 {
 	private Image image;
 	

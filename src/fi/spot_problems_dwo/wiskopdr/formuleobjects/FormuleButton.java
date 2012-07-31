@@ -3,7 +3,9 @@ package fi.spot_problems_dwo.wiskopdr.formuleobjects;
 import java.awt.*;
 import java.awt.event.*;
 
-public class FormuleButton extends Panel implements MouseListener	
+import javax.swing.*;
+
+public class FormuleButton extends JPanel implements MouseListener	
 {	
 	private Image im;
 	private Graphics gIm;
@@ -52,21 +54,24 @@ public class FormuleButton extends Panel implements MouseListener
 	}
 	
 	public void paint(Graphics g)
-	{	{ 	if(im==null)
-			{	im = createImage(getSize().width,getSize().height);
-  				gIm = im.getGraphics();
-			}
+	{	{ 	
+			//if(im==null)
+			//{	im = createImage(getSize().width,getSize().height);
+  			//	gIm = im.getGraphics();
+			//}
+			gIm = g;
 			gIm.setColor(getBackground());
 			gIm.fillRect(0,0,getSize().width,getSize().height);
 			paintBuffer(gIm);
-			g.drawImage(im, 0, 0, null);
+			//g.drawImage(im, 0, 0, null);
   		}
 	}
 	
+/*	
 	public void update(Graphics g)
 	{	paint(g);
 	}
-	
+*/	
 	public void paintBuffer(Graphics g)
 	{	
 		g.setColor(fgColor);

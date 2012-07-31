@@ -8,6 +8,7 @@ public class Text_nl extends java.util.ListResourceBundle
         	{ "aantalTekst" , "Aantal" },
             { "scoreMaxTekst" , "Maximum score" },
             { "niveauTekst" , "Niveau" },
+            { "kijkNaActiefTekst" , "Kijk na actief"},
             
             { "vNumbersText",    "V-getallen" },
             { "wNumbersText",    "W-getallen" },

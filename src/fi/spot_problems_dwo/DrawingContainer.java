@@ -1740,7 +1740,7 @@ public class DrawingContainer extends JPanel//Container
         {   if (spip == null)
     			showPattern(i);
         	else
-        		showDWOPattern(patternsShown);
+        		showDWOPattern(i);
         }    
         patternsShown = maxPatterns - 1;
         repaint();

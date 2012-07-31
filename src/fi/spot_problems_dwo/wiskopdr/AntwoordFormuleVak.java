@@ -57,6 +57,8 @@ public class AntwoordFormuleVak extends FormuleEditor
 	}*/
 	//
 	
+	private boolean kijkNaActief = true; 
+	
 	public AntwoordFormuleVak()
 	{	super(true);
 		//formuleVak.addActionListener(this);
@@ -81,12 +83,12 @@ public class AntwoordFormuleVak extends FormuleEditor
 		gelijkwaardigKnop = new BewerkingButton("gelijkwaardig");
 		gelijkwaardigKnop.setBounds(280,2,20,20);
 		gelijkwaardigKnop.addActionListener(this);
-		zetOpBalk(gelijkwaardigKnop);
+		//zetOpBalk(gelijkwaardigKnop);
 		
 		terugKnop = new BewerkingButton("terug");
 		terugKnop.setBounds(302,2,20,20);
 		terugKnop.addActionListener(this);
-		zetOpBalk(terugKnop);
+		//zetOpBalk(terugKnop);
 		
 		pijlVakken = new PijlVak[100];
 		formuleVakken = new FormuleVak[100];
@@ -94,7 +96,7 @@ public class AntwoordFormuleVak extends FormuleEditor
 		
 		formuleVakken[0] = new FormuleVak();
 		formuleVakken[0].addActionListener(this);
-		formuleVakken[0].setLocation(30,20);
+		formuleVakken[0].setLocation(30, 10);
 		add(formuleVakken[0]);
 		
 		formuleVak = formuleVakken[0];
@@ -192,6 +194,11 @@ public class AntwoordFormuleVak extends FormuleEditor
 	    return h;
 	}
 	
+	public void zetKijkNaActief(boolean b)
+	{
+		kijkNaActief = b;
+	}
+	
 	public void zetStappen(boolean b)
 	{	stappen = b;
 		gelijkwaardigKnop.setVisible(b);
@@ -267,17 +274,20 @@ public class AntwoordFormuleVak extends FormuleEditor
 		{	prefix = s.substring(0, index + 1) + "@";
 			hasPrefix = true;
 			s = "$f"+ s.substring(index + 1);
+			if (prefixVakken[0] != null)
+				remove(prefixVakken[0]);
 			prefixVakken[0] = new FormuleVak();
-			prefixVakken[0].setLocation(30, 20);
+			prefixVakken[0].setLocation(30, 10);
 			prefixVakken[0].setEditable(false);
 			prefixVakken[0].setSelectable(false);
 			prefixVakken[0].vulVak(prefix);
 			add(prefixVakken[0]);
 			
 			int x = 30 + prefixVakken[0].getSize().width;
-			remove(formuleVakken[0]);
+			if (formuleVakken[0] != null)
+				remove(formuleVakken[0]);
 			formuleVakken[0] = new FormuleVak();
-			formuleVakken[0].setLocation(x, 20);
+			formuleVakken[0].setLocation(x, 10);
 			formuleVakken[0].addActionListener(this);
 			add(formuleVakken[0]);
 			formuleVak = formuleVakken[0];
@@ -413,6 +423,10 @@ public class AntwoordFormuleVak extends FormuleEditor
 	{	return correct;
 	}
 	
+	public boolean isIngevuld()
+	{	return ingevuld;
+	}
+	
 	private void maakStap()
 	{	if(stapOk )
 		{	stapOk = false;
@@ -469,10 +483,13 @@ public class AntwoordFormuleVak extends FormuleEditor
 		if (e.getSource() == formuleVak && e.getActionCommand().equals("ingevuld"))
 		{	
 			
-System.out.println("aVak action");			
-			kijkNa();
-			if (ingevuld)
-				produceAction("changed");
+//System.out.println("aVak action");		
+			if (kijkNaActief)
+			{	
+				kijkNa();
+				if (ingevuld)
+					produceAction("changed");
+			}
 		}
 		else if(e.getSource()==gelijkwaardigKnop)
 		{	maakStap();
@@ -482,11 +499,14 @@ System.out.println("aVak action");
 		{	stapTerug();
 			formuleVak.requestFocus();
 		}
-		else if(e.getActionCommand().equals("zetMaat") && prefix!=null)
-		{	int h1 = prefixVakken[stapNr].getLocation().y;
+		else if(e.getActionCommand().equals("zetMaat") && prefix != null)
+		{	
+//System.out.println("ap zetMaat");			
+			int h1 = prefixVakken[stapNr].getLocation().y;
 			int h2 = formuleVakken[stapNr].getLocation().y;		
-			int dh = formuleVakken[stapNr].ashoogte-prefixVakken[stapNr].ashoogte;
-			prefixVakken[stapNr].setLocation(30,h2+dh);
+			int dh = formuleVakken[stapNr].ashoogte - prefixVakken[stapNr].ashoogte;
+			prefixVakken[stapNr].setLocation(30, h2 + dh);
+			contentPane.repaint();
 		}
 	}
 	
