@@ -107,13 +107,15 @@ public class VermenigvuldigSchuifComponent extends BewerkingSchuifComponent
 				return uitv;
 			}
 			else
-			{	if(e2.geefWaarde().doubleValue()==1)uitv = e1;
-				else if(e2.geefWaarde().doubleValue()==-1)
-					uitv = new Aftrekking(new BasisExpressie("0"),e1);
-				else if(e2.geefWaarde().doubleValue()<0)
+			{	if (e2.geefWaarde().doubleValue() == 1)
+					uitv = e1;
+				else if (e2.geefWaarde().doubleValue() == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1);
+				else if (e2.geefWaarde().doubleValue() < 0)
 					uitv = new Aftrekking(new BasisExpressie("0"),
 							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-e2.geefWaarde().doubleValue())),e1));
-				else uitv = new Vermenigvuldiging(e2,e1);
+				else 
+					uitv = new Vermenigvuldiging(e2,e1);
 				return uitv;
 			}
 			/*if(d!=1)

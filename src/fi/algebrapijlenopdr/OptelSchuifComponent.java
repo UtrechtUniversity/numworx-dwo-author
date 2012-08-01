@@ -63,10 +63,16 @@ public class OptelSchuifComponent extends BewerkingSchuifComponent
 			{	d = -e1.kind2.geefWaarde().doubleValue() + e2.geefWaarde().doubleValue();
 			}
 			else
-			{	if (e2.geefWaarde().doubleValue() == 0)
+			{	
+				d = e2.geefWaarde().doubleValue();
+				if (d == 0)
 					uitv = e1;
-				else 
+				else if (d > 0)
 					uitv = new Optelling(e1, e2);
+				else //d<0
+				{	e2 = new BasisExpressie(Expressie.df.format(-d));
+					uitv = new Aftrekking(e1, e2);
+				}
 				return uitv;
 			}
 			if (d > 0)

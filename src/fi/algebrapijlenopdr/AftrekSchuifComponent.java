@@ -46,33 +46,53 @@ public class AftrekSchuifComponent extends BewerkingSchuifComponent
 	
 	
 	public Expressie geefUitvoer(int max)
-	{	if(AlgebraPijlenOpdr.simplify)
+	{	if (AlgebraPijlenOpdr.simplify)
 		{	Expressie uitv = new Expressie();
-			if(pijlIn1==null)return null;
-			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
+			if (pijlIn1 == null)
+				return null;
+			Expressie e1 = pijlIn1.zender.geefUitvoer(max - 1);
 			Expressie e2 = beginw;
-			if(e1==null)return null;
+//System.out.println("e1 = " + e1.toString());
+//System.out.println("e2 = " + e2.toString());
+			if (e1 == null)
+				return null;
 			double d = 0;
-			if(e1 instanceof Optelling)
-			{	d = 	e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
+			if (e1 instanceof Optelling)
+			{	d = e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
+//System.out.println("e1 + d = " + d);			
 			}
-			else if(e1 instanceof Aftrekking)
-			{	d = 	-e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
+			else if (e1 instanceof Aftrekking && (Double.isNaN(e1.kind1.geefWaarde()) || 
+					 e1.kind1.geefWaarde() != 0))
+			{	d = -e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
+//System.out.println("e1 - d = " + d);			
 			}
 			else
-			{	if(e2.geefWaarde().doubleValue()==0)uitv = e1;
-				else uitv = new Aftrekking(e1,e2);
+			{	
+				d = e2.geefWaarde().doubleValue();
+				
+				if (d == 0)
+					uitv = e1;
+				else if (d > 0)
+					uitv = new Aftrekking(e1, e2);
+				else // d < 0
+				{	e2 = new BasisExpressie(Expressie.df.format(-d));
+					uitv = new Optelling(e1, e2);
+				
+				}
+			
+//System.out.println("e1 not +- uitv = " + uitv.toString());			
 				return uitv;
 			}
-			if(d>0)
+			if (d > 0)
 			{	e2 = new BasisExpressie(Expressie.df.format(d));
-				uitv = new Optelling(e1.kind1,e2);
+				uitv = new Optelling(e1.kind1, e2);
 			}
-			else if(d<0)
+			else if(d < 0)
 			{	e2 = new BasisExpressie(Expressie.df.format(-d));
-				uitv = new Aftrekking(e1.kind1,e2);
+				uitv = new Aftrekking(e1.kind1, e2);
 			}
-			else uitv = e1.kind1;
+			else 
+				uitv = e1.kind1;
 			return uitv;
 		}
 		else

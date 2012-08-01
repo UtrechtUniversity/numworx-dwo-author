@@ -211,7 +211,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		}
 		zetTabelAan(tabelAan);
 		zetLabel(labelZichtbaar);
-		label.zetLabelTekst(labelTekst);
+		label.zetLabelTekst(labelTekst);		
         if (!kettingZichtbaar)
         	zetKettingZichtbaarHier(kettingZichtbaar);
         
@@ -530,6 +530,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		{	remove(plusMinKnop);
 			scrollCorr = 0;
 			expressie = pijlIn1.zender.geefUitvoer(20);
+//if (expressie != null)			
+//System.out.println("usc e = " + expressie.toString());			
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
 			zoomInKnop.setVisible(false);
 			zoomUitKnop.setVisible(false);
