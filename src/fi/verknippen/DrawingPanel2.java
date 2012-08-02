@@ -24,6 +24,8 @@ public class DrawingPanel2 extends JPanel
 	
 	boolean showGrid = false;
 	
+	boolean showBorder = true;
+	
 	boolean gridOnTop = false;
 	// dit is de default
 	int gridSize = 20;
@@ -169,6 +171,10 @@ public class DrawingPanel2 extends JPanel
 		geenButton.setSelected(true);
 		tekenen = false;
 		repaint();
+	}
+	
+	public void zetBorder(boolean b)
+	{	showBorder = b;		
 	}
 	
 	public void zetBalletjesGrootte()
@@ -1116,7 +1122,7 @@ System.out.println("f & !o & !i pol2 from stack");
 	{	g.setColor(bgColor);
 		g.fillRect(0, 0, getSize().width, getSize().height);
 		g.setColor(outlineColor);
-		g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+		if(showBorder)g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		
 		if (showGrid && !gridOnTop)
 			paintGrid(g);

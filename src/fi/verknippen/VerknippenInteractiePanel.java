@@ -290,7 +290,21 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	
 	public void zetBalkOnderaan(boolean b)
 	{	balkOnderaan = b;
+		drawingPanel2.zetBorder(b);
 		setSize(getSize().width, getSize().height);
+		if (balkOnderaan)
+		{	bottomPanel2.setVisible(true);
+			bottomPanel2.setSize(getSize().width, bottomHeight);
+			drawingPanel2.setSize(getSize().width, getSize().height - bottomHeight);
+			zetGridSize(gridSize);
+		}
+		else
+		{	bottomPanel2.setVisible(false);
+			bottomPanel2.setSize(0,0);
+			drawingPanel2.setSize(getSize().width, getSize().height);
+			zetGridSize(gridSize);
+		}
+		
 	}
 	
 	

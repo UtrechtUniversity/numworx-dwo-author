@@ -603,10 +603,10 @@ System.out.println("aLD found");
 		
 		boolean toonRodeFiguurInput = false;
 		if (b.containsKey("toonRodeFiguurInput"))
-			toonRodeFiguurInput = (Boolean) b.get("toonRodeFiguurInput");
+			toonRodeFiguurInput = ((Boolean) b.get("toonRodeFiguurInput")).booleanValue();
 		boolean toonGrijzeFiguurInput = false;
 		if (b.containsKey("toonGrijzeFiguurInput"))
-			toonGrijzeFiguurInput = (Boolean) b.get("toonGrijzeFiguurInput");
+			toonGrijzeFiguurInput = ((Boolean) b.get("toonGrijzeFiguurInput")).booleanValue();
 		rodeFiguurPanel.setVisible(toonRodeFiguurInput);
 		grijzeFiguurPanel.setVisible(toonGrijzeFiguurInput);
 		
