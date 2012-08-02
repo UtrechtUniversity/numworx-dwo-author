@@ -61,8 +61,8 @@ public class AftrekSchuifComponent extends BewerkingSchuifComponent
 			{	d = e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
 //System.out.println("e1 + d = " + d);			
 			}
-			else if (e1 instanceof Aftrekking && (Double.isNaN(e1.kind1.geefWaarde()) || 
-					 e1.kind1.geefWaarde() != 0))
+			else if (e1 instanceof Aftrekking && (Double.isNaN(e1.kind1.geefWaarde().doubleValue()) || 
+					 e1.kind1.geefWaarde().doubleValue() != 0))
 			{	d = -e1.kind2.geefWaarde().doubleValue() - e2.geefWaarde().doubleValue();
 //System.out.println("e1 - d = " + d);			
 			}
