@@ -1,10 +1,11 @@
 package fi.spot_problems_dwo.wiskopdr.opdrnav;
 
+import javax.swing.JPanel;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;;
 
-public class OpdrContainer extends Panel 
+public class OpdrContainer extends JPanel 
 {
 	protected static int OEFENEN = 0;
 	protected static int OEFENEN_STRAFPUNTEN = 1;

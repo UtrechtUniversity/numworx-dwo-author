@@ -157,6 +157,8 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	public void setState(Hashtable b)
 	{
 //System.out.println("setState");		
+		if (b.containsKey("nagekeken"))	nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
+		if (b.containsKey("ingevuld"))	ingevuld = ((Boolean) b.get("ingevuld")).booleanValue();
 		
 		String antwoord = "";
 		if (b.containsKey("antwoord"))
@@ -170,6 +172,8 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		if (b.containsKey("userSpots"))
 			userSpots = (Vector) b.get("userSpots");
 		drawCon.setUserSpots(userSpots);
+		
+		if(ingevuld && (mode==0 || nagekeken)) kijkNa();
 
 	}
 	
@@ -224,6 +228,8 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		
 		h.put("antwoord", antwoordVak.geefAntwoord());
 		h.put("userSpots", drawCon.getUserSpots());
+		h.put("nagekeken", new Boolean(nagekeken));
+		h.put("ingevuld", new Boolean(ingevuld));
 		
 		return h;
 		
@@ -330,8 +336,9 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 			drawCon.initialize();
 		
 			scrollPane = new JScrollPane(drawCon);
-    		scrollPane.setBounds(0, 0, b, h - antwoordVakHoogte - 1);
-    		scrollPane.setPreferredSize(new Dimension(b, h - antwoordVakHoogte - 1));
+    		scrollPane.setBounds(0, 0, b, h - antwoordVakHoogte - 10);
+    		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+    		scrollPane.setPreferredSize(new Dimension(b, h - antwoordVakHoogte - 10));
     		add(scrollPane);
     		
 			//dummyPanel = new JPanel();
@@ -348,7 +355,7 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
     		antwoordVak.zetJuisteAntwoord("$f" + Spot_Problems_dwo.rb.getString("aantalTekst") + "=" + antwoorden[0][0] + "@");
     		
     		if (b > antwoordVakBreedte)
-    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 1, 
+    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 10, 
     					              antwoordVakBreedte, antwoordVakHoogte);
     		else
     			antwoordVak.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
@@ -415,8 +422,9 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	{	return score;
 	}
 	
-	public int getScoreMax()
-	{	return scoreMax;
+	public int getScoreMax(){
+		if(kijkNaActief)return scoreMax;
+		else return 0;
 	}
 	
 	public boolean isCorrect()
@@ -445,7 +453,8 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	}
 	
     public void stop()
-    {}
+    { kijkNa();
+    }
     
     public void start()
     {}
@@ -457,7 +466,20 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
     {}
     
     public void kijkNa()
-    {}
+    {	
+    	if (!kijkNaActief)
+			return;
+    	boolean correct = antwoordVak.isCorrect();
+		ingevuld = antwoordVak.isIngevuld();
+		if (correct)
+		{	score = scoreMax;
+			drawCon.showAllPatterns();
+		}
+		else
+			score = 0;
+		
+		produceAction("changed");
+	}
     
     public void kijkNa(int stapNr)
     {}
@@ -490,20 +512,9 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	public void actionPerformed(ActionEvent e)
 	{	if (e.getSource() == antwoordVak)
 		{	
-			if (!kijkNaActief)
-				return;
+			kijkNa();
 			
-//System.out.println("aVak action");
-			boolean correct = antwoordVak.isCorrect();
-			ingevuld = antwoordVak.isIngevuld();
-			if (correct)
-			{	score = scoreMax;
-				drawCon.showAllPatterns();
-			}
-			else
-				score = 0;
 			
-			produceAction("changed");
 		}
 	}
 }

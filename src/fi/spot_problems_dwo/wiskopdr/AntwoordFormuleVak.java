@@ -506,7 +506,8 @@ public class AntwoordFormuleVak extends FormuleEditor
 			int h2 = formuleVakken[stapNr].getLocation().y;		
 			int dh = formuleVakken[stapNr].ashoogte - prefixVakken[stapNr].ashoogte;
 			prefixVakken[stapNr].setLocation(30, h2 + dh);
-			contentPane.repaint();
+			
+			repaint();
 		}
 	}
 	

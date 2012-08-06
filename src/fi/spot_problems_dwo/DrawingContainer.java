@@ -1750,7 +1750,7 @@ public class DrawingContainer extends JPanel//Container
     // paint method
     public void paintComponent(Graphics g)
     {   // white background
-        g.setColor(getBackground());
+        g.setColor(Color.white);
         g.fillRect(0, 0, getSize().width, getSize().height);
         // grid elements
         for (int i = 0; i < horSize; i++)
@@ -1758,8 +1758,7 @@ public class DrawingContainer extends JPanel//Container
                 grid[i][j].paint(g);
         // outline the drawing container in black, right border is one pixel to the right
         g.setColor(Color.lightGray);
-        g.drawRect(0, 0, getSize().width - 1,
-                         getSize().height - 1);
+        g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
         // labels
         g.setColor(Color.black);
         labelFont = new Font(getFont().getName(), Font.BOLD, getFont().getSize());

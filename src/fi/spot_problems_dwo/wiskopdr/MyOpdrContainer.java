@@ -39,7 +39,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		antwoordVak = new AntwoordFormuleVak();
 		antwoordVak.setBounds(280,80,460,300);
 		antwoordVak.addActionListener(this);
-		add(antwoordVak);
+		add(antwoordVak,0);
 		
 		
 	}
