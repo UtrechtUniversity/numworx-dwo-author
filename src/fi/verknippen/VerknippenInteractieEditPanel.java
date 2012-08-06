@@ -74,7 +74,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		rodeFiguurPanel.viep = this;
 		rodeFiguurPanel.zetFiguurString(rodeFiguurInput);
 		rodeFiguurPanel.setVisible(false);
-		vip.add(rodeFiguurPanel, 0);
+		//add(rodeFiguurPanel, 0);
 		rodeFiguurPanel.closeButton.addActionListener(new CloseFiguurInputAL(true));
 		
 		grijzeFiguurInput = vip.grijzeFiguurString;
@@ -82,7 +82,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		grijzeFiguurPanel.viep = this;		
 		grijzeFiguurPanel.zetFiguurString(grijzeFiguurInput);
 		grijzeFiguurPanel.setVisible(false);
-		add(grijzeFiguurPanel, 0);
+		//add(grijzeFiguurPanel, 0);
 		grijzeFiguurPanel.closeButton.addActionListener(new CloseFiguurInputAL(false));
 		
 		
@@ -655,7 +655,10 @@ System.out.println("viep getEditState");
 //					Math.max(gipHoogte, editHeight));
 	
 		if (vip != null)
-			vip.setBounds(0, 0, vipBreedte, vipHoogte);
+		{	vip.setBounds(0, 0, vipBreedte, vipHoogte);
+			vip.drawingPanel2.add(rodeFiguurPanel, 0);
+			vip.drawingPanel2.add(grijzeFiguurPanel, 0);
+		}
 		
 		plaatsComponenten();
 		
