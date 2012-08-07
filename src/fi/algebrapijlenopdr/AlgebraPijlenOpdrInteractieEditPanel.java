@@ -530,12 +530,13 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
 		{	beginExpString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
 			
-//System.out.println(beginExpString);				
+System.out.println(beginExpString);				
 		
 			beginExpString = "$f" + beginExpString + "@";
 			Expressie beginExp = FormuleParser_ap.geefExpressie(beginExpString);
 			
-//System.out.println(beginExp.toString());					
+System.out.println(beginExp.toString());
+
 			apoip.zetBeginExpressie(beginExp);
 			
 			

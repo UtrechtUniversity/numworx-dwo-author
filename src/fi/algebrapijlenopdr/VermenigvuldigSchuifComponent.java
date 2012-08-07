@@ -44,45 +44,127 @@ public class VermenigvuldigSchuifComponent extends BewerkingSchuifComponent
 	
 	
 	public Expressie geefUitvoer(int max)
-	{	if(AlgebraPijlenOpdr.simplify)
+	{	if (AlgebraPijlenOpdr.simplify)
 		{	Expressie uitv = new Expressie();
-			if(pijlIn1==null)return null;
+			if (pijlIn1 == null)
+				return null;
 			Expressie e1 = pijlIn1.zender.geefUitvoer(max-1);
 			Expressie e2 = beginw;
-			if(e1==null)return null;
+			if (e1 == null)
+				return null;
 			
 			double d = 1;
-			if(e1 instanceof Vermenigvuldiging)
-			{	d = e1.kind1.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
+			if (e1 instanceof Vermenigvuldiging && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()))
+			{	
+//System.out.println("vermenigvuldiging 1");
+
+				d = e1.kind1.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
-				if(d==1)uitv = e1.kind2;
-				else if(d==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2);
-				else if(d<0)uitv = new Aftrekking(new BasisExpressie("0"),new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)),e1.kind2));
-				else uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind2);
+				if (d == 1)
+					uitv = e1.kind2;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind2);
+				else if (d < 0)
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)), e1.kind2));
+				else 
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind2);
 				return uitv;
 			}
-			else if(e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
-					e1.kind1.geefWaarde().doubleValue()==0 && e1.kind2 instanceof Vermenigvuldiging)
-			{	d = -e1.kind2.kind1.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
+			else if (e1 instanceof Vermenigvuldiging && !Double.isNaN(e1.kind2.geefWaarde().doubleValue()))
+			{	
+System.out.println("vermenigvuldiging 1A");
+
+				d = e1.kind2.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
-				if(d==1)uitv = e1.kind2.kind2;
-				else if(d==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2.kind2);
-				else if(d<0)uitv = new Aftrekking(new BasisExpressie("0"),new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)),e1.kind2.kind2));
-				else uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind2.kind2);
+				if (d == 1)
+					uitv = e1.kind1;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind1);
+				else if (d < 0)
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)), e1.kind1));
+				else 
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind1);
 				return uitv;
 			}
-			else if(e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
-					e1.kind1.geefWaarde().doubleValue()==0)
-			{	d = -1.0 * e2.geefWaarde().doubleValue();
+			
+			
+			
+			
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Vermenigvuldiging)
+			{	
+//System.out.println("aftrekking 1");				
+				
+				d = - e1.kind2.kind1.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
-				if(d==1)uitv = e1.kind2.kind2;
-				else if(d==-1)uitv = new Aftrekking(new BasisExpressie("0"),e1.kind2);
-				else if(d<0)uitv = new Aftrekking(new BasisExpressie("0"),new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)),e1.kind2));
-				else uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)),e1.kind2);
+				if (d == 1)
+					uitv = e1.kind2.kind2;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind2.kind2);
+				else if (d < 0)
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(- d)), e1.kind2.kind2));
+				else 
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)), e1.kind2.kind2);
+				return uitv;
+			}
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Deling &&
+					 e2.geefWaarde().doubleValue() == -1)
+			{	
+//System.out.println("aftrekking 1A");
+
+				uitv = e1.kind2;
+				
+				return uitv;
+			}
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Wortel &&
+					 e2.geefWaarde().doubleValue() == -1)
+			{	
+//System.out.println("aftrekking 1B");
+
+				uitv = e1.kind2;
+				
+				return uitv;
+			}
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Macht &&
+					 e2.geefWaarde().doubleValue() == -1)
+			{	
+//System.out.println("aftrekking 1C");
+
+				uitv = e1.kind2;
+				
+				return uitv;
+			}
+			
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0)
+			{	
+//System.out.println("aftrekking 2");
+//System.out.println("e2 = " + e2.toString());
+//System.out.println("" + e2.geefWaarde().doubleValue());
+
+				d = -1.0 * e2.geefWaarde().doubleValue();
+				//if(d==0)uitv = new BasisExpressie("0");
+				if (d == 1)
+					uitv = e1.kind2.kind2;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind2);
+				else if (d < 0)
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-d)), e1.kind2));
+				else 
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)), e1.kind2);
 				return uitv;
 			}
 			else if(e1 instanceof Deling && !Double.isNaN(e1.kind2.geefWaarde().doubleValue()))
-			{	d = e2.geefWaarde().doubleValue() / e1.kind2.geefWaarde().doubleValue();
+			{	
+//System.out.println("deling 1");				
+				d = e2.geefWaarde().doubleValue() / e1.kind2.geefWaarde().doubleValue();
 				double dn = e1.kind2.geefWaarde().doubleValue() / e2.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
 				if(d==1)uitv = e1.kind1;
@@ -97,7 +179,9 @@ public class VermenigvuldigSchuifComponent extends BewerkingSchuifComponent
 				return uitv;
 			}
 			else if(e1 instanceof Deling && !Double.isNaN(e1.kind2.geefWaarde().doubleValue()))
-			{	d = e2.geefWaarde().doubleValue() * e1.kind1.geefWaarde().doubleValue();
+			{	
+//System.out.println("deling 2");				
+				d = e2.geefWaarde().doubleValue() * e1.kind1.geefWaarde().doubleValue();
 				//if(d==0)uitv = new BasisExpressie("0");
 				uitv = new Deling(new BasisExpressie(Expressie.df.format(d)),e1.kind2);
 				//else if(d==1)
@@ -107,15 +191,18 @@ public class VermenigvuldigSchuifComponent extends BewerkingSchuifComponent
 				return uitv;
 			}
 			else
-			{	if (e2.geefWaarde().doubleValue() == 1)
+			{	
+//System.out.println("else");				
+				if (e2.geefWaarde().doubleValue() == 1)
 					uitv = e1;
 				else if (e2.geefWaarde().doubleValue() == -1)
 					uitv = new Aftrekking(new BasisExpressie("0"), e1);
 				else if (e2.geefWaarde().doubleValue() < 0)
 					uitv = new Aftrekking(new BasisExpressie("0"),
-							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(-e2.geefWaarde().doubleValue())),e1));
+							              new Vermenigvuldiging(
+							            		  new BasisExpressie(Expressie.df.format(-e2.geefWaarde().doubleValue())),e1));
 				else 
-					uitv = new Vermenigvuldiging(e2,e1);
+					uitv = new Vermenigvuldiging(e2, e1);
 				return uitv;
 			}
 			/*if(d!=1)
