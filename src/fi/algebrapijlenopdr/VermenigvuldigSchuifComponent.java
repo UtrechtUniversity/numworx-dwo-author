@@ -93,7 +93,8 @@ System.out.println("vermenigvuldiging 1A");
 			
 			
 			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
-					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Vermenigvuldiging)
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Vermenigvuldiging &&
+					 !Double.isNaN(e1.kind2.kind1.geefWaarde().doubleValue()))
 			{	
 //System.out.println("aftrekking 1");				
 				
@@ -108,6 +109,25 @@ System.out.println("vermenigvuldiging 1A");
 							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(- d)), e1.kind2.kind2));
 				else 
 					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)), e1.kind2.kind2);
+				return uitv;
+			}
+			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
+					 e1.kind1.geefWaarde().doubleValue() == 0 && e1.kind2 instanceof Vermenigvuldiging &&
+					 !Double.isNaN(e1.kind2.kind2.geefWaarde().doubleValue()))
+			{	
+//System.out.println("aftrekking 1AA");				
+				
+				d = - e1.kind2.kind2.geefWaarde().doubleValue() * e2.geefWaarde().doubleValue();
+				//if(d==0)uitv = new BasisExpressie("0");
+				if (d == 1)
+					uitv = e1.kind2.kind1;
+				else if (d == -1)
+					uitv = new Aftrekking(new BasisExpressie("0"), e1.kind2.kind1);
+				else if (d < 0)
+					uitv = new Aftrekking(new BasisExpressie("0"),
+							              new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(- d)), e1.kind2.kind1));
+				else 
+					uitv = new Vermenigvuldiging(new BasisExpressie(Expressie.df.format(d)), e1.kind2.kind1);
 				return uitv;
 			}
 			else if (e1 instanceof Aftrekking && !Double.isNaN(e1.kind1.geefWaarde().doubleValue()) && 
