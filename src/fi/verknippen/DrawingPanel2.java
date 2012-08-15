@@ -16,7 +16,9 @@ public class DrawingPanel2 extends JPanel
 	Color bgColor = Color.white;
 	Color outlineColor = Color.black;
 	Color gridColor = Color.lightGray;
-	Color polyColor = new Color(255, 0, 0, 175);
+	Color polyColorTransparent = new Color(255, 0, 0, 175);
+	Color polyColorSolid = Color.red;
+	Color polyColor = polyColorTransparent;
 	Color shadowColor = Color.lightGray;
 	Color grijsPolyColor = Color.gray;
 	Color sizeColor = Color.black;	
@@ -86,7 +88,7 @@ public class DrawingPanel2 extends JPanel
 	Point gridPointClicked = null;
 	Rectangle draggRectangle = null;
 	Vector rectangles = new Vector();
-	Color rectangleColor = Color.red;
+	Color rectangleColor = Color.blue;
 	
 	public DrawingPanel2(VerknippenInteractiePanel o, boolean largeOvals)
 	{	
@@ -170,6 +172,15 @@ public class DrawingPanel2 extends JPanel
 		tekenGumPanel.setVisible(tekenGumOptie);
 		geenButton.setSelected(true);
 		tekenen = false;
+		repaint();
+	}
+	
+	public void zetFiguurTransparant(boolean b)
+	{	if (b)
+			polyColor = polyColorTransparent;
+		else
+			polyColor = polyColorSolid;
+		
 		repaint();
 	}
 	

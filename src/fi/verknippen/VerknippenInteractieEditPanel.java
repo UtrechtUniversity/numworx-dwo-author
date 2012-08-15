@@ -19,7 +19,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 																	ActionListener	
 {	
 	int editWidth = 190;
-	int editHeight = 500; 
+	int editHeight = 540; 
 	int vipBreedte = 500; // startbreedte vip
 	int vipHoogte = 450; // starthoogte vip
 	
@@ -38,7 +38,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 	JLabel taakNummerLabel, gridSizeLabel, oppervlakteRoodLabel, oppervlakteGrijsLabel, scoreMaxLabel;
 	JTextField gridSizeVeld, oppervlakteRoodVeld, oppervlakteGrijsVeld, scoreMaxVeld;
 	JCheckBox balkOnderaanBox, roosterZichtbaarBox, groteBalletjesBox, schaduwZichtbaarBox, afmetingenZichtbaarBox;
-	JCheckBox tekenGumOptieBox;
+	JCheckBox figuurTransparantBox, tekenGumOptieBox;
 	
 	JComboBox taakNummerCombo;
 	
@@ -187,6 +187,15 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		tekenGumOptieBox.addActionListener(this);
 		
 		currentY += height + offset;
+
+		figuurTransparantBox = new JCheckBox(Verknippen.rb.getString("figuurTransparantTekst"), true);
+		figuurTransparantBox.setFont(theFont);
+		figuurTransparantBox.setBackground(Color.white);
+		figuurTransparantBox.setBounds(currentX, currentY, width, height);
+		add(figuurTransparantBox);
+		figuurTransparantBox.addActionListener(this);
+		
+		currentY += height + offset;
 		
 		gridSizeLabel = new JLabel(Verknippen.rb.getString("gridInPixelsTekst"));
 		gridSizeLabel.setFont(theFont);
@@ -330,6 +339,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 			schaduwZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, schaduwZichtbaarBox.getLocation().y);
 			afmetingenZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, afmetingenZichtbaarBox.getLocation().y);
 			tekenGumOptieBox.setLocation(vip.getSize().width + 2 * offset, tekenGumOptieBox.getLocation().y);
+			figuurTransparantBox.setLocation(vip.getSize().width + 2 * offset, figuurTransparantBox.getLocation().y);
 
 			gridSizeLabel.setLocation(vip.getSize().width + 2 * offset, gridSizeLabel.getLocation().y);
 			//gridSizeVeld.setLocation(vip.getSize().width + 3 * offset, gridSizeVeld.getLocation().y);
@@ -409,7 +419,8 @@ System.out.println("viep setEditState");
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
-		boolean tekenGumOptie = false; 
+		boolean tekenGumOptie = false;
+		boolean figuurTransparant = true;
 		int gridSize = 20;		
 	   	String rodeFiguurInput =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
@@ -529,6 +540,8 @@ System.out.println("aLD found");
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
 			if (b.containsKey("tekenGumOptie"))
 				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
+			if (b.containsKey("figuurTransparant"))
+				figuurTransparant = ((Boolean) b.get("figuurTransparant")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurInput"))
@@ -554,6 +567,7 @@ System.out.println("aLD found");
 		schaduwZichtbaarBox.setSelected(schaduwZichtbaar);
 		afmetingenZichtbaarBox.setSelected(afmetingenZichtbaar);
 		tekenGumOptieBox.setSelected(tekenGumOptie);
+		figuurTransparantBox.setSelected(figuurTransparant);
 		this.gridSize = gridSize;
 		gridSizeVeld.setText("" + gridSize);
 		this.rodeFiguurInput = rodeFiguurInput;
@@ -747,6 +761,9 @@ System.out.println("viep getEditState");
 		{	vip.zetTekenGumOptie(tekenGumOptieBox.isSelected());
 			if (tekenGumOptieBox.isSelected())
 				roosterZichtbaarBox.setSelected(true);
+		}
+		else if (e.getSource() == figuurTransparantBox)
+		{	vip.zetFiguurTransparant(figuurTransparantBox.isSelected());
 		}
 		else if (e.getSource() == maakRodeFiguurButton)
 		{	if (!rodeFiguurPanel.isVisible())

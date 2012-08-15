@@ -47,6 +47,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	boolean schaduwZichtbaar = false;
 	boolean afmetingenZichtbaar = false;
 	boolean tekenGumOptie = false;
+	boolean figuurTransparant = true;
    	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
    	Vector rodeFiguurCoordinaten = new Vector();
 	int gridSize = 20;  
@@ -359,6 +360,13 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		drawingPanel2.repaint();
 		
 	}
+
+	public void zetFiguurTransparant(boolean b)
+	{	figuurTransparant = b;
+		drawingPanel2.zetFiguurTransparant(figuurTransparant);
+
+	}
+	
 	
 	public void zetGridSize(int gSize)
 	{	gridSize = gSize;
@@ -497,6 +505,7 @@ System.out.println("vip zetOpdracht");
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
 		boolean tekenGumOptie = false;
+		boolean figuurTransparant = true;
 		int gridSize = 20;		
 	   	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
@@ -543,7 +552,7 @@ System.out.println("aLD found");
 			if (schaduwZichtbaarString.equals("true") || schaduwZichtbaarString.equals("yes"))
 				schaduwZichtbaar = true;
 			
-System.out.println("schaduwZichtbaar = " + schaduwZichtbaar);			
+//System.out.println("schaduwZichtbaar = " + schaduwZichtbaar);			
 			
 			if (appletLaunchData.containsKey("toonafmetingen"))
 				afmetingenZichtbaarString = (String) appletLaunchData.get("toonafmetingen");
@@ -624,6 +633,8 @@ System.out.println("schaduwZichtbaar = " + schaduwZichtbaar);
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
 			if (b.containsKey("tekenGumOptie"))
 				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
+			if (b.containsKey("figuurTransparant"))
+				figuurTransparant = ((Boolean) b.get("figuurTransparant")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurString"))
@@ -724,6 +735,7 @@ System.out.println("aES found");
 	    		    		
 	    	}	    	
 	    	zetAntwoorden();
+	    	zetFiguurTransparant(figuurTransparant);
 	    	
 	    	Vector rectangles = new Vector();
 			if (b.containsKey("rechthoeken"))			
@@ -914,6 +926,7 @@ System.out.println("vip setEditState");
 		boolean schaduwZichtbaar = false;
 		boolean afmetingenZichtbaar = false;
 		boolean tekenGumOptie = false;
+		boolean figuurTransparant = true;
 		int gridSize = 20;		
 	   	String rodeFiguurString =  "2,0|10,0|8,8|0,8";
 		int oppervlakteRood = 64;    	
@@ -1040,6 +1053,8 @@ System.out.println("aLD found");
 				afmetingenZichtbaar = ((Boolean) b.get("afmetingenZichtbaar")).booleanValue();
 			if (b.containsKey("tekenGumOptie"))
 				tekenGumOptie = ((Boolean) b.get("tekenGumOptie")).booleanValue();
+			if (b.containsKey("figuurTransparant"))
+				figuurTransparant = ((Boolean) b.get("figuurTransparant")).booleanValue();
 			if (b.containsKey("gridSize"))
 				gridSize = ((Integer) b.get("gridSize")).intValue();
 			if (b.containsKey("rodeFiguurString"))
@@ -1141,6 +1156,7 @@ System.out.println("aES found");
 	    		    		
 	    	}	    	
 	    	zetAntwoorden();
+	    	zetFiguurTransparant(figuurTransparant);
 	    	
 	    	Vector rectangles = new Vector();
 			if (b.containsKey("rechthoeken"))			
@@ -1198,6 +1214,7 @@ System.out.println("vip getEditState");
 		h.put("schaduwZichtbaar", new Boolean(schaduwZichtbaar));
 		h.put("afmetingenZichtbaar", new Boolean(afmetingenZichtbaar));
 		h.put("tekenGumOptie", new Boolean(tekenGumOptie));
+		h.put("figuurTransparant", new Boolean(figuurTransparant));
 		h.put("gridSize", new Integer(gridSize));
 		h.put("rodeFiguurString", rodeFiguurString);
 		h.put("oppervlakteRood", new Integer(oppervlakteRood));
@@ -1217,7 +1234,7 @@ System.out.println("vip getEditState");
     	h.put("scormOpdracht", scormOpdracht);
     	
     	h.put("rechthoeken", drawingPanel2.rectangles);    	
-System.out.println("put rects = " + drawingPanel2.rectangles.size());    	
+//System.out.println("put rects = " + drawingPanel2.rectangles.size());    	
 		
 		return h;
 	}

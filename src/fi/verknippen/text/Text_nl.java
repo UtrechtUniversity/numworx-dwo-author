@@ -24,6 +24,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "schaduwZichtbaarTekst" , "Schaduw zichtbaar" },
             { "afmetingenZichtbaarTekst" , "Afmetingen schaduw" },
             { "rechthoekenTekenenTekst" , "Rechthoeken tekenen" },
+            { "figuurTransparantTekst" , "Rode figuur transparant" },
             { "gridInPixelsTekst" , "Rooster in pixels" },
             { "maakRodeFiguurTekst" , "Maak rode figuur" },
             { "oppervlakteRoodTekst" , "Oppervlakte rood" },
