@@ -388,10 +388,14 @@ System.out.println("diagramcopy encoded");
 	}
 	
 	public InteractiePanel getInteractiePanel()
-	{	if (ipa == null)
-			ipa = new InteractiePanelAdapter(this);
+	{	
 		
-		return ipa;
+//		if (ipa == null)
+//			ipa = new InteractiePanelAdapter(this);
+//		return ipa;
+		
+
+		return new SDInteractiePanel(this);
 	}
 	
 	public boolean hasEditMode()

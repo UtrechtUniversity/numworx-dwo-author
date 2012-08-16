@@ -41,6 +41,15 @@ public class Text_nl extends java.util.ListResourceBundle
             {"optionsText",     "Opties"},
             {"labelsText",      "Knooppunten met labels"},
             {"addRootText",     "Voeg extra bron toe"},
+            
+            {"berekenMenuText", "Menu Berekeningen" },
+            {"berekenInBreukenText", "Bereken in breuken" },
+            {"stroombreedteMenuText", "Menu Stroombreedte" },
+            {"stroombreedteAbsoluutText", "Stroombreedte absoluut" },
+            {"optiesMenuText", "Menu Opties" },
+            {"labelsText", "Knooppunten met labels" },
+            {"aantalBronnenText", "Aantal bronnen" },
+            
 
 		};
 }

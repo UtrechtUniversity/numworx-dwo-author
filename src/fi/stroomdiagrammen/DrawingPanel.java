@@ -103,10 +103,32 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
 
 	Image offScreen;
 	Graphics offGraphics;
+	
+	boolean realDWO = false;
+	SDInteractiePanel sdip = null;
 
     // constructor    
     public DrawingPanel(Stroomdiagrammen o)
     {   owner = o;
+        // for Container
+        setLayout(null);    
+        // init diagramManager
+        diagramManager = new DiagramManager(this);
+        // add listener for resizing events
+        ComponentListener cl = new CL();
+        addComponentListener(cl);
+        MouseListener ml = new ML();
+        addMouseListener(ml);
+        KeyListener kl = new KL();
+        addKeyListener(kl);
+    } // constructor
+
+    public DrawingPanel(Stroomdiagrammen o, boolean realDWO, SDInteractiePanel sdip)
+    {   
+    	this.realDWO = realDWO;
+    	this.sdip = sdip;
+    	
+    	owner = o;
         // for Container
         setLayout(null);    
         // init diagramManager
@@ -130,7 +152,12 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
         if (history.size() > MAXHISTORY)
             history.removeElementAt(0);
         if (history.size() > 1)
-            owner.bPanel.previousButton.setEnabled(true);
+        {	if (realDWO)
+        		sdip.bottomPanel.previousButton.setEnabled(true);
+        	else
+        		owner.bPanel.previousButton.setEnabled(true);
+        
+        }
     }
 
     public void updateHistoryLabels()
@@ -244,10 +271,19 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
                                   getSize().width - 2 * GRIDSIZE,
                                   getSize().height - 2 * GRIDSIZE);
 */
-    	workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
-    							  owner.getSize().width - 2 * GRIDSIZE,
-    							  owner.getSize().height - owner.bottomHeight - 2 * GRIDSIZE);
-    
+    	if (!realDWO)
+    	{	
+    		workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
+    							  	  owner.getSize().width - 2 * GRIDSIZE,
+    							  	  owner.getSize().height - owner.bottomHeight - 2 * GRIDSIZE);
+    	}
+    	else
+    	{	
+    		workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
+    							  	  getSize().width - 2 * GRIDSIZE,
+    							  	  getSize().height - 2 * GRIDSIZE);
+    	}
+    		
         if (oldWorkSpace == null)
         	oldWorkSpace = workSpace;	                          
         setLayerDistance();                          
@@ -2679,7 +2715,12 @@ class DiagramManager
         owner.flowOn = false;
         if (owner.flowThread != null)
             owner.flowThread.stop();
-        owner.owner.bPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));        
+        
+        if (owner.realDWO)
+        	owner.sdip.bottomPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));
+        else	
+        	owner.owner.bPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));
+        
         for (int j = edges.size() - 1; j >= 0; j--)
         {   Edge e = (Edge) edges.elementAt(j);
             edges.removeElement(e);
@@ -2702,7 +2743,10 @@ class DiagramManager
         if (newRoot)
         {   // clear history
             owner.history.removeAllElements();
-            owner.owner.bPanel.previousButton.setEnabled(false);
+            if (owner.realDWO)
+            	owner.sdip.bottomPanel.previousButton.setEnabled(false);
+            else	
+            	owner.owner.bPanel.previousButton.setEnabled(false);
             if (owner.owner.toonOptiesMenu)
             	owner.addNewRoot(true);
             else
@@ -2831,21 +2875,50 @@ class DiagramManager
 */            
         owner.flowMode = dc.flowMode;
         if (owner.flowMode == DrawingPanel.decMode)
-        	owner.owner.rbDecimaalItem.setSelected(true);
+        {	if (owner.realDWO)
+        		owner.sdip.rbDecimaalItem.setSelected(true);
+        	else
+        		owner.owner.rbDecimaalItem.setSelected(true);
+        }
         else
-        	owner.owner.rbBreukenItem.setSelected(true);
+        {	if (owner.realDWO)
+        		owner.sdip.rbBreukenItem.setSelected(true);
+        	else
+        		owner.owner.rbBreukenItem.setSelected(true);
+        
+        }
         
         owner.thickMode = dc.thickMode;
         if (owner.thickMode == DrawingPanel.relMode)
-        	owner.owner.rbRelatiefItem.setSelected(true);
+        {	if (owner.realDWO)
+        		owner.sdip.rbRelatiefItem.setSelected(true);
+        	else
+        		owner.owner.rbRelatiefItem.setSelected(true);
+        
+        }
         else
-        	owner.owner.rbAbsoluutItem.setSelected(true);
+        {	if (owner.realDWO)
+        		owner.sdip.rbAbsoluutItem.setSelected(true);
+        	else
+        		owner.owner.rbAbsoluutItem.setSelected(true);
+        
+        }
         
         owner.labelHeight = dc.labelHeight;        
         if (owner.labelHeight == 0)
-        	owner.owner.cbLabelsItem.setSelected(false);
+        {	if (owner.realDWO)
+        		owner.sdip.cbLabelsItem.setSelected(false);
+        	else
+        		owner.owner.cbLabelsItem.setSelected(false);
+        
+        }
         else
-        	owner.owner.cbLabelsItem.setSelected(true);
+        {	if (owner.realDWO)
+        		owner.sdip.cbLabelsItem.setSelected(true);
+        	else
+        		owner.owner.cbLabelsItem.setSelected(true);
+        
+        }
             
             
         owner.flowOn = dc.flowOn;
@@ -2921,8 +2994,11 @@ class DiagramManager
         }    
         if (owner.flowOn)
         {    owner.flowThread = new Thread(owner);
-             owner.flowThread.start();                
-             owner.owner.bPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
+             owner.flowThread.start();   
+             if (owner.realDWO)
+            	 owner.sdip.bottomPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
+             else	 
+            	 owner.owner.bPanel.bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
         }    
         calculateDiagram();
         resizeDiagram(true);

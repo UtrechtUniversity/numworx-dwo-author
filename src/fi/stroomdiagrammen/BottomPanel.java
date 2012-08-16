@@ -26,10 +26,14 @@ public class BottomPanel extends JPanel
     FIButton fiButton;
 
 JTextField test;    
+
+	boolean realDWO = false;
+	SDInteractiePanel sdip;
     
     // constructor
     public BottomPanel(Stroomdiagrammen o)
-    {   owner = o;
+    {   
+    	owner = o;
         setBackground(Stroomdiagrammen.appletBackground);                                   
         // allow using coordinates
         setLayout(null);
@@ -57,28 +61,78 @@ JTextField test;
 //test = new JTextField();
 //add(test);
         
-		//Fi-logo, copyright
-		fiButton = new FIButton("Info",
-			new String[]
-			{	owner.rb.getString("titelText"),
-				owner.rb.getString("versionText") + "20110412",
-				owner.rb.getString("authorText"),
-				owner.rb.getString("programText"),
-				owner.rb.getString("fiText"),
-				"www.fi.uu.nl",
-				""
-			});
-        add(fiButton);
+        if (!realDWO)
+        {	
+        	//Fi-logo, copyright
+        	fiButton = new FIButton("Info",
+        		new String[]
+        		{	owner.rb.getString("titelText"),
+        			owner.rb.getString("versionText") + "20110412",
+        			owner.rb.getString("authorText"),
+        			owner.rb.getString("programText"),
+        			owner.rb.getString("fiText"),
+        			"www.fi.uu.nl",
+        			""
+        		});
+        	add(fiButton);
+        }	
 		
         initialize();
         
     }
+    
+    public BottomPanel(Stroomdiagrammen o, boolean realDWO, SDInteractiePanel sdip)
+    {	this.realDWO = realDWO;
+    	this.sdip = sdip;
+		owner = o;
+		setBackground(Stroomdiagrammen.appletBackground);                                   
+		//allow using coordinates
+		setLayout(null);
+		// create and add components
+		//set location in initialize()
+		newButton = new JButton(owner.rb.getString("newDiagramText"));
+		newButton.setBackground(owner.buttonColor);
+		newButton.setFont(fo1);
+		add(newButton);
+		newButton.addActionListener(new NewAL());
+    
+		bubbleButton = new JButton(owner.rb.getString("flowOnText"));
+		bubbleButton.setBackground(owner.buttonColor);
+		bubbleButton.setFont(fo1);
+		add(bubbleButton);
+		bubbleButton.addActionListener(new BubbleAL());
+    
+		previousButton = new JButton(owner.rb.getString("previousText"));
+		previousButton.setBackground(owner.buttonColor);
+		previousButton.setFont(fo1);
+		add(previousButton);
+		previousButton.setEnabled(false);
+		previousButton.addActionListener(new PreviousAL());
+
+//test = new JTextField();
+//add(test);
+    
+	
+		initialize();
+    	
+    	
+    }
     // set locations at startup and after resizing    
     public void initialize()
     {   // determine effective area
-        rect = new Rectangle(DrawingPanel.GRIDSIZE, 0, 
-                   owner.getSize().width - 2 * DrawingPanel.GRIDSIZE,
-                   owner.bottomHeight - DrawingPanel.GRIDSIZE);
+    	if (realDWO)
+    	{
+    		rect = new Rectangle(DrawingPanel.GRIDSIZE, 0, 
+					             getSize().width - 2 * DrawingPanel.GRIDSIZE,
+					             owner.bottomHeight - DrawingPanel.GRIDSIZE);
+    		
+    	}
+    	else
+    	{	
+    		rect = new Rectangle(DrawingPanel.GRIDSIZE, 0, 
+    							 owner.getSize().width - 2 * DrawingPanel.GRIDSIZE,
+    							 owner.bottomHeight - DrawingPanel.GRIDSIZE);
+    	}
         // for layout        
         int vGap = DrawingPanel.GRIDSIZE;
         int hGap = DrawingPanel.GRIDSIZE; 
@@ -109,7 +163,8 @@ JTextField test;
         
         currentX = rect.x + rect.width - hGap - 20;
         currentY = rect.y + vGap;
-        fiButton.setBounds(currentX, currentY, 20, 30);
+        if (fiButton != null)
+        	fiButton.setBounds(currentX, currentY, 20, 30);
         
         repaint();
     } 
@@ -119,7 +174,14 @@ JTextField test;
                              owner.bottomHeight);
     }    
     public void paintComponent(Graphics g)
-    {   // fill effective area with background and outline
+    {   
+    	if (realDWO)
+    	{	
+    		g.setColor(Stroomdiagrammen.appletBackground);
+    		g.fillRect(0, 0, getSize().width, getSize().height);
+    	}	
+    	
+    	// fill effective area with background and outline
         g.setColor(Stroomdiagrammen.bottomBackground);
         g.fillRect(rect.x, rect.y, rect.width, rect.height);
         g.setColor(Color.black);
@@ -129,37 +191,72 @@ JTextField test;
     // inner class for newButton
     class NewAL implements ActionListener
     {   public void actionPerformed(ActionEvent e)
-        {    owner.drawingPanel.diagramManager.clearDiagram(true);
+        {   if (realDWO) 
+        		sdip.drawingPanel.diagramManager.clearDiagram(true);
+        	else
+        		owner.drawingPanel.diagramManager.clearDiagram(true);
         }    
     }    
     // inner class for bubbleButton
     class BubbleAL implements ActionListener
     {   public void actionPerformed(ActionEvent e)
-        {   if (owner.drawingPanel.flowOn)
-            {   owner.drawingPanel.flowOn = false;
-                // owner.drawingPanel.flowThread.suspend();
-                // for Netscape
-                // note: stop kills the Thread!
-                owner.drawingPanel.flowThread.stop();
-                bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));
-            }
-            else
-            {   owner.drawingPanel.flowOn = true;
-                // owner.drawingPanel.flowThread.resume();
-                // for Netscape
-                owner.drawingPanel.flowThread = new Thread(owner.drawingPanel);
-                owner.drawingPanel.flowThread.start();                
-                bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
-            }
-            owner.drawingPanel.addToHistory();
+        {   
+    		if (realDWO)
+    		{
+    			if (sdip.drawingPanel.flowOn)
+    			{   sdip.drawingPanel.flowOn = false;
+    				// sdip.drawingPanel.flowThread.suspend();
+    				// 	for Netscape
+    				// note: stop kills the Thread!
+    				sdip.drawingPanel.flowThread.stop();
+                	bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));
+    			}
+    			else
+    			{   sdip.drawingPanel.flowOn = true;
+                	// sdip.drawingPanel.flowThread.resume();
+                	// 	for Netscape
+    				sdip.drawingPanel.flowThread = new Thread(sdip.drawingPanel);
+    				sdip.drawingPanel.flowThread.start();                
+                	bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
+    			}
+    			sdip.drawingPanel.addToHistory();
+    			
+    		}
+    		else
+    		{	
+    			if (owner.drawingPanel.flowOn)
+    			{   owner.drawingPanel.flowOn = false;
+    				// owner.drawingPanel.flowThread.suspend();
+    				// 	for Netscape
+    				// note: stop kills the Thread!
+                	owner.drawingPanel.flowThread.stop();
+                	bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOnText"));
+    			}
+    			else
+    			{   owner.drawingPanel.flowOn = true;
+                	// owner.drawingPanel.flowThread.resume();
+                	// 	for Netscape
+                	owner.drawingPanel.flowThread = new Thread(owner.drawingPanel);
+                	owner.drawingPanel.flowThread.start();                
+                	bubbleButton.setLabel(Stroomdiagrammen.rb.getString("flowOffText"));
+    			}
+    			owner.drawingPanel.addToHistory();
+    		}
         }    
     } 
     
     class PreviousAL implements ActionListener
     {   public void actionPerformed(ActionEvent e)
-        {   owner.drawingPanel.previousDiagram();
-            if (owner.drawingPanel.history.size() <= 1)
-                previousButton.setEnabled(false);
+        {   if (realDWO)
+        	{	sdip.drawingPanel.previousDiagram();
+    			if (sdip.drawingPanel.history.size() <= 1)
+    				previousButton.setEnabled(false);
+        	}
+        	else
+        	{	owner.drawingPanel.previousDiagram();
+        		if (owner.drawingPanel.history.size() <= 1)
+        			previousButton.setEnabled(false);
+        	}
             
         }    
     }    

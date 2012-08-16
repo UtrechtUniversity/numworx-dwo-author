@@ -38,6 +38,15 @@ public class Text_en extends java.util.ListResourceBundle
             {"optionsText", "Options"},
             {"labelsText", "Vertices with labels"},
             {"addRootText", "Add another source"},
+            
+            {"berekenMenuText", "Calculations menu" },
+            {"berekenInBreukenText", "Calculate in fractions" },
+            {"stroombreedteMenuText", "Flow width menu" },
+            {"stroombreedteAbsoluutText", "Flow width absolute" },
+            {"optiesMenuText", "Options menu" },
+            {"labelsText", "Vertices with labels" },
+            {"aantalBronnenText", "Number of sources" },
+            
 		};
 }
 
