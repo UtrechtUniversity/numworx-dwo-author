@@ -61,7 +61,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		theBoldFM = getFontMetrics(theBoldFont);
 		
 		
-		int width = editWidth - 2 * offset;
+		int width = editWidth - 3 * offset;
 		int height = 3 * theFM.getHeight() / 2;
 		int currentX = spip.getSize().width + offset;
 		int currentX2 = offset;
@@ -148,7 +148,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		kijkNaBox = new JCheckBox(Spot_Problems_dwo.rb.getString("kijkNaActiefTekst"), true);
 		kijkNaBox.setFont(theFont);
 		kijkNaBox.setBackground(Color.white);
-		kijkNaBox.setBounds(currentX, currentY, editWidth - offset - 3, 3 * theFM.getHeight() / 2);
+		kijkNaBox.setBounds(currentX, currentY, editWidth - 3 * offset, 3 * theFM.getHeight() / 2);
 		add(kijkNaBox);
 		kijkNaBox.addActionListener(this);
 		
