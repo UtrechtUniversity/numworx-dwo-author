@@ -6,7 +6,7 @@ import java.awt.Polygon;
 import java.awt.Color;
 import java.applet.Applet;
 
-public class Vlakdeel
+public class Vlakdeel2
 {	
 	public int aantalPunten;
 	public int aantalHoekpunten;
@@ -18,7 +18,7 @@ public class Vlakdeel
 	public Color kleur;
 	public int beginnummer;
 	public int aantalHoekpuntenVast;
-	public Applet eigenaar;
+	public TekenPanel eigenaar;
 	public boolean nieuw;
 	
 	public double positiex, positiey;
@@ -28,7 +28,7 @@ public class Vlakdeel
 	
 	public int fractielType = 0;
 	
-	public Vlakdeel(Applet ap, int aantal, double positiex, double positiey, Color kl)
+	public Vlakdeel2(TekenPanel ap, int aantal, double positiex, double positiey, Color kl)
 	{	
 		this.positiex = positiex;
 		this.positiey = positiey;

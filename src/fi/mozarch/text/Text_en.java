@@ -8,6 +8,13 @@ public class Text_en extends java.util.ListResourceBundle
                 { "opstuurKnopLabel", "Send"},
 				{ "BestandenKnopLabel", "Show/open files"},
 				{ "infoKnopLabel", "Info"},
+				
+				{ "fractielenTekst", "Fractiles" },
+				{ "startFiguurTekst", "First piece" },
+				{ "aantalHoekpuntenTekst", "Number of vertices" },
+				{ "aantalPerZijdeTekst", "Number of figures per edge" },
+				{ "fractielTypeTekst", "Fractile type" },
+				
         };
 }
 

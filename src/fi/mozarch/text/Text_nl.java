@@ -8,6 +8,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "opstuurKnopLabel", "Opsturen"},
 				{ "bestandenKnopLabel", "Bestanden opvragen/bekijken"},
 				{ "infoKnopLabel", "Info"},
+				
+				{ "fractielenTekst", "Fractielen" },
+				{ "startFiguurTekst", "Eerste stukje" },
+				{ "aantalHoekpuntenTekst", "Aantal hoekpunten" },
+				{ "aantalPerZijdeTekst", "Aantal figuren per zijde" },
+				{ "fractielTypeTekst", "Type fractiel" },
+					
+				
         };
 }
 

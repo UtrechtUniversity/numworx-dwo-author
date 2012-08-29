@@ -19,6 +19,7 @@ public class MozArch extends TekenApplet implements ActionListener,
 	
 	// scormgebeuren
 	protected static ResourceBundle rb;
+	protected static String langArg;
 	protected SCORM12APIInterface api;
 	boolean scormed = false;
 	boolean reviewMode = false;	
@@ -84,10 +85,14 @@ public class MozArch extends TekenApplet implements ActionListener,
     private double dummyX, startX, startY;
     
     public MozArch()
-    {	Locale language = new Locale ("nl", "");
+    {	langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.mozarch.text.Text", language);
     }
     public MozArch(Locale language)
-    {
+    {	
+    	langArg = language.getLanguage();
+    	rb = ResourceBundle.getBundle("fi.mozarch.text.Text", language);
     }
 	
 	public void initialiseer()
@@ -1147,7 +1152,9 @@ System.out.println("set h = null");
 	
 	public InteractiePanel getInteractiePanel()
 	{
-		return new InteractiePanelAdapter(this);
+		//return new InteractiePanelAdapter(this);
+		
+		return new MZInteractiePanel();
 	}	
 	
 	public boolean hasEditMode()
