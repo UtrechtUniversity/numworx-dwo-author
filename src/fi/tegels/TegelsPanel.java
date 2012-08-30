@@ -1,34 +1,23 @@
 package fi.tegels;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.*;
-
-import fi.beans.base64code.*;
-import fi.beans.scorm.*;
-
-import fi.beans.wiskopdrbeans.InteractiePanel;
+import java.util.Vector;
 
 import javax.swing.*;
-/**
- * @author Peter Boon
- */
 
-public class Tegels extends JApplet implements MouseListener, MouseMotionListener, ActionListener,
-											   ScormAppletIF, WiskOpdrParamEditApplet	
-{	
-	// scormgebeuren
-	protected static ResourceBundle rb;
-	protected static String langArg;
-	protected SCORM12APIInterface api;
-	boolean scormed = false;
-	boolean reviewMode = false;	
+
+public class TegelsPanel extends JPanel implements MouseListener, MouseMotionListener, ActionListener 
+{
+	TegelsInteractiePanel tip;
 	
-	// DWO-component-gebeuren
-	boolean isDWOComponent = false;
-	
-	private ControlPanel cp;
-	TekenPanel tekenPanel;
+	ControlPanel2 cp;
+	TekenPanel2 tekenPanel;
 	//private String langArg;
 	
 	int breedte, hoogte;
@@ -63,89 +52,41 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 	boolean demoVersion = false;
 	
 	int hokBreedte = 180;
-	int controlHoogte = 70;//60;
+	int controlHoogte = 90;//60;
 
 	Vector basisVormen = new Vector();
 	int actualBasisVorm = 0;
 	
-	public static void main(String[] args)    
-	{	int width = 700;
-        int height = 450;
+	
+	
+	public TegelsPanel(int b, int h, TegelsInteractiePanel tip)
+	{
+		setBounds(0, 0, b, h);
 		
-        Tegels tegels = new Tegels();
-		ScormMainFrame mf = new ScormMainFrame(tegels, width, height);
-		mf.setTitle("Tegels Scormed");
-		mf.pack();
-		mf.show();
-		
-		tegels.setLocation(mf.getInsets().left, mf.getInsets().top);		
-		
-		int framebreedte = width + mf.getInsets().left + mf.getInsets().right;
-		int framehoogte = height + mf.getInsets().top + mf.getInsets().bottom;
-		mf.setSize(framebreedte, framehoogte);
-
-		
-	}
-
-    public Tegels()
-    {	langArg = "nl";
-		Locale language = new Locale (langArg, "");
-		rb = ResourceBundle.getBundle("fi.tegels.text.Text", language);	
-
-    }
-    public Tegels(Locale language)
-    {
-    	langArg = language.getLanguage();
-    	rb = ResourceBundle.getBundle("fi.tegels.text.Text", language);
-    }
-
-	public void init()
-	{	
-		
-		try
-		{	api = Scorm.findAPI(this);
-		}
-		catch(Exception e){}
+		this.tip = tip;
 		
 		hoogte = getSize().height;
 		breedte = getSize().width;
 		
-		getContentPane().setLayout(null);
+		setLayout(null);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		langArg = getParameter("language");
-		if (langArg == null || !langArg.equals("en") || !langArg.equals("ca")) 
-			langArg = "nl";
-		Locale language = new Locale (langArg, "");
-		rb = ResourceBundle.getBundle("fi.tegels.text.Text",language);
-		
-		String versionString = getParameter("transversion");
-		if (versionString != null && 
-			(versionString.equals("yes") || versionString.equals("true")))
-			transVersion = true;
-		
-		String demoString = getParameter("demoversion");
-		if (demoString != null && 
-			(demoString.equals("yes") || demoString.equals("true")))
-			demoVersion = true;
-		
-		
-		tekenPanel = new TekenPanel(this);
+		tekenPanel = new TekenPanel2(this);
 		tekenPanel.setBounds(0, 0, breedte, hoogte);
 //		getContentPane().add(tekenPanel);
 		
-		cp = new ControlPanel(this);
+		cp = new ControlPanel2(this);
 		cp.setLayout(null);
 		//cp.setBounds(181, hoogte - 61, breedte - 182, 60);
 		cp.setBounds(hokBreedte + 1, hoogte - controlHoogte - 1, breedte - hokBreedte - 2, controlHoogte);
 		if (demoVersion)
 			cp.setVisible(false);
-		getContentPane().add(cp);
+		add(cp);
 	
 		// deze HIER!!
-		getContentPane().add(tekenPanel);		
+		add(tekenPanel);		
 		
 		
 		pak = false;
@@ -221,10 +162,121 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		mi.addActionListener(this);
 		popup.add(mi);
 		
-		getContentPane().add(popup);
+		add(popup);
+		
+	}
+
+	public void setSize(int b, int h)
+	{
+		super.setSize(b, h);
+
+		hoogte = getSize().height;
+		breedte = getSize().width;
+		
+		tekenPanel.setBounds(0, 0, breedte, hoogte);		
+		cp.setBounds(hokBreedte + 1, hoogte - controlHoogte - 1, breedte - hokBreedte - 2, controlHoogte);		
+		
+		if (transVersion)
+			posBasis = new Point(85, hoogte - 85);
+		else	
+			posBasis = new Point(95, hoogte - 85);
+		
+		basisv.zetPositie(posBasis.x, posBasis.y);
+		basisvOud.zetPositie(posBasis.x, posBasis.y);
+
+		for (int bCnt = 0; bCnt < basisVormen.size(); bCnt++)
+		{	SchuifStuk ss = (SchuifStuk) basisVormen.elementAt(bCnt);
+			ss.zetPositie(posBasis.x, posBasis.y);
+		}
+
+		int n = 10 / Trans.factor;
+		zeshok = new Polygon();
+		zeshok.addPoint(posBasis.x + Trans.geefx(n, 0), posBasis.y + Trans.geefy(n, 0));
+		zeshok.addPoint(posBasis.x + Trans.geefx(0, n), posBasis.y + Trans.geefy(0, n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(-n, n), posBasis.y + Trans.geefy(-n, n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(-n, 0), posBasis.y + Trans.geefy(-n, 0));
+		zeshok.addPoint(posBasis.x + Trans.geefx(0, -n), posBasis.y + Trans.geefy(0, -n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(n, -n), posBasis.y + Trans.geefy(n, -n));
+
+		tekenOpnieuw();
 	}
 	
+	public void zetTransVersion(boolean b)
+	{
+		transVersion = b;
+		
+		cp.controlLeggen();
+		cp.gridKeuze.setVisible(false);
+		if (b)
+			cp.codeveld.setVisible(false);
+		
+		basisVormen.removeAllElements();
 
+		pak = false;
+		maakVorm = false;
+		wisTegelEerst = false;
+		aantalSs = 0;
+		 
+		if (transVersion)
+			posBasis = new Point(85, hoogte - 85);
+		else	
+			posBasis = new Point(95, hoogte - 85);
+		
+//		ss = new SchuifStuk[500];
+		Point p1, p2, p3, p4;
+		if (transVersion)
+		{	p1 = new Point(-2, -2);
+			p2 = new Point(2, -2);
+			p3 = new Point(2, 2);
+			p4 = new Point(-2, 2);
+		}
+		else
+		{	p1 = new Point(-20, -20);
+			p2 = new Point(20, -20);
+			p3 = new Point(20, 40);
+			p4 = new Point(-20, 40);
+		}
+		Point[] pnt = {p1, p2, p3, p4};
+		
+		basisv = new SchuifStuk(transVersion, 4, pnt, Color.red);
+		basisvOud = new SchuifStuk(transVersion, 4, pnt, new Color(230, 230, 230));
+		basisv.zetPositie(posBasis.x, posBasis.y);
+		basisvOud.zetPositie(posBasis.x, posBasis.y);
+//		nieuwHp = new Point[50];
+		aantalNieuwHp = 0;
+		for (int i = 0; i < 4; i++)
+		{	nieuwHp[i] = new Point(pnt[i]);
+			aantalNieuwHp++;
+		}
+		nieuwHp[4] = new Point(pnt[0]);
+		aantalNieuwHp++;
+		tegelKlaar = true;
+		maakCodeString();
+		
+		basisVormen.addElement(new SchuifStuk(transVersion, basisv.aantalPunten, basisv.punten,
+				               posBasis, basisv.kleur));
+
+		int n = 10 / Trans.factor;
+		zeshok = new Polygon();
+		zeshok.addPoint(posBasis.x + Trans.geefx(n, 0), posBasis.y + Trans.geefy(n, 0));
+		zeshok.addPoint(posBasis.x + Trans.geefx(0, n), posBasis.y + Trans.geefy(0, n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(-n, n), posBasis.y + Trans.geefy(-n, n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(-n, 0), posBasis.y + Trans.geefy(-n, 0));
+		zeshok.addPoint(posBasis.x + Trans.geefx(0, -n), posBasis.y + Trans.geefy(0, -n));
+		zeshok.addPoint(posBasis.x + Trans.geefx(n, -n), posBasis.y + Trans.geefy(n, -n));
+		
+		tekenOpnieuw();
+	}
+	
+	public void zetDemoVersion(boolean b)
+	{
+		demoVersion = b;
+		
+		cp.setVisible(!demoVersion);
+		
+		tekenOpnieuw();
+	}
+	
  	void tekenOpnieuw()
 	{	
  		repaint();
@@ -409,7 +461,6 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		maakCodeString();
 	}
 	
-	
 	public void mousePressed(MouseEvent e)
 	{	
 		
@@ -554,173 +605,4 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 		tekenOpnieuw();
 	}
 	
-	// scormgebeuren
-
-	public void start()
-	{	if (api != null)
-		{	String s = api.LMSGetValue("cmi.suspend_data");
-			if (s != null && !s.equals(""))
-			{	setState(s);
-//System.out.println("set state");			
-			}
-		}
-	}
-	
-	public void stop()
-	{	if (api != null)
-		{	String s = getState();
-			String d = new Double(getScore()).toString();
-			api.LMSSetValue("cmi.core.score.raw",d);
-			api.LMSSetValue("cmi.suspend_data",s);
-//System.out.println("get state");			
-		}
-	}
-
-	public void stopSco()
-	{	stop();
-		api = null;
-	}
-
-	public void setState(String s)
-	{	
-//System.out.println("set: sl = " + s.length());
-	
-		// decodeer de string
-		Object o = StringCodeObject.decodeStringToObject(s);
-		// cast
-		Hashtable h = (Hashtable) o;
-		
-		boolean stateVersion = transVersion;
-		
-		if (h.containsKey("stateversion"))
-			stateVersion = ((Boolean) h.get("stateversion")).booleanValue();
-		
-		if (stateVersion == transVersion)
-		{	
-		
-			Vector schuifStukkenVector = new Vector();
-			if (h.containsKey("schuifstukken"))
-				schuifStukkenVector = (Vector) h.get("schuifstukken");
-		
-			aantalSs = schuifStukkenVector.size();
-			for (int sCnt = 0; sCnt < aantalSs; sCnt++)
-			{	ss[sCnt] = (SchuifStuk) schuifStukkenVector.elementAt(sCnt);
-			}
-
-			Vector basisVormenVector = new Vector();
-			if (h.containsKey("basisvormen"))
-				basisVormenVector = (Vector) h.get("basisvormen");
-
-			basisVormen = new Vector();
-			for (int bCnt = 0; bCnt < basisVormenVector.size(); bCnt++)
-			{	basisVormen.addElement((SchuifStuk) basisVormenVector.elementAt(bCnt));
-			}
-			
-			if (basisVormen.size() >= 1)
-			{
-				zetBasisVorm((SchuifStuk) basisVormen.elementAt(0));
-				if (basisVormen.size() > 1)
-					cp.downButton.setEnabled(true);
-			}
-
-		}
-		
-/*		
-if (h == null)
-{
-System.out.println("set h = null");	
-	return;
-
 }
-*/		
-	}
-
-	public String getState()
-	{	
-		// creeer de gegevens die de state bepalen
-		Hashtable h = new Hashtable();
-	
-		boolean stateVersion = transVersion;
-		
-		h.put("stateversion", new Boolean(stateVersion));
-		
-		Vector schuifStukkenVector = new Vector();
-		for (int sCnt = 0; sCnt < aantalSs; sCnt++)
-		{	schuifStukkenVector.addElement(ss[sCnt]);
-		}
-		h.put("schuifstukken", schuifStukkenVector);
-		
-		Vector basisVormenVector = new Vector();
-		for (int bCnt = 0; bCnt < basisVormen.size(); bCnt++)
-		{	basisVormenVector.addElement((SchuifStuk) basisVormen.elementAt(bCnt));
-		}
-		h.put("basisvormen", basisVormenVector);
-		
-	    // codeer deze gegevens tot een string
-	    String s = StringCodeObject.encodeObjectToString(h);
-
-	    return s;
-	}
-
-	public double getScore()
-	{	return 0.5;
-	}
-	
-	public InteractiePanel getInteractiePanel()
-	{
-		//return new InteractiePanelAdapter(this);
-		
-		return new TegelsInteractiePanel();
-	}	
-	
-	public boolean hasEditMode()
-	{	return false;
-	}
-
-    public ScormEditComponentIF getEditComponent(Hashtable launchdata)
-    {	return null;
-    }
-	
-	
-    public Parameter[] getEditableParameters()
-	{	
-    	Parameter[] parameters = new Parameter[2];
-		
-		DataType type = new ScormString();
-		DataType bType = new ScormBoolean();
-		
-		Parameter param = new Parameter("transversion", "versie TegelsTr", bType);
-		param.setHelpText("vul in: yes of no");		
-		parameters[0] = param;
-
-		param = new Parameter("demoversion", "demo versie", bType);
-		param.setHelpText("vul in: yes of no");		
-		parameters[1] = param;
-		
-		return parameters;
-    }
-	
-    public Parameter[] getAllParameters()
-    {	return null;
-    }
-	
-    // wiskOpdrParamEditApplet
-    public Hashtable getDefaultParameters()
-    {
-    	Hashtable h = new Hashtable();
-    	
-    	h.put("transversion", "no");
-    	h.put("demoversion", "no");
-    	
-    	return h;
-    }
-    
-	public void setSingleComponent()
-	{	
-		isDWOComponent = true;
-		cp.fiButton.setVisible(false);
-		
-	}
-	
-}
-

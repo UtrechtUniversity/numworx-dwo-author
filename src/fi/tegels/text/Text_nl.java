@@ -17,6 +17,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "menuKopieerLabel", "Kopieer"},
 				{ "fijnRasterTekst", "Fijn raster"},
 				{ "grofRasterTekst", "Grof raster"},
+				
+				{ "transVersionTekst", "Versie TegelsTr"},
+				{ "demoVersionTekst", "Demo versie"},
         };
 }
 

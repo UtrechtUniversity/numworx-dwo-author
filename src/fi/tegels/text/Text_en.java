@@ -18,6 +18,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "fijnRasterTekst", "Small grid"},
 				{ "grofRasterTekst", "Large grid"},
 				
+				{ "transVersionTekst", "Version TegelsTr"},
+				{ "demoVersionTekst", "Demo version"},
+				
         };
 }
 
