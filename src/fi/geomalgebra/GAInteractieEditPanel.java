@@ -5,6 +5,10 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Hashtable;
 
 import javax.swing.*;
@@ -31,12 +35,22 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	protected GAInteractiePanel gaip;
 
+	
+	JCheckBox varWaardeBox, oppWaardeBox, formuleBox, constructieToolsBox, alleenOppervlaktesBox,
+	          werkbladBox;
+	
+	JCheckBox kijkNaActiefBox;
+	ButtonGroup naKijkGroup;
+	JRadioButton equivalentButton, gelijkButton;
+	JButton antwoordFormuleButton;
+	JLabel maxScoreLabel;	
+	JTextField maxScoreVeld;	
+
 	int scoreMax = 10;
 	
-	JCheckBox varWaardeBox, oppWaardeBox, formuleBox, constructieToolsBox, alleenOppervlaktesBox;
-	
-	
-	
+	ExpressiePanel antwoordFormulePanel;
+	int ePanelHeight;
+
 	
 	public GAInteractieEditPanel()
 	{
@@ -49,11 +63,16 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		theBoldFont = new Font("Dialog", Font.BOLD, 12);
 		theBoldFM = getFontMetrics(theBoldFont);
 		
-		
 		int width = editWidth - 2 * offset;
 		int height = 3 * theFM.getHeight() / 2;
 		int currentX = gaip.getSize().width + offset;
 		int currentY = offset;
+		
+		ePanelHeight = height;
+		antwoordFormulePanel = new ExpressiePanel(200, ePanelHeight);
+		antwoordFormulePanel.setVisible(false);
+		gaip.add(antwoordFormulePanel, 0);
+		
 		
 		varWaardeBox = new JCheckBox(GeomAlgebra.rb.getString("varWaardeTekst"), false);
 		varWaardeBox.setFont(theFont);
@@ -99,6 +118,84 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		alleenOppervlaktesBox.addActionListener(this);
 		
 		currentY += height + offset;
+
+		werkbladBox = new JCheckBox(GeomAlgebra.rb.getString("werkbladTekst"), false);
+		werkbladBox.setFont(theFont);
+		werkbladBox.setBackground(Color.white);
+		werkbladBox.setBounds(currentX, currentY, width, height);
+		add(werkbladBox);
+		werkbladBox.addActionListener(this);
+		
+		currentY += height + 2 * offset;
+
+		kijkNaActiefBox = new JCheckBox(GeomAlgebra.rb.getString("kijkNaActiefTekst"), false);
+		kijkNaActiefBox.setFont(theFont);
+		kijkNaActiefBox.setBackground(Color.white);
+		kijkNaActiefBox.setBounds(currentX, currentY, width, height);
+		add(kijkNaActiefBox);
+		kijkNaActiefBox.addActionListener(this);
+		
+		currentY += height + offset / 2;
+		
+		naKijkGroup = new ButtonGroup();
+
+		equivalentButton = new JRadioButton(GeomAlgebra.rb.getString("equivalentTekst"), true);
+		equivalentButton.setFont(theFont);
+		equivalentButton.setBackground(Color.white);
+		equivalentButton.setBounds(currentX + offset, currentY, width - offset, height);
+		equivalentButton.setVisible(false);
+		add(equivalentButton);
+		equivalentButton.addActionListener(this);
+		naKijkGroup.add(equivalentButton);
+		
+		currentY += height;
+		
+		gelijkButton = new JRadioButton(GeomAlgebra.rb.getString("gelijkTekst"), false);
+		gelijkButton.setFont(theFont);
+		gelijkButton.setBackground(Color.white);
+		gelijkButton.setBounds(currentX + offset, currentY, width - offset, height);
+		gelijkButton.setVisible(false);
+		add(gelijkButton);
+		gelijkButton.addActionListener(this);
+		naKijkGroup.add(gelijkButton);
+
+		currentY += height + offset;
+		
+		antwoordFormuleButton = new JButton(GeomAlgebra.rb.getString("antwoordFormuleTekst"));
+		antwoordFormuleButton.setFont(theFont);
+		int w = theFM.stringWidth(antwoordFormuleButton.getText()) + 40;
+		currentX = (editWidth - w) / 2;
+		antwoordFormuleButton.setBounds(currentX, currentY, w, 3 * theFM.getHeight() / 2);
+		//antwoordFormuleButton.setVisible(false);
+		//add(antwoordFormuleButton);
+		antwoordFormuleButton.addActionListener(this);
+		
+		//currentY += height + offset;		
+		
+		maxScoreLabel = new JLabel(GeomAlgebra.rb.getString("scoreMaxTekst"));
+		maxScoreLabel.setFont(theFont);
+		maxScoreLabel.setBackground(Color.white);
+		width = theFM.stringWidth(maxScoreLabel.getText());
+		maxScoreLabel.setBounds(currentX + offset, currentY + 3, width, theFM.getHeight());
+		maxScoreLabel.setVisible(false);
+		add(maxScoreLabel);
+		
+		currentY += height; // + offset;
+		
+		maxScoreVeld = new JTextField("" + scoreMax);
+		maxScoreVeld.setFont(theFont);
+		maxScoreVeld.setBackground(Color.white);
+		width = theFM.stringWidth("XXXXXX");
+		maxScoreVeld.setBounds(currentX + 2 * offset, currentY, width, height);
+				//maxScoreLabel.getLocation().x + maxScoreLabel.getSize().width + offset,
+				//currentY, width, height);
+		add(maxScoreVeld);
+		//maxScoreVeld.setEditable(false);
+		maxScoreVeld.setVisible(false);
+
+		maxScoreVeld.addKeyListener(new InputKL2(maxScoreVeld));
+		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
+		maxScoreVeld.addFocusListener(new TextFL2(maxScoreVeld));
 		
 		componentsCreated = true;
 	}	
@@ -112,6 +209,15 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			formuleBox.setLocation(gaip.getSize().width + offset, formuleBox.getLocation().y);
 			constructieToolsBox.setLocation(gaip.getSize().width + offset, constructieToolsBox.getLocation().y);
 			alleenOppervlaktesBox.setLocation(gaip.getSize().width + offset, alleenOppervlaktesBox.getLocation().y);
+			werkbladBox.setLocation(gaip.getSize().width + offset, werkbladBox.getLocation().y);
+			kijkNaActiefBox.setLocation(gaip.getSize().width + offset, kijkNaActiefBox.getLocation().y);
+			equivalentButton.setLocation(gaip.getSize().width + 2 * offset, equivalentButton.getLocation().y);
+			gelijkButton.setLocation(gaip.getSize().width + 2 * offset, gelijkButton.getLocation().y);
+			antwoordFormuleButton.setLocation(gaip.getSize().width + offset, antwoordFormuleButton.getLocation().y);
+			
+			maxScoreLabel.setLocation(gaip.getSize().width + 2 * offset, maxScoreLabel.getLocation().y);
+			maxScoreVeld.setLocation(gaip.getSize().width + 3 * offset, maxScoreVeld.getLocation().y);
+			
 		}
 	}
 	
@@ -125,6 +231,12 @@ System.out.println("gaiep setEditState");
 		boolean formuleZichtbaar = true;
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
+		boolean werkblad = false;
+		boolean kijkNaActief = false;
+		boolean equivalent = true;
+		// antwoord ophalen
+		String antwoordFormuleString = "";
+		int scoreMax = 10;
 	
 
 		if (b.containsKey("appletLaunchData"))
@@ -175,7 +287,22 @@ System.out.println("aLD found");
 				constructieTools = ((Boolean) b.get("constructieTools")).booleanValue();
 			if (b.containsKey("alleenOppervlaktes"))
 				alleenOppervlaktes = ((Boolean) b.get("alleenOppervlaktes")).booleanValue();
+			if (b.containsKey("werkblad"))
+				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("kijkNaActief"))
+				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("equivalent"))
+				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
+
+//System.out.println("equivalent = " + equivalent);			
 			
+			if (b.containsKey("antwoordFormuleString"))
+			{	antwoordFormuleString = (String) b.get("antwoordFormuleString");
+			}
+
+			if (b.containsKey("scoreMax"))
+				scoreMax = ((Integer) b.get("scoreMax")).intValue();
+
 		}
 		
 		varWaardeBox.setSelected(varWaardeZichtbaar);
@@ -183,6 +310,20 @@ System.out.println("aLD found");
 		formuleBox.setSelected(formuleZichtbaar);
 		constructieToolsBox.setSelected(constructieTools);
 		alleenOppervlaktesBox.setSelected(alleenOppervlaktes);
+		werkbladBox.setSelected(werkblad);
+		kijkNaActiefBox.setSelected(kijkNaActief);
+		equivalentButton.setSelected(equivalent);
+		gelijkButton.setSelected(!equivalent);
+		
+System.out.println("set afs = " + antwoordFormuleString);		
+		antwoordFormulePanel.zetExpressieString(antwoordFormuleString);
+		
+		maxScoreVeld.setText("" + scoreMax);
+		
+		equivalentButton.setVisible(kijkNaActiefBox.isSelected());
+		gelijkButton.setVisible(kijkNaActiefBox.isSelected());
+		maxScoreLabel.setVisible(kijkNaActiefBox.isSelected());
+		maxScoreVeld.setVisible(kijkNaActiefBox.isSelected());
 		
 		
 		if (b.containsKey("gaipBreedte"))
@@ -191,6 +332,11 @@ System.out.println("aLD found");
 			gaipHoogte = ((Integer) b.get("gaipHoogte")).intValue();
 		
 		setBounds(getLocation().x, getLocation().y, gaipBreedte + editWidth, Math.max(gaipHoogte, editHeight));
+		
+		if (kijkNaActiefBox.isSelected())
+		{
+			antwoordFormulePanel.setVisible(true);
+		}
 		
 		// HIER !!
 		gaip.setEditState(b);		
@@ -202,6 +348,12 @@ System.out.println("aLD found");
 System.out.println("gaiep getEditState");
 
 		Hashtable h = gaip.getEditState(); 
+		
+	
+System.out.println("get afs = " + antwoordFormulePanel.getExpressieString());
+System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieString());
+		h.put("antwoordFormuleString", antwoordFormulePanel.getExpressieString());
+		h.put("antwoordFormuleStringCorrect", antwoordFormulePanel.getCorrectExpressieString());
 		
 		h.put("scoreMax", new Integer(scoreMax));
 		
@@ -229,7 +381,15 @@ System.out.println("gaiep getEditState");
 //					Math.max(spipHoogte, editHeight));
 	
 		if (gaip != null)
-			gaip.setBounds(0, 0, gaipBreedte, gaipHoogte);
+		{	gaip.setBounds(0, 0, gaipBreedte, gaipHoogte);
+			antwoordFormulePanel.setLocation(gaip.kijkNaPanel.getLocation().x + 
+					                         gaip.kijkNaButton.getSize().width + offset, 
+					                         gaipHoogte - ePanelHeight - 1);
+			antwoordFormulePanel.setSize(gaip.getSize().width - antwoordFormulePanel.getLocation().x,
+					                     ePanelHeight);		
+		}
+		
+		//antwoordFormulePanel.setLocation(gaipBreedte / 2, gaipHoogte - ePanelHeight);
 		
 		plaatsComponenten();
 		
@@ -289,10 +449,233 @@ System.out.println("gaiep getEditState");
 		{
 			gaip.zetAlleenOppervlaktes(alleenOppervlaktesBox.isSelected());
 		}
+		else if (e.getSource() == werkbladBox)
+		{
+			gaip.zetWerkblad(werkbladBox.isSelected());
+		}
+		else if (e.getSource() == kijkNaActiefBox)
+		{
+			gaip.zetKijkNaActief(kijkNaActiefBox.isSelected());
+			antwoordFormulePanel.setVisible(kijkNaActiefBox.isSelected());
+			
+			equivalentButton.setVisible(kijkNaActiefBox.isSelected());
+			gelijkButton.setVisible(kijkNaActiefBox.isSelected());
+			maxScoreLabel.setVisible(kijkNaActiefBox.isSelected());
+			maxScoreVeld.setVisible(kijkNaActiefBox.isSelected());
+		}
+		else if (e.getSource() == equivalentButton)
+		{
+			gaip.zetEquivalent(equivalentButton.isSelected());
+		}
+		else if (e.getSource() == gelijkButton)
+		{
+			gaip.zetEquivalent(equivalentButton.isSelected());
+		}
 					
 
 			
 		
 	}
 
+	class TextFL2 implements FocusListener
+	{		
+		JTextField inputTextField;
+		
+		public TextFL2(JTextField input)
+		{	inputTextField = input;
+		}
+
+		public void focusGained(FocusEvent e)
+		{
+		}
+		public void focusLost(FocusEvent e)
+		{	// invoer user
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+//System.out.println("nfe");			
+			}
+			// dit zou niet moeten gebeuren
+			// Peter: nu wel bij de definitie van een random variabele ipv een double			
+			if (error)
+				return;
+
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+		} // focusLost
+	}
+
+
+	class TextAL2 implements ActionListener
+	{	
+		JTextField inputTextField;
+		
+		public TextAL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void actionPerformed(ActionEvent e)
+		{	
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			// dit zou niet moeten gebeuren  
+			// Peter: nu wel bij de definitie van een random variabele ipv een double
+			if (error)
+			{	return;
+			}
+
+			
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 1) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+			
+		} // actionPerformed
+	}
+	
+	public String trimTrailingZeros(String s, char decSep)
+	{	String txt = new String(s);
+		if (txt.indexOf(decSep) < 0)
+			return txt;
+		char c = txt.charAt(txt.length() - 1);
+		while (c == '0')
+		{	txt = removeCharAt(txt, txt.length() - 1);
+			c = txt.charAt(txt.length() - 1);
+		}	
+		c = txt.charAt(txt.length() - 1);
+		if (c == decSep)
+			txt = removeCharAt(txt, txt.length() - 1);
+		return txt;		
+	}				
+		
+	public String removeCharAt(String s, int index)
+	{	String txt = new String(s);
+		// eerste
+		if (index == 0)
+			txt = txt.substring(1);
+		// laatste	
+		else if (index == (txt.length() - 1))
+			txt = txt.substring(0, txt.length() - 1);
+		// middenin	
+		else
+		{	String txt1 = txt.substring(0, index);
+			String txt2 = txt.substring(index + 1);
+			txt = txt1 + txt2;
+		}
+		return txt;
+	}		
+
+	class InputKL2 extends KeyAdapter
+	{	
+		JTextField inputTextField;
+		
+		public InputKL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void keyReleased(KeyEvent e)
+		{	
+			inputTextField.setForeground(Color.black);
+		
+			String txt = inputTextField.getText();
+			
+//System.out.println(txt);
+				
+			boolean corrected = false;
+
+			// kijk of txt illegale characters bevat
+			// dit zou er maximaal 1 moeten zijn
+			int index = -1;
+			for (int cCnt = 0; cCnt < txt.length(); cCnt++)
+			{	char c = txt.charAt(cCnt);
+				if (!isLegal(c))
+				{	index = cCnt;
+//System.out.println("illegal " + index);				
+				}
+			}	
+			// verwijder illegaal karakter
+			if (index >= 0)
+			{	txt = removeCharAt(txt, index);
+				corrected = true;
+//System.out.println("corr " + txt);							
+			}
+			
+//System.out.println(txt);			
+			
+			// leading zeros, leiden niet tot een NumberFormatException	
+			// geen minteken
+			if ((txt.indexOf('-') < 0) && (txt.length() >= 2) &&
+				(txt.charAt(0) == '0') && Character.isDigit(txt.charAt(1)))
+			{	txt = removeCharAt(txt, 0);
+				corrected = true;
+			}
+			
+			// trailing zeros na(!) decimale punt oplossen 
+			// bij actionPerformed of focusLost			
+
+			if (corrected)
+			{	
+//System.out.println("corr " + txt);							
+				inputTextField.setText(txt);
+			
+			}
+			
+		}
+		
+		
+		public boolean isLegal(char c)
+		{	return Character.isDigit(c);
+		}
+	}	
+	
 }

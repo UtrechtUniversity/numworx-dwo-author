@@ -19,7 +19,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	
 	private Figuur[] fg;
 	private Figuur[] fgNieuw ;
-	private int aantalFg;
+	int aantalFg;
 	private int aantalFgNieuw;
 	private Buffer buffer;
 	
@@ -39,7 +39,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private int[] varTek;
 	private int varHuidig;
 	
-	private String formule;
+	String formule;
 	private double oppervlakte;
 	
 	private Font fc,fl;
@@ -57,7 +57,12 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private boolean formuleZichtbaar = true;
 	private boolean constructieTools = true;
 	private boolean alleenOppervlaktes;
+	private boolean werkblad;
+
+	Rectangle werkbladRectangle = null;
+	Color werkbladColor = new Color(245, 245, 245);
 	
+	protected ActionListener actionListener = null;	
 	
 	public AlgebraVeld(int b, int h)
 	{	hoogte = h;
@@ -157,6 +162,22 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		
 		add(popup);
 		
+		if (constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+		}
+		else if (constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+		}
+		else if (!constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+		}
+		else if (!constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+		}
 	}
 	
 	public void setSize(int b, int h)
@@ -175,8 +196,26 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		basisLijnstukY = new Lijnstuk(0, 3, Lijnstuk.VER, basisPosY.x, basisPosY.y);
 		basisFiguurY = new Figuur(basisPosY.x, basisPosY.y);
 		basisFiguurY.voegToe(basisLijnstukY);
-		
+
 		super.setSize(b, h);
+		
+		if (constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+		}
+		else if (constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+		}
+		else if (!constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+		}
+		else if (!constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+		}
+		
 		
 	}
 	
@@ -207,11 +246,18 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
     		gIm.fillRect(42, 0, breedte - 40, hoogte - 82);
     	else 
     		gIm.fillRect(0, 0, breedte, hoogte);
+    	
+		if (werkblad)
+		{	gIm.setColor(werkbladColor);
+			gIm.fillRect(werkbladRectangle.x, werkbladRectangle.y, werkbladRectangle.width, werkbladRectangle.height);
+		}
+    	
 		tekenprogramma();
 		gIm.setColor(Color.black);
 		gIm.drawRect(0, 0, breedte - 1, hoogte - 1);
 		if (constructieTools)
 			gIm.drawLine(1, hoogte - 42, breedte - 1, hoogte - 42);
+		
 	}
 	
  	void tekenOpnieuw()
@@ -266,6 +312,24 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	
 	public void zetFormuleZichtbaar(boolean b)
 	{	formuleZichtbaar = b;
+	
+		if (constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+		}
+		else if (constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+		}
+		else if (!constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+		}
+		else if (!constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+		}
+	
 		repaint();
 	}
 	
@@ -281,6 +345,24 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	
 	public void zetConstructieTools(boolean b)
 	{	constructieTools = b;
+			
+		if (constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+		}
+		else if (constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+		}
+		else if (!constructieTools && formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+		}
+		else if (!constructieTools && !formuleZichtbaar)
+		{
+			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+		}
+	
 		repaint();	
 	}
 	
@@ -288,6 +370,14 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	{	alleenOppervlaktes = b;
 		repaint();
 	}
+	
+	public void zetWerkBlad(boolean b)
+	{
+		werkblad = b;
+		maakFormule();
+		repaint();
+	}
+
 	
 	/*public void zetOpdracht(Opdracht opdr)
 	{	var[1] = opdr.geefVarx();
@@ -372,16 +462,19 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	}
 	
 	public void maakFormule()
-	{	formule = "";
+	{	
+		String oudeFormule = formule;
+		formule = "";
 		
 		int[] posities = new int[aantalFg];
 		int[] nummers = new int[aantalFg];
-		for(int i=0 ; i<aantalFg ; i++)
+		for (int i = 0; i <aantalFg; i++)
 		{	posities[i] = fg[i].positie.x;
 			nummers[i] = i;
 		}
-		for(int i=0 ; i<aantalFg ; i++)
-		{	for(int j=i+1 ; j<aantalFg ; j++)
+		// sorteer op x positie (bubble)
+		for(int i = 0; i < aantalFg; i++)
+		{	for (int j = i + 1; j <aantalFg; j++)
 			{	if(posities[i] > posities[j])
 				{	int res = posities[i];
 					posities[i] = posities[j];
@@ -392,49 +485,77 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				}
 			}
 		}
-		for(int m=0 ; m<aantalFg ; m++)
+		
+		for (int m = 0; m < aantalFg; m++)
 		{	int i = nummers[m];
-			if(fg[i].aantalx!=0 && fg[i].aantaly!=0)
-			{	if((fg[i].aantalx!=1 || fg[i].aantaly!=1) && formule.equals(""))formule += "(";
-				else if(fg[i].aantalx!=1 || fg[i].aantaly!=1)formule += "+(";
-				for(int j=1 ; j<fg[i].aantalx+1 ; j++)
-				{	for(int k=1 ; k<fg[i].aantaly+1 ; k++)
+		
+			boolean meenemen = true;
+			if (werkblad && werkbladRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+				meenemen = false;
+			
+			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)
+			{	if ((fg[i].aantalx != 1 || fg[i].aantaly != 1) && formule.equals(""))
+					formule += "(";
+				else if (fg[i].aantalx != 1 || fg[i].aantaly != 1)
+					formule += "+(";
+				for (int j = 1; j < fg[i].aantalx + 1; j++)
+				{	for (int k = 1; k < fg[i].aantaly + 1; k++)
 					{	
-						String s = parse(fg[i].lsx[j-1], fg[i].lsy[k-1]);
+						String s = parse(fg[i].lsx[j - 1], fg[i].lsy[k - 1]);
 						String minteken = "";
 						String plusteken = "";
-						if(!s.equals("") && s.charAt(0)== '-')minteken = "-";
-						if(!formule.equals("")  && minteken.equals("") && formule.charAt(formule.length()-1)!= '(')plusteken = "+";
+						if (!s.equals("") && s.charAt(0)== '-')
+							minteken = "-";
+						if (!formule.equals("") && minteken.equals("") && formule.charAt(formule.length() - 1) !=  '(')
+							plusteken = "+";
 						formule = formule + plusteken  + s;
 					}
 				}
-				if(fg[i].aantalx!=1 || fg[i].aantaly!=1)formule += ")";
+				if (fg[i].aantalx != 1 || fg[i].aantaly != 1)
+					formule += ")";
 			}
 		}
+		
+		if ((formule.length() > 1) && (formule.charAt(0) == '(') && (formule.charAt(formule.length() - 1) == ')'))
+		{
+			formule = formule.substring(1);
+			formule = formule.substring(0, formule.length() - 1);
+		}
+				
+		
 		if(gIm!=null) gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		
 		oppervlakte = 0;
-		for(int i=0 ; i<aantalFg ; i++)
-		{	if(fg[i].aantalx!=0 && fg[i].aantaly!=0)
+		for (int i = 0; i < aantalFg; i++)
+		{	
+			
+			boolean meenemen = true;
+			if (werkblad && werkbladRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+				meenemen = false;
+			
+			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)
 			{	double b = 0;
 				double h = 0;
 				int lengteX = 0;
-				for(int j=0 ; j<fg[i].aantalx ; j++)
-				{	for(int k=0 ; k<4 ; k++)
+				for (int j = 0; j < fg[i].aantalx; j++)
+				{	for (int k = 0; k < 4; k++)
 					{	lengteX += fg[i].lsx[j].lengte[k] * fg[i].lsx[j].varD[k];
 					}
 				}
-				b = 1.0*lengteX/24;
+				b = 1.0 * lengteX / 24;
 				int lengteY = 0;
-				for(int j=0 ; j<fg[i].aantaly ; j++)
-				{	for(int k=0 ; k<4 ; k++)
+				for (int j = 0; j < fg[i].aantaly; j++)
+				{	for (int k = 0; k < 4; k++)
 					{	lengteY += fg[i].lsy[j].lengte[k] * fg[i].lsy[j].varD[k];
 					}
 				}
-				h = 1.0*lengteY/24;
-				oppervlakte = oppervlakte + b*h;
+				h = 1.0 * lengteY / 24;
+				oppervlakte = oppervlakte + b * h;
 			}
 		}
+		
+		if (!formule.equals(oudeFormule))
+			fireChangeEvent();
 	}
 	void tekenVarPunt()
 	{	if (varHuidig != 0)
@@ -725,6 +846,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	void wis()
 	{	aantalFg = 0;
 		maakFormule();
+		buffer.voegToe(new State(aantalFg,fg,var));		
 		tekenOpnieuw();
 	}
 	void maakOngedaan()
@@ -745,6 +867,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			return;
 		else
 		{	aantalFg = s.geefAantalFiguren();
+//System.out.println("set af = " + aantalFg);		
 			fg = s.geefFigurenRij();
 			var = s.geefVars();
 			basisLijnstukX.zetVar(varHuidig, var[varHuidig]);
@@ -764,6 +887,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	}
 	State getStateState()
 	{	State state = buffer.geefHuidigeState();
+//System.out.println("get af = " + state.geefAantalFiguren());	
 		return state;
 	}
 	
@@ -1175,5 +1299,21 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		
 		buffer.voegToe(new State(aantalFg,fg,var));
 	}
+	
+	public void addActionListener(ActionListener l) 
+ 	{	actionListener = AWTEventMulticaster.add(actionListener,l);
+ 	}
+ 	
+ 	public void removeActionListener(ActionListener l)
+ 	{	actionListener = AWTEventMulticaster.remove(actionListener, l);
+ 	}
+	
+    public void fireChangeEvent()
+    {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+    	if (actionListener != null)
+    		actionListener.actionPerformed(event);
+    	
+    }
+ 	
 }
 

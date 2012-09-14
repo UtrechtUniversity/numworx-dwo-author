@@ -26,6 +26,16 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "formuleTekst", "Toon formule oppervlakte" },
 				{ "constructieToolsTekst", "Constructie toolbox" },
 				{ "alleenOppervlaktesTekst", "Alleen oppervlaktes" },
+				
+				{ "werkbladTekst", "Werkblad" },
+				{ "kijkNaActiefTekst", "Kijk na actief" },
+				{ "kijkNaTekst", "Kijk na" },
+				{ "equivalentTekst", "Equivalente formule" },
+				{ "gelijkTekst", "Identieke formule" },
+				{ "antwoordFormuleTekst", "Antwoord formule" },				
+				{ "scoreMaxTekst", "Maximum score" },
+				
+				
         };
 }
 

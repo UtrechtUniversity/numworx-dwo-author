@@ -30,6 +30,7 @@ public class GeomAlgebra extends JApplet implements  ActionListener, ScormApplet
 	
 	protected static ResourceBundle rb;
 	protected static String langArg;
+	public static Locale language;
 	
 	ControlPanel cp;
 	private LineaalHor lh;
@@ -54,12 +55,14 @@ public class GeomAlgebra extends JApplet implements  ActionListener, ScormApplet
 	}
 	
 	public GeomAlgebra()
-	{	Locale language = new Locale ("nl", "");
+	{	
+		language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text",language);
 	}
 	
 	public GeomAlgebra(Locale language)
 	{	
+		this.language = language;
 		langArg = language.getLanguage();
 		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text", language);	
 	}
@@ -78,7 +81,7 @@ public class GeomAlgebra extends JApplet implements  ActionListener, ScormApplet
 		langArg = getParameter("language");
 		if (langArg == null) 
 			langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.geomalgebra.text.Text",language);
 		
 		String varWaardeString = getParameter("varWaarde");

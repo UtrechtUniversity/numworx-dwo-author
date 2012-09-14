@@ -27,6 +27,15 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "constructieToolsTekst", "Construction toolbox" },
 				{ "alleenOppervlaktesTekst", "Show only areas" },
 				
+				{ "werkbladTekst", "Work area" },
+				{ "kijkNaActiefTekst", "Checking active" },
+				{ "kijkNaTekst", "Check" },				
+				{ "equivalentTekst", "Equivalent formula" },
+				{ "gelijkTekst", "Identical formula" },
+				{ "antwoordFormuleTekst", "Answer formula" },
+				{ "scoreMaxTekst", "Maximum score" },
+				
+				
         };
 }
 

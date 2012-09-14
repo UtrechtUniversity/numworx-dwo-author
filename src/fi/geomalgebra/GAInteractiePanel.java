@@ -1,9 +1,15 @@
 package fi.geomalgebra;
 
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.Vector;
+import java.awt.Color;
+
+import fi.geomalgebra.expressies.*;
 
 import javax.swing.*;
 
@@ -12,6 +18,8 @@ import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 // deze moet vanwege interface InteractiePanel
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.geomalgebra.formuleobjects.FormuleParser;
+
 
 public class GAInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
 							         ActionListener
@@ -27,18 +35,88 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean formuleZichtbaar = true;
 	boolean constructieTools = true;
 	boolean alleenOppervlaktes;
+	boolean werkblad;
+	boolean kijkNaActief;
+	boolean equivalent = true;
+	String antwoordFormuleStringCorrect = "";
 	
 	int score = 0;
 	int scoreMax = 10;
 	
+    boolean ingevuld = false;
+	private boolean nagekeken = false;
+	private int mode;
 	
-	boolean noSetBounds = false;	
 	
+	ImageIcon goedkrulIcon, foutkruisIcon;
+	JButton kijkNaButton;
+	JPanel kijkNaPanel;
+	JLabel groenVinkjeLabel;
+	JLabel geelVinkjeLabel;
+	JLabel kruisjeLabel;
+	int kijkNaHeight;
+	
+    Vector listeners = new Vector();
+    
+	boolean kijkNaChanged = false;	
+		
 	public GAInteractiePanel()
 	{
 		setLayout(null);
 		// echte initiatie vind pas plaats na setBounds
+		java.net.URL imageURL = GeomAlgebra.class.getResource("resources/goedkrul_en.gif");
+		if (imageURL != null) 
+		{
+		    goedkrulIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrul_en.gif.");
+		}
+		imageURL = GeomAlgebra.class.getResource("resources/foutkruis.gif");
+		if (imageURL != null) 
+		{
+			foutkruisIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading foutkruis.gif");
+		}
 		
+		Font theFont = new Font("SansSerif", Font.PLAIN, 12);
+		FontMetrics theFM = getFontMetrics(theFont);
+		
+		
+		kijkNaButton = new JButton(GeomAlgebra.rb.getString("kijkNaTekst"));
+		kijkNaButton.setFont(theFont);
+		kijkNaButton.setBounds(0, 0, 75, 24);
+		kijkNaButton.addActionListener(this);
+		
+	    groenVinkjeLabel = new JLabel(goedkrulIcon);
+		groenVinkjeLabel.setBounds(76, 2, 20, 20);
+
+//	    geelVinkjeLabel = new JLabel(halfkrulIcon);
+//		geelVinkjeLabel.setBounds(76, 2, 20, 20);
+		
+	    kruisjeLabel = new JLabel(foutkruisIcon);
+		kruisjeLabel.setBounds(76, 2, 20, 20);
+		
+		groenVinkjeLabel.setVisible(false);
+//		geelVinkjeLabel.setVisible(false);
+		kruisjeLabel.setVisible(false);
+		
+		kijkNaPanel = new JPanel(null);
+		kijkNaPanel.setOpaque(false);
+		
+		kijkNaHeight = 3 * theFM.getHeight() / 2;
+		//kijkNaPanel.setBackground(Color.cyan);
+		kijkNaPanel.setSize(95, kijkNaHeight);
+		kijkNaPanel.add(kijkNaButton);
+		kijkNaPanel.add(groenVinkjeLabel);
+		//kijkNaPanel.add(geelVinkjeLabel);
+		kijkNaPanel.add(kruisjeLabel);
+		kijkNaPanel.setVisible(false);
+		add(kijkNaPanel);
 		
 	}
 
@@ -52,6 +130,11 @@ System.out.println("gaip zetOpdracht");
 		boolean formuleZichtbaar = true;
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
+		boolean werkblad = false;
+		boolean kijkNaActief = false;
+		boolean equivalent = true;
+		String antwoordFormuleStringCorrect = "";
+		int scoreMax = 10;
 	
 
 		if (b.containsKey("appletLaunchData"))
@@ -102,6 +185,18 @@ System.out.println("aLD found");
 				constructieTools = ((Boolean) b.get("constructieTools")).booleanValue();
 			if (b.containsKey("alleenOppervlaktes"))
 				alleenOppervlaktes = ((Boolean) b.get("alleenOppervlaktes")).booleanValue();
+			if (b.containsKey("werkblad"))
+				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("kijkNaActief"))
+				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("equivalent"))
+				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
+			if (b.containsKey("antwoordFormuleStringCorrect"))
+				antwoordFormuleStringCorrect = (String) b.get("antwoordFormuleStringCorrect");
+
+			if (b.containsKey("scoreMax"))
+				scoreMax = ((Integer) b.get("scoreMax")).intValue();
+			
 			
 		}
 		
@@ -110,6 +205,13 @@ System.out.println("aLD found");
 		zetFormuleZichtbaar(formuleZichtbaar);
 		zetConstructieTools(constructieTools);
 		zetAlleenOppervlaktes(alleenOppervlaktes);
+		zetWerkblad(werkblad);
+		zetKijkNaActief(kijkNaActief);
+		this.equivalent = equivalent;
+		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
+//System.out.println("zet o afs = " + antwoordFormuleStringCorrect);		
+		this.scoreMax = scoreMax;
+		
 		
 		if (b.containsKey("appletEditState"))
 		{	String appletEditState = (String) b.get("appletEditState");
@@ -119,7 +221,11 @@ System.out.println("aLD found");
 		{	State state = (State) b.get("state");
 			av.setState(state);
 		}
-		
+	
+//System.out.println("af = " + av.aantalFg);
+
+		//if (kijkNaActief)
+		//	kijkNa();
 	}
 	
 	public void setState(Hashtable b)
@@ -132,7 +238,10 @@ System.out.println("aLD found");
 		{	State state = (State) b.get("state");
 			av.setState(state);
 		}
-			
+
+		if (kijkNaActief)
+			kijkNa();
+		
 	}
 	
 	public void setEditState(Hashtable b)
@@ -144,6 +253,12 @@ System.out.println("gaip setEditState");
 		boolean formuleZichtbaar = true;
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
+		boolean werkblad = false;
+		boolean kijkNaActief = false;
+		boolean equivalent = true;
+		String antwoordFormuleStringCorrect = "";
+		int scoreMax = 10;
+		
 	
 
 		if (b.containsKey("appletLaunchData"))
@@ -195,6 +310,19 @@ System.out.println("aLD found");
 			if (b.containsKey("alleenOppervlaktes"))
 				alleenOppervlaktes = ((Boolean) b.get("alleenOppervlaktes")).booleanValue();
 			
+			if (b.containsKey("werkblad"))
+				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("kijkNaActief"))
+				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("equivalent"))
+				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
+			if (b.containsKey("antwoordFormuleStringCorrect"))
+				antwoordFormuleStringCorrect = (String) b.get("antwoordFormuleStringCorrect");
+
+			if (b.containsKey("scoreMax"))
+				scoreMax = ((Integer) b.get("scoreMax")).intValue();
+			
+			
 		}
 
 		zetVarWaardeZichtbaar(varWaardeZichtbaar);
@@ -202,6 +330,11 @@ System.out.println("aLD found");
 		zetFormuleZichtbaar(formuleZichtbaar);
 		zetConstructieTools(constructieTools);
 		zetAlleenOppervlaktes(alleenOppervlaktes);
+		zetWerkblad(werkblad);
+		zetKijkNaActief(kijkNaActief);
+		this.equivalent = equivalent;
+		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
+		this.scoreMax = scoreMax;
 		
 		if (b.containsKey("appletEditState"))
 		{	String appletEditState = (String) b.get("appletEditState");
@@ -236,6 +369,9 @@ System.out.println("aLD found");
 		h.put("formuleZichtbaar", new Boolean(formuleZichtbaar));
 		h.put("constructieTools", new Boolean(constructieTools));
 		h.put("alleenOppervlaktes", new Boolean(alleenOppervlaktes));
+		h.put("werkblad", new Boolean(werkblad));
+		h.put("kijkNaActief", new Boolean(kijkNaActief));
+		h.put("equivalent", new Boolean(equivalent));
 		
 		State state = av.getStateState();
 		if (state != null)
@@ -283,11 +419,34 @@ System.out.println("aLD found");
 		Figuur.zetGeslotenVeld(!constructieTools || alleenOppervlaktes);
 	}
 	
+	public void zetWerkblad(boolean b)
+	{
+		werkblad = b;
+		av.zetWerkBlad(werkblad);
+	}
 	
-	
+	public void zetKijkNaActief(boolean b)
+	{
+		kijkNaActief = b;
+		kijkNaPanel.setVisible(kijkNaActief);
+		kijkNaChanged = true;
+		setBounds(getLocation().x, getLocation().y, getSize().width, getSize().height);
+		kijkNaChanged = false;
+		//av.zetKijkNaActief(kijkNaActief);
+	}
+
+	// !equivalent is gelijk
+	public void zetEquivalent(boolean b)
+	{
+		equivalent = b;
+	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
+	
+		if ((getLocation().x == x) && (getLocation().y == y) &&
+			(getSize().width == b) && (getSize().height == h) && !kijkNaChanged)
+				return;
 		
 //		System.out.println("spip set bounds " + b + " " + h);
 		
@@ -307,7 +466,10 @@ System.out.println("aLD found");
 			av.zetFormuleZichtbaar(formuleZichtbaar);
 			av.zetConstructieTools(constructieTools);
 			av.zetAlleenOppervlaktes(alleenOppervlaktes);
+			
 			add(av);
+			
+			av.addActionListener(this);
 		
 			Figuur.zetGeslotenVeld(!constructieTools || alleenOppervlaktes);
 			Figuur.zetVeldSizes(breedte, hoogte);
@@ -331,7 +493,11 @@ System.out.println("aLD found");
 //System.out.println("av created");			
 		}
 		else
-		{	av.setSize(b, h);
+		{	
+			if (kijkNaActief)
+			{	hoogte -= kijkNaHeight; 
+			}
+			av.setSize(breedte, hoogte);			
 
 			Figuur.zetGeslotenVeld(!constructieTools || alleenOppervlaktes);
 			Figuur.zetVeldSizes(breedte, hoogte);
@@ -350,7 +516,9 @@ System.out.println("aLD found");
 			if (constructieTools) 
 				av.add(lv, 0);
 			
-
+			kijkNaPanel.setLocation((breedte - kijkNaPanel.getSize().width) / 2, 
+					                 hoogte);
+			
 //System.out.println("g3dc sized");		
 		}
 		
@@ -380,22 +548,37 @@ System.out.println("aLD found");
 	}
 	
 	public int getScoreMax()
-	{	return scoreMax;
+	{
+		if (kijkNaActief)
+			return scoreMax;
+		else 
+			return 0;
 	}
 	
 	public boolean isCorrect()
-	{	return true;
+	{	if (!kijkNaActief)
+			return true;
+		return 
+			score == scoreMax;
 	}
 	
 	public boolean isFout()
-	{	return false;
+	{	if (!kijkNaActief)
+			return false;
+		return score == 0;
 	}
 	
 	public void zetMode(int mode)
-	{}
+    {   this.mode = mode;
+    	if (kijkNaActief)    
+    		zetKijkNaActief(mode == 0 || mode == 1);
+    }
+
 	
 	public void zetNagekeken(boolean b)
-	{}
+	{	if (ingevuld) 
+			nagekeken = b;
+	}
 	
     public void stop()
     {}
@@ -410,13 +593,108 @@ System.out.println("aLD found");
     {}
     
     public void kijkNa()
-    {}
+    {
+    	
+//System.out.println("kijkNa");
+
+    	if (!kijkNaActief)
+    	{	
+//System.out.println("!kijkNaActief");    		
+    		return;
+    	
+    	}
+    	
+    	ingevuld = av.aantalFg > 0;
+    	
+    	if (!ingevuld)
+    	{	
+//System.out.println("!ingevuld");    		
+    		return;
+    	
+    	}
+    	
+    	if (antwoordFormuleStringCorrect.equals(""))
+    	{
+//System.out.println("afs = ");    		
+    		return;
+    	}
+    	
+    	String antwoordFormuleStringCorrected = "$f" + antwoordFormuleStringCorrect + "@";
+    	String leerlingExpressieString = "$f" + av.formule + "@";
+    	if (leerlingExpressieString.equals(""))
+    	{
+//System.out.println("les = ");    		
+    		return;
+    	}
+    	else
+    	{
+//System.out.println("lesstr = " + leerlingExpressieString);    		
+    	}
+    	
+    	Expressie antwoordExpressie = FormuleParser.geefExpressie(antwoordFormuleStringCorrected);
+    	Expressie leerlingExpressie = FormuleParser.geefExpressie(leerlingExpressieString);
+    	
+    	if (antwoordExpressie == null || leerlingExpressie == null)
+    	{	
+    		if (leerlingExpressie == null)
+    		{
+//System.out.println("les = null");
+    		}
+    		if (antwoordExpressie == null)
+    		{
+//System.out.println("aes = null");
+    		}
+    		
+    		return;
+    	
+    	}
+    	
+    	boolean correct = false;
+    	if (equivalent && Algebra.isGelijkwaardig(antwoordExpressie, leerlingExpressie))
+    		correct = true;
+    	if (!equivalent && Algebra.zijnGelijk(antwoordExpressie, leerlingExpressie))
+       		correct = true;
+    	
+    	if (correct)
+    	{
+//System.out.println("correct");
+
+    		score = scoreMax;
+    		groenVinkjeLabel.setVisible(true);
+    		kruisjeLabel.setVisible(false);
+    	}
+    	else
+    	{
+//System.out.println("not correct");    		
+    		score = 0;
+    		groenVinkjeLabel.setVisible(false);
+    		kruisjeLabel.setVisible(true);
+    		
+    	}
+    	
+    	
+    	fireChangeEvent();
+    	
+    }
+    
+    public void fireChangeEvent()
+    {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		{
+			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		}
+    	
+    }
     
     public void kijkNa(int stapNr)
-    {}
+    {
+    	kijkNa();
+    }
     
     public void addActionListener(ActionListener al)
-    {}
+    {
+    	listeners.addElement(al);
+    }
 
 	public void zetBreedte(int b)
 	{}
@@ -431,5 +709,26 @@ System.out.println("aLD found");
 		if (command.equals("maakBasis"))
 		{	av.zetBasis(modifier);
 		}
+		if (command.equals("changed"))
+		{
+			
+			if (kijkNaActief && ingevuld)
+			{	
+				groenVinkjeLabel.setVisible(false);
+				kruisjeLabel.setVisible(false);
+			
+				score = 0;
+			
+			
+				fireChangeEvent();
+			}
+
+		}
+		
+		if (e.getSource() == kijkNaButton)
+		{
+			kijkNa();
+		}
+		
 	}
 }
