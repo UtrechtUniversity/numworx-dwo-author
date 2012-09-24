@@ -62,6 +62,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	Rectangle werkbladRectangle = null;
 	Color werkbladColor = new Color(245, 245, 245);
 	
+	Rectangle werkbladBigRectangle = null;
+	
 	protected ActionListener actionListener = null;	
 	
 	public AlgebraVeld(int b, int h)
@@ -165,18 +167,22 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+			werkbladBigRectangle = new Rectangle(0, 25, (breedte - 40) / 3 + 42, hoogte - 25);
 		}
 		else if (constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+			werkbladBigRectangle = new Rectangle(0, 1, (breedte - 40) / 3 + 42, hoogte - 1);
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
 		}
 	}
 	
@@ -202,18 +208,22 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+			werkbladBigRectangle = new Rectangle(0, 25, (breedte - 40) / 3 + 42, hoogte - 25);
 		}
 		else if (constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+			werkbladBigRectangle = new Rectangle(0, 1, (breedte - 40) / 3 + 42, hoogte - 1);
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
 		}
 		
 		
@@ -239,6 +249,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
   	public void tekenOpImage()
   	{ 	if (gIm == null)
   			return;
+  	
   		gIm.setColor(new Color(220, 220, 220));
     	gIm.fillRect(0, 0, breedte, hoogte);
 		gIm.setColor(Color.white);
@@ -490,7 +501,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		{	int i = nummers[m];
 		
 			boolean meenemen = true;
-			if (werkblad && werkbladRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
 				meenemen = false;
 			
 			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)
@@ -516,12 +527,13 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			}
 		}
 		
+/*		
 		if ((formule.length() > 1) && (formule.charAt(0) == '(') && (formule.charAt(formule.length() - 1) == ')'))
 		{
 			formule = formule.substring(1);
 			formule = formule.substring(0, formule.length() - 1);
 		}
-				
+*/				
 		
 		if(gIm!=null) gIm.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		
@@ -530,7 +542,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		{	
 			
 			boolean meenemen = true;
-			if (werkblad && werkbladRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
 				meenemen = false;
 			
 			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)

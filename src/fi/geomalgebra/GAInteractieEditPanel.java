@@ -49,14 +49,16 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 	int scoreMax = 10;
 	
 	ExpressiePanel antwoordFormulePanel;
+	JLabel doelFormuleLabel;
 	int ePanelHeight;
 
-	
 	public GAInteractieEditPanel()
 	{
 		setLayout(null);
 		gaip = new GAInteractiePanel();
 		add(gaip);
+		
+		gaip.gaiep = this;
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -73,6 +75,12 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		antwoordFormulePanel.setVisible(false);
 		gaip.add(antwoordFormulePanel, 0);
 		
+		doelFormuleLabel = new JLabel(GeomAlgebra.rb.getString("doelFormuleTekst"));
+		doelFormuleLabel.setFont(theBoldFont);
+		doelFormuleLabel.setBackground(Color.white);
+		doelFormuleLabel.setSize(theBoldFM.stringWidth(doelFormuleLabel.getText()), 3 * theBoldFM.getHeight() / 2);
+		doelFormuleLabel.setVisible(false);
+		gaip.add(doelFormuleLabel);
 		
 		varWaardeBox = new JCheckBox(GeomAlgebra.rb.getString("varWaardeTekst"), false);
 		varWaardeBox.setFont(theFont);
@@ -161,6 +169,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 		currentY += height + offset;
 		
+/*		
 		antwoordFormuleButton = new JButton(GeomAlgebra.rb.getString("antwoordFormuleTekst"));
 		antwoordFormuleButton.setFont(theFont);
 		int w = theFM.stringWidth(antwoordFormuleButton.getText()) + 40;
@@ -169,7 +178,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//antwoordFormuleButton.setVisible(false);
 		//add(antwoordFormuleButton);
 		antwoordFormuleButton.addActionListener(this);
-		
+*/		
 		//currentY += height + offset;		
 		
 		maxScoreLabel = new JLabel(GeomAlgebra.rb.getString("scoreMaxTekst"));
@@ -213,8 +222,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			kijkNaActiefBox.setLocation(gaip.getSize().width + offset, kijkNaActiefBox.getLocation().y);
 			equivalentButton.setLocation(gaip.getSize().width + 2 * offset, equivalentButton.getLocation().y);
 			gelijkButton.setLocation(gaip.getSize().width + 2 * offset, gelijkButton.getLocation().y);
-			antwoordFormuleButton.setLocation(gaip.getSize().width + offset, antwoordFormuleButton.getLocation().y);
-			
+						
 			maxScoreLabel.setLocation(gaip.getSize().width + 2 * offset, maxScoreLabel.getLocation().y);
 			maxScoreVeld.setLocation(gaip.getSize().width + 3 * offset, maxScoreVeld.getLocation().y);
 			
@@ -336,6 +344,7 @@ System.out.println("set afs = " + antwoordFormuleString);
 		if (kijkNaActiefBox.isSelected())
 		{
 			antwoordFormulePanel.setVisible(true);
+			doelFormuleLabel.setVisible(true);
 		}
 		
 		// HIER !!
@@ -382,8 +391,13 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 	
 		if (gaip != null)
 		{	gaip.setBounds(0, 0, gaipBreedte, gaipHoogte);
-			antwoordFormulePanel.setLocation(gaip.kijkNaPanel.getLocation().x + 
-					                         gaip.kijkNaButton.getSize().width + offset, 
+		
+			doelFormuleLabel.setLocation(gaip.kijkNaPanel.getLocation().x + 
+					                     gaip.kijkNaButton.getSize().width + offset, 
+					                     gaipHoogte - doelFormuleLabel.getSize().height);
+		
+			antwoordFormulePanel.setLocation(doelFormuleLabel.getLocation().x + 
+											 doelFormuleLabel.getSize().width + offset, 
 					                         gaipHoogte - ePanelHeight - 1);
 			antwoordFormulePanel.setSize(gaip.getSize().width - antwoordFormulePanel.getLocation().x,
 					                     ePanelHeight);		
@@ -456,7 +470,9 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 		else if (e.getSource() == kijkNaActiefBox)
 		{
 			gaip.zetKijkNaActief(kijkNaActiefBox.isSelected());
+			doelFormuleLabel.setVisible(kijkNaActiefBox.isSelected());
 			antwoordFormulePanel.setVisible(kijkNaActiefBox.isSelected());
+			
 			
 			equivalentButton.setVisible(kijkNaActiefBox.isSelected());
 			gelijkButton.setVisible(kijkNaActiefBox.isSelected());

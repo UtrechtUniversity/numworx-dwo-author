@@ -32,7 +32,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "kijkNaTekst", "Check" },				
 				{ "equivalentTekst", "Equivalent formula" },
 				{ "gelijkTekst", "Identical formula" },
-				{ "antwoordFormuleTekst", "Answer formula" },
+				{ "doelFormuleTekst", "Target formula" },
 				{ "scoreMaxTekst", "Maximum score" },
 				
 				

@@ -48,7 +48,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	private int mode;
 	
 	
-	ImageIcon goedkrulIcon, foutkruisIcon;
+	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon;
 	JButton kijkNaButton;
 	JPanel kijkNaPanel;
 	JLabel groenVinkjeLabel;
@@ -59,6 +59,8 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
     Vector listeners = new Vector();
     
 	boolean kijkNaChanged = false;	
+	
+	GAInteractieEditPanel gaiep = null;
 		
 	public GAInteractiePanel()
 	{
@@ -82,6 +84,16 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		{
 			System.out.println("Error reading foutkruis.gif");
 		}
+		imageURL = GeomAlgebra.class.getResource("resources/goedkrulhalf.gif");
+		if (imageURL != null) 
+		{
+			halfkrulIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrulhalf.");
+		}
+		
 		
 		Font theFont = new Font("SansSerif", Font.PLAIN, 12);
 		FontMetrics theFM = getFontMetrics(theFont);
@@ -95,14 +107,14 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	    groenVinkjeLabel = new JLabel(goedkrulIcon);
 		groenVinkjeLabel.setBounds(76, 2, 20, 20);
 
-//	    geelVinkjeLabel = new JLabel(halfkrulIcon);
-//		geelVinkjeLabel.setBounds(76, 2, 20, 20);
+	    geelVinkjeLabel = new JLabel(halfkrulIcon);
+		geelVinkjeLabel.setBounds(76, 2, 20, 20);
 		
 	    kruisjeLabel = new JLabel(foutkruisIcon);
 		kruisjeLabel.setBounds(76, 2, 20, 20);
 		
 		groenVinkjeLabel.setVisible(false);
-//		geelVinkjeLabel.setVisible(false);
+		geelVinkjeLabel.setVisible(false);
 		kruisjeLabel.setVisible(false);
 		
 		kijkNaPanel = new JPanel(null);
@@ -113,7 +125,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		kijkNaPanel.setSize(95, kijkNaHeight);
 		kijkNaPanel.add(kijkNaButton);
 		kijkNaPanel.add(groenVinkjeLabel);
-		//kijkNaPanel.add(geelVinkjeLabel);
+		kijkNaPanel.add(geelVinkjeLabel);
 		kijkNaPanel.add(kruisjeLabel);
 		kijkNaPanel.setVisible(false);
 		add(kijkNaPanel);
@@ -495,7 +507,7 @@ System.out.println("aLD found");
 		else
 		{	
 			if (kijkNaActief)
-			{	hoogte -= kijkNaHeight; 
+			{	hoogte -= kijkNaHeight + 5; 
 			}
 			av.setSize(breedte, hoogte);			
 
@@ -507,17 +519,27 @@ System.out.println("aLD found");
 			av.remove(lh);
 			lh = new LineaalHor(breedte, hoogte);
 			lh.addActionListener(this);
-			if (constructieTools) 
-				av.add(lh, 0);
+			av.add(lh, 0);
+			lh.setVisible(constructieTools);
+			//if (constructieTools) 
+			//	av.add(lh, 0);
 			
 			av.remove(lv);
 			lv = new LineaalVer(breedte, hoogte);
 			lv.addActionListener(this);
-			if (constructieTools) 
-				av.add(lv, 0);
+			av.add(lv, 0);
+			lv.setVisible(constructieTools);			
+			//if (constructieTools)
+			//	av.add(lv, 0);
 			
-			kijkNaPanel.setLocation((breedte - kijkNaPanel.getSize().width) / 2, 
-					                 hoogte);
+			if (gaiep == null)
+			{	kijkNaPanel.setLocation((breedte - kijkNaPanel.getSize().width) / 2, 
+					                     getSize().height - kijkNaHeight);
+			}
+			else
+			{	kijkNaPanel.setLocation(breedte / 4, getSize().height - kijkNaHeight);
+				
+			}
 			
 //System.out.println("g3dc sized");		
 		}
@@ -619,8 +641,17 @@ System.out.println("aLD found");
     		return;
     	}
     	
+
+    	String formule = av.formule;
+		if ((formule.length() > 1) && (formule.charAt(0) == '(') && (formule.charAt(formule.length() - 1) == ')'))
+		{
+			formule = formule.substring(1);
+			formule = formule.substring(0, formule.length() - 1);
+		}
+				
+    	
     	String antwoordFormuleStringCorrected = "$f" + antwoordFormuleStringCorrect + "@";
-    	String leerlingExpressieString = "$f" + av.formule + "@";
+    	String leerlingExpressieString = "$f" + formule + "@";
     	if (leerlingExpressieString.equals(""))
     	{
 //System.out.println("les = ");    		
@@ -633,6 +664,8 @@ System.out.println("aLD found");
     	
     	Expressie antwoordExpressie = FormuleParser.geefExpressie(antwoordFormuleStringCorrected);
     	Expressie leerlingExpressie = FormuleParser.geefExpressie(leerlingExpressieString);
+    	
+    	
     	
     	if (antwoordExpressie == null || leerlingExpressie == null)
     	{	
@@ -650,10 +683,16 @@ System.out.println("aLD found");
     	}
     	
     	boolean correct = false;
+    	boolean halfCorrect = false;
     	if (equivalent && Algebra.isGelijkwaardig(antwoordExpressie, leerlingExpressie))
-    		correct = true;
+    	{	correct = true;
+    	}
     	if (!equivalent && Algebra.zijnGelijk(antwoordExpressie, leerlingExpressie))
-       		correct = true;
+    	{	correct = true;
+    	}
+    	if (!equivalent && Algebra.isGelijkwaardig(antwoordExpressie, leerlingExpressie))
+    	{	halfCorrect = true;
+    	}
     	
     	if (correct)
     	{
@@ -661,13 +700,23 @@ System.out.println("aLD found");
 
     		score = scoreMax;
     		groenVinkjeLabel.setVisible(true);
+    		geelVinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(false);
     	}
-    	else
+    	else if (halfCorrect)
+    	{
+    		score = scoreMax / 2;
+    		groenVinkjeLabel.setVisible(false);
+    		geelVinkjeLabel.setVisible(true);
+    		kruisjeLabel.setVisible(false);
+    		
+    	}
+    	else 
     	{
 //System.out.println("not correct");    		
     		score = 0;
     		groenVinkjeLabel.setVisible(false);
+    		geelVinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(true);
     		
     	}
@@ -715,6 +764,7 @@ System.out.println("aLD found");
 			if (kijkNaActief && ingevuld)
 			{	
 				groenVinkjeLabel.setVisible(false);
+				geelVinkjeLabel.setVisible(false);
 				kruisjeLabel.setVisible(false);
 			
 				score = 0;
