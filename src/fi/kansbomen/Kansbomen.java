@@ -12,6 +12,7 @@ public class Kansbomen extends Applet implements ScormAppletIF
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
 	private TextField textField;
+	private Kansboom kansboom;
 	
 	public static void main(String[] args)    
 	{	int width = 800;
@@ -58,7 +59,12 @@ public class Kansbomen extends Applet implements ScormAppletIF
 		//Test-textfield
 		textField = new TextField();
 		textField.setBounds(50,100,200,25);
-		add(textField);
+		//add(textField,0);
+		
+		kansboom = new Kansboom();
+		kansboom.setLocation(0,0);
+		kansboom.setSize(200,150);
+		add(kansboom,0);
 	}
 
 	public void start()
@@ -83,10 +89,10 @@ public class Kansbomen extends Applet implements ScormAppletIF
 		}
 	}
 	
-	public void paint(Graphics g) 
-	{	g.drawString(Kansbomen.rb.getString("welkomTekst"), 50, 60 );
-		super.paint(g);
-	}
+	//public void paint(Graphics g) 
+	//{	g.drawString(Kansbomen.rb.getString("welkomTekst"), 50, 60 );
+	//	super.paint(g);
+	//}
 	
 	public void setState(String s)
 	{	//decodeer de string

@@ -3,14 +3,17 @@ package fi.kansbomen;
 import java.awt.*;
 import java.applet.*;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 public class Kansboom extends JPanel
 
 { 
 	
 	
-	int hoogteKansboomveld, breedteKansboomveld;
+	static int HOOGTE = 400; 
+	static int BREEDTE = 600;
+	int hoogteKansboomveld;
+	int breedteKansboomveld;
 	int aantalKolommen;
 	int breedteKolom;
 	int aantalKeuzes;
@@ -18,29 +21,32 @@ public class Kansboom extends JPanel
 	int aantal1, aantal2, aantal3, aantal4;
 	boolean terugleggen, inKleur;
 	
-	public void init()
+	public Kansboom()
 	{
+	    
 		//Alles wat instelbaar is, moet voor de docent instelbaar zijn. 
 		//Bovendien moet de docent kunnen aangeven dat het voor de leerling instelbaar is.
 		
-	hoogteKansboomveld=400; //Standaardmaat in DWO? 
-	breedteKansboomveld=600; //Standaardmaat in DWO?
-	aantalKolommen=4; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
-	breedteKolom=breedteKansboomveld/aantalKolommen;
-	
-	aantalKeuzes=2; //Instelbaar. Opties: 2, 3 of 4
-	aantal1=2; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
-	aantal2=5; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
-	aantal3=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 3, en niet zichtbaar voor docent of leerling.
-	aantal4=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 4, en niet zichtbaar voor docent of leerling.
-	
-	terugleggen=false; //Instelbaar door middel van aanvinkvakje; true is met terugleggen, false is zonder. 
-	inKleur=true; //Instelbaar door middel van aanvinkvakje; bij true heeft elke keuzemogelijkheid zijn eigen kleur.
+    	hoogteKansboomveld=HOOGTE; //Standaardmaat in DWO? 
+    	breedteKansboomveld=BREEDTE; //Standaardmaat in DWO?
+    	setSize(breedteKansboomveld+60, hoogteKansboomveld+60);
+    	aantalKolommen=15; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
+    	breedteKolom=breedteKansboomveld/aantalKolommen;
+    	
+    	aantalKeuzes=2; //Instelbaar. Opties: 2, 3 of 4
+    	aantal1=12; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
+    	aantal2=5; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
+    	aantal3=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 3, en niet zichtbaar voor docent of leerling.
+    	aantal4=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 4, en niet zichtbaar voor docent of leerling.
+    	
+    	terugleggen=false; //Instelbaar door middel van aanvinkvakje; true is met terugleggen, false is zonder. 
+    	inKleur=true; //Instelbaar door middel van aanvinkvakje; bij true heeft elke keuzemogelijkheid zijn eigen kleur.
 	}
 	
 	
 	public void paint(Graphics g)
-	{ 	g.drawRect(30,30,breedteKansboomveld,hoogteKansboomveld);
+	{ 	
+	    g.drawRect(30,30,breedteKansboomveld,hoogteKansboomveld);
 		//for(int i=1;i<aantalKolommen;i++)
 		//{g.drawLine(30+i*breedteKolom, 30, 30+i*breedteKolom, 30+hoogteKansboomveld);
 		//} //Dit tekent kolommen in het kansboomveld. Volgens mij wil ik dat liever niet.
@@ -141,7 +147,14 @@ public class Kansboom extends JPanel
 				gr.drawLine(30+i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h+30), 30+(i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h+30));
 			}
 		}
-	}	
+	}
+	
+	public void setSize(int b, int h)
+	{
+	    breedteKansboomveld = b;
+	    hoogteKansboomveld = h;
+	    super.setSize(b,h);
+	}
 		
 	
 	
