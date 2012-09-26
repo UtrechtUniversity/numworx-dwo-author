@@ -177,7 +177,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		else if (!constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
-			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
@@ -218,7 +218,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		else if (!constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
-			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
@@ -501,8 +501,12 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		{	int i = nummers[m];
 		
 			boolean meenemen = true;
-			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
-				meenemen = false;
+			//if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, hoogte / 2))
+			{	meenemen = false;
+//System.out.println("pos x " + i + " = " + fg[i].positie.x);
+//System.out.println("pos y " + i + " = " + fg[i].positie.y);			
+			}
 			
 			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)
 			{	if ((fg[i].aantalx != 1 || fg[i].aantaly != 1) && formule.equals(""))
@@ -542,7 +546,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		{	
 			
 			boolean meenemen = true;
-			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+			//if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, fg[i].positie.y))
+			if (werkblad && werkbladBigRectangle.contains(fg[i].positie.x, hoogte / 2))
 				meenemen = false;
 			
 			if (fg[i].aantalx != 0 && fg[i].aantaly != 0 && meenemen)
@@ -1123,11 +1128,12 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	}	
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(!muisAan)return;
+	{	if (!muisAan)
+			return;
 		int dx = e.getX() - laatstex;
-		int dy =  e.getY() - laatstey;
+		int dy = e.getY() - laatstey;
 		
-		if(pak)
+		if (pak)
 		{	fg[aantalFg]= new Figuur(basisFiguur);
 			actiefFg = fg[aantalFg];
 			for(int j=aantalFg ; j>0 ; j--)
