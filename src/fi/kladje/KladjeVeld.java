@@ -16,7 +16,7 @@ public class KladjeVeld extends JPanel
 	int gridSize = 20;
 	
 	Color lijnenKleur = new Color(150, 150, 255);
-	Color ruitjesKleur = new Color(150, 150, 255);
+	Color ruitjesKleur = new Color(210, 210, 210);
 	
 	Color drawingColor = Color.black;
 	Color backgroundColor = Color.white;
@@ -157,7 +157,6 @@ System.out.println("kladjeVeld.setSize");
 	
 	public void paintComponent(Graphics g)
 	{
-		
 		if (offScreen == null)
 		{
 			offScreen = createImage(getSize().width, getSize().height);
@@ -171,8 +170,8 @@ System.out.println("kladjeVeld.setSize");
 		g.setColor(backgroundColor);
 		g.fillRect(0, 0, getSize().width, getSize().height);
 		
-		g.setColor(Color.black);
-		g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+		//g.setColor(Color.black);
+		//g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		
 		if (lijnen)
 		{
@@ -186,7 +185,7 @@ System.out.println("kladjeVeld.setSize");
 		}
 		if (ruitjes)
 		{
-			g.setColor(lijnenKleur);
+			g.setColor(ruitjesKleur);
 			int vSteps = getSize().height / lineDistance;
 			for (int vCnt = 1; vCnt <= vSteps; vCnt++)
 			{
@@ -195,14 +194,15 @@ System.out.println("kladjeVeld.setSize");
 			int hSteps = getSize().width / lineDistance;
 			for (int hCnt = 1; hCnt <= hSteps; hCnt++)
 			{
-				g.drawLine(hCnt * lineDistance, 0, hCnt * lineDistance, getSize().width - 1);
+				g.drawLine(hCnt * lineDistance, 0, hCnt * lineDistance, getSize().height - 5);
 			}
 			
 		}
 		
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
-		g2D.setStroke(new BasicStroke(2f));
+		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2D.setStroke(new BasicStroke(1.5f));
 		
 		tekenProgramma(g2D, false);
 		
@@ -216,8 +216,8 @@ System.out.println("kladjeVeld.setSize");
 			g.setColor(backgroundColor);
 			g.fillRect(0, 0, getSize().width, getSize().height);
 		
-			g.setColor(Color.black);
-			g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
+			//g.setColor(Color.black);
+			//g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		}
 		
 		

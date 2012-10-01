@@ -243,7 +243,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		Vector stateVector = kladjeVeld.getState();
 		
-		h.put("pixels", stateVector);
+		//h.put("pixels", stateVector);
 
 		
 		return h;
@@ -306,8 +306,10 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		
 		if (kladjeVeld == null) 
-		{	kladjeVeld = new KladjeVeld(b - 2 * offSet, h - offSet - bottomHeight);
-			kladjeVeld.setLocation(offSet, offSet);
+		{	//kladjeVeld = new KladjeVeld(b - 2 * offSet, h - offSet - bottomHeight);
+			//kladjeVeld.setLocation(offSet, offSet);
+			kladjeVeld = new KladjeVeld(b, h - bottomHeight);
+			kladjeVeld.setLocation(0, 0);
 			add(kladjeVeld);
 //System.out.println("kladjeVeld created");
 			tekenGumGroup = new ButtonGroup();
