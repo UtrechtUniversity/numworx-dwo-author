@@ -176,13 +176,13 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
-			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 + 5);
+			werkbladRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
-			werkbladBigRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
 		}
 	}
 	
@@ -217,13 +217,13 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
-			werkbladBigRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 + 5);
+			werkbladRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
-			werkbladBigRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
 		}
 		
 		
@@ -261,6 +261,10 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (werkblad)
 		{	gIm.setColor(werkbladColor);
 			gIm.fillRect(werkbladRectangle.x, werkbladRectangle.y, werkbladRectangle.width, werkbladRectangle.height);
+			//gIm.setColor(Color.yellow);
+			//gIm.fillRect(werkbladBigRectangle.x, werkbladBigRectangle.y, werkbladBigRectangle.width, werkbladBigRectangle.height);
+			//gIm.setColor(werkbladColor);
+			//gIm.fillRect(werkbladRectangle.x, werkbladRectangle.y, werkbladRectangle.width, werkbladRectangle.height);
 		}
     	
 		tekenprogramma();
@@ -327,18 +331,22 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+			werkbladBigRectangle = new Rectangle(0, 25, (breedte - 40) / 3 + 42, hoogte - 25);
 		}
 		else if (constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+			werkbladBigRectangle = new Rectangle(0, 1, (breedte - 40) / 3 + 42, hoogte - 1);
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
 		}
 	
 		repaint();
@@ -360,20 +368,24 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (constructieTools && formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 25, (breedte - 40) / 3, hoogte - 82 - 25);
+			werkbladBigRectangle = new Rectangle(0, 25, (breedte - 40) / 3 + 42, hoogte - 25);
 		}
 		else if (constructieTools && !formuleZichtbaar)
 		{
 			werkbladRectangle = new Rectangle(42, 1, (breedte - 40) / 3, hoogte - 82 - 1);
+			werkbladBigRectangle = new Rectangle(0, 1, (breedte - 40) / 3 + 42, hoogte - 1);
 		}
 		else if (!constructieTools && formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 - 1);
+			werkbladBigRectangle = new Rectangle(0, 25, breedte / 3, hoogte - 25 + 5);
 		}
 		else if (!constructieTools && !formuleZichtbaar)
 		{
-			werkbladRectangle = new Rectangle(1, 1, breedte / 3, hoogte - 2);
+			werkbladRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
+			werkbladBigRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
 		}
-	
+
 		repaint();	
 	}
 	
