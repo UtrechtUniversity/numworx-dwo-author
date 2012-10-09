@@ -7,12 +7,15 @@ import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 
+import javax.swing.*;
+
 public class Kansbomen extends Applet implements ScormAppletIF 
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
 	private TextField textField;
-	private Kansboom kansboom;
+	//private Kansboom kansboom;
+	private KansbomenInteractieEditPanel kbiep;
 	
 	public static void main(String[] args)    
 	{	int width = 800;
@@ -61,10 +64,17 @@ public class Kansbomen extends Applet implements ScormAppletIF
 		textField.setBounds(50,100,200,25);
 		//add(textField,0);
 		
+		/*//Kansboom direct toevoegen:
 		kansboom = new Kansboom();
-		kansboom.setLocation(0,0);
+		kansboom.setLocation(30,30);
 		kansboom.setSize(200,150);
 		add(kansboom,0);
+		*/
+		
+		kbiep = new KansbomenInteractieEditPanel();
+		kbiep.setBounds(0,0,800,600);
+		add(kbiep,0);
+		
 	}
 
 	public void start()

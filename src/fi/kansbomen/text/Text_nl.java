@@ -5,10 +5,17 @@ public class Text_nl extends java.util.ListResourceBundle
         public Object [] [] getContents() { return contents; }
         static final Object [] [] contents =
         {
-            {	"welkomTekst" , "Welkom bij Java" }
+            //{	"welkomTekst" , "Welkom bij Java" }
             	 	
-        //	{	"button1Label" , "text1_nl" },
-		//	{ 	"button2Label" , "text2_nl" },
+        {	"metTerugleggenTekst" , "Met terugleggen" },
+        {	"zonderTerugleggenTekst" , "Zonder terugleggen"},
+        { 	"kleurTekst" , "Verschillende kleuren" },
+        { 	"aantalTrekkingenTekst" , "Aantal trekkingen" },
+        { 	"aantalOptiesTekst" , "Aantal opties" },
+        { 	"naamOptieTekst" , "Naam optie " },
+        { 	"optieTekst" , "Optie " },
+        { 	"aantalOptieTekst" , "Aantal optie " },
+        
 		//	....
 		
 		};

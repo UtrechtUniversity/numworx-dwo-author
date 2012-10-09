@@ -1,7 +1,6 @@
 package fi.kansbomen;
 
 import java.awt.*;
-import java.applet.*;
 
 import javax.swing.JPanel;
 
@@ -19,7 +18,9 @@ public class Kansboom extends JPanel
 	int aantalKeuzes;
 	int t1, t2, t3, t4;
 	int aantal1, aantal2, aantal3, aantal4;
-	boolean terugleggen, inKleur;
+	boolean terugleggen, kleur;
+	
+	Color backgroundColor = Color.white;
 	
 	public Kansboom()
 	{
@@ -27,29 +28,28 @@ public class Kansboom extends JPanel
 		//Alles wat instelbaar is, moet voor de docent instelbaar zijn. 
 		//Bovendien moet de docent kunnen aangeven dat het voor de leerling instelbaar is.
 		
-    	hoogteKansboomveld=HOOGTE; //Standaardmaat in DWO? 
-    	breedteKansboomveld=BREEDTE; //Standaardmaat in DWO?
-    	setSize(breedteKansboomveld+60, hoogteKansboomveld+60);
-    	aantalKolommen=15; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
+    	hoogteKansboomveld=HOOGTE; 
+    	breedteKansboomveld=BREEDTE; 
+    	aantalKolommen=3; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
     	breedteKolom=breedteKansboomveld/aantalKolommen;
+    	//setSize(breedteKansboomveld, hoogteKansboomveld);
     	
-    	aantalKeuzes=2; //Instelbaar. Opties: 2, 3 of 4
-    	aantal1=12; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
-    	aantal2=5; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
-    	aantal3=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 3, en niet zichtbaar voor docent of leerling.
-    	aantal4=-1; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 4, en niet zichtbaar voor docent of leerling.
     	
-    	terugleggen=false; //Instelbaar door middel van aanvinkvakje; true is met terugleggen, false is zonder. 
-    	inKleur=true; //Instelbaar door middel van aanvinkvakje; bij true heeft elke keuzemogelijkheid zijn eigen kleur.
+    	aantalKeuzes=4; //Instelbaar. Opties: 2, 3 of 4
+    	aantal1=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
+    	aantal2=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
+    	aantal3=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 3, en niet zichtbaar voor docent of leerling.
+    	aantal4=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld. Moet standaard -1 zijn als aantalKeuzes < 4, en niet zichtbaar voor docent of leerling.
+    	
+    	terugleggen=true; //Instelbaar door middel van aanvinkvakje; true is met terugleggen, false is zonder. 
+    	kleur=true; //Instelbaar door middel van aanvinkvakje; bij true heeft elke keuzemogelijkheid zijn eigen kleur.
 	}
 	
 	
 	public void paint(Graphics g)
-	{ 	
-	    g.drawRect(30,30,breedteKansboomveld,hoogteKansboomveld);
-		//for(int i=1;i<aantalKolommen;i++)
-		//{g.drawLine(30+i*breedteKolom, 30, 30+i*breedteKolom, 30+hoogteKansboomveld);
-		//} //Dit tekent kolommen in het kansboomveld. Volgens mij wil ik dat liever niet.
+	{ 	g.setColor(backgroundColor);
+		g.fillRect(0, 0, getSize().width, getSize().height);
+	    
 		this.tekenKansboom(g);
 		
 	}
@@ -73,7 +73,14 @@ public class Kansboom extends JPanel
 					h=h+macht*mod;
 				}
 			if(terugleggen)
-			{	t1=0; t2=0; t3=0; t4=0;	}
+			{	t1=0; t2=0; 
+				if(aantalKeuzes<3)
+				t3=-1; 
+				else t3=0;
+				if(aantalKeuzes<4)
+				t4=-1;
+				else t4=0;	
+			}
 			else
 				this.zetTellers(h,i);
 			this.tekenKinderen(i,j,t1, t2, t3, t4,gr);	
@@ -115,11 +122,11 @@ public class Kansboom extends JPanel
 		int k = aantalKeuzes;
 		
 		Color kleur1, kleur2, kleur3, kleur4;
-		if(inKleur) //TO DO: Ik wil deze kleuren gelijk hebben aan die in de grafiekentool.
-		{	kleur1= Color.RED;
-			kleur2= Color.BLUE;
-			kleur3= Color.GREEN;
-			kleur4= Color.MAGENTA;
+		if(kleur) 
+		{	kleur1= new Color(0,0,255);
+			kleur2= new Color(0,200,0);
+			kleur3= new Color(255,50,50);
+			kleur4= new Color(0,220,220);
 		}
 		else
 		{	kleur1= Color.BLACK;
@@ -127,25 +134,29 @@ public class Kansboom extends JPanel
 			kleur3= Color.BLACK;
 			kleur4= Color.BLACK;
 		}
-		
+	
+		Graphics2D gr2 = (Graphics2D) gr;
+		gr2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		        RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
-		{ 	if(t1<aantal1)
-			{	gr.setColor(kleur1);
-				gr.drawLine(30+i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h+30), 30+(i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h+30));
-			}
-			if(t2<aantal2)
-			{	gr.setColor(kleur2);
-				gr.drawLine(30+i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h+30), 30+(i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h+30));
+		{ 	if(t4<aantal4)
+			{	gr2.setColor(kleur4);
+				gr2.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h));
 			}
 			if(t3<aantal3)
-			{	gr.setColor(kleur3);
-				gr.drawLine(30+i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h+30), 30+(i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h+30));
+			{	gr2.setColor(kleur3);
+				gr2.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h));
 			}
-			if(t4<aantal4)
-			{	gr.setColor(kleur4);
-				gr.drawLine(30+i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h+30), 30+(i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h+30));
+			if(t2<aantal2)
+			{	gr2.setColor(kleur2);
+				gr2.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h));
 			}
+			if(t1<aantal1)
+			{	gr2.setColor(kleur1);
+				gr2.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h));
+			}
+			
 		}
 	}
 	
@@ -153,11 +164,55 @@ public class Kansboom extends JPanel
 	{
 	    breedteKansboomveld = b;
 	    hoogteKansboomveld = h;
+	    breedteKolom=breedteKansboomveld/aantalKolommen;
 	    super.setSize(b,h);
 	}
 		
+	public void zetKleur(boolean b)
+	{
+		kleur = b;
+		repaint();
+	}
 	
+	public void zetTerugleggen(boolean b)
+	{
+		terugleggen = b;
+		repaint();
+	}
 	
+	public void zetKeuzeMomenten(int i)
+	{
+		aantalKolommen = i;
+		setSize(breedteKansboomveld, hoogteKansboomveld);
+		repaint();
+	}
 	
+	public void zetAantalOpties(int i)
+	{
+		aantalKeuzes = i;
+		if(i < 4)
+			aantal4 = -1;
+		else if(aantal4 == -1)
+			aantal4 = 4;
+		if(i < 3)
+			aantal3 = -1;
+		else if(aantal3 == -1)
+			aantal3 = 4;
+		repaint();
+	}
+	
+	public void zetAantalVanOptie(int i, int j)
+	{
+		if(i == 1)
+			aantal1 = j;
+		else if(i == 2)
+			aantal2 = j;
+		else if(i == 3)
+			aantal3 = j;
+		else if(i ==4)
+			aantal4 = j;
+		
+		repaint();
+	}
 
 }
