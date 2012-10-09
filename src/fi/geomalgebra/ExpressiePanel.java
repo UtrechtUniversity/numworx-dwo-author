@@ -97,17 +97,14 @@ public class ExpressiePanel extends JPanel
     	{	check.setWrong();
 			return;
     	}
-    	
-    	String[] varNamen = Algebra.geefVarNamen(exp);
-    	
-//System.out.println("vn = " + varNamen.length);
-//System.out.println(exp.toString());
 
+/*    	
+    	String[] varNamen = Algebra.geefVarNamen(exp);
     	if (varNamen.length > 1)
     	{	check.setWrong();
 			return;
     	}
-
+*/
     	check.setCorrect();
     	
 //System.out.println(exp.toString());
