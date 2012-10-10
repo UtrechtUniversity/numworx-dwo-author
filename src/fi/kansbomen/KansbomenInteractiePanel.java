@@ -31,11 +31,26 @@ int aantalKeuzes;
 
 	public void setBounds(int x, int y, int b, int h)
 	{
-		super.setBounds(x,y,b,h);
+// Huub: deze methode wordt alleen in de DWO gebruikt en
+// gaat mogelijk niet goed: kansboom is een zichtbaar JPanel,
+// dat je plotsklaps opnieuw initialiseert; kijk dus even of
+// de kansboom er al is, dan behoeft deze alleen een setSize
+		
+		
+super.setBounds(x,y,b,h);
+		
+if (kansboom == null)
+{
+		//super.setBounds(x,y,b,h);
 		kansboom = new Kansboom();
 		kansboom.setSize(b-2*marge, h-2*marge);
 		kansboom.setLocation(marge,marge);
 		add(kansboom);
+}
+else
+{
+		kansboom.setSize(b-2*marge, h-2*marge);
+}
 	}
 
 	public void zetKleur(boolean b)

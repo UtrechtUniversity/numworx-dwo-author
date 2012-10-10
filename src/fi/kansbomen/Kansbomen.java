@@ -9,7 +9,8 @@ import fi.beans.base64code.*;
 
 import javax.swing.*;
 
-public class Kansbomen extends Applet implements ScormAppletIF 
+// Huub: maak van het applet maar meteen een JApplet
+public class Kansbomen extends JApplet implements ScormAppletIF 
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;

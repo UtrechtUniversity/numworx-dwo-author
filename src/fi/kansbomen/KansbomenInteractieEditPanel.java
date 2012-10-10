@@ -51,6 +51,9 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	String aantal2String = "4";
 	String aantal3String = "4";
 	String aantal4String = "4";
+// Huub: aantallen zijn positief, naar boven begrensd?
+// zie actionPerformed: als iets illegaals ingevuld
+// wordt verbeteren met oude, legale waarde	
 	int aantal1Int = 4;
 	int aantal2Int = 4;
 	int aantal3Int = 4;
@@ -236,6 +239,53 @@ public void actionPerformed(ActionEvent e)
 		aantalOptiesKeuze = optiesBox.getSelectedIndex();
 		kbip.zetAantalOpties(aantalOptiesKeuze+2);
 		//Wat moet hier om te zorgen dat alleen de goede regels worden getekend?
+		
+// Huub: zie hieronder
+		
+		if (aantalOptiesKeuze + 2 == 3)
+		{
+			naamOptie[4].setVisible(false);
+			aantalOptie[4].setVisible(false);
+			naamOptieBox[4].setVisible(false);
+			aantalOptieBox[4].setVisible(false);
+			
+			// 3 zichtbaar zetten, kan verborgen zijn
+			naamOptie[3].setVisible(true);
+			aantalOptie[3].setVisible(true);
+			naamOptieBox[3].setVisible(true);
+			aantalOptieBox[3].setVisible(true);
+			
+			
+		}
+		else if (aantalOptiesKeuze + 2 == 2)
+		{
+			naamOptie[4].setVisible(false);
+			aantalOptie[4].setVisible(false);
+			naamOptieBox[4].setVisible(false);
+			aantalOptieBox[4].setVisible(false);
+			
+			naamOptie[3].setVisible(false);
+			aantalOptie[3].setVisible(false);
+			naamOptieBox[3].setVisible(false);
+			aantalOptieBox[3].setVisible(false);
+			
+		}
+		else
+		{
+			// 4 zichtbaar zetten, kan verborgen zijn			
+			naamOptie[4].setVisible(true);
+			aantalOptie[4].setVisible(true);
+			naamOptieBox[4].setVisible(true);
+			aantalOptieBox[4].setVisible(true);
+			
+			// 3 zichtbaar zetten, kan verborgen zijn			
+			naamOptie[3].setVisible(true);
+			aantalOptie[3].setVisible(true);
+			naamOptieBox[3].setVisible(true);
+			aantalOptieBox[3].setVisible(true);
+			
+		}
+			
 	}
 		
 	else if(e.getSource() == aantalOptieBox[1])
@@ -270,6 +320,9 @@ public void actionPerformed(ActionEvent e)
 		{ 		aantal4Int = Integer.parseInt( aantalOptieBox[4].getText() );
 				if(aantal4Int > 0)
 					kbip.zetAantalVanOptie(4,aantal4Int);
+// Huub: zoiets dus				
+				else
+					aantalOptieBox[4].setText("" + kbip.kansboom.aantal4);
 		}
 		catch (Exception p)
 		{}
