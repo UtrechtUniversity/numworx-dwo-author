@@ -609,25 +609,29 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	void tekenFiguur(Figuur f)	
 	{	f.maxx = f.minx = f.positie.x;
 		f.maxy = f.miny = f.positie.y;			 
-		int[]posx = new int[f.aantalx + 1];
-		int[]posy = new int[f.aantaly + 1];
+		int[] posx = new int[f.aantalx + 1];
+		int[] posy = new int[f.aantaly + 1];
 		posx[0] = f.positie.x;
 		posy[0] = f.positie.y;
 		
-		for(int i=1 ; i<f.aantalx+1 ; i++)
-		{	posx[i] = f.lsx[i-1].positie.x + f.lsx[i-1].d;
-			if(posx[i]>f.maxx)f.maxx=posx[i];
-			if(posx[i]<f.minx)f.minx=posx[i];
+		for (int i = 1; i < f.aantalx + 1; i++)
+		{	posx[i] = f.lsx[i - 1].positie.x + f.lsx[i - 1].d;
+			if (posx[i] > f.maxx)
+				f.maxx = posx[i];
+			if (posx[i] < f.minx)
+				f.minx = posx[i];
 		}
 				
-		for(int i=1 ; i<f.aantaly+1 ; i++)
-		{	posy[i] = f.lsy[i-1].positie.y - f.lsy[i-1].d;
-			if(posy[i]>f.maxy)f.maxy=posy[i];
-			if(posy[i]<f.miny)f.miny=posy[i];
+		for (int i = 1; i < f.aantaly + 1; i++)
+		{	posy[i] = f.lsy[i - 1].positie.y - f.lsy[i - 1].d;
+			if (posy[i] > f.maxy)
+				f.maxy = posy[i];
+			if (posy[i] < f.miny)
+				f.miny = posy[i];
 		}
 		
 		f.posx = new Point(posx[f.aantalx], posy[0]);
-		f.posy = new Point(posx[0],posy[f.aantaly]) ;
+		f.posy = new Point(posx[0], posy[f.aantaly]) ;
 		
 		
 		for (int i = 0; i < f.aantalx; i++)
@@ -651,23 +655,23 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	
 		gIm.setFont(fl);
 		
-		for(int j=1 ; j<f.aantalx+1 ; j++)
-		{	for(int k=1 ; k<f.aantaly+1 ; k++)
+		for (int j = 1; j < f.aantalx + 1; j++)
+		{	for (int k = 1; k < f.aantaly + 1; k++)
 			{	
-				int dxx = posx[j]-posx[j-1];
-				int dyy = posy[k-1]-posy[k];
+				int dxx = posx[j] - posx[j - 1];
+				int dyy = posy[k - 1] - posy[k];
 				
-				if(dxx>0 && dyy>0)
+				if (dxx > 0 && dyy > 0)
 				{	gIm.setColor(new Color(150,230,150));
-					gIm.fillRect(posx[j-1],posy[k],dxx,dyy);
+					gIm.fillRect(posx[j - 1], posy[k], dxx, dyy);
 					gIm.setColor(Color.black);
-					gIm.drawRect(posx[j-1],posy[k],dxx,dyy);
+					gIm.drawRect(posx[j - 1], posy[k], dxx, dyy);
 				}
-				if(dxx<0 && dyy<0)
+				if (dxx < 0 && dyy < 0)
 				{	gIm.setColor(new Color(150,230,150));
-					gIm.fillRect(posx[j-1]+dxx,posy[k-1],-dxx,-dyy);
+					gIm.fillRect(posx[j-1] + dxx, posy[k - 1], -dxx, -dyy);
 					gIm.setColor(Color.black);
-					gIm.drawRect(posx[j-1]+dxx,posy[k-1],-dxx,-dyy);
+					gIm.drawRect(posx[j-1] + dxx, posy[k - 1], -dxx, -dyy);
 				}
 				if(dxx<0 && dyy>0)
 				{	gIm.setColor(new Color(255,200,200));
@@ -695,9 +699,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		int y = s.positie.y;
 		int d = s.d;
 		int dAbs = Math.abs(d);
-		int dk=0;
-		if(s.stand==Lijnstuk.HOR) dk = f.positie.y - f.posy.y;
-		if(s.stand==Lijnstuk.VER) dk = f.posx.x - f.positie.x;
+		int dk = 0;
+		if (s.stand == Lijnstuk.HOR) 
+			dk = f.positie.y - f.posy.y;
+		if (s.stand == Lijnstuk.VER) 
+			dk = f.posx.x - f.positie.x;
 			
 		Color kleurBalk, kleurKop, kleurFont;
 		if(s.isVar && d>0)
@@ -718,7 +724,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		else
 		{	kleurKop=Color.black;
 		}
-		if(s.stand==1)
+		if (s.stand == 1)
 		{	gIm.setColor(kleurBalk);
 			gIm.fillRect(x+3+Math.min(0,d), y-1, dAbs-6, 3);
 			gIm.setColor(kleurKop);
@@ -730,8 +736,9 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			gIm.setFont(fl);
 			int w = fcm.stringWidth(s.varNaam);
 			int corr = 0;
-			if(dk<0 || s == basisLijnstukX)corr = -16;
-			gIm.drawString(s.varNaam, x+d/2-w/2, y+13+corr);
+			if (dk < 0 || s == basisLijnstukX)
+				corr = -16;
+			gIm.drawString(s.varNaam, x + d / 2 - w / 2, y + 13 + corr);
 			
 			Polygon pol = new Polygon();
 			pol.addPoint(f.posx.x, f.posx.y);
@@ -745,7 +752,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			}
 			gIm.fillPolygon(pol);
 		}
-		else
+		else if (s.stand == 2)
 		{	gIm.setColor(kleurBalk);
 			gIm.fillRect(x-1, y+3-Math.max(0,d), 3,dAbs-6 );
 			gIm.setColor(kleurKop);
@@ -861,8 +868,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		tekenOpnieuw();
 	}
 	void zetVars()
-	{	for(int i=1 ; i<4 ; i++)
-		{	for(int j=0 ; j<aantalFg ; j++)
+	{	for (int i = 1; i < 4; i++)
+		{	for (int j = 0; j < aantalFg; j++)
 			{	fg[j].pasAanVar(i, var[i]);
 			}
 		}
@@ -927,9 +934,15 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	}
 			
 	void breekFiguur(Figuur f)
-	{	for(int i=0 ; i<f.aantalx ; i++)
-		{	for(int j=0 ; j<f.aantaly ; j++)
+	{	
+//System.out.println("break started");		
+//System.out.println("aantalx = " + f.aantalx);
+//System.out.println("aantaly = " + f.aantaly);
+		for (int i = 0; i < f.aantalx; i++)
+		{	for (int j = 0; j < f.aantaly; j++)
 			{	Figuur fn = new Figuur(f.lsx[i].positie.x, f.lsy[j].positie.y);
+				fn.minx = fn.maxx = f.lsx[i].positie.x;
+				fn.miny = fn.maxy = f.lsy[j].positie.y;
 				Lijnstuk lstx = new Lijnstuk(f.lsx[i]);
 				Lijnstuk lsty = new Lijnstuk(f.lsy[j]);
 				fn.voegToe(lstx);
@@ -939,6 +952,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				aantalFgNieuw++;
 			}
 		}
+//System.out.println("break finished");	
 	}
 	void breekFiguurInTwee(Figuur f, int x, int y)
 	{	for(int i=1 ; i<f.aantalx ; i++)
@@ -1035,55 +1049,60 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	public void mousePressed(MouseEvent e)
 	{	if (!muisAan)
 			return;
-		
-		
+
 		laatstex = e.getX();
 		laatstey = e.getY();
 		drukx = e.getX();
 		druky = e.getY();
 		
-		for(int i=0 ; i<aantalFg ; i++)
-		{	if((e.getModifiers()== e.BUTTON3_MASK || e.isControlDown()) && (fg[i].raakRechthoek(e.getX(),e.getY()) || fg[i].raakKop(e.getX(),e.getY())))
-			{	popup.show(this,e.getX(),e.getY());
+		for (int i = 0; i < aantalFg; i++)
+		{	if ((e.getModifiers()== e.BUTTON3_MASK || e.isControlDown()) && 
+				(fg[i].raakRechthoek(e.getX(),e.getY()) || fg[i].raakKop(e.getX(),e.getY())))
+			{	popup.show(this, e.getX(), e.getY());
+//System.out.println("popup.show");
 			}
 		}
 		
 		
 		selectFiguur  = null;
 		
-		if(!alleenOppervlaktes)
-		{	if(varHuidig!=0 && basisFiguurX.raakStaartX(e.getX(),e.getY()))
+		if (!alleenOppervlaktes)
+		{	if (varHuidig != 0 && basisFiguurX.raakStaartX(e.getX(),e.getY()))
 			{	veranderVar = true;
 				basisLijnstuk = basisLijnstukX;
+//System.out.println("raakStaartX");				
 				return;
 			}
-			if(varHuidig!=0 && basisFiguurY.raakStaartY(e.getX(),e.getY()))
+			if (varHuidig != 0 && basisFiguurY.raakStaartY(e.getX(),e.getY()))
 			{	veranderVar = true;
 				basisLijnstuk = basisLijnstukY;
+//System.out.println("raakStaartY");				
 				return;
 			}
 					
-			if(basisFiguurX.raakKop(e.getX(),e.getY()) || basisFiguurX.raakRechthoek(e.getX(),e.getY()) )
+			if (basisFiguurX.raakKop(e.getX(),e.getY()) || basisFiguurX.raakRechthoek(e.getX(),e.getY()))
 			{	maakLos = false;
 				pak = true;
 				basisFiguur = basisFiguurX;
+//System.out.println("raakKopX");				
 				return;
 			}
-			if(basisFiguurY.raakKop(e.getX(),e.getY()) || basisFiguurY.raakRechthoek(e.getX(),e.getY()))
+			if (basisFiguurY.raakKop(e.getX(),e.getY()) || basisFiguurY.raakRechthoek(e.getX(),e.getY()))
 			{	maakLos = false;
 				pak = true;
 				basisFiguur = basisFiguurY;
+//System.out.println("raakKopY");				
 				return;
 			}
 		}
 		
-		for(int i=0 ; i<aantalFg ; i++)
-		{	if((fg[i].aantalx==0 || fg[i].aantaly==0) && fg[i].raakKop(e.getX(),e.getY()))
+		for (int i = 0; i <aantalFg; i++)
+		{	if ((fg[i].aantalx == 0 || fg[i].aantaly == 0) && fg[i].raakKop(e.getX(),e.getY()))
 			{	maakLos = false;
 				selectFiguur  = fg[i];
 				actiefFg = fg[i];
-				for(int j=i ; j>0 ; j--)
-				{	fg[j] = fg[j-1];
+				for (int j = i; j > 0; j--)
+				{	fg[j] = fg[j - 1];
 				}
 				fg[0] = actiefFg;
 				tekenOpnieuw();
@@ -1091,13 +1110,13 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			}
 		}
 		
-		for(int i=0 ; i<aantalFg ; i++)
-		{	if(fg[i].raakSplits(e.getX(),e.getY()))
+		for (int i = 0; i < aantalFg; i++)
+		{	if (fg[i].raakSplits(e.getX(),e.getY()))
 			{	maakLos = false;
-				fg[aantalFg] = fg[i].splitsLijnstukAf(e.getX(),e.getY());
+				fg[aantalFg] = fg[i].splitsLijnstukAf(e.getX(), e.getY());
 				actiefFg = fg[aantalFg];
-				for(int j=aantalFg ; j>0 ; j--)
-				{	fg[j] = fg[j-1];
+				for (int j = aantalFg; j > 0; j--)
+				{	fg[j] = fg[j - 1];
 				}
 				fg[0] = actiefFg;
 				aantalFg++;
@@ -1106,32 +1125,33 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			}
 		}
 		
-		for(int i=0 ; i<aantalFg ; i++)
-		{	if(fg[i].raakRechthoek(e.getX(),e.getY()))
-			{	selectFiguur  = fg[i];
+		for (int i = 0; i < aantalFg; i++)
+		{	if (fg[i].raakRechthoek(e.getX(),e.getY()))
+			{	selectFiguur = fg[i];
 				actiefFg = fg[i];
-				for(int j=i ; j>0 ; j--)
-				{	fg[j] = fg[j-1];
+				for (int j = i; j > 0; j--)
+				{	fg[j] = fg[j - 1];
 				}
 				fg[0] = actiefFg;
 				
-				if(maakLos && actiefFg.raakLijn(e.getX(),e.getY()))
-				{	for(int j=0 ; j<aantalFg ; j++)
-					{	fg[j]=fg[j+1];
+				if (maakLos && actiefFg.raakLijn(e.getX(),e.getY()))
+				{	for (int j = 0; j < aantalFg; j++)
+					{	fg[j]=fg[j + 1];
 					}
 					aantalFg--;
 					aantalFgNieuw = aantalFg;
 					int aantalRes = aantalFg;
 					
-					breekFiguurInTwee(actiefFg,e.getX(),e.getY());
+					breekFiguurInTwee(actiefFg, e.getX(), e.getY());
 					
 					aantalFg = aantalFgNieuw;
-					for(int j=aantalRes ; j<aantalFgNieuw ; j++)
+					for (int j = aantalRes; j < aantalFgNieuw; j++)
 					{	fg[j] = fgNieuw[j];
 					}
 					actiefFg = null;
 				}
-				else maakLos = false;
+				else 
+					maakLos = false;
 				maakFormule();
 				tekenOpnieuw();
 				return;
@@ -1171,10 +1191,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if(!muisAan)return;
+	{	if (!muisAan)
+			return;
 		
 		pak = false;
-		if(veranderVar)
+		if (veranderVar)
 		{	if(var[varHuidig]>breedte/2-20)
 				var[varHuidig]=breedte/2-20;
 			if(var[varHuidig]<-breedte/2+20) 
@@ -1185,11 +1206,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			else pasAanVar(varHuidig,6-ex);
 		}
 		veranderVar = false;
-		if(actiefFg!=null)
+		if (actiefFg!=null)
 			actiefFg.plaatsOpGrid();
 		
 		
-		if(constructieTools && actiefFg!=null && !new Rectangle(42, 0, breedte-43, hoogte-82).contains(e.getX(),e.getY()))
+		if (constructieTools && actiefFg != null && !new Rectangle(42, 0, breedte-43, hoogte-82).contains(e.getX(),e.getY()))
 		{	actiefFg = null;
 			fg[0] = null;
 			for(int j=0 ; j<aantalFg-1 ; j++)
@@ -1303,11 +1324,13 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		{	maakLos = true;
 		}
 		
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMALLabel")))
-		{	for(int i=0 ; i<aantalFg ; i++)
-			{	if(fg[i]==selectFiguur)
-				{	for(int j=i ; j<aantalFg ; j++)
-					{	fg[j]=fg[j+1];
+		if (((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMALLabel")))
+		{	for(int i = 0; i < aantalFg; i++)
+			{
+			
+				if (fg[i] == selectFiguur)
+				{	for (int j = i; j < aantalFg; j++)
+					{	fg[j] = fg[j + 1];
 					}
 					aantalFg--;
 					aantalFgNieuw = aantalFg;
@@ -1316,10 +1339,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 					breekFiguur(selectFiguur);
 					
 					aantalFg = aantalFgNieuw;
-					for(int j=aantalRes ; j<aantalFgNieuw ; j++)
+					for (int j = aantalRes; j < aantalFgNieuw; j++)
 					{	fg[j] = fgNieuw[j];
 					}
 				}
+				
 			}
 		}
 		selectFiguur = null;

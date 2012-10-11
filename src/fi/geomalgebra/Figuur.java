@@ -51,7 +51,7 @@ class Figuur  implements Serializable
 	}
 	
 	public void voegToe(Lijnstuk ls)
-	{	if(ls.stand==Lijnstuk.HOR)
+	{	if (ls.stand == Lijnstuk.HOR)
 		{	ls.zetPositie(posx.x, posx.y);
 			posx.x += ls.d;
 			lsx[aantalx] = ls;
@@ -345,6 +345,8 @@ class Figuur  implements Serializable
 		}
 		*/
 		
+//System.out.println("vp " + dx + ", " + dy);
+
 		positie.x = positie.x + dx;
 		positie.y = positie.y + dy;
 		
@@ -357,8 +359,9 @@ class Figuur  implements Serializable
 		minx = minx + dx;
 		
 		maxy = maxy + dy;
+//System.out.println("miny old = " + miny);
 		miny = miny + dy;
-		
+//System.out.println("miny new = " + miny);		
 		for(int i=0 ; i<aantalx ; i++)
 		{	lsx[i].positie.x = lsx[i].positie.x + dx;
 			lsx[i].positie.y = lsx[i].positie.y + dy;
@@ -367,12 +370,26 @@ class Figuur  implements Serializable
 		{	lsy[i].positie.x = lsy[i].positie.x + dx;
 			lsy[i].positie.y = lsy[i].positie.y + dy;
 		}
-		if(geslotenVeld)
+		if (geslotenVeld)
 		{
-			if(maxx > breedte)veranderPositie(breedte-maxx,0);
-			if(minx < 0)veranderPositie(-minx,0);
-			if(maxy > hoogte)veranderPositie(0,hoogte-maxy);
-			if(miny < 25)veranderPositie(0,25-miny);
+			if (maxx > breedte)
+			{	veranderPositie(breedte - maxx, 0);
+//System.out.println("maxx = " + maxx);
+
+			}
+			if (minx < 0)
+			{	veranderPositie(-minx, 0);
+//System.out.println("minx = " + minx);			
+			}
+			if (maxy > hoogte)
+			{	veranderPositie(0, hoogte - maxy);
+//System.out.println("maxy = " + maxy);			
+			}
+			if (miny < 25) 
+			{	veranderPositie(0, 25 - miny);
+//System.out.println("miny = " + miny);			
+			}
+			
 		}
 	}
 	public void plaatsOpGrid()
