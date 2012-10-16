@@ -45,9 +45,9 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private Font fc,fl;
 	private FontMetrics fcm, flm;
 	
-	private  DecimalFormatSymbols dfs;
-	private  DecimalFormat df;
-	private  FontMetrics fm;
+	private DecimalFormatSymbols dfs;
+	private DecimalFormat df;
+	private FontMetrics fm;
 	
 	PopupMenu popup;
 	MenuItem mi;
@@ -58,6 +58,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private boolean constructieTools = true;
 	private boolean alleenOppervlaktes;
 	private boolean werkblad;
+	private boolean oppervlaktesZichtbaar = true;
+	private boolean lengtesBreedtesZichtbaar = true;
 
 	Rectangle werkbladRectangle = null;
 	Color werkbladColor = new Color(245, 245, 245);
@@ -400,7 +402,18 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		maakFormule();
 		repaint();
 	}
+	
+	public void zetOppervlaktesZichtbaar(boolean b)
+	{
+		oppervlaktesZichtbaar = b;
+		repaint();
+	}
 
+	public void zetLengtesBreedtesZichtbaar(boolean b)
+	{
+		lengtesBreedtesZichtbaar = b;
+		repaint();
+	}
 	
 	/*public void zetOpdracht(Opdracht opdr)
 	{	var[1] = opdr.geefVarx();
@@ -641,6 +654,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				f.lsx[i].zetPositie(f.lsx[i - 1].positie.x + f.lsx[i - 1].d , f.lsx[i - 1].positie.y);
 			if (!alleenOppervlaktes)
 				tekenLijnstuk(f.lsx[i], f);
+			else if (lengtesBreedtesZichtbaar)
+				tekenLengtesBreedtes(f.lsx[i], f);
 		}
 		
 		for (int i = 0; i < f.aantaly; i++)
@@ -650,6 +665,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				f.lsy[i].zetPositie(f.lsy[i - 1].positie.x, f.lsy[i - 1].positie.y - f.lsy[i - 1].d );
 			if (!alleenOppervlaktes)
 				tekenLijnstuk(f.lsy[i], f);
+			else if (lengtesBreedtesZichtbaar)
+				tekenLengtesBreedtes(f.lsy[i], f);
 			
 		}
 	
@@ -688,7 +705,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				
 				String s = parse(f.lsx[j-1], f.lsy[k-1]);
 				int w = fcm.stringWidth(s)/2;
-				tekenFormule(s, (posx[j]+posx[j-1])/2-w, (posy[k-1]+posy[k])/2+5);
+				if (oppervlaktesZichtbaar)
+					tekenFormule(s, (posx[j]+posx[j-1])/2-w, (posy[k-1]+posy[k])/2+5);
 				
 			}
 		}
@@ -738,7 +756,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			int corr = 0;
 			if (dk < 0 || s == basisLijnstukX)
 				corr = -16;
-			gIm.drawString(s.varNaam, x + d / 2 - w / 2, y + 13 + corr);
+			if (lengtesBreedtesZichtbaar || constructieTools)
+				gIm.drawString(s.varNaam, x + d / 2 - w / 2, y + 13 + corr);
 			
 			Polygon pol = new Polygon();
 			pol.addPoint(f.posx.x, f.posx.y);
@@ -764,8 +783,10 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			gIm.setFont(fl);
 			int w = fcm.stringWidth(s.varNaam);
 			int corr = 0;
-			if(dk<0 || s == basisLijnstukY)corr = 6 + w;
-			gIm.drawString(s.varNaam, x-w-3+corr, y-d/2+5);
+			if (dk<0 || s == basisLijnstukY)
+				corr = 6 + w;
+			if (lengtesBreedtesZichtbaar || constructieTools)
+				gIm.drawString(s.varNaam, x - w - 3 + corr, y - d / 2 + 5);
 			
 			Polygon pol = new Polygon();
 			pol.addPoint(f.posy.x, f.posy.y);
@@ -778,6 +799,94 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				pol.addPoint(f.posy.x-7, f.posy.y-7);
 			}
 			gIm.fillPolygon(pol);
+		}	
+	}
+
+	void tekenLengtesBreedtes(Lijnstuk s, Figuur f)
+	{	int x = s.positie.x;
+		int y = s.positie.y;
+		int d = s.d;
+		int dAbs = Math.abs(d);
+		int dk = 0;
+		if (s.stand == Lijnstuk.HOR) 
+			dk = f.positie.y - f.posy.y;
+		if (s.stand == Lijnstuk.VER) 
+			dk = f.posx.x - f.positie.x;
+			
+		Color kleurBalk, kleurKop, kleurFont;
+		if(s.isVar && d>0)
+		{	kleurBalk=new Color(0,150,0);
+			kleurFont=new Color(0,150,0);
+		}
+		else if(d<0)
+		{	kleurBalk=Color.red;
+			kleurFont=Color.red;
+		}
+		else
+		{	kleurBalk=Color.black;
+			kleurFont=Color.black;
+		}
+		if((s==f.lsx[0] && f.aantaly==0) || (s==f.lsy[0] && f.aantalx==0))
+		{	kleurKop=Color.red;
+		}
+		else
+		{	kleurKop=Color.black;
+		}
+		if (s.stand == 1 && s != basisLijnstukX)
+		{	gIm.setColor(kleurBalk);
+			//gIm.fillRect(x+3+Math.min(0,d), y-1, dAbs-6, 3);
+			gIm.setColor(kleurKop);
+			//gIm.fillOval(x-4, y-4, 8, 8);
+			gIm.setColor(Color.black);
+			//gIm.drawOval(x-4, y-4, 8, 8);
+			//gIm.drawOval(x+d-4, y-4, 8, 8);
+			gIm.setColor(kleurFont);
+			gIm.setFont(fl);
+			int w = fcm.stringWidth(s.varNaam);
+			int corr = 0;
+			if (dk < 0 || s == basisLijnstukX)
+				corr = -16;
+			gIm.drawString(s.varNaam, x + d / 2 - w / 2, y + 13 + corr);
+			
+			Polygon pol = new Polygon();
+			pol.addPoint(f.posx.x, f.posx.y);
+			if(f.lsx[f.aantalx-1].d>0)
+			{	pol.addPoint(f.posx.x-7, f.posx.y-7);
+				pol.addPoint(f.posx.x-7, f.posx.y+7);
+			}
+			else
+			{	pol.addPoint(f.posx.x+7, f.posx.y-7);
+				pol.addPoint(f.posx.x+7, f.posx.y+7);
+			}
+			//gIm.fillPolygon(pol);
+		}
+		else if (s.stand == 2 && s != basisLijnstukY)
+		{	gIm.setColor(kleurBalk);
+			//gIm.fillRect(x-1, y+3-Math.max(0,d), 3,dAbs-6 );
+			gIm.setColor(kleurKop);
+			//gIm.fillOval(x-4, y-4, 8, 8);
+			gIm.setColor(Color.black);
+			//gIm.drawOval(x-4, y-d-4, 8, 8);
+			//gIm.drawOval(x-4, y-4, 8, 8);
+			gIm.setColor(kleurFont);
+			gIm.setFont(fl);
+			int w = fcm.stringWidth(s.varNaam);
+			int corr = 0;
+			if (dk<0 || s == basisLijnstukY)
+				corr = 6 + w;
+			gIm.drawString(s.varNaam, x - w - 3 + corr, y - d / 2 + 5);
+			
+			Polygon pol = new Polygon();
+			pol.addPoint(f.posy.x, f.posy.y);
+			if(f.lsy[f.aantaly-1].d>0)
+			{	pol.addPoint(f.posy.x+7, f.posy.y+7);
+				pol.addPoint(f.posy.x-7, f.posy.y+7);
+			}
+			else
+			{	pol.addPoint(f.posy.x+7, f.posy.y-7);
+				pol.addPoint(f.posy.x-7, f.posy.y-7);
+			}
+			//gIm.fillPolygon(pol);
 		}	
 	}
 	

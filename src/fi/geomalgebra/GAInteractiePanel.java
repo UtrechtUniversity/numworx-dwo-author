@@ -36,6 +36,8 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean constructieTools = true;
 	boolean alleenOppervlaktes;
 	boolean werkblad;
+	boolean oppervlaktesZichtbaar = true;
+	boolean lengtesBreedtesZichtbaar = true;
 	boolean kijkNaActief;
 	boolean equivalent = true;
 	String antwoordFormuleStringCorrect = "";
@@ -143,6 +145,8 @@ System.out.println("gaip zetOpdracht");
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
 		boolean werkblad = false;
+		boolean oppervlaktesZichtbaar = true;
+		boolean lengtesBreedtesZichtbaar = true;
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		String antwoordFormuleStringCorrect = "";
@@ -199,6 +203,10 @@ System.out.println("aLD found");
 				alleenOppervlaktes = ((Boolean) b.get("alleenOppervlaktes")).booleanValue();
 			if (b.containsKey("werkblad"))
 				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("oppervlaktesZichtbaar"))
+				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
+			if (b.containsKey("lengtesBreedtesZichtbaar"))
+				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
 			if (b.containsKey("equivalent"))
@@ -218,6 +226,8 @@ System.out.println("aLD found");
 		zetConstructieTools(constructieTools);
 		zetAlleenOppervlaktes(alleenOppervlaktes);
 		zetWerkblad(werkblad);
+		zetOppervlaktesZichtbaar(oppervlaktesZichtbaar);
+		zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
 		zetKijkNaActief(kijkNaActief);
 		this.equivalent = equivalent;
 		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
@@ -266,6 +276,8 @@ System.out.println("gaip setEditState");
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
 		boolean werkblad = false;
+		boolean oppervlaktesZichtbaar = true;
+		boolean lengtesBreedtesZichtbaar = true;
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		String antwoordFormuleStringCorrect = "";
@@ -324,6 +336,11 @@ System.out.println("aLD found");
 			
 			if (b.containsKey("werkblad"))
 				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("oppervlaktesZichtbaar"))
+				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
+			if (b.containsKey("lengtesBreedtesZichtbaar"))
+				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
+			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
 			if (b.containsKey("equivalent"))
@@ -343,6 +360,9 @@ System.out.println("aLD found");
 		zetConstructieTools(constructieTools);
 		zetAlleenOppervlaktes(alleenOppervlaktes);
 		zetWerkblad(werkblad);
+		zetOppervlaktesZichtbaar(oppervlaktesZichtbaar);
+		zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
+		
 		zetKijkNaActief(kijkNaActief);
 		this.equivalent = equivalent;
 		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
@@ -382,6 +402,8 @@ System.out.println("aLD found");
 		h.put("constructieTools", new Boolean(constructieTools));
 		h.put("alleenOppervlaktes", new Boolean(alleenOppervlaktes));
 		h.put("werkblad", new Boolean(werkblad));
+		h.put("oppervlaktesZichtbaar", new Boolean(oppervlaktesZichtbaar));
+		h.put("lengtesBreedtesZichtbaar", new Boolean(lengtesBreedtesZichtbaar));
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
 		h.put("equivalent", new Boolean(equivalent));
 		
@@ -436,6 +458,19 @@ System.out.println("aLD found");
 		werkblad = b;
 		av.zetWerkBlad(werkblad);
 	}
+	
+	public void zetOppervlaktesZichtbaar(boolean b)
+	{
+		oppervlaktesZichtbaar = b;
+		av.zetOppervlaktesZichtbaar(oppervlaktesZichtbaar);
+	}
+
+	public void zetLengtesBreedtesZichtbaar(boolean b)
+	{
+		lengtesBreedtesZichtbaar = b;
+		av.zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
+	}
+	
 	
 	public void zetKijkNaActief(boolean b)
 	{

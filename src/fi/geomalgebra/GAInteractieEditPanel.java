@@ -18,7 +18,7 @@ import fi.beans.wiskopdrbeans.*;
 public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel,
 																	ActionListener	
 {	
-	int editWidth = 190;
+	int editWidth = 200;
 	int editHeight = 500; 
 	int gaipBreedte = 500; // startbreedte gaip
 	int gaipHoogte = 450; // starthoogte gaip
@@ -37,7 +37,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	
 	JCheckBox varWaardeBox, oppWaardeBox, formuleBox, constructieToolsBox, alleenOppervlaktesBox,
-	          werkbladBox;
+	          werkbladBox, oppervlaktesZichtbaarBox, lengtesBreedtesZichtbaarBox;;
 	
 	JCheckBox kijkNaActiefBox;
 	ButtonGroup naKijkGroup;
@@ -134,8 +134,27 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		add(werkbladBox);
 		werkbladBox.addActionListener(this);
 		
-		currentY += height + 2 * offset;
+		currentY += height + offset;
 
+		oppervlaktesZichtbaarBox = new JCheckBox(GeomAlgebra.rb.getString("oppervlaktesZichtbaarTekst"), true);
+		oppervlaktesZichtbaarBox.setFont(theFont);
+		oppervlaktesZichtbaarBox.setBackground(Color.white);
+		oppervlaktesZichtbaarBox.setBounds(currentX, currentY, width, height);
+		add(oppervlaktesZichtbaarBox);
+		oppervlaktesZichtbaarBox.addActionListener(this);
+		
+		currentY += height + offset;
+
+		lengtesBreedtesZichtbaarBox = new JCheckBox(GeomAlgebra.rb.getString("lengtesBreedtesZichtbaarTekst"), true);
+		lengtesBreedtesZichtbaarBox.setFont(theFont);
+		lengtesBreedtesZichtbaarBox.setBackground(Color.white);
+		lengtesBreedtesZichtbaarBox.setBounds(currentX, currentY, width, height);
+		add(lengtesBreedtesZichtbaarBox);
+		lengtesBreedtesZichtbaarBox.setEnabled(false);
+		lengtesBreedtesZichtbaarBox.addActionListener(this);
+		
+		currentY += height + 2 * offset;
+		
 		kijkNaActiefBox = new JCheckBox(GeomAlgebra.rb.getString("kijkNaActiefTekst"), false);
 		kijkNaActiefBox.setFont(theFont);
 		kijkNaActiefBox.setBackground(Color.white);
@@ -219,6 +238,8 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			constructieToolsBox.setLocation(gaip.getSize().width + offset, constructieToolsBox.getLocation().y);
 			alleenOppervlaktesBox.setLocation(gaip.getSize().width + offset, alleenOppervlaktesBox.getLocation().y);
 			werkbladBox.setLocation(gaip.getSize().width + offset, werkbladBox.getLocation().y);
+			oppervlaktesZichtbaarBox.setLocation(gaip.getSize().width + offset, oppervlaktesZichtbaarBox.getLocation().y);
+			lengtesBreedtesZichtbaarBox.setLocation(gaip.getSize().width + offset, lengtesBreedtesZichtbaarBox.getLocation().y);
 			kijkNaActiefBox.setLocation(gaip.getSize().width + offset, kijkNaActiefBox.getLocation().y);
 			equivalentButton.setLocation(gaip.getSize().width + 2 * offset, equivalentButton.getLocation().y);
 			gelijkButton.setLocation(gaip.getSize().width + 2 * offset, gelijkButton.getLocation().y);
@@ -240,6 +261,8 @@ System.out.println("gaiep setEditState");
 		boolean constructieTools = true;
 		boolean alleenOppervlaktes = false;
 		boolean werkblad = false;
+		boolean oppervlaktesZichtbaar = true;
+		boolean lengtesBreedtesZichtbaar = true;
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		// antwoord ophalen
@@ -297,6 +320,11 @@ System.out.println("aLD found");
 				alleenOppervlaktes = ((Boolean) b.get("alleenOppervlaktes")).booleanValue();
 			if (b.containsKey("werkblad"))
 				werkblad = ((Boolean) b.get("werkblad")).booleanValue();
+			if (b.containsKey("oppervlaktesZichtbaar"))
+				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
+			if (b.containsKey("lengtesBreedtesZichtbaar"))
+				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
+			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
 			if (b.containsKey("equivalent"))
@@ -319,6 +347,9 @@ System.out.println("aLD found");
 		constructieToolsBox.setSelected(constructieTools);
 		alleenOppervlaktesBox.setSelected(alleenOppervlaktes);
 		werkbladBox.setSelected(werkblad);
+		oppervlaktesZichtbaarBox.setSelected(oppervlaktesZichtbaar);
+		lengtesBreedtesZichtbaarBox.setSelected(lengtesBreedtesZichtbaar || constructieTools);
+		lengtesBreedtesZichtbaarBox.setEnabled(!constructieTools);
 		kijkNaActiefBox.setSelected(kijkNaActief);
 		equivalentButton.setSelected(equivalent);
 		gelijkButton.setSelected(!equivalent);
@@ -458,6 +489,9 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 		else if (e.getSource() == constructieToolsBox)
 		{
 			gaip.zetConstructieTools(constructieToolsBox.isSelected());
+			lengtesBreedtesZichtbaarBox.setSelected(true);
+			gaip.zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaarBox.isSelected());
+			lengtesBreedtesZichtbaarBox.setEnabled(!constructieToolsBox.isSelected());
 		}
 		else if (e.getSource() == alleenOppervlaktesBox)
 		{
@@ -466,6 +500,14 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 		else if (e.getSource() == werkbladBox)
 		{
 			gaip.zetWerkblad(werkbladBox.isSelected());
+		}
+		else if (e.getSource() == oppervlaktesZichtbaarBox)
+		{
+			gaip.zetOppervlaktesZichtbaar(oppervlaktesZichtbaarBox.isSelected());
+		}
+		else if (e.getSource() == lengtesBreedtesZichtbaarBox)
+		{
+			gaip.zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaarBox.isSelected());
 		}
 		else if (e.getSource() == kijkNaActiefBox)
 		{

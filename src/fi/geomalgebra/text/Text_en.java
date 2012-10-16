@@ -26,6 +26,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "formuleTekst", "Show formule for area" },
 				{ "constructieToolsTekst", "Construction toolbox" },
 				{ "alleenOppervlaktesTekst", "Show only areas" },
+				{ "oppervlaktesZichtbaarTekst", "Areas visible" },
+				{ "lengtesBreedtesZichtbaarTekst", "Lengths/widths visible" },
+				
 				
 				{ "werkbladTekst", "Work area" },
 				{ "kijkNaActiefTekst", "Checking active" },
