@@ -58,15 +58,18 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	int bottomHeight = 30;
 	int offSet = 5;
 	
-	JToggleButton tekenButton, gumButton;
+	JToggleButton tekenButton, gumButton, lijnButton, rechthoekButton, cirkelButton;
 	ButtonGroup tekenGumGroup;
-	JButton wisButton;
+	JButton undoButton, wisButton;
 	JButton[] kleurKeuzeButtons;
 	
 	// parametrisatie
 	boolean kleurkeuze = true;
 	boolean lijnen = false;
 	boolean ruitjes = false;
+	boolean lijnTekenen = true;
+	boolean rechthoekTekenen = true;
+	boolean cirkelTekenen = true;
 	
 	// copyright
 	FIButton fiButton;
@@ -82,7 +85,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	Image penDefault, penRollover, penSelected, gumDefault, gumRollover, gumSelected;
 	Image tekenCursor, gumCursor;
 
-	
 
 	public Kladje()
 	{	
@@ -158,6 +160,20 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		if (ruitjesString != null && (ruitjesString.equals("yes") || ruitjesString.equals("true")))
 			ruitjes = true;	
 		
+		if (lijnen && ruitjes)
+			lijnen = false;
+		
+		String lijnTekenenString = getParameter("lijntekenen");
+		if (lijnTekenenString != null && (lijnTekenenString.equals("no") || lijnTekenenString.equals("false")))
+			lijnTekenen = false;	
+		String rechthoekTekenenString = getParameter("rechthoektekenen");
+		if (rechthoekTekenenString != null && (rechthoekTekenenString.equals("no") || rechthoekTekenenString.equals("false")))
+			rechthoekTekenen = false;	
+		String cirkelTekenenString = getParameter("cirkeltekenen");
+		if (cirkelTekenenString != null && (cirkelTekenenString.equals("no") || cirkelTekenenString.equals("false")))
+			cirkelTekenen = false;	
+				
+		
 		
 		//Fi-logo, copyright
 		fiButton = new FIButton("Info", new String[]
@@ -192,13 +208,45 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		getContentPane().add(gumButton);
 		gumButton.addActionListener(new TekenGumAL());
 		
+		lijnButton = new JToggleButton("/");
+		lijnButton.setBorder(null);
+		lijnButton.setBounds(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	                        getSize().height - offSet - 20, 20, 20);
+		getContentPane().add(lijnButton);
+		lijnButton.addActionListener(new TekenGumAL());
+		
+		rechthoekButton = new JToggleButton("#");
+		rechthoekButton.setBorder(null);
+		rechthoekButton.setBounds(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+	                              getSize().height - offSet - 20, 20, 20);
+		getContentPane().add(rechthoekButton);
+		rechthoekButton.addActionListener(new TekenGumAL());
+
+		cirkelButton = new JToggleButton("o");
+		cirkelButton.setBorder(null);
+		cirkelButton.setBounds(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
+	                           getSize().height - offSet - 20, 20, 20);
+		getContentPane().add(cirkelButton);
+		cirkelButton.addActionListener(new TekenGumAL());
+		
 		tekenGumGroup.add(tekenButton);
 		tekenGumGroup.add(gumButton);
+		tekenGumGroup.add(lijnButton);
+		tekenGumGroup.add(rechthoekButton);
+		tekenGumGroup.add(cirkelButton);
+
+		undoButton = new JButton(rb.getString("terugTekst"));
+		int width = theFM.stringWidth(rb.getString("terugTekst")) + 35;
+		undoButton.setFont(theFont);
+		undoButton.setBounds(cirkelButton.getLocation().x + cirkelButton.getSize().width + 3 * offSet,
+				             getSize().height - 20 - offSet, width, 20);
+		getContentPane().add(undoButton);
+		undoButton.addActionListener(this);
 		
 		wisButton = new JButton(rb.getString("wisTekst"));
-		int width = theFM.stringWidth(rb.getString("wisTekst")) + 35;
+		width = theFM.stringWidth(rb.getString("wisTekst")) + 35;
 		wisButton.setFont(theFont);
-		wisButton.setBounds(gumButton.getLocation().x + gumButton.getSize().width + 3 * offSet,
+		wisButton.setBounds(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
 				            getSize().height - 20 - offSet, width, 20);
 		getContentPane().add(wisButton);
 		wisButton.addActionListener(this);
@@ -225,6 +273,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		getContentPane().add(kladjeVeld);
 		
+				
 		boolean error = false;
 		Cursor drawCursor = null;
 		try
@@ -244,8 +293,149 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		kladjeVeld.zetLijnen(lijnen);
 		kladjeVeld.zetRuitjes(ruitjes);
 		
+		layoutBottom();
+		
 	} // init	
 
+	public void layoutBottom()
+	{
+		if (lijnTekenen && rechthoekTekenen && cirkelTekenen)
+		{
+			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	      			               getSize().height - offSet - 20);
+			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+	      			                    getSize().height - offSet - 20);
+			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
+	      			                 getSize().height - offSet - 20);
+
+			undoButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+			
+		}
+		else if (!lijnTekenen && rechthoekTekenen && cirkelTekenen)
+		{	
+			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	      			                    getSize().height - offSet - 20);
+			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
+	      			                 getSize().height - offSet - 20);
+			undoButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+
+		}
+		else if (lijnTekenen && !rechthoekTekenen && cirkelTekenen)
+		{
+			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	      			               getSize().height - offSet - 20);
+			cirkelButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+	      			                 getSize().height - offSet - 20);
+			undoButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+					//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+
+
+		}
+		else if (lijnTekenen && rechthoekTekenen && !cirkelTekenen)
+		{
+			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	      			               getSize().height - offSet - 20);
+			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+	      			  getSize().height - offSet - 20);
+
+			undoButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+
+		}
+		else if (!lijnTekenen && !rechthoekTekenen && cirkelTekenen)
+		{	
+			cirkelButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	      			                 getSize().height - offSet - 20);
+			undoButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+			
+
+		}
+		else if (!lijnTekenen && rechthoekTekenen && !cirkelTekenen)
+		{
+			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+	       			                    getSize().height - offSet - 20);
+
+			undoButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + 3 * offSet,
+						           getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+			
+		}
+		else if (lijnTekenen && !rechthoekTekenen && !cirkelTekenen)
+		{
+			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+                       			   getSize().height - offSet - 20);
+
+			undoButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + 3 * offSet,
+	      			               getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+
+
+		}
+		else if (!lijnTekenen && !rechthoekTekenen && !cirkelTekenen)
+		{
+			undoButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + 3 * offSet,
+	      			  getSize().height - 20 - offSet);
+			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
+		            			  getSize().height - 20 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+
+		}
+		
+	}
 	
 	class TekenGumAL implements ActionListener
 	{
@@ -272,7 +462,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 				}
 			}
 			
-			if (gumButton.isSelected())
+			else if (gumButton.isSelected())
 			{
 				kladjeVeld.mouseMode = kladjeVeld.gummen;
 				
@@ -292,6 +482,30 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 				{	kladjeVeld.setCursor(deleteCursor);
 				}
 			}
+			else if (lijnButton.isSelected())
+			{
+				kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
+				
+				kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				// cursor
+			}
+			
+			else if (rechthoekButton.isSelected())
+			{
+				kladjeVeld.mouseMode = kladjeVeld.rechthoekTekenen;
+				
+				kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				// cursor
+			}
+			
+			else if (cirkelButton.isSelected())
+			{
+				kladjeVeld.mouseMode = kladjeVeld.cirkelTekenen;
+				
+				kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));				
+				// cursor
+			}
+			
 		}
 	}
 	
@@ -307,11 +521,17 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		{
 			kladjeVeld.wis();
 		}
+		
+		if (e.getSource() == undoButton)
+		{
+			kladjeVeld.undo();
+		}
 
 	}
 	
 	// scormgebeuren
 
+	
 	public void start()
 	{	if (api != null)
 		{	String s = api.LMSGetValue("cmi.suspend_data");
@@ -396,7 +616,7 @@ System.out.println("Kladje getState");
     
     public Parameter[] getEditableParameters()
 	{	
-    	Parameter[] parameters = new Parameter[3];
+    	Parameter[] parameters = new Parameter[6];
 		
 		DataType type = new ScormString();
 		DataType btype = new ScormBoolean();
@@ -409,6 +629,16 @@ System.out.println("Kladje getState");
 		
 		param = new Parameter("ruitjes", "kladje met ruitjes", btype);
 		parameters[2] = param;
+		
+		param = new Parameter("lijntekenen", "optie lijnen tekenen", btype);
+		parameters[3] = param;
+		
+		param = new Parameter("rechthoektekenen", "optie rechthoeken tekenen", btype);
+		parameters[4] = param;
+		
+		param = new Parameter("cirkeltekenen", "optie cirkels tekenen", btype);
+		parameters[5] = param;
+		
 		
 		return parameters;
     }

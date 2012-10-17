@@ -36,6 +36,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;
 	JRadioButton blancoButton, lijnenButton, ruitjesButton; 
+	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox;
 	
 	public KladjeInteractieEditPanel()
 	{
@@ -94,8 +95,36 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		ruitjesButton.addActionListener(this);
 		achtergrondGroep.add(ruitjesButton);
 		
-		currentY += height + offset;		
-				
+		currentY += height + 2 * offset;
+		
+		lijnTekenenBox = new JCheckBox(Kladje.rb.getString("lijnTekenenTekst"), true);
+		lijnTekenenBox.setFont(theFont);
+		lijnTekenenBox.setBackground(Color.white);
+		lijnTekenenBox.setBounds(currentX, currentY, width, height);
+		add(lijnTekenenBox);
+		lijnTekenenBox.addActionListener(this);
+		
+		currentY += height + offset;
+		
+		rechthoekTekenenBox = new JCheckBox(Kladje.rb.getString("rechthoekTekenenTekst"), true);
+		rechthoekTekenenBox.setFont(theFont);
+		rechthoekTekenenBox.setBackground(Color.white);
+		rechthoekTekenenBox.setBounds(currentX, currentY, width, height);
+		add(rechthoekTekenenBox);
+		rechthoekTekenenBox.addActionListener(this);
+		
+		currentY += height + offset;
+
+		cirkelTekenenBox = new JCheckBox(Kladje.rb.getString("cirkelTekenenTekst"), true);
+		cirkelTekenenBox.setFont(theFont);
+		cirkelTekenenBox.setBackground(Color.white);
+		cirkelTekenenBox.setBounds(currentX, currentY, width, height);
+		add(cirkelTekenenBox);
+		cirkelTekenenBox.addActionListener(this);
+		
+		currentY += height + offset;
+
+		
 		componentsCreated = true;
 	}	
 	
@@ -107,6 +136,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			blancoButton.setLocation(klip.getSize().width + offset, blancoButton.getLocation().y);
 			lijnenButton.setLocation(klip.getSize().width + offset, lijnenButton.getLocation().y);
 			ruitjesButton.setLocation(klip.getSize().width + offset, ruitjesButton.getLocation().y);
+			
+			lijnTekenenBox.setLocation(klip.getSize().width + offset, lijnTekenenBox.getLocation().y);
+			rechthoekTekenenBox.setLocation(klip.getSize().width + offset, rechthoekTekenenBox.getLocation().y);
+			cirkelTekenenBox.setLocation(klip.getSize().width + offset, cirkelTekenenBox.getLocation().y);
 		}
 	}
 	
@@ -127,6 +160,20 @@ System.out.println("kliep setEditState");
 		if (b.containsKey("ruitjes"))
 			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
 		ruitjesButton.setSelected(ruitjes);
+		
+		boolean lijnTekenen = true;
+		if (b.containsKey("lijnTekenen"))
+			lijnTekenen = ((Boolean) b.get("lijnTekenen")).booleanValue();
+		lijnTekenenBox.setSelected(lijnTekenen);
+		boolean rechthoekTekenen = true;
+		if (b.containsKey("rechthoekTekenen"))
+			rechthoekTekenen = ((Boolean) b.get("rechthoekTekenen")).booleanValue();
+		rechthoekTekenenBox.setSelected(rechthoekTekenen);
+		boolean cirkelTekenen = true;
+		if (b.containsKey("cirkelTekenen"))
+			cirkelTekenen = ((Boolean) b.get("cirkelTekenen")).booleanValue();
+		cirkelTekenenBox.setSelected(cirkelTekenen);
+		
 		
 		
 		if (b.containsKey("klipBreedte"))
@@ -230,6 +277,19 @@ System.out.println("kliep getEditState");
 		{
 			klip.zetRuitjes(ruitjesButton.isSelected());
 		}
+		else if (e.getSource() == lijnTekenenBox)
+		{
+			klip.zetLijnTekenen(lijnTekenenBox.isSelected());
+		}
+		else if (e.getSource() == rechthoekTekenenBox)
+		{
+			klip.zetRechthoekTekenen(rechthoekTekenenBox.isSelected());
+		}
+		else if (e.getSource() == cirkelTekenenBox)
+		{
+			klip.zetCirkelTekenen(cirkelTekenenBox.isSelected());
+		}
+		
 
 	}
 

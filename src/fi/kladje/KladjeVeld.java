@@ -1,6 +1,7 @@
 package fi.kladje;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -9,6 +10,8 @@ import java.io.Serializable;
 
 public class KladjeVeld extends JPanel 
 {
+	static double NZERO = 1e-5d;
+	
 	boolean lijnen = false;
 	boolean ruitjes = false;
 	
@@ -32,16 +35,28 @@ public class KladjeVeld extends JPanel
 
 	final int tekenen = 0;
 	final int gummen = 1;
+	final int lijnTekenen = 2;
+	final int rechthoekTekenen = 3;
+	final int cirkelTekenen = 4;
 	int mouseMode = tekenen;
 	Vector draggPoints = new Vector();
+	Point figuurStart = null;
+	Point lijnEinde = null;
+	Rectangle tekenRechthoek = null;
 
-	ColorBytes[][] pixels;
+	ColorBytes[][] pixels = null;
 	int breedte, hoogte;
 //	int penGrootte = 2; // oneven
 	int gumGrootte = 7; // oneven
 	
 	Image offScreen = null;
 	Graphics offGraphics = null;
+	
+	int maxHistories = 5;
+	int numHistories = 0;
+	Vector[] histories = new Vector[maxHistories + 1];
+
+	boolean shiftPressed = false;
 	
 	public KladjeVeld(int w, int h)
 	{
@@ -62,13 +77,33 @@ public class KladjeVeld extends JPanel
 		
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
-
+		
 	}
 
+	void addToHistory()
+	{
+		Vector stateVector = getState();
+		
+		histories[numHistories] = stateVector;
+		numHistories++;
+		if (numHistories > maxHistories)
+		{	for (int i = 0; i < numHistories - 1; i++)
+			{	histories[i] = histories[i + 1];
+			}
+			numHistories--;
+		}		
+	}
+	
+	public Vector getFromHistory()
+	{	if (numHistories == 1)
+			return null;
+		numHistories--;
+		return histories[numHistories - 1];
+	}
 	
 	public void setSize(int w, int h)
 	{
-System.out.println("kladjeVeld.setSize");		
+//System.out.println("kladjeVeld.setSize");		
 		
 		int oudeBreedte = breedte;
 		int oudeHoogte = hoogte;
@@ -76,6 +111,8 @@ System.out.println("kladjeVeld.setSize");
 		hoogte = h;
 		if (pixels != null)
 		{
+//System.out.println("pixels != null");
+
 			ColorBytes[][] oudePixels = new ColorBytes[oudeBreedte][oudeHoogte];
 			for (int hCnt = 0; hCnt < oudeBreedte; hCnt++)
 				for (int vCnt = 0; vCnt < oudeHoogte; vCnt++)
@@ -98,6 +135,7 @@ System.out.println("kladjeVeld.setSize");
 		}
 		else
 		{
+System.out.println("pixels == null");			
 			pixels = new ColorBytes[breedte][hoogte];
 			for (int hCnt = 0; hCnt < breedte; hCnt++)
 				for (int vCnt = 0; vCnt < hoogte; vCnt++)
@@ -132,13 +170,19 @@ System.out.println("kladjeVeld.setSize");
 	
 	public void setState(Vector stateVector)
 	{
+		
+System.out.println("kladjeVeld setState");
+
 		for (int pCnt = 0; pCnt < stateVector.size(); pCnt++)
 		{
 			ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
-			pixels[cb.x][cb.y] = cb;
+			if ((cb.x < breedte) && (cb.y < hoogte))
+				pixels[cb.x][cb.y] = cb;
 		}
 		repaint();
 	}
+	
+	
 	public void zetDrawingColor(int code)
 	{
 		drawingColor = kleuren[code];
@@ -247,6 +291,21 @@ System.out.println("kladjeVeld.setSize");
 			
 		}
 		
+		if ((mouseMode == lijnTekenen) && (figuurStart != null) && (lijnEinde != null))
+		{	g.drawLine(figuurStart.x, figuurStart.y, lijnEinde.x, lijnEinde.y);
+			
+		}
+		
+		if ((mouseMode == rechthoekTekenen) && (tekenRechthoek != null))
+		{
+			g.drawRect(tekenRechthoek.x, tekenRechthoek.y, tekenRechthoek.width, tekenRechthoek.height);
+		}
+		
+		if ((mouseMode == cirkelTekenen) && (tekenRechthoek != null))
+		{
+			g.drawOval(tekenRechthoek.x, tekenRechthoek.y, tekenRechthoek.width, tekenRechthoek.height);
+		}
+		
 	}
 	
 	void updatePixelArray()
@@ -307,6 +366,17 @@ System.out.println("kladjeVeld.setSize");
 			}
 	}
 
+	void undo()
+	{
+		wis();
+		Vector lastState = getFromHistory();
+		if (lastState != null)
+		{	setState(lastState);
+		}
+
+		repaint();
+	}
+	
 	void wis()
 	{	for (int xCnt = 0; xCnt < breedte; xCnt++)
 			for (int yCnt = 0; yCnt < hoogte; yCnt++)
@@ -327,9 +397,14 @@ System.out.println("kladjeVeld.setSize");
 				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
-			else // mouseMode == gummen
+			else if (mouseMode == gummen)
 			{
 				gumPunt(e.getX(), e.getY());
+			}
+			
+			else
+			{
+				figuurStart = new Point(e.getX(), e.getY());
 			}
 			repaint();
 			
@@ -345,9 +420,194 @@ System.out.println("kladjeVeld.setSize");
 				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
-			else // mouseMode == gummen
+			else if (mouseMode == gummen)
 			{
 				gumPunt(e.getX(), e.getY());	
+			}
+			else if (mouseMode == lijnTekenen)
+			{
+				if (e.isShiftDown())
+				{
+					if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+					{	
+						double xZijde = (double) e.getX() - figuurStart.x;
+						double yZijde = (double) e.getY() - figuurStart.y;
+						int min = Math.min(e.getX() - figuurStart.x, e.getY() - figuurStart.y);
+						if (yZijde > xZijde - NZERO)
+						{
+							if (xZijde < yZijde / 2 + NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x, e.getY());
+							}
+							else
+							{
+								lijnEinde = new Point(figuurStart.x + min, figuurStart.y + min);
+							}
+						}
+						else
+						{
+							if (yZijde > xZijde / 2 - NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x + min, figuurStart.y + min);
+							}
+							else
+							{
+								lijnEinde = new Point(e.getX(), figuurStart.y);
+							}
+						}
+
+					}	
+					else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+					{	
+						double xZijde = (double) e.getX() - figuurStart.x;
+						double yZijde = (double) figuurStart.y - e.getY();
+						int min = Math.min(e.getX() - figuurStart.x, figuurStart.y - e.getY());
+						if (yZijde > xZijde + NZERO)
+						{
+							if (xZijde < yZijde / 2 + NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x, e.getY());
+							}
+							else
+							{
+								lijnEinde = new Point(figuurStart.x + min, figuurStart.y - min);
+							}
+						}
+						else
+						{
+							if (yZijde > xZijde / 2 - NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x + min, figuurStart.y - min);
+							}
+							else
+							{
+								lijnEinde = new Point(e.getX(), figuurStart.y);
+							}
+						}
+
+ 
+
+					}	
+					else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+					{	
+						double xZijde = (double) figuurStart.x - e.getX();
+						double yZijde = (double) e.getY() - figuurStart.y;
+						int min = Math.min(figuurStart.x - e.getX(), e.getY() - figuurStart.y);
+						if (yZijde > xZijde + NZERO)
+						{
+							if (xZijde < yZijde / 2 + NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x, e.getY());
+							}
+							else
+							{
+								lijnEinde = new Point(figuurStart.x - min, figuurStart.y + min);
+							}
+						}
+						else
+						{
+							if (yZijde > xZijde / 2 - NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x - min, figuurStart.y + min);
+							}
+							else
+							{
+								lijnEinde = new Point(e.getX(), figuurStart.y);
+							}
+						}
+						
+						
+					}	
+					else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+					{	
+						int xZijde = figuurStart.x - e.getX();
+						int yZijde = figuurStart.y - e.getY();
+						int min = Math.min(figuurStart.x - e.getX(), figuurStart.y - e.getY());
+						if (yZijde > xZijde + NZERO)
+						{
+							if (xZijde < yZijde / 2 + NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x, e.getY());
+							}
+							else
+							{
+								lijnEinde = new Point(figuurStart.x - min, figuurStart.y - min);
+							}
+						}
+						else
+						{
+							if (yZijde > xZijde / 2 - NZERO)
+							{
+								lijnEinde = new Point(figuurStart.x - min, figuurStart.y - min);
+							}
+							else
+							{
+								lijnEinde = new Point(e.getX(), figuurStart.y);
+							}
+						}
+						        
+					}
+					
+				}
+				else
+				{	
+					lijnEinde = new Point(e.getX(), e.getY());
+				}	
+			}
+			else
+			{
+				if (figuurStart != null)
+				{
+					
+					if (e.isShiftDown())
+					{
+//System.out.println("ShiftDown");
+						if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+						{	
+							int zijde = Math.min(e.getX() - figuurStart.x, e.getY() - figuurStart.y);
+							tekenRechthoek = new Rectangle(figuurStart.x, figuurStart.y, zijde, zijde); 
+
+						}	
+						else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+						{	
+							int zijde = Math.min(e.getX() - figuurStart.x, figuurStart.y - e.getY());
+							tekenRechthoek = new Rectangle(figuurStart.x, e.getY(), zijde, zijde); 
+ 
+						}	
+						else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+						{	
+							int zijde = Math.min(figuurStart.x - e.getX(), e.getY() - figuurStart.y);
+							tekenRechthoek = new Rectangle(e.getX(), figuurStart.y, zijde, zijde);
+							
+						}	
+						else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+						{	
+							int zijde = Math.min(figuurStart.x - e.getX(), figuurStart.y - e.getY());
+							tekenRechthoek = new Rectangle(e.getX(), e.getY(), zijde, zijde); 
+							        
+						}
+					}
+					else
+					{	
+						if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+						{	tekenRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
+							                           	   e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
+						}	
+						else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+						{	tekenRechthoek = new Rectangle(figuurStart.x, e.getY(), 
+								                           e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
+						}	
+						else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+						{	tekenRechthoek = new Rectangle(e.getX(), figuurStart.y, 
+													       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
+						}	
+						else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+						{	tekenRechthoek = new Rectangle(e.getX(), e.getY(), 
+													       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
+						}
+					}
+				}	
+				
 			}
 			repaint();
 			
@@ -363,8 +623,21 @@ System.out.println("kladjeVeld.setSize");
 				updatePixelArray();
 				draggPoints.removeAllElements();
 			}	
+			else if (mouseMode == gummen)
+			{
+				
+			}
+			else
+			{	
+				updatePixelArray();
+				figuurStart = null;
+				lijnEinde = null;
+				tekenRechthoek = null;
+			}
+			addToHistory();
 		}
-	}
+	} //MLMML
+	
 }
 
 
