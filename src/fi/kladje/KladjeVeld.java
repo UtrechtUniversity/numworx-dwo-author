@@ -40,6 +40,9 @@ public class KladjeVeld extends JPanel
 	final int cirkelTekenen = 4;
 	int mouseMode = tekenen;
 	Vector draggPoints = new Vector();
+	
+	Vector gumPunten = new Vector();
+	
 	Point figuurStart = null;
 	Point lijnEinde = null;
 	Rectangle tekenRechthoek = null;
@@ -84,6 +87,8 @@ public class KladjeVeld extends JPanel
 	{
 		Vector stateVector = getState();
 		
+//System.out.println("add " + stateVector.size());		
+		
 		histories[numHistories] = stateVector;
 		numHistories++;
 		if (numHistories > maxHistories)
@@ -95,7 +100,7 @@ public class KladjeVeld extends JPanel
 	}
 	
 	public Vector getFromHistory()
-	{	if (numHistories == 1)
+	{	if (numHistories <= 1)
 			return null;
 		numHistories--;
 		return histories[numHistories - 1];
@@ -135,7 +140,7 @@ public class KladjeVeld extends JPanel
 		}
 		else
 		{
-System.out.println("pixels == null");			
+//System.out.println("pixels == null");			
 			pixels = new ColorBytes[breedte][hoogte];
 			for (int hCnt = 0; hCnt < breedte; hCnt++)
 				for (int vCnt = 0; vCnt < hoogte; vCnt++)
@@ -161,24 +166,37 @@ System.out.println("pixels == null");
 				Color c = pixels[hCnt][vCnt].makeColor();
 				if (!c.equals(backgroundColor))
 				{
-					stateVector.addElement(pixels[hCnt][vCnt]);
+					ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
+							                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
+					//stateVector.addElement(pixels[hCnt][vCnt]);
+					stateVector.addElement(newCB);
 				}
 			}
-		
+//System.out.println("kladjeVeld getState " + stateVector.size());		
 		return stateVector;
 	}
 	
 	public void setState(Vector stateVector)
 	{
 		
-System.out.println("kladjeVeld setState");
+//System.out.println("kladjeVeld setState " + stateVector.size());
 
+
+		int cnt = 0;
 		for (int pCnt = 0; pCnt < stateVector.size(); pCnt++)
 		{
 			ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
+			
+			
 			if ((cb.x < breedte) && (cb.y < hoogte))
-				pixels[cb.x][cb.y] = cb;
+			{	pixels[cb.x][cb.y] = cb;
+				Color c = pixels[cb.x][cb.y].makeColor();
+				if (!c.equals(backgroundColor))
+					cnt++;
+			}
 		}
+		
+//System.out.println("kladjeVeld pp " + cnt);		
 		repaint();
 	}
 	
@@ -253,9 +271,9 @@ System.out.println("kladjeVeld setState");
 	}
 	
 	
-	void tekenProgramma(Graphics g, boolean outline)
+	void tekenProgramma(Graphics g, boolean wis)
 	{
-		if (outline)
+		if (wis)
 		{	
 			g.setColor(backgroundColor);
 			g.fillRect(0, 0, getSize().width, getSize().height);
@@ -264,6 +282,7 @@ System.out.println("kladjeVeld setState");
 			//g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		}
 		
+		int tpCnt = 0;
 		
 		for (int hCnt = 1; hCnt < getSize().width - 1; hCnt++)
 			for (int vCnt = 1; vCnt < getSize().height - 1; vCnt++)
@@ -272,11 +291,14 @@ System.out.println("kladjeVeld setState");
 				if (!c.equals(backgroundColor))
 				{
 					tekenPunt(g, hCnt, vCnt);
+					tpCnt++;
 				}
 			}
 		
+//System.out.println("wis = " + wis + " tp = " + tpCnt);		
 	
 		g.setColor(drawingColor);		
+		
 		if (draggPoints.size() == 1)
 		{	Point p = (Point) draggPoints.elementAt(0);
 			g.drawLine(p.x, p.y, p.x, p.y);
@@ -362,7 +384,10 @@ System.out.println("kladjeVeld setState");
 			{
 				if ((xCnt >= 0) && (xCnt < getSize().width - 1) &&
 					(yCnt >= 0) && (yCnt < getSize().height - 1))
-					pixels[xCnt][yCnt].zetColor(backgroundColor);
+				{	pixels[xCnt][yCnt].zetColor(backgroundColor);
+				
+				}
+				
 			}
 	}
 
@@ -622,10 +647,13 @@ System.out.println("kladjeVeld setState");
 			{	
 				updatePixelArray();
 				draggPoints.removeAllElements();
+				//addToHistory();
 			}	
 			else if (mouseMode == gummen)
 			{
-				
+				updatePixelArray();
+				//addToHistory();
+				//updatePixelArray();
 			}
 			else
 			{	
@@ -633,6 +661,7 @@ System.out.println("kladjeVeld setState");
 				figuurStart = null;
 				lijnEinde = null;
 				tekenRechthoek = null;
+				//addToHistory();
 			}
 			addToHistory();
 		}
