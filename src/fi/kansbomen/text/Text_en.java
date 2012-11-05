@@ -9,12 +9,28 @@ public class Text_en extends java.util.ListResourceBundle
             	 	
         	{	"metTerugleggenTekst" , "With replacement" },
             {	"zonderTerugleggenTekst" , "Without replacement"},
+            {	"geenLabelTekst", "Label: none"},
+            {	"letterLabelTekst", "Label: character"},
+            {	"kansLabelTekst", "Label: probability"},
 			{ 	"kleurTekst" , "Different colours" },
+			{	"volgordeTekst", "Order visible"},
+			{	"letterTekst", "Characters visible"},
 			{ 	"aantalTrekkingenTekst" , "Number of draws" },
 			{ 	"aantalOptiesTekst" , "Number of options" },
 			{ 	"naamOptieTekst" , "Name option " },
-			{ 	"optieTekst" , "Option " },
-			{ 	"aantalOptieTekst" , "Number of option " },
+			{	"letterOptieTekst", "Character option " },
+			//{ 	"optieTekst" , "Option " },
+			{ 	"aantalTekst" , "Number of " },
+			{	"naam1StringTekst" , "Blue" },
+	        {	"naam2StringTekst" , "Green" },
+	        {	"naam3StringTekst" , "Red" },
+	        {	"naam4StringTekst" , "Cyan" },
+	        {	"legendaTekst", "Symbols" },
+	        {	"zichtbaarTekst", "Visible for student"},
+	        {	"teruglegZichtbaarTekst", "With/without replacement"},
+	        {	"trekkingZichtbaarTekst", "Number of draws"},
+	        {	"optiesZichtbaarTekst", "Number of options"},
+	        {	"ballenZichtbaarTekst", "Number of balls per option"}
 		//	....
 		
 		};

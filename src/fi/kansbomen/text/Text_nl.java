@@ -7,14 +7,31 @@ public class Text_nl extends java.util.ListResourceBundle
         {
             //{	"welkomTekst" , "Welkom bij Java" }
             	 	
-        {	"metTerugleggenTekst" , "Met terugleggen" },
-        {	"zonderTerugleggenTekst" , "Zonder terugleggen"},
-        { 	"kleurTekst" , "Verschillende kleuren" },
-        { 	"aantalTrekkingenTekst" , "Aantal trekkingen" },
-        { 	"aantalOptiesTekst" , "Aantal opties" },
-        { 	"naamOptieTekst" , "Naam optie " },
-        { 	"optieTekst" , "Optie " },
-        { 	"aantalOptieTekst" , "Aantal optie " },
+	        {	"metTerugleggenTekst" , "Met terugleggen" },
+	        {	"zonderTerugleggenTekst" , "Zonder terugleggen"},
+	        {	"geenLabelTekst", "Label: geen"},
+	        {	"letterLabelTekst", "Label: letter"},
+	        {	"kansLabelTekst", "Label: kans"},
+	        { 	"kleurTekst" , "Verschillende kleuren" },
+	        {	"volgordeTekst", "Volgorde zichtbaar"},
+	        {	"letterTekst", "Letters zichtbaar"},
+	        { 	"aantalTrekkingenTekst" , "Aantal trekkingen" },
+	        { 	"aantalOptiesTekst" , "Aantal opties" },
+	        { 	"naamOptieTekst" , "Naam optie " },
+	        {	"letterOptieTekst", "Letter optie " },
+	        //{ 	"optieTekst" , "Optie " },
+	        { 	"aantalTekst" , "Aantal " },
+	        {	"naam1StringTekst" , "Blauw" },
+	        {	"naam2StringTekst" , "Groen" },
+	        {	"naam3StringTekst" , "Rood" },
+	        {	"naam4StringTekst" , "Cyaan" },
+	        {	"legendaTekst", "Legenda" },
+	        {	"zichtbaarTekst", "Zichtbaar voor leerling"},
+	        {	"teruglegZichtbaarTekst", "Met/zonder terugleggen"},
+	        {	"trekkingZichtbaarTekst", "Aantal trekkingen"},
+	        {	"optiesZichtbaarTekst", "Aantal opties"},
+	        {	"ballenZichtbaarTekst", "Aantal ballen per optie"}
+        
         
 		//	....
 		
