@@ -170,13 +170,13 @@ class Figuur  implements Serializable
 	}
 	public boolean raakLijnX(int nr, int x, int y)
 	{	int xRaak = lsx[nr].positie.x;
-		if(new Rectangle(xRaak-2,miny,4,maxy-miny).contains(x,y))return true;
+		if(new Rectangle(xRaak-4,miny,8,maxy-miny).contains(x,y))return true;
 		else return false;
 	}
 	
 	public boolean raakLijnY(int nr, int x, int y)
 	{	int yRaak = lsy[nr].positie.y;
-		if(new Rectangle(minx,yRaak-2,maxx-minx,4).contains(x,y))return true;
+		if(new Rectangle(minx,yRaak-4,maxx-minx,8).contains(x,y))return true;
 		else return false;
 	}
 	public boolean raakKop(int x, int y )

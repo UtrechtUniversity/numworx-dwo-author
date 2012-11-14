@@ -129,11 +129,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		
 		mi = new MenuItem(GeomAlgebra.rb.getString("menuSpiegelLabel"));
 		mi.addActionListener(this);
-		popup.add(mi);
+		//popup.add(mi);
 		
 		mi = new MenuItem(GeomAlgebra.rb.getString("menuMinLabel"));
 		mi.addActionListener(this);
-		popup.add(mi);
+		//popup.add(mi);
 		
 		
 		mi = new MenuItem(GeomAlgebra.rb.getString("menuKopieerLabel"));
@@ -270,8 +270,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		}
     	
 		tekenprogramma();
-		gIm.setColor(Color.black);
-		gIm.drawRect(0, 0, breedte - 1, hoogte - 1);
+		gIm.setColor(Color.gray);
+		if(!werkblad)gIm.drawRect(0, 0, breedte - 1, hoogte - 1);
 		if (constructieTools)
 			gIm.drawLine(1, hoogte - 42, breedte - 1, hoogte - 42);
 		

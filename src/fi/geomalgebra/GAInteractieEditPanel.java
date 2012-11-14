@@ -46,7 +46,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 	JLabel maxScoreLabel;	
 	JTextField maxScoreVeld;	
 
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	ExpressiePanel antwoordFormulePanel;
 	JLabel doelFormuleLabel;
@@ -267,7 +267,7 @@ System.out.println("gaiep setEditState");
 		boolean equivalent = true;
 		// antwoord ophalen
 		String antwoordFormuleString = "";
-		int scoreMax = 10;
+		int scoreMax = 0;
 	
 
 		if (b.containsKey("appletLaunchData"))
@@ -520,6 +520,8 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 			gelijkButton.setVisible(kijkNaActiefBox.isSelected());
 			maxScoreLabel.setVisible(kijkNaActiefBox.isSelected());
 			maxScoreVeld.setVisible(kijkNaActiefBox.isSelected());
+			
+			if(!kijkNaActiefBox.isSelected()) scoreMax = 0;
 		}
 		else if (e.getSource() == equivalentButton)
 		{

@@ -1,4 +1,4 @@
-package fi.geomalgebra;
+/*package fi.geomalgebra;
 
 import java.applet.Applet;
 import java.applet.AppletContext;
@@ -291,4 +291,4 @@ public class InteractiePanelAdapter extends Panel implements InteractiePanel, Ap
 	public void showDocument( URL url ){}
     public void showDocument( URL url, String target ){}
     public void showStatus( String status ){}
-}
+}*/

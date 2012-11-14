@@ -1,4 +1,4 @@
-package fi.geomalgebra;
+/*package fi.geomalgebra;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -174,4 +174,4 @@ public class InteractieEditPanelAdapter extends JPanel implements InteractieEdit
 	    }
 	}
 
-}
+}*/

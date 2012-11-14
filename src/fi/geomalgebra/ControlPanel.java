@@ -25,7 +25,7 @@ class ControlPanel extends JPanel implements ActionListener , ItemListener
 	{	
 		eigenaar = av;
 		
-		setBackground(new Color(150, 150, 150));
+		setBackground(new Color(208, 228, 255));//(new Color(150, 150, 150));
 		
 		//ns = new NumberSlider(0,400,150,0,"","");
 		//ns.setValue(150);
