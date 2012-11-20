@@ -49,8 +49,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private DecimalFormat df;
 	private FontMetrics fm;
 	
-	PopupMenu popup;
-	MenuItem mi;
+	JPopupMenu popup;
+	JMenuItem mi, menuSplitsItem, menuSVItem, menuVSItem, menuMLItem, menuMALItem;
 	
 	private boolean varWaardeZichtbaar;
 	private boolean oppWaardeZichtbaar;
@@ -60,6 +60,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private boolean werkblad;
 	private boolean oppervlaktesZichtbaar = true;
 	private boolean lengtesBreedtesZichtbaar = true;
+	private boolean negatieveWaarden = true; 
+	private boolean puzzelen = false;
 
 	Rectangle werkbladRectangle = null;
 	Color werkbladColor = new Color(245, 245, 245);
@@ -120,48 +122,49 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		fl = new Font("Helvetica", Font.PLAIN, 12);
 		fcm = getFontMetrics(fc);
 		
-		popup = new PopupMenu();
+		popup = new JPopupMenu();
 		
 			
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuDraaiLabel"));
+		mi = new JMenuItem(GeomAlgebra.rb.getString("menuDraaiLabel"));
 		mi.addActionListener(this);
 		popup.add(mi);
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuSpiegelLabel"));
+		mi = new JMenuItem(GeomAlgebra.rb.getString("menuSpiegelLabel"));
 		mi.addActionListener(this);
 		//popup.add(mi);
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuMinLabel"));
+		mi = new JMenuItem(GeomAlgebra.rb.getString("menuMinLabel"));
 		mi.addActionListener(this);
 		//popup.add(mi);
 		
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuKopieerLabel"));
+		mi = new JMenuItem(GeomAlgebra.rb.getString("menuKopieerLabel"));
 		mi.addActionListener(this);
 		popup.add(mi);
+		
 		popup.addSeparator();
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuSplitsLabel"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		menuSplitsItem = new JMenuItem(GeomAlgebra.rb.getString("menuSplitsLabel"));
+		menuSplitsItem.addActionListener(this);
+		popup.add(menuSplitsItem);
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuSVLabel"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		menuSVItem = new JMenuItem(GeomAlgebra.rb.getString("menuSVLabel"));
+		menuSVItem.addActionListener(this);
+		popup.add(menuSVItem);
 		 
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuVSLabel"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		menuVSItem = new JMenuItem(GeomAlgebra.rb.getString("menuVSLabel"));
+		menuVSItem.addActionListener(this);
+		popup.add(menuVSItem);
 		
 		popup.addSeparator();
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuMLLabel"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		menuMLItem = new JMenuItem(GeomAlgebra.rb.getString("menuMLLabel"));
+		menuMLItem.addActionListener(this);
+		popup.add(menuMLItem);
 		
-		mi = new MenuItem(GeomAlgebra.rb.getString("menuMALLabel"));
-		mi.addActionListener(this);
-		popup.add(mi);
+		menuMALItem = new JMenuItem(GeomAlgebra.rb.getString("menuMALLabel"));
+		menuMALItem.addActionListener(this);
+		popup.add(menuMALItem);
 		
 		
 		add(popup);
@@ -195,9 +198,18 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		
 		hoogte = h;
 		breedte = b;
+
+		if (negatieveWaarden)
+		{	
+			basisPosX = new Point(breedte / 2, hoogte - 69);
+			basisPosY = new Point(28,(hoogte - 60) / 2);
+		}
+		else
+		{	
+			basisPosX = new Point(2 * 24 + 10, hoogte - 69);
+			basisPosY = new Point(28, hoogte - 60 - 29);
+		}
 		
-		basisPosX = new Point(breedte / 2, hoogte - 69);
-		basisPosY = new Point(28,(hoogte - 60) / 2);
 		basisLijnstukX = new Lijnstuk(0, 3, Lijnstuk.HOR, basisPosX.x, basisPosX.y);
 		basisFiguurX = new Figuur(basisPosX.x, basisPosX.y);
 		basisFiguurX.voegToe(basisLijnstukX);
@@ -415,6 +427,49 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		repaint();
 	}
 	
+	public void zetNegatieveWaarden(boolean b)
+	{
+		negatieveWaarden = b;
+		if (negatieveWaarden)
+		{
+			basisPosX = new Point(breedte / 2, hoogte - 69);
+			basisPosY = new Point(28,(hoogte - 60) / 2);
+			basisLijnstukX = new Lijnstuk(0, 3, Lijnstuk.HOR, basisPosX.x, basisPosX.y);
+			basisFiguurX = new Figuur(basisPosX.x, basisPosX.y);
+			basisFiguurX.voegToe(basisLijnstukX);
+			basisLijnstukY = new Lijnstuk(0, 3, Lijnstuk.VER, basisPosY.x, basisPosY.y);
+			basisFiguurY = new Figuur(basisPosY.x, basisPosY.y);
+			basisFiguurY.voegToe(basisLijnstukY);
+			
+		}
+		else
+		{
+			basisPosX = new Point(2 * 24 + 10, hoogte - 69);
+			basisPosY = new Point(28, hoogte - 60 - 29);
+			basisLijnstukX = new Lijnstuk(0, 3, Lijnstuk.HOR, basisPosX.x, basisPosX.y);
+			basisFiguurX = new Figuur(basisPosX.x, basisPosX.y);
+			basisFiguurX.voegToe(basisLijnstukX);
+			basisLijnstukY = new Lijnstuk(0, 3, Lijnstuk.VER, basisPosY.x, basisPosY.y);
+			basisFiguurY = new Figuur(basisPosY.x, basisPosY.y);
+			basisFiguurY.voegToe(basisLijnstukY);
+			
+		}
+		repaint();
+	}
+	
+	public void zetPuzzelen(boolean b)
+	{
+		puzzelen = b;
+		
+		menuSplitsItem.setEnabled(!puzzelen);
+		menuSVItem.setEnabled(!puzzelen);
+		menuVSItem.setEnabled(!puzzelen);
+		menuMLItem.setEnabled(!puzzelen);
+		menuMALItem.setEnabled(!puzzelen);
+		
+		
+		
+	}
 	/*public void zetOpdracht(Opdracht opdr)
 	{	var[1] = opdr.geefVarx();
 		var[2] = opdr.geefVary();
@@ -1067,6 +1122,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	{	for(int i=1 ; i<f.aantalx ; i++)
 		{	if(f.raakLijnX(i,x,y))
 			{	Figuur fn = new Figuur(f.lsx[0].positie.x, f.lsx[0].positie.y);
+				fn.minx = fn.maxx = f.lsx[0].positie.x;
+				fn.miny = fn.maxy = f.lsx[0].positie.y;
 				for(int k=0 ; k<i ; k++)
 				{	Lijnstuk lstx = new Lijnstuk(f.lsx[k]);
 					fn.voegToe(lstx);
@@ -1079,6 +1136,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				aantalFgNieuw++;
 				
 				fn = new Figuur(f.lsx[i].positie.x, f.lsx[i].positie.y);
+				fn.minx = fn.maxx = f.lsx[i].positie.x;
+				fn.miny = fn.maxy = f.lsx[i].positie.y;
 				for(int k=i ; k<f.aantalx ; k++)
 				{	Lijnstuk lstx = new Lijnstuk(f.lsx[k]);
 					fn.voegToe(lstx);
@@ -1096,6 +1155,9 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		for(int i=1 ; i<f.aantaly ; i++)
 		{	if(f.raakLijnY(i,x,y))
 			{	Figuur fn = new Figuur(f.lsy[0].positie.x, f.lsy[0].positie.y);
+				fn.minx = fn.maxx = f.lsy[0].positie.x;
+				fn.miny = fn.maxy = f.lsy[0].positie.y;
+			
 				for(int k=0 ; k<f.aantalx ; k++)
 				{	Lijnstuk lstx = new Lijnstuk(f.lsx[k]);
 					fn.voegToe(lstx);
@@ -1108,6 +1170,9 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				aantalFgNieuw++;
 				
 				fn = new Figuur(f.lsy[i].positie.x, f.lsy[i].positie.y);
+				fn.minx = fn.maxx = f.lsy[i].positie.x;
+				fn.miny = fn.maxy = f.lsy[i].positie.y;
+				
 				for(int k=0 ; k<f.aantalx ; k++)
 				{	Lijnstuk lstx = new Lijnstuk(f.lsx[k]);
 					fn.voegToe(lstx);
@@ -1332,7 +1397,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			return;
 		}
 		
-		boolean b = true;
+		//boolean b = true;
+		boolean b = !puzzelen;
 		while(b)
 		{	b = zoekEnKlikVast();
 		}
@@ -1367,7 +1433,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	public void mouseEntered(MouseEvent e){;}
 	
 	public void actionPerformed(ActionEvent e)
-	{	if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuDraaiLabel")))
+	{	if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuDraaiLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)
 				{	fg[i]=fg[i].draai();
@@ -1375,7 +1441,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				}
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSpiegelLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSpiegelLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)
 				{	fg[i]=fg[i].spiegel();
@@ -1383,12 +1449,12 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				}
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMinLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMinLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)fg[i]=fg[i].negatief();
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuKopieerLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuKopieerLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)
 				{	Figuur fn = fg[i].dupliceer();
@@ -1404,19 +1470,19 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				}
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSplitsLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSplitsLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)fg[i]=fg[i].splits();
 				
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSVLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuSVLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)fg[i]=fg[i].splitsVolledig();
 				
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuVSLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuVSLabel")))
 		{	for(int i=0 ; i<aantalFg ; i++)
 			{	if(fg[i]==selectFiguur)
 				{	fg[i].maakGeheel();
@@ -1429,11 +1495,11 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 				}
 			}
 		}
-		if(((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMLLabel")))
+		if(((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMLLabel")))
 		{	maakLos = true;
 		}
 		
-		if (((MenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMALLabel")))
+		if (((JMenuItem)e.getSource()).getLabel().equals(GeomAlgebra.rb.getString("menuMALLabel")))
 		{	for(int i = 0; i < aantalFg; i++)
 			{
 			

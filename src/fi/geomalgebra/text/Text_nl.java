@@ -28,6 +28,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "alleenOppervlaktesTekst", "Alleen oppervlaktes" },
 				{ "oppervlaktesZichtbaarTekst", "Oppervlaktes zichtbaar" },
 				{ "lengtesBreedtesZichtbaarTekst", "Lengtes/breedtes zichtbaar" },
+				{ "negatieveWaardenTekst", "Negatieve waarden" },
+				{ "puzzelenTekst", "Puzzelen" },
 				
 				{ "werkbladTekst", "Werkblad" },
 				{ "kijkNaActiefTekst", "Kijk na actief" },

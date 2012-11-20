@@ -37,7 +37,8 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	
 	JCheckBox varWaardeBox, oppWaardeBox, formuleBox, constructieToolsBox, alleenOppervlaktesBox,
-	          werkbladBox, oppervlaktesZichtbaarBox, lengtesBreedtesZichtbaarBox;;
+	          werkbladBox, oppervlaktesZichtbaarBox, lengtesBreedtesZichtbaarBox,
+	          negatieveWaardenBox, puzzelenBox;
 	
 	JCheckBox kijkNaActiefBox;
 	ButtonGroup naKijkGroup;
@@ -153,6 +154,24 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		lengtesBreedtesZichtbaarBox.setEnabled(false);
 		lengtesBreedtesZichtbaarBox.addActionListener(this);
 		
+		currentY += height + offset;
+
+		negatieveWaardenBox = new JCheckBox(GeomAlgebra.rb.getString("negatieveWaardenTekst"), true);
+		negatieveWaardenBox.setFont(theFont);
+		negatieveWaardenBox.setBackground(Color.white);
+		negatieveWaardenBox.setBounds(currentX, currentY, width, height);
+		add(negatieveWaardenBox);
+		negatieveWaardenBox.addActionListener(this);
+		
+		currentY += height + offset;
+		
+		puzzelenBox = new JCheckBox(GeomAlgebra.rb.getString("puzzelenTekst"), false);
+		puzzelenBox.setFont(theFont);
+		puzzelenBox.setBackground(Color.white);
+		puzzelenBox.setBounds(currentX, currentY, width, height);
+		add(puzzelenBox);
+		puzzelenBox.addActionListener(this);
+		
 		currentY += height + 2 * offset;
 		
 		kijkNaActiefBox = new JCheckBox(GeomAlgebra.rb.getString("kijkNaActiefTekst"), false);
@@ -240,6 +259,9 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			werkbladBox.setLocation(gaip.getSize().width + offset, werkbladBox.getLocation().y);
 			oppervlaktesZichtbaarBox.setLocation(gaip.getSize().width + offset, oppervlaktesZichtbaarBox.getLocation().y);
 			lengtesBreedtesZichtbaarBox.setLocation(gaip.getSize().width + offset, lengtesBreedtesZichtbaarBox.getLocation().y);
+			negatieveWaardenBox.setLocation(gaip.getSize().width + offset, negatieveWaardenBox.getLocation().y);			
+			puzzelenBox.setLocation(gaip.getSize().width + offset, puzzelenBox.getLocation().y);
+			
 			kijkNaActiefBox.setLocation(gaip.getSize().width + offset, kijkNaActiefBox.getLocation().y);
 			equivalentButton.setLocation(gaip.getSize().width + 2 * offset, equivalentButton.getLocation().y);
 			gelijkButton.setLocation(gaip.getSize().width + 2 * offset, gelijkButton.getLocation().y);
@@ -263,6 +285,9 @@ System.out.println("gaiep setEditState");
 		boolean werkblad = false;
 		boolean oppervlaktesZichtbaar = true;
 		boolean lengtesBreedtesZichtbaar = true;
+		boolean negatieveWaarden = true;
+		boolean puzzelen = false;
+		
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		// antwoord ophalen
@@ -324,6 +349,11 @@ System.out.println("aLD found");
 				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
 			if (b.containsKey("lengtesBreedtesZichtbaar"))
 				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
+			if (b.containsKey("negatieveWaarden"))
+				negatieveWaarden = ((Boolean) b.get("negatieveWaarden")).booleanValue();
+			if (b.containsKey("puzzelen"))
+				puzzelen = ((Boolean) b.get("puzzelen")).booleanValue();
+			
 			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
@@ -350,6 +380,9 @@ System.out.println("aLD found");
 		oppervlaktesZichtbaarBox.setSelected(oppervlaktesZichtbaar);
 		lengtesBreedtesZichtbaarBox.setSelected(lengtesBreedtesZichtbaar || constructieTools);
 		lengtesBreedtesZichtbaarBox.setEnabled(!constructieTools);
+		negatieveWaardenBox.setSelected(negatieveWaarden);
+		puzzelenBox.setSelected(puzzelen);
+		
 		kijkNaActiefBox.setSelected(kijkNaActief);
 		equivalentButton.setSelected(equivalent);
 		gelijkButton.setSelected(!equivalent);
@@ -509,6 +542,16 @@ System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieSt
 		{
 			gaip.zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaarBox.isSelected());
 		}
+		else if (e.getSource() == negatieveWaardenBox)
+		{
+			gaip.zetNegatieveWaarden(negatieveWaardenBox.isSelected());
+		}
+		else if (e.getSource() == puzzelenBox)
+		{
+			gaip.zetPuzzelen(puzzelenBox.isSelected());
+		}
+		
+		
 		else if (e.getSource() == kijkNaActiefBox)
 		{
 			gaip.zetKijkNaActief(kijkNaActiefBox.isSelected());

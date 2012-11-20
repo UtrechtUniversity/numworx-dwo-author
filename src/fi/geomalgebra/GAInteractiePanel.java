@@ -38,6 +38,8 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean werkblad;
 	boolean oppervlaktesZichtbaar = true;
 	boolean lengtesBreedtesZichtbaar = true;
+	boolean negatieveWaarden = true;
+	boolean puzzelen = false;
 	boolean kijkNaActief;
 	boolean equivalent = true;
 	String antwoordFormuleStringCorrect = "";
@@ -147,6 +149,9 @@ System.out.println("gaip zetOpdracht");
 		boolean werkblad = false;
 		boolean oppervlaktesZichtbaar = true;
 		boolean lengtesBreedtesZichtbaar = true;
+		boolean negatieveWaarden = true;
+		boolean puzzelen = false;
+
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		String antwoordFormuleStringCorrect = "";
@@ -207,6 +212,12 @@ System.out.println("aLD found");
 				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
 			if (b.containsKey("lengtesBreedtesZichtbaar"))
 				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
+			if (b.containsKey("negatieveWaarden"))
+				negatieveWaarden = ((Boolean) b.get("negatieveWaarden")).booleanValue();
+			if (b.containsKey("puzzelen"))
+				puzzelen = ((Boolean) b.get("puzzelen")).booleanValue();
+
+			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
 			if (b.containsKey("equivalent"))
@@ -228,6 +239,9 @@ System.out.println("aLD found");
 		zetWerkblad(werkblad);
 		zetOppervlaktesZichtbaar(oppervlaktesZichtbaar);
 		zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
+		zetNegatieveWaarden(negatieveWaarden);
+		zetPuzzelen(puzzelen);
+		
 		zetKijkNaActief(kijkNaActief);
 		this.equivalent = equivalent;
 		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
@@ -278,6 +292,9 @@ System.out.println("gaip setEditState");
 		boolean werkblad = false;
 		boolean oppervlaktesZichtbaar = true;
 		boolean lengtesBreedtesZichtbaar = true;
+		boolean negatieveWaarden = true;
+		boolean puzzelen = false;
+
 		boolean kijkNaActief = false;
 		boolean equivalent = true;
 		String antwoordFormuleStringCorrect = "";
@@ -340,6 +357,10 @@ System.out.println("aLD found");
 				oppervlaktesZichtbaar = ((Boolean) b.get("oppervlaktesZichtbaar")).booleanValue();
 			if (b.containsKey("lengtesBreedtesZichtbaar"))
 				lengtesBreedtesZichtbaar = ((Boolean) b.get("lengtesBreedtesZichtbaar")).booleanValue();
+			if (b.containsKey("negatieveWaarden"))
+				negatieveWaarden = ((Boolean) b.get("negatieveWaarden")).booleanValue();
+			if (b.containsKey("puzzelen"))
+				puzzelen = ((Boolean) b.get("puzzelen")).booleanValue();
 			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
@@ -362,6 +383,8 @@ System.out.println("aLD found");
 		zetWerkblad(werkblad);
 		zetOppervlaktesZichtbaar(oppervlaktesZichtbaar);
 		zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
+		zetNegatieveWaarden(negatieveWaarden);
+		zetPuzzelen(puzzelen);
 		
 		zetKijkNaActief(kijkNaActief);
 		this.equivalent = equivalent;
@@ -404,6 +427,9 @@ System.out.println("aLD found");
 		h.put("werkblad", new Boolean(werkblad));
 		h.put("oppervlaktesZichtbaar", new Boolean(oppervlaktesZichtbaar));
 		h.put("lengtesBreedtesZichtbaar", new Boolean(lengtesBreedtesZichtbaar));
+		h.put("negatieveWaarden", new Boolean(negatieveWaarden));
+		h.put("puzzelen", new Boolean(puzzelen));
+		
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
 		h.put("equivalent", new Boolean(equivalent));
 		
@@ -471,6 +497,19 @@ System.out.println("aLD found");
 		av.zetLengtesBreedtesZichtbaar(lengtesBreedtesZichtbaar);
 	}
 	
+	public void zetNegatieveWaarden(boolean b)
+	{
+		negatieveWaarden = b;
+		lh.zetNegatieveWaarden(negatieveWaarden);
+		lv.zetNegatieveWaarden(negatieveWaarden);
+		av.zetNegatieveWaarden(negatieveWaarden);
+	}
+	
+	public void zetPuzzelen(boolean b)
+	{
+		puzzelen = b;
+		av.zetPuzzelen(puzzelen);
+	}
 	
 	public void zetKijkNaActief(boolean b)
 	{
@@ -528,11 +567,13 @@ System.out.println("aLD found");
 				av.add(cp, 0);
 		
 			lh = new LineaalHor(breedte, hoogte);
+			lh.zetNegatieveWaarden(negatieveWaarden);
 			lh.addActionListener(this);
 			if (constructieTools) 
 				av.add(lh, 0);
 		
 			lv = new LineaalVer(breedte, hoogte);
+			lv.zetNegatieveWaarden(negatieveWaarden);
 			lv.addActionListener(this);
 			if (constructieTools) 
 				av.add(lv, 0);
@@ -553,6 +594,7 @@ System.out.println("aLD found");
 			
 			av.remove(lh);
 			lh = new LineaalHor(breedte, hoogte);
+			lh.zetNegatieveWaarden(negatieveWaarden);
 			lh.addActionListener(this);
 			av.add(lh, 0);
 			lh.setVisible(constructieTools);
@@ -561,6 +603,7 @@ System.out.println("aLD found");
 			
 			av.remove(lv);
 			lv = new LineaalVer(breedte, hoogte);
+			lv.zetNegatieveWaarden(negatieveWaarden);
 			lv.addActionListener(this);
 			av.add(lv, 0);
 			lv.setVisible(constructieTools);			

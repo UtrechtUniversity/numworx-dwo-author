@@ -28,6 +28,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "alleenOppervlaktesTekst", "Show only areas" },
 				{ "oppervlaktesZichtbaarTekst", "Areas visible" },
 				{ "lengtesBreedtesZichtbaarTekst", "Lengths/widths visible" },
+				{ "negatieveWaardenTekst", "Negative values" },
+				{ "puzzelenTekst", "Puzzle mode" },
+				
 				
 				
 				{ "werkbladTekst", "Work area" },

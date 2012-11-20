@@ -1,6 +1,5 @@
 package fi.geomalgebra;
 
-import java.awt.Polygon;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
@@ -20,36 +19,82 @@ class LineaalVer extends JPanel  implements MouseListener
 	Rectangle[] getalknoppen;
 	int[] getallen;
 	int nulPositie;
-	
+
+	boolean negatieveWaarden = true; 
+
 	public LineaalVer(int x, int y)
 	{	addMouseListener(this);
 		breedte = 20;
 		hoogte = y-breedte-50;
-		setBackground(new Color(220,220,220));
+//		setBackground(new Color(220,220,220));
 		setBounds(2,5,breedte,hoogte);
 		
 		aantal = hoogte/(2*schaal)+2;
+//System.out.println("aantal lv = " + aantal);		
 		getalknoppen = new Rectangle[2*aantal+1];
 		getallen = new int[2*aantal+1];
 		nulPositie = hoogte/2;
 		min = -aantal+2-(nulPositie-hoogte/2)/(schaal);
 		max = aantal+2-(nulPositie-hoogte/2)/(schaal);
+//System.out.println("min lv = " + min);
+//System.out.println("max lv = " + max);
+		
 	}
 	
 	//public void paint(Graphics g)
 	public void paintComponent(Graphics g)
-	{	g.drawLine(breedte-1,0,breedte-1,hoogte);
-		aantal = hoogte/(2*schaal);
-		for(int i=min ; i<max-3 ; i++)
-		{	int dy = hoogte/2 - i*schaal;
-			g.drawLine(breedte,dy,breedte-6,dy);
-			g.drawLine(breedte,dy-schaal/2,breedte-4,dy-schaal/2);
-			g.drawString(Integer.toString(i),breedte-18,dy+3);
-			getalknoppen[i-min] = new Rectangle(0,dy-8,breedte,10);
-			getallen[i-min] = i;
+	{	
+		g.setColor(new Color(220,220,220));
+		//g.setColor(Color.orange);
+		g.fillRect(0, 0, getSize().width, getSize().height);
+		g.setColor(Color.black);
+		
+		if (negatieveWaarden)
+			g.drawLine(breedte-1,0,breedte-1,hoogte);
+		else
+			g.drawLine(breedte-1,0,breedte-1,nulPositie);
+		aantal = hoogte / (2 * schaal);
+		
+		int einde = max - 3;
+		if (!negatieveWaarden)
+			einde = max - 2;
+		//for (int i = min; i < max - 3; i++)
+		for (int i = min; i < einde; i++)
+		{	int dy = nulPositie - i * schaal;
+			getalknoppen[i - min] = null;
+			if ((negatieveWaarden && i < 0) || i > 0)
+			{
+				g.drawLine(breedte, dy, breedte - 6, dy);
+				g.drawLine(breedte, dy - schaal / 2, breedte - 4, dy - schaal / 2);
+				g.drawString(Integer.toString(i), breedte - 18, dy + 3);
+				getalknoppen[i-min] = new Rectangle(0,dy-8,breedte,10);
+				getallen[i-min] = i;
+			}
 		}
 		g.setFont(new Font("SansSerif", Font.BOLD, 12));
-		g.drawString(Integer.toString(0),breedte-18,hoogte/2+3);
+		g.drawLine(breedte, nulPositie, breedte - 6, nulPositie);
+		g.drawLine(breedte, nulPositie - schaal / 2, breedte - 4, nulPositie - schaal / 2);
+		g.drawString(Integer.toString(0),breedte - 18, nulPositie + 3);
+		
+	}
+	
+	public void zetNegatieveWaarden(boolean b)
+	{
+		negatieveWaarden = b;
+		if (negatieveWaarden)
+		{	nulPositie = hoogte / 2;
+			aantal = hoogte /(2 * schaal) + 2;
+			min = -aantal + 2 - (nulPositie - hoogte / 2) / (schaal);
+			max = aantal + 2 - (nulPositie - hoogte / 2) / (schaal);
+		}
+		else
+		{
+			nulPositie = hoogte - schaal;
+			aantal = hoogte /(2 * schaal) + 2;
+			min = -1;
+			max = min + 2 * aantal;
+		}
+		repaint();
 		
 	}
 	
@@ -63,7 +108,7 @@ class LineaalVer extends JPanel  implements MouseListener
 	
 	public void mousePressed(MouseEvent e)
 	{	for(int i=0 ; i<2*aantal+1 ; i++)
-		{	if(getalknoppen[i].contains(e.getX(), e.getY()))
+		{	if ((getalknoppen[i] != null) && getalknoppen[i].contains(e.getX(), e.getY()))
 			{	huidigeWaarde = getallen[i];
 				if (actionListener != null)
  				{	actionListener.actionPerformed( new ActionEvent(this, 0, "maakBasis", huidigeWaarde) );
