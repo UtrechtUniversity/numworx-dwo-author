@@ -36,7 +36,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;
 	JRadioButton blancoButton, lijnenButton, ruitjesButton; 
-	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox;
+	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox;
 	
 	public KladjeInteractieEditPanel()
 	{
@@ -124,6 +124,14 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		
 		currentY += height + offset;
 
+		tekstTekenenBox = new JCheckBox(Kladje.rb.getString("tekstTekenenTekst"), true);
+		tekstTekenenBox.setFont(theFont);
+		tekstTekenenBox.setBackground(Color.white);
+		tekstTekenenBox.setBounds(currentX, currentY, width, height);
+		add(tekstTekenenBox);
+		tekstTekenenBox.addActionListener(this);
+		
+		currentY += height + offset;
 		
 		componentsCreated = true;
 	}	
@@ -140,6 +148,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			lijnTekenenBox.setLocation(klip.getSize().width + offset, lijnTekenenBox.getLocation().y);
 			rechthoekTekenenBox.setLocation(klip.getSize().width + offset, rechthoekTekenenBox.getLocation().y);
 			cirkelTekenenBox.setLocation(klip.getSize().width + offset, cirkelTekenenBox.getLocation().y);
+			tekstTekenenBox.setLocation(klip.getSize().width + offset, tekstTekenenBox.getLocation().y);
 		}
 	}
 	
@@ -173,6 +182,10 @@ System.out.println("kliep setEditState");
 		if (b.containsKey("cirkelTekenen"))
 			cirkelTekenen = ((Boolean) b.get("cirkelTekenen")).booleanValue();
 		cirkelTekenenBox.setSelected(cirkelTekenen);
+		boolean tekstTekenen = true;
+		if (b.containsKey("tekstTekenen"))
+			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
+		tekstTekenenBox.setSelected(tekstTekenen);
 		
 		
 		
@@ -288,6 +301,10 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == cirkelTekenenBox)
 		{
 			klip.zetCirkelTekenen(cirkelTekenenBox.isSelected());
+		}
+		else if (e.getSource() == tekstTekenenBox)
+		{
+			klip.zetTekstTekenen(tekstTekenenBox.isSelected());
 		}
 		
 

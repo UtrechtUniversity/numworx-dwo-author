@@ -38,6 +38,8 @@ public class KladjeVeld extends JPanel
 	final int lijnTekenen = 2;
 	final int rechthoekTekenen = 3;
 	final int cirkelTekenen = 4;
+	final int tekstTekenen = 5;
+	final int selecteren = 6;
 	int mouseMode = tekenen;
 	Vector draggPoints = new Vector();
 	
@@ -46,6 +48,8 @@ public class KladjeVeld extends JPanel
 	Point figuurStart = null;
 	Point lijnEinde = null;
 	Rectangle tekenRechthoek = null;
+	Rectangle tekstRechthoek = null;
+	Rectangle selecteerRechthoek = null;
 
 	ColorBytes[][] pixels = null;
 	int breedte, hoogte;
@@ -61,11 +65,40 @@ public class KladjeVeld extends JPanel
 
 	boolean shiftPressed = false;
 	
+	Cursor selectCursor = null;
+	boolean sleepSelectie = false;
+	Vector sleepPoints = new Vector();
+	
+	Cursor textCursor = null;
+	JTextField tekstVeld;
+	Font tekstFont;
+	Font tekenTekstFont;
+	FontMetrics tekstFM;
+	int tekstBreedte = 50;
+	int tekstHoogte;
+	boolean sleepTekst;
+	int tekstRand = 5;
+	String tekstString = "";
+	int tekstX = 0;
+	int tekstY = 0;
+	
 	public KladjeVeld(int w, int h)
 	{
 		breedte = w;
 		hoogte = h;
 		setSize(breedte, hoogte);
+		
+		tekstFont = new Font("Sanserif", Font.BOLD, 14);
+		tekenTekstFont = new Font("Sanserif", Font.PLAIN, 14);
+		tekstFM = getFontMetrics(tekstFont);
+		tekstHoogte = 4 * tekstFM.getHeight() / 3;
+		//tekstHoogte = tekstFM.getHeight();
+//System.out.println("ta = " + tekstFM.getAscent());		
+		tekstVeld = new JTextField();
+		tekstVeld.setFont(tekstFont);
+		tekstVeld.setSize(tekstBreedte, tekstHoogte);
+		tekstVeld.setVisible(false);
+		add(tekstVeld);
 		
 /*		
 		pixels = new ColorBytes[breedte][hoogte];
@@ -83,6 +116,29 @@ public class KladjeVeld extends JPanel
 		
 	}
 
+	public void hideTekstVeld(boolean update)
+	{
+		tekstString = tekstVeld.getText();
+		tekstX = tekstVeld.getLocation().x;
+		tekstY = tekstVeld.getLocation().y + tekstFM.getAscent() + tekstFM.getHeight() / 6;
+		tekstRechthoek = null;
+//System.out.println("trh null");		
+		tekstVeld.setVisible(false);
+//System.out.println("tv invisible");		
+		//repaint();
+//System.out.println("repaint");
+
+		drawTekstString();
+	
+		if (update)
+		{	
+//System.out.println("upa start");			
+			//updatePixelArray();
+			tekstString = "";
+		
+		}
+	}
+	
 	void addToHistory()
 	{
 		Vector stateVector = getState();
@@ -157,6 +213,39 @@ public class KladjeVeld extends JPanel
 		
 	}
 
+	public Vector copyRectangle(Rectangle r)
+	{
+		Vector rVector = new Vector();
+		for (int hCnt = r.x; hCnt < Math.min(breedte, r.x + r.width); hCnt++)
+			for (int vCnt = r.y; vCnt < Math.min(hoogte, r.y + r.height); vCnt++)
+			{
+				Color c = pixels[hCnt][vCnt].makeColor();
+				if (!c.equals(backgroundColor))
+				{
+					ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
+							                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
+					//stateVector.addElement(pixels[hCnt][vCnt]);
+					rVector.addElement(newCB);
+				}
+			}
+		
+		
+		return rVector;
+	}
+	
+	public void wisRectangle(Rectangle r)
+	{
+		int cnt = 0;
+		for (int xCnt = r.x; xCnt < Math.min(breedte, r.x + r.width); xCnt++)
+			for (int yCnt = r.y; yCnt < Math.min(hoogte, r.y + r.height); yCnt++)
+			{
+				pixels[xCnt][yCnt].zetColor(backgroundColor);
+				cnt++;
+			}
+		
+//System.out.println("wisrect = " + cnt);		
+	}
+	
 	public Vector getState()
 	{
 		Vector stateVector = new Vector();
@@ -217,6 +306,24 @@ public class KladjeVeld extends JPanel
 		repaint();
 	}
 	
+	public void drawTekstString()
+	{
+		if (offGraphics != null)
+		{
+			if (tekstString.equals(""))
+				return;
+			
+			offGraphics.setColor(Color.black);
+			offGraphics.setFont(tekenTekstFont);
+			offGraphics.drawString(tekstString, tekstX, tekstY);
+			
+			updatePixelArray();
+			addToHistory();
+			tekstString = "";
+			
+		}
+	}
+	
 	public void paintComponent(Graphics g)
 	{
 		if (offScreen == null)
@@ -260,10 +367,19 @@ public class KladjeVeld extends JPanel
 			}
 			
 		}
-		
+
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		BasicStroke stroke = new BasicStroke(1.5f);
+		
+//System.out.println("width = " + stroke.getLineWidth());
+//System.out.println("cap = " + stroke.getEndCap());
+//System.out.println("join = " + stroke.getLineJoin());
+//System.out.println("miter = " + stroke.getMiterLimit());
+//System.out.println("dash = " + stroke.getDashArray());
+//System.out.println("dash_phase = " + stroke.getDashPhase());
+
 		g2D.setStroke(new BasicStroke(1.5f));
 		
 		tekenProgramma(g2D, false);
@@ -328,6 +444,74 @@ public class KladjeVeld extends JPanel
 			g.drawOval(tekenRechthoek.x, tekenRechthoek.y, tekenRechthoek.width, tekenRechthoek.height);
 		}
 		
+		// alleen op het scherm
+		if ((mouseMode == tekstTekenen) && (tekstRechthoek != null) && !wis)
+		{
+			
+//System.out.println("drawing trh at " + tekstRechthoek.x + "," + tekstRechthoek.y);
+
+			Graphics2D g2D = (Graphics2D) g;
+			float[] dash = new float[2];
+			dash[0] = 1;
+			dash[1] = 3;
+			g2D.setStroke(new BasicStroke(1.2f, 2, 0, 10.0f, dash, 0.0f));
+			g.setColor(Color.black);
+			g.drawRect(tekstRechthoek.x, tekstRechthoek.y, tekstRechthoek.width, tekstRechthoek.height);
+			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		}
+
+/*		
+		if ((mouseMode == tekstTekenen) && !tekstString.equals("") && wis)
+		{
+			
+//System.out.println("ds " + tekstString + " at " + tekstX + "," + tekstY + " w = " + wis); 
+
+
+//Graphics2D g2D = (Graphics2D) g;
+//g2D.setStroke(new BasicStroke(1.0f));
+			g.setColor(Color.black);
+			g.setFont(tekenTekstFont);
+			g.drawString(tekstString, tekstX, tekstY);
+			
+			updatePixelArray();
+			tekstString = "";
+			
+//g2D.setStroke(new BasicStroke(1.5f));			
+		}
+*/		
+		// alleen op het scherm
+		if ((mouseMode == selecteren) && (selecteerRechthoek != null) && !sleepSelectie && !wis)
+		{
+			Graphics2D g2D = (Graphics2D) g;
+			float[] dash = new float[2];
+			dash[0] = 5;
+			dash[1] = 5;
+			g2D.setStroke(new BasicStroke(1.2f, 2, 0, 10.0f, dash, 0.0f));
+			g.setColor(Color.blue);
+			g.drawRect(selecteerRechthoek.x, selecteerRechthoek.y, selecteerRechthoek.width, selecteerRechthoek.height);
+			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+			
+		}
+		
+		// alleen op het scherm
+		if ((mouseMode == selecteren) && (selecteerRechthoek != null) && sleepSelectie && !wis)
+		{	
+			
+			Graphics2D g2D = (Graphics2D) g;
+			float[] dash = new float[2];
+			dash[0] = 5;
+			dash[1] = 5;
+			g2D.setStroke(new BasicStroke(1.2f, 2, 0, 10.0f, dash, 0.0f));
+			g.setColor(Color.blue);
+			g.drawRect(selecteerRechthoek.x, selecteerRechthoek.y, selecteerRechthoek.width, selecteerRechthoek.height);
+			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+			for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
+			{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
+				g.setColor(cb.makeColor());
+				g.drawLine(cb.x, cb.y, cb.x, cb.y);
+			}
+			
+		}
 	}
 	
 	void updatePixelArray()
@@ -403,17 +587,25 @@ public class KladjeVeld extends JPanel
 	}
 	
 	void wis()
-	{	for (int xCnt = 0; xCnt < breedte; xCnt++)
-			for (int yCnt = 0; yCnt < hoogte; yCnt++)
-			{
-				pixels[xCnt][yCnt].zetColor(backgroundColor);
-			}
+	{	if ((mouseMode == selecteren) && (selecteerRechthoek != null))
+		{
+			wisRectangle(selecteerRechthoek);
+		}
+		else
+		{
+			for (int xCnt = 0; xCnt < breedte; xCnt++)
+				for (int yCnt = 0; yCnt < hoogte; yCnt++)
+				{
+					pixels[xCnt][yCnt].zetColor(backgroundColor);
+				}
+		}	
 		repaint();
 	}
 	
+	
 	class MLMML extends MouseAdapter implements MouseMotionListener
 	{
-//		int startX, startY;
+		int startX, startY;
 		
 		public void mousePressed(MouseEvent e)
 		{
@@ -426,10 +618,52 @@ public class KladjeVeld extends JPanel
 			{
 				gumPunt(e.getX(), e.getY());
 			}
-			
-			else
+			else if ((mouseMode == lijnTekenen) ||
+					 (mouseMode == rechthoekTekenen) ||
+					 (mouseMode == cirkelTekenen))
 			{
 				figuurStart = new Point(e.getX(), e.getY());
+			}
+			else if (mouseMode == tekstTekenen)
+			{
+				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
+				{
+					sleepTekst = true;
+					startX = e.getX();
+					startY = e.getY();
+				}
+				else
+				{
+					sleepTekst = false;
+					//if (tekstVeld.isVisible())
+					//{
+						hideTekstVeld(false);
+					//}
+					tekstVeld.setLocation(e.getX(), e.getY());
+					tekstVeld.setText("");
+					tekstVeld.setVisible(true);
+					tekstVeld.requestFocus();
+					tekstRechthoek = new Rectangle(e.getX() - tekstRand, e.getY() - tekstRand, tekstBreedte + 2 * tekstRand - 2, 
+							                                           tekstHoogte + 2 * tekstRand - 2);
+				}
+			}
+			else if (mouseMode == selecteren)
+			{
+				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				{
+					sleepSelectie = true;
+					startX = e.getX();
+					startY = e.getY();
+					sleepPoints = copyRectangle(selecteerRechthoek);
+					wisRectangle(selecteerRechthoek);
+//System.out.println("sr = " + selecteerRechthoek.toString());					
+				}
+				else
+				{
+					sleepSelectie = false;
+					figuurStart = new Point(e.getX(), e.getY());
+					selecteerRechthoek = null;
+				}
 			}
 			repaint();
 			
@@ -579,7 +813,7 @@ public class KladjeVeld extends JPanel
 					lijnEinde = new Point(e.getX(), e.getY());
 				}	
 			}
-			else
+			else if ((mouseMode == rechthoekTekenen) || (mouseMode == cirkelTekenen))
 			{
 				if (figuurStart != null)
 				{
@@ -634,6 +868,77 @@ public class KladjeVeld extends JPanel
 				}	
 				
 			}
+			else if (mouseMode == tekstTekenen)
+			{
+				if (sleepTekst) // verplaats de tekstRechthoek en het tekstVeld!!
+				{	
+				
+					int dx = e.getX() - startX;
+					int dy = e.getY() - startY;
+					tekstRechthoek.translate(dx, dy);
+					tekstVeld.setLocation(tekstVeld.getLocation().x + dx, tekstVeld.getLocation().y + dy);
+					
+					startX = e.getX();
+					startY = e.getY();
+				
+				}
+				
+/*				
+				if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+				{	tekstRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
+					                           	   e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
+				}	
+				else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+				{	tekstRechthoek = new Rectangle(figuurStart.x, e.getY(), 
+						                           e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
+				}	
+				else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+				{	tekstRechthoek = new Rectangle(e.getX(), figuurStart.y, 
+											       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
+				}	
+				else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+				{	tekstRechthoek = new Rectangle(e.getX(), e.getY(), 
+											       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
+				}
+*/				
+			}
+			else if (mouseMode == selecteren)
+			{
+				if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
+				{	
+					int dx = e.getX() - startX;
+					int dy = e.getY() - startY;
+					selecteerRechthoek.translate(dx, dy);
+					//figuurStart.translate(e.getX() - figuurStart.x, figuurStart.y - e.getY());
+					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
+					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
+						translateColorBytes(cb, dx, dy);
+					}	
+					startX = e.getX();
+					startY = e.getY();
+					
+				}
+				else // sleepSelectie, vorm de selecteerRechthoek
+				{	
+					if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+					{	selecteerRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
+							e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
+					}	
+					else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+					{	selecteerRechthoek = new Rectangle(figuurStart.x, e.getY(), 
+					        e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
+					}	
+					else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+					{	selecteerRechthoek = new Rectangle(e.getX(), figuurStart.y, 
+					       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
+					}	
+					else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+					{	selecteerRechthoek = new Rectangle(e.getX(), e.getY(), 
+					       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
+					}
+				}
+			}
+			
 			repaint();
 			
 //			startX = e.getX();
@@ -647,23 +952,93 @@ public class KladjeVeld extends JPanel
 			{	
 				updatePixelArray();
 				draggPoints.removeAllElements();
-				//addToHistory();
+				addToHistory();
 			}	
 			else if (mouseMode == gummen)
 			{
 				updatePixelArray();
-				//addToHistory();
+				addToHistory();
 				//updatePixelArray();
 			}
-			else
+			else if ((mouseMode == lijnTekenen) ||
+					 (mouseMode == rechthoekTekenen) ||
+					 (mouseMode == cirkelTekenen))
 			{	
 				updatePixelArray();
 				figuurStart = null;
 				lijnEinde = null;
 				tekenRechthoek = null;
-				//addToHistory();
+				addToHistory();
 			}
-			addToHistory();
+			else if (mouseMode == tekstTekenen)
+			{
+				
+			}
+			else if (mouseMode == selecteren)
+			{
+				//updatePixelArray();
+				if (sleepSelectie)
+				{	//sleepSelectie = false;
+					//updatePixelArray();
+					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
+					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
+						if ((cb.x < breedte) && (cb.y < hoogte))
+							pixels[cb.x][cb.y] = cb;
+					}
+					
+					sleepPoints.removeAllElements();
+					
+					sleepSelectie = false;
+					addToHistory();
+					//sleepSelectie = false;
+					repaint();
+				}
+			}
+			//addToHistory();
+		}
+		
+		public void mouseMoved(MouseEvent e)
+		{
+			if (mouseMode == tekstTekenen)
+			{
+				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
+				{
+					setCursor(new Cursor(Cursor.MOVE_CURSOR));
+				}
+				else
+				{
+					if (textCursor != null)
+						setCursor(textCursor);
+					else
+						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				}
+				
+			}
+			
+			if (mouseMode == selecteren)
+			{
+				
+				
+				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				{
+					setCursor(new Cursor(Cursor.MOVE_CURSOR));
+				}
+				else
+				{
+					if (selectCursor != null)
+						setCursor(selectCursor);
+					else
+						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				}
+				
+			}
+				
+		}
+		
+		void translateColorBytes(ColorBytes cb, int dx, int dy)
+		{
+			cb.x += dx;
+			cb.y += dy;
 		}
 	} //MLMML
 	

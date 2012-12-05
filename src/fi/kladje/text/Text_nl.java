@@ -14,6 +14,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "lijnTekenenTekst" , "Lijnen tekenen" },
             { "rechthoekTekenenTekst" , "Rechthoeken tekenen" },
             { "cirkelTekenenTekst" , "Cirkels tekenen" },
+            { "tekstTekenenTekst" , "Tekst tekenen" },
             
             
             
