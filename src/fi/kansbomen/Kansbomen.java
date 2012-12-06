@@ -3,14 +3,17 @@ package fi.kansbomen;
 import java.awt.*;
 import java.applet.*;
 import java.util.*;
+
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
 
 import javax.swing.*;
 
 // Huub: maak van het applet maar meteen een JApplet
-public class Kansbomen extends JApplet implements ScormAppletIF 
+public class Kansbomen extends JApplet implements ScormAppletIF, WiskOpdrApplet
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
@@ -26,6 +29,15 @@ public class Kansbomen extends JApplet implements ScormAppletIF
 		mf.pack();
 		mf.show();
 		mf.setSize(width, height);
+	}
+	
+	public Kansbomen(Locale language)
+	{	rb = ResourceBundle.getBundle("fi.kansbomen.text.Text",language);
+	}
+	
+	public Kansbomen()
+	{	Locale language = new Locale ("nl", "");
+		rb = ResourceBundle.getBundle("fi.kansbomen.text.Text",language);
 	}
 	
 	public void init() 
@@ -152,4 +164,9 @@ public class Kansbomen extends JApplet implements ScormAppletIF
     public Parameter[] getAllParameters()
     {	return null;
     }
+
+	public InteractiePanel getInteractiePanel() {
+		// TODO Auto-generated method stub
+		return new KansbomenInteractiePanel();
+	}
 }
