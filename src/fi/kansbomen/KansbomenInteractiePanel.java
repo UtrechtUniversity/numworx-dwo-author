@@ -25,6 +25,7 @@ boolean teruglegZichtbaar = true;
 boolean trekkingZichtbaar = true;
 boolean optiesZichtbaar = true;
 boolean ballenZichtbaar = true;
+boolean legendaZichtbaar = true;
 boolean kleur = true;
 int kansVolgordeKeuze = 0;
 boolean terugleggen = true;
@@ -290,6 +291,34 @@ else
 		}
 	}
 	
+	public void zetLegendaZichtbaar(boolean b)
+	{
+		legendaZichtbaar = b;
+		
+		legendaKop.setVisible(b);
+		legendaKleur[1].setVisible(b);
+		legendaOptie[1].setVisible(b);
+		legendaKleur[2].setVisible(b);
+		legendaOptie[2].setVisible(b);
+	
+		if(aantalOpties+2>2)
+		{	legendaKleur[3].setVisible(b);
+			legendaOptie[3].setVisible(b);
+		}	
+		else
+		{	legendaKleur[3].setVisible(false);
+			legendaOptie[3].setVisible(false);
+		}
+		if(aantalOpties+2>3)
+		{	legendaKleur[4].setVisible(b);
+			legendaOptie[4].setVisible(b);
+		}	
+		else
+		{	legendaKleur[4].setVisible(false);
+			legendaOptie[4].setVisible(false);
+		}
+	}
+	
 	public void zetNaamOptie(int i, String s)
 	{
 		naamOptieTekst[i] = s;
@@ -393,6 +422,7 @@ else
 		else if(e.getSource() == trekkingenBox)
 		{	trekkingen = trekkingenBox.getSelectedIndex();
 			zetTrekkingen(trekkingen+1);
+			//hier set size?
 		}
 		else if(e.getSource() == optiesBox)
 		{
@@ -620,6 +650,10 @@ else
 			ballenZichtbaar = ((Boolean) h.get("ballenZichtbaar")).booleanValue();
 		zetBallenZichtbaar(ballenZichtbaar);
 		
+		if (h.containsKey("legendaZichtbaar"))
+			legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
+		zetLegendaZichtbaar(legendaZichtbaar);
+		
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer)h.get("labelsKeuze")).intValue();
 		zetLabelsKeuze(labelsKeuze);
@@ -741,6 +775,10 @@ else
 			ballenZichtbaar = ((Boolean) h.get("ballenZichtbaar")).booleanValue();
 		zetBallenZichtbaar(ballenZichtbaar);
 		
+		if (h.containsKey("legendaZichtbaar"))
+			legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
+		zetLegendaZichtbaar(legendaZichtbaar);
+		
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer) h.get("labelsKeuze")).intValue();
 		zetLabelsKeuze(labelsKeuze);
@@ -849,6 +887,7 @@ else
 		boolean trekkingZichtbaar = true;
 		boolean optiesZichtbaar = true;
 		boolean ballenZichtbaar = true;
+		boolean legendaZichtbaar = true;
 		int labelsKeuze = 0;
 		boolean kleur = true;
 		int kansVolgordeKeuze = 0;
@@ -866,6 +905,7 @@ else
 		trekkingZichtbaar = this.trekkingZichtbaar;
 		optiesZichtbaar = this.optiesZichtbaar;
 		ballenZichtbaar = this.ballenZichtbaar;
+		legendaZichtbaar = this.legendaZichtbaar;
 		labelsKeuze = this.labelsKeuze;
 		kleur = this.kleur;
 		kansVolgordeKeuze = this.kansVolgordeKeuze;
@@ -894,6 +934,7 @@ else
 		h.put("trekkingZichtbaar", trekkingZichtbaar);
 		h.put("optiesZichtbaar", optiesZichtbaar);
 		h.put("ballenZichtbaar", ballenZichtbaar);
+		h.put("legendaZichtbaar", legendaZichtbaar);
 		h.put("labelsKeuze", labelsKeuze);
 		h.put("kleur", kleur);
 		h.put("kansVolgordeKeuze", kansVolgordeKeuze);

@@ -36,11 +36,12 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 
 	protected KansbomenInteractiePanel kbip; //Ik weet niet waarom protected.
 	JCheckBox kleurBox;
-	JCheckBox teruglegZichtbaarBox, trekkingZichtbaarBox, optiesZichtbaarBox, ballenZichtbaarBox;
+	JCheckBox teruglegZichtbaarBox, trekkingZichtbaarBox, optiesZichtbaarBox, ballenZichtbaarBox, legendaZichtbaarBox;
 	boolean teruglegZichtbaar = true;
 	boolean trekkingZichtbaar = true;
 	boolean optiesZichtbaar = true;
 	boolean ballenZichtbaar = true;
+	boolean legendaZichtbaar = true;
 	JComboBox terugleggenBox, trekkingenBox, optiesBox, labelsBox, kansVolgordeBox;
 	JLabel aantalTrekkingen, aantalOptiesLabel, zichtbaarLabel;
 	JLabel[] naamOptie, aantalOptie, letterOptie;
@@ -219,7 +220,14 @@ public KansbomenInteractieEditPanel ()
 	add(ballenZichtbaarBox);
 	ballenZichtbaarBox.addActionListener(this);
 	
+	currentY += height + 2 * offset;
 	
+	legendaZichtbaarBox = new JCheckBox(Kansbomen.rb.getString("legendaZichtbaarTekst"), legendaZichtbaar);
+	legendaZichtbaarBox.setFont(theFont);
+	legendaZichtbaarBox.setBackground(Color.white);
+	legendaZichtbaarBox.setBounds(currentX, currentY, width, height);
+	add(legendaZichtbaarBox);
+	legendaZichtbaarBox.addActionListener(this);
 	
 	
 	componentsCreated = true;
@@ -246,6 +254,7 @@ public void plaatsComponenten()
 		trekkingZichtbaarBox.setLocation(kbip.getSize().width + offset, trekkingZichtbaarBox.getLocation().y);
 		optiesZichtbaarBox.setLocation(kbip.getSize().width + offset, optiesZichtbaarBox.getLocation().y);
 		ballenZichtbaarBox.setLocation(kbip.getSize().width + offset, ballenZichtbaarBox.getLocation().y);
+		legendaZichtbaarBox.setLocation(kbip.getSize().width + offset, legendaZichtbaarBox.getLocation().y);
 		
 	}
 }
@@ -374,6 +383,11 @@ public void actionPerformed(ActionEvent e)
 	{	ballenZichtbaar = ballenZichtbaarBox.isSelected();
 		kbip.zetBallenZichtbaar(ballenZichtbaar);
 	}	
+	
+	else if(e.getSource() == legendaZichtbaarBox)
+	{	legendaZichtbaar = legendaZichtbaarBox.isSelected();
+		kbip.zetLegendaZichtbaar(legendaZichtbaar);
+	}	
 }
 
 public void focusLost(FocusEvent e) 
@@ -486,6 +500,10 @@ public void setEditState(Hashtable h) {
 	if (h.containsKey("ballenZichtbaar"))
 		ballenZichtbaar = ((Boolean) h.get("ballenZichtbaar")).booleanValue();
 	ballenZichtbaarBox.setSelected(ballenZichtbaar);
+	
+	if (h.containsKey("legendaZichtbaar"))
+		legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
+	legendaZichtbaarBox.setSelected(legendaZichtbaar);
 	
 	if (h.containsKey("labelsKeuze"))
 		labelsKeuze = ((Integer) h.get("labelsKeuze")).intValue();

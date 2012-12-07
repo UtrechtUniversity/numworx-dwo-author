@@ -32,7 +32,8 @@ public class Text_en extends java.util.ListResourceBundle
 	        {	"teruglegZichtbaarTekst", "With/without replacement"},
 	        {	"trekkingZichtbaarTekst", "Number of draws"},
 	        {	"optiesZichtbaarTekst", "Number of options"},
-	        {	"ballenZichtbaarTekst", "Number of balls per option"}
+	        {	"ballenZichtbaarTekst", "Number of balls per option"},
+	        {	"legendaZichtbaarTekst", "Symbol description visible"}
 		//	....
 		
 		};

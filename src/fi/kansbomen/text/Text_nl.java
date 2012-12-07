@@ -32,7 +32,8 @@ public class Text_nl extends java.util.ListResourceBundle
 	        {	"teruglegZichtbaarTekst", "Met/zonder terugleggen"},
 	        {	"trekkingZichtbaarTekst", "Aantal trekkingen"},
 	        {	"optiesZichtbaarTekst", "Aantal opties"},
-	        {	"ballenZichtbaarTekst", "Aantal ballen per optie"}
+	        {	"ballenZichtbaarTekst", "Aantal ballen per optie"},
+	        {	"legendaZichtbaarTekst", "Legenda zichtbaar"}
         
         
 		//	....
