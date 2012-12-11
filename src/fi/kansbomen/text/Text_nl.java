@@ -7,7 +7,8 @@ public class Text_nl extends java.util.ListResourceBundle
         {
             //{	"welkomTekst" , "Welkom bij Java" }
             	 	
-	        {	"metTerugleggenTekst" , "Met terugleggen" },
+        	{	"trekkingBalkTekst", "Trekking" },
+        	{	"metTerugleggenTekst" , "Met terugleggen" },
 	        {	"zonderTerugleggenTekst" , "Zonder terugleggen"},
 	        {	"geenLabelTekst", "Label: geen"},
 	        {	"letterLabelTekst", "Label: letter"},
@@ -19,9 +20,10 @@ public class Text_nl extends java.util.ListResourceBundle
 	        {	"letterTekst", "Letters zichtbaar"},
 	        { 	"aantalTrekkingenTekst" , "Aantal trekkingen" },
 	        { 	"aantalOptiesTekst" , "Aantal opties" },
-	        { 	"naamOptieTekst" , "Naam optie " },
-	        {	"letterOptieTekst", "Letter optie " },
-	        //{ 	"optieTekst" , "Optie " },
+	        {	"naamLetterTekst", "Namen en letters"},
+	        //{ 	"naamOptieTekst" , "Naam optie " },
+	        //{	"letterOptieTekst", "Letter optie " },
+	        { 	"optieTekst" , "Optie " },
 	        { 	"aantalTekst" , "Aantal " },
 	        {	"naam1StringTekst" , "Blauw" },
 	        {	"naam2StringTekst" , "Groen" },
@@ -33,7 +35,8 @@ public class Text_nl extends java.util.ListResourceBundle
 	        {	"trekkingZichtbaarTekst", "Aantal trekkingen"},
 	        {	"optiesZichtbaarTekst", "Aantal opties"},
 	        {	"ballenZichtbaarTekst", "Aantal ballen per optie"},
-	        {	"legendaZichtbaarTekst", "Legenda zichtbaar"}
+	        {	"legendaZichtbaarTekst", "Legenda zichtbaar"},
+	        {	"bovenbalkZichtbaarTekst", "Bovenbalk zichtbaar"}
         
         
 		//	....

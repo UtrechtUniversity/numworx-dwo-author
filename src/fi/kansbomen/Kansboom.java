@@ -12,6 +12,7 @@ public class Kansboom extends JPanel
 	static int BREEDTE = 600;
 	static int BREEDTEVOLGORDE=60;
 	int hoogteKansboomveld;
+	int hoogteKansboom;
 	int breedteKansboomveld;
 	int aantalKolommen;
 	int breedteKolom;
@@ -32,8 +33,8 @@ public class Kansboom extends JPanel
 	
 	Font theFont;
 	FontMetrics theFM;
-	//Font theBoldFont;
-	//FontMetrics theBoldFM;
+	Font theBoldFont;
+	FontMetrics theBoldFM;
 	
 	public Kansboom()
 	{
@@ -42,9 +43,11 @@ public class Kansboom extends JPanel
 		//Bovendien moet de docent kunnen aangeven dat het voor de leerling instelbaar is.
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
+		theBoldFont = new Font("Dialog", Font.BOLD, 12);
+		theBoldFM = getFontMetrics(theBoldFont);
 		
     	hoogteKansboomveld=HOOGTE; 
-    	breedteKansboomveld=BREEDTE; 
+    	breedteKansboomveld=BREEDTE;
     	aantalKolommen=3; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
     	rijhoogte = theFM.getHeight();   
     	
@@ -56,19 +59,26 @@ public class Kansboom extends JPanel
     	
     	volgorde = false;
     	eindkans = false;
+    	bovenbalk = true;
     	
     	breedteVolgordekolom=aantalKolommen*theFM.charWidth('a') + 2* offset;
-    	if(volgorde || eindkans)
+    	if(volgorde)
     		breedteKolom=(breedteKansboomveld-breedteVolgordekolom)/aantalKolommen;
+    	else if(eindkans)
+    		breedteKolom=(breedteKansboomveld-breedteKanskolom)/aantalKolommen;
     	else 
     		breedteKolom=breedteKansboomveld/aantalKolommen;
+    	if(bovenbalk)
+    		hoogteKansboom = hoogteKansboomveld - rijhoogte;
+    	else
+    		hoogteKansboom = hoogteKansboomveld;
     	//setSize(breedteKansboomveld, hoogteKansboomveld);
     	
     	terugleggen = true; //Instelbaar door middel van aanvinkvakje; true is met terugleggen, false is zonder. 
     	kleur = true; //Instelbaar door middel van aanvinkvakje; bij true heeft elke keuzemogelijkheid zijn eigen kleur.
     	letters = false;
     	kans = false;
-    	bovenbalk = false;
+    	
 	}
 	
 	
@@ -111,7 +121,7 @@ public class Kansboom extends JPanel
 		else if(kans)
 			this.tekenKansen(gr);
 		if(bovenbalk)
-			this.tekenBovenbalk(gr);
+			this.tekenBovenbalk(gr);			
 	}
 	
 	private void zetTellers(int i, int j)
@@ -157,7 +167,7 @@ public class Kansboom extends JPanel
 	private void tekenKinderen(int i, int j, int t1, int t2, int t3, int t4, Graphics gr)
 	{
 		int b = breedteKolom;
-		int h = hoogteKansboomveld;
+		int h = hoogteKansboom;
 		int k = aantalOpties;
 		
 		Color kleur1, kleur2, kleur3, kleur4;
@@ -178,49 +188,22 @@ public class Kansboom extends JPanel
 		{ 	if(t4<aantal4)
 			{	gr.setColor(kleur4);
 				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h));
-				/*if(letters)
-				{	gr.setColor(backgroundColor);
-					gr.fillRect((2*i+1)*b/2-theFM.charWidth('a')/2-offset, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2, theFM.charWidth('a')+2*offset, theFM.getHeight());
-					gr.setColor(Color.BLACK);
-					gr.drawString("d",(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-				}
-				*/
+				
 			}
 			if(t3<aantal3)
 			{	gr.setColor(kleur3);
 				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h));
-				/*
-				if(letters)
-				{	gr.setColor(backgroundColor);
-					gr.fillRect((2*i+1)*b/2-theFM.charWidth('a')/2-offset, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2, theFM.charWidth('a')+2*offset, theFM.getHeight());
-					gr.setColor(Color.BLACK);
-					gr.drawString("c",(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-				}
-				*/
+				
 			}
 			if(t2<aantal2)
 			{	gr.setColor(kleur2);
 				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h));
-				/*
-				if(letters)
-				{	gr.setColor(backgroundColor);
-					gr.fillRect((2*i+1)*b/2-theFM.charWidth('a')/2-offset, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2, theFM.charWidth('a')+2*offset, theFM.getHeight());
-					gr.setColor(Color.BLACK);
-					gr.drawString("b",(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-				}
-				*/
+				
 			}
 			if(t1<aantal1)
 			{	gr.setColor(kleur1);
 				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h));
-				/*
-				if(letters)
-				{	gr.setColor(backgroundColor);
-					gr.fillRect((2*i+1)*b/2-theFM.charWidth('a')/2-offset, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2, theFM.charWidth('a')+2*offset, theFM.getHeight());
-					gr.setColor(Color.BLACK);
-					gr.drawString("a",(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-				}
-				*/
+				
 			}
 			
 		}
@@ -230,7 +213,7 @@ public class Kansboom extends JPanel
 	private void tekenLetters(Graphics gr)
 	{
 		int b = breedteKolom;
-		int h = hoogteKansboomveld;
+		int h = hoogteKansboom;
 		int k = aantalOpties;
 		
 		gr.setColor(backgroundColor);
@@ -270,7 +253,7 @@ public class Kansboom extends JPanel
 	private void tekenKansen(Graphics gr)
 	{
 		int b = breedteKolom;
-		int h = hoogteKansboomveld;
+		int h = hoogteKansboom;
 		int k = aantalOpties;
 		int a = aantal1 + aantal2 + aantal3 + aantal4;
 		if(aantalOpties<3)
@@ -342,7 +325,7 @@ public class Kansboom extends JPanel
 	{	int k = aantalOpties;
 		int n = aantalKolommen;
 		int b = breedteKansboomveld;
-		int h = hoogteKansboomveld;
+		int h = hoogteKansboom;
 		int positie;
 		for(int j=1; j<Math.pow(k,n)+1; j++)
 		{	volgordeString = "";
@@ -378,7 +361,7 @@ public class Kansboom extends JPanel
 	{	int k = aantalOpties;
 		int n = aantalKolommen;
 		int b = breedteKansboomveld;
-		int h = hoogteKansboomveld;
+		int h = hoogteKansboom;
 		int s1, s2, s3, s4, s;
 		int a = aantal1 + aantal2 + aantal3 + aantal4;
 		if(aantalOpties<3)
@@ -410,14 +393,14 @@ public class Kansboom extends JPanel
 	
 	public void tekenBovenbalk(Graphics gr)
 	{
-		//boldfont gebruiken? Tekst centreren is misschien mooier.
+		gr.setFont(theBoldFont);
 		int n = aantalKolommen;
 		int xpos, ypos;
 		
 		for(int i=0; i<n; i++)
-		{	xpos = i * breedteKolom + offset;
+		{	xpos = (2*i+1) * breedteKolom / 2 - theBoldFM.stringWidth(Kansbomen.rb.getString("trekkingBalkTekst")+" "+(i+1))/2;
 			ypos = rijhoogte;
-			gr.drawString("trekking", xpos, ypos);
+			gr.drawString(Kansbomen.rb.getString("trekkingBalkTekst")+" "+(i+1), xpos, ypos);
 		}	
 	}
 	
@@ -461,16 +444,19 @@ public class Kansboom extends JPanel
 	{	//hier aanpassen voor bovenbalk.
 	    breedteKansboomveld = b;
 	    hoogteKansboomveld = h;
+	    
 	    breedteVolgordekolom = aantalKolommen*theFM.charWidth('a') + 2 * offset;
 	    breedteKanskolom = berekenBreedteKanskolom();
-	    //de breedte van de kanskolom moet nu eigenlijk het maximum worden
-	    //van de breedtes van de strings in de kanskolom. Over nadenken.
 	    if(volgorde)
 	    	breedteKolom=(breedteKansboomveld-breedteVolgordekolom)/aantalKolommen;
 	    else if(eindkans)
 	    	breedteKolom=(breedteKansboomveld-breedteKanskolom)/aantalKolommen;
 	    else	
 	    	breedteKolom=breedteKansboomveld/aantalKolommen;
+	    if(bovenbalk)
+	    	hoogteKansboom = h-rijhoogte;
+	    else
+	    	hoogteKansboom = h;
 	    super.setSize(b,h);
 	}
 		
@@ -553,6 +539,13 @@ public class Kansboom extends JPanel
 			aantal3 = j;
 		else if(i ==4)
 			aantal4 = j;
+		setSize(breedteKansboomveld, hoogteKansboomveld);
+		repaint();
+	}
+	
+	public void zetBovenbalkZichtbaar(boolean b)
+	{
+		bovenbalk = b;
 		setSize(breedteKansboomveld, hoogteKansboomveld);
 		repaint();
 	}

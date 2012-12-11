@@ -26,6 +26,7 @@ boolean trekkingZichtbaar = true;
 boolean optiesZichtbaar = true;
 boolean ballenZichtbaar = true;
 boolean legendaZichtbaar = true;
+boolean bovenbalkZichtbaar = true;
 boolean kleur = true;
 int kansVolgordeKeuze = 0;
 boolean terugleggen = true;
@@ -317,6 +318,12 @@ else
 		{	legendaKleur[4].setVisible(false);
 			legendaOptie[4].setVisible(false);
 		}
+	}
+	
+	public void zetBovenbalkZichtbaar(boolean b)
+	{
+		bovenbalkZichtbaar = b;
+		kansboom.zetBovenbalkZichtbaar(b);
 	}
 	
 	public void zetNaamOptie(int i, String s)

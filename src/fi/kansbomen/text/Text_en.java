@@ -7,6 +7,7 @@ public class Text_en extends java.util.ListResourceBundle
         {
             //{	"welkomTekst" , "Welcome to Java" },
             	 	
+        	{	"trekkingBalkTekst", "Draw" },
         	{	"metTerugleggenTekst" , "With replacement" },
             {	"zonderTerugleggenTekst" , "Without replacement"},
             {	"geenLabelTekst", "Label: none"},
@@ -19,9 +20,10 @@ public class Text_en extends java.util.ListResourceBundle
 			{	"letterTekst", "Characters visible"},
 			{ 	"aantalTrekkingenTekst" , "Number of draws" },
 			{ 	"aantalOptiesTekst" , "Number of options" },
-			{ 	"naamOptieTekst" , "Name option " },
-			{	"letterOptieTekst", "Character option " },
-			//{ 	"optieTekst" , "Option " },
+			{	"naamLetterTekst", "Names and characters"},
+			//{ 	"naamOptieTekst" , "Name option " },
+			//{	"letterOptieTekst", "Character option " },
+			{ 	"optieTekst" , "Option " },
 			{ 	"aantalTekst" , "Number of " },
 			{	"naam1StringTekst" , "Blue" },
 	        {	"naam2StringTekst" , "Green" },
@@ -33,7 +35,8 @@ public class Text_en extends java.util.ListResourceBundle
 	        {	"trekkingZichtbaarTekst", "Number of draws"},
 	        {	"optiesZichtbaarTekst", "Number of options"},
 	        {	"ballenZichtbaarTekst", "Number of balls per option"},
-	        {	"legendaZichtbaarTekst", "Symbol description visible"}
+	        {	"legendaZichtbaarTekst", "Symbol description visible"},
+	        {	"bovenbalkZichtbaarTekst", "Upper beam visible"}
 		//	....
 		
 		};

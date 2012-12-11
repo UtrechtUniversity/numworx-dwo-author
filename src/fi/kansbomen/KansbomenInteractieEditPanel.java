@@ -36,15 +36,17 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 
 	protected KansbomenInteractiePanel kbip; //Ik weet niet waarom protected.
 	JCheckBox kleurBox;
-	JCheckBox teruglegZichtbaarBox, trekkingZichtbaarBox, optiesZichtbaarBox, ballenZichtbaarBox, legendaZichtbaarBox;
+	JCheckBox teruglegZichtbaarBox, trekkingZichtbaarBox, optiesZichtbaarBox, 
+				ballenZichtbaarBox, legendaZichtbaarBox, bovenbalkZichtbaarBox;
 	boolean teruglegZichtbaar = true;
 	boolean trekkingZichtbaar = true;
 	boolean optiesZichtbaar = true;
 	boolean ballenZichtbaar = true;
 	boolean legendaZichtbaar = true;
+	boolean bovenbalkZichtbaar = true;
 	JComboBox terugleggenBox, trekkingenBox, optiesBox, labelsBox, kansVolgordeBox;
-	JLabel aantalTrekkingen, aantalOptiesLabel, zichtbaarLabel;
-	JLabel[] naamOptie, aantalOptie, letterOptie;
+	JLabel aantalTrekkingen, aantalOptiesLabel, naamLetterLabel, zichtbaarLabel;
+	JLabel[] /*naamOptie*/ optieLabel, aantalOptie, letterOptie;
 	JTextField[] naamOptieVeld, aantalOptieVeld, letterOptieVeld;
 	String[] letterString = new String[5];
 	String[] aantalString;
@@ -98,15 +100,6 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += height + 2 * offset;
 	
-	kleurBox = new JCheckBox(Kansbomen.rb.getString("kleurTekst"), kleur);
-	kleurBox.setFont(theFont);
-	kleurBox.setBackground(Color.white);
-	kleurBox.setBounds(currentX, currentY, width, height);
-	add(kleurBox);
-	kleurBox.addActionListener(this);
-	
-	currentY += height + 2 * offset;
-	
 	String[] kansVolgordeKeuzes = { Kansbomen.rb.getString("geenKansVolgordeTekst"), Kansbomen.rb.getString("kansTekst"), Kansbomen.rb.getString("volgordeTekst")};
 	kansVolgordeBox = new JComboBox(kansVolgordeKeuzes);
 	kansVolgordeBox.setSelectedIndex(kansVolgordeKeuze);
@@ -117,7 +110,41 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += height + 2 * offset;
 	
+	kleurBox = new JCheckBox(Kansbomen.rb.getString("kleurTekst"), kleur);
+	kleurBox.setFont(theFont);
+	kleurBox.setBackground(Color.white);
+	kleurBox.setBounds(currentX, currentY, width, height);
+	add(kleurBox);
+	kleurBox.addActionListener(this);
 	
+	currentY += height + offset;
+	
+	legendaZichtbaarBox = new JCheckBox(Kansbomen.rb.getString("legendaZichtbaarTekst"), legendaZichtbaar);
+	legendaZichtbaarBox.setFont(theFont);
+	legendaZichtbaarBox.setBackground(Color.white);
+	legendaZichtbaarBox.setBounds(currentX, currentY, width, height);
+	add(legendaZichtbaarBox);
+	legendaZichtbaarBox.addActionListener(this);
+	
+	currentY += height + offset;
+	
+	bovenbalkZichtbaarBox = new JCheckBox(Kansbomen.rb.getString("bovenbalkZichtbaarTekst"), legendaZichtbaar);
+	bovenbalkZichtbaarBox.setFont(theFont);
+	bovenbalkZichtbaarBox.setBackground(Color.white);
+	bovenbalkZichtbaarBox.setBounds(currentX, currentY, width, height);
+	add(bovenbalkZichtbaarBox);
+	bovenbalkZichtbaarBox.addActionListener(this);
+	
+	currentY += height + 2 * offset;
+	
+	naamLetterLabel = new JLabel(Kansbomen.rb.getString("naamLetterTekst"));
+	naamLetterLabel.setFont(theBoldFont);
+	naamLetterLabel.setBounds(currentX, currentY, width, height);
+	add(naamLetterLabel);
+	
+	currentY += height + offset;
+	
+	/*
 	naamOptie = new JLabel[5];
 	for(int i=1; i<5; i++)
 	{	naamOptie[i] = new JLabel(Kansbomen.rb.getString("naamOptieTekst")+i+":"); 
@@ -128,6 +155,19 @@ public KansbomenInteractieEditPanel ()
 	}
 		
 	currentY -= 8 * height + 8 * offset;
+	*/
+	optieLabel = new JLabel[5];
+	for(int i=1; i<5; i++)
+	{	optieLabel[i] = new JLabel(Kansbomen.rb.getString("optieTekst")+i+":"); 
+		optieLabel[i].setFont(theFont);
+		optieLabel[i].setBounds(currentX, currentY, 
+				theFM.stringWidth(Kansbomen.rb.getString("optieTekst")+i+":"), height);
+		add(optieLabel[i]);
+		currentY += height + offset;
+	}
+	
+	currentY -= 4 * height + 4 * offset;
+	currentX += optieLabel[1].getWidth() + offset;
 	
 	naamOptieTekst = new String[5];
 	naamOptieTekst[1] = Kansbomen.rb.getString("naam1StringTekst");
@@ -137,18 +177,19 @@ public KansbomenInteractieEditPanel ()
 	
 	naamOptieVeld = new JTextField[5];
 	for(int i=1; i<5; i++)
-	{ 	currentX += naamOptie[i].getWidth()+ offset;
-		naamOptieVeld[i] = new JTextField(naamOptieTekst[i]);
+	{ 	naamOptieVeld[i] = new JTextField(naamOptieTekst[i]);
 		naamOptieVeld[i].setFont(theFont);
-		naamOptieVeld[i].setBounds(currentX, currentY, width - naamOptie[i].getWidth() - offset, height);
+		naamOptieVeld[i].setBounds(currentX, currentY, width - 
+				optieLabel[i].getWidth() - theFM.charWidth('m') - 4 * offset, height);
 		add(naamOptieVeld[i]);
 		naamOptieVeld[i].addActionListener(this);
 		naamOptieVeld[i].addFocusListener(this);
-		currentY += 2* height + 2* offset;
-		currentX -= naamOptie[i].getWidth()+ offset;
+		currentY += height + offset;
 	}
-		
+	
+	/*
 	currentY -= 7 * height + 7 * offset;
+	
 	
 	letterOptie = new JLabel[5];
 	for(int i=1; i<5; i++)
@@ -158,12 +199,12 @@ public KansbomenInteractieEditPanel ()
 		add(letterOptie[i]);
 		currentY += 2* height + 2* offset;
 	}
-		
-	currentY -= 8 * height + 8 * offset;
+	*/	
+	currentY -= 4 * height + 4 * offset;
 	
 	for(int i=1; i<5; i++)
 		letterString[i] = naamOptieTekst[i].substring(0,1).toLowerCase();
-		
+	/*Oude versie:	
 	letterOptieVeld = new JTextField[5];
 	for(int i=1; i<5; i++)
 	{ 	currentX += letterOptie[i].getWidth()+ offset;
@@ -176,8 +217,24 @@ public KansbomenInteractieEditPanel ()
 		currentY += 2* height + 2* offset;
 		currentX -= naamOptie[i].getWidth()+ offset;
 	}
-		
-	currentY -= height + offset;
+	*/
+	
+	//nieuwe versie:
+	
+	currentX += naamOptieVeld[1].getWidth() + offset;
+	
+	letterOptieVeld = new JTextField[5];
+	for(int i=1; i<5; i++)
+	{ 	letterOptieVeld[i] = new JTextField(letterString[i]);
+		letterOptieVeld[i].setFont(theFont);
+		letterOptieVeld[i].setBounds(currentX, currentY, theFM.charWidth('m') + 2 * offset, height);
+		add(letterOptieVeld[i]);
+		letterOptieVeld[i].addActionListener(this);
+		letterOptieVeld[i].addFocusListener(this);
+		currentY += height + offset;
+	}	
+	
+	currentX -= optieLabel[1].getWidth() + naamOptieVeld[1].getWidth() + 2 * offset;
 	
 	zichtbaarLabel = new JLabel(Kansbomen.rb.getString("zichtbaarTekst"));
 	zichtbaarLabel.setFont(theBoldFont);
@@ -220,15 +277,6 @@ public KansbomenInteractieEditPanel ()
 	add(ballenZichtbaarBox);
 	ballenZichtbaarBox.addActionListener(this);
 	
-	currentY += height + 2 * offset;
-	
-	legendaZichtbaarBox = new JCheckBox(Kansbomen.rb.getString("legendaZichtbaarTekst"), legendaZichtbaar);
-	legendaZichtbaarBox.setFont(theFont);
-	legendaZichtbaarBox.setBackground(Color.white);
-	legendaZichtbaarBox.setBounds(currentX, currentY, width, height);
-	add(legendaZichtbaarBox);
-	legendaZichtbaarBox.addActionListener(this);
-	
 	
 	componentsCreated = true;
 	
@@ -242,12 +290,14 @@ public void plaatsComponenten()
 		labelsBox.setLocation(kbip.getSize().width + offset, labelsBox.getLocation().y);
 		kleurBox.setLocation(kbip.getSize().width + offset, kleurBox.getLocation().y);
 		kansVolgordeBox.setLocation(kbip.getSize().width + offset, kansVolgordeBox.getLocation().y);
+		naamLetterLabel.setLocation(kbip.getSize().width + offset, naamLetterLabel.getLocation().y);
 		for(int i=1; i<5; i++)
 		{
-			naamOptie[i].setLocation(kbip.getSize().width + offset, naamOptie[i].getLocation().y);
-			naamOptieVeld[i].setLocation(kbip.getSize().width + naamOptie[i].getSize().width + offset, naamOptieVeld[i].getLocation().y);
-			letterOptie[i].setLocation(kbip.getSize().width + offset, letterOptie[i].getLocation().y);
-			letterOptieVeld[i].setLocation(kbip.getSize().width + letterOptie[i].getSize().width + offset, letterOptieVeld[i].getLocation().y);
+			optieLabel[i].setLocation(kbip.getSize().width + offset, optieLabel[i].getLocation().y);
+			naamOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width + 2 * offset, naamOptieVeld[i].getLocation().y);
+			//letterOptie[i].setLocation(kbip.getSize().width + offset, letterOptie[i].getLocation().y);
+			letterOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width 
+					+ naamOptieVeld[i].getSize().width + 3 * offset, letterOptieVeld[i].getLocation().y);
 		}
 		zichtbaarLabel.setLocation(kbip.getSize().width + offset, zichtbaarLabel.getLocation().y);
 		teruglegZichtbaarBox.setLocation(kbip.getSize().width + offset, teruglegZichtbaarBox.getLocation().y);
@@ -255,6 +305,7 @@ public void plaatsComponenten()
 		optiesZichtbaarBox.setLocation(kbip.getSize().width + offset, optiesZichtbaarBox.getLocation().y);
 		ballenZichtbaarBox.setLocation(kbip.getSize().width + offset, ballenZichtbaarBox.getLocation().y);
 		legendaZichtbaarBox.setLocation(kbip.getSize().width + offset, legendaZichtbaarBox.getLocation().y);
+		bovenbalkZichtbaarBox.setLocation(kbip.getSize().width + offset, bovenbalkZichtbaarBox.getLocation().y);
 		
 	}
 }
@@ -388,6 +439,11 @@ public void actionPerformed(ActionEvent e)
 	{	legendaZichtbaar = legendaZichtbaarBox.isSelected();
 		kbip.zetLegendaZichtbaar(legendaZichtbaar);
 	}	
+	
+	else if(e.getSource() == bovenbalkZichtbaarBox)
+	{	bovenbalkZichtbaar = bovenbalkZichtbaarBox.isSelected();
+		kbip.zetBovenbalkZichtbaar(bovenbalkZichtbaar);
+	}	
 }
 
 public void focusLost(FocusEvent e) 
@@ -504,6 +560,10 @@ public void setEditState(Hashtable h) {
 	if (h.containsKey("legendaZichtbaar"))
 		legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
 	legendaZichtbaarBox.setSelected(legendaZichtbaar);
+	
+	if (h.containsKey("bovenbalkZichtbaar"))
+		bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
+	bovenbalkZichtbaarBox.setSelected(bovenbalkZichtbaar);
 	
 	if (h.containsKey("labelsKeuze"))
 		labelsKeuze = ((Integer) h.get("labelsKeuze")).intValue();
