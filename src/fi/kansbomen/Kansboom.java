@@ -49,8 +49,7 @@ public class Kansboom extends JPanel
     	hoogteKansboomveld=HOOGTE; 
     	breedteKansboomveld=BREEDTE;
     	aantalKolommen=3; //Instelbaar als aantal keuzemomenten (of aantal keer trekken)
-    	rijhoogte = theFM.getHeight();   
-    	
+    	    	
     	aantalOpties=4; //Instelbaar. Opties: 2, 3 of 4
     	aantal1=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
     	aantal2=4; //Instelbaar. Van 1 tot 10 bijvoorbeeld.
@@ -60,6 +59,10 @@ public class Kansboom extends JPanel
     	volgorde = false;
     	eindkans = false;
     	bovenbalk = true;
+    	if(bovenbalk)
+    		rijhoogte = theFM.getHeight()+offset;
+    	else
+    		rijhoogte = 0;
     	
     	breedteVolgordekolom=aantalKolommen*theFM.charWidth('a') + 2* offset;
     	if(volgorde)
@@ -69,6 +72,7 @@ public class Kansboom extends JPanel
     	else 
     		breedteKolom=breedteKansboomveld/aantalKolommen;
     	if(bovenbalk)
+    		
     		hoogteKansboom = hoogteKansboomveld - rijhoogte;
     	else
     		hoogteKansboom = hoogteKansboomveld;
@@ -187,22 +191,22 @@ public class Kansboom extends JPanel
 		if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
 		{ 	if(t4<aantal4)
 			{	gr.setColor(kleur4);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h));
+				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
 				
 			}
 			if(t3<aantal3)
 			{	gr.setColor(kleur3);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h));
+				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
 				
 			}
 			if(t2<aantal2)
 			{	gr.setColor(kleur2);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h));
+				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
 				
 			}
 			if(t1<aantal1)
 			{	gr.setColor(kleur1);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h), (i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h));
+				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
 				
 			}
 			
@@ -219,7 +223,7 @@ public class Kansboom extends JPanel
 		gr.setColor(backgroundColor);
 		for(int i=1; i<aantalKolommen+1; i++)
 		{
-			gr.fillRect((2*i-1)*b/2-theFM.charWidth('a')/2-offset, 0, theFM.charWidth('a')+2*offset,h);
+			gr.fillRect((2*i-1)*b/2-theFM.charWidth('a')/2-offset, rijhoogte, theFM.charWidth('a')+2*offset,h-rijhoogte);
 		}
 	
 		gr.setColor(Color.BLACK);
@@ -236,13 +240,13 @@ public class Kansboom extends JPanel
 					this.zetTellers(i,j);	
 				if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
 				{ 	if(t4<aantal4)
-						gr.drawString(letter[4],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+						gr.drawString(letter[4],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 					if(t3<aantal3)
-						gr.drawString(letter[3],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+						gr.drawString(letter[3],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 					if(t2<aantal2)
-						gr.drawString(letter[2],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+						gr.drawString(letter[2],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 					if(t1<aantal1)
-						gr.drawString(letter[1],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+						gr.drawString(letter[1],(2*i+1)*b/2-theFM.charWidth('a')/2, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 				}		
 			}
 		}
@@ -273,47 +277,73 @@ public class Kansboom extends JPanel
 			{	if(terugleggen)
 				{
 				gr.setColor(backgroundColor);
-				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal1,a))/2-offset,(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal1,a))+2*offset,theFM.getHeight());
-				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal2,a))/2-offset,(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal2,a))+2*offset,theFM.getHeight());
+				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal1,a))/2-offset,
+						(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+						theFM.stringWidth(simplify(aantal1,a))+2*offset,theFM.getHeight());
+				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal2,a))/2-offset,
+						(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+						theFM.stringWidth(simplify(aantal2,a))+2*offset,theFM.getHeight());
 				if(t3>-1)
-				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal3,a))/2-offset,(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal3,a))+2*offset,theFM.getHeight());
+				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal3,a))/2-offset,
+						(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+						theFM.stringWidth(simplify(aantal3,a))+2*offset,theFM.getHeight());
 				if(t4>-1)
-				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal4,a))/2-offset,(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal4,a))+2*offset,theFM.getHeight());
+				gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal4,a))/2-offset,
+						(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+						theFM.stringWidth(simplify(aantal4,a))+2*offset,theFM.getHeight());
 				
 				gr.setColor(Color.BLACK);
-				gr.drawString(simplify(aantal1,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal1,a))/2, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-				gr.drawString(simplify(aantal2,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal2,a))/2, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+				gr.drawString(simplify(aantal1,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal1,a))/2, 
+						(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
+				gr.drawString(simplify(aantal2,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal2,a))/2, 
+						(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 				if(t3>-1)
-				gr.drawString(simplify(aantal3,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal3,a))/2, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+				gr.drawString(simplify(aantal3,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal3,a))/2, 
+						(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 				if(t4>-1)
-				gr.drawString(simplify(aantal4,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal4,a))/2, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+				gr.drawString(simplify(aantal4,a), (2*i+1)*b/2-theFM.stringWidth(simplify(aantal4,a))/2, 
+						(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 			//Hier wil ik graag vereenvoudigde breuken van maken, die ook liefst onder elkaar weergegeven worden
 			//(al is dit ruimtetechnisch misschien makkelijker, maar dan moet de breedte van de strook
 			//zich wel aanpassen aan de breedste en niet aan de eerste.
 				}
 				else
-				{	this.zetTellers(i,j);	
-					gr.setColor(backgroundColor);
-					if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
-					{ 	if(t4<aantal4)
-							gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal4-t4,a-i))/2-offset,(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal4-t4,a-i))+2*offset,theFM.getHeight());
-						if(t3<aantal3)
-							gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal3-t3,a-i))/2-offset,(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal3-t3,a-i))+2*offset,theFM.getHeight());
-						if(t2<aantal2)
-							gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal2-t2,a-i))/2-offset,(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal2-t2,a-i))+2*offset,theFM.getHeight());
-						if(t1<aantal1)
-							gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal1-t1,a-i))/2-offset,(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2,theFM.stringWidth(simplify(aantal1-t1,a-i))+2*offset,theFM.getHeight());
+				{	
+				this.zetTellers(i,j);	
+				gr.setColor(backgroundColor);
+				if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
+				{ 	if(t4<aantal4)
+					gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal4-t4,a-i))/2-offset,
+							(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+							theFM.stringWidth(simplify(aantal4-t4,a-i))+2*offset,theFM.getHeight());
+					if(t3<aantal3)
+					gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal3-t3,a-i))/2-offset,
+							(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+							theFM.stringWidth(simplify(aantal3-t3,a-i))+2*offset,theFM.getHeight());
+					if(t2<aantal2)
+					gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal2-t2,a-i))/2-offset,
+							(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+							theFM.stringWidth(simplify(aantal2-t2,a-i))+2*offset,theFM.getHeight());
+					if(t1<aantal1)
+					gr.fillRect((2*i+1)*b/2-theFM.stringWidth(simplify(aantal1-t1,a-i))/2-offset,
+							(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))-theFM.getHeight()/2+rijhoogte,
+							theFM.stringWidth(simplify(aantal1-t1,a-i))+2*offset,theFM.getHeight());
 					}	
 					gr.setColor(Color.BLACK);
 					if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
-					{ 	if(t4<aantal4)					
-							gr.drawString(simplify(aantal4-t4,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal4-t4,a-i))/2, (int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-						if(t3<aantal3)						
-							gr.drawString(simplify(aantal3-t3,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal3-t3,a-i))/2, (int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-						if(t2<aantal2)
-							gr.drawString(simplify(aantal2-t2,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal2-t2,a-i))/2, (int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
-						if(t1<aantal1)
-							gr.drawString(simplify(aantal1-t1,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal1-t1,a-i))/2, (int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3);
+					{ 	
+					if(t4<aantal4)					
+						gr.drawString(simplify(aantal4-t4,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal4-t4,a-i))/2, 
+								(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
+					if(t3<aantal3)						
+						gr.drawString(simplify(aantal3-t3,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal3-t3,a-i))/2, 
+								(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
+					if(t2<aantal2)
+						gr.drawString(simplify(aantal2-t2,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal2-t2,a-i))/2, 
+								(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
+					if(t1<aantal1)
+						gr.drawString(simplify(aantal1-t1,a-i),(2*i+1)*b/2-theFM.stringWidth(simplify(aantal1-t1,a-i))/2, 
+								(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 					}	
 				}
 			}
@@ -350,9 +380,9 @@ public class Kansboom extends JPanel
 				}
 			zetTellers(n,j-1);
 			if(terugleggen)
-				gr.drawString(volgordeString, b - breedteVolgordekolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3);
+				gr.drawString(volgordeString, b - breedteVolgordekolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3+rijhoogte);
 			else if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
-				gr.drawString(volgordeString, b - breedteVolgordekolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3);
+				gr.drawString(volgordeString, b - breedteVolgordekolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3+rijhoogte);
 		}
 		
 	}
@@ -373,7 +403,7 @@ public class Kansboom extends JPanel
 		{	zetTellers(n,j-1);
 			if(terugleggen)
 				gr.drawString(simplify((int) (Math.pow(aantal1, t1)*Math.pow(aantal2, t2)*Math.pow(aantal3, Math.max(t3, 0))*Math.pow(aantal4, Math.max(t4,0))),(int) Math.pow(a, n)),
-						b - breedteKanskolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3);
+						b - breedteKanskolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3+rijhoogte);
 			else if(t1 <= aantal1 && t2 <= aantal2 && t3 <= aantal3 && t4 <= aantal4)
 			{	s1 = 1; s2 = 1; s3 = 1; s4 = 1; s = 1;
 				for(int i=0; i < t1; i++)
@@ -386,7 +416,8 @@ public class Kansboom extends JPanel
 					s4 *= aantal4-i;
 				for(int i=0; i < n; i++)	
 					s *= a-i;
-				gr.drawString(simplify(s1*s2*s3*s4,s), b - breedteKanskolom + offset, (int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3);
+				gr.drawString(simplify(s1*s2*s3*s4,s), b - breedteKanskolom + offset, 
+						(int) ((2*j-1)*h/(2*Math.pow(k,n)))+theFM.getHeight()/3+rijhoogte);
 			}
 		}
 	}
@@ -487,6 +518,7 @@ public class Kansboom extends JPanel
 	public void zetTerugleggen(boolean b)
 	{
 		terugleggen = b;
+		setSize(breedteKansboomveld, hoogteKansboomveld);
 		repaint();
 	}
 	
@@ -546,6 +578,10 @@ public class Kansboom extends JPanel
 	public void zetBovenbalkZichtbaar(boolean b)
 	{
 		bovenbalk = b;
+		if(bovenbalk)
+    		rijhoogte = theFM.getHeight()+offset;
+    	else
+    		rijhoogte = 0;
 		setSize(breedteKansboomveld, hoogteKansboomveld);
 		repaint();
 	}
