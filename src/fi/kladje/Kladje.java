@@ -61,7 +61,9 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	JToggleButton tekenButton, gumButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
 	ButtonGroup tekenGumGroup;
 	JButton undoButton, wisButton;
-	JButton[] kleurKeuzeButtons;
+	//JButton[] kleurKeuzeButtons;
+	JToggleButton[] kleurKeuzeButtons;
+	ButtonGroup kleurKeuzeGroup;
 	
 	// parametrisatie
 	boolean kleurkeuze = true;
@@ -339,22 +341,42 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		getContentPane().add(wisButton);
 		wisButton.addActionListener(this);
 		
-		
-		kleurKeuzeButtons = new JButton[kleuren.length];
+		kleurKeuzeGroup = new ButtonGroup();
+		//kleurKeuzeButtons = new JButton[kleuren.length];
+		kleurKeuzeButtons = new JToggleButton[kleuren.length];
 		for (int i = 0; i < kleuren.length; i++)
 		{	final Color buttonColor = kleuren[i];
-			kleurKeuzeButtons[i] = new JButton()
+			//kleurKeuzeButtons[i] = new JButton()
+			kleurKeuzeButtons[i] = new JToggleButton()
 			{	public void paintComponent(Graphics g)
-				{	g.setColor(buttonColor);
-					g.fillRect(0, 0, getWidth(), getHeight());
+				{	//g.setColor(buttonColor);
+					if (isSelected())
+					{	g.setColor(buttonColor);
+						g.fillRect(0, 0, getWidth(), getHeight());
+						//g.setColor(buttonColor);
+						//g.fillRect(3, 3, getWidth() - 6, getHeight() - 6);
+						g.setColor(Color.white);
+						g.drawLine(getWidth() - 2, 0, getWidth() - 2, getHeight() - 2);
+						g.drawLine(0, getHeight() - 2, getWidth() - 2, getHeight() - 2);
+						g.drawLine(0, 1, getWidth() - 1, 1);
+						g.drawLine(1, 0, 1, getHeight() - 1);
+						
+					}
+					else
+					{	g.setColor(buttonColor);
+						g.fillRect(0, 0, getWidth(), getHeight());
+					}	
 				}
 			};
+			kleurKeuzeGroup.add(kleurKeuzeButtons[i]);
+			
 			kleurKeuzeButtons[i].setBounds(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
 					                getSize().height - 20 - offSet, 20 , 20);
 			getContentPane().add(kleurKeuzeButtons[i]);
 			kleurKeuzeButtons[i].addActionListener(this);
 			kleurKeuzeButtons[i].setVisible(kleurkeuze);
 		}
+		kleurKeuzeButtons[0].setSelected(true);
 		
 		kladjeVeld = new KladjeVeld(getSize().width - 2 * offSet, getSize().height - offSet - bottomHeight);
 		kladjeVeld.setLocation(offSet, offSet);
@@ -900,7 +922,8 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	{
 		for (int i = 0; i < kleurKeuzeButtons.length; i++)
 		{	if (e.getSource() == kleurKeuzeButtons[i])
-			{	kladjeVeld.zetDrawingColor(i);
+			{	
+				kladjeVeld.zetDrawingColor(i);
 			}
 		}
 		
