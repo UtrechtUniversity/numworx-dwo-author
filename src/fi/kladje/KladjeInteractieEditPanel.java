@@ -31,7 +31,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 
 	protected KladjeInteractiePanel klip;
 
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;

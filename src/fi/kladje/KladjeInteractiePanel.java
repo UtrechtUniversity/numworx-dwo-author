@@ -1430,7 +1430,7 @@ System.out.println("kladjeVeld sized");
 	}
 	
 	public int getScoreMax()
-	{	return scoreMax;
+	{	return 0;
 	}
 	
 	public boolean isCorrect()
