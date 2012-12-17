@@ -471,12 +471,48 @@ public class Kansboom extends JPanel
 		return m + 2 * offset;
 	}
 	
+	public int berekenBreedteVolgordekolom()
+	{
+		int m = 0;
+		int k = aantalOpties;
+		int n = aantalKolommen;
+		int b = breedteKansboomveld;
+		int h = hoogteKansboom;
+		int positie;
+		for(int j=1; j<Math.pow(k,n)+1; j++)
+		{	volgordeString = "";
+			positie=j-1;
+			for(int i=1; i<n+1; i++)
+				if(positie<Math.pow(k,n-i))
+					volgordeString = volgordeString + letter[1];
+				else if(positie<2*Math.pow(k,n-i))
+				{
+					volgordeString = volgordeString + letter[2];
+					positie -= Math.pow(k,n-i);
+				}
+				else if(positie<3*Math.pow(k,n-i))
+				{
+					volgordeString = volgordeString + letter[3];
+					positie -= 2*Math.pow(k,n-i);
+				}
+				else if(positie<4*Math.pow(k,n-i))
+				{	
+					volgordeString = volgordeString + letter[4];
+					positie -= 3*Math.pow(k,n-i);
+				}
+			
+			m = Math.max(theFM.stringWidth(volgordeString),m);
+		}
+		
+		return m + 2 * offset;
+	}
+	
 	public void setSize(int b, int h)
 	{	//hier aanpassen voor bovenbalk.
 	    breedteKansboomveld = b;
 	    hoogteKansboomveld = h;
 	    
-	    breedteVolgordekolom = aantalKolommen*theFM.charWidth('a') + 2 * offset;
+	    breedteVolgordekolom = berekenBreedteVolgordekolom();
 	    breedteKanskolom = berekenBreedteKanskolom();
 	    if(volgorde)
 	    	breedteKolom=(breedteKansboomveld-breedteVolgordekolom)/aantalKolommen;

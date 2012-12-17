@@ -64,6 +64,8 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	int labelsKeuze = 0;
 	
 	String[] naamOptieTekst;
+	
+	boolean nakijkModelIngesteld = false;
 
 public KansbomenInteractieEditPanel ()
 {
@@ -263,7 +265,6 @@ public void plaatsComponenten()
 		{
 			optieLabel[i].setLocation(kbip.getSize().width + offset, optieLabel[i].getLocation().y);
 			naamOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width + 2 * offset, naamOptieVeld[i].getLocation().y);
-			//letterOptie[i].setLocation(kbip.getSize().width + offset, letterOptie[i].getLocation().y);
 			letterOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width 
 					+ naamOptieVeld[i].getSize().width + 3 * offset, letterOptieVeld[i].getLocation().y);
 		}
@@ -662,6 +663,42 @@ public void zetHoogte(int h)
 	kbipHoogte = h;
 	
 	setBounds(getLocation().x, getLocation().y, kbipBreedte + editWidth, Math.max(kbipHoogte, editHeight));		
+}
+
+public Hashtable setInitialCheckState()
+{
+	int terugleggenKeuze = 0;
+	int trekkingen = 2;
+	int aantalOpties = 2;
+	int[] aantalInt = {4,4,4,4,4};
+	
+	terugleggenKeuze = kbip.terugleggenKeuze;
+	trekkingen = kbip.trekkingen;
+	aantalOpties = kbip.aantalOpties;
+	aantalInt[1] = kbip.aantalInt[1];
+	aantalInt[2] = kbip.aantalInt[2];
+	aantalInt[3] = kbip.aantalInt[3];
+	aantalInt[4] = kbip.aantalInt[4];
+	
+	Hashtable h = new Hashtable();
+	
+	h.put("terugleggenKeuze", terugleggenKeuze);
+	h.put("trekkingen", trekkingen);
+	h.put("aantalOpties", aantalOpties);
+	h.put("aantalInt[1]", aantalInt[1]);
+	h.put("aantalInt[2]", aantalInt[2]);
+	h.put("aantalInt[3]", aantalInt[3]);
+	h.put("aantalInt[4]", aantalInt[4]);
+	
+	nakijkModelIngesteld = true;
+	
+	//en nu moet ergens, bij het indrukken van de Nakijkmodel-knop, iets als
+	//if(!nakijkModelIngesteld)
+	//zetNakijkModel(setInitialCheckState());
+	//else
+	//??? Hoe onthoud ik de staat van dat nakijkmodel? 
+	
+	return h;
 }
 
 

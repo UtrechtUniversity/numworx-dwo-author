@@ -145,7 +145,33 @@ public class NakijkModel extends JDialog implements ActionListener, FocusListene
 	}	
 	
 	public void zetNakijkModel(Hashtable h)
-	{
+	{	//bij eerste keer nakijkmodel openen moet de state van het interactiepanel
+		//worden neergezet. Daarna moet de state worden neergezet zoals de auteur
+		//die in het nakijkmodel heeft ingesteld.
+		
+		if (h.containsKey("terugleggenKeuze"))
+			terugleggenKeuze = ((Integer) h.get("terugleggenKeuze")).intValue();
+		if (h.containsKey("trekkingen"))
+			trekkingen = ((Integer) h.get("trekkingen")).intValue();
+		if (h.containsKey("aantalOpties"))
+			aantalOpties = ((Integer) h.get("aantalOpties")).intValue();
+		if (h.containsKey("aantalInt[1]"))
+			aantalInt[1] = ((Integer) h.get("aantalInt[1]")).intValue();
+		if (h.containsKey("aantalInt[2]"))
+			aantalInt[2] = ((Integer) h.get("aantalInt[2]")).intValue();
+		if (h.containsKey("aantalInt[3]"))
+			aantalInt[3] = ((Integer) h.get("aantalInt[3]")).intValue();
+		if (h.containsKey("aantalInt[4]"))
+			aantalInt[4] = ((Integer) h.get("aantalInt[4]")).intValue();
+		
+		terugleggenBox.setSelectedIndex(terugleggenKeuze);
+		trekkingenBox.setSelectedIndex(trekkingen);
+		optiesBox.setSelectedIndex(aantalOpties);
+		aantalOptieVeld[1].setText(""+aantalInt[1]);
+		aantalOptieVeld[2].setText(""+aantalInt[2]);
+		aantalOptieVeld[3].setText(""+aantalInt[3]);
+		aantalOptieVeld[4].setText(""+aantalInt[4]);
+		
 		
 	}
 	
