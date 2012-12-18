@@ -52,7 +52,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	private int mode;
 	
 	
-	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon;
+	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon, resetIcon;
 	JButton kijkNaButton;
 	JPanel kijkNaPanel;
 	JLabel groenVinkjeLabel;
@@ -96,6 +96,15 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		else 
 		{
 			System.out.println("Error reading goedkrulhalf.");
+		}
+		imageURL = GeomAlgebra.class.getResource("resources/reseticon.gif");
+		if (imageURL != null) 
+		{
+			resetIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading reseticon.gif");
 		}
 		
 		
@@ -252,11 +261,15 @@ System.out.println("aLD found");
 		if (b.containsKey("appletEditState"))
 		{	String appletEditState = (String) b.get("appletEditState");
 			av.setState(appletEditState);
+			
 		}
 		else if (b.containsKey("state"))
 		{	State state = (State) b.get("state");
 			av.setState(state);
+			
 		}
+		av.docentState = new State(av.aantalFg, av.fg, av.var);
+		
 	
 //System.out.println("af = " + av.aantalFg);
 
@@ -399,7 +412,7 @@ System.out.println("aLD found");
 		{	State state = (State) b.get("state");
 			av.setState(state);
 		}
-		
+		av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	}
 	
@@ -553,6 +566,8 @@ System.out.println("aLD found");
 			av.zetConstructieTools(constructieTools);
 			av.zetAlleenOppervlaktes(alleenOppervlaktes);
 			
+			av.makeResetButton(resetIcon);
+			
 			add(av);
 			
 			av.addActionListener(this);
@@ -585,7 +600,7 @@ System.out.println("aLD found");
 			if (kijkNaActief)
 			{	hoogte -= kijkNaHeight + 5; 
 			}
-			av.setSize(breedte, hoogte);			
+			av.setSize(breedte, hoogte);	
 
 			Figuur.zetGeslotenVeld(!constructieTools || alleenOppervlaktes);
 			Figuur.zetVeldSizes(breedte, hoogte);

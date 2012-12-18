@@ -17,11 +17,12 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private Image im ;
   	private Graphics gIm ;
 	
-	private Figuur[] fg;
+	Figuur[] fg;
 	private Figuur[] fgNieuw ;
 	int aantalFg;
 	private int aantalFgNieuw;
 	private Buffer buffer;
+	State docentState = null;
 	
 	private Figuur basisFiguur, basisFiguurX,  basisFiguurY;
 	private Figuur actiefFg, selectFiguur;
@@ -35,7 +36,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	private int cursorx = 0;
 	private int cursory = 0;
 	
-	private int[] var;
+	int[] var;
 	private int[] varTek;
 	private int varHuidig;
 	
@@ -68,7 +69,10 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 	
 	Rectangle werkbladBigRectangle = null;
 	
-	protected ActionListener actionListener = null;	
+	protected ActionListener actionListener = null;
+	
+	JButton resetButton;
+	ImageIcon resetIcon;
 	
 	public AlgebraVeld(int b, int h)
 	{	hoogte = h;
@@ -115,7 +119,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		varTek[2] = 1;
 		varTek[3] = 1;
 		
-		buffer = new Buffer(50);
+		buffer = new Buffer(20);
 		buffer.voegToe(new State(aantalFg, fg, var));
 		
 		fc = new Font("Helvetica", Font.PLAIN, 12);
@@ -191,6 +195,32 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		}
 	}
 	
+	void reset()
+	{
+		buffer = new Buffer(20);
+		if (docentState != null)
+		{	buffer.voegToe(docentState);
+			setState(docentState);
+		}
+		tekenOpnieuw();
+	}
+	
+	void makeResetButton(ImageIcon resetIcon)
+	{
+		resetButton = new JButton(resetIcon);
+		resetButton.setBounds(breedte - 25, hoogte - 25, 16, 16);
+		resetButton.setVisible(false);
+		add(resetButton);
+		resetButton.addActionListener(new ResetAL());
+	}
+	
+	class ResetAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			reset();
+		}
+	}
 	public void setSize(int b, int h)
 	{
 		if ((getSize().width == b) && (getSize().height == h))
@@ -198,6 +228,9 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		
 		hoogte = h;
 		breedte = b;
+		
+		if (resetButton != null)
+			resetButton.setBounds(breedte - 25, hoogte - 25, 16, 16);		
 
 		if (negatieveWaarden)
 		{	
@@ -400,6 +433,8 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			werkbladBigRectangle = new Rectangle(0, 1, breedte / 3, hoogte - 2);
 		}
 
+		if (resetButton != null)
+			resetButton.setVisible(!constructieTools);
 		repaint();	
 	}
 	
@@ -1085,6 +1120,7 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 		if (state != null) 
 			setState(state);
 	}
+	
 	State getStateState()
 	{	State state = buffer.geefHuidigeState();
 //System.out.println("get af = " + state.geefAantalFiguren());	
@@ -1284,23 +1320,32 @@ public class AlgebraVeld extends JPanel implements MouseListener, MouseMotionLis
 			}
 		}
 		
-		for (int i = 0; i < aantalFg; i++)
-		{	if (fg[i].raakSplits(e.getX(),e.getY()))
-			{	maakLos = false;
-				fg[aantalFg] = fg[i].splitsLijnstukAf(e.getX(), e.getY());
-				actiefFg = fg[aantalFg];
-				for (int j = aantalFg; j > 0; j--)
-				{	fg[j] = fg[j - 1];
+		if (!alleenOppervlaktes)
+		{	
+			
+			for (int i = 0; i < aantalFg; i++)
+			{	
+//System.out.println("raakSplits");
+
+				if (fg[i].raakSplits(e.getX(),e.getY()))
+				{	maakLos = false;
+					fg[aantalFg] = fg[i].splitsLijnstukAf(e.getX(), e.getY());
+					actiefFg = fg[aantalFg];
+					for (int j = aantalFg; j > 0; j--)
+					{	fg[j] = fg[j - 1];
+					}
+					fg[0] = actiefFg;
+					aantalFg++;
+					tekenOpnieuw();
+					return;
 				}
-				fg[0] = actiefFg;
-				aantalFg++;
-				tekenOpnieuw();
-				return;
 			}
-		}
 		
+		}
 		for (int i = 0; i < aantalFg; i++)
-		{	if (fg[i].raakRechthoek(e.getX(),e.getY()))
+		{	
+			
+			if (fg[i].raakRechthoek(e.getX(),e.getY()))
 			{	selectFiguur = fg[i];
 				actiefFg = fg[i];
 				for (int j = i; j > 0; j--)
