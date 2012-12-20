@@ -38,7 +38,9 @@ public class Text_en extends java.util.ListResourceBundle
 	        {	"legendaZichtbaarTekst", "Symbol description visible"},
 	        {	"bovenbalkZichtbaarTekst", "Upper beam visible"},
 	        {	"kijkNaTekst", "Check"},
-	        {	"nakijkModelTekst", "Answer model"}
+	        {	"nakijkModelTekst", "Answer model"},
+	        {	"maxScoreTekst", "Maximal score"},
+	        {	"bovenbalkTekst", "Upper beam"}
 		//	....
 		
 		};

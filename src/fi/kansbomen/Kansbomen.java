@@ -145,6 +145,8 @@ public class Kansbomen extends JApplet implements ScormAppletIF, WiskOpdrApplet
 	    return s;
 	}
 	
+	
+	
 	public double getScore()
 	{	return 0.5;
 	}

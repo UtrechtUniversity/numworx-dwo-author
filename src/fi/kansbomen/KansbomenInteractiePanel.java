@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -36,7 +38,7 @@ boolean optiesZichtbaar = true;
 boolean ballenZichtbaar = true;
 boolean legendaZichtbaar = true;
 boolean bovenbalkZichtbaar = true;
-boolean kijkNa = false;
+//boolean kijkNa = false;
 boolean kleur = true;
 int kansVolgordeKeuze = 0;
 boolean terugleggen = true;
@@ -68,12 +70,25 @@ LijntjeLabel[] legendaKleur;
 JTextField[] aantalOptieVeld;	
 String[] naamOptieTekst;
 String[] letterString = new String[] {"d","d","d","d","d"};
+String trekkingTekst = Kansbomen.rb.getString("trekkingBalkTekst");
 
 int aantalOpties = 2;
 int[] aantalInt = new int[]  {4,4,4,4,4};
 int[] aantalIntOud = new int[] {4,4,4,4,4};
 int breedteAantalVeld;
 
+boolean kijkNaActief;
+JButton kijkNaButton;
+JPanel kijkNaPanel;
+JLabel groenVinkjeLabel;
+JLabel geelVinkjeLabel;
+JLabel kruisjeLabel;
+
+int score;
+int scoreMax = 10;
+
+int[] nakijkModel = {10, 0, 2, 2, 4, 4, 4, 4};
+int[] leerlingAntwoorden = {0, 0, 2, 2, 4, 4, 4, 4};
 
 
 	public KansbomenInteractiePanel()
@@ -204,9 +219,65 @@ int breedteAantalVeld;
 			legendaOptie[i].setBounds(currentX, currentY, 4* width / 5, height);
 			add(legendaOptie[i]);
 			currentX -= width / 5 + offset;
-			//currentY += height + offset;
+			currentY += height + offset;
 		}
 			
+		kijkNaButton = new JButton(Kansbomen.rb.getString("kijkNaTekst"));
+		kijkNaButton.setFont(new Font("SansSerif",Font.PLAIN, 12));
+		kijkNaButton.setBounds(0, 0, 75, 24);
+		//kijkNaButton.addActionListener(new KijkNaAL());
+		kijkNaButton.addActionListener(this);
+		
+		java.net.URL imageURL = Kansbomen.class.getResource("resources/goedkrul_en.gif");
+		if (imageURL != null)
+		{
+		    groenVinkjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrul_en.gif.");
+			groenVinkjeLabel = new JLabel();
+		}
+		groenVinkjeLabel.setBounds(76, 2, 20, 20);
+		
+		imageURL = Kansbomen.class.getResource("resources/goedkrulhalf.gif");
+		if (imageURL != null) 
+		{
+		    geelVinkjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else 
+		{
+			System.out.println("Error reading goedkrulhalf.gif.");
+			geelVinkjeLabel = new JLabel();
+		}
+		geelVinkjeLabel.setBounds(76, 2, 20, 20);
+		
+		
+		imageURL = Kansbomen.class.getResource("resources/foutkruis.gif");
+		if (imageURL != null) 
+		{
+		    kruisjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else 
+		{
+			System.out.println("Error reading foutkruis.gif.");
+			kruisjeLabel = new JLabel();
+		}
+		kruisjeLabel.setBounds(76, 2, 20, 20);
+		
+		groenVinkjeLabel.setVisible(false);
+		geelVinkjeLabel.setVisible(false);
+		kruisjeLabel.setVisible(false);
+		
+		kijkNaPanel = new JPanel(null);
+		kijkNaPanel.setOpaque(false);
+		kijkNaPanel.setBounds(offset, editHeight-height, 95, 24);
+		kijkNaPanel.add(kijkNaButton);
+		kijkNaPanel.add(groenVinkjeLabel);
+		kijkNaPanel.add(geelVinkjeLabel);
+		kijkNaPanel.add(kruisjeLabel);
+		kijkNaPanel.setVisible(false);
+		this.add(kijkNaPanel);
 		//currentX += width + offset;
 		//componentsCreated = true;
 				
@@ -242,7 +313,7 @@ int breedteAantalVeld;
 		}
 	}	
 	
-	public void layoutLinks()
+	public void vernieuwLayoutLinks()
 	{
 		currentY = offset;
 		if (terugleggenBox.isVisible())
@@ -289,32 +360,35 @@ int breedteAantalVeld;
 		if (legendaKop.isVisible())
 		{	currentY += offset;
 			legendaKop.setLocation(legendaKop.getLocation().x, currentY);
-		    currentY += legendaKop.getSize().height + 2 * offset;
+		    currentY += legendaKop.getSize().height + offset;
 		}
 		if (legendaOptie[1].isVisible())
 		{	
 			legendaOptie[1].setLocation(legendaOptie[1].getLocation().x, currentY);
 			legendaKleur[1].setLocation(legendaKleur[1].getLocation().x, currentY);
-		    currentY += legendaOptie[1].getSize().height + offset;
+		    currentY += legendaOptie[1].getSize().height;
 		}
 		if (legendaOptie[2].isVisible())
 		{	
 			legendaOptie[2].setLocation(legendaOptie[2].getLocation().x, currentY);
 			legendaKleur[2].setLocation(legendaKleur[2].getLocation().x, currentY);
-		    currentY += legendaOptie[2].getSize().height + offset;
+		    currentY += legendaOptie[2].getSize().height;
 		}
 		if (legendaOptie[3].isVisible())
 		{	
 			legendaOptie[3].setLocation(legendaOptie[3].getLocation().x, currentY);
 			legendaKleur[3].setLocation(legendaKleur[3].getLocation().x, currentY);
-		    currentY += legendaOptie[3].getSize().height + offset;
+		    currentY += legendaOptie[3].getSize().height;
 		}
 		if (legendaOptie[4].isVisible())
 		{	
 			legendaOptie[4].setLocation(legendaOptie[4].getLocation().x, currentY);
 			legendaKleur[4].setLocation(legendaKleur[4].getLocation().x, currentY);
-		    currentY += legendaOptie[4].getSize().height + offset;
+		    currentY += legendaOptie[4].getSize().height;
 		}
+		
+		if (kijkNaPanel.isVisible())
+			kijkNaPanel.setLocation(kijkNaPanel.getLocation().x, kbipHoogte-24);
 		
 
 	}
@@ -347,7 +421,7 @@ else
 		kansboom.setLocation(currentX + offset, offset);
 }
 
-layoutLinks();
+vernieuwLayoutLinks();
 	}
 
 	public void zetTeruglegZichtbaar(boolean b)
@@ -509,20 +583,7 @@ layoutLinks();
 			legendaKleur[3].setVisible(legendaZichtbaar);
 			legendaOptie[3].setVisible(legendaZichtbaar);
 			
-			currentY = kansboom.HOOGTE - (aantalOpties + 3)* (height + offset);
-			currentX = offset;
-			legendaKop.setBounds(currentX, currentY, width, height);
-			currentY += height + offset;
-			
-			for (int i=1; i<4; i++)
-			{
-				legendaKleur[i].setBounds(currentX, currentY, width / 5, height);
-				currentX += width / 5 + offset;
-				legendaOptie[i].setBounds(currentX, currentY, 4 * width / 5, height);
-				currentY += height + offset;
-				currentX -= width / 5 + offset;
-			}
-			
+			vernieuwLayoutLinks();			
 		}
 		else if (aantalOpties + 2 == 2)
 		{
@@ -536,20 +597,7 @@ layoutLinks();
 			legendaKleur[3].setVisible(false);
 			legendaOptie[3].setVisible(false);
 			
-			currentY = kansboom.HOOGTE - (aantalOpties +1)* (height + offset);
-			currentX = offset;
-			legendaKop.setBounds(currentX, currentY, width, height);
-			currentY += height + offset;
-			
-			for (int i=1; i<3; i++)
-			{
-				legendaKleur[i].setBounds(currentX, currentY, width / 5, height);
-				currentX += width / 5 + offset;
-				legendaOptie[i].setBounds(currentX, currentY, 4 * width / 5, height);
-				currentY += height + offset;
-				currentX -= width / 5 + offset;
-			}
-			
+			vernieuwLayoutLinks();			
 		}
 		else
 		{
@@ -567,19 +615,7 @@ layoutLinks();
 			legendaKleur[3].setVisible(legendaZichtbaar);
 			legendaOptie[3].setVisible(legendaZichtbaar);
 			
-			currentY = kansboom.HOOGTE - (aantalOpties +1)* (height + offset);
-			currentX = offset;
-			legendaKop.setBounds(currentX, currentY, width, height);
-			currentY += height + offset;
-			
-			for (int i=1; i<5; i++)
-			{
-				legendaKleur[i].setBounds(currentX, currentY, width / 5, height);
-				currentX += width / 5 + offset;
-				legendaOptie[i].setBounds(currentX, currentY, 4 * width / 5, height);
-				currentY += height + offset;
-				currentX -= width / 5 + offset;
-			}
+			vernieuwLayoutLinks();
 		}
 	}
 	
@@ -617,10 +653,37 @@ layoutLinks();
 		}
 	}	
 	
-	public void zetKijkNa(boolean b)
-	// mogelijk tijdelijke methode; ik moet de nakijkopties nog leren kennen.
+	public void zetTrekkingTekst(String s)
 	{
-		kijkNa = b;
+		trekkingTekst = s;
+		kansboom.trekkingTekst = s;
+		kansboom.repaint();
+	}
+	
+	public void zetKijkNa(boolean b)
+	{
+		kijkNaActief = b;
+		kijkNaPanel.setVisible(kijkNaActief);
+	}
+	
+	
+	public void zetNakijkModel(int[] waardes)
+	{
+		scoreMax = waardes[0];
+		for(int i=0; i<8; i++)
+			nakijkModel[i] = waardes[i];
+	}
+
+	
+	public void updateLeerlingAntwoorden()
+	{
+		leerlingAntwoorden[1] = terugleggenKeuze;
+		leerlingAntwoorden[2] = trekkingen;
+		leerlingAntwoorden[3] = aantalOpties;
+		leerlingAntwoorden[4] = aantalInt[1];
+		leerlingAntwoorden[5] = aantalInt[2];
+		leerlingAntwoorden[6] = aantalInt[3];
+		leerlingAntwoorden[7] = aantalInt[4];
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -636,9 +699,7 @@ layoutLinks();
 		else if(e.getSource() == optiesBox)
 		{
 			aantalOpties = optiesBox.getSelectedIndex();
-			zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4]);
-			
-			
+			zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4]);	
 		
 		}	
 		else if(e.getSource() == aantalOptieVeld[1])
@@ -704,6 +765,11 @@ layoutLinks();
 			}
 			catch (Exception p)
 			{aantalOptieVeld[4].setText(""+aantalInt[4]);}
+		}
+		else if(e.getSource() == kijkNaButton)
+		{
+			kijkNa();
+
 		}
 		
 	}
@@ -793,8 +859,8 @@ layoutLinks();
 			legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
 		if (h.containsKey("bovenbalkZichtbaar"))
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
-		if (h.containsKey("kijkNa"))
-			kijkNa = ((Boolean) h.get("kijkNa")).booleanValue();
+		if (h.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer)h.get("labelsKeuze")).intValue();
 		if(h.containsKey("kleur"))
@@ -832,6 +898,14 @@ layoutLinks();
 		if(h.containsKey("aantalInt[4]"))
 			aantalInt[4] = ((Integer)h.get("aantalInt[4]")).intValue();
 		
+		if(h.containsKey("scoreMax"))
+			scoreMax = ((Integer)h.get("scoreMax")).intValue();
+		if(h.containsKey("nakijkModel"))
+			nakijkModel = (int[]) h.get("nakijkModel");
+		if(h.containsKey("trekkingTekst"))
+			trekkingTekst = ((String) h.get("trekkingTekst"));
+				
+		
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
 		if(h.containsKey("kbipHoogte"))
@@ -843,7 +917,7 @@ layoutLinks();
 		zetBallenZichtbaar(ballenZichtbaar);
 		zetLegendaZichtbaar(legendaZichtbaar);
 		zetBovenbalkZichtbaar(bovenbalkZichtbaar);
-		zetKijkNa(kijkNa);
+		zetKijkNa(kijkNaActief);
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
@@ -862,6 +936,8 @@ layoutLinks();
 		zetAantalVanOptie(3,aantalInt[3]);
 		zetAantalVanOptie(4,aantalInt[4]);
 		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4] );
+		zetNakijkModel(nakijkModel);
+		kansboom.trekkingTekst = trekkingTekst;
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
 			
 		
@@ -912,7 +988,7 @@ layoutLinks();
 		if (h.containsKey("bovenbalkZichtbaar"))
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
 		if (h.containsKey("kijkNa"))
-			kijkNa = ((Boolean) h.get("kijkNa")).booleanValue();
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer)h.get("labelsKeuze")).intValue();
 		if(h.containsKey("kleur"))
@@ -949,6 +1025,16 @@ layoutLinks();
 			aantalInt[3] = ((Integer)h.get("aantalInt[3]")).intValue();
 		if(h.containsKey("aantalInt[4]"))
 			aantalInt[4] = ((Integer)h.get("aantalInt[4]")).intValue();
+		if(h.containsKey("trekkingTekst"))
+			trekkingTekst = ((String) h.get("trekkingTekst"));
+	
+		
+		//nodig?
+		if(h.containsKey("scoreMax"))
+			scoreMax = ((Integer)h.get("scoreMax")).intValue();
+		if(h.containsKey("nakijkModel"))
+			nakijkModel = (int[]) h.get("nakijkModel");
+
 		
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
@@ -961,7 +1047,7 @@ layoutLinks();
 		zetBallenZichtbaar(ballenZichtbaar);
 		zetLegendaZichtbaar(legendaZichtbaar);
 		zetBovenbalkZichtbaar(bovenbalkZichtbaar);
-		zetKijkNa(kijkNa);
+		zetKijkNa(kijkNaActief);
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
@@ -979,7 +1065,9 @@ layoutLinks();
 		zetAantalVanOptie(2,aantalInt[2]);
 		zetAantalVanOptie(3,aantalInt[3]);
 		zetAantalVanOptie(4,aantalInt[4]);
-		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4] );	
+		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4] );
+		zetNakijkModel(nakijkModel);
+		kansboom.trekkingTekst = trekkingTekst;
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
 		
 	}
@@ -1020,7 +1108,7 @@ layoutLinks();
 		boolean ballenZichtbaar = true;
 		boolean legendaZichtbaar = true;
 		boolean bovenbalkZichtbaar = true;
-		boolean kijkNa = false;
+		boolean kijkNaActief = false;
 		int labelsKeuze = 0;
 		boolean kleur = true;
 		int kansVolgordeKeuze = 0;
@@ -1030,6 +1118,9 @@ layoutLinks();
 		int trekkingen = 2;
 		int aantalOpties = 2;
 		int[] aantalInt = {4,4,4,4,4};
+		int scoreMax = 10;
+		int[] nakijkModel = {10, 0, 2, 2, 4, 4, 4, 4};
+		String trekkingTekst = "trekking";
 				
 		teruglegZichtbaar = this.teruglegZichtbaar;
 		trekkingZichtbaar = this.trekkingZichtbaar;
@@ -1037,7 +1128,7 @@ layoutLinks();
 		ballenZichtbaar = this.ballenZichtbaar;
 		legendaZichtbaar = this.legendaZichtbaar;
 		bovenbalkZichtbaar = this.bovenbalkZichtbaar;
-		kijkNa = this.kijkNa;
+		kijkNaActief = this.kijkNaActief;
 		labelsKeuze = this.labelsKeuze;
 		kleur = this.kleur;
 		kansVolgordeKeuze = this.kansVolgordeKeuze;
@@ -1056,6 +1147,9 @@ layoutLinks();
 		aantalInt[2] = this.aantalInt[2];
 		aantalInt[3] = this.aantalInt[3];
 		aantalInt[4] = this.aantalInt[4];
+		scoreMax = this.scoreMax;
+		nakijkModel = this.nakijkModel;
+		trekkingTekst = this.trekkingTekst;
 				
 		Hashtable h = new Hashtable();
 		
@@ -1065,7 +1159,7 @@ layoutLinks();
 		h.put("ballenZichtbaar", ballenZichtbaar);
 		h.put("legendaZichtbaar", legendaZichtbaar);
 		h.put("bovenbalkZichtbaar", bovenbalkZichtbaar);
-		h.put("kijkNa", kijkNa);
+		h.put("kijkNaActief", kijkNaActief);
 		h.put("labelsKeuze", labelsKeuze);
 		h.put("kleur", kleur);
 		h.put("kansVolgordeKeuze", kansVolgordeKeuze);
@@ -1084,6 +1178,9 @@ layoutLinks();
 		h.put("aantalInt[2]", aantalInt[2]);
 		h.put("aantalInt[3]", aantalInt[3]);
 		h.put("aantalInt[4]", aantalInt[4]);
+		h.put("scoreMax", scoreMax);
+		h.put("nakijkModel", nakijkModel);
+		h.put("trekkingTekst", trekkingTekst);
 		
 		
 		return h;
@@ -1119,27 +1216,29 @@ layoutLinks();
 	}
 
 
-	public int getScore() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getScore() 
+	{
+		return score;
 	}
 
 
-	public int getScoreMax() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getScoreMax() 
+	{
+		return scoreMax;
 	}
 
 
-	public boolean isCorrect() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isCorrect() 
+	{	if (!kijkNaActief)
+			return true;
+		return 
+			score == scoreMax;
 	}
 
-
-	public boolean isFout() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isFout() 
+	{	if (!kijkNaActief)
+			return false;
+		return score == 0;
 	}
 
 
@@ -1180,9 +1279,70 @@ layoutLinks();
 
 
 	public void kijkNa() {
-		// TODO Auto-generated method stub
+		// niet nakijken
+    	if (!kijkNaActief)
+    		return;
+    	updateLeerlingAntwoorden();
+    	//updateNakijkModel();
+    	if(nakijkModel[3] == 0)
+    	{	if(leerlingAntwoorden[1] == nakijkModel[1] && 
+    				leerlingAntwoorden[2] == nakijkModel[2] &&
+    				leerlingAntwoorden[3] == nakijkModel[3] &&
+    				leerlingAntwoorden[4] == nakijkModel[4] &&
+    				leerlingAntwoorden[5] == nakijkModel[5])
+    		score = scoreMax;
+    	}		
+    	else if(nakijkModel[3] == 1)
+    	{	if(leerlingAntwoorden[1] == nakijkModel[1] && 
+    				leerlingAntwoorden[2] == nakijkModel[2] &&
+    				leerlingAntwoorden[3] == nakijkModel[3] &&
+    				leerlingAntwoorden[4] == nakijkModel[4] &&
+    				leerlingAntwoorden[5] == nakijkModel[5] &&
+    				leerlingAntwoorden[6] == nakijkModel[6] )
+    		score = scoreMax;
+    	}
+    	if(leerlingAntwoorden[1] == nakijkModel[1] && 
+    			leerlingAntwoorden[2] == nakijkModel[2] &&
+    			leerlingAntwoorden[3] == nakijkModel[3] &&
+    			leerlingAntwoorden[4] == nakijkModel[4] &&
+    			leerlingAntwoorden[5] == nakijkModel[5] &&
+    			leerlingAntwoorden[6] == nakijkModel[6] &&
+    			leerlingAntwoorden[7] == nakijkModel[7])
+    		score = scoreMax;
+    	
+    	else
+    		score = 0;
+    	
+    	 if (score == 0)
+         {	kruisjeLabel.setVisible(true);
+         	geelVinkjeLabel.setVisible(false);
+         	groenVinkjeLabel.setVisible(false);
+         }
+         else if (score < scoreMax)
+         {	kruisjeLabel.setVisible(false);
+         	geelVinkjeLabel.setVisible(true);
+         	groenVinkjeLabel.setVisible(false);
+         }
+    	 
+         else // score==maxScore
+         {	kruisjeLabel.setVisible(false);
+         	geelVinkjeLabel.setVisible(false);
+         	groenVinkjeLabel.setVisible(true);
+         }
+ 		
+ //System.out.println("score = " + score);		
+ 		//fire actionEvent
+ 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+ 		//for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+ 		//{
+ 		//	((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+ 		//}
+     
+     	
+     }
+
 		
-	}
+	
 
 
 	public void kijkNa(int stapNr) {

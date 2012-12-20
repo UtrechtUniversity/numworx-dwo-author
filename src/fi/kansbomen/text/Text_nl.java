@@ -38,7 +38,9 @@ public class Text_nl extends java.util.ListResourceBundle
 	        {	"legendaZichtbaarTekst", "Legenda zichtbaar"},
 	        {	"bovenbalkZichtbaarTekst", "Bovenbalk zichtbaar"},
 	        {	"kijkNaTekst", "Kijk na"},
-	        {	"nakijkModelTekst", "Nakijkmodel"}
+	        {	"nakijkModelTekst", "Nakijkmodel"},
+	        {	"maxScoreTekst", "Maximum score"},
+	        {	"bovenbalkTekst", "Bovenbalk"}
         
         
 		//	....

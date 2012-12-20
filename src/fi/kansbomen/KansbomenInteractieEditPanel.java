@@ -1,10 +1,8 @@
 package fi.kansbomen;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.event.*;
-import java.util.Hashtable;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -39,7 +37,7 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	JCheckBox teruglegZichtbaarBox, trekkingZichtbaarBox, optiesZichtbaarBox, 
 				ballenZichtbaarBox, legendaZichtbaarBox, bovenbalkZichtbaarBox;
 	JCheckBox kijkNaBox;
-	JButton nakijkModelKnop;
+	NakijkModelButton nakijkModelButton;
 	boolean teruglegZichtbaar = true;
 	boolean trekkingZichtbaar = true;
 	boolean optiesZichtbaar = true;
@@ -48,11 +46,13 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	boolean bovenbalkZichtbaar = true;
 	boolean kijkNa = false;
 	JComboBox terugleggenBox, trekkingenBox, optiesBox, labelsBox, kansVolgordeBox;
-	JLabel aantalTrekkingen, aantalOptiesLabel, naamLetterLabel, zichtbaarLabel;
-	JLabel[] /*naamOptie*/ optieLabel, aantalOptie, letterOptie;
+	JLabel aantalTrekkingen, aantalOptiesLabel, naamLetterLabel, zichtbaarLabel, bovenbalkLabel;
+	JTextField bovenbalkVeld;
+	JLabel[] optieLabel, aantalOptie, letterOptie;
 	JTextField[] naamOptieVeld, aantalOptieVeld, letterOptieVeld;
 	String[] letterString = new String[5];
 	String[] aantalString;
+	String trekkingTekst;
 	
 	//startwaarden editpanel
 	boolean kleur = true;
@@ -66,6 +66,10 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	String[] naamOptieTekst;
 	
 	boolean nakijkModelIngesteld = false;
+	int scoreMax;
+	int[] nakijkModel = new int[] {10, 0, 2, 2, 4, 4, 4, 4};
+	
+	
 
 public KansbomenInteractieEditPanel ()
 {
@@ -163,7 +167,7 @@ public KansbomenInteractieEditPanel ()
 	{ 	naamOptieVeld[i] = new JTextField(naamOptieTekst[i]);
 		naamOptieVeld[i].setFont(theFont);
 		naamOptieVeld[i].setBounds(currentX, currentY, width - 
-				optieLabel[i].getWidth() - theFM.charWidth('m') - 4 * offset, height);
+				optieLabel[i].getWidth() - 2 * theFM.charWidth('m') - 4 * offset, height);
 		add(naamOptieVeld[i]);
 		naamOptieVeld[i].addActionListener(this);
 		naamOptieVeld[i].addFocusListener(this);
@@ -181,7 +185,7 @@ public KansbomenInteractieEditPanel ()
 	for(int i=1; i<5; i++)
 	{ 	letterOptieVeld[i] = new JTextField(letterString[i]);
 		letterOptieVeld[i].setFont(theFont);
-		letterOptieVeld[i].setBounds(currentX, currentY, theFM.charWidth('m') + 2 * offset, height);
+		letterOptieVeld[i].setBounds(currentX, currentY, 2 * theFM.charWidth('m') + 2 * offset, height);
 		add(letterOptieVeld[i]);
 		letterOptieVeld[i].addActionListener(this);
 		letterOptieVeld[i].addFocusListener(this);
@@ -189,6 +193,23 @@ public KansbomenInteractieEditPanel ()
 	}	
 	
 	currentX -= optieLabel[1].getWidth() + naamOptieVeld[1].getWidth() + 2 * offset;
+	
+	bovenbalkLabel = new JLabel(Kansbomen.rb.getString("bovenbalkTekst")+":");
+	bovenbalkLabel.setFont(theFont);
+	bovenbalkLabel.setBounds(currentX, currentY, 
+			theFM.stringWidth(Kansbomen.rb.getString("bovenbalkTekst")+":"), height);
+	add(bovenbalkLabel);
+	
+	currentX += bovenbalkLabel.getWidth() + offset;
+	
+	bovenbalkVeld = new JTextField(Kansbomen.rb.getString("trekkingBalkTekst"));
+	bovenbalkVeld.setFont(theFont);
+	bovenbalkVeld.setBounds(currentX, currentY, width - bovenbalkLabel.getWidth() - offset, height);
+	add(bovenbalkVeld);
+	bovenbalkVeld.addActionListener(this);
+	bovenbalkVeld.addFocusListener(this);
+	
+	currentY += height + offset;
 	
 	zichtbaarLabel = new JLabel(Kansbomen.rb.getString("zichtbaarTekst"));
 	zichtbaarLabel.setFont(theBoldFont);
@@ -240,13 +261,13 @@ public KansbomenInteractieEditPanel ()
 	add(kijkNaBox);
 	kijkNaBox.addActionListener(this);
 	
-	nakijkModelKnop = new JButton(Kansbomen.rb.getString("nakijkModelTekst"));
-	nakijkModelKnop.setFont(theFont);
-	nakijkModelKnop.setBounds(currentX + kijkNaBox.getWidth() + offset, currentY,
+	nakijkModelButton = new NakijkModelButton();
+	nakijkModelButton.setFont(theFont);
+	nakijkModelButton.setBounds(currentX + kijkNaBox.getWidth() + offset, currentY,
 			width - kijkNaBox.getWidth() - offset, height);
-	add(nakijkModelKnop);
-	nakijkModelKnop.addActionListener(this);
-	nakijkModelKnop.setVisible(kijkNa);
+	add(nakijkModelButton);
+	nakijkModelButton.setVisible(kijkNa);
+	nakijkModelButton.addActionListener(this);
 	
 	componentsCreated = true;
 	
@@ -268,6 +289,9 @@ public void plaatsComponenten()
 			letterOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width 
 					+ naamOptieVeld[i].getSize().width + 3 * offset, letterOptieVeld[i].getLocation().y);
 		}
+		bovenbalkLabel.setLocation(kbip.getSize().width + offset, bovenbalkLabel.getLocation().y);
+		bovenbalkVeld.setLocation(kbip.getSize().width
+				+bovenbalkLabel.getWidth()+ 2 * offset, bovenbalkVeld.getLocation().y);
 		zichtbaarLabel.setLocation(kbip.getSize().width + offset, zichtbaarLabel.getLocation().y);
 		teruglegZichtbaarBox.setLocation(kbip.getSize().width + offset, teruglegZichtbaarBox.getLocation().y);
 		trekkingZichtbaarBox.setLocation(kbip.getSize().width + offset, trekkingZichtbaarBox.getLocation().y);
@@ -276,7 +300,7 @@ public void plaatsComponenten()
 		legendaZichtbaarBox.setLocation(kbip.getSize().width + offset, legendaZichtbaarBox.getLocation().y);
 		bovenbalkZichtbaarBox.setLocation(kbip.getSize().width + offset, bovenbalkZichtbaarBox.getLocation().y);
 		kijkNaBox.setLocation(kbip.getSize().width + offset, kijkNaBox.getLocation().y);
-		nakijkModelKnop.setLocation(kbip.getSize().width + kijkNaBox.getWidth() + 2 * offset, nakijkModelKnop.getLocation().y);
+		nakijkModelButton.setLocation(kbip.getSize().width + kijkNaBox.getWidth() + 2 * offset, nakijkModelButton.getLocation().y);
 		
 	}
 }
@@ -384,21 +408,37 @@ public void actionPerformed(ActionEvent e)
 		else
 			letterOptieVeld[4].setText(letterString[4]);
 	}
+	else if(e.getSource() == bovenbalkVeld)
+	{
+		kbip.zetTrekkingTekst(bovenbalkVeld.getText());
+	}	
 	else if(e.getSource() == teruglegZichtbaarBox)
 	{	teruglegZichtbaar = teruglegZichtbaarBox.isSelected();
 		kbip.zetTeruglegZichtbaar(teruglegZichtbaar);
+		nakijkModelButton.nakijkModel[1] = kbip.terugleggenKeuze;
+		nakijkModelButton.itemsEnabled[0] = teruglegZichtbaar;
+		
 	}
 	else if(e.getSource() == trekkingZichtbaarBox)
 	{	trekkingZichtbaar = trekkingZichtbaarBox.isSelected();
 		kbip.zetTrekkingZichtbaar(trekkingZichtbaar);
+		nakijkModelButton.nakijkModel[2] = kbip.trekkingen;
+		nakijkModelButton.itemsEnabled[1] = trekkingZichtbaar;
 	}
 	else if(e.getSource() == optiesZichtbaarBox)
 	{	optiesZichtbaar = optiesZichtbaarBox.isSelected();
 		kbip.zetOptiesZichtbaar(optiesZichtbaar);
+		nakijkModelButton.nakijkModel[3] = kbip.aantalOpties;
+		nakijkModelButton.itemsEnabled[2] = optiesZichtbaar;
 	}
 	else if(e.getSource() == ballenZichtbaarBox)
 	{	ballenZichtbaar = ballenZichtbaarBox.isSelected();
 		kbip.zetBallenZichtbaar(ballenZichtbaar);
+		nakijkModelButton.nakijkModel[4] = kbip.aantalInt[1];
+		nakijkModelButton.nakijkModel[5] = kbip.aantalInt[2];
+		nakijkModelButton.nakijkModel[6] = kbip.aantalInt[3];
+		nakijkModelButton.nakijkModel[7] = kbip.aantalInt[4];
+		nakijkModelButton.itemsEnabled[3] = ballenZichtbaar;
 	}	
 	
 	else if(e.getSource() == legendaZichtbaarBox)
@@ -413,17 +453,36 @@ public void actionPerformed(ActionEvent e)
 	
 	else if(e.getSource() == kijkNaBox)
 	{	kijkNa = kijkNaBox.isSelected();
-		nakijkModelKnop.setVisible(kijkNa);
+		nakijkModelButton.setVisible(kijkNa);
 		kbip.zetKijkNa(kijkNa);
 	}
 	
-	else if(e.getSource() == nakijkModelKnop)
+	else if(e.getSource() == nakijkModelButton)
 	{
-		
+		if(!nakijkModelIngesteld)
+		{	nakijkModel[0] = 10;
+			nakijkModel[1] = kbip.terugleggenKeuze;
+			nakijkModel[2] = kbip.trekkingen;
+			nakijkModel[3] = kbip.aantalOpties;
+			nakijkModel[4] = kbip.aantalInt[1];
+			nakijkModel[5] = kbip.aantalInt[2];
+			nakijkModel[6] = kbip.aantalInt[3];
+			nakijkModel[7] = kbip.aantalInt[4];
+			nakijkModelIngesteld = true;                        
+		}
+		else
+		{	for(int i = 0; i < 8; i++)
+			nakijkModel[i] = nakijkModelButton.nakijkModel[i];
+		}
+		nakijkModelButton.updateBeginwaarden(nakijkModel);
+		nakijkModelButton.zetTeksten(naamOptieTekst);
 	}
+	
 }
 
-public void focusLost(FocusEvent e) 
+
+
+public void focusLost(FocusEvent e)  
 {
 	if(e.getSource() == naamOptieVeld[1])
 	{
@@ -510,7 +569,10 @@ public void focusLost(FocusEvent e)
 		else
 			letterOptieVeld[4].setText(letterString[4]);
 	}
-	
+	else if(e.getSource() == bovenbalkVeld)
+	{
+		kbip.zetTrekkingTekst(bovenbalkVeld.getText());
+	}	
 }
 
 
@@ -518,6 +580,9 @@ public void focusLost(FocusEvent e)
 
 public void setEditState(Hashtable h) {
 
+	int scoreMax = 0;
+	//int[] nakijkModel = null;
+	
 	if (h.containsKey("teruglegZichtbaar"))
 		teruglegZichtbaar = ((Boolean) h.get("teruglegZichtbaar")).booleanValue();
 	teruglegZichtbaarBox.setSelected(teruglegZichtbaar);
@@ -545,7 +610,7 @@ public void setEditState(Hashtable h) {
 	if (h.containsKey("kijkNa"))
 		kijkNa = ((Boolean) h.get("kijkNa")).booleanValue();
 	kijkNaBox.setSelected(kijkNa);
-	nakijkModelKnop.setVisible(kijkNa);
+	nakijkModelButton.setVisible(kijkNa);
 	
 	if (h.containsKey("labelsKeuze"))
 		labelsKeuze = ((Integer) h.get("labelsKeuze")).intValue();
@@ -591,10 +656,21 @@ public void setEditState(Hashtable h) {
 		letterString[4] = ((String) h.get("letterString[4]"));
 	letterOptieVeld[4].setText(letterString[4]);
 	
+	if (h.containsKey("trekkingTekst"))
+		trekkingTekst = ((String) h.get("trekkingTekst"));
+	bovenbalkVeld.setText(trekkingTekst);
 	
+	if (h.containsKey("scoreMax"))
+		scoreMax = ((Integer) h.get("scoreMax")).intValue();
 	
+	if (h.containsKey("nakijkModel"))
+		nakijkModel = ((int[]) h.get("nakijkModel"));
+	nakijkModelButton.updateBeginwaarden(nakijkModel);
+	nakijkModelButton.updateNakijkModel();
 	
-	if (h.containsKey("kbipBreedte"))
+	if (h.containsKey("nakijkModelIngesteld"))
+		nakijkModelIngesteld = ((Boolean) h.get("nakijkModelIngesteld")).booleanValue();
+		if (h.containsKey("kbipBreedte"))
 		kbipBreedte = ((Integer) h.get("kbipBreedte")).intValue();
 	if (h.containsKey("kbipHoogte"))
 		kbipHoogte = ((Integer) h.get("kbipHoogte")).intValue();
@@ -612,8 +688,26 @@ public void setEditState(Hashtable h) {
 
 public Hashtable getEditState() {
 
-	Hashtable h = kbip.getEditState();
+	boolean kijkNa = false;
+	int scoreMax = 0;
+	//int[] nakijkModel = null;
+	boolean nakijkModelIngesteld = false;
+
+	kijkNa = this.kijkNa;
+	nakijkModelIngesteld = this.nakijkModelIngesteld;
+	if(kijkNa)
+	{	scoreMax = nakijkModelButton.getScoreMax();
+		nakijkModel = nakijkModelButton.getNakijkModel();
+	}
+	//nakijkModel = this.nakijkModel;
 	
+	Hashtable h = kbip.getEditState();
+	h.put("kijkNa", kijkNa);
+	h.put("nakijkModelIngesteld", nakijkModelIngesteld);
+	if(kijkNa){
+		h.put("scoreMax", new Integer(scoreMax));
+		h.put("nakijkModel", nakijkModel);
+	}	
 	
 	h.put("kbipBreedte", new Integer(kbipBreedte));
 	h.put("kbipHoogte", new Integer(kbipHoogte));
@@ -664,44 +758,6 @@ public void zetHoogte(int h)
 	
 	setBounds(getLocation().x, getLocation().y, kbipBreedte + editWidth, Math.max(kbipHoogte, editHeight));		
 }
-
-public Hashtable setInitialCheckState()
-{
-	int terugleggenKeuze = 0;
-	int trekkingen = 2;
-	int aantalOpties = 2;
-	int[] aantalInt = {4,4,4,4,4};
-	
-	terugleggenKeuze = kbip.terugleggenKeuze;
-	trekkingen = kbip.trekkingen;
-	aantalOpties = kbip.aantalOpties;
-	aantalInt[1] = kbip.aantalInt[1];
-	aantalInt[2] = kbip.aantalInt[2];
-	aantalInt[3] = kbip.aantalInt[3];
-	aantalInt[4] = kbip.aantalInt[4];
-	
-	Hashtable h = new Hashtable();
-	
-	h.put("terugleggenKeuze", terugleggenKeuze);
-	h.put("trekkingen", trekkingen);
-	h.put("aantalOpties", aantalOpties);
-	h.put("aantalInt[1]", aantalInt[1]);
-	h.put("aantalInt[2]", aantalInt[2]);
-	h.put("aantalInt[3]", aantalInt[3]);
-	h.put("aantalInt[4]", aantalInt[4]);
-	
-	nakijkModelIngesteld = true;
-	
-	//en nu moet ergens, bij het indrukken van de Nakijkmodel-knop, iets als
-	//if(!nakijkModelIngesteld)
-	//zetNakijkModel(setInitialCheckState());
-	//else
-	//??? Hoe onthoud ik de staat van dat nakijkmodel? 
-	
-	return h;
-}
-
-
 
 
 public void wis() {
