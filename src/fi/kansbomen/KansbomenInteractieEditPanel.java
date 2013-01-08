@@ -89,7 +89,8 @@ public KansbomenInteractieEditPanel ()
 	int currentX2 = offset;
 	currentY = offset;
 	
-	String[] labelsKeuzes = { Kansbomen.rb.getString("geenLabelTekst"), Kansbomen.rb.getString("letterLabelTekst"), Kansbomen.rb.getString("kansLabelTekst")};
+	String[] labelsKeuzes = { Kansbomen.rb.getString("geenLabelTekst"), Kansbomen.rb.getString("letterLabelTekst"), 
+			Kansbomen.rb.getString("kansNaastLabelTekst"), Kansbomen.rb.getString("kansOnderLabelTekst")};
 	labelsBox = new JComboBox(labelsKeuzes);
 	labelsBox.setSelectedIndex(labelsKeuze);
 	labelsBox.setFont(theFont);
@@ -99,7 +100,8 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += height + 2 * offset;
 	
-	String[] kansVolgordeKeuzes = { Kansbomen.rb.getString("geenKansVolgordeTekst"), Kansbomen.rb.getString("kansTekst"), Kansbomen.rb.getString("volgordeTekst")};
+	String[] kansVolgordeKeuzes = { Kansbomen.rb.getString("geenKansVolgordeTekst"), Kansbomen.rb.getString("volgordeTekst"), 
+			Kansbomen.rb.getString("kansNaastTekst"), Kansbomen.rb.getString("kansOnderTekst")};
 	kansVolgordeBox = new JComboBox(kansVolgordeKeuzes);
 	kansVolgordeBox.setSelectedIndex(kansVolgordeKeuze);
 	kansVolgordeBox.setFont(theFont);

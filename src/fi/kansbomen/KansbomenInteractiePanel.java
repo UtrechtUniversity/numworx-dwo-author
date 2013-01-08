@@ -3,6 +3,7 @@ package fi.kansbomen;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,7 +39,6 @@ boolean optiesZichtbaar = true;
 boolean ballenZichtbaar = true;
 boolean legendaZichtbaar = true;
 boolean bovenbalkZichtbaar = true;
-//boolean kijkNa = false;
 boolean kleur = true;
 int kansVolgordeKeuze = 0;
 boolean terugleggen = true;
@@ -46,7 +46,6 @@ boolean letter = false;
 int terugleggenKeuze = 0;
 int labelsKeuze = 0;
 int trekkingen = 2;
-
 
 int offset=5;
 
@@ -87,9 +86,14 @@ JLabel kruisjeLabel;
 int score;
 int scoreMax = 10;
 
+Vector listeners = new Vector();
+
 int[] nakijkModel = {10, 0, 2, 2, 4, 4, 4, 4};
 int[] leerlingAntwoorden = {0, 0, 2, 2, 4, 4, 4, 4};
 
+private boolean ingevuld;
+private boolean nagekeken;
+private int mode;
 
 	public KansbomenInteractiePanel()
 	{
@@ -971,6 +975,13 @@ vernieuwLayoutLinks();
 		zetAantalVanOptie(4,aantalInt[4]);
 		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4] );
 		
+		if (h.containsKey("ingevuld")) 
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
+	    if (h.containsKey("nagekeken")) 
+	    	nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+		if (ingevuld && (mode == 0 || nagekeken)) 
+	    	kijkNa();
+		
 	}
 
 
@@ -1097,6 +1108,9 @@ vernieuwLayoutLinks();
 		h.put("aantalInt[3]", aantalInt[3]);
 		h.put("aantalInt[4]", aantalInt[4]);
 		
+		h.put("ingevuld", new Boolean(ingevuld));
+	    h.put("nagekeken", new Boolean(nagekeken));
+		
 		return h;
 	}
 
@@ -1187,31 +1201,22 @@ vernieuwLayoutLinks();
 	}
 
 	public InteractieEditPanel getEditPanel() {
-		// TODO Auto-generated method stub
 		return new KansbomenInteractieEditPanel();
 	}
 
 
-	public void wis() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void wis() {}
 
 
-	public void zetMaat() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void zetMaat() {}
 
 
 	public int geefAsHoogte() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
 	public int getIpId() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -1243,37 +1248,36 @@ vernieuwLayoutLinks();
 
 
 	public void zetMode(int mode) {
-		// TODO Auto-generated method stub
+		this.mode = mode;
+		kijkNaButton.setVisible(mode == 0 || mode == 1);
 		
 	}
 
 
 	public void zetNagekeken(boolean b) {
-		// TODO Auto-generated method stub
+		if (ingevuld) 
+			nagekeken = b;
 		
 	}
 
 
 	public void stop() {
-		// TODO Auto-generated method stub
+		kijkNa();
 		
 	}
 
 
 	public void start() {
-		// TODO Auto-generated method stub
 		
-	}
+		}
 
 
 	public void destroy() {
-		// TODO Auto-generated method stub
 		
 	}
 
 
 	public void opnieuw() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1301,7 +1305,7 @@ vernieuwLayoutLinks();
     				leerlingAntwoorden[6] == nakijkModel[6] )
     		score = scoreMax;
     	}
-    	if(leerlingAntwoorden[1] == nakijkModel[1] && 
+    	else if(leerlingAntwoorden[1] == nakijkModel[1] && 
     			leerlingAntwoorden[2] == nakijkModel[2] &&
     			leerlingAntwoorden[3] == nakijkModel[3] &&
     			leerlingAntwoorden[4] == nakijkModel[4] &&
@@ -1312,7 +1316,7 @@ vernieuwLayoutLinks();
     	
     	else
     		score = 0;
-    	
+    	ingevuld = true;
     	 if (score == 0)
          {	kruisjeLabel.setVisible(true);
          	geelVinkjeLabel.setVisible(false);
@@ -1333,27 +1337,22 @@ vernieuwLayoutLinks();
  //System.out.println("score = " + score);		
  		//fire actionEvent
  		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
- 		//for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
- 		//{
- 		//	((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
- 		//}
+ 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+ 		{
+ 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+ 		}
      
      	
      }
 
-		
-	
-
-
 	public void kijkNa(int stapNr) {
-		// TODO Auto-generated method stub
+		kijkNa();
 		
 	}
 
 
 	public void addActionListener(ActionListener al) {
-		// TODO Auto-generated method stub
-		
+		listeners.addElement(al);
 	}
 
 
