@@ -31,6 +31,8 @@ public class Text_en extends java.util.ListResourceBundle
 	        {	"naam2StringTekst" , "Green" },
 	        {	"naam3StringTekst" , "Red" },
 	        {	"naam4StringTekst" , "Cyan" },
+	        {	"naam5StringTekst" , "Orange" },
+	        {	"naam6StringTekst" , "Magenta" },
 	        {	"legendaTekst", "Symbols" },
 	        {	"zichtbaarTekst", "Adjustable by student"},
 	        {	"teruglegZichtbaarTekst", "With/without replacement"},

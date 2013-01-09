@@ -50,7 +50,7 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	JTextField bovenbalkVeld;
 	JLabel[] optieLabel, aantalOptie, letterOptie;
 	JTextField[] naamOptieVeld, aantalOptieVeld, letterOptieVeld;
-	String[] letterString = new String[5];
+	String[] letterString = new String[7];
 	String[] aantalString;
 	String trekkingTekst;
 	
@@ -145,8 +145,8 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += height + offset;
 	
-	optieLabel = new JLabel[5];
-	for(int i=1; i<5; i++)
+	optieLabel = new JLabel[7];
+	for(int i=1; i<7; i++)
 	{	optieLabel[i] = new JLabel(Kansbomen.rb.getString("optieTekst")+i+":"); 
 		optieLabel[i].setFont(theFont);
 		optieLabel[i].setBounds(currentX, currentY, 
@@ -155,17 +155,19 @@ public KansbomenInteractieEditPanel ()
 		currentY += height + offset;
 	}
 	
-	currentY -= 4 * height + 4 * offset;
+	currentY -= 6 * height + 6 * offset;
 	currentX += optieLabel[1].getWidth() + offset;
 	
-	naamOptieTekst = new String[5];
+	naamOptieTekst = new String[7];
 	naamOptieTekst[1] = Kansbomen.rb.getString("naam1StringTekst");
 	naamOptieTekst[2] = Kansbomen.rb.getString("naam2StringTekst");
 	naamOptieTekst[3] = Kansbomen.rb.getString("naam3StringTekst");
 	naamOptieTekst[4] = Kansbomen.rb.getString("naam4StringTekst");
+	naamOptieTekst[5] = Kansbomen.rb.getString("naam5StringTekst");
+	naamOptieTekst[6] = Kansbomen.rb.getString("naam6StringTekst");
 	
-	naamOptieVeld = new JTextField[5];
-	for(int i=1; i<5; i++)
+	naamOptieVeld = new JTextField[7];
+	for(int i=1; i<7; i++)
 	{ 	naamOptieVeld[i] = new JTextField(naamOptieTekst[i]);
 		naamOptieVeld[i].setFont(theFont);
 		naamOptieVeld[i].setBounds(currentX, currentY, width - 
@@ -176,15 +178,15 @@ public KansbomenInteractieEditPanel ()
 		currentY += height + offset;
 	}
 		
-	currentY -= 4 * height + 4 * offset;
+	currentY -= 6 * height + 6 * offset;
 	
-	for(int i=1; i<5; i++)
+	for(int i=1; i<7; i++)
 		letterString[i] = naamOptieTekst[i].substring(0,1).toLowerCase();
 	
 	currentX += naamOptieVeld[1].getWidth() + offset;
 	
-	letterOptieVeld = new JTextField[5];
-	for(int i=1; i<5; i++)
+	letterOptieVeld = new JTextField[7];
+	for(int i=1; i<7; i++)
 	{ 	letterOptieVeld[i] = new JTextField(letterString[i]);
 		letterOptieVeld[i].setFont(theFont);
 		letterOptieVeld[i].setBounds(currentX, currentY, 2 * theFM.charWidth('m') + 2 * offset, height);
@@ -284,7 +286,7 @@ public void plaatsComponenten()
 		kleurBox.setLocation(kbip.getSize().width + offset, kleurBox.getLocation().y);
 		kansVolgordeBox.setLocation(kbip.getSize().width + offset, kansVolgordeBox.getLocation().y);
 		naamLetterLabel.setLocation(kbip.getSize().width + offset, naamLetterLabel.getLocation().y);
-		for(int i=1; i<5; i++)
+		for(int i=1; i<7; i++)
 		{
 			optieLabel[i].setLocation(kbip.getSize().width + offset, optieLabel[i].getLocation().y);
 			naamOptieVeld[i].setLocation(kbip.getSize().width + optieLabel[i].getSize().width + 2 * offset, naamOptieVeld[i].getLocation().y);
@@ -374,6 +376,30 @@ public void actionPerformed(ActionEvent e)
 		kbip.zetNaamOptie(4,naamOptieTekst[4]);
 		}
 	}
+	else if(e.getSource() == naamOptieVeld[5])
+	{
+		if(naamOptieVeld[5].getText().isEmpty())
+			naamOptieVeld[5].setText(naamOptieTekst[5]);
+		else
+		{
+		naamOptieTekst[5] = naamOptieVeld[5].getText();
+		letterString[5] = naamOptieTekst[5].substring(0,1).toLowerCase();
+		letterOptieVeld[5].setText(letterString[5]);
+		kbip.zetNaamOptie(5,naamOptieTekst[5]);
+		}
+	}
+	else if(e.getSource() == naamOptieVeld[6])
+	{
+		if(naamOptieVeld[6].getText().isEmpty())
+			naamOptieVeld[6].setText(naamOptieTekst[6]);
+		else
+		{
+		naamOptieTekst[6] = naamOptieVeld[6].getText();
+		letterString[6] = naamOptieTekst[6].substring(0,1).toLowerCase();
+		letterOptieVeld[6].setText(letterString[6]);
+		kbip.zetNaamOptie(6,naamOptieTekst[6]);
+		}
+	}
 	else if(e.getSource() == letterOptieVeld[1])
 	{
 		if(letterOptieVeld[1].getText().length() < 3)
@@ -409,6 +435,24 @@ public void actionPerformed(ActionEvent e)
 		}
 		else
 			letterOptieVeld[4].setText(letterString[4]);
+	}
+	else if(e.getSource() == letterOptieVeld[5])
+	{
+		if(letterOptieVeld[5].getText().length() < 3)
+		{	letterString[5] = letterOptieVeld[5].getText();
+			kbip.zetLetterOptie(5,letterString[5]);
+		}
+		else
+			letterOptieVeld[5].setText(letterString[5]);
+	}
+	else if(e.getSource() == letterOptieVeld[6])
+	{
+		if(letterOptieVeld[6].getText().length() < 3)
+		{	letterString[6] = letterOptieVeld[6].getText();
+			kbip.zetLetterOptie(6,letterString[6]);
+		}
+		else
+			letterOptieVeld[6].setText(letterString[6]);
 	}
 	else if(e.getSource() == bovenbalkVeld)
 	{
@@ -535,6 +579,30 @@ public void focusLost(FocusEvent e)
 		kbip.zetNaamOptie(4,naamOptieTekst[4]);
 		}
 	}
+	else if(e.getSource() == naamOptieVeld[5])
+	{
+		if(naamOptieVeld[5].getText().isEmpty())
+			naamOptieVeld[5].setText(naamOptieTekst[5]);
+		else
+		{
+		naamOptieTekst[5] = naamOptieVeld[5].getText();
+		letterString[5] = naamOptieTekst[5].substring(0,1).toLowerCase();
+		letterOptieVeld[5].setText(letterString[5]);
+		kbip.zetNaamOptie(5,naamOptieTekst[5]);
+		}
+	}
+	else if(e.getSource() == naamOptieVeld[6])
+	{
+		if(naamOptieVeld[6].getText().isEmpty())
+			naamOptieVeld[6].setText(naamOptieTekst[6]);
+		else
+		{
+		naamOptieTekst[6] = naamOptieVeld[6].getText();
+		letterString[6] = naamOptieTekst[6].substring(0,1).toLowerCase();
+		letterOptieVeld[6].setText(letterString[6]);
+		kbip.zetNaamOptie(6,naamOptieTekst[6]);
+		}
+	}
 	else if(e.getSource() == letterOptieVeld[1])
 	{
 		if(letterOptieVeld[1].getText().length() < 3)
@@ -570,6 +638,24 @@ public void focusLost(FocusEvent e)
 		}
 		else
 			letterOptieVeld[4].setText(letterString[4]);
+	}
+	else if(e.getSource() == letterOptieVeld[5])
+	{
+		if(letterOptieVeld[5].getText().length() < 3)
+		{	letterString[5] = letterOptieVeld[5].getText();
+			kbip.zetLetterOptie(5,letterString[5]);
+		}
+		else
+			letterOptieVeld[5].setText(letterString[5]);
+	}
+	else if(e.getSource() == letterOptieVeld[6])
+	{
+		if(letterOptieVeld[6].getText().length() < 3)
+		{	letterString[6] = letterOptieVeld[6].getText();
+			kbip.zetLetterOptie(6,letterString[6]);
+		}
+		else
+			letterOptieVeld[6].setText(letterString[6]);
 	}
 	else if(e.getSource() == bovenbalkVeld)
 	{
@@ -641,6 +727,14 @@ public void setEditState(Hashtable h) {
 	if (h.containsKey("naamOptieTekst[4]"))
 		naamOptieTekst[4] = ((String) h.get("naamOptieTekst[4]"));
 	naamOptieVeld[4].setText(naamOptieTekst[4]);
+	
+	if (h.containsKey("naamOptieTekst[5]"))
+		naamOptieTekst[5] = ((String) h.get("naamOptieTekst[5]"));
+	naamOptieVeld[5].setText(naamOptieTekst[5]);
+		
+	if (h.containsKey("naamOptieTekst[6]"))
+		naamOptieTekst[6] = ((String) h.get("naamOptieTekst[6]"));
+	naamOptieVeld[6].setText(naamOptieTekst[6]);
 		
 	if (h.containsKey("letterString[1]"))
 		letterString[1] = ((String) h.get("letterString[1]"));
@@ -657,6 +751,14 @@ public void setEditState(Hashtable h) {
 	if (h.containsKey("letterString[4]"))
 		letterString[4] = ((String) h.get("letterString[4]"));
 	letterOptieVeld[4].setText(letterString[4]);
+	
+	if (h.containsKey("letterString[5]"))
+		letterString[5] = ((String) h.get("letterString[5]"));
+	letterOptieVeld[5].setText(letterString[5]);
+	
+	if (h.containsKey("letterString[6]"))
+		letterString[6] = ((String) h.get("letterString[6]"));
+	letterOptieVeld[6].setText(letterString[6]);
 	
 	if (h.containsKey("trekkingTekst"))
 		trekkingTekst = ((String) h.get("trekkingTekst"));
