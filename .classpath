@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/_base/codebase" sourcepath="C:/java/beans"/>
 	<classpathentry kind="lib" path="/DWO/output/classes"/>
+	<classpathentry kind="lib" path="/_base/codebase/jars/mayscript.jar"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>

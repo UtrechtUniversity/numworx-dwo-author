@@ -22,6 +22,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
 	private Tekenblad tekenblad;
 	private Rekenblad rekenblad;
+	private boolean rekenApplet;
 	
 	public static Image editImage;
 	
@@ -77,6 +78,11 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		getContentPane().setBackground(bgcolor);
 		setBackground(bgcolor);
 		
+		//instelling rekenApplet/tekenApplet
+		String rekenAppletString = getParameter("rekenApplet");
+		if ( rekenAppletString != null && rekenAppletString.equals("true")) rekenApplet = true;
+				
+		
 		//Fi-logo, copyright
 		FIButton fiButton = new FIButton("JavaLogoWeb",new String[]
 			{	"versie-info: ...",
@@ -97,18 +103,18 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 				
 		tekenblad = new Tekenblad(this);
 		tekenblad.setBounds(420, 10, getSize().width-431, getSize().height-71);
-		//add(tekenblad);
+		add(tekenblad);
 		
 		rekenblad = new Rekenblad(this);
 		rekenblad.setBounds(620, 10, getSize().width-631, getSize().height-171);
-		add(rekenblad);
+		//add(rekenblad);
 		
 		/*javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, tekenblad);
 		javaLogoSchuifVeld.setBackground(getBackground());
 		add(javaLogoSchuifVeld);
 		javaLogoSchuifVeld.initialize();*/
 		
-		javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, rekenblad);
+		javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, tekenblad);
 		javaLogoSchuifVeld.setBackground(getBackground());
 		add(javaLogoSchuifVeld);
 		javaLogoSchuifVeld.initialize();
@@ -119,7 +125,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		trb.addActionListener(javaLogoSchuifVeld);
 		add(trb);*/
 		
-		TraceBeheerder trb = new TraceBeheerder( rekenblad,null);
+		TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
 		trb.setBounds(618,getSize().height-59,getSize().width-619,58);
 		trb.setBackground(getBackground());
 		trb.addActionListener(javaLogoSchuifVeld);
@@ -130,7 +136,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		versieLabel.setBounds(getSize().width-60,getSize().height-20,60,15);
 		add(versieLabel,0);
 		
-		rekenblad.meldTraceBeheerder(trb);
+		tekenblad.meldTraceBeheerder(trb);
 		//trb.naarBegin();
 		
 		
