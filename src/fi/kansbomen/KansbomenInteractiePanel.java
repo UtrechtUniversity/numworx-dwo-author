@@ -2,6 +2,7 @@ package fi.kansbomen;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -28,8 +29,6 @@ int kbipBreedte = 500;
 int kbipHoogte = 450;
 
 int kansboomBreedte;
-// Even kijken hoe ik bovenstaande handig combineer...
-
 
 //boolean componentsCreated = false;
 
@@ -65,14 +64,15 @@ JComboBox trekkingenBox, optiesBox;
 JLabel aantalTrekkingen, aantalOptiesLabel, legendaKop;
 JLabel[] aantalOptie, legendaOptie;
 Color[] kleurRij = new Color[7];
+Color[] gekleurdeRij, zwarteRij;
 LijntjeLabel[] legendaKleur;
 JTextField[] aantalOptieVeld;	
 String[] naamOptieTekst;
-String[] letterString = new String[] {"d","d","d","d","d","d","d"};
+String[] letterString = new String[7]; //{"d","d","d","d","d","d","d"}
 String trekkingTekst = Kansbomen.rb.getString("trekkingBalkTekst");
 
 int aantalOpties = 2;
-int[] aantalInt = new int[]  {4,4,4,4,4,4,4};
+int[] aantalInt = new int[] {4,4,4,4,4,4,4};
 int[] aantalIntOud = new int[] {4,4,4,4,4,4,4};
 int breedteAantalVeld;
 
@@ -88,9 +88,9 @@ int scoreMax = 10;
 
 Vector listeners = new Vector();
 
-int[] nakijkModel = {10, 0, 2, 2, 4, 4, 4, 4};
-int[] leerlingAntwoorden = {0, 0, 2, 2, 4, 4, 4, 4};
-int[] beginStatus = {0, 0, 2, 2, 4, 4, 4, 4};
+int[] nakijkModel = new int[] {10, 4, 4, 4, 4, 4, 4, 0, 2, 2};
+int[] leerlingAntwoorden = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 2, 2};
+int[] beginStatus = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 2, 2};
 
 private boolean ingevuld;
 private boolean nagekeken;
@@ -110,7 +110,18 @@ private int mode;
 		currentX = offset;
 		//currentY = offset;
 		
+		gekleurdeRij = new Color[7];
+		gekleurdeRij[1] = new Color(0,0,255);
+		gekleurdeRij[2] = new Color(0,200,0);
+		gekleurdeRij[3] = new Color(255,50,50);
+		gekleurdeRij[4] = new Color(0,220,220);
+		gekleurdeRij[5] = new Color(255,180,0);
+		gekleurdeRij[6] = new Color(220,0,220);
 		
+		zwarteRij = new Color[7];
+		for(int i = 1; i < 7; i++)
+			zwarteRij[i] = new Color(0,0,0);		
+	
 		String[] teruglegKeuzes = { Kansbomen.rb.getString("metTerugleggenTekst"), Kansbomen.rb.getString("zonderTerugleggenTekst")};
 		terugleggenBox = new JComboBox(teruglegKeuzes);
 		terugleggenBox.setSelectedIndex(terugleggenKeuze);
@@ -118,8 +129,6 @@ private int mode;
 		terugleggenBox.setBounds(currentX, currentY, width, height);
 		add(terugleggenBox);
 		terugleggenBox.addActionListener(this);
-		
-		//currentY += height + 2 * offset;
 		
 		aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTrekkingenTekst"));
 		aantalTrekkingen.setFont(theFont);
@@ -137,7 +146,6 @@ private int mode;
 		trekkingenBox.addActionListener(this);
 		
 		currentX -= aantalTrekkingen.getWidth()+ offset;
-		//currentY += height + 2 * offset;
 		
 		aantalOptiesLabel = new JLabel(Kansbomen.rb.getString("aantalOptiesTekst"));
 		aantalOptiesLabel.setFont(theFont);
@@ -155,7 +163,6 @@ private int mode;
 		optiesBox.addActionListener(this);
 		
 		currentX -= aantalOptiesLabel.getWidth()+ offset;
-		//currentY += height + 2 * offset;
 		
 		breedteAantalVeld = theFM.stringWidth("000")+ 2 * offset;
 				                       
@@ -164,12 +171,8 @@ private int mode;
 		{	aantalOptieVeld[i] = new JTextField(""+aantalInt[i]);
 			aantalOptieVeld[i].setFont(theFont);
 			aantalOptieVeld[i].setBounds(currentX + width - breedteAantalVeld, currentY, breedteAantalVeld, height);
-			//currentY += height + offset;
 		}
 			
-		
-		//currentY -= 4 * height + 4 * offset;
-		
 		naamOptieTekst = new String[7];
 		naamOptieTekst[1] = Kansbomen.rb.getString("naam1StringTekst");
 		naamOptieTekst[2] = Kansbomen.rb.getString("naam2StringTekst");
@@ -186,37 +189,26 @@ private int mode;
 		{	aantalOptie[i] = new JLabel(Kansbomen.rb.getString("aantalTekst")+naamOptieTekst[i]+":");
 			aantalOptie[i].setFont(theFont);
 			aantalOptie[i].setBounds(currentX, currentY, width - breedteAantalVeld, height);
-			//currentY += height + offset;
 		}
-		plaatsOptieRegels(aantalOpties+2);
-		
-		//currentY = editHeight - (aantalOpties + 3) * (height + offset);
+		for(int i=1; i<7; i++)
+	{		add(aantalOptie[i]);
+			add(aantalOptieVeld[i]);
+			aantalOptieVeld[i].addActionListener(this);
+			aantalOptieVeld[i].addFocusListener(this);
+		}
 		
 		legendaKop = new JLabel(Kansbomen.rb.getString("legendaTekst"));
 		legendaKop.setFont(theBoldFont);
 		legendaKop.setBounds(currentX, currentY, width, height);
 		add(legendaKop);
-		//currentY += height + offset;
 		
 		legendaOptie = new JLabel[7];
 		legendaKleur = new LijntjeLabel[7];
 		
 		if(kleur) 
-		{	kleurRij[1] = new Color(0,0,255);
-			kleurRij[2] = new Color(0,200,0);
-			kleurRij[3] = new Color(255,50,50);
-			kleurRij[4] = new Color(0,220,220);
-			kleurRij[5] = new Color(220,220,0);
-			kleurRij[6] = new Color(220,0,220);
-		}
+			kleurRij = gekleurdeRij;
 		else
-		{	kleurRij[1] = Color.BLACK;
-			kleurRij[2] = Color.BLACK;
-			kleurRij[3] = Color.BLACK;
-			kleurRij[4] = Color.BLACK;
-			kleurRij[5] = Color.BLACK;
-			kleurRij[6] = Color.BLACK;
-		}
+			kleurRij = zwarteRij;
 		
 		for (int i=1; i<7; i++)
 		{
@@ -230,13 +222,11 @@ private int mode;
 			legendaOptie[i].setBounds(currentX, currentY, 4* width / 5, height);
 			add(legendaOptie[i]);
 			currentX -= width / 5 + offset;
-			currentY += height + offset;
 		}
 			
 		kijkNaButton = new JButton(Kansbomen.rb.getString("kijkNaTekst"));
 		kijkNaButton.setFont(new Font("SansSerif",Font.PLAIN, 12));
 		kijkNaButton.setBounds(0, 0, 75, 24);
-		//kijkNaButton.addActionListener(new KijkNaAL());
 		kijkNaButton.addActionListener(this);
 		
 		java.net.URL imageURL = Kansbomen.class.getResource("resources/goedkrul_en.gif");
@@ -282,47 +272,16 @@ private int mode;
 		
 		kijkNaPanel = new JPanel(null);
 		kijkNaPanel.setOpaque(false);
-		kijkNaPanel.setBounds(offset, editHeight-height, 95, 24);
+		kijkNaPanel.setBounds(editWidth - 95, editHeight-height, 95, 24);
 		kijkNaPanel.add(kijkNaButton);
 		kijkNaPanel.add(groenVinkjeLabel);
 		kijkNaPanel.add(geelVinkjeLabel);
 		kijkNaPanel.add(kruisjeLabel);
 		kijkNaPanel.setVisible(false);
-		this.add(kijkNaPanel);
-		//currentX += width + offset;
-		//componentsCreated = true;
-				
+		this.add(kijkNaPanel, 0);
+		
+		zetLegendaZichtbaar(true);
 	}
-
-	/* Waarschijnlijk toch niet nodig?
-	public void plaatsComponenten()
-	{
-		if (componentsCreated)
-		{
-			legendaKop.setLocation(offset, editHeight - (aantalOpties + 3) * (height + offset));
-			for(int i=1; i<5; i++)
-			{
-				legendaKleur[i].setLocation(offset, legendaKleur[i].getLocation().y);
-				legendaTekst[i].setLocation(offset, naamOptieVeld[i].getLocation().y);
-				
-			}
-		}
-	}
-	*/
-	
-	public void plaatsOptieRegels(int j)
-	{
-		for(int i=1; i<7; i++)
-		{	if(j>=i)
-			{
-				add(aantalOptie[i]);
-				add(aantalOptieVeld[i]);
-				aantalOptieVeld[i].addActionListener(this);
-				aantalOptieVeld[i].addFocusListener(this);
-			}
-			
-		}
-	}	
 	
 	public void vernieuwLayoutLinks()
 	{
@@ -330,49 +289,29 @@ private int mode;
 		if (terugleggenBox.isVisible())
 		{	
 			terugleggenBox.setLocation(terugleggenBox.getLocation().x, currentY);
-		    currentY += terugleggenBox.getSize().height + 2 * offset;
+		    currentY += terugleggenBox.getSize().height + offset;
 		}
 		if (aantalTrekkingen.isVisible())
 		{	
 			aantalTrekkingen.setLocation(aantalTrekkingen.getLocation().x, currentY);
 		    trekkingenBox.setLocation(trekkingenBox.getLocation().x, currentY);
-		    currentY += aantalTrekkingen.getSize().height + 2 * offset;
+		    currentY += aantalTrekkingen.getSize().height + offset;
 		}
 		if (aantalOptiesLabel.isVisible())
 		{	
 			aantalOptiesLabel.setLocation(aantalOptiesLabel.getLocation().x, currentY);
 			optiesBox.setLocation(optiesBox.getLocation().x, currentY);
-		    currentY += aantalOptiesLabel.getSize().height + 2 * offset;
+		    currentY += aantalOptiesLabel.getSize().height + offset;
 		}
 		for(int i = 1; i<7; i++)
 		{	
-		if (aantalOptieVeld[i].isVisible())
-		{	
-			aantalOptieVeld[i].setLocation(aantalOptieVeld[i].getLocation().x, currentY);
-			aantalOptie[i].setLocation(aantalOptie[i].getLocation().x, currentY);
-		    currentY += aantalOptieVeld[i].getSize().height + offset;
+			if (aantalOptieVeld[i].isVisible())
+			{	
+				aantalOptieVeld[i].setLocation(aantalOptieVeld[i].getLocation().x, currentY);
+				aantalOptie[i].setLocation(aantalOptie[i].getLocation().x, currentY);
+			    currentY += aantalOptieVeld[i].getSize().height + offset;
+			}
 		}
-		}
-		/*
-		if (aantalOptieVeld[2].isVisible())
-		{	
-			aantalOptieVeld[2].setLocation(aantalOptieVeld[2].getLocation().x, currentY);
-			aantalOptie[2].setLocation(aantalOptie[2].getLocation().x, currentY);
-		    currentY += aantalOptieVeld[2].getSize().height + offset;
-		}
-		if (aantalOptieVeld[3].isVisible())
-		{	
-			aantalOptieVeld[3].setLocation(aantalOptieVeld[3].getLocation().x, currentY);
-			aantalOptie[3].setLocation(aantalOptie[3].getLocation().x, currentY);
-		    currentY += aantalOptieVeld[3].getSize().height + offset;
-		}
-		if (aantalOptieVeld[4].isVisible())
-		{	
-			aantalOptieVeld[4].setLocation(aantalOptieVeld[4].getLocation().x, currentY);
-			aantalOptie[4].setLocation(aantalOptie[4].getLocation().x, currentY);
-		    currentY += aantalOptieVeld[4].getSize().height + offset;
-		}
-		*/
 		if (legendaKop.isVisible())
 		{	currentY += offset;
 			legendaKop.setLocation(legendaKop.getLocation().x, currentY);
@@ -380,69 +319,46 @@ private int mode;
 		}
 		for(int i = 1; i<7; i++)
 		{
-		if (legendaOptie[i].isVisible())
-		{	
-			legendaOptie[i].setLocation(legendaOptie[i].getLocation().x, currentY);
-			legendaKleur[i].setLocation(legendaKleur[i].getLocation().x, currentY);
-		    currentY += legendaOptie[i].getSize().height;
+			if (legendaOptie[i].isVisible())
+			{	
+				legendaOptie[i].setLocation(legendaOptie[i].getLocation().x, currentY);
+				legendaKleur[i].setLocation(legendaKleur[i].getLocation().x, currentY);
+			    currentY += legendaOptie[i].getSize().height;
+			}
 		}
-		}
-		/*
-		if (legendaOptie[2].isVisible())
-		{	
-			legendaOptie[2].setLocation(legendaOptie[2].getLocation().x, currentY);
-			legendaKleur[2].setLocation(legendaKleur[2].getLocation().x, currentY);
-		    currentY += legendaOptie[2].getSize().height;
-		}
-		if (legendaOptie[3].isVisible())
-		{	
-			legendaOptie[3].setLocation(legendaOptie[3].getLocation().x, currentY);
-			legendaKleur[3].setLocation(legendaKleur[3].getLocation().x, currentY);
-		    currentY += legendaOptie[3].getSize().height;
-		}
-		if (legendaOptie[4].isVisible())
-		{	
-			legendaOptie[4].setLocation(legendaOptie[4].getLocation().x, currentY);
-			legendaKleur[4].setLocation(legendaKleur[4].getLocation().x, currentY);
-		    currentY += legendaOptie[4].getSize().height;
-		}
-		*/
 		
 		if (kijkNaPanel.isVisible())
 			kijkNaPanel.setLocation(kijkNaPanel.getLocation().x, kbipHoogte-24);
 		
-
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
-		
-super.setBounds(x,y,b,h);
-	if(teruglegZichtbaar || trekkingZichtbaar || optiesZichtbaar || ballenZichtbaar
-			|| legendaZichtbaar)
-	{	currentX = width + 2 * offset;
-		kansboomBreedte = b - width - 3 * offset;
-	}
-	else
-	{	currentX = offset;
-		kansboomBreedte = b - 2 * offset;
-	}
-if (kansboom == null)
-{
-		
 		super.setBounds(x,y,b,h);
-		kansboom = new Kansboom();
-		kansboom.setSize(kansboomBreedte, h-2*offset);
-		kansboom.setLocation(currentX, offset);
-		add(kansboom);
-}
-else
-{
-		kansboom.setSize(kansboomBreedte, h-2*offset);
-		kansboom.setLocation(currentX + offset, offset);
-}
-
-vernieuwLayoutLinks();
+		if(teruglegZichtbaar || trekkingZichtbaar || optiesZichtbaar || ballenZichtbaar
+				|| legendaZichtbaar)
+		{	currentX = width + 2 * offset;
+			kansboomBreedte = b - width - 3 * offset;
+		}
+		else
+		{	currentX = offset;
+			kansboomBreedte = b - 2 * offset;
+		}
+		if (kansboom == null)
+		{
+				
+				super.setBounds(x,y,b,h);
+				kansboom = new Kansboom();
+				kansboom.setSize(kansboomBreedte, h-2*offset);
+				kansboom.setLocation(currentX, offset);
+				add(kansboom);
+		}
+		else
+		{
+				kansboom.setSize(kansboomBreedte, h-2*offset);
+				kansboom.setLocation(currentX + offset, offset);
+		}
+		zetOpties(aantalOpties,aantalInt);
 	}
 
 	public void zetTeruglegZichtbaar(boolean b)
@@ -471,11 +387,6 @@ vernieuwLayoutLinks();
 	public void zetBallenZichtbaar(boolean b)
 	{
 		ballenZichtbaar = b;
-		aantalOptie[1].setVisible(b);
-		aantalOptieVeld[1].setVisible(b);
-		aantalOptie[2].setVisible(b);
-		aantalOptieVeld[2].setVisible(b);
-	
 		for(int p = 1; p < 7; p++)
 		{	if(aantalOpties+2 > p-1)
 			{	aantalOptie[p].setVisible(b);
@@ -486,24 +397,6 @@ vernieuwLayoutLinks();
 				aantalOptieVeld[p].setVisible(false);
 			}
 		}
-		/*
-		if(aantalOpties+2>2)
-		{	aantalOptie[3].setVisible(b);
-			aantalOptieVeld[3].setVisible(b);
-		}	
-		else
-		{	aantalOptie[3].setVisible(false);
-			aantalOptieVeld[3].setVisible(false);
-		}
-		if(aantalOpties+2>3)
-		{	aantalOptie[4].setVisible(b);
-			aantalOptieVeld[4].setVisible(b);
-		}	
-		else
-		{	aantalOptie[4].setVisible(false);
-			aantalOptieVeld[4].setVisible(false);
-		}
-		*/
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
 	}
 	
@@ -522,29 +415,6 @@ vernieuwLayoutLinks();
 				legendaOptie[p].setVisible(false);
 			}
 		}
-		/*
-		legendaKleur[1].setVisible(b);
-		legendaOptie[1].setVisible(b);
-		legendaKleur[2].setVisible(b);
-		legendaOptie[2].setVisible(b);
-	
-		if(aantalOpties+2>2)
-		{	legendaKleur[3].setVisible(b);
-			legendaOptie[3].setVisible(b);
-		}	
-		else
-		{	legendaKleur[3].setVisible(false);
-			legendaOptie[3].setVisible(false);
-		}
-		if(aantalOpties+2>3)
-		{	legendaKleur[4].setVisible(b);
-			legendaOptie[4].setVisible(b);
-		}	
-		else
-		{	legendaKleur[4].setVisible(false);
-			legendaOptie[4].setVisible(false);
-		}
-		*/
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
 	}
 	
@@ -608,12 +478,15 @@ vernieuwLayoutLinks();
 		kansboom.zetLabelsKeuze(i);
 	}
 	
-	public void zetAantalOpties(int j, int w3, int w4, int w5, int w6)
-	{
-		aantalOpties=j-2;
-		kansboom.zetAantalOpties(j, w3, w4, w5, w6);
-		optiesBox.setSelectedIndex(j-2);
-		
+	public void zetOpties(int k, int[] opties)
+	{	aantalInt = opties;
+		aantalOpties = k;
+		kansboom.zetOpties(k, opties);
+		for(int i = 1; i<aantalInt.length; i++)
+		{	zetLegendaTekst(i);
+			aantalOptieVeld[i].setText(""+aantalInt[i]);
+		}
+		optiesBox.setSelectedIndex(k);
 		for(int p = 1; p < 7; p++)
 		{	if(aantalOpties + 2 > p-1)
 			{
@@ -631,66 +504,6 @@ vernieuwLayoutLinks();
 			}
 		}
 		vernieuwLayoutLinks();
-		
-		/*
-		if (aantalOpties + 2 == 3)
-		{
-			aantalOptie[4].setVisible(false);
-			aantalOptieVeld[4].setVisible(false);
-			legendaKleur[4].setVisible(false);
-			legendaOptie[4].setVisible(false);
-			
-			// 3 zichtbaar zetten, kan verborgen zijn.
-			// alleen zichtbaar als ze getoond moet worden.
-			aantalOptie[3].setVisible(ballenZichtbaar);
-			aantalOptieVeld[3].setVisible(ballenZichtbaar);
-			legendaKleur[3].setVisible(legendaZichtbaar);
-			legendaOptie[3].setVisible(legendaZichtbaar);
-			
-			vernieuwLayoutLinks();			
-		}
-		else if (aantalOpties + 2 == 2)
-		{
-			aantalOptie[4].setVisible(false);
-			aantalOptieVeld[4].setVisible(false);
-			legendaKleur[4].setVisible(false);
-			legendaOptie[4].setVisible(false);
-			
-			aantalOptie[3].setVisible(false);
-			aantalOptieVeld[3].setVisible(false);
-			legendaKleur[3].setVisible(false);
-			legendaOptie[3].setVisible(false);
-			
-			vernieuwLayoutLinks();			
-		}
-		else
-		{
-			// 4 zichtbaar zetten, kan verborgen zijn		
-			// vakjes voor aantal alleen zichtbaar als ze getoond moet worden.
-			aantalOptie[4].setVisible(ballenZichtbaar);
-			aantalOptieVeld[4].setVisible(ballenZichtbaar);
-			legendaKleur[4].setVisible(legendaZichtbaar);
-			legendaOptie[4].setVisible(legendaZichtbaar);
-			
-			// 3 zichtbaar zetten, kan verborgen zijn
-			// vakjes voor aantal alleen zichtbaar als ze getoond moet worden.
-			aantalOptie[3].setVisible(ballenZichtbaar);
-			aantalOptieVeld[3].setVisible(ballenZichtbaar);
-			legendaKleur[3].setVisible(legendaZichtbaar);
-			legendaOptie[3].setVisible(legendaZichtbaar);
-			
-			vernieuwLayoutLinks();
-		}
-		*/
-	}
-	
-	public void zetAantalVanOptie(int i, int j)
-	{
-		aantalInt[i] = j;
-		kansboom.zetAantalVanOptie(i,j);
-		zetLegendaTekst(i);
-		aantalOptieVeld[i].setText(""+aantalInt[i]);
-		
 	}
 	
 	public void zetLegendaTekst(int i)
@@ -701,25 +514,12 @@ vernieuwLayoutLinks();
 	public void zetLegendaKleur(boolean b)
 	{
 		if(b) 
-			{	kleurRij[1] = new Color(0,0,255);
-				kleurRij[2] = new Color(0,200,0);
-				kleurRij[3] = new Color(255,50,50);
-				kleurRij[4] = new Color(0,220,220);
-				kleurRij[5] = new Color(220,220,0);
-				kleurRij[6] = new Color(220,0,220);
-			}
-			else
-			{	kleurRij[1] = Color.BLACK;
-				kleurRij[2] = Color.BLACK;
-				kleurRij[3] = Color.BLACK;
-				kleurRij[4] = Color.BLACK;
-				kleurRij[5] = Color.BLACK;
-				kleurRij[6] = Color.BLACK;
-			}
-		for (int i=1; i<7; i++)
-		{
+			kleurRij = gekleurdeRij;	
+		else
+			kleurRij = zwarteRij;			
+		
+		for (int i = 1; i < 7; i++)
 			legendaKleur[i].setColor(kleurRij[i]);
-		}
 	}	
 	
 	public void zetTrekkingTekst(String s)
@@ -739,30 +539,26 @@ vernieuwLayoutLinks();
 	public void zetNakijkModel(int[] waardes)
 	{
 		scoreMax = waardes[0];
-		for(int i=0; i<8; i++)
-			nakijkModel[i] = waardes[i];
+		nakijkModel = waardes;
 	}
 	
 	public void updateLeerlingAntwoorden()
 	{
-		leerlingAntwoorden[1] = terugleggenKeuze;
-		leerlingAntwoorden[2] = trekkingen;
-		leerlingAntwoorden[3] = aantalOpties;
-		leerlingAntwoorden[4] = aantalInt[1];
-		leerlingAntwoorden[5] = aantalInt[2];
-		leerlingAntwoorden[6] = aantalInt[3];
-		leerlingAntwoorden[7] = aantalInt[4];
+		leerlingAntwoorden[0] = beginStatus[0];
+		for(int i = 1; i < 7; i++)
+			leerlingAntwoorden[i] = aantalInt[i];
+		leerlingAntwoorden[7] = terugleggenKeuze;
+		leerlingAntwoorden[8] = trekkingen;
+		leerlingAntwoorden[9] = aantalOpties;	
 	}
 	
 	public void zetBeginStatus()
 	{
-		beginStatus[1] = terugleggenKeuze;
-		beginStatus[2] = trekkingen;
-		beginStatus[3] = aantalOpties;
-		beginStatus[4] = aantalInt[1];
-		beginStatus[5] = aantalInt[2];
-		beginStatus[6] = aantalInt[3];
-		beginStatus[7] = aantalInt[4];
+		for(int i = 1; i < 7; i++)
+			beginStatus[i] = aantalInt[i];
+		beginStatus[7] = terugleggenKeuze;
+		beginStatus[8] = trekkingen;
+		beginStatus[9] = aantalOpties;
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -778,214 +574,60 @@ vernieuwLayoutLinks();
 		else if(e.getSource() == optiesBox)
 		{
 			aantalOpties = optiesBox.getSelectedIndex();
-			zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4], aantalInt[5], aantalInt[6]);	
+			zetOpties(aantalOpties, aantalInt);
 		
 		}	
 		else if(e.getSource() == aantalOptieVeld[1])
-		{	 try
-			{ 	aantalIntOud[1] = aantalInt[1];
-				aantalInt[1] = Integer.parseInt( aantalOptieVeld[1].getText() );
-				if(aantalInt[1] > 0)
-				{	zetAantalVanOptie(1,aantalInt[1]);
-					zetLegendaTekst(1);
-				}	
-				else 
-				{	aantalInt[1] = aantalIntOud[1];
-					aantalOptieVeld[1].setText(""+aantalInt[1]);
-				}	
-			}
-			catch (Exception p)
-			{aantalOptieVeld[1].setText(""+aantalInt[1]);}
-		}
+			actieAantalOptieVeld(1);
 		else if(e.getSource() == aantalOptieVeld[2])
-		{	 try
-			{ 	aantalIntOud[2] = aantalInt[2];	
-				aantalInt[2] = Integer.parseInt( aantalOptieVeld[2].getText() );
-				if(aantalInt[2] > 0)
-				{	zetAantalVanOptie(2,aantalInt[2]);
-					zetLegendaTekst(2);
-				}
-				else 
-				{	aantalInt[2] = aantalIntOud[2];
-					aantalOptieVeld[2].setText(""+aantalInt[2]);
-				}
-		}
-		catch (Exception p)
-		{aantalOptieVeld[2].setText(""+aantalInt[2]);}
-		}
+			actieAantalOptieVeld(2);
 		else if(e.getSource() == aantalOptieVeld[3])
-		{	 try
-			{ 	aantalIntOud[3] = aantalInt[3];
-				aantalInt[3] = Integer.parseInt( aantalOptieVeld[3].getText() );
-				if(aantalInt[3] > 0)
-				{	zetAantalVanOptie(3,aantalInt[3]);
-					zetLegendaTekst(3);
-				}
-				else 
-				{	aantalInt[3] = aantalIntOud[3];
-					aantalOptieVeld[3].setText(""+aantalInt[3]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[3].setText(""+aantalInt[3]);}
-		}
+			actieAantalOptieVeld(3);
 		else if(e.getSource() == aantalOptieVeld[4])
-		{	 try
-			{ 	aantalIntOud[4] = aantalInt[4];	
-				aantalInt[4] = Integer.parseInt( aantalOptieVeld[4].getText() );
-				if(aantalInt[4] > 0)
-				{	zetAantalVanOptie(4,aantalInt[4]);
-					zetLegendaTekst(4);
-				}
-				else
-				{	aantalInt[4] = aantalIntOud[4];	
-					aantalOptieVeld[4].setText(""+aantalInt[4]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[4].setText(""+aantalInt[4]);}
-		}
+			actieAantalOptieVeld(4);
 		else if(e.getSource() == aantalOptieVeld[5])
-		{	 try
-			{ 	aantalIntOud[5] = aantalInt[5];	
-				aantalInt[5] = Integer.parseInt( aantalOptieVeld[5].getText() );
-				if(aantalInt[5] > 0)
-				{	zetAantalVanOptie(5,aantalInt[5]);
-					zetLegendaTekst(5);
-				}
-				else
-				{	aantalInt[5] = aantalIntOud[5];	
-					aantalOptieVeld[5].setText(""+aantalInt[5]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[5].setText(""+aantalInt[5]);}
-		}
+			actieAantalOptieVeld(5);
 		else if(e.getSource() == aantalOptieVeld[6])
-		{	 try
-			{ 	aantalIntOud[6] = aantalInt[6];	
-				aantalInt[6] = Integer.parseInt( aantalOptieVeld[6].getText() );
-				if(aantalInt[6] > 0)
-				{	zetAantalVanOptie(6,aantalInt[6]);
-					zetLegendaTekst(6);
-				}
-				else
-				{	aantalInt[6] = aantalIntOud[6];	
-					aantalOptieVeld[6].setText(""+aantalInt[6]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[6].setText(""+aantalInt[6]);}
-		}
+			actieAantalOptieVeld(6);
 		else if(e.getSource() == kijkNaButton)
 		{
 			kijkNa();
-
-		}
-		
+		}	
 	}
 	
 	public void focusLost(FocusEvent e) 
 	{
 		if(e.getSource() == aantalOptieVeld[1])
-		{	 try
-			{ 	aantalIntOud[1] = aantalInt[1];
-				aantalInt[1] = Integer.parseInt( aantalOptieVeld[1].getText() );
-				if(aantalInt[1] > 0)
-				{	zetAantalVanOptie(1,aantalInt[1]);
-					zetLegendaTekst(1);
-				}	
-				else 
-				{	aantalInt[1] = aantalIntOud[1];
-					aantalOptieVeld[1].setText(""+aantalInt[1]);
-				}	
-			}
-			catch (Exception p)
-			{aantalOptieVeld[1].setText(""+aantalInt[1]);}
-		}
+			actieAantalOptieVeld(1);
 		else if(e.getSource() == aantalOptieVeld[2])
-		{	 try
-			{ 	aantalIntOud[2] = aantalInt[2];	
-				aantalInt[2] = Integer.parseInt( aantalOptieVeld[2].getText() );
-				if(aantalInt[2] > 0)
-				{	zetAantalVanOptie(2,aantalInt[2]);
-					zetLegendaTekst(2);
-				}
-				else 
-				{	aantalInt[2] = aantalIntOud[2];
-					aantalOptieVeld[2].setText(""+aantalInt[2]);
-				}
+			actieAantalOptieVeld(2);
+		else if(e.getSource() == aantalOptieVeld[3])
+			actieAantalOptieVeld(3);
+		else if(e.getSource() == aantalOptieVeld[4])
+			actieAantalOptieVeld(4);
+		else if(e.getSource() == aantalOptieVeld[5])
+			actieAantalOptieVeld(5);
+		else if(e.getSource() == aantalOptieVeld[6])
+			actieAantalOptieVeld(6);
+	}
+	
+	public void actieAantalOptieVeld(int i)
+	{
+		try
+		{ 	aantalIntOud[i] = aantalInt[i];
+			aantalInt[i] = Integer.parseInt( aantalOptieVeld[i].getText() );
+			if(aantalInt[i] > 0)
+			{	zetOpties(aantalOpties, aantalInt);
+				zetLegendaTekst(i);
+			}	
+			else 
+			{	aantalInt[i] = aantalIntOud[i];
+				aantalOptieVeld[i].setText(""+aantalInt[i]);
+			}	
 		}
 		catch (Exception p)
-		{aantalOptieVeld[2].setText(""+aantalInt[2]);}
-		}
-		else if(e.getSource() == aantalOptieVeld[3])
-		{	 try
-			{ 	aantalIntOud[3] = aantalInt[3];
-				aantalInt[3] = Integer.parseInt( aantalOptieVeld[3].getText() );
-				if(aantalInt[3] > 0)
-				{	zetAantalVanOptie(3,aantalInt[3]);
-					zetLegendaTekst(3);
-				}
-				else 
-				{	aantalInt[3] = aantalIntOud[3];
-					aantalOptieVeld[3].setText(""+aantalInt[3]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[3].setText(""+aantalInt[3]);}
-		}
-		else if(e.getSource() == aantalOptieVeld[4])
-		{	 try
-			{ 	aantalIntOud[4] = aantalInt[4];	
-				aantalInt[4] = Integer.parseInt( aantalOptieVeld[4].getText() );
-				if(aantalInt[4] > 0)
-				{	zetAantalVanOptie(4,aantalInt[4]);
-					zetLegendaTekst(4);
-				}
-				else
-				{	aantalInt[4] = aantalIntOud[4];	
-					aantalOptieVeld[4].setText(""+aantalInt[4]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[4].setText(""+aantalInt[4]);}
-		}
-		else if(e.getSource() == aantalOptieVeld[5])
-		{	 try
-			{ 	aantalIntOud[5] = aantalInt[5];	
-				aantalInt[5] = Integer.parseInt( aantalOptieVeld[5].getText() );
-				if(aantalInt[5] > 0)
-				{	zetAantalVanOptie(5,aantalInt[5]);
-					zetLegendaTekst(5);
-				}
-				else
-				{	aantalInt[5] = aantalIntOud[5];	
-					aantalOptieVeld[5].setText(""+aantalInt[5]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[5].setText(""+aantalInt[5]);}
-		}
-		else if(e.getSource() == aantalOptieVeld[6])
-		{	 try
-			{ 	aantalIntOud[6] = aantalInt[6];	
-				aantalInt[6] = Integer.parseInt( aantalOptieVeld[6].getText() );
-				if(aantalInt[6] > 0)
-				{	zetAantalVanOptie(6,aantalInt[6]);
-					zetLegendaTekst(6);
-				}
-				else
-				{	aantalInt[6] = aantalIntOud[6];	
-					aantalOptieVeld[6].setText(""+aantalInt[6]);
-				}
-			}
-			catch (Exception p)
-			{aantalOptieVeld[6].setText(""+aantalInt[6]);}
-		}
-		
-	}		
-
+		{aantalOptieVeld[i].setText(""+aantalInt[i]);}
+	}
 
 	public void zetOpdracht(Hashtable h, String[] randomVars,
 			Hashtable randomValues) {
@@ -1010,48 +652,22 @@ vernieuwLayoutLinks();
 			kleur = ((Boolean) h.get("kleur")).booleanValue();
 		if (h.containsKey("kansVolgordeKeuze"))
 			kansVolgordeKeuze = ((Integer)h.get("kansVolgordeKeuze")).intValue();
-		if (h.containsKey("naamOptieTekst[1]"))
-			naamOptieTekst[1] = ((String) h.get("naamOptieTekst[1]"));
-		if (h.containsKey("naamOptieTekst[2]"))
-			naamOptieTekst[2] = ((String) h.get("naamOptieTekst[2]"));
-		if (h.containsKey("naamOptieTekst[3]"))
-			naamOptieTekst[3] = ((String) h.get("naamOptieTekst[3]"));
-		if (h.containsKey("naamOptieTekst[4]"))
-			naamOptieTekst[4] = ((String) h.get("naamOptieTekst[4]"));
-		if (h.containsKey("naamOptieTekst[5]"))
-			naamOptieTekst[5] = ((String) h.get("naamOptieTekst[5]"));
-		if (h.containsKey("naamOptieTekst[6]"))
-			naamOptieTekst[6] = ((String) h.get("naamOptieTekst[6]"));
-		if (h.containsKey("letterString[1]"))
-			letterString[1] = ((String) h.get("letterString[1]"));
-		if (h.containsKey("letterString[2]"))
-			letterString[2] = ((String) h.get("letterString[2]"));
-		if (h.containsKey("letterString[3]"))
-			letterString[3] = ((String) h.get("letterString[3]"));
-		if (h.containsKey("letterString[4]"))
-			letterString[4] = ((String) h.get("letterString[4]"));
-		if (h.containsKey("letterString[5]"))
-			letterString[5] = ((String) h.get("letterString[5]"));
-		if (h.containsKey("letterString[6]"))
-			letterString[6] = ((String) h.get("letterString[6]"));
+		if (h.containsKey("naamOptieTekst"))
+			naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
+		for(int i = 1; i < 7; i++)
+			zetNaamOptie(i, naamOptieTekst[i]);
+		if (h.containsKey("letterString"))
+			letterString = ((String[]) h.get("letterString"));
+		for(int i = 1; i < 7; i++)
+			zetLetterOptie(i, letterString[i]);
 		if(h.containsKey("terugleggenKeuze"))
 			terugleggenKeuze = ((Integer)h.get("terugleggenKeuze")).intValue();
 		if(h.containsKey("trekkingen"))
 			trekkingen = ((Integer)h.get("trekkingen")).intValue();
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
-		if(h.containsKey("aantalInt[1]"))
-			aantalInt[1] = ((Integer)h.get("aantalInt[1]")).intValue();
-		if(h.containsKey("aantalInt[2]"))
-			aantalInt[2] = ((Integer)h.get("aantalInt[2]")).intValue();
-		if(h.containsKey("aantalInt[3]"))
-			aantalInt[3] = ((Integer)h.get("aantalInt[3]")).intValue();
-		if(h.containsKey("aantalInt[4]"))
-			aantalInt[4] = ((Integer)h.get("aantalInt[4]")).intValue();
-		if(h.containsKey("aantalInt[5]"))
-			aantalInt[5] = ((Integer)h.get("aantalInt[5]")).intValue();
-		if(h.containsKey("aantalInt[6]"))
-			aantalInt[6] = ((Integer)h.get("aantalInt[6]")).intValue();
+		if (h.containsKey("aantalInt"))
+			aantalInt = ((int[]) h.get("aantalInt"));
 		
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
@@ -1059,7 +675,6 @@ vernieuwLayoutLinks();
 			nakijkModel = (int[]) h.get("nakijkModel");
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
-				
 		
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
@@ -1076,37 +691,13 @@ vernieuwLayoutLinks();
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
-		for(int i = 1; i<7; i++)
-		{
-			zetNaamOptie(i, naamOptieTekst[i]);
-			zetLetterOptie(i, letterString[i]);
-			zetAantalVanOptie(i, aantalInt[i]);
-		}
-		/*
-		zetNaamOptie(2,naamOptieTekst[2]);
-		zetNaamOptie(3,naamOptieTekst[3]);
-		zetNaamOptie(4,naamOptieTekst[4]);
-		zetNaamOptie(5,naamOptieTekst[5]);
-		zetNaamOptie(6,naamOptieTekst[6]);
-		zetLetterOptie(1,letterString[1]);
-		zetLetterOptie(2,letterString[2]);
-		zetLetterOptie(3,letterString[3]);
-		zetLetterOptie(4,letterString[4]);
-		*/
 		zetTerugleggen(terugleggenKeuze);
 		zetTrekkingen(trekkingen+1); 		
-		/*
-		zetAantalVanOptie(1,aantalInt[1]);
-		zetAantalVanOptie(2,aantalInt[2]);
-		zetAantalVanOptie(3,aantalInt[3]);
-		zetAantalVanOptie(4,aantalInt[4]);
-		*/
-		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4], aantalInt[5], aantalInt[6] );
+		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
-		zetBeginStatus();
-		
+		zetBeginStatus();	
 	}
 
 
@@ -1122,26 +713,9 @@ vernieuwLayoutLinks();
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
 		
-		if(h.containsKey("aantalInt[1]"))
-			aantalInt[1] = ((Integer)h.get("aantalInt[1]")).intValue();
-		if(h.containsKey("aantalInt[2]"))
-			aantalInt[2] = ((Integer)h.get("aantalInt[2]")).intValue();
-		if(h.containsKey("aantalInt[3]"))
-			aantalInt[3] = ((Integer)h.get("aantalInt[3]")).intValue();
-		if(h.containsKey("aantalInt[4]"))
-			aantalInt[4] = ((Integer)h.get("aantalInt[4]")).intValue();
-		if(h.containsKey("aantalInt[5]"))
-			aantalInt[5] = ((Integer)h.get("aantalInt[5]")).intValue();
-		if(h.containsKey("aantalInt[6]"))
-			aantalInt[6] = ((Integer)h.get("aantalInt[6]")).intValue();
-		
-		zetAantalVanOptie(1,aantalInt[1]);
-		zetAantalVanOptie(2,aantalInt[2]);
-		zetAantalVanOptie(3,aantalInt[3]);
-		zetAantalVanOptie(4,aantalInt[4]);
-		zetAantalVanOptie(5,aantalInt[5]);
-		zetAantalVanOptie(6,aantalInt[6]);
-		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4], aantalInt[5], aantalInt[6] );
+		if (h.containsKey("aantalInt"))
+			aantalInt = ((int[]) h.get("aantalInt"));
+		zetOpties(aantalOpties, aantalInt);
 		
 		if (h.containsKey("ingevuld")) 
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
@@ -1149,7 +723,6 @@ vernieuwLayoutLinks();
 	    	nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
 		if (ingevuld && (mode == 0 || nagekeken)) 
 	    	kijkNa();
-		
 	}
 
 
@@ -1174,59 +747,33 @@ vernieuwLayoutLinks();
 			kleur = ((Boolean) h.get("kleur")).booleanValue();
 		if (h.containsKey("kansVolgordeKeuze"))
 			kansVolgordeKeuze = ((Integer)h.get("kansVolgordeKeuze")).intValue();
-		if (h.containsKey("naamOptieTekst[1]"))
-			naamOptieTekst[1] = ((String) h.get("naamOptieTekst[1]"));
-		if (h.containsKey("naamOptieTekst[2]"))
-			naamOptieTekst[2] = ((String) h.get("naamOptieTekst[2]"));
-		if (h.containsKey("naamOptieTekst[3]"))
-			naamOptieTekst[3] = ((String) h.get("naamOptieTekst[3]"));
-		if (h.containsKey("naamOptieTekst[4]"))
-			naamOptieTekst[4] = ((String) h.get("naamOptieTekst[4]"));
-		if (h.containsKey("naamOptieTekst[5]"))
-			naamOptieTekst[5] = ((String) h.get("naamOptieTekst[5]"));
-		if (h.containsKey("naamOptieTekst[6]"))
-			naamOptieTekst[6] = ((String) h.get("naamOptieTekst[6]"));
-		if (h.containsKey("letterString[1]"))
-			letterString[1] = ((String) h.get("letterString[1]"));
-		if (h.containsKey("letterString[2]"))
-			letterString[2] = ((String) h.get("letterString[2]"));
-		if (h.containsKey("letterString[3]"))
-			letterString[3] = ((String) h.get("letterString[3]"));
-		if (h.containsKey("letterString[4]"))
-			letterString[4] = ((String) h.get("letterString[4]"));
-		if (h.containsKey("letterString[5]"))
-			letterString[5] = ((String) h.get("letterString[5]"));
-		if (h.containsKey("letterString[6]"))
-			letterString[6] = ((String) h.get("letterString[6]"));
+		if (h.containsKey("naamOptieTekst"))
+			naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
+		for(int i = 1; i < 7; i++)
+			zetNaamOptie(i, naamOptieTekst[i]);
+		if (h.containsKey("letterString"))
+			letterString = ((String[]) h.get("letterString"));
+		for(int i = 1; i < 7; i++)
+			zetLetterOptie(i, letterString[i]);
 		if(h.containsKey("terugleggenKeuze"))
 			terugleggenKeuze = ((Integer)h.get("terugleggenKeuze")).intValue();
 		if(h.containsKey("trekkingen"))
 			trekkingen = ((Integer)h.get("trekkingen")).intValue();
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
-		if(h.containsKey("aantalInt[1]"))
-			aantalInt[1] = ((Integer)h.get("aantalInt[1]")).intValue();
-		if(h.containsKey("aantalInt[2]"))
-			aantalInt[2] = ((Integer)h.get("aantalInt[2]")).intValue();
-		if(h.containsKey("aantalInt[3]"))
-			aantalInt[3] = ((Integer)h.get("aantalInt[3]")).intValue();
-		if(h.containsKey("aantalInt[4]"))
-			aantalInt[4] = ((Integer)h.get("aantalInt[4]")).intValue();
-		if(h.containsKey("aantalInt[5]"))
-			aantalInt[5] = ((Integer)h.get("aantalInt[5]")).intValue();
-		if(h.containsKey("aantalInt[6]"))
-			aantalInt[6] = ((Integer)h.get("aantalInt[6]")).intValue();
+		
+		if (h.containsKey("aantalInt"))
+			aantalInt = ((int[]) h.get("aantalInt"));
+		
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
 	
-		
 		//nodig?
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
 		if(h.containsKey("nakijkModel"))
 			nakijkModel = (int[]) h.get("nakijkModel");
 
-		
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
 		if(h.containsKey("kbipHoogte"))
@@ -1242,37 +789,12 @@ vernieuwLayoutLinks();
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
-		for(int i = 1; i<7; i++)
-		{
-			zetNaamOptie(i, naamOptieTekst[i]);
-			zetLetterOptie(i, letterString[i]);
-			zetAantalVanOptie(i, aantalInt[i]);
-		}
-		/*
-		zetNaamOptie(1,naamOptieTekst[1]);
-		zetNaamOptie(2,naamOptieTekst[2]);
-		zetNaamOptie(3,naamOptieTekst[3]);
-		zetNaamOptie(4,naamOptieTekst[4]);
-		zetNaamOptie(5,naamOptieTekst[5]);
-		zetNaamOptie(6,naamOptieTekst[6]);
-		zetLetterOptie(1,letterString[1]);
-		zetLetterOptie(2,letterString[2]);
-		zetLetterOptie(3,letterString[3]);
-		zetLetterOptie(4,letterString[4]);
-		*/
 		zetTerugleggen(terugleggenKeuze);
 		zetTrekkingen(trekkingen+1); 
-		/*
-		zetAantalVanOptie(1,aantalInt[1]);
-		zetAantalVanOptie(2,aantalInt[2]);
-		zetAantalVanOptie(3,aantalInt[3]);
-		zetAantalVanOptie(4,aantalInt[4]);
-		*/
-		zetAantalOpties(aantalOpties+2, aantalInt[3], aantalInt[4], aantalInt[5], aantalInt[6] );
+		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
-		
+		setBounds(0, 0, kbipBreedte, kbipHoogte);	
 	}
 
 
@@ -1285,25 +807,14 @@ vernieuwLayoutLinks();
 		terugleggenKeuze = this.terugleggenKeuze;
 		trekkingen = this.trekkingen;
 		aantalOpties = this.aantalOpties;
-		aantalInt[1] = this.aantalInt[1];
-		aantalInt[2] = this.aantalInt[2];
-		aantalInt[3] = this.aantalInt[3];
-		aantalInt[4] = this.aantalInt[4];
-		aantalInt[5] = this.aantalInt[5];
-		aantalInt[6] = this.aantalInt[6];
+		aantalInt = this.aantalInt;
 		
 		Hashtable h = new Hashtable();
 		
 		h.put("terugleggenKeuze", terugleggenKeuze);
 		h.put("trekkingen", trekkingen);
 		h.put("aantalOpties", aantalOpties);
-		h.put("aantalInt[1]", aantalInt[1]);
-		h.put("aantalInt[2]", aantalInt[2]);
-		h.put("aantalInt[3]", aantalInt[3]);
-		h.put("aantalInt[4]", aantalInt[4]);
-		h.put("aantalInt[5]", aantalInt[5]);
-		h.put("aantalInt[6]", aantalInt[6]);
-		
+		h.put("aantalInt", aantalInt);
 		h.put("ingevuld", new Boolean(ingevuld));
 	    h.put("nagekeken", new Boolean(nagekeken));
 		
@@ -1322,14 +833,14 @@ vernieuwLayoutLinks();
 		int labelsKeuze = 0;
 		boolean kleur = true;
 		int kansVolgordeKeuze = 0;
-		String[] naamOptieTekst = {"dummy", "dummy", "dummy","dummy", "dummy", "dummy", "dummy"};
-		String[] letterString = {"d", "d", "d", "d", "d", "d", "d"};	
+		String[] naamOptieTekst = null;
+		String[] letterString = null;
 		int terugleggenKeuze = 0;
 		int trekkingen = 2;
 		int aantalOpties = 2;
-		int[] aantalInt = {4,4,4,4,4,4,4};
+		int[] aantalInt = null;
 		int scoreMax = 10;
-		int[] nakijkModel = {10, 0, 2, 2, 4, 4, 4, 4};
+		int[] nakijkModel = null;
 		String trekkingTekst = "trekking";
 				
 		teruglegZichtbaar = this.teruglegZichtbaar;
@@ -1342,27 +853,12 @@ vernieuwLayoutLinks();
 		labelsKeuze = this.labelsKeuze;
 		kleur = this.kleur;
 		kansVolgordeKeuze = this.kansVolgordeKeuze;
-		naamOptieTekst[1] = this.naamOptieTekst[1];
-		naamOptieTekst[2] = this.naamOptieTekst[2];
-		naamOptieTekst[3] = this.naamOptieTekst[3];
-		naamOptieTekst[4] = this.naamOptieTekst[4];
-		naamOptieTekst[5] = this.naamOptieTekst[5];
-		naamOptieTekst[6] = this.naamOptieTekst[6];
-		letterString[1] = this.letterString[1];
-		letterString[2] = this.letterString[2];
-		letterString[3] = this.letterString[3];
-		letterString[4] = this.letterString[4];
-		letterString[5] = this.letterString[5];
-		letterString[6] = this.letterString[6];
+		naamOptieTekst = this.naamOptieTekst;
+		letterString = this.letterString;
 		terugleggenKeuze = this.terugleggenKeuze;
 		trekkingen = this.trekkingen;
 		aantalOpties = this.aantalOpties;
-		aantalInt[1] = this.aantalInt[1];
-		aantalInt[2] = this.aantalInt[2];
-		aantalInt[3] = this.aantalInt[3];
-		aantalInt[4] = this.aantalInt[4];
-		aantalInt[5] = this.aantalInt[5];
-		aantalInt[6] = this.aantalInt[6];
+		aantalInt = this.aantalInt;
 		scoreMax = this.scoreMax;
 		nakijkModel = this.nakijkModel;
 		trekkingTekst = this.trekkingTekst;
@@ -1379,31 +875,15 @@ vernieuwLayoutLinks();
 		h.put("labelsKeuze", labelsKeuze);
 		h.put("kleur", kleur);
 		h.put("kansVolgordeKeuze", kansVolgordeKeuze);
-		h.put("naamOptieTekst[1]", naamOptieTekst[1]);
-		h.put("naamOptieTekst[2]", naamOptieTekst[2]);
-		h.put("naamOptieTekst[3]", naamOptieTekst[3]);
-		h.put("naamOptieTekst[4]", naamOptieTekst[4]);
-		h.put("naamOptieTekst[5]", naamOptieTekst[5]);
-		h.put("naamOptieTekst[6]", naamOptieTekst[6]);
-		h.put("letterString[1]", letterString[1]);
-		h.put("letterString[2]", letterString[2]);
-		h.put("letterString[3]", letterString[3]);
-		h.put("letterString[4]", letterString[4]);
-		h.put("letterString[5]", letterString[5]);
-		h.put("letterString[6]", letterString[6]);
+		h.put("naamOptieTekst", naamOptieTekst);
+		h.put("letterString", letterString);
 		h.put("terugleggenKeuze", terugleggenKeuze);
 		h.put("trekkingen", trekkingen);
 		h.put("aantalOpties", aantalOpties);
-		h.put("aantalInt[1]", aantalInt[1]);
-		h.put("aantalInt[2]", aantalInt[2]);
-		h.put("aantalInt[3]", aantalInt[3]);
-		h.put("aantalInt[4]", aantalInt[4]);
-		h.put("aantalInt[5]", aantalInt[5]);
-		h.put("aantalInt[6]", aantalInt[6]);
+		h.put("aantalInt", aantalInt);
 		h.put("scoreMax", scoreMax);
 		h.put("nakijkModel", nakijkModel);
 		h.put("trekkingTekst", trekkingTekst);
-		
 		
 		return h;
 	}
@@ -1495,46 +975,20 @@ vernieuwLayoutLinks();
     	if (!kijkNaActief)
     		return;
     	updateLeerlingAntwoorden();
-    	if(leerlingAntwoorden[1]==beginStatus[1]&&
-    			leerlingAntwoorden[2] == beginStatus[2] &&
-    			leerlingAntwoorden[3] == beginStatus[3] &&
-    			leerlingAntwoorden[4] == beginStatus[4] &&
-    			leerlingAntwoorden[5] == beginStatus[5] &&
-    			leerlingAntwoorden[6] == beginStatus[6] &&
-    			leerlingAntwoorden[7] == beginStatus[7])
+    	if(Arrays.equals(leerlingAntwoorden,beginStatus))
     	{
     		ingevuld = false;
     		return;
     	}		                                   
-    	//updateNakijkModel();
-    	if(nakijkModel[3] == 0)
-    	{	if(leerlingAntwoorden[1] == nakijkModel[1] && 
-    				leerlingAntwoorden[2] == nakijkModel[2] &&
-    				leerlingAntwoorden[3] == nakijkModel[3] &&
-    				leerlingAntwoorden[4] == nakijkModel[4] &&
-    				leerlingAntwoorden[5] == nakijkModel[5])
-    		score = scoreMax;
-    	}		
-    	else if(nakijkModel[3] == 1)
-    	{	if(leerlingAntwoorden[1] == nakijkModel[1] && 
-    				leerlingAntwoorden[2] == nakijkModel[2] &&
-    				leerlingAntwoorden[3] == nakijkModel[3] &&
-    				leerlingAntwoorden[4] == nakijkModel[4] &&
-    				leerlingAntwoorden[5] == nakijkModel[5] &&
-    				leerlingAntwoorden[6] == nakijkModel[6] )
-    		score = scoreMax;
-    	}
-    	else if(leerlingAntwoorden[1] == nakijkModel[1] && 
-    			leerlingAntwoorden[2] == nakijkModel[2] &&
-    			leerlingAntwoorden[3] == nakijkModel[3] &&
-    			leerlingAntwoorden[4] == nakijkModel[4] &&
-    			leerlingAntwoorden[5] == nakijkModel[5] &&
-    			leerlingAntwoorden[6] == nakijkModel[6] &&
-    			leerlingAntwoorden[7] == nakijkModel[7])
-    		score = scoreMax;
     	
+    	leerlingAntwoorden[0] = nakijkModel[0];
+    	for(int i = nakijkModel[9] + 3; i < 7; i++)
+    		leerlingAntwoorden[i] = nakijkModel[i];
+    	if(Arrays.equals(leerlingAntwoorden,nakijkModel))
+    		score = scoreMax;
     	else
     		score = 0;
+    	
     	ingevuld = true;
     	 if (score == 0)
          {	kruisjeLabel.setVisible(true);
@@ -1552,7 +1006,6 @@ vernieuwLayoutLinks();
          	geelVinkjeLabel.setVisible(false);
          	groenVinkjeLabel.setVisible(true);
          }
- 		
  //System.out.println("score = " + score);		
  		//fire actionEvent
  		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");

@@ -14,7 +14,7 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 {
 
 	int editWidth = 190;
-	int editHeight = 500; 
+	int editHeight = 550; 
 	int kbipBreedte = 500; // startbreedte ip
 	int kbipHoogte = 450; // starthoogte ip
 	
@@ -67,7 +67,7 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	
 	boolean nakijkModelIngesteld = false;
 	int scoreMax;
-	int[] nakijkModel = new int[] {10, 0, 2, 2, 4, 4, 4, 4};
+	int[] nakijkModel = new int[] {10, 4, 4, 4, 4, 4, 4, 0, 2, 2};
 	
 	
 
@@ -98,7 +98,7 @@ public KansbomenInteractieEditPanel ()
 	add(labelsBox);
 	labelsBox.addActionListener(this);
 	
-	currentY += height + 2 * offset;
+	currentY += height + offset;
 	
 	String[] kansVolgordeKeuzes = { Kansbomen.rb.getString("geenKansVolgordeTekst"), Kansbomen.rb.getString("volgordeTekst"), 
 			Kansbomen.rb.getString("kansNaastTekst"), Kansbomen.rb.getString("kansOnderTekst")};
@@ -109,7 +109,7 @@ public KansbomenInteractieEditPanel ()
 	add(kansVolgordeBox);
 	kansVolgordeBox.addActionListener(this);
 	
-	currentY += height + 2 * offset;
+	currentY += height + offset;
 	
 	kleurBox = new JCheckBox(Kansbomen.rb.getString("kleurTekst"), kleur);
 	kleurBox.setFont(theFont);
@@ -136,7 +136,7 @@ public KansbomenInteractieEditPanel ()
 	add(bovenbalkZichtbaarBox);
 	bovenbalkZichtbaarBox.addActionListener(this);
 	
-	currentY += height + 2 * offset;
+	currentY += height + offset;
 	
 	naamLetterLabel = new JLabel(Kansbomen.rb.getString("naamLetterTekst"));
 	naamLetterLabel.setFont(theBoldFont);
@@ -256,7 +256,7 @@ public KansbomenInteractieEditPanel ()
 	add(ballenZichtbaarBox);
 	ballenZichtbaarBox.addActionListener(this);
 	
-	currentY += height + 2 * offset;
+	currentY += height + offset;
 	
 	kijkNaBox = new JCheckBox(Kansbomen.rb.getString("kijkNaTekst"), kijkNa);
 	kijkNaBox.setFont(theFont);
@@ -295,7 +295,7 @@ public void plaatsComponenten()
 		}
 		bovenbalkLabel.setLocation(kbip.getSize().width + offset, bovenbalkLabel.getLocation().y);
 		bovenbalkVeld.setLocation(kbip.getSize().width
-				+bovenbalkLabel.getWidth()+ 2 * offset, bovenbalkVeld.getLocation().y);
+				+ bovenbalkLabel.getWidth()+ 2 * offset, bovenbalkVeld.getLocation().y);
 		zichtbaarLabel.setLocation(kbip.getSize().width + offset, zichtbaarLabel.getLocation().y);
 		teruglegZichtbaarBox.setLocation(kbip.getSize().width + offset, teruglegZichtbaarBox.getLocation().y);
 		trekkingZichtbaarBox.setLocation(kbip.getSize().width + offset, trekkingZichtbaarBox.getLocation().y);
@@ -326,134 +326,30 @@ public void actionPerformed(ActionEvent e)
 	{	labelsKeuze=labelsBox.getSelectedIndex();
 		kbip.zetLabelsKeuze(labelsKeuze);	
 	}
-	
 	else if(e.getSource() == naamOptieVeld[1])
-	{
-		if(naamOptieVeld[1].getText().isEmpty())
-			naamOptieVeld[1].setText(naamOptieTekst[1]);
-		else
-		{
-		naamOptieTekst[1] = naamOptieVeld[1].getText();
-		letterString[1] = naamOptieTekst[1].substring(0,1).toLowerCase();
-		letterOptieVeld[1].setText(letterString[1]);
-		kbip.zetNaamOptie(1,naamOptieTekst[1]);
-		}
-		
-	}
+		actieNaamOptieVeld(1);
 	else if(e.getSource() == naamOptieVeld[2])
-	{
-		if(naamOptieVeld[2].getText().isEmpty())
-			naamOptieVeld[2].setText(naamOptieTekst[2]);
-		else
-		{
-		naamOptieTekst[2] = naamOptieVeld[2].getText();
-		letterString[2] = naamOptieTekst[2].substring(0,1).toLowerCase();
-		letterOptieVeld[2].setText(letterString[2]);
-		kbip.zetNaamOptie(2,naamOptieTekst[2]);
-		}
-	}
+		actieNaamOptieVeld(2);
 	else if(e.getSource() == naamOptieVeld[3])
-	{
-		if(naamOptieVeld[3].getText().isEmpty())
-			naamOptieVeld[3].setText(naamOptieTekst[3]);
-		else
-		{
-		naamOptieTekst[3] = naamOptieVeld[3].getText();
-		letterString[3] = naamOptieTekst[3].substring(0,1).toLowerCase();
-		letterOptieVeld[3].setText(letterString[3]);
-		kbip.zetNaamOptie(3,naamOptieTekst[3]);
-		}
-	}
+		actieNaamOptieVeld(3);
 	else if(e.getSource() == naamOptieVeld[4])
-	{
-		if(naamOptieVeld[4].getText().isEmpty())
-			naamOptieVeld[4].setText(naamOptieTekst[4]);
-		else
-		{
-		naamOptieTekst[4] = naamOptieVeld[4].getText();
-		letterString[4] = naamOptieTekst[4].substring(0,1).toLowerCase();
-		letterOptieVeld[4].setText(letterString[4]);
-		kbip.zetNaamOptie(4,naamOptieTekst[4]);
-		}
-	}
+		actieNaamOptieVeld(4);
 	else if(e.getSource() == naamOptieVeld[5])
-	{
-		if(naamOptieVeld[5].getText().isEmpty())
-			naamOptieVeld[5].setText(naamOptieTekst[5]);
-		else
-		{
-		naamOptieTekst[5] = naamOptieVeld[5].getText();
-		letterString[5] = naamOptieTekst[5].substring(0,1).toLowerCase();
-		letterOptieVeld[5].setText(letterString[5]);
-		kbip.zetNaamOptie(5,naamOptieTekst[5]);
-		}
-	}
+		actieNaamOptieVeld(5);
 	else if(e.getSource() == naamOptieVeld[6])
-	{
-		if(naamOptieVeld[6].getText().isEmpty())
-			naamOptieVeld[6].setText(naamOptieTekst[6]);
-		else
-		{
-		naamOptieTekst[6] = naamOptieVeld[6].getText();
-		letterString[6] = naamOptieTekst[6].substring(0,1).toLowerCase();
-		letterOptieVeld[6].setText(letterString[6]);
-		kbip.zetNaamOptie(6,naamOptieTekst[6]);
-		}
-	}
+		actieNaamOptieVeld(6);
 	else if(e.getSource() == letterOptieVeld[1])
-	{
-		if(letterOptieVeld[1].getText().length() < 3)
-		{	letterString[1] = letterOptieVeld[1].getText();
-			kbip.zetLetterOptie(1,letterString[1]);
-		}
-		else
-			letterOptieVeld[1].setText(letterString[1]);
-	}
+		actieLetterOptieVeld(1);
 	else if(e.getSource() == letterOptieVeld[2])
-	{
-		if(letterOptieVeld[2].getText().length() < 3)
-		{	letterString[2] = letterOptieVeld[2].getText();
-			kbip.zetLetterOptie(2,letterString[2]);
-		}
-		else
-			letterOptieVeld[2].setText(letterString[2]);
-	}
+		actieLetterOptieVeld(2);
 	else if(e.getSource() == letterOptieVeld[3])
-	{
-		if(letterOptieVeld[3].getText().length() < 3)
-		{	letterString[3] = letterOptieVeld[3].getText();
-			kbip.zetLetterOptie(3,letterString[3]);
-		}
-		else
-			letterOptieVeld[3].setText(letterString[3]);
-	}
+		actieLetterOptieVeld(3);
 	else if(e.getSource() == letterOptieVeld[4])
-	{
-		if(letterOptieVeld[4].getText().length() < 3)
-		{	letterString[4] = letterOptieVeld[4].getText();
-			kbip.zetLetterOptie(4,letterString[4]);
-		}
-		else
-			letterOptieVeld[4].setText(letterString[4]);
-	}
+		actieLetterOptieVeld(4);
 	else if(e.getSource() == letterOptieVeld[5])
-	{
-		if(letterOptieVeld[5].getText().length() < 3)
-		{	letterString[5] = letterOptieVeld[5].getText();
-			kbip.zetLetterOptie(5,letterString[5]);
-		}
-		else
-			letterOptieVeld[5].setText(letterString[5]);
-	}
+		actieLetterOptieVeld(5);
 	else if(e.getSource() == letterOptieVeld[6])
-	{
-		if(letterOptieVeld[6].getText().length() < 3)
-		{	letterString[6] = letterOptieVeld[6].getText();
-			kbip.zetLetterOptie(6,letterString[6]);
-		}
-		else
-			letterOptieVeld[6].setText(letterString[6]);
-	}
+		actieLetterOptieVeld(6);
 	else if(e.getSource() == bovenbalkVeld)
 	{
 		kbip.zetTrekkingTekst(bovenbalkVeld.getText());
@@ -461,30 +357,32 @@ public void actionPerformed(ActionEvent e)
 	else if(e.getSource() == teruglegZichtbaarBox)
 	{	teruglegZichtbaar = teruglegZichtbaarBox.isSelected();
 		kbip.zetTeruglegZichtbaar(teruglegZichtbaar);
-		nakijkModelButton.nakijkModel[1] = kbip.terugleggenKeuze;
+		nakijkModelButton.nakijkModel[7] = kbip.terugleggenKeuze;
 		nakijkModelButton.itemsEnabled[0] = teruglegZichtbaar;
+		kijkNaAlleenAlsMogelijk();
 		
 	}
 	else if(e.getSource() == trekkingZichtbaarBox)
 	{	trekkingZichtbaar = trekkingZichtbaarBox.isSelected();
 		kbip.zetTrekkingZichtbaar(trekkingZichtbaar);
-		nakijkModelButton.nakijkModel[2] = kbip.trekkingen;
+		nakijkModelButton.nakijkModel[8] = kbip.trekkingen;
 		nakijkModelButton.itemsEnabled[1] = trekkingZichtbaar;
+		kijkNaAlleenAlsMogelijk();
 	}
 	else if(e.getSource() == optiesZichtbaarBox)
 	{	optiesZichtbaar = optiesZichtbaarBox.isSelected();
 		kbip.zetOptiesZichtbaar(optiesZichtbaar);
-		nakijkModelButton.nakijkModel[3] = kbip.aantalOpties;
+		nakijkModelButton.nakijkModel[9] = kbip.aantalOpties;
 		nakijkModelButton.itemsEnabled[2] = optiesZichtbaar;
+		kijkNaAlleenAlsMogelijk();
 	}
 	else if(e.getSource() == ballenZichtbaarBox)
 	{	ballenZichtbaar = ballenZichtbaarBox.isSelected();
 		kbip.zetBallenZichtbaar(ballenZichtbaar);
-		nakijkModelButton.nakijkModel[4] = kbip.aantalInt[1];
-		nakijkModelButton.nakijkModel[5] = kbip.aantalInt[2];
-		nakijkModelButton.nakijkModel[6] = kbip.aantalInt[3];
-		nakijkModelButton.nakijkModel[7] = kbip.aantalInt[4];
+		for(int i = 1; i < 7; i++)
+			nakijkModelButton.nakijkModel[i] = kbip.aantalInt[i];
 		nakijkModelButton.itemsEnabled[3] = ballenZichtbaar;
+		kijkNaAlleenAlsMogelijk();
 	}	
 	
 	else if(e.getSource() == legendaZichtbaarBox)
@@ -507,163 +405,89 @@ public void actionPerformed(ActionEvent e)
 	{
 		if(!nakijkModelIngesteld)
 		{	nakijkModel[0] = 10;
-			nakijkModel[1] = kbip.terugleggenKeuze;
-			nakijkModel[2] = kbip.trekkingen;
-			nakijkModel[3] = kbip.aantalOpties;
-			nakijkModel[4] = kbip.aantalInt[1];
-			nakijkModel[5] = kbip.aantalInt[2];
-			nakijkModel[6] = kbip.aantalInt[3];
-			nakijkModel[7] = kbip.aantalInt[4];
-			nakijkModelIngesteld = true;                        
+			for(int i = 1; i < 7; i++)
+				nakijkModel[i] = kbip.aantalInt[i];
+			nakijkModel[7] = kbip.terugleggenKeuze;
+			nakijkModel[8] = kbip.trekkingen;
+			nakijkModel[9] = kbip.aantalOpties;
+			nakijkModelIngesteld = true;     
+			nakijkModelButton.nakijkModel = nakijkModel;
 		}
 		else
-		{	for(int i = 0; i < 8; i++)
-			nakijkModel[i] = nakijkModelButton.nakijkModel[i];
-		}
+			nakijkModel = nakijkModelButton.nakijkModel;
 		nakijkModelButton.updateBeginwaarden(nakijkModel);
 		nakijkModelButton.zetTeksten(naamOptieTekst);
 	}
 	
 }
 
-
+public void kijkNaAlleenAlsMogelijk()
+{
+	if(!teruglegZichtbaar && !trekkingZichtbaar && !optiesZichtbaar && !ballenZichtbaar)
+	{	kijkNa = false;
+		kijkNaBox.setSelected(kijkNa);
+		kijkNaBox.setEnabled(kijkNa);
+		nakijkModelButton.setVisible(kijkNa);
+		kbip.zetKijkNa(kijkNa);
+	}	
+	else
+		kijkNaBox.setEnabled(true);
+}
 
 public void focusLost(FocusEvent e)  
 {
 	if(e.getSource() == naamOptieVeld[1])
-	{
-		if(naamOptieVeld[1].getText().isEmpty())
-			naamOptieVeld[1].setText(naamOptieTekst[1]);
-		else
-		{
-		naamOptieTekst[1] = naamOptieVeld[1].getText();
-		letterString[1] = naamOptieTekst[1].substring(0,1).toLowerCase();
-		letterOptieVeld[1].setText(letterString[1]);
-		kbip.zetNaamOptie(1,naamOptieTekst[1]);
-		}
-		
-	}
+		actieNaamOptieVeld(1);
 	else if(e.getSource() == naamOptieVeld[2])
-	{
-		if(naamOptieVeld[2].getText().isEmpty())
-			naamOptieVeld[2].setText(naamOptieTekst[2]);
-		else
-		{
-		naamOptieTekst[2] = naamOptieVeld[2].getText();
-		letterString[2] = naamOptieTekst[2].substring(0,1).toLowerCase();
-		letterOptieVeld[2].setText(letterString[2]);
-		kbip.zetNaamOptie(2,naamOptieTekst[2]);
-		}
-	}
+		actieNaamOptieVeld(2);
 	else if(e.getSource() == naamOptieVeld[3])
-	{
-		if(naamOptieVeld[3].getText().isEmpty())
-			naamOptieVeld[3].setText(naamOptieTekst[3]);
-		else
-		{
-		naamOptieTekst[3] = naamOptieVeld[3].getText();
-		letterString[3] = naamOptieTekst[3].substring(0,1).toLowerCase();
-		letterOptieVeld[3].setText(letterString[3]);
-		kbip.zetNaamOptie(3,naamOptieTekst[3]);
-		}
-	}
+		actieNaamOptieVeld(3);
 	else if(e.getSource() == naamOptieVeld[4])
-	{
-		if(naamOptieVeld[4].getText().isEmpty())
-			naamOptieVeld[4].setText(naamOptieTekst[4]);
-		else
-		{
-		naamOptieTekst[4] = naamOptieVeld[4].getText();
-		letterString[4] = naamOptieTekst[4].substring(0,1).toLowerCase();
-		letterOptieVeld[4].setText(letterString[4]);
-		kbip.zetNaamOptie(4,naamOptieTekst[4]);
-		}
-	}
+		actieNaamOptieVeld(4);
 	else if(e.getSource() == naamOptieVeld[5])
-	{
-		if(naamOptieVeld[5].getText().isEmpty())
-			naamOptieVeld[5].setText(naamOptieTekst[5]);
-		else
-		{
-		naamOptieTekst[5] = naamOptieVeld[5].getText();
-		letterString[5] = naamOptieTekst[5].substring(0,1).toLowerCase();
-		letterOptieVeld[5].setText(letterString[5]);
-		kbip.zetNaamOptie(5,naamOptieTekst[5]);
-		}
-	}
+		actieNaamOptieVeld(5);
 	else if(e.getSource() == naamOptieVeld[6])
-	{
-		if(naamOptieVeld[6].getText().isEmpty())
-			naamOptieVeld[6].setText(naamOptieTekst[6]);
-		else
-		{
-		naamOptieTekst[6] = naamOptieVeld[6].getText();
-		letterString[6] = naamOptieTekst[6].substring(0,1).toLowerCase();
-		letterOptieVeld[6].setText(letterString[6]);
-		kbip.zetNaamOptie(6,naamOptieTekst[6]);
-		}
-	}
+		actieNaamOptieVeld(6);
 	else if(e.getSource() == letterOptieVeld[1])
-	{
-		if(letterOptieVeld[1].getText().length() < 3)
-		{	letterString[1] = letterOptieVeld[1].getText();
-			kbip.zetLetterOptie(1,letterString[1]);
-		}
-		else
-			letterOptieVeld[1].setText(letterString[1]);
-	}
+		actieLetterOptieVeld(1);
 	else if(e.getSource() == letterOptieVeld[2])
-	{
-		if(letterOptieVeld[2].getText().length() < 3)
-		{	letterString[2] = letterOptieVeld[2].getText();
-			kbip.zetLetterOptie(2,letterString[2]);
-		}
-		else
-			letterOptieVeld[2].setText(letterString[2]);
-	}
+		actieLetterOptieVeld(2);
 	else if(e.getSource() == letterOptieVeld[3])
-	{
-		if(letterOptieVeld[3].getText().length() < 3)
-		{	letterString[3] = letterOptieVeld[3].getText();
-			kbip.zetLetterOptie(3,letterString[3]);
-		}
-		else
-			letterOptieVeld[3].setText(letterString[3]);
-	}
+		actieLetterOptieVeld(3);
 	else if(e.getSource() == letterOptieVeld[4])
-	{
-		if(letterOptieVeld[4].getText().length() < 3)
-		{	letterString[4] = letterOptieVeld[4].getText();
-			kbip.zetLetterOptie(4,letterString[4]);
-		}
-		else
-			letterOptieVeld[4].setText(letterString[4]);
-	}
+		actieLetterOptieVeld(4);
 	else if(e.getSource() == letterOptieVeld[5])
-	{
-		if(letterOptieVeld[5].getText().length() < 3)
-		{	letterString[5] = letterOptieVeld[5].getText();
-			kbip.zetLetterOptie(5,letterString[5]);
-		}
-		else
-			letterOptieVeld[5].setText(letterString[5]);
-	}
+		actieLetterOptieVeld(5);
 	else if(e.getSource() == letterOptieVeld[6])
-	{
-		if(letterOptieVeld[6].getText().length() < 3)
-		{	letterString[6] = letterOptieVeld[6].getText();
-			kbip.zetLetterOptie(6,letterString[6]);
-		}
-		else
-			letterOptieVeld[6].setText(letterString[6]);
-	}
+		actieLetterOptieVeld(6);
 	else if(e.getSource() == bovenbalkVeld)
 	{
 		kbip.zetTrekkingTekst(bovenbalkVeld.getText());
 	}	
 }
 
+public void actieNaamOptieVeld(int i)
+{
+	if(naamOptieVeld[i].getText().isEmpty())
+		naamOptieVeld[i].setText(naamOptieTekst[i]);
+	else
+	{
+	naamOptieTekst[i] = naamOptieVeld[i].getText();
+	letterString[i] = naamOptieTekst[i].substring(0,1).toLowerCase();
+	letterOptieVeld[i].setText(letterString[i]);
+	kbip.zetNaamOptie(i,naamOptieTekst[i]);
+	}
+}
 
+public void actieLetterOptieVeld(int i)
+{
+	if(letterOptieVeld[i].getText().length() < 3)
+	{	letterString[i] = letterOptieVeld[i].getText();
+		kbip.zetLetterOptie(i,letterString[i]);
+	}
+	else
+		letterOptieVeld[i].setText(letterString[i]);
+}
 
 
 public void setEditState(Hashtable h) {
@@ -712,54 +536,15 @@ public void setEditState(Hashtable h) {
 		kansVolgordeKeuze = ((Integer) h.get("kansVolgordeKeuze")).intValue();
 	kansVolgordeBox.setSelectedIndex(kansVolgordeKeuze);
 	
-	if (h.containsKey("naamOptieTekst[1]"))
-		naamOptieTekst[1] = ((String) h.get("naamOptieTekst[1]"));
-	naamOptieVeld[1].setText(naamOptieTekst[1]);
-		
-	if (h.containsKey("naamOptieTekst[2]"))
-		naamOptieTekst[2] = ((String) h.get("naamOptieTekst[2]"));
-	naamOptieVeld[2].setText(naamOptieTekst[2]);
-		
-	if (h.containsKey("naamOptieTekst[3]"))
-		naamOptieTekst[3] = ((String) h.get("naamOptieTekst[3]"));
-	naamOptieVeld[3].setText(naamOptieTekst[3]);
-		
-	if (h.containsKey("naamOptieTekst[4]"))
-		naamOptieTekst[4] = ((String) h.get("naamOptieTekst[4]"));
-	naamOptieVeld[4].setText(naamOptieTekst[4]);
-	
-	if (h.containsKey("naamOptieTekst[5]"))
-		naamOptieTekst[5] = ((String) h.get("naamOptieTekst[5]"));
-	naamOptieVeld[5].setText(naamOptieTekst[5]);
-		
-	if (h.containsKey("naamOptieTekst[6]"))
-		naamOptieTekst[6] = ((String) h.get("naamOptieTekst[6]"));
-	naamOptieVeld[6].setText(naamOptieTekst[6]);
-		
-	if (h.containsKey("letterString[1]"))
-		letterString[1] = ((String) h.get("letterString[1]"));
-	letterOptieVeld[1].setText(letterString[1]);
-	
-	if (h.containsKey("letterString[2]"))
-		letterString[2] = ((String) h.get("letterString[2]"));
-	letterOptieVeld[2].setText(letterString[2]);
-	
-	if (h.containsKey("letterString[3]"))
-		letterString[3] = ((String) h.get("letterString[3]"));
-	letterOptieVeld[3].setText(letterString[3]);
-	
-	if (h.containsKey("letterString[4]"))
-		letterString[4] = ((String) h.get("letterString[4]"));
-	letterOptieVeld[4].setText(letterString[4]);
-	
-	if (h.containsKey("letterString[5]"))
-		letterString[5] = ((String) h.get("letterString[5]"));
-	letterOptieVeld[5].setText(letterString[5]);
-	
-	if (h.containsKey("letterString[6]"))
-		letterString[6] = ((String) h.get("letterString[6]"));
-	letterOptieVeld[6].setText(letterString[6]);
-	
+	if (h.containsKey("naamOptieTekst"))
+		naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
+	for(int i = 1; i < 7; i++)
+		naamOptieVeld[i].setText(naamOptieTekst[i]);	
+	if (h.containsKey("letterString"))
+		letterString = ((String[]) h.get("letterString"));	
+
+	for(int i = 1; i < 7; i++)
+		letterOptieVeld[i].setText(letterString[i]);
 	if (h.containsKey("trekkingTekst"))
 		trekkingTekst = ((String) h.get("trekkingTekst"));
 	bovenbalkVeld.setText(trekkingTekst);
@@ -769,12 +554,16 @@ public void setEditState(Hashtable h) {
 	
 	if (h.containsKey("nakijkModel"))
 		nakijkModel = ((int[]) h.get("nakijkModel"));
-	nakijkModelButton.updateBeginwaarden(nakijkModel);
-	nakijkModelButton.updateNakijkModel();
+	nakijkModelButton.nakijkModel = nakijkModel;
+	//nakijkModelButton.updateBeginwaarden(nakijkModel);
+	//nakijkModelButton.updateNakijkModel();
 	
 	if (h.containsKey("nakijkModelIngesteld"))
 		nakijkModelIngesteld = ((Boolean) h.get("nakijkModelIngesteld")).booleanValue();
-		if (h.containsKey("kbipBreedte"))
+	if (h.containsKey("itemsEnabled"))
+		nakijkModelButton.itemsEnabled = ((boolean[]) h.get("itemsEnabled"));
+	
+	if (h.containsKey("kbipBreedte"))
 		kbipBreedte = ((Integer) h.get("kbipBreedte")).intValue();
 	if (h.containsKey("kbipHoogte"))
 		kbipHoogte = ((Integer) h.get("kbipHoogte")).intValue();
@@ -783,12 +572,7 @@ public void setEditState(Hashtable h) {
 	
 	// HIER !!
 	kbip.setEditState(h);		
-
-	
 }
-
-
-
 
 public Hashtable getEditState() {
 
@@ -796,12 +580,14 @@ public Hashtable getEditState() {
 	int scoreMax = 0;
 	//int[] nakijkModel = null;
 	boolean nakijkModelIngesteld = false;
+	boolean[] itemsEnabled = null;
 
 	kijkNa = this.kijkNa;
 	nakijkModelIngesteld = this.nakijkModelIngesteld;
 	if(kijkNa)
 	{	scoreMax = nakijkModelButton.getScoreMax();
 		nakijkModel = nakijkModelButton.getNakijkModel();
+		itemsEnabled = nakijkModelButton.itemsEnabled;
 	}
 	//nakijkModel = this.nakijkModel;
 	
@@ -811,12 +597,11 @@ public Hashtable getEditState() {
 	if(kijkNa){
 		h.put("scoreMax", new Integer(scoreMax));
 		h.put("nakijkModel", nakijkModel);
+		h.put("itemsEnabled", itemsEnabled);
 	}	
 	
 	h.put("kbipBreedte", new Integer(kbipBreedte));
 	h.put("kbipHoogte", new Integer(kbipHoogte));
-	
-		
 	
 	return h;
 }
@@ -864,47 +649,16 @@ public void zetHoogte(int h)
 }
 
 
-public void wis() {
-	// TODO Auto-generated method stub
-	
-}
+public void wis() {}
 
+public void zetMode(int mode) {}
 
+public void stop() {}
 
+public void start() {}
 
-public void zetMode(int mode) {
-	// TODO Auto-generated method stub
-	
-}
+public void addActionListener(ActionListener al) {}
 
-
-
-
-public void stop() {
-	// TODO Auto-generated method stub
-	
-}
-
-
-
-
-public void start() {
-	// TODO Auto-generated method stub
-	
-}
-
-
-
-
-public void addActionListener(ActionListener al) {
-	// TODO Auto-generated method stub
-	
-}
-
-
-public void focusGained(FocusEvent arg0) {
-		
-}
-	
+public void focusGained(FocusEvent arg0) {}
 	
 }

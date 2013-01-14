@@ -22,9 +22,11 @@ public class Kansboom extends JPanel
 	boolean volgorde, eindkansNaast, eindkansOnder, bovenbalk;
 	int offset = 2;
 	
+	Color[] kleurRij = new Color[7];
+	Color[] gekleurdeRij, zwarteRij;
+	
 	int aantalOpties;
 	int[] teller;
-	//int aantal1, aantal2, aantal3, aantal4, aantal5, aantal6;//te vervangen door aantal[]
 	int[] aantal;
 	boolean terugleggen, kleur, letters, kans, breukOnder;
 	String volgordeString;
@@ -45,21 +47,30 @@ public class Kansboom extends JPanel
 		theBoldFont = new Font("Dialog", Font.BOLD, 12);
 		theBoldFM = getFontMetrics(theBoldFont);
 		
-    	hoogteKansboomveld=HOOGTE; 
-    	breedteKansboomveld=BREEDTE;
-    	aantalKolommen=3; 
+		gekleurdeRij = new Color[7];
+		gekleurdeRij[1] = new Color(0,0,255);
+		gekleurdeRij[2] = new Color(0,200,0);
+		gekleurdeRij[3] = new Color(255,50,50);
+		gekleurdeRij[4] = new Color(0,220,220);
+		gekleurdeRij[5] = new Color(255,180,0);
+		gekleurdeRij[6] = new Color(220,0,220);
+		
+		zwarteRij = new Color[7];
+		for(int i = 1; i < 7; i++)
+			zwarteRij[i] = new Color(0,0,0);
+		
+    	hoogteKansboomveld = HOOGTE; 
+    	breedteKansboomveld = BREEDTE;
+    	aantalKolommen = 3; 
     	    	
-    	aantalOpties=4; 
+    	aantalOpties = 4; 
     	aantal = new int[7];
-    	for(int i = 1; i<7; i++)
-    	aantal[i]=4; 
+    	for(int i = 1; i<5; i++)
+    	aantal[i] = 4; 
+    	aantal[5] = -1;
+    	aantal[6] = -1;
     	teller = new int[7];
     	
-    	/*
-    	aantal2=4; 
-    	aantal3=4; 
-    	aantal4=4; 
-    	*/
     	volgorde = false;
     	eindkansNaast = false;
     	eindkansOnder = false;
@@ -142,10 +153,10 @@ public class Kansboom extends JPanel
 	
 	private void zetStartTellers()
 	{
-		for(int p = 1; p < 7; p++)
-			if(aantalOpties < p)
-				teller[p] = -1; 
-			else teller[p] = 0;
+		for(int p = 1; p < aantalOpties + 1; p++)
+			teller[p] = 0;
+		for(int p = aantalOpties + 1; p < 7; p++)
+			teller[p] = -1;
 	}
 	
 	private void zetTellers(int i, int j)
@@ -157,41 +168,12 @@ public class Kansboom extends JPanel
 		
 		zetStartTellers();
 		
-		
-		/*
-		teller[1]=0; teller[2]=0; 
-		if(aantalOpties<3)
-			teller[3]=-1; 
-		else teller[3]=0;
-		if(aantalOpties<4)
-			teller[4]=-1;
-		else teller[4]=0;
-		*/
-		
 		for(int s=0; s<i; s++)
 		{	d=(int) (j/Math.pow(k,s));
 			mod=d%k;
 			macht=(int) Math.pow(10,s);
 			h=h+macht*mod;
 		}
-		/*
-		for(int q=1; q<i+1; q++)
-		{	int p = i-q;
-			if(h>=(int) 3*Math.pow(10,p))
-			{	teller[4]++;
-				h=(int) (h-3*Math.pow(10,p));
-			}
-			else if(h>=(int) 2*Math.pow(10,p))
-			{	teller[3]++;
-				h=(int) (h-2*Math.pow(10,p));
-			}
-			else if(h>=(int) Math.pow(10,p))
-			{	teller[2]++;
-				h=(int) (h-Math.pow(10,p));
-			}
-			else teller[1]++;
-		}	
-		*/
 		for(int q=1; q<i+1; q++)
 		{	int p = i-q;
 			if(h >= (int) 5 * Math.pow(10,p))
@@ -227,48 +209,19 @@ public class Kansboom extends JPanel
 		
 		Color[] kleurRij = new Color[7];
 		if(kleur) 
-		{	kleurRij[1] = new Color(0,0,255);
-			kleurRij[2] = new Color(0,200,0);
-			kleurRij[3] = new Color(255,50,50);
-			kleurRij[4] = new Color(0,220,220);
-			kleurRij[5] = new Color(220,220,0);
-			kleurRij[6] = new Color(220,0,220);
-		}
+			kleurRij = gekleurdeRij;
 		else
-		{	for(int p = 1; p<7; p++)
+		{	for(int p = 1; p < 7; p++)
 			kleurRij[p]= Color.BLACK;
-			/*
-			kleur2= Color.BLACK;
-			kleur3= Color.BLACK;
-			kleur4= Color.BLACK;
-			*/
 		}
 		
 		if(bestaanKinderen(aantal, teller))
-		{ 	for(int p = 1; p < 7; p++)
-			if(teller[7-p]<aantal[7-p])
-			{	gr.setColor(kleurRij[7-p]);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+13-2*p)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
+		{ 	for(int p = 1; p < aantalOpties + 1; p++)
+			if(teller[p] < aantal[p])
+			{	gr.setColor(kleurRij[p]);
+				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+2*p-1)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
 			}
 			
-		/*
-			if(teller[4]<aantal[4])
-			{	gr.setColor(kleurRij[4]);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+7)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
-			}
-			if(teller[3]<aantal[3])
-			{	gr.setColor(kleurRij[3]);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+5)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
-			}
-			if(teller[2]<aantal[2])
-			{	gr.setColor(kleurRij[2]);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+3)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
-			}
-			if(teller[1]<aantal[1])
-			{	gr.setColor(kleurRij[1]);
-				gr.drawLine(i*b, (int) ((2*j+1)/(Math.pow(k,i)*2)*h)+rijhoogte, (i+1)*b, (int) ((2*k*j+1)/(Math.pow(k,i+1)*2)*h)+rijhoogte);
-			}
-		*/	
 		}
 	}
 	
@@ -293,23 +246,9 @@ public class Kansboom extends JPanel
 					this.zetTellers(i,j);	
 				if(bestaanKinderen(aantal,teller))
 				{ 	for(int p = 1; p < k+1; p++)
-					if(teller[7-p]<aantal[7-p])
-						gr.drawString(letter[7-p],(2*i+1)*b/2-theFM.charWidth('a')/2, 
-								(int) (h*(4*k*j+k+13-2*p)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
-					/*	
-					if(teller[4]<aantal[4])
-						gr.drawString(letter[4],(2*i+1)*b/2-theFM.charWidth('a')/2, 
-							(int) (h*(4*k*j+k+7)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
-					if(teller[3]<aantal[3])
-						gr.drawString(letter[3],(2*i+1)*b/2-theFM.charWidth('a')/2, 
-							(int) (h*(4*k*j+k+5)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
-					if(teller[2]<aantal[2])
-						gr.drawString(letter[2],(2*i+1)*b/2-theFM.charWidth('a')/2, 
-							(int) (h*(4*k*j+k+3)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
-					if(teller[1]<aantal[1])
-						gr.drawString(letter[1],(2*i+1)*b/2-theFM.charWidth('a')/2, 
-							(int) (h*(4*k*j+k+1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
-					*/
+					if(teller[p]<aantal[p])
+						gr.drawString(letter[p],(2*i+1)*b/2-theFM.charWidth('a')/2, 
+								(int) (h*(4*k*j+k+2*p-1)/(4*Math.pow(k,i+1)))+theFM.getHeight()/3+rijhoogte);
 				}		
 			}
 		}	
@@ -318,16 +257,10 @@ public class Kansboom extends JPanel
 	private void tekenKansen(Graphics gr)
 	{
 		int k = aantalOpties;
-		int a = aantal[1] + aantal[2] + aantal[3] + aantal[4];
-		for(int p = 1; p < 7; p++)
-			if(aantalOpties<p)
-				a -= aantal[p];
-		/*
-		if(aantalOpties<3)
-			a -= aantal[3];
-		if(aantalOpties<4)
-			a -= aantal[4];
-			*/
+		int a = 0;
+		
+		for(int p = 1; p < aantalOpties + 1; p++)
+			a += aantal[p];
 		
 		for(int i=0; i<aantalKolommen; i++)
 		{	zetStartTellers();
@@ -337,129 +270,40 @@ public class Kansboom extends JPanel
 				gr.setColor(backgroundColor);
 				
 				if(breukOnder)
-					{
-					for(int p = 1; p < 7; p++)
-						if(teller[p] > -1)
-							tekenRechthoekOnder(p, aantal[p], a, gr, i, j);
-					/*
-					tekenRechthoekOnder(1, aantal[1], a, gr, i, j);
-					tekenRechthoekOnder(2, aantal[2], a, gr, i, j);
-					if(teller[3]>-1)
-						tekenRechthoekOnder(3, aantal[3], a, gr, i, j);
-					if(teller[4]>-1)
-						tekenRechthoekOnder(4, aantal[4], a, gr, i, j);
-						*/
-					}
+					for(int p = 1; p < aantalOpties + 1; p++)
+						tekenRechthoekOnder(p, aantal[p], a, gr, i, j);
 				else 
-					for(int p = 1; p < 7; p++)
-						if(teller[p] > -1)
-							tekenRechthoekNaast(p, aantal[p], a, gr, i, j);
-					/*	
-				{
-					tekenRechthoekNaast(1, aantal[1], a, gr, i, j);
-					tekenRechthoekNaast(2, aantal[2], a, gr, i, j);
-					if(teller[3]>-1)
-						tekenRechthoekNaast(3, aantal[3], a, gr, i, j);
-					if(teller[4]>-1)
-						tekenRechthoekNaast(4, aantal[4], a, gr, i, j);
-					}
-					*/
+					for(int p = 1; p < aantalOpties + 1; p++)
+						tekenRechthoekNaast(p, aantal[p], a, gr, i, j);
 				gr.setColor(Color.BLACK);
 				if(breukOnder)
-					for(int p = 1; p < 7; p++)
-					{	if(teller[p] > -1)
-							tekenBreukOnder(p, aantal[p], a, gr, i, j);	
-					}
-				/*
-				{
-					tekenBreukOnder(1, aantal[1], a, gr, i, j);
-					tekenBreukOnder(2, aantal[2], a, gr, i, j);
-					if(teller[3]>-1)
-						tekenBreukOnder(3, aantal[3], a, gr, i, j);
-					if(teller[4]>-1)
-						tekenBreukOnder(4, aantal[4], a, gr, i, j);
-					}
-					*/
+					for(int p = 1; p < aantalOpties + 1; p++)
+						tekenBreukOnder(p, aantal[p], a, gr, i, j);	
 				else 
-					for(int p = 1; p < 7; p++)
-						if(teller[p] > -1)
-							tekenBreukNaast(p, aantal[p], a, gr, i, j);
-					/*
-					{
-					tekenBreukNaast(1, aantal[1], a, gr, i, j);
-					tekenBreukNaast(2, aantal[2], a, gr, i, j);
-					if(teller[3]>-1)
-					tekenBreukNaast(3, aantal[3], a, gr, i, j);
-					if(teller[4]>-1)
-					tekenBreukNaast(4, aantal[4], a, gr, i, j);
-					}
-					*/
+					for(int p = 1; p < aantalOpties + 1; p++)
+						tekenBreukNaast(p, aantal[p], a, gr, i, j);
 				}
 			else //zonder terugleggen
 				{	
 				this.zetTellers(i,j);	
 				gr.setColor(backgroundColor);
 				if(bestaanKinderen(aantal,teller))
-				{ 	for(int p = 1; p < 5; p++)
-					if(teller[5-p]<aantal[5-p])
+				{ 	for(int p = 1; p < aantalOpties + 1; p++)
+					if(teller[p]<aantal[p])
 						if(breukOnder)
-						tekenRechthoekOnder(5-p, aantal[5-p]-teller[5-p], a-i, gr, i, j);
+						tekenRechthoekOnder(p, aantal[p]-teller[p], a-i, gr, i, j);
 						else	
-						tekenRechthoekNaast(5-p, aantal[5-p]-teller[5-p], a-i, gr, i, j);
-					/*
-					if(teller[4]<aantal[4])
-						if(breukOnder)
-						tekenRechthoekOnder(4, aantal[4]-teller[4], a-i, gr, i, j);
-						else	
-						tekenRechthoekNaast(4, aantal[4]-teller[4], a-i, gr, i, j);
-					if(teller[3]<aantal[3])
-						if(breukOnder)
-						tekenRechthoekOnder(3, aantal[3]-teller[3], a-i, gr, i, j);
-						else
-						tekenRechthoekNaast(3, aantal[3]-teller[3], a-i, gr, i, j);
-					if(teller[2]<aantal[2])
-						if(breukOnder)
-						tekenRechthoekOnder(2, aantal[2]-teller[2], a-i, gr, i, j);
-						else
-						tekenRechthoekNaast(2, aantal[2]-teller[2], a-i, gr, i, j);
-					if(teller[1]<aantal[1])
-						if(breukOnder)
-						tekenRechthoekOnder(1, aantal[1]-teller[1], a-i, gr, i, j);
-						else
-						tekenRechthoekNaast(1, aantal[1]-teller[1], a-i, gr, i, j);
-						*/
+						tekenRechthoekNaast(p, aantal[p]-teller[p], a-i, gr, i, j);
 					}	
 				gr.setColor(Color.BLACK);
 					if(bestaanKinderen(aantal,teller))
 					{ 
-						for(int p = 1; p < 5; p++)
-							if(teller[5-p]<aantal[5-p])	
+						for(int p = 1; p < aantalOpties + 1; p++)
+							if(teller[p]<aantal[p])	
 								if(breukOnder)
-								tekenBreukOnder(5-p, aantal[5-p]-teller[5-p], a-i, gr, i, j);
+								tekenBreukOnder(p, aantal[p]-teller[p], a-i, gr, i, j);
 								else
-								tekenBreukNaast(5-p, aantal[5-p]-teller[5-p], a-i, gr, i, j);
-					/*
-						if(t4<aantal[4])	
-						if(breukOnder)
-						tekenBreukOnder(4, aantal[4]-t4, a-i, gr, i, j);
-						else
-						tekenBreukNaast(4, aantal[4]-t4, a-i, gr, i, j);
-					if(t3<aantal[3])
-						if(breukOnder)
-						tekenBreukOnder(3, aantal[3]-t3, a-i, gr, i, j);
-						else
-						tekenBreukNaast(3, aantal[3]-t3, a-i, gr, i, j);
-					if(t2<aantal2)
-						if(breukOnder)
-						tekenBreukOnder(2, aantal2-t2, a-i, gr, i, j);
-						else
-						tekenBreukNaast(2, aantal2-t2, a-i, gr, i, j);
-					if(t1<aantal1)
-						if(breukOnder)
-						tekenBreukOnder(1, aantal1-t1, a-i, gr, i, j);
-						else
-						tekenBreukNaast(1, aantal1-t1, a-i, gr, i, j);
-						*/
+								tekenBreukNaast(p, aantal[p]-teller[p], a-i, gr, i, j);
 					}	
 				}
 			}
@@ -519,15 +363,14 @@ public class Kansboom extends JPanel
 	public int[] eindkansMetTerug()
 	{
 		int n = aantalKolommen;
-		int a = aantal[1] + aantal[2] + aantal[3] + aantal[4] + aantal[5] + aantal[6];
-		for(int p = 1; p < 7; p++)
-			if(aantalOpties<p)
-			a -= aantal[p];
-		int totaalTeller;
+		int a = 0;
+		for (int i = 1; i < aantalOpties + 1; i++)
+			a += aantal[i];
+		int totaalTeller = 1;
 		
-		totaalTeller = (int) (Math.pow(aantal[1], teller[1])*Math.pow(aantal[2], teller[2])*
-				Math.pow(aantal[3], Math.max(teller[3], 0))*Math.pow(aantal[4], Math.max(teller[4],0))*
-				Math.pow(aantal[5], Math.max(teller[5], 0))*Math.pow(aantal[6], Math.max(teller[6],0)));
+		for(int i = 1; i < aantalOpties + 1; i++)
+			totaalTeller *= Math.pow(aantal[i], Math.max(teller[i], 0));
+		
 		int[] breuk = simplify(totaalTeller,(int) Math.pow(a, n));
 		return breuk;
 		
@@ -536,20 +379,25 @@ public class Kansboom extends JPanel
 	public int[] eindkansZonderTerug()
 	{
 		int n = aantalKolommen;
-		int[] s = new int[7];
-		int ss;
-		int a = aantal[1] + aantal[2] + aantal[3] + aantal[4] + aantal[5] + aantal[6];
+		int[] s = new int[aantalOpties + 1];
+		int noemer = 1;
+		int totaalTeller = 1;
+		int a = 0;
+		for (int i = 1; i < aantalOpties + 1; i++)
+			a += aantal[i];
 		
-		for(int p = 1; p < 7; p++)
+		for(int p = 1; p < aantalOpties + 1; p++)
 			s[p] = 1;
-			ss = 1;
-			for(int p = 1; p < 7; p++)
-				for(int i = 0; i < teller[p]; i++)
-					s[p] *= aantal[p] - i;
-			for(int i=0; i < n; i++)	
-				ss *= a-i;
-			
-		int[] breuk = simplify(s[1]*s[2]*s[3]*s[4]*s[5]*s[6],ss);
+		noemer = 1;
+		for(int p = 1; p < aantalOpties + 1; p++)
+			for(int i = 0; i < teller[p]; i++)
+				s[p] *= aantal[p] - i;
+		for(int i=0; i < n; i++)	
+			noemer *= a-i;
+		for(int p = 1; p < aantalOpties + 1; p++)
+			totaalTeller *= s[p];
+					
+		int[] breuk = simplify(totaalTeller, noemer);
 		return breuk;
 	}
 	
@@ -585,7 +433,7 @@ public class Kansboom extends JPanel
 			{	
 				tekenEindBreukOnder(eindkansMetTerug()[0], eindkansMetTerug()[1], gr, j);
 			}
-			else if(teller[1] <= aantal[1] && teller[2] <= aantal[2] && teller[3] <= aantal[3] && teller[4] <= aantal[4])
+			else if(bestaanKinderen(aantal,teller))
 			{	
 				tekenEindBreukOnder(eindkansZonderTerug()[0], eindkansZonderTerug()[1], gr, j);
 			}
@@ -687,8 +535,7 @@ public class Kansboom extends JPanel
 	}
 	
 	public void setSize(int b, int h)
-	{	//hier aanpassen voor bovenbalk.
-	    breedteKansboomveld = b;
+	{	breedteKansboomveld = b;
 	    hoogteKansboomveld = h;
 	    
 	    breedteVolgordekolom = berekenBreedteVolgordekolom();
@@ -780,43 +627,13 @@ public class Kansboom extends JPanel
 		repaint();
 	}
 	
-	public void zetAantalOpties(int i, int w3, int w4, int w5, int w6)
+	public void zetOpties(int k, int[] opties)
 	{
-		aantalOpties = i;
-		if(i < 6)
-			aantal[6] = -1;
-		else if(aantal[6] == -1)
-			aantal[6] = w6;
-		if(i < 5)
-			aantal[5] = -1;
-		else if(aantal[5] == -1)
-			aantal[5] = w5;
-		if(i < 4)
-			aantal[4] = -1;
-		else if(aantal[4] == -1)
-			aantal[4] = w4;
-		if(i < 3)
-			aantal[3] = -1;
-		else if(aantal[3] == -1)
-			aantal[3] = w3;
-		setSize(breedteKansboomveld, hoogteKansboomveld);
-		repaint();
-	}
-	
-	public void zetAantalVanOptie(int i, int j)
-	{
-		if(i == 1)
-			aantal[1] = j;
-		else if(i == 2)
-			aantal[2] = j;
-		else if(i == 3)
-			aantal[3] = j;
-		else if(i == 4)
-			aantal[4] = j;
-		else if(i == 5)
-			aantal[5] = j;
-		else if(i == 6)
-			aantal[6] = j;
+		aantalOpties = k+2;
+		for(int i = 1; i < aantalOpties + 1; i++)
+			aantal[i] = opties[i];
+		for(int i = aantalOpties + 1; i < 7; i++)
+			aantal[i] = -1;
 		setSize(breedteKansboomveld, hoogteKansboomveld);
 		repaint();
 	}
@@ -833,10 +650,7 @@ public class Kansboom extends JPanel
 	}
 
 	  public int[] simplify(int nom, int denom)
-	    { //Deze methode vereenvoudigt breuken.
-		  
-		  // positive denominator
-	        if (denom < 0)
+	    {   if (denom < 0)
 	        {   nom = - nom;
 	            denom = - denom;
 	        }
@@ -892,7 +706,7 @@ public class Kansboom extends JPanel
 	  }
 	  
 	  //scheef onder elkaar
-	  /*
+	/*
 	  public void tekenRechthoekOnder(int a, int p, int q, Graphics gr, int i, int j)
 	  {	int b = breedteKolom;
 		int h = hoogteKansboom;
@@ -917,7 +731,7 @@ public class Kansboom extends JPanel
 	  */
 	  
 	  //recht onder elkaar
-	  
+	 
 	  public void tekenRechthoekOnder(int a, int p, int q, Graphics gr, int i, int j)
 	  {	int b = breedteKolom;
 		int h = hoogteKansboom;
@@ -939,6 +753,7 @@ public class Kansboom extends JPanel
 		  gr.drawLine((2*i+1)*b/2  - breukBreedte(p,q)/2, (int) (h*(4*k*j+k+2*a-1)/(4*Math.pow(k,i+1))) + rijhoogte, 
 				  (2*i+1)*b/2  + breukBreedte(p,q)/2, (int) (h*(4*k*j+k+2*a-1)/(4*Math.pow(k,i+1))) + rijhoogte);
 	  }
+	
 	 
 	  public void tekenEindBreukOnder(int p, int q, Graphics gr, int j)
 	  {	int k = aantalOpties;
