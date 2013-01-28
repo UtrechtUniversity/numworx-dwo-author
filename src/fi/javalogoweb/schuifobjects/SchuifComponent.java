@@ -16,9 +16,11 @@ public class SchuifComponent extends JPanel implements MouseListener, MouseMotio
 	public SchuifComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	setBounds(x,y,b,h);
 		setLayout(null);
-		addMouseListener(this);
-		addMouseMotionListener(this);
-		schuifveld = sv;
+		if(sv!=null)
+		{	addMouseListener(this);
+			addMouseMotionListener(this);
+			schuifveld = sv;
+		}
 	}
 	
 	public void mousePressed(MouseEvent e)

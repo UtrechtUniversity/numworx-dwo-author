@@ -12,12 +12,15 @@ import logotekenap.Rekenblad;
 import logotekenap.Tekenblad;
 
 import fi.javalogoweb.schuifobjects.SchuifVeld;
+import javax.swing.JPanel;
 
 public class KeuzeCommandComponent extends CommandContainer  implements ActionListener
 {
 	protected boolean caretIn;
 	String jaString = "ja";
 	String neeString = "nee";
+	BlokCommandComponent blokJa, blokNee;
+	
 	
 	public KeuzeCommandComponent(int x, int y, int b, int h, SchuifVeld sv)
 	{	super(x,y,b,h,sv);
@@ -32,6 +35,14 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		bc.zetTekst("0=0");
 		bc.addActionListener(this);
 		add(bc,0);
+		
+		blokJa = new BlokCommandComponent(0,25,b/2,h-26);
+		((JPanel)this).add(blokJa,0);
+		
+		blokNee = new BlokCommandComponent(b/2,25,b/2,h-26);
+		((JPanel)this).add(blokNee,0);
+		
+		
 				
 		zetMaat();
 	}
@@ -44,11 +55,13 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		}
 		if(c instanceof CommandComponent) {
 		    c.setBounds(c.getX()-getLocationOpSchuifveld().x,25+getComponentCount()*23, getSize().width/2+1, c.getSize().height);
+		    return blokJa.add(c,0);
 		}
-		Component comp = super.add(c, caretPos);
-		reArange();
-		caretPos = getComponentCount();
-		return comp;
+		//Component comp = super.add(c, caretPos);
+		//reArange();
+		//caretPos = getComponentCount();
+		//return comp;
+		return null;
 	}
 	
 	public void showCaret(int x, int y, boolean b)
@@ -88,7 +101,11 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 	}
 	
 	public void reArange()
-	{	int hoogteLinks = 25;
+	{	
+		//blokJa.reArange();
+		//blokNee.reArange();
+		
+		/*int hoogteLinks = 25;
 		for(int i=0 ; i<getComponentCount(); i++)
 		{	Component c = getComponent(i);
 			if(c instanceof CommandComponent && c.getX()<getWidth()/2-3) 
@@ -107,7 +124,7 @@ public class KeuzeCommandComponent extends CommandContainer  implements ActionLi
 		setSize(getSize().width, Math.max(48,Math.max(hoogteLinks,hoogteRechts)+2));
 		if(getParent() instanceof CommandContainer)((CommandContainer)getParent()).reArange();
 		locationGc1 = getSize().width/2-10;
-		bc.setLocation(locationGc1, 2);
+		bc.setLocation(locationGc1, 2);*/
 	}
 	
 	public void paint(Graphics g)

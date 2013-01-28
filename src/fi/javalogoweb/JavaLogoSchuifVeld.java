@@ -114,40 +114,51 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		deeltaakLabel.setBounds(opdrLocXDefault+40,340,opdrSizeWidthDefault, opdrLocYDefault-22);
 		add(deeltaakLabel,0);
 		
+		if(tekenblad!=null)
+		{
+			commandComponents[1] = new PenAanCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[1],0);
+			
+			commandComponents[2] = new PenUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[2],0);
+			
+			commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[3],0);
+			
+			commandComponents[4] = new StapCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[4],0);
 		
+			commandComponents[5] = new LinksCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[5],0);
+			
+			commandComponents[6] = new RechtsCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[6],0);
+			
+			commandComponents[7] = new VulAanCComponent(opdrLocXDefault,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[7],0);
+			
+			commandComponents[8] = new VulUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[8],0);
+			
+		}
+		else if(tekenblad!=null)
+		{
+			commandComponents[1] = new PrintStringCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[1],0);
+			
+			commandComponents[2] = new PrintVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[2],0);
+			
+			commandComponents[3] = new PrintLStringCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[3],0);
+			
+			commandComponents[4] = new PrintLVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[4],0);
+			
+			commandComponents[5] = new InvoerCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
+			add(commandComponents[5],0);
 		
-		commandComponents[1] = new PrintStringCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[1],0);
-		
-		commandComponents[2] = new PrintVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[2],0);
-		
-		commandComponents[3] = new PrintLStringCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[3],0);
-		
-		commandComponents[4] = new PrintLVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[4],0);
-		
-		commandComponents[5] = new InvoerCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-		add(commandComponents[5],0);
-		
-		//commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[3],0);
-		
-		//commandComponents[4] = new StapCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[4],0);
-	
-		//commandComponents[5] = new LinksCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[5],0);
-		
-		commandComponents[6] = new RechtsCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[6],0);
-		
-		commandComponents[7] = new VulAanCComponent(opdrLocXDefault,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[7],0);
-		
-		commandComponents[8] = new VulUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-		//add(commandComponents[8],0);
+		}
 		
 		
 		commandComponents[9] = new HerhaalCommandComponent(opdrLocXDefault,opdrLocYDefault+130,opdrSizeWidthDefault,48, this);
@@ -614,8 +625,14 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			
 		}
 		if(e.getSource()==runButton)
-		{	rekenblad.init();
-			rekenblad.tekenOpnieuw();
+		{	if(rekenblad!=null)
+			{	rekenblad.init();
+				rekenblad.tekenOpnieuw();
+			}
+			else
+			{	tekenblad.tekenOpnieuw();
+				
+			}
 		}
 		else if(e.getSource()==importButton)
 		{	importFrame("");
