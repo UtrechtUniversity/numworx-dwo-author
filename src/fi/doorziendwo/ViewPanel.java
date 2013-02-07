@@ -194,7 +194,7 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, ActionListener
 	{	
 //System.out.println("viewPanel setState");
 
-		if (startFiguurString == null) 
+		//if (startFiguurString == null) 
 			startFiguurString = s;
 		Object o = StringCodeObject.decodeStringToObject(s);
 		ScormedObject3D s3d = (ScormedObject3D) o;
