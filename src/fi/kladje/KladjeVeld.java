@@ -265,10 +265,39 @@ public class KladjeVeld extends JPanel
 		return stateVector;
 	}
 	
+	public Vector getGWTState()
+	{
+		Vector gwtStateVector = new Vector();
+		
+		for (int hCnt = 0; hCnt < breedte; hCnt++)
+			for (int vCnt = 0; vCnt < hoogte; vCnt++)
+			{
+				Color c = pixels[hCnt][vCnt].makeColor();
+				if (!c.equals(backgroundColor))
+				{
+					//ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
+					//		                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
+					
+					short[] gwtPixels = new short[5];
+					gwtPixels[0] = (short) pixels[hCnt][vCnt].x;
+					gwtPixels[1] = (short) pixels[hCnt][vCnt].y;
+					gwtPixels[2] = pixels[hCnt][vCnt].red;
+					gwtPixels[3] = pixels[hCnt][vCnt].green;			
+					gwtPixels[4] = pixels[hCnt][vCnt].blue;						
+					
+					gwtStateVector.addElement(gwtPixels);
+				}
+			}
+		
+System.out.println("kladjeVeld getGWTState " + gwtStateVector.size());
+
+		return gwtStateVector;
+	}
+	
 	public void setState(Vector stateVector)
 	{
 		
-//System.out.println("kladjeVeld setState " + stateVector.size());
+System.out.println("kladjeVeld setState " + stateVector.size());
 
 
 		int cnt = 0;
@@ -283,6 +312,42 @@ public class KladjeVeld extends JPanel
 				if (!c.equals(backgroundColor))
 					cnt++;
 			}
+		}
+		
+//System.out.println("kladjeVeld pp " + cnt);		
+		repaint();
+	}
+
+	public void setGWTState(Vector gwtStateVector)
+	{
+		
+System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
+
+
+		int cnt = 0;
+		for (int pCnt = 0; pCnt < gwtStateVector.size(); pCnt++)
+		{
+			//ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
+			
+			short[] gwtPixels = new short[5];
+			
+			gwtPixels = (short[]) gwtStateVector.elementAt(pCnt);
+			
+			if ((gwtPixels[0] < breedte) && (gwtPixels[1] < hoogte))
+			{
+				pixels[gwtPixels[0]][gwtPixels[1]] = 
+					new ColorBytes(gwtPixels[0], gwtPixels[1], gwtPixels[2], gwtPixels[3], gwtPixels[4]);
+			}
+			
+/*			
+			if ((cb.x < breedte) && (cb.y < hoogte))
+			{	pixels[cb.x][cb.y] = cb;
+				Color c = pixels[cb.x][cb.y].makeColor();
+				if (!c.equals(backgroundColor))
+					cnt++;
+			}
+			
+*/			
 		}
 		
 //System.out.println("kladjeVeld pp " + cnt);		

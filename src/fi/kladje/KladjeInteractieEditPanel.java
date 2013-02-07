@@ -41,6 +41,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	public KladjeInteractieEditPanel()
 	{
 		setLayout(null);
+
 		klip = new KladjeInteractiePanel();
 		add(klip);
 		

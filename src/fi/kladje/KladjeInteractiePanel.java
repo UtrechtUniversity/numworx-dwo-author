@@ -455,20 +455,34 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 
 		
 		Vector stateVector = new Vector();
-		if (b.containsKey("pixels"))
-			stateVector = (Vector) b.get("pixels");
-		if (stateVector.size() > 0)
-			kladjeVeld.setState(stateVector);
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}	
 		
 	}
 	
 	public void setState(Hashtable b)
 	{
 		Vector stateVector = new Vector();
-		if (b.containsKey("pixels"))
-			stateVector = (Vector) b.get("pixels");
-		if (stateVector.size() > 0)
-			kladjeVeld.setState(stateVector);
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}	
 
 	}
 	
@@ -505,10 +519,17 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		zetTekstTekenen(tekstTekenen);
 		
 		Vector stateVector = new Vector();
-		if (b.containsKey("pixels"))
-			stateVector = (Vector) b.get("pixels");
-		if (stateVector.size() > 0)
-			kladjeVeld.setState(stateVector);
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}	
 		
 
 	}
@@ -517,9 +538,11 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	{
 		Hashtable h = new Hashtable();
 
-		Vector stateVector = kladjeVeld.getState();
+//		Vector stateVector = kladjeVeld.getState();
+//		h.put("pixels", stateVector);
 		
-		h.put("pixels", stateVector);
+		Vector gwtStateVector = kladjeVeld.getGWTState();
+		h.put("gwtpixels", gwtStateVector);
 		
 		return h;
 		
@@ -537,10 +560,11 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		h.put("cirkelTekenen", new Boolean(cirkelTekenen));
 		h.put("tekstTekenen", new Boolean(tekstTekenen));
 		
-		Vector stateVector = kladjeVeld.getState();
-		
-		h.put("pixels", stateVector);
+//		Vector stateVector = kladjeVeld.getState();
+//		h.put("pixels", stateVector);
 
+		Vector gwtStateVector = kladjeVeld.getGWTState();
+		h.put("gwtpixels", gwtStateVector);
 		
 		return h;
 	}
