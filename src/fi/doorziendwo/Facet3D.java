@@ -67,10 +67,10 @@ public class Facet3D implements Serializable
 // changing via rebuild!    
     // how to draw "hidden" outlines in non-filled mode
     // voor later 0 = lighter, 1 = dashed 2 = dashed and lighter    
-    public int hiddenOutlineMode = DrawingPanel.hiddenOutlineMode;
+    public int hiddenOutlineMode = DrawConstants.hiddenOutlineMode;
     // colors for edges, reference sufficient
     // these are the non-hidden colors
-    public Color[] edgeColors = DrawingPanel.edgeColors;
+    public Color[] edgeColors = DrawConstants.edgeColors;
     
     // average height above x-y-plane after transforming to
     // view space, needed for Painter's Algo etc.
@@ -161,7 +161,8 @@ public class Facet3D implements Serializable
         }
     }
     private void deletePoint(int index)
-    {   // shift for index = 0 to index = numPoints - 2
+    {   
+    	// shift for index = 0 to index = numPoints - 2
         for (int i = index + 1; i < numPoints - 1; i++)
         {   indices[i] = indices[i + 1];
             points[i] = points[i + 1];
@@ -249,6 +250,8 @@ public class Facet3D implements Serializable
         {   // view space, origin at (o.x, o.y, o.z)
             // xy-projection
             // project point on plane through (o.x, o.y, 0)
+if (trPoints[i] == null)         	
+System.out.println("tr " + i + " null");        	
             double temp =  d / (d - trPoints[i].z);
             xPoints[i] = (int) Math.round((o.x + (trPoints[i].x - o.x) * temp));
             yPoints[i] = (int) Math.round((o.y + (trPoints[i].y - o.y) * temp));
@@ -456,11 +459,11 @@ public class Facet3D implements Serializable
 
 
         // drawing tickmarks
-        if (DrawingPanel.TICKSVISIBLE && (DrawingPanel.TICKNUM > 0))
+        if (DrawConstants.TICKSVISIBLE && (DrawConstants.TICKNUM > 0))
         {   if (visFromD)
-                g.setColor(DrawingPanel.tickColor);
+                g.setColor(DrawConstants.tickColor);
             else    
-                g.setColor(DrawingPanel.hiddenTickColor);
+                g.setColor(DrawConstants.hiddenTickColor);
             for (int eCnt = 0; eCnt < numPoints; eCnt++)
             {   if (drawTicks[eCnt] && (numTicks[eCnt] > 0))
                 {   Vector3D[] trTicks = findTransformedTicks(eCnt);
@@ -479,8 +482,9 @@ public class Facet3D implements Serializable
             }
         }
         // drawing letters        
-        if (DrawingPanel.letters)
-        {   //g.setFont(vertexFont);
+        if (DrawConstants.letters)
+        {   
+        	//g.setFont(vertexFont);
             g.setColor(Color.magenta);
             FontMetrics vertexFM = g.getFontMetrics(g.getFont());
             for (int vCnt = 0; vCnt < p.npoints; vCnt++)
@@ -817,13 +821,13 @@ extern op UNhidden gezet
             return Color.lightGray;
 // tijdelijk
         if (c.equals(Color.blue))
-            return DrawingPanel.mediumBlue;
+            return DrawConstants.mediumBlue;
             
         if (c.equals(Color.red))
-            return DrawingPanel.lightRed;
+            return DrawConstants.lightRed;
             //return Color.orange;
-        if (c.equals(DrawingPanel.brownRed))
-            return DrawingPanel.lightRed;
+        if (c.equals(DrawConstants.brownRed))
+            return DrawConstants.lightRed;
         return result;
     }    
     

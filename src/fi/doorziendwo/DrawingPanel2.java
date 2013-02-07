@@ -11,13 +11,16 @@ import javax.swing.*;
 // a Panel containing one or more objects to be drawn in
 // such as an Object3DContainer or others
 // also contains all control routines
-public class DrawingPanel extends JPanel
+public class DrawingPanel2 extends JPanel
 {   // applet frame
-    DoorzienFrame owner;
+    DoorzienPanel owner;
 
     // the 3D panel(s)
     Object3DContainer panel3D = new Object3DContainer();
     Object3DContainer cutPanel = new Object3DContainer();
+    
+    int modelCode = DoorzienPanel.CUBE;
+
     public static double MAXZOOM = 15e-1d;
     public static double MINZOOM = 2e-1d; 
     public static double ZOOMSTEP = 1e-1d;
@@ -65,7 +68,7 @@ public class DrawingPanel extends JPanel
     MLMML listener;
 
     // drawing
-    boolean startUp = true;
+    boolean startUp = false;//true;
     //Image offscreen = null;
 
     // code of originalObject
@@ -117,7 +120,7 @@ public class DrawingPanel extends JPanel
     // percentwise or absolute?
     public static double MAXLLFACTOR = 3;
     public static double LLSTEP = 2e-1d;
-    //public static double llFactor = 0;
+//    public static double llFactor = 0;
 
     // making a foldout    
     Object3D foldOutObject;
@@ -140,24 +143,21 @@ public class DrawingPanel extends JPanel
 
     // using the slider
     double sliderValue = 0;
-    Slider slider;
+    Slider2 slider;
     
     LWButton flatButton;
     
     // tick modes
-    
-    
     public static int NOTICKS = 0;
     public static int INHERITED = 1;
     public static int INDIVIDUAL = 2;
     public int tickMode = NOTICKS;
 
-//    public static int TICKNUM = 0;    
-//    public static boolean TICKSVISIBLE = false;
+    //public static int TICKNUM = 0;    
+    //public static boolean TICKSVISIBLE = false;
     
     public DropButton dropButton;
-    public LWPopUp dropMenu;
-    
+    public LWPopUp2 dropMenu;
     
     // undo
     Vector history = new Vector();
@@ -177,8 +177,14 @@ public class DrawingPanel extends JPanel
     // using the preview
     boolean previewOn = false;
     
+    MLMML ml;
+    CutMLMML cutml;
+    
     // using letters
-    //public static boolean letters = false;
+//    public static boolean letters = false;
+    
+    // voor de demo
+    boolean draaibaar = true;
     
 // for testing
 String testString = "";
@@ -209,10 +215,13 @@ public static void showTime(String comment)
 }    
 
     // constructor    
-    public DrawingPanel(DoorzienFrame o)
+    public DrawingPanel2(DoorzienPanel o)
     {   owner = o;
         // for Container
-        setLayout(null);    
+        setLayout(null);
+        
+        //setBackground(Color.white);
+        
         // add listener for resizing events
         ComponentListener cl = new CL();
         addComponentListener(cl);
@@ -226,9 +235,10 @@ public static void showTime(String comment)
     // initialization of components etc.
     public void initialize(int startModel)
     {   
+    	
+    	
         panel3D.setBounds(0, 0, getSize().width, getSize().height);
         add(panel3D);        
-
 
         dropButton = new DropButton(owner.tt("divideSidesText"), 20);
         dropButton.setLocation(panel3D.getSize().width - 
@@ -237,7 +247,7 @@ public static void showTime(String comment)
 // dit er weer uit                               
 //panel3D.add(dropButton);
 
-        dropMenu = new LWPopUp(this, "", owner.dropNumHelpPoints);
+        dropMenu = new LWPopUp2(this, "", owner.dropNumHelpPoints);
         dropMenu.setCheckable(true);
         dropMenu.setLocation(panel3D.getSize().width - 
                              dropMenu.getSize().width, 
@@ -246,11 +256,11 @@ public static void showTime(String comment)
 //panel3D.add(dropMenu);                             
                              
 
-        MLMML ml = new MLMML();
+        ml = new MLMML();
         panel3D.addMouseListener(ml);
         panel3D.addMouseMotionListener(ml);        
         
-        CutMLMML cutml = new CutMLMML();
+        cutml = new CutMLMML();
         cutPanel.addMouseListener(cutml);
         cutPanel.addMouseMotionListener(cutml);        
         
@@ -258,6 +268,30 @@ public static void showTime(String comment)
         
     }  // initialize  
 
+    public void zetDraaibaar(boolean b)
+    {   draaibaar = b; 
+/*    	
+    	if (b)
+    	{
+    		panel3D.addMouseListener(ml);
+            panel3D.addMouseMotionListener(ml);
+            
+            cutPanel.addMouseListener(cutml);
+            cutPanel.addMouseMotionListener(cutml);        
+            
+    	}
+    	else
+    	{
+    		panel3D.removeMouseListener(ml);
+            panel3D.removeMouseMotionListener(ml);
+            
+            cutPanel.removeMouseListener(cutml);
+            cutPanel.removeMouseMotionListener(cutml);        
+    		
+    	}
+*/    	
+    }
+    
     public void setProjection(int proj)
     {   if (proj == CENTRALPROJ)
             projection = CENTRALPROJ;
@@ -398,9 +432,9 @@ public static void showTime(String comment)
         owner.resetLetters();
 
 		// projectie
-        if (DoorzienDWO.version == DoorzienDWO.EPN)
-            setProjection(PARALLELPROJ);        
-        else
+        //if (DoorzienDWO.version == DoorzienDWO.EPN)
+        //    setProjection(PARALLELPROJ);        
+        //else
             setProjection(CENTRALPROJ);
         owner.resetProjection(projection);
         
@@ -437,13 +471,13 @@ public static void showTime(String comment)
         	addToHistory();
         	owner.helpBar.setText(owner.tt("rotateText"));
         }
-        else if ((modelCode == owner.MYFIGURE) && !startUp)
-        	owner.viewer.setScormedObject3D();	
+        //else if ((modelCode == owner.MYFIGURE) && !startUp)
+        //	owner.viewer.setScormedObject3D();	
         
     }    
 
     public ObjectGroup3D makeNewModel(int code)
-    {   //modelCode = code;
+    {   modelCode = code;
         Object3D model;
         ObjectGroup3D modelGroup;
         // default?
@@ -564,7 +598,16 @@ public static void showTime(String comment)
         return modelGroup;
     }    
 
+    // overloaded
+    public ObjectGroup3D makeNewModel(Object3D object)
+    {
+    	originalObject = object;
 
+    	currentObjectGroup = new ObjectGroup3D(object, false);
+    	currentObjectGroup.numVertexLabels = object.numVertexLabels;
+        return currentObjectGroup;
+    }
+    
     public void addToHistory()
     {   int hisSize = history.size();
         ObjectGroup3D og = (ObjectGroup3D) currentObjectGroup.deepCopy();
@@ -578,9 +621,9 @@ public static void showTime(String comment)
             historyPointer--;
         }
         if (history.size() > 1)
-            owner.topToolBar.undoButton.setOn(true);
+            owner.rightToolBar.undoButton.setOn(true);
 //System.out.println("added, his = " + history.size());                
-        owner.topToolBar.redoButton.setOn(false);            
+        owner.rightToolBar.redoButton.setOn(false);            
     }
     
     public void previousObjectGroup()
@@ -631,8 +674,8 @@ public static void showTime(String comment)
             panel3D.initializeModel(currentObjectGroup, false);
         }
         if (historyPointer == 0)
-            owner.topToolBar.undoButton.setOn(false);
-        owner.topToolBar.redoButton.setOn(true);            
+            owner.rightToolBar.undoButton.setOn(false);
+        owner.rightToolBar.redoButton.setOn(true);            
         
     }    
 
@@ -684,8 +727,8 @@ public static void showTime(String comment)
             panel3D.initializeModel(currentObjectGroup, false);
         }
         if ((history.size() - 1) == historyPointer)
-            owner.topToolBar.redoButton.setOn(false);
-        owner.topToolBar.undoButton.setOn(true);            
+            owner.rightToolBar.redoButton.setOn(false);
+        owner.rightToolBar.undoButton.setOn(true);            
         
     }    
 
@@ -785,7 +828,7 @@ public static void showTime(String comment)
     {   if (b)
         {   sliderValue = init;
 //System.out.println("initValue = " + UF.format(sliderValue, 2));            
-            slider = new Slider(this, min, max);
+            slider = new Slider2(this, min, max);
             if (mouseMode == FOLDOUT)
             {   currentFoldOut = sliderValue;
             	flatButton = new LWButton(Table.lookUp("flatText"),
@@ -1021,8 +1064,8 @@ public static void showTime(String comment)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
                 owner.rightToolBar.conDrawButton.setPressed(false);                                                
@@ -1033,8 +1076,8 @@ public static void showTime(String comment)
                 cutObjectGroup = null;                
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
                 
                 }
                 //originalObject = currentObjectGroup.leftMostLeaf();
@@ -1057,9 +1100,9 @@ public static void showTime(String comment)
                 owner.helpBar.setText(owner.tt("rotateText"));                    
                 owner.enableOptions(true);
 if (historyPointer > 0)
-owner.topToolBar.undoButton.setOn(true);
+owner.rightToolBar.undoButton.setOn(true);
 if (historyPointer < (history.size() - 1))
-owner.topToolBar.redoButton.setOn(true);
+owner.rightToolBar.redoButton.setOn(true);
                 setNumLines(numLines);
                 setNumPlanes(numPlanes);
                 filled = oldFilled;
@@ -1075,7 +1118,9 @@ owner.topToolBar.redoButton.setOn(true);
                     panel3D.mat.row3 = new Vector3D(oldPos.row3);
                 
                 }
-                panel3D.initializeModel(currentObjectGroup, false);                                        
+                panel3D.initializeModel(currentObjectGroup, false);
+                
+                startFacet = null;
                 return;
             }
             mouseMode = FOLDOUT;
@@ -1090,9 +1135,11 @@ owner.topToolBar.redoButton.setOn(true);
 //    System.out.println("vertices = " + foldOutObject.numVertices);        
             foldOutObject.loosenVertices();
 //System.out.println("lo-vertices = " + foldOutObject.numVertices);        
-//System.out.println("facets = " + foldOutObject.numFacets);                
-            startFacet = null;
+//System.out.println("facets = " + foldOutObject.numFacets);
+            
+            //startFacet = null;
             panel3D.initializeModel(foldOutObjectGroup, false);
+            
             if ((DoorzienDWO.version == DoorzienDWO.EPN) && 
                 (foldOutObject.modelCode == owner.CYLINDER))
             {   // take the frontmost facet of the side
@@ -1129,8 +1176,12 @@ owner.topToolBar.redoButton.setOn(true);
                 makeFoldOut(1, true);
                 
             }
-            else
+            else if (startFacet != null)
             {
+            	makeFoldOut(1, true);
+            }
+            else
+            {	
                 owner.helpBar.setText(owner.tt("conDrawSelectText"));
                 owner.rightToolBar.conDrawButton.setPressed(true);
                 // wait for mouse action
@@ -1149,10 +1200,14 @@ owner.topToolBar.redoButton.setOn(true);
             owner.enableOptions(false);
             owner.topToolBar.disableLineButtons();
             owner.topToolBar.disablePlaneButtons();
-owner.topToolBar.undoButton.setOn(false);
-owner.topToolBar.redoButton.setOn(false);
-            // asumed >= 0    
-            int startIndex = foldOutObject.containsFacet(startFacet);    
+owner.rightToolBar.undoButton.setOn(false);
+owner.rightToolBar.redoButton.setOn(false);
+            
+			// asumed >= 0    
+            //int startIndex = foldOutObject.containsFacet(startFacet);    
+			int startIndex = NoSer.containsFacet(foldOutObject, startFacet);
+            
+            
             // init facet labels
             facetsUsed = new boolean[foldOutObject.numFacets]; 
             // create root node, mark facet as labeled
@@ -1620,8 +1675,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -1635,8 +1690,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 cutObjectGroup = null;                
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                 //originalObject = currentObjectGroup.leftMostLeaf();
@@ -2092,8 +2147,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -2105,8 +2160,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 cutObjectGroup = null;                
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
 
@@ -2197,8 +2252,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             owner.topToolBar.drawPlaneButton.setPressed(false);                                
             owner.topToolBar.parPlaneButton.setPressed(false);
             owner.topToolBar.deletePlaneButton.setPressed(false);
-            owner.topToolBar.transPlaneButton.setPressed(false);
-            owner.topToolBar.rotPlaneButton.setPressed(false);
+            //owner.topToolBar.transPlaneButton.setPressed(false);
+            //owner.topToolBar.rotPlaneButton.setPressed(false);
             
             owner.topToolBar.showCutButton.setPressed(false);                
             owner.topToolBar.cutButton.setPressed(false);                                
@@ -2211,8 +2266,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             cutObjectGroup = null;                
             if (numPlanes > 0)
             {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
             }
             //originalObject = currentObjectGroup.leftMostLeaf();
@@ -2267,8 +2322,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             owner.topToolBar.drawPlaneButton.setPressed(false);                                
             owner.topToolBar.parPlaneButton.setPressed(false);
             owner.topToolBar.deletePlaneButton.setPressed(false);
-            owner.topToolBar.transPlaneButton.setPressed(false);
-            owner.topToolBar.rotPlaneButton.setPressed(false);
+            //owner.topToolBar.transPlaneButton.setPressed(false);
+            //owner.topToolBar.rotPlaneButton.setPressed(false);
             
             owner.topToolBar.showCutButton.setPressed(false);                
             owner.topToolBar.cutButton.setPressed(false);                                
@@ -2281,8 +2336,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             cutObjectGroup = null;                
             if (numPlanes > 0)
             {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
             }
 
@@ -2342,8 +2397,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -2357,8 +2412,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
 
@@ -3150,8 +3205,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -3164,8 +3219,8 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                 
@@ -3593,8 +3648,8 @@ if (currentObjectGroup.objects.size() > 1)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -3607,8 +3662,8 @@ if (currentObjectGroup.objects.size() > 1)
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                     owner.topToolBar.cutButton.setImage(owner.cutImage);
@@ -3754,8 +3809,8 @@ if (currentObjectGroup.objects.size() > 1)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -3768,8 +3823,8 @@ if (currentObjectGroup.objects.size() > 1)
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                 // slider weg                                
@@ -3785,7 +3840,7 @@ if (currentObjectGroup.objects.size() > 1)
             if (!b)
             {   mouseMode = INERT;
                 owner.helpBar.setText(owner.tt("rotateText"));                    
-                owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
                 return;
             }
             mouseMode = TRANSLATEPLANE;
@@ -3797,7 +3852,7 @@ if (currentObjectGroup.objects.size() > 1)
             {
                 // help message
                 owner.helpBar.setText(owner.tt("selectTranslatePlaneText"));                
-                owner.topToolBar.transPlaneButton.setPressed(true);                
+                //owner.topToolBar.transPlaneButton.setPressed(true);                
                 transPlaneChoosen = null;
                 // wait for mouse action
                 helpPoint = true;
@@ -3820,7 +3875,7 @@ if (currentObjectGroup.objects.size() > 1)
         }    
         else if (stepNum == 1)
         {
-            owner.topToolBar.transPlaneButton.setPressed(false);            
+            //owner.topToolBar.transPlaneButton.setPressed(false);            
             helpPoint = false;
             panel3D.hideHelpPoint();
             
@@ -3882,7 +3937,7 @@ if (currentObjectGroup.objects.size() > 1)
 
             setSlider(true, 0, minTrans, maxTrans);        
             owner.helpBar.setText(owner.tt("rotateText"));        
-            owner.topToolBar.transPlaneButton.setImage(owner.noTransPlaneImage);        
+            //owner.topToolBar.transPlaneButton.setImage(owner.noTransPlaneImage);        
         // kijk bij rebuild uit dat je niet twee keer hetzelfde
         // vlak snijdt (er kan een parallel vlak zijn)
         
@@ -3914,8 +3969,8 @@ if (currentObjectGroup.objects.size() > 1)
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -3928,8 +3983,8 @@ if (currentObjectGroup.objects.size() > 1)
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   owner.topToolBar.cutButton.setImage(owner.cutImage);
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                 // slider weg                                
@@ -3945,11 +4000,11 @@ if (currentObjectGroup.objects.size() > 1)
             if (!b)
             {   mouseMode = INERT;
                 owner.helpBar.setText(owner.tt("rotateText"));                    
-                owner.topToolBar.rotPlaneButton.setPressed(false);                
+                //owner.topToolBar.rotPlaneButton.setPressed(false);                
                 return;
             }
             mouseMode = ROTATEPLANE;
-            owner.topToolBar.rotPlaneButton.setPressed(true);                            
+            //owner.topToolBar.rotPlaneButton.setPressed(true);                            
             if (currentObjectGroup instanceof ObjectWithLine)
                 transRotConstruct = ((ObjectWithLine) currentObjectGroup).getConstruction();
             else if (currentObjectGroup instanceof ObjectWithPlane)
@@ -3965,7 +4020,7 @@ if (currentObjectGroup.objects.size() > 1)
         }
         else if (stepNum == 1)
         {
-           owner.topToolBar.rotPlaneButton.setPressed(false);                            
+           //owner.topToolBar.rotPlaneButton.setPressed(false);                            
            helpPoint = false;
            panel3D.hideHelpPoint();
             
@@ -4137,7 +4192,7 @@ else
 
             setSlider(true, 0, minRot, maxRot);        
             owner.helpBar.setText(owner.tt("rotateText"));        
-            owner.topToolBar.rotPlaneButton.setImage(owner.noRotPlaneImage);        
+            //owner.topToolBar.rotPlaneButton.setImage(owner.noRotPlaneImage);        
         
         }
     }    
@@ -4164,8 +4219,8 @@ else
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -4277,8 +4332,8 @@ setCutPanel(true);
                 owner.topToolBar.drawPlaneButton.setPressed(false);                                
                 owner.topToolBar.parPlaneButton.setPressed(false);
                 owner.topToolBar.deletePlaneButton.setPressed(false);
-                owner.topToolBar.transPlaneButton.setPressed(false);
-                owner.topToolBar.rotPlaneButton.setPressed(false);
+                //owner.topToolBar.transPlaneButton.setPressed(false);
+                //owner.topToolBar.rotPlaneButton.setPressed(false);
                 
                 owner.topToolBar.showCutButton.setPressed(false);                
                 owner.topToolBar.cutButton.setPressed(false);                                
@@ -4291,8 +4346,8 @@ setCutPanel(true);
                 cutObjectGroup = null;
                 if (numPlanes > 0)
                 {   
-                    owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-                    owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+                    //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+                    //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
 
                 }
                 
@@ -4325,9 +4380,9 @@ setCutPanel(true);
     	            owner.topToolBar.planesFilledButton.setImage(owner.planesFilledImage);                
         
         		if (historyPointer > 0)
-        		{   owner.topToolBar.undoButton.setOn(true);                
+        		{   owner.rightToolBar.undoButton.setOn(true);                
         		}
-    	        owner.topToolBar.redoButton.setOn(false);                
+    	        owner.rightToolBar.redoButton.setOn(false);                
     	            
                 owner.topToolBar.cutButton.setPressed(false);                                            
                 panel3D.testString = "";
@@ -4399,8 +4454,8 @@ if (isSide)
             owner.topToolBar.disablePlaneButtons();
             owner.topToolBar.cutButton.setOn(true);            
             owner.topToolBar.cutButton.setImage(owner.glueImage);                
-            owner.topToolBar.undoButton.setOn(false);
-            owner.topToolBar.redoButton.setOn(false);
+            owner.rightToolBar.undoButton.setOn(false);
+            owner.rightToolBar.redoButton.setOn(false);
             
             ObjectGroup3D left = (ObjectGroup3D) cutObjectGroup.objects.elementAt(0);
             ObjectGroup3D right = (ObjectGroup3D) cutObjectGroup.objects.elementAt(1);
@@ -4513,7 +4568,7 @@ panel3D.testString = "";
                 owner.helpBar.setText(owner.tt("rotateText"));                                        
                 setNumLines(nLines);
                 setNumPlanes(nPlanes);
-                owner.topToolBar.undoButton.setOn(true);                                
+                owner.rightToolBar.undoButton.setOn(true);                                
                 if (numPlanes > 0)                
                     owner.topToolBar.cutButton.setImage(owner.cutImage);                
                 owner.enableOptions(true);                        
@@ -4575,7 +4630,7 @@ panel3D.testString = "";
                 owner.helpBar.setText(owner.tt("rotateText"));                        
                 setNumLines(nLines);
                 setNumPlanes(nPlanes);
-                owner.topToolBar.undoButton.setOn(true);                                
+                owner.rightToolBar.undoButton.setOn(true);                                
                 if (numPlanes > 0)
                     owner.topToolBar.cutButton.setImage(owner.cutImage);
                 owner.enableOptions(true);    
@@ -4600,8 +4655,8 @@ panel3D.testString = "";
             owner.topToolBar.drawPlaneButton.setPressed(false);                                
             owner.topToolBar.parPlaneButton.setPressed(false);
             owner.topToolBar.deletePlaneButton.setPressed(false);
-            owner.topToolBar.transPlaneButton.setPressed(false);
-            owner.topToolBar.rotPlaneButton.setPressed(false);
+            //owner.topToolBar.transPlaneButton.setPressed(false);
+            //owner.topToolBar.rotPlaneButton.setPressed(false);
             
             owner.topToolBar.showCutButton.setPressed(false);                
             owner.topToolBar.cutButton.setPressed(false);                                
@@ -4632,8 +4687,8 @@ panel3D.testString = "";
             owner.topToolBar.shortLinesButton.setOn(true);
         if (numPlanes > 0)
         {   
-            owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-            owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+            //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+            //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
         }
         
         owner.enableOptions(true);
@@ -4670,8 +4725,8 @@ panel3D.testString = "";
             owner.topToolBar.drawPlaneButton.setPressed(false);                                
             owner.topToolBar.parPlaneButton.setPressed(false);
             owner.topToolBar.deletePlaneButton.setPressed(false);
-            owner.topToolBar.transPlaneButton.setPressed(false);
-            owner.topToolBar.rotPlaneButton.setPressed(false);
+            //owner.topToolBar.transPlaneButton.setPressed(false);
+            //owner.topToolBar.rotPlaneButton.setPressed(false);
             
             owner.topToolBar.showCutButton.setPressed(false);                
             owner.topToolBar.cutButton.setPressed(false);                                
@@ -4702,8 +4757,8 @@ panel3D.testString = "";
             owner.topToolBar.shortLinesButton.setOn(true);
         if (numPlanes > 0)
         {   
-            owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
-            owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
+            //owner.topToolBar.transPlaneButton.setImage(owner.transPlaneImage);
+            //owner.topToolBar.rotPlaneButton.setImage(owner.rotPlaneImage);
         }
         
         owner.enableOptions(true);
@@ -4761,8 +4816,8 @@ panel3D.testString = "";
             owner.topToolBar.drawPlaneButton.setPressed(false);                                
             owner.topToolBar.parPlaneButton.setPressed(false);
             owner.topToolBar.deletePlaneButton.setPressed(false);
-            owner.topToolBar.transPlaneButton.setPressed(false);
-            owner.topToolBar.rotPlaneButton.setPressed(false);
+            //owner.topToolBar.transPlaneButton.setPressed(false);
+            //owner.topToolBar.rotPlaneButton.setPressed(false);
             
             owner.topToolBar.showCutButton.setPressed(false);                
             owner.topToolBar.cutButton.setPressed(false);                                
@@ -4792,6 +4847,11 @@ panel3D.testString = "";
         
     }    
 
+    public void setBounds(int x, int y, int b, int h)
+    {
+    	super.setBounds(x, y, b, h);
+    	updateWork();
+    }
 
     // update workSpace after resizing
     public void updateWork()
@@ -4812,6 +4872,7 @@ panel3D.testString = "";
             panel3D.setBounds(0, 0, getSize().width, getSize().height);
             //panel3D.offscreen = null;    
             panel3D.resetModel();
+//System.out.println("resetModel");            
         }
         if (slider != null)            
         {   if (flatButton != null)
@@ -5055,7 +5116,11 @@ panel3D.testString = "";
         boolean draggStartInCircle = false;
         
         public void mousePressed(MouseEvent e)
-        {   // right button for rotating
+        {   
+        	if (!draaibaar)
+        		return;
+        	
+        	// right button for rotating
             if ((e.getModifiers() & e.BUTTON1_MASK) == 0)
             {   
                 panel3D.oldX = e.getX();
@@ -6094,7 +6159,12 @@ panel3D.testString = "";
     class CutMLMML extends MouseAdapter implements MouseMotionListener
     {   boolean dragging = false; 
         public void mousePressed(MouseEvent e)
-        {       cutPanel.oldX = e.getX();
+        {       
+        		if (!draaibaar)
+        			return;
+        	
+        	
+        		cutPanel.oldX = e.getX();
                 cutPanel.oldY = e.getY();
                 dragging = true;
         }
@@ -6161,532 +6231,3 @@ panel3D.testString = "";
         }    
     } // class CutMLMML
 } // class DrawingPanel
-
-
-class FoldOutTreeNode implements Serializable
-{   // tree attributes
-    // parent
-    FoldOutTreeNode parentNode = null;
-    // children of type FoldOutTreeNode
-    Vector childNodes = new Vector();
-    
-    // info attributes
-    // the facet represented by the node
-    Facet3D facet;
-    // the fold out component, elements of type facet
-    // en wel dit facet en die van de kinderen,
-    // met toegevoegd alle ZICHTBARE facets die deze facets vervangen 
-    Vector foldOutFacets = new Vector();
-    // (minimum) angle and rotation axis relative
-    // to parentNode.facet
-    double minAngle;
-    double currentAngle; // foldout relative to minAngle
-    // axis is common edge to facet in parentNode
-    // remember the indices of the edgepoints
-    // in this facet with the correct orientation!!
-    // this because the axis is also rotated!!
-    int axisFrom, axisTo;
-    
-// tijdelijk
-int level;
-    
-    // constructor
-    public FoldOutTreeNode(Facet3D f, double angle, int aFrom, int aTo)
-    {   facet = f;
-        minAngle = angle;
-        axisFrom = aFrom;
-        axisTo = aTo;
-    }
-    
-    
-    
-}
-// nodig?
-class Point3D
-{   public int x, y, z;
-    public Point3D(int x, int y, int z)
-    {   this.x = x; this.y = y; this.z = z;
-    }    
-    public boolean equals(Object obj)
-    {   if (obj instanceof Point3D)
-        {   Point3D point = (Point3D) obj;
-            return (x == point.x) && (y == point.y) && (z == point.z);
-        }
-        return false;
-    }    
-}    
-
-
-// class representing a horizontal slider
-class ViewSlider extends Component //implements Observer
-{   // sizes, hard coded
-    static final int vertSize = 20;
-    static final int horSize = 120;
-    static final int buttonWidth = 7;
-    static final int offSet = 10;
-    // the parameter being adjusted
-    //private Parameter sliderValue;
-    //double sliderValue;
-    double minValue, maxValue;
-    // slider position, a value from 0 to 1
-    private double currentPosition;
-    // slider colors
-	private Color enabledColor = Color.red;
-	private Color disabledColor = Color.gray;
-	private Color sliderColor = enabledColor;
-	// flag for being enabled
-	// NOT private, must be accessable from inner class MLMML
-	boolean enabled = true;
-	// the owner
-	ViewPanel owner;
-    // constructor
-	public ViewSlider(ViewPanel vp, double min, double max)
-	{	owner = vp;
-	    setSize(horSize, vertSize);
-	    minValue = min;
-	    maxValue = max;
-		MLMML listener = new MLMML();
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
-		
-		setPosition(owner.sliderValue);
-	}
-/*	
-    // for Observer
-    public void update(Observable o, Object arg)
-    {   double value = ((Parameter) o).getCurrentValue();
-        setPosition(value);
-    }
-*/    
-
-// nog tekst links en rechts?
-
-    // paint method
-	public void paintSlider(Graphics g)
-	{	g.setColor(Color.lightGray);
-	    // outline
-		g.drawRect(0, 0, horSize - 1, vertSize - 1);
-
-		// inside rectangle
-		g.setColor(Color.white);
-		g.fillRect(offSet, vertSize / 4,
-		           getSize().width - 2 * offSet - 1, vertSize / 2);
-	    
-	    // draw rectangle
-        g.setColor(Color.black);
-//		g.drawRect(buttonWidth / 2, vertSize / 4,
-//		           getSize().width - buttonWidth - 1, vertSize / 2);
-		g.drawRect(offSet, vertSize / 4,
-		           getSize().width - 2 * offSet - 1, vertSize / 2);
-		           
-        // draw button
-		g.setColor(sliderColor);
-/*		
-		// NOTE: slider extends from
-		// (buttonWidth / 2) to getSize().width - (buttonWidth / 2) - 1
-		// thus has length getSize().width - buttonWidth - 1
-		// this corresponds to currentPosition 0.0 through 1.0
-		g.fillOval((int) Math.round(
-		                currentPosition * (getSize().width - buttonWidth - 1)
-		                 ),
-		           0, buttonWidth, getSize().height);
-*/		           
-		// NOTE: slider extends from
-		// offSet to getSize().width - offSet - 1
-		// thus has length getSize().width - 2 * offSet - 1
-		// this corresponds to currentPosition 0.0 through 1.0
-		g.fillOval((int) Math.round(offSet - (buttonWidth / 2) +
-		                currentPosition * (getSize().width - 2 * offSet - 1)
-		                 ),
-		           0, buttonWidth, getSize().height);
-		           
-	}
-    // avoid flickering
-	//public void update(Graphics g)
-	//{   paint(g);
-	//}
-	// draw offscreen
-	public void paint(Graphics g)
-	{   //Image offscreen = createImage(getSize().width, getSize().height);
-	    //Graphics og = offscreen.getGraphics();
-	    g.setClip(0, 0, getSize().width, getSize().height);
-	    paintSlider(g);
-	    //g.drawImage(offscreen, 0, 0, null);
-	    //og.dispose();
-	}
-	// change parameter value, prevent button from leaving
-	// rectangle
-    public void setValue(int mousePosition)
-    {   
-//        currentPosition =
-//                ((double) (mousePosition - (buttonWidth / 2))) /
-//	            (getSize().width - buttonWidth);
-        currentPosition =
-                ((double) (mousePosition - offSet)) /
-	            (getSize().width - 2 * offSet);
-	            
-	    if (currentPosition > 1.0d)
-	        currentPosition = 1.0d;
-	    else if (currentPosition < 0.0d)
-	        currentPosition = 0.0d;
-	    owner.processSlider(minValue +
-	        currentPosition * (maxValue - minValue));
-        repaint();
-    }
-    // find button position
-	public void setPosition(double val)
-	{	currentPosition = (owner.sliderValue - minValue) /
-	                      (maxValue - minValue);
-		repaint();
-	}
-	public void setEnabled(boolean e)
-	{	if (e)
-		{	sliderColor = enabledColor;
-		    enabled = true;
-		}
-		else
-		{	sliderColor = disabledColor;
-		    enabled = false;
-		}
-		repaint();
-	}
-	// inner class for mouse events
-	class MLMML extends MouseAdapter
-	            implements MouseMotionListener
-    {   public void mousePressed(MouseEvent e)
-        {   if (enabled)
-            {   requestFocus();
-                int xPos = e.getX();
-                setValue(xPos);
-            }
-        }
-        public void mouseDragged(MouseEvent e)
-        {   if (enabled)
-            {   int xPos = e.getX();
-                int yPos = e.getY();
-                // limit dragg events to slider
-                if (contains(xPos, yPos))
-                    setValue(xPos);
-            }
-        }
-        public void mouseMoved(MouseEvent e) {}
-    }
-}
-
-// light weight button
-class LWButton extends Component
-{   // attributes
-    String buttonText;
-    Font fo1 = new Font("Helvetica", Font.PLAIN, 11);
-    // constructor    
-    public LWButton(String s, int w, int h)
-    {   buttonText = s;
-        setSize(w, h);
-    }    
-    public void setText(String s)
-    {   buttonText = s;
-        repaint();
-    }    
-    public void paint(Graphics g)
-    {   // background
-        g.setColor(DrawConstants.flatButtonColor);
-        g.fillRect(0, 0, getSize().width, getSize().height);         
-        // outline        
-        g.setColor(Color.black);
-        g.drawRect(0, 0, getSize().width - 1, getSize().height - 1); 
-        // right vertical
-        g.drawLine(getSize().width - 2, 1, 
-                   getSize().width - 2, getSize().height - 2);
-        // bottom horizontal           
-        g.drawLine(1, getSize().height - 2, 
-                   getSize().width - 2, getSize().height - 2);
-        g.setColor(Color.white);                   
-        // top vertical
-        g.drawLine(1, 1, getSize().width - 2, 1);
-        g.drawLine(2, 2, getSize().width - 4, 2);
-        // left vertical
-        g.drawLine(1, 1, 1, getSize().height - 2);
-        g.drawLine(2, 2, 2, getSize().height - 4);
-        g.setColor(Color.black);        
-        g.setFont(fo1);
-        int by = getBaseLine(g.getFont(), buttonText);
-        drawCenteredString(g, buttonText, by);   
-    }    
-    public int getBaseLine(Font f, String s)
-    {   FontMetrics fm = getFontMetrics(f);
-        int charHeight = fm.getHeight() - 2 * fm.getDescent();
-        int by = 0;
-        int verSpace = getSize().height - charHeight;
-        if (verSpace > 0)
-            by = verSpace / 2 + charHeight;
-        else    
-            by = getSize().height;
-        return by;        
-    }    
-    public void drawCenteredString(Graphics g, String s, int by)
-    {   FontMetrics fm = getFontMetrics(g.getFont());
-        int bx = 0;
-        int horSpace = getSize().width - fm.stringWidth(s);
-        if (horSpace > 0)
-            bx = horSpace / 2;
-        g.drawString(s, bx, by);    
-    }    
-} // class LWButton   
-
-
-class DropButton extends Component
-{   // attributes
-    String buttonText;
-    Font fo1 = new Font("Helvetica", Font.PLAIN, 11);
-    FontMetrics fm = getFontMetrics(fo1);
-    int inset = 5;
-    int arrowWidth;
-    // constructor    
-    public DropButton(String s, int h)
-    {   buttonText = s;
-        arrowWidth = h - 2 * inset;
-        int width = inset + fm.stringWidth(buttonText) + inset +
-                    arrowWidth + inset;
-        setSize(width, h);
-    }    
-    public void setText(String s)
-    {   buttonText = s;
-        repaint();
-    }    
-    public void paint(Graphics g)
-    {   // background
-        g.setColor(Color.lightGray);
-        g.fillRect(0, 0, getSize().width, getSize().height);         
-        // outline        
-        g.setColor(Color.black);
-        g.drawRect(0, 0, getSize().width - 1, getSize().height - 1); 
-        // right vertical
-        g.drawLine(getSize().width - 2, 1, 
-                   getSize().width - 2, getSize().height - 2);
-        // bottom horizontal           
-        g.drawLine(1, getSize().height - 2, 
-                   getSize().width - 2, getSize().height - 2);
-        g.setColor(Color.white);                   
-        // top vertical
-        g.drawLine(1, 1, getSize().width - 2, 1);
-        g.drawLine(2, 2, getSize().width - 4, 2);
-        // left vertical
-        g.drawLine(1, 1, 1, getSize().height - 2);
-        g.drawLine(2, 2, 2, getSize().height - 4);
-        g.setColor(Color.black);        
-        // arrow
-        int numPoints = 3;
-        int[] xPoints = new int[3];
-        int[] yPoints = new int[3];
-        xPoints[0] = getSize().width - inset - arrowWidth;
-        yPoints[0] = inset;
-        xPoints[1] = getSize().width - inset;
-        yPoints[1] = inset;
-        xPoints[2] = getSize().width - inset - arrowWidth / 2;
-        yPoints[2] = getSize().height - inset;
-        Polygon p = new Polygon(xPoints, yPoints, numPoints);
-        g.fillPolygon(p);
-        
-        
-        g.setFont(fo1);
-        int bx = 5;
-        int by = getBaseLine(g.getFont(), buttonText);
-        g.drawString(buttonText, bx, by);   
-    }    
-    public int getBaseLine(Font f, String s)
-    {   FontMetrics fm = getFontMetrics(f);
-        int charHeight = fm.getHeight() - 2 * fm.getDescent();
-        int by = 0;
-        int verSpace = getSize().height - charHeight;
-        if (verSpace > 0)
-            by = verSpace / 2 + charHeight;
-        else    
-            by = getSize().height;
-        return by;        
-    }    
-} // class DropButton   
-
-
-/*
-class LWPopUp extends Container
-{   DrawingPanel parent;
-    String titel;
-    String[] items;
-    LWItem[] menuItems;
-    Font fo = new Font("Helvetica", Font.PLAIN, 11);    
-    FontMetrics fm = getFontMetrics(fo);
-    int inset = 3;
-    public LWPopUp(DrawingPanel p, String t, String[] its)
-    {   parent = p;
-        titel = t;
-        items = its;
-        menuItems = new LWItem[items.length];
-        setFont(fo);
-        setBackground(Color.lightGray);
-        int width = fm.stringWidth(titel) + 3 * inset;
-        for (int i = 0; i < items.length; i++)
-            width = Math.max(width,
-                        fm.stringWidth(items[i] + "  ") + 3 * inset);
-        int currentY = inset;
-        
-        LWItem lwItem;
-        
-//        lwItem.setBounds(inset, currentY, width - 2 * inset,
-//                         4 * fm.getHeight() / 3);
-//        add(lwItem);
-//        currentY += 2 * fm.getHeight() / 3;
-        
-        for (int j = 0; j < items.length; j++)
-        {   // look for separator
-            if (items[j].charAt(0) == '-')
-            {   items[j] = items[j].substring(1);
-                lwItem = new LWItem("");
-                lwItem.setBounds(inset, currentY, width - 2 * inset,
-                                 2 * fm.getHeight() / 3);
-                add(lwItem);
-                currentY += lwItem.getSize().height;
-            }
-            lwItem = new LWItem(items[j]);
-            menuItems[j] = lwItem;
-            lwItem.setBounds(inset, currentY, width - 2 * inset,
-                                 4 * fm.getHeight() / 3);
-            add(lwItem);
-            lwItem.addMouseListener(new ML());
-            currentY += lwItem.getSize().height;
-        }
-        setSize(width, currentY + inset);
-        
-    }
-
-    public void paint(Graphics g)
-    {   g.setColor(getBackground());
-        g.fillRect(0, 0, getSize().width, getSize().height);
-//        g.setColor(Color.white);
-        
-        g.setColor(Color.black);
-//        g.drawLine(0, 0, getSize().width - 1, 0);
-        g.drawLine(0, 0, 0, getSize(). height - 1);        
-//        g.setColor(Color.black);
-        g.drawLine(getSize().width - 1, 0, 
-                   getSize().width - 1, getSize(). height - 1);
-        g.drawLine(0, getSize(). height - 1, 
-                   getSize().width - 1, getSize(). height - 1);        
-        
-        super.paint(g);
-    }
-    public int findIndex(String s)
-    {   int index = 0;
-        for (int i = 0; i < items.length; i++)
-            if (items[i].equals(s))
-                index = i;
-        return index;
-    }    
-    
-    public void setCheckable(String s, boolean c)
-    {   int index = findIndex(s);
-        menuItems[index].checkable = c;
-    }    
-    
-    public void setCheckable(boolean b)
-    {   for (int i = 0; i < menuItems.length; i++)
-            menuItems[i].checkable = b;
-        
-    }    
-    
-    public void setChecked(String s, boolean c)
-    {   int index = findIndex(s);
-        if (menuItems[index].checkable)
-            menuItems[index].checked = c;
-    }    
-    
-    public void switchTo(String s)
-    {   int index = findIndex(s);
-        for (int i = 0; i < menuItems.length; i++)
-        {   if (i == index)
-                menuItems[i].checked = true;
-            else
-                menuItems[i].checked = false;            
-        }    
-    
-    }
-    public void setEnabled(int index, boolean b)
-    {   menuItems[index].enabled = b;
-    }
-    class ML extends MouseAdapter
-    {   public void mousePressed(MouseEvent e)
-        {   LWItem lwi = (LWItem) e.getComponent();
-            if (lwi.enabled)
-            {   lwi.selected = false;            
-                int i = findIndex(lwi.text);
-                switchTo(lwi.text);
-//parent.TICKSVISIBLE = true;
-                parent.setHelpPoints(i + 1);
-                parent.panel3D.remove(LWPopUp.this);
-                parent.panel3D.repaint();
-            }
-        }
-        public void mouseEntered(MouseEvent e)
-        {   LWItem lwi = (LWItem) e.getComponent();
-            if (lwi.enabled)
-            {   lwi.selected = true;
-                repaint();
-            }
-        }
-        public void mouseExited(MouseEvent e)
-        {   LWItem lwi = (LWItem) e.getComponent();
-            if (lwi.enabled)
-            {   lwi.selected = false;
-                repaint();
-            }
-        }
-    }    
-
-}
-*/
-
-class LWItem extends Component
-{   String text = "";
-    boolean selected = false;
-    boolean enabled = true;
-    boolean checkable = false;
-    boolean checked = false;
-    public LWItem(String t)
-    {   text = t;
-    }
-    public void paint(Graphics g)
-    {   if (selected)
-            g.setColor(Color.blue);
-        else
-            g.setColor(getParent().getBackground());
-        g.fillRect(0, 0, getSize().width, getSize().height);
-        if (selected)
-            g.setColor(Color.white);
-        else if (enabled)
-            g.setColor(Color.black);        
-        else 
-            g.setColor(new Color(232, 232, 232));        
-        g.setFont(getParent().getFont());
-        String cText = text;
-        if (checkable)
-        {   if (checked)
-                cText = "\u00BB " + cText;
-            else
-                cText = "  " + cText;
-        }    
-        int by = getBaseLine(g.getFont(), cText);
-        g.drawString(cText, 1, by);
-      
-    }
-    public int getBaseLine(Font f, String s)
-    {
-        FontMetrics fm = getFontMetrics(f);
-        int charHeight = fm.getHeight() - 2 * fm.getDescent();
-        int by = 0;
-        int verSpace = getSize().height - charHeight;
-        if (verSpace > 0)
-            by = verSpace / 2 + charHeight;
-        else
-            by = getSize().height;
-        return by;
-    }
-} // class LWItem

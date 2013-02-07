@@ -137,20 +137,27 @@ public static String testString = "";
         //if (gg != null)
         //    paint(getGraphics());
         //else
-            repaint();
+        
+        repaint();
+        
     }
     
     public void setBackground(Color c)
-    {	if(bordered) bgColor = Color.white;
-    	else bgColor = c;
+    {	if (bordered) 
+    		bgColor = Color.white;
+    	else 
+    		bgColor = c;
 	    super.setBackground(c);
 	}
     
     public void setBordered(boolean b)
     {	bordered = b;
-    	if(!b) bgColor = getBackground();
-    	else bgColor = Color.white;
-    	
+    	if (!b) 
+    		bgColor = getBackground();
+    	else 
+    		bgColor = Color.white;
+    
+    	repaint();
     }
     
     
@@ -220,7 +227,8 @@ public static String testString = "";
 		if (model == null)
 		{	// outline only
     	    g.setColor(Color.black);
-	        if (bordered) g.drawRect(0,0,getSize().width - 1, getSize().height - 1);
+	        if (bordered) 
+	        	g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 			return;
         }
         // set distance in view space
@@ -237,7 +245,7 @@ public static String testString = "";
         //g.setClip(0, 0, getSize().width, getSize().height);   
         // background
         g.setColor(bgColor);
-        g.fillRect(0,0,getSize().width, getSize().height);
+        g.fillRect(0, 0, getSize().width, getSize().height);
 
         g.setFont(vertexFont);
         if (previewModel == null)
@@ -272,7 +280,8 @@ public static String testString = "";
         }    
         // outline
         g.setColor(Color.gray);
-        if (bordered)g.drawRect(0,0,getSize().width-1, getSize().height-1 );
+        if (bordered)
+        	g.drawRect(0,0,getSize().width - 1, getSize().height - 1);
 /*        
 og.drawLine(0, getSize().height / 2, getSize().width - 1, getSize().height /2);
 og.drawLine(getSize().width / 2, 0, getSize().width / 2, getSize().height -1);

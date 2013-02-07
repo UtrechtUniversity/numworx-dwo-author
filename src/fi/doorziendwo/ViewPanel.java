@@ -23,7 +23,7 @@ import fi.beans.base64code.StringCodeObject;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel, ActionListener
+public class ViewPanel extends JLayeredPane implements ViewerIF, ActionListener
 {	
 	JButton startButton, opnieuwButton;
 	NewSlider vouwSlider;
@@ -76,11 +76,11 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 	public ViewPanel(int x, int y, int b, int h)
 	{	
 		setLayout(null);
-		setBounds(x,y,b,h);
+		setBounds(x, y, b, h);
 		//setOpaque(false);
-		if(images==null)
+		if (images == null)
 		{	images = new Hashtable();
-			DoorzienDWO.loadImages(images,imageNames);
+			DoorzienDWO.loadImages(images, imageNames);
 		}
 		
 		rotateOption = true;
@@ -90,7 +90,8 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		foldOption = false;
 		
 		theFont = getFont();
-		if(theFont==null) theFont = new Font("SansSerif",Font.PLAIN,12);
+		if (theFont == null) 
+			theFont = new Font("SansSerif",Font.PLAIN,12);
 		theFM = getFontMetrics(theFont);
 		
 		viewPanel3D = new Object3DContainer();
@@ -103,7 +104,7 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		
 		startButton = new JButton(new ImageIcon(getImage("tools.gif")));
 		//startButton.setBounds(b-theFM.stringWidth(startButton.getText())-50, h-20, theFM.stringWidth(startButton.getText())+50,20);
-		startButton.setBounds(b-35,h-35,32,32);
+		startButton.setBounds(b - 35, h - 35, 32, 32);
 		startButton.setOpaque(false);
 		startButton.setBorder(BorderFactory.createEmptyBorder());
 		setLayer((Component)startButton, JLayeredPane.PALETTE_LAYER.intValue());
@@ -112,25 +113,25 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		startButton.addActionListener(listener);
 		
 		opnieuwButton = new JButton(new ImageIcon(getImage("reseticon.gif")));
-		opnieuwButton.setBounds(b-23, 7, 15,16);
+		opnieuwButton.setBounds(b - 23, 7, 15, 16);
 		opnieuwButton.setOpaque(false);
 		opnieuwButton.setBorder(BorderFactory.createEmptyBorder());
-		setLayer((Component)opnieuwButton, JLayeredPane.PALETTE_LAYER.intValue());
+		setLayer((Component) opnieuwButton, JLayeredPane.PALETTE_LAYER.intValue());
 		add(opnieuwButton);
 		opnieuwButton.addActionListener(listener);
 		//opnieuwButton.setVisible(false);
 		
-		vouwSlider = new NewSlider(200,10);
-		vouwSlider.setLocation(b/2-105,h-14);
+		vouwSlider = new NewSlider(200, 10);
+		vouwSlider.setLocation(b / 2 - 105, h - 14);
 		vouwSlider.setOpaque(false);
-		setLayer((Component)vouwSlider, JLayeredPane.PALETTE_LAYER.intValue());
+		setLayer((Component) vouwSlider, JLayeredPane.PALETTE_LAYER.intValue());
 		vouwSlider.addActionListener(this);
 		vouwSlider.setVisible(false);
 		add(vouwSlider);
 	}
 	
 	public static Image getImage(String name)
-	{	return(Image)images.get(name);
+	{	return (Image)images.get(name);
 	}
 	
 	public void setApplet(DoorzienDWO d)
@@ -150,9 +151,12 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
     }
     
 	public void setBackground(Color c)
-    {	if(viewPanel3D!=null) viewPanel3D.setBackground(c);
-   		if(startButton!=null)startButton.setBackground(viewPanel3D.getBackground());
-   		if(opnieuwButton!=null)opnieuwButton.setBackground(viewPanel3D.getBackground());
+    {	if (viewPanel3D != null) 
+    		viewPanel3D.setBackground(c);
+   		if (startButton != null)
+   			startButton.setBackground(viewPanel3D.getBackground());
+   		if (opnieuwButton != null)
+   			opnieuwButton.setBackground(viewPanel3D.getBackground());
 	    super.setBackground(c);
 	}
 	
@@ -160,6 +164,7 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
     {	borderOption = b;
     	//if(!b)
 	    { 	viewPanel3D.setBordered(b);
+	    	viewPanel3D.repaint();
 	    }
 	}
 	
@@ -169,16 +174,49 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
     	opnieuwButton.setVisible(b);
 	}
 	
+	public void setDesignOption(boolean b)
+	{	designOption = b;
+		startButton.setVisible(designOption);
+	}
+	
+	public void setResetOption(boolean b)
+	{	resetOption = b;
+		opnieuwButton.setVisible(resetOption);
+	}
+	
+	public void setFoldOption(boolean b)
+	{
+		foldOption = b;
+		vouwSlider.setVisible(foldOption);
+	}
+	
 	public void setState(String s)
-	{	if(startFiguurString==null) startFiguurString = s;
+	{	
+//System.out.println("viewPanel setState");
+
+		if (startFiguurString == null) 
+			startFiguurString = s;
 		Object o = StringCodeObject.decodeStringToObject(s);
 		ScormedObject3D s3d = (ScormedObject3D) o;
 		scormedObject3D = s3d;
-		if(scormedObject3D!=null)showScormedObject3D();
+		if (scormedObject3D != null)
+		{	showScormedObject3D();
+//System.out.println("viewPanel showScormedObject3D");		
+		}
+		else
+		{
+//System.out.println("viewPanel showScormedObject3D == null");			
+		}
 	}
 	
 	public String getStateString()
-	{	scormedObject3D.mat = Matrix3D.copy(viewPanel3D.mat);
+	{	
+//System.out.println("getStateString");		
+		
+if (scormedObject3D == null)
+System.out.println("so = null");	
+		
+		scormedObject3D.mat = Matrix3D.copy(viewPanel3D.mat);
 		String s = StringCodeObject.encodeObjectToString(scormedObject3D);
 	    return s;
 	}
@@ -193,7 +231,11 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 	// laat het zien in de viewer
 	// merk op: het DoorzienFrame (en dus Panel3D) is hierna killed
 	public void getScormedObject3D()
-	{	// shortcut
+	{	
+		
+System.out.println("getScormedObject3D");		
+		
+		// shortcut
 		DrawingPanel dp = doorzienFrame.drawingPanel;
 
 		// dit moet je altijd doen!!
@@ -201,15 +243,17 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		scormedObject3D = new ScormedObject3D();
 		// drawingPanel main items
 		scormedObject3D.mode = dp.INERT;
-		if (dp.TICKNUM > 0)
+		if (DrawConstants.TICKNUM > 0)
 			dp.setHelpPoints(0);
 		scormedObject3D.theObjectGroup = dp.currentObjectGroup;
 		scormedObject3D.numLines = dp.numLines;
 		scormedObject3D.numPlanes = dp.numPlanes;
 		scormedObject3D.filled = dp.filled;
 		scormedObject3D.planesFilled = dp.planesFilled;
-		scormedObject3D.lengthFactor = dp.llFactor;
-		scormedObject3D.letters = dp.letters;
+		scormedObject3D.lengthFactor = DrawConstants.llFactor;
+		scormedObject3D.letters = DrawConstants.letters;
+
+System.out.println("scormedObject3D.letters " + scormedObject3D.letters);
 
 		// drawingPanel.panel3D items
 		scormedObject3D.projection = dp.panel3D.projection;
@@ -280,7 +324,11 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 	// in Doorzien terecht komt
 	// gebruik dit ook als je in het menu "mijn figuur" kiest
 	public void setScormedObject3D()
-	{	// shortcut
+	{	
+		
+System.out.println("setScormedObject3D");		
+		
+		// shortcut
 	
 		DrawingPanel dp = doorzienFrame.drawingPanel;
 
@@ -295,13 +343,13 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		dp.setNumLines(scormedObject3D.numLines);
 		// dit enabeld/disabled de knoppen
 		dp.setNumPlanes(scormedObject3D.numPlanes);
-		dp.llFactor = scormedObject3D.lengthFactor;
+		DrawConstants.llFactor = scormedObject3D.lengthFactor;
 		// dit betekent dat er zeker lijnen zijn!
-		if (dp.llFactor > 0)
+		if (DrawConstants.llFactor > 0)
 		{	//doorzienFrame.topToolBar.shortLinesButton.setImage(DoorzienDWO.shortLines);		
 			doorzienFrame.topToolBar.shortLinesButton.setImage(doorzienFrame.getImage("shortLines.gif"));		
 			doorzienFrame.topToolBar.shortLinesButton.enabled = true;
-            if (dp.llFactor >= (dp.MAXLLFACTOR - dp.LLSTEP / 10))
+            if (DrawConstants.llFactor >= (dp.MAXLLFACTOR - dp.LLSTEP / 10))
                 doorzienFrame.topToolBar.lengLinesButton.setOn(false);    
 
 		}
@@ -355,7 +403,7 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
        	doorzienFrame.helpBar.setText(doorzienFrame.tt("rotateText"));
 
 		dp.setLetters(scormedObject3D.letters);
-		if (dp.letters)
+		if (DrawConstants.letters)
 			doorzienFrame.setLetters();	
 
 		// override standard here
@@ -436,7 +484,11 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, InteractiePanel
 		viewPanel3D.paintType = scormedObject3D.paintType;					
 		viewPanel3D.showInside = scormedObject3D.showInside;							
 		viewPanel3D.setZoomFactor(scormedObject3D.zoomFactor);					
+		
+		DrawConstants.letters = scormedObject3D.letters;
+		
 		viewPanel3D.repaint();
+		
 		//rotateString = textTable.lookUp("rotateText");
 		
 		
@@ -556,187 +608,64 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 		
 	}
 	
-	// methodes interface InteractiePanel
-	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
-	{
-		String startFiguurString = null;
-		boolean rotateOption = true;
-		boolean borderOption = false;
-		boolean designOption = false;
-		boolean resetOption = false;
-		boolean foldOption = false;
-		
-		if(h.containsKey("startFiguurString")) startFiguurString = (String)h.get("startFiguurString");
-		if(h.containsKey("rotateOption")) rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
-		if(h.containsKey("borderOption")) borderOption = ((Boolean)h.get("borderOption")).booleanValue();
-		if(h.containsKey("designOption")) designOption = ((Boolean)h.get("designOption")).booleanValue();
-		if(h.containsKey("resetOption")) resetOption = ((Boolean)h.get("resetOption")).booleanValue();
-		if(h.containsKey("foldOption")) foldOption = ((Boolean)h.get("foldOption")).booleanValue();
-	    
-		this.startFiguurString = startFiguurString;
-		this.rotateOption = rotateOption;
-		this.borderOption = borderOption;
-		this.designOption = designOption;
-		this.resetOption = resetOption;
-		this.foldOption = foldOption;
-		
-		setState(startFiguurString);
-		setMouse(rotateOption);
-		setBordered(borderOption);
-		setChangeable(designOption);
-		opnieuwButton.setVisible(resetOption);
-		vouwSlider.setVisible(foldOption);
-	}
-	
+/*	
 	public void setState(Hashtable h)
 	{
 		String stateString = null;
 		
-		if(h.containsKey("stateString")) stateString = (String)h.get("stateString");
+		if (h.containsKey("stateString")) 
+			stateString = (String) h.get("stateString");
 		
 		setState(stateString);
 		
 	}
-	
-	public void setEditState(Hashtable h)
-	{
-		String startFiguurString = null;
-		boolean rotateOption = true;
-		boolean borderOption = false;
-		boolean designOption = false;
-		boolean resetOption = false;
-		boolean foldOption = false;
-		
-		if(h.containsKey("startFiguurString")) startFiguurString = (String)h.get("startFiguurString");
-		if(h.containsKey("rotateOption")) rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
-		if(h.containsKey("borderOption")) borderOption = ((Boolean)h.get("borderOption")).booleanValue();
-		if(h.containsKey("designOption")) designOption = ((Boolean)h.get("designOption")).booleanValue();
-		if(h.containsKey("resetOption")) resetOption = ((Boolean)h.get("resetOption")).booleanValue();
-		if(h.containsKey("foldOption")) foldOption = ((Boolean)h.get("foldOption")).booleanValue();
-	   
-		this.rotateOption = rotateOption;
-		this.borderOption = borderOption;
-		this.designOption = designOption;
-		this.resetOption = resetOption;
-		this.foldOption = foldOption;
-		
-		setState(startFiguurString);
-		setMouse(rotateOption);
-		setBordered(borderOption);
-		setChangeable(designOption);
-		opnieuwButton.setVisible(resetOption);
-		vouwSlider.setVisible(foldOption);
-		
-	}
-	
+*/	
 	public Hashtable getState()
 	{	
+		
+System.out.println("viewPanel getState");
+
 		String stateString = null;
 		
 		stateString = getStateString();
 		
 		Hashtable h = new Hashtable();
-		h.put("stateString", stateString);
+		
+		//h.put("stateString", stateString);
+		h.put("startFiguurString", stateString);
 		
 		return h;
 	
 	}
 	
-	public Hashtable getEditState()
-	{
-		String startFiguurString = null;
-		boolean rotateOption;
-		boolean borderOption;
-		boolean designOption;
-		boolean resetOption;
-		boolean foldOption;
-	    
-		startFiguurString = getStateString();
-		rotateOption = this.rotateOption;
-		borderOption = this.borderOption;
-		designOption = this.designOption;
-		resetOption = this.resetOption;
-		foldOption = this.foldOption;
-		
-	    Hashtable h = new Hashtable();
-		h.put("startFiguurString",startFiguurString);
-		h.put("rotateOption", new Boolean(rotateOption));
-		h.put("borderOption", new Boolean(borderOption));
-		h.put("designOption", new Boolean(designOption));
-		h.put("resetOption", new Boolean(resetOption));
-		h.put("foldOption", new Boolean(foldOption));
-		
-		return h;
-	}
-	
-	public InteractieEditPanel getEditPanel(){return new DoorzienInteractieEditPanel();}
-		
 	public void setBounds(int x, int y, int b, int h)
-	{	if(viewPanel3D!=null) 
+	{	if (viewPanel3D != null) 
 		{	viewPanel3D.setBounds(0, 0, b, h);
 			viewPanel3D.resetModel();
 		}
-		if(startButton!=null)startButton.setBounds(b-35,h-35,32,32);
-		if(opnieuwButton!=null)opnieuwButton.setBounds(b-22, 7, 15,16);
+		if (startButton != null)
+			startButton.setBounds(b - 35, h - 35, 32, 32);
+		if (opnieuwButton != null)
+			opnieuwButton.setBounds(b - 22, 7, 15, 16);
 		
-		if(vouwSlider!=null)
-		{	int lengte = Math.min(200, b-70);
+		if (vouwSlider != null)
+		{	int lengte = Math.min(200, b - 70);
 			vouwSlider.zetLengte(lengte);
-			vouwSlider.setLocation((b-lengte-10)/2, h-14);
+			vouwSlider.setLocation((b - lengte - 10) / 2, h - 14);
 		}
 		
-		super.setBounds(x,y,b,h);
+		super.setBounds(x, y, b, h);
 	}
 	
-	public void wis(){}
-	
-	public void zetMaat(){}
-	
-	public int geefAsHoogte(){return 0;}
-	
-	public int getIpId(){return 0;}
-	
-	public String getIpExpString(){return null;}
-	
-	public int getScore(){return 0;}
-	
-	public int getScoreMax(){return 0;}
-	
-	public boolean isCorrect(){return true;}
-	
-	public boolean isFout(){return false;}
-	
-	public void zetMode(int mode){}
-	
-	public void zetNagekeken(boolean b){}
-	
-    public void stop(){}
-    
-    public void start(){}
-    
-    public void destroy(){}
-    
-    public void opnieuw(){}
-    
-    public void kijkNa(){}
-    
-    public void kijkNa(int stapNr){}
-    
-    public void addActionListener(ActionListener al){}
     
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==vouwSlider && scormedObject3D.mode == FOLDOUT)
+		if (e.getSource() == vouwSlider && scormedObject3D.mode == FOLDOUT)
 		{
-			double vouwPerc = (double)vouwSlider.geefStand()/(double)vouwSlider.geeflengte();
+			double vouwPerc = (double) vouwSlider.geefStand() / (double) vouwSlider.geeflengte();
 			processSlider(vouwPerc);
 		}
 	}
-	
-	public void zetBreedte(int b){}
-	
-	public void zetHoogte(int h){}
-	
 	
 	
 	class AL implements ActionListener
@@ -759,7 +688,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 				
 					
              }
-             if (!frameStarted && e.getSource()==opnieuwButton)
+             if (!frameStarted && e.getSource() == opnieuwButton)
 			 {	setState(startFiguurString);
 			 }
 	    }    
@@ -930,10 +859,6 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 			setStartFacetCopy(viewGroup3D);            
             
 //System.out.println("new from = " + startFacetCopy.unitNormal.toString());                        
-
-
-
-// ook (tijdelijk) parallele projectie??
 
             // zet slider op 100% (maakt maximale foldout)
             

@@ -88,30 +88,38 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	public static int startWidth = 780;
 	public static int startHeight = 480;
 	
+    // versions
+    public static final int EPN = 0;
+    public static final int FI = 1;
+    public static int version = EPN;
+	
+	
 	int offSet = 15;
 
 	Font theFont;
 	FontMetrics theFM;
 	
 	// viewers
-	ViewPanel viewPanel,viewPanelExample;
+	ViewPanel viewPanel, viewPanelExample;
 	
 	public DoorzienDWO()
 	{	textTable = new Table("nl");
 		applet = this;
+		
 	}
 	
 	public DoorzienDWO(Locale lang)
 	{	textTable = new Table(lang.toString());
 		applet = this;
+		
 	}
 	
 	public void init()
 	{   defaultParamValues = makeDefaultParamValues(0);
 		String launchDataString = super.getParameter("launchData");
-		if(launchDataString!=null)
+		if (launchDataString != null)
 		{	Object o = StringCodeObject.decodeStringToObject(launchDataString);
-			launchData = (Hashtable)o;
+			launchData = (Hashtable) o;
 		}
 		
 			
@@ -189,21 +197,22 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 		
 		epnLogo = au.getImage("resources/EPNlogo.gif");	    																				
 		*/
-		Color bgcolor = new Color(230,240,255);
-			String kleurcode = getParameter("bgcolor");
-			if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
-			getContentPane().setBackground(bgcolor);
+		Color bgcolor = new Color(230, 240, 255);
+		String kleurcode = getParameter("bgcolor");
+		if (kleurcode != null)
+			bgcolor = new Color(Integer.parseInt(kleurcode.substring(1), 16));
+		getContentPane().setBackground(bgcolor);
 		
-		if(getParent() instanceof ScormEditMainFrame)
+		if (getParent() instanceof ScormEditMainFrame)
 		{	scormEditComponent = getEditComponent(defaultParamValues);
 			((ScormEditMainFrame)getParent()).setScormEditComponent(scormEditComponent);
-			getContentPane().add(scormEditComponent.getComponent(),0);
-			scormEditComponent.getComponent().setSize(getSize().width,getSize().height);
+			getContentPane().add(scormEditComponent.getComponent(), 0);
+			scormEditComponent.getComponent().setSize(getSize().width, getSize().height);
 			
 		} 
 		else
 		{	
-			viewPanel = new ViewPanel(300,15,startWidth-315,startHeight-65);
+			viewPanel = new ViewPanel(300, 15, startWidth - 315, startHeight - 65);
 			viewPanel.setApplet(this);
 			viewPanel.setBackground(getBackground());
 			getContentPane().add(viewPanel);
@@ -213,14 +222,16 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 			
 			boolean example = false;
 			String exampleString = getParameter("example");
-			if(exampleString!=null && exampleString.equals("true")) example = true;
+			if (exampleString != null && exampleString.equals("true")) 
+				example = true;
 			
 			boolean draaibaar = false;
 			String draaibaarString = getParameter("draaibaar");
-			if(draaibaarString!=null && draaibaarString.equals("true")) draaibaar = true;
+			if (draaibaarString != null && draaibaarString.equals("true")) 
+				draaibaar = true;
 			
-			if(example)
-			{	viewPanelExample = new ViewPanel(15,15,260,200);
+			if (example)
+			{	viewPanelExample = new ViewPanel(15, 15, 260, 200);
 				getContentPane().add(viewPanelExample);
 				viewPanelExample.setApplet(this);
 				viewPanelExample.setBordered(false);
@@ -233,8 +244,10 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 			}
 			
 			tekstArea = new TekstArea();
-			if(example) tekstArea.setBounds(15,230,280,250);
-			else tekstArea.setBounds(15,15,280,250);
+			if (example) 
+				tekstArea.setBounds(15,230,280,250);
+			else 
+				tekstArea.setBounds(15,15,280,250);
 			tekstArea.setText(getParameter("tekst"));		
 			getContentPane().add(tekstArea);
 			tekstArea.resize();	
@@ -245,20 +258,25 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 			//else uitleg = au.getImage("resources/help_en.gif");
 			uitleg = au.getImage("resources/help.gif");
 			MediaTracker tr = new MediaTracker(this);
-			tr.addImage(uitleg,0);
-			try{tr.waitForAll();} 
+			tr.addImage(uitleg, 0);
+			try
+			{	tr.waitForAll();
+			} 
 			catch(Exception e) {}
-			UitlegButton uitlegButton = new UitlegButton(Table.lookUp("uitlegButtonViewerText"),uitleg);
-			uitlegButton.setBounds(630,getSize().height-30,90,20);
+			
+			UitlegButton uitlegButton = new UitlegButton(Table.lookUp("uitlegButtonViewerText"), uitleg);
+			uitlegButton.setBounds(630, getSize().height - 30, 90, 20);
 			uitlegButton.setFrameBackground(getBackground());
-			getContentPane().add(uitlegButton,0);
+			getContentPane().add(uitlegButton, 0);
 		}
-	}
+	} // init
 	
 	public void setBackground(Color c)
 	{
-		if(viewPanel!=null)viewPanel.setBackground(c);
-		if(viewPanelExample!=null)viewPanelExample.setBackground(c);
+		if (viewPanel != null)
+			viewPanel.setBackground(c);
+		if (viewPanelExample != null)
+			viewPanelExample.setBackground(c);
 		super.setBackground(c);
 		
 	}
@@ -267,12 +285,16 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	{	//AppletUtil au = new AppletUtil(applet);
 		MediaTracker tr = new MediaTracker(applet);
 		Image[] image = new Image[imageNames.length];
-		for(int i=0 ; i<imageNames.length ; i++)
+		for (int i = 0; i < imageNames.length; i++)
 		{	image[i] = makeImage("resources/" + imageNames[i]);
 			tr.addImage(image[i], 0);
 		}
-		try{tr.waitForAll();} catch(Exception e) {};
-		for(int i=0 ; i<imageNames.length ; i++)
+		try 
+		{	tr.waitForAll();
+		}
+		catch(Exception e) {};
+		
+		for (int i = 0; i < imageNames.length; i++)
 		{	images.put(imageNames[i], image[i]);
 		}
 		
@@ -284,19 +306,22 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 		{
 		    InputStream in = applet.getClass().getResourceAsStream(resourceName);
 		    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		     buffer = new byte[1024]; 
+		    buffer = new byte[1024]; 
 		    int len;
-		    do { 
-			len = in.read(buffer);
+		    do 
+		    { 
+		    	len = in.read(buffer);
 	//System.out.println("read " + len);
-		        if(len > 0) bos.write(buffer, 0, len);
+		        if(len > 0) 
+		        	bos.write(buffer, 0, len);
 		    }
-		    while(len > 0);
+		    while (len > 0);
 		    buffer = bos.toByteArray();
 		    in.close();
 		    bos.close();
 		    	    
-		}  catch(Exception e)
+		}  
+		catch(Exception e)
 		{   e.printStackTrace();
 		    return null;
 		}
@@ -305,11 +330,17 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	
 	public InteractiePanel getInteractiePanel()
 	{
-		ViewPanel viewPanel = new ViewPanel(0,0,500,500);
+		
+/*		
+		ViewPanel viewPanel = new ViewPanel(0, 0, 500, 500);
 		String editModeState = "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";
 		
 		viewPanel.setState(editModeState);
+		
 		return viewPanel;
+*/		
+		
+		return new DoorzienInteractiePanel();
 	}
 
 	//public void update(Graphics g)
@@ -379,16 +410,19 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	public String getSessionTime()
 	{	long sessionTime = System.currentTimeMillis() - sessionStartTime;
 		String s = "";
-		int hours = (int)sessionTime/3600000;
-		int minutes = (int)sessionTime/60000 - hours*60;
-		int seconds = (int)sessionTime/1000 - hours*3600 - minutes*60;
-		if(hours<10)s += "0";
+		int hours = (int) sessionTime / 3600000;
+		int minutes = (int) sessionTime / 60000 - hours * 60;
+		int seconds = (int) sessionTime / 1000 - hours * 3600 - minutes * 60;
+		if (hours < 10) 
+			s += "0";
 		s += hours;
 		s += ":";
-		if(minutes<10)s += "0";
+		if (minutes < 10)
+			s += "0";
 		s += minutes;
 		s += ":";
-		if(seconds<10)s += "0";
+		if (seconds < 10)
+			s += "0";
 		s += seconds;
 		return s;
 	}
@@ -413,9 +447,12 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	
 	public String getParameter(String name)
 	{	String value = null;
-		if(launchData!=null)value = (String)launchData.get(name);
-		if(value==null)	value = super.getParameter(name);
-		if(value==null) value = (String)defaultParamValues.get(name);
+		if (launchData != null)
+			value = (String) launchData.get(name);
+		if (value == null)	
+			value = super.getParameter(name);
+		if (value == null) 
+			value = (String) defaultParamValues.get(name);
 		return value;
 	}
 

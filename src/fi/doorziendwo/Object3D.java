@@ -2841,7 +2841,7 @@ class ObjectWithPoint extends ObjectGroup3D
                      origObjectGroup.diameter, false);
         
 // RESTRICTIE EPN
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
     hideNonOrigVertices();
 // EINDE RESTRICTIE epn
 // alleen EPN?
@@ -2983,7 +2983,7 @@ inheritTickMarks();
 
 
 // RESTRICTIE EPN
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
     hideNonOrigVertices();
 // EINDE RESTRICTIE epn
 // alleen EPN?
@@ -3005,14 +3005,14 @@ inheritTickMarks();
             {
                 
 // for EPN, unhide points on a line/plane intersection                
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
 {
     for (int vCnt = 0; vCnt < replacement.facets[i].numPoints; vCnt++)
     {   if ((replacement.facets[i].vertexLabels[vCnt] != null) &&
              replacement.facets[i].vertexLabels[vCnt].equals("XX")
            )
            if (!filled)// & cutFilled)
-               replacement.facets[i].vertexCodes[vCnt] = DrawingPanel.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
+               replacement.facets[i].vertexCodes[vCnt] = DrawConstants.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
 //           else if (!filled & !cutFilled)
 //               replacement.facets[i].vertexCodes[vCnt] = -1;
     }    
@@ -3024,7 +3024,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     if (replacement.facets[i].numPoints > 2)
                     {   if (filled)
                         {   replacement.facets[i].filled = filled;
-                            replacement.facets[i].color = DrawingPanel.objectColor;
+                            replacement.facets[i].color = DrawConstants.objectColor;
                         }
                         else // surrounding object will not be filled    
                         {   if (cutFilled)
@@ -3052,11 +3052,11 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                                 {
 //System.out.println("replaces orig");                                                        
                                     replacement.facets[i].filled = true;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                                 else
                                 {   replacement.facets[i].filled = false;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                             }    
                             else
@@ -3073,7 +3073,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     else // surrounding object will not be filled    
                     {   replacement.facets[i].visible = true;
                         if (cutFilled)
-                        {   replacement.facets[i].color = DrawingPanel.planeColor; 
+                        {   replacement.facets[i].color = DrawConstants.planeColor; 
                             replacement.facets[i].filled = true; // testing filled cuts
 //System.out.println("replaces cut");                                                                                    
                         }
@@ -3200,7 +3200,7 @@ return null;
 
     public void inheritTickMarks()
     {   // nothing to do
-        if (DrawingPanel.TICKNUM == 0)
+        if (DrawConstants.TICKNUM == 0)
             return; 
         for (int fCnt = 0; fCnt < replacement.numFacets; fCnt++)
         {   Facet3D repF = replacement.facets[fCnt];
@@ -3808,7 +3808,7 @@ class ObjectWithLine extends ObjectGroup3D
                         rep.facets[j].vertexCodes[pCnt] = -1;                         
                     else
                         // vertex inside and on  a cut, hide
-                        rep.facets[j].vertexCodes[pCnt] = DrawingPanel.lineColorIndex + 10;     
+                        rep.facets[j].vertexCodes[pCnt] = DrawConstants.lineColorIndex + 10;     
 //System.out.println("inside");                                    
                 }   // inside 
                 
@@ -4037,7 +4037,7 @@ for (int i = 0; i < origObjectGroup.numFacets; i++)
                     if (edgeContains0)                    
                         segFacet.vertexCodes[0] = -1;
                     else // "isolated vertex" inner point of an outer facet
-                        segFacet.vertexCodes[0] = DrawingPanel.pointColorIndex;
+                        segFacet.vertexCodes[0] = DrawConstants.pointColorIndex;
                 
                 
                 }
@@ -4072,7 +4072,7 @@ for (int i = 0; i < origObjectGroup.numFacets; i++)
                     if (edgeContains1)                    
                         segFacet.vertexCodes[1] = -1;
                     else    // "isolated vertex" on inside of outer facet
-                        segFacet.vertexCodes[1] = DrawingPanel.pointColorIndex;
+                        segFacet.vertexCodes[1] = DrawConstants.pointColorIndex;
                 }
                 else  // inner vertex  
                 {    segFacet.vertexCodes[1] = lineColorIndex + Facet3D.HIDDENSHIFT;                
@@ -4262,7 +4262,7 @@ System.out.println(" owl-rep-v = " + replacement.numVertices +
                      origObjectGroup.diameter, false);
 
 // RESTRICTIE EPN
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
     hideNonOrigVertices();
 // EINDE RESTRICTIE epn
 // alleen voor EPN
@@ -4495,7 +4495,7 @@ return null;
     
     public void inheritTickMarks()
     {   // nothing to do
-        if (DrawingPanel.TICKNUM == 0)
+        if (DrawConstants.TICKNUM == 0)
             return; 
         for (int fCnt = 0; fCnt < replacement.numFacets; fCnt++)
         {   Facet3D repF = replacement.facets[fCnt];
@@ -4683,14 +4683,14 @@ return null;
             {
                 
 // for EPN, unhide points on a line/plane intersection                
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
 {
     for (int vCnt = 0; vCnt < replacement.facets[i].numPoints; vCnt++)
     {   if ((replacement.facets[i].vertexLabels[vCnt] != null) &&
              replacement.facets[i].vertexLabels[vCnt].equals("XX")
            )
            if (!filled)// & cutFilled)
-               replacement.facets[i].vertexCodes[vCnt] = DrawingPanel.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
+               replacement.facets[i].vertexCodes[vCnt] = DrawConstants.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
 //           else if (!filled & !cutFilled)
 //               replacement.facets[i].vertexCodes[vCnt] = -1;
     }    
@@ -4702,7 +4702,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     if (replacement.facets[i].numPoints > 2)
                     {   if (filled)
                         {   replacement.facets[i].filled = filled;
-                            replacement.facets[i].color = DrawingPanel.objectColor;
+                            replacement.facets[i].color = DrawConstants.objectColor;
                         }
                         else // surrounding object will not be filled    
                         {   if (cutFilled)
@@ -4730,11 +4730,11 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                                 {
 //System.out.println("replaces orig");                                                        
                                     replacement.facets[i].filled = true;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                                 else
                                 {   replacement.facets[i].filled = false;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                             }    
                             else
@@ -4752,7 +4752,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     {   replacement.facets[i].visible = true;
                         if (cutFilled)
                         {   replacement.facets[i].filled = true; // testing filled cuts
-                            replacement.facets[i].color = DrawingPanel.planeColor;
+                            replacement.facets[i].color = DrawConstants.planeColor;
                         }
                         else    
                             replacement.facets[i].filled = false;            
@@ -5371,7 +5371,7 @@ for (int k = 0; k < replacement.numFacets; k++)
                          repFacet.vertexCodes[pCnt] = facet.vertexCodes[index];
                      else
                      {   if ((facet.vertexCodes[index] % Facet3D.HIDDENSHIFT) ==
-                             DrawingPanel.lineColorIndex)
+                             DrawConstants.lineColorIndex)
                              repFacet.vertexCodes[pCnt] = facet.vertexCodes[index];
                          else    
                              repFacet.vertexCodes[pCnt] = planeColorIndex;
@@ -5387,7 +5387,7 @@ for (int k = 0; k < replacement.numFacets; k++)
 //System.out.println("index < 0");                                                
                     // a segment was cut
                     if (repFacet.numPoints == 2)
-                        repFacet.vertexCodes[pCnt] = DrawingPanel.lineColorIndex +
+                        repFacet.vertexCodes[pCnt] = DrawConstants.lineColorIndex +
                                                      Facet3D.HIDDENSHIFT;
                     else
                     {   
@@ -5399,8 +5399,8 @@ for (int k = 0; k < replacement.numFacets; k++)
                         if (eIndex >= 0)
                         {   
 //System.out.println("eIndex >= 0");                            
-                            if (facet.edgeCodes[eIndex] == DrawingPanel.lineColorIndex)
-                                repFacet.vertexCodes[pCnt] = DrawingPanel.lineColorIndex;
+                            if (facet.edgeCodes[eIndex] == DrawConstants.lineColorIndex)
+                                repFacet.vertexCodes[pCnt] = DrawConstants.lineColorIndex;
                             else    
                                 repFacet.vertexCodes[pCnt] = planeColorIndex;
                         }    
@@ -5448,7 +5448,7 @@ for (int k = 0; k < replacement.numFacets; k++)
                         }
                     }
                     if (isOnLine)                    
-                        repFacet.edgeCodes[pCnt] = DrawingPanel.lineColorIndex;                    
+                        repFacet.edgeCodes[pCnt] = DrawConstants.lineColorIndex;                    
                     else
                         repFacet.edgeCodes[pCnt] = planeColorIndex;
                 
@@ -5534,7 +5534,7 @@ repCut++;
                         }                        
                         if (isOnLine)
                             replacement.facets[i].edgeCodes[j] = 
-                                DrawingPanel.lineColorIndex + Facet3D.HIDDENSHIFT;
+                                DrawConstants.lineColorIndex + Facet3D.HIDDENSHIFT;
                         else
                             replacement.facets[i].edgeCodes[j] = 
                                 planeColorIndex + Facet3D.HIDDENSHIFT;
@@ -5679,10 +5679,10 @@ else // no label
                     finalCutInds[k] = newInds[k];
                     
                 Facet3D cutFacet = new Facet3D(cut.vertices, 
-                    finalCutInds, DrawingPanel.planeColor);
+                    finalCutInds, DrawConstants.planeColor);
                 Facet3D.copyAttributes(leftFacet, cutFacet, false);
                 // override!!
-                cutFacet.color = DrawingPanel.planeColor;
+                cutFacet.color = DrawConstants.planeColor;
                 
                 for (int i = 0; i < cutFacet.numPoints; i++)
                     cutFacet.vertexCodes[i] = - 1; //DrawingPanel.planeOutlineColorIndex;
@@ -5759,7 +5759,7 @@ else // no label
 //System.out.println("before recut facets = " + cut.numFacets);            
 
 
-                        cut = cutWithLine(cut, li, DrawingPanel.lineColorIndex);
+                        cut = cutWithLine(cut, li, DrawConstants.lineColorIndex);
                         
 //System.out.println("after recut facets = " + cut.numFacets);                                    
                         
@@ -5882,7 +5882,7 @@ else // no label
                      
 //System.out.println("os = " + objects.size());        
 // RESTRICTIE EPN
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
     hideNonOrigVertices();
 // EINDE RESTRICTIE epn
 // alleen voor EPN?
@@ -6144,7 +6144,7 @@ return null;
 
     public void inheritTickMarks()
     {   // nothing to do
-        if (DrawingPanel.TICKNUM == 0)
+        if (DrawConstants.TICKNUM == 0)
             return; 
         for (int fCnt = 0; fCnt < replacement.numFacets; fCnt++)
         {   Facet3D repF = replacement.facets[fCnt];
@@ -6301,14 +6301,14 @@ return null;
             {
                 
 // for EPN, unhide points on a line/plane intersection                
-if (DoorzienFrame.version == DoorzienFrame.EPN)
+if (DoorzienDWO.version == DoorzienDWO.EPN)
 {
     for (int vCnt = 0; vCnt < replacement.facets[i].numPoints; vCnt++)
     {   if ((replacement.facets[i].vertexLabels[vCnt] != null) &&
              replacement.facets[i].vertexLabels[vCnt].equals("XX")
            )
            if (!filled)// & cutFilled)
-               replacement.facets[i].vertexCodes[vCnt] = DrawingPanel.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
+               replacement.facets[i].vertexCodes[vCnt] = DrawConstants.planeOutlineColorIndex + Facet3D.HIDDENSHIFT;
 //           else if (!filled & !cutFilled)
 //               replacement.facets[i].vertexCodes[vCnt] = -1;
     }    
@@ -6320,7 +6320,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     if (replacement.facets[i].numPoints > 2)
                     {   if (filled)
                         {   replacement.facets[i].filled = filled;
-                            replacement.facets[i].color = DrawingPanel.objectColor;
+                            replacement.facets[i].color = DrawConstants.objectColor;
                         }
                         else // surrounding object will not be filled    
                         {   if (cutFilled)
@@ -6348,11 +6348,11 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                                 {
 //System.out.println("replaces orig");                                                        
                                     replacement.facets[i].filled = true;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                                 else
                                 {   replacement.facets[i].filled = false;
-                                    replacement.facets[i].color = DrawingPanel.planeColor;
+                                    replacement.facets[i].color = DrawConstants.planeColor;
                                 }
                             }    
                             else
@@ -6369,7 +6369,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     else // surrounding object will not be filled    
                     {   replacement.facets[i].visible = true;
                         if (cutFilled)
-                        {   replacement.facets[i].color = DrawingPanel.planeColor; 
+                        {   replacement.facets[i].color = DrawConstants.planeColor; 
                             replacement.facets[i].filled = true; // testing filled cuts
 //System.out.println("replaces cut");                                                                                    
                         }
@@ -6408,7 +6408,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                 if (cutFilled)
                 {   
 //System.out.println("isCut");                    
-                    cut.facets[j].color = DrawingPanel.planeColor;
+                    cut.facets[j].color = DrawConstants.planeColor;
                     cut.facets[j].filled = true; // testing filled cuts
                 }    
                 else    
@@ -6864,7 +6864,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     // update not outlined
                     for (int m = 0; m < cutFacet.numPoints; m++)
                     {    if (cutFacet.edgeCodes[m] < 0)
-                            cutFacet.edgeCodes[m] = DrawingPanel.planeOutlineColorIndex + 40;
+                            cutFacet.edgeCodes[m] = DrawConstants.planeOutlineColorIndex + 40;
                          // override color through normal   
                          else if ((cutFacet.edgeCodes[m] >= 0) && (cutFacet.edgeCodes[m] < 10))     
                             cutFacet.edgeCodes[m] += 40;
@@ -7086,11 +7086,11 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     int[] inds = new int[owp.facets[i].numPoints];
                     for (int k = 0; k < owp.facets[i].numPoints; k++)
                         inds[k] = k + firstIndex;
-                    Facet3D rightCutFacet = new Facet3D(right.vertices, inds, DrawingPanel.objectColor);
+                    Facet3D rightCutFacet = new Facet3D(right.vertices, inds, DrawConstants.objectColor);
                     right.addFacet(rightCutFacet);
                     Facet3D.copyAttributes(owp.facets[i], rightCutFacet, false);
                     // update cut colors and not outlined
-                    rightCutFacet.color = DrawingPanel.objectColor;                    
+                    rightCutFacet.color = DrawConstants.objectColor;                    
                     // note: there is only one cut!
                     for (int m = 0; m < rightCutFacet.numPoints; m++)
                         rightCutFacet.edgeCodes[m] = 0;
@@ -7102,10 +7102,10 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     inds = new int[owp.facets[i].numPoints];
                     for (int k = 0; k < owp.facets[i].numPoints; k++)
                         inds[k] = k + firstIndex;
-                    Facet3D leftCutFacet = new Facet3D(left.vertices, inds, DrawingPanel.objectColor);
+                    Facet3D leftCutFacet = new Facet3D(left.vertices, inds, DrawConstants.objectColor);
                     left.addFacet(leftCutFacet);
                     Facet3D.copyAttributes(owp.facets[i], leftCutFacet, false);
-                    leftCutFacet.color = DrawingPanel.objectColor;
+                    leftCutFacet.color = DrawConstants.objectColor;
                     for (int m = 0; m < leftCutFacet.numPoints; m++)
                         leftCutFacet.edgeCodes[m] = 0;
                     
@@ -7480,7 +7480,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
                     pl.support, 
                     Vector3D.plus(pl.support, pl.direction1),
                     Vector3D.plus(pl.support, pl.direction2), 
-                    DrawingPanel.planeOutlineColorIndex, true);    
+                    DrawConstants.planeOutlineColorIndex, true);    
                 // replacement made    
                 if (tempStartGroup.objects.size() > 1)    
                 {   startGroup = tempStartGroup;
@@ -7491,7 +7491,7 @@ if (DoorzienFrame.version == DoorzienFrame.EPN)
             {   Line3D li = (Line3D) ob;
                 ObjectGroup3D tempStartGroup = new ObjectWithLine(startGroup, 
                     li.point1, li.point2,
-                    DrawingPanel.lineColorIndex, DrawingPanel.llFactor);    
+                    DrawConstants.lineColorIndex, DrawConstants.llFactor);    
                 // replacement made    
                 if (tempStartGroup.objects.size() > 1)    
                 {   startGroup = tempStartGroup;

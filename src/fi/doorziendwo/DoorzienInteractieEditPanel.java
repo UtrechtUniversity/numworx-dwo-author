@@ -3,6 +3,7 @@ package fi.doorziendwo;
 import java.awt.Button;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -14,53 +15,225 @@ import fi.beans.wiskopdrbeans.*;
 
 public class DoorzienInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener
 {
-	ViewPanel viewPanel;
-	private Font ifFont = new Font("SansSerif",Font.PLAIN,12);
 	
-	private JCheckBox rotateOptionCB;
-	private JCheckBox borderOptionCB;
-	private JCheckBox designOptionCB;
-	private JCheckBox resetOptionCB;
-	private JCheckBox foldOptionCB;
+	int editWidth = 190;
+	int editHeight = 500; 
+	int dzipBreedte = 500; // startbreedte DoorzienInteractiePanel
+	int dzipHoogte = 450; // starthoogte DoorzienInteractiePanel
 	
-	private boolean rotateOption;
-	private boolean borderOption;
-	private boolean designOption;
-	private boolean resetOption;
-	private boolean foldOption;
+	Font theFont;
+	FontMetrics theFM;
+	Font theBoldFont;
+	FontMetrics theBoldFM;
 	
+	int offset = 10;
+	boolean componentsCreated = false;
+	
+	boolean noSetBounds = false;	
+
+	DoorzienInteractiePanel dzip;
+	
+	JLabel modusLabel, viewerOptiesLabel, doorzienOptiesLabel;
+	JRadioButton viewerRadioButton, doorzienRadioButton;
+	ButtonGroup modusGroup;
+	
+	// viewer
+	JCheckBox rotateOptionCB, borderOptionCB, designOptionCB, resetOptionCB, foldOptionCB;
+	// doorzien
+	JCheckBox demoOptieCB, 
+			  figurenMenuOptieCB, optiesMenuOptieCB, helpBarOptieCB, 
+			  lijnTekenOptieCB, lijnVerlengOptieCB,
+			  vlakTekenOptieCB, evenwijdigVlakOptieCB, toonDoorsnedeOptieCB, splitsFiguurOptieCB, 
+			  bouwplaatOptieCB;
+	
+	;
+	
+	boolean viewerModus = true;
+	
+	// defaults at startup
+	// worden niet gewijzigd
+	// viewer
+	boolean rotateOption = true;
+	boolean borderOption = false;
+	boolean designOption = false;
+	boolean resetOption = false;
+	boolean foldOption = false;
+
+	// doorzien
+	boolean demo = false;
+	
+	boolean figurenMenuOptie = true;
+	boolean optiesMenuOptie = true;
+	boolean helpBarOptie = true;
+	
+	boolean lijnTekenOptie = true;
+	boolean lijnVerlengOptie = true;
+	
+	boolean vlakTekenOptie = true;
+	boolean evenwijdigVlakOptie = true;
+	boolean toonDoorsnedeOptie = true;
+	boolean splitsFiguurOptie = true;
+	
+	boolean bouwplaatOptie = true;
 	
 	
 	
 	public DoorzienInteractieEditPanel()
 	{
-		this(0,0,250,250);
-	}
+		this(0, 0, 250, 250);
+		
+	}	
 	public DoorzienInteractieEditPanel(int x, int y, int b, int h)
 	{	
 		setLayout(null);
+	
+		dzip = new DoorzienInteractiePanel();
+		add(dzip);
 		
-		rotateOption = true;
-		borderOption = false;
-		designOption = false;
-		resetOption = false;
-		foldOption = false;
+		theFont = new Font("Dialog", Font.PLAIN, 12);
+		theFM = getFontMetrics(theFont);
+		theBoldFont = new Font("Dialog", Font.BOLD, 12);
+		theBoldFM = getFontMetrics(theBoldFont);
 		
-		viewPanel = new ViewPanel(15,15,360,360);
-		add(viewPanel);
-		viewPanel.setBordered(borderOption);
-		viewPanel.setMouse(rotateOption);
-		viewPanel.setChangeable(designOption);	
-		viewPanel.setBackground(getBackground());
+		int width = editWidth - 2 * offset;
+		int height = theFM.getHeight(); //3 * theFM.getHeight() / 2;
+		int height2 = 3 * theBoldFM.getHeight() / 2;
+		int currentX = dzip.getSize().width + offset;
+		int currentY = offset / 2;
 		
-		String editModeState = "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";
-		viewPanel.setState(editModeState);
+		modusLabel = new JLabel(Table.lookUp("EditPanel_modus"));
+		modusLabel.setFont(theBoldFont);
+		modusLabel.setBackground(getBackground());
+		modusLabel.setBounds(currentX, currentY, width, height2);
+		add(modusLabel);
 		
-		rotateOptionCB = maakCheckBox(Table.lookUp("EditPanel_draaibaar"), 600,30,180,20, rotateOption);
-		borderOptionCB = maakCheckBox(Table.lookUp("EditPanel_Rand"), 600,60,180,20, borderOption);
-		designOptionCB = maakCheckBox(Table.lookUp("EditPanel_ontwerpmogelijkheid"), 600,90,180,20, designOption);
-		resetOptionCB = maakCheckBox(Table.lookUp("EditPanel_reset-optie"), 600,120,180,20, resetOption);
-		foldOptionCB = maakCheckBox(Table.lookUp("EditPanel_vouwslider"), 600,150,180,20, foldOption);
+		currentY += height2 + offset / 2;
+		
+		modusGroup = new ButtonGroup();
+		viewerRadioButton = new JRadioButton(Table.lookUp("EditPanel_viewer"), viewerModus);
+		viewerRadioButton.setFont(theFont);
+		viewerRadioButton.setBackground(getBackground());
+		viewerRadioButton.setOpaque(false);
+		viewerRadioButton.setBounds(currentX, currentY, width, height);
+		modusGroup.add(viewerRadioButton);
+		add(viewerRadioButton);
+		viewerRadioButton.addActionListener(this);
+		
+		currentY += height + offset / 2;
+		
+		doorzienRadioButton = new JRadioButton(Table.lookUp("EditPanel_doorzien"), !viewerModus);
+		doorzienRadioButton.setFont(theFont);
+		doorzienRadioButton.setBackground(getBackground());
+		doorzienRadioButton.setOpaque(false);
+		doorzienRadioButton.setBounds(currentX, currentY, width, height);
+		modusGroup.add(doorzienRadioButton);
+		add(doorzienRadioButton);
+		doorzienRadioButton.addActionListener(this);
+		
+		currentY += height + offset / 2;
+		
+		
+		viewerOptiesLabel = new JLabel(Table.lookUp("EditPanel_vieweropties"));
+		viewerOptiesLabel.setFont(theBoldFont);
+		viewerOptiesLabel.setBackground(getBackground());
+		viewerOptiesLabel.setBounds(currentX, currentY, width, height2);
+		add(viewerOptiesLabel);
+		
+		currentY += height2 + offset / 2;
+		
+		rotateOptionCB = maakCheckBox(Table.lookUp("EditPanel_draaibaar"), 
+		        currentX, currentY, width, height, rotateOption);
+		
+		currentY += height + offset / 2;
+		
+		borderOptionCB = maakCheckBox(Table.lookUp("EditPanel_Rand"), 
+				currentX, currentY, width, height, borderOption);
+		
+		currentY += height + offset / 2;
+		
+		designOptionCB = maakCheckBox(Table.lookUp("EditPanel_ontwerpmogelijkheid"), 
+				currentX, currentY, width, height, designOption);
+		designOptionCB.setEnabled(viewerModus);
+		
+		currentY += height + offset / 2;
+		
+		resetOptionCB = maakCheckBox(Table.lookUp("EditPanel_reset-optie"), 
+				currentX, currentY, width, height, resetOption);
+		resetOptionCB.setEnabled(viewerModus);
+		
+		currentY += height + offset / 2;
+		
+		foldOptionCB = maakCheckBox(Table.lookUp("EditPanel_vouwslider"), 
+				currentX, currentY, width, height, foldOption);
+		
+		currentY += height + offset / 2;
+
+		doorzienOptiesLabel = new JLabel(Table.lookUp("EditPanel_doorzienopties"));
+		doorzienOptiesLabel.setFont(theBoldFont);
+		doorzienOptiesLabel.setBackground(getBackground());
+		doorzienOptiesLabel.setBounds(currentX, currentY, width, height2);
+		add(doorzienOptiesLabel);
+		
+		currentY += height2 + offset / 2;
+
+		demoOptieCB = maakCheckBox(Table.lookUp("EditPanel_demoOptie"), 
+				  				   currentX, currentY, width, height, demo);
+		currentY += height + offset;// / 2;
+		
+		figurenMenuOptieCB = maakCheckBox(Table.lookUp("EditPanel_figurenMenuOptie"), 
+										  currentX, currentY, width, height, figurenMenuOptie);
+		currentY += height + offset / 2;
+		
+		optiesMenuOptieCB = maakCheckBox(Table.lookUp("EditPanel_optiesMenuOptie"), 
+				  currentX, currentY, width, height, optiesMenuOptie);
+		currentY += height + offset / 2;
+		
+		helpBarOptieCB = maakCheckBox(Table.lookUp("EditPanel_helpBarOptie"), 
+				  currentX, currentY, width, height, helpBarOptie);
+		currentY += height + offset;// / 2;
+
+		lijnTekenOptieCB = maakCheckBox(Table.lookUp("EditPanel_lijnTekenOptie"), 
+				  currentX, currentY, width, height, lijnTekenOptie);
+		currentY += height + offset / 2;
+
+		lijnVerlengOptieCB = maakCheckBox(Table.lookUp("EditPanel_lijnVerlengOptie"), 
+				  currentX, currentY, width, height, lijnVerlengOptie);
+		currentY += height + offset / 2;
+		
+		vlakTekenOptieCB = maakCheckBox(Table.lookUp("EditPanel_vlakTekenOptie"), 
+				  currentX, currentY, width, height, vlakTekenOptie);
+		currentY += height + offset / 2;
+		
+		evenwijdigVlakOptieCB = maakCheckBox(Table.lookUp("EditPanel_evenwijdigVlakOptie"), 
+				  currentX, currentY, width, height, evenwijdigVlakOptie);
+		currentY += height + offset / 2;
+
+		toonDoorsnedeOptieCB = maakCheckBox(Table.lookUp("EditPanel_toonDoorsnedeOptie"), 
+				  currentX, currentY, width, height, toonDoorsnedeOptie);
+		currentY += height + offset / 2;
+		
+		splitsFiguurOptieCB = maakCheckBox(Table.lookUp("EditPanel_splitsFiguurOptie"), 
+				  currentX, currentY, width, height, splitsFiguurOptie);
+		currentY += height + offset / 2;
+
+		bouwplaatOptieCB = maakCheckBox(Table.lookUp("EditPanel_bouwplaatOptie"), 
+				  currentX, currentY, width, height, bouwplaatOptie);
+		currentY += height + offset / 2;
+		
+		
+		componentsCreated = true;
+		
+		plaatsComponenten();
+		
+		if (!viewerModus && !demo)
+		{
+			rotateOptionCB.setEnabled(false);
+			borderOptionCB.setEnabled(false);
+			designOptionCB.setEnabled(false);
+			resetOptionCB.setEnabled(false);
+			foldOptionCB.setEnabled(false);
+			
+		}
 	}
 	
 	private JCheckBox maakCheckBox(String s, int x, int y, int b, int h, boolean selected)
@@ -68,6 +241,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		checkbox.setBounds(x,y,b,h);
 		checkbox.setOpaque(false);
 		checkbox.setBackground(getBackground());
+		checkbox.setFont(theFont);
 		checkbox.setSelected(selected);
 		checkbox.addActionListener(this);
 		add(checkbox);
@@ -75,81 +249,259 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		return checkbox;
 	}
 	
-	public void setBackground(Color c)
+	public void plaatsComponenten()
 	{
-		if(viewPanel != null)viewPanel.setBackground(c);
-		super.setBackground(c);
+		if (componentsCreated)
+		{
+			modusLabel.setLocation(dzip.getSize().width + offset, modusLabel.getLocation().y);
+			viewerRadioButton.setLocation(dzip.getSize().width + offset, viewerRadioButton.getLocation().y);
+			doorzienRadioButton.setLocation(dzip.getSize().width + offset, doorzienRadioButton.getLocation().y);
+			
+			viewerOptiesLabel.setLocation(dzip.getSize().width + offset, viewerOptiesLabel.getLocation().y);
+			rotateOptionCB.setLocation(dzip.getSize().width + offset, rotateOptionCB.getLocation().y);
+			borderOptionCB.setLocation(dzip.getSize().width + offset, borderOptionCB.getLocation().y);
+			designOptionCB.setLocation(dzip.getSize().width + offset, designOptionCB.getLocation().y);
+			resetOptionCB.setLocation(dzip.getSize().width + offset, resetOptionCB.getLocation().y);
+			foldOptionCB.setLocation(dzip.getSize().width + offset, foldOptionCB.getLocation().y);
+			
+			doorzienOptiesLabel.setLocation(dzip.getSize().width + offset, doorzienOptiesLabel.getLocation().y);
+			
+			demoOptieCB.setLocation(dzip.getSize().width + offset, demoOptieCB.getLocation().y);
+			
+			figurenMenuOptieCB.setLocation(dzip.getSize().width + offset, figurenMenuOptieCB.getLocation().y);
+			optiesMenuOptieCB.setLocation(dzip.getSize().width + offset, optiesMenuOptieCB.getLocation().y);
+			helpBarOptieCB.setLocation(dzip.getSize().width + offset, helpBarOptieCB.getLocation().y);
+			
+			lijnTekenOptieCB.setLocation(dzip.getSize().width + offset, lijnTekenOptieCB.getLocation().y);
+			lijnVerlengOptieCB.setLocation(dzip.getSize().width + offset, lijnVerlengOptieCB.getLocation().y);
+			vlakTekenOptieCB.setLocation(dzip.getSize().width + offset, vlakTekenOptieCB.getLocation().y);
+			evenwijdigVlakOptieCB.setLocation(dzip.getSize().width + offset, evenwijdigVlakOptieCB.getLocation().y);
+			toonDoorsnedeOptieCB.setLocation(dzip.getSize().width + offset, toonDoorsnedeOptieCB.getLocation().y);
+			splitsFiguurOptieCB.setLocation(dzip.getSize().width + offset, splitsFiguurOptieCB.getLocation().y);
+			bouwplaatOptieCB.setLocation(dzip.getSize().width + offset, bouwplaatOptieCB.getLocation().y);
+			
+		}
 	}
+	
+	public void resetViewerDemoOptions()
+	{
+		rotateOptionCB.setSelected(rotateOption);
+		borderOptionCB.setSelected(borderOption);
+		designOptionCB.setSelected(designOption);
+		resetOptionCB.setSelected(resetOption);
+		foldOptionCB.setSelected(foldOption);
+		
+		demoOptieCB.setSelected(false);
+		dzip.zetDemo(false);
+		
+		dzip.setRotateOption(rotateOption);
+		dzip.setBorderOption(borderOption);
+		dzip.setDesignOption(designOption);
+		dzip.setResetOption(resetOption);
+		dzip.setFoldOption(foldOption);
+	}
+	
 	public void setEditState(Hashtable h)
 	{
-		String startFiguurString = null;
+//		String startFiguurString = null;
+		boolean viewerModus = true;
+		
 		boolean rotateOption = true;
 		boolean borderOption = false;
 		boolean designOption = false;
 		boolean resetOption = false;
 		boolean foldOption = false;
 		
-		if(h.containsKey("startFiguurString")) startFiguurString = (String)h.get("startFiguurString");
-		if(h.containsKey("rotateOption")) rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
-		if(h.containsKey("borderOption")) borderOption = ((Boolean)h.get("borderOption")).booleanValue();
-		if(h.containsKey("designOption")) designOption = ((Boolean)h.get("designOption")).booleanValue();
-		if(h.containsKey("resetOption")) resetOption = ((Boolean)h.get("resetOption")).booleanValue();
-		if(h.containsKey("foldOption")) foldOption = ((Boolean)h.get("foldOption")).booleanValue();
+		boolean demo = false;
+		
+		boolean figurenMenuOptie = true;
+		boolean optiesMenuOptie = true;
+		boolean helpBarOptie = true;
+		
+		boolean lijnTekenOptie = true;
+		boolean lijnVerlengOptie = true;
+		
+		boolean vlakTekenOptie = true;
+		boolean evenwijdigVlakOptie = true;
+		boolean toonDoorsnedeOptie = true;
+		boolean splitsFiguurOptie = true;
+		
+		boolean bouwplaatOptie = true;
+		
+		
+		if (h.containsKey("viewerModus")) 
+			viewerModus = ((Boolean) h.get("viewerModus")).booleanValue();
+
+		if (h.containsKey("rotateOption")) 
+			rotateOption = ((Boolean)h.get("rotateOption")).booleanValue();
+		if (h.containsKey("borderOption")) 
+			borderOption = ((Boolean)h.get("borderOption")).booleanValue();
+		if (h.containsKey("designOption")) 
+			designOption = ((Boolean)h.get("designOption")).booleanValue();
+		if (h.containsKey("resetOption")) 
+			resetOption = ((Boolean)h.get("resetOption")).booleanValue();
+		if (h.containsKey("foldOption")) 
+			foldOption = ((Boolean)h.get("foldOption")).booleanValue();
 	    
-		viewPanel.setEditState(h);
-		this.rotateOption = rotateOption;
-		this.borderOption = borderOption;
-		this.designOption = designOption;
-		this.resetOption = resetOption;
-		this.foldOption = foldOption;
+		if (h.containsKey("demo"))
+			demo = ((Boolean) h.get("demo")).booleanValue();
+		
+		if (h.containsKey("figurenMenuOptie"))
+			figurenMenuOptie = ((Boolean) h.get("figurenMenuOptie")).booleanValue();
+		if (h.containsKey("optiesMenuOptie"))
+			optiesMenuOptie = ((Boolean) h.get("optiesMenuOptie")).booleanValue();
+		if (h.containsKey("helpBarOptie"))
+			helpBarOptie = ((Boolean) h.get("helpBarOptie")).booleanValue();
+
+		if (h.containsKey("lijnTekenOptie"))
+			lijnTekenOptie = ((Boolean) h.get("lijnTekenOptie")).booleanValue();
+		if (h.containsKey("lijnVerlengOptie"))
+			lijnVerlengOptie = ((Boolean) h.get("lijnVerlengOptie")).booleanValue();
+
+		if (h.containsKey("vlakTekenOptie"))
+			vlakTekenOptie = ((Boolean) h.get("vlakTekenOptie")).booleanValue();
+		if (h.containsKey("evenwijdigVlakOptie"))
+			evenwijdigVlakOptie = ((Boolean) h.get("evenwijdigVlakOptie")).booleanValue();
+		if (h.containsKey("toonDoorsnedeOptie"))
+			toonDoorsnedeOptie = ((Boolean) h.get("toonDoorsnedeOptie")).booleanValue();
+		if (h.containsKey("splitsFiguurOptie"))
+			splitsFiguurOptie = ((Boolean) h.get("splitsFiguurOptie")).booleanValue();
+		
+		if (h.containsKey("bouwplaatOptie"))
+			bouwplaatOptie = ((Boolean) h.get("bouwplaatOptie")).booleanValue();
+		
+		if (viewerModus)
+		{	viewerRadioButton.setSelected(true);
+
+			rotateOptionCB.setEnabled(true);
+			borderOptionCB.setEnabled(true);
+			designOptionCB.setEnabled(true);
+			resetOptionCB.setEnabled(true);
+			foldOptionCB.setEnabled(true);
+
+		}
+		else
+		{	doorzienRadioButton.setSelected(true);
+		
+			designOptionCB.setEnabled(false);
+			resetOptionCB.setEnabled(false);
+			
+			if (demo)
+			{
+				rotateOptionCB.setEnabled(true);
+				borderOptionCB.setEnabled(true);
+				foldOptionCB.setEnabled(true);
+			}
+			else
+			{
+				rotateOptionCB.setEnabled(false);
+				borderOptionCB.setEnabled(false);
+				foldOptionCB.setEnabled(false);
+			}
+			
+
+		}
 		
 		rotateOptionCB.setSelected(rotateOption);
 		borderOptionCB.setSelected(borderOption);
 		designOptionCB.setSelected(designOption);
 		resetOptionCB.setSelected(resetOption);
 		foldOptionCB.setSelected(foldOption);
+		
+		demoOptieCB.setSelected(demo);
+		
+		figurenMenuOptieCB.setSelected(figurenMenuOptie);
+		optiesMenuOptieCB.setSelected(optiesMenuOptie);
+		helpBarOptieCB.setSelected(helpBarOptie);
+		
+		lijnTekenOptieCB.setSelected(lijnTekenOptie);
+		lijnVerlengOptieCB.setSelected(lijnVerlengOptie);
+		lijnVerlengOptieCB.setEnabled(lijnTekenOptieCB.isSelected());
+		if (!lijnTekenOptieCB.isSelected())
+			lijnVerlengOptieCB.setSelected(false);
+		
+		vlakTekenOptieCB.setSelected(vlakTekenOptie);
+		evenwijdigVlakOptieCB.setSelected(evenwijdigVlakOptie);
+		toonDoorsnedeOptieCB.setSelected(toonDoorsnedeOptie);
+		splitsFiguurOptieCB.setSelected(splitsFiguurOptie);
+
+		evenwijdigVlakOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+		toonDoorsnedeOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+		splitsFiguurOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+		if (!vlakTekenOptieCB.isSelected())
+		{
+			evenwijdigVlakOptieCB.setSelected(false);
+			toonDoorsnedeOptieCB.setSelected(false);
+			splitsFiguurOptieCB.setSelected(false);
+		}
+		
+		bouwplaatOptieCB.setSelected(bouwplaatOptie);
+		
+		
+		if (h.containsKey("dzipBreedte"))
+			dzipBreedte = ((Integer) h.get("dzipBreedte")).intValue();
+		if (h.containsKey("dzipHoogte"))
+			dzipHoogte = ((Integer) h.get("dzipHoogte")).intValue();
+		
+		setBounds(getLocation().x, getLocation().y, dzipBreedte + editWidth, Math.max(dzipHoogte, editHeight));
+		
+		// HIER !!
+		dzip.setEditState(h);		
+		
 	}
 	
 	public Hashtable getEditState()
 	{
-		String startFiguurString = null;
-		boolean rotateOption;
-		boolean borderOption;
-		boolean designOption;
-		boolean resetOption = false;
-		boolean foldOption = false;
 		
-		startFiguurString = viewPanel.getStateString();
-		rotateOption = this.rotateOption;
-		borderOption = this.borderOption;
-		designOption = this.designOption;
-		resetOption = this.resetOption;
-		foldOption = this.foldOption;
+		Hashtable h = dzip.getEditState();
 		
-	    Hashtable h = new Hashtable(); //viewPanel.getEditState();
-		h.put("startFiguurString",startFiguurString);
-		h.put("rotateOption", new Boolean(rotateOption));
-		h.put("borderOption", new Boolean(borderOption));
-		h.put("designOption", new Boolean(designOption));
-		h.put("resetOption", new Boolean(resetOption));
-		h.put("foldOption", new Boolean(foldOption));
+		h.put("dzipBreedte", new Integer(dzipBreedte));
+		h.put("dzipHoogte", new Integer(dzipHoogte));
+
 		
 		return h;
 	}
 		
 	public void setBounds(int x, int y, int b, int h)
 	{	
-		super.setBounds(x,y,b,h);
+		if (noSetBounds)
+		{	noSetBounds = false;
+			return;
+		}
+//System.out.println("spiep setBounds raw " + x + " " + y + " " + b + " " + h);
+
+		if ((h <= 1) || (x < 0) || (b <= 1))
+			return;
+		
+		super.setBounds(x, y, dzipBreedte + editWidth, Math.max(dzipHoogte, editHeight));
+		
+//System.out.println("spiep setBounds " + x + " " + y + " " + (spipBreedte + editWidth) + " " + 
+//					Math.max(spipHoogte, editHeight));
+	
+		if (dzip != null)
+			dzip.setBounds(0, 0, dzipBreedte, dzipHoogte);
+		
+		plaatsComponenten();
+		
+//System.out.println("setBounds " + x + " " + y + " " + b + " " + h);		
+
 	}
 	
 	public void zetBreedte(int b)
 	{
-		viewPanel.setSize(b, viewPanel.getSize().height);
+		dzipBreedte = b;
+		
+		setBounds(getLocation().x, getLocation().y, dzipBreedte + editWidth, Math.max(dzipHoogte, editHeight));		
+		plaatsComponenten();
+
 	}
 	
 	public void zetHoogte(int h)
 	{
-		viewPanel.setSize(viewPanel.getSize().width, h);
+		dzipHoogte = h;
+		
+		setBounds(getLocation().x, getLocation().y, dzipBreedte + editWidth, Math.max(dzipHoogte, editHeight));		
+
 	}
 	
 	public void wis(){}
@@ -164,25 +516,143 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
     
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource().equals(rotateOptionCB))
-		{	rotateOption = rotateOptionCB.isSelected();
-			viewPanel.setEditState(getEditState());
+		if (e.getSource().equals(rotateOptionCB))
+		{	
+			dzip.setRotateOption(rotateOptionCB.isSelected());
 		}
-		if(e.getSource().equals(borderOptionCB))
-		{	borderOption = borderOptionCB.isSelected();
-			viewPanel.setEditState(getEditState());
+		if (e.getSource().equals(borderOptionCB))
+		{	
+			dzip.setBorderOption(borderOptionCB.isSelected());
 		}
-		if(e.getSource().equals(designOptionCB))
-		{	designOption = designOptionCB.isSelected();
-			viewPanel.setEditState(getEditState());
+		if (e.getSource().equals(designOptionCB))
+		{	
+			dzip.setDesignOption(designOptionCB.isSelected());
 		}
-		if(e.getSource().equals(resetOptionCB))
-		{	resetOption = resetOptionCB.isSelected();
-			viewPanel.setEditState(getEditState());
+		if (e.getSource().equals(resetOptionCB))
+		{	
+			dzip.setResetOption(resetOptionCB.isSelected());
 		}
-		if(e.getSource().equals(foldOptionCB))
-		{	foldOption = foldOptionCB.isSelected();
-			viewPanel.setEditState(getEditState());
+		if (e.getSource().equals(foldOptionCB))
+		{	
+			dzip.setFoldOption(foldOptionCB.isSelected());
 		}
+		
+		if (e.getSource().equals(viewerRadioButton))
+		{	
+			dzip.setViewerModus(viewerRadioButton.isSelected(), true);
+			
+			resetViewerDemoOptions();
+			
+			rotateOptionCB.setEnabled(true);
+			borderOptionCB.setEnabled(true);
+			designOptionCB.setEnabled(true);
+			resetOptionCB.setEnabled(true);
+			foldOptionCB.setEnabled(true);
+			
+		}
+		if (e.getSource().equals(doorzienRadioButton))
+		{	
+			dzip.setViewerModus(!doorzienRadioButton.isSelected(), true);
+			
+			resetViewerDemoOptions();
+			
+			designOptionCB.setEnabled(false);
+			resetOptionCB.setEnabled(false);
+			
+			if (demoOptieCB.isSelected())
+			{
+				rotateOptionCB.setEnabled(true);
+				borderOptionCB.setEnabled(true);
+				foldOptionCB.setEnabled(true);
+			}
+			else
+			{
+				rotateOptionCB.setEnabled(false);
+				borderOptionCB.setEnabled(false);
+				foldOptionCB.setEnabled(false);
+			}
+
+		}
+
+		if (e.getSource().equals(demoOptieCB))
+		{	dzip.zetDemo(demoOptieCB.isSelected());
+		
+			if (demoOptieCB.isSelected())
+			{
+				rotateOptionCB.setEnabled(true);
+				borderOptionCB.setEnabled(true);
+				foldOptionCB.setEnabled(true);
+			}
+			else
+			{
+				rotateOptionCB.setEnabled(false);
+				borderOptionCB.setEnabled(false);
+				foldOptionCB.setEnabled(false);
+			}
+		}
+		
+		if (e.getSource().equals(figurenMenuOptieCB))
+		{	
+			dzip.zetFigurenMenuOptie(figurenMenuOptieCB.isSelected());
+		}
+		if (e.getSource().equals(optiesMenuOptieCB))
+		{	
+			dzip.zetOptiesMenuOptie(optiesMenuOptieCB.isSelected());
+		}
+		if (e.getSource().equals(helpBarOptieCB))
+		{	
+			dzip.zetHelpBarOptie(helpBarOptieCB.isSelected());
+		}
+		if (e.getSource().equals(helpBarOptieCB))
+		{	
+			dzip.zetHelpBarOptie(helpBarOptieCB.isSelected());
+		}
+
+		if (e.getSource().equals(lijnTekenOptieCB))
+		{
+			lijnVerlengOptieCB.setEnabled(lijnTekenOptieCB.isSelected());
+			dzip.zetLijnTekenOptie(lijnTekenOptieCB.isSelected());
+			if (!lijnTekenOptieCB.isSelected())
+				lijnVerlengOptieCB.setSelected(false);
+		}
+		if (e.getSource().equals(lijnVerlengOptieCB))
+		{	
+			dzip.zetLijnVerlengOptie(lijnVerlengOptieCB.isSelected());
+		}
+		
+		if (e.getSource().equals(vlakTekenOptieCB))
+		{	
+			evenwijdigVlakOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+			toonDoorsnedeOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+			splitsFiguurOptieCB.setEnabled(vlakTekenOptieCB.isSelected());
+			dzip.zetVlakTekenOptie(vlakTekenOptieCB.isSelected());
+			if (!vlakTekenOptieCB.isSelected())
+			{
+				evenwijdigVlakOptieCB.setSelected(false);
+				toonDoorsnedeOptieCB.setSelected(false);
+				splitsFiguurOptieCB.setSelected(false);
+			}
+		}
+		if (e.getSource().equals(evenwijdigVlakOptieCB))
+		{	
+			dzip.zetEvenwijdigVlakOptie(evenwijdigVlakOptieCB.isSelected());
+		}
+		if (e.getSource().equals(toonDoorsnedeOptieCB))
+		{	
+			dzip.zetToonDoorsnedeOptie(toonDoorsnedeOptieCB.isSelected());
+		}
+		if (e.getSource().equals(splitsFiguurOptieCB))
+		{	
+			dzip.zetSplitsFiguurOptie(splitsFiguurOptieCB.isSelected());
+		}
+
+		if (e.getSource().equals(bouwplaatOptieCB))
+		{	
+			dzip.zetBouwplaatOptie(bouwplaatOptieCB.isSelected());
+		}
+		
+		
+		
+		
 	}
 }

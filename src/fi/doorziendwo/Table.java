@@ -402,11 +402,35 @@ public class Table
                 				   "Help", ""},
          
         //InteractieEditPanel        				   
-        {"EditPanel_draaibaar", "Draaibaar", "Rotatable", ""}, 
+        {"EditPanel_modus", "Modus", "Mode", ""},
+        {"EditPanel_viewer", "Viewer", "Viewer", ""},        	
+        {"EditPanel_doorzien", "Doorzien", "Doorzien", ""},
+        {"EditPanel_vieweropties", "Viewer/Demo opties", "Viewer/Demo options", ""},
+        {"EditPanel_doorzienopties", "Doorzien opties", "Doorzien options", ""},
+                				   
+	    {"EditPanel_draaibaar", "Draaibaar", "Rotatable", ""}, 
         {"EditPanel_Rand", "Rand", "Border", ""}, 
         {"EditPanel_ontwerpmogelijkheid", "Ontwerpmogelijkheid", "Design option", ""}, 
-        {"EditPanel_reset-optie", "reset optie", "Reset-option", ""}, 
+        {"EditPanel_reset-optie", "Reset optie", "Reset-option", ""}, 
         {"EditPanel_vouwslider", "Vouwslider", "Slider for folding", ""}, 
+        
+        
+        {"EditPanel_demoOptie", "Demo", "Demo", ""},
+        
+        {"EditPanel_figurenMenuOptie", "Figurenmenu", "Menu figures", ""},
+        {"EditPanel_optiesMenuOptie", "Optiesmenu", "Menu options", ""},
+        {"EditPanel_helpBarOptie", "Aanwijzingenbalk", "Help bar", ""},
+        
+        {"EditPanel_lijnTekenOptie", "Lijnen tekenen", "Drawing lines", ""},
+        {"EditPanel_lijnVerlengOptie", "Lijnen verlengen", "Lengthen lines", ""},
+        
+        {"EditPanel_vlakTekenOptie", "Vlakken tekenen", "Drawing planes", ""},
+        {"EditPanel_evenwijdigVlakOptie", "Evenwijdige vlakken", "Parallel planes", ""},
+        {"EditPanel_toonDoorsnedeOptie", "Doorsnede tonen", "Show cut surface", ""},
+        {"EditPanel_splitsFiguurOptie", "Figuur splitsen", "Split figure", ""},
+        {"EditPanel_bouwplaatOptie", "Bouwplaat", "FoldShow cut surface", ""},
+        
+        
         
     };
     // make the table static so it can be accessed from the static
