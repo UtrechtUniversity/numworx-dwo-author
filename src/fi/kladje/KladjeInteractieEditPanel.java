@@ -156,7 +156,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	public void setEditState(Hashtable b)
 	{
 		
-System.out.println("kliep setEditState");
+//System.out.println("kliep setEditState");
 
 		boolean kleurkeuze = true;
 		if (b.containsKey("kleurkeuze"))

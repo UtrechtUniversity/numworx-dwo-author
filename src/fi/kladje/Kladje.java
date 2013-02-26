@@ -58,7 +58,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	int bottomHeight = 30;
 	int offSet = 5;
 	
-	JToggleButton tekenButton, gumButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
+	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
 	ButtonGroup tekenGumGroup;
 	JButton undoButton, wisButton;
 	//JButton[] kleurKeuzeButtons;
@@ -258,7 +258,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		tekenButton.setBounds(2 * offSet, getSize().height - offSet - 20, 20, 20);
 		getContentPane().add(tekenButton);
 		tekenButton.addActionListener(new TekenGumAL());
-
+/*
 		gumButton = new JToggleButton(new ImageIcon(gumDefault), false);
 		gumButton.setRolloverIcon(new ImageIcon(gumRollover));
 		gumButton.setSelectedIcon(new ImageIcon(gumSelected));
@@ -267,13 +267,13 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 				            getSize().height - offSet - 20, 20, 20);
 		getContentPane().add(gumButton);
 		gumButton.addActionListener(new TekenGumAL());
-		
+*/		
 		//lijnButton = new JToggleButton("/");
 		lijnButton = new JToggleButton(new ImageIcon(lijnDefault), false);
 		lijnButton.setRolloverIcon(new ImageIcon(lijnRollover));
 		lijnButton.setSelectedIcon(new ImageIcon(lijnSelected));
 		lijnButton.setBorder(null);
-		lijnButton.setBounds(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+		lijnButton.setBounds(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	                        getSize().height - offSet - 20, 20, 20);
 		getContentPane().add(lijnButton);
 		lijnButton.addActionListener(new TekenGumAL());
@@ -318,7 +318,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		
 		tekenGumGroup.add(tekenButton);
-		tekenGumGroup.add(gumButton);
+//		tekenGumGroup.add(gumButton);
 		tekenGumGroup.add(lijnButton);
 		tekenGumGroup.add(rechthoekButton);
 		tekenGumGroup.add(cirkelButton);
@@ -413,7 +413,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	{
 		if (lijnTekenen && rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			                    getSize().height - offSet - 20);
@@ -436,7 +436,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (!lijnTekenen && rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{	
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			                    getSize().height - offSet - 20);
 			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
@@ -457,7 +457,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (lijnTekenen && !rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			cirkelButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
@@ -479,7 +479,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (lijnTekenen && rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
@@ -501,7 +501,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (lijnTekenen && rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
@@ -524,7 +524,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		else if (!lijnTekenen && !rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{	
-			cirkelButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			cirkelButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
 			tekstButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -544,7 +544,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (!lijnTekenen && rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	       			                    getSize().height - offSet - 20);
 			tekstButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -563,7 +563,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (!lijnTekenen && rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	       			                    getSize().height - offSet - 20);
 			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -583,7 +583,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		else if (lijnTekenen && !rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			tekstButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -604,7 +604,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		else if (lijnTekenen && !rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			cirkelButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -624,7 +624,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (lijnTekenen && rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -645,7 +645,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 
 		else if (lijnTekenen && !rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -662,7 +662,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (!lijnTekenen && rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -679,7 +679,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		else if (!lijnTekenen && !rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			cirkelButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			cirkelButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -697,7 +697,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		else if (!lijnTekenen && !rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			tekstButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			tekstButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -715,7 +715,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		else if (!lijnTekenen && !rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			selecterenButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			selecterenButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			undoButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 3 * offSet,
 	      			  getSize().height - 20 - offSet);
@@ -766,7 +766,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 				{	kladjeVeld.setCursor(drawCursor);
 				}
 			}
-			
+/*			
 			else if (gumButton.isSelected())
 			{
 				//kladjeVeld.mouseMode = kladjeVeld.gummen;
@@ -790,6 +790,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 				{	kladjeVeld.setCursor(deleteCursor);
 				}
 			}
+*/			
 			else if (lijnButton.isSelected())
 			{
 				//kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
@@ -867,7 +868,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			{
 				//kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
 				kladjeVeld.hideTekstVeld(true);
-				kladjeVeld.tekstRechthoek = null;
+//				kladjeVeld.tekstRechthoek = null;
 				kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
 				kladjeVeld.repaint();
 				
@@ -893,7 +894,8 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			{
 				//kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);
-				kladjeVeld.selecteerRechthoek = null;
+//				kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.resetSelectedObject();
 				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.repaint();
 				
@@ -929,7 +931,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		
 		if (e.getSource() == wisButton)
 		{
-			kladjeVeld.wis();
+			kladjeVeld.wis(true);
 		}
 		
 		if (e.getSource() == undoButton)
@@ -980,25 +982,27 @@ System.out.println("Kladje setState");
 		
 		Hashtable gegevens = (Hashtable) o;
 		
-		Vector stateVector = new Vector();
+		kladjeVeld.setState(gegevens);
 		
-		if (gegevens.containsKey("pixels"))
-			stateVector = (Vector) gegevens.get("pixels");
+		//Vector stateVector = new Vector();
 		
-		if (stateVector.size() > 0)
-			kladjeVeld.setState(stateVector);
+		//if (gegevens.containsKey("pixels"))
+		//	stateVector = (Vector) gegevens.get("pixels");
+		
+		//if (stateVector.size() > 0)
+		//kladjeVeld.setOldState(stateVector);
 	}
 
 	public String getState()
 	{	
 System.out.println("Kladje getState");
 
-		//Object gegevens = new Object();
-		Hashtable gegevens = new Hashtable();
+		//Hashtable gegevens = new Hashtable();
+		Hashtable gegevens = kladjeVeld.getState();
 		
-		Vector stateVector = kladjeVeld.getState();
+		//Vector stateVector = kladjeVeld.getState();
 		
-		gegevens.put("pixels", stateVector);
+		//gegevens.put("pixels", stateVector);
 		
 	    // codeer deze gegevens tot een string
 	    String s = StringCodeObject.encodeObjectToString(gegevens);

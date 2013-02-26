@@ -20,64 +20,70 @@ public class KladjeVeld extends JPanel
 	
 	Color lijnenKleur = new Color(150, 150, 255);
 	Color ruitjesKleur = new Color(210, 210, 210);
+	static Color bbColor = Color.blue; 
 	
 	Color drawingColor = Color.black;
 	Color backgroundColor = Color.white;
-	//int drawingColorCode = 10;
-	//int backgroundColorCode = 11;
-	
-//	Color[] kleuren = {Color.black, Color.white, Color.gray, Color.lightGray, Color.red,     Color.orange,
-//			           Color.yellow,Color.green, Color.cyan, Color.blue,      Color.magenta, Color.pink};
-	
 	
 	Color[] kleuren = {Color.black, Color.lightGray, Color.red, Color.orange,
 	   		           Color.green, Color.cyan, Color.blue, Color.magenta};
 
 	final int tekenen = 0;
-	final int gummen = 1;
+	//final int gummen = 1;
 	final int lijnTekenen = 2;
 	final int rechthoekTekenen = 3;
 	final int cirkelTekenen = 4;
 	final int tekstTekenen = 5;
 	final int selecteren = 6;
 	int mouseMode = tekenen;
+	
 	Vector draggPoints = new Vector();
-	
-	Vector gumPunten = new Vector();
-	
+	//Vector gumPunten = new Vector();
+	//int gumGrootte = 7; // oneven	
 	Point figuurStart = null;
 	Point lijnEinde = null;
 	Rectangle tekenRechthoek = null;
-	Rectangle tekstRechthoek = null;
-	Rectangle selecteerRechthoek = null;
+//	Rectangle tekstRechthoek = null;
+//	Rectangle selecteerRechthoek = null;
 
+	// backwards compatibility
 	ColorBytes[][] pixels = null;
 	int breedte, hoogte;
-//	int penGrootte = 2; // oneven
-	int gumGrootte = 7; // oneven
+	Vector streepVector = new Vector();
+	Vector lijnVector = new Vector();
+	Vector rechthoekVector = new Vector();
+	Vector ellipsVector = new Vector();
+	Vector tekstElementVector = new Vector();
 	
-	Image offScreen = null;
-	Graphics offGraphics = null;
+	//Image offScreen = null;
+	//Graphics offGraphics = null;
 	
 	int maxHistories = 5;
 	int numHistories = 0;
-	Vector[] histories = new Vector[maxHistories + 1];
+	Hashtable[] histories = new Hashtable[maxHistories + 1];
 
 	boolean shiftPressed = false;
 	
 	Cursor selectCursor = null;
 	boolean sleepSelectie = false;
-	Vector sleepPoints = new Vector();
+	boolean objectMoved = false;
+	//Vector sleepPoints = new Vector();
+	
+	Streep selectedStreep = null;
+	Lijn selectedLijn = null;
+	Rechthoek selectedRechthoek = null;
+	Ellips selectedEllips = null;
+	TekstElement selectedTekstElement = null;
 	
 	Cursor textCursor = null;
 	JTextField tekstVeld;
-	Font tekstFont;
-	Font tekenTekstFont;
-	FontMetrics tekstFM;
+	static Font tekstFont;
+	//Font tekenTekstFont;
+	static FontMetrics tekstFM;
 	int tekstBreedte = 50;
 	int tekstHoogte;
-	boolean sleepTekst;
-	int tekstRand = 5;
+	//boolean sleepTekst;
+	//int tekstRand = 5;
 	String tekstString = "";
 	int tekstX = 0;
 	int tekstY = 0;
@@ -89,25 +95,17 @@ public class KladjeVeld extends JPanel
 		setSize(breedte, hoogte);
 		
 		tekstFont = new Font("Sanserif", Font.BOLD, 14);
-		tekenTekstFont = new Font("Sanserif", Font.PLAIN, 14);
+		//tekenTekstFont = new Font("Sanserif", Font.PLAIN, 14);
 		tekstFM = getFontMetrics(tekstFont);
-		tekstHoogte = 4 * tekstFM.getHeight() / 3;
-		//tekstHoogte = tekstFM.getHeight();
-//System.out.println("ta = " + tekstFM.getAscent());		
+		//tekstHoogte = 4 * tekstFM.getHeight() / 3;
+		tekstHoogte = tekstFM.getHeight();
+
 		tekstVeld = new JTextField();
 		tekstVeld.setFont(tekstFont);
 		tekstVeld.setSize(tekstBreedte, tekstHoogte);
 		tekstVeld.setVisible(false);
 		add(tekstVeld);
-		
-/*		
-		pixels = new ColorBytes[breedte][hoogte];
-		for (int hCnt = 0; hCnt < breedte; hCnt++)
-			for (int vCnt = 0; vCnt < hoogte; vCnt++)
-			{
-				pixels[hCnt][vCnt] = new ColorBytes(hCnt, vCnt, backgroundColor);
-			}
-*/			
+		tekstVeld.addActionListener(new TekstAL());
 		
 		MLMML listener = new MLMML();
 		
@@ -119,47 +117,69 @@ public class KladjeVeld extends JPanel
 	public void hideTekstVeld(boolean update)
 	{
 		tekstString = tekstVeld.getText();
-		tekstX = tekstVeld.getLocation().x;
-		tekstY = tekstVeld.getLocation().y + tekstFM.getAscent() + tekstFM.getHeight() / 6;
-		tekstRechthoek = null;
-//System.out.println("trh null");		
+		tekstX = tekstVeld.getLocation().x + 2;
+		tekstY = tekstVeld.getLocation().y + tekstFM.getAscent();// + tekstFM.getHeight() / 6;
+		//tekstRechthoek = null;
+		
 		tekstVeld.setVisible(false);
-//System.out.println("tv invisible");		
-		//repaint();
-//System.out.println("repaint");
 
-		drawTekstString();
+		if (!tekstString.equals(""))
+		{
+			TekstElement tekstElement = 
+				new TekstElement(drawingColor, tekstString, tekstX, tekstY);
+			tekstElementVector.addElement(tekstElement);
+			addToHistory();
+		}
+		
+		//drawTekstString();
 	
 		if (update)
 		{	
-//System.out.println("upa start");			
-			//updatePixelArray();
 			tekstString = "";
 		
 		}
+		
 	}
 	
 	void addToHistory()
 	{
-		Vector stateVector = getState();
+		//Vector stateVector = getState();
+		Hashtable stateTable = getState();
 		
-//System.out.println("add " + stateVector.size());		
-		
-		histories[numHistories] = stateVector;
+		histories[numHistories] = stateTable;
 		numHistories++;
+		
 		if (numHistories > maxHistories)
 		{	for (int i = 0; i < numHistories - 1; i++)
 			{	histories[i] = histories[i + 1];
 			}
 			numHistories--;
-		}		
+		}
+		
+System.out.println("ath " + numHistories);		
 	}
 	
-	public Vector getFromHistory()
-	{	if (numHistories <= 1)
+	public Hashtable getFromHistory()
+	{	//if (numHistories <= 1)
+		//	return null;
+		
+		if (numHistories > 0)
+			numHistories--;
+		
+System.out.println("gfh " + numHistories);
+
+		if (numHistories > 0)
+		{	
+System.out.println("returned " + numHistories);			
+			return histories[numHistories - 1];
+		
+		}
+		else
+		{	numHistories = 0;
+System.out.println("returned null " + numHistories);		
+		
 			return null;
-		numHistories--;
-		return histories[numHistories - 1];
+		}
 	}
 	
 	public void setSize(int w, int h)
@@ -191,7 +211,7 @@ public class KladjeVeld extends JPanel
 						pixels[hCnt][vCnt] = new ColorBytes(hCnt, vCnt,backgroundColor);
 				}
 
-			offScreen = null;
+			//offScreen = null;
 			
 		}
 		else
@@ -213,6 +233,7 @@ public class KladjeVeld extends JPanel
 		
 	}
 
+/*	
 	public Vector copyRectangle(Rectangle r)
 	{
 		Vector rVector = new Vector();
@@ -232,7 +253,8 @@ public class KladjeVeld extends JPanel
 		
 		return rVector;
 	}
-	
+*/
+/*	
 	public void wisRectangle(Rectangle r)
 	{
 		int cnt = 0;
@@ -245,67 +267,145 @@ public class KladjeVeld extends JPanel
 		
 //System.out.println("wisrect = " + cnt);		
 	}
-	
-	public Vector getState()
+*/	
+	public Hashtable getState()
 	{
-		Vector stateVector = new Vector();
-		for (int hCnt = 0; hCnt < breedte; hCnt++)
-			for (int vCnt = 0; vCnt < hoogte; vCnt++)
-			{
-				Color c = pixels[hCnt][vCnt].makeColor();
-				if (!c.equals(backgroundColor))
-				{
-					ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
-							                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
-					//stateVector.addElement(pixels[hCnt][vCnt]);
-					stateVector.addElement(newCB);
-				}
-			}
-//System.out.println("kladjeVeld getState " + stateVector.size());		
-		return stateVector;
+		Hashtable h = new Hashtable();
+		
+		// backwards compatibility
+		Vector gwtStateVector = getGWTState();
+		if (gwtStateVector.size() > 0)
+			h.put("gwtpixels", gwtStateVector);
+		
+		Hashtable[] strepen = new Hashtable[streepVector.size()];
+		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
+		{	Streep streep = (Streep) streepVector.elementAt(sCnt);
+			strepen[sCnt] = streep.getState();
+		}
+		h.put("strepen", strepen);
+		
+		Hashtable[] lijnenHash = new Hashtable[lijnVector.size()];
+		for (int lCnt = 0; lCnt < lijnVector.size(); lCnt++)
+		{	Lijn lijn = (Lijn) lijnVector.elementAt(lCnt);
+			lijnenHash[lCnt] = lijn.getState();
+		}
+		h.put("lijnenhash", lijnenHash);
+		
+		Hashtable[] rechthoeken = new Hashtable[rechthoekVector.size()];
+		for (int rCnt = 0; rCnt < rechthoekVector.size(); rCnt++)
+		{	Rechthoek rechthoek = (Rechthoek) rechthoekVector.elementAt(rCnt);
+			rechthoeken[rCnt] = rechthoek.getState();
+		}
+		h.put("rechthoeken", rechthoeken);
+		
+		Hashtable[] ellipsen = new Hashtable[ellipsVector.size()];
+		for (int eCnt = 0; eCnt < ellipsVector.size(); eCnt++)
+		{	Ellips ellips = (Ellips) ellipsVector.elementAt(eCnt);
+			ellipsen[eCnt] = ellips.getState();
+		}
+		h.put("ellipsen", ellipsen);
+		
+		Hashtable[] tekstElementen = new Hashtable[tekstElementVector.size()];
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			tekstElementen[tCnt] = tekstElement.getState();
+		}
+		h.put("tekstElementen", tekstElementen);
+		
+		
+		return h;
 	}
 	
 	public Vector getGWTState()
-	{
-		Vector gwtStateVector = new Vector();
-		
+	{	Vector gwtStateVector = new Vector();
 		for (int hCnt = 0; hCnt < breedte; hCnt++)
 			for (int vCnt = 0; vCnt < hoogte; vCnt++)
-			{
-				Color c = pixels[hCnt][vCnt].makeColor();
+			{	Color c = pixels[hCnt][vCnt].makeColor();
 				if (!c.equals(backgroundColor))
-				{
-					//ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
-					//		                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
-					
-					short[] gwtPixels = new short[5];
+				{	short[] gwtPixels = new short[5];
 					gwtPixels[0] = (short) pixels[hCnt][vCnt].x;
 					gwtPixels[1] = (short) pixels[hCnt][vCnt].y;
 					gwtPixels[2] = pixels[hCnt][vCnt].red;
 					gwtPixels[3] = pixels[hCnt][vCnt].green;			
 					gwtPixels[4] = pixels[hCnt][vCnt].blue;						
-					
 					gwtStateVector.addElement(gwtPixels);
 				}
 			}
-		
-System.out.println("kladjeVeld getGWTState " + gwtStateVector.size());
-
+//System.out.println("kladjeVeld getGWTState " + gwtStateVector.size());
 		return gwtStateVector;
 	}
-	
-	public void setState(Vector stateVector)
-	{
-		
-System.out.println("kladjeVeld setState " + stateVector.size());
 
+	public void setState(Hashtable h)
+	{
+		// backwards-compatibility
+		Vector stateVector = new Vector();
+		Vector gwtStateVector = new Vector();
+		if (h.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) h.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				setOldGWTState(gwtStateVector);
+		}	
+		else if (h.containsKey("pixels"))
+		{	stateVector = (Vector) h.get("pixels");
+			if (stateVector.size() > 0)
+				setOldState(stateVector);
+		}	
+
+		// hier de rest
+		streepVector.removeAllElements();
+		Hashtable[] strepen = new Hashtable[0];
+		if (h.containsKey("strepen"))
+			strepen = (Hashtable[]) h.get("strepen");
+		for (int sCnt = 0; sCnt < strepen.length; sCnt++)
+		{	Streep streep = Streep.setState(strepen[sCnt]);
+			streepVector.addElement(streep);
+		}
+		
+		lijnVector.removeAllElements();
+		Hashtable[] lijnenHash = new Hashtable[0];
+		if (h.containsKey("lijnenhash"))
+			lijnenHash = (Hashtable[]) h.get("lijnenhash");
+		for (int lCnt = 0; lCnt < lijnenHash.length; lCnt++)
+		{	Lijn lijn = Lijn.setState(lijnenHash[lCnt]);
+			lijnVector.addElement(lijn);
+		}
+
+		rechthoekVector.removeAllElements();
+		Hashtable[] rechthoeken = new Hashtable[0];
+		if (h.containsKey("rechthoeken"))
+			rechthoeken = (Hashtable[]) h.get("rechthoeken");
+		for (int rCnt = 0; rCnt < rechthoeken.length; rCnt++)
+		{	Rechthoek rechthoek = Rechthoek.setState(rechthoeken[rCnt]);
+			rechthoekVector.addElement(rechthoek);
+		}
+
+		ellipsVector.removeAllElements();
+		Hashtable[] ellipsen = new Hashtable[0];
+		if (h.containsKey("ellipsen"))
+			ellipsen = (Hashtable[]) h.get("ellipsen");
+		for (int eCnt = 0; eCnt < ellipsen.length; eCnt++)
+		{	Ellips ellips = Ellips.setState(ellipsen[eCnt]);
+			ellipsVector.addElement(ellips);
+		}
+
+		tekstElementVector.removeAllElements();
+		Hashtable[] tekstElementen = new Hashtable[0];
+		if (h.containsKey("tekstElementen"))
+			tekstElementen = (Hashtable[]) h.get("tekstElementen");
+		for (int tCnt = 0; tCnt < tekstElementen.length; tCnt++)
+		{	TekstElement tekstElement = TekstElement.setState(tekstElementen[tCnt]);
+			tekstElementVector.addElement(tekstElement);
+		}
+		
+	}
+	
+	public void setOldState(Vector stateVector)
+	{
+System.out.println("kladjeVeld setState " + stateVector.size());
 
 		int cnt = 0;
 		for (int pCnt = 0; pCnt < stateVector.size(); pCnt++)
-		{
-			ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
-			
-			
+		{	ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
 			if ((cb.x < breedte) && (cb.y < hoogte))
 			{	pixels[cb.x][cb.y] = cb;
 				Color c = pixels[cb.x][cb.y].makeColor();
@@ -313,45 +413,24 @@ System.out.println("kladjeVeld setState " + stateVector.size());
 					cnt++;
 			}
 		}
-		
-//System.out.println("kladjeVeld pp " + cnt);		
-		repaint();
+//		repaint();
 	}
 
-	public void setGWTState(Vector gwtStateVector)
+	public void setOldGWTState(Vector gwtStateVector)
 	{
-		
 System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
-
 
 		int cnt = 0;
 		for (int pCnt = 0; pCnt < gwtStateVector.size(); pCnt++)
 		{
-			//ColorBytes cb = (ColorBytes) stateVector.elementAt(pCnt);
-			
 			short[] gwtPixels = new short[5];
-			
 			gwtPixels = (short[]) gwtStateVector.elementAt(pCnt);
-			
 			if ((gwtPixels[0] < breedte) && (gwtPixels[1] < hoogte))
-			{
-				pixels[gwtPixels[0]][gwtPixels[1]] = 
+			{	pixels[gwtPixels[0]][gwtPixels[1]] = 
 					new ColorBytes(gwtPixels[0], gwtPixels[1], gwtPixels[2], gwtPixels[3], gwtPixels[4]);
 			}
-			
-/*			
-			if ((cb.x < breedte) && (cb.y < hoogte))
-			{	pixels[cb.x][cb.y] = cb;
-				Color c = pixels[cb.x][cb.y].makeColor();
-				if (!c.equals(backgroundColor))
-					cnt++;
-			}
-			
-*/			
 		}
-		
-//System.out.println("kladjeVeld pp " + cnt);		
-		repaint();
+//		repaint();
 	}
 	
 	
@@ -371,6 +450,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		repaint();
 	}
 	
+/*	
 	public void drawTekstString()
 	{
 		if (offGraphics != null)
@@ -388,17 +468,19 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			
 		}
 	}
+*/	
 	
 	public void paintComponent(Graphics g)
 	{
+/*		
 		if (offScreen == null)
 		{
 			offScreen = createImage(getSize().width, getSize().height);
 			offGraphics = offScreen.getGraphics();
 		}
+*/		
 		
-		
-		tekenProgramma(offGraphics, true);
+		//tekenProgramma(offGraphics, true);
 		
 
 		g.setColor(backgroundColor);
@@ -465,6 +547,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		
 		int tpCnt = 0;
 		
+		// backwards compatibility
 		for (int hCnt = 1; hCnt < getSize().width - 1; hCnt++)
 			for (int vCnt = 1; vCnt < getSize().height - 1; vCnt++)
 			{
@@ -476,8 +559,32 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				}
 			}
 		
-//System.out.println("wis = " + wis + " tp = " + tpCnt);		
-	
+//System.out.println("wis = " + wis + " tp = " + tpCnt);
+		
+		// elementen
+		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
+		{	Streep streep = (Streep) streepVector.elementAt(sCnt);
+			streep.teken(g);
+		}
+		for (int lCnt = 0; lCnt < lijnVector.size(); lCnt++)
+		{	Lijn lijn = (Lijn) lijnVector.elementAt(lCnt);
+			lijn.teken(g);
+		}
+		for (int rCnt = 0; rCnt < rechthoekVector.size(); rCnt++)
+		{	Rechthoek rechthoek = (Rechthoek) rechthoekVector.elementAt(rCnt);
+			rechthoek.teken(g);
+		}
+		for (int eCnt = 0; eCnt < ellipsVector.size(); eCnt++)
+		{	Ellips ellips = (Ellips) ellipsVector.elementAt(eCnt);
+			ellips.teken(g);
+		}
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			tekstElement.teken(g);
+		}
+			
+		
+		
 		g.setColor(drawingColor);		
 		
 		if (draggPoints.size() == 1)
@@ -495,8 +602,8 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		}
 		
 		if ((mouseMode == lijnTekenen) && (figuurStart != null) && (lijnEinde != null))
-		{	g.drawLine(figuurStart.x, figuurStart.y, lijnEinde.x, lijnEinde.y);
-			
+		{	
+			g.drawLine(figuurStart.x, figuurStart.y, lijnEinde.x, lijnEinde.y);
 		}
 		
 		if ((mouseMode == rechthoekTekenen) && (tekenRechthoek != null))
@@ -509,6 +616,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			g.drawOval(tekenRechthoek.x, tekenRechthoek.y, tekenRechthoek.width, tekenRechthoek.height);
 		}
 		
+/*		
 		// alleen op het scherm
 		if ((mouseMode == tekstTekenen) && (tekstRechthoek != null) && !wis)
 		{
@@ -524,6 +632,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			g.drawRect(tekstRechthoek.x, tekstRechthoek.y, tekstRechthoek.width, tekstRechthoek.height);
 			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		}
+*/		
 
 /*		
 		if ((mouseMode == tekstTekenen) && !tekstString.equals("") && wis)
@@ -543,7 +652,8 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			
 //g2D.setStroke(new BasicStroke(1.5f));			
 		}
-*/		
+*/
+/*		
 		// alleen op het scherm
 		if ((mouseMode == selecteren) && (selecteerRechthoek != null) && !sleepSelectie && !wis)
 		{
@@ -557,7 +667,8 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 			
 		}
-		
+*/
+/*		
 		// alleen op het scherm
 		if ((mouseMode == selecteren) && (selecteerRechthoek != null) && sleepSelectie && !wis)
 		{	
@@ -577,8 +688,24 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			
 		}
+*/	
+		
+		if (mouseMode == selecteren)
+		{
+			if (selectedStreep != null)
+				selectedStreep.tekenBB(g);
+			if (selectedLijn != null)
+				selectedLijn.tekenBB(g);
+			if (selectedRechthoek != null)
+				selectedRechthoek.tekenBB(g);
+			if (selectedEllips != null)
+				selectedEllips.tekenBB(g);
+			if (selectedTekstElement != null)
+				selectedTekstElement.tekenBB(g);
+		}
 	}
 	
+/*	
 	void updatePixelArray()
 	{	int w = getSize().width;
 		int h = getSize().height;
@@ -605,7 +732,9 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		
 		
 	}	
-		
+*/		
+	
+/*	
 	public ColorBytes handlesinglepixel(int x, int y, int pixel) 
 	{
 		int alpha = (pixel >> 24) & 0xff;
@@ -615,7 +744,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			
 		return new ColorBytes(x, y, red, green, blue);
 	}
-
+*/
 		
 	
 	void tekenPunt(Graphics g, int x, int y)
@@ -625,7 +754,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		g.drawLine(x, y, x, y);
 		
 	}
-	
+/*	
 	void gumPunt(int x, int y)
 	{
 		for (int xCnt = x - gumGrootte / 2; xCnt <= x + gumGrootte / 2; xCnt++)
@@ -639,11 +768,11 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				
 			}
 	}
-
+*/
 	void undo()
 	{
-		wis();
-		Vector lastState = getFromHistory();
+		wis(false);
+		Hashtable lastState = getFromHistory();
 		if (lastState != null)
 		{	setState(lastState);
 		}
@@ -651,20 +780,182 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		repaint();
 	}
 	
-	void wis()
-	{	if ((mouseMode == selecteren) && (selecteerRechthoek != null))
+	void wis(boolean complete)
+	{	
+/*		
+		if ((mouseMode == selecteren) && (selecteerRechthoek != null))
 		{
 			wisRectangle(selecteerRechthoek);
+		}
+*/
+		if ((mouseMode == selecteren) && objectSelected())
+		{
+			wisObjectSelected();
+			
 		}
 		else
 		{
 			for (int xCnt = 0; xCnt < breedte; xCnt++)
 				for (int yCnt = 0; yCnt < hoogte; yCnt++)
-				{
-					pixels[xCnt][yCnt].zetColor(backgroundColor);
+				{	pixels[xCnt][yCnt].zetColor(backgroundColor);
 				}
+			
+			streepVector.removeAllElements();
+			lijnVector.removeAllElements();
+			rechthoekVector.removeAllElements();
+			ellipsVector.removeAllElements();
+			tekstElementVector.removeAllElements();
+			
+			if (complete)
+				numHistories = 0;
 		}	
 		repaint();
+	}
+	
+	public void resetSelectedObject()
+	{
+		selectedStreep = null;
+		selectedLijn = null;
+		selectedRechthoek = null;
+		selectedEllips = null;
+		selectedTekstElement = null;
+		
+	}
+	
+	public boolean objectSelected()
+	{
+		return (selectedStreep != null)|| 
+		   (selectedLijn != null) || 
+		   (selectedRechthoek != null) || 
+		   (selectedEllips != null) ||
+		   (selectedTekstElement != null);		
+	}
+	
+	public boolean setSelectedObject(int x, int y)
+	{	boolean found = false;
+	
+		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
+		{	Streep streep = (Streep) streepVector.elementAt(sCnt);
+			if (streep.bbContains(x, y))
+			{	selectedStreep = streep;
+				selectedLijn = null;
+				selectedRechthoek  = null;
+				selectedEllips  = null;
+				selectedTekstElement  = null;
+				return true; 
+			}
+		}
+		for (int lCnt = 0; lCnt < lijnVector.size(); lCnt++)
+		{	Lijn lijn = (Lijn) lijnVector.elementAt(lCnt);
+			if (lijn.bbContains(x, y))
+			{	selectedLijn = lijn;
+				selectedStreep = null;
+				selectedRechthoek  = null;
+				selectedEllips  = null;
+				selectedTekstElement  = null;
+				return true; 
+			}
+		}
+		for (int rCnt = 0; rCnt < rechthoekVector.size(); rCnt++)
+		{	Rechthoek rechthoek = (Rechthoek) rechthoekVector.elementAt(rCnt);
+			if (rechthoek.bbContains(x, y))
+			{	selectedRechthoek = rechthoek;
+				selectedStreep = null;
+				selectedLijn  = null;
+				selectedEllips  = null;
+				selectedTekstElement  = null;
+			
+				return true; 
+			}
+		}
+		for (int eCnt = 0; eCnt < ellipsVector.size(); eCnt++)
+		{	Ellips ellips = (Ellips) ellipsVector.elementAt(eCnt);
+			if (ellips.bbContains(x, y))
+			{	selectedEllips = ellips;
+				selectedStreep = null;
+				selectedLijn  = null;
+				selectedRechthoek  = null;
+				selectedTekstElement  = null;
+			
+				return true; 
+			}
+		}
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			if (tekstElement.bbContains(x, y))
+			{	selectedTekstElement = tekstElement;
+				selectedStreep = null;
+				selectedLijn  = null;
+				selectedRechthoek  = null;
+				selectedEllips  = null;
+				return true; 
+			}
+		}
+	
+		return found;
+	}
+	
+	
+	
+	public void wisObjectSelected()
+	{ 
+		boolean gewist = false;
+		if (selectedStreep != null)
+		{	streepVector.removeElement(selectedStreep);
+			selectedStreep = null;
+			gewist = true;
+		}
+		if (selectedLijn != null)  
+		{	lijnVector.removeElement(selectedLijn);
+			selectedLijn = null;
+			gewist = true;
+		}
+		if (selectedRechthoek != null)  
+		{	rechthoekVector.removeElement(selectedRechthoek);
+			selectedRechthoek = null;
+			gewist = true;
+		}
+		if (selectedEllips != null) 
+		{	ellipsVector.removeElement(selectedEllips);
+			selectedEllips = null;
+			gewist = true;
+		}
+		if (selectedTekstElement != null)
+		{	tekstElementVector.removeElement(selectedTekstElement);
+			selectedTekstElement = null;
+			gewist = true;
+		}
+		
+		sleepSelectie = false;
+		
+		if (gewist)
+			addToHistory();
+		repaint();
+	}
+	
+	
+	public void translateObjectSelected(int dx, int dy)
+	{ 
+		if (selectedStreep != null)
+			selectedStreep.translate(dx, dy);
+		if (selectedLijn != null)  
+			selectedLijn.translate(dx, dy);		   
+		if (selectedRechthoek != null)  
+			selectedRechthoek.translate(dx, dy);
+		if (selectedEllips != null) 
+			selectedEllips.translate(dx, dy);		
+		if  (selectedTekstElement != null)
+			selectedTekstElement.translate(dx, dy);
+		
+	}
+	
+	public boolean objectSelectedContains(int x, int y)
+	{ 
+		return ((selectedStreep != null) && selectedStreep.bbContains(x, y)) || 
+			   ((selectedLijn != null) && selectedLijn.bbContains(x, y)) || 
+			   ((selectedRechthoek != null) && selectedRechthoek.bbContains(x, y)) || 
+			   ((selectedEllips != null) && selectedEllips.bbContains(x, y)) ||
+			   ((selectedTekstElement != null) && selectedTekstElement.bbContains(x, y));
 	}
 	
 	
@@ -679,10 +970,12 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
+/*			
 			else if (mouseMode == gummen)
 			{
 				gumPunt(e.getX(), e.getY());
 			}
+*/			
 			else if ((mouseMode == lijnTekenen) ||
 					 (mouseMode == rechthoekTekenen) ||
 					 (mouseMode == cirkelTekenen))
@@ -691,6 +984,8 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == tekstTekenen)
 			{
+
+/*				
 				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
 				{
 					sleepTekst = true;
@@ -699,35 +994,38 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				}
 				else
 				{
-					sleepTekst = false;
-					//if (tekstVeld.isVisible())
-					//{
+*/					
+					//sleepTekst = false;
+				
+					if (tekstVeld.isVisible())
 						hideTekstVeld(false);
-					//}
 					tekstVeld.setLocation(e.getX(), e.getY());
 					tekstVeld.setText("");
 					tekstVeld.setVisible(true);
 					tekstVeld.requestFocus();
-					tekstRechthoek = new Rectangle(e.getX() - tekstRand, e.getY() - tekstRand, tekstBreedte + 2 * tekstRand - 2, 
-							                                           tekstHoogte + 2 * tekstRand - 2);
-				}
+					//tekstRechthoek = new Rectangle(e.getX() - tekstRand, e.getY() - tekstRand, tekstBreedte + 2 * tekstRand - 2, 
+//							                                           tekstHoogte + 2 * tekstRand - 2);
+				//}
 			}
 			else if (mouseMode == selecteren)
 			{
-				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				//if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
 				{
 					sleepSelectie = true;
 					startX = e.getX();
 					startY = e.getY();
-					sleepPoints = copyRectangle(selecteerRechthoek);
-					wisRectangle(selecteerRechthoek);
-//System.out.println("sr = " + selecteerRechthoek.toString());					
+					//sleepPoints = copyRectangle(selecteerRechthoek);
+					//wisRectangle(selecteerRechthoek);
+//System.out.println("sr = " + selecteerRechthoek.toString());
+					objectMoved = false;
 				}
 				else
 				{
 					sleepSelectie = false;
-					figuurStart = new Point(e.getX(), e.getY());
-					selecteerRechthoek = null;
+					resetSelectedObject();
+					//figuurStart = new Point(e.getX(), e.getY());
+					//selecteerRechthoek = null;
 				}
 			}
 			repaint();
@@ -744,10 +1042,12 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
+/*			
 			else if (mouseMode == gummen)
 			{
 				gumPunt(e.getX(), e.getY());	
 			}
+*/			
 			else if (mouseMode == lijnTekenen)
 			{
 				if (e.isShiftDown())
@@ -935,6 +1235,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == tekstTekenen)
 			{
+/*				
 				if (sleepTekst) // verplaats de tekstRechthoek en het tekstVeld!!
 				{	
 				
@@ -947,7 +1248,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					startY = e.getY();
 				
 				}
-				
+*/				
 /*				
 				if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
 				{	tekstRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
@@ -973,16 +1274,22 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				{	
 					int dx = e.getX() - startX;
 					int dy = e.getY() - startY;
-					selecteerRechthoek.translate(dx, dy);
+					//selecteerRechthoek.translate(dx, dy);
 					//figuurStart.translate(e.getX() - figuurStart.x, figuurStart.y - e.getY());
+					translateObjectSelected(dx, dy);
+/*					
 					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
 					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
 						translateColorBytes(cb, dx, dy);
-					}	
+					}
+*/						
 					startX = e.getX();
 					startY = e.getY();
 					
+					objectMoved = true;
+					
 				}
+/*				
 				else // sleepSelectie, vorm de selecteerRechthoek
 				{	
 					if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
@@ -1002,6 +1309,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
 					}
 				}
+*/				
 			}
 			
 			repaint();
@@ -1015,26 +1323,73 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		{
 			if (mouseMode == tekenen)
 			{	
-				updatePixelArray();
+				//updatePixelArray();
+				Streep streep = new Streep(drawingColor, draggPoints);
+				streepVector.addElement(streep);
+				if (draggPoints.size() > 1)
+					addToHistory();
 				draggPoints.removeAllElements();
-				addToHistory();
-			}	
+				repaint();
+			}
+/*			
 			else if (mouseMode == gummen)
 			{
 				updatePixelArray();
 				addToHistory();
-				//updatePixelArray();
 			}
-			else if ((mouseMode == lijnTekenen) ||
-					 (mouseMode == rechthoekTekenen) ||
-					 (mouseMode == cirkelTekenen))
+*/			
+			else if (mouseMode == lijnTekenen)
 			{	
-				updatePixelArray();
+				//updatePixelArray();
+				if (lijnEinde != null)
+				{	
+					Lijn lijn = new Lijn(drawingColor, figuurStart.x, figuurStart.y, lijnEinde.x, lijnEinde.y);
+					lijnVector.addElement(lijn);
+				}
 				figuurStart = null;
 				lijnEinde = null;
 				tekenRechthoek = null;
+				
 				addToHistory();
+				repaint();
 			}
+			else if (mouseMode == rechthoekTekenen)
+			{	
+				//updatePixelArray();
+				if (tekenRechthoek != null)
+				{	
+					Rechthoek rechthoek = new Rechthoek(drawingColor, 
+													tekenRechthoek.x, tekenRechthoek.y,
+													tekenRechthoek.width, tekenRechthoek.height);
+					rechthoekVector.addElement(rechthoek);
+				}
+				
+				figuurStart = null;
+				lijnEinde = null;
+				tekenRechthoek = null;
+				
+				addToHistory();
+				repaint();				
+			}
+			else if (mouseMode == cirkelTekenen)
+			{	
+				//updatePixelArray();
+				
+				if (tekenRechthoek != null)
+				{
+					Ellips ellips = new Ellips(drawingColor, 
+									       tekenRechthoek.x, tekenRechthoek.y,
+										   tekenRechthoek.width, tekenRechthoek.height);
+					ellipsVector.addElement(ellips);				
+				}
+				figuurStart = null;
+				lijnEinde = null;
+				tekenRechthoek = null;
+				
+				addToHistory();
+				repaint();				
+			}
+			
 			else if (mouseMode == tekstTekenen)
 			{
 				
@@ -1045,6 +1400,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				if (sleepSelectie)
 				{	//sleepSelectie = false;
 					//updatePixelArray();
+/*					
 					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
 					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
 						if ((cb.x < breedte) && (cb.y < hoogte))
@@ -1052,9 +1408,13 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					}
 					
 					sleepPoints.removeAllElements();
-					
+*/					
+
 					sleepSelectie = false;
-					addToHistory();
+					//resetSelectedObject();
+					if (objectMoved)
+						addToHistory();
+					objectMoved = false;
 					//sleepSelectie = false;
 					repaint();
 				}
@@ -1066,6 +1426,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		{
 			if (mouseMode == tekstTekenen)
 			{
+/*				
 				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
 				{
 					setCursor(new Cursor(Cursor.MOVE_CURSOR));
@@ -1077,13 +1438,14 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					else
 						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}
+*/				
 				
 			}
 			
 			if (mouseMode == selecteren)
 			{
 				
-				
+/*				
 				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
 				{
 					setCursor(new Cursor(Cursor.MOVE_CURSOR));
@@ -1095,6 +1457,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					else
 						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}
+*/				
 				
 			}
 				
@@ -1107,6 +1470,13 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		}
 	} //MLMML
 	
+	class TekstAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			hideTekstVeld(false);
+		}
+	}
 }
 
 

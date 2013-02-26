@@ -52,7 +52,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	int bottomHeight = 30;
 	int offSet = 5;
 	
-	JToggleButton tekenButton, gumButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
+	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
 	ButtonGroup tekenGumGroup;
 	JButton undoButton, wisButton;
 	JToggleButton[] kleurKeuzeButtons;
@@ -453,7 +453,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		zetTekstTekenen(tekstTekenen);
 
-		
+/*		
+		// backwards-compatibility
 		Vector stateVector = new Vector();
 		Vector gwtStateVector = new Vector();
 		if (b.containsKey("gwtpixels"))
@@ -465,12 +466,15 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		{	stateVector = (Vector) b.get("pixels");
 			if (stateVector.size() > 0)
 				kladjeVeld.setState(stateVector);
-		}	
+		}
+*/
+		kladjeVeld.setState(b);
 		
 	}
 	
 	public void setState(Hashtable b)
 	{
+/*		
 		Vector stateVector = new Vector();
 		Vector gwtStateVector = new Vector();
 		if (b.containsKey("gwtpixels"))
@@ -483,7 +487,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			if (stateVector.size() > 0)
 				kladjeVeld.setState(stateVector);
 		}	
-
+*/
+		kladjeVeld.setState(b);
 	}
 	
 	public void setEditState(Hashtable b)
@@ -518,6 +523,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		zetTekstTekenen(tekstTekenen);
 		
+/*		
 		Vector stateVector = new Vector();
 		Vector gwtStateVector = new Vector();
 		if (b.containsKey("gwtpixels"))
@@ -530,19 +536,20 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			if (stateVector.size() > 0)
 				kladjeVeld.setState(stateVector);
 		}	
-		
+*/
+		kladjeVeld.setState(b);
 
 	}
 	
 	public Hashtable getState()
 	{
-		Hashtable h = new Hashtable();
+		Hashtable h = kladjeVeld.getState();
 
 //		Vector stateVector = kladjeVeld.getState();
 //		h.put("pixels", stateVector);
 		
-		Vector gwtStateVector = kladjeVeld.getGWTState();
-		h.put("gwtpixels", gwtStateVector);
+		//Vector gwtStateVector = kladjeVeld.getGWTState();
+		//h.put("gwtpixels", gwtStateVector);
 		
 		return h;
 		
@@ -550,7 +557,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	
 	public Hashtable getEditState()
 	{
-		Hashtable h = new Hashtable();
+		//Hashtable h = new Hashtable();
+		Hashtable h = kladjeVeld.getState();
 		
 		h.put("kleurkeuze", new Boolean(kleurkeuze));
 		h.put("lijnen", new Boolean(lijnen));
@@ -563,8 +571,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 //		Vector stateVector = kladjeVeld.getState();
 //		h.put("pixels", stateVector);
 
-		Vector gwtStateVector = kladjeVeld.getGWTState();
-		h.put("gwtpixels", gwtStateVector);
+		//Vector gwtStateVector = kladjeVeld.getGWTState();
+		//h.put("gwtpixels", gwtStateVector);
 		
 		return h;
 	}
@@ -644,7 +652,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	{
 		if (lijnTekenen && rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			                    getSize().height - offSet - 20);
@@ -667,7 +675,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (!lijnTekenen && rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{	
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			                    getSize().height - offSet - 20);
 			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
@@ -688,7 +696,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (lijnTekenen && !rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			cirkelButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
@@ -710,7 +718,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (lijnTekenen && rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
@@ -732,7 +740,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (lijnTekenen && rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			               getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
@@ -755,7 +763,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		else if (!lijnTekenen && !rechthoekTekenen && cirkelTekenen && tekstTekenen)
 		{	
-			cirkelButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			cirkelButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	      			                 getSize().height - offSet - 20);
 			tekstButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -775,7 +783,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (!lijnTekenen && rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	       			                    getSize().height - offSet - 20);
 			tekstButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -794,7 +802,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (!lijnTekenen && rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 	       			                    getSize().height - offSet - 20);
 			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -814,7 +822,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		else if (lijnTekenen && !rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			tekstButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -835,7 +843,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		else if (lijnTekenen && !rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			cirkelButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -855,7 +863,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (lijnTekenen && rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                        			   getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -876,7 +884,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 
 		else if (lijnTekenen && !rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -893,7 +901,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (!lijnTekenen && rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			rechthoekButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			rechthoekButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -910,7 +918,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		}
 		else if (!lijnTekenen && !rechthoekTekenen && cirkelTekenen && !tekstTekenen)
 		{
-			cirkelButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			cirkelButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -928,7 +936,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		else if (!lijnTekenen && !rechthoekTekenen && !cirkelTekenen && tekstTekenen)
 		{
-			tekstButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			tekstButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			selecterenButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
@@ -946,7 +954,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		
 		else if (!lijnTekenen && !rechthoekTekenen && !cirkelTekenen && !tekstTekenen)
 		{
-			selecterenButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			selecterenButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
                     getSize().height - offSet - 20);
 			undoButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 3 * offSet,
 	      			  getSize().height - 20 - offSet);
@@ -984,7 +992,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			return;
 			
 		super.setBounds(x, y, b, h);
-System.out.println("klip set bounds " + b + " " + h);		
+//System.out.println("klip set bounds " + b + " " + h);		
 		
 		
 		if (kladjeVeld == null) 
@@ -993,7 +1001,7 @@ System.out.println("klip set bounds " + b + " " + h);
 			kladjeVeld = new KladjeVeld(b, h - bottomHeight);
 			kladjeVeld.setLocation(0, 0);
 			add(kladjeVeld);
-System.out.println("kladjeVeld created");
+//System.out.println("kladjeVeld created");
 			tekenGumGroup = new ButtonGroup();
 
 			tekenButton = new JToggleButton(new ImageIcon(penDefault), true);
@@ -1004,6 +1012,7 @@ System.out.println("kladjeVeld created");
 			add(tekenButton);
 			tekenButton.addActionListener(new TekenGumAL());
 
+/*			
 			gumButton = new JToggleButton(new ImageIcon(gumDefault), false);
 			gumButton.setRolloverIcon(new ImageIcon(gumRollover));
 			gumButton.setSelectedIcon(new ImageIcon(gumSelected));
@@ -1012,6 +1021,7 @@ System.out.println("kladjeVeld created");
 					            getSize().height - offSet - 20, 20, 20);
 			add(gumButton);
 			gumButton.addActionListener(new TekenGumAL());
+*/			
 			
 			if (lijnDefault != null && lijnRollover != null && lijnSelected != null)
 			{
@@ -1025,7 +1035,7 @@ System.out.println("kladjeVeld created");
 				lijnButton = new JToggleButton("/");
 			}
 			lijnButton.setBorder(null);
-			lijnButton.setBounds(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+			lijnButton.setBounds(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 		                        getSize().height - offSet - 20, 20, 20);
 			add(lijnButton);
 			lijnButton.addActionListener(new TekenGumAL());
@@ -1101,7 +1111,7 @@ System.out.println("kladjeVeld created");
 			
 			
 			tekenGumGroup.add(tekenButton);
-			tekenGumGroup.add(gumButton);
+//			tekenGumGroup.add(gumButton);
 			tekenGumGroup.add(lijnButton);
 			tekenGumGroup.add(rechthoekButton);
 			tekenGumGroup.add(cirkelButton);
@@ -1186,9 +1196,9 @@ System.out.println("kladjeVeld created");
 		{	//kladjeVeld.setSize(b - 2 * offSet, h - offSet - bottomHeight);
 			kladjeVeld.setSize(b, h - bottomHeight);
 			tekenButton.setLocation(2 * offSet, getSize().height - offSet - 20);
-			gumButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
-		            			  getSize().height - offSet - 20);
-			lijnButton.setLocation(gumButton.getLocation().x + gumButton.getSize().width + offSet, 
+//			gumButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
+//		            			  getSize().height - offSet - 20);
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
       			  getSize().height - offSet - 20);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
       			  getSize().height - offSet - 20);
@@ -1250,7 +1260,7 @@ System.out.println("kladjeVeld sized");
 				else
 					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
-			
+/*			
 			else if (gumButton.isSelected())
 			{
 				kladjeVeld.mouseMode = kladjeVeld.gummen;
@@ -1276,7 +1286,7 @@ System.out.println("kladjeVeld sized");
 				else
 					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
-			
+*/			
 			else if (lijnButton.isSelected())
 			{
 				kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
@@ -1380,7 +1390,7 @@ System.out.println("kladjeVeld sized");
 			{
 				kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
 				kladjeVeld.hideTekstVeld(true);
-				kladjeVeld.tekstRechthoek = null;
+				//kladjeVeld.tekstRechthoek = null;
 				kladjeVeld.repaint();
 				
 				boolean error = false;
@@ -1405,7 +1415,8 @@ System.out.println("kladjeVeld sized");
 			{
 				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);
-				kladjeVeld.selecteerRechthoek = null;
+//				kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.resetSelectedObject();
 				kladjeVeld.repaint();
 				
 				boolean error = false;
@@ -1508,7 +1519,7 @@ System.out.println("kladjeVeld sized");
 		
 		if (e.getSource() == wisButton)
 		{
-			kladjeVeld.wis();
+			kladjeVeld.wis(true);
 		}
 		
 		if (e.getSource() == undoButton)
