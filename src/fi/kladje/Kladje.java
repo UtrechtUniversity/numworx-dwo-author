@@ -894,7 +894,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			{
 				//kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);
-//				kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.selecteerRechthoek = null;
 				kladjeVeld.resetSelectedObject();
 				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.repaint();

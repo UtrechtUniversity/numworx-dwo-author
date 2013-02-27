@@ -2,6 +2,7 @@ package fi.kladje;
 
 import java.awt.*;
 import java.util.*;
+import java.awt.geom.*;
 
 public class Streep 
 {
@@ -188,7 +189,7 @@ public class Streep
 	}
 	
 	
-	public void teken(Graphics g)
+	public void teken(Graphics2D g)
 	{
 		g.setColor(kleur);		
 		
@@ -207,18 +208,18 @@ public class Streep
 
 	}
 	
-	public void tekenBB(Graphics g)
+	public void tekenBB(Graphics2D g)
 	{
-		Graphics2D g2D = (Graphics2D) g;
+		//Graphics2D g2D = (Graphics2D) g;
 		float[] dash = new float[2];
 		dash[0] = 2;
 		dash[1] = 2;
-		g2D.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setColor(KladjeVeld.bbColor);
 
 		g.drawPolygon(bb);
 				
-		g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
 	}
 	
@@ -238,6 +239,20 @@ public class Streep
 		bb.translate(dx, dy);
 	}
 	
+	public boolean isContainedIn(Rectangle r)
+	{
+		if (r == null)
+			return false;		
+		
+		boolean isContainedIn = true;
+		
+		for (int pCnt = 0; pCnt < bb.npoints; pCnt++)
+		{
+			isContainedIn = isContainedIn && r.contains(bb.xpoints[pCnt], bb.ypoints[pCnt]);
+		}
+		
+		return isContainedIn;
+	}
 }
 class Lijn
 {
@@ -336,7 +351,7 @@ class Lijn
 		return new Lijn(kleur, fromX, fromY, toX, toY);
 	}
 	
-	public void teken(Graphics g)
+	public void teken(Graphics2D g)
 	{
 		g.setColor(kleur);
 		g.drawLine(fromX, fromY, toX, toY);
@@ -345,18 +360,18 @@ class Lijn
 		//tekenBB(g);
 	}
 
-	public void tekenBB(Graphics g)
+	public void tekenBB(Graphics2D g)
 	{
-		Graphics2D g2D = (Graphics2D) g;
+		//Graphics2D g2D = (Graphics2D) g;
 		float[] dash = new float[2];
 		dash[0] = 2;
 		dash[1] = 2;
-		g2D.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawPolygon(bb);
 				
-		g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
 	}
 	
@@ -375,6 +390,20 @@ class Lijn
 		bb.translate(dx, dy);
 	}	
 
+	public boolean isContainedIn(Rectangle r)
+	{
+		if (r == null)
+			return false;
+		
+		boolean isContainedIn = true;
+		
+		for (int pCnt = 0; pCnt < bb.npoints; pCnt++)
+		{
+			isContainedIn = isContainedIn && r.contains(bb.xpoints[pCnt], bb.ypoints[pCnt]);
+		}
+		
+		return isContainedIn;
+	}	
 }
 class Rechthoek
 {	Color kleur;
@@ -382,6 +411,8 @@ class Rechthoek
 	int bbFactor = 4;
 	Rectangle outerBB;
 	Rectangle innerBB;
+	AffineTransform at = new AffineTransform();
+	double cx, cy;
 	
 	public Rechthoek(Color c, int x, int y, int w, int h)
 	{
@@ -391,12 +422,16 @@ class Rechthoek
 		breedte = w;
 		hoogte = h;
 		
+		cx = topLeftX + ((double) breedte) / 2;
+		cy = topLeftY + ((double) hoogte) / 2;
+		
 		outerBB = new Rectangle(topLeftX - bbFactor, topLeftY - bbFactor, 
 							    breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
 		innerBB = new Rectangle(topLeftX + bbFactor, topLeftY + bbFactor, 
 			    			    breedte - 2 * bbFactor, hoogte - 2 * bbFactor);
 		
-		
+	
+		at.rotate(Math.PI / 4, cx, cy);
 	}
 
 	public Hashtable getState()
@@ -434,7 +469,7 @@ class Rechthoek
 		return new Rechthoek(kleur, topLeftX, topLeftY, breedte, hoogte);
 	}
 	
-	public void teken(Graphics g)
+	public void teken(Graphics2D g)
 	{
 		g.setColor(kleur);
 		g.drawRect(topLeftX, topLeftY, breedte, hoogte);
@@ -443,19 +478,26 @@ class Rechthoek
 		//tekenBB(g);
 	}
 
-	public void tekenBB(Graphics g)
+	public void tekenBB(Graphics2D g)
 	{
-		Graphics2D g2D = (Graphics2D) g;
+		//Graphics2D g2D = (Graphics2D) g;
 		float[] dash = new float[2];
 		dash[0] = 2;
 		dash[1] = 2;
-		g2D.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawRect(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
 		g.drawRect(innerBB.x, innerBB.y, innerBB.width, innerBB.height);
 		
-		g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		// testing
+		
+		//g.setColor(Color.red);
+		//g.setTransform(at);
+		//g.drawRect(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
+		//g.setTransform(new AffineTransform());
 
 	}
 	
@@ -471,6 +513,17 @@ class Rechthoek
 		outerBB.translate(dx, dy);
 		innerBB.translate(dx, dy);
 	}	
+
+	public boolean isContainedIn(Rectangle r)
+	{
+		if (r == null)
+			return false;
+		
+		boolean isContainedIn = r.contains(outerBB.x, outerBB.y) && 
+								r.contains(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
+		
+		return isContainedIn;
+	}
 	
 }
 class Ellips
@@ -529,7 +582,7 @@ class Ellips
 		return new Ellips(kleur, topLeftX, topLeftY, breedte, hoogte);
 	}
 
-	public void teken(Graphics g)
+	public void teken(Graphics2D g)
 	{
 		g.setColor(kleur);
 		g.drawOval(topLeftX, topLeftY, breedte, hoogte);
@@ -538,19 +591,19 @@ class Ellips
 		//tekenBB(g);
 	}
 	
-	public void tekenBB(Graphics g)
+	public void tekenBB(Graphics2D g)
 	{
-		Graphics2D g2D = (Graphics2D) g;
+		//Graphics2D g2D = (Graphics2D) g;
 		float[] dash = new float[2];
 		dash[0] = 2;
 		dash[1] = 2;
-		g2D.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawOval(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
 		g.drawOval(innerBB.x, innerBB.y, innerBB.width, innerBB.height);
 		
-		g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 
 	}
 	
@@ -591,6 +644,17 @@ class Ellips
 		
 	}	
 
+	public boolean isContainedIn(Rectangle r)
+	{
+		if (r == null)
+			return false;
+		
+		boolean isContainedIn = r.contains(outerBB.x, outerBB.y) && 
+								r.contains(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
+		
+		return isContainedIn;
+	}
+	
 }
 
 class TekstElement
@@ -643,7 +707,7 @@ class TekstElement
 		return new TekstElement(kleur, tekst, xPos, yPos);
 	}
 	
-	public void teken(Graphics g)
+	public void teken(Graphics2D g)
 	{
 		g.setFont(KladjeVeld.tekstFont);
 		g.setColor(kleur);
@@ -653,18 +717,18 @@ class TekstElement
 		//tekenBB(g);
 	}
 
-	public void tekenBB(Graphics g)
+	public void tekenBB(Graphics2D g)
 	{
-		Graphics2D g2D = (Graphics2D) g;
+		//Graphics2D g2D = (Graphics2D) g;
 		float[] dash = new float[2];
 		dash[0] = 2;
 		dash[1] = 2;
-		g2D.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setColor(KladjeVeld.bbColor);
 
 		g.drawRect(bb.x, bb.y, bb.width, bb.height);
 				
-		g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 
 	}
 	
@@ -681,5 +745,16 @@ class TekstElement
 		
 		bb.translate(dx, dy);
 	}	
+
+	public boolean isContainedIn(Rectangle r)
+	{
+		if (r == null)
+			return false;
+		
+		boolean isContainedIn = r.contains(bb.x, bb.y) && 
+								r.contains(bb.x + bb.width, bb.y + bb.height);
+		
+		return isContainedIn;
+	}
 	
 }

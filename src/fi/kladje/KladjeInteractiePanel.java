@@ -1415,7 +1415,7 @@ System.out.println("kladjeVeld sized");
 			{
 				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);
-//				kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.selecteerRechthoek = null;
 				kladjeVeld.resetSelectedObject();
 				kladjeVeld.repaint();
 				
