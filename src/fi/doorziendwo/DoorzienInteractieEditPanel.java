@@ -44,11 +44,11 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 			  figurenMenuOptieCB, optiesMenuOptieCB, helpBarOptieCB, 
 			  lijnTekenOptieCB, lijnVerlengOptieCB,
 			  vlakTekenOptieCB, evenwijdigVlakOptieCB, toonDoorsnedeOptieCB, splitsFiguurOptieCB, 
-			  bouwplaatOptieCB;
+			  bouwplaatOptieCB, previewOptieCB;
 	
 	;
 	
-	boolean viewerModus = true;
+	boolean viewerModus = false;
 	
 	// defaults at startup
 	// worden niet gewijzigd
@@ -76,7 +76,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 	
 	boolean bouwplaatOptie = true;
 	
-	
+	boolean previewOptie = false;
 	
 	public DoorzienInteractieEditPanel()
 	{
@@ -101,6 +101,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		int currentX = dzip.getSize().width + offset;
 		int currentY = offset / 2;
 		
+/*		
 		modusLabel = new JLabel(Table.lookUp("EditPanel_modus"));
 		modusLabel.setFont(theBoldFont);
 		modusLabel.setBackground(getBackground());
@@ -108,7 +109,8 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		add(modusLabel);
 		
 		currentY += height2 + offset / 2;
-		
+*/
+/*		
 		modusGroup = new ButtonGroup();
 		viewerRadioButton = new JRadioButton(Table.lookUp("EditPanel_viewer"), viewerModus);
 		viewerRadioButton.setFont(theFont);
@@ -120,7 +122,8 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		viewerRadioButton.addActionListener(this);
 		
 		currentY += height + offset / 2;
-		
+*/
+/*		
 		doorzienRadioButton = new JRadioButton(Table.lookUp("EditPanel_doorzien"), !viewerModus);
 		doorzienRadioButton.setFont(theFont);
 		doorzienRadioButton.setBackground(getBackground());
@@ -131,7 +134,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		doorzienRadioButton.addActionListener(this);
 		
 		currentY += height + offset / 2;
-		
+*/		
 		
 		viewerOptiesLabel = new JLabel(Table.lookUp("EditPanel_vieweropties"));
 		viewerOptiesLabel.setFont(theBoldFont);
@@ -218,8 +221,12 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 
 		bouwplaatOptieCB = maakCheckBox(Table.lookUp("EditPanel_bouwplaatOptie"), 
 				  currentX, currentY, width, height, bouwplaatOptie);
-		currentY += height + offset / 2;
+		currentY += height + offset;
 		
+		previewOptieCB = maakCheckBox(Table.lookUp("EditPanel_previewOptie"), 
+				  currentX, currentY, width, height, previewOptie);
+		currentY += height + offset / 2;
+
 		
 		componentsCreated = true;
 		
@@ -253,9 +260,10 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 	{
 		if (componentsCreated)
 		{
-			modusLabel.setLocation(dzip.getSize().width + offset, modusLabel.getLocation().y);
-			viewerRadioButton.setLocation(dzip.getSize().width + offset, viewerRadioButton.getLocation().y);
-			doorzienRadioButton.setLocation(dzip.getSize().width + offset, doorzienRadioButton.getLocation().y);
+			
+			//modusLabel.setLocation(dzip.getSize().width + offset, modusLabel.getLocation().y);
+			//viewerRadioButton.setLocation(dzip.getSize().width + offset, viewerRadioButton.getLocation().y);
+			//doorzienRadioButton.setLocation(dzip.getSize().width + offset, doorzienRadioButton.getLocation().y);
 			
 			viewerOptiesLabel.setLocation(dzip.getSize().width + offset, viewerOptiesLabel.getLocation().y);
 			rotateOptionCB.setLocation(dzip.getSize().width + offset, rotateOptionCB.getLocation().y);
@@ -279,6 +287,8 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 			toonDoorsnedeOptieCB.setLocation(dzip.getSize().width + offset, toonDoorsnedeOptieCB.getLocation().y);
 			splitsFiguurOptieCB.setLocation(dzip.getSize().width + offset, splitsFiguurOptieCB.getLocation().y);
 			bouwplaatOptieCB.setLocation(dzip.getSize().width + offset, bouwplaatOptieCB.getLocation().y);
+			
+			previewOptieCB.setLocation(dzip.getSize().width + offset, previewOptieCB.getLocation().y);
 			
 		}
 	}
@@ -304,7 +314,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 	public void setEditState(Hashtable h)
 	{
 //		String startFiguurString = null;
-		boolean viewerModus = true;
+		boolean viewerModus = false;
 		
 		boolean rotateOption = true;
 		boolean borderOption = false;
@@ -328,6 +338,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		
 		boolean bouwplaatOptie = true;
 		
+		boolean previewOptie = false;
 		
 		if (h.containsKey("viewerModus")) 
 			viewerModus = ((Boolean) h.get("viewerModus")).booleanValue();
@@ -370,6 +381,10 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		if (h.containsKey("bouwplaatOptie"))
 			bouwplaatOptie = ((Boolean) h.get("bouwplaatOptie")).booleanValue();
 		
+		if (h.containsKey("previewOptie"))
+			previewOptie = ((Boolean) h.get("previewOptie")).booleanValue();
+		
+/*		
 		if (viewerModus)
 		{	viewerRadioButton.setSelected(true);
 
@@ -382,25 +397,16 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		}
 		else
 		{	doorzienRadioButton.setSelected(true);
-		
-			designOptionCB.setEnabled(false);
-			resetOptionCB.setEnabled(false);
-			
-			if (demo)
-			{
-				rotateOptionCB.setEnabled(true);
-				borderOptionCB.setEnabled(true);
-				foldOptionCB.setEnabled(true);
-			}
-			else
-			{
-				rotateOptionCB.setEnabled(false);
-				borderOptionCB.setEnabled(false);
-				foldOptionCB.setEnabled(false);
-			}
+*/		
+			rotateOptionCB.setEnabled(demo);
+			borderOptionCB.setEnabled(demo);
+			designOptionCB.setEnabled(demo);
+			resetOptionCB.setEnabled(demo);
+			foldOptionCB.setEnabled(demo);
 			
 
-		}
+//		}
+		
 		
 		rotateOptionCB.setSelected(rotateOption);
 		borderOptionCB.setSelected(borderOption);
@@ -436,6 +442,8 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		}
 		
 		bouwplaatOptieCB.setSelected(bouwplaatOptie);
+		
+		previewOptieCB.setSelected(previewOptie);
 		
 		
 		if (h.containsKey("dzipBreedte"))
@@ -554,41 +562,35 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		{	
 			dzip.setViewerModus(!doorzienRadioButton.isSelected(), true);
 			
+// tijdelijk
+//dzip.viewerObjectNaarDoorzien();			
+			
 			resetViewerDemoOptions();
 			
-			designOptionCB.setEnabled(false);
-			resetOptionCB.setEnabled(false);
 			
-			if (demoOptieCB.isSelected())
-			{
-				rotateOptionCB.setEnabled(true);
-				borderOptionCB.setEnabled(true);
-				foldOptionCB.setEnabled(true);
-			}
-			else
-			{
-				rotateOptionCB.setEnabled(false);
-				borderOptionCB.setEnabled(false);
-				foldOptionCB.setEnabled(false);
-			}
+			boolean demoSelected = demoOptieCB.isSelected();
+			
+			rotateOptionCB.setEnabled(demoSelected);
+			borderOptionCB.setEnabled(demoSelected);
+			designOptionCB.setEnabled(demoSelected);
+			resetOptionCB.setEnabled(demoSelected);				
+			foldOptionCB.setEnabled(demoSelected);
+				
 
 		}
 
 		if (e.getSource().equals(demoOptieCB))
 		{	dzip.zetDemo(demoOptieCB.isSelected());
 		
-			if (demoOptieCB.isSelected())
-			{
-				rotateOptionCB.setEnabled(true);
-				borderOptionCB.setEnabled(true);
-				foldOptionCB.setEnabled(true);
-			}
-			else
-			{
-				rotateOptionCB.setEnabled(false);
-				borderOptionCB.setEnabled(false);
-				foldOptionCB.setEnabled(false);
-			}
+			boolean demoSelected = demoOptieCB.isSelected();
+		
+			rotateOptionCB.setEnabled(demoSelected);
+			borderOptionCB.setEnabled(demoSelected);
+			designOptionCB.setEnabled(demoSelected);
+			resetOptionCB.setEnabled(demoSelected);				
+			foldOptionCB.setEnabled(demoSelected);
+		
+			
 		}
 		
 		if (e.getSource().equals(figurenMenuOptieCB))
@@ -649,6 +651,10 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		if (e.getSource().equals(bouwplaatOptieCB))
 		{	
 			dzip.zetBouwplaatOptie(bouwplaatOptieCB.isSelected());
+		}
+		if (e.getSource().equals(previewOptieCB))
+		{	
+			dzip.zetPreviewOptie(previewOptieCB.isSelected());
 		}
 		
 		

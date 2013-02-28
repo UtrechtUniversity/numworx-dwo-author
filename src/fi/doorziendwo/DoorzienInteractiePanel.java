@@ -2,6 +2,7 @@ package fi.doorziendwo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.awt.*;
 
@@ -12,6 +13,8 @@ import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 // deze moet vanwege interface InteractiePanel
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+
+import fi.beans.base64code.StringCodeObject;
  
 
 public class DoorzienInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel
@@ -21,7 +24,7 @@ public class DoorzienInteractiePanel extends JPanel implements InteractiePanel, 
 	
 	int viewPanelOffset = 0;
 	
-	boolean viewerModus = true;
+	boolean viewerModus = false; //true;
 	
 	boolean rotateOption = true;
 	boolean borderOption = false;
@@ -48,6 +51,20 @@ public class DoorzienInteractiePanel extends JPanel implements InteractiePanel, 
 		
 		super.setBackground(c);
 	}
+	
+/*	
+// tijdelijk
+public void viewerObjectNaarDoorzien()
+{
+	ScormedObject3D sco = viewPanel.scormedObject3D;
+	if (sco != null)
+	{
+		Hashtable scoTable = NoSer.getScormObject3DState(sco);
+		doorzienPanel.setState(scoTable);
+	}
+}
+*/
+	
 	public void setViewerModus(boolean b, boolean reset)
 	{
 		viewerModus = b;
@@ -90,12 +107,18 @@ public class DoorzienInteractiePanel extends JPanel implements InteractiePanel, 
 
 	public void setDesignOption(boolean b)
 	{	designOption = b;
-		viewPanel.setDesignOption(designOption);
+		if (viewerModus)
+			viewPanel.setDesignOption(designOption);
+		else
+			doorzienPanel.setDesignOption(designOption);
 	}
 
 	public void setResetOption(boolean b)
 	{	resetOption = b;
-		viewPanel.setResetOption(resetOption);
+		if (viewerModus)
+			viewPanel.setResetOption(resetOption);
+		else
+			doorzienPanel.setResetOption(resetOption);
 	}
 	
 	public void setFoldOption(boolean b)
@@ -150,42 +173,25 @@ public class DoorzienInteractiePanel extends JPanel implements InteractiePanel, 
 	{	doorzienPanel.zetBouwplaatOptie(b);
 	}
 	
+	public void zetPreviewOptie(boolean b)
+	{	doorzienPanel.zetPreviewOptie(b);
+	}
 	
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
 		
-System.out.println("dip zetOpdracht");		
 		boolean viewerModus = true;
-		
-		boolean rotateOption = true;
-		boolean borderOption = false;
-		boolean designOption = false;
-		boolean resetOption = false;
-		boolean foldOption = false;
-		
+
 		if (b.containsKey("viewerModus")) 
-			viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
+		{	viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
+//System.out.println("dip zetOpdracht contains vm = " + viewerModus);		
+		}
 
-		if (b.containsKey("rotateOption")) 
-			rotateOption = ((Boolean) b.get("rotateOption")).booleanValue();
-		if (b.containsKey("borderOption")) 
-			borderOption = ((Boolean) b.get("borderOption")).booleanValue();
-		if (b.containsKey("designOption")) 
-			designOption = ((Boolean) b.get("designOption")).booleanValue();
-		if (b.containsKey("resetOption")) 
-			resetOption = ((Boolean) b.get("resetOption")).booleanValue();
-		if (b.containsKey("foldOption")) 
-			foldOption = ((Boolean) b.get("foldOption")).booleanValue();
-
-		this.rotateOption = rotateOption;
-		this.borderOption = borderOption;
-		this.designOption = designOption;
-		this.resetOption = resetOption;
-		this.foldOption = foldOption;
-		
 		if (viewerModus)
 		{
-/*			
+			
+//System.out.println("dip zetOpdracht vm = " + viewerModus);
+
 			boolean rotateOption = true;
 			boolean borderOption = false;
 			boolean designOption = false;
@@ -208,26 +214,51 @@ System.out.println("dip zetOpdracht");
 			this.designOption = designOption;
 			this.resetOption = resetOption;
 			this.foldOption = foldOption;
-*/		
+		
 			viewPanel.setMouse(rotateOption);
 			viewPanel.setBordered(borderOption);
 			viewPanel.setDesignOption(designOption);
 			viewPanel.setResetOption(resetOption);
 			viewPanel.setFoldOption(foldOption);
 
+
 			String startFiguurString = null;
 			if (b.containsKey("startFiguurString")) 
 			{	startFiguurString = (String) b.get("startFiguurString");
 				viewPanel.setState(startFiguurString);
-			}	
+			}
+			
+			
+/*			
+			String startFiguurString = null;
+			if (b.containsKey("startFiguurString")) 
+			{	startFiguurString = (String) b.get("startFiguurString");
+				Object o = StringCodeObject.decodeStringToObject(startFiguurString);
+				ScormedObject3D sco = (ScormedObject3D) o;				
+				if (sco != null)
+				{	Hashtable scoTable = NoSer.getScormObject3DState(sco);
+					for (Enumeration e = scoTable.keys(); e.hasMoreElements();)
+					{	Object aKey = e.nextElement();
+						Object aValue = scoTable.get(aKey);
+						b.put(aKey, aValue);
+					}
+				}
+			}
+			boolean demo = true;
+			b.put("demo", new Boolean(demo));
+			viewerModus = false;
+			this.viewerModus = viewerModus;
+			b.put("viewerModus", new Boolean(viewerModus));
+
+			doorzienPanel.zetOpdracht(b, randomVars, randomValues);
+*/			
 		}
 		else
-		{	doorzienPanel.zetOpdracht(b, randomVars, randomValues);
-			
-			doorzienPanel.setRotateOption(rotateOption);
-			doorzienPanel.setBorderOption(borderOption);
-			doorzienPanel.setFoldOption(foldOption);
+		{	
+//System.out.println("dip zetOpdracht vm = " + viewerModus);
 
+			doorzienPanel.zetOpdracht(b, randomVars, randomValues);
+			
 		}
 			
 		setViewerModus(viewerModus, false);
@@ -236,27 +267,60 @@ System.out.println("dip zetOpdracht");
 	
 	public void setState(Hashtable b)
 	{
-System.out.println("dip setState");		
+//System.out.println("dip setState");		
 		
 		boolean viewerModus = true;
 		
 		if (b.containsKey("viewerModus")) 
-			viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
+		{	viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
+//System.out.println("dip setState contains vm");		
+		}
 		
 		if (viewerModus)
 		{
+			
+//System.out.println("dip setState vm = " + viewerModus);
+
 			String startFiguurString = null;
-		
 			if (b.containsKey("startFiguurString")) 
 			{	startFiguurString = (String) b.get("startFiguurString");
-//System.out.println("b contains sfs");
 				viewPanel.setState(startFiguurString);
+				
+//System.out.println("dip setState contains sfs");				
 			}
-		
-			//viewPanel.setState(startFiguurString);
+			
+
+
+/*
+			String startFiguurString = null;
+			if (b.containsKey("startFiguurString")) 
+			{	
+				
+System.out.println("dip setState contains sfs");
+
+				startFiguurString = (String) b.get("startFiguurString");
+				Object o = StringCodeObject.decodeStringToObject(startFiguurString);
+				ScormedObject3D sco = (ScormedObject3D) o;				
+				if (sco != null)
+				{	Hashtable scoTable = NoSer.getScormObject3DState(sco);
+					for (Enumeration e = scoTable.keys(); e.hasMoreElements();)
+					{	Object aKey = e.nextElement();
+						Object aValue = scoTable.get(aKey);
+						b.put(aKey, aValue);
+					}
+				}
+			}
+			boolean demo = true;
+			b.put("demo", new Boolean(demo));
+			viewerModus = false;
+			b.put("viewerModus", new Boolean(viewerModus));
+			
+			doorzienPanel.setState(b);
+*/
 		}
 		else
 		{
+//System.out.println("dip setState vm = " + viewerModus);			
 			doorzienPanel.setState(b);
 		}
 		
@@ -266,38 +330,19 @@ System.out.println("dip setState");
 	public void setEditState(Hashtable b)
 	{
 		
-System.out.println("dip setEditState");
+//System.out.println("dip setEditState");
 
 		boolean viewerModus = true;
-		
-		boolean rotateOption = true;
-		boolean borderOption = false;
-		boolean designOption = false;
-		boolean resetOption = false;
-		boolean foldOption = false;
-		
-		if (b.containsKey("viewerModus")) 
-			viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
-		if (b.containsKey("rotateOption")) 
-			rotateOption = ((Boolean) b.get("rotateOption")).booleanValue();
-		if (b.containsKey("borderOption")) 
-			borderOption = ((Boolean) b.get("borderOption")).booleanValue();
-		if (b.containsKey("designOption")) 
-			designOption = ((Boolean) b.get("designOption")).booleanValue();
-		if (b.containsKey("resetOption")) 
-			resetOption = ((Boolean) b.get("resetOption")).booleanValue();
-		if (b.containsKey("foldOption")) 
-			foldOption = ((Boolean) b.get("foldOption")).booleanValue();
-   
-		this.rotateOption = rotateOption;
-		this.borderOption = borderOption;
-		this.designOption = designOption;
-		this.resetOption = resetOption;
-		this.foldOption = foldOption;
 
+		if (b.containsKey("viewerModus")) 
+		{	viewerModus = ((Boolean) b.get("viewerModus")).booleanValue();
+//System.out.println("dip setEditState contains + vm = " + viewerModus);		
+		}
+		
 		if (viewerModus)
 		{
-/*		
+//System.out.println("dip setEditState + vm = " + viewerModus);			
+		
 			boolean rotateOption = true;
 			boolean borderOption = false;
 			boolean designOption = false;
@@ -320,7 +365,7 @@ System.out.println("dip setEditState");
 			this.designOption = designOption;
 			this.resetOption = resetOption;
 			this.foldOption = foldOption;
-*/		
+		
 			viewPanel.setMouse(rotateOption);
 			viewPanel.setBordered(borderOption);
 			viewPanel.setDesignOption(designOption);
@@ -330,30 +375,46 @@ System.out.println("dip setEditState");
 			String startFiguurString = null;
 			if (b.containsKey("startFiguurString")) 
 			{	startFiguurString = (String) b.get("startFiguurString");
-				viewPanel.setState(startFiguurString);
-			}	
+				Object o = StringCodeObject.decodeStringToObject(startFiguurString);
+				ScormedObject3D sco = (ScormedObject3D) o;				
+				if (sco != null)
+				{	Hashtable scoTable = NoSer.getScormObject3DState(sco);
+					for (Enumeration e = scoTable.keys(); e.hasMoreElements();)
+					{	Object aKey = e.nextElement();
+						Object aValue = scoTable.get(aKey);
+						b.put(aKey, aValue);
+					}
+				}
+			}
+			boolean demo = true;
+			b.put("demo", new Boolean(demo));
+//			viewerModus = false;
+//			this.viewerModus = viewerModus;
+//			b.put("viewerModus", new Boolean(viewerModus));
+			
+			doorzienPanel.setEditState(b);
 			
 		}
 		else
 		{	doorzienPanel.setEditState(b);
 
-			doorzienPanel.setRotateOption(rotateOption);
-			doorzienPanel.setBorderOption(borderOption);
-			doorzienPanel.setFoldOption(foldOption);
-		
 		}
 		
-		setViewerModus(viewerModus, false);		
+		//setViewerModus(viewerModus, false);
+		setViewerModus(false, false);
 
 	}
 	
 	public Hashtable getState()
 	{
 		
-System.out.println("dip getState");
+//System.out.println("dip getState");
 
 		if (viewerModus)
 		{
+
+//System.out.println("dip getState vm = " + viewerModus);
+
 			Hashtable h = viewPanel.getState();
 			h.put("viewerModus", new Boolean(viewerModus));
 		
@@ -361,6 +422,7 @@ System.out.println("dip getState");
 		}
 		else
 		{
+//System.out.println("dip getState vm = " + viewerModus);			
 			Hashtable h = doorzienPanel.getState();
 			h.put("viewerModus", new Boolean(viewerModus));
 			
@@ -371,43 +433,32 @@ System.out.println("dip getState");
 	public Hashtable getEditState()
 	{
 		
-System.out.println("dip getEditState");
+//System.out.println("dip getEditState");
 
-		boolean viewerModus;
+		boolean viewerModus = false;
 
-		boolean rotateOption;
-		boolean borderOption;
-		boolean designOption;
-		boolean resetOption;
-		boolean foldOption;
-		
 		viewerModus = this.viewerModus;
-		
-		rotateOption = this.rotateOption;
-		borderOption = this.borderOption;
-		designOption = this.designOption;
-		resetOption = this.resetOption;
-		foldOption = this.foldOption;
+
 
 		if (viewerModus)
 		{
-//			boolean viewerModus;
+//System.out.println("dip getEditState + vm " + viewerModus);			
 			
-//			boolean rotateOption;
-//			boolean borderOption;
-//			boolean designOption;
-//			boolean resetOption;
-//			boolean foldOption;
+			boolean rotateOption;
+			boolean borderOption;
+			boolean designOption;
+			boolean resetOption;
+			boolean foldOption;
 		
 			String startFiguurString = null;
 		
-//			viewerModus = this.viewerModus;
+			viewerModus = this.viewerModus;
 		
-//			rotateOption = this.rotateOption;
-//			borderOption = this.borderOption;
-//			designOption = this.designOption;
-//			resetOption = this.resetOption;
-//			foldOption = this.foldOption;
+			rotateOption = this.rotateOption;
+			borderOption = this.borderOption;
+			designOption = this.designOption;
+			resetOption = this.resetOption;
+			foldOption = this.foldOption;
 		
 			startFiguurString = viewPanel.getStateString();
 
@@ -428,18 +479,12 @@ System.out.println("dip getEditState");
 		}
 		else
 		{
-//			boolean viewerModus;
-			
-//			viewerModus = this.viewerModus;
-			
+//System.out.println("dip getEditState + vm " + viewerModus);
+
 			Hashtable h = doorzienPanel.getEditState();
 			
 			h.put("viewerModus", new Boolean(viewerModus));
 
-		    h.put("rotateOption", new Boolean(rotateOption));
-		    h.put("borderOption", new Boolean(borderOption));
-		    h.put("foldOption", new Boolean(foldOption));
-			
 			return h;
 		}
 		
@@ -470,7 +515,7 @@ System.out.println("dip getEditState");
 		if (viewPanel == null)
 		{
 			
-System.out.println("Panels created");
+//System.out.println("Panels created");
 //System.out.println("viewerModus " + viewerModus);
 
 			viewPanel = new ViewPanel(viewPanelOffset, viewPanelOffset,

@@ -1,6 +1,7 @@
 package fi.doorziendwo;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Color;
@@ -11,10 +12,16 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import fi.doorziendwo.ViewPanel.AL;
+
 public class DoorzienPanel extends JPanel 
 {
 	// nodig??
 	//ViewerIF viewer;
+	
+	DoorzienFrame2 doorzienFrame; 
+	boolean frameStarted = false;
+	boolean isInFrame = false;
 	
     // GUI components
     // buffering drawing
@@ -68,6 +75,8 @@ public class DoorzienPanel extends JPanel
           redoImage, redoOffImage
           ;  
 
+    Image toolsImage, resetIconImage;
+    
     Image epnImage;
     
 	protected String[] imageNames = {
@@ -113,7 +122,9 @@ public class DoorzienPanel extends JPanel
 			"undooff.gif",
 			"redo.gif",
 			"redooff.gif",
-			"EPNlogo.gif"};
+			"EPNlogo.gif",
+			"tools.gif",
+			"reseticon.gif"};
 	
 	
 	
@@ -206,6 +217,8 @@ public class DoorzienPanel extends JPanel
 	
 	boolean bouwplaatOptie = true;
 	
+	boolean previewOptie = false;
+	
 	// menukeuzes docent indien geen menu
 	//int figuurCode = CUBE;
 	boolean letters = false;
@@ -214,8 +227,14 @@ public class DoorzienPanel extends JPanel
 	
 	boolean rotateOption = true;
 	boolean borderOption = false;
+	boolean designOption = false;
+	boolean resetOption = false;
 	boolean foldOption = false;
 	
+	JButton toolsButton, resetButton;
+	
+	Hashtable opdrachtState, opdrachtRandom, editState, resetState;
+	String[] opdrachtStrings;
 	
     public DoorzienPanel(int x, int y, int w, int h)
     {
@@ -276,6 +295,9 @@ public class DoorzienPanel extends JPanel
         redoOffImage = getImage("redooff.gif");
 	    
 	    epnImage = getImage("EPNlogo.gif");
+	    
+	    toolsImage = getImage("tools.gif");
+	    resetIconImage = getImage("reseticon.gif");
 
 		// layout and size
         // use BorderLayout so that Menubar is included in the layout
@@ -335,6 +357,29 @@ public class DoorzienPanel extends JPanel
         helpBar.setText(tt("rotateText"));
         
         setBackground(Color.white);
+        
+        toolsButton = new JButton(new ImageIcon(toolsImage));
+		
+        toolsButton.setBounds(5, drawingPanel.panel3D.getSize().height - 35, 32, 32);
+        toolsButton.setOpaque(true);
+        toolsButton.setBackground(drawingPanel.panel3D.getBackground());
+        toolsButton.setBorder(BorderFactory.createEmptyBorder());
+        //drawingPanel.setLayer((Component)toolsButton, JLayeredPane.PALETTE_LAYER.intValue());
+        toolsButton.setVisible(false);
+		drawingPanel.panel3D.add(toolsButton);
+		AL listener = new AL();
+		toolsButton.addActionListener(listener);
+		
+		
+		resetButton = new JButton(new ImageIcon(resetIconImage));
+		resetButton.setBounds(5, 5, 15, 16);
+		resetButton.setOpaque(true);
+		resetButton.setBackground(drawingPanel.panel3D.getBackground());
+		resetButton.setBorder(BorderFactory.createEmptyBorder());
+		//setLayer((Component) opnieuwButton, JLayeredPane.PALETTE_LAYER.intValue());
+		resetButton.setVisible(false);
+		drawingPanel.panel3D.add(resetButton);
+		resetButton.addActionListener(listener);
 	    
     }
 
@@ -343,6 +388,12 @@ public class DoorzienPanel extends JPanel
     	    		
     	if ((drawingPanel != null) && (drawingPanel.panel3D != null))
     		drawingPanel.panel3D.setBackground(c);
+    	
+    	if (toolsButton != null)
+    		toolsButton.setBackground(c);
+    	if (resetButton != null)
+    		resetButton.setBackground(c);
+    	
     	
     	super.setBackground(c);
     		
@@ -575,8 +626,27 @@ public class DoorzienPanel extends JPanel
 			drawingPanel.panel3D.setBordered(true);
 	}
 
+	public void setDesignOption(boolean b)
+	{	designOption = b;
+		if (demo)
+			toolsButton.setVisible(designOption);
+		else
+			toolsButton.setVisible(false);
+	}
+	
+	public void setResetOption(boolean b)
+	{	resetOption = b;
+		if (demo)
+			resetButton.setVisible(resetOption);
+		else
+			resetButton.setVisible(false);
+	}
+	
+	
 	public void setFoldOption(boolean b)
 	{	foldOption = b;
+	
+//System.out.println("fold " + foldOption);	
 		if (demo)
 		{
 			if ((drawingPanel.mouseMode == DrawingPanel2.FOLDOUT) && (drawingPanel.startFacet != null))
@@ -585,7 +655,7 @@ public class DoorzienPanel extends JPanel
 				drawingPanel.flatButton.setVisible(false);
 			}
 		}
-/*		
+		
 		else
 		{
 			if ((drawingPanel.mouseMode == DrawingPanel2.FOLDOUT) && (drawingPanel.startFacet != null))
@@ -594,14 +664,14 @@ public class DoorzienPanel extends JPanel
 				drawingPanel.flatButton.setVisible(true);
 			}
 		}
-*/			
+			
 	}
 	
 	
 	public void zetDemo(boolean b)
 	{	demo = b;
 	
-System.out.println("demo " + demo);
+//System.out.println("demo " + demo);
 
 		if (demo)
 		{
@@ -667,7 +737,9 @@ System.out.println("demo " + demo);
 		
 		setRotateOption(rotateOption);
 		setBorderOption(borderOption);
-//		setFoldOption(foldOption);
+		setDesignOption(designOption);
+		setResetOption(resetOption);
+		setFoldOption(foldOption);
 		
 	}
 	
@@ -785,12 +857,26 @@ System.out.println("demo " + demo);
 		//doorzienPanel.zetBouwplaatOptie(b);
 	}
 	
-	
+	public void zetPreviewOptie(boolean b)
+	{	previewOptie = b;
+		drawingPanel.previewOn = previewOptie;
+		
+	}
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
 		
-System.out.println("zetOpdracht");
+//System.out.println("dzp zetOpdracht");
 
+		opdrachtState = b;
+		opdrachtStrings = randomVars;
+		opdrachtRandom = randomValues;
+		
+		boolean rotateOption = true;
+		boolean borderOption = false;
+		boolean designOption = false;
+		boolean resetOption = false;
+		boolean foldOption = false;
+		
 		boolean demo = false;
 
 		boolean figurenMenuOptie = true;
@@ -807,11 +893,24 @@ System.out.println("zetOpdracht");
 		
 		boolean bouwplaatOptie = true;
 
+		boolean previewOptie = false;
+		
 		int figuurCode = CUBE;
 		boolean letters = false;
 		boolean hulpPunten = false;
 		boolean centraleProjectie = true;
 
+		if (b.containsKey("rotateOption")) 
+			rotateOption = ((Boolean) b.get("rotateOption")).booleanValue();
+		if (b.containsKey("borderOption")) 
+			borderOption = ((Boolean) b.get("borderOption")).booleanValue();
+		if (b.containsKey("designOption")) 
+			designOption = ((Boolean) b.get("designOption")).booleanValue();
+		if (b.containsKey("resetOption")) 
+			resetOption = ((Boolean) b.get("resetOption")).booleanValue();
+		if (b.containsKey("foldOption")) 
+			foldOption = ((Boolean) b.get("foldOption")).booleanValue();
+		
 		if (b.containsKey("demo"))
 			demo = ((Boolean) b.get("demo")).booleanValue();
 		
@@ -839,6 +938,9 @@ System.out.println("zetOpdracht");
 		if (b.containsKey("bouwplaatFiguurOptie"))
 			bouwplaatOptie = ((Boolean) b.get("bouwplaatOptie")).booleanValue();
 
+		if (b.containsKey("previewOptie"))
+			previewOptie = ((Boolean) b.get("previewOptie")).booleanValue();
+		
 		if (b.containsKey("figuurCode"))
 			figuurCode = ((Integer) b.get("figuurCode")).intValue();
 		if (b.containsKey("letters"))
@@ -848,7 +950,15 @@ System.out.println("zetOpdracht");
 		if (b.containsKey("centraleProjectie"))
 			centraleProjectie = ((Boolean) b.get("centraleProjectie")).booleanValue();
 
-		zetDemo(demo);		
+		setRotateOption(rotateOption);
+		setBorderOption(borderOption);
+		setDesignOption(designOption);
+		setResetOption(resetOption);
+		setFoldOption(foldOption);
+
+		
+		if (!isInFrame)
+			zetDemo(demo);
 		
 		zetFigurenMenuOptie(figurenMenuOptie);
 		zetOptiesMenuOptie(optiesMenuOptie);
@@ -863,6 +973,7 @@ System.out.println("zetOpdracht");
 		
 		zetBouwplaatOptie(bouwplaatOptie);
 		
+		zetPreviewOptie(previewOptie);
 
 // wat als figuur veranderd is?		
 		//drawingPanel.setNewModel(figuurCode);
@@ -883,15 +994,25 @@ System.out.println("zetOpdracht");
 			parallelProjectieItem.setSelected(true);
 		}
 		
-		setState(b);		
+		setState(b);
+		
+		setFoldOption(foldOption);
 	}
 	
 
 	public void setEditState(Hashtable b)
 	{
 		
-System.out.println("setEditState");
+//System.out.println("dp setEditState");
 
+		editState = b;
+
+		boolean rotateOption = true;
+		boolean borderOption = false;
+		boolean designOption = false;
+		boolean resetOption = false;
+		boolean foldOption = false;
+		
 		boolean demo = false;
 
 		boolean figurenMenuOptie = true;
@@ -907,11 +1028,24 @@ System.out.println("setEditState");
 		boolean splitsFiguurOptie = true;
 		
 		boolean bouwplaatOptie = true;
+		
+		boolean previewOptie = false;		
 
 		//int figuurCode = CUBE;
 		//boolean letters = false;
 		//boolean hulpPunten = false;
 		//boolean centraleProjectie = true;
+
+		if (b.containsKey("rotateOption")) 
+			rotateOption = ((Boolean) b.get("rotateOption")).booleanValue();
+		if (b.containsKey("borderOption")) 
+			borderOption = ((Boolean) b.get("borderOption")).booleanValue();
+		if (b.containsKey("designOption")) 
+			designOption = ((Boolean) b.get("designOption")).booleanValue();
+		if (b.containsKey("resetOption")) 
+			resetOption = ((Boolean) b.get("resetOption")).booleanValue();
+		if (b.containsKey("foldOption")) 
+			foldOption = ((Boolean) b.get("foldOption")).booleanValue();
 		
 		if (b.containsKey("demo"))
 			demo = ((Boolean) b.get("demo")).booleanValue();
@@ -940,6 +1074,9 @@ System.out.println("setEditState");
 		if (b.containsKey("bouwplaatFiguurOptie"))
 			bouwplaatOptie = ((Boolean) b.get("bouwplaatOptie")).booleanValue();
 
+		if (b.containsKey("previewOptie"))
+			previewOptie = ((Boolean) b.get("previewOptie")).booleanValue();
+		
 		//if (b.containsKey("figuurCode"))
 		//	figuurCode = ((Integer) b.get("figuurCode")).intValue();
 		//if (b.containsKey("letters"))
@@ -948,8 +1085,15 @@ System.out.println("setEditState");
 		//	hulpPunten = ((Boolean) b.get("hulpPunten")).booleanValue();
 		//if (b.containsKey("centraleProjectie"))
 		//	centraleProjectie = ((Boolean) b.get("centraleProjectie")).booleanValue();
+
+		setRotateOption(rotateOption);
+		setBorderOption(borderOption);
+		setDesignOption(designOption);
+		setResetOption(resetOption);
+		setFoldOption(foldOption);
 		
-		zetDemo(demo);
+		if (!isInFrame)
+			zetDemo(demo);
 
 		zetFigurenMenuOptie(figurenMenuOptie);
 		zetOptiesMenuOptie(optiesMenuOptie);
@@ -964,6 +1108,7 @@ System.out.println("setEditState");
 		
 		zetBouwplaatOptie(bouwplaatOptie);
 		
+		zetPreviewOptie(previewOptie);
 
 // wat als figuur veranderd is?		
 		//drawingPanel.setNewModel(figuurCode);
@@ -988,11 +1133,25 @@ System.out.println("setEditState");
 		}
 */		
 		setState(b);
+		
+		setFoldOption(foldOption);
 
 	}
 	
 	public Hashtable getEditState()
 	{
+		boolean rotateOption = true;
+		boolean borderOption = false;
+		boolean designOption = false;
+		boolean resetOption = false;
+		boolean foldOption = false;
+		
+		rotateOption = this.rotateOption;
+		borderOption = this.borderOption;
+		designOption = this.designOption;
+		resetOption = this.resetOption;
+		foldOption = this.foldOption;
+		
 		boolean demo = false;
 		
 		boolean figurenMenuOptie = true;
@@ -1008,6 +1167,8 @@ System.out.println("setEditState");
 		boolean splitsFiguurOptie = true;
 		
 		boolean bouwplaatOptie = true;
+		
+		boolean previewOptie = false;
 		
 		//int figuurCode = CUBE;
 		//boolean letters = false;
@@ -1029,6 +1190,8 @@ System.out.println("setEditState");
 		splitsFiguurOptie = this.splitsFiguurOptie;
 		
 		bouwplaatOptie = this.splitsFiguurOptie;
+		
+		previewOptie = this.previewOptie;
 
 		//figuurCode = this.figuurCode;
 		//letters = this.letters;
@@ -1036,6 +1199,12 @@ System.out.println("setEditState");
 		//centraleProjectie = this.centraleProjectie;
 		
 		Hashtable h = getState();//new Hashtable();
+
+	    h.put("rotateOption", new Boolean(rotateOption));
+	    h.put("borderOption", new Boolean(borderOption));
+	    h.put("designOption", new Boolean(designOption));
+	    h.put("resetOption", new Boolean(resetOption));
+	    h.put("foldOption", new Boolean(foldOption));
 		
 		h.put("demo", new Boolean(demo));
 		
@@ -1052,6 +1221,8 @@ System.out.println("setEditState");
 		h.put("splitsFiguurOptie", new Boolean(splitsFiguurOptie));
 		
 		h.put("bouwplaatOptie", new Boolean(bouwplaatOptie));
+		
+		h.put("previewOptie", new Boolean(previewOptie));
 		
 		//h.put("figuurCode", new Integer(figuurCode));
 		//h.put("letters", new Boolean(letters));
@@ -1139,6 +1310,8 @@ System.out.println("setEditState");
 			h.put("flattened", new Boolean(flattened));
 			h.put("angle", new Double(angle));
 			
+//System.out.println("get angle = " + angle);
+
 			Facet3D theStartFacet = drawingPanel.startFacet;
 			double[] startFacet = NoSer.getFacet3DVertexState(theStartFacet);
 			h.put("startFacet", startFacet);
@@ -1220,7 +1393,7 @@ System.out.println("setEditState");
 	public void setState(Hashtable b)
 	{
 		
-System.out.println("setState");
+//System.out.println("dzp setState");
 
 		boolean letters = false;
 		boolean hulpPunten = false;
@@ -1334,9 +1507,13 @@ System.out.println("setState");
 		
         int mode = drawingPanel.INERT;
         if (b.containsKey("mode"))
-        	mode = ((Integer) b.get("mode")).intValue();
+        {	mode = ((Integer) b.get("mode")).intValue();
+//System.out.println("contains mode");        
+        }
         
         drawingPanel.mouseMode = mode;
+        
+//System.out.println("dp mode = " + mode);        
         
 		Hashtable origObject = new Hashtable();
 		Vector conState = new Vector();
@@ -1376,21 +1553,34 @@ System.out.println("setState");
 			drawingPanel.flattened = flattened;
 			drawingPanel.currentFoldOut = angle;
 			
+//System.out.println("set angle = " + angle);			
+			
 			Facet3D startFacet = null;
 			double[] vertices = new double[0];;
 			if (b.containsKey("startFacet"))
-				vertices = (double[]) b.get("startFacet");
+			{	vertices = (double[]) b.get("startFacet");
+//System.out.println("contains sf");			
+			}
 	
 			startFacet = NoSer.setFacet3DVertexState(vertices);
 
 			if (startFacet != null)
 			{	
-				//for (int i = 0; i < drawingPanel.originalObject.numFacets; i++)
-				//{	if (Facet3D.isEqualTo(drawingPanel.originalObject.facets[i], startFacet) >= 0)
-						drawingPanel.startFacet = startFacet; //drawingPanel.originalObject.facets[i];
-				//}
+				drawingPanel.startFacet = startFacet; 
+
+//System.out.println("sf != null");						
 				
 				drawingPanel.makeFoldOut(0, true);
+				
+				drawingPanel.processSlider(angle);
+				
+				if (flattened)
+					drawingPanel.flattenAction();
+				
+			}
+			else
+			{
+//System.out.println("sf == null");				
 			}
 			
 		}
@@ -1684,6 +1874,55 @@ System.out.println("setState");
 			{	//figuurCode = CUBE;
 				drawingPanel.setNewModel(MYFIGURE);
 			}
-		}
-	}
-}
+			
+		} // actionPerformed
+	} // menuListener
+	
+	class AL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			if (e.getSource() == toolsButton)
+			{
+			   if (!frameStarted)
+			   {	frameStarted = true;
+					toolsButton.setEnabled(false);
+					// note the handle to the outer class!
+					doorzienFrame = new DoorzienFrame2(DoorzienPanel.this);
+
+					//Hashtable demoState = getState();
+					
+					// docentmodus
+					//if (editState != null)
+					//{	
+						editState = getEditState();
+					//}
+						doorzienFrame.doorzienPanel.setEditState(editState);
+					
+					//}
+					
+					// leerlingmodus
+					if (opdrachtState != null)
+						doorzienFrame.doorzienPanel.zetOpdracht(opdrachtState, opdrachtStrings, opdrachtRandom);
+					
+					//doorzienFrame.doorzienPanel.setState(demoState);
+				} 
+
+			}
+		
+			else if (e.getSource() == resetButton)
+			{
+				if (!frameStarted)
+				{	
+					if (editState != null)
+						setEditState(editState);
+					
+					if (opdrachtState != null)
+						zetOpdracht(opdrachtState, opdrachtStrings, opdrachtRandom);
+				}
+				
+			}
+		} // actionPerformed
+	} // AL	
+
+} // DoorzienPanel

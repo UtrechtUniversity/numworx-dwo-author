@@ -1242,6 +1242,7 @@ public class DoorzienFrame extends Frame
             processMenuChoice(choosen);
         }
     }
+
     // window listener class, closes all open frames, then this
     class WL extends WindowAdapter
     {   public void windowClosing(WindowEvent e)

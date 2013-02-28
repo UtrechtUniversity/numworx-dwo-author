@@ -1124,19 +1124,13 @@ owner.rightToolBar.redoButton.setOn(true);
                 return;
             }
             mouseMode = FOLDOUT;
+
             owner.enableOptions(false);            
             foldOutObjectGroup = (ObjectGroup3D) currentObjectGroup.deepCopy();
             foldOutObject = foldOutObjectGroup.leftMostLeaf(); 
             
-            //foldOutObject.setTickMarks(0);
-            // make all vertices redundant
-            // note that all replacements have their own vertices
-            // and are redundant
-//    System.out.println("vertices = " + foldOutObject.numVertices);        
             foldOutObject.loosenVertices();
-//System.out.println("lo-vertices = " + foldOutObject.numVertices);        
-//System.out.println("facets = " + foldOutObject.numFacets);
-            
+
             //startFacet = null;
             panel3D.initializeModel(foldOutObjectGroup, false);
             
@@ -1178,6 +1172,7 @@ owner.rightToolBar.redoButton.setOn(true);
             }
             else if (startFacet != null)
             {
+//System.out.println("makeFoldout - 0 sf != null");            
             	makeFoldOut(1, true);
             }
             else
@@ -4872,7 +4867,10 @@ panel3D.testString = "";
             panel3D.setBounds(0, 0, getSize().width, getSize().height);
             //panel3D.offscreen = null;    
             panel3D.resetModel();
-//System.out.println("resetModel");            
+//System.out.println("resetModel");       
+            
+            owner.toolsButton.setLocation(5, panel3D.getSize().height - 35);
+            owner.resetButton.setLocation(5, 5);
         }
         if (slider != null)            
         {   if (flatButton != null)
@@ -5062,6 +5060,28 @@ panel3D.testString = "";
         }    
     } // class CL   
 
+    public void flattenAction()
+    {
+        // roteer de foldOutGroup in view space
+        Vector3D from = new Vector3D(
+            startFacet.unitNormal.x,
+            startFacet.unitNormal.y,
+            startFacet.unitNormal.z);
+//System.out.println("from = " + from.toString());            
+        Vector3D to = new Vector3D(0, 0, 1);
+        panel3D.vwRotate(from, to);
+//System.out.println("new from = " + startFacet.unitNormal.toString());                        
+        
+
+//ook (tijdelijk) parallele projectie??
+
+        // zet slider op 100% (maakt maximale foldout)
+        
+        processSlider(1);
+        slider.setPosition(1);
+    	
+    }
+    
     // inner class for listening to the flatButton
     class FlatML extends MouseAdapter
     {   public void mousePressed(MouseEvent e)
@@ -5083,6 +5103,7 @@ panel3D.testString = "";
             
             processSlider(1);
             slider.setPosition(1);
+            flattened = true;
         }    
     }
     

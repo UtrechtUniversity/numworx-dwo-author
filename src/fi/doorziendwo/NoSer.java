@@ -3,6 +3,8 @@ package fi.doorziendwo;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import fi.beans.base64code.StringCodeObject;
+
 public class NoSer 
 {
 	public static double[] getVectorDState(Vector3D vec)
@@ -159,7 +161,7 @@ public class NoSer
 		
 		if (h.containsKey("indices"))
 			indices = (int[]) h.get("indices"); 
-		if (h.containsKey("indices"))
+		if (h.containsKey("vertexLabels"))
 			vertexLabels = (String[]) h.get("vertexLabels"); 
 		
 		Facet3D facet = new Facet3D(vertices, indices, DrawConstants.objectColor);
@@ -348,6 +350,7 @@ public class NoSer
 		return construction;
 	}
 
+	
 	public static int containsFacet(Object3D o, Facet3D f)
     {   o.fixFacetArray();
         int result = -1;
@@ -356,33 +359,144 @@ public class NoSer
                return i;
         }
         return result;
-    }	
+    }
 	
+	public static Hashtable getScormObject3DState(String scoString)
+	{
+		Object o = StringCodeObject.decodeStringToObject(scoString);
+		ScormedObject3D sco = (ScormedObject3D) o;
+		return getScormObject3DState(sco);	
+	}
+	
+	public static Hashtable getScormObject3DState(ScormedObject3D sco)
+	{
+		if (sco == null)
+		{	return new Hashtable();	
+		}
+
+		Hashtable h = new Hashtable();
+		
+		boolean letters = sco.letters;
+		// niet in sco
+		//boolean hulpPunten = sco.hulpPunten;
+		int projectie = sco.projection;
+		boolean centraleProjectie = true;
+		if (projectie == DrawingPanel2.PARALLELPROJ)
+			centraleProjectie = false;
+		
+		h.put("letters", new Boolean(letters));
+		//h.put("hulpPunten", new Boolean(hulpPunten));
+		h.put("centraleProjectie", new Boolean(centraleProjectie));
+		
+		// status van de knoppen/het object
+		int numLines = sco.numLines;
+		int numPlanes = sco.numPlanes;
+		boolean filled = sco.filled;
+		boolean planesFilled = sco.planesFilled;
+		
+		h.put("numLines", new Integer(numLines));
+		h.put("numPlanes", new Integer(numPlanes));
+		h.put("filled", new Boolean(filled));
+		h.put("planesFilled", new Boolean(planesFilled));
+
+		Object3D scoOrigObject = sco.theObjectGroup.leftMostLeaf();
+		
+		int figuurCode = scoOrigObject.modelCode;
+		if ((numLines > 0) || (numPlanes > 0))
+			figuurCode = DoorzienPanel.MYFIGURE;
+		h.put("figuurCode", new Integer(figuurCode));
+		
+		double lengthFactor = sco.lengthFactor;
+		h.put("lengthFactor", new Double(lengthFactor));
+		
+		// drawingPanel.panel3D items
+		Matrix3D mat = sco.mat;
+		int paintType = sco.paintType;
+		double zoomFactor = sco.zoomFactor;
+		boolean showInside = sco.showInside;
+		
+		double[] coeff = NoSer.getMatrix3DState(mat);
+		h.put("matrix3D", coeff);
+		h.put("paintType", new Integer(paintType));
+		h.put("zoomFactor", new Double(zoomFactor));
+		h.put("showInside", new Boolean(showInside));
+		
+		Hashtable origObject = NoSer.getObject3DState(scoOrigObject);
+
+		ObjectGroup3D scoObjectGroup = sco.theObjectGroup; 
+		
+		Vector construction = new Vector();
+        if (scoObjectGroup instanceof ObjectWithLine)
+            construction = ((ObjectWithLine) scoObjectGroup).getConstruction();
+        else if (scoObjectGroup instanceof ObjectWithPlane)
+            construction = ((ObjectWithPlane) scoObjectGroup).getConstruction();
+        
+        Vector conState = NoSer.getConstructionState(construction);
+		
+		h.put("origObject", origObject);
+		h.put("conState", conState);
+		
+		int mode = DrawingPanel2.INERT;
+		
+		if ((sco.mode == DrawingPanel2.FOLDOUT) && 
+			(sco.theStartFacet != null))
+		{
+			
+//System.out.println("sco foldout");
+
+			mode = DrawingPanel2.FOLDOUT;
+			
+			// toestand originele object
+			boolean oldFilled = sco.oldFilled;
+			Matrix3D oldPos = sco.oldPos;
+			double[] oldCoeff = NoSer.getMatrix3DState(oldPos);
+			h.put("oldFilled", new Boolean(oldFilled));
+			h.put("oldPos", oldCoeff);
+			
+			// toestand fold out
+			boolean flattened = sco.flattened;
+			double angle = sco.angle;
+			h.put("flattened", new Boolean(flattened));
+			h.put("angle", new Double(angle));
+			
+			Facet3D theStartFacet = sco.theStartFacet;
+			double[] startFacet = NoSer.getFacet3DVertexState(theStartFacet);
+			h.put("startFacet", startFacet);
+			
+			//scormedObject3D.theFoldOutGroup = dp.foldOutObjectGroup;			
+			//scormedObject3D.theFoldOutTreeRoot = dp.foldOutTreeRoot;
+		}
+		if ((sco.mode == DrawingPanel2.CUTOBJECT) && 
+			(sco.planeChoosen != null))
+		{
+			mode = DrawingPanel2.CUTOBJECT;
+			// toestand originele object
+			boolean oldPlanesFilled = sco.oldPlanesFilled;
+			h.put("oldPlanesFilled", new Boolean("oldPlanesFilled"));
+			// toestand cut object
+			String volumeString = sco.volumeString;
+			h.put("volumeString", volumeString);
+			
+			Plane3D thePlaneChoosen = sco.planeChoosen;
+			double[] planeChoosen = NoSer.getPlane3DState(thePlaneChoosen);
+			h.put("planeChoosen", planeChoosen);
+			
+			//scormedObject3D.theCutObjectGroup = dp.cutObjectGroup;
+		}
+		
+		h.put("mode", new Integer(mode));
+		
+		return h;
+	}
 /*	
-    public void makeDeepObjectCopy(Object3D copy)
-    {   
 
-        // now make COMPLETELY new facets
-        for (int k = 0; k < numFacets; k++)
-        {   
-            // now copy attributes of facets[k]                             
-            Facet3D.copyAttributes(facets[k], copy.facets[k], true); 
-        }
-        
-        // copy object attributes 
-        copy.outlined = outlined;
-        copy.filled = filled;
-        copy.visible = visible;
+class ScormedObject3D implements Serializable
+{	
+	// nodig?
+	boolean figureCut;
 
-        copy.centerSet = centerSet;
-        copy.diamSet = diamSet;
-        copy.diameter = diameter;
-        copy.center = new Vector3D(center);
-        
-        copy.modelCode = modelCode;
-        //Object3D parent = null;
-        
-        
-    }    
+		
+}
+    
 */	
 }	

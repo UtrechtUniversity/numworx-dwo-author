@@ -195,7 +195,7 @@ public class ViewPanel extends JLayeredPane implements ViewerIF, ActionListener
 //System.out.println("viewPanel setState");
 
 		//if (startFiguurString == null) 
-			startFiguurString = s;
+		startFiguurString = s;
 		Object o = StringCodeObject.decodeStringToObject(s);
 		ScormedObject3D s3d = (ScormedObject3D) o;
 		scormedObject3D = s3d;
@@ -233,7 +233,7 @@ System.out.println("so = null");
 	public void getScormedObject3D()
 	{	
 		
-System.out.println("getScormedObject3D");		
+//System.out.println("getScormedObject3D");		
 		
 		// shortcut
 		DrawingPanel dp = doorzienFrame.drawingPanel;
@@ -253,7 +253,7 @@ System.out.println("getScormedObject3D");
 		scormedObject3D.lengthFactor = DrawConstants.llFactor;
 		scormedObject3D.letters = DrawConstants.letters;
 
-System.out.println("scormedObject3D.letters " + scormedObject3D.letters);
+//System.out.println("scormedObject3D.letters " + scormedObject3D.letters);
 
 		// drawingPanel.panel3D items
 		scormedObject3D.projection = dp.panel3D.projection;
@@ -326,7 +326,7 @@ System.out.println("scormedObject3D.letters " + scormedObject3D.letters);
 	public void setScormedObject3D()
 	{	
 		
-System.out.println("setScormedObject3D");		
+//System.out.println("setScormedObject3D");		
 		
 		// shortcut
 	
@@ -623,7 +623,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 	public Hashtable getState()
 	{	
 		
-System.out.println("viewPanel getState");
+//System.out.println("viewPanel getState");
 
 		String stateString = null;
 		

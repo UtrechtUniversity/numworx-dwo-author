@@ -405,7 +405,7 @@ public class Table
         {"EditPanel_modus", "Modus", "Mode", ""},
         {"EditPanel_viewer", "Viewer", "Viewer", ""},        	
         {"EditPanel_doorzien", "Doorzien", "Doorzien", ""},
-        {"EditPanel_vieweropties", "Viewer/Demo opties", "Viewer/Demo options", ""},
+        {"EditPanel_vieweropties", "Demo/viewer opties", "Demo/viewer options", ""},
         {"EditPanel_doorzienopties", "Doorzien opties", "Doorzien options", ""},
                 				   
 	    {"EditPanel_draaibaar", "Draaibaar", "Rotatable", ""}, 
@@ -428,9 +428,9 @@ public class Table
         {"EditPanel_evenwijdigVlakOptie", "Evenwijdige vlakken", "Parallel planes", ""},
         {"EditPanel_toonDoorsnedeOptie", "Doorsnede tonen", "Show cut surface", ""},
         {"EditPanel_splitsFiguurOptie", "Figuur splitsen", "Split figure", ""},
-        {"EditPanel_bouwplaatOptie", "Bouwplaat", "FoldShow cut surface", ""},
+        {"EditPanel_bouwplaatOptie", "Bouwplaat", "Foldout", ""},
         
-        
+        {"EditPanel_previewOptie", "Preview optie", "Preview option", ""},
         
     };
     // make the table static so it can be accessed from the static
