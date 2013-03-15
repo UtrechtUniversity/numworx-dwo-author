@@ -89,6 +89,10 @@ public class KladjeVeld extends JPanel
 	int tekstX = 0;
 	int tekstY = 0;
 	
+	double rotateStep = Math.PI / 12; // 15 degrees in radians
+	double scaleUpStep = 11e-1d;
+	double scaleDownStep = 1 / 11e-1d;
+	
 	public KladjeVeld(int w, int h)
 	{
 		breedte = w;
@@ -119,7 +123,7 @@ public class KladjeVeld extends JPanel
 	{
 		tekstString = tekstVeld.getText();
 		tekstX = tekstVeld.getLocation().x + 2;
-		tekstY = tekstVeld.getLocation().y + tekstFM.getAscent();// + tekstFM.getHeight() / 6;
+		tekstY = tekstVeld.getLocation().y;// + tekstFM.getAscent();
 		//tekstRechthoek = null;
 		
 		tekstVeld.setVisible(false);
@@ -130,6 +134,7 @@ public class KladjeVeld extends JPanel
 				new TekstElement(drawingColor, tekstString, tekstX, tekstY);
 			tekstElementVector.addElement(tekstElement);
 			addToHistory();
+			repaint();
 		}
 		
 		//drawTekstString();
@@ -158,7 +163,7 @@ public class KladjeVeld extends JPanel
 			numHistories--;
 		}
 		
-System.out.println("ath " + numHistories);		
+//System.out.println("ath " + numHistories);		
 	}
 	
 	public Hashtable getFromHistory()
@@ -168,17 +173,17 @@ System.out.println("ath " + numHistories);
 		if (numHistories > 0)
 			numHistories--;
 		
-System.out.println("gfh " + numHistories);
+//System.out.println("gfh " + numHistories);
 
 		if (numHistories > 0)
 		{	
-System.out.println("returned " + numHistories);			
+//System.out.println("returned " + numHistories);			
 			return histories[numHistories - 1];
 		
 		}
 		else
 		{	numHistories = 0;
-System.out.println("returned null " + numHistories);		
+//System.out.println("returned null " + numHistories);		
 		
 			return null;
 		}
@@ -235,49 +240,19 @@ System.out.println("returned null " + numHistories);
 		
 	}
 
-/*	
-	public Vector copyRectangle(Rectangle r)
-	{
-		Vector rVector = new Vector();
-		for (int hCnt = r.x; hCnt < Math.min(breedte, r.x + r.width); hCnt++)
-			for (int vCnt = r.y; vCnt < Math.min(hoogte, r.y + r.height); vCnt++)
-			{
-				Color c = pixels[hCnt][vCnt].makeColor();
-				if (!c.equals(backgroundColor))
-				{
-					ColorBytes newCB = new ColorBytes(pixels[hCnt][vCnt].x, pixels[hCnt][vCnt].y, 
-							                          pixels[hCnt][vCnt].red, pixels[hCnt][vCnt].green, pixels[hCnt][vCnt].blue);
-					//stateVector.addElement(pixels[hCnt][vCnt]);
-					rVector.addElement(newCB);
-				}
-			}
-		
-		
-		return rVector;
-	}
-*/
-/*	
-	public void wisRectangle(Rectangle r)
-	{
-		int cnt = 0;
-		for (int xCnt = r.x; xCnt < Math.min(breedte, r.x + r.width); xCnt++)
-			for (int yCnt = r.y; yCnt < Math.min(hoogte, r.y + r.height); yCnt++)
-			{
-				pixels[xCnt][yCnt].zetColor(backgroundColor);
-				cnt++;
-			}
-		
-//System.out.println("wisrect = " + cnt);		
-	}
-*/	
 	public Hashtable getState()
 	{
+		
+//System.out.println("kv getState");
+
 		Hashtable h = new Hashtable();
 		
 		// backwards compatibility
 		Vector gwtStateVector = getGWTState();
 		if (gwtStateVector.size() > 0)
-			h.put("gwtpixels", gwtStateVector);
+		{	h.put("gwtpixels", gwtStateVector);
+//System.out.println("put gwtpixels");		
+		}
 		
 		Hashtable[] strepen = new Hashtable[streepVector.size()];
 		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
@@ -339,6 +314,9 @@ System.out.println("returned null " + numHistories);
 
 	public void setState(Hashtable h)
 	{
+		
+//System.out.println("kv setState");
+
 		// backwards-compatibility
 		Vector stateVector = new Vector();
 		Vector gwtStateVector = new Vector();
@@ -403,7 +381,7 @@ System.out.println("returned null " + numHistories);
 	
 	public void setOldState(Vector stateVector)
 	{
-System.out.println("kladjeVeld setState " + stateVector.size());
+//System.out.println("kladjeVeld setState " + stateVector.size());
 
 		int cnt = 0;
 		for (int pCnt = 0; pCnt < stateVector.size(); pCnt++)
@@ -420,7 +398,7 @@ System.out.println("kladjeVeld setState " + stateVector.size());
 
 	public void setOldGWTState(Vector gwtStateVector)
 	{
-System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
+//System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 
 		int cnt = 0;
 		for (int pCnt = 0; pCnt < gwtStateVector.size(); pCnt++)
@@ -452,45 +430,13 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		repaint();
 	}
 	
-/*	
-	public void drawTekstString()
-	{
-		if (offGraphics != null)
-		{
-			if (tekstString.equals(""))
-				return;
-			
-			offGraphics.setColor(Color.black);
-			offGraphics.setFont(tekenTekstFont);
-			offGraphics.drawString(tekstString, tekstX, tekstY);
-			
-			updatePixelArray();
-			addToHistory();
-			tekstString = "";
-			
-		}
-	}
-*/	
-	
 	public void paintComponent(Graphics g)
 	{
-/*		
-		if (offScreen == null)
-		{
-			offScreen = createImage(getSize().width, getSize().height);
-			offGraphics = offScreen.getGraphics();
-		}
-*/		
-		
-		//tekenProgramma(offGraphics, true);
 		
 		Graphics2D g2D = (Graphics2D) g;		
 
 		g2D.setColor(backgroundColor);
 		g2D.fillRect(0, 0, getSize().width, getSize().height);
-		
-		//g.setColor(Color.black);
-		//g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		
 		if (lijnen)
 		{
@@ -518,18 +464,10 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			
 		}
 
-		//Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		BasicStroke stroke = new BasicStroke(1.5f);
 		
-//System.out.println("width = " + stroke.getLineWidth());
-//System.out.println("cap = " + stroke.getEndCap());
-//System.out.println("join = " + stroke.getLineJoin());
-//System.out.println("miter = " + stroke.getMiterLimit());
-//System.out.println("dash = " + stroke.getDashArray());
-//System.out.println("dash_phase = " + stroke.getDashPhase());
-
 		g2D.setStroke(new BasicStroke(1.5f));
 		
 		tekenProgramma(g2D, false);
@@ -544,8 +482,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			g.setColor(backgroundColor);
 			g.fillRect(0, 0, getSize().width, getSize().height);
 		
-			//g.setColor(Color.black);
-			//g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
 		}
 		
 		int tpCnt = 0;
@@ -619,43 +555,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			g.drawOval(tekenRechthoek.x, tekenRechthoek.y, tekenRechthoek.width, tekenRechthoek.height);
 		}
 		
-/*		
-		// alleen op het scherm
-		if ((mouseMode == tekstTekenen) && (tekstRechthoek != null) && !wis)
-		{
-			
-//System.out.println("drawing trh at " + tekstRechthoek.x + "," + tekstRechthoek.y);
-
-			Graphics2D g2D = (Graphics2D) g;
-			float[] dash = new float[2];
-			dash[0] = 1;
-			dash[1] = 3;
-			g2D.setStroke(new BasicStroke(1.2f, 2, 0, 10.0f, dash, 0.0f));
-			g.setColor(Color.black);
-			g.drawRect(tekstRechthoek.x, tekstRechthoek.y, tekstRechthoek.width, tekstRechthoek.height);
-			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
-		}
-*/		
-
-/*		
-		if ((mouseMode == tekstTekenen) && !tekstString.equals("") && wis)
-		{
-			
-//System.out.println("ds " + tekstString + " at " + tekstX + "," + tekstY + " w = " + wis); 
-
-
-//Graphics2D g2D = (Graphics2D) g;
-//g2D.setStroke(new BasicStroke(1.0f));
-			g.setColor(Color.black);
-			g.setFont(tekenTekstFont);
-			g.drawString(tekstString, tekstX, tekstY);
-			
-			updatePixelArray();
-			tekstString = "";
-			
-//g2D.setStroke(new BasicStroke(1.5f));			
-		}
-*/
 		
 		// alleen op het scherm
 		if ((mouseMode == selecteren) && (selecteerRechthoek != null))// && !sleepSelectie && !wis)
@@ -671,28 +570,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			
 		}
 
-/*		
-		// alleen op het scherm
-		if ((mouseMode == selecteren) && (selecteerRechthoek != null) && sleepSelectie && !wis)
-		{	
-			
-			Graphics2D g2D = (Graphics2D) g;
-			float[] dash = new float[2];
-			dash[0] = 5;
-			dash[1] = 5;
-			g2D.setStroke(new BasicStroke(1.2f, 2, 0, 10.0f, dash, 0.0f));
-			g.setColor(Color.blue);
-			g.drawRect(selecteerRechthoek.x, selecteerRechthoek.y, selecteerRechthoek.width, selecteerRechthoek.height);
-			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
-			for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
-			{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
-				g.setColor(cb.makeColor());
-				g.drawLine(cb.x, cb.y, cb.x, cb.y);
-			}
-			
-		}
-*/	
-		
 		if (mouseMode == selecteren)
 		{
 			if (selectedStreep != null)
@@ -724,47 +601,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		}
 	}
 	
-/*	
-	void updatePixelArray()
-	{	int w = getSize().width;
-		int h = getSize().height;
-		
-		int[] tempPixels = new int[w * h];
-		PixelGrabber pg = new PixelGrabber(offScreen, 0, 0,  w, h, tempPixels, 0, w);
-		try 
-		{    pg.grabPixels();
-		}
-		catch (InterruptedException e) 
-		{   System.err.println("interrupted waiting for pixels!");
-		    return;
-		}
-		if ((pg.getStatus() & ImageObserver.ABORT) != 0) 
-		{   System.err.println("image fetch aborted or errored");
-		    return;
-		}
-		for (int j = 0; j < h; j++) 
-		{   for (int i = 0; i < w; i++) 
-			{
-				pixels[i][j] = handlesinglepixel(i, j, tempPixels[j * w + i]);
-		    }
-		}
-		
-		
-	}	
-*/		
-	
-/*	
-	public ColorBytes handlesinglepixel(int x, int y, int pixel) 
-	{
-		int alpha = (pixel >> 24) & 0xff;
-		int red   = (pixel >> 16) & 0xff;
-		int green = (pixel >>  8) & 0xff;
-		int blue  = (pixel      ) & 0xff;
-			
-		return new ColorBytes(x, y, red, green, blue);
-	}
-*/
-		
 	
 	void tekenPunt(Graphics g, int x, int y)
 	{
@@ -801,12 +637,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 	
 	void wis(boolean complete)
 	{	
-/*		
-		if ((mouseMode == selecteren) && (selecteerRechthoek != null))
-		{
-			wisRectangle(selecteerRechthoek);
-		}
-*/
 		if ((mouseMode == selecteren) && objectSelected())
 		{
 			wisObjectSelected();
@@ -842,9 +672,13 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		selectedRechthoek = null;
 		selectedEllips = null;
 		selectedTekstElement = null;
-		objectsSelected.removeAllElements();
-		
 	}
+	
+	public void resetSelectedObjects()
+	{
+		objectsSelected.removeAllElements();
+	}
+	
 	
 	public boolean objectSelected()
 	{
@@ -1028,6 +862,37 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		repaint();
 	}
 	
+	public void rotateObjectSelected(double rotateStep)
+	{ 
+		if (selectedStreep != null)
+			selectedStreep.rotate(rotateStep);
+		if (selectedLijn != null)  
+			selectedLijn.rotate(rotateStep);		   
+		if (selectedRechthoek != null)  
+			selectedRechthoek.rotate(rotateStep);
+		if (selectedEllips != null) 
+			selectedEllips.rotate(rotateStep);		
+		if  (selectedTekstElement != null)
+			selectedTekstElement.rotate(rotateStep);
+	
+		repaint();
+	}
+
+	public void scaleObjectSelected(double scaleStep)
+	{ 
+		if (selectedStreep != null)
+			selectedStreep.scale(scaleStep);
+		if (selectedLijn != null)  
+			selectedLijn.scale(scaleStep);		   
+		if (selectedRechthoek != null)  
+			selectedRechthoek.scale(scaleStep);
+		if (selectedEllips != null) 
+			selectedEllips.scale(scaleStep);		
+		if  (selectedTekstElement != null)
+			selectedTekstElement.scale(scaleStep);
+		
+		repaint();
+	}
 	
 	public void translateObjectSelected(int dx, int dy)
 	{ 
@@ -1082,7 +947,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		{
 			if (mouseMode == tekenen)
 			{
-				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
 /*			
@@ -1100,43 +964,31 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			else if (mouseMode == tekstTekenen)
 			{
 
-/*				
-				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
-				{
-					sleepTekst = true;
-					startX = e.getX();
-					startY = e.getY();
-				}
-				else
-				{
-*/					
-					//sleepTekst = false;
-				
-					if (tekstVeld.isVisible())
-						hideTekstVeld(true);
-					tekstVeld.setLocation(e.getX(), e.getY());
-					tekstVeld.setText("");
-					tekstVeld.setVisible(true);
-					tekstVeld.requestFocus();
-					//tekstRechthoek = new Rectangle(e.getX() - tekstRand, e.getY() - tekstRand, tekstBreedte + 2 * tekstRand - 2, 
-//							                                           tekstHoogte + 2 * tekstRand - 2);
-				//}
+				if (tekstVeld.isVisible())
+					hideTekstVeld(true);
+				tekstVeld.setLocation(e.getX(), e.getY());
+				tekstVeld.setText("");
+				tekstVeld.setVisible(true);
+				tekstVeld.requestFocus();
+
 			}
 			else if (mouseMode == selecteren)
 			{
-				//if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+
+				// individueel object aangeklikt, was mogelijk al geselecteerd
 				if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
 				{
 					sleepSelectie = true;
 					startX = e.getX();
 					startY = e.getY();
-					//sleepPoints = copyRectangle(selecteerRechthoek);
-					//wisRectangle(selecteerRechthoek);
-//System.out.println("sr = " + selecteerRechthoek.toString());
+					selecteerRechthoek = null;
+					resetSelectedObjects();
+
 					objectMoved = false;
 				}
 				else if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
 				{
+					resetSelectedObject();
 					sleepSelectie = true;
 					startX = e.getX();
 					startY = e.getY();
@@ -1145,6 +997,7 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 				{
 					sleepSelectie = false;
 					resetSelectedObject();
+					resetSelectedObjects();
 					figuurStart = new Point(e.getX(), e.getY());
 					selecteerRechthoek = null;
 				}
@@ -1160,7 +1013,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 		{
 			if (mouseMode == tekenen)
 			{
-				//pixels[e.getX()][e.getY()] = (byte) drawingColorCode;
 				draggPoints.addElement(new Point(e.getX(), e.getY()));
 			}
 /*			
@@ -1356,38 +1208,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == tekstTekenen)
 			{
-/*				
-				if (sleepTekst) // verplaats de tekstRechthoek en het tekstVeld!!
-				{	
-				
-					int dx = e.getX() - startX;
-					int dy = e.getY() - startY;
-					tekstRechthoek.translate(dx, dy);
-					tekstVeld.setLocation(tekstVeld.getLocation().x + dx, tekstVeld.getLocation().y + dy);
-					
-					startX = e.getX();
-					startY = e.getY();
-				
-				}
-*/				
-/*				
-				if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
-				{	tekstRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
-					                           	   e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
-				}	
-				else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
-				{	tekstRechthoek = new Rectangle(figuurStart.x, e.getY(), 
-						                           e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
-				}	
-				else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
-				{	tekstRechthoek = new Rectangle(e.getX(), figuurStart.y, 
-											       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
-				}	
-				else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
-				{	tekstRechthoek = new Rectangle(e.getX(), e.getY(), 
-											       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
-				}
-*/				
 			}
 			else if (mouseMode == selecteren)
 			{
@@ -1399,19 +1219,10 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					if (selecteerRechthoek != null)
 						selecteerRechthoek.translate(dx, dy);
 					
-					
-					//figuurStart.translate(e.getX() - figuurStart.x, figuurStart.y - e.getY());
-					
-					
 					translateObjectSelected(dx, dy);
 					
 					translateObjectsSelected(dx, dy);
-/*					
-					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
-					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
-						translateColorBytes(cb, dx, dy);
-					}
-*/						
+
 					startX = e.getX();
 					startY = e.getY();
 					
@@ -1486,7 +1297,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == rechthoekTekenen)
 			{	
-				//updatePixelArray();
 				if (tekenRechthoek != null)
 				{	
 					Rechthoek rechthoek = new Rechthoek(drawingColor, 
@@ -1504,7 +1314,6 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == cirkelTekenen)
 			{	
-				//updatePixelArray();
 				
 				if (tekenRechthoek != null)
 				{
@@ -1527,19 +1336,8 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 			}
 			else if (mouseMode == selecteren)
 			{
-				//updatePixelArray();
 				if (sleepSelectie)
-				{	//sleepSelectie = false;
-					//updatePixelArray();
-/*					
-					for (int pCnt = 0; pCnt < sleepPoints.size(); pCnt++)
-					{	ColorBytes cb = (ColorBytes) sleepPoints.elementAt(pCnt);
-						if ((cb.x < breedte) && (cb.y < hoogte))
-							pixels[cb.x][cb.y] = cb;
-					}
-					
-					sleepPoints.removeAllElements();
-*/					
+				{	
 
 					sleepSelectie = false;
 					//resetSelectedObject();
@@ -1550,45 +1348,18 @@ System.out.println("kladjeVeld setGWTState " + gwtStateVector.size());
 					repaint();
 				}
 			}
-			//addToHistory();
+
 		}
 		
 		public void mouseMoved(MouseEvent e)
 		{
 			if (mouseMode == tekstTekenen)
 			{
-/*				
-				if ((tekstRechthoek != null) && tekstRechthoek.contains(e.getX(), e.getY()))
-				{
-					setCursor(new Cursor(Cursor.MOVE_CURSOR));
-				}
-				else
-				{
-					if (textCursor != null)
-						setCursor(textCursor);
-					else
-						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				}
-*/				
 				
 			}
 			
 			if (mouseMode == selecteren)
 			{
-				
-/*				
-				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
-				{
-					setCursor(new Cursor(Cursor.MOVE_CURSOR));
-				}
-				else
-				{
-					if (selectCursor != null)
-						setCursor(selectCursor);
-					else
-						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				}
-*/				
 				
 			}
 				

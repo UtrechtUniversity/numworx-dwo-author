@@ -745,9 +745,8 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			
 			if (tekenButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.tekenen;
-				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.mouseMode = kladjeVeld.tekenen;
+				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.repaint();
 				
 				boolean error = false;
@@ -759,7 +758,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "TEKEN_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -793,7 +791,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 */			
 			else if (lijnButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
 				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
 				kladjeVeld.repaint();
@@ -807,7 +804,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "LIJN_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -817,7 +813,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			
 			else if (rechthoekButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.rechthoekTekenen;
 				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.mouseMode = kladjeVeld.rechthoekTekenen;
 				kladjeVeld.repaint();
@@ -831,7 +826,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "RECHTHOEK_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -841,7 +835,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 			
 			else if (cirkelButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.cirkelTekenen;
 				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.mouseMode = kladjeVeld.cirkelTekenen;
 				kladjeVeld.repaint();
@@ -856,7 +849,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "CIRKEL_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -866,9 +858,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 
 			else if (tekstButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
 				kladjeVeld.hideTekstVeld(true);
-//				kladjeVeld.tekstRechthoek = null;
 				kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
 				kladjeVeld.repaint();
 				
@@ -881,7 +871,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "TEKST_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -892,11 +881,11 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 
 			else if (selecterenButton.isSelected())
 			{
-				//kladjeVeld.mouseMode = kladjeVeld.selecteren;
+				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);
 				kladjeVeld.selecteerRechthoek = null;
 				kladjeVeld.resetSelectedObject();
-				kladjeVeld.mouseMode = kladjeVeld.selecteren;
+				kladjeVeld.resetSelectedObjects();
 				kladjeVeld.repaint();
 				
 				boolean error = false;
@@ -908,7 +897,6 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 							new Point(10, 10), "SELECTEREN_CURSOR");
 				}
 				catch (IndexOutOfBoundsException ioobe)
-				//catch (HeadlessException he)
 				{	error = true;
 				}
 				if (!error)
@@ -975,7 +963,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	public void setState(String s)
 	{	
 		
-System.out.println("Kladje setState");		
+//System.out.println("Kladje setState");		
 		
 		// decodeer de string
 		Object o = StringCodeObject.decodeStringToObject(s);
@@ -984,25 +972,13 @@ System.out.println("Kladje setState");
 		
 		kladjeVeld.setState(gegevens);
 		
-		//Vector stateVector = new Vector();
-		
-		//if (gegevens.containsKey("pixels"))
-		//	stateVector = (Vector) gegevens.get("pixels");
-		
-		//if (stateVector.size() > 0)
-		//kladjeVeld.setOldState(stateVector);
 	}
 
 	public String getState()
 	{	
-System.out.println("Kladje getState");
+//System.out.println("Kladje getState");
 
-		//Hashtable gegevens = new Hashtable();
 		Hashtable gegevens = kladjeVeld.getState();
-		
-		//Vector stateVector = kladjeVeld.getState();
-		
-		//gegevens.put("pixels", stateVector);
 		
 	    // codeer deze gegevens tot een string
 	    String s = StringCodeObject.encodeObjectToString(gegevens);

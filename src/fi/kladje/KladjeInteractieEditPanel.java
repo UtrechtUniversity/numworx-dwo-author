@@ -37,6 +37,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	ButtonGroup achtergrondGroep;
 	JRadioButton blancoButton, lijnenButton, ruitjesButton; 
 	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox;
+	JCheckBox roterenBox, schalenBox;
 	
 	public KladjeInteractieEditPanel()
 	{
@@ -132,7 +133,26 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(tekstTekenenBox);
 		tekstTekenenBox.addActionListener(this);
 		
+		currentY += height + 2 * offset;
+
+		roterenBox = new JCheckBox(Kladje.rb.getString("roterenTekst"), true);
+		roterenBox.setFont(theFont);
+		roterenBox.setBackground(Color.white);
+		roterenBox.setBounds(currentX, currentY, width, height);
+		add(roterenBox);
+		roterenBox.addActionListener(this);
+		
 		currentY += height + offset;
+		
+		schalenBox = new JCheckBox(Kladje.rb.getString("schalenTekst"), true);
+		schalenBox.setFont(theFont);
+		schalenBox.setBackground(Color.white);
+		schalenBox.setBounds(currentX, currentY, width, height);
+		add(schalenBox);
+		schalenBox.addActionListener(this);
+		
+		currentY += height + offset;
+		
 		
 		componentsCreated = true;
 	}	
@@ -150,6 +170,9 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			rechthoekTekenenBox.setLocation(klip.getSize().width + offset, rechthoekTekenenBox.getLocation().y);
 			cirkelTekenenBox.setLocation(klip.getSize().width + offset, cirkelTekenenBox.getLocation().y);
 			tekstTekenenBox.setLocation(klip.getSize().width + offset, tekstTekenenBox.getLocation().y);
+			
+			roterenBox.setLocation(klip.getSize().width + offset, roterenBox.getLocation().y);
+			schalenBox.setLocation(klip.getSize().width + offset, schalenBox.getLocation().y);
 		}
 	}
 	
@@ -188,7 +211,14 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		tekstTekenenBox.setSelected(tekstTekenen);
 		
-		
+		boolean roteren = true;
+		if (b.containsKey("roteren"))
+			roteren = ((Boolean) b.get("roteren")).booleanValue();
+		roterenBox.setSelected(roteren);
+		boolean schalen = true;
+		if (b.containsKey("schalen"))
+			schalen = ((Boolean) b.get("schalen")).booleanValue();
+		schalenBox.setSelected(schalen);
 		
 		if (b.containsKey("klipBreedte"))
 			klipBreedte = ((Integer) b.get("klipBreedte")).intValue();
@@ -307,7 +337,14 @@ System.out.println("kliep getEditState");
 		{
 			klip.zetTekstTekenen(tekstTekenenBox.isSelected());
 		}
-		
+		else if (e.getSource() == roterenBox)
+		{
+			klip.zetRoteren(roterenBox.isSelected());
+		}
+		else if (e.getSource() == schalenBox)
+		{
+			klip.zetSchalen(schalenBox.isSelected());
+		}
 
 	}
 
