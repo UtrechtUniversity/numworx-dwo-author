@@ -3,15 +3,21 @@ package fi.calculatordwo;
 import java.awt.*;
 import java.applet.*;
 import java.util.*;
+
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
 
-public class CalculatorDwo extends Applet implements ScormAppletIF 
+import javax.swing.*;
+
+public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApplet 
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
 	private TextField textField;
+	private CalculatorDwoInteractieEditPanel cdiep;
 	
 	public static void main(String[] args)    
 	{	int width = 800;
@@ -58,7 +64,11 @@ public class CalculatorDwo extends Applet implements ScormAppletIF
 		//Test-textfield
 		textField = new TextField();
 		textField.setBounds(50,100,200,25);
-		add(textField);
+		//add(textField);
+		
+		cdiep = new CalculatorDwoInteractieEditPanel();
+		cdiep.setBounds(0,0,800,600);
+		add(cdiep,0);
 	}
 
 	public void start()
@@ -83,10 +93,13 @@ public class CalculatorDwo extends Applet implements ScormAppletIF
 		}
 	}
 	
+	/*
 	public void paint(Graphics g) 
 	{	g.drawString(CalculatorDwo.rb.getString("welkomTekst"), 50, 60 );
 		super.paint(g);
 	}
+	*/
+	
 	
 	public void setState(String s)
 	{	//decodeer de string
@@ -135,4 +148,9 @@ public class CalculatorDwo extends Applet implements ScormAppletIF
     public Parameter[] getAllParameters()
     {	return null;
     }
+
+	public InteractiePanel getInteractiePanel() {
+		// TODO Auto-generated method stub
+		return new CalculatorDwoInteractiePanel();
+	}
 }
