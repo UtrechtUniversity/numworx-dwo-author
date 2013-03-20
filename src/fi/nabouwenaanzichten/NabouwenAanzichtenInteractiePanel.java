@@ -1869,9 +1869,12 @@ newViewer = false;
 		}
 		
 		String state = null;
+		boolean[][][] stateNew = null;
 		
 		if (h.containsKey("state")) 
 			state = (String) h.get("state");
+		if (h.containsKey("stateNew"))
+			stateNew = (boolean[][][]) h.get("stateNew");
 		
 		if (state != null)
 		{	
@@ -1881,6 +1884,19 @@ newViewer = false;
 			for (int i = 0; i < booleanKRs.length; i++)
 			{	kr = new KubusRooster(booleanKRs[i], 1); //later uitbreiden naar meer kubusroosters
 			}
+			v.zetKubusRooster(kr);
+			vp.zetKubusRooster(kr);
+			na.setValue(kr.maxAantal);
+			v.zetAchtergrond(getBackground());
+			
+			if (silhouet && !bovenAanzichtMetHoogtes)
+			{
+				kr.zetVulkleur("zwart"); 
+			}
+		}
+		else if (stateNew != null)
+		{
+			kr = new KubusRooster(stateNew, 1);
 			v.zetKubusRooster(kr);
 			vp.zetKubusRooster(kr);
 			na.setValue(kr.maxAantal);
@@ -1937,6 +1953,11 @@ newViewer = false;
 	    h.put("ingevuld", new Boolean(ingevuld));
         h.put("nagekeken", new Boolean(nagekeken));
         
+        // Java-onafhankelijke codering
+        boolean[][][] stateNew = null;
+		stateNew = kr.geefBooleanRooster();
+		h.put("stateNew", stateNew);
+		
 	    
 	    return h;
 	}
