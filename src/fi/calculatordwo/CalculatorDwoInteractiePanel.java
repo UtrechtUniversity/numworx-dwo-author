@@ -49,8 +49,20 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	String s;
 	StringBuffer sb = new StringBuffer();
+	StringBuffer sb2 = new StringBuffer();
 	double rekenGetal1, rekenGetal2;
 	int lengteRekenGetal1;
+	StringBuffer kind1 = new StringBuffer();
+	StringBuffer kind2 = new StringBuffer();
+	int lengte1, lengte2;
+	double uitkomst;
+	Double eindUitkomst;
+	
+	double rekenKind1, rekenKind2;
+	
+	
+	boolean syntaxError;
+	String subString;
 
 	
 	
@@ -90,11 +102,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		haakRechtsKnop = new JButton(")");
 		haakRechtsKnop.addActionListener(this);
 		
-		pijlLinksKnop = new JButton("\u25C0");
+		pijlLinksKnop = new JButton("\u25C4");
 		pijlLinksKnop.addActionListener(this);
-		pijlRechtsKnop = new JButton("\u25B6");
+		pijlRechtsKnop = new JButton("\u25BA");
 		pijlRechtsKnop.addActionListener(this);
 		//als pijltjes groter moeten: gebruik resp 25C4 en 25BA.
+		//als pijltjes kleiner moeten: gebruik resp 25C0 en 25B6
 		insKnop = new JButton("INS");
 		insKnop.addActionListener(this);
 		delKnop = new JButton("DEL");
@@ -171,18 +184,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		uitvoerVeld = new JLabel("0");
 		uitvoerVeld.setHorizontalAlignment(JLabel.RIGHT);
 		
-		//uitvoerPanel2 = new TekstVak();
-		//uitvoerFormuleVak = new TekstFormuleVak(uitvoerPanel2);
-		//uitvoerPanel2.add(uitvoerFormuleVak);
-		//uitvoerVeld = new TekstDeelVak(uitvoerPanel2);
-		
 		uitvoerVak = new FormuleVak();
-		//uitvoerVak.setLocation(20,2);
 		uitvoerVak.setBackground(new Color(225,225,225));
-		//uitvoerVak.setFont(f);
 		uitvoerVak.setEditable(false);
-		//uitvoerFormuleVak.add(uitvoerVak);
-	
+		
 		uitvoerPanel = new JPanel();
 		uitvoerPanel.setLayout(new BorderLayout());
 		add(uitvoerPanel, BorderLayout.NORTH);
@@ -295,8 +300,84 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 	}
 	
+	public void berekenWaarde(String str) // van een expressie zonder haakjes
+	{
+		sb2.delete(0, sb2.length());
+		sb2.append(str);
+		
+		//++ veranderen in +
+		while(sb2.indexOf("++") != -1)
+		{	sb2.replace(sb2.indexOf("++"), sb2.indexOf("++")+2, "+");
+		}
+		
+		//+- veranderen in -
+		while(sb2.indexOf("+-") != -1)
+		{	sb2.replace(sb2.indexOf("+-"), sb2.indexOf("+-")+2, "-");
+		}
+		
+		//- veranderen in +
+		while(sb2.indexOf("--") != -1)
+		{	sb2.replace(sb2.indexOf("--"), sb2.indexOf("--")+2, "+");
+		}
+		
+		//-+ veranderen in -
+		while(sb2.indexOf("-+") != -1)
+		{	sb2.replace(sb2.indexOf("-+"), sb2.indexOf("-+")+2, "-");
+		}
+		
+		//op zoek naar wortels
+		while(sb2.indexOf("\u221A") != -1)
+		{	vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);		
+			if(syntaxError)
+				return;
+			double wortel = Math.sqrt(rekenGetal1);
+			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A")+lengteRekenGetal1+1, Double.toString(wortel));
+		}	
+		
+		//op zoek naar machten
+		while(sb2.indexOf("^") != -1)
+		{	vindUitkomst("^", sb2);
+			if(syntaxError)
+				return;
+		}
+			
+		//op zoek naar producten en delingen
+		while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
+		{
+			if(sb2.indexOf("/") == -1) 
+				vindUitkomst("x", sb2);
+			else if(sb2.indexOf("x") == -1)
+				vindUitkomst("/", sb2);
+			else if(sb2.indexOf("x") < sb2.indexOf("/"))
+				vindUitkomst("x", sb2);
+			else 
+				vindUitkomst("/", sb2);
+			if(syntaxError)
+				return;
+				
+		}
+		
+		//op zoek naar optellen en aftrekken
+		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") != -1)
+		{	if(sb2.indexOf("-") == -1) 
+				vindUitkomst("+", sb2);
+			else if(sb2.indexOf("+") == -1)
+				vindUitkomst("-", sb2);
+			else if(sb2.indexOf("+") < sb2.indexOf("-"))
+				vindUitkomst("+", sb2);
+			else 
+				vindUitkomst("-", sb2);			
+			if(syntaxError)
+				return;
+				
+		}
+	}
+	
+	
+	
 	public void bereken()
 	{
+		syntaxError = false;
 		int teller1, teller2;
 		
 		s = invoerVeld.getText();
@@ -308,6 +389,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == '\u00B2')
 				sb.replace(i, i+1, "^2");
 		
+		//Alle komma's veranderen in punten
+		for(int i = 0; i< sb.length(); i++)
+			if(sb.charAt(i) == ',')
+				sb.setCharAt(i, '.');
+		
 		//Aantal linker- en rechterhaakjes kloppend maken
 		teller1 = 0;
 		teller2 = 0;
@@ -318,182 +404,264 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == ')')
 				teller2++;
 		if(teller2 > teller1)
-		{ 	uitvoerVeld.setText("Syntax ERROR");
-			return;
-		}
+			syntaxError = true;
 		else if(teller1 > teller2)
 			for(int i = 0; i  <teller1 - teller2; i++)
 				sb.append(')');
 		
-		//haakjes wegwerken (met een while statement, while er nog ) zijn.
-		while(teller2 > -1)
+		if(syntaxError)
+			return;
+		
+		//haakjes wegwerken (met een while statement, zolang er nog ) zijn.
+		String substring1;
+		while(teller2 > 0)
 		{
 			try
-			{	int eindpunt = sb.indexOf(")");
+			{	int eindpunt = sb.indexOf(")");		
 				int beginpunt = sb.substring(0,eindpunt).lastIndexOf("(");
-				String substring1 = sb.substring(beginpunt,eindpunt);
+				substring1 = sb.substring(beginpunt+1,eindpunt);				
+				berekenWaarde(substring1);
+				sb.replace(beginpunt, eindpunt+1, sb2.toString());
 			}
-			catch(Exception e){}
-		//hier een berekening, en dan in sb de substring (incl haakjes) vervangen door het berekende stuk.
-		//Evt keerteken toevoegen...
+			catch(Exception e){
+				syntaxError = true;}
 			teller2--;
 		}
 		
-		//op zoek naar wortels
-		while(sb.indexOf("\u221A") != -1)
-		{	vindGetalNaBewerking(sb.indexOf("\u221A"));
-			double wortel = Math.sqrt(rekenGetal1);
-			sb.replace(sb.indexOf("\u221A"), sb.indexOf("\u221A")+lengteRekenGetal1, Double.toString(wortel));
-		}	
-		
-		//op zoek naar machten
-		while(sb.indexOf("^") != -1)
-		{	vindGetalNaBewerking(sb.indexOf("^"));
-			double exponent = rekenGetal1;
-			int lengte1 = lengteRekenGetal1;
-			vindGetalVoorBewerking(sb.indexOf("^"));
-			double grondtal = rekenGetal1;
-			int lengte2 = lengteRekenGetal1;
-			double macht = Math.pow(grondtal, exponent);
-			sb.replace(sb.indexOf("^")-lengte2, sb.indexOf("^")+lengte1 , Double.toString(macht));
+		try{
+			berekenWaarde(sb.toString());			
+			sb.replace(0, sb.length(), sb2.toString());
 		}
-			
+		catch(Exception e)
+		{ syntaxError = true;
+		}
 		
-		
-		
-		/*
-		 * Berekenen:
-		 * eerst wortels
-		 * Vervolgens machten.
-		 */
-		
+		if(sb.substring(sb.length()-2).equals(".0"))
+			sb.delete(sb.length()-2, sb.length());
 		s = sb.toString();
 		uitvoerVeld.setText(s);
-		
-		
-		
-		/*Expressie exp = formuleVak.geefExpressie();
-		if(exp!=null && !Double.isNaN(exp.geefWaarde()) && !(exp instanceof BasisExpressie))
-		{	double d = exp.geefWaarde();
-			Expressie expAfgerond = new DecRound(exp, new BasisExpressie(3));
-			double dAfgerond = expAfgerond.geefWaarde();
-			boolean isAfronding = !Algebra.isGelijkDouble(d, dAfgerond, 0.00000000000000001);
-			String s1 = formuleVak.toString();
-			s1 = s1.substring(2,s1.length()-1);
-			String s2 = Expressie.df3.format(dAfgerond);
-			if(afgerondOp3)
-			{	if(isAfronding) s2 = "\u2248" + s2;
-				else s2 = "=" + s2;
-			}
-			else
-			{
-				String s = Double.toString(d);
-				String[] delen = StringUtils.split(s,"E");
-				if(delen.length>1) s2 = delen[0] + "*10$m" + delen[1] + "@";
-				else s2 = delen[0];
-				if(isAfronding) s2 = "\u2248" + s2;
-				else s2 = "=" + s2;
-			}
-			rmAntwoordVak.vulVak("$f" + s2 + "@");
-			*/
 	}
 	
-	public void vindGetalVoorBewerking(int pos)
+	public void vindUitkomst(String s, StringBuffer sb)
 	{
-		if(sb.charAt(pos-1) == ',')
-		{	sb.deleteCharAt(pos-1);
-			pos--;
-		}
 		
-		int getal1, getal2;
+		vindGetalVoorBewerking(sb.indexOf(s), sb);
+		if(syntaxError)
+			return;
+		
+		rekenKind1 = rekenGetal1;
+		lengte1 = lengteRekenGetal1;
+		vindGetalNaBewerking(sb.indexOf(s), sb);
+		if(syntaxError)
+			return;
+		rekenKind2 = rekenGetal1;
+		lengte2 = lengteRekenGetal1;
+		if(s.equals("+"))
+			uitkomst = rekenKind1 + rekenKind2;
+		else if(s.equals("-"))
+			uitkomst = rekenKind1 - rekenKind2;
+		else if(s.equals("x"))
+			uitkomst = rekenKind1 * rekenKind2;
+		else if(s.equals("/"))
+			uitkomst = rekenKind1/rekenKind2;
+		else if(s.equals("^"))
+			uitkomst = Math.pow(rekenKind1, rekenKind2);
+		sb.replace(sb.indexOf(s)-lengte1, sb.indexOf(s)+lengte2+1, Double.toString(uitkomst));
+		
+	}
 	
-		if(Character.isDigit(sb.charAt(pos-1)))
-		{	int beginPos = pos-1;
-			while(Character.isDigit(sb.charAt(beginPos)))
-				beginPos --;
-			getal1 = Integer.parseInt(sb.substring(beginPos + 1, pos - 1));
-			if(sb.charAt(beginPos)==',')
-			{	rekenGetal1 = getal1/Math.pow(10, pos - beginPos -2);
-				int pos2 = beginPos;
-				int beginPos2 = pos2-1;
-				while(Character.isDigit(sb.charAt(beginPos2)))
-					beginPos2 --;
-				try{
-					getal2 = Integer.parseInt(sb.substring(beginPos2 + 1, pos2 - 1));
-				}
-				catch(Exception e){
-					getal2 = 0;
-				}
-				rekenGetal2 = getal2;
-				rekenGetal1 = rekenGetal1 + rekenGetal2;
-				lengteRekenGetal1 = pos - beginPos2;
-			}
-			else
-			{	rekenGetal1 = getal1;
-				lengteRekenGetal1 = pos - beginPos;
-			}
-		}
+	/*
+	public void vindUitdrVoorBewerking(int pos)
+	{
+		//int getal1, getal2;
 		
-		else if(sb.charAt(pos-1) == '\u03C0')
-		{		rekenGetal1 = Math.PI;
-				lengteRekenGetal1 = 1;
-		}
-		
-		else
-			{	uitvoerVeld.setText("Syntax ERROR");
-				return;
+		try{
+			if(sb.charAt(pos-1) == '.')
+			{	sb.deleteCharAt(pos-1);
+				pos--;
 			}
-		
 			
-	}
-	
-	public void vindGetalNaBewerking(int pos)
-	{
-		if(sb.charAt(pos+1) == ',')
-		{	sb.insert(pos+1,'0');
-		}
+			if(Character.isDigit(sb.charAt(pos-1)))//geval dat er een getal voor de bewerking staat
+			{	int beginPos = pos-1;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos --;
+				//doet het één keer te vaak:
+				beginPos++;
 				
-		int getal1, getal2;
-	
-		
-		if(Character.isDigit(sb.charAt(pos+1)))
-		{	int eindPos = pos+1;
-			while(Character.isDigit(sb.charAt(eindPos)))
-				eindPos ++;
-			getal1 = Integer.parseInt(sb.substring(pos+1, eindPos));
-			if(sb.charAt(eindPos)==',')
-			{	rekenGetal1 = getal1;
-				int pos2 = eindPos;
-				int eindPos2 = pos2+1;
-				while(Character.isDigit(sb.charAt(eindPos2)))
-					eindPos2 ++;
-				try{
-					getal2 = Integer.parseInt(sb.substring(pos2 + 1, eindPos2 - 1));
-				}
-				catch(Exception e){
-					getal2 = 0;
-				}
-				rekenGetal2 = getal2/Math.pow(10, eindPos2 - pos2 -2);
-				rekenGetal1 = rekenGetal1 + rekenGetal2;
-				lengteRekenGetal1 = eindPos2 - pos;
+				//getal1 = Integer.parseInt(sb.substring(beginPos, pos));
+				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+				{	//rekenGetal1 = getal1/Math.pow(10, pos - beginPos);
+					//int pos2 = beginPos-1;
+					//int beginPos2 = pos2-1;
+					beginPos = beginPos-2;
+					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+						beginPos --;
+					beginPos++;
+				}		
+				
+				subString = sb.substring(beginPos, pos);
+				
+					//getal2 = Integer.parseInt(sb.substring(beginPos2, pos2));
+					//rekenGetal2 = getal2;
+					//rekenGetal1 = rekenGetal1 + rekenGetal2;
+					//lengteRekenGetal1 = pos - beginPos2;
+			}
+			else if(sb.charAt(pos-1) == ')')//geval dat er iets tussen haakjes voor de bewerking staat.
+			{	int teller = 1;
+				int j = pos-1;
+			while(teller > 0)
+			{
+				j--;
+				if(sb.charAt(j)=='(')
+					teller--;
+				else if(sb.charAt(j)==')')
+					teller++;
+			}	
+
+			subString = sb.substring(j, pos);
 			}
 			else
-			{	rekenGetal1 = getal1;
-				lengteRekenGetal1 = eindPos - pos;
+			{	syntaxError = true;
+				System.out.println("Else voorBewerking");
 			}
+			
+				//else
+				//{	rekenGetal1 = getal1;
+				//	lengteRekenGetal1 = pos - beginPos;
+				//}
+			
+		}
+		catch(Exception e){
+			syntaxError = true;
+			System.out.println("Exception voorBewerking");
 		}
 		
-		else if(sb.charAt(pos+1) == '\u03C0')
-			{	rekenGetal1 = Math.PI;
-				lengteRekenGetal1 = 1;
-			}
-		else
-			{	uitvoerVeld.setText("Syntax ERROR");
-				return;
-			}
 		
-			
+		
 	}
+	*/
+
+	/*
+	public void vindUitdrNaBewerking(int pos)
+	{
+		//try
+		//{
+			if(sb.charAt(pos+1) == '.')
+			{	sb.insert(pos+1,'0');
+			}
+			
+			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
+			{	int eindPos = pos+1;
+				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
+					eindPos ++;
+				//doet het één keer te vaak:
+				eindPos--;
+//System.out.println("eindPos = " + eindPos + "en length -1= " + (sb.length()-1));
+								
+				if(eindPos < sb.length()-1 && sb.charAt(eindPos+1)=='.')
+				{	eindPos = eindPos+2;
+					while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
+						eindPos ++;
+					eindPos--;
+				}	
+//System.out.println("we komen na if");
+				subString = sb.substring(pos+1, eindPos+1);
+//System.out.println("we komen na substring maken");
+//System.out.println(subString);
+			}
+			else if(sb.charAt(pos+1) == '(')//geval dat er iets tussen haakjes na de bewerking staat.
+			{	int teller = 1;
+				int j = pos+1;
+				while(teller > 0)
+				{
+					j++;
+					if(sb.charAt(j)==')')
+						teller--;
+					else if(sb.charAt(j)=='(')
+						teller++;
+				}	
+				subString = sb.substring(pos+1, j);
+			}
+			else
+			{	syntaxError = true;
+				System.out.println("Else naBewerking");
+			}
+				
+		//}
+		//catch(Exception e){
+		//	syntaxError = true;
+		//	System.out.println("Exception naBewerking");
+		//}
+	}
+*/
+	
+	public void vindGetalVoorBewerking(int pos, StringBuffer sb)
+	{
+		try{
+			if(sb.charAt(pos-1) == '.')
+			{	sb.deleteCharAt(pos-1);
+				pos--;
+			}
+			
+			if(Character.isDigit(sb.charAt(pos-1)))
+			{	int beginPos = pos-1;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos --;
+				//doet het één keer te vaak:
+				beginPos++;
+				
+				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+				{	beginPos = beginPos-2;
+					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+						beginPos --;
+					beginPos++;
+				}		
+				
+				subString = sb.substring(beginPos, pos);
+				rekenGetal1 = Double.parseDouble(subString);
+				lengteRekenGetal1 = subString.length();
+			}
+			else
+				syntaxError = true;
+		}
+		catch(Exception e){
+			syntaxError = true;
+		}
+	}
+	
+	public void vindGetalNaBewerking(int pos, StringBuffer sb)
+	{
+		try
+		{	if(sb.charAt(pos+1) == '.')
+			{	sb.insert(pos+1,'0');
+			}
+			
+			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
+			{	int eindPos = pos+1;
+				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
+					eindPos ++;
+				//doet het één keer te vaak:
+				eindPos--;
+								
+				if(eindPos < sb.length()-1 && sb.charAt(eindPos+1)=='.')
+				{	eindPos = eindPos+2;
+					while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
+						eindPos ++;
+					eindPos--;
+				}
+				subString = sb.substring(pos + 1, eindPos + 1);
+				rekenGetal1 = Double.parseDouble(subString);
+				lengteRekenGetal1 = subString.length();
+			}
+			else
+				syntaxError = true;
+		}
+		catch(Exception e){
+			syntaxError = true;
+		}
+		
+	}
+
 
 	public void actionPerformed(ActionEvent e) {
 		String str = new String("");
@@ -552,6 +720,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		else if(e.getSource() == isKnop)
 		{	bereken();
+			if(syntaxError)
+				uitvoerVeld.setText("Syntax ERROR");
 			//cursor uit invoervak; als je weer begint te typen, dan verdwijnt huidige invoer.
 		}
 		
