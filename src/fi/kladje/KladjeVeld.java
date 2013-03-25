@@ -248,11 +248,11 @@ public class KladjeVeld extends JPanel
 		Hashtable h = new Hashtable();
 		
 		// backwards compatibility
-		Vector gwtStateVector = getGWTState();
-		if (gwtStateVector.size() > 0)
-		{	h.put("gwtpixels", gwtStateVector);
+//		Vector gwtStateVector = getGWTState();
+//		if (gwtStateVector.size() > 0)
+//		{	h.put("gwtpixels", gwtStateVector);
 //System.out.println("put gwtpixels");		
-		}
+//		}
 		
 		Hashtable[] strepen = new Hashtable[streepVector.size()];
 		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
