@@ -5,10 +5,12 @@ import java.awt.*;
 import java.util.Hashtable;
 
 import javax.swing.*;
+import javax.swing.text.Caret;
 
 import fi.beans.stringutils.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+
 import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.BasisExpressie;
 import fi.wiskopdr.expressies.DecRound;
@@ -19,7 +21,7 @@ import fi.wiskopdr.tekstobjects.*;
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, InteractiePanel
 {
 	int cdipBreedte = 500;
-	int cdipHoogte = 450;
+	int cdipHoogte = 250;
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -33,184 +35,261 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ansKnop, isKnop;
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
 	
-	JButton dummyKnop;
-	
 	JTextField invoerVeld;
 	JLabel uitvoerVeld;
 	
-	JPanel knoppenPanel;
+	JPanel knoppenPanel, bovensteKnoppen, linkerKnoppen, rechterKnoppen, ondersteKnoppen;
 	JPanel uitvoerPanel;
-	
-	//TekstDeelVak uitvoerVeld;
-	TekstVak uitvoerPanel2;
-	TekstFormuleVak uitvoerFormuleVak;
-	
-	FormuleVak uitvoerVak;
 	
 	String s;
 	StringBuffer sb = new StringBuffer();
 	StringBuffer sb2 = new StringBuffer();
-	double rekenGetal1, rekenGetal2;
-	int lengteRekenGetal1;
-	StringBuffer kind1 = new StringBuffer();
-	StringBuffer kind2 = new StringBuffer();
-	int lengte1, lengte2;
+	double rekenGetal;
+	int lengteRekenGetal;
 	double uitkomst;
-	Double eindUitkomst;
-	
-	double rekenKind1, rekenKind2;
-	
 	
 	boolean syntaxError;
 	String subString;
+	String bewaardeAns;
+	int cp = 0;
+	boolean nieuweInvoer = true;
 
+	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs;
 	
+	boolean wetenschappelijk = true;
 	
 	public CalculatorDwoInteractiePanel()
 	{
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(5, 5));
 		
-		theFont = new Font("Dialog", Font.PLAIN, 14);
+		theFont = new Font("Sansserif", Font.BOLD, 16);
 		theFM = getFontMetrics(theFont);
-		theLargeFont = new Font("Dialog", Font.PLAIN, 16);
+		theLargeFont = new Font("Sansserif", Font.PLAIN, 20);
 		theLargeFM = getFontMetrics(theLargeFont);
-				
+		
+		blauw = new Color(50, 120, 255);
+		oranje = new Color(255, 170, 80);
+		groen = new Color(0, 150, 0);
+		geel = new Color(255, 255, 180);
+		lichtgeel = new Color(255, 255, 220);
+		grijs = Color.lightGray;
+		donkergrijs = Color.gray;
+		
 		getalKnop = new JButton[10];
-		setFont(theLargeFont);
 		for(int i = 0; i<getalKnop.length; i++)
-		{	getalKnop[i] = new JButton(""+i);
-			getalKnop[i].addActionListener(this);
-		}
+			getalKnop[i] = maakButton(""+i, donkergrijs);
 		
-		plusKnop = new JButton("+");
-		plusKnop.addActionListener(this);
-		minKnop = new JButton("-");
-		minKnop.addActionListener(this);
-		keerKnop = new JButton("x");
-		keerKnop.addActionListener(this);
-		deelKnop = new JButton("/");
-		deelKnop.addActionListener(this);
-		machtKnop = new JButton("^");
-		machtKnop.addActionListener(this);
-		kwadraatKnop = new JButton("x\u00B2");
-		kwadraatKnop.addActionListener(this);
-		wortelKnop = new JButton("\u221A");
-		wortelKnop.addActionListener(this);
+		plusKnop = maakButton("+", grijs);
+		minKnop = maakButton("\u2212", grijs);
+		keerKnop = maakButton("\u00D7", grijs);
+		deelKnop = maakButton("\u00F7", grijs);
+		machtKnop = maakButton("^", grijs);
+		kwadraatKnop = maakButton("x\u00B2", grijs);
+		wortelKnop = maakButton("\u221A", grijs);
 		
-		haakLinksKnop = new JButton("(");
-		haakLinksKnop.addActionListener(this);
-		haakRechtsKnop = new JButton(")");
-		haakRechtsKnop.addActionListener(this);
+		haakLinksKnop = maakButton("(", grijs);
+		haakRechtsKnop = maakButton(")", grijs);
 		
-		pijlLinksKnop = new JButton("\u25C4");
-		pijlLinksKnop.addActionListener(this);
-		pijlRechtsKnop = new JButton("\u25BA");
-		pijlRechtsKnop.addActionListener(this);
+		pijlLinksKnop = maakButton("\u25C4", blauw);
+		pijlRechtsKnop = maakButton("\u25BA", blauw);
 		//als pijltjes groter moeten: gebruik resp 25C4 en 25BA.
 		//als pijltjes kleiner moeten: gebruik resp 25C0 en 25B6
-		insKnop = new JButton("INS");
+		insKnop = maakButton("INS", blauw);
+		delKnop = maakButton("DEL", blauw);
+		cKnop = maakButton("C", blauw);
+		
+		kommaKnop = maakButton(",", grijs);
+		negatiefKnop = maakButton("(-)", grijs);
+		ansKnop = maakButton("Ans", grijs);
+		isKnop = maakButton("=", groen);
+		
+		sinKnop = maakButton("sin", Color.orange);
+		cosKnop = maakButton("cos", Color.orange);
+		tanKnop = maakButton("tan", Color.orange);
+		invKnop = maakButton("INV", Color.orange);
+		piKnop = maakButton("\u03C0", grijs);
+		
+		for(int i = 0; i < 10; i++)
+			getalKnop[i].addActionListener(this);
+		plusKnop.addActionListener(this);
+		minKnop.addActionListener(this);
+		keerKnop.addActionListener(this);
+		deelKnop.addActionListener(this);
+		machtKnop.addActionListener(this);
+		kwadraatKnop.addActionListener(this);
+		wortelKnop.addActionListener(this);
+		haakLinksKnop.addActionListener(this);
+		haakRechtsKnop.addActionListener(this);
+		pijlLinksKnop.addActionListener(this);
+		pijlRechtsKnop.addActionListener(this);
 		insKnop.addActionListener(this);
-		delKnop = new JButton("DEL");
 		delKnop.addActionListener(this);
-		cKnop = new JButton("C");
 		cKnop.addActionListener(this);
-		
-		kommaKnop = new JButton(",");
 		kommaKnop.addActionListener(this);
-		negatiefKnop = new JButton("(-)");
 		negatiefKnop.addActionListener(this);
-		ansKnop = new JButton("ANS");
 		ansKnop.addActionListener(this);
-		isKnop = new JButton("=");
 		isKnop.addActionListener(this);
-		
-		sinKnop = new JButton("sin");
 		sinKnop.addActionListener(this);
-		cosKnop = new JButton("cos");
 		cosKnop.addActionListener(this);
-		tanKnop = new JButton("tan");
 		tanKnop.addActionListener(this);
-		invKnop = new JButton("INV");
 		invKnop.addActionListener(this);
-		piKnop = new JButton("\u03C0");
 		piKnop.addActionListener(this);
-		
-		dummyKnop = new JButton("");
-		dummyKnop.setVisible(false);
-		
+				
 		knoppenPanel = new JPanel();
-		knoppenPanel.setLayout(new GridLayout(5,6,2,2));
+		knoppenPanel.setLayout(new BorderLayout(5,5));
 		add(knoppenPanel, BorderLayout.CENTER);
 		
-		knoppenPanel.add(pijlLinksKnop);
-		knoppenPanel.add(pijlRechtsKnop);
-		knoppenPanel.add(insKnop);
-		knoppenPanel.add(delKnop);
-		knoppenPanel.add(cKnop);
-		knoppenPanel.add(dummyKnop);
+		bovensteKnoppen = new JPanel();
+		bovensteKnoppen.setLayout(new GridLayout(1, 5, 3, 3));
+		knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
 		
-		knoppenPanel.add(getalKnop[7]);
-		knoppenPanel.add(getalKnop[8]);
-		knoppenPanel.add(getalKnop[9]);
-		knoppenPanel.add(keerKnop);
-		knoppenPanel.add(deelKnop);
-		knoppenPanel.add(wortelKnop);
+		bovensteKnoppen.add(pijlLinksKnop);
+		bovensteKnoppen.add(pijlRechtsKnop);
+		bovensteKnoppen.add(insKnop);
+		bovensteKnoppen.add(delKnop);
+		bovensteKnoppen.add(cKnop);
 		
-		knoppenPanel.add(getalKnop[4]);
-		knoppenPanel.add(getalKnop[5]);
-		knoppenPanel.add(getalKnop[6]);
-		knoppenPanel.add(plusKnop);
-		knoppenPanel.add(minKnop);
-		knoppenPanel.add(kwadraatKnop);
+		ondersteKnoppen = new JPanel();
+		zetWetenschappelijk(wetenschappelijk);
 		
-		knoppenPanel.add(getalKnop[1]);
-		knoppenPanel.add(getalKnop[2]);
-		knoppenPanel.add(getalKnop[3]);
-		knoppenPanel.add(haakLinksKnop);
-		knoppenPanel.add(haakRechtsKnop);
-		knoppenPanel.add(machtKnop);
+		/*
+		ondersteKnoppen.add(getalKnop[7]);
+		ondersteKnoppen.add(getalKnop[8]);
+		ondersteKnoppen.add(getalKnop[9]);
+		ondersteKnoppen.add(keerKnop);
+		ondersteKnoppen.add(deelKnop);
+		ondersteKnoppen.add(wortelKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(sinKnop);
 		
-		knoppenPanel.add(getalKnop[0]);
-		knoppenPanel.add(kommaKnop);
-		knoppenPanel.add(negatiefKnop);
-		knoppenPanel.add(ansKnop);
-		knoppenPanel.add(isKnop);
-		knoppenPanel.add(piKnop);
+		ondersteKnoppen.add(getalKnop[4]);
+		ondersteKnoppen.add(getalKnop[5]);
+		ondersteKnoppen.add(getalKnop[6]);
+		ondersteKnoppen.add(plusKnop);
+		ondersteKnoppen.add(minKnop);
+		ondersteKnoppen.add(kwadraatKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(cosKnop);
+		
+		ondersteKnoppen.add(getalKnop[1]);
+		ondersteKnoppen.add(getalKnop[2]);
+		ondersteKnoppen.add(getalKnop[3]);
+		ondersteKnoppen.add(haakLinksKnop);
+		ondersteKnoppen.add(haakRechtsKnop);
+		ondersteKnoppen.add(machtKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(tanKnop);
+		
+		ondersteKnoppen.add(getalKnop[0]);
+		ondersteKnoppen.add(kommaKnop);
+		ondersteKnoppen.add(negatiefKnop);
+		ondersteKnoppen.add(piKnop);
+		ondersteKnoppen.add(ansKnop);
+		ondersteKnoppen.add(isKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(invKnop);
+		*/
 		
 		invoerVeld = new JTextField("");
 		invoerVeld.setEditable(false);
+		invoerVeld.getCaret().setVisible(true);
+		invoerVeld.setBackground(lichtgeel);
+		invoerVeld.setFont(theFont);
 		
 		
 		uitvoerVeld = new JLabel("0");
 		uitvoerVeld.setHorizontalAlignment(JLabel.RIGHT);
-		
-		uitvoerVak = new FormuleVak();
-		uitvoerVak.setBackground(new Color(225,225,225));
-		uitvoerVak.setEditable(false);
+		uitvoerVeld.setFont(theLargeFont);
 		
 		uitvoerPanel = new JPanel();
 		uitvoerPanel.setLayout(new BorderLayout());
+		uitvoerPanel.setBackground(geel);
 		add(uitvoerPanel, BorderLayout.NORTH);
 		
 		uitvoerPanel.add(invoerVeld, BorderLayout.NORTH);
-		uitvoerPanel.add(uitvoerVak, BorderLayout.SOUTH);
 		uitvoerPanel.add(uitvoerVeld, BorderLayout.SOUTH);
 	}
 	
-	public void zetOpdracht(Hashtable b, String[] randomVars,
+	public JButton maakButton(String s, Color c)
+	{
+		JButton button = new JButton(s);
+		button.setFont(theLargeFont);
+		button.setBackground(c);
+		button.setForeground(Color.WHITE);
+		return button;
+	}
+	
+	public void zetWetenschappelijk(boolean b)
+	{
+		wetenschappelijk = b;
+		ondersteKnoppen.removeAll();
+		knoppenPanel.remove(ondersteKnoppen);
+		
+		if(wetenschappelijk)
+			ondersteKnoppen.setLayout(new GridLayout(4, 7, 3, 3));
+		else
+			ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
+		knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
+		
+		ondersteKnoppen.add(getalKnop[7]);
+		ondersteKnoppen.add(getalKnop[8]);
+		ondersteKnoppen.add(getalKnop[9]);
+		ondersteKnoppen.add(keerKnop);
+		ondersteKnoppen.add(deelKnop);
+		ondersteKnoppen.add(wortelKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(sinKnop);
+		
+		ondersteKnoppen.add(getalKnop[4]);
+		ondersteKnoppen.add(getalKnop[5]);
+		ondersteKnoppen.add(getalKnop[6]);
+		ondersteKnoppen.add(plusKnop);
+		ondersteKnoppen.add(minKnop);
+		ondersteKnoppen.add(kwadraatKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(cosKnop);
+		
+		ondersteKnoppen.add(getalKnop[1]);
+		ondersteKnoppen.add(getalKnop[2]);
+		ondersteKnoppen.add(getalKnop[3]);
+		ondersteKnoppen.add(haakLinksKnop);
+		ondersteKnoppen.add(haakRechtsKnop);
+		ondersteKnoppen.add(machtKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(tanKnop);
+		
+		ondersteKnoppen.add(getalKnop[0]);
+		ondersteKnoppen.add(kommaKnop);
+		ondersteKnoppen.add(negatiefKnop);
+		ondersteKnoppen.add(piKnop);
+		ondersteKnoppen.add(ansKnop);
+		ondersteKnoppen.add(isKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(invKnop);
+		
+		revalidate();
+		
+		
+	}
+	
+	public void zetOpdracht(Hashtable h, String[] randomVars,
 			Hashtable randomValues) {
-		// TODO Auto-generated method stub
+		if (h.containsKey("wetenschappelijk")) 
+			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
+		zetWetenschappelijk(wetenschappelijk);
+	}
+
+	public void setState(Hashtable h) {
+		if (h.containsKey("wetenschappelijk")) 
+			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
+		zetWetenschappelijk(wetenschappelijk);
 		
 	}
 
-	public void setState(Hashtable b) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setEditState(Hashtable b) {
-		// TODO Auto-generated method stub
-		
+	public void setEditState(Hashtable h) {
+		if (h.containsKey("wetenschappelijk")) 
+			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
+		zetWetenschappelijk(wetenschappelijk);
 	}
 
 	public Hashtable getState() {
@@ -218,9 +297,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		return null;
 	}
 
-	public Hashtable getEditState() {
-		// TODO Auto-generated method stub
-		return null;
+	public Hashtable getEditState() 
+	{	
+		Hashtable h = new Hashtable();
+		h.put("wetenschappelijk", new Boolean(wetenschappelijk));
+		
+		return h;
 	}
 
 	public InteractieEditPanel getEditPanel() {
@@ -305,33 +387,28 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
 		
-		//++ veranderen in +
-		while(sb2.indexOf("++") != -1)
-		{	sb2.replace(sb2.indexOf("++"), sb2.indexOf("++")+2, "+");
-		}
+		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
+		replace(sb2, "\u2212", "-");
+		replace(sb2, "\u00F7", "/");
+		replace(sb2, "\u00D7", "x");
+		// in plaats van de regels hier voor / en x kan ik ook in het vervolg de / en x vervangen door 
+		// de unicode-characters die ik erbij heb gezocht.
 		
-		//+- veranderen in -
-		while(sb2.indexOf("+-") != -1)
-		{	sb2.replace(sb2.indexOf("+-"), sb2.indexOf("+-")+2, "-");
-		}
-		
-		//- veranderen in +
-		while(sb2.indexOf("--") != -1)
-		{	sb2.replace(sb2.indexOf("--"), sb2.indexOf("--")+2, "+");
-		}
-		
-		//-+ veranderen in -
-		while(sb2.indexOf("-+") != -1)
-		{	sb2.replace(sb2.indexOf("-+"), sb2.indexOf("-+")+2, "-");
-		}
+		//++ veranderen in +, etc
+		replace(sb2, "++", "+");
+		replace(sb2, "+-", "-");
+		replace(sb2, "--", "+");
+		replace(sb2, "-+", "-");
+		replace(sb2, "x+", "x");
+		replace(sb2, "/+", "/");
 		
 		//op zoek naar wortels
 		while(sb2.indexOf("\u221A") != -1)
 		{	vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);		
 			if(syntaxError)
 				return;
-			double wortel = Math.sqrt(rekenGetal1);
-			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A")+lengteRekenGetal1+1, Double.toString(wortel));
+			double wortel = Math.sqrt(rekenGetal);
+			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A")+lengteRekenGetal+1, Double.toString(wortel));
 		}	
 		
 		//op zoek naar machten
@@ -358,8 +435,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		
 		//op zoek naar optellen en aftrekken
-		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") != -1)
-		{	if(sb2.indexOf("-") == -1) 
+		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
+		{	if(sb2.indexOf("-") <= 0) 
 				vindUitkomst("+", sb2);
 			else if(sb2.indexOf("+") == -1)
 				vindUitkomst("-", sb2);
@@ -389,6 +466,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == '\u00B2')
 				sb.replace(i, i+1, "^2");
 		
+		//Zorgen dat voor en na elke komma getallen staan
+		for(int i = 0; i < sb.length(); i++)
+			if(sb.charAt(i) == ',')
+			{	if(i == 0)
+					sb.insert(0, '0');
+				else if(!Character.isDigit(sb.charAt(i-1)))
+					sb.insert(i-1, '0');
+				if(i == sb.length()-1)
+					sb.append('0');
+				else if(!Character.isDigit(sb.charAt(i+1)))
+					sb.insert(i+1, '0');
+			}
+		
 		//Alle komma's veranderen in punten
 		for(int i = 0; i< sb.length(); i++)
 			if(sb.charAt(i) == ',')
@@ -409,8 +499,30 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			for(int i = 0; i  <teller1 - teller2; i++)
 				sb.append(')');
 		
+		//Maaltekens invoegen waar nodig
+		for(int i = 1; i < sb.length(); i++)
+			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == '(' || sb.charAt(i)=='\u221A'||sb.charAt(i) == 'A')
+				if(sb.charAt(i-1)==')' || sb.charAt(i-1) == '\u03C0' || Character.isDigit(sb.charAt(i-1))||sb.charAt(i-1) == 's')
+					sb.insert(i, 'x');
+		
+		//SyntaxErrors voor getal na pi, Ans en haakje sluiten
+		for(int i = 0; i < sb.length() - 1; i++)
+			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == ')' || sb.charAt(i) == 's')
+				if(Character.isDigit(sb.charAt(i+1)))
+					syntaxError = true;
+		
 		if(syntaxError)
 			return;
+		
+		//pi's uitrekenen
+		for(int i = 0; i < sb.length(); i++)
+			if(sb.charAt(i) == '\u03C0')
+				sb.replace(i, i+1, Double.toString(Math.PI));
+				
+		//Ans invullen
+		for(int i = 0; i < sb.length(); i++)
+			if(sb.charAt(i) == 'A')
+				sb.replace(i, i+3, bewaardeAns);
 		
 		//haakjes wegwerken (met een while statement, zolang er nog ) zijn.
 		String substring1;
@@ -429,14 +541,14 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		
 		try{
-			berekenWaarde(sb.toString());			
+			berekenWaarde(sb.toString());				
 			sb.replace(0, sb.length(), sb2.toString());
 		}
 		catch(Exception e)
 		{ syntaxError = true;
 		}
 		
-		if(sb.substring(sb.length()-2).equals(".0"))
+		if(sb.length()>1 && sb.substring(sb.length()-2).equals(".0"))
 			sb.delete(sb.length()-2, sb.length());
 		s = sb.toString();
 		uitvoerVeld.setText(s);
@@ -449,13 +561,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		if(syntaxError)
 			return;
 		
-		rekenKind1 = rekenGetal1;
-		lengte1 = lengteRekenGetal1;
+		double rekenKind1 = rekenGetal;
+		int lengte1 = lengteRekenGetal;
 		vindGetalNaBewerking(sb.indexOf(s), sb);
 		if(syntaxError)
 			return;
-		rekenKind2 = rekenGetal1;
-		lengte2 = lengteRekenGetal1;
+		double rekenKind2 = rekenGetal;
+		int lengte2 = lengteRekenGetal;
 		if(s.equals("+"))
 			uitkomst = rekenKind1 + rekenKind2;
 		else if(s.equals("-"))
@@ -466,134 +578,18 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			uitkomst = rekenKind1/rekenKind2;
 		else if(s.equals("^"))
 			uitkomst = Math.pow(rekenKind1, rekenKind2);
+		uitkomst = (double) Math.round(100000000 * uitkomst)/100000000;
 		sb.replace(sb.indexOf(s)-lengte1, sb.indexOf(s)+lengte2+1, Double.toString(uitkomst));
 		
 	}
 	
-	/*
-	public void vindUitdrVoorBewerking(int pos)
+	public void replace(StringBuffer sb, String s1, String s2)
 	{
-		//int getal1, getal2;
-		
-		try{
-			if(sb.charAt(pos-1) == '.')
-			{	sb.deleteCharAt(pos-1);
-				pos--;
-			}
-			
-			if(Character.isDigit(sb.charAt(pos-1)))//geval dat er een getal voor de bewerking staat
-			{	int beginPos = pos-1;
-				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-					beginPos --;
-				//doet het één keer te vaak:
-				beginPos++;
-				
-				//getal1 = Integer.parseInt(sb.substring(beginPos, pos));
-				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
-				{	//rekenGetal1 = getal1/Math.pow(10, pos - beginPos);
-					//int pos2 = beginPos-1;
-					//int beginPos2 = pos2-1;
-					beginPos = beginPos-2;
-					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-						beginPos --;
-					beginPos++;
-				}		
-				
-				subString = sb.substring(beginPos, pos);
-				
-					//getal2 = Integer.parseInt(sb.substring(beginPos2, pos2));
-					//rekenGetal2 = getal2;
-					//rekenGetal1 = rekenGetal1 + rekenGetal2;
-					//lengteRekenGetal1 = pos - beginPos2;
-			}
-			else if(sb.charAt(pos-1) == ')')//geval dat er iets tussen haakjes voor de bewerking staat.
-			{	int teller = 1;
-				int j = pos-1;
-			while(teller > 0)
-			{
-				j--;
-				if(sb.charAt(j)=='(')
-					teller--;
-				else if(sb.charAt(j)==')')
-					teller++;
-			}	
-
-			subString = sb.substring(j, pos);
-			}
-			else
-			{	syntaxError = true;
-				System.out.println("Else voorBewerking");
-			}
-			
-				//else
-				//{	rekenGetal1 = getal1;
-				//	lengteRekenGetal1 = pos - beginPos;
-				//}
-			
+		while(sb.indexOf(s1) != -1)
+		{	sb.replace(sb.indexOf(s1), sb.indexOf(s1)+s1.length(), s2);
 		}
-		catch(Exception e){
-			syntaxError = true;
-			System.out.println("Exception voorBewerking");
-		}
-		
-		
-		
 	}
-	*/
-
-	/*
-	public void vindUitdrNaBewerking(int pos)
-	{
-		//try
-		//{
-			if(sb.charAt(pos+1) == '.')
-			{	sb.insert(pos+1,'0');
-			}
-			
-			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
-			{	int eindPos = pos+1;
-				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
-					eindPos ++;
-				//doet het één keer te vaak:
-				eindPos--;
-//System.out.println("eindPos = " + eindPos + "en length -1= " + (sb.length()-1));
-								
-				if(eindPos < sb.length()-1 && sb.charAt(eindPos+1)=='.')
-				{	eindPos = eindPos+2;
-					while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
-						eindPos ++;
-					eindPos--;
-				}	
-//System.out.println("we komen na if");
-				subString = sb.substring(pos+1, eindPos+1);
-//System.out.println("we komen na substring maken");
-//System.out.println(subString);
-			}
-			else if(sb.charAt(pos+1) == '(')//geval dat er iets tussen haakjes na de bewerking staat.
-			{	int teller = 1;
-				int j = pos+1;
-				while(teller > 0)
-				{
-					j++;
-					if(sb.charAt(j)==')')
-						teller--;
-					else if(sb.charAt(j)=='(')
-						teller++;
-				}	
-				subString = sb.substring(pos+1, j);
-			}
-			else
-			{	syntaxError = true;
-				System.out.println("Else naBewerking");
-			}
-				
-		//}
-		//catch(Exception e){
-		//	syntaxError = true;
-		//	System.out.println("Exception naBewerking");
-		//}
-	}
-*/
+		
 	
 	public void vindGetalVoorBewerking(int pos, StringBuffer sb)
 	{
@@ -615,11 +611,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
 						beginPos --;
 					beginPos++;
-				}		
+				}	
 				
 				subString = sb.substring(beginPos, pos);
-				rekenGetal1 = Double.parseDouble(subString);
-				lengteRekenGetal1 = subString.length();
+				rekenGetal = Double.parseDouble(subString);
+				lengteRekenGetal = subString.length();
+				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
+					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
+							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
+								|| sb.charAt(beginPos - 2) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+					}	//wortel later als nodig nog toevoegen
+				
 			}
 			else
 				syntaxError = true;
@@ -631,9 +635,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public void vindGetalNaBewerking(int pos, StringBuffer sb)
 	{
+		boolean negatief = false;
 		try
 		{	if(sb.charAt(pos+1) == '.')
 			{	sb.insert(pos+1,'0');
+			}
+		
+			if(sb.charAt(pos+1) == '-')
+			{
+				pos++;
+				negatief = true;
 			}
 			
 			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
@@ -650,8 +661,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					eindPos--;
 				}
 				subString = sb.substring(pos + 1, eindPos + 1);
-				rekenGetal1 = Double.parseDouble(subString);
-				lengteRekenGetal1 = subString.length();
+				rekenGetal = Double.parseDouble(subString);
+				lengteRekenGetal = subString.length();
+				if(negatief)
+				{
+					rekenGetal = - rekenGetal;
+					lengteRekenGetal++;
+				}
 			}
 			else
 				syntaxError = true;
@@ -662,70 +678,123 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 	}
 
-
+	public void voegTekstIn(String s, boolean b)
+	{
+		if(nieuweInvoer && b)
+		{	invoerVeld.setText("");
+			nieuweInvoer = false;
+		}
+		if(nieuweInvoer && !b)
+		{	invoerVeld.setText("Ans");
+			nieuweInvoer = false;
+		}
+		String str2 = invoerVeld.getText();
+		if(invoerVeld.getCaretPosition() == 0)
+		{	invoerVeld.setText(s + str2);
+			invoerVeld.setCaretPosition(s.length());
+		}
+		else if(invoerVeld.getCaretPosition() == str2.length())
+			invoerVeld.setText(str2 + s);
+		else
+		{	cp = invoerVeld.getCaretPosition();
+			invoerVeld.setText(str2.substring(0,invoerVeld.getCaretPosition())+ s + str2.substring(invoerVeld.getCaretPosition(), str2.length()));
+			invoerVeld.setCaretPosition(cp+s.length());
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e) {
+		invoerVeld.getCaret().setVisible(true);
 		String str = new String("");
 		for(int i = 0; i < 10; i++)
 			if(e.getSource() == getalKnop[i])
-				invoerVeld.setText(invoerVeld.getText() + i);
-			
-		/*
-		 * Rekenissues:
-		 * Werken met een cursor. Tekst invoegen op cursor-positie... dus commando wordt
-		 * anders, misschien methode voor schrijven.
-		 * Zorgen voor een nette weergave van de string. Monospace lettertype?
-		 */
-		//kan ik een actionlistener maken die alle getallen afhandelt?
+				voegTekstIn(""+i, true);
+		
 		
 		if(e.getSource() == piKnop)
-			invoerVeld.setText(invoerVeld.getText() + "\u03C0");
+			voegTekstIn("\u03C0", true);
 		else if(e.getSource() == plusKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + "+");
+			voegTekstIn("+", false);
 		else if(e.getSource() == minKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + "-");
+			voegTekstIn("\u2212", false);
 		else if(e.getSource() == keerKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + "x");
+			voegTekstIn("\u00D7", false);
 		else if(e.getSource() == deelKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + "/");
+			voegTekstIn("\u00F7", false);
 		else if(e.getSource() == wortelKnop)
-			invoerVeld.setText(invoerVeld.getText() + "\u221A");
+			voegTekstIn("\u221A", true);
 		else if(e.getSource() == kwadraatKnop)
-			invoerVeld.setText(invoerVeld.getText() + "\u00B2");
+			voegTekstIn("\u00B2", false);
 		else if(e.getSource() == machtKnop)
-			invoerVeld.setText(invoerVeld.getText() + "^");
+			voegTekstIn("^", false);
 		else if(e.getSource() == haakLinksKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + "(");
+			voegTekstIn("(", true);
 		else if(e.getSource() == haakRechtsKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + ")");
+			voegTekstIn(")", false);
 		else if(e.getSource() == kommaKnop)
-		 	invoerVeld.setText(invoerVeld.getText() + ",");
+			voegTekstIn(",", true);
 		else if(e.getSource() == negatiefKnop)
-			invoerVeld.setText(invoerVeld.getText() + "-");
+			voegTekstIn("-", true);
 		else if(e.getSource() == ansKnop)
-			invoerVeld.setText(invoerVeld.getText() + "Ans");
-		
+			voegTekstIn("Ans", true);
 		
 		else if(e.getSource() == cKnop)
+		{	if(nieuweInvoer)
+				nieuweInvoer = false;
 			invoerVeld.setText("");
+		}
 		else if(e.getSource() == delKnop)
 		{	str = invoerVeld.getText();
-			try
-			{ invoerVeld.setText(str.substring(0, str.length()-1));
+			if(invoerVeld.getCaretPosition() == 0)
+				return;
+			if(nieuweInvoer)
+				nieuweInvoer = false; //kijken of dit geen gekke dingen oplevert...
+			else if(str.charAt(invoerVeld.getCaretPosition() - 1)=='s')
+			{	cp = invoerVeld.getCaretPosition();
+				invoerVeld.setText(str.substring(0, invoerVeld.getCaretPosition() - 3) + str.substring(invoerVeld.getCaretPosition(), str.length()));
+				invoerVeld.setCaretPosition(cp - 3);
 			}
-			catch(Exception ex){}
-			/* dit moet nog wel iets geraffineerder:
-			 * Bij bewerking moeten ook de spaties weg.
-			 * Bij dingen als Ans moet hele woord weg.
-			 */
+			else
+			{ 	cp = invoerVeld.getCaretPosition();
+				invoerVeld.setText(str.substring(0, invoerVeld.getCaretPosition() - 1) + str.substring(invoerVeld.getCaretPosition(), str.length()));
+				invoerVeld.setCaretPosition(cp - 1);
+			}
 		}
+		else if(e.getSource() == pijlLinksKnop)
+		{	str = invoerVeld.getText();
+			if(nieuweInvoer)
+				nieuweInvoer = false;
+			if(invoerVeld.getCaretPosition() == 0)
+				return;
+			else if(str.charAt(invoerVeld.getCaretPosition()-1)=='s')
+				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 3);
+			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
+		}
+		else if(e.getSource() == pijlRechtsKnop)
+		{	str = invoerVeld.getText();
+			if(nieuweInvoer)
+				nieuweInvoer = false;
+			if(invoerVeld.getCaretPosition()==str.length())
+				return;
+			else if(str.charAt(invoerVeld.getCaretPosition())=='A')
+				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 3);
+			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 1);
+		}
+		
 		else if(e.getSource() == isKnop)
-		{	bereken();
+		{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
+				bewaardeAns = uitvoerVeld.getText();
+			bereken();
 			if(syntaxError)
 				uitvoerVeld.setText("Syntax ERROR");
-			//cursor uit invoervak; als je weer begint te typen, dan verdwijnt huidige invoer.
+			invoerVeld.getCaret().setVisible(false);
+			nieuweInvoer = true;
 		}
 		
 		
 	}
 
 }
+/*
+ * Issues:
+ * Zorgen dat sin, cos, tan en inv werken. Ins weglaten?? Doet nu niets...
+ */

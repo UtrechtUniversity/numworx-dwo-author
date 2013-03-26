@@ -13,7 +13,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 {	int editWidth = 190;
 	int editHeight = 550; 
 	int cdipBreedte = 500; // startbreedte ip
-	int cdipHoogte = 450; // starthoogte ip
+	int cdipHoogte = 250; // starthoogte ip
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -29,6 +29,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	protected CalculatorDwoInteractiePanel cdip;
 	JRadioButton scientificButton, easyButton;
 	ButtonGroup groep;
+	boolean wetenschappelijk;
 
 	
 	public CalculatorDwoInteractieEditPanel ()
@@ -49,13 +50,13 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		currentY = offset;
 		
 		easyButton = new JRadioButton("Eenvoudig");
-		easyButton.setSelected(true);
 		easyButton.setBounds(currentX, currentY, width, height);
 		add(easyButton);
 		
 		currentY += height + offset;
 		
 		scientificButton = new JRadioButton("Wetenschappelijk");
+		scientificButton.setSelected(true);
 		scientificButton.setBounds(currentX, currentY, width, height);
 		add(scientificButton);
 		
@@ -68,14 +69,20 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 
 	}
 
-	public void setEditState(Hashtable b) {
-		// TODO Auto-generated method stub
-		
+	public void setEditState(Hashtable h) {
+		if(h.containsKey("wetenschappelijk"))
+			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
+		if(wetenschappelijk)
+			scientificButton.setSelected(true);
+		else
+			easyButton.setSelected(true);
+			
+		cdip.setEditState(h);
 	}
 
 	public Hashtable getEditState() {
-		// TODO Auto-generated method stub
-		return null;
+		Hashtable h = cdip.getEditState();
+		return h;
 	}
 
 	public void zetBreedte(int b) {
@@ -100,9 +107,17 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 
 	public void addActionListener(ActionListener al) {}
 
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getSource() == easyButton)
+		{	wetenschappelijk = false;
+			cdip.zetWetenschappelijk(wetenschappelijk);
+		}
+		else if(e.getSource() == scientificButton)
+		{	wetenschappelijk = true;
+			cdip.zetWetenschappelijk(wetenschappelijk);
+		}
+			
 	}
 
 }

@@ -29,6 +29,15 @@ public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApp
 		mf.setSize(width, height);
 	}
 	
+	public CalculatorDwo(Locale language)
+	{	rb = ResourceBundle.getBundle("fi.calculatordwo.text.Text",language);
+	}
+	
+	public CalculatorDwo()
+	{	Locale language = new Locale ("nl", "");
+		rb = ResourceBundle.getBundle("fi.calculatordwo.text.Text",language);
+	}
+	
 	public void init() 
 	{	try
 		{	api = Scorm.findAPI(this);
@@ -121,7 +130,7 @@ public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApp
 	    
 	    Hashtable h = new Hashtable();
 	    
-	    //voeg de gegeven toe aan de hashtable
+	    //voeg de gegevens toe aan de hashtable
 	    h.put("text", text);
 	      
 	    //codeer de hashtable tot string
