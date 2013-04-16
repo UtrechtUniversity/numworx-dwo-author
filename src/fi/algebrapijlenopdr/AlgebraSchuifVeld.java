@@ -814,6 +814,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	    {	for(int j = 0; j < aantalSc; j++)
 			{	if (connections[i][j]) 
 				{	Pijl p = schuifcomponenten[i].pijlUit[schuifcomponenten[i].aantalPu - 1];
+					//schuifcomponenten[j].zetLinks(links);
 					schuifcomponenten[j].verbind(p);
 					p.zetVerbonden(schuifcomponenten[j]);
 				}

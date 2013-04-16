@@ -3,7 +3,7 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import javax.swing.*;
 
-public class CheckComponent extends JComponent 
+public class CheckComponent extends JPanel 
 {
 	static final int NEUTRAL = 0;
 	static final int CORRECT = 1;
@@ -32,7 +32,12 @@ public class CheckComponent extends JComponent
 	}
 	
 	public void paintComponent(Graphics g)
-	{	if (status == CORRECT)
+	{	
+		
+		//g.setColor(Color.orange);
+		//g.fillRect(0, 0, getSize().width, getSize().height);
+		
+		if (status == CORRECT)
 		{	g.setColor(Color.green);
 			g.fillOval(2, 2, getSize().width - 4, getSize().height - 4);		
 		}

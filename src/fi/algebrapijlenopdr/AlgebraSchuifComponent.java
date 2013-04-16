@@ -226,6 +226,7 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		}
 	}
 	
+	
 	public void verbind(Pijl p)
 	{	pijlIn1 = p;
 		if (!links)
@@ -236,9 +237,14 @@ public class AlgebraSchuifComponent extends SchuifComponent
 		}
 		else 
 		{	if (label)
-				pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 30);
+			{	//pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 30);
+				pijlIn1.zetEind(getLocation().x + getSize().width, getLocation().y + 30);
+			}
 			else 
-				pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 10);
+			{	//pijlIn1.zetEind(getLocation().x + getSize().width + 10, getLocation().y + 10);
+				pijlIn1.zetEind(getLocation().x + getSize().width, getLocation().y + 10);
+			}
+//System.out.println("verbind " + (getLocation().x + getSize().width));		
 		}
 	}
 	
