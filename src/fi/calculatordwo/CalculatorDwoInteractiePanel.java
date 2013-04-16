@@ -6,6 +6,7 @@ import java.util.Hashtable;
 
 import javax.swing.*;
 import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
 
 import fi.beans.stringutils.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -20,7 +21,7 @@ import fi.wiskopdr.tekstobjects.*;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, InteractiePanel
 {
-	int cdipBreedte = 500;
+	int cdipBreedte = 540;
 	int cdipHoogte = 250;
 	
 	Font theFont, theLargeFont, theSmallFont;
@@ -32,6 +33,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	JButton pijlLinksKnop, pijlRechtsKnop, insKnop, delKnop, cKnop, kommaKnop, negatiefKnop, 
 		ansKnop, isKnop;
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
+	JButton lnKnop, logKnop, eKnop, xWortelKnop;
 	
 	JTextField invoerVeld;
 	JLabel uitvoerVeld;
@@ -44,7 +46,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	StringBuffer sb2 = new StringBuffer();
 	double rekenGetal;
 	int lengteRekenGetal;
-	double uitkomst;
+	double uitkomst, eindUitkomst;
 	int lengteHaakjesUitdrukking;
 	int linksTeller, rechtsTeller;
 	
@@ -52,13 +54,17 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	String subString;
 	String bewaardeAns;
 	int cp = 0;
-	boolean nieuweInvoer = true;
+	boolean nieuweInvoer = false;
 
 	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs;
 	
 	boolean wetenschappelijk = true;
 	boolean invers = false;
+	boolean insert = true;
 	JLabel invLabel;
+	
+	ReplaceCaret replaceCaret;
+	DefaultCaret defaultCaret;
 	
 	public CalculatorDwoInteractiePanel()
 	{
@@ -66,7 +72,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		theFont = new Font("Sansserif", Font.BOLD, 16);
 		theFM = getFontMetrics(theFont);
-		theLargeFont = new Font("Sansserif", Font.PLAIN, 20);
+		theLargeFont = new Font("Sansserif", Font.PLAIN, 18);
 		theLargeFM = getFontMetrics(theLargeFont);
 		theSmallFont = new Font("Sansserif", Font.BOLD, 6);
 		theSmallFM = getFontMetrics(theSmallFont);
@@ -113,6 +119,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		invKnop = maakButton("INV", Color.orange);
 		piKnop = maakButton("\u03C0", grijs);
 		
+		logKnop = maakButton("log", Color.orange);
+		lnKnop = maakButton("ln", Color.orange);
+		eKnop = maakButton("e", grijs);
+		xWortelKnop = maakButton("x\u221A", Color.orange);
+		
 		for(int i = 0; i < 10; i++)
 			getalKnop[i].addActionListener(this);
 		plusKnop.addActionListener(this);
@@ -138,6 +149,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		tanKnop.addActionListener(this);
 		invKnop.addActionListener(this);
 		piKnop.addActionListener(this);
+		logKnop.addActionListener(this);
+		lnKnop.addActionListener(this);
+		eKnop.addActionListener(this);
+		xWortelKnop.addActionListener(this);
 				
 		knoppenPanel = new JPanel();
 		knoppenPanel.setLayout(new BorderLayout(5,5));
@@ -156,9 +171,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ondersteKnoppen = new JPanel();
 		zetWetenschappelijk(wetenschappelijk);
 		
+		replaceCaret = new ReplaceCaret();
+		defaultCaret = new DefaultCaret();
 		
 		invoerVeld = new JTextField("");
 		invoerVeld.setEditable(false);
+		invoerVeld.setCaret(defaultCaret);
+		invoerVeld.getCaret().setBlinkRate(500);
 		invoerVeld.getCaret().setVisible(true);
 		invoerVeld.setBackground(lichtgeel);
 		invoerVeld.setFont(theFont);
@@ -203,7 +222,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		knoppenPanel.remove(ondersteKnoppen);
 		
 		if(wetenschappelijk)
-			ondersteKnoppen.setLayout(new GridLayout(4, 7, 3, 3));
+			ondersteKnoppen.setLayout(new GridLayout(4, 8, 3, 3));
 		else
 			ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
 		knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
@@ -215,7 +234,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ondersteKnoppen.add(deelKnop);
 		ondersteKnoppen.add(wortelKnop);
 		if(wetenschappelijk)
+		{	ondersteKnoppen.add(xWortelKnop);
 			ondersteKnoppen.add(sinKnop);
+		}
 		
 		ondersteKnoppen.add(getalKnop[4]);
 		ondersteKnoppen.add(getalKnop[5]);
@@ -224,7 +245,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ondersteKnoppen.add(minKnop);
 		ondersteKnoppen.add(kwadraatKnop);
 		if(wetenschappelijk)
+		{	ondersteKnoppen.add(logKnop);
 			ondersteKnoppen.add(cosKnop);
+		}
 		
 		ondersteKnoppen.add(getalKnop[1]);
 		ondersteKnoppen.add(getalKnop[2]);
@@ -233,12 +256,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ondersteKnoppen.add(haakRechtsKnop);
 		ondersteKnoppen.add(machtKnop);
 		if(wetenschappelijk)
+		{	ondersteKnoppen.add(lnKnop);
 			ondersteKnoppen.add(tanKnop);
+		}
 		
 		ondersteKnoppen.add(getalKnop[0]);
 		ondersteKnoppen.add(kommaKnop);
 		ondersteKnoppen.add(negatiefKnop);
 		ondersteKnoppen.add(piKnop);
+		if(wetenschappelijk)
+			ondersteKnoppen.add(eKnop);
 		ondersteKnoppen.add(ansKnop);
 		ondersteKnoppen.add(isKnop);
 		if(wetenschappelijk)
@@ -356,7 +383,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			{	if(i == 0)
 					sb.insert(0, '0');
 				else if(!Character.isDigit(sb.charAt(i-1)))
-					sb.insert(i-1, '0');
+					sb.insert(i, '0');
 				if(i == sb.length()-1)
 					sb.append('0');
 				else if(!Character.isDigit(sb.charAt(i+1)))
@@ -380,16 +407,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		//Maaltekens invoegen waar nodig
 		for(int i = 1; i < sb.length(); i++)
-			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == '(' || sb.charAt(i)=='\u221A'||sb.charAt(i) == 'A')
-				if(sb.charAt(i-1)==')' || sb.charAt(i-1) == '\u03C0' || Character.isDigit(sb.charAt(i-1))||sb.charAt(i-1) == 's')
+			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == 'e' || sb.charAt(i) == '(' || sb.charAt(i)=='\u221A'||sb.charAt(i) == 'A')
+			{	if(sb.charAt(i-1)==')' || sb.charAt(i-1) == '\u03C0' || sb.charAt(i-1) == 'e' || Character.isDigit(sb.charAt(i-1)))
 					sb.insert(i, 'x');
+				if(sb.charAt(i-1) == 's' && sb.charAt(i-2) == 'n')
+					sb.insert(i, 'x');
+			}	
 		
 		//SyntaxErrors voor getal na pi, Ans en haakje sluiten
 		for(int i = 0; i < sb.length() - 1; i++)
-			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == ')' || sb.charAt(i) == 's')
+			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == 'e' || sb.charAt(i) == ')' || sb.charAt(i) == 's')
 				if(Character.isDigit(sb.charAt(i+1)))
 				{	syntaxError = true;
-					System.out.println("Getal na pi, ans of haakje sluiten");
+					System.out.println("Getal na pi, e, ans of haakje sluiten");
 				}
 		
 		if(syntaxError)
@@ -397,10 +427,15 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			return;
 		}
 		
-		//pi's uitrekenen
+		//pi's uitrekenen --> misschien beter nog even Math.Pi neerzetten, en pas later echt uitrekenen?
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == '\u03C0')
 				sb.replace(i, i+1, Double.toString(Math.PI));
+
+		//e's uitrekenen
+		for(int i = 0; i < sb.length(); i++)
+			if(sb.charAt(i) == 'e')
+				sb.replace(i, i+1, Double.toString(Math.E));
 				
 		//Ans invullen
 		for(int i = 0; i < sb.length(); i++)
@@ -409,8 +444,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	}
 	
 	/*
-	 * De berekenmethode; berekent wat er in de stringbuffer staat. Regelt met name
-	 * gonioformules en haakjes zelf, besteedt de rest uit.
+	 * De berekenmethode; berekent wat er in de stringbuffer staat. Regelt
+	 * gonioformules, logaritmes en haakjes zelf, besteedt de rest uit.
 	 */
 	
 	public void bereken(StringBuffer sb)
@@ -420,13 +455,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == 's' && sb.charAt(i+1)== 'i')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4, 
-							Double.toString((double)Math.round(1000000000*Math.sin(uitkomst))/1000000000));
+					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+							Double.toString(Math.sin(uitkomst)));
 				}
 				else //arcsin
 				{	vindHaakjesUitdrukking(sb, i + 5);
 					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
-							Double.toString((double)Math.round(1000000000*Math.asin(uitkomst))/1000000000));
+							Double.toString(Math.asin(uitkomst)));
 				}
 			}
 		for(int i = 0; i < sb.length()-1; i++)
@@ -434,12 +469,14 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
 					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
-							Double.toString((double)Math.round(1000000000*Math.cos(uitkomst))/1000000000));
+							Double.toString(Math.cos(uitkomst)));
 				}
 				else //arccos
-				{	vindHaakjesUitdrukking(sb, i + 5);
+				{	
+					System.out.println("sb.charAt(i+3) = " + sb.charAt(i+3));
+					vindHaakjesUitdrukking(sb, i + 5);
 					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
-							Double.toString((double)Math.round(1000000000*Math.acos(uitkomst))/1000000000));
+							Double.toString(Math.acos(uitkomst)));
 				}
 			}
 		for(int i = 0; i < sb.length()-1; i++)
@@ -447,19 +484,31 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
 					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
-							Double.toString((double)Math.round(1000000000*Math.tan(uitkomst))/1000000000));
+							Double.toString(Math.tan(uitkomst)));
 				}
 				else //arctan
 				{	vindHaakjesUitdrukking(sb, i + 5);
 					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
-							Double.toString((double)Math.round(1000000000*Math.atan(uitkomst))/1000000000));
+							Double.toString(Math.atan(uitkomst)));
 				}
 			}
 		
-System.out.println(sb.toString());		
+		//logfuncties uitrekenen
+		for(int i = 0; i < sb.length() - 1; i++)
+			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'o')//logs
+			{	vindHaakjesUitdrukking(sb, i + 3);
+				sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+							Double.toString(Math.log10(uitkomst)));
+			}	
+		for(int i = 0; i < sb.length() - 1; i++)
+			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'n')//lns
+			{	vindHaakjesUitdrukking(sb, i + 2);
+				sb.replace(i, i + lengteHaakjesUitdrukking + 3,
+							Double.toString(Math.log(uitkomst)));
+			}	
+		
 		//haakjes wegwerken (met een while statement, zolang er nog ) zijn.
 		berekenTellers(sb);
-System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rechtsTeller);		
 		String substring1;
 		while(rechtsTeller > 0)
 		{
@@ -485,13 +534,10 @@ System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rech
 		System.out.println("ERROR bereken waarde geheel");
 		}
 		
-		if(sb.length()>1 && sb.substring(sb.length()-2).equals(".0"))
-			sb.delete(sb.length()-2, sb.length());
-		
 	}
 	
 	/*
-	 * berekenWaarde berekent de waarde van een expressie waarin geen haakjes, pi, ans en
+	 * berekenWaarde berekent de waarde van een expressie waarin geen haakjes, pi, e, ans, logaritmes en
 	 * gonio-formules voorkomen.
 	 */
 	public void berekenWaarde(String str) 
@@ -514,6 +560,29 @@ System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rech
 		replace(sb2, "x+", "x");
 		replace(sb2, "/+", "/");
 		
+		//kijken of er een E in staat (bij hele grote of hele kleine getallen)
+		//werkt niet zo, want die E komt net zo hard weer terug bij het vervangen! Dus blijf je in de loop.
+		//Misschien betere oplossing: zorgen dat het -teken niet schrikt als ie een E tegenkomt vlak voor zich
+		// en weet wat ie dan moet doen. Eigenlijk wil je E- gewoon negeren.
+		//
+		//Of misschien is er eigenlijk wel meer nodig, namelijk dat ie echt kan rekenen met E.
+		//Misschien moet ik dus met het rekenwerk ook echt een double bijhouden.  
+		/*
+		while(sb2.indexOf("E") != -1)
+		{	vindGetalNaBewerking(sb2.indexOf("E"), sb2);
+System.out.println(rekenGetal);		
+			if(syntaxError)
+			{
+				System.out.println("ERROR E");
+				return;
+			}
+			double tienmacht = Math.pow(10, rekenGetal);
+			sb2.replace(sb2.indexOf("E"), sb2.indexOf("E") + lengteRekenGetal + 1, 
+					"x" + Double.toString(tienmacht));
+System.out.println(sb2.toString());			
+		}
+		*/
+		
 		//op zoek naar wortels
 		while(sb2.indexOf("\u221A") != -1)
 		{	vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);		
@@ -523,7 +592,8 @@ System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rech
 			return;
 			}
 			double wortel = Math.sqrt(rekenGetal);
-			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A")+lengteRekenGetal+1, Double.toString(wortel));
+			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
+					Double.toString(wortel));
 		}	
 		
 		//op zoek naar machten
@@ -631,7 +701,6 @@ System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rech
 			uitkomst = rekenKind1/rekenKind2;
 		else if(s.equals("^"))
 			uitkomst = Math.pow(rekenKind1, rekenKind2);
-		uitkomst = (double) Math.round(100000000 * uitkomst)/100000000;
 		sb.replace(sb.indexOf(s)-lengte1, sb.indexOf(s)+lengte2+1, Double.toString(uitkomst));
 		
 	}
@@ -643,6 +712,13 @@ System.out.println("linksTeller = " + linksTeller + " en rechtsTeller = " + rech
 			{	sb.deleteCharAt(pos-1);
 				pos--;
 			}
+			
+			/*
+			if(sb.charAt(pos-1) == 'E')
+			{	vindGetalNaBewerking(pos-1, sb);
+				
+			}
+			*/
 			
 			if(Character.isDigit(sb.charAt(pos-1)))
 			{	int beginPos = pos-1;
@@ -748,14 +824,19 @@ System.out.println("sb3 = " + sb3.toString());
 		lengteHaakjesUitdrukking = j - n;
 	}
 
-	public void voegTekstIn(String s, boolean b)
+	/*
+	 * de boolean is om aan te geven of Ans moet worden toegevoegd als 
+	 * een nieuwe berekening wordt gestart.
+	 */
+	
+	public void voegTekstIn(String s, boolean ans)
 	{
-		if(nieuweInvoer && b)
-		{	invoerVeld.setText("");
+		if(nieuweInvoer && ans)
+		{	invoerVeld.setText("Ans");
 			nieuweInvoer = false;
 		}
-		if(nieuweInvoer && !b)
-		{	invoerVeld.setText("Ans");
+		if(nieuweInvoer && !ans)
+		{	invoerVeld.setText("");
 			nieuweInvoer = false;
 		}
 		String str2 = invoerVeld.getText();
@@ -772,67 +853,116 @@ System.out.println("sb3 = " + sb3.toString());
 		}
 	}
 	
+	public void vervangTekst(String s)
+	{
+		String str2 = invoerVeld.getText();
+		cp = invoerVeld.getCaretPosition();
+		
+		if(cp == str2.length())
+		{	invoerVeld.setText(str2 + s);
+			invoerVeld.setCaretPosition(cp + s.length());
+			return;
+		}
+		
+		char testChar = str2.charAt(cp);
+		// eerste stuk vast terugzetten:
+		invoerVeld.setText(str2.substring(0,invoerVeld.getCaretPosition()) + s);
+		
+		//uitrekenen wat er verder nog terugmoet (meestal alles behalve het eerstevolgende karakter
+		if(testChar=='s' || testChar == 'c' || testChar == 't' || testChar == 'A')
+		{	char testChar2 = str2.charAt(cp + 3);
+			if(testChar2 == '(')
+			{	invoerVeld.setText(invoerVeld.getText() + str2.substring(cp + 4));
+			}
+			else
+				invoerVeld.setText(invoerVeld.getText() + str2.substring(cp + 6));
+		}
+		else
+			invoerVeld.setText(invoerVeld.getText() + str2.substring(cp + 1));
+		
+		invoerVeld.setCaretPosition(cp + s.length());
+	}
+	
+	public void voegInOfVervang(String s, boolean ans)
+	{
+		if(insert)
+			voegTekstIn(s, ans);
+		else
+			vervangTekst(s);
+	}
+	
+	
 	public void actionPerformed(ActionEvent e) {
 		invoerVeld.getCaret().setVisible(true);
 		String str = new String("");
 		for(int i = 0; i < 10; i++)
 			if(e.getSource() == getalKnop[i])
-				voegTekstIn(""+i, true);
+				voegInOfVervang(""+i, false);
 		
 		
 		if(e.getSource() == piKnop)
-			voegTekstIn("\u03C0", true);
+			//voegTekstIn("\u03C0", true);
+			voegInOfVervang("\u03C0", false);
 		else if(e.getSource() == plusKnop)
-			voegTekstIn("+", false);
+			//voegTekstIn("+", false);
+			voegInOfVervang("+", true);
 		else if(e.getSource() == minKnop)
-			voegTekstIn("\u2212", false);
+			voegInOfVervang("\u2212", true);
 		else if(e.getSource() == keerKnop)
-			voegTekstIn("\u00D7", false);
+			voegInOfVervang("\u00D7", true);
 		else if(e.getSource() == deelKnop)
-			voegTekstIn("\u00F7", false);
+			voegInOfVervang("\u00F7", true);
 		else if(e.getSource() == wortelKnop)
-			voegTekstIn("\u221A", true);
+			voegInOfVervang("\u221A", false);
 		else if(e.getSource() == kwadraatKnop)
-			voegTekstIn("\u00B2", false);
+			voegInOfVervang("\u00B2", true);
 		else if(e.getSource() == machtKnop)
-			voegTekstIn("^", false);
+			voegInOfVervang("^", true);
 		else if(e.getSource() == haakLinksKnop)
-			voegTekstIn("(", true);
+			voegInOfVervang("(", false);
 		else if(e.getSource() == haakRechtsKnop)
-			voegTekstIn(")", false);
+			voegInOfVervang(")", true);
 		else if(e.getSource() == kommaKnop)
-			voegTekstIn(",", true);
+			voegInOfVervang(",", false);
 		else if(e.getSource() == negatiefKnop)
-			voegTekstIn("-", true);
+			voegInOfVervang("-", false);
 		else if(e.getSource() == ansKnop)
-			voegTekstIn("Ans", true);
+			voegInOfVervang("Ans", false);
 		else if(e.getSource() == sinKnop)
 		{	if(!invers)
-				voegTekstIn("sin(", true);
+				voegInOfVervang("sin(", false);
 			else
-			{	voegTekstIn("sin\u207B\u00B9(", true);
+			{	voegInOfVervang("sin\u207B\u00B9(", false);
 				invers = false;
 				invLabel.setVisible(false);
 			}
 		}
 		else if(e.getSource() == cosKnop)
 		{	if(!invers)
-				voegTekstIn("cos(", true);
+				voegInOfVervang("cos(", false);
 			else
-			{	voegTekstIn("cos\u207B\u00B9(", true);
+			{	voegInOfVervang("cos\u207B\u00B9(", false);
 				invers = false;
 				invLabel.setVisible(false);
 			}
 		}
 		else if(e.getSource() == tanKnop)
 		{	if(!invers)
-				voegTekstIn("tan(", true);
+				voegInOfVervang("tan(", false);
 			else
-			{	voegTekstIn("tan\u207B\u00B9(", true);
+			{	voegInOfVervang("tan\u207B\u00B9(", false);
 				invers = false;
 				invLabel.setVisible(false);
 			}
 		}
+		else if(e.getSource() == logKnop)
+			voegInOfVervang("log(", false);
+		else if(e.getSource() == lnKnop)
+			voegInOfVervang("ln(", false);
+		else if(e.getSource() == eKnop)
+			voegInOfVervang("e", false);
+		else if(e.getSource() == xWortelKnop)
+			voegInOfVervang("x\u221A", false);//dit moet nog anders, misschien getal ervoor al omhoog zetten?
 		else if(e.getSource() == invKnop)
 		{	invers = !invers;
 			invLabel.setVisible(invers);
@@ -844,11 +974,13 @@ System.out.println("sb3 = " + sb3.toString());
 		}
 		else if(e.getSource() == delKnop)
 		{	str = invoerVeld.getText();
+			if(nieuweInvoer)
+			{	nieuweInvoer = false; 
+				invoerVeld.setCaretPosition(str.length());
+			}
 			cp = invoerVeld.getCaretPosition();
 			if(cp == 0)
 				return;
-			if(nieuweInvoer)
-				nieuweInvoer = false; //kijken of dit geen gekke dingen oplevert...
 			else if(str.charAt(cp - 1) == 's')
 			{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp, str.length()));
 				invoerVeld.setCaretPosition(cp - 3);
@@ -880,7 +1012,9 @@ System.out.println("sb3 = " + sb3.toString());
 		else if(e.getSource() == pijlLinksKnop)
 		{	str = invoerVeld.getText();
 			if(nieuweInvoer)
-				nieuweInvoer = false;
+			{	nieuweInvoer = false;
+				invoerVeld.setCaretPosition(str.length());
+			}
 			if(invoerVeld.getCaretPosition() == 0)
 				return;
 			else if(str.charAt(invoerVeld.getCaretPosition() - 1)=='s')
@@ -901,7 +1035,9 @@ System.out.println("sb3 = " + sb3.toString());
 		else if(e.getSource() == pijlRechtsKnop)
 		{	str = invoerVeld.getText();
 			if(nieuweInvoer)
-				nieuweInvoer = false;
+			{	nieuweInvoer = false;
+				invoerVeld.setCaretPosition(str.length());
+			}
 			if(invoerVeld.getCaretPosition()==str.length())
 				return;
 			else if(str.charAt(invoerVeld.getCaretPosition())=='A')
@@ -917,6 +1053,24 @@ System.out.println("sb3 = " + sb3.toString());
 			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 1);
 		}
 		
+		else if(e.getSource() == insKnop)
+		{	str = invoerVeld.getText();
+			invoerVeld.getCaret().setVisible(false);
+			insert = !insert;
+			if(nieuweInvoer)
+			{	nieuweInvoer = false;
+				invoerVeld.setCaretPosition(str.length());
+			}
+			cp = invoerVeld.getCaretPosition();
+			if(insert)
+				invoerVeld.setCaret(defaultCaret);
+			else
+				invoerVeld.setCaret(replaceCaret);
+			invoerVeld.setCaretPosition(cp);
+			invoerVeld.getCaret().setBlinkRate(500);
+			invoerVeld.getCaret().setVisible(true);
+		}
+		
 		else if(e.getSource() == isKnop)
 		{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
 				bewaardeAns = uitvoerVeld.getText();
@@ -926,9 +1080,27 @@ System.out.println("sb3 = " + sb3.toString());
 			if(syntaxError)
 				uitvoerVeld.setText("Syntax ERROR");
 			else
-				uitvoerVeld.setText(sb.toString());
-			invoerVeld.getCaret().setVisible(false);
+			{	try{
+				eindUitkomst = Double.parseDouble(sb.toString());
+				eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+				
+				uitvoerVeld.setText(Double.toString(eindUitkomst));
+				if(uitvoerVeld.getText().length() > 1 && uitvoerVeld.getText().endsWith(".0"))
+					uitvoerVeld.setText(uitvoerVeld.getText().substring(0, uitvoerVeld.getText().length()-2));
+				}
+				catch(Exception ex) {};
+			}
 			nieuweInvoer = true;
+			if(!insert)
+			{	insert = true;
+				invoerVeld.getCaret().setVisible(false);
+				invoerVeld.setCaret(defaultCaret);
+			}
+			invoerVeld.getCaret().setBlinkRate(500);
+			invoerVeld.getCaret().setVisible(false);
+			
+			
+			
 		}
 		
 		
@@ -938,14 +1110,8 @@ System.out.println("sb3 = " + sb3.toString());
 /*
  * TO DO:
  *  
- * INS implementeren of weglaten. (Op mijn Casio is INS voor invoegen; als je de
- * cursor ergens neerzet en INS is niet aan, dan vervang je tekst. Met INS zet je 
- * de tekst tussen de al bestaande tekst.)
- * 
- * Zorgen dat de rekenmachine overweg kan met wetenschappelijke notatie (E-5 oid). 
- * Samenhangend hiermee: EXP-knop toevoegen?
- * 
- * Werken aan afrondingsfouten (bijv bij sin(3*pi)). 
+ * Zorgen dat de rekenmachine overweg kan met wetenschappelijke notatie (E-5 oid)?
+ * Samenhangend hiermee: EXP-knop toevoegen? 
  * 
  * log en ln toevoegen? Ook daarvoor heb ik de gebouwde 'bereken'-constructie nodig,
  * net als bij gonio.
