@@ -430,12 +430,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		//pi's uitrekenen --> misschien beter nog even Math.Pi neerzetten, en pas later echt uitrekenen?
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == '\u03C0')
-				sb.replace(i, i+1, Double.toString(Math.PI));
+				sb.replace(i, i+1, "Math.PI");
 
 		//e's uitrekenen
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == 'e')
-				sb.replace(i, i+1, Double.toString(Math.E));
+				sb.replace(i, i+1, "Math.F"); // Niet E, want die bestaat al...
 				
 		//Ans invullen
 		for(int i = 0; i < sb.length(); i++)
@@ -455,6 +455,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == 's' && sb.charAt(i+1)== 'i')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
+System.out.println("uitkomst = " + uitkomst);				
 					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.sin(uitkomst)));
 				}
@@ -624,7 +625,16 @@ System.out.println(sb2.toString());
 		
 		//op zoek naar optellen en aftrekken
 		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-		{	if(sb2.indexOf("-") <= 0) 
+		{	//hier regelen dat elke E- wordt overgeslagen. 
+			
+				//getal na E- vinden, pas daarna bewerking zoeken;
+				//maar wat als dat een + is, dus een bewerking op het getal met de E
+				//waar je middenin zit? Dat gaat gewoon goed als vind getal voor/na bewerking E's aankunnen.
+				//Dus: in vind getal voor/na bewerking meenemen dat een getal een E kan bevatten
+			
+			
+			
+			if(sb2.indexOf("-") <= 0) 
 				vindUitkomst("+", sb2);
 			else if(sb2.indexOf("+") == -1)
 				vindUitkomst("-", sb2);
@@ -641,6 +651,8 @@ System.out.println(sb2.toString());
 			uitkomst = Double.parseDouble(sb2.toString());
 		}
 		catch(Exception e){
+			
+			
 			System.out.println("uitkomstfout " + sb2.toString());			
 		}
 	}
@@ -746,9 +758,32 @@ System.out.println(sb2.toString());
 					}	
 				
 			}
+			else if(sb.charAt(pos - 1) == 'I')//nu moet er wel Math.PI staan
+			{	rekenGetal = Math.PI;
+				lengteRekenGetal = 7;//de lengte van de string Math.PI
+				if(pos > 6 && sb.charAt(pos - 7) == '-')
+					if(pos == 7 || sb.charAt(pos - 8) == '^'
+						|| sb.charAt(pos - 8) == 'x' || sb.charAt(pos - 8) == '/' 
+							|| sb.charAt(pos - 8) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+					}	
+			}
+			else if(sb.charAt(pos - 1) == 'F') //nu moet er wel Math.F staan
+			{	rekenGetal = Math.E;
+				lengteRekenGetal = 6;//de lengte van de string Math.F
+				if(pos > 5 && sb.charAt(pos - 6) == '-')
+					if(pos == 6 || sb.charAt(pos - 7) == '^'
+						|| sb.charAt(pos - 7) == 'x' || sb.charAt(pos - 7) == '/' 
+							|| sb.charAt(pos - 7) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+					}	
+			}	
 			else
 			{	syntaxError = true;
-				System.out.println("ERROR getalVoorBewerking else");
+				System.out.println("ERROR getalVoorBewerking else" );
+				System.out.println(Math.cos(Math.PI/2));
 			}
 		}
 		catch(Exception e){
@@ -787,25 +822,36 @@ System.out.println(sb2.toString());
 				subString = sb.substring(pos + 1, eindPos + 1);
 				rekenGetal = Double.parseDouble(subString);
 				lengteRekenGetal = subString.length();
-				if(negatief)
-				{
-					rekenGetal = - rekenGetal;
-					lengteRekenGetal++;
-				}
 			}
+			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'P')//nu moet er wel Math.PI staan
+			{	rekenGetal = Math.PI;
+				lengteRekenGetal = 7;//de lengte van de string Math.PI
+			}
+			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'F') //nu moet er wel Math.F staan
+			{	rekenGetal = Math.E;
+				lengteRekenGetal = 6;//de lengte van de string Math.F
+			}	
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalNaBewerking else");
+				return;
 			}
 		}
 		catch(Exception e){
 			syntaxError = true;
 			System.out.println("ERROR getalNaBewerking else");
+			return;
+		}
+		if(negatief)
+		{
+			rekenGetal = - rekenGetal;
+			lengteRekenGetal++;
 		}
 	}
 	
 	/*
-	 * Uitdrukking tussen haakjes vinden; wordt gebruikt voor gonioformules. 
+	 * Uitdrukking tussen haakjes vinden; haakje links staat op positie n.
+	 * Wordt gebruikt voor gonioformules. 
 	 */
 	public void vindHaakjesUitdrukking(StringBuffer sb, int n)
 	{	int teller = 1;
