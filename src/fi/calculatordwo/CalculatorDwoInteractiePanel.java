@@ -624,6 +624,9 @@ System.out.println(sb2.toString());
 		}
 		
 		//op zoek naar optellen en aftrekken
+		//hier misschien een andere manier van tellen gebruiken, omdat je niet alle - weggewerkt krijgt misschien. 
+		//maar het is goed als - even vaak voorkomt als E-, dus tellen hoe vaak beide voorkomen en alleen als
+		//- vaker voorkomt nog op zoek gaan naar die minnen.
 		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
 		{	//hier regelen dat elke E- wordt overgeslagen. 
 			
@@ -652,8 +655,12 @@ System.out.println(sb2.toString());
 		}
 		catch(Exception e){
 			
-			
-			System.out.println("uitkomstfout " + sb2.toString());			
+			if(sb2.toString().equals("Math.PI"))
+				uitkomst = Math.PI;
+			else if(sb2.toString().equals("Math.F"))
+				uitkomst = Math.E;
+			else
+				System.out.println("uitkomstfout " + sb2.toString());			
 		}
 	}
 	
@@ -742,7 +749,7 @@ System.out.println(sb2.toString());
 				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
 				{	beginPos = beginPos-2;
 					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-						beginPos --;
+						beginPos--;
 					beginPos++;
 				}	
 				
@@ -756,6 +763,26 @@ System.out.println(sb2.toString());
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
 					}	
+				if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') // dit pas als mogelijkheden e en pi ook verwerkt? Kan denk ik wel..
+				{
+					int beginPos2 = beginPos - 2;
+					beginPos = beginPos2;
+					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+						beginPos--;
+					beginPos++;
+					
+					if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+					{	beginPos = beginPos-2;
+						while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+							beginPos--;
+						beginPos++;
+					}	
+					
+					subString = sb.substring(beginPos, beginPos2);
+					double rekenGetal2 = Double.parseDouble(subString);
+					rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
+					lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+				}
 				
 			}
 			else if(sb.charAt(pos - 1) == 'I')//nu moet er wel Math.PI staan
@@ -779,7 +806,7 @@ System.out.println(sb2.toString());
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
 					}	
-			}	
+			}				
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalVoorBewerking else" );
@@ -795,6 +822,7 @@ System.out.println(sb2.toString());
 	public void vindGetalNaBewerking(int pos, StringBuffer sb)
 	{
 		boolean negatief = false;
+		int eindPos = pos + 1;
 		try
 		{	if(sb.charAt(pos+1) == '.')
 			{	sb.insert(pos+1,'0');
@@ -807,7 +835,7 @@ System.out.println(sb2.toString());
 			}
 			
 			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
-			{	int eindPos = pos+1;
+			{	//int eindPos = pos+1;
 				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
 					eindPos ++;
 				//doet het één keer te vaak:
@@ -822,13 +850,16 @@ System.out.println(sb2.toString());
 				subString = sb.substring(pos + 1, eindPos + 1);
 				rekenGetal = Double.parseDouble(subString);
 				lengteRekenGetal = subString.length();
+					
 			}
 			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'P')//nu moet er wel Math.PI staan
-			{	rekenGetal = Math.PI;
+			{	eindPos = pos + 7;
+				rekenGetal = Math.PI;
 				lengteRekenGetal = 7;//de lengte van de string Math.PI
 			}
 			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'F') //nu moet er wel Math.F staan
-			{	rekenGetal = Math.E;
+			{	eindPos = pos + 6;
+				rekenGetal = Math.E;
 				lengteRekenGetal = 6;//de lengte van de string Math.F
 			}	
 			else
@@ -847,6 +878,30 @@ System.out.println(sb2.toString());
 			rekenGetal = - rekenGetal;
 			lengteRekenGetal++;
 		}
+		
+		if(eindPos < sb.length() - 1 && sb.charAt(eindPos + 1) == 'E')
+		{
+			negatief = false;
+			int eindPos2 = eindPos + 2;
+			eindPos = eindPos2;
+			if(sb.charAt(eindPos)=='-')
+			{	negatief = true;
+				eindPos++;
+			}
+			
+			while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
+				eindPos ++;
+			eindPos--;
+			subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
+			double rekenGetal2 = Double.parseDouble(subString);
+			if(negatief)
+				rekenGetal2 = - rekenGetal2;
+			rekenGetal = rekenGetal*Math.pow(10, rekenGetal2);
+			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+			if(negatief)
+				lengteRekenGetal++;			
+		}
+System.out.println("rekenGetal na bewerking is " + rekenGetal);		
 	}
 	
 	/*
