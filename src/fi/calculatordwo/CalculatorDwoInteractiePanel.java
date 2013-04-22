@@ -45,7 +45,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	StringBuffer sb = new StringBuffer();
 	StringBuffer sb2 = new StringBuffer();
 	double rekenGetal;
-	int lengteRekenGetal;
+	int lengteRekenGetal, lengte1, lengte2;
 	double uitkomst, eindUitkomst;
 	int lengteHaakjesUitdrukking;
 	int linksTeller, rechtsTeller;
@@ -403,7 +403,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		else if(linksTeller > rechtsTeller)
 			for(int i = 0; i  <linksTeller - rechtsTeller; i++)
-				sb.append(')');
+			{	sb.append(')');
+				invoerVeld.setText(invoerVeld.getText()+")");
+			}
 		
 		//Maaltekens invoegen waar nodig
 		for(int i = 1; i < sb.length(); i++)
@@ -425,17 +427,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		if(syntaxError)
 		{	System.out.println("ERROR Return na maaltekens etc");
 			return;
-		}
-		
-		//pi's uitrekenen --> misschien beter nog even Math.Pi neerzetten, en pas later echt uitrekenen?
-		for(int i = 0; i < sb.length(); i++)
-			if(sb.charAt(i) == '\u03C0')
-				sb.replace(i, i+1, "Math.PI");
-
-		//e's uitrekenen
-		for(int i = 0; i < sb.length(); i++)
-			if(sb.charAt(i) == 'e')
-				sb.replace(i, i+1, "Math.F"); // Niet E, want die bestaat al...
+		}				
 				
 		//Ans invullen
 		for(int i = 0; i < sb.length(); i++)
@@ -455,7 +447,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == 's' && sb.charAt(i+1)== 'i')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
-System.out.println("uitkomst = " + uitkomst);				
 					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.sin(uitkomst)));
 				}
@@ -527,7 +518,7 @@ System.out.println("uitkomst = " + uitkomst);
 		}
 		
 		try{
-			berekenWaarde(sb.toString());				
+			berekenWaarde(sb.toString());
 			sb.replace(0, sb.length(), sb2.toString());
 		}
 		catch(Exception e)
@@ -538,14 +529,14 @@ System.out.println("uitkomst = " + uitkomst);
 	}
 	
 	/*
-	 * berekenWaarde berekent de waarde van een expressie waarin geen haakjes, pi, e, ans, logaritmes en
+	 * berekenWaarde berekent de waarde van een expressie waarin geen haakjes, ans, logaritmes en
 	 * gonio-formules voorkomen.
 	 */
 	public void berekenWaarde(String str) 
 	{
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
-		
+	
 		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
 		replace(sb2, "\u2212", "-");
 		replace(sb2, "\u00F7", "/");
@@ -561,28 +552,8 @@ System.out.println("uitkomst = " + uitkomst);
 		replace(sb2, "x+", "x");
 		replace(sb2, "/+", "/");
 		
-		//kijken of er een E in staat (bij hele grote of hele kleine getallen)
-		//werkt niet zo, want die E komt net zo hard weer terug bij het vervangen! Dus blijf je in de loop.
-		//Misschien betere oplossing: zorgen dat het -teken niet schrikt als ie een E tegenkomt vlak voor zich
-		// en weet wat ie dan moet doen. Eigenlijk wil je E- gewoon negeren.
-		//
-		//Of misschien is er eigenlijk wel meer nodig, namelijk dat ie echt kan rekenen met E.
-		//Misschien moet ik dus met het rekenwerk ook echt een double bijhouden.  
-		/*
-		while(sb2.indexOf("E") != -1)
-		{	vindGetalNaBewerking(sb2.indexOf("E"), sb2);
-System.out.println(rekenGetal);		
-			if(syntaxError)
-			{
-				System.out.println("ERROR E");
-				return;
-			}
-			double tienmacht = Math.pow(10, rekenGetal);
-			sb2.replace(sb2.indexOf("E"), sb2.indexOf("E") + lengteRekenGetal + 1, 
-					"x" + Double.toString(tienmacht));
-System.out.println(sb2.toString());			
-		}
-		*/
+		//E- veranderen in G om problemen met mintekens te voorkomen (hier nog niet nodig?)
+		//replace(sb2, "E-", "G");
 		
 		//op zoek naar wortels
 		while(sb2.indexOf("\u221A") != -1)
@@ -599,7 +570,7 @@ System.out.println(sb2.toString());
 		
 		//op zoek naar machten
 		while(sb2.indexOf("^") != -1)
-		{	vindUitkomst("^", sb2);
+		{	vervangUitkomst("^", sb2);
 			if(syntaxError)
 			{	System.out.println("ERROR machten");
 				return;
@@ -610,41 +581,34 @@ System.out.println(sb2.toString());
 		while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
 		{
 			if(sb2.indexOf("/") == -1) 
-				vindUitkomst("x", sb2);
+				vervangUitkomst("x", sb2);
 			else if(sb2.indexOf("x") == -1)
-				vindUitkomst("/", sb2);
+			{	vervangUitkomst("/", sb2);
+			
+			}
 			else if(sb2.indexOf("x") < sb2.indexOf("/"))
-				vindUitkomst("x", sb2);
+				vervangUitkomst("x", sb2);
 			else 
-				vindUitkomst("/", sb2);
+				vervangUitkomst("/", sb2);
+			
 			if(syntaxError)
 			{	System.out.println("ERROR product/deling");
 				return;
 			}
 		}
 		
+		//E- veranderen in G om problemen met mintekens te voorkomen
+		replace(sb2, "E-", "G");
 		//op zoek naar optellen en aftrekken
-		//hier misschien een andere manier van tellen gebruiken, omdat je niet alle - weggewerkt krijgt misschien. 
-		//maar het is goed als - even vaak voorkomt als E-, dus tellen hoe vaak beide voorkomen en alleen als
-		//- vaker voorkomt nog op zoek gaan naar die minnen.
 		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-		{	//hier regelen dat elke E- wordt overgeslagen. 
-			
-				//getal na E- vinden, pas daarna bewerking zoeken;
-				//maar wat als dat een + is, dus een bewerking op het getal met de E
-				//waar je middenin zit? Dat gaat gewoon goed als vind getal voor/na bewerking E's aankunnen.
-				//Dus: in vind getal voor/na bewerking meenemen dat een getal een E kan bevatten
-			
-			
-			
-			if(sb2.indexOf("-") <= 0) 
-				vindUitkomst("+", sb2);
+		{	if(sb2.indexOf("-") <= 0) 
+				vervangUitkomst("+", sb2);
 			else if(sb2.indexOf("+") == -1)
-				vindUitkomst("-", sb2);
+				vervangUitkomst("-", sb2);
 			else if(sb2.indexOf("+") < sb2.indexOf("-"))
-				vindUitkomst("+", sb2);
+				vervangUitkomst("+", sb2);
 			else 
-				vindUitkomst("-", sb2);			
+				vervangUitkomst("-", sb2);			
 			if(syntaxError)
 			{	System.out.println("ERROR optellen/aftrekken");
 				return;
@@ -655,12 +619,29 @@ System.out.println(sb2.toString());
 		}
 		catch(Exception e){
 			
-			if(sb2.toString().equals("Math.PI"))
+			if(sb2.toString().equals("\u03C0"))
 				uitkomst = Math.PI;
-			else if(sb2.toString().equals("Math.F"))
+			else if(sb2.toString().equals("e"))
 				uitkomst = Math.E;
+			else if(sb2.indexOf("E") > -1)//een zeer groot getal
+				try{
+					vindUitkomst("E", sb2);
+				}
+				catch(Exception ex){
+				syntaxError = true;
+				System.out.println("ERROR vindUitkomst(E)");				
+				}
+			else if(sb2.indexOf("G") > -1)//een zeer klein getal
+				try{
+					vindUitkomst("G", sb2);				
+				}
+				catch(Exception ex){
+				syntaxError = true;
+				System.out.println("ERROR vindUitkomst(G)");				
+				}	
 			else
-				System.out.println("uitkomstfout " + sb2.toString());			
+				System.out.println("uitkomstfout " + sb2.toString());	
+				//hier syntax error nog true zetten?
 		}
 	}
 	
@@ -695,21 +676,21 @@ System.out.println(sb2.toString());
 	 */
 	public void vindUitkomst(String s, StringBuffer sb)
 	{
-		
 		vindGetalVoorBewerking(sb.indexOf(s), sb);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindGetalVoorBewerking");
 			return;
 		}
 		double rekenKind1 = rekenGetal;
-		int lengte1 = lengteRekenGetal;
+		
+		lengte1 = lengteRekenGetal;
 		vindGetalNaBewerking(sb.indexOf(s), sb);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindGetalNaBewerking");
 			return;
 		}
 		double rekenKind2 = rekenGetal;
-		int lengte2 = lengteRekenGetal;
+		lengte2 = lengteRekenGetal;
 		if(s.equals("+"))
 			uitkomst = rekenKind1 + rekenKind2;
 		else if(s.equals("-"))
@@ -720,28 +701,31 @@ System.out.println(sb2.toString());
 			uitkomst = rekenKind1/rekenKind2;
 		else if(s.equals("^"))
 			uitkomst = Math.pow(rekenKind1, rekenKind2);
-		sb.replace(sb.indexOf(s)-lengte1, sb.indexOf(s)+lengte2+1, Double.toString(uitkomst));
+		else if(s.equals("E"))
+			uitkomst = rekenKind1 * Math.pow(10, rekenKind2);
+		else if(s.equals("G"))
+			uitkomst = rekenKind1 * Math.pow(10, -rekenKind2);
+		
 		
 	}
 	
-	public void vindGetalVoorBewerking(int pos, StringBuffer sb)
+	public void vervangUitkomst(String s, StringBuffer sb)
 	{
+		vindUitkomst(s, sb);		
+		sb.replace(sb.indexOf(s)-lengte1, sb.indexOf(s)+lengte2+1, Double.toString(uitkomst));
+	}
+	
+	public void vindGetalVoorBewerking(int pos, StringBuffer sb)
+	{	
+		int beginPos = pos-1;
 		try{
 			if(sb.charAt(pos-1) == '.')
 			{	sb.deleteCharAt(pos-1);
 				pos--;
 			}
 			
-			/*
-			if(sb.charAt(pos-1) == 'E')
-			{	vindGetalNaBewerking(pos-1, sb);
-				
-			}
-			*/
-			
 			if(Character.isDigit(sb.charAt(pos-1)))
-			{	int beginPos = pos-1;
-				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+			{	while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
 					beginPos --;
 				//doet het één keer te vaak:
 				beginPos++;
@@ -755,7 +739,7 @@ System.out.println(sb2.toString());
 				
 				subString = sb.substring(beginPos, pos);
 				rekenGetal = Double.parseDouble(subString);
-				lengteRekenGetal = subString.length();
+				lengteRekenGetal = subString.length();				
 				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
 					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
 							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
@@ -763,66 +747,86 @@ System.out.println(sb2.toString());
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
 					}	
-				if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') // dit pas als mogelijkheden e en pi ook verwerkt? Kan denk ik wel..
-				{
-					int beginPos2 = beginPos - 2;
-					beginPos = beginPos2;
-					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-						beginPos--;
-					beginPos++;
-					
-					if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
-					{	beginPos = beginPos-2;
-						while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-							beginPos--;
-						beginPos++;
-					}	
-					
-					subString = sb.substring(beginPos, beginPos2);
-					double rekenGetal2 = Double.parseDouble(subString);
-					rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
-					lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
-				}
-				
 			}
-			else if(sb.charAt(pos - 1) == 'I')//nu moet er wel Math.PI staan
+			else if(sb.charAt(pos - 1) == '\u03C0')//dit is pi
 			{	rekenGetal = Math.PI;
-				lengteRekenGetal = 7;//de lengte van de string Math.PI
-				if(pos > 6 && sb.charAt(pos - 7) == '-')
-					if(pos == 7 || sb.charAt(pos - 8) == '^'
-						|| sb.charAt(pos - 8) == 'x' || sb.charAt(pos - 8) == '/' 
-							|| sb.charAt(pos - 8) == '(')
+				lengteRekenGetal = 1;
+				if(pos > 0 && sb.charAt(pos - 1) == '-')
+					if(pos == 1 || sb.charAt(pos - 2) == '^'
+						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
+							|| sb.charAt(pos - 2) == '(')
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
-					}	
+						beginPos--;
+					}		
 			}
-			else if(sb.charAt(pos - 1) == 'F') //nu moet er wel Math.F staan
+			else if(sb.charAt(pos - 1) == 'e') //dan moet er wel e staan
 			{	rekenGetal = Math.E;
-				lengteRekenGetal = 6;//de lengte van de string Math.F
-				if(pos > 5 && sb.charAt(pos - 6) == '-')
-					if(pos == 6 || sb.charAt(pos - 7) == '^'
-						|| sb.charAt(pos - 7) == 'x' || sb.charAt(pos - 7) == '/' 
-							|| sb.charAt(pos - 7) == '(')
+				lengteRekenGetal = 1;
+				if(pos > 0 && sb.charAt(pos - 1) == '-')
+					if(pos == 1 || sb.charAt(pos - 2) == '^'
+						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
+							|| sb.charAt(pos - 2) == '(')
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
+						beginPos--;
 					}	
 			}				
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalVoorBewerking else" );
-				System.out.println(Math.cos(Math.PI/2));
 			}
+			
 		}
 		catch(Exception e){
 			syntaxError = true;
 			System.out.println("ERROR getalVoorBewerking Exception");
+		}
+		if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') 
+		{
+			int beginPos2 = beginPos - 2;
+			beginPos = beginPos2;
+			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+				beginPos--;
+			beginPos++;
+			
+			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+			{	beginPos = beginPos-2;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos--;
+				beginPos++;
+			}	
+			
+			subString = sb.substring(beginPos, beginPos2);
+			double rekenGetal2 = Double.parseDouble(subString);
+			rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
+			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+		}
+		if(beginPos != 0 && sb.charAt(beginPos-1) == 'G') 
+		{
+			int beginPos2 = beginPos - 2;
+			beginPos = beginPos2;
+			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+				beginPos--;
+			beginPos++;
+			
+			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+			{	beginPos = beginPos-2;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos--;
+				beginPos++;
+			}	
+			
+			subString = sb.substring(beginPos, beginPos2);
+			double rekenGetal2 = Double.parseDouble(subString);
+			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);//volgens mij zou de - hier voldoende moeten zijn.
+			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
 		}
 	}
 	
 	public void vindGetalNaBewerking(int pos, StringBuffer sb)
 	{
 		boolean negatief = false;
-		int eindPos = pos + 1;
 		try
 		{	if(sb.charAt(pos+1) == '.')
 			{	sb.insert(pos+1,'0');
@@ -833,7 +837,7 @@ System.out.println(sb2.toString());
 				pos++;
 				negatief = true;
 			}
-			
+			int eindPos = pos + 1;	
 			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
 			{	//int eindPos = pos+1;
 				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
@@ -852,20 +856,62 @@ System.out.println(sb2.toString());
 				lengteRekenGetal = subString.length();
 					
 			}
-			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'P')//nu moet er wel Math.PI staan
-			{	eindPos = pos + 7;
+			else if(sb.charAt(pos + 1) == '\u03C0')//dit is pi
+			{	eindPos = pos + 1;//klopt dit??
 				rekenGetal = Math.PI;
-				lengteRekenGetal = 7;//de lengte van de string Math.PI
+				lengteRekenGetal = 1;
 			}
-			else if(sb.charAt(pos + 1) == 'M' && sb.charAt(pos + 6) == 'F') //nu moet er wel Math.F staan
-			{	eindPos = pos + 6;
+			else if(sb.charAt(pos + 1) == 'e') //nu moet er wel e staan
+			{	eindPos = pos + 1;
 				rekenGetal = Math.E;
-				lengteRekenGetal = 6;//de lengte van de string Math.F
+				lengteRekenGetal = 1;
 			}	
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalNaBewerking else");
 				return;
+			}
+		
+			if(negatief)
+			{
+				rekenGetal = - rekenGetal;
+				lengteRekenGetal++;
+			}
+			
+			if(eindPos < sb.length() - 1 && sb.charAt(eindPos + 1) == 'E')
+			{
+				negatief = false;
+				int eindPos2 = eindPos + 2;
+				eindPos = eindPos2;
+				if(sb.charAt(eindPos)=='-')
+				{	negatief = true;
+					eindPos++;
+				}
+				
+				while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
+					eindPos ++;
+				eindPos--;
+				subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
+				double rekenGetal2 = Double.parseDouble(subString);
+				if(negatief)
+					rekenGetal2 = - rekenGetal2;
+				rekenGetal = rekenGetal*Math.pow(10, rekenGetal2);
+				lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+				if(negatief)
+					lengteRekenGetal++;			
+			}
+			if(eindPos < sb.length() - 1 && sb.charAt(eindPos + 1) == 'G')
+			{
+				int eindPos2 = eindPos + 2;
+				eindPos = eindPos2;
+				
+				while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
+					eindPos ++;
+				eindPos--;
+				subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
+				double rekenGetal2 = Double.parseDouble(subString);
+				rekenGetal = rekenGetal*Math.pow(10, - rekenGetal2);
+				lengteRekenGetal = lengteRekenGetal + subString.length() + 1;			
 			}
 		}
 		catch(Exception e){
@@ -873,35 +919,6 @@ System.out.println(sb2.toString());
 			System.out.println("ERROR getalNaBewerking else");
 			return;
 		}
-		if(negatief)
-		{
-			rekenGetal = - rekenGetal;
-			lengteRekenGetal++;
-		}
-		
-		if(eindPos < sb.length() - 1 && sb.charAt(eindPos + 1) == 'E')
-		{
-			negatief = false;
-			int eindPos2 = eindPos + 2;
-			eindPos = eindPos2;
-			if(sb.charAt(eindPos)=='-')
-			{	negatief = true;
-				eindPos++;
-			}
-			
-			while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
-				eindPos ++;
-			eindPos--;
-			subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
-			double rekenGetal2 = Double.parseDouble(subString);
-			if(negatief)
-				rekenGetal2 = - rekenGetal2;
-			rekenGetal = rekenGetal*Math.pow(10, rekenGetal2);
-			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
-			if(negatief)
-				lengteRekenGetal++;			
-		}
-System.out.println("rekenGetal na bewerking is " + rekenGetal);		
 	}
 	
 	/*
@@ -920,7 +937,6 @@ System.out.println("rekenGetal na bewerking is " + rekenGetal);
 		}
 		StringBuffer sb3 = new StringBuffer();
 		sb3.append(sb.substring(n + 1, j));
-System.out.println("sb3 = " + sb3.toString());		
 		bereken(sb3);
 		lengteHaakjesUitdrukking = j - n;
 	}
@@ -1072,6 +1088,7 @@ System.out.println("sb3 = " + sb3.toString());
 		{	if(nieuweInvoer)
 				nieuweInvoer = false;
 			invoerVeld.setText("");
+			uitvoerVeld.setText("0");
 		}
 		else if(e.getSource() == delKnop)
 		{	str = invoerVeld.getText();
@@ -1178,19 +1195,61 @@ System.out.println("sb3 = " + sb3.toString());
 			maakBerekenbaar(invoerVeld.getText());
 			syntaxError = false;
 			bereken(sb);
+			if(!syntaxError)
+			{	try{
+				eindUitkomst = Double.parseDouble(sb.toString());}
+				catch(Exception ex) 
+				{	if(sb2.indexOf("E") > -1)
+						try{
+							vindUitkomst("E", sb2);
+							eindUitkomst = uitkomst;
+						}
+						catch(Exception exc){
+						syntaxError = true;
+		System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
+						}
+					else if(sb2.indexOf("G") > -1)
+						try{
+							vindUitkomst("G", sb2);
+							eindUitkomst = uitkomst;
+						}
+						catch(Exception exc){
+							syntaxError = true;
+		System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
+					}
+
+				}
+				if(eindUitkomst < Math.pow(10, 9))
+					eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+				String uitvoerTekst = Double.toString(eindUitkomst);
+				if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
+					uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
+			
+				int indexE;
+				String tienMachtString;
+				if(uitvoerTekst.contains("E"))
+				{	indexE = uitvoerTekst.indexOf('E');
+					tienMachtString = uitvoerTekst.substring(indexE + 1);
+					tienMachtString = tienMachtString.replaceAll("0", "\u2070");
+					tienMachtString = tienMachtString.replaceAll("1", "\u00B9");
+					tienMachtString = tienMachtString.replaceAll("2", "\u00B2");
+					tienMachtString = tienMachtString.replaceAll("3", "\u00B3");
+					tienMachtString = tienMachtString.replaceAll("4", "\u2074");
+					tienMachtString = tienMachtString.replaceAll("5", "\u2075");
+					tienMachtString = tienMachtString.replaceAll("6", "\u2076");
+					tienMachtString = tienMachtString.replaceAll("7", "\u2077");
+					tienMachtString = tienMachtString.replaceAll("8", "\u2078");
+					tienMachtString = tienMachtString.replaceAll("9", "\u2079");     
+					tienMachtString = tienMachtString.replaceAll("-", "\u207B");
+					
+					uitvoerTekst = uitvoerTekst.substring(0, indexE)+ "\u00D710"+ tienMachtString;
+				}
+				uitvoerTekst = uitvoerTekst.replace(".", ",");
+				uitvoerVeld.setText(uitvoerTekst);
+			}
 			if(syntaxError)
 				uitvoerVeld.setText("Syntax ERROR");
 			else
-			{	try{
-				eindUitkomst = Double.parseDouble(sb.toString());
-				eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
-				
-				uitvoerVeld.setText(Double.toString(eindUitkomst));
-				if(uitvoerVeld.getText().length() > 1 && uitvoerVeld.getText().endsWith(".0"))
-					uitvoerVeld.setText(uitvoerVeld.getText().substring(0, uitvoerVeld.getText().length()-2));
-				}
-				catch(Exception ex) {};
-			}
 			nieuweInvoer = true;
 			if(!insert)
 			{	insert = true;
@@ -1210,14 +1269,14 @@ System.out.println("sb3 = " + sb3.toString());
 }
 /*
  * TO DO:
- *  
- * Zorgen dat de rekenmachine overweg kan met wetenschappelijke notatie (E-5 oid)?
- * Samenhangend hiermee: EXP-knop toevoegen? 
- * 
- * log en ln toevoegen? Ook daarvoor heb ik de gebouwde 'bereken'-constructie nodig,
- * net als bij gonio.
+ *
+ * Nu eerst: 'cito'-versie maken; zelfde knoppen als in cito-rekenmachine
+ *
+ * EXP-knop toevoegen?
  * 
  * xe-machts wortels toevoegen?
+ * 
+ * 1/x knop toevoegen? Werkt erg hetzelfde als de kwadraat-knop. Dus op zelfde manier implementeren.
  * 
  * Nadenken over implementatie in de DWO.
  * 
