@@ -61,7 +61,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 
 	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs;
 	
-	//boolean wetenschappelijk = true;
+	boolean breuk = false;
 	int rmMode = 1;
 	boolean invers = false;
 	boolean insert = true;
@@ -1052,126 +1052,88 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public void vindBreukTot(int pos, StringBuffer sb)
 	{
-		int beginPos = pos-1;
-		try{
-			if(sb.charAt(beginPos) != '\u231F')
-			{}
+		double teller;
+		double noemer;
+		//int pos2;//echt nodig? Kun je niet gewoon overal pos gebruiken?
+		vindGetalVoorBewerking(pos, sb);
+		if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u231F')
+		{	teller = rekenGetal;
+			noemer = 1;
+			return;
 		}
-		catch(Exception e) {}
-		
-		//hier wil ik het volgende:
-		//de substring vinden van het laatste breuktekentje tot pos. Ik moet dus op zoek
-		//naar het laatste breuktekentje tot hier en vanaf daar de waarde uitrekenen.
-		//in dat stuk mogen echter geen plus, / of x voorkomen vanwege voorrangsregels.
-		//Punt is dus dat ik niet zeker weet of er wel een breuk staat. Hoe bepaal ik dat?
-		//En hoe bepaal ik vervolgens of de breuk uit twee of uit drie stukken bestaat?
-		
-		try{
-			if(sb.charAt(pos-1) == '.')
-			{	sb.deleteCharAt(pos-1);
-				pos--;
-			}
-			
-			if(Character.isDigit(sb.charAt(pos-1)))
-			{	while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-					beginPos --;
-				//doet het één keer te vaak:
-				beginPos++;
-				
-				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
-				{	beginPos = beginPos-2;
-					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-						beginPos--;
-					beginPos++;
-				}	
-				
-				subString = sb.substring(beginPos, pos);
-				rekenGetal = Double.parseDouble(subString);
-				lengteRekenGetal = subString.length();				
-				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
-					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
-							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
-								|| sb.charAt(beginPos - 2) == '(')
-					{	rekenGetal = -rekenGetal;
-						lengteRekenGetal++;
-					}	
-			}
-			else if(sb.charAt(pos - 1) == '\u03C0')//dit is pi
-			{	rekenGetal = Math.PI;
-				lengteRekenGetal = 1;
-				if(pos > 0 && sb.charAt(pos - 1) == '-')
-					if(pos == 1 || sb.charAt(pos - 2) == '^'
-						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
-							|| sb.charAt(pos - 2) == '(')
-					{	rekenGetal = -rekenGetal;
-						lengteRekenGetal++;
-						beginPos--;
-					}		
-			}
-			else if(sb.charAt(pos - 1) == 'e') //dan moet er wel e staan
-			{	rekenGetal = Math.E;
-				lengteRekenGetal = 1;
-				if(pos > 0 && sb.charAt(pos - 1) == '-')
-					if(pos == 1 || sb.charAt(pos - 2) == '^'
-						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
-							|| sb.charAt(pos - 2) == '(')
-					{	rekenGetal = -rekenGetal;
-						lengteRekenGetal++;
-						beginPos--;
-					}	
-			}				
+		else
+		{	noemer = rekenGetal;
+			pos = pos - lengteRekenGetal - 1;
+			vindGetalVoorBewerking(pos, sb);
+			teller = rekenGetal;
+			if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u231F')
+				return;
 			else
-			{	syntaxError = true;
-				System.out.println("ERROR getalVoorBewerking else" );
-			}
-			
+			{
+				try{
+				pos = pos - lengteRekenGetal - 1;
+				vindGetalVoorBewerking(pos, sb);
+				teller = teller + rekenGetal * noemer;	
+				}
+				catch(Exception e)
+				{syntaxError = true;
+				System.out.println("ERROR breuk");
+				}
+			}//hier nog meer exceptions inbouwen met syntaxerror?
 		}
-		catch(Exception e){
-			syntaxError = true;
-			System.out.println("ERROR getalVoorBewerking Exception");
-		}
-		if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') 
-		{
-			int beginPos2 = beginPos - 2;
-			beginPos = beginPos2;
-			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-				beginPos--;
-			beginPos++;
-			
-			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
-			{	beginPos = beginPos-2;
-				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-					beginPos--;
-				beginPos++;
-			}	
-			
-			subString = sb.substring(beginPos, beginPos2);
-			double rekenGetal2 = Double.parseDouble(subString);
-			rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
-			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
-		}
-		if(beginPos != 0 && sb.charAt(beginPos-1) == 'G') 
-		{
-			int beginPos2 = beginPos - 2;
-			beginPos = beginPos2;
-			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-				beginPos--;
-			beginPos++;
-			
-			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
-			{	beginPos = beginPos-2;
-				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
-					beginPos--;
-				beginPos++;
-			}	
-			
-			subString = sb.substring(beginPos, beginPos2);
-			double rekenGetal2 = Double.parseDouble(subString);
-			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);//volgens mij zou de - hier voldoende moeten zijn.
-			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
-		}
+		
+		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
+		if(teller % 1 == 0  && noemer %1 == 0)
+			//hier bedenken wat ik er precies uit wil hebben.
+			;
+		else
+			breuk = false; //afhankelijk van de waarde  van breuk wil ik het antwoord als breuk weergeven en ga ik op zoek naar breuken.
+		//in de berekenWaarde-methode komt waarschijnlijk een while-constructie met als één van de voorwaarden dat breuk true is. 
 	}
 	
+	public void vindBreukVanaf(int pos, StringBuffer sb)
+	{
+		double gehelen;
+		double teller;
+		double noemer;
+		vindGetalNaBewerking(pos, sb);
+		if(pos + lengteRekenGetal > sb.length() || sb.charAt(pos + lengteRekenGetal) != '\u231F')
+		{	teller = rekenGetal;
+			noemer = 1;
+			return;
+		}
+		else
+		{	teller = rekenGetal;
+			pos = pos + lengteRekenGetal + 1;
+			vindGetalNaBewerking(pos, sb);
+			noemer = rekenGetal;
+			if(pos + lengteRekenGetal > sb.length() || sb.charAt(pos + lengteRekenGetal) != '\u231F')
+				return;
+			else
+			{	gehelen = teller;
+				teller = noemer;
+				try{
+				pos = pos + lengteRekenGetal + 1;
+				vindGetalVoorBewerking(pos, sb);
+				noemer = rekenGetal;
+				teller = teller + gehelen * noemer;
+				}
+				catch(Exception e)
+				{syntaxError = true;
+				System.out.println("ERROR breuk");
+				}
+			}//hier nog meer exceptions inbouwen met syntaxerror?
+		}
+		
+		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
+		if(teller % 1 == 0  && noemer %1 == 0)
+			//hier bedenken wat ik er precies uit wil hebben.
+			;
+		else
+			breuk = false; //afhankelijk van de waarde  van breuk wil ik het antwoord als breuk weergeven en ga ik op zoek naar breuken.
+		//in de berekenWaarde-methode komt waarschijnlijk een while-constructie met als één van de voorwaarden dat breuk true is. 
+	}
+		
 	/*
 	 * Uitdrukking tussen haakjes vinden; haakje links staat op positie n.
 	 * Wordt gebruikt voor gonioformules. 
@@ -1289,7 +1251,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		else if(e.getSource() == eenGedeeldDoorKnop)
 			voegInOfVervang("\u207B\u00B9", true);
 		else if(e.getSource() == breukKnop)
+		{	breuk = true;
 			voegInOfVervang("\u231F", false);// \u321F doet het niet..
+		}
 		else if(e.getSource() == expKnop)
 			voegInOfVervang("\u2081\u2080", true);
 		else if(e.getSource() == haakLinksKnop)
@@ -1346,6 +1310,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				nieuweInvoer = false;
 			invoerVeld.setText("");
 			uitvoerVeld.setText("0");
+			breuk = false;
 		}
 		else if(e.getSource() == delKnop)
 		{	str = invoerVeld.getText();
@@ -1533,6 +1498,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			}
 			invoerVeld.getCaret().setBlinkRate(500);
 			invoerVeld.getCaret().setVisible(false);
+			breuk = false;
 			
 			
 			
