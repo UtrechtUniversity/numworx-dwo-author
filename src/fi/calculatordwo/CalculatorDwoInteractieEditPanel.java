@@ -13,7 +13,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 {	int editWidth = 190;
 	int editHeight = 550; 
 	int cdipBreedte = 540; // startbreedte ip
-	int cdipHoogte = 250; // starthoogte ip
+	int cdipHoogte = 300; // starthoogte ip
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -27,9 +27,10 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	int height;
 	
 	protected CalculatorDwoInteractiePanel cdip;
-	JRadioButton scientificButton, easyButton;
+	JRadioButton scientificButton, easyButton, citoButton;
 	ButtonGroup groep;
-	boolean wetenschappelijk;
+	//boolean wetenschappelijk;
+	int rmMode;
 
 	
 	public CalculatorDwoInteractieEditPanel ()
@@ -60,22 +61,42 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		scientificButton.setBounds(currentX, currentY, width, height);
 		add(scientificButton);
 		
+		currentY += height + offset;
+		
+		citoButton = new JRadioButton("Cito-versie");
+		citoButton.setBounds(currentX, currentY, width, height);
+		add(citoButton);
+		
 		groep = new ButtonGroup();
 		groep.add(easyButton);
 		groep.add(scientificButton);
+		groep.add(citoButton);
 		
 		easyButton.addActionListener(this);
 		scientificButton.addActionListener(this);
+		citoButton.addActionListener(this);
 
 	}
 
 	public void setEditState(Hashtable h) {
+		
+		if(h.containsKey("rmMode"))
+			rmMode = ((Integer)h.get("rmMode")).intValue();
+		if(rmMode == 0)
+			easyButton.setSelected(true);
+		else if(rmMode == 1)
+			scientificButton.setSelected(true);
+		else
+			citoButton.setSelected(true);
+		
+		/*
 		if(h.containsKey("wetenschappelijk"))
 			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
 		if(wetenschappelijk)
 			scientificButton.setSelected(true);
 		else
 			easyButton.setSelected(true);
+			*/
 			
 		cdip.setEditState(h);
 	}
@@ -109,6 +130,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 
 	public void actionPerformed(ActionEvent e) 
 	{
+		/*
 		if(e.getSource() == easyButton)
 		{	wetenschappelijk = false;
 			cdip.zetWetenschappelijk(wetenschappelijk);
@@ -116,6 +138,19 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		else if(e.getSource() == scientificButton)
 		{	wetenschappelijk = true;
 			cdip.zetWetenschappelijk(wetenschappelijk);
+		}
+		*/
+		if(e.getSource() == easyButton)
+		{	rmMode = 0;
+			cdip.zetRmMode(rmMode);
+		}
+		else if(e.getSource() == scientificButton)
+		{	rmMode = 1;
+			cdip.zetRmMode(rmMode);
+		}
+		else if(e.getSource() == citoButton)
+		{	rmMode = 2;
+			cdip.zetRmMode(rmMode);			
 		}
 			
 	}

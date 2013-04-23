@@ -22,18 +22,21 @@ import fi.wiskopdr.tekstobjects.*;
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, InteractiePanel
 {
 	int cdipBreedte = 540;
-	int cdipHoogte = 250;
+	int cdipHoogte = 300;
 	
 	Font theFont, theLargeFont, theSmallFont;
 	FontMetrics theFM, theLargeFM, theSmallFM;
 	
 	JButton[] getalKnop;
 	JButton plusKnop, minKnop, keerKnop, deelKnop, haakLinksKnop, haakRechtsKnop,
-		machtKnop, kwadraatKnop, wortelKnop;
+		machtKnop, kwadraatKnop, wortelKnop, eenGedeeldDoorKnop, breukKnop;
 	JButton pijlLinksKnop, pijlRechtsKnop, insKnop, delKnop, cKnop, kommaKnop, negatiefKnop, 
 		ansKnop, isKnop;
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
-	JButton lnKnop, logKnop, eKnop, xWortelKnop;
+	JButton lnKnop, logKnop, eKnop, xWortelKnop, expKnop;
+	
+	JLabel[] leegLabel;
+	JLabel sinInvLabel, cosInvLabel, tanInvLabel, decLabel;
 	
 	JTextField invoerVeld;
 	JLabel uitvoerVeld;
@@ -58,7 +61,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 
 	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs;
 	
-	boolean wetenschappelijk = true;
+	//boolean wetenschappelijk = true;
+	int rmMode = 1;
 	boolean invers = false;
 	boolean insert = true;
 	JLabel invLabel;
@@ -96,6 +100,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		machtKnop = maakButton("^", grijs);
 		kwadraatKnop = maakButton("x\u00B2", grijs);
 		wortelKnop = maakButton("\u221A", grijs);
+		eenGedeeldDoorKnop = maakButton("x\u207B\u00B9", grijs);
+		breukKnop = maakButton("a b/c", grijs);
+		expKnop = maakButton("<html>&times;10<sup><i>x</i></sup></html>", grijs);
 		
 		haakLinksKnop = maakButton("(", grijs);
 		haakRechtsKnop = maakButton(")", grijs);
@@ -113,16 +120,17 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ansKnop = maakButton("Ans", grijs);
 		isKnop = maakButton("=", groen);
 		
-		sinKnop = maakButton("sin", Color.orange);
-		cosKnop = maakButton("cos", Color.orange);
-		tanKnop = maakButton("tan", Color.orange);
+		sinKnop = maakButton("sin", grijs);
+		cosKnop = maakButton("cos", grijs);
+		tanKnop = maakButton("tan", grijs);
 		invKnop = maakButton("INV", Color.orange);
 		piKnop = maakButton("\u03C0", grijs);
 		
-		logKnop = maakButton("log", Color.orange);
-		lnKnop = maakButton("ln", Color.orange);
+		logKnop = maakButton("log", grijs);
+		lnKnop = maakButton("ln", grijs);
 		eKnop = maakButton("e", grijs);
-		xWortelKnop = maakButton("x\u221A", Color.orange);
+		xWortelKnop = maakButton("<html><sup><i>x</i></sup>&#x221a;</html>", grijs);
+		//xWortelKnop = maakButton("\u033D\u221A", grijs);
 		
 		for(int i = 0; i < 10; i++)
 			getalKnop[i].addActionListener(this);
@@ -133,6 +141,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		machtKnop.addActionListener(this);
 		kwadraatKnop.addActionListener(this);
 		wortelKnop.addActionListener(this);
+		eenGedeeldDoorKnop.addActionListener(this);
+		breukKnop.addActionListener(this);
+		expKnop.addActionListener(this);
 		haakLinksKnop.addActionListener(this);
 		haakRechtsKnop.addActionListener(this);
 		pijlLinksKnop.addActionListener(this);
@@ -153,23 +164,29 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		lnKnop.addActionListener(this);
 		eKnop.addActionListener(this);
 		xWortelKnop.addActionListener(this);
+		leegLabel = new JLabel[15];
+		for(int i = 0; i<15; i++)
+			leegLabel[i] = new JLabel("");
+		sinInvLabel = maakLabel("sin\u207B\u00B9", Color.orange);
+		cosInvLabel = maakLabel("cos\u207B\u00B9", Color.orange);
+		tanInvLabel = maakLabel("tan\u207B\u00B9", Color.orange);
+		decLabel = maakLabel("\u2192dec", Color.orange);
+		
+		
+		
 				
 		knoppenPanel = new JPanel();
-		knoppenPanel.setLayout(new BorderLayout(5,5));
 		add(knoppenPanel, BorderLayout.CENTER);
 		
+		linkerKnoppen = new JPanel();
+		linkerKnoppen.setLayout(new GridLayout(6, 5, 3, 3));
+		rechterKnoppen = new JPanel();
+		rechterKnoppen.setLayout(new GridLayout (5, 5, 3, 3));
 		bovensteKnoppen = new JPanel();
 		bovensteKnoppen.setLayout(new GridLayout(1, 5, 3, 3));
-		knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
-		
-		bovensteKnoppen.add(pijlLinksKnop);
-		bovensteKnoppen.add(pijlRechtsKnop);
-		bovensteKnoppen.add(insKnop);
-		bovensteKnoppen.add(delKnop);
-		bovensteKnoppen.add(cKnop);
-		
 		ondersteKnoppen = new JPanel();
-		zetWetenschappelijk(wetenschappelijk);
+		
+		zetRmMode(rmMode);
 		
 		replaceCaret = new ReplaceCaret();
 		defaultCaret = new DefaultCaret();
@@ -212,86 +229,187 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		button.setFont(theLargeFont);
 		button.setBackground(c);
 		button.setForeground(Color.WHITE);
+		button.setMargin(new Insets(0, 0, 0, 0));
 		return button;
 	}
 	
-	public void zetWetenschappelijk(boolean b)
+	public JLabel maakLabel(String s, Color c)
 	{
-		wetenschappelijk = b;
-		ondersteKnoppen.removeAll();
-		knoppenPanel.remove(ondersteKnoppen);
-		
-		if(wetenschappelijk)
-			ondersteKnoppen.setLayout(new GridLayout(4, 8, 3, 3));
-		else
-			ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
-		knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
-		
-		ondersteKnoppen.add(getalKnop[7]);
-		ondersteKnoppen.add(getalKnop[8]);
-		ondersteKnoppen.add(getalKnop[9]);
-		ondersteKnoppen.add(keerKnop);
-		ondersteKnoppen.add(deelKnop);
-		ondersteKnoppen.add(wortelKnop);
-		if(wetenschappelijk)
-		{	ondersteKnoppen.add(xWortelKnop);
-			ondersteKnoppen.add(sinKnop);
-		}
-		
-		ondersteKnoppen.add(getalKnop[4]);
-		ondersteKnoppen.add(getalKnop[5]);
-		ondersteKnoppen.add(getalKnop[6]);
-		ondersteKnoppen.add(plusKnop);
-		ondersteKnoppen.add(minKnop);
-		ondersteKnoppen.add(kwadraatKnop);
-		if(wetenschappelijk)
-		{	ondersteKnoppen.add(logKnop);
-			ondersteKnoppen.add(cosKnop);
-		}
-		
-		ondersteKnoppen.add(getalKnop[1]);
-		ondersteKnoppen.add(getalKnop[2]);
-		ondersteKnoppen.add(getalKnop[3]);
-		ondersteKnoppen.add(haakLinksKnop);
-		ondersteKnoppen.add(haakRechtsKnop);
-		ondersteKnoppen.add(machtKnop);
-		if(wetenschappelijk)
-		{	ondersteKnoppen.add(lnKnop);
-			ondersteKnoppen.add(tanKnop);
-		}
-		
-		ondersteKnoppen.add(getalKnop[0]);
-		ondersteKnoppen.add(kommaKnop);
-		ondersteKnoppen.add(negatiefKnop);
-		ondersteKnoppen.add(piKnop);
-		if(wetenschappelijk)
-			ondersteKnoppen.add(eKnop);
-		ondersteKnoppen.add(ansKnop);
-		ondersteKnoppen.add(isKnop);
-		if(wetenschappelijk)
-			ondersteKnoppen.add(invKnop);
-		
-		revalidate();
+		JLabel label = new JLabel(s);
+		label.setFont(theLargeFont);
+		label.setForeground(c);
+		label.setVerticalAlignment(SwingConstants.BOTTOM);
+		return label;
 	}
+	
+	public void zetRmMode(int i)
+	{
+		rmMode = i;
+		knoppenPanel.removeAll();
+		
+		if(rmMode == 1)
+		{	ondersteKnoppen.removeAll();
+			ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
+		}
+		else if(rmMode == 0)
+		{	ondersteKnoppen.removeAll();
+			ondersteKnoppen.setLayout(new GridLayout(5, 6, 3, 3));
+		}
+		
+		if(rmMode < 2)
+		{	knoppenPanel.setLayout(new BorderLayout(5, 5));
+			
+			knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
+			bovensteKnoppen.add(pijlLinksKnop);
+			bovensteKnoppen.add(pijlRechtsKnop);
+			bovensteKnoppen.add(insKnop);
+			bovensteKnoppen.add(delKnop);
+			bovensteKnoppen.add(cKnop);
+			
+			knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
+			
+			ondersteKnoppen.add(getalKnop[7]);
+			ondersteKnoppen.add(getalKnop[8]);
+			ondersteKnoppen.add(getalKnop[9]);
+			ondersteKnoppen.add(keerKnop);
+			ondersteKnoppen.add(deelKnop);
+			ondersteKnoppen.add(wortelKnop);
+			if(rmMode == 1)
+			{	ondersteKnoppen.add(xWortelKnop);
+				ondersteKnoppen.add(sinKnop);
+			}
+			
+			ondersteKnoppen.add(getalKnop[4]);
+			ondersteKnoppen.add(getalKnop[5]);
+			ondersteKnoppen.add(getalKnop[6]);
+			ondersteKnoppen.add(plusKnop);
+			ondersteKnoppen.add(minKnop);
+			ondersteKnoppen.add(kwadraatKnop);
+			if(rmMode == 1)
+			{	ondersteKnoppen.add(logKnop);
+				ondersteKnoppen.add(cosKnop);
+			}
+			
+			ondersteKnoppen.add(getalKnop[1]);
+			ondersteKnoppen.add(getalKnop[2]);
+			ondersteKnoppen.add(getalKnop[3]);
+			ondersteKnoppen.add(haakLinksKnop);
+			ondersteKnoppen.add(haakRechtsKnop);
+			ondersteKnoppen.add(machtKnop);
+			if(rmMode == 1)
+			{	ondersteKnoppen.add(lnKnop);
+				ondersteKnoppen.add(tanKnop);
+			}
+			
+			ondersteKnoppen.add(getalKnop[0]);
+			ondersteKnoppen.add(kommaKnop);
+			ondersteKnoppen.add(negatiefKnop);
+			ondersteKnoppen.add(piKnop);
+			if(rmMode == 1)
+				ondersteKnoppen.add(eKnop);
+			ondersteKnoppen.add(ansKnop);
+			ondersteKnoppen.add(isKnop);
+			if(rmMode == 1)
+				ondersteKnoppen.add(invKnop);
+				
+			
+			ondersteKnoppen.add(eenGedeeldDoorKnop);
+			ondersteKnoppen.add(breukKnop);
+			ondersteKnoppen.add(expKnop);
+			ondersteKnoppen.add(leegLabel[0]);
+			ondersteKnoppen.add(leegLabel[1]);
+			ondersteKnoppen.add(leegLabel[2]);
+			//ondersteKnoppen.add(leegLabel[3]);
+			//ondersteKnoppen.add(leegLabel[4]);
+		}
+		else
+		{	knoppenPanel.setLayout(new GridLayout(1, 2, 10, 5));
+			
+			knoppenPanel.add(linkerKnoppen);
+			knoppenPanel.add(rechterKnoppen);
+			
+			linkerKnoppen.add(invKnop);
+			linkerKnoppen.add(leegLabel[0]);
+			linkerKnoppen.add(leegLabel[1]);
+			linkerKnoppen.add(leegLabel[2]);
+			linkerKnoppen.add(leegLabel[3]);
+			
+			linkerKnoppen.add(sinInvLabel);
+			linkerKnoppen.add(cosInvLabel);
+			linkerKnoppen.add(tanInvLabel);
+			linkerKnoppen.add(decLabel);
+			linkerKnoppen.add(leegLabel[4]);
+			
+			linkerKnoppen.add(sinKnop);
+			linkerKnoppen.add(cosKnop);
+			linkerKnoppen.add(tanKnop);
+			linkerKnoppen.add(breukKnop);
+			linkerKnoppen.add(expKnop);
+			
+			linkerKnoppen.add(wortelKnop);
+			linkerKnoppen.add(kwadraatKnop);
+			linkerKnoppen.add(machtKnop);
+			linkerKnoppen.add(eenGedeeldDoorKnop);
+			linkerKnoppen.add(piKnop);
+		
+			for(int j = 5; j < 15; j++)
+				linkerKnoppen.add(leegLabel[j]);
+			
+			rechterKnoppen.add(pijlLinksKnop);
+			rechterKnoppen.add(pijlRechtsKnop);
+			rechterKnoppen.add(insKnop);
+			rechterKnoppen.add(delKnop);
+			rechterKnoppen.add(cKnop);
+			
+			rechterKnoppen.add(getalKnop[7]);
+			rechterKnoppen.add(getalKnop[8]);
+			rechterKnoppen.add(getalKnop[9]);
+			rechterKnoppen.add(keerKnop);
+			rechterKnoppen.add(deelKnop);
+			
+			rechterKnoppen.add(getalKnop[4]);
+			rechterKnoppen.add(getalKnop[5]);
+			rechterKnoppen.add(getalKnop[6]);
+			rechterKnoppen.add(plusKnop);
+			rechterKnoppen.add(minKnop);
+			
+			rechterKnoppen.add(getalKnop[1]);
+			rechterKnoppen.add(getalKnop[2]);
+			rechterKnoppen.add(getalKnop[3]);
+			rechterKnoppen.add(haakLinksKnop);
+			rechterKnoppen.add(haakRechtsKnop);
+			
+			rechterKnoppen.add(getalKnop[0]);
+			rechterKnoppen.add(kommaKnop);
+			rechterKnoppen.add(negatiefKnop);
+			rechterKnoppen.add(ansKnop);
+			rechterKnoppen.add(isKnop);
+		}
+			
+		revalidate();
+		repaint();
+	}
+	
+	
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars,
 			Hashtable randomValues) {
-		if (h.containsKey("wetenschappelijk")) 
-			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
-		zetWetenschappelijk(wetenschappelijk);
+		if (h.containsKey("rmMode")) 
+			rmMode = ((Integer) h.get("rmMode")).intValue();
+		zetRmMode(rmMode);
 	}
 
 	public void setState(Hashtable h) {
-		if (h.containsKey("wetenschappelijk")) 
-			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
-		zetWetenschappelijk(wetenschappelijk);
+		if (h.containsKey("rmMode")) 
+			rmMode = ((Integer) h.get("rmMode")).intValue();
+		zetRmMode(rmMode);
 		
 	}
 
 	public void setEditState(Hashtable h) {
-		if (h.containsKey("wetenschappelijk")) 
-			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
-		zetWetenschappelijk(wetenschappelijk);
+		if (h.containsKey("rmMode")) 
+			rmMode = ((Integer) h.get("rmMode")).intValue();
+		zetRmMode(rmMode);
 	}
 
 	public Hashtable getState() {
@@ -301,7 +419,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	public Hashtable getEditState() 
 	{	
 		Hashtable h = new Hashtable();
-		h.put("wetenschappelijk", new Boolean(wetenschappelijk));
+		h.put("rmMode", new Integer(rmMode));
 		
 		return h;
 	}
@@ -376,6 +494,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == '\u00B2')
 				sb.replace(i, i+1, "^2");
+		
+		//Alle ^(-1) goed schrijven
+		for(int i = 0; i < sb.length()-1; i++)
+			if(sb.charAt(i) == '\u207B')
+				sb.replace(i, i+2, "^-1");
+		
+		//Alle *10^x goed schrijven
+		for(int i = 0; i < sb.length()-1; i++)
+			if(sb.charAt(i) == '\u2081')
+				sb.replace(i, i+2, "E");
 		
 		//Zorgen dat voor en na elke komma getallen staan
 		for(int i = 0; i < sb.length(); i++)
@@ -640,8 +768,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				System.out.println("ERROR vindUitkomst(G)");				
 				}	
 			else
-				System.out.println("uitkomstfout " + sb2.toString());	
-				//hier syntax error nog true zetten?
+			{	System.out.println("ERROR in berekenWaarde overig");
+				syntaxError = true;
+			}
 		}
 	}
 	
@@ -921,6 +1050,128 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 	}
 	
+	public void vindBreukTot(int pos, StringBuffer sb)
+	{
+		int beginPos = pos-1;
+		try{
+			if(sb.charAt(beginPos) != '\u231F')
+			{}
+		}
+		catch(Exception e) {}
+		
+		//hier wil ik het volgende:
+		//de substring vinden van het laatste breuktekentje tot pos. Ik moet dus op zoek
+		//naar het laatste breuktekentje tot hier en vanaf daar de waarde uitrekenen.
+		//in dat stuk mogen echter geen plus, / of x voorkomen vanwege voorrangsregels.
+		//Punt is dus dat ik niet zeker weet of er wel een breuk staat. Hoe bepaal ik dat?
+		//En hoe bepaal ik vervolgens of de breuk uit twee of uit drie stukken bestaat?
+		
+		try{
+			if(sb.charAt(pos-1) == '.')
+			{	sb.deleteCharAt(pos-1);
+				pos--;
+			}
+			
+			if(Character.isDigit(sb.charAt(pos-1)))
+			{	while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos --;
+				//doet het één keer te vaak:
+				beginPos++;
+				
+				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+				{	beginPos = beginPos-2;
+					while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+						beginPos--;
+					beginPos++;
+				}	
+				
+				subString = sb.substring(beginPos, pos);
+				rekenGetal = Double.parseDouble(subString);
+				lengteRekenGetal = subString.length();				
+				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
+					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
+							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
+								|| sb.charAt(beginPos - 2) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+					}	
+			}
+			else if(sb.charAt(pos - 1) == '\u03C0')//dit is pi
+			{	rekenGetal = Math.PI;
+				lengteRekenGetal = 1;
+				if(pos > 0 && sb.charAt(pos - 1) == '-')
+					if(pos == 1 || sb.charAt(pos - 2) == '^'
+						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
+							|| sb.charAt(pos - 2) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+						beginPos--;
+					}		
+			}
+			else if(sb.charAt(pos - 1) == 'e') //dan moet er wel e staan
+			{	rekenGetal = Math.E;
+				lengteRekenGetal = 1;
+				if(pos > 0 && sb.charAt(pos - 1) == '-')
+					if(pos == 1 || sb.charAt(pos - 2) == '^'
+						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
+							|| sb.charAt(pos - 2) == '(')
+					{	rekenGetal = -rekenGetal;
+						lengteRekenGetal++;
+						beginPos--;
+					}	
+			}				
+			else
+			{	syntaxError = true;
+				System.out.println("ERROR getalVoorBewerking else" );
+			}
+			
+		}
+		catch(Exception e){
+			syntaxError = true;
+			System.out.println("ERROR getalVoorBewerking Exception");
+		}
+		if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') 
+		{
+			int beginPos2 = beginPos - 2;
+			beginPos = beginPos2;
+			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+				beginPos--;
+			beginPos++;
+			
+			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+			{	beginPos = beginPos-2;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos--;
+				beginPos++;
+			}	
+			
+			subString = sb.substring(beginPos, beginPos2);
+			double rekenGetal2 = Double.parseDouble(subString);
+			rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
+			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+		}
+		if(beginPos != 0 && sb.charAt(beginPos-1) == 'G') 
+		{
+			int beginPos2 = beginPos - 2;
+			beginPos = beginPos2;
+			while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+				beginPos--;
+			beginPos++;
+			
+			if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
+			{	beginPos = beginPos-2;
+				while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
+					beginPos--;
+				beginPos++;
+			}	
+			
+			subString = sb.substring(beginPos, beginPos2);
+			double rekenGetal2 = Double.parseDouble(subString);
+			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);//volgens mij zou de - hier voldoende moeten zijn.
+			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
+		}
+	}
+	
 	/*
 	 * Uitdrukking tussen haakjes vinden; haakje links staat op positie n.
 	 * Wordt gebruikt voor gonioformules. 
@@ -1035,6 +1286,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			voegInOfVervang("\u00B2", true);
 		else if(e.getSource() == machtKnop)
 			voegInOfVervang("^", true);
+		else if(e.getSource() == eenGedeeldDoorKnop)
+			voegInOfVervang("\u207B\u00B9", true);
+		else if(e.getSource() == breukKnop)
+			voegInOfVervang("\u231F", false);// \u321F doet het niet..
+		else if(e.getSource() == expKnop)
+			voegInOfVervang("\u2081\u2080", true);
 		else if(e.getSource() == haakLinksKnop)
 			voegInOfVervang("(", false);
 		else if(e.getSource() == haakRechtsKnop)
@@ -1191,7 +1448,25 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		else if(e.getSource() == isKnop)
 		{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
-				bewaardeAns = uitvoerVeld.getText();
+			{	bewaardeAns = uitvoerVeld.getText();
+				bewaardeAns = bewaardeAns.replace(',', '.');
+				if(bewaardeAns.contains("\u00D710"))
+				{
+					bewaardeAns = bewaardeAns.replaceAll("\u00D710", "E");
+					bewaardeAns = bewaardeAns.replaceAll("\u2070", "0");
+					bewaardeAns = bewaardeAns.replaceAll("\u00B9", "1");
+					bewaardeAns = bewaardeAns.replaceAll("\u00B2", "2");
+					bewaardeAns = bewaardeAns.replaceAll("\u00B3", "3");
+					bewaardeAns = bewaardeAns.replaceAll("\u2074", "4");
+					bewaardeAns = bewaardeAns.replaceAll("\u2075", "5");
+					bewaardeAns = bewaardeAns.replaceAll("\u2076", "6");
+					bewaardeAns = bewaardeAns.replaceAll("\u2077", "7");
+					bewaardeAns = bewaardeAns.replaceAll("\u2078", "8");
+					bewaardeAns = bewaardeAns.replaceAll("\u2079", "9");     
+					bewaardeAns = bewaardeAns.replaceAll("\u207B", "-");
+				}				
+			}
+			
 			maakBerekenbaar(invoerVeld.getText());
 			syntaxError = false;
 			bereken(sb);
@@ -1270,13 +1545,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 /*
  * TO DO:
  *
- * Nu eerst: 'cito'-versie maken; zelfde knoppen als in cito-rekenmachine
- *
- * EXP-knop toevoegen?
+ * Breukknop verder implementeren => leren rekenen met breuken...
  * 
- * xe-machts wortels toevoegen?
- * 
- * 1/x knop toevoegen? Werkt erg hetzelfde als de kwadraat-knop. Dus op zelfde manier implementeren.
+ * xe-machts wortelknop verder implementeren toevoegen?
  * 
  * Nadenken over implementatie in de DWO.
  * 
