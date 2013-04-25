@@ -48,7 +48,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	StringBuffer sb = new StringBuffer();
 	StringBuffer sb2 = new StringBuffer();
 	double rekenGetal;
-	int lengteRekenGetal, lengte1, lengte2;
+	int lengteRekenGetal, lengte1, lengte2, lengteBreuk;
+	double teller, noemer;
 	double uitkomst, eindUitkomst;
 	int lengteHaakjesUitdrukking;
 	int linksTeller, rechtsTeller;
@@ -704,74 +705,122 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				return;
 			}
 		}
+		
+		//checken of er breuktekentjes in staan
+		if(sb2.indexOf("\u22A5") > -1)
+			breuk = true;			
 			
 		//op zoek naar producten en delingen
-		while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
-		{
-			if(sb2.indexOf("/") == -1) 
-				vervangUitkomst("x", sb2);
-			else if(sb2.indexOf("x") == -1)
-			{	vervangUitkomst("/", sb2);
-			
+		if(breuk)
+		{	while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
+			{
+				if(sb2.indexOf("/") == -1) 
+					vervangUitkomstBreuk("x", sb2);
+				else if(sb2.indexOf("x") == -1)
+					vervangUitkomstBreuk("/", sb2);
+				else if(sb2.indexOf("x") < sb2.indexOf("/"))
+					vervangUitkomstBreuk("x", sb2);
+				else 
+					vervangUitkomstBreuk("/", sb2);
+				
+				if(syntaxError)
+				{	System.out.println("ERROR product/deling breuk");
+					return;
+				}
 			}
-			else if(sb2.indexOf("x") < sb2.indexOf("/"))
-				vervangUitkomst("x", sb2);
-			else 
-				vervangUitkomst("/", sb2);
+		}
+		else
+		{	while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
+			{
+				if(sb2.indexOf("/") == -1) 
+					vervangUitkomst("x", sb2);
+				else if(sb2.indexOf("x") == -1)
+					vervangUitkomst("/", sb2);
+				else if(sb2.indexOf("x") < sb2.indexOf("/"))
+					vervangUitkomst("x", sb2);
+				else 
+					vervangUitkomst("/", sb2);
 			
-			if(syntaxError)
-			{	System.out.println("ERROR product/deling");
-				return;
+				if(syntaxError)
+				{	System.out.println("ERROR product/deling");
+					return;
+				}
 			}
 		}
 		
 		//E- veranderen in G om problemen met mintekens te voorkomen
 		replace(sb2, "E-", "G");
+		
 		//op zoek naar optellen en aftrekken
-		while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-		{	if(sb2.indexOf("-") <= 0) 
-				vervangUitkomst("+", sb2);
-			else if(sb2.indexOf("+") == -1)
-				vervangUitkomst("-", sb2);
-			else if(sb2.indexOf("+") < sb2.indexOf("-"))
-				vervangUitkomst("+", sb2);
-			else 
-				vervangUitkomst("-", sb2);			
-			if(syntaxError)
-			{	System.out.println("ERROR optellen/aftrekken");
-				return;
+		if(breuk)
+			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
+			{	if(sb2.indexOf("-") <= 0) 
+					vervangUitkomstBreuk("+", sb2);
+				else if(sb2.indexOf("+") == -1)
+					vervangUitkomstBreuk("-", sb2);
+				else if(sb2.indexOf("+") < sb2.indexOf("-"))
+					vervangUitkomstBreuk("+", sb2);
+				else 
+					vervangUitkomstBreuk("-", sb2);			
+				if(syntaxError)
+				{	System.out.println("ERROR optellen/aftrekken breuk");
+					return;
+				}
 			}
-		}
-		try{	
-			uitkomst = Double.parseDouble(sb2.toString());
-		}
-		catch(Exception e){
-			
-			if(sb2.toString().equals("\u03C0"))
-				uitkomst = Math.PI;
-			else if(sb2.toString().equals("e"))
-				uitkomst = Math.E;
-			else if(sb2.indexOf("E") > -1)//een zeer groot getal
-				try{
-					vindUitkomst("E", sb2);
+		else
+			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
+			{	if(sb2.indexOf("-") <= 0) 
+					vervangUitkomst("+", sb2);
+				else if(sb2.indexOf("+") == -1)
+					vervangUitkomst("-", sb2);
+				else if(sb2.indexOf("+") < sb2.indexOf("-"))
+					vervangUitkomst("+", sb2);
+				else 
+					vervangUitkomst("-", sb2);			
+				if(syntaxError)
+				{	System.out.println("ERROR optellen/aftrekken");
+					return;
 				}
-				catch(Exception ex){
-				syntaxError = true;
-				System.out.println("ERROR vindUitkomst(E)");				
-				}
-			else if(sb2.indexOf("G") > -1)//een zeer klein getal
-				try{
-					vindUitkomst("G", sb2);				
-				}
-				catch(Exception ex){
-				syntaxError = true;
-				System.out.println("ERROR vindUitkomst(G)");				
-				}	
-			else
-			{	System.out.println("ERROR in berekenWaarde overig");
-				syntaxError = true;
 			}
+System.out.println("sb na +/- = "+ sb);		
+		if(breuk)
+			try
+			{	vindBreukVanaf(-1, sb2);
+			}
+		catch(Exception e)
+		{	syntaxError = true;
+			System.out.println("ERROR in berekenWaardeOverig Breuk");
 		}
+		else
+			try{	
+				uitkomst = Double.parseDouble(sb2.toString());
+			}
+			catch(Exception e)
+			{	if(sb2.toString().equals("\u03C0"))
+					uitkomst = Math.PI;
+				else if(sb2.toString().equals("e"))
+					uitkomst = Math.E;
+				else if(sb2.indexOf("E") > -1)//een zeer groot getal
+					try{
+						vindUitkomst("E", sb2);
+					}
+					catch(Exception ex){
+					syntaxError = true;
+					System.out.println("ERROR vindUitkomst(E)");				
+					}
+				else if(sb2.indexOf("G") > -1)//een zeer klein getal
+					try{
+						vindUitkomst("G", sb2);				
+					}
+					catch(Exception ex){
+					syntaxError = true;
+					System.out.println("ERROR vindUitkomst(G)");				
+					}	
+				else
+				{	System.out.println("ERROR in berekenWaarde overig");
+					syntaxError = true;
+				}
+			}
 	}
 	
 	/*
@@ -834,8 +883,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			uitkomst = rekenKind1 * Math.pow(10, rekenKind2);
 		else if(s.equals("G"))
 			uitkomst = rekenKind1 * Math.pow(10, -rekenKind2);
-		
-		
 	}
 	
 	public void vervangUitkomst(String s, StringBuffer sb)
@@ -967,8 +1014,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				negatief = true;
 			}
 			int eindPos = pos + 1;	
+System.out.println("vgnb digit: " + sb.charAt(pos+1));			
 			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
-			{	//int eindPos = pos+1;
+			{	
+				
+				//int eindPos = pos+1;
 				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
 					eindPos ++;
 				//doet het één keer te vaak:
@@ -983,6 +1033,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				subString = sb.substring(pos + 1, eindPos + 1);
 				rekenGetal = Double.parseDouble(subString);
 				lengteRekenGetal = subString.length();
+System.out.println("rekengetal vgnb: " + rekenGetal);				
 					
 			}
 			else if(sb.charAt(pos + 1) == '\u03C0')//dit is pi
@@ -998,6 +1049,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalNaBewerking else");
+System.out.println("sb is " + sb);				
 				return;
 			}
 		
@@ -1050,89 +1102,211 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 	}
 	
+	/*
+	 * Uitkomst van 'simpele' bewerkingen berekenen:
+	 * +, -, *, /, ^
+	 */
+	public void vindUitkomstBreuk(String s, StringBuffer sb)
+	{
+		double teller1, noemer1, teller2, noemer2;
+		
+		vindBreukTot(sb.indexOf(s), sb);
+		if(syntaxError)
+		{	System.out.println("Syntax Error komt uit vindBreukTot");
+			return;
+		}
+		teller1 = teller;
+System.out.println("teller 1 = " + teller1);
+		noemer1 = noemer;
+System.out.println("noemer 1 = " + noemer1);		
+		
+		lengte1 = lengteBreuk;
+		vindBreukVanaf(sb.indexOf(s), sb);
+		if(syntaxError)
+		{	System.out.println("Syntax Error komt uit vindBreukVanaf");
+			return;
+		}
+		teller2 = teller;
+System.out.println("teller 2 = " + teller2);		
+		noemer2 = noemer;
+System.out.println("noemer 2 = " + noemer2);		
+		lengte2 = lengteBreuk;
+		if(s.equals("+"))
+		{	teller = teller1 * noemer2 + noemer1 * teller2;
+			noemer = noemer1 * noemer2;
+System.out.println("noemer na + = " + noemer);			
+		}
+		else if(s.equals("-"))
+		{	teller = teller1 * noemer2 - noemer1 * teller2;
+			noemer = noemer1 * noemer2;
+		}
+		else if(s.equals("x"))
+		{	teller = teller1 * teller2;
+			noemer = noemer1 * noemer2;
+		}
+		else if(s.equals("/"))
+		{	teller = teller1 * noemer2;
+			noemer = noemer1 * teller2;
+		}
+		else if(s.equals("^"))//moet dit wel hier, zo? Misschien wel..
+		{	teller = Math.pow(teller1, teller2/noemer2);
+			noemer = Math.pow(noemer1, teller2/noemer2);
+		}
+		else if(s.equals("E"))
+		{	teller = teller1 * Math.pow(10, teller2/noemer2);
+			noemer = noemer1;		
+		}
+		else if(s.equals("G"))
+		{	teller = teller1 * Math.pow(10, -teller2/noemer2);
+			noemer = noemer1;		
+		}
+	}
+	
+	public void vervangUitkomstBreuk(String s, StringBuffer sb)
+	{
+		vindUitkomstBreuk(s, sb);		
+		sb.replace(sb.indexOf(s) - lengte1, sb.indexOf(s) + lengte2 + 1, teller + "\u22A5" + noemer);
+	}
+	
 	public void vindBreukTot(int pos, StringBuffer sb)
 	{
-		double teller;
-		double noemer;
-		//int pos2;//echt nodig? Kun je niet gewoon overal pos gebruiken?
 		vindGetalVoorBewerking(pos, sb);
-		if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u231F')
+		lengteBreuk = lengteRekenGetal;
+System.out.println(sb.charAt(pos - lengteRekenGetal));
+		if(pos - lengteRekenGetal - 1 < 0 || sb.charAt(pos - lengteRekenGetal - 1) != '\u22A5')
 		{	teller = rekenGetal;
 			noemer = 1;
 			return;
 		}
 		else
 		{	noemer = rekenGetal;
+			try{
 			pos = pos - lengteRekenGetal - 1;
 			vindGetalVoorBewerking(pos, sb);
 			teller = rekenGetal;
-			if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u231F')
+			lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+			}
+			catch(Exception e)
+			{	syntaxError = true;
+				System.out.println("ERROR breuk");
+				return;
+			}
+			if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u22A5')
 				return;
 			else
 			{
 				try{
-				pos = pos - lengteRekenGetal - 1;
-				vindGetalVoorBewerking(pos, sb);
-				teller = teller + rekenGetal * noemer;	
+					pos = pos - lengteRekenGetal - 1;
+					vindGetalVoorBewerking(pos, sb);
+					teller = teller + rekenGetal * noemer;	
+					lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
 				}
 				catch(Exception e)
-				{syntaxError = true;
-				System.out.println("ERROR breuk");
+				{	syntaxError = true;
+					System.out.println("ERROR breuk");
+					return;
 				}
 			}//hier nog meer exceptions inbouwen met syntaxerror?
 		}
 		
 		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
-		if(teller % 1 == 0  && noemer %1 == 0)
-			//hier bedenken wat ik er precies uit wil hebben.
-			;
-		else
-			breuk = false; //afhankelijk van de waarde  van breuk wil ik het antwoord als breuk weergeven en ga ik op zoek naar breuken.
-		//in de berekenWaarde-methode komt waarschijnlijk een while-constructie met als één van de voorwaarden dat breuk true is. 
+		if(teller % 1 != 0  || noemer %1 != 0)
+			breuk = false;
 	}
 	
 	public void vindBreukVanaf(int pos, StringBuffer sb)
 	{
+System.out.println("vbv 1");		
 		double gehelen;
-		double teller;
-		double noemer;
 		vindGetalNaBewerking(pos, sb);
-		if(pos + lengteRekenGetal > sb.length() || sb.charAt(pos + lengteRekenGetal) != '\u231F')
-		{	teller = rekenGetal;
-			noemer = 1;
+if(syntaxError)
+{	System.out.println("ERROR vgnb in vbf");
+	return;
+}
+System.out.println("vbv 2");
+		teller = rekenGetal;
+		lengteBreuk = lengteRekenGetal;
+//System.out.println(lengteRekenGetal);		
+//System.out.println("pos-1+lengteRekengetal: " + (pos - 1 + lengteRekenGetal) + " en sb.length: " + sb.length());		
+		if(pos + 1 + lengteRekenGetal > sb.length() - 1 || sb.charAt(pos + 1 + lengteRekenGetal) != '\u22A5')
+		{	noemer = 1;
+System.out.println("vbv 3");		
 			return;
 		}
 		else
-		{	teller = rekenGetal;
-			pos = pos + lengteRekenGetal + 1;
-			vindGetalNaBewerking(pos, sb);
-			noemer = rekenGetal;
-			if(pos + lengteRekenGetal > sb.length() || sb.charAt(pos + lengteRekenGetal) != '\u231F')
+		{	try{
+				pos = pos + lengteRekenGetal + 1;
+				vindGetalNaBewerking(pos, sb);
+				if(syntaxError)
+				{	System.out.println("ERROR vgnb2 in vbf");
+					return;
+				}				
+System.out.println("noemer in vbv: "+ rekenGetal);				
+				noemer = rekenGetal;
+				lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+			}
+			catch(Exception e)
+			{	syntaxError = true;
+				System.out.println("ERROR breuk1");
 				return;
-			else
+			}
+System.out.println((pos + lengteRekenGetal + 1) +" en "+ sb.length());			
+			if(pos + lengteRekenGetal + 1 < sb.length() && sb.charAt(pos + lengteRekenGetal + 1) == '\u22A5')
 			{	gehelen = teller;
 				teller = noemer;
+				
+System.out.println("gehelen = " + gehelen + " en teller = " + teller);				
 				try{
-				pos = pos + lengteRekenGetal + 1;
-				vindGetalVoorBewerking(pos, sb);
-				noemer = rekenGetal;
-				teller = teller + gehelen * noemer;
+					pos = pos + lengteRekenGetal + 1;
+					vindGetalNaBewerking(pos, sb);
+					if(syntaxError)
+					{	System.out.println("ERROR vgnb3 in vbf");
+							return;
+						}
+						noemer = rekenGetal;
+	System.out.println("noemer5 = " + noemer);					
+					teller = teller + gehelen * noemer;
+					lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
 				}
 				catch(Exception e)
 				{syntaxError = true;
-				System.out.println("ERROR breuk");
+				System.out.println("ERROR breuk2");
 				}
 			}//hier nog meer exceptions inbouwen met syntaxerror?
 		}
 		
 		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
-		if(teller % 1 == 0  && noemer %1 == 0)
-			//hier bedenken wat ik er precies uit wil hebben.
-			;
-		else
-			breuk = false; //afhankelijk van de waarde  van breuk wil ik het antwoord als breuk weergeven en ga ik op zoek naar breuken.
-		//in de berekenWaarde-methode komt waarschijnlijk een while-constructie met als één van de voorwaarden dat breuk true is. 
+		if(teller % 1 != 0  || noemer %1 != 0)
+			breuk = false;
 	}
+	
+	public int[] simplify(int nom, int denom)
+    {   if (denom < 0)
+        {   nom = - nom;
+            denom = - denom;
+        }
+        if (nom == 0)
+            denom = 1;
+        else
+        {   int g = gcd(nom, denom);
+            nom = nom / g;
+            denom = denom / g;
+        }
+        int[] breuk = {nom, denom}; 
+        return breuk;
+    }
+  
+  public int gcd(int a, int b)
+  {   int m = Math.abs(a);
+	  int n = Math.abs(b);
+	  int temp = 0;
+	  while ( n != 0 )
+	  {   temp = m % n;
+	      m = n;
+	      n = temp;
+	  }
+	  return m;
+  }
 		
 	/*
 	 * Uitdrukking tussen haakjes vinden; haakje links staat op positie n.
@@ -1251,9 +1425,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		else if(e.getSource() == eenGedeeldDoorKnop)
 			voegInOfVervang("\u207B\u00B9", true);
 		else if(e.getSource() == breukKnop)
-		{	breuk = true;
-			voegInOfVervang("\u231F", false);// \u321F doet het niet..
-		}
+			voegInOfVervang("\u22A5", false);// \u321F doet het niet..
 		else if(e.getSource() == expKnop)
 			voegInOfVervang("\u2081\u2080", true);
 		else if(e.getSource() == haakLinksKnop)
@@ -1310,7 +1482,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				nieuweInvoer = false;
 			invoerVeld.setText("");
 			uitvoerVeld.setText("0");
-			breuk = false;
 		}
 		else if(e.getSource() == delKnop)
 		{	str = invoerVeld.getText();
@@ -1436,32 +1607,62 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			syntaxError = false;
 			bereken(sb);
 			if(!syntaxError)
-			{	try{
-				eindUitkomst = Double.parseDouble(sb.toString());}
-				catch(Exception ex) 
-				{	if(sb2.indexOf("E") > -1)
-						try{
-							vindUitkomst("E", sb2);
-							eindUitkomst = uitkomst;
-						}
-						catch(Exception exc){
-						syntaxError = true;
-		System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
-						}
-					else if(sb2.indexOf("G") > -1)
-						try{
-							vindUitkomst("G", sb2);
-							eindUitkomst = uitkomst;
-						}
-						catch(Exception exc){
-							syntaxError = true;
-		System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
+			{	String uitvoerTekst;
+System.out.println("breuk = " + breuk);			
+				if(breuk)
+				{	int tellerInt = (int) teller;				
+					int noemerInt = (int) noemer;
+					int[] breuk  = simplify(tellerInt, noemerInt);
+					
+					int gehelenInt = breuk[0]/breuk[1];
+System.out.println("gehelenInt = " + gehelenInt);					
+					if(gehelenInt > 0)
+					{	breuk[0] = breuk[0] - gehelenInt * breuk[1];
+						if(breuk[0] == 0)
+							uitvoerTekst = "" + gehelenInt;
+						else
+							uitvoerTekst = gehelenInt + "\u22A5" + breuk[0] + "\u22A5" + breuk[1];
 					}
-
+					else
+					{	if(breuk[0] == 0)
+							uitvoerTekst = "" + 0;
+						else
+							uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
+					}
 				}
-				if(eindUitkomst < Math.pow(10, 9))
-					eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
-				String uitvoerTekst = Double.toString(eindUitkomst);
+				else
+				{	try{
+					eindUitkomst = Double.parseDouble(sb.toString());}
+					catch(Exception ex) 
+					{	if(sb2.indexOf("E") > -1)
+							try{
+								vindUitkomst("E", sb2);
+								eindUitkomst = uitkomst;
+							}
+							catch(Exception exc){
+							syntaxError = true;
+			System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
+							}
+						else if(sb2.indexOf("G") > -1)
+							try{
+								vindUitkomst("G", sb2);
+								eindUitkomst = uitkomst;
+							}
+							catch(Exception exc){
+								syntaxError = true;
+			System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
+							}
+						else if(sb2.indexOf("\u22a5") > -1)
+						{
+							eindUitkomst = teller/noemer;
+						}
+							
+	
+					}
+					if(eindUitkomst < Math.pow(10, 9))
+						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+					uitvoerTekst = Double.toString(eindUitkomst);
+				}
 				if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
 					uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
 			
@@ -1498,7 +1699,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			}
 			invoerVeld.getCaret().setBlinkRate(500);
 			invoerVeld.getCaret().setVisible(false);
-			breuk = false;
 			
 			
 			
@@ -1511,7 +1711,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 /*
  * TO DO:
  *
- * Breukknop verder implementeren => leren rekenen met breuken...
+ * Breukknop verder implementeren
+ * Machten moet nog goed, net als sinussen... (dus er moet iets gebeuren als de breuk tussen haakjes staat)
  * 
  * xe-machts wortelknop verder implementeren toevoegen?
  * 
