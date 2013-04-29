@@ -616,13 +616,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		//logfuncties uitrekenen
 		for(int i = 0; i < sb.length() - 1; i++)
-			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'o')//logs
+			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'o')//log
 			{	vindHaakjesUitdrukking(sb, i + 3);
 				sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.log10(uitkomst)));
 			}	
 		for(int i = 0; i < sb.length() - 1; i++)
-			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'n')//lns
+			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'n')//ln
 			{	vindHaakjesUitdrukking(sb, i + 2);
 				sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.log(uitkomst)));
@@ -684,17 +684,77 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		//E- veranderen in G om problemen met mintekens te voorkomen (hier nog niet nodig?)
 		//replace(sb2, "E-", "G");
 		
+		
+		//checken of er breuktekentjes of B's in staan
+		if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
+			breuk = true;	
+		
 		//op zoek naar wortels
-		while(sb2.indexOf("\u221A") != -1)
-		{	vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);		
+		if(breuk){
+		while(sb2.indexOf("\u221A") != -1 && breuk)
+		{	
+System.out.println("Start while loop met breuk");			
+			double wortel;
+			vindBreukVanaf(sb2.indexOf("\u221A"), sb2);
+System.out.println("gevonden breuk: " + sb2.substring(sb2.indexOf("\u221A")+1, sb2.indexOf("\u221A") + 1 + lengteBreuk));			
+			if(sb2.substring(sb2.indexOf("\u221A")+1, sb2.indexOf("\u221A") + 1 + lengteBreuk).indexOf('B') > -1)
+			{	
+System.out.println("er zit in B in de breuk");				
+				teller = Math.sqrt(teller);
+				noemer = Math.sqrt(noemer);
+				if(teller % 1 != 0  || noemer %1 != 0)
+				{	
+System.out.println("wortel breukB geen goede breuk");					
+					breuk = false;
+					wortel = teller/noemer;
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreuk + 1, 
+							Double.toString(wortel));
+				}
+				else 
+				{
+System.out.println("wortel breukB wel goede breuk");					
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreuk + 1, teller + "B" + noemer);
+				}
+			}
+			else 
+			{	
+System.out.println("er zit geen B in de breuk");				
+				vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);
+				wortel = Math.sqrt(rekenGetal);
+				if(wortel % 1 != 0)
+				{	
+System.out.println("wortel is niet geheel");					
+					breuk = false;
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
+							Double.toString(wortel));
+				}
+				else{
+System.out.println("wortel is wel geheel");
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, "" + teller);
+				}
+			}
 			if(syntaxError)
 			{	
-			System.out.println("ERROR wortels");
-			return;
+				System.out.println("ERROR wortels");
+				return;
+			}
+		}
+		}
+		while(sb2.indexOf("\u221A") != -1)
+		{	
+System.out.println("Start while loop zonder breuk");			
+			vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);
+System.out.println("getalNaBewerking is " + rekenGetal);			
+			if(syntaxError)
+			{	
+				System.out.println("ERROR wortels");
+				return;
 			}
 			double wortel = Math.sqrt(rekenGetal);
 			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
 					Double.toString(wortel));
+System.out.println("sb2 is: " + sb2);			
+//bovenstaande werkt nog niet goed als een breuk na een wortel niet tussen haakjes staat.. 			
 		}	
 		
 		//op zoek naar machten
@@ -706,9 +766,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			}
 		}
 		
-		//checken of er breuktekentjes in staan
-		if(sb2.indexOf("\u22A5") > -1)
-			breuk = true;			
+		//checken of er breuktekentjes of B's in staan
+		//if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
+		//	breuk = true;			
 			
 		//op zoek naar producten en delingen
 		if(breuk)
@@ -786,6 +846,7 @@ System.out.println("sb na +/- = "+ sb);
 		if(breuk)
 			try
 			{	vindBreukVanaf(-1, sb2);
+				replace(sb2,"\u22A5","B");
 			}
 		catch(Exception e)
 		{	syntaxError = true;
@@ -1165,7 +1226,7 @@ System.out.println("noemer na + = " + noemer);
 	public void vervangUitkomstBreuk(String s, StringBuffer sb)
 	{
 		vindUitkomstBreuk(s, sb);		
-		sb.replace(sb.indexOf(s) - lengte1, sb.indexOf(s) + lengte2 + 1, teller + "\u22A5" + noemer);
+		sb.replace(sb.indexOf(s) - lengte1, sb.indexOf(s) + lengte2 + 1, teller + "B" + noemer);
 	}
 	
 	public void vindBreukTot(int pos, StringBuffer sb)
@@ -1173,7 +1234,8 @@ System.out.println("noemer na + = " + noemer);
 		vindGetalVoorBewerking(pos, sb);
 		lengteBreuk = lengteRekenGetal;
 System.out.println(sb.charAt(pos - lengteRekenGetal));
-		if(pos - lengteRekenGetal - 1 < 0 || sb.charAt(pos - lengteRekenGetal - 1) != '\u22A5')
+		if(pos - lengteRekenGetal - 1 < 0 || (sb.charAt(pos - lengteRekenGetal - 1) != '\u22A5' 
+			&& sb.charAt(pos - lengteRekenGetal - 1) != 'B'))
 		{	teller = rekenGetal;
 			noemer = 1;
 			return;
@@ -1191,7 +1253,8 @@ System.out.println(sb.charAt(pos - lengteRekenGetal));
 				System.out.println("ERROR breuk");
 				return;
 			}
-			if(pos - lengteRekenGetal < 0 || sb.charAt(pos - lengteRekenGetal) != '\u22A5')
+			if(pos - lengteRekenGetal < 0 || (sb.charAt(pos - lengteRekenGetal) != '\u22A5' 
+				&& sb.charAt(pos - lengteRekenGetal) != 'B'))
 				return;
 			else
 			{
@@ -1226,9 +1289,8 @@ if(syntaxError)
 System.out.println("vbv 2");
 		teller = rekenGetal;
 		lengteBreuk = lengteRekenGetal;
-//System.out.println(lengteRekenGetal);		
-//System.out.println("pos-1+lengteRekengetal: " + (pos - 1 + lengteRekenGetal) + " en sb.length: " + sb.length());		
-		if(pos + 1 + lengteRekenGetal > sb.length() - 1 || sb.charAt(pos + 1 + lengteRekenGetal) != '\u22A5')
+		if(pos + 1 + lengteRekenGetal > sb.length() - 1 || (sb.charAt(pos + 1 + lengteRekenGetal) != '\u22A5' 
+			&& sb.charAt(pos + 1 + lengteRekenGetal) != 'B'))
 		{	noemer = 1;
 System.out.println("vbv 3");		
 			return;
@@ -1251,7 +1313,8 @@ System.out.println("noemer in vbv: "+ rekenGetal);
 				return;
 			}
 System.out.println((pos + lengteRekenGetal + 1) +" en "+ sb.length());			
-			if(pos + lengteRekenGetal + 1 < sb.length() && sb.charAt(pos + lengteRekenGetal + 1) == '\u22A5')
+			if(pos + lengteRekenGetal + 1 < sb.length() && (sb.charAt(pos + lengteRekenGetal + 1) == '\u22A5'
+				|| sb.charAt(pos + lengteRekenGetal + 1) == 'B'))
 			{	gehelen = teller;
 				teller = noemer;
 				
@@ -1405,10 +1468,8 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 		
 		
 		if(e.getSource() == piKnop)
-			//voegTekstIn("\u03C0", true);
 			voegInOfVervang("\u03C0", false);
 		else if(e.getSource() == plusKnop)
-			//voegTekstIn("+", false);
 			voegInOfVervang("+", true);
 		else if(e.getSource() == minKnop)
 			voegInOfVervang("\u2212", true);
@@ -1478,8 +1539,8 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 			invLabel.setVisible(invers);
 		}
 		else if(e.getSource() == cKnop)
-		{	if(nieuweInvoer)
-				nieuweInvoer = false;
+		{	nieuweInvoer = false;
+			breuk = false;
 			invoerVeld.setText("");
 			uitvoerVeld.setText("0");
 		}
