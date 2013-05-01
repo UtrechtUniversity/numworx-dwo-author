@@ -48,8 +48,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	StringBuffer sb = new StringBuffer();
 	StringBuffer sb2 = new StringBuffer();
 	double rekenGetal;
-	int lengteRekenGetal, lengte1, lengte2, lengteBreuk;
-	double teller, noemer;
+	int lengteRekenGetal, lengte1, lengte2, lengteBreuk, lengteBreukB;
+	double teller, noemer, tellerB, noemerB;
 	double uitkomst, eindUitkomst;
 	int lengteHaakjesUitdrukking;
 	int linksTeller, rechtsTeller;
@@ -64,6 +64,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	boolean breuk = false;
 	int rmMode = 1;
+	boolean graden = false;
 	boolean invers = false;
 	boolean insert = true;
 	JLabel invLabel;
@@ -246,6 +247,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	public void zetRmMode(int i)
 	{
 		rmMode = i;
+		if(rmMode == 2)
+			graden = true;
+		else
+			graden = false;
 		knoppenPanel.removeAll();
 		
 		if(rmMode == 1)
@@ -562,6 +567,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == 'A')
 				sb.replace(i, i+3, bewaardeAns);
+		
 	}
 	
 	/*
@@ -576,41 +582,114 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == 's' && sb.charAt(i+1)== 'i')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}	
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4, 
+							Double.toString(Math.sin(teller/noemer)));
+					}
+					else	
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.sin(uitkomst)));
+					}
 				}
 				else //arcsin
 				{	vindHaakjesUitdrukking(sb, i + 5);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+							Double.toString(Math.asin(teller/noemer)));
+					}
+					else
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
 							Double.toString(Math.asin(uitkomst)));
+					}
 				}
 			}
 		for(int i = 0; i < sb.length()-1; i++)
 			if(sb.charAt(i) == 'c' && sb.charAt(i+1) == 'o')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+							Double.toString(Math.cos(teller/noemer)));
+					}
+					else
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.cos(uitkomst)));
+					}
 				}
 				else //arccos
 				{	
 					System.out.println("sb.charAt(i+3) = " + sb.charAt(i+3));
 					vindHaakjesUitdrukking(sb, i + 5);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+							Double.toString(Math.acos(teller/noemer)));
+					}
+					else
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
 							Double.toString(Math.acos(uitkomst)));
+					}
 				}
 			}
 		for(int i = 0; i < sb.length()-1; i++)
 			if(sb.charAt(i) == 't' && sb.charAt(i+1) == 'a')
 			{	if(sb.charAt(i+3) == '(')
 				{	vindHaakjesUitdrukking(sb, i + 3);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
-							Double.toString(Math.tan(uitkomst)));
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+							Double.toString(Math.tan(teller/noemer)));
+					}
+					else
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+								Double.toString(Math.tan(uitkomst)));
+					}
+					
 				}
 				else //arctan
 				{	vindHaakjesUitdrukking(sb, i + 5);
-					sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+					if(breuk)
+					{	if(graden)
+						{	teller = teller * Math.PI;
+							noemer = noemer * 180;
+						}
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+							Double.toString(Math.atan(teller/noemer)));
+					}
+					else	
+					{	if(graden)
+							uitkomst = uitkomst * Math.PI / 180;
+						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
 							Double.toString(Math.atan(uitkomst)));
+					}
 				}
 			}
 		
@@ -618,13 +697,21 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		for(int i = 0; i < sb.length() - 1; i++)
 			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'o')//log
 			{	vindHaakjesUitdrukking(sb, i + 3);
-				sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+				if(breuk)
+					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+							Double.toString(Math.log10(teller/noemer)));
+				else
+					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
 							Double.toString(Math.log10(uitkomst)));
 			}	
 		for(int i = 0; i < sb.length() - 1; i++)
 			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'n')//ln
 			{	vindHaakjesUitdrukking(sb, i + 2);
-				sb.replace(i, i + lengteHaakjesUitdrukking + 3,
+				if(breuk)
+					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
+							Double.toString(Math.log(teller/noemer)));
+				else
+					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.log(uitkomst)));
 			}	
 		
@@ -690,81 +777,51 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			breuk = true;	
 		
 		//op zoek naar wortels
-		if(breuk){
-		while(sb2.indexOf("\u221A") != -1 && breuk)
-		{	
-System.out.println("Start while loop met breuk");			
-			double wortel;
-			vindBreukVanaf(sb2.indexOf("\u221A"), sb2);
-System.out.println("gevonden breuk: " + sb2.substring(sb2.indexOf("\u221A")+1, sb2.indexOf("\u221A") + 1 + lengteBreuk));			
-			if(sb2.substring(sb2.indexOf("\u221A")+1, sb2.indexOf("\u221A") + 1 + lengteBreuk).indexOf('B') > -1)
-			{	
-System.out.println("er zit in B in de breuk");				
-				teller = Math.sqrt(teller);
-				noemer = Math.sqrt(noemer);
-				if(teller % 1 != 0  || noemer %1 != 0)
-				{	
-System.out.println("wortel breukB geen goede breuk");					
-					breuk = false;
-					wortel = teller/noemer;
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreuk + 1, 
-							Double.toString(wortel));
+		if(breuk)
+		{	while(sb2.indexOf("\u221A") != -1)
+			{	vindBBreukVanaf(sb2.indexOf("\u221A"), sb2);
+				if(syntaxError)
+				{	System.out.println("ERROR breuk-wortel");
+					return;
 				}
-				else 
-				{
-System.out.println("wortel breukB wel goede breuk");					
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreuk + 1, teller + "B" + noemer);
-				}
-			}
-			else 
-			{	
-System.out.println("er zit geen B in de breuk");				
-				vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);
-				wortel = Math.sqrt(rekenGetal);
-				if(wortel % 1 != 0)
-				{	
-System.out.println("wortel is niet geheel");					
-					breuk = false;
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
-							Double.toString(wortel));
-				}
-				else{
-System.out.println("wortel is wel geheel");
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, "" + teller);
-				}
-			}
-			if(syntaxError)
-			{	
-				System.out.println("ERROR wortels");
-				return;
+				teller = Math.sqrt(tellerB);
+				noemer = Math.sqrt(noemerB);
+				if(noemer == 1)
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, "" + teller);
+				else
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, teller + "B" + noemer);
 			}
 		}
-		}
-		while(sb2.indexOf("\u221A") != -1)
-		{	
-System.out.println("Start while loop zonder breuk");			
-			vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);
-System.out.println("getalNaBewerking is " + rekenGetal);			
-			if(syntaxError)
-			{	
-				System.out.println("ERROR wortels");
-				return;
+		else
+		{	while(sb2.indexOf("\u221A") != -1)
+			{	vindGetalNaBewerking(sb2.indexOf("\u221A"), sb2);
+				if(syntaxError)
+				{	System.out.println("ERROR wortels zonder breuk");
+					return;
+				}
+				rekenGetal = Math.sqrt(rekenGetal);
+				sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
+						Double.toString(rekenGetal));
 			}
-			double wortel = Math.sqrt(rekenGetal);
-			sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
-					Double.toString(wortel));
-System.out.println("sb2 is: " + sb2);			
-//bovenstaande werkt nog niet goed als een breuk na een wortel niet tussen haakjes staat.. 			
-		}	
+		}
 		
 		//op zoek naar machten
-		while(sb2.indexOf("^") != -1)
-		{	vervangUitkomst("^", sb2);
-			if(syntaxError)
-			{	System.out.println("ERROR machten");
-				return;
+		if(breuk)
+			while(sb2.indexOf("^") != -1 && breuk)
+			{	vervangUitkomstBreuk("^", sb2);
+				if(syntaxError)
+				{	System.out.println("ERROR machten breuken");
+					return;
+				}
 			}
-		}
+		else
+			while(sb2.indexOf("^") != -1)
+			{	vervangUitkomst("^", sb2);
+				if(syntaxError)
+				{	System.out.println("ERROR machten");
+					return;
+				}
+			}	
 		
 		//checken of er breuktekentjes of B's in staan
 		//if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
@@ -842,11 +899,11 @@ System.out.println("sb2 is: " + sb2);
 					return;
 				}
 			}
-System.out.println("sb na +/- = "+ sb);		
 		if(breuk)
 			try
 			{	vindBreukVanaf(-1, sb2);
-				replace(sb2,"\u22A5","B");
+				sb2.delete(0, sb2.length());
+				sb2.append(teller + "B" + noemer);
 			}
 		catch(Exception e)
 		{	syntaxError = true;
@@ -1075,7 +1132,6 @@ System.out.println("sb na +/- = "+ sb);
 				negatief = true;
 			}
 			int eindPos = pos + 1;	
-System.out.println("vgnb digit: " + sb.charAt(pos+1));			
 			if(Character.isDigit(sb.charAt(pos+1)))//geval dat er een getal na de bewerking staat
 			{	
 				
@@ -1094,7 +1150,6 @@ System.out.println("vgnb digit: " + sb.charAt(pos+1));
 				subString = sb.substring(pos + 1, eindPos + 1);
 				rekenGetal = Double.parseDouble(subString);
 				lengteRekenGetal = subString.length();
-System.out.println("rekengetal vgnb: " + rekenGetal);				
 					
 			}
 			else if(sb.charAt(pos + 1) == '\u03C0')//dit is pi
@@ -1110,7 +1165,6 @@ System.out.println("rekengetal vgnb: " + rekenGetal);
 			else
 			{	syntaxError = true;
 				System.out.println("ERROR getalNaBewerking else");
-System.out.println("sb is " + sb);				
 				return;
 			}
 		
@@ -1170,6 +1224,8 @@ System.out.println("sb is " + sb);
 	public void vindUitkomstBreuk(String s, StringBuffer sb)
 	{
 		double teller1, noemer1, teller2, noemer2;
+		boolean breuk1B = false;
+		boolean breuk2B = false;
 		
 		vindBreukTot(sb.indexOf(s), sb);
 		if(syntaxError)
@@ -1177,25 +1233,25 @@ System.out.println("sb is " + sb);
 			return;
 		}
 		teller1 = teller;
-System.out.println("teller 1 = " + teller1);
 		noemer1 = noemer;
-System.out.println("noemer 1 = " + noemer1);		
-		
 		lengte1 = lengteBreuk;
+		if(sb.substring(sb.indexOf(s) - lengte1, sb.indexOf(s)).contains("B"))
+			breuk1B = true;
+		
 		vindBreukVanaf(sb.indexOf(s), sb);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindBreukVanaf");
 			return;
 		}
 		teller2 = teller;
-System.out.println("teller 2 = " + teller2);		
 		noemer2 = noemer;
-System.out.println("noemer 2 = " + noemer2);		
 		lengte2 = lengteBreuk;
+		if(sb.substring(sb.indexOf(s), sb.indexOf(s) + lengte2 + 1).contains("B"))
+			breuk2B = true;
+		
 		if(s.equals("+"))
 		{	teller = teller1 * noemer2 + noemer1 * teller2;
 			noemer = noemer1 * noemer2;
-System.out.println("noemer na + = " + noemer);			
 		}
 		else if(s.equals("-"))
 		{	teller = teller1 * noemer2 - noemer1 * teller2;
@@ -1209,8 +1265,19 @@ System.out.println("noemer na + = " + noemer);
 		{	teller = teller1 * noemer2;
 			noemer = noemer1 * teller2;
 		}
-		else if(s.equals("^"))//moet dit wel hier, zo? Misschien wel..
-		{	teller = Math.pow(teller1, teller2/noemer2);
+		else if(s.equals("^"))
+		{	if(!breuk1B)
+			{	teller1 = noemer1;
+				noemer1 = 1;
+				vindGetalVoorBewerking(sb.indexOf("^"), sb);
+				lengte1 = lengteRekenGetal;
+			}
+			if(!breuk2B)
+			{	noemer2 = 1;
+				vindGetalNaBewerking(sb.indexOf("^"), sb);
+				lengte2 = lengteRekenGetal; 
+			}
+			teller = Math.pow(teller1, teller2/noemer2);
 			noemer = Math.pow(noemer1, teller2/noemer2);
 		}
 		else if(s.equals("E"))
@@ -1231,116 +1298,112 @@ System.out.println("noemer na + = " + noemer);
 	
 	public void vindBreukTot(int pos, StringBuffer sb)
 	{
-		vindGetalVoorBewerking(pos, sb);
-		lengteBreuk = lengteRekenGetal;
-System.out.println(sb.charAt(pos - lengteRekenGetal));
-		if(pos - lengteRekenGetal - 1 < 0 || (sb.charAt(pos - lengteRekenGetal - 1) != '\u22A5' 
-			&& sb.charAt(pos - lengteRekenGetal - 1) != 'B'))
-		{	teller = rekenGetal;
-			noemer = 1;
-			return;
+		vindBBreukTot(pos, sb);
+		lengteBreuk = lengteBreukB;
+		if(pos - lengteBreuk - 1 < 0 || sb.charAt(pos - lengteBreuk - 1) != '\u22A5' )
+		{	teller = tellerB;
+			noemer = noemerB;
 		}
-		else
-		{	noemer = rekenGetal;
+		else 
+		{	teller = noemerB;
+			noemer = tellerB;
 			try{
-			pos = pos - lengteRekenGetal - 1;
-			vindGetalVoorBewerking(pos, sb);
-			teller = rekenGetal;
-			lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+				pos = pos - lengteBreukB - 1;
+				vindBBreukTot(pos, sb);
+				teller = teller * tellerB;
+				noemer = noemer * noemerB; 
+				lengteBreuk = lengteBreuk + lengteBreukB + 1;
 			}
 			catch(Exception e)
-			{	syntaxError = true;
-				System.out.println("ERROR breuk");
-				return;
+			{	System.out.println("ERROR breukTot1");
+				syntaxError = true;
 			}
-			if(pos - lengteRekenGetal < 0 || (sb.charAt(pos - lengteRekenGetal) != '\u22A5' 
-				&& sb.charAt(pos - lengteRekenGetal) != 'B'))
-				return;
-			else
-			{
-				try{
-					pos = pos - lengteRekenGetal - 1;
-					vindGetalVoorBewerking(pos, sb);
-					teller = teller + rekenGetal * noemer;	
-					lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+			if(pos - lengteBreukB - 1 >= 0 && sb.charAt(pos - lengteBreukB - 1) == '\u22A5')
+			{	try{
+					pos = pos - lengteBreukB - 1;
+					vindBBreukTot(pos, sb);
+					teller = teller * noemerB + noemer * tellerB;
+					noemer = noemer * noemerB;
+					lengteBreuk = lengteBreuk + lengteBreukB + 1;
 				}
 				catch(Exception e)
-				{	syntaxError = true;
-					System.out.println("ERROR breuk");
-					return;
+				{	System.out.println("ERROR breukTot2");
+					syntaxError = true;
 				}
-			}//hier nog meer exceptions inbouwen met syntaxerror?
+			}
 		}
-		
-		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
-		if(teller % 1 != 0  || noemer %1 != 0)
-			breuk = false;
 	}
 	
 	public void vindBreukVanaf(int pos, StringBuffer sb)
 	{
-System.out.println("vbv 1");		
-		double gehelen;
-		vindGetalNaBewerking(pos, sb);
-if(syntaxError)
-{	System.out.println("ERROR vgnb in vbf");
-	return;
-}
-System.out.println("vbv 2");
-		teller = rekenGetal;
-		lengteBreuk = lengteRekenGetal;
-		if(pos + 1 + lengteRekenGetal > sb.length() - 1 || (sb.charAt(pos + 1 + lengteRekenGetal) != '\u22A5' 
-			&& sb.charAt(pos + 1 + lengteRekenGetal) != 'B'))
-		{	noemer = 1;
-System.out.println("vbv 3");		
-			return;
-		}
-		else
+		vindBBreukVanaf(pos, sb);
+		teller = tellerB;
+		noemer = noemerB;
+		lengteBreuk = lengteBreukB;
+		if(pos + lengteBreuk + 1 <= sb.length() - 1 && sb.charAt(pos + lengteBreukB + 1) == '\u22A5' )
 		{	try{
-				pos = pos + lengteRekenGetal + 1;
-				vindGetalNaBewerking(pos, sb);
-				if(syntaxError)
-				{	System.out.println("ERROR vgnb2 in vbf");
-					return;
-				}				
-System.out.println("noemer in vbv: "+ rekenGetal);				
-				noemer = rekenGetal;
-				lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+				pos = pos + lengteBreukB + 1;
+				vindBBreukVanaf(pos, sb);
+				lengteBreuk = lengteBreuk + lengteBreukB + 1;
 			}
 			catch(Exception e)
-			{	syntaxError = true;
-				System.out.println("ERROR breuk1");
+			{	System.out.println("ERROR breukVanaf1");
+				syntaxError = true;
 				return;
 			}
-System.out.println((pos + lengteRekenGetal + 1) +" en "+ sb.length());			
-			if(pos + lengteRekenGetal + 1 < sb.length() && (sb.charAt(pos + lengteRekenGetal + 1) == '\u22A5'
-				|| sb.charAt(pos + lengteRekenGetal + 1) == 'B'))
-			{	gehelen = teller;
-				teller = noemer;
-				
-System.out.println("gehelen = " + gehelen + " en teller = " + teller);				
+			if(pos + lengteBreukB + 1 >= sb.length() - 1 || sb.charAt(pos + lengteBreukB + 1) != '\u22A5')
+			{	noemer = noemer * tellerB;
+				teller = teller * noemerB;
+			}
+			else
+			{
+				double teller1 = teller * noemerB;
+				double teller2 = noemer * tellerB;
+				noemer = noemerB * noemer;
 				try{
-					pos = pos + lengteRekenGetal + 1;
-					vindGetalNaBewerking(pos, sb);
-					if(syntaxError)
-					{	System.out.println("ERROR vgnb3 in vbf");
-							return;
-						}
-						noemer = rekenGetal;
-	System.out.println("noemer5 = " + noemer);					
-					teller = teller + gehelen * noemer;
-					lengteBreuk = lengteBreuk + 1 + lengteRekenGetal;
+					pos = pos + lengteBreukB + 1;
+					vindBBreukVanaf(pos, sb);
+					teller = teller1 * tellerB + teller2 * noemerB;
+					noemer = noemer * tellerB;
+					lengteBreuk = lengteBreuk + lengteBreukB + 1;
 				}
 				catch(Exception e)
-				{syntaxError = true;
-				System.out.println("ERROR breuk2");
+				{	System.out.println("ERROR breukVanaf2");
+					syntaxError = true;
 				}
-			}//hier nog meer exceptions inbouwen met syntaxerror?
+			}
 		}
-		
-		//nu proberen of de twee getallen die ik heb gevonden geheel zijn. 
-		if(teller % 1 != 0  || noemer %1 != 0)
-			breuk = false;
+	}
+	
+	
+	public void vindBBreukTot(int pos, StringBuffer sb)
+	{
+		vindGetalVoorBewerking(pos, sb);
+		lengteBreukB = lengteRekenGetal;
+		if(pos - lengteRekenGetal - 1 < 0 || sb.charAt(pos - lengteRekenGetal - 1) != 'B')
+		{	tellerB = rekenGetal;
+			noemerB = 1;
+		}
+		else
+		{	noemerB = rekenGetal;
+			vindGetalVoorBewerking(pos - lengteBreukB - 1, sb);
+			tellerB = rekenGetal;
+			lengteBreukB += lengteRekenGetal + 1;
+		}
+	}
+	
+	public void vindBBreukVanaf(int pos, StringBuffer sb)
+	{
+		vindGetalNaBewerking(pos, sb);
+		tellerB = rekenGetal;
+		lengteBreukB = lengteRekenGetal;
+		if(pos + lengteRekenGetal + 1 > sb.length() -1 || sb.charAt(pos + lengteRekenGetal + 1) != 'B')
+			noemerB = 1;
+		else
+		{	vindGetalNaBewerking(pos + lengteBreukB + 1, sb);
+			noemerB = rekenGetal;
+			lengteBreukB += lengteRekenGetal + 1;
+		}
 	}
 	
 	public int[] simplify(int nom, int denom)
@@ -1395,7 +1458,6 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 	 * de boolean is om aan te geven of Ans moet worden toegevoegd als 
 	 * een nieuwe berekening wordt gestart.
 	 */
-	
 	public void voegTekstIn(String s, boolean ans)
 	{
 		if(nieuweInvoer && ans)
@@ -1465,7 +1527,6 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 		for(int i = 0; i < 10; i++)
 			if(e.getSource() == getalKnop[i])
 				voegInOfVervang(""+i, false);
-		
 		
 		if(e.getSource() == piKnop)
 			voegInOfVervang("\u03C0", false);
@@ -1554,30 +1615,35 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 			if(cp == 0)
 				return;
 			else if(str.charAt(cp - 1) == 's')
-			{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp, str.length()));
+			{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp));
 				invoerVeld.setCaretPosition(cp - 3);
 			}
 			else if(str.charAt(cp - 1) == '(' )
 			{
 				if(cp < 3)
-				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp, str.length()));
+				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
 					invoerVeld.setCaretPosition(cp - 1);
 				}
 				else if(str.charAt(cp - 2) == '\u00B9')
-				{	invoerVeld.setText(str.substring(0, cp - 6) + str.substring(cp, str.length()));
+				{	invoerVeld.setText(str.substring(0, cp - 6) + str.substring(cp));
 					invoerVeld.setCaretPosition(cp - 6);
 				}
 				else if(str.charAt(cp - 2) == 'n' || str.charAt(cp - 3) == 'o')
-				{	invoerVeld.setText(str.substring(0, cp - 4) + str.substring(cp, str.length()));
+				{	invoerVeld.setText(str.substring(0, cp - 4) + str.substring(cp));
 					invoerVeld.setCaretPosition(cp - 4);
 				}
 				else
-				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp, str.length()));
+				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
 					invoerVeld.setCaretPosition(cp - 1);
 				}
 			}
+			else if(str.charAt(cp - 1) == '\u2070')
+			{
+				invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 2);
+			}
 			else
-			{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp, str.length()));
+			{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
 				invoerVeld.setCaretPosition(cp - 1);
 			}
 		}
@@ -1669,26 +1735,32 @@ System.out.println("gehelen = " + gehelen + " en teller = " + teller);
 			bereken(sb);
 			if(!syntaxError)
 			{	String uitvoerTekst;
-System.out.println("breuk = " + breuk);			
 				if(breuk)
-				{	int tellerInt = (int) teller;				
-					int noemerInt = (int) noemer;
-					int[] breuk  = simplify(tellerInt, noemerInt);
+				{	if(teller % 1 == 0  && noemer %1 == 0)
+					{	int tellerInt = (int) teller;	
+						int noemerInt = (int) noemer;
+						int[] breuk  = simplify(tellerInt, noemerInt);
 					
-					int gehelenInt = breuk[0]/breuk[1];
-System.out.println("gehelenInt = " + gehelenInt);					
-					if(gehelenInt > 0)
-					{	breuk[0] = breuk[0] - gehelenInt * breuk[1];
-						if(breuk[0] == 0)
-							uitvoerTekst = "" + gehelenInt;
+						int gehelenInt = breuk[0]/breuk[1];
+						if(gehelenInt > 0)
+						{	breuk[0] = breuk[0] - gehelenInt * breuk[1];
+							if(breuk[0] == 0)
+								uitvoerTekst = "" + gehelenInt;
+							else
+								uitvoerTekst = gehelenInt + "\u22A5" + breuk[0] + "\u22A5" + breuk[1];
+						}
 						else
-							uitvoerTekst = gehelenInt + "\u22A5" + breuk[0] + "\u22A5" + breuk[1];
+						{	if(breuk[0] == 0)
+								uitvoerTekst = "" + 0;
+							else
+								uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
+						}
 					}
 					else
-					{	if(breuk[0] == 0)
-							uitvoerTekst = "" + 0;
-						else
-							uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
+					{	eindUitkomst = teller/noemer;
+						if(eindUitkomst < Math.pow(10, 9))
+							eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+						uitvoerTekst = Double.toString(eindUitkomst);
 					}
 				}
 				else
@@ -1696,29 +1768,27 @@ System.out.println("gehelenInt = " + gehelenInt);
 					eindUitkomst = Double.parseDouble(sb.toString());}
 					catch(Exception ex) 
 					{	if(sb2.indexOf("E") > -1)
-							try{
-								vindUitkomst("E", sb2);
+							try
+							{	vindUitkomst("E", sb2);
 								eindUitkomst = uitkomst;
 							}
-							catch(Exception exc){
-							syntaxError = true;
-			System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
+							catch(Exception exc)
+							{	syntaxError = true;
+								System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
 							}
 						else if(sb2.indexOf("G") > -1)
-							try{
-								vindUitkomst("G", sb2);
+							try
+							{	vindUitkomst("G", sb2);
 								eindUitkomst = uitkomst;
 							}
-							catch(Exception exc){
-								syntaxError = true;
-			System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
+							catch(Exception exc)
+							{	syntaxError = true;
+								System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
 							}
-						else if(sb2.indexOf("\u22a5") > -1)
+						else if(sb2.indexOf("\u22a5") > -1 || sb2.indexOf("B") > -1)
 						{
 							eindUitkomst = teller/noemer;
 						}
-							
-	
 					}
 					if(eindUitkomst < Math.pow(10, 9))
 						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
@@ -1752,7 +1822,9 @@ System.out.println("gehelenInt = " + gehelenInt);
 			if(syntaxError)
 				uitvoerVeld.setText("Syntax ERROR");
 			else
-			nieuweInvoer = true;
+			{	nieuweInvoer = true;
+				breuk = false;
+			}
 			if(!insert)
 			{	insert = true;
 				invoerVeld.getCaret().setVisible(false);
@@ -1761,11 +1833,7 @@ System.out.println("gehelenInt = " + gehelenInt);
 			invoerVeld.getCaret().setBlinkRate(500);
 			invoerVeld.getCaret().setVisible(false);
 			
-			
-			
 		}
-		
-		
 	}
 
 }
