@@ -5,19 +5,10 @@ import java.awt.*;
 import java.util.Hashtable;
 
 import javax.swing.*;
-import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 
-import fi.beans.stringutils.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
-
-import fi.wiskopdr.expressies.Algebra;
-import fi.wiskopdr.expressies.BasisExpressie;
-import fi.wiskopdr.expressies.DecRound;
-import fi.wiskopdr.expressies.Expressie;
-import fi.wiskopdr.formuleobjects.FormuleVak;
-import fi.wiskopdr.tekstobjects.*;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, InteractiePanel
 {
@@ -567,7 +558,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == 'A')
 				sb.replace(i, i+3, bewaardeAns);
-		
+
+System.out.println("sb berekenbaar: " + sb);
 	}
 	
 	/*
@@ -749,16 +741,15 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	 * gonio-formules voorkomen.
 	 */
 	public void berekenWaarde(String str) 
-	{
+	{		
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
 	
+System.out.println("berekenWaarde in: "+ sb2);		
 		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
 		replace(sb2, "\u2212", "-");
 		replace(sb2, "\u00F7", "/");
 		replace(sb2, "\u00D7", "x");
-		// in plaats van de regels hier voor / en x kan ik ook in het vervolg de / en x vervangen door 
-		// de unicode-characters die ik erbij heb gezocht.
 		
 		//++ veranderen in +, etc
 		replace(sb2, "++", "+");
@@ -767,10 +758,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		replace(sb2, "-+", "-");
 		replace(sb2, "x+", "x");
 		replace(sb2, "/+", "/");
-		
-		//E- veranderen in G om problemen met mintekens te voorkomen (hier nog niet nodig?)
-		//replace(sb2, "E-", "G");
-		
 		
 		//checken of er breuktekentjes of B's in staan
 		if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
@@ -804,7 +791,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						Double.toString(rekenGetal));
 			}
 		}
-		
+
 		//op zoek naar machten
 		if(breuk)
 			while(sb2.indexOf("^") != -1 && breuk)
@@ -823,10 +810,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				}
 			}	
 		
-		//checken of er breuktekentjes of B's in staan
-		//if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
-		//	breuk = true;			
-			
 		//op zoek naar producten en delingen
 		if(breuk)
 		{	while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
@@ -867,11 +850,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		//E- veranderen in G om problemen met mintekens te voorkomen
 		replace(sb2, "E-", "G");
-		
+System.out.println("sb voor + en -: "+ sb2);		
 		//op zoek naar optellen en aftrekken
 		if(breuk)
 			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-			{	if(sb2.indexOf("-") <= 0) 
+			{	if(sb2.indexOf("-") <= 0) 				
 					vervangUitkomstBreuk("+", sb2);
 				else if(sb2.indexOf("+") == -1)
 					vervangUitkomstBreuk("-", sb2);
@@ -886,8 +869,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			}
 		else
 			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-			{	if(sb2.indexOf("-") <= 0) 
+			{	if(sb2.indexOf("-") <= 0) {
+System.out.println("dit geval toch?");				
 					vervangUitkomst("+", sb2);
+			}
 				else if(sb2.indexOf("+") == -1)
 					vervangUitkomst("-", sb2);
 				else if(sb2.indexOf("+") < sb2.indexOf("-"))
@@ -899,6 +884,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					return;
 				}
 			}
+System.out.println("sb na + en -: " + sb2);		
 		if(breuk)
 			try
 			{	vindBreukVanaf(-1, sb2);
@@ -939,6 +925,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					syntaxError = true;
 				}
 			}
+System.out.println("berekenWaarde uit: " + sb2);
 	}
 	
 	/*
@@ -972,6 +959,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	 */
 	public void vindUitkomst(String s, StringBuffer sb)
 	{
+System.out.println("vindUitkomst("+s+"," + sb + ")");		
 		vindGetalVoorBewerking(sb.indexOf(s), sb);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindGetalVoorBewerking");
@@ -989,6 +977,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		lengte2 = lengteRekenGetal;
 		if(s.equals("+"))
 			uitkomst = rekenKind1 + rekenKind2;
+//System.out.println("uitkomst +: " + uitkomst);}		
 		else if(s.equals("-"))
 			uitkomst = rekenKind1 - rekenKind2;
 		else if(s.equals("x"))
@@ -1091,7 +1080,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				beginPos++;
 			}	
 			
-			subString = sb.substring(beginPos, beginPos2);
+			subString = sb.substring(beginPos, beginPos2+1);
 			double rekenGetal2 = Double.parseDouble(subString);
 			rekenGetal = rekenGetal2*Math.pow(10, rekenGetal);
 			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
@@ -1111,9 +1100,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				beginPos++;
 			}	
 			
-			subString = sb.substring(beginPos, beginPos2);
+			subString = sb.substring(beginPos, beginPos2+1);
 			double rekenGetal2 = Double.parseDouble(subString);
-			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);//volgens mij zou de - hier voldoende moeten zijn.
+			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);
 			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
 		}
 	}
@@ -1187,7 +1176,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
 					eindPos ++;
 				eindPos--;
-				subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
+				subString = sb.substring(eindPos2, eindPos + 1);
 				double rekenGetal2 = Double.parseDouble(subString);
 				if(negatief)
 					rekenGetal2 = - rekenGetal2;
@@ -1204,7 +1193,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				while(eindPos <= sb.length() - 1 && Character.isDigit(sb.charAt(eindPos)))
 					eindPos ++;
 				eindPos--;
-				subString = sb.substring(eindPos2, eindPos);//nog even controleren of ik het goede pak..
+				subString = sb.substring(eindPos2, eindPos + 1);
 				double rekenGetal2 = Double.parseDouble(subString);
 				rekenGetal = rekenGetal*Math.pow(10, - rekenGetal2);
 				lengteRekenGetal = lengteRekenGetal + subString.length() + 1;			
@@ -1224,8 +1213,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	public void vindUitkomstBreuk(String s, StringBuffer sb)
 	{
 		double teller1, noemer1, teller2, noemer2;
-		boolean breuk1B = false;
-		boolean breuk2B = false;
+		//boolean breuk1B = false;
+		//boolean breuk2B = false;
 		
 		vindBreukTot(sb.indexOf(s), sb);
 		if(syntaxError)
@@ -1235,8 +1224,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		teller1 = teller;
 		noemer1 = noemer;
 		lengte1 = lengteBreuk;
-		if(sb.substring(sb.indexOf(s) - lengte1, sb.indexOf(s)).contains("B"))
-			breuk1B = true;
 		
 		vindBreukVanaf(sb.indexOf(s), sb);
 		if(syntaxError)
@@ -1246,8 +1233,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		teller2 = teller;
 		noemer2 = noemer;
 		lengte2 = lengteBreuk;
-		if(sb.substring(sb.indexOf(s), sb.indexOf(s) + lengte2 + 1).contains("B"))
-			breuk2B = true;
 		
 		if(s.equals("+"))
 		{	teller = teller1 * noemer2 + noemer1 * teller2;
@@ -1266,19 +1251,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			noemer = noemer1 * teller2;
 		}
 		else if(s.equals("^"))
-		{	if(!breuk1B)
-			{	teller1 = noemer1;
-				noemer1 = 1;
-				vindGetalVoorBewerking(sb.indexOf("^"), sb);
-				lengte1 = lengteRekenGetal;
-			}
-			if(!breuk2B)
-			{	noemer2 = 1;
-				vindGetalNaBewerking(sb.indexOf("^"), sb);
-				lengte2 = lengteRekenGetal; 
-			}
-			teller = Math.pow(teller1, teller2/noemer2);
-			noemer = Math.pow(noemer1, teller2/noemer2);
+		{	vindUitkomstMachtBreuk(s, sb);
 		}
 		else if(s.equals("E"))
 		{	teller = teller1 * Math.pow(10, teller2/noemer2);
@@ -1288,6 +1261,32 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		{	teller = teller1 * Math.pow(10, -teller2/noemer2);
 			noemer = noemer1;		
 		}
+	}
+	
+	public void vindUitkomstMachtBreuk(String s, StringBuffer sb)
+	{
+		double teller1, noemer1, teller2, noemer2;
+		
+		vindBBreukTot(sb.indexOf(s), sb);
+		if(syntaxError)
+		{	System.out.println("Syntax Error komt uit vindBBreukTot");
+			return;
+		}
+		teller1 = tellerB;
+		noemer1 = noemerB;
+		lengte1 = lengteBreukB;
+		
+		vindBBreukVanaf(sb.indexOf(s), sb);
+		if(syntaxError)
+		{	System.out.println("Syntax Error komt uit vindBBreukVanaf");
+			return;
+		}
+		teller2 = tellerB;
+		noemer2 = noemerB;
+		lengte2 = lengteBreukB;
+		
+		teller = Math.pow(teller1, teller2/noemer2);
+		noemer = Math.pow(noemer1, teller2/noemer2);
 	}
 	
 	public void vervangUitkomstBreuk(String s, StringBuffer sb)
@@ -1546,8 +1545,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			voegInOfVervang("^", true);
 		else if(e.getSource() == eenGedeeldDoorKnop)
 			voegInOfVervang("\u207B\u00B9", true);
-		else if(e.getSource() == breukKnop)
-			voegInOfVervang("\u22A5", false);// \u321F doet het niet..
 		else if(e.getSource() == expKnop)
 			voegInOfVervang("\u2081\u2080", true);
 		else if(e.getSource() == haakLinksKnop)
@@ -1560,6 +1557,36 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			voegInOfVervang("-", false);
 		else if(e.getSource() == ansKnop)
 			voegInOfVervang("Ans", false);
+		else if(e.getSource() == breukKnop)
+		{	if(!invers)
+				voegInOfVervang("\u22A5", false);
+			else
+			{	if(uitvoerVeld.getText().contains("\u22A5"))
+				{	str = uitvoerVeld.getText();
+					String[] breukStrings = str.split("\u22A5");
+					if(breukStrings.length == 2)
+					{	teller = Integer.parseInt(breukStrings[0]);
+						noemer = Integer.parseInt(breukStrings[1]);
+					}
+					else //breukStrings.length moet nu 3 zijn
+					{	noemer = Integer.parseInt(breukStrings[2]);
+						teller = Integer.parseInt(breukStrings[1]) + Integer.parseInt(breukStrings[0]) * noemer;
+					}
+					eindUitkomst = teller/noemer;
+					if(eindUitkomst < Math.pow(10, 9))
+						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+					String uitvoerTekst = Double.toString(eindUitkomst);
+				
+					if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
+						uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
+					
+					uitvoerTekst = uitvoerTekst.replace(".", ",");
+					uitvoerVeld.setText(uitvoerTekst);
+				}
+			invers = false;
+			invLabel.setVisible(false);
+			}
+		}
 		else if(e.getSource() == sinKnop)
 		{	if(!invers)
 				voegInOfVervang("sin(", false);
@@ -1602,6 +1629,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		else if(e.getSource() == cKnop)
 		{	nieuweInvoer = false;
 			breuk = false;
+			invers = false;
+			invLabel.setVisible(false);
 			invoerVeld.setText("");
 			uitvoerVeld.setText("0");
 		}
@@ -1646,6 +1675,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
 				invoerVeld.setCaretPosition(cp - 1);
 			}
+			if(invoerVeld.getText().equals(""))
+			{	breuk = false;
+				invers = false;
+				invLabel.setVisible(false);
+			}
+			
 		}
 		else if(e.getSource() == pijlLinksKnop)
 		{	str = invoerVeld.getText();
@@ -1824,6 +1859,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			else
 			{	nieuweInvoer = true;
 				breuk = false;
+				invers = false;
+				invLabel.setVisible(false);
 			}
 			if(!insert)
 			{	insert = true;
@@ -1840,14 +1877,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 /*
  * TO DO:
  *
- * Breukknop verder implementeren
- * Machten moet nog goed, net als sinussen... (dus er moet iets gebeuren als de breuk tussen haakjes staat)
+ * graden/radialen instelbaar maken (voor wetenschappelijke versie iig). 
  * 
- * xe-machts wortelknop verder implementeren toevoegen?
+ * xe-machts wortelknop verder implementeren 
  * 
  * Nadenken over implementatie in de DWO.
  * 
- * In later stadium: alle print-statements weer verwijderen.
- * 
- * Nog eens kritisch (laten) kijken naar layout.
+ * Alle print-statements weer verwijderen.
+ *
  */

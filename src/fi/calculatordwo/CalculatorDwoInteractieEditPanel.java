@@ -29,7 +29,6 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	protected CalculatorDwoInteractiePanel cdip;
 	JRadioButton scientificButton, easyButton, citoButton;
 	ButtonGroup groep;
-	//boolean wetenschappelijk;
 	int rmMode;
 
 	
@@ -89,15 +88,6 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		else
 			citoButton.setSelected(true);
 		
-		/*
-		if(h.containsKey("wetenschappelijk"))
-			wetenschappelijk = ((Boolean) h.get("wetenschappelijk")).booleanValue();
-		if(wetenschappelijk)
-			scientificButton.setSelected(true);
-		else
-			easyButton.setSelected(true);
-			*/
-			
 		cdip.setEditState(h);
 	}
 
@@ -130,16 +120,6 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 
 	public void actionPerformed(ActionEvent e) 
 	{
-		/*
-		if(e.getSource() == easyButton)
-		{	wetenschappelijk = false;
-			cdip.zetWetenschappelijk(wetenschappelijk);
-		}
-		else if(e.getSource() == scientificButton)
-		{	wetenschappelijk = true;
-			cdip.zetWetenschappelijk(wetenschappelijk);
-		}
-		*/
 		if(e.getSource() == easyButton)
 		{	rmMode = 0;
 			cdip.zetRmMode(rmMode);
