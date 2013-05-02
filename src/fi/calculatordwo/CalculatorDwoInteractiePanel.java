@@ -79,8 +79,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		groen = new Color(0, 150, 0);
 		geel = new Color(255, 255, 180);
 		lichtgeel = new Color(255, 255, 220);
-		grijs = Color.lightGray;
-		donkergrijs = Color.gray;
+		grijs = Color.gray;
+		donkergrijs = Color.darkGray;
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
