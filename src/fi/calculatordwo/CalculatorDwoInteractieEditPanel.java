@@ -88,12 +88,33 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		else
 			citoButton.setSelected(true);
 		
+		if (h.containsKey("cdipBreedte"))
+			cdipBreedte = ((Integer) h.get("cdipBreedte")).intValue();
+		if (h.containsKey("cdipHoogte"))
+			cdipHoogte = ((Integer) h.get("cdipHoogte")).intValue();
+		
 		cdip.setEditState(h);
 	}
 
 	public Hashtable getEditState() {
 		Hashtable h = cdip.getEditState();
+		
+		h.put("cdipBreedte", new Integer(cdipBreedte));
+		h.put("cdipHoogte", new Integer(cdipHoogte));
 		return h;
+	}
+	
+	public void setBounds(int x, int y, int b, int h)
+	{
+		if ((h <= 1) || (x < 0) || (b <= 1))
+			return;
+		super.setBounds(x, y, cdipBreedte + editWidth, Math.max(cdipHoogte, editHeight));
+		if (cdip != null)
+			cdip.setBounds(0, 0, cdipBreedte, cdipHoogte);
+		
+		//plaatsComponenten();
+		
+		
 	}
 
 	public void zetBreedte(int b) {

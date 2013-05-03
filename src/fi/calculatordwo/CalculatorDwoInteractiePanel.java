@@ -1519,6 +1519,132 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			vervangTekst(s);
 	}
 	
+	public void voerActieIsKnopUit(boolean dec)
+	{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
+		{	bewaardeAns = uitvoerVeld.getText();
+			bewaardeAns = bewaardeAns.replace(',', '.');
+			if(bewaardeAns.contains("\u00D710"))
+			{
+				bewaardeAns = bewaardeAns.replaceAll("\u00D710", "E");
+				bewaardeAns = bewaardeAns.replaceAll("\u2070", "0");
+				bewaardeAns = bewaardeAns.replaceAll("\u00B9", "1");
+				bewaardeAns = bewaardeAns.replaceAll("\u00B2", "2");
+				bewaardeAns = bewaardeAns.replaceAll("\u00B3", "3");
+				bewaardeAns = bewaardeAns.replaceAll("\u2074", "4");
+				bewaardeAns = bewaardeAns.replaceAll("\u2075", "5");
+				bewaardeAns = bewaardeAns.replaceAll("\u2076", "6");
+				bewaardeAns = bewaardeAns.replaceAll("\u2077", "7");
+				bewaardeAns = bewaardeAns.replaceAll("\u2078", "8");
+				bewaardeAns = bewaardeAns.replaceAll("\u2079", "9");     
+				bewaardeAns = bewaardeAns.replaceAll("\u207B", "-");
+			}				
+		}
+		
+		maakBerekenbaar(invoerVeld.getText());
+		syntaxError = false;
+		bereken(sb);
+		if(!syntaxError)
+		{	String uitvoerTekst;
+			if(breuk)
+			{	if(teller % 1 == 0  && noemer %1 == 0 && !dec)
+				{	int tellerInt = (int) teller;	
+					int noemerInt = (int) noemer;
+					int[] breuk  = simplify(tellerInt, noemerInt);
+				
+					int gehelenInt = breuk[0]/breuk[1];
+					if(gehelenInt > 0)
+					{	breuk[0] = breuk[0] - gehelenInt * breuk[1];
+						if(breuk[0] == 0)
+							uitvoerTekst = "" + gehelenInt;
+						else
+							uitvoerTekst = gehelenInt + "\u22A5" + breuk[0] + "\u22A5" + breuk[1];
+					}
+					else
+					{	if(breuk[0] == 0)
+							uitvoerTekst = "" + 0;
+						else
+							uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
+					}
+				}
+				else
+				{	eindUitkomst = teller/noemer;
+					if(eindUitkomst < Math.pow(10, 9))
+						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+					uitvoerTekst = Double.toString(eindUitkomst);
+				}
+			}
+			else
+			{	try{
+				eindUitkomst = Double.parseDouble(sb.toString());}
+				catch(Exception ex) 
+				{	if(sb2.indexOf("E") > -1)
+						try
+						{	vindUitkomst("E", sb2);
+							eindUitkomst = uitkomst;
+						}
+						catch(Exception exc)
+						{	syntaxError = true;
+							System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
+						}
+					else if(sb2.indexOf("G") > -1)
+						try
+						{	vindUitkomst("G", sb2);
+							eindUitkomst = uitkomst;
+						}
+						catch(Exception exc)
+						{	syntaxError = true;
+							System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
+						}
+					else if(sb2.indexOf("\u22a5") > -1 || sb2.indexOf("B") > -1)
+					{
+						eindUitkomst = teller/noemer;
+					}
+				}
+				if(eindUitkomst < Math.pow(10, 9))
+					eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
+				uitvoerTekst = Double.toString(eindUitkomst);
+			}
+			if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
+				uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
+		
+			int indexE;
+			String tienMachtString;
+			if(uitvoerTekst.contains("E"))
+			{	indexE = uitvoerTekst.indexOf('E');
+				tienMachtString = uitvoerTekst.substring(indexE + 1);
+				tienMachtString = tienMachtString.replaceAll("0", "\u2070");
+				tienMachtString = tienMachtString.replaceAll("1", "\u00B9");
+				tienMachtString = tienMachtString.replaceAll("2", "\u00B2");
+				tienMachtString = tienMachtString.replaceAll("3", "\u00B3");
+				tienMachtString = tienMachtString.replaceAll("4", "\u2074");
+				tienMachtString = tienMachtString.replaceAll("5", "\u2075");
+				tienMachtString = tienMachtString.replaceAll("6", "\u2076");
+				tienMachtString = tienMachtString.replaceAll("7", "\u2077");
+				tienMachtString = tienMachtString.replaceAll("8", "\u2078");
+				tienMachtString = tienMachtString.replaceAll("9", "\u2079");     
+				tienMachtString = tienMachtString.replaceAll("-", "\u207B");
+				
+				uitvoerTekst = uitvoerTekst.substring(0, indexE)+ "\u00D710"+ tienMachtString;
+			}
+			uitvoerTekst = uitvoerTekst.replace(".", ",");
+			uitvoerVeld.setText(uitvoerTekst);
+		}
+		if(syntaxError)
+			uitvoerVeld.setText("Syntax ERROR");
+		else
+		{	nieuweInvoer = true;
+			breuk = false;
+			invers = false;
+			invLabel.setVisible(false);
+		}
+		if(!insert)
+		{	insert = true;
+			invoerVeld.getCaret().setVisible(false);
+			invoerVeld.setCaret(defaultCaret);
+		}
+		invoerVeld.getCaret().setBlinkRate(500);
+		invoerVeld.getCaret().setVisible(false);
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 		invoerVeld.getCaret().setVisible(true);
@@ -1561,7 +1687,9 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		{	if(!invers)
 				voegInOfVervang("\u22A5", false);
 			else
-			{	if(uitvoerVeld.getText().contains("\u22A5"))
+			{	voerActieIsKnopUit(true);
+				/*
+				if(uitvoerVeld.getText().contains("\u22A5"))
 				{	str = uitvoerVeld.getText();
 					String[] breukStrings = str.split("\u22A5");
 					if(breukStrings.length == 2)
@@ -1585,6 +1713,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 				}
 			invers = false;
 			invLabel.setVisible(false);
+			*/
 			}
 		}
 		else if(e.getSource() == sinKnop)
@@ -1745,130 +1874,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		}
 		
 		else if(e.getSource() == isKnop)
-		{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
-			{	bewaardeAns = uitvoerVeld.getText();
-				bewaardeAns = bewaardeAns.replace(',', '.');
-				if(bewaardeAns.contains("\u00D710"))
-				{
-					bewaardeAns = bewaardeAns.replaceAll("\u00D710", "E");
-					bewaardeAns = bewaardeAns.replaceAll("\u2070", "0");
-					bewaardeAns = bewaardeAns.replaceAll("\u00B9", "1");
-					bewaardeAns = bewaardeAns.replaceAll("\u00B2", "2");
-					bewaardeAns = bewaardeAns.replaceAll("\u00B3", "3");
-					bewaardeAns = bewaardeAns.replaceAll("\u2074", "4");
-					bewaardeAns = bewaardeAns.replaceAll("\u2075", "5");
-					bewaardeAns = bewaardeAns.replaceAll("\u2076", "6");
-					bewaardeAns = bewaardeAns.replaceAll("\u2077", "7");
-					bewaardeAns = bewaardeAns.replaceAll("\u2078", "8");
-					bewaardeAns = bewaardeAns.replaceAll("\u2079", "9");     
-					bewaardeAns = bewaardeAns.replaceAll("\u207B", "-");
-				}				
-			}
-			
-			maakBerekenbaar(invoerVeld.getText());
-			syntaxError = false;
-			bereken(sb);
-			if(!syntaxError)
-			{	String uitvoerTekst;
-				if(breuk)
-				{	if(teller % 1 == 0  && noemer %1 == 0)
-					{	int tellerInt = (int) teller;	
-						int noemerInt = (int) noemer;
-						int[] breuk  = simplify(tellerInt, noemerInt);
-					
-						int gehelenInt = breuk[0]/breuk[1];
-						if(gehelenInt > 0)
-						{	breuk[0] = breuk[0] - gehelenInt * breuk[1];
-							if(breuk[0] == 0)
-								uitvoerTekst = "" + gehelenInt;
-							else
-								uitvoerTekst = gehelenInt + "\u22A5" + breuk[0] + "\u22A5" + breuk[1];
-						}
-						else
-						{	if(breuk[0] == 0)
-								uitvoerTekst = "" + 0;
-							else
-								uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
-						}
-					}
-					else
-					{	eindUitkomst = teller/noemer;
-						if(eindUitkomst < Math.pow(10, 9))
-							eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
-						uitvoerTekst = Double.toString(eindUitkomst);
-					}
-				}
-				else
-				{	try{
-					eindUitkomst = Double.parseDouble(sb.toString());}
-					catch(Exception ex) 
-					{	if(sb2.indexOf("E") > -1)
-							try
-							{	vindUitkomst("E", sb2);
-								eindUitkomst = uitkomst;
-							}
-							catch(Exception exc)
-							{	syntaxError = true;
-								System.out.println("ERROR vindUitkomst(E) bij eindUitkomst");				
-							}
-						else if(sb2.indexOf("G") > -1)
-							try
-							{	vindUitkomst("G", sb2);
-								eindUitkomst = uitkomst;
-							}
-							catch(Exception exc)
-							{	syntaxError = true;
-								System.out.println("ERROR vindUitkomst(G) bij eindUitkomst");				
-							}
-						else if(sb2.indexOf("\u22a5") > -1 || sb2.indexOf("B") > -1)
-						{
-							eindUitkomst = teller/noemer;
-						}
-					}
-					if(eindUitkomst < Math.pow(10, 9))
-						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
-					uitvoerTekst = Double.toString(eindUitkomst);
-				}
-				if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
-					uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
-			
-				int indexE;
-				String tienMachtString;
-				if(uitvoerTekst.contains("E"))
-				{	indexE = uitvoerTekst.indexOf('E');
-					tienMachtString = uitvoerTekst.substring(indexE + 1);
-					tienMachtString = tienMachtString.replaceAll("0", "\u2070");
-					tienMachtString = tienMachtString.replaceAll("1", "\u00B9");
-					tienMachtString = tienMachtString.replaceAll("2", "\u00B2");
-					tienMachtString = tienMachtString.replaceAll("3", "\u00B3");
-					tienMachtString = tienMachtString.replaceAll("4", "\u2074");
-					tienMachtString = tienMachtString.replaceAll("5", "\u2075");
-					tienMachtString = tienMachtString.replaceAll("6", "\u2076");
-					tienMachtString = tienMachtString.replaceAll("7", "\u2077");
-					tienMachtString = tienMachtString.replaceAll("8", "\u2078");
-					tienMachtString = tienMachtString.replaceAll("9", "\u2079");     
-					tienMachtString = tienMachtString.replaceAll("-", "\u207B");
-					
-					uitvoerTekst = uitvoerTekst.substring(0, indexE)+ "\u00D710"+ tienMachtString;
-				}
-				uitvoerTekst = uitvoerTekst.replace(".", ",");
-				uitvoerVeld.setText(uitvoerTekst);
-			}
-			if(syntaxError)
-				uitvoerVeld.setText("Syntax ERROR");
-			else
-			{	nieuweInvoer = true;
-				breuk = false;
-				invers = false;
-				invLabel.setVisible(false);
-			}
-			if(!insert)
-			{	insert = true;
-				invoerVeld.getCaret().setVisible(false);
-				invoerVeld.setCaret(defaultCaret);
-			}
-			invoerVeld.getCaret().setBlinkRate(500);
-			invoerVeld.getCaret().setVisible(false);
+		{	voerActieIsKnopUit(false);
 			
 		}
 	}
