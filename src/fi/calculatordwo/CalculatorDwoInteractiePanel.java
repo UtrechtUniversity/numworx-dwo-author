@@ -446,7 +446,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	}
 
 	public boolean isCorrect() {
-		return false;
+		return true;
 	}
 
 	public boolean isFout() {
