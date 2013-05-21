@@ -10,7 +10,7 @@ import javax.swing.text.DefaultCaret;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, InteractiePanel
+public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, InteractiePanel
 {
 	int cdipBreedte = 540;
 	int cdipHoogte = 300;
@@ -24,7 +24,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	JButton pijlLinksKnop, pijlRechtsKnop, insKnop, delKnop, cKnop, kommaKnop, negatiefKnop, 
 		ansKnop, isKnop;
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
-	JButton lnKnop, logKnop, eKnop, xWortelKnop, expKnop;
+	JButton lnKnop, logKnop, eKnop, nWortelKnop, expKnop;
 	
 	JLabel[] leegLabel;
 	JLabel sinInvLabel, cosInvLabel, tanInvLabel, decLabel;
@@ -51,7 +51,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	int cp = 0;
 	boolean nieuweInvoer = false;
 
-	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs;
+	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs, lichtblauw, witblauw,
+			 lichtgrijs;
 	
 	boolean breuk = false;
 	int rmMode = 1;
@@ -74,55 +75,60 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		theSmallFont = new Font("Sansserif", Font.BOLD, 6);
 		theSmallFM = getFontMetrics(theSmallFont);
 		
-		blauw = new Color(50, 120, 255);
+		blauw = new Color(130, 180, 255);
 		oranje = new Color(255, 170, 80);
 		groen = new Color(0, 150, 0);
+		lichtblauw = new Color(208, 228, 255);
+		witblauw = new Color(245, 250, 255);
 		geel = new Color(255, 255, 180);
 		lichtgeel = new Color(255, 255, 220);
 		grijs = Color.gray;
-		donkergrijs = Color.darkGray;
+		//donkergrijs = Color.darkGray;
+		donkergrijs = new Color(98, 98, 98);
+		//lichtgrijs = Color.lightGray;
+		lichtgrijs = new Color(152, 152, 152);
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
-			getalKnop[i] = maakButton(""+i, donkergrijs);
+			getalKnop[i] = maakButton(""+i, donkergrijs, witblauw);
 		
-		plusKnop = maakButton("+", grijs);
-		minKnop = maakButton("\u2212", grijs);
-		keerKnop = maakButton("\u00D7", grijs);
-		deelKnop = maakButton("\u00F7", grijs);
-		machtKnop = maakButton("^", grijs);
-		kwadraatKnop = maakButton("x\u00B2", grijs);
-		wortelKnop = maakButton("\u221A", grijs);
-		eenGedeeldDoorKnop = maakButton("x\u207B\u00B9", grijs);
-		breukKnop = maakButton("a b/c", grijs);
-		expKnop = maakButton("<html>&times;10<sup><i>x</i></sup></html>", grijs);
+		plusKnop = maakButton("+", grijs, witblauw);
+		minKnop = maakButton("\u2212", grijs, witblauw);
+		keerKnop = maakButton("\u00D7", grijs, witblauw);
+		deelKnop = maakButton("\u00F7", grijs, witblauw);
+		machtKnop = maakButton("^", grijs, witblauw);
+		kwadraatKnop = maakButton("x\u00B2", grijs, witblauw);
+		wortelKnop = maakButton("\u221A", grijs, witblauw);
+		eenGedeeldDoorKnop = maakButton("x\u207B\u00B9", grijs, witblauw);
+		breukKnop = maakButton("a b/c", grijs, witblauw);
+		expKnop = maakButton("<html>&times;10<sup><i>x</i></sup></html>", grijs, witblauw);
 		
-		haakLinksKnop = maakButton("(", grijs);
-		haakRechtsKnop = maakButton(")", grijs);
+		haakLinksKnop = maakButton("(", grijs, witblauw);
+		haakRechtsKnop = maakButton(")", grijs, witblauw);
 		
-		pijlLinksKnop = maakButton("\u25C4", blauw);
-		pijlRechtsKnop = maakButton("\u25BA", blauw);
+		pijlLinksKnop = maakButton("\u25C4", blauw, witblauw);
+		pijlRechtsKnop = maakButton("\u25BA", blauw, witblauw);
 		//als pijltjes groter moeten: gebruik resp 25C4 en 25BA.
 		//als pijltjes kleiner moeten: gebruik resp 25C0 en 25B6
-		insKnop = maakButton("INS", blauw);
-		delKnop = maakButton("DEL", blauw);
-		cKnop = maakButton("C", blauw);
+		insKnop = maakButton("INS", blauw, witblauw);
+		delKnop = maakButton("DEL", blauw, witblauw);
+		cKnop = maakButton("C", blauw, witblauw);
 		
-		kommaKnop = maakButton(",", grijs);
-		negatiefKnop = maakButton("(-)", grijs);
-		ansKnop = maakButton("Ans", grijs);
-		isKnop = maakButton("=", groen);
+		kommaKnop = maakButton(",", grijs, witblauw);
+		negatiefKnop = maakButton("(-)", grijs, witblauw);
+		ansKnop = maakButton("Ans", grijs, witblauw);
+		isKnop = maakButton("=", groen, Color.WHITE);
 		
-		sinKnop = maakButton("sin", grijs);
-		cosKnop = maakButton("cos", grijs);
-		tanKnop = maakButton("tan", grijs);
-		invKnop = maakButton("INV", Color.orange);
-		piKnop = maakButton("\u03C0", grijs);
+		sinKnop = maakButton("sin", grijs, witblauw);
+		cosKnop = maakButton("cos", grijs, witblauw);
+		tanKnop = maakButton("tan", grijs, witblauw);
+		invKnop = maakButton("INV", geel, donkergrijs);
+		piKnop = maakButton("\u03C0", grijs, witblauw);
 		
-		logKnop = maakButton("log", grijs);
-		lnKnop = maakButton("ln", grijs);
-		eKnop = maakButton("e", grijs);
-		xWortelKnop = maakButton("<html><sup><i>x</i></sup>&#x221a;</html>", grijs);
+		logKnop = maakButton("log", grijs, witblauw);
+		lnKnop = maakButton("ln", grijs, witblauw);
+		eKnop = maakButton("e", grijs, witblauw);
+		nWortelKnop = maakButton("\u207F\u221A", grijs, witblauw);
 		//xWortelKnop = maakButton("\u033D\u221A", grijs);
 		
 		for(int i = 0; i < 10; i++)
@@ -156,7 +162,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		logKnop.addActionListener(this);
 		lnKnop.addActionListener(this);
 		eKnop.addActionListener(this);
-		xWortelKnop.addActionListener(this);
+		nWortelKnop.addActionListener(this);
 		leegLabel = new JLabel[15];
 		for(int i = 0; i<15; i++)
 			leegLabel[i] = new JLabel("");
@@ -185,19 +191,22 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		defaultCaret = new DefaultCaret();
 		
 		invoerVeld = new JTextField("");
-		invoerVeld.setEditable(false);
+		//invoerVeld.setEditable(false);
 		invoerVeld.setCaret(defaultCaret);
 		invoerVeld.getCaret().setBlinkRate(500);
 		invoerVeld.getCaret().setVisible(true);
-		invoerVeld.setBackground(lichtgeel);
+		//invoerVeld.setBackground(lichtgeel);
+		invoerVeld.setBackground(witblauw);
 		invoerVeld.setFont(theFont);
 		invoerVeld.setMargin(new Insets(8,10,3,3));
+		invoerVeld.addKeyListener(this);
 
 		invLabel = new JLabel("I");
 		invLabel.setFont(theSmallFont);
 		invLabel.setOpaque(true);
 		invLabel.setBackground(Color.BLACK);
-		invLabel.setForeground(lichtgeel);
+		//invLabel.setForeground(lichtgeel);
+		invLabel.setForeground(witblauw);
 		invLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		invLabel.setBounds(2,2,5,6);
 		invLabel.setVisible(invers);
@@ -209,19 +218,22 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		uitvoerPanel = new JPanel();
 		uitvoerPanel.setLayout(new BorderLayout());
-		uitvoerPanel.setBackground(geel);
+		//uitvoerPanel.setBackground(geel);
+		uitvoerPanel.setBackground(lichtblauw);
 		add(uitvoerPanel, BorderLayout.NORTH);
 		
 		uitvoerPanel.add(invoerVeld, BorderLayout.NORTH);
 		uitvoerPanel.add(uitvoerVeld, BorderLayout.SOUTH);
+		
+		//invoerVeld.requestFocusInWindow();
 	}
 	
-	public JButton maakButton(String s, Color c)
+	public JButton maakButton(String s, Color backGround, Color foreGround)
 	{
 		JButton button = new JButton(s);
 		button.setFont(theLargeFont);
-		button.setBackground(c);
-		button.setForeground(Color.WHITE);
+		button.setBackground(backGround);
+		button.setForeground(foreGround);
 		button.setMargin(new Insets(0, 0, 0, 0));
 		return button;
 	}
@@ -272,7 +284,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			ondersteKnoppen.add(deelKnop);
 			ondersteKnoppen.add(wortelKnop);
 			if(rmMode == 1)
-			{	ondersteKnoppen.add(xWortelKnop);
+			{	ondersteKnoppen.add(nWortelKnop);
 				ondersteKnoppen.add(sinKnop);
 			}
 			
@@ -527,10 +539,46 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			System.out.println("ERROR te veel rechterhaakjes");
 		}
 		else if(linksTeller > rechtsTeller)
-			for(int i = 0; i  <linksTeller - rechtsTeller; i++)
+			for(int i = 0; i < linksTeller - rechtsTeller; i++)
 			{	sb.append(')');
 				invoerVeld.setText(invoerVeld.getText()+")");
 			}
+		
+		/*
+		//n-demachtswortels schrijven als ()^(1/n)
+		for(int i = 1; i < sb.length(); i++)
+			if(sb.charAt(i) == '\u207F')
+				if(i >= sb.length() - 2)
+				{	syntaxError = true;
+					System.out.println("ERROR n-demachtswortel zonder argument");
+					return;
+				}
+				else if(sb.charAt(i + 2) == '(')
+					vindHaakjesUitdrukking(sb, i+2);
+				else
+					vindGetalNaBewerking(i+2, sb);
+		
+		
+		
+				else if(sb.charAt(i + 2) == '(')
+				{	int tellertje = 1;
+					int pos = i + 3;
+					while(tellertje > 0 && pos < sb.length())
+					{	if(sb.charAt(pos) == '(')
+							tellertje++;
+						if(sb.charAt(pos) == ')')
+							tellertje--;
+						pos++;
+					}
+					if(tellertje != 0)
+					{	syntaxError = true;
+						System.out.println("ERROR n-demachtswortel haakjes");
+						return;
+					}
+					else
+						
+			*/			
+				//}
 		
 		//Maaltekens invoegen waar nodig
 		for(int i = 1; i < sb.length(); i++)
@@ -771,12 +819,29 @@ System.out.println("berekenWaarde in: "+ sb2);
 				{	System.out.println("ERROR breuk-wortel");
 					return;
 				}
-				teller = Math.sqrt(tellerB);
-				noemer = Math.sqrt(noemerB);
-				if(noemer == 1)
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, "" + teller);
+				if(sb2.indexOf("\u221A") == 0 || sb2.charAt(sb2.indexOf("\u221A")-1) != '\u207F')
+				{	
+					
+					teller = Math.sqrt(tellerB);
+					noemer = Math.sqrt(noemerB);
+					lengteRekenGetal = lengteBreukB;
+					if(noemer == 1)
+						sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, "" + teller);
+					else
+						sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, teller + "B" + noemer);
+				}
 				else
-					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, teller + "B" + noemer);
+				{	teller = tellerB;
+					noemer = noemerB;
+					int lengte1 = lengteBreukB;
+					vindBBreukTot(sb2.indexOf("\u221A") - 1, sb2);
+					if(syntaxError)
+					{	System.out.println("ERROR breuk-nwortel");
+						return;
+					}
+					sb2.replace(sb2.indexOf("\u221A") - 1 - lengteBreukB, sb2.indexOf("\u221A") + lengte1 + 1, teller + "B" + noemer + "^"+noemerB + "B"+tellerB);
+System.out.println("sb2 in wortel en breuk: "+sb2);				
+				}
 			}
 		}
 		else
@@ -786,9 +851,23 @@ System.out.println("berekenWaarde in: "+ sb2);
 				{	System.out.println("ERROR wortels zonder breuk");
 					return;
 				}
-				rekenGetal = Math.sqrt(rekenGetal);
-				sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
+				if(sb2.indexOf("\u221A") == 0 || sb2.charAt(sb2.indexOf("\u221A")-1) != '\u207F')
+				{	rekenGetal = Math.sqrt(rekenGetal);
+					sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteRekenGetal + 1, 
 						Double.toString(rekenGetal));
+				}
+				else
+				{	double rekenKind1 = rekenGetal;
+					int lengte1 = lengteRekenGetal;
+					vindGetalVoorBewerking(sb2.indexOf("\u207F"), sb2);
+					if(syntaxError)
+					{	System.out.println("ERROR nwortel zonder breuk");
+						return;
+					}
+					rekenGetal = 1/rekenGetal;
+					sb2.replace(sb2.indexOf("\u221A") - 1 - lengteRekenGetal, sb2.indexOf("\u221A") + lengte1 + 1, rekenKind1 + "^" + rekenGetal);
+					
+				}
 			}
 		}
 
@@ -1749,8 +1828,8 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			voegInOfVervang("ln(", false);
 		else if(e.getSource() == eKnop)
 			voegInOfVervang("e", false);
-		else if(e.getSource() == xWortelKnop)
-			voegInOfVervang("x\u221A", false);//dit moet nog anders, misschien getal ervoor al omhoog zetten?
+		else if(e.getSource() == nWortelKnop)
+			voegInOfVervang("\u207F\u221A", false);//dit moet nog anders, misschien getal ervoor al omhoog zetten?
 		else if(e.getSource() == invKnop)
 		{	invers = !invers;
 			invLabel.setVisible(invers);
@@ -1800,6 +1879,10 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 				invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
 				invoerVeld.setCaretPosition(cp - 2);
 			}
+			else if(cp >= 2 && str.charAt(cp - 2) == '\u207F')
+			{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 2);
+			}
 			else
 			{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
 				invoerVeld.setCaretPosition(cp - 1);
@@ -1832,6 +1915,8 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 				else 
 					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
 			}
+			else if(invoerVeld.getCaretPosition() >= 2 && str.charAt(invoerVeld.getCaretPosition() - 2) == '\u207F')
+				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 2);
 			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
 		}
 		else if(e.getSource() == pijlRechtsKnop)
@@ -1852,6 +1937,8 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 				else
 					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 6);
 			}
+			else if(str.charAt(invoerVeld.getCaretPosition()) == '\u207F')
+				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 2);
 			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 1);
 		}
 		
@@ -1872,11 +1959,26 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			invoerVeld.getCaret().setBlinkRate(500);
 			invoerVeld.getCaret().setVisible(true);
 		}
-		
 		else if(e.getSource() == isKnop)
 		{	voerActieIsKnopUit(false);
 			
 		}
+		if(e.getSource() != isKnop && (e.getSource() != breukKnop || !invers))
+			invoerVeld.requestFocus();
+	}
+
+	public void keyPressed(KeyEvent e) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyReleased(KeyEvent e){}
+
+	public void keyTyped(KeyEvent e) 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }
@@ -1885,10 +1987,19 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
  *
  * graden/radialen instelbaar maken (voor wetenschappelijke versie iig). 
  * 
- * xe-machts wortelknop verder implementeren 
- * 
  * Nadenken over implementatie in de DWO.
  * 
  * Alle print-statements weer verwijderen.
- *
+ * 
+ * Key-pressed en Key-released implementeren. Zie ook FormuleRegel.java en FormuleTeken.java in WiskOpdr.
+ * Mogelijke invoer:
+ * - getallen
+ * - , en ., worden beide ,
+ * - ^, (, ), +, -
+ * - * wordt vermenigvuldigingsteken
+ * - / en : worden deelteken
+ * Verder: Enter werkt, = doet hetzelfde als Enter (actie =-knop).  
+ * Bugs en bugjes:
+ *  - afrondingsfouten; kleine getallen eerst delen door een getal en dan vermenigvuldigen met hetzelfde geta levert niet altijd het oorspronkelijke getal terug
+ *  - worteltrekken van breuken; gaat niet goed bij niet-vereenvoudigde breuken
  */
