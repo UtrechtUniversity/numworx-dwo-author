@@ -64,6 +64,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	ReplaceCaret replaceCaret;
 	DefaultCaret defaultCaret;
 	
+	int kc;
+	
 	public CalculatorDwoInteractiePanel()
 	{
 		setLayout(new BorderLayout(5, 5));
@@ -108,8 +110,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		pijlLinksKnop = maakButton("\u25C4", blauw, witblauw);
 		pijlRechtsKnop = maakButton("\u25BA", blauw, witblauw);
-		//als pijltjes groter moeten: gebruik resp 25C4 en 25BA.
-		//als pijltjes kleiner moeten: gebruik resp 25C0 en 25B6
 		insKnop = maakButton("INS", blauw, witblauw);
 		delKnop = maakButton("DEL", blauw, witblauw);
 		cKnop = maakButton("C", blauw, witblauw);
@@ -129,7 +129,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		lnKnop = maakButton("ln", grijs, witblauw);
 		eKnop = maakButton("e", grijs, witblauw);
 		nWortelKnop = maakButton("\u207F\u221A", grijs, witblauw);
-		//xWortelKnop = maakButton("\u033D\u221A", grijs);
 		
 		for(int i = 0; i < 10; i++)
 			getalKnop[i].addActionListener(this);
@@ -191,7 +190,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		defaultCaret = new DefaultCaret();
 		
 		invoerVeld = new JTextField("");
-		//invoerVeld.setEditable(false);
 		invoerVeld.setCaret(defaultCaret);
 		invoerVeld.getCaret().setBlinkRate(500);
 		invoerVeld.getCaret().setVisible(true);
@@ -224,8 +222,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		uitvoerPanel.add(invoerVeld, BorderLayout.NORTH);
 		uitvoerPanel.add(uitvoerVeld, BorderLayout.SOUTH);
-		
-		//invoerVeld.requestFocusInWindow();
 	}
 	
 	public JButton maakButton(String s, Color backGround, Color foreGround)
@@ -249,7 +245,15 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public void zetRmMode(int i)
 	{
+		//rmMode = 0: Eenvoudig
+		//rmMode = 1: Wetenschappelijk
+		//rmMode = 2: Cito
+		
 		rmMode = i;
+		if(rmMode == 2)
+			invKnop.setBackground(Color.ORANGE);
+		else
+			invKnop.setBackground(geel);
 		if(rmMode == 2)
 			graden = true;
 		else
@@ -492,8 +496,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	public void addActionListener(ActionListener al) {
 	}
 	
-	
-	
 	public void maakBerekenbaar(String s)
 	{
 		sb.delete(0, sb.length());
@@ -544,42 +546,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				invoerVeld.setText(invoerVeld.getText()+")");
 			}
 		
-		/*
-		//n-demachtswortels schrijven als ()^(1/n)
-		for(int i = 1; i < sb.length(); i++)
-			if(sb.charAt(i) == '\u207F')
-				if(i >= sb.length() - 2)
-				{	syntaxError = true;
-					System.out.println("ERROR n-demachtswortel zonder argument");
-					return;
-				}
-				else if(sb.charAt(i + 2) == '(')
-					vindHaakjesUitdrukking(sb, i+2);
-				else
-					vindGetalNaBewerking(i+2, sb);
-		
-		
-		
-				else if(sb.charAt(i + 2) == '(')
-				{	int tellertje = 1;
-					int pos = i + 3;
-					while(tellertje > 0 && pos < sb.length())
-					{	if(sb.charAt(pos) == '(')
-							tellertje++;
-						if(sb.charAt(pos) == ')')
-							tellertje--;
-						pos++;
-					}
-					if(tellertje != 0)
-					{	syntaxError = true;
-						System.out.println("ERROR n-demachtswortel haakjes");
-						return;
-					}
-					else
-						
-			*/			
-				//}
-		
 		//Maaltekens invoegen waar nodig
 		for(int i = 1; i < sb.length(); i++)
 			if(sb.charAt(i) == '\u03C0' || sb.charAt(i) == 'e' || sb.charAt(i) == '(' || sb.charAt(i)=='\u221A'||sb.charAt(i) == 'A')
@@ -606,8 +572,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		for(int i = 0; i < sb.length(); i++)
 			if(sb.charAt(i) == 'A')
 				sb.replace(i, i+3, bewaardeAns);
-
-System.out.println("sb berekenbaar: " + sb);
 	}
 	
 	/*
@@ -793,7 +757,6 @@ System.out.println("sb berekenbaar: " + sb);
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
 	
-System.out.println("berekenWaarde in: "+ sb2);		
 		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
 		replace(sb2, "\u2212", "-");
 		replace(sb2, "\u00F7", "/");
@@ -840,7 +803,6 @@ System.out.println("berekenWaarde in: "+ sb2);
 						return;
 					}
 					sb2.replace(sb2.indexOf("\u221A") - 1 - lengteBreukB, sb2.indexOf("\u221A") + lengte1 + 1, teller + "B" + noemer + "^"+noemerB + "B"+tellerB);
-System.out.println("sb2 in wortel en breuk: "+sb2);				
 				}
 			}
 		}
@@ -929,7 +891,7 @@ System.out.println("sb2 in wortel en breuk: "+sb2);
 		
 		//E- veranderen in G om problemen met mintekens te voorkomen
 		replace(sb2, "E-", "G");
-System.out.println("sb voor + en -: "+ sb2);		
+		
 		//op zoek naar optellen en aftrekken
 		if(breuk)
 			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
@@ -948,10 +910,8 @@ System.out.println("sb voor + en -: "+ sb2);
 			}
 		else
 			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-			{	if(sb2.indexOf("-") <= 0) {
-System.out.println("dit geval toch?");				
+			{	if(sb2.indexOf("-") <= 0) 
 					vervangUitkomst("+", sb2);
-			}
 				else if(sb2.indexOf("+") == -1)
 					vervangUitkomst("-", sb2);
 				else if(sb2.indexOf("+") < sb2.indexOf("-"))
@@ -963,7 +923,6 @@ System.out.println("dit geval toch?");
 					return;
 				}
 			}
-System.out.println("sb na + en -: " + sb2);		
 		if(breuk)
 			try
 			{	vindBreukVanaf(-1, sb2);
@@ -1004,7 +963,6 @@ System.out.println("sb na + en -: " + sb2);
 					syntaxError = true;
 				}
 			}
-System.out.println("berekenWaarde uit: " + sb2);
 	}
 	
 	/*
@@ -1038,7 +996,6 @@ System.out.println("berekenWaarde uit: " + sb2);
 	 */
 	public void vindUitkomst(String s, StringBuffer sb)
 	{
-System.out.println("vindUitkomst("+s+"," + sb + ")");		
 		vindGetalVoorBewerking(sb.indexOf(s), sb);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindGetalVoorBewerking");
@@ -1056,7 +1013,6 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		lengte2 = lengteRekenGetal;
 		if(s.equals("+"))
 			uitkomst = rekenKind1 + rekenKind2;
-//System.out.println("uitkomst +: " + uitkomst);}		
 		else if(s.equals("-"))
 			uitkomst = rekenKind1 - rekenKind2;
 		else if(s.equals("x"))
@@ -1292,8 +1248,6 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 	public void vindUitkomstBreuk(String s, StringBuffer sb)
 	{
 		double teller1, noemer1, teller2, noemer2;
-		//boolean breuk1B = false;
-		//boolean breuk2B = false;
 		
 		vindBreukTot(sb.indexOf(s), sb);
 		if(syntaxError)
@@ -1596,9 +1550,167 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			voegTekstIn(s, ans);
 		else
 			vervangTekst(s);
+		
 	}
 	
-	public void voerActieIsKnopUit(boolean dec)
+	public void maakStapNaarRechts()
+	{	String str = invoerVeld.getText();
+		int cp = invoerVeld.getCaretPosition();
+		
+		if(nieuweInvoer)
+		{	nieuweInvoer = false;
+			invoerVeld.setCaretPosition(str.length());
+		}
+		if(cp == str.length())
+			return;
+		else if(str.charAt(cp)=='A')
+			cp += 3;
+		else if(str.charAt(cp) == 's' || str.charAt(cp) == 'c' || str.charAt(cp) == 't')
+		{	if(str.charAt(cp + 3) == '(' )
+				cp += 4;
+			else
+				cp += 6;
+		}
+		else if(str.charAt(cp) == 'l')
+			if(str.charAt(cp + 1) == 'n')
+				cp += 3;
+			else
+				cp += 4;
+		else if(str.charAt(cp) == '\u207F')
+			cp += 2;
+		else 
+			cp += 1;
+		
+		invoerVeld.setCaretPosition(cp);
+		
+	}
+	
+	public void maakStapNaarLinks()
+	{	String str = invoerVeld.getText();
+		int cp = invoerVeld.getCaretPosition();
+		
+		if(nieuweInvoer)
+		{	nieuweInvoer = false;
+			invoerVeld.setCaretPosition(str.length());
+		}
+		if(cp == 0)
+			return;
+		else if(str.charAt(cp - 1)=='s')
+			cp -= 3;
+		else if(str.charAt(cp - 1) == '(')
+		{	if(cp < 3)
+				cp -= 1;
+			else if(str.charAt(cp - 2) == '\u00B9')
+				cp -= 6;
+			else if(str.charAt(cp - 2) == 'n' && str.charAt(cp - 3) == 'l')
+				cp -= 3;
+			else if(str.charAt(cp - 2) == 'n' || str.charAt(cp - 3) == 'o')
+				cp -= 4;
+			else 
+				cp -= 1;
+		}
+		else if(cp >= 2 && str.charAt(cp - 2) == '\u207F')
+			cp -= 2;
+		else if(str.charAt(cp - 1) == '\u2070')
+			cp -= 2;
+		else 
+			cp -= 1;
+		
+		invoerVeld.setCaretPosition(cp);
+	}
+	
+	public void doeActieBackSpace()
+	{	String str = invoerVeld.getText();
+		int cp = invoerVeld.getCaretPosition();
+	
+		if(nieuweInvoer)
+		{	nieuweInvoer = false; 
+			invoerVeld.setCaretPosition(str.length());
+		}
+		if(cp == 0)
+			return;
+		else if(str.charAt(cp - 1) == 's')
+		{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp));
+			invoerVeld.setCaretPosition(cp - 3);
+		}
+		else if(str.charAt(cp - 1) == '(' )
+		{	if(cp < 3)
+			{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 1);
+			}
+			else if(str.charAt(cp - 2) == '\u00B9')
+			{	invoerVeld.setText(str.substring(0, cp - 6) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 6);
+			}
+			else if(str.charAt(cp - 2) == 'n' && str.charAt(cp - 3) == 'l')
+			{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 3);
+			}
+			else if(str.charAt(cp - 2) == 'n' || str.charAt(cp - 3) == 'o')
+			{	invoerVeld.setText(str.substring(0, cp - 4) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 4);
+			}
+			else
+			{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
+				invoerVeld.setCaretPosition(cp - 1);
+			}
+		}
+		else if(cp >= 2 && str.charAt(cp - 2) == '\u207F')
+		{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
+			invoerVeld.setCaretPosition(cp - 2);
+		}
+		else if(str.charAt(cp - 1) == '\u2070')
+		{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
+			invoerVeld.setCaretPosition(cp - 2);
+		}
+		else
+		{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
+			invoerVeld.setCaretPosition(cp - 1);
+		}
+		if(invoerVeld.getText().equals(""))
+		{	breuk = false;
+			invers = false;
+			invLabel.setVisible(false);
+		}
+	}
+	
+	public void doeActieDelete()
+	{	String str = invoerVeld.getText();
+		int cp = invoerVeld.getCaretPosition();
+		
+		if(nieuweInvoer)
+		{	nieuweInvoer = false;
+			invoerVeld.setCaretPosition(str.length());
+		}
+		if(cp == str.length())
+			return;
+		else if(str.charAt(cp)=='A')
+			invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 3));
+		else if(str.charAt(cp) == 's' || str.charAt(cp) == 'c' || str.charAt(cp) == 't')
+		{	if(str.charAt(cp + 3) == '(' )
+				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 4));	
+			else
+				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 6));
+		}
+		else if(str.charAt(cp) == 'l')
+			if(str.charAt(cp + 1) == 'n')
+				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 3));
+			else
+				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 4));
+		else if(str.charAt(cp) == '\u207F')
+			invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 2));
+		else 
+		invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 1));
+		
+		invoerVeld.setCaretPosition(cp);
+		if(invoerVeld.getText().equals(""))
+		{	breuk = false;
+			invers = false;
+			invLabel.setVisible(false);
+		}
+	}
+	
+	public void vindAntwoord(boolean dec)
 	{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
 		{	bewaardeAns = uitvoerVeld.getText();
 			bewaardeAns = bewaardeAns.replace(',', '.');
@@ -1755,7 +1867,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		else if(e.getSource() == haakLinksKnop)
 			voegInOfVervang("(", false);
 		else if(e.getSource() == haakRechtsKnop)
-			voegInOfVervang(")", true);
+			voegInOfVervang(")", false);
 		else if(e.getSource() == kommaKnop)
 			voegInOfVervang(",", false);
 		else if(e.getSource() == negatiefKnop)
@@ -1766,34 +1878,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		{	if(!invers)
 				voegInOfVervang("\u22A5", false);
 			else
-			{	voerActieIsKnopUit(true);
-				/*
-				if(uitvoerVeld.getText().contains("\u22A5"))
-				{	str = uitvoerVeld.getText();
-					String[] breukStrings = str.split("\u22A5");
-					if(breukStrings.length == 2)
-					{	teller = Integer.parseInt(breukStrings[0]);
-						noemer = Integer.parseInt(breukStrings[1]);
-					}
-					else //breukStrings.length moet nu 3 zijn
-					{	noemer = Integer.parseInt(breukStrings[2]);
-						teller = Integer.parseInt(breukStrings[1]) + Integer.parseInt(breukStrings[0]) * noemer;
-					}
-					eindUitkomst = teller/noemer;
-					if(eindUitkomst < Math.pow(10, 9))
-						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
-					String uitvoerTekst = Double.toString(eindUitkomst);
-				
-					if(uitvoerTekst.length() > 1 && uitvoerTekst.endsWith(".0"))
-						uitvoerTekst = uitvoerTekst.substring(0, uitvoerTekst.length()-2);
-					
-					uitvoerTekst = uitvoerTekst.replace(".", ",");
-					uitvoerVeld.setText(uitvoerTekst);
-				}
-			invers = false;
-			invLabel.setVisible(false);
-			*/
-			}
+				vindAntwoord(true);
 		}
 		else if(e.getSource() == sinKnop)
 		{	if(!invers)
@@ -1829,7 +1914,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 		else if(e.getSource() == eKnop)
 			voegInOfVervang("e", false);
 		else if(e.getSource() == nWortelKnop)
-			voegInOfVervang("\u207F\u221A", false);//dit moet nog anders, misschien getal ervoor al omhoog zetten?
+			voegInOfVervang("\u207F\u221A", false);
 		else if(e.getSource() == invKnop)
 		{	invers = !invers;
 			invLabel.setVisible(invers);
@@ -1843,105 +1928,11 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			uitvoerVeld.setText("0");
 		}
 		else if(e.getSource() == delKnop)
-		{	str = invoerVeld.getText();
-			if(nieuweInvoer)
-			{	nieuweInvoer = false; 
-				invoerVeld.setCaretPosition(str.length());
-			}
-			cp = invoerVeld.getCaretPosition();
-			if(cp == 0)
-				return;
-			else if(str.charAt(cp - 1) == 's')
-			{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp));
-				invoerVeld.setCaretPosition(cp - 3);
-			}
-			else if(str.charAt(cp - 1) == '(' )
-			{
-				if(cp < 3)
-				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
-					invoerVeld.setCaretPosition(cp - 1);
-				}
-				else if(str.charAt(cp - 2) == '\u00B9')
-				{	invoerVeld.setText(str.substring(0, cp - 6) + str.substring(cp));
-					invoerVeld.setCaretPosition(cp - 6);
-				}
-				else if(str.charAt(cp - 2) == 'n' || str.charAt(cp - 3) == 'o')
-				{	invoerVeld.setText(str.substring(0, cp - 4) + str.substring(cp));
-					invoerVeld.setCaretPosition(cp - 4);
-				}
-				else
-				{	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
-					invoerVeld.setCaretPosition(cp - 1);
-				}
-			}
-			else if(str.charAt(cp - 1) == '\u2070')
-			{
-				invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
-				invoerVeld.setCaretPosition(cp - 2);
-			}
-			else if(cp >= 2 && str.charAt(cp - 2) == '\u207F')
-			{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
-				invoerVeld.setCaretPosition(cp - 2);
-			}
-			else
-			{ 	invoerVeld.setText(str.substring(0, cp - 1) + str.substring(cp));
-				invoerVeld.setCaretPosition(cp - 1);
-			}
-			if(invoerVeld.getText().equals(""))
-			{	breuk = false;
-				invers = false;
-				invLabel.setVisible(false);
-			}
-			
-		}
+			doeActieBackSpace();
 		else if(e.getSource() == pijlLinksKnop)
-		{	str = invoerVeld.getText();
-			if(nieuweInvoer)
-			{	nieuweInvoer = false;
-				invoerVeld.setCaretPosition(str.length());
-			}
-			if(invoerVeld.getCaretPosition() == 0)
-				return;
-			else if(str.charAt(invoerVeld.getCaretPosition() - 1)=='s')
-				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 3);
-			else if(str.charAt(invoerVeld.getCaretPosition() - 1) == '(')
-			{	if(invoerVeld.getCaretPosition() == 1 || invoerVeld.getCaretPosition() == 2)
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
-				else if(str.charAt(invoerVeld.getCaretPosition() - 2) == 'n'||
-						str.charAt(invoerVeld.getCaretPosition() - 3) == 'o')
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 4);
-				else if(str.charAt(invoerVeld.getCaretPosition() - 2) == '\u00B9')
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 6);
-				else 
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
-			}
-			else if(invoerVeld.getCaretPosition() >= 2 && str.charAt(invoerVeld.getCaretPosition() - 2) == '\u207F')
-				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 2);
-			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() - 1);
-		}
+			maakStapNaarLinks();
 		else if(e.getSource() == pijlRechtsKnop)
-		{	str = invoerVeld.getText();
-			if(nieuweInvoer)
-			{	nieuweInvoer = false;
-				invoerVeld.setCaretPosition(str.length());
-			}
-			if(invoerVeld.getCaretPosition()==str.length())
-				return;
-			else if(str.charAt(invoerVeld.getCaretPosition())=='A')
-				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 3);
-			else if(str.charAt(invoerVeld.getCaretPosition()) == 's' ||
-					str.charAt(invoerVeld.getCaretPosition()) == 'c' ||
-					str.charAt(invoerVeld.getCaretPosition()) == 't')
-			{	if(str.charAt(invoerVeld.getCaretPosition() + 3) == '(' )
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 4);
-				else
-					invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 6);
-			}
-			else if(str.charAt(invoerVeld.getCaretPosition()) == '\u207F')
-				invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 2);
-			else invoerVeld.setCaretPosition(invoerVeld.getCaretPosition() + 1);
-		}
-		
+			maakStapNaarRechts();
 		else if(e.getSource() == insKnop)
 		{	str = invoerVeld.getText();
 			invoerVeld.getCaret().setVisible(false);
@@ -1960,7 +1951,7 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 			invoerVeld.getCaret().setVisible(true);
 		}
 		else if(e.getSource() == isKnop)
-		{	voerActieIsKnopUit(false);
+		{	vindAntwoord(false);
 			
 		}
 		if(e.getSource() != isKnop && (e.getSource() != breukKnop || !invers))
@@ -1968,17 +1959,41 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
 	}
 
 	public void keyPressed(KeyEvent e) 
-	{
-		// TODO Auto-generated method stub
+	{	invoerVeld.getCaret().setVisible(true);
+		kc =e.getKeyCode();
 		
+		if(kc == KeyEvent.VK_LEFT)
+			maakStapNaarLinks();
+		if(kc == KeyEvent.VK_RIGHT)
+			maakStapNaarRechts();
+		if(kc == KeyEvent.VK_DELETE)
+			doeActieDelete();
+		if(kc == KeyEvent.VK_BACK_SPACE)
+			doeActieBackSpace();
+		if(e.isShiftDown() && kc == KeyEvent.VK_6)
+			voegInOfVervang("^", true);
+		e.consume();
 	}
 
 	public void keyReleased(KeyEvent e){}
 
 	public void keyTyped(KeyEvent e) 
-	{
-		// TODO Auto-generated method stub
-		
+	{	invoerVeld.getCaret().setVisible(true);
+		int kch = e.getKeyChar();
+		if(kch == KeyEvent.VK_ENTER || kch == '=')
+			vindAntwoord(false);
+		else if(kch == '*')
+			voegInOfVervang("\u00D7", true);
+		else if(kch == '/' || kch == ':')
+			voegInOfVervang("\u00F7", true);
+		else if(kch == ',' || kch == '.')
+			voegInOfVervang(",", false);//TO DO: afhankelijk maken van de taal.
+		else if(kch == '+' || kch == '-')
+			voegInOfVervang("" + (char)kch, true);
+		else if(kch =='(' || kch == ')' || Character.isDigit(kch))	
+			voegInOfVervang("" + (char)kch, false);
+			
+		e.consume();
 	}
 
 }
@@ -1987,19 +2002,17 @@ System.out.println("vindUitkomst("+s+"," + sb + ")");
  *
  * graden/radialen instelbaar maken (voor wetenschappelijke versie iig). 
  * 
- * Nadenken over implementatie in de DWO.
+ * Alle print-statements weer verwijderen. 
  * 
- * Alle print-statements weer verwijderen.
+ * Eenvoudige versie echt eenvoudig maken
  * 
- * Key-pressed en Key-released implementeren. Zie ook FormuleRegel.java en FormuleTeken.java in WiskOpdr.
- * Mogelijke invoer:
- * - getallen
- * - , en ., worden beide ,
- * - ^, (, ), +, -
- * - * wordt vermenigvuldigingsteken
- * - / en : worden deelteken
- * Verder: Enter werkt, = doet hetzelfde als Enter (actie =-knop).  
  * Bugs en bugjes:
  *  - afrondingsfouten; kleine getallen eerst delen door een getal en dan vermenigvuldigen met hetzelfde geta levert niet altijd het oorspronkelijke getal terug
  *  - worteltrekken van breuken; gaat niet goed bij niet-vereenvoudigde breuken
+ *  - pi en e: als je ze zo invoert, wordt hun waarde niet gegeven (er komt helemaal geen nieuwe uitvoerwaarde in het uitvoerveld).
+ *  - bij opstarten rekenmachine lukt toetsenbord-invoer niet, daarvoor moet je eerst ergens op klikken.
+ *  
+ *  Taalafhankelijk maken: met name punten en komma's. 
+ *  
+ *  
  */
