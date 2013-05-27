@@ -3,21 +3,21 @@
 package fi.beans.scorm;
 
 public class ScormTree extends DataType {
-    private int maxItems;
+	private int maxItems;
 
-    /**
-     * @roseuid 425E23C501A5
-     */
-    public ScormTree() {
-        setMustTabSheet(false);
-        maxItems = -1;
-    }
+	/**
+	 * @roseuid 425E23C501A5
+	 */
+	public ScormTree() {
+		setMustTabSheet(false);
+		maxItems = -1;
+	}
 
-    public int getMaxItems() {
-        return maxItems;
-    }
+	public int getMaxItems() {
+		return maxItems;
+	}
 
-    public void setMaxItems(int maxItems) {
-        this.maxItems = maxItems;
-    }
+	public void setMaxItems(int maxItems) {
+		this.maxItems = maxItems;
+	}
 }

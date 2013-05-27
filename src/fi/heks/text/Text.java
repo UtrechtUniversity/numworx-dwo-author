@@ -1,8 +1,4 @@
 package fi.heks.text;
 
-public class Text extends Text_nl
-{
+public class Text extends Text_nl {
 }
-
-
-

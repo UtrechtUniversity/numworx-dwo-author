@@ -4,11 +4,11 @@ package fi.beans.scorm;
 
 public class ScormInteger extends DataType {
 
-    /**
-     * @roseuid 425E23C5009C
-     */
-    public ScormInteger() {
-        setMustTabSheet(false);
+	/**
+	 * @roseuid 425E23C5009C
+	 */
+	public ScormInteger() {
+		setMustTabSheet(false);
 
-    }
+	}
 }

@@ -4,11 +4,11 @@ package fi.beans.scorm;
 
 public interface DataTypeIF {
 
+	public int getSize();
 
-    public int getSize();
+	public void setSize(int size);
 
-    public void setSize(int size);
+	public boolean getMustTabSheet();
 
-    public boolean getMustTabSheet();
-    public void setMustTabSheet(boolean mustTabSheet);
+	public void setMustTabSheet(boolean mustTabSheet);
 }

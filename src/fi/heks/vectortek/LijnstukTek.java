@@ -5,96 +5,96 @@ import java.awt.event.*;
 
 import java.io.*;
 
-public class LijnstukTek extends TekenObjectTek 
-{	Point[] punten;
+public class LijnstukTek extends TekenObjectTek {
+	Point[] punten;
 	Color lijnkleur;
-	double[] exactePuntenX,exactePuntenY;
-	
-	public LijnstukTek(DataInputStream inv)
-	{	punten = new Point[2];
-		try
-		{	int r = inv.readByte()+128;
-			int g = inv.readByte()+128;
-			int b = inv.readByte()+128;
-			lijnkleur = new Color(r,g,b);
-			
-			int x = inv.readByte()*2+254;
-			int y = inv.readByte()*2+254;
-			punten[0] = new Point(x,y);
-			x = inv.readByte()*2+254;
-			y = inv.readByte()*2+254;
-			punten[1] = new Point(x,y);
-		}
-		catch(IOException io){}
+	double[] exactePuntenX, exactePuntenY;
 
-		//lijnkleur = Color.black;
+	public LijnstukTek(DataInputStream inv) {
+		punten = new Point[2];
+		try {
+			int r = inv.readByte() + 128;
+			int g = inv.readByte() + 128;
+			int b = inv.readByte() + 128;
+			lijnkleur = new Color(r, g, b);
+
+			int x = inv.readByte() * 2 + 254;
+			int y = inv.readByte() * 2 + 254;
+			punten[0] = new Point(x, y);
+			x = inv.readByte() * 2 + 254;
+			y = inv.readByte() * 2 + 254;
+			punten[1] = new Point(x, y);
+		} catch (IOException io) {
+		}
+
+		// lijnkleur = Color.black;
 	}
-	
-	public void paint(Graphics gr)
-	{	Graphics g = (Graphics2D)gr;
-    	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
-    	g.setColor(lijnkleur);
+
+	public void paint(Graphics gr) {
+		Graphics g = (Graphics2D) gr;
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g.setColor(lijnkleur);
 		g.drawLine(punten[0].x, punten[0].y, punten[1].x, punten[1].y);
 	}
-	public boolean contains(int x, int y)
-	{	return false;
+
+	public boolean contains(int x, int y) {
+		return false;
 	}
-	public void zetLijnkleur(Color c)
-	{	lijnkleur = c;
+
+	public void zetLijnkleur(Color c) {
+		lijnkleur = c;
 	}
-	
-	
-	public void verplaats(int dx, int dy)
-	{	for(int j=0 ; j<2  ; j++)
-		{	punten[j].x += dx;
+
+	public void verplaats(int dx, int dy) {
+		for (int j = 0; j < 2; j++) {
+			punten[j].x += dx;
 			punten[j].y += dy;
-		
-			if(exactePuntenX != null)
-			{	exactePuntenX[j] += dx;
+
+			if (exactePuntenX != null) {
+				exactePuntenX[j] += dx;
 				exactePuntenY[j] += dy;
 			}
 		}
-		
+
 	}
-	
-	public void schaal(double factorX, double factorY)
-	{	if(exactePuntenX == null)
-		{	exactePuntenX = new double[2];
+
+	public void schaal(double factorX, double factorY) {
+		if (exactePuntenX == null) {
+			exactePuntenX = new double[2];
 			exactePuntenY = new double[2];
-			for(int j=0 ; j<2  ; j++)
-			{	exactePuntenX[j] = punten[j].x;
+			for (int j = 0; j < 2; j++) {
+				exactePuntenX[j] = punten[j].x;
 				exactePuntenY[j] = punten[j].y;
 			}
 		}
-		for(int j=0 ; j<2  ; j++)
-		{	exactePuntenX[j] = factorX * exactePuntenX[j];
+		for (int j = 0; j < 2; j++) {
+			exactePuntenX[j] = factorX * exactePuntenX[j];
 			exactePuntenY[j] = factorY * exactePuntenY[j];
-			punten[j].x = ((int)exactePuntenX[j]);
-			punten[j].y = ((int)exactePuntenY[j]);
+			punten[j].x = ((int) exactePuntenX[j]);
+			punten[j].y = ((int) exactePuntenY[j]);
 		}
 	}
-	
-	public void draai(double dh)
-	{	if(exactePuntenX == null)
-		{	exactePuntenX = new double[2];
+
+	public void draai(double dh) {
+		if (exactePuntenX == null) {
+			exactePuntenX = new double[2];
 			exactePuntenY = new double[2];
-			for(int j=0 ; j<2  ; j++)
-			{	exactePuntenX[j] = punten[j].x;
+			for (int j = 0; j < 2; j++) {
+				exactePuntenX[j] = punten[j].x;
 				exactePuntenY[j] = punten[j].y;
 			}
 		}
-		double cos = Math.cos(dh*Math.PI/180);
-		double sin = Math.sin(dh*Math.PI/180);
-		
-		for(int j=0 ; j<2  ; j++)
-		{	
-			double x = exactePuntenX[j] - ((Tekening)getParent()).breedte/2;
-			double y = exactePuntenY[j] - ((Tekening)getParent()).hoogte/2;
-			exactePuntenX[j] = cos*x +sin*y + ((Tekening)getParent()).breedte/2;
-			exactePuntenY[j] = cos*y -sin*x + ((Tekening)getParent()).hoogte/2;
-			punten[j].x = ((int)exactePuntenX[j]+1)/2*2;
-			punten[j].y = ((int)exactePuntenY[j]+1)/2*2;
+		double cos = Math.cos(dh * Math.PI / 180);
+		double sin = Math.sin(dh * Math.PI / 180);
+
+		for (int j = 0; j < 2; j++) {
+			double x = exactePuntenX[j] - ((Tekening) getParent()).breedte / 2;
+			double y = exactePuntenY[j] - ((Tekening) getParent()).hoogte / 2;
+			exactePuntenX[j] = cos * x + sin * y + ((Tekening) getParent()).breedte / 2;
+			exactePuntenY[j] = cos * y - sin * x + ((Tekening) getParent()).hoogte / 2;
+			punten[j].x = ((int) exactePuntenX[j] + 1) / 2 * 2;
+			punten[j].y = ((int) exactePuntenY[j] + 1) / 2 * 2;
 		}
 	}
 }

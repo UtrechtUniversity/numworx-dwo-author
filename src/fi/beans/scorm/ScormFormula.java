@@ -4,11 +4,11 @@ package fi.beans.scorm;
 
 public class ScormFormula extends DataType {
 
-    /**
-     * @roseuid 425E23C503C8
-     */
-    public ScormFormula() {
-        setMustTabSheet(false);
+	/**
+	 * @roseuid 425E23C503C8
+	 */
+	public ScormFormula() {
+		setMustTabSheet(false);
 
-    }
+	}
 }

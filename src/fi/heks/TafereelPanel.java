@@ -7,18 +7,16 @@ import java.awt.event.*;
 import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
+
 //import fi.beans.tinyplayer.*;
 
-public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotionListener, ActionListener
-{	
+public class TafereelPanel extends ScPanel implements MouseListener, MouseMotionListener, ActionListener {
 	private AppletUtil au;
-	
-	
+
 	private AchtergrondContainer achtergrond;
-	
-	
-	Tekening blokjePlus,blokjeMin, blokjeSleep, blokjeSleepMin;
-	Tekening pot, potEruit, potErin, beginPot, eindPot, potinhoud, vloer, schrijfheks,werkheks;
+
+	Tekening blokjePlus, blokjeMin, blokjeSleep, blokjeSleepMin;
+	Tekening pot, potEruit, potErin, beginPot, eindPot, potinhoud, vloer, schrijfheks, werkheks;
 	ZinkAnimatie za;
 	GetalComponent tc, beginTemp, eindTemp;
 	Thermometer tm;
@@ -28,30 +26,29 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 	ScTekstContainer uitleg, opdracht;
 	ScTextArea textArea;
 	ScPanel sleeppanel;
-	Polygon[] p; 
-	//AudioClip plons, bubbel;
-	
+	Polygon[] p;
+	// AudioClip plons, bubbel;
+
 	int laatstex, laatstey;
 	boolean raakPlusBuiten, raakPlusBinnen, raakMinBuiten, raakMinBinnen, raakSleep, raakSleepMin;
 	boolean plusEruit, minEruit, pasEruit;
-	boolean[] kleurBlokjes = {true,false,true,true,true,true,false,false,false,false,true};
-	
-	//private ScLWButton playButton;
-	//private TinyPlayer tinyPlayer;
-	
-	public TafereelPanel(int x, int y, int b, int h, Applet applet)
-	{	super(x,y,b,h);
-		
-		//setBackground(new Color(255,255,220));
+	boolean[] kleurBlokjes = { true, false, true, true, true, true, false, false, false, false, true };
+
+	// private ScLWButton playButton;
+	// private TinyPlayer tinyPlayer;
+
+	public TafereelPanel(int x, int y, int b, int h, Applet applet) {
+		super(x, y, b, h);
+
+		// setBackground(new Color(255,255,220));
 		setBackground(getBackground());
-		
+
 		zetVastePlaats(true);
-		
-		
+
 		au = new AppletUtil(applet);
-		//plons = au.getAudioClip("resources/watersplash.au");
-		//bubbel = au.getAudioClip("resources/bubble.au");
-		
+		// plons = au.getAudioClip("resources/watersplash.au");
+		// bubbel = au.getAudioClip("resources/bubble.au");
+
 		raakPlusBuiten = false;
 		raakPlusBinnen = false;
 		raakMinBuiten = false;
@@ -60,172 +57,171 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 		plusEruit = false;
 		minEruit = false;
 		pasEruit = false;
-	
-		
-		Color color_01 = new Color(240,240,240);
+
+		Color color_01 = new Color(240, 240, 240);
 		String kleurcode = applet.getParameter("color_01");
-		if(kleurcode!=null)color_01 = new Color(Integer.parseInt(kleurcode.substring(1),16));
-		
-		sleeppanel = new ScPanel(300,0,b-300,h-5);
-		//sleeppanel.setBackground(color_01);
+		if (kleurcode != null)
+			color_01 = new Color(Integer.parseInt(kleurcode.substring(1), 16));
+
+		sleeppanel = new ScPanel(300, 0, b - 300, h - 5);
+		// sleeppanel.setBackground(color_01);
 		sleeppanel.addMouseListener(this);
 		addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
-		achtergrond = new AchtergrondContainer(0,0,b-300,h-5);
-		
+		achtergrond = new AchtergrondContainer(0, 0, b - 300, h - 5);
 
-		opnieuwKnop = new ScLWButton(150,85,100,25,Heks.rb.getString("opnieuwKnopLabel"));
+		opnieuwKnop = new ScLWButton(150, 85, 100, 25, Heks.rb.getString("opnieuwKnopLabel"));
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
-		
-		pot = new Tekening(40,210,350,300,au,"potnieuw.gif");
+
+		pot = new Tekening(40, 210, 350, 300, au, "potnieuw.gif");
 		achtergrond.add(pot);
-		
-		vloer = new Tekening(0,370,490,160, au,"vloer.gif");
-		//achtergrond.add(vloer);
-		
-		beginTemp = new GetalComponent(170,130,80,40);
+
+		vloer = new Tekening(0, 370, 490, 160, au, "vloer.gif");
+		// achtergrond.add(vloer);
+
+		beginTemp = new GetalComponent(170, 130, 80, 40);
 		beginTemp.zetInstelbaar(true);
 		beginTemp.zetAlsTemp(true);
 		beginTemp.addActionListener(this);
 		add(beginTemp);
-		
-		beginLabel = new ScLabel(50,135,60,30,Heks.rb.getString("beginLabel"));
+
+		beginLabel = new ScLabel(50, 135, 60, 30, Heks.rb.getString("beginLabel"));
 		beginLabel.addMouseListener(this);
 		add(beginLabel);
-		
-		beginPot = new Tekening(35,115,90,65,au,"potzwart.gif");
+
+		beginPot = new Tekening(35, 115, 90, 65, au, "potzwart.gif");
 		add(beginPot);
-		
-		//schrijfheks = new Tekening(145,0,140,140,au,"schrijfheks.gif");
-		//add(schrijfheks);
-		
-		werkheks = new Tekening(180,0,150,150,au,"werkheks.gif");
+
+		// schrijfheks = new Tekening(145,0,140,140,au,"schrijfheks.gif");
+		// add(schrijfheks);
+
+		werkheks = new Tekening(180, 0, 150, 150, au, "werkheks.gif");
 		achtergrond.add(werkheks);
-		
-		erinLabel = new ScLabel(65,235,60,30,Heks.rb.getString("erinLabel"));
+
+		erinLabel = new ScLabel(65, 235, 60, 30, Heks.rb.getString("erinLabel"));
 		add(erinLabel);
-		
-		potErin = new Tekening(30,190,100,90,au,"potErin.gif");
+
+		potErin = new Tekening(30, 190, 100, 90, au, "potErin.gif");
 		add(potErin);
-		
-		eruitLabel = new ScLabel(35,335,60,30,Heks.rb.getString("eruitLabel"));
-		if(Heks.rb.getLocale().toString().equals("en")) eruitLabel = new ScLabel(25,335,80,30,Heks.rb.getString("eruitLabel"));
+
+		eruitLabel = new ScLabel(35, 335, 60, 30, Heks.rb.getString("eruitLabel"));
+		if (Heks.rb.getLocale().toString().equals("en"))
+			eruitLabel = new ScLabel(25, 335, 80, 30, Heks.rb.getString("eruitLabel"));
 		add(eruitLabel);
-		
-		potEruit = new Tekening(30,290,100,90,au,"potEruit.gif");
-		if(Heks.rb.getLocale().toString().equals("en")) potEruit = new Tekening(20,290,130,90,au,"potEruit.gif");
+
+		potEruit = new Tekening(30, 290, 100, 90, au, "potEruit.gif");
+		if (Heks.rb.getLocale().toString().equals("en"))
+			potEruit = new Tekening(20, 290, 130, 90, au, "potEruit.gif");
 		add(potEruit);
-		
-		eindTemp = new GetalComponent(170,410,80,40);
+
+		eindTemp = new GetalComponent(170, 410, 80, 40);
 		eindTemp.zetAlsTemp(true);
 		add(eindTemp);
-		
-		eindLabel = new ScLabel(50,415,60,30,Heks.rb.getString("eindLabel"));
+
+		eindLabel = new ScLabel(50, 415, 60, 30, Heks.rb.getString("eindLabel"));
 		add(eindLabel);
-		
-		eindPot = new Tekening(35,395,90,65 ,au,"potzwart.gif");
+
+		eindPot = new Tekening(35, 395, 90, 65, au, "potzwart.gif");
 		add(eindPot);
-		
-		erinContainer = new BlokjesContainer(150,200,110,85,applet);
+
+		erinContainer = new BlokjesContainer(150, 200, 110, 85, applet);
 		add(erinContainer);
-		
-		eruitContainer = new BlokjesContainer(150,300,110,85,applet);
+
+		eruitContainer = new BlokjesContainer(150, 300, 110, 85, applet);
 		add(eruitContainer);
-				
-		blokjePlus = new Tekening(400,30,60,60,au,"blokjePlus.gif");
+
+		blokjePlus = new Tekening(400, 30, 60, 60, au, "blokjePlus.gif");
 		achtergrond.add(blokjePlus);
-						
-		blokjeMin = new Tekening(400,100,60,60,au,"blokjeMin.gif");
+
+		blokjeMin = new Tekening(400, 100, 60, 60, au, "blokjeMin.gif");
 		achtergrond.add(blokjeMin);
-		
-		uitleg = new ScTekstContainer(5,5,285,20,4,Heks.rb.getString("TafereelPanelUitleg"));
+
+		uitleg = new ScTekstContainer(5, 5, 285, 20, 4, Heks.rb.getString("TafereelPanelUitleg"));
 		uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);
-		
-		
-		titel = new ScLabel(20,10,240,40,"De toverdrank 2");
-		//add(titel);
-		
-		
-			
-		
-		za = new ZinkAnimatie(110,240,210,200,applet);
-		sleeppanel.add(za,0);
-		
-		blokjeSleep = new Tekening(400,30,60,60,au,"blokjePlus.gif");
-		sleeppanel.add(blokjeSleep,0);
-		
-		blokjeSleepMin = new Tekening(400,100,60,60,au,"blokjeMin.gif");
-		sleeppanel.add(blokjeSleepMin,0);
-		
-		potinhoud = new Tekening(40,210,350,300,au,"inhoudnieuw.gif");
+
+		titel = new ScLabel(20, 10, 240, 40, "De toverdrank 2");
+		// add(titel);
+
+		za = new ZinkAnimatie(110, 240, 210, 200, applet);
+		sleeppanel.add(za, 0);
+
+		blokjeSleep = new Tekening(400, 30, 60, 60, au, "blokjePlus.gif");
+		sleeppanel.add(blokjeSleep, 0);
+
+		blokjeSleepMin = new Tekening(400, 100, 60, 60, au, "blokjeMin.gif");
+		sleeppanel.add(blokjeSleepMin, 0);
+
+		potinhoud = new Tekening(40, 210, 350, 300, au, "inhoudnieuw.gif");
 		sleeppanel.add(potinhoud, 0);
-		
-		tc = new GetalComponent(390,280,120,40);
+
+		tc = new GetalComponent(390, 280, 120, 40);
 		tc.zetAlsTemp(true);
-		sleeppanel.add(tc,0);
-		
-		tm = new Thermometer(100,10, 40,300);
-		sleeppanel.add(tm,0);
-		
+		sleeppanel.add(tc, 0);
+
+		tm = new Thermometer(100, 10, 40, 300);
+		sleeppanel.add(tm, 0);
+
 		sleeppanel.add(achtergrond);
 		add(sleeppanel);
-		
-		//tinyPlayer = new TinyPlayer(applet);
-		
-		//playButton = new ScLWButton(130,0,60, 25,"uitleg");
-    	//playButton.addActionListener(this);
-    	//add(playButton);
-    	
-    	opdrachtTitel = new ScLabel(20,200,200,40,Heks.rb.getString("opdrachtTitelLabel"));
+
+		// tinyPlayer = new TinyPlayer(applet);
+
+		// playButton = new ScLWButton(130,0,60, 25,"uitleg");
+		// playButton.addActionListener(this);
+		// add(playButton);
+
+		opdrachtTitel = new ScLabel(20, 200, 200, 40, Heks.rb.getString("opdrachtTitelLabel"));
 		opdrachtTitel.setVisible(false);
 		add(opdrachtTitel);
-		
-		opdracht = new ScTekstContainer(5,250,285,20,4,Heks.rb.getString("TafereelPanelOpdracht"));
+
+		opdracht = new ScTekstContainer(5, 250, 285, 20, 4, Heks.rb.getString("TafereelPanelOpdracht"));
 		opdracht.lijnUit(ScLabel.LINKS);
 		opdracht.setVisible(false);
 		add(opdracht);
-		
-		textArea = new ScTextArea(5,340,270,150,0,0,TextArea.SCROLLBARS_VERTICAL_ONLY,""); 
+
+		textArea = new ScTextArea(5, 340, 270, 150, 0, 0, TextArea.SCROLLBARS_VERTICAL_ONLY, "");
 		textArea.setVisible(false);
 		add(textArea);
-			
-		opdrachtKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("opdrachtKnopLabel"));
+
+		opdrachtKnop = new ScLWButton(5, 510, 270, 35, Heks.rb.getString("opdrachtKnopLabel"));
 		opdrachtKnop.addActionListener(this);
 		add(opdrachtKnop);
-		
-		werkKnop = new ScLWButton(5,510,270,35,Heks.rb.getString("werkKnopLabel"));
+
+		werkKnop = new ScLWButton(5, 510, 270, 35, Heks.rb.getString("werkKnopLabel"));
 		werkKnop.addActionListener(this);
 		textArea.setVisible(false);
 		add(werkKnop);
 	}
-	
-	public void setState(Hashtable h)
-	{	String tekst = (String)h.get("tekst");
-				
+
+	public void setState(Hashtable h) {
+		String tekst = (String) h.get("tekst");
+
 		textArea.setText(tekst);
 	}
-	
-	public Hashtable getState()
-	{	String tekst = null;
-			
+
+	public Hashtable getState() {
+		String tekst = null;
+
 		tekst = textArea.getText();
-		
+
 		Hashtable h = new Hashtable();
-	    h.put("tekst", tekst);
-	    
-	    return h;
+		h.put("tekst", tekst);
+
+		return h;
 	}
-	
-	public double getScore()
-	{	if(textArea.getText() != null && textArea.getText().length()>100) return 100;
-		if(textArea.getText() != null && textArea.getText().length()>5) return 10;
+
+	public double getScore() {
+		if (textArea.getText() != null && textArea.getText().length() > 100)
+			return 100;
+		if (textArea.getText() != null && textArea.getText().length() > 5)
+			return 10;
 		return 0;
 	}
-	
-	public void start()
-	{	beginTemp.zetWaarde(0);
+
+	public void start() {
+		beginTemp.zetWaarde(0);
 		eindTemp.zetWaarde(0);
 		tc.zetWaarde(0);
 		tm.zetTemp(0);
@@ -233,147 +229,146 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 		eruitContainer.removeAll();
 		za.start();
 	}
-	
-	public void stop()
-	{	za.stop();
-		//tinyPlayer.stop();
+
+	public void stop() {
+		za.stop();
+		// tinyPlayer.stop();
 	}
-	
-	public void mousePressed(MouseEvent e)
-	{	if(e.getSource()==this)
-		{	requestFocus();
+
+	public void mousePressed(MouseEvent e) {
+		if (e.getSource() == this) {
+			requestFocus();
 			return;
 		}
-		if(opdracht.isVisible())return;
+		if (opdracht.isVisible())
+			return;
 		laatstex = e.getX();
 		laatstey = e.getY();
-		
-		if(beginLabel.contains(e.getX(),e.getY()))
-		{	beginTemp.vulIn();
+
+		if (beginLabel.contains(e.getX(), e.getY())) {
+			beginTemp.vulIn();
 		}
-		
+
 		p = new Polygon[11];
-		for (int i=0 ; i<11 ; i++)
-		{	p[i] = ((VeelhoekTek)(potinhoud.to[i])).basisPolygon;
+		for (int i = 0; i < 11; i++) {
+			p[i] = ((VeelhoekTek) (potinhoud.to[i])).basisPolygon;
 		}
-		
-		if(blokjePlus.contains(e.getX(),e.getY()))
-		{	raakPlusBuiten = true;
+
+		if (blokjePlus.contains(e.getX(), e.getY())) {
+			raakPlusBuiten = true;
 		}
-			
-		
-		if(blokjeSleep.contains(e.getX(),e.getY()))
-		{   raakSleep = true;
+
+		if (blokjeSleep.contains(e.getX(), e.getY())) {
+			raakSleep = true;
 		}
-		
-		if(blokjeSleepMin.contains(e.getX(),e.getY()))
-		{   raakSleepMin = true;
+
+		if (blokjeSleepMin.contains(e.getX(), e.getY())) {
+			raakSleepMin = true;
 		}
-		int x = e.getX()-potinhoud.getLocation().x;
-		int y = e.getY()-potinhoud.getLocation().y;
-		
-		for(int i=10 ; i>-1 ; i--)
-		{	if(p[i].contains(x,y))
-			{	if(kleurBlokjes[i])
-				{	blokjeSleep.setLocation(e.getX()-blokjeSleep.getSize().width/2,e.getY()-blokjeSleep.getSize().height/2);
+		int x = e.getX() - potinhoud.getLocation().x;
+		int y = e.getY() - potinhoud.getLocation().y;
+
+		for (int i = 10; i > -1; i--) {
+			if (p[i].contains(x, y)) {
+				if (kleurBlokjes[i]) {
+					blokjeSleep.setLocation(e.getX() - blokjeSleep.getSize().width / 2, e.getY() - blokjeSleep.getSize().height / 2);
 					blokjeSleep.repaint();
 					plusEruit = true;
-				}
-				else
-				{	blokjeSleepMin.setLocation(e.getX()-blokjeSleep.getSize().width/2,e.getY()-blokjeSleep.getSize().height/2);
+				} else {
+					blokjeSleepMin.setLocation(e.getX() - blokjeSleep.getSize().width / 2, e.getY() - blokjeSleep.getSize().height / 2);
 					blokjeSleepMin.repaint();
 					minEruit = true;
 				}
-				
+
 				return;
 			}
 		}
-		
-	}	
-	public void mouseDragged(MouseEvent e)
-	{	if(opdracht.isVisible())return;
-	
+
+	}
+
+	public void mouseDragged(MouseEvent e) {
+		if (opdracht.isVisible())
+			return;
+
 		int dx = e.getX() - laatstex;
-		int dy =  e.getY() - laatstey;
-				
-		if(raakSleep)
-		{	blokjeSleep.setLocation(blokjeSleep.getLocation().x + dx, blokjeSleep.getLocation().y + dy);
-			Polygon p = ((VulKrommeTek)(pot.to[2])).buigPolygon;
+		int dy = e.getY() - laatstey;
+
+		if (raakSleep) {
+			blokjeSleep.setLocation(blokjeSleep.getLocation().x + dx, blokjeSleep.getLocation().y + dy);
+			Polygon p = ((VulKrommeTek) (pot.to[2])).buigPolygon;
 			int lx = pot.getLocation().x;
 			int ly = pot.getLocation().y;
-			for(int i=0 ; i<p.npoints ; i++)
-			{	if(blokjeSleep.contains(p.xpoints[i] + lx, p.ypoints[i] + ly))
-				{	blokjeSleep.setLocation(blokjeSleep.getLocation().x - dx, blokjeSleep.getLocation().y - dy);
+			for (int i = 0; i < p.npoints; i++) {
+				if (blokjeSleep.contains(p.xpoints[i] + lx, p.ypoints[i] + ly)) {
+					blokjeSleep.setLocation(blokjeSleep.getLocation().x - dx, blokjeSleep.getLocation().y - dy);
 					raakSleep = false;
 				}
 			}
 			blokjeSleep.repaint();
 		}
-		if(raakSleepMin)
-		{	blokjeSleepMin.setLocation(blokjeSleepMin.getLocation().x + dx, blokjeSleepMin.getLocation().y + dy);
-			Polygon p = ((VulKrommeTek)(pot.to[2])).buigPolygon;
+		if (raakSleepMin) {
+			blokjeSleepMin.setLocation(blokjeSleepMin.getLocation().x + dx, blokjeSleepMin.getLocation().y + dy);
+			Polygon p = ((VulKrommeTek) (pot.to[2])).buigPolygon;
 			int lx = pot.getLocation().x;
 			int ly = pot.getLocation().y;
-			for(int i=0 ; i<p.npoints ; i++)
-			{	if(blokjeSleepMin.contains(p.xpoints[i] + lx, p.ypoints[i] + ly))
-				{	blokjeSleepMin.setLocation(blokjeSleepMin.getLocation().x - dx, blokjeSleepMin.getLocation().y - dy);
+			for (int i = 0; i < p.npoints; i++) {
+				if (blokjeSleepMin.contains(p.xpoints[i] + lx, p.ypoints[i] + ly)) {
+					blokjeSleepMin.setLocation(blokjeSleepMin.getLocation().x - dx, blokjeSleepMin.getLocation().y - dy);
 					raakSleepMin = false;
 				}
 			}
 			blokjeSleepMin.repaint();
+		} else if (blokjeSleep.contains(e.getX(), e.getY())) {
+			raakSleep = true;
+		} else if (blokjeSleepMin.contains(e.getX(), e.getY())) {
+			raakSleepMin = true;
 		}
-		else if(blokjeSleep.contains(e.getX(),e.getY()))
-		{   raakSleep = true;
-		}
-		else if(blokjeSleepMin.contains(e.getX(),e.getY()))
-		{   raakSleepMin = true;
-		}
-		
-		if(!plusEruit && blokjeSleep.getLocation().x + blokjeSleep.getSize().width < za.getLocation().x + za.getSize().width 
-			&& blokjeSleep.getLocation().x > za.getLocation().x 
-			&& blokjeSleep.getLocation().y > za.getLocation().y
-			&& blokjeSleep.getLocation().y + blokjeSleep.getSize().height < za.getLocation().y  + za.getSize().height)
-		{	//plons.play();
-			za.start(true,blokjeSleep.getLocation().x - za.getLocation().x );
+
+		if (!plusEruit && blokjeSleep.getLocation().x + blokjeSleep.getSize().width < za.getLocation().x + za.getSize().width
+				&& blokjeSleep.getLocation().x > za.getLocation().x && blokjeSleep.getLocation().y > za.getLocation().y
+				&& blokjeSleep.getLocation().y + blokjeSleep.getSize().height < za.getLocation().y + za.getSize().height) { // plons.play();
+			za.start(true, blokjeSleep.getLocation().x - za.getLocation().x);
 			tc.verhoog();
 			tm.tempPlus();
 			eindTemp.verhoog();
-			if(!pasEruit)erinContainer.voegBlokjeToe(true);
-			else eruitContainer.verwijderBlokje();
-			blokjeSleep.setLocation((int)(blokjePlus.getLocation().x),(int)(blokjePlus.getLocation().y));
+			if (!pasEruit)
+				erinContainer.voegBlokjeToe(true);
+			else
+				eruitContainer.verwijderBlokje();
+			blokjeSleep.setLocation((int) (blokjePlus.getLocation().x), (int) (blokjePlus.getLocation().y));
 			raakSleep = false;
 			pasEruit = false;
 		}
-		
-		if(!minEruit &&  blokjeSleepMin.getLocation().x + blokjeSleepMin.getSize().width < za.getLocation().x + za.getSize().width 
-			&& blokjeSleepMin.getLocation().x > za.getLocation().x 
-			&& blokjeSleepMin.getLocation().y > za.getLocation().y
-			&& blokjeSleepMin.getLocation().y + blokjeSleepMin.getSize().height < za.getLocation().y  + za.getSize().height)
-		{	//plons.play();
-			za.start(false,blokjeSleepMin.getLocation().x - za.getLocation().x );
+
+		if (!minEruit && blokjeSleepMin.getLocation().x + blokjeSleepMin.getSize().width < za.getLocation().x + za.getSize().width
+				&& blokjeSleepMin.getLocation().x > za.getLocation().x && blokjeSleepMin.getLocation().y > za.getLocation().y
+				&& blokjeSleepMin.getLocation().y + blokjeSleepMin.getSize().height < za.getLocation().y + za.getSize().height) { // plons.play();
+			za.start(false, blokjeSleepMin.getLocation().x - za.getLocation().x);
 			tc.verlaag();
 			tm.tempMin();
 			eindTemp.verlaag();
-			if(!pasEruit)erinContainer.voegBlokjeToe(false);
-			else eruitContainer.verwijderBlokje();
-			blokjeSleepMin.setLocation((int)(blokjeMin.getLocation().x),(int)(blokjeMin.getLocation().y));
+			if (!pasEruit)
+				erinContainer.voegBlokjeToe(false);
+			else
+				eruitContainer.verwijderBlokje();
+			blokjeSleepMin.setLocation((int) (blokjeMin.getLocation().x), (int) (blokjeMin.getLocation().y));
 			raakSleepMin = false;
 			pasEruit = false;
 		}
-		
-		if(plusEruit && blokjeSleep.getLocation().y  < za.getLocation().y )
-		{	plusEruit = false;
+
+		if (plusEruit && blokjeSleep.getLocation().y < za.getLocation().y) {
+			plusEruit = false;
 			pasEruit = true;
-			//bubbel.play();
+			// bubbel.play();
 			tc.verlaag();
 			tm.tempMin();
 			eindTemp.verlaag();
 			eruitContainer.voegBlokjeToe(true);
 		}
-		if(minEruit && blokjeSleepMin.getLocation().y  < za.getLocation().y)
-		{	minEruit = false;
+		if (minEruit && blokjeSleepMin.getLocation().y < za.getLocation().y) {
+			minEruit = false;
 			pasEruit = true;
-			//bubbel.play();
+			// bubbel.play();
 			tc.verhoog();
 			tm.tempPlus();
 			eindTemp.verhoog();
@@ -382,65 +377,70 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 		laatstex = e.getX();
 		laatstey = e.getY();
 	}
-	
-	public void mouseReleased(MouseEvent e)
-	{	raakSleep = false;
+
+	public void mouseReleased(MouseEvent e) {
+		raakSleep = false;
 		raakSleepMin = false;
-		
-		if(!plusEruit &&  blokjeSleep.getLocation().x + blokjeSleep.getSize().width < pot.getLocation().x + pot.getSize().width 
-			&& blokjeSleep.getLocation().x > pot.getLocation().x
-		   && blokjeSleep.getLocation().y + blokjeSleep.getSize().height < za.getLocation().y  + za.getSize().height)
-		{	
+
+		if (!plusEruit && blokjeSleep.getLocation().x + blokjeSleep.getSize().width < pot.getLocation().x + pot.getSize().width
+				&& blokjeSleep.getLocation().x > pot.getLocation().x
+				&& blokjeSleep.getLocation().y + blokjeSleep.getSize().height < za.getLocation().y + za.getSize().height) {
 			int x = blokjeSleep.getLocation().x;
-			blokjeSleep.setLocation((int)(blokjePlus.getLocation().x),(int)(blokjePlus.getLocation().y));
-			//plons.play();
-			za.start(true,x - za.getLocation().x );
+			blokjeSleep.setLocation((int) (blokjePlus.getLocation().x), (int) (blokjePlus.getLocation().y));
+			// plons.play();
+			za.start(true, x - za.getLocation().x);
 			tc.verhoog();
 			tm.tempPlus();
 			eindTemp.verhoog();
-			if(!pasEruit)erinContainer.voegBlokjeToe(true);
-			else eruitContainer.verwijderBlokje();
+			if (!pasEruit)
+				erinContainer.voegBlokjeToe(true);
+			else
+				eruitContainer.verwijderBlokje();
+		} else {
+			blokjeSleep.setLocation((int) (blokjePlus.getLocation().x), (int) (blokjePlus.getLocation().y));
 		}
-		else
-		{	blokjeSleep.setLocation((int)(blokjePlus.getLocation().x),(int)(blokjePlus.getLocation().y));
-		}
-		
-		if(!minEruit &&  blokjeSleepMin.getLocation().x + blokjeSleepMin.getSize().width < pot.getLocation().x + pot.getSize().width 
-			&& blokjeSleepMin.getLocation().x > pot.getLocation().x 
-		   && blokjeSleepMin.getLocation().y + blokjeSleepMin.getSize().height < za.getLocation().y  + za.getSize().height)
-		{	
+
+		if (!minEruit && blokjeSleepMin.getLocation().x + blokjeSleepMin.getSize().width < pot.getLocation().x + pot.getSize().width
+				&& blokjeSleepMin.getLocation().x > pot.getLocation().x
+				&& blokjeSleepMin.getLocation().y + blokjeSleepMin.getSize().height < za.getLocation().y + za.getSize().height) {
 			int x = blokjeSleepMin.getLocation().x;
-			blokjeSleepMin.setLocation((int)(blokjeMin.getLocation().x),(int)(blokjeMin.getLocation().y));
-			//plons.play();
-			za.start(false,x - za.getLocation().x );
-			
+			blokjeSleepMin.setLocation((int) (blokjeMin.getLocation().x), (int) (blokjeMin.getLocation().y));
+			// plons.play();
+			za.start(false, x - za.getLocation().x);
+
 			tc.verlaag();
 			tm.tempMin();
 			eindTemp.verlaag();
-			if(!pasEruit)erinContainer.voegBlokjeToe(false);
-			else eruitContainer.verwijderBlokje();
+			if (!pasEruit)
+				erinContainer.voegBlokjeToe(false);
+			else
+				eruitContainer.verwijderBlokje();
+		} else {
+			blokjeSleepMin.setLocation((int) (blokjeMin.getLocation().x), (int) (blokjeMin.getLocation().y));
 		}
-		else
-		{	blokjeSleepMin.setLocation((int)(blokjeMin.getLocation().x),(int)(blokjeMin.getLocation().y));
-		}
-		
+
 		plusEruit = false;
 		minEruit = false;
 		pasEruit = false;
 	}
-	
-	public void mouseMoved(MouseEvent e)
-	{	
+
+	public void mouseMoved(MouseEvent e) {
 	}
-	public void mouseExited(MouseEvent e){;}
-	public void mouseClicked(MouseEvent e)
-	{	
+
+	public void mouseExited(MouseEvent e) {
+		;
 	}
-	public void mouseEntered(MouseEvent e){;}
-	
-	public void actionPerformed(ActionEvent e)
-	{	if(e.getSource()==opdrachtKnop)
-		{	beginLabel.setVisible(false);
+
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+		;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == opdrachtKnop) {
+			beginLabel.setVisible(false);
 			eindLabel.setVisible(false);
 			erinLabel.setVisible(false);
 			eruitLabel.setVisible(false);
@@ -453,14 +453,13 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 			erinContainer.setVisible(false);
 			eruitContainer.setVisible(false);
 			opdrachtKnop.setVisible(false);
-			
+
 			opdracht.setVisible(true);
 			textArea.setVisible(true);
 			opdrachtTitel.setVisible(true);
 			werkKnop.setVisible(true);
-		}
-		else if(e.getSource()==werkKnop)
-		{	beginLabel.setVisible(true);
+		} else if (e.getSource() == werkKnop) {
+			beginLabel.setVisible(true);
 			eindLabel.setVisible(true);
 			erinLabel.setVisible(true);
 			eruitLabel.setVisible(true);
@@ -473,16 +472,15 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 			erinContainer.setVisible(true);
 			eruitContainer.setVisible(true);
 			opdrachtKnop.setVisible(true);
-			
+
 			opdracht.setVisible(false);
 			textArea.setVisible(false);
 			opdrachtTitel.setVisible(false);
 			werkKnop.setVisible(false);
-		
-		}
-		else
-		{	if(beginTemp.isBekend())
-			{	eindTemp.zetBekend(true);
+
+		} else {
+			if (beginTemp.isBekend()) {
+				eindTemp.zetBekend(true);
 				tc.zetBekend(true);
 				eindTemp.zetWaarde(beginTemp.geefWaarde());
 				tc.zetWaarde(beginTemp.geefWaarde());
@@ -491,9 +489,8 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 				erinContainer.repaint();
 				eruitContainer.removeAll();
 				eruitContainer.repaint();
-			}
-			else
-			{	eindTemp.zetBekend(false);
+			} else {
+				eindTemp.zetBekend(false);
 				eindTemp.repaint();
 				tc.zetBekend(false);
 				tc.repaint();
@@ -504,12 +501,10 @@ public class TafereelPanel extends ScPanel implements  MouseListener, MouseMotio
 				eruitContainer.repaint();
 			}
 		}
-		//if(e.getSource()== playButton)
-        //{	tinyPlayer.startPlayer("uitleg_ketel.mp3");
-        //}
-        
-        
+		// if(e.getSource()== playButton)
+		// { tinyPlayer.startPlayer("uitleg_ketel.mp3");
+		// }
+
 	}
-	
-	
+
 }
