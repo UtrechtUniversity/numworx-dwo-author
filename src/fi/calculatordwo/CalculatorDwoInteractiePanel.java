@@ -514,7 +514,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		//Alle *10^x goed schrijven
 		for(int i = 0; i < sb.length()-1; i++)
 			if(sb.charAt(i) == '\u2081')
-				sb.replace(i, i+2, "E");
+			{	if(sb.charAt(i+2) == '-')
+					sb.replace(i, i+2, "G");
+				else
+					sb.replace(i, i+2, "E");
+			}
 		
 		//Zorgen dat voor en na elke komma getallen staan
 		for(int i = 0; i < sb.length(); i++)
@@ -602,19 +606,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					}
 				}
 				else //arcsin
-				{	vindHaakjesUitdrukking(sb, i + 5);
+				{	vindHaakjesUitdrukking(sb, i + 7);
 					if(breuk)
 					{	if(graden)
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.asin(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.asin(uitkomst)));
 					}
 				}
@@ -640,20 +644,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				}
 				else //arccos
 				{	
-					System.out.println("sb.charAt(i+3) = " + sb.charAt(i+3));
-					vindHaakjesUitdrukking(sb, i + 5);
+					vindHaakjesUitdrukking(sb, i + 7);
 					if(breuk)
 					{	if(graden)
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.acos(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.acos(uitkomst)));
 					}
 				}
@@ -679,19 +682,19 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					
 				}
 				else //arctan
-				{	vindHaakjesUitdrukking(sb, i + 5);
+				{	vindHaakjesUitdrukking(sb, i + 7);
 					if(breuk)
 					{	if(graden)
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.atan(teller/noemer)));
 					}
 					else	
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 6,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
 							Double.toString(Math.atan(uitkomst)));
 					}
 				}
@@ -784,9 +787,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				}
 				if(sb2.indexOf("\u221A") == 0 || sb2.charAt(sb2.indexOf("\u221A")-1) != '\u207F')
 				{	
-					
-					teller = Math.sqrt(tellerB);
-					noemer = Math.sqrt(noemerB);
+					//testen of de teller en de noemer geheel zijn.
+					//in dat geval breuk vereenvoudigen en dan pas wortels nemen, om te kunnen zien of ze geheel zijn.
+					if(tellerB - (int) tellerB == 0 && noemerB - (int) noemerB == 0)
+					{	teller = Math.sqrt(simplify((int) tellerB, (int) noemerB)[0]);
+						noemer = Math.sqrt(simplify((int) tellerB, (int) noemerB)[1]);
+					}
+					else
+					{	teller = Math.sqrt(tellerB);
+						noemer = Math.sqrt(noemerB);
+					}
 					lengteRekenGetal = lengteBreukB;
 					if(noemer == 1)
 						sb2.replace(sb2.indexOf("\u221A"), sb2.indexOf("\u221A") + lengteBreukB + 1, "" + teller);
@@ -1061,9 +1071,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
 					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
 							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
-								|| sb.charAt(beginPos - 2) == '(')
+								|| sb.charAt(beginPos - 2) == '(' || sb.charAt(beginPos - 2) == 'E')
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
+						beginPos--;
 					}	
 			}
 			else if(sb.charAt(pos - 1) == '\u03C0')//dit is pi
@@ -1072,7 +1083,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				if(pos > 0 && sb.charAt(pos - 1) == '-')
 					if(pos == 1 || sb.charAt(pos - 2) == '^'
 						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
-							|| sb.charAt(pos - 2) == '(')
+							|| sb.charAt(pos - 2) == '(' || sb.charAt(beginPos - 2) == 'E')
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
 						beginPos--;
@@ -1084,7 +1095,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				if(pos > 0 && sb.charAt(pos - 1) == '-')
 					if(pos == 1 || sb.charAt(pos - 2) == '^'
 						|| sb.charAt(pos - 2) == 'x' || sb.charAt(pos - 2) == '/' 
-							|| sb.charAt(pos - 2) == '(')
+							|| sb.charAt(pos - 2) == '(' || sb.charAt(beginPos - 2) == 'E')
 					{	rekenGetal = -rekenGetal;
 						lengteRekenGetal++;
 						beginPos--;
@@ -1137,6 +1148,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			
 			subString = sb.substring(beginPos, beginPos2+1);
 			double rekenGetal2 = Double.parseDouble(subString);
+			
 			rekenGetal = rekenGetal2*Math.pow(10, -rekenGetal);
 			lengteRekenGetal = lengteRekenGetal + subString.length() + 1;
 		}
@@ -1711,27 +1723,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	}
 	
 	public void vindAntwoord(boolean dec)
-	{	if(!uitvoerVeld.getText().equals("Syntax ERROR"))
-		{	bewaardeAns = uitvoerVeld.getText();
-			bewaardeAns = bewaardeAns.replace(',', '.');
-			if(bewaardeAns.contains("\u00D710"))
-			{
-				bewaardeAns = bewaardeAns.replaceAll("\u00D710", "E");
-				bewaardeAns = bewaardeAns.replaceAll("\u2070", "0");
-				bewaardeAns = bewaardeAns.replaceAll("\u00B9", "1");
-				bewaardeAns = bewaardeAns.replaceAll("\u00B2", "2");
-				bewaardeAns = bewaardeAns.replaceAll("\u00B3", "3");
-				bewaardeAns = bewaardeAns.replaceAll("\u2074", "4");
-				bewaardeAns = bewaardeAns.replaceAll("\u2075", "5");
-				bewaardeAns = bewaardeAns.replaceAll("\u2076", "6");
-				bewaardeAns = bewaardeAns.replaceAll("\u2077", "7");
-				bewaardeAns = bewaardeAns.replaceAll("\u2078", "8");
-				bewaardeAns = bewaardeAns.replaceAll("\u2079", "9");     
-				bewaardeAns = bewaardeAns.replaceAll("\u207B", "-");
-			}				
-		}
-		
-		maakBerekenbaar(invoerVeld.getText());
+	{	maakBerekenbaar(invoerVeld.getText());
 		syntaxError = false;
 		bereken(sb);
 		if(!syntaxError)
@@ -1756,9 +1748,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						else
 							uitvoerTekst = breuk[0] + "\u22a5" + breuk[1];
 					}
+					if(!syntaxError)
+						bewaardeAns = uitvoerTekst;
 				}
 				else
 				{	eindUitkomst = teller/noemer;
+					if(!syntaxError)
+						bewaardeAns = Double.toString(eindUitkomst);
 					if(eindUitkomst < Math.pow(10, 9))
 						eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
 					uitvoerTekst = Double.toString(eindUitkomst);
@@ -1791,6 +1787,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						eindUitkomst = teller/noemer;
 					}
 				}
+				if(!syntaxError)
+					bewaardeAns = Double.toString(eindUitkomst);
 				if(eindUitkomst < Math.pow(10, 9))
 					eindUitkomst = (double) Math.round(1000000000 * eindUitkomst)/1000000000;
 				uitvoerTekst = Double.toString(eindUitkomst);
@@ -2007,10 +2005,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
  * Eenvoudige versie echt eenvoudig maken
  * 
  * Bugs en bugjes:
- *  - afrondingsfouten; kleine getallen eerst delen door een getal en dan vermenigvuldigen met hetzelfde geta levert niet altijd het oorspronkelijke getal terug
- *  - worteltrekken van breuken; gaat niet goed bij niet-vereenvoudigde breuken
  *  - pi en e: als je ze zo invoert, wordt hun waarde niet gegeven (er komt helemaal geen nieuwe uitvoerwaarde in het uitvoerveld).
  *  - bij opstarten rekenmachine lukt toetsenbord-invoer niet, daarvoor moet je eerst ergens op klikken.
+ *  - je kunt met de cursor midden in tekst zoals cos klikken, dan kun een deel daarvan verwijderen. Wil ik eigenlijk niet; 
+ *  liever dan cursor naar begin of eind daarvan laten springen.
  *  
  *  Taalafhankelijk maken: met name punten en komma's. 
  *  
