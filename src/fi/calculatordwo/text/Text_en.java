@@ -7,8 +7,13 @@ public class Text_en extends java.util.ListResourceBundle
         {
             {	"welkomTekst" , "Welcome to Java" },
             	 	
-        //	{	"button1Label" , "text1_en" },
-		//	{ 	"button2Label" , "text2_en" },
+        	{	"wetenschappelijkButton" , "Scientific version" },
+			{ 	"eenvoudigButton" , "Plain version" },
+            { 	"citoButton" , "Cito-version" },
+            {	"gradenInstelbaarBox", "Degrees or radians adjustable"},
+			
+			{	"gradenButton", "Degrees"},
+            {	"radialenButton", "Radians"}
 		//	....
 		
 		};

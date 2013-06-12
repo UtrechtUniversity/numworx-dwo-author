@@ -29,7 +29,9 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	protected CalculatorDwoInteractiePanel cdip;
 	JRadioButton scientificButton, easyButton, citoButton;
 	ButtonGroup groep;
-	int rmMode;
+	JCheckBox gradenInstelbaarBox;
+	int rmMode = 1;
+	boolean	gradenInstelbaar = true;
 
 	
 	public CalculatorDwoInteractieEditPanel ()
@@ -49,31 +51,39 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		currentX = cdip.getSize().width + offset;
 		currentY = offset;
 		
-		easyButton = new JRadioButton("Eenvoudig");
+		easyButton = new JRadioButton(CalculatorDwo.rb.getString("eenvoudigButton"));
 		easyButton.setBounds(currentX, currentY, width, height);
 		add(easyButton);
 		
 		currentY += height + offset;
 		
-		scientificButton = new JRadioButton("Wetenschappelijk");
+		scientificButton = new JRadioButton(CalculatorDwo.rb.getString("wetenschappelijkButton"));
 		scientificButton.setSelected(true);
 		scientificButton.setBounds(currentX, currentY, width, height);
 		add(scientificButton);
 		
 		currentY += height + offset;
 		
-		citoButton = new JRadioButton("Cito-versie");
+		citoButton = new JRadioButton(CalculatorDwo.rb.getString("citoButton"));
 		citoButton.setBounds(currentX, currentY, width, height);
 		add(citoButton);
 		
+		currentY += height + offset;
+		
 		groep = new ButtonGroup();
 		groep.add(easyButton);
-		groep.add(scientificButton);
 		groep.add(citoButton);
+		groep.add(scientificButton);
 		
 		easyButton.addActionListener(this);
 		scientificButton.addActionListener(this);
 		citoButton.addActionListener(this);
+		
+		gradenInstelbaarBox = new JCheckBox(CalculatorDwo.rb.getString("gradenInstelbaarBox"));
+		gradenInstelbaarBox.setBounds(currentX, currentY, width, height);
+		gradenInstelbaarBox.setSelected(true);
+		add(gradenInstelbaarBox);
+		gradenInstelbaarBox.addActionListener(this);
 
 	}
 
@@ -81,12 +91,21 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		
 		if(h.containsKey("rmMode"))
 			rmMode = ((Integer)h.get("rmMode")).intValue();
+		if(h.containsKey("gradenInstelbaar"))
+			gradenInstelbaar = ((Boolean)h.get("gradenInstelbaar")).booleanValue();
+		gradenInstelbaarBox.setSelected(gradenInstelbaar);
 		if(rmMode == 0)
-			easyButton.setSelected(true);
+		{	easyButton.setSelected(true);
+			gradenInstelbaarBox.setVisible(false);
+		}
 		else if(rmMode == 1)
-			scientificButton.setSelected(true);
+		{	scientificButton.setSelected(true);
+			gradenInstelbaarBox.setVisible(true);
+		}
 		else
-			citoButton.setSelected(true);
+		{	citoButton.setSelected(true);
+			gradenInstelbaarBox.setVisible(false);
+		}
 		
 		if (h.containsKey("cdipBreedte"))
 			cdipBreedte = ((Integer) h.get("cdipBreedte")).intValue();
@@ -143,15 +162,23 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	{
 		if(e.getSource() == easyButton)
 		{	rmMode = 0;
-			cdip.zetRmMode(rmMode);
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gradenInstelbaarBox.setVisible(false);
 		}
 		else if(e.getSource() == scientificButton)
 		{	rmMode = 1;
-			cdip.zetRmMode(rmMode);
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gradenInstelbaarBox.setVisible(true);
 		}
 		else if(e.getSource() == citoButton)
 		{	rmMode = 2;
-			cdip.zetRmMode(rmMode);			
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gradenInstelbaarBox.setVisible(false);
+		}
+		else if(e.getSource() == gradenInstelbaarBox)
+		{
+			gradenInstelbaar = gradenInstelbaarBox.isSelected();
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
 		}
 			
 	}
