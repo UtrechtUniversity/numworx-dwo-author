@@ -13,7 +13,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 {	int editWidth = 190;
 	int editHeight = 550; 
 	int cdipBreedte = 540; // startbreedte ip
-	int cdipHoogte = 300; // starthoogte ip
+	int cdipHoogte = 330; // starthoogte ip
 	
 	Font theFont;
 	FontMetrics theFM;

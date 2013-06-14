@@ -3,17 +3,19 @@ package fi.calculatordwo;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.wiskopdr.WiskOpdr;
 
-public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, InteractiePanel
+public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
 	int cdipBreedte = 540;
-	int cdipHoogte = 300;
+	int cdipHoogte = 330;
 	
 	Font theFont, theLargeFont, theSmallFont;
 	FontMetrics theFM, theLargeFM, theSmallFM;
@@ -48,14 +50,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	JRadioButton gradenButton, radialenButton;
 	ButtonGroup groep;
 	
-	boolean syntaxError, mathError;
+	boolean syntaxError;//, mathError;
 	String subString;
 	String bewaardeAns;
 	int cp = 0;
 	boolean nieuweInvoer = false;
 
-	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs, lichtblauw, witblauw,
-			 lichtgrijs;
+	Color blauw, oranje, groen, geel, lichtgeel, grijs, donkergrijs, lichtblauw, witblauw;
 	
 	boolean breuk = false;
 	int rmMode = 1;
@@ -89,10 +90,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		geel = new Color(255, 255, 180);
 		lichtgeel = new Color(255, 255, 220);
 		grijs = Color.gray;
-		//donkergrijs = Color.darkGray;
 		donkergrijs = new Color(98, 98, 98);
-		//lichtgrijs = Color.lightGray;
-		lichtgrijs = new Color(152, 152, 152);
+		
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
@@ -118,7 +117,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		delKnop = maakButton("DEL", blauw, witblauw);
 		cKnop = maakButton("C", blauw, witblauw);
 		
-		kommaKnop = maakButton(",", grijs, witblauw);
+		if(WiskOpdr.language.toString().equals("nl"))
+			kommaKnop = maakButton(",", grijs, witblauw);
+		else
+			kommaKnop = maakButton(".", grijs, witblauw);
 		negatiefKnop = maakButton("(-)", grijs, witblauw);
 		ansKnop = maakButton("Ans", grijs, witblauw);
 		isKnop = maakButton("=", groen, Color.WHITE);
@@ -174,9 +176,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		tanInvLabel = maakLabel("tan\u207B\u00B9", Color.orange);
 		decLabel = maakLabel("\u2192dec", Color.orange);
 		
-		
-		
-				
 		knoppenPanel = new JPanel();
 		add(knoppenPanel, BorderLayout.CENTER);
 		
@@ -189,21 +188,18 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ondersteKnoppen = new JPanel();
 		
 		instellingenPanel = new JPanel();
-		//add(instellingenPanel, BorderLayout.SOUTH);
+		instellingenPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		gradenButton = new JRadioButton(CalculatorDwo.rb.getString("gradenButton"));
 		gradenButton.addActionListener(this);
-		//instellingenPanel.add(gradenButton);
 		
 		radialenButton = new JRadioButton(CalculatorDwo.rb.getString("radialenButton"));
 		radialenButton.setSelected(true);
 		radialenButton.addActionListener(this);
-		//instellingenPanel.add(radialenButton);
 		
 		groep = new ButtonGroup();
 		groep.add(gradenButton);
 		groep.add(radialenButton);
-		
 		
 		zetRmMode(rmMode, gradenInstelbaar);
 		
@@ -214,17 +210,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		invoerVeld.setCaret(defaultCaret);
 		invoerVeld.getCaret().setBlinkRate(500);
 		invoerVeld.getCaret().setVisible(true);
-		//invoerVeld.setBackground(lichtgeel);
 		invoerVeld.setBackground(witblauw);
 		invoerVeld.setFont(theFont);
 		invoerVeld.setMargin(new Insets(8,10,3,3));
 		invoerVeld.addKeyListener(this);
+		invoerVeld.addMouseListener(this);
 
 		invLabel = new JLabel("I");
 		invLabel.setFont(theSmallFont);
 		invLabel.setOpaque(true);
 		invLabel.setBackground(Color.BLACK);
-		//invLabel.setForeground(lichtgeel);
 		invLabel.setForeground(witblauw);
 		invLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		invLabel.setBounds(2,2,5,6);
@@ -237,16 +232,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		uitvoerPanel = new JPanel();
 		uitvoerPanel.setLayout(new BorderLayout());
-		//uitvoerPanel.setBackground(geel);
 		uitvoerPanel.setBackground(lichtblauw);
 		add(uitvoerPanel, BorderLayout.NORTH);
 		
 		uitvoerPanel.add(invoerVeld, BorderLayout.NORTH);
 		uitvoerPanel.add(uitvoerVeld, BorderLayout.SOUTH);
-		
-		
-		
-		
 	}
 	
 	public JButton maakButton(String s, Color backGround, Color foreGround)
@@ -275,7 +265,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		//rmMode = 2: Cito
 		
 		rmMode = i;
-		gradenInstelbaar = b;
+		gradenInstelbaar = (b && rmMode == 1);
 		if(rmMode == 2)
 			invKnop.setBackground(Color.ORANGE);
 		else
@@ -286,37 +276,29 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			graden = false;
 		knoppenPanel.removeAll();
 		
-		/* OUD
-		//if(rmMode == 1)
-		//{	ondersteKnoppen.removeAll();
-		//	ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
-		//}
-		
 		if(rmMode < 2)
 		{
 			knoppenPanel.setLayout(new BorderLayout(5, 5));
 			
-			knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
 			bovensteKnoppen.add(pijlLinksKnop);
 			bovensteKnoppen.add(pijlRechtsKnop);
 			bovensteKnoppen.add(insKnop);
 			bovensteKnoppen.add(delKnop);
 			bovensteKnoppen.add(cKnop);
 			
+			knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
 			knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
 		
-			if(rmMode == 1)
-			{	ondersteKnoppen.removeAll();
-				ondersteKnoppen.setLayout(new GridBagLayout());
-				GridBagConstraints c = new GridBagConstraints();
+			if(gradenInstelbaar)
+			{	instellingenPanel.add(gradenButton);
+				instellingenPanel.add(radialenButton);
+				knoppenPanel.add(instellingenPanel, BorderLayout.SOUTH);
+				
+				
 			}
 			
-			else //rmMode = 0
-			{	ondersteKnoppen.removeAll();
-				ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
-			}
-		
-			
+			ondersteKnoppen.removeAll();
+			ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
 			
 			ondersteKnoppen.add(getalKnop[7]);
 			ondersteKnoppen.add(getalKnop[8]);
@@ -361,300 +343,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			ondersteKnoppen.add(isKnop);
 			if(rmMode == 1)
 				ondersteKnoppen.add(invKnop);
-				
-			if(rmMode == 1)
-			{
-				ondersteKnoppen.add(eenGedeeldDoorKnop);
-				ondersteKnoppen.add(breukKnop);
-				ondersteKnoppen.add(expKnop);
-				ondersteKnoppen.add(leegLabel[0]);
-			}
-		}
-		
-		*/
-		
-		
-		//if(rmMode == 1)
-		//{	ondersteKnoppen.removeAll();
-		//	ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
-		//}
-		
-		if(rmMode < 2)
-		{
-			knoppenPanel.setLayout(new BorderLayout(5, 5));
 			
-			//knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
-			bovensteKnoppen.add(pijlLinksKnop);
-			bovensteKnoppen.add(pijlRechtsKnop);
-			bovensteKnoppen.add(insKnop);
-			bovensteKnoppen.add(delKnop);
-			bovensteKnoppen.add(cKnop);
-			
-			knoppenPanel.add(ondersteKnoppen, BorderLayout.CENTER);
-		
-			if(rmMode == 1)
-			{	ondersteKnoppen.removeAll();
-				ondersteKnoppen.setLayout(new GridBagLayout());
-				GridBagConstraints c = new GridBagConstraints();
-				
-				JPanel[] dummyRij = new JPanel[8];
-				c.insets = new Insets(0, 0, 0, 50);
-				c.weightx = 1;
-				for(int j = 0; j < 8; j++)
-				{	c.gridy = 6; c.gridx = j;
-					dummyRij[j] = new JPanel();
-					ondersteKnoppen.add(dummyRij[j], c);
-					
-				}
-				
-				JPanel[] dummyKolom = new JPanel[6];
-				c.insets = new Insets(0, 0, 50, 0);
-				c.weightx = 0;
-				c.weighty = 1;
-				for(int j = 0; j < 6; j++)
-				{	c.gridy = j; c.gridx = 8;
-					dummyKolom[j] = new JPanel();
-					ondersteKnoppen.add(dummyKolom[j], c);
-					
-				}
-				c.weighty = 0;
-				
-				JPanel[] knoppenRij = new JPanel[5];
-				for(int j = 0; j < 5; j++)
-				{	knoppenRij[j] = new JPanel();
-					knoppenRij[j].setLayout(new GridLayout(1, 8, 3, 3));
-				}
-				knoppenRij[4].setLayout(new GridLayout(1, 3, 3, 3));
-				
-				//c.fill = GridBagConstraints.BOTH;
-				knoppenRij[0].add(getalKnop[7]);
-				knoppenRij[0].add(getalKnop[8]);
-				knoppenRij[0].add(getalKnop[9]);
-				knoppenRij[0].add(keerKnop);
-				knoppenRij[0].add(deelKnop);
-				knoppenRij[0].add(wortelKnop);
-				knoppenRij[0].add(nWortelKnop);
-				knoppenRij[0].add(sinKnop);
-				
-				knoppenRij[1].add(getalKnop[4]);
-				knoppenRij[1].add(getalKnop[5]);
-				knoppenRij[1].add(getalKnop[6]);
-				knoppenRij[1].add(plusKnop);
-				knoppenRij[1].add(minKnop);
-				knoppenRij[1].add(kwadraatKnop);
-				knoppenRij[1].add(logKnop);
-				knoppenRij[1].add(cosKnop);
-				
-				knoppenRij[2].add(getalKnop[1]);
-				knoppenRij[2].add(getalKnop[2]);
-				knoppenRij[2].add(getalKnop[3]);
-				knoppenRij[2].add(haakLinksKnop);
-				knoppenRij[2].add(haakRechtsKnop);
-				knoppenRij[2].add(machtKnop);
-				knoppenRij[2].add(lnKnop);
-				knoppenRij[2].add(tanKnop);
-				
-				knoppenRij[3].add(getalKnop[0]);
-				knoppenRij[3].add(kommaKnop);
-				knoppenRij[3].add(negatiefKnop);
-				knoppenRij[3].add(piKnop);
-				knoppenRij[3].add(eKnop);
-				knoppenRij[3].add(ansKnop);
-				knoppenRij[3].add(isKnop);
-				knoppenRij[3].add(invKnop);
-					
-				knoppenRij[4].add(eenGedeeldDoorKnop);
-				knoppenRij[4].add(breukKnop);
-				knoppenRij[4].add(expKnop);
-				c.insets = new Insets(0, 0, 3, 0);
-				c.fill = GridBagConstraints.BOTH;
-				
-				c.gridx = 0; c.gridy = 0;
-				c.gridwidth = 8;
-				ondersteKnoppen.add(bovensteKnoppen, c);
-				
-				for(int j = 0; j < 4; j++)
-				{	c.gridwidth = 8;
-					c.gridx = 0; c.gridy = j + 1;
-					ondersteKnoppen.add(knoppenRij[j], c);
-				}
-				c.gridwidth = 3;
-				c.gridx = 0; c.gridy = 5;
-				ondersteKnoppen.add(knoppenRij[4], c);
-				
-				if(gradenInstelbaar)
-				{	c.gridwidth = 5;
-					c.gridx = 3; c.gridy = 5;
-					ondersteKnoppen.add(instellingenPanel, c);
-					
-					instellingenPanel.add(gradenButton);
-					instellingenPanel.add(radialenButton);
-				}
-				
-				
-				/*
-				c.fill = GridBagConstraints.BOTH;
-				c.insets = new Insets(0, 2, 2, 0);
-				c.weightx = 1;
-				c.gridx = 0; c.gridy = 0;
-				ondersteKnoppen.add(getalKnop[7], c);
-				c.weightx = 0.5;
-				c.gridx = 1; c.gridy = 0;
-				ondersteKnoppen.add(getalKnop[8], c);
-				c.weightx = 0;
-				c.gridx = 2; c.gridy = 0;
-				ondersteKnoppen.add(getalKnop[9], c);
-				//c.weightx = 0.5;
-				c.gridx = 3; c.gridy = 0;
-				ondersteKnoppen.add(keerKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 4; c.gridy = 0;				
-				ondersteKnoppen.add(deelKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 5; c.gridy = 0;
-				ondersteKnoppen.add(wortelKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 6; c.gridy = 0;
-				ondersteKnoppen.add(nWortelKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 7; c.gridy = 0;
-				ondersteKnoppen.add(sinKnop, c);
-				
-				//c.weightx = 0.5;
-				c.gridx = 0; c.gridy = 1;
-				ondersteKnoppen.add(getalKnop[4], c);
-				//c.weightx = 0.5;
-				c.gridx = 1; c.gridy = 1;
-				ondersteKnoppen.add(getalKnop[5], c);
-				//c.weightx = 0.5;
-				c.gridx = 2; c.gridy = 1;
-				ondersteKnoppen.add(getalKnop[6], c);
-				//c.weightx = 0.5;
-				c.gridx = 3; c.gridy = 1;
-				ondersteKnoppen.add(plusKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 4; c.gridy = 1;
-				ondersteKnoppen.add(minKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 5; c.gridy = 1;
-				ondersteKnoppen.add(kwadraatKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 6; c.gridy = 1;
-				ondersteKnoppen.add(logKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 7; c.gridy = 1;
-				ondersteKnoppen.add(cosKnop, c);
-				
-				//c.weightx = 0.5;
-				c.gridx = 0; c.gridy = 2;
-				ondersteKnoppen.add(getalKnop[1], c);
-				//c.weightx = 0.5;
-				c.gridx = 1; c.gridy = 2;
-				ondersteKnoppen.add(getalKnop[2], c);
-				//c.weightx = 0.5;
-				c.gridx = 2; c.gridy = 2;
-				ondersteKnoppen.add(getalKnop[3], c);
-				//c.weightx = 0.5;
-				c.gridx = 3; c.gridy = 2;
-				ondersteKnoppen.add(haakLinksKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 4; c.gridy = 2;
-				ondersteKnoppen.add(haakRechtsKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 5; c.gridy = 2;
-				ondersteKnoppen.add(machtKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 6; c.gridy = 2;
-				ondersteKnoppen.add(lnKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 7; c.gridy = 2;
-				ondersteKnoppen.add(tanKnop, c);
-				
-				//c.weightx = 0.5;
-				c.gridx = 0; c.gridy = 3;
-				ondersteKnoppen.add(getalKnop[0], c);
-				//c.weightx = 0.5;
-				c.gridx = 1; c.gridy = 3;
-				ondersteKnoppen.add(kommaKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 2; c.gridy = 3;
-				ondersteKnoppen.add(negatiefKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 3; c.gridy = 3;
-				ondersteKnoppen.add(piKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 4; c.gridy = 3;
-				ondersteKnoppen.add(eKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 5; c.gridy = 3;
-				ondersteKnoppen.add(ansKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 6; c.gridy = 3;
-				ondersteKnoppen.add(isKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 7; c.gridy = 3;
-				ondersteKnoppen.add(invKnop, c);
-					
-				//c.weightx = 0.5;
-				c.gridx = 0; c.gridy = 4;
-				ondersteKnoppen.add(eenGedeeldDoorKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 1; c.gridy = 4;
-				ondersteKnoppen.add(breukKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 2; c.gridy = 4;
-				ondersteKnoppen.add(expKnop, c);
-				//c.weightx = 0.5;
-				c.gridx = 3; c.gridy = 4;
-				ondersteKnoppen.add(leegLabel[0], c);
-				c.gridwidth = 5;
-				c.gridx = 4; c.gridy = 4;
-				ondersteKnoppen.add(instellingenPanel, c);
-				
-				instellingenPanel.add(gradenButton);
-				instellingenPanel.add(radialenButton);
-				*/
-			}
-			
-			else //rmMode = 0
-			{	knoppenPanel.add(bovensteKnoppen, BorderLayout.NORTH);
-				
-				
-				ondersteKnoppen.removeAll();
-				ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
-				
-				ondersteKnoppen.add(getalKnop[7]);
-				ondersteKnoppen.add(getalKnop[8]);
-				ondersteKnoppen.add(getalKnop[9]);
-				ondersteKnoppen.add(keerKnop);
-				ondersteKnoppen.add(deelKnop);
-				ondersteKnoppen.add(wortelKnop);
-				
-				ondersteKnoppen.add(getalKnop[4]);
-				ondersteKnoppen.add(getalKnop[5]);
-				ondersteKnoppen.add(getalKnop[6]);
-				ondersteKnoppen.add(plusKnop);
-				ondersteKnoppen.add(minKnop);
-				ondersteKnoppen.add(kwadraatKnop);
-				
-				ondersteKnoppen.add(getalKnop[1]);
-				ondersteKnoppen.add(getalKnop[2]);
-				ondersteKnoppen.add(getalKnop[3]);
-				ondersteKnoppen.add(haakLinksKnop);
-				ondersteKnoppen.add(haakRechtsKnop);
-				ondersteKnoppen.add(machtKnop);
-				
-				ondersteKnoppen.add(getalKnop[0]);
-				ondersteKnoppen.add(kommaKnop);
-				ondersteKnoppen.add(negatiefKnop);
-				ondersteKnoppen.add(piKnop);
-				ondersteKnoppen.add(ansKnop);
-				ondersteKnoppen.add(isKnop);
-			}
-		
-			
-			
-			
+			ondersteKnoppen.add(eenGedeeldDoorKnop);
+			ondersteKnoppen.add(breukKnop);
+			ondersteKnoppen.add(expKnop);
+			ondersteKnoppen.add(leegLabel[0]);
 			
 		}
 		else
@@ -828,7 +521,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	{
 		sb.delete(0, sb.length());
 		sb.append(s);
-//System.out.println("sb begin maakBerekenbaar: " +sb);		
 		
 		//Alle kwadraten veranderen in ^2
 		for(int i = 0; i < sb.length(); i++)
@@ -843,8 +535,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		//Alle *10^x goed schrijven
 		for(int i = 0; i < sb.length()-1; i++)
 			if(sb.charAt(i) == '\u2081')
-			{	System.out.println("i: " + i + " en sb.length(): " + sb.length());
-				if(sb.length() < i + 3)
+			{	if(sb.length() < i + 3)
 				{	syntaxError = true;
 					System.out.println("ERROR niets na 10macht");
 				}
@@ -1076,7 +767,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		try{
 			berekenWaarde(sb.toString());
-System.out.println("sb: " + sb + ", sb2: " + sb2);			
 			sb.replace(0, sb.length(), sb2.toString());
 		}
 		catch(Exception e)
@@ -1092,7 +782,6 @@ System.out.println("sb: " + sb + ", sb2: " + sb2);
 	 */
 	public void berekenWaarde(String str) 
 	{		
-System.out.println("berekenWaarde aangeroepen op " + str);		
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
 	
@@ -1174,7 +863,6 @@ System.out.println("berekenWaarde aangeroepen op " + str);
 					}
 					rekenGetal = 1/rekenGetal;
 					sb2.replace(sb2.indexOf("\u221A") - 1 - lengteRekenGetal, sb2.indexOf("\u221A") + lengte1 + 1, rekenKind1 + "^" + rekenGetal);
-System.out.println("sb2 na nwortel: " + sb2);
 				}
 			}
 		}
@@ -1270,28 +958,6 @@ System.out.println("sb2 na nwortel: " + sb2);
 				}
 			}
 		
-		
-		
-		
-		/*OUD
-		 * 
-		 * else
-		 
-			while(sb2.indexOf("+") != -1 || sb2.indexOf("-") > 0)
-			{	if(sb2.indexOf("-") <= 0) 
-					vervangUitkomst("+", sb2);
-				else if(sb2.indexOf("+") == -1)
-					vervangUitkomst("-", sb2);
-				else if(sb2.indexOf("+") < sb2.indexOf("-"))
-					vervangUitkomst("+", sb2);
-				else 
-					vervangUitkomst("-", sb2);			
-				if(syntaxError)
-				{	System.out.println("ERROR optellen/aftrekken");
-					return;
-				}
-			}
-			*/
 		if(breuk)
 		{	try
 			{	vindBreukVanaf(-1, sb2);
@@ -1402,15 +1068,12 @@ System.out.println("sb2 na nwortel: " + sb2);
 		{	uitkomst = Math.pow(rekenKind1, rekenKind2);
 			if(Double.isNaN(uitkomst))
 			{	uitkomst = -Math.pow(-rekenKind1, rekenKind2);
-System.out.println("Uitkomst: " + uitkomst);			
 				double test = Math.pow(uitkomst, 1/rekenKind2);
-				if(test != rekenKind1)
+				if(Math.abs(test - rekenKind1) > 0.000000001)
 					uitkomst = Double.NaN;
 			}
-				
-//System.out.println("27^-1/3 = " + Math.pow(-27, 0.3333333333333));		
 		}		
-else if(s.equals("E"))
+		else if(s.equals("E"))
 			uitkomst = rekenKind1 * Math.pow(10, rekenKind2);
 		else if(s.equals("G"))
 			uitkomst = rekenKind1 * Math.pow(10, -rekenKind2);
@@ -1488,7 +1151,6 @@ else if(s.equals("E"))
 		}
 		catch(Exception e){
 			syntaxError = true;
-System.out.println("sb bij getalVoorbewerking Exc error: "+sb);			
 			System.out.println("ERROR getalVoorBewerking Exception");
 		}
 		if(beginPos != 0 && sb.charAt(beginPos-1) == 'E') 
@@ -1580,7 +1242,6 @@ System.out.println("sb bij getalVoorbewerking Exc error: "+sb);
 			}	
 			else
 			{	syntaxError = true;
-System.out.println("sb bij getal naBewerking: " + sb);			
 				System.out.println("ERROR getalNaBewerking else");
 				return;
 			}
@@ -1715,19 +1376,15 @@ System.out.println("sb bij getal naBewerking: " + sb);
 		if(Double.isNaN(teller))
 		{	teller = -Math.pow(-teller1, teller2/noemer2);
 			double test = Math.pow(teller, noemer2/teller2);
-			if(test != teller1)
+			if(Math.abs(test - teller1) > 0.000000001)
 				teller = Double.NaN;
 		}
 		noemer = Math.pow(noemer1, teller2/noemer2);
 		if(Double.isNaN(noemer))
 		{	noemer = -Math.pow(-noemer1, teller2/noemer2);
 			double test = Math.pow(noemer, noemer2/teller2);
-			if(test != noemer1)
+			if(Math.abs(test - noemer1) > 0.000000001)
 				noemer = Double.NaN;
-		}
-		if(Double.isNaN(teller) || Double.isNaN(noemer))
-		{	mathError = true;
-			return;
 		}
 	}
 	
@@ -1999,7 +1656,7 @@ System.out.println("sb bij getal naBewerking: " + sb);
 				cp += 3;
 			else
 				cp += 4;
-		else if(str.charAt(cp) == '\u207F')
+		else if(str.charAt(cp) == '\u207F' || str.charAt(cp) == '\u2081' || str.charAt(cp) == '\u207B')
 			cp += 2;
 		else 
 			cp += 1;
@@ -2032,7 +1689,8 @@ System.out.println("sb bij getal naBewerking: " + sb);
 			else 
 				cp -= 1;
 		}
-		else if(cp >= 2 && str.charAt(cp - 2) == '\u207F')
+		else if(cp >= 2 && (str.charAt(cp - 2) == '\u207F' || str.charAt(cp - 1) == '\u2080'
+			|| str.charAt(cp - 1) == '\u00B9'))
 			cp -= 2;
 		else if(str.charAt(cp - 1) == '\u2070')
 			cp -= 2;
@@ -2045,13 +1703,17 @@ System.out.println("sb bij getal naBewerking: " + sb);
 	public void doeActieBackSpace()
 	{	String str = invoerVeld.getText();
 		int cp = invoerVeld.getCaretPosition();
-	
+		int ss = invoerVeld.getSelectionStart();
+		int se = invoerVeld.getSelectionEnd();
+		
 		if(nieuweInvoer)
 		{	nieuweInvoer = false; 
 			invoerVeld.setCaretPosition(str.length());
 		}
 		if(cp == 0)
 			return;
+		else if(se - ss > 0)
+			invoerVeld.setText(str.substring(0, ss) + str.substring(se));
 		else if(str.charAt(cp - 1) == 's')
 		{	invoerVeld.setText(str.substring(0, cp - 3) + str.substring(cp));
 			invoerVeld.setCaretPosition(cp - 3);
@@ -2082,7 +1744,7 @@ System.out.println("sb bij getal naBewerking: " + sb);
 		{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
 			invoerVeld.setCaretPosition(cp - 2);
 		}
-		else if(str.charAt(cp - 1) == '\u2070')
+		else if(str.charAt(cp - 1) == '\u2080' || str.charAt(cp - 1) == '\u00B9')
 		{	invoerVeld.setText(str.substring(0, cp - 2) + str.substring(cp));
 			invoerVeld.setCaretPosition(cp - 2);
 		}
@@ -2100,6 +1762,8 @@ System.out.println("sb bij getal naBewerking: " + sb);
 	public void doeActieDelete()
 	{	String str = invoerVeld.getText();
 		int cp = invoerVeld.getCaretPosition();
+		int ss = invoerVeld.getSelectionStart();
+		int se = invoerVeld.getSelectionEnd();
 		
 		if(nieuweInvoer)
 		{	nieuweInvoer = false;
@@ -2107,6 +1771,10 @@ System.out.println("sb bij getal naBewerking: " + sb);
 		}
 		if(cp == str.length())
 			return;
+		else if(se - ss > 0)
+		{	invoerVeld.setText(str.substring(0, ss) + str.substring(se));
+			cp = ss;
+		}
 		else if(str.charAt(cp)=='A')
 			invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 3));
 		else if(str.charAt(cp) == 's' || str.charAt(cp) == 'c' || str.charAt(cp) == 't')
@@ -2120,7 +1788,7 @@ System.out.println("sb bij getal naBewerking: " + sb);
 				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 3));
 			else
 				invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 4));
-		else if(str.charAt(cp) == '\u207F')
+		else if(str.charAt(cp) == '\u207F' || str.charAt(cp) == '\u2081' || str.charAt(cp) == '\u207B')
 			invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 2));
 		else 
 		invoerVeld.setText(str.substring(0, cp) + str.substring(cp + 1));
@@ -2135,9 +1803,7 @@ System.out.println("sb bij getal naBewerking: " + sb);
 	
 	public void vindAntwoord(boolean dec)
 	{	syntaxError = false;
-		mathError = false;
 		maakBerekenbaar(invoerVeld.getText());
-System.out.println(sb);		
 		bereken(sb);
 		if(!syntaxError)
 		{	String uitvoerTekst;
@@ -2232,21 +1898,19 @@ System.out.println(sb);
 					uitvoerTekst = uitvoerTekst.substring(0, indexE)+ "\u00D710"+ tienMachtString;
 				
 			}
-			uitvoerTekst = uitvoerTekst.replace(".", ",");
+			if(WiskOpdr.language.toString().equals("nl"))
+				uitvoerTekst = uitvoerTekst.replace(".", ",");
 			uitvoerVeld.setText(uitvoerTekst);
 		}
-		if(uitvoerVeld.getText().contains("NaN"));
-			mathError = true;
-		if(mathError)
+		if(sb2.toString().contains("NaN") || sb.toString().contains("NaN") || sb2.toString().contains("Infinity")
+				|| sb.toString().contains("Infinity"))
 			uitvoerVeld.setText("Math ERROR");
-		if(syntaxError)
+		else if(syntaxError)
 			uitvoerVeld.setText("Syntax ERROR");
-		else
-		{	nieuweInvoer = true;
-			breuk = false;
-			invers = false;
-			invLabel.setVisible(false);
-		}
+		nieuweInvoer = true;
+		breuk = false;
+		invers = false;
+		invLabel.setVisible(false);
 		if(!insert)
 		{	insert = true;
 			invoerVeld.getCaret().setVisible(false);
@@ -2293,7 +1957,11 @@ System.out.println(sb);
 			else if(e.getSource() == haakRechtsKnop)
 				voegInOfVervang(")", false);
 			else if(e.getSource() == kommaKnop)
-				voegInOfVervang(",", false);
+			{	if(WiskOpdr.language.toString().equals("nl"))
+					voegInOfVervang(",", false);
+				else
+					voegInOfVervang(".", false);
+			}
 			else if(e.getSource() == negatiefKnop)
 				voegInOfVervang("-", false);
 			else if(e.getSource() == ansKnop)
@@ -2412,35 +2080,120 @@ System.out.println(sb);
 		else if(kch == '/' || kch == ':')
 			voegInOfVervang("\u00F7", true);
 		else if(kch == ',' || kch == '.')
-			voegInOfVervang(",", false);//TO DO: afhankelijk maken van de taal.
-		else if(kch == '+' || kch == '-')
-			voegInOfVervang("" + (char)kch, true);
+		{	if(WiskOpdr.language.toString().equals("nl"))
+				voegInOfVervang(",", false);
+			else
+				voegInOfVervang(".", false);
+		}
+		else if(kch == '-')
+			voegInOfVervang("\u2212", true);
+		else if(kch == '+')
+			voegInOfVervang("+", true);
 		else if(kch =='(' || kch == ')' || Character.isDigit(kch))	
 			voegInOfVervang("" + (char)kch, false);
 			
 		e.consume();
 	}
 
+	public void mouseClicked(MouseEvent e) 
+	{	
+		
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mousePressed(MouseEvent e) 
+	{	String str = invoerVeld.getText();
+		int cp = invoerVeld.getCaretPosition();
+		
+		if(cp == 0 || cp == str.length())
+			return;
+		else if(str.charAt(cp) == 'i' || str.charAt(cp) == 'o' || str.charAt(cp - 1) == 'l' 
+			|| str.charAt(cp - 1) == 't' || (str.charAt(cp) == 'n' && str.charAt(cp + 1) == 's')
+			|| str.charAt(cp - 1) == '\u2081' || str.charAt(cp - 1) == '\u207F'
+			|| (str.charAt(cp - 1) == '\u207B' && cp > 1 && str.charAt(cp-2) != 'n' && (str.charAt(cp - 2) != 's' || (cp > 2 && str.charAt(cp - 3) == 'n'))))
+			cp--;
+		else if(cp < str.length() - 1 && str.charAt(cp + 1) == '\u207B' && (str.charAt(cp) == 'n' || (str.charAt(cp) == 's' && str.charAt(cp - 1) != 'n')))
+			cp -= 2;
+		else if(str.charAt(cp - 1) == 'n' && (str.charAt(cp) == 's' || str.charAt(cp) == '(')
+				|| (cp > 2 && str.charAt(cp - 2) == '\u207B' && (str.charAt(cp - 3) == 'n' || (str.charAt(cp - 3) == 's' && cp > 3 && str.charAt(cp - 4) != 'n')))
+				|| (str.charAt(cp) == '(' && (str.charAt(cp - 1) == 's' || str.charAt(cp - 1) == 'g')))
+			cp++;
+		else if((cp < str.length() - 1 && str.charAt(cp + 1) == '(' && (str.charAt(cp - 1) == 'o' || str.charAt(cp) == 'n')) 
+			|| (cp > 1 && str.charAt(cp - 1) == '\u207B' && (str.charAt(cp - 2) == 'n' || (str.charAt(cp - 2) == 's' && cp > 2 && str.charAt(cp - 3) != 'n'))))
+			cp += 2;
+		else if(str.charAt(cp) == '\u207B' && (str.charAt(cp - 1) == 'n' || (str.charAt(cp - 1) == 's' && cp > 1 && str.charAt(cp - 2) != 'n')))
+			cp += 3;
+				
+		invoerVeld.setCaretPosition(cp);
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int ss = invoerVeld.getSelectionStart();
+		int se = invoerVeld.getSelectionEnd();
+		String str = invoerVeld.getText();
+		
+		if(ss > 0 && se - ss > 0)
+			if(str.charAt(ss) == 'i' || str.charAt(ss) == 'o' || str.charAt(ss - 1) == 'l' 
+				|| str.charAt(ss - 1) == 't' || (str.charAt(ss) == 'n' && str.charAt(ss + 1) == 's')
+				|| str.charAt(ss - 1) == '\u2081' || str.charAt(ss - 1) == '\u207F'
+				|| (str.charAt(ss - 1) == '\u207B' && ss > 1 && str.charAt(ss - 2) != 'n' && (str.charAt(ss - 2) != 's' || (ss > 2 && str.charAt(ss - 3) == 'n'))))
+				ss--;
+			else if(ss > 1 && (str.charAt(ss - 1) == 'i' || str.charAt(ss - 1) == 'o' 
+					|| (str.charAt(ss - 1) == 'a' && str.charAt(ss - 2) == 't') 
+					|| (str.charAt(ss - 1) == 'n' && (str.charAt(ss - 2) == 'l' || str.charAt(ss) == 's'))))
+				ss -= 2;
+			else if(ss > 2 && (str.charAt(ss - 2) == 'i' || str.charAt(ss - 2) == 'o' 
+				|| (str.charAt(ss - 2) == 'a' && str.charAt(ss - 3) == 't')))
+				ss -= 3;
+			else if(ss > 3 && str.charAt(ss - 1) == '\u207B' && (str.charAt(ss - 3) == 'i' 
+				|| str.charAt(ss - 3) == 'o' || (str.charAt(ss - 3) == 'a' && str.charAt(ss - 4) == 't')))
+				ss -= 4;
+			else if(ss > 4 && str.charAt(ss - 2) == '\u207B' && (str.charAt(ss - 4) == 'i' 
+				|| str.charAt(ss - 4) == 'o' || (str.charAt(ss - 4) == 'a' && str.charAt(ss - 5) == 't')))
+				ss -= 5;
+		
+		if(se < str.length() && se - ss > 0)
+			if(se > 4 && str.charAt(se - 2) == '\u207B' && (str.charAt(se - 4) == 'i' 
+				|| str.charAt(se - 4) == 'o' || (str.charAt(se - 4) == 'a' && str.charAt(se - 5) == 't')))
+				se++;
+			else if(se > 3 && str.charAt(se - 1) == '\u207B' && (str.charAt(se - 3) == 'i' 
+				|| str.charAt(se - 3) == 'o' || (str.charAt(se - 3) == 'a' && str.charAt(se - 4) == 't')))
+				se += 2;
+			else if(se > 2 && str.length() > 5 && str.charAt(se) == '\u207B' && (str.charAt(se - 2) == 'i' 
+				|| str.charAt(se - 2) == 'o' || (str.charAt(se - 2) == 'a' && str.charAt(se - 3) == 't')))
+				se += 3;
+			else if(se > 1 && se < str.length() - 1 && str.charAt(se + 1) == '\u207B' && (str.charAt(se - 1) == 'i' 
+				|| str.charAt(se - 1) == 'o' || (str.charAt(se - 1) == 'a' && str.charAt(se - 2) == 't')))
+				se += 4;
+			else if(se > 0 && se < str.length() - 2 && str.charAt(se + 2) == '\u207B' && (str.charAt(se) == 'i' 
+				|| str.charAt(se) == 'o' || (str.charAt(se) == 'a' && str.charAt(se - 1) == 't')))
+				se += 5;
+			else if(se > 2 && (str.charAt(se - 2) == 'i' || str.charAt(se - 2) == 'o' 
+				|| (str.charAt(se - 2) == 'a' && str.charAt(se - 3) == 't')))
+				se++;
+			else if((se > 1 && (str.charAt(se - 1) == 'n' || str.charAt(se - 1) == '\u207F' || str.charAt(se - 1) == '\u207B'
+					|| str.charAt(se - 1) == '\u2081') || (se > 2 && str.charAt(se - 2) == 'o')))
+				se++;
+			else if(str.charAt(se) == 'n' || (se > 1 && str.charAt(se - 1) == 'o'))
+				se += 2;
+			else if(str.charAt(se) == 'o' || (se > 0 && str.charAt(se - 1) == 's' && str.charAt(se) == 'i')
+					|| (se > 0 && str.charAt(se - 1) == 't' && str.charAt(se) == 'a'))
+				se += 3;
+		
+		invoerVeld.setSelectionStart(ss);
+		invoerVeld.setSelectionEnd(se);
+			
+		
+	}
+
 }
-/*
- * TO DO:
- *
- * graden/radialen instelbaar maken (voor wetenschappelijke versie iig).
- * Door leerling of door auteur?? --> Lijkt te werken nu; backwards compatible? Lijkt me wel.
- * 
- * Alle print-statements weer verwijderen. 
- * 
- * Bugs en bugjes:
- *  - bij opstarten rekenmachine lukt toetsenbord-invoer niet, daarvoor moet je eerst ergens op klikken.
- *  - je kunt met de cursor midden in tekst zoals cos klikken, dan kun een deel daarvan verwijderen. Wil ik eigenlijk niet; 
- *  liever dan cursor naar begin of eind daarvan laten springen.
- *  - Volgens de rekenmachine is de derdemachtswortel van -27 NaN. 
- *  Mogelijk hiermee samenhangend: 27^(-1/3 (als breuk)) geeft een syntaxerror
- *  --> mogelijkheden voor NaN / mathError beter implementeren.
- *  - Na een Syntax Error is het misschien logischer als nieuwe invoer aan gaat. Maar die moet wel weer uit als je bijv in de invoer klikt. 
- *  (Is misschien nu ook al zo bij nieuwe invoer).
- *  
- *  Taalafhankelijk maken: met name punten en komma's. 
- *  
- *  
- */
