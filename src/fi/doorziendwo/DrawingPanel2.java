@@ -831,7 +831,7 @@ public static void showTime(String comment)
             slider = new Slider2(this, min, max);
             if (mouseMode == FOLDOUT)
             {   currentFoldOut = sliderValue;
-            	flatButton = new LWButton(Table.lookUp("flatText"),
+            	flatButton = new LWButton(DoorzienDWO.rb.getString("flatText"),
                              30, slider.getSize().height);
                 flatButton.setLocation(
                     panel3D.getSize().width - flatButton.getSize().width,
@@ -1737,7 +1737,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             clickedPoint = null;
             clickedEdgeWithPoint = null;
             
-            owner.helpBar.setText(Table.lookUp("linePoint1Text"));
+            owner.helpBar.setText(DoorzienDWO.rb.getString("linePoint1Text"));
             // now wait for mouse action
         }
         else if (stepNum == 1)
@@ -1839,7 +1839,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 movedEdgeWithPoint = null;
                 clickedPoint = null;
                 clickedEdgeWithPoint = null;
-                owner.helpBar.setText(Table.lookUp("linePoint2Text"));                            
+                owner.helpBar.setText(DoorzienDWO.rb.getString("linePoint2Text"));                            
             }
             else if (clickedEdgeWithPoint != null)
             {   
@@ -1864,7 +1864,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 movedEdgeWithPoint = null;
                 clickedPoint = null;
                 clickedEdgeWithPoint = null;
-                owner.helpBar.setText(Table.lookUp("linePoint2Text"));                            
+                owner.helpBar.setText(DoorzienDWO.rb.getString("linePoint2Text"));                            
             }
             
 
@@ -2106,7 +2106,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 panel3D.initializeModel(currentObjectGroup, false);        
             }    
             addToHistory();
-            owner.helpBar.setText(Table.lookUp("rotateText"));                                    
+            owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                                    
             tempObjectGroup = null;
             tempObjectGroup2 = null;            
             //fillPlanes(planesFilled);            
@@ -2225,7 +2225,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             //fillPlanes(planesFilled);
             // originalObject opnieuw!
             mouseMode = INERT;
-            owner.helpBar.setText(Table.lookUp("rotateText"));                                            
+            owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                                            
             tempObjectGroup = null;
             setNumLines(numLines - 1);        
             if (showCut)
@@ -2296,7 +2296,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
         fillPlanes(planesFilled);
         panel3D.initializeModel(currentObjectGroup, false);        
         //fillPlanes(planesFilled);
-        owner.helpBar.setText(Table.lookUp("rotateText"));                                            
+        owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                                            
        if (showCut)
            updateCutPanel();
         
@@ -2361,7 +2361,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
         fillPlanes(planesFilled);
         panel3D.initializeModel(currentObjectGroup, false);        
         //fillPlanes(planesFilled);
-        owner.helpBar.setText(Table.lookUp("rotateText"));                                            
+        owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                                            
         if (showCut)
             updateCutPanel();
         
@@ -2462,7 +2462,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             clickedPoint = null;
             clickedEdgeWithPoint = null;
             
-            owner.helpBar.setText(Table.lookUp("planePoint1Text"));
+            owner.helpBar.setText(DoorzienDWO.rb.getString("planePoint1Text"));
             // now wait for mouse action
         }
         // one point indicated/choosen, process this
@@ -2580,7 +2580,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
                 clickedEdgeWithPoint = null;
             }
             
-            owner.helpBar.setText(Table.lookUp("planePoint2Text"));            
+            owner.helpBar.setText(DoorzienDWO.rb.getString("planePoint2Text"));            
             // now wait again for mouse action
         }    
         // two points choosen, process these
@@ -2871,7 +2871,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
 // maak de lijn als je hem nog niet hebt
             }            
             
-            owner.helpBar.setText(Table.lookUp("planePoint3Text"));            
+            owner.helpBar.setText(DoorzienDWO.rb.getString("planePoint3Text"));            
         }
         // third point choosen
         else if (stepNum == 3)
@@ -3160,7 +3160,7 @@ if (Math.abs(rotAngle) > Vector3D.NZero)
             }
             addToHistory();
             // aan het einde 
-            owner.helpBar.setText(Table.lookUp("rotateText"));                        
+            owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                        
             tempObjectGroup = null;            
             tempObjectGroup2 = null;                        
 //            fillPlanes(planesFilled);
@@ -3617,7 +3617,7 @@ if (currentObjectGroup.objects.size() > 1)
             }
             // dit altijd
             // aan het einde 
-            owner.helpBar.setText(Table.lookUp("rotateText"));                        
+            owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                        
             tempObjectGroup = null;            
             tempObjectGroup2 = null;                        
             mouseMode = INERT;
@@ -3722,7 +3722,7 @@ if (currentObjectGroup.objects.size() > 1)
             //fillPlanes(planesFilled);
             // originalObject opnieuw!
             mouseMode = INERT;
-            owner.helpBar.setText(Table.lookUp("rotateText"));                                            
+            owner.helpBar.setText(DoorzienDWO.rb.getString("rotateText"));                                            
             setNumPlanes(numPlanes - 1);        
             if (showCut)
             {   if (planeChoosen.equals(cutPlane))

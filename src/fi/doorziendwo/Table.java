@@ -12,7 +12,9 @@ import java.util.*;
 public class Table
 {   static String[][] contents =
     //   keys               nederlands              engels             spaans
-    {   // start button
+    {   
+	
+		// start button
         {"startButtonText", "Start Doorzien 4",
                             "Start Doorzien 4",
                             ""},
@@ -459,10 +461,13 @@ public class Table
 //            languageCode = 3;
         else languageCode = 1;
     }
+    
+/*    
     public static String lookUp(String key)
     {   if (table.containsKey(key))
             return (String) table.get(key);
         else
             return "";
     }
+*/    
 } // class Table

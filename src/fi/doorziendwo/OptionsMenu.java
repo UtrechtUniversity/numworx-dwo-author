@@ -78,7 +78,7 @@ public class OptionsMenu extends Menu
 	}
 	// short cut for table lookup
     public String tt(String s)
-	{   return Table.lookUp(s);
+	{   return DoorzienDWO.rb.getString(s);
 	}
     // return the MenuItem with name itemName (or null)
 	public MenuItem getItem(String itemName)

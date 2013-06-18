@@ -37,7 +37,7 @@ class UF
                 fractionalString = zeros(decs - fractionalString.length()) +
                                    fractionalString;
             result = integerString + 
-                     Table.lookUp("decSep") + fractionalString;
+            	DoorzienDWO.rb.getString("decSep") + fractionalString;
         }
         return result;
     }

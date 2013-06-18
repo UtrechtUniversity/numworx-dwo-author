@@ -136,7 +136,7 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		currentY += height + offset / 2;
 */		
 		
-		viewerOptiesLabel = new JLabel(Table.lookUp("EditPanel_vieweropties"));
+		viewerOptiesLabel = new JLabel(DoorzienDWO.rb.getString("EditPanel_vieweropties"));
 		viewerOptiesLabel.setFont(theBoldFont);
 		viewerOptiesLabel.setBackground(getBackground());
 		viewerOptiesLabel.setBounds(currentX, currentY, width, height2);
@@ -144,34 +144,34 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		
 		currentY += height2 + offset / 2;
 		
-		rotateOptionCB = maakCheckBox(Table.lookUp("EditPanel_draaibaar"), 
+		rotateOptionCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_draaibaar"), 
 		        currentX, currentY, width, height, rotateOption);
 		
 		currentY += height + offset / 2;
 		
-		borderOptionCB = maakCheckBox(Table.lookUp("EditPanel_Rand"), 
+		borderOptionCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_Rand"), 
 				currentX, currentY, width, height, borderOption);
 		
 		currentY += height + offset / 2;
 		
-		designOptionCB = maakCheckBox(Table.lookUp("EditPanel_ontwerpmogelijkheid"), 
+		designOptionCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_ontwerpmogelijkheid"), 
 				currentX, currentY, width, height, designOption);
 		designOptionCB.setEnabled(viewerModus);
 		
 		currentY += height + offset / 2;
 		
-		resetOptionCB = maakCheckBox(Table.lookUp("EditPanel_reset-optie"), 
+		resetOptionCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_reset-optie"), 
 				currentX, currentY, width, height, resetOption);
 		resetOptionCB.setEnabled(viewerModus);
 		
 		currentY += height + offset / 2;
 		
-		foldOptionCB = maakCheckBox(Table.lookUp("EditPanel_vouwslider"), 
+		foldOptionCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_vouwslider"), 
 				currentX, currentY, width, height, foldOption);
 		
 		currentY += height + offset / 2;
 
-		doorzienOptiesLabel = new JLabel(Table.lookUp("EditPanel_doorzienopties"));
+		doorzienOptiesLabel = new JLabel(DoorzienDWO.rb.getString("EditPanel_doorzienopties"));
 		doorzienOptiesLabel.setFont(theBoldFont);
 		doorzienOptiesLabel.setBackground(getBackground());
 		doorzienOptiesLabel.setBounds(currentX, currentY, width, height2);
@@ -179,51 +179,51 @@ public class DoorzienInteractieEditPanel extends JPanel implements InteractieEdi
 		
 		currentY += height2 + offset / 2;
 
-		demoOptieCB = maakCheckBox(Table.lookUp("EditPanel_demoOptie"), 
+		demoOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_demoOptie"), 
 				  				   currentX, currentY, width, height, demo);
 		currentY += height + offset;// / 2;
 		
-		figurenMenuOptieCB = maakCheckBox(Table.lookUp("EditPanel_figurenMenuOptie"), 
+		figurenMenuOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_figurenMenuOptie"), 
 										  currentX, currentY, width, height, figurenMenuOptie);
 		currentY += height + offset / 2;
 		
-		optiesMenuOptieCB = maakCheckBox(Table.lookUp("EditPanel_optiesMenuOptie"), 
+		optiesMenuOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_optiesMenuOptie"), 
 				  currentX, currentY, width, height, optiesMenuOptie);
 		currentY += height + offset / 2;
 		
-		helpBarOptieCB = maakCheckBox(Table.lookUp("EditPanel_helpBarOptie"), 
+		helpBarOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_helpBarOptie"), 
 				  currentX, currentY, width, height, helpBarOptie);
 		currentY += height + offset;// / 2;
 
-		lijnTekenOptieCB = maakCheckBox(Table.lookUp("EditPanel_lijnTekenOptie"), 
+		lijnTekenOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_lijnTekenOptie"), 
 				  currentX, currentY, width, height, lijnTekenOptie);
 		currentY += height + offset / 2;
 
-		lijnVerlengOptieCB = maakCheckBox(Table.lookUp("EditPanel_lijnVerlengOptie"), 
+		lijnVerlengOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_lijnVerlengOptie"), 
 				  currentX, currentY, width, height, lijnVerlengOptie);
 		currentY += height + offset / 2;
 		
-		vlakTekenOptieCB = maakCheckBox(Table.lookUp("EditPanel_vlakTekenOptie"), 
+		vlakTekenOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_vlakTekenOptie"), 
 				  currentX, currentY, width, height, vlakTekenOptie);
 		currentY += height + offset / 2;
 		
-		evenwijdigVlakOptieCB = maakCheckBox(Table.lookUp("EditPanel_evenwijdigVlakOptie"), 
+		evenwijdigVlakOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_evenwijdigVlakOptie"), 
 				  currentX, currentY, width, height, evenwijdigVlakOptie);
 		currentY += height + offset / 2;
 
-		toonDoorsnedeOptieCB = maakCheckBox(Table.lookUp("EditPanel_toonDoorsnedeOptie"), 
+		toonDoorsnedeOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_toonDoorsnedeOptie"), 
 				  currentX, currentY, width, height, toonDoorsnedeOptie);
 		currentY += height + offset / 2;
 		
-		splitsFiguurOptieCB = maakCheckBox(Table.lookUp("EditPanel_splitsFiguurOptie"), 
+		splitsFiguurOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_splitsFiguurOptie"), 
 				  currentX, currentY, width, height, splitsFiguurOptie);
 		currentY += height + offset / 2;
 
-		bouwplaatOptieCB = maakCheckBox(Table.lookUp("EditPanel_bouwplaatOptie"), 
+		bouwplaatOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_bouwplaatOptie"), 
 				  currentX, currentY, width, height, bouwplaatOptie);
 		currentY += height + offset;
 		
-		previewOptieCB = maakCheckBox(Table.lookUp("EditPanel_previewOptie"), 
+		previewOptieCB = maakCheckBox(DoorzienDWO.rb.getString("EditPanel_previewOptie"), 
 				  currentX, currentY, width, height, previewOptie);
 		currentY += height + offset / 2;
 

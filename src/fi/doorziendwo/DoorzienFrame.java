@@ -857,7 +857,7 @@ public class DoorzienFrame extends Frame
 	
     // shortcut for tablelookup
 	public String tt(String s)
-	{   return Table.lookUp(s);
+	{   return DoorzienDWO.rb.getString(s);
 	}
 	// process menu choices
     public void processMenuChoice(MenuItem choosen)

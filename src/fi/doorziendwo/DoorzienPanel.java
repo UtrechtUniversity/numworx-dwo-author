@@ -314,13 +314,13 @@ public class DoorzienPanel extends JPanel
         topBar.setLayout(null);
 
 		menuBar = new JMenuBar();
-		figurenMenu = new JMenu(Table.lookUp("figureText"));
+		figurenMenu = new JMenu(DoorzienDWO.rb.getString("figureText"));
 		
 		maakFigurenMenu();
 		
 		menuBar.add(figurenMenu);
 		
-		optiesMenu = new JMenu(Table.lookUp("optionsText"));
+		optiesMenu = new JMenu(DoorzienDWO.rb.getString("optionsText"));
 
 		maakOptiesMenu();
 		
@@ -400,22 +400,22 @@ public class DoorzienPanel extends JPanel
     }
     public void maakOptiesMenu()
     {
-		helpPuntenItem = new JCheckBoxMenuItem(Table.lookUp("helpPointsText"));
+		helpPuntenItem = new JCheckBoxMenuItem(DoorzienDWO.rb.getString("helpPointsText"));
 		optiesMenu.add(helpPuntenItem);
 		helpPuntenItem.addActionListener(new MenuListener());
 		
-		lettersItem = new JCheckBoxMenuItem(Table.lookUp("lettersText"));
+		lettersItem = new JCheckBoxMenuItem(DoorzienDWO.rb.getString("lettersText"));
 		optiesMenu.add(lettersItem);
 		lettersItem.addActionListener(new MenuListener());
 		
 		ButtonGroup projectieGroep = new ButtonGroup();
-		centraleProjectieItem = new JRadioButtonMenuItem(Table.lookUp("centralProjText"));
+		centraleProjectieItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("centralProjText"));
 		projectieGroep.add(centraleProjectieItem);
 		centraleProjectieItem.setSelected(true);
 		optiesMenu.add(centraleProjectieItem);
 		centraleProjectieItem.addActionListener(new MenuListener());
 		
-		parallelProjectieItem = new JRadioButtonMenuItem(Table.lookUp("parallelProjText"));
+		parallelProjectieItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("parallelProjText"));
 		projectieGroep.add(parallelProjectieItem);
 		optiesMenu.add(parallelProjectieItem);
 		parallelProjectieItem.addActionListener(new MenuListener());
@@ -426,135 +426,135 @@ public class DoorzienPanel extends JPanel
     {
     	ButtonGroup figurenGroep = new ButtonGroup();
 
-    	achtvlakItem = new JRadioButtonMenuItem(Table.lookUp("octahedronText"));
+    	achtvlakItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("octahedronText"));
     	figurenGroep.add(achtvlakItem);
     	figurenMenu.add(achtvlakItem);
     	achtvlakItem.addActionListener(new MenuListener());
     	
-    	balkItem = new JRadioButtonMenuItem(Table.lookUp("blockText"));
+    	balkItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("blockText"));
     	figurenGroep.add(balkItem);
     	figurenMenu.add(balkItem);
     	balkItem.addActionListener(new MenuListener());
   
-    	cilinderItem = new JRadioButtonMenuItem(Table.lookUp("cylinderText"));
+    	cilinderItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cylinderText"));
     	figurenGroep.add(cilinderItem);
     	figurenMenu.add(cilinderItem);
     	cilinderItem.addActionListener(new MenuListener());
     	
-    	huizenMenu = new JMenu(Table.lookUp("housesText"));
+    	huizenMenu = new JMenu(DoorzienDWO.rb.getString("housesText"));
     	figurenMenu.add(huizenMenu);
     	
-    	piramideHuisItem = new JRadioButtonMenuItem(Table.lookUp("pirHouseText"));
+    	piramideHuisItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("pirHouseText"));
     	figurenGroep.add(piramideHuisItem);
     	huizenMenu.add(piramideHuisItem);
     	piramideHuisItem.addActionListener(new MenuListener());
     	
-    	schildHuisItem = new JRadioButtonMenuItem(Table.lookUp("edgeHouseText"));
+    	schildHuisItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("edgeHouseText"));
     	figurenGroep.add(schildHuisItem);
     	huizenMenu.add(schildHuisItem);
     	schildHuisItem.addActionListener(new MenuListener());
     	
-    	kegelsMenu = new JMenu(Table.lookUp("conesText"));
+    	kegelsMenu = new JMenu(DoorzienDWO.rb.getString("conesText"));
     	figurenMenu.add(kegelsMenu);
     	
-    	kegel1Item = new JRadioButtonMenuItem(Table.lookUp("cone1Text"));
+    	kegel1Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cone1Text"));
     	figurenGroep.add(kegel1Item);
     	kegelsMenu.add(kegel1Item);
     	kegel1Item.addActionListener(new MenuListener());
 
-    	kegel2Item = new JRadioButtonMenuItem(Table.lookUp("cone2Text"));
+    	kegel2Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cone2Text"));
     	figurenGroep.add(kegel2Item);
     	kegelsMenu.add(kegel2Item);
     	kegel2Item.addActionListener(new MenuListener());
 
-    	kegel3Item = new JRadioButtonMenuItem(Table.lookUp("cone3Text"));
+    	kegel3Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cone3Text"));
     	figurenGroep.add(kegel3Item);
     	kegelsMenu.add(kegel3Item);
     	kegel3Item.addActionListener(new MenuListener());
 
-    	kegel4Item = new JRadioButtonMenuItem(Table.lookUp("cone4Text"));
+    	kegel4Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cone4Text"));
     	figurenGroep.add(kegel4Item);
     	kegelsMenu.add(kegel4Item);
     	kegel4Item.addActionListener(new MenuListener());
     	
-    	kubusItem = new JRadioButtonMenuItem(Table.lookUp("cubeText"));
+    	kubusItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("cubeText"));
     	figurenGroep.add(kubusItem);
     	kubusItem.setSelected(true);
     	figurenMenu.add(kubusItem);
     	kubusItem.addActionListener(new MenuListener());
     	
-    	piramidesMenu = new JMenu(Table.lookUp("piramidsText"));
+    	piramidesMenu = new JMenu(DoorzienDWO.rb.getString("piramidsText"));
     	figurenMenu.add(piramidesMenu);
     	
-    	piramide3Item = new JRadioButtonMenuItem(Table.lookUp("threePiramidText"));
+    	piramide3Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("threePiramidText"));
     	figurenGroep.add(piramide3Item);
     	piramidesMenu.add(piramide3Item);
     	piramide3Item.addActionListener(new MenuListener());
     	
-    	piramide4Item = new JRadioButtonMenuItem(Table.lookUp("fourPiramidText"));
+    	piramide4Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("fourPiramidText"));
     	figurenGroep.add(piramide4Item);
     	piramidesMenu.add(piramide4Item);
     	piramide4Item.addActionListener(new MenuListener());
 
-    	piramide5Item = new JRadioButtonMenuItem(Table.lookUp("fivePiramidText"));
+    	piramide5Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("fivePiramidText"));
     	figurenGroep.add(piramide5Item);
     	piramidesMenu.add(piramide5Item);
     	piramide5Item.addActionListener(new MenuListener());
 
-    	piramide6Item = new JRadioButtonMenuItem(Table.lookUp("sixPiramidText"));
+    	piramide6Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("sixPiramidText"));
     	figurenGroep.add(piramide6Item);
     	piramidesMenu.add(piramide6Item);
     	piramide6Item.addActionListener(new MenuListener());
 
-    	piramide7Item = new JRadioButtonMenuItem(Table.lookUp("sevenPiramidText"));
+    	piramide7Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("sevenPiramidText"));
     	figurenGroep.add(piramide7Item);
     	piramidesMenu.add(piramide7Item);
     	piramide7Item.addActionListener(new MenuListener());
 
-    	piramide8Item = new JRadioButtonMenuItem(Table.lookUp("eightPiramidText"));
+    	piramide8Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("eightPiramidText"));
     	figurenGroep.add(piramide8Item);
     	piramidesMenu.add(piramide8Item);
     	piramide8Item.addActionListener(new MenuListener());
     	
-    	prismasMenu = new JMenu(Table.lookUp("prismsText"));
+    	prismasMenu = new JMenu(DoorzienDWO.rb.getString("prismsText"));
     	figurenMenu.add(prismasMenu);
     	
-      	prisma3Item = new JRadioButtonMenuItem(Table.lookUp("threePrismText"));
+      	prisma3Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("threePrismText"));
     	figurenGroep.add(prisma3Item);
     	prismasMenu.add(prisma3Item);
     	prisma3Item.addActionListener(new MenuListener());
     	
-      	prisma4Item = new JRadioButtonMenuItem(Table.lookUp("fourPrismText"));
+      	prisma4Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("fourPrismText"));
     	figurenGroep.add(prisma4Item);
     	prismasMenu.add(prisma4Item);
     	prisma4Item.addActionListener(new MenuListener());
 
-      	prisma5Item = new JRadioButtonMenuItem(Table.lookUp("fivePrismText"));
+      	prisma5Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("fivePrismText"));
     	figurenGroep.add(prisma5Item);
     	prismasMenu.add(prisma5Item);
     	prisma5Item.addActionListener(new MenuListener());
     	
-      	prisma6Item = new JRadioButtonMenuItem(Table.lookUp("sixPrismText"));
+      	prisma6Item = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("sixPrismText"));
     	figurenGroep.add(prisma6Item);
     	prismasMenu.add(prisma6Item);
     	prisma6Item.addActionListener(new MenuListener());
     	
-    	twaalfvlakItem = new JRadioButtonMenuItem(Table.lookUp("dodecahedronText"));
+    	twaalfvlakItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("dodecahedronText"));
     	figurenGroep.add(twaalfvlakItem);
     	figurenMenu.add(twaalfvlakItem);
     	twaalfvlakItem.addActionListener(new MenuListener());
     	
-    	twintigvlakItem = new JRadioButtonMenuItem(Table.lookUp("icosahedronText"));
+    	twintigvlakItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("icosahedronText"));
     	figurenGroep.add(twintigvlakItem);
     	figurenMenu.add(twintigvlakItem);
     	twintigvlakItem.addActionListener(new MenuListener());
     	
-    	viervlakItem = new JRadioButtonMenuItem(Table.lookUp("tetrahedronText"));
+    	viervlakItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("tetrahedronText"));
     	figurenGroep.add(viervlakItem);
     	figurenMenu.add(viervlakItem);
     	viervlakItem.addActionListener(new MenuListener());
     	
-    	mijnFiguurItem = new JRadioButtonMenuItem(Table.lookUp("myFigureText"));
+    	mijnFiguurItem = new JRadioButtonMenuItem(DoorzienDWO.rb.getString("myFigureText"));
     	figurenGroep.add(mijnFiguurItem);
     	figurenMenu.add(mijnFiguurItem);
     	mijnFiguurItem.addActionListener(new MenuListener());
@@ -577,7 +577,7 @@ public class DoorzienPanel extends JPanel
 
 	   // shortcut for tablelookup
 	public String tt(String s)
-	{   return Table.lookUp(s);
+	{   return DoorzienDWO.rb.getString(s);
 	}
 	
     public void resetProjection(int proj)

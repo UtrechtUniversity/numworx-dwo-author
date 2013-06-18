@@ -28,6 +28,11 @@ import fi.beans.wiskopdrbeans.*;
 public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApplet
 {   // attributes
 
+	protected static ResourceBundle rb;
+	protected static String langArg;
+	public static Locale language;
+	
+	
     // scorm
     protected SCORM12APIInterface api;
     private long sessionStartTime;
@@ -42,11 +47,9 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
     
     public static Applet applet;
     
-    // language string
-    static String langArg;
     // the langage lookup table
     // NOTE: static so it can be accessed from other compilation units
-    static Table textTable;
+    //static Table textTable;
 
     // parametrization strings
     String figureString = null;
@@ -103,13 +106,21 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 	ViewPanel viewPanel, viewPanelExample;
 	
 	public DoorzienDWO()
-	{	textTable = new Table("nl");
+	{	//textTable = new Table("nl");
+	
+		language = new Locale ("nl", "");
+		rb = ResourceBundle.getBundle("fi.doorziendwo.text.Text",language);	
+	
 		applet = this;
 		
 	}
 	
-	public DoorzienDWO(Locale lang)
-	{	textTable = new Table(lang.toString());
+	public DoorzienDWO(Locale language)
+	{	//textTable = new Table(lang.toString());
+	
+		this.language = language;
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.doorziendwo.text.Text", language);	
 		applet = this;
 		
 	}
@@ -142,7 +153,7 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
         // get language parameter if any (nl is default)
         langArg = getParameter("language");
         // create language lookup table
-        textTable = new Table(langArg);
+        //textTable = new Table(langArg);
         
         // read all parameter strings here
         figureString = getParameter("figures");
@@ -264,7 +275,7 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 			} 
 			catch(Exception e) {}
 			
-			UitlegButton uitlegButton = new UitlegButton(Table.lookUp("uitlegButtonViewerText"), uitleg);
+			UitlegButton uitlegButton = new UitlegButton(rb.getString("uitlegButtonViewerText"), uitleg);
 			uitlegButton.setBounds(630, getSize().height - 30, 90, 20);
 			uitlegButton.setFrameBackground(getBackground());
 			getContentPane().add(uitlegButton, 0);

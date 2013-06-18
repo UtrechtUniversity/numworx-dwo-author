@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.*;
 
@@ -22,6 +24,10 @@ public class HelpBar extends JPanel//Canvas
 
     String messageText = null;
     int messageX = 0;
+    
+	Font theFont = new Font("Dialog", Font.PLAIN, 12);
+	FontMetrics theFM = getFontMetrics(theFont);
+    
     
     public HelpBar(DoorzienFrame o)
     {   owner = o;
@@ -57,9 +63,13 @@ public class HelpBar extends JPanel//Canvas
 
     }    
     
-    public void paint(Graphics g)
+    public void paint(Graphics gr)
     {   
-        
+    	Graphics2D g = (Graphics2D) gr;
+		
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);        
+    	
         g.setColor(DoorzienFrame.helpBackground);
         g.fillRect(0, 0, getSize().width, getSize().height);
         g.setColor(Color.black);
@@ -68,7 +78,8 @@ public class HelpBar extends JPanel//Canvas
         g.drawLine(0, 0, 0, getSize().height - 1);
         g.drawLine(getSize().width - 1, 0, getSize().width - 1, getSize().height - 1);
         
-        Font fo = getFont();        
+        //Font fo = getFont();
+        Font fo = theFont;
         if ((text.length() > 0) && text.substring(0,1).equals("#"))
         {   g.setColor(Color.red);        
             fo = new Font(fo.getName(), Font.BOLD, fo.getSize());
