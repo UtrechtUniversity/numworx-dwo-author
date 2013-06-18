@@ -152,6 +152,11 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 		
         // get language parameter if any (nl is default)
         langArg = getParameter("language");
+		if (langArg == null) 
+			langArg = "nl";
+		language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.doorziendwo.text.Text",language);
+        
         // create language lookup table
         //textTable = new Table(langArg);
         
