@@ -747,7 +747,7 @@ System.out.println(beginExp.toString());
 			
 				int mScore = (int) userInput;
 
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{
 					scoreMax = mScore;
 				}
@@ -799,7 +799,7 @@ System.out.println(beginExp.toString());
 			
 				int mScore = (int) userInput;
 
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{
 					scoreMax = mScore;
 				}

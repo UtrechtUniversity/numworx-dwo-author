@@ -293,11 +293,15 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	}
 	
 	public int getScore()
-	{	return score;
+	{	if (kijkNaActief)
+			return score;
+		return 0;
 	}
 	
 	public int getScoreMax()
-	{	return scoreMax;
+	{	if (kijkNaActief)
+			return scoreMax;
+		return 0;
 	}
 	
 	public boolean isCorrect()
