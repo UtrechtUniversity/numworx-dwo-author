@@ -11,7 +11,7 @@ public class Vermenigvuldiging extends Expressie
 	public Vermenigvuldiging(Expressie e1,Expressie e2 )
 	{	kind1 = e1;
 		kind2 = e2;
-		operatorString = "·";
+		operatorString = "\u00b7";// "ï¿½";"Â·";
 		isVeelterm = false;
 		isProdukt = true;
 		isBasis = false;
