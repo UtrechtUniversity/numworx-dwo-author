@@ -985,27 +985,30 @@ private int mode;
     	for(int i = nakijkModel[9] + 3; i < 7; i++)
     		leerlingAntwoorden[i] = nakijkModel[i];
     	if(Arrays.equals(leerlingAntwoorden,nakijkModel))
-    		score = scoreMax;
+    	{	score = scoreMax;
+    		kruisjeLabel.setVisible(false);
+    		geelVinkjeLabel.setVisible(false);
+    		groenVinkjeLabel.setVisible(true);
+    	}
     	else
-    		score = 0;
-    	
+    	{	score = 0;
+    		kruisjeLabel.setVisible(true);
+    		geelVinkjeLabel.setVisible(false);
+    		groenVinkjeLabel.setVisible(false);
+    	}
     	ingevuld = true;
-    	 if (score == 0)
-         {	kruisjeLabel.setVisible(true);
-         	geelVinkjeLabel.setVisible(false);
-         	groenVinkjeLabel.setVisible(false);
-         }
-         else if (score < scoreMax)
+
+    	/* Geel vinkje komt niet voor:
+    	else if (score < scoreMax)
          {	kruisjeLabel.setVisible(false);
          	geelVinkjeLabel.setVisible(true);
          	groenVinkjeLabel.setVisible(false);
          }
     	 
          else // score==maxScore
-         {	kruisjeLabel.setVisible(false);
-         	geelVinkjeLabel.setVisible(false);
-         	groenVinkjeLabel.setVisible(true);
+         {	
          }
+         */
  //System.out.println("score = " + score);		
  		//fire actionEvent
  		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
