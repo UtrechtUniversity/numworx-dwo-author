@@ -10,10 +10,10 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionListener, InteractieEditPanel
 
-{	int editWidth = 190;
+{	int editWidth = 200;
 	int editHeight = 550; 
-	int cdipBreedte = 540; // startbreedte ip
-	int cdipHoogte = 330; // starthoogte ip
+	int cdipBreedte = 500; // startbreedte ip
+	int cdipHoogte = 300; // starthoogte ip
 	
 	Font theFont;
 	FontMetrics theFM;
@@ -29,9 +29,11 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	protected CalculatorDwoInteractiePanel cdip;
 	JRadioButton scientificButton, easyButton, citoButton;
 	ButtonGroup groep;
-	JCheckBox gradenInstelbaarBox;
+	JCheckBox gonioBox, logaritmeBox, gradenInstelbaarBox;
 	int rmMode = 1;
 	boolean	gradenInstelbaar = true;
+	boolean gonioKnoppen = true;
+	boolean logaritmeKnoppen = true;
 
 	
 	public CalculatorDwoInteractieEditPanel ()
@@ -51,6 +53,12 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		currentX = cdip.getSize().width + offset;
 		currentY = offset;
 		
+		citoButton = new JRadioButton(CalculatorDwo.rb.getString("citoButton"));
+		citoButton.setBounds(currentX, currentY, width, height);
+		add(citoButton);
+		
+		currentY += height + offset;
+		
 		easyButton = new JRadioButton(CalculatorDwo.rb.getString("eenvoudigButton"));
 		easyButton.setBounds(currentX, currentY, width, height);
 		add(easyButton);
@@ -64,20 +72,32 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		
 		currentY += height + offset;
 		
-		citoButton = new JRadioButton(CalculatorDwo.rb.getString("citoButton"));
-		citoButton.setBounds(currentX, currentY, width, height);
-		add(citoButton);
+		groep = new ButtonGroup();
+		groep.add(citoButton);
+		groep.add(easyButton);
+		groep.add(scientificButton);
+		
+		citoButton.addActionListener(this);
+		easyButton.addActionListener(this);
+		scientificButton.addActionListener(this);
+		
+		currentX += 20;
+		
+		gonioBox = new JCheckBox(CalculatorDwo.rb.getString("gonioBox"));
+		gonioBox.setBounds(currentX, currentY, width, height);
+		gonioBox.setSelected(true);
+		add(gonioBox);
+		gonioBox.addActionListener(this);
 		
 		currentY += height + offset;
 		
-		groep = new ButtonGroup();
-		groep.add(easyButton);
-		groep.add(citoButton);
-		groep.add(scientificButton);
+		logaritmeBox = new JCheckBox(CalculatorDwo.rb.getString("logaritmeBox"));
+		logaritmeBox.setBounds(currentX, currentY, width, height);
+		logaritmeBox.setSelected(true);
+		add(logaritmeBox);
+		logaritmeBox.addActionListener(this);
 		
-		easyButton.addActionListener(this);
-		scientificButton.addActionListener(this);
-		citoButton.addActionListener(this);
+		currentY += height + offset;
 		
 		gradenInstelbaarBox = new JCheckBox(CalculatorDwo.rb.getString("gradenInstelbaarBox"));
 		gradenInstelbaarBox.setBounds(currentX, currentY, width, height);
@@ -96,14 +116,20 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		gradenInstelbaarBox.setSelected(gradenInstelbaar);
 		if(rmMode == 0)
 		{	easyButton.setSelected(true);
+			gonioBox.setVisible(false);
+			logaritmeBox.setVisible(false);
 			gradenInstelbaarBox.setVisible(false);
 		}
 		else if(rmMode == 1)
 		{	scientificButton.setSelected(true);
+			gonioBox.setVisible(true);
+			logaritmeBox.setVisible(true);
 			gradenInstelbaarBox.setVisible(true);
 		}
 		else
 		{	citoButton.setSelected(true);
+			gonioBox.setVisible(false);
+			logaritmeBox.setVisible(false);
 			gradenInstelbaarBox.setVisible(false);
 		}
 		
@@ -163,17 +189,46 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		if(e.getSource() == easyButton)
 		{	rmMode = 0;
 			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gonioBox.setVisible(false);
+			logaritmeBox.setVisible(false);
 			gradenInstelbaarBox.setVisible(false);
 		}
 		else if(e.getSource() == scientificButton)
 		{	rmMode = 1;
 			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gonioBox.setVisible(true);
+			logaritmeBox.setVisible(true);
 			gradenInstelbaarBox.setVisible(true);
 		}
 		else if(e.getSource() == citoButton)
 		{	rmMode = 2;
 			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			gonioBox.setVisible(false);
+			logaritmeBox.setVisible(false);
 			gradenInstelbaarBox.setVisible(false);
+		}
+		else if(e.getSource() == gonioBox)
+		{
+			gonioKnoppen = gonioBox.isSelected();
+			cdip.gonioKnoppen = gonioKnoppen;
+			if(!gonioKnoppen)
+			{	gradenInstelbaar = false; 
+				gradenInstelbaarBox.setSelected(false);
+				gradenInstelbaarBox.setEnabled(false);
+			}
+			else
+			{
+				gradenInstelbaarBox.setSelected(gradenInstelbaar);
+				gradenInstelbaarBox.setEnabled(true);
+			}
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
+			
+		}
+		else if(e.getSource() == logaritmeBox)
+		{
+			logaritmeKnoppen = logaritmeBox.isSelected();
+			cdip.logaritmeKnoppen = logaritmeKnoppen;
+			cdip.zetRmMode(rmMode, gradenInstelbaar);
 		}
 		else if(e.getSource() == gradenInstelbaarBox)
 		{

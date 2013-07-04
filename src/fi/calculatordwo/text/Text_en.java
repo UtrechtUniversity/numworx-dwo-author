@@ -6,10 +6,13 @@ public class Text_en extends java.util.ListResourceBundle
         static final Object [] [] contents =
         {
             {	"welkomTekst" , "Welcome to Java" },
-            	 	
-        	{	"wetenschappelijkButton" , "Scientific version" },
-			{ 	"eenvoudigButton" , "Plain version" },
-            { 	"citoButton" , "Cito-version" },
+            
+            { 	"citoButton" , "Cito-version" },	 	
+            { 	"eenvoudigButton" , "Plain version" },
+            {	"wetenschappelijkButton" , "Scientific version" },
+			
+            {	"gonioBox", "Trigonometry-buttons"},
+            {	"logaritmeBox", "Logarithm-buttons"},
             {	"gradenInstelbaarBox", "Degrees or radians adjustable"},
 			
 			{	"gradenButton", "Degrees"},

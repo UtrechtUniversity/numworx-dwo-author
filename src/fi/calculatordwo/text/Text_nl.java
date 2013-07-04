@@ -7,10 +7,13 @@ public class Text_nl extends java.util.ListResourceBundle
         {
             {	"welkomTekst" , "Welkom bij Java" },
             	 	
-            {	"wetenschappelijkButton" , "Wetenschappelijk" },
-			{ 	"eenvoudigButton" , "Eenvoudig" },
             { 	"citoButton" , "Cito-versie" },
-            {	"gradenInstelbaarBox", "Graden of radialen instelbaar"},
+            { 	"eenvoudigButton" , "Eenvoudig" },
+            {	"wetenschappelijkButton" , "Wetenschappelijk" },
+            
+			{	"gonioBox", "Goniometrie-knoppen"},
+            {	"logaritmeBox", "Logaritme-knoppen"},
+            {	"gradenInstelbaarBox", "Graden/radialen instelbaar"},
             
             {	"gradenButton", "Graden"},
             {	"radialenButton", "Radialen"}

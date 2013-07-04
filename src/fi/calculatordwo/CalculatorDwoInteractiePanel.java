@@ -14,8 +14,8 @@ import fi.wiskopdr.WiskOpdr;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
-	int cdipBreedte = 540;
-	int cdipHoogte = 330;
+	int cdipBreedte = 500;
+	int cdipHoogte = 300;
 	
 	Font theFont, theLargeFont, theSmallFont;
 	FontMetrics theFM, theLargeFM, theSmallFM;
@@ -61,6 +61,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	boolean breuk = false;
 	int rmMode = 1;
 	boolean gradenInstelbaar = true;
+	boolean gonioKnoppen = true;
+	boolean logaritmeKnoppen = true;
+	
 	boolean graden = false;
 	boolean invers = false;
 	boolean insert = true;
@@ -77,7 +80,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 		theFont = new Font("Sansserif", Font.BOLD, 16);
 		theFM = getFontMetrics(theFont);
-		theLargeFont = new Font("Sansserif", Font.PLAIN, 18);
+		theLargeFont = new Font("Sansserif", Font.BOLD, 14);
 		theLargeFM = getFontMetrics(theLargeFont);
 		theSmallFont = new Font("Sansserif", Font.BOLD, 6);
 		theSmallFM = getFontMetrics(theSmallFont);
@@ -298,8 +301,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			}
 			
 			ondersteKnoppen.removeAll();
-			ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
-			
+			if(rmMode == 1 && gonioKnoppen && logaritmeKnoppen)
+				ondersteKnoppen.setLayout(new GridLayout(5, 8, 3, 3));
+			else if(rmMode == 1)
+				ondersteKnoppen.setLayout(new GridLayout(4, 8, 3, 3));
+			else
+				ondersteKnoppen.setLayout(new GridLayout(4, 6, 3, 3));
+				
 			ondersteKnoppen.add(getalKnop[7]);
 			ondersteKnoppen.add(getalKnop[8]);
 			ondersteKnoppen.add(getalKnop[9]);
@@ -308,7 +316,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			ondersteKnoppen.add(wortelKnop);
 			if(rmMode == 1)
 			{	ondersteKnoppen.add(nWortelKnop);
-				ondersteKnoppen.add(sinKnop);
+				if(gonioKnoppen)
+					ondersteKnoppen.add(sinKnop);
+				else if(logaritmeKnoppen)
+					ondersteKnoppen.add(eenGedeeldDoorKnop);
+				else
+					ondersteKnoppen.add(leegLabel[1]);
 			}
 			
 			ondersteKnoppen.add(getalKnop[4]);
@@ -318,8 +331,16 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			ondersteKnoppen.add(minKnop);
 			ondersteKnoppen.add(kwadraatKnop);
 			if(rmMode == 1)
-			{	ondersteKnoppen.add(logKnop);
-				ondersteKnoppen.add(cosKnop);
+			{	if(logaritmeKnoppen)
+					ondersteKnoppen.add(logKnop);
+				else
+					ondersteKnoppen.add(eenGedeeldDoorKnop);
+				if(gonioKnoppen)
+					ondersteKnoppen.add(cosKnop);
+				else if(logaritmeKnoppen)
+					ondersteKnoppen.add(breukKnop);
+				else
+					ondersteKnoppen.add(leegLabel[2]);
 			}
 			
 			ondersteKnoppen.add(getalKnop[1]);
@@ -329,25 +350,39 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			ondersteKnoppen.add(haakRechtsKnop);
 			ondersteKnoppen.add(machtKnop);
 			if(rmMode == 1)
-			{	ondersteKnoppen.add(lnKnop);
-				ondersteKnoppen.add(tanKnop);
+			{	if(logaritmeKnoppen)
+					ondersteKnoppen.add(lnKnop);
+				else
+					ondersteKnoppen.add(breukKnop);
+				if(gonioKnoppen)
+					ondersteKnoppen.add(tanKnop);
+				else if(logaritmeKnoppen)
+					ondersteKnoppen.add(expKnop);
+				else
+					ondersteKnoppen.add(invKnop);
 			}
 			
 			ondersteKnoppen.add(getalKnop[0]);
 			ondersteKnoppen.add(kommaKnop);
 			ondersteKnoppen.add(negatiefKnop);
 			ondersteKnoppen.add(piKnop);
-			if(rmMode == 1)
+			if(rmMode == 1 && logaritmeKnoppen)
 				ondersteKnoppen.add(eKnop);
 			ondersteKnoppen.add(ansKnop);
+			if(rmMode == 1 && !logaritmeKnoppen)
+				ondersteKnoppen.add(expKnop);
 			ondersteKnoppen.add(isKnop);
 			if(rmMode == 1)
-				ondersteKnoppen.add(invKnop);
-			
-			ondersteKnoppen.add(eenGedeeldDoorKnop);
-			ondersteKnoppen.add(breukKnop);
-			ondersteKnoppen.add(expKnop);
-			ondersteKnoppen.add(leegLabel[0]);
+			{	if(gonioKnoppen || logaritmeKnoppen)
+					ondersteKnoppen.add(invKnop);
+				if(gonioKnoppen && logaritmeKnoppen)
+				{
+					ondersteKnoppen.add(eenGedeeldDoorKnop);
+					ondersteKnoppen.add(breukKnop);
+					ondersteKnoppen.add(expKnop);
+					ondersteKnoppen.add(leegLabel[0]);
+				}
+			}
 			
 		}
 		else
