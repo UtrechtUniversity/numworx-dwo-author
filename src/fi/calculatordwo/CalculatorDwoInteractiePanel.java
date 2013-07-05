@@ -383,7 +383,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					ondersteKnoppen.add(leegLabel[0]);
 				}
 			}
-			
 		}
 		else
 		{	knoppenPanel.setLayout(new GridLayout(1, 2, 10, 5));
@@ -459,6 +458,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			rmMode = ((Integer) h.get("rmMode")).intValue();
 		if (h.containsKey("gradenInstelbaar"))
 			gradenInstelbaar = ((Boolean) h.get("gradenInstelbaar")).booleanValue();
+		if (h.containsKey("gonioKnoppen"))
+			gonioKnoppen = ((Boolean) h.get("gonioKnoppen")).booleanValue();
+		if (h.containsKey("logaritmeKnoppen"))
+			logaritmeKnoppen = ((Boolean) h.get("logaritmeKnoppen")).booleanValue();
 		zetRmMode(rmMode, gradenInstelbaar);
 		
 	}
@@ -468,6 +471,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			rmMode = ((Integer) h.get("rmMode")).intValue();
 		if (h.containsKey("gradenInstelbaar"))
 			gradenInstelbaar = ((Boolean) h.get("gradenInstelbaar")).booleanValue();
+		if (h.containsKey("gonioKnoppen"))
+			gonioKnoppen = ((Boolean) h.get("gonioKnoppen")).booleanValue();
+		if (h.containsKey("logaritmeKnoppen"))
+			logaritmeKnoppen = ((Boolean) h.get("logaritmeKnoppen")).booleanValue();
 		zetRmMode(rmMode, gradenInstelbaar);
 		
 	}
@@ -477,6 +484,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			rmMode = ((Integer) h.get("rmMode")).intValue();
 		if (h.containsKey("gradenInstelbaar"))
 			gradenInstelbaar = ((Boolean) h.get("gradenInstelbaar")).booleanValue();
+		if (h.containsKey("gonioKnoppen"))
+			gonioKnoppen = ((Boolean) h.get("gonioKnoppen")).booleanValue();
+		if (h.containsKey("logaritmeKnoppen"))
+			logaritmeKnoppen = ((Boolean) h.get("logaritmeKnoppen")).booleanValue();
 		zetRmMode(rmMode, gradenInstelbaar);
 	}
 
@@ -489,6 +500,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		Hashtable h = new Hashtable();
 		h.put("rmMode", new Integer(rmMode));
 		h.put("gradenInstelbaar", new Boolean(gradenInstelbaar));
+		h.put("gonioKnoppen", new Boolean(gonioKnoppen));
+		h.put("logaritmeKnoppen", new Boolean(logaritmeKnoppen));
 		
 		return h;
 	}
@@ -1508,7 +1521,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 	}
 	
-	
 	public void vindBBreukTot(int pos, StringBuffer sb)
 	{
 		vindGetalVoorBewerking(pos, sb);
@@ -2130,19 +2142,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		e.consume();
 	}
 
-	public void mouseClicked(MouseEvent e) 
-	{	
-		
+	public void mouseClicked(MouseEvent arg0) {	
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void mousePressed(MouseEvent e) 
@@ -2172,7 +2178,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		int ss = invoerVeld.getSelectionStart();
 		int se = invoerVeld.getSelectionEnd();
 		String str = invoerVeld.getText();

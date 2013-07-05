@@ -55,12 +55,14 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		
 		citoButton = new JRadioButton(CalculatorDwo.rb.getString("citoButton"));
 		citoButton.setBounds(currentX, currentY, width, height);
+		citoButton.setOpaque(false);
 		add(citoButton);
 		
 		currentY += height + offset;
 		
 		easyButton = new JRadioButton(CalculatorDwo.rb.getString("eenvoudigButton"));
 		easyButton.setBounds(currentX, currentY, width, height);
+		easyButton.setOpaque(false);
 		add(easyButton);
 		
 		currentY += height + offset;
@@ -68,6 +70,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		scientificButton = new JRadioButton(CalculatorDwo.rb.getString("wetenschappelijkButton"));
 		scientificButton.setSelected(true);
 		scientificButton.setBounds(currentX, currentY, width, height);
+		scientificButton.setOpaque(false);
 		add(scientificButton);
 		
 		currentY += height + offset;
@@ -86,6 +89,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		gonioBox = new JCheckBox(CalculatorDwo.rb.getString("gonioBox"));
 		gonioBox.setBounds(currentX, currentY, width, height);
 		gonioBox.setSelected(true);
+		gonioBox.setOpaque(false);
 		add(gonioBox);
 		gonioBox.addActionListener(this);
 		
@@ -94,6 +98,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		logaritmeBox = new JCheckBox(CalculatorDwo.rb.getString("logaritmeBox"));
 		logaritmeBox.setBounds(currentX, currentY, width, height);
 		logaritmeBox.setSelected(true);
+		logaritmeBox.setOpaque(false);
 		add(logaritmeBox);
 		logaritmeBox.addActionListener(this);
 		
@@ -102,6 +107,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		gradenInstelbaarBox = new JCheckBox(CalculatorDwo.rb.getString("gradenInstelbaarBox"));
 		gradenInstelbaarBox.setBounds(currentX, currentY, width, height);
 		gradenInstelbaarBox.setSelected(true);
+		gradenInstelbaarBox.setOpaque(false);
 		add(gradenInstelbaarBox);
 		gradenInstelbaarBox.addActionListener(this);
 
@@ -113,7 +119,13 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 			rmMode = ((Integer)h.get("rmMode")).intValue();
 		if(h.containsKey("gradenInstelbaar"))
 			gradenInstelbaar = ((Boolean)h.get("gradenInstelbaar")).booleanValue();
+		if(h.containsKey("gonioKnoppen"))
+			gonioKnoppen = ((Boolean) h.get("gonioKnoppen")).booleanValue();
+		if(h.containsKey("logaritmeKnoppen"))
+			logaritmeKnoppen = ((Boolean)h.get("logaritmeKnoppen")).booleanValue();
 		gradenInstelbaarBox.setSelected(gradenInstelbaar);
+		gonioBox.setSelected(gonioKnoppen);
+		logaritmeBox.setSelected(logaritmeKnoppen);
 		if(rmMode == 0)
 		{	easyButton.setSelected(true);
 			gonioBox.setVisible(false);
