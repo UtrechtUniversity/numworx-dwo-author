@@ -10,7 +10,7 @@ import javax.swing.text.DefaultCaret;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
-import fi.wiskopdr.WiskOpdr;
+//import fi.wiskopdr.WiskOpdr;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
@@ -120,7 +120,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		delKnop = maakButton("DEL", blauw, witblauw);
 		cKnop = maakButton("C", blauw, witblauw);
 		
-		if(WiskOpdr.language.toString().equals("nl"))
+		if(CalculatorDwo.language.toString().equals("nl"))
 			kommaKnop = maakButton(",", grijs, witblauw);
 		else
 			kommaKnop = maakButton(".", grijs, witblauw);
@@ -1945,7 +1945,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					uitvoerTekst = uitvoerTekst.substring(0, indexE)+ "\u00D710"+ tienMachtString;
 				
 			}
-			if(WiskOpdr.language.toString().equals("nl"))
+			if(CalculatorDwo.language.toString().equals("nl"))
 				uitvoerTekst = uitvoerTekst.replace(".", ",");
 			uitvoerVeld.setText(uitvoerTekst);
 		}
@@ -2004,7 +2004,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			else if(e.getSource() == haakRechtsKnop)
 				voegInOfVervang(")", false);
 			else if(e.getSource() == kommaKnop)
-			{	if(WiskOpdr.language.toString().equals("nl"))
+			{	if(CalculatorDwo.language.toString().equals("nl"))
 					voegInOfVervang(",", false);
 				else
 					voegInOfVervang(".", false);
@@ -2127,7 +2127,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		else if(kch == '/' || kch == ':')
 			voegInOfVervang("\u00F7", true);
 		else if(kch == ',' || kch == '.')
-		{	if(WiskOpdr.language.toString().equals("nl"))
+		{	if(CalculatorDwo.language.toString().equals("nl"))
 				voegInOfVervang(",", false);
 			else
 				voegInOfVervang(".", false);

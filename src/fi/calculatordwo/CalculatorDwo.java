@@ -15,6 +15,7 @@ import javax.swing.*;
 public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApplet 
 {
 	protected static ResourceBundle rb;
+	protected static Locale language;
 	protected SCORM12APIInterface api;
 	private TextField textField;
 	private CalculatorDwoInteractieEditPanel cdiep;
@@ -31,10 +32,11 @@ public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApp
 	
 	public CalculatorDwo(Locale language)
 	{	rb = ResourceBundle.getBundle("fi.calculatordwo.text.Text",language);
+		this.language = language;
 	}
 	
 	public CalculatorDwo()
-	{	Locale language = new Locale ("nl", "");
+	{	language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.calculatordwo.text.Text",language);
 	}
 	
@@ -49,7 +51,7 @@ public class CalculatorDwo extends JApplet implements ScormAppletIF, WiskOpdrApp
 		//instelling taal
 		String langArg = getParameter("language");
 		if ( langArg == null) langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.calculatordwo.text.Text",language);
 		
 		//instelling achtergrondkleur
