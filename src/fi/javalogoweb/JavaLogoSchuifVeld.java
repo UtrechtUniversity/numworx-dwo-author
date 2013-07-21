@@ -67,7 +67,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 	}
 	
 	public void initialize()
-	{	pcSizeWidthDefault = 400;
+	{	pcSizeWidthDefault = getWidth()-220;
 		pcSizeHeightDefault = 395;
 		pcLocXDefault = 190;
 		pcLocYDefault = 38;
