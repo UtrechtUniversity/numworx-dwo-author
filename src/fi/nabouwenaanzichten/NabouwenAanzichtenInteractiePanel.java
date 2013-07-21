@@ -1971,8 +1971,9 @@ newViewer = false;
 	}
 	
 	public int getScore()
-	{	//hier wordt de score berekend
-		return score;
+	{	if (kijkNaActief)
+			return score;
+		return 0;
 	}
 	
 	public int getScoreMax()
