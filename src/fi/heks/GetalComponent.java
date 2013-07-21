@@ -37,7 +37,7 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		String s;
 		if (bekend) {
 			if (isTemp)
-				s = Integer.toString(waarde) + "�C";
+				s = Integer.toString(waarde) + "\u2103";
 			else
 				s = Integer.toString(waarde);
 		} else {

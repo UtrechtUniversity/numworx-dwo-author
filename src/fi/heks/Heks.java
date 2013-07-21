@@ -16,6 +16,7 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 	static int bladNummer;
 
 	protected static ResourceBundle rb;
+	public static Locale language;
 
 	private SCORM12APIInterface api;
 	private long sessionStartTime;
@@ -57,7 +58,7 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		String langArg = getParameter("language");
 		if (langArg == null)
 			langArg = "nl";
-		Locale language = new Locale(langArg, "");
+		language = new Locale(langArg, "");
 		rb = ResourceBundle.getBundle("fi.heks.text.Text", language);
 
 		String bladNummerString = getParameter("blad");

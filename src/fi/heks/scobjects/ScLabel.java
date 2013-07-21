@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.JPanel;
 
+import fi.heks.Heks;
+
 public class ScLabel extends JPanel implements ScObject {
 	public static int CENTER = 0;
 	public static int RECHTS = 2;
@@ -31,6 +33,7 @@ public class ScLabel extends JPanel implements ScObject {
 		uitlijning = CENTER;
 		
 		setOpaque(false);
+		boolean textRtoL = !ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
 
 	}
 
@@ -90,5 +93,9 @@ public class ScLabel extends JPanel implements ScObject {
 
 	public void lijnUit(int soort) {
 		uitlijning = soort;
+		boolean textRtoL = !ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
+		if(textRtoL && uitlijning==2) uitlijning = 1;
+		if(textRtoL && uitlijning==1) uitlijning = 2;
+		
 	}
 }

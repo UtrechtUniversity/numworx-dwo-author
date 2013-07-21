@@ -1,8 +1,12 @@
 package fi.heks.scobjects;
 
+import java.awt.ComponentOrientation;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Label;
 import java.awt.RenderingHints;
+import fi.heks.Heks;
+
 
 public class ScTekstContainer extends ScContainer {
 	private String tekst;
