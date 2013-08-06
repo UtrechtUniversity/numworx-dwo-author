@@ -28,7 +28,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 	Font theBoldFont;
 	FontMetrics theBoldFM;
 	
-	int offset = 10;
+	int offset = 8;
 	boolean componentsCreated = false;
 	
 	boolean noSetBounds = false;	
@@ -37,7 +37,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 
 	JLabel taakNummerLabel, gridSizeLabel, oppervlakteRoodLabel, oppervlakteGrijsLabel, scoreMaxLabel;
 	JTextField gridSizeVeld, oppervlakteRoodVeld, oppervlakteGrijsVeld, scoreMaxVeld;
-	JCheckBox balkOnderaanBox, roosterZichtbaarBox, groteBalletjesBox, schaduwZichtbaarBox, afmetingenZichtbaarBox;
+	JCheckBox balkOnderaanBox, resetButtonBox,roosterZichtbaarBox, groteBalletjesBox, schaduwZichtbaarBox, afmetingenZichtbaarBox;
 	JCheckBox figuurTransparantBox, tekenGumOptieBox;
 	
 	JComboBox taakNummerCombo;
@@ -143,6 +143,16 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		
 		currentY += height + offset / 2;
 
+		width = editWidth - 3 * offset;
+		resetButtonBox = new JCheckBox(Verknippen.rb.getString("resetButtonTekst"), false);
+		resetButtonBox.setFont(theFont);
+		resetButtonBox.setBackground(Color.white);
+		resetButtonBox.setBounds(currentX, currentY, width, height);
+		add(resetButtonBox);
+		resetButtonBox.addActionListener(this);
+		
+		currentY += height + offset / 2;
+		
 		roosterZichtbaarBox = new JCheckBox(Verknippen.rb.getString("roosterZichtbaarTekst"), false);
 		roosterZichtbaarBox.setFont(theFont);
 		roosterZichtbaarBox.setBackground(Color.white);
@@ -334,6 +344,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 //			   taakNummerVeld.getLocation().y);
 			
 			balkOnderaanBox.setLocation(vip.getSize().width + 2 * offset, balkOnderaanBox.getLocation().y);
+			resetButtonBox.setLocation(vip.getSize().width + 2 * offset, resetButtonBox.getLocation().y);
 			roosterZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, roosterZichtbaarBox.getLocation().y);
 			groteBalletjesBox.setLocation(vip.getSize().width + 2 * offset, groteBalletjesBox.getLocation().y);
 			schaduwZichtbaarBox.setLocation(vip.getSize().width + 2 * offset, schaduwZichtbaarBox.getLocation().y);
@@ -385,6 +396,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 	{	String rodeFiguurString = rodeFiguurPanel.getCorrectFiguurString();
 		if (!rodeFiguurString.equals(""))
 		{	vip.zetRodeFiguur(rodeFiguurString);
+			rodeFiguurInput = rodeFiguurString;
 		}
 		
 	}
@@ -394,6 +406,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		String grijzeFiguurString = grijzeFiguurPanel.getCorrectFiguurString();
 		if (!grijzeFiguurString.equals(""))
 		{	vip.zetGrijzeFiguur(grijzeFiguurString);
+			grijzeFiguurInput = grijzeFiguurString;
 		}
 		
 	}
@@ -415,6 +428,7 @@ System.out.println("viep setEditState");
 
 		int taakNummer = 1;
 		boolean balkOnderaan = true;
+		boolean resetButton = false;
 		boolean roosterZichtbaar = false;
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
@@ -530,6 +544,8 @@ System.out.println("aLD found");
 				taakNummer = ((Integer) b.get("taakNummer")).intValue();
 			if (b.containsKey("balkOnderaan"))
 				balkOnderaan = ((Boolean) b.get("balkOnderaan")).booleanValue();
+			if (b.containsKey("resetButton"))
+				resetButton = ((Boolean) b.get("resetButton")).booleanValue();
 			if (b.containsKey("roosterZichtbaar"))
 				roosterZichtbaar = ((Boolean) b.get("roosterZichtbaar")).booleanValue();
 			if (b.containsKey("groteBalletjes"))
@@ -562,6 +578,7 @@ System.out.println("aLD found");
 		taakNummerCombo.setSelectedIndex(taakNummer);
 		taakNummerComboEnabled = true;
 		balkOnderaanBox.setSelected(balkOnderaan);
+		resetButtonBox.setSelected(resetButton);
 		roosterZichtbaarBox.setSelected(roosterZichtbaar);
 		groteBalletjesBox.setSelected(groteBalletjes);
 		schaduwZichtbaarBox.setSelected(schaduwZichtbaar);
@@ -572,6 +589,9 @@ System.out.println("aLD found");
 		gridSizeVeld.setText("" + gridSize);
 		this.rodeFiguurInput = rodeFiguurInput;
 		rodeFiguurPanel.zetFiguurString(rodeFiguurInput);
+		
+//System.out.println("set rfi = " + rodeFiguurInput);		
+		
 		this.oppervlakteRood = oppervlakteRood; 
 		oppervlakteRoodVeld.setText("" + oppervlakteRood);
 		this.grijzeFiguurInput = grijzeFiguurInput;
@@ -642,6 +662,8 @@ System.out.println("viep getEditState");
 		h.put("rodeFiguurInput", rodeFiguurInput);
 		h.put("grijzeFiguurInput", grijzeFiguurInput);
 		
+//System.out.println("get rfi = " + rodeFiguurInput);
+
 		h.put("scoreMax", new Integer(scoreMax));
 		
 		h.put("vipBreedte", new Integer(vipBreedte));
@@ -744,6 +766,9 @@ System.out.println("viep getEditState");
 		}
 		else if (e.getSource() == balkOnderaanBox)
 		{	vip.zetBalkOnderaan(balkOnderaanBox.isSelected());
+		}
+		else if (e.getSource() == resetButtonBox)
+		{	vip.zetResetButton(resetButtonBox.isSelected());
 		}
 		else if (e.getSource() == roosterZichtbaarBox)
 		{	vip.zetRoosterZichtbaar(roosterZichtbaarBox.isSelected());

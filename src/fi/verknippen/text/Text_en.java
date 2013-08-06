@@ -19,6 +19,7 @@ public class Text_en extends java.util.ListResourceBundle
             
             { "taakNummerTekst" , "Task number" },
             { "balkOnderaanTekst" , "Bottom panel" },
+            { "resetButtonTekst" , "Reset button" },
             { "roosterZichtbaarTekst" , "Show grid" },
             { "groteBalletjesTekst" , "Large ovals" },
             { "schaduwZichtbaarTekst" , "Show schadow" },

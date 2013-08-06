@@ -19,6 +19,7 @@ public class Text_nl extends java.util.ListResourceBundle
             
             { "taakNummerTekst" , "Taaknummer" },
             { "balkOnderaanTekst" , "Balk onderaan" },
+            { "resetButtonTekst" , "Resetknop" },
             { "roosterZichtbaarTekst" , "Rooster zichtbaar" },
             { "groteBalletjesTekst" , "Grote balletjes" },
             { "schaduwZichtbaarTekst" , "Schaduw zichtbaar" },

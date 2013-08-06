@@ -28,8 +28,9 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	ImageIcon penDefaultIcon, penRolloverIcon, penSelectedIcon, gumDefaultIcon, gumRolloverIcon, gumSelectedIcon;
 	Image tekenCursor, gumCursor;
 	ImageIcon tekenCursorIcon, gumCursorIcon; 
-	
-	
+	Image resetImage;
+	ImageIcon resetIcon;
+		
 	// fonts
 	Font theFont;
 	FontMetrics theFM;
@@ -39,9 +40,11 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 	int bottomHeight = 55;	
 	DrawingPanel2 drawingPanel2;
 	BottomPanel2 bottomPanel2;
+	JButton resetKnop;
 	
 	int taakNummer = 1;
 	boolean balkOnderaan = true;
+	boolean resetButton = false;
 	boolean roosterZichtbaar = false;
 	boolean groteBalletjes = false;
 	boolean schaduwZichtbaar = false;
@@ -180,6 +183,16 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		{
 			System.out.println("Error reading gumcursor.gif");
 		}
+		imageURL = Verknippen.class.getResource("resources/reset1.gif");
+		if (imageURL != null) 
+		{
+			resetIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading reset1.gif");
+		}
+
 		
 		goedKrul = goedKrulIcon.getImage();
 		foutKruis = foutKruisIcon.getImage();
@@ -192,6 +205,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		gumSelected = gumSelectedIcon.getImage();
 		tekenCursor = tekenCursorIcon.getImage();
 		gumCursor = gumCursorIcon.getImage();
+		resetImage = resetIcon.getImage();
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -308,6 +322,11 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		
 	}
 	
+	public void zetResetButton(boolean b)
+	{	resetButton = b;
+		resetKnop.setVisible(b);
+		drawingPanel2.repaint();	
+	}
 	
 	public void zetRoosterZichtbaar(boolean b)
 	{	roosterZichtbaar = b;
@@ -500,6 +519,7 @@ System.out.println("vip zetOpdracht");
 
 		int taakNummer = 1;
 		boolean balkOnderaan = true;
+		boolean resetButton = false;
 		boolean roosterZichtbaar = false;
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
@@ -623,6 +643,8 @@ System.out.println("aLD found");
 //System.out.println("get tn = " + taakNummer);			
 			if (b.containsKey("balkOnderaan"))
 				balkOnderaan = ((Boolean) b.get("balkOnderaan")).booleanValue();
+			if (b.containsKey("resetButton"))
+				resetButton = ((Boolean) b.get("resetButton")).booleanValue();
 			if (b.containsKey("roosterZichtbaar"))
 				roosterZichtbaar = ((Boolean) b.get("roosterZichtbaar")).booleanValue();
 			if (b.containsKey("groteBalletjes"))
@@ -651,6 +673,7 @@ System.out.println("aLD found");
 			
 		}
 		zetBalkOnderaan(balkOnderaan);
+		zetResetButton(resetButton);
 		zetRoosterZichtbaar(roosterZichtbaar);
 		zetGroteBalletjes(groteBalletjes);
 		//zetSchaduwZichtbaar(schaduwZichtbaar);
@@ -921,6 +944,7 @@ System.out.println("vip setEditState");
 
 		int taakNummer = 1;
 		boolean balkOnderaan = true;
+		boolean resetButton = false;
 		boolean roosterZichtbaar = false;
 		boolean groteBalletjes = false;
 		boolean schaduwZichtbaar = false;
@@ -1043,6 +1067,8 @@ System.out.println("aLD found");
 //System.out.println("get tn = " + taakNummer);			
 			if (b.containsKey("balkOnderaan"))
 				balkOnderaan = ((Boolean) b.get("balkOnderaan")).booleanValue();
+			if (b.containsKey("resetButton"))
+				resetButton = ((Boolean) b.get("resetButton")).booleanValue();
 			if (b.containsKey("roosterZichtbaar"))
 				roosterZichtbaar = ((Boolean) b.get("roosterZichtbaar")).booleanValue();
 			if (b.containsKey("groteBalletjes"))
@@ -1071,6 +1097,7 @@ System.out.println("aLD found");
 			
 		}
 		zetBalkOnderaan(balkOnderaan);
+		zetResetButton(resetButton);
 		zetRoosterZichtbaar(roosterZichtbaar);
 		zetGroteBalletjes(groteBalletjes);
 		//zetSchaduwZichtbaar(schaduwZichtbaar);
@@ -1209,6 +1236,7 @@ System.out.println("vip getEditState");
 		h.put("taakNummer", new Integer(taakNummer));
 //System.out.println("put tn = " + taakNummer);		
 		h.put("balkOnderaan", new Boolean(balkOnderaan));
+		h.put("resetButton", new Boolean(resetButton));
 		h.put("roosterZichtbaar", new Boolean(roosterZichtbaar));
 		h.put("groteBalletjes", new Boolean(groteBalletjes));
 		h.put("schaduwZichtbaar", new Boolean(schaduwZichtbaar));
@@ -1269,6 +1297,16 @@ System.out.println("vip getEditState");
 			KnipPolygon2 kp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.CENTER);
 			drawingPanel2.addKnipPolygon(kp);
 			add(drawingPanel2);
+			
+			resetKnop = new JButton(new ImageIcon(resetImage));
+			resetKnop.setBounds(getSize().width - 32 - 5, 5, 32, 32);
+			resetKnop.setOpaque(true);
+			resetKnop.setBackground(drawingPanel2.getBackground());
+			resetKnop.setBorder(BorderFactory.createEmptyBorder());
+			resetKnop.setVisible(false);
+			drawingPanel2.add(resetKnop);
+			resetKnop.addActionListener(this);
+
 
 //System.out.println("comps created");			
 		}
@@ -1278,12 +1316,14 @@ System.out.println("vip getEditState");
 			{	bottomPanel2.setVisible(true);
 				bottomPanel2.setSize(getSize().width, bottomHeight);
 				drawingPanel2.setSize(getSize().width, getSize().height - bottomHeight);
+				resetKnop.setBounds(getSize().width - 32 - 5, 5, 32, 32);
 				zetGridSize(gridSize);
 			}
 			else
 			{	bottomPanel2.setVisible(false);
 				bottomPanel2.setSize(b, h);
 				drawingPanel2.setSize(getSize().width, getSize().height);
+				resetKnop.setBounds(getSize().width - 32 - 5, 5, 32, 32);
 				zetGridSize(gridSize);
 			}
 				
@@ -1417,7 +1457,13 @@ System.out.println("vip getEditState");
 	{}
     
 	public void actionPerformed(ActionEvent e)
-	{}
+	{
+		if (e.getSource() == resetKnop)
+		{
+			opnieuwAction();
+			produceAction("changed");
+		}
+	}
 	
 	//ActionProducer
 	private ActionListener actionListener = null;
