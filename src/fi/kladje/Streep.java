@@ -190,6 +190,7 @@ public class Streep
 	{	Hashtable h = new Hashtable();
 		
 		h.put("kleur", kleur);
+		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
 		h.put("puntenX", puntenX);
 		h.put("puntenY", puntenY);
 		h.put("rotation", new Double(rotation));
@@ -414,6 +415,7 @@ class Lijn
 	{	Hashtable h = new Hashtable();
 		
 		h.put("kleur", kleur);
+		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));		
 		h.put("fromX", new Integer(fromX));
 		h.put("fromY", new Integer(fromY));
 		h.put("toX", new Integer(toX));
@@ -599,6 +601,7 @@ class Rechthoek
 	{	Hashtable h = new Hashtable();
 		
 		h.put("kleur", kleur);
+		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));		
 		h.put("topLeftX", new Integer(topLeftX));
 		h.put("topLeftY", new Integer(topLeftY));
 		h.put("breedte", new Integer(breedte));
@@ -779,6 +782,7 @@ class Ellips
 	{	Hashtable h = new Hashtable();
 		
 		h.put("kleur", kleur);
+		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));		
 		h.put("topLeftX", new Integer(topLeftX));
 		h.put("topLeftY", new Integer(topLeftY));
 		h.put("breedte", new Integer(breedte));
@@ -963,6 +967,17 @@ class TekstElement
 	
 	}
 
+	public void zetTekst(String t)
+	{
+		tekst = new String(t);
+		breedte = KladjeVeld.tekstFM.stringWidth(tekst);
+		cx = xPos + ((double) breedte) / 2;
+		cy = yPos + ((double) hoogte) / 2;
+		
+		makeBB();
+		
+	}
+	
 	public void makeBB()
 	{
 		bb = new Rectangle(xPos - bbFactor, yPos - bbFactor, 
@@ -999,6 +1014,7 @@ class TekstElement
 	{	Hashtable h = new Hashtable();
 		
 		h.put("kleur", kleur);
+		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));		
 		h.put("tekst", new String(tekst));
 		h.put("xPos", new Integer(xPos));
 		h.put("yPos", new Integer(yPos));

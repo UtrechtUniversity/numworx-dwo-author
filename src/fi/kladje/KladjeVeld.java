@@ -45,6 +45,7 @@ public class KladjeVeld extends JPanel
 	Rectangle tekenRechthoek = null;
 //	Rectangle tekstRechthoek = null;
 	Rectangle selecteerRechthoek = null;
+	TekstElement tekstEdited = null;
 
 	// backwards compatibility
 	ColorBytes[][] pixels = null;
@@ -111,6 +112,7 @@ public class KladjeVeld extends JPanel
 		tekstVeld.setVisible(false);
 		add(tekstVeld);
 		tekstVeld.addActionListener(new TekstAL());
+		tekstVeld.addKeyListener(new TekstKL());
 		
 		MLMML listener = new MLMML();
 		
@@ -128,11 +130,25 @@ public class KladjeVeld extends JPanel
 		
 		tekstVeld.setVisible(false);
 
-		if (!tekstString.equals(""))
+		if (!tekstString.equals("") && (tekstEdited == null))
 		{
 			TekstElement tekstElement = 
 				new TekstElement(drawingColor, tekstString, tekstX, tekstY);
 			tekstElementVector.addElement(tekstElement);
+			addToHistory();
+			repaint();
+		}
+		else if (!tekstString.equals("") && (tekstEdited != null))
+		{
+			tekstEdited.zetTekst(tekstString);
+			//tekstEdited.tekst = tekstString;
+			addToHistory();
+			repaint();
+			tekstEdited = null;
+		}
+		else if (tekstString.equals("") && (tekstEdited != null))
+		{
+			tekstElementVector.removeElement(tekstEdited);
 			addToHistory();
 			repaint();
 		}
@@ -753,6 +769,18 @@ public class KladjeVeld extends JPanel
 		return found;
 	}
 	
+	public TekstElement getClickedTekstElement(int x, int y)
+	{
+		TekstElement result = null;
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			if (tekstElement.bbContains(x, y))
+			{	result = tekstElement;
+			}
+		}
+		return result;
+	}
+	
 	public boolean findObjectsSelected(Rectangle r)
 	{	boolean found = false;
 		objectsSelected.removeAllElements();
@@ -966,8 +994,12 @@ public class KladjeVeld extends JPanel
 
 				if (tekstVeld.isVisible())
 					hideTekstVeld(true);
+				tekstEdited = getClickedTekstElement(e.getX(), e.getY());
 				tekstVeld.setLocation(e.getX(), e.getY());
-				tekstVeld.setText("");
+				if (tekstEdited != null)
+					tekstVeld.setText(tekstEdited.tekst);
+				else	
+					tekstVeld.setText("");
 				tekstVeld.setVisible(true);
 				tekstVeld.requestFocus();
 
@@ -1379,6 +1411,16 @@ public class KladjeVeld extends JPanel
 			hideTekstVeld(true);
 		}
 	}
+	class TekstKL extends KeyAdapter
+	{
+		public void keyTyped(KeyEvent e)
+		{
+			String tekst = tekstVeld.getText();
+			int tekstBreedte = tekstFM.stringWidth(tekst);
+			tekstVeld.setSize(tekstBreedte + 20, tekstVeld.getSize().height);
+		}
+	}
+	
 }
 
 

@@ -111,6 +111,8 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		catch(Exception e){}
 		
+System.out.println(Color.orange.toString());		
+		
 		getContentPane().setLayout(null);
 
 		au = new AppletUtil(this);
