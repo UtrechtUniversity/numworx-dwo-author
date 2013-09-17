@@ -2,97 +2,91 @@ package fi.draaibank;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.Applet;
-//import fi.beans.grnuminput.*;
 
+import javax.swing.*;
 
-public class TekenApplet3D extends Applet 
+public class TekenApplet3D extends JApplet 
 {
-	Regelaar rg;
 	Tekenblad3D tb;
-	AnimatieBeheerder ab;
 	private MuisBeheerder mb;
-	//KleurKiezer kk;
 		  
 	//-----------------------------------------------------------------------------------------
 	// initalisatie
 	//-----------------------------------------------------------------------------------------
 	public void init()
 	{	tb = new Tekenblad3D(this);
-		rg = new Regelaar(this);
-		
-		this.setLayout(new BorderLayout(0,0));
+		getContentPane().setLayout(null);
 		initialiseer();
-		add(tb,"Center");
-		add(rg,"East");
-		//add(kk,"South");
-		
-		
-		if(mb!=null && ab!=null)				
-		{	mb.meldAnimatieBeheerder(ab);		
-		}										
+		tb.setBounds(0, 0, getSize().width, getSize().height);
+		getContentPane().add(tb);
 	}	
-	
-	public void stop()
-	{	if(animatieStatus())onderbreekAnimatie();		
-	}
 	
 	//-------------------------------------------------------------------------------------------
 	//deze methoden kunnen alleen worden gebruikt in  "initialiseer()" van leerling-applet
 	//-------------------------------------------------------------------------------------------
-	public void maakAnimatieMogelijk()
-	{	ab = new AnimatieBeheerder(this);
-		add(ab,"North");
-	}
-	
 	public void maakMuisActieMogelijk()
 	{	mb = new MuisBeheerder(this);
 		tb.addMouseListener(mb);
 		tb.addMouseMotionListener(mb);
 	}
-	public InvoerVariabele nieuweInvoerVariabele(String n, double mn, double mx, double val)
-	{	return rg.nieuweInvoerVariabele( n,  mn,  mx,  val);
-	} 
-		
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de muishandler en  doorgegeven aan MuisBeheerder mb
 	//-------------------------------------------------------------------------------------------
-	public int geefSleepdx(){return mb.geefSleepdx();}
-	public int geefSleepdy(){return mb.geefSleepdy();}
-	public int geefDrukx(){return mb.geefDrukx();}
-	public int geefDruky(){return mb.geefDruky();}
-	public int geefX(){return mb.geefX();}
-	public int geefY(){return mb.geefY();}
+	public int geefSleepdx()
+	{	return mb.geefSleepdx();
+	}
+	public int geefSleepdy()
+	{	return mb.geefSleepdy();
+	}
+	public int geefDrukx()
+	{	return mb.geefDrukx();
+	}
+	public int geefDruky()
+	{	return mb.geefDruky();
+	}
+	public int geefX()
+	{	return mb.geefX();
+	}
+	public int geefY()
+	{	return mb.geefY();
+	}
 
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatiehandler en doorgegeven aan AnimatieBeheerder ab
-	//-------------------------------------------------------------------------------------------
-	public void pauze(int millisec){ab.pauze(millisec);}
-	public boolean animatieStatus(){if (ab!=null)return ab.animatieStatus();else return false;}
-	public void onderbreekAnimatie(){ab.onderbreekAnimatie();}
-	public void beginAnimatie(){ab.beginAnimatie();}
-
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatiehandler en muishandlers en doogegeven aan 
-	//Tekenblad
-	//-------------------------------------------------------------------------------------------
-	public void tekenOpnieuw(){tb.tekenOpnieuw();}
-	public void tekenErbij(){tb.tekenErbij();}
+	public void tekenOpnieuw()
+	{	repaint();	
+	}
 	
+/*	
+	public void tekenOpnieuw()
+	{	tb.tekenOpnieuw();	
+	}
+	public void tekenErbij()
+	{	tb.tekenErbij();
+	}
+*/
   	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "initialiseer" en doorgegeven aan Tekenblad tb (of 
 	//Matrix2d) 
 	//-------------------------------------------------------------------------------------------
-	public void schaal(double s){tb.mat.schaal(s);}
-	public void achtergrondkleur(String kl){tb.achtergrondkleur(kl);}
-	public void achtergrondkleur(int r, int g, int b){tb.achtergrondkleur(r, g, b);}
-	public void achtergrondkleur(Color c){tb.achtergrondkleur(c);}
+	public void schaal(double s)
+	{ tb.mat.schaal(s);
+	}
+	public void achtergrondkleur(String kl)
+	{	tb.achtergrondkleur(kl);
+	}
+	public void achtergrondkleur(int r, int g, int b)
+	{	tb.achtergrondkleur(r, g, b);
+	}
+	public void achtergrondkleur(Color c)
+	{	tb.achtergrondkleur(c);
+	}
 	
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "tekenprogramma()" en doorgegeven aan Tekenblad tb (of 
 	//Matrix2d) 
 	//-------------------------------------------------------------------------------------------
-	public void xdraai(double dh){tb.mat.xdraai(dh);}
+	public void xdraai(double dh)
+	{	tb.mat.xdraai(dh);
+	}
 	public void ydraai(double dh){tb.mat.ydraai(dh);}
 	public void zdraai(double dh){tb.mat.zdraai(dh);}
 	public void rechts(double dh){tb.mat.zdraai(-dh);}
@@ -132,15 +126,13 @@ public class TekenApplet3D extends Applet
 	//-------------------------------------------------------------------------------------------
 	public void tekenprogramma(){}
 	public void initialiseer(){}
-	public void animatie(){}
 	public void muisSleepActie(){}
 	public void muisDrukActie(){}
 	public void muisKlikActie(){}
 	public void muisLosActie(){}
-	public void invoerVarActie(InvoerVariabele iv){}
 }		
 	
-    
+/*    
 class Punt3D
 
 {	double x, y, z;
@@ -157,46 +149,14 @@ class Punt3D
 		this.z = p.z;
 	}
 }
+*/
 
 
-
-class Regelaar extends Panel
-{	
-	private TekenApplet3D eigenaar;
-	public GridBagLayout gridbag;
-	public GridBagConstraints c;
-	
-	public Regelaar(TekenApplet3D ap)
-	{	eigenaar = ap;
-		gridbag = new GridBagLayout();
-		c = new GridBagConstraints();
-		setLayout(gridbag);
-		c.insets = new Insets(5, 5, 5, 5); 			
-		c.anchor = GridBagConstraints.NORTHWEST;
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.weighty = 0.0;
-		c.weightx = 0.0;
-	}	
-	//-----------------------------------------------------------------------------------------
-	// nieuwe InvoerVariabelen worden hier gemaakt, en op het panel geplaatst 
-	//-----------------------------------------------------------------------------------------
-	public InvoerVariabele nieuweInvoerVariabele(String n, double mn, double mx, double val)
-	{	InvoerVariabele iv = new InvoerVariabele(n,mn,mx,val);
-		iv.ontvangEigenaar(eigenaar);
-		//NumberArrow invoercomp = new NumberArrow(iv.geefMin(), iv.geefMax(), iv.geefWaarde(), 1, 0, iv.geefNaam(), "");
-		//invoercomp.addNumberListener(iv);
-		//gridbag.setConstraints(invoercomp, c);
-		//add(invoercomp);
-		return iv;
-		}
-}
-
-class Tekenblad3D extends Container
+class Tekenblad3D extends JPanel
 {
 	private int breedte,hoogte;
 	private Punt3D beginpunt,eindpunt,startpunt;
   	public Lichaam3D[] l;
-  	private Image im ;
   	public Graphics gIm ;
 	public Matrix3D mat;  
 	private TekenApplet3D eigenaar;
@@ -206,7 +166,8 @@ class Tekenblad3D extends Container
 	public boolean bezigMetTekenen;
 	
 	public Tekenblad3D(TekenApplet3D ap)
-	{	achtergrondkleur = Color.white;
+	{	
+		achtergrondkleur = Color.white;
 		leeg = false;
 		l = new Lichaam3D[5];
 		lnummer=0;
@@ -217,29 +178,30 @@ class Tekenblad3D extends Container
 		mat = new Matrix3D();
 		
 	}
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
-	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
-	//zorgt "tekenOpnieuw()" of "tekenErbij()" hiervoor. "TekenOpImage()" zorgt voor het vullen 
-	//van de image, metbehulp van het door de leerlingen geimplementeerde "tekenprogramma()",
-	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
-	//-------------------------------------------------------------------------------------------  	
-	public void paint(Graphics g)
-  	{ 	bezigMetTekenen = true;
-		if(im==null)
-		{	breedte = getSize().width;
+
+	//public void paint(Graphics g)
+	public void paintComponent(Graphics g)
+  	{ 	
+		
+//System.out.println("tb paint");		
+		
+		bezigMetTekenen = true;
+		//if (im == null)
+		//{	
+			breedte = getSize().width;
 			hoogte = getSize().height;	
-			double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
-			mat.initialiseer(0,0,0,startschaal);	
+			double startschaal = Math.min((double)breedte / 500,(double) hoogte / 500);
+			//DIT ERUIT mat.initialiseer(0,0,0,startschaal);	
 			startpunt = new Punt3D(breedte/2,hoogte/2,0);
 			for(int i=0 ; i<5 ; i++)
 			{	l[i].maakNulpunt(breedte/2,hoogte/2,0);
 			}
-			im = createImage(breedte,hoogte);
-  			gIm = im.getGraphics();
+			//im = createImage(breedte,hoogte);
+  			//gIm = im.getGraphics();
+			gIm = g;
 			tekenOpImage(true);
-		}
-    	g.drawImage(im, 0, 0, null);
+		//}
+    	//g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
   	}
 	  
@@ -247,9 +209,10 @@ class Tekenblad3D extends Container
   	public void tekenOpImage(boolean wis)
   	{ 	beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
-		//mat.initialiseer();
+		//Peter mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
-    	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
+    	if(wis)
+    		gIm.fillRect(0, 0, breedte, hoogte);
     	penAan(0,0,0);
 		vul = false;
     	eigenaar.tekenprogramma();
@@ -292,40 +255,41 @@ class Tekenblad3D extends Container
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
 	//-------------------------------------------------------------------------------------------
 	void tekenOpnieuw()
-	{	bezigMetTekenen = true;
+	{	
+/*		
+		bezigMetTekenen = true;
 		tekenOpImage(true);
-		Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null); 
+		//Graphics g = getGraphics();
+		//g.drawImage(im, 0, 0, null); 
 		bezigMetTekenen = false;
+*/		
+		repaint();
+		
 	}
   
+/*	
   	void tekenErbij()
 	{	bezigMetTekenen = true;
 		tekenOpImage(false);
-		Graphics g = getGraphics();
-		g.drawImage(im, 0, 0, null);
+		//Graphics g = getGraphics();
+		//g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
 	}
-
+*/
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad om de lijnen en vlakken te tekenen
 	//-------------------------------------------------------------------------------------------
 
 	void naarVolgendPunt(double dx,double dy, double dz)
 	{	eindpunt = mat.geefVolgendPunt(beginpunt,dx,dy,dz);
-		//double grw = (beginpunt.z + eindpunt.z)/2;
-		//penkleur((int)(125-0.7*grw),(int)(125-0.7*grw),(int)(125-0.7*grw));
-		//if(tg.pen && !tg.vul)gIm.drawLine((int)beginpunt.x,(int)beginpunt.y,(int)eindpunt.x,(int)eindpunt.y);
 		
 		if(pen && !vul)
 		{	l[lnummer].voegPuntToe(beginpunt);
 			l[lnummer].voegPuntToe(eindpunt);
 			l[lnummer].voegPolygonToe(penkleur,penkleur,true, false);
 		}
-		//if(vul && lnummer==0)		 
-		//{	l[0].voegPuntToe(beginpunt);
-		//}
-		if(vul)  //&&lnummer!=0		 
+		
+		if(vul)  		 
 		{	l[lnummer].voegPuntToe(beginpunt);
 		}
 		beginpunt.x = eindpunt.x;
@@ -453,7 +417,7 @@ class Tekenblad3D extends Container
 	}
 
 	Polygon geefVlak()
-	{	if(l[0].vlakken[l[0].aantalPolygonen-1].normaal.z > 0)
+ 	{	if(l[0].vlakken[l[0].aantalPolygonen-1].normaal.z > 0)
 		return l[0].vlakken[l[0].aantalPolygonen-1].pol;
 		else return new Polygon();
 	}
@@ -480,83 +444,11 @@ class Tekenblad3D extends Container
 }
 
 
-class AnimatieBeheerder extends Panel implements ActionListener, Runnable
-{
-  	public Button animatieknop;
-  	private Thread animatie;
-  	boolean animatieAan;
-	TekenApplet3D eigenaar;	  
-
-	public AnimatieBeheerder(TekenApplet3D ap)
-	{	eigenaar = ap;
-		animatieAan = false;
-		animatieknop = new Button("animatie");
-		animatieknop.addActionListener(this);
-		setLayout(new FlowLayout(FlowLayout.CENTER));
-		add(animatieknop);
-	}
-	
- 	//-------------------------------------------------------------------------------------------
-	//afhandeling van de animatieknop actie, en het starten van de animatiedraad 
-	//-------------------------------------------------------------------------------------------
- 	public void actionPerformed(ActionEvent e)
-	{	if(animatieknop.getLabel()=="animatie")
-		{	beginAnimatie();
-		}
-		else
-		{	onderbreekAnimatie();
-			animatieknop.setLabel("animatie");
-		}
-	}
-	
-	public void run()
-	{	while(eigenaar.tb.bezigMetTekenen)pauze(1);
-		eigenaar.animatie();
-		animatieknop.setLabel("animatie");
-	}
-	
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden behalve door de Animatiebeheerder zelf, ook gebruikt door de 
-	// MuisBeheerder 
-	//-------------------------------------------------------------------------------------------
-	public void onderbreekAnimatie()
-	{	animatieAan=false;
-		try
-		{	animatie.join();
-		}
-		catch(InterruptedException e) {}
-	}
-	
-	public void beginAnimatie()
-	{	animatieAan=true;
-		animatie = new Thread(this);
-		animatie.start();
-		animatieknop.setLabel("stoppen");
-	}	
-	
-	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in de animatie- en muishandlers van het leerlingenprogramma.
-	//"animatieStatus()" wordt ook gebruikt door de TraceBeheerder en MuisBeheerder.
-	//-------------------------------------------------------------------------------------------
-	public boolean animatieStatus()
-	{	return animatieAan;
-	}
-	
-	public void pauze(int millisec)
-	{  	try
-    		{   Thread.sleep(millisec);
-       		}
-    		catch(InterruptedException e)    // geen ;
-      		{   }
-	}
-}
 
 class MuisBeheerder implements MouseListener, MouseMotionListener
 {
 	private int eerstex, laatstex, eerstey, laatstey, dx, dy;
 	private TekenApplet3D eigenaar;
-	private AnimatieBeheerder ab;
-	private boolean animatieWasAan;
 	
 	public MuisBeheerder(TekenApplet3D ap)
 	{	eigenaar = ap;
@@ -569,20 +461,10 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 	}
 	
 	//-------------------------------------------------------------------------------------------
-	//de AnimatieBeheerder maakt zich met deze methode kenbaar aan de Muisbeheerder  
-	//-------------------------------------------------------------------------------------------
-	public void meldAnimatieBeheerder(AnimatieBeheerder ab)
-	{	this.ab = ab;
-	}
-	
-	//-------------------------------------------------------------------------------------------
 	//afhandeling van de muis gebeurtenissen 
 	//-------------------------------------------------------------------------------------------
 	public void mousePressed(MouseEvent e)
-	{	if(eigenaar.animatieStatus())
-		{	animatieWasAan = true;
-			ab.onderbreekAnimatie();
-		}
+	{	
 		eerstex = e.getX();
 		eerstey = e.getY();
 		laatstex = e.getX();
@@ -602,26 +484,15 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 	
 	public void mouseReleased(MouseEvent e)
 	{	eigenaar.muisLosActie();
-		if(animatieWasAan)
-		{	animatieWasAan = false;
-			ab.beginAnimatie();
-		}
 		
 	}
 	public void mouseClicked(MouseEvent e)
-	{	if(eigenaar.animatieStatus())
-		{	animatieWasAan = true;
-			ab.onderbreekAnimatie();
-		}
+	{	
 		eerstex = e.getX();
 		eerstey = e.getY();
 		laatstex = e.getX();
 		laatstey = e.getY();
 		eigenaar.muisKlikActie();
-		if(animatieWasAan)
-		{	animatieWasAan = false;
-			ab.beginAnimatie();
-		}
 	
 	}
 	public void mouseExited(MouseEvent e){;}
@@ -653,6 +524,7 @@ class MuisBeheerder implements MouseListener, MouseMotionListener
 
 }	
 
+/*
 class Rotatie3D
 {
 	public int as;
@@ -663,7 +535,8 @@ class Rotatie3D
 		this.rotatieHoek = rotatieHoek;
 	}
 }
-
+*/
+/*
 class Matrix3D
 {	
 	//-------------------------------------------------------------------------------------------
@@ -860,7 +733,8 @@ class Matrix3D
 		return ep;
 	}
 }
-	
+*/
+/*
 class Polygon3D
 {
 	public Polygon pol;
@@ -869,7 +743,8 @@ class Polygon3D
 	public Color vulkleur,lijnkleur;
 	public boolean isLijn,isOmlijnd,isLeeg;
 }
-
+*/
+/*
 class Lichaam3D
 {
 	public int[] xcoor;
@@ -970,3 +845,4 @@ class Lichaam3D
 		}
 	}
 }
+*/

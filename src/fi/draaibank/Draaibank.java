@@ -3,28 +3,31 @@ package fi.draaibank;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
-//import fi.beans.grnuminput.*;
+
 import fi.draaibank.text.*;
+
+import javax.swing.*;
+
+//import fi.beans.scorm.ScormAppletIF;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
 /**
  * @author Peter Boon
  */
 
-public class Draaibank extends TekenApplet3D //implements  NumberListener
+public class Draaibank extends TekenApplet3D implements WiskOpdrApplet
 {	
 	protected static ResourceBundle rb;
-	private String langArg;
-	
+	protected static String langArg;
+
 	Matrix3D matrot;
-	//Polygon[] p;
 	double k, xhoek,yhoek; 
 	int hoogte, breedte;
 	int aantal;
 	Veelvlak v;
 	boolean begin,raak;
 	ControlPanel cp;
-	//NumberSlider hoogteSl;
-	//NumberArrow aantalInv;
 	Point posBasis;
 	Punt[] nieuwHp;
 	int aantalNieuwHp;
@@ -40,25 +43,46 @@ public class Draaibank extends TekenApplet3D //implements  NumberListener
 		mf.setSize(width, height);
 	}
 	
+    public Draaibank()
+    {	langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.draaibank.text.Text", language);
+    }
+    public Draaibank(Locale language)
+    {	
+    	langArg = language.getLanguage();
+    	rb = ResourceBundle.getBundle("fi.draaibank.text.Text", language);
+    }
+	
 	public void initialiseer()
 	{	
 		String langArg = getParameter("language");
-		if (langArg == null) langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		if (langArg == null) 
+			langArg = "nl";
+		Locale language = new Locale(langArg, "");
 		rb = ResourceBundle.getBundle("fi.draaibank.text.Text",language);
 		
+		// lichtgeel
 		bgcolor = new Color(255,255,200);
 		String kleurcode = getParameter("bgcolor");
-		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+		if (kleurcode!=null)
+			bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		achtergrondkleur(bgcolor);
 		
 		maakMuisActieMogelijk();
+		
 		breedte = getSize().width;
 		hoogte = getSize().height;
 		cp = new ControlPanel(this);
 		cp.setLayout(null);
-		cp.setBounds(171,hoogte-60,breedte-171,60);
-		tb.add(cp);
+		// kan wel een beetje kleiner
+		//cp.setBounds(171,hoogte-60,breedte-171,60);
+		cp.setBounds(171,hoogte-40,breedte-171,40);
+		
+		//tb.add(cp);
+		
+		getContentPane().add(cp);
+		
 		begin = true;
 		k=2;
 		matrot = new Matrix3D();
@@ -66,13 +90,16 @@ public class Draaibank extends TekenApplet3D //implements  NumberListener
 		aantalNieuwHp = 0;
 		posBasis = new Point(85,hoogte-85);
 		
-		
-		
 		v = new Veelvlak();
-		
-		
+	
 		
 	}
+	
+	public InteractiePanel getInteractiePanel()
+	{
+		return new DBInteractiePanel();
+	}	
+	
 	public void tekenprogramma()
 	{	
 		tekenHok();
@@ -84,13 +111,13 @@ public class Draaibank extends TekenApplet3D //implements  NumberListener
 		
 	}
 	void begindraai(double xdr,double ydr)
-	{	if(begin)
+	{	if (begin)
 		{	tb.mat.initialiseer();
 			matrot.initialiseer();
 			matrot.zdraaiAbs(ydr);
 			matrot.ydraaiAbs(xdr);
 			tb.mat.mult(matrot);
-			begin=false;
+			begin = false;
 		}
 	}
 	void tekenHok()
@@ -205,19 +232,27 @@ public class Draaibank extends TekenApplet3D //implements  NumberListener
 		penUit();
 		stap(-k*v.punten[0].x, -k*v.punten[0].y, -k*v.punten[0].z);
 	}
-	public void numberChanged(String name,double val)
-	{	
-	}
+	
+//	public void numberChanged(String name,double val)
+//	{	
+//	}
+	
+	// op het rooster
 	public void muisDrukActie()
-	{	if(geefDrukx()< 170 && hoogte-geefDruky() < 170 && hoogte-geefDruky() > 84)
-		{	int x = geefDrukx()-posBasis.x+200;
-			int y = geefDruky()-posBasis.y+200;
+	{	
+		if (geefDrukx() < 170 && hoogte - geefDruky() < 170 && hoogte- geefDruky() > 84)
+		{	
+			
+//System.out.println("druk rooster");
+			
+			int x = geefDrukx() - posBasis.x + 200;
+			int y = geefDruky() - posBasis.y + 200;
 			int ex = (x+1)%2;
 			int ey = (y+1)%2;
-			//if(ex<2 && ey<2)
+			//Peter if(ex<2 && ey<2)
 			{	voegNieuwPuntToe(x-200-ex+1 , y-200-ey+1);
 			}
-			//voegNieuwPuntToe(x,y);
+			//Peter voegNieuwPuntToe(x,y);
 			v = new DraaiObject(20,aantalNieuwHp,nieuwHp);
 			tekenOpnieuw();
 			return;
@@ -225,9 +260,14 @@ public class Draaibank extends TekenApplet3D //implements  NumberListener
 	}
 	
 	public void muisSleepActie()
-	{	if(geefX()> 170 || hoogte-geefY() > 170 )
-		{	xhoek=-0.5*geefSleepdy();
-			yhoek=0.5*geefSleepdx();
+	{	
+		if (geefX() > 170 || hoogte - geefY() > 170 )
+		{	
+
+//System.out.println("sleep blad");			
+			
+			xhoek =-0.5*geefSleepdy();
+			yhoek = 0.5*geefSleepdx();
 			matrot.initialiseer();
 			matrot.ydraaiAbs(yhoek);
 			matrot.xdraaiAbs(xhoek);

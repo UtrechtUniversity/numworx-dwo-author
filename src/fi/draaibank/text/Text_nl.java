@@ -6,7 +6,9 @@ public class Text_nl extends java.util.ListResourceBundle
         static final Object [] [] contents =
         {
                 { "wisKnopLabel" , "Wis" },
-                { "terugKnopLabel" , "Stap terug" }
+                { "terugKnopLabel" , "Terug" },
+                { "demoVersionTekst", "Demo versie"},
+                { "zoomOptionTekst", "Zoom optie"},
         };
 }
 

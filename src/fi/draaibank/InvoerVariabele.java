@@ -23,7 +23,7 @@ public class InvoerVariabele //implements NumberListener
 	
 	public void numberChanged(String name, double w)
 	{  waarde = w;
-	   eigenaar.invoerVarActie(this);
+//	   eigenaar.invoerVarActie(this);
 	}
 	
 	public double geefWaarde()
