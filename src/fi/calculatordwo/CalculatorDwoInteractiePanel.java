@@ -658,6 +658,23 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public void bereken(StringBuffer sb)
 	{
+		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
+		replace(sb, "\u2212", "-");
+		replace(sb, "\u00F7", "/");
+		replace(sb, "\u00D7", "x");
+		
+		//++ veranderen in +, etc
+		replace(sb, "++", "+");
+		replace(sb, "+-", "-");
+		replace(sb, "--", "+");
+		replace(sb, "-+", "-");
+		replace(sb, "x+", "x");
+		replace(sb, "/+", "/");
+		
+		//checken of er breuktekentjes of B's in staan
+		if(sb.indexOf("\u22A5") > -1 || sb.indexOf("B") > -1)
+			breuk = true;	
+				
 		//goniofuncties uitrekenen
 		for(int i = 0; i < sb.length() - 1; i++)
 			if(sb.charAt(i) == 's' && sb.charAt(i+1)== 'i')
@@ -795,6 +812,10 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 							Double.toString(Math.log(uitkomst)));
 			}	
 		
+		//op zoek naar machten
+		sb = vindMachten(sb);
+			
+		
 		//haakjes wegwerken (met een while statement, zolang er nog ) zijn.
 		berekenTellers(sb);
 		String substring1;
@@ -824,6 +845,74 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 	}
 	
+	public StringBuffer vindMachten(StringBuffer sb)
+	{
+		if(breuk)
+			while(sb.indexOf("^") != -1 && breuk)
+			{	vindUitkomstMachtBreuk("^", sb);		
+				sb.replace(vindIndex("^", sb) - lengte1, vindIndex("^", sb) + lengte2 + 1, teller + "B" + noemer);
+				if(syntaxError)
+				{	System.out.println("ERROR machten breuken");
+					return sb;
+				}
+			}
+		else
+			while(sb.indexOf("^") != -1)
+			{	double rekenKind1, rekenKind2;
+				if(sb.indexOf("^") > 0 && sb.charAt(sb.indexOf("^") - 1) == ')')
+				{	int index = sb.indexOf("^") - 1;
+					int haakjesTeller = 1;
+					while(index > 0 && haakjesTeller > 0)
+					{	index--;
+						if(sb.charAt(index) == '(')
+							haakjesTeller--;
+						else if(sb.charAt(index) == ')')
+							haakjesTeller++;
+					}
+					vindHaakjesUitdrukking(sb, index);
+					rekenKind1 = uitkomst;
+					lengte1 = lengteHaakjesUitdrukking+1;
+				}
+				else
+				{	vindGetalVoorBewerking(vindIndex("^", sb), sb, false);
+					rekenKind1 = rekenGetal;
+					lengte1 = lengteRekenGetal;
+				}
+				if(syntaxError)
+				{	System.out.println("Syntax Error komt uit vindGetalVoorBewerking");
+					return sb;
+				}
+				if(sb.indexOf("^") < sb.length() - 1 && sb.charAt(sb.indexOf("^") + 1) == '(')
+				{	vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+					rekenKind2 = uitkomst;
+					lengte2 = lengteHaakjesUitdrukking;
+				}
+				else
+				{	vindGetalNaBewerking(vindIndex("^", sb), sb);
+					rekenKind2 = rekenGetal;
+					lengte2 = lengteRekenGetal;
+				}
+				if(syntaxError)
+				{	System.out.println("Syntax Error komt uit vindGetalNaBewerking");
+					return sb;
+				}
+				uitkomst = Math.pow(rekenKind1, rekenKind2);
+				if(Double.isNaN(uitkomst))
+				{	uitkomst = -Math.pow(-rekenKind1, rekenKind2);
+					double test = Math.pow(uitkomst, 1/rekenKind2);
+					if(Math.abs(test - rekenKind1) > 0.000000001)
+						uitkomst = Double.NaN;
+				}
+				sb.replace(vindIndex("^", sb)-lengte1, vindIndex("^", sb)+lengte2+1, Double.toString(uitkomst));
+				//vervangUitkomst("^", sb);
+				if(syntaxError)
+				{	System.out.println("ERROR machten");
+					return sb;
+				}
+			}
+		return sb;
+	}
+	
 	/*
 	 * berekenWaarde berekent de waarde van een expressie waarin geen haakjes, ans, logaritmes en
 	 * gonio-formules voorkomen.
@@ -833,23 +922,6 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		sb2.delete(0, sb2.length());
 		sb2.append(str);
 	
-		//alle minnen hetzelfde maken, en alle keertekens en gedeeld-doortekens snel leesbaar maken
-		replace(sb2, "\u2212", "-");
-		replace(sb2, "\u00F7", "/");
-		replace(sb2, "\u00D7", "x");
-		
-		//++ veranderen in +, etc
-		replace(sb2, "++", "+");
-		replace(sb2, "+-", "-");
-		replace(sb2, "--", "+");
-		replace(sb2, "-+", "-");
-		replace(sb2, "x+", "x");
-		replace(sb2, "/+", "/");
-		
-		//checken of er breuktekentjes of B's in staan
-		if(sb2.indexOf("\u22A5") > -1 || sb2.indexOf("B") > -1)
-			breuk = true;	
-		
 		//op zoek naar wortels
 		if(breuk)
 		{	while(sb2.indexOf("\u221A") != -1)
@@ -880,7 +952,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				{	teller = tellerB;
 					noemer = noemerB;
 					int lengte1 = lengteBreukB;
-					vindBBreukTot(sb2.indexOf("\u221A") - 1, sb2);
+					vindBBreukTot(sb2.indexOf("\u221A") - 1, sb2, true);
 					if(syntaxError)
 					{	System.out.println("ERROR breuk-nwortel");
 						return;
@@ -904,7 +976,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				else
 				{	double rekenKind1 = rekenGetal;
 					int lengte1 = lengteRekenGetal;
-					vindGetalVoorBewerking(sb2.indexOf("\u207F"), sb2);
+					vindGetalVoorBewerking(sb2.indexOf("\u207F"), sb2, true);
 					if(syntaxError)
 					{	System.out.println("ERROR nwortel zonder breuk");
 						return;
@@ -914,25 +986,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				}
 			}
 		}
-
-		//op zoek naar machten
-		if(breuk)
-			while(sb2.indexOf("^") != -1 && breuk)
-			{	vervangUitkomstBreuk("^", sb2);
-				if(syntaxError)
-				{	System.out.println("ERROR machten breuken");
-					return;
-				}
-			}
-		else
-			while(sb2.indexOf("^") != -1)
-			{	vervangUitkomst("^", sb2);
-				if(syntaxError)
-				{	System.out.println("ERROR machten");
-					return;
-				}
-			}	
 		
+		vindMachten(sb2);
+
 		//op zoek naar producten en delingen
 		if(breuk)
 		{	while(sb2.indexOf("x") != -1 || sb2.indexOf("/") != -1)
@@ -1056,6 +1112,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					syntaxError = true;
 				}
 			}
+		System.out.println("sb2 einde berekenWaarde: " + sb2.toString());
 	}
 	
 	/*
@@ -1085,11 +1142,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	/*
 	 * Uitkomst van 'simpele' bewerkingen berekenen:
-	 * +, -, *, /, ^
+	 * +, -, *, /
 	 */
 	public void vindUitkomst(String s, StringBuffer sb)
 	{
-		vindGetalVoorBewerking(vindIndex(s, sb), sb);
+		vindGetalVoorBewerking(vindIndex(s, sb), sb, true);
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindGetalVoorBewerking");
 			return;
@@ -1113,14 +1170,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		else if(s.equals("/"))
 			uitkomst = rekenKind1/rekenKind2;
 		else if(s.equals("^"))
-		{	uitkomst = Math.pow(rekenKind1, rekenKind2);
-			if(Double.isNaN(uitkomst))
-			{	uitkomst = -Math.pow(-rekenKind1, rekenKind2);
-				double test = Math.pow(uitkomst, 1/rekenKind2);
-				if(Math.abs(test - rekenKind1) > 0.000000001)
-					uitkomst = Double.NaN;
-			}
-		}		
+			uitkomst = Math.pow(rekenKind1,rekenKind2);
 		else if(s.equals("E"))
 			uitkomst = rekenKind1 * Math.pow(10, rekenKind2);
 		else if(s.equals("G"))
@@ -1133,7 +1183,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		sb.replace(vindIndex(s, sb)-lengte1, vindIndex(s, sb)+lengte2+1, Double.toString(uitkomst));
 	}
 	
-	public void vindGetalVoorBewerking(int pos, StringBuffer sb)
+	public void vindGetalVoorBewerking(int pos, StringBuffer sb, boolean minteken)
 	{	
 		int beginPos = pos-1;
 		try{
@@ -1158,7 +1208,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				subString = sb.substring(beginPos, pos);
 				rekenGetal = Double.parseDouble(subString);
 				lengteRekenGetal = subString.length();				
-				if(beginPos != 0 && sb.charAt(beginPos-1) == '-')
+				if(beginPos != 0 && sb.charAt(beginPos-1) == '-' && minteken)
 					if(beginPos == 1 || sb.charAt(beginPos - 2) == '^'
 							|| sb.charAt(beginPos - 2) == 'x' || sb.charAt(beginPos - 2) == '/' 
 								|| sb.charAt(beginPos - 2) == '(' || sb.charAt(beginPos - 2) == 'E')
@@ -1385,9 +1435,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		{	teller = teller1 * noemer2;
 			noemer = noemer1 * teller2;
 		}
-		else if(s.equals("^"))
-		{	vindUitkomstMachtBreuk(s, sb);
-		}
+		//else if(s.equals("^"))
+		//{	vindUitkomstMachtBreuk(s, sb);
+		//}
 		else if(s.equals("E"))
 		{	teller = teller1 * Math.pow(10, teller2/noemer2);
 			noemer = noemer1;		
@@ -1402,23 +1452,48 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	{
 		double teller1, noemer1, teller2, noemer2;
 		
-		vindBBreukTot(vindIndex(s, sb), sb);
+		if(sb.indexOf("^") > 0 && sb.charAt(sb.indexOf("^") - 1) == ')')
+		{	int index = sb.indexOf("^") - 1;
+			int haakjesTeller = 1;
+			while(index > 0 && haakjesTeller > 0)
+			{	index--;
+				if(sb.charAt(index) == '(')
+					haakjesTeller--;
+				else if(sb.charAt(index) == ')')
+					haakjesTeller++;
+			}
+			vindHaakjesUitdrukking(sb, index);
+			teller1 = teller;
+			noemer1 = noemer;
+			lengte1 = lengteHaakjesUitdrukking;
+		}
+		else
+		{	vindBBreukTot(vindIndex(s, sb), sb, false);
+			teller1 = tellerB;
+			noemer1 = noemerB;
+			lengte1 = lengteBreukB;
+		}
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindBBreukTot");
 			return;
 		}
-		teller1 = tellerB;
-		noemer1 = noemerB;
-		lengte1 = lengteBreukB;
 		
-		vindBBreukVanaf(vindIndex(s, sb), sb);
+		if(sb.indexOf("^") < sb.length() - 1 && sb.charAt(sb.indexOf("^") + 1) == '(')
+		{	vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+			teller2 = teller;
+			noemer2 = noemer;
+			lengte2 = lengteHaakjesUitdrukking;
+		}
+		else
+		{	vindBBreukVanaf(vindIndex(s, sb), sb);
+			teller2 = tellerB;
+			noemer2 = noemerB;
+			lengte2 = lengteBreukB;
+		}
 		if(syntaxError)
 		{	System.out.println("Syntax Error komt uit vindBBreukVanaf");
 			return;
 		}
-		teller2 = tellerB;
-		noemer2 = noemerB;
-		lengte2 = lengteBreukB;
 		
 		teller = Math.pow(teller1, teller2/noemer2);
 		if(Double.isNaN(teller))
@@ -1444,7 +1519,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public void vindBreukTot(int pos, StringBuffer sb)
 	{
-		vindBBreukTot(pos, sb);
+		vindBBreukTot(pos, sb, false);
 		lengteBreuk = lengteBreukB;
 		if(pos - lengteBreuk - 1 < 0 || sb.charAt(pos - lengteBreuk - 1) != '\u22A5' )
 		{	teller = tellerB;
@@ -1455,7 +1530,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			noemer = tellerB;
 			try{
 				pos = pos - lengteBreukB - 1;
-				vindBBreukTot(pos, sb);
+				vindBBreukTot(pos, sb, false);
 				teller = teller * tellerB;
 				noemer = noemer * noemerB; 
 				lengteBreuk = lengteBreuk + lengteBreukB + 1;
@@ -1467,7 +1542,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(pos - lengteBreukB - 1 >= 0 && sb.charAt(pos - lengteBreukB - 1) == '\u22A5')
 			{	try{
 					pos = pos - lengteBreukB - 1;
-					vindBBreukTot(pos, sb);
+					vindBBreukTot(pos, sb, false);
 					teller = teller * noemerB + noemer * tellerB;
 					noemer = noemer * noemerB;
 					lengteBreuk = lengteBreuk + lengteBreukB + 1;
@@ -1521,9 +1596,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 	}
 	
-	public void vindBBreukTot(int pos, StringBuffer sb)
+	public void vindBBreukTot(int pos, StringBuffer sb, boolean minteken)
 	{
-		vindGetalVoorBewerking(pos, sb);
+		vindGetalVoorBewerking(pos, sb, true);
 		lengteBreukB = lengteRekenGetal;
 		if(pos - lengteRekenGetal - 1 < 0 || sb.charAt(pos - lengteRekenGetal - 1) != 'B')
 		{	tellerB = rekenGetal;
@@ -1531,7 +1606,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		else
 		{	noemerB = rekenGetal;
-			vindGetalVoorBewerking(pos - lengteBreukB - 1, sb);
+			vindGetalVoorBewerking(pos - lengteBreukB - 1, sb, minteken);
 			tellerB = rekenGetal;
 			lengteBreukB += lengteRekenGetal + 1;
 		}
