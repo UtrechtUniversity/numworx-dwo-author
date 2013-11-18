@@ -464,8 +464,9 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 	public void paintComponent(Graphics g) {		
         this.berekenStaafBreedte();
         this.berekenMultiplier();
-        
-        g.clearRect(0, 0, this.getWidth(), this.getHeight());
+        g.setColor(Color.white);
+        //g.clearRect(0, 0, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         
         this.paintXAs(g);
         this.paintYAs(g,this.multiplier);
