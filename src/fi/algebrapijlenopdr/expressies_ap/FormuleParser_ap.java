@@ -84,10 +84,10 @@ public class FormuleParser_ap
 		{	s = s.substring(0,n) + ")" + s.substring(n+1);
 			n = s.indexOf("@");
 		}
-		n = s.indexOf("·");
+		n = s.indexOf("\u00b7");
 		while(n>-1)
 		{	s = s.substring(0,n) + "*" + s.substring(n+1);
-			n = s.indexOf("·");
+			n = s.indexOf("\u00b7");
 		}
 		return s;	
 	}
