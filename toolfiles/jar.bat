@@ -1,2 +1,2 @@
-%JAVA_HOME%\bin\jar.exe cvfm ..\output\jar\nabouwenaanzichten.jar mainclass.mf -C ..\output\classes fi
-copy ..\output\jar\nabouwenaanzichten.jar ..\output\scorm\course\cp\sco
+%JAVA_HOME%\bin\jar.exe cvfm ..\output\jar\nabouwenaanzichten.jar ..\output\classes\meta-inf\Manifest.mf -C ..\output\classes fi
+
