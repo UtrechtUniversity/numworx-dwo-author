@@ -3,7 +3,7 @@ package fi.algebrapijlenopdr;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.expressies_ap.*;
-import fi.beans.tooltip.*;
+//import fi.beans.tooltip.*;
 
 import javax.swing.*;
 
