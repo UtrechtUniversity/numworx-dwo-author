@@ -54,7 +54,7 @@ public class TekenPanel extends JPanel
 	{	
 		
 		// lichtgeel
-		bgcolor = new Color(255,255,200);
+		//bgcolor = new Color(255,255,200);
 		achtergrondkleur(bgcolor);
 		
 		maakMuisActieMogelijk();
@@ -87,7 +87,7 @@ public class TekenPanel extends JPanel
 	{	
 		
 		// lichtgeel
-		bgcolor = new Color(255,255,200);
+		//bgcolor = new Color(255,255,200);
 		achtergrondkleur(bgcolor);
 		
 		//maakMuisActieMogelijk();
