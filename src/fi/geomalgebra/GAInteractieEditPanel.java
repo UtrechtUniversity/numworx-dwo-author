@@ -275,7 +275,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 	public void setEditState(Hashtable b)
 	{
 		
-System.out.println("gaiep setEditState");
+//System.out.println("gaiep setEditState");
 
 		boolean varWaardeZichtbaar = false;
 		boolean oppWaardeZichtbaar = false;
@@ -297,7 +297,7 @@ System.out.println("gaiep setEditState");
 
 		if (b.containsKey("appletLaunchData"))
 		{
-System.out.println("aLD found");
+//System.out.println("aLD found");
 
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 			
@@ -387,7 +387,7 @@ System.out.println("aLD found");
 		equivalentButton.setSelected(equivalent);
 		gelijkButton.setSelected(!equivalent);
 		
-System.out.println("set afs = " + antwoordFormuleString);		
+//System.out.println("set afs = " + antwoordFormuleString);		
 		antwoordFormulePanel.zetExpressieString(antwoordFormuleString);
 		
 		maxScoreVeld.setText("" + scoreMax);
@@ -418,13 +418,13 @@ System.out.println("set afs = " + antwoordFormuleString);
 	
 	public Hashtable getEditState()
 	{
-System.out.println("gaiep getEditState");
+//System.out.println("gaiep getEditState");
 
 		Hashtable h = gaip.getEditState(); 
 		
 	
-System.out.println("get afs = " + antwoordFormulePanel.getExpressieString());
-System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieString());
+//System.out.println("get afs = " + antwoordFormulePanel.getExpressieString());
+//System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieString());
 		h.put("antwoordFormuleString", antwoordFormulePanel.getExpressieString());
 		h.put("antwoordFormuleStringCorrect", antwoordFormulePanel.getCorrectExpressieString());
 		

@@ -148,7 +148,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
-System.out.println("gaip zetOpdracht");
+//System.out.println("gaip zetOpdracht");
 		
 		boolean varWaardeZichtbaar = false;
 		boolean oppWaardeZichtbaar = false;
@@ -169,7 +169,7 @@ System.out.println("gaip zetOpdracht");
 
 		if (b.containsKey("appletLaunchData"))
 		{
-System.out.println("aLD found");
+//System.out.println("aLD found");
 
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 			
@@ -295,7 +295,7 @@ System.out.println("aLD found");
 	
 	public void setEditState(Hashtable b)
 	{
-System.out.println("gaip setEditState");
+//System.out.println("gaip setEditState");
 
 		boolean varWaardeZichtbaar = false;
 		boolean oppWaardeZichtbaar = false;
@@ -317,7 +317,7 @@ System.out.println("gaip setEditState");
 
 		if (b.containsKey("appletLaunchData"))
 		{
-System.out.println("aLD found");
+//System.out.println("aLD found");
 
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 			
