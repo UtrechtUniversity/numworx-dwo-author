@@ -1,5 +1,5 @@
 -classpath %JAVA_HOME%\jre\lib\rt.jar
--manifestMain
+..\output\classes\META-INF
 ..\output\classes\fi
 -keepInterface fi.?
 -o ..\output\jar\algebraexpressies.jar
