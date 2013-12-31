@@ -1,2 +1,2 @@
-..\..\..\tools\jar.exe cvfm ..\output\jar\normaleverdeling.jar mainclass.mf -C ..\output\classes fi
+..\..\..\tools\jar.exe cvfm ..\output\jar\normaleverdeling.jar ..\output\classes\meta-inf\Manifest.mf -C ..\output\classes fi
 
