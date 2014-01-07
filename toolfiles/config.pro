@@ -15,7 +15,8 @@
     <methods>;
 }
 
--keep class fi.tegels.Tegels {
+-keep class fi.tegels.* {
+ 	<fields>;
     <methods>;
 }
 
