@@ -15,14 +15,18 @@
     <methods>;
 }
 
+# Waarschijnlijk niet nodig om alle classes te behouden.
+# Nog verder uitzoeken
+-keep class fi.doorziendwo.* {
+    <fields>;
+    <methods>;
+}
+
 -keep class fi.beans.*.* {
     <fields>;
     <methods>;
 }
 
--keep class fi.doorziendwo.DoorzienDWO {
-    <methods>;
-}
 
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.

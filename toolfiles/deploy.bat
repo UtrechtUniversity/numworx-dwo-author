@@ -1,4 +1,3 @@
-call jar
+call proguard
 call sign
 call export-jar
-::proguard geeft nog geen werkende jar
