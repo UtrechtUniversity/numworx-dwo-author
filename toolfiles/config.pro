@@ -24,6 +24,19 @@
     <methods>;
 }
 
+-keep class fi.geomalgebra.State{
+    <fields>;
+    <methods>;
+}
+-keep class fi.geomalgebra.Figuur{
+    <fields>;
+    <methods>;
+}
+-keep class fi.geomalgebra.Lijnstuk{
+    <fields>;
+    <methods>;
+}
+
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.
 -keepclasseswithmembers public class * {
@@ -35,6 +48,17 @@
 -keepclassmembers enum  * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
+}
+
+# Also keep - Serialization code. Keep all fields and methods that are used for
+# serialization.
+-keepclassmembers class * extends java.io.Serializable {
+    static final long serialVersionUID;
+    static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
 }
 
 # Also keep - Database drivers. Keep all implementations of java.sql.Driver.
