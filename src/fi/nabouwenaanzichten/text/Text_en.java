@@ -87,7 +87,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "geenVoorkant", "No indication of front" },
 
 				{ "plattegrond", "Grid with" },
-				{ "plattegrond2", "       heights" },				
+				{ "plattegrond2", "       heights" },
+				{ "tekenAanzicht", "Draw view mode" },
 				
 				{ "blokkenbouwsel", "Block building" },
 				{ "silhouet", "Building in silhouet" },				

@@ -22,7 +22,7 @@ public class Viewer3d extends JComponent
     private Color penkleur,
     			  vulkleur,
     			  achtergrondkleur;
-    public boolean bezigMetTekenen, muisAan, klikAan,pijlAan,balkAan;
+    public boolean bezigMetTekenen, muisAan, klikAan,pijlAan,balkAan, maakAanzicht;
     private double afstand;
     int aantalVeelvlakken;
     Veelvlak[] vvRij;
@@ -71,6 +71,7 @@ public class Viewer3d extends JComponent
         klikAan = true;
         pijlAan = true;
         balkAan = false;
+        maakAanzicht = false;
         grZichtbaar = false;
         l = new Lichaam3D[5];
         afstand = 1000;
@@ -122,6 +123,21 @@ public class Viewer3d extends JComponent
     public void zetPijlAan(boolean b)
     {   pijlAan = b;
         if (pijlAan)balkAan = false;
+    }
+    public void zetMaakAanzicht(boolean b)
+    {   maakAanzicht = b;
+	    if (maakAanzicht)
+	    {	zetBeginHoeken(90,0);
+	    	zetAfstand(1000000000);
+	    	zetMuisAan(false);
+	    	zetSchaduw(false);
+	    }
+	    else
+	    {	zetBeginHoeken(30,-30);
+	    	zetAfstand(1000);
+	    	zetMuisAan(true);
+	    	zetSchaduw(true);
+	    }
     }
     public void zetBalkAan(boolean b)
     {   balkAan = b;
@@ -263,7 +279,7 @@ public class Viewer3d extends JComponent
     
     void tekenKubusRooster()
     {   aantalKv = 0;
-        tekenVeelvlak(0, kr.grondvlak);
+        if(!maakAanzicht)tekenVeelvlak(0, kr.grondvlak);
         if(pijlAan)
         {
             for(int i=0 ; i<kr.pijl.aantalVlakken ; i++)
@@ -282,7 +298,15 @@ public class Viewer3d extends JComponent
         }
         for(int i=0 ; i<kr.maxAantal ; i++)
         {   for(int j=0 ; j<kr.maxAantal ; j++)
-            {   tekenVlak(1, kr.vierkanten[i][j].vlakken[0]);
+            {   if(maakAanzicht) 
+            	{	kr.vierkanten[i][j].vlakken[0].vulkleur = "wit";
+            		kr.vierkanten[i][j].vlakken[0].vorigeKleur = "wit";
+            	}
+	            else
+	            {  	kr.vierkanten[i][j].vlakken[0].vorigeKleur = "lichtgrijs";
+	            	kr.vierkanten[i][j].vlakken[0].vulkleur = "lichtgrijs";
+	            }
+        		tekenVlak(1, kr.vierkanten[i][j].vlakken[0]);
                 p[i][j] = geefVlak(1);
                 kv[aantalKv] = new Klikvlak(i,j,0,6);
                 aantalKv++;
@@ -625,25 +649,24 @@ public class Viewer3d extends JComponent
                 return;
             }
             else if(kv[n].m != 6 && pp[kv[n].i][kv[n].j][kv[n].k][kv[n].m].contains(mb.geefDrukx(),mb.geefDruky()))
-            {   if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() |remove))
-                {   
-                    if(kv[n].m==0)
+            {   if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() ||remove) && !maakAanzicht)
+                {   if(kv[n].m==0)
                     {   kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k+1);
                         if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
                     }
-                    if(kv[n].m==1)
+                	else if(kv[n].m==1)
                     {   kr.voegKubusToe(kv[n].i,kv[n].j-1,kv[n].k);
                     }
-                    if(kv[n].m==2)
+                	else if(kv[n].m==2)
                     {   kr.voegKubusToe(kv[n].i+1,kv[n].j,kv[n].k);
                     }
-                    if(kv[n].m==3)
+                	else if(kv[n].m==3)
                     {   kr.voegKubusToe(kv[n].i,kv[n].j+1,kv[n].k);
                     }
-                    if(kv[n].m==4)
+                	else if(kv[n].m==4)
                     {   kr.voegKubusToe(kv[n].i-1,kv[n].j,kv[n].k);
                     }
-                    if(kv[n].m==5)
+                	else if(kv[n].m==5)
                     {   kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k-1);
                     }
                 }

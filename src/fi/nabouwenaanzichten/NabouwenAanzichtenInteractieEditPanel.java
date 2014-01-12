@@ -41,6 +41,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	ButtonGroup frontGroup;
 	JRadioButton pijlButton, balkButton, geenButton;
 	JCheckBox plattegrondBox;
+	JCheckBox maakAanzichtBox;
 	JLabel plattegrondLabel;
 	ButtonGroup aanzichtGroup;
 	JRadioButton bouwselButton, silhouetButton, drieButton, voorZijButton, bovenButton, voorButton, rechtsButton;
@@ -215,8 +216,20 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		viewerOptiesPanel.add(geenButton);
 		geenButton.addActionListener(this);
 		
-		currentY += height + offset;		
+		currentY += height + offset;	
 		
+		maakAanzichtBox = new JCheckBox(NabouwenAanzichten.rb.getString("maakAanzicht"));
+		maakAanzichtBox.setFont(theFont);
+		//plattegrondBox.setBackground(Color.white);
+		width = theFM.stringWidth(maakAanzichtBox.getText()) + 35;
+		maakAanzichtBox.setBounds(currentX2, currentY, width, theFM.getHeight());
+		//add(plattegrondBox);
+		viewerOptiesPanel.add(maakAanzichtBox);
+		maakAanzichtBox.addActionListener(this);
+		
+		currentY += theFM.getHeight();
+
+				
 		plattegrondBox = new JCheckBox(NabouwenAanzichten.rb.getString("plattegrond"));
 		plattegrondBox.setFont(theFont);
 		//plattegrondBox.setBackground(Color.white);
@@ -227,7 +240,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		plattegrondBox.addActionListener(this);
 		
 		currentY += theFM.getHeight();
-
+		
+		
 		plattegrondLabel = new JLabel(NabouwenAanzichten.rb.getString("plattegrond2"));
 		plattegrondLabel.setFont(theFont);
 		//plattegrondLabel.setBackground(Color.white);
@@ -237,6 +251,9 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		viewerOptiesPanel.add(plattegrondLabel);
 		
 		currentY += height;// + offset / 2;
+		
+		
+		height -=3;
 		
 		aanzichtGroup = new ButtonGroup();
 
@@ -322,6 +339,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		viewerOptiesPanel.add(rechtsButton);
 		rechtsButton.addActionListener(this);
 
+		height +=3;
 		currentY += height + offset;
 		
 		roosterLabel = new JLabel(NabouwenAanzichten.rb.getString("roosterGrootte"));
@@ -607,6 +625,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			bovenAanzichtMetHoogtes = ((Boolean) b.get("bovenAanzichtMetHoogtes")).booleanValue();
 		plattegrondBox.setSelected(bovenAanzichtMetHoogtes);
 		
+		boolean maakAanzicht = false;
+		if (b.containsKey("maakAanzicht"))
+			maakAanzicht = ((Boolean) b.get("maakAanzicht")).booleanValue();
+		maakAanzichtBox.setSelected(maakAanzicht);
+		
 		if (plattegrondBox.isSelected())
 		{
 			rotatieVastBox.setEnabled(false);
@@ -875,7 +898,88 @@ System.out.println("zetHoogte naiep " + h);
 		}
 		else if (e.getSource() == plattegrondBox)
 		{	boolean selected = plattegrondBox.isSelected();
+			if (selected) {
+				maakAanzichtBox.setSelected(false);
+				naip.zetMaakAanzicht(false);
+			}
 			naip.zetBovenAanzichtMetHoogtes(selected);
+			if (selected)
+			{	rotatieVastBox.setEnabled(false);
+				perspectiefBox.setEnabled(false);
+		
+				nietBouwenSlopenBox.setEnabled(true);
+				keuzeBouwenSlopenBox.setEnabled(true);
+				volLeegBox.setEnabled(true);
+				aantalBlokjesBox.setEnabled(true);
+				
+				pijlButton.setEnabled(true);
+				balkButton.setEnabled(true);
+				geenButton.setEnabled(true);				
+				
+				bouwselButton.setEnabled(false);
+				silhouetButton.setEnabled(false);
+				drieButton.setEnabled(false);
+				voorZijButton.setEnabled(false);
+				bovenButton.setEnabled(false);
+				voorButton.setEnabled(false);
+				rechtsButton.setEnabled(false);
+				
+				roosterTextField.setEnabled(false);
+			}
+			else
+			{	rotatieVastBox.setEnabled(true);
+				perspectiefBox.setEnabled(true);
+				
+				bouwselButton.setEnabled(true);
+				silhouetButton.setEnabled(true);
+				drieButton.setEnabled(true);
+				voorZijButton.setEnabled(true);
+				bovenButton.setEnabled(true);
+				voorButton.setEnabled(true);
+				rechtsButton.setEnabled(true);
+				
+				roosterTextField.setEnabled(true);
+				
+				if (naip.blokkenBouwsel)
+				{
+					
+				}
+				
+				if (naip.silhouet)
+				{	
+					nietBouwenSlopenBox.setEnabled(false);
+					keuzeBouwenSlopenBox.setEnabled(false);
+					volLeegBox.setEnabled(false);
+					aantalBlokjesBox.setEnabled(false);
+					
+				}
+				
+				if (naip.drieAanzichten || naip.voorZijAanzicht ||
+					naip.bovenAanzicht || naip.voorAanzicht || naip.rechtsAanzicht)
+				{
+					rotatieVastBox.setEnabled(false);
+					nietBouwenSlopenBox.setEnabled(false);
+					keuzeBouwenSlopenBox.setEnabled(false);
+					perspectiefBox.setEnabled(false);
+					volLeegBox.setEnabled(false);
+					aantalBlokjesBox.setEnabled(false);
+					
+					pijlButton.setEnabled(false);
+					balkButton.setEnabled(false);
+					geenButton.setEnabled(false);
+					
+				}
+			}
+			
+		}
+		else if (e.getSource() == maakAanzichtBox)
+		{	boolean selected = maakAanzichtBox.isSelected();
+			if (selected) {
+				plattegrondBox.setSelected(false);
+				naip.zetBovenAanzichtMetHoogtes(false);
+			}
+			
+			naip.zetMaakAanzicht(selected);
 			if (selected)
 			{	rotatieVastBox.setEnabled(false);
 				perspectiefBox.setEnabled(false);

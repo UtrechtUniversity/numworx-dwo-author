@@ -62,6 +62,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	boolean pijlAan = true;
 	boolean balkAan = false;
 	boolean bovenAanzichtMetHoogtes = false;
+	boolean maakAanzicht = false;
 	
     boolean blokkenBouwsel = true;
     boolean silhouet = false;
@@ -342,6 +343,7 @@ System.out.println("naip noSetBounds");
 //System.out.println("pb vpZijde = " + v.getSize().width);
 		
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
+		zetMaakAanzicht(maakAanzicht);
 
 //System.out.println("bah vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
 //System.out.println("bah vpZijde = " + v.getSize().width);
@@ -849,9 +851,113 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 		v.tekenOpnieuw();
 	}
 	
+	public void zetMaakAanzicht(boolean b)
+	{	maakAanzicht = b;
+		
+		if (maakAanzicht)
+		{	//zetSilhouet(false);
+			kr.zetVulkleur("geel");
+			//v.zetAfstand(1000000000);
+			if (vp.isVisible())
+			{	noSetBounds = true;
+				vp.setVisible(false);
+				noSetBounds = true;
+				v.setVisible(true);
+				if (keuzeBouwenSlopen)
+				{	noSetBounds = true;
+					ip.setVisible(true);
+				}
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;		
+				if (showKnoppenPanel)
+				{	noSetBounds = true;
+					kPanel.setVisible(true);
+				}			
+				
+			}	
+			else if (v.isVisible() && silhouet && !newViewer)
+			{
+				//zetSilhouet(false);
+				
+				if (keuzeBouwenSlopen)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					noSetBounds = true;
+					ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					noSetBounds = true;
+					ip.setVisible(true);
+				}
+				boolean showKnoppenPanel = volLeegOptie || kijkNaActief || aantalBlokjes;				
+				if (showKnoppenPanel)
+				{	
+					int vSpace = getSize().height - v.getSize().height - 24;
+					if (ip.isVisible())
+						vSpace -= 24;
+					if (vSpace > 0)
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x, vSpace / 2, v.getSize().width, v.getSize().height);
+					}
+					else
+					{	noSetBounds = true;
+						v.setBounds(v.getLocation().x + 12, v.getLocation().y, v.getSize().width - 24, v.getSize().height - 24);
+					}	
+					if (ip.isVisible())
+					{	noSetBounds = true;
+						ip.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, ip.getLocation().y + 24, v.getSize().width, 24);
+					}
+					else
+					{
+						noSetBounds = true;
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
+					}	
+					noSetBounds = true;
+					kPanel.setVisible(true);
+				}
+				
+			}
+		}
+	
+		v.zetMaakAanzicht(maakAanzicht);
+		docentV.zetMaakAanzicht(maakAanzicht);
+		
+		if (!maakAanzicht)
+		{	v.zetSchaduw(true);
+			
+			if ((Math.abs(beginHoekX - 90) < NZERO) && (Math.abs(beginHoekY) < NZERO))
+				zetBeginHoeken(30, -30);
+			else	
+				zetBeginHoeken(beginHoekX, beginHoekY);
+			zetPerspectief(perspectief);
+			zetRotatieVast(rotatieVast);
+			newViewer = true;
+			zetBlokkenBouwsel(blokkenBouwsel);
+			newViewer = false; 
+			zetSilhouet(silhouet);
+			zetDrieAanzichten(drieAanzichten);
+			zetVoorZijAanzicht(voorZijAanzicht);
+			zetBovenAanzicht(bovenAanzicht);
+			zetVoorAanzicht(voorAanzicht);
+			zetRechtsAanzicht(rechtsAanzicht);
+
+		}
+		else
+		if(bovenAanzichtMetHoogtes)	v.zetHoogtes();
+		
+		v.tekenOpnieuw();
+	}
+	
 	public void zetBlokkenBouwsel(boolean b)
 	{	blokkenBouwsel = b;
-		if (blokkenBouwsel && !bovenAanzichtMetHoogtes)
+		if (blokkenBouwsel && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{
 			kr.zetVulkleur("geel");
 			v.zetSchaduw(true);
@@ -980,7 +1086,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetSilhouet(boolean b)
 	{	silhouet = b;
 		
-		if (silhouet && !bovenAanzichtMetHoogtes)
+		if (silhouet && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{
 			kr.zetVulkleur("zwart");
 			v.klikAan = false;
@@ -1056,7 +1162,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	
 	public void zetDrieAanzichten(boolean b)
 	{	drieAanzichten = b;
-		if (drieAanzichten && !bovenAanzichtMetHoogtes)
+		if (drieAanzichten && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{	
 			kr.zetVulkleur("geel");
 			
@@ -1097,7 +1203,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 
 	public void zetVoorZijAanzicht(boolean b)
 	{	voorZijAanzicht = b;
-		if (voorZijAanzicht && !bovenAanzichtMetHoogtes)
+		if (voorZijAanzicht && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{	
 			kr.zetVulkleur("geel");
 			
@@ -1138,7 +1244,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	
 	public void zetBovenAanzicht(boolean b)
 	{	bovenAanzicht = b;
-		if (bovenAanzicht && !bovenAanzichtMetHoogtes)
+		if (bovenAanzicht && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{	
 			kr.zetVulkleur("geel");
 			
@@ -1180,7 +1286,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 
 	public void zetVoorAanzicht(boolean b)
 	{	voorAanzicht = b;
-		if (voorAanzicht && !bovenAanzichtMetHoogtes)
+		if (voorAanzicht && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{	
 			kr.zetVulkleur("geel");
 			
@@ -1222,7 +1328,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 
 	public void zetRechtsAanzicht(boolean b)
 	{	rechtsAanzicht = b;
-		if (rechtsAanzicht && !bovenAanzichtMetHoogtes)
+		if (rechtsAanzicht && !(bovenAanzichtMetHoogtes || maakAanzicht))
 		{	
 			kr.zetVulkleur("geel");
 			
@@ -1629,7 +1735,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			na.setValue(kr.maxAantal);
 			
 			
-			if (silhouet &&  !bovenAanzichtMetHoogtes)
+			if (silhouet &&  !(bovenAanzichtMetHoogtes || maakAanzicht))
 			{
 				kr.zetVulkleur("zwart"); 
 			}
@@ -1729,6 +1835,11 @@ newViewer = true;
 		if (h.containsKey("bovenAanzichtMetHoogtes"))
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
+		
+		boolean maakAanzicht = false;
+		if (h.containsKey("maakAanzicht"))
+			maakAanzicht = ((Boolean) h.get("maakAanzicht")).booleanValue();
+		zetMaakAanzicht(maakAanzicht);
 		
 		boolean blokkenBouwsel = true;
 		if (h.containsKey("blokkenBouwsel"))
@@ -1889,7 +2000,7 @@ newViewer = false;
 			na.setValue(kr.maxAantal);
 			v.zetAchtergrond(getBackground());
 			
-			if (silhouet && !bovenAanzichtMetHoogtes)
+			if (silhouet && !(bovenAanzichtMetHoogtes || maakAanzicht))
 			{
 				kr.zetVulkleur("zwart"); 
 			}
@@ -1902,7 +2013,7 @@ newViewer = false;
 			na.setValue(kr.maxAantal);
 			v.zetAchtergrond(getBackground());
 			
-			if (silhouet && !bovenAanzichtMetHoogtes)
+			if (silhouet && !(bovenAanzichtMetHoogtes || maakAanzicht))
 			{
 				kr.zetVulkleur("zwart"); 
 			}
@@ -2151,6 +2262,11 @@ newViewer = true;
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
 
+		boolean maakAanzicht = false;
+		if (h.containsKey("maakAanzicht"))
+			maakAanzicht = ((Boolean) h.get("maakAanzicht")).booleanValue();
+		zetMaakAanzicht(maakAanzicht);
+		
 		boolean blokkenBouwsel = true;
 		if (h.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) h.get("blokkenBouwsel")).booleanValue();
@@ -2364,6 +2480,7 @@ newViewer = false;
 	    h.put("balkAan", new Boolean(balkAan));
 	    
 	    h.put("bovenAanzichtMetHoogtes", new Boolean(bovenAanzichtMetHoogtes));
+	    h.put("maakAanzicht", new Boolean(maakAanzicht));
 	    
 	    h.put("blokkenBouwsel", new Boolean(blokkenBouwsel));
 	    h.put("silhouet", new Boolean(silhouet));

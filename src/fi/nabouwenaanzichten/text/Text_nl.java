@@ -86,7 +86,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "geenVoorkant", "Geen indicatie voorzijde" },
 
 				{ "plattegrond", "Plattegrond met" },				
-				{ "plattegrond2", "       hoogtes" },				
+				{ "plattegrond2", "       hoogtes" },		
+				{ "maakAanzicht", "Teken aanzicht modus" },
 				
 				{ "blokkenbouwsel", "Blokkenbouwsel" },
 				{ "silhouet", "Bouwsel in silhouet" },				
