@@ -1,9 +1,7 @@
 package fi.geomalgebra;
 
 import java.awt.*;
-import java.util.*;
 import java.awt.event.*;
-import fi.geomalgebra.text.*;
 
 import javax.swing.*;
 
@@ -26,26 +24,22 @@ class LineaalVer extends JPanel  implements MouseListener
 	{	addMouseListener(this);
 		breedte = 20;
 		hoogte = y-breedte-50;
-//		setBackground(new Color(220,220,220));
+
 		setBounds(2,5,breedte,hoogte);
 		
 		aantal = hoogte/(2*schaal)+2;
-//System.out.println("aantal lv = " + aantal);		
+		
 		getalknoppen = new Rectangle[2*aantal+1];
 		getallen = new int[2*aantal+1];
 		nulPositie = hoogte/2;
 		min = -aantal+2-(nulPositie-hoogte/2)/(schaal);
 		max = aantal+2-(nulPositie-hoogte/2)/(schaal);
-//System.out.println("min lv = " + min);
-//System.out.println("max lv = " + max);
 		
 	}
 	
-	//public void paint(Graphics g)
 	public void paintComponent(Graphics g)
 	{	
 		g.setColor(new Color(220,220,220));
-		//g.setColor(Color.orange);
 		g.fillRect(0, 0, getSize().width, getSize().height);
 		g.setColor(Color.black);
 		
@@ -58,7 +52,7 @@ class LineaalVer extends JPanel  implements MouseListener
 		int einde = max - 3;
 		if (!negatieveWaarden)
 			einde = max - 2;
-		//for (int i = min; i < max - 3; i++)
+
 		for (int i = min; i < einde; i++)
 		{	int dy = nulPositie - i * schaal;
 			getalknoppen[i - min] = null;

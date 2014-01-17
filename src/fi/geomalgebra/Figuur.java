@@ -1,11 +1,7 @@
 package fi.geomalgebra;
 
-import java.awt.Polygon;
 import java.awt.*;
-import java.util.*;
-import java.awt.event.*;
 import java.io.Serializable; 
-import fi.geomalgebra.text.*;
 
 class Figuur  implements Serializable
 {	int aantalx, aantaly;
@@ -332,21 +328,8 @@ class Figuur  implements Serializable
 	}
 	
 	public void veranderPositie(int dx,int dy)
-	{	/*positie.x = positie.x + dx;
-		positie.y = positie.y + dy;
+	{	
 		
-		for(int i=0 ; i<aantalx ; i++)
-		{	lsx[i].positie.x = lsx[i].positie.x + dx;
-			lsx[i].positie.y = lsx[i].positie.y + dy;
-		}
-		for(int i=0 ; i<aantaly ; i++)
-		{	lsy[i].positie.x = lsy[i].positie.x + dx;
-			lsy[i].positie.y = lsy[i].positie.y + dy;
-		}
-		*/
-		
-//System.out.println("vp " + dx + ", " + dy);
-
 		positie.x = positie.x + dx;
 		positie.y = positie.y + dy;
 		
@@ -359,9 +342,9 @@ class Figuur  implements Serializable
 		minx = minx + dx;
 		
 		maxy = maxy + dy;
-//System.out.println("miny old = " + miny);
+
 		miny = miny + dy;
-//System.out.println("miny new = " + miny);		
+		
 		for(int i=0 ; i<aantalx ; i++)
 		{	lsx[i].positie.x = lsx[i].positie.x + dx;
 			lsx[i].positie.y = lsx[i].positie.y + dy;
@@ -374,20 +357,20 @@ class Figuur  implements Serializable
 		{
 			if (maxx > breedte)
 			{	veranderPositie(breedte - maxx, 0);
-//System.out.println("maxx = " + maxx);
+
 
 			}
 			if (minx < 0)
 			{	veranderPositie(-minx, 0);
-//System.out.println("minx = " + minx);			
+			
 			}
 			if (maxy > hoogte)
 			{	veranderPositie(0, hoogte - maxy);
-//System.out.println("maxy = " + maxy);			
+			
 			}
 			if (miny < 25) 
 			{	veranderPositie(0, 25 - miny);
-//System.out.println("miny = " + miny);			
+			
 			}
 			
 		}

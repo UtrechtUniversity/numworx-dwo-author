@@ -39,7 +39,8 @@ class Lijnstuk  implements Serializable
 		varD[3] = 36;
 		positie = new Point(x,y);
 		isVar = false;
-		if(var!=0)isVar = true;
+		if (var!=0)
+			isVar = true;
 		zetLengte();
 	}
 	
@@ -63,31 +64,39 @@ class Lijnstuk  implements Serializable
 	}
 	
 	public void zetLengte()
-	{	d = lengte[0]*schaal + lengte[1]*varD[1] + lengte[2]*varD[2] + lengte[3]*varD[3];
+	{	d = lengte[0] * schaal + lengte[1] * varD[1] + lengte[2] * varD[2] + lengte[3] * varD[3];
 		varNaam = "";
 		
-		for(int i=1 ; i<4 ; i++)
-		{	if(lengte[i]!=0)
+		for (int i = 1; i < 4; i++)
+		{	if (lengte[i] != 0)
 			{	isVar = true;
-				if(i!=1 && !varNaam.equals("") && lengte[i]>0)varNaam += "+";
-				if(i!=1 && !varNaam.equals("") && lengte[i]<0)varNaam += "-";
+				if (i != 1 && !varNaam.equals("") && lengte[i] > 0)
+					varNaam += "+";
+				if (i != 1 && !varNaam.equals("") && lengte[i] < 0)
+					varNaam += "-";
 				
-				if(lengte[i]==1)varNaam += varString[i];
-				else if(lengte[i]==-1 && varNaam.equals(""))varNaam += "-" + varString[i];
-				else if(lengte[i]==-1 && !varNaam.equals(""))varNaam += varString[i];
-				else if(lengte[i]>1)varNaam += Integer.toString(lengte[i]) + varString[i];
-				else if(lengte[i]<-1 && varNaam.equals(""))varNaam += Integer.toString(lengte[i]) + varString[i];
-				else if(lengte[i]<-1 && !varNaam.equals(""))varNaam += Integer.toString(-lengte[i]) + varString[i];
+				if (lengte[i]==1)
+					varNaam += varString[i];
+				else if (lengte[i] == -1 && varNaam.equals(""))
+					varNaam += "-" + varString[i];
+				else if (lengte[i] == -1 && !varNaam.equals(""))
+					varNaam += varString[i];
+				else if (lengte[i] > 1)
+					varNaam += Integer.toString(lengte[i]) + varString[i];
+				else if (lengte[i] < -1 && varNaam.equals(""))
+					varNaam += Integer.toString(lengte[i]) + varString[i];
+				else if (lengte[i] < -1 && !varNaam.equals(""))
+					varNaam += Integer.toString(-lengte[i]) + varString[i];
 			}
 		}
-		if(lengte[0]>0)
+		if (lengte[0] > 0)
 		{	if(!varNaam.equals(""))
 			{	varNaam += "+";
 			}	
 			varNaam += Integer.toString(lengte[0]);
 		}
-		if(lengte[0]<0)	
-		{	if(!varNaam.equals(""))
+		if (lengte[0] < 0)	
+		{	if (!varNaam.equals(""))
 			{	varNaam += "-";
 				varNaam += Integer.toString(-lengte[0]);
 			}	

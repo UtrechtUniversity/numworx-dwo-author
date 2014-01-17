@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Vector;
 import java.awt.Color;
 
@@ -31,7 +32,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	LineaalVer lv;
 	
 	boolean varWaardeZichtbaar;
-	boolean oppWaardeZichtbaar;
+	boolean oppWaardeZichtbaar = false;
 	boolean formuleZichtbaar = true;
 	boolean constructieTools = true;
 	boolean alleenOppervlaktes;
@@ -40,6 +41,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean lengtesBreedtesZichtbaar = true;
 	boolean negatieveWaarden = true;
 	boolean puzzelen = false;
+
 	boolean kijkNaActief;
 	boolean equivalent = true;
 	String antwoordFormuleStringCorrect = "";
@@ -264,7 +266,9 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			
 		}
 		else if (b.containsKey("state"))
-		{	State state = (State) b.get("state");
+		{	
+			
+			State state = (State) b.get("state");
 			av.setState(state);
 			
 		}
@@ -287,7 +291,13 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		{	State state = (State) b.get("state");
 			av.setState(state);
 		}
-
+		else if (b.containsKey("stateHM"))
+		{
+			HashMap stateHM = (HashMap) b.get("stateHM");
+			State state = NoSer.setStateState(stateHM);
+			av.setState(state);
+//System.out.println("stateHM");			
+		}
 		if (kijkNaActief)
 			kijkNa();
 		
@@ -407,12 +417,14 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		if (b.containsKey("appletEditState"))
 		{	String appletEditState = (String) b.get("appletEditState");
 			av.setState(appletEditState);
+			av.docentState = new State(av.aantalFg, av.fg, av.var);
 		}
 		else if (b.containsKey("state"))
 		{	State state = (State) b.get("state");
 			av.setState(state);
+			av.docentState = new State(av.aantalFg, av.fg, av.var);
 		}
-		av.docentState = new State(av.aantalFg, av.fg, av.var);
+		//av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	}
 	
@@ -422,7 +434,10 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		
 		State state = av.getStateState();
 		if (state != null)
-			h.put("state", state);
+		{	h.put("state", state);
+			HashMap stateHM = NoSer.getStateState(state);
+			h.put("stateHM", stateHM);
+		}
 		
 		return h;
 		
@@ -448,7 +463,10 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		
 		State state = av.getStateState();
 		if (state != null)
-			h.put("state", state);
+		{	h.put("state", state);
+			HashMap stateHM = NoSer.getStateState(state);
+			h.put("stateHM", state);
+		}
 		
 		return h;
 	}
