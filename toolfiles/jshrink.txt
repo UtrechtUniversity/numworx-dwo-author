@@ -1,6 +1,6 @@
 -classpath %JAVA_HOME%\jre\lib\rt.jar
--manifestMain
 ..\output\classes\fi
+..\output\classes\META-INF
 -keepInterface fi.?
 -o ..\output\jar\spot_problems_dwo.jar
 

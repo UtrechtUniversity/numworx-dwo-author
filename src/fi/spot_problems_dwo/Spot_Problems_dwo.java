@@ -9,11 +9,12 @@ import java.applet.*;
 import java.awt.event.*;
 import java.util.*;
 
+import javax.swing.JPanel;
+
 import fi.spot_problems_dwo.wiskopdr.*;
 import fi.beans.base64code.*;
 import fi.beans.scorm.*;
 import fi.beans.copyright.*;
-
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
@@ -139,7 +140,7 @@ public class Spot_Problems_dwo extends WiskOpdr implements WiskOpdrApplet
     
     // GUI attributes
     // buffer Panel
-    BufferPanel bufferPanel;
+    JPanel bufferPanel;
     // drawing Container in buffer panel
     DrawingContainer drawCon;
 
@@ -262,7 +263,7 @@ public class Spot_Problems_dwo extends WiskOpdr implements WiskOpdrApplet
 		
         // graphical part
         // buffer panel
-		bufferPanel = new BufferPanel();
+		bufferPanel = new JPanel();
 		
 		bufferPanel.setBackground(bgColor);
 		// take width and height as multiples of 
