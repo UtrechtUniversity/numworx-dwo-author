@@ -4,7 +4,7 @@
 -libraryjars <java.home>/lib/rt.jar
 -libraryjars ..\lib\mayscript.jar
 
--target 1.7
+-target 1.6
 
 -keeppackagenames
 
