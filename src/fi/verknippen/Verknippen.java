@@ -30,7 +30,7 @@ public class Verknippen extends JApplet implements ScormAppletIF , WiskOpdrParam
 	// DWO-component-gebeuren
 	boolean isDWOComponent = false;
 	
-	InteractiePanelAdapter ipa = null;
+	//InteractiePanelAdapter ipa = null;
 	
 	public static void main(String[] args)    
 	{	int width = 790;
@@ -855,8 +855,8 @@ opdrachtLabel2.setBackground(Color.orange);
 				{	bottomPanel.showGoed = true;
 					bottomPanel.showFout = false;
 					
-					if (ipa != null)				
-						ipa.produceAction("changed");
+					//if (ipa != null)				
+					//	ipa.produceAction("changed");
 					
 				}	
 			}
@@ -867,8 +867,8 @@ opdrachtLabel2.setBackground(Color.orange);
 				{	bottomPanel.showGoed = true;
 					bottomPanel.showFout = true;
 					
-					if (ipa != null)				
-						ipa.produceAction("changed");
+					//if (ipa != null)				
+					//	ipa.produceAction("changed");
 					
 				}	
 				
@@ -881,8 +881,8 @@ opdrachtLabel2.setBackground(Color.orange);
 				{	bottomPanel.showGoed = false;
 					bottomPanel.showFout = true;
 					
-					if (ipa != null)				
-						ipa.produceAction("changed");
+					//if (ipa != null)				
+					//	ipa.produceAction("changed");
 					
 				}	
 			
@@ -944,8 +944,8 @@ opdrachtLabel2.setBackground(Color.orange);
 		{
 			opnieuwAction();
 			
-			if (ipa != null)
-				ipa.produceAction("changed");
+			//if (ipa != null)
+			//	ipa.produceAction("changed");
 /*		
 			currentOpdracht.drawingPanel.removeAllKnipPolygons();
 			
@@ -1080,8 +1080,8 @@ opdrachtLabel2.setBackground(Color.orange);
 					{	bottomPanel.showGoed = true;
 						bottomPanel.showFout = false;
 						
-						if (ipa != null)				
-							ipa.produceAction("changed");
+						//if (ipa != null)				
+						//	ipa.produceAction("changed");
 						
 					}	
 				}
@@ -1092,8 +1092,8 @@ opdrachtLabel2.setBackground(Color.orange);
 					{	bottomPanel.showGoed = false;
 						bottomPanel.showFout = true;
 						
-						if (ipa != null)				
-							ipa.produceAction("changed");
+						//if (ipa != null)				
+						//	ipa.produceAction("changed");
 						
 					}	
 
