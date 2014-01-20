@@ -254,8 +254,8 @@ class Regelaar extends JPanel
 		//}
 	public void paint(Graphics g)
 	{	super.paint(g);
-		g.setColor(Color.black);
-		g.drawRect(0,0,getSize().width-1, getSize().height-1);
+		//g.setColor(Color.black);
+		//g.drawRect(0,0,getSize().width-1, getSize().height-1);
 	}	
 }
 
@@ -330,8 +330,8 @@ class Tekenblad3D extends JPanel
 		//mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
     	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
-		gIm.setColor(Color.black);
-		gIm.drawRect(0,0,breedte-1, hoogte-1);
+		//gIm.setColor(Color.black);
+		//gIm.drawRect(0,0,breedte-1, hoogte-1);
     	penAan(0,0,0);
 		vul = false;
     	eigenaar.tekenprogramma();

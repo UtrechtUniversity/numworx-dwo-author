@@ -61,7 +61,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
         
 		kiesV.setBounds(15,bStarH,100,25);
 		rg.add(kiesV);
-		rg.setBackground(new Color(180,217,255));
+		rg.setBackground(new Color(208,228,255));
 		
 		l = new JLabel(TekenVeelvlakOpdr.rb.getString("zijdeLabel"));
 		l.setFont(font);
@@ -72,7 +72,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		zijdeSl = new Slider(100,40);
 		zijdeSl.addActionListener(this);
 		zijdeSl.setBounds(10,bStarH+60,110,20);
-		zijdeSl.setBackground(new Color(180,217,255));
+		zijdeSl.setBackground(new Color(208,228,255));
 		rg.add(zijdeSl);
 		
 		lijnKnop = new JButton(TekenVeelvlakOpdr.rb.getString("lijnKnopLabel"));
