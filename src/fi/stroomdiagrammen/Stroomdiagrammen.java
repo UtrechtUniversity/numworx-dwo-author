@@ -34,7 +34,7 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
 	// DWO-component-gebeuren
 	boolean isDWOComponent = false;
 	
-	InteractiePanelAdapter ipa = null;
+	//InteractiePanelAdapter ipa = null;
 
 	public static void main(String[] args)    
 	{	int width = 700;
