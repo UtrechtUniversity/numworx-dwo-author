@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.text.*;
 import java.util.Hashtable;
 
-
 public class GrafiekComponent extends AlgebraSchuifComponent 
                               implements ActionListener, MouseListener, MouseMotionListener
 {		
@@ -1002,7 +1001,13 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			stapx= Math.pow(factorx,0.1);
 			stapy= Math.pow(factory,0.1);
 			
-			
+System.out.println("stapx = " + stapx);
+System.out.println("stapy = " + stapy);
+
+System.out.println("ehxD = " + eenheidxD);
+System.out.println("ehyD = " + eenheidyD);
+
+
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
 				long t = System.currentTimeMillis();
@@ -1033,6 +1038,8 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 				
 			}
 			
+System.out.println("ehxD = " + eenheidxD);
+System.out.println("ehyD = " + eenheidyD);
 			
 			
 			schaalFactorX*=factorx;
@@ -1044,6 +1051,9 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 			
 			eenheidxD = eenheidxD*factorx;
 			eenheidyD = eenheidyD*factory;
+
+System.out.println("ehxD = " + eenheidxD);
+System.out.println("ehyD = " + eenheidyD);
 			
 			
 			for(int i=0 ; i<5 ; i++)
@@ -1073,14 +1083,18 @@ public class GrafiekComponent extends AlgebraSchuifComponent
 				gv.tekenOpnieuw();
 				schuifveld.tekenOpnieuw();
 			}
+
+			
+System.out.println("ehxD = " + eenheidxD);
+System.out.println("ehyD = " + eenheidyD);
 			
 			//beginx = Math.round(beginx/eenheid)*eenheid;
 			
 			beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 			double beginwaardeD = 1.0-(beginx/eenheidx);
-			System.out.println(""+beginx);
-			System.out.println(""+eenheidx);
-			System.out.println(""+beginwaardeD);
+//System.out.println(""+beginx);
+//System.out.println(""+eenheidx);
+//System.out.println(""+beginwaardeD);
 			
 			tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
 			tracex = (int) Math.round(tracexD);

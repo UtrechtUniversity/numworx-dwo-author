@@ -43,6 +43,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 	public AlgebraPijlenOpdrInteractiePanel()
 	{	
 		
+//System.out.println(Color.gray.toString());		
+		
 		setLayout(null);
 		// echte initiatie vind pas plaats na setBounds
 		

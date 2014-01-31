@@ -529,11 +529,17 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	public Hashtable getState()
 	{	int aantalSc = 0;
 		String[] classNames = null;
+		ArrayList<String> classNamesList = new ArrayList<String>();
 		int[] posX = null;
 		int[] posY = null;
+		ArrayList<Integer> posXList = new ArrayList<Integer>();
+		ArrayList<Integer> posYList = new ArrayList<Integer>();
 		Hashtable[] scStates = null;
+		ArrayList<Hashtable> scStatesList = new ArrayList<Hashtable>(); 
 		boolean[][] connections = null;
 		int[] graphConnections = null;
+		ArrayList<Boolean> connectionsList = new ArrayList<Boolean>();
+		ArrayList<Integer> graphConnectionsList = new ArrayList<Integer>();
 		boolean tabel = false;
 		boolean grafiek = false;
 		boolean expressie = false;
@@ -547,15 +553,20 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		scStates = new Hashtable[aantalSc];
 		for (int i = 0; i < aantalSc; i++)
 	    {	classNames[i] = schuifcomponenten[i].getClass().getName();
+	    	classNamesList.add(classNames[i]);
 	    	posX[i] = schuifcomponenten[i].getLocation().x;
+	    	posXList.add(posX[i]);
 	    	posY[i] = schuifcomponenten[i].getLocation().y;
+	    	posYList.add(posY[i]);
 	    	scStates[i] = schuifcomponenten[i].getState();
+	    	scStatesList.add(scStates[i]);
 	    }
 		connections = new boolean[aantalSc][aantalSc];
 		for (int i = 0; i < aantalSc; i++)
 	    {	for (int j = 0; j < aantalSc; j++)
 			{	connections[i][j] = schuifcomponenten[j].pijlIn1 != null && 
 	    							schuifcomponenten[j].pijlIn1.zender == schuifcomponenten[i];
+				connectionsList.add(new Boolean(connections[i][j]));
 			}
 	    }
 	    
@@ -569,13 +580,16 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	    graphConnections = new int[10];
 	    for (int i = 0; i < 10; i++)
 		{	graphConnections[i] = -1;
+			graphConnectionsList.add(new Integer(-1));
 		}
 		if (grafiek)
 	    {	for (int i = 0; i < 10; i++)
 			{	Pijl p = grafiekComponent.pijlenIn[i];
 				for (int j = 0; j < aantalSc; j++)
 		   		{	if (p != null && schuifcomponenten[j] == p.zender)
-		   				graphConnections[i] = j;
+		   			{	graphConnections[i] = j;
+		   				graphConnectionsList.set(i, new Integer(j));
+		   			}
 				}
 			}
 	    }
@@ -583,11 +597,17 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		Hashtable h = new Hashtable();
 	    h.put("aantalSc", new Integer(aantalSc));
 	    h.put("classNames", classNames);
+	    h.put("classNamesList", classNamesList);
 	    h.put("posX", posX);
+	    h.put("posXList", posXList);
 	    h.put("posY", posY);
+	    h.put("posYList", posYList);
 	    h.put("scStates", scStates);
+	    h.put("scStatesList", scStatesList);
 	    h.put("connections", connections);
+	    h.put("connectionsList", connectionsList);
 	    h.put("graphConnections", graphConnections);
+	    h.put("graphConnectionsList", graphConnectionsList);
 	    h.put("tabel", new Boolean(tabel));
 	    h.put("grafiek", new Boolean(grafiek));
 	    h.put("expressie", new Boolean(expressie));
