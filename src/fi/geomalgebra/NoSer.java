@@ -214,8 +214,14 @@ public class NoSer
 			//figurenHash[i] = getFiguurState(figurenrij[i]);
 		}
 		h.put("figurenrij", figurenHash);
+		
 		int[] var = s.geefVars();
-		h.put("var", var);
+		//h.put("var", var);
+		
+		ArrayList<Integer> varList = new ArrayList<Integer>();
+		for (int vCnt = 0; vCnt < var.length; vCnt++)
+			varList.add(new Integer(var[vCnt]));
+		h.put("varList", varList);
 		
 		
 		return h;
@@ -236,8 +242,17 @@ public class NoSer
 			figurenrij[i] = setFiguurState(figurenHash.get(i));
 		}
 		int[] var = new int[4];
+		ArrayList<Integer> varList = new ArrayList<Integer>(); 
+		
+		// backwards compatibility
 		if (h.containsKey("var"))
 			var = (int[]) h.get("var");
+		 
+		if (h.containsKey("varList"))
+		{	varList = (ArrayList<Integer>) h.get("varList");
+			for (int vCnt = 0; vCnt < varList.size(); vCnt++)
+				var[vCnt] = ((Integer) varList.get(vCnt)).intValue();
+		}
 		
 		State s = new State(aantalFg, figurenrij, var);
 		

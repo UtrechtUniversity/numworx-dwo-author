@@ -272,6 +272,15 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.setState(state);
 			
 		}
+		else if (b.containsKey("stateHM"))
+		{
+			HashMap stateHM = (HashMap) b.get("stateHM");
+			State state = NoSer.setStateState(stateHM);
+			av.setState(state);
+			
+//System.out.println("zetOpdr stateHM");			
+		}
+		
 		av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	
@@ -296,7 +305,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			HashMap stateHM = (HashMap) b.get("stateHM");
 			State state = NoSer.setStateState(stateHM);
 			av.setState(state);
-//System.out.println("stateHM");			
+//System.out.println("setState stateHM");			
 		}
 		if (kijkNaActief)
 			kijkNa();
@@ -424,6 +433,15 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.setState(state);
 			av.docentState = new State(av.aantalFg, av.fg, av.var);
 		}
+		else if (b.containsKey("stateHM"))
+		{
+			HashMap stateHM = (HashMap) b.get("stateHM");
+			State state = NoSer.setStateState(stateHM);
+			av.setState(state);
+			av.docentState = new State(av.aantalFg, av.fg, av.var);
+//System.out.println("setEditState stateHM");			
+		}
+		
 		//av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	}
@@ -438,6 +456,12 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			HashMap stateHM = NoSer.getStateState(state);
 			h.put("stateHM", stateHM);
 		}
+		else
+		{
+			HashMap stateHM = new HashMap();
+			h.put("stateHM", stateHM);
+		}
+
 		
 		return h;
 		
@@ -465,7 +489,12 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		if (state != null)
 		{	h.put("state", state);
 			HashMap stateHM = NoSer.getStateState(state);
-			h.put("stateHM", state);
+			h.put("stateHM", stateHM);
+		}
+		else
+		{
+			HashMap stateHM = new HashMap();
+			h.put("stateHM", stateHM);
 		}
 		
 		return h;
