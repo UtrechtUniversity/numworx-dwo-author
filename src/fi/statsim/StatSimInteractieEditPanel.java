@@ -14,10 +14,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private StatSimInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
 	
-	private int defaultWidth = 800;
-	private int defaultHeight = 500;
-	private int defaultIpWidth = 500;
-	private int defaultOpWidth = 260;
+	private int defaultWidth = 790;
+	private int defaultHeight = 450;
+	private int defaultIpWidth = 790;
+	private int defaultOpWidth = 450;
 	
 	//// Te vervangen voorbeeldcode:
 	private JTextField opdrachtTekstTF;
@@ -100,11 +100,6 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		//// Te vervangen voorbeeldcode:
-		if(e.getSource()==opdrachtTekstTF) {
-			interactiePanel.zetOpdrachtTekst(opdrachtTekstTF.getText());
-		}
-		//// Einde voorbeelcode
 	}
 
 }

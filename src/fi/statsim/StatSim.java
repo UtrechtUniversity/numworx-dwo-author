@@ -15,8 +15,8 @@ public class StatSim extends Applet implements ScormAppletIF, WiskOpdrApplet {
 	private StatSimInteractiePanel interactiePanel;
 	
 	public static void main(String[] args) {	
-		int width = 800;
-        int height = 600;
+		int width = 790;
+        int height = 450;
 		ScormMainFrame mf = new ScormMainFrame(new StatSim(),width, height);
 		mf.setTitle("StatSim");
 		mf.pack();
@@ -55,9 +55,9 @@ public class StatSim extends Applet implements ScormAppletIF, WiskOpdrApplet {
 		
 		//Fi-logo, copyright
 		FIButton fiButton = new FIButton("StatSim",new String[]
-			{	"versie-info: ...",
-				"auteur: ...",
-				"programmeur: ...",
+			{	"versie-info: 1.0",
+				"auteur: Daniel Boon",
+				"programmeur: Daniel Boon",
 				"Freudenthal Instituut",
 				"www.fi.uu.nl",
 				""
