@@ -6,6 +6,8 @@ import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 import fi.algebraexpressies.schuifobjects.*;
 import fi.beans.base64code.StringCodeObject;
@@ -385,19 +387,21 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	
 	public Hashtable getState()
 	{	
-		
 		int aantalSc = 0;
 		String[] classNames = null;
+		ArrayList<String> classNamesList = new ArrayList<String>();
 		int[] posX = null;
 		int[] posY = null;
+		ArrayList<Integer> posXList = new ArrayList<Integer>();
+		ArrayList<Integer> posYList = new ArrayList<Integer>();
 		Hashtable[] scStates = null;
-		//boolean[][] connections = null;
+		ArrayList<Hashtable> scStatesList = new ArrayList<Hashtable>();
 		int[][] connections = null;
 		int[] graphConnections = null;
-//		boolean tabel = false;
+		ArrayList<Integer> connectionsList = new ArrayList<Integer>();
+		ArrayList<Integer> graphConnectionsList = new ArrayList<Integer>();
 		boolean grafiek = false;
 		boolean expressie = false;
-//		boolean links = false;
 		Hashtable zoomStateHolderState = null;
 
 		aantalSc = this.aantalSc;
@@ -407,23 +411,30 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		scStates = new Hashtable[aantalSc];
 		for (int i = 0; i < aantalSc; i++)
 	    {	classNames[i] = schuifcomponenten[i].getClass().getName();
+	    	classNamesList.add(classNames[i]);
 	    	posX[i] = schuifcomponenten[i].getLocation().x;
+	    	posXList.add(new Integer(posX[i]));
 	    	posY[i] = schuifcomponenten[i].getLocation().y;
+	    	posYList.add(new Integer(posY[i]));
 	    	scStates[i] = schuifcomponenten[i].getState();
+	    	scStatesList.add(scStates[i]);
 	    }
 	    
 		connections = new int[aantalSc][aantalSc];
 		for (int i = 0; i < aantalSc; i++)
 	    {	for (int j = 0; j < aantalSc; j++)
-			{	if (schuifcomponenten[j].pijlIn1 != null && 
+			{	int result = 0;
+	    		if (schuifcomponenten[j].pijlIn1 != null && 
 	    			schuifcomponenten[j].pijlIn1.zender == schuifcomponenten[i])
-	    			connections[i][j] = 1;
+	    		{	connections[i][j] = 1;
+	    			result = 1;
+	    		}	
 	    		if (schuifcomponenten[j].pijlIn2 != null && 
 	    			schuifcomponenten[j].pijlIn2.zender == schuifcomponenten[i])
-	    			connections[i][j] = 2;	
-			
-				//connections[i][j] = schuifcomponenten[j].pijlIn1 != null && 
-	    		//					schuifcomponenten[j].pijlIn1.zender == schuifcomponenten[i];
+	    		{	connections[i][j] = 2;	
+	    			result = 2;
+	    		}	
+	    		connectionsList.add(new Integer(result));	
 			}
 	    }
 	    
@@ -440,13 +451,16 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	    graphConnections = new int[10];
 	    for (int i = 0; i < 10; i++)
 		{	graphConnections[i] = -1;
+			graphConnectionsList.add(new Integer(-1));
 		}
 		if (grafiek)
 	    {	for (int i = 0; i < 10; i++)
 			{	Pijl p = grafiekComponent.pijlenIn[i];
 				for (int j = 0; j < aantalSc; j++)
 		   		{	if (p != null && schuifcomponenten[j] == p.zender)
-		   				graphConnections[i] = j;
+		   			{	graphConnections[i] = j;
+		   				graphConnectionsList.set(i, new Integer(j));
+		   			}
 				}
 			}
 	    }
@@ -456,15 +470,19 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		
 	    h.put("aantalSc", new Integer(aantalSc));
 	    h.put("classNames", classNames);
+	    h.put("classNamesList", classNamesList);
 	    h.put("posX", posX);
+	    h.put("posXList", posXList);
 	    h.put("posY", posY);
+	    h.put("posYList", posYList);
 	    h.put("scStates", scStates);
+	    h.put("scStatesList", scStatesList);
 	    h.put("connections", connections);
+	    h.put("connectionsList", connectionsList);
 	    h.put("graphConnections", graphConnections);
-//	    h.put("tabel", new Boolean(tabel));
+	    h.put("graphConnectionsList", graphConnectionsList);
 	    h.put("grafiek", new Boolean(grafiek));
 	    h.put("expressie", new Boolean(expressie));
-//	    h.put("links", new Boolean(links));
 	    h.put("zoomStateHolderState", zoomStateHolderState);
 	    
 	    h.put("toolkit", new Boolean(toolkit));

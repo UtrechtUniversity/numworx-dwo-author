@@ -128,9 +128,12 @@ public class Aftrekking extends Expressie
 	public String toString()
 	{	String s1 = kind1.toString();
 		String s2 = kind2.toString();
-		if(kind1 instanceof BasisExpressie && ((BasisExpressie)kind1).geefWaarde().doubleValue()==0)s1 = "";
-		if(kind2.isVeelterm)s2 = "$h" + s2 + "@";
-		return s1 + "-" + s2;
+		if (kind1 instanceof BasisExpressie && ((BasisExpressie)kind1).geefWaarde().doubleValue()==0)
+			s1 = "";
+		if (kind2.isVeelterm)
+			s2 = "$h" + s2 + "@";
+		return 
+			s1 + "-" + s2;
 	}
 	
 	public String toStringStrikt()
