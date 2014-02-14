@@ -555,9 +555,9 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	    {	classNames[i] = schuifcomponenten[i].getClass().getName();
 	    	classNamesList.add(classNames[i]);
 	    	posX[i] = schuifcomponenten[i].getLocation().x;
-	    	posXList.add(posX[i]);
+	    	posXList.add(new Integer(posX[i]));
 	    	posY[i] = schuifcomponenten[i].getLocation().y;
-	    	posYList.add(posY[i]);
+	    	posYList.add(new Integer(posY[i]));
 	    	scStates[i] = schuifcomponenten[i].getState();
 	    	scStatesList.add(scStates[i]);
 	    }
