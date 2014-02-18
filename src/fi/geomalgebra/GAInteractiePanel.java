@@ -272,6 +272,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.setState(state);
 			
 		}
+/*		
 		else if (b.containsKey("stateHM"))
 		{
 			HashMap stateHM = (HashMap) b.get("stateHM");
@@ -280,7 +281,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			
 //System.out.println("zetOpdr stateHM");			
 		}
-		
+*/		
 		av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	
@@ -300,6 +301,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		{	State state = (State) b.get("state");
 			av.setState(state);
 		}
+/*		
 		else if (b.containsKey("stateHM"))
 		{
 			HashMap stateHM = (HashMap) b.get("stateHM");
@@ -307,6 +309,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.setState(state);
 //System.out.println("setState stateHM");			
 		}
+*/		
 		if (kijkNaActief)
 			kijkNa();
 		
@@ -433,6 +436,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.setState(state);
 			av.docentState = new State(av.aantalFg, av.fg, av.var);
 		}
+/*		
 		else if (b.containsKey("stateHM"))
 		{
 			HashMap stateHM = (HashMap) b.get("stateHM");
@@ -441,7 +445,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			av.docentState = new State(av.aantalFg, av.fg, av.var);
 //System.out.println("setEditState stateHM");			
 		}
-		
+*/		
 		//av.docentState = new State(av.aantalFg, av.fg, av.var);
 		
 	}

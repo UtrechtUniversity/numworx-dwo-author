@@ -5,32 +5,12 @@ import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-
 public class NoSer 
 {
-
-/*	
-	ok schaal = SCHAAL;
-	ok stand = ls.stand;
-	ok lengte = new int[4];
-	ok lengte[0] = ls.lengte[0];
-	ok lengte[1] = ls.lengte[1];
-	ok lengte[2] = ls.lengte[2];
-	ok lengte[3] = ls.lengte[3];
-	ok varD = new int[4];
-	ok varD[0] = ls.varD[0];
-	ok varD[1] = ls.varD[1];
-	ok varD[2] = ls.varD[2];
-	ok varD[3] = ls.varD[3];
-	ok d = ls.d;
-	ok positie = new Point(ls.positie.x,ls.positie.y);
-	ok isVar = ls.isVar;
-	ok varNaam = new String(ls.varNaam);
-*/		
 	
-	public static HashMap getLijnstukState(Lijnstuk ls)
+	public static HashMap<String,Object> getLijnstukState(Lijnstuk ls)
 	{
-		HashMap h = new HashMap();
+		HashMap<String,Object> h = new HashMap<String,Object>();
 		
 		h.put("schaal", new Integer(ls.schaal));
 		h.put("stand", new Integer(ls.stand));
@@ -49,12 +29,35 @@ public class NoSer
 		h.put("dee", new Integer(ls.d));
 		h.put("positieX", new Integer(ls.positie.x));
 		h.put("positieY", new Integer(ls.positie.y));
-		//h.put("positie", new Point(ls.positie.x,ls.positie.y));
 		h.put("isVar", new Boolean(ls.isVar));
 		h.put("varNaam", new String(ls.varNaam));
 		
 		
 		return h;
+	}
+
+	public static ArrayList<Integer> getLijnstukState2(Lijnstuk ls)
+	{
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		
+		a.add(new Integer(ls.schaal));
+		a.add(new Integer(ls.stand));
+		a.add(new Integer(ls.lengte[0]));
+		a.add(new Integer(ls.lengte[1]));
+		a.add(new Integer(ls.lengte[2]));
+		a.add(new Integer(ls.lengte[3]));
+		a.add(new Integer(ls.varD[0]));
+		a.add(new Integer(ls.varD[1]));
+		a.add(new Integer(ls.varD[2]));
+		a.add(new Integer(ls.varD[3]));
+		a.add(new Integer(ls.d));
+		a.add(new Integer(ls.positie.x));
+		a.add(new Integer(ls.positie.y));
+		
+		//h.put("isVar", new Boolean(ls.isVar));
+		//h.put("varNaam", new String(ls.varNaam));
+		
+		return a;
 	}
 	
 	public static Lijnstuk setLijnstukState(HashMap h)
@@ -122,38 +125,70 @@ public class NoSer
 	for(int i=0 ; i<aantaly ; i++)
 	{	lsy[i] = new Lijnstuk(f.lsy[i]);
 	}	
-*/	
-	public static HashMap getFiguurState(Figuur fig)
+*/
+	
+	
+	public static HashMap<String,Object> getFiguurState(Figuur fig)
 	{
-		HashMap h = new HashMap();
+		HashMap<String,Object> h = new HashMap<String,Object>();
 		
 		h.put("aantalx", new Integer(fig.aantalx));
 		h.put("aantaly", new Integer(fig.aantaly));
 		h.put("positieX", new Integer(fig.positie.x));
 		h.put("positieY", new Integer(fig.positie.y));
-		//h.put("positie", new Point(fig.positie.x,fig.positie.y));
-		ArrayList<HashMap> lsxHash = new ArrayList<HashMap>(); 
-		//Hashtable[] lsxHash = new Hashtable[fig.aantalx];
+		
+		ArrayList<HashMap<String,Object>> lsxHash = new ArrayList<HashMap<String,Object>>(); 
+		
 		for (int i = 0; i < fig.aantalx ; i++)
-		{	HashMap lsxh = getLijnstukState(fig.lsx[i]);
+		{	HashMap<String,Object> lsxh = getLijnstukState(fig.lsx[i]);
 			lsxHash.add(lsxh);
-//			lsxHash[i] = getLijnstukState(fig.lsx[i]);
+
 		}
 		h.put("lsx", lsxHash);
 		
-		ArrayList<HashMap> lsyHash = new ArrayList<HashMap>();
-		//Hashtable[] lsyHash = new Hashtable[fig.aantaly];
+		ArrayList<HashMap<String,Object>> lsyHash = new ArrayList<HashMap<String,Object>>();
+
 		for (int i = 0; i < fig.aantaly ; i++)
-		{	HashMap lsyh = getLijnstukState(fig.lsy[i]);
+		{	HashMap<String,Object> lsyh = getLijnstukState(fig.lsy[i]);
 			lsyHash.add(lsyh);
-			//lsyHash[i] = getLijnstukState(fig.lsy[i]);
+
 		}
 		h.put("lsy", lsyHash);
 		
 		return h;
 	}
 	
-	public static Figuur setFiguurState(HashMap h)
+	public static HashMap<String,Object> getFiguurState2(Figuur fig)
+	{
+		HashMap<String,Object> h = new HashMap<String,Object>();
+		
+		h.put("aantalx", new Integer(fig.aantalx));
+		h.put("aantaly", new Integer(fig.aantaly));
+		h.put("positieX", new Integer(fig.positie.x));
+		h.put("positieY", new Integer(fig.positie.y));
+		for (int xCnt = 0; xCnt < fig.aantalx; xCnt++)
+		{	String name1 = "lsx" + xCnt;
+			h.put(name1, getLijnstukState2(fig.lsx[xCnt]));
+			String name2 = "xisvar" + xCnt;
+			h.put(name2, new Boolean(fig.lsx[xCnt].isVar));
+			String name3 = "xvarnaam" + xCnt;
+			h.put(name3, fig.lsx[xCnt].varNaam);
+			
+		}
+		for (int yCnt = 0; yCnt < fig.aantaly; yCnt++)
+		{	String name1 = "lsy" + yCnt;
+			h.put(name1, getLijnstukState2(fig.lsy[yCnt]));
+			String name2 = "yisvar" + yCnt;
+			h.put(name2, new Boolean(fig.lsy[yCnt].isVar));
+			String name3 = "yvarnaam" + yCnt;
+			h.put(name3, fig.lsy[yCnt].varNaam);
+			
+		}
+		
+		return h;
+	}
+	
+	public static Figuur setFiguurState(HashMap<String,Object> h)
 	{
 		int aantalx = 0;
 		if (h.containsKey("aantalx"))
@@ -201,22 +236,27 @@ public class NoSer
 	//private int varx,vary,varz;
 	
 	
-	public static HashMap getStateState(State s)
+	public static HashMap<String,Object> getStateState(State s)
 	{
-		HashMap h = new HashMap();
+		HashMap<String,Object> h = new HashMap<String,Object>();
 		int aantalFg = s.geefAantalFiguren();
 		h.put("aantalFg", new Integer(aantalFg));
-		//Hashtable[] figurenHash = new Hashtable[aantalFg];
-		ArrayList<HashMap> figurenHash = new ArrayList<HashMap>(); 
+		
+		ArrayList<HashMap<String,Object>> figurenHash = new ArrayList<HashMap<String,Object>>(); 
 		Figuur[] figurenrij = s.geefFigurenRij();
 		for (int i = 0; i < aantalFg; i++)
-		{	figurenHash.add(getFiguurState(figurenrij[i]));				
-			//figurenHash[i] = getFiguurState(figurenrij[i]);
+		{	
+	
+//HashMap<String,Object> figuurState2 = getFiguurState2(figurenrij[i]);
+//if (figuurState2 == null)
+//System.out.println("figState null");
+
+			figurenHash.add(getFiguurState2(figurenrij[i]));				
+
 		}
 		h.put("figurenrij", figurenHash);
 		
 		int[] var = s.geefVars();
-		//h.put("var", var);
 		
 		ArrayList<Integer> varList = new ArrayList<Integer>();
 		for (int vCnt = 0; vCnt < var.length; vCnt++)
