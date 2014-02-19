@@ -1,0 +1,1302 @@
+package fi.statistiek;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
+import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
+import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
+
+/**
+ * data model, implements TableModel for JTable
+ * 
+ * @author Manu Drijvers
+ * 
+ */
+public class StatTableModel implements TableModel
+{
+	private int rowCount;
+	private int columnCount;
+	private ArrayList<ColumnType> columnClass;
+	private ArrayList<String> columnNames;
+	private ArrayList<ArrayList<Object>> values; // ArrayList van ArrayLists
+
+	// these hashtables contain the frequency of every string of a column to
+	// efficiently know the used strings in a column at all times
+	private ArrayList<Hashtable<String, Integer>> stringFrequencies;
+
+	// this arraylist contains all used strings in a column for each column
+	private ArrayList<ArrayList<String>> stringOptions;
+
+	private ArrayList<Boolean> selectionList;
+	private ArrayList<TableModelListener> listeners;
+
+	private ArrayList<SelectionListener> selectionListeners;
+
+	private boolean viewsEditable;
+	private boolean dataEditable;
+	private boolean viewsAddable;
+
+	/**
+	 * Constructor
+	 */
+	public StatTableModel()
+	{
+		this.rowCount = 0;
+		this.columnCount = 0;
+		this.columnNames = new ArrayList<String>();
+		this.columnClass = new ArrayList<ColumnType>();
+		this.values = new ArrayList<ArrayList<Object>>();
+		this.listeners = new ArrayList<TableModelListener>();
+		this.selectionList = new ArrayList<Boolean>();
+
+		this.selectionListeners = new ArrayList<SelectionListener>();
+
+		this.stringFrequencies = new ArrayList<Hashtable<String, Integer>>();
+		this.stringOptions = new ArrayList<ArrayList<String>>();
+
+		this.viewsEditable = true;
+		this.dataEditable = true;
+		this.viewsAddable = true;
+	}
+
+	public boolean isViewsEditable()
+	{
+		return viewsEditable;
+	}
+
+	public void setViewsEditable(boolean viewsEditable)
+	{
+		this.viewsEditable = viewsEditable;
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	public boolean isDataEditable()
+	{
+		return dataEditable;
+	}
+
+	public void setDataEditable(boolean dataEditable)
+	{
+		this.dataEditable = dataEditable;
+		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+	}
+
+	public boolean isViewsAddable()
+	{
+		return viewsAddable;
+	}
+
+	public void setViewsAddable(boolean viewsAddable)
+	{
+		this.viewsAddable = viewsAddable;
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	public Hashtable getState()
+	{
+		Hashtable h = new Hashtable();
+
+		h.put("rowCount", new Integer(this.rowCount));
+		h.put("columnCount", new Integer(this.columnCount));
+		h.put("columnNames", this.columnNames);
+		h.put("columnClass", this.columnClass);
+		h.put("values", this.values);
+
+		h.put("viewsEditable", this.viewsEditable);
+		h.put("dataEditable", this.dataEditable);
+		h.put("viewsAddable", this.viewsAddable);
+		// h.put("listeners", this.listeners);
+
+		return h;
+	}
+
+	public void setState(Hashtable h)
+	{
+		if (h.containsKey("rowCount"))
+		{
+			this.rowCount = ((Integer) h.get("rowCount")).intValue();
+		}
+		if (h.containsKey("columnCount"))
+		{
+			this.columnCount = ((Integer) h.get("columnCount")).intValue();
+		}
+		if (h.containsKey("columnNames"))
+		{
+			this.columnNames = (ArrayList<String>) h.get("columnNames");
+		}
+		if (h.containsKey("columnClass"))
+		{
+			this.columnClass = (ArrayList<ColumnType>) h.get("columnClass");
+		}
+		if (h.containsKey("values"))
+		{
+			this.values = (ArrayList<ArrayList<Object>>) h.get("values");
+			// System.out.println("StatTableModel.setState(): values.size()=" +
+			// values.size());
+		}
+		if (h.containsKey("viewsEditable"))
+		{
+			this.setViewsEditable(((Boolean) h.get("viewsEditable")).booleanValue());
+		}
+		if (h.containsKey("dataEditable"))
+		{
+			this.setDataEditable(((Boolean) h.get("dataEditable")).booleanValue());
+		}
+		if (h.containsKey("viewsAddable"))
+		{
+			this.setViewsAddable(((Boolean) h.get("viewsAddable")).booleanValue());
+		}
+
+		// this.selectionListeners = new ArrayList<SelectionListener>();
+		// this.listeners = new ArrayList<TableModelListener>();
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			this.stringFrequencies.add(this.buildColumnStringOptions(i));
+			this.stringOptions.add(stringsInHashtable(this.stringFrequencies.get(i)));
+		}
+	}
+
+	/**
+	 * This returns all key strings of a hashtable, sorted lexicographically
+	 */
+	private ArrayList<String> stringsInHashtable(
+		Hashtable<String, Integer> hashtable)
+	{
+		ArrayList<String> list = new ArrayList<String>(hashtable.keySet());
+		java.util.Collections.sort(list);
+		return list;
+	}
+
+	/**
+	 * Subscribe for events
+	 */
+	public void addTableModelListener(TableModelListener l)
+	{
+		this.listeners.add(l);
+	}
+
+	/**
+	 * Subsribe sl to changes in the selection of rows
+	 */
+	public void addSelectionListener(SelectionListener sl)
+	{
+		this.selectionListeners.add(sl);
+	}
+
+	private void fireSelectionChanged()
+	{
+		// System.out.println("Firing changed update");
+		for (SelectionListener sl : this.selectionListeners)
+		{
+			// System.out.println("fire");
+			sl.selectionChanged();
+		}
+	}
+
+	/**
+	 * This method is used by JTable, always returns string so JTable will treat
+	 * all data as strings.
+	 */
+	public Class getColumnClass(int i)
+	{
+		return String.class;
+	}
+
+	/**
+	 * Get the amount of columns in the data
+	 * 
+	 * @return the amount of columns in the data
+	 */
+	public int getColumnCount()
+	{
+		return this.columnCount;
+	}
+
+	/**
+	 * Get the amount of rows in the data
+	 * 
+	 * @return the amount of rows in the data
+	 */
+	public int getRowCount()
+	{
+		return this.rowCount;
+	}
+
+	/**
+	 * Get the column names
+	 * 
+	 * @return an arraylist containing the column names
+	 */
+	public ArrayList<String> getColumnNames()
+	{
+		return this.columnNames;
+	}
+
+	public synchronized void setColumnName(String name, int columnIndex)
+	{
+		this.columnNames.set(columnIndex, name);
+
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	public ArrayList<String> getStringOptions(int column)
+	{
+		return this.stringOptions.get(column);
+	}
+
+	public boolean isColumnIndexValid(int columnIndex)
+	{
+		return columnIndex >= 0 && columnIndex < this.columnCount;
+	}
+
+	/**
+	 * Determine in how many classes the split variable splits the data
+	 * 
+	 * @return the amount of classes in which the split variable splits the data
+	 */
+	public int splitVarClasses(SplitOptions splitOptions)
+	{
+		if (splitOptions == null)
+		{
+			return 1;
+		}
+		return this.splitVarClasses(splitOptions.getColumnSplitIndex(),
+			splitOptions.getBinBoundaries());
+	}
+
+	/**
+	 * Determine in how many classes the split variable splits the data
+	 * 
+	 * @return the amount of classes in which the split variable splits the data
+	 */
+	public int splitVarClasses(int columnIndex, ArrayList<Double> binBoundaries)
+	{
+		if (!this.isColumnIndexValid(columnIndex))
+		{
+			return 1;
+		}
+		else
+		{
+			ColumnType cType = this.getColumnTypes().get(columnIndex);
+			AllowedTypes type = cType.getType();
+			if (type.isNumber())
+			{
+				return binBoundaries.size() - 1;
+			}
+			else if (type.equals(AllowedTypes.ENUM))
+			{
+				return cType.getEnumOptions().length - 1;
+			}
+			else
+			{
+				return this.getStringOptions(columnIndex).size();
+			}
+		}
+	}
+
+	/**
+	 * Determines in which split class the object at row rowIndex is
+	 * 
+	 * @param rowIndex
+	 *            the row index of the value to classify
+	 * @param splitOptions
+	 *            the split options
+	 * @return the split class in which the object at rowIndex is
+	 */
+	public int classifyObject(int rowIndex, SplitOptions splitOptions)
+	{
+		if (splitOptions != null)
+		{
+			return this.classifyObject(rowIndex,
+				splitOptions.getColumnSplitIndex(),
+				splitOptions.getBinBoundaries());
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	/**
+	 * Determines in which split class the value at row rowIndex is
+	 * 
+	 * @param rowIndex
+	 *            the row index of the value to classify
+	 * @param columnIndex
+	 *            the index of the column by which data is split
+	 * @param binBoundaries
+	 *            the bin boundaries to split numerical data by
+	 * @return the split class in which the object at rowIndex is
+	 */
+	public int classifyObject(int rowIndex, int columnIndex,
+		ArrayList<Double> binBoundaries)
+	{
+		if (!this.isColumnIndexValid(columnIndex))
+		{
+			return 0;
+		}
+		else
+		{
+			return this.classifyObject(
+				(String) this.getValueAt(rowIndex, columnIndex), columnIndex,
+				binBoundaries);
+		}
+	}
+
+	/**
+	 * Determines in which split class given value is
+	 * 
+	 * @param value
+	 *            the value to classify
+	 * @param columnIndex
+	 *            the index of the column by which data is split
+	 * @param binBoundaries
+	 *            the bin boundaries to split numerical data by
+	 * @return the split class in which the given value is
+	 */
+	public int classifyObject(String value, int columnIndex,
+		ArrayList<Double> binBoundaries)
+	{
+		if (!this.isColumnIndexValid(columnIndex)
+			|| ColumnType.WILDCARD.equals(value))
+		{
+			return 0;
+		}
+
+		ColumnType cType = this.getColumnTypes().get(columnIndex);
+		AllowedTypes type = cType.getType();
+		if (type.isNumber())
+		{
+			double d = Double.parseDouble(value);
+			int bin = -1;
+			while (((bin + 1) < binBoundaries.size())
+				&& d >= binBoundaries.get(bin + 1))
+			{
+				bin++;
+			}
+
+			if (bin < 0 || bin >= binBoundaries.size())
+			{
+				System.out.println("ClassifyObject geeft -1\nd = " + d
+					+ "\nBoundaries: ");
+				for (Double a : binBoundaries)
+				{
+					System.out.println(a);
+				}
+				return -1;
+			}
+			else
+			{
+				return bin;
+			}
+		}
+		else if (type.equals(AllowedTypes.ENUM))
+		{
+			int ret = 0;
+			for (String option : cType.getEnumOptions())
+			{
+				if (option.equals(value))
+				{
+					break;
+				}
+				else if (!option.equals(ColumnType.WILDCARD))
+				{
+					ret++;
+				}
+			}
+			return ret;
+		}
+		else
+		{
+			return this.stringOptions.get(columnIndex).indexOf(value);
+		}
+	}
+
+	/**
+	 * Get the name of column with index i
+	 * 
+	 * @param i
+	 *            the index of the column to get the name of
+	 * @return The name of column with index i
+	 */
+	public String getColumnName(int i)
+	{
+		if (i < this.columnCount)
+		{
+			return this.columnNames.get(i);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the value of specific cell
+	 * 
+	 * @param rowIndex
+	 *            the rowindex of the cell
+	 * @param columnIndex
+	 *            the columnindex of the cell
+	 * @return the value of the cell
+	 */
+	public Object getValueAt(int rowIndex, int columnIndex)
+	{
+		// debug
+//		if (this.rowCount != this.values.size())
+//		{
+//			System.out.println("StatTableModel.getValueAt(): inconsistent StatTableModel.rowCount="
+//				+ this.rowCount + ", this.values.size()=" + this.values.size()
+//				+ ", this.hashCode()=" + this.hashCode());
+//		}
+		
+		if (rowIndex < this.rowCount && columnIndex < this.columnCount)
+		{
+			return (this.values.get(rowIndex)).get(columnIndex);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Tells the JTable whether a cell is editable or not
+	 * 
+	 * @return true iff editable
+	 */
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		return this.dataEditable;
+	}
+
+	/**
+	 * unsubscribe from events
+	 * 
+	 * @param l
+	 *            the listener to unsubscribe
+	 */
+	public synchronized void removeTableModelListener(TableModelListener l)
+	{
+		this.listeners.remove(l);
+	}
+
+	/**
+	 * Checks if the input is valid
+	 * 
+	 * @param o
+	 *            input
+	 * @param columnIndex
+	 *            check if the input is valid for this column
+	 * @return true iff valid
+	 */
+	private boolean validInput(Object o, int columnIndex)
+	{
+		return this.columnClass.get(columnIndex).isValidInput(o);
+	}
+
+	/**
+	 * Set the value of a cell, without fireing an event
+	 * 
+	 * @param o
+	 *            the new value
+	 * @param rowIndex
+	 *            the the cell's row index
+	 * @param columnIndex
+	 *            the cell's column index
+	 */
+	public synchronized void setValueAtWithoutEvent(Object o, int rowIndex,
+		int columnIndex)
+	{
+		// System.out.println("StatTableModel.setValueAtWithoutEvent(object=" +
+		// o
+		// + ", rowIndex=" + rowIndex + ", columnIndex=" + columnIndex + ")");
+
+		if (rowIndex < this.rowCount && columnIndex < this.columnCount)
+		{
+			if (o.equals(ColumnType.WILDCARD)
+				|| this.validInput(o, columnIndex))
+			{
+				AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+				if (!type.isNumber())
+				{
+					this.decreaseKeyHashtable(
+						(String) this.getValueAt(rowIndex, columnIndex),
+						columnIndex);
+					// StatTableModel.decreaseKeyHashtable((String)this.getValueAt(rowIndex,
+					// columnIndex), this.stringFrequencies.get(columnIndex));
+				}
+
+				this.values.get(rowIndex).set(columnIndex, o);
+
+				if (!type.isNumber())
+				{
+					this.increaseKeyHashtable((String) o, columnIndex);
+				}
+			}
+			else
+			{
+				System.out.println("Invalid input");
+			}
+		}
+		else
+		{
+			System.out.println("Error in setValueAt: goal cel not in table");
+		}
+	}
+
+	/**
+	 * Set the value of a cell, without fireing an event
+	 * 
+	 * @param o
+	 *            the new value
+	 * @param rowIndex
+	 *            the the cell's row index
+	 * @param columnIndex
+	 *            the cell's column index
+	 */
+	public synchronized void setValueAt(Object o, int rowIndex, int columnIndex)
+	{
+		this.setValueAtWithoutEvent(o, rowIndex, columnIndex);
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	/**
+	 * Fires an event to all listeners
+	 * 
+	 * @param e
+	 *            the event
+	 */
+	private void fireEvent(TableModelEvent e)
+	{
+		// System.out.println("fireEvent called");
+		for (TableModelListener t : this.listeners)
+		{
+			t.tableChanged(e);
+		}
+	}
+
+	public void fireTableModelEvent()
+	{
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	/**
+	 * Add a row, but don't fire an event.
+	 */
+	public synchronized void addRowWithoutEvent()
+	{
+		ArrayList<Object> nieuw = new ArrayList<Object>(this.columnCount);
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			nieuw.add(i, ColumnType.WILDCARD);
+		}
+		this.values.add(nieuw);
+		this.selectionList.add(false);
+		this.rowCount++;
+
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			if (!this.getColumnTypes().get(i).getType().isNumber())
+			{
+				this.increaseKeyHashtable(ColumnType.WILDCARD, i);
+			}
+		}
+
+	}
+
+	/**
+	 * Add a row
+	 */
+	public synchronized void addRow()
+	{
+		this.addRowWithoutEvent();
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	/**
+	 * Add a column
+	 * 
+	 * @param columnName
+	 *            this column's name
+	 * @param columnType
+	 *            this colum's ColumnType
+	 */
+	public synchronized void addColumn(String columnName, ColumnType columnType)
+	{
+		this.columnClass.add(columnType);
+		this.columnNames.add(columnName);
+
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			this.values.get(i).add(ColumnType.WILDCARD);
+		}
+		this.columnCount++;
+
+		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
+		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
+
+		this.fireEvent(new TableModelEvent(this));
+		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+	}
+
+	/**
+	 * Edit a column
+	 * 
+	 * @param columnIndex
+	 *            the index of the column to edit
+	 * @param columnName
+	 *            the new column name
+	 * @param cType
+	 *            the new column type
+	 */
+	public synchronized void editColumn(int columnIndex, String columnName,
+		ColumnType cType)
+	{
+		this.columnNames.set(columnIndex, columnName);
+		this.columnClass.set(columnIndex, cType);
+
+		if (!cType.getType().isNumber())
+		{
+			this.stringFrequencies.set(columnIndex,
+				this.buildColumnStringOptions(columnIndex));
+			this.stringOptions.set(columnIndex, this
+				.stringsInHashtable(this.stringFrequencies.get(columnIndex)));
+		}
+		else
+		{
+			this.stringFrequencies.set(columnIndex,new Hashtable<String, Integer>());
+			this.stringOptions.set(columnIndex, new ArrayList<String>());
+		}
+
+		for (int row = 0; row < this.rowCount; row++)
+		{
+			if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
+			{
+				this.setValueAt(ColumnType.WILDCARD, row, columnIndex);
+			}
+		}
+
+		this.fireEvent(new TableModelEvent(this));
+		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+	}
+
+	/**
+	 * Get the index of a column
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @return The index of the column
+	 */
+	public int getColumnIndexByName(String columnName)
+	{
+		int i = 0;
+		for (String s : this.columnNames)
+		{
+			if (s.equals(columnName))
+			{
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+
+	/**
+	 * Remove a row
+	 * 
+	 * @param row
+	 *            index of the row to remove
+	 */
+	public synchronized void removeRow(int row)
+	{
+//		System.out.println("StatTableModel.removeRow(row=" + row + "), this.hashCode()=" + this.hashCode());
+
+		if (row >= 0)
+		{
+			for (int i = 0; i < this.columnCount; i++)
+			{
+				if (!this.columnClass.get(i).getType().isNumber())
+				{
+					this.decreaseKeyHashtable((String) this.getValueAt(row, i), i);
+				}
+			}
+
+			this.values.remove(row);
+			this.selectionList.remove(row);
+			this.rowCount--;
+			this.fireEvent(new TableModelEvent(this));
+		}
+	}
+
+	private void decreaseKeyHashtable(String key, int columnIndex)
+	{
+		System.out.println("decreasing: " + key + ". Column: " + columnIndex);
+		boolean b = StatTableModel.decreaseKeyHashtable(key,
+			this.stringFrequencies.get(columnIndex));
+		if (b)
+		{
+			this.stringOptions.get(columnIndex).remove(key);
+		}
+	}
+
+	private void increaseKeyHashtable(String key, int columnIndex)
+	{
+		boolean b = StatTableModel.increaseKeyHashtable(key,
+			this.stringFrequencies.get(columnIndex));
+		if (b)
+		{
+			this.stringOptions.get(columnIndex).add(key);
+			Collections.sort(this.stringOptions.get(columnIndex));
+		}
+	}
+
+	/**
+	 * Increases the value of key 'key' in a hashtable of type <T, Integer>
+	 * 
+	 * @param <T>
+	 *            The type of keys in this hashtable
+	 * @param key
+	 *            the key
+	 * @param ht
+	 *            the hashtable in which a value will be increased
+	 * @return true iff the hashtable did not contain the key yet
+	 */
+	private static <T> boolean increaseKeyHashtable(T key,
+		Hashtable<T, Integer> ht)
+	{
+		if (ht.containsKey(key))
+		{
+			ht.put(key, ht.get(key) + 1);
+			return false;
+		}
+		else
+		{
+			ht.put(key, 1);
+			return true;
+		}
+	}
+
+	/**
+	 * Decrease the value of key 'key' in hashtable 'ht'
+	 * 
+	 * @param <T>
+	 *            the type of keys in hashtable 'ht'
+	 * @param key
+	 *            the key value
+	 * @param ht
+	 *            the hashtable in which a value will be decreased
+	 * @return true iff the value of 'key' is now zero
+	 */
+	private static <T> boolean decreaseKeyHashtable(T key,
+		Hashtable<T, Integer> ht)
+	{
+		ht.put(key, ht.get(key) - 1);
+		if (ht.get(key) == 0)
+		{
+			ht.remove(key);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Remove a column
+	 * 
+	 * @param columnName
+	 *            name of the column to remove
+	 */
+	public synchronized void removeColumn(String columnName)
+	{
+		int i = this.getColumnIndexByName(columnName);
+		if (i == -1)
+		{
+			System.out.println("Column not found.");
+		}
+		else
+		{
+			this.removeColumn(i);
+		}
+	}
+
+	/**
+	 * Remove a column
+	 * 
+	 * @param column
+	 *            index of the column to remove
+	 */
+	public synchronized void removeColumn(int column)
+	{
+		if (column >= 0)
+		{
+			this.columnNames.remove(column);
+			this.columnClass.remove(column);
+			this.stringFrequencies.remove(column);
+
+			for (ArrayList<Object> row : this.values)
+			{
+				row.remove(column);
+			}
+			this.columnCount--;
+
+			this.fireEvent(new TableModelEvent(this));
+			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+		}
+	}
+
+	/**
+	 * @return the ColumnTypes of all columns
+	 */
+	public ArrayList<ColumnType> getColumnTypes()
+	{
+		return this.columnClass;
+	}
+
+	/**
+	 * Switch two rows
+	 */
+	private void switchRows(int rowA, int rowB)
+	{
+		ArrayList<Object> temp = this.values.get(rowA);
+		this.values.set(rowA, this.values.get(rowB));
+		this.values.set(rowB, temp);
+
+		boolean tempSelection = this.selectionList.get(rowA);
+		this.selectionList.set(rowA, this.selectionList.get(rowB));
+		this.selectionList.set(rowB, tempSelection);
+	}
+
+	/**
+	 * Sort by a specified column
+	 * 
+	 * @param columnIndex
+	 *            the index of the column to sort by
+	 */
+	public void sort(int columnIndex)
+	{
+		this.quickSort(columnIndex, 0, this.rowCount - 1);
+		this.fireEvent(new TableModelEvent(this));
+	}
+
+	/**
+	 * Quicksort implementation
+	 * 
+	 * @param columnIndex
+	 *            The column to sort by
+	 * @param p
+	 *            start index of the subarray to sort
+	 * @param r
+	 *            end index of the subarray to sort
+	 */
+	private void quickSort(int columnIndex, int p, int r)
+	{
+		if (p < r)
+		{
+			int q = this.partition(columnIndex, p, r);
+			this.quickSort(columnIndex, p, q - 1);
+			this.quickSort(columnIndex, q + 1, r);
+		}
+	}
+
+	/**
+	 * Partition subarray
+	 * 
+	 * @param columnIndex
+	 *            The column to sort by
+	 * @param p
+	 *            start index of the subarray to sort
+	 * @param r
+	 *            end index of the subarray to sort
+	 * @return index of the pivot used
+	 */
+	private int partition(int columnIndex, int p, int r)
+	{
+		ColumnType cType = this.columnClass.get(columnIndex);
+
+		// exchange middle value with last value, so we have the middle value as
+		// pivot, which gives us O(n log(n)) for ordered arrays.
+		this.switchRows((p + r) / 2, r);
+
+		// get the pivot x
+		ArrayList<Object> x = this.values.get(r);
+
+		int i = p - 1;
+		for (int j = p; j < r; j++)
+		{
+			if (cType.compare(
+				this.values.get(j).get(columnIndex), x.get(columnIndex)) <= 0)
+			{
+				i++;
+				this.switchRows(i, j);
+			}
+		}
+
+		this.switchRows(i + 1, r);
+		return i + 1;
+	}
+
+	/**
+	 * Create a hashtable containing the frequency of all strings in column with
+	 * index columnIndex
+	 * 
+	 * @param columnIndex
+	 *            the index of the column
+	 * @return a hashtable containing the frequency of all strings in column
+	 *         with index columnIndex
+	 */
+	private Hashtable<String, Integer> buildColumnStringOptions(int columnIndex)
+	{
+		Hashtable<String, Integer> options = new Hashtable<String, Integer>();
+		if ((columnIndex >= 0 
+			&& columnIndex < this.columnCount)
+			&& !this.getColumnTypes().get(columnIndex).getType().isNumber())
+		{
+			String s;
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				s = (String) this.getValueAt(i, columnIndex);
+				if (options.containsKey(s))
+				{
+					options.put(s, options.get(s) + 1);
+				}
+				else
+				{
+					options.put(s, 1);
+				}
+			}
+		}
+
+		return options;
+	}
+
+	/**
+	 * Gets all string values that occur in column with index 'columnIndex'
+	 * 
+	 * @param columnIndex
+	 *            the index of the column for which the string options are
+	 *            returned
+	 * @return all string values that occur in column with index 'columnIndex'
+	 */
+	public ArrayList<String> stringColumnOptions(int columnIndex)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+
+		for (String s : this.stringFrequencies.get(columnIndex).keySet())
+		{
+			ret.add(s);
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Gets the min value of a numerical column
+	 * 
+	 * @param columnIndex
+	 *            the column index
+	 * @return the min value of a numerical column
+	 */
+	public double getColumnMin(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double min = Double.MAX_VALUE;
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			Object o = this.getValueAt(i, columnIndex);
+			if (!o.equals(ColumnType.WILDCARD))
+			{
+				Double d = Double.parseDouble((String) o);
+				if (d < min)
+				{
+					min = d;
+				}
+			}
+		}
+		if (min.equals(Double.MAX_VALUE))
+		{
+			return 0;
+		}
+		else
+		{
+			return min.doubleValue();
+		}
+	}
+
+	/**
+	 * Gets the max value of a numerical column
+	 * 
+	 * @param columnIndex
+	 *            the column index
+	 * @return the max value of a numerical column
+	 */
+	public double getColumnMax(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 100;
+		}
+		Double max = Double.MIN_VALUE;
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			Object o = this.getValueAt(i, columnIndex);
+			if (!o.equals(ColumnType.WILDCARD))
+			{
+				Double d = Double.parseDouble((String) o);
+				if (d > max)
+				{
+					max = d;
+				}
+			}
+		}
+		if (max.equals(Double.MIN_VALUE))
+		{
+			return 100;
+		}
+		else
+		{
+			return max.doubleValue();
+		}
+	}
+
+	/**
+	 * Override toString
+	 */
+	public String toString()
+	{
+		String ret = new String();
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			for (int j = 0; j < this.columnCount; j++)
+			{
+				ret = ret + this.columnClass.get(j).getType().toString() + ":"
+					+ this.getValueAt(i, j) + "\t";
+			}
+			ret = ret + "\n";
+		}
+		return ret;
+	}
+
+	public boolean isRowSelected(int rowIndex)
+	{
+		return this.selectionList.get(rowIndex);
+	}
+
+	/**
+	 * clear stringFrequencies
+	 */
+	public void clearStringFrequencies()
+	{
+		this.stringFrequencies = new ArrayList<Hashtable<String, Integer>>();
+	}
+
+	public synchronized void setSelectionList(ArrayList<Boolean> selectionList)
+	{
+		// System.out.println("StatTableModel.setSelectionList(selectionList="
+		// + selectionList + ")");
+		this.selectionList = selectionList;
+		this.fireSelectionChanged();
+	}
+
+	public ArrayList<Boolean> getSelectionList()
+	{
+		return this.selectionList;
+	}
+
+	/**
+	 * Find the frequency of every bin, and the amount of selected objects in
+	 * this bin Only use for columns of type integer or double
+	 * 
+	 * @return array of frequencies, with index 2*i the frequency of bin i, and
+	 *         2*i + 1 the amount of selected items in this bin.
+	 */
+	public int[][] numberClassFrequency(ArrayList<Double> binBoundaries,
+		int columnIndex, SplitOptions splitOptions)
+	{
+		// check if the column type is a number
+		ColumnType cType = this.getColumnTypes().get(columnIndex);
+		if (cType.getType().isNumber())
+		{
+			int[][] binFrequency = new int[this.splitVarClasses(splitOptions)]
+				[(binBoundaries.size() - 1) * 2];
+			for (int splitClass = 0; splitClass < this.splitVarClasses(splitOptions); splitClass++)
+			{
+				for (int i = 0; i < binBoundaries.size() - 1; i++)
+				{
+					binFrequency[splitClass][2 * i] = 0;
+					binFrequency[splitClass][2 * i + 1] = 0;
+				}
+			}
+
+			for (int i = 0; i < this.getRowCount(); i++)
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!ColumnType.WILDCARD.equals(o))
+				{
+					Double d = Double.parseDouble((String) o);
+					int bin = -1;
+					while (bin < binBoundaries.size() - 1
+						&& d >= binBoundaries.get(bin + 1))
+					{
+						bin++;
+					}
+					if (bin >= 0 && bin < binBoundaries.size() - 1)
+					{
+						binFrequency[this.classifyObject(i, splitOptions)][2 * bin]++;
+						if (this.isRowSelected(i))
+						{
+							binFrequency[this.classifyObject(i, splitOptions)][2 * bin + 1]++;
+						}
+					}
+				}
+			}
+			return binFrequency;
+		}
+		else
+		{
+			// column type is not a number, return null
+			return null;
+		}
+	}
+
+	/**
+	 * Find the frequency of every class Only use for columns of type enum or
+	 * string
+	 * 
+	 * @return array of FrequencyTuples (which contains class label and
+	 *         frequency)
+	 */
+	public FrequencyTuple[][] enumClassFrequency(int columnIndex,
+		boolean setSelection, SplitOptions splitOptions)
+	{
+		ColumnType cType = this.getColumnTypes().get(columnIndex);
+		if (cType.getType().equals(AllowedTypes.STRING)
+			|| cType.getType().equals(AllowedTypes.ENUM))
+		{
+			int splitClasses = this.splitVarClasses(splitOptions);
+			System.out.println(splitClasses + " splitclasses");
+			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
+			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
+
+			for (int i = 0; i < splitClasses; i++)
+			{
+				frequencyTable[i] = new Hashtable<String, Integer>();
+				frequencySelectionTable[i] = new Hashtable<String, Integer>();
+			}
+
+			for (int i = 0; i < this.getRowCount(); i++)
+			{
+				StatTableModel.increaseKeyHashtable(
+					(String) this.getValueAt(i, columnIndex),
+					frequencyTable[this.classifyObject(i, splitOptions)]);
+				if (this.isRowSelected(i))
+				{
+					StatTableModel.increaseKeyHashtable(
+						(String) this.getValueAt(i, columnIndex),
+						frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+				}
+			}
+
+			// create FreqencyTuple array from hashtable
+
+			FrequencyTuple[][] ret = new FrequencyTuple[splitClasses][];
+			for (int splitClass = 0; splitClass < splitClasses; splitClass++)
+			{
+				if (cType.getType().equals(AllowedTypes.ENUM))
+				{
+					ret[splitClass] = new FrequencyTuple[cType.getEnumOptions().length - 1];
+					for (int i = 0, j = 0; i < cType.getEnumOptions().length - 1; i++)
+					{
+						if (cType.getEnumOptions()[i + j].equals(ColumnType.WILDCARD))
+						{
+							j++;
+						}
+						String option = cType.getEnumOptions()[i + j];
+						int freq;
+						int selectionFreq;
+						if (frequencyTable[splitClass].containsKey(option))
+						{
+							freq = frequencyTable[splitClass].get(option);
+						}
+						else
+						{
+							freq = 0;
+						}
+
+						if (frequencySelectionTable[splitClass].containsKey(option))
+						{
+							selectionFreq = frequencySelectionTable[splitClass].get(option);
+						}
+						else
+						{
+							selectionFreq = 0;
+						}
+
+						ret[splitClass][i] = new FrequencyTuple(option, freq,
+							selectionFreq);
+					}
+				}
+				else
+				{
+					Set<String> keySet = new HashSet<String>();
+					for (Hashtable<String, Integer> h : frequencyTable)
+					{
+						keySet.addAll(h.keySet());
+					}
+					List<String> keyList = Arrays.asList(keySet.toArray(new String[0]));
+					Collections.sort(keyList);
+					ret[splitClass] = new FrequencyTuple[keySet.size()];
+					int i = 0;
+					for (String key : keyList)
+					{
+						if (frequencyTable[splitClass].containsKey(key))
+						{
+							if (frequencySelectionTable[splitClass].containsKey(key))
+							{
+								ret[splitClass][i] = new FrequencyTuple(key,
+									frequencyTable[splitClass].get(key),
+									frequencySelectionTable[splitClass].get(key));
+							}
+							else
+							{
+								ret[splitClass][i] = new FrequencyTuple(key,
+									frequencyTable[splitClass].get(key), 0);
+							}
+						}
+						else
+						{
+							ret[splitClass][i] = new FrequencyTuple(key, 0, 0);
+						}
+						i++;
+					}
+				}
+			}
+
+			return ret;
+		}
+		else
+		{
+			// column type is not a String of Enum, return null
+			return null;
+		}
+	}
+}

@@ -1,0 +1,2044 @@
+package fi.statistiek.histogram;
+
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+
+import javax.swing.*;
+
+import fi.statistiek.ColorLegend;
+import fi.statistiek.Statistiek;
+import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
+import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
+
+/**
+ * MVC View for StatistiekView Histogram
+ * 
+ * @author ManuDrijvers, Sylvia van Borkulo
+ * 
+ */
+public class HistogramView extends JPanel implements Observer
+{
+	private HistogramModel model;
+	private HistogramController controller;
+	private HistogramUserOptionsPanel userOptionsPanel;
+	private JButton dialogButton;
+
+	public static final int KEUZEBALK_HOOGTE = 50;
+	public static final int X_AS_OFFSET = 50;
+	public static final int Y_AS_OFFSET = 50;
+	public static final double MAX_BAR_HEIGHT = 0.8;
+
+	private double verticalBarWidth;
+	private double horizontalBarWidth;
+
+	private ArrayList<Rectangle> barRectangles;
+	private JPanel mainPanel;
+	private JScrollPane scrollPane;
+	private ColorLegend colorLegend;
+
+	private Random random;
+
+	// public static final Color BAR_COLOR = new Color(117,224,170);
+	public static final Color BAR_COLOR = new Color(220, 160, 0);
+	public static final Color SELECTED_BAR_COLOR = Color.YELLOW;
+
+	private int xAxisOffset;
+	private int yAxisOffset;
+	private Point lastPolygonPoint;
+
+	private Color[] COLORS =
+		{ Color.RED, Color.GREEN, Color.BLUE };
+	private ArrayList<Color> colorList;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param model
+	 *            MVC model
+	 * @param controller
+	 *            MVC controller
+	 */
+	public HistogramView(HistogramModel model, HistogramController controller)
+	{
+		super(new BorderLayout());
+
+		this.model = model;
+		this.model.addObserver(this);
+		this.controller = controller;
+
+		// create GUI
+		userOptionsPanel = new HistogramUserOptionsPanel(this, controller, model);
+		dialogButton = userOptionsPanel.getDialogButton();
+		super.add(dialogButton, BorderLayout.SOUTH);
+
+		this.mainPanel = new HistogramBarPanel();
+		this.scrollPane = new JScrollPane(this.mainPanel);
+		
+		super.add(this.scrollPane, BorderLayout.CENTER);
+		this.mainPanel.addMouseListener(new BarClickListener());
+
+		this.colorLegend = new ColorLegend("", null, null);
+		super.add(this.colorLegend, BorderLayout.EAST);
+		this.colorLegend.setVisible(false);
+
+		this.random = new Random();
+		this.colorList = new ArrayList<Color>(Arrays.asList(COLORS));
+	}
+
+	/**
+	 * Get color for displaying multiple split groups in a single view
+	 * 
+	 * @param number
+	 *            the number of the split group
+	 * @return the color in which this split group will be displayed
+	 */
+	private Color getColor(int number)
+	{
+		if (number < this.colorList.size())
+		{
+			return this.colorList.get(number);
+		}
+		else
+		{
+			Color c = new Color(this.random.nextInt(256),
+				this.random.nextInt(256), this.random.nextInt(256));
+			this.colorList.add(c);
+			return c;
+		}
+	}
+
+	public void setModel(HistogramModel model)
+	{
+		this.model = model;
+		this.model.addObserver(this);
+		userOptionsPanel.setModel(model);
+		this.update(null, null);
+	}
+
+	/**
+	 * Gets the currently selected item of the combobox allowing you to choose
+	 * the column that this StatistiekView will display
+	 * 
+	 * @return index of currently selected item
+	 */
+	public int getVarBoxSelectedIndex()
+	{
+		return userOptionsPanel.getVarBoxSelectedIndex();
+	}
+
+	public int getSplitVarBoxSelectedIndex()
+	{
+		return userOptionsPanel.getSplitVarBoxSelectedIndex();
+	}
+
+	public boolean isCumulativeBoxSelected()
+	{
+		return userOptionsPanel.isCumulativeBoxSelected();
+	}
+
+	public boolean isSplitSingleViewSelected()
+	{
+		return userOptionsPanel.isSplitSingleViewSelected();
+	}
+
+	public boolean isNextToEachOtherSelected()
+	{
+		if (this.model.isFrequencyPolygonMode())
+			return true; // is natuurljk een beetje gek
+		return userOptionsPanel.isNextToEachOtherSelected();
+	}
+
+	public boolean isStackModeBoxSelected()
+	{
+		return userOptionsPanel.isStackModeBoxSelected();
+	}
+
+	/**
+	 * Gets currently selected item of the combobox allowing you to choose the
+	 * number of bins
+	 * 
+	 * @return currently selected number of bins
+	 */
+	public int getBinsBoxSelectedInt()
+	{
+		return userOptionsPanel.getBinsBoxSelectedInt();
+	}
+
+	public int getSplitBinsBoxSelectedInt()
+	{
+		return userOptionsPanel.getSplitBinsBoxSelectedInt();
+	}
+
+	public double getminBoundary()
+	{
+		return this.userOptionsPanel.getminBoundary();
+	}
+
+	public double getSplitminBoundary()
+	{
+		return userOptionsPanel.getSplitminBoundary();
+	}
+
+	public double getBinWidth()
+	{
+		return this.userOptionsPanel.getBinWidth();
+	}
+
+	public double getSplitBinWidth()
+	{
+		return userOptionsPanel.getSplitBinWidth();
+	}
+
+	/**
+	 * Get the chosen axis from this.axisBox
+	 * 
+	 * @return true iff x-axis selected
+	 */
+	public boolean xAxisSelected()
+	{
+		return userOptionsPanel.xAxisSelected();
+	}
+
+	/**
+	 * Gets which item the user selected from the radiogroup
+	 * 
+	 * @return true iff percentage is chosen
+	 */
+	public boolean percentageItemSelected()
+	{
+		return userOptionsPanel.percentageItemSelected();
+	}
+
+	/**
+	 * Calculate the width of each bar
+	 * 
+	 * @param numberOfBars
+	 *            The amount of bars
+	 */
+	private void setBarWidth(int numberOfBars)
+	{
+		this.verticalBarWidth = ((double) (this.barAreaWidth() - numberOfBars - 1) / ((double) numberOfBars + 0.5));
+		this.horizontalBarWidth = ((double) (this.barAreaHeight()
+			- numberOfBars - 1) / ((double) numberOfBars + 0.5));
+	}
+
+	private AlphaComposite makeComposite(int splitClasses)
+	{
+		System.out.println("Making composite for " + splitClasses
+			+ " splitClasses.");
+		int type = AlphaComposite.SRC_ATOP;
+		return (AlphaComposite.getInstance(type, (float) (1.0 / splitClasses)));
+	}
+
+	/**
+	 * Get the location of the dot for given dot number and height
+	 * 
+	 * @param dotHeight
+	 *            The height of the dot
+	 * @param dotNumber
+	 *            The number of the dot
+	 * @return the point where given dot would be painted
+	 */
+	private Point dotLocation(int dotHeight, int dotNumber)
+	{
+		if (this.model.getVerticalBars())
+		{
+			int x1 = this.yAxisOffset + dotNumber + 1
+				+ (int) (dotNumber * this.verticalBarWidth);
+			int x2 = this.yAxisOffset + dotNumber + 1
+				+ (int) ((dotNumber + 1) * this.verticalBarWidth);
+			int y = this.barAreaHeight() - dotHeight;
+			int xPoint;
+			if (this.model.isFrequencyPolygonCumulativeMode())
+			{
+				xPoint = x2;
+			}
+			else
+			{
+				xPoint = (x1 + x2) / 2;
+			}
+
+			return new Point(xPoint, y);
+		}
+		else
+		{
+			int y1 = dotNumber + 1
+				+ (int) ((dotNumber + 0.5) * this.horizontalBarWidth);
+			int y2 = dotNumber + 1
+				+ (int) ((dotNumber + 1.5) * this.horizontalBarWidth);
+			int xPoint = this.yAxisOffset + dotHeight;
+			int yPoint;
+			if (this.model.isFrequencyPolygonCumulativeMode())
+			{
+				yPoint = y2;
+			}
+			else
+			{
+				yPoint = (y1 + y2) / 2;
+			}
+			return new Point(xPoint, yPoint);
+		}
+	}
+
+	private void paintBar(Graphics g, int barLength, int selectedLength,
+		int barNumber, int ySplitOffset, int xSplitOffset)
+	{
+		this.paintBar(g, barLength, selectedLength, barNumber, ySplitOffset,
+			xSplitOffset, HistogramView.BAR_COLOR, 0, 0, false);
+	}
+
+	/**
+	 * Paint a single bar
+	 * 
+	 * @param g
+	 *            The graphics in which this will be painted
+	 * @param barLength
+	 *            The length of the bar
+	 * @param selectedLength
+	 *            The length of the selected part of the bar
+	 * @param barNumber
+	 *            The number of this bar
+	 */
+	private void paintBar(Graphics g, int barLength, int selectedLength,
+		int barNumber, int ySplitOffset, int xSplitOffset, Color c,
+		int numberOfBars, int totalBars, boolean drawNextToEachOther)
+	{
+		if (this.model.isFrequencyPolygonMode())
+		{
+			g.setColor(c);
+			Point p = this.dotLocation(barLength, barNumber);
+			int size = 4;
+			g.fillOval(p.x - size, p.y - size + ySplitOffset, 2 * size,
+				2 * size);
+			if (this.model.isFrequencyPolygonCumulativeMode()
+				&& this.lastPolygonPoint == null)
+			{
+				this.lastPolygonPoint = this.dotLocation(0, -1);
+			}
+			if (this.lastPolygonPoint != null)
+			{
+				g.drawLine(this.lastPolygonPoint.x, this.lastPolygonPoint.y
+					+ ySplitOffset, p.x, p.y + ySplitOffset);
+			}
+
+			this.lastPolygonPoint = p;
+		}
+		else
+		{
+			if (this.model.getVerticalBars())
+			{
+				int x1 = this.yAxisOffset + barNumber + 1
+					+ (int) (barNumber * this.verticalBarWidth);
+				int x2 = this.yAxisOffset + barNumber + 1
+					+ (int) ((barNumber + 1) * this.verticalBarWidth);
+				int y = this.barAreaHeight() - barLength;
+
+				g.setColor(c);
+				int barbarWidth = x2 - x1;
+				int barbarOffset = 0;
+				if (drawNextToEachOther)
+				{
+					barbarWidth = (barbarWidth - 6) / totalBars;
+					barbarOffset = numberOfBars * barbarWidth + 3;
+					barbarWidth = barbarWidth - 1;
+				}
+				g.fillRect(x1 + barbarOffset, y + ySplitOffset, barbarWidth,
+					barLength - selectedLength);
+
+				g.setColor(HistogramView.SELECTED_BAR_COLOR);
+				g.fillRect(x1 + barbarOffset, y + barLength - selectedLength
+					+ ySplitOffset, barbarWidth, selectedLength);
+
+				// fill the rectangle above the bar white to get the correct
+				// color mixing when using alpha values
+				// g.setColor(Color.WHITE);
+				// g.fillRect(x1, ySplitOffset, x2-x1,
+				// this.barAreaHeight()-barLength);
+				g.setColor(Color.BLACK);
+				g.drawRect(x1 - 1 + barbarOffset, y + ySplitOffset,
+					barbarWidth + 1, barLength);
+
+				this.barRectangles.add(new Rectangle(x1 - 1 + barbarOffset, y
+					+ ySplitOffset, barbarWidth + 1, barLength));
+			}
+			else
+			{
+				int x1 = this.yAxisOffset;
+				int y1 = barNumber + 1
+					+ (int) ((barNumber + 0.5) * this.horizontalBarWidth);
+				int y2 = barNumber + 1
+					+ (int) ((barNumber + 1.5) * this.horizontalBarWidth);
+
+				int barbarWidth = y2 - y1;
+				int barbarOffset = 0;
+				if (drawNextToEachOther)
+				{
+					barbarWidth = barbarWidth / totalBars;
+					barbarOffset = numberOfBars * barbarWidth;
+					barbarWidth = barbarWidth - 1;
+				}
+
+				g.setColor(HistogramView.SELECTED_BAR_COLOR);
+				g.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barbarOffset,
+					selectedLength, barbarWidth);
+
+				g.setColor(c);
+				g.fillRect(x1 + xSplitOffset + selectedLength, y1
+					+ ySplitOffset + barbarOffset, barLength - selectedLength,
+					barbarWidth);
+
+				// g.setColor(Color.WHITE);
+				// g.fillRect(x1+xSplitOffset+barLength, y1+ySplitOffset,
+				// this.barAreaWidth()-barLength, y2-y1);
+
+				g.setColor(Color.BLACK);
+				g.drawRect(x1 + xSplitOffset - 1, y1 - 1 + ySplitOffset
+					+ barbarOffset, barLength, barbarWidth + 1);
+
+				this.barRectangles.add(new Rectangle(x1 + xSplitOffset - 1, y1
+					- 1 + ySplitOffset + barbarOffset, barLength,
+					barbarWidth + 1));
+			}
+		}
+	}
+
+	private void fillCumulativeFreqPolygonSegment(Graphics g, int dotHeight,
+		int stackHeight, int prevDotHeight, int prevStackHeight, int dotNumber,
+		Color color)
+	{
+		g.setColor(color);
+		Point p1 = this.dotLocation(prevStackHeight, dotNumber - 1);
+		Point p2 = this.dotLocation(prevDotHeight, dotNumber - 1);
+		Point p3 = this.dotLocation(dotHeight, dotNumber);
+		Point p4 = this.dotLocation(stackHeight, dotNumber);
+		int[] xPoints =
+			{ p1.x, p2.x, p3.x, p4.x };
+		int[] yPoints =
+			{ p1.y, p2.y, p3.y, p4.y };
+		g.fillPolygon(xPoints, yPoints, 4);
+		this.lastPolygonPoint = p3;
+
+		if (!this.model.isFrequencyPolygonStackMode())
+		{
+			// paint area above this segment white to get the correct color
+			// mixing when using alpha values
+			if (this.model.getVerticalBars())
+			{
+				yPoints[0] = 0;
+				yPoints[3] = 0;
+			}
+			else
+			{
+				xPoints[0] = this.barAreaWidth();
+				xPoints[3] = this.barAreaWidth();
+			}
+			g.setColor(Color.WHITE);
+			g.fillPolygon(xPoints, yPoints, 4);
+		}
+	}
+
+	private int arrayMax(int[] array)
+	{
+		if (array.length == 0)
+		{
+			return -1;
+		}
+		int max = array[0];
+		for (int i = 1; i < array.length; i++)
+		{
+			if (array[i] > max)
+			{
+				max = array[i];
+			}
+		}
+		return max;
+	}
+
+	private int tupleArrayMax(FrequencyTuple[] array)
+	{
+		if (array.length == 0)
+		{
+			return -1;
+		}
+		int max = array[0].frequency;
+		for (int i = 1; i < array.length; i++)
+		{
+			if (array[i].frequency > max)
+			{
+				max = array[i].frequency;
+			}
+		}
+		return max;
+	}
+
+	private int tupleArraySum(FrequencyTuple[] array)
+	{
+		int sum = 0;
+		for (FrequencyTuple ft : array)
+		{
+			sum += ft.frequency;
+		}
+		return sum;
+	}
+
+	/**
+	 * @return The sum of all elements on even indices
+	 */
+	private int arrayEvenSum(int[] array)
+	{
+		int sum = 0;
+		for (int i = 0; i < array.length; i += 2)
+		{
+			sum += array[i];
+		}
+		return sum;
+	}
+
+	private int barAreaWidth()
+	{
+		// return this.getWidth() - HistogramView.Y_AS_OFFSET;
+		return this.getWidth() - this.yAxisOffset
+			- (this.colorLegend.isVisible() ? this.colorLegend.getWidth() : 0);
+	}
+
+	private int barAreaHeight()
+	{
+		// return this.getHeight() - HistogramView.X_AS_OFFSET -
+		// (this.model.getTableModel().isViewsEditable() ?
+		// HistogramView.KEUZEBALK_HOOGTE : 0);
+		// return this.getHeight() - this.xAxisOffset-
+		// (this.model.getTableModel().isViewsEditable() ?
+		// HistogramView.KEUZEBALK_HOOGTE : 0);
+		return this.scrollPane.getHeight() - this.xAxisOffset;
+	}
+
+	/**
+	 * Paint the axis labels
+	 * 
+	 * @param g
+	 *            The graphics in which the labels will be painted
+	 */
+	private void paintAxisLabels(Graphics g, int yOffset, int splitClass)
+	{
+		Font font = super.getFont().deriveFont(super.getFont().getStyle());
+		FontMetrics fm = super.getFontMetrics(font);
+		AffineTransform at = new AffineTransform();
+		at.rotate(Math.PI * 1.5);
+		Font rotateFont = font.deriveFont(at);
+
+		String s1 = this.model.getVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
+			.getString("percentageLabel") : Statistiek.rb
+			.getString("frequentieLabel"))
+			: this.model.getTableModel().getColumnName(
+				this.model.getColumnIndex());
+		String s2 = !this.model.getVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
+			.getString("percentageLabel") : Statistiek.rb
+			.getString("frequentieLabel"))
+			: this.model.getTableModel().getColumnName(
+				this.model.getColumnIndex());
+
+		g.setColor(Color.BLACK);
+		g.setFont(rotateFont);
+		g.drawString(s1, fm.getHeight(),
+			this.barAreaHeight() / 2 + fm.stringWidth(s1) / 2 + yOffset);
+		g.setFont(font);
+		g.drawString(s2,
+			(this.getWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
+				+ this.yAxisOffset, this.barAreaHeight() + this.xAxisOffset
+				- 10 + yOffset);
+
+		if (this.model.getTableModel().splitVarClasses(
+			this.model.getSplitOptions()) > 1
+			&& !this.model.isSplitInSingleView())
+		{
+			String name = this.model.getTableModel().getColumnName(
+				this.model.getSplitOptions().getColumnSplitIndex());
+			String s = name
+				+ ": "
+				+ this.model.getSplitOptions().getSplitClassLabel(splitClass,
+					this.model.getTableModel());
+			g.drawString(s, 10, this.barAreaHeight() + this.xAxisOffset - 10
+				+ yOffset);
+		}
+
+		g.fillRect(0, this.barAreaHeight() + this.xAxisOffset - 2 + yOffset,
+			super.getWidth(), 1);
+	}
+
+	private int maxFrequency(int[] frequencies)
+	{
+		int max;
+		if (this.model.isFrequencyPolygonMode()
+			&& this.model.isFrequencyPolygonCumulativeMode())
+		{
+			// max frequency is total frequency, because we're in cumulative
+			// mode
+			max = this.arrayEvenSum(frequencies);
+		}
+		else
+		{
+			max = this.arrayMax(frequencies);
+		}
+		return max;
+	}
+
+	private int maxFrequency(FrequencyTuple[] frequencies)
+	{
+		int max;
+		if (this.model.isFrequencyPolygonMode()
+			&& this.model.isFrequencyPolygonCumulativeMode())
+		{
+			// max frequency is total frequency, because we're in cumulative
+			// mode
+			max = this.tupleArraySum(frequencies);
+		}
+		else
+		{
+			max = this.tupleArrayMax(frequencies);
+		}
+		return max;
+	}
+
+	private int maxFrequency(int[][] frequencies, int splitClass)
+	{
+		int max = 0;
+		if (this.model.isSplitInSingleView())
+		{
+			// if(this.model.isFrequencyPolygonMode() &&
+			// this.model.isFrequencyPolygonCumulativeMode() &&
+			// this.model.isFrequencyPolygonStackMode()) {
+			if (!isNextToEachOtherSelected())
+			{
+				for (int[] splitFreq : frequencies)
+				{
+					max += this.maxFrequency(splitFreq);
+				}
+				return max;
+			}
+			else
+			{
+				for (int[] splitFreq : frequencies)
+				{
+					max = Math.max(max, this.maxFrequency(splitFreq));
+				}
+				return max;
+			}
+		}
+		else
+		{
+			return this.maxFrequency(frequencies[splitClass]);
+		}
+	}
+
+	private int maxFrequency(FrequencyTuple[][] frequencies, int splitClass)
+	{
+		int max = 0;
+		if (this.model.isSplitInSingleView())
+		{
+			// if(this.model.isFrequencyPolygonMode() &&
+			// this.model.isFrequencyPolygonCumulativeMode() &&
+			// this.model.isFrequencyPolygonStackMode()) {
+			if (!isNextToEachOtherSelected())
+			{
+				for (FrequencyTuple[] splitFreq : frequencies)
+				{
+					max += this.maxFrequency(splitFreq);
+				}
+				return max;
+			}
+			else
+			{
+				for (FrequencyTuple[] splitFreq : frequencies)
+				{
+					max = Math.max(max, this.maxFrequency(splitFreq));
+				}
+				return max;
+			}
+		}
+		else
+		{
+			return this.maxFrequency(frequencies[splitClass]);
+		}
+	}
+
+	private int frequenciesSum(int[][] frequencies, int splitClass)
+	{
+		int sum = 0;
+		if (this.model.isSplitInSingleView())
+		{
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode()
+				&& this.model.isFrequencyPolygonStackMode())
+			{
+				for (int[] splitFreq : frequencies)
+				{
+					sum += this.arrayEvenSum(splitFreq);
+				}
+				return sum;
+			}
+			else
+			{
+				for (int[] splitFreq : frequencies)
+				{
+					sum = Math.max(sum, this.arrayEvenSum(splitFreq));
+				}
+				return sum;
+			}
+		}
+		else
+		{
+			return this.arrayEvenSum(frequencies[splitClass]);
+		}
+	}
+
+	private int frequenciesSum(FrequencyTuple[][] frequencies, int splitClass)
+	{
+		int sum = 0;
+		if (this.model.isSplitInSingleView())
+		{
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode()
+				&& this.model.isFrequencyPolygonStackMode())
+			{
+				for (FrequencyTuple[] splitFreq : frequencies)
+				{
+					sum += this.tupleArraySum(splitFreq);
+				}
+				return sum;
+			}
+			else
+			{
+				for (FrequencyTuple[] splitFreq : frequencies)
+				{
+					sum = Math.max(sum, this.tupleArraySum(splitFreq));
+				}
+				return sum;
+			}
+		}
+		else
+		{
+			return this.tupleArraySum(frequencies[splitClass]);
+		}
+	}
+
+	/**
+	 * paint the bars for numerical data
+	 * 
+	 * @param g
+	 *            The graphics in which the bars will be painted
+	 */
+	private void paintNumberClass(Graphics2D g, int[][] allFrequencies,
+		int splitClass)
+	{
+		int[] frequencies = allFrequencies[splitClass];
+		g.setFont(super.getFont());
+		FontMetrics fm = g.getFontMetrics();
+		AffineTransform at = new AffineTransform();
+		at.rotate(Math.PI * 1.5);
+		Font rotateFont = super.getFont().deriveFont(at);
+		int ySplitOffset = splitClass * (this.scrollPane.getHeight() - 5);
+
+		// determine scale
+		int max = this.maxFrequency(allFrequencies, splitClass);
+
+		double percScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth())
+			/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
+		double amountScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth()) / (double) max;
+
+		if (this.model.getVerticalBars())
+		{
+			this.yAxisOffset = this.determineDependentAxisWidth(this.model
+				.getPercentage() ? percScale : amountScale)
+				+ 15
+				+ fm.getHeight();
+
+			// set bar width
+			this.setBarWidth(frequencies.length / 2);
+
+			// check if the bin boundary strings will fit
+			boolean normalFit = true;
+			int longest = 0;
+			for (Double d : this.model.getBinBoundaries())
+			{
+				int width = fm.stringWidth(d.toString());
+				if (width > this.verticalBarWidth)
+				{
+					normalFit = false;
+				}
+				if (width > longest)
+				{
+					longest = width;
+				}
+			}
+
+			if (normalFit)
+			{
+				this.xAxisOffset = 50;
+			}
+			else
+			{
+				this.xAxisOffset = longest + 15 + fm.getHeight();
+			}
+		}
+		else
+		{
+			this.xAxisOffset = this.determineDependentAxisWidth(this.model
+				.getPercentage() ? percScale : amountScale);
+
+			// set bar width
+			this.setBarWidth(frequencies.length / 2);
+
+			// find longest binboundary label
+			int longest = 0;
+			for (Double d : this.model.getBinBoundaries())
+			{
+				int width = fm.stringWidth(d.toString());
+				if (width > longest)
+				{
+					longest = width;
+				}
+			}
+
+			this.yAxisOffset = longest + 15 + fm.getHeight();
+		}
+
+		// correct scales
+		percScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth())
+			/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
+		amountScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth()) / (double) max;
+
+		// paint scale
+		if (this.model.getPercentage())
+		{
+			this.paintAmountScale(g, percScale, ySplitOffset);
+		}
+		else
+		{
+			this.paintAmountScale(g, amountScale, ySplitOffset);
+		}
+
+		// paint bars
+		if (this.model.isSplitInSingleView()
+			&& this.model.getTableModel().splitVarClasses(
+				this.model.getSplitOptions()) > 1)
+		{
+			ArrayList<Color> splitColors = new ArrayList<Color>();
+			ArrayList<String> splitLabels = new ArrayList<String>();
+
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode()
+				&& this.model.isFrequencyPolygonStackMode())
+			{
+				int[] totalFrequencies = new int[frequencies.length / 2];
+				int[] frequencySum = new int[frequencies.length / 2];
+				for (int split = 0; split < allFrequencies.length; split++)
+				{
+					int splitFreq[] = allFrequencies[split];
+					this.lastPolygonPoint = null;
+					Color c = this.getColor(split);
+					splitColors.add(c);
+					splitLabels.add(this.model.getSplitOptions()
+						.getSplitClassLabel(splitClass,
+							this.model.getTableModel()));
+
+					for (int i = 0; i < splitFreq.length / 2; i++)
+					{
+						if (i > 0)
+						{
+							frequencySum[i] = frequencySum[i - 1]
+								+ splitFreq[2 * i];
+						}
+						else
+						{
+							frequencySum[i] = splitFreq[2 * i];
+						}
+
+						// this.paintBar(g,
+						// (int)(totalFrequencies[i]*amountScale), 0, i, 0);
+						this.fillCumulativeFreqPolygonSegment(
+							g,
+							(int) Math.round(amountScale
+								* (totalFrequencies[i] + frequencySum[i])),
+							(int) Math.round(amountScale * totalFrequencies[i]),
+							(int) Math.round(amountScale
+								* (i > 0 ? frequencySum[i - 1]
+									+ totalFrequencies[i - 1] : 0)),
+							(int) Math.round(amountScale
+								* (i > 0 ? totalFrequencies[i - 1] : 0)), i, c);
+					}
+					for (int i = 0; i < frequencySum.length; i++)
+					{
+						totalFrequencies[i] += frequencySum[i];
+					}
+					//System.out.println(Arrays.toString(totalFrequencies));
+				}
+			}
+			else
+			{
+				if (this.model.isFrequencyPolygonMode()
+					&& this.model.isFrequencyPolygonCumulativeMode())
+				{
+
+					for (int split = 0; split < allFrequencies.length; split++)
+					{
+						g.setComposite(this.makeComposite(split + 1));
+						int[] splitFreq = allFrequencies[split];
+						int frequencySum = 0;
+						// int frequencySelectedSum = 0;
+						Color c = this.getColor(split);
+						splitColors.add(c);
+						splitLabels.add(this.model.getSplitOptions()
+							.getSplitClassLabel(splitClass,
+								this.model.getTableModel()));
+
+						for (int i = 0; i < splitFreq.length / 2; i++)
+						{
+							this.fillCumulativeFreqPolygonSegment(
+								g,
+								(int) Math.round(amountScale
+									* (frequencySum + splitFreq[2 * i])), 0,
+								(int) Math.round(amountScale * frequencySum),
+								0, i, c);
+
+							frequencySum += splitFreq[2 * i];
+							// frequencySelectedSum = splitFreq[2*i + 1];
+							// this.paintBar(g, (int)(frequencySum*amountScale),
+							// 0, i, 0);
+						}
+						this.lastPolygonPoint = null;
+					}
+					g.setComposite(this.makeComposite(1));
+
+				}
+				else
+				{
+					// Hier worden de samengestelde staafjes getekend.
+					int[] cumHeight = new int[frequencies.length / 2];
+					for (int split = 0; split < allFrequencies.length; split++)
+					{
+						int[] splitFreq = allFrequencies[split];
+						if (!this.model.isFrequencyPolygonMode())
+						{
+							// g.setComposite(this.makeComposite(split+1));
+						}
+						Color c = this.getColor(split);
+						splitColors.add(c);
+						splitLabels.add(this.model.getSplitOptions()
+							.getSplitClassLabel(splitClass,
+								this.model.getTableModel()));
+
+						for (int i = 0; i < frequencies.length / 2; i++)
+						{
+							if (this.model.getVerticalBars())
+							{
+								if (this.isNextToEachOtherSelected())
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[2 * i] * amountScale),
+										(int) (splitFreq[2 * i + 1] * amountScale),
+										i, 0, 0, c, split,
+										allFrequencies.length, true);
+								}
+								else
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[2 * i] * amountScale),
+										(int) (splitFreq[2 * i + 1] * amountScale),
+										i, -cumHeight[i], 0, c, 0, 0, false);
+								}
+							}
+							else
+							{
+								if (this.isNextToEachOtherSelected())
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[2 * i] * amountScale),
+										(int) (splitFreq[2 * i + 1] * amountScale),
+										i, 0, 0, c, split,
+										allFrequencies.length, true);
+								}
+								else
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[2 * i] * amountScale),
+										(int) (splitFreq[2 * i + 1] * amountScale),
+										i, 0, cumHeight[i], c, 0, 0, false);
+								}
+							}
+							cumHeight[i] += (int) (splitFreq[2 * i] * amountScale);
+
+						}
+						this.lastPolygonPoint = null;
+					}
+					g.setComposite(this.makeComposite(1));
+				}
+			}
+		}
+		else
+		{
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode())
+			{
+				int frequencySum = 0;
+				int frequencySelectedSum = 0;
+				for (int i = 0; i < frequencies.length / 2; i++)
+				{
+					frequencySum += frequencies[2 * i];
+					frequencySelectedSum = frequencies[2 * i + 1];
+					this.paintBar(g, (int) (frequencySum * amountScale),
+						(int) (frequencySelectedSum * amountScale), i,
+						ySplitOffset, 0);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < frequencies.length / 2; i++)
+				{
+					// this.paintBar(g, (int)(frequencies[2*i]*amountScale),
+					// (int)(frequencies[2*i+1]*amountScale), i,
+					// ySplitOffset,0);
+					if (allFrequencies.length > 1)
+						this.paintBar(g,
+							(int) (frequencies[2 * i] * amountScale),
+							(int) (frequencies[2 * i + 1] * amountScale), i,
+							ySplitOffset, 0, this.getColor(splitClass), 0, 0,
+							false);
+					else
+						this.paintBar(g,
+							(int) (frequencies[2 * i] * amountScale),
+							(int) (frequencies[2 * i + 1] * amountScale), i,
+							ySplitOffset, 0);
+				}
+			}
+		}
+
+		g.setColor(Color.BLACK);
+
+		if (this.model.getVerticalBars())
+		{
+			// check if the bin boundary strings will fit
+			boolean normalFit = true;
+			for (Double d : this.model.getBinBoundaries())
+			{
+				if (fm.stringWidth(d.toString()) > this.verticalBarWidth)
+				{
+					normalFit = false;
+					break;
+				}
+			}
+
+			// paint bin boundaries
+			if (normalFit)
+			{
+				int y = this.barAreaHeight();
+				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
+				{
+					int x = (int) (this.yAxisOffset + i + i
+						* this.verticalBarWidth);
+					g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+					String s = this.model.getBinBoundaries().get(i).toString();
+					int offset = fm.stringWidth(s) / 2;
+					g.drawString(s, x - offset, y + 20 + ySplitOffset);
+				}
+			}
+			else
+			{
+				// the boundary labels won't fit the normal way, use rotated
+				// font
+				g.setFont(rotateFont);
+				int y = this.barAreaHeight();
+				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
+				{
+					int x = (int) (this.yAxisOffset + i + i
+						* this.verticalBarWidth);
+					g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+					String s = this.model.getBinBoundaries().get(i).toString();
+					int offset = fm.stringWidth(s);
+					g.drawString(s, x + 5, y + 7 + offset + ySplitOffset);
+				}
+			}
+		}
+		else
+		{
+			// paint bin boundaries
+			for (int i = 0; i <= frequencies.length / 2; i++)
+			{
+				int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
+				int x = this.yAxisOffset;
+				g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
+				String s = this.model.getBinBoundaries().get(i).toString();
+				int offset = fm.stringWidth(s);
+				g.drawString(s, x - offset - 7, y
+					+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+			}
+			// String s = this.model.getBinBoundaries().get(0).toString();
+			// g.drawString(s, HistogramView.Y_AS_OFFSET-fm.stringWidth(s)-7,
+			// fm.getHeight()-4);
+			// g.drawLine(HistogramView.Y_AS_OFFSET-7, 0,
+			// HistogramView.Y_AS_OFFSET-2, 0);
+		}
+	}
+
+	private int determineDependentAxisWidth(double scale)
+	{
+		if (this.model.getVerticalBars())
+		{
+			int width = 5;
+			FontMetrics fm = this.getFontMetrics(this.getFont());
+
+			int panelHeight = (int) ((this.model.getVerticalBars() ? this
+				.barAreaHeight() : this.barAreaWidth()));
+			int base = 1;
+			int exp = 0;
+			int step = (int) (base * Math.pow(10, exp));
+			while (step * 6 * scale < panelHeight)
+			{
+				switch (base)
+				{
+				case 1:
+					base = 2;
+					break;
+				case 2:
+					base = 5;
+					break;
+				case 5:
+					base = 1;
+					exp++;
+					break;
+				}
+				step = (int) (base * Math.pow(10, exp));
+			}
+
+			int majorSteps = (int) Math.floor((panelHeight - 0.5 * fm
+				.getHeight()) / (step * scale));
+
+			// paint the large markers with their value
+
+			for (int i = 0; i < majorSteps + 1; i++)
+			{
+				String s = new Integer(i * step).toString();
+				if (this.model.getPercentage())
+				{
+					s = s + "%";
+				}
+				int stringWidth = fm.stringWidth(s);
+				if (stringWidth > width)
+				{
+					width = stringWidth;
+				}
+			}
+			return width;
+		}
+		else
+		{
+			return 40;
+		}
+	}
+
+	/**
+	 * Paint scale on the axis
+	 * 
+	 * @param g
+	 *            Graphics in which it will be painted
+	 * @param amountScale
+	 *            The multiplier used to make sure the bars fill the view
+	 */
+	private void paintAmountScale(Graphics g, double amountScale,
+		int ySplitOffset)
+	{
+		g.setFont(super.getFont());
+		g.setColor(Color.BLACK);
+		FontMetrics fm = g.getFontMetrics();
+
+		// Determine the interval for markers on the axis
+		int panelHeight = (int) ((this.model.getVerticalBars() ? this
+			.barAreaHeight() : this.barAreaWidth()));
+		int base = 1;
+		int exp = 0;
+		int step = (int) (base * Math.pow(10, exp));
+		while (step * 6 * amountScale < panelHeight)
+		{
+			switch (base)
+			{
+			case 1:
+				base = 2;
+				break;
+			case 2:
+				base = 5;
+				break;
+			case 5:
+				base = 1;
+				exp++;
+				break;
+			}
+			step = (int) (base * Math.pow(10, exp));
+		}
+
+		int minorStep;
+		int minorStepsPerMajorStep;
+		switch (base)
+		{
+		case 5:
+			minorStep = (int) Math.pow(10, exp);
+			minorStepsPerMajorStep = 5;
+			break;
+		case 2:
+			minorStep = (int) (5 * Math.pow(10, exp - 1));
+			minorStepsPerMajorStep = 4;
+			break;
+		case 1:
+			minorStep = (int) (2 * Math.pow(10, exp - 1));
+			minorStepsPerMajorStep = 5;
+			break;
+		default:
+			minorStep = 1;
+			minorStepsPerMajorStep = step;
+		}
+
+		double majorSteps = (panelHeight - 0.5 * fm.getHeight())
+			/ (step * amountScale);
+		int majorStepsFloor = (int) Math.floor(majorSteps);
+
+		if (this.model.getVerticalBars())
+		{
+			// Paint the small markers
+			for (int i = 0; i < majorSteps * minorStepsPerMajorStep; i++)
+			{
+				int y = this.barAreaHeight()
+					- (int) (i * minorStep * amountScale);
+				g.setColor(new Color(240, 240, 240));
+				g.drawLine(this.yAxisOffset, y + ySplitOffset, this.getWidth(),
+					y + ySplitOffset);
+				g.setColor(Color.black);
+				g.drawLine(this.yAxisOffset - 2, y + ySplitOffset,
+					this.yAxisOffset, y + ySplitOffset);
+			}
+
+			// paint the large markers with their value
+			for (int i = 0; i < majorStepsFloor + 1; i++)
+			{
+				int y = this.barAreaHeight() - (int) (i * step * amountScale);
+				g.setColor(new Color(220, 220, 220));
+				g.drawLine(this.yAxisOffset, y + ySplitOffset, this.getWidth(),
+					y + ySplitOffset);
+				g.setColor(Color.black);
+				g.drawLine(this.yAxisOffset - 5, y + ySplitOffset,
+					this.yAxisOffset, y + ySplitOffset);
+				String s = new Integer(i * step).toString();
+				if (this.model.getPercentage())
+				{
+					s = s + "%";
+				}
+				g.drawString(s, this.yAxisOffset - 7 - fm.stringWidth(s), y
+					+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+			}
+		}
+		else
+		{
+			int y = this.barAreaHeight();
+
+			// paint the small markers
+			for (int i = 0; i < majorStepsFloor * minorStepsPerMajorStep; i++)
+			{
+				int x = this.yAxisOffset + (int) (i * minorStep * amountScale)
+					- 1;
+				g.drawLine(x, y + ySplitOffset, x, y + 2 + ySplitOffset);
+			}
+
+			// paint the large markers with their value
+			for (int i = 0; i < majorStepsFloor + 1; i++)
+			{
+				int x = this.yAxisOffset + (int) (i * step * amountScale) - 1;
+				g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+				String s = new Integer(i * step).toString();
+				if (this.model.getPercentage())
+				{
+					s = s + "%";
+				}
+				g.drawString(s, x - (int) (fm.stringWidth(s) / 2.0),
+					y + 7 + fm.getHeight() + ySplitOffset);
+			}
+		}
+	}
+
+	/**
+	 * paint the bars for enum or string data
+	 * 
+	 * @param g
+	 *            The graphics in which the bars will be painted
+	 */
+	private void paintEnumClass(Graphics2D g,
+		FrequencyTuple[][] allFrequencies, int splitClass)
+	{
+		g.setFont(super.getFont());
+		g.setColor(Color.BLACK);
+		FontMetrics fm = g.getFontMetrics();
+		AffineTransform at = new AffineTransform();
+		at.rotate(Math.PI * 1.5);
+		Font rotateFont = super.getFont().deriveFont(at);
+
+		// get frequencies
+		FrequencyTuple[] frequencies = allFrequencies[splitClass];
+		int ySplitOffset = splitClass * (this.scrollPane.getHeight() - 5);
+
+		// determine scale
+		int max = this.maxFrequency(allFrequencies, splitClass);
+		double amountScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth()) / (double) max;
+		double percScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth())
+			/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
+
+		if (this.model.getVerticalBars())
+		{
+			this.yAxisOffset = this.determineDependentAxisWidth(this.model
+				.getPercentage() ? percScale : amountScale)
+				+ 10
+				+ fm.getHeight();
+
+			// set bar width
+			this.setBarWidth(frequencies.length);
+
+			// check if the bin boundary strings will fit
+			boolean normalFit = true;
+			int longest = 0;
+			for (FrequencyTuple ft : frequencies)
+			{
+				int width = fm.stringWidth(ft.label);
+				if (width > this.verticalBarWidth)
+				{
+					normalFit = false;
+				}
+				if (width > longest)
+				{
+					longest = width;
+				}
+			}
+
+			if (normalFit)
+			{
+				this.xAxisOffset = 40;
+			}
+			else
+			{
+				this.xAxisOffset = longest + 5 + fm.getHeight();
+			}
+		}
+		else
+		{
+			this.xAxisOffset = this.determineDependentAxisWidth(this.model
+				.getPercentage() ? percScale : amountScale);
+
+			// set bar width
+			this.setBarWidth(frequencies.length);
+
+			// find longest binboundary
+			int longest = 0;
+			for (FrequencyTuple ft : frequencies)
+			{
+				int width = fm.stringWidth(ft.label);
+				if (width > longest)
+				{
+					longest = width;
+				}
+			}
+
+			this.yAxisOffset = longest + 5 + fm.getHeight();
+		}
+
+		this.setBarWidth(frequencies.length);
+
+		// correct scales after the axis offsets are set
+		amountScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth()) / (double) max;
+		percScale = HistogramView.MAX_BAR_HEIGHT
+			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
+				.barAreaWidth())
+			/ (100.0 * max / this.tupleArraySum(frequencies));
+
+		// paint scale on axis
+		if (this.model.getPercentage())
+		{
+			this.paintAmountScale(g, percScale, ySplitOffset);
+		}
+		else
+		{
+			this.paintAmountScale(g, amountScale, ySplitOffset);
+		}
+
+		// paint bars
+		if (this.model.isSplitInSingleView()
+			&& this.model.getTableModel().splitVarClasses(
+				this.model.getSplitOptions()) > 1)
+		{
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode()
+				&& this.model.isFrequencyPolygonStackMode())
+			{
+				int[] totalFrequencies = new int[frequencies.length];
+				int[] frequencySum = new int[frequencies.length];
+				for (int split = 0; split < allFrequencies.length; split++)
+				{
+					FrequencyTuple[] splitFreq = allFrequencies[split];
+					this.lastPolygonPoint = null;
+					Color c = this.getColor(split);
+					for (int i = 0; i < splitFreq.length; i++)
+					{
+						if (i > 0)
+						{
+							frequencySum[i] = frequencySum[i - 1]
+								+ splitFreq[i].frequency;
+						}
+						else
+						{
+							frequencySum[i] = splitFreq[i].frequency;
+						}
+
+						this.fillCumulativeFreqPolygonSegment(
+							g,
+							(int) Math.round(amountScale
+								* (totalFrequencies[i] + frequencySum[i])),
+							(int) Math.round(amountScale * totalFrequencies[i]),
+							(int) Math.round(amountScale
+								* (i > 0 ? frequencySum[i - 1]
+									+ totalFrequencies[i - 1] : 0)),
+							(int) Math.round(amountScale
+								* (i > 0 ? totalFrequencies[i - 1] : 0)), i, c);
+					}
+					for (int i = 0; i < frequencySum.length; i++)
+					{
+						totalFrequencies[i] += frequencySum[i];
+					}
+					//System.out.println(Arrays.toString(totalFrequencies));
+				}
+			}
+			else
+			{
+				if (this.model.isFrequencyPolygonMode()
+					&& this.model.isFrequencyPolygonCumulativeMode())
+				{
+
+					for (int split = 0; split < allFrequencies.length; split++)
+					{
+						g.setComposite(this.makeComposite(split + 1));
+						FrequencyTuple[] splitFreq = allFrequencies[split];
+						int frequencySum = 0;
+						// int frequencySelectedSum = 0;
+						Color c = this.getColor(split);
+						for (int i = 0; i < splitFreq.length; i++)
+						{
+							this.fillCumulativeFreqPolygonSegment(
+								g,
+								(int) Math.round(amountScale
+									* (frequencySum + splitFreq[i].frequency)),
+								0,
+								(int) Math.round(amountScale * frequencySum),
+								0, i, c);
+
+							frequencySum += splitFreq[i].frequency;
+							// frequencySelectedSum = splitFreq[2*i + 1];
+							// this.paintBar(g, (int)(frequencySum*amountScale),
+							// 0, i, 0);
+						}
+						this.lastPolygonPoint = null;
+					}
+					g.setComposite(this.makeComposite(1));
+
+				}
+				else
+				{
+					int[] cumHeight = new int[frequencies.length];
+					for (int split = 0; split < allFrequencies.length; split++)
+					{
+						FrequencyTuple[] splitFreq = allFrequencies[split];
+						if (!this.model.isFrequencyPolygonMode())
+						{
+							// g.setComposite(this.makeComposite(split+1));
+						}
+						Color c = this.getColor(split);
+						for (int i = 0; i < frequencies.length; i++)
+						{
+							if (this.model.getVerticalBars())
+							{
+								if (this.isNextToEachOtherSelected())
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[i].frequency * amountScale),
+										(int) (splitFreq[i].selectionFrequency * amountScale),
+										i, 0, 0, c, split,
+										allFrequencies.length, true);
+								}
+								else
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[i].frequency * amountScale),
+										(int) (splitFreq[i].selectionFrequency * amountScale),
+										i, -cumHeight[i], 0, c, 0, 0, false);
+								}
+							}
+							else
+							{
+								if (this.isNextToEachOtherSelected())
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[i].frequency * amountScale),
+										(int) (splitFreq[i].selectionFrequency * amountScale),
+										i, 0, 0, c, split,
+										allFrequencies.length, true);
+								}
+								else
+								{
+									this.paintBar(
+										g,
+										(int) (splitFreq[i].frequency * amountScale),
+										(int) (splitFreq[i].selectionFrequency * amountScale),
+										i, 0, cumHeight[i], c, 0, 0, false);
+								}
+							}
+							cumHeight[i] += (int) (splitFreq[i].frequency * amountScale);
+
+						}
+						this.lastPolygonPoint = null;
+					}
+					g.setComposite(this.makeComposite(1));
+				}
+			}
+		}
+		else
+		{
+			if (this.model.isFrequencyPolygonMode()
+				&& this.model.isFrequencyPolygonCumulativeMode())
+			{
+				int frequencySum = 0;
+				int frequencySelectedSum = 0;
+				for (int i = 0; i < frequencies.length; i++)
+				{
+					frequencySum += frequencies[i].frequency;
+					frequencySelectedSum = frequencies[i].selectionFrequency;
+					this.paintBar(g, (int) (frequencySum * amountScale),
+						(int) (frequencySelectedSum * amountScale), i,
+						ySplitOffset, 0);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < frequencies.length; i++)
+				{
+					// this.paintBar(g,
+					// (int)(frequencies[i].frequency*amountScale),(int)(frequencies[i].selectionFrequency*amountScale),
+					// i, ySplitOffset,0);
+					if (allFrequencies.length > 1)
+						this.paintBar(
+							g,
+							(int) (frequencies[i].frequency * amountScale),
+							(int) (frequencies[i].selectionFrequency * amountScale),
+							i, ySplitOffset, 0, this.getColor(splitClass), 0,
+							0, false);
+					else
+						this.paintBar(
+							g,
+							(int) (frequencies[i].frequency * amountScale),
+							(int) (frequencies[i].selectionFrequency * amountScale),
+							i, ySplitOffset, 0);
+				}
+			}
+		}
+
+		// paint bar labels
+		g.setColor(Color.BLACK);
+		if (this.model.getVerticalBars())
+		{
+			int y = this.barAreaHeight() - 2;
+			boolean normalFit = true;
+			for (FrequencyTuple ft : frequencies)
+			{
+				int width = fm.stringWidth(ft.label);
+				if (width > this.verticalBarWidth)
+				{
+					normalFit = false;
+				}
+			}
+
+			if (normalFit)
+			{
+				for (int i = 0; i < frequencies.length; i++)
+				{
+					int x = this.yAxisOffset
+						+ (int) (((double) i + 0.5) * this.verticalBarWidth)
+						+ i + 1;
+
+					String s = frequencies[i].label;
+					g.drawString(s, x - (int) (fm.stringWidth(s) / 2.0), y + 5
+						+ fm.getHeight() + ySplitOffset);
+				}
+			}
+			else
+			{
+				g.setFont(rotateFont);
+				for (int i = 0; i < frequencies.length; i++)
+				{
+					int x = this.yAxisOffset
+						+ (int) (((double) i + 0.5) * this.verticalBarWidth)
+						+ i + 1;
+					String s = frequencies[i].label;
+					g.drawString(s, x + (int) (0.5 * fm.getHeight()),
+						this.barAreaHeight() + 5 + fm.stringWidth(s)
+							+ ySplitOffset);
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < frequencies.length; i++)
+			{
+				int y = i + (int) ((i + 1) * this.horizontalBarWidth);
+
+				// check if the label will fit on the screen
+				String s = frequencies[i].label;
+				if (fm.stringWidth(s) > this.yAxisOffset - 10)
+				{
+					// cut off the label to make it fit
+					s = s + "...";
+					while (fm.stringWidth(s) > this.yAxisOffset - 5
+						- fm.getHeight()
+						&& s.length() > 4)
+					{
+						s = s.substring(0, s.length() - 4) + "...";
+					}
+				}
+
+				g.drawString(s, this.yAxisOffset - fm.stringWidth(s) - 3,
+					(int) (y + (0.5 * fm.getHeight())) + ySplitOffset);
+			}
+		}
+	}
+
+	private void setMainPanelSize()
+	{
+		int splitClasses = this.model.getTableModel().splitVarClasses(
+			this.model.getSplitOptions());
+		int colorLegendWidth = this.colorLegend.isVisible() ? this.colorLegend
+			.getPreferredSize().width : 0;
+		if (this.model.isSplitInSingleView())
+		{
+			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
+				.getWidth() - colorLegendWidth - 20, this.scrollPane
+				.getHeight() - 5));
+
+//			System.out.println("HistogramView.setMainPanelSize(): splitInSingleView=true, "
+//				+ "mainPanel.getPreferredSize()=" + this.mainPanel.getPreferredSize());
+		}
+		else
+		{
+			if (this.scrollPane.getWidth() == 0)
+			{
+				// syl: even hardcoded op de gebruikelijke maat... Hoe komt scrollPane 0x0?
+				this.mainPanel.setPreferredSize(new Dimension(653, 677));
+				// test: iets kleiner om het verschil te zien
+//				this.mainPanel.setPreferredSize(new Dimension(500, 500));
+			}
+			else
+			{
+    			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
+    				.getWidth() - colorLegendWidth - 20, splitClasses
+    				* (this.scrollPane.getHeight() - 5) + 1));
+			}
+
+//			System.out.println("HistogramView.setMainPanelSize(): splitInSingleView=false, "
+//				+ "scrollPane w=" + this.scrollPane.getWidth() + ", h=" + this.scrollPane.getHeight() + "; "  
+//				+ "mainPanel.getPreferredSize() w=" + this.mainPanel.getPreferredSize().getWidth()
+//				+ ", h=" + this.mainPanel.getPreferredSize().getHeight());
+		}
+	}
+
+	// Override setBound
+	public void setBounds(int x, int y, int w, int h)
+	{
+//		System.out.println("HistogramView.setBounds(x=" + x + ", y=" + y 
+//			+ ", w=" + w + ", h=" + h + ")");
+
+		super.setBounds(x, y, w, h);
+
+		this.setMainPanelSize();
+		
+		this.scrollPane.setViewportView(mainPanel);// syl: dit stond uitgecommentarieerd
+
+		// System.out.println("HistogramView.setBounds(): Size histogram: " +
+		// this.getBounds().toString()
+		// + ", scrollbarVisible=" +
+		// scrollPane.getVerticalScrollBar().isVisible());
+		
+//		 System.out.println("HistogramView.setBounds(): scrollPane w="
+//			 + scrollPane.getWidth()
+//			 + ", h=" + scrollPane.getHeight());
+	}
+
+	// Implements Observer
+	public void update(Observable arg0, Object arg1)
+	{
+		// this.userOptionsPanel.setVisible(this.model.getTableModel().isViewsEditable());
+		this.dialogButton.setVisible(this.model.getTableModel()
+			.isViewsEditable());
+
+		if (this.updateColorLegend() || true)
+		{
+			this.setMainPanelSize();
+		}
+
+		userOptionsPanel.update();
+
+		// Revalidate the mainPanel to reset the scrollbar
+		this.mainPanel.revalidate();
+
+//		System.out.println("HistogramView.update(): Size histogram: "
+//			+ this.getBounds().toString() + ", scrollbarVisible="
+//			+ scrollPane.getVerticalScrollBar().isVisible());
+//		System.out.println("HistogramView.update(): scrollPane w="
+//			+ scrollPane.getWidth() + ", h=" + scrollPane.getHeight());
+//		System.out.println("HistogramView.update(): mainPanel w=" 
+//			+ this.mainPanel.getWidth() + ", h=" + this.mainPanel.getHeight());
+		
+		this.repaint();
+	}
+
+	/**
+	 * Updates the color legend
+	 * 
+	 * @return true if the visibility of the color legend changed
+	 */
+	private boolean updateColorLegend()
+	{
+		int splitClasses = this.model.getTableModel().splitVarClasses(
+			this.model.getSplitOptions());
+		if (splitClasses > 1 && this.model.isSplitInSingleView())
+		{
+			this.colorLegend.setColumnString(this.model.getTableModel()
+				.getColumnName(
+					this.model.getSplitOptions().getColumnSplitIndex()));
+			ArrayList<String> splitStrings = new ArrayList<String>(splitClasses);
+			ArrayList<Color> splitColors = new ArrayList<Color>(splitClasses);
+			for (int i = 0; i < splitClasses; i++)
+			{
+				splitStrings.add(this.model.getSplitOptions()
+					.getSplitClassLabel(i, this.model.getTableModel()));
+				splitColors.add(this.getColor(i));
+			}
+			this.colorLegend.setColors(splitStrings, splitColors);
+			if (!this.colorLegend.isVisible())
+			{
+				this.colorLegend.setVisible(true);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (this.colorLegend.isVisible())
+			{
+//				System.out.println("aaaa");
+
+				this.colorLegend.setVisible(false);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
+	private static int identityHashCode(Object o)
+	{
+		return System.identityHashCode(o);
+	}
+	
+	private class HistogramBarPanel extends JPanel
+	{
+		public void paintComponent(Graphics g)
+		{
+			Graphics2D g2D = (Graphics2D) g;
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
+			// clear panel
+			g2D.clearRect(0, 0, this.getWidth(), this.getHeight());
+			
+//			System.out.println("mainPanel.paintComponent(): this.w=" +
+//				this.getWidth() + ", h=" + this.getHeight());
+
+			HistogramView.this.lastPolygonPoint = null;
+
+			// clear locations of bars
+			HistogramView.this.barRectangles = new ArrayList<Rectangle>(
+				HistogramView.this.model.getNoBins()
+					* HistogramView.this.model.getTableModel().splitVarClasses(
+						HistogramView.this.model.getSplitOptions()));
+
+			if (!HistogramView.this.model.columnIndexValid())
+			{
+				return;
+			}
+
+			// get the data type
+			AllowedTypes type = HistogramView.this.model.getTableModel()
+				.getColumnTypes()
+				.get(HistogramView.this.model.getColumnIndex()).getType();
+
+			int splitClasses = HistogramView.this.model.getTableModel()
+				.splitVarClasses(HistogramView.this.model.getSplitOptions());
+
+			if (HistogramView.this.model.isSplitInSingleView())
+			{
+				if (type.isNumber())
+				{
+					int[][] frequencies = HistogramView.this.model
+						.numberClassFrequency();
+					HistogramView.this.paintNumberClass(g2D, frequencies, 0);
+				}
+				else
+				{
+					FrequencyTuple[][] frequencies = HistogramView.this.model
+						.enumClassFrequency();
+					HistogramView.this.paintEnumClass(g2D, frequencies, 0);
+				}
+			}
+			else
+			{
+				// call the right paint method
+				if (type.equals(AllowedTypes.ENUM)
+					|| type.equals(AllowedTypes.STRING))
+				{
+					FrequencyTuple[][] frequencies = HistogramView.this.model
+						.enumClassFrequency();
+					for (int splitClass = 0; splitClass < splitClasses; splitClass++)
+					{
+						HistogramView.this.lastPolygonPoint = null;
+						HistogramView.this.paintEnumClass(g2D, frequencies,
+							splitClass);
+					}
+				}
+				else
+				{
+					int[][] frequencies = HistogramView.this.model
+						.numberClassFrequency();
+					for (int splitClass = 0; splitClass < splitClasses; splitClass++)
+					{
+						HistogramView.this.lastPolygonPoint = null;
+						HistogramView.this.paintNumberClass(g2D, frequencies,
+							splitClass);
+					}
+				}
+			}
+
+			// draw the bottom line
+			for (int i = 0; i < (HistogramView.this.isSplitSingleViewSelected() ? 1
+				: splitClasses); i++)
+			{
+				int ySplitOffset = i
+					* (HistogramView.this.scrollPane.getHeight() - 5);
+
+				if (HistogramView.this.model.getVerticalBars())
+				{
+					g2D.drawLine(HistogramView.this.yAxisOffset,
+						HistogramView.this.barAreaHeight() + ySplitOffset,
+						super.getWidth(), HistogramView.this.barAreaHeight()
+							+ ySplitOffset);
+				}
+				else
+				{
+					g2D.drawLine(HistogramView.this.yAxisOffset,
+						ySplitOffset - 1, HistogramView.this.yAxisOffset - 1,
+						HistogramView.this.barAreaHeight() + ySplitOffset);
+				}
+				HistogramView.this.paintAxisLabels(g2D, ySplitOffset, i);
+			}
+		}
+	}
+
+	private class BarClickListener implements MouseListener
+	{
+
+		public void mouseClicked(MouseEvent e)
+		{
+			if (HistogramView.this.model.isFrequencyPolygonMode()
+				|| HistogramView.this.model.isSplitInSingleView())
+			{
+				return;
+			}
+			
+			int i;
+			
+			for (i = 0; i < HistogramView.this.barRectangles.size(); i++)
+			{
+				if (HistogramView.this.barRectangles.get(i) != null
+					&& HistogramView.this.barRectangles.get(i).contains(
+						e.getPoint()))
+				{
+					this.barClicked(i);
+					break;
+				}
+			}
+			
+			if (i == HistogramView.this.barRectangles.size())
+			{
+				// no bin was clicked, deselect all
+				ArrayList<Boolean> selectionList = new ArrayList<Boolean>();
+				for (int row = 0; row < HistogramView.this.model
+					.getTableModel().getRowCount(); row++)
+				{
+					selectionList.add(false);
+				}
+				HistogramView.this.model.getTableModel().setSelectionList(
+					selectionList);
+			}
+		}
+
+		private void barClicked(int bar)
+		{
+			if (!HistogramView.this.model.columnIndexValid())
+			{
+				return;
+			}
+
+			int bins = HistogramView.this.model.getTableModel()
+				.splitVarClasses(HistogramView.this.model.getColumnIndex(),
+					HistogramView.this.model.getBinBoundaries());
+			int bin = bar % bins;
+			int splitClass = bar / bins;
+
+			System.out.println("Bin clicked: " + bin);
+			System.out.println("SplitClass: " + splitClass);
+			ColumnType cType = HistogramView.this.model.getTableModel()
+				.getColumnTypes()
+				.get(HistogramView.this.model.getColumnIndex());
+			AllowedTypes type = cType.getType();
+			if (type.isNumber())
+			{
+				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
+					HistogramView.this.model.getTableModel().getRowCount());
+				for (int i = 0; i < HistogramView.this.model.getTableModel()
+					.getRowCount(); i++)
+				{
+					Object o = HistogramView.this.model.getTableModel()
+						.getValueAt(i,
+							HistogramView.this.model.getColumnIndex());
+
+					selectionList
+						.add(!o.equals(ColumnType.WILDCARD)
+							&& HistogramView.this.model.binOfNumber(Double
+								.parseDouble((String) o)) == bin
+							&& HistogramView.this.model.getTableModel()
+								.classifyObject(i,
+									HistogramView.this.model.getSplitOptions()) == splitClass);
+				}
+
+				HistogramView.this.model.getTableModel().setSelectionList(
+					selectionList);
+			}
+			else
+			{
+				String clicked;
+				if (type.equals(AllowedTypes.ENUM))
+				{
+					clicked = cType.getEnumOptions()[bin];
+					int wildcardIndex = Arrays.asList(cType.getEnumOptions())
+						.indexOf(ColumnType.WILDCARD);
+					if (wildcardIndex <= 0 && wildcardIndex < bin)
+					{
+						clicked = cType.getEnumOptions()[bin + 1];
+					}
+				}
+				else
+				{
+					ArrayList<String> options = HistogramView.this.model
+						.getTableModel().stringColumnOptions(
+							HistogramView.this.model.getColumnIndex());
+					System.out.println(options);
+					clicked = options.get(bin);
+				}
+
+				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
+					HistogramView.this.model.getTableModel().getRowCount());
+				for (int i = 0; i < HistogramView.this.model.getTableModel()
+					.getRowCount(); i++)
+				{
+					Object o = HistogramView.this.model.getTableModel()
+						.getValueAt(i,
+							HistogramView.this.model.getColumnIndex());
+					selectionList
+						.add(!o.equals(ColumnType.WILDCARD)
+							&& ((String) o).equals(clicked)
+							&& HistogramView.this.model.getTableModel()
+								.classifyObject(i,
+									HistogramView.this.model.getSplitOptions()) == splitClass);
+				}
+				HistogramView.this.model.getTableModel().setSelectionList(
+					selectionList);
+			}
+		}
+
+		public void mouseEntered(MouseEvent arg0)
+		{
+			// Do nothing
+
+		}
+
+		public void mouseExited(MouseEvent arg0)
+		{
+			// Do nothing
+
+		}
+
+		public void mousePressed(MouseEvent arg0)
+		{
+			// Do nothing
+
+		}
+
+		public void mouseReleased(MouseEvent arg0)
+		{
+			// Do nothing
+
+		}
+
+	}
+}
