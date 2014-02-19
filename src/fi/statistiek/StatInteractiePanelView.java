@@ -635,7 +635,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		{
 			this.tabPane = tabPane;
 			
-			// test syl
+			// initialize with an invalid value
 			this.draggedTab = -1;
 		}
 

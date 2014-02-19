@@ -140,6 +140,8 @@ public class Statistiek implements WiskOpdrApplet
 	 *            The model containing the data that the view will show
 	 * @param startVar
 	 *            The index of the column that will be shown in the view
+	 * @param statInteractiePanel
+	 * 			  The statInteractiePanel to pass through 
 	 * @return a new statistiekView
 	 */
 
@@ -148,8 +150,8 @@ public class Statistiek implements WiskOpdrApplet
 		StatTableModel model, int startVar,
 		StatInteractiePanel statInteractiePanel)
 	{
-//		System.out.println("Statistiek.createView(viewType=" + viewType + ", viewName=" + viewName 
-//			+ ", model.hashCode()=" + model.hashCode() + ")");
+		System.out.println("Statistiek.createView(viewType=" + viewType + ", viewName=" + viewName 
+			+ ", identityHashCode(statTableModel)=" + identityHashCode(model) + ")");
 
 		// VIEWS[0]=Statistiek.rb.getString("tableOption");
 		// VIEWS[1]=Statistiek.rb.getString("histogramOption");
@@ -186,6 +188,11 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			return null;
 		}
+	}
+
+	private static int identityHashCode(Object o)
+	{
+		return System.identityHashCode(o);
 	}
 
 	/**
@@ -268,6 +275,82 @@ public class Statistiek implements WiskOpdrApplet
 			d = round(d, -e);
 			boundaries.add(d);
 		}
+		return boundaries;
+	}
+
+	/**
+	 * Determine appropriate bin boundaries from given min, max and 
+	 * bin width, and determine the number of bins.
+	 * 
+	 * @param min
+	 *            The minimum value in the dataset
+	 * @param max
+	 *            The maximum value in the dataset
+	 * @param binWidth
+	 *            The desired bin width
+	 * @return ArrayList containing appropriate bin boundaries
+	 */
+	public static ArrayList<Double> appropriateBoundariesFromBinWidth(
+		double min,	double max, double binWidth)
+	{
+		double start;
+		int noBins;
+		
+		start = Math.floor(min - 1);
+		
+		// The maximum bin boundary should be larger than the maximum value
+		// so (max + 1) to determine the number of bins
+		noBins = (int) Math.ceil(((max + 1) - start)/binWidth);
+
+		// build arraylist
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		for (int i = 0; i <= noBins; i++)
+		{
+			double d = start + (double) i * binWidth;
+			d = round(d, -0);
+			boundaries.add(d);
+		}
+
+		return boundaries;
+	}
+	
+	/**
+	 * Determine appropriate bin boundaries from given min, max and 
+	 * the minimum bin boundary, and determine the number of bins.
+	 * 
+	 * @param min
+	 *            The minimum value in the dataset
+	 * @param max
+	 *            The maximum value in the dataset
+	 * @param minBoundary
+	 *            The minimum bin boundary
+	 * @return ArrayList containing appropriate bin boundaries
+	 */
+	public static ArrayList<Double> appropriateBoundariesFromMinBoundary(
+		double min, double max, double minBoundary)
+	{
+		double start;
+		int noBins;
+		
+		start = minBoundary;
+		
+		// TODO: hieronder aanpassen...
+		
+		// The maximum bin boundary should be larger than the maximum value
+		// so (max + 1) to determine the number of bins
+//		noBins = (int) Math.ceil(((max + 1) - start)/binWidth);
+//
+//		// build arraylist
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+//		
+//		for (int i = 0; i <= noBins; i++)
+//		{
+//			double d = start + (double) i * binWidth;
+//			d = round(d, -0);
+//			boundaries.add(d);
+//		}
+
 		return boundaries;
 	}
 
