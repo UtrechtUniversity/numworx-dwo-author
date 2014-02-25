@@ -580,9 +580,14 @@ public class StatTableModel implements TableModel
 	private void fireEvent(TableModelEvent e)
 	{
 		// System.out.println("fireEvent called");
-		for (TableModelListener t : this.listeners)
+		
+		// test syl: performance lijkt iets minder door onderstaand synchronized blok...
+		synchronized (this.listeners)
 		{
-			t.tableChanged(e);
+    		for (TableModelListener t : this.listeners)
+    		{
+    			t.tableChanged(e);
+    		}
 		}
 	}
 
@@ -741,7 +746,7 @@ public class StatTableModel implements TableModel
 
 	private void decreaseKeyHashtable(String key, int columnIndex)
 	{
-		System.out.println("decreasing: " + key + ". Column: " + columnIndex);
+		//System.out.println("decreasing: " + key + ". Column: " + columnIndex);
 		boolean b = StatTableModel.decreaseKeyHashtable(key,
 			this.stringFrequencies.get(columnIndex));
 		if (b)

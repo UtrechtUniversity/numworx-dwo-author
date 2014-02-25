@@ -258,7 +258,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 	public Hashtable getEditState()
 	{
 		// test syl
-		System.out.println("StatInteractiePanel.getEditState()");
+		//System.out.println("StatInteractiePanel.getEditState()");
 		return this.getState();
 		//return null;
 	}
@@ -410,9 +410,14 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					t = Statistiek.VIEWS[5];
 				}
+//				StatistiekView statistiekView = Statistiek.createView(t,
+//					this.model.findUniqueViewName(s), model.getData(),
+//					this.view.getStartVarBoxSelectedIndex(), this);
+				
+				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
 				StatistiekView statistiekView = Statistiek.createView(t,
 					this.model.findUniqueViewName(s), model.getData(),
-					this.view.getStartVarBoxSelectedIndex(), this);
+					this.view.getStartVarBoxSelectedIndex()-1, this);
 				this.model.addView(statistiekView);
 				this.view.selectLastTab();
 				this.view.clearAddViewTab();

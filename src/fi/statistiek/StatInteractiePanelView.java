@@ -600,14 +600,36 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			}
 		}
 
-		// this.startVarBox.addItem("");
-		for (String varName : this.model.getData().getColumnNames())
-		{
-			this.startVarBox.addItem(varName);
-		}
+		// Fill box with variable names
+		updateStartVarBox();
 
 		this.revalidate();
 		this.repaint();
+	}
+
+	/*
+	 * Update the startVarBox with the variable names.
+	 */
+	private synchronized void updateStartVarBox()
+	{
+//		System.out.println("StatInteractiePanelView.updateStartVarBox()");
+
+		// Alleen updaten als er kolomnamen zijn 
+		if (this.model.getData().getColumnNames().size() > 0)
+		{
+    		// startVarBox leegmaken -> geeft ConcurrentModificationException...
+    		this.startVarBox.removeAllItems();
+    		
+    		// startVarBox vullen
+    		// The first item
+    		this.startVarBox.addItem(Statistiek.rb.getString("chooseAVariableOption"));
+    
+    		// The variable names
+    		for (String varName : this.model.getData().getColumnNames())
+    		{
+   				this.startVarBox.addItem(varName);
+    		}
+		}
 	}
 
 	/**
@@ -663,7 +685,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				return;
 			}
 
-//			System.out.println("---------------- MousePressed " + tab);
+			//System.out.println("---------------- MousePressed " + tab);
 			if (arg0.getButton() == MouseEvent.BUTTON1
 				&& !(StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView))
 			{
