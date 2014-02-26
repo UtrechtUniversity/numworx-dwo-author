@@ -85,9 +85,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 	public void zetOpdracht(Hashtable hashtable, String[] randomVars, Hashtable randomValues)
 	{
 		// Waarom randomVars en randomValues?
-		// test syl
-		System.out.println("StatInteractiePanel.zetOpdracht(hashtable=" + hashtable
-		 + ", randomVars=" + randomVars + ", randomValues=" + randomValues);
+//		System.out.println("StatInteractiePanel.zetOpdracht(hashtable=" + hashtable
+//		 + ", randomVars=" + randomVars + ", randomValues=" + randomValues);
 		
 		Hashtable b = deepCopy(hashtable);
 		Hashtable resetHashtable = deepCopy(hashtable);
@@ -146,8 +145,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 		if (b.containsKey("selectedView"))
 		{
 			// test syl
-			System.out.println("StatInteractiePanel.zetOpdracht(): selectedView in hashtable = "
-			 + ((Integer)b.get("selectedView")).intValue());
+//			System.out.println("StatInteractiePanel.zetOpdracht(): selectedView in hashtable = "
+//			 + ((Integer)b.get("selectedView")).intValue());
 			this.view.processSelectedTab(((Integer) b.get("selectedView")).intValue());
 			// test syl
 //			this.view.processSelectedTab(1); // ?? geeft geen tab 1??!!
@@ -425,7 +424,26 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 		}
 		else if (e.getActionCommand().equals("viewsBox"))
 		{
-			this.view.setStartVarBox(true);
+			// check of tabel gekozen is
+			String s = this.view.getViewsBoxString();
+			String t = null;
+			if (Arrays.asList(Statistiek.VIEWS_translated).contains(s)
+				&& (s == Statistiek.rb.getString("tableOption")))
+			{
+				// tabel gekozen, er is geen variabelekeuze nodig
+				t = Statistiek.VIEWS[0];
+				StatistiekView statistiekView = Statistiek.createView(t,
+					this.model.findUniqueViewName(s), model.getData(),
+					0, this);
+				this.model.addView(statistiekView);
+				this.view.selectLastTab();
+				this.view.clearAddViewTab();
+			}
+			else
+			{
+				// bied variabelekeuze aan
+				this.view.setStartVarBox(true);
+			}
 		}
 		// resetbutton is now implemented in StatTable
 		// else if(e.getActionCommand().equals("reset"))
