@@ -617,18 +617,48 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		// Alleen updaten als er kolomnamen zijn 
 		if (this.model.getData().getColumnNames().size() > 0)
 		{
-    		// startVarBox leegmaken -> geeft ConcurrentModificationException...
-    		this.startVarBox.removeAllItems();
-    		
-    		// startVarBox vullen
-    		// The first item
-    		this.startVarBox.addItem(Statistiek.rb.getString("chooseAVariableOption"));
+    		// Check the first item
+			String firstItem = Statistiek.rb.getString("chooseAVariableOption");
+			if (!firstItem.equals(this.startVarBox.getItemAt(0)))
+			{
+				this.startVarBox.addItem(firstItem);
+			}
     
-    		// The variable names
-    		for (String varName : this.model.getData().getColumnNames())
-    		{
-   				this.startVarBox.addItem(varName);
-    		}
+			boolean exists;
+    		// Check the variable names in model.getData()
+			for (String varName : this.model.getData().getColumnNames())
+			{
+				exists = false;
+				for (int i = 0; i < this.startVarBox.getItemCount() && !exists; i++)
+				{
+					if (varName.equals(this.startVarBox.getItemAt(i)))
+					{
+						exists = true;
+					}
+				}
+				if (!exists)
+				{
+					this.startVarBox.addItem(varName);
+				}
+			}
+			
+			// Check if items from startVarBox need to be removed
+			for (int i = 1; i < this.startVarBox.getItemCount(); i++)
+			{
+				exists = false;
+				for (String varName : this.model.getData().getColumnNames())
+				{
+					if (varName.equals(this.startVarBox.getItemAt(i)))
+					{
+						exists = true;
+						break;
+					}
+				}
+				if (!exists)
+				{
+					this.startVarBox.removeItemAt(i);
+				}					
+			}
 		}
 	}
 

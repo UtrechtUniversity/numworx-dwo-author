@@ -19,7 +19,7 @@ import fi.statistiek.types.ColumnType;
 /**
  * data model, implements TableModel for JTable
  * 
- * @author Manu Drijvers
+ * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
 public class StatTableModel implements TableModel
@@ -581,14 +581,14 @@ public class StatTableModel implements TableModel
 	{
 		// System.out.println("fireEvent called");
 		
-		// test syl: performance lijkt iets minder door onderstaand synchronized blok...
-		synchronized (this.listeners)
-		{
+		// test syl: performance lijkt iets minder met een synchronized blok...
+//		synchronized (this.listeners)
+//		{
     		for (TableModelListener t : this.listeners)
     		{
     			t.tableChanged(e);
     		}
-		}
+//		}
 	}
 
 	public void fireTableModelEvent()
@@ -850,6 +850,12 @@ public class StatTableModel implements TableModel
 			this.columnNames.remove(column);
 			this.columnClass.remove(column);
 			this.stringFrequencies.remove(column);
+			
+			// test syl
+			// TODO: als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande views 
+			// als column < columnindex van view dan 
+			// columnindex - 1 voor ViewModel van alle views!
+			// als column == columnindex, dan verwijder view? of toon leeg
 
 			for (ArrayList<Object> row : this.values)
 			{
@@ -857,7 +863,11 @@ public class StatTableModel implements TableModel
 			}
 			this.columnCount--;
 
-			this.fireEvent(new TableModelEvent(this));
+//			this.fireEvent(new TableModelEvent(this));
+//			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+			// test syl: 
+			// specifiekere fireEvent en fireEvent voor headers
+			this.fireEvent(new TableModelEvent(this, 0, this.rowCount, column, TableModelEvent.DELETE));
 			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
 		}
 	}
