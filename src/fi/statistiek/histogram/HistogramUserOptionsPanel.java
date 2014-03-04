@@ -808,8 +808,20 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			splitVarBox.addItem(this.model.getTableModel()
 				.getColumnName(column));
 		}
-		this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
-			.getColumnSplitIndex() + 1);
+		
+		// test syl: check of columnindex valid
+		if (this.model.columnIndexValid())
+		{
+			//System.out.println("HistogramUserOptionsPanel.update(): COLUMN INDEX NOT VALID!");
+			this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
+				.getColumnSplitIndex() + 1);
+		}
+		else
+		{
+			// set no item selected
+			this.splitVarBox.setSelectedIndex(-1);
+		}
+	
 		this.splitVarBox.addActionListener(this.controller);
 
 		this.binsBox.removeActionListener(this.controller);
@@ -885,63 +897,67 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			}
 		}
 
-		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
+		// test syl: check of column index valid
+		if (this.model.columnIndexValid())
 		{
-			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
-				.get(this.model.getSplitOptions().getColumnSplitIndex());
-			AllowedTypes splitType = cSplitType.getType();
-			if (splitType.equals(AllowedTypes.DOUBLE)
-				|| splitType.equals(AllowedTypes.INTEGER))
-			{
-				this.splitMinBoundaryField.setText(Statistiek.df
-					.format(this.model.getSplitOptions().getBinBoundaries()
-						.get(0)));
-				Double d = this.model.getSplitOptions().getBinBoundaries()
-					.get(1)
-					- this.model.getSplitOptions().getBinBoundaries().get(0);
-				this.splitBinWidthField.setText(Statistiek.df.format(d));
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < this.model.getSplitOptions()
-					.getBinBoundaries().size() - 1; i++)
-				{
-					sb.append(Statistiek.df.format(this.model.getSplitOptions()
-						.getBinBoundaries().get(i)));
-					sb.append(" - ");
-					sb.append(Statistiek.df.format(this.model.getSplitOptions()
-						.getBinBoundaries().get(i + 1)));
-					sb.append("\n");
-				}
-				sb.delete(sb.length() - 3, sb.length());
-				this.splitBoundariesArea.setText(sb.toString());
-				this.splitNoObjectsLabel.setText(Statistiek.rb
-					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
-				this.splitMinValueLabel.setText(Statistiek.rb
-					.getString("minLabel")
-					+ this.model.getTableModel().getColumnMin(
-						this.model.getSplitOptions().getColumnSplitIndex()));
-				this.splitMaxValueLabel.setText(Statistiek.rb
-					.getString("maxLabel")
-					+ this.model.getTableModel().getColumnMax(
-						this.model.getSplitOptions().getColumnSplitIndex()));
-				this.splitBinsBox.getParent().setVisible(true);
-				this.splitBinsLabel.getParent().setVisible(true);
-				setSplitEnumClasses(false);
-			}
-			else if (splitType.equals(AllowedTypes.ENUM))
-			{
-				StringBuilder sb = new StringBuilder();
-				for (String s : cSplitType.getEnumOptions())
-				{
-					sb.append(s);
-					sb.append("\n");
-				}
-				sb.substring(0, sb.length() - 1);
-				this.splitBoundariesArea.setText(sb.toString());
-				this.splitBinsBox.getParent().setVisible(false);
-				this.splitBinsLabel.getParent().setVisible(false);
-				setSplitEnumClasses(true);
-			}
+    		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
+    		{
+    			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
+    				.get(this.model.getSplitOptions().getColumnSplitIndex());
+    			AllowedTypes splitType = cSplitType.getType();
+    			if (splitType.equals(AllowedTypes.DOUBLE)
+    				|| splitType.equals(AllowedTypes.INTEGER))
+    			{
+    				this.splitMinBoundaryField.setText(Statistiek.df
+    					.format(this.model.getSplitOptions().getBinBoundaries()
+    						.get(0)));
+    				Double d = this.model.getSplitOptions().getBinBoundaries()
+    					.get(1)
+    					- this.model.getSplitOptions().getBinBoundaries().get(0);
+    				this.splitBinWidthField.setText(Statistiek.df.format(d));
+    				StringBuilder sb = new StringBuilder();
+    				for (int i = 0; i < this.model.getSplitOptions()
+    					.getBinBoundaries().size() - 1; i++)
+    				{
+    					sb.append(Statistiek.df.format(this.model.getSplitOptions()
+    						.getBinBoundaries().get(i)));
+    					sb.append(" - ");
+    					sb.append(Statistiek.df.format(this.model.getSplitOptions()
+    						.getBinBoundaries().get(i + 1)));
+    					sb.append("\n");
+    				}
+    				sb.delete(sb.length() - 3, sb.length());
+    				this.splitBoundariesArea.setText(sb.toString());
+    				this.splitNoObjectsLabel.setText(Statistiek.rb
+    					.getString("numberLabel")
+    					+ this.model.getTableModel().getRowCount());
+    				this.splitMinValueLabel.setText(Statistiek.rb
+    					.getString("minLabel")
+    					+ this.model.getTableModel().getColumnMin(
+    						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitMaxValueLabel.setText(Statistiek.rb
+    					.getString("maxLabel")
+    					+ this.model.getTableModel().getColumnMax(
+    						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitBinsBox.getParent().setVisible(true);
+    				this.splitBinsLabel.getParent().setVisible(true);
+    				setSplitEnumClasses(false);
+    			}
+    			else if (splitType.equals(AllowedTypes.ENUM))
+    			{
+    				StringBuilder sb = new StringBuilder();
+    				for (String s : cSplitType.getEnumOptions())
+    				{
+    					sb.append(s);
+    					sb.append("\n");
+    				}
+    				sb.substring(0, sb.length() - 1);
+    				this.splitBoundariesArea.setText(sb.toString());
+    				this.splitBinsBox.getParent().setVisible(false);
+    				this.splitBinsLabel.getParent().setVisible(false);
+    				setSplitEnumClasses(true);
+    			}
+    		}
 		}
 
 		if (this.model.isFrequencyPolygonMode()
