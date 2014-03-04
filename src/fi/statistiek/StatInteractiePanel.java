@@ -379,6 +379,9 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 
 	public void actionPerformed(ActionEvent e)
 	{
+		// test syl
+		//System.out.println("StatInteractiePanel.actionPerformed(): " + e.getActionCommand());
+		
 		if (e.getActionCommand().equals("startVarBox"))
 		{
 			String s = this.view.getViewsBoxString();
@@ -413,13 +416,17 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 //					this.model.findUniqueViewName(s), model.getData(),
 //					this.view.getStartVarBoxSelectedIndex(), this);
 				
-				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
-				StatistiekView statistiekView = Statistiek.createView(t,
-					this.model.findUniqueViewName(s), model.getData(),
-					this.view.getStartVarBoxSelectedIndex()-1, this);
-				this.model.addView(statistiekView);
-				this.view.selectLastTab();
-				this.view.clearAddViewTab();
+				// Als Tabel gekozen, dan is de actionPerformed van startVarBox niet relevant
+				if (!t.equals(Statistiek.VIEWS[0]))
+				{
+    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
+    				StatistiekView statistiekView = Statistiek.createView(t,
+    					this.model.findUniqueViewName(s), model.getData(),
+    					this.view.getStartVarBoxSelectedIndex()-1, this);
+    				this.model.addView(statistiekView);
+    				this.view.selectLastTab();
+    				this.view.clearAddViewTab();
+				}
 			}
 		}
 		else if (e.getActionCommand().equals("viewsBox"))
