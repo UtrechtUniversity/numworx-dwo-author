@@ -2,6 +2,7 @@ package fi.statistiek;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Observable;
 
 import javax.swing.event.TableModelEvent;
@@ -242,6 +243,15 @@ public class StatModel extends Observable implements TableModelListener
 	 */
 	public void removeViewsWithoutEvent()
 	{
+		// test syl
+        Iterator<StatistiekView> iterator = this.views.iterator();
+        while (iterator.hasNext()) 
+        {
+        	StatistiekView view = iterator.next();
+        	if (view != null)
+        		iterator.remove();
+        }
+
 		this.views = new ArrayList<StatistiekView>();
 		this.viewInOwnWindow = new ArrayList<Boolean>();
 		// this.setChanged();
