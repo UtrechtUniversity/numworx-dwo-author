@@ -625,20 +625,24 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			}
     
 			boolean exists;
+			String columnName;
     		// Check the variable names in model.getData()
-			for (String varName : this.model.getData().getColumnNames())
+//			for (String varName : this.model.getData().getColumnNames())
+			for (int j = 0; j < this.model.getData().getColumnNames().size(); j++)
 			{
+				columnName = this.model.getData().getColumnNames().get(j);
 				exists = false;
 				for (int i = 0; i < this.startVarBox.getItemCount() && !exists; i++)
 				{
-					if (varName.equals(this.startVarBox.getItemAt(i)))
+					if (columnName.equals(this.startVarBox.getItemAt(i)))
 					{
 						exists = true;
 					}
 				}
 				if (!exists)
 				{
-					this.startVarBox.addItem(varName);
+					// startVarBox heeft een eerste item 'Kies een variabele', dus j + 1
+					this.startVarBox.insertItemAt(columnName, j + 1);
 				}
 			}
 			
