@@ -43,7 +43,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "pasteclipboardButton", "Paste from clipboard" },
             {   "resetButton", "Reset" },
             {   "importButton", "Open file" },
-            {   "importWarning", "The table contains data. Opening a file will overwrite this data." },
+            {   "importWarning", "The table contains data. Opening a file will overwrite this data and delete the views." },
             {   "binboundariesDialog", "Define bin boundaries" },
             {   "setupDialog", "Set up" },
             {   "viewnameLabel", "View name: " },

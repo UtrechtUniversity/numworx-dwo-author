@@ -43,7 +43,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "pasteclipboardButton", "Plak vanaf klembord" },
             {   "resetButton", "Reset" },
             {   "importButton", "Open bestand" },
-            {   "importWarning", "De tabel bevat data. Een bestand openen overschrijft deze data." },
+            {   "importWarning", "De tabel bevat data. Een bestand openen overschrijft deze data en verwijdert de views." },
             {   "binboundariesDialog", "Definieer klassengrenzen" },
             {   "setupDialog", "Set up" },
             {   "viewnameLabel", "View naam: " },
