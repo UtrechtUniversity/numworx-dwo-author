@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
@@ -19,9 +17,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultCellEditor;
@@ -29,7 +33,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -39,13 +45,27 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
 import fi.statistiek.addcolumndialog.AddColumnDialogView;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
+
 
 /**
  * A Table StatistiekView
@@ -76,6 +96,9 @@ public class StatTable extends JPanel implements StatistiekView,
 	private JButton pasteButton;
 	private JButton deleteRowsButton;
 	private JButton resetButton;
+	// test syl
+	private JButton importButton;
+	private JFileChooser fileChooser;
 
 	/**
 	 * Constructor without viewname
@@ -173,22 +196,33 @@ public class StatTable extends JPanel implements StatistiekView,
 		gl.setHgap(5);
 		gl.setVgap(5);
 		this.editDataPanel = new JPanel(gl);
+		
+		this.importButton = new JButton(Statistiek.rb.getString("importButton"));
+		this.importButton.setToolTipText(Statistiek.rb.getString("importButton"));
+		this.importButton.addActionListener(this);
+		// test syl
+		//this.editDataPanel.add(this.importButton);
+
 		this.addRowButton = new JButton(Statistiek.rb.getString("addrowButton"));
 		this.addRowButton.setToolTipText(Statistiek.rb.getString("addrowButton"));
 		this.addRowButton.addActionListener(this);
 		this.editDataPanel.add(this.addRowButton);
+		
 		this.addColumnButton = new JButton(Statistiek.rb.getString("addcolumnButton"));
 		this.addColumnButton.setToolTipText(Statistiek.rb.getString("addcolumnButton"));
 		this.addColumnButton.addActionListener(this);
 		this.editDataPanel.add(this.addColumnButton);
+		
 		this.deleteRowsButton = new JButton(Statistiek.rb.getString("deleteselectedrowsButton"));
 		this.deleteRowsButton.setToolTipText(Statistiek.rb.getString("deleteselectedrowsButton"));
 		this.deleteRowsButton.addActionListener(this);
 		this.editDataPanel.add(this.deleteRowsButton);
+		
 		this.pasteButton = new JButton(Statistiek.rb.getString("pasteclipboardButton"));
 		this.pasteButton.setToolTipText(Statistiek.rb.getString("pasteclipboardButton"));
 		this.pasteButton.addActionListener(this);
 		this.editDataPanel.add(this.pasteButton);
+		
 		this.resetButton = new JButton();
 		try
 		{
@@ -201,13 +235,32 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.resetButton.setToolTipText(Statistiek.rb.getString("resetButton"));
 		this.resetButton.addActionListener(this);
 		this.editDataPanel.add(this.resetButton);
-
+		
 		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
 
 		// set the right selection
 		this.selectionChanged();
 
 		super.add(this.editDataPanel, BorderLayout.SOUTH);
+		
+		// test syl: set up the file chooser to open a data file
+		setUpFileChooser();
+	}
+
+	private void setUpFileChooser()
+	{
+		this.fileChooser = new JFileChooser();
+		try
+		{
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Excel (*.xls, *.xlsx)", "xls", "xlsx");
+		    fileChooser.setFileFilter(filter);
+		    fileChooser.setAcceptAllFileFilterUsed(false);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Creating FileNameExtensionFilter failed. " + e.toString());
+		}
 	}
 
 	class PopupListener extends MouseAdapter
@@ -565,6 +618,235 @@ public class StatTable extends JPanel implements StatistiekView,
     				.zetOpdracht(resetHashtable, null, null);
 			} // else the button is clicked in edit-mode: do nothing
 		}
+		// test syl
+		else if (e.getSource() == this.importButton)
+		{
+			if (this.statTableModel.getRowCount() > 0)
+			{
+				int reply = JOptionPane.showConfirmDialog(null, 
+					Statistiek.rb.getString("importWarning"),
+					"Waarschuwing", JOptionPane.OK_CANCEL_OPTION);
+				if (reply == JOptionPane.OK_OPTION)
+				{
+					openFileChooserDialog();
+				}
+			}
+			else
+			{
+				openFileChooserDialog();
+			}
+		}
+	}
+
+	/*
+	 * Opent de dialoog voor het openen van een data bestand.
+	 */
+	private void openFileChooserDialog()
+	{
+		int returnVal;
+		
+		returnVal = this.fileChooser.showOpenDialog(this);
+		
+		if (returnVal == JFileChooser.APPROVE_OPTION) 
+		{
+//			System.out.println("You chose to open this file: " +
+//				fileChooser.getSelectedFile().getName());
+//			processCSVDataFile(fileChooser.getSelectedFile());
+			
+			// Verwijder oude views: onderstaande verwijdert ook de tabelview
+			//removeViews();
+			
+			processExcelDataFile(fileChooser.getSelectedFile());
+		}
+	}
+	
+	private void removeViews()
+	{
+		this.statInteractiePanel.getModel().removeViewsWithoutEvent();		
+	}
+
+	/*
+	 * Process the excel data file. Reads the first sheet.
+	 */
+	private void processExcelDataFile(File file)
+	{
+		// test syl: moet deze methode synchronized vanwege zetten waarden kolommen?
+		try
+		{
+			//FileInputStream fileInputStream = new FileInputStream(file);
+			Workbook workbook = WorkbookFactory.create(file);
+			
+			//Get first sheet from the workbook
+			Sheet sheet = workbook.getSheetAt(0);
+			Row headerRow;
+			ArrayList<String> headerStrings = new ArrayList<String>();
+			Row row;
+			Cell cell;
+ 
+            //Iterate through each rows one by one
+			Iterator<Row> rowIterator = sheet.rowIterator();
+			
+			// Read header row
+			if (rowIterator.hasNext())
+			{
+				headerRow = (Row) rowIterator.next();
+				
+				 //For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = headerRow.cellIterator();
+                 
+                while (cellIterator.hasNext())
+                {
+                    cell = (Cell) cellIterator.next();
+                    
+                    headerStrings.add(cell.toString());
+                }
+                //System.out.println("...headers=" + headerStrings);
+                
+                clearStatTableModel();
+                createColumns(headerStrings);
+			}
+			
+			// read data rows
+			int rowIndex = 0;
+            while (rowIterator.hasNext())
+            {
+                row = (Row) rowIterator.next();
+
+                // Add empty row to statTableModel
+                this.statTableModel.addRow();
+                
+                //For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+                int columnIndex = 0;
+                while (cellIterator.hasNext())
+                {
+                    cell = (Cell) cellIterator.next();
+                    
+                    // TODO: fill current row in statTableModel with data for each column
+                    this.statTableModel.setValueAt(cell.toString(), rowIndex, columnIndex);
+                    
+                    //Check the cell type and format accordingly
+//                    switch (cell.getCellType())
+//                    {
+//                        case Cell.CELL_TYPE_NUMERIC:
+//                            System.out.print(cell.getNumericCellValue() + "-");
+//                            break;
+//                        case Cell.CELL_TYPE_STRING:
+//                            System.out.print(cell.getStringCellValue() + "-");
+//                            break;
+//                    }
+                    columnIndex++;
+                }
+//              System.out.println("...row processed");
+                rowIndex++;
+            }
+            //fileInputStream.close();
+		}
+		catch (Exception e)
+		{
+			// TODO: gebruikersmelding
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * Create columns based on the names. 
+	 */
+	private void createColumns(ArrayList<String> names)
+	{
+		System.out.println("StatTable.createColumns(): " + names);
+		// test syl: eerst even allemaal type string
+		for (int i = 0; i < names.size(); i++)
+		{
+    		this.statTableModel.addColumn(names.get(i),
+    			new ColumnType(AllowedTypes.STRING));
+		}
+	}
+
+	/*
+	 * Clear the statTableModel.
+	 */
+	private void clearStatTableModel()
+	{
+		// test syl
+		int numberOfRows = this.statTableModel.getRowCount();
+		for (int i = numberOfRows - 1; i >= 0; i--)
+		{
+			System.out.println("StatTable.clearStatTableModel(): remove row " + i);
+			this.statTableModel.removeRow(i);
+		}
+
+		int numberOfColumns = this.statTableModel.getColumnCount(); 
+		for (int i = numberOfColumns - 1; i >=0; i--)
+		{
+			System.out.println("StatTable.clearStatTableModel(): remove column " + i);
+			this.statTableModel.removeColumn(i);
+		}
+	}
+
+	/*
+	 * Process the CSV data file.
+	 * Not ready, maybe not necessary...
+	 */
+	private void processCSVDataFile(File file)
+	{
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ";";
+		ArrayList<String> dataRows;
+		String[] headers;
+	 
+		try 
+		{
+			br = new BufferedReader(new FileReader(file));
+			dataRows = new ArrayList<String>();
+			
+			// TODO: read the header line
+			if ((line = br.readLine()) != null)
+			{
+				headers = line.split(cvsSplitBy);
+				if (headers != null)
+				{
+					for (int i = 0; i < headers.length; i++)
+						System.out.println("headers[" + i + "]=" + headers[i]);
+				}
+			}
+
+			// read the data
+			while ((line = br.readLine()) != null) 
+			{
+				dataRows.add(line);
+			}
+			
+			for (int i = 0; i < dataRows.size(); i++)
+			{
+				System.out.println("dataRows[" + i + "]: " + dataRows.get(i));
+			}
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		finally 
+		{
+			if (br != null)
+			{
+				try 
+				{
+					br.close();
+				}
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	 
+		System.out.println("Done");
 	}
 
 	public Object getState()
