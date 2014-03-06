@@ -259,6 +259,11 @@ public class BoxplotModel extends Observable implements TableModelListener
 		{
 			return;
 		}
+		
+		// als niet-numerieke variabele gekozen, dan kun je geen percentielwaarden berekenen
+		String type = this.tableModel.getColumnTypes().get(columnIndex).getType().toString();
+		if (type.equals("Enum") || type.equals("String"))
+			return;
 
 		if (!this.getTableModel().isColumnIndexValid(
 			this.splitOptions.getColumnSplitIndex()))
@@ -301,7 +306,6 @@ public class BoxplotModel extends Observable implements TableModelListener
 				this.lowerQuartiles
 					.add(data.get((int) Math.ceil(0.25 * size) - 1));
 				
-				// test syl
 				//this.medians.add(data.get((int) Math.ceil(0.5 * size) - 1));
 				addMedian(data);
 				
