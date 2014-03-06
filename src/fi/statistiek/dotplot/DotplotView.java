@@ -1088,13 +1088,40 @@ public class DotplotView extends JPanel implements Observer
 			{
 				int x = this.determineXCoordNumClass(p);
 				g.drawLine(x, y + heightOffset, x, y + 5 + heightOffset);
-				g.drawString(Double.toString(p),
-					x - (int) (0.5 * fm.stringWidth(Double.toString(p))), y + 5
+				
+				// get the right string value for integer or double
+				String pString = getStringValue(p);
+//				g.drawString(Double.toString(p),
+//					x - (int) (0.5 * fm.stringWidth(Double.toString(p))), y + 5
+//						+ fm.getHeight() + heightOffset);
+				g.drawString(pString,
+					x - (int) (0.5 * fm.stringWidth(pString)), y + 5
 						+ fm.getHeight() + heightOffset);
 
 				p += step;
 			}
 		}
+	}
+
+	/*
+	 * Get the string value of p according to the type (Integer or Double).
+	 */
+	private String getStringValue(double p)
+	{
+		String s;
+		
+		if (this.xType.equals(AllowedTypes.INTEGER))
+		{
+			s = String.valueOf((int) p);
+		}
+		else if (this.xType.equals(AllowedTypes.DOUBLE))
+		{
+			s = Double.toString(p);
+		}
+		else
+			s = "";
+		
+		return s;
 	}
 
 	/**
@@ -1191,8 +1218,14 @@ public class DotplotView extends JPanel implements Observer
 					continue;
 				}
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
-				g.drawString(Double.toString(p),
-					x - 7 - fm.stringWidth(Double.toString(p)), y
+				
+				// get the right string value for integer or double
+				String pString = getStringValue(p);
+//				g.drawString(Double.toString(p),
+//					x - 7 - fm.stringWidth(Double.toString(p)), y
+//						+ (int) (0.5 * fm.getHeight() - 3) + heightOffset);
+				g.drawString(pString,
+					x - 7 - fm.stringWidth(pString), y
 						+ (int) (0.5 * fm.getHeight() - 3) + heightOffset);
 
 				p += step;
