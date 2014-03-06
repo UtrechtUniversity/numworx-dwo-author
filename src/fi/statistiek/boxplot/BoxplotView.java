@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -176,6 +178,13 @@ public class BoxplotView extends JPanel implements Observer
 		return this.mainPanel.getSize();
 	}
 
+	public BoxplotModel getModel()
+	{
+		// test syl: methode nodig om type te kunnen opvragen van de te 
+		// tekenen variabele in BoxplotDependentAxis
+		return this.model;
+	}
+	
 	public void setModel(BoxplotModel model)
 	{
 		this.model = model;
@@ -419,8 +428,8 @@ public class BoxplotView extends JPanel implements Observer
 				}
 			}
 
-			// test syl: a la HistogramView.update()
-			// this.mainPanel.revalidate();
+			// Wijzigingen van BoxplotUserOptionsPanel zichtbaar maken in BoxplotView
+			this.mainPanel.revalidate();
 
 			this.repaint();
 		}
