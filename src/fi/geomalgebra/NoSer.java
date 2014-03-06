@@ -3,7 +3,9 @@ package fi.geomalgebra;
 import java.awt.Point;
 import java.util.Hashtable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NoSer 
 {
@@ -36,9 +38,9 @@ public class NoSer
 		return h;
 	}
 
-	public static ArrayList<Integer> getLijnstukState2(Lijnstuk ls)
+	public static List<Integer> getLijnstukState2(Lijnstuk ls)
 	{
-		ArrayList<Integer> a = new ArrayList<Integer>();
+		List<Integer> a = new ArrayList<Integer>();
 		
 		a.add(new Integer(ls.schaal));
 		a.add(new Integer(ls.stand));
@@ -158,9 +160,9 @@ public class NoSer
 		return h;
 	}
 	
-	public static HashMap<String,Object> getFiguurState2(Figuur fig)
+	public static Map<String,Object> getFiguurState2(Figuur fig)
 	{
-		HashMap<String,Object> h = new HashMap<String,Object>();
+		Map<String,Object> h = new HashMap<String,Object>();
 		
 		h.put("aantalx", new Integer(fig.aantalx));
 		h.put("aantaly", new Integer(fig.aantaly));
@@ -242,7 +244,7 @@ public class NoSer
 		int aantalFg = s.geefAantalFiguren();
 		h.put("aantalFg", new Integer(aantalFg));
 		
-		ArrayList<HashMap<String,Object>> figurenHash = new ArrayList<HashMap<String,Object>>(); 
+		List<Map<String,Object>> figurenHash = new ArrayList<Map<String,Object>>(); 
 		Figuur[] figurenrij = s.geefFigurenRij();
 		for (int i = 0; i < aantalFg; i++)
 		{	
@@ -258,7 +260,7 @@ public class NoSer
 		
 		int[] var = s.geefVars();
 		
-		ArrayList<Integer> varList = new ArrayList<Integer>();
+		List<Integer> varList = new ArrayList<Integer>();
 		for (int vCnt = 0; vCnt < var.length; vCnt++)
 			varList.add(new Integer(var[vCnt]));
 		h.put("varList", varList);
