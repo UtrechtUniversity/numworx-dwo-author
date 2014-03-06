@@ -12,6 +12,7 @@ import javax.swing.*;
 
 //import java.util.Enumeration;
 import java.util.*;
+import java.util.List;
 import java.lang.reflect.Constructor;
 
 public class AlgebraSchuifVeld extends SchuifVeld 
@@ -526,20 +527,20 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		
 	}
 	
-	public Hashtable getState()
+	public Hashtable<String,Object> getState()
 	{	int aantalSc = 0;
 		String[] classNames = null;
-		ArrayList<String> classNamesList = new ArrayList<String>();
+		List<String> classNamesList = new ArrayList<String>();
 		int[] posX = null;
 		int[] posY = null;
-		ArrayList<Integer> posXList = new ArrayList<Integer>();
-		ArrayList<Integer> posYList = new ArrayList<Integer>();
-		Hashtable[] scStates = null;
-		ArrayList<Hashtable> scStatesList = new ArrayList<Hashtable>(); 
+		List<Integer> posXList = new ArrayList<Integer>();
+		List<Integer> posYList = new ArrayList<Integer>();
+		Hashtable<String,Object>[] scStates = null;
+		List<Map<String,Object>> scStatesList = new ArrayList<Map<String,Object>>(); 
 		boolean[][] connections = null;
 		int[] graphConnections = null;
-		ArrayList<Boolean> connectionsList = new ArrayList<Boolean>();
-		ArrayList<Integer> graphConnectionsList = new ArrayList<Integer>();
+		List<Boolean> connectionsList = new ArrayList<Boolean>();
+		List<Integer> graphConnectionsList = new ArrayList<Integer>();
 		boolean tabel = false;
 		boolean grafiek = false;
 		boolean expressie = false;
