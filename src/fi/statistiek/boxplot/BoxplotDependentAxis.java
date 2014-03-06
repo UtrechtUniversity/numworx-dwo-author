@@ -160,7 +160,7 @@ public class BoxplotDependentAxis extends JPanel
 //					super.getWidth() - 7 - fm.stringWidth(Double.toString(p)),
 //					y + (int) (0.5 * fm.getHeight()));
 				g.drawString(pString,
-					super.getWidth() - 7 - fm.stringWidth(Double.toString(p)),
+					super.getWidth() - 7 - fm.stringWidth(pString),
 					y + (int) (0.5 * fm.getHeight()));
 
 				p += step;
@@ -213,7 +213,7 @@ public class BoxplotDependentAxis extends JPanel
 //					x - (int) (fm.stringWidth(Double.toString(p)) / 2),
 //					7 + fm.getHeight());
 				g.drawString(pString,
-					x - (int) (fm.stringWidth(Double.toString(p)) / 2),
+					x - (int) (fm.stringWidth(pString) / 2),
 					7 + fm.getHeight());
 				
 				p += step;
