@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observable;
@@ -366,6 +368,18 @@ public class HistogramView extends JPanel implements Observer
 		}
 		else
 		{
+			int columnIndex = this.model.getColumnIndex();
+			String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+			
+			// test syl
+			int spacing = 0;
+					
+			if (type.equals(AllowedTypes.ENUM.toString()))
+				spacing = 4;
+			
+			// test syl
+			//System.out.println("HistogramView(): type = " + type + ", spacing = " + spacing);
+
 			if (this.model.getVerticalBars())
 			{
 				int x1 = this.yAxisOffset + barNumber + 1
@@ -383,12 +397,12 @@ public class HistogramView extends JPanel implements Observer
 					barOffset = numberOfBars * barWidth + 3;
 					barWidth = barWidth - 1;
 				}
-				g.fillRect(x1 + barOffset, y + ySplitOffset, barWidth,
+				g.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
 					barLength - selectedLength);
 
 				g.setColor(HistogramView.SELECTED_BAR_COLOR);
-				g.fillRect(x1 + barOffset, y + barLength - selectedLength
-					+ ySplitOffset, barWidth, selectedLength);
+				g.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
+					+ ySplitOffset, barWidth - spacing, selectedLength);
 
 				// fill the rectangle above the bar white to get the correct
 				// color mixing when using alpha values
@@ -405,18 +419,21 @@ public class HistogramView extends JPanel implements Observer
 
     				Graphics2D g2 = (Graphics2D) g;
     		        g2.setStroke(new BasicStroke(3));
-    				g.drawLine(x1 - 1 + barOffset, y + ySplitOffset,
+    				g.drawLine(x1 - 1 + barOffset + spacing, y + ySplitOffset,
     					x1 + barOffset + barWidth, y + ySplitOffset);
     		        g2.setStroke(new BasicStroke(1));
 				}
 				
-   				g.drawRect(x1 - 1 + barOffset, y + ySplitOffset,
-   					barWidth + 1, barLength);
+//   				g.drawRect(x1 - 1 + barOffset, y + ySplitOffset,
+//   					barWidth + 1, barLength);
+				// test syl: spacing tussen staven voor enum
+   				g.drawRect(x1 - 1 + barOffset + spacing, y + ySplitOffset,
+   					barWidth + 1 - spacing, barLength);
 
-				this.barRectangles.add(new Rectangle(x1 - 1 + barOffset, y
-					+ ySplitOffset, barWidth + 1, barLength));
-			}
-			else
+				this.barRectangles.add(new Rectangle(x1 - 1 + barOffset + spacing, y
+					+ ySplitOffset, barWidth + 1 - spacing, barLength));
+			} // vertical bars
+			else // horizontal bars
 			{
 				int x1 = this.yAxisOffset;
 				int y1 = barNumber + 1
@@ -434,25 +451,42 @@ public class HistogramView extends JPanel implements Observer
 				}
 
 				g.setColor(HistogramView.SELECTED_BAR_COLOR);
-				g.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset,
-					selectedLength, barWidth);
+				// test syl: spacing
+				g.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset + spacing,
+					selectedLength, barWidth - spacing);
 
 				g.setColor(c);
 				g.fillRect(x1 + xSplitOffset + selectedLength, y1
-					+ ySplitOffset + barOffset, barLength - selectedLength,
-					barWidth);
+					+ ySplitOffset + barOffset + spacing, barLength - selectedLength,
+					barWidth - spacing);
 
 				// g.setColor(Color.WHITE);
 				// g.fillRect(x1+xSplitOffset+barLength, y1+ySplitOffset,
 				// this.barAreaWidth()-barLength, y2-y1);
 
 				g.setColor(Color.BLACK);
+
+				if ((highlightedBar == barNumber) && (highlightInSplit == splitClass))
+				{
+//					System.out.println("HIGHLIGHT! HistogramView.paintBar(): barNumber = " + barNumber
+//						+ ", splitClass = " + splitClass + ", numberOfBars = "
+//						+ numberOfBars + ", totalBars = " + totalBars);
+
+    				Graphics2D g2 = (Graphics2D) g;
+    		        g2.setStroke(new BasicStroke(3));
+    				g.drawLine(x1 + xSplitOffset - 1 + barLength, 
+    					y1 - 1 + ySplitOffset + barOffset + spacing,
+    					x1 + xSplitOffset - 1 + barLength,
+    					y1 + ySplitOffset + barOffset + barWidth);
+    		        g2.setStroke(new BasicStroke(1));
+				}
+
 				g.drawRect(x1 + xSplitOffset - 1, y1 - 1 + ySplitOffset
-					+ barOffset, barLength, barWidth + 1);
+					+ barOffset + spacing, barLength, barWidth + 1 - spacing);
 
 				this.barRectangles.add(new Rectangle(x1 + xSplitOffset - 1, y1
-					- 1 + ySplitOffset + barOffset, barLength,
-					barWidth + 1));
+					- 1 + ySplitOffset + barOffset + spacing, barLength,
+					barWidth + 1 - spacing));
 			}
 		}
 		this.repaint();
@@ -1143,6 +1177,7 @@ public class HistogramView extends JPanel implements Observer
 			{
 				int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
 				int x = this.yAxisOffset;
+				// test syl: 
 				g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
 				
 				// Get the string value (integer or double)
@@ -1874,6 +1909,15 @@ public class HistogramView extends JPanel implements Observer
 		return System.identityHashCode(o);
 	}
 	
+	public static double round(double value, int places)
+	{
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
+	
 	private class HistogramBarPanel extends JPanel implements MouseMotionListener
 	{
 		public void paintComponent(Graphics g)
@@ -1968,7 +2012,11 @@ public class HistogramView extends JPanel implements Observer
 				}
 				else
 				{
-					g2D.drawLine(HistogramView.this.yAxisOffset,
+					// test syl: scheve lijn?
+//					g2D.drawLine(HistogramView.this.yAxisOffset,
+//						ySplitOffset - 1, HistogramView.this.yAxisOffset - 1,
+//						HistogramView.this.barAreaHeight() + ySplitOffset);
+					g2D.drawLine(HistogramView.this.yAxisOffset - 1,
 						ySplitOffset - 1, HistogramView.this.yAxisOffset - 1,
 						HistogramView.this.barAreaHeight() + ySplitOffset);
 				}
@@ -1988,143 +2036,190 @@ public class HistogramView extends JPanel implements Observer
 		{
 			// Method mouseMoved() implements showing tooltip & highlight
 			
-			Point p = me.getPoint();
-			FrequencyTuple[][] frequencies_enum = HistogramView.this.model
-				.enumClassFrequency();
-			int[][] frequencies_number = HistogramView.this.model
-				.numberClassFrequency();
-			boolean isPercentage = HistogramView.this.model.getPercentage();
-			int[] aantal = null;
-			boolean found = false;
-
-			// System.out.println("HistogramBarPanel.mouseMoved(): (" + p.x
-			// + ", " + p.y + "): frequencies=" + frequencies_number +
-			// ", barRectangles=" + HistogramView.this.barRectangles);
-
-			ToolTipManager.sharedInstance().setInitialDelay(0);
-			ToolTipManager.sharedInstance().setReshowDelay(0);
-
-			int noBins = 0;
-			int numberOfSplits = HistogramView.this.model.getTableModel()
-				.splitVarClasses(HistogramView.this.model.getSplitOptions());
-
-			// System.out.println("... numberOfSplits = " + numberOfSplits);
-			
-			if (frequencies_number != null)
-				noBins = HistogramView.this.model.getNoBins();
-			else if (frequencies_enum != null)
-				noBins = frequencies_enum[0].length;
-
-			aantal = new int[numberOfSplits];
-
-			if (isPercentage)
+			if (!HistogramView.this.model.isFrequencyPolygonMode())
 			{
-				for (int i = 0; i < numberOfSplits; i++)
-				{
-					int sum = 0;
-					
-					// tel de aantallen op voor split i
-					if (frequencies_number != null) // number variable
-					{
-						aantal[i] = 0;
-						for (int j = 0; j < noBins; j++)
-						{
-							aantal[i] = aantal[i]
-								+ frequencies_number[i][j * 2];
-						}
-						// System.out.println("... aantal[" + i + "] = " +
-						// aantal[i]);
-					}
-					else if (frequencies_enum != null) // enum variable
-					{
-						aantal[i] = 0;
-						for (int j = 0; j < noBins; j++)
-						{
-							aantal[i] = aantal[i]
-								+ frequencies_enum[i][j].frequency;
-						}
-//						System.out.println("... aantal[" + i + "] = "
-//							+ aantal[i]);
-					}
-				}
-			}
-
-			Rectangle rect;
-			for (int i = 0; i < numberOfSplits && !found; i++)
-			{
-				for (int j = 0; j < noBins && !found; j++) // j <
-														   // HistogramView.this.barRectangles.size()
-				{
-					rect = HistogramView.this.barRectangles.get(j + i * noBins);
-
-					if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
-						&& (p.y > rect.y - 5) && (p.y < rect.y + 5))
-					{
-//						System.out.println("HistogramBarPanel.mouseMoved(): ("
-//							+ p.x + ", " + p.y + "): bij bovenkant van staaf "
-//							+ (j + i * noBins + 1));
-
-						int waarde = 0;
-						if (isPercentage)
-						{
-							if (frequencies_number != null)
-							{
-    							waarde = (int) Math.round((double) 
-    								((double) frequencies_number[i][j * 2] / aantal[i]) * 100); // percentage berekenen
-							}
-							else if (frequencies_enum != null)
-							{
-    							waarde = (int) Math.round((double) 
-    								((double) frequencies_enum[i][j].frequency / aantal[i]) * 100); // percentage berekenen
+    			Point p = me.getPoint();
+    			FrequencyTuple[][] frequencies_enum = HistogramView.this.model
+    				.enumClassFrequency();
+    			int[][] frequencies_number = HistogramView.this.model
+    				.numberClassFrequency();
+    			boolean isPercentage = HistogramView.this.model.getPercentage();
+    			int[] aantal = null;
+    			boolean found = false;
+    
+    			// System.out.println("HistogramBarPanel.mouseMoved(): (" + p.x
+    			// + ", " + p.y + "): frequencies=" + frequencies_number +
+    			// ", barRectangles=" + HistogramView.this.barRectangles);
+    
+    			ToolTipManager.sharedInstance().setInitialDelay(0);
+    			ToolTipManager.sharedInstance().setReshowDelay(0);
+    
+    			int noBins = 0;
+    			int numberOfSplits = HistogramView.this.model.getTableModel()
+    				.splitVarClasses(HistogramView.this.model.getSplitOptions());
+    
+    			// System.out.println("... numberOfSplits = " + numberOfSplits);
+    			
+    			if (frequencies_number != null)
+    				noBins = HistogramView.this.model.getNoBins();
+    			else if (frequencies_enum != null)
+    				noBins = frequencies_enum[0].length;
+    
+    			aantal = new int[numberOfSplits];
+    
+    			if (isPercentage)
+    			{
+    				for (int i = 0; i < numberOfSplits; i++)
+    				{
+    					int sum = 0;
+    					
+    					// tel de aantallen op voor split i
+    					if (frequencies_number != null) // number variable
+    					{
+    						aantal[i] = 0;
+    						for (int j = 0; j < noBins; j++)
+    						{
+    							aantal[i] = aantal[i]
+    								+ frequencies_number[i][j * 2];
+    						}
+    						// System.out.println("... aantal[" + i + "] = " +
+    						// aantal[i]);
+    					}
+    					else if (frequencies_enum != null) // enum variable
+    					{
+    						aantal[i] = 0;
+    						for (int j = 0; j < noBins; j++)
+    						{
+    							aantal[i] = aantal[i]
+    								+ frequencies_enum[i][j].frequency;
+    						}
+    //						System.out.println("... aantal[" + i + "] = "
+    //							+ aantal[i]);
+    					}
+    				}
+    			}
+    
+    			Rectangle rect;
+    			for (int i = 0; i < numberOfSplits && !found; i++)
+    			{
+    				for (int j = 0; j < noBins && !found; j++) // j <
+    														   // HistogramView.this.barRectangles.size()
+    				{
+    					rect = HistogramView.this.barRectangles.get(j + i * noBins);
+    
+    					if (isOverTop(p, rect))
+    					{
+    //						System.out.println("HistogramBarPanel.mouseMoved(): ("
+    //							+ p.x + ", " + p.y + "): bij bovenkant van staaf "
+    //							+ (j + i * noBins + 1));
+    
+    						String waardeString = "0";
+    						if (isPercentage)
+    						{
+    							double waarde = 0;
     							
-							}
-						}
-						else
-						{
-							if (frequencies_number != null)
-							{
-								waarde = frequencies_number[i][j * 2];
-							}
-							else if (frequencies_enum != null)
-							{
-								waarde = frequencies_enum[i][j].frequency;
-							}
-						}
-
-//						System.out.println("... waarde = " + waarde);
-
-						if (waarde != 0)
-						{
-							// System.out.println("... waarde != 0");
-
-							highlightedBar = j;
-							highlightInSplit = i;
-//							System.out.println("... highlightedBar = "
-//								+ highlightedBar + ", highlightInSplit = "
-//								+ highlightInSplit);
-
-							// show tooltip
-							ToolTipManager.sharedInstance().setEnabled(true);
-							if (isPercentage)
-								this.setToolTipText(waarde + "%");
-							else
-								this.setToolTipText("aantal = " + waarde);
-						}
-						else
-						{
-							highlightedBar = -1;
-							highlightInSplit = -1;
-						}
-						found = true; // gevonden
-					}
-					else
-					{
-						highlightedBar = -1;
-						highlightInSplit = -1;
-						ToolTipManager.sharedInstance().setEnabled(false);
-					}
-				}
+    							if (frequencies_number != null)
+    							{
+        							waarde = ((double) frequencies_number[i][j * 2] / aantal[i]) * 100; // percentage berekenen
+        							waarde = round(waarde, 1);
+    							}
+    							else if (frequencies_enum != null)
+    							{
+        							waarde = ((double) frequencies_enum[i][j].frequency / aantal[i]) * 100; // percentage berekenen
+        							waarde = round(waarde, 1);        							
+    							}
+    							
+    							// Test of waarde een integer is 
+    							if ((waarde == Math.floor(waarde)) && !Double.isInfinite(waarde))
+    							{
+    								// als integer, dan zonder decimalen
+    								waardeString = String.valueOf((int) waarde);
+    							}
+    							else
+    							{
+    								waardeString = String.valueOf(waarde);
+    							}
+    						}
+    						else
+    						{
+    							int waarde = 0;
+    							
+    							if (frequencies_number != null)
+    							{
+    								waarde = frequencies_number[i][j * 2];
+    							}
+    							else if (frequencies_enum != null)
+    							{
+    								waarde = frequencies_enum[i][j].frequency;
+    							}
+    							waardeString = String.valueOf(waarde);
+    						}
+    
+    						//System.out.println("... waardeString = " + waardeString);
+    
+    						if (!waardeString.equals("0"))
+    						{
+    							// System.out.println("... waarde != 0");
+    
+    							highlightedBar = j;
+    							highlightInSplit = i;
+    //							System.out.println("... highlightedBar = "
+    //								+ highlightedBar + ", highlightInSplit = "
+    //								+ highlightInSplit);
+    
+    							// show tooltip
+    							ToolTipManager.sharedInstance().setEnabled(true);
+    							if (isPercentage)
+    								this.setToolTipText(waardeString + "%");
+    							else
+    								this.setToolTipText("aantal = " + waardeString);
+    						}
+    						else
+    						{
+    							highlightedBar = -1;
+    							highlightInSplit = -1;
+    						}
+    						found = true; // gevonden
+    					}
+    					else
+    					{
+    						highlightedBar = -1;
+    						highlightInSplit = -1;
+    						ToolTipManager.sharedInstance().setEnabled(false);
+    					}
+    				}
+    			}
+    		} // not a frequency polygon
+			// TODO 
+			else // frequency polygon
+			{
+				// tooltip en highlight bij bolletje
 			}
+		}
+
+		private boolean isOverTop(Point p, Rectangle rect)
+		{
+			boolean isOverTop = false;
+			int marge = 5;
+			
+			if (HistogramView.this.model.getVerticalBars())
+			{
+    			if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
+    			&& (p.y > rect.y - marge) && (p.y < rect.y + marge))
+    			{
+    				isOverTop = true;
+    			}
+			}
+			else // horizontal bars
+			{
+    			if ((p.x > (rect.x + rect.width - marge)) 
+    				&& (p.x < (rect.x + rect.width + marge))
+    				&& (p.y > rect.y) && (p.y < (rect.y + rect.height)))
+    			{
+    				isOverTop = true;
+    			}				
+			}
+			return isOverTop;
 		}
 	}
 
