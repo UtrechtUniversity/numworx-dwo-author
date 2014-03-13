@@ -6,6 +6,8 @@ import java.util.Hashtable;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
@@ -16,12 +18,11 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	
 	private int defaultWidth = 790;
 	private int defaultHeight = 450;
-	private int defaultIpWidth = 790;
-	private int defaultOpWidth = 450;
-	
-	//// Te vervangen voorbeeldcode:
-	private JTextField opdrachtTekstTF;
-	//// Einde voorbeelcode
+	private int defaultIpWidth = 500;
+	private int defaultOpWidth = 200;
+
+	private JRadioButton dobbelstenenRadio;
+	private JRadioButton muntenRadio;
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -35,34 +36,39 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		optionsPanel.setBounds(defaultIpWidth+30,20,defaultOpWidth,defaultHeight);
 		add(optionsPanel);
 		
-		//// Te vervangen voorbeeldcode:
-		opdrachtTekstTF = new JTextField();
-		opdrachtTekstTF.setBounds(20,60,200,20);
-		opdrachtTekstTF.addActionListener(this);
-		optionsPanel.add(opdrachtTekstTF);
-		//// Einde voorbeelcode
+		muntenRadio=new JRadioButton("Munten");
+		muntenRadio.setLocation(10,10);
+		muntenRadio.setSize(200,20);
+		optionsPanel.add(muntenRadio);
+		
+		dobbelstenenRadio=new JRadioButton("Dobbelstenen");
+		dobbelstenenRadio.setLocation(10,30);
+		dobbelstenenRadio.setSize(200,20);
+		optionsPanel.add(dobbelstenenRadio);
+		
+		ButtonGroup buttonGroup1=new ButtonGroup();
+		buttonGroup1.add(muntenRadio);
+		buttonGroup1.add(dobbelstenenRadio);
 	}
 	
 	public Hashtable getEditState() {
 		Hashtable h = interactiePanel.getEditState();
-		//// Te vervangen voorbeeldcode:
-		String opdrachtTekst = opdrachtTekstTF.getText();
-		
-		h.put("opdrachtTekst", opdrachtTekst);
-		//// Einde voorbeelcode
+		h.put("muntenRadio", new Boolean(muntenRadio.isSelected()));
+		h.put("dobbelstenenRadio", new Boolean(dobbelstenenRadio.isSelected()));
 		return h;
 	}
 	
 	
 	public void setEditState(Hashtable h) {
-		//// Te vervangen voorbeeldcode:
-		String opdrachtTekst = "";
+		Boolean muntenRadioBool=false;
+		if(h.containsKey("muntenRadio")) muntenRadioBool= ((Boolean)h.get("muntenRadio")).booleanValue();
+		muntenRadio.setSelected(muntenRadioBool);
+		Boolean dobbelstenenRadioBool=false;
+		if(h.containsKey("dobbelstenenRadio")) dobbelstenenRadioBool= ((Boolean)h.get("dobbelstenenRadio")).booleanValue();
+		dobbelstenenRadio.setSelected(dobbelstenenRadioBool);
 		
-		if(h.containsKey("opdrachtTekst")) opdrachtTekst = (String)h.get("opdrachtTekst");
 		interactiePanel.setEditState(h);
 		
-		opdrachtTekstTF.setText(opdrachtTekst);
-		//// Einde voorbeelcode
 	}
 	
 	public void setBounds(int x, int y, int b, int h) {

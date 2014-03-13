@@ -11,13 +11,14 @@ import java.awt.Graphics2D;
 
 public class PaintPanel extends JPanel{
 	
-	private StatSimInteractiePanel munten;
+	private Munten munten;
 	
-	public PaintPanel(StatSimInteractiePanel munten) {
+	public PaintPanel(Munten munten) {
 		this.munten = munten;
 	}
 
 	public void paintComponent(Graphics g) {
+		this.setBackground(Color.white);
 		super.paintComponent(g);
 		//g.drawString(munten.getText(),100,100);
 		if (munten.eenMuntRadio.isSelected()==true) {
@@ -66,17 +67,17 @@ public class PaintPanel extends JPanel{
 			at.setToRotation(-Math.PI / 2.0, getWidth() / 2.0, getHeight() / 2.0);
 			g2.setTransform(at);
 			g2.setColor(Color.black);
-			g2.drawString("Percentage kop",200,-90);
+			g2.drawString(StatSim.rb.getString("percentageHeads"),200,-90);
 			g2.setTransform(orig);
 		} else {
 			g.drawLine(80,305,530,305);
 			g.drawLine(80, 5, 80, 305);
 			g.drawLine(80+450/6,305,80+450/6,310);
-			g.drawString("Geen kop",80+450/6-30,325);
+			g.drawString(StatSim.rb.getString("noHeads"),80+450/6-30,325);
 			g.drawLine(80+ 450*3/6, 305,80+450*3/6,310);
-			g.drawString("Een kop",80+450*3/6-25,325);
+			g.drawString(StatSim.rb.getString("oneHeads"),80+450*3/6-25,325);
 			g.drawLine(80+450*5/6, 305, 80+450*5/6, 310);
-			g.drawString("Twee kop",80+450*5/6-30,325);
+			g.drawString(StatSim.rb.getString("twoHeads"),80+450*5/6-30,325);
 			
 			int a;			
 			if (Double.parseDouble(munten.kansOpKopText.getText())>0.75 || Double.parseDouble(munten.kansOpKopText.getText())<0.25)
@@ -117,7 +118,7 @@ public class PaintPanel extends JPanel{
 			at.setToRotation(-Math.PI / 2.0, getWidth() / 2.0, getHeight() / 2.0);
 			g2.setTransform(at);
 			g2.setColor(Color.black);
-			g2.drawString("Frequentie",200,-70);
+			g2.drawString(StatSim.rb.getString("frequency"),200,-70);
 			g2.setTransform(orig);
 			
 			g.setColor(Color.red);
@@ -132,7 +133,6 @@ public class PaintPanel extends JPanel{
 			g.fillRect(85+300, 5+300-munten.tweeKop*300/a, 450/3-10, munten.tweeKop*300/a);
 			g.setColor(Color.black);
 			g.drawRect(85+300, 5+300-munten.tweeKop*300/a, 450/3-10, munten.tweeKop*300/a);
-		}
-		
+		}	
 	}
 }

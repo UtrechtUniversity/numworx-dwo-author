@@ -9,12 +9,13 @@ import javax.swing.JPanel;
 
 public class FrequentieClass extends JPanel{
 
-	private StatSimInteractiePanel munten;
+	private Munten munten;
 	
-	public FrequentieClass(StatSimInteractiePanel munten) {
+	public FrequentieClass(Munten munten) {
 		this.munten = munten;
 	}
 	public void paintComponent(Graphics g) {
+		this.setBackground(Color.white);
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D) g;
@@ -23,11 +24,11 @@ public class FrequentieClass extends JPanel{
 	    at.setToRotation(-Math.PI / 2.0, getWidth() / 2.0, getHeight() / 2.0);
 	    g2.setTransform(at);
 	    g2.setColor(Color.black);
-		g2.drawString("Frequentie",80,-30);
+		g2.drawString(StatSim.rb.getString("frequency"),80,-30);
 		g2.setTransform(orig);
 		
-		g.drawString ("Kop",90,90);
-		g.drawString ("Munt",150,90);
+		g.drawString (StatSim.rb.getString("heads"),90,90);
+		g.drawString (StatSim.rb.getString("tails"),150,90);
 		
 		g.setColor(Color.yellow);
 		g.fillRect(65, 10+60-(int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75), 60, (int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75));

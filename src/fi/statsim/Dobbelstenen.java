@@ -1,0 +1,488 @@
+package fi.statsim;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ButtonGroup;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JCheckBox;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.JRadioButton;
+
+public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
+	JTable table;
+	DefaultTableModel model;
+	JTable table1;
+	DefaultTableModel model1;
+	JTable table2;
+	DefaultTableModel model2;
+	JTable table3;
+	DefaultTableModel model3;
+	JTable table4;
+	DefaultTableModel model4;
+	JTable table5;
+	DefaultTableModel model5;
+	String col[]={"exp.","1", "2", "3","4","5","6"};
+	String col1[]={"exp.", "2", "3","4","5","6","7","8","9","10", "11","12"};
+	String col2[]={"exp.", "3","4","5","6","7","8","9","10", "11","12", "13","14","15","16","17","18"};
+	String col3[]={"Ogen","1", "2", "3","4","5","6"};
+	String col4[]={"Som ogen", "2", "3","4","5","6","7","8","9","10", "11","12"};
+	String col5[]={"Som ogen", "3","4","5","6","7","8","9","10", "11","12", "13","14","15","16","17","18"};
+	JScrollPane pane;
+	JScrollPane pane1;
+	JScrollPane pane2;
+	JScrollPane pane3;
+	JScrollPane pane4;
+	JScrollPane pane5;
+	Button start;
+	Button volgende;
+	Button stop;
+	Thread animatie;
+	Boolean stopCounting;
+	Border border1;
+	Border border2;
+	int ogen[];
+	int ogenSom[];
+	double ogenGemiddeld[];
+	JPanel panel1;
+	JPanel panel2;
+	JRadioButton eenDobbelsteenRadio;
+	JRadioButton tweeDobbelstenenRadio;
+	JRadioButton drieDobbelstenenRadio;
+	DobbelstenenGrafiek dobbelstenenGrafiek;
+	DobbelstenenGrafiek dobbelstenenSomGrafiek;
+	JLabel aantalWorpenLabel;
+	JTextField aantalWorpenText;
+	JLabel toonSomLabel;
+	JCheckBox toonSomCheckBox;
+	int maxCount;
+	
+	public Dobbelstenen () {
+		setLayout(null);
+		this.setBackground(Color.white);
+		
+		border1=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		panel1=new JPanel();
+		panel1.setLayout(null);
+		panel1.setBackground(Color.white);
+		add(panel1);
+		panel1.setSize(230,115);
+		panel1.setLocation(0,0);
+		panel1.setBorder(BorderFactory.createTitledBorder(border1,"Instellingen",TitledBorder.CENTER,TitledBorder.TOP));
+		
+		border2=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		panel2=new JPanel();
+		panel2.setLayout(null);
+		panel2.setBackground(Color.white);
+		panel1.add(panel2);
+		panel2.setSize(200,40);
+		panel2.setLocation(10,15);
+		panel2.setBorder(BorderFactory.createTitledBorder(border2,"Aantal dobbelstenen",TitledBorder.LEFT,TitledBorder.TOP));
+		
+		eenDobbelsteenRadio=new JRadioButton("Een");
+		eenDobbelsteenRadio.setBackground(Color.white);
+		eenDobbelsteenRadio.setSize(50,20);
+		eenDobbelsteenRadio.setLocation(10,15);
+		eenDobbelsteenRadio.setSelected(true);
+		eenDobbelsteenRadio.addActionListener(this);
+		panel2.add(eenDobbelsteenRadio);
+		
+		tweeDobbelstenenRadio=new JRadioButton("Twee");
+		tweeDobbelstenenRadio.setBackground(Color.white);
+		tweeDobbelstenenRadio.setSize(60,20);
+		tweeDobbelstenenRadio.setLocation(60,15);
+		tweeDobbelstenenRadio.addActionListener(this);
+		panel2.add(tweeDobbelstenenRadio);
+		
+		drieDobbelstenenRadio=new JRadioButton("Drie");
+		drieDobbelstenenRadio.setBackground(Color.white);
+		drieDobbelstenenRadio.setSize(60,20);
+		drieDobbelstenenRadio.setLocation(120,15);
+		drieDobbelstenenRadio.addActionListener(this);
+		panel2.add(drieDobbelstenenRadio);
+		
+		ButtonGroup buttonGroup1=new ButtonGroup();
+		buttonGroup1.add(eenDobbelsteenRadio);
+		buttonGroup1.add(tweeDobbelstenenRadio);
+		buttonGroup1.add(drieDobbelstenenRadio);
+		
+		
+	    model = new DefaultTableModel(col,100); 
+	    table=new JTable(model){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column = null;
+	    column = table.getColumnModel().getColumn(0);
+	    column.setPreferredWidth(33); //third column is bigger
+	    for (int i=1;i<7;i++) {
+	    	column = table.getColumnModel().getColumn(i);
+	    	column.setPreferredWidth(24); //third column is bigger
+	    }
+	    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane = new JScrollPane(table);
+	   
+	    add(pane);
+	    pane.setLocation(0,115);
+	    pane.setSize(200,335);
+
+	    model1 = new DefaultTableModel(col1,100); 
+	    table1=new JTable(model1){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column1 = null;
+	    column1 = table1.getColumnModel().getColumn(0);
+	    column1.setPreferredWidth(33); //third column is bigger
+	    for (int i=1;i<12;i++) {
+	    	column1 = table1.getColumnModel().getColumn(i);
+	    	column1.setPreferredWidth(24); //third column is bigger
+	    }
+	    table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane1 = new JScrollPane(table1);
+	   
+	    add(pane1);
+	    pane1.setLocation(0,115);
+	    pane1.setSize(200,335);
+
+	    model2 = new DefaultTableModel(col2,100); 
+	    table2=new JTable(model2){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column2 = null;
+	    column2 = table2.getColumnModel().getColumn(0);
+	    column2.setPreferredWidth(33); //third column is bigger
+	    for (int i=1;i<17;i++) {
+	    	column2 = table2.getColumnModel().getColumn(i);
+	    	column2.setPreferredWidth(24); //third column is bigger
+	    }
+	    table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane2 = new JScrollPane(table2);
+	   
+	    add(pane2);
+	    pane2.setLocation(0,115);
+	    pane2.setSize(200,335);
+	    
+	    pane1.setVisible(false);
+	    pane2.setVisible(false);
+	    
+	    start=new Button("Start");
+	    start.setSize(100,20);
+	    start.setLocation(240,0);
+	    start.addActionListener(this);
+	    add(start);
+	    
+	    volgende=new Button("Volgende");
+	    volgende.setSize(100,20);
+	    volgende.setLocation(240,30);
+	    volgende.addActionListener(this);
+	    volgende.setEnabled(false);
+	    add(volgende);
+	    
+	    stop=new Button("Stop");
+	    stop.setSize(100,20);
+	    stop.setLocation(240,60);
+	    stop.addActionListener(this);
+	    stop.setEnabled(false);
+	    add(stop);
+	    
+	    dobbelstenenGrafiek = new DobbelstenenGrafiek(this);
+	    dobbelstenenGrafiek.setSize(590,325);
+	    dobbelstenenGrafiek.setLocation(200,125);
+	    dobbelstenenGrafiek.displaySom=false;
+	    add(dobbelstenenGrafiek);
+
+	    dobbelstenenSomGrafiek = new DobbelstenenGrafiek(this);
+	    dobbelstenenSomGrafiek.setSize(590,160);
+	    dobbelstenenSomGrafiek.setLocation(200,285);
+	    dobbelstenenSomGrafiek.setVisible(false);
+	    dobbelstenenSomGrafiek.displaySom=true;
+	    add(dobbelstenenSomGrafiek);
+	    
+	    aantalWorpenLabel = new JLabel("Aantal worpen");
+	    aantalWorpenLabel.setSize(100,20);
+	    aantalWorpenLabel.setLocation(10,60);
+	    panel1.add(aantalWorpenLabel);
+	    
+	    aantalWorpenText = new JTextField("30");
+	    aantalWorpenText.setSize(50,20);
+	    aantalWorpenText.setLocation(120,60);
+	    panel1.add(aantalWorpenText);
+	    
+	    toonSomLabel = new JLabel("Toon som");
+	    toonSomLabel.setSize(100,20);
+	    toonSomLabel.setLocation(10,80);
+	    panel1.add(toonSomLabel);
+	    
+	    toonSomCheckBox = new JCheckBox();
+	    toonSomCheckBox.setBackground(Color.white);
+	    toonSomCheckBox.setSize(50,20);
+	    toonSomCheckBox.setLocation(120,80);
+	    toonSomCheckBox.addActionListener(this);
+	    panel1.add(toonSomCheckBox);
+	   
+	    model3 = new DefaultTableModel(col3,1); 
+	    table3=new JTable(model3){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column3 = null;
+	    column3 = table3.getColumnModel().getColumn(0);
+	    column3.setPreferredWidth(100); //third column is bigger
+	    for (int i=1;i<7;i++) {
+	    	column3 = table3.getColumnModel().getColumn(i);
+	    	column3.setPreferredWidth(50); //third column is bigger
+	    }
+	    table3.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane3 = new JScrollPane(table3);
+	   
+	    add(pane3);
+	    pane3.setLocation(350,0);
+	    pane3.setSize(440,115);
+	   
+	    model4 = new DefaultTableModel(col4,1); 
+	    table4=new JTable(model4){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column4 = null;
+	    column4 = table4.getColumnModel().getColumn(0);
+	    column4.setPreferredWidth(100); //third column is bigger
+	    for (int i=1;i<12;i++) {
+	    	column4 = table4.getColumnModel().getColumn(i);
+	    	column4.setPreferredWidth(50); //third column is bigger
+	    }
+	    table4.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane4 = new JScrollPane(table4);
+	   
+	    add(pane4);
+	    pane4.setLocation(350,0);
+	    pane4.setSize(440,115);
+	    
+	    pane4.setVisible(false);
+	    
+	    
+	    model5 = new DefaultTableModel(col5,1); 
+	    table5=new JTable(model5){@Override
+	    	public boolean isCellEditable(int arg0, int arg1) {
+	         
+	            return false;
+	        }};
+	        
+	    TableColumn column5 = null;
+	    column5 = table5.getColumnModel().getColumn(0);
+	    column5.setPreferredWidth(100); //third column is bigger
+	    for (int i=1;i<17;i++) {
+	    	column5 = table5.getColumnModel().getColumn(i);
+	    	column5.setPreferredWidth(50); //third column is bigger
+	    }
+	    table5.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    pane5 = new JScrollPane(table5);
+	   
+	    add(pane5);
+	    pane5.setLocation(350,0);
+	    pane5.setSize(440,115);
+	    
+	    pane5.setVisible(false);
+	    
+	    table3.setValueAt("Gemiddelde",0,0);
+	    table4.setValueAt("Gemiddelde",0,0);
+	    table5.setValueAt("Gemiddelde",0,0);
+	    
+	    ogen = new int[19];
+	    ogenSom = new int[19];
+	    ogenGemiddeld = new double[19];
+	    maxCount=30;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		   if (e.getSource()==start) {
+			   for (int i=0;i<100;i++) {
+				   table.setValueAt("",i,0);
+				   for (int j=0;j<6;j++) {
+					   table.setValueAt("",i,j+1);
+				   }
+				   table1.setValueAt("",i,0);
+				   for (int j=0;j<11;j++) {
+					   table1.setValueAt("",i,j+1);
+				   }
+				   table2.setValueAt("",i,0);
+				   for (int j=0;j<16;j++) {
+					   table2.setValueAt("",i,j+1);
+				   }
+			   }
+			   for (int i=0;i<19;i++) {
+				   ogen[i]=0;
+			   }
+			   for (int i=0;i<19;i++) {
+				   ogenGemiddeld[i]=0;
+				   ogenSom[i]=0;
+			   }
+			   experiment=0;
+			   dobbelsteenCount=0;
+			   start.setEnabled(false);
+			   volgende.setEnabled(true);
+			   stop.setEnabled(true);
+			   eenDobbelsteenRadio.setEnabled(false);
+			   tweeDobbelstenenRadio.setEnabled(false);
+			   drieDobbelstenenRadio.setEnabled(false);
+			   aantalWorpenText.setEnabled(false);
+			   maxCount=Integer.parseInt(aantalWorpenText.getText());
+			   stopCounting=false;
+			   animatie=new Thread(this);
+			   animatie.start();   
+		   }
+		   if (e.getSource()==volgende) {
+			   for (int i=0;i<19;i++) {
+				   ogen[i]=0;
+			   }
+			   dobbelsteenCount=0;
+			   stopCounting=false;
+			   animatie=new Thread(this);
+			   animatie.start();   
+		   }
+		   if (e.getSource()==stop) {
+			   start.setEnabled(true);
+			   volgende.setEnabled(false);
+			   stop.setEnabled(false);
+			   eenDobbelsteenRadio.setEnabled(true);
+			   tweeDobbelstenenRadio.setEnabled(true);
+			   drieDobbelstenenRadio.setEnabled(true);
+			   aantalWorpenText.setEnabled(true);
+		   }
+		   if (e.getSource()==eenDobbelsteenRadio) {
+			   pane.setVisible(true);
+			   pane1.setVisible(false);
+			   pane2.setVisible(false);
+			   pane3.setVisible(true);
+			   pane4.setVisible(false);
+			   pane5.setVisible(false);
+			   dobbelstenenGrafiek.repaint();
+			   dobbelstenenSomGrafiek.repaint();
+		   }
+		   if (e.getSource()==tweeDobbelstenenRadio) {
+			   pane.setVisible(false);
+			   pane1.setVisible(true);
+			   pane2.setVisible(false);
+			   pane3.setVisible(false);
+			   pane4.setVisible(true);
+			   pane5.setVisible(false);
+			   dobbelstenenGrafiek.repaint();
+			   dobbelstenenSomGrafiek.repaint();
+		   }
+		   if (e.getSource()==drieDobbelstenenRadio) {
+			   pane.setVisible(false);
+			   pane1.setVisible(false);
+			   pane2.setVisible(true);
+			   pane3.setVisible(false);
+			   pane4.setVisible(false);
+			   pane5.setVisible(true);
+			   dobbelstenenGrafiek.repaint();
+			   dobbelstenenSomGrafiek.repaint();
+		   }
+		   if (e.getSource()==toonSomCheckBox) {
+			   if (toonSomCheckBox.isSelected()==true) {
+				   dobbelstenenGrafiek.setSize(590,160);
+				   dobbelstenenSomGrafiek.setVisible(true);
+			   } else {
+				   dobbelstenenGrafiek.setSize(590,325);
+				   dobbelstenenSomGrafiek.setVisible(false);
+			   }
+		   }
+	}
+	
+	
+	int dobbelsteenCount;
+	int experiment;
+	public void doeStap() {
+		Random generator = new Random();
+		double r = generator.nextDouble();
+		double r2 = generator.nextDouble();
+		double r4 = generator.nextDouble();
+		
+		int r1=(int)(r*6)+1;
+		int r3=(int)(r2*6)+1;
+		int r5=(int)(r4*6)+1;
+		
+		if (eenDobbelsteenRadio.isSelected()==true) {
+			ogen[r1]++;
+			table.setValueAt(experiment+1, experiment, 0);
+			for (int i=0;i<6;i++) {
+				table.setValueAt(ogen[i+1], experiment, i+1);
+			}
+		}
+		if (tweeDobbelstenenRadio.isSelected()==true) {
+			ogen[r1+r3]++;
+			table1.setValueAt(experiment+1, experiment, 0);
+			for (int i=0;i<11;i++) {
+				table1.setValueAt(ogen[i+2], experiment, i+1);
+			}
+		}
+		if (drieDobbelstenenRadio.isSelected()==true) {
+			ogen[r1+r3+r5]++;
+			table2.setValueAt(experiment+1, experiment, 0);
+			for (int i=0;i<16;i++) {
+				table2.setValueAt(ogen[i+3], experiment, i+1);
+			}
+		}
+		
+		dobbelsteenCount++;
+		dobbelstenenGrafiek.repaint();
+		dobbelstenenSomGrafiek.repaint();
+		
+		if (dobbelsteenCount==maxCount) {
+			stopCounting=true;
+			for (int i=0;i<19;i++) {
+				ogenGemiddeld[i]=(ogenGemiddeld[i]*experiment+ogen[i])/(experiment+1);
+				ogenSom[i]=ogenSom[i]+ogen[i];
+			}
+			if (eenDobbelsteenRadio.isSelected()==true) {
+				for (int i=0;i<6;i++) {
+					table3.setValueAt(ogenGemiddeld[i+1], 0,i+1);
+				}
+			}
+			if (tweeDobbelstenenRadio.isSelected()==true) {
+				for (int i=0;i<11;i++) {
+					table4.setValueAt(ogenGemiddeld[i+2], 0,i+1);
+				}
+			}
+			if (drieDobbelstenenRadio.isSelected()==true) {
+				for (int i=0;i<16;i++) {
+					table5.setValueAt(ogenGemiddeld[i+3], 0,i+1);
+				}
+			}
+			experiment++;
+		}
+	}
+	
+	public void run() {
+	 	while (animatie!=null && stopCounting==false)
+   		{
+	   		this.doeStap();
+	   		try{ Thread.sleep(10); } catch (Exception e) {}
+   		}
+	}
+}
