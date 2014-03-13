@@ -685,13 +685,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}	
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4, 
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3, 
 							Double.toString(Math.sin(teller/noemer)));
 					}
 					else	
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.sin(uitkomst)));
 					}
 				}
@@ -702,13 +702,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.asin(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.asin(uitkomst)));
 					}
 				}
@@ -722,13 +722,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.cos(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.cos(uitkomst)));
 					}
 				}
@@ -740,13 +740,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.acos(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.acos(uitkomst)));
 					}
 				}
@@ -760,13 +760,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.tan(teller/noemer)));
 					}
 					else
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 								Double.toString(Math.tan(uitkomst)));
 					}
 					
@@ -778,13 +778,13 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 						{	teller = teller * Math.PI;
 							noemer = noemer * 180;
 						}
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.atan(teller/noemer)));
 					}
 					else	
 					{	if(graden)
 							uitkomst = uitkomst * Math.PI / 180;
-						sb.replace(i, i + lengteHaakjesUitdrukking + 8,
+						sb.replace(i, i + lengteHaakjesUitdrukking + 7,
 							Double.toString(Math.atan(uitkomst)));
 					}
 				}
@@ -795,20 +795,20 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'o')//log
 			{	vindHaakjesUitdrukking(sb, i + 3);
 				if(breuk)
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.log10(teller/noemer)));
 				else
-					sb.replace(i, i + lengteHaakjesUitdrukking + 4,
+					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
 							Double.toString(Math.log10(uitkomst)));
 			}	
 		for(int i = 0; i < sb.length() - 1; i++)
 			if(sb.charAt(i) == 'l' && sb.charAt(i+1)== 'n')//ln
 			{	vindHaakjesUitdrukking(sb, i + 2);
 				if(breuk)
-					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
+					sb.replace(i, i + lengteHaakjesUitdrukking + 2,
 							Double.toString(Math.log(teller/noemer)));
 				else
-					sb.replace(i, i + lengteHaakjesUitdrukking + 3,
+					sb.replace(i, i + lengteHaakjesUitdrukking + 2,
 							Double.toString(Math.log(uitkomst)));
 			}	
 		
@@ -823,14 +823,22 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		{
 			try
 			{	int eindpunt = sb.indexOf(")");		
-				int beginpunt = sb.substring(0,eindpunt).lastIndexOf("(");
-				substring1 = sb.substring(beginpunt+1,eindpunt);				
-				berekenWaarde(substring1);
-				sb.replace(beginpunt, eindpunt+1, sb2.toString());
+			System.out.println("try1: eindpunt = " + eindpunt);	
+			int beginpunt = sb.substring(0,eindpunt).lastIndexOf("(");
+			System.out.println("try2: beginpunt = " + beginpunt);	
+				
+			substring1 = sb.substring(beginpunt+1,eindpunt);				
+			System.out.println("try3: substring1 = " + substring1);	
+				
+			berekenWaarde(substring1);
+			System.out.println("try4");	
+			System.out.println("sb2.toString(): " + sb2.toString());	
+			sb.replace(beginpunt, eindpunt+1, sb2.toString());
 			}
 			catch(Exception e){
 				syntaxError = true;
 				System.out.println("ERROR haakjes wegwerken");}
+			System.out.println("sb: " + sb);
 			rechtsTeller--;
 		}
 		
@@ -846,7 +854,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	}
 	
 	public StringBuffer vindMachten(StringBuffer sb)
-	{
+	{ 
 		if(breuk)
 			while(sb.indexOf("^") != -1 && breuk)
 			{	vindUitkomstMachtBreuk("^", sb);		
@@ -871,7 +879,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 					}
 					vindHaakjesUitdrukking(sb, index);
 					rekenKind1 = uitkomst;
-					lengte1 = lengteHaakjesUitdrukking+1;
+					lengte1 = lengteHaakjesUitdrukking; //hier stond +1
 				}
 				else
 				{	vindGetalVoorBewerking(vindIndex("^", sb), sb, false);
@@ -1670,7 +1678,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		
 	/*
 	 * Uitdrukking tussen haakjes vinden; haakje links staat op positie n.
-	 * Wordt gebruikt voor gonioformules. 
+	 * Wordt onder andere gebruikt voor gonioformules. 
 	 */
 	public void vindHaakjesUitdrukking(StringBuffer sb, int n)
 	{	int teller = 1;
@@ -1685,7 +1693,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		StringBuffer sb3 = new StringBuffer();
 		sb3.append(sb.substring(n + 1, j));
 		bereken(sb3);
-		lengteHaakjesUitdrukking = j - n;
+		lengteHaakjesUitdrukking = j - n + 1; //dit is nu de lengte inclusief haakjes
 	}
 
 	/*
