@@ -5,9 +5,11 @@ import java.awt.event.*;
 import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 
 import fi.algebraexpressies.schuifobjects.*;
 import fi.beans.base64code.StringCodeObject;
@@ -389,17 +391,17 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	{	
 		int aantalSc = 0;
 		String[] classNames = null;
-		ArrayList<String> classNamesList = new ArrayList<String>();
+		List<String> classNamesList = new ArrayList<String>();
 		int[] posX = null;
 		int[] posY = null;
-		ArrayList<Integer> posXList = new ArrayList<Integer>();
-		ArrayList<Integer> posYList = new ArrayList<Integer>();
+		List<Integer> posXList = new ArrayList<Integer>();
+		List<Integer> posYList = new ArrayList<Integer>();
 		Hashtable[] scStates = null;
-		ArrayList<Hashtable> scStatesList = new ArrayList<Hashtable>();
+		List<Map<String,Object>> scStatesList = new ArrayList<Map<String,Object>>();
 		int[][] connections = null;
 		int[] graphConnections = null;
-		ArrayList<Integer> connectionsList = new ArrayList<Integer>();
-		ArrayList<Integer> graphConnectionsList = new ArrayList<Integer>();
+		List<Integer> connectionsList = new ArrayList<Integer>();
+		List<Integer> graphConnectionsList = new ArrayList<Integer>();
 		boolean grafiek = false;
 		boolean expressie = false;
 		Hashtable zoomStateHolderState = null;
