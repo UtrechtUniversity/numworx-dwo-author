@@ -1034,7 +1034,8 @@ public class DotplotView extends JPanel implements Observer
 				step = (int) (base * Math.pow(10, exp));
 			}
 
-			int minorStep;
+//			int minorStep;
+			double minorStep;
 			int minorStepsPerMajorStep;
 			switch (base)
 			{
@@ -1047,20 +1048,22 @@ public class DotplotView extends JPanel implements Observer
 					minorStepsPerMajorStep = 4;
 					break;
 				case 1:
-					minorStep = (int) (2 * Math.pow(10, exp - 1));
+//					minorStep = (int) (2 * Math.pow(10, exp - 1));
+					minorStep = 2 * Math.pow(10, exp - 1);
 					minorStepsPerMajorStep = 5;
 					break;
 				default:
 					minorStep = 1;
 					minorStepsPerMajorStep = step;
 			}
-
+			
 			double min = this.xMin - DotplotView.KEEP_CLEAR_PART
 				* (this.xMax - this.xMin);
 			double max = this.xMax + DotplotView.KEEP_CLEAR_PART
 				* (this.xMax - this.xMin);
 
-			double p = Math.ceil(min / step) * step;
+//			double p = Math.ceil(min / step) * step;
+			double p = determineFirstMinorStep(min, minorStep);
 
 			// Math.ceil can give -0.0, this step turns that into 0.0
 			if (p == 0)
@@ -1068,6 +1071,12 @@ public class DotplotView extends JPanel implements Observer
 				p = 0.0;
 			}
 
+//			System.out.println("DotplotView.paintXAxis(): base = "
+//				+ base + ", step = " + step + ", minorStep = "
+//				+ minorStep + ", minorStepsPerMajorStep = " 
+//				+ minorStepsPerMajorStep + ", min = " + min
+//				+ ", max = " + max + ", p = " + p);
+			
 			while (p < max)
 			{
 				int x = this.determineXCoordNumClass(p);
@@ -1101,6 +1110,15 @@ public class DotplotView extends JPanel implements Observer
 				p += step;
 			}
 		}
+	}
+
+	private double determineFirstMinorStep(double min, double minorStep)
+	{
+		double first = 0;
+		
+		first = min - (min % minorStep);
+		
+		return first;
 	}
 
 	/*
