@@ -55,7 +55,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "splitsingleviewCheckBox", "split in one screen" },
             {   "addacolumn", "Add a column"},
             {   "columnname", "Column name:"},
-            {   "choosetype", "Choose type"},
+            {   "choosetype", "Choose type:"},
             {   "addenumeration", "Add enumeration element: "},
             {   "removeselectedelement", "Remove selected element"},
             {   "uitlegbijkolom", "Explanation with column:"},
