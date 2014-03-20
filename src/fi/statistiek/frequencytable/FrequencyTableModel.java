@@ -30,6 +30,7 @@ public class FrequencyTableModel extends Observable implements
 	private boolean showFreq;
 	private boolean showFreqCumulative;
 
+	private int noBins;
 	private ArrayList<Double> binBoundaries;
 
 	private StatTableModel tableModel;
@@ -52,6 +53,7 @@ public class FrequencyTableModel extends Observable implements
 		this.viewName = viewName;
 
 		// set initial values
+		this.noBins = 10;
 		this.columnIndex = -1;
 		this.binBoundaries = new ArrayList<Double>();
 		this.binBoundaries.add(new Double(-100));
@@ -71,6 +73,18 @@ public class FrequencyTableModel extends Observable implements
 	public void setBinBoundaries(ArrayList<Double> bins)
 	{
 		this.binBoundaries = bins;
+		
+		// Make a deep copy, not only copy the reference, since this will cause strange behavior
+		// dit lijkt toch niet nodig
+//		ArrayList<Double> copy = new ArrayList<Double>(bins.size());
+//		for (Double d: bins)
+//		{
+//			copy.add(new Double(d));
+//		}
+//		
+//		this.binBoundaries = copy; 
+
+		this.noBins = this.binBoundaries.size() - 1;
 		this.setChanged();
 		this.notifyObservers();
 	}
@@ -119,6 +133,8 @@ public class FrequencyTableModel extends Observable implements
 	 */
 	public void setNoBins(int noBins)
 	{
+		this.noBins = noBins;
+
 		// set appropriate boundaries
 		if (this.tableModel.getRowCount() > 0 && this.columnIndexValid())
 		{
@@ -130,6 +146,14 @@ public class FrequencyTableModel extends Observable implements
 
 		this.setChanged();
 		this.notifyObservers();
+	}
+
+	/**
+	 * @return number of bins
+	 */
+	public int getNoBins()
+	{
+		return this.noBins;
 	}
 
 	/**
@@ -196,17 +220,17 @@ public class FrequencyTableModel extends Observable implements
 	}
 
 	/**
-	 * Set the column of the datatable dat this StatistiekView will show
+	 * Set the column of the datatable that this StatistiekView will show
 	 * 
 	 * @param columnIndex
 	 *            The index of the column that will be shown
 	 */
 	public void setColumnIndex(int columnIndex)
 	{
-		// System.out.println("setColumnIndex op frequencytablemodel");
 		if (!(this.columnIndex == columnIndex))
 		{
 			this.columnIndex = columnIndex;
+
 			if (this.columnIndexValid()
 				&& this.tableModel.getColumnTypes().get(this.columnIndex)
 					.getType().isNumber())
@@ -214,7 +238,7 @@ public class FrequencyTableModel extends Observable implements
 				this.binBoundaries = Statistiek.appropriateBoundaries(
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
-					this.binBoundaries.size() - 1);
+					this.noBins);
 			}
 			this.setChanged();
 			this.notifyObservers();

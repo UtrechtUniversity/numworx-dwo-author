@@ -2,6 +2,7 @@ package fi.statistiek.frequencytable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
@@ -16,9 +17,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
 import fi.statistiek.Statistiek;
@@ -39,10 +42,10 @@ public class FrequencyTableView extends JPanel implements Observer
 	private FrequencyTableModel model;
 	private FrequencyTableController controller;
 	// TODO deze implementeren
-	//private FrequencyTableUserOptionsPanel userOptionsPanel;
-	// private JButton dialogButton;
-
-	private JPanel userOptionsPanel;
+	private FrequencyTableUserOptionsPanel userOptionsPanel;
+	//private JPanel userOptionsPanel;
+	private JButton dialogButton;
+	//private DialogButton dialogButton;
 
 	// TODO: onderstaande naar FrequencyTableUserOptionsPanel
 	private JLabel columnIndexLabel;
@@ -54,12 +57,12 @@ public class FrequencyTableView extends JPanel implements Observer
 	private JTextField noBinsField;
 	private JButton chooseBinsButton;
 
-	private DialogButton dialogButton;
-
 	private JPanel mainPanel;
+	private JScrollPane scrollPane;
 
 	private int mainPanelRows;
 	private int mainPanelColumns;
+	private int minRowHeight = 30;
 
 	private Color[] rowColors;
 	public static final int MAIN_GRID_HGAP = 8;
@@ -125,16 +128,25 @@ public class FrequencyTableView extends JPanel implements Observer
 					}
 				}
 
-				g.setColor(Color.BLACK);
-
 				// draw vertical lines
-				for (int i = 1; i < FrequencyTableView.this.mainPanelColumns; i++)
+				// first line black
+				g.setColor(Color.BLACK);
+				if (FrequencyTableView.this.mainPanelColumns > 0)
+				{
+					int x = (int) (columnWidth);
+					g.drawLine(x, 0, x, this.getHeight());
+				}
+				
+				// other lines grey
+				g.setColor(ColorGenerator.getGreyLineColor());
+				for (int i = 2; i < FrequencyTableView.this.mainPanelColumns; i++)
 				{
 					int x = (int) (columnWidth * i);
 					g.drawLine(x, 0, x, this.getHeight());
 				}
 
 				// draw horizontal lines
+				g.setColor(Color.BLACK);
 				g.drawLine(0, roundRowHeight, this.getWidth(), roundRowHeight);
 
 				int y = (int) Math
@@ -143,41 +155,18 @@ public class FrequencyTableView extends JPanel implements Observer
 				g.drawLine(0, y, this.getWidth(), y);
 			}
 		};
+		
+		this.scrollPane = new JScrollPane(this.mainPanel);
+		super.add(this.scrollPane, BorderLayout.CENTER);
+
 		this.mainPanel.setBackground(Color.WHITE);
 		this.mainPanel.addMouseListener(new RowClickListener());
-		super.add(this.mainPanel, BorderLayout.CENTER);
+		//super.add(this.mainPanel, BorderLayout.CENTER);
 
 		GridLayout gl = new GridLayout(2, 3);
 		gl.setHgap(0);// TODO terugzetten
 		gl.setVgap(0);
-		this.userOptionsPanel = new JPanel(gl);
-
-		GridLayout gl1 = new GridLayout(1, 2);
-		gl1.setHgap(5);
-		gl1.setVgap(5);
-		JPanel p1 = new JPanel(gl1);
-		this.columnIndexLabel = new JLabel(
-			Statistiek.rb.getString("variableLabel"), SwingConstants.RIGHT);
-		p1.add(this.columnIndexLabel);
-
-		this.columnIndexBox = new JComboBox();
-		this.columnIndexBox.setActionCommand("columnIndexBox");
-		this.columnIndexBox.addActionListener(this.controller);
-		p1.add(this.columnIndexBox);
-
-		this.userOptionsPanel.add(p1);
-
-		this.showPercBox = new JCheckBox(
-			Statistiek.rb.getString("showpercentageCheckbox"), true);
-		this.showPercBox.setActionCommand("showPercBox");
-		this.showPercBox.addActionListener(this.controller);
-		this.userOptionsPanel.add(this.showPercBox);
-
-		this.showFreqBox = new JCheckBox(
-			Statistiek.rb.getString("showfrequencyCheckbox"), true);
-		this.showFreqBox.setActionCommand("showFreqBox");
-		this.showFreqBox.addActionListener(this.controller);
-		this.userOptionsPanel.add(this.showFreqBox);
+		this.userOptionsPanel = new FrequencyTableUserOptionsPanel(this, controller, model);
 
 		GridLayout gl2 = new GridLayout(1, 2);
 		gl2.setHgap(5);
@@ -194,33 +183,36 @@ public class FrequencyTableView extends JPanel implements Observer
 		this.noBinsField.addFocusListener(this.controller);
 		p2.add(this.noBinsField);
 
-		this.userOptionsPanel.add(p2);
-
-		this.chooseBinsButton = new JButton(
-			Statistiek.rb.getString("BoundariesButton"));
-		this.chooseBinsButton.setActionCommand("chooseBinsButton");
-		this.chooseBinsButton.addActionListener(this.controller);
-		this.userOptionsPanel.add(this.chooseBinsButton);
+		// test syl
+		//this.userOptionsPanel.add(p2);
 
 		this.showCumulativeBox = new JCheckBox(
 			Statistiek.rb.getString("showcumulativefrequencyCheckbox"), true);
 		this.showCumulativeBox.setActionCommand("showCumulativeBox");
 		this.showCumulativeBox.addActionListener(this.controller);
-		this.userOptionsPanel.add(this.showCumulativeBox);
+		// test syl
+		//this.userOptionsPanel.add(this.showCumulativeBox);
 
 		// super.add(this.userOptionsPanel, BorderLayout.SOUTH);
 
-		dialogButton = new DialogButton(
-			Statistiek.rb.getString("settingsButton"), this.userOptionsPanel);
-		dialogButton.setDialogSize(650, 100);
+		// test syl
+		dialogButton = userOptionsPanel.getDialogButton();
 
 		super.add(dialogButton, BorderLayout.SOUTH);
-
-		// dialogButton.makeDialog();
 
 		this.update(null, null);
 	}
 
+	public double getBinWidth()
+	{
+		return this.userOptionsPanel.getBinWidth();
+	}
+
+	public double getMinBoundary()
+	{
+		return this.userOptionsPanel.getMinBoundary();
+	}
+	
 	public JTextField getNoBinsField()
 	{
 		return this.noBinsField;
@@ -233,22 +225,22 @@ public class FrequencyTableView extends JPanel implements Observer
 
 	public boolean isShowPercBoxSelected()
 	{
-		return this.showPercBox.isSelected();
+		return this.userOptionsPanel.isShowPercBoxSelected();
 	}
 
 	public boolean isShowFreqBoxSelected()
 	{
-		return this.showFreqBox.isSelected();
+		return this.userOptionsPanel.isShowFreqBoxSelected();
 	}
 
 	public boolean isShowCumulativeBoxSelected()
 	{
-		return this.showCumulativeBox.isSelected();
+		return this.userOptionsPanel.isShowCumulativeBoxSelected();
 	}
 
 	public int varBoxSelectedIndex()
 	{
-		return this.columnIndexBox.getSelectedIndex();
+		return this.userOptionsPanel.getVarXBoxSelectedIndex();
 	}
 
 	/**
@@ -276,36 +268,14 @@ public class FrequencyTableView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
-		this.showPercBox.setSelected(this.model.isShowPercentage());
-		this.showFreqBox.setSelected(this.model.isShowFreq());
-		this.showCumulativeBox.setSelected(this.model.isShowCumulative());
-
-		this.columnIndexBox.removeActionListener(this.controller);
-		this.columnIndexBox.removeAllItems();
-
-		for (String varName : this.model.getTableModel().getColumnNames())
-		{
-			this.columnIndexBox.addItem(varName);
-		}
-
-		if (this.model.columnIndexValid())
-		{
-			this.columnIndexBox.setSelectedIndex(this.model.getColumnIndex());
-		}
-		else
-		{
-			// set no item selected
-			System.out.println("Niet valid!");
-			this.columnIndexBox.setSelectedIndex(-1);
-		}
-		this.columnIndexBox.addActionListener(this.controller);
-
 		this.noBinsField.setText(Integer.toString(this.model.getBinBoundaries()
 			.size() - 1));
 
 		// this.userOptionsPanel.setVisible(this.model.getTableModel().isViewsEditable());
 		this.dialogButton.setVisible(this.model.getTableModel()
 			.isViewsEditable());
+		
+		this.setMainPanelSize();
 
 		this.mainPanel.removeAll();
 		if (this.model.columnIndexValid())
@@ -351,29 +321,9 @@ public class FrequencyTableView extends JPanel implements Observer
 			gl.setVgap(FrequencyTableView.MAIN_GRID_VGAP);
 			this.mainPanel.setLayout(gl);
 			this.mainPanel.setBackground(Color.WHITE);
+			
 			// make header row
-			this.mainPanel.add(new JLabel(this.model.getTableModel()
-				.getColumnName(this.model.getColumnIndex())));
-			if (this.model.isShowFreq())
-			{
-				this.mainPanel
-					.add(new JLabel("Freq.", SwingConstants.TRAILING));
-			}
-			if (this.model.isShowPercentage())
-			{
-				this.mainPanel
-					.add(new JLabel("Freq.%", SwingConstants.TRAILING));
-			}
-			if (this.model.isShowCumulative())
-			{
-				this.mainPanel
-					.add(new JLabel("Cumul.", SwingConstants.TRAILING));
-			}
-			if (this.model.isShowPercentage())
-			{
-				this.mainPanel.add(new JLabel("Cumul.%",
-					SwingConstants.TRAILING));
-			}
+			makeHeaderRow();
 
 			// make middle part
 			int sum;
@@ -388,75 +338,12 @@ public class FrequencyTableView extends JPanel implements Observer
 				sum = this.tupleArraySum(frequencyTuple);
 
 			}
-			int cumulative = 0;
-			int freq;
-			for (int bin = 0; bin < this.mainPanelRows; bin++)
-			{
-				if (type.isNumber())
-				{
-					freq = frequencies[bin * 2];
-					JLabel label = new JLabel(this.model.getBinBoundaries()
-						.get(bin).toString()
-						+ " - "
-						+ this.model.getBinBoundaries().get(bin + 1).toString());
-					this.mainPanel.add(label);
-				}
-				else
-				{
-					freq = frequencyTuple[bin].frequency;
-					JLabel label = new JLabel(frequencyTuple[bin].label);
-					this.mainPanel.add(label);
-				}
 
-				if (this.model.isShowFreq())
-				{
-					this.mainPanel.add(new JLabel(Integer.toString(freq),
-						SwingConstants.TRAILING));
-				}
-				if (this.model.isShowPercentage())
-				{
-					double d = freq * 100 / (double) sum;
-					d = Math.round(d * 100) / (double) 100;
-					this.mainPanel.add(new JLabel(Double.toString(d) + "%",
-						SwingConstants.TRAILING));
-				}
-				if (this.model.isShowCumulative())
-				{
-					cumulative += freq;
-					this.mainPanel.add(new JLabel(Integer.toString(cumulative),
-						SwingConstants.TRAILING));
-				}
-				if (this.model.isShowPercentage())
-				{
-					double d = (double) cumulative * 100 / (double) sum;
-					d = Math.round(d * 100) / (double) 100;
-					this.mainPanel.add(new JLabel(Double.toString(d) + "%",
-						SwingConstants.TRAILING));
-				}
-			}
+			makeMiddlePart(type, frequencies, frequencyTuple, sum);
 
 			// make total row
-			this.mainPanel
-				.add(new JLabel(Statistiek.rb.getString("totalLabel")));
-			if (this.model.isShowFreq())
-			{
-				this.mainPanel.add(new JLabel(Integer.toString(sum),
-					SwingConstants.TRAILING));
-			}
-			if (this.model.isShowPercentage())
-			{
-				this.mainPanel.add(new JLabel("100%", SwingConstants.TRAILING));
-			}
-			if (this.model.isShowCumulative())
-			{
-				this.mainPanel.add(new JLabel(Integer.toString(sum),
-					SwingConstants.TRAILING));
-			}
-			if (this.model.isShowPercentage())
-			{
-				this.mainPanel.add(new JLabel("100%", SwingConstants.TRAILING));
-			}
-
+			makeTotalRow(sum);
+			
 			// set colors for background
 			if (type.isNumber())
 			{
@@ -465,8 +352,8 @@ public class FrequencyTableView extends JPanel implements Observer
 				{
 					double d = (frequencies[i] == 0 ? 0.0
 						: (double) frequencies[i + 1] / (double) frequencies[i]);
-					System.out.println(frequencies[i + 1] + " "
-						+ frequencies[i] + " " + d);
+//					System.out.println(frequencies[i + 1] + " "
+//						+ frequencies[i] + " " + d);
 					this.rowColors[i / 2] = ColorPreviewer.mixColors(
 						Color.WHITE, SELECTED_COLOR, d);
 				}
@@ -480,16 +367,157 @@ public class FrequencyTableView extends JPanel implements Observer
 					double d = (ft.frequency == 0 ? 0
 						: (double) ft.selectionFrequency
 							/ (double) ft.frequency);
-					System.out.println(d);
+//					System.out.println(d);
 					this.rowColors[i] = ColorPreviewer.mixColors(Color.WHITE,
 						SELECTED_COLOR, d);
 				}
 			}
 		}
 
-		System.out.println(this.rowColors);
-
+//		System.out.println(this.rowColors);
+		userOptionsPanel.update();
+		
+		this.mainPanel.revalidate();
+		
 		this.repaint();
+	}
+
+	private void makeTotalRow(int sum)
+	{
+		JLabel totalLabel = new JLabel(Statistiek.rb.getString("totalLabel"));
+		totalLabel.setFont(Statistiek.font);
+		this.mainPanel.add(totalLabel);
+		
+    	if (this.model.isShowFreq())
+    	{
+    		JLabel freqLabel = new JLabel(Integer.toString(sum),
+    			SwingConstants.TRAILING);
+    		freqLabel.setFont(Statistiek.font);
+    		this.mainPanel.add(freqLabel);
+    	}
+    	
+    	if (this.model.isShowPercentage())
+    	{
+    		JLabel percLabel = new JLabel("100%", SwingConstants.TRAILING);
+    		percLabel.setFont(Statistiek.font);
+    		this.mainPanel.add(percLabel);
+    	}
+    	
+    	if (this.model.isShowCumulative())
+    	{
+    		JLabel cumulLabel = new JLabel(Integer.toString(sum),
+    			SwingConstants.TRAILING);
+    		cumulLabel.setFont(Statistiek.font);
+    		this.mainPanel.add(cumulLabel);
+    	}
+    	
+    	if (this.model.isShowPercentage())
+    	{
+    		JLabel percLabel = new JLabel("100%", SwingConstants.TRAILING);
+    		percLabel.setFont(Statistiek.font);
+    		this.mainPanel.add(percLabel);
+    	}
+	}
+
+	/**
+	 * Make the middle part of the frequency table view.
+	 */
+	private void makeMiddlePart(AllowedTypes type, int[] frequencies, 
+		FrequencyTuple[] frequencyTuple, double sum)
+	{
+		int cumulative = 0;
+		int freq;
+		for (int bin = 0; bin < this.mainPanelRows; bin++)
+		{
+			if (type.isNumber())
+			{
+				freq = frequencies[bin * 2];
+				JLabel label = new JLabel(this.model.getBinBoundaries()
+					.get(bin).toString()
+					+ " - "
+					+ this.model.getBinBoundaries().get(bin + 1).toString());
+				label.setFont(Statistiek.font);
+				this.mainPanel.add(label);
+			}
+			else
+			{
+				freq = frequencyTuple[bin].frequency;
+				JLabel label = new JLabel(frequencyTuple[bin].label);
+				label.setFont(Statistiek.font);
+				this.mainPanel.add(label);
+			}
+
+			if (this.model.isShowFreq())
+			{
+				JLabel freqLabel = new JLabel(Integer.toString(freq),
+					SwingConstants.TRAILING);
+				freqLabel.setFont(Statistiek.font);
+				this.mainPanel.add(freqLabel);
+			}
+			if (this.model.isShowPercentage())
+			{
+				double d = freq * 100 / (double) sum;
+				d = Math.round(d * 100) / (double) 100;
+				JLabel percLabel = new JLabel(Double.toString(d) + "%",
+					SwingConstants.TRAILING);
+				percLabel.setFont(Statistiek.font);
+				this.mainPanel.add(percLabel);
+			}
+			if (this.model.isShowCumulative())
+			{
+				cumulative += freq;
+				JLabel cumulLabel = new JLabel(Integer.toString(cumulative),
+					SwingConstants.TRAILING);
+				cumulLabel.setFont(Statistiek.font);
+				this.mainPanel.add(cumulLabel);
+			}
+			if (this.model.isShowPercentage())
+			{
+				double d = (double) cumulative * 100 / (double) sum;
+				d = Math.round(d * 100) / (double) 100;
+				JLabel percLabel = new JLabel(Double.toString(d) + "%",
+					SwingConstants.TRAILING);
+				percLabel.setFont(Statistiek.font);
+				this.mainPanel.add(percLabel);
+			}
+		}
+	}
+
+	/**
+	 * Make the header row in the frequency table view.
+	 */
+	private void makeHeaderRow()
+	{
+		JLabel variableName = new JLabel(this.model.getTableModel()
+			.getColumnName(this.model.getColumnIndex()));
+		variableName.setFont(Statistiek.font);
+		this.mainPanel.add(variableName);
+		
+		if (this.model.isShowFreq())
+		{
+			JLabel freq = new JLabel("Freq.", SwingConstants.TRAILING);
+			freq.setFont(Statistiek.font);
+			this.mainPanel.add(freq);
+		}
+		if (this.model.isShowPercentage())
+		{
+			JLabel freqPerc = new JLabel("Freq.%", SwingConstants.TRAILING);
+			freqPerc.setFont(Statistiek.font);
+			this.mainPanel.add(freqPerc);
+		}
+		if (this.model.isShowCumulative())
+		{
+			JLabel cumul = new JLabel("Cumul.", SwingConstants.TRAILING);
+			cumul.setFont(Statistiek.font);
+			this.mainPanel.add(cumul);
+		}
+		if (this.model.isShowPercentage())
+		{
+			JLabel cumulPerc = new JLabel("Cumul.%",
+				SwingConstants.TRAILING);
+			cumulPerc.setFont(Statistiek.font);
+			this.mainPanel.add(cumulPerc);
+		}
 	}
 
 	public void paintComponent(Graphics g)
@@ -505,6 +533,49 @@ public class FrequencyTableView extends JPanel implements Observer
 			return;
 		}
 	}
+	
+	private void setMainPanelSize()
+	{
+		int noBins = this.model.getNoBins();
+		int scrollbarWidth = this.scrollPane.getVerticalScrollBar().getWidth();
+		
+		if (noBins * minRowHeight > this.scrollPane.getHeight())
+		{
+//			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
+//				.getWidth() - scrollbarWidth, noBins * minRowHeight - scrollbarWidth));
+			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane.getViewport()
+				.getWidth(), noBins * minRowHeight));
+		}
+		else
+		{
+			this.mainPanel.setPreferredSize(new Dimension(
+				this.scrollPane.getViewport().getWidth(), 
+				this.scrollPane.getViewport().getHeight()));
+		}
+	}
+	
+	// Override setBound
+	public void setBounds(int x, int y, int w, int h)
+	{
+//		System.out.println("FrequencyTableView.setBounds(x=" + x + ", y=" + y 
+//			+ ", w=" + w + ", h=" + h + ")");
+
+		super.setBounds(x, y, w, h);
+
+		this.setMainPanelSize();
+		
+		this.scrollPane.setViewportView(mainPanel);// syl: dit stond uitgecommentarieerd
+
+		// System.out.println("HistogramView.setBounds(): Size histogram: " +
+		// this.getBounds().toString()
+		// + ", scrollbarVisible=" +
+		// scrollPane.getVerticalScrollBar().isVisible());
+		
+//		 System.out.println("HistogramView.setBounds(): scrollPane w="
+//			 + scrollPane.getWidth()
+//			 + ", h=" + scrollPane.getHeight());
+	}
+
 
 	private class RowClickListener implements MouseListener
 	{
@@ -558,7 +629,8 @@ public class FrequencyTableView extends JPanel implements Observer
 				return;
 			}
 
-			System.out.println("Bar clicked: " + row);
+//			System.out.println("FrequencyTableView.rowClicked(): row = " + row);
+			
 			ColumnType cType = FrequencyTableView.this.model.getTableModel()
 				.getColumnTypes()
 				.get(FrequencyTableView.this.model.getColumnIndex());
@@ -619,7 +691,8 @@ public class FrequencyTableView extends JPanel implements Observer
 					selectionList);
 
 			}
-
+			
+			FrequencyTableView.this.mainPanel.revalidate();
 		}
 
 	}

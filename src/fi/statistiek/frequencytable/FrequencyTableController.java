@@ -12,6 +12,7 @@ import java.util.Hashtable;
 
 import javax.swing.JComponent;
 
+import fi.statistiek.Copy;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.StatistiekView;
@@ -42,14 +43,17 @@ public class FrequencyTableController implements StatistiekView,
 		int startVar)
 	{
 		this.model = new FrequencyTableModel(tableModel, viewName);
-		model.setColumnIndex(startVar);
+		this.model.setColumnIndex(startVar);
 		this.view = new FrequencyTableView(this.model, this);
-
 	}
 
 	public void actionPerformed(ActionEvent arg0)
 	{
 		String action = arg0.getActionCommand();
+		
+//		System.out.println("FrequencyTableController.actionPerformed(): action = "
+//			+ action);
+
 		if (action.equals("columnIndexBox"))
 		{
 			this.model.setColumnIndex(this.view.varBoxSelectedIndex());
@@ -80,25 +84,13 @@ public class FrequencyTableController implements StatistiekView,
 				this.view.update(null, null);
 			}
 		}
-		else if (action.equals("chooseBinsButton"))
+		else if (action.equals("minBoundary"))
 		{
-			Container c = Statistiek.getTopLevelAcestor(this.view);
-
-			DefineBinBoundariesDialog dialog = null;
-			if (c instanceof Dialog)
-			{
-				dialog = new DefineBinBoundariesDialog((Dialog) c, this.model);
-			}
-			else if (c instanceof Frame)
-			{
-				dialog = new DefineBinBoundariesDialog((Frame) c, this.model);
-			}
-
-			dialog.setVisible(true);
-			if (dialog.isDonePressed())
-			{
-				this.model.setBinBoundaries(dialog.getBoundaries());
-			}
+			updateBoundariesFromBinSettings();
+		}
+		else if (action.equals("binWidth"))
+		{
+			updateBoundariesFromBinSettings();
 		}
 	}
 
@@ -141,6 +133,9 @@ public class FrequencyTableController implements StatistiekView,
 	public void setState(Object state)
 	{
 		Hashtable h = (Hashtable) state;
+		
+		// deep copy waarschijnlijk niet nodig...
+		//Hashtable h = Copy.deepCopy((Hashtable) state);
 
 		if (h.containsKey("showPercentage"))
 		{
@@ -154,18 +149,21 @@ public class FrequencyTableController implements StatistiekView,
 		{
 			this.model.setShowFreq((Boolean) h.get("showFrequency"));
 		}
-		if (h.containsKey("binBoundaries"))
-		{
-			this.model.setBinBoundaries((ArrayList<Double>) h
-				.get("binBoundaries"));
-		}
 		if (h.containsKey("viewName"))
 		{
 			this.setViewName((String) h.get("viewName"));
 		}
 		if (h.containsKey("columnIndex"))
 		{
+			// Let op: setColumnIndex() zet ook de binBoundaries
+			// Dat wordt hieronder goed gemaakt als de binBoundaries
+			// uit de hashtable worden gezet.
 			this.model.setColumnIndex((Integer) h.get("columnIndex"));
+		}
+		if (h.containsKey("binBoundaries"))
+		{
+			this.model.setBinBoundaries((ArrayList<Double>) h
+				.get("binBoundaries"));
 		}
 
 	}
@@ -188,7 +186,8 @@ public class FrequencyTableController implements StatistiekView,
 
 	public void focusLost(FocusEvent arg0)
 	{
-		System.out.println("focusLost");
+		//System.out.println("FrequencyTableController.focusLost()");
+		
 		if (arg0.getSource() == this.view.getNoBinsField())
 		{
 			System.out.println("focusLost van nobinsField");
@@ -204,6 +203,26 @@ public class FrequencyTableController implements StatistiekView,
 			}
 		}
 
+		updateBoundariesFromBinSettings();
 	}
 
+	/*
+	 * Update the bin boundaries using the settings for the minimum boundary
+	 * and the bin width.
+	 * and determine the number of bins.
+	 */
+	private void updateBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			this.model.getTableModel().getColumnMin(
+				this.model.getColumnIndex()),
+			this.model.getTableModel().getColumnMax(
+				this.model.getColumnIndex()),
+			view.getBinWidth(),
+			view.getMinBoundary());
+		
+		this.model.setBinBoundaries(boundaries);
+	}	
 }
