@@ -17,7 +17,7 @@ public class ColorGenerator
 	// oud
 	private static Color[] COLORS =
 		{ Color.RED, Color.GREEN, Color.BLUE };
-	// nieuw (Dark2 van http://colorbrewer2.org/ 
+	// nieuw (Dark2 van http://colorbrewer2.org/):
 //	private static Color[] COLORS = {
 //		new Color(27, 158, 119),
 //		new Color(217,95,2),
@@ -28,6 +28,9 @@ public class ColorGenerator
 //		new Color(166,118,29),
 //		new Color(102,102,102)
 //	};
+	
+	private static Color lightgrey = new Color(240, 240, 240);
+	private static Color grey = new Color(220, 220, 220);
 	
 	private static ArrayList<Color> colorList = 
 		new ArrayList<Color>(Arrays.asList(COLORS));
@@ -67,5 +70,15 @@ public class ColorGenerator
 			random.nextInt(256), random.nextInt(256));
 		colorList.add(c);
 		return c;
+	}
+	
+	/**
+	 * Get grey line color
+	 * 
+	 * @return the grey line color
+	 */
+	public static Color getGreyLineColor()
+	{
+		return grey;
 	}
 }
