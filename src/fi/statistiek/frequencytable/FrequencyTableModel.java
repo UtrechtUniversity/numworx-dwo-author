@@ -265,14 +265,24 @@ public class FrequencyTableModel extends Observable implements
 			&& this.columnIndex < this.tableModel.getColumnCount();
 	}
 
+	/**
+	 * Determines the bin in which double d is contained. The upper bin boundary 
+	 * is exclusive.
+	 * @param d
+	 * @return
+	 */
 	public int binOfNumber(double d)
 	{
-		int bin = -1;
-		while (bin < this.binBoundaries.size() - 1
-			&& d > this.binBoundaries.get(bin + 1))
+		int bin = 0;
+		int i = 0;
+		
+		while (i < this.binBoundaries.size()
+			&& d >= this.binBoundaries.get(i))
 		{
-			bin++;
+			i++;
 		}
+		
+		bin = i-1;
 
 		return bin;
 	}
