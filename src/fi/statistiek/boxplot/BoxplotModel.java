@@ -439,5 +439,33 @@ public class BoxplotModel extends Observable implements TableModelListener
 		this.setPercentileValues();
 		this.changed();
 	}
+	
+	/**
+	 * Update the column index and the split column index
+	 * given that removedColumn has been removed.
+	 * @param removedColumn
+	 */
+	public void updateColumnIndex(int removedColumn)
+	{
+		// index van de geselecteerde variabele bijwerken
+		if (removedColumn < this.columnIndex)
+		{
+			this.columnIndex = this.columnIndex - 1;
+		}
+		else if (removedColumn == this.columnIndex)
+		{
+			this.columnIndex = -1;
+		}
+		
+		// index van de split variabele bijwerken
+		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+		{
+			this.splitOptions.setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+		}
+		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+		{
+			this.splitOptions.setColumnSplitIndex(- 1);
+		}
+	}
 
 }

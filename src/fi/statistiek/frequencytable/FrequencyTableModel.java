@@ -323,4 +323,33 @@ public class FrequencyTableModel extends Observable implements
 		this.setChanged();
 		this.notifyObservers();
 	}
+	
+	/**
+	 * Update the column index 
+	 * given that removedColumn has been removed.
+	 * @param removedColumn
+	 */
+	public void updateColumnIndex(int removedColumn)
+	{
+		// index van de geselecteerde variabele bijwerken
+		if (removedColumn < this.columnIndex)
+		{
+			this.columnIndex = this.columnIndex - 1;
+		}
+		else if (removedColumn == this.columnIndex)
+		{
+			this.columnIndex = -1;
+		}
+		
+		// TODO: code voor als split is geimplementeerd
+		// index van de split variabele bijwerken
+//		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+//		{
+//			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+//		}
+//		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+//		{
+//			setColumnSplitIndex(- 1);
+//		}
+	}
 }

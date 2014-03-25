@@ -390,4 +390,33 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.splitOptions = splitOptions;
 		this.changed();
 	}
+	
+	/**
+	 * Update the column index and the split column index
+	 * given that removedColumn has been removed.
+	 * @param removedColumn
+	 */
+	public void updateColumnIndex(int removedColumn)
+	{
+		// index van de geselecteerde variabele bijwerken
+		if (removedColumn < this.columnXIndex)
+		{
+			setColumnXIndex(this.columnXIndex - 1);
+		}
+		else if (removedColumn == this.columnXIndex)
+		{
+			setColumnXIndex(- 1);
+		}
+	
+		// index van de split variabele bijwerken
+		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+		}
+		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(- 1);
+		}
+	}
+
 }

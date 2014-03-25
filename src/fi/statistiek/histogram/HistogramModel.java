@@ -173,7 +173,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 			double max = this.tableModel.getColumnMax(this.columnIndex);
 			this.binBoundaries = Statistiek.appropriateBoundaries(min, max,
 				this.noBins);
-			System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
+			//System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
 		}
 
 		this.changed();
@@ -490,6 +490,35 @@ public class HistogramModel extends Observable implements TableModelListener,
 	{
 		return frequencyPolygonStackMode;
 	}
+	
+	/**
+	 * Update the column index and the split column index
+	 * given that removedColumn has been removed.
+	 * @param removedColumn
+	 */
+	public void updateColumnIndex(int removedColumn)
+	{
+		// index van de geselecteerde variabele bijwerken
+		if (removedColumn < this.columnIndex)
+		{
+			this.columnIndex = this.columnIndex - 1;
+		}
+		else if (removedColumn == this.columnIndex)
+		{
+			this.columnIndex = -1;
+		}
+		
+		// index van de split variabele bijwerken
+		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+		}
+		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(- 1);
+		}
+	}
+
 
 	/**
 	 * Class used to represent label and frequency tuple
