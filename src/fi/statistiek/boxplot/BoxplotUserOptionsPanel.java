@@ -471,6 +471,8 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.varBox.removeAllItems();
 		for (String varName : this.model.getTableModel().getColumnNames())
 		{
+//			System.out.println("BoxplotUserOptionsPanel.update(): varBox.addItem("
+//				+ varName + ")");
 			this.varBox.addItem(varName);
 		}
 		if (this.model.getColumnIndex() > -1)
