@@ -344,7 +344,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		else
 		{
 			// set no item selected
-			System.out.println("Niet valid!");
+			//System.out.println("FrequencyTableUserOptionsPanel.update(): no column index selected!");
 			this.columnIndexBox.setSelectedIndex(-1);
 		}
 		this.columnIndexBox.addActionListener(this.controller);
