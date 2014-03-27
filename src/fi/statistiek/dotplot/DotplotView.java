@@ -271,6 +271,8 @@ public class DotplotView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
+//		System.out.println("DotplotView.update()");
+		
 		this.setTypes();
 		this.setMinMax();
 
