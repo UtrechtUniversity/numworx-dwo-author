@@ -12,6 +12,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import fi.statistiek.boxplot.BoxplotModel;
+import fi.statistiek.dotplot.DotplotModel;
+import fi.statistiek.frequencytable.FrequencyTableModel;
+import fi.statistiek.histogram.HistogramModel;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -648,6 +652,11 @@ public class StatTableModel implements TableModel
 		}
 		this.columnCount++;
 
+		// test syl
+//		System.out.println("StatTableModel.addColumn(" 
+//			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
+//			+ this.buildColumnStringOptions(this.columnCount - 1) 
+//			+ "); stringFrequencies = " + stringFrequencies);
 		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
 		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
 
@@ -851,24 +860,54 @@ public class StatTableModel implements TableModel
 			this.columnClass.remove(column);
 			this.stringFrequencies.remove(column);
 			
-			// test syl
-			// TODO: als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande views 
-			// als column < columnindex van view dan 
-			// columnindex - 1 voor ViewModel van alle views!
-			// als column == columnindex, dan verwijder view? of toon leeg
-
 			for (ArrayList<Object> row : this.values)
 			{
 				row.remove(column);
 			}
 			this.columnCount--;
+			
+			// test syl
+			// TODO: als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande views 
+			// als column < columnindex van view dan 
+			// columnindex - 1 voor ViewModel van alle views!
+			// als column == columnindex, dan verwijder view? of toon leeg
+			this.updateColumnIndexInViews(column);
 
-//			this.fireEvent(new TableModelEvent(this));
+			//this.fireEvent(new TableModelEvent(this));
 //			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
 			// test syl: 
 			// specifiekere fireEvent en fireEvent voor headers
 			this.fireEvent(new TableModelEvent(this, 0, this.rowCount, column, TableModelEvent.DELETE));
 			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+		}
+	}
+
+	/**
+	 * Update the column index for the views.
+	 */
+	private void updateColumnIndexInViews(int removedIndex)
+	{
+//		System.out.println("StatTableModel.updateColumnIndexInViews(" 
+//			+ removedIndex + ")");
+
+		for (TableModelListener t : this.listeners)
+		{
+			if (t.getClass() == BoxplotModel.class)
+			{
+				((BoxplotModel) t).updateColumnIndex(removedIndex);
+			}
+			else if (t.getClass() == HistogramModel.class)
+			{
+				((HistogramModel) t).updateColumnIndex(removedIndex);
+			}
+			else if (t.getClass() == DotplotModel.class)
+			{
+				((DotplotModel) t).updateColumnIndex(removedIndex);
+			}
+			else if (t.getClass() == FrequencyTableModel.class)
+			{
+				((FrequencyTableModel) t).updateColumnIndex(removedIndex);
+			}
 		}
 	}
 
@@ -1208,7 +1247,7 @@ public class StatTableModel implements TableModel
 			|| cType.getType().equals(AllowedTypes.ENUM))
 		{
 			int splitClasses = this.splitVarClasses(splitOptions);
-			System.out.println(splitClasses + " splitclasses");
+			//System.out.println(splitClasses + " splitclasses");
 			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
 			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
 
