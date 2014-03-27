@@ -197,7 +197,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.minBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.minBoundaryField.setActionCommand("minBoundary");
 		this.minBoundaryField.addActionListener(controller);
-		// this.minBoundaryField.addFocusListener(controller);
+		this.minBoundaryField.addFocusListener(controller);
 
 		this.binWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -209,6 +209,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.binWidthField.setPreferredSize(new Dimension(40, 25));
 		this.binWidthField.setActionCommand("binWidth");
 		this.binWidthField.addActionListener(controller);
+		this.binWidthField.addFocusListener(controller);
 
 		this.boundariesLabel = new JLabel(Statistiek.rb.getString("binsButton"));
 		this.boundariesLabel.setFont(Statistiek.font);
@@ -735,7 +736,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return ((Integer) this.splitBinsBox.getSelectedItem()).intValue();
 	}
 
-	public double getminBoundary()
+	public double getMinBoundary()
 	{
 		String s = this.minBoundaryField.getText();
 		s = s.replace(',', '.');
@@ -755,7 +756,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		s = s.replace(',', '.');
 		return Double.parseDouble(s);
 	}
-
+	
 	public double getSplitBinWidth()
 	{
 		String s = this.splitBinWidthField.getText();
@@ -1138,8 +1139,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
-		// System.out.println("HistogramUserOptionsPanel.actionPerformed(): e.getActionCommand()="
-		// + e.getActionCommand());
+//		 System.out.println("HistogramUserOptionsPanel.actionPerformed(): e.getActionCommand()="
+//			 + e.getActionCommand());
 
 		if (e.getSource() == chooseBoundariesButton)
 		{

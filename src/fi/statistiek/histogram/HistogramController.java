@@ -27,6 +27,7 @@ import fi.statistiek.types.ColumnType;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -35,6 +36,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * MVC Controller for StatistiekView Histogram
@@ -139,7 +142,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		else if (ac.equals("varBox"))
 		{
 			this.model.setColumnIndex(this.view.getVarBoxSelectedIndex());
-			System.out.println("Var set to " + this.model.getColumnIndex());
+			//System.out.println("Var set to " + this.model.getColumnIndex());
 		}
 		else if (ac.equals("binsBox"))
 		{
@@ -147,17 +150,11 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else if (ac.equals("minBoundary"))
 		{
-			updateBoundaries();
+			updateBoundariesFromBinSettings();
 		}
 		else if (ac.equals("binWidth"))
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
-			for (int i = 0; i <= this.model.getNoBins(); i++)
-			{
-				boundaries.add(new Double(view.getminBoundary() + i
-					* view.getBinWidth()));
-			}
-			this.model.setBinBoundaries(boundaries);
+			updateBoundariesFromBinSettings();
 		}
 		else if (ac.equals("axisBox"))
 		{
@@ -286,12 +283,34 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 	}
 
+	/*
+	 * Update the bin boundaries using the settings for the minimum boundary
+	 * and the bin width.
+	 * and determine the number of bins.
+	 */
+	private void updateBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			this.model.getTableModel().getColumnMin(
+				this.model.getColumnIndex()),
+			this.model.getTableModel().getColumnMax(
+				this.model.getColumnIndex()),
+			view.getBinWidth(),
+			view.getMinBoundary());
+		this.model.setBinBoundaries(boundaries);
+	}
+	
+	/*
+	 * Update the bin boundaries with the set number of bins.
+	 */
 	private void updateBoundaries()
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		for (int i = 0; i <= this.model.getNoBins(); i++)
 		{
-			boundaries.add(new Double(view.getminBoundary() + i
+			boundaries.add(new Double(view.getMinBoundary() + i
 				* view.getBinWidth()));
 		}
 		
@@ -508,8 +527,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 	public void focusLost(FocusEvent e)
 	{
-		// System.out.println("HistogramController.focusLost(): e.getSource()="
-		// + e.getSource());
-		updateBoundaries();
+//		System.out.println("HistogramController.focusLost(): e.getSource()="
+//			+ e.getSource());
+
+		updateBoundariesFromBinSettings();
 	}
 }

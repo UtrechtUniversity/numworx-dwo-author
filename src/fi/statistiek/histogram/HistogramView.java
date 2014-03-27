@@ -199,11 +199,11 @@ public class HistogramView extends JPanel implements Observer
 		return userOptionsPanel.getSplitBinsBoxSelectedInt();
 	}
 
-	public double getminBoundary()
+	public double getMinBoundary()
 	{
-		return this.userOptionsPanel.getminBoundary();
+		return this.userOptionsPanel.getMinBoundary();
 	}
-
+	
 	public double getSplitminBoundary()
 	{
 		return userOptionsPanel.getSplitminBoundary();

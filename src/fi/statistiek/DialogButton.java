@@ -37,6 +37,7 @@ public class DialogButton extends JButton implements ActionListener, ComponentLi
 	}
 	
     public void makeDialog(){
+//    	System.out.println("DialogButton.makeDialog()");
     	if(dialog==null) {
         	dialog = new JDialog((Frame) null, title, true);
         	dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -58,11 +59,13 @@ public class DialogButton extends JButton implements ActionListener, ComponentLi
     }
     
     public void closeDialog() {
+//		System.out.println("DialogButton.closeDialog()");
     	dialog.setVisible(false);
 		dialog.dispose();
     }
 	
 	public void actionPerformed(ActionEvent e){
+//		System.out.println("DialogButton.actionPerformed(): e.getActionCommand()=" + e.getActionCommand());
 		if(e.getSource().equals(this)){	
 			makeDialog();
 		}
@@ -70,11 +73,13 @@ public class DialogButton extends JButton implements ActionListener, ComponentLi
 	}
 
 	public void componentResized(ComponentEvent e) {
+//		System.out.println("DialogButton.componentResized(): e.getSource=" + e.getSource());
 		if(e.getSource()==content) {
 			preferred = content.getPreferredSize();
 			dialog.setSize(preferred);
 	        dialog.pack();
-	        dialog.setVisible(true);
+	        // syl: onderstaande is overbodig; als hij invisible is, moet dat zo blijven 
+	        //dialog.setVisible(true);
 		}
 		
 	}
