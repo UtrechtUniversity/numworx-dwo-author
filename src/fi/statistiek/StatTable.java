@@ -19,7 +19,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -48,17 +47,13 @@ import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+/*
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+*/
 
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
@@ -656,7 +651,7 @@ public class StatTable extends JPanel implements StatistiekView,
 			// Verwijder oude views: onderstaande verwijdert ook de tabelview
 			//removeViews();
 			
-			processExcelDataFile(fileChooser.getSelectedFile());
+			//processExcelDataFile(fileChooser.getSelectedFile());
 		}
 	}
 	
@@ -665,89 +660,91 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.statInteractiePanel.getModel().removeViewsWithoutEvent();		
 	}
 
+	
+
 	/*
 	 * Process the excel data file. Reads the first sheet.
 	 */
-	private void processExcelDataFile(File file)
-	{
-		// test syl: moet deze methode synchronized vanwege zetten waarden kolommen?
-		try
-		{
-			//FileInputStream fileInputStream = new FileInputStream(file);
-			Workbook workbook = WorkbookFactory.create(file);
-			
-			//Get first sheet from the workbook
-			Sheet sheet = workbook.getSheetAt(0);
-			Row headerRow;
-			ArrayList<String> headerStrings = new ArrayList<String>();
-			Row row;
-			Cell cell;
- 
-            //Iterate through each rows one by one
-			Iterator<Row> rowIterator = sheet.rowIterator();
-			
-			// Read header row
-			if (rowIterator.hasNext())
-			{
-				headerRow = (Row) rowIterator.next();
-				
-				 //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = headerRow.cellIterator();
-                 
-                while (cellIterator.hasNext())
-                {
-                    cell = (Cell) cellIterator.next();
-                    
-                    headerStrings.add(cell.toString());
-                }
-                //System.out.println("...headers=" + headerStrings);
-                
-                clearStatTableModel();
-                createColumns(headerStrings);
-			}
-			
-			// read data rows
-			int rowIndex = 0;
-            while (rowIterator.hasNext())
-            {
-                row = (Row) rowIterator.next();
-
-                // Add empty row to statTableModel
-                this.statTableModel.addRow();
-                
-                //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = row.cellIterator();
-                int columnIndex = 0;
-                while (cellIterator.hasNext())
-                {
-                    cell = (Cell) cellIterator.next();
-                    
-                    // TODO: fill current row in statTableModel with data for each column
-                    this.statTableModel.setValueAt(cell.toString(), rowIndex, columnIndex);
-                    
-                    //Check the cell type and format accordingly
-//                    switch (cell.getCellType())
-//                    {
-//                        case Cell.CELL_TYPE_NUMERIC:
-//                            System.out.print(cell.getNumericCellValue() + "-");
-//                            break;
-//                        case Cell.CELL_TYPE_STRING:
-//                            System.out.print(cell.getStringCellValue() + "-");
-//                            break;
-//                    }
-                    columnIndex++;
-                }
-//              System.out.println("...row processed");
-                rowIndex++;
-            }
-            //fileInputStream.close();
-		}
-		catch (Exception e)
-		{
-			// TODO: gebruikersmelding
-			e.printStackTrace();
-		}
-	}
+//	private void processExcelDataFile(File file)
+//	{
+//		// test syl: moet deze methode synchronized vanwege zetten waarden kolommen?
+//		try
+//		{
+//			//FileInputStream fileInputStream = new FileInputStream(file);
+//			Workbook workbook = WorkbookFactory.create(file);
+//			
+//			//Get first sheet from the workbook
+//			Sheet sheet = workbook.getSheetAt(0);
+//			Row headerRow;
+//			ArrayList<String> headerStrings = new ArrayList<String>();
+//			Row row;
+//			Cell cell;
+// 
+//            //Iterate through each rows one by one
+//			Iterator<Row> rowIterator = sheet.rowIterator();
+//			
+//			// Read header row
+//			if (rowIterator.hasNext())
+//			{
+//				headerRow = (Row) rowIterator.next();
+//				
+//				 //For each row, iterate through all the columns
+//                Iterator<Cell> cellIterator = headerRow.cellIterator();
+//                 
+//                while (cellIterator.hasNext())
+//                {
+//                    cell = (Cell) cellIterator.next();
+//                    
+//                    headerStrings.add(cell.toString());
+//                }
+//                //System.out.println("...headers=" + headerStrings);
+//                
+//                clearStatTableModel();
+//                createColumns(headerStrings);
+//			}
+//			
+//			// Read data rows
+//			int rowIndex = 0;
+//            while (rowIterator.hasNext())
+//            {
+//                row = (Row) rowIterator.next();
+//
+//                // Add empty row to statTableModel
+//                this.statTableModel.addRow();
+//                
+//                //For each row, iterate through all the columns
+//                Iterator<Cell> cellIterator = row.cellIterator();
+//                int columnIndex = 0;
+//                while (cellIterator.hasNext())
+//                {
+//                    cell = (Cell) cellIterator.next();
+//                    
+//                    // Fill current row in statTableModel with data for each column
+//                    this.statTableModel.setValueAt(cell.toString(), rowIndex, columnIndex);
+//                    
+//                    //Check the cell type and format accordingly
+////                    switch (cell.getCellType())
+////                    {
+////                        case Cell.CELL_TYPE_NUMERIC:
+////                            System.out.print(cell.getNumericCellValue() + "-");
+////                            break;
+////                        case Cell.CELL_TYPE_STRING:
+////                            System.out.print(cell.getStringCellValue() + "-");
+////                            break;
+////                    }
+//                    columnIndex++;
+//                }
+////              System.out.println("...row processed");
+//                rowIndex++;
+//            }
+//            //fileInputStream.close();
+//		}
+//		catch (Exception e)
+//		{
+//			// TODO: gebruikersmelding
+//			e.printStackTrace();
+//		}
+//	}
 
 	/*
 	 * Create columns based on the names. 
@@ -769,6 +766,7 @@ public class StatTable extends JPanel implements StatistiekView,
 	private void clearStatTableModel()
 	{
 		// test syl
+		// statTable rij voor rij, kolom voor kolom leegmaken
 		int numberOfRows = this.statTableModel.getRowCount();
 		for (int i = numberOfRows - 1; i >= 0; i--)
 		{
@@ -801,7 +799,7 @@ public class StatTable extends JPanel implements StatistiekView,
 			br = new BufferedReader(new FileReader(file));
 			dataRows = new ArrayList<String>();
 			
-			// TODO: read the header line
+			// read the header line
 			if ((line = br.readLine()) != null)
 			{
 				headers = line.split(cvsSplitBy);
@@ -886,7 +884,8 @@ public class StatTable extends JPanel implements StatistiekView,
 
 	public void selectionChanged()
 	{
-		// System.out.println("selection Changed called");
+		// test syl
+		//System.out.println("selection Changed called");
 		ListSelectionModel selectionModel = this.table.getSelectionModel();
 		selectionModel.removeListSelectionListener(this);
 
