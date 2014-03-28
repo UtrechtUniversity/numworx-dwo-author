@@ -15,12 +15,29 @@ public class KladjeVeld extends JPanel
 	boolean lijnen = false;
 	boolean ruitjes = false;
 	
+	static boolean roteren = true;
+	static boolean schalen = true;
+	
+	boolean handleAction = false;
+	boolean scalingTopRight = false;
+	boolean scalingTopLeft = false;
+	boolean scalingBottomRight = false;
+	boolean scalingBottomLeft = false;
+	boolean rotatingEast = false;
+	boolean rotatingNorth = false;
+	boolean rotatingWest = false;
+	boolean rotatingSouth = false;
+	
 	int lineDistance = 20;
 	int gridSize = 20;
 	
+	static Color lightBlue = new Color(148, 214, 231);
 	Color lijnenKleur = new Color(150, 150, 255);
 	Color ruitjesKleur = new Color(210, 210, 210);
-	static Color bbColor = Color.blue; 
+	static Color bbColor = lightBlue; 
+	static Color hbColor = Color.blue;
+	
+	static int minHandleBoxSize = 50;
 	
 	Color drawingColor = Color.black;
 	Color backgroundColor = Color.white;
@@ -90,7 +107,8 @@ public class KladjeVeld extends JPanel
 	int tekstX = 0;
 	int tekstY = 0;
 	
-	double rotateStep = Math.PI / 12; // 15 degrees in radians
+	double rotateStep = Math.PI / 18; // 10 degrees in radians
+	double angleSum = 0;
 	double scaleUpStep = 11e-1d;
 	double scaleDownStep = 1 / 11e-1d;
 	
@@ -446,6 +464,91 @@ public class KladjeVeld extends JPanel
 		repaint();
 	}
 	
+	public void zetSchalen(boolean b)
+	{	schalen = b;
+		
+		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
+		{	Streep streep = (Streep) streepVector.elementAt(sCnt);
+			if (b)
+				streep.makeScaleHandles();
+			else
+				streep.killScaleHandles();
+		}
+		for (int lCnt = 0; lCnt < lijnVector.size(); lCnt++)
+		{	Lijn lijn = (Lijn) lijnVector.elementAt(lCnt);
+			if (b)
+				lijn.makeScaleHandles();
+			else	
+				lijn.killScaleHandles();
+		}
+		for (int rCnt = 0; rCnt < rechthoekVector.size(); rCnt++)
+		{	Rechthoek rechthoek = (Rechthoek) rechthoekVector.elementAt(rCnt);
+			if (b)
+				rechthoek.makeScaleHandles();
+			else	
+				rechthoek.killScaleHandles();
+		}
+		for (int eCnt = 0; eCnt < ellipsVector.size(); eCnt++)
+		{	Ellips ellips = (Ellips) ellipsVector.elementAt(eCnt);
+			if (b)
+				ellips.makeScaleHandles();
+			else	
+				ellips.killScaleHandles();
+		}
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			if (b)
+				tekstElement.makeScaleHandles();
+			else
+				tekstElement.killScaleHandles();
+		}
+		
+		repaint();
+	}
+
+	public void zetRoteren(boolean b)
+	{
+		roteren = b;
+		
+		for (int sCnt = 0; sCnt < streepVector.size(); sCnt++)
+		{	Streep streep = (Streep) streepVector.elementAt(sCnt);
+			if (b)
+				streep.makeRotateHandles();
+			else
+				streep.killRotateHandles();
+		}
+		for (int lCnt = 0; lCnt < lijnVector.size(); lCnt++)
+		{	Lijn lijn = (Lijn) lijnVector.elementAt(lCnt);
+			if (b)
+				lijn.makeRotateHandles();
+			else	
+				lijn.killRotateHandles();
+		}
+		for (int rCnt = 0; rCnt < rechthoekVector.size(); rCnt++)
+		{	Rechthoek rechthoek = (Rechthoek) rechthoekVector.elementAt(rCnt);
+			if (b)
+				rechthoek.makeRotateHandles();
+			else	
+				rechthoek.killRotateHandles();
+		}
+		for (int eCnt = 0; eCnt < ellipsVector.size(); eCnt++)
+		{	Ellips ellips = (Ellips) ellipsVector.elementAt(eCnt);
+			if (b)
+				ellips.makeRotateHandles();
+			else	
+				ellips.killRotateHandles();
+		}
+		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+			if (b)
+				tekstElement.makeRotateHandles();
+			else
+				tekstElement.killRotateHandles();
+		}
+		
+		repaint();
+	}
+	
 	public void paintComponent(Graphics g)
 	{
 		
@@ -589,15 +692,25 @@ public class KladjeVeld extends JPanel
 		if (mouseMode == selecteren)
 		{
 			if (selectedStreep != null)
-				selectedStreep.tekenBB(g);
+			{	selectedStreep.tekenHandleBox(g);
+				//selectedStreep.tekenBB(g);
+			}
 			if (selectedLijn != null)
-				selectedLijn.tekenBB(g);
+			{	//selectedLijn.tekenBB(g);
+				selectedLijn.tekenHandleBox(g);
+			}
 			if (selectedRechthoek != null)
-				selectedRechthoek.tekenBB(g);
+			{	//selectedRechthoek.tekenBB(g);
+				selectedRechthoek.tekenHandleBox(g);
+			}
 			if (selectedEllips != null)
-				selectedEllips.tekenBB(g);
+			{	//selectedEllips.tekenBB(g);
+				selectedEllips.tekenHandleBox(g);
+			}
 			if (selectedTekstElement != null)
-				selectedTekstElement.tekenBB(g);
+			{	//selectedTekstElement.tekenBB(g);
+				selectedTekstElement.tekenHandleBox(g);
+			}
 			
 			for (int oCnt = 0; oCnt < objectsSelected.size(); oCnt++)
 			{
@@ -959,11 +1072,704 @@ public class KladjeVeld extends JPanel
 	
 	public boolean objectSelectedContains(int x, int y)
 	{ 
-		return ((selectedStreep != null) && selectedStreep.bbContains(x, y)) || 
-			   ((selectedLijn != null) && selectedLijn.bbContains(x, y)) || 
-			   ((selectedRechthoek != null) && selectedRechthoek.bbContains(x, y)) || 
-			   ((selectedEllips != null) && selectedEllips.bbContains(x, y)) ||
-			   ((selectedTekstElement != null) && selectedTekstElement.bbContains(x, y));
+		return ((selectedStreep != null) && 
+				 //selectedStreep.bbContains(x, y)) ||
+				 selectedStreep.handleBox.contains(x, y)) ||
+			   ((selectedLijn != null) && 
+				 //selectedLijn.bbContains(x, y)) ||
+			     selectedLijn.handleBox.contains(x, y)) ||	   
+			   ((selectedRechthoek != null) && 
+				 //selectedRechthoek.bbContains(x, y)) ||
+				 selectedRechthoek.handleBox.contains(x, y)) ||	   
+			   ((selectedEllips != null) && 
+				 //selectedEllips.bbContains(x, y)) ||
+				 selectedEllips.handleBox.contains(x, y)) ||	   
+			   ((selectedTekstElement != null) && 
+				 //selectedTekstElement.bbContains(x, y));
+			     selectedTekstElement.handleBox.contains(x, y));	   
+	}
+	
+	
+	public void processHandleAction(int dx, int dy)
+	{
+		if (selectedStreep != null)
+		{
+			if (scalingTopRight)
+			{
+				double aspectDirX = selectedStreep.handleBox.x + selectedStreep.handleBox. width - 
+									selectedStreep.cx;
+				double aspectDirY = selectedStreep.handleBox.y - selectedStreep.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedStreep.handleBox.width / 2;
+				double oldHeight = (double) selectedStreep.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight - asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedStreep.scale(sc);
+			}
+			else if (scalingTopLeft)
+			{
+				int oldWidth = selectedStreep.handleBox.width / 2;
+				int oldHeight = selectedStreep.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight - dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedStreep.scale(sx,sy);
+			}
+			else if (scalingBottomLeft)
+			{
+				int oldWidth = selectedStreep.handleBox.width / 2;
+				int oldHeight = selectedStreep.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight + dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedStreep.scale(sx,sy);
+			}
+			else if (scalingBottomRight)
+			{
+				double aspectDirX = selectedStreep.handleBox.x + selectedStreep.handleBox.width - 
+								    selectedStreep.cx;
+				double aspectDirY = selectedStreep.handleBox.y + selectedStreep.handleBox.height - selectedStreep.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedStreep.handleBox.width / 2;
+				double oldHeight = (double) selectedStreep.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight + asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedStreep.scale(sc);
+			}
+			else if (rotatingEast)
+			{
+				// hier is alleen dy van belang
+				double angle = Math.atan(((double) dy) / (selectedStreep.handleBox.width/2));
+				selectedStreep.rotate(angle);
+				
+			}
+			else if (rotatingNorth)
+			{
+				// hier is alleen dx van belang
+				double angle = Math.atan(((double) dx) / (selectedStreep.handleBox.width/2));
+				selectedStreep.rotate(angle);
+				
+			}
+			else if (rotatingWest)
+			{
+				// hier is alleen dy van belang
+				double angle = - Math.atan(((double) dy) / (selectedStreep.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedStreep.rotate(rotateSteps * rotateStep);
+				
+				
+			}
+			else if (rotatingSouth)
+			{
+				// hier is alleen dx van belang
+				double angle = - Math.atan(((double) dx) / (selectedStreep.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedStreep.rotate(rotateSteps * rotateStep);
+			
+			}
+			
+			
+			
+		}
+		else if (selectedLijn != null)
+		{
+			if (scalingTopRight)
+			{
+				double aspectDirX = selectedLijn.handleBox.x + selectedLijn.handleBox. width - 
+									selectedLijn.cx;
+				double aspectDirY = selectedLijn.handleBox.y - selectedLijn.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedLijn.handleBox.width / 2;
+				double oldHeight = (double) selectedLijn.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight - asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedLijn.scale(sc);
+			}
+			else if (scalingTopLeft)
+			{
+				int oldWidth = selectedLijn.handleBox.width / 2;
+				int oldHeight = selectedLijn.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight - dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedLijn.scale(sx,sy);
+			}
+			else if (scalingBottomLeft)
+			{
+				int oldWidth = selectedLijn.handleBox.width / 2;
+				int oldHeight = selectedLijn.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight + dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedLijn.scale(sx,sy);
+			}
+			else if (scalingBottomRight)
+			{
+				double aspectDirX = selectedLijn.handleBox.x + selectedLijn.handleBox.width - 
+								    selectedLijn.cx;
+				double aspectDirY = selectedLijn.handleBox.y + selectedLijn.handleBox.height - 
+									selectedLijn.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedLijn.handleBox.width / 2;
+				double oldHeight = (double) selectedLijn.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight + asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedLijn.scale(sc);
+			}
+			else if (rotatingEast)
+			{
+				// hier is alleen dy van belang
+				double angle = Math.atan(((double) dy) / (selectedLijn.handleBox.width/2));
+				selectedLijn.rotate(angle);
+				
+			}
+			else if (rotatingNorth)
+			{
+				// hier is alleen dx van belang
+				double angle = Math.atan(((double) dx) / (selectedLijn.handleBox.width/2));
+				selectedLijn.rotate(angle);
+				
+			}
+			else if (rotatingWest)
+			{
+				// hier is alleen dy van belang
+				double angle = - Math.atan(((double) dy) / (selectedLijn.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedLijn.rotate(rotateSteps * rotateStep);
+				
+				
+			}
+			else if (rotatingSouth)
+			{
+				// hier is alleen dx van belang
+				double angle = - Math.atan(((double) dx) / (selectedLijn.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedLijn.rotate(rotateSteps * rotateStep);
+			
+			}
+
+			
+		}
+		else if (selectedRechthoek != null)
+		{
+			if (scalingTopRight)
+			{
+				double aspectDirX = selectedRechthoek.handleBox.x + selectedRechthoek.handleBox. width - 
+									selectedRechthoek.cx;
+				double aspectDirY = selectedRechthoek.handleBox.y - selectedRechthoek.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
+				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight - asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedRechthoek.scale(sc);
+			}
+			else if (scalingTopLeft)
+			{
+				int oldWidth = selectedRechthoek.handleBox.width / 2;
+				int oldHeight = selectedRechthoek.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight - dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedRechthoek.scale(sx,sy);
+			}
+			else if (scalingBottomLeft)
+			{
+				int oldWidth = selectedRechthoek.handleBox.width / 2;
+				int oldHeight = selectedRechthoek.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight + dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedRechthoek.scale(sx,sy);
+			}
+			else if (scalingBottomRight)
+			{
+				double aspectDirX = selectedRechthoek.handleBox.x + selectedRechthoek.handleBox.width - 
+								    selectedRechthoek.cx;
+				double aspectDirY = selectedRechthoek.handleBox.y + selectedRechthoek.handleBox.height - 
+									selectedRechthoek.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
+				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight + asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedRechthoek.scale(sc);
+			}
+			else if (rotatingEast)
+			{
+				// hier is alleen dy van belang
+				double angle = Math.atan(((double) dy) / (selectedRechthoek.handleBox.width/2));
+				selectedRechthoek.rotate(angle);
+				
+			}
+			else if (rotatingNorth)
+			{
+				// hier is alleen dx van belang
+				double angle = Math.atan(((double) dx) / (selectedRechthoek.handleBox.width/2));
+				selectedRechthoek.rotate(angle);
+				
+			}
+			else if (rotatingWest)
+			{
+				// hier is alleen dy van belang
+				double angle = - Math.atan(((double) dy) / (selectedRechthoek.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedRechthoek.rotate(rotateSteps * rotateStep);
+				
+				
+			}
+			else if (rotatingSouth)
+			{
+				// hier is alleen dx van belang
+				double angle = - Math.atan(((double) dx) / (selectedRechthoek.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedRechthoek.rotate(rotateSteps * rotateStep);
+			
+			}
+
+			
+		}
+		else if (selectedEllips != null)
+		{
+			if (scalingTopRight)
+			{
+				double aspectDirX = selectedEllips.handleBox.x + selectedEllips.handleBox. width - 
+									selectedEllips.cx;
+				double aspectDirY = selectedEllips.handleBox.y - selectedEllips.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedEllips.handleBox.width / 2;
+				double oldHeight = (double) selectedEllips.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight - asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedEllips.scale(sc);
+			}
+			else if (scalingTopLeft)
+			{
+				int oldWidth = selectedEllips.handleBox.width / 2;
+				int oldHeight = selectedEllips.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight - dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedEllips.scale(sx,sy);
+			}
+			else if (scalingBottomLeft)
+			{
+				int oldWidth = selectedEllips.handleBox.width / 2;
+				int oldHeight = selectedEllips.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight + dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedEllips.scale(sx,sy);
+			}
+			else if (scalingBottomRight)
+			{
+				double aspectDirX = selectedEllips.handleBox.x + selectedEllips.handleBox.width - 
+								    selectedEllips.cx;
+				double aspectDirY = selectedEllips.handleBox.y + selectedEllips.handleBox.height - 
+									selectedEllips.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedEllips.handleBox.width / 2;
+				double oldHeight = (double) selectedEllips.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight + asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedEllips.scale(sc);
+			}
+			else if (rotatingEast)
+			{
+				// hier is alleen dy van belang
+				double angle = Math.atan(((double) dy) / (selectedEllips.handleBox.width/2));
+				selectedEllips.rotate(angle);
+				
+			}
+			else if (rotatingNorth)
+			{
+				// hier is alleen dx van belang
+				double angle = Math.atan(((double) dx) / (selectedEllips.handleBox.width/2));
+				selectedEllips.rotate(angle);
+				
+			}
+			else if (rotatingWest)
+			{
+				// hier is alleen dy van belang
+				double angle = - Math.atan(((double) dy) / (selectedEllips.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedEllips.rotate(rotateSteps * rotateStep);
+				
+				
+			}
+			else if (rotatingSouth)
+			{
+				// hier is alleen dx van belang
+				double angle = - Math.atan(((double) dx) / (selectedEllips.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedEllips.rotate(rotateSteps * rotateStep);
+			
+			}
+			
+			
+		}
+		else if (selectedTekstElement != null)
+		{
+			if (scalingTopRight)
+			{
+				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox. width - 
+									selectedTekstElement.cx;
+				double aspectDirY = selectedTekstElement.handleBox.y - selectedTekstElement.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
+				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight - asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedTekstElement.scale(sc);
+			}
+			else if (scalingTopLeft)
+			{
+				int oldWidth = selectedTekstElement.handleBox.width / 2;
+				int oldHeight = selectedTekstElement.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight - dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedTekstElement.scale(sx,sy);
+			}
+			else if (scalingBottomLeft)
+			{
+				int oldWidth = selectedTekstElement.handleBox.width / 2;
+				int oldHeight = selectedTekstElement.handleBox.height / 2;
+				int newWidth = oldWidth - dx;
+				int newHeight = oldHeight + dy;
+				double sx = ((double) newWidth) / oldWidth;
+				double sy = ((double) newHeight) / oldHeight;
+				selectedTekstElement.scale(sx,sy);
+			}
+			else if (scalingBottomRight)
+			{
+				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 
+								    selectedTekstElement.cx;
+				double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
+									selectedTekstElement.cy;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double asXDouble = s * aspectDirX;
+				double asYDouble = s * aspectDirY;
+				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
+				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
+				double newWidth = oldWidth + asXDouble;
+				double newHeight = oldHeight + asYDouble;
+				double sc = ((double) newWidth) / oldWidth;
+				selectedTekstElement.scale(sc);
+			}
+			else if (rotatingEast)
+			{
+				// hier is alleen dy van belang
+				double angle = Math.atan(((double) dy) / (selectedTekstElement.handleBox.width/2));
+				selectedTekstElement.rotate(angle);
+				
+			}
+			else if (rotatingNorth)
+			{
+				// hier is alleen dx van belang
+				double angle = Math.atan(((double) dx) / (selectedTekstElement.handleBox.width/2));
+				selectedTekstElement.rotate(angle);
+				
+			}
+			else if (rotatingWest)
+			{
+				// hier is alleen dy van belang
+				double angle = - Math.atan(((double) dy) / (selectedTekstElement.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedTekstElement.rotate(rotateSteps * rotateStep);
+				
+				
+			}
+			else if (rotatingSouth)
+			{
+				// hier is alleen dx van belang
+				double angle = - Math.atan(((double) dx) / (selectedTekstElement.handleBox.width/2));
+				angleSum += angle; 
+				int rotateSteps = (int) Math.round(angleSum / rotateStep);
+				angleSum -= rotateSteps * rotateStep;
+				selectedTekstElement.rotate(rotateSteps * rotateStep);
+			
+			}
+
+			
+		}
+
+	}
+	
+	public boolean objectSelectedHandlesContain(int x, int y)
+	{
+		if (selectedStreep != null)
+		{
+			if ((selectedStreep.topRightRect != null) && selectedStreep.topRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopRight = true;
+//System.out.println("sc top right");
+			}
+			else if ((selectedStreep.topLeftRect != null) && selectedStreep.topLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopLeft = true;
+			}
+			else if ((selectedStreep.bottomRightRect != null) && selectedStreep.bottomRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomRight = true;
+			}
+			else if ((selectedStreep.bottomLeftRect != null) && selectedStreep.bottomLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomLeft = true;
+			}
+			else if ((selectedStreep.rotateEastHandle != null) && selectedStreep.rotateEastHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingEast = true;
+			}
+			else if ((selectedStreep.rotateNorthHandle != null) && selectedStreep.rotateNorthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingNorth = true;
+			}
+			else if ((selectedStreep.rotateWestHandle != null) && selectedStreep.rotateWestHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingWest = true;
+			}
+			else if ((selectedStreep.rotateSouthHandle != null) && selectedStreep.rotateSouthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingSouth = true;
+			}
+						
+
+		}
+		else if (selectedLijn != null)
+		{
+			if ((selectedLijn.topRightRect != null) && selectedLijn.topRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopRight = true;
+			}
+			else if ((selectedLijn.topLeftRect != null) && selectedLijn.topLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopLeft = true;
+			}
+			else if ((selectedLijn.bottomRightRect != null) && selectedLijn.bottomRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomRight = true;
+			}
+			else if ((selectedLijn.bottomLeftRect != null) && selectedLijn.bottomLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomLeft = true;
+			}
+			else if ((selectedLijn.rotateEastHandle != null) && selectedLijn.rotateEastHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingEast = true;
+			}
+			else if ((selectedLijn.rotateNorthHandle != null) && selectedLijn.rotateNorthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingNorth = true;
+			}
+			else if ((selectedLijn.rotateWestHandle != null) && selectedLijn.rotateWestHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingWest = true;
+			}
+			else if ((selectedLijn.rotateSouthHandle != null) && selectedLijn.rotateSouthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingSouth = true;
+			}
+			
+
+		}
+		else if (selectedRechthoek != null)
+		{
+			if ((selectedRechthoek.topRightRect != null) && selectedRechthoek.topRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopRight = true;
+			}
+			else if ((selectedRechthoek.topLeftRect != null) && selectedRechthoek.topLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopLeft = true;
+			}
+			else if ((selectedRechthoek.bottomRightRect != null) && selectedRechthoek.bottomRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomRight = true;
+			}
+			else if ((selectedRechthoek.bottomLeftRect != null) && selectedRechthoek.bottomLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomLeft = true;
+			}
+			else if ((selectedRechthoek.rotateEastHandle != null) && selectedRechthoek.rotateEastHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingEast = true;
+			}
+			else if ((selectedRechthoek.rotateNorthHandle != null) && selectedRechthoek.rotateNorthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingNorth = true;
+			}
+			else if ((selectedRechthoek.rotateWestHandle != null) && selectedRechthoek.rotateWestHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingWest = true;
+			}
+			else if ((selectedRechthoek.rotateSouthHandle != null) && selectedRechthoek.rotateSouthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingSouth = true;
+			}
+
+
+		}
+		else if (selectedEllips != null)
+		{
+			if ((selectedEllips.topRightRect != null) && selectedEllips.topRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopRight = true;
+			}
+			else if ((selectedEllips.topLeftRect != null) && selectedEllips.topLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopLeft = true;
+			}
+			else if ((selectedEllips.bottomRightRect != null) && selectedEllips.bottomRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomRight = true;
+			}
+			else if ((selectedEllips.bottomLeftRect != null) && selectedEllips.bottomLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomLeft = true;
+			}
+			else if ((selectedEllips.rotateEastHandle != null) && selectedEllips.rotateEastHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingEast = true;
+			}
+			else if ((selectedEllips.rotateNorthHandle != null) && selectedEllips.rotateNorthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingNorth = true;
+			}
+			else if ((selectedEllips.rotateWestHandle != null) && selectedEllips.rotateWestHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingWest = true;
+			}
+			else if ((selectedEllips.rotateSouthHandle != null) && selectedEllips.rotateSouthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingSouth = true;
+			}
+
+
+		}
+		else if (selectedTekstElement != null)
+		{
+			if ((selectedTekstElement.topRightRect != null) && selectedTekstElement.topRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopRight = true;
+			}
+			else if ((selectedTekstElement.topLeftRect != null) && selectedTekstElement.topLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingTopLeft = true;
+			}
+			else if ((selectedTekstElement.bottomRightRect != null) && selectedTekstElement.bottomRightRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomRight = true;
+			}
+			else if ((selectedTekstElement.bottomLeftRect != null) && selectedTekstElement.bottomLeftRect.contains(x,y))
+			{	handleAction = true;
+				scalingBottomLeft = true;
+			}
+			else if ((selectedTekstElement.rotateEastHandle != null) && selectedTekstElement.rotateEastHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingEast = true;
+			}
+			else if ((selectedTekstElement.rotateNorthHandle != null) && selectedTekstElement.rotateNorthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingNorth = true;
+			}
+			else if ((selectedTekstElement.rotateWestHandle != null) && selectedTekstElement.rotateWestHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingWest = true;
+			}
+			else if ((selectedTekstElement.rotateSouthHandle != null) && selectedTekstElement.rotateSouthHandle.contains(x,y))
+			{	handleAction = true;
+				rotatingSouth = true;
+			}
+			
+
+		}
+		
+		return handleAction;
 	}
 	
 	
@@ -1007,8 +1813,14 @@ public class KladjeVeld extends JPanel
 			else if (mouseMode == selecteren)
 			{
 
+				if (objectSelectedHandlesContain(e.getX(), e.getY()))
+				{
+					startX = e.getX();
+					startY = e.getY();
+//System.out.println("mp oshc");					
+				}
 				// individueel object aangeklikt, was mogelijk al geselecteerd
-				if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
+				else if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
 				{
 					sleepSelectie = true;
 					startX = e.getX();
@@ -1243,7 +2055,18 @@ public class KladjeVeld extends JPanel
 			}
 			else if (mouseMode == selecteren)
 			{
-				if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
+				if (handleAction)
+				{
+					int dx = e.getX() - startX;
+					int dy = e.getY() - startY;
+
+					processHandleAction(dx,dy);
+					
+					startX = e.getX();
+					startY = e.getY();
+					
+				}
+				else if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
 				{	
 					int dx = e.getX() - startX;
 					int dy = e.getY() - startY;
@@ -1379,6 +2202,17 @@ public class KladjeVeld extends JPanel
 					//sleepSelectie = false;
 					repaint();
 				}
+				handleAction = false;
+				scalingTopRight = false;
+				scalingTopLeft = false;
+				scalingBottomRight = false;
+				scalingBottomLeft = false;
+				rotatingEast = false;
+				rotatingNorth = false;
+				rotatingWest = false;
+				rotatingSouth = false;
+				angleSum = 0; 
+
 			}
 
 		}

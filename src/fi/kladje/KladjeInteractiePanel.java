@@ -724,31 +724,35 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	public void zetRoteren(boolean b)
 	{
 		roteren = b;
+		//KladjeVeld.roteren = b;
+		kladjeVeld.zetRoteren(b);
 		
 		layoutBottom();
 		if (kladjeVeld.mouseMode == kladjeVeld.selecteren)
 		{
-			setRotateScaleButtons(true);
+			//setRotateScaleButtons(true);
 		}
 		else
 		{
-			setRotateScaleButtons(false);
+			//setRotateScaleButtons(false);
 		}
 	}
 
 	public void zetSchalen(boolean b)
 	{
 		schalen = b;
+		//KladjeVeld.schalen = b;
+		kladjeVeld.zetSchalen(b);
 		
 		layoutBottom();
 
 		if (kladjeVeld.mouseMode == kladjeVeld.selecteren)
 		{
-			setRotateScaleButtons(true);
+			//setRotateScaleButtons(true);
 		}
 		else
 		{
-			setRotateScaleButtons(false);
+			//setRotateScaleButtons(false);
 		}
 		
 	}
@@ -1342,7 +1346,7 @@ System.out.println("kladjeVeld sized");
 			else if (selecterenButton.isSelected())
 			{
 				
-				setRotateScaleButtons(true);				
+				//setRotateScaleButtons(true);				
 
 				kladjeVeld.mouseMode = kladjeVeld.selecteren;
 				kladjeVeld.hideTekstVeld(true);

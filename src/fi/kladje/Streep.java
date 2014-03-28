@@ -4,14 +4,22 @@ import java.awt.*;
 import java.util.*;
 import java.awt.geom.*;
 
+
 public class Streep 
 {
 	Color kleur;
 	int[] puntenX, puntenY;
 	int bbFactor = 4;
-	Polygon bb;
+	Polygon bb, bb2;
 	double cx = 0, cy = 0;
 	double rotation = 0;
+	Rectangle handleBox;
+	int hbFactor = 4;
+	
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	
 	
 	public Streep(Color c, Vector punten)
 	{	kleur = c;
@@ -30,6 +38,7 @@ public class Streep
 		cy /= puntenY.length;
 		
 		maakBBs();
+		makeHandleBox();
 	}
 	
 	public Streep(Color c, int[] ptX, int[] ptY)
@@ -38,8 +47,122 @@ public class Streep
 		puntenY = ptY;
 		
 		maakBBs();
+		makeHandleBox();
 	}
 
+	public void makeHandleBox()
+	{
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		{
+			if (bb2.xpoints[pCnt] < minX)
+				minX = bb2.xpoints[pCnt];
+			if (bb2.xpoints[pCnt] > maxX)
+				maxX = bb2.xpoints[pCnt];
+			if (bb2.ypoints[pCnt] < minY)
+				minY = bb2.ypoints[pCnt];
+			if (bb2.ypoints[pCnt] > maxY)
+				maxY = bb2.ypoints[pCnt];
+		}
+		
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		int dw = w - KladjeVeld.minHandleBoxSize;
+		int dh = h - KladjeVeld.minHandleBoxSize;
+		if ((dw >= 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor,w, h);
+		else if ((dw >= 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor + dh/2, w, KladjeVeld.minHandleBoxSize);
+		else if ((dw < 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor, KladjeVeld.minHandleBoxSize, h);
+		else if ((dw < 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor + dh/2, KladjeVeld.minHandleBoxSize, KladjeVeld.minHandleBoxSize);
+		
+		if (KladjeVeld.schalen)
+			makeScaleHandles();
+		if (KladjeVeld.roteren)
+			makeRotateHandles();
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y + 3 * hbFactor);
+		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+	
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+
+	public void makeRotateHandles()
+	{
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
+										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
+                						  handleBox.y + handleBox.height - 2 * hbFactor,
+                						  4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateNorthHandle = null; 
+		rotateWestHandle = null;
+		rotateSouthHandle = null;
+		
+		
+	}
+	
+	
 	public void maakBBs()
 	{
 		bb = new Polygon();
@@ -168,10 +291,20 @@ public class Streep
 		
 			}
 		}
+		
+		bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
 	}
 
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
+	
+		maakBBs();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+
+		makeHandleBox();
+		
+		
+		
 	}
 	
 	public void scale(double scaleStep)
@@ -183,6 +316,22 @@ public class Streep
 		}
 		
 		maakBBs();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+		
+	}
+
+	public void scale(double scaleStepX, double scaleStepY)
+	{
+		for (int pCnt = 0; pCnt < puntenX.length; pCnt++)
+		{	
+			puntenX[pCnt] = (int) Math.round(scaleStepX * puntenX[pCnt] + (1 - scaleStepX) * cx);
+			puntenY[pCnt] = (int) Math.round(scaleStepY * puntenY[pCnt] + (1 - scaleStepY) * cy);
+		}
+		
+		maakBBs();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
 		
 	}
 	
@@ -246,6 +395,85 @@ public class Streep
 		g.setTransform(oldAT);
 	}
 	
+	public void tekenHandleBox(Graphics2D g)
+	{
+
+		float[] dash = new float[2];
+		dash[0] = 2;
+		dash[1] = 2;
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		
+		g.setColor(KladjeVeld.hbColor);
+		
+		g.drawRect(handleBox.x, handleBox.y, handleBox.width, handleBox.height);
+		
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		tekenHandles(g);
+	}
+	
+	public void tekenHandles(Graphics2D g)
+	{
+		if (topRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+		}
+		if (topLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+			
+		}
+		if (bottomRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+			
+		}
+		if (bottomLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+			
+		}
+		if (rotateEastHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+		}
+		if (rotateNorthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
+		}
+		if (rotateWestHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+		}
+		if (rotateSouthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
+
+		}
+		
+
+	}
+	
 	public void tekenBB(Graphics2D g)
 	{
 		AffineTransform oldAT = g.getTransform();
@@ -255,10 +483,11 @@ public class Streep
 		
 		g.setTransform(at);
 
-		float[] dash = new float[2];
-		dash[0] = 2;
-		dash[1] = 2;
-		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		//float[] dash = new float[2];
+		//dash[0] = 2;
+		//dash[1] = 2;
+		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 
 		g.drawPolygon(bb);
@@ -303,6 +532,8 @@ public class Streep
 		cy += dy;
 
 		bb.translate(dx, dy);
+		bb2.translate(dx, dy);
+		makeHandleBox();
 	}
 	
 	public boolean isContainedIn(Rectangle r)
@@ -323,15 +554,47 @@ public class Streep
 		
 		return isContainedIn;
 	}
+
+	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
+	{	
+		Polygon r = new Polygon();
+		
+		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		{
+			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
+			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
+						
+			//puntenX[pCnt] = (int) Math.round(cx + rotX);
+			//puntenY[pCnt] = (int) Math.round(cy + rotY);
+			
+			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
+			//doubleX[pCnt] = cx + rotX;
+			//doubleY[pCnt] = cy + rotY;
+			
+		}
+		
+		return r;
+	}
+
+
 }
+
+
 class Lijn
 {
 	Color kleur;
 	int fromX, fromY, toX, toY;
 	int bbFactor = 4;
-	Polygon bb;
+	Polygon bb,bb2;
 	double cx, cy;
 	double rotation = 0;
+	Rectangle handleBox;
+	int hbFactor = 4;
+	
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	
 	
 	public Lijn(Color c, int fromX, int fromY, int toX, int toY)
 	{
@@ -345,8 +608,121 @@ class Lijn
 		cy = ((double) fromY + (double) toY) / 2;
 		
 		makeBB();
+		makeHandleBox();
 	}
 	
+	public void makeHandleBox()
+	{
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		{
+			if (bb2.xpoints[pCnt] < minX)
+				minX = bb2.xpoints[pCnt];
+			if (bb2.xpoints[pCnt] > maxX)
+				maxX = bb2.xpoints[pCnt];
+			if (bb2.ypoints[pCnt] < minY)
+				minY = bb2.ypoints[pCnt];
+			if (bb2.ypoints[pCnt] > maxY)
+				maxY = bb2.ypoints[pCnt];
+		}
+		
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		int dw = w - KladjeVeld.minHandleBoxSize;
+		int dh = h - KladjeVeld.minHandleBoxSize;
+		if ((dw >= 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor,w, h);
+		else if ((dw >= 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor + dh/2, w, KladjeVeld.minHandleBoxSize);
+		else if ((dw < 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor, KladjeVeld.minHandleBoxSize, h);
+		else if ((dw < 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor + dh/2, KladjeVeld.minHandleBoxSize, KladjeVeld.minHandleBoxSize);
+
+		if (KladjeVeld.schalen)
+			makeScaleHandles();
+		if (KladjeVeld.roteren)
+			makeRotateHandles();
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y + 3 * hbFactor);
+		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+	
+	public void makeRotateHandles()
+	{
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
+										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
+                						  handleBox.y + handleBox.height - 2 * hbFactor,
+                						  4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateNorthHandle = null; 
+		rotateWestHandle = null;
+		rotateSouthHandle = null;
+		
+		
+	}
+
 	public void makeBB()
 	{
 		bb = new Polygon();
@@ -394,10 +770,18 @@ class Lijn
 			bb.addPoint(fromX + bbFactor, fromY + bbFactor);
 			bb.addPoint(fromX - bbFactor, fromY + bbFactor);
 		}
+		
+		bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
 	}
 
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
+	
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+
+		makeHandleBox();
+	
 	}
 	
 	public void scale(double scaleStep)
@@ -408,6 +792,21 @@ class Lijn
 		toY = (int) Math.round(scaleStep * toY + (1 - scaleStep) * cy);
 		
 		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+		
+	}
+
+	public void scale(double sx, double sy)
+	{	
+		fromX = (int) Math.round(sx * fromX + (1 - sx) * cx);
+		fromY = (int) Math.round(sy * fromY + (1 - sy) * cy);
+		toX = (int) Math.round(sx * toX + (1 - sx) * cx);
+		toY = (int) Math.round(sy * toY + (1 - sy) * cy);
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
 		
 	}
 	
@@ -470,6 +869,84 @@ class Lijn
 		g.setTransform(oldAT);
 	}
 
+	public void tekenHandleBox(Graphics2D g)
+	{
+		float[] dash = new float[2];
+		dash[0] = 2;
+		dash[1] = 2;
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+
+		g.setColor(KladjeVeld.hbColor);
+		
+		g.drawRect(handleBox.x, handleBox.y, handleBox.width, handleBox.height);
+		
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		tekenHandles(g);
+	}
+
+	public void tekenHandles(Graphics2D g)
+	{
+		if (topRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+		}
+		if (topLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+			
+		}
+		if (bottomRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+			
+		}
+		if (bottomLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+			
+		}
+		if (rotateEastHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+		}
+		if (rotateNorthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
+		}
+		if (rotateWestHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+		}
+		if (rotateSouthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
+
+		}
+		
+
+	}
+	
 	public void tekenBB(Graphics2D g)
 	{
 		AffineTransform oldAT = g.getTransform();
@@ -479,10 +956,11 @@ class Lijn
 		
 		g.setTransform(at);
 
-		float[] dash = new float[2];
-		dash[0] = 2;
-		dash[1] = 2;
-		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		//float[] dash = new float[2];
+		//dash[0] = 2;
+		//dash[1] = 2;
+		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawPolygon(bb);
@@ -527,6 +1005,9 @@ class Lijn
 		cy += dy;
 		
 		bb.translate(dx, dy);
+		bb2.translate(dx, dy);
+		makeHandleBox();
+
 	}	
 
 	public boolean isContainedIn(Rectangle r)
@@ -547,6 +1028,28 @@ class Lijn
 		
 		return isContainedIn;
 	}	
+	
+	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
+	{	
+		Polygon r = new Polygon();
+		
+		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		{
+			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
+			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
+						
+			//puntenX[pCnt] = (int) Math.round(cx + rotX);
+			//puntenY[pCnt] = (int) Math.round(cy + rotY);
+			
+			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
+			//doubleX[pCnt] = cx + rotX;
+			//doubleY[pCnt] = cy + rotY;
+			
+		}
+		
+		return r;
+	}
+
 }
 class Rechthoek
 {	Color kleur;
@@ -554,8 +1057,15 @@ class Rechthoek
 	int bbFactor = 4;
 	Rectangle outerBB;
 	Rectangle innerBB;
+	Polygon bb2;
 	double cx, cy;
 	double rotation = 0;
+	Rectangle handleBox;
+	int hbFactor = 4;
+
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
 	
 	public Rechthoek(Color c, int x, int y, int w, int h)
 	{
@@ -569,6 +1079,119 @@ class Rechthoek
 		cy = topLeftY + ((double) hoogte) / 2;
 		
 		makeBB();
+		makeHandleBox();
+		
+	}
+
+	public void makeHandleBox()
+	{
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		{
+			if (bb2.xpoints[pCnt] < minX)
+				minX = bb2.xpoints[pCnt];
+			if (bb2.xpoints[pCnt] > maxX)
+				maxX = bb2.xpoints[pCnt];
+			if (bb2.ypoints[pCnt] < minY)
+				minY = bb2.ypoints[pCnt];
+			if (bb2.ypoints[pCnt] > maxY)
+				maxY = bb2.ypoints[pCnt];
+		}
+		
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		int dw = w - KladjeVeld.minHandleBoxSize;
+		int dh = h - KladjeVeld.minHandleBoxSize;
+		if ((dw >= 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor,w, h);
+		else if ((dw >= 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor + dh/2, w, KladjeVeld.minHandleBoxSize);
+		else if ((dw < 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor, KladjeVeld.minHandleBoxSize, h);
+		else if ((dw < 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor + dh/2, KladjeVeld.minHandleBoxSize, KladjeVeld.minHandleBoxSize);	
+		
+		if (KladjeVeld.schalen)
+			makeScaleHandles();
+		if (KladjeVeld.roteren)
+			makeRotateHandles();
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y + 3 * hbFactor);
+		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+
+	public void makeRotateHandles()
+	{
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
+										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
+                						  handleBox.y + handleBox.height - 2 * hbFactor,
+                						  4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateNorthHandle = null; 
+		rotateWestHandle = null;
+		rotateSouthHandle = null;
+		
 		
 	}
 
@@ -579,10 +1202,21 @@ class Rechthoek
 		innerBB = new Rectangle(topLeftX + bbFactor, topLeftY + bbFactor, 
 			    breedte - 2 * bbFactor, hoogte - 2 * bbFactor);
 		
+		bb2 = new Polygon();
+		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor);
+		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor);
+		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
+		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
+		
 	}
 	
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+
 	}
 	
 	public void scale(double scaleStep)
@@ -593,9 +1227,23 @@ class Rechthoek
 		hoogte = (int) Math.round(scaleStep * hoogte);
 		
 		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
 		
 	}
 	
+	public void scale(double sx, double sy)
+	{	
+		topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
+		topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
+		breedte = (int) Math.round(sx * breedte);
+		hoogte = (int) Math.round(sy * hoogte);
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+		
+	}
 	
 	public Hashtable getState()
 	{	Hashtable h = new Hashtable();
@@ -656,6 +1304,84 @@ class Rechthoek
 		g.setTransform(oldAT);
 	}
 
+	public void tekenHandleBox(Graphics2D g)
+	{
+		float[] dash = new float[2];
+		dash[0] = 2;
+		dash[1] = 2;
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+
+		g.setColor(KladjeVeld.hbColor);
+		
+		g.drawRect(handleBox.x, handleBox.y, handleBox.width, handleBox.height);
+		
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		tekenHandles(g);
+	}
+
+	public void tekenHandles(Graphics2D g)
+	{
+		if (topRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+		}
+		if (topLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+			
+		}
+		if (bottomRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+			
+		}
+		if (bottomLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+			
+		}
+		if (rotateEastHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+		}
+		if (rotateNorthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
+		}
+		if (rotateWestHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+		}
+		if (rotateSouthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
+
+		}
+		
+
+	}
+
 	public void tekenBB(Graphics2D g)
 	{
 		AffineTransform oldAT = g.getTransform();
@@ -665,10 +1391,11 @@ class Rechthoek
 		
 		g.setTransform(at);
 		
-		float[] dash = new float[2];
-		dash[0] = 2;
-		dash[1] = 2;
-		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		//float[] dash = new float[2];
+		//dash[0] = 2;
+		//dash[1] = 2;
+		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawRect(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
@@ -712,6 +1439,10 @@ class Rechthoek
 		innerBB.translate(dx, dy);
 		cx += dx;
 		cy += dy;
+		
+		bb2.translate(dx, dy);
+		makeHandleBox();
+
 	}	
 
 	public boolean isContainedIn(Rectangle r)
@@ -729,14 +1460,43 @@ class Rechthoek
 		return isContainedIn;
 	}
 	
+	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
+	{	
+		Polygon r = new Polygon();
+		
+		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		{
+			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
+			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
+						
+			//puntenX[pCnt] = (int) Math.round(cx + rotX);
+			//puntenY[pCnt] = (int) Math.round(cy + rotY);
+			
+			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
+			//doubleX[pCnt] = cx + rotX;
+			//doubleY[pCnt] = cy + rotY;
+			
+		}
+		
+		return r;
+	}
+
+	
 }
 class Ellips
 {	Color kleur;
 	int topLeftX, topLeftY, breedte, hoogte;
 	int bbFactor = 4;
 	Rectangle outerBB, innerBB;
+	Polygon bb2;
 	double cx, cy;
 	double rotation = 0;
+	Rectangle handleBox;
+	int hbFactor = 4;
+
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
 	
 	public Ellips(Color c, int x, int y, int w, int h)
 	{
@@ -750,20 +1510,144 @@ class Ellips
 		cy = topLeftY + ((double) hoogte) / 2;
 		
 		makeBB();
+		makeHandleBox();
 		
 	}
 
+	public void makeHandleBox()
+	{
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		{
+			if (bb2.xpoints[pCnt] < minX)
+				minX = bb2.xpoints[pCnt];
+			if (bb2.xpoints[pCnt] > maxX)
+				maxX = bb2.xpoints[pCnt];
+			if (bb2.ypoints[pCnt] < minY)
+				minY = bb2.ypoints[pCnt];
+			if (bb2.ypoints[pCnt] > maxY)
+				maxY = bb2.ypoints[pCnt];
+		}
+		
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		int dw = w - KladjeVeld.minHandleBoxSize;
+		int dh = h - KladjeVeld.minHandleBoxSize;
+		if ((dw >= 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor,w, h);
+		else if ((dw >= 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor + dh/2, w, KladjeVeld.minHandleBoxSize);
+		else if ((dw < 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor, KladjeVeld.minHandleBoxSize, h);
+		else if ((dw < 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor + dh/2, KladjeVeld.minHandleBoxSize, KladjeVeld.minHandleBoxSize);	
+		
+		if (KladjeVeld.schalen)
+			makeScaleHandles();
+		if (KladjeVeld.roteren)
+			makeRotateHandles();
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y + 3 * hbFactor);
+		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+
+	public void makeRotateHandles()
+	{
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
+										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
+                						  handleBox.y + handleBox.height - 2 * hbFactor,
+                						  4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateNorthHandle = null; 
+		rotateWestHandle = null;
+		rotateSouthHandle = null;
+		
+		
+	}
+	
 	public void makeBB()
 	{
 		outerBB = new Rectangle(topLeftX - bbFactor, topLeftY - bbFactor, 
 			    breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
 		innerBB = new Rectangle(topLeftX + bbFactor, topLeftY + bbFactor, 
 			    breedte - 2 * bbFactor, hoogte - 2 * bbFactor);
-		
+
+		bb2 = new Polygon();
+		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor);
+		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor);
+		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
+		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
+
 	}
 	
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+
 	}
 	
 	public void scale(double scaleStep)
@@ -774,9 +1658,23 @@ class Ellips
 		hoogte = (int) Math.round(scaleStep * hoogte);
 		
 		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
 		
 	}
 	
+	public void scale(double sx, double sy)
+	{	
+		topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
+		topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
+		breedte = (int) Math.round(sx * breedte);
+		hoogte = (int) Math.round(sy * hoogte);
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+		
+	}
 	
 	public Hashtable getState()
 	{	Hashtable h = new Hashtable();
@@ -836,6 +1734,85 @@ class Ellips
 		
 		g.setTransform(oldAT);	
 	}
+
+	public void tekenHandleBox(Graphics2D g)
+	{
+		float[] dash = new float[2];
+		dash[0] = 2;
+		dash[1] = 2;
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+
+		g.setColor(KladjeVeld.hbColor);
+		
+		g.drawRect(handleBox.x, handleBox.y, handleBox.width, handleBox.height);
+		
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		tekenHandles(g);
+	}
+
+	
+	public void tekenHandles(Graphics2D g)
+	{
+		if (topRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+		}
+		if (topLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+			
+		}
+		if (bottomRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+			
+		}
+		if (bottomLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+			
+		}
+		if (rotateEastHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+		}
+		if (rotateNorthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
+		}
+		if (rotateWestHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+		}
+		if (rotateSouthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
+
+		}
+		
+
+	}
 	
 	public void tekenBB(Graphics2D g)
 	{
@@ -846,10 +1823,11 @@ class Ellips
 		
 		g.setTransform(at);
 
-		float[] dash = new float[2];
-		dash[0] = 2;
-		dash[1] = 2;
-		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		//float[] dash = new float[2];
+		//dash[0] = 2;
+		//dash[1] = 2;
+		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 		
 		g.drawOval(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
@@ -914,6 +1892,10 @@ class Ellips
 		cx += dx;
 		cy += dy;
 		
+		bb2.translate(dx, dy);
+		makeHandleBox();
+
+		
 	}	
 
 	public boolean isContainedIn(Rectangle r)
@@ -931,6 +1913,27 @@ class Ellips
 		return isContainedIn;
 	}
 	
+	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
+	{	
+		Polygon r = new Polygon();
+		
+		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		{
+			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
+			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
+						
+			//puntenX[pCnt] = (int) Math.round(cx + rotX);
+			//puntenY[pCnt] = (int) Math.round(cy + rotY);
+			
+			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
+			//doubleX[pCnt] = cx + rotX;
+			//doubleY[pCnt] = cy + rotY;
+			
+		}
+		
+		return r;
+	}
+
 }
 
 class TekstElement
@@ -941,11 +1944,19 @@ class TekstElement
 	int breedte, hoogte, ascent;
 	int bbFactor = 4;
 	Rectangle bb;
+	Polygon bb2;
 	double cx, cy;
 	double rotation = 0;
 	double scaleX = 1;
 	double scaleY = 1;
 	int tekstX, tekstY;
+	Rectangle handleBox;
+	int hbFactor = 4;
+
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	
 	
 	public TekstElement(Color c, String t, int x, int y)
 	{
@@ -964,6 +1975,7 @@ class TekstElement
 		cy = yPos + ((double) hoogte) / 2;
 		
 		makeBB();
+		makeHandleBox();
 	
 	}
 
@@ -975,17 +1987,143 @@ class TekstElement
 		cy = yPos + ((double) hoogte) / 2;
 		
 		makeBB();
+		makeHandleBox();
 		
 	}
+
+	public void makeHandleBox()
+	{
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		{
+			if (bb2.xpoints[pCnt] < minX)
+				minX = bb2.xpoints[pCnt];
+			if (bb2.xpoints[pCnt] > maxX)
+				maxX = bb2.xpoints[pCnt];
+			if (bb2.ypoints[pCnt] < minY)
+				minY = bb2.ypoints[pCnt];
+			if (bb2.ypoints[pCnt] > maxY)
+				maxY = bb2.ypoints[pCnt];
+		}
+		
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		int dw = w - KladjeVeld.minHandleBoxSize;
+		int dh = h - KladjeVeld.minHandleBoxSize;
+		if ((dw >= 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor,w, h);
+		else if ((dw >= 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor, minY - hbFactor + dh/2, w, KladjeVeld.minHandleBoxSize);
+		else if ((dw < 0) && (dh >= 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor, KladjeVeld.minHandleBoxSize, h);
+		else if ((dw < 0) && (dh < 0))
+			handleBox = new Rectangle(minX - hbFactor + dw/2, minY - hbFactor + dh/2, KladjeVeld.minHandleBoxSize, KladjeVeld.minHandleBoxSize);	
+		
+		if (KladjeVeld.schalen)
+			makeScaleHandles();
+		if (KladjeVeld.roteren)
+			makeRotateHandles();
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								handleBox.y - hbFactor);
+		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								handleBox.y + 3 * hbFactor);
+		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
+		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width - 3 * hbFactor,
+								   handleBox.y + handleBox.height + hbFactor);
+		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
+								   handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
+				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
+		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+
+	public void makeRotateHandles()
+	{
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
+										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
+                						  handleBox.y + handleBox.height - 2 * hbFactor,
+                						  4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateNorthHandle = null; 
+		rotateWestHandle = null;
+		rotateSouthHandle = null;
+		
+		
+	}
+
 	
 	public void makeBB()
 	{
 		bb = new Rectangle(xPos - bbFactor, yPos - bbFactor, 
 						   breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
+		
+		bb2 = new Polygon();
+		bb2.addPoint(xPos - bbFactor, yPos - bbFactor);
+		bb2.addPoint(xPos - bbFactor + breedte + 2 * bbFactor, yPos - bbFactor);
+		bb2.addPoint(xPos - bbFactor + breedte + 2 * bbFactor, yPos - bbFactor + hoogte + 2 * bbFactor);
+		bb2.addPoint(xPos - bbFactor, yPos - bbFactor + hoogte + 2 * bbFactor);
+
 	}
 
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
+		
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+
 	}
 
 	public void scale(double scaleStep)
@@ -1007,6 +2145,32 @@ class TekstElement
 		scaleY *= scaleStep;
 	
 		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
+	
+	}
+
+	public void scale(double sx, double sy)
+	{	
+		// dit niet doen!!
+		//xPos = (int) Math.round(sx * xPos + (1 - sx) * cx);
+		//yPos = (int) Math.round(sy * yPos + (1 - sy) * cy);
+		
+		breedte = (int) Math.round(sx * breedte);
+		hoogte = (int) Math.round(sy * hoogte);
+
+		// dit niet doen!!
+		//ascent = (int) Math.round(sy * ascent);
+		
+		tekstX = (int) Math.round((1/sx) * tekstX);// + (1 - (1/sx)) * cx);
+		tekstY = (int) Math.round((1/sy) * tekstY);// + (1 - (1/sy)) * cy);
+		
+		scaleX *= sx;
+		scaleY *= sy;
+	
+		makeBB();
+		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeHandleBox();
 	
 	}
 	
@@ -1083,6 +2247,85 @@ class TekstElement
 		
 	}
 
+	public void tekenHandleBox(Graphics2D g)
+	{
+		float[] dash = new float[2];
+		dash[0] = 2;
+		dash[1] = 2;
+		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+
+		g.setColor(KladjeVeld.hbColor);
+		
+		g.drawRect(handleBox.x, handleBox.y, handleBox.width, handleBox.height);
+		
+		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
+		
+		tekenHandles(g); 
+	}
+	
+	public void tekenHandles(Graphics2D g)
+	{
+		if (topRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+		}
+		if (topLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(topLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+			
+		}
+		if (bottomRightHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomRightHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+			
+		}
+		if (bottomLeftHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawPolygon(bottomLeftHandle);
+//g.setColor(Color.red);
+//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+			
+		}
+		if (rotateEastHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+		}
+		if (rotateNorthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
+		}
+		if (rotateWestHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+		}
+		if (rotateSouthHandle != null)
+		{	g.setColor(KladjeVeld.hbColor);
+			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
+					   4 * hbFactor, 4 * hbFactor);
+//g.setColor(Color.red);			
+//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
+
+		}
+		
+
+	}
+	
+
 	public void tekenBB(Graphics2D g)
 	{
 
@@ -1093,10 +2336,11 @@ class TekstElement
 		
 		g.setTransform(at);
 		
-		float[] dash = new float[2];
-		dash[0] = 2;
-		dash[1] = 2;
-		g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		//float[] dash = new float[2];
+		//dash[0] = 2;
+		//dash[1] = 2;
+		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
+		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 
 		g.drawRect(bb.x, bb.y, bb.width, bb.height);
@@ -1140,6 +2384,10 @@ class TekstElement
 		bb.translate(dx, dy);
 		cx += dx;
 		cy += dy;
+		
+		bb2.translate(dx, dy);
+		makeHandleBox();
+
 	}	
 
 	public boolean isContainedIn(Rectangle r)
@@ -1157,4 +2405,25 @@ class TekstElement
 		return isContainedIn;
 	}
 	
+	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
+	{	
+		Polygon r = new Polygon();
+		
+		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		{
+			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
+			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
+						
+			//puntenX[pCnt] = (int) Math.round(cx + rotX);
+			//puntenY[pCnt] = (int) Math.round(cy + rotY);
+			
+			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
+			//doubleX[pCnt] = cx + rotX;
+			//doubleY[pCnt] = cy + rotY;
+			
+		}
+		
+		return r;
+	}
+
 }
