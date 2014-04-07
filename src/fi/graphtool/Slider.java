@@ -204,10 +204,12 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	public void mouseReleased(MouseEvent e)
 	{
 		if(raak)
-		{	System.out.println("mouseReleased: stand: " + stand);
-			int intStapGrootte = (int) Math.round(stapGrootte * lengte/(bovenGrens - onderGrens));
-			int aantalStappen = (int) (lengte/intStapGrootte);
-			System.out.println("aantalStappen: " + aantalStappen);
+		{	int aantalStappen = lengte;
+			int intStapGrootte = 1;
+			if(stapGrootte != 0)	
+			{	intStapGrootte = (int) Math.round(stapGrootte * lengte/(bovenGrens - onderGrens));
+				aantalStappen = (int) (lengte/intStapGrootte);
+			}
 			for(int i = 0; i < aantalStappen; i++)
 			{	if(stand < i * intStapGrootte + intStapGrootte/2)
 				{	stand = (int) (i * intStapGrootte);
