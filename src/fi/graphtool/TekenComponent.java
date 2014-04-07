@@ -300,7 +300,7 @@ public class TekenComponent extends JPanel {
 	
 	public void zetGrafiekComponent(GraphToolInteractiePanel gc)
 	{	grafiekComponent = gc;
-		grKeuze.setForeground(grafiekComponent.getColor(0));
+		grKeuze.setForeground(grafiekComponent.getFormuleColor(0));
 	}
 	
 	public Hashtable getState()
@@ -439,7 +439,7 @@ public class TekenComponent extends JPanel {
 			int index = grKeuze.getSelectedIndex();
 			if(index >= 0)
 			{	//if(grafiekComponent.typeOpdracht > 0)
-				grKeuze.setForeground(grafiekComponent.getColor(index));
+				grKeuze.setForeground(grafiekComponent.getFormuleColor(index));
 				
 				//grKeuze.setForeground(grafiekComponent.opdrachtKleuren[index]);
 				//else
@@ -481,7 +481,7 @@ public class TekenComponent extends JPanel {
          	else	
          		setBackground(new Color(210, 210, 210));
          	if (index >= 0)	
-         		setForeground(grafiekComponent.getColor(index));
+         		setForeground(grafiekComponent.getFormuleColor(index));
          	return this;
      	}
  	}

@@ -583,8 +583,8 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 	
 	public void zetGrafiekComponent(GraphToolInteractiePanel gc)
 	{	interactiePanel = gc;
-		functieKeuze.setForeground(interactiePanel.getColor(0));
-		tabelKeuze.setForeground(interactiePanel.getColor(0));
+		functieKeuze.setForeground(interactiePanel.getFormuleColor(0));
+		tabelKeuze.setForeground(interactiePanel.getFormuleColor(0));
 	}
 	
 	public GraphToolInteractiePanel getGrafiekComponent()
@@ -706,7 +706,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 	public void setActiveIndex(int index, boolean setState)
 	{	tabelKeuzeEnabled = false;
 		tabelKeuze.setSelectedIndex(index - 1);
-		tabelKeuze.setForeground(interactiePanel.getColor(index - 1));
+		tabelKeuze.setForeground(interactiePanel.getFormuleColor(index - 1));
 		tabelKeuzeEnabled = true;
 		int[] oldFirstIndexVisible = new int[3]; 
 		for(int i = 0; i < oldFirstIndexVisible.length; i++)
@@ -1386,7 +1386,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 				return;
 			int index = tabelKeuze.getSelectedIndex();
 			if(index >= 0)
-			{	tabelKeuze.setForeground(interactiePanel.getColor(index));
+			{	tabelKeuze.setForeground(interactiePanel.getFormuleColor(index));
 				interactiePanel.setActiveIndex(index + 1, false);
 			}
 		}
@@ -1400,7 +1400,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 				funcNum = getFunctie(name);
 				zetFunctie(functies[funcNum], false);
 			}	
-			functieKeuze.setForeground(interactiePanel.getColor(funcNum));
+			functieKeuze.setForeground(interactiePanel.getFormuleColor(funcNum));
 		}
 	}
 	
@@ -1421,7 +1421,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
          	else	
          		setBackground(new Color(210, 210, 210));
          	if ((index >= 0))	
-         		setForeground(interactiePanel.getColor(index));
+         		setForeground(interactiePanel.getFormuleColor(index));
          	return this;
      	}
  	}

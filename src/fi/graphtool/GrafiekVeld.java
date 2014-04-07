@@ -479,16 +479,16 @@ class GrafiekVeld extends JComponent{
 						}
 						if(Double.isNaN(d1) || gtip.yPositief && d1<0)
 						{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-							if(gtip.grafiekKleuren)g.setColor(gtip.getColor(j));
-							else g.setColor(gtip.getColor(0));
+							if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
+							else g.setColor(gtip.getTekenColor(0));
 							g.setStroke(new BasicStroke(1.2f));
 							if(curve.getCurrentPoint()!=null) g.draw(curve);
 							curve = new GeneralPath();
 						}
 					}
 					g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-					if(gtip.grafiekKleuren)g.setColor(gtip.getColor(j));
-					else g.setColor(gtip.getColor(0));
+					if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
+					else g.setColor(gtip.getTekenColor(0));
 					g.setStroke(new BasicStroke(1.2f));
 					g.draw(curve);
 	
@@ -612,9 +612,9 @@ class GrafiekVeld extends JComponent{
 		if(docent)
 			g.setColor(gtip.docentColor);
 		else if(gtip.grafiekKleuren)
-			g.setColor(gtip.getColor(index - 1));
+			g.setColor(gtip.getTekenColor(index - 1));
 		else
-			g.setColor(gtip.getColor(0));
+			g.setColor(gtip.getTekenColor(0));
 		for (int pCnt = 0; pCnt < indexPoints.size(); pCnt++)
 		{	RealPoint rp = (RealPoint) indexPoints.elementAt(pCnt);
 			Point pix = gtip.realPointToPixels(rp);
@@ -1352,9 +1352,9 @@ class GrafiekVeld extends JComponent{
 			if(areas[i] != null && !areas[i].isEmpty())
 			{	areaClusters[clusterNr][teller] = areas[i];
 				if(gtip.grafiekKleuren)
-					ongelijkheidKleuren[clusterNr][teller] = gtip.getColor(i);
+					ongelijkheidKleuren[clusterNr][teller] = gtip.getTekenColor(i);
 				else
-					ongelijkheidKleuren[clusterNr][teller] = gtip.getColor(0);
+					ongelijkheidKleuren[clusterNr][teller] = gtip.getTekenColor(0);
 				teller++;
 				if(teller >= areaClusters[clusterNr].length)
 				{	clusterNr++;
@@ -1447,7 +1447,7 @@ class GrafiekVeld extends JComponent{
 				curve.lineTo(xWaardePixels, gtip.yPositief?gtip.beginy:getHeight());
 				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
 				g.setStroke(new BasicStroke(1.2f));
-				g.setColor(gtip.getColor(j));
+				g.setColor(gtip.getTekenColor(j));
 				g.draw(curve);
 			}
 		}
@@ -1593,8 +1593,8 @@ class GrafiekVeld extends JComponent{
 					}
 					if(Double.isNaN(x1)  || gtip.xPositief && x1 < 0 || Double.isNaN(y1) || gtip.yPositief && y1 < 0)
 					{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-						if(gtip.grafiekKleuren)g.setColor(gtip.getColor(j));
-						else g.setColor(gtip.getColor(0));
+						if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
+						else g.setColor(gtip.getTekenColor(0));
 						g.setStroke(new BasicStroke(1.2f));
 						if(curve.getCurrentPoint()!=null) 
 							g.draw(curve);
@@ -1602,8 +1602,8 @@ class GrafiekVeld extends JComponent{
 					}
 				}
 				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-				if(gtip.grafiekKleuren)g.setColor(gtip.getColor(j*2));
-				else g.setColor(gtip.getColor(0));
+				if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j*2));
+				else g.setColor(gtip.getTekenColor(0));
 				g.setStroke(new BasicStroke(1.2f));
 				g.draw(curve);
 			

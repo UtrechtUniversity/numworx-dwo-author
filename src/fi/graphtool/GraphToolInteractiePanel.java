@@ -132,7 +132,8 @@ MouseListener, MouseMotionListener {
 	
 	boolean formuleComponentAan, tekenComponentAan, tabelComponentAan, tabelAlsTekenTool;
 	Color piColor = Color.gray;
-	private Color[] colors, opdrachtKleuren, gewoneKleuren;;
+	private Color[] colors, gewoneKleuren;
+	private Color[] opdrachtKleuren;
 	//private static Color[] 
 	static int PRAD = 2;
 	
@@ -1239,7 +1240,19 @@ MouseListener, MouseMotionListener {
 		
 	}
 	
-	public Color getColor(int index)
+	public Color getFormuleColor(int index)
+	{
+		if(grafiekKleuren && typeOpdracht != GEENOPDRACHT)
+			return opdrachtKleuren[index];
+		else if(grafiekKleuren)
+			return gewoneKleuren[index];
+		else
+			return gewoneKleuren[0];
+	}
+	
+	//verschil tussen deze en die hierboven: bij nagekeken grafieken wordt grafiek groen, rood of oranje, 
+	//maar de bijbehorende formule moet niet van kleur veranderen
+	public Color getTekenColor(int index)
 	{	if(grafiekKleuren)
 			return colors[index];
 		else
@@ -1253,12 +1266,12 @@ MouseListener, MouseMotionListener {
 		repaint();
 	}
 	
-	public void setColor(int nr, Color c)
+	public void setColor(int nr, Color c, boolean nakijken)
 	{
 		colors[nr] = c;
 		if(typeOpdracht == GEENOPDRACHT)
 			gewoneKleuren[nr] = c;
-		else
+		else if (!nakijken)
 			opdrachtKleuren[nr] = c;
 		
 		repaint();
@@ -1878,9 +1891,11 @@ MouseListener, MouseMotionListener {
 			//}
 		
 		if((mode != 2 && mode != 3) || nagekeken)	kijkNa();
+		
 	}
 	
 	public Hashtable getState() {	
+			
 		if(!("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))) kijkNa(false);
 		
 		double beginxDocent = 1;
@@ -2496,6 +2511,8 @@ MouseListener, MouseMotionListener {
 		for(int i = 0; i < colorRGBsOpdrachten.length; i++)
 		{	//colors[i] = new Color(colorRGBs[i][0], colorRGBs[i][1], colorRGBs[i][2]);
 			opdrachtKleuren[i] = new Color(colorRGBsOpdrachten[i][0], colorRGBsOpdrachten[i][1], colorRGBsOpdrachten[i][2]);
+			//System.out.println("zijn opdrachtkleuren rood geworden?");
+			//System.out.println("opdrachtKleuren[" + i + "]=" + colorRGBsOpdrachten[i][0] + ", " + colorRGBsOpdrachten[i][1] + ", " + colorRGBsOpdrachten[i][2]);
 		}
 		if(paramNamen != null)
 		{	this.schuifParameters = new SchuifParameter[paramNamen.length];
@@ -3441,7 +3458,7 @@ MouseListener, MouseMotionListener {
 							}
 					}
 					if(show)
-						setColor(i, color);
+						setColor(i, color, true);
 					else
 					;	//nog iets leegmaken, zodat niet wordt getekend?
 						
@@ -3472,7 +3489,7 @@ MouseListener, MouseMotionListener {
 				{	fout = true;
 				}
 				if(show)
-					setColor(0, color);
+					setColor(0, color, true);
 				else
 					;	//iets leegmaken, zodat niet getekend?
 			}
@@ -3729,7 +3746,7 @@ MouseListener, MouseMotionListener {
 					}
 				}
 				if(show)
-					setColor(0, color);
+					setColor(0, color, true);
 				
 				repaint();
 			}
@@ -4082,7 +4099,7 @@ MouseListener, MouseMotionListener {
 			else if (tekenComponent.getCursorMode() == tekenComponent.DRAW)
 			{	
 				if(typeOpdracht > GEENOPDRACHT)
-				{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1]);
+				{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1], false);
 				}
 				
 				
@@ -4169,7 +4186,7 @@ MouseListener, MouseMotionListener {
 				}
 				if (drp != null)
 				{	if(typeOpdracht > GEENOPDRACHT)
-					{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1]);
+					{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1], false);
 					}
 					removePoint(drp.getTabelIndex(), drp.getIndex(), false);
 				
@@ -4189,7 +4206,7 @@ MouseListener, MouseMotionListener {
 									  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
 						if (dis <= PRAD + 2)
 						{	if(typeOpdracht > GEENOPDRACHT)
-							{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1]);
+							{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1], false);
 							}
 							dragPoint = rp;
 						}
@@ -4667,7 +4684,7 @@ MouseListener, MouseMotionListener {
 		else if (typeOpdracht == TEKENTABELPUNTEN)
 		{	if (e.getActionCommand().equals("points changed")) 
 			{	
-				setColor(0, new Color(0,0,255));	
+				setColor(0, new Color(0,0,255), false);	
 				tabelComponent.zetTabelPunten(docentGraphPoints, false);
 				
 				repaint();

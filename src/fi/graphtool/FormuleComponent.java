@@ -150,11 +150,12 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	
 	public void zetMaxAantalFormules(int num, boolean setState)
 	{	maxAantalFormules = num;
-		boolean knoppenNodig = maxAantalFormules>1;
+		boolean knoppenNodig = maxAantalFormules > 1;
+		boolean checkboxenNodig = docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT));
 		nieuweRegelKnop.setVisible(knoppenNodig);
 		verwijderRegelKnop.setVisible(knoppenNodig);
-		checkboxen[0].setVisible(knoppenNodig);
-		formuleX = knoppenNodig ? 30 : 10;
+		checkboxen[0].setVisible(checkboxenNodig);
+		formuleX = checkboxenNodig ? 30 : 10;
 		if(aantalRegels > maxAantalFormules)
 			aantalRegels = maxAantalFormules;
 				
@@ -296,7 +297,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	public void zetGrafiekKleuren()
 	{	if(formuleVakken != null && grafiekComponent != null)
 			for(int i=0 ; i<formuleVakken.length ; i++)
-				formuleVakken[i].setFGColor(grafiekComponent.getColor(i));
+				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
 		repaint();
 	}
 	
@@ -501,9 +502,12 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 				formuleVakken[i].setVisible(true);
 				if(geselecteerd!=null)
 					checkboxen[i].setSelected(geselecteerd[i]);
-				add(checkboxen[i],0);
-				if(maxAantalFormules > 1)
-					checkboxen[i].setVisible(true);
+				if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+				{	//System.out.println("hier visible gezet? " + i);
+					add(checkboxen[i],0);
+					//checkboxen[i].setVisible(true);
+				
+				}
 				add(domeinButtons[i], 0);
 				domeinButtons[i].setVisible(false);
 				this.isEn[i] = isEn[i];
@@ -657,7 +661,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 			formuleVakken[i].setLocation(formuleX,10 + 35*i);
 			formuleVakken[i].setOpaque(false);
 			if(grafiekComponent != null)
-				formuleVakken[i].setFGColor(grafiekComponent.getColor(i));
+				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
 			if(functieBeginAanpasbaar)
 				formuleVakken[i].formuleVak.vulVak(exps[i]);
 			parseFormule(exps[i], i, setState);
@@ -666,6 +670,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		}
 		
 		if(maxAantalFormules > 1)
+		//if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 		{	checkboxen = new JCheckBox[maxAantalFormules];
 			for(int i=0 ; i<maxAantalFormules ; i++)
 			{	checkboxen[i] = new JCheckBox();
@@ -689,7 +694,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		
 		for(int i = 0; i < aantalRegels; i++)
 		{	add(formuleVakken[i],0);
-			if(maxAantalFormules > 1)
+			if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				add(checkboxen[i]);
 			add(domeinButtons[i]);
 		}
@@ -723,7 +728,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		formuleVak.requestFocus();
 		actiefNummer = 0;
 		
-		if(maxAantalFormules > 1)
+		if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 		{	checkboxen[0].setVisible(true);	
 			checkboxen[0].setSelected(true);
 		}
@@ -1074,10 +1079,14 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		{	parseFormule(aantalRegels - 1, false);
 			add(formuleVakken[aantalRegels],0);
 			zetVoorvoegsel(aantalRegels);	
-			add(checkboxen[aantalRegels],0);
+			if(docent || (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))
+				add(checkboxen[aantalRegels],0);
+			else
+				checkboxen[aantalRegels].setSelected(true);
 			add(domeinButtons[aantalRegels],0);
 			domeinButtons[aantalRegels].setVisible(false);
 			add(enOfKnoppen[aantalRegels - 1], 0);
+			enOfKnoppen[aantalRegels - 1].setVisible(false);
 			layoutVakken(false);
 			formuleVakken[aantalRegels].formuleVak.requestFocus();
 			aantalRegels++;
@@ -1097,6 +1106,8 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 			//	formuleVakken[aantalRegels - 1].formuleVak.vulVak("$f@");
 			remove(formuleVakken[aantalRegels-1]);
 			remove(checkboxen[aantalRegels-1]);
+			if(!docent && grafiekComponent != null && grafiekComponent.typeOpdracht != GraphToolInteractiePanel.GEENOPDRACHT)
+				checkboxen[aantalRegels-1].setSelected(false);
 			remove(domeinButtons[aantalRegels-1]);
 			remove(enOfKnoppen[aantalRegels-2]);
 			isEn[aantalRegels - 2] = true;
@@ -1180,8 +1191,8 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	public void mousePressed(MouseEvent e)
 	{	for(int i = 0; i < aantalRegels; i++)
 		{	if(e.getSource().equals(checkboxen[i]) && (e.getModifiers() & e.BUTTON1_MASK) == 0)
-			{	Color kleur = JColorChooser.showDialog(this, GraphTool.rb.getString("kleurKiezer"), grafiekComponent.getColor(i));//new Color(255,255,180));
-				grafiekComponent.setColor(i,  kleur);
+			{	Color kleur = JColorChooser.showDialog(this, GraphTool.rb.getString("kleurKiezer"), grafiekComponent.getFormuleColor(i));//new Color(255,255,180));
+				grafiekComponent.setColor(i,  kleur, false);
 				zetGrafiekKleuren();
 			}
 		}
