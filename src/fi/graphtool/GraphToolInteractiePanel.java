@@ -3558,7 +3558,8 @@ MouseListener, MouseMotionListener {
 					if(permutatieHits > totaalHits)
 					{	totaalHits = permutatieHits;
 						for(int i = 0; i < permutatie.length; i++)
-							koppeling[i] = permutatie[i][0];
+						{	koppeling[i] = permutatie[i][0];
+						}
 					}
 					permutatie = vindVolgendePermutatie(permutatie);
 				}
@@ -3567,7 +3568,7 @@ MouseListener, MouseMotionListener {
 					somMinimum += minimumPunten[i];
 				int[] scorePerPunt = new int[aantalFuncties];
 				for(int i = 0; i < aantalFuncties; i++)
-					scorePerPunt[i] = maxScores[i] / Math.max(checkPoints[i].size(), minimumPunten[koppeling[i]]);
+					scorePerPunt[koppeling[i]] = maxScores[i] / Math.max(checkPoints[i].size(), minimumPunten[koppeling[i]]);
 				if(totaalHits == 0)
 				{	score = 0; 
 					fout = true;
@@ -3595,7 +3596,8 @@ MouseListener, MouseMotionListener {
 							score += maxScores[koppeling[i]];
 						}
 						else
-							score += hits[i][koppeling[i]] * scorePerPunt[koppeling[i]];
+						{	score += hits[i][koppeling[i]] * scorePerPunt[koppeling[i]];
+						}
 					fout = true;
 					groenVinkjeLabel.setVisible(false);
 					oranjeVinkjeLabel.setVisible(show);
@@ -3642,7 +3644,7 @@ MouseListener, MouseMotionListener {
 				if(show) 
 				{	//leerlingcolor op juiste kleur zetten.
 					for(int i = 0; i < aantalFuncties; i++)
-					{	if(functieCorrect[i])
+					{	if(functieCorrect[koppeling[i]])
 							colors[i] = color;
 						else
 							colors[i] = Color.red;
