@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -28,9 +29,9 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 public class Munten extends JPanel implements ActionListener, Runnable {	
 	JPanel buttonPanel;
 	Thread animatie;
-	Button volgende;
-	Button start;
-	Button stop;
+	JButton volgende;
+	JButton start;
+	JButton stop;
 	PaintPanel paintPanel;
 	FrequentieClass frequentieClass;
 	JTable table;
@@ -143,7 +144,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		aantalWorpenLabel=new JLabel(StatSim.rb.getString("numberOfRounds"));
 		aantalWorpenLabel.setLocation(10,50);
 		aantalWorpenLabel.setSize(150,20);
-		kansOpKopLabel=new JLabel(StatSim.rb.getString("chanceOfHead"));
+		kansOpKopLabel=new JLabel(StatSim.rb.getString("chanceOfTails"));
 		kansOpKopLabel.setLocation(160,50);
 		kansOpKopLabel.setSize(150,20);
 		aantalWorpenText=new JTextField();
@@ -161,20 +162,20 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		panel1.add(kansOpKopLabel);
 		panel1.add(kansOpKopText);
 		
-		start=new Button(StatSim.rb.getString("start"));
+		start=new JButton(StatSim.rb.getString("start"));
 		buttonPanel.add(start);
 		start.setLocation(315,0);
 		start.setSize(100,20);
 		start.addActionListener(this);
 		
-		volgende = new Button(StatSim.rb.getString("next"));
+		volgende = new JButton(StatSim.rb.getString("next"));
 		buttonPanel.add(volgende);
 		volgende.setLocation(315,30);
 		volgende.setSize(100,20);
 		volgende.addActionListener(this);
 		volgende.setEnabled(false);
 		
-		stop = new Button(StatSim.rb.getString("stop"));
+		stop = new JButton(StatSim.rb.getString("stop"));
 		buttonPanel.add(stop);
 		stop.setLocation(315,60);
 		stop.setSize(100,20);
@@ -369,6 +370,12 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	    pane1.setVisible(false);
 	    
 	}
+
+	public String replaceComma(String oldString)
+	{
+		String newString=oldString.replace(",",".");				
+		return newString;
+	}
 	
 	public void setResults () {
 		if (eenMuntRadio.isSelected()==true) {
@@ -556,7 +563,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	   double r = generator.nextDouble();
 	   
 	   if (eenMuntRadio.isSelected()==true) {
-		   if (r>1-Double.parseDouble(kansOpKopText.getText())) {
+		   if (r>1-Double.parseDouble(replaceComma(kansOpKopText.getText()))) {
 			   munt[muntCount]=true;
 			   totaalmunt=totaalmunt+1;
 			   if (muntCount>0)

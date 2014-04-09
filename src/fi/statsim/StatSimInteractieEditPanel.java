@@ -23,6 +23,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 
 	private JRadioButton dobbelstenenRadio;
 	private JRadioButton muntenRadio;
+	private JRadioButton binomTrekkingRadio;
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -39,22 +40,32 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		muntenRadio=new JRadioButton("Munten");
 		muntenRadio.setLocation(10,10);
 		muntenRadio.setSize(200,20);
+		muntenRadio.addActionListener(this);
 		optionsPanel.add(muntenRadio);
 		
 		dobbelstenenRadio=new JRadioButton("Dobbelstenen");
 		dobbelstenenRadio.setLocation(10,30);
 		dobbelstenenRadio.setSize(200,20);
+		dobbelstenenRadio.addActionListener(this);
 		optionsPanel.add(dobbelstenenRadio);
+		
+		binomTrekkingRadio=new JRadioButton("Binominale trekking");
+		binomTrekkingRadio.setLocation(10,50);
+		binomTrekkingRadio.setSize(200,20);
+		binomTrekkingRadio.addActionListener(this);
+		optionsPanel.add(binomTrekkingRadio);
 		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
 		buttonGroup1.add(dobbelstenenRadio);
+		buttonGroup1.add(binomTrekkingRadio);
 	}
 	
 	public Hashtable getEditState() {
 		Hashtable h = interactiePanel.getEditState();
 		h.put("muntenRadio", new Boolean(muntenRadio.isSelected()));
 		h.put("dobbelstenenRadio", new Boolean(dobbelstenenRadio.isSelected()));
+		h.put("binomTrekkingRadio", new Boolean(binomTrekkingRadio.isSelected()));
 		return h;
 	}
 	
@@ -63,9 +74,15 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		Boolean muntenRadioBool=false;
 		if(h.containsKey("muntenRadio")) muntenRadioBool= ((Boolean)h.get("muntenRadio")).booleanValue();
 		muntenRadio.setSelected(muntenRadioBool);
+		interactiePanel.munten.setVisible(muntenRadioBool);
 		Boolean dobbelstenenRadioBool=false;
 		if(h.containsKey("dobbelstenenRadio")) dobbelstenenRadioBool= ((Boolean)h.get("dobbelstenenRadio")).booleanValue();
 		dobbelstenenRadio.setSelected(dobbelstenenRadioBool);
+		interactiePanel.dobbelstenen.setVisible(dobbelstenenRadioBool);
+		Boolean binomTrekkingRadioBool=false;
+		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
+		binomTrekkingRadio.setSelected(binomTrekkingRadioBool);
+		interactiePanel.binomTrekking.setVisible(binomTrekkingRadioBool);
 		
 		interactiePanel.setEditState(h);
 		
@@ -106,6 +123,21 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		   if (e.getSource()==muntenRadio) {
+			   interactiePanel.munten.setVisible(true);
+			   interactiePanel.dobbelstenen.setVisible(false);
+			   interactiePanel.binomTrekking.setVisible(false);
+		   }
+		   if (e.getSource()==dobbelstenenRadio) {
+			   interactiePanel.munten.setVisible(false);
+			   interactiePanel.dobbelstenen.setVisible(true);
+			   interactiePanel.binomTrekking.setVisible(false);
+		   }
+		   if (e.getSource()==binomTrekkingRadio) {
+			   interactiePanel.munten.setVisible(false);
+			   interactiePanel.dobbelstenen.setVisible(false);
+			   interactiePanel.binomTrekking.setVisible(true);
+		   }
 	}
 
 }

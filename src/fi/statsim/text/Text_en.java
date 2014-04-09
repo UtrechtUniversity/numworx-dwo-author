@@ -9,7 +9,7 @@ public class Text_en extends java.util.ListResourceBundle
             {	"oneCoin" , "One coin" },
             {	"twoCoins" , "Two coins" },
             {   "numberOfRounds", "Number of rounds" },
-            {   "chanceOfHead", "Chance of head" },
+            {   "chanceOfTails", "Chance of tails" },
             {   "start", "Start" },
             {   "next", "Next" },
             {   "stop", "Stop" },
@@ -27,7 +27,17 @@ public class Text_en extends java.util.ListResourceBundle
             {   "frequency", "Frequency" },
             {   "heads", "Heads" },
             {   "tails", "Tails" },
-            {   "percentageHeads", "Percentage heads" }
+            {   "percentageHeads", "Percentage heads" },
+            {   "eyes", "Eyes" },
+            {   "sumEyes", " Sum eyes" },
+            {   "numberOfDices", "Number of dices" },
+            {   "one", "One" },
+            {   "two", "Two" },
+            {   "three", "Three" },
+            {   "showSum", "Show sum" },
+            {   "outcome", "Outcome" },
+            {   "numberOfDraws", "Number of draws" },
+            {   "chance", "Chance" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

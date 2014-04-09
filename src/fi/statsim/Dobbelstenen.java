@@ -4,6 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import java.awt.Button;
 import java.awt.Color;
@@ -46,9 +47,9 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	JScrollPane pane3;
 	JScrollPane pane4;
 	JScrollPane pane5;
-	Button start;
-	Button volgende;
-	Button stop;
+	JButton start;
+	JButton volgende;
+	JButton stop;
 	Thread animatie;
 	Boolean stopCounting;
 	Border border1;
@@ -80,7 +81,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		add(panel1);
 		panel1.setSize(230,115);
 		panel1.setLocation(0,0);
-		panel1.setBorder(BorderFactory.createTitledBorder(border1,"Instellingen",TitledBorder.CENTER,TitledBorder.TOP));
+		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP));
 		
 		border2=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		panel2=new JPanel();
@@ -89,9 +90,9 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		panel1.add(panel2);
 		panel2.setSize(200,40);
 		panel2.setLocation(10,15);
-		panel2.setBorder(BorderFactory.createTitledBorder(border2,"Aantal dobbelstenen",TitledBorder.LEFT,TitledBorder.TOP));
+		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("numberOfDices"),TitledBorder.LEFT,TitledBorder.TOP));
 		
-		eenDobbelsteenRadio=new JRadioButton("Een");
+		eenDobbelsteenRadio=new JRadioButton(StatSim.rb.getString("one"));
 		eenDobbelsteenRadio.setBackground(Color.white);
 		eenDobbelsteenRadio.setSize(50,20);
 		eenDobbelsteenRadio.setLocation(10,15);
@@ -99,14 +100,14 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		eenDobbelsteenRadio.addActionListener(this);
 		panel2.add(eenDobbelsteenRadio);
 		
-		tweeDobbelstenenRadio=new JRadioButton("Twee");
+		tweeDobbelstenenRadio=new JRadioButton(StatSim.rb.getString("two"));
 		tweeDobbelstenenRadio.setBackground(Color.white);
 		tweeDobbelstenenRadio.setSize(60,20);
 		tweeDobbelstenenRadio.setLocation(60,15);
 		tweeDobbelstenenRadio.addActionListener(this);
 		panel2.add(tweeDobbelstenenRadio);
 		
-		drieDobbelstenenRadio=new JRadioButton("Drie");
+		drieDobbelstenenRadio=new JRadioButton(StatSim.rb.getString("three"));
 		drieDobbelstenenRadio.setBackground(Color.white);
 		drieDobbelstenenRadio.setSize(60,20);
 		drieDobbelstenenRadio.setLocation(120,15);
@@ -118,6 +119,12 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		buttonGroup1.add(tweeDobbelstenenRadio);
 		buttonGroup1.add(drieDobbelstenenRadio);
 		
+		col[0]=StatSim.rb.getString("exp");
+		col1[0]=StatSim.rb.getString("exp");
+		col2[0]=StatSim.rb.getString("exp");
+		col3[0]=StatSim.rb.getString("eyes");
+		col4[0]=StatSim.rb.getString("sumEyes");
+		col5[0]=StatSim.rb.getString("sumEyes");
 		
 	    model = new DefaultTableModel(col,100); 
 	    table=new JTable(model){@Override
@@ -185,20 +192,20 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane1.setVisible(false);
 	    pane2.setVisible(false);
 	    
-	    start=new Button("Start");
+	    start=new JButton(StatSim.rb.getString("start"));
 	    start.setSize(100,20);
 	    start.setLocation(240,0);
 	    start.addActionListener(this);
 	    add(start);
 	    
-	    volgende=new Button("Volgende");
+	    volgende=new JButton(StatSim.rb.getString("next"));
 	    volgende.setSize(100,20);
 	    volgende.setLocation(240,30);
 	    volgende.addActionListener(this);
 	    volgende.setEnabled(false);
 	    add(volgende);
 	    
-	    stop=new Button("Stop");
+	    stop=new JButton(StatSim.rb.getString("stop"));
 	    stop.setSize(100,20);
 	    stop.setLocation(240,60);
 	    stop.addActionListener(this);
@@ -218,7 +225,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    dobbelstenenSomGrafiek.displaySom=true;
 	    add(dobbelstenenSomGrafiek);
 	    
-	    aantalWorpenLabel = new JLabel("Aantal worpen");
+	    aantalWorpenLabel = new JLabel(StatSim.rb.getString("numberOfRounds"));
 	    aantalWorpenLabel.setSize(100,20);
 	    aantalWorpenLabel.setLocation(10,60);
 	    panel1.add(aantalWorpenLabel);
@@ -228,7 +235,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    aantalWorpenText.setLocation(120,60);
 	    panel1.add(aantalWorpenText);
 	    
-	    toonSomLabel = new JLabel("Toon som");
+	    toonSomLabel = new JLabel(StatSim.rb.getString("showSum"));
 	    toonSomLabel.setSize(100,20);
 	    toonSomLabel.setLocation(10,80);
 	    panel1.add(toonSomLabel);
@@ -308,16 +315,59 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    
 	    pane5.setVisible(false);
 	    
-	    table3.setValueAt("Gemiddelde",0,0);
-	    table4.setValueAt("Gemiddelde",0,0);
-	    table5.setValueAt("Gemiddelde",0,0);
+	    table3.setValueAt(StatSim.rb.getString("mean"),0,0);
+	    table4.setValueAt(StatSim.rb.getString("mean"),0,0);
+	    table5.setValueAt(StatSim.rb.getString("mean"),0,0);
 	    
 	    ogen = new int[19];
 	    ogenSom = new int[19];
 	    ogenGemiddeld = new double[19];
 	    maxCount=30;
 	}
+	
+	public void setAantalDobbelstenen() {
+		if (eenDobbelsteenRadio.isSelected()==true) {
+			pane.setVisible(true);
+			pane1.setVisible(false);
+			pane2.setVisible(false);
+			pane3.setVisible(true);
+			pane4.setVisible(false);
+			pane5.setVisible(false);
+		}
+		if (tweeDobbelstenenRadio.isSelected()==true) {
+			pane.setVisible(false);
+			pane1.setVisible(true);
+			pane2.setVisible(false);
+			pane3.setVisible(false);
+			pane4.setVisible(true);
+			pane5.setVisible(false);
+		}
+		if (drieDobbelstenenRadio.isSelected()==true) {
+			pane.setVisible(false);
+			pane1.setVisible(false);
+			pane2.setVisible(true);
+			pane3.setVisible(false);
+			pane4.setVisible(false);
+			pane5.setVisible(true);
+		}
+		dobbelstenenGrafiek.repaint();
+		dobbelstenenSomGrafiek.repaint();
+	}
 
+	public void setStartStop() {
+		if (start.isEnabled()==false) {
+			eenDobbelsteenRadio.setEnabled(false);
+			tweeDobbelstenenRadio.setEnabled(false);
+			drieDobbelstenenRadio.setEnabled(false);
+			aantalWorpenText.setEnabled(false);
+		} else {
+			eenDobbelsteenRadio.setEnabled(true);
+			tweeDobbelstenenRadio.setEnabled(true);
+			drieDobbelstenenRadio.setEnabled(true);
+			aantalWorpenText.setEnabled(true);
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		   if (e.getSource()==start) {
 			   for (int i=0;i<100;i++) {
@@ -346,10 +396,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			   start.setEnabled(false);
 			   volgende.setEnabled(true);
 			   stop.setEnabled(true);
-			   eenDobbelsteenRadio.setEnabled(false);
-			   tweeDobbelstenenRadio.setEnabled(false);
-			   drieDobbelstenenRadio.setEnabled(false);
-			   aantalWorpenText.setEnabled(false);
+			   setStartStop();
 			   maxCount=Integer.parseInt(aantalWorpenText.getText());
 			   stopCounting=false;
 			   animatie=new Thread(this);
@@ -368,40 +415,16 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			   start.setEnabled(true);
 			   volgende.setEnabled(false);
 			   stop.setEnabled(false);
-			   eenDobbelsteenRadio.setEnabled(true);
-			   tweeDobbelstenenRadio.setEnabled(true);
-			   drieDobbelstenenRadio.setEnabled(true);
-			   aantalWorpenText.setEnabled(true);
+			   setStartStop();
 		   }
 		   if (e.getSource()==eenDobbelsteenRadio) {
-			   pane.setVisible(true);
-			   pane1.setVisible(false);
-			   pane2.setVisible(false);
-			   pane3.setVisible(true);
-			   pane4.setVisible(false);
-			   pane5.setVisible(false);
-			   dobbelstenenGrafiek.repaint();
-			   dobbelstenenSomGrafiek.repaint();
+			   setAantalDobbelstenen();
 		   }
 		   if (e.getSource()==tweeDobbelstenenRadio) {
-			   pane.setVisible(false);
-			   pane1.setVisible(true);
-			   pane2.setVisible(false);
-			   pane3.setVisible(false);
-			   pane4.setVisible(true);
-			   pane5.setVisible(false);
-			   dobbelstenenGrafiek.repaint();
-			   dobbelstenenSomGrafiek.repaint();
+			   setAantalDobbelstenen();
 		   }
 		   if (e.getSource()==drieDobbelstenenRadio) {
-			   pane.setVisible(false);
-			   pane1.setVisible(false);
-			   pane2.setVisible(true);
-			   pane3.setVisible(false);
-			   pane4.setVisible(false);
-			   pane5.setVisible(true);
-			   dobbelstenenGrafiek.repaint();
-			   dobbelstenenSomGrafiek.repaint();
+			   setAantalDobbelstenen();
 		   }
 		   if (e.getSource()==toonSomCheckBox) {
 			   if (toonSomCheckBox.isSelected()==true) {

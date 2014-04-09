@@ -10,6 +10,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 	Munten munten;
 	Dobbelstenen dobbelstenen;
+	BinomTrekking binomTrekking;
 	
 	public StatSimInteractiePanel () {
 		setLayout(null);
@@ -17,15 +18,21 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		munten.setLocation(0,0);
 		munten.setSize(790,450);
 		add(munten);
-		
 		munten.setVisible(false);
+		
 		dobbelstenen = new Dobbelstenen();
 		dobbelstenen.setLocation(0,0);
 		dobbelstenen.setSize(790,450);
+		dobbelstenen.setVisible(false);
 		add(dobbelstenen);
+		
+		binomTrekking = new BinomTrekking();
+		binomTrekking.setLocation(0,0);
+		binomTrekking.setSize(790,450);
+		add(binomTrekking);
 	}
 	public void setState(Hashtable h) {
-
+        // ***** Munten *******
 		String[] column11 = new String[100];
 		String[] column12 = new String[100];
 		String[] column13 = new String[100];
@@ -88,9 +95,120 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		if(h.containsKey("minimumTweeKop")) munten.minimumTweeKop= ((Integer)h.get("minimumTweeKop")).intValue();
 		if(h.containsKey("maximumTweeKop")) munten.maximumTweeKop= ((Integer)h.get("maximumTweeKop")).intValue();
 		munten.setResults();
+		int maxCount=0;
+		if(h.containsKey("maxCount")) maxCount= ((Integer)h.get("maxCount")).intValue();
+		munten.maxCount=maxCount;
+		munten.aantalWorpenText.setText(Integer.toString(maxCount));
+		String kansOpKopText="";
+		if(h.containsKey("kansOpKopText")) kansOpKopText =  (String)h.get("kansOpKopText");
+		munten.kansOpKopText.setText(kansOpKopText);
+		
+		// ******* Dobbelstenen *********
+		String[][] column31 = new String[7][100];
+		String[][] column32 = new String[12][100];
+		String[][] column33 = new String[17][100];
+		if(h.containsKey("column31")) column31 =  (String[][])h.get("column31");
+		if(h.containsKey("column32")) column32 =  (String[][])h.get("column32");
+		if(h.containsKey("column33")) column33 =  (String[][])h.get("column33");
+		for (int i=0;i<100;i++) {
+			for (int j=0;j<7;j++) {
+				if (column31[j][i]=="null") dobbelstenen.table.setValueAt("",i, j); else dobbelstenen.table.setValueAt(column31[j][i],i, j);	
+			}
+			for (int j=0;j<12;j++) {
+				if (column32[j][i]=="null") dobbelstenen.table1.setValueAt("",i, j); else dobbelstenen.table1.setValueAt(column32[j][i],i, j);	
+			}
+			for (int j=0;j<17;j++) {
+				if (column33[j][i]=="null") dobbelstenen.table2.setValueAt("",i, j); else dobbelstenen.table2.setValueAt(column33[j][i],i, j);	
+			}
+		}
+		String[] column41 = new String[6];
+		String[] column42 = new String[11];
+		String[] column43 = new String[16];
+		if(h.containsKey("column41")) column41 =  (String[])h.get("column41");
+		if(h.containsKey("column42")) column42 =  (String[])h.get("column42");
+		if(h.containsKey("column43")) column43 =  (String[])h.get("column43");
+		for (int j=0;j<6;j++) {
+			if (column41[j]=="null") dobbelstenen.table3.setValueAt("",0, j+1); else dobbelstenen.table3.setValueAt(column41[j],0, j+1);	
+		}
+		for (int j=0;j<11;j++) {
+			if (column42[j]=="null") dobbelstenen.table4.setValueAt("",0, j+1); else dobbelstenen.table4.setValueAt(column42[j],0, j+1);	
+		}
+		for (int j=0;j<16;j++) {
+			if (column43[j]=="null") dobbelstenen.table5.setValueAt("",0, j+1); else dobbelstenen.table5.setValueAt(column43[j],0, j+1);	
+		}
+		if(h.containsKey("ogenGemiddeld")) dobbelstenen.ogenGemiddeld =  (double[])h.get("ogenGemiddeld");
+		if(h.containsKey("ogenSom")) dobbelstenen.ogenSom =  (int[])h.get("ogenSom");
+		if(h.containsKey("experiment1")) dobbelstenen.experiment= ((Integer)h.get("experiment1")).intValue();
+		Boolean eenDobbelsteen=false;
+		if(h.containsKey("eenDobbelsteenRadio")) eenDobbelsteen= ((Boolean)h.get("eenDobbelsteenRadio")).booleanValue();
+		dobbelstenen.eenDobbelsteenRadio.setSelected(eenDobbelsteen);
+		Boolean TweeDobbelstenen=false;
+		if(h.containsKey("TweeDobbelstenenRadio")) TweeDobbelstenen= ((Boolean)h.get("TweeDobbelstenenRadio")).booleanValue();
+		dobbelstenen.tweeDobbelstenenRadio.setSelected(TweeDobbelstenen);
+		Boolean DrieDobbelstenen=false;
+		if(h.containsKey("DrieDobbelstenenRadio")) DrieDobbelstenen= ((Boolean)h.get("DrieDobbelstenenRadio")).booleanValue();
+		dobbelstenen.drieDobbelstenenRadio.setSelected(DrieDobbelstenen);
+		dobbelstenen.setAantalDobbelstenen();
+		Boolean startSelected1=false;
+		if(h.containsKey("startSelected1")) startSelected1= ((Boolean)h.get("startSelected1")).booleanValue();
+		if (startSelected1==true) {
+			dobbelstenen.start.setEnabled(true);
+			dobbelstenen.volgende.setEnabled(false);
+			dobbelstenen.stop.setEnabled(false);
+		} else {
+			dobbelstenen.start.setEnabled(false);
+			dobbelstenen.volgende.setEnabled(true);
+			dobbelstenen.stop.setEnabled(true);
+		}
+		dobbelstenen.setStartStop();
+		Boolean toonSom=false;
+		if(h.containsKey("toonSom")) toonSom= ((Boolean)h.get("toonSom")).booleanValue();
+		dobbelstenen.toonSomCheckBox.setSelected(toonSom);
+		int maxCount1=0;
+		if(h.containsKey("maxCount1")) maxCount1= ((Integer)h.get("maxCount1")).intValue();
+		dobbelstenen.maxCount=maxCount1;
+		dobbelstenen.aantalWorpenText.setText(Integer.toString(maxCount1));
+
+		// ******* Binominale trekking *********
+		String[] column51 = new String[1000];
+		String[] column52 = new String[1000];
+		if(h.containsKey("column51")) column51 =  (String[])h.get("column51");
+		if(h.containsKey("column52")) column52 =  (String[])h.get("column52");
+		for (int i=0;i<1000;i++) {
+			if (column51[i]=="null") binomTrekking.table.setValueAt("",i, 0); else binomTrekking.table.setValueAt(column51[i],i, 0);	
+			if (column52[i]=="null") binomTrekking.table.setValueAt("",i, 1); else binomTrekking.table.setValueAt(column52[i],i, 1);	
+		}
+		int[] column61 = new int[1000];
+		if(h.containsKey("column61")) column61 =  (int[])h.get("column61");
+		binomTrekking.trekkingen=column61;
+		
+		if(h.containsKey("experiment2")) binomTrekking.experiment= ((Integer)h.get("experiment2")).intValue();
+		Boolean startSelected2=false;
+		if(h.containsKey("startSelected2")) startSelected2= ((Boolean)h.get("startSelected2")).booleanValue();
+		if (startSelected2==true) {
+			binomTrekking.start.setEnabled(true);
+			binomTrekking.volgende.setEnabled(false);
+			binomTrekking.stop.setEnabled(false);
+		} else {
+			binomTrekking.start.setEnabled(false);
+			binomTrekking.volgende.setEnabled(true);
+			binomTrekking.stop.setEnabled(true);
+		}
+		binomTrekking.setStartStop();
+		int maxCount2=0;
+		if(h.containsKey("maxCount2")) maxCount2= ((Integer)h.get("maxCount2")).intValue();
+		binomTrekking.maxCount=maxCount2;
+		binomTrekking.aantalTrekkingenText.setText(Integer.toString(maxCount2));
+		
+		String kans="";
+		if(h.containsKey("kans")) kans= ((String)h.get("kans"));
+		binomTrekking.kansText.setText(kans);
+		
 	}
 	
 	public Hashtable getState() {	
+		
+		//  ****** Munten *********
 		Hashtable h = new Hashtable();
 		
 		String[] column11 = new String[100];
@@ -133,7 +251,70 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		h.put("gemiddeldeTweeKop", new Double(munten.gemiddeldeTweeKop));
 		h.put("minimumTweeKop", new Integer(munten.minimumTweeKop));
 		h.put("maximumTweeKop", new Integer(munten.maximumTweeKop));
-	    return h;
+		h.put("maxCount", new Integer(munten.maxCount));
+		h.put("kansOpKopText", new String(munten.kansOpKopText.getText()));
+		
+		// ********** Dobbelstenen **********
+		
+		String[][] column31 = new String[7][100];
+		String[][] column32 = new String[12][100];
+		String[][] column33 = new String[17][100];
+		for (int i=0;i<100;i++) {
+			for (int j=0;j<7;j++) {
+				column31[j][i]=String.valueOf(dobbelstenen.table.getValueAt(i, j));	
+			}
+			for (int j=0;j<12;j++) {
+				column32[j][i]=String.valueOf(dobbelstenen.table1.getValueAt(i, j));	
+			}
+			for (int j=0;j<17;j++) {
+				column33[j][i]=String.valueOf(dobbelstenen.table2.getValueAt(i, j));	
+			}	
+		}
+		h.put("column31", column31);
+		h.put("column32", column32);
+		h.put("column33", column33);
+		String[] column41 = new String[6];
+		String[] column42 = new String[11];
+		String[] column43 = new String[16];
+		for (int j=0;j<6;j++) {
+			column41[j]=String.valueOf(dobbelstenen.table3.getValueAt(0, j+1));	
+		}
+		for (int j=0;j<11;j++) {
+			column42[j]=String.valueOf(dobbelstenen.table4.getValueAt(0, j+1));	
+		}
+		for (int j=0;j<16;j++) {
+			column43[j]=String.valueOf(dobbelstenen.table5.getValueAt(0, j+1));	
+		}
+		h.put("column41", column41);
+		h.put("column42", column42);
+		h.put("column43", column43);
+		h.put("ogenGemiddeld", dobbelstenen.ogenGemiddeld);
+		h.put("ogenSom", dobbelstenen.ogenSom);
+		h.put("experiment1", new Integer(dobbelstenen.experiment));
+		h.put("eenDobbelsteenRadio", new Boolean(dobbelstenen.eenDobbelsteenRadio.isSelected()));
+		h.put("TweeDobbelstenenRadio", new Boolean(dobbelstenen.tweeDobbelstenenRadio.isSelected()));
+		h.put("DrieDobbelstenenRadio", new Boolean(dobbelstenen.drieDobbelstenenRadio.isSelected()));
+		h.put("toonSom", new Boolean(dobbelstenen.toonSomCheckBox.isSelected()));
+		h.put("startSelected1", new Boolean(dobbelstenen.start.isEnabled()));
+		h.put("maxCount1", new Integer(dobbelstenen.maxCount));
+		
+		// ********** Binominale trekking **********
+		
+		String[] column51 = new String[1000];
+		String[] column52 = new String[1000];
+		
+		for (int i=0;i<1000;i++) {
+			column51[i]=String.valueOf(binomTrekking.table.getValueAt(i, 0));	
+			column52[i]=String.valueOf(binomTrekking.table.getValueAt(i, 1));	
+		}
+		h.put("column51", column51);
+		h.put("column52", column52);
+		h.put("column61", binomTrekking.trekkingen);
+		h.put("experiment2", new Integer(binomTrekking.experiment));
+		h.put("startSelected2", new Boolean(binomTrekking.start.isEnabled()));
+		h.put("maxCount2", new Integer(binomTrekking.maxCount));
+		h.put("kans", new String(binomTrekking.kansText.getText()));
+		return h;
 	}
 	
 	
@@ -144,6 +325,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean dobbelstenenRadioBool=false;
 		if(h.containsKey("dobbelstenenRadio")) dobbelstenenRadioBool= ((Boolean)h.get("dobbelstenenRadio")).booleanValue();
 		dobbelstenen.setVisible(dobbelstenenRadioBool);
+		Boolean binomTrekkingRadioBool=false;
+		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
+		binomTrekking.setVisible(binomTrekkingRadioBool);
 	}
 
 	public void setEditState(Hashtable h) {

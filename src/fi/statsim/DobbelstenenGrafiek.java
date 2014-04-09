@@ -64,21 +64,21 @@ public class DobbelstenenGrafiek extends JPanel{
 		String ogenString="";
 		if (dobbelstenen.eenDobbelsteenRadio.isSelected()) {
 			numBars=6;
-			ogenString="Ogen";
+			ogenString=StatSim.rb.getString("eyes");
 		}
 		if (dobbelstenen.tweeDobbelstenenRadio.isSelected()) {
 			numBars=11;
 			skipNum=1;
-			ogenString="Som ogen";
+			ogenString=StatSim.rb.getString("sumEyes");
 		}
 		if (dobbelstenen.drieDobbelstenenRadio.isSelected()) {
 			numBars=16;
 			skipNum=2;
-			ogenString="Som ogen";
+			ogenString=StatSim.rb.getString("sumEyes");
 		}
 		
 		g.drawString(ogenString, 5, this.getHeight()-20);
-		g.drawString("Frequentie", 5, this.getHeight()-5);
+		g.drawString(StatSim.rb.getString("frequency"), 5, this.getHeight()-5);
 		for (int i=0;i<numBars;i++) {
 			g.setColor(Color.RED);
 			if (displaySom==true) {

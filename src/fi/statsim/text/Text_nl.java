@@ -9,7 +9,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"oneCoin" , "Een munt" },
             {	"twoCoins", "Twee munten" },
             {   "numberOfRounds", "Aantal worpen" },
-            {   "chanceOfHead", "Kans op kop" },
+            {   "chanceOfTails", "Kans op munt" },
             {   "start", "Start" },
             {   "next", "Volgende" },
             {   "stop", "Stop" },
@@ -27,7 +27,17 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "frequency", "Frequentie" },
             {   "heads", "Kop" },
             {   "tails", "Munt" },
-            {   "percentageHeads", "Percentage kop" }
+            {   "percentageHeads", "Percentage kop" },
+            {   "eyes", "Ogen" },
+            {   "sumEyes", "Som ogen" },
+            {   "numberOfDices", "Aantal dobbelstenen" },
+            {   "one", "Een" },
+            {   "two", "Twee" },
+            {   "three", "Drie" },
+            {   "showSum", "Toon som" },
+            {   "outcome", "Uitkomst" },
+            {   "numberOfDraws", "Aantal trekkingen" },
+            {   "chance", "Kans" }
         //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....
