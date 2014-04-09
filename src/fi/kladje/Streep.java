@@ -8,64 +8,119 @@ import java.awt.geom.*;
 public class Streep 
 {
 	Color kleur;
-	int[] puntenX, puntenY;
+	double[] puntenXD, puntenYD;
+	double[] pXD, pYD;
 	int bbFactor = 4;
-	Polygon bb, bb2;
+	KladjePolygon bb;
 	double cx = 0, cy = 0;
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
+	int breedte, hoogte;
 	
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
-	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	Rectangle rotateEastHandle, rotateWestHandle;
 	
 	
 	public Streep(Color c, Vector punten)
 	{	kleur = c;
-		puntenX = new int[punten.size()];
-		puntenY = new int[punten.size()];
+		puntenXD = new double[punten.size()];
+		puntenYD = new double[punten.size()];
+
 		for (int pCnt = 0; pCnt < punten.size(); pCnt++)
 		{	Point pt = (Point) punten.elementAt(pCnt);
-			puntenX[pCnt] = pt.x;
-			puntenY[pCnt] = pt.y;
+			puntenXD[pCnt] = pt.x;
+			puntenYD[pCnt] = pt.y;
 			
-			cx += puntenX[pCnt];
-			cy += puntenY[pCnt];
+			cx += puntenXD[pCnt];
+			cy += puntenYD[pCnt];
 		}
 		
-		cx /= puntenX.length;
-		cy /= puntenY.length;
-		
-		maakBBs();
-		makeHandleBox();
+		cx /= puntenXD.length;
+		cy /= puntenYD.length;
+
+		maakStreep();
+		//maakBBs();
+		//makeHandleBox();
 	}
 	
 	public Streep(Color c, int[] ptX, int[] ptY)
 	{	kleur = c;
-		puntenX = ptX;
-		puntenY = ptY;
+		puntenXD = new double[ptX.length];
+		puntenYD = new double[ptY.length];
+
+		for (int cnt = 0; cnt < ptX.length; cnt++) 
+		{	puntenXD[cnt] = ptX[cnt];
+			puntenYD[cnt] = ptY[cnt];
+		}
 		
-		maakBBs();
-		makeHandleBox();
+		maakStreep();
+		//maakBBs();
+		//makeHandleBox();
 	}
 
+	public Streep(Color c, double[] ptXD, double[] ptYD)
+	{	kleur = c;
+		puntenXD = ptXD;
+		puntenYD = ptYD;
+		
+		maakStreep();
+		//maakBBs();
+		//makeHandleBox();
+	}
+
+	public void maakStreep()
+	{
+		pXD = new double[puntenXD.length];
+		pYD = new double[puntenYD.length];
+		double minX = 1000;
+		double maxX = -100;
+		double minY = 1000;
+		double maxY = -100;
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
+		{
+			pXD[pCnt] = puntenXD[pCnt];
+			pYD[pCnt] = puntenYD[pCnt];
+			
+			if (puntenXD[pCnt] < minX)
+				minX = puntenXD[pCnt];
+			if (puntenXD[pCnt] > maxX)
+				maxX = puntenXD[pCnt];
+			if (puntenYD[pCnt] < minY)
+				minY = puntenYD[pCnt];
+			if (puntenYD[pCnt] > maxY)
+				maxY = puntenYD[pCnt];
+		}
+		breedte = (int) Math.round(maxX - minX);
+		hoogte = (int) Math.round(maxY - minY);
+		
+		maakBBs();
+		
+		rotateStreep(rotation);
+		
+		bb.rotate(rotation, cx, cy);
+		
+		makeHandleBox();
+	}
+	
+	
 	public void makeHandleBox()
 	{
 		int minX = 1000;
 		int maxX = -100;
 		int minY = 1000;
 		int maxY = -100;
-		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			if (bb2.xpoints[pCnt] < minX)
-				minX = bb2.xpoints[pCnt];
-			if (bb2.xpoints[pCnt] > maxX)
-				maxX = bb2.xpoints[pCnt];
-			if (bb2.ypoints[pCnt] < minY)
-				minY = bb2.ypoints[pCnt];
-			if (bb2.ypoints[pCnt] > maxY)
-				maxY = bb2.ypoints[pCnt];
+			if (bb.puntenX[pCnt] < minX)
+				minX = bb.puntenX[pCnt];
+			if (bb.puntenX[pCnt] > maxX)
+				maxX = bb.puntenX[pCnt];
+			if (bb.puntenY[pCnt] < minY)
+				minY = bb.puntenY[pCnt];
+			if (bb.puntenY[pCnt] > maxY)
+				maxY = bb.puntenY[pCnt];
 		}
 		
 		int w = maxX - minX + 2 * hbFactor;
@@ -140,49 +195,41 @@ public class Streep
 
 	public void makeRotateHandles()
 	{
-		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width,// - 2 * hbFactor,
 										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
-										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
-		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+		rotateWestHandle = new Rectangle(handleBox.x - 4 * hbFactor, 
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
-                						  handleBox.y + handleBox.height - 2 * hbFactor,
-                						  4 * hbFactor, 4 * hbFactor);
 	}
 
 	public void killRotateHandles()
 	{
 		rotateEastHandle = null; 
-		rotateNorthHandle = null; 
 		rotateWestHandle = null;
-		rotateSouthHandle = null;
-		
-		
 	}
 	
 	
 	public void maakBBs()
 	{
-		bb = new Polygon();
+		bb = new KladjePolygon();
 		
-		if (puntenX.length == 1)
-		{	bb.addPoint(puntenX[0] - bbFactor, puntenY[0] - bbFactor);
-			bb.addPoint(puntenX[0] + bbFactor, puntenY[0] - bbFactor);
-			bb.addPoint(puntenX[0] + bbFactor, puntenY[0] + bbFactor);
-			bb.addPoint(puntenX[0] - bbFactor, puntenY[0] + bbFactor);
+		if (puntenXD.length == 1)
+		{	bb.addPoint((int) Math.round(puntenXD[0] - bbFactor), (int) Math.round(puntenYD[0] - bbFactor));
+			bb.addPoint((int) Math.round(puntenXD[0] + bbFactor), (int) Math.round(puntenYD[0] - bbFactor));
+			bb.addPoint((int) Math.round(puntenXD[0] + bbFactor), (int) Math.round(puntenYD[0] + bbFactor));
+			bb.addPoint((int) Math.round(puntenXD[0] - bbFactor), (int) Math.round(puntenYD[0] + bbFactor));
 		}
-		if (puntenX.length > 1)
+		if (puntenXD.length > 1)
 		{  
 			
 			// for loop 1
-			for (int pCnt = 1; pCnt < puntenX.length; pCnt++)
+			for (int pCnt = 1; pCnt < puntenXD.length; pCnt++)
 			{	
-				int fromX = puntenX[pCnt - 1];
-				int fromY = puntenY[pCnt - 1];
-				int toX = puntenX[pCnt];
-				int toY = puntenY[pCnt];
+				double fromX = puntenXD[pCnt - 1];
+				double fromY = puntenYD[pCnt - 1];
+				double toX = puntenXD[pCnt];
+				double toY = puntenYD[pCnt];
 				// richtingsvector
 				double rX = toX - fromX;
 				double rY = toY - fromY;
@@ -237,12 +284,12 @@ public class Streep
 			}
 		
 			// for loop 2
-			for (int pCnt = puntenX.length - 1; pCnt > 0; pCnt--)
+			for (int pCnt = puntenXD.length - 1; pCnt > 0; pCnt--)
 			{	
-				int fromX = puntenX[pCnt - 1];
-				int fromY = puntenY[pCnt - 1];
-				int toX = puntenX[pCnt];
-				int toY = puntenY[pCnt];
+				double fromX = puntenXD[pCnt - 1];
+				double fromY = puntenYD[pCnt - 1];
+				double toX = puntenXD[pCnt];
+				double toY = puntenYD[pCnt];
 				// richtingsvector
 				double rX = toX - fromX;
 				double rY = toY - fromY;
@@ -292,14 +339,23 @@ public class Streep
 			}
 		}
 		
-		bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
+		//bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
 	}
 
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 	
-		maakBBs();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
+		{	
+			double pXDNew = Math.cos(rotateStep) * (pXD[pCnt] - cx) - Math.sin(rotateStep) * (pYD[pCnt] - cy);
+			double pYDNew = Math.sin(rotateStep) * (pXD[pCnt] - cx) + Math.cos(rotateStep) * (pYD[pCnt] - cy);
+			pXD[pCnt] = pXDNew + cx;
+			pYD[pCnt] = pYDNew + cy;
+		}
+		bb.rotate(rotateStep, cx, cy);
+	
+		//maakBBs();
+		//bb = rotatePolygon(bb2, rotation, cx, cy);
 
 		makeHandleBox();
 		
@@ -307,30 +363,48 @@ public class Streep
 		
 	}
 	
-	public void scale(double scaleStep)
+	public void rotateStreep(double rotation)
 	{
-		for (int pCnt = 0; pCnt < puntenX.length; pCnt++)
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
-			puntenX[pCnt] = (int) Math.round(scaleStep * puntenX[pCnt] + (1 - scaleStep) * cx);
-			puntenY[pCnt] = (int) Math.round(scaleStep * puntenY[pCnt] + (1 - scaleStep) * cy);
+			double pXDNew = Math.cos(rotation) * (pXD[pCnt] - cx) - Math.sin(rotation) * (pYD[pCnt] - cy);
+			double pYDNew = Math.sin(rotation) * (pXD[pCnt] - cx) + Math.cos(rotation) * (pYD[pCnt] - cy);
+			pXD[pCnt] = pXDNew + cx;
+			pYD[pCnt] = pYDNew + cy;
 		}
 		
-		maakBBs();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+	}
+	
+	public void scale(double scaleStep)
+	{
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
+		{	
+			puntenXD[pCnt] = scaleStep * puntenXD[pCnt] + (1 - scaleStep) * cx;
+			puntenYD[pCnt] = scaleStep * puntenYD[pCnt] + (1 - scaleStep) * cy;
+		}
+		
+		//maakBBs();
+		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		
+		maakStreep();
+		
 		makeHandleBox();
 		
 	}
 
 	public void scale(double scaleStepX, double scaleStepY)
 	{
-		for (int pCnt = 0; pCnt < puntenX.length; pCnt++)
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
-			puntenX[pCnt] = (int) Math.round(scaleStepX * puntenX[pCnt] + (1 - scaleStepX) * cx);
-			puntenY[pCnt] = (int) Math.round(scaleStepY * puntenY[pCnt] + (1 - scaleStepY) * cy);
+			puntenXD[pCnt] = scaleStepX * puntenXD[pCnt] + (1 - scaleStepX) * cx;
+			puntenYD[pCnt] = scaleStepY * puntenYD[pCnt] + (1 - scaleStepY) * cy;
 		}
 		
-		maakBBs();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		//maakBBs();
+		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		
+		maakStreep();
+		
 		makeHandleBox();
 		
 	}
@@ -340,8 +414,8 @@ public class Streep
 		
 		h.put("kleur", kleur);
 		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
-		h.put("puntenX", puntenX);
-		h.put("puntenY", puntenY);
+		h.put("puntenXD", puntenXD);
+		h.put("puntenYD", puntenYD);
 		h.put("rotation", new Double(rotation));
 	
 		return h;
@@ -352,20 +426,36 @@ public class Streep
 		Color kleur = Color.black;
 		int[] puntenX = new int[0];
 		int[] puntenY = new int[0];
+		double[] puntenXD = null;
+		double[] puntenYD = null;
 		double rotation = 0;
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
+		
+		// backwards compatibility
 		if (h.containsKey("puntenX"))
 			puntenX = (int[]) h.get("puntenX");
 		if (h.containsKey("puntenY"))
 			puntenY = (int[]) h.get("puntenY");
 
+		if (h.containsKey("puntenXD"))
+			puntenXD = (double[]) h.get("puntenXD");
+		if (h.containsKey("puntenYD"))
+			puntenYD = (double[]) h.get("puntenYD");
+		
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
 		
-		Streep streep = new Streep(kleur, puntenX, puntenY);
+		Streep streep = null;
+		if (puntenXD != null)
+		{	streep = new Streep(kleur, puntenXD, puntenYD);
+		}
+		else
+			streep = new Streep(kleur, puntenX, puntenY);
+		
 		streep.rotation = rotation;
+		streep.maakStreep();
 		
 		return streep;
 	}
@@ -373,26 +463,22 @@ public class Streep
 	
 	public void teken(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
 		
 		g.setColor(kleur);		
 		
-		if (puntenX.length == 1)
-		{	g.drawLine(puntenX[0], puntenY[0], puntenX[0], puntenY[0]);
+		if (puntenXD.length == 1)
+		{	g.drawLine((int) Math.round(pXD[0]), (int) Math.round(pYD[0]), 
+				       (int) Math.round(pXD[0]), (int) Math.round(pYD[0]));
 		}
-		if (puntenX.length > 1)
-		{	for (int pCnt = 1; pCnt < puntenX.length; pCnt++)
-			{	g.drawLine(puntenX[pCnt - 1], puntenY[pCnt - 1], puntenX[pCnt], puntenY[pCnt]);
+		if (puntenXD.length > 1)
+		{	for (int pCnt = 1; pCnt < puntenXD.length; pCnt++)
+			{	g.drawLine((int) Math.round(pXD[pCnt - 1]), (int) Math.round(pYD[pCnt - 1]), 
+						   (int) Math.round(pXD[pCnt]), (int) Math.round(pYD[pCnt]));
 			}
 			
 		}
 		
-		g.setTransform(oldAT);
+		//g.setTransform(oldAT);
 	}
 	
 	public void tekenHandleBox(Graphics2D g)
@@ -443,34 +529,20 @@ public class Streep
 		}
 		if (rotateEastHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x + handleBox.width, // - 2 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
 //g.setColor(Color.red);			
 //g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
 		}
-		if (rotateNorthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
-		}
 		if (rotateWestHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x - 4 * hbFactor, 
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
 //g.setColor(Color.red);			
 //g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
 		}
-		if (rotateSouthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
-
-		}
-		
 
 	}
 	
@@ -488,51 +560,51 @@ public class Streep
 		//dash[1] = 2;
 		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
-		g.setColor(KladjeVeld.bbColor);
+//		g.setColor(KladjeVeld.bbColor);
 
-		g.drawPolygon(bb);
+		bb.draw(g, KladjeVeld.bbColor, null);
 				
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
-		g.setTransform(oldAT);		
+		//g.setTransform(oldAT);		
 	}
 
-	public int inverseTransformX(int x, int y)
+	public double inverseRotX(double x, double y)
 	{
-		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
-		int rx = (int) Math.round(cx + rotX);
+		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
 		
-		return rx;
+		return rotX;
+		
 	}
-
-	public int inverseTransformY(int x, int y)
+	
+	public double inverseRotY(double x, double y)
 	{
-		double rotY = Math.sin(-rotation) * (x - cx) + Math.cos(- rotation) * (y - cy);
-		int ry = (int) Math.round(cy + rotY);
+		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
-		return ry;
+		return rotY;
 	}
 	
 	public boolean bbContains(int x, int y)
 	{
-		int rx = inverseTransformX(x, y);
-		int ry = inverseTransformY(x, y);
 
-		return bb.contains(rx, ry);
+		return bb.contains(x, y);
 	}
 	
 	public void translate(int dx, int dy)
 	{
-		for (int pCnt = 0; pCnt < puntenX.length; pCnt++)
-		{	puntenX[pCnt] += dx;
-			puntenY[pCnt] += dy;
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
+		{	puntenXD[pCnt] += dx;
+			puntenYD[pCnt] += dy;
+			pXD[pCnt] += dx;
+			pYD[pCnt] += dy; 
 		}
 
 		cx += dx;
 		cy += dy;
 
 		bb.translate(dx, dy);
-		bb2.translate(dx, dy);
+		
+		//bb2.translate(dx, dy);
 		makeHandleBox();
 	}
 	
@@ -543,37 +615,16 @@ public class Streep
 		
 		boolean isContainedIn = true;
 		
-		for (int pCnt = 0; pCnt < bb.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			int bbX = inverseTransformX(bb.xpoints[pCnt], bb.ypoints[pCnt]);
-			int bbY = inverseTransformY(bb.xpoints[pCnt], bb.ypoints[pCnt]);
+			//int bbX = inverseTransformX(bb.xpoints[pCnt], bb.ypoints[pCnt]);
+			//int bbY = inverseTransformY(bb.xpoints[pCnt], bb.ypoints[pCnt]);
 			
-			isContainedIn = isContainedIn && r.contains(bbX, bbY);
+			isContainedIn = isContainedIn && r.contains(bb.puntenX[pCnt], bb.puntenY[pCnt]);
 			//isContainedIn = isContainedIn && r.contains(bb.xpoints[pCnt], bb.ypoints[pCnt]);
 		}
 		
 		return isContainedIn;
-	}
-
-	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
-	{	
-		Polygon r = new Polygon();
-		
-		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
-		{
-			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
-			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
-						
-			//puntenX[pCnt] = (int) Math.round(cx + rotX);
-			//puntenY[pCnt] = (int) Math.round(cy + rotY);
-			
-			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
-			//doubleX[pCnt] = cx + rotX;
-			//doubleY[pCnt] = cy + rotY;
-			
-		}
-		
-		return r;
 	}
 
 
@@ -584,8 +635,9 @@ class Lijn
 {
 	Color kleur;
 	int fromX, fromY, toX, toY;
+	int fX, fY, tX, tY;
 	int bbFactor = 4;
-	Polygon bb,bb2;
+	KladjePolygon bb; 
 	double cx, cy;
 	double rotation = 0;
 	Rectangle handleBox;
@@ -593,7 +645,7 @@ class Lijn
 	
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
-	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	Rectangle rotateEastHandle, rotateWestHandle;
 	
 	
 	public Lijn(Color c, int fromX, int fromY, int toX, int toY)
@@ -607,7 +659,26 @@ class Lijn
 		cx = ((double) fromX + (double) toX) / 2;
 		cy = ((double) fromY + (double) toY) / 2;
 		
+		
+		maakLijn();
+		
+		//makeBB();
+		//makeHandleBox();
+	}
+	
+	public void maakLijn()
+	{
+		fX = fromX;
+		fY = fromY;
+		tX = toX;
+		tY = toY;
+				
 		makeBB();
+		
+		rotateLijn(rotation);
+		
+		bb.rotate(rotation, cx, cy);
+		
 		makeHandleBox();
 	}
 	
@@ -617,16 +688,16 @@ class Lijn
 		int maxX = -100;
 		int minY = 1000;
 		int maxY = -100;
-		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			if (bb2.xpoints[pCnt] < minX)
-				minX = bb2.xpoints[pCnt];
-			if (bb2.xpoints[pCnt] > maxX)
-				maxX = bb2.xpoints[pCnt];
-			if (bb2.ypoints[pCnt] < minY)
-				minY = bb2.ypoints[pCnt];
-			if (bb2.ypoints[pCnt] > maxY)
-				maxY = bb2.ypoints[pCnt];
+			if (bb.puntenX[pCnt] < minX)
+				minX = bb.puntenX[pCnt];
+			if (bb.puntenX[pCnt] > maxX)
+				maxX = bb.puntenX[pCnt];
+			if (bb.puntenY[pCnt] < minY)
+				minY = bb.puntenY[pCnt];
+			if (bb.puntenY[pCnt] > maxY)
+				maxY = bb.puntenY[pCnt];
 		}
 		
 		int w = maxX - minX + 2 * hbFactor;
@@ -701,31 +772,24 @@ class Lijn
 	
 	public void makeRotateHandles()
 	{
-		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width,// - 2 * hbFactor,
 										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
-										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
-		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+		rotateWestHandle = new Rectangle(handleBox.x - 4 * hbFactor, 
+				                         handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
-                						  handleBox.y + handleBox.height - 2 * hbFactor,
-                						  4 * hbFactor, 4 * hbFactor);
 	}
 
 	public void killRotateHandles()
 	{
 		rotateEastHandle = null; 
-		rotateNorthHandle = null; 
 		rotateWestHandle = null;
-		rotateSouthHandle = null;
-		
 		
 	}
 
 	public void makeBB()
 	{
-		bb = new Polygon();
+		bb = new KladjePolygon();
 		
 		// richtingsvector
 		double rX = toX - fromX;
@@ -771,18 +835,41 @@ class Lijn
 			bb.addPoint(fromX - bbFactor, fromY + bbFactor);
 		}
 		
-		bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
 	}
 
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 	
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		double fXNew = Math.cos(rotateStep) * (fX - cx) - Math.sin(rotateStep) * (fY - cy);
+		double fYNew = Math.sin(rotateStep) * (fX - cx) + Math.cos(rotateStep) * (fY - cy);
+		double tXNew = Math.cos(rotateStep) * (tX - cx) - Math.sin(rotateStep) * (tY - cy);
+		double tYNew = Math.sin(rotateStep) * (tX - cx) + Math.cos(rotateStep) * (tY - cy);
+		fX = (int) Math.round(fXNew + cx);
+		fY = (int) Math.round(fYNew + cy);
+		tX = (int) Math.round(tXNew + cx);
+		tY = (int) Math.round(tYNew + cy);
+	
+		bb.rotate(rotateStep, cx, cy);
+		
+		//makeBB();
+		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
 
 		makeHandleBox();
 	
 	}
+
+	public void rotateLijn(double rotation)
+	{		
+		double fXNew = Math.cos(rotation) * (fX - cx) - Math.sin(rotation) * (fY - cy);
+		double fYNew = Math.sin(rotation) * (fX - cx) + Math.cos(rotation) * (fY - cy);
+		double tXNew = Math.cos(rotation) * (tX - cx) - Math.sin(rotation) * (tY - cy);
+		double tYNew = Math.sin(rotation) * (tX - cx) + Math.cos(rotation) * (tY - cy);
+		fX = (int) Math.round(fXNew + cx);
+		fY = (int) Math.round(fYNew + cy);
+		tX = (int) Math.round(tXNew + cx);
+		tY = (int) Math.round(tYNew + cy);
+		
+	}	
 	
 	public void scale(double scaleStep)
 	{	
@@ -791,8 +878,10 @@ class Lijn
 		toX = (int) Math.round(scaleStep * toX + (1 - scaleStep) * cx);
 		toY = (int) Math.round(scaleStep * toY + (1 - scaleStep) * cy);
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		//makeBB();
+		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		maakLijn();
+		
 		makeHandleBox();
 		
 	}
@@ -804,8 +893,10 @@ class Lijn
 		toX = (int) Math.round(sx * toX + (1 - sx) * cx);
 		toY = (int) Math.round(sy * toY + (1 - sy) * cy);
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		//makeBB();
+		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		
+		maakLijn();
 		makeHandleBox();
 		
 	}
@@ -850,23 +941,17 @@ class Lijn
 		
 		Lijn lijn = new Lijn(kleur, fromX, fromY, toX, toY);
 		lijn.rotation = rotation;
+		lijn.maakLijn();
 		
 		return lijn;
 	}
 	
 	public void teken(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
 		
 		g.setColor(kleur);
-		g.drawLine(fromX, fromY, toX, toY);
+		g.drawLine(fX, fY, tX, tY);
 		
-		g.setTransform(oldAT);
 	}
 
 	public void tekenHandleBox(Graphics2D g)
@@ -890,109 +975,65 @@ class Lijn
 		if (topRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
 		}
 		if (topLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
 			
 		}
 		if (bottomRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
 			
 		}
 		if (bottomLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
 			
 		}
 		if (rotateEastHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x + handleBox.width, // - 2 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
-		}
-		if (rotateNorthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
 		}
 		if (rotateWestHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x - 4 * hbFactor, 
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
 		}
-		if (rotateSouthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
-
-		}
-		
 
 	}
 	
 	public void tekenBB(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
-
-		//float[] dash = new float[2];
-		//dash[0] = 2;
-		//dash[1] = 2;
-		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
-		g.setColor(KladjeVeld.bbColor);
 		
-		g.drawPolygon(bb);
+		bb.draw(g, KladjeVeld.bbColor, null);
 				
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
-		g.setTransform(oldAT);
-		
 	}
 
-	public int inverseTransformX(int x, int y)
+	public double inverseRotX(double x, double y)
 	{
-		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
-		int rx = (int) Math.round(cx + rotX);
+		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
 		
-		return rx;
+		return rotX;
+		
 	}
-
-	public int inverseTransformY(int x, int y)
+	
+	public double inverseRotY(double x, double y)
 	{
-		double rotY = Math.sin(-rotation) * (x - cx) + Math.cos(- rotation) * (y - cy);
-		int ry = (int) Math.round(cy + rotY);
+		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
-		return ry;
+		return rotY;
 	}
 	
 	public boolean bbContains(int x, int y)
 	{
-		int rx = inverseTransformX(x, y);
-		int ry = inverseTransformY(x, y);
-		
-		return bb.contains(rx, ry);
+		return bb.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)
@@ -1003,9 +1044,14 @@ class Lijn
 		toY += dy;
 		cx += dx;
 		cy += dy;
+
+		fX += dx;
+		fY += dy;
+		tX += dx; 
+		tY += dy;
 		
 		bb.translate(dx, dy);
-		bb2.translate(dx, dy);
+
 		makeHandleBox();
 
 	}	
@@ -1017,55 +1063,35 @@ class Lijn
 		
 		boolean isContainedIn = true;
 		
-		for (int pCnt = 0; pCnt < bb.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			int bbX = inverseTransformX(bb.xpoints[pCnt], bb.ypoints[pCnt]);
-			int bbY = inverseTransformY(bb.xpoints[pCnt], bb.ypoints[pCnt]);
 			
-			isContainedIn = isContainedIn && r.contains(bbX, bbY);
-			//isContainedIn = isContainedIn && r.contains(bb.xpoints[pCnt], bb.ypoints[pCnt]);
+			isContainedIn = isContainedIn && r.contains(bb.puntenX[pCnt], bb.puntenY[pCnt]);
+
 		}
 		
 		return isContainedIn;
 	}	
 	
-	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
-	{	
-		Polygon r = new Polygon();
-		
-		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
-		{
-			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
-			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
-						
-			//puntenX[pCnt] = (int) Math.round(cx + rotX);
-			//puntenY[pCnt] = (int) Math.round(cy + rotY);
-			
-			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
-			//doubleX[pCnt] = cx + rotX;
-			//doubleY[pCnt] = cy + rotY;
-			
-		}
-		
-		return r;
-	}
 
 }
 class Rechthoek
 {	Color kleur;
 	int topLeftX, topLeftY, breedte, hoogte;
+	KladjePolygon rechthoek;
 	int bbFactor = 4;
-	Rectangle outerBB;
-	Rectangle innerBB;
-	Polygon bb2;
+	KladjePolygon outerRechthoek;
+	KladjePolygon innerRechthoek;
+	
 	double cx, cy;
 	double rotation = 0;
+	
 	Rectangle handleBox;
 	int hbFactor = 4;
 
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
-	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	Rectangle rotateEastHandle, rotateWestHandle;
 	
 	public Rechthoek(Color c, int x, int y, int w, int h)
 	{
@@ -1077,28 +1103,46 @@ class Rechthoek
 		
 		cx = topLeftX + ((double) breedte) / 2;
 		cy = topLeftY + ((double) hoogte) / 2;
-		
+
+		maakRechthoek();
 		makeBB();
 		makeHandleBox();
 		
 	}
 
+	public void maakRechthoek()
+	{
+		rechthoek = new KladjePolygon();
+		rechthoek.addPoint(topLeftX, topLeftY);
+		rechthoek.addPoint(topLeftX + breedte, topLeftY);
+		rechthoek.addPoint(topLeftX + breedte, topLeftY + hoogte);
+		rechthoek.addPoint(topLeftX, topLeftY + hoogte);
+		
+		makeBB();
+		
+		rechthoek.rotate(rotation, cx, cy);
+		outerRechthoek.rotate(rotation, cx, cy);
+		innerRechthoek.rotate(rotation, cx, cy);
+		
+		makeHandleBox();
+	}
+	
 	public void makeHandleBox()
 	{
 		int minX = 1000;
 		int maxX = -100;
 		int minY = 1000;
 		int maxY = -100;
-		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < outerRechthoek.aantalPunten; pCnt++)
 		{
-			if (bb2.xpoints[pCnt] < minX)
-				minX = bb2.xpoints[pCnt];
-			if (bb2.xpoints[pCnt] > maxX)
-				maxX = bb2.xpoints[pCnt];
-			if (bb2.ypoints[pCnt] < minY)
-				minY = bb2.ypoints[pCnt];
-			if (bb2.ypoints[pCnt] > maxY)
-				maxY = bb2.ypoints[pCnt];
+			if (outerRechthoek.puntenX[pCnt] < minX)
+				minX = outerRechthoek.puntenX[pCnt];
+			if (outerRechthoek.puntenX[pCnt] > maxX)
+				maxX = outerRechthoek.puntenX[pCnt];
+			if (outerRechthoek.puntenY[pCnt] < minY)
+				minY = outerRechthoek.puntenY[pCnt];
+			if (outerRechthoek.puntenY[pCnt] > maxY)
+				maxY = outerRechthoek.puntenY[pCnt];
 		}
 		
 		int w = maxX - minX + 2 * hbFactor;
@@ -1173,48 +1217,45 @@ class Rechthoek
 
 	public void makeRotateHandles()
 	{
-		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width, // - 2 * hbFactor,
 										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
-										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
-		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+		rotateWestHandle = new Rectangle(handleBox.x - 4 * hbFactor, 
+										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
-                						  handleBox.y + handleBox.height - 2 * hbFactor,
-                						  4 * hbFactor, 4 * hbFactor);
 	}
 
 	public void killRotateHandles()
 	{
 		rotateEastHandle = null; 
-		rotateNorthHandle = null; 
 		rotateWestHandle = null;
-		rotateSouthHandle = null;
-		
 		
 	}
 
 	public void makeBB()
 	{
-		outerBB = new Rectangle(topLeftX - bbFactor, topLeftY - bbFactor, 
-			    breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
-		innerBB = new Rectangle(topLeftX + bbFactor, topLeftY + bbFactor, 
-			    breedte - 2 * bbFactor, hoogte - 2 * bbFactor);
+		outerRechthoek = new KladjePolygon();
+		outerRechthoek.addPoint(topLeftX - bbFactor, topLeftY - bbFactor);
+		outerRechthoek.addPoint(topLeftX + breedte + bbFactor, topLeftY - bbFactor);
+		outerRechthoek.addPoint(topLeftX + breedte + bbFactor, topLeftY + hoogte + bbFactor);
+		outerRechthoek.addPoint(topLeftX - bbFactor, topLeftY + hoogte + bbFactor);
 		
-		bb2 = new Polygon();
-		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor);
-		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor);
-		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
-		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
+		innerRechthoek = new KladjePolygon();
+		innerRechthoek.addPoint(topLeftX + bbFactor, topLeftY + bbFactor);
+		innerRechthoek.addPoint(topLeftX + breedte - bbFactor, topLeftY + bbFactor);
+		innerRechthoek.addPoint(topLeftX + breedte - bbFactor, topLeftY + hoogte - bbFactor);
+		innerRechthoek.addPoint(topLeftX + bbFactor, topLeftY + hoogte - bbFactor);		
 		
 	}
 	
 	public void rotate(double rotateStep)
-	{	rotation += rotateStep;
+	{	
+		rotation += rotateStep;
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		rechthoek.rotate(rotateStep, cx, cy);
+		outerRechthoek.rotate(rotateStep, cx, cy);
+		innerRechthoek.rotate(rotateStep, cx, cy);
+		
 		makeHandleBox();
 
 	}
@@ -1226,25 +1267,53 @@ class Rechthoek
 		breedte = (int) Math.round(scaleStep * breedte);
 		hoogte = (int) Math.round(scaleStep * hoogte);
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		makeHandleBox();
+		maakRechthoek();
+		
+		//rechthoek.scale(scaleStep, cx, cy);
+		//outerRechthoek.scale(scaleStep, cx, cy);
+		//innerRechthoek.scale(scaleStep, cx, cy);
+		
+		//makeHandleBox();
 		
 	}
 	
 	public void scale(double sx, double sy)
-	{	
+	{
 		topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
 		topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
 		breedte = (int) Math.round(sx * breedte);
 		hoogte = (int) Math.round(sy * hoogte);
+
+		maakRechthoek();
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		makeHandleBox();
+//		rechthoek.scale(sx, sy, cx, cy);
+//		outerRechthoek.scale(sx, sy, cx, cy);
+//		innerRechthoek.scale(sx,sy, cx, cy);
+		
+//		makeHandleBox();
 		
 	}
-	
+
+/*	
+// wordt alleen aangeroepen wanneer matrix2d = identity	
+	public void transformBy(double[] m2d)
+	{
+		
+System.out.println("transformBy: " + printMatrix(m2d));
+
+		matrix2d[0] = m2d[0];
+		matrix2d[1] = m2d[1];
+		matrix2d[2] = m2d[2];
+		matrix2d[3] = m2d[3];
+		
+		rechthoek.transformBy(m2d, cx, cy);
+		outerRechthoek.transformBy(m2d, cx, cy);
+		innerRechthoek.transformBy(m2d, cx, cy);
+		
+		makeHandleBox();
+
+	}
+*/	
 	public Hashtable getState()
 	{	Hashtable h = new Hashtable();
 		
@@ -1255,7 +1324,7 @@ class Rechthoek
 		h.put("breedte", new Integer(breedte));
 		h.put("hoogte", new Integer(hoogte));
 		h.put("rotation", new Double(rotation));
-	
+		
 		return h;
 	}
 	
@@ -1267,6 +1336,11 @@ class Rechthoek
 		int breedte = 0;
 		int hoogte = 0;
 		double rotation = 0;
+		double[] m2d = new double[4];
+		double m00 = 1;
+		double m01 = 0;
+		double m10 = 0;
+		double m11 = 1;
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
@@ -1280,28 +1354,31 @@ class Rechthoek
 		if (h.containsKey("hoogte"))
 			hoogte = ((Integer) h.get("hoogte")).intValue();
 		
+		// backwards compatibility
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
 		
 		Rechthoek rechthoek = new Rechthoek(kleur, topLeftX, topLeftY, breedte, hoogte);
 		rechthoek.rotation = rotation;
-		
+		rechthoek.maakRechthoek();
+
+/*		
+		if (h.containsKey("rotation"))
+		{	rechthoek.rotate(rotation);
+		}
+		if (h.containsKey("matrix2d"))
+		{	rechthoek.transformBy(m2d);
+		}
+*/		
 		return rechthoek;
 	}
 	
+	
 	public void teken(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
-		
 		g.setColor(kleur);
-		g.drawRect(topLeftX, topLeftY, breedte, hoogte);
+		rechthoek.draw(g, kleur, null);
 
-		g.setTransform(oldAT);
 	}
 
 	public void tekenHandleBox(Graphics2D g)
@@ -1325,58 +1402,30 @@ class Rechthoek
 		if (topRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
 		}
 		if (topLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
-			
 		}
 		if (bottomRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
-			
 		}
 		if (bottomLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
-			
 		}
 		if (rotateEastHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x + handleBox.width, // - 2 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
-		}
-		if (rotateNorthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
 		}
 		if (rotateWestHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x - 4 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
-		}
-		if (rotateSouthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
-
 		}
 		
 
@@ -1384,63 +1433,48 @@ class Rechthoek
 
 	public void tekenBB(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
 		
-		g.setTransform(at);
-		
-		//float[] dash = new float[2];
-		//dash[0] = 2;
-		//dash[1] = 2;
-		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
-		g.setColor(KladjeVeld.bbColor);
-		
-		g.drawRect(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
-		g.drawRect(innerBB.x, innerBB.y, innerBB.width, innerBB.height);
+
+		outerRechthoek.draw(g, KladjeVeld.bbColor, null);
+		innerRechthoek.draw(g, KladjeVeld.bbColor, null);
 		
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
-		g.setTransform(oldAT);
+	}
+	
+	public double inverseRotX(double x, double y)
+	{
+		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
+		
+		return rotX;
 		
 	}
 	
-	public int inverseTransformX(int x, int y)
+	public double inverseRotY(double x, double y)
 	{
-		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
-		int rx = (int) Math.round(cx + rotX);
+		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
-		return rx;
-	}
-
-	public int inverseTransformY(int x, int y)
-	{
-		double rotY = Math.sin(-rotation) * (x - cx) + Math.cos(- rotation) * (y - cy);
-		int ry = (int) Math.round(cy + rotY);
-		
-		return ry;
+		return rotY;
 	}
 	
 	public boolean bbContains(int x, int y)
 	{
-		int rx = inverseTransformX(x, y);
-		int ry = inverseTransformY(x, y);
 		
-		return outerBB.contains(rx, ry) && !innerBB.contains(rx, ry);
+		return outerRechthoek.contains(x, y) && !innerRechthoek.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)
 	{
 		topLeftX += dx;
 		topLeftY += dy;
-		outerBB.translate(dx, dy);
-		innerBB.translate(dx, dy);
 		cx += dx;
 		cy += dy;
 		
-		bb2.translate(dx, dy);
+		rechthoek.translate(dx, dy);
+		outerRechthoek.translate(dx, dy);
+		innerRechthoek.translate(dx, dy);
+		
 		makeHandleBox();
 
 	}	
@@ -1449,36 +1483,15 @@ class Rechthoek
 	{
 		if (r == null)
 			return false;
-
-		int toBBx = inverseTransformX(outerBB.x, outerBB.y);
-		int toBBy = inverseTransformY(outerBB.x, outerBB.y);
-		int toBBx2 = inverseTransformX(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
-		int toBBy2 = inverseTransformY(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
 		
-		boolean isContainedIn = r.contains(toBBx, toBBy) &&	r.contains(toBBx2, toBBy2);		
-		
-		return isContainedIn;
-	}
-	
-	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
-	{	
-		Polygon r = new Polygon();
-		
-		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
+		boolean isContainedIn = true;
+		for (int cnt = 0; cnt < outerRechthoek.aantalPunten; cnt++)
 		{
-			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
-			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
-						
-			//puntenX[pCnt] = (int) Math.round(cx + rotX);
-			//puntenY[pCnt] = (int) Math.round(cy + rotY);
-			
-			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
-			//doubleX[pCnt] = cx + rotX;
-			//doubleY[pCnt] = cy + rotY;
-			
+			isContainedIn = isContainedIn && 
+							r.contains(outerRechthoek.puntenX[cnt], outerRechthoek.puntenY[cnt]);
 		}
 		
-		return r;
+		return isContainedIn;
 	}
 
 	
@@ -1487,16 +1500,16 @@ class Ellips
 {	Color kleur;
 	int topLeftX, topLeftY, breedte, hoogte;
 	int bbFactor = 4;
-	Rectangle outerBB, innerBB;
-	Polygon bb2;
+	KladjePolygon ellips, outerEllips, innerEllips;
 	double cx, cy;
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
+	int steps = 75;
 
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
-	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	Rectangle rotateEastHandle, rotateWestHandle;
 	
 	public Ellips(Color c, int x, int y, int w, int h)
 	{
@@ -1509,10 +1522,30 @@ class Ellips
 		cx = topLeftX + ((double) breedte) / 2;
 		cy = topLeftY + ((double) hoogte) / 2;
 		
-		makeBB();
-		makeHandleBox();
-		
+		makeEllips();
 	}
+	
+	public void makeEllips()
+	{
+		double angleStep = 2 * Math.PI / steps;
+		
+		ellips = new KladjePolygon();
+		for (int pCnt = 0; pCnt <= steps; pCnt++)
+		{
+			double x = cx + (breedte / 2) * Math.cos(pCnt * angleStep);
+			double y = cy - (hoogte / 2) * Math.sin(pCnt * angleStep);
+			ellips.addPoint(x, y);
+		}
+		
+		makeOuterInner();
+		
+		ellips.rotate(rotation, cx, cy);
+		outerEllips.rotate(rotation, cx, cy);
+		innerEllips.rotate(rotation, cx, cy);
+		
+		makeHandleBox();
+	}
+	
 
 	public void makeHandleBox()
 	{
@@ -1520,17 +1553,18 @@ class Ellips
 		int maxX = -100;
 		int minY = 1000;
 		int maxY = -100;
-		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < outerEllips.aantalPunten; pCnt++)
 		{
-			if (bb2.xpoints[pCnt] < minX)
-				minX = bb2.xpoints[pCnt];
-			if (bb2.xpoints[pCnt] > maxX)
-				maxX = bb2.xpoints[pCnt];
-			if (bb2.ypoints[pCnt] < minY)
-				minY = bb2.ypoints[pCnt];
-			if (bb2.ypoints[pCnt] > maxY)
-				maxY = bb2.ypoints[pCnt];
+			if (outerEllips.puntenX[pCnt] < minX)
+				minX = outerEllips.puntenX[pCnt];
+			if (outerEllips.puntenX[pCnt] > maxX)
+				maxX = outerEllips.puntenX[pCnt];
+			if (outerEllips.puntenY[pCnt] < minY)
+				minY = outerEllips.puntenY[pCnt];
+			if (outerEllips.puntenY[pCnt] > maxY)
+				maxY = outerEllips.puntenY[pCnt];
 		}
+		
 		
 		int w = maxX - minX + 2 * hbFactor;
 		int h = maxY - minY + 2 * hbFactor;
@@ -1604,48 +1638,52 @@ class Ellips
 
 	public void makeRotateHandles()
 	{
-		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width, // - 2 * hbFactor,
 										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
-										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
-		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+		rotateWestHandle = new Rectangle(handleBox.x - 4 * hbFactor, 
+				                         handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
-                						  handleBox.y + handleBox.height - 2 * hbFactor,
-                						  4 * hbFactor, 4 * hbFactor);
 	}
 
 	public void killRotateHandles()
 	{
 		rotateEastHandle = null; 
-		rotateNorthHandle = null; 
 		rotateWestHandle = null;
-		rotateSouthHandle = null;
 		
 		
 	}
 	
-	public void makeBB()
+	
+	public void makeOuterInner()
 	{
-		outerBB = new Rectangle(topLeftX - bbFactor, topLeftY - bbFactor, 
-			    breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
-		innerBB = new Rectangle(topLeftX + bbFactor, topLeftY + bbFactor, 
-			    breedte - 2 * bbFactor, hoogte - 2 * bbFactor);
+		double angleStep = 2 * Math.PI / steps;
+		
+		outerEllips = new KladjePolygon();
+		for (int pCnt = 0; pCnt <= steps; pCnt++)
+		{
+			double x = cx + (breedte/2 + bbFactor) * Math.cos(pCnt * angleStep);
+			double y = cy - (hoogte/2 + bbFactor) * Math.sin(pCnt * angleStep);
+			outerEllips.addPoint(x, y);
+		}
 
-		bb2 = new Polygon();
-		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor);
-		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor);
-		bb2.addPoint(topLeftX - bbFactor + breedte + 2 * bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
-		bb2.addPoint(topLeftX - bbFactor, topLeftY - bbFactor + hoogte + 2 * bbFactor);
-
+		innerEllips = new KladjePolygon();
+		for (int pCnt = 0; pCnt <= steps; pCnt++)
+		{
+			double x = cx + (breedte/2 - bbFactor) * Math.cos(pCnt * angleStep);
+			double y = cy - (hoogte/2 - bbFactor) * Math.sin(pCnt * angleStep);
+			innerEllips.addPoint(x, y);
+		}
+		
 	}
 	
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
-		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+
+		ellips.rotate(rotateStep, cx, cy);
+		outerEllips.rotate(rotateStep, cx, cy);
+		innerEllips.rotate(rotateStep, cx, cy);
+
 		makeHandleBox();
 
 	}
@@ -1657,8 +1695,8 @@ class Ellips
 		breedte = (int) Math.round(scaleStep * breedte);
 		hoogte = (int) Math.round(scaleStep * hoogte);
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeEllips();
+		
 		makeHandleBox();
 		
 	}
@@ -1670,8 +1708,8 @@ class Ellips
 		breedte = (int) Math.round(sx * breedte);
 		hoogte = (int) Math.round(sy * hoogte);
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		makeEllips();
+		
 		makeHandleBox();
 		
 	}
@@ -1716,23 +1754,17 @@ class Ellips
 		
 		Ellips ellips = new Ellips(kleur, topLeftX, topLeftY, breedte, hoogte);
 		ellips.rotation = rotation;
+		ellips.makeEllips();
 		
 		return ellips;
 	}
 
 	public void teken(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
 		
 		g.setColor(kleur);
-		g.drawOval(topLeftX, topLeftY, breedte, hoogte);
+		ellips.draw(g, kleur, null);
 		
-		g.setTransform(oldAT);	
 	}
 
 	public void tekenHandleBox(Graphics2D g)
@@ -1757,58 +1789,30 @@ class Ellips
 		if (topRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
 		}
 		if (topLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(topLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
-			
 		}
 		if (bottomRightHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomRightHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
-			
 		}
 		if (bottomLeftHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
 			g.drawPolygon(bottomLeftHandle);
-//g.setColor(Color.red);
-//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
-			
 		}
 		if (rotateEastHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x + handleBox.width, // - 2 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
-		}
-		if (rotateNorthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
 		}
 		if (rotateWestHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x - 4 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
-		}
-		if (rotateSouthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
-
 		}
 		
 
@@ -1816,83 +1820,48 @@ class Ellips
 	
 	public void tekenBB(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
-
-		at.rotate(rotation, cx, cy);
-		
-		g.setTransform(at);
-
-		//float[] dash = new float[2];
-		//dash[0] = 2;
-		//dash[1] = 2;
-		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
-		g.setColor(KladjeVeld.bbColor);
 		
-		g.drawOval(outerBB.x, outerBB.y, outerBB.width, outerBB.height);
-		g.drawOval(innerBB.x, innerBB.y, innerBB.width, innerBB.height);
+		outerEllips.draw(g, KladjeVeld.bbColor, null);
+		innerEllips.draw(g, KladjeVeld.bbColor, null);
 		
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 
-		g.setTransform(oldAT);
 	}
 
-	public int inverseTransformX(int x, int y)
+	public double inverseRotX(double x, double y)
 	{
-		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
-		int rx = (int) Math.round(cx + rotX);
+		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
 		
-		return rx;
-	}
-
-	public int inverseTransformY(int x, int y)
-	{
-		double rotY = Math.sin(-rotation) * (x - cx) + Math.cos(- rotation) * (y - cy);
-		int ry = (int) Math.round(cy + rotY);
+		return rotX;
 		
-		return ry;
 	}
 	
-	boolean ellipsContains(int x, int y, Rectangle r)
+	public double inverseRotY(double x, double y)
 	{
+		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
-		int rx = inverseTransformX(x, y);
-		int ry = inverseTransformY(x, y);
-		
-		double a = ((double) r.width) / 2;
-		double b = ((double) r.height) / 2;
-		double cx = r.x + a;
-		double cy = r.y + b;
-		double px = ((double) rx) - cx;
-		double py = ((double) ry) - cy;
-		
-		//px^2/a^2+py^2/b^2<1
-		
-		double inside = px*px/(a*a) + py*py/(b*b);
-		
-		boolean contains = inside < 1;
-		return contains;
+		return rotY;
 	}
+	
 	
 	public boolean bbContains(int x, int y)
 	{
-		boolean outer = ellipsContains(x, y, outerBB);
-		boolean inner = ellipsContains(x, y, innerBB);
 		
-		return outer && !inner;
+		return outerEllips.contains(x, y) && !innerEllips.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)
 	{
 		topLeftX += dx;
 		topLeftY += dy;
-		outerBB.translate(dx, dy);
-		innerBB.translate(dx, dy);
+		
+		ellips.translate(dx, dy);
+		outerEllips.translate(dx, dy);
+		innerEllips.translate(dx, dy);
 		cx += dx;
 		cy += dy;
 		
-		bb2.translate(dx, dy);
 		makeHandleBox();
 
 		
@@ -1903,36 +1872,16 @@ class Ellips
 		if (r == null)
 			return false;
 		
-		int toBBx = inverseTransformX(outerBB.x, outerBB.y);
-		int toBBy = inverseTransformY(outerBB.x, outerBB.y);
-		int toBBx2 = inverseTransformX(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
-		int toBBy2 = inverseTransformY(outerBB.x + outerBB.width, outerBB.y + outerBB.height);
-		
-		boolean isContainedIn = r.contains(toBBx, toBBy) &&	r.contains(toBBx2, toBBy2);		
+		boolean isContainedIn = true;
+		for (int cnt = 0; cnt < outerEllips.aantalPunten; cnt++)
+		{
+			isContainedIn = isContainedIn && 
+							r.contains(outerEllips.puntenX[cnt], outerEllips.puntenY[cnt]);
+		}
 		
 		return isContainedIn;
 	}
 	
-	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
-	{	
-		Polygon r = new Polygon();
-		
-		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
-		{
-			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
-			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
-						
-			//puntenX[pCnt] = (int) Math.round(cx + rotX);
-			//puntenY[pCnt] = (int) Math.round(cy + rotY);
-			
-			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
-			//doubleX[pCnt] = cx + rotX;
-			//doubleY[pCnt] = cy + rotY;
-			
-		}
-		
-		return r;
-	}
 
 }
 
@@ -1944,7 +1893,7 @@ class TekstElement
 	int breedte, hoogte, ascent;
 	int bbFactor = 4;
 	Rectangle bb;
-	Polygon bb2;
+	KladjePolygon bb2;
 	double cx, cy;
 	double rotation = 0;
 	double scaleX = 1;
@@ -1952,10 +1901,10 @@ class TekstElement
 	int tekstX, tekstY;
 	Rectangle handleBox;
 	int hbFactor = 4;
-
+	
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
-	Rectangle rotateEastHandle, rotateNorthHandle, rotateWestHandle, rotateSouthHandle;
+	Rectangle rotateEastHandle, rotateWestHandle;
 	
 	
 	public TekstElement(Color c, String t, int x, int y)
@@ -1997,16 +1946,16 @@ class TekstElement
 		int maxX = -100;
 		int minY = 1000;
 		int maxY = -100;
-		for (int pCnt = 0; pCnt < bb2.npoints; pCnt++)
+		for (int pCnt = 0; pCnt < bb2.aantalPunten; pCnt++)
 		{
-			if (bb2.xpoints[pCnt] < minX)
-				minX = bb2.xpoints[pCnt];
-			if (bb2.xpoints[pCnt] > maxX)
-				maxX = bb2.xpoints[pCnt];
-			if (bb2.ypoints[pCnt] < minY)
-				minY = bb2.ypoints[pCnt];
-			if (bb2.ypoints[pCnt] > maxY)
-				maxY = bb2.ypoints[pCnt];
+			if (bb2.puntenX[pCnt] < minX)
+				minX = bb2.puntenX[pCnt];
+			if (bb2.puntenX[pCnt] > maxX)
+				maxX = bb2.puntenX[pCnt];
+			if (bb2.puntenY[pCnt] < minY)
+				minY = bb2.puntenY[pCnt];
+			if (bb2.puntenY[pCnt] > maxY)
+				maxY = bb2.puntenY[pCnt];
 		}
 		
 		int w = maxX - minX + 2 * hbFactor;
@@ -2031,6 +1980,8 @@ class TekstElement
 	
 	public void makeScaleHandles()
 	{
+		
+/*		
 		topRightHandle = new Polygon();
 		topRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
 								handleBox.y - hbFactor);
@@ -2040,13 +1991,14 @@ class TekstElement
 								handleBox.y + 3 * hbFactor);
 		topRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
 									 handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
-		
+*/
+/*		
 		topLeftHandle = new Polygon();
 		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y - hbFactor);
 		topLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y - hbFactor);
 		topLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + 3 * hbFactor);
 		topLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
-		
+*/		
 		bottomRightHandle = new Polygon();
 		bottomRightHandle.addPoint(handleBox.x + handleBox.width + hbFactor,
 								   handleBox.y + handleBox.height + hbFactor);
@@ -2056,14 +2008,14 @@ class TekstElement
 								   handleBox.y + handleBox.height - 3 * hbFactor);
 		bottomRightRect = new Rectangle(handleBox.x + handleBox.width - 3 * hbFactor,
 				   						handleBox.y + handleBox.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
-		
+/*		
 		bottomLeftHandle = new Polygon();
 		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height + hbFactor);
 		bottomLeftHandle.addPoint(handleBox.x + 3 * hbFactor, handleBox.y + handleBox.height + hbFactor);
 		bottomLeftHandle.addPoint(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor);
 		bottomLeftRect = new Rectangle(handleBox.x - hbFactor, handleBox.y + handleBox.height - 3 * hbFactor, 
 									   4 * hbFactor, 4 * hbFactor);		
-		
+*/		
 	}
 
 	public void killScaleHandles()
@@ -2081,25 +2033,20 @@ class TekstElement
 
 	public void makeRotateHandles()
 	{
-		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width - 2 * hbFactor,
+		rotateEastHandle = new Rectangle(handleBox.x + handleBox.width, // - 2 * hbFactor,
 										 handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateNorthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor,
-										  handleBox.y - 2 * hbFactor, 4 * hbFactor, 4 * hbFactor);
-		rotateWestHandle = new Rectangle(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor,
+/*
+		rotateWestHandle = new Rectangle(handleBox.x - 4 * hbFactor,
+				                         handleBox.y + handleBox.height/2 - 2 * hbFactor,
 										 4 * hbFactor, 4 * hbFactor);
-		rotateSouthHandle = new Rectangle(handleBox.x + handleBox.width/2 - 2 * hbFactor, 
-                						  handleBox.y + handleBox.height - 2 * hbFactor,
-                						  4 * hbFactor, 4 * hbFactor);
+*/										 
 	}
 
 	public void killRotateHandles()
 	{
 		rotateEastHandle = null; 
-		rotateNorthHandle = null; 
 		rotateWestHandle = null;
-		rotateSouthHandle = null;
-		
 		
 	}
 
@@ -2108,8 +2055,8 @@ class TekstElement
 	{
 		bb = new Rectangle(xPos - bbFactor, yPos - bbFactor, 
 						   breedte + 2 * bbFactor, hoogte + 2 * bbFactor);
-		
-		bb2 = new Polygon();
+
+		bb2 = new KladjePolygon();
 		bb2.addPoint(xPos - bbFactor, yPos - bbFactor);
 		bb2.addPoint(xPos - bbFactor + breedte + 2 * bbFactor, yPos - bbFactor);
 		bb2.addPoint(xPos - bbFactor + breedte + 2 * bbFactor, yPos - bbFactor + hoogte + 2 * bbFactor);
@@ -2120,10 +2067,10 @@ class TekstElement
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 		
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		makeHandleBox();
-
+		//makeBB();
+		//bb2.rotate(rotateStep, cx, cy);
+		//makeHandleBox();
+		
 	}
 
 	public void scale(double scaleStep)
@@ -2141,12 +2088,15 @@ class TekstElement
 		tekstX = (int) Math.round((1/scaleStep) * tekstX);// + (1 - (1/scaleStep)) * cx);
 		tekstY = (int) Math.round((1/scaleStep) * tekstY);// + (1 - (1/scaleStep)) * cy);
 		
+		//tekstX = (int) Math.round(scaleStep * tekstX + (1 - scaleStep) * cx);
+		//tekstY = (int) Math.round(scaleStep * tekstY + (1 - scaleStep) * cy);
+		
 		scaleX *= scaleStep;
 		scaleY *= scaleStep;
 	
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		makeHandleBox();
+		//makeBB();
+		//bb2.rotate(rotation, cx, cy);
+		//makeHandleBox();
 	
 	}
 
@@ -2165,12 +2115,16 @@ class TekstElement
 		tekstX = (int) Math.round((1/sx) * tekstX);// + (1 - (1/sx)) * cx);
 		tekstY = (int) Math.round((1/sy) * tekstY);// + (1 - (1/sy)) * cy);
 		
+		//tekstX = (int) Math.round(sx * tekstX + (1 - sx) * cx);
+		//tekstY = (int) Math.round(sy * tekstY + (1 - sy) * cy);
+		
+		
 		scaleX *= sx;
 		scaleY *= sy;
 	
-		makeBB();
-		bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		makeHandleBox();
+		//makeBB();
+		//bb2.rotate(rotation, cx, cy);
+		//makeHandleBox();
 	
 	}
 	
@@ -2218,10 +2172,11 @@ class TekstElement
 		
 		TekstElement tekstElement = new TekstElement(kleur, tekst, xPos, yPos);
 		tekstElement.rotation = rotation;
-		tekstElement.scaleX = scaleX;
-		tekstElement.scaleY = scaleY;
-		tekstElement.tekstX = (int) Math.round(((double) xPos) / scaleX);
-		tekstElement.tekstY = (int) Math.round(((double) yPos) / scaleY);
+		//tekstElement.scaleX = scaleX;
+		//tekstElement.scaleY = scaleY;
+		//tekstElement.tekstX = (int) Math.round(((double) xPos) / scaleX);
+		//tekstElement.tekstY = (int) Math.round(((double) yPos) / scaleY);
+		tekstElement.scale(scaleX, scaleY);
 		
 		
 		return tekstElement;
@@ -2229,6 +2184,10 @@ class TekstElement
 	
 	public void teken(Graphics2D g)
 	{
+		makeBB();
+		bb2.rotate(rotation, cx, cy);
+		makeHandleBox();
+		
 		AffineTransform oldAT = g.getTransform();
 		AffineTransform at = g.getTransform();
 		
@@ -2242,8 +2201,12 @@ class TekstElement
 		g.setFont(KladjeVeld.tekstFont);
 		g.setColor(kleur);
 		g.drawString(tekst, tekstX, tekstY + ascent);
+		//g.drawString(tekst, xPos, yPos + ascent);
 		
 		g.setTransform(oldAT);
+		
+		//tekenBB(g);
+		//tekenHandleBox(g);
 		
 	}
 
@@ -2294,32 +2257,19 @@ class TekstElement
 		}
 		if (rotateEastHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width - 2 * hbFactor , handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x + handleBox.width, // - 2 * hbFactor,
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
 //g.setColor(Color.red);			
 //g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
 		}
-		if (rotateNorthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x + handleBox.width/2 - 2 * hbFactor, handleBox.y - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateNorthHandle.x, rotateNorthHandle.y, rotateNorthHandle.width, rotateNorthHandle.height);
-		}
 		if (rotateWestHandle != null)
 		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x - 2 * hbFactor, handleBox.y + handleBox.height/2 - 2 * hbFactor, 
+			g.drawOval(handleBox.x - 4 * hbFactor, 
+					   handleBox.y + handleBox.height/2 - 2 * hbFactor, 
 					   4 * hbFactor, 4 * hbFactor);
 //g.setColor(Color.red);			
 //g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
-		}
-		if (rotateSouthHandle != null)
-		{	g.setColor(KladjeVeld.hbColor);
-			g.drawOval(handleBox.x +handleBox.width/2 - 2 * hbFactor, handleBox.y + handleBox.height - 2 * hbFactor, 
-					   4 * hbFactor, 4 * hbFactor);
-//g.setColor(Color.red);			
-//g.drawRect(rotateSouthHandle.x, rotateSouthHandle.y, rotateSouthHandle.width, rotateSouthHandle.height);
-
 		}
 		
 
@@ -2329,6 +2279,7 @@ class TekstElement
 	public void tekenBB(Graphics2D g)
 	{
 
+		
 		AffineTransform oldAT = g.getTransform();
 		AffineTransform at = g.getTransform();
 
@@ -2336,21 +2287,37 @@ class TekstElement
 		
 		g.setTransform(at);
 		
-		//float[] dash = new float[2];
-		//dash[0] = 2;
-		//dash[1] = 2;
-		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 
 		g.drawRect(bb.x, bb.y, bb.width, bb.height);
+		//bb.draw(g, KladjeVeld.bbColor, null);
 				
+//g.setColor(Color.red);		
+//g.drawRect(tekstBox.x, tekstBox.y, tekstBox.width, tekstBox.height);
+		
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
 		g.setTransform(oldAT);
 
 	}
 
+	public double inverseRotX(double x, double y)
+	{
+		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
+		
+		return rotX;
+		
+	}
+
+	public double inverseRotY(double x, double y)
+	{
+		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
+		
+		return rotY;
+	}
+	
+	
 	public int inverseTransformX(int x, int y)
 	{
 		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
@@ -2372,7 +2339,7 @@ class TekstElement
 		int rx = inverseTransformX(x, y);
 		int ry = inverseTransformY(x, y);
 		
-		return bb.contains(rx, ry);
+		return bb.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)
@@ -2394,7 +2361,6 @@ class TekstElement
 	{
 		if (r == null)
 			return false;
-		
 		int toBBx = inverseTransformX(bb.x, bb.y);
 		int toBBy = inverseTransformY(bb.x, bb.y);
 		int toBBx2 = inverseTransformX(bb.x + bb.width, bb.y + bb.height);
@@ -2405,25 +2371,5 @@ class TekstElement
 		return isContainedIn;
 	}
 	
-	public Polygon rotatePolygon(Polygon p, double rotation, double cx, double cy)
-	{	
-		Polygon r = new Polygon();
-		
-		for (int pCnt = 0; pCnt < p.npoints; pCnt++)
-		{
-			double rotX = Math.cos(rotation) * (p.xpoints[pCnt] - cx) - Math.sin(rotation) * (p.ypoints[pCnt] - cy);
-			double rotY = Math.sin(rotation) * (p.xpoints[pCnt] - cx) + Math.cos(rotation) * (p.ypoints[pCnt] - cy);
-						
-			//puntenX[pCnt] = (int) Math.round(cx + rotX);
-			//puntenY[pCnt] = (int) Math.round(cy + rotY);
-			
-			r.addPoint((int) Math.round(cx + rotX), (int) Math.round(cy + rotY));
-			//doubleX[pCnt] = cx + rotX;
-			//doubleY[pCnt] = cy + rotY;
-			
-		}
-		
-		return r;
-	}
 
 }

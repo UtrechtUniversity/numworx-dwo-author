@@ -24,14 +24,12 @@ public class KladjeVeld extends JPanel
 	boolean scalingBottomRight = false;
 	boolean scalingBottomLeft = false;
 	boolean rotatingEast = false;
-	boolean rotatingNorth = false;
 	boolean rotatingWest = false;
-	boolean rotatingSouth = false;
 	
 	int lineDistance = 20;
 	int gridSize = 20;
 	
-	static Color lightBlue = new Color(148, 214, 231);
+	static Color lightBlue = new Color(148, 148, 255);
 	Color lijnenKleur = new Color(150, 150, 255);
 	Color ruitjesKleur = new Color(210, 210, 210);
 	static Color bbColor = lightBlue; 
@@ -85,6 +83,7 @@ public class KladjeVeld extends JPanel
 	Cursor selectCursor = null;
 	boolean sleepSelectie = false;
 	boolean objectMoved = false;
+	boolean objectHandled = false;
 	//Vector sleepPoints = new Vector();
 	
 	Streep selectedStreep = null;
@@ -109,8 +108,8 @@ public class KladjeVeld extends JPanel
 	
 	double rotateStep = Math.PI / 18; // 10 degrees in radians
 	double angleSum = 0;
-	double scaleUpStep = 11e-1d;
-	double scaleDownStep = 1 / 11e-1d;
+	double scaleUpStep = 105e-2d;
+	double scaleDownStep = 1 / 105e-2d;
 	
 	public KladjeVeld(int w, int h)
 	{
@@ -184,6 +183,8 @@ public class KladjeVeld extends JPanel
 	
 	void addToHistory()
 	{
+		
+//System.out.println("ath = " + numHistories);		
 		//Vector stateVector = getState();
 		Hashtable stateTable = getState();
 		
@@ -211,7 +212,7 @@ public class KladjeVeld extends JPanel
 
 		if (numHistories > 0)
 		{	
-//System.out.println("returned " + numHistories);			
+System.out.println("returned " + (numHistories - 1));			
 			return histories[numHistories - 1];
 		
 		}
@@ -410,6 +411,7 @@ public class KladjeVeld extends JPanel
 		{	TekstElement tekstElement = TekstElement.setState(tekstElementen[tCnt]);
 			tekstElementVector.addElement(tekstElement);
 		}
+		
 		
 	}
 	
@@ -1114,22 +1116,30 @@ public class KladjeVeld extends JPanel
 			}
 			else if (scalingTopLeft)
 			{
-				int oldWidth = selectedStreep.handleBox.width / 2;
-				int oldHeight = selectedStreep.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight - dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedStreep.breedte / 2;
+				double oldHeight = (double) selectedStreep.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight - dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedStreep.scale(sx,sy);
 			}
 			else if (scalingBottomLeft)
 			{
-				int oldWidth = selectedStreep.handleBox.width / 2;
-				int oldHeight = selectedStreep.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight + dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedStreep.breedte / 2;
+				double oldHeight = (double) selectedStreep.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight + dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedStreep.scale(sx,sy);
 			}
 			else if (scalingBottomRight)
@@ -1157,13 +1167,6 @@ public class KladjeVeld extends JPanel
 				selectedStreep.rotate(angle);
 				
 			}
-			else if (rotatingNorth)
-			{
-				// hier is alleen dx van belang
-				double angle = Math.atan(((double) dx) / (selectedStreep.handleBox.width/2));
-				selectedStreep.rotate(angle);
-				
-			}
 			else if (rotatingWest)
 			{
 				// hier is alleen dy van belang
@@ -1174,16 +1177,6 @@ public class KladjeVeld extends JPanel
 				selectedStreep.rotate(rotateSteps * rotateStep);
 				
 				
-			}
-			else if (rotatingSouth)
-			{
-				// hier is alleen dx van belang
-				double angle = - Math.atan(((double) dx) / (selectedStreep.handleBox.width/2));
-				angleSum += angle; 
-				int rotateSteps = (int) Math.round(angleSum / rotateStep);
-				angleSum -= rotateSteps * rotateStep;
-				selectedStreep.rotate(rotateSteps * rotateStep);
-			
 			}
 			
 			
@@ -1211,22 +1204,35 @@ public class KladjeVeld extends JPanel
 			}
 			else if (scalingTopLeft)
 			{
-				int oldWidth = selectedLijn.handleBox.width / 2;
-				int oldHeight = selectedLijn.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight - dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
+				double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
+				double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
+				double oldWidth = breedte / 2;
+				double oldHeight = hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight - dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
+				
 				selectedLijn.scale(sx,sy);
 			}
 			else if (scalingBottomLeft)
 			{
-				int oldWidth = selectedLijn.handleBox.width / 2;
-				int oldHeight = selectedLijn.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight + dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
+				double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
+				double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
+				double oldWidth = breedte / 2;
+				double oldHeight = hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight + dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedLijn.scale(sx,sy);
 			}
 			else if (scalingBottomRight)
@@ -1255,13 +1261,6 @@ public class KladjeVeld extends JPanel
 				selectedLijn.rotate(angle);
 				
 			}
-			else if (rotatingNorth)
-			{
-				// hier is alleen dx van belang
-				double angle = Math.atan(((double) dx) / (selectedLijn.handleBox.width/2));
-				selectedLijn.rotate(angle);
-				
-			}
 			else if (rotatingWest)
 			{
 				// hier is alleen dy van belang
@@ -1272,16 +1271,6 @@ public class KladjeVeld extends JPanel
 				selectedLijn.rotate(rotateSteps * rotateStep);
 				
 				
-			}
-			else if (rotatingSouth)
-			{
-				// hier is alleen dx van belang
-				double angle = - Math.atan(((double) dx) / (selectedLijn.handleBox.width/2));
-				angleSum += angle; 
-				int rotateSteps = (int) Math.round(angleSum / rotateStep);
-				angleSum -= rotateSteps * rotateStep;
-				selectedLijn.rotate(rotateSteps * rotateStep);
-			
 			}
 
 			
@@ -1308,22 +1297,33 @@ public class KladjeVeld extends JPanel
 			}
 			else if (scalingTopLeft)
 			{
-				int oldWidth = selectedRechthoek.handleBox.width / 2;
-				int oldHeight = selectedRechthoek.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight - dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedRechthoek.breedte / 2;
+				double oldHeight = (double) selectedRechthoek.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight - dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
+				
 				selectedRechthoek.scale(sx,sy);
 			}
 			else if (scalingBottomLeft)
 			{
-				int oldWidth = selectedRechthoek.handleBox.width / 2;
-				int oldHeight = selectedRechthoek.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight + dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedRechthoek.breedte / 2;
+				double oldHeight = (double) selectedRechthoek.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight + dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
+				
 				selectedRechthoek.scale(sx,sy);
 			}
 			else if (scalingBottomRight)
@@ -1352,13 +1352,6 @@ public class KladjeVeld extends JPanel
 				selectedRechthoek.rotate(angle);
 				
 			}
-			else if (rotatingNorth)
-			{
-				// hier is alleen dx van belang
-				double angle = Math.atan(((double) dx) / (selectedRechthoek.handleBox.width/2));
-				selectedRechthoek.rotate(angle);
-				
-			}
 			else if (rotatingWest)
 			{
 				// hier is alleen dy van belang
@@ -1369,16 +1362,6 @@ public class KladjeVeld extends JPanel
 				selectedRechthoek.rotate(rotateSteps * rotateStep);
 				
 				
-			}
-			else if (rotatingSouth)
-			{
-				// hier is alleen dx van belang
-				double angle = - Math.atan(((double) dx) / (selectedRechthoek.handleBox.width/2));
-				angleSum += angle; 
-				int rotateSteps = (int) Math.round(angleSum / rotateStep);
-				angleSum -= rotateSteps * rotateStep;
-				selectedRechthoek.rotate(rotateSteps * rotateStep);
-			
 			}
 
 			
@@ -1405,22 +1388,31 @@ public class KladjeVeld extends JPanel
 			}
 			else if (scalingTopLeft)
 			{
-				int oldWidth = selectedEllips.handleBox.width / 2;
-				int oldHeight = selectedEllips.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight - dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedEllips.breedte / 2;
+				double oldHeight = (double) selectedEllips.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight - dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedEllips.scale(sx,sy);
 			}
 			else if (scalingBottomLeft)
 			{
-				int oldWidth = selectedEllips.handleBox.width / 2;
-				int oldHeight = selectedEllips.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight + dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedEllips.breedte / 2;
+				double oldHeight = (double) selectedEllips.hoogte / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight + dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
+				
 				selectedEllips.scale(sx,sy);
 			}
 			else if (scalingBottomRight)
@@ -1449,13 +1441,6 @@ public class KladjeVeld extends JPanel
 				selectedEllips.rotate(angle);
 				
 			}
-			else if (rotatingNorth)
-			{
-				// hier is alleen dx van belang
-				double angle = Math.atan(((double) dx) / (selectedEllips.handleBox.width/2));
-				selectedEllips.rotate(angle);
-				
-			}
 			else if (rotatingWest)
 			{
 				// hier is alleen dy van belang
@@ -1466,16 +1451,6 @@ public class KladjeVeld extends JPanel
 				selectedEllips.rotate(rotateSteps * rotateStep);
 				
 				
-			}
-			else if (rotatingSouth)
-			{
-				// hier is alleen dx van belang
-				double angle = - Math.atan(((double) dx) / (selectedEllips.handleBox.width/2));
-				angleSum += angle; 
-				int rotateSteps = (int) Math.round(angleSum / rotateStep);
-				angleSum -= rotateSteps * rotateStep;
-				selectedEllips.rotate(rotateSteps * rotateStep);
-			
 			}
 			
 			
@@ -1502,54 +1477,66 @@ public class KladjeVeld extends JPanel
 			}
 			else if (scalingTopLeft)
 			{
-				int oldWidth = selectedTekstElement.handleBox.width / 2;
-				int oldHeight = selectedTekstElement.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight - dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight - dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
 			else if (scalingBottomLeft)
 			{
-				int oldWidth = selectedTekstElement.handleBox.width / 2;
-				int oldHeight = selectedTekstElement.handleBox.height / 2;
-				int newWidth = oldWidth - dx;
-				int newHeight = oldHeight + dy;
-				double sx = ((double) newWidth) / oldWidth;
-				double sy = ((double) newHeight) / oldHeight;
+				double dxDouble = (double) dx;
+				double dyDouble = (double) dy;
+				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
+				double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				double newWidth = oldWidth - dx;
+				double newHeight = oldHeight + dy;
+				double sx = newWidth / oldWidth;
+				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
 			else if (scalingBottomRight)
 			{
-				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 
+				//double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 
+				//				    selectedTekstElement.cx;
+				//double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
+				//					selectedTekstElement.cy;
+				double aspectDirX = selectedTekstElement.bb.x + selectedTekstElement.bb.width - 
 								    selectedTekstElement.cx;
-				double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
+				double aspectDirY = selectedTekstElement.bb.y + selectedTekstElement.bb.height - 
 									selectedTekstElement.cy;
+				
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
+				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
+				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
 				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
-				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				//double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				double s = (aspectDirX * dxInvRot + aspectDirY * dyInvRot) / aa;
 				double asXDouble = s * aspectDirX;
 				double asYDouble = s * aspectDirY;
-				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
-				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
+				double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				double oldHeight = (double) selectedTekstElement.bb.height / 2;
 				double newWidth = oldWidth + asXDouble;
 				double newHeight = oldHeight + asYDouble;
 				double sc = ((double) newWidth) / oldWidth;
-				selectedTekstElement.scale(sc);
+				if (sc < 1)
+					selectedTekstElement.scale(scaleDownStep);
+				else
+					selectedTekstElement.scale(scaleUpStep);
 			}
 			else if (rotatingEast)
 			{
 				// hier is alleen dy van belang
 				double angle = Math.atan(((double) dy) / (selectedTekstElement.handleBox.width/2));
-				selectedTekstElement.rotate(angle);
-				
-			}
-			else if (rotatingNorth)
-			{
-				// hier is alleen dx van belang
-				double angle = Math.atan(((double) dx) / (selectedTekstElement.handleBox.width/2));
 				selectedTekstElement.rotate(angle);
 				
 			}
@@ -1564,17 +1551,6 @@ public class KladjeVeld extends JPanel
 				
 				
 			}
-			else if (rotatingSouth)
-			{
-				// hier is alleen dx van belang
-				double angle = - Math.atan(((double) dx) / (selectedTekstElement.handleBox.width/2));
-				angleSum += angle; 
-				int rotateSteps = (int) Math.round(angleSum / rotateStep);
-				angleSum -= rotateSteps * rotateStep;
-				selectedTekstElement.rotate(rotateSteps * rotateStep);
-			
-			}
-
 			
 		}
 
@@ -1587,7 +1563,6 @@ public class KladjeVeld extends JPanel
 			if ((selectedStreep.topRightRect != null) && selectedStreep.topRightRect.contains(x,y))
 			{	handleAction = true;
 				scalingTopRight = true;
-//System.out.println("sc top right");
 			}
 			else if ((selectedStreep.topLeftRect != null) && selectedStreep.topLeftRect.contains(x,y))
 			{	handleAction = true;
@@ -1605,17 +1580,9 @@ public class KladjeVeld extends JPanel
 			{	handleAction = true;
 				rotatingEast = true;
 			}
-			else if ((selectedStreep.rotateNorthHandle != null) && selectedStreep.rotateNorthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingNorth = true;
-			}
 			else if ((selectedStreep.rotateWestHandle != null) && selectedStreep.rotateWestHandle.contains(x,y))
 			{	handleAction = true;
 				rotatingWest = true;
-			}
-			else if ((selectedStreep.rotateSouthHandle != null) && selectedStreep.rotateSouthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingSouth = true;
 			}
 						
 
@@ -1642,17 +1609,9 @@ public class KladjeVeld extends JPanel
 			{	handleAction = true;
 				rotatingEast = true;
 			}
-			else if ((selectedLijn.rotateNorthHandle != null) && selectedLijn.rotateNorthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingNorth = true;
-			}
 			else if ((selectedLijn.rotateWestHandle != null) && selectedLijn.rotateWestHandle.contains(x,y))
 			{	handleAction = true;
 				rotatingWest = true;
-			}
-			else if ((selectedLijn.rotateSouthHandle != null) && selectedLijn.rotateSouthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingSouth = true;
 			}
 			
 
@@ -1679,19 +1638,10 @@ public class KladjeVeld extends JPanel
 			{	handleAction = true;
 				rotatingEast = true;
 			}
-			else if ((selectedRechthoek.rotateNorthHandle != null) && selectedRechthoek.rotateNorthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingNorth = true;
-			}
 			else if ((selectedRechthoek.rotateWestHandle != null) && selectedRechthoek.rotateWestHandle.contains(x,y))
 			{	handleAction = true;
 				rotatingWest = true;
 			}
-			else if ((selectedRechthoek.rotateSouthHandle != null) && selectedRechthoek.rotateSouthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingSouth = true;
-			}
-
 
 		}
 		else if (selectedEllips != null)
@@ -1716,17 +1666,9 @@ public class KladjeVeld extends JPanel
 			{	handleAction = true;
 				rotatingEast = true;
 			}
-			else if ((selectedEllips.rotateNorthHandle != null) && selectedEllips.rotateNorthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingNorth = true;
-			}
 			else if ((selectedEllips.rotateWestHandle != null) && selectedEllips.rotateWestHandle.contains(x,y))
 			{	handleAction = true;
 				rotatingWest = true;
-			}
-			else if ((selectedEllips.rotateSouthHandle != null) && selectedEllips.rotateSouthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingSouth = true;
 			}
 
 
@@ -1753,17 +1695,9 @@ public class KladjeVeld extends JPanel
 			{	handleAction = true;
 				rotatingEast = true;
 			}
-			else if ((selectedTekstElement.rotateNorthHandle != null) && selectedTekstElement.rotateNorthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingNorth = true;
-			}
 			else if ((selectedTekstElement.rotateWestHandle != null) && selectedTekstElement.rotateWestHandle.contains(x,y))
 			{	handleAction = true;
 				rotatingWest = true;
-			}
-			else if ((selectedTekstElement.rotateSouthHandle != null) && selectedTekstElement.rotateSouthHandle.contains(x,y))
-			{	handleAction = true;
-				rotatingSouth = true;
 			}
 			
 
@@ -1817,7 +1751,9 @@ public class KladjeVeld extends JPanel
 				{
 					startX = e.getX();
 					startY = e.getY();
-//System.out.println("mp oshc");					
+//System.out.println("mp oshc");			
+					
+					objectHandled = false;
 				}
 				// individueel object aangeklikt, was mogelijk al geselecteerd
 				else if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
@@ -2065,6 +2001,8 @@ public class KladjeVeld extends JPanel
 					startX = e.getX();
 					startY = e.getY();
 					
+					objectHandled = true;
+					
 				}
 				else if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
 				{	
@@ -2202,15 +2140,17 @@ public class KladjeVeld extends JPanel
 					//sleepSelectie = false;
 					repaint();
 				}
+				
+				if (objectHandled)
+					addToHistory();
+				objectHandled = false;
 				handleAction = false;
 				scalingTopRight = false;
 				scalingTopLeft = false;
 				scalingBottomRight = false;
 				scalingBottomLeft = false;
 				rotatingEast = false;
-				rotatingNorth = false;
 				rotatingWest = false;
-				rotatingSouth = false;
 				angleSum = 0; 
 
 			}
