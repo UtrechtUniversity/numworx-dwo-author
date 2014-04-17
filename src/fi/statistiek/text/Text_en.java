@@ -94,7 +94,12 @@ public class Text_en extends java.util.ListResourceBundle
             {   "aboveEachOtherRadioItem", "bars stacked"},
             {   "separateFromEachOtherRadioItem", "separate diagrams"},
             {   "percentageLabel", "Percentage"},
-            {   "frequentieLabel", "Frequency"}
+            {   "frequentieLabel", "Frequency"},
+            {   "integer", "Whole number"},
+            {   "double", "Decimal number"},
+            {   "string", "Text"},
+            {   "enum", "Opsomming"}
+
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

@@ -93,7 +93,11 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "aboveEachOtherRadioItem", "staafjes gestapeld"},
             {   "separateFromEachOtherRadioItem", "losse diagrammen"},
             {   "percentageLabel", "Percentage"},
-            {   "frequentieLabel", "Frequentie"}
+            {   "frequentieLabel", "Frequentie"},
+            {   "integer", "Geheel getal"},
+            {   "double", "Decimaal getal"},
+            {   "string", "Tekst"},
+            {   "enum", "Opsomming"}
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
