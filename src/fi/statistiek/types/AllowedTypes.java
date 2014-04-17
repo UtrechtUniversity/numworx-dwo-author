@@ -51,7 +51,7 @@ public class AllowedTypes implements Serializable
 	 * 
 	 * @param o
 	 *            Object to be tested
-	 * @return true iff o is a valid instance of this AllowedType
+	 * @return true if o is a valid instance of this AllowedType
 	 */
 	public boolean isValidInstance(Object o)
 	{
@@ -71,7 +71,10 @@ public class AllowedTypes implements Serializable
 		{
 			try
 			{
-				Double.parseDouble((String) o);
+				// Allow commas in doubles
+				String s = ((String) o).replaceAll(",", ".");
+				Double.parseDouble((String) s);
+//				Double.parseDouble((String) o);
 				return true;
 			}
 			catch (NumberFormatException e)

@@ -522,8 +522,7 @@ public class StatTableModel implements TableModel
 	public synchronized void setValueAtWithoutEvent(Object o, int rowIndex,
 		int columnIndex)
 	{
-		// System.out.println("StatTableModel.setValueAtWithoutEvent(object=" +
-		// o
+		// System.out.println("StatTableModel.setValueAtWithoutEvent(object=" + o
 		// + ", rowIndex=" + rowIndex + ", columnIndex=" + columnIndex + ")");
 
 		if (rowIndex < this.rowCount && columnIndex < this.columnCount)
@@ -539,6 +538,14 @@ public class StatTableModel implements TableModel
 						columnIndex);
 					// StatTableModel.decreaseKeyHashtable((String)this.getValueAt(rowIndex,
 					// columnIndex), this.stringFrequencies.get(columnIndex));
+				}
+				
+				if (type.equals(AllowedTypes.DOUBLE))
+				{
+//					System.out.println("StatTableModel.setValueAtWithoutEvent(): Double type! o = "
+//						+ o);
+					o = processDoubleValue(o);
+//					System.out.println("... o = " + o);
 				}
 
 				this.values.get(rowIndex).set(columnIndex, o);
@@ -557,6 +564,15 @@ public class StatTableModel implements TableModel
 		{
 			System.out.println("Error in setValueAt: goal cel not in table");
 		}
+	}
+
+	private Object processDoubleValue(Object o)
+	{
+		String processedValue = (String) o;
+		
+		processedValue = processedValue.replaceAll(",", ".");
+		
+		return processedValue;
 	}
 
 	/**
@@ -652,7 +668,6 @@ public class StatTableModel implements TableModel
 		}
 		this.columnCount++;
 
-		// test syl
 //		System.out.println("StatTableModel.addColumn(" 
 //			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
 //			+ this.buildColumnStringOptions(this.columnCount - 1) 
@@ -866,16 +881,14 @@ public class StatTableModel implements TableModel
 			}
 			this.columnCount--;
 			
-			// test syl
-			// TODO: als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande views 
-			// als column < columnindex van view dan 
+			// Als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande 
+			// views. Als column < columnindex van view dan 
 			// columnindex - 1 voor ViewModel van alle views!
 			// als column == columnindex, dan verwijder view? of toon leeg
 			this.updateColumnIndexInViews(column);
 
 			//this.fireEvent(new TableModelEvent(this));
 //			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
-			// test syl: 
 			// specifiekere fireEvent en fireEvent voor headers
 			this.fireEvent(new TableModelEvent(this, 0, this.rowCount, column, TableModelEvent.DELETE));
 			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
