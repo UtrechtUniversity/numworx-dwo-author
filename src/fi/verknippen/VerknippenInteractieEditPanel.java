@@ -890,7 +890,7 @@ System.out.println("viep getEditState");
 			}
 			if (inputTextField == scoreMaxVeld)
 			{	int mScore = (int) userInput;
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{	scoreMax = mScore;
 				}
 				else
@@ -976,7 +976,7 @@ System.out.println("viep getEditState");
 			}
 			if (inputTextField == scoreMaxVeld)
 			{	int mScore = (int) userInput;
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{	scoreMax = mScore;
 				}
 				else
