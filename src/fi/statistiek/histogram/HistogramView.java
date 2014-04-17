@@ -333,6 +333,9 @@ public class HistogramView extends JPanel implements Observer
 	 * @param c
 	 * 		The color of the bar
 	 * @param numberOfBars
+	 * 		Must be 'numberOfBarInBin'? If not split in single view, then 
+	 * 		numberOfBars is 0. If split in single view, then numberOfBars 
+	 * 		indicates the splitClass.
 	 * @param totalBars
 	 * @param drawNextToEachOther
 	 * @param splitClass
@@ -344,6 +347,7 @@ public class HistogramView extends JPanel implements Observer
 	{
 //		System.out.println("HistogramView.paintBar(): barLength = " + barLength 
 //			+ ", barNumber = " + barNumber
+//			+ ", numberOfBars = " + numberOfBars
 //			+ ", splitClass = " + splitClass);
 
 		if (this.model.isFrequencyPolygonMode())
@@ -377,7 +381,6 @@ public class HistogramView extends JPanel implements Observer
 			if (type.equals(AllowedTypes.ENUM.toString()))
 				spacing = 4;
 			
-			// test syl
 			//System.out.println("HistogramView(): type = " + type + ", spacing = " + spacing);
 
 			if (this.model.getVerticalBars())
@@ -929,13 +932,11 @@ public class HistogramView extends JPanel implements Observer
 		// paint scale
 		if (this.model.getPercentage())
 		{
-			// test syl
 			//System.out.println("HistogramView.paintNumberClass(): percScale = " + percScale);
 			this.paintAmountScale(g, percScale, ySplitOffset);
 		}
 		else
 		{
-			// test syl
 			//System.out.println("HistogramView.paintNumberClass(): amountScale = " + amountScale);
 			this.paintAmountScale(g, amountScale, ySplitOffset);
 		}
@@ -1076,20 +1077,31 @@ public class HistogramView extends JPanel implements Observer
 							{
 								if (this.isNextToEachOtherSelected())
 								{
+//									this.paintBar(
+//										g,
+//										(int) (splitFreq[2 * i] * amountScale),
+//										(int) (splitFreq[2 * i + 1] * amountScale),
+//										i, 0, 0, c, split,
+//										allFrequencies.length, true, splitClass);
 									this.paintBar(
 										g,
 										(int) (splitFreq[2 * i] * amountScale),
 										(int) (splitFreq[2 * i + 1] * amountScale),
 										i, 0, 0, c, split,
-										allFrequencies.length, true, splitClass);
+										allFrequencies.length, true, split);
 								}
 								else
 								{
+//									this.paintBar(
+//										g,
+//										(int) (splitFreq[2 * i] * amountScale),
+//										(int) (splitFreq[2 * i + 1] * amountScale),
+//										i, 0, cumHeight[i], c, 0, 0, false, splitClass);
 									this.paintBar(
 										g,
 										(int) (splitFreq[2 * i] * amountScale),
 										(int) (splitFreq[2 * i + 1] * amountScale),
-										i, 0, cumHeight[i], c, 0, 0, false, splitClass);
+										i, 0, cumHeight[i], c, 0, 0, false, split);
 								}
 							}
 							cumHeight[i] += (int) (splitFreq[2 * i] * amountScale);
@@ -1197,7 +1209,6 @@ public class HistogramView extends JPanel implements Observer
 			{
 				int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
 				int x = this.yAxisOffset;
-				// test syl: 
 				g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
 				
 				// Get the string value (integer or double)
@@ -1522,7 +1533,7 @@ public class HistogramView extends JPanel implements Observer
 		amountScale = HistogramView.MAX_BAR_HEIGHT
 			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
 				.barAreaWidth()) / (double) max;
-		// test syl
+
 		if (this.model.getPercentage() && this.model.isSplitInSingleView())
 		{
 			//System.out.println("paintEnumClass(): % && splitInSingleView! percScale aanpassen...");
@@ -1544,19 +1555,15 @@ public class HistogramView extends JPanel implements Observer
     				.barAreaWidth())
     			/ (100.0 * max / this.tupleArraySum(frequencies));
 		}
-		// test syl
-		//percScale = 3.03;
 
 		// paint scale on axis
 		if (this.model.getPercentage())
 		{
-			// test syl
 			//System.out.println("HistogramView.paintEnumClass(): percScale = " + percScale);
 			this.paintAmountScale(g, percScale, ySplitOffset);
 		}
 		else
 		{
-			// test syl
 			//System.out.println("HistogramView.paintEnumClass(): amountScale = " + amountScale);
 			this.paintAmountScale(g, amountScale, ySplitOffset);
 		}
@@ -1657,13 +1664,6 @@ public class HistogramView extends JPanel implements Observer
 							{
 								if (this.isNextToEachOtherSelected())
 								{
-//									this.paintBar(
-//										g,
-//										(int) (splitFreq[i].frequency * amountScale),
-//										(int) (splitFreq[i].selectionFrequency * amountScale),
-//										i, 0, 0, c, split,
-//										allFrequencies.length, true, splitClass);
-									// test syl
 									this.paintBar(
 										g,
 										(int) (splitFreq[i].frequency * amountScale),
@@ -1673,12 +1673,6 @@ public class HistogramView extends JPanel implements Observer
 								}
 								else
 								{
-//									this.paintBar(
-//										g,
-//										(int) (splitFreq[i].frequency * amountScale),
-//										(int) (splitFreq[i].selectionFrequency * amountScale),
-//										i, -cumHeight[i], 0, c, 0, 0, false, splitClass);
-									// test syl
 									this.paintBar(
 										g,
 										(int) (splitFreq[i].frequency * amountScale),
@@ -2128,10 +2122,6 @@ public class HistogramView extends JPanel implements Observer
 				}
 				else
 				{
-					// test syl: scheve lijn?
-//					g2D.drawLine(HistogramView.this.yAxisOffset,
-//						ySplitOffset - 1, HistogramView.this.yAxisOffset - 1,
-//						HistogramView.this.barAreaHeight() + ySplitOffset);
 					g2D.drawLine(HistogramView.this.yAxisOffset - 1,
 						ySplitOffset - 1, HistogramView.this.yAxisOffset - 1,
 						HistogramView.this.barAreaHeight() + ySplitOffset);
@@ -2165,7 +2155,6 @@ public class HistogramView extends JPanel implements Observer
     			int aantal_totaal = 0;
     			boolean found = false;
     
-    			// test syl
 //    			System.out.println("HistogramBarPanel.mouseMoved(): (" + p.x
 //    				+ ", " + p.y + "): frequencies=" + frequencies_number +
 //    				", barRectangles=" + HistogramView.this.barRectangles);
@@ -2200,7 +2189,6 @@ public class HistogramView extends JPanel implements Observer
     							aantalPerSplit[i] = aantalPerSplit[i]
     								+ frequencies_number[i][j * 2];
     						}
-    						// test syl
 //    						System.out.println("... aantalPerSplit[" + i + "] = " +
 //    							aantalPerSplit[i]);
     					}
@@ -2211,7 +2199,6 @@ public class HistogramView extends JPanel implements Observer
     							aantalPerSplit[i] = aantalPerSplit[i]
     								+ frequencies_enum[i][j].frequency;
     						}
-    						// test syl
 //    						System.out.println("... aantalPerSplit[" + i + "] = "
 //    							+ aantalPerSplit[i]);
     					}
@@ -2239,13 +2226,11 @@ public class HistogramView extends JPanel implements Observer
     								+ frequencies_enum[i][j].frequency;
     						}
     					}
-//						// test syl
 //						System.out.println("... aantalPerBin[" + j + "] = " +
 //							aantalPerBin[j]);
     				}
     			}
     			
-    			// test syl
     			//System.out.println("HistogramView.HistogramBarPanel.mouseMoved(): aantal_totaal = " + aantal_totaal);
     
     			Rectangle rect;
@@ -2273,8 +2258,19 @@ public class HistogramView extends JPanel implements Observer
     								{
     									if (HistogramView.this.model.isSplitInSingleView())
             							{
-                							// test syl: als split in 1 view, dan percentage t.o.v. totaal per bin
-                							waarde = ((double) frequencies_number[i][j * 2] / aantalPerBin[j]) * 100;
+        									if (HistogramView.this.isNextToEachOtherSelected())
+        									{
+//        										System.out.println("HistogramBarPanel.mouseMoved(): split nextToEachOther!");
+        										// als naast elkaar, dan percentage relatief aan totaalaantal
+        										waarde = ((double) frequencies_number[i][j*2] / aantal_totaal) * 100;
+        									}
+        									else
+        									{
+//        										System.out.println("HistogramBarPanel.mouseMoved(): split gestapeld!");
+                								// als gestapeld in 1 view, dan percentage relatief aan totaal per bin 
+                    							waarde = ((double) frequencies_number[i][j * 2] / aantalPerBin[j]) * 100;
+        									}
+
             							}
             							else
             							{
@@ -2294,8 +2290,18 @@ public class HistogramView extends JPanel implements Observer
     								{
         								if (HistogramView.this.model.isSplitInSingleView())
         								{
-            								// test syl: als samen in 1 view, dan percentage relatief aan totaal per bin 
-                							waarde = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
+        									if (HistogramView.this.isNextToEachOtherSelected())
+        									{
+//        										System.out.println("HistogramBarPanel.mouseMoved(): split nextToEachOther!");
+        										// als naast elkaar, dan percentage relatief aan totaalaantal
+        										waarde = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
+        									}
+        									else
+        									{
+//        										System.out.println("HistogramBarPanel.mouseMoved(): split gestapeld!");
+                								// als gestapeld in 1 view, dan percentage relatief aan totaal per bin 
+                    							waarde = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
+        									}
         								}
         								else
         								{
@@ -2312,6 +2318,8 @@ public class HistogramView extends JPanel implements Observer
     							
     							if (!Double.isNaN(waarde))
     								waarde = round(waarde, 1);
+    							else
+    								waarde = 0;
     							
     							// Test of waarde een integer is 
     							if ((waarde == Math.floor(waarde)) && !Double.isInfinite(waarde))
