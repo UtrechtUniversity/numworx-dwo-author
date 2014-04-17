@@ -1,99 +1,132 @@
 package fi.statistiek.types;
+
 import java.io.Serializable;
 
 /**
  * Type-safe enumeration die de toegestande types voor kolommen geeft.
+ * 
  * @author Manu Drijvers
- *
+ * 
  */
-public class AllowedTypes implements Serializable {
+public class AllowedTypes implements Serializable
+{
 	private String type;
 	private Class typeClass;
-	
-	public static final AllowedTypes INTEGER = new AllowedTypes("Integer", Integer.class);
-	public static final AllowedTypes DOUBLE = new AllowedTypes("Double", Double.class);
-	public static final AllowedTypes STRING = new AllowedTypes("String", String.class);
-	public static final AllowedTypes ENUM = new AllowedTypes("Enum", String.class);
-	public static final AllowedTypes[] allowedTypes = {AllowedTypes.INTEGER, AllowedTypes.DOUBLE, AllowedTypes.STRING, AllowedTypes.ENUM};
-	
+
+	public static final AllowedTypes INTEGER = new AllowedTypes("Integer",
+		Integer.class);
+	public static final AllowedTypes DOUBLE = new AllowedTypes("Double",
+		Double.class);
+	public static final AllowedTypes STRING = new AllowedTypes("String",
+		String.class);
+	public static final AllowedTypes ENUM = new AllowedTypes("Enum",
+		String.class);
+	public static final AllowedTypes[] allowedTypes =
+		{ AllowedTypes.INTEGER, AllowedTypes.DOUBLE, AllowedTypes.STRING,
+			AllowedTypes.ENUM };
+
 	/**
 	 * Private constructor to achieve type-safe enumeration
+	 * 
 	 * @param type
 	 * @param typeClass
 	 */
-	private AllowedTypes(String type, Class typeClass) {
+	private AllowedTypes(String type, Class typeClass)
+	{
 		this.type = type;
-		this.typeClass = typeClass;		
+		this.typeClass = typeClass;
 	}
-	
+
 	/**
 	 * Override toString
 	 */
-	public String toString() {
+	public String toString()
+	{
 		return this.type;
 	}
-	
+
 	/**
-	 * Tests if o is valid instance of this AllowedType
-	 * Enums must be tested in ColumnType
-	 * @param o Object to be tested
+	 * Tests if o is valid instance of this AllowedType Enums must be tested in
+	 * ColumnType
+	 * 
+	 * @param o
+	 *            Object to be tested
 	 * @return true iff o is a valid instance of this AllowedType
 	 */
-	public boolean isValidInstance(Object o) {
-		if(this.equals(AllowedTypes.INTEGER)) {
-			try {
-				Integer.parseInt((String)o);
+	public boolean isValidInstance(Object o)
+	{
+		if (this.equals(AllowedTypes.INTEGER))
+		{
+			try
+			{
+				Integer.parseInt((String) o);
 				return true;
 			}
-			catch (NumberFormatException e) {
+			catch (NumberFormatException e)
+			{
 				return false;
 			}
 		}
-		else if(this.equals(AllowedTypes.DOUBLE)) {
-			try {
-				Double.parseDouble((String)o);
+		else if (this.equals(AllowedTypes.DOUBLE))
+		{
+			try
+			{
+				Double.parseDouble((String) o);
 				return true;
 			}
-			catch (NumberFormatException e) {
+			catch (NumberFormatException e)
+			{
 				return false;
 			}
 		}
-		else if(this.equals(AllowedTypes.STRING)) {
-			try {
+		else if (this.equals(AllowedTypes.STRING))
+		{
+			try
+			{
 				String a = (String) o;
 				return true;
 			}
-			catch (ClassCastException e) {
+			catch (ClassCastException e)
+			{
 				return false;
 			}
 		}
-		else {
+		else
+		{
 			return false;
 		}
 	}
-	
-	
+
 	/**
 	 * @return The Class you can typecast elements of this AllowedType to
 	 */
-	public Class getTypeClass() {
+	public Class getTypeClass()
+	{
 		return this.typeClass;
 	}
-	
-	public boolean isNumber() {
-		return this.equals(AllowedTypes.INTEGER) || this.equals(AllowedTypes.DOUBLE);
+
+	public boolean isNumber()
+	{
+		return this.equals(AllowedTypes.INTEGER)
+			|| this.equals(AllowedTypes.DOUBLE);
 	}
-	
-	public boolean equals(Object o) {
-		if(o == null || o.getClass() != AllowedTypes.class) {
+
+	public boolean equals(Object o)
+	{
+		if (o == null || o.getClass() != AllowedTypes.class)
+		{
 			return false;
 		}
-		else {
-			AllowedTypes other = (AllowedTypes)o;
-			if(this.type.equals(other.type) && this.typeClass.equals(other.typeClass)) {
+		else
+		{
+			AllowedTypes other = (AllowedTypes) o;
+			if (this.type.equals(other.type)
+				&& this.typeClass.equals(other.typeClass))
+			{
 				return true;
 			}
-			else {
+			else
+			{
 				return false;
 			}
 		}
