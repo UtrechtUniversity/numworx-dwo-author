@@ -414,6 +414,7 @@ public class Streep
 		
 		h.put("kleur", kleur);
 		h.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
+		
 		h.put("puntenXD", puntenXD);
 		h.put("puntenYD", puntenYD);
 		h.put("rotation", new Double(rotation));
@@ -548,12 +549,12 @@ public class Streep
 	
 	public void tekenBB(Graphics2D g)
 	{
-		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
+		//AffineTransform oldAT = g.getTransform();
+		//AffineTransform at = g.getTransform();
 
-		at.rotate(rotation, cx, cy);
+		//at.rotate(rotation, cx, cy);
 		
-		g.setTransform(at);
+		//g.setTransform(at);
 
 		//float[] dash = new float[2];
 		//dash[0] = 2;
