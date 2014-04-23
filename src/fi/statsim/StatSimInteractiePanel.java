@@ -16,21 +16,31 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		setLayout(null);
 		munten = new Munten();
 		munten.setLocation(0,0);
-		munten.setSize(790,450);
+		munten.setSize(this.getWidth(),this.getHeight());
+		
 		add(munten);
-		munten.setVisible(false);
+		munten.setVisible(true);
 		
 		dobbelstenen = new Dobbelstenen();
 		dobbelstenen.setLocation(0,0);
-		dobbelstenen.setSize(790,450);
+		//dobbelstenen.setSize(790,450);
 		dobbelstenen.setVisible(false);
 		add(dobbelstenen);
 		
 		binomTrekking = new BinomTrekking();
 		binomTrekking.setLocation(0,0);
-		binomTrekking.setSize(790,450);
+		//binomTrekking.setSize(790,450);
 		add(binomTrekking);
+		binomTrekking.setVisible(false);
 	}
+	
+	public void setBounds(int a, int b, int c, int d) {
+		super.setBounds(a,b,c,d);
+		munten.setSize(this.getWidth(),this.getHeight());
+		dobbelstenen.setSize(this.getWidth(),this.getHeight());
+		binomTrekking.setSize(this.getWidth(),this.getHeight());
+	}
+	
 	public void setState(Hashtable h) {
         // ***** Munten *******
 		String[] column11 = new String[100];
@@ -322,12 +332,25 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean muntenRadioBool=false;
 		if(h.containsKey("muntenRadio")) muntenRadioBool= ((Boolean)h.get("muntenRadio")).booleanValue();
 		munten.setVisible(muntenRadioBool);
+		if(h.containsKey("muntenResultaten")) munten.showResultaten= ((Boolean)h.get("muntenResultaten")).booleanValue();
+		if(h.containsKey("muntenGrafiek")) munten.showGrafiek= ((Boolean)h.get("muntenGrafiek")).booleanValue();
+		if(h.containsKey("muntenTabel")) munten.showTabel= ((Boolean)h.get("muntenTabel")).booleanValue();
+		if(h.containsKey("muntenFrequentie")) munten.showFrequentie= ((Boolean)h.get("muntenFrequentie")).booleanValue();
+		munten.setZichtbaar();
 		Boolean dobbelstenenRadioBool=false;
 		if(h.containsKey("dobbelstenenRadio")) dobbelstenenRadioBool= ((Boolean)h.get("dobbelstenenRadio")).booleanValue();
 		dobbelstenen.setVisible(dobbelstenenRadioBool);
+		if(h.containsKey("dobbelstenenResultaten")) dobbelstenen.showResultaten= ((Boolean)h.get("dobbelstenenResultaten")).booleanValue();
+		if(h.containsKey("dobbelstenenGrafiek")) dobbelstenen.showGrafiek= ((Boolean)h.get("dobbelstenenGrafiek")).booleanValue();
+		if(h.containsKey("dobbelstenenTabel")) dobbelstenen.showTabel= ((Boolean)h.get("dobbelstenenTabel")).booleanValue();
+		dobbelstenen.setZichtbaar();
 		Boolean binomTrekkingRadioBool=false;
 		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
 		binomTrekking.setVisible(binomTrekkingRadioBool);
+		if(h.containsKey("binomTrekkingGrafiek")) binomTrekking.showGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
+		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
+		binomTrekking.setZichtbaar();
+		
 	}
 
 	public void setEditState(Hashtable h) {

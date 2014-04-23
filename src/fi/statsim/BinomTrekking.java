@@ -42,6 +42,9 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	BinomGrafiek binomGrafiek;
 	int[] trekkingen;
 	
+	Boolean showTabel=true;
+	Boolean showGrafiek=true;
+	
 	public BinomTrekking () {
 		setLayout(null);
 		this.setBackground(Color.white);
@@ -126,6 +129,27 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 
 	    trekkingen = new int[1000];
 	    maxCount=Integer.parseInt(aantalTrekkingenText.getText());
+	}
+	
+	public void setZichtbaar() {
+		if (showTabel) {
+			pane.setVisible(true);
+			binomGrafiek.setLocation(200,115);
+			binomGrafiek.setSize(this.getWidth()-200,this.getHeight()-115);
+		} else {
+			pane.setVisible(false);
+			binomGrafiek.setLocation(0,115);
+			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
+		}
+		binomGrafiek.setVisible(showGrafiek);
+	}
+	
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		if (showTabel==false)
+			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
+		else
+			binomGrafiek.setSize(this.getWidth()-200,this.getHeight()-115);
 	}
 	
 	public void setStartStop() {

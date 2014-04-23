@@ -85,6 +85,11 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	JRadioButton eenMuntRadio;
 	JRadioButton tweeMuntenRadio;
 	
+	Boolean showTabel=true;
+	Boolean showResultaten=true;
+	Boolean showGrafiek=true;
+	Boolean showFrequentie=true;
+	
 	public Munten() {
 		setBackground(Color.white);
 		setBorder(BorderFactory.createLineBorder(new Color(202,228,255), 7));
@@ -103,7 +108,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		buttonPanel.setSize(790,100);
 		
 		paintPanel=new PaintPanel(this);
-		paintPanel.setSize(590,350);
+		paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
 		paintPanel.setPreferredSize(paintPanel.getSize());
 		add(paintPanel);
 		paintPanel.setLocation(200,100);
@@ -370,6 +375,47 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	    pane1.setVisible(false);
 	    
 	}
+	
+	public void setZichtbaar() {
+		if (showTabel) {
+			if (eenMuntRadio.isSelected()) {
+				pane.setVisible(true);
+				paintPanel.setLocation(200,100);
+			} else {
+				pane1.setVisible(true);
+				paintPanel.setLocation(250,100);
+			}
+		} else {
+			pane.setVisible(false);
+			pane1.setVisible(false);
+		}
+		panel2.setVisible(showResultaten);
+		paintPanel.setVisible(showGrafiek);
+		if (eenMuntRadio.isSelected()) {
+			frequentieClass.setVisible(showFrequentie);
+			paintPanel.setLocation(200,100);
+		} else {
+			frequentieClass.setVisible(false);
+		}
+		if (showFrequentie==false && showTabel==false) {
+			paintPanel.setLocation(0,100);
+			paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+		} else {
+			if (eenMuntRadio.isSelected()) {
+				paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+			} else {
+				paintPanel.setSize(this.getWidth()-250,this.getHeight()-100);
+			}
+		}
+	}
+	
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		if (showTabel==false && showFrequentie==false)
+			paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+		else
+			paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+	}
 
 	public String replaceComma(String oldString)
 	{
@@ -412,7 +458,8 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		if (eenMuntRadio.isSelected()==true) {
 			pane.setVisible(true);
 			frequentieClass.setVisible(true);
-			pane1.setVisible(false);
+			if (showTabel)
+				pane1.setVisible(false);
 			aantalKop.setVisible(true);
 			percentageKop.setVisible(true);
 			gemiddeldeLabel.setVisible(true);
@@ -436,13 +483,18 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			gemiddeldeText3.setVisible(false);
 			minimumText3.setVisible(false);
 			maximumText3.setVisible(false);
-			paintPanel.setLocation(200,100);
-			paintPanel.setSize(590,350);
+			if (showTabel || showFrequentie) {
+				paintPanel.setLocation(200,100);
+				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+			} else {
+				paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+			}
 			paintPanel.repaint();
 		} else {
 			pane.setVisible(false);
 			frequentieClass.setVisible(false);
-			pane1.setVisible(true);
+			if (showTabel)
+				pane1.setVisible(true);
 			aantalKop.setVisible(false);
 			percentageKop.setVisible(false);
 			gemiddeldeLabel.setVisible(false);
@@ -466,8 +518,12 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			gemiddeldeText3.setVisible(true);
 			minimumText3.setVisible(true);
 			maximumText3.setVisible(true);
-			paintPanel.setLocation(250,100);
-			paintPanel.setSize(540,350);
+			if (showTabel || showFrequentie) {
+				paintPanel.setLocation(250,100);
+				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+			} else {
+				paintPanel.setSize(this.getWidth()-250,this.getHeight()-100);
+			}
 			paintPanel.repaint();
 		}
 	}

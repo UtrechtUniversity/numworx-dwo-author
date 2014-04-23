@@ -70,6 +70,10 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	JCheckBox toonSomCheckBox;
 	int maxCount;
 	
+	Boolean showTabel=true;
+	Boolean showGrafiek=true;
+	Boolean showResultaten=true;
+	
 	public Dobbelstenen () {
 		setLayout(null);
 		this.setBackground(Color.white);
@@ -213,7 +217,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    add(stop);
 	    
 	    dobbelstenenGrafiek = new DobbelstenenGrafiek(this);
-	    dobbelstenenGrafiek.setSize(590,325);
+	    //dobbelstenenGrafiek.setSize(590,325);
 	    dobbelstenenGrafiek.setLocation(200,125);
 	    dobbelstenenGrafiek.displaySom=false;
 	    add(dobbelstenenGrafiek);
@@ -325,30 +329,104 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    maxCount=30;
 	}
 	
-	public void setAantalDobbelstenen() {
-		if (eenDobbelsteenRadio.isSelected()==true) {
-			pane.setVisible(true);
+	public void setZichtbaar() {
+		if (showResultaten==false) {
+			pane3.setVisible(false);
+			pane4.setVisible(false);
+			pane5.setVisible(false);
+		} else {
+			if (eenDobbelsteenRadio.isSelected()==true) {
+				pane3.setVisible(true);
+				pane4.setVisible(false);
+				pane5.setVisible(false);
+			}
+			if (tweeDobbelstenenRadio.isSelected()==true) {
+				pane3.setVisible(false);
+				pane4.setVisible(true);
+				pane5.setVisible(false);
+			}
+			if (drieDobbelstenenRadio.isSelected()==true) {
+				pane3.setVisible(false);
+				pane4.setVisible(false);
+				pane5.setVisible(true);
+			}
+		}
+		if (showTabel==false) {
+			pane.setVisible(false);
 			pane1.setVisible(false);
 			pane2.setVisible(false);
-			pane3.setVisible(true);
+			dobbelstenenGrafiek.setLocation(0,125);
+			if (toonSomCheckBox.isSelected()==true) 
+				dobbelstenenGrafiek.setSize(this.getWidth(),(this.getHeight()-125)/2);
+			else
+				dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
+			dobbelstenenSomGrafiek.setLocation(0,125+(this.getHeight()-125)/2);
+			dobbelstenenSomGrafiek.setSize(this.getWidth(),(this.getHeight()-125)/2);
+		} else {
+			if (eenDobbelsteenRadio.isSelected()==true) {
+				pane.setVisible(true);
+				pane1.setVisible(false);
+				pane2.setVisible(false);
+			}
+			if (tweeDobbelstenenRadio.isSelected()==true) {
+				pane.setVisible(false);
+				pane1.setVisible(true);
+				pane2.setVisible(false);
+			}
+			if (drieDobbelstenenRadio.isSelected()==true) {
+				pane.setVisible(false);
+				pane1.setVisible(false);
+				pane2.setVisible(true);
+			}			
+			dobbelstenenGrafiek.setLocation(200,125);
+			if (toonSomCheckBox.isSelected()==true) 
+				dobbelstenenGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+			else
+				dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+			dobbelstenenSomGrafiek.setLocation(200,125+(this.getHeight()-125)/2);
+			dobbelstenenSomGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+		}
+		dobbelstenenGrafiek.setVisible(showGrafiek);
+	}
+	
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		if (showTabel==false)
+			dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
+		else
+			dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+	}
+	
+	public void setAantalDobbelstenen() {
+		if (eenDobbelsteenRadio.isSelected()==true) {
+			if (showTabel)
+				pane.setVisible(true);
+			pane1.setVisible(false);
+			pane2.setVisible(false);
+			if (showResultaten)
+				pane3.setVisible(true);
 			pane4.setVisible(false);
 			pane5.setVisible(false);
 		}
 		if (tweeDobbelstenenRadio.isSelected()==true) {
 			pane.setVisible(false);
-			pane1.setVisible(true);
+			if (showTabel)
+				pane1.setVisible(true);
 			pane2.setVisible(false);
 			pane3.setVisible(false);
-			pane4.setVisible(true);
+			if (showResultaten)
+				pane4.setVisible(true);
 			pane5.setVisible(false);
 		}
 		if (drieDobbelstenenRadio.isSelected()==true) {
 			pane.setVisible(false);
 			pane1.setVisible(false);
-			pane2.setVisible(true);
+			if (showTabel)
+				pane2.setVisible(true);
 			pane3.setVisible(false);
 			pane4.setVisible(false);
-			pane5.setVisible(true);
+			if (showResultaten)
+				pane5.setVisible(true);
 		}
 		dobbelstenenGrafiek.repaint();
 		dobbelstenenSomGrafiek.repaint();
@@ -428,10 +506,16 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		   }
 		   if (e.getSource()==toonSomCheckBox) {
 			   if (toonSomCheckBox.isSelected()==true) {
-				   dobbelstenenGrafiek.setSize(590,160);
+				   if (showTabel)
+					   dobbelstenenGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+				   else
+					   dobbelstenenGrafiek.setSize(this.getWidth(),(this.getHeight()-125)/2);
 				   dobbelstenenSomGrafiek.setVisible(true);
 			   } else {
-				   dobbelstenenGrafiek.setSize(590,325);
+				   if (showTabel)
+					   dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+				   else
+					   dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
 				   dobbelstenenSomGrafiek.setVisible(false);
 			   }
 		   }

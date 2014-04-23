@@ -67,6 +67,7 @@ public class StatSim extends Applet implements ScormAppletIF, WiskOpdrApplet {
 		
 		interactiePanel = new StatSimInteractiePanel();
 		interactiePanel.setBounds(0,0,getWidth(), getHeight());
+		
 		add(interactiePanel);
 	}
 
