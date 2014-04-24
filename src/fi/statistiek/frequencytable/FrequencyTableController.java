@@ -17,6 +17,7 @@ import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.StatistiekView;
 import fi.statistiek.histogram.DefineBinBoundariesDialog;
+import fi.statistiek.types.AllowedTypes;
 
 /**
  * MVC Controller for StatistiekView FrequencyTable
@@ -45,6 +46,8 @@ public class FrequencyTableController implements StatistiekView,
 		this.model = new FrequencyTableModel(tableModel, viewName);
 		this.model.setColumnIndex(startVar);
 		this.view = new FrequencyTableView(this.model, this);
+		// test syl
+		this.view.update(null, null);
 	}
 
 	public void actionPerformed(ActionEvent arg0)
@@ -71,19 +74,19 @@ public class FrequencyTableController implements StatistiekView,
 			this.model.setShowCumulative(this.view
 				.isShowCumulativeBoxSelected());
 		}
-		else if (action.equals("noBinsField"))
-		{
-			String s = this.view.getNoBinsFieldText();
-			try
-			{
-				int i = Integer.parseInt(s);
-				this.model.setNoBins(i);
-			}
-			catch (NumberFormatException e)
-			{
-				this.view.update(null, null);
-			}
-		}
+//		else if (action.equals("noBinsField"))
+//		{
+//			String s = this.view.getNoBinsFieldText();
+//			try
+//			{
+//				int i = Integer.parseInt(s);
+//				this.model.setNoBins(i);
+//			}
+//			catch (NumberFormatException e)
+//			{
+//				this.view.update(null, null);
+//			}
+//		}
 		else if (action.equals("minBoundary"))
 		{
 			updateBoundariesFromBinSettings();
@@ -91,6 +94,31 @@ public class FrequencyTableController implements StatistiekView,
 		else if (action.equals("binWidth"))
 		{
 			updateBoundariesFromBinSettings();
+		}
+		else if (action.equals("splitVarBox"))
+		{
+			// System.out.println("FrequencyTableController.actionPerformed(): splitVarBox, SplitColumnUpdate!");
+			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
+				.getSplitOptions().getColumnSplitIndex())
+			{
+				this.model.setColumnSplitIndex(this.view
+					.getSplitVarBoxSelectedIndex() - 1);
+				this.model.setSplitOptions(this.model.getSplitOptions());
+				if (this.view.getSplitVarBoxSelectedIndex() > 0)
+				{
+					this.setSplitType(this.model
+						.getTableModel()
+						.getColumnTypes()
+						.get(this.model.getSplitOptions().getColumnSplitIndex())
+						.getType());
+				}
+			}
+		}
+		else if (action.equals("splitBinsBox"))
+		{
+			this.setSplitType(this.model.getTableModel().getColumnTypes()
+				.get(this.model.getSplitOptions().getColumnSplitIndex())
+				.getType());
 		}
 	}
 
@@ -126,6 +154,10 @@ public class FrequencyTableController implements StatistiekView,
 		h.put("binBoundaries", this.model.getBinBoundaries());
 		h.put("viewName", this.getViewName());
 		h.put("columnIndex", this.model.getColumnIndex());
+		h.put("columnSplitIndex", this.model.getSplitOptions()
+			.getColumnSplitIndex());
+		h.put("splitBoundaries", this.model.getSplitOptions()
+			.getBinBoundaries());
 
 		return h;
 	}
@@ -165,7 +197,15 @@ public class FrequencyTableController implements StatistiekView,
 			this.model.setBinBoundaries((ArrayList<Double>) h
 				.get("binBoundaries"));
 		}
-
+		if (h.containsKey("columnSplitIndex"))
+		{
+			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+		}
+		if (h.containsKey("splitBoundaries"))
+		{
+			this.model.setSplitBoundaries((ArrayList<Double>) h
+				.get("splitBoundaries"));
+		}
 	}
 
 	public String getViewName()
@@ -188,20 +228,20 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		//System.out.println("FrequencyTableController.focusLost()");
 		
-		if (arg0.getSource() == this.view.getNoBinsField())
-		{
-			System.out.println("focusLost van nobinsField");
-			String s = this.view.getNoBinsFieldText();
-			try
-			{
-				int i = Integer.parseInt(s);
-				this.model.setNoBins(i);
-			}
-			catch (NumberFormatException e)
-			{
-				this.view.update(null, null);
-			}
-		}
+//		if (arg0.getSource() == this.view.getNoBinsField())
+//		{
+//			System.out.println("focusLost van nobinsField");
+//			String s = this.view.getNoBinsFieldText();
+//			try
+//			{
+//				int i = Integer.parseInt(s);
+//				this.model.setNoBins(i);
+//			}
+//			catch (NumberFormatException e)
+//			{
+//				this.view.update(null, null);
+//			}
+//		}
 
 		updateBoundariesFromBinSettings();
 	}
@@ -224,5 +264,23 @@ public class FrequencyTableController implements StatistiekView,
 			view.getMinBoundary());
 		
 		this.model.setBinBoundaries(boundaries);
-	}	
+	}
+	
+	private void setSplitType(AllowedTypes type)
+	{
+		if (type.isNumber())
+		{
+			ArrayList<Double> boundaries = new ArrayList<Double>();
+			boundaries = Statistiek.appropriateBoundaries(
+				this.model.getTableModel().getColumnMin(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getTableModel().getColumnMax(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.view.getSplitBinsBoxSelectedInt());
+
+			this.model.setSplitBoundaries(boundaries);
+			this.model.setSplitOptions(this.model.getSplitOptions());
+			this.view.setModel(this.model);
+		}
+	}
 }
