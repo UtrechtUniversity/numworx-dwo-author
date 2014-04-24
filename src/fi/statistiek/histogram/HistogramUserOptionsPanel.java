@@ -752,9 +752,19 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	public double getBinWidth()
 	{
+		double d = 1;
 		String s = this.binWidthField.getText();
 		s = s.replace(',', '.');
-		return Double.parseDouble(s);
+		try
+		{
+			d = Double.parseDouble(s); 
+		}
+		catch (NumberFormatException e)
+		{
+			System.out.println("Klassenbreedte heeft niet het goede formaat. Cannot parse bin width " + s);
+			e.printStackTrace();
+		}
+		return d;
 	}
 	
 	public double getSplitBinWidth()
