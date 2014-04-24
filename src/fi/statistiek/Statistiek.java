@@ -35,6 +35,7 @@ public class Statistiek implements WiskOpdrApplet
 	public static Font font = new Font("SansSerif", Font.PLAIN, 12);
 	static DecimalFormatSymbols dfs;
 	public static DecimalFormat df;
+	public static int scrollSpeedUnit = 16;
 
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
