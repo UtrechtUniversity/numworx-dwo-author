@@ -101,6 +101,7 @@ public class HistogramView extends JPanel implements Observer
 		this.mainPanel.addMouseMotionListener((MouseMotionListener) this.mainPanel);
 		
 		this.scrollPane = new JScrollPane(this.mainPanel);
+		this.scrollPane.getVerticalScrollBar().setUnitIncrement(Statistiek.scrollSpeedUnit);
 		
 		super.add(this.scrollPane, BorderLayout.CENTER);
 		this.mainPanel.addMouseListener(new BarClickListener());
