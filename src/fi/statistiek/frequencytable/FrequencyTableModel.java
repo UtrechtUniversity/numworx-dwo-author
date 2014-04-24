@@ -8,6 +8,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import fi.statistiek.SelectionListener;
+import fi.statistiek.SplitOptions;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.histogram.HistogramModel;
@@ -32,6 +33,8 @@ public class FrequencyTableModel extends Observable implements
 
 	private int noBins;
 	private ArrayList<Double> binBoundaries;
+	
+	private SplitOptions splitOptions;
 
 	private StatTableModel tableModel;
 	private String viewName;
@@ -49,6 +52,8 @@ public class FrequencyTableModel extends Observable implements
 		this.tableModel = tableModel;
 		this.tableModel.addTableModelListener(this);
 		this.tableModel.addSelectionListener(this);
+		
+		this.splitOptions = new SplitOptions();
 
 		this.viewName = viewName;
 
@@ -294,10 +299,10 @@ public class FrequencyTableModel extends Observable implements
 	 * @return array of frequencies, with index 2*i the frequency of bin i, and
 	 *         2*i + 1 the amount of selected items in this bin.
 	 */
-	public int[] numberClassFrequency()
+	public int[][] numberClassFrequency()
 	{
 		return this.tableModel.numberClassFrequency(this.binBoundaries,
-			this.columnIndex, null)[0];
+			this.columnIndex, this.splitOptions);
 	}
 
 	/**
@@ -341,15 +346,51 @@ public class FrequencyTableModel extends Observable implements
 			this.columnIndex = -1;
 		}
 		
-		// TODO: code voor als split is geimplementeerd
 		// index van de split variabele bijwerken
-//		if (removedColumn < this.splitOptions.getColumnSplitIndex())
-//		{
-//			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
-//		}
-//		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
-//		{
-//			setColumnSplitIndex(- 1);
-//		}
+		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+		}
+		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(- 1);
+		}
 	}
+	
+	public SplitOptions getSplitOptions()
+	{
+		return this.splitOptions;
+	}
+	
+	public void setSplitOptions(SplitOptions splitOptions)
+	{
+		this.splitOptions = splitOptions;
+		this.changed();
+	}
+	
+	/**
+	 * Abbreviation of setChanged and notifyObservers
+	 */
+	private void changed()
+	{
+		// System.out.println("HistogramModel.changed()");
+		this.setChanged();
+		this.notifyObservers();
+	}
+	
+	public void setColumnSplitIndex(int columnSplitIndex)
+	{
+		if (this.splitOptions.getColumnSplitIndex() != columnSplitIndex)
+		{
+			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
+			this.changed();
+		}
+	}
+
+	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
+		this.changed();
+	}
+
 }
