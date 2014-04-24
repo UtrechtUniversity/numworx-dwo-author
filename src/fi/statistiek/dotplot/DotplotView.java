@@ -120,6 +120,7 @@ public class DotplotView extends JPanel implements Observer
 
 		this.mainPanel = new DotPanel();
 		this.scrollPane = new JScrollPane(this.mainPanel);
+		this.scrollPane.getVerticalScrollBar().setUnitIncrement(Statistiek.scrollSpeedUnit);
 		super.add(this.scrollPane, BorderLayout.CENTER);
 
 		this.dotClickListener = new DotClickListener();

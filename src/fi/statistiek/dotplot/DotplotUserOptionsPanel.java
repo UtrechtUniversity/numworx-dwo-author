@@ -282,6 +282,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBoundariesArea.setEditable(false);
 		this.splitBoundariesAreaScrollPane = new JScrollPane(
 			this.splitBoundariesArea);
+		this.splitBoundariesAreaScrollPane.getVerticalScrollBar().setUnitIncrement(Statistiek.scrollSpeedUnit);
 		this.splitBoundariesArea.setBorder(BorderFactory
 			.createLoweredBevelBorder());
 		this.splitBoundariesArea.setMaximumSize(new Dimension(120, 140));
