@@ -28,7 +28,6 @@ public class FrequencyTableModel extends Observable implements
 {
 	private int columnIndex;
 	private boolean showPercentage;
-	private boolean showFreq;
 	private boolean showFreqCumulative;
 
 	private int noBins;
@@ -64,7 +63,6 @@ public class FrequencyTableModel extends Observable implements
 		this.binBoundaries.add(new Double(-100));
 		this.binBoundaries.add(new Double(100));
 
-		this.showFreq = true;
 		this.showPercentage = true;
 		this.showFreqCumulative = true;
 	}
@@ -102,18 +100,6 @@ public class FrequencyTableModel extends Observable implements
 	void setShowPercentage(boolean b)
 	{
 		this.showPercentage = b;
-		this.setChanged();
-		this.notifyObservers();
-	}
-
-	boolean isShowFreq()
-	{
-		return this.showFreq;
-	}
-
-	void setShowFreq(boolean b)
-	{
-		this.showFreq = b;
 		this.setChanged();
 		this.notifyObservers();
 	}
