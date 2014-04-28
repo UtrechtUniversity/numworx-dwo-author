@@ -69,7 +69,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 
 	// display settings
 	private JCheckBox showPercBox;
-	private JCheckBox showFreqBox;
 	private JCheckBox showCumulativeBox;
 
 	// split settings
@@ -191,13 +190,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.showPercBox.setActionCommand("showPercBox");
 		this.showPercBox.addActionListener(this.controller);
 
-		this.showFreqBox = new JCheckBox(
-			Statistiek.rb.getString("showfrequencyCheckbox"), true);
-		this.showFreqBox.setFont(Statistiek.font);
-		this.showFreqBox.setBackground(backgroundColor);
-		this.showFreqBox.setActionCommand("showFreqBox");
-		this.showFreqBox.addActionListener(this.controller);
-
 		this.showCumulativeBox = new JCheckBox(
 			Statistiek.rb.getString("showcumulativefrequencyCheckbox"), true);
 		this.showCumulativeBox.setFont(Statistiek.font);
@@ -265,7 +257,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.splitMinBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.splitMinBoundaryField.setActionCommand("splitMinBoundary");
 		this.splitMinBoundaryField.addActionListener(controller);
-		// this.minBoundaryField.addFocusListener(controller);
 
 		this.splitBinWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -389,11 +380,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		hb1.add(showPercBox);
 		hb1.add(Box.createHorizontalGlue());
 
-		hb2 = Box.createHorizontalBox();
-		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
-		hb2.add(showFreqBox);
-		hb2.add(Box.createHorizontalGlue());
-
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
 		hb3.add(showCumulativeBox);
@@ -403,7 +389,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			Statistiek.rb.getString("absRelLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
 		vb3.add(hb1);
-		vb3.add(hb2);
 		vb3.add(hb3);
 		vb3.add(Box.createVerticalGlue());
 		
@@ -620,7 +605,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		}
 		
 		this.showPercBox.setSelected(this.model.isShowPercentage());
-		this.showFreqBox.setSelected(this.model.isShowFreq());
 		this.showCumulativeBox.setSelected(this.model.isShowCumulative());
 		
 		this.splitVarBox.removeActionListener(this.controller);
@@ -824,11 +808,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	public boolean isShowPercBoxSelected()
 	{
 		return this.showPercBox != null && this.showPercBox.isSelected();
-	}
-
-	public boolean isShowFreqBoxSelected()
-	{
-		return this.showFreqBox != null && this.showFreqBox.isSelected();
 	}
 
 	public boolean isShowCumulativeBoxSelected()
