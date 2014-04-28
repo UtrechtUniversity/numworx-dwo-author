@@ -65,10 +65,10 @@ public class FrequencyTableController implements StatistiekView,
 		{
 			this.model.setShowPercentage(this.view.isShowPercBoxSelected());
 		}
-		else if (action.equals("showFreqBox"))
-		{
-			this.model.setShowFreq(this.view.isShowFreqBoxSelected());
-		}
+//		else if (action.equals("showFreqBox"))
+//		{
+//			this.model.setShowFreq(this.view.isShowFreqBoxSelected());
+//		}
 		else if (action.equals("showCumulativeBox"))
 		{
 			this.model.setShowCumulative(this.view
@@ -150,7 +150,6 @@ public class FrequencyTableController implements StatistiekView,
 
 		h.put("showPercentage", this.model.isShowPercentage());
 		h.put("showCumulative", this.model.isShowCumulative());
-		h.put("showFrequency", this.model.isShowFreq());
 		h.put("binBoundaries", this.model.getBinBoundaries());
 		h.put("viewName", this.getViewName());
 		h.put("columnIndex", this.model.getColumnIndex());
@@ -176,10 +175,6 @@ public class FrequencyTableController implements StatistiekView,
 		if (h.containsKey("showCumulative"))
 		{
 			this.model.setShowCumulative((Boolean) h.get("showCumulative"));
-		}
-		if (h.containsKey("showFrequency"))
-		{
-			this.model.setShowFreq((Boolean) h.get("showFrequency"));
 		}
 		if (h.containsKey("viewName"))
 		{
