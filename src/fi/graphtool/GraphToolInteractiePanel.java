@@ -4611,7 +4611,7 @@ MouseListener, MouseMotionListener {
 	{	if(zoomDraad!=null && zoomDraad.isAlive())return;
 	
 		if(e.getSource()==feedbackTekst)
-		{	if(getParent()!=null)feedbackTekst.getParent().remove(feedbackTekst);
+		{	if(feedbackTekst.getParent()!=null)feedbackTekst.getParent().remove(feedbackTekst);
 		}
 		if(e.getActionCommand().equals("focus")) ;
 		else 
