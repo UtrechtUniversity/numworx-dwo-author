@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: fi.statsim.StatSim
+Trusted-Only: true
+Permissions: all-permissions
+Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost
+Application-Name: Statistiek simulaties
+Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost
