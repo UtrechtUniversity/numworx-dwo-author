@@ -52,6 +52,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	// bin settings
 	private JLabel binsLabel;
 	private JComboBox binsBox;
+	private JRadioButton labelUnderBinRadioItem; // labels midden onder staven
+	private JRadioButton labelBetweenBinsRadioItem; // labels tussen staven
 	private JButton chooseBoundariesButton;
 	private JSeparator separator1;
 	private JLabel minBoundaryLabel;
@@ -174,6 +176,25 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.binsBox.setPreferredSize(new Dimension(100, 25));
 		this.binsBox.setActionCommand("binsBox");
 		this.binsBox.addActionListener(this.controller);
+		
+		// radiobuttons for position labels
+		this.labelBetweenBinsRadioItem = new JRadioButton(
+			Statistiek.rb.getString("labelBetweenBinsRadio"));
+		this.labelBetweenBinsRadioItem.setFont(Statistiek.font);
+		this.labelBetweenBinsRadioItem.setOpaque(false);
+		this.labelBetweenBinsRadioItem.setActionCommand("labelsBetweenBinsRadioItem");
+		this.labelBetweenBinsRadioItem.addActionListener(this.controller);
+
+		this.labelUnderBinRadioItem = new JRadioButton(
+			Statistiek.rb.getString("labelUnderBinRadio"));
+		this.labelUnderBinRadioItem.setFont(Statistiek.font);
+		this.labelUnderBinRadioItem.setActionCommand("labelsUnderBinRadioItem");
+		this.labelUnderBinRadioItem.addActionListener(this.controller);
+		this.labelUnderBinRadioItem.setOpaque(false);
+
+		ButtonGroup buttonGroup3 = new ButtonGroup();
+		buttonGroup3.add(this.labelBetweenBinsRadioItem);
+		buttonGroup3.add(this.labelUnderBinRadioItem);
 
 		this.chooseBoundariesButton = new JButton(
 			Statistiek.rb.getString("binsButton"));
@@ -449,48 +470,56 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		hb2.add(binsBox);
 
 		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb3.add(separator1);
+		hb3.add(labelBetweenBinsRadioItem);
+		hb3.add(Box.createHorizontalGlue());
 
 		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
-		hb4.add(chooseBoundariesButton);
+		hb4.add(labelUnderBinRadioItem);
+		hb4.add(Box.createHorizontalGlue());
 
 		hb5 = Box.createHorizontalBox();
 		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb5.add(this.minBoundaryLabel);
-		hb5.add(Box.createHorizontalStrut(5));
-		hb5.add(Box.createHorizontalGlue());
-		hb5.add(this.minBoundaryField);
+		hb5.add(separator1);
 
 		hb6 = Box.createHorizontalBox();
-		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb6.add(this.binWidthLabel);
-		hb6.add(Box.createHorizontalGlue());
-		hb6.add(this.binWidthField);
+		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
+		hb6.add(chooseBoundariesButton);
 
 		hb7 = Box.createHorizontalBox();
 		hb7.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb7.add(this.boundariesLabel);
+		hb7.add(this.minBoundaryLabel);
+		hb7.add(Box.createHorizontalStrut(5));
+		hb7.add(Box.createHorizontalGlue());
+		hb7.add(this.minBoundaryField);
 
 		hb8 = Box.createHorizontalBox();
 		hb8.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb8.add(this.boundariesAreaScrollPane);
+		hb8.add(this.binWidthLabel);
+		hb8.add(Box.createHorizontalGlue());
+		hb8.add(this.binWidthField);
 
 		hb9 = Box.createHorizontalBox();
-		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb9.add(this.noObjectsLabel);
-		hb9.add(Box.createHorizontalGlue());
+		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb9.add(this.boundariesLabel);
 
 		hb10 = Box.createHorizontalBox();
-		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb10.add(this.minValueLabel);
-		hb10.add(Box.createHorizontalGlue());
+		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb10.add(this.boundariesAreaScrollPane);
 
 		hb11 = Box.createHorizontalBox();
 		hb11.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb11.add(this.maxValueLabel);
+		hb11.add(this.noObjectsLabel);
 		hb11.add(Box.createHorizontalGlue());
+
+		hb12 = Box.createHorizontalBox();
+		hb12.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb12.add(this.minValueLabel);
+		hb12.add(Box.createHorizontalGlue());
+
+		hb13 = Box.createHorizontalBox();
+		hb13.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb13.add(this.maxValueLabel);
+		hb13.add(Box.createHorizontalGlue());
 
 		vb2 = Box.createVerticalBox();
 		vb2.setBorder(BorderFactory.createTitledBorder(border,
@@ -507,6 +536,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		vb2.add(hb9);
 		vb2.add(hb10);
 		vb2.add(hb11);
+		vb2.add(hb12);
+		vb2.add(hb13);
 		vb2.add(Box.createVerticalGlue());
 
 		// Display
@@ -783,6 +814,16 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	{
 		return this.percentageRadioItem.isSelected();
 	}
+	
+	public boolean labelUnderBinSelected()
+	{
+		return this.labelUnderBinRadioItem.isSelected();
+	}
+
+	public boolean labelBetweenBinsSelected()
+	{
+		return this.labelBetweenBinsRadioItem.isSelected();
+	}
 
 	public void setModel(HistogramModel model)
 	{
@@ -820,10 +861,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				.getColumnName(column));
 		}
 		
-		// test syl: check of columnindex valid
+		// check of columnindex valid
 		if (this.model.columnIndexValid())
 		{
-			//System.out.println("HistogramUserOptionsPanel.update(): COLUMN INDEX NOT VALID!");
+			//System.out.println("HistogramUserOptionsPanel.update(): COLUMN INDEX VALID!");
 			this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
 				.getColumnSplitIndex() + 1);
 		}
@@ -888,6 +929,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ this.model.getTableModel().getColumnMax(
 						this.model.getColumnIndex()));
+				this.labelBetweenBinsRadioItem.getParent().setVisible(true);
+				this.labelUnderBinRadioItem.getParent().setVisible(true);
 				this.binsBox.getParent().setVisible(true);
 				this.binsLabel.getParent().setVisible(true);
 				setEnumClasses(false);
@@ -902,13 +945,15 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				}
 				sb.substring(0, sb.length() - 1);
 				this.boundariesArea.setText(sb.toString());
+				this.labelBetweenBinsRadioItem.getParent().setVisible(false);
+				this.labelUnderBinRadioItem.getParent().setVisible(false);
 				this.binsBox.getParent().setVisible(false);
 				this.binsLabel.getParent().setVisible(false);
 				setEnumClasses(true);
 			}
 		}
 
-		// test syl: check of column index valid
+		// check of column index valid
 		if (this.model.columnIndexValid())
 		{
     		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
@@ -977,6 +1022,17 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		{
 			this.cumulativeBox.setSelected(this.model
 				.isFrequencyPolygonCumulativeMode());
+		}
+		
+//		System.out.println("HistogramUserOptionsPanel.update(): this.model.getLabelUnderBin() = "
+//			+ this.model.getLabelUnderBin());
+		if (this.model.getLabelUnderBin())
+		{
+			this.labelUnderBinRadioItem.setSelected(true);
+		}
+		else
+		{
+			this.labelBetweenBinsRadioItem.setSelected(true);
 		}
 
 		if (this.model.getPercentage())

@@ -66,6 +66,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		
 		this.model = new HistogramModel(tableModel, viewName, frequencyPolygonMode);
 		model.setColumnIndex(startVar);
+		model.setDefaultLabelPositioning();
 		this.view = new HistogramView(this.model, this);
 		this.view.update(null, null);
 		
@@ -138,6 +139,11 @@ public class HistogramController implements StatistiekView, ActionListener,
 		if (ac.equals("amountRadioItem") || ac.equals("percentageRadioItem"))
 		{
 			this.model.setPercentage(this.view.percentageItemSelected());
+		}
+		else if (ac.equals("labelsBetweenBinsRadioItem") ||
+			ac.equals("labelsUnderBinRadioItem"))
+		{
+			this.model.setLabelUnderBin(this.view.labelUnderBinItemSelected());
 		}
 		else if (ac.equals("varBox"))
 		{
@@ -369,6 +375,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 		h.put("percentage", this.model.getPercentage());
 		// System.out.println("   percentage=" + this.model.getPercentage());
 
+		h.put("labelUnderBin", this.model.getLabelUnderBin());
+		//System.out.println("   labelUnderBin=" + this.model.getLabelUnderBin());
+
 		h.put("showUserOptions", this.model.getShowUserOptions());
 		// System.out.println("   showUserOptions=" +
 		// this.model.getShowUserOptions());
@@ -473,6 +482,13 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 			this.model.setPercentage(((Boolean) h.get("percentage"))
 				.booleanValue());
+		}
+		if (h.containsKey("labelUnderBin"))
+		{
+			this.model.setLabelUnderBin(((Boolean) h.get("labelUnderBin"))
+				.booleanValue());
+//			System.out.println("HistogramController.setState(): labelUnderBin="
+//				+ ((Boolean) h.get("labelUnderBin")).booleanValue());
 		}
 		if (h.containsKey("showUserOptions"))
 		{

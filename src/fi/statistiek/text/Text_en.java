@@ -24,6 +24,8 @@ public class Text_en extends java.util.ListResourceBundle
             {   "doneButton", "Done" },
             {   "classDivisionLabel", "Class division" },
             {   "noClassesLabel", "Number of classes" },
+            {   "labelBetweenBinsRadio", "labels between classes" },
+            {   "labelUnderBinRadio", "labels under middle of bar" },
             {   "classesLabel", "Classes" },
             {   "autoButton", "Determine automatically" },
             {   "startvalueLabel", "Startvalue" },

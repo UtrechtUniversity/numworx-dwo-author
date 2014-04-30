@@ -10,12 +10,30 @@ import fi.statistiek.SelectionListener;
 import fi.statistiek.SplitOptions;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
+import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
 
 /**
  * MVC model for StatistiekView Histogram
  * 
  * @author Manu Drijvers
  * 
+ */
+/**
+ * @author borku102
+ *
+ */
+/**
+ * @author borku102
+ *
+ */
+/**
+ * @author borku102
+ *
+ */
+/**
+ * @author borku102
+ *
  */
 public class HistogramModel extends Observable implements TableModelListener,
 	SelectionListener, StatBinsModel
@@ -33,6 +51,8 @@ public class HistogramModel extends Observable implements TableModelListener,
 								// frequency
 	private boolean verticalBars; // true = vertical bars, false = horizontal
 								  // bars
+	private boolean labelUnderBin; 	// true = show labels under bin, false = 
+									// show labels between bins
 	private boolean showUserOptions;
 	private final boolean frequencyPolygonMode;
 	private boolean frequencyPolygonCumulativeMode;
@@ -249,17 +269,33 @@ public class HistogramModel extends Observable implements TableModelListener,
 		if (!(this.columnIndex == columnIndex))
 		{
 			this.columnIndex = columnIndex;
-			if (this.columnIndexValid()
-				&& this.tableModel.getColumnTypes().get(this.columnIndex)
-					.getType().isNumber())
+			
+			if (this.columnIndexValid())
 			{
-				// binBoundaries worden hier standaard gezet
-				this.binBoundaries = Statistiek
-					.appropriateBoundaries(
-						this.tableModel.getColumnMin(this.columnIndex),
-						this.tableModel.getColumnMax(this.columnIndex),
-						this.noBins);
+				if (this.tableModel.getColumnTypes().get(this.columnIndex)
+					.getType().isNumber())
+				{
+    				// binBoundaries worden hier standaard gezet
+    				this.binBoundaries = Statistiek
+    					.appropriateBoundaries(
+    						this.tableModel.getColumnMin(this.columnIndex),
+    						this.tableModel.getColumnMax(this.columnIndex),
+    						this.noBins);
+				}
+
+				// set bin label positioning
+				AllowedTypes type = this.tableModel.getColumnTypes().get(this.columnIndex)
+					.getType(); 
+				if (type.equals(AllowedTypes.INTEGER))
+				{
+					setLabelUnderBin(true);
+				}
+				else if (type.equals(AllowedTypes.DOUBLE))
+				{
+					setLabelUnderBin(false);
+				}
 			}
+			
 			this.changed();
 		}
 	}
@@ -389,11 +425,36 @@ public class HistogramModel extends Observable implements TableModelListener,
 	}
 
 	/**
-	 * @return true iff showing relative frequency
+	 * Set whether the Histogram will display labels under the bins
+	 * or between the bins.
+	 * 
+	 * @param b
+	 *            true for label under bin, false for label between bins
+	 */
+	public void setLabelUnderBin(boolean b)
+	{
+		if (!(this.labelUnderBin == b))
+		{
+			this.labelUnderBin = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * @return true if showing relative frequency
 	 */
 	public boolean getPercentage()
 	{
 		return this.percentage;
+	}
+
+	/**
+	 * @return true if showing labels under bin, false is showing labels
+	 * between bins
+	 */
+	public boolean getLabelUnderBin()
+	{
+		return this.labelUnderBin;
 	}
 
 	/**
@@ -538,6 +599,37 @@ public class HistogramModel extends Observable implements TableModelListener,
 			this.label = label;
 			this.frequency = frequency;
 			this.selectionFrequency = selectionFrequency;
+		}
+	}
+
+	/*
+	 * Set the default label positioning depending on column type.
+	 * Default for integer variables is under the bin,
+	 * default for double variable is between the bins.
+	 */
+	public void setDefaultLabelPositioning()
+	{
+//		System.out.println("HistogramModel.setDefaultLabelPositioning(): this.getColumnIndex() = " 
+//			+ this.getColumnIndex());
+		if (this.getColumnIndex() > -1)
+		{
+    		ColumnType cType = this.getTableModel().getColumnTypes()
+    			.get(this.getColumnIndex());
+    		AllowedTypes type = cType.getType();
+//			System.out.println("HistogramModel.setDefaultLabelPositioning(): type = " 
+//				+ type);
+    		if (type.equals(AllowedTypes.INTEGER))
+    		{
+    			this.labelUnderBin = true;
+    		}
+    		else if (type.equals(AllowedTypes.DOUBLE))
+    		{
+    			this.labelUnderBin = false;
+    		}
+		}
+		else
+		{
+			this.labelUnderBin = false;
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -99,6 +100,9 @@ public class HistogramView extends JPanel implements Observer
 
 		this.mainPanel = new HistogramBarPanel();
 		this.mainPanel.addMouseMotionListener((MouseMotionListener) this.mainPanel);
+		// test syl: onderstaande werkt niet...
+		this.mainPanel.setBackground(Statistiek.backgroundColor);
+		this.setBackground(Statistiek.backgroundColor);
 		
 		this.scrollPane = new JScrollPane(this.mainPanel);
 		this.scrollPane.getVerticalScrollBar().setUnitIncrement(Statistiek.scrollSpeedUnit);
@@ -223,7 +227,7 @@ public class HistogramView extends JPanel implements Observer
 	/**
 	 * Get the chosen axis from this.axisBox
 	 * 
-	 * @return true iff x-axis selected
+	 * @return true if x-axis selected
 	 */
 	public boolean xAxisSelected()
 	{
@@ -232,12 +236,24 @@ public class HistogramView extends JPanel implements Observer
 
 	/**
 	 * Gets which item the user selected from the radiogroup
+	 * choosing between percentage or amount.
 	 * 
-	 * @return true iff percentage is chosen
+	 * @return true if percentage is chosen
 	 */
 	public boolean percentageItemSelected()
 	{
 		return userOptionsPanel.percentageItemSelected();
+	}
+
+	/**
+	 * Gets which item the user selected from the radiogroup
+	 * choosing between labels under bin or labels between bins.
+	 * 
+	 * @return true if label under bin is chosen
+	 */
+	public boolean labelUnderBinItemSelected()
+	{
+		return userOptionsPanel.labelUnderBinSelected();
 	}
 
 	/**
@@ -374,15 +390,22 @@ public class HistogramView extends JPanel implements Observer
 		else
 		{
 			int columnIndex = this.model.getColumnIndex();
-			String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+			AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
 			
-			// test syl
 			int spacing = 0;
 					
-			if (type.equals(AllowedTypes.ENUM.toString()))
+			if (type.equals(AllowedTypes.ENUM))
+			{
 				spacing = 4;
+			}
+			if (labelUnderBinItemSelected() && type.equals(AllowedTypes.INTEGER) && getBinWidth() == 1)
+			{
+//				System.out.println("HistogramView.paintBar(): INT & 1, spacing!");
+				spacing = 4;
+			}
 			
-			//System.out.println("HistogramView(): type = " + type + ", spacing = " + spacing);
+//			System.out.println("HistogramView.paintBar(): type = " + type + ", binWidth = " 
+//				+ getBinWidth() + ", spacing = " + spacing);
 
 			if (this.model.getVerticalBars())
 			{
@@ -401,13 +424,40 @@ public class HistogramView extends JPanel implements Observer
 					barOffset = numberOfBars * barWidth + 3;
 					barWidth = barWidth - 1;
 				}
-				g.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
-					barLength - selectedLength);
+				
+				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
 
-				g.setColor(HistogramView.SELECTED_BAR_COLOR);
-				g.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
-					+ ySplitOffset, barWidth - spacing, selectedLength);
+				if (type.equals(AllowedTypes.ENUM) 
+					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER)))
+				{
+    				g.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
+    					barLength - selectedLength);
+    				
+    				g.setColor(colorSelectedBar);
+    				g.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
+    					+ ySplitOffset, barWidth - spacing, selectedLength);
+				}
+				else
+				{
+    				Graphics2D g2d = (Graphics2D)g;
+    				Color color2 = Color.WHITE;
+    				GradientPaint gradient = new GradientPaint(x1 + barOffset + spacing, y + ySplitOffset, 
+    					c, x1 + barOffset + spacing + barWidth - spacing, y + ySplitOffset, color2, false);
+    				g2d.setPaint(gradient);
 
+    				// paint bar
+    				g2d.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
+    					barLength - selectedLength);
+
+    				gradient = new GradientPaint(x1 + barOffset + spacing, y + ySplitOffset, 
+    					colorSelectedBar, x1 + barOffset + spacing + barWidth - spacing, y + ySplitOffset, color2, false);
+    				g2d.setPaint(gradient);
+
+    				// paint selected bar
+    				g2d.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
+    					+ ySplitOffset, barWidth - spacing, selectedLength);
+				}
+				
 				// fill the rectangle above the bar white to get the correct
 				// color mixing when using alpha values
 				// g.setColor(Color.WHITE);
@@ -428,9 +478,6 @@ public class HistogramView extends JPanel implements Observer
     		        g2.setStroke(new BasicStroke(1));
 				}
 				
-//   				g.drawRect(x1 - 1 + barOffset, y + ySplitOffset,
-//   					barWidth + 1, barLength);
-				// test syl: spacing tussen staven voor enum
    				g.drawRect(x1 - 1 + barOffset + spacing, y + ySplitOffset,
    					barWidth + 1 - spacing, barLength);
 
@@ -454,15 +501,53 @@ public class HistogramView extends JPanel implements Observer
 					barWidth = barWidth - 1;
 				}
 
-				g.setColor(HistogramView.SELECTED_BAR_COLOR);
-				// test syl: spacing
-				g.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset + spacing,
-					selectedLength, barWidth - spacing);
+				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
 
-				g.setColor(c);
-				g.fillRect(x1 + xSplitOffset + selectedLength, y1
-					+ ySplitOffset + barOffset + spacing, barLength - selectedLength,
-					barWidth - spacing);
+				if (type.equals(AllowedTypes.ENUM) 
+					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER)))
+				{
+					g.setColor(c);
+					// paint bar
+					g.fillRect(x1 + xSplitOffset + selectedLength, y1
+						+ ySplitOffset + barOffset + spacing, barLength - selectedLength,
+						barWidth - spacing);
+
+					g.setColor(colorSelectedBar);
+					// paint selected bar
+					g.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset + spacing,
+						selectedLength, barWidth - spacing);
+				}	
+				else
+				{
+					Graphics2D g2d = (Graphics2D) g;
+					Color color2 = Color.WHITE;
+					GradientPaint gradient = new GradientPaint(
+						x1 + xSplitOffset + selectedLength, 
+						y1 + ySplitOffset + barOffset + spacing, c, 
+						x1 + xSplitOffset + selectedLength, 
+						y1 + ySplitOffset + barOffset + spacing + barWidth - spacing, 
+						color2, false);
+					g2d.setPaint(gradient);
+
+					// paint bar
+					g2d.fillRect(x1 + xSplitOffset + selectedLength, 
+						y1 + ySplitOffset + barOffset + spacing, 
+						barLength - selectedLength, barWidth - spacing);
+
+					gradient = new GradientPaint(
+						x1 + xSplitOffset, 
+						y1 + ySplitOffset + barOffset + spacing, colorSelectedBar,
+						x1 + xSplitOffset, 
+						y1 + ySplitOffset + barOffset + spacing + barWidth - spacing, 
+						color2, false);
+					g2d.setPaint(gradient);
+
+					// paint selected bar
+					g2d.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset + spacing,
+						selectedLength, barWidth - spacing);
+				}
+			
+				
 
 				// g.setColor(Color.WHITE);
 				// g.fillRect(x1+xSplitOffset+barLength, y1+ySplitOffset,
@@ -630,7 +715,7 @@ public class HistogramView extends JPanel implements Observer
 			.getString("frequentieLabel"))
 			: this.model.getTableModel().getColumnName(
 				this.model.getColumnIndex());
-
+			
 		g.setColor(Color.BLACK);
 		g.setFont(rotateFont);
 		g.drawString(s1, fm.getHeight(),
@@ -827,6 +912,7 @@ public class HistogramView extends JPanel implements Observer
 	private void paintNumberClass(Graphics2D g, int[][] allFrequencies,
 		int splitClass)
 	{
+		boolean normalFit;
 		int[] frequencies = allFrequencies[splitClass];
 		g.setFont(super.getFont());
 		FontMetrics fm = g.getFontMetrics();
@@ -856,19 +942,65 @@ public class HistogramView extends JPanel implements Observer
 			// set bar width
 			this.setBarWidth(frequencies.length / 2);
 
-			// check if the bin boundary strings will fit
-			boolean normalFit = true;
+			// check if the bin boundary strings will fit and determine the longest
+			normalFit = true;
 			int longest = 0;
-			for (Double d : this.model.getBinBoundaries())
+			int width;
+			
+			if (this.model.getLabelUnderBin())
 			{
-				int width = fm.stringWidth(d.toString());
-				if (width > this.verticalBarWidth)
+				int marge = 5;
+				int columnIndex = this.model.getColumnIndex();
+				String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+				
+//				System.out.println("HistogramView.paintNumberClass(): type = " + type
+//					+ ", getBinWidth() = " + getBinWidth());
+				
+				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
-					normalFit = false;
+					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					if (i < this.model.getBinBoundaries().size() - 1)
+					{
+						String s_labelUnderBin;
+						if (type.equals(AllowedTypes.INTEGER.toString()) && ((int) getBinWidth()) == 1)
+						{
+							s_labelUnderBin = s;
+//							System.out.println("HistogramView.paintNumberClass(): INT & binwidth = 1, s_labelUnderBin = " 
+//								+ s_labelUnderBin);
+						}
+						else
+						{
+    						s_labelUnderBin = s + "-<" +
+    							getStringValue(this.model.getBinBoundaries().get(i + 1));
+//							System.out.println("HistogramView.paintNumberClass(): s_labelUnderBin = " 
+//								+ s_labelUnderBin);
+						}
+						
+						width = fm.stringWidth(s_labelUnderBin) + marge;
+						if (width > this.verticalBarWidth)
+						{
+							normalFit = false;
+						}
+						if (width > longest)
+						{
+							longest = width;
+						}
+					}
 				}
-				if (width > longest)
+			}
+			else // label between bins
+			{
+				for (Double d : this.model.getBinBoundaries())
 				{
-					longest = width;
+					width = fm.stringWidth(d.toString());
+					if (width > this.verticalBarWidth)
+					{
+						normalFit = false;
+					}
+					if (width > longest)
+					{
+						longest = width;
+					}
 				}
 			}
 
@@ -880,8 +1012,8 @@ public class HistogramView extends JPanel implements Observer
 			{
 				this.xAxisOffset = longest + 15 + fm.getHeight();
 			}
-		}
-		else
+		} // vertical bars
+		else // horizontal bars
 		{
 			this.xAxisOffset = this.determineDependentAxisWidth(this.model
 				.getPercentage() ? percScale : amountScale);
@@ -889,14 +1021,48 @@ public class HistogramView extends JPanel implements Observer
 			// set bar width
 			this.setBarWidth(frequencies.length / 2);
 
-			// find longest binboundary label
 			int longest = 0;
-			for (Double d : this.model.getBinBoundaries())
+			int width;
+
+			if (this.model.getLabelUnderBin())
 			{
-				int width = fm.stringWidth(d.toString());
-				if (width > longest)
+				int columnIndex = this.model.getColumnIndex();
+				String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+				
+				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
-					longest = width;
+					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					if (i < this.model.getBinBoundaries().size() - 1)
+					{
+						String s_labelUnderBin;
+						if (type.equals(AllowedTypes.INTEGER.toString()) && ((int) getBinWidth()) == 1)
+						{
+							s_labelUnderBin = s;
+						}
+						else
+						{
+    						s_labelUnderBin = s + "-<" +
+    							getStringValue(this.model.getBinBoundaries().get(i + 1));
+						}
+						
+						width = fm.stringWidth(s_labelUnderBin);
+						if (width > longest)
+						{
+							longest = width;
+						}
+					}
+				}
+			}
+			else // labels between bins
+			{
+				// find longest binboundary label
+				for (Double d : this.model.getBinBoundaries())
+				{
+					width = fm.stringWidth(d.toString());
+					if (width > longest)
+					{
+						longest = width;
+					}
 				}
 			}
 
@@ -1034,7 +1200,7 @@ public class HistogramView extends JPanel implements Observer
 					}
 					g.setComposite(this.makeComposite(1));
 
-				}
+				} // cumulatief frequentiepolygoon
 				else
 				{
 					// Hier worden de samengestelde staafjes getekend.
@@ -1113,9 +1279,9 @@ public class HistogramView extends JPanel implements Observer
 					g.setComposite(this.makeComposite(1));
 				}
 			}
-		}
+		} // split van meer dan 1 klasse
 		else
-		{
+		{ // no split
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode())
 			{
@@ -1154,36 +1320,68 @@ public class HistogramView extends JPanel implements Observer
 
 		g.setColor(Color.BLACK);
 
+		int columnIndex = this.model.getColumnIndex();
+		AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
+
 		if (this.model.getVerticalBars())
 		{
 			// check if the bin boundary strings will fit
-			boolean normalFit = true;
-			for (Double d : this.model.getBinBoundaries())
-			{
-				if (fm.stringWidth(d.toString()) > this.verticalBarWidth)
-				{
-					normalFit = false;
-					break;
-				}
-			}
+			normalFit = determineNormalFitForVerticalBars(fm);
+			
+//			System.out.println("HistogramView.paintNumberClass(): normalFit = " + normalFit);
 
 			// paint bin boundaries
 			if (normalFit)
 			{
 				int y = this.barAreaHeight();
+
 				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
-					int x = (int) (this.yAxisOffset + i + i
-						* this.verticalBarWidth);
-					g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+					int x = (int) (this.yAxisOffset + i + i * this.verticalBarWidth);
 					
 					// Get the string value (integer or double)
 					String s = getStringValue(this.model.getBinBoundaries().get(i));
 
 					int offset = fm.stringWidth(s) / 2;
-					g.drawString(s, x - offset, y + 20 + ySplitOffset);
+					if (this.model.getLabelUnderBin())
+					{
+						// put label under bin
+						if (i < this.model.getBinBoundaries().size() - 1)
+						{
+							String s_labelUnderBin;
+							if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
+							{
+								s_labelUnderBin = s;
+//								System.out.println("HistogramView.paintNumberClass(): INT & binwidth = 1, s_labelUnderBin = " 
+//									+ s_labelUnderBin);
+							}
+							else
+							{
+								s_labelUnderBin = s + "-<" +
+									getStringValue(this.model.getBinBoundaries().get(i + 1));
+								// draw marker
+								g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+							}
+							
+							int x2 = (int) (this.yAxisOffset + (i + 1) + (i + 1)
+								* this.verticalBarWidth);
+							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin) / 2;
+//							g.drawString(s_labelUnderBin, ((x + x2 - offset)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
+							g.drawString(s_labelUnderBin, ((x + x2)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
+//							System.out.println("HistogramView.paintNumberClass(): fm.stringWidth(s_labelUnderBin) = "
+//								+ fm.stringWidth(s_labelUnderBin)
+//								+ ", x2-x = " + (x2 - x) + ", this.verticalBarWidth = " + this.verticalBarWidth);
+						}
+					}
+					else
+					{
+						// draw marker
+						g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+						// put label between bins
+						g.drawString(s, x - offset, y + 20 + ySplitOffset);
+					}
 				}
-			}
+			} // normal fit
 			else
 			{
 				// the boundary labels won't fit the normal way, use rotated
@@ -1199,24 +1397,73 @@ public class HistogramView extends JPanel implements Observer
 					// Get the string value (integer or double)
 					String s = getStringValue(this.model.getBinBoundaries().get(i));
 					int offset = fm.stringWidth(s);
-					g.drawString(s, x + 5, y + 7 + offset + ySplitOffset);
+					
+					if (this.model.getLabelUnderBin())
+					{
+						// put label under bin
+						if (i < this.model.getBinBoundaries().size() - 1)
+						{
+							String s_labelUnderBin = s + "-<" +
+								getStringValue(this.model.getBinBoundaries().get(i + 1));
+							int x2 = (int) (this.yAxisOffset + (i + 1) + (i + 1)
+								* this.verticalBarWidth);
+							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
+							g.drawString(s_labelUnderBin, (int) (x + 5 + (this.verticalBarWidth/2)), y + 7 + offset_labelUnderBin + ySplitOffset);
+//							System.out.println("HistogramView.paintNumberClass(): fm.stringWidth(s_labelUnderBin) = "
+//								+ fm.stringWidth(s_labelUnderBin)
+//								+ ", x2-x = " + (x2 - x) + ", this.verticalBarWidth = " + this.verticalBarWidth);
+						}
+					}
+					else
+					{
+						// put label between bins
+						g.drawString(s, x + 5, y + 7 + offset + ySplitOffset);
+					}
 				}
 			}
-		}
+		} // vertical bars
 		else
-		{
+		{ // horizontal bars
 			// paint bin boundaries
 			for (int i = 0; i <= frequencies.length / 2; i++)
 			{
 				int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
 				int x = this.yAxisOffset;
-				g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
-				
 				// Get the string value (integer or double)
 				String s = getStringValue(this.model.getBinBoundaries().get(i));
-				int offset = fm.stringWidth(s);
-				g.drawString(s, x - offset - 7, y
-					+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+				
+				if (this.model.getLabelUnderBin())
+				{
+					// put label under bin
+					if (i < this.model.getBinBoundaries().size() - 1)
+					{
+						String s_labelUnderBin;
+						if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
+						{
+							s_labelUnderBin = s;
+						}
+						else
+						{
+							s_labelUnderBin = s + "-<" +
+								getStringValue(this.model.getBinBoundaries().get(i + 1));
+							// draw marker
+							g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
+						}
+											
+						int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
+						g.drawString(s_labelUnderBin, x - offset_labelUnderBin - 7, y
+							+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset + (int) this.horizontalBarWidth/2);
+					}
+				}
+				else
+				{
+					// draw marker
+					g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
+					// put label between bins
+					int offset = fm.stringWidth(s);
+					g.drawString(s, x - offset - 7, y
+						+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+				}
 			}
 			// String s = this.model.getBinBoundaries().get(0).toString();
 			// g.drawString(s, HistogramView.Y_AS_OFFSET-fm.stringWidth(s)-7,
@@ -1224,6 +1471,43 @@ public class HistogramView extends JPanel implements Observer
 			// g.drawLine(HistogramView.Y_AS_OFFSET-7, 0,
 			// HistogramView.Y_AS_OFFSET-2, 0);
 		}
+	}
+
+	private boolean determineNormalFitForVerticalBars(FontMetrics fm)
+	{
+		boolean normalFit = true;
+
+		if (this.model.getLabelUnderBin())
+		{
+			int marge = 5;
+			for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
+			{
+				String s = getStringValue(this.model.getBinBoundaries().get(i));
+				if (i < this.model.getBinBoundaries().size() - 1)
+				{
+					String s_labelUnderBin = s + "-<" +
+						getStringValue(this.model.getBinBoundaries().get(i + 1));
+					if (fm.stringWidth(s_labelUnderBin) + marge > this.verticalBarWidth)
+					{
+						normalFit = false;
+						break;
+					}
+				}
+			}
+		}
+		else // label between bins
+		{
+			for (Double d : this.model.getBinBoundaries())
+			{
+				if (fm.stringWidth(d.toString()) > this.verticalBarWidth)
+				{
+					normalFit = false;
+					break;
+				}
+			}
+		}
+		
+		return normalFit;
 	}
 
 	/**
@@ -1292,7 +1576,7 @@ public class HistogramView extends JPanel implements Observer
 			int majorSteps = (int) Math.floor((panelHeight - 0.5 * fm
 				.getHeight()) / (step * scale));
 
-			// paint the large markers with their value
+			// determine the width of the axis labels
 
 			for (int i = 0; i < majorSteps + 1; i++)
 			{
@@ -1777,9 +2061,10 @@ public class HistogramView extends JPanel implements Observer
 					g.drawString(s, x - (int) (fm.stringWidth(s) / 2.0), y + 5
 						+ fm.getHeight() + ySplitOffset);
 				}
-			}
+			} // normal fit
 			else
 			{
+				// too wide, so rotate labels
 				g.setFont(rotateFont);
 				for (int i = 0; i < frequencies.length; i++)
 				{
@@ -1792,9 +2077,9 @@ public class HistogramView extends JPanel implements Observer
 							+ ySplitOffset);
 				}
 			}
-		}
+		} // vertical bars
 		else
-		{
+		{ // horizontal bars
 			for (int i = 0; i < frequencies.length; i++)
 			{
 				int y = i + (int) ((i + 1) * this.horizontalBarWidth);

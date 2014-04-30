@@ -24,6 +24,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "doneButton", "Klaar" },
             {   "classDivisionLabel", "Indeling" },
             {   "noClassesLabel", "Aantal klassen" },
+            {   "labelBetweenBinsRadio", "labels tussen klassen" },
+            {   "labelUnderBinRadio", "labels midden onder staaf" },
             {   "classesLabel", "Klassen" },
             {   "autoButton", "Automatisch bepalen" },
             {   "startvalueLabel", "Beginwaarde" },
