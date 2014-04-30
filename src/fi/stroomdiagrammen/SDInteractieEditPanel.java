@@ -34,7 +34,7 @@ public class SDInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	protected SDInteractiePanel sdip;
 	
-	JCheckBox berekenMenuBox, breukenBox, stroomMenuBox, absoluutBox, optiesMenuBox, labelsBox;
+	JCheckBox berekenMenuBox, breukenBox, stroomMenuBox, absoluutBox, optiesMenuBox, labelsBox, demoBox;
 	JLabel bronnenLabel;
 	JComboBox bronnenCombo;
 	
@@ -143,6 +143,15 @@ public class SDInteractieEditPanel extends JPanel implements InteractieEditPanel
 		add(bronnenCombo);
 		bronnenCombo.addActionListener(this);
 		
+		currentY += height + 2 * offset;
+		
+		width = editWidth - 3 * offset;
+		demoBox = new JCheckBox(Stroomdiagrammen.rb.getString("demoText"), false);
+		demoBox.setFont(theFont);
+		demoBox.setBackground(Color.white);
+		demoBox.setBounds(currentX, currentY, width, height);
+		add(demoBox);
+		demoBox.addActionListener(this);
 		
 		componentsCreated = true;
 	}	
@@ -164,7 +173,7 @@ public class SDInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 			bronnenCombo.setLocation(bronnenLabel.getLocation().x + bronnenLabel.getSize().width + offset, 
 									 bronnenCombo.getLocation().y);
-			
+			demoBox.setLocation(sdip.getSize().width + 2 * offset, demoBox.getLocation().y);
 		}
 		
 	}
@@ -182,6 +191,8 @@ System.out.println("sdiep setEditState");
 		boolean toonOptiesMenu = true;
 		boolean toonLabels = false;
 		int aantalBronnen = 1;
+		
+		boolean isDemo = false;
 
 		if (b.containsKey("appletLaunchData"))
 		{
@@ -244,6 +255,8 @@ System.out.println("aLD found");
 				toonLabels = ((Boolean) b.get("toonLabels")).booleanValue();
 			if (b.containsKey("aantalBronnen"))
 				aantalBronnen = ((Integer) b.get("aantalBronnen")).intValue();
+			if (b.containsKey("isDemo"))
+				isDemo = ((Boolean) b.get("isDemo")).booleanValue();
 			
 			
 		}
@@ -257,6 +270,8 @@ System.out.println("aLD found");
 		bronnenComboEnabled = false;
 		bronnenCombo.setSelectedIndex(aantalBronnen - 1);
 		bronnenComboEnabled = true;
+		demoBox.setSelected(isDemo);
+		
 		
 		if (b.containsKey("sdipBreedte"))
 			sdipBreedte = ((Integer) b.get("sdipBreedte")).intValue();
@@ -373,6 +388,10 @@ System.out.println("spiep getEditState");
 			sdip.zetAantalBronnen(bronnenCombo.getSelectedIndex() + 1);		
 		} 
 		
+		else if (e.getSource() == demoBox)
+		{
+			sdip.zetIsDemo(demoBox.isSelected());
+		} 
 
 		
 	}

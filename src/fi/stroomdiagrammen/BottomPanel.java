@@ -138,26 +138,26 @@ JTextField test;
         int hGap = DrawingPanel.GRIDSIZE; 
         int currentX = rect.x + hGap;
         int currentY = rect.y + vGap;
-        int width = fm1.stringWidth(newButton.getText()) + 55;
+        int width = fm1.stringWidth(newButton.getText()) + 35;
         newButton.setBounds(currentX, currentY,
             //fm1.stringWidth(newButton.getLabel() + "XXX"),
         	width, 3 * fm1.getHeight() / 2);	
             //2 * vGap);
-        currentX += newButton.getSize().width + 4 * hGap;
+        currentX += newButton.getSize().width + 2 * hGap;
         
-        width = fm1.stringWidth(bubbleButton.getText()) + 55;
+        width = fm1.stringWidth(bubbleButton.getText()) + 35;
         bubbleButton.setBounds(currentX, currentY,
             //fm1.stringWidth(owner.rb.getString("flowOffText") + "XXX"),
         	width, 3 * fm1.getHeight() / 2);	
             //2 * vGap);
-        currentX += bubbleButton.getSize().width + 4 * hGap;
+        currentX += bubbleButton.getSize().width + 2 * hGap;
         
-        width = fm1.stringWidth(previousButton.getText()) + 55;
+        width = fm1.stringWidth(previousButton.getText()) + 35;
         previousButton.setBounds(currentX, currentY,
             //fm1.stringWidth(owner.rb.getString("previousText") + "XXX"),
         	width, 3 * fm1.getHeight() / 2);	
             //2 * vGap);
-        currentX += previousButton.getSize().width + 4 * hGap;
+        currentX += previousButton.getSize().width + 2 * hGap;
         
 //test.setBounds(currentX, currentY, 2 * width, 3 * fm1.getHeight() / 2);        
         

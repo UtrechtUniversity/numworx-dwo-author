@@ -142,6 +142,12 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
         addKeyListener(kl);
     } // constructor
     
+    public void zetIsDemo(boolean demo)
+    {
+    	diagramManager.freezeEdges(demo);
+    	diagramManager.freezeVertices(demo);
+    }
+    
     public void addToHistory()
     {   //if (diagramManager.vertexLabelsChanged())
         //{   DiagramCopy dco = diagramManager.copyDiagram();
@@ -893,6 +899,8 @@ class VertexCopy implements Serializable
 class Vertex extends JPanel //LWContainer
 {   // attributes
 
+	boolean frozen = false;
+	
 	int code;
     int layerNum;
     Rational flow = DrawingPanel.unDef;
@@ -982,6 +990,17 @@ class Vertex extends JPanel //LWContainer
             //add(vLabel);
         }
     }    
+    
+    public void setFrozen(boolean b)
+    {
+    	frozen = b;
+    	vLabel.setEditable(!frozen);
+    	if (root)
+    		flowField.setEditable(!frozen);
+    	addEdgeButton.setEnabled(!frozen);
+    	if (colorButton != null)
+    		colorButton.setEnabled(!frozen);
+    }
     
     public void setLabel(boolean b)
     {   // add label
@@ -1400,10 +1419,14 @@ class Vertex extends JPanel //LWContainer
         public void focusGained(FocusEvent e)
         {}
         public void focusLost(FocusEvent e)
-        {   processInput();
+        {   if (frozen)
+        		return;
+        	processInput();
         }
         public void actionPerformed(ActionEvent e)
-        {   processInput();
+        {   if (frozen)
+    			return;
+        	processInput();
         }
         
         
@@ -1415,21 +1438,30 @@ class Vertex extends JPanel //LWContainer
     	String labelText;
     	
         public void focusGained(FocusEvent e)
-        {	labelText = vLabel.getText();
+        {	if (frozen)
+    			return;
+        	
+        	labelText = vLabel.getText();
         }
         public void focusLost(FocusEvent e)
-        {   if (!labelText.equals(vLabel.getText()))
+        {   if (frozen)
+    			return;
+        	
+        	if (!labelText.equals(vLabel.getText()))
         	{	
         		((DrawingPanel) getParent()).updateHistoryLabels();
         		labelText = vLabel.getText();
         	}
         }
         public void actionPerformed(ActionEvent e)
-        {	if (!labelText.equals(vLabel.getText()))
-    	{	
-    		((DrawingPanel) getParent()).updateHistoryLabels();
-    		labelText = vLabel.getText();
-    	}
+        {	if (frozen)
+    			return;
+        	
+        	if (!labelText.equals(vLabel.getText()))
+    		{	
+    			((DrawingPanel) getParent()).updateHistoryLabels();
+    			labelText = vLabel.getText();
+    		}
         }
         
     } // inner class VertexIAL       
@@ -1453,6 +1485,8 @@ class EdgeCopy implements Serializable
 class Edge 
 {   DrawingPanel owner;
     Vertex fromVertex, toVertex;
+    
+    boolean frozen = false;
     
     //NumberField capacityField;
     CapacityPanel capacityField;
@@ -1522,6 +1556,12 @@ class Edge
         thickMode = owner.thickMode;
     }
 
+    public void setFrozen(boolean b)
+    {
+    	frozen = b;
+    	
+    	capacityField.capacityTextField.setEditable(!frozen);
+    }
     public void setCapacity(Rational c, boolean newTime)
     {   capacity = new Rational(c);
         if (mode == DrawingPanel.decMode)
@@ -2103,10 +2143,16 @@ class Edge
         public void focusGained(FocusEvent e)
         {}
         public void focusLost(FocusEvent e)
-        {   processInput();
+        {   if (frozen)
+    			return;
+        	
+        	processInput();
         }
         public void actionPerformed(ActionEvent e)
-        {   processInput();
+        {   if (frozen)
+    			return;
+        	
+        	processInput();
         }
         
         
@@ -2287,7 +2333,9 @@ class DiagramManager
         if (spacing >= 0)              
             spacing /= vertexLayers[layerNum].size() + 1;             
         else
-            spacing /= vertexLayers[layerNum].size() - 1;                     
+        {    spacing /= Math.max(1, vertexLayers[layerNum].size() - 1);
+        
+        }
         // set positions
         for (int i = 0; i < vertexLayers[layerNum].size(); i++)
         {   Vertex w = (Vertex) vertexLayers[layerNum].elementAt(i);
@@ -2659,6 +2707,13 @@ class DiagramManager
          }    
     }    
     
+    public void freezeEdges(boolean freeze)
+    {    for (int j = 0; j < edges.size(); j++)
+         {   Edge e = (Edge) edges.elementAt(j);
+             e.setFrozen(freeze);
+         }    
+    }    
+    
     public void lowLightEdges()
     {    for (int j = 0; j < edges.size(); j++)
          {   Edge e = (Edge) edges.elementAt(j);
@@ -2790,6 +2845,15 @@ class DiagramManager
         return refs;     
     }    
     
+    public void freezeVertices(boolean freeze)
+    {
+    	for (int i = 0; i < vertexLayers.length; i++)
+            for (int j = 0; j < vertexLayers[i].size(); j++)
+            {   Vertex v = (Vertex) vertexLayers[i].elementAt(j);
+                v.setFrozen(freeze);
+            }
+    }
+    
     public void redrawDiagram()
     {   for (int i = 0; i < vertexLayers.length; i++)
             updateVertexLayer(i);
@@ -2814,6 +2878,12 @@ class DiagramManager
             ds = (int) Math.round(
                     ((double) owner.workSpace.height - owner.oldWorkSpace.height) /
                     spacings);   
+        
+//System.out.println("wsh = " + owner.workSpace.height);
+//System.out.println("owsh = " + owner.oldWorkSpace.height);
+//System.out.println("sp = " + spacings);
+//System.out.println("ds = " + ds);
+
         // set positions
         for (int i = 0; i < vertexLayers[layerNum].size(); i++)
         {   Vertex w = (Vertex) vertexLayers[layerNum].elementAt(i);

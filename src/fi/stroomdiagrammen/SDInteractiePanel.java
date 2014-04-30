@@ -34,12 +34,14 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 	DrawingPanel drawingPanel;
 	BottomPanel bottomPanel;
 	
-	
 	// menu-gebeuren
-	//JMenuBar menuBar;
+	JMenuBar menuBar;
+	JMenu berekeningenMenu, stroombreedteMenu, optiesMenu;
+	
 	JButton berekeningenButton, stroombreedteButton, optiesButton;
 	int berekeningenButtonWidth, stroombreedteButtonWidth, optiesButtonWidth;
-	JPopupMenu berekeningenMenu, stroombreedteMenu, optiesMenu;
+	//JPopupMenu berekeningenMenu, stroombreedteMenu, optiesMenu;
+	
 	JRadioButtonMenuItem rbDecimaalItem, rbBreukenItem;
 	JRadioButtonMenuItem rbRelatiefItem, rbAbsoluutItem;
 	JCheckBoxMenuItem cbLabelsItem;
@@ -55,9 +57,11 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
     boolean toonOptiesMenu = true;
     boolean toonLabels = false;
     int aantalBronnen = 1;
+    
+    boolean isDemo = false;
 
 	int score = 0;
-	int scoreMax = 10;
+	int scoreMax = 0;
     
 	boolean noSetBounds = false;
 	
@@ -74,12 +78,11 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 		theBoldFM = getFontMetrics(theBoldFont);
 		
 		// menubalk
-		//menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		MenuListener menuListener = new MenuListener();
 		
 		menuPanel = new MenuPanel();
 		menuPanel.setLayout(null);
-		
 		menuHeight = 3 * theBoldFM.getHeight() / 2 + 1;
 		
 		// menu berekeningen
@@ -89,8 +92,9 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 		berekeningenButton.setBounds(0, 0, berekeningenButtonWidth, 3 * theBoldFM.getHeight() / 2);
 		menuPanel.add(berekeningenButton);
 		berekeningenButton.addActionListener(menuListener);
-		//berekeningenMenu = new JMenu(Stroomdiagrammen.rb.getString("represText"));
-		berekeningenMenu = new JPopupMenu();
+		
+		berekeningenMenu = new JMenu(Stroomdiagrammen.rb.getString("represText"));
+		//berekeningenMenu = new JPopupMenu();
 		ButtonGroup berekeningenGroup = new ButtonGroup();
 		rbDecimaalItem = new JRadioButtonMenuItem(Stroomdiagrammen.rb.getString("decimalText"));
 		if (!berekenInBreuken)
@@ -114,8 +118,9 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 									  stroombreedteButtonWidth, 3 * theBoldFM.getHeight() / 2);
 		menuPanel.add(stroombreedteButton);
 		stroombreedteButton.addActionListener(menuListener);
-		//stroombreedteMenu = new JMenu(Stroomdiagrammen.rb.getString("thicknessText"));
-		stroombreedteMenu = new JPopupMenu();
+		
+		stroombreedteMenu = new JMenu(Stroomdiagrammen.rb.getString("thicknessText"));
+		//stroombreedteMenu = new JPopupMenu();
 		ButtonGroup stroombreedteGroup = new ButtonGroup();
 		rbRelatiefItem = new JRadioButtonMenuItem(Stroomdiagrammen.rb.getString("relativeText"));
 		if (!stroombreedteAbsoluut)
@@ -139,8 +144,9 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 				 			   optiesButtonWidth, 3 * theBoldFM.getHeight() / 2);
 		menuPanel.add(optiesButton);
 		optiesButton.addActionListener(menuListener);
-		//optiesMenu = new JMenu(Stroomdiagrammen.rb.getString("optionsText"));
-		optiesMenu = new JPopupMenu();
+		
+		optiesMenu = new JMenu(Stroomdiagrammen.rb.getString("optionsText"));
+		//optiesMenu = new JPopupMenu();
 		cbLabelsItem = new JCheckBoxMenuItem(Stroomdiagrammen.rb.getString("labelsText"));
 		cbLabelsItem.setSelected(toonLabels);
 		optiesMenu.add(cbLabelsItem);
@@ -149,18 +155,22 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 		optiesMenu.add(addRootItem);
 		addRootItem.addActionListener(menuListener);
 
-/*		
+		
 		if (toonBerekeningenMenu)
-			menuBar.add(berekeningenMenu);
+		{	menuBar.add(berekeningenMenu);
+		}
 		if (toonStroombreedteMenu)
-			menuBar.add(stroombreedteMenu);
+		{	menuBar.add(stroombreedteMenu);
+		}
 		if (toonOptiesMenu)
-			menuBar.add(optiesMenu);
-*/		
+		{	menuBar.add(optiesMenu);
+		}
+		
 		//setJMenuBar(menuBar);
 		
 		
 	}
+
 
 	public void zetDocentModus()
 	{
@@ -172,7 +182,7 @@ public class SDInteractiePanel extends JPanel implements InteractiePanel, Intera
 		addRootItem.setEnabled(false);
 		
 	}
-	
+
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
 System.out.println("sdip zetOpdracht");
@@ -186,6 +196,8 @@ System.out.println("sdip zetOpdracht");
 		boolean toonOptiesMenu = true;
 		boolean toonLabels = false;
 		int aantalBronnen = 1;
+		
+		boolean isDemo = false;
 
 		if (b.containsKey("appletLaunchData"))
 		{
@@ -249,6 +261,9 @@ System.out.println("aLD found");
 			if (b.containsKey("aantalBronnen"))
 				aantalBronnen = ((Integer) b.get("aantalBronnen")).intValue();
 			
+			if (b.containsKey("isDemo"))
+				isDemo = ((Boolean) b.get("isDemo")).booleanValue();
+			
 			
 		}
 		
@@ -259,6 +274,8 @@ System.out.println("aLD found");
 		zetToonOptiesMenu(toonOptiesMenu);
 		zetToonLabels(toonLabels);
 		zetAantalBronnen(aantalBronnen);
+		
+		zetIsDemo(isDemo);
 
 		//DiagramCopy diagramCopy = null;
 		if (b.containsKey("appletEditState"))
@@ -391,6 +408,8 @@ System.out.println("sdip setEditState");
 		boolean toonLabels = false;
 		int aantalBronnen = 1;
 
+		boolean isDemo = false;
+		
 		if (b.containsKey("appletLaunchData"))
 		{
 System.out.println("aLD found");
@@ -453,6 +472,8 @@ System.out.println("aLD found");
 			if (b.containsKey("aantalBronnen"))
 				aantalBronnen = ((Integer) b.get("aantalBronnen")).intValue();
 			
+			if (b.containsKey("isDemo"))
+				isDemo = ((Boolean) b.get("isDemo")).booleanValue();
 			
 		}
 
@@ -463,6 +484,8 @@ System.out.println("aLD found");
 		zetToonOptiesMenu(toonOptiesMenu);
 		zetToonLabels(toonLabels);
 		zetAantalBronnen(aantalBronnen);
+		
+		zetIsDemo(isDemo);		
 		
 		if (b.containsKey("appletEditState"))
 		{
@@ -556,6 +579,8 @@ System.out.println("diagramcopy encoded");
 		h.put("toonOptiesMenu", new Boolean(toonOptiesMenu));
 		h.put("toonLabels", new Boolean(toonLabels));
 		h.put("aantalBronnen", new Integer(aantalBronnen));
+		
+		h.put("isDemo", new Boolean(isDemo));
 
 		// codeer de diagramCopy tot string
 		DiagramCopy diagramCopy = drawingPanel.diagramManager.copyDiagram();		
@@ -575,8 +600,9 @@ System.out.println("diagramcopy encoded");
 	
 	public void zetToonBerekeningenMenu(boolean b)
 	{	toonBerekeningenMenu = b;
-		layoutMenuPanel();
+		layoutMenuBar();
 	}
+	
 	public void zetBerekenInBreuken(boolean b)
 	{	berekenInBreuken = b;
 		rbBreukenItem.setSelected(berekenInBreuken);
@@ -590,7 +616,7 @@ System.out.println("diagramcopy encoded");
 	
 	public void zetToonStroombreedteMenu(boolean b)
 	{	toonStroombreedteMenu = b;
-		layoutMenuPanel();
+		layoutMenuBar();
 	}
 
 	public void zetStroombreedteAbsoluut(boolean b)
@@ -604,7 +630,7 @@ System.out.println("diagramcopy encoded");
 	
 	public void zetToonOptiesMenu(boolean b)
 	{	toonOptiesMenu = b;
-		layoutMenuPanel();
+		layoutMenuBar();
 	}
 
 	public void zetToonLabels(boolean b)
@@ -631,7 +657,34 @@ System.out.println("diagramcopy encoded");
 			
 	
 	}
+	
+	public void zetIsDemo(boolean b)
+	{
+		isDemo = b;
+		
+//System.out.println("dp height before = " + drawingPanel.getSize().height);		
+		
+		menuBar.setVisible(!isDemo);
+		bottomPanel.setVisible(!isDemo);
+		
+		sdPanel.validate();
+		drawingPanel.defineSpaces(true);
+		drawingPanel.updateWork();
+		drawingPanel.repaint();
+	
+		drawingPanel.zetIsDemo(isDemo);
+//System.out.println("dp height after = " + drawingPanel.getSize().height);		
+		
+	}
 
+	public void layoutMenuBar()
+	{
+		berekeningenMenu.setVisible(toonBerekeningenMenu);
+		stroombreedteMenu.setVisible(toonStroombreedteMenu);
+		optiesMenu.setVisible(toonOptiesMenu);
+		
+	}
+	
 	public void layoutMenuPanel()
 	{
 		berekeningenButton.setVisible(toonBerekeningenMenu);
@@ -712,43 +765,62 @@ System.out.println("diagramcopy encoded");
 		
 		
 		if (sdPanel == null) 
-		{	sdPanel = new JPanel();
-			sdPanel.setLayout(null);
+		{	
+
+			sdPanel = new JPanel();
+			//sdPanel.setLayout(null);
+			sdPanel.setLayout(new BorderLayout());
 //sdPanel.setBackground(Color.orange);			
 			sdPanel.setBounds(0, 0, b, h);
 			add(sdPanel);
 			
-			menuPanel.setBounds(0, 0, b, menuHeight);
-			sdPanel.add(menuPanel);
+//			menuPanel.setBounds(0, 0, b, menuHeight);
+//			sdPanel.add(menuPanel);
+			
+			sdPanel.add(menuBar, BorderLayout.NORTH);
 			
 			drawingPanel = new DrawingPanel(eigenaar, true, this);
-			drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
-			drawingPanel.initialize();
-			sdPanel.add(drawingPanel);
+			//drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
+			//drawingPanel.initialize();
+			sdPanel.add(drawingPanel, BorderLayout.CENTER);
 			
 			
 			bottomPanel = new BottomPanel(eigenaar, true, this);
-			bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
-			bottomPanel.initialize();
-			sdPanel.add(bottomPanel);
+			//bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
+			//bottomPanel.initialize();
+			sdPanel.add(bottomPanel, BorderLayout.SOUTH);
 			
-//System.out.println("sdFramec created");			
+			sdPanel.validate();
+			
+			drawingPanel.initialize();
+			bottomPanel.initialize();
+			
+			
+//System.out.println("sdPanel created");	
+//System.out.println("sdPanel cc = " + sdPanel.getComponentCount());
+//System.out.println("bMenu enabled = " + berekeningenMenu.isEnabled());
+
+
 		}
 		else
 		{	sdPanel.setSize(b, h);
-			menuPanel.setSize(b, menuHeight);
+			
+		//menuPanel.setSize(b, menuHeight);
 
+			sdPanel.validate();
+/*			
 			if (menuPanel.isVisible())
 				drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
 			else
 				drawingPanel.setBounds(0, 0, b, h - eigenaar.bottomHeight);
+*/			
 			drawingPanel.defineSpaces(true);
 			drawingPanel.updateWork();
-
+			drawingPanel.repaint();
 			
 			bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
 			bottomPanel.initialize();
-//System.out.println("g3dc sized");		
+//System.out.println("sdPanel sized");		
 		}
 		
 	}
@@ -831,7 +903,7 @@ System.out.println("diagramcopy encoded");
 		{	
 			if (e.getSource() == berekeningenButton)
 			{
-				
+/*				
 				berekeningenMenu.show(sdPanel, 
 									  berekeningenButton.getLocation().x, 
 									  berekeningenButton.getLocation().y + 
@@ -840,7 +912,7 @@ System.out.println("diagramcopy encoded");
 				// HIER !!
 				berekeningenMenu.setPopupSize(berekeningenButton.getSize().width, 
 					                          berekeningenMenu.getSize().height);
-				
+*/				
 			}
 			// berekeningenMenu
 			else if (e.getSource() == rbDecimaalItem)
@@ -855,6 +927,7 @@ System.out.println("diagramcopy encoded");
 			}
 			else if (e.getSource() == stroombreedteButton)
 			{
+/*				
 				stroombreedteMenu.show(sdPanel, 
 									  stroombreedteButton.getLocation().x, 
 									  stroombreedteButton.getLocation().y + 
@@ -863,7 +936,7 @@ System.out.println("diagramcopy encoded");
 				// HIER !!
 				stroombreedteMenu.setPopupSize(stroombreedteButton.getSize().width, 
 											   stroombreedteMenu.getSize().height);
-				
+*/				
 			}
 			// stroombreedteMenu
 			else if (e.getSource() == rbRelatiefItem)
@@ -878,6 +951,7 @@ System.out.println("diagramcopy encoded");
 			}
 			else if (e.getSource() == optiesButton)
 			{
+/*				
 				optiesMenu.show(sdPanel, 
 								optiesButton.getLocation().x, 
 								optiesButton.getLocation().y + 
@@ -886,7 +960,7 @@ System.out.println("diagramcopy encoded");
 				// HIER !!
 				//optiesMenu.setPopupSize(optiesButton.getSize().width, 
 				//						optiesMenu.getSize().height);
-								
+*/								
 			}
 			// optiesMenu
 			else if (e.getSource() == cbLabelsItem)

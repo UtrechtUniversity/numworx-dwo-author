@@ -46,6 +46,7 @@ public class Text_en extends java.util.ListResourceBundle
             {"optiesMenuText", "Options menu" },
             {"labelsText", "Vertices with labels" },
             {"aantalBronnenText", "Number of sources" },
+            {"demoText", "Diagram for demo" },
             
 		};
 }

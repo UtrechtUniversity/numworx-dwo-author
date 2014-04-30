@@ -49,6 +49,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {"optiesMenuText", "Menu Opties" },
             {"labelsText", "Knooppunten met labels" },
             {"aantalBronnenText", "Aantal bronnen" },
+            {"demoText", "Diagram voor demo" },
+            
             
 
 		};
