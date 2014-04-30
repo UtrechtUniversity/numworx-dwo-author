@@ -125,7 +125,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.panel.setBackground(backgroundColor);
 
 		// var settings
-		this.columnIndexLabel = new JLabel(Statistiek.rb.getString("variableXLabel"));
+		this.columnIndexLabel = new JLabel(Statistiek.rb.getString("variableLabel"));
 		this.columnIndexLabel.setFont(Statistiek.font);
 
 		this.columnIndexBox = new JComboBox();
