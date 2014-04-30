@@ -46,7 +46,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	private Color backgroundColor = new Color(230, 230, 230);
 
 	// variable settings
-	private JLabel columnIndexLabel;
 	private JComboBox columnIndexBox;
 	private JLabel noBinsLabel;
 	private JTextField noBinsField;
@@ -125,9 +124,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.panel.setBackground(backgroundColor);
 
 		// var settings
-		this.columnIndexLabel = new JLabel(Statistiek.rb.getString("variableLabel"));
-		this.columnIndexLabel.setFont(Statistiek.font);
-
 		this.columnIndexBox = new JComboBox();
 		this.columnIndexBox.setFont(Statistiek.font);
 		this.columnIndexBox.setPreferredSize(new Dimension(100, 25));
@@ -306,12 +302,8 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		// Variable
 		
 		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb1.add(columnIndexLabel);
-
-		hb2 = Box.createHorizontalBox();
-		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-		hb2.add(columnIndexBox);
+		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+		hb1.add(columnIndexBox);
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -319,7 +311,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			Statistiek.rb.getString("variableLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
 		vb1.add(hb1);
-		vb1.add(hb2);
 		vb1.add(Box.createVerticalGlue());
 
 		// Bins
