@@ -13,6 +13,11 @@ public class Streep
 	int bbFactor = 4;
 	KladjePolygon bb;
 	double cx = 0, cy = 0;
+	double m00 = 1;
+	double m01 = 0;
+	double m10 = 0;
+	double m11 = 1;
+
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -345,6 +350,8 @@ public class Streep
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 	
+		
+	
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
 			double pXDNew = Math.cos(rotateStep) * (pXD[pCnt] - cx) - Math.sin(rotateStep) * (pYD[pCnt] - cy);
@@ -352,6 +359,17 @@ public class Streep
 			pXD[pCnt] = pXDNew + cx;
 			pYD[pCnt] = pYDNew + cy;
 		}
+		
+		double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
+		double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
+		double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
+		double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+		
 		bb.rotate(rotateStep, cx, cy);
 	
 		//maakBBs();
@@ -373,20 +391,38 @@ public class Streep
 			pYD[pCnt] = pYDNew + cy;
 		}
 		
+		double m00New  = Math.cos(rotation) * m00 - Math.sin(rotation) * m10;
+		double m10New  = Math.sin(rotation) * m00 + Math.cos(rotation) * m10;
+		double m01New = Math.cos(rotation) * m01 - Math.sin(rotation) * m11;
+		double m11New = Math.sin(rotation) * m01 + Math.cos(rotation) * m11;
+		
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+		
+		
 	}
 	
 	public void scale(double scaleStep)
 	{
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
-			puntenXD[pCnt] = scaleStep * puntenXD[pCnt] + (1 - scaleStep) * cx;
-			puntenYD[pCnt] = scaleStep * puntenYD[pCnt] + (1 - scaleStep) * cy;
+			pXD[pCnt] = scaleStep * pXD[pCnt] + (1 - scaleStep) * cx;
+			pYD[pCnt] = scaleStep * pYD[pCnt] + (1 - scaleStep) * cy;
 		}
 		
 		//maakBBs();
 		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
 		
-		maakStreep();
+		//maakStreep();
+		m00 *= scaleStep;
+		m10 *= scaleStep;
+		m01 *= scaleStep;
+		m11 *= scaleStep;
+		
+		bb.scale(scaleStep, cx, cy);
+
 		
 		makeHandleBox();
 		
@@ -396,14 +432,22 @@ public class Streep
 	{
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
-			puntenXD[pCnt] = scaleStepX * puntenXD[pCnt] + (1 - scaleStepX) * cx;
-			puntenYD[pCnt] = scaleStepY * puntenYD[pCnt] + (1 - scaleStepY) * cy;
+			pXD[pCnt] = scaleStepX * pXD[pCnt] + (1 - scaleStepX) * cx;
+			pYD[pCnt] = scaleStepY * pYD[pCnt] + (1 - scaleStepY) * cy;
 		}
 		
 		//maakBBs();
 		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
 		
-		maakStreep();
+//		maakStreep();
+		
+		m00 *= scaleStepX;
+		m10 *= scaleStepY;
+		m01 *= scaleStepX;
+		m11 *= scaleStepY;
+		
+		bb.scale(scaleStepX, scaleStepY, cx, cy);
+		
 		
 		makeHandleBox();
 		
@@ -417,7 +461,14 @@ public class Streep
 		
 		h.put("puntenXD", puntenXD);
 		h.put("puntenYD", puntenYD);
-		h.put("rotation", new Double(rotation));
+		
+//		h.put("rotation", new Double(rotation));
+		
+		h.put("m00", new Double(m00));
+		h.put("m10", new Double(m10));
+		h.put("m01", new Double(m01));
+		h.put("m11", new Double(m11));
+		
 	
 		return h;
 	}
@@ -429,7 +480,13 @@ public class Streep
 		int[] puntenY = new int[0];
 		double[] puntenXD = null;
 		double[] puntenYD = null;
+		
 		double rotation = 0;
+		
+		double m00 = 1;
+		double m01 = 0;
+		double m10 = 0;
+		double m11 = 1;
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
@@ -448,6 +505,15 @@ public class Streep
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
 		
+		if (h.containsKey("m00"))
+			m00 = ((Double) h.get("m00")).doubleValue();
+		if (h.containsKey("m10"))
+			m10 = ((Double) h.get("m10")).doubleValue();
+		if (h.containsKey("m01"))
+			m01 = ((Double) h.get("m01")).doubleValue();
+		if (h.containsKey("m11"))
+			m11 = ((Double) h.get("m11")).doubleValue();
+		
 		Streep streep = null;
 		if (puntenXD != null)
 		{	streep = new Streep(kleur, puntenXD, puntenYD);
@@ -458,7 +524,25 @@ public class Streep
 		streep.rotation = rotation;
 		streep.maakStreep();
 		
+		if (h.containsKey("rotation"))
+		{	streep.rotate(rotation);
+		}
+		else if (h.containsKey("m00"))
+		{	streep.transformBy(m00, m01, m10, m11);
+		}
+		
 		return streep;
+	}
+	
+	public void transformBy(double m00, double m01, double m10, double m11)
+	{
+		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
+		{	
+			double pXDNew = m00 * (pXD[pCnt] - cx) + m01 * (pYD[pCnt] - cy);
+			double pYDNew = m10 * (pXD[pCnt] - cx) + m11 * (pYD[pCnt] - cy);
+			pXD[pCnt] = pXDNew + cx;
+			pYD[pCnt] = pYDNew + cy;
+		}
 	}
 	
 	
@@ -640,6 +724,11 @@ class Lijn
 	int bbFactor = 4;
 	KladjePolygon bb; 
 	double cx, cy;
+	double m00 = 1;
+	double m01 = 0;
+	double m10 = 0;
+	double m11 = 1;
+
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -849,6 +938,17 @@ class Lijn
 		fY = (int) Math.round(fYNew + cy);
 		tX = (int) Math.round(tXNew + cx);
 		tY = (int) Math.round(tYNew + cy);
+		
+		double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
+		double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
+		double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
+		double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+		
 	
 		bb.rotate(rotateStep, cx, cy);
 		
@@ -869,19 +969,37 @@ class Lijn
 		fY = (int) Math.round(fYNew + cy);
 		tX = (int) Math.round(tXNew + cx);
 		tY = (int) Math.round(tYNew + cy);
+
+		double m00New  = Math.cos(rotation) * m00 - Math.sin(rotation) * m10;
+		double m10New  = Math.sin(rotation) * m00 + Math.cos(rotation) * m10;
+		double m01New = Math.cos(rotation) * m01 - Math.sin(rotation) * m11;
+		double m11New = Math.sin(rotation) * m01 + Math.cos(rotation) * m11;
+		
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
 		
 	}	
 	
 	public void scale(double scaleStep)
 	{	
-		fromX = (int) Math.round(scaleStep * fromX + (1 - scaleStep) * cx);
-		fromY = (int) Math.round(scaleStep * fromY + (1 - scaleStep) * cy);
-		toX = (int) Math.round(scaleStep * toX + (1 - scaleStep) * cx);
-		toY = (int) Math.round(scaleStep * toY + (1 - scaleStep) * cy);
+		fX = (int) Math.round(scaleStep * fX + (1 - scaleStep) * cx);
+		fY = (int) Math.round(scaleStep * fY + (1 - scaleStep) * cy);
+		tX = (int) Math.round(scaleStep * tX + (1 - scaleStep) * cx);
+		tY = (int) Math.round(scaleStep * tY + (1 - scaleStep) * cy);
 		
 		//makeBB();
 		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		maakLijn();
+		//maakLijn();
+		
+		m00 *= scaleStep;
+		m10 *= scaleStep;
+		m01 *= scaleStep;
+		m11 *= scaleStep;
+		
+		bb.scale(scaleStep, scaleStep, cx, cy);
+
 		
 		makeHandleBox();
 		
@@ -889,15 +1007,23 @@ class Lijn
 
 	public void scale(double sx, double sy)
 	{	
-		fromX = (int) Math.round(sx * fromX + (1 - sx) * cx);
-		fromY = (int) Math.round(sy * fromY + (1 - sy) * cy);
-		toX = (int) Math.round(sx * toX + (1 - sx) * cx);
-		toY = (int) Math.round(sy * toY + (1 - sy) * cy);
+		fX = (int) Math.round(sx * fX + (1 - sx) * cx);
+		fY = (int) Math.round(sy * fY + (1 - sy) * cy);
+		tX = (int) Math.round(sx * tX + (1 - sx) * cx);
+		tY = (int) Math.round(sy * tY + (1 - sy) * cy);
 		
 		//makeBB();
 		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
 		
-		maakLijn();
+		//maakLijn();
+		
+		m00 *= sx;
+		m10 *= sy;
+		m01 *= sx;
+		m11 *= sy;
+		
+		bb.scale(sx, sy, cx, cy);
+		
 		makeHandleBox();
 		
 	}
@@ -911,7 +1037,12 @@ class Lijn
 		h.put("fromY", new Integer(fromY));
 		h.put("toX", new Integer(toX));
 		h.put("toY", new Integer(toY));
-		h.put("rotation", new Double(rotation));
+//		h.put("rotation", new Double(rotation));
+		
+		h.put("m00", new Double(m00));
+		h.put("m10", new Double(m10));
+		h.put("m01", new Double(m01));
+		h.put("m11", new Double(m11));
 	
 		return h;
 	}
@@ -924,6 +1055,11 @@ class Lijn
 		int toX = 0;
 		int toY = 0;
 		double rotation = 0;
+
+		double m00 = 1;
+		double m01 = 0;
+		double m10 = 0;
+		double m11 = 1;
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
@@ -939,13 +1075,43 @@ class Lijn
 
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
+
+		if (h.containsKey("m00"))
+			m00 = ((Double) h.get("m00")).doubleValue();
+		if (h.containsKey("m10"))
+			m10 = ((Double) h.get("m10")).doubleValue();
+		if (h.containsKey("m01"))
+			m01 = ((Double) h.get("m01")).doubleValue();
+		if (h.containsKey("m11"))
+			m11 = ((Double) h.get("m11")).doubleValue();
 		
 		Lijn lijn = new Lijn(kleur, fromX, fromY, toX, toY);
 		lijn.rotation = rotation;
 		lijn.maakLijn();
+
+		if (h.containsKey("rotation"))
+		{	lijn.rotate(rotation);
+		}
+		else if (h.containsKey("m00"))
+		{	lijn.transformBy(m00, m01, m10, m11);
+		}
 		
 		return lijn;
 	}
+	
+	public void transformBy(double m00, double m01, double m10, double m11)
+	{
+			double fXNew = m00 * (fX - cx) + m01 * (fY - cy);
+			double fYNew = m10 * (fX - cx) + m11 * (fY - cy);
+			fX = (int) Math.round(fXNew + cx);
+			fY = (int) Math.round(fYNew + cy);
+			double tXNew = m00 * (tX - cx) + m01 * (tY - cy);
+			double tYNew = m10 * (tX - cx) + m11 * (tY - cy);
+			tX = (int) Math.round(tXNew + cx);
+			tY = (int) Math.round(tYNew + cy);
+
+	}
+		
 	
 	public void teken(Graphics2D g)
 	{
@@ -1085,6 +1251,11 @@ class Rechthoek
 	KladjePolygon innerRechthoek;
 	
 	double cx, cy;
+	double m00 = 1;
+	double m01 = 0;
+	double m10 = 0;
+	double m11 = 1;
+
 	double rotation = 0;
 	
 	Rectangle handleBox;
@@ -1253,6 +1424,16 @@ class Rechthoek
 	{	
 		rotation += rotateStep;
 		
+		double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
+		double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
+		double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
+		double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+		
 		rechthoek.rotate(rotateStep, cx, cy);
 		outerRechthoek.rotate(rotateStep, cx, cy);
 		innerRechthoek.rotate(rotateStep, cx, cy);
@@ -1263,58 +1444,48 @@ class Rechthoek
 	
 	public void scale(double scaleStep)
 	{	
-		topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-		topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-		breedte = (int) Math.round(scaleStep * breedte);
-		hoogte = (int) Math.round(scaleStep * hoogte);
+//		topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
+//		topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
+//		breedte = (int) Math.round(scaleStep * breedte);
+//		hoogte = (int) Math.round(scaleStep * hoogte);
 		
-		maakRechthoek();
+		//maakRechthoek();
 		
-		//rechthoek.scale(scaleStep, cx, cy);
-		//outerRechthoek.scale(scaleStep, cx, cy);
-		//innerRechthoek.scale(scaleStep, cx, cy);
+		m00 *= scaleStep;
+		m10 *= scaleStep;
+		m01 *= scaleStep;
+		m11 *= scaleStep;
 		
-		//makeHandleBox();
+		rechthoek.scale(scaleStep, cx, cy);
+		outerRechthoek.scale(scaleStep, cx, cy);
+		innerRechthoek.scale(scaleStep, cx, cy);
+		
+		makeHandleBox();
 		
 	}
 	
 	public void scale(double sx, double sy)
 	{
-		topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		breedte = (int) Math.round(sx * breedte);
-		hoogte = (int) Math.round(sy * hoogte);
+		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
+		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
+		//breedte = (int) Math.round(sx * breedte);
+		//hoogte = (int) Math.round(sy * hoogte);
 
-		maakRechthoek();
-		
-//		rechthoek.scale(sx, sy, cx, cy);
-//		outerRechthoek.scale(sx, sy, cx, cy);
-//		innerRechthoek.scale(sx,sy, cx, cy);
-		
-//		makeHandleBox();
-		
-	}
+		//maakRechthoek();
 
-/*	
-// wordt alleen aangeroepen wanneer matrix2d = identity	
-	public void transformBy(double[] m2d)
-	{
+		m00 *= sx;
+		m01 *= sx;
+		m10 *= sy;
+		m11 *= sy;
 		
-System.out.println("transformBy: " + printMatrix(m2d));
-
-		matrix2d[0] = m2d[0];
-		matrix2d[1] = m2d[1];
-		matrix2d[2] = m2d[2];
-		matrix2d[3] = m2d[3];
-		
-		rechthoek.transformBy(m2d, cx, cy);
-		outerRechthoek.transformBy(m2d, cx, cy);
-		innerRechthoek.transformBy(m2d, cx, cy);
+		rechthoek.scale(sx, sy, cx, cy);
+		outerRechthoek.scale(sx, sy, cx, cy);
+		innerRechthoek.scale(sx,sy, cx, cy);
 		
 		makeHandleBox();
-
+		
 	}
-*/	
+
 	public Hashtable getState()
 	{	Hashtable h = new Hashtable();
 		
@@ -1324,7 +1495,13 @@ System.out.println("transformBy: " + printMatrix(m2d));
 		h.put("topLeftY", new Integer(topLeftY));
 		h.put("breedte", new Integer(breedte));
 		h.put("hoogte", new Integer(hoogte));
-		h.put("rotation", new Double(rotation));
+
+		//h.put("rotation", new Double(rotation));
+		
+		h.put("m00", new Double(m00));
+		h.put("m10", new Double(m10));
+		h.put("m01", new Double(m01));
+		h.put("m11", new Double(m11));
 		
 		return h;
 	}
@@ -1336,8 +1513,9 @@ System.out.println("transformBy: " + printMatrix(m2d));
 		int topLeftY = 0;
 		int breedte = 0;
 		int hoogte = 0;
+		
 		double rotation = 0;
-		double[] m2d = new double[4];
+
 		double m00 = 1;
 		double m01 = 0;
 		double m10 = 0;
@@ -1359,21 +1537,44 @@ System.out.println("transformBy: " + printMatrix(m2d));
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
 		
+		if (h.containsKey("m00"))
+			m00 = ((Double) h.get("m00")).doubleValue();
+		if (h.containsKey("m10"))
+			m10 = ((Double) h.get("m10")).doubleValue();
+		if (h.containsKey("m01"))
+			m01 = ((Double) h.get("m01")).doubleValue();
+		if (h.containsKey("m11"))
+			m11 = ((Double) h.get("m11")).doubleValue();
+		
 		Rechthoek rechthoek = new Rechthoek(kleur, topLeftX, topLeftY, breedte, hoogte);
 		rechthoek.rotation = rotation;
 		rechthoek.maakRechthoek();
 
-/*		
+		
 		if (h.containsKey("rotation"))
 		{	rechthoek.rotate(rotation);
 		}
-		if (h.containsKey("matrix2d"))
-		{	rechthoek.transformBy(m2d);
+		else if (h.containsKey("m00"))
+		{	rechthoek.transformBy(m00, m01, m10, m11);
 		}
-*/		
+		
 		return rechthoek;
 	}
-	
+
+	public void transformBy(double m00, double m01, double m10, double m11)
+	{
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
+		
+		rechthoek.transformBy(m00, m01, m10, m11, cx, cy);
+		outerRechthoek.transformBy(m00, m01, m10, m11, cx, cy);
+		innerRechthoek.transformBy(m00, m01, m10, m11, cx, cy);
+		
+		makeHandleBox();
+		
+	}
 	
 	public void teken(Graphics2D g)
 	{
@@ -1503,6 +1704,11 @@ class Ellips
 	int bbFactor = 4;
 	KladjePolygon ellips, outerEllips, innerEllips;
 	double cx, cy;
+	double m00 = 1;
+	double m01 = 0;
+	double m10 = 0;
+	double m11 = 1;
+	
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -1681,6 +1887,16 @@ class Ellips
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 
+		double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
+		double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
+		double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
+		double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+	
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+	
 		ellips.rotate(rotateStep, cx, cy);
 		outerEllips.rotate(rotateStep, cx, cy);
 		innerEllips.rotate(rotateStep, cx, cy);
@@ -1691,25 +1907,45 @@ class Ellips
 	
 	public void scale(double scaleStep)
 	{	
-		topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-		topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-		breedte = (int) Math.round(scaleStep * breedte);
-		hoogte = (int) Math.round(scaleStep * hoogte);
+		//topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
+		//topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
+		//breedte = (int) Math.round(scaleStep * breedte);
+		//hoogte = (int) Math.round(scaleStep * hoogte);
 		
-		makeEllips();
+		//makeEllips();
+
+		m00 *= scaleStep;
+		m01 *= scaleStep;
+		m10 *= scaleStep;
+		m11 *= scaleStep;
+
+		ellips.scale(scaleStep, cx, cy);
+		outerEllips.scale(scaleStep, cx, cy);
+		innerEllips.scale(scaleStep, cx, cy);
 		
+
 		makeHandleBox();
 		
 	}
 	
 	public void scale(double sx, double sy)
 	{	
-		topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		breedte = (int) Math.round(sx * breedte);
-		hoogte = (int) Math.round(sy * hoogte);
+		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
+		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
+		//breedte = (int) Math.round(sx * breedte);
+		//hoogte = (int) Math.round(sy * hoogte);
 		
-		makeEllips();
+		//makeEllips();
+
+		m00 *= sx;
+		m01 *= sx;
+		m10 *= sy;
+		m11 *= sy;
+
+		ellips.scale(sx, sy, cx, cy);
+		outerEllips.scale(sx, sy, cx, cy);
+		innerEllips.scale(sx, sy, cx, cy);
+		
 		
 		makeHandleBox();
 		
@@ -1724,8 +1960,14 @@ class Ellips
 		h.put("topLeftY", new Integer(topLeftY));
 		h.put("breedte", new Integer(breedte));
 		h.put("hoogte", new Integer(hoogte));
-		h.put("rotation", new Double(rotation));
-	
+		
+		//h.put("rotation", new Double(rotation));
+
+		h.put("m00", new Double(m00));
+		h.put("m10", new Double(m10));
+		h.put("m01", new Double(m01));
+		h.put("m11", new Double(m11));
+
 		return h;
 	}
 	
@@ -1737,7 +1979,12 @@ class Ellips
 		int breedte = 0;
 		int hoogte = 0;
 		double rotation = 0;
-		
+
+		double m00 = 1;
+		double m01 = 0;
+		double m10 = 0;
+		double m11 = 1;
+
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
 		if (h.containsKey("topLeftX"))
@@ -1752,12 +1999,43 @@ class Ellips
 
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
+
+		if (h.containsKey("m00"))
+			m00 = ((Double) h.get("m00")).doubleValue();
+		if (h.containsKey("m10"))
+			m10 = ((Double) h.get("m10")).doubleValue();
+		if (h.containsKey("m01"))
+			m01 = ((Double) h.get("m01")).doubleValue();
+		if (h.containsKey("m11"))
+			m11 = ((Double) h.get("m11")).doubleValue();
 		
 		Ellips ellips = new Ellips(kleur, topLeftX, topLeftY, breedte, hoogte);
 		ellips.rotation = rotation;
 		ellips.makeEllips();
 		
+		if (h.containsKey("rotation"))
+		{	ellips.rotate(rotation);
+		}
+		else if (h.containsKey("m00"))
+		{	ellips.transformBy(m00, m01, m10, m11);
+		}
+		
 		return ellips;
+	}
+
+	public void transformBy(double m00, double m01, double m10, double m11)
+	{
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
+		
+		ellips.transformBy(m00, m01, m10, m11, cx, cy);
+		outerEllips.transformBy(m00, m01, m10, m11, cx, cy);
+		innerEllips.transformBy(m00, m01, m10, m11, cx, cy);
+		
+		makeHandleBox();
+		
 	}
 
 	public void teken(Graphics2D g)

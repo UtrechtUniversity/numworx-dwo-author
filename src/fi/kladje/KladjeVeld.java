@@ -1118,10 +1118,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedStreep.breedte / 2;
-				double oldHeight = (double) selectedStreep.hoogte / 2;
+				
+				//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedStreep.breedte / 2;
+				//double oldHeight = (double) selectedStreep.hoogte / 2;
+				
+				double oldWidth = (double) selectedStreep.handleBox.width / 2;
+				double oldHeight = (double) selectedStreep.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
@@ -1132,10 +1137,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedStreep.breedte / 2;
-				double oldHeight = (double) selectedStreep.hoogte / 2;
+				
+				//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedStreep.breedte / 2;
+				//double oldHeight = (double) selectedStreep.hoogte / 2;
+				
+				double oldWidth = (double) selectedStreep.handleBox.width / 2;
+				double oldHeight = (double) selectedStreep.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight + dy;
 				double sx = newWidth / oldWidth;
@@ -1206,12 +1216,17 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
-				double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
-				double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
-				double oldWidth = breedte / 2;
-				double oldHeight = hoogte / 2;
+				
+				//double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
+				//double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
+				//double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
+				//double oldWidth = breedte / 2;
+				//double oldHeight = hoogte / 2;
+				
+				double oldWidth = (double) selectedLijn.handleBox.width / 2;
+				double oldHeight = (double) selectedLijn.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
@@ -1223,12 +1238,17 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
-				double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
-				double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
-				double oldWidth = breedte / 2;
-				double oldHeight = hoogte / 2;
+				
+				//double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
+				//double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
+				//double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
+				//double oldWidth = breedte / 2;
+				//double oldHeight = hoogte / 2;
+				
+				double oldWidth = (double) selectedLijn.handleBox.width / 2;
+				double oldHeight = (double) selectedLijn.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight + dy;
 				double sx = newWidth / oldWidth;
@@ -1299,10 +1319,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedRechthoek.breedte / 2;
-				double oldHeight = (double) selectedRechthoek.hoogte / 2;
+				
+				//double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedRechthoek.breedte / 2;
+				//double oldHeight = (double) selectedRechthoek.hoogte / 2;
+				
+				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
+				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
+				
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
@@ -1315,10 +1340,14 @@ System.out.println("returned " + (numHistories - 1));
 				
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedRechthoek.breedte / 2;
-				double oldHeight = (double) selectedRechthoek.hoogte / 2;
+
+				//double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedRechthoek.breedte / 2;
+				//double oldHeight = (double) selectedRechthoek.hoogte / 2;
+				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
+				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
+				
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight + dy;
 				double sx = newWidth / oldWidth;
@@ -1390,10 +1419,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedEllips.breedte / 2;
-				double oldHeight = (double) selectedEllips.hoogte / 2;
+
+				//double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedEllips.breedte / 2;
+				//double oldHeight = (double) selectedEllips.hoogte / 2;
+				
+				double oldWidth = (double) selectedEllips.handleBox.width / 2;
+				double oldHeight = (double) selectedEllips.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
@@ -1404,10 +1438,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedEllips.breedte / 2;
-				double oldHeight = (double) selectedEllips.hoogte / 2;
+				
+				//double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
+				//double oldWidth = (double) selectedEllips.breedte / 2;
+				//double oldHeight = (double) selectedEllips.hoogte / 2;
+				
+				double oldWidth = (double) selectedEllips.handleBox.width / 2;
+				double oldHeight = (double) selectedEllips.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight + dy;
 				double sx = newWidth / oldWidth;
@@ -1457,6 +1496,7 @@ System.out.println("returned " + (numHistories - 1));
 		}
 		else if (selectedTekstElement != null)
 		{
+// wordt niet gebruikt
 			if (scalingTopRight)
 			{
 				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox. width - 
@@ -1475,6 +1515,7 @@ System.out.println("returned " + (numHistories - 1));
 				double sc = ((double) newWidth) / oldWidth;
 				selectedTekstElement.scale(sc);
 			}
+// wordt niet gebruikt			
 			else if (scalingTopLeft)
 			{
 				double dxDouble = (double) dx;
@@ -1489,6 +1530,7 @@ System.out.println("returned " + (numHistories - 1));
 				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
+// wordt niet gebruikt			
 			else if (scalingBottomLeft)
 			{
 				double dxDouble = (double) dx;
@@ -1503,6 +1545,7 @@ System.out.println("returned " + (numHistories - 1));
 				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
+			
 			else if (scalingBottomRight)
 			{
 				//double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 

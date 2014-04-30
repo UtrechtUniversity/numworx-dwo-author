@@ -187,7 +187,21 @@ class KladjePolygon
 			
 		}
 	}
-	
+
+	public void transformBy(double m00, double m01, double m10, double m11, double cx, double cy)
+	{
+		for (int pCnt = 0; pCnt < aantalPunten; pCnt++)
+		{
+			double doubleXpCnt = m00 * (doubleX[pCnt] - cx) + m01 * (doubleY[pCnt] - cy);
+			double doubleYpCnt = m10 * (doubleX[pCnt] - cx) + m11 * (doubleY[pCnt] - cy);
+			doubleX[pCnt] = doubleXpCnt + cx;
+			doubleY[pCnt] = doubleYpCnt + cy;
+			puntenX[pCnt] = (int) Math.round(doubleX[pCnt]);
+			puntenY[pCnt] = (int) Math.round(doubleY[pCnt]);
+			
+		}
+	}
+
 	public boolean contains(int x, int y) 
 	{
 		return contains((double)x, (double)y);
