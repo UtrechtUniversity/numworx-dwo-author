@@ -37,7 +37,10 @@ public class Text_en extends java.util.ListResourceBundle
             {   "showSum", "Show sum" },
             {   "outcome", "Outcome" },
             {   "numberOfDraws", "Number of draws" },
-            {   "chance", "Chance" }
+            {   "chance", "Chance" },
+            {   "times", "times" },
+            {   "so", "so" },
+            {   "notso", "not so" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

@@ -17,12 +17,12 @@ public class BinomGrafiek extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		binomVerdeling = new int[binomTrekking.maxCount];
+		binomVerdeling = new int[binomTrekking.maxCount+1];
 		for (int i=0;i<binomTrekking.experiment;i++) {
 			binomVerdeling[binomTrekking.trekkingen[i]]++;
 		}
 		int maxHeight=0;
-		for (int i=0;i<binomTrekking.maxCount;i++) {
+		for (int i=0;i<binomTrekking.maxCount+1;i++) {
 			if (binomVerdeling[i]>maxHeight) {
 				maxHeight=binomVerdeling[i];
 			}
@@ -60,24 +60,24 @@ public class BinomGrafiek extends JPanel {
 		
 		for (int i=0;i<=numMarks1;i++) {
 			if (maxHeight>0) {
-				g.drawLine(45,this.getHeight()-40-(i*f*(getHeight()-50)/d),50,this.getHeight()-40-(i*f*(getHeight()-50)/d));
-				g.drawString(i*f+"", 25,this.getHeight()-40-(i*f*(getHeight()-50)/d));
+				g.drawLine(45,this.getHeight()-20-(i*f*(getHeight()-50)/d),50,this.getHeight()-20-(i*f*(getHeight()-50)/d));
+				g.drawString(i*f+"", 25,this.getHeight()-20-(i*f*(getHeight()-50)/d));
 			}
 		}
 		
-		for (int i=0;i<binomTrekking.maxCount;i++) {
+		for (int i=0;i<binomTrekking.maxCount+1;i++) {
 			if (maxHeight>0) {
 				g.setColor(Color.red);
-				g.fillRect(50+(i*(this.getWidth()-60)/binomTrekking.maxCount), (maxHeight-binomVerdeling[i])*(this.getHeight()-50)/maxHeight+10, ((this.getWidth()-60)/binomTrekking.maxCount), (binomVerdeling[i])*(this.getHeight()-50)/maxHeight);
+				g.fillRect(50+(i*(this.getWidth()-60)/(binomTrekking.maxCount+1)), (maxHeight-binomVerdeling[i])*(this.getHeight()-50)/maxHeight+30, ((this.getWidth()-60)/(binomTrekking.maxCount+1)), (binomVerdeling[i])*(this.getHeight()-50)/maxHeight);
 				g.setColor(Color.black);
-				g.drawRect(50+(i*(this.getWidth()-60)/binomTrekking.maxCount), (maxHeight-binomVerdeling[i])*(this.getHeight()-50)/maxHeight+10, ((this.getWidth()-60)/binomTrekking.maxCount), (binomVerdeling[i])*(this.getHeight()-50)/maxHeight);
+				g.drawRect(50+(i*(this.getWidth()-60)/(binomTrekking.maxCount+1)), (maxHeight-binomVerdeling[i])*(this.getHeight()-50)/maxHeight+30, ((this.getWidth()-60)/(binomTrekking.maxCount+1)), (binomVerdeling[i])*(this.getHeight()-50)/maxHeight);
 			}
 		}
 		
-		g.drawLine(50,10,50,this.getHeight()-40);
-		g.drawLine(50,this.getHeight()-40,this.getWidth()-10,this.getHeight()-40);
+		g.drawLine(50,30,50,this.getHeight()-20);
+		g.drawLine(50,this.getHeight()-20,this.getWidth()-10,this.getHeight()-20);
 		
-		int a=binomTrekking.maxCount;
+		int a=binomTrekking.maxCount+1;
 		int b=0;
 		int c=0;
 		while (true) {
@@ -102,9 +102,9 @@ public class BinomGrafiek extends JPanel {
 		System.out.println(c);
 		int numMarks=a/c;
 		for (int i=0;i<=numMarks;i++) {
-			g.drawLine((this.getWidth()-60)*(i*c)/(a)+50, this.getHeight()-40, (this.getWidth()-60)*(i*c)/(a)+50, this.getHeight()-35);
+			g.drawLine((this.getWidth()-60)*(i*c)/(a)+50, this.getHeight()-20, (this.getWidth()-60)*(i*c)/(a)+50, this.getHeight()-15);
 			String s=(i*c)+"";
-			g.drawString(s, (this.getWidth()-60)*(i*c)/(a)+45, this.getHeight()-20);
+			g.drawString(s, (this.getWidth()-60)*(i*c)/(a)+45, this.getHeight());
 		}
 	}
 }

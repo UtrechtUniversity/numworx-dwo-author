@@ -23,14 +23,14 @@ public class PaintPanel extends JPanel{
 		//g.drawString(munten.getText(),100,100);
 		if (munten.eenMuntRadio.isSelected()==true) {
 			for (int i=1;i<munten.muntCount;i++) {
-				g.drawLine(i*(this.getWidth()-90)/munten.maxCount+80, (int) (munten.percentageMunt[i-1]*(this.getHeight()-50))+5, (i+1)*(this.getWidth()-90)/munten.maxCount+80,(int) (munten.percentageMunt[i]*(this.getHeight()-50))+5);	
+				g.drawLine(i*(this.getWidth()-90)/munten.maxCount+80, (int) (munten.percentageMunt[i-1]*(this.getHeight()-50))+25, (i+1)*(this.getWidth()-90)/munten.maxCount+80,(int) (munten.percentageMunt[i]*(this.getHeight()-50))+25);	
 			}
-			g.drawLine(80, 5, 80, this.getHeight()-45);
-			g.drawLine(80, (this.getHeight()-40)/2, this.getWidth()-10, (this.getHeight()-40)/2);
-			g.drawLine(80, this.getHeight()-45, this.getWidth()-10, this.getHeight()-45);
+			g.drawLine(80, 25, 80, this.getHeight()-25);
+			g.drawLine(80, (this.getHeight())/2, this.getWidth()-10, (this.getHeight())/2);
+			g.drawLine(80, this.getHeight()-25, this.getWidth()-10, this.getHeight()-25);
 			for (int i=5;i>=0;i--) {
-				g.drawString(i*20+"%",40,(5-i)*(this.getHeight()-50)/5+10);
-				g.drawLine(75,(5-i)*(this.getHeight()-50)/5+5,80,(5-i)*(this.getHeight()-50)/5+5);
+				g.drawString(i*20+"%",40,(5-i)*(this.getHeight()-50)/5+30);
+				g.drawLine(75,(5-i)*(this.getHeight()-50)/5+25,80,(5-i)*(this.getHeight()-50)/5+25);
 			}
 			int a=munten.maxCount;
 			int b=0;
@@ -57,9 +57,9 @@ public class PaintPanel extends JPanel{
 			System.out.println(c);
 			int numMarks=a/c;
 			for (int i=0;i<=numMarks;i++) {
-				g.drawLine((this.getWidth()-90)*(i*c)/(a)+80, (this.getHeight()-50), (this.getWidth()-90)*(i*c)/(a)+80, (this.getHeight()-45));
+				g.drawLine((this.getWidth()-90)*(i*c)/(a)+80, (this.getHeight()-25), (this.getWidth()-90)*(i*c)/(a)+80, (this.getHeight()-20));
 				String s=(i*c)+"";
-				g.drawString(s, (this.getWidth()-90)*(i*c)/(a)+70, (this.getHeight()-25));
+				g.drawString(s, (this.getWidth()-90)*(i*c)/(a)+70, (this.getHeight()-5));
 			}
 			Graphics2D g2 = (Graphics2D) g;
 			AffineTransform orig = g2.getTransform();
@@ -70,14 +70,14 @@ public class PaintPanel extends JPanel{
 			g2.drawString(StatSim.rb.getString("percentageHeads"),200,-90);
 			g2.setTransform(orig);
 		} else {
-			g.drawLine(80,this.getHeight()-45,this.getWidth()-60,this.getHeight()-45);
-			g.drawLine(80, 5, 80, this.getHeight()-45);
-			g.drawLine(80+(this.getWidth()-90)/6,this.getHeight()-45,80+(this.getWidth()-90)/6,this.getHeight()-40);
-			g.drawString(StatSim.rb.getString("noHeads"),80+(this.getWidth()-90)/6-30,this.getHeight()-25);
-			g.drawLine(80+ (this.getWidth()-90)*3/6, this.getHeight()-45,80+(this.getWidth()-90)*3/6,this.getHeight()-40);
-			g.drawString(StatSim.rb.getString("oneHeads"),80+(this.getWidth()-90)*3/6-25,this.getHeight()-25);
-			g.drawLine(80+(this.getWidth()-90)*5/6, this.getHeight()-45, 80+(this.getWidth()-90)*5/6, this.getHeight()-40);
-			g.drawString(StatSim.rb.getString("twoHeads"),80+(this.getWidth()-90)*5/6-30,this.getHeight()-25);
+			g.drawLine(80,this.getHeight()-25,this.getWidth()-60,this.getHeight()-25);
+			g.drawLine(80, 25, 80, this.getHeight()-25);
+			g.drawLine(80+(this.getWidth()-90)/6,this.getHeight()-25,80+(this.getWidth()-90)/6,this.getHeight()-20);
+			g.drawString(StatSim.rb.getString("noHeads"),80+(this.getWidth()-90)/6-30,this.getHeight()-5);
+			g.drawLine(80+ (this.getWidth()-90)*3/6, this.getHeight()-25,80+(this.getWidth()-90)*3/6,this.getHeight()-20);
+			g.drawString(StatSim.rb.getString("oneHeads"),80+(this.getWidth()-90)*3/6-25,this.getHeight()-5);
+			g.drawLine(80+(this.getWidth()-90)*5/6, this.getHeight()-25, 80+(this.getWidth()-90)*5/6, this.getHeight()-20);
+			g.drawString(StatSim.rb.getString("twoHeads"),80+(this.getWidth()-90)*5/6-30,this.getHeight()-5);
 			
 			int a;			
 			if (Double.parseDouble(munten.kansOpKopText.getText())>0.75 || Double.parseDouble(munten.kansOpKopText.getText())<0.25)
@@ -108,9 +108,9 @@ public class PaintPanel extends JPanel{
 			System.out.println(c);
 			int numMarks=a/c;
 			for (int i=0;i<=numMarks;i++) {
-				g.drawLine(75,(this.getHeight()-50)-(this.getHeight()-50)*(i*c)/(a)+5, 80, (this.getHeight()-50)-(this.getHeight()-50)*(i*c)/(a)+5);
+				g.drawLine(75,(this.getHeight()-30)-(this.getHeight()-50)*(i*c)/(a)+5, 80, (this.getHeight()-30)-(this.getHeight()-50)*(i*c)/(a)+5);
 				String s=(i*c)+"";
-				g.drawString(s, 50,(this.getHeight()-50)-(this.getHeight()-50)*(i*c)/(a)+10);
+				g.drawString(s, 50,(this.getHeight()-30)-(this.getHeight()-50)*(i*c)/(a)+10);
 			}
 			Graphics2D g2 = (Graphics2D) g;
 			AffineTransform orig = g2.getTransform();
@@ -122,17 +122,17 @@ public class PaintPanel extends JPanel{
 			g2.setTransform(orig);
 			
 			g.setColor(Color.red);
-			g.fillRect(85, 5+(this.getHeight()-50)-munten.geenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.geenKop*(this.getHeight()-50)/a);
+			g.fillRect(85, 5+(this.getHeight()-30)-munten.geenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.geenKop*(this.getHeight()-50)/a);
 			g.setColor(Color.black);
-			g.drawRect(85, 5+(this.getHeight()-50)-munten.geenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.geenKop*(this.getHeight()-50)/a);
+			g.drawRect(85, 5+(this.getHeight()-30)-munten.geenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.geenKop*(this.getHeight()-50)/a);
 			g.setColor(Color.yellow);
-			g.fillRect(85+(this.getWidth()-90)*1/3, 5+(this.getHeight()-50)-munten.eenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.eenKop*(this.getHeight()-50)/a);
+			g.fillRect(85+(this.getWidth()-90)*1/3, 5+(this.getHeight()-30)-munten.eenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.eenKop*(this.getHeight()-50)/a);
 			g.setColor(Color.black);
-			g.drawRect(85+(this.getWidth()-90)*1/3, 5+(this.getHeight()-50)-munten.eenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.eenKop*(this.getHeight()-50)/a);
+			g.drawRect(85+(this.getWidth()-90)*1/3, 5+(this.getHeight()-30)-munten.eenKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.eenKop*(this.getHeight()-50)/a);
 			g.setColor(Color.green);
-			g.fillRect(85+(this.getWidth()-90)*2/3, 5+(this.getHeight()-50)-munten.tweeKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.tweeKop*(this.getHeight()-50)/a);
+			g.fillRect(85+(this.getWidth()-90)*2/3, 5+(this.getHeight()-30)-munten.tweeKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.tweeKop*(this.getHeight()-50)/a);
 			g.setColor(Color.black);
-			g.drawRect(85+(this.getWidth()-90)*2/3, 5+(this.getHeight()-50)-munten.tweeKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.tweeKop*(this.getHeight()-50)/a);
+			g.drawRect(85+(this.getWidth()-90)*2/3, 5+(this.getHeight()-30)-munten.tweeKop*(this.getHeight()-50)/a, (this.getWidth()-90)/3-10, munten.tweeKop*(this.getHeight()-50)/a);
 		}	
 	}
 }

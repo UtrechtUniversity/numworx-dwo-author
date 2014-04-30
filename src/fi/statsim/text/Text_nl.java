@@ -37,7 +37,10 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "showSum", "Toon som" },
             {   "outcome", "Uitkomst" },
             {   "numberOfDraws", "Aantal trekkingen" },
-            {   "chance", "Kans" }
+            {   "chance", "Kans" },
+            {   "times", "keer" },
+            {   "so", "wel" },
+            {   "notso", "niet" }
         //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

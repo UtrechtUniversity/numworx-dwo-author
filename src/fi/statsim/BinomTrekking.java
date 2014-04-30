@@ -1,6 +1,7 @@
 package fi.statsim;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -26,7 +27,9 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	JTextField kansText;
 	JLabel aantalTrekkingenLabel;
 	JTextField aantalTrekkingenText;
+	JTextField aantalKeer;
 	JButton start;
+	JButton keer;
 	JButton volgende;
 	JButton stop;
 	JTable table;
@@ -40,10 +43,15 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	int trekkingCount;
 	int totaal;
 	BinomGrafiek binomGrafiek;
+	BinomFrequentie binomFrequentie;
 	int[] trekkingen;
 	
 	Boolean showTabel=true;
 	Boolean showGrafiek=true;
+	Boolean showFrequentie=true;
+	
+	Boolean multipleTimes=false;
+	int numberOfTimes;
 	
 	public BinomTrekking () {
 		setLayout(null);
@@ -54,12 +62,14 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 		panel1.setLayout(null);
 		panel1.setBackground(Color.white);
 		add(panel1);
-		panel1.setSize(230,115);
+		panel1.setSize(230,105);
 		panel1.setLocation(0,0);
-		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP));
+		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
+		
 		kansLabel=new JLabel(StatSim.rb.getString("chance"));
 		kansLabel.setSize(100,20);
 		kansLabel.setLocation(20,30);
+		kansLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel1.add(kansLabel);
 		
 		kansText=new JTextField("0.2");
@@ -70,6 +80,7 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 		aantalTrekkingenLabel=new JLabel(StatSim.rb.getString("numberOfDraws"));
 		aantalTrekkingenLabel.setSize(100,20);
 		aantalTrekkingenLabel.setLocation(20,60);
+		aantalTrekkingenLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel1.add(aantalTrekkingenLabel);
 				
 		aantalTrekkingenText=new JTextField("20");
@@ -79,23 +90,39 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 
 	    start=new JButton(StatSim.rb.getString("start"));
 	    start.setSize(100,20);
-	    start.setLocation(240,0);
+	    start.setLocation(240,5);
 	    start.addActionListener(this);
 	    add(start);
 	    
+	    aantalKeer = new JTextField("20");
+	    aantalKeer.setSize(25,20);
+	    aantalKeer.setLocation(240,30);
+	    add(aantalKeer);
+
+	    keer=new JButton(StatSim.rb.getString("times"));
+	    keer.setSize(75,20);
+	    keer.setLocation(265,30);
+	    keer.addActionListener(this);
+	    add(keer);
+	    
 	    volgende=new JButton(StatSim.rb.getString("next"));
 	    volgende.setSize(100,20);
-	    volgende.setLocation(240,30);
+	    volgende.setLocation(240,55);
 	    volgende.addActionListener(this);
 	    volgende.setEnabled(false);
 	    add(volgende);
 	    
 	    stop=new JButton(StatSim.rb.getString("stop"));
 	    stop.setSize(100,20);
-	    stop.setLocation(240,60);
+	    stop.setLocation(240,80);
 	    stop.addActionListener(this);
 	    stop.setEnabled(false);
 	    add(stop);
+	    
+	    binomFrequentie = new BinomFrequentie(this);
+	    binomFrequentie.setSize(200,100);
+	    binomFrequentie.setLocation(0,115);
+	    add(binomFrequentie);
 	
 	    col[0]=StatSim.rb.getString("exp");
 	    col[1]=StatSim.rb.getString("outcome");
@@ -118,8 +145,8 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	    pane = new JScrollPane(table);
 	   
 	    add(pane);
-	    pane.setLocation(0,115);
-	    pane.setSize(200,335);
+	    pane.setLocation(0,215);
+	    pane.setSize(200,235);
 	    
 	    binomGrafiek=new BinomGrafiek(this);
 	    binomGrafiek.setLocation(200,115);
@@ -141,6 +168,17 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 			binomGrafiek.setLocation(0,115);
 			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
 		}
+		if (showFrequentie) {
+			binomFrequentie.setVisible(true);
+			pane.setLocation(0,215);
+			pane.setSize(200,this.getHeight()-215);
+			table.setSize(200,this.getHeight()-215);
+		} else {
+			binomFrequentie.setVisible(false);
+			pane.setLocation(0,115);
+			pane.setSize(200,this.getHeight()-115);
+			table.setSize(200,this.getHeight()-115);	
+		}
 		binomGrafiek.setVisible(showGrafiek);
 	}
 	
@@ -150,6 +188,7 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
 		else
 			binomGrafiek.setSize(this.getWidth()-200,this.getHeight()-115);
+		setZichtbaar();
 	}
 	
 	public void setStartStop() {
@@ -165,7 +204,7 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==start) {
-			for (int i=0;i<100;i++) {
+			for (int i=0;i<1000;i++) {
 			   table.setValueAt("",i,0);
 			   table.setValueAt("",i,1);
 			}
@@ -181,6 +220,27 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 			animatie=new Thread(this);
 			animatie.start();   
 			   
+		}
+		if (e.getSource()==keer) {
+			if (start.isEnabled()) {
+				experiment=0;
+				for (int i=0;i<1000;i++) {
+				   table.setValueAt("",i,0);
+				   table.setValueAt("",i,1);
+				}
+			}
+			stopCounting=false;
+			trekkingCount=0;
+			totaal=0;
+			keer.setEnabled(false);
+			volgende.setEnabled(false);
+			start.setEnabled(false);
+			stop.setEnabled(true);
+			numberOfTimes=Integer.parseInt(aantalKeer.getText());
+			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
+			multipleTimes=true;
+			animatie=new Thread(this);
+			animatie.start();   
 		}
 		if (e.getSource()==volgende) {
 			stopCounting=false;
@@ -217,11 +277,24 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 		table.setValueAt(totaal,experiment,1);
 		
 		if (trekkingCount==maxCount) {
-			stopCounting=true;
 			trekkingen[experiment]=totaal;
 			experiment++;
 			binomGrafiek.repaint();
+			if (multipleTimes==false) {
+				stopCounting=true;
+			} else {
+				numberOfTimes--;
+				if (numberOfTimes==0) {
+					stopCounting=true;
+					multipleTimes=false;
+					keer.setEnabled(true);
+					volgende.setEnabled(true);
+				}
+				trekkingCount=0;
+				totaal=0;
+			}
 		}
+		binomFrequentie.repaint();
 	}
 	
 	public void run()

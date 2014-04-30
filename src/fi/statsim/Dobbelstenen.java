@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -85,8 +86,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		add(panel1);
 		panel1.setSize(230,115);
 		panel1.setLocation(0,0);
-		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP));
-		
+		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
+				
 		border2=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		panel2=new JPanel();
 		panel2.setLayout(null);
@@ -94,7 +95,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		panel1.add(panel2);
 		panel2.setSize(200,40);
 		panel2.setLocation(10,15);
-		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("numberOfDices"),TitledBorder.LEFT,TitledBorder.TOP));
+		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("numberOfDices"),TitledBorder.LEFT,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
 		eenDobbelsteenRadio=new JRadioButton(StatSim.rb.getString("one"));
 		eenDobbelsteenRadio.setBackground(Color.white);
@@ -102,6 +103,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		eenDobbelsteenRadio.setLocation(10,15);
 		eenDobbelsteenRadio.setSelected(true);
 		eenDobbelsteenRadio.addActionListener(this);
+		eenDobbelsteenRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(eenDobbelsteenRadio);
 		
 		tweeDobbelstenenRadio=new JRadioButton(StatSim.rb.getString("two"));
@@ -109,6 +111,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		tweeDobbelstenenRadio.setSize(60,20);
 		tweeDobbelstenenRadio.setLocation(60,15);
 		tweeDobbelstenenRadio.addActionListener(this);
+		tweeDobbelstenenRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(tweeDobbelstenenRadio);
 		
 		drieDobbelstenenRadio=new JRadioButton(StatSim.rb.getString("three"));
@@ -116,6 +119,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		drieDobbelstenenRadio.setSize(60,20);
 		drieDobbelstenenRadio.setLocation(120,15);
 		drieDobbelstenenRadio.addActionListener(this);
+		drieDobbelstenenRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(drieDobbelstenenRadio);
 		
 		ButtonGroup buttonGroup1=new ButtonGroup();
@@ -198,20 +202,20 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    
 	    start=new JButton(StatSim.rb.getString("start"));
 	    start.setSize(100,20);
-	    start.setLocation(240,0);
+	    start.setLocation(240,7);
 	    start.addActionListener(this);
 	    add(start);
 	    
 	    volgende=new JButton(StatSim.rb.getString("next"));
 	    volgende.setSize(100,20);
-	    volgende.setLocation(240,30);
+	    volgende.setLocation(240,32);
 	    volgende.addActionListener(this);
 	    volgende.setEnabled(false);
 	    add(volgende);
 	    
 	    stop=new JButton(StatSim.rb.getString("stop"));
 	    stop.setSize(100,20);
-	    stop.setLocation(240,60);
+	    stop.setLocation(240,57);
 	    stop.addActionListener(this);
 	    stop.setEnabled(false);
 	    add(stop);
@@ -232,6 +236,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    aantalWorpenLabel = new JLabel(StatSim.rb.getString("numberOfRounds"));
 	    aantalWorpenLabel.setSize(100,20);
 	    aantalWorpenLabel.setLocation(10,60);
+	    aantalWorpenLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    panel1.add(aantalWorpenLabel);
 	    
 	    aantalWorpenText = new JTextField("30");
@@ -242,6 +247,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    toonSomLabel = new JLabel(StatSim.rb.getString("showSum"));
 	    toonSomLabel.setSize(100,20);
 	    toonSomLabel.setLocation(10,80);
+	    toonSomLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    panel1.add(toonSomLabel);
 	    
 	    toonSomCheckBox = new JCheckBox();
@@ -395,6 +401,21 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
 		else
 			dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+		pane.setSize(200,this.getHeight()-115);
+		table.setSize(200,this.getHeight()-115);
+		pane1.setSize(200,this.getHeight()-115);
+		table1.setSize(200,this.getHeight()-115);
+		pane2.setSize(200,this.getHeight()-115);
+		table2.setSize(200,this.getHeight()-115);
+		
+		pane3.setSize(this.getWidth()-350,115);
+		table3.setSize(this.getWidth()-350,115);
+		pane4.setSize(this.getWidth()-350,115);
+		table4.setSize(this.getWidth()-350,115);
+		pane5.setSize(this.getWidth()-350,115);
+		table5.setSize(this.getWidth()-350,115);
+	    
+		setZichtbaar();
 	}
 	
 	public void setAantalDobbelstenen() {

@@ -349,6 +349,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		binomTrekking.setVisible(binomTrekkingRadioBool);
 		if(h.containsKey("binomTrekkingGrafiek")) binomTrekking.showGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
 		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
+		if(h.containsKey("binomTrekkingFrequentie")) binomTrekking.showFrequentie= ((Boolean)h.get("binomTrekkingFrequentie")).booleanValue();
 		binomTrekking.setZichtbaar();
 		
 	}

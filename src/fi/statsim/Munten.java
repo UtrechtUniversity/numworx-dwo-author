@@ -2,6 +2,7 @@ package fi.statsim;
 
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,8 +93,6 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	
 	public Munten() {
 		setBackground(Color.white);
-		setBorder(BorderFactory.createLineBorder(new Color(202,228,255), 7));
-		
 		maxCount=100;
 		
 		munt= new Boolean[10001];
@@ -126,19 +125,22 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		buttonPanel.add(panel1);
 		panel1.setSize(310,95);
 		panel1.setLocation(0,0);
-		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP));
-		
+		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
+				
 		eenMuntRadio = new JRadioButton(StatSim.rb.getString("oneCoin"));
 		eenMuntRadio.setBackground(Color.white);
 		eenMuntRadio.setSelected(true);
 		eenMuntRadio.setLocation(30,20);
 		eenMuntRadio.setSize(80,20);
 		eenMuntRadio.addActionListener(this);
+		eenMuntRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
+			    
 		tweeMuntenRadio = new JRadioButton(StatSim.rb.getString("twoCoins"));
 		tweeMuntenRadio.setBackground(Color.white);
 		tweeMuntenRadio.setLocation(120,20);
 		tweeMuntenRadio.setSize(150,20);
 		tweeMuntenRadio.addActionListener(this);
+		tweeMuntenRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel1.add(eenMuntRadio);
 		panel1.add(tweeMuntenRadio);
 		
@@ -149,9 +151,11 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		aantalWorpenLabel=new JLabel(StatSim.rb.getString("numberOfRounds"));
 		aantalWorpenLabel.setLocation(10,50);
 		aantalWorpenLabel.setSize(150,20);
+		aantalWorpenLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		kansOpKopLabel=new JLabel(StatSim.rb.getString("chanceOfTails"));
 		kansOpKopLabel.setLocation(160,50);
 		kansOpKopLabel.setSize(150,20);
+		kansOpKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		aantalWorpenText=new JTextField();
 		aantalWorpenText.setSize(50, 20);
 		aantalWorpenText.setLocation(100,50);
@@ -169,20 +173,20 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 		start=new JButton(StatSim.rb.getString("start"));
 		buttonPanel.add(start);
-		start.setLocation(315,0);
+		start.setLocation(315,7);
 		start.setSize(100,20);
 		start.addActionListener(this);
 		
 		volgende = new JButton(StatSim.rb.getString("next"));
 		buttonPanel.add(volgende);
-		volgende.setLocation(315,30);
+		volgende.setLocation(315,32);
 		volgende.setSize(100,20);
 		volgende.addActionListener(this);
 		volgende.setEnabled(false);
 		
 		stop = new JButton(StatSim.rb.getString("stop"));
 		buttonPanel.add(stop);
-		stop.setLocation(315,60);
+		stop.setLocation(315,57);
 		stop.setSize(100,20);
 		stop.addActionListener(this);
 		stop.setEnabled(false);
@@ -194,31 +198,37 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		buttonPanel.add(panel2);
 		panel2.setSize(360,95);
 		panel2.setLocation(425,0);
-		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("results"),TitledBorder.CENTER,TitledBorder.TOP));
+		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("results"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
 		gemiddeldeLabel=new JLabel(StatSim.rb.getString("mean"));
 		gemiddeldeLabel.setSize(100,20);
 		gemiddeldeLabel.setLocation(200,20);
+		gemiddeldeLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeLabel);
 		gemiddeldeText=new JLabel("0.0");
 		gemiddeldeText.setSize(40,20);
 		gemiddeldeText.setLocation(300,20);
+		gemiddeldeText.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeText);
 		minimumLabel=new JLabel(StatSim.rb.getString("minimum"));
 		minimumLabel.setSize(100,20);
 		minimumLabel.setLocation(200,40);
+		minimumLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumLabel);
 		minimumText=new JLabel("0.0");
 		minimumText.setSize(40,20);
 		minimumText.setLocation(300,40);
+		minimumText.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumText);
 		maximumLabel=new JLabel(StatSim.rb.getString("maximum"));
 		maximumLabel.setSize(100,20);
 		maximumLabel.setLocation(200,60);
+		maximumLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumLabel);
 		maximumText=new JLabel("0.0");
 		maximumText.setSize(40,20);
 		maximumText.setLocation(300,60);
+		maximumText.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumText);
 		
 		aantalKop = new JRadioButton(StatSim.rb.getString("numberOfHeads"));
@@ -228,13 +238,15 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		aantalKop.setSelected(true);
 		panel2.add(aantalKop);
 		aantalKop.addActionListener(this);
+		aantalKop.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		
 		percentageKop=new JRadioButton(StatSim.rb.getString("percentageHeads"));
 		percentageKop.setBackground(Color.white);
-		percentageKop.setSize(150,20);
+		percentageKop.setSize(120,20);
 		percentageKop.setLocation(10,50);
 		panel2.add(percentageKop);
 		percentageKop.addActionListener(this);
+		percentageKop.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		
 		ButtonGroup buttonGroup2=new ButtonGroup();
 		buttonGroup2.add(aantalKop);
@@ -244,90 +256,105 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		gemiddeldeLabel1.setSize(100,20);
 		gemiddeldeLabel1.setLocation(10,25);
 		gemiddeldeLabel1.setVisible(false);
+		gemiddeldeLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeLabel1);
 		
 		minimumLabel1=new JLabel(StatSim.rb.getString("minimum"));
 		minimumLabel1.setSize(100,20);
 		minimumLabel1.setLocation(10,45);
 		minimumLabel1.setVisible(false);
+		minimumLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumLabel1);
 		
 		maximumLabel1=new JLabel(StatSim.rb.getString("maximum"));
 		maximumLabel1.setSize(100,20);
 		maximumLabel1.setLocation(10,65);
 		maximumLabel1.setVisible(false);
+		maximumLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumLabel1);
 		
 		geenKopLabel=new JLabel(StatSim.rb.getString("noHeads"));
 		geenKopLabel.setSize(80,20);
 		geenKopLabel.setLocation(110,10);
 		geenKopLabel.setVisible(false);
+		geenKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(geenKopLabel);
 		
 		gemiddeldeText1=new JLabel("0.0");
 		gemiddeldeText1.setSize(40,20);
 		gemiddeldeText1.setLocation(110,25);
 		gemiddeldeText1.setVisible(false);
+		gemiddeldeText1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeText1);
 		
 		minimumText1=new JLabel("0.0");
 		minimumText1.setSize(40,20);
 		minimumText1.setLocation(110, 45);
 		minimumText1.setVisible(false);
+		minimumText1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumText1);
 		
 		maximumText1=new JLabel("0.0");
 		maximumText1.setSize(40,20);
 		maximumText1.setLocation(110,65);
 		maximumText1.setVisible(false);
+		maximumText1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumText1);
 		
 		eenKopLabel=new JLabel(StatSim.rb.getString("oneHeads"));
 		eenKopLabel.setSize(80,20);
 		eenKopLabel.setLocation(190,10);
 		eenKopLabel.setVisible(false);
+		eenKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(eenKopLabel);
 		
 		gemiddeldeText2=new JLabel("0.0");
 		gemiddeldeText2.setSize(40,20);
 		gemiddeldeText2.setLocation(190,25);
 		gemiddeldeText2.setVisible(false);
+		gemiddeldeText2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeText2);
 		
 		minimumText2=new JLabel("0.0");
 		minimumText2.setSize(40,20);
 		minimumText2.setLocation(190,45);
 		minimumText2.setVisible(false);
+		minimumText2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumText2);
 		
 		maximumText2=new JLabel("0.0");
 		maximumText2.setSize(40,20);
 		maximumText2.setLocation(190,65);
 		maximumText2.setVisible(false);
+		maximumText2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumText2);
 				
 		tweeKopLabel=new JLabel(StatSim.rb.getString("twoHeads"));
 		tweeKopLabel.setSize(80,20);
 		tweeKopLabel.setLocation(270,10);
 		tweeKopLabel.setVisible(false);
+		tweeKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(tweeKopLabel);
 		
 		gemiddeldeText3=new JLabel("0.0");
 		gemiddeldeText3.setSize(40,20);
 		gemiddeldeText3.setLocation(270,25);
 		gemiddeldeText3.setVisible(false);
+		gemiddeldeText3.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(gemiddeldeText3);
 		
 		minimumText3=new JLabel("0.0");
 		minimumText3.setSize(40,20);
 		minimumText3.setLocation(270,45);
 		minimumText3.setVisible(false);
+		minimumText3.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(minimumText3);
 		
 		maximumText3=new JLabel("0.0");
 		maximumText3.setSize(40,20);
 		maximumText3.setLocation(270,65);
 		maximumText3.setVisible(false);
+		maximumText3.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel2.add(maximumText3);
 	
 		String col[]=new String[3];
@@ -409,12 +436,54 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		}
 	}
 	
+	
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
 		if (showTabel==false && showFrequentie==false)
 			paintPanel.setSize(this.getWidth(),this.getHeight()-100);
 		else
 			paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+		if (showFrequentie==false) {
+			pane.setLocation(0,100);
+			pane1.setLocation(0,100);
+			pane.setSize(200,this.getHeight()-100);
+			table.setSize(200,this.getHeight()-100);
+			pane1.setSize(250,this.getHeight()-100);
+			table1.setSize(250,this.getHeight()-100);
+		} else {
+			pane.setLocation(0,200);
+			pane1.setLocation(0,100);
+			pane.setSize(200,this.getHeight()-200);
+			table.setSize(200,this.getHeight()-200);
+			pane1.setSize(250,this.getHeight()-100);
+			table1.setSize(250,this.getHeight()-100);
+		}
+		if (this.getWidth()<740) {
+			panel2.setSize(310,95);
+			
+			gemiddeldeLabel.setLocation(150,20);
+			gemiddeldeText.setLocation(250,20);
+			minimumLabel.setLocation(150,40);
+			minimumText.setLocation(250,40);
+			maximumLabel.setLocation(150,60);
+			maximumText.setLocation(250,60);
+			
+		} else {
+		    panel2.setSize(this.getWidth()-425,95);
+
+			gemiddeldeLabel.setLocation(this.getWidth()-590,20);
+			gemiddeldeText.setLocation(this.getWidth()-490,20);
+			minimumLabel.setLocation(this.getWidth()-590,40);
+			minimumText.setLocation(this.getWidth()-490,40);
+			maximumLabel.setLocation(this.getWidth()-590,60);
+			maximumText.setLocation(this.getWidth()-490,60);
+			
+		}
+		buttonPanel.setSize(this.getWidth(),100);
+	}
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 	}
 
 	public String replaceComma(String oldString)
@@ -485,9 +554,9 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			maximumText3.setVisible(false);
 			if (showTabel || showFrequentie) {
 				paintPanel.setLocation(200,100);
-				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
-			} else {
 				paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+			} else {
+				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
 			}
 			paintPanel.repaint();
 		} else {
@@ -520,9 +589,9 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			maximumText3.setVisible(true);
 			if (showTabel || showFrequentie) {
 				paintPanel.setLocation(250,100);
-				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
-			} else {
 				paintPanel.setSize(this.getWidth()-250,this.getHeight()-100);
+			} else {
+				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
 			}
 			paintPanel.repaint();
 		}
@@ -710,9 +779,4 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	   		try{ Thread.sleep(10); } catch (Exception e) {}
    		}
    }
-	
-	public void paintComponent(Graphics g) {	
-		super.paintComponent(g);
-	}
-	
 }

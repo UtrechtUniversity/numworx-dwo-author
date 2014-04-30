@@ -34,6 +34,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox dobbelstenenTabelCheckBox;
 	private JCheckBox binomTrekkingGrafiekCheckBox;
 	private JCheckBox binomTrekkingTabelCheckBox;
+	private JCheckBox binomTrekkingFrequentieCheckBox;
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -129,6 +130,13 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		binomTrekkingTabelCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingTabelCheckBox);
 		
+		binomTrekkingFrequentieCheckBox = new JCheckBox("Frequentie");
+		binomTrekkingFrequentieCheckBox.setLocation(30,250);
+		binomTrekkingFrequentieCheckBox.setSize(200,20);
+		binomTrekkingFrequentieCheckBox.addActionListener(this);
+		binomTrekkingFrequentieCheckBox.setSelected(true);
+		optionsPanel.add(binomTrekkingFrequentieCheckBox);
+		
 		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
@@ -150,6 +158,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("binomTrekkingRadio", new Boolean(binomTrekkingRadio.isSelected()));
 		h.put("binomTrekkingGrafiek", new Boolean(binomTrekkingGrafiekCheckBox.isSelected()));
 		h.put("binomTrekkingTabel", new Boolean(binomTrekkingTabelCheckBox.isSelected()));
+		h.put("binomTrekkingFrequentie", new Boolean(binomTrekkingFrequentieCheckBox.isSelected()));
 		return h;
 	}
 	
@@ -221,6 +230,11 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			if(h.containsKey("binomTrekkingTabel")) binomTrekkingTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
 			binomTrekkingTabelCheckBox.setSelected(binomTrekkingTabel);
 			interactiePanel.binomTrekking.showTabel=binomTrekkingTabel;
+			
+			Boolean binomTrekkingFrequentie=true;
+			if(h.containsKey("binomTrekkingFrequentie")) binomTrekkingFrequentie= ((Boolean)h.get("binomTrekkingFrequentie")).booleanValue();
+			binomTrekkingFrequentieCheckBox.setSelected(binomTrekkingFrequentie);
+			interactiePanel.binomTrekking.showFrequentie=binomTrekkingFrequentie;
 			
 			interactiePanel.binomTrekking.setZichtbaar();		
 		
@@ -312,6 +326,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		   }
 		   if (e.getSource()==binomTrekkingTabelCheckBox) {
 			   interactiePanel.binomTrekking.showTabel=binomTrekkingTabelCheckBox.isSelected();
+			   interactiePanel.binomTrekking.setZichtbaar();
+		   }
+		   if (e.getSource()==binomTrekkingFrequentieCheckBox) {
+			   interactiePanel.binomTrekking.showFrequentie=binomTrekkingFrequentieCheckBox.isSelected();
 			   interactiePanel.binomTrekking.setZichtbaar();
 		   }
 	}
