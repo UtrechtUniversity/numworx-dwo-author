@@ -1,5 +1,6 @@
 package fi.statistiek;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -36,6 +37,7 @@ public class Statistiek implements WiskOpdrApplet
 	static DecimalFormatSymbols dfs;
 	public static DecimalFormat df;
 	public static int scrollSpeedUnit = 16;
+	public static Color backgroundColor = Color.WHITE;
 
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
@@ -242,7 +244,12 @@ public class Statistiek implements WiskOpdrApplet
 		 * if(noBins == 1) { ArrayList<Double> ret = new ArrayList<Double>(2);
 		 * ret.add(new Double(min)); ret.add(new Double(max)); return ret; }
 		 */
+		
+		// 
 		double b = (max - min) / (double) (Math.max(noBins - 1, 1));
+		// test syl: neem integer waarde
+		b = (int) b;
+		
 		int e;
 		if (noBins == 1)
 		{
@@ -253,20 +260,33 @@ public class Statistiek implements WiskOpdrApplet
 			e = (int) Math.floor(Math.log10(b));
 		}
 		double step = Math.ceil(b * Math.pow(10, -e)) * Math.pow(10, e);
-		if (step == b)
-		{
-			step++;
-		}
+//		if (step == b)
+//		{
+//			step++;
+//		}
 
 		// System.out.println("e = " + e);
 		// System.out.println("step = " + step);
 
-		double start = (Math.ceil(min / step) - 1) * step;
-
-		if ((start + noBins * step) <= max)
+		double start;
+		
+		if (min == Math.round(min))
 		{
-			step = (1 + Math.ceil(b * Math.pow(10, -e))) * Math.pow(10, e);
+			start = min;
 		}
+		else
+		{
+			start = (Math.ceil(min / step) - 1) * step;
+		}
+
+		// test syl: step wordt hier 0...
+//		if ((start + noBins * step) <= max)
+//		{
+//			step = (1 + Math.ceil(b * Math.pow(10, -e))) * Math.pow(10, e);
+//		}
+		
+		if (step == 0)
+			step++;
 
 		// build arraylist
 		ArrayList<Double> boundaries = new ArrayList<Double>();
