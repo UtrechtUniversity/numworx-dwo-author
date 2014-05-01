@@ -536,6 +536,12 @@ public class Streep
 	
 	public void transformBy(double m00, double m01, double m10, double m11)
 	{
+		
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
+				
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
 			double pXDNew = m00 * (pXD[pCnt] - cx) + m01 * (pYD[pCnt] - cy);
@@ -1101,14 +1107,19 @@ class Lijn
 	
 	public void transformBy(double m00, double m01, double m10, double m11)
 	{
-			double fXNew = m00 * (fX - cx) + m01 * (fY - cy);
-			double fYNew = m10 * (fX - cx) + m11 * (fY - cy);
-			fX = (int) Math.round(fXNew + cx);
-			fY = (int) Math.round(fYNew + cy);
-			double tXNew = m00 * (tX - cx) + m01 * (tY - cy);
-			double tYNew = m10 * (tX - cx) + m11 * (tY - cy);
-			tX = (int) Math.round(tXNew + cx);
-			tY = (int) Math.round(tYNew + cy);
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
+		
+		double fXNew = m00 * (fX - cx) + m01 * (fY - cy);
+		double fYNew = m10 * (fX - cx) + m11 * (fY - cy);
+		fX = (int) Math.round(fXNew + cx);
+		fY = (int) Math.round(fYNew + cy);
+		double tXNew = m00 * (tX - cx) + m01 * (tY - cy);
+		double tYNew = m10 * (tX - cx) + m11 * (tY - cy);
+		tX = (int) Math.round(tXNew + cx);
+		tY = (int) Math.round(tYNew + cy);
 
 	}
 		
@@ -2174,9 +2185,16 @@ class TekstElement
 	Rectangle bb;
 	KladjePolygon bb2;
 	double cx, cy;
+	
 	double rotation = 0;
 	double scaleX = 1;
 	double scaleY = 1;
+	
+	double m00 = 1;
+	double m01 = 0;
+	double m10 = 0;
+	double m11 = 1;
+	
 	int tekstX, tekstY;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -2346,7 +2364,19 @@ class TekstElement
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 		
-		//makeBB();
+		
+		double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
+		double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
+		double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
+		double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+
+		m00 = m00New;
+		m01 = m01New;
+		m10 = m10New;
+		m11 = m11New;
+	
+	
+	//makeBB();
 		//bb2.rotate(rotateStep, cx, cy);
 		//makeHandleBox();
 		
@@ -2372,8 +2402,14 @@ class TekstElement
 		
 		scaleX *= scaleStep;
 		scaleY *= scaleStep;
-	
-		//makeBB();
+
+		m00 *= scaleStep;
+		m01 *= scaleStep;
+		m10 *= scaleStep;
+		m11 *= scaleStep;
+		
+		
+		makeBB();
 		//bb2.rotate(rotation, cx, cy);
 		//makeHandleBox();
 	
@@ -2401,6 +2437,12 @@ class TekstElement
 		scaleX *= sx;
 		scaleY *= sy;
 	
+		m00 *= sx;
+		m01 *= sx;
+		m10 *= sy;
+		m11 *= sy;
+		
+		
 		//makeBB();
 		//bb2.rotate(rotation, cx, cy);
 		//makeHandleBox();
@@ -2415,10 +2457,16 @@ class TekstElement
 		h.put("tekst", new String(tekst));
 		h.put("xPos", new Integer(xPos));
 		h.put("yPos", new Integer(yPos));
+		
 		h.put("rotation", new Double(rotation));
 		h.put("scaleX", new Double(scaleX));
 		h.put("scaleY", new Double(scaleY));
 	
+		h.put("m00", new Double(m00));
+		h.put("m10", new Double(m10));
+		h.put("m01", new Double(m01));
+		h.put("m11", new Double(m11));
+		
 		return h;
 	}
 
@@ -2428,9 +2476,16 @@ class TekstElement
 		String tekst = new String("");
 		int xPos = 0;
 		int yPos = 0;
+
 		double rotation = 0;
 		double scaleX = 1;
 		double scaleY = 1;
+
+		double m00 = 1;
+		double m01 = 0;
+		double m10 = 0;
+		double m11 = 1;
+		
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
@@ -2443,22 +2498,42 @@ class TekstElement
 
 		if (h.containsKey("rotation"))
 			rotation = ((Double) h.get("rotation")).doubleValue();
-
 		if (h.containsKey("scaleX"))
 			scaleX = ((Double) h.get("scaleX")).doubleValue();
 		if (h.containsKey("scaleY"))
 			scaleY = ((Double) h.get("scaleY")).doubleValue();
+
+		if (h.containsKey("m00"))
+			m00 = ((Double) h.get("m00")).doubleValue();
+		if (h.containsKey("m10"))
+			m10 = ((Double) h.get("m10")).doubleValue();
+		if (h.containsKey("m01"))
+			m01 = ((Double) h.get("m01")).doubleValue();
+		if (h.containsKey("m11"))
+			m11 = ((Double) h.get("m11")).doubleValue();
+		
 		
 		TekstElement tekstElement = new TekstElement(kleur, tekst, xPos, yPos);
 		tekstElement.rotation = rotation;
-		//tekstElement.scaleX = scaleX;
-		//tekstElement.scaleY = scaleY;
-		//tekstElement.tekstX = (int) Math.round(((double) xPos) / scaleX);
-		//tekstElement.tekstY = (int) Math.round(((double) yPos) / scaleY);
-		tekstElement.scale(scaleX, scaleY);
+		
+		if (h.containsKey("rotation"))
+		{	tekstElement.scale(scaleX, scaleY);
+		}
+		else
+		{
+			tekstElement.transformBy(m00, m01, m10, m11);
+		}
 		
 		
 		return tekstElement;
+	}
+	
+	public void transformBy(double m00, double m01, double m10, double m11)
+	{
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
 	}
 	
 	public void teken(Graphics2D g)
@@ -2468,12 +2543,13 @@ class TekstElement
 		makeHandleBox();
 		
 		AffineTransform oldAT = g.getTransform();
-		AffineTransform at = g.getTransform();
 		
+		AffineTransform at = g.getTransform();
 		// hier!!
 		at.rotate(rotation, cx, cy);
-		
 		at.scale(scaleX, scaleY);
+		
+//		AffineTransform at = new AffineTransform(m00,m10,m01,m11,0,0);
 		
 		g.setTransform(at);
 		
@@ -2484,7 +2560,7 @@ class TekstElement
 		
 		g.setTransform(oldAT);
 		
-		//tekenBB(g);
+		tekenBB(g);
 		//tekenHandleBox(g);
 		
 	}
@@ -2615,10 +2691,10 @@ class TekstElement
 
 	public boolean bbContains(int x, int y)
 	{
-		int rx = inverseTransformX(x, y);
-		int ry = inverseTransformY(x, y);
+		//int rx = inverseTransformX(x, y);
+		//int ry = inverseTransformY(x, y);
 		
-		return bb.contains(x, y);
+		return bb2.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)

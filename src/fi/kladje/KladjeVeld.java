@@ -111,6 +111,10 @@ public class KladjeVeld extends JPanel
 	double scaleUpStep = 105e-2d;
 	double scaleDownStep = 1 / 105e-2d;
 	
+	boolean undo = false;
+	
+	boolean initialState = false;
+	
 	public KladjeVeld(int w, int h)
 	{
 		breedte = w;
@@ -185,7 +189,7 @@ public class KladjeVeld extends JPanel
 	{
 		
 //System.out.println("ath = " + numHistories);		
-		//Vector stateVector = getState();
+
 		Hashtable stateTable = getState();
 		
 		histories[numHistories] = stateTable;
@@ -204,7 +208,23 @@ public class KladjeVeld extends JPanel
 	public Hashtable getFromHistory()
 	{	//if (numHistories <= 1)
 		//	return null;
+//System.out.println("initialState " + initialState);
+
+		Hashtable hTable = null;
 		
+		if (numHistories >= 2)
+		{
+			hTable = histories[numHistories - 2];
+			numHistories--;
+		}
+		else if ((numHistories == 1) && initialState)
+		{
+			hTable = histories[0];
+			//numHistories--;
+		}
+		
+			
+/*		
 		if (numHistories > 0)
 			numHistories--;
 		
@@ -222,6 +242,8 @@ System.out.println("returned " + (numHistories - 1));
 		
 			return null;
 		}
+*/		
+		return hTable;
 	}
 	
 	public void setSize(int w, int h)
@@ -412,6 +434,10 @@ System.out.println("returned " + (numHistories - 1));
 			tekstElementVector.addElement(tekstElement);
 		}
 		
+		if (!undo && !initialState)
+		{	addToHistory();
+			initialState = true;
+		}
 		
 	}
 	
@@ -760,7 +786,9 @@ System.out.println("returned " + (numHistories - 1));
 		wis(false);
 		Hashtable lastState = getFromHistory();
 		if (lastState != null)
-		{	setState(lastState);
+		{	undo = true;
+			setState(lastState);
+			undo = false;
 		}
 
 		repaint();
@@ -1548,26 +1576,28 @@ System.out.println("returned " + (numHistories - 1));
 			
 			else if (scalingBottomRight)
 			{
-				//double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 
-				//				    selectedTekstElement.cx;
-				//double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
-				//					selectedTekstElement.cy;
-				double aspectDirX = selectedTekstElement.bb.x + selectedTekstElement.bb.width - 
+				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox.width - 
 								    selectedTekstElement.cx;
-				double aspectDirY = selectedTekstElement.bb.y + selectedTekstElement.bb.height - 
+				double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
 									selectedTekstElement.cy;
+				//double aspectDirX = selectedTekstElement.bb.x + selectedTekstElement.bb.width - 
+				//				    selectedTekstElement.cx;
+				//double aspectDirY = selectedTekstElement.bb.y + selectedTekstElement.bb.height - 
+				//					selectedTekstElement.cy;
 				
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
+				//double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
 				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
-				//double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
-				double s = (aspectDirX * dxInvRot + aspectDirY * dyInvRot) / aa;
+				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+				//double s = (aspectDirX * dxInvRot + aspectDirY * dyInvRot) / aa;
 				double asXDouble = s * aspectDirX;
 				double asYDouble = s * aspectDirY;
-				double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
+				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
 				double newWidth = oldWidth + asXDouble;
 				double newHeight = oldHeight + asYDouble;
 				double sc = ((double) newWidth) / oldWidth;
