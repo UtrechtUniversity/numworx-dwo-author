@@ -29,6 +29,7 @@ import javax.swing.*;
 
 import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
+import fi.statistiek.ColorPreviewer;
 import fi.statistiek.Statistiek;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
@@ -39,6 +40,10 @@ import fi.statistiek.types.ColumnType;
  * 
  * @author ManuDrijvers, Sylvia van Borkulo
  * 
+ */
+/**
+ * @author borku102
+ *
  */
 public class HistogramView extends JPanel implements Observer
 {
@@ -407,6 +412,9 @@ public class HistogramView extends JPanel implements Observer
 //			System.out.println("HistogramView.paintBar(): type = " + type + ", binWidth = " 
 //				+ getBinWidth() + ", spacing = " + spacing);
 
+			double colorMixSymm = 0.5; // t.b.v. shading
+			double colorMix = 0.7;
+
 			if (this.model.getVerticalBars())
 			{
 				int x1 = this.yAxisOffset + barNumber + 1
@@ -428,34 +436,52 @@ public class HistogramView extends JPanel implements Observer
 				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
 
 				if (type.equals(AllowedTypes.ENUM) 
-					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER)))
+					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER)) && labelUnderBinItemSelected())
 				{
-    				g.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
-    					barLength - selectedLength);
+					// Symmetrical shading
+					
+    				Color shadingColor = ColorPreviewer.mixColors(c, Color.WHITE,
+						colorMixSymm);
     				
-    				g.setColor(colorSelectedBar);
-    				g.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
-    					+ ySplitOffset, barWidth - spacing, selectedLength);
+    				int x_coordinate = x1 + barOffset + spacing;
+    				int y_coordinate = y + ySplitOffset;
+    				int width = barWidth - spacing;
+    				int height = barLength - selectedLength;
+    				
+    				fillRectWithSymmShade(x_coordinate, y_coordinate, 
+    					width, height, g, c, shadingColor);
+    				
+    				// draw selected bar
+    				y_coordinate = y + barLength - selectedLength + ySplitOffset;
+    				height = selectedLength;
+    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
+						colorMixSymm);
+    				fillRectWithSymmShade(x_coordinate, y_coordinate, 
+    					width, height, g, colorSelectedBar, shadingColor);
 				}
 				else
 				{
-    				Graphics2D g2d = (Graphics2D)g;
-    				Color color2 = Color.WHITE;
-    				GradientPaint gradient = new GradientPaint(x1 + barOffset + spacing, y + ySplitOffset, 
-    					c, x1 + barOffset + spacing + barWidth - spacing, y + ySplitOffset, color2, false);
-    				g2d.setPaint(gradient);
+					// shading to the right 
+					// in order to support visually that the upper bin boundary is not included
+					
+    				Color shadingColor = ColorPreviewer.mixColors(c, Color.WHITE,
+						colorMix);
 
     				// paint bar
-    				g2d.fillRect(x1 + barOffset + spacing, y + ySplitOffset, barWidth - spacing,
-    					barLength - selectedLength);
-
-    				gradient = new GradientPaint(x1 + barOffset + spacing, y + ySplitOffset, 
-    					colorSelectedBar, x1 + barOffset + spacing + barWidth - spacing, y + ySplitOffset, color2, false);
-    				g2d.setPaint(gradient);
+    				int x_coordinate = x1 + barOffset + spacing;
+    				int y_coordinate = y + ySplitOffset;
+    				int width = barWidth - spacing;
+    				int height = barLength - selectedLength;
+    				fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
+    					width, height, g, c, shadingColor, true);
 
     				// paint selected bar
-    				g2d.fillRect(x1 + barOffset + spacing, y + barLength - selectedLength
-    					+ ySplitOffset, barWidth - spacing, selectedLength);
+    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE, colorMix);
+    				y_coordinate = y + barLength - selectedLength + ySplitOffset;
+    				height = selectedLength;
+    				fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
+    					width, height, g, colorSelectedBar, shadingColor,
+    					true);
 				}
 				
 				// fill the rectangle above the bar white to get the correct
@@ -504,12 +530,36 @@ public class HistogramView extends JPanel implements Observer
 				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
 
 				if (type.equals(AllowedTypes.ENUM) 
-					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER)))
+					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER) && labelUnderBinItemSelected()))
 				{
+					// TODO: Symmetrical shading
+					
+// 					Color shadingColor = ColorPreviewer.mixColors(c, Color.WHITE,
+//						colorMixSymm);
+//    				
+//    				int x_coordinate = x1 + xSplitOffset + selectedLength;
+//    				int y_coordinate = y1 + ySplitOffset + barOffset + spacing;
+//    				int width = barLength - selectedLength;
+//    				int height = barWidth - spacing;
+//    				
+//    				fillRectWithSymmShade(x_coordinate, y_coordinate, 
+//    					width, height, g, c, shadingColor);
+//    				
+//    				// draw selected bar
+//    				y_coordinate = y + barLength - selectedLength + ySplitOffset;
+//    				height = selectedLength;
+//    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
+//						colorMixSymm);
+//    				fillRectWithSymmShade(x_coordinate, y_coordinate, 
+//    					width, height, g, colorSelectedBar, shadingColor);
+//
+    				
+					// original.......
 					g.setColor(c);
 					// paint bar
-					g.fillRect(x1 + xSplitOffset + selectedLength, y1
-						+ ySplitOffset + barOffset + spacing, barLength - selectedLength,
+					g.fillRect(x1 + xSplitOffset + selectedLength, 
+						y1 + ySplitOffset + barOffset + spacing, 
+						barLength - selectedLength,
 						barWidth - spacing);
 
 					g.setColor(colorSelectedBar);
@@ -519,32 +569,28 @@ public class HistogramView extends JPanel implements Observer
 				}	
 				else
 				{
+					// shading to the down side 
+					// in order to support visually that the upper bin boundary is not included
+
 					Graphics2D g2d = (Graphics2D) g;
-					Color color2 = Color.WHITE;
-					GradientPaint gradient = new GradientPaint(
-						x1 + xSplitOffset + selectedLength, 
-						y1 + ySplitOffset + barOffset + spacing, c, 
-						x1 + xSplitOffset + selectedLength, 
-						y1 + ySplitOffset + barOffset + spacing + barWidth - spacing, 
-						color2, false);
-					g2d.setPaint(gradient);
-
-					// paint bar
-					g2d.fillRect(x1 + xSplitOffset + selectedLength, 
-						y1 + ySplitOffset + barOffset + spacing, 
-						barLength - selectedLength, barWidth - spacing);
-
-					gradient = new GradientPaint(
-						x1 + xSplitOffset, 
-						y1 + ySplitOffset + barOffset + spacing, colorSelectedBar,
-						x1 + xSplitOffset, 
-						y1 + ySplitOffset + barOffset + spacing + barWidth - spacing, 
-						color2, false);
-					g2d.setPaint(gradient);
+    				Color shadingColor = ColorPreviewer.mixColors(c, Color.WHITE,
+						colorMix);
+    				
+    				// paint bar
+    				int x_coordinate = x1 + xSplitOffset + selectedLength;
+    				int y_coordinate = y1 + ySplitOffset + barOffset + spacing;
+    				int width = barLength - selectedLength;
+    				int height = barWidth - spacing;
+    				fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
+    					width, height, g, c, shadingColor, false);
 
 					// paint selected bar
-					g2d.fillRect(x1 + xSplitOffset, y1 + ySplitOffset + barOffset + spacing,
-						selectedLength, barWidth - spacing);
+					shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
+						colorMix);
+					x_coordinate = x1 + xSplitOffset;
+					width = selectedLength;
+					fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
+						width, height, g, colorSelectedBar, shadingColor, false);
 				}
 			
 				
@@ -579,6 +625,110 @@ public class HistogramView extends JPanel implements Observer
 			}
 		}
 		this.repaint();
+	}
+
+	/**
+	 * Fills the rectangle starting at (x, y) with given width and height,
+	 * and adds shade to both the right and left side, using color c for the body
+	 * and shadingColor for the shading parts.
+	 *  
+	 * @param x
+	 * 	x coordinate of the rectangle starting point
+	 * @param y
+	 * 	y coordinate of the rectangle starting point
+	 * @param width
+	 * 	width of the rectangle
+	 * @param height
+	 * 	height of the rectangle
+	 * @param g
+	 * 	the graphics to be used
+	 * @param c
+	 * 	the color of the body
+	 * @param shadingColor
+	 * 	the color of the end of the shade
+	 */
+	private void fillRectWithSymmShade(int x, int y,
+		int width, int height, Graphics g, Color c, Color shadingColor)
+	{
+		double symmShadingFraction = (double) 1/4; // number indicating the part of the outside of the bar that is shaded
+
+		Graphics2D g2d = (Graphics2D)g;
+
+		GradientPaint gradient = new GradientPaint(
+			x, y, shadingColor,
+			x + (int) (width * symmShadingFraction), 
+			y, c, false);
+		g2d.setPaint(gradient);
+
+		g2d.fillRect(x, y, (int) (width * symmShadingFraction), height);
+		
+		g2d.setColor(c);
+		g2d.fillRect(x + (int) (width * symmShadingFraction), 
+			y, (int) (width * ((1/symmShadingFraction) - 1) * symmShadingFraction), height);
+
+		gradient = new GradientPaint(
+			x + (int) (width * ((1/symmShadingFraction) - 1) * symmShadingFraction), 
+			y, c,
+			x + width, 
+			y, shadingColor, false);
+		g2d.setPaint(gradient);
+		
+		g2d.fillRect(x + (int) (width * ((1/symmShadingFraction) - 1) * symmShadingFraction) - 1,
+			y, (int) (width * symmShadingFraction) + 2,
+			height); // door int afrondingen wat extra marge nemen
+	}
+	
+	/**
+	 * Fills the rectangle starting at (x, y) with given width and height,
+	 * and adds shade to the upper bin boundary side, using color c for the body
+	 * and shadingColor for the shading part.
+	 *  
+	 * @param x
+	 * 	x coordinate of the rectangle starting point
+	 * @param y
+	 * 	y coordinate of the rectangle starting point
+	 * @param width
+	 * 	width of the rectangle
+	 * @param height
+	 * 	height of the rectangle
+	 * @param g
+	 * 	the graphics to be used
+	 * @param c
+	 * 	the color of the body
+	 * @param shadingColor
+	 * 	the color of the end of the shade
+	 * @param isVerticalBar
+	 * 	true if the rectangle is a vertical bar,
+	 * 	false if the rectangle is a horizontal bar
+	 */
+	private void fillRectWithShadeToUpperBinSide(int x, int y,
+		int width, int height, Graphics g, Color c, Color shadingColor, 
+		boolean isVerticalBar)
+	{
+		Graphics2D g2d = (Graphics2D)g;
+
+		GradientPaint gradient;
+		
+		if (isVerticalBar)
+		{
+    		gradient = new GradientPaint(
+    			x, 
+    			y, c,
+    			x + width, 
+    			y, shadingColor, false);
+		}
+		else // horizontal bar
+		{
+    		gradient = new GradientPaint(
+    			x, 
+    			y, c,
+    			x, 
+    			y + height, shadingColor, false);
+		}
+		g2d.setPaint(gradient);
+
+		// paint bar
+		g2d.fillRect(x, y, width, height);
 	}
 
 	private void fillCumulativeFreqPolygonSegment(Graphics g, int dotHeight,
