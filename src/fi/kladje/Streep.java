@@ -58,8 +58,15 @@ public class Streep
 		for (int cnt = 0; cnt < ptX.length; cnt++) 
 		{	puntenXD[cnt] = ptX[cnt];
 			puntenYD[cnt] = ptY[cnt];
+			
+			cx += puntenXD[cnt];
+			cy += puntenYD[cnt];
+			
 		}
-		
+
+		cx /= puntenXD.length;
+		cy /= puntenYD.length;
+
 		maakStreep();
 		//maakBBs();
 		//makeHandleBox();
@@ -69,6 +76,16 @@ public class Streep
 	{	kleur = c;
 		puntenXD = ptXD;
 		puntenYD = ptYD;
+
+		for (int cnt = 0; cnt < puntenXD.length; cnt++) 
+		{				
+			cx += puntenXD[cnt];
+			cy += puntenYD[cnt];
+			
+		}
+
+		cx /= puntenXD.length;
+		cy /= puntenYD.length;
 		
 		maakStreep();
 		//maakBBs();
@@ -541,14 +558,19 @@ public class Streep
 		this.m01 = m01;
 		this.m10 = m10;
 		this.m11 = m11;
-				
+		
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
 			double pXDNew = m00 * (pXD[pCnt] - cx) + m01 * (pYD[pCnt] - cy);
 			double pYDNew = m10 * (pXD[pCnt] - cx) + m11 * (pYD[pCnt] - cy);
 			pXD[pCnt] = pXDNew + cx;
 			pYD[pCnt] = pYDNew + cy;
+			
 		}
+		
+		bb.transformBy(m00, m01, m10, m11, cx, cy);
+		
+		makeHandleBox();
 	}
 	
 	
@@ -1121,6 +1143,12 @@ class Lijn
 		tX = (int) Math.round(tXNew + cx);
 		tY = (int) Math.round(tYNew + cy);
 
+		
+		bb.transformBy(m00, m01, m10, m11, cx, cy);
+		
+		makeHandleBox();
+		
+		
 	}
 		
 	
