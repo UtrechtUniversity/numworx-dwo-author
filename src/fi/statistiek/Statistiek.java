@@ -247,7 +247,7 @@ public class Statistiek implements WiskOpdrApplet
 		
 		// 
 		double b = (max - min) / (double) (Math.max(noBins - 1, 1));
-		// test syl: neem integer waarde
+		// neem integer waarde
 		b = (int) b;
 		
 		int e;
@@ -260,10 +260,6 @@ public class Statistiek implements WiskOpdrApplet
 			e = (int) Math.floor(Math.log10(b));
 		}
 		double step = Math.ceil(b * Math.pow(10, -e)) * Math.pow(10, e);
-//		if (step == b)
-//		{
-//			step++;
-//		}
 
 		// System.out.println("e = " + e);
 		// System.out.println("step = " + step);
@@ -279,14 +275,14 @@ public class Statistiek implements WiskOpdrApplet
 			start = (Math.ceil(min / step) - 1) * step;
 		}
 
-		// test syl: step wordt hier 0...
-//		if ((start + noBins * step) <= max)
-//		{
-//			step = (1 + Math.ceil(b * Math.pow(10, -e))) * Math.pow(10, e);
-//		}
-		
 		if (step == 0)
 			step++;
+		
+		// make sure the maximum value is covered by the bins
+		while ((start + noBins * step) <= max)
+		{
+			step++;
+		}
 
 		// build arraylist
 		ArrayList<Double> boundaries = new ArrayList<Double>();
