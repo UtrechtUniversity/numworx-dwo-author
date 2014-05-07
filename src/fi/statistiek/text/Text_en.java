@@ -33,7 +33,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "boundariesintervals","Boundaries intervals: " },
             {   "boundariesintervalsLabel","Boundaries intervals: " },
             {   "observationsLabel", "Observations" },
-            {   "numberLabel", "Amount: " },
+            {   "numberLabel", "No. of measurements: " },
             {   "minLabel", "Minimum: " },
             {   "maxLabel", "Maximum: " },
             {   "sortItem", "Sort" },
