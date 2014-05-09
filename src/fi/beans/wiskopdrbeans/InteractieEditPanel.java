@@ -17,7 +17,7 @@ public interface InteractieEditPanel
 	
 	public void zetHoogte(int h);
 	
-	public void wis();
+	//public void wis();
     
 	public void zetMode(int mode);
 	
