@@ -104,41 +104,41 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		buttonPanel.setLayout(null);
 		buttonPanel.setBackground(Color.white);
 		buttonPanel.setLocation(0,0);
-		buttonPanel.setSize(790,100);
+		buttonPanel.setSize(790,115);
 		
 		paintPanel=new PaintPanel(this);
-		paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+		paintPanel.setSize(this.getWidth()-230,this.getHeight()-100);
 		paintPanel.setPreferredSize(paintPanel.getSize());
 		add(paintPanel);
-		paintPanel.setLocation(200,100);
+		paintPanel.setLocation(230,100);
 		
 		frequentieClass = new FrequentieClass(this);
 		frequentieClass.setSize(200,100);
 		frequentieClass.setPreferredSize(frequentieClass.getSize());
 		add(frequentieClass);
-		frequentieClass.setLocation(0,100);
+		frequentieClass.setLocation(15,115);
 		
 		border1=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		panel1=new JPanel();
 		panel1.setLayout(null);
 		panel1.setBackground(Color.white);
 		buttonPanel.add(panel1);
-		panel1.setSize(310,95);
+		panel1.setSize(230,115);
 		panel1.setLocation(0,0);
 		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 				
 		eenMuntRadio = new JRadioButton(StatSim.rb.getString("oneCoin"));
 		eenMuntRadio.setBackground(Color.white);
 		eenMuntRadio.setSelected(true);
-		eenMuntRadio.setLocation(30,20);
+		eenMuntRadio.setLocation(10,20);
 		eenMuntRadio.setSize(80,20);
 		eenMuntRadio.addActionListener(this);
 		eenMuntRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 			    
 		tweeMuntenRadio = new JRadioButton(StatSim.rb.getString("twoCoins"));
 		tweeMuntenRadio.setBackground(Color.white);
-		tweeMuntenRadio.setLocation(120,20);
-		tweeMuntenRadio.setSize(150,20);
+		tweeMuntenRadio.setLocation(90,20);
+		tweeMuntenRadio.setSize(130,20);
 		tweeMuntenRadio.addActionListener(this);
 		tweeMuntenRadio.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel1.add(eenMuntRadio);
@@ -153,7 +153,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		aantalWorpenLabel.setSize(150,20);
 		aantalWorpenLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		kansOpKopLabel=new JLabel(StatSim.rb.getString("chanceOfTails"));
-		kansOpKopLabel.setLocation(160,50);
+		kansOpKopLabel.setLocation(10,70);
 		kansOpKopLabel.setSize(150,20);
 		kansOpKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		aantalWorpenText=new JTextField();
@@ -164,7 +164,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		kansOpKopText=new JTextField();
 		kansOpKopText.setColumns(5);
 		kansOpKopText.setSize(50,20);
-		kansOpKopText.setLocation(240,50);
+		kansOpKopText.setLocation(100,70);
 		kansOpKopText.setText("0.5");
 		panel1.add(aantalWorpenLabel);
 		panel1.add(aantalWorpenText);
@@ -173,20 +173,20 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 		start=new JButton(StatSim.rb.getString("start"));
 		buttonPanel.add(start);
-		start.setLocation(315,7);
+		start.setLocation(235,7);
 		start.setSize(100,20);
 		start.addActionListener(this);
 		
 		volgende = new JButton(StatSim.rb.getString("next"));
 		buttonPanel.add(volgende);
-		volgende.setLocation(315,32);
+		volgende.setLocation(235,32);
 		volgende.setSize(100,20);
 		volgende.addActionListener(this);
 		volgende.setEnabled(false);
 		
 		stop = new JButton(StatSim.rb.getString("stop"));
 		buttonPanel.add(stop);
-		stop.setLocation(315,57);
+		stop.setLocation(235,57);
 		stop.setSize(100,20);
 		stop.addActionListener(this);
 		stop.setEnabled(false);
@@ -197,7 +197,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		panel2.setBackground(Color.white);
 		buttonPanel.add(panel2);
 		panel2.setSize(360,95);
-		panel2.setLocation(425,0);
+		panel2.setLocation(345,0);
 		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("results"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
 		gemiddeldeLabel=new JLabel(StatSim.rb.getString("mean"));
@@ -381,8 +381,8 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	    pane = new JScrollPane(table);
 	   
 	    add(pane);
-	    pane.setLocation(0,200);
-	    pane.setSize(200,250);
+	    pane.setLocation(0,225);
+	    pane.setSize(230,225);
 
 	     model1 = new DefaultTableModel(col1,100); 
 	        table1=new JTable(model1){@Override
@@ -397,8 +397,8 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	    pane1 = new JScrollPane(table1);
 	   
 	    add(pane1);
-	    pane1.setLocation(0,100);
-	    pane1.setSize(250,350);
+	    pane1.setLocation(0,125);
+	    pane1.setSize(230,325);
 	    pane1.setVisible(false);
 	    
 	}
@@ -407,10 +407,12 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		if (showTabel) {
 			if (eenMuntRadio.isSelected()) {
 				pane.setVisible(true);
-				paintPanel.setLocation(200,100);
+				pane1.setVisible(false);
+				paintPanel.setLocation(230,115);
 			} else {
+				pane.setVisible(false);
 				pane1.setVisible(true);
-				paintPanel.setLocation(250,100);
+				paintPanel.setLocation(230,115);
 			}
 		} else {
 			pane.setVisible(false);
@@ -420,19 +422,34 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		paintPanel.setVisible(showGrafiek);
 		if (eenMuntRadio.isSelected()) {
 			frequentieClass.setVisible(showFrequentie);
-			paintPanel.setLocation(200,100);
+			paintPanel.setLocation(230,115);
 		} else {
 			frequentieClass.setVisible(false);
 		}
 		if (showFrequentie==false && showTabel==false) {
-			paintPanel.setLocation(0,100);
-			paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+			paintPanel.setLocation(0,115);
+			paintPanel.setSize(this.getWidth(),this.getHeight()-115);
 		} else {
 			if (eenMuntRadio.isSelected()) {
-				paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+				paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
 			} else {
-				paintPanel.setSize(this.getWidth()-250,this.getHeight()-100);
+				paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
 			}
+		}
+		if (showFrequentie==false) {
+			pane.setLocation(0,125);
+			pane1.setLocation(0,125);
+			pane.setSize(230,this.getHeight()-125);
+			table.setSize(230,this.getHeight()-125);
+			pane1.setSize(230,this.getHeight()-125);
+			table1.setSize(230,this.getHeight()-125);
+		} else {
+			pane.setLocation(0,215);
+			pane1.setLocation(0,125);
+			pane.setSize(230,this.getHeight()-215);
+			table.setSize(230,this.getHeight()-215);
+			pane1.setSize(230,this.getHeight()-125);
+			table1.setSize(230,this.getHeight()-125);
 		}
 	}
 	
@@ -440,25 +457,11 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
 		if (showTabel==false && showFrequentie==false)
-			paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+			paintPanel.setSize(this.getWidth(),this.getHeight()-115);
 		else
-			paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
-		if (showFrequentie==false) {
-			pane.setLocation(0,100);
-			pane1.setLocation(0,100);
-			pane.setSize(200,this.getHeight()-100);
-			table.setSize(200,this.getHeight()-100);
-			pane1.setSize(250,this.getHeight()-100);
-			table1.setSize(250,this.getHeight()-100);
-		} else {
-			pane.setLocation(0,200);
-			pane1.setLocation(0,100);
-			pane.setSize(200,this.getHeight()-200);
-			table.setSize(200,this.getHeight()-200);
-			pane1.setSize(250,this.getHeight()-100);
-			table1.setSize(250,this.getHeight()-100);
-		}
-		if (this.getWidth()<740) {
+			paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
+		setZichtbaar();
+		if (this.getWidth()<660) {
 			panel2.setSize(310,95);
 			
 			gemiddeldeLabel.setLocation(150,20);
@@ -469,17 +472,17 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			maximumText.setLocation(250,60);
 			
 		} else {
-		    panel2.setSize(this.getWidth()-425,95);
+		    panel2.setSize(this.getWidth()-345,95);
 
-			gemiddeldeLabel.setLocation(this.getWidth()-590,20);
-			gemiddeldeText.setLocation(this.getWidth()-490,20);
-			minimumLabel.setLocation(this.getWidth()-590,40);
-			minimumText.setLocation(this.getWidth()-490,40);
-			maximumLabel.setLocation(this.getWidth()-590,60);
-			maximumText.setLocation(this.getWidth()-490,60);
+			gemiddeldeLabel.setLocation(this.getWidth()-510,20);
+			gemiddeldeText.setLocation(this.getWidth()-410,20);
+			minimumLabel.setLocation(this.getWidth()-510,40);
+			minimumText.setLocation(this.getWidth()-410,40);
+			maximumLabel.setLocation(this.getWidth()-510,60);
+			maximumText.setLocation(this.getWidth()-410,60);
 			
 		}
-		buttonPanel.setSize(this.getWidth(),100);
+		buttonPanel.setSize(this.getWidth(),115);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -553,10 +556,10 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			minimumText3.setVisible(false);
 			maximumText3.setVisible(false);
 			if (showTabel || showFrequentie) {
-				paintPanel.setLocation(200,100);
-				paintPanel.setSize(this.getWidth()-200,this.getHeight()-100);
+				paintPanel.setLocation(230,115);
+				paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
 			} else {
-				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+				paintPanel.setSize(this.getWidth(),this.getHeight()-115);
 			}
 			paintPanel.repaint();
 		} else {
@@ -588,10 +591,10 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			minimumText3.setVisible(true);
 			maximumText3.setVisible(true);
 			if (showTabel || showFrequentie) {
-				paintPanel.setLocation(250,100);
-				paintPanel.setSize(this.getWidth()-250,this.getHeight()-100);
+				paintPanel.setLocation(230,115);
+				paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
 			} else {
-				paintPanel.setSize(this.getWidth(),this.getHeight()-100);
+				paintPanel.setSize(this.getWidth(),this.getHeight()-115);
 			}
 			paintPanel.repaint();
 		}

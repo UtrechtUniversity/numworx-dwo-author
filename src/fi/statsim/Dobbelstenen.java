@@ -152,8 +152,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane = new JScrollPane(table);
 	   
 	    add(pane);
-	    pane.setLocation(0,115);
-	    pane.setSize(200,335);
+	    pane.setLocation(0,125);
+	    pane.setSize(200,325);
 
 	    model1 = new DefaultTableModel(col1,100); 
 	    table1=new JTable(model1){@Override
@@ -173,8 +173,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane1 = new JScrollPane(table1);
 	   
 	    add(pane1);
-	    pane1.setLocation(0,115);
-	    pane1.setSize(200,335);
+	    pane1.setLocation(0,125);
+	    pane1.setSize(200,325);
 
 	    model2 = new DefaultTableModel(col2,100); 
 	    table2=new JTable(model2){@Override
@@ -194,8 +194,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane2 = new JScrollPane(table2);
 	   
 	    add(pane2);
-	    pane2.setLocation(0,115);
-	    pane2.setSize(200,335);
+	    pane2.setLocation(0,125);
+	    pane2.setSize(200,325);
 	    
 	    pane1.setVisible(false);
 	    pane2.setVisible(false);
@@ -384,15 +384,28 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 				pane1.setVisible(false);
 				pane2.setVisible(true);
 			}			
-			dobbelstenenGrafiek.setLocation(200,125);
+			dobbelstenenGrafiek.setLocation(230,125);
 			if (toonSomCheckBox.isSelected()==true) 
-				dobbelstenenGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+				dobbelstenenGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
 			else
 				dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
-			dobbelstenenSomGrafiek.setLocation(200,125+(this.getHeight()-125)/2);
-			dobbelstenenSomGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+			dobbelstenenSomGrafiek.setLocation(230,125+(this.getHeight()-125)/2);
+			dobbelstenenSomGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
 		}
 		dobbelstenenGrafiek.setVisible(showGrafiek);
+		if (toonSomCheckBox.isSelected()==true) {
+			if (showTabel)
+				dobbelstenenGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
+			else
+				dobbelstenenGrafiek.setSize(this.getWidth(),(this.getHeight()-125)/2);
+			dobbelstenenSomGrafiek.setVisible(true);
+		} else {
+			if (showTabel)
+		   		dobbelstenenGrafiek.setSize(this.getWidth()-230,this.getHeight()-125);
+		   	else
+		   		dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
+		   	dobbelstenenSomGrafiek.setVisible(false);
+		}
 	}
 	
 	public void setSize(int width, int height) {
@@ -400,13 +413,13 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		if (showTabel==false)
 			dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
 		else
-			dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
-		pane.setSize(200,this.getHeight()-115);
-		table.setSize(200,this.getHeight()-115);
-		pane1.setSize(200,this.getHeight()-115);
-		table1.setSize(200,this.getHeight()-115);
-		pane2.setSize(200,this.getHeight()-115);
-		table2.setSize(200,this.getHeight()-115);
+			dobbelstenenGrafiek.setSize(this.getWidth()-230,this.getHeight()-125);
+		pane.setSize(230,this.getHeight()-125);
+		table.setSize(230,this.getHeight()-125);
+		pane1.setSize(230,this.getHeight()-125);
+		table1.setSize(230,this.getHeight()-125);
+		pane2.setSize(230,this.getHeight()-125);
+		table2.setSize(230,this.getHeight()-125);
 		
 		pane3.setSize(this.getWidth()-350,115);
 		table3.setSize(this.getWidth()-350,115);
@@ -589,17 +602,20 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			}
 			if (eenDobbelsteenRadio.isSelected()==true) {
 				for (int i=0;i<6;i++) {
-					table3.setValueAt(ogenGemiddeld[i+1], 0,i+1);
+					double dummy=Math.round(ogenGemiddeld[i+1]*100);
+					table3.setValueAt(Double.toString(dummy/100), 0,i+1);
 				}
 			}
 			if (tweeDobbelstenenRadio.isSelected()==true) {
 				for (int i=0;i<11;i++) {
-					table4.setValueAt(ogenGemiddeld[i+2], 0,i+1);
+					double dummy=Math.round(ogenGemiddeld[i+2]*100);
+					table4.setValueAt(Double.toString(dummy/100), 0,i+1);
 				}
 			}
 			if (drieDobbelstenenRadio.isSelected()==true) {
 				for (int i=0;i<16;i++) {
-					table5.setValueAt(ogenGemiddeld[i+3], 0,i+1);
+					double dummy=Math.round(ogenGemiddeld[i+3]*100);
+					table5.setValueAt(Double.toString(dummy/100), 0,i+1);
 				}
 			}
 			experiment++;

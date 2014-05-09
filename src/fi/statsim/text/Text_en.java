@@ -19,7 +19,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "maximum", "Maximum" },
             {   "numberOfHeads", "Number of heads" },
             {   "percentageHeads", "Percentage heads" },
-            {   "noHeads", "No heads" },
+            {   "noHeads", "0 heads" },
             {   "oneHeads", "1 heads" },
             {   "twoHeads", "2 heads" },
             {   "exp", "exp." },

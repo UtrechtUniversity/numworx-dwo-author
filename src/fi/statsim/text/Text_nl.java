@@ -19,7 +19,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "maximum", "Maximum" },
             {   "numberOfHeads", "Aantal kop" },
             {   "percentageHeads", "Percentage kop" },
-            {   "noHeads", "Geen kop" },
+            {   "noHeads", "0 kop" },
             {   "oneHeads", "1 kop" },
             {   "twoHeads", "2 kop" },
             {   "exp", "exp." },

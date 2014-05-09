@@ -44,6 +44,7 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	int totaal;
 	BinomGrafiek binomGrafiek;
 	BinomFrequentie binomFrequentie;
+	BinomRooster binomRooster;
 	int[] trekkingen;
 	
 	Boolean showTabel=true;
@@ -62,7 +63,7 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 		panel1.setLayout(null);
 		panel1.setBackground(Color.white);
 		add(panel1);
-		panel1.setSize(230,105);
+		panel1.setSize(200,105);
 		panel1.setLocation(0,0);
 		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
@@ -90,31 +91,31 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 
 	    start=new JButton(StatSim.rb.getString("start"));
 	    start.setSize(100,20);
-	    start.setLocation(240,5);
+	    start.setLocation(210,5);
 	    start.addActionListener(this);
 	    add(start);
 	    
 	    aantalKeer = new JTextField("20");
 	    aantalKeer.setSize(25,20);
-	    aantalKeer.setLocation(240,30);
+	    aantalKeer.setLocation(210,30);
 	    add(aantalKeer);
 
 	    keer=new JButton(StatSim.rb.getString("times"));
 	    keer.setSize(75,20);
-	    keer.setLocation(265,30);
+	    keer.setLocation(235,30);
 	    keer.addActionListener(this);
 	    add(keer);
 	    
 	    volgende=new JButton(StatSim.rb.getString("next"));
 	    volgende.setSize(100,20);
-	    volgende.setLocation(240,55);
+	    volgende.setLocation(210,55);
 	    volgende.addActionListener(this);
 	    volgende.setEnabled(false);
 	    add(volgende);
 	    
 	    stop=new JButton(StatSim.rb.getString("stop"));
 	    stop.setSize(100,20);
-	    stop.setLocation(240,80);
+	    stop.setLocation(210,80);
 	    stop.addActionListener(this);
 	    stop.setEnabled(false);
 	    add(stop);
@@ -152,7 +153,14 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	    binomGrafiek.setLocation(200,115);
 	    binomGrafiek.setBackground(Color.white);
 	    binomGrafiek.setSize(590,335);
+	    binomGrafiek.setVisible(false);
 	    add(binomGrafiek);
+	    
+	    binomRooster=new BinomRooster(this);
+	    binomRooster.setLocation(200,115);
+	    binomRooster.setBackground(Color.white);
+	    binomRooster.setSize(590,335);
+	    add(binomRooster);
 
 	    trekkingen = new int[1000];
 	    maxCount=Integer.parseInt(aantalTrekkingenText.getText());
@@ -161,10 +169,13 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 	public void setZichtbaar() {
 		if (showTabel) {
 			pane.setVisible(true);
+		} else {
+			pane.setVisible(false);
+		}
+		if (showTabel || showFrequentie) {
 			binomGrafiek.setLocation(200,115);
 			binomGrafiek.setSize(this.getWidth()-200,this.getHeight()-115);
 		} else {
-			pane.setVisible(false);
 			binomGrafiek.setLocation(0,115);
 			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
 		}
@@ -179,15 +190,18 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 			pane.setSize(200,this.getHeight()-115);
 			table.setSize(200,this.getHeight()-115);	
 		}
-		binomGrafiek.setVisible(showGrafiek);
+		//binomGrafiek.setVisible(showGrafiek);
 	}
 	
 	public void setSize(int width, int height) {
 		super.setSize(width, height);
-		if (showTabel==false)
+		if (showTabel==false) {
 			binomGrafiek.setSize(this.getWidth(),this.getHeight()-115);
-		else
+			binomRooster.setSize(this.getWidth(),this.getHeight()-115);
+		} else {
 			binomGrafiek.setSize(this.getWidth()-200,this.getHeight()-115);
+			binomRooster.setSize(this.getWidth()-200,this.getHeight()-115);
+		}
 		setZichtbaar();
 	}
 	
@@ -296,12 +310,28 @@ public class BinomTrekking extends JPanel implements ActionListener, Runnable{
 		}
 		binomFrequentie.repaint();
 	}
-	
+	int frameSkip;
 	public void run()
 	{ 	while (animatie!=null && stopCounting==false)
    		{
 	   		this.doeStap();
-	   		try{ Thread.sleep(10); } catch (Exception e) {}
+	   		try{ 
+	   			double waitTime;
+	   			if (multipleTimes) 
+	   				waitTime=200/(Double.parseDouble(aantalTrekkingenText.getText())*Double.parseDouble(aantalKeer.getText()));
+	   			else
+	   				waitTime=200/(Double.parseDouble(aantalTrekkingenText.getText()));
+	   			if (waitTime<1) {
+	   				double dummy=1/waitTime;
+	   				frameSkip=frameSkip+1;
+	   				if (frameSkip>dummy) {
+	   					Thread.sleep(1);
+	   					frameSkip=0;
+	   				}
+	   			} else {
+	   				Thread.sleep((int)waitTime);
+	   			}
+	   		} catch (Exception e) {}
    		}
 	}
 

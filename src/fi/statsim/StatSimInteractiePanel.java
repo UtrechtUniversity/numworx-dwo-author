@@ -174,6 +174,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean toonSom=false;
 		if(h.containsKey("toonSom")) toonSom= ((Boolean)h.get("toonSom")).booleanValue();
 		dobbelstenen.toonSomCheckBox.setSelected(toonSom);
+		dobbelstenen.setZichtbaar();
 		int maxCount1=0;
 		if(h.containsKey("maxCount1")) maxCount1= ((Integer)h.get("maxCount1")).intValue();
 		dobbelstenen.maxCount=maxCount1;
@@ -351,14 +352,90 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
 		if(h.containsKey("binomTrekkingFrequentie")) binomTrekking.showFrequentie= ((Boolean)h.get("binomTrekkingFrequentie")).booleanValue();
 		binomTrekking.setZichtbaar();
+
+		Boolean eenMuntTweeMunt=true;
+		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
+		munten.eenMuntRadio.setSelected(eenMuntTweeMunt);
+		munten.tweeMuntenRadio.setSelected(!eenMuntTweeMunt);
+		if(h.containsKey("aantalWorpen")) munten.aantalWorpenText.setText(((String)h.get("aantalWorpen")));
+		if(h.containsKey("kansOpMunt")) munten.kansOpKopText.setText(((String)h.get("kansOpMunt")));
+		munten.setZichtbaar();
 		
+		if(h.containsKey("eenDobbelsteenRadio")) dobbelstenen.eenDobbelsteenRadio.setSelected(((Boolean)h.get("eenDobbelsteenRadio")).booleanValue());
+		if(h.containsKey("tweeDobbelstenenRadio")) dobbelstenen.tweeDobbelstenenRadio.setSelected(((Boolean)h.get("tweeDobbelstenenRadio")).booleanValue());
+		if(h.containsKey("drieDobbelstenenRadio")) dobbelstenen.drieDobbelstenenRadio.setSelected(((Boolean)h.get("drieDobbelstenenRadio")).booleanValue());
+		if(h.containsKey("aantalWorpenDobbelsteen")) dobbelstenen.aantalWorpenText.setText(((String)h.get("aantalWorpenDobbelsteen")));
+		if(h.containsKey("toonSom")) dobbelstenen.toonSomCheckBox.setSelected(((Boolean)h.get("toonSom")).booleanValue());
+		dobbelstenen.setZichtbaar();
+		
+		if(h.containsKey("kans")) binomTrekking.kansText.setText(((String)h.get("kans")));
+		if(h.containsKey("aantalTrekkingen")) binomTrekking.aantalTrekkingenText.setText(((String)h.get("aantalTrekkingen")));
+		if(h.containsKey("aantalKeer")) binomTrekking.aantalKeer.setText(((String)h.get("aantalKeer")));
+		binomTrekking.setZichtbaar();
 	}
 
 	public void setEditState(Hashtable h) {
+		Boolean muntenRadioBool=false;
+		if(h.containsKey("muntenRadio")) muntenRadioBool= ((Boolean)h.get("muntenRadio")).booleanValue();
+		munten.setVisible(muntenRadioBool);
+		if(h.containsKey("muntenResultaten")) munten.showResultaten= ((Boolean)h.get("muntenResultaten")).booleanValue();
+		if(h.containsKey("muntenGrafiek")) munten.showGrafiek= ((Boolean)h.get("muntenGrafiek")).booleanValue();
+		if(h.containsKey("muntenTabel")) munten.showTabel= ((Boolean)h.get("muntenTabel")).booleanValue();
+		if(h.containsKey("muntenFrequentie")) munten.showFrequentie= ((Boolean)h.get("muntenFrequentie")).booleanValue();
+		munten.setZichtbaar();
+		Boolean dobbelstenenRadioBool=false;
+		if(h.containsKey("dobbelstenenRadio")) dobbelstenenRadioBool= ((Boolean)h.get("dobbelstenenRadio")).booleanValue();
+		dobbelstenen.setVisible(dobbelstenenRadioBool);
+		if(h.containsKey("dobbelstenenResultaten")) dobbelstenen.showResultaten= ((Boolean)h.get("dobbelstenenResultaten")).booleanValue();
+		if(h.containsKey("dobbelstenenGrafiek")) dobbelstenen.showGrafiek= ((Boolean)h.get("dobbelstenenGrafiek")).booleanValue();
+		if(h.containsKey("dobbelstenenTabel")) dobbelstenen.showTabel= ((Boolean)h.get("dobbelstenenTabel")).booleanValue();
+		dobbelstenen.setZichtbaar();
+		Boolean binomTrekkingRadioBool=false;
+		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
+		binomTrekking.setVisible(binomTrekkingRadioBool);
+		if(h.containsKey("binomTrekkingGrafiek")) binomTrekking.showGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
+		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
+		if(h.containsKey("binomTrekkingFrequentie")) binomTrekking.showFrequentie= ((Boolean)h.get("binomTrekkingFrequentie")).booleanValue();
+		binomTrekking.setZichtbaar();
+		
+		Boolean eenMuntTweeMunt=true;
+		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
+		munten.eenMuntRadio.setSelected(eenMuntTweeMunt);
+		munten.tweeMuntenRadio.setSelected(!eenMuntTweeMunt);
+		if(h.containsKey("aantalWorpen")) munten.aantalWorpenText.setText(((String)h.get("aantalWorpen")));
+		if(h.containsKey("kansOpMunt")) munten.kansOpKopText.setText(((String)h.get("kansOpMunt")));
+		munten.setZichtbaar();
+		
+		if(h.containsKey("eenDobbelsteenRadio")) dobbelstenen.eenDobbelsteenRadio.setSelected(((Boolean)h.get("eenDobbelsteenRadio")).booleanValue());
+		if(h.containsKey("tweeDobbelstenenRadio")) dobbelstenen.tweeDobbelstenenRadio.setSelected(((Boolean)h.get("tweeDobbelstenenRadio")).booleanValue());
+		if(h.containsKey("drieDobbelstenenRadio")) dobbelstenen.drieDobbelstenenRadio.setSelected(((Boolean)h.get("drieDobbelstenenRadio")).booleanValue());
+		if(h.containsKey("aantalWorpenDobbelsteen")) dobbelstenen.aantalWorpenText.setText(((String)h.get("aantalWorpenDobbelsteen")));
+		if(h.containsKey("toonSom")) dobbelstenen.toonSomCheckBox.setSelected(((Boolean)h.get("toonSom")).booleanValue());
+		dobbelstenen.setZichtbaar();
+		
+		if(h.containsKey("kans")) binomTrekking.kansText.setText(((String)h.get("kans")));
+		if(h.containsKey("aantalTrekkingen")) binomTrekking.aantalTrekkingenText.setText(((String)h.get("aantalTrekkingen")));
+		if(h.containsKey("aantalKeer")) binomTrekking.aantalKeer.setText(((String)h.get("aantalKeer")));
+		binomTrekking.setZichtbaar();
 	}
 
 	public Hashtable getEditState() {
-		return getState();
+		Hashtable h = new Hashtable();
+		h.put("eenMuntTweeMunt", new Boolean(munten.eenMuntRadio.isSelected()));
+		h.put("aantalWorpen", new String(munten.aantalWorpenText.getText()));
+		h.put("kansOpMunt", new String(munten.kansOpKopText.getText()));
+		
+		h.put("eenDobbelsteenRadio", new Boolean(dobbelstenen.eenDobbelsteenRadio.isSelected()));
+		h.put("TweeDobbelstenenRadio", new Boolean(dobbelstenen.tweeDobbelstenenRadio.isSelected()));
+		h.put("drieDobbelstenenRadio", new Boolean(dobbelstenen.drieDobbelstenenRadio.isSelected()));
+		h.put("aantalWorpenDobbelsteen", new String(dobbelstenen.aantalWorpenText.getText()));
+		h.put("toonSom", new Boolean(dobbelstenen.toonSomCheckBox.isSelected()));
+		
+		h.put("kans", new String(binomTrekking.kansText.getText()));
+		h.put("aantalTrekkingen", new String(binomTrekking.aantalTrekkingenText.getText()));
+		h.put("aantalKeer", new String(binomTrekking.aantalKeer.getText()));
+		return h;
+		//return getState();
 	}
 
 	public InteractieEditPanel getEditPanel() {
