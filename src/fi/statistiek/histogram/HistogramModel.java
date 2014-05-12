@@ -49,7 +49,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 
 	private boolean percentage; // true = show percentage, false = show
 								// frequency
-	private boolean verticalBars; // true = vertical bars, false = horizontal
+	private boolean hasVerticalBars; // true = vertical bars, false = horizontal
 								  // bars
 	private boolean labelUnderBin; 	// true = show labels under bin, false = 
 									// show labels between bins
@@ -95,7 +95,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.binBoundaries.add(new Double(-100));
 		this.binBoundaries.add(new Double(100));
 		this.percentage = false;
-		this.verticalBars = true;
+		this.hasVerticalBars = true;
 		this.showUserOptions = false;
 
 		this.frequencyPolygonMode = frequencyPolygonMode;
@@ -465,9 +465,9 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setVerticalBars(boolean b)
 	{
-		if (!(this.verticalBars == b))
+		if (!(this.hasVerticalBars == b))
 		{
-			this.verticalBars = b;
+			this.hasVerticalBars = b;
 			this.changed();
 		}
 	}
@@ -475,9 +475,9 @@ public class HistogramModel extends Observable implements TableModelListener,
 	/**
 	 * @return true iff using vertical bars
 	 */
-	public boolean getVerticalBars()
+	public boolean hasVerticalBars()
 	{
-		return this.verticalBars;
+		return this.hasVerticalBars;
 	}
 
 	public void tableChanged(TableModelEvent arg0)
