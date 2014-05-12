@@ -260,6 +260,9 @@ public class Statistiek implements WiskOpdrApplet
 			e = (int) Math.floor(Math.log10(b));
 		}
 		double step = Math.ceil(b * Math.pow(10, -e)) * Math.pow(10, e);
+		
+		if (step == 0)
+			step++;
 
 		// System.out.println("e = " + e);
 		// System.out.println("step = " + step);
@@ -275,9 +278,6 @@ public class Statistiek implements WiskOpdrApplet
 			start = (Math.ceil(min / step) - 1) * step;
 		}
 
-		if (step == 0)
-			step++;
-		
 		// make sure the maximum value is covered by the bins
 		while ((start + noBins * step) <= max)
 		{
@@ -323,6 +323,9 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			start = min;
 		}
+		
+		if (binWidth == 0)
+			binWidth++;
 		
 		// The maximum bin boundary should be larger than the maximum value
 		// so (max + 1) to determine the number of bins
