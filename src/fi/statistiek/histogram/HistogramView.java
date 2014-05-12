@@ -55,7 +55,7 @@ public class HistogramView extends JPanel implements Observer
 	public static final int KEUZEBALK_HOOGTE = 50;
 	public static final int X_AS_OFFSET = 50;
 	public static final int Y_AS_OFFSET = 50;
-	public static final double MAX_BAR_HEIGHT = 0.8;
+	public static final double MAX_SCREEN_FRACTION_FOR_BARS = 0.8;
 
 	private double verticalBarWidth;
 	private double horizontalBarWidth;
@@ -293,7 +293,7 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private Point dotLocation(int dotHeight, int dotNumber)
 	{
-		if (this.model.getVerticalBars())
+		if (this.model.hasVerticalBars())
 		{
 			int x1 = this.yAxisOffset + dotNumber + 1
 				+ (int) (dotNumber * this.verticalBarWidth);
@@ -332,15 +332,9 @@ public class HistogramView extends JPanel implements Observer
 		}
 	}
 
-	private void paintBar(Graphics g, int barLength, int selectedLength,
-		int barNumber, int ySplitOffset, int xSplitOffset, int splitClass)
-	{
-		this.paintBar(g, barLength, selectedLength, barNumber, ySplitOffset,
-			xSplitOffset, HistogramView.BAR_COLOR, 0, 0, false, splitClass);
-	}
-
 	/**
-	 * Paint a single bar
+	 * Paint a single bar. In case of frequencypolygon the dot and connecting
+	 * line is painted. The bar color will be the standard bar color.
 	 * 
 	 * @param g
 	 *            The graphics in which this will be painted
@@ -349,7 +343,31 @@ public class HistogramView extends JPanel implements Observer
 	 * @param selectedLength
 	 *            The length of the selected part of the bar
 	 * @param barNumber
-	 *            The number of this bar
+	 *            The number of the bar
+	 * @param ySplitOffset
+	 * @param xSplitOffset
+	 * @param splitClass
+	 * 		The number of the split class
+	 */
+	private void paintBar(Graphics g, int barLength, int selectedLength,
+		int barNumber, int ySplitOffset, int xSplitOffset, int splitClass)
+	{
+		this.paintBar(g, barLength, selectedLength, barNumber, ySplitOffset,
+			xSplitOffset, HistogramView.BAR_COLOR, 0, 0, false, splitClass);
+	}
+
+	/**
+	 * Paint a single bar. In case of frequencypolygon the dot and connecting
+	 * line is painted.
+	 * 
+	 * @param g
+	 *            The graphics in which this will be painted
+	 * @param barLength
+	 *            The length of the bar
+	 * @param selectedLength
+	 *            The length of the selected part of the bar
+	 * @param barNumber
+	 *            The number of the bar
 	 * @param ySplitOffset
 	 * @param xSplitOffset
 	 * @param c
@@ -415,7 +433,7 @@ public class HistogramView extends JPanel implements Observer
 			double colorMixSymm = 0.5; // t.b.v. shading
 			double colorMix = 0.7;
 
-			if (this.model.getVerticalBars())
+			if (this.model.hasVerticalBars())
 			{
 				int x1 = this.yAxisOffset + barNumber + 1
 					+ (int) (barNumber * this.verticalBarWidth);
@@ -656,7 +674,8 @@ public class HistogramView extends JPanel implements Observer
 		int width, int height, Graphics g, Color c, Color shadingColor,
 		boolean isVerticalBar)
 	{
-		double symmShadingFraction = (double) 1/4; // number indicating the part of the outside of the bar that is shaded
+//		double symmShadingFraction = (double) 1/4; // number indicating the part of the outside of the bar that is shaded
+		double symmShadingFraction = (double) 1/3; // number indicating the part of the outside of the bar that is shaded
 
 		Graphics2D g2d = (Graphics2D)g;
 
@@ -812,7 +831,7 @@ public class HistogramView extends JPanel implements Observer
 		{
 			// paint area above this segment white to get the correct color
 			// mixing when using alpha values
-			if (this.model.getVerticalBars())
+			if (this.model.hasVerticalBars())
 			{
 				yPoints[0] = 0;
 				yPoints[3] = 0;
@@ -916,12 +935,12 @@ public class HistogramView extends JPanel implements Observer
 		at.rotate(Math.PI * 1.5);
 		Font rotateFont = font.deriveFont(at);
 
-		String s1 = this.model.getVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
+		String s1 = this.model.hasVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
 			.getString("percentageLabel") : Statistiek.rb
 			.getString("frequentieLabel"))
 			: this.model.getTableModel().getColumnName(
 				this.model.getColumnIndex());
-		String s2 = !this.model.getVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
+		String s2 = !this.model.hasVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
 			.getString("percentageLabel") : Statistiek.rb
 			.getString("frequentieLabel"))
 			: this.model.getTableModel().getColumnName(
@@ -934,8 +953,8 @@ public class HistogramView extends JPanel implements Observer
 		g.setFont(font);
 		g.drawString(s2,
 			(this.getWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
-				+ this.yAxisOffset, this.barAreaHeight() + this.xAxisOffset
-				- 10 + yOffset);
+				+ this.yAxisOffset, 
+			this.barAreaHeight() + this.xAxisOffset - 10 + yOffset);
 
 		if (this.model.getTableModel().splitVarClasses(
 			this.model.getSplitOptions()) > 1
@@ -1115,40 +1134,52 @@ public class HistogramView extends JPanel implements Observer
 	}
 
 	/**
-	 * paint the bars for numerical data
+	 * Paint the axes and bars for numerical data.
 	 * 
 	 * @param g
-	 *            The graphics in which the bars will be painted
+	 *	The graphics in which the bars will be painted
+	 * @param allFrequencies
+	 *	Array of frequencies, one for each splitClass, containing for each bin
+	 *	the frequency for the bin and the number of selected items within the bin. 
+	 * @param splitClass
+	 * 	The number of the splitClass, starting with 0. Is 0 when there is no split.
 	 */
 	private void paintNumberClass(Graphics2D g, int[][] allFrequencies,
 		int splitClass)
 	{
 		boolean normalFit;
+		double availableSpace;
+		double maxValueOnAxis;
+		double scale;
+		double amountScale;
+		
 		int[] frequencies = allFrequencies[splitClass];
 		g.setFont(super.getFont());
 		FontMetrics fm = g.getFontMetrics();
 		AffineTransform at = new AffineTransform();
-		at.rotate(Math.PI * 1.5);
+		double theta = Math.PI * 1.75;
+		at.rotate(theta); // 315 graden met de klok mee; 45 graden tegen de klok in
 		Font rotateFont = super.getFont().deriveFont(at);
 		int ySplitOffset = splitClass * (this.scrollPane.getHeight() - 5);
 
 		// determine scale
 		int max = this.maxFrequency(allFrequencies, splitClass);
+		
+		availableSpace = HistogramView.MAX_SCREEN_FRACTION_FOR_BARS *
+        	(this.model.hasVerticalBars() ? 
+        		this.barAreaHeight() : 
+        		this.barAreaWidth()); // if vertical then availableSpace represents height, if horizontal then width
+		
+		maxValueOnAxis = this.model.getPercentage() ? 
+			(100.0 * max / (this.frequenciesSum(allFrequencies, splitClass))) : 
+			max; 
+		
+		// scale variable to derive the correct size for percentages or amounts
+		scale =  availableSpace/maxValueOnAxis;
 
-		double percScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth())
-			/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
-		double amountScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth()) / (double) max;
-
-		if (this.model.getVerticalBars())
+		if (this.model.hasVerticalBars())
 		{
-			this.yAxisOffset = this.determineDependentAxisWidth(this.model
-				.getPercentage() ? percScale : amountScale)
-				+ 15
-				+ fm.getHeight();
+			this.yAxisOffset = this.determineDependentAxisWidth(scale) + 15 + fm.getHeight();
 
 			// set bar width
 			this.setBarWidth(frequencies.length / 2);
@@ -1162,7 +1193,7 @@ public class HistogramView extends JPanel implements Observer
 			{
 				int marge = 5;
 				int columnIndex = this.model.getColumnIndex();
-				String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+				AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
 				
 //				System.out.println("HistogramView.paintNumberClass(): type = " + type
 //					+ ", getBinWidth() = " + getBinWidth());
@@ -1173,8 +1204,9 @@ public class HistogramView extends JPanel implements Observer
 					if (i < this.model.getBinBoundaries().size() - 1)
 					{
 						String s_labelUnderBin;
-						if (type.equals(AllowedTypes.INTEGER.toString()) && ((int) getBinWidth()) == 1)
+						if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
 						{
+							// Voor gehele getallen met 1 waarde per klasse, 1 getal tonen onder de staaf
 							s_labelUnderBin = s;
 //							System.out.println("HistogramView.paintNumberClass(): INT & binwidth = 1, s_labelUnderBin = " 
 //								+ s_labelUnderBin);
@@ -1226,8 +1258,7 @@ public class HistogramView extends JPanel implements Observer
 		} // vertical bars
 		else // horizontal bars
 		{
-			this.xAxisOffset = this.determineDependentAxisWidth(this.model
-				.getPercentage() ? percScale : amountScale);
+			this.xAxisOffset = this.determineDependentAxisWidth(scale);
 
 			// set bar width
 			this.setBarWidth(frequencies.length / 2);
@@ -1238,7 +1269,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.getLabelUnderBin())
 			{
 				int columnIndex = this.model.getColumnIndex();
-				String type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType().toString();
+				AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
 				
 				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
@@ -1246,8 +1277,9 @@ public class HistogramView extends JPanel implements Observer
 					if (i < this.model.getBinBoundaries().size() - 1)
 					{
 						String s_labelUnderBin;
-						if (type.equals(AllowedTypes.INTEGER.toString()) && ((int) getBinWidth()) == 1)
+						if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
 						{
+							// Voor gehele getallen met 1 waarde per klasse, 1 getal tonen bij de staaf
 							s_labelUnderBin = s;
 						}
 						else
@@ -1255,6 +1287,7 @@ public class HistogramView extends JPanel implements Observer
     						s_labelUnderBin = s + "-<" +
     							getStringValue(this.model.getBinBoundaries().get(i + 1));
 						}
+//						System.out.println("HistogramView.paintNumberClass(): s_labelUnderBin = " + s_labelUnderBin);
 						
 						width = fm.stringWidth(s_labelUnderBin);
 						if (width > longest)
@@ -1281,52 +1314,52 @@ public class HistogramView extends JPanel implements Observer
 		}
 
 		// correct scales
-		if (this.model.getPercentage() && this.model.isSplitInSingleView())
-		{
-			//System.out.println("paintNumberClass(): % && splitInSingleView! percScale aanpassen...");
-			
-			// max is de max van de som van de frequencies per split
-			max = getMaxFrequenciesofBins(allFrequencies);
-			// allFrequencies gebruiken om totaal aantal frequencies te bepalen
-			int frequenciesTotalSum = getTotalSumOfFrequencies(allFrequencies);
-
-			percScale = HistogramView.MAX_BAR_HEIGHT
-    			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-    				.barAreaWidth())
-    			/ (100.0 * max / frequenciesTotalSum);
-		}
-		else
-		{
-            percScale = HistogramView.MAX_BAR_HEIGHT
-            	* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-            	.barAreaWidth())
-            	/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
-		}
-		
-		amountScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth()) / (double) max;
-
-		// paint scale
 		if (this.model.getPercentage())
 		{
-			//System.out.println("HistogramView.paintNumberClass(): percScale = " + percScale);
-			this.paintAmountScale(g, percScale, ySplitOffset);
-		}
-		else
-		{
-			//System.out.println("HistogramView.paintNumberClass(): amountScale = " + amountScale);
-			this.paintAmountScale(g, amountScale, ySplitOffset);
-		}
+			if (this.model.getTableModel().splitVarClasses(
+				this.model.getSplitOptions()) > 1)
+			{
+				// er is een split
 
-		// paint bars
+				if (this.model.isSplitInSingleView())
+				{
+					if (this.model.isFrequencyPolygonMode()
+						&& this.model.isFrequencyPolygonCumulativeMode())
+					{
+						maxValueOnAxis = 100.0;
+					}
+					else
+					{
+						maxValueOnAxis = (100.0 * max / (this.frequenciesSum(allFrequencies, splitClass) + 1));
+					}
+			        
+					scale = availableSpace/maxValueOnAxis;
+				}
+				else
+				{
+        			int maxInSplitClass = this.maxFrequency(allFrequencies, splitClass);
+        
+        			maxValueOnAxis = (100.0 * maxInSplitClass / (this.frequenciesSum(allFrequencies, splitClass))); 
+        			
+    	            scale = availableSpace/maxValueOnAxis;
+				}
+			}
+		}
+		
+		// PAINT AMOUNT SCALE
+		this.paintAmountScale(g, scale, ySplitOffset);
+
+		// PAINT BARS
+		// use amountScale to paint the correct bar length
+		amountScale = availableSpace/max;
+
+		ArrayList<Color> splitColors = new ArrayList<Color>();
+		ArrayList<String> splitLabels = new ArrayList<String>();
+
 		if (this.model.isSplitInSingleView()
 			&& this.model.getTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 		{
-			ArrayList<Color> splitColors = new ArrayList<Color>();
-			ArrayList<String> splitLabels = new ArrayList<String>();
-
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode()
 				&& this.model.isFrequencyPolygonStackMode())
@@ -1355,8 +1388,6 @@ public class HistogramView extends JPanel implements Observer
 							frequencySum[i] = splitFreq[2 * i];
 						}
 
-						// this.paintBar(g,
-						// (int)(totalFrequencies[i]*amountScale), 0, i, 0);
 						this.fillCumulativeFreqPolygonSegment(
 							g,
 							(int) Math.round(amountScale
@@ -1374,55 +1405,54 @@ public class HistogramView extends JPanel implements Observer
 					}
 					//System.out.println(Arrays.toString(totalFrequencies));
 				}
-			}
+			} // frequentiepolygoon, cumulatief, stapelen
 			else
 			{
+				// frequentiepolygoon, cumulatief, split in single view
 				if (this.model.isFrequencyPolygonMode()
 					&& this.model.isFrequencyPolygonCumulativeMode())
 				{
-
+					// Paint the frequency polygon as dots and lines 
 					for (int split = 0; split < allFrequencies.length; split++)
 					{
-						g.setComposite(this.makeComposite(split + 1));
+						amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						
 						int[] splitFreq = allFrequencies[split];
-						int frequencySum = 0;
-						// int frequencySelectedSum = 0;
 						Color c = this.getColor(split);
 						splitColors.add(c);
 						splitLabels.add(this.model.getSplitOptions()
 							.getSplitClassLabel(splitClass,
 								this.model.getTableModel()));
 
-						for (int i = 0; i < splitFreq.length / 2; i++)
+						int frequencySum = 0;
+						int frequencySelectedSum = 0;
+						
+						for (int i = 0; i < frequencies.length / 2; i++)
 						{
-							this.fillCumulativeFreqPolygonSegment(
-								g,
-								(int) Math.round(amountScale
-									* (frequencySum + splitFreq[2 * i])), 0,
-								(int) Math.round(amountScale * frequencySum),
-								0, i, c);
-
 							frequencySum += splitFreq[2 * i];
-							// frequencySelectedSum = splitFreq[2*i + 1];
-							// this.paintBar(g, (int)(frequencySum*amountScale),
-							// 0, i, 0);
+							frequencySelectedSum = splitFreq[2 * i + 1];
+							this.paintBar(
+								g,
+								(int) (frequencySum * amountScale),
+								(int) (frequencySelectedSum * amountScale),
+								i, 0, 0, c, split,
+								allFrequencies.length, true, split);
 						}
 						this.lastPolygonPoint = null;
 					}
+
 					g.setComposite(this.makeComposite(1));
 
 				} // cumulatief frequentiepolygoon
 				else
 				{
+					// niet-cumulatief frequentiepolygoon
+					
 					// Hier worden de samengestelde staafjes getekend.
 					int[] cumHeight = new int[frequencies.length / 2];
 					for (int split = 0; split < allFrequencies.length; split++)
 					{
 						int[] splitFreq = allFrequencies[split];
-						if (!this.model.isFrequencyPolygonMode())
-						{
-							// g.setComposite(this.makeComposite(split+1));
-						}
 						Color c = this.getColor(split);
 						splitColors.add(c);
 						splitLabels.add(this.model.getSplitOptions()
@@ -1431,7 +1461,7 @@ public class HistogramView extends JPanel implements Observer
 
 						for (int i = 0; i < frequencies.length / 2; i++)
 						{
-							if (this.model.getVerticalBars())
+							if (this.model.hasVerticalBars())
 							{
 								if (this.isNextToEachOtherSelected())
 								{
@@ -1455,12 +1485,6 @@ public class HistogramView extends JPanel implements Observer
 							{
 								if (this.isNextToEachOtherSelected())
 								{
-//									this.paintBar(
-//										g,
-//										(int) (splitFreq[2 * i] * amountScale),
-//										(int) (splitFreq[2 * i + 1] * amountScale),
-//										i, 0, 0, c, split,
-//										allFrequencies.length, true, splitClass);
 									this.paintBar(
 										g,
 										(int) (splitFreq[2 * i] * amountScale),
@@ -1470,11 +1494,6 @@ public class HistogramView extends JPanel implements Observer
 								}
 								else
 								{
-//									this.paintBar(
-//										g,
-//										(int) (splitFreq[2 * i] * amountScale),
-//										(int) (splitFreq[2 * i + 1] * amountScale),
-//										i, 0, cumHeight[i], c, 0, 0, false, splitClass);
 									this.paintBar(
 										g,
 										(int) (splitFreq[2 * i] * amountScale),
@@ -1483,7 +1502,6 @@ public class HistogramView extends JPanel implements Observer
 								}
 							}
 							cumHeight[i] += (int) (splitFreq[2 * i] * amountScale);
-
 						}
 						this.lastPolygonPoint = null;
 					}
@@ -1492,39 +1510,68 @@ public class HistogramView extends JPanel implements Observer
 			}
 		} // split van meer dan 1 klasse
 		else
-		{ // no split
+		{ // no split or split in multiple views
+
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode())
 			{
-				int frequencySum = 0;
-				int frequencySelectedSum = 0;
-				for (int i = 0; i < frequencies.length / 2; i++)
+				if (this.model.getTableModel().splitVarClasses(
+				this.model.getSplitOptions()) > 1)
 				{
-					frequencySum += frequencies[2 * i];
-					frequencySelectedSum = frequencies[2 * i + 1];
-					this.paintBar(g, (int) (frequencySum * amountScale),
-						(int) (frequencySelectedSum * amountScale), i,
-						ySplitOffset, 0, splitClass);
+					// split in multiple views
+					Color c = this.getColor(splitClass);
+					splitColors.add(c);
+					splitLabels.add(this.model.getSplitOptions()
+						.getSplitClassLabel(splitClass,
+							this.model.getTableModel()));
+
+					int frequencySum = 0;
+					int frequencySelectedSum = 0;
+					for (int i = 0; i < frequencies.length / 2; i++)
+					{
+						frequencySum += frequencies[2 * i];
+						frequencySelectedSum = frequencies[2 * i + 1];
+						this.paintBar(
+							g,
+							(int) (frequencySum * amountScale),
+							(int) (frequencySelectedSum * amountScale),
+							i, ySplitOffset, 0, c, splitClass,
+							allFrequencies.length, true, splitClass);
+					}
+				}
+				else // no split
+				{
+					int frequencySum = 0;
+					int frequencySelectedSum = 0;
+					for (int i = 0; i < frequencies.length / 2; i++)
+					{
+						frequencySum += frequencies[2 * i];
+						frequencySelectedSum = frequencies[2 * i + 1];
+						this.paintBar(
+							g, 
+							(int) (frequencySum * amountScale),
+							(int) (frequencySelectedSum * amountScale), 
+							i, ySplitOffset, 0, splitClass);
+					}
 				}
 			}
 			else
 			{
 				for (int i = 0; i < frequencies.length / 2; i++)
 				{
-					// this.paintBar(g, (int)(frequencies[2*i]*amountScale),
-					// (int)(frequencies[2*i+1]*amountScale), i,
-					// ySplitOffset,0);
 					if (allFrequencies.length > 1)
-						this.paintBar(g,
+						this.paintBar(
+							g,
 							(int) (frequencies[2 * i] * amountScale),
-							(int) (frequencies[2 * i + 1] * amountScale), i,
-							ySplitOffset, 0, this.getColor(splitClass), 0, 0,
+							(int) (frequencies[2 * i + 1] * amountScale), 
+							i, ySplitOffset, 0, this.getColor(splitClass), 0, 0,
 							false, splitClass);
 					else
-						this.paintBar(g,
+						this.paintBar(
+							g,
 							(int) (frequencies[2 * i] * amountScale),
-							(int) (frequencies[2 * i + 1] * amountScale), i,
-							ySplitOffset, 0, splitClass);
+							(int) (frequencies[2 * i + 1] * amountScale), 
+							i, ySplitOffset, 0, splitClass);
 				}
 			}
 		}
@@ -1534,10 +1581,11 @@ public class HistogramView extends JPanel implements Observer
 		int columnIndex = this.model.getColumnIndex();
 		AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
 
-		if (this.model.getVerticalBars())
+		// PAINT BIN BOUNDARY LABELS
+		if (this.model.hasVerticalBars())
 		{
 			// check if the bin boundary strings will fit
-			normalFit = determineNormalFitForVerticalBars(fm);
+			normalFit = determineNormalFitForVerticalBars(fm, type);
 			
 //			System.out.println("HistogramView.paintNumberClass(): normalFit = " + normalFit);
 
@@ -1577,7 +1625,6 @@ public class HistogramView extends JPanel implements Observer
 							int x2 = (int) (this.yAxisOffset + (i + 1) + (i + 1)
 								* this.verticalBarWidth);
 							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin) / 2;
-//							g.drawString(s_labelUnderBin, ((x + x2 - offset)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
 							g.drawString(s_labelUnderBin, ((x + x2)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
 //							System.out.println("HistogramView.paintNumberClass(): fm.stringWidth(s_labelUnderBin) = "
 //								+ fm.stringWidth(s_labelUnderBin)
@@ -1616,13 +1663,12 @@ public class HistogramView extends JPanel implements Observer
 						{
 							String s_labelUnderBin = s + "-<" +
 								getStringValue(this.model.getBinBoundaries().get(i + 1));
-							int x2 = (int) (this.yAxisOffset + (i + 1) + (i + 1)
-								* this.verticalBarWidth);
 							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
-							g.drawString(s_labelUnderBin, (int) (x + 5 + (this.verticalBarWidth/2)), y + 7 + offset_labelUnderBin + ySplitOffset);
-//							System.out.println("HistogramView.paintNumberClass(): fm.stringWidth(s_labelUnderBin) = "
-//								+ fm.stringWidth(s_labelUnderBin)
-//								+ ", x2-x = " + (x2 - x) + ", this.verticalBarWidth = " + this.verticalBarWidth);
+							int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
+							int heightRotatedLabel = (int) (offset_labelUnderBin * -Math.sin(theta));
+							g.drawString(s_labelUnderBin, 
+									(int) (x + 5 + (this.verticalBarWidth/2) - widthRotatedLabel), 
+									y + 7 + heightRotatedLabel + 5 + ySplitOffset);
 						}
 					}
 					else
@@ -1676,15 +1722,10 @@ public class HistogramView extends JPanel implements Observer
 						+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
 				}
 			}
-			// String s = this.model.getBinBoundaries().get(0).toString();
-			// g.drawString(s, HistogramView.Y_AS_OFFSET-fm.stringWidth(s)-7,
-			// fm.getHeight()-4);
-			// g.drawLine(HistogramView.Y_AS_OFFSET-7, 0,
-			// HistogramView.Y_AS_OFFSET-2, 0);
-		}
+		} // horizontal bars
 	}
 
-	private boolean determineNormalFitForVerticalBars(FontMetrics fm)
+	private boolean determineNormalFitForVerticalBars(FontMetrics fm, AllowedTypes type)
 	{
 		boolean normalFit = true;
 
@@ -1696,8 +1737,18 @@ public class HistogramView extends JPanel implements Observer
 				String s = getStringValue(this.model.getBinBoundaries().get(i));
 				if (i < this.model.getBinBoundaries().size() - 1)
 				{
-					String s_labelUnderBin = s + "-<" +
-						getStringValue(this.model.getBinBoundaries().get(i + 1));
+					String s_labelUnderBin;
+					
+					if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
+					{
+						s_labelUnderBin = s;
+					}
+					else
+					{
+						s_labelUnderBin = s + "-<" +
+								getStringValue(this.model.getBinBoundaries().get(i + 1));
+					}
+					
 					if (fm.stringWidth(s_labelUnderBin) + marge > this.verticalBarWidth)
 					{
 						normalFit = false;
@@ -1756,12 +1807,12 @@ public class HistogramView extends JPanel implements Observer
 	{
 //		System.out.println("HistogramView.determineDependentAxisWidth(scale = " + scale + ")");
 		
-		if (this.model.getVerticalBars())
+		if (this.model.hasVerticalBars())
 		{
 			int width = 5;
 			FontMetrics fm = this.getFontMetrics(this.getFont());
 
-			int panelHeight = (int) ((this.model.getVerticalBars() ? this
+			int panelHeight = (int) ((this.model.hasVerticalBars() ? this
 				.barAreaHeight() : this.barAreaWidth()));
 			int base = 1;
 			int exp = 0;
@@ -1811,14 +1862,14 @@ public class HistogramView extends JPanel implements Observer
 	}
 
 	/**
-	 * Paint scale on the axis
+	 * Paint scale on the axis with the amounts or percentages.
 	 * 
 	 * @param g
 	 *            Graphics in which it will be painted
-	 * @param amountScale
+	 * @param scale
 	 *            The multiplier used to make sure the bars fill the view
 	 */
-	private void paintAmountScale(Graphics g, double amountScale,
+	private void paintAmountScale(Graphics g, double scale,
 		int ySplitOffset)
 	{
 		g.setFont(super.getFont());
@@ -1826,12 +1877,12 @@ public class HistogramView extends JPanel implements Observer
 		FontMetrics fm = g.getFontMetrics();
 
 		// Determine the interval for markers on the axis
-		int panelHeight = (int) ((this.model.getVerticalBars() ? this
+		int panelHeight = (int) ((this.model.hasVerticalBars() ? this
 			.barAreaHeight() : this.barAreaWidth()));
 		int base = 1;
 		int exp = 0;
 		int step = (int) (base * Math.pow(10, exp));
-		while (step * 6 * amountScale < panelHeight)
+		while (step * 6 * scale < panelHeight) // hoezo 6?
 		{
 			switch (base)
 			{
@@ -1871,16 +1922,16 @@ public class HistogramView extends JPanel implements Observer
 		}
 
 		double majorSteps = (panelHeight - 0.5 * fm.getHeight())
-			/ (step * amountScale);
+			/ (step * scale);
 		int majorStepsFloor = (int) Math.floor(majorSteps);
 
-		if (this.model.getVerticalBars())
+		if (this.model.hasVerticalBars())
 		{
 			// Paint the small markers
 			for (int i = 0; i < majorSteps * minorStepsPerMajorStep; i++)
 			{
 				int y = this.barAreaHeight()
-					- (int) (i * minorStep * amountScale);
+					- (int) (i * minorStep * scale);
 				g.setColor(new Color(240, 240, 240));
 				g.drawLine(this.yAxisOffset, y + ySplitOffset, this.getWidth(),
 					y + ySplitOffset);
@@ -1892,7 +1943,7 @@ public class HistogramView extends JPanel implements Observer
 			// paint the large markers with their value
 			for (int i = 0; i < majorStepsFloor + 1; i++)
 			{
-				int y = this.barAreaHeight() - (int) (i * step * amountScale);
+				int y = this.barAreaHeight() - (int) (i * step * scale);
 				g.setColor(new Color(220, 220, 220));
 				g.drawLine(this.yAxisOffset, y + ySplitOffset, this.getWidth(),
 					y + ySplitOffset);
@@ -1915,7 +1966,7 @@ public class HistogramView extends JPanel implements Observer
 			// paint the small markers
 			for (int i = 0; i < majorStepsFloor * minorStepsPerMajorStep; i++)
 			{
-				int x = this.yAxisOffset + (int) (i * minorStep * amountScale)
+				int x = this.yAxisOffset + (int) (i * minorStep * scale)
 					- 1;
 				g.drawLine(x, y + ySplitOffset, x, y + 2 + ySplitOffset);
 			}
@@ -1923,7 +1974,7 @@ public class HistogramView extends JPanel implements Observer
 			// paint the large markers with their value
 			for (int i = 0; i < majorStepsFloor + 1; i++)
 			{
-				int x = this.yAxisOffset + (int) (i * step * amountScale) - 1;
+				int x = this.yAxisOffset + (int) (i * step * scale) - 1;
 				g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 				String s = new Integer(i * step).toString();
 				if (this.model.getPercentage())
@@ -1945,11 +1996,17 @@ public class HistogramView extends JPanel implements Observer
 	private void paintEnumClass(Graphics2D g,
 		FrequencyTuple[][] allFrequencies, int splitClass)
 	{
+		double availableSpace;
+		double maxValueOnAxis;
+		double scale;
+		double amountScale;
+
 		g.setFont(super.getFont());
 		g.setColor(Color.BLACK);
 		FontMetrics fm = g.getFontMetrics();
 		AffineTransform at = new AffineTransform();
-		at.rotate(Math.PI * 1.5);
+		double theta = Math.PI * 1.75;
+		at.rotate(theta); // 315 graden met de klok mee; 45 graden tegen de klok in
 		Font rotateFont = super.getFont().deriveFont(at);
 
 		// get frequencies
@@ -1958,20 +2015,24 @@ public class HistogramView extends JPanel implements Observer
 
 		// determine scale
 		int max = this.maxFrequency(allFrequencies, splitClass);
-		double amountScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth()) / (double) max;
-		double percScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth())
-			/ (100.0 * max / this.frequenciesSum(allFrequencies, splitClass));
+		
+		availableSpace = HistogramView.MAX_SCREEN_FRACTION_FOR_BARS *
+        	(this.model.hasVerticalBars() ? 
+        		this.barAreaHeight() : 
+        		this.barAreaWidth()); // if vertical then availableSpace represents height, if horizontal then width
+		
+		maxValueOnAxis = this.model.getPercentage() ? 
+			(100.0 * max / (this.frequenciesSum(allFrequencies, splitClass))) : 
+			max; 
+		
+		// scale variable to derive the correct size for percentages or amounts
+		scale =  availableSpace/maxValueOnAxis;
 
-		if (this.model.getVerticalBars())
+		amountScale = availableSpace / (double) max;
+
+		if (this.model.hasVerticalBars())
 		{
-			this.yAxisOffset = this.determineDependentAxisWidth(this.model
-				.getPercentage() ? percScale : amountScale)
-				+ 10
-				+ fm.getHeight();
+			this.yAxisOffset = this.determineDependentAxisWidth(scale) + 10 + fm.getHeight();
 
 			// set bar width
 			this.setBarWidth(frequencies.length);
@@ -2002,9 +2063,8 @@ public class HistogramView extends JPanel implements Observer
 			}
 		}
 		else
-		{
-			this.xAxisOffset = this.determineDependentAxisWidth(this.model
-				.getPercentage() ? percScale : amountScale);
+		{ // horizontal bars
+			this.xAxisOffset = this.determineDependentAxisWidth(scale);
 
 			// set bar width
 			this.setBarWidth(frequencies.length);
@@ -2025,46 +2085,41 @@ public class HistogramView extends JPanel implements Observer
 
 		this.setBarWidth(frequencies.length);
 
-		// correct scales after the axis offsets are set
-		amountScale = HistogramView.MAX_BAR_HEIGHT
-			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-				.barAreaWidth()) / (double) max;
-
-		if (this.model.getPercentage() && this.model.isSplitInSingleView())
-		{
-			//System.out.println("paintEnumClass(): % && splitInSingleView! percScale aanpassen...");
-			
-			// max is de max van de som van de frequencies per split
-			max = getMaxFrequenciesofBins(allFrequencies);
-			// allFrequencies gebruiken om totaal aantal frequencies te bepalen
-			int frequenciesTotalSum = getTotalSumOfFrequencies(allFrequencies);
-
-			percScale = HistogramView.MAX_BAR_HEIGHT
-    			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-    				.barAreaWidth())
-    			/ (100.0 * max / frequenciesTotalSum);
-		}
-		else
-		{
-    		percScale = HistogramView.MAX_BAR_HEIGHT
-    			* (this.model.getVerticalBars() ? this.barAreaHeight() : this
-    				.barAreaWidth())
-    			/ (100.0 * max / this.tupleArraySum(frequencies));
-		}
-
-		// paint scale on axis
 		if (this.model.getPercentage())
 		{
-			//System.out.println("HistogramView.paintEnumClass(): percScale = " + percScale);
-			this.paintAmountScale(g, percScale, ySplitOffset);
-		}
+			if (this.model.isSplitInSingleView())
+			{
+				//System.out.println("paintEnumClass(): % && splitInSingleView! percScale aanpassen...");
+				
+				// max is de max van de som van de frequencies per split
+				max = getMaxFrequenciesofBins(allFrequencies);
+				// allFrequencies gebruiken om totaal aantal frequencies te bepalen
+				int frequenciesTotalSum = getTotalSumOfFrequencies(allFrequencies);
+				
+				maxValueOnAxis = (100.0 * max / frequenciesTotalSum);
+			}
+			else
+			{
+				maxValueOnAxis = (100.0 * max / this.tupleArraySum(frequencies));
+			}
+			
+			scale = availableSpace/maxValueOnAxis;
+		} // percentage
 		else
 		{
-			//System.out.println("HistogramView.paintEnumClass(): amountScale = " + amountScale);
-			this.paintAmountScale(g, amountScale, ySplitOffset);
+			scale = availableSpace/(double) max;
 		}
 
-		// paint bars
+		// PAINT AMOUNT SCALE
+		this.paintAmountScale(g, scale, ySplitOffset);
+
+		// PAINT BARS
+		// use amountScale to paint the correct bar length
+		amountScale = availableSpace/max;
+
+		ArrayList<Color> splitColors = new ArrayList<Color>();
+		ArrayList<String> splitLabels = new ArrayList<String>();
+
 		if (this.model.isSplitInSingleView()
 			&& this.model.getTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
@@ -2109,39 +2164,38 @@ public class HistogramView extends JPanel implements Observer
 					}
 					//System.out.println(Arrays.toString(totalFrequencies));
 				}
-			}
+			} // frequentiepolygoon, cumulatief, stapelen
 			else
 			{
+				// frequentiepolygoon, cumulatief, split in single view
 				if (this.model.isFrequencyPolygonMode()
 					&& this.model.isFrequencyPolygonCumulativeMode())
 				{
-
+					// Paint the frequency polygon as dots and lines 
 					for (int split = 0; split < allFrequencies.length; split++)
 					{
-						g.setComposite(this.makeComposite(split + 1));
+						amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						
+						//g.setComposite(this.makeComposite(split + 1)); // test syl: wat doet dit?
 						FrequencyTuple[] splitFreq = allFrequencies[split];
 						int frequencySum = 0;
-						// int frequencySelectedSum = 0;
+						int frequencySelectedSum = 0;
 						Color c = this.getColor(split);
+
 						for (int i = 0; i < splitFreq.length; i++)
 						{
-							this.fillCumulativeFreqPolygonSegment(
-								g,
-								(int) Math.round(amountScale
-									* (frequencySum + splitFreq[i].frequency)),
-								0,
-								(int) Math.round(amountScale * frequencySum),
-								0, i, c);
-
 							frequencySum += splitFreq[i].frequency;
-							// frequencySelectedSum = splitFreq[2*i + 1];
-							// this.paintBar(g, (int)(frequencySum*amountScale),
-							// 0, i, 0);
+							frequencySelectedSum = splitFreq[i].selectionFrequency;
+							this.paintBar(
+								g,
+								(int) (frequencySum * amountScale),
+								(int) (frequencySelectedSum * amountScale),
+								i, 0, 0, c, split,
+								allFrequencies.length, true, split);
 						}
 						this.lastPolygonPoint = null;
 					}
 					g.setComposite(this.makeComposite(1));
-
 				}
 				else
 				{
@@ -2156,7 +2210,7 @@ public class HistogramView extends JPanel implements Observer
 						Color c = this.getColor(split);
 						for (int i = 0; i < frequencies.length; i++)
 						{
-							if (this.model.getVerticalBars())
+							if (this.model.hasVerticalBars())
 							{
 								if (this.isNextToEachOtherSelected())
 								{
@@ -2204,30 +2258,57 @@ public class HistogramView extends JPanel implements Observer
 					g.setComposite(this.makeComposite(1));
 				}
 			}
-		}
+		} // split in single view
 		else
-		{
+		{ // no split or split in multiple views
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode())
 			{
-				int frequencySum = 0;
-				int frequencySelectedSum = 0;
-				for (int i = 0; i < frequencies.length; i++)
-				{
-					frequencySum += frequencies[i].frequency;
-					frequencySelectedSum = frequencies[i].selectionFrequency;
-					this.paintBar(g, (int) (frequencySum * amountScale),
-						(int) (frequencySelectedSum * amountScale), i,
-						ySplitOffset, 0, splitClass);
-				}
+				if (this.model.getTableModel().splitVarClasses(
+					this.model.getSplitOptions()) > 1)
+					{
+						// split in multiple views
+						Color c = this.getColor(splitClass);
+						splitColors.add(c);
+						splitLabels.add(this.model.getSplitOptions()
+							.getSplitClassLabel(splitClass,
+								this.model.getTableModel()));
+
+						int frequencySum = 0;
+						int frequencySelectedSum = 0;
+						for (int i = 0; i < frequencies.length; i++)
+						{
+							frequencySum += frequencies[i].frequency;
+							frequencySelectedSum = frequencies[i].selectionFrequency;
+							this.paintBar(
+								g,
+								(int) (frequencySum * amountScale),
+								(int) (frequencySelectedSum * amountScale),
+								i, ySplitOffset, 0, c, splitClass,
+								allFrequencies.length, true, splitClass);
+						}
+					}
+					else // no split
+					{
+						int frequencySum = 0;
+						int frequencySelectedSum = 0;
+						for (int i = 0; i < frequencies.length; i++)
+						{
+							frequencySum += frequencies[i].frequency;
+							frequencySelectedSum = frequencies[i].selectionFrequency;
+							this.paintBar(
+								g, 
+								(int) (frequencySum * amountScale),
+								(int) (frequencySelectedSum * amountScale), 
+								i, ySplitOffset, 0, splitClass);
+						}
+					}
+
 			}
 			else
 			{
 				for (int i = 0; i < frequencies.length; i++)
 				{
-					// this.paintBar(g,
-					// (int)(frequencies[i].frequency*amountScale),(int)(frequencies[i].selectionFrequency*amountScale),
-					// i, ySplitOffset,0);
 					if (allFrequencies.length > 1)
 						this.paintBar(
 							g,
@@ -2247,7 +2328,7 @@ public class HistogramView extends JPanel implements Observer
 
 		// paint bar labels
 		g.setColor(Color.BLACK);
-		if (this.model.getVerticalBars())
+		if (this.model.hasVerticalBars())
 		{
 			int y = this.barAreaHeight() - 2;
 			boolean normalFit = true;
@@ -2283,9 +2364,12 @@ public class HistogramView extends JPanel implements Observer
 						+ (int) (((double) i + 0.5) * this.verticalBarWidth)
 						+ i + 1;
 					String s = frequencies[i].label;
-					g.drawString(s, x + (int) (0.5 * fm.getHeight()),
-						this.barAreaHeight() + 5 + fm.stringWidth(s)
-							+ ySplitOffset);
+					int offset_labelUnderBin = fm.stringWidth(s);
+					int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
+					int heightRotatedLabel = (int) (offset_labelUnderBin * -Math.sin(theta));
+					g.drawString(s, 
+						x - widthRotatedLabel,
+						this.barAreaHeight() + 15 + heightRotatedLabel + ySplitOffset);
 				}
 			}
 		} // vertical bars
@@ -2335,10 +2419,7 @@ public class HistogramView extends JPanel implements Observer
 		
 		for (int i = 0; i < allFrequencies.length; i++)
 		{
-			for (int j = 0; j < allFrequencies[i].length; j++)
-			{
-				sum = sum + allFrequencies[i][j];
-			}
+			sum = sum + arrayEvenSum(allFrequencies[i]);
 		}
 
 		//System.out.println("HistogramView.getTotalSumOfFrequencies(): sum = " + sum);
@@ -2359,8 +2440,8 @@ public class HistogramView extends JPanel implements Observer
 
 		return max;
 	}
-
-	private int getMaxFrequenciesofBins(int[][] allFrequencies)
+	
+	private int getMaxFrequencyofBins(int[][] allFrequencies)
 	{
 		int max = 0;
 		
@@ -2497,9 +2578,10 @@ public class HistogramView extends JPanel implements Observer
 		}
 		else
 		{
+			// bij geen split of split in 1 view geen colorlegend tonen
 			if (this.colorLegend.isVisible())
 			{
-//				System.out.println("aaaa");
+				//System.out.println("HistogramView.updateColorLegend(): colorLegend.isVisible() en nu FALSE");
 
 				this.colorLegend.setVisible(false);
 				return true;
@@ -2610,7 +2692,7 @@ public class HistogramView extends JPanel implements Observer
 				int ySplitOffset = i
 					* (HistogramView.this.scrollPane.getHeight() - 5);
 
-				if (HistogramView.this.model.getVerticalBars())
+				if (HistogramView.this.model.hasVerticalBars())
 				{
 					g2D.drawLine(HistogramView.this.yAxisOffset,
 						HistogramView.this.barAreaHeight() + ySplitOffset,
@@ -2892,7 +2974,7 @@ public class HistogramView extends JPanel implements Observer
 			boolean isOverTop = false;
 			int marge = 5;
 			
-			if (HistogramView.this.model.getVerticalBars())
+			if (HistogramView.this.model.hasVerticalBars())
 			{
     			if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
     			&& (p.y > rect.y - marge) && (p.y < rect.y + marge))
