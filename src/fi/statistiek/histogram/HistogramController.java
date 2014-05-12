@@ -382,7 +382,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		// System.out.println("   showUserOptions=" +
 		// this.model.getShowUserOptions());
 
-		h.put("verticalBars", this.model.getVerticalBars());
+		h.put("verticalBars", this.model.hasVerticalBars());
 		// System.out.println("   verticalBars=" +
 		// this.model.getVerticalBars());
 
