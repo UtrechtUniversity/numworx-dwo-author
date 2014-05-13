@@ -60,6 +60,9 @@ public class HistogramView extends JPanel implements Observer
 	private double verticalBarWidth;
 	private double horizontalBarWidth;
 
+	/**
+	 * List of the bar rectangles. For frequency polygons the rectangles correspond to the dots.
+	 */
 	private ArrayList<Rectangle> barRectangles;
 	private JPanel mainPanel;
 	private JScrollPane scrollPane;
@@ -75,6 +78,10 @@ public class HistogramView extends JPanel implements Observer
 	private int yAxisOffset;
 	private Point lastPolygonPoint;
 	
+	/**
+	 * The number of the highlighted bar, or for frequency polygons the
+	 * number of the highlighted dot. 
+	 */
 	private int highlightedBar = -1;
 	private int highlightInSplit = -1;
 
@@ -409,6 +416,10 @@ public class HistogramView extends JPanel implements Observer
 			}
 
 			this.lastPolygonPoint = p;
+			
+			// test syl
+//			this.barRectangles.add(new Rectangle(p.x - size, p.y - size + ySplitOffset, 2 * size,
+//				2 * size));
 		}
 		else
 		{
@@ -550,8 +561,6 @@ public class HistogramView extends JPanel implements Observer
 				if (type.equals(AllowedTypes.ENUM) 
 					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER) && labelUnderBinItemSelected()))
 				{
-					// TODO: Symmetrical shading
-					
  					Color shadingColor = ColorPreviewer.mixColors(c, Color.WHITE,
 						colorMixSymm);
     				
@@ -571,21 +580,6 @@ public class HistogramView extends JPanel implements Observer
     				fillRectWithSymmShade(x_coordinate, y_coordinate, 
     					width, height, g, colorSelectedBar, shadingColor, false);
 
-    				
-//					// original.......
-//					g.setColor(c);
-//					// paint bar
-//					g.fillRect(x1 + xSplitOffset + selectedLength, 
-//						y1 + ySplitOffset + barOffset + spacing, 
-//						barLength - selectedLength,
-//						barWidth - spacing);
-//
-//					g.setColor(colorSelectedBar);
-//					// paint selected bar
-//					g.fillRect(
-//						x1 + xSplitOffset, 
-//						y1 + ySplitOffset + barOffset + spacing,
-//						selectedLength, barWidth - spacing);
 				}	
 				else
 				{
@@ -612,12 +606,6 @@ public class HistogramView extends JPanel implements Observer
 					fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
 						width, height, g, colorSelectedBar, shadingColor, false);
 				}
-			
-				
-
-				// g.setColor(Color.WHITE);
-				// g.fillRect(x1+xSplitOffset+barLength, y1+ySplitOffset,
-				// this.barAreaWidth()-barLength, y2-y1);
 
 				g.setColor(Color.BLACK);
 
@@ -643,7 +631,7 @@ public class HistogramView extends JPanel implements Observer
 					- 1 + ySplitOffset + barOffset + spacing, barLength,
 					barWidth + 1 - spacing));
 			}
-		}
+		} // no frequency polygon
 		this.repaint();
 	}
 
@@ -988,6 +976,30 @@ public class HistogramView extends JPanel implements Observer
 		{
 			max = this.arrayMax(frequencies);
 		}
+		return max;
+	}
+	
+	private int maxFrequencyOverAllSplits(int[][] frequenciesArray)
+	{
+		int max = 0;
+		
+		for (int[] splitFreq : frequenciesArray)
+		{
+			max = Math.max(max, this.maxFrequency(splitFreq));
+		}
+		
+		return max;
+	}
+	
+	private int maxFrequencyOverAllSplits(FrequencyTuple[][] frequenciesArray)
+	{
+		int max = 0;
+		
+		for (FrequencyTuple[] splitFreqTuple : frequenciesArray)
+		{
+			max = Math.max(max, this.maxFrequency(splitFreqTuple));
+		}
+		
 		return max;
 	}
 
@@ -1415,7 +1427,15 @@ public class HistogramView extends JPanel implements Observer
 					// Paint the frequency polygon as dots and lines 
 					for (int split = 0; split < allFrequencies.length; split++)
 					{
-						amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						if (this.model.getPercentage())
+						{
+							amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						}
+						else
+						{ // aantal
+							// bij aantal moet hij de max frequency over alle splits nemen
+							amountScale = availableSpace/this.maxFrequencyOverAllSplits(allFrequencies);
+						}
 						
 						int[] splitFreq = allFrequencies[split];
 						Color c = this.getColor(split);
@@ -2087,28 +2107,38 @@ public class HistogramView extends JPanel implements Observer
 
 		if (this.model.getPercentage())
 		{
-			if (this.model.isSplitInSingleView())
+			if (this.model.getTableModel().splitVarClasses(
+				this.model.getSplitOptions()) > 1)
 			{
-				//System.out.println("paintEnumClass(): % && splitInSingleView! percScale aanpassen...");
-				
-				// max is de max van de som van de frequencies per split
-				max = getMaxFrequenciesofBins(allFrequencies);
-				// allFrequencies gebruiken om totaal aantal frequencies te bepalen
-				int frequenciesTotalSum = getTotalSumOfFrequencies(allFrequencies);
-				
-				maxValueOnAxis = (100.0 * max / frequenciesTotalSum);
+				// er is een split
+				if (this.model.isSplitInSingleView())
+				{
+					if (this.model.isFrequencyPolygonMode()
+						&& this.model.isFrequencyPolygonCumulativeMode())
+					{
+						maxValueOnAxis = 100.0;
+					}
+					else
+					{
+						maxValueOnAxis = (100.0 * max / (this.frequenciesSum(
+							allFrequencies, splitClass) + 1));
+					}
+
+					scale = availableSpace / maxValueOnAxis;
+				}
+				else
+				{
+					int maxInSplitClass = this.maxFrequency(allFrequencies,
+						splitClass);
+
+					maxValueOnAxis = (100.0 * maxInSplitClass / (this
+						.frequenciesSum(allFrequencies, splitClass)));
+
+					scale = availableSpace / maxValueOnAxis;
+				}
 			}
-			else
-			{
-				maxValueOnAxis = (100.0 * max / this.tupleArraySum(frequencies));
-			}
-			
-			scale = availableSpace/maxValueOnAxis;
 		} // percentage
-		else
-		{
-			scale = availableSpace/(double) max;
-		}
+
 
 		// PAINT AMOUNT SCALE
 		this.paintAmountScale(g, scale, ySplitOffset);
@@ -2174,7 +2204,15 @@ public class HistogramView extends JPanel implements Observer
 					// Paint the frequency polygon as dots and lines 
 					for (int split = 0; split < allFrequencies.length; split++)
 					{
-						amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						if (this.model.getPercentage())
+						{
+							amountScale = availableSpace/this.maxFrequency(allFrequencies[split]);
+						}
+						else
+						{ // aantal
+							// bij aantal moet hij de max frequency over alle splits nemen
+							amountScale = availableSpace/this.maxFrequencyOverAllSplits(allFrequencies);
+						}
 						
 						//g.setComposite(this.makeComposite(split + 1)); // test syl: wat doet dit?
 						FrequencyTuple[] splitFreq = allFrequencies[split];
@@ -2721,6 +2759,7 @@ public class HistogramView extends JPanel implements Observer
 		{
 			// Method mouseMoved() implements showing tooltip & highlight
 			
+			// test syl
 			if (!HistogramView.this.model.isFrequencyPolygonMode())
 			{
     			Point p = me.getPoint();
@@ -2820,11 +2859,11 @@ public class HistogramView extends JPanel implements Observer
     				{
     					rect = HistogramView.this.barRectangles.get(j + i * noBins);
     
-    					if (isOverTop(p, rect))
+    					if (isOverToolTipArea(p, rect))
     					{
 //    						System.out.println("HistogramBarPanel.mouseMoved(): ("
 //    							+ p.x + ", " + p.y + "): bij bovenkant van staaf "
-//    							+ (j + i * noBins + 1));
+//    							+ (j + i * noBins + 1) + ", isOverToolTipArea!");
     
     						String waardeString = "0";
     						if (isPercentage)
@@ -2928,7 +2967,7 @@ public class HistogramView extends JPanel implements Observer
     
     						//System.out.println("... waardeString = " + waardeString);
     
-    						if (!waardeString.equals("0"))
+    						if (HistogramView.this.model.isFrequencyPolygonMode() || !waardeString.equals("0"))
     						{
     							// System.out.println("... waarde != 0");
     
@@ -2963,35 +3002,46 @@ public class HistogramView extends JPanel implements Observer
     			}
     		} // not a frequency polygon
 			// TODO 
-			else // frequency polygon
-			{
-				// tooltip en highlight bij bolletje
-			}
+//			else // frequency polygon
+//			{
+//				// tooltip en highlight bij bolletje
+//			}
 		}
 
-		private boolean isOverTop(Point p, Rectangle rect)
+		private boolean isOverToolTipArea(Point p, Rectangle rect)
 		{
-			boolean isOverTop = false;
+			boolean isOverToolTipArea = false;
 			int marge = 5;
 			
-			if (HistogramView.this.model.hasVerticalBars())
+			if (HistogramView.this.model.isFrequencyPolygonMode())
 			{
-    			if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
-    			&& (p.y > rect.y - marge) && (p.y < rect.y + marge))
-    			{
-    				isOverTop = true;
-    			}
+				if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
+					&& (p.y > rect.y) && (p.y < (rect.y + rect.height)))
+				{
+					isOverToolTipArea = true;
+				}
 			}
-			else // horizontal bars
+			else
 			{
-    			if ((p.x > (rect.x + rect.width - marge)) 
-    				&& (p.x < (rect.x + rect.width + marge))
-    				&& (p.y > rect.y) && (p.y < (rect.y + rect.height)))
-    			{
-    				isOverTop = true;
-    			}				
+				if (HistogramView.this.model.hasVerticalBars())
+				{
+	    			if ((p.x > rect.x) && (p.x < (rect.x + rect.width))
+	    			&& (p.y > rect.y - marge) && (p.y < rect.y + marge))
+	    			{
+	    				isOverToolTipArea = true;
+	    			}
+				}
+				else // horizontal bars
+				{
+	    			if ((p.x > (rect.x + rect.width - marge)) 
+	    				&& (p.x < (rect.x + rect.width + marge))
+	    				&& (p.y > rect.y) && (p.y < (rect.y + rect.height)))
+	    			{
+	    				isOverToolTipArea = true;
+	    			}				
+				}
 			}
-			return isOverTop;
+			return isOverToolTipArea;
 		}
 	}
 
