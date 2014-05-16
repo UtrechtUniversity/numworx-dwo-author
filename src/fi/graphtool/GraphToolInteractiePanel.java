@@ -28,6 +28,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -35,6 +36,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,10 +51,18 @@ import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.tekstobjects.TekstArea;
 
+import org.cbook.cbookif.AssessmentMode;
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+import org.cbook.cbookif.CBookWidgetInstanceIF;
+import org.cbook.cbookif.SuccessStatus;
+
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
-MouseListener, MouseMotionListener {
+MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener {
 
 	int width = 280; // was 250
 	int height = 280;
@@ -200,6 +210,8 @@ MouseListener, MouseMotionListener {
 	private int activeIndex = 1;
 	Vector graphPoints = new Vector();
 	SchuifParameter[] schuifParameters = new SchuifParameter[0];
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
 	public GraphToolInteractiePanel() {
 		setLayout(null);
@@ -4909,6 +4921,82 @@ MouseListener, MouseMotionListener {
 		{	dood = true;
 		}
 	}
+	
+		@Override
+		public void addCBookEventListener(CBookEventListener listener,
+				String command) {
+			System.out.println("addCBookEventListener: "+listener.toString() +"+"+command);
+			cbookEventHandler.addCBookEventListener(listener, command);
+			
+		}
+
+		@Override
+		public JComponent asComponent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CBookEventListener asEventListener() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public SuccessStatus getSuccessStatus() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void init() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeCBookEventListener(CBookEventListener listener,
+				String command) {
+			cbookEventHandler.removeCBookEventListener(listener, command);
+			
+		}
+
+		@Override
+		public void reset() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setAssessmentMode(AssessmentMode arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setLaunchData(Map<String, ?> arg0, Map<String, Number> arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setState(Map<String, ?> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void acceptCBookEvent(CBookEvent event) {
+			String command = event.getCommand();
+			System.out.println("accepted");
+			if(command.equals("input"))
+			{
+		 		String formuleString = (String)event.getParameter("input");
+				getFormuleComponent().geefFormuleVak().vulVak(formuleString);
+				getFormuleComponent().geefFormuleVak().finish();
+			}
+			
+		}
 
 }
 
