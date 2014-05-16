@@ -38,7 +38,7 @@ import fi.wiskopdr.formuleobjects.FormuleParser;
 
 
 
-public class GraphToolInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener, CBookWidgetEditIF {
+public class GraphToolInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener {
 
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
@@ -1670,58 +1670,6 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			}
 		}
 
-		@Override
-		public JComponent asComponent() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String[] getAcceptedCmds() {
-			String[] s = {"input"};
-			return s;
-		}
-
-		@Override
-		public String[] getSendCmds() {
-			String[] s = {"input"};
-			return s;
-		}
-
-		@Override
-		public Dimension getInstanceSize() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Map<String, ?> getLaunchData() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public int getMaxScore() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setInstanceHeight(int arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setInstanceWidth(int arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setLaunchData(Map<String, ?> arg0) {
-			// TODO Auto-generated method stub
-			
-		}
+		
 
 }

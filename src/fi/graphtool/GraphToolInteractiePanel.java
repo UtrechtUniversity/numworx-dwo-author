@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.ZoomKnop;
@@ -62,7 +63,7 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
 
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
-MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener {
+MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener, CBookAware {
 
 	int width = 280; // was 250
 	int height = 280;
@@ -4996,6 +4997,18 @@ MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener {
 				getFormuleComponent().geefFormuleVak().finish();
 			}
 			
+		}
+		
+		@Override
+		public String[] getAcceptedCmds() {
+			String[] s = {"input"};
+			return s;
+		}
+
+		@Override
+		public String[] getSendCmds() {
+			String[] s = {"input"};
+			return s;
 		}
 
 }
