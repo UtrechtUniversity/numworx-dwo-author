@@ -55,15 +55,13 @@ import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.tekstobjects.TekstArea;
 
-import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
-import org.cbook.cbookif.CBookWidgetInstanceIF;
-import org.cbook.cbookif.SuccessStatus;
+
 
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
-MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener, CBookAware {
+MouseListener, MouseMotionListener, CBookAware {
 
 	int width = 280; // was 250
 	int height = 280;
@@ -4931,30 +4929,7 @@ MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener, C
 			
 		}
 
-		@Override
-		public JComponent asComponent() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CBookEventListener asEventListener() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public SuccessStatus getSuccessStatus() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void init() {
-			// TODO Auto-generated method stub
-			
-		}
-
+		
 		@Override
 		public void removeCBookEventListener(CBookEventListener listener,
 				String command) {
@@ -4962,30 +4937,7 @@ MouseListener, MouseMotionListener, CBookWidgetInstanceIF, CBookEventListener, C
 			
 		}
 
-		@Override
-		public void reset() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setAssessmentMode(AssessmentMode arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setLaunchData(Map<String, ?> arg0, Map<String, Number> arg1) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setState(Map<String, ?> arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		
 		@Override
 		public void acceptCBookEvent(CBookEvent event) {
 			String command = event.getCommand();

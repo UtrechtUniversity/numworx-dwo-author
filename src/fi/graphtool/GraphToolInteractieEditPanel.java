@@ -29,8 +29,6 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
-import org.cbook.cbookif.CBookWidgetEditIF;
-
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Expressie;
