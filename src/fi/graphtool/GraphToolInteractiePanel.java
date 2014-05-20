@@ -4944,7 +4944,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			System.out.println("accepted");
 			if(command.equals("input"))
 			{
-		 		String formuleString = (String)event.getParameter("input");
+		 		String formuleString = (String)event.getMessage();
 				getFormuleComponent().geefFormuleVak().vulVak(formuleString);
 				getFormuleComponent().geefFormuleVak().finish();
 			}
