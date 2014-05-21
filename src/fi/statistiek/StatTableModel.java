@@ -389,10 +389,10 @@ public class StatTableModel implements TableModel
 				bin++;
 			}
 
-			if (bin < 0 || bin >= binBoundaries.size())
+			if (bin < 0 || bin >= binBoundaries.size() - 1)
 			{
-				System.out.println("ClassifyObject geeft -1\nd = " + d
-					+ "\nBoundaries: ");
+				System.out.println("StatTableModel.classifyObject(value=" + d + ", columnIndex = " 
+					+ columnIndex + ") geeft -1\nBoundaries: ");
 				for (Double a : binBoundaries)
 				{
 					System.out.println(a);
@@ -1228,10 +1228,19 @@ public class StatTableModel implements TableModel
 					}
 					if (bin >= 0 && bin < binBoundaries.size() - 1)
 					{
-						binFrequency[this.classifyObject(i, splitOptions)][2 * bin]++;
-						if (this.isRowSelected(i))
+						int split = this.classifyObject(i, splitOptions);
+						if (split > -1)
 						{
-							binFrequency[this.classifyObject(i, splitOptions)][2 * bin + 1]++;
+							binFrequency[split][2 * bin]++;
+							if (this.isRowSelected(i))
+							{
+								binFrequency[split][2 * bin + 1]++;
+							}
+						}
+						else
+						{
+							System.out.println("StatTableModel.numberClassFrequency() returns null. Objects cannot be classified");
+							return null;
 						}
 					}
 				}
@@ -1272,14 +1281,23 @@ public class StatTableModel implements TableModel
 
 			for (int i = 0; i < this.getRowCount(); i++)
 			{
-				StatTableModel.increaseKeyHashtable(
-					(String) this.getValueAt(i, columnIndex),
-					frequencyTable[this.classifyObject(i, splitOptions)]);
-				if (this.isRowSelected(i))
+				int split = this.classifyObject(i, splitOptions);
+				if (split > -1)
 				{
 					StatTableModel.increaseKeyHashtable(
 						(String) this.getValueAt(i, columnIndex),
-						frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+						frequencyTable[this.classifyObject(i, splitOptions)]);
+					if (this.isRowSelected(i))
+					{
+						StatTableModel.increaseKeyHashtable(
+							(String) this.getValueAt(i, columnIndex),
+							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+					}
+				}
+				else
+				{
+					System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
+					return null;
 				}
 			}
 
