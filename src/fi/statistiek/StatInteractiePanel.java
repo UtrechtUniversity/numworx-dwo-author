@@ -131,7 +131,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
 				StatistiekView statistiekView = Statistiek.createView(
-					statistiekViewTypes[i], "", this.model.getData(), 0, this);
+					statistiekViewTypes[i], "", this.model.getData(), 0, 0, this);
 				if (statistiekView != null)
 				{
 					statistiekView.setState(statistiekViewStates[i]);
@@ -234,7 +234,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
 				StatistiekView statistiekView = Statistiek.createView(
-					statistiekViewTypes[i], "", this.model.getData(), 0, this);
+					statistiekViewTypes[i], "", this.model.getData(), 0, 0, this);
 				if (statistiekView != null)
 				{
 					statistiekView.setState(statistiekViewStates[i]);
@@ -382,8 +382,13 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 		// test syl
 		//System.out.println("StatInteractiePanel.actionPerformed(): " + e.getActionCommand());
 		
-		if (e.getActionCommand().equals("startVarBox"))
+		String ac = e.getActionCommand(); 
+		
+		if (ac.equals("startVarBox") || ac.equals("startVar2Box"))
 		{
+			// for crosstab (kruistabel) startVarBox is for choosing the rows variable
+			// startVar2Box is for choosing the columns variable
+			
 			String s = this.view.getViewsBoxString();
 			String t = null;
 			if (Arrays.asList(Statistiek.VIEWS_translated).contains(s))
@@ -412,6 +417,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					t = Statistiek.VIEWS[5];
 				}
+				else if (s == Statistiek.rb.getString("crosstabOption"))
+				{
+					t = Statistiek.VIEWS[6];
+				}
 //				StatistiekView statistiekView = Statistiek.createView(t,
 //					this.model.findUniqueViewName(s), model.getData(),
 //					this.view.getStartVarBoxSelectedIndex(), this);
@@ -419,17 +428,39 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				// Als Tabel gekozen, dan is de actionPerformed van startVarBox niet relevant
 				if (!t.equals(Statistiek.VIEWS[0]))
 				{
-    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
-    				StatistiekView statistiekView = Statistiek.createView(t,
-    					this.model.findUniqueViewName(s), model.getData(),
-    					this.view.getStartVarBoxSelectedIndex()-1, this);
-    				this.model.addView(statistiekView);
-    				this.view.selectLastTab();
-    				this.view.clearAddViewTab();
+					if (t.equals(Statistiek.VIEWS[6]))
+					{
+						// Crosstab
+						// Check if both varboxes are set
+						if ((this.view.getStartVarBoxSelectedIndex() > 1)
+							&& (this.view.getStartVar2BoxSelectedIndex() > 1))
+						{
+							// both variable boxes are set
+							
+		    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
+		    				StatistiekView statistiekView = Statistiek.createView(t,
+		    					this.model.findUniqueViewName(s), model.getData(),
+		    					this.view.getStartVarBoxSelectedIndex()-1, 
+		    					this.view.getStartVar2BoxSelectedIndex()-1, this);
+		    				this.model.addView(statistiekView);
+		    				this.view.selectLastTab();
+		    				this.view.clearAddViewTab();
+						}
+					}
+					else
+					{
+	    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
+	    				StatistiekView statistiekView = Statistiek.createView(t,
+	    					this.model.findUniqueViewName(s), model.getData(),
+	    					this.view.getStartVarBoxSelectedIndex()-1, 0, this);
+	    				this.model.addView(statistiekView);
+	    				this.view.selectLastTab();
+	    				this.view.clearAddViewTab();
+					}
 				}
 			}
-		}
-		else if (e.getActionCommand().equals("viewsBox"))
+		} // ac = startVarBox || startVar2Box
+		else if (ac.equals("viewsBox"))
 		{
 			// check of tabel gekozen is
 			String s = this.view.getViewsBoxString();
@@ -441,15 +472,25 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				t = Statistiek.VIEWS[0];
 				StatistiekView statistiekView = Statistiek.createView(t,
 					this.model.findUniqueViewName(s), model.getData(),
-					0, this);
+					0, 0, this);
 				this.model.addView(statistiekView);
 				this.view.selectLastTab();
 				this.view.clearAddViewTab();
 			}
+			else if (Arrays.asList(Statistiek.VIEWS_translated).contains(s)
+				&& (s == Statistiek.rb.getString("crosstabOption")))
+			{
+				// update label "Kies variabele rijen:"
+				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVar1Label"));
+				this.view.setStartVarBox(true);
+				this.view.setStartVar2Box(true);
+			}
 			else
 			{
 				// bied variabelekeuze aan
+				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarLabel"));
 				this.view.setStartVarBox(true);
+				this.view.setStartVar2Box(false);
 			}
 		}
 		// resetbutton is now implemented in StatTable
