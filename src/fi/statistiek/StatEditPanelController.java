@@ -180,7 +180,7 @@ public class StatEditPanelController extends JPanel implements
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
 				StatistiekView statistiekView = Statistiek.createView(
-					statistiekViewTypes[i], "", this.model.getData(), 0, null);
+					statistiekViewTypes[i], "", this.model.getData(), 0, 0, null);
 				if (statistiekView != null)
 				{
 					statistiekView.setState(statistiekViewStates[i]);
