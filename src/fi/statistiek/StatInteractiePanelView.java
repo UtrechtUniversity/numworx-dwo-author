@@ -47,9 +47,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	private static JLabel NO_VIEWS_LABEL = new JLabel("No views added.");
 	private JTabbedPane tabPane;
 	private JPanel addViewTab;
-	private JComboBox viewsBox, startVarBox;
+	private JComboBox viewsBox, startVarBox, startVar2Box;
 	private JLabel addViewLabel;
-	private JLabel chooseStartVarLabel;
+	private JLabel chooseStartVarLabel, chooseStartVar2Label;
 
 	// button to reset the data -> button now implemented in StatTable for
 	// layout reasons
@@ -93,6 +93,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.chooseStartVarLabel.setPreferredSize(new Dimension(150, 20));
 		this.chooseStartVarLabel.setVisible(false);
 
+		this.chooseStartVar2Label = new JLabel(Statistiek.rb.getString("chooseStartVar2Label"));
+		this.chooseStartVar2Label.setPreferredSize(new Dimension(150, 20));
+		this.chooseStartVar2Label.setVisible(false);
+
 		String[] options = new String[Statistiek.VIEWS_translated.length + 1];
 		options[0] = Statistiek.rb.getString("chooseaviewOption");
 		for (int i = 0; i < Statistiek.VIEWS_translated.length; i++)
@@ -109,6 +113,12 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.startVarBox.setActionCommand("startVarBox");
 		this.startVarBox.addActionListener(this.controller);
 		this.startVarBox.setVisible(false);
+
+		this.startVar2Box = new JComboBox();
+		this.startVar2Box.setPreferredSize(new Dimension(150, 24));
+		this.startVar2Box.setActionCommand("startVar2Box");
+		this.startVar2Box.addActionListener(this.controller);
+		this.startVar2Box.setVisible(false);
 
 		// Create the reset button -> button now implemented in StatTable
 		// this.resetButton = new JButton();
@@ -135,11 +145,19 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		hb2.add(startVarBox);
 		hb2.add(Box.createHorizontalGlue());
 
+		Box hb3 = Box.createHorizontalBox();
+		hb3.add(chooseStartVar2Label);
+		hb3.add(Box.createHorizontalStrut(10));
+		hb3.add(startVar2Box);
+		hb3.add(Box.createHorizontalGlue());
+
 		Box vb = Box.createVerticalBox();
 		vb.add(Box.createVerticalStrut(25));
 		vb.add(hb1);
 		vb.add(Box.createVerticalStrut(15));
 		vb.add(hb2);
+		vb.add(Box.createVerticalStrut(15));
+		vb.add(hb3);
 
 		Box hb = Box.createHorizontalBox();
 		hb.add(Box.createHorizontalStrut(20));
@@ -163,12 +181,29 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.startVarBox.addActionListener(controller);
 		startVarBox.setVisible(false);
 		chooseStartVarLabel.setVisible(false);
+		
+		this.startVar2Box.removeActionListener(controller);
+		startVar2Box.setSelectedIndex(0);
+		this.startVar2Box.addActionListener(controller);
+		startVar2Box.setVisible(false);
+		chooseStartVar2Label.setVisible(false);
 	}
 
 	public void setStartVarBox(boolean b)
 	{
 		startVarBox.setVisible(b);
 		chooseStartVarLabel.setVisible(b);
+	}
+	
+	public void setStartVarLabel(String s)
+	{
+		chooseStartVarLabel.setText(s);
+	}
+
+	public void setStartVar2Box(boolean b)
+	{
+		startVar2Box.setVisible(b);
+		chooseStartVar2Label.setVisible(b);
 	}
 
 	/**
@@ -600,8 +635,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			}
 		}
 
-		// Fill box with variable names
+		// Fill boxes with variable names
 		updateStartVarBox();
+		updateStartVar2Box();
 
 		this.revalidate();
 		this.repaint();
@@ -661,6 +697,65 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				if (!exists)
 				{
 					this.startVarBox.removeItemAt(i);
+				}					
+			}
+		}
+	}
+
+	/*
+	 * Update the startVar2Box with the variable names.
+	 */
+	private synchronized void updateStartVar2Box()
+	{
+//		System.out.println("StatInteractiePanelView.updateStartVar2Box()");
+
+		// Alleen updaten als er kolomnamen zijn 
+		if (this.model.getData().getColumnNames().size() > 0)
+		{
+    		// Check the first item
+			String firstItem = Statistiek.rb.getString("chooseAVariableOption");
+			if (!firstItem.equals(this.startVar2Box.getItemAt(0)))
+			{
+				this.startVar2Box.addItem(firstItem);
+			}
+    
+			boolean exists;
+			String columnName;
+    		// Check the variable names in model.getData()
+//			for (String varName : this.model.getData().getColumnNames())
+			for (int j = 0; j < this.model.getData().getColumnNames().size(); j++)
+			{
+				columnName = this.model.getData().getColumnNames().get(j);
+				exists = false;
+				for (int i = 0; i < this.startVar2Box.getItemCount() && !exists; i++)
+				{
+					if (columnName.equals(this.startVar2Box.getItemAt(i)))
+					{
+						exists = true;
+					}
+				}
+				if (!exists)
+				{
+					// startVarBox heeft een eerste item 'Kies een variabele', dus j + 1
+					this.startVar2Box.insertItemAt(columnName, j + 1);
+				}
+			}
+			
+			// Check if items from startVarBox need to be removed
+			for (int i = 1; i < this.startVar2Box.getItemCount(); i++)
+			{
+				exists = false;
+				for (String varName : this.model.getData().getColumnNames())
+				{
+					if (varName.equals(this.startVar2Box.getItemAt(i)))
+					{
+						exists = true;
+						break;
+					}
+				}
+				if (!exists)
+				{
+					this.startVar2Box.removeItemAt(i);
 				}					
 			}
 		}
@@ -944,5 +1039,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	public int getStartVarBoxSelectedIndex()
 	{
 		return this.startVarBox.getSelectedIndex();
+	}
+	
+	public int getStartVar2BoxSelectedIndex()
+	{
+		return this.startVar2Box.getSelectedIndex();
 	}
 }
