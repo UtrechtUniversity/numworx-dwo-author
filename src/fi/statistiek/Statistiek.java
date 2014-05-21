@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.statistiek.boxplot.BoxplotController;
+import fi.statistiek.crosstabulationtable.CrossTabulationTableController;
 import fi.statistiek.dotplot.DotplotController;
 import fi.statistiek.frequencytable.FrequencyTableController;
 import fi.statistiek.histogram.HistogramController;
@@ -42,10 +43,10 @@ public class Statistiek implements WiskOpdrApplet
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
 								 // "Frequentietabel", "Frequentiepolygoon",
-								 // "Boxplot"};
+								 // "Boxplot", "Kruistabel"};
 	public static String[] VIEWS_translated;// = {"Table", "Histogram",
 											// "Dotplot", "Frequentietabel",
-											// "Frequentiepolygoon", "Boxplot"};
+											// "Frequentiepolygoon", "Boxplot", "Crosstab"};
 
 	public Statistiek()
 	{
@@ -62,21 +63,23 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
-		VIEWS_translated = new String[6];
+		VIEWS_translated = new String[7];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
 		VIEWS_translated[2] = Statistiek.rb.getString("dotplotOption");
 		VIEWS_translated[3] = Statistiek.rb.getString("frequencytableOption");
 		VIEWS_translated[4] = Statistiek.rb.getString("frequencypolygonOption");
 		VIEWS_translated[5] = Statistiek.rb.getString("boxplotOption");
+		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
 
-		VIEWS = new String[6];
+		VIEWS = new String[7];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
 		VIEWS[2] = "Dotplot";
 		VIEWS[3] = "Frequentietabel";
 		VIEWS[4] = "Frequentiepolygoon";
 		VIEWS[5] = "Boxplot";
+		VIEWS[6] = "Kruistabel";
 	}
 
 	public Statistiek(Locale language)
@@ -150,7 +153,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	// syl: Param statInteractiePanel toegevoegd
 	public static StatistiekView createView(String viewType, String viewName,
-		StatTableModel model, int startVar,
+		StatTableModel model, int startVar, int startVar2,
 		StatInteractiePanel statInteractiePanel)
 	{
 //		System.out.println("Statistiek.createView(viewType=" + viewType + ", viewName=" + viewName 
@@ -186,6 +189,14 @@ public class Statistiek implements WiskOpdrApplet
 		else if (viewType.equals("Boxplot"))
 		{
 			return new BoxplotController(model, viewName, startVar);
+		}
+		else if (viewType.equals("Kruistabel"))
+		{
+//			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			CrossTabulationTableController controller = new CrossTabulationTableController(model, viewName, startVar, startVar2);
+			// set the split variable (i.e., the column variable)
+			controller.setSplit(startVar2);
+			return controller;
 		}
 		else
 		{
