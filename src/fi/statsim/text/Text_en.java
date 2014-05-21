@@ -40,7 +40,13 @@ public class Text_en extends java.util.ListResourceBundle
             {   "chance", "Chance" },
             {   "times", "times" },
             {   "so", "so" },
-            {   "notso", "not so" }
+            {   "notso", "not so" },
+            {   "step", "Step" },
+            {   "graph", "Graph" },
+            {   "grid", "Grid" },
+            {   "execute", "Execute" },
+            {   "erase", "Erase results" },
+            {   "execute1", "Execute" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

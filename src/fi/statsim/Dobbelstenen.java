@@ -48,9 +48,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	JScrollPane pane3;
 	JScrollPane pane4;
 	JScrollPane pane5;
-	JButton start;
-	JButton volgende;
-	JButton stop;
+	JButton voeruit;
+	JButton wis;
 	Thread animatie;
 	Boolean stopCounting;
 	Border border1;
@@ -200,25 +199,18 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane1.setVisible(false);
 	    pane2.setVisible(false);
 	    
-	    start=new JButton(StatSim.rb.getString("start"));
-	    start.setSize(100,20);
-	    start.setLocation(240,7);
-	    start.addActionListener(this);
-	    add(start);
+	    voeruit=new JButton(StatSim.rb.getString("execute"));
+	    voeruit.setSize(100,20);
+	    voeruit.setLocation(240,7);
+	    voeruit.addActionListener(this);
+	    add(voeruit);
 	    
-	    volgende=new JButton(StatSim.rb.getString("next"));
-	    volgende.setSize(100,20);
-	    volgende.setLocation(240,32);
-	    volgende.addActionListener(this);
-	    volgende.setEnabled(false);
-	    add(volgende);
-	    
-	    stop=new JButton(StatSim.rb.getString("stop"));
-	    stop.setSize(100,20);
-	    stop.setLocation(240,57);
-	    stop.addActionListener(this);
-	    stop.setEnabled(false);
-	    add(stop);
+	    wis=new JButton(StatSim.rb.getString("erase"));
+	    wis.setSize(100,20);
+	    wis.setLocation(240,32);
+	    wis.addActionListener(this);
+	    wis.setEnabled(false);
+	    add(wis);
 	    
 	    dobbelstenenGrafiek = new DobbelstenenGrafiek(this);
 	    //dobbelstenenGrafiek.setSize(590,325);
@@ -388,7 +380,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			if (toonSomCheckBox.isSelected()==true) 
 				dobbelstenenGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
 			else
-				dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+				dobbelstenenGrafiek.setSize(this.getWidth()-230,this.getHeight()-125);
 			dobbelstenenSomGrafiek.setLocation(230,125+(this.getHeight()-125)/2);
 			dobbelstenenSomGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
 		}
@@ -467,7 +459,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void setStartStop() {
-		if (start.isEnabled()==false) {
+		if (wis.isEnabled()==true) {
 			eenDobbelsteenRadio.setEnabled(false);
 			tweeDobbelstenenRadio.setEnabled(false);
 			drieDobbelstenenRadio.setEnabled(false);
@@ -481,7 +473,23 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		   if (e.getSource()==start) {
+		   if (e.getSource()==voeruit) {
+			   voeruit.setEnabled(false);
+			   wis.setEnabled(true);
+			   setStartStop();
+			   maxCount=Integer.parseInt(aantalWorpenText.getText());
+			   stopCounting=false;
+			   for (int i=0;i<19;i++) {
+				   ogen[i]=0;
+			   }
+			   dobbelsteenCount=0;
+			   animatie=new Thread(this);
+			   animatie.start();   
+		   }
+		   if (e.getSource()==wis) {
+		   	   voeruit.setEnabled(true);
+			   wis.setEnabled(false);
+			   setStartStop();
 			   for (int i=0;i<100;i++) {
 				   table.setValueAt("",i,0);
 				   for (int j=0;j<6;j++) {
@@ -505,29 +513,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			   }
 			   experiment=0;
 			   dobbelsteenCount=0;
-			   start.setEnabled(false);
-			   volgende.setEnabled(true);
-			   stop.setEnabled(true);
-			   setStartStop();
-			   maxCount=Integer.parseInt(aantalWorpenText.getText());
-			   stopCounting=false;
-			   animatie=new Thread(this);
-			   animatie.start();   
-		   }
-		   if (e.getSource()==volgende) {
-			   for (int i=0;i<19;i++) {
-				   ogen[i]=0;
-			   }
-			   dobbelsteenCount=0;
-			   stopCounting=false;
-			   animatie=new Thread(this);
-			   animatie.start();   
-		   }
-		   if (e.getSource()==stop) {
-			   start.setEnabled(true);
-			   volgende.setEnabled(false);
-			   stop.setEnabled(false);
-			   setStartStop();
+			   dobbelstenenGrafiek.repaint();
 		   }
 		   if (e.getSource()==eenDobbelsteenRadio) {
 			   setAantalDobbelstenen();
@@ -541,13 +527,13 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		   if (e.getSource()==toonSomCheckBox) {
 			   if (toonSomCheckBox.isSelected()==true) {
 				   if (showTabel)
-					   dobbelstenenGrafiek.setSize(this.getWidth()-200,(this.getHeight()-125)/2);
+					   dobbelstenenGrafiek.setSize(this.getWidth()-230,(this.getHeight()-125)/2);
 				   else
 					   dobbelstenenGrafiek.setSize(this.getWidth(),(this.getHeight()-125)/2);
 				   dobbelstenenSomGrafiek.setVisible(true);
 			   } else {
 				   if (showTabel)
-					   dobbelstenenGrafiek.setSize(this.getWidth()-200,this.getHeight()-125);
+					   dobbelstenenGrafiek.setSize(this.getWidth()-230,this.getHeight()-125);
 				   else
 					   dobbelstenenGrafiek.setSize(this.getWidth(),this.getHeight()-125);
 				   dobbelstenenSomGrafiek.setVisible(false);
@@ -619,6 +605,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 				}
 			}
 			experiment++;
+			voeruit.setEnabled(true);
 		}
 	}
 	

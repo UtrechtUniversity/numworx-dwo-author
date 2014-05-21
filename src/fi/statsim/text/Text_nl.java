@@ -38,9 +38,15 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "outcome", "Uitkomst" },
             {   "numberOfDraws", "Aantal trekkingen" },
             {   "chance", "Kans" },
-            {   "times", "keer" },
+            {   "times", "keer uit" },
             {   "so", "wel" },
-            {   "notso", "niet" }
+            {   "notso", "niet" },
+            {   "step", "Stap" },
+            {   "graph", "Grafiek" },
+            {   "grid", "Rooster" },
+            {   "execute", "Voer uit" },
+            {   "erase", "Wis resultaten" },
+            {   "execute1", "Voer" }
         //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

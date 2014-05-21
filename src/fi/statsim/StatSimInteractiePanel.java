@@ -83,13 +83,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean startSelected=false;
 		if(h.containsKey("startSelected")) startSelected= ((Boolean)h.get("startSelected")).booleanValue();
 		if (startSelected==true) {
-			munten.start.setEnabled(true);
-			munten.volgende.setEnabled(false);
-			munten.stop.setEnabled(false);
+			munten.wis.setEnabled(true);
 		} else {
-			munten.start.setEnabled(false);
-			munten.volgende.setEnabled(true);
-			munten.stop.setEnabled(true);
+			munten.wis.setEnabled(false);
 		}
 		munten.setStartStop();
 		if(h.containsKey("gemiddeldeKop")) munten.gemiddeldeKop= ((Double)h.get("gemiddeldeKop")).doubleValue();
@@ -162,13 +158,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean startSelected1=false;
 		if(h.containsKey("startSelected1")) startSelected1= ((Boolean)h.get("startSelected1")).booleanValue();
 		if (startSelected1==true) {
-			dobbelstenen.start.setEnabled(true);
-			dobbelstenen.volgende.setEnabled(false);
-			dobbelstenen.stop.setEnabled(false);
+			dobbelstenen.wis.setEnabled(true);
 		} else {
-			dobbelstenen.start.setEnabled(false);
-			dobbelstenen.volgende.setEnabled(true);
-			dobbelstenen.stop.setEnabled(true);
+			dobbelstenen.wis.setEnabled(false);
 		}
 		dobbelstenen.setStartStop();
 		Boolean toonSom=false;
@@ -197,13 +189,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		Boolean startSelected2=false;
 		if(h.containsKey("startSelected2")) startSelected2= ((Boolean)h.get("startSelected2")).booleanValue();
 		if (startSelected2==true) {
-			binomTrekking.start.setEnabled(true);
-			binomTrekking.volgende.setEnabled(false);
-			binomTrekking.stop.setEnabled(false);
+			binomTrekking.wis.setEnabled(true);
 		} else {
-			binomTrekking.start.setEnabled(false);
-			binomTrekking.volgende.setEnabled(true);
-			binomTrekking.stop.setEnabled(true);
+			binomTrekking.wis.setEnabled(false);
 		}
 		binomTrekking.setStartStop();
 		int maxCount2=0;
@@ -214,7 +202,6 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		String kans="";
 		if(h.containsKey("kans")) kans= ((String)h.get("kans"));
 		binomTrekking.kansText.setText(kans);
-		
 	}
 	
 	public Hashtable getState() {	
@@ -249,7 +236,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		h.put("column24", column24);
 		h.put("experiment", new Integer(munten.experiment));
 		h.put("eenMuntRadio", new Boolean(munten.eenMuntRadio.isSelected()));
-		h.put("startSelected", new Boolean(munten.start.isEnabled()));
+		h.put("startSelected", new Boolean(munten.wis.isEnabled()));
 		h.put("gemiddeldeKop", new Double(munten.gemiddeldeKop));
 		h.put("minimumKop", new Integer(munten.minimumKop));
 		h.put("maximumKop", new Integer(munten.maximumKop));
@@ -306,7 +293,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		h.put("TweeDobbelstenenRadio", new Boolean(dobbelstenen.tweeDobbelstenenRadio.isSelected()));
 		h.put("DrieDobbelstenenRadio", new Boolean(dobbelstenen.drieDobbelstenenRadio.isSelected()));
 		h.put("toonSom", new Boolean(dobbelstenen.toonSomCheckBox.isSelected()));
-		h.put("startSelected1", new Boolean(dobbelstenen.start.isEnabled()));
+		h.put("startSelected1", new Boolean(dobbelstenen.wis.isEnabled()));
 		h.put("maxCount1", new Integer(dobbelstenen.maxCount));
 		
 		// ********** Binominale trekking **********
@@ -322,7 +309,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		h.put("column52", column52);
 		h.put("column61", binomTrekking.trekkingen);
 		h.put("experiment2", new Integer(binomTrekking.experiment));
-		h.put("startSelected2", new Boolean(binomTrekking.start.isEnabled()));
+		h.put("startSelected2", new Boolean(binomTrekking.wis.isEnabled()));
 		h.put("maxCount2", new Integer(binomTrekking.maxCount));
 		h.put("kans", new String(binomTrekking.kansText.getText()));
 		return h;

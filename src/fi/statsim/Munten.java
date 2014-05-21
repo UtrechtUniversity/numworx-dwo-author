@@ -30,9 +30,9 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 public class Munten extends JPanel implements ActionListener, Runnable {	
 	JPanel buttonPanel;
 	Thread animatie;
-	JButton volgende;
-	JButton start;
-	JButton stop;
+	JButton voeruit;
+	JButton stap;
+	JButton wis;
 	PaintPanel paintPanel;
 	FrequentieClass frequentieClass;
 	JTable table;
@@ -171,25 +171,25 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		panel1.add(kansOpKopLabel);
 		panel1.add(kansOpKopText);
 		
-		start=new JButton(StatSim.rb.getString("start"));
-		buttonPanel.add(start);
-		start.setLocation(235,7);
-		start.setSize(100,20);
-		start.addActionListener(this);
+		voeruit=new JButton(StatSim.rb.getString("execute"));
+		buttonPanel.add(voeruit);
+		voeruit.setLocation(235,7);
+		voeruit.setSize(100,20);
+		voeruit.addActionListener(this);
 		
-		volgende = new JButton(StatSim.rb.getString("next"));
-		buttonPanel.add(volgende);
-		volgende.setLocation(235,32);
-		volgende.setSize(100,20);
-		volgende.addActionListener(this);
-		volgende.setEnabled(false);
+		stap = new JButton(StatSim.rb.getString("step"));
+		buttonPanel.add(stap);
+		stap.setLocation(235,32);
+		stap.setSize(100,20);
+		stap.addActionListener(this);
+		stap.setEnabled(true);
 		
-		stop = new JButton(StatSim.rb.getString("stop"));
-		buttonPanel.add(stop);
-		stop.setLocation(235,57);
-		stop.setSize(100,20);
-		stop.addActionListener(this);
-		stop.setEnabled(false);
+		wis = new JButton(StatSim.rb.getString("erase"));
+		buttonPanel.add(wis);
+		wis.setLocation(235,57);
+		wis.setSize(100,20);
+		wis.addActionListener(this);
+		wis.setEnabled(false);
 		
 		border2=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		panel2=new JPanel();
@@ -601,7 +601,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	}
   
 	public void setStartStop() {
-		if (start.isEnabled()==false) {
+		if (wis.isEnabled()==true) {
 			eenMuntRadio.setEnabled(false);
 			tweeMuntenRadio.setEnabled(false);
 			aantalWorpenText.setEnabled(false);
@@ -615,9 +615,32 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 	}
 	
+	Boolean stapStarted=false;
    public void actionPerformed(ActionEvent e)
    {
-	   if (e.getSource()==start) {
+	   if (e.getSource()==voeruit) {
+		   voeruit.setEnabled(false);
+		   stap.setEnabled(false);
+		   wis.setEnabled(true);
+		   setStartStop();
+		   stopCounting=false;
+		   maxCount=Integer.parseInt(aantalWorpenText.getText());
+		   if (!stapStarted) {
+			   muntCount=0;
+			   totaalmunt=0;
+			   geenKop=0;
+			   eenKop=0;
+			   tweeKop=0;
+		   } else {
+			   stapStarted=false;
+		   }
+		   animatie=new Thread(this);
+		   animatie.start();   
+		   
+	   }
+	   if (e.getSource()==wis) {
+		   wis.setEnabled(false);
+		   setStartStop();
 		   for (int i=0;i<100;i++) {
 			   table.setValueAt("",i,0);
 			   table.setValueAt("",i,1);
@@ -627,38 +650,29 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			   table1.setValueAt("",i,2);
 			   table1.setValueAt("",i,3);
 		   }
-		   start.setEnabled(false);
-		   stop.setEnabled(true);
-		   volgende.setEnabled(true);
-		   setStartStop();
-		   stopCounting=false;
 		   experiment=0;
 		   muntCount=0;
 		   totaalmunt=0;
-		   maxCount=Integer.parseInt(aantalWorpenText.getText());
 		   geenKop=0;
 		   eenKop=0;
 		   tweeKop=0;
-		   animatie=new Thread(this);
-		   animatie.start();   
-		   
+		   frequentieClass.repaint();
+		   paintPanel.repaint();
 	   }
-	   if (e.getSource()==stop) {
-		   start.setEnabled(true);
-		   stop.setEnabled(false);
-		   volgende.setEnabled(false);
-		   setStartStop();
-	   }
-	   if (e.getSource()==volgende) {
+	   if (e.getSource()==stap) {
+		   wis.setEnabled(true);
 		   stopCounting=false;
-		   muntCount=0;
-		   totaalmunt=0;
-		   maxCount=Integer.parseInt(aantalWorpenText.getText());
-		   geenKop=0;
-		   eenKop=0;
-		   tweeKop=0;
-		   animatie=new Thread(this);
-		   animatie.start();
+		   if (!stapStarted) {
+			   muntCount=0;
+			   totaalmunt=0;
+			   maxCount=Integer.parseInt(aantalWorpenText.getText());
+			   geenKop=0;
+			   eenKop=0;
+			   tweeKop=0;
+			   stapStarted=true;
+		   } 
+		   doeStap();
+		   
 	   }
 	   if (e.getSource()==eenMuntRadio) {
 		   setEenMuntTweeMunten();
@@ -732,6 +746,9 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		   
 	   if (muntCount>=maxCount) {
 		   stopCounting=true;
+		   stapStarted=false;
+		   voeruit.setEnabled(true);
+		   stap.setEnabled(true);
 		   if (eenMuntRadio.isSelected()==true) {
 			   gemiddeldeKop=(gemiddeldeKop*(experiment)+muntCount-totaalmunt)/(experiment+1);
 			   if (muntCount-totaalmunt>maximumKop)
