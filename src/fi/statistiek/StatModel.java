@@ -40,7 +40,7 @@ public class StatModel extends Observable implements TableModelListener
 		this.data.addTableModelListener(this);
 
 		this.addView(Statistiek.createView("Table",
-			Statistiek.rb.getString("tableOption") + " 1", this.data, 0, null));
+			Statistiek.rb.getString("tableOption") + " 1", this.data, 0, 0, null));
 	}
 
 	/**
