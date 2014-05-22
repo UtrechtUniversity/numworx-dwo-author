@@ -29,6 +29,7 @@ public class KladjeVeld extends JPanel
 	int lineDistance = 20;
 	int gridSize = 20;
 	
+	static Color veryLightBlue = new Color(220, 220, 255);
 	static Color lightBlue = new Color(148, 148, 255);
 	Color lijnenKleur = new Color(150, 150, 255);
 	Color ruitjesKleur = new Color(210, 210, 210);
@@ -125,10 +126,11 @@ public class KladjeVeld extends JPanel
 		//tekenTekstFont = new Font("Sanserif", Font.PLAIN, 14);
 		tekstFM = getFontMetrics(tekstFont);
 		//tekstHoogte = 4 * tekstFM.getHeight() / 3;
-		tekstHoogte = tekstFM.getHeight();
+		tekstHoogte = tekstFM.getHeight() + 10;
 
 		tekstVeld = new JTextField();
 		tekstVeld.setFont(tekstFont);
+		tekstVeld.setBackground(veryLightBlue);
 		tekstVeld.setSize(tekstBreedte, tekstHoogte);
 		tekstVeld.setVisible(false);
 		add(tekstVeld);
@@ -1808,11 +1810,19 @@ System.out.println("returned " + (numHistories - 1));
 				if (tekstVeld.isVisible())
 					hideTekstVeld(true);
 				tekstEdited = getClickedTekstElement(e.getX(), e.getY());
-				tekstVeld.setLocation(e.getX(), e.getY());
+				//tekstVeld.setLocation(e.getX(), e.getY());
 				if (tekstEdited != null)
-					tekstVeld.setText(tekstEdited.tekst);
+				{	tekstVeld.setText(tekstEdited.tekst);
+					int currentTekstBreedte = tekstFM.stringWidth(tekstEdited.tekst);
+					tekstVeld.setLocation(tekstEdited.bb.x, tekstEdited.bb.y);
+					tekstVeld.setSize(Math.max(tekstBreedte, currentTekstBreedte + 20), tekstVeld.getSize().height);
+				}
 				else	
-					tekstVeld.setText("");
+				{	tekstVeld.setText("");
+					tekstVeld.setLocation(e.getX(), e.getY());
+					tekstVeld.setSize(tekstBreedte, tekstVeld.getSize().height);
+					
+				}
 				tekstVeld.setVisible(true);
 				tekstVeld.requestFocus();
 
@@ -2214,6 +2224,26 @@ System.out.println("returned " + (numHistories - 1));
 					repaint();
 				}
 				
+				if (objectsSelected.size() == 1)
+				{	Object objectSelected = objectsSelected.elementAt(0);
+					if (objectSelected instanceof Streep)
+						selectedStreep = (Streep) objectSelected;
+					if (objectSelected instanceof Lijn)
+						selectedLijn = (Lijn) objectSelected;
+					if (objectSelected instanceof Rechthoek)
+						selectedRechthoek = (Rechthoek) objectSelected;
+					if (objectSelected instanceof Ellips)
+						selectedEllips = (Ellips) objectSelected;
+					if (objectSelected instanceof TekstElement)
+						selectedTekstElement = (TekstElement) objectSelected;
+					selecteerRechthoek = null;
+					resetSelectedObjects();
+					
+					repaint();
+					
+					
+				}
+				
 				if (objectHandled)
 					addToHistory();
 				objectHandled = false;
@@ -2263,8 +2293,8 @@ System.out.println("returned " + (numHistories - 1));
 		public void keyTyped(KeyEvent e)
 		{
 			String tekst = tekstVeld.getText();
-			int tekstBreedte = tekstFM.stringWidth(tekst);
-			tekstVeld.setSize(tekstBreedte + 20, tekstVeld.getSize().height);
+			int currentTekstBreedte = tekstFM.stringWidth(tekst);
+			tekstVeld.setSize(Math.max(tekstBreedte, currentTekstBreedte + 20), tekstVeld.getSize().height);
 		}
 	}
 	
