@@ -61,7 +61,7 @@ public class CrossTabulationTableController implements StatistiekView,
 				.getTableModel()
 				.getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
-				.getType(), 10);//index);
+				.getType(), 5);//index);
 		}
 	}
 
