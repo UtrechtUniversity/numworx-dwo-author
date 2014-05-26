@@ -14,6 +14,7 @@ import fi.statistiek.Statistiek;
 // use some features from histogram
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.histogram.StatBinsModel;
+import fi.statistiek.types.AllowedTypes;
 
 /**
  * MVC model for StatistiekView CrossTabulationTable
@@ -225,7 +226,7 @@ public class CrossTabulationTableModel extends Observable implements
 				this.binBoundaries = Statistiek.appropriateBoundaries(
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
-					10);//this.noBins);
+					5);//this.noBins);
 				
 				// test syl: niet fraai, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
 				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
@@ -386,5 +387,37 @@ public class CrossTabulationTableModel extends Observable implements
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
+	}
+
+	public void swapVariables()
+	{
+		int index_row = this.getColumnIndex();
+		int index_column = this.getColumnSplitIndex();
+		SplitOptions splitOptions = this.getSplitOptions();
+		ArrayList<Double> binBoundaries_row = getBinBoundaries();
+		
+		// Rij moet kolom worden met de ingestelde klassen
+		this.setColumnIndex(index_column);
+		this.setBinBoundaries(splitOptions.getBinBoundaries());
+		
+		// Kolom moet rij worden met de ingestelde klassen
+		// setSplit() uit controller
+		this.setColumnSplitIndex(index_row);
+		this.setSplitBoundaries(binBoundaries_row);
+		this.setSplitOptions(this.getSplitOptions());
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 */
+	private ArrayList<Double> getBoundaries(double min, double max, double binWidth, double minBoundary)
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			min, max, binWidth, minBoundary);
+		
+		return boundaries;
 	}
 }
