@@ -292,15 +292,12 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 
 		// button to swap row and column variable
 		this.swapButton = new JButton();
-		try
+		java.net.URL imageURL = Statistiek.class.getResource("resources/reseticon.gif");
+		if (imageURL != null) 
 		{
-			Image img = ImageIO.read(getClass().getResource(SWAP_ICON_PATH));
-			swapButton.setIcon(new ImageIcon(img));
+		   swapButton.setIcon(new ImageIcon(imageURL));
 		}
-		catch (IOException ex)
-		{
-			ex.printStackTrace();
-		}
+
 		this.swapButton.setToolTipText(Statistiek.rb.getString("swapTooltip"));
 		this.swapButton.addActionListener(this);
 
