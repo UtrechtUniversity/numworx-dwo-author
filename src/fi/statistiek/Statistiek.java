@@ -35,6 +35,7 @@ public class Statistiek implements WiskOpdrApplet
 {
 	public static ResourceBundle rb;
 	public static Font font = new Font("SansSerif", Font.PLAIN, 12);
+	public static Font font_bold = new Font("SansSerif", Font.BOLD, 12);
 	static DecimalFormatSymbols dfs;
 	public static DecimalFormat df;
 	public static int scrollSpeedUnit = 16;
@@ -43,10 +44,11 @@ public class Statistiek implements WiskOpdrApplet
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
 								 // "Frequentietabel", "Frequentiepolygoon",
-								 // "Boxplot", "Kruistabel"};
+								 // "Boxplot", "Kruistabel", "Spreidingsdiagram"};
 	public static String[] VIEWS_translated;// = {"Table", "Histogram",
 											// "Dotplot", "Frequentietabel",
-											// "Frequentiepolygoon", "Boxplot", "Crosstab"};
+											// "Frequentiepolygoon", "Boxplot", "Crosstab",
+											// "Scatterplot"};
 
 	public Statistiek()
 	{
@@ -63,6 +65,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
+//		VIEWS_translated = new String[8];
 		VIEWS_translated = new String[7];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
@@ -71,7 +74,9 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS_translated[4] = Statistiek.rb.getString("frequencypolygonOption");
 		VIEWS_translated[5] = Statistiek.rb.getString("boxplotOption");
 		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
+//		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
 
+//		VIEWS = new String[8];
 		VIEWS = new String[7];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
@@ -80,6 +85,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[4] = "Frequentiepolygoon";
 		VIEWS[5] = "Boxplot";
 		VIEWS[6] = "Kruistabel";
+//		VIEWS[7] = "Spreidingsdiagram";
 	}
 
 	public Statistiek(Locale language)
@@ -197,6 +203,11 @@ public class Statistiek implements WiskOpdrApplet
 			// set the split variable (i.e., the column variable)
 			controller.setSplit(startVar2);
 			return controller;
+		}
+		else if (viewType.equals("Spreidingsdiagram"))
+		{
+			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			return new DotplotController(model, viewName, startVar, startVar2);
 		}
 		else
 		{
