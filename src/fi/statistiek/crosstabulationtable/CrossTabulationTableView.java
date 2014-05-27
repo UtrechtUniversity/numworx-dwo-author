@@ -499,7 +499,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			for (int i = 0; i < binLabelsRows.length; i++)
 			{
 				String text = this.model.getBinBoundaries().get(i).toString() 
-					+ "-" 
+					+ "-<" 
 					+ this.model.getBinBoundaries().get(i + 1).toString();
 				binLabelsRows[i] = new JLabel(text);
 				binLabelsRows[i].setFont(Statistiek.font);
@@ -528,7 +528,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 				for (int i = 0; i < binLabelsColumns.length; i++)
 				{
 					String text = this.model.getSplitOptions().getBinBoundaries().get(i).toString() 
-						+ "-" 
+						+ "-<" 
 						+ this.model.getSplitOptions().getBinBoundaries().get(i + 1).toString();
 					binLabelsColumns[i] = new JLabel(text);
 					binLabelsColumns[i].setFont(Statistiek.font);
@@ -742,7 +742,8 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					// loop over x het aantal splitbins
 					for (int i_x = 0; i_x < x - 1; i_x++)
 					{
-						// test syl: frequencies_enum kent de split eerst nog niet...
+						// check of frequencies_enum de goede lengte heeft 
+						// (frequencies_enum kent de split nog niet in de eerste getriggerde update)
 						if (frequencies_enum.length == numberOfColumnBins)
 						{
 							// loop over het aantal bins van de row variabele
@@ -1041,7 +1042,10 @@ public class CrossTabulationTableView extends JPanel implements Observer
 
 		// add the total label
 		JLabel totalLabel = new JLabel(Statistiek.rb.getString("totalLabel"));
-		totalLabel.setFont(Statistiek.font);
+		if (percentageItemSelected() && percentage_endTotalSelected())
+			totalLabel.setFont(Statistiek.font_bold);
+		else
+			totalLabel.setFont(Statistiek.font);
 		totalLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0;
 		c.gridy = crosstabRows - 1;
@@ -1095,6 +1099,11 @@ public class CrossTabulationTableView extends JPanel implements Observer
 						c.gridheight = 1;
 						data[numberOfColumnBins][j].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 						data[numberOfColumnBins][j].setHorizontalAlignment(SwingConstants.RIGHT);
+						if (percentageItemSelected() && percentage_rowTotalSelected()
+							&& data[numberOfColumnBins][j].getText().equals("100%"))
+							data[numberOfColumnBins][j].setFont(Statistiek.font_bold);
+						else
+							data[numberOfColumnBins][j].setFont(Statistiek.font);
 						mainPanel.add(data[numberOfColumnBins][j], c);
 						// Set the max of column numberOfColumnBins + 2
 						setMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][j]);
@@ -1103,7 +1112,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			}
 			
 			// Last row with totals
-			for (int i = 0; i < numberOfColumnBins + 1; i++)
+			for (int i = 0; i < numberOfColumnBins; i++)
 			{
 				if (data[i][numberOfRowBins] != null)
 				{
@@ -1113,11 +1122,35 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					c.gridheight = 1;
 					data[i][numberOfRowBins].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 					data[i][numberOfRowBins].setHorizontalAlignment(SwingConstants.RIGHT);
+					if (percentageItemSelected() && percentage_columnTotalSelected()
+						&& data[i][numberOfRowBins].getText().equals("100%"))
+						data[i][numberOfRowBins].setFont(Statistiek.font_bold);
+					else
+						data[i][numberOfRowBins].setFont(Statistiek.font);
 					mainPanel.add(data[i][numberOfRowBins], c);
 					// Set the max of column i + 2
 					setMaxColumnWidth(i + 2, data[i][numberOfRowBins]);
 				}
 			}
+			
+			// endtotal
+			if (data[numberOfColumnBins][numberOfRowBins] != null)
+			{
+				c.gridx = numberOfColumnBins + 2;
+				c.gridy = numberOfRowBins + 2;
+				c.gridwidth = 1;
+				c.gridheight = 1;
+				data[numberOfColumnBins][numberOfRowBins].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				data[numberOfColumnBins][numberOfRowBins].setHorizontalAlignment(SwingConstants.RIGHT);
+				if (percentageItemSelected() && percentage_endTotalSelected())
+					data[numberOfColumnBins][numberOfRowBins].setFont(Statistiek.font_bold);
+				else
+					data[numberOfColumnBins][numberOfRowBins].setFont(Statistiek.font);
+				mainPanel.add(data[numberOfColumnBins][numberOfRowBins], c);
+				// Set the max of column i + 2
+				setMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][numberOfRowBins]);
+			}
+
 			
 			// add extra cell under last row to fill the space 
 			// and make the table start at the northwest corner
