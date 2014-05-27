@@ -3,24 +3,25 @@ package fi.statistiek.crosstabulationtable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -112,6 +113,12 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	private boolean enumClassesRows;
 	private boolean enumClassesColumns;
 
+	private static final String SWAP_ICON_PATH = "../resources/reseticon.gif";
+
+	/**
+	 * Button to swap row and column variable
+	 */
+	private JButton swapButton;
 	private JButton okButton;
 
 	private ArrayList<Double> binBoundariesRows;
@@ -120,6 +127,8 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	public CrossTabulationTableUserOptionsPanel(CrossTabulationTableView view,
 		CrossTabulationTableController controller, CrossTabulationTableModel model)
 	{
+//		System.out.println("CrossTabulationTableUserOptionsPanel() met createGUI en layoutGUI");
+		
 		this.view = view;
 		this.controller = controller;
 		this.model = model;
@@ -281,6 +290,20 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		buttonGroupPercentageSettings.add(this.percentage_rowTotal);
 		buttonGroupPercentageSettings.add(this.percentage_columnTotal);
 
+		// button to swap row and column variable
+		this.swapButton = new JButton();
+		try
+		{
+			Image img = ImageIO.read(getClass().getResource(SWAP_ICON_PATH));
+			swapButton.setIcon(new ImageIcon(img));
+		}
+		catch (IOException ex)
+		{
+			ex.printStackTrace();
+		}
+		this.swapButton.setToolTipText(Statistiek.rb.getString("swapTooltip"));
+		this.swapButton.addActionListener(this);
+
 		// ok-cancel
 		this.okButton = new JButton("OK");
 		this.okButton.addActionListener(this);
@@ -288,8 +311,11 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 
 	private void layoutGuiComponents()
 	{
-		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7;
-		Box vb1, vb2, vb3, vb4, vb5;
+		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7, 
+			hb8, 
+			hb9, hb10, hb11, hb12, hb13, hb14, hb15,
+			hb16, hb17, hb18, hb19, hb20, hb21;
+		Box vb1, vb2, vb3, vb4, vb5, vb6;
 
 		// ROWS variable settings
 		
@@ -353,56 +379,68 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		vb1.add(vb2);
 		vb1.add(Box.createVerticalGlue());
 
+		// Swap button
+		hb8 = Box.createHorizontalBox();
+		hb8.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb8.add(swapButton);
+
+		vb6 = Box.createVerticalBox();
+		vb6.setBorder(BorderFactory.createTitledBorder(border,
+			Statistiek.rb.getString("swapLabel"), TitledBorder.CENTER,
+			TitledBorder.TOP, Statistiek.font));
+		vb6.add(hb8);
+		vb6.add(Box.createVerticalGlue());
+
 		// COLUMNS variable settings
 		
-		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb1.add(columnsLabel);
+		hb9 = Box.createHorizontalBox();
+		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb9.add(columnsLabel);
 
-		hb2 = Box.createHorizontalBox();
-		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb2.add(columnIndexBox);
+		hb10 = Box.createHorizontalBox();
+		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb10.add(columnIndexBox);
 
 		// Columns bins settings
 		
-		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb3.add(this.minBoundaryColumnsLabel);
-		hb3.add(Box.createHorizontalStrut(5));
-		hb3.add(Box.createHorizontalGlue());
-		hb3.add(this.minBoundaryColumnsField);
+		hb11 = Box.createHorizontalBox();
+		hb11.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb11.add(this.minBoundaryColumnsLabel);
+		hb11.add(Box.createHorizontalStrut(5));
+		hb11.add(Box.createHorizontalGlue());
+		hb11.add(this.minBoundaryColumnsField);
 
-		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb4.add(this.binWidthColumnsLabel);
-		hb4.add(Box.createHorizontalGlue());
-		hb4.add(Box.createHorizontalStrut(5));
-		hb4.add(this.binWidthColumnsField);
+		hb12 = Box.createHorizontalBox();
+		hb12.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb12.add(this.binWidthColumnsLabel);
+		hb12.add(Box.createHorizontalGlue());
+		hb12.add(Box.createHorizontalStrut(5));
+		hb12.add(this.binWidthColumnsField);
 
-		hb5 = Box.createHorizontalBox();
-		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb5.add(this.noObjectsColumnsLabel);
-		hb5.add(Box.createHorizontalGlue());
+		hb13 = Box.createHorizontalBox();
+		hb13.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb13.add(this.noObjectsColumnsLabel);
+		hb13.add(Box.createHorizontalGlue());
 
-		hb6 = Box.createHorizontalBox();
-		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb6.add(this.minValueColumnsLabel);
-		hb6.add(Box.createHorizontalGlue());
+		hb14 = Box.createHorizontalBox();
+		hb14.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb14.add(this.minValueColumnsLabel);
+		hb14.add(Box.createHorizontalGlue());
 
-		hb7 = Box.createHorizontalBox();
-		hb7.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb7.add(this.maxValueColumnsLabel);
-		hb7.add(Box.createHorizontalGlue());
+		hb15 = Box.createHorizontalBox();
+		hb15.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb15.add(this.maxValueColumnsLabel);
+		hb15.add(Box.createHorizontalGlue());
 
 		vb4 = Box.createVerticalBox();
 		vb4.setBorder(BorderFactory.createTitledBorder(border,
 			Statistiek.rb.getString("classDivisionLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
-		vb4.add(hb3);
-		vb4.add(hb4);
-		vb4.add(hb5);
-		vb4.add(hb6);
-		vb4.add(hb7);
+		vb4.add(hb11);
+		vb4.add(hb12);
+		vb4.add(hb13);
+		vb4.add(hb14);
+		vb4.add(hb15);
 		vb4.add(Box.createVerticalGlue());
 		
 		vb3 = Box.createVerticalBox();
@@ -410,51 +448,53 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		vb3.setBorder(BorderFactory.createTitledBorder(border,
 			Statistiek.rb.getString("variableLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
-		vb3.add(hb1);
-		vb3.add(hb2);
+		vb3.add(hb9);
+		vb3.add(hb10);
 		vb3.add(vb4);
 		vb3.add(Box.createVerticalGlue());
 
 		// Display
-		hb1 = Box.createHorizontalBox();
-		hb1.add(amountRadioItem);
-		hb1.add(Box.createHorizontalGlue());
+		hb16 = Box.createHorizontalBox();
+		hb16.add(amountRadioItem);
+		hb16.add(Box.createHorizontalGlue());
 
-		hb2 = Box.createHorizontalBox();
-		hb2.add(percentageRadioItem);
-		hb2.add(Box.createHorizontalGlue());
+		hb17 = Box.createHorizontalBox();
+		hb17.add(percentageRadioItem);
+		hb17.add(Box.createHorizontalGlue());
 
-		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb3.add(separatorPercentageSettings);
+		hb18 = Box.createHorizontalBox();
+		hb18.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb18.add(separatorPercentageSettings);
 
-		hb4 = Box.createHorizontalBox();
-		hb4.add(percentage_endTotal);
-		hb4.add(Box.createHorizontalGlue());
+		hb19 = Box.createHorizontalBox();
+		hb19.add(percentage_endTotal);
+		hb19.add(Box.createHorizontalGlue());
 
-		hb5 = Box.createHorizontalBox();
-		hb5.add(percentage_rowTotal);
-		hb5.add(Box.createHorizontalGlue());
+		hb20 = Box.createHorizontalBox();
+		hb20.add(percentage_rowTotal);
+		hb20.add(Box.createHorizontalGlue());
 
-		hb6 = Box.createHorizontalBox();
-		hb6.add(percentage_columnTotal);
-		hb6.add(Box.createHorizontalGlue());
+		hb21 = Box.createHorizontalBox();
+		hb21.add(percentage_columnTotal);
+		hb21.add(Box.createHorizontalGlue());
 
 		vb5 = Box.createVerticalBox();
 		vb5.setBorder(BorderFactory.createTitledBorder(border,
 			Statistiek.rb.getString("absRelLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
-		vb5.add(hb1);
-		vb5.add(hb2);
-		vb5.add(hb3);
-		vb5.add(hb4);
-		vb5.add(hb5);
-		vb5.add(hb6);
+		vb5.add(hb16);
+		vb5.add(hb17);
+		vb5.add(hb18);
+		vb5.add(hb19);
+		vb5.add(hb20);
+		vb5.add(hb21);
 		vb5.add(Box.createVerticalGlue());
 		
 		Box hb0 = Box.createHorizontalBox();
 		hb0.add(Box.createHorizontalStrut(10));
 		hb0.add(vb1);
+		hb0.add(Box.createHorizontalStrut(10));
+		hb0.add(vb6);
 		hb0.add(Box.createHorizontalStrut(10));
 		hb0.add(vb3);
 		hb0.add(Box.createHorizontalStrut(10));
@@ -468,15 +508,6 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		vb0.add(Box.createVerticalStrut(20));
 
 		panel.add(vb0);
-		init();
-		resize(vb0);
-	}
-
-	public void resize(JComponent c)
-	{
-		Dimension d = c.getPreferredSize();
-		panel.setSize(new Dimension(d.width + 10, d.height));
-		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
 	}
 
 	public DialogButton getDialogButton()
@@ -612,9 +643,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 
 	public void update()
 	{
-//		System.out.println("CrossTabulationTableUserOptionsPanel.update(): this.model.columnIndexValid() = "
-//			+ this.model.columnIndexValid() + ", this.model.getSplitOptions().getColumnSplitIndex() = "
-//			+ this.model.getSplitOptions().getColumnSplitIndex());
+//		System.out.println("CrossTabulationTableUserOptionsPanel.update()");
 		
 		updateRowIndexBox();
 		
@@ -640,7 +669,8 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			this.setPercentageOptionsVisible(false);
 		}
 		
-		// test syl
+		if (SwingUtilities.getWindowAncestor(this.panel) != null)
+			SwingUtilities.getWindowAncestor(this.panel).pack();
 		repaint();
 	}
 
@@ -708,8 +738,6 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 
 		// box waarin componenten zitten ook visible zetten
 		maxValueRowsLabel.getParent().getParent().setVisible(!b);
-
-		resize(vb0);
 	}
 
 	private void setEnumClassesColumns(boolean b)
@@ -728,14 +756,6 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 
 		// box waarin componenten zitten ook visible zetten
 		maxValueColumnsLabel.getParent().getParent().setVisible(!b);
-
-		resize(vb0);
-	}
-
-	public void init()
-	{
-		if (vb0 != null)
-			resize(vb0);
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -810,6 +830,10 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				this.model.setShowPercentage_columnTotal(b);
 			}
 		}
+		else if (e.getSource() == swapButton)
+		{
+			this.model.swapVariables();
+		}
 		else if (e.getSource() == dialogButton)
 		{
 			Thread startDraad = new Thread()
@@ -823,7 +847,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 					catch (InterruptedException e)
 					{
 					}
-					init();
+					//init();
 					repaint();
 				}
 			};
