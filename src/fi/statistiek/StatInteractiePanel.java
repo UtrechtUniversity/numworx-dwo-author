@@ -379,7 +379,6 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 
 	public void actionPerformed(ActionEvent e)
 	{
-		// test syl
 		//System.out.println("StatInteractiePanel.actionPerformed(): " + e.getActionCommand());
 		
 		String ac = e.getActionCommand(); 
@@ -421,6 +420,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					t = Statistiek.VIEWS[6];
 				}
+//				else if (s == Statistiek.rb.getString("scatterplotOption"))
+//				{
+//					t = Statistiek.VIEWS[7];
+//				}
 //				StatistiekView statistiekView = Statistiek.createView(t,
 //					this.model.findUniqueViewName(s), model.getData(),
 //					this.view.getStartVarBoxSelectedIndex(), this);
@@ -428,9 +431,12 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				// Als Tabel gekozen, dan is de actionPerformed van startVarBox niet relevant
 				if (!t.equals(Statistiek.VIEWS[0]))
 				{
+					StatistiekView statistiekView = null;
+					
+//					if (t.equals(Statistiek.VIEWS[6]) || t.equals(Statistiek.VIEWS[7]))
 					if (t.equals(Statistiek.VIEWS[6]))
 					{
-						// Crosstab
+						// Crosstab or scatterplot
 						// Check if both varboxes are set
 						if ((this.view.getStartVarBoxSelectedIndex() > 1)
 							&& (this.view.getStartVar2BoxSelectedIndex() > 1))
@@ -438,11 +444,11 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 							// both variable boxes are set
 							
 		    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
-		    				StatistiekView statistiekView = Statistiek.createView(t,
+		    				statistiekView = Statistiek.createView(t,
 		    					this.model.findUniqueViewName(s), model.getData(),
 		    					this.view.getStartVarBoxSelectedIndex()-1, 
 		    					this.view.getStartVar2BoxSelectedIndex()-1, this);
-		    				this.model.addView(statistiekView);
+							this.model.addView(statistiekView);
 		    				this.view.selectLastTab();
 		    				this.view.clearAddViewTab();
 						}
@@ -450,10 +456,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 					else
 					{
 	    				// startVarBox index -1 vanwege de eerste default 'Kies een variabele'
-	    				StatistiekView statistiekView = Statistiek.createView(t,
+	    				statistiekView = Statistiek.createView(t,
 	    					this.model.findUniqueViewName(s), model.getData(),
 	    					this.view.getStartVarBoxSelectedIndex()-1, 0, this);
-	    				this.model.addView(statistiekView);
+						this.model.addView(statistiekView);
 	    				this.view.selectLastTab();
 	    				this.view.clearAddViewTab();
 					}
@@ -481,10 +487,20 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				&& (s == Statistiek.rb.getString("crosstabOption")))
 			{
 				// update label "Kies variabele rijen:"
-				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVar1Label"));
+				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarRowLabel"));
 				this.view.setStartVarBox(true);
 				this.view.setStartVar2Box(true);
 			}
+//			else if (Arrays.asList(Statistiek.VIEWS_translated).contains(s)
+//				&& (s == Statistiek.rb.getString("scatterplotOption")))
+//			{
+//				// update label "Kies variabele x-as:"
+//				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarXLabel"));
+//				// update label "Kies variabele y-as:"
+//				this.view.setStartVar2Label(Statistiek.rb.getString("chooseStartVarYLabel"));
+//				this.view.setStartVarBox(true);
+//				this.view.setStartVar2Box(true);
+//			}
 			else
 			{
 				// bied variabelekeuze aan
