@@ -93,7 +93,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.chooseStartVarLabel.setPreferredSize(new Dimension(150, 20));
 		this.chooseStartVarLabel.setVisible(false);
 
-		this.chooseStartVar2Label = new JLabel(Statistiek.rb.getString("chooseStartVar2Label"));
+		this.chooseStartVar2Label = new JLabel(Statistiek.rb.getString("chooseStartVarColumnLabel"));
 		this.chooseStartVar2Label.setPreferredSize(new Dimension(150, 20));
 		this.chooseStartVar2Label.setVisible(false);
 
@@ -198,6 +198,11 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	public void setStartVarLabel(String s)
 	{
 		chooseStartVarLabel.setText(s);
+	}
+
+	public void setStartVar2Label(String s)
+	{
+		chooseStartVar2Label.setText(s);
 	}
 
 	public void setStartVar2Box(boolean b)
