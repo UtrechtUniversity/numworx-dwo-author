@@ -204,11 +204,11 @@ public class Statistiek implements WiskOpdrApplet
 			controller.setSplit(startVar2);
 			return controller;
 		}
-		else if (viewType.equals("Spreidingsdiagram"))
-		{
-			System.out.println("Statistiek.createView(): viewName = " + viewName);
-			return new DotplotController(model, viewName, startVar, startVar2);
-		}
+//		else if (viewType.equals("Spreidingsdiagram"))
+//		{
+//			System.out.println("Statistiek.createView(): viewName = " + viewName);
+//			return new DotplotController(model, viewName, startVar, startVar2);
+//		}
 		else
 		{
 			return null;
