@@ -1,9 +1,6 @@
 package fi.statistiek;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -14,8 +11,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.List;
-
 import javax.swing.JPanel;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -420,10 +415,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					t = Statistiek.VIEWS[6];
 				}
-//				else if (s == Statistiek.rb.getString("scatterplotOption"))
-//				{
-//					t = Statistiek.VIEWS[7];
-//				}
+				else if (s == Statistiek.rb.getString("scatterplotOption"))
+				{
+					t = Statistiek.VIEWS[7];
+				}
 //				StatistiekView statistiekView = Statistiek.createView(t,
 //					this.model.findUniqueViewName(s), model.getData(),
 //					this.view.getStartVarBoxSelectedIndex(), this);
@@ -433,8 +428,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					StatistiekView statistiekView = null;
 					
-//					if (t.equals(Statistiek.VIEWS[6]) || t.equals(Statistiek.VIEWS[7]))
-					if (t.equals(Statistiek.VIEWS[6]))
+					if (t.equals(Statistiek.VIEWS[6]) || t.equals(Statistiek.VIEWS[7]))
 					{
 						// Crosstab or scatterplot
 						// Check if both varboxes are set
@@ -491,16 +485,16 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				this.view.setStartVarBox(true);
 				this.view.setStartVar2Box(true);
 			}
-//			else if (Arrays.asList(Statistiek.VIEWS_translated).contains(s)
-//				&& (s == Statistiek.rb.getString("scatterplotOption")))
-//			{
-//				// update label "Kies variabele x-as:"
-//				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarXLabel"));
-//				// update label "Kies variabele y-as:"
-//				this.view.setStartVar2Label(Statistiek.rb.getString("chooseStartVarYLabel"));
-//				this.view.setStartVarBox(true);
-//				this.view.setStartVar2Box(true);
-//			}
+			else if (Arrays.asList(Statistiek.VIEWS_translated).contains(s)
+				&& (s == Statistiek.rb.getString("scatterplotOption")))
+			{
+				// update label "Kies variabele x-as:"
+				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarXLabel"));
+				// update label "Kies variabele y-as:"
+				this.view.setStartVar2Label(Statistiek.rb.getString("chooseStartVarYLabel"));
+				this.view.setStartVarBox(true);
+				this.view.setStartVar2Box(true);
+			}
 			else
 			{
 				// bied variabelekeuze aan
