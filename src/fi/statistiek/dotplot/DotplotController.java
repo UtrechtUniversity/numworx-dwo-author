@@ -34,7 +34,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 	private DotplotModel model;
 
 	/**
-	 * Constructor
+	 * Constructor of DotplotController.
 	 * 
 	 * @param tableModel
 	 *            The data table
@@ -44,8 +44,26 @@ public class DotplotController implements StatistiekView, ActionListener,
 	public DotplotController(StatTableModel tableModel, String viewName,
 		int startVar)
 	{
-		this.model = new DotplotModel(tableModel, viewName);
+		this.model = new DotplotModel(tableModel, viewName, false);
 		model.setColumnXIndex(startVar);
+		this.view = new DotplotView(this.model, this);
+		this.view.update(null, null);
+	}
+
+	/**
+	 * Constructor of DotplotController for scatterplot mode.
+	 * 
+	 * @param tableModel
+	 *            The data table
+	 * @param viewName
+	 *            this view's name
+	 */
+	public DotplotController(StatTableModel tableModel, String viewName,
+		int startVar1, int startVar2)
+	{
+		this.model = new DotplotModel(tableModel, viewName, true);
+		model.setColumnXIndex(startVar1);
+		model.setColumnYIndex(startVar2);
 		this.view = new DotplotView(this.model, this);
 		this.view.update(null, null);
 	}
@@ -59,11 +77,21 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		else if (actionCommand.equals("varXBox"))
 		{
-			this.model.setColumnXIndex(this.view.getVarXBoxSelected() - 1);
+			this.model.setColumnXIndex(this.view.getVarXBoxSelected());
+			if (this.model.isScatterplotMode() && !(this.view.getXType().isNumber() && this.view.getYType().isNumber()))
+			{
+				// if not both variables are numerical, no correlation should be shown 
+				this.model.setShowCorrelation(false);
+			}
 		}
 		else if (actionCommand.equals("varYBox"))
 		{
-			this.model.setColumnYIndex(this.view.getVarYBoxSelected() - 1);
+			this.model.setColumnYIndex(this.view.getVarYBoxSelected());
+			if (!(this.view.getXType().isNumber() && this.view.getYType().isNumber()))
+			{
+				// if not both variables are numerical, no correlation should be shown 
+				this.model.setShowCorrelation(false);
+			}
 		}
 		// else if(actionCommand.equals("varSplitBox")) {
 		// this.model.setColumnSplitIndex(this.view.getVarSplitBoxSelected());
@@ -201,7 +229,8 @@ public class DotplotController implements StatistiekView, ActionListener,
 
 	public String getViewType()
 	{
-		return "Dotplot";
+		return (this.model.isScatterplotMode() ? "Spreidingsdiagram"
+			: "Dotplot");
 	}
 
 	public Object getState()
@@ -282,6 +311,11 @@ public class DotplotController implements StatistiekView, ActionListener,
 			this.model.setSplitInSingleView(((Boolean) h
 				.get("splitInSingleView")).booleanValue());
 		}
+//		if (h.containsKey("scatterplotMode"))
+//		{
+//			this.model.setScatterplotMode(((Boolean) h
+//				.get("scatterplotMode")).booleanValue());
+//		}
 	}
 
 	public String getViewName()

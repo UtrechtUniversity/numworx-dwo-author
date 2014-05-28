@@ -15,7 +15,7 @@ import fi.statistiek.Statistiek;
 /**
  * MVC Model for StatistiekView Scatterplot
  * 
- * @author Manu Drijvers
+ * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
 public class DotplotModel extends Observable implements TableModelListener,
@@ -24,7 +24,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	private StatTableModel tableModel;
 	private int columnXIndex;
 	private int columnYIndex;
-	// private int columnSplitIndex;
+	private final boolean scatterplotMode;
 
 	private SplitOptions splitOptions;
 
@@ -48,7 +48,8 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 * @param viewName
 	 *            The initial name of this view
 	 */
-	public DotplotModel(StatTableModel tableModel, String viewName)
+	public DotplotModel(StatTableModel tableModel, String viewName,
+		boolean scatterplotMode)
 	{
 		this.tableModel = tableModel;
 		this.tableModel.addTableModelListener(this);
@@ -72,6 +73,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 		boundaries.add(0.0);
 		boundaries.add(100.0);
 		this.splitOptions.setBinBoundaries(boundaries);
+		this.scatterplotMode = scatterplotMode;
 	}
 
 	private void changed()
@@ -271,7 +273,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	/**
 	 * Tests if the variable index for column X is valid
 	 * 
-	 * @return true iff index is valid
+	 * @return true if index is valid
 	 */
 	public boolean columnXIndexValid()
 	{
@@ -282,7 +284,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	/**
 	 * Tests if the variable index for column Y is valid
 	 * 
-	 * @return true iff index is valid
+	 * @return true if index is valid
 	 */
 	public boolean columnYIndexValid()
 	{
@@ -293,7 +295,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	/**
 	 * Tests if the variable index for column Z is valid
 	 * 
-	 * @return true iff index is valid
+	 * @return true if index is valid
 	 */
 	public boolean columnZIndexValid()
 	{
@@ -304,7 +306,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	/**
 	 * Tests if the variable index for the color scale is valid
 	 * 
-	 * @return true iff index is valid
+	 * @return true if index is valid
 	 */
 	public boolean columnColorIndexValid()
 	{
@@ -331,7 +333,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	}
 
 	/**
-	 * @return true iff currently showing correlation
+	 * @return true if currently showing correlation
 	 */
 	public boolean isShowCorrelation()
 	{
@@ -342,7 +344,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 * Set whether the correlation should be shown
 	 * 
 	 * @param showCorrelation
-	 *            true iff correlation should be shown
+	 *            true if correlation should be shown
 	 */
 	public void setShowCorrelation(boolean showCorrelation)
 	{
@@ -419,4 +421,8 @@ public class DotplotModel extends Observable implements TableModelListener,
 		}
 	}
 
+	public boolean isScatterplotMode()
+	{
+		return this.scatterplotMode;
+	}
 }

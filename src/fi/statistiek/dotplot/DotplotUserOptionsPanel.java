@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -129,15 +130,18 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.varXBox.setActionCommand("varXBox");
 		this.varXBox.addActionListener(this.controller);
 
-		this.varYLabel = new JLabel(Statistiek.rb.getString("variableYLabel"));
-		this.varYLabel.setFont(Statistiek.font);
-
-		this.varYBox = new JComboBox();
-		this.varYBox.setFont(Statistiek.font);
-		this.varYBox.setPreferredSize(new Dimension(100, 25));
-		this.varYBox.setMaximumSize(new Dimension(100, 25));
-		this.varYBox.setActionCommand("varYBox");
-		this.varYBox.addActionListener(this.controller);
+		if (this.model.isScatterplotMode())
+		{
+			this.varYLabel = new JLabel(Statistiek.rb.getString("variableYLabel"));
+			this.varYLabel.setFont(Statistiek.font);
+	
+			this.varYBox = new JComboBox();
+			this.varYBox.setFont(Statistiek.font);
+			this.varYBox.setPreferredSize(new Dimension(100, 25));
+			this.varYBox.setMaximumSize(new Dimension(100, 25));
+			this.varYBox.setActionCommand("varYBox");
+			this.varYBox.addActionListener(this.controller);
+		}
 
 		// display settings
 		this.absRelLabel = new JLabel(Statistiek.rb.getString("absRelLabel"));
@@ -306,7 +310,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 	private void layoutGuiComponents()
 	{
 		// Variable
-		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8, hb9, hb10, hb11, hb12, hb13;
+		Box hb1, hb2, hb3 = null, hb4 = null, hb5, hb6, hb7, hb8, hb9, hb10, hb11, hb12, hb13;
 		Box vb1, vb2, vb3, vb4, vb5, vb6, vb7;
 
 		hb1 = Box.createHorizontalBox();
@@ -317,13 +321,16 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
 		hb2.add(varXBox);
 
-		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb3.add(varYLabel);
-
-		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb4.add(varYBox);
+		if (this.model.isScatterplotMode())
+		{
+			hb3 = Box.createHorizontalBox();
+			hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+			hb3.add(varYLabel);
+	
+			hb4 = Box.createHorizontalBox();
+			hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			hb4.add(varYBox);
+		}
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -332,8 +339,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			TitledBorder.TOP, Statistiek.font));
 		vb1.add(hb1);
 		vb1.add(hb2);
-		vb1.add(hb3);
-		vb1.add(hb4);
+		if (this.model.isScatterplotMode())
+		{
+			vb1.add(hb3);
+			vb1.add(hb4);
+		}
 		vb1.add(Box.createVerticalGlue());
 
 		// Bins
@@ -588,14 +598,13 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 	{
 		this.varXBox.removeActionListener(this.controller);
 		this.varXBox.removeAllItems();
-		this.varXBox.addItem(Statistiek.rb.getString("noneItem"));
 		for (String varName : this.model.getTableModel().getColumnNames())
 		{
 			this.varXBox.addItem(varName);
 		}
 		if (this.model.columnXIndexValid())
 		{
-			this.varXBox.setSelectedIndex(this.model.getColumnXIndex() + 1);
+			this.varXBox.setSelectedIndex(this.model.getColumnXIndex());
 		}
 		else
 		{
@@ -604,23 +613,25 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		}
 		this.varXBox.addActionListener(this.controller);
 
-		this.varYBox.removeActionListener(this.controller);
-		this.varYBox.removeAllItems();
-		this.varYBox.addItem(Statistiek.rb.getString("noneItem"));
-		for (String varName : this.model.getTableModel().getColumnNames())
+		if (this.model.isScatterplotMode())
 		{
-			this.varYBox.addItem(varName);
+			this.varYBox.removeActionListener(this.controller);
+			this.varYBox.removeAllItems();
+			for (String varName : this.model.getTableModel().getColumnNames())
+			{
+				this.varYBox.addItem(varName);
+			}
+			if (this.model.columnYIndexValid())
+			{
+				this.varYBox.setSelectedIndex(this.model.getColumnYIndex());
+			}
+			else
+			{
+				// set no item selected
+				this.varYBox.setSelectedIndex(-1);
+			}
+			this.varYBox.addActionListener(this.controller);
 		}
-		if (this.model.columnYIndexValid())
-		{
-			this.varYBox.setSelectedIndex(this.model.getColumnYIndex() + 1);
-		}
-		else
-		{
-			// set no item selected
-			this.varYBox.setSelectedIndex(-1);
-		}
-		this.varYBox.addActionListener(this.controller);
 
 		this.varColorBox.removeActionListener(this.controller);
 		this.varColorBox.removeAllItems();
@@ -731,6 +742,19 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.separateRadioItem.setSelected(!this.model.splitInSingleView());
 		this.singleViewRadioItem.setSelected(this.model.splitInSingleView());
 
+		if (this.model.isScatterplotMode() 
+			&& this.view.getXType().isNumber() && this.view.getYType().isNumber())
+		{
+			this.enableCorrelationCheckBox(true);
+			this.showCorrelationBox.setSelected(this.model.isShowCorrelation());
+		}
+		else
+		{
+			// uncheck
+			this.showCorrelationBox.setSelected(false);
+			// and disable
+			this.enableCorrelationCheckBox(false);
+		}
 	}
 
 	public void init()
@@ -774,6 +798,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		splitMaxValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
 		// }
 		resize(vb0);
+	}
+	
+	private void enableCorrelationCheckBox(boolean b)
+	{
+		this.showCorrelationBox.setEnabled(b);
 	}
 
 	private void setVisibleSplitBoundaryOptions(boolean b)

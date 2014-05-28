@@ -1,5 +1,6 @@
 package fi.statistiek.dotplot;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,7 +28,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
+import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
@@ -54,7 +57,7 @@ public class DotplotView extends JPanel implements Observer
 	// Constants
 	public static final int KEUZEBALK_HOOGTE = 50;
 	public static final int X_AS_OFFSET = 25;
-	public static final int Y_AS_OFFSET = 55;
+	public int yAxisOffset = 55;
 	public static final double KEEP_CLEAR_PART = 0.05;
 	public static final Color SELECTION_RECTANGLE_COLOR = new Color(153, 204,
 		255);
@@ -126,7 +129,22 @@ public class DotplotView extends JPanel implements Observer
 		this.dotClickListener = new DotClickListener();
 		this.mainPanel.addMouseListener(this.dotClickListener);
 		this.mainPanel.addMouseMotionListener(this.dotClickListener);
-
+		// test syl: onderstaande werkt niet...
+//		this.mainPanel.setBackground(Statistiek.backgroundColor); // is wit, maar wordt niet wit...
+//		this.setBackground(Statistiek.backgroundColor);
+		this.mainPanel.setOpaque(true);
+		this.mainPanel.setBackground(Color.WHITE);
+		super.setOpaque(true);
+		super.setBackground(Color.WHITE);
+		if (SwingUtilities.getWindowAncestor(this) != null)
+		{
+			System.out.println("DotplotView(): SwingUtilities.getWindowAncestor(this) != null");
+			SwingUtilities.getWindowAncestor(this).setOpacity(1);
+			SwingUtilities.getWindowAncestor(this).setBackground(Color.WHITE);
+		}
+		this.scrollPane.setOpaque(true);
+		this.scrollPane.setBackground(Color.WHITE);
+		
 		this.colorLegend = new ColorLegend("", null, null);
 		super.add(this.colorLegend, BorderLayout.EAST);
 		// this.colorLegend.setVisible(false);
@@ -170,7 +188,7 @@ public class DotplotView extends JPanel implements Observer
 			- (this.colorLegend.isVisible() ? this.colorLegend.getWidth() : 0);
 		if (this.model.columnYIndexValid())
 		{
-			ret -= DotplotView.Y_AS_OFFSET;
+			ret -= this.yAxisOffset;
 		}
 		if (this.splitClasses > 1)
 		{
@@ -305,9 +323,68 @@ public class DotplotView extends JPanel implements Observer
 			this.setMainPanelSize();
 		}
 
+		// test syl
+		this.mainPanel.setBackground(Color.WHITE);
+//		if (this.getParent().getParent() != null)
+//			this.getParent().getParent().setBackground(Color.WHITE);
+
 		userOptionsPanel.update();
+		
+		updateOffsets();
 
 		this.repaint();
+		
+//		System.out.println("DotplotView.update() mainPanel.bg RGB = " 
+//			+ this.mainPanel.getBackground().getRed() + ", " + this.mainPanel.getBackground().getGreen()
+//			+ ", " + this.mainPanel.getBackground().getBlue());
+	}
+
+	/**
+	 * Update y-axis offsets depending on 
+	 */
+	private void updateOffsets()
+	{
+		int max = 0;
+		int yIndex = this.model.getColumnYIndex();
+		
+		// update offset y-axis
+		if (yIndex > -1)
+		{
+			ColumnType columnType = this.model.getTableModel().getColumnTypes()
+				.get(yIndex);
+			
+			Font font = super.getFont().deriveFont(super.getFont().getStyle());
+			FontMetrics fm = super.getFontMetrics(font);
+			
+			if (yType.equals(AllowedTypes.ENUM))
+			{
+				// determine max width of the enum option labels
+				for (int i = 0; i < columnType.getEnumOptions().length; i++)
+				{
+					String option = columnType.getEnumOptions()[i];
+					if (fm.stringWidth(option) > max)
+					{
+						max = fm.stringWidth(option) + 45; // + 45 for label, tick-width and some extra space
+//						System.out.println("DotplotView.updateOffsets(): option = " 
+//							+ option + ", max = " + max);
+					}
+					
+					// test syl: bovenstaande werkt, maar + 45 is willekeurig. Om een of andere reden is er voor
+					// langere enum-klassen-labels meer ruimte nodig dan voor kortere...
+				}
+			}
+			else
+			{
+				max = 55;
+			}
+		} // there is a y-axis variable
+		else
+		{
+			max = 55;
+		}
+
+		this.yAxisOffset = max;
+//		System.out.println("DotplotView.updateOffsets(): Y_AS_OFFSET = " + yAxisOffset);
 	}
 
 	public boolean isSplitSingleViewSelected()
@@ -611,13 +688,13 @@ public class DotplotView extends JPanel implements Observer
 	{
 		// return DotplotView.Y_AS_OFFSET + (int)((DotplotView.KEEP_CLEAR_PART +
 		// (1-2*DotplotView.KEEP_CLEAR_PART)*((d-xMin)/(xMax-xMin)))*(this.getWidth()-DotplotView.Y_AS_OFFSET));
-		int ret = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
+		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
 			* ((d - xMin) / (xMax - xMin))) * this.dotAreaWidth());
 		if (this.model.columnYIndexValid())
 		{
-			ret += DotplotView.Y_AS_OFFSET;
+			x += this.yAxisOffset;
 		}
-		return ret;
+		return x;
 	}
 
 	/**
@@ -636,8 +713,8 @@ public class DotplotView extends JPanel implements Observer
 		{
 			if (this.model.columnYIndexValid())
 			{
-				return DotplotView.Y_AS_OFFSET
-					+ (this.getWidth() - DotplotView.Y_AS_OFFSET) / 2;
+				return this.yAxisOffset
+					+ (this.getWidth() - this.yAxisOffset) / 2;
 			}
 			else
 			{
@@ -652,13 +729,13 @@ public class DotplotView extends JPanel implements Observer
 
 		double d = (double) index
 			/ (double) (cType.getEnumOptions().length - 2);
-		int ret = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
+		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
 			* d) * this.dotAreaWidth());
 		if (this.model.columnYIndexValid())
 		{
-			ret += DotplotView.Y_AS_OFFSET;
+			x += this.yAxisOffset;
 		}
-		return ret;
+		return x;
 	}
 
 	/**
@@ -674,8 +751,8 @@ public class DotplotView extends JPanel implements Observer
 		{
 			if (this.model.columnYIndexValid())
 			{
-				return DotplotView.Y_AS_OFFSET
-					+ (this.getWidth() - DotplotView.Y_AS_OFFSET) / 2;
+				return this.yAxisOffset
+					+ (this.getWidth() - this.yAxisOffset) / 2;
 			}
 			else
 			{
@@ -684,13 +761,13 @@ public class DotplotView extends JPanel implements Observer
 		}
 		double d = (double) this.getXStringOptions().indexOf(value)
 			/ (double) (this.getXStringOptions().size() - 1);
-		int ret = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
-			* d) * (this.getWidth() - DotplotView.Y_AS_OFFSET));
+		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
+			* d) * (this.getWidth() - this.yAxisOffset));
 		if (this.model.columnYIndexValid())
 		{
-			ret += DotplotView.Y_AS_OFFSET;
+			x += this.yAxisOffset;
 		}
-		return ret;
+		return x;
 	}
 
 	/**
@@ -902,9 +979,11 @@ public class DotplotView extends JPanel implements Observer
 
 		// paint the point
 		g.setColor(c);
+		// test syl: set transparent
+//		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0.1f));
 		g.fillOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
 			2 * this.dotSize);
-		g.setColor(Color.BLACK);
+//		g.setColor(Color.BLACK); // test syl: geen zwarte lijn
 		g.drawOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
 			2 * this.dotSize);
 
@@ -930,14 +1009,19 @@ public class DotplotView extends JPanel implements Observer
 
 		g.setColor(Color.BLACK);
 		g.setFont(rotateFont);
+		
+		// draw label y-axis
 		g.drawString(s1, fm.getHeight() - 2, this.scrollPane.getHeight() / 2
 			+ fm.stringWidth(s1) / 2 + yOffset);
 		g.setFont(font);
+
+		// draw label x-axis
 		g.drawString(s2,
-			(this.getWidth() - this.Y_AS_OFFSET - fm.stringWidth(s2)) / 2
-				+ this.Y_AS_OFFSET, this.scrollPane.getHeight()
+			(this.getWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
+				+ this.yAxisOffset, this.scrollPane.getHeight()
 				+ this.X_AS_OFFSET - 37 + yOffset);
 
+		// draw split variable class (e.g., "geslacht: m")
 		if (this.model.getTableModel().splitVarClasses(
 			this.model.getSplitOptions()) > 1
 			&& !this.model.splitInSingleView())
@@ -965,7 +1049,11 @@ public class DotplotView extends JPanel implements Observer
 	private void paintXAxis(Graphics g, int heightOffset)
 	{
 		g.setColor(Color.BLACK);
-		FontMetrics fm = g.getFontMetrics();
+//		FontMetrics fm = g.getFontMetrics();
+		// consistent met andere methodes
+		Font font = super.getFont().deriveFont(super.getFont().getStyle());
+		FontMetrics fm = super.getFontMetrics(font);
+
 
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
@@ -973,9 +1061,11 @@ public class DotplotView extends JPanel implements Observer
 		int y = this.model.getTableModel().isViewsEditable() ? this.getHeight()
 			- DotplotView.KEUZEBALK_HOOGTE - DotplotView.X_AS_OFFSET : this
 			.getHeight() - DotplotView.X_AS_OFFSET;
+		
+		// draw x-axis
 		if (this.model.columnYIndexValid())
 		{
-			g.drawLine(DotplotView.Y_AS_OFFSET, y + heightOffset,
+			g.drawLine(this.yAxisOffset, y + heightOffset,
 				this.getWidth(), y + heightOffset);
 		}
 		else
@@ -985,6 +1075,7 @@ public class DotplotView extends JPanel implements Observer
 
 		if (this.xType.equals(AllowedTypes.ENUM))
 		{
+			// draw ticks and help lines
 			for (int i = 0; i < columnType.getEnumOptions().length; i++)
 			{
 				String option = columnType.getEnumOptions()[i];
@@ -993,7 +1084,11 @@ public class DotplotView extends JPanel implements Observer
 					continue;
 				}
 				int x = this.determineXCoordEnumClass(option);
-				g.drawLine(x, y + heightOffset, x, y + 5 + heightOffset);
+				
+				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
+				// draw dashed help line
+				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+			    
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
 			}
@@ -1002,12 +1097,17 @@ public class DotplotView extends JPanel implements Observer
 		else if (this.xType.equals(AllowedTypes.STRING))
 		{
 			int amountOfOptions = this.getXStringOptions().size();
+
+			// draw ticks and help lines
 			for (int i = 0; i < amountOfOptions; i++)
 			{
 				String option = this.getXStringOptions().get(i);
 				int x = this.determineXCoordStringClass(option);
 
-				g.drawLine(x, y + heightOffset, x, y + 5 + heightOffset);
+				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
+				// draw dashed help line
+				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+			    
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
 			}
@@ -1037,7 +1137,6 @@ public class DotplotView extends JPanel implements Observer
 				step = (int) (base * Math.pow(10, exp));
 			}
 
-//			int minorStep;
 			double minorStep;
 			int minorStepsPerMajorStep;
 			switch (base)
@@ -1080,6 +1179,7 @@ public class DotplotView extends JPanel implements Observer
 //				+ minorStepsPerMajorStep + ", min = " + min
 //				+ ", max = " + max + ", p = " + p);
 			
+			// draw minor ticks
 			while (p < max)
 			{
 				int x = this.determineXCoordNumClass(p);
@@ -1096,13 +1196,17 @@ public class DotplotView extends JPanel implements Observer
 				p = 0.0;
 			}
 
+			// draw major ticks and help lines
 			while (p < max)
 			{
 				int x = this.determineXCoordNumClass(p);
-				g.drawLine(x, y + heightOffset, x, y + 5 + heightOffset);
+				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
 				
+				// draw dashed help line
+				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+			    
 				// get the right string value for integer or double
-				String pString = getStringValue(p);
+				String pString = getStringValueForXVar(p);
 //				g.drawString(Double.toString(p),
 //					x - (int) (0.5 * fm.stringWidth(Double.toString(p))), y + 5
 //						+ fm.getHeight() + heightOffset);
@@ -1115,6 +1219,40 @@ public class DotplotView extends JPanel implements Observer
 		}
 	}
 
+	/**
+	 * Draws a dashed help line in grey, starting from (x,y) with given length.
+	 * @param g
+	 * @param x
+	 * @param y
+	 * @param length
+	 * @param orientation
+	 * 	0 is vertical, 1 is horizontal
+	 */
+	private void drawDashedLine(Graphics g, int x, int y, int length, int orientation)
+	{
+		float dash1[] = {10.0f};
+		BasicStroke dashed =
+		    new BasicStroke(1.0f,
+		                    BasicStroke.CAP_BUTT,
+		                    BasicStroke.JOIN_MITER,
+		                    10.0f, dash1, 0.0f);
+		BasicStroke normal = new BasicStroke();
+		((Graphics2D) g).setStroke(dashed);
+		g.setColor(ColorGenerator.getGreyLineColor());
+
+		// draw the line
+		if (orientation == 0)
+			g.drawLine(x, y, x, y + length);
+		else if (orientation == 1)
+			g.drawLine(x, y, x + length, y);
+		else
+			System.out.println("DotplotView.drawDashedLine(): wrong parameter! orientation = " + orientation);
+		
+		// reset the graphics
+		g.setColor(Color.BLACK);
+		((Graphics2D) g).setStroke(normal);
+	}
+
 	private double determineFirstMinorStep(double min, double minorStep)
 	{
 		double first = 0;
@@ -1125,9 +1263,9 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/*
-	 * Get the string value of p according to the type (Integer or Double).
+	 * Get the string value of p according to the type of the x variable (Integer or Double).
 	 */
-	private String getStringValue(double p)
+	private String getStringValueForXVar(double p)
 	{
 		String s;
 		
@@ -1145,8 +1283,29 @@ public class DotplotView extends JPanel implements Observer
 		return s;
 	}
 
+	/*
+	 * Get the string value of p according to the type of the y variable (Integer or Double).
+	 */
+	private String getStringValueForYVar(double p)
+	{
+		String s;
+		
+		if (this.yType.equals(AllowedTypes.INTEGER))
+		{
+			s = String.valueOf((int) p);
+		}
+		else if (this.yType.equals(AllowedTypes.DOUBLE))
+		{
+			s = Double.toString(p);
+		}
+		else
+			s = "";
+		
+		return s;
+	}
+
 	/**
-	 * Paint the y-axis
+	 * Paint the y-axis and its value labels.
 	 * 
 	 * @param g
 	 *            The graphics in which the x-axis will be painted
@@ -1159,12 +1318,18 @@ public class DotplotView extends JPanel implements Observer
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(this.model.getColumnYIndex());
 
-		int x = DotplotView.Y_AS_OFFSET;
+		int x = this.yAxisOffset;
+		// test syl
+//		System.out.println("DotplotView.paintYAxis(): yAxisOffset = " + yAxisOffset);
+
 		int drawHeight = this.dotAreaHeight();
+		
+		// draw y-axis
 		g.drawLine(x, 5 + heightOffset, x, drawHeight + heightOffset);
 
 		if (yType.equals(AllowedTypes.ENUM))
 		{
+			// draw ticks and help lines
 			for (int i = 0; i < columnType.getEnumOptions().length; i++)
 			{
 				String option = columnType.getEnumOptions()[i];
@@ -1172,8 +1337,13 @@ public class DotplotView extends JPanel implements Observer
 				{
 					continue;
 				}
+
 				int y = this.determineYCoordEnumClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
+				// draw dashed help line
+				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
+
+				// draw enum option label
 				g.drawString(option, x - 7 - fm.stringWidth(option), (int) (y
 					+ 0.5 * fm.getHeight() - 3)
 					+ heightOffset);
@@ -1183,11 +1353,16 @@ public class DotplotView extends JPanel implements Observer
 		else if (this.yType.equals(AllowedTypes.STRING))
 		{
 			int amountOfOptions = this.getYStringOptions().size();
+
+			// draw ticks and help line
 			for (int i = 0; i < amountOfOptions; i++)
 			{
 				String option = this.getYStringOptions().get(i);
 				int y = this.determineYCoordStringClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
+				// draw dashed help line
+				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
+
 				g.drawString(option, x - 7 - fm.stringWidth(option), (int) (y
 					+ 0.5 * fm.getHeight() - 3)
 					+ heightOffset);
@@ -1225,12 +1400,15 @@ public class DotplotView extends JPanel implements Observer
 				* (this.yMax - this.yMin);
 			double p = Math.ceil(min / step) * step;
 
+			// test syl: TODO draw minor ticks
+			
 			// Math.ceil can give -0.0, this step turns that into 0.0
 			if (p == 0)
 			{
 				p = 0.0;
 			}
 
+			// draw major ticks and help lines
 			while (p < max)
 			{
 				int y = this.determineYCoordNumClass(p);
@@ -1238,13 +1416,13 @@ public class DotplotView extends JPanel implements Observer
 				{
 					continue;
 				}
+
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
+				// draw dashed help line
+				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 				
 				// get the right string value for integer or double
-				String pString = getStringValue(p);
-//				g.drawString(Double.toString(p),
-//					x - 7 - fm.stringWidth(Double.toString(p)), y
-//						+ (int) (0.5 * fm.getHeight() - 3) + heightOffset);
+				String pString = getStringValueForYVar(p);
 				g.drawString(pString,
 					x - 7 - fm.stringWidth(pString), y
 						+ (int) (0.5 * fm.getHeight() - 3) + heightOffset);
@@ -1266,7 +1444,7 @@ public class DotplotView extends JPanel implements Observer
 	 *            for string columns
 	 * @return The mean value of the column
 	 */
-	private double columnMean(int column, ArrayList<String> options)
+	private double getColumnMean(int column, ArrayList<String> options)
 	{
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(column);
@@ -1319,7 +1497,7 @@ public class DotplotView extends JPanel implements Observer
 	 *            for string columns
 	 * @return
 	 */
-	private double stdDev(int column, double mean, ArrayList<String> options)
+	private double getStdDev(int column, double mean, ArrayList<String> options)
 	{
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(column);
@@ -1377,7 +1555,7 @@ public class DotplotView extends JPanel implements Observer
 	 *            necessary for string columns
 	 * @return The covariance between columnA and columnB
 	 */
-	private double covariance(int columnA, double meanA,
+	private double getCovariance(int columnA, double meanA,
 		ArrayList<String> optionsA, int columnB, double meanB,
 		ArrayList<String> optionsB)
 	{
@@ -1445,7 +1623,8 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Paint the correlation
+	 * Draw the correlation. The Pearson product-moment correlation coefficient
+	 * is calculated, or Pearson's r.
 	 * 
 	 * @param g
 	 *            The graphics in which the correlation will be painted
@@ -1459,23 +1638,27 @@ public class DotplotView extends JPanel implements Observer
 
 			int columnA = this.model.getColumnXIndex();
 			int columnB = this.model.getColumnYIndex();
-			double meanA = this.columnMean(columnA, this.getXStringOptions());
-			double meanB = this.columnMean(columnB, this.getYStringOptions());
+			double meanA = this.getColumnMean(columnA, this.getXStringOptions());
+			double meanB = this.getColumnMean(columnB, this.getYStringOptions());
 
-			double covar = this.covariance(columnA, meanA,
+			double covar = this.getCovariance(columnA, meanA,
 				this.getXStringOptions(), columnB, meanB,
 				this.getYStringOptions());
-			double sdA = this.stdDev(columnA, meanA, this.getXStringOptions());
-			double sdB = this.stdDev(columnB, meanB, this.getYStringOptions());
+			double sdA = this.getStdDev(columnA, meanA, this.getXStringOptions());
+			double sdB = this.getStdDev(columnB, meanB, this.getYStringOptions());
 			double correlation = covar / (sdA * sdB);
 
-			int y = this.model.getTableModel().isViewsEditable() ? this
+			int y = (this.model.getTableModel().isViewsEditable() ? this
 				.getHeight() - 10 - DotplotView.KEUZEBALK_HOOGTE : this
-				.getHeight() - 3;
+				.getHeight() - 3);
+			
+			// test syl: TODO calculate significance met T-test...?
+
 			g.drawString(
-				"Corr(X,Y) = "
-					+ Double.toString(Math.round(correlation * 100) / 100.0),
-				3, y);
+				"r="
+				+ Double.toString(Math.round(correlation * 100) / 100.0),
+				3, this.scrollPane.getHeight()
+				+ this.X_AS_OFFSET - 37);
 		}
 	}
 
@@ -1582,8 +1765,8 @@ public class DotplotView extends JPanel implements Observer
 			// find the lowest x value for point i such that the distance to all
 			// other points is
 			// greater than DotplotView.KEEP_CLEAR_PART
-			int x = (int) (DotplotView.Y_AS_OFFSET + (DotplotView.KEEP_CLEAR_PART * (this
-				.getWidth() - DotplotView.Y_AS_OFFSET)));
+			int x = (int) (this.yAxisOffset + (DotplotView.KEEP_CLEAR_PART * (this
+				.getWidth() - this.yAxisOffset)));
 
 			for (int j = 0; j < i; j++)
 			{
@@ -1692,6 +1875,10 @@ public class DotplotView extends JPanel implements Observer
 
 	public void paintComponent(Graphics g)
 	{
+		// test syl: tbv background
+//		System.out.println("DotplotView.paintComponent()");
+		super.paintComponent(g);
+
 		g.clearRect(0, 0, this.getWidth(), this.getHeight());
 
 		// Graphics2D g2D = (Graphics2D)g;
@@ -1711,6 +1898,24 @@ public class DotplotView extends JPanel implements Observer
 				.getWidth() - 20, splitClasses
 				* (this.scrollPane.getHeight() - 5)));
 		this.scrollPane.setViewportView(mainPanel);
+	}
+	
+	/**
+	 * Get the type of the x variable.
+	 * @return The allowed type
+	 */
+	public AllowedTypes getXType()
+	{
+		return this.xType;
+	}
+
+	/**
+	 * Get the type of the y variable.
+	 * @return The allowed type
+	 */
+	public AllowedTypes getYType()
+	{
+		return this.yType;
 	}
 
 	/**
@@ -1836,12 +2041,17 @@ public class DotplotView extends JPanel implements Observer
 		{
 
 		}
-	}
+	} // DotClickListener class
 
 	private class DotPanel extends JPanel
 	{
 		public void paintComponent(Graphics g)
 		{
+			// test syl: tbv background white
+//			System.out.println("DotplotView$DotPanel.paintComponent()");
+			super.paintComponent(g);
+			DotplotView.super.paintComponent(g);
+
 			g.clearRect(0, 0, this.getWidth(), this.getHeight());
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -1888,18 +2098,18 @@ public class DotplotView extends JPanel implements Observer
 
 				DotplotView.this.drawCorrelation(g);
 
-				for (int row = 0; row < DotplotView.this.model.getTableModel()
-					.getRowCount(); row++)
-				{
-					DotplotView.this.drawPoint(g2d, row);
-				}
-
 				for (int i = 0; i < DotplotView.this.splitClasses; i++)
 				{
 					DotplotView.this.paintXAxis(g, i
 						* (DotplotView.this.scrollPane.getHeight() - 5));
 					DotplotView.this.paintYAxis(g, i
 						* (DotplotView.this.scrollPane.getHeight() - 5));
+				}
+
+				for (int row = 0; row < DotplotView.this.model.getTableModel()
+					.getRowCount(); row++)
+				{
+					DotplotView.this.drawPoint(g2d, row);
 				}
 			}
 			// else if(DotplotView.this.model.columnXIndexValid() &&
@@ -1909,6 +2119,13 @@ public class DotplotView extends JPanel implements Observer
 				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
 					.columnColorIndexValid()))
 			{
+				for (int i = 0; i < DotplotView.this.splitClasses; i++)
+				{
+					DotplotView.this.paintXAxis(g, i
+						* (DotplotView.this.scrollPane.getHeight() - 5));
+
+				}
+				
 				// only the x-column variable is valid, draw a single variable
 				// dot plot with the variable on the x-axis
 				// this.setStringOptions();
@@ -1963,19 +2180,17 @@ public class DotplotView extends JPanel implements Observer
 						}
 					}
 				}
-
-				for (int i = 0; i < DotplotView.this.splitClasses; i++)
-				{
-					DotplotView.this.paintXAxis(g, i
-						* (DotplotView.this.scrollPane.getHeight() - 5));
-
-				}
-
 			}
 			else if (DotplotView.this.model.columnYIndexValid()
 				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
 					.columnColorIndexValid()))
 			{
+				for (int i = 0; i < DotplotView.this.splitClasses; i++)
+				{
+					DotplotView.this.paintYAxis(g, i
+						* (DotplotView.this.scrollPane.getHeight() - 5));
+				}
+				
 				// only the y-column variable is valid, draw a single variable
 				// dot plot with the variable on the y-axis
 				// this.setStringOptions();
@@ -2000,13 +2215,6 @@ public class DotplotView extends JPanel implements Observer
 						.equals(ColumnType.WILDCARD))
 					{
 						int splitClass = DotplotView.this.getSplitClass(i);
-						// if(splitClass >= 0) {
-						// int heightOffset =
-						// (DotplotView.this.splitClasses-splitClass-1)*(DotplotView.this.scrollPane.getHeight()-5);
-						// DotplotView.this.drawPointAtLocation(g2d,
-						// coords[i][0], coords[i][1]+heightOffset, i);
-						//
-						// }
 						if (DotplotView.this.model.splitInSingleView())
 							splitClass = 0;
 						if (splitClass >= 0)
@@ -2037,12 +2245,6 @@ public class DotplotView extends JPanel implements Observer
 							}
 						}
 					}
-				}
-
-				for (int i = 0; i < DotplotView.this.splitClasses; i++)
-				{
-					DotplotView.this.paintYAxis(g, i
-						* (DotplotView.this.scrollPane.getHeight() - 5));
 				}
 			}
 
@@ -2108,5 +2310,5 @@ public class DotplotView extends JPanel implements Observer
 					DotplotView.this.scrollPane.getWidth() - 20, 1);
 			}
 		}
-	}
+	} // DotPanel class
 }
