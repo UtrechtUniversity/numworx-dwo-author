@@ -107,6 +107,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.viewsBox.setPreferredSize(new Dimension(150, 24));
 		this.viewsBox.setActionCommand("viewsBox");
 		this.viewsBox.addActionListener(controller);
+		this.viewsBox.setMaximumRowCount(9); // default is 8; liever niet scrollen voor 1 extra optie
 
 		this.startVarBox = new JComboBox();
 		this.startVarBox.setPreferredSize(new Dimension(150, 24));
