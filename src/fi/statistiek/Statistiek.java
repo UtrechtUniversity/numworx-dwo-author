@@ -65,8 +65,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
-//		VIEWS_translated = new String[8];
-		VIEWS_translated = new String[7];
+		VIEWS_translated = new String[8];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
 		VIEWS_translated[2] = Statistiek.rb.getString("dotplotOption");
@@ -74,10 +73,9 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS_translated[4] = Statistiek.rb.getString("frequencypolygonOption");
 		VIEWS_translated[5] = Statistiek.rb.getString("boxplotOption");
 		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
-//		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
+		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
 
-//		VIEWS = new String[8];
-		VIEWS = new String[7];
+		VIEWS = new String[8];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
 		VIEWS[2] = "Dotplot";
@@ -85,7 +83,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[4] = "Frequentiepolygoon";
 		VIEWS[5] = "Boxplot";
 		VIEWS[6] = "Kruistabel";
-//		VIEWS[7] = "Spreidingsdiagram";
+		VIEWS[7] = "Spreidingsdiagram";
 	}
 
 	public Statistiek(Locale language)
@@ -204,11 +202,11 @@ public class Statistiek implements WiskOpdrApplet
 			controller.setSplit(startVar2);
 			return controller;
 		}
-//		else if (viewType.equals("Spreidingsdiagram"))
-//		{
-//			System.out.println("Statistiek.createView(): viewName = " + viewName);
-//			return new DotplotController(model, viewName, startVar, startVar2);
-//		}
+		else if (viewType.equals("Spreidingsdiagram"))
+		{
+			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			return new DotplotController(model, viewName, startVar, startVar2);
+		}
 		else
 		{
 			return null;
