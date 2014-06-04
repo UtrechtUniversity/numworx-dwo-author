@@ -85,7 +85,8 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	JPanel panel2;
 	JRadioButton eenMuntRadio;
 	JRadioButton tweeMuntenRadio;
-	
+
+	Boolean showInstellingen=true;
 	Boolean showTabel=true;
 	Boolean showResultaten=true;
 	Boolean showGrafiek=true;
@@ -404,6 +405,19 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	}
 	
 	public void setZichtbaar() {
+		if (showInstellingen) {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(235,7);
+			stap.setLocation(235,32);
+			wis.setLocation(235,57);
+			panel2.setLocation(345,0);
+		} else {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(10,7);
+			stap.setLocation(10,32);
+			wis.setLocation(10,57);
+			panel2.setLocation(120,0);
+		}
 		if (showTabel) {
 			if (eenMuntRadio.isSelected()) {
 				pane.setVisible(true);

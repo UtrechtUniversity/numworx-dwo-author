@@ -70,6 +70,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	JCheckBox toonSomCheckBox;
 	int maxCount;
 	
+	Boolean showInstellingen=true;
 	Boolean showTabel=true;
 	Boolean showGrafiek=true;
 	Boolean showResultaten=true;
@@ -328,6 +329,21 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	}
 	
 	public void setZichtbaar() {
+		if (showInstellingen) {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(240,7);
+			wis.setLocation(240,32);
+			pane3.setLocation(350,0);
+			pane4.setLocation(350,0);
+			pane5.setLocation(350,0);
+		} else {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(10,7);
+			wis.setLocation(10,32);
+			pane3.setLocation(120,0);
+			pane4.setLocation(120,0);
+			pane5.setLocation(120,0);
+		}
 		if (showResultaten==false) {
 			pane3.setVisible(false);
 			pane4.setVisible(false);

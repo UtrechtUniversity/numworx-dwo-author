@@ -25,13 +25,16 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JRadioButton dobbelstenenRadio;
 	private JRadioButton muntenRadio;
 	private JRadioButton binomTrekkingRadio;
+	private JCheckBox muntenInstellingenCheckBox;
 	private JCheckBox muntenResultatenCheckBox;
 	private JCheckBox muntenGrafiekCheckBox;
 	private JCheckBox muntenTabelCheckBox;
 	private JCheckBox muntenFrequentieCheckBox;
+	private JCheckBox dobbelstenenInstellingenCheckBox;
 	private JCheckBox dobbelstenenResultatenCheckBox;
 	private JCheckBox dobbelstenenGrafiekCheckBox;
 	private JCheckBox dobbelstenenTabelCheckBox;
+	private JCheckBox binomTrekkingInstellingenCheckBox;
 	private JCheckBox binomTrekkingGrafiekCheckBox;
 	private JCheckBox binomTrekkingTabelCheckBox;
 	private JCheckBox binomTrekkingFrequentieCheckBox;
@@ -56,90 +59,111 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		muntenRadio.setSelected(true);
 		optionsPanel.add(muntenRadio);
 		
+		muntenInstellingenCheckBox = new JCheckBox("Instellingen");
+		muntenInstellingenCheckBox.setLocation(30,30);
+		muntenInstellingenCheckBox.setSize(200,20);
+		muntenInstellingenCheckBox.addActionListener(this);
+		muntenInstellingenCheckBox.setSelected(true);
+		optionsPanel.add(muntenInstellingenCheckBox);
+		
 		muntenResultatenCheckBox = new JCheckBox("Resultaten");
-		muntenResultatenCheckBox.setLocation(30,30);
+		muntenResultatenCheckBox.setLocation(30,50);
 		muntenResultatenCheckBox.setSize(200,20);
 		muntenResultatenCheckBox.addActionListener(this);
 		muntenResultatenCheckBox.setSelected(true);
 		optionsPanel.add(muntenResultatenCheckBox);
 		
 		muntenGrafiekCheckBox = new JCheckBox("Grafiek");
-		muntenGrafiekCheckBox.setLocation(30,50);
+		muntenGrafiekCheckBox.setLocation(30,70);
 		muntenGrafiekCheckBox.setSize(200,20);
 		muntenGrafiekCheckBox.addActionListener(this);
 		muntenGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(muntenGrafiekCheckBox);
 		
 		muntenTabelCheckBox = new JCheckBox("Tabel");
-		muntenTabelCheckBox.setLocation(30,70);
+		muntenTabelCheckBox.setLocation(30,90);
 		muntenTabelCheckBox.setSize(200,20);
 		muntenTabelCheckBox.addActionListener(this);
 		muntenTabelCheckBox.setSelected(true);
 		optionsPanel.add(muntenTabelCheckBox);
 		
 		muntenFrequentieCheckBox = new JCheckBox("Frequentie");
-		muntenFrequentieCheckBox.setLocation(30,90);
+		muntenFrequentieCheckBox.setLocation(30,110);
 		muntenFrequentieCheckBox.setSize(200,20);
 		muntenFrequentieCheckBox.addActionListener(this);
 		muntenFrequentieCheckBox.setSelected(true);
 		optionsPanel.add(muntenFrequentieCheckBox);
 		
 		dobbelstenenRadio=new JRadioButton("Dobbelstenen");
-		dobbelstenenRadio.setLocation(10,110);
+		dobbelstenenRadio.setLocation(10,130);
 		dobbelstenenRadio.setSize(200,20);
 		dobbelstenenRadio.addActionListener(this);
 		optionsPanel.add(dobbelstenenRadio);
 		
+		dobbelstenenInstellingenCheckBox = new JCheckBox("Instellingen");
+		dobbelstenenInstellingenCheckBox.setLocation(30,150);
+		dobbelstenenInstellingenCheckBox.setSize(200,20);
+		dobbelstenenInstellingenCheckBox.addActionListener(this);
+		dobbelstenenInstellingenCheckBox.setSelected(true);
+		optionsPanel.add(dobbelstenenInstellingenCheckBox);
+		
 		dobbelstenenResultatenCheckBox = new JCheckBox("Resultaten");
-		dobbelstenenResultatenCheckBox.setLocation(30,130);
+		dobbelstenenResultatenCheckBox.setLocation(30,170);
 		dobbelstenenResultatenCheckBox.setSize(200,20);
 		dobbelstenenResultatenCheckBox.addActionListener(this);
 		dobbelstenenResultatenCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenResultatenCheckBox);
 		
 		dobbelstenenGrafiekCheckBox = new JCheckBox("Grafiek");
-		dobbelstenenGrafiekCheckBox.setLocation(30,150);
+		dobbelstenenGrafiekCheckBox.setLocation(30,190);
 		dobbelstenenGrafiekCheckBox.setSize(200,20);
 		dobbelstenenGrafiekCheckBox.addActionListener(this);
 		dobbelstenenGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenGrafiekCheckBox);
 		
 		dobbelstenenTabelCheckBox = new JCheckBox("Tabel");
-		dobbelstenenTabelCheckBox.setLocation(30,170);
+		dobbelstenenTabelCheckBox.setLocation(30,210);
 		dobbelstenenTabelCheckBox.setSize(200,20);
 		dobbelstenenTabelCheckBox.addActionListener(this);
 		dobbelstenenTabelCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenTabelCheckBox);
 		
 		binomTrekkingRadio=new JRadioButton("Binominale trekking");
-		binomTrekkingRadio.setLocation(10,190);
+		binomTrekkingRadio.setLocation(10,230);
 		binomTrekkingRadio.setSize(200,20);
 		binomTrekkingRadio.addActionListener(this);
 		optionsPanel.add(binomTrekkingRadio);
-
+	
+		binomTrekkingInstellingenCheckBox = new JCheckBox("Instellingen");
+		binomTrekkingInstellingenCheckBox.setLocation(30,250);
+		binomTrekkingInstellingenCheckBox.setSize(200,20);
+		binomTrekkingInstellingenCheckBox.addActionListener(this);
+		binomTrekkingInstellingenCheckBox.setSelected(true);
+		optionsPanel.add(binomTrekkingInstellingenCheckBox);
+	
 		binomTrekkingGrafiekCheckBox = new JCheckBox("Grafiek");
-		binomTrekkingGrafiekCheckBox.setLocation(30,210);
+		binomTrekkingGrafiekCheckBox.setLocation(30,270);
 		binomTrekkingGrafiekCheckBox.setSize(200,20);
 		binomTrekkingGrafiekCheckBox.addActionListener(this);
 		binomTrekkingGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingGrafiekCheckBox);
 		
 		binomTrekkingTabelCheckBox = new JCheckBox("Tabel");
-		binomTrekkingTabelCheckBox.setLocation(30,230);
+		binomTrekkingTabelCheckBox.setLocation(30,290);
 		binomTrekkingTabelCheckBox.setSize(200,20);
 		binomTrekkingTabelCheckBox.addActionListener(this);
 		binomTrekkingTabelCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingTabelCheckBox);
 		
 		binomTrekkingFrequentieCheckBox = new JCheckBox("Frequentie");
-		binomTrekkingFrequentieCheckBox.setLocation(30,250);
+		binomTrekkingFrequentieCheckBox.setLocation(30,310);
 		binomTrekkingFrequentieCheckBox.setSize(200,20);
 		binomTrekkingFrequentieCheckBox.addActionListener(this);
 		binomTrekkingFrequentieCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingFrequentieCheckBox);
 		
 		binomTrekkingRoosterCheckBox = new JCheckBox("Rooster");
-		binomTrekkingRoosterCheckBox.setLocation(30,270);
+		binomTrekkingRoosterCheckBox.setLocation(30,330);
 		binomTrekkingRoosterCheckBox.setSize(200,20);
 		binomTrekkingRoosterCheckBox.addActionListener(this);
 		binomTrekkingRoosterCheckBox.setSelected(true);
@@ -154,15 +178,18 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	public Hashtable getEditState() {
 		Hashtable h = interactiePanel.getEditState();
 		h.put("muntenRadio", new Boolean(muntenRadio.isSelected()));
+		h.put("muntenInstellingen", new Boolean(muntenInstellingenCheckBox.isSelected()));
 		h.put("muntenResultaten", new Boolean(muntenResultatenCheckBox.isSelected()));
 		h.put("muntenGrafiek", new Boolean(muntenGrafiekCheckBox.isSelected()));
 		h.put("muntenTabel", new Boolean(muntenTabelCheckBox.isSelected()));
 		h.put("muntenFrequentie", new Boolean(muntenFrequentieCheckBox.isSelected()));
 		h.put("dobbelstenenRadio", new Boolean(dobbelstenenRadio.isSelected()));
+		h.put("dobbelstenenInstellingen", new Boolean(dobbelstenenInstellingenCheckBox.isSelected()));
 		h.put("dobbelstenenResultaten", new Boolean(dobbelstenenResultatenCheckBox.isSelected()));
 		h.put("dobbelstenenGrafiek", new Boolean(dobbelstenenGrafiekCheckBox.isSelected()));
 		h.put("dobbelstenenTabel", new Boolean(dobbelstenenTabelCheckBox.isSelected()));
 		h.put("binomTrekkingRadio", new Boolean(binomTrekkingRadio.isSelected()));
+		h.put("binomTrekkingInstellingen", new Boolean(binomTrekkingInstellingenCheckBox.isSelected()));
 		h.put("binomTrekkingGrafiek", new Boolean(binomTrekkingGrafiekCheckBox.isSelected()));
 		h.put("binomTrekkingTabel", new Boolean(binomTrekkingTabelCheckBox.isSelected()));
 		h.put("binomTrekkingFrequentie", new Boolean(binomTrekkingFrequentieCheckBox.isSelected()));
@@ -177,7 +204,12 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		if(h.containsKey("muntenRadio")) muntenRadioBool= ((Boolean)h.get("muntenRadio")).booleanValue();
 		muntenRadio.setSelected(muntenRadioBool);
 		interactiePanel.munten.setVisible(muntenRadioBool);
-		
+
+			Boolean muntenInstellingen=true;
+			if(h.containsKey("muntenInstellingen")) muntenInstellingen= ((Boolean)h.get("muntenInstellingen")).booleanValue();
+			muntenInstellingenCheckBox.setSelected(muntenInstellingen);
+			interactiePanel.munten.showInstellingen=muntenInstellingen;
+			
 			Boolean muntenResultaten=true;
 			if(h.containsKey("muntenResultaten")) muntenResultaten= ((Boolean)h.get("muntenResultaten")).booleanValue();
 			muntenResultatenCheckBox.setSelected(muntenResultaten);
@@ -206,6 +238,11 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		interactiePanel.dobbelstenen.setVisible(dobbelstenenRadioBool);
 		
 	
+			Boolean dobbelstenenInstellingen=true;
+			if(h.containsKey("dobbelstenenInstellingen")) dobbelstenenInstellingen= ((Boolean)h.get("dobbelstenenInstellingen")).booleanValue();
+			dobbelstenenInstellingenCheckBox.setSelected(dobbelstenenInstellingen);
+			interactiePanel.dobbelstenen.showInstellingen=dobbelstenenInstellingen;
+			
 			Boolean dobbelstenenResultaten=true;
 			if(h.containsKey("dobbelstenenResultaten")) dobbelstenenResultaten= ((Boolean)h.get("dobbelstenenResultaten")).booleanValue();
 			dobbelstenenResultatenCheckBox.setSelected(dobbelstenenResultaten);
@@ -227,7 +264,11 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
 		binomTrekkingRadio.setSelected(binomTrekkingRadioBool);
 		interactiePanel.binomTrekking.setVisible(binomTrekkingRadioBool);
-	
+
+			Boolean binomTrekkingInstellingen=true;
+			if(h.containsKey("binomTrekkingInstellingen")) binomTrekkingInstellingen= ((Boolean)h.get("binomTrekkingInstellingen")).booleanValue();
+			binomTrekkingInstellingenCheckBox.setSelected(binomTrekkingInstellingen);
+			interactiePanel.binomTrekking.showInstellingen=binomTrekkingInstellingen;
 			
 			Boolean binomTrekkingGrafiek=true;
 			if(h.containsKey("binomTrekkingGrafiek")) binomTrekkingGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
@@ -295,6 +336,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(false);
 		   }
+		   if (e.getSource()==muntenInstellingenCheckBox) {
+			   interactiePanel.munten.showInstellingen=muntenInstellingenCheckBox.isSelected();
+			   interactiePanel.munten.setZichtbaar();
+		   }
 		   if (e.getSource()==muntenResultatenCheckBox) {
 			   interactiePanel.munten.showResultaten=muntenResultatenCheckBox.isSelected();
 			   interactiePanel.munten.setZichtbaar();
@@ -316,6 +361,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(true);
 			   interactiePanel.binomTrekking.setVisible(false);
 		   }
+		   if (e.getSource()==dobbelstenenInstellingenCheckBox) {
+			   interactiePanel.dobbelstenen.showInstellingen=dobbelstenenInstellingenCheckBox.isSelected();
+			   interactiePanel.dobbelstenen.setZichtbaar();
+		   }
 		   if (e.getSource()==dobbelstenenResultatenCheckBox) {
 			   interactiePanel.dobbelstenen.showResultaten=dobbelstenenResultatenCheckBox.isSelected();
 			   interactiePanel.dobbelstenen.setZichtbaar();
@@ -332,6 +381,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.munten.setVisible(false);
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(true);
+		   }
+		   if (e.getSource()==binomTrekkingInstellingenCheckBox) {
+			   interactiePanel.binomTrekking.showInstellingen=binomTrekkingInstellingenCheckBox.isSelected();
+			   interactiePanel.binomTrekking.setZichtbaar();
 		   }
 		   if (e.getSource()==binomTrekkingGrafiekCheckBox) {
 			   interactiePanel.binomTrekking.showGrafiek=binomTrekkingGrafiekCheckBox.isSelected();

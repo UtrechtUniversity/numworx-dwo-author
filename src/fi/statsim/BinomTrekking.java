@@ -57,6 +57,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	Boolean showGrafiek=true;
 	Boolean showFrequentie=true;
 	Boolean showRooster=true;
+	Boolean showInstellingen=true;
 	
 	Boolean multipleTimes=false;
 	int numberOfTimes;
@@ -185,6 +186,23 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	}
 	
 	public void setZichtbaar() {
+		if (showInstellingen) {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(210,5);
+			stap.setLocation(295,5);
+			voerLabel.setLocation(210,30);
+			aantalKeer.setLocation(265,30);
+			keer.setLocation(295,30);
+			wis.setLocation(210,55);
+		} else {
+			panel1.setVisible(showInstellingen);
+			voeruit.setLocation(10,5);
+			stap.setLocation(95,5);
+			voerLabel.setLocation(10,30);
+			aantalKeer.setLocation(65,30);
+			keer.setLocation(95,30);
+			wis.setLocation(10,55);
+		}
 		if (showTabel) {
 			pane.setVisible(true);
 		} else {
