@@ -113,7 +113,9 @@ public class Text_en extends java.util.ListResourceBundle
             {   "integer", "Whole number"},
             {   "double", "Decimal number"},
             {   "string", "Text"},
-            {   "enum", "Opsomming"}
+            {   "enum", "Opsomming"},
+            {   "messageNrRowsMoreThan", "Number of rows is more than "},
+            {   "messageChooseOtherVar", "Choose another variable."}
 
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },

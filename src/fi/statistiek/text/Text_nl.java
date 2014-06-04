@@ -112,7 +112,9 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "integer", "Geheel getal"},
             {   "double", "Decimaal getal"},
             {   "string", "Tekst"},
-            {   "enum", "Opsomming"}
+            {   "enum", "Opsomming"},
+            {   "messageNrRowsMoreThan", "Aantal rijen is meer dan "},
+            {   "messageChooseOtherVar", "Kies een andere variabele."}
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
