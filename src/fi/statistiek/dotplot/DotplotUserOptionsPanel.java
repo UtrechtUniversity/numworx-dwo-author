@@ -631,7 +631,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 				this.varYBox.setSelectedIndex(-1);
 			}
 			this.varYBox.addActionListener(this.controller);
-		}
+		} // scatterplot mode
 
 		this.varColorBox.removeActionListener(this.controller);
 		this.varColorBox.removeAllItems();
@@ -743,7 +743,8 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.singleViewRadioItem.setSelected(this.model.splitInSingleView());
 
 		if (this.model.isScatterplotMode() 
-			&& this.view.getXType().isNumber() && this.view.getYType().isNumber())
+			&& this.view.getXType().isNumber() && this.view.getYType().isNumber()
+			&& !isSplit())
 		{
 			this.enableCorrelationCheckBox(true);
 			this.showCorrelationBox.setSelected(this.model.isShowCorrelation());
@@ -894,6 +895,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			else
 			{
 				setVisibleSplitOptions(true);
+				if (this.model.isScatterplotMode())
+				{
+					// for a split no correlation should be shown 
+					this.model.setShowCorrelation(false);
+				}
 			}
 			resize(vb0);
 		}
