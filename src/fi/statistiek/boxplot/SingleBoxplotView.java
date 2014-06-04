@@ -47,7 +47,7 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
 
 	public static double WIDTH_FILL_FRACTION = 0.8;
 	public static double HEIGHT_FILL_FRACTION = 0.8;
-	public static final Color BOX_COLOR = new Color(220, 160, 0);
+	public static final Color BOX_COLOR = ColorGenerator.DEFAULT_VIEW_ELEMENT_COLOR;
 	public static final int MAX_BOX_HEIGHT = 40;
 
 	public SingleBoxplotView(Double minValue, Double lowerQuartile,
