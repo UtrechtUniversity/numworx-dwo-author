@@ -70,9 +70,8 @@ public class HistogramView extends JPanel implements Observer
 
 	private Random random;
 
-	// public static final Color BAR_COLOR = new Color(117,224,170);
-	public static final Color BAR_COLOR = new Color(220, 160, 0);
-	public static final Color SELECTED_BAR_COLOR = Color.YELLOW;
+	public static final Color BAR_COLOR = ColorGenerator.DEFAULT_VIEW_ELEMENT_COLOR;
+	public static final Color SELECTED_BAR_COLOR = ColorGenerator.SELECTION_COLOR;
 
 	private int xAxisOffset;
 	private int yAxisOffset;
@@ -84,10 +83,6 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private int highlightedBar = -1;
 	private int highlightInSplit = -1;
-
-	private Color[] COLORS =
-		{ Color.RED, Color.GREEN, Color.BLUE };
-	private ArrayList<Color> colorList;
 
 	/**
 	 * Constructor
@@ -113,8 +108,9 @@ public class HistogramView extends JPanel implements Observer
 		this.mainPanel = new HistogramBarPanel();
 		this.mainPanel.addMouseMotionListener((MouseMotionListener) this.mainPanel);
 		// test syl: onderstaande werkt niet...
-		this.mainPanel.setBackground(Statistiek.backgroundColor);
-		this.setBackground(Statistiek.backgroundColor);
+//		this.mainPanel.setBackground(Statistiek.backgroundColor);
+//		this.setBackground(Statistiek.backgroundColor);
+		this.mainPanel.setBackground(Color.WHITE);
 		
 		this.scrollPane = new JScrollPane(this.mainPanel);
 		this.scrollPane.getVerticalScrollBar().setUnitIncrement(Statistiek.scrollSpeedUnit);
@@ -127,7 +123,6 @@ public class HistogramView extends JPanel implements Observer
 		this.colorLegend.setVisible(false);
 
 		this.random = new Random();
-		this.colorList = new ArrayList<Color>(Arrays.asList(COLORS));
 	}
 
 	/**
@@ -2759,7 +2754,6 @@ public class HistogramView extends JPanel implements Observer
 		{
 			// Method mouseMoved() implements showing tooltip & highlight
 			
-			// test syl
 			if (!HistogramView.this.model.isFrequencyPolygonMode())
 			{
     			Point p = me.getPoint();
@@ -2847,7 +2841,7 @@ public class HistogramView extends JPanel implements Observer
 //						System.out.println("... aantalPerBin[" + j + "] = " +
 //							aantalPerBin[j]);
     				}
-    			}
+    			} // percentage
     			
     			//System.out.println("HistogramView.HistogramBarPanel.mouseMoved(): aantal_totaal = " + aantal_totaal);
     
