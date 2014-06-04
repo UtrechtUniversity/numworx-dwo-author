@@ -42,7 +42,7 @@ import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
 /**
- * MVC View for StatistiekView Scatterplot
+ * MVC View for StatistiekView Dotplot
  * 
  * @author Manu Drijvers, Sylvia van Borkulo
  * 
@@ -57,11 +57,20 @@ public class DotplotView extends JPanel implements Observer
 	// Constants
 	public static final int KEUZEBALK_HOOGTE = 50;
 	public static final int X_AS_OFFSET = 25;
-	public int yAxisOffset = 55;
+	/**
+	 * The part below the minimum value and above the maximum value respectively 
+	 * that serves to create extra space. For example, 0.05 is 5% of the 
+	 * space available for drawing the dots. 
+	 */
 	public static final double KEEP_CLEAR_PART = 0.05;
 	public static final Color SELECTION_RECTANGLE_COLOR = new Color(153, 204,
 		255);
-	public static final Color DEFAULT_DOT_COLOR = new Color(220, 160, 0);
+
+	public int yAxisOffset = 55;
+	/**
+	 * Correction used to determine the x coordinate of a number value.
+	 */
+	private int xCoordCorrection = 0;
 
 	private DotClickListener dotClickListener;
 
@@ -89,10 +98,6 @@ public class DotplotView extends JPanel implements Observer
 	private ColorLegend colorLegend;
 
 	private Random random;
-
-	private Color[] COLORS =
-		{ Color.RED, Color.GREEN, Color.BLUE };
-	private ArrayList<Color> colorList;
 
 	/**
 	 * Constructor
@@ -150,7 +155,6 @@ public class DotplotView extends JPanel implements Observer
 		// this.colorLegend.setVisible(false);
 
 		this.random = new Random();
-		this.colorList = new ArrayList<Color>(Arrays.asList(COLORS));
 	}
 
 	private ArrayList<String> getXStringOptions()
@@ -636,8 +640,9 @@ public class DotplotView extends JPanel implements Observer
 				}
 			}
 		}
-		// if not using a colorscale, the color is always black
-		return DotplotView.DEFAULT_DOT_COLOR;
+		
+		// if not using a colorscale, the color is the default dot color
+		return ColorGenerator.DEFAULT_VIEW_ELEMENT_COLOR;
 	}
 
 	/**
@@ -678,7 +683,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Determine where a numeric value would be painted in the scatterplot
+	 * Determine the x coordinate of a numeric value in the dotplot or scatterplot.
 	 * 
 	 * @param d
 	 *            a numeric value
@@ -686,14 +691,19 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int determineXCoordNumClass(double d)
 	{
-		// return DotplotView.Y_AS_OFFSET + (int)((DotplotView.KEEP_CLEAR_PART +
-		// (1-2*DotplotView.KEEP_CLEAR_PART)*((d-xMin)/(xMax-xMin)))*(this.getWidth()-DotplotView.Y_AS_OFFSET));
 		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
 			* ((d - xMin) / (xMax - xMin))) * this.dotAreaWidth());
 		if (this.model.columnYIndexValid())
 		{
-			x += this.yAxisOffset;
+			if (x < 0)
+			{
+				// The x coordinate should be in the dot area (x >= 0), else make a correction to shift x.
+				// This correction is applied in determining the x coordinate for all values
+				this.xCoordCorrection = -x;
+			}
+			x = x + this.yAxisOffset + this.xCoordCorrection;
 		}
+//		System.out.println("DotplotView.determineXCoordNumClass(" + d + "): x = " + x);
 		return x;
 	}
 
@@ -943,22 +953,24 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private void drawPointAtLocation(Graphics2D g, int x, int y, int rowIndex)
 	{
+//		System.out.println("DotplotView.drawPointAtLocation(g, " + x + ", " + y + ", " + rowIndex + ")");
+		
 		// highlight point if the object is selected
 		g.setColor(Color.BLACK);
 		if (this.model.getTableModel().isRowSelected(rowIndex))
 		{
 			g.fillOval(x - this.dotSize - 2, y - this.dotSize - 2,
-				2 * this.dotSize + 4, 2 * this.dotSize + 4);
+				2 * this.dotSize + 4, 2 * this.dotSize + 4); // test syl: color black?
 			g.drawOval(x - this.dotSize - 2, y - this.dotSize - 2,
 				2 * this.dotSize + 4, 2 * this.dotSize + 4);
 		}
 
 		// paint the point
-		g.setColor(this.determineColor(rowIndex));
+		Color c = this.determineColor(rowIndex);
+		g.setColor(c);
+		// set transparent
+		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 150));
 		g.fillOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
-			2 * this.dotSize);
-		g.setColor(Color.BLACK);
-		g.drawOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
 			2 * this.dotSize);
 
 		this.objectLocations.set(rowIndex, new Point(x, y));
@@ -967,6 +979,8 @@ public class DotplotView extends JPanel implements Observer
 	private void drawPointAtLocation(Graphics2D g, int x, int y, int rowIndex,
 		Color c)
 	{
+//		System.out.println("DotplotView.drawPointAtLocation(g, " + x + ", " + y + ", " + rowIndex + c.toString() + ")");
+		
 		// highlight point if the object is selected
 		g.setColor(Color.BLACK);
 		if (this.model.getTableModel().isRowSelected(rowIndex))
@@ -979,12 +993,9 @@ public class DotplotView extends JPanel implements Observer
 
 		// paint the point
 		g.setColor(c);
-		// test syl: set transparent
-//		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0.1f));
+		// set transparent
+		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 150));
 		g.fillOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
-			2 * this.dotSize);
-//		g.setColor(Color.BLACK); // test syl: geen zwarte lijn
-		g.drawOval(x - this.dotSize, y - this.dotSize, 2 * this.dotSize,
 			2 * this.dotSize);
 
 		this.objectLocations.set(rowIndex, new Point(x, y));
@@ -1087,7 +1098,7 @@ public class DotplotView extends JPanel implements Observer
 				
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
 				// draw dashed help line
-				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
@@ -1106,7 +1117,7 @@ public class DotplotView extends JPanel implements Observer
 
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
 				// draw dashed help line
-				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
@@ -1203,7 +1214,7 @@ public class DotplotView extends JPanel implements Observer
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
 				
 				// draw dashed help line
-				drawDashedLine(g, x, heightOffset + 5, y - 5, 0);
+				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
 				// get the right string value for integer or double
 				String pString = getStringValueForXVar(p);
@@ -1220,7 +1231,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Draws a dashed help line in grey, starting from (x,y) with given length.
+	 * Draws a help help line in grey, starting from (x,y) with given length.
 	 * @param g
 	 * @param x
 	 * @param y
@@ -1228,16 +1239,8 @@ public class DotplotView extends JPanel implements Observer
 	 * @param orientation
 	 * 	0 is vertical, 1 is horizontal
 	 */
-	private void drawDashedLine(Graphics g, int x, int y, int length, int orientation)
+	private void drawHelpLine(Graphics g, int x, int y, int length, int orientation)
 	{
-		float dash1[] = {10.0f};
-		BasicStroke dashed =
-		    new BasicStroke(1.0f,
-		                    BasicStroke.CAP_BUTT,
-		                    BasicStroke.JOIN_MITER,
-		                    10.0f, dash1, 0.0f);
-		BasicStroke normal = new BasicStroke();
-		((Graphics2D) g).setStroke(dashed);
 		g.setColor(ColorGenerator.getGreyLineColor());
 
 		// draw the line
@@ -1246,11 +1249,10 @@ public class DotplotView extends JPanel implements Observer
 		else if (orientation == 1)
 			g.drawLine(x, y, x + length, y);
 		else
-			System.out.println("DotplotView.drawDashedLine(): wrong parameter! orientation = " + orientation);
+			System.out.println("DotplotView.drawHelpLine(): wrong parameter! orientation = " + orientation);
 		
 		// reset the graphics
 		g.setColor(Color.BLACK);
-		((Graphics2D) g).setStroke(normal);
 	}
 
 	private double determineFirstMinorStep(double min, double minorStep)
@@ -1319,7 +1321,6 @@ public class DotplotView extends JPanel implements Observer
 			.get(this.model.getColumnYIndex());
 
 		int x = this.yAxisOffset;
-		// test syl
 //		System.out.println("DotplotView.paintYAxis(): yAxisOffset = " + yAxisOffset);
 
 		int drawHeight = this.dotAreaHeight();
@@ -1341,7 +1342,7 @@ public class DotplotView extends JPanel implements Observer
 				int y = this.determineYCoordEnumClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
 				// draw dashed help line
-				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
+				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 
 				// draw enum option label
 				g.drawString(option, x - 7 - fm.stringWidth(option), (int) (y
@@ -1361,7 +1362,7 @@ public class DotplotView extends JPanel implements Observer
 				int y = this.determineYCoordStringClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
 				// draw dashed help line
-				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
+				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 
 				g.drawString(option, x - 7 - fm.stringWidth(option), (int) (y
 					+ 0.5 * fm.getHeight() - 3)
@@ -1419,7 +1420,7 @@ public class DotplotView extends JPanel implements Observer
 
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
 				// draw dashed help line
-				drawDashedLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
+				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 				
 				// get the right string value for integer or double
 				String pString = getStringValueForYVar(p);
@@ -1860,17 +1861,7 @@ public class DotplotView extends JPanel implements Observer
 
 	private Color getColor(int number)
 	{
-		if (number < this.colorList.size())
-		{
-			return this.colorList.get(number);
-		}
-		else
-		{
-			Color c = new Color(this.random.nextInt(256),
-				this.random.nextInt(256), this.random.nextInt(256));
-			this.colorList.add(c);
-			return c;
-		}
+		return ColorGenerator.getColor(number);
 	}
 
 	public void paintComponent(Graphics g)
