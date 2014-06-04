@@ -99,7 +99,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	private JLabel[] binLabelsColumns;
 	private Color[][] cellColors;
 	
-	public static final Color SELECTED_COLOR = Color.YELLOW;
+	public static final Color SELECTED_COLOR = ColorGenerator.SELECTION_COLOR;
 	public static final int GRID_TOPGAP = 5;
 	public static final int GRID_BOTTOMGAP = 5;
 	public static final int GRID_LEFTGAP = 5;
@@ -298,8 +298,13 @@ public class CrossTabulationTableView extends JPanel implements Observer
 
 			if (typeRows.isNumber())
 				numberOfRowBins = this.model.getBinBoundaries().size() - 1;
-			else
-				numberOfRowBins = cTypeRows.getEnumOptions().length - 1;
+			else 
+			{
+				if (cTypeRows.getEnumOptions() != null)
+					numberOfRowBins = cTypeRows.getEnumOptions().length - 1;
+				else
+					numberOfRowBins = 0;
+			}
 						
 			numberOfColumnBins = this.model.getTableModel().splitVarClasses(
 				this.model.getSplitOptions());
@@ -396,9 +401,10 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			makeHeaderRows();
 			
 			makeTable();				
-			
-			this.mainPanel.setBackground(Color.WHITE);	
-		}
+
+			// this works!
+			this.mainPanel.setBackground(Color.WHITE);
+		} // columnIndexValid()
 		
 		this.setMainPanelSize();
 
@@ -538,14 +544,18 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			{
 				ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
     				.get(this.model.getSplitOptions().getColumnSplitIndex());
-				int i = 0;
-				for (String s : cSplitType.getEnumOptions())
+				
+				if (cSplitType.getEnumOptions() != null)
 				{
-					if (!s.equals(ColumnType.WILDCARD))
+					int i = 0;
+					for (String s : cSplitType.getEnumOptions())
 					{
-						binLabelsColumns[i] = new JLabel(s);
-						binLabelsColumns[i].setFont(Statistiek.font);
-						i++;
+						if (!s.equals(ColumnType.WILDCARD))
+						{
+							binLabelsColumns[i] = new JLabel(s);
+							binLabelsColumns[i].setFont(Statistiek.font);
+							i++;
+						}
 					}
 				}
 			}
@@ -835,7 +845,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			}
 		}
 		else
-			System.out.println("data is null!");
+			System.out.println("CrossTabulationTableView.printData(): data is null!");
 	}
 
 	/**
@@ -1164,7 +1174,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 
 		}
 		else
-			System.out.println("data is null!");
+			System.out.println("CrossTabulationTableView.makeTable(): data is null!");
 	}
 
 	public void paintComponent(Graphics g)
