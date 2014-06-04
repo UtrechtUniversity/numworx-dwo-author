@@ -432,8 +432,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 					{
 						// Crosstab or scatterplot
 						// Check if both varboxes are set
-						if ((this.view.getStartVarBoxSelectedIndex() > 1)
-							&& (this.view.getStartVar2BoxSelectedIndex() > 1))
+						if ((this.view.getStartVarBoxSelectedIndex() > 0)
+							&& (this.view.getStartVar2BoxSelectedIndex() > 0))
 						{
 							// both variable boxes are set
 							
