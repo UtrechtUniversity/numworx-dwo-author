@@ -22,9 +22,9 @@ import fi.statistiek.histogram.DefineBinBoundariesDialog;
 import fi.statistiek.types.AllowedTypes;
 
 /**
- * MVC Controller for StatistiekView Scatterplot
+ * MVC Controller for StatistiekView Dotplot
  * 
- * @author Manu Drijvers
+ * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
 public class DotplotController implements StatistiekView, ActionListener,
