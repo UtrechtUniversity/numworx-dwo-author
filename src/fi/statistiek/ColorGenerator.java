@@ -14,23 +14,22 @@ import java.util.Random;
  */
 public class ColorGenerator
 {
-	// oud
-	private static Color[] COLORS =
-		{ Color.RED, Color.GREEN, Color.BLUE };
-	// nieuw (Dark2 van http://colorbrewer2.org/):
-//	private static Color[] COLORS = {
-//		new Color(27, 158, 119),
-//		new Color(217,95,2),
-//		new Color(117,112,179),
-//		new Color(231,41,138),
-//		new Color(102,166,30),
-//		new Color(230,171,2),
-//		new Color(166,118,29),
-//		new Color(102,102,102)
-//	};
+	// Dark2 van http://colorbrewer2.org/:
+	private static final Color[] COLORS = {
+		new Color(117, 112, 179), // paars
+		new Color(230, 171, 2), // geel
+		new Color(102, 166, 30), // groen
+		new Color(217, 95, 2), // oranje
+		new Color(231, 41, 138), // roze
+		new Color(102, 102, 102), // grijs
+		new Color(27, 158, 119), // groenblauw
+		new Color(166, 118, 29) // bruin
+	};
 	
-	private static Color lightgrey = new Color(240, 240, 240);
-	private static Color grey = new Color(220, 220, 220);
+	private static final Color LIGHT_GREY = new Color(240, 240, 240);
+	private static final Color GREY = new Color(220, 220, 220);
+	public static final Color DEFAULT_VIEW_ELEMENT_COLOR = new Color(67,147,195); // blue
+	public static final Color SELECTION_COLOR = Color.LIGHT_GRAY; // 
 	
 	private static ArrayList<Color> colorList = 
 		new ArrayList<Color>(Arrays.asList(COLORS));
@@ -79,6 +78,16 @@ public class ColorGenerator
 	 */
 	public static Color getGreyLineColor()
 	{
-		return grey;
+		return GREY;
+	}
+	
+	/**
+	 * Get the default view element color
+	 * 
+	 * @return the default view element color
+	 */
+	public static Color getDefaultViewElementColor()
+	{
+		return DEFAULT_VIEW_ELEMENT_COLOR;
 	}
 }
