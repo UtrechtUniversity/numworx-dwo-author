@@ -186,6 +186,8 @@ MouseListener, MouseMotionListener, CBookAware {
 	private boolean fout = false;
 	int score;
 	
+	private boolean checkExternal = false;
+	
 	Vector listeners = new Vector();
 
 	boolean nagekeken = false;
@@ -714,6 +716,13 @@ MouseListener, MouseMotionListener, CBookAware {
 					schuifParameters[i].zetLocatie(offset, currentYTop + veldh - 25*(i + 1));
 			}
 		}//p.zetLocatie(offset, gv.getY() + gv.getHeight() - offset - (schuifParameters.length - 1) * 15);
+		
+		if(checkExternal)
+		{
+			groenVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+			oranjeVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+			kruisjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+		}
 	}
 	
 	
@@ -840,6 +849,37 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetTabelComponent(leerlingZietTabel, setState);
 		tabelComponent.zetTabelPunten(docentGraphPoints, true);
 	}
+	
+	public void zetCheckExternal(boolean b)
+	{
+		checkExternal = b;
+		zetKijkNaButton(typeOpdracht == TEKENPUNTENBIJFORMULE || typeOpdracht == TEKENTABELPUNTEN);
+		if(checkExternal)
+		{
+			kijkNaPanel.remove(groenVinkjeLabel);
+			kijkNaPanel.remove(oranjeVinkjeLabel);
+			kijkNaPanel.remove(kruisjeLabel);
+			add(groenVinkjeLabel, 0);
+			add(oranjeVinkjeLabel, 0);
+			add(kruisjeLabel, 0);
+			groenVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+			oranjeVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+			kruisjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
+		}
+		else
+		{	remove(groenVinkjeLabel);
+			remove(oranjeVinkjeLabel);
+			remove(kruisjeLabel);
+			kijkNaPanel.add(groenVinkjeLabel);
+			kijkNaPanel.add(oranjeVinkjeLabel);
+			kijkNaPanel.add(kruisjeLabel);
+			groenVinkjeLabel.setLocation(76, 2);
+			oranjeVinkjeLabel.setLocation(76, 2);
+			kruisjeLabel.setLocation(76, 2);
+		}
+		
+		
+	}
 
 	public void zetSchaal(boolean zichtbaar, boolean x, boolean y)
 	{	schaalZichtbaar = zichtbaar;
@@ -912,7 +952,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	public void zetKijkNaButton(boolean b)
-	{	if(mode != 2 && mode != 3)
+	{	if(mode != 2 && mode != 3 && !checkExternal)
 			kijkNaButtonZichtbaar = b;
 		else
 			kijkNaButtonZichtbaar = false;
@@ -2180,6 +2220,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		int scoreMax = 0;
 		boolean domeinControleren = false;
 		boolean leerlingZietTabel = true;	
+		boolean checkExternal = false;
 		String[] docentFunctieStrings = new String[maxAantalExpressies];
 		String[][] docentDomeinStrings = new String[maxAantalExpressies][2];
 		//double[][] docentDomeinen = new double[maxAantalExpressies][2];
@@ -2214,6 +2255,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		scoreMax = this.scoreMax;
 		domeinControleren = this.domeinControleren;
 		leerlingZietTabel = this.leerlingZietTabel;
+		checkExternal = this.checkExternal;
 		
 		docentFunctieStrings = this.docentFunctieStrings;
 		docentDomeinStrings = this.docentDomeinStrings;
@@ -2241,6 +2283,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("scoreMax", new Integer(scoreMax));
 		h.put("domeinControleren", new Boolean(domeinControleren));
 		h.put("leerlingZietTabel", new Boolean(leerlingZietTabel));
+		h.put("checkExternal", new Boolean(checkExternal));
 		h.put("docentFunctieStrings", docentFunctieStrings);
 		h.put("docentDomeinStrings", docentDomeinStrings);
 		//h.put("docentDomeinen", docentDomeinen);
@@ -2599,6 +2642,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		int scoreMax = 0;
 		boolean domeinControleren = false;
 		boolean leerlingZietTabel = true;
+		boolean checkExternal = false;
 		//Expressie[] docentFuncties = null;
 		String[] docentFunctieStrings = new String[maxAantalExpressies];
 		//double[][] docentDomeinen = new double[maxAantalExpressies][2];
@@ -2645,6 +2689,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			domeinControleren = ((Boolean) h.get("domeinControleren")).booleanValue();
 		if (h.containsKey("leerlingZietTabel")) 
 			leerlingZietTabel = ((Boolean) h.get("leerlingZietTabel")).booleanValue();		
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
 		
 		this.typeOpdracht = typeOpdracht;
 		this.maxScores = maxScores;	
@@ -2653,6 +2699,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.scoreMax = scoreMax;
 		this.domeinControleren = domeinControleren;
 		this.leerlingZietTabel = leerlingZietTabel;
+		this.checkExternal = checkExternal;
 		this.docentFunctieStrings = docentFunctieStrings;
 		if(docentFunctieStrings != null)
 		{	docentFuncties = new Expressie[docentFunctieStrings.length];
@@ -3202,6 +3249,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		int scoreMax = 0;
 		boolean domeinControleren = false;
 		boolean leerlingZietTabel = true;
+		boolean checkExternal = false;
 		//Expressie[] docentFuncties = null;
 		String[] docentFunctieStrings = new String[maxAantalExpressies];
 		//double[][] docentDomeinen = new double[maxAantalExpressies][2];
@@ -3248,6 +3296,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			domeinControleren = ((Boolean) h.get("domeinControleren")).booleanValue();
 		if (h.containsKey("leerlingZietTabel")) 
 			leerlingZietTabel = ((Boolean) h.get("leerlingZietTabel")).booleanValue();		
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
 		
 		this.typeOpdracht = typeOpdracht;
 		this.maxScores = maxScores;	
@@ -3256,6 +3306,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.scoreMax = scoreMax;
 		this.domeinControleren = domeinControleren;
 		this.leerlingZietTabel = leerlingZietTabel;
+		this.checkExternal = checkExternal;
 		this.docentFunctieStrings = docentFunctieStrings;
 		if(docentFunctieStrings != null)
 		{	docentFuncties = new Expressie[docentFunctieStrings.length];
@@ -3346,6 +3397,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				schuifParameters[i].geefSlider().addMouseListener(this);
 				schuifParameters[i].geefSlider().addMouseMotionListener(this);
 			}
+		zetCheckExternal(checkExternal);
 	}
 
 	public Hashtable getEditState() {
@@ -3435,7 +3487,12 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	public void kijkNa(boolean show)
-	{	ingevuld = false;
+	{	if(checkExternal)
+		{	add(groenVinkjeLabel, 0);
+			add(oranjeVinkjeLabel, 0);
+			add(kruisjeLabel, 0);
+		}
+		ingevuld = false;
 		remove(feedbackTekst);
 		if(typeOpdracht == VINDFORMULEBIJGRAFIEK)
 		{	if(functies != null)
@@ -3780,13 +3837,23 @@ MouseListener, MouseMotionListener, CBookAware {
 	public void setFeedback(String tekst, boolean closeable)
 	{	feedbackTekst.setText("");
 		feedbackTekst.setCloseable(closeable);
-		feedbackTekst.setSize(veldb - kijkNaPanel.getWidth(), 20);
+		
 		
 		//feedbackTekst.setSize(195,20);
-		feedbackTekst.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
+		if(checkExternal)
+		{	feedbackTekst.setSize(200, 40);
+			feedbackTekst.setLocation(veldb - 220, gv.getY() + gv.getHeight() - 40);
+		}
+		else
+		{	feedbackTekst.setSize(veldb - kijkNaPanel.getWidth(), 20);
+			feedbackTekst.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
+		}
 				//getSize().width-250,formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 10);
 		feedbackTekst.setText(tekst);
 		feedbackTekst.resize();
+		
+		if(checkExternal)
+			feedbackTekst.setLocation(veldb - 220, gv.getY() + gv.getHeight() - feedbackTekst.getHeight());
 		if("MW".equals(WiskOpdr.deployVariant))
 		{	
 			int h = feedbackTekst.getHeight()+20;
@@ -3810,7 +3877,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			mwFeedbackPanel.add(feedbackTekst,0);
 			add(mwFeedbackPanel,0);
 		}
-		else add(feedbackTekst);
+		else add(feedbackTekst, 0);
 		produceAction("feedback");
 	}
     

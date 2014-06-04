@@ -83,6 +83,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"Opdr_tabelPunten", "Vul in de tabel hieronder de te tekenen punten in."},    
             {	"Opdr_tekenMetExtrapolatie", "Leerling tekent grafiek (met extrapolatie)"},
             {	"Opdr_tekenZonderExtrapolatie", "Leerling tekent grafiek (zonder extrapolatie)"},
+            {	"Opdr_checkExternal", "Extern controleren"},
             
             {	"feedbackTekstPuntenDeels", "Nog niet alle punten zijn (goed) getekend."},
             {	"feedbackTekstGrafiekenDeels", "Nog niet alle grafieken zijn goed getekend."},

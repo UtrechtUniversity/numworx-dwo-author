@@ -79,7 +79,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		piLijnenZichtbaar, zoomOptie, traceOptie, dragOptie, formeleFuncties, 
 		zoomInTabel, tabelAlsTekenTool, xPositief, yPositief, xAsLog, yAsLog,
 		xVarEditable, yVarEditable, 
-		snapToGridPoints, krommeZonderExtrapolatie, krommeMetExtrapolatie; 
+		snapToGridPoints, krommeZonderExtrapolatie, krommeMetExtrapolatie;
 	
 	//Opdrachtenpanel 
 	protected static int GEENOPDRACHT = 0;
@@ -108,8 +108,10 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	boolean domeinControleren = false;
 	private JCheckBox leerlingZietTabelBox; 
 	boolean leerlingZietTabel = true;
+	private boolean checkExternal = false;
 	
 	private JCheckBox tekenMetExtrapolatieCB, tekenZonderExtrapolatieCB;
+	private JCheckBox checkExternalCB;
 	
 	private FormuleComponent docentFormuleComponent;
 	private TabelComponent docentTabelComponent;
@@ -128,7 +130,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private JButton paramVerwijderButton;
 	private JList schuifParamList;
 	private DefaultListModel schuifParamListElements;
-	private JTextField paramNaamTF, paramOnderGrensTF, paramBovenGrensTF, paramBeginStandTF, paramLengteTF;
+	//private JTextField paramNaamTF, paramOnderGrensTF, paramBovenGrensTF, paramBeginStandTF, paramLengteTF;
 	
 	
 	public GraphToolInteractieEditPanel() {
@@ -513,6 +515,9 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		tekenZonderExtrapolatieCB = maakCheckBox(GraphTool.rb.getString("Opdr_tekenZonderExtrapolatie"), 65, 195, 300, 20, krommeZonderExtrapolatie, opdrachtenPanel);
 		tekenZonderExtrapolatieCB.setVisible(false);
 		
+		checkExternalCB = maakCheckBox(GraphTool.rb.getString("Opdr_checkExternal"), 65, 220, 300, 20, checkExternal, opdrachtenPanel);
+		checkExternalCB.setVisible(false);
+		
 		resetDocentFunctie();
 		resetDocentGraphPoints();
 		
@@ -668,6 +673,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			leerlingZietTabelBox.setVisible(false);
 			tekenMetExtrapolatieCB.setVisible(false);
 			tekenZonderExtrapolatieCB.setVisible(false);
+			checkExternalCB.setVisible(false);
 			
 			
 			tekenComponentCB.setEnabled(true);
@@ -748,6 +754,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			leerlingZietTabelBox.setVisible(false);
 			tekenMetExtrapolatieCB.setVisible(false);
 			tekenZonderExtrapolatieCB.setVisible(false);
+			checkExternalCB.setVisible(false);
 			if(scoreMaxLabel[1].isVisible())
 				scoreMaxLabel[0].setText(GraphTool.rb.getString("Opdr_maximumScore") + " " + 1);
 			else
@@ -792,6 +799,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			leerlingZietTabelBox.setVisible(false);
 			tekenMetExtrapolatieCB.setVisible(false);
 			tekenZonderExtrapolatieCB.setVisible(false);
+			checkExternalCB.setVisible(false);
 			
 			scoreMaxLabel[0].setLocation(65, 364);
 			scoreMaxLabel[0].setText(GraphTool.rb.getString("Opdr_maximumScore"));
@@ -867,14 +875,18 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			tekenMetExtrapolatieCB.setLocation(tekenMetExtrapolatieCB.getLocation().x, maxY);
 			maxY += 25;
 			tekenZonderExtrapolatieCB.setLocation(tekenZonderExtrapolatieCB.getLocation().x, maxY);
+			maxY += 25;
+			checkExternalCB.setLocation(tekenZonderExtrapolatieCB.getLocation().x, maxY);
 			tekenMetExtrapolatieCB.setVisible(true);
 			tekenZonderExtrapolatieCB.setVisible(true);
+			checkExternalCB.setVisible(true);
 			if(!setState) 
 			{	krommeMetExtrapolatie = true;
 				krommeZonderExtrapolatie = false;
 			}
 			tekenMetExtrapolatieCB.setSelected(krommeMetExtrapolatie);
 			tekenZonderExtrapolatieCB.setSelected(krommeZonderExtrapolatie);
+			checkExternalCB.setSelected(checkExternal);
 			interactiePanel.zetKrommeKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 			
 
@@ -923,6 +935,10 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			{	scoreMaxLabel[i].setVisible(false);
 				scoreMaxTF[i].setVisible(false);
 			}
+			maxY += 40;
+			checkExternalCB.setLocation(65, maxY);
+			checkExternalCB.setVisible(true);
+			checkExternalCB.setSelected(checkExternal);
 			
 			minimumPuntenLabel.setVisible(false);
 			for(int i = 0; i < minimumPuntenTF.length; i++)
@@ -1117,6 +1133,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			leerlingZietTabel = ((Boolean) h.get("leerlingZietTabel")).booleanValue();	
 		if (h.containsKey("domeinControleren"))
 			domeinControleren = ((Boolean) h.get("domeinControleren")).booleanValue();
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
 		
 		for(int i = 0; i < nauwkeurigheidTF.length; i++)
 			nauwkeurigheidTF[i].setText("" + nauwkeurigheid[i]);
@@ -1128,6 +1146,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		domeinControlerenBox.setSelected(domeinControleren);
 		tekenMetExtrapolatieCB.setSelected(krommeMetExtrapolatie);
 		tekenZonderExtrapolatieCB.setSelected(krommeZonderExtrapolatie);
+		checkExternalCB.setSelected(checkExternal);
 		
 		xAsNaamTF.setText(xAsNaam);
 		yAsNaamTF.setText(yAsNaam);
@@ -1481,6 +1500,10 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		if(e.getSource().equals(tekenZonderExtrapolatieCB))
 		{	krommeZonderExtrapolatie = tekenZonderExtrapolatieCB.isSelected();
 			interactiePanel.zetKrommeKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+		}
+		if(e.getSource().equals(checkExternalCB))
+		{	checkExternal = checkExternalCB.isSelected();
+			interactiePanel.zetCheckExternal(checkExternal);
 		}
 		for(int i = 0; i < nauwkeurigheidTF.length; i++)
 		if (e.getSource().equals(nauwkeurigheidTF[i]))

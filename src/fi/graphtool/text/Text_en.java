@@ -85,6 +85,7 @@ public class Text_en extends java.util.ListResourceBundle
             {	"Opdr_tabelPunten", "Fill in the graph points in the table below."},
             {	"Opdr_tekenMetExtrapolatie", "Student draws graph (with extrapolation)"},
             {	"Opdr_tekenZonderExtrapolatie", "Student draws graph (without extrapolation)"},
+            {	"Opdr_checkExternal", "Check external"},
             
             {	"feedbackTekstPuntenDeels", "Not all points are drawn correctly (yet)."},
             {	"feedbackTekstGrafiekenDeels", "Not all graphs are drawn correctly (yet)."},
