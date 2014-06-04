@@ -26,6 +26,8 @@ public class RowNumberTable extends JTable implements ChangeListener, PropertyCh
 		setAutoCreateColumnsFromModel( false );
 		setModel( main.getModel() );
 		setSelectionModel( main.getSelectionModel() );
+		
+		main.setSelectionBackground(ColorGenerator.SELECTION_COLOR);
 
 		TableColumn column = new TableColumn();
 		column.setHeaderValue(" ");
