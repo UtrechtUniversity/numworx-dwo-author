@@ -1444,7 +1444,7 @@ class GrafiekVeld extends JComponent{
 				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
 				GeneralPath curve = new GeneralPath();
 				curve.moveTo(xWaardePixels,  0);
-				curve.lineTo(xWaardePixels, gtip.yPositief?gtip.beginy:getHeight());
+				curve.lineTo(xWaardePixels, gtip.yPositief?(getHeight() - gtip.beginy):getHeight());
 				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
 				g.setStroke(new BasicStroke(1.2f));
 				g.setColor(gtip.getTekenColor(j));
