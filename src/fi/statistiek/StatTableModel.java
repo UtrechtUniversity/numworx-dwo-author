@@ -126,6 +126,8 @@ public class StatTableModel implements TableModel
 
 	public void setState(Hashtable h)
 	{
+		//System.out.println("StatTableModel.setState()");
+		
 		if (h.containsKey("rowCount"))
 		{
 			this.rowCount = ((Integer) h.get("rowCount")).intValue();
@@ -163,6 +165,12 @@ public class StatTableModel implements TableModel
 
 		// this.selectionListeners = new ArrayList<SelectionListener>();
 		// this.listeners = new ArrayList<TableModelListener>();
+		
+		// setState wordt 2x aangeroepen, de 2e keer met de laatste wijzigingen.
+		if (!this.stringFrequencies.isEmpty())
+		{
+			this.stringFrequencies.clear();
+		}
 		for (int i = 0; i < this.columnCount; i++)
 		{
 			this.stringFrequencies.add(this.buildColumnStringOptions(i));
@@ -392,10 +400,10 @@ public class StatTableModel implements TableModel
 			if (bin < 0 || bin >= binBoundaries.size() - 1)
 			{
 				System.out.println("StatTableModel.classifyObject(value=" + d + ", columnIndex = " 
-					+ columnIndex + ") geeft -1\nBoundaries: ");
+					+ columnIndex + ") geeft -1\n\tBoundaries: ");
 				for (Double a : binBoundaries)
 				{
-					System.out.println(a);
+					System.out.println("\t" + a);
 				}
 				return -1;
 			}
@@ -830,16 +838,22 @@ public class StatTableModel implements TableModel
 	private static <T> boolean decreaseKeyHashtable(T key,
 		Hashtable<T, Integer> ht)
 	{
-		ht.put(key, ht.get(key) - 1);
-		if (ht.get(key) == 0)
+		// check of ht de key bevat
+		if (ht.get(key) != null)
 		{
-			ht.remove(key);
-			return true;
+			ht.put(key, ht.get(key) - 1);
+			if (ht.get(key) == 0)
+			{
+				ht.remove(key);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	/**
@@ -1188,7 +1202,7 @@ public class StatTableModel implements TableModel
 	{
 		return this.selectionList;
 	}
-
+	
 	/**
 	 * Find the frequency of every bin, and the amount of selected objects in
 	 * this bin Only use for columns of type integer or double
