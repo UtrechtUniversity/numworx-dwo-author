@@ -348,8 +348,11 @@ public class Statistiek implements WiskOpdrApplet
 			binWidth++;
 		
 		// The maximum bin boundary should be larger than the maximum value
-		// so (max + 1) to determine the number of bins
-		noBins = (int) Math.ceil(((max + 1) - start)/binWidth);
+		noBins = (int) Math.ceil((max - start)/binWidth);
+		while (start + noBins * binWidth <= max)
+		{
+			noBins++;
+		}
 
 		// build arraylist
 		ArrayList<Double> boundaries = new ArrayList<Double>();
@@ -357,7 +360,7 @@ public class Statistiek implements WiskOpdrApplet
 		for (int i = 0; i <= noBins; i++)
 		{
 			double d = start + (double) i * binWidth;
-			d = round(d, -0);
+			d = round(d, 1);
 			boundaries.add(d);
 		}
 
