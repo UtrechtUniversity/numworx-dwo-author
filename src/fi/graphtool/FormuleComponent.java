@@ -1072,25 +1072,43 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		formuleVakken[regelnummer].formuleVak.vulVak("$f" + deel2 + "@");
 	}
 	
+	public void maakNieuweRegel()
+	{
+		parseFormule(aantalRegels - 1, false);
+		add(formuleVakken[aantalRegels],0);
+		zetVoorvoegsel(aantalRegels);	
+		if(docent || (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))
+			add(checkboxen[aantalRegels],0);
+		else
+			checkboxen[aantalRegels].setSelected(true);
+		add(domeinButtons[aantalRegels],0);
+		domeinButtons[aantalRegels].setVisible(false);
+		add(enOfKnoppen[aantalRegels - 1], 0);
+		enOfKnoppen[aantalRegels - 1].setVisible(false);
+		layoutVakken(false);
+		formuleVakken[aantalRegels].formuleVak.requestFocus();
+		aantalRegels++;
+		produceAction("regel meer");
+	}
+	
+	public void zetVergelijking(int regelNr, String vergelijkingString)
+	{
+		//zetFunctieBeginAanpasbaar(false, false);
+		//zetFormeleFuncties(false, false);
+		VergelijkingMeerv v = FormuleParser.parseVergelijking(vergelijkingString);
+		formuleVakken[0].formuleVak.vulVak("$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@");
+		if(aantalRegels<2) maakNieuweRegel();
+		formuleVakken[1].formuleVak.vulVak("$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@");
+		checkboxen[0].setSelected(true);
+		checkboxen[1].setSelected(true);
+		parseFormule(0, false);
+		parseFormule(1, false);
+	}
 	
 	public void actionPerformed(ActionEvent e)
 	{	
 		if (e.getSource() == nieuweRegelKnop && aantalRegels < maxAantalFormules)
-		{	parseFormule(aantalRegels - 1, false);
-			add(formuleVakken[aantalRegels],0);
-			zetVoorvoegsel(aantalRegels);	
-			if(docent || (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))
-				add(checkboxen[aantalRegels],0);
-			else
-				checkboxen[aantalRegels].setSelected(true);
-			add(domeinButtons[aantalRegels],0);
-			domeinButtons[aantalRegels].setVisible(false);
-			add(enOfKnoppen[aantalRegels - 1], 0);
-			enOfKnoppen[aantalRegels - 1].setVisible(false);
-			layoutVakken(false);
-			formuleVakken[aantalRegels].formuleVak.requestFocus();
-			aantalRegels++;
-			produceAction("regel meer");
+		{	maakNieuweRegel();
 			return;
 		}
 		else if (e.getSource() == nieuweRegelKnop)

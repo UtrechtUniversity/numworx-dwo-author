@@ -50,6 +50,7 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.ZoomKnop;
 import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.VergelijkingMeerv;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
@@ -5015,18 +5016,52 @@ MouseListener, MouseMotionListener, CBookAware {
 				getFormuleComponent().geefFormuleVak().vulVak(formuleString);
 				getFormuleComponent().geefFormuleVak().finish();
 			}
+			if(command.equals("vergelijking"))
+			{
+				String vergelijkingString = (String)event.getMessage();
+				if(vergelijkingString.charAt(0)!='$') vergelijkingString = "$f"+vergelijkingString+"@";
+				System.out.println("vergelijkingString: "+vergelijkingString);
+				getFormuleComponent().zetVergelijking(0, vergelijkingString);
+				
+			}
+			if(command.equals("parameterwaarde"))
+			{
+				Map map = (Map)event.getParameters();
+				if(map!=null)
+				{	String name = (String)map.get("name");
+					if("x".equals(name)) 
+					{
+						tracing = true;
+						double xWaarde = ((Double)map.get("value")).doubleValue();
+						tracex =(int)(eenheidxD*(xWaarde)/schaalFactorX+beginx);
+						System.out.println("tracex: "+ tracex);
+						tracexD = tracex;
+						slider.zetStand(tracex);
+						
+						repaint();
+					}
+					//else
+						
+				}
+				
+				
+			}
+			
+			
+			
+			
 			
 		}
 		
 		@Override
 		public String[] getAcceptedCmds() {
-			String[] s = {"input"};
+			String[] s = {"input", "vergelijking", "parameterwaarde"};
 			return s;
 		}
 
 		@Override
 		public String[] getSendCmds() {
-			String[] s = {"input"};
+			String[] s = {"input", "vergelijking"};
 			return s;
 		}
 
