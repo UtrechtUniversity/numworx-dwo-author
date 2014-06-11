@@ -1435,13 +1435,30 @@ MouseListener, MouseMotionListener, CBookAware {
 		return found;
 	}
 	
+	public SchuifParameter geefSchuifParameter(String naam)
+	{
+		for(int i = 0; i < schuifParameters.length ; i++)
+		{	if(naam.equals(schuifParameters[i].geefNaam()))
+				return schuifParameters[i];
+		}
+		return null;
+	}
+	
 	public void voegSchuifParameterToe(SchuifParameter p)
+	{
+		voegSchuifParameterToe(p,true);
+	}
+	
+	public void voegSchuifParameterToe(SchuifParameter p, boolean show)
 	{	SchuifParameter[] parameters = new SchuifParameter[schuifParameters.length + 1];
 		for(int i = 0; i < parameters.length - 1; i++)
 			parameters[i] = schuifParameters[i];
 		parameters[parameters.length - 1] = p;
 		
 		schuifParameters = parameters;
+		
+		if(!show)
+			return;
 		p.zetLocatie(offset, gv.getY() + gv.getHeight() - (schuifParameters.length) * 25);
 		p.geefSlider().setBackground(getBackground());
 		p.geefSlider().addActionListener(this);
@@ -5040,17 +5057,21 @@ MouseListener, MouseMotionListener, CBookAware {
 						
 						repaint();
 					}
-					//else
-						
+					
+					else 
+					{
+						double waarde = ((Double)map.get("value")).doubleValue();
+						SchuifParameter schuifParameter = geefSchuifParameter(name);
+						if(schuifParameter==null)
+						{	
+							schuifParameter = new SchuifParameter(200,name);
+							voegSchuifParameterToe(schuifParameter,false);
+						}
+						schuifParameter.zetWaarde(waarde, false);
+						gv.repaint();
+					}
 				}
-				
-				
 			}
-			
-			
-			
-			
-			
 		}
 		
 		@Override
