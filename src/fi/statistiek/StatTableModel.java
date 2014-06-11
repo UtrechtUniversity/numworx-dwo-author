@@ -1,11 +1,13 @@
 package fi.statistiek;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.event.TableModelEvent;
@@ -185,7 +187,9 @@ public class StatTableModel implements TableModel
 		Hashtable<String, Integer> hashtable)
 	{
 		ArrayList<String> list = new ArrayList<String>(hashtable.keySet());
-		java.util.Collections.sort(list);
+		// Use collator to sort for example 'é' correctly
+		Collator collator = Collator.getInstance(Locale.getDefault());
+		Collections.sort(list, collator);
 		return list;
 	}
 
@@ -1353,18 +1357,23 @@ public class StatTableModel implements TableModel
 						ret[splitClass][i] = new FrequencyTuple(option, freq,
 							selectionFreq);
 					}
-				}
+				} // Enum
 				else
-				{
+				{ // String
 					Set<String> keySet = new HashSet<String>();
 					for (Hashtable<String, Integer> h : frequencyTable)
 					{
 						keySet.addAll(h.keySet());
 					}
 					List<String> keyList = Arrays.asList(keySet.toArray(new String[0]));
-					Collections.sort(keyList);
+
+					// Use collator to sort for example 'é' correctly
+					Collator collator = Collator.getInstance(Locale.getDefault());
+					Collections.sort(keyList, collator);
+					
 					ret[splitClass] = new FrequencyTuple[keySet.size()];
 					int i = 0;
+					
 					for (String key : keyList)
 					{
 						if (frequencyTable[splitClass].containsKey(key))
@@ -1391,7 +1400,7 @@ public class StatTableModel implements TableModel
 			}
 
 			return ret;
-		}
+		} // String or Enum
 		else
 		{
 			// column type is not a String of Enum, return null
