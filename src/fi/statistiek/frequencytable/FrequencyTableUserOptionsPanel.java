@@ -3,9 +3,14 @@ package fi.statistiek.frequencytable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -28,6 +34,7 @@ import javax.swing.border.TitledBorder;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
 import fi.statistiek.Statistiek;
+import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
@@ -89,7 +96,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	private JLabel splitMinValueLabel;
 	private JLabel splitMaxValueLabel;
 
-	private boolean BoundariesVisible;
 	private boolean splitBoundariesVisible;
 	private boolean splitOptionsVisible;
 	private boolean enumClasses;
@@ -489,15 +495,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		vb0.add(Box.createVerticalStrut(20));
 
 		panel.add(vb0);
-		init();
-		resize(vb0);
-	}
-
-	public void resize(JComponent c)
-	{
-		Dimension d = c.getPreferredSize();
-		panel.setSize(new Dimension(d.width + 10, d.height));
-		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
 	}
 
 	public DialogButton getDialogButton()
@@ -564,7 +561,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 						.getBinBoundaries().get(i + 1)));
 					sb.append("\n");
 				}
-				sb.delete(sb.length() - 3, sb.length());
+
 				this.boundariesArea.setText(sb.toString());
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
@@ -575,22 +572,51 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ this.model.getTableModel().getColumnMax(
 						this.model.getColumnIndex()));
-				//this.binsBox.getParent().setVisible(true);
-				//this.binsLabel.getParent().setVisible(true);
 				setEnumClasses(false);
 			}
 			else if (type.equals(AllowedTypes.ENUM))
 			{
 				StringBuilder sb = new StringBuilder();
-				for (String s : cType.getEnumOptions())
+				java.util.List<String> list = Arrays.asList(cType.getEnumOptions());
+				// Use collator to sort for example 'é' correctly
+				Collator collator = Collator.getInstance(Locale.getDefault());
+				Collections.sort(list, collator);
+				
+				for (String s : list)
+				{
+					if (!s.equals("*"))
+					{
+						sb.append(s);
+						sb.append("\n");
+					}
+				}
+				sb.substring(0, sb.length() - 1);
+				this.boundariesArea.setText(sb.toString());
+				setEnumClasses(true);
+			}
+			else if (type.equals(AllowedTypes.STRING))
+			{
+				StringBuilder sb = new StringBuilder();
+				java.util.List<String> list = new ArrayList<String>();
+					
+				FrequencyTuple[] freqTuple = this.model.enumClassFrequency()[0];
+				for (int i = 0; i < freqTuple.length; i++)
+				{
+					list.add(freqTuple[i].label);
+				}
+
+				// Use collator to sort for example 'é' correctly
+				Collator collator = Collator.getInstance(Locale.getDefault());
+				Collections.sort(list, collator);
+				
+				for (String s : list)
 				{
 					sb.append(s);
 					sb.append("\n");
 				}
+
 				sb.substring(0, sb.length() - 1);
 				this.boundariesArea.setText(sb.toString());
-				//this.binsBox.getParent().setVisible(false);
-				//this.binsLabel.getParent().setVisible(false);
 				setEnumClasses(true);
 			}
 		}
@@ -702,6 +728,10 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		
 		boolean split = this.model.getSplitOptions().getColumnSplitIndex() > -1;
 		this.setVisibleSplitOptions(split);
+		
+		if (SwingUtilities.getWindowAncestor(this.panel) != null)
+			SwingUtilities.getWindowAncestor(this.panel).pack();
+		repaint();
 	}
 
 	public double getBinWidth()
@@ -723,23 +753,14 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		//System.out.println("FrequencyTableUserOptionsPanel.setEnumClasses(" + b + ")");
 		
 		enumClasses = b;
-		if (b) 
-		{
-    		minBoundaryLabel.getParent().setVisible(boundariesVisible && !b);
-    		minBoundaryField.getParent().setVisible(boundariesVisible && !b);
-    		binWidthLabel.getParent().setVisible(boundariesVisible && !b);
-    		binWidthField.getParent().setVisible(boundariesVisible && !b);
-    		noObjectsLabel.getParent().setVisible(boundariesVisible && !b);
-    		minValueLabel.getParent().setVisible(boundariesVisible && !b);
-    		maxValueLabel.getParent().setVisible(boundariesVisible && !b);
-		}
-		resize(vb0);
-	}
-
-	public void init()
-	{
-		if (vb0 != null)
-			resize(vb0);
+		
+		minBoundaryLabel.getParent().setVisible(!b);
+		minBoundaryField.getParent().setVisible(!b);
+		binWidthLabel.getParent().setVisible(!b);
+		binWidthField.getParent().setVisible(!b);
+		noObjectsLabel.getParent().setVisible(!b);
+		minValueLabel.getParent().setVisible(!b);
+		maxValueLabel.getParent().setVisible(!b);
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -760,7 +781,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			{
 				setVisibleSplitOptions(true);
 			}
-			resize(vb0);
 		}
 		else if (e.getSource() == splitChooseBoundariesButton)
 		{
@@ -772,8 +792,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			{
 				setVisibleSplitBoundaryOptions(true);
 			}
-
-			resize(vb0);
 		}
 		else if (e.getSource() == dialogButton)
 		{
@@ -788,7 +806,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 					catch (InterruptedException e)
 					{
 					}
-					init();
 					repaint();
 				}
 			};
@@ -857,7 +874,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	private void setSplitEnumClasses(boolean b)
 	{
 		splitEnumClasses = b;
-		// if(b) {
+
 		splitMinBoundaryLabel.getParent().setVisible(
 			splitBoundariesVisible && !b);
 		splitMinBoundaryField.getParent().setVisible(
@@ -868,8 +885,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			.setVisible(splitBoundariesVisible && !b);
 		splitMinValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
 		splitMaxValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
-		// }
-		resize(vb0);
 	}
 
 	public int getSplitVarBoxSelectedIndex()
