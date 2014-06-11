@@ -46,7 +46,6 @@ public class FrequencyTableController implements StatistiekView,
 		this.model = new FrequencyTableModel(tableModel, viewName);
 		this.model.setColumnIndex(startVar);
 		this.view = new FrequencyTableView(this.model, this);
-		// test syl
 		this.view.update(null, null);
 	}
 
@@ -59,6 +58,7 @@ public class FrequencyTableController implements StatistiekView,
 
 		if (action.equals("columnIndexBox"))
 		{
+			this.model.initNoBins(5);
 			this.model.setColumnIndex(this.view.varBoxSelectedIndex());
 		}
 		else if (action.equals("showPercBox"))
