@@ -115,9 +115,18 @@ public class FrequencyTableModel extends Observable implements
 		this.setChanged();
 		this.notifyObservers();
 	}
+	
+	/**
+	 * Initialize the number of bins without updating other fields.
+	 * @param noBins
+	 */
+	public void initNoBins(int noBins)
+	{
+		this.noBins = noBins;
+	}
 
 	/**
-	 * Set the number of bins
+	 * Set the number of bins and update bin boundaries.
 	 * 
 	 * @param noBins
 	 *            the new number of bins
@@ -230,6 +239,13 @@ public class FrequencyTableModel extends Observable implements
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
 					this.noBins);
+				
+				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
+				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
+					this.tableModel.getColumnMax(this.columnIndex), 
+					this.binBoundaries.get(1) - this.binBoundaries.get(0), this.binBoundaries.get(0));
+				this.noBins = this.binBoundaries.size() - 1;
 			}
 			this.setChanged();
 			this.notifyObservers();
@@ -298,9 +314,9 @@ public class FrequencyTableModel extends Observable implements
 	 * @return array of FrequencyTuples (which contains class label and
 	 *         frequency)
 	 */
-	public FrequencyTuple[] enumClassFrequency()
+	public FrequencyTuple[][] enumClassFrequency()
 	{
-		return this.tableModel.enumClassFrequency(this.columnIndex, true, null)[0];
+		return this.tableModel.enumClassFrequency(this.columnIndex, true, this.splitOptions);
 	}
 
 	public void tableChanged(TableModelEvent arg0)
