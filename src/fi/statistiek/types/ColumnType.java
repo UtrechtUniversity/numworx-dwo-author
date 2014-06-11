@@ -1,6 +1,9 @@
 package fi.statistiek.types;
 
 import java.io.Serializable;
+import java.text.CollationKey;
+import java.text.Collator;
+import java.util.Locale;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
 
@@ -179,7 +182,11 @@ public class ColumnType implements Serializable
 			}
 			else if (this.type.equals(AllowedTypes.STRING))
 			{
-				return s1.compareTo(s2);
+				// Use collator to sort for example 'é' correctly
+				Collator collator = Collator.getInstance(Locale.getDefault());
+				CollationKey key1 = collator.getCollationKey(s1);
+				CollationKey key2 = collator.getCollationKey(s2);
+				return key1.compareTo(key2);
 			}
 			else if (this.type.equals(AllowedTypes.ENUM))
 			{
