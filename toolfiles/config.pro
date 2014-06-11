@@ -3,6 +3,7 @@
 
 -libraryjars <java.home>\lib\rt.jar
 -libraryjars ..\lib\mayscript.jar
+-libraryjars ..\lib\classes
 
 -target 1.6
 

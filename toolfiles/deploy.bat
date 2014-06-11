@@ -1,3 +1,3 @@
-call proguard
+call jshrink
 call sign
 call export-jar
