@@ -64,7 +64,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	public static final double KEEP_CLEAR_PART = 0.05;
 	public static final Color SELECTION_RECTANGLE_COLOR = new Color(153, 204,
-		255);
+		255); // blue
 
 	public int yAxisOffset = 55;
 	/**
@@ -960,7 +960,7 @@ public class DotplotView extends JPanel implements Observer
 		if (this.model.getTableModel().isRowSelected(rowIndex))
 		{
 			g.fillOval(x - this.dotSize - 2, y - this.dotSize - 2,
-				2 * this.dotSize + 4, 2 * this.dotSize + 4); // test syl: color black?
+				2 * this.dotSize + 4, 2 * this.dotSize + 4); // because of transparency the highlighted dot will tone darker
 			g.drawOval(x - this.dotSize - 2, y - this.dotSize - 2,
 				2 * this.dotSize + 4, 2 * this.dotSize + 4);
 		}
