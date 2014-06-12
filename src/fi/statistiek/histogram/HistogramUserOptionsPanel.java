@@ -914,7 +914,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				this.binsLabel.getParent().setVisible(true);
 				setEnumClasses(false);
 			}
-			else if (type.equals(AllowedTypes.ENUM))
+			else if (type.equals(AllowedTypes.ENUM) || type.equals(AllowedTypes.STRING))
 			{
 				this.separator1.getParent().setVisible(false);
 				this.separator4.getParent().setVisible(false);
