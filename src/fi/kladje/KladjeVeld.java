@@ -19,6 +19,7 @@ public class KladjeVeld extends JPanel
 	static boolean schalen = true;
 	
 	boolean handleAction = false;
+	boolean groupHandleAction = false;
 	boolean scalingTopRight = false;
 	boolean scalingTopLeft = false;
 	boolean scalingBottomRight = false;
@@ -62,6 +63,11 @@ public class KladjeVeld extends JPanel
 //	Rectangle tekstRechthoek = null;
 	Rectangle selecteerRechthoek = null;
 	TekstElement tekstEdited = null;
+	
+	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
+	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
+	Rectangle rotateEastHandle, rotateWestHandle;
+	int hbFactor = 4;
 
 	// backwards compatibility
 	ColorBytes[][] pixels = null;
@@ -533,6 +539,11 @@ System.out.println("returned " + (numHistories - 1));
 				tekstElement.killScaleHandles();
 		}
 		
+		if (b)
+			makeScaleHandles();
+		else
+			killScaleHandles();
+		
 		repaint();
 	}
 
@@ -575,6 +586,11 @@ System.out.println("returned " + (numHistories - 1));
 			else
 				tekstElement.killRotateHandles();
 		}
+		
+		if (b)
+			makeRotateHandles();
+		else 
+			killRotateHandles();
 		
 		repaint();
 	}
@@ -717,6 +733,57 @@ System.out.println("returned " + (numHistories - 1));
 			g.drawRect(selecteerRechthoek.x, selecteerRechthoek.y, selecteerRechthoek.width, selecteerRechthoek.height);
 			g2D.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 			
+			if (schalen)
+			{	
+				if (topRightHandle != null)
+				{	g.setColor(hbColor);
+					g.drawPolygon(topRightHandle);
+	//g.setColor(Color.red);
+	//g.drawRect(topRightRect.x,topRightRect.y,topRightRect.width,topRightRect.height);
+				}
+				if (topLeftHandle != null)
+				{	g.setColor(hbColor);
+					g.drawPolygon(topLeftHandle);
+	//g.setColor(Color.red);
+	//g.drawRect(topLeftRect.x,topLeftRect.y,topLeftRect.width,topLeftRect.height);
+				
+				}
+				if (bottomRightHandle != null)
+				{	g.setColor(hbColor);
+					g.drawPolygon(bottomRightHandle);
+	//g.setColor(Color.red);
+	//g.drawRect(bottomRightRect.x,bottomRightRect.y,bottomRightRect.width,bottomRightRect.height);
+				
+				}
+				if (bottomLeftHandle != null)
+				{	g.setColor(hbColor);
+					g.drawPolygon(bottomLeftHandle);
+	//g.setColor(Color.red);
+	//g.drawRect(bottomLeftRect.x,bottomLeftRect.y,bottomLeftRect.width,bottomLeftRect.height);
+				
+				}
+			} // if schalen
+			if (roteren)
+			{
+				if (rotateEastHandle != null)
+				{	g.setColor(KladjeVeld.hbColor);
+					g.drawOval(selecteerRechthoek.x + selecteerRechthoek.width, // - 2 * hbFactor,
+							   selecteerRechthoek.y + selecteerRechthoek.height/2 - 2 * hbFactor, 
+							   4 * hbFactor, 4 * hbFactor);
+		//g.setColor(Color.red);			
+		//g.drawRect(rotateEastHandle.x, rotateEastHandle.y, rotateEastHandle.width, rotateEastHandle.height);
+				}
+				if (rotateWestHandle != null)
+				{	g.setColor(KladjeVeld.hbColor);
+					g.drawOval(selecteerRechthoek.x - 4 * hbFactor, 
+							   selecteerRechthoek.y + selecteerRechthoek.height/2 - 2 * hbFactor, 
+							   4 * hbFactor, 4 * hbFactor);
+		//g.setColor(Color.red);			
+		//g.drawRect(rotateWestHandle.x, rotateWestHandle.y, rotateWestHandle.width, rotateWestHandle.height);
+				}
+
+			}
+			
 		}
 
 		if (mouseMode == selecteren)
@@ -826,6 +893,160 @@ System.out.println("returned " + (numHistories - 1));
 		repaint();
 	}
 	
+	
+	public void updateSelecteerRechthoek()
+	{
+		if (selecteerRechthoek == null)
+			return;
+		
+		int minX = 1000;
+		int maxX = -100;
+		int minY = 1000;
+		int maxY = -100;
+		
+		for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+		{
+			Object ob = objectsSelected.elementAt(cnt);
+			if (ob instanceof Streep)
+			{	Rectangle r = ((Streep) ob).handleBox;
+				if (r.x < minX)
+					minX = r.x;
+				if ((r.x + r.width) > maxX)
+					maxX = r.x + r.width;
+				if (r.y < minY)
+					minY = r.y;
+				if ((r.y + r.height) > maxY)
+					maxY = r.y + r.height;
+			}
+			else if (ob instanceof Lijn)
+			{	Rectangle r = ((Lijn) ob).handleBox;
+				if (r.x < minX)
+					minX = r.x;
+				if ((r.x + r.width) > maxX)
+					maxX = r.x + r.width;
+				if (r.y < minY)
+					minY = r.y;
+				if ((r.y + r.height) > maxY)
+					maxY = r.y + r.height;
+			}
+			if (ob instanceof Rechthoek)
+			{	Rectangle r = ((Rechthoek) ob).handleBox;
+				if (r.x < minX)
+					minX = r.x;
+				if ((r.x + r.width) > maxX)
+					maxX = r.x + r.width;
+				if (r.y < minY)
+					minY = r.y;
+				if ((r.y + r.height) > maxY)
+					maxY = r.y + r.height;
+			}
+			if (ob instanceof Ellips)
+			{	Rectangle r = ((Ellips) ob).handleBox;
+				if (r.x < minX)
+					minX = r.x;
+				if ((r.x + r.width) > maxX)
+					maxX = r.x + r.width;
+				if (r.y < minY)
+					minY = r.y;
+				if ((r.y + r.height) > maxY)
+					maxY = r.y + r.height;
+			}
+			if (ob instanceof TekstElement)
+			{	Rectangle r = ((TekstElement) ob).handleBox;
+				if (r.x < minX)
+					minX = r.x;
+				if ((r.x + r.width) > maxX)
+					maxX = r.x + r.width;
+				if (r.y < minY)
+					minY = r.y;
+				if ((r.y + r.height) > maxY)
+					maxY = r.y + r.height;
+			}
+		} // for
+		int w = maxX - minX + 8 * hbFactor;
+		int h = maxY - minY + 8 * hbFactor;
+		selecteerRechthoek = new Rectangle(minX - 4 * hbFactor, minY - 4 * hbFactor, w, h);
+		if (schalen)
+			makeScaleHandles();
+		if (roteren)
+			makeRotateHandles();
+
+		
+	}
+	
+	public void makeScaleHandles()
+	{
+		if (selecteerRechthoek == null)
+			return;
+		
+		topRightHandle = new Polygon();
+		topRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width + hbFactor,
+								selecteerRechthoek.y - hbFactor);
+		topRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width - 3 * hbFactor,
+								selecteerRechthoek.y - hbFactor);
+		topRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width + hbFactor,
+								selecteerRechthoek.y + 3 * hbFactor);
+		topRightRect = new Rectangle(selecteerRechthoek.x + selecteerRechthoek.width - 3 * hbFactor,
+									 selecteerRechthoek.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		topLeftHandle = new Polygon();
+		topLeftHandle.addPoint(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y - hbFactor);
+		topLeftHandle.addPoint(selecteerRechthoek.x + 3 * hbFactor, selecteerRechthoek.y - hbFactor);
+		topLeftHandle.addPoint(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y + 3 * hbFactor);
+		topLeftRect = new Rectangle(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y - hbFactor, 4 * hbFactor, 4 * hbFactor);
+		
+		bottomRightHandle = new Polygon();
+		bottomRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width + hbFactor,
+								   selecteerRechthoek.y + selecteerRechthoek.height + hbFactor);
+		bottomRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width - 3 * hbFactor,
+								   selecteerRechthoek.y + selecteerRechthoek.height + hbFactor);
+		bottomRightHandle.addPoint(selecteerRechthoek.x + selecteerRechthoek.width + hbFactor,
+								   selecteerRechthoek.y + selecteerRechthoek.height - 3 * hbFactor);
+		bottomRightRect = new Rectangle(selecteerRechthoek.x + selecteerRechthoek.width - 3 * hbFactor,
+				   						selecteerRechthoek.y + selecteerRechthoek.height - 3 * hbFactor, 4 * hbFactor, 4 * hbFactor);		
+		
+		bottomLeftHandle = new Polygon();
+		bottomLeftHandle.addPoint(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y + selecteerRechthoek.height + hbFactor);
+		bottomLeftHandle.addPoint(selecteerRechthoek.x + 3 * hbFactor, selecteerRechthoek.y + selecteerRechthoek.height + hbFactor);
+		bottomLeftHandle.addPoint(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y + selecteerRechthoek.height - 3 * hbFactor);
+		bottomLeftRect = new Rectangle(selecteerRechthoek.x - hbFactor, selecteerRechthoek.y + selecteerRechthoek.height - 3 * hbFactor, 
+									   4 * hbFactor, 4 * hbFactor);		
+		
+	}
+	
+	public void killScaleHandles()
+	{
+		topRightHandle = null; 
+		bottomRightHandle = null; 
+		topLeftHandle = null;
+		bottomLeftHandle = null;
+		topRightRect = null;
+		bottomRightRect = null;
+		topLeftRect = null;
+		bottomLeftRect = null;
+		
+	}
+	
+	public void makeRotateHandles()
+	{
+		
+		if (selecteerRechthoek == null)
+			return;
+		
+		rotateEastHandle = new Rectangle(selecteerRechthoek.x + selecteerRechthoek.width,// - 2 * hbFactor,
+										 selecteerRechthoek.y + selecteerRechthoek.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+		rotateWestHandle = new Rectangle(selecteerRechthoek.x - 4 * hbFactor, 
+										 selecteerRechthoek.y + selecteerRechthoek.height/2 - 2 * hbFactor,
+										 4 * hbFactor, 4 * hbFactor);
+	}
+
+	public void killRotateHandles()
+	{
+		rotateEastHandle = null; 
+		rotateWestHandle = null;
+	}
+
 	public void resetSelectedObject()
 	{
 		selectedStreep = null;
@@ -1120,7 +1341,310 @@ System.out.println("returned " + (numHistories - 1));
 				 //selectedTekstElement.bbContains(x, y));
 			     selectedTekstElement.handleBox.contains(x, y));	   
 	}
+
+
 	
+	public void processSelecteerRechthoekHandleAction(int dx, int dy)
+	{
+		int crx = selecteerRechthoek.x + selecteerRechthoek.width / 2;
+		int cry = selecteerRechthoek.y + selecteerRechthoek.height / 2;
+		
+		if (scalingTopRight)
+		{
+			double aspectDirX = selecteerRechthoek.x + selecteerRechthoek.width - 
+								crx;
+			double aspectDirY = selecteerRechthoek.y - cry;
+			double dxDouble = (double) dx;
+			double dyDouble = (double) dy;
+			double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+			double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+			double asXDouble = s * aspectDirX;
+			double asYDouble = s * aspectDirY;
+			double oldWidth = (double) selecteerRechthoek.width / 2;
+			double oldHeight = (double) selecteerRechthoek.height / 2;
+			double newWidth = oldWidth + asXDouble;
+			double newHeight = oldHeight - asYDouble;
+			double sc = ((double) newWidth) / oldWidth;
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).scale(sc, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).scale(sc, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).scale(sc, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).scale(sc, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).scale(sc, crx, cry);
+				
+			}
+
+			int tlx = selecteerRechthoek.x;
+			int tly = selecteerRechthoek.y;
+			int b = selecteerRechthoek.width;
+			int h = selecteerRechthoek.height;
+				
+			int ntlx = (int) Math.round(sc * tlx + (1 - sc) * crx);
+			int ntly = (int) Math.round(sc * tly + (1 - sc) * cry);
+			int nb = (int) Math.round(sc * b);
+			int nh = (int) Math.round(sc * h);
+			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			
+			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
+			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
+			topLeftHandle.translate(ntlx - tlx, ntly - tly);
+			topLeftRect.translate(ntlx - tlx, ntly - tly);
+			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
+			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
+
+			if (roteren)
+			{	
+				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
+				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
+			}	
+			
+		}
+		else if (scalingTopLeft)
+		{
+			double dxDouble = (double) dx;
+			double dyDouble = (double) dy;
+			
+			//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+			//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+			//double oldWidth = (double) selectedStreep.breedte / 2;
+			//double oldHeight = (double) selectedStreep.hoogte / 2;
+			
+			double oldWidth = (double) selecteerRechthoek.width / 2;
+			double oldHeight = (double) selecteerRechthoek.height / 2;
+
+			double newWidth = oldWidth - dx;
+			double newHeight = oldHeight - dy;
+			double sx = newWidth / oldWidth;
+			double sy = newHeight / oldHeight;
+
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).scale(sx, sy, crx, cry);
+				
+			}
+
+			int tlx = selecteerRechthoek.x;
+			int tly = selecteerRechthoek.y;
+			int b = selecteerRechthoek.width;
+			int h = selecteerRechthoek.height;
+				
+			int ntlx = (int) Math.round(sx * tlx + (1 - sx) * crx);
+			int ntly = (int) Math.round(sy * tly + (1 - sy) * cry);
+			int nb = (int) Math.round(sx * b);
+			int nh = (int) Math.round(sy * h);
+			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			
+			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
+			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
+			topLeftHandle.translate(ntlx - tlx, ntly - tly);
+			topLeftRect.translate(ntlx - tlx, ntly - tly);
+			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
+			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
+
+			if (roteren)
+			{	
+				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
+				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
+			}	
+
+		}
+		else if (scalingBottomLeft)
+		{
+			double dxDouble = (double) dx;
+			double dyDouble = (double) dy;
+			
+			//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
+			//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
+			//double oldWidth = (double) selectedStreep.breedte / 2;
+			//double oldHeight = (double) selectedStreep.hoogte / 2;
+			
+			double oldWidth = (double) selecteerRechthoek.width / 2;
+			double oldHeight = (double) selecteerRechthoek.height / 2;
+
+			double newWidth = oldWidth - dx;
+			double newHeight = oldHeight + dy;
+			double sx = newWidth / oldWidth;
+			double sy = newHeight / oldHeight;
+
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).scale(sx, sy, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).scale(sx, sy, crx, cry);
+				
+			}
+			
+			int tlx = selecteerRechthoek.x;
+			int tly = selecteerRechthoek.y;
+			int b = selecteerRechthoek.width;
+			int h = selecteerRechthoek.height;
+				
+			int ntlx = (int) Math.round(sx * tlx + (1 - sx) * crx);
+			int ntly = (int) Math.round(sy * tly + (1 - sy) * cry);
+			int nb = (int) Math.round(sx * b);
+			int nh = (int) Math.round(sy * h);
+			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			
+			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
+			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
+			topLeftHandle.translate(ntlx - tlx, ntly - tly);
+			topLeftRect.translate(ntlx - tlx, ntly - tly);
+			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
+			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
+			
+			if (roteren)
+			{	
+				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
+				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
+			}	
+
+		}
+		else if (scalingBottomRight)
+		{
+			double aspectDirX = selecteerRechthoek.x + selecteerRechthoek.width - crx; 
+			double aspectDirY = selecteerRechthoek.y + selecteerRechthoek.height - cry;
+			double dxDouble = (double) dx;
+			double dyDouble = (double) dy;
+			double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
+			double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
+			double asXDouble = s * aspectDirX;
+			double asYDouble = s * aspectDirY;
+			double oldWidth = (double) selecteerRechthoek.width / 2;
+			double oldHeight = (double) selecteerRechthoek.height / 2;
+			double newWidth = oldWidth + asXDouble;
+			double newHeight = oldHeight + asYDouble;
+			double sc = ((double) newWidth) / oldWidth;
+			
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).scale(sc, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).scale(sc, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).scale(sc, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).scale(sc, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).scale(sc, crx, cry);
+				
+			}
+
+			int tlx = selecteerRechthoek.x;
+			int tly = selecteerRechthoek.y;
+			int b = selecteerRechthoek.width;
+			int h = selecteerRechthoek.height;
+				
+			int ntlx = (int) Math.round(sc * tlx + (1 - sc) * crx);
+			int ntly = (int) Math.round(sc * tly + (1 - sc) * cry);
+			int nb = (int) Math.round(sc * b);
+			int nh = (int) Math.round(sc * h);
+			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			
+			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
+			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
+			topLeftHandle.translate(ntlx - tlx, ntly - tly);
+			topLeftRect.translate(ntlx - tlx, ntly - tly);
+			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
+			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
+			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
+
+			if (roteren)
+			{	
+				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
+				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
+			}	
+
+		}
+		
+		else if (rotatingEast)
+		{
+			// hier is alleen dy van belang
+			double angle = Math.atan(((double) dy) / (selecteerRechthoek.width/2));
+			//selectedStreep.rotate(angle);
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).rotate(angle, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).rotate(angle, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).rotate(angle, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).rotate(angle, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).rotate(angle, crx, cry);
+				
+			}
+			
+			updateSelecteerRechthoek();
+
+			
+		}
+		else if (rotatingWest)
+		{
+			// hier is alleen dy van belang
+			double angle = - Math.atan(((double) dy) / (selecteerRechthoek.width/2));
+			angleSum += angle; 
+			int rotateSteps = (int) Math.round(angleSum / rotateStep);
+			angleSum -= rotateSteps * rotateStep;
+			//selectedStreep.rotate(rotateSteps * rotateStep);
+			
+			for (int cnt = 0; cnt < objectsSelected.size(); cnt++)
+			{
+				Object ob = objectsSelected.elementAt(cnt);
+				if (ob instanceof Streep)
+					((Streep) ob).rotate(rotateSteps * rotateStep, crx, cry);
+				else if (ob instanceof Lijn)
+					((Lijn) ob).rotate(rotateSteps * rotateStep, crx, cry);
+				else if (ob instanceof Rechthoek)
+					((Rechthoek) ob).rotate(rotateSteps * rotateStep, crx, cry);
+				else if (ob instanceof Ellips)
+					((Ellips) ob).rotate(rotateSteps * rotateStep, crx, cry);
+				else if (ob instanceof TekstElement)
+					((TekstElement) ob).rotate(rotateSteps * rotateStep, crx, cry);
+				
+			}
+			
+			updateSelecteerRechthoek();
+		}
+
+		
+	}
 	
 	public void processHandleAction(int dx, int dy)
 	{
@@ -1526,7 +2050,7 @@ System.out.println("returned " + (numHistories - 1));
 		}
 		else if (selectedTekstElement != null)
 		{
-// wordt niet gebruikt
+
 			if (scalingTopRight)
 			{
 				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox. width - 
@@ -1550,10 +2074,15 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				
+				//double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
+				//double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
+				
+				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
+				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
+
+				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
@@ -1565,10 +2094,16 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
+
 				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
 				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
-				double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				
+				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
+				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
+				
+				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
+				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
+
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight + dy;
 				double sx = newWidth / oldWidth;
@@ -1603,10 +2138,13 @@ System.out.println("returned " + (numHistories - 1));
 				double newWidth = oldWidth + asXDouble;
 				double newHeight = oldHeight + asYDouble;
 				double sc = ((double) newWidth) / oldWidth;
-				if (sc < 1)
-					selectedTekstElement.scale(scaleDownStep);
-				else
-					selectedTekstElement.scale(scaleUpStep);
+				
+				selectedTekstElement.scale(sc);
+				
+				//if (sc < 1)
+				//	selectedTekstElement.scale(scaleDownStep);
+				//else
+				//	selectedTekstElement.scale(scaleUpStep);
 			}
 			else if (rotatingEast)
 			{
@@ -1629,6 +2167,37 @@ System.out.println("returned " + (numHistories - 1));
 			
 		}
 
+	}
+	
+	public boolean selecteerRechthoekHandlesContain(int x, int y)
+	{
+				
+		if ((topRightRect != null) && topRightRect.contains(x,y))
+		{	groupHandleAction = true;
+			scalingTopRight = true;
+		}
+		else if ((topLeftRect != null) && topLeftRect.contains(x,y))
+		{	groupHandleAction = true;
+			scalingTopLeft = true;
+		}
+		else if ((bottomRightRect != null) && bottomRightRect.contains(x,y))
+		{	groupHandleAction = true;
+			scalingBottomRight = true;
+		}
+		else if ((bottomLeftRect != null) && bottomLeftRect.contains(x,y))
+		{	groupHandleAction = true;
+			scalingBottomLeft = true;
+		}
+		else if ((rotateEastHandle != null) && rotateEastHandle.contains(x,y))
+		{	groupHandleAction = true;
+			rotatingEast = true;
+		}
+		else if ((rotateWestHandle != null) && rotateWestHandle.contains(x,y))
+		{	groupHandleAction = true;
+			rotatingWest = true;
+		}
+		
+		return groupHandleAction;
 	}
 	
 	public boolean objectSelectedHandlesContain(int x, int y)
@@ -1830,7 +2399,16 @@ System.out.println("returned " + (numHistories - 1));
 			else if (mouseMode == selecteren)
 			{
 
+				
 				if (objectSelectedHandlesContain(e.getX(), e.getY()))
+				{
+					startX = e.getX();
+					startY = e.getY();
+//System.out.println("mp oshc");			
+					
+					objectHandled = false;
+				}
+				else if (selecteerRechthoekHandlesContain(e.getX(), e.getY()))
 				{
 					startX = e.getX();
 					startY = e.getY();
@@ -1845,6 +2423,8 @@ System.out.println("returned " + (numHistories - 1));
 					startX = e.getX();
 					startY = e.getY();
 					selecteerRechthoek = null;
+					killScaleHandles();
+					killRotateHandles();
 					resetSelectedObjects();
 
 					objectMoved = false;
@@ -1863,6 +2443,8 @@ System.out.println("returned " + (numHistories - 1));
 					resetSelectedObjects();
 					figuurStart = new Point(e.getX(), e.getY());
 					selecteerRechthoek = null;
+					killScaleHandles();
+					killRotateHandles();
 				}
 			}
 			repaint();
@@ -2087,13 +2669,44 @@ System.out.println("returned " + (numHistories - 1));
 					objectHandled = true;
 					
 				}
+				else if (groupHandleAction)
+				{
+					int dx = e.getX() - startX;
+					int dy = e.getY() - startY;
+
+					processSelecteerRechthoekHandleAction(dx,dy);
+					
+					startX = e.getX();
+					startY = e.getY();
+					
+					objectHandled = true;
+					
+				}
+				
 				else if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
 				{	
 					int dx = e.getX() - startX;
 					int dy = e.getY() - startY;
 					
 					if (selecteerRechthoek != null)
-						selecteerRechthoek.translate(dx, dy);
+					{	selecteerRechthoek.translate(dx, dy);
+						if (schalen)
+						{
+							topRightHandle.translate(dx, dy); 
+							bottomRightHandle.translate(dx, dy); 
+							topLeftHandle.translate(dx, dy);
+							bottomLeftHandle.translate(dx, dy);
+							topRightRect.translate(dx, dy);
+							bottomRightRect.translate(dx, dy);
+							topLeftRect.translate(dx, dy);
+							bottomLeftRect.translate(dx, dy);
+						}
+						if (roteren)
+						{
+							rotateEastHandle.translate(dx, dy);
+							rotateWestHandle.translate(dx, dy);
+						}
+					}
 					
 					translateObjectSelected(dx, dy);
 					
@@ -2125,6 +2738,10 @@ System.out.println("returned " + (numHistories - 1));
 					       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
 					}
 					
+					if (schalen)
+						makeScaleHandles();
+					if (roteren)
+						makeRotateHandles();
 					findObjectsSelected(selecteerRechthoek);
 				}
 				
@@ -2225,7 +2842,10 @@ System.out.println("returned " + (numHistories - 1));
 				}
 				
 				if (objectsSelected.size() == 1)
-				{	Object objectSelected = objectsSelected.elementAt(0);
+				{	
+					
+//System.out.println("oss = 1");					
+					Object objectSelected = objectsSelected.elementAt(0);
 					if (objectSelected instanceof Streep)
 						selectedStreep = (Streep) objectSelected;
 					if (objectSelected instanceof Lijn)
@@ -2237,6 +2857,8 @@ System.out.println("returned " + (numHistories - 1));
 					if (objectSelected instanceof TekstElement)
 						selectedTekstElement = (TekstElement) objectSelected;
 					selecteerRechthoek = null;
+					killScaleHandles();
+					killRotateHandles();
 					resetSelectedObjects();
 					
 					repaint();
@@ -2248,6 +2870,7 @@ System.out.println("returned " + (numHistories - 1));
 					addToHistory();
 				objectHandled = false;
 				handleAction = false;
+				groupHandleAction = false;
 				scalingTopRight = false;
 				scalingTopLeft = false;
 				scalingBottomRight = false;
