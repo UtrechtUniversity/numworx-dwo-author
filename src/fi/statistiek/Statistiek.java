@@ -203,7 +203,7 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		else if (viewType.equals("Spreidingsdiagram"))
 		{
-			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DotplotController(model, viewName, startVar, startVar2);
 		}
 		else
@@ -403,7 +403,8 @@ public class Statistiek implements WiskOpdrApplet
 			binWidth++;
 		
 		// The maximum bin boundary should be larger than the maximum value
-		noBins = (int) Math.ceil((max - start)/binWidth);
+		// so (max + 1) to determine the number of bins
+		noBins = (int) Math.ceil(((max + 1) - start)/binWidth);
 		while (start + noBins * binWidth <= max)
 		{
 			noBins++;
