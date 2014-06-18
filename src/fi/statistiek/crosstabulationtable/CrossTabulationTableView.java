@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import fi.statistiek.ColorGenerator;
@@ -299,9 +300,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			if (typeRows.isNumber())
 				numberOfRowBins = this.model.getBinBoundaries().size() - 1;
 			else 
-			{
-				if (cTypeRows.getEnumOptions() != null)
-					numberOfRowBins = cTypeRows.getEnumOptions().length - 1;
+			{ // ENUM or STRING
+				if (this.model.enumClassFrequency() != null)
+					numberOfRowBins = this.model.enumClassFrequency()[0].length;
 				else
 					numberOfRowBins = 0;
 			}
@@ -409,7 +410,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		this.setMainPanelSize();
 
 		this.mainPanel.revalidate();
-		
+
 		this.repaint();
 	}
 
@@ -542,21 +543,12 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			}
 			else // enum or string
 			{
-				ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
-    				.get(this.model.getSplitOptions().getColumnSplitIndex());
-				
-				if (cSplitType.getEnumOptions() != null)
+				for (int splitClass = 0; splitClass < numberOfColumnBins; splitClass++)
 				{
-					int i = 0;
-					for (String s : cSplitType.getEnumOptions())
-					{
-						if (!s.equals(ColumnType.WILDCARD))
-						{
-							binLabelsColumns[i] = new JLabel(s);
-							binLabelsColumns[i].setFont(Statistiek.font);
-							i++;
-						}
-					}
+					String text = this.model.getSplitOptions().getSplitClassLabel(splitClass,
+						this.model.getTableModel());
+					binLabelsColumns[splitClass] = new JLabel(text);
+					binLabelsColumns[splitClass].setFont(Statistiek.font);
 				}
 			}
 		}
@@ -943,6 +935,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		c.gridy = 1;
 		mainPanel.add(dummy11, c);
 		
+		// column bin labels
 		for (int i = 0; i < binLabelsColumns.length; i++)
 		{
 			if (binLabelsColumns[i] != null)
@@ -1173,8 +1166,8 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			mainPanel.add(dummy0Rest, c);
 
 		}
-		else
-			System.out.println("CrossTabulationTableView.makeTable(): data is null!");
+//		else
+//			System.out.println("CrossTabulationTableView.makeTable(): data is null!");
 	}
 
 	public void paintComponent(Graphics g)
