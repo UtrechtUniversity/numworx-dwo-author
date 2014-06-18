@@ -30,6 +30,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+
 import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
 import fi.statistiek.ColorPreviewer;
@@ -732,10 +735,6 @@ public class DotplotView extends JPanel implements Observer
 			}
 		}
 		int index = cType.indexOfStringInEnum(value);
-		if (cType.indexOfStringInEnum(ColumnType.WILDCARD) < index)
-		{
-			index--;
-		}
 
 		double d = (double) index
 			/ (double) (cType.getEnumOptions().length - 2);
@@ -1434,7 +1433,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Find the mean value of a column In case of an Enum type column, it find
+	 * Find the mean value of a column. In case of an Enum type column, it find
 	 * the average index in the enum options In case of a String type column, it
 	 * finds the average index in the options list
 	 * 
@@ -1624,7 +1623,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Draw the correlation. The Pearson product-moment correlation coefficient
+	 * Draw the correlation. Pearson's product-moment correlation coefficient
 	 * is calculated, or Pearson's r.
 	 * 
 	 * @param g
@@ -1637,30 +1636,92 @@ public class DotplotView extends JPanel implements Observer
 		{
 			g.setColor(Color.BLACK);
 
-			int columnA = this.model.getColumnXIndex();
-			int columnB = this.model.getColumnYIndex();
-			double meanA = this.getColumnMean(columnA, this.getXStringOptions());
-			double meanB = this.getColumnMean(columnB, this.getYStringOptions());
+			int columnAIndex = this.model.getColumnXIndex();
+			int columnBIndex = this.model.getColumnYIndex();
+			double meanA = this.getColumnMean(columnAIndex, this.getXStringOptions());
+			double meanB = this.getColumnMean(columnBIndex, this.getYStringOptions());
 
-			double covar = this.getCovariance(columnA, meanA,
-				this.getXStringOptions(), columnB, meanB,
+			double covar = this.getCovariance(columnAIndex, meanA,
+				this.getXStringOptions(), columnBIndex, meanB,
 				this.getYStringOptions());
-			double sdA = this.getStdDev(columnA, meanA, this.getXStringOptions());
-			double sdB = this.getStdDev(columnB, meanB, this.getYStringOptions());
+			double sdA = this.getStdDev(columnAIndex, meanA, this.getXStringOptions());
+			double sdB = this.getStdDev(columnBIndex, meanB, this.getYStringOptions());
 			double correlation = covar / (sdA * sdB);
 
 			int y = (this.model.getTableModel().isViewsEditable() ? this
 				.getHeight() - 10 - DotplotView.KEUZEBALK_HOOGTE : this
 				.getHeight() - 3);
 			
-			// test syl: TODO calculate significance met T-test...?
-
+			double r = Math.round(correlation * 100) / 100.0;
+			
+			// calculate significance met Common math package
+			double[][] data = getDataColumnsForCorrelation(columnAIndex, columnBIndex);
+			String pString;
+			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
+			RealMatrix pValues = pearsonCorrelation.getCorrelationPValues();
+			double p = Statistiek.round((double) pValues.getEntry(0, 1), 3);
+			if (p == 0)
+			{
+				// for the significance value explicit precision is shown
+				pString = "0.000";
+			}
+			else
+			{
+				pString = String.valueOf(p);
+			}
+//			double r2 = pearsonCorrelation.getCorrelationMatrix().getEntry(0, 1);
+			
 			g.drawString(
-				"r="
-				+ Double.toString(Math.round(correlation * 100) / 100.0),
+				"r=" + Double.toString(r) 
+				+ ", p=" + pString,
 				3, this.scrollPane.getHeight()
 				+ this.X_AS_OFFSET - 37);
 		}
+	}
+
+	/**
+	 * Creates a matrix with the values of column A and column B.
+	 * @param columnBIndex 
+	 * @param columnAIndex 
+	 * @return An array with doubles. If column A or column B contains non-numerical values,
+	 * these values are not set in the array and count as missing. 
+	 */
+	private double[][] getDataColumnsForCorrelation(int columnAIndex, int columnBIndex)
+	{
+		double[][] data = new double[this.model.getTableModel().getRowCount()][2];
+		
+		// count the valid pairs of values
+		int count = 0;
+
+		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		{
+			try
+			{
+				// column A value
+				data[count][0] = Double.parseDouble(((String) this.model.getTableModel().getValueAt(i, columnAIndex)));
+				// column B value
+				data[count][1] = Double.parseDouble(((String) this.model.getTableModel().getValueAt(i, columnBIndex)));
+				// if both column values are valid, increase count
+				count++;
+			}
+			catch (NumberFormatException e)
+			{
+				// data contains non-numerical values; these count as missing
+			}
+		}
+		
+		// return the data with non-valid pairs of values excluded
+		double[][] data_missingExcluded = new double[count][2];
+		
+		for (int i = 0; i < count; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				data_missingExcluded[i][j] = data[i][j];
+			}
+		}
+		
+		return data_missingExcluded;
 	}
 
 	/**
