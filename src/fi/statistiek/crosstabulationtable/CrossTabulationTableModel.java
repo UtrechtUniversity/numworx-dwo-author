@@ -391,19 +391,24 @@ public class CrossTabulationTableModel extends Observable implements
 
 	public void swapVariables()
 	{
-		int index_row = this.getColumnIndex();
-		int index_column = this.getColumnSplitIndex();
-		SplitOptions splitOptions = this.getSplitOptions();
-		ArrayList<Double> binBoundaries_row = getBinBoundaries();
+		// index old row variable
+		int indexRow_old = this.getColumnIndex();
+		// bins of the old row variable
+		ArrayList<Double> binBoundariesRow_old = getBinBoundaries();
+
+		// index old column variable
+		int indexColumn_old = this.getColumnSplitIndex();
+		// split options of the column variable
+		SplitOptions splitOptionsColumn_old = this.getSplitOptions();
 		
-		// Rij moet kolom worden met de ingestelde klassen
-		this.setColumnIndex(index_column);
-		this.setBinBoundaries(splitOptions.getBinBoundaries());
+		// Set as the new row variable the column variable with its bins
+		this.setColumnIndex(indexColumn_old);
+		this.setBinBoundaries(splitOptionsColumn_old.getBinBoundaries());
 		
-		// Kolom moet rij worden met de ingestelde klassen
+		// Set as the new column variable the row variable with its bins
 		// setSplit() uit controller
-		this.setColumnSplitIndex(index_row);
-		this.setSplitBoundaries(binBoundaries_row);
+		this.setColumnSplitIndex(indexRow_old);
+		this.setSplitBoundaries(binBoundariesRow_old);
 		this.setSplitOptions(this.getSplitOptions());
 	}
 	
