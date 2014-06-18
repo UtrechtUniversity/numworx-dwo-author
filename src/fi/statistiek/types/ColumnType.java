@@ -223,7 +223,7 @@ public class ColumnType implements Serializable
 			{
 				return j;
 			}
-			else if (!this.enumOptions[i].equals(WILDCARD))
+			else if (!this.enumOptions[i].equals(WILDCARD)) // wildcard wordt niet meegeteld
 			{
 				j++;
 			}
