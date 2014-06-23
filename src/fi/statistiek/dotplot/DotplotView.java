@@ -1,6 +1,5 @@
 package fi.statistiek.dotplot;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,7 +7,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -17,30 +15,18 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
 import fi.statistiek.Statistiek;
-import fi.statistiek.histogram.HistogramModel;
-import fi.statistiek.histogram.HistogramUserOptionsPanel;
-import fi.statistiek.histogram.HistogramView;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
@@ -68,6 +54,60 @@ public class DotplotView extends JPanel implements Observer
 	public static final double KEEP_CLEAR_PART = 0.05;
 	public static final Color SELECTION_RECTANGLE_COLOR = new Color(153, 204,
 		255); // blue
+	
+	// Table with critical values of the Pearson's product-moment 
+	// correlation coefficient. 
+	// See also, method getLevelOfSignificance(r, N).
+	// Column 4: if r > SIGNIFICANCE_TABLE[n][3] then p < 0.001
+	// Column 3: if r > SIGNIFICANCE_TABLE[n][2] then p < 0.01
+	// Column 2: if r > SIGNIFICANCE_TABLE[n][1] then p < 0.05
+	// Column 1: if r > SIGNIFICANCE_TABLE[n][0] then p < 0.1
+	//			 if r < SIGNIFICANCE_TABLE[n][0] then p > 0.1
+	// Source: http://faculty.fortlewis.edu/CHEW_B/Documents/Table%20of%20critical%20values%20for%20Pearson%20correlation.htm
+	private static final double[][] SIGNIFICANCE_TABLE = {
+		{0.988, 0.997, 0.9999, 0.99999}, // N = 3 (i = 0)
+		{0.900, 0.950, 0.990, 0.999}, // N = 4 (i = 1)
+		{0.805, 0.878, 0.959, 0.991}, // N = 5 (i = 2)
+		{0.729, 0.811, 0.917, 0.974}, // N = 6 (i = 3)
+		{0.669, 0.754, 0.875, 0.951}, // N = 7 (i = 4)
+		{0.621, 0.707, 0.834, 0.925}, // N = 8 (i = 5)
+		{0.582, 0.666, 0.798, 0.898}, // N = 9 (i = 6)
+		{0.549, 0.632, 0.765, 0.872}, // N = 10 (i = 7)
+		{0.521, 0.602, 0.735, 0.847}, // N = 11 (i = 8)
+		{0.497, 0.576, 0.708, 0.823}, // N = 12 (i = 9)
+		{0.476, 0.553, 0.684, 0.801}, // N = 13 (i = 10)
+		{0.458, 0.532, 0.661, 0.780}, // N = 14 (i = 11)
+		{0.441, 0.514, 0.641, 0.760}, // N = 15 (i = 12)
+		{0.426, 0.497, 0.623, 0.742}, // N = 16 (i = 13)
+		{0.412, 0.482, 0.606, 0.725}, // N = 17 (i = 14)
+		{0.400, 0.468, 0.590, 0.708}, // N = 18 (i = 15)
+		{0.389, 0.456, 0.575, 0.693}, // N = 19 (i = 16)
+		{0.378, 0.444, 0.561, 0.679}, // N = 20 (i = 17)
+		{0.369, 0.433, 0.549, 0.665}, // N = 21 (i = 18)
+		{0.360, 0.423, 0.537, 0.652}, // N = 22 (i = 19)
+		{0.352, 0.413, 0.526, 0.640}, // N = 23 (i = 20)
+		{0.344, 0.404, 0.515, 0.629}, // N = 24 (i = 21)
+		{0.337, 0.396, 0.505, 0.618}, // N = 25 (i = 22)
+		{0.330, 0.388, 0.496, 0.607}, // N = 26 (i = 23)
+		{0.323, 0.381, 0.487, 0.597}, // N = 27 (i = 24)
+		{0.317, 0.374, 0.479, 0.588}, // N = 28 (i = 25)
+		{0.311, 0.367, 0.471, 0.579}, // N = 29 (i = 26)
+		{0.306, 0.361, 0.463, 0.570}, // N = 30 (i = 27)
+		{0.283, 0.334, 0.430, 0.532}, // N = 35 (i = 28)
+		{0.264, 0.312, 0.403, 0.501}, // N = 40 (i = 29)
+		{0.248, 0.294, 0.380, 0.474}, // N = 45 (i = 30)
+		{0.235, 0.279, 0.361, 0.451}, // N = 50 (i = 31)
+		{0.214, 0.254, 0.330, 0.414}, // N = 60 (i = 32)
+		{0.198, 0.235, 0.306, 0.385}, // N = 70 (i = 33)
+		{0.185, 0.220, 0.286, 0.361}, // N = 80 (i = 34)
+		{0.174, 0.207, 0.270, 0.341}, // N = 90 (i = 35)
+		{0.165, 0.197, 0.256, 0.324}, // N = 100 (i = 36)
+		{0.117, 0.139, 0.182, 0.231}, // N = 200 (i = 37)
+		{0.095, 0.113, 0.149, 0.189}, // N = 300 (i = 38)
+		{0.082, 0.098, 0.129, 0.164}, // N = 400 (i = 39)
+		{0.074, 0.088, 0.115, 0.147}, // N = 500 (i = 40)
+		{0.052, 0.062, 0.081, 0.104} // N = 1000 (i = 41)
+	};
 
 	public int yAxisOffset = 55;
 	/**
@@ -82,6 +122,7 @@ public class DotplotView extends JPanel implements Observer
 	// variables for painting, set every time paint is called
 	private double xMin;
 	private double xMax;
+	private double xFirstMinorStep; // field to be used in determineXCoordNumClass()
 	private double yMin;
 	private double yMax;
 	private double zMin;
@@ -99,8 +140,6 @@ public class DotplotView extends JPanel implements Observer
 	private JPanel mainPanel;
 
 	private ColorLegend colorLegend;
-
-	private Random random;
 
 	/**
 	 * Constructor
@@ -156,8 +195,6 @@ public class DotplotView extends JPanel implements Observer
 		this.colorLegend = new ColorLegend("", null, null);
 		super.add(this.colorLegend, BorderLayout.EAST);
 		// this.colorLegend.setVisible(false);
-
-		this.random = new Random();
 	}
 
 	private ArrayList<String> getXStringOptions()
@@ -693,9 +730,21 @@ public class DotplotView extends JPanel implements Observer
 	 * @return the x-coordinate of where the value would be painted
 	 */
 	private int determineXCoordNumClass(double d)
-	{
+	{		
+		int drawWidth = this.dotAreaWidth();
+
+		// determine the minimum value on the scale
+		double minValue;
+		
+		// if possible take the first minor step
+		if (!Double.isNaN(this.xFirstMinorStep))
+			minValue = this.xFirstMinorStep;
+		else
+			minValue = this.xMin;
+		
 		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
-			* ((d - xMin) / (xMax - xMin))) * this.dotAreaWidth());
+			* ((d - minValue) / (xMax - minValue))) * drawWidth);
+	
 		if (this.model.columnYIndexValid())
 		{
 			if (x < 0)
@@ -815,7 +864,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Determine where a numeric value would be painted in the scatterplot
+	 * Determine where a numeric value would be painted in the scatterplot.
 	 * 
 	 * @param d
 	 *            a numeric value
@@ -1176,6 +1225,9 @@ public class DotplotView extends JPanel implements Observer
 
 //			double p = Math.ceil(min / step) * step;
 			double p = determineFirstMinorStep(min, minorStep);
+			
+			// field to be used in determineXCoordNumClass()
+			this.xFirstMinorStep = p;
 
 			// Math.ceil can give -0.0, this step turns that into 0.0
 			if (p == 0)
@@ -1212,7 +1264,7 @@ public class DotplotView extends JPanel implements Observer
 				int x = this.determineXCoordNumClass(p);
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
 				
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
 				// get the right string value for integer or double
@@ -1654,29 +1706,131 @@ public class DotplotView extends JPanel implements Observer
 			
 			double r = Math.round(correlation * 100) / 100.0;
 			
+			String correlationInfoString;
+			
 			// calculate significance met Common math package
 			double[][] data = getDataColumnsForCorrelation(columnAIndex, columnBIndex);
 			String pString;
-			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
-			RealMatrix pValues = pearsonCorrelation.getCorrelationPValues();
-			double p = Statistiek.round((double) pValues.getEntry(0, 1), 3);
-			if (p == 0)
+//			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
+			try
 			{
-				// for the significance value explicit precision is shown
-				pString = "0.000";
+//				RealMatrix pValues = pearsonCorrelation.getCorrelationPValues();
+//				double p1 = Statistiek.round((double) pValues.getEntry(0, 1), 3);
+
+				// determine p value with significance table
+				double p = getLevelOfSignificance(correlation, data.length);
+				
+				if (p == 0)
+				{
+					// for the significance value explicit precision is shown (in case of precise calculation with Commons Math)
+					pString = "0.000";
+				}
+				else
+				{
+					pString = String.valueOf(p);
+				}
+//				double r2 = pearsonCorrelation.getCorrelationMatrix().getEntry(0, 1);
+				
+				if (p == 1)
+					correlationInfoString = "r=" + Double.toString(r) 
+//						+ ", p_common=" + p1
+						+ ", p>0.1";
+				else if (p == -1)
+					correlationInfoString = "r=" + Double.toString(r) 
+//						+ ", p_common=" + p1
+						+ ", " + Statistiek.rb.getString("significanceNoShow");
+				else
+					correlationInfoString = 
+						"r=" + Double.toString(r) 
+//						+ ", p_common=" + p1
+						+ ", p<" + pString;
 			}
-			else
+			catch (Exception e)
 			{
-				pString = String.valueOf(p);
+				System.out.println("degrees of freedom is 0; er is te weinig data om significantie te berekenen");
+				correlationInfoString = Statistiek.rb.getString("correlationNoShow");
 			}
-//			double r2 = pearsonCorrelation.getCorrelationMatrix().getEntry(0, 1);
 			
-			g.drawString(
-				"r=" + Double.toString(r) 
-				+ ", p=" + pString,
+			g.drawString(correlationInfoString,
 				3, this.scrollPane.getHeight()
 				+ this.X_AS_OFFSET - 37);
 		}
+	}
+
+	/**
+	 * Get the level of significance of Pearson's product-moment correlation 
+	 * coefficient r and n cases. This means that correlation r has
+	 * significance p < level of significance.
+	 * 
+	 * @param r Pearson's product-moment correlation coefficient
+	 * @param n The number of cases
+	 * 
+	 * @return The level of significance, i.e., correlation r has significance 
+	 * p < level of significance. If the level cannot be determined, -1 is returned.
+	 */
+	private double getLevelOfSignificance(double r, int n)
+	{
+		double level;
+		// the index for reading SIGNIFICANCE_TABLE
+		int i = -1; 
+		// help variable for checking valid values of n
+		double[] values;
+		
+		// determine the index for reading SIGNIFICANCE_TABLE
+		if (n < 3)
+			i = -1; // not valid
+		else if (n <= 30)
+			i = n - 3;
+		else if ((n > 30) && (n <= 35))
+			i = 28;
+		else if ((n > 35) && (n <= 40))
+			i = 29;
+		else if ((n > 40) && (n <= 45))
+			i = 30;
+		else if ((n > 45) && (n <= 50))
+			i = 31;
+		else if ((n > 50) && (n <= 60))
+			i = 32;
+		else if ((n > 60) && (n <= 70))
+			i = 33;
+		else if ((n > 70) && (n <= 80))
+			i = 34;
+		else if ((n > 80) && (n <= 90))
+			i = 35;
+		else if ((n > 90) && (n <= 100))
+			i = 36;
+		else if ((n > 100) && (n <= 200))
+			i = 37;
+		else if ((n > 200) && (n <= 300))
+			i = 38;
+		else if ((n > 300) && (n <= 400))
+			i = 39;
+		else if ((n > 400) && (n <= 500))
+			i = 40;
+		else if ((n > 500) && (n <= 1000))
+			i = 41;
+			
+		// read the table for row i
+		if (i > -1)
+		{
+			r = Math.abs(r);
+			if (r > SIGNIFICANCE_TABLE[i][3])
+				level = 0.001;
+			else if (r > SIGNIFICANCE_TABLE[i][2])
+				level = 0.01;
+			else if (r > SIGNIFICANCE_TABLE[i][1])
+				level = 0.05;
+			else if (r > SIGNIFICANCE_TABLE[i][0])
+				level = 0.1;
+			else if (r < SIGNIFICANCE_TABLE[i][0])
+				level = 1; // p > 0.1
+			else
+				level = -1; // not valid
+		}
+		else
+			level = -1;
+		
+		return level;
 	}
 
 	/**
