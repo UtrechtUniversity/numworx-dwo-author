@@ -115,7 +115,9 @@ public class Text_en extends java.util.ListResourceBundle
             {   "string", "Text"},
             {   "enum", "Opsomming"},
             {   "messageNrRowsMoreThan", "Number of rows is more than "},
-            {   "messageChooseOtherVar", "Choose another variable."}
+            {   "messageChooseOtherVar", "Choose another variable."},
+            {   "correlationNoShow", "Correlatie cannot be calculated"},
+            {   "significanceNoShow", "significance cannot be calculated"}
 
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },

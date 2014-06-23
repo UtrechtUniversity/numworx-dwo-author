@@ -114,7 +114,9 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "string", "Tekst"},
             {   "enum", "Opsomming"},
             {   "messageNrRowsMoreThan", "Aantal rijen is meer dan "},
-            {   "messageChooseOtherVar", "Kies een andere variabele."}
+            {   "messageChooseOtherVar", "Kies een andere variabele."},
+            {   "correlationNoShow", "Correlatie kan niet berekend worden"},
+            {   "significanceNoShow", "significantie kan niet berekend worden"}
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
