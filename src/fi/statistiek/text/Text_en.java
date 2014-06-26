@@ -39,7 +39,13 @@ public class Text_en extends java.util.ListResourceBundle
             {   "observationsLabel", "Observations" },
             {   "numberLabel", "No. of measurements: " },
             {   "minLabel", "Minimum: " },
+            {   "minimum", "Minimum" },
             {   "maxLabel", "Maximum: " },
+            {   "maximum", "Maximum" },
+            {   "mean", "Mean" },
+            {   "standardDeviation", "Standard deviation" },
+            {   "median", "Median" },
+            {   "mode", "Mode" },
             {   "sortItem", "Sort" },
             {   "editcolumnItem", "Edit column" },
             {   "deletecolumnItem", "Delete column" },
@@ -93,6 +99,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "boxplotOption", "Boxplot"},
             {   "crosstabOption", "Crosstab"},
             {   "scatterplotOption", "Scatterplot"},
+            {   "descriptivesOption", "Descriptive statistics"},
             {   "settingsButton", "Settings"},
             {   "nexttoeachotherCheckbox", "Next to each other"},
             {   "chooseStartVarLabel", "Choose variable: "},
@@ -117,7 +124,8 @@ public class Text_en extends java.util.ListResourceBundle
             {   "messageNrRowsMoreThan", "Number of rows is more than "},
             {   "messageChooseOtherVar", "Choose another variable."},
             {   "correlationNoShow", "Correlatie cannot be calculated"},
-            {   "significanceNoShow", "significance cannot be calculated"}
+            {   "significanceNoShow", "significance cannot be calculated"},
+            {   "notAvailable", "Not available"}
 
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },

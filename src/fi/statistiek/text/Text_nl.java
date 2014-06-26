@@ -39,7 +39,13 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "observationsLabel", "Waarnemingen" },
             {   "numberLabel", "Aantal meetwaarden: " },
             {   "minLabel", "Minimum: " },
+            {   "minimum", "Minimum" },
             {   "maxLabel", "Maximum: " },
+            {   "maximum", "Maximum" },
+            {   "mean", "Gemiddelde" },
+            {   "standardDeviation", "Standaarddeviatie" },
+            {   "median", "Mediaan" },
+            {   "mode", "Modus" },
             {   "sortItem", "Sorteer" },
             {   "editcolumnItem", "Bewerk kolom" },
             {   "deletecolumnItem", "Wis kolom" },
@@ -92,6 +98,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "boxplotOption", "Boxplot"},
             {   "crosstabOption", "Kruistabel"},
             {   "scatterplotOption", "Spreidingsdiagram"},
+            {   "descriptivesOption", "Beschrijvende statistiek"},
             {   "settingsButton", "Instellingen"},
             {   "nexttoeachotherCheckbox", "Naast elkaar"},
             {   "chooseStartVarLabel", "Kies variabele: "},
@@ -116,7 +123,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "messageNrRowsMoreThan", "Aantal rijen is meer dan "},
             {   "messageChooseOtherVar", "Kies een andere variabele."},
             {   "correlationNoShow", "Correlatie kan niet berekend worden"},
-            {   "significanceNoShow", "significantie kan niet berekend worden"}
+            {   "significanceNoShow", "significantie kan niet berekend worden"},
+            {   "notAvailable", "Niet beschikbaar"}
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
