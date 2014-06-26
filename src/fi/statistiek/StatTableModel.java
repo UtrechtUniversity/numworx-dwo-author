@@ -1,5 +1,7 @@
 package fi.statistiek;
 
+import java.awt.Color;
+import java.awt.font.MultipleMaster;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1068,7 +1070,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Gets all string values that occur in column with index 'columnIndex'
+	 * Get all string values that occur in column with index 'columnIndex'
 	 * 
 	 * @param columnIndex
 	 *            the index of the column for which the string options are
@@ -1088,11 +1090,11 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Gets the min value of a numerical column
+	 * Get the minimum value of a numerical column.
 	 * 
 	 * @param columnIndex
 	 *            the column index
-	 * @return the min value of a numerical column
+	 * @return The minimum value of a numerical column. Returns 0 if column is not numerical. 
 	 */
 	public double getColumnMin(int columnIndex)
 	{
@@ -1126,11 +1128,52 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Gets the max value of a numerical column
+	 * Get the minimum value of a numerical column of the current selection.
 	 * 
 	 * @param columnIndex
 	 *            the column index
-	 * @return the max value of a numerical column
+	 * @return The minimum value of a numerical column. Returns 0 if column is not numerical. 
+	 */
+	public double getColumnMinOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double min = Double.MAX_VALUE;
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (selectionList.get(i))
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
+				{
+					Double d = Double.parseDouble((String) o);
+					if (d < min)
+					{
+						min = d;
+					}
+				}
+			}
+		}
+		if (min.equals(Double.MAX_VALUE))
+		{
+			return 0;
+		}
+		else
+		{
+			return min.doubleValue();
+		}
+	}
+
+	/**
+	 * Get the maximum value of a numerical column.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The maximum value of a numerical column. Returns 100 if column is not numerical.
 	 */
 	public double getColumnMax(int columnIndex)
 	{
@@ -1161,6 +1204,593 @@ public class StatTableModel implements TableModel
 		{
 			return max.doubleValue();
 		}
+	}
+	
+	/**
+	 * Get the maximum value of a numerical column of the current selection.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The maximum value of a numerical column. Returns 100 if column is not numerical.
+	 */
+	public double getColumnMaxOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 100;
+		}
+		Double max = Double.MIN_VALUE;
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (selectionList.get(i)) // only process the selected items
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
+				{
+					Double d = Double.parseDouble((String) o);
+					if (d > max)
+					{
+						max = d;
+					}
+				}
+			}
+		}
+		if (max.equals(Double.MIN_VALUE))
+		{
+			return 100;
+		}
+		else
+		{
+			return max.doubleValue();
+		}
+	}
+	
+	/**
+	 * Get the mean value of a numerical column, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The mean value of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the mean cannot be calculated.
+	 */
+	public double getColumnMean(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double sum = 0.0;
+		int count = 0; // number of valid values
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			Object o = this.getValueAt(i, columnIndex);
+			if (!o.equals(ColumnType.WILDCARD))
+			{
+				Double d = Double.parseDouble((String) o);
+				sum += d;
+				count++;
+			}
+		}
+		if (count > 0)
+			return sum/count;
+		else
+			return 0;
+	}	
+
+	/**
+	 * Get the mean value of a numerical column of the current selection, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The mean value of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the mean cannot be calculated.
+	 */
+	public double getColumnMeanOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double sum = 0.0;
+		int count = 0; // number of valid values
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (selectionList.get(i))
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
+				{
+					Double d = Double.parseDouble((String) o);
+					sum += d;
+					count++;
+				}
+			}
+		}
+		if (count > 0)
+			return sum/count;
+		else
+			return 0;
+	}	
+
+	/**
+	 * Get the standard deviation of a numerical column, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The standard deviation of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the standard deviation cannot be calculated.
+	 */
+	public double getColumnSD(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double sum = 0.0;
+		int count = 0; // number of valid values
+		double mean = this.getColumnMean(columnIndex);
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			Object o = this.getValueAt(i, columnIndex);
+			if (!o.equals(ColumnType.WILDCARD))
+			{
+				Double d = Double.parseDouble((String) o);
+				sum += Math.pow(d - mean, 2);
+				count++;
+			}
+		}
+		if (count > 0)
+			return Math.sqrt(sum/count);
+		else
+			return 0;
+	}	
+
+	/**
+	 * Get the standard deviation of a numerical column of the current selection, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The standard deviation of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the standard deviation cannot be calculated.
+	 */
+	public double getColumnSDOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		Double sum = 0.0;
+		int count = 0; // number of valid values
+		double mean = this.getColumnMeanOfSelection(columnIndex);
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (selectionList.get(i))
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
+				{
+					Double d = Double.parseDouble((String) o);
+					sum += Math.pow(d - mean, 2);
+					count++;
+				}
+			}
+		}
+		if (count > 0)
+			return Math.sqrt(sum/count);
+		else
+			return 0;
+	}	
+
+	/**
+	 * Get the median value of a numerical column, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The median value of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the median value cannot be calculated.
+	 */
+	public double getColumnMedian(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		double median = 0;
+		
+		ArrayList<Double> data = new ArrayList<Double>();
+
+		for (int i = 0; i < this.getRowCount(); i++)
+		{
+			String valueString = (String) this.getValueAt(i, columnIndex);
+			if (!valueString.equals(ColumnType.WILDCARD))
+			{
+				// get the value
+				Double d = Double.parseDouble(valueString);
+
+				// add the value to a list based on the splitclass
+				data.add(d);
+			}
+		}
+		
+		Collections.sort(data);
+		int size = data.size();
+		int index;
+
+		if (size % 2 == 0)
+		{
+			// even number of values in data set
+			index = (size/2) - 1;
+			// mediaan is het gemiddelde van de twee waarden in het midden
+			median = (data.get(index) + data.get(index + 1))/2;
+//			System.out.println("StatTableModel.getColumnMedian(): even, median=" 
+//				+ median);
+		}
+		else
+		{
+			// odd number of values in data set
+			index = (int) ((size + 1)/2) - 1;
+			// mediaan is de middelste waarde
+			median = data.get(index);
+//			System.out.println("StatTableModel.getColumnMedian(): odd, median=" 
+//				+ median);
+		}
+
+		return median;
+	}	
+
+	/**
+	 * Get the median value of a numerical column of the current selection, excluding missing values.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The median value of a numerical column. 
+	 * 		Returns 0 if column is not numerical or if the median value cannot be calculated.
+	 */
+	public double getColumnMedianOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		if (!(type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			return 0;
+		}
+		double median = 0;
+		
+		ArrayList<Double> data = new ArrayList<Double>();
+
+		for (int i = 0; i < this.getRowCount(); i++)
+		{
+			if (selectionList.get(i))
+			{
+				String valueString = (String) this.getValueAt(i, columnIndex);
+				if (!valueString.equals(ColumnType.WILDCARD))
+				{
+					// get the value
+					Double d = Double.parseDouble(valueString);
+	
+					// add the value to a list based on the splitclass
+					data.add(d);
+				}
+			}
+		}
+		
+		Collections.sort(data);
+		int size = data.size();
+		int index;
+
+		if (size % 2 == 0)
+		{
+			// even number of values in data set
+			index = (size/2) - 1;
+			// mediaan is het gemiddelde van de twee waarden in het midden
+			median = (data.get(index) + data.get(index + 1))/2;
+//			System.out.println("StatTableModel.getColumnMedian(): even, median=" 
+//				+ median);
+		}
+		else
+		{
+			// odd number of values in data set
+			index = (int) ((size + 1)/2) - 1;
+			// mediaan is de middelste waarde
+			median = data.get(index);
+//			System.out.println("StatTableModel.getColumnMedian(): odd, median=" 
+//				+ median);
+		}
+
+		return median;
+	}	
+
+	/**
+	 * Get the mode of a column.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The mode of a column. 
+	 */
+	public String getColumnMode(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		String mode = "";
+		int maxFreq = 0;
+		boolean multipleModes = false;
+		
+		if ((type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			ArrayList<Double> data = new ArrayList<Double>();
+
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				String valueString = (String) this.getValueAt(i, columnIndex);
+				if (!valueString.equals(ColumnType.WILDCARD))
+				{
+					// get the value
+					Double d = Double.parseDouble(valueString);
+
+					// add the value to a list based on the splitclass
+					data.add(d);
+				}
+			}
+			
+			Collections.sort(data);
+			
+			for (int i = 0; i < data.size(); i++)
+			{
+				int freq_i = Collections.frequency(data, data.get(i));
+				if (freq_i > maxFreq)
+				{
+					maxFreq = Collections.frequency(data, data.get(i));
+					mode = String.valueOf(data.get(i));
+					multipleModes = false;
+				}
+				else if ((freq_i != 0) && (freq_i == maxFreq) && (!data.get(i).equals(data.get(i - 1))))
+				{ // check if there is another value with the same max frequency
+					multipleModes = true;
+				}
+			}
+		}
+		else
+		{ // enum or string
+			FrequencyTuple[][] frequencies_enum = this.enumClassFrequency(columnIndex, null);
+			
+			if (frequencies_enum != null)
+			{
+				for (int i = 0; i < frequencies_enum[0].length; i++)
+				{
+					FrequencyTuple ft = frequencies_enum[0][i];
+					if (ft.frequency > maxFreq)
+					{
+						maxFreq = ft.frequency;
+						mode = ft.label;
+						multipleModes = false;
+					}
+					else if ((ft.frequency != 0) && (ft.frequency == maxFreq))
+					{
+						// there are two modes
+						multipleModes = true;
+					}
+				}
+			}
+		}
+		
+		if (multipleModes)
+			return Statistiek.rb.getString("notAvailable");
+		else
+			return mode;
+	}	
+
+	/**
+	 * Get the mode of a column of the current selection.
+	 * 
+	 * @param columnIndex
+	 *            The column index
+	 * @return The mode of a column. 
+	 */
+	public String getColumnModeOfSelection(int columnIndex)
+	{
+		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
+		String mode = "";
+		int maxFreq = 0;
+		boolean multipleModes = false;
+		
+		if ((type.equals(AllowedTypes.DOUBLE) 
+			|| type.equals(AllowedTypes.INTEGER)))
+		{
+			ArrayList<Double> data = new ArrayList<Double>();
+
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				if (selectionList.get(i))
+				{
+					String valueString = (String) this.getValueAt(i, columnIndex);
+					if (!valueString.equals(ColumnType.WILDCARD))
+					{
+						// get the value
+						Double d = Double.parseDouble(valueString);
+	
+						// add the value to a list based on the splitclass
+						data.add(d);
+					}
+				}
+			}
+			
+			Collections.sort(data);
+			
+			for (int i = 0; i < data.size(); i++)
+			{
+				int freq_i = Collections.frequency(data, data.get(i));
+				if (freq_i > maxFreq)
+				{
+					maxFreq = Collections.frequency(data, data.get(i));
+					mode = String.valueOf(data.get(i));
+					multipleModes = false;
+				}
+				else if ((freq_i != 0) && (freq_i == maxFreq) && (!data.get(i).equals(data.get(i - 1))))
+				{ // check if there is another value with the same max frequency
+					multipleModes = true;
+				}
+			}
+		}
+		else
+		{ // enum or string
+			FrequencyTuple[][] frequencies_enum = this.enumClassFrequency(columnIndex, null);
+			
+			if (frequencies_enum != null)
+			{
+				for (int i = 0; i < frequencies_enum[0].length; i++)
+				{
+					FrequencyTuple ft = frequencies_enum[0][i];
+					if (ft.selectionFrequency > maxFreq)
+					{
+						maxFreq = ft.selectionFrequency;
+						mode = ft.label;
+						multipleModes = false;
+					}
+					else if ((ft.selectionFrequency != 0) && (ft.selectionFrequency == maxFreq))
+					{
+						// there are two modes
+						multipleModes = true;
+					}
+				}
+			}
+		}
+		
+		if (multipleModes)
+			return Statistiek.rb.getString("notAvailable");
+		else
+			return mode;
+	}	
+
+	/**
+	 * Creates a matrix with valid pairs of values of column A and column B.
+	 * @param columnAIndex 
+	 * @param columnBIndex 
+	 * @return An array with doubles. If column A or column B contains non-numerical values,
+	 * these values count as missing and are not set in the array. 
+	 */
+	public double[][] getDataColumnsForCorrelation(int columnAIndex, int columnBIndex)
+	{
+		double[][] data = new double[this.getRowCount()][2];
+		
+		// count the valid pairs of values
+		int count = 0;
+
+		for (int i = 0; i < this.getRowCount(); i++)
+		{
+			try
+			{
+				// column A value
+				data[count][0] = Double.parseDouble(((String) this.getValueAt(i, columnAIndex)));
+				// column B value
+				data[count][1] = Double.parseDouble(((String) this.getValueAt(i, columnBIndex)));
+				// if both column values are valid, increase count
+				count++;
+			}
+			catch (NumberFormatException e)
+			{
+				// data contains non-numerical values; these count as missing
+			}
+		}
+		
+		// return the data with non-valid pairs of values excluded
+		double[][] data_missingExcluded = new double[count][2];
+		
+		for (int i = 0; i < count; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				data_missingExcluded[i][j] = data[i][j];
+			}
+		}
+		
+		return data_missingExcluded;
+	}
+
+	/**
+	 * Creates an array with valid string values of column columnIndex.
+	 * 
+	 * @param columnIndex 
+	 * @return An array with strings. If column columnIndex contains missing values,
+	 * 		these values are not set in the array. 
+	 */
+	public String[] getDataColumnMissingExcluded(int columnIndex)
+	{
+		String[] data = new String[this.getRowCount()];
+		
+		// count the number of valid values
+		int count = 0;
+
+		for (int i = 0; i < this.getRowCount(); i++)
+		{
+			if (!((String) this.getValueAt(i, columnIndex)).equals(ColumnType.WILDCARD))
+			{
+				data[count] = (String) this.getValueAt(i, columnIndex);
+				count++;
+			}
+		}
+		
+		// return the data with non-valid pairs of values excluded
+		String[] data_missingExcluded = new String[count];
+		
+		for (int i = 0; i < count; i++)
+		{
+			data_missingExcluded[i] = data[i];
+		}
+		
+		return data_missingExcluded;
+	}
+
+	/**
+	 * Creates an array with valid string values of column columnIndex of the current selection.
+	 * 
+	 * @param columnIndex 
+	 * @return An array with strings. If column columnIndex contains missing values,
+	 * 		these values are not set in the array. 
+	 */
+	public String[] getDataColumnMissingExcludedOfSelection(int columnIndex)
+	{
+		String[] data = new String[this.getRowCount()];
+		
+		// count the number of valid values
+		int count = 0;
+
+		for (int i = 0; i < this.getRowCount(); i++)
+		{
+			if (selectionList.get(i))
+			{
+				if (!((String) this.getValueAt(i, columnIndex)).equals(ColumnType.WILDCARD))
+				{
+					data[count] = (String) this.getValueAt(i, columnIndex);
+					count++;
+				}
+			}
+		}
+		
+		// return the data with non-valid pairs of values excluded
+		String[] data_missingExcluded = new String[count];
+		
+		for (int i = 0; i < count; i++)
+		{
+			data_missingExcluded[i] = data[i];
+		}
+		
+		return data_missingExcluded;
 	}
 
 	/**
@@ -1273,14 +1903,158 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Find the frequency of every class Only use for columns of type enum or
-	 * string
+	 * Find the frequency of every class. Only use for columns of type enum or
+	 * string.
 	 * 
+	 * @param columnIndex 
+	 * 		The column index 
+	 * @param splitOptions
+	 * 		The split information used to get the frequencies for each split class.
 	 * @return array of FrequencyTuples (which contains class label and
 	 *         frequency)
 	 */
 	public FrequencyTuple[][] enumClassFrequency(int columnIndex,
-		boolean setSelection, SplitOptions splitOptions)
+		SplitOptions splitOptions)
+	{
+		ColumnType cType = this.getColumnTypes().get(columnIndex);
+		if (cType.getType().equals(AllowedTypes.STRING)
+			|| cType.getType().equals(AllowedTypes.ENUM))
+		{
+			int splitClasses = this.splitVarClasses(splitOptions);
+			//System.out.println(splitClasses + " splitclasses");
+			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
+			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
+
+			for (int i = 0; i < splitClasses; i++)
+			{
+				frequencyTable[i] = new Hashtable<String, Integer>();
+				frequencySelectionTable[i] = new Hashtable<String, Integer>();
+			}
+
+			for (int i = 0; i < this.getRowCount(); i++)
+			{
+				int split = this.classifyObject(i, splitOptions);
+				if (split > -1)
+				{
+					StatTableModel.increaseKeyHashtable(
+						(String) this.getValueAt(i, columnIndex),
+						frequencyTable[this.classifyObject(i, splitOptions)]);
+					if (this.isRowSelected(i))
+					{
+						StatTableModel.increaseKeyHashtable(
+							(String) this.getValueAt(i, columnIndex),
+							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+					}
+				}
+				else
+				{
+					System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
+					return null;
+				}
+			}
+
+			// create FreqencyTuple array from hashtable
+
+			FrequencyTuple[][] ret = new FrequencyTuple[splitClasses][];
+			for (int splitClass = 0; splitClass < splitClasses; splitClass++)
+			{
+				if (cType.getType().equals(AllowedTypes.ENUM))
+				{
+					ret[splitClass] = new FrequencyTuple[cType.getEnumOptions().length - 1];
+					for (int i = 0, j = 0; i < cType.getEnumOptions().length - 1; i++)
+					{
+						if (cType.getEnumOptions()[i + j].equals(ColumnType.WILDCARD))
+						{
+							j++;
+						}
+						String option = cType.getEnumOptions()[i + j];
+						int freq;
+						int selectionFreq;
+						if (frequencyTable[splitClass].containsKey(option))
+						{
+							freq = frequencyTable[splitClass].get(option);
+						}
+						else
+						{
+							freq = 0;
+						}
+
+						if (frequencySelectionTable[splitClass].containsKey(option))
+						{
+							selectionFreq = frequencySelectionTable[splitClass].get(option);
+						}
+						else
+						{
+							selectionFreq = 0;
+						}
+
+						ret[splitClass][i] = new FrequencyTuple(option, freq,
+							selectionFreq);
+					}
+				} // Enum
+				else
+				{ // String
+					Set<String> keySet = new HashSet<String>();
+					for (Hashtable<String, Integer> h : frequencyTable)
+					{
+						keySet.addAll(h.keySet());
+					}
+					List<String> keyList = Arrays.asList(keySet.toArray(new String[0]));
+
+					// Use collator to sort for example 'é' correctly
+					Collator collator = Collator.getInstance(Locale.getDefault());
+					Collections.sort(keyList, collator);
+					
+					ret[splitClass] = new FrequencyTuple[keySet.size()];
+					int i = 0;
+					
+					for (String key : keyList)
+					{
+						if (frequencyTable[splitClass].containsKey(key))
+						{
+							if (frequencySelectionTable[splitClass].containsKey(key))
+							{
+								ret[splitClass][i] = new FrequencyTuple(key,
+									frequencyTable[splitClass].get(key),
+									frequencySelectionTable[splitClass].get(key));
+							}
+							else
+							{
+								ret[splitClass][i] = new FrequencyTuple(key,
+									frequencyTable[splitClass].get(key), 0);
+							}
+						}
+						else
+						{
+							ret[splitClass][i] = new FrequencyTuple(key, 0, 0);
+						}
+						i++;
+					}
+				}
+			}
+
+			return ret;
+		} // String or Enum
+		else
+		{
+			// column type is not a String of Enum, return null
+			return null;
+		}
+	}
+	
+	/**
+	 * Find the frequency of every class in the current selection. Only use for columns of type enum or
+	 * string.
+	 * 
+	 * @param columnIndex 
+	 * 		The column index 
+	 * @param splitOptions
+	 * 		The split information used to get the frequencies for each split class.
+	 * @return array of FrequencyTuples (which contains class label and
+	 *         frequency)
+	 */
+	public FrequencyTuple[][] enumClassFrequencyOfSelection(int columnIndex,
+		SplitOptions splitOptions)
 	{
 		ColumnType cType = this.getColumnTypes().get(columnIndex);
 		if (cType.getType().equals(AllowedTypes.STRING)
