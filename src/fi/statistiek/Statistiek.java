@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.statistiek.boxplot.BoxplotController;
 import fi.statistiek.crosstabulationtable.CrossTabulationTableController;
+import fi.statistiek.descriptives.DescriptivesController;
 import fi.statistiek.dotplot.DotplotController;
 import fi.statistiek.frequencytable.FrequencyTableController;
 import fi.statistiek.histogram.HistogramController;
@@ -43,11 +46,12 @@ public class Statistiek implements WiskOpdrApplet
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
 								 // "Frequentietabel", "Frequentiepolygoon",
-								 // "Boxplot", "Kruistabel", "Spreidingsdiagram"};
+								 // "Boxplot", "Kruistabel", "Spreidingsdiagram",
+								 // "Beschrijvende statistiek"};
 	public static String[] VIEWS_translated;// = {"Table", "Histogram",
 											// "Dotplot", "Frequentietabel",
 											// "Frequentiepolygoon", "Boxplot", "Crosstab",
-											// "Scatterplot"};
+											// "Scatterplot", "Descriptive statistics"};
 
 	public Statistiek()
 	{
@@ -64,7 +68,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
-		VIEWS_translated = new String[8];
+		VIEWS_translated = new String[9];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
 		VIEWS_translated[2] = Statistiek.rb.getString("dotplotOption");
@@ -73,8 +77,9 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS_translated[5] = Statistiek.rb.getString("boxplotOption");
 		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
 		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
+		VIEWS_translated[8] = Statistiek.rb.getString("descriptivesOption");
 
-		VIEWS = new String[8];
+		VIEWS = new String[9];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
 		VIEWS[2] = "Dotplot";
@@ -83,6 +88,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[5] = "Boxplot";
 		VIEWS[6] = "Kruistabel";
 		VIEWS[7] = "Spreidingsdiagram";
+		VIEWS[8] = "Beschrijvende statistiek";
 	}
 
 	public Statistiek(Locale language)
@@ -162,13 +168,6 @@ public class Statistiek implements WiskOpdrApplet
 //		System.out.println("Statistiek.createView(viewType=" + viewType + ", viewName=" + viewName 
 //			+ ", identityHashCode(statTableModel)=" + identityHashCode(model) + ")");
 
-		// VIEWS[0]=Statistiek.rb.getString("tableOption");
-		// VIEWS[1]=Statistiek.rb.getString("histogramOption");
-		// VIEWS[2]=Statistiek.rb.getString("dotplotOption");
-		// VIEWS[3]=Statistiek.rb.getString("frequencytableOption");
-		// VIEWS[4]=Statistiek.rb.getString("frequencypolygonOption");
-		// VIEWS[5]=Statistiek.rb.getString("boxplotOption");
-
 		if (viewType.equals("Table"))
 		{
 			return new StatTable(model, statInteractiePanel, viewName);
@@ -205,6 +204,11 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DotplotController(model, viewName, startVar, startVar2);
+		}
+		else if (viewType.equals("Beschrijvende statistiek"))
+		{
+			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			return new DescriptivesController(model, viewName, startVar);
 		}
 		else
 		{
@@ -441,12 +445,19 @@ public class Statistiek implements WiskOpdrApplet
 	 */
 	public static double round(double number, int decimals)
 	{
-		number = number * (Math.pow(10, decimals));
-		
-		number = Math.round(number);
-		
-		number = number / (Math.pow(10, decimals));
-		
+//		number = number * (Math.pow(10, decimals));
+//		
+//		number = Math.round(number);
+//		
+//		number = number / (Math.pow(10, decimals));
+
+		// test syl
+	    if (decimals < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(number);
+	    bd = bd.setScale(decimals, RoundingMode.HALF_UP);
+	    number = bd.doubleValue(); 
+
 		return number;
 	}
 }
