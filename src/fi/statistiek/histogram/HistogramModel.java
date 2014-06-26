@@ -413,7 +413,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public FrequencyTuple[][] enumClassFrequency()
 	{
-		return this.tableModel.enumClassFrequency(this.columnIndex, true,
+		return this.tableModel.enumClassFrequency(this.columnIndex, 
 			this.splitOptions);
 
 	}
