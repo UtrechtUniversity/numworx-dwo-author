@@ -302,7 +302,7 @@ public class CrossTabulationTableModel extends Observable implements
 	 */
 	public FrequencyTuple[][] enumClassFrequency()
 	{
-		return this.tableModel.enumClassFrequency(this.columnIndex, true, this.splitOptions);
+		return this.tableModel.enumClassFrequency(this.columnIndex, this.splitOptions);
 	}
 
 	public void tableChanged(TableModelEvent arg0)
