@@ -2723,15 +2723,6 @@ public class HistogramView extends JPanel implements Observer
 		return System.identityHashCode(o);
 	}
 	
-	public static double round(double value, int places)
-	{
-	    if (places < 0) throw new IllegalArgumentException();
-
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
-	}
-	
 	private class HistogramBarPanel extends JPanel implements MouseMotionListener
 	{
 		public void paintComponent(Graphics g)
@@ -3003,7 +2994,7 @@ public class HistogramView extends JPanel implements Observer
     							}
     							
     							if (!Double.isNaN(waarde))
-    								waarde = round(waarde, 1);
+    								waarde = Statistiek.round(waarde, 1);
     							else
     								waarde = 0;
     							
