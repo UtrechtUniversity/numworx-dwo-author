@@ -419,9 +419,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 				{
 					t = Statistiek.VIEWS[7];
 				}
-//				StatistiekView statistiekView = Statistiek.createView(t,
-//					this.model.findUniqueViewName(s), model.getData(),
-//					this.view.getStartVarBoxSelectedIndex(), this);
+				else if (s == Statistiek.rb.getString("descriptivesOption"))
+				{
+					t = Statistiek.VIEWS[8];
+				}
 				
 				// Als Tabel gekozen, dan is de actionPerformed van startVarBox niet relevant
 				if (!t.equals(Statistiek.VIEWS[0]))
