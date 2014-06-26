@@ -317,7 +317,7 @@ public class TekenComponent extends JPanel {
 		int connectMode = NONE;				
 		
 		if(h.containsKey("connectMode")) 
-			connectMode = ((Integer)h.get("connectMode")).intValue();
+			connectMode = ((Number)h.get("connectMode")).intValue();
     	
 		this.connectMode = connectMode;						
 		setConnectMode(connectMode);	

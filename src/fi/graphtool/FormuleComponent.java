@@ -429,7 +429,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
     	
     	if(docent)
     	{	if(h.containsKey("docentExpressieStrings")) 
-    			expressieStrings = (String[])h.get("docentExpressieStrings");
+    			expressieStrings = GraphToolInteractiePanel.toStringArray(h.get("docentExpressieStrings"));
     		if(h.containsKey("docentGeselecteerd")) 
     			geselecteerd = (boolean[])h.get("docentGeselecteerd");
     		if(h.containsKey("docentDomeinStrings"))
@@ -440,13 +440,13 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
     	}
     	else
     	{  	if(h.containsKey("expressieStrings")) 
-    			expressieStrings = (String[])h.get("expressieStrings");
+    			expressieStrings = GraphToolInteractiePanel.toStringArray(h.get("expressieStrings"));
     		if(h.containsKey("geselecteerd")) 
-    			geselecteerd = (boolean[])h.get("geselecteerd");
+    			geselecteerd = GraphToolInteractiePanel.toBooleanArray(h.get("geselecteerd"));
     		if(h.containsKey("domeinStrings"))
-    			domeinStrings = (String[][])h.get("domeinStrings");
+    			domeinStrings = GraphToolInteractiePanel.toStringArrayArray(h.get("domeinStrings"));
     		if(h.containsKey("isEn")) 
-        		isEn = (boolean[])h.get("isEn");
+        		isEn = GraphToolInteractiePanel.toBooleanArray(h.get("isEn"));
         }
     	
     	if(expressieStrings==null) 

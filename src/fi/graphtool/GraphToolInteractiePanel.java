@@ -28,6 +28,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -1209,7 +1210,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		for(int i = 0; i < docentDomString.length; i++)
 		{	docentDomeinStrings[i][0] = docentDomString[i][0];
 			docentDomeinStrings[i][1] = docentDomString[i][1];
-			if(docentDomeinStrings[i][0].equals("$f" + Double.toString(DEFAULTDOMEIN[0]) + "@"))
+			if(docentDomeinStrings[i][0]== null || docentDomeinStrings[i][0].equals("$f" + Double.toString(DEFAULTDOMEIN[0]) + "@"))
 				docentDomeinen[i][0] = DEFAULTDOMEIN[0];
 			else
 				try{
@@ -1218,7 +1219,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				catch(Exception e){
 					docentDomeinen[i][0] = DEFAULTDOMEIN[0];
 				}
-			if(docentDomeinStrings[i][1].equals("$f" + Double.toString(DEFAULTDOMEIN[1]) + "@"))
+			if(docentDomeinStrings[i][1]== null || docentDomeinStrings[i][1].equals("$f" + Double.toString(DEFAULTDOMEIN[1]) + "@"))
 				docentDomeinen[i][1] = DEFAULTDOMEIN[1];
 			else
 				try{
@@ -1487,8 +1488,103 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	
-	
-	
+	public static int[] toIntArray(Object object)
+	{
+		if (object == null || object instanceof int[])
+			return (int[]) object;
+		if (object instanceof List)
+		{
+			List c = (List) object;
+			int[] result = new int[c.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = ((Number) c.get(i)).intValue();
+			}
+			return result;
+		}
+		return null;
+	}
+
+	public static double[] toDoubleArray(Object object)
+	{
+		if (object == null || object instanceof double[])
+			return (double[]) object;
+		if (object instanceof List)
+		{
+			List c = (List) object;
+			double[] result = new double[c.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = ((Number) c.get(i)).doubleValue();
+			}
+			return result;
+		}
+		return null;
+	}
+
+	public static String[] toStringArray(Object object)
+	{
+		if (object == null || object instanceof String[])
+			return (String[]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			return (String[]) list.toArray(new String[list.size()]);
+		}
+		return null;
+	}
+
+	static int[][] toIntArrayArray(Object object)
+	{
+		if (object == null || object instanceof int[][])
+			return (int[][]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			int[][] result = new int[list.size()][];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = toIntArray(list.get(i));
+			}
+			return result;
+		}
+		return null;
+	}
+
+	static boolean[] toBooleanArray(Object object)
+	{
+		if (object == null || object instanceof boolean[])
+			return (boolean[]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			boolean[] result = new boolean[list.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = Boolean.TRUE.equals(list.get(i));
+			}
+			return result;
+		}
+		return null;
+	}
+
+	static String[][] toStringArrayArray(Object object)
+	{
+		if (object == null || object instanceof String[][])
+			return (String[][]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			String[][] result = new String[list.size()][];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = toStringArray(list.get(i));
+			}
+			return result;
+		}
+		return null;
+	}
+
 	public void setState(Hashtable h) 	
 	{	
 		//hier hoeven eigenlijk alleen maar dingen in die een leerling zou kunnen veranderen. 
@@ -1576,47 +1672,47 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean parametrisatieToegestaan = true;
 		
 		if(h.containsKey("beginxDocent"))
-	    	beginxDocent = ((Double)h.get("beginxDocent")).doubleValue();
+	    	beginxDocent = ((Number)h.get("beginxDocent")).doubleValue();
     	if(h.containsKey("beginyDocent"))
-    		beginyDocent = ((Double)h.get("beginyDocent")).doubleValue();
+    		beginyDocent = ((Number)h.get("beginyDocent")).doubleValue();
     	if(h.containsKey("beginx")) 
-    		beginx = ((Double)h.get("beginx")).doubleValue();
+    		beginx = ((Number)h.get("beginx")).doubleValue();
     	if(h.containsKey("beginy")) 
-    		beginy = ((Double)h.get("beginy")).doubleValue();
+    		beginy = ((Number)h.get("beginy")).doubleValue();
     	if(h.containsKey("docentSchaalFactorX"))
-    		docentSchaalFactorX = ((Double)h.get("docentSchaalFactorX")).doubleValue();
+    		docentSchaalFactorX = ((Number)h.get("docentSchaalFactorX")).doubleValue();
     	if(h.containsKey("docentSchaalFactorY"))
-    		docentSchaalFactorY = ((Double)h.get("docentSchaalFactorY")).doubleValue();
+    		docentSchaalFactorY = ((Number)h.get("docentSchaalFactorY")).doubleValue();
     	if(h.containsKey("schaalFactorX")) 
-    		schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
+    		schaalFactorX = ((Number)h.get("schaalFactorX")).doubleValue();
     	if(h.containsKey("schaalFactorY")) 
-    		schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
+    		schaalFactorY = ((Number)h.get("schaalFactorY")).doubleValue();
     	//if(h.containsKey("leerlingGrafiek"))
     	//	leerlingGrafiek = (boolean[])h.get("leerlingGrafiek");
     	//if(h.containsKey("graphPoints"))
     	//	graphPoints = (Vector)h.get("graphPoints");
     	if(h.containsKey("graphPointsX"))
-    		graphPointsX = ((double[])h.get("graphPointsX"));
+    		graphPointsX = toDoubleArray(h.get("graphPointsX"));
     	if(h.containsKey("graphPointsY"))
-    		graphPointsY = ((double[])h.get("graphPointsY"));
+    		graphPointsY = toDoubleArray(h.get("graphPointsY"));
     	if(h.containsKey("graphPointsIndex"))
-    		graphPointsIndex = ((int[])h.get("graphPointsIndex"));
+    		graphPointsIndex = toIntArray(h.get("graphPointsIndex"));
     	if(h.containsKey("graphPointsTabelIndex"))
-    		graphPointsTabelIndex = ((int[])h.get("graphPointsTabelIndex"));
+    		graphPointsTabelIndex = toIntArray(h.get("graphPointsTabelIndex"));
     	if(h.containsKey("graphPointsXString"))
-    		graphPointsXString = ((String[])h.get("graphPointsXString"));
+    		graphPointsXString = toStringArray(h.get("graphPointsXString"));
     	if(h.containsKey("graphPointsYString"))
-    		graphPointsYString = ((String[])h.get("graphPointsYString"));
+    		graphPointsYString = toStringArray(h.get("graphPointsYString"));
     	if(h.containsKey("colorRGBsOpdrachten"))
-    		colorRGBsOpdrachten = ((int[][])h.get("colorRGBsOpdrachten"));
+    		colorRGBsOpdrachten = toIntArrayArray(h.get("colorRGBsOpdrachten"));
     	if(h.containsKey("colorRGBsGewoon"))
-    		colorRGBsGewoon = ((int[][])h.get("colorRGBsGewoon"));
+    		colorRGBsGewoon =toIntArrayArray(h.get("colorRGBsGewoon"));
     	else if(h.containsKey("colorRGBs"))
-    		colorRGBsGewoon = ((int[][])h.get("colorRGBs"));
+    		colorRGBsGewoon = toIntArrayArray(h.get("colorRGBs"));
     	if(h.containsKey("paramWaarden"))
-    		paramWaarden = ((double[])h.get("paramWaarden"));
+    		paramWaarden = toDoubleArray(h.get("paramWaarden"));
     	if(h.containsKey("activeIndex"))
-    		activeIndex = ((Integer)h.get("activeIndex")).intValue();
+    		activeIndex = ((Number)h.get("activeIndex")).intValue();
     	if(h.containsKey("grafiekXAsNaam"))
     		grafiekXAsNaam = ((String)h.get("grafiekXAsNaam"));
     	if(h.containsKey("grafiekYAsNaam"))
@@ -1678,13 +1774,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		if (h.containsKey("krommeMetExtrapolatie"))
 			krommeMetExtrapolatie = ((Boolean) h.get("krommeMetExtrapolatie")).booleanValue();
 		if (h.containsKey("tekenGrafiekNauwkeurigheid"))
-			tekenGrafiekNauwkeurigheid = ((Integer) h.get("tekenGrafiekNauwkeurigheid")).intValue();
+			tekenGrafiekNauwkeurigheid = ((Number) h.get("tekenGrafiekNauwkeurigheid")).intValue();
 		if (h.containsKey("selectnummer"))
-			selectnummer = ((Integer) h.get("selectnummer")).intValue();
+			selectnummer = ((Number) h.get("selectnummer")).intValue();
 		if (h.containsKey("beginwaarde"))
-			beginwaarde = ((Integer) h.get("beginwaarde")).intValue();
+			beginwaarde = ((Number) h.get("beginwaarde")).intValue();
 		if (h.containsKey("tracexD"))
-			tracexD = ((Double) h.get("tracexD")).doubleValue();
+			tracexD = ((Number) h.get("tracexD")).doubleValue();
 		
 		if(h.containsKey("grafiekKleuren"))
 			grafiekKleuren = ((Boolean)h.get("grafiekKleuren")).booleanValue();
@@ -1699,7 +1795,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(h.containsKey("domeinInstelbaar"))
 			domeinInstelbaar = ((Boolean)h.get("domeinInstelbaar")).booleanValue();
 		if(h.containsKey("formuleComponentHoogte"))
-			formuleComponentHoogte = ((Integer)h.get("formuleComponentHoogte")).intValue();
+			formuleComponentHoogte = ((Number)h.get("formuleComponentHoogte")).intValue();
 		
 		if(h.containsKey("functieToegestaan"))
 			functieToegestaan = ((Boolean)h.get("functieToegestaan")).booleanValue();
@@ -1723,6 +1819,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.schaalFactorY = schaalFactorY;
 		//this.graphPoints = graphPoints;
 		this.graphPoints = new Vector();
+		if(graphPointsX!=null)
 		for(int i = 0; i < graphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(graphPointsX[i], graphPointsY[i]);
 			rp.setIndex(graphPointsIndex[i]);
@@ -1809,7 +1906,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean domeinControleren = false;
 		boolean leerlingZietTabel = true;
 		//Expressie[] docentFuncties = new Expressie[maxAantalExpressies];
-		String[] docentFunctieStrings = new String[maxAantalExpressies];
+		String[] docentFunctieStrings = null; // new String[maxAantalExpressies];
 		//double[][] docentDomeinen = new double[maxAantalExpressies][2];
 		String[][] docentDomeinStrings = new String[maxAantalExpressies][2];
 		//Vector docentGraphPoints = new Vector();
@@ -1885,8 +1982,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(docentDomeinStrings != null)
 		{	docentDomeinen = new double[docentDomeinStrings.length][2];
 			for(int i = 0; i < docentDomeinStrings.length; i++)
-			{	docentDomeinen[i][0] = FormuleParser.geefExpressie(docentDomeinStrings[i][0]).geefWaarde();
-				docentDomeinen[i][1] = FormuleParser.geefExpressie(docentDomeinStrings[i][1]).geefWaarde();
+			{	if(docentDomeinStrings[i][0]!= null) docentDomeinen[i][0] = FormuleParser.geefExpressie(docentDomeinStrings[i][0]).geefWaarde();
+				if(docentDomeinStrings[i][1]!= null) docentDomeinen[i][1] = FormuleParser.geefExpressie(docentDomeinStrings[i][1]).geefWaarde();
 				//Hier nog try/catch inbouwen? Geeft deze een exception bij randomvariabelen?
 			}
 			
@@ -1909,6 +2006,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(minimumPunten[i] < kleinsteMinimum)
 				kleinsteMinimum = minimumPunten[i];
 		this.docentGraphPoints = new Vector();
+		if(docentGraphPointsX!= null)
 		for(int i = 0; i < docentGraphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(docentGraphPointsX[i], docentGraphPointsY[i]);
 			rp.setIndex(docentGraphPointsIndex[i]);
@@ -2302,7 +2400,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("domeinControleren", new Boolean(domeinControleren));
 		h.put("leerlingZietTabel", new Boolean(leerlingZietTabel));
 		h.put("checkExternal", new Boolean(checkExternal));
-		h.put("docentFunctieStrings", docentFunctieStrings);
+		if(docentFunctieStrings != null) h.put("docentFunctieStrings", docentFunctieStrings);
 		h.put("docentDomeinStrings", docentDomeinStrings);
 		//h.put("docentDomeinen", docentDomeinen);
 		//h.put("docentGraphPoints", docentGraphPoints);
@@ -2568,6 +2666,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
 		this.graphPoints = new Vector();
+		if(graphPointsX != null)
 		for(int i = 0; i < graphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(graphPointsX[i], graphPointsY[i]);
 			rp.setIndex(graphPointsIndex[i]);
@@ -2778,6 +2877,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		*/
 		//this.docentGraphPoints = docentGraphPoints;
 		this.docentGraphPoints = new Vector();
+		if( docentGraphPointsX != null)
 		for(int i = 0; i < docentGraphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(docentGraphPointsX[i], docentGraphPointsY[i]);
 			rp.setIndex(docentGraphPointsIndex[i]);
@@ -3176,7 +3276,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.schaalFactorY = schaalFactorY;
 		//this.graphPoints = graphPoints;
 		this.graphPoints = new Vector();
-		for(int i = 0; i < graphPointsX.length; i++)
+		if(graphPointsX!=null)  for(int i = 0; i < graphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(graphPointsX[i], graphPointsY[i]);
 			rp.setIndex(graphPointsIndex[i]);
 			rp.setTabelIndex(graphPointsTabelIndex[i]);
@@ -3370,7 +3470,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		*/
 		//this.docentGraphPoints = docentGraphPoints;
 		this.docentGraphPoints = new Vector();
-		for(int i = 0; i < docentGraphPointsX.length; i++)
+		if(docentGraphPointsX!= null) for(int i = 0; i < docentGraphPointsX.length; i++)
 		{	RealPoint rp = new RealPoint(docentGraphPointsX[i], docentGraphPointsY[i]);
 			rp.setIndex(docentGraphPointsIndex[i]);
 			rp.setTabelIndex(docentGraphPointsTabelIndex[i]);

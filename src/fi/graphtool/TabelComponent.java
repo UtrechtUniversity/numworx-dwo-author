@@ -554,19 +554,19 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 		
 		if(docent)
 		{	if (h.containsKey("docentTabelBeginX"))
-			beginX = ((Double) h.get("docentTabelBeginX")).doubleValue();
+			beginX = ((Number) h.get("docentTabelBeginX")).doubleValue();
     		if (h.containsKey("docentTabelSchaalFactorX")) 
-				schaalFactorX = ((Double) h.get("docentTabelSchaalFactorX")).doubleValue();
+				schaalFactorX = ((Number) h.get("docentTabelSchaalFactorX")).doubleValue();
 			if (h.containsKey("docentTabelFirstIndexVisible"))
-				firstIndexVisible = (int[])h.get("docentTabelFirstIndexVisible");
+				firstIndexVisible = GraphToolInteractiePanel.toIntArray(h.get("docentTabelFirstIndexVisible"));
     	}
 		else
 		{	if (h.containsKey("tabelBeginX"))
-				beginX = ((Double) h.get("tabelBeginX")).doubleValue();
+				beginX = ((Number) h.get("tabelBeginX")).doubleValue();
     		if (h.containsKey("tabelSchaalFactorX")) 
-				schaalFactorX = ((Double) h.get("tabelSchaalFactorX")).doubleValue();
+				schaalFactorX = ((Number) h.get("tabelSchaalFactorX")).doubleValue();
 			if (h.containsKey("tabelFirstIndexVisible"))
-				firstIndexVisible = (int[])h.get("tabelFirstIndexVisible");
+				firstIndexVisible = GraphToolInteractiePanel.toIntArray(h.get("tabelFirstIndexVisible"));
 		}
 		
     	this.beginX = beginX;	
