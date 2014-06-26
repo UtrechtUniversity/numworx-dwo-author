@@ -1708,9 +1708,9 @@ public class DotplotView extends JPanel implements Observer
 			
 			String correlationInfoString;
 			
-			// calculate significance met Common math package
-			double[][] data = getDataColumnsForCorrelation(columnAIndex, columnBIndex);
+			double[][] data = this.model.getTableModel().getDataColumnsForCorrelation(columnAIndex, columnBIndex);
 			String pString;
+			// calculate significance met Common math package
 //			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
 			try
 			{
