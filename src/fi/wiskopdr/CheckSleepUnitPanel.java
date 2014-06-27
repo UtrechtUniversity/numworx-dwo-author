@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -275,14 +276,24 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	    Vector attempts = new Vector();
 	    int attemptsCount = 0;
 		int errorCount = 0;
-       
+        if(h.containsKey("randomizedPositionsX"))
+        {
+        	int[] randomizedPositionsX = OpdrNavStruct.toIntArray(h.get("randomizedPositionsX"));
+        	int[] randomizedPositionsY = OpdrNavStruct.toIntArray(h.get("randomizedPositionsY"));
+        	randomizedPositions = new Point[randomizedPositionsX.length];
+        	for (int i = 0; i < randomizedPositionsY.length; i++) {
+				int x = randomizedPositionsX[i];
+				int y = randomizedPositionsY[i];
+				randomizedPositions[i] = new Point(x,y);
+			}
+        } else
 	    if(h.containsKey("randomizedPositions")) randomizedPositions = (Point[])h.get("randomizedPositions");
 	    if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
 	    if(h.containsKey("positions")) positions = (Point[])h.get("positions");
 	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Integer)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Integer)h.get("errorCount")).intValue();
+	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
         
         this.randomizedPositions = randomizedPositions;
         this.ingevuld = ingevuld;
@@ -299,7 +310,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	        }
 	       
         }
-        
+        if(positions != null)
         for(int i=0 ; i<ipListSleep.length ; i++)
         {   
         	Point p = positions[i];
