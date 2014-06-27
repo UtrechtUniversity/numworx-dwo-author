@@ -281,7 +281,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			catch (Exception e)
 			{
 			}
-			antwoordKV.addItem(keuzeMogelijkheden[i]);
+			antwoordKV.addItem(keuzeMogelijkheden[i].trim());
 
 		}
 
@@ -393,7 +393,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
 
-		antwoordKV.setSelectedItem(antwoord);
+		antwoordKV.setSelectedItem(antwoord.trim());
 
 		if (ingevuld && (mode == 0 || mode == 1 || nagekeken))
 			kijkNa();
