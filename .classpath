@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_algos.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_cas.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_export.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_gui.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_javascript.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_main.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra_properties.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra.jar"/>
+	<classpathentry kind="lib" path="/Kansbomen/output/classes"/>
+	<classpathentry kind="lib" path="/CalculatorDwo/output/classes"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3_cas.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3_export.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3_gui.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3_main.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3_properties.jar"/>
+	<classpathentry kind="lib" path="output/jar/geogebra3.jar"/>
+	<classpathentry kind="lib" path="/GraphTool/output/classes"/>
+	<classpathentry kind="lib" path="lib/mayscript.jar"/>
+	<classpathentry kind="lib" path="lib/classes"/>
+	<classpathentry kind="lib" path="output/jar/sardine.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/BalansFruitApplet"/>
+	<classpathentry kind="output" path="output/classes"/>
+</classpath>
