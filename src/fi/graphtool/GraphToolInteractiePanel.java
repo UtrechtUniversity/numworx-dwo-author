@@ -1966,7 +1966,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.scoreMax = scoreMax;
 		this.domeinControleren = domeinControleren;
 		this.leerlingZietTabel = leerlingZietTabel;
-		this.docentFunctieStrings = docentFunctieStrings;
+		if(docentFunctieStrings != null) this.docentFunctieStrings = docentFunctieStrings;
 		if(docentFunctieStrings != null)
 		{	docentFuncties = new Expressie[docentFunctieStrings.length];
 			for(int i = 0; i < docentFunctieStrings.length; i++)
