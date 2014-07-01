@@ -134,6 +134,37 @@ public class StatTable extends JPanel implements StatistiekView,
 	}
 
 	/**
+	 * Update field popup. If the data is not editable, the options edit column and
+	 * delete column are not available.
+	 */
+	private void updatePopUp()
+	{
+		if (!this.statTableModel.isDataEditable())
+		{
+			if (this.popup.getSubElements().length == 3)
+			{
+				this.popup.remove(2);			
+				this.popup.remove(1);
+			}
+		}
+		else
+		{
+			if (this.popup.getSubElements().length == 1)
+			{
+				// add menu items
+				JMenuItem editItem = new JMenuItem(Statistiek.rb.getString("editcolumnItem"));
+				editItem.setActionCommand("editItem");
+				editItem.addActionListener(this);
+				JMenuItem deleteItem = new JMenuItem(Statistiek.rb.getString("deletecolumnItem"));
+				deleteItem.setActionCommand("deleteItem");
+				deleteItem.addActionListener(this);
+				this.popup.add(editItem);
+				this.popup.add(deleteItem);
+			}
+		}
+	}
+
+	/**
 	 * Initialize
 	 */
 	private void setUp()
@@ -179,8 +210,11 @@ public class StatTable extends JPanel implements StatistiekView,
 		deleteItem.setActionCommand("deleteItem");
 		deleteItem.addActionListener(this);
 		this.popup.add(sortItem);
-		this.popup.add(editItem);
-		this.popup.add(deleteItem);
+		if (this.statTableModel.isDataEditable())
+		{
+			this.popup.add(editItem);
+			this.popup.add(deleteItem);
+		}
 		MouseListener popupListener = new PopupListener();
 		this.table.getTableHeader().addMouseListener(popupListener);
 
@@ -299,6 +333,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		}
 
 		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
+		this.updatePopUp();
 	}
 
 	/**
