@@ -162,6 +162,10 @@ public class MPReduceConverter extends AbstractConverter {
 	public Object diff(Object kind1, Object kind2) {
 		return "df(" + kind1 + "," + kind2 + ")";
 	}
+	
+	public Object differentiaal(Object kind1)	{
+		return null;
+	}
 
 	@Override
 	public Object poissoncdf(Object kind1, Object kind2) {

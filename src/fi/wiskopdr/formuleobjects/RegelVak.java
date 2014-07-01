@@ -265,7 +265,7 @@ public class RegelVak extends FormuleElement
 				
 				cm3 = formuleRegel.getComponent(nr-1);
 				ft3 = (FormuleTeken)cm3;
-				if(ft3.geefChar()=='e')
+				if(ft3.geefChar()=='e' || ft3.geefChar()=='d' && FormuleTeken.isDiffOperator())
 				{	ft3.zetFunctieTeken(true);
 				}
 				if(nr>1)

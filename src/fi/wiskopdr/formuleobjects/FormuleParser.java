@@ -14,6 +14,7 @@ public class FormuleParser
 	private static boolean woordFormule = false;
 	private static boolean tweeHoofdletterVariabele = false;
 	private static boolean significantie = false;
+	private static boolean diffOperatoren = false;
 	
 	public FormuleParser()
 	{	
@@ -33,6 +34,11 @@ public class FormuleParser
     {
 	    significantie = b;
     }
+	
+	public static void zetDiffOperatoren(boolean b)
+	{
+		diffOperatoren = b;
+	}
 	
 	public static boolean isWoordFormule()
 	{
@@ -250,6 +256,12 @@ public class FormuleParser
 		{	s = s.substring(0,n) + "(difpar(" + s.substring(n+2);
 			n = s.indexOf("$D");
 			
+		}
+		n = s.indexOf("$g");
+		while(n>-1)
+		{
+			s = s.substring(0,n) + "(differentiaal(" + s.substring(n+2);
+			n = s.indexOf("$g");
 		}
 		n = s.indexOf("$P");
 		while(n>-1)
@@ -520,6 +532,7 @@ public class FormuleParser
 				"p*o*i*s*s*o*n*p*d*f*",
 				"b*i*n*",
 				"d*i*f*p*a*r*",
+				"d*i*f*f*e*r*e*n*t*i*a*a*l*",
 				"d*i*f*",
 				"d*i*f*",
 				"p*r*m*",
@@ -754,6 +767,11 @@ public class FormuleParser
 			if(s.length()==1 && Character.isLetter(s.charAt(0)))
 			{	if(s.charAt(0)=='e')exp = new E();
 				else if(s.charAt(0)=='\u03C0')exp = new PI();
+				
+//				else if(s.charAt(0) == 'd' && diffOperatoren)
+//				{	exp = new Differentiaal(null);
+//					System.out.println("differentiaal gemaakt");
+//				}
 				else exp = new BasisExpressie(s);
 				return exp;
 			}
@@ -780,6 +798,14 @@ public class FormuleParser
 		if(s.equals("-\u221e")) 
 		{	double d = Double.NEGATIVE_INFINITY;
 			exp = new BasisExpressie(s);
+		}
+		
+		if(diffOperatoren && s.startsWith("d") && ! s.substring(1).startsWith("i"))
+		{
+			
+			//dit gaat waarschijnlijk fout bij dingen als dy+dx.
+			Expressie e1 = parse(s.substring(2, s.length()));
+			return new Differentiaal(e1);
 		}
 		
 		int niv = 0;
@@ -1020,7 +1046,15 @@ public class FormuleParser
 				{	Expressie e1 = parse(s.substring(0,i));
 					Expressie e2 = parse(s.substring(i+1));
 					if(e1==null || e2==null)return null;
-					return new Vermenigvuldiging(e1,e2);
+					if(diffOperatoren && e1 instanceof Deling && e1.kind2 instanceof Differentiaal 
+							&& e1.kind1.toString().equals("d"))//geval: d/dx (f(x))
+						return new Diff(e2, e1.kind2.kind1);
+					else if(diffOperatoren && e1 instanceof Vermenigvuldiging &&
+							e1.kind2.toString().equals("d"))//geval: iets*dx
+						return new Vermenigvuldiging(e1.kind1, new Differentiaal(e2));
+						
+					else	
+						return new Vermenigvuldiging(e1,e2);
 					
 				}
 				
@@ -1035,10 +1069,17 @@ public class FormuleParser
 				{	niv--;
 				}
 				else if(s.charAt(i)=='/' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
+				{	
+					Expressie e1 = parse(s.substring(0,i));
 					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Deling(e1,e2);
+					if(e1==null || e2==null)
+					{	return null;
+					}
+					if(diffOperatoren && e1 instanceof Differentiaal && e2 instanceof Differentiaal)
+					{	return new Diff(e1.kind1, e2.kind1); 
+					}
+					else
+						return new Deling(e1,e2);
 					
 				}
 			}
@@ -1170,6 +1211,11 @@ public class FormuleParser
 			Expressie[] expressies = splitExpressieParameters(string,'_',2);
 			if(expressies==null) return null;
 			return new DiffPartial(expressies[0],expressies[1]);
+		}
+		else if(s.length()>13 && s.substring(0,13).equals("differentiaal"))
+		{	Expressie e = parse(s.substring(13,s.length()));
+            if(e==null)return null;
+            return new Differentiaal(e);
 		}
 		else if(s.length()>3 && s.substring(0,3).equals("dif"))
 		{	String string = s.substring(4,s.length()-1);

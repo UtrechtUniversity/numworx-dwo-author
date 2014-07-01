@@ -76,6 +76,7 @@ public abstract class AbstractConverter {
 	public abstract Object cotangens(Object kind1);
 	public abstract Object decround(Object kind1, Object kind2);
 	public abstract Object diff(Object kind1, Object kind2);
+	public abstract Object differentiaal(Object kind1);
 	public abstract Object fac(Object kind1);
 	public abstract Object gcd(Object kind1, Object kind2);
 	public abstract Object integrate(Object kind1, Object kind2, Object kind3, Object kind4, String string);

@@ -158,6 +158,10 @@ public class StrictConverter extends AbstractConverter {
 	public Object diff(Object kind1, Object kind2) {
 		return "$d" + kind1 + "$n" + kind2 + "@@";
 	}
+	
+	public Object differentiaal(Object kind1)	{
+		return "$g" + kind1 + "@";
+	}
 
 	@Override
 	public Object gcd(Object kind1, Object kind2) {

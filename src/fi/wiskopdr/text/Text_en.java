@@ -291,6 +291,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_margeOnderLabel" , "Below"},
 				{"OPT_fToets" , "F-keys for formulas"},
 				{"OPT_globalParam" , "Global parameters"},
+				{"OPT_diffOperatoren" , "Differential operators"},
 				{"OPT_voortgangKnop", "'Progress' instead of 'Total'"},
 				{"OPT_conditionalNav" , "Conditional navigation"},
 				{"OPT_conditionalPercLabel" , "Percentage"},

@@ -2466,9 +2466,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					System.out.println("antwoordIngevuldNa " + antwoordIngevuldString);
 					
 					formuleVak.vulVak("$f" + antwoordIngevuldString + "@");
+					System.out.println("na vulvak");
 					huidigeVergelijking = antwoord;
 					sendCommand("balansvergelijking");
+					System.out.println("na sendcommand balans");
 					sendCommand("vergelijking");
+					
 				}
 			System.out.println("$f" + antwoordIngevuld.toString() + "@");
 			ingevuld = true;

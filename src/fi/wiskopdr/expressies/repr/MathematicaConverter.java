@@ -185,6 +185,10 @@ public class MathematicaConverter extends AbstractConverter {
 	public Object diff(Object kind1, Object kind2) {
 		return "D[" + kind1 + "," + kind2 + "]";
 	}
+	
+	public Object differentiaal(Object kind1)	{
+		return null;
+	}
 
 	@Override
 	public Object poissoncdf(Object kind1, Object kind2) {

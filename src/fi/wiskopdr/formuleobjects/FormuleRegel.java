@@ -84,7 +84,7 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					cm3 = this.getComponent(nr-1);
 					if(cm3 instanceof FormuleTeken)
 					{	ft3 = (FormuleTeken)cm3;
-						if(ft3.geefChar()=='e')
+						if(ft3.geefChar()=='e' || ft3.geefChar()=='d' && FormuleTeken.isDiffOperator())
 						{	ft3.zetFunctieTeken(true);
 						}
 						if(nr>1)
@@ -317,7 +317,7 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 				cm3 = getComponent(nr-1);
 				if(cm3 instanceof FormuleTeken)
 				{	ft3 = (FormuleTeken)cm3;
-					if(ft3.geefChar()=='e')
+					if(ft3.geefChar()=='e' || ft3.geefChar()=='d' && FormuleTeken.isDiffOperator())
 					{	ft3.zetFunctieTeken(true);
 					}
 					if(nr>1)
@@ -1729,7 +1729,7 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					
 					cm3 = this.getComponent(nr-1);
 					ft3 = (FormuleTeken)cm3;
-					if(ft3.geefChar()=='e')
+					if(ft3.geefChar()=='e' || ft3.geefChar()=='d' && FormuleTeken.isDiffOperator())
 					{	ft3.zetFunctieTeken(true);
 					}
 					if(nr>1)

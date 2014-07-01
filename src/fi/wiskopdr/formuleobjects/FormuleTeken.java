@@ -18,6 +18,7 @@ public class FormuleTeken extends FormuleElement
 	private boolean selected = false;
 	private boolean functieTeken = false;
 	private static boolean maalteken=false;
+	private static boolean diffOperatoren = false;
 	
 	public FormuleTeken(char tk)
 	{	character = tk;
@@ -83,6 +84,16 @@ public class FormuleTeken extends FormuleElement
 	
 	public static void zetMaalTeken(boolean b)
 	{	maalteken = b;
+	}
+	
+	public static void zetDiffOperatoren(boolean b)
+	{
+		diffOperatoren = b;
+	}
+	
+	public static boolean isDiffOperator()
+	{
+		return diffOperatoren;
 	}
 	
 	public int getCorrItalic()
@@ -260,6 +271,7 @@ public class FormuleTeken extends FormuleElement
 	public char geefChar()
 	{	return character;
 	}
+	
 	
 	public void zetFunctieTeken(boolean b)
 	{	functieTeken = b;

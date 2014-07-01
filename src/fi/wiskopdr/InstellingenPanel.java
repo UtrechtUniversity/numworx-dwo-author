@@ -35,6 +35,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox formTimesCB;
 	private JCheckBox fToetsCB;
 	private JCheckBox globalParamCB;
+	private JCheckBox diffOperatorenCB;
 	private JCheckBox voortgangCB;
 	private JCheckBox condNavCB;
 	private JRadioButton condNavPercentageRB;
@@ -134,6 +135,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fToetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fToets"), boxv1, true);//"F-toetsen gebruiken of niet"
 		significantieCB = maakCheckBox(WiskOpdr.rb.getString("OPT_significantie"), boxv1, false); //"Checkmogelijkheid significante getallen"
 		globalParamCB = maakCheckBox(WiskOpdr.rb.getString("OPT_globalParam"), boxv1, false);//"Globale parameters"
+		diffOperatorenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
+		diffOperatorenCB.setVisible(false);
 		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();
@@ -451,6 +454,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int margeOnder = 15;
 		boolean fToets = true;
 		boolean globalParam = false;
+		boolean diffOperatoren = false;
 		boolean voortgang = false;
 		boolean condNav = false;
 		boolean condNavPerc = true;
@@ -493,6 +497,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fontName = (String)fontNameCO.getSelectedItem();
 		fToets = fToetsCB.isSelected();
 		globalParam = globalParamCB.isSelected();
+		diffOperatoren = diffOperatorenCB.isSelected();
 		voortgang = voortgangCB.isSelected();
 		condNav = condNavCB.isSelected();
 		if(condNav)
@@ -539,6 +544,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("margeOnder", new Integer(margeOnder));
 		h.put("fToets", new Boolean(fToets));
 		h.put("globalParam", new Boolean(globalParam));
+		h.put("diffOperatoren", new Boolean(diffOperatoren));
 		h.put("voortgang", new Boolean(voortgang));
 		h.put("condNav", new Boolean(condNav));
 		if(condNav)
@@ -591,6 +597,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int margeOnder = 15;
 		boolean fToets = true;
 		boolean globalParam = false;
+		boolean diffOperatoren = false;
 		boolean voortgang = false;
 		boolean condNav = false;
 		boolean condNavPerc = true;
@@ -629,6 +636,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("margeOnder")) margeOnder = ((Integer)h.get("margeOnder")).intValue();
 		if(h.containsKey("fToets")) fToets = ((Boolean)h.get("fToets")).booleanValue();
 		if(h.containsKey("globalParam")) globalParam = ((Boolean)h.get("globalParam")).booleanValue();
+		if(h.containsKey("diffOperatoren")) diffOperatoren = ((Boolean)h.get("diffOperatoren")).booleanValue();
 		if(h.containsKey("voortgang")) voortgang = ((Boolean)h.get("voortgang")).booleanValue();
 		if(h.containsKey("condNav")) condNav = ((Boolean)h.get("condNav")).booleanValue();
 		if(h.containsKey("condPerc")) condPerc = ((Integer)h.get("condPerc")).intValue();
@@ -672,6 +680,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margeOnderTF.setText(""+margeOnder);
 		fToetsCB.setSelected(fToets);
 		globalParamCB.setSelected(globalParam);
+		diffOperatorenCB.setSelected(diffOperatoren);
 		voortgangCB.setSelected(voortgang);
 		condNavCB.setSelected(condNav);
 		condNavPercentageRB.setVisible(condNav);

@@ -283,6 +283,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void zetInstellingen(Hashtable h) {
 		int fontSize = 12;
 		boolean maalTeken = false;
+		boolean diffOperatoren = false;
 		boolean woordFormule = false;
 		boolean tweeHoofdletterVar = false;
 		boolean hoekGraden = false;
@@ -300,6 +301,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			fontSize = ((Integer) h.get("fontSize")).intValue();
 		if (h != null && h.containsKey("maalTeken"))
 			maalTeken = ((Boolean) h.get("maalTeken")).booleanValue();
+		if (h != null && h.containsKey("diffOperatoren"))
+			diffOperatoren = ((Boolean) h.get("diffOperatoren")).booleanValue();
 		if (h != null && h.containsKey("woordFormule"))
 			woordFormule = ((Boolean) h.get("woordFormule")).booleanValue();
 		if (h != null && h.containsKey("tweeHoofdletterVar"))
@@ -338,6 +341,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		WiskOpdr.setCategories(categorieString);
 
 		FormuleTeken.zetMaalTeken(maalTeken);
+		FormuleTeken.zetDiffOperatoren(diffOperatoren);
+		FormuleParser.zetDiffOperatoren(diffOperatoren);
 		FormuleParser.zetWoordFormule(woordFormule);
 		FormuleParser.zetTweeHoofdletterVariabele(tweeHoofdletterVar);
 		FormuleParser.zetSignificantie(significantie);
