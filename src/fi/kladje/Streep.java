@@ -13,14 +13,9 @@ public class Streep
 	int bbFactor = 4;
 	KladjePolygon bb;
 	double cx = 0, cy = 0;
-	//double m00 = 1;
-	//double m01 = 0;
-	//double m10 = 0;
-	//double m11 = 1;
-	//double b0 = 0;
-	//double b1 = 1;
 	AffineTransform at = new AffineTransform();
 
+	// backward compatibility
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -49,8 +44,6 @@ public class Streep
 		cy /= puntenYD.length;
 
 		maakStreep();
-		//maakBBs();
-		//makeHandleBox();
 	}
 	
 	public Streep(Color c, int[] ptX, int[] ptY)
@@ -71,8 +64,6 @@ public class Streep
 		cy /= puntenYD.length;
 
 		maakStreep();
-		//maakBBs();
-		//makeHandleBox();
 	}
 
 	public Streep(Color c, double[] ptXD, double[] ptYD)
@@ -91,8 +82,6 @@ public class Streep
 		cy /= puntenYD.length;
 		
 		maakStreep();
-		//maakBBs();
-		//makeHandleBox();
 	}
 
 	public void maakStreep()
@@ -364,7 +353,6 @@ public class Streep
 			}
 		}
 		
-		//bb2 = new Polygon(bb.xpoints,bb.ypoints,bb.npoints);
 	}
 
 	
@@ -379,29 +367,15 @@ public class Streep
 			pYD[pCnt] = pYDNew + cy;
 		}
 		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
-		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 												  Math.sin(rotateStep), Math.cos(rotateStep), 
 												  cx - Math.cos(rotateStep) * cx + Math.sin(rotateStep) * cy, 
 												  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
 		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 		bb.rotate(rotateStep, cx, cy);
 	
-		//maakBBs();
-		//bb = rotatePolygon(bb2, rotation, cx, cy);
-
 		makeHandleBox();
-		
 		
 		
 	}
@@ -409,7 +383,6 @@ public class Streep
 	
 	public void rotate(double rotateStep, double dx, double dy)
 	{	
-		//rotation += rotateStep;
 	
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
@@ -418,11 +391,12 @@ public class Streep
 			pXD[pCnt] = pXDNew + dx;
 			pYD[pCnt] = pYDNew + dy;
 		}
+
 		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		double cxNew = Math.cos(rotateStep) * (cx - dx) - Math.sin(rotateStep) * (cy - dy);
+		double cyNew = Math.sin(rotateStep) * (cx - dx) + Math.cos(rotateStep) * (cy - dy);
+		cx = cxNew + dx;
+		cy = cyNew + dy;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 												  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -430,16 +404,8 @@ public class Streep
 												  dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 		bb.rotate(rotateStep, dx, dy);
 	
-		//maakBBs();
-		//bb = rotatePolygon(bb2, rotation, cx, cy);
-
 		makeHandleBox();
 	}
 	
@@ -453,10 +419,6 @@ public class Streep
 			pYD[pCnt] = pYDNew + cy;
 		}
 		
-		//double m00New  = Math.cos(rotation) * m00 - Math.sin(rotation) * m10;
-		//double m10New  = Math.sin(rotation) * m00 + Math.cos(rotation) * m10;
-		//double m01New = Math.cos(rotation) * m01 - Math.sin(rotation) * m11;
-		//double m11New = Math.sin(rotation) * m01 + Math.cos(rotation) * m11;
 
 		AffineTransform rot = new AffineTransform(Math.cos(rotation),- Math.sin(rotation),
 												  Math.sin(rotation), Math.cos(rotation), 
@@ -464,11 +426,6 @@ public class Streep
 		  										  cy - Math.sin(rotation) * cx - Math.cos(rotation) * cy);
 
 		at = at.leftMultiplyBy(rot);
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
 		
 		
 	}
@@ -481,21 +438,11 @@ public class Streep
 			pYD[pCnt] = scaleStep * pYD[pCnt] + (1 - scaleStep) * cy;
 		}
 		
-		//maakBBs();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
 		
-		//maakStreep();
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
-		
 		bb.scale(scaleStep, cx, cy);
 
-		
 		makeHandleBox();
 		
 	}
@@ -508,21 +455,14 @@ public class Streep
 			pYD[pCnt] = scaleStep * pYD[pCnt] + (1 - scaleStep) * dy;
 		}
 		
-		//maakBBs();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
+		cx = scaleStep * cx + (1 - scaleStep) * dx;
+		cy = scaleStep * cy + (1 - scaleStep) * dy;
 		
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
 		
-		//maakStreep();
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
-		
 		bb.scale(scaleStep, dx, dy);
 
-		
 		makeHandleBox();
 		
 	}
@@ -536,18 +476,10 @@ public class Streep
 			pYD[pCnt] = scaleStepY * pYD[pCnt] + (1 - scaleStepY) * cy;
 		}
 		
-		//maakBBs();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		
-//		maakStreep();
 		
 		AffineTransform sc = new AffineTransform(scaleStepX, 0, 0, scaleStepY, (1 - scaleStepX) * cx, (1 - scaleStepY) * cy);
 		at = at.leftMultiplyBy(sc);
 		
-		//m00 *= scaleStepX;
-		//m10 *= scaleStepY;
-		//m01 *= scaleStepX;
-		//m11 *= scaleStepY;
 		
 		bb.scale(scaleStepX, scaleStepY, cx, cy);
 		
@@ -564,18 +496,12 @@ public class Streep
 			pYD[pCnt] = scaleStepY * pYD[pCnt] + (1 - scaleStepY) * dy;
 		}
 		
-		//maakBBs();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		
-//		maakStreep();
+		cx = scaleStepX * cx + (1 - scaleStepX) * dx;
+		cy = scaleStepY * cy + (1 - scaleStepY) * dy;
 		
 		AffineTransform sc = new AffineTransform(scaleStepX, 0, 0, scaleStepY, (1 - scaleStepX) * dx, (1 - scaleStepY) * dy);
 		at = at.leftMultiplyBy(sc);
 		
-		//m00 *= scaleStepX;
-		//m10 *= scaleStepY;
-		//m01 *= scaleStepX;
-		//m11 *= scaleStepY;
 		
 		bb.scale(scaleStepX, scaleStepY, dx, dy);
 		
@@ -676,30 +602,17 @@ public class Streep
 	public void transformBy(double m00, double m01, double m10, double m11, double b0, double b1)
 	{
 		
-		//this.m00 = m00;
-		//this.m01 = m01;
-		//this.m10 = m10;
-		//this.m11 = m11;
-		//this.b0 = b0;
-		//this.b1 = b1;
-		
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 		
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
 		{	
-			//double pXDNew = m00 * (pXD[pCnt] - cx) + m01 * (pYD[pCnt] - cy);
-			//double pYDNew = m10 * (pXD[pCnt] - cx) + m11 * (pYD[pCnt] - cy);
-			//pXD[pCnt] = pXDNew + cx;
-			//pYD[pCnt] = pYDNew + cy;
 			double pXDNew = at.m00 * pXD[pCnt] + at.m01 * pYD[pCnt] + at.b0;
 			double pYDNew = at.m10 * pXD[pCnt] + at.m11 * pYD[pCnt] + at.b1;
 			pXD[pCnt] = pXDNew;
 			pYD[pCnt] = pYDNew;
 			
-			
 		}
 		
-		//bb.transformBy(m00, m01, m10, m11, cx, cy);
 		bb.transformBy(at);
 		
 		makeHandleBox();
@@ -723,7 +636,7 @@ public class Streep
 			
 		}
 		
-		//g.setTransform(oldAT);
+		//tekenBB(g);
 	}
 	
 	public void tekenHandleBox(Graphics2D g)
@@ -793,27 +706,15 @@ public class Streep
 	
 	public void tekenBB(Graphics2D g)
 	{
-		//AffineTransform oldAT = g.getTransform();
-		//AffineTransform at = g.getTransform();
-
-		//at.rotate(rotation, cx, cy);
-		
-		//g.setTransform(at);
-
-		//float[] dash = new float[2];
-		//dash[0] = 2;
-		//dash[1] = 2;
-		//g.setStroke(new BasicStroke(1.0f, 2, 0, 10.0f, dash, 0.0f));
 		g.setStroke(new BasicStroke(0.8f));
-//		g.setColor(KladjeVeld.bbColor);
 
 		bb.draw(g, KladjeVeld.bbColor, null);
 				
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
-		//g.setTransform(oldAT);		
 	}
 
+/*	
 	public double inverseRotX(double x, double y)
 	{
 		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
@@ -821,14 +722,15 @@ public class Streep
 		return rotX;
 		
 	}
-	
+*/
+/*	
 	public double inverseRotY(double x, double y)
 	{
 		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
 		return rotY;
 	}
-	
+*/	
 	public boolean bbContains(int x, int y)
 	{
 
@@ -852,7 +754,6 @@ public class Streep
 
 		bb.translate(dx, dy);
 		
-		//bb2.translate(dx, dy);
 		makeHandleBox();
 	}
 	
@@ -865,11 +766,7 @@ public class Streep
 		
 		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			//int bbX = inverseTransformX(bb.xpoints[pCnt], bb.ypoints[pCnt]);
-			//int bbY = inverseTransformY(bb.xpoints[pCnt], bb.ypoints[pCnt]);
-			
 			isContainedIn = isContainedIn && r.contains(bb.puntenX[pCnt], bb.puntenY[pCnt]);
-			//isContainedIn = isContainedIn && r.contains(bb.xpoints[pCnt], bb.ypoints[pCnt]);
 		}
 		
 		return isContainedIn;
@@ -888,15 +785,9 @@ class Lijn
 	int bbFactor = 4;
 	KladjePolygon bb; 
 	double cx, cy;
-	//double m00 = 1;
-	//double m01 = 0;
-	//double m10 = 0;
-	//double m11 = 1;
-	//double b0 = 0;
-	//double b1 = 1;
 	AffineTransform at = new AffineTransform();
 
-
+	// backwards compatibility
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -919,9 +810,6 @@ class Lijn
 		
 		
 		maakLijn();
-		
-		//makeBB();
-		//makeHandleBox();
 	}
 	
 	public void maakLijn()
@@ -1102,20 +990,10 @@ class Lijn
 		double fYNew = Math.sin(rotateStep) * (fX - cx) + Math.cos(rotateStep) * (fY - cy);
 		double tXNew = Math.cos(rotateStep) * (tX - cx) - Math.sin(rotateStep) * (tY - cy);
 		double tYNew = Math.sin(rotateStep) * (tX - cx) + Math.cos(rotateStep) * (tY - cy);
-		//fX = (int) Math.round(fXNew + cx);
-		//fY = (int) Math.round(fYNew + cy);
-		//tX = (int) Math.round(tXNew + cx);
-		//tY = (int) Math.round(tYNew + cy);
 		fX = fXNew + cx;
 		fY = fYNew + cy;
 		tX = tXNew + cx;
 		tY = tYNew + cy;
-		
-		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -1123,18 +1001,9 @@ class Lijn
 				  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
 
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 	
 		bb.rotate(rotateStep, cx, cy);
 		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-
 		makeHandleBox();
 	
 	}
@@ -1146,20 +1015,15 @@ class Lijn
 		double fYNew = Math.sin(rotateStep) * (fX - dx) + Math.cos(rotateStep) * (fY - dy);
 		double tXNew = Math.cos(rotateStep) * (tX - dx) - Math.sin(rotateStep) * (tY - dy);
 		double tYNew = Math.sin(rotateStep) * (tX - dx) + Math.cos(rotateStep) * (tY - dy);
-		//fX = (int) Math.round(fXNew + cx);
-		//fY = (int) Math.round(fYNew + cy);
-		//tX = (int) Math.round(tXNew + cx);
-		//tY = (int) Math.round(tYNew + cy);
 		fX = fXNew + dx;
 		fY = fYNew + dy;
 		tX = tXNew + dx;
 		tY = tYNew + dy;
 		
-		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		double cxNew = Math.cos(rotateStep) * (cx - dx) - Math.sin(rotateStep) * (cy - dy);
+		double cyNew = Math.sin(rotateStep) * (cx - dx) + Math.cos(rotateStep) * (cy - dy);
+		cx = cxNew + dx;
+		cy = cyNew + dy;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -1167,18 +1031,8 @@ class Lijn
 				  dy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
-	
 		bb.rotate(rotateStep, dx, dy);
 		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-
 		makeHandleBox();
 	
 	}
@@ -1189,19 +1043,10 @@ class Lijn
 		double fYNew = Math.sin(rotation) * (fX - cx) + Math.cos(rotation) * (fY - cy);
 		double tXNew = Math.cos(rotation) * (tX - cx) - Math.sin(rotation) * (tY - cy);
 		double tYNew = Math.sin(rotation) * (tX - cx) + Math.cos(rotation) * (tY - cy);
-		//fX = (int) Math.round(fXNew + cx);
-		//fY = (int) Math.round(fYNew + cy);
-		//tX = (int) Math.round(tXNew + cx);
-		//tY = (int) Math.round(tYNew + cy);
 		fX = fXNew + cx;
 		fY = fYNew + cy;
 		tX = tXNew + cx;
 		tY = tYNew + cy;
-
-		//double m00New  = Math.cos(rotation) * m00 - Math.sin(rotation) * m10;
-		//double m10New  = Math.sin(rotation) * m00 + Math.cos(rotation) * m10;
-		//double m01New = Math.cos(rotation) * m01 - Math.sin(rotation) * m11;
-		//double m11New = Math.sin(rotation) * m01 + Math.cos(rotation) * m11;
 
 		AffineTransform rot = new AffineTransform(Math.cos(rotation),- Math.sin(rotation),
 				  Math.sin(rotation), Math.cos(rotation), 
@@ -1209,68 +1054,36 @@ class Lijn
 				  cy - Math.sin(rotation) * cx - Math.cos(rotation) * cy);
 
 		at = at.leftMultiplyBy(rot);
-
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 	}	
 	
 	public void scale(double scaleStep)
 	{	
-		//fX = (int) Math.round(scaleStep * fX + (1 - scaleStep) * cx);
-		//fY = (int) Math.round(scaleStep * fY + (1 - scaleStep) * cy);
-		//tX = (int) Math.round(scaleStep * tX + (1 - scaleStep) * cx);
-		//tY = (int) Math.round(scaleStep * tY + (1 - scaleStep) * cy);
 		fX = scaleStep * fX + (1 - scaleStep) * cx;
 		fY = scaleStep * fY + (1 - scaleStep) * cy;
 		tX = scaleStep * tX + (1 - scaleStep) * cx;
 		tY = scaleStep * tY + (1 - scaleStep) * cy;
 		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		//maakLijn();
-		
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
-		
 		bb.scale(scaleStep, scaleStep, cx, cy);
 
-		
 		makeHandleBox();
 		
 	}
 
 	public void scale(double scaleStep, double dx, double dy)
 	{	
-		//fX = (int) Math.round(scaleStep * fX + (1 - scaleStep) * dx);
-		//fY = (int) Math.round(scaleStep * fY + (1 - scaleStep) * dy);
-		//tX = (int) Math.round(scaleStep * tX + (1 - scaleStep) * dx);
-		//tY = (int) Math.round(scaleStep * tY + (1 - scaleStep) * dy);
 		fX = scaleStep * fX + (1 - scaleStep) * dx;
 		fY = scaleStep * fY + (1 - scaleStep) * dy;
 		tX = scaleStep * tX + (1 - scaleStep) * dx;
 		tY = scaleStep * tY + (1 - scaleStep) * dy;
 		
-		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		//maakLijn();
+		cx = scaleStep * cx + (1 - scaleStep) * dx;
+		cy = scaleStep * cy + (1 - scaleStep) * dy;
 		
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
 		
 		bb.scale(scaleStep, scaleStep, dx, dy);
 
@@ -1281,27 +1094,14 @@ class Lijn
 	
 	public void scale(double sx, double sy)
 	{	
-		//fX = (int) Math.round(sx * fX + (1 - sx) * cx);
-		//fY = (int) Math.round(sy * fY + (1 - sy) * cy);
-		//tX = (int) Math.round(sx * tX + (1 - sx) * cx);
-		//tY = (int) Math.round(sy * tY + (1 - sy) * cy);
 		fX = sx * fX + (1 - sx) * cx;
 		fY = sy * fY + (1 - sy) * cy;
 		tX = sx * tX + (1 - sx) * cx;
 		tY = sy * tY + (1 - sy) * cy;
 		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		
-		//maakLijn();
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * cx, (1 - sy) * cy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= sx;
-		//m10 *= sy;
-		//m01 *= sx;
-		//m11 *= sy;
-		
 		bb.scale(sx, sy, cx, cy);
 		
 		makeHandleBox();
@@ -1310,28 +1110,17 @@ class Lijn
 
 	public void scale(double sx, double sy, double dx, double dy)
 	{	
-		//fX = (int) Math.round(sx * fX + (1 - sx) * dx);
-		//fY = (int) Math.round(sy * fY + (1 - sy) * dy);
-		//tX = (int) Math.round(sx * tX + (1 - sx) * dx);
-		//tY = (int) Math.round(sy * tY + (1 - sy) * dy);
 		fX = sx * fX + (1 - sx) * dx;
 		fY = sy * fY + (1 - sy) * dy;
 		tX = sx * tX + (1 - sx) * dx;
 		tY = sy * tY + (1 - sy) * dy;
 		
+		cx = sx * cx + (1 - sx) * dx;
+		cy = sy * cy + (1 - sy) * dy;
 		
-		//makeBB();
-		//bb2 = rotatePolygon(bb2, rotation, cx, cy);
-		
-		//maakLijn();
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * dx, (1 - sy) * dy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= sx;
-		//m10 *= sy;
-		//m01 *= sx;
-		//m11 *= sy;
-		
 		bb.scale(sx, sy, dx, dy);
 		
 		makeHandleBox();
@@ -1422,25 +1211,9 @@ class Lijn
 	
 	public void transformBy(double m00, double m01, double m10, double m11, double b0, double b1)
 	{
-		//this.m00 = m00;
-		//this.m01 = m01;
-		//this.m10 = m10;
-		//this.m11 = m11;
-		//this.b0 = b0;
-		//this.b1 = b1;
 		
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 
-		
-		//double fXNew = m00 * (fX - cx) + m01 * (fY - cy);
-		//double fYNew = m10 * (fX - cx) + m11 * (fY - cy);
-		//fX = (int) Math.round(fXNew + cx);
-		//fY = (int) Math.round(fYNew + cy);
-		//double tXNew = m00 * (tX - cx) + m01 * (tY - cy);
-		//double tYNew = m10 * (tX - cx) + m11 * (tY - cy);
-		//tX = (int) Math.round(tXNew + cx);
-		//tY = (int) Math.round(tYNew + cy);
-		
 		double fXNew = at.m00 * fX + at.m01 * fY + at.b0;
 		double fYNew = at.m10 * fX + at.m11 * fY + at.b1;
 		fX = (int) Math.round(fXNew);
@@ -1451,8 +1224,6 @@ class Lijn
 		tX = (int) Math.round(tXNew);
 		tY = (int) Math.round(tYNew);
 
-		
-		//bb.transformBy(m00, m01, m10, m11, cx, cy);
 		bb.transformBy(at);
 		
 		makeHandleBox();
@@ -1466,6 +1237,8 @@ class Lijn
 		
 		g.setColor(kleur);
 		g.drawLine((int) Math.round(fX), (int) Math.round(fY), (int) Math.round(tX), (int) Math.round(tY));
+	
+		//tekenBB(g);
 		
 	}
 
@@ -1531,6 +1304,7 @@ class Lijn
 		
 	}
 
+/*	
 	public double inverseRotX(double x, double y)
 	{
 		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
@@ -1538,14 +1312,15 @@ class Lijn
 		return rotX;
 		
 	}
-	
+*/
+/*	
 	public double inverseRotY(double x, double y)
 	{
 		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
 		return rotY;
 	}
-	
+*/	
 	public boolean bbContains(int x, int y)
 	{
 		return bb.contains(x, y);
@@ -1580,7 +1355,6 @@ class Lijn
 		
 		for (int pCnt = 0; pCnt < bb.aantalPunten; pCnt++)
 		{
-			
 			isContainedIn = isContainedIn && r.contains(bb.puntenX[pCnt], bb.puntenY[pCnt]);
 
 		}
@@ -1599,15 +1373,9 @@ class Rechthoek
 	KladjePolygon innerRechthoek;
 	
 	double cx, cy;
-	//double m00 = 1;
-	//double m01 = 0;
-	//double m10 = 0;
-	//double m11 = 1;
-	//double b0 = 0;
-	//double b1 = 1;
 	AffineTransform at = new AffineTransform();
 
-
+	// backwards compatibility
 	double rotation = 0;
 	
 	Rectangle handleBox;
@@ -1629,8 +1397,6 @@ class Rechthoek
 		cy = topLeftY + ((double) hoogte) / 2;
 
 		maakRechthoek();
-		makeBB();
-		makeHandleBox();
 		
 	}
 
@@ -1776,23 +1542,12 @@ class Rechthoek
 	{	
 		rotation += rotateStep;
 		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
-		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
 				  cx - Math.cos(rotateStep) * cx + Math.sin(rotateStep) * cy, 
 				  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
 
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 		rechthoek.rotate(rotateStep, cx, cy);
 		outerRechthoek.rotate(rotateStep, cx, cy);
 		innerRechthoek.rotate(rotateStep, cx, cy);
@@ -1802,12 +1557,11 @@ class Rechthoek
 	}
 	public void rotate(double rotateStep, double dx, double dy)
 	{	
-		//rotation += rotateStep;
-		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+
+		double cxNew = Math.cos(rotateStep) * (cx - dx) - Math.sin(rotateStep) * (cy - dy);
+		double cyNew = Math.sin(rotateStep) * (cx - dx) + Math.cos(rotateStep) * (cy - dy);
+		cx = cxNew + dx;
+		cy = cyNew + dy;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -1815,12 +1569,6 @@ class Rechthoek
 				  dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 
-		
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-		
 		rechthoek.rotate(rotateStep, dx, dy);
 		outerRechthoek.rotate(rotateStep, dx, dy);
 		innerRechthoek.rotate(rotateStep, dx, dy);
@@ -1831,20 +1579,10 @@ class Rechthoek
 	
 	public void scale(double scaleStep)
 	{	
-//		topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-//		topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-//		breedte = (int) Math.round(scaleStep * breedte);
-//		hoogte = (int) Math.round(scaleStep * hoogte);
-		
-		//maakRechthoek();
+
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
-		
 		rechthoek.scale(scaleStep, cx, cy);
 		outerRechthoek.scale(scaleStep, cx, cy);
 		innerRechthoek.scale(scaleStep, cx, cy);
@@ -1855,20 +1593,12 @@ class Rechthoek
 
 	public void scale(double scaleStep, double dx, double dy)
 	{	
-//		topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-//		topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-//		breedte = (int) Math.round(scaleStep * breedte);
-//		hoogte = (int) Math.round(scaleStep * hoogte);
+		cx = scaleStep * cx + (1 - scaleStep) * dx;
+		cy = scaleStep * cy + (1 - scaleStep) * dy;
 		
-		//maakRechthoek();
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= scaleStep;
-		//m10 *= scaleStep;
-		//m01 *= scaleStep;
-		//m11 *= scaleStep;
-		
 		rechthoek.scale(scaleStep, dx, dy);
 		outerRechthoek.scale(scaleStep, dx, dy);
 		innerRechthoek.scale(scaleStep, dx, dy);
@@ -1879,20 +1609,10 @@ class Rechthoek
 	
 	public void scale(double sx, double sy)
 	{
-		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
 
-		//maakRechthoek();
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * cx, (1 - sy) * cy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
-		
 		rechthoek.scale(sx, sy, cx, cy);
 		outerRechthoek.scale(sx, sy, cx, cy);
 		innerRechthoek.scale(sx,sy, cx, cy);
@@ -1903,20 +1623,12 @@ class Rechthoek
 
 	public void scale(double sx, double sy, double dx, double dy)
 	{
-		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
+		cx = sx * cx + (1 - sx) * dx;
+		cy = sy * cy + (1 - sy) * dy;
 
-		//maakRechthoek();
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * dx, (1 - sy) * dy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
-		
 		rechthoek.scale(sx, sy, dx, dy);
 		outerRechthoek.scale(sx, sy, dx, dy);
 		innerRechthoek.scale(sx,sy, dx, dy);
@@ -2013,18 +1725,9 @@ class Rechthoek
 
 	public void transformBy(double m00, double m01, double m10, double m11, double b0, double b1)
 	{
-		//this.m00 = m00;
-		//this.m01 = m01;
-		//this.m10 = m10;
-		//this.m11 = m11;
-		//this.b0 = b0;
-		//this.b1 = b1;
 		
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 		
-		//rechthoek.transformBy(m00, m01, m10, m11, cx, cy);
-		//outerRechthoek.transformBy(m00, m01, m10, m11, cx, cy);
-		//innerRechthoek.transformBy(m00, m01, m10, m11, cx, cy);
 		rechthoek.transformBy(at);
 		outerRechthoek.transformBy(at);
 		innerRechthoek.transformBy(at);
@@ -2037,6 +1740,8 @@ class Rechthoek
 	{
 		g.setColor(kleur);
 		rechthoek.draw(g, kleur, null);
+		
+		//tekenBB(g);
 
 	}
 
@@ -2101,7 +1806,7 @@ class Rechthoek
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
 	}
-	
+/*	
 	public double inverseRotX(double x, double y)
 	{
 		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
@@ -2109,14 +1814,15 @@ class Rechthoek
 		return rotX;
 		
 	}
-	
+*/
+/*	
 	public double inverseRotY(double x, double y)
 	{
 		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
 		return rotY;
 	}
-	
+*/	
 	public boolean bbContains(int x, int y)
 	{
 		
@@ -2161,15 +1867,9 @@ class Ellips
 	int bbFactor = 4;
 	KladjePolygon ellips, outerEllips, innerEllips;
 	double cx, cy;
-	//double m00 = 1;
-	//double m01 = 0;
-	//double m10 = 0;
-	//double m11 = 1;
-	//double b0 = 0;
-	//double b1 = 1;
 	AffineTransform at = new AffineTransform();
 
-	
+	// backward compatibility
 	double rotation = 0;
 	Rectangle handleBox;
 	int hbFactor = 4;
@@ -2348,23 +2048,12 @@ class Ellips
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
-		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
 				  cx - Math.cos(rotateStep) * cx + Math.sin(rotateStep) * cy, 
 				  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
 
-	
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-	
 		ellips.rotate(rotateStep, cx, cy);
 		outerEllips.rotate(rotateStep, cx, cy);
 		innerEllips.rotate(rotateStep, cx, cy);
@@ -2376,10 +2065,10 @@ class Ellips
 	public void rotate(double rotateStep, double dx, double dy)
 	{	//rotation += rotateStep;
 
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
+		double cxNew = Math.cos(rotateStep) * (cx - dx) - Math.sin(rotateStep) * (cy - dy);
+		double cyNew = Math.sin(rotateStep) * (cx - dx) + Math.cos(rotateStep) * (cy - dy);
+		cx = cxNew + dx;
+		cy = cyNew + dy;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -2387,12 +2076,6 @@ class Ellips
 				  dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 
-	
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-	
 		ellips.rotate(rotateStep, dx, dy);
 		outerEllips.rotate(rotateStep, dx, dy);
 		innerEllips.rotate(rotateStep, dx, dy);
@@ -2403,44 +2086,24 @@ class Ellips
 	
 	public void scale(double scaleStep)
 	{	
-		//topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-		//topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-		//breedte = (int) Math.round(scaleStep * breedte);
-		//hoogte = (int) Math.round(scaleStep * hoogte);
-		
-		//makeEllips();
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= scaleStep;
-		//m01 *= scaleStep;
-		//m10 *= scaleStep;
-		//m11 *= scaleStep;
 
 		ellips.scale(scaleStep, cx, cy);
 		outerEllips.scale(scaleStep, cx, cy);
 		innerEllips.scale(scaleStep, cx, cy);
 		
-
 		makeHandleBox();
 		
 	}
 
 	public void scale(double scaleStep, double dx, double dy)
 	{	
-		//topLeftX = (int) Math.round(scaleStep * topLeftX + (1 - scaleStep) * cx);
-		//topLeftY = (int) Math.round(scaleStep * topLeftY + (1 - scaleStep) * cy);
-		//breedte = (int) Math.round(scaleStep * breedte);
-		//hoogte = (int) Math.round(scaleStep * hoogte);
+		cx = scaleStep * cx + (1 - scaleStep) * dx;
+		cy = scaleStep * cy + (1 - scaleStep) * dy;
 		
-		//makeEllips();
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= scaleStep;
-		//m01 *= scaleStep;
-		//m10 *= scaleStep;
-		//m11 *= scaleStep;
 
 		ellips.scale(scaleStep, dx, dy);
 		outerEllips.scale(scaleStep, dx, dy);
@@ -2453,19 +2116,8 @@ class Ellips
 	
 	public void scale(double sx, double sy)
 	{	
-		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
-		
-		//makeEllips();
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * cx, (1 - sy) * cy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
 
 		ellips.scale(sx, sy, cx, cy);
 		outerEllips.scale(sx, sy, cx, cy);
@@ -2478,24 +2130,15 @@ class Ellips
 
 	public void scale(double sx, double sy, double dx, double dy)
 	{	
-		//topLeftX = (int) Math.round(sx * topLeftX + (1 - sx) * cx);
-		//topLeftY = (int) Math.round(sy * topLeftY + (1 - sy) * cy);
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
-		
-		//makeEllips();
+		cx = sx * cx + (1 - sx) * dx;
+		cy = sy * cy + (1 - sy) * dy;
+
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * dx, (1 - sy) * dy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
 
 		ellips.scale(sx, sy, dx, dy);
 		outerEllips.scale(sx, sy, dx, dy);
 		innerEllips.scale(sx, sy, dx, dy);
-		
 		
 		makeHandleBox();
 		
@@ -2586,18 +2229,8 @@ class Ellips
 
 	public void transformBy(double m00, double m01, double m10, double m11, double b0, double b1)
 	{
-		//this.m00 = m00;
-		//this.m01 = m01;
-		//this.m10 = m10;
-		//this.m11 = m11;
-		//this.b0 = b0;
-		//this.b1 = b1;
-		
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 		
-		//ellips.transformBy(m00, m01, m10, m11, cx, cy);
-		//outerEllips.transformBy(m00, m01, m10, m11, cx, cy);
-		//innerEllips.transformBy(m00, m01, m10, m11, cx, cy);
 		ellips.transformBy(at);
 		outerEllips.transformBy(at);
 		innerEllips.transformBy(at);
@@ -2611,6 +2244,8 @@ class Ellips
 		
 		g.setColor(kleur);
 		ellips.draw(g, kleur, null);
+		
+		//tekenBB(g);
 		
 	}
 
@@ -2676,6 +2311,7 @@ class Ellips
 
 	}
 
+/*	
 	public double inverseRotX(double x, double y)
 	{
 		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
@@ -2683,14 +2319,15 @@ class Ellips
 		return rotX;
 		
 	}
-	
+*/
+/*	
 	public double inverseRotY(double x, double y)
 	{
 		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
 		return rotY;
 	}
-	
+*/	
 	
 	public boolean bbContains(int x, int y)
 	{
@@ -2738,21 +2375,16 @@ class TekstElement
 	String tekst;
 	int xPos, yPos;
 	int breedte, hoogte, ascent;
-	int bbFactor = 4;
+	int bbFactor = 0;
 	Rectangle bb;
 	KladjePolygon bb2;
 	double cx, cy;
-	
+
+	// backward compatibility
 	double rotation = 0;
 	double scaleX = 1;
 	double scaleY = 1;
 	
-	//double m00 = 1;
-	//double m01 = 0;
-	//double m10 = 0;
-	//double m11 = 1;
-	//double b0 = 0;
-	//double b1 = 1;
 	AffineTransform at = new AffineTransform();
 
 	
@@ -2764,7 +2396,6 @@ class TekstElement
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
-	
 	public TekstElement(Color c, String t, int x, int y)
 	{
 		kleur = c;
@@ -2773,10 +2404,11 @@ class TekstElement
 		yPos = y;
 		tekstX = x;
 		tekstY = y;
-
+		
 		breedte = KladjeVeld.tekstFM.stringWidth(tekst);
-		hoogte = KladjeVeld.tekstFM.getHeight();
-		ascent = KladjeVeld.tekstFM.getAscent();
+		hoogte = KladjeVeld.tekstFM.getHeight() - 4;
+		ascent = KladjeVeld.tekstFM.getAscent() - 2;
+//System.out.println("hoogte = " + hoogte);		
 				
 		cx = xPos + ((double) breedte) / 2;
 		cy = yPos + ((double) hoogte) / 2;
@@ -2794,8 +2426,16 @@ class TekstElement
 		cy = yPos + ((double) hoogte) / 2;
 		
 		makeBB();
+		bb2.transformBy(at);
+		setCenter();
 		makeHandleBox();
 		
+	}
+	
+	public void setCenter()
+	{
+		cx = (bb2.geefPuntX(0) + bb2.geefPuntX(2)) / 2;
+		cy = (bb2.geefPuntY(0) + bb2.geefPuntY(2)) / 2;
 	}
 
 	public void makeHandleBox()
@@ -2922,14 +2562,21 @@ class TekstElement
 
 	}
 
+	public void makeBB(Rectangle r)
+	{
+		bb = new Rectangle(tekstX + r.x, tekstY + r.y, r.width, r.height); 
+
+		bb2 = new KladjePolygon();
+		bb2.addPoint(tekstX + r.x, tekstY + r.y + r.height);
+		bb2.addPoint(tekstX + r.x + r.width, tekstY + r.y + r.height);
+		bb2.addPoint(tekstX + r.x + r.width, tekstY + r.y + 2 * r.height);
+		bb2.addPoint(tekstX + r.x, tekstY + r.y + 2 * r.height);
+
+	}
+	
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 		
-		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
 		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
@@ -2937,15 +2584,10 @@ class TekstElement
 				  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
 
-
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
 	
-	
-	//makeBB();
+		//makeBB();
 		//bb2.rotate(rotateStep, cx, cy);
+		//setCenter();
 		//makeHandleBox();
 		
 	}
@@ -2953,49 +2595,22 @@ class TekstElement
 	public void rotate(double rotateStep, double dx, double dy)
 	{	rotation += rotateStep;
 		
-		
-		//double m00New  = Math.cos(rotateStep) * m00 - Math.sin(rotateStep) * m10;
-		//double m10New  = Math.sin(rotateStep) * m00 + Math.cos(rotateStep) * m10;
-		//double m01New = Math.cos(rotateStep) * m01 - Math.sin(rotateStep) * m11;
-		//double m11New = Math.sin(rotateStep) * m01 + Math.cos(rotateStep) * m11;
-		
 		AffineTransform rot = new AffineTransform(Math.cos(rotateStep),- Math.sin(rotateStep),
 				  Math.sin(rotateStep), Math.cos(rotateStep), 
 				  dx - Math.cos(rotateStep) * dx + Math.sin(rotateStep) * dy, 
 				  dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 
-
-		//m00 = m00New;
-		//m01 = m01New;
-		//m10 = m10New;
-		//m11 = m11New;
-	
-	
-	//makeBB();
-		//bb2.rotate(rotateStep, cx, cy);
+		//makeBB();
+		//bb2.rotate(rotateStep, dx, dy);
+		//setCenter();
 		//makeHandleBox();
 		
 	}
 	
+	
 	public void scale(double scaleStep)
 	{	
-		// dit niet doen!!
-		//xPos = (int) Math.round(scaleStep * xPos + (1 - scaleStep) * cx);
-		//yPos = (int) Math.round(scaleStep * yPos + (1 - scaleStep) * cy);
-		
-		//breedte = (int) Math.round(scaleStep * breedte);
-		//hoogte = (int) Math.round(scaleStep * hoogte);
-
-		// dit niet doen!!
-		//ascent = (int) Math.round(scaleStep * ascent);
-		
-		//tekstX = (int) Math.round((1/scaleStep) * tekstX);
-		//tekstY = (int) Math.round((1/scaleStep) * tekstY);
-		
-		// dit werkt niet goed
-		//tekstX = (int) Math.round(scaleStep * tekstX + (1 - scaleStep) * cx);
-		//tekstY = (int) Math.round(scaleStep * tekstY + (1 - scaleStep) * cy);
 		
 		scaleX *= scaleStep;
 		scaleY *= scaleStep;
@@ -3003,37 +2618,15 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= scaleStep;
-		//m01 *= scaleStep;
-		//m10 *= scaleStep;
-		//m11 *= scaleStep;
-		
-		
-		makeBB();
-		//bb2.rotate(rotation, cx, cy);
+		//makeBB();
+		//bb2.scale(scaleStep, cx, cy);
+		//setCenter();
 		//makeHandleBox();
 	
 	}
 
 	public void scale(double scaleStep, double dx, double dy)
 	{	
-		// dit niet doen!!
-		//xPos = (int) Math.round(scaleStep * xPos + (1 - scaleStep) * cx);
-		//yPos = (int) Math.round(scaleStep * yPos + (1 - scaleStep) * cy);
-		
-		//breedte = (int) Math.round(scaleStep * breedte);
-		//hoogte = (int) Math.round(scaleStep * hoogte);
-
-		// dit niet doen!!
-		//ascent = (int) Math.round(scaleStep * ascent);
-		
-		// probeer dit
-		//tekstX = (int) Math.round((1/scaleStep) * (tekstX - dx) + dx);
-		//tekstY = (int) Math.round((1/scaleStep) * (tekstY - dy) + dy);
-		
-		// dit werkt niet goed
-		//tekstX = (int) Math.round(scaleStep * tekstX + (1 - scaleStep) * cx);
-		//tekstY = (int) Math.round(scaleStep * tekstY + (1 - scaleStep) * cy);
 		
 		scaleX *= scaleStep;
 		scaleY *= scaleStep;
@@ -3041,75 +2634,30 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= scaleStep;
-		//m01 *= scaleStep;
-		//m10 *= scaleStep;
-		//m11 *= scaleStep;
-		
-		
-		makeBB();
-		//bb2.rotate(rotation, cx, cy);
+		//makeBB();
+		//bb2.scale(scaleStep, dx, dy);
+		//setCenter();
 		//makeHandleBox();
 	
 	}
 
 	public void scale(double sx, double sy)
 	{	
-		// dit niet doen!!
-		//xPos = (int) Math.round(sx * xPos + (1 - sx) * cx);
-		//yPos = (int) Math.round(sy * yPos + (1 - sy) * cy);
-		
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
-
-		// dit niet doen!!
-		//ascent = (int) Math.round(sy * ascent);
-		
-		//tekstX = (int) Math.round((1/sx) * tekstX);
-		//tekstY = (int) Math.round((1/sy) * tekstY);
-		
-		// dit werkt niet goed
-		//tekstX = (int) Math.round(sx * tekstX + (1 - sx) * cx);
-		//tekstY = (int) Math.round(sy * tekstY + (1 - sy) * cy);
-		
-		
 		scaleX *= sx;
 		scaleY *= sy;
 	
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * cx, (1 - sy) * cy);
 		at = at.leftMultiplyBy(sc);
-
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
-		
 		
 		//makeBB();
-		//bb2.rotate(rotation, cx, cy);
+		//bb2.scale(sx, sy, cx, cy);
+		//setCenter();
 		//makeHandleBox();
 	
 	}
 
 	public void scale(double sx, double sy, double dx, double dy)
 	{	
-		// dit niet doen!!
-		//xPos = (int) Math.round(sx * xPos + (1 - sx) * cx);
-		//yPos = (int) Math.round(sy * yPos + (1 - sy) * cy);
-		
-		//breedte = (int) Math.round(sx * breedte);
-		//hoogte = (int) Math.round(sy * hoogte);
-
-		// dit niet doen!!
-		//ascent = (int) Math.round(sy * ascent);
-		
-		//tekstX = (int) Math.round((1/sx) * (tekstX - dx) + dx);
-		//tekstY = (int) Math.round((1/sy) * (tekstY - dy) + dy);
-		
-		// dit werkt niet goed
-		//tekstX = (int) Math.round(sx * tekstX + (1 - sx) * cx);
-		//tekstY = (int) Math.round(sy * tekstY + (1 - sy) * cy);
-		
 		
 		scaleX *= sx;
 		scaleY *= sy;
@@ -3117,14 +2665,9 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * dx, (1 - sy) * dy);
 		at = at.leftMultiplyBy(sc);
 
-		//m00 *= sx;
-		//m01 *= sx;
-		//m10 *= sy;
-		//m11 *= sy;
-		
-		
 		//makeBB();
-		//bb2.rotate(rotation, cx, cy);
+		//bb2.scale(sx, sy, dx, dy);
+		//setCenter();
 		//makeHandleBox();
 	
 	}
@@ -3220,33 +2763,22 @@ class TekstElement
 	
 	public void transformBy(double m00, double m01, double m10, double m11, double b0, double b1)
 	{
-		//this.m00 = m00;
-		//this.m01 = m01;
-		//this.m10 = m10;
-		//this.m11 = m11;
-		//this.b0 = b0;
-		//this.m11 = b1;
 		
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 	}
 	
 	public void teken(Graphics2D g)
 	{
+		
 		makeBB();
-		//bb2.rotate(rotation, cx, cy);
 		bb2.transformBy(at);
+		setCenter();
 		makeHandleBox();
 		
 		java.awt.geom.AffineTransform oldAT = g.getTransform();
 		
 		java.awt.geom.AffineTransform tempAT = 
 			new java.awt.geom.AffineTransform(at.m00, at.m10, at.m01, at.m11, at.b0, at.b1); 
-		//java.awt.geom.AffineTransform tempAT = g.getTransform();
-		// hier!!
-		//tempAT.rotate(rotation, cx, cy);
-		//tempAT.scale(scaleX, scaleY);
-		
-//		AffineTransform at = new AffineTransform(m00,m10,m01,m11,0,0);
 		
 		g.setTransform(tempAT);
 		
@@ -3330,30 +2862,16 @@ class TekstElement
 
 	public void tekenBB(Graphics2D g)
 	{
-
-		
-		//java.awt.geom.AffineTransform oldAT = g.getTransform();
-		//java.awt.geom.AffineTransform at = g.getTransform();
-
-		//at.rotate(rotation, cx, cy);
-		//g.setTransform(at);
-		
 		g.setStroke(new BasicStroke(0.8f));
 		g.setColor(KladjeVeld.bbColor);
 
-		//g.drawRect(bb.x, bb.y, bb.width, bb.height);
-		//bb.draw(g, KladjeVeld.bbColor, null);
 		bb2.draw(g, KladjeVeld.bbColor, null);
 				
-//g.setColor(Color.red);		
-//g.drawRect(tekstBox.x, tekstBox.y, tekstBox.width, tekstBox.height);
-		
 		g.setStroke(new BasicStroke(1.5f, 2, 0, 10.0f, null, 0.0f));
 		
-		//g.setTransform(oldAT);
-
 	}
 
+/*	
 	public double inverseRotX(double x, double y)
 	{
 		double rotX = Math.cos(-rotation) * x - Math.sin(- rotation) * y;
@@ -3361,15 +2879,17 @@ class TekstElement
 		return rotX;
 		
 	}
-
+*/
+/*	
 	public double inverseRotY(double x, double y)
 	{
 		double rotY = Math.sin(-rotation) * x + Math.cos(- rotation) * y;
 		
 		return rotY;
 	}
+*/	
 	
-	
+/*	
 	public int inverseTransformX(int x, int y)
 	{
 		double rotX = Math.cos(-rotation) * (x - cx) - Math.sin(- rotation) * (y - cy);
@@ -3377,7 +2897,8 @@ class TekstElement
 		
 		return rx;
 	}
-
+*/
+/*	
 	public int inverseTransformY(int x, int y)
 	{
 		double rotY = Math.sin(-rotation) * (x - cx) + Math.cos(- rotation) * (y - cy);
@@ -3385,23 +2906,15 @@ class TekstElement
 		
 		return ry;
 	}
-
+*/
 	public boolean bbContains(int x, int y)
 	{
-		//int rx = inverseTransformX(x, y);
-		//int ry = inverseTransformY(x, y);
 		
 		return bb2.contains(x, y);
 	}
 
 	public void translate(int dx, int dy)
 	{
-		//xPos += dx;
-		//yPos += dy;
-		//tekstX += dx;
-		//tekstY += dy;
-		//tekstX = (int) Math.round(((double) xPos) / scaleX);
-		//tekstY = (int) Math.round(((double) yPos) / scaleY);
 		
 		AffineTransform trans = new AffineTransform (1,0,0,1,dx,dy);
 		at = at.leftMultiplyBy(trans);
@@ -3419,12 +2932,37 @@ class TekstElement
 	{
 		if (r == null)
 			return false;
-		int toBBx = inverseTransformX(bb.x, bb.y);
-		int toBBy = inverseTransformY(bb.x, bb.y);
-		int toBBx2 = inverseTransformX(bb.x + bb.width, bb.y + bb.height);
-		int toBBy2 = inverseTransformY(bb.x + bb.width, bb.y + bb.height);
+
+		boolean isContainedIn = true;
 		
-		boolean isContainedIn = r.contains(toBBx, toBBy) &&	r.contains(toBBx2, toBBy2);		
+		int topLeftX = bb2.geefPuntX(0);
+		int topRightX = bb2.geefPuntX(1);
+		int bottomRightX = bb2.geefPuntX(2);
+		int bottomLeftX = bb2.geefPuntX(3);
+
+		int topLeftY = bb2.geefPuntY(0);
+		int topRightY = bb2.geefPuntY(1);
+		int bottomRightY = bb2.geefPuntY(2);
+		int bottomLeftY = bb2.geefPuntY(3);
+		
+		int topMiddleX = (topLeftX + topRightX) / 2;
+		int topMiddleY = (topLeftY + topRightY) / 2;
+		int rightMiddleX = (topRightX + bottomRightX) / 2;
+		int rightMiddleY = (topRightY + bottomRightY) / 2;
+		int bottomMiddleX = (bottomLeftX + bottomRightX) / 2;
+		int bottomMiddleY = (bottomLeftY + bottomRightY) / 2;
+		int leftMiddleX = (topLeftX + bottomLeftX) / 2;
+		int leftMiddleY = (topLeftY + bottomLeftY) / 2;
+		
+		isContainedIn = isContainedIn && r.contains(topMiddleX, topMiddleY);
+		isContainedIn = isContainedIn && r.contains(rightMiddleX, rightMiddleY);
+		isContainedIn = isContainedIn && r.contains(bottomMiddleX, bottomMiddleY);
+		isContainedIn = isContainedIn && r.contains(leftMiddleX, leftMiddleY);
+		
+		//for (int pCnt = 0; pCnt < bb2.aantalPunten; pCnt++)
+		//{
+		//	isContainedIn = isContainedIn && r.contains(bb2.puntenX[pCnt], bb2.puntenY[pCnt]);
+		//}
 		
 		return isContainedIn;
 	}

@@ -122,6 +122,7 @@ public class KladjeVeld extends JPanel
 	
 	boolean initialState = false;
 	
+		
 	public KladjeVeld(int w, int h)
 	{
 		breedte = w;
@@ -963,9 +964,9 @@ System.out.println("returned " + (numHistories - 1));
 					maxY = r.y + r.height;
 			}
 		} // for
-		int w = maxX - minX + 8 * hbFactor;
-		int h = maxY - minY + 8 * hbFactor;
-		selecteerRechthoek = new Rectangle(minX - 4 * hbFactor, minY - 4 * hbFactor, w, h);
+		int w = maxX - minX + 2 * hbFactor;
+		int h = maxY - minY + 2 * hbFactor;
+		selecteerRechthoek = new Rectangle(minX - hbFactor, minY - hbFactor, w, h);
 		if (schalen)
 			makeScaleHandles();
 		if (roteren)
@@ -1250,6 +1251,8 @@ System.out.println("returned " + (numHistories - 1));
 		sleepSelectie = false;
 		objectsSelected.removeAllElements();
 		selecteerRechthoek = null;
+		killScaleHandles();
+		killRotateHandles();
 		
 		if (gewist)
 			addToHistory();
@@ -1673,11 +1676,6 @@ System.out.println("returned " + (numHistories - 1));
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 				
-				//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedStreep.breedte / 2;
-				//double oldHeight = (double) selectedStreep.hoogte / 2;
-				
 				double oldWidth = (double) selectedStreep.handleBox.width / 2;
 				double oldHeight = (double) selectedStreep.handleBox.height / 2;
 
@@ -1691,11 +1689,6 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				
-				//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedStreep.breedte / 2;
-				//double oldHeight = (double) selectedStreep.hoogte / 2;
 				
 				double oldWidth = (double) selectedStreep.handleBox.width / 2;
 				double oldHeight = (double) selectedStreep.handleBox.height / 2;
@@ -1740,10 +1733,7 @@ System.out.println("returned " + (numHistories - 1));
 				angleSum -= rotateSteps * rotateStep;
 				selectedStreep.rotate(rotateSteps * rotateStep);
 				
-				
 			}
-			
-			
 			
 		}
 		else if (selectedLijn != null)
@@ -1771,13 +1761,6 @@ System.out.println("returned " + (numHistories - 1));
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 				
-				//double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
-				//double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
-				//double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
-				//double oldWidth = breedte / 2;
-				//double oldHeight = hoogte / 2;
-				
 				double oldWidth = (double) selectedLijn.handleBox.width / 2;
 				double oldHeight = (double) selectedLijn.handleBox.height / 2;
 
@@ -1792,13 +1775,6 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				
-				//double dxInvRot = selectedLijn.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedLijn.inverseRotY(dxDouble, dyDouble);
-				//double breedte = Math.abs(selectedLijn.toX - selectedLijn.fromX);
-				//double hoogte = Math.abs(selectedLijn.toY - selectedLijn.fromY);
-				//double oldWidth = breedte / 2;
-				//double oldHeight = hoogte / 2;
 				
 				double oldWidth = (double) selectedLijn.handleBox.width / 2;
 				double oldHeight = (double) selectedLijn.handleBox.height / 2;
@@ -1874,11 +1850,6 @@ System.out.println("returned " + (numHistories - 1));
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 				
-				//double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedRechthoek.breedte / 2;
-				//double oldHeight = (double) selectedRechthoek.hoogte / 2;
-				
 				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
 				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
 				
@@ -1895,10 +1866,6 @@ System.out.println("returned " + (numHistories - 1));
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 
-				//double dxInvRot = selectedRechthoek.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedRechthoek.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedRechthoek.breedte / 2;
-				//double oldHeight = (double) selectedRechthoek.hoogte / 2;
 				double oldWidth = (double) selectedRechthoek.handleBox.width / 2;
 				double oldHeight = (double) selectedRechthoek.handleBox.height / 2;
 				
@@ -1974,11 +1941,6 @@ System.out.println("returned " + (numHistories - 1));
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 
-				//double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedEllips.breedte / 2;
-				//double oldHeight = (double) selectedEllips.hoogte / 2;
-				
 				double oldWidth = (double) selectedEllips.handleBox.width / 2;
 				double oldHeight = (double) selectedEllips.handleBox.height / 2;
 
@@ -1992,11 +1954,6 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				
-				//double dxInvRot = selectedEllips.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedEllips.inverseRotY(dxDouble, dyDouble);
-				//double oldWidth = (double) selectedEllips.breedte / 2;
-				//double oldHeight = (double) selectedEllips.hoogte / 2;
 				
 				double oldWidth = (double) selectedEllips.handleBox.width / 2;
 				double oldHeight = (double) selectedEllips.handleBox.height / 2;
@@ -2069,38 +2026,25 @@ System.out.println("returned " + (numHistories - 1));
 				double sc = ((double) newWidth) / oldWidth;
 				selectedTekstElement.scale(sc);
 			}
-// wordt niet gebruikt			
 			else if (scalingTopLeft)
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 				
-				//double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
-				
 				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
 				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
 
-				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
 				double newWidth = oldWidth - dx;
 				double newHeight = oldHeight - dy;
 				double sx = newWidth / oldWidth;
 				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
-// wordt niet gebruikt			
 			else if (scalingBottomLeft)
 			{
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
 
-				double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
-				double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
-				
-				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
-				
 				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
 				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
 
@@ -2117,22 +2061,13 @@ System.out.println("returned " + (numHistories - 1));
 								    selectedTekstElement.cx;
 				double aspectDirY = selectedTekstElement.handleBox.y + selectedTekstElement.handleBox.height - 
 									selectedTekstElement.cy;
-				//double aspectDirX = selectedTekstElement.bb.x + selectedTekstElement.bb.width - 
-				//				    selectedTekstElement.cx;
-				//double aspectDirY = selectedTekstElement.bb.y + selectedTekstElement.bb.height - 
-				//					selectedTekstElement.cy;
 				
 				double dxDouble = (double) dx;
 				double dyDouble = (double) dy;
-				//double dxInvRot = selectedTekstElement.inverseRotX(dxDouble, dyDouble);
-				//double dyInvRot = selectedTekstElement.inverseRotY(dxDouble, dyDouble);
 				double aa = aspectDirX * aspectDirX + aspectDirY * aspectDirY;
 				double s = (aspectDirX * dxDouble + aspectDirY * dyDouble) / aa;
-				//double s = (aspectDirX * dxInvRot + aspectDirY * dyInvRot) / aa;
 				double asXDouble = s * aspectDirX;
 				double asYDouble = s * aspectDirY;
-				//double oldWidth = (double) selectedTekstElement.bb.width / 2;
-				//double oldHeight = (double) selectedTekstElement.bb.height / 2;
 				double oldWidth = (double) selectedTekstElement.handleBox.width / 2;
 				double oldHeight = (double) selectedTekstElement.handleBox.height / 2;
 				double newWidth = oldWidth + asXDouble;
@@ -2141,10 +2076,6 @@ System.out.println("returned " + (numHistories - 1));
 				
 				selectedTekstElement.scale(sc);
 				
-				//if (sc < 1)
-				//	selectedTekstElement.scale(scaleDownStep);
-				//else
-				//	selectedTekstElement.scale(scaleUpStep);
 			}
 			else if (rotatingEast)
 			{
@@ -2738,10 +2669,10 @@ System.out.println("returned " + (numHistories - 1));
 					       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
 					}
 					
-					if (schalen)
-						makeScaleHandles();
-					if (roteren)
-						makeRotateHandles();
+					//if (schalen)
+					//	makeScaleHandles();
+					//if (roteren)
+					//	makeRotateHandles();
 					findObjectsSelected(selecteerRechthoek);
 				}
 				
@@ -2841,7 +2772,15 @@ System.out.println("returned " + (numHistories - 1));
 					repaint();
 				}
 				
-				if (objectsSelected.size() == 1)
+				if (objectsSelected.size() == 0)
+				{
+					selecteerRechthoek = null;
+					killScaleHandles();
+					killRotateHandles();
+					
+					repaint();
+				}
+				else if (objectsSelected.size() == 1)
 				{	
 					
 //System.out.println("oss = 1");					
@@ -2864,6 +2803,15 @@ System.out.println("returned " + (numHistories - 1));
 					repaint();
 					
 					
+				}
+				else // objectsSelected.size() >= 2
+				{
+					if (schalen)
+						makeScaleHandles();
+					if (roteren)
+						makeRotateHandles();
+					
+					repaint();
 				}
 				
 				if (objectHandled)
