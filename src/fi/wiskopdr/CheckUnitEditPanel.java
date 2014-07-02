@@ -250,6 +250,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
     	else {
     		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
     	}
+    	this.knopImageString = knopImageString;
 	}
 	
 	public Hashtable getEditState()
