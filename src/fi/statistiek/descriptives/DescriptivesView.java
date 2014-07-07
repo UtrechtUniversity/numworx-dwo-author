@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import fi.statistiek.ColorGenerator;
@@ -46,8 +47,6 @@ public class DescriptivesView extends JPanel implements Observer
 	public static final int GRID_BOTTOMGAP = 5;
 	public static final int GRID_LEFTGAP = 5;
 	public static final int GRID_RIGHTGAP = 5;
-	private int ROW_HEIGHT;
-	private int TABLE_WIDTH;
 	/**
 	 * The number of decriptives in the table.
 	 */
@@ -91,7 +90,7 @@ public class DescriptivesView extends JPanel implements Observer
 	 *   - median
 	 *   - modus
 	 */
-	private JLabel[][][] data;
+	private JLabel[][][] dataLabels;
 	
 	/**
 	 * The number of cases[0..1 if selection][splitClass].
@@ -171,11 +170,6 @@ public class DescriptivesView extends JPanel implements Observer
 		this.update(null, null);
 	}
 	
-	public int varColumnsBoxSelectedIndex()
-	{
-		return this.userOptionsPanel.getVarColumnsBoxSelectedIndex();
-	}
-
 	/**
 	 * @return The sum of all elements on even indices
 	 */
@@ -201,37 +195,43 @@ public class DescriptivesView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
-		System.out.println("DescriptivesView.update(): splitIndex = " + this.model.getSplitOptions().getColumnSplitIndex());
+//		System.out.println("DescriptivesView.update(): splitIndex = " + this.model.getSplitOptions().getColumnSplitIndex());
 		
 		this.dialogButton.setVisible(this.model.getTableModel()
 			.isViewsEditable());
 	
-		// update the components in the useroptionspanel
-		userOptionsPanel.update();
-
 		this.mainPanel.removeAll();
 		if (this.model.columnIndexValid())
 		{
 			ColumnType cTypeColumnIndex = this.model.getTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
-			typeColumnIndex = cTypeColumnIndex.getType();
+			this.typeColumnIndex = cTypeColumnIndex.getType();
 			
-//			ColumnType cTypeSplit;
-//			if (this.model.getColumnSplitIndex() > -1)
-//			{
-//				cTypeSplit = this.model.getTableModel().getColumnTypes()
-//					.get(this.model.getColumnSplitIndex());
-//				typeSplitVar = cTypeSplit.getType();
-//
-////				System.out.println("Descriptives.update(): typeColumns = " + typeColumns.toString());
-//			}
-//			else
-//			{
-//				// er is geen split
-////				System.out.println("Descriptives.update(): this.model.getColumnSplitIndex() > -1");
-//			}
+			ColumnType cTypeSplit;
+			if (this.model.getColumnSplitIndex() > -1)
+			{
+				cTypeSplit = this.model.getTableModel().getColumnTypes()
+					.get(this.model.getColumnSplitIndex());
+				typeSplitVar = cTypeSplit.getType();
 
-			calculateData();
+				//System.out.println("DescriptivesView.update(): typeSplitVar = " + typeSplitVar.toString());
+			}
+			else
+			{
+				// er is geen split
+				//System.out.println("DescriptivesView.update(): this.model.getColumnSplitIndex() > -1");
+			}
+			
+			if (this.typeColumnIndex.isNumber())
+			{
+				this.frequencies_number = this.model.numberClassFrequency();
+			}
+			else
+			{ // enum or string
+				this.frequencies_enum = this.model.enumClassFrequency();
+			}
+
+			setData();
 
 			Dimension dimension;
 			
@@ -246,8 +246,12 @@ public class DescriptivesView extends JPanel implements Observer
 
 			this.mainPanel.setBackground(Color.WHITE);
 		} // columnIndexValid()
-		
-		this.setMainPanelSize();
+
+		// update the components in the useroptionspanel
+		userOptionsPanel.update();
+
+		if (SwingUtilities.getWindowAncestor(this.scrollPane) != null)
+			SwingUtilities.getWindowAncestor(this.scrollPane).pack();
 
 		this.mainPanel.revalidate();
 
@@ -255,12 +259,14 @@ public class DescriptivesView extends JPanel implements Observer
 	}
 
 	/**
-	 * Calculates the data set used to create the descriptives table.
+	 * Calculate the data and set the data labels used to create the descriptives table.
 	 */
-	private void calculateData()
+	private void setData()
 	{
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
 			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+		
+		int columnIndex = this.model.getColumnIndex(); // this.varBoxSelectedIndex() is nog niet geupdate!
 
 		if (this.hasSelection())
 		{
@@ -275,20 +281,19 @@ public class DescriptivesView extends JPanel implements Observer
 		
 		for (int i = 0; i < numberOfSplits; i++)
 		{
-			// number of cases, missing excluded (wildcard '*')
-			this.numberOfCases[0][i] = this.model.getTableModel().getDataColumnMissingExcluded(
-				this.varBoxSelectedIndex()).length;
+			// number of cases, missing excluded (missing is wildcard '*')
+			this.numberOfCases[0][i] = this.getNumberOfCases(0,i);
+
 			if (this.hasSelection())
-				this.numberOfCases[1][i] = this.model.getTableModel().getDataColumnMissingExcludedOfSelection(
-					this.varBoxSelectedIndex()).length;
+				this.numberOfCases[1][i] = this.getNumberOfCases(1, i);
 		}
 		
 		
 		for (int i = 0; i < numberOfSplits; i++)
 		{
 			String s;
-			
-			s = this.model.getTableModel().getColumnMode(this.varBoxSelectedIndex());
+
+			s = this.model.getColumnMode(columnIndex, i, false);
 			if (this.isNumeric(s))
 				this.mode[0][i] = this.getStringValue(Double.valueOf(s));
 			else
@@ -296,7 +301,8 @@ public class DescriptivesView extends JPanel implements Observer
 			
 			if (this.hasSelection())
 			{
-				s = this.model.getTableModel().getColumnModeOfSelection(this.varBoxSelectedIndex());
+//				s = this.model.getTableModel().getColumnModeOfSelection(columnIndex);
+				s = this.model.getColumnMode(columnIndex, i, true);
 				if (this.isNumeric(s))
 					this.mode[1][i] = this.getStringValue(Double.valueOf(s));
 				else
@@ -306,6 +312,52 @@ public class DescriptivesView extends JPanel implements Observer
 		
 		// set data for both the main table and the selection table
 		setDataLabels();
+	}
+
+	/**
+	 * Get the number of cases for the given splitClass. 
+	 * 
+	 * @param selection
+	 * 		If selection is 0, the number of cases for the splitClass is returned.
+	 * 		If selection is 1, the number of selected cases for the splitClass is returned. 
+	 * @param splitClass
+	 * @return
+	 */
+	private int getNumberOfCases(int selection, int splitClass)
+	{
+		int numberOfCases = 0;
+		
+		if (this.typeColumnIndex.isNumber())
+		{
+			if (this.frequencies_number != null)
+			{
+				int[] frequencies = frequencies_number[splitClass];
+				int sum = 0;
+				for (int i = 0; i < frequencies.length/2; i++)
+				{
+					if (selection == 0)
+						sum += frequencies[2*i];
+					else
+						sum += frequencies[2*i + 1];
+				}
+				
+//				numberOfCases = sum;
+				// altijd maar 1 bin...
+				if (selection == 0)
+					numberOfCases = frequencies[0];
+				else
+					numberOfCases = frequencies[1];
+			}
+		}
+		else
+		{ // enum or string
+			if (frequencies_enum != null)
+			{
+				
+			}
+		}
+		
+		return numberOfCases;
 	}
 
 	/**
@@ -335,22 +387,40 @@ public class DescriptivesView extends JPanel implements Observer
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
 			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
 
-		// test syl: TODO implement numberOfSplits
 		if (this.hasSelection())
-			data = new JLabel[this.NUMBER_OF_DESCRIPTIVES][2][numberOfSplits];
+			dataLabels = new JLabel[this.NUMBER_OF_DESCRIPTIVES][2][numberOfSplits];
 		else
-			data = new JLabel[this.NUMBER_OF_DESCRIPTIVES][1][numberOfSplits];
-		
-		this.setMainDataLabels();
-		
-		if (this.hasSelection())
-			this.setSelectionDataLabels();
+			dataLabels = new JLabel[this.NUMBER_OF_DESCRIPTIVES][1][numberOfSplits];
+
+		for (int i = 0; i < numberOfSplits; i++)
+		{
+			// the main data
+			this.setDataLabels(0, i);
+			
+			if (this.hasSelection())
+			{
+				// the selection data
+				this.setDataLabels(1, i);
+			}
+		}
 	}
 
-	/**
-	 * Set the data labels of the descriptives table of the selection.
-	 */
-	private void setSelectionDataLabels()
+	public JLabel[][][] getDataLabels()
+	{
+		return dataLabels;
+	}
+
+	public int[][] getNumberOfCases()
+	{
+		return numberOfCases;
+	}
+
+	public String[][] getMode()
+	{
+		return mode;
+	}
+
+	private void setDataLabels(int selection, int splitClass)
 	{
 		String minimumString;
 		String maximumString;
@@ -360,16 +430,29 @@ public class DescriptivesView extends JPanel implements Observer
 
 		if (this.typeColumnIndex.isNumber())
 		{
-			int columnIndex = this.varBoxSelectedIndex();
+			int columnIndex = this.model.getColumnIndex(); // this.varBoxSelectedIndex() is nog niet geupdate!
 			int numberOfDecimals = determineMaxNumberOfDecimals(columnIndex) + 2;
 			
-			minimumString = this.getMinimumValueOfSelection(columnIndex);
-			maximumString = this.getMaximumValueOfSelection(columnIndex);
-			meanString = this.getStringValue(
-				Statistiek.round(this.model.getTableModel().getColumnMeanOfSelection(columnIndex), numberOfDecimals));
-			sdString = this.getStringValue(
-				Statistiek.round(this.model.getTableModel().getColumnSDOfSelection(columnIndex), numberOfDecimals));
-			medianString = getMedianValueOfSelection(columnIndex);
+			if (selection == 0)
+			{
+				minimumString = this.getMinimumValue(columnIndex, splitClass, false);
+				maximumString = this.getMaximumValue(columnIndex, splitClass, false);
+				meanString = this.getStringValue(
+					Statistiek.round(this.model.getColumnMean(columnIndex, splitClass, false), numberOfDecimals));
+				sdString = this.getStringValue(
+					Statistiek.round(this.model.getColumnSD(columnIndex, splitClass, false), numberOfDecimals));
+				medianString = getMedianValue(columnIndex, splitClass, false);
+			}
+			else
+			{
+				minimumString = this.getMinimumValue(columnIndex, splitClass, true);
+				maximumString = this.getMaximumValue(columnIndex, splitClass, true);
+				meanString = this.getStringValue(
+					Statistiek.round(this.model.getColumnMean(columnIndex, splitClass, true), numberOfDecimals));
+				sdString = this.getStringValue(
+					Statistiek.round(this.model.getColumnSD(columnIndex, splitClass, true), numberOfDecimals));
+				medianString = getMedianValue(columnIndex, splitClass, true);
+			}
 		} // type is number
 		else
 		{ // type is enum or string
@@ -381,164 +464,75 @@ public class DescriptivesView extends JPanel implements Observer
 		}
 
 		// number of cases
-		data [0][1][0] = new JLabel(String.valueOf(this.numberOfCases[1][0]));
-		data [0][1][0].setBackground(this.SELECTED_COLOR);
-		data [0][1][0].setOpaque(true);
-		data [0][1][0].setFont(Statistiek.font);
+		dataLabels[0][selection][splitClass] = new JLabel(String.valueOf(this.numberOfCases[selection][splitClass]));
+		dataLabels[0][selection][splitClass].setFont(Statistiek.font);
 		
 		// minimum
-		data [1][1][0] = new JLabel(minimumString);
-		data [1][1][0].setBackground(this.SELECTED_COLOR);
-		data [1][1][0].setOpaque(true);
-		data [1][1][0].setFont(Statistiek.font);
+		dataLabels[1][selection][splitClass] = new JLabel(minimumString);
+		dataLabels[1][selection][splitClass].setFont(Statistiek.font);
 
 		// maximum
-		data [2][1][0] = new JLabel(maximumString);
-		data [2][1][0].setBackground(this.SELECTED_COLOR);
-		data [2][1][0].setOpaque(true);
-		data [2][1][0].setFont(Statistiek.font);
+		dataLabels[2][selection][splitClass] = new JLabel(maximumString);
+		dataLabels[2][selection][splitClass].setFont(Statistiek.font);
 
 		// mean
-		data [3][1][0] = new JLabel(meanString);
-		data [3][1][0].setBackground(this.SELECTED_COLOR);
-		data [3][1][0].setOpaque(true);
-		data [3][1][0].setFont(Statistiek.font);
+		dataLabels[3][selection][splitClass] = new JLabel(meanString);
+		dataLabels[3][selection][splitClass].setFont(Statistiek.font);
 
 		// standard deviation
-		data [4][1][0] = new JLabel(sdString);
-		data [4][1][0].setBackground(this.SELECTED_COLOR);
-		data [4][1][0].setOpaque(true);
-		data [4][1][0].setFont(Statistiek.font);
+		dataLabels[4][selection][splitClass] = new JLabel(sdString);
+		dataLabels[4][selection][splitClass].setFont(Statistiek.font);
 
 		// median
-		data [5][1][0] = new JLabel(medianString);
-		data [5][1][0].setBackground(this.SELECTED_COLOR);
-		data [5][1][0].setOpaque(true);
-		data [5][1][0].setFont(Statistiek.font);
+		dataLabels[5][selection][splitClass] = new JLabel(medianString);
+		dataLabels[5][selection][splitClass].setFont(Statistiek.font);
 
 		// modus
-		data [6][1][0] = new JLabel(this.mode[1][0]);
-		data [6][1][0].setBackground(this.SELECTED_COLOR);
-		data [6][1][0].setOpaque(true);
-		data [6][1][0].setFont(Statistiek.font);
-	}
+		dataLabels[6][selection][splitClass] = new JLabel(this.mode[selection][splitClass]);
+		dataLabels[6][selection][splitClass].setFont(Statistiek.font);
 
-	/**
-	 * Set the data labels of the main descriptives table.
-	 */
-	private void setMainDataLabels()
-	{
-		String minimumString;
-		String maximumString;
-		String meanString;
-		String sdString;
-		String medianString;
-
-		if (this.typeColumnIndex.isNumber())
+		if (selection == 1)
 		{
-			int columnIndex = this.varBoxSelectedIndex();
-			int numberOfDecimals = determineMaxNumberOfDecimals(columnIndex) + 2;
-			
-			minimumString = this.getMinimumValue(columnIndex);
-			maximumString = this.getMaximumValue(columnIndex);
-			meanString = this.getStringValue(
-				Statistiek.round(this.model.getTableModel().getColumnMean(columnIndex), numberOfDecimals));
-			sdString = this.getStringValue(
-				Statistiek.round(this.model.getTableModel().getColumnSD(columnIndex), numberOfDecimals));
-			medianString = getMedianValue(columnIndex);
-		} // type is number
-		else
-		{ // type is enum or string
-			minimumString = Statistiek.rb.getString("notAvailable");
-			maximumString = Statistiek.rb.getString("notAvailable");
-			meanString = Statistiek.rb.getString("notAvailable");
-			sdString = Statistiek.rb.getString("notAvailable");
-			medianString = Statistiek.rb.getString("notAvailable");
+			this.setSelectionColors(selection, splitClass);
 		}
-
-		// number of cases
-		data [0][0][0] = new JLabel(String.valueOf(this.numberOfCases[0][0]));
-		data [0][0][0].setFont(Statistiek.font);
-		
-		// minimum
-		data [1][0][0] = new JLabel(minimumString);
-		data [1][0][0].setFont(Statistiek.font);
-
-		// maximum
-		data [2][0][0] = new JLabel(maximumString);
-		data [2][0][0].setFont(Statistiek.font);
-
-		// mean
-		data [3][0][0] = new JLabel(meanString);
-		data [3][0][0].setFont(Statistiek.font);
-
-		// standard deviation
-		data [4][0][0] = new JLabel(sdString);
-		data [4][0][0].setFont(Statistiek.font);
-
-		// median
-		data [5][0][0] = new JLabel(medianString);
-		data [5][0][0].setFont(Statistiek.font);
-
-		// modus
-		data [6][0][0] = new JLabel(this.mode[0][0]);
-		data [6][0][0].setFont(Statistiek.font);
 	}
 
-	private String getMedianValue(int columnIndex)
+	private void setSelectionColors(int selection, int splitClass)
+	{
+		for (int i = 0; i < this.NUMBER_OF_DESCRIPTIVES; i++)
+		{
+			dataLabels[i][selection][splitClass].setBackground(this.SELECTED_COLOR);
+			dataLabels[i][selection][splitClass].setOpaque(true);
+		}
+	}
+
+	private String getMedianValue(int columnIndex, int splitClass, boolean forSelection)
 	{
 		String medianValue;
-		double medianDouble = this.model.getTableModel().getColumnMedian(columnIndex);
 		
-		medianValue = getStringValue(medianDouble);
+		int numberOfDecimals = determineMaxNumberOfDecimals(columnIndex) + 2;
+
+		double medianDouble = this.model.getColumnMedian(columnIndex, splitClass, forSelection);
+
+		medianValue = getStringValue(Statistiek.round(medianDouble, numberOfDecimals));
 		
 		return medianValue;
 	}
 
-	private String getMedianValueOfSelection(int columnIndex)
-	{
-		String medianValue;
-		double medianDouble = this.model.getTableModel().getColumnMedianOfSelection(columnIndex);
-		
-		medianValue = getStringValue(medianDouble);
-		
-		return medianValue;
-	}
-
-	private String getMaximumValue(int columnIndex)
+	private String getMaximumValue(int columnIndex, int splitClass, boolean forSelection)
 	{
 		String maximumValue;
-		double maxDouble = this.model.getTableModel().getColumnMax(columnIndex);
+		double maxDouble = this.model.getColumnMax(columnIndex, splitClass, forSelection);
 		
 		maximumValue = getStringValue(maxDouble);
 		
 		return maximumValue;
 	}
 
-	private String getMaximumValueOfSelection(int columnIndex)
-	{
-		String maximumValue;
-		double maxDouble = this.model.getTableModel().getColumnMaxOfSelection(columnIndex);
-		
-		maximumValue = getStringValue(maxDouble);
-		
-		return maximumValue;
-	}
-
-	private String getMinimumValue(int columnIndex)
+	private String getMinimumValue(int columnIndex, int splitClass, boolean forSelection)
 	{
 		String minimumValue;
-		double minDouble = this.model.getTableModel().getColumnMin(columnIndex);
-		
-		minimumValue = getStringValue(minDouble);
-		
-		return minimumValue;
-	}
-
-	private String getMinimumValueOfSelection(int columnIndex)
-	{
-		String minimumValue;
-		double minDouble = this.model.getTableModel().getColumnMinOfSelection(columnIndex);
+		double minDouble = this.model.getColumnMin(columnIndex, splitClass, forSelection);
 		
 		minimumValue = getStringValue(minDouble);
 		
@@ -618,105 +612,22 @@ public class DescriptivesView extends JPanel implements Observer
 	}
 
 	/**
-	 * Make the two header rows on mainPanel.
-	 * @param panel
-	 */
-	private void makeHeaderRows()
-	{
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.FIRST_LINE_START;		
-		c.weightx = 0;
-		
-		this.ROW_HEIGHT = 0;
-		this.TABLE_WIDTH = 0;
-
-		Border paddingBorder = BorderFactory.createEmptyBorder(this.GRID_TOPGAP, this.GRID_LEFTGAP,
-			this.GRID_BOTTOMGAP, this.GRID_RIGHTGAP);
-		// borders on all sides
-		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
-		// borders on all sides except the left side
-		Border matteBorder = BorderFactory.createMatteBorder(1, 0, 1, 1, Color.BLACK);
-		String columnsNameString;
-		
-		int columnsVarIndex = this.model.getSplitOptions().getColumnSplitIndex();
-		if (columnsVarIndex < 0)
-			columnsNameString = "onbekende variabele";
-		else 
-			columnsNameString = this.model.getTableModel()
-				.getColumnName(columnsVarIndex);
-		
-		// FIRST ROW with dummy labels, column variable name and "total" 
-		JLabel dummy00 = new JLabel(" ");
-		dummy00.setFont(Statistiek.font);
-		dummy00.setBorder(BorderFactory.createCompoundBorder(lineBorder, paddingBorder));
-		c.gridx = 0;
-		c.gridy = 0;
-		mainPanel.add(dummy00, c);
-		JLabel dummy10 = new JLabel(" ");
-		dummy10.setFont(Statistiek.font);
-		dummy10.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		c.gridx = 1;
-		c.gridy = 0;
-		mainPanel.add(dummy10, c);
-		
-		JLabel variableColumnsName = new JLabel(columnsNameString);
-		variableColumnsName.setFont(Statistiek.font);
-		variableColumnsName.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		variableColumnsName.setHorizontalAlignment(SwingConstants.CENTER);
-		c.gridx = 2;
-		c.gridy = 0;
-		mainPanel.add(variableColumnsName, c);
-		
-		
-		JLabel dummyEnd1 = new JLabel(" ");
-		dummyEnd1.setFont(Statistiek.font);
-		dummyEnd1.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		c.gridx = binLabelsSplitVar.length + 2;
-		c.gridy = 1;
-		mainPanel.add(dummyEnd1, c);
-	}
-
-	/**
-	 * In order to determine the maximum width of column i, set the max width to the 
-	 * width of label if label width is larger than the value in maxColumnWidth.
-	 *  
-	 * @param i
-	 * @param label
-	 */
-	private void setMaxColumnWidth(int i, JLabel label)
-	{
-		if (label.getPreferredSize().width > this.maxColumnWidth[i])
-			this.maxColumnWidth[i] = label.getPreferredSize().width;		
-	}
-
-	private void calculateTableWidth()
-	{
-		this.TABLE_WIDTH = 0;
-		
-//		for (int i = 0; i < this.maxColumnWidth.length; i++)
-//		{
-//			this.TABLE_WIDTH += this.maxColumnWidth[i];
-//		}
-		
-//		System.out.println("DescriptivesView.calculateTableWidth(): this.TABLE_WIDTH = " 
-//			+ this.TABLE_WIDTH);
-	}
-
-	/**
 	 * Make the descriptives table view on panel. When there is a selection, 
 	 * a table for the selected data is shown next to the descriptives table
 	 * for the complete data set.
 	 */
 	private void makeDescritivesTable()
 	{
-		makeDescriptivesTable(0, 0);
-		
-		if (this.hasSelection())
+		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+
+		for (int i = 0; i < numberOfSplits; i++)
 		{
-			makeDescriptivesTable(1, 0);
+			makeDescriptivesTable(0, i);
+			
+			if (this.hasSelection())
+				makeDescriptivesTable(1, i);
 		}
-		
 	}
 
 	/**
@@ -733,32 +644,41 @@ public class DescriptivesView extends JPanel implements Observer
 		int x_shift = 0;
 		if (selection == 1)
 			x_shift = 3;
-			
+		
+		int y_shift = (splitClass) * (this.NUMBER_OF_TABLE_ROWS + 2);
+		String splitClassString = "";
+		
+		if (this.hasSplit())
+		{
+			String splitColumnName = this.model.getTableModel().getColumnName(this.model.getColumnSplitIndex());
+			splitClassString = splitColumnName + ": "
+				+ this.model.getSplitOptions().getSplitClassLabel(splitClass, this.model.getTableModel()); // e.g., "geslacht: m"
+		}
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.FIRST_LINE_START;		
-//		c.weighty = 1;
-//		c.weightx = 1;
-//		c.weightx = 0.1;
+
 		Border paddingBorder = BorderFactory.createEmptyBorder(this.GRID_TOPGAP, this.GRID_LEFTGAP,
 			this.GRID_BOTTOMGAP, this.GRID_RIGHTGAP);
 		// borders on all sides except the top side
 		Border matteBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK);
 
 		// add the selected variable name to the first column
-		JLabel columnIndexName = new JLabel(this.model.getTableModel()
-			.getColumnName(this.model.getColumnIndex()));
+		String label = "";
+		if (selection == 0)
+			label = this.model.getTableModel().getColumnName(this.model.getColumnIndex());
+		else
+			label = Statistiek.rb.getString("selection");
+		JLabel columnIndexName = new JLabel(label);
 		columnIndexName.setFont(Statistiek.font);
 		columnIndexName.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		columnIndexName.setVerticalAlignment(SwingConstants.CENTER);
 		columnIndexName.setHorizontalAlignment(SwingConstants.LEFT);
-		//c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0 + x_shift;
-		c.gridy = 0;
+		c.gridy = 0 + y_shift;
 		c.gridwidth = 2;
 		mainPanel.add(columnIndexName, c);
-		// Set the max of column 0
-//		setMaxColumnWidth(0, columnIndexName);
 		
 		// borders on all sides except the top and left side
 		matteBorder = BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK);
@@ -771,7 +691,7 @@ public class DescriptivesView extends JPanel implements Observer
 		dummy1End.setFont(Statistiek.font);
 		//dummy1End.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 2 + x_shift;
-		c.gridy = 0;
+		c.gridy = 0 + y_shift;
 		c.gridwidth = 1;
 		/*
 		 *  the dummy label creates space between the two tables (if there is a selection)
@@ -798,18 +718,18 @@ public class DescriptivesView extends JPanel implements Observer
 		aantalLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0 + x_shift;
-		c.gridy = 1;
+		c.gridy = 1 + y_shift;
 		c.weightx = 0; // Makes the grid cells as small as possible 
 		c.gridwidth = 1;
 		mainPanel.add(aantalLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[0][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[0][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[0][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[0][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 1;
-		mainPanel.add(data[0][selection][0], c);
+		c.gridy = 1 + y_shift;
+		mainPanel.add(dataLabels[0][selection][splitClass], c);
 		
 		// add row Minimum
 		// label
@@ -819,16 +739,16 @@ public class DescriptivesView extends JPanel implements Observer
 		minLabel.setFont(Statistiek.font);
 		minLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 2;
+		c.gridy = 2 + y_shift;
 		mainPanel.add(minLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[1][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[1][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[1][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[1][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 2;
-		mainPanel.add(data[1][selection][0], c);
+		c.gridy = 2 + y_shift;
+		mainPanel.add(dataLabels[1][selection][splitClass], c);
 		
 		// add row Maximum
 		// label
@@ -838,16 +758,16 @@ public class DescriptivesView extends JPanel implements Observer
 		maxLabel.setFont(Statistiek.font);
 		maxLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 3;
+		c.gridy = 3 + y_shift;
 		mainPanel.add(maxLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[2][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[2][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[2][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[2][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 3;
-		mainPanel.add(data[2][selection][0], c);
+		c.gridy = 3 + y_shift;
+		mainPanel.add(dataLabels[2][selection][splitClass], c);
 		
 		// add row Mean
 		// label
@@ -857,16 +777,16 @@ public class DescriptivesView extends JPanel implements Observer
 		meanLabel.setFont(Statistiek.font);
 		meanLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 4;
+		c.gridy = 4 + y_shift;
 		mainPanel.add(meanLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[3][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[3][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[3][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[3][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 4;
-		mainPanel.add(data[3][selection][0], c);
+		c.gridy = 4 + y_shift;
+		mainPanel.add(dataLabels[3][selection][splitClass], c);
 		
 		// add row Standard Deviation
 		// label
@@ -876,16 +796,16 @@ public class DescriptivesView extends JPanel implements Observer
 		sdLabel.setFont(Statistiek.font);
 		sdLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 5;
+		c.gridy = 5 + y_shift;
 		mainPanel.add(sdLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[4][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[4][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[4][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[4][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 5;
-		mainPanel.add(data[4][selection][0], c);
+		c.gridy = 5 + y_shift;
+		mainPanel.add(dataLabels[4][selection][splitClass], c);
 		
 		// add row Median
 		// label
@@ -895,16 +815,16 @@ public class DescriptivesView extends JPanel implements Observer
 		medianLabel.setFont(Statistiek.font);
 		medianLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 6;
+		c.gridy = 6 + y_shift;
 		mainPanel.add(medianLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[5][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[5][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[5][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[5][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 6;
-		mainPanel.add(data[5][selection][0], c);
+		c.gridy = 6 + y_shift;
+		mainPanel.add(dataLabels[5][selection][splitClass], c);
 		
 		// add row Modus
 		// label
@@ -914,26 +834,62 @@ public class DescriptivesView extends JPanel implements Observer
 		modusLabel.setFont(Statistiek.font);
 		modusLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 		c.gridx = 0 + x_shift;
-		c.gridy = 7;
+		c.gridy = 7 + y_shift;
 		mainPanel.add(modusLabel, c);
 		// value
 		// borders on left, bottom and right side
 		matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
-		data[6][selection][0].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
-		data[6][selection][0].setHorizontalAlignment(SwingConstants.RIGHT);
+		dataLabels[6][selection][splitClass].setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		dataLabels[6][selection][splitClass].setHorizontalAlignment(SwingConstants.RIGHT);
 		c.gridx = 1 + x_shift;
-		c.gridy = 7;
-		mainPanel.add(data[6][selection][0], c);
+		c.gridy = 7 + y_shift;
+		mainPanel.add(dataLabels[6][selection][splitClass], c);
+		
+		if (selection == 0)
+		{
+			// add label for the split class
+			// no borders
+			matteBorder = BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLACK);
+			JLabel splitClassLabel = new JLabel(splitClassString);
+			splitClassLabel.setFont(Statistiek.font);
+			splitClassLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+			c.gridx = 0;
+			c.gridy = DescriptivesView.NUMBER_OF_TABLE_ROWS + y_shift;
+			mainPanel.add(splitClassLabel, c);
+		}
 		
 		// add extra cell under last row to fill the space 
 		// and make the table start at the northwest corner
 		c.gridx = 0 + x_shift;
-		c.gridy = DescriptivesView.NUMBER_OF_TABLE_ROWS;
-		c.weighty = 1;
-		c.fill = GridBagConstraints.REMAINDER;
+		c.gridy = DescriptivesView.NUMBER_OF_TABLE_ROWS + 1 + y_shift;
+		if (this.lastRowInView(splitClass))
+		{
+			c.weighty = 1;
+			c.fill = GridBagConstraints.REMAINDER;
+		}
+
 		JLabel dummy0Rest = new JLabel(" ");
 		dummy0Rest.setFont(Statistiek.font);
-		mainPanel.add(dummy0Rest, c);	}
+		mainPanel.add(dummy0Rest, c);	
+	}
+
+	private boolean lastRowInView(int splitClass)
+	{
+		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+		
+		return (splitClass == numberOfSplits - 1);
+	}
+
+	/**
+	 * Returns true if the view has a split, else false.
+	 * @return
+	 * 		 True if the view has a split, else false.
+	 */
+	private boolean hasSplit()
+	{
+		return (this.model.getColumnSplitIndex() > -1);
+	}
 
 	private boolean hasSelection()
 	{
@@ -964,23 +920,6 @@ public class DescriptivesView extends JPanel implements Observer
 		}
 	}
 	
-	/**
-	 * Set the preferred size of the main panel, so that if required scrollbars
-	 * may appear.
-	 */
-	private void setMainPanelSize()
-	{
-		calculateTableWidth();
-		
-		Dimension dimension = new Dimension(this.TABLE_WIDTH,
-			this.ROW_HEIGHT * (this.NUMBER_OF_TABLE_ROWS));
-		
-//		System.out.println("DescriptivesView.setMainPanelSize(): dimension.width = "
-//			+ dimension.width + ", height = " + dimension.height);
-		
-		this.mainPanel.setPreferredSize(dimension);
-	}
-	
 	// Override setBound
 	public void setBounds(int x, int y, int w, int h)
 	{
@@ -988,10 +927,6 @@ public class DescriptivesView extends JPanel implements Observer
 //			+ ", w=" + w + ", h=" + h + ")");
 
 		super.setBounds(x, y, w, h);
-
-		this.setMainPanelSize();
-		
-		this.scrollPane.setViewportView(mainPanel);
 	}
 
 	public void setModel(DescriptivesModel model)
@@ -1006,4 +941,25 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 		return userOptionsPanel.getVarColumnsBoxSelectedIndex();
 	}
+	
+	public int getSplitVarBoxSelectedIndex()
+	{
+		return userOptionsPanel.getSplitVarBoxSelectedIndex();
+	}
+	
+	public int getSplitBinsBoxSelectedInt()
+	{
+		return userOptionsPanel.getSplitBinsBoxSelectedInt();
+	}
+
+	public double getSplitMinBoundary()
+	{
+		return userOptionsPanel.getSplitminBoundary();
+	}
+
+	public double getSplitBinWidth()
+	{
+		return userOptionsPanel.getSplitBinWidth();
+	}
+
 }
