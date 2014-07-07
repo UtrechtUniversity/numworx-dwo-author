@@ -603,6 +603,10 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			{
 				setEnumClassesRows(true);
 			}
+			else if (type.equals(AllowedTypes.STRING))
+			{
+				setEnumClassesRows(true);
+			}
 		}
 	}
 	
@@ -632,6 +636,10 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				setEnumClassesColumns(false);
 			}
 			else if (type.equals(AllowedTypes.ENUM))
+			{
+				setEnumClassesColumns(true);
+			}
+			else if (type.equals(AllowedTypes.STRING))
 			{
 				setEnumClassesColumns(true);
 			}
