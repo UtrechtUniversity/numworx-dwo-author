@@ -2419,7 +2419,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		String var = "x";
 		if (gewensteEindOplossing != null)
 			var = gewensteEindOplossing.geefVergelijkingVar();
-		
+		System.out.println("checkAntwoord: var = " + var);
 
 		if (antwoordSubstituties != null && antwoord != null)
 		{
@@ -2469,7 +2469,6 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					System.out.println("na vulvak");
 					huidigeVergelijking = antwoord;
 					sendCommand("balansvergelijking");
-					System.out.println("na sendcommand balans");
 					sendCommand("vergelijking");
 					
 				}
@@ -2480,6 +2479,15 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			//if (gewensteEindOplossing != null)
 			//	var = gewensteEindOplossing.geefVergelijkingVar();
 
+			String diffVar = "x";
+			for(int i = 0; i < antwoord.geefAantal(); i++)
+			{	String diffVar2 = antwoord.geefVergelijking(i).geefVarNaam();
+				if(diffVar2 != null && !diffVar2.equals(""))
+				{	diffVar = diffVar2;
+					break;
+				}
+			}
+			antwoord = antwoord.vervangDifferentialen(diffVar);
 			
 			boolean isGelijkwaardigEind = antwoord.isOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
 

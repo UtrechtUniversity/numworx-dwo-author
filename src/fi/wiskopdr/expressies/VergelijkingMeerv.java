@@ -474,6 +474,16 @@ public class VergelijkingMeerv
 		}
 		return new VergelijkingMeerv(vergelijkingenNieuw);
 	}
+	
+	public VergelijkingMeerv vervangDifferentialen(String var)
+	{
+		Vergelijking[] vergelijkingenNieuw = new Vergelijking[vergelijkingen.length];
+		for(int i = 0; i < vergelijkingen.length; i++)
+		{
+			vergelijkingenNieuw[i] = vergelijkingen[i].vervangDifferentialen(var);
+		}
+		return new VergelijkingMeerv(vergelijkingenNieuw);
+	}
 
 	public Object visit(AbstractConverter instance) {
 		Object[] objects  = new Object[vergelijkingen.length];

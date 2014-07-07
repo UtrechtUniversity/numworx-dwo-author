@@ -93,6 +93,10 @@ public class Max extends Expressie
 	{	return new Max(kind1.substitueer(subst,var), kind2.substitueer(subst,var));
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Max(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+	}
+	
 	
 	public boolean isWaarde(double subst)
 	{	return (kind1.isWaarde(subst) && kind2.isWaarde(subst));

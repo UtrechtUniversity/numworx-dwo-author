@@ -46,6 +46,10 @@ public class E extends BasisExpressie
 	{	return new E();
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new E();
+	}
+	
 	public boolean isWaarde(double subst)
 	{	return true;
 	}

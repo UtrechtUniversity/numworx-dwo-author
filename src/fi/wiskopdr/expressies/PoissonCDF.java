@@ -70,6 +70,10 @@ public class PoissonCDF extends Expressie
 	public Expressie substitueer(Expressie subst, String var)
 	{	return new PoissonCDF(kind1.substitueer(subst,var), kind2.substitueer(subst,var));
 	}
+	
+	public Expressie vervangDifferentialen(String var)
+	{	return new PoissonCDF(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+	}
 		
 	public boolean isWaarde(double subst)
 	{	return (kind1.isWaarde(subst) && kind2.isWaarde(subst));

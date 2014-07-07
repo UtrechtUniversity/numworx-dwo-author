@@ -22,7 +22,7 @@ public class Deling extends Expressie
 		return null;	
 	}
 	
-	public double geefWaarde()
+		public double geefWaarde()
 	{	double d1 = kind1.geefWaarde();
 		double d2 = kind2.geefWaarde();
 		if(d2!=0)
@@ -60,6 +60,10 @@ public class Deling extends Expressie
 	
 	public Expressie substitueer(Expressie subst, String var)
 	{	return new Deling(kind1.substitueer(subst,var),kind2.substitueer(subst,var));
+	}
+	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Deling(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
 	}
 	
 	public boolean isWaarde(double subst)

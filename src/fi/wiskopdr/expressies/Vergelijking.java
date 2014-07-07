@@ -412,6 +412,16 @@ public class Vergelijking
 		return new Vergelijking(e1, e2, vergelijkingsTeken);
 	}
 	
+	public Vergelijking vervangDifferentialen(String var)
+	{
+		Expressie e1 = kind1.vervangDifferentialen(var);
+		Expressie e2 = kind2.vervangDifferentialen(var);
+		
+		
+		
+		return new Vergelijking(e1, e2, vergelijkingsTeken);
+	}
+	
 	
 	public String toString()
 	{	String s = "";

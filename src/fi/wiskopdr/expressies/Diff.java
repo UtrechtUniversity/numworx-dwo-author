@@ -57,6 +57,9 @@ public class Diff extends Expressie
 		//return Expressie.evalWithCAS(this.toStringCAS());
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Diff(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+	}
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

@@ -49,6 +49,11 @@ public class FormuleParser
     {
         return tweeHoofdletterVariabele;
     }
+	
+	public static boolean isDiffOperatoren()
+	{
+		return diffOperatoren;
+	}
 		
 	public static VergelijkingMeerv parseVergelijking(String s)
 	{	try
@@ -800,12 +805,57 @@ public class FormuleParser
 			exp = new BasisExpressie(s);
 		}
 		
-		if(diffOperatoren && s.startsWith("d") && ! s.substring(1).startsWith("i"))
-		{
+		if(diffOperatoren && s.charAt(0) == 'd' && (s.charAt(1) == '*')) //(als charAt(1) i is, dan heb je een diff)
+		{	System.out.println("Differentiaaloperator? " + s);
+			//begin met een d, en dan ofwel een haakje openen die hoort bij het haakje sluiten
+			//helemaal achteraan, of één teken, of een subscript-constructie.
+			if(s.length() == 3)
+			{	System.out.println("kind wordt: " + s.substring(2, s.length()));
+				return new Differentiaal(parse(s.substring(2, s.length())));
+			}
+			boolean isDifferentiaal = true;
+			if(s.charAt(2) == '(')
+			{
+				int niv = 1;
+				for(int i = 3; i < s.length(); i++)
+				{
+					if(s.charAt(i) == '(')
+						niv++;
+					else if(s.charAt(i) == ')')
+						niv--;
+					if(niv == 0 && i < s.length() - 1)
+					{	isDifferentiaal = false;
+						break;
+					}
+				}
+			}
+			else if(s.length() > 4 && s.charAt(3) == '$' && s.charAt(4) == 's')//subscript
+			{
+				int niv = 1;
+				for(int i = 4; i < s.length(); i++)
+				{
+					if(s.charAt(i) == '$')
+						niv++;
+					else if(s.charAt(i) == '@')
+						niv--;
+					if(niv == 0 && i < s.length() - 1)
+					{
+						isDifferentiaal = false;
+						break;
+					}
+				}
+			}
+			else
+				isDifferentiaal = false;
 			
-			//dit gaat waarschijnlijk fout bij dingen als dy+dx.
-			Expressie e1 = parse(s.substring(2, s.length()));
-			return new Differentiaal(e1);
+			
+			if(isDifferentiaal)	
+			{
+				Expressie e1 = parse(s.substring(2, s.length()));
+				System.out.println("geeft differentiaal met kind " + e1.toString());
+				return new Differentiaal(e1);
+			}
+			
 		}
 		
 		int niv = 0;
@@ -1051,7 +1101,8 @@ public class FormuleParser
 						return new Diff(e2, e1.kind2.kind1);
 					else if(diffOperatoren && e1 instanceof Vermenigvuldiging &&
 							e1.kind2.toString().equals("d"))//geval: iets*dx
-						return new Vermenigvuldiging(e1.kind1, new Differentiaal(e2));
+					{	return new Vermenigvuldiging(e1.kind1, new Differentiaal(e2));
+					}
 						
 					else	
 						return new Vermenigvuldiging(e1,e2);

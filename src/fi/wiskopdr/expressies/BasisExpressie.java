@@ -120,6 +120,10 @@ public class BasisExpressie extends Expressie
 		else return new BasisExpressie(basisString);
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new BasisExpressie(basisString);
+	}
+	
 	public boolean isWaarde(double subst)
 	{	if(Double.isNaN(geefWaarde()))return false;
 		return true;

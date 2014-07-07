@@ -44,6 +44,10 @@ public class Conjug extends Expressie
 	{	return new Conjug(kind1.substitueer(subst,var));
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Conjug(kind1.vervangDifferentialen(var));
+	}
+	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);
 	}

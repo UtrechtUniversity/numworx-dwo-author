@@ -50,6 +50,11 @@ public class Abs extends Expressie
 	public Expressie substitueer(Expressie subst, String var)
 	{	return new Abs(kind1.substitueer(subst,var));
 	}
+	
+	public Expressie vervangDifferentialen(String var)
+	{
+		return new Abs(kind1.vervangDifferentialen(var));
+	}
 		
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

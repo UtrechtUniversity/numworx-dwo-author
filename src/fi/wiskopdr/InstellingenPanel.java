@@ -136,7 +136,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		significantieCB = maakCheckBox(WiskOpdr.rb.getString("OPT_significantie"), boxv1, false); //"Checkmogelijkheid significante getallen"
 		globalParamCB = maakCheckBox(WiskOpdr.rb.getString("OPT_globalParam"), boxv1, false);//"Globale parameters"
 		diffOperatorenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
-		diffOperatorenCB.setVisible(false);
+		//diffOperatorenCB.setVisible(false);
 		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();

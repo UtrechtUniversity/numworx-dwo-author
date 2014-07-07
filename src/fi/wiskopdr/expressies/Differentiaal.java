@@ -3,7 +3,7 @@ package fi.wiskopdr.expressies;
 import fi.wiskopdr.expressies.repr.AbstractConverter;
 
 public class Differentiaal extends Expressie
-{	double waarde = Double.NaN;
+{	private double waarde = 0.8765432;
 
 	public Differentiaal(Expressie e1)
 	{   kind1 = e1;
@@ -13,15 +13,22 @@ public class Differentiaal extends Expressie
 	}
 	
 	public double geefWaarde()
-	{	return Double.NaN;
+	{	return waarde*kind1.geefWaarde();
+		
+		//return Double.NaN;
 	}
 	
 	public double geefWaarde(double subst)
-	{	return Double.NaN;
+	{	
+		return waarde*kind1.geefWaarde(subst);
+		
+		//return Double.NaN;
 	}
 	
 	public double geefWaarde(double[] subst, String[] vars)
-	{	return Double.NaN;
+	{	return waarde*kind1.geefWaarde(subst, vars);
+		
+		//return Double.NaN;
 	}
 	
 	public boolean isLeeg()
@@ -53,14 +60,29 @@ public class Differentiaal extends Expressie
 		return null;
 	}	
 	
+	public Expressie vervangDifferentialen(String var) {
+		
+		return new Vermenigvuldiging(new Diff(kind1, new BasisExpressie(var)), new Differentiaal(new BasisExpressie(var)));
+	}
+	
 	public String toString()
-	{	return "d" + "$h" + kind1.toString() + "@";
+	{	if(kind1.toString().length() == 1 || kind1.toString().contains("$s") && kind1.toString().length() == 5)
+		{
+			return "d" + kind1.toString();
+		}
+		else
+			return "d" + "$h" + kind1.toString() + "@";
 	   
 	}
 	
 	
 	public String toStringStrikt()
-	{	return "d" + "$h" + kind1.toStringStrikt() + "@";
+	{	if(kind1.toString().length() == 1 || kind1.toString().contains("$s") && kind1.toString().length() == 5)
+		{
+			return "d" + kind1.toString();
+		}
+		else
+			return "d" + "$h" + kind1.toStringStrikt() + "@";
 	   
 	}
 	

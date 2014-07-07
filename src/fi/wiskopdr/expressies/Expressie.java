@@ -394,4 +394,9 @@ public class Expressie
 		return converter.expressie(this);
 	}
 	
+	public Expressie vervangDifferentialen(String var) {
+		
+		return null;
+	}
+	
 }

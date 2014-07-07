@@ -42,6 +42,16 @@ public class Integraal extends Expressie
 		return new Integraal(kind1.substitueer(subst,var), kind2.substitueer(subst,var), kind3.substitueer(subst,var), kind4.substitueer(subst,var));
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	//return new Integraal(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind3.vervangDifferentialen(var), kind4.vervangDifferentialen(var));
+	
+		Expressie e1 = new Vermenigvuldiging(kind1.vervangDifferentialen(var), new Diff(kind4, new BasisExpressie(var)));
+		Expressie e4 = new BasisExpressie(var);
+	
+	
+		return new Integraal(e1, kind2, kind3, e4);
+	
+	}
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

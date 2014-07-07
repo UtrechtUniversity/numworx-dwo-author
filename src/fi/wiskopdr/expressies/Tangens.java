@@ -54,6 +54,10 @@ public class Tangens extends Expressie
 	{	return new Tangens(kind1.substitueer(subst,var));
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Tangens(kind1.vervangDifferentialen(var));
+	}
+	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);
 	}

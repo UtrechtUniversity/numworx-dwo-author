@@ -52,6 +52,13 @@ public class DecRound extends Expressie
 			return exp;
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	DecRound exp = new DecRound(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+		
+		return exp;
+	}
+	
+	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst) && kind2.isWaarde(subst);
 	}

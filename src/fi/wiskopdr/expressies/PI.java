@@ -41,6 +41,10 @@ public class PI extends BasisExpressie
 	{	return new PI();
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new PI();
+	}
+	
 	public boolean isWaarde(double subst)
 	{	return true;
 	}

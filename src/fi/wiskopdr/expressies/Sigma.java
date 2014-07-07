@@ -44,6 +44,10 @@ public class Sigma extends Expressie
 		//return Expressie.evalWithCAS(this.toStringCAS());
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	return new Sigma(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind4.vervangDifferentialen(var));
+	}
+	
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

@@ -40,6 +40,13 @@ public class Primitieve extends Expressie
 		return new Primitieve(kind1.substitueer(subst,var), kind2.substitueer(subst,var));
 	}
 	
+	public Expressie vervangDifferentialen(String var)
+	{	Expressie e1 = new Vermenigvuldiging(kind1.vervangDifferentialen(var), new Diff(kind2, new BasisExpressie(var)));
+		Expressie e2 = new BasisExpressie(var);
+		
+		
+		return new Primitieve(e1, e2);
+	}
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

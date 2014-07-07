@@ -1882,6 +1882,13 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		{	antwoord = antwoord.substitueer(substitutie,"u");
 		}
 		
+		String diffVar = "x";
+		String diffVar2 = antwoord.geefVarNaam();
+		if(diffVar2 != null && !diffVar2.equals(""))
+		{	diffVar = diffVar2;
+		}
+		antwoord = antwoord.vervangDifferentialen(diffVar);
+			
 		Expressie antwoordEvalCAS = null;
 		boolean casNodig = false;
 		if(antwoord!=null) 
