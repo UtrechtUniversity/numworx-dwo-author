@@ -76,10 +76,17 @@ public class DialogButton extends JButton implements ActionListener, ComponentLi
 //		System.out.println("DialogButton.componentResized(): e.getSource=" + e.getSource());
 		if(e.getSource()==content) {
 			preferred = content.getPreferredSize();
-			dialog.setSize(preferred);
-	        dialog.pack();
-	        // syl: onderstaande is overbodig; als hij invisible is, moet dat zo blijven 
-	        //dialog.setVisible(true);
+			// test syl
+			if (dialog != null)
+			{
+				//System.out.println("DialogButton.componentResized() dialog != null, e=" + e.toString());
+				dialog.setSize(preferred);
+		        dialog.pack();
+			}
+			else
+			{
+				//System.out.println("DialogButton.componentResized() dialog is null, e=" + e.toString());
+			}
 		}
 		
 	}
