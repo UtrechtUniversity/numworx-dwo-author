@@ -47,7 +47,7 @@ public class Statistiek implements WiskOpdrApplet
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
 								 // "Frequentietabel", "Frequentiepolygoon",
 								 // "Boxplot", "Kruistabel", "Spreidingsdiagram",
-								 // "Beschrijvende statistiek"};
+								 // "Kengetallen"};
 	public static String[] VIEWS_translated;// = {"Table", "Histogram",
 											// "Dotplot", "Frequentietabel",
 											// "Frequentiepolygoon", "Boxplot", "Crosstab",
@@ -88,7 +88,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[5] = "Boxplot";
 		VIEWS[6] = "Kruistabel";
 		VIEWS[7] = "Spreidingsdiagram";
-		VIEWS[8] = "Beschrijvende statistiek";
+		VIEWS[8] = "Kengetallen";
 	}
 
 	public Statistiek(Locale language)
@@ -205,7 +205,7 @@ public class Statistiek implements WiskOpdrApplet
 			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DotplotController(model, viewName, startVar, startVar2);
 		}
-		else if (viewType.equals("Beschrijvende statistiek"))
+		else if (viewType.equals("Kengetallen"))
 		{
 			System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DescriptivesController(model, viewName, startVar);
@@ -305,6 +305,7 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			e = (int) Math.floor(Math.log10(b));
 		}
+		// test syl: voor lengte min 156, max 171 en noBins 2 wordt step 20 i.p.v. 10
 		double step = Math.ceil(b * Math.pow(10, -e)) * Math.pow(10, e);
 		
 		if (step == 0)
@@ -451,7 +452,6 @@ public class Statistiek implements WiskOpdrApplet
 //		
 //		number = number / (Math.pow(10, decimals));
 
-		// test syl
 	    if (decimals < 0) throw new IllegalArgumentException();
 
 	    BigDecimal bd = new BigDecimal(number);
