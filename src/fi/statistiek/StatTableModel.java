@@ -1090,7 +1090,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Get the minimum value of a numerical column.
+	 * Get the minimum value column columnIndex.
 	 * 
 	 * @param columnIndex
 	 *            the column index
@@ -1128,7 +1128,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Get the minimum value of a numerical column of the current selection.
+	 * Get the minimum value of column columnIndex of the current selection.
 	 * 
 	 * @param columnIndex
 	 *            the column index
@@ -1145,7 +1145,7 @@ public class StatTableModel implements TableModel
 		Double min = Double.MAX_VALUE;
 		for (int i = 0; i < this.rowCount; i++)
 		{
-			if (selectionList.get(i))
+			if (this.selectionList.get(i))
 			{
 				Object o = this.getValueAt(i, columnIndex);
 				if (!o.equals(ColumnType.WILDCARD))
@@ -1169,7 +1169,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Get the maximum value of a numerical column.
+	 * Get the maximum value of column columnIndex.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1207,7 +1207,7 @@ public class StatTableModel implements TableModel
 	}
 	
 	/**
-	 * Get the maximum value of a numerical column of the current selection.
+	 * Get the maximum value of column columnIndex of the current selection.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1224,7 +1224,7 @@ public class StatTableModel implements TableModel
 		Double max = Double.MIN_VALUE;
 		for (int i = 0; i < this.rowCount; i++)
 		{
-			if (selectionList.get(i)) // only process the selected items
+			if (this.selectionList.get(i)) // only process the selected items
 			{
 				Object o = this.getValueAt(i, columnIndex);
 				if (!o.equals(ColumnType.WILDCARD))
@@ -1248,7 +1248,7 @@ public class StatTableModel implements TableModel
 	}
 	
 	/**
-	 * Get the mean value of a numerical column, excluding missing values.
+	 * Get the mean value of column columnIndex, excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1283,7 +1283,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the mean value of a numerical column of the current selection, excluding missing values.
+	 * Get the mean value of column columnIndex of the current selection, excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1303,7 +1303,7 @@ public class StatTableModel implements TableModel
 		
 		for (int i = 0; i < this.rowCount; i++)
 		{
-			if (selectionList.get(i))
+			if (this.selectionList.get(i))
 			{
 				Object o = this.getValueAt(i, columnIndex);
 				if (!o.equals(ColumnType.WILDCARD))
@@ -1321,7 +1321,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the standard deviation of a numerical column, excluding missing values.
+	 * Get the standard deviation of column columnindex, excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1357,7 +1357,8 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the standard deviation of a numerical column of the current selection, excluding missing values.
+	 * Get the standard deviation of a column columnIndex of the current selection, 
+	 * excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1378,7 +1379,7 @@ public class StatTableModel implements TableModel
 		
 		for (int i = 0; i < this.rowCount; i++)
 		{
-			if (selectionList.get(i))
+			if (this.selectionList.get(i))
 			{
 				Object o = this.getValueAt(i, columnIndex);
 				if (!o.equals(ColumnType.WILDCARD))
@@ -1396,7 +1397,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the median value of a numerical column, excluding missing values.
+	 * Get the median value of column columnIndex, excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1432,7 +1433,11 @@ public class StatTableModel implements TableModel
 		int size = data.size();
 		int index;
 
-		if (size % 2 == 0)
+		if ((size == 0) ||(size == 1))
+		{
+			median = 0;
+		}
+		else if (size % 2 == 0)
 		{
 			// even number of values in data set
 			index = (size/2) - 1;
@@ -1455,7 +1460,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the median value of a numerical column of the current selection, excluding missing values.
+	 * Get the median value of column columnIndex of the current selection, excluding missing values.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1476,7 +1481,7 @@ public class StatTableModel implements TableModel
 
 		for (int i = 0; i < this.getRowCount(); i++)
 		{
-			if (selectionList.get(i))
+			if (this.selectionList.get(i))
 			{
 				String valueString = (String) this.getValueAt(i, columnIndex);
 				if (!valueString.equals(ColumnType.WILDCARD))
@@ -1517,7 +1522,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the mode of a column.
+	 * Get the mode of column columnIndex.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1564,7 +1569,7 @@ public class StatTableModel implements TableModel
 					multipleModes = true;
 				}
 			}
-		}
+		} // number
 		else
 		{ // enum or string
 			FrequencyTuple[][] frequencies_enum = this.enumClassFrequency(columnIndex, null);
@@ -1596,7 +1601,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the mode of a column of the current selection.
+	 * Get the mode of column columnIndex of the current selection.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1616,7 +1621,7 @@ public class StatTableModel implements TableModel
 
 			for (int i = 0; i < this.rowCount; i++)
 			{
-				if (selectionList.get(i))
+				if (this.selectionList.get(i))
 				{
 					String valueString = (String) this.getValueAt(i, columnIndex);
 					if (!valueString.equals(ColumnType.WILDCARD))
