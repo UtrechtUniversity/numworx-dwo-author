@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -89,7 +91,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	private JRadioButton singleViewRadioItem;
 
 	// split settings
-	private JLabel splitsLabel;
 	private JButton splitButton;
 	private JLabel splitsVarLabel;
 	private JComboBox splitVarBox;
@@ -114,14 +115,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	private JCheckBox stackModeBox;
 
 	private JButton okButton;
-	private JButton cancelButton;
 
 	private boolean splitBoundariesVisible;
 	private boolean splitOptionsVisible;
 	private boolean enumClasses;
 	private boolean splitEnumClasses;
-
-	private ArrayList<Double> Boundaries;
 
 	public HistogramUserOptionsPanel(HistogramView view,
 		HistogramController controller, HistogramModel model)
@@ -377,7 +375,19 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.splitMinBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.splitMinBoundaryField.setActionCommand("splitMinBoundary");
 		this.splitMinBoundaryField.addActionListener(controller);
-		// this.minBoundaryField.addFocusListener(controller);
+		this.splitMinBoundaryField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				HistogramUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBinWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -389,6 +399,19 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBinWidthField.setPreferredSize(new Dimension(40, 25));
 		this.splitBinWidthField.setActionCommand("splitBinWidth");
 		this.splitBinWidthField.addActionListener(controller);
+		this.splitBinWidthField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				HistogramUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBoundariesLabel = new JLabel(
 			Statistiek.rb.getString("binsButton"));
@@ -702,6 +725,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	public void resize(JComponent c)
 	{
+//		System.out.println("HistogramUserOptionsPanel.resize(): c = " + c.toString());
 		Dimension d = c.getPreferredSize();
 		panel.setSize(new Dimension(d.width + 10, d.height));
 		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
