@@ -98,7 +98,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "boxplotOption", "Boxplot"},
             {   "crosstabOption", "Kruistabel"},
             {   "scatterplotOption", "Spreidingsdiagram"},
-            {   "descriptivesOption", "Beschrijvende statistiek"},
+            {   "descriptivesOption", "Kengetallen"},
             {   "settingsButton", "Instellingen"},
             {   "nexttoeachotherCheckbox", "Naast elkaar"},
             {   "chooseStartVarLabel", "Kies variabele: "},
@@ -124,7 +124,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "messageChooseOtherVar", "Kies een andere variabele."},
             {   "correlationNoShow", "Correlatie kan niet berekend worden"},
             {   "significanceNoShow", "significantie kan niet berekend worden"},
-            {   "notAvailable", "Niet beschikbaar"}
+            {   "notAvailable", "Niet beschikbaar"},
+            {   "selection", "selectie"}
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
