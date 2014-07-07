@@ -217,7 +217,7 @@ public class HistogramView extends JPanel implements Observer
 		return this.userOptionsPanel.getMinBoundary();
 	}
 	
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
 		return userOptionsPanel.getSplitminBoundary();
 	}
@@ -2882,6 +2882,7 @@ public class HistogramView extends JPanel implements Observer
    						aantal_totaal = HistogramView.this.getFrequenciesSum(frequencies_enum);
    					}
     				
+					// bepaal aantal per bin
     				for (int j = 0; j < noBins; j++)
     				{
     					// tel de aantallen op voor bin j
@@ -2905,6 +2906,29 @@ public class HistogramView extends JPanel implements Observer
     					}
 //						System.out.println("... aantalPerBin[" + j + "] = " +
 //							aantalPerBin[j]);
+    				}
+    				
+    				// bepaal aantal per split
+    				for (int i = 0; i < numberOfSplits; i++)
+    				{
+    					if (frequencies_number != null) // number variable
+    					{
+        					for (int j = 0; j < noBins; j++)
+        					{
+        						aantalPerSplit[i] = aantalPerSplit[i]
+        							+ frequencies_number[i][j * 2];
+        					}
+    					}
+    					else if (frequencies_enum != null) // enum variable
+    					{
+    						for (int j = 0; j < noBins; j++)
+    						{
+        						aantalPerSplit[i] = aantalPerSplit[i]
+    								+ frequencies_enum[i][j].frequency;
+    						}
+    					}    					
+//    					System.out.println("... aantalPerSplit[" + i + "] = " +
+//    						aantalPerSplit[i]);
     				}
     			} // percentage
     			
@@ -2993,7 +3017,7 @@ public class HistogramView extends JPanel implements Observer
     								}
     							}
     							
-    							if (!Double.isNaN(waarde))
+    							if (!Double.isNaN(waarde) && !Double.isInfinite(waarde))
     								waarde = Statistiek.round(waarde, 1);
     							else
     								waarde = 0;
@@ -3008,7 +3032,7 @@ public class HistogramView extends JPanel implements Observer
     							{
     								waardeString = String.valueOf(waarde);
     							}
-    						}
+    						} // isPercentage
     						else
     						{
     							int waarde = 0;
