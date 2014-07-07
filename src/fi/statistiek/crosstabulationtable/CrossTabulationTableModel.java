@@ -94,6 +94,18 @@ public class CrossTabulationTableModel extends Observable implements
 		this.changed();
 	}
 
+	/**
+	 * Set the bin boundaries without firing the changed() event.
+	 * 
+	 * @param bins
+	 *            The new bin boundaries
+	 */
+	public void setBinBoundariesWithoutEvent(ArrayList<Double> bins)
+	{
+		this.binBoundaries = bins;
+		this.noBins = this.binBoundaries.size() - 1;
+	}
+
 	boolean isShowPercentage()
 	{
 		return this.showPercentage;
@@ -239,6 +251,37 @@ public class CrossTabulationTableModel extends Observable implements
 	}
 
 	/**
+	 * Set the column index, i.e. for the rows, in the crosstabulation table,
+	 * without firing the changed() event. 
+	 * 
+	 * @param columnIndex
+	 *            The index of the column that will be shown
+	 */
+	public void setColumnIndexWithoutEvent(int columnIndex)
+	{
+		if (!(this.columnIndex == columnIndex))
+		{
+			this.columnIndex = columnIndex;
+
+			if (this.columnIndexValid()
+				&& this.tableModel.getColumnTypes().get(this.columnIndex)
+					.getType().isNumber())
+			{
+				this.binBoundaries = Statistiek.appropriateBoundaries(
+					this.tableModel.getColumnMin(this.columnIndex),
+					this.tableModel.getColumnMax(this.columnIndex),
+					5);//this.noBins);
+				
+				// test syl: niet fraai, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
+				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
+					this.tableModel.getColumnMax(this.columnIndex), 
+					this.binBoundaries.get(1) - this.binBoundaries.get(0), this.binBoundaries.get(0));
+			}
+		}
+	}
+
+	/**
 	 * @return The index of the column that is represented by this
 	 *         StatistiekView
 	 */
@@ -374,6 +417,18 @@ public class CrossTabulationTableModel extends Observable implements
 	}
 
 	/**
+	 * Set the split index without firing the changed() event.
+	 * @param columnSplitIndex
+	 */
+	public void setColumnSplitIndexWithoutEvent(int columnSplitIndex)
+	{
+		if (this.splitOptions.getColumnSplitIndex() != columnSplitIndex)
+		{
+			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
+		}
+	}
+
+	/**
 	 * Get the index of the column by which the data is split
 	 * 
 	 * @return the index of the column by which the data is split
@@ -384,6 +439,16 @@ public class CrossTabulationTableModel extends Observable implements
 	}
 
 	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
+		this.changed();
+	}
+
+	/**
+	 * Set the split boundaries without firing the changed() event.
+	 * @param boundaries
+	 */
+	public void setSplitBoundariesWithoutEvent(ArrayList<Double> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
@@ -402,14 +467,16 @@ public class CrossTabulationTableModel extends Observable implements
 		SplitOptions splitOptionsColumn_old = this.getSplitOptions();
 		
 		// Set as the new row variable the column variable with its bins
-		this.setColumnIndex(indexColumn_old);
-		this.setBinBoundaries(splitOptionsColumn_old.getBinBoundaries());
+		this.setColumnIndexWithoutEvent(indexColumn_old);
+		this.setBinBoundariesWithoutEvent(splitOptionsColumn_old.getBinBoundaries());
 		
 		// Set as the new column variable the row variable with its bins
 		// setSplit() uit controller
-		this.setColumnSplitIndex(indexRow_old);
-		this.setSplitBoundaries(binBoundariesRow_old);
-		this.setSplitOptions(this.getSplitOptions());
+		this.setColumnSplitIndexWithoutEvent(indexRow_old);
+		this.setSplitBoundariesWithoutEvent(binBoundariesRow_old);
+		// test syl: onderstaande is niet nodig?
+		//this.setSplitOptions(this.getSplitOptions());
+		this.changed();
 	}
 	
 	/**
