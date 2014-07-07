@@ -42,7 +42,7 @@ import javax.swing.event.DocumentListener;
 /**
  * MVC Controller for StatistiekView Histogram
  * 
- * @author Manu Drijvers
+ * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
 public class HistogramController implements StatistiekView, ActionListener,
@@ -291,8 +291,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 	/*
 	 * Update the bin boundaries using the settings for the minimum boundary
-	 * and the bin width.
-	 * and determine the number of bins.
+	 * and the bin width, and determine the number of bins.
 	 */
 	private void updateBoundariesFromBinSettings()
 	{
@@ -306,6 +305,26 @@ public class HistogramController implements StatistiekView, ActionListener,
 			view.getBinWidth(),
 			view.getMinBoundary());
 		this.model.setBinBoundaries(boundaries);
+	}
+	
+	/*
+	 * Update the split bin boundaries using the settings for the minimum boundary
+	 * and the bin width, and determine the number of bins.
+	 */
+	public void updateSplitBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			this.model.getTableModel().getColumnMin(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			this.model.getTableModel().getColumnMax(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			view.getSplitBinWidth(),
+			view.getSplitMinBoundary());
+		this.model.setSplitBoundaries(boundaries);
+		this.view.setModel(this.model);
+
 	}
 	
 	/*
@@ -328,7 +347,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
 		{
-			boundaries.add(new Double(view.getSplitminBoundary() + i
+			boundaries.add(new Double(view.getSplitMinBoundary() + i
 				* view.getSplitBinWidth()));
 		}
 		this.model.setSplitBoundaries(boundaries);
@@ -546,6 +565,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 //		System.out.println("HistogramController.focusLost(): e.getSource()="
 //			+ e.getSource());
 
+		// column index bin settings
 		updateBoundariesFromBinSettings();
 	}
 }
