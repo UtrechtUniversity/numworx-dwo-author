@@ -101,8 +101,8 @@ public class DescriptivesController implements StatistiekView,
 	{
 		String action = arg0.getActionCommand();
 		
-		System.out.println("DescriptivesController.actionPerformed(): action = "
-			+ action);
+//		System.out.println("DescriptivesController.actionPerformed(): action = "
+//			+ action);
 
 		if (action.equals("columnIndexBox"))
 		{
