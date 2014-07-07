@@ -243,7 +243,6 @@ public class StatModel extends Observable implements TableModelListener
 	 */
 	public void removeViewsWithoutEvent()
 	{
-		// test syl
         Iterator<StatistiekView> iterator = this.views.iterator();
         while (iterator.hasNext()) 
         {
@@ -254,8 +253,6 @@ public class StatModel extends Observable implements TableModelListener
 
 		this.views = new ArrayList<StatistiekView>();
 		this.viewInOwnWindow = new ArrayList<Boolean>();
-		// this.setChanged();
-		// this.notifyObservers();
 	}
 
 	/**
