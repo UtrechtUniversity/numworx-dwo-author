@@ -125,7 +125,8 @@ public class Text_en extends java.util.ListResourceBundle
             {   "messageChooseOtherVar", "Choose another variable."},
             {   "correlationNoShow", "Correlatie cannot be calculated"},
             {   "significanceNoShow", "significance cannot be calculated"},
-            {   "notAvailable", "Not available"}
+            {   "notAvailable", "Not available"},
+            {   "selection", "selection"}
 
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
