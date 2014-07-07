@@ -94,16 +94,102 @@ public class DescriptivesController implements StatistiekView,
 		}
 	}
 	
+	/**
+	 * ActionListener implementation
+	 */
 	public void actionPerformed(ActionEvent arg0)
 	{
 		String action = arg0.getActionCommand();
 		
-//		System.out.println("DescriptivesController.actionPerformed(): action = "
-//			+ action);
+		System.out.println("DescriptivesController.actionPerformed(): action = "
+			+ action);
 
 		if (action.equals("columnIndexBox"))
 		{
 			this.model.setColumnIndex(this.view.varBoxSelectedIndex());
+		}
+		else if (action.equals("splitVarBox"))
+		{
+			// System.out.println("HistogramController.actionPerformed(): splitVarBox, SplitColumnUpdate!");
+			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
+				.getSplitOptions().getColumnSplitIndex())
+			{
+				this.model.setColumnSplitIndex(this.view
+					.getSplitVarBoxSelectedIndex() - 1);
+				this.model.setSplitOptions(this.model.getSplitOptions());
+				if (this.view.getSplitVarBoxSelectedIndex() > 0)
+				{
+					this.setSplitType(this.model
+						.getTableModel()
+						.getColumnTypes()
+						.get(this.model.getSplitOptions().getColumnSplitIndex())
+						.getType());
+				}
+			}
+		}
+		else if (action.equals("splitNoBinsBox"))
+		{
+			this.setSplitType(this.model.getTableModel().getColumnTypes()
+				.get(this.model.getSplitOptions().getColumnSplitIndex())
+				.getType());
+		}
+		else if (action.equals("splitMinBoundary"))
+		{
+			updateSplitBoundaries();
+		}
+		else if (action.equals("splitBinWidth"))
+		{
+			updateSplitBoundaries();
+		}
+	}
+
+	private void updateSplitBoundaries()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		for (int i = 0; i <= this.view.getSplitVarBoxSelectedIndex(); i++)
+		{
+			boundaries.add(new Double(view.getSplitMinBoundary() + i
+				* view.getSplitBinWidth()));
+		}
+		this.model.setSplitBoundaries(boundaries);
+		this.view.setModel(this.model);
+	}
+
+	/*
+	 * Update the split bin boundaries using the settings for the minimum boundary
+	 * and the bin width, and determine the number of bins.
+	 */
+	private void updateSplitBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			this.model.getTableModel().getColumnMin(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			this.model.getTableModel().getColumnMax(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			view.getSplitBinWidth(),
+			view.getSplitMinBoundary());
+		this.model.setSplitBoundaries(boundaries);
+		this.view.setModel(this.model);
+
+	}
+	
+	private void setSplitType(AllowedTypes type)
+	{
+		if (type.isNumber())
+		{
+			ArrayList<Double> boundaries = new ArrayList<Double>();
+			boundaries = Statistiek.appropriateBoundaries(
+				this.model.getTableModel().getColumnMin(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getTableModel().getColumnMax(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.view.getSplitBinsBoxSelectedInt());
+
+			this.model.setSplitBoundaries(boundaries);
+			this.model.setSplitOptions(this.model.getSplitOptions());
+			this.view.setModel(this.model);
 		}
 	}
 
@@ -126,7 +212,7 @@ public class DescriptivesController implements StatistiekView,
 
 	public String getViewType()
 	{
-		return "Beschrijvende statistiek";
+		return "Kengetallen";
 	}
 
 	public Object getState()
@@ -135,6 +221,10 @@ public class DescriptivesController implements StatistiekView,
 
 		h.put("viewName", this.getViewName());
 		h.put("columnIndex", this.model.getColumnIndex());
+		h.put("columnSplitIndex", this.model.getSplitOptions()
+			.getColumnSplitIndex());
+		h.put("splitBoundaries", this.model.getSplitOptions()
+			.getBinBoundaries());
 
 		return h;
 	}
@@ -150,6 +240,15 @@ public class DescriptivesController implements StatistiekView,
 		if (h.containsKey("columnIndex"))
 		{
 			this.model.setColumnIndex((Integer) h.get("columnIndex"));
+		}
+		if (h.containsKey("columnSplitIndex"))
+		{
+			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+		}
+		if (h.containsKey("splitBoundaries"))
+		{
+			this.model.setSplitBoundaries((ArrayList<Double>) h
+				.get("splitBoundaries"));
 		}
 	}
 
@@ -168,7 +267,11 @@ public class DescriptivesController implements StatistiekView,
 		// TODO Auto-generated method stub
 	}
 
-	public void focusLost(FocusEvent arg0)
+	public void focusLost(FocusEvent e)
 	{
+//		System.out.println("DescriptivesController.focusLost(): e.getSource()="
+//			+ e.getSource());
+
+		updateSplitBoundariesFromBinSettings();
 	}
 }
