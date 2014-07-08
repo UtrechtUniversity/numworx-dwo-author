@@ -425,11 +425,14 @@ public class DescriptivesModel extends Observable implements
 	 *            Only look at the selection y/n
 	 * @return 
 	 * 		The minimum value of column columnIndex for the given split class.
-	 * 		Returns 0 if column is not numerical. 
+	 * 		Returns "not available" if column is not numerical or 
+	 * 		if no minimum can be calculated. 
 	 */
-	public double getColumnMin(int columnIndex, int splitClass, boolean forSelection)
+	public String getColumnMin(int columnIndex, int splitClass, boolean forSelection)
 	{
 		double min;
+		String minString = null;
+		
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
 		int splitColumnIndex = this.splitOptions.getColumnSplitIndex();
 		
@@ -437,15 +440,15 @@ public class DescriptivesModel extends Observable implements
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
 			// type is not numerical
-			min = 0;
+			minString = Statistiek.rb.getString("notAvailable");
 		}
 		else if (splitColumnIndex == -1)
 		{
 			// there is no split
 			if (forSelection)
-				min = this.tableModel.getColumnMinOfSelection(columnIndex);
+				minString = this.tableModel.getColumnMinOfSelection(columnIndex);
 			else
-				min = this.tableModel.getColumnMin(columnIndex);
+				minString = Statistiek.getStringValue(this.tableModel.getColumnMin(columnIndex));
 		}
 		else
 		{
@@ -482,15 +485,15 @@ public class DescriptivesModel extends Observable implements
 			if (minDouble.equals(Double.MAX_VALUE))
 			{
 				// no minimum found
-				min = 0;
+				minString = Statistiek.rb.getString("notAvailable");
 			}
 			else
 			{
-				min = minDouble.doubleValue();
+				minString = Statistiek.getStringValue(minDouble);
 			}
 		} // there is a split
 		
-		return min;
+		return minString;
 	}
 
 	/**
@@ -510,9 +513,11 @@ public class DescriptivesModel extends Observable implements
 	 * 		The maximum value of column columnIndex for the given split class.
 	 * 		Returns 0 if column is not numerical. 
 	 */
-	public double getColumnMax(int columnIndex, int splitClass, boolean forSelection)
+	public String getColumnMax(int columnIndex, int splitClass, boolean forSelection)
 	{
 		double max;
+		String maxString = null;
+
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
 		int splitColumnIndex = this.splitOptions.getColumnSplitIndex();
 		
@@ -520,15 +525,15 @@ public class DescriptivesModel extends Observable implements
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
 			// type is not numerical
-			max = 0;
+			maxString = Statistiek.rb.getString("notAvailable");
 		}
 		else if (splitColumnIndex == -1)
 		{
 			// there is no split
 			if (forSelection)
-				max = this.tableModel.getColumnMaxOfSelection(columnIndex);
+				maxString = this.tableModel.getColumnMaxOfSelection(columnIndex);
 			else
-				max = this.tableModel.getColumnMax(columnIndex);
+				maxString = Statistiek.getStringValue(this.tableModel.getColumnMax(columnIndex));
 		}
 		else
 		{
@@ -565,15 +570,15 @@ public class DescriptivesModel extends Observable implements
 			if (maxDouble.equals(Double.MIN_VALUE))
 			{
 				// no maximum found
-				max = 0;
+				maxString = Statistiek.rb.getString("notAvailable");
 			}
 			else
 			{
-				max = maxDouble.doubleValue();
+				maxString = Statistiek.getStringValue(maxDouble);
 			}
 		} // there is a split
 		
-		return max;
+		return maxString;
 	}
 
 	/**
@@ -591,11 +596,13 @@ public class DescriptivesModel extends Observable implements
 	 *            Only look at the selection y/n
 	 * @return 
 	 * 		The mean value of column columnIndex for the given split class.
-	 * 		Returns 0 if column is not numerical or if the mean cannot be calculated.
+	 * 		Returns "Not available" if column is not numerical or if the mean cannot be calculated.
 	 */
-	public double getColumnMean(int columnIndex, int splitClass, boolean forSelection)
+	public String getColumnMean(int columnIndex, int splitClass, boolean forSelection)
 	{
 		double mean;
+		String meanString = null;
+
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
 		int splitColumnIndex = this.splitOptions.getColumnSplitIndex();
 		
@@ -603,15 +610,15 @@ public class DescriptivesModel extends Observable implements
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
 			// type is not numerical
-			mean = 0;
+			meanString = Statistiek.rb.getString("notAvailable");
 		}
 		else if (splitColumnIndex == -1)
 		{
 			// there is no split
 			if (forSelection)
-				mean = this.tableModel.getColumnMeanOfSelection(columnIndex);
+				meanString = this.tableModel.getColumnMeanOfSelection(columnIndex);
 			else
-				mean = this.tableModel.getColumnMean(columnIndex);
+				meanString = Statistiek.getStringValue(this.tableModel.getColumnMean(columnIndex));
 		}
 		else
 		{
@@ -645,12 +652,12 @@ public class DescriptivesModel extends Observable implements
 			}
 			
 			if (count > 0)
-				mean = sum/count;
+				meanString = Statistiek.getStringValue(sum/count);
 			else
-				mean = 0;
+				meanString = Statistiek.rb.getString("notAvailable");
 		} // there is a split
 		
-		return mean;
+		return meanString;
 	}
 
 	/**
@@ -669,10 +676,12 @@ public class DescriptivesModel extends Observable implements
 	 *            Only look at the selection y/n
 	 * @return 
 	 * 		The standard deviation of column columnIndex for the given split class. 
-	 * 		Returns 0 if column is not numerical or if the standard deviation cannot be calculated.
+	 * 		Returns "Not available" if column is not numerical or if the standard deviation cannot be calculated.
 	 */
-	public double getColumnSD(int columnIndex, int splitClass, boolean forSelection)
+	public String getColumnSD(int columnIndex, int splitClass, boolean forSelection)
 	{
+		String sdString = null;
+
 		double sd;
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
 		int splitColumnIndex = this.splitOptions.getColumnSplitIndex();
@@ -681,12 +690,12 @@ public class DescriptivesModel extends Observable implements
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
 			// type is not numerical
-			sd = 0;
+			sdString = Statistiek.rb.getString("notAvailable");
 		}
 		else if (splitColumnIndex == -1)
 		{
 			// there is no split
-			sd = this.tableModel.getColumnSD(columnIndex);
+			sdString = Statistiek.getStringValue(this.tableModel.getColumnSD(columnIndex));
 		}
 		else
 		{
@@ -699,7 +708,7 @@ public class DescriptivesModel extends Observable implements
 			int count = 0; // number of valid values
 			double mean;
 			
-			mean = this.getColumnMean(columnIndex, splitClass, forSelection);
+			mean = Double.parseDouble(this.getColumnMean(columnIndex, splitClass, forSelection));
 			for (int i = 0; i < this.tableModel.getRowCount(); i++)
 			{
 				if ((forSelection && this.tableModel.getSelectionList().get(i))
@@ -723,12 +732,12 @@ public class DescriptivesModel extends Observable implements
 			}
 			
 			if (count > 0)
-				sd = Math.sqrt(sum/count);
+				sdString = Statistiek.getStringValue(Math.sqrt(sum/count));
 			else
-				sd = 0;
+				sdString = Statistiek.rb.getString("notAvailable");
 		} // there is a split
 		
-		return sd;
+		return sdString;
 	}
 
 	/**
