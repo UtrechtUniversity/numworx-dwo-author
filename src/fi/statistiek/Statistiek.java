@@ -460,4 +460,21 @@ public class Statistiek implements WiskOpdrApplet
 
 		return number;
 	}
+	
+	/**
+	 * Get the string value of double. If the value is an integer value
+	 * a string is returned without decimals.
+	 * @param d The double value
+	 * @return The string value
+	 */
+	public static String getStringValue(double d)
+	{
+		String s;
+		if ((d == Math.floor(d)) && !Double.isInfinite(d))
+			s = String.valueOf((int) d);
+		else
+			s = String.valueOf(d);
+		
+		return s;
+	}
 }
