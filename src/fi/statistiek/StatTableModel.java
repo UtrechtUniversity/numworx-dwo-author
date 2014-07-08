@@ -1132,40 +1132,49 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @param columnIndex
 	 *            the column index
-	 * @return The minimum value of a numerical column. Returns 0 if column is not numerical. 
+	 * @return 
+	 * 		The minimum value of a numerical column. Returns "Not available" 
+	 * 		if column is not numerical or if the minimum cannot be calculated. 
 	 */
-	public double getColumnMinOfSelection(int columnIndex)
+	public String getColumnMinOfSelection(int columnIndex)
 	{
+		String minString = null;
+		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
-			return 0;
-		}
-		Double min = Double.MAX_VALUE;
-		for (int i = 0; i < this.rowCount; i++)
-		{
-			if (this.selectionList.get(i))
-			{
-				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
-				{
-					Double d = Double.parseDouble((String) o);
-					if (d < min)
-					{
-						min = d;
-					}
-				}
-			}
-		}
-		if (min.equals(Double.MAX_VALUE))
-		{
-			return 0;
+			minString = Statistiek.rb.getString("notAvailable");
 		}
 		else
 		{
-			return min.doubleValue();
+			Double min = Double.MAX_VALUE;
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				if (this.selectionList.get(i))
+				{
+					Object o = this.getValueAt(i, columnIndex);
+					if (!o.equals(ColumnType.WILDCARD))
+					{
+						Double d = Double.parseDouble((String) o);
+						if (d < min)
+						{
+							min = d;
+						}
+					}
+				}
+			}
+			if (min.equals(Double.MAX_VALUE))
+			{
+				minString = Statistiek.rb.getString("notAvailable");
+			}
+			else
+			{
+				minString = Statistiek.getStringValue(min);
+			}
 		}
+		
+		return minString;
 	}
 
 	/**
@@ -1211,40 +1220,50 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @param columnIndex
 	 *            The column index
-	 * @return The maximum value of a numerical column. Returns 100 if column is not numerical.
+	 * @return 
+	 * 		The maximum value of a numerical column. 
+	 * 		Returns "Not available" if column is not numerical 
+	 * 		or if the maximum cannot be calculated.
 	 */
-	public double getColumnMaxOfSelection(int columnIndex)
+	public String getColumnMaxOfSelection(int columnIndex)
 	{
+		String maxString = null;
+		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
-			return 100;
-		}
-		Double max = Double.MIN_VALUE;
-		for (int i = 0; i < this.rowCount; i++)
-		{
-			if (this.selectionList.get(i)) // only process the selected items
-			{
-				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
-				{
-					Double d = Double.parseDouble((String) o);
-					if (d > max)
-					{
-						max = d;
-					}
-				}
-			}
-		}
-		if (max.equals(Double.MIN_VALUE))
-		{
-			return 100;
+			maxString = Statistiek.rb.getString("notAvailable");
 		}
 		else
 		{
-			return max.doubleValue();
+			Double max = Double.MIN_VALUE;
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				if (this.selectionList.get(i)) // only process the selected items
+				{
+					Object o = this.getValueAt(i, columnIndex);
+					if (!o.equals(ColumnType.WILDCARD))
+					{
+						Double d = Double.parseDouble((String) o);
+						if (d > max)
+						{
+							max = d;
+						}
+					}
+				}
+			}
+			if (max.equals(Double.MIN_VALUE))
+			{
+				maxString = Statistiek.rb.getString("notAvailable");
+			}
+			else
+			{
+				maxString = Statistiek.getStringValue(max);
+			}
 		}
+		
+		return maxString;
 	}
 	
 	/**
@@ -1288,36 +1307,43 @@ public class StatTableModel implements TableModel
 	 * @param columnIndex
 	 *            The column index
 	 * @return The mean value of a numerical column. 
-	 * 		Returns 0 if column is not numerical or if the mean cannot be calculated.
+	 * 		Returns "Not available" if column is not numerical or if the mean cannot be calculated.
 	 */
-	public double getColumnMeanOfSelection(int columnIndex)
+	public String getColumnMeanOfSelection(int columnIndex)
 	{
+		String meanString = null;
+		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
-			return 0;
+			meanString = Statistiek.rb.getString("notAvailable");
 		}
-		Double sum = 0.0;
-		int count = 0; // number of valid values
-		
-		for (int i = 0; i < this.rowCount; i++)
+		else
 		{
-			if (this.selectionList.get(i))
+			Double sum = 0.0;
+			int count = 0; // number of valid values
+			
+			for (int i = 0; i < this.rowCount; i++)
 			{
-				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
+				if (this.selectionList.get(i))
 				{
-					Double d = Double.parseDouble((String) o);
-					sum += d;
-					count++;
+					Object o = this.getValueAt(i, columnIndex);
+					if (!o.equals(ColumnType.WILDCARD))
+					{
+						Double d = Double.parseDouble((String) o);
+						sum += d;
+						count++;
+					}
 				}
 			}
+			if (count > 0)
+				meanString = Statistiek.getStringValue(sum/count);
+			else
+				meanString = Statistiek.rb.getString("notAvailable");
 		}
-		if (count > 0)
-			return sum/count;
-		else
-			return 0;
+		
+		return meanString;
 	}	
 
 	/**
@@ -1375,7 +1401,7 @@ public class StatTableModel implements TableModel
 		}
 		Double sum = 0.0;
 		int count = 0; // number of valid values
-		double mean = this.getColumnMeanOfSelection(columnIndex);
+		double mean = Double.parseDouble(this.getColumnMeanOfSelection(columnIndex));
 		
 		for (int i = 0; i < this.rowCount; i++)
 		{
