@@ -481,10 +481,10 @@ public class HistogramView extends JPanel implements Observer
 //    					width, height, g, colorSelectedBar, shadingColor, true);
 
     				// draw the selected bar darker in its original color c 
-    				shadingColor = ColorPreviewer.mixColors(c.darker(), Color.WHITE,
+    				shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE,
 						colorMixSymm);
     				fillRectWithSymmShade(x_coordinate, y_coordinate, 
-    					width, height, g, c.darker(), shadingColor, true);
+    					width, height, g, c.darker().darker(), shadingColor, true);
 				}
 				else
 				{
@@ -511,9 +511,9 @@ public class HistogramView extends JPanel implements Observer
 //    					true);
 
     				// draw the selected bar darker in its original color c 
-    				shadingColor = ColorPreviewer.mixColors(c.darker(), Color.WHITE, colorMix);
+    				shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE, colorMix);
     				fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
-    					width, height, g, c.darker(), shadingColor,
+    					width, height, g, c.darker().darker(), shadingColor,
     					true);
 				}
 				
