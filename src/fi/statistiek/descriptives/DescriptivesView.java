@@ -428,7 +428,7 @@ public class DescriptivesView extends JPanel implements Observer
 		String sdString;
 		String medianString;
 
-		if (this.typeColumnIndex.isNumber())
+		if (this.typeColumnIndex.isNumber() && (this.numberOfCases[selection][splitClass] > 0))
 		{
 			int columnIndex = this.model.getColumnIndex(); // this.varBoxSelectedIndex() is nog niet geupdate!
 			int numberOfDecimals = determineMaxNumberOfDecimals(columnIndex) + 2;
@@ -437,20 +437,40 @@ public class DescriptivesView extends JPanel implements Observer
 			{
 				minimumString = this.getMinimumValue(columnIndex, splitClass, false);
 				maximumString = this.getMaximumValue(columnIndex, splitClass, false);
-				meanString = this.getStringValue(
-					Statistiek.round(this.model.getColumnMean(columnIndex, splitClass, false), numberOfDecimals));
-				sdString = this.getStringValue(
-					Statistiek.round(this.model.getColumnSD(columnIndex, splitClass, false), numberOfDecimals));
+				
+				meanString = this.model.getColumnMean(columnIndex, splitClass, false);
+				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
+				{
+					meanString = this.getStringValue(
+						Statistiek.round(Double.parseDouble(meanString), numberOfDecimals));
+				}
+				
+				sdString = this.model.getColumnSD(columnIndex, splitClass, false);
+				if (!sdString.equals(Statistiek.rb.getString("notAvailable")))
+				{
+					sdString = this.getStringValue(
+						Statistiek.round(Double.parseDouble(sdString), numberOfDecimals));
+				}
 				medianString = getMedianValue(columnIndex, splitClass, false);
 			}
 			else
 			{
 				minimumString = this.getMinimumValue(columnIndex, splitClass, true);
 				maximumString = this.getMaximumValue(columnIndex, splitClass, true);
-				meanString = this.getStringValue(
-					Statistiek.round(this.model.getColumnMean(columnIndex, splitClass, true), numberOfDecimals));
-				sdString = this.getStringValue(
-					Statistiek.round(this.model.getColumnSD(columnIndex, splitClass, true), numberOfDecimals));
+				
+				meanString = this.model.getColumnMean(columnIndex, splitClass, true);
+				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
+				{
+					meanString = this.getStringValue(
+						Statistiek.round(Double.parseDouble(meanString), numberOfDecimals));
+				}
+				
+				sdString = this.model.getColumnSD(columnIndex, splitClass, true);
+				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
+				{
+					sdString = this.getStringValue(
+						Statistiek.round(Double.parseDouble(sdString), numberOfDecimals));
+				}
 				medianString = getMedianValue(columnIndex, splitClass, true);
 			}
 		} // type is number
@@ -521,20 +541,14 @@ public class DescriptivesView extends JPanel implements Observer
 
 	private String getMaximumValue(int columnIndex, int splitClass, boolean forSelection)
 	{
-		String maximumValue;
-		double maxDouble = this.model.getColumnMax(columnIndex, splitClass, forSelection);
-		
-		maximumValue = getStringValue(maxDouble);
+		String maximumValue = this.model.getColumnMax(columnIndex, splitClass, forSelection);
 		
 		return maximumValue;
 	}
 
 	private String getMinimumValue(int columnIndex, int splitClass, boolean forSelection)
 	{
-		String minimumValue;
-		double minDouble = this.model.getColumnMin(columnIndex, splitClass, forSelection);
-		
-		minimumValue = getStringValue(minDouble);
+		String minimumValue = this.model.getColumnMin(columnIndex, splitClass, forSelection);
 		
 		return minimumValue;
 	}
