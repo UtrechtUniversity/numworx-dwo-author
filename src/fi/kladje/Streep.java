@@ -25,6 +25,25 @@ public class Streep
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
+	public Streep(Color c, ArrayList<DoublePoint> punten)
+	{	kleur = c;
+		puntenXD = new double[punten.size()];
+		puntenYD = new double[punten.size()];
+
+		for (int pCnt = 0; pCnt < punten.size(); pCnt++)
+		{	DoublePoint pt = punten.get(pCnt);
+			puntenXD[pCnt] = pt.x;
+			puntenYD[pCnt] = pt.y;
+			
+			cx += puntenXD[pCnt];
+			cy += puntenYD[pCnt];
+		}
+		
+		cx /= puntenXD.length;
+		cy /= puntenYD.length;
+
+		maakStreep();
+	}
 	
 	public Streep(Color c, Vector punten)
 	{	kleur = c;

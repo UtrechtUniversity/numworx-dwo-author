@@ -54,7 +54,12 @@ public class KladjeVeld extends JPanel
 	final int selecteren = 6;
 	int mouseMode = tekenen;
 	
-	Vector draggPoints = new Vector();
+	final int GAUSSIAN = 0;
+	final int AVERAGE = 1;
+	final int AVERAGE2 = 2;
+	int smoothType = AVERAGE2;
+	//Vector draggPoints = new Vector();
+	ArrayList<DoublePoint> draggDoublePoints = new ArrayList<DoublePoint>();
 	//Vector gumPunten = new Vector();
 	//int gumGrootte = 7; // oneven	
 	Point figuurStart = null;
@@ -596,6 +601,66 @@ System.out.println("returned " + (numHistories - 1));
 		repaint();
 	}
 	
+	public ArrayList<DoublePoint> gaussianSmooth(ArrayList<DoublePoint> doublePoints)
+	{
+		if (doublePoints.size() < 3) 
+			return doublePoints;
+		ArrayList<DoublePoint> pointsNew = new ArrayList<DoublePoint>();
+		pointsNew.add(doublePoints.get(0));		
+		for (int i = 1; i < doublePoints.size() - 1; i++)
+		{
+			DoublePoint pOld0 = doublePoints.get(i-1);
+			DoublePoint pOld1 = doublePoints.get(i);
+			DoublePoint pOld2 = doublePoints.get(i+1);
+			DoublePoint smoothedPoint = new DoublePoint(pOld0.x / 4 + pOld1.x / 2 + pOld2.x / 4,
+														pOld0.y / 4 + pOld1.y / 2 + pOld2.y / 4);
+			pointsNew.add(smoothedPoint);
+		}
+		pointsNew.add(doublePoints.get(doublePoints.size() - 1));
+		
+		return pointsNew;
+		
+	}
+
+	public ArrayList<DoublePoint> averageSmooth(ArrayList<DoublePoint> doublePoints)
+	{
+		if (doublePoints.size() < 5) 
+			return doublePoints;
+		ArrayList<DoublePoint> pointsNew = new ArrayList<DoublePoint>();
+		pointsNew.add(doublePoints.get(0));		
+		pointsNew.add(doublePoints.get(1));
+		for (int i = 2; i < doublePoints.size() - 2; i++)
+		{
+			DoublePoint pOld0 = doublePoints.get(i-2);
+			DoublePoint pOld1 = doublePoints.get(i-1);
+			DoublePoint pOld2 = doublePoints.get(i);
+			DoublePoint pOld3 = doublePoints.get(i+1);
+			DoublePoint pOld4 = doublePoints.get(i+2);
+			
+			DoublePoint smoothedPoint = new DoublePoint(pOld0.x/5 + pOld1.x/5 + pOld2.x/5 + pOld3.x/5 + pOld4.x/5,
+														pOld0.y/5 + pOld1.y/5 + pOld2.y/5 + pOld3.y/5 + pOld4.y/5);
+			pointsNew.add(smoothedPoint);
+		}
+		pointsNew.add(doublePoints.get(doublePoints.size() - 1));
+		
+		return pointsNew;
+		
+	}
+
+	public ArrayList<DoublePoint> smooth(ArrayList<DoublePoint> doublePoints, int smoothType)
+	{
+		if (smoothType == GAUSSIAN)
+			return gaussianSmooth(doublePoints);
+		else if (smoothType == AVERAGE)
+			return averageSmooth(doublePoints);
+		else if (smoothType == AVERAGE2)
+		{	ArrayList<DoublePoint> oneSmooth = averageSmooth(doublePoints);
+			return averageSmooth(oneSmooth);			
+		}
+		else
+			return doublePoints;
+	}
+	
 	public void paintComponent(Graphics g)
 	{
 		
@@ -691,7 +756,8 @@ System.out.println("returned " + (numHistories - 1));
 		
 		
 		g.setColor(drawingColor);		
-		
+
+/*		
 		if (draggPoints.size() == 1)
 		{	Point p = (Point) draggPoints.elementAt(0);
 			g.drawLine(p.x, p.y, p.x, p.y);
@@ -705,6 +771,25 @@ System.out.println("returned " + (numHistories - 1));
 			}
 			
 		}
+*/		
+		
+		if (draggDoublePoints.size() == 1)
+		{	Point p = draggDoublePoints.get(0).getPoint();
+			g.drawLine(p.x, p.y, p.x, p.y);
+		}
+		if (draggDoublePoints.size() > 1)
+		{	
+			ArrayList<DoublePoint> smoothedDraggDoublePoints = smooth(draggDoublePoints, smoothType);
+									
+			Point p1 = smoothedDraggDoublePoints.get(0).getPoint();
+			for (int pCnt = 1; pCnt < smoothedDraggDoublePoints.size(); pCnt++)
+			{	Point p2 = smoothedDraggDoublePoints.get(pCnt).getPoint();
+				g.drawLine(p1.x, p1.y, p2.x, p2.y);
+				p1 = p2;
+			}
+			
+		}
+		
 		
 		if ((mouseMode == lijnTekenen) && (figuurStart != null) && (lijnEinde != null))
 		{	
@@ -2290,7 +2375,8 @@ System.out.println("returned " + (numHistories - 1));
 		{
 			if (mouseMode == tekenen)
 			{
-				draggPoints.addElement(new Point(e.getX(), e.getY()));
+				//draggPoints.addElement(new Point(e.getX(), e.getY()));
+				draggDoublePoints.add(new DoublePoint(e.getX(), e.getY()));
 			}
 /*			
 			else if (mouseMode == gummen)
@@ -2389,7 +2475,8 @@ System.out.println("returned " + (numHistories - 1));
 		{
 			if (mouseMode == tekenen)
 			{
-				draggPoints.addElement(new Point(e.getX(), e.getY()));
+				//draggPoints.addElement(new Point(e.getX(), e.getY()));
+				draggDoublePoints.add(new DoublePoint(e.getX(), e.getY()));
 			}
 /*			
 			else if (mouseMode == gummen)
@@ -2690,11 +2777,15 @@ System.out.println("returned " + (numHistories - 1));
 			if (mouseMode == tekenen)
 			{	
 				//updatePixelArray();
-				Streep streep = new Streep(drawingColor, draggPoints);
+				
+				ArrayList<DoublePoint> smoothedDraggDoublePoints = smooth(draggDoublePoints, smoothType);
+	
+				Streep streep = new Streep(drawingColor, smoothedDraggDoublePoints);
 				streepVector.addElement(streep);
-				if (draggPoints.size() > 1)
+				if (draggDoublePoints.size() > 1)
 					addToHistory();
-				draggPoints.removeAllElements();
+				//draggPoints.removeAllElements();
+				draggDoublePoints.clear();
 				repaint();
 			}
 /*			
