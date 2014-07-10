@@ -169,21 +169,18 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 
 		h.put("selectionList", this.model.getData().getSelectionList());
 
-		if (this.model.getData().isViewsAddable()
-			|| this.model.getData().isViewsEditable())
+		// statistiekViewTypes and statistiekViewStates should always be added to the state
+		int noViews = this.model.getViews().size();
+		String[] statistiekViewTypes = new String[noViews];
+		Object[] statistiekViewStates = new Object[noViews];
+		for (int i = 0; i < noViews; i++)
 		{
-			int noViews = this.model.getViews().size();
-			String[] statistiekViewTypes = new String[noViews];
-			Object[] statistiekViewStates = new Object[noViews];
-			for (int i = 0; i < noViews; i++)
-			{
-				statistiekViewTypes[i] = this.model.getViews().get(i).getViewType();
-				statistiekViewStates[i] = this.model.getViews().get(i).getState();
-			}
-
-			h.put("statistiekViewTypes", statistiekViewTypes);
-			h.put("statistiekViewStates", statistiekViewStates);
+			statistiekViewTypes[i] = this.model.getViews().get(i).getViewType();
+			statistiekViewStates[i] = this.model.getViews().get(i).getState();
 		}
+
+		h.put("statistiekViewTypes", statistiekViewTypes);
+		h.put("statistiekViewStates", statistiekViewStates);
 
 		int tabInt = this.model.mainWindowIndexToGeneralIndex(this.view
 			.getSelectedView());
