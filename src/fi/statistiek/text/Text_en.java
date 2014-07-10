@@ -120,7 +120,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "integer", "Whole number"},
             {   "double", "Decimal number"},
             {   "string", "Text"},
-            {   "enum", "Opsomming"},
+            {   "enum", "Enumeration"},
             {   "messageNrRowsMoreThan", "Number of rows is more than "},
             {   "messageChooseOtherVar", "Choose another variable."},
             {   "correlationNoShow", "Correlatie cannot be calculated"},
