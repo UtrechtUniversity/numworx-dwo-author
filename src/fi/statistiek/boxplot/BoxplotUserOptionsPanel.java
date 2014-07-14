@@ -182,6 +182,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBinsBox.setFont(Statistiek.font);
 		this.splitBinsBox.setMaximumSize(new Dimension(100, 25));
 		this.splitBinsBox.setPreferredSize(new Dimension(100, 25));
+		this.splitBinsBox.setSelectedIndex(1); //  by default select 1
 		this.splitBinsBox.setActionCommand("splitBinsBox");
 		this.splitBinsBox.addActionListener(this.controller);
 
