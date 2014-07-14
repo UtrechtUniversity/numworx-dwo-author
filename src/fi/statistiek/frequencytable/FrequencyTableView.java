@@ -309,7 +309,8 @@ public class FrequencyTableView extends JPanel implements Observer
 						this.mainPanelRows = 0;
 					}
 					
-					this.rowColors = new Color[this.model.numberClassFrequency()[0].length / 2][numberOfSplitClasses];
+					if (this.model.numberClassFrequency() != null)
+						this.rowColors = new Color[this.model.numberClassFrequency()[0].length / 2][numberOfSplitClasses];
 				}
 				else
 				{
@@ -378,11 +379,14 @@ public class FrequencyTableView extends JPanel implements Observer
 					makeHeaderRow(splitClassPanels[i]);
 					
 					// make middle part
-					int sum;
+					int sum = 0;
 					if (type.isNumber())
 					{
-						frequencies = this.model.numberClassFrequency()[i];
-						sum = this.arrayEvenSum(frequencies);
+						if (this.model.numberClassFrequency() != null)
+						{
+							frequencies = this.model.numberClassFrequency()[i];
+							sum = this.arrayEvenSum(frequencies);
+						}
 					}
 					else
 					{
@@ -391,7 +395,10 @@ public class FrequencyTableView extends JPanel implements Observer
 					}
 	
 					if (frequencyTuple == null)
-						makeMiddlePart(splitClassPanels[i], type, frequencies, null, sum);				
+					{
+						if (frequencies != null)
+							makeMiddlePart(splitClassPanels[i], type, frequencies, null, sum);
+					}
 					else
 						makeMiddlePart(splitClassPanels[i], type, frequencies, frequencyTuple[i], sum);
 					
@@ -400,27 +407,33 @@ public class FrequencyTableView extends JPanel implements Observer
 					// set colors for background
 					if (type.isNumber())
 					{
-						for (int j = 0; j < frequencies.length; j += 2)
+						if (frequencies != null)
 						{
-							double d = (frequencies[j] == 0 ? 0.0
-								: (double) frequencies[j + 1] / (double) frequencies[j]);
-	//						System.out.println("FrequencyTableView.update(): " + frequencies[i + 1] + " "
-	//							+ frequencies[i] + " " + d);
-							this.rowColors[j / 2][i] = ColorPreviewer.mixColors(
-								Color.WHITE, SELECTED_COLOR, d);
+							for (int j = 0; j < frequencies.length; j += 2)
+							{
+								double d = (frequencies[j] == 0 ? 0.0
+									: (double) frequencies[j + 1] / (double) frequencies[j]);
+		//						System.out.println("FrequencyTableView.update(): " + frequencies[i + 1] + " "
+		//							+ frequencies[i] + " " + d);
+								this.rowColors[j / 2][i] = ColorPreviewer.mixColors(
+									Color.WHITE, SELECTED_COLOR, d);
+							}
 						}
 					}
 					else
 					{
-						for (int k = 0; k < frequencyTuple[i].length; k++)
+						if (frequencyTuple != null)
 						{
-							FrequencyTuple ft = frequencyTuple[i][k];
-							double d = (ft.frequency == 0 ? 0
-								: (double) ft.selectionFrequency
-									/ (double) ft.frequency);
-	//						System.out.println("FrequencyTableView.update(): " + d);
-							this.rowColors[k][i] = ColorPreviewer.mixColors(Color.WHITE,
-								SELECTED_COLOR, d);
+							for (int k = 0; k < frequencyTuple[i].length; k++)
+							{
+								FrequencyTuple ft = frequencyTuple[i][k];
+								double d = (ft.frequency == 0 ? 0
+									: (double) ft.selectionFrequency
+										/ (double) ft.frequency);
+		//						System.out.println("FrequencyTableView.update(): " + d);
+								this.rowColors[k][i] = ColorPreviewer.mixColors(Color.WHITE,
+									SELECTED_COLOR, d);
+							}
 						}
 					}
 	
