@@ -90,13 +90,13 @@ public class BoxplotController implements StatistiekView, ActionListener
 		}
 		else if (actionCommand.equals("splitVarBox"))
 		{
-			System.out.println("SplitColumnUpdate!");
+			//System.out.println("BoxplotController.actionperformed(): splitVarBox!");
 			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
 				.getSplitOptions().getColumnSplitIndex())
 			{
-				this.model.setColumnSplitIndex(this.view
+				this.model.setColumnSplitIndexWithoutEvent(this.view
 					.getSplitVarBoxSelectedIndex() - 1);
-				this.model.setSplitOptions(this.model.getSplitOptions());
+				this.model.setSplitOptionsWithoutEvent(this.model.getSplitOptions());
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.setSplitType(this.model
@@ -105,9 +105,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
 				}
-				// boolean b = this.view.isNextToEachOtherSelected();
-				// this.model.setNextToEachOther(!b);
-				// this.model.setNextToEachOther(b);
+				this.model.setPercentileValues();
 			}
 		}
 		else if (actionCommand.equals("splitBinsBox"))
