@@ -574,7 +574,7 @@ public class FrequencyTableView extends JPanel implements Observer
 				freq = frequencies[bin * 2];
 				JLabel label = new JLabel(this.model.getBinBoundaries()
 					.get(bin).toString()
-					+ " - "
+					+ " -< "
 					+ this.model.getBinBoundaries().get(bin + 1).toString());
 				label.setFont(Statistiek.font);
 				panel.add(label);
