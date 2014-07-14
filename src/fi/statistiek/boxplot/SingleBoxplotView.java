@@ -485,6 +485,13 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
 			int upper_x = lower_x + widthBoxplot;
 			
     		if (p.x > lower_x && p.x < upper_x
+    			&& (p.y > (locationMedian - 5)) && p.y < (locationMedian + 5))
+    		{
+    			ToolTipManager.sharedInstance().setEnabled(true);
+    			this.setToolTipText("mediaan = " + this.median);			
+    			setHighlightValues(false, false, true, false, false);
+    		}
+    		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationMinValue - 5)) && p.y < (locationMinValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
@@ -492,20 +499,13 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			setHighlightValues(true, false, false, false, false);
     		}
     		// TODO: when e.g. minValue and lowerQuartile are close together or the same
-    		// show show multiple tooltips
+    		// show multiple tooltips
     		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationLowerQuartile - 5)) && p.y < (locationLowerQuartile + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
     			this.setToolTipText("1e kwartiel = " + this.lowerQuartile);
     			setHighlightValues(false, true, false, false, false);
-    		}
-    		else if (p.x > lower_x && p.x < upper_x
-    			&& (p.y > (locationMedian - 5)) && p.y < (locationMedian + 5))
-    		{
-    			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("mediaan = " + this.median);			
-    			setHighlightValues(false, false, true, false, false);
     		}
     		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationUpperQuartile - 5)) && p.y < (locationUpperQuartile + 5))
@@ -526,7 +526,7 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			ToolTipManager.sharedInstance().setEnabled(false);
     			setHighlightValues(false, false, false, false, false);
     		}
-		}
+		} // vertical boxplots
 		else // horizontal boxplots
 		{
 			// lower y coordinate of the horizontal boxplot
@@ -534,6 +534,13 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
 			int lower_y = upper_y - widthBoxplot;
 			
     		if (p.y > lower_y && p.y < upper_y
+    			&& (p.x > (locationMedian - 5)) && p.x < (locationMedian + 5))
+    		{
+    			ToolTipManager.sharedInstance().setEnabled(true);
+    			this.setToolTipText("mediaan = " + this.median);			
+    			setHighlightValues(false, false, true, false, false);
+    		}
+    		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationMinValue - 5)) && p.x < (locationMinValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
@@ -546,13 +553,6 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			ToolTipManager.sharedInstance().setEnabled(true);
     			this.setToolTipText("1e kwartiel = " + this.lowerQuartile);			
     			setHighlightValues(false, true, false, false, false);
-    		}
-    		else if (p.y > lower_y && p.y < upper_y
-    			&& (p.x > (locationMedian - 5)) && p.x < (locationMedian + 5))
-    		{
-    			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("mediaan = " + this.median);			
-    			setHighlightValues(false, false, true, false, false);
     		}
     		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationUpperQuartile - 5)) && p.x < (locationUpperQuartile + 5))
