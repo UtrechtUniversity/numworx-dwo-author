@@ -180,7 +180,7 @@ public class BoxplotView extends JPanel implements Observer
 
 	public BoxplotModel getModel()
 	{
-		// test syl: methode nodig om type te kunnen opvragen van de te 
+		// Deze methode is nodig om type te kunnen opvragen van de te 
 		// tekenen variabele in BoxplotDependentAxis
 		return this.model;
 	}
@@ -432,6 +432,12 @@ public class BoxplotView extends JPanel implements Observer
 			this.mainPanel.revalidate();
 
 			this.repaint();
+		} // non empty dataset
+		else
+		{
+		// empty dataset
+			this.mainPanel.removeAll();
+			userOptionsPanel.update();			
 		}
 	}
 }
