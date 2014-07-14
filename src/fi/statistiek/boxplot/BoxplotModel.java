@@ -184,8 +184,8 @@ public class BoxplotModel extends Observable implements TableModelListener
 	 */
 	public void setColumnIndex(int columnIndex)
 	{
-		System.out.println("Setting column from " + this.columnIndex + " to "
-			+ columnIndex);
+//		System.out.println("BoxplotModel.setColumnIndex(): Setting column from " + this.columnIndex + " to "
+//			+ columnIndex);
 		this.columnIndex = columnIndex;
 		this.setPercentileValues();
 		this.changed();
@@ -263,7 +263,11 @@ public class BoxplotModel extends Observable implements TableModelListener
 		// als niet-numerieke variabele gekozen, dan kun je geen percentielwaarden berekenen
 		String type = this.tableModel.getColumnTypes().get(columnIndex).getType().toString();
 		if (type.equals("Enum") || type.equals("String"))
+		{
+			// 'empty' the dataset; field dataMinValue is used to test for empty dataset
+			this.dataMinValue = null;
 			return;
+		}
 
 		if (!this.getTableModel().isColumnIndexValid(
 			this.splitOptions.getColumnSplitIndex()))
@@ -279,7 +283,7 @@ public class BoxplotModel extends Observable implements TableModelListener
 					// get the value
 					Double d = Double.parseDouble(valueString);
 
-					// add the value to a list based on the spitclass
+					// add the value to a list based on the splitclass
 					data.add(d);
 				}
 			}
