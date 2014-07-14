@@ -472,4 +472,23 @@ public class BoxplotModel extends Observable implements TableModelListener
 		}
 	}
 
+	/**
+	 * Set column split index without triggering an updating event.
+	 * @param columnSplitIndex
+	 */
+	public void setColumnSplitIndexWithoutEvent(int columnSplitIndex)
+	{
+		this.splitOptions.setColumnSplitIndex(columnSplitIndex);
+	}
+
+	/**
+	 * Set split options without triggering an updating event.
+	 * @param splitOptions
+	 */
+	public void setSplitOptionsWithoutEvent(
+		SplitOptions splitOptions)
+	{
+		this.splitOptions = splitOptions;
+	}
+
 }
