@@ -126,7 +126,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		// }
 		else if (actionCommand.equals("splitVarBox"))
 		{
-			System.out.println("SplitColumnUpdate!");
+			//System.out.println("DotplotController.actionPerformed(): splitVarBox!");
 			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
 				.getSplitOptions().getColumnSplitIndex())
 			{
@@ -141,9 +141,6 @@ public class DotplotController implements StatistiekView, ActionListener,
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
 				}
-				// boolean b = this.view.isNextToEachOtherSelected();
-				// this.model.setNextToEachOther(!b);
-				// this.model.setNextToEachOther(b);
 			}
 		}
 		else if (actionCommand.equals("splitBinsBox"))
@@ -175,7 +172,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
 		{
-			boundaries.add(new Double(view.getSplitminBoundary() + i
+			boundaries.add(new Double(view.getSplitMinBoundary() + i
 				* view.getSplitBinWidth()));
 		}
 		this.model.setSplitBinBoundaries(boundaries);
@@ -253,6 +250,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 			.getColumnSplitIndex());
 		// System.out.println("   columnSplitIndex=" +
 		// this.model.getSplitOptions().getColumnSplitIndex());
+		h.put("splitBoundaries", this.model.getSplitBinBoundaries());
 
 		h.put("splitInSingleView", this.model.splitInSingleView());
 		// System.out.println("   splitInSingleView=" +
@@ -311,6 +309,11 @@ public class DotplotController implements StatistiekView, ActionListener,
 			this.model.setSplitInSingleView(((Boolean) h
 				.get("splitInSingleView")).booleanValue());
 		}
+		if (h.containsKey("splitBoundaries"))
+		{
+			this.model.setSplitBinBoundaries((ArrayList<Double>) h
+				.get("splitBoundaries"));
+		}
 //		if (h.containsKey("scatterplotMode"))
 //		{
 //			this.model.setScatterplotMode(((Boolean) h
@@ -328,6 +331,25 @@ public class DotplotController implements StatistiekView, ActionListener,
 		this.model.setViewName(s);
 	}
 
+	/*
+	 * Update the split bin boundaries using the settings for the minimum boundary
+	 * and the bin width, and determine the number of bins.
+	 */
+	public void updateSplitBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			this.model.getTableModel().getColumnMin(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			this.model.getTableModel().getColumnMax(
+				this.model.getSplitOptions().getColumnSplitIndex()),
+			view.getSplitBinWidth(),
+			view.getSplitMinBoundary());
+		this.model.setSplitBoundaries(boundaries);
+		this.view.setModel(this.model);
+	}
+	
 	public void mouseClicked(MouseEvent arg0)
 	{
 		Container c = Statistiek.getTopLevelAcestor(this.view);
