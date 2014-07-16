@@ -70,7 +70,9 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.splitOptions.setColumnSplitIndex(-1);
 
 		ArrayList<Double> boundaries = new ArrayList<Double>();
+		// by default 2 split bins
 		boundaries.add(0.0);
+		boundaries.add(50.0);
 		boundaries.add(100.0);
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.scatterplotMode = scatterplotMode;
@@ -173,19 +175,6 @@ public class DotplotModel extends Observable implements TableModelListener,
 		if (!(this.splitOptions.getColumnSplitIndex() == columnSplitIndex))
 		{
 			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
-			if (this.columnSplitIndexValid()
-				&& this.tableModel.getColumnTypes()
-					.get(this.splitOptions.getColumnSplitIndex()).getType()
-					.isNumber())
-			{
-				this.splitOptions.setBinBoundaries(Statistiek
-					.appropriateBoundaries(this.tableModel
-						.getColumnMin(this.splitOptions.getColumnSplitIndex()),
-						this.tableModel.getColumnMax(this.splitOptions
-							.getColumnSplitIndex()), this.splitOptions
-							.getBinBoundaries().size() - 1));
-			}
-
 			this.changed();
 		}
 	}
@@ -357,11 +346,6 @@ public class DotplotModel extends Observable implements TableModelListener,
 		return this.splitOptions.getBinBoundaries();
 	}
 
-	public void setSplitBinBoundaries(ArrayList<Double> splitBinBoundaries)
-	{
-		this.splitOptions.setBinBoundaries(splitBinBoundaries);
-	}
-
 	public void tableChanged(TableModelEvent arg0)
 	{
 		this.changed();
@@ -424,5 +408,11 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public boolean isScatterplotMode()
 	{
 		return this.scatterplotMode;
+	}
+	
+	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
+		this.changed();
 	}
 }
