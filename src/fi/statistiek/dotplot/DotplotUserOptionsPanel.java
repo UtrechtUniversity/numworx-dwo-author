@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 
@@ -30,6 +32,7 @@ import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
 import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.Statistiek;
+import fi.statistiek.histogram.HistogramUserOptionsPanel;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
@@ -265,7 +268,19 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitMinBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.splitMinBoundaryField.setActionCommand("splitMinBoundary");
 		this.splitMinBoundaryField.addActionListener(controller);
-		// this.minBoundaryField.addFocusListener(controller);
+		this.splitMinBoundaryField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				DotplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBinWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -277,6 +292,19 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBinWidthField.setPreferredSize(new Dimension(40, 25));
 		this.splitBinWidthField.setActionCommand("splitBinWidth");
 		this.splitBinWidthField.addActionListener(controller);
+		this.splitBinWidthField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				DotplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBoundariesLabel = new JLabel(
 			Statistiek.rb.getString("binsButton"));
@@ -575,7 +603,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		return ((Integer) this.splitBinsBox.getSelectedItem()).intValue();
 	}
 
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
 		String s = this.splitMinBoundaryField.getText();
 		s = s.replace(',', '.');
@@ -725,7 +753,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 				this.splitBinsLabel.getParent().setVisible(false);
 				setSplitEnumClasses(true);
 			}
-		}
+		} // split
 
 		boolean correlatieMogelijk = this.model.getColumnXIndex() > -1
 			&& this.model.getColumnYIndex() > -1;
