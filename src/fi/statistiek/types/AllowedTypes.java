@@ -87,7 +87,10 @@ public class AllowedTypes implements Serializable
 			try
 			{
 				String a = (String) o;
-				return true;
+				if (!a.equals(""))
+					return true;
+				else
+					return false;
 			}
 			catch (ClassCastException e)
 			{
