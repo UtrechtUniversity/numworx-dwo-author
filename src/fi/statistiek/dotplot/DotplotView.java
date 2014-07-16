@@ -156,12 +156,6 @@ public class DotplotView extends JPanel implements Observer
 		this.model.addObserver(this);
 		this.controller = controller;
 
-		// Create GUI
-		// GridLayout gl = new GridLayout(4,3);
-		// gl.setHgap(5);
-		// this.userOptionsPanel = new JPanel(gl);
-		// this.userOptionsPanel1 = new JPanel();
-
 		userOptionsPanel = new DotplotUserOptionsPanel(this, controller, model);
 		dialogButton = userOptionsPanel.getDialogButton();
 
@@ -228,17 +222,20 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int dotAreaWidth()
 	{
-		int ret = this.getWidth() - 20
+		int w = this.getWidth() - 20
 			- (this.colorLegend.isVisible() ? this.colorLegend.getWidth() : 0);
+		
+		//System.out.println("DotplotView.dotAreaWidth(): w = " + w);
+		
 		if (this.model.columnYIndexValid())
 		{
-			ret -= this.yAxisOffset;
+			w -= this.yAxisOffset;
 		}
 		if (this.splitClasses > 1)
 		{
-			ret -= 20;
+			w -= 20;
 		}
-		return ret;
+		return w;
 	}
 
 	/**
@@ -248,16 +245,17 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int dotAreaHeight()
 	{
-		int ret = this.getHeight();
+		int h = this.getHeight();
+
 		if (this.model.columnXIndexValid())
 		{
-			ret -= DotplotView.X_AS_OFFSET;
+			h -= DotplotView.X_AS_OFFSET;
 		}
 		if (this.model.getTableModel().isViewsEditable())
 		{
-			ret -= DotplotView.KEUZEBALK_HOOGTE;
+			h -= DotplotView.KEUZEBALK_HOOGTE;
 		}
-		return ret;
+		return h;
 	}
 
 	public void setModel(DotplotModel model)
@@ -342,30 +340,20 @@ public class DotplotView extends JPanel implements Observer
 		if (this.model.columnSplitIndexValid())
 		{
 			this.setSplitType();
-			// this.splitBinsBox.setSelectedIndex(this.splitVarClasses()-1);
-			// this.splitBinsBox.setEnabled(this.model.getTableModel().getColumnTypes().get(this.model.getColumnSplitIndex()).getType().isNumber());
-		}
-		else
-		{
-			// this.splitBinsBox.setEnabled(false);
-		}
-
-		this.dialogButton.setVisible(this.model.getTableModel()
-			.isViewsEditable());
-
-		if (this.model.columnSplitIndexValid())
-		{
-			splitClasses = this.splitVarClasses();
+			splitClasses = this.numberOfSplitClasses();
 		}
 		else
 		{
 			splitClasses = 1;
 		}
 
-		if (this.updateColorLegend() || true)
-		{
-			this.setMainPanelSize();
-		}
+		this.dialogButton.setVisible(this.model.getTableModel()
+			.isViewsEditable());
+
+		// updateColorLegend() retourneert boolean, maar voert ook update uit
+		this.updateColorLegend();
+		// test syl: TODO voor horizontale scrollbar bij brede labels wellicht setMainPanelSize() nodig?
+		//this.setMainPanelSize();
 
 		// test syl
 		this.mainPanel.setBackground(Color.WHITE);
@@ -375,6 +363,13 @@ public class DotplotView extends JPanel implements Observer
 		userOptionsPanel.update();
 		
 		updateOffsets();
+		
+		// test syl: onderstaande zorgt voor opblazen window bij wijziging in edit mode
+//		if (SwingUtilities.getWindowAncestor(this.scrollPane) != null)
+//			SwingUtilities.getWindowAncestor(this.scrollPane).pack();
+
+//		this.scrollPane.revalidate();
+		this.mainPanel.revalidate();
 
 		this.repaint();
 		
@@ -406,6 +401,26 @@ public class DotplotView extends JPanel implements Observer
 				for (int i = 0; i < columnType.getEnumOptions().length; i++)
 				{
 					String option = columnType.getEnumOptions()[i];
+					if (fm.stringWidth(option) > max)
+					{
+						max = fm.stringWidth(option) + 45; // + 45 for label, tick-width and some extra space
+//						System.out.println("DotplotView.updateOffsets(): option = " 
+//							+ option + ", max = " + max);
+					}
+					
+					// test syl: bovenstaande werkt, maar + 45 is willekeurig. Om een of andere reden is er voor
+					// langere enum-klassen-labels meer ruimte nodig dan voor kortere...
+				}
+			}
+			else if (yType.equals(AllowedTypes.STRING))
+			{
+				// determine max width of the string option labels
+				int amountOfOptions = this.getYStringOptions().size();
+
+				// draw ticks and help line
+				for (int i = 0; i < amountOfOptions; i++)
+				{
+					String option = this.getYStringOptions().get(i);
 					if (fm.stringWidth(option) > max)
 					{
 						max = fm.stringWidth(option) + 45; // + 45 for label, tick-width and some extra space
@@ -466,9 +481,9 @@ public class DotplotView extends JPanel implements Observer
 		return userOptionsPanel.getSplitBinsBoxSelectedInt();
 	}
 
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
-		return userOptionsPanel.getSplitminBoundary();
+		return userOptionsPanel.getSplitMinBoundary();
 	}
 
 	public double getSplitBinWidth()
@@ -686,7 +701,8 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Determine where the dot representing an object has to be painted
+	 * Determine the x coordinate of a dot representing an object
+	 * in the dotplot or scatterplot.
 	 * 
 	 * @param pointIndex
 	 *            the index of the object represented by the dot
@@ -771,28 +787,37 @@ public class DotplotView extends JPanel implements Observer
 		ColumnType cType = this.model.getTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
 
-		if (cType.getEnumOptions().length == 2)
+		if (cType.getEnumOptions().length == 2) // including '*' which is not shown, so 1 class
 		{
+			// the middle of the field
 			if (this.model.columnYIndexValid())
 			{
 				return this.yAxisOffset
-					+ (this.getWidth() - this.yAxisOffset) / 2;
+					+ (this.mainPanel.getWidth() - this.yAxisOffset) / 2;
 			}
 			else
 			{
-				return this.getWidth() / 2;
+				return this.mainPanel.getWidth() / 2;
 			}
 		}
+		
 		int index = cType.indexOfStringInEnum(value);
 
-		double d = (double) index
-			/ (double) (cType.getEnumOptions().length - 2);
-		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
-			* d) * this.dotAreaWidth());
+		double d = (double) (index + 1) / (double) cType.getEnumOptions().length;
+
+		int x = 0;
+
 		if (this.model.columnYIndexValid())
 		{
-			x += this.yAxisOffset;
+			x = (int) (d * (this.mainPanel.getWidth() - this.yAxisOffset)) + this.yAxisOffset;
+			//System.out.println("DotplotView.determineXCoordEnumClass(" + value + ")");
 		}
+		else
+		{
+			x = (int) (d * this.mainPanel.getWidth());
+			//System.out.println("DotplotView.determineXCoordEnumClass(" + value + "): x = " + x);
+		}
+
 		return x;
 	}
 
@@ -810,26 +835,34 @@ public class DotplotView extends JPanel implements Observer
 			if (this.model.columnYIndexValid())
 			{
 				return this.yAxisOffset
-					+ (this.getWidth() - this.yAxisOffset) / 2;
+					+ (this.mainPanel.getWidth() - this.yAxisOffset) / 2;
 			}
 			else
 			{
-				return this.getWidth() / 2;
+				return this.mainPanel.getWidth() / 2;
 			}
 		}
-		double d = (double) this.getXStringOptions().indexOf(value)
-			/ (double) (this.getXStringOptions().size() - 1);
-		int x = (int) ((DotplotView.KEEP_CLEAR_PART + (1 - 2 * DotplotView.KEEP_CLEAR_PART)
-			* d) * (this.getWidth() - this.yAxisOffset));
+		
+		double d = (double) (this.getXStringOptions().indexOf(value) + 1)
+			/ (double) (this.getXStringOptions().size() + 1);
+		
+		int x = 0;
+
 		if (this.model.columnYIndexValid())
 		{
-			x += this.yAxisOffset;
+			x = (int) (d * (this.mainPanel.getWidth() - this.yAxisOffset)) + this.yAxisOffset;
 		}
+		else
+		{
+			x = (int) (d * this.mainPanel.getWidth());
+		}
+		
 		return x;
 	}
 
 	/**
-	 * Determine where the dot representing an object has to be painted
+	 * Determine the y coordinate of a dot representing an object
+	 * in the dotplot or scatterplot.
 	 * 
 	 * @param pointIndex
 	 *            the index of the object represented by the dot
@@ -1056,7 +1089,7 @@ public class DotplotView extends JPanel implements Observer
 		AffineTransform at = new AffineTransform();
 		at.rotate(Math.PI * 1.5);
 		Font rotateFont = font.deriveFont(at);
-
+		
 		String s1 = "";
 		String s2 = "";
 		if (this.model.columnYIndexValid())
@@ -1108,11 +1141,13 @@ public class DotplotView extends JPanel implements Observer
 	private void paintXAxis(Graphics g, int heightOffset)
 	{
 		g.setColor(Color.BLACK);
-//		FontMetrics fm = g.getFontMetrics();
-		// consistent met andere methodes
 		Font font = super.getFont().deriveFont(super.getFont().getStyle());
 		FontMetrics fm = super.getFontMetrics(font);
 
+		AffineTransform at = new AffineTransform();
+		double theta = Math.PI * 1.95;
+		at.rotate(theta); 
+		Font rotateFont = super.getFont().deriveFont(at);
 
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
@@ -1134,7 +1169,8 @@ public class DotplotView extends JPanel implements Observer
 
 		if (this.xType.equals(AllowedTypes.ENUM))
 		{
-			// draw ticks and help lines
+			boolean normalFit = this.determineNormalFitForEnum();
+			// draw ticks and help lines, and labels
 			for (int i = 0; i < columnType.getEnumOptions().length; i++)
 			{
 				String option = columnType.getEnumOptions()[i];
@@ -1145,16 +1181,22 @@ public class DotplotView extends JPanel implements Observer
 				int x = this.determineXCoordEnumClass(option);
 				
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
+				if (!normalFit)
+					g.setFont(rotateFont);
+
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
+				g.setFont(font);
 			}
 
 		}
 		else if (this.xType.equals(AllowedTypes.STRING))
 		{
+			boolean normalFit = this.determineNormalFitForString();
+
 			int amountOfOptions = this.getXStringOptions().size();
 
 			// draw ticks and help lines
@@ -1164,11 +1206,15 @@ public class DotplotView extends JPanel implements Observer
 				int x = this.determineXCoordStringClass(option);
 
 				g.drawLine(x, y + heightOffset, x, y + heightOffset + 5);
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
+				if (!normalFit)
+					g.setFont(rotateFont);
+
 				g.drawString(option, x - (int) (0.5 * fm.stringWidth(option)),
 					y + 5 + fm.getHeight() + heightOffset);
+				g.setFont(font);
 			}
 		}
 		else
@@ -1281,6 +1327,79 @@ public class DotplotView extends JPanel implements Observer
 		}
 	}
 
+	private boolean determineNormalFitForString()
+	{
+		boolean normalFit = true;
+		
+		int amountOfOptions = this.getXStringOptions().size();
+
+		Font font = super.getFont().deriveFont(super.getFont().getStyle());
+		FontMetrics fm = super.getFontMetrics(font);
+		
+		int tickWidth = 0;
+		// determine tick width and normal fit
+		for (int i = 0; i < amountOfOptions; i++)
+		{
+			String option = this.getXStringOptions().get(i);
+			if (option.equals(ColumnType.WILDCARD))
+			{
+				continue;
+			}
+
+			int x = this.determineXCoordStringClass(option);
+
+			if (i == 0)
+				tickWidth = x;
+			if (i == 1)
+				tickWidth = x - tickWidth; // tickWidth = x1 - x0
+			
+			int width = fm.stringWidth(option);
+			if ((i > 0) && (width > tickWidth))
+			{
+				normalFit = false;
+				break;
+			}
+		}
+		
+		return normalFit;
+	}
+
+	private boolean determineNormalFitForEnum()
+	{
+		boolean normalFit = true;
+		
+		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+			.get(this.model.getColumnXIndex());
+		Font font = super.getFont().deriveFont(super.getFont().getStyle());
+		FontMetrics fm = super.getFontMetrics(font);
+		
+		int tickWidth = 0;
+		// determine tick width and normal fit
+		for (int i = 0; i < columnType.getEnumOptions().length; i++)
+		{
+			String option = columnType.getEnumOptions()[i];
+			if (option.equals(ColumnType.WILDCARD))
+			{
+				continue;
+			}
+			int x = this.determineXCoordEnumClass(option);
+			
+			if (i == 0)
+				tickWidth = x;
+			if (i == 1)
+				tickWidth = x - tickWidth; // tickWidth = x1 - x0
+			
+			int width = fm.stringWidth(option);
+			if ((i > 0) && (width > tickWidth))
+			{
+				normalFit = false;
+				break;
+			}
+		}
+		
+		return normalFit;
+	}
+
 	/**
 	 * Draws a help help line in grey, starting from (x,y) with given length.
 	 * @param g
@@ -1366,7 +1485,8 @@ public class DotplotView extends JPanel implements Observer
 	private void paintYAxis(Graphics g, int heightOffset)
 	{
 		g.setColor(Color.BLACK);
-		FontMetrics fm = g.getFontMetrics();
+		Font font = super.getFont().deriveFont(super.getFont().getStyle());
+		FontMetrics fm = super.getFontMetrics(font);
 
 		ColumnType columnType = this.model.getTableModel().getColumnTypes()
 			.get(this.model.getColumnYIndex());
@@ -1392,7 +1512,7 @@ public class DotplotView extends JPanel implements Observer
 
 				int y = this.determineYCoordEnumClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 
 				// draw enum option label
@@ -1412,7 +1532,7 @@ public class DotplotView extends JPanel implements Observer
 				String option = this.getYStringOptions().get(i);
 				int y = this.determineYCoordStringClass(option);
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 
 				g.drawString(option, x - 7 - fm.stringWidth(option), (int) (y
@@ -1470,7 +1590,7 @@ public class DotplotView extends JPanel implements Observer
 				}
 
 				g.drawLine(x - 5, y + heightOffset, x, y + heightOffset);
-				// draw dashed help line
+				// draw help line
 				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 				
 				// get the right string value for integer or double
@@ -2011,7 +2131,7 @@ public class DotplotView extends JPanel implements Observer
 	 * 
 	 * @return the amount of classes in which the split variable splits the data
 	 */
-	private int splitVarClasses()
+	private int numberOfSplitClasses()
 	{
 		if (!this.model.columnSplitIndexValid())
 		{
@@ -2279,20 +2399,13 @@ public class DotplotView extends JPanel implements Observer
 			}
 
 			g.setColor(Color.BLACK);
-			// this.drawSplitGroupLabels(g2d);
 
 			if (DotplotView.this.model.columnXIndexValid()
 				&& DotplotView.this.model.columnYIndexValid()
 				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
 					.columnColorIndexValid()))
 			{
-				// if(DotplotView.this.model.columnXIndexValid() &&
-				// DotplotView.this.model.columnYIndexValid() &&
-				// (!(DotplotView.this.model.columnZIndexValid() &&
-				// !DotplotView.this.model.splitInSingleView()) ||
-				// DotplotView.this.model.columnColorIndexValid())) {
 				// all variables are valid, draw a scatterplot
-				// this.setStringOptions();
 				DotplotView.this.determineDotSize();
 				DotplotView.this.objectLocations = new ArrayList<Point>(
 					DotplotView.this.model.getTableModel().getRowCount());
@@ -2318,9 +2431,6 @@ public class DotplotView extends JPanel implements Observer
 					DotplotView.this.drawPoint(g2d, row);
 				}
 			}
-			// else if(DotplotView.this.model.columnXIndexValid() &&
-			// (!DotplotView.this.model.isUseColorScale() ||
-			// DotplotView.this.model.columnColorIndexValid())) {
 			else if (DotplotView.this.model.columnXIndexValid()
 				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
 					.columnColorIndexValid()))
@@ -2399,7 +2509,6 @@ public class DotplotView extends JPanel implements Observer
 				
 				// only the y-column variable is valid, draw a single variable
 				// dot plot with the variable on the y-axis
-				// this.setStringOptions();
 				DotplotView.this.determineDotSize();
 				DotplotView.this.dotSize = DotplotView.this.dotSize * 2;
 				DotplotView.this.objectLocations = new ArrayList<Point>(
@@ -2407,8 +2516,6 @@ public class DotplotView extends JPanel implements Observer
 				for (int i = 0; i < DotplotView.this.model.getTableModel()
 					.getRowCount(); i++)
 				{
-					// int heightOffset =
-					// (DotplotView.this.splitClasses-DotplotView.this.getSplitClass(i)-1)*(DotplotView.this.scrollPane.getHeight()-5);
 					DotplotView.this.objectLocations.add(null);
 				}
 
