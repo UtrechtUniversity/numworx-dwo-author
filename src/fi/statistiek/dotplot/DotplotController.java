@@ -175,7 +175,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 			boundaries.add(new Double(view.getSplitMinBoundary() + i
 				* view.getSplitBinWidth()));
 		}
-		this.model.setSplitBinBoundaries(boundaries);
+		this.model.setSplitBoundaries(boundaries);
 		this.view.setModel(this.model);
 	}
 
@@ -191,7 +191,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.view.getSplitBinsBoxSelectedInt());
 
-			this.model.setSplitBinBoundaries(boundaries);
+			this.model.setSplitBoundaries(boundaries);
 			this.model.setSplitOptions(this.model.getSplitOptions());
 			this.view.setModel(this.model);
 		}
@@ -311,7 +311,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBinBoundaries((ArrayList<Double>) h
+			this.model.setSplitBoundaries((ArrayList<Double>) h
 				.get("splitBoundaries"));
 		}
 //		if (h.containsKey("scatterplotMode"))
