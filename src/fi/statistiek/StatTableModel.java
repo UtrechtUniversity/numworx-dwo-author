@@ -175,6 +175,10 @@ public class StatTableModel implements TableModel
 		{
 			this.stringFrequencies.clear();
 		}
+		if (!this.stringOptions.isEmpty())
+		{
+			this.stringOptions.clear();
+		}
 		for (int i = 0; i < this.columnCount; i++)
 		{
 			this.stringFrequencies.add(this.buildColumnStringOptions(i));
@@ -590,7 +594,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Set the value of a cell, without fireing an event
+	 * Set the value of a cell
 	 * 
 	 * @param o
 	 *            the new value
