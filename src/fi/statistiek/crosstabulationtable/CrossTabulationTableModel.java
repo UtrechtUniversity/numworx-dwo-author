@@ -25,6 +25,7 @@ import fi.statistiek.types.AllowedTypes;
 public class CrossTabulationTableModel extends Observable implements
 	TableModelListener, SelectionListener, StatBinsModel
 {
+	static int DEFAULT_NUMBER_OF_BINS = 6;
 	private int columnIndex;
 	private boolean showPercentage;
 	private boolean showPercentage_endTotal;
@@ -238,7 +239,7 @@ public class CrossTabulationTableModel extends Observable implements
 				this.binBoundaries = Statistiek.appropriateBoundaries(
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
-					5);//this.noBins);
+					CrossTabulationTableModel.DEFAULT_NUMBER_OF_BINS);
 				
 				// test syl: niet fraai, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
 				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
@@ -270,7 +271,7 @@ public class CrossTabulationTableModel extends Observable implements
 				this.binBoundaries = Statistiek.appropriateBoundaries(
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
-					5);//this.noBins);
+					CrossTabulationTableModel.DEFAULT_NUMBER_OF_BINS);//this.noBins);
 				
 				// test syl: niet fraai, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
 				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
