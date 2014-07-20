@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1601,7 +1602,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (object == null || object instanceof Hashtable)
 			return (Hashtable) object;
 		if (object instanceof Map)
-			return new Hashtable((Map) object);
+		{	Map map = (Map)object;
+			Hashtable hash = new Hashtable();
+			Iterator keys = map.keySet().iterator();
+			while (keys.hasNext()) {
+				Object key = (Object) keys.next();
+				Object value = map.get(key);
+				if(value != null) hash.put(key, value);
+			}
+			return hash;
+		}
 		return null;
 	}
 
@@ -2120,7 +2130,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		opdrContainer.closePopups();
-		if (mode == 0 || mode == 1)
+		if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
 			opdrContainer.stop();
 		else
 			opdrContainer.sessionStop();
@@ -2464,7 +2474,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + bepaalVoortgangPercentage(activiteitNr, opdrachtNr) + "%");
 			}
 
-			if (mode == 0 || mode == 1)
+			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
 			{
 				WiskOpdr.setLMSScore();
 				WiskOpdr.setLMSState();
@@ -2643,7 +2653,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
 				or[activiteitNr].zetScore(opdrachtNr + 1, score);
 			}
-			if (mode == 0 || mode == 1)
+			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
 			{
 				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
 				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
@@ -2668,7 +2678,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				totaal = Math.max(0, totaal - (Math.max(0, aantalNakijken[activiteitNr] - 1)) * nakijkStraf);
 			}
-			if (mode == 0 || mode == 1)
+			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
 			{
 				activiteitScoreLabels[activiteitNr].setText(WiskOpdr.rb.getString("score") + totaal);
 				if (aantalActiviteiten == 1)
