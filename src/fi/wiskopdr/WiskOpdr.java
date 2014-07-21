@@ -1353,7 +1353,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		Link.setJSObjectOwner(applet);
 		WidgetBridge.setJSObjectOwner(applet);
 	}
-
+	
+	public static int getPageNr() {
+		return applet.ons.geefOpdrachtNr();
+	}
+	
 	public static String getUnit_id() {
 		if( applet != null) {
 			String parameter = applet.getParameter("scoViewNr");

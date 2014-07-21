@@ -274,7 +274,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		}
 // conversie cbook key naar wiskopdr key
 		if(WidgetBridge.UUID.equals(key))
-			return WiskOpdr.getUnit_id() + "-" + getInstanceId();
+			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getPageNr() + "-" + getInstanceId();
 		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
 		{ 
 			String clazzName = Service.getClassName(widget);

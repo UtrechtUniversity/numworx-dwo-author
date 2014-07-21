@@ -130,7 +130,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 	public Object getProperty(String key) {
 		if("locale".equals(key)) return getLocale();
 		if(WidgetBridge.UUID.equals(key))
-			return WiskOpdr.getUnit_id() + "-" + instance;
+			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getPageNr() + "-" + instance;
 		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
 		{ 
 			return WidgetBridge.getResourceManager(clazzName, instance);

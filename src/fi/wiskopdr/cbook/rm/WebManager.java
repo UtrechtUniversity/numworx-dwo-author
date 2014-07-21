@@ -1,5 +1,6 @@
 package fi.wiskopdr.cbook.rm;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -15,20 +16,24 @@ public class WebManager implements ResourceManager {
 	private String widget;
 	private String unit, instance, student;
 	private Sardine sardine;
+	private WebContainer global,perinstance,perstudent;
+	
 	
 	@Override
 	public ResourceContainer getWidgetContainer() {
-		URL widget = null;
+		if(global != null)
+			return global;
+		URL url = null;
 		try {
-			widget = new URL(root, "Widget/" + this.widget + "/");
-		} catch (MalformedURLException _) {
+			url = new URL(root, "Widget/" + this.widget + "/");
+			sardine.createDirectory(url.toExternalForm());
+		} catch (IOException _) {
 		}
-		return new WebContainer(widget, "/", sardine);
+		return global = new WebContainer(url, "/", sardine);
 	}
 
 	public WebManager(URL root, String widget, String unit, String instance,
 			String student, String username, String password) {
-		super();
 		this.root = root;
 		this.widget = widget;
 		this.unit = unit;
@@ -39,14 +44,28 @@ public class WebManager implements ResourceManager {
 
 	@Override
 	public ResourceContainer getInstanceContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		if( perinstance != null)
+			return perinstance;
+		URL url = null;
+		try {
+			url = new URL(root, "Instance/" + this.unit + "/"+ this.instance + "/");
+			sardine.createDirectory(url.toExternalForm());
+		} catch (IOException _) {
+		}
+		return perinstance = new WebContainer(url, "/", sardine);
 	}
 
 	@Override
 	public ResourceContainer getStudentContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		if(perstudent != null)
+			return perstudent;
+		URL url = null;
+		try {
+			url = new URL(root, "Student/" + this.unit + "/"+ this.student + "/" + this.instance + "/");
+			sardine.createDirectory(url.toExternalForm());
+		} catch (IOException _) {
+		}
+		return perstudent = new WebContainer(url, "/", sardine);
 	}
 
 }

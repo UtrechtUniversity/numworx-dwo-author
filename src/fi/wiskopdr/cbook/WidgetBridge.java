@@ -66,20 +66,22 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 	private static WeakHashMap<String, ResourceManager> rmmap = new WeakHashMap<String, ResourceManager>();
 	
 	static ResourceManager getResourceManager(String widget, String instance) {
+		instance = WiskOpdr.getPageNr() + "/" + instance;
 		String key = widget + "/" + instance;
 		ResourceManager rm = rmmap.get(key);
 		if(rm != null) return rm;
 		
 		String student = WiskOpdr.getLearner_id();
 		String unit    = WiskOpdr.getUnit_id();
+		String user    = widget;
 		String passwd  = widget;
 
 		URL root = null;
 		try {
-			root = new URL("http://mc2-resource.appspot.com/dav/");
+			root = new URL("https://mc2-resource.appspot.com/dav/");
 		} catch (MalformedURLException _) {}
 		
-		rm = new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, widget, passwd);
+		rm = new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
 		rmmap.put(key, rm);
 		return rm;
 
