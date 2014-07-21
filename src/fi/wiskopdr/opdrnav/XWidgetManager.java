@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fi.wiskopdr.tekstobjects.BasisTekstVak;
+import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
@@ -75,8 +76,15 @@ public class XWidgetManager {
 		Set<String> pool = keySet();
  		String uniq = getUUID(pool);
 		tekstInteractiePanelVak.setCrossWidgetId(uniq);
-		widgets.put(uniq, tekstInteractiePanelVak);
-		
+		widgets.put(uniq, tekstInteractiePanelVak);	
+	}
+
+	public void newCrossWidgetId(
+			EditInteractiePanelDialog editInteractiePanelDialog) {
+		Set<String> pool = keySet();
+ 		String uniq = getUUID(pool);
+ 		editInteractiePanelDialog.setCrossWidgetId(uniq);
+		widgets.put(uniq, null);	
 	}
 
 	/**
@@ -120,6 +128,7 @@ public class XWidgetManager {
 			entry.getValue().getConnections().clear(); // TODO !!
 		}
 	}
+
 	
 	
 	

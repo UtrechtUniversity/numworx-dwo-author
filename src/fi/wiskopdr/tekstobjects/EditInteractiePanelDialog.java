@@ -270,7 +270,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         if(launchData.containsKey("popup")) popup = ((Boolean)launchData.get("popup")).booleanValue();
         if(launchData.containsKey("setNr")) setNr = ((Integer)launchData.get("setNr")).intValue();
         if(launchData.containsKey("popupImageString")) popupImageString = (String)launchData.get("popupImageString");       
-        
+// WIM TODO is dit okay?
+        if(launchData.containsKey("crossWidgetId")) setCrossWidgetId((String)launchData.get("crossWidgetId"));
         
        if(soortInteractiePanel != -2) 
        {   for(int i=0 ; i<set.length ; i++)
@@ -605,6 +606,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("popup", new Boolean(popup));
         h.put("setNr", new Integer(setNr));
         h.put("popupImageString", popupImageString);
+        if(crossWidgetId != null)
+        	h.put("crossWidgetId", crossWidgetId);
         
 		return h;
     }
@@ -656,7 +659,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			Object o = soortAntwoordVakKeuze.getSelectedItem();
 			if(o instanceof CBookWidgetIF)
 			{
-				makeInteractieEditPanel( (CBookWidgetIF) o, crossWidgetId);
+				makeInteractieEditPanel( (CBookWidgetIF) o, getCrossWidgetId());
 			} else
 			{
 				int soortInteractiePanel = -1;
@@ -808,6 +811,22 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	@Override
 	public XWidgetManager getXWidgetManager() {
 		return manager;
+	}
+
+	public String getCrossWidgetId() {
+		if(crossWidgetId == null && manager != null)
+		{
+			manager.newCrossWidgetId(this);
+		}
+		return crossWidgetId;
+	}
+	
+	public String getCrossWidgetId0() {
+		return crossWidgetId;
+	}
+
+	public void setCrossWidgetId(String crossWidgetId) {
+		this.crossWidgetId = crossWidgetId;
 	}
     
     

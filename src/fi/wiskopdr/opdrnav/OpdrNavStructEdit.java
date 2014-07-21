@@ -28,6 +28,14 @@ import javax.swing.*;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
 	
+	// Dit wordt vreselijke spaghetti :-(
+	static private OpdrNavStructEdit instance;
+	public static OpdrNavStructEdit getInstance() {
+		return instance;
+	}
+	
+	
+	
 	private MyOpdrEditContainer opdrEditContainer;
 
 	private String[][] opdrachten;
@@ -85,7 +93,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		setLayout(null);
 		setBounds(x, y, b, h);
 		setBackground(WiskOpdr.bgcolor);
-
+		instance = this; // FIXME hoe kom ik hierachter?
+		
 		this.opdrEditContainer = opdrEditContainer;
 
 		String instellingenString = (String) launchData.get("instellingen");

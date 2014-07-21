@@ -41,10 +41,10 @@ public class CBookInteractieEditPanel extends JPanel implements
 	
 	public CBookInteractieEditPanel(CBookWidgetIF widget, Locale locale, String uuid) {
 		super(new BorderLayout());
+		instance = uuid;
+		clazzName = Service.getClassName(widget);
 		setLocale(locale);
 		editor = widget.getEditor(this);
-		clazzName = Service.getClassName(widget);
-		instance = uuid;
 		String[] cmds = editor.getSendCmds();
 
 		for (int i = 0; cmds!=null && i < cmds.length; i++) {
@@ -130,10 +130,10 @@ public class CBookInteractieEditPanel extends JPanel implements
 	public Object getProperty(String key) {
 		if("locale".equals(key)) return getLocale();
 		if(WidgetBridge.UUID.equals(key))
-			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getPageNr() + "-" + instance;
+			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getEditPageNr() + "-" + instance;
 		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
 		{ 
-			return WidgetBridge.getResourceManager(clazzName, instance);
+			return WidgetBridge.getResourceManager(clazzName, WiskOpdr.getEditPageNr() + "/" + instance);
 		}
 		return launchData.get(key);
 	}

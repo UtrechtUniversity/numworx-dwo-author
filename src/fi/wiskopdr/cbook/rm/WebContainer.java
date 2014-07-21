@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import org.cbook.cbookif.rm.ReadOnlyException;
 import org.cbook.cbookif.rm.Resource;
@@ -20,15 +21,17 @@ import org.json.simple.parser.JSONParser;
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 
-public class WebContainer implements ResourceContainer {
+public class WebContainer implements ResourceContainer, CachedResource {
 
 	
 	
 	static final String LINK = "httpd/url";
 	private WebContainer parent;
-	private URL url;
+	protected URL url;
 	private String name;
 	Sardine sardine;
+	
+	WeakHashMap<String, CachedResource> children = new WeakHashMap<String, CachedResource>();
 
 	public WebContainer() {
 	}
@@ -73,10 +76,6 @@ public class WebContainer implements ResourceContainer {
 		}
 	}
 
-	public Reader getReader()  {
-		return null;
-	}
-
 	@Override
 	public String getMimeType() {
 		return "httpd/unix-folder";
@@ -86,10 +85,12 @@ public class WebContainer implements ResourceContainer {
 	public void remove() throws ResourceException {
 		try {
 			sardine.delete(url.toExternalForm());
+			parent.children.remove(name);
 		    url = null;
 		    parent = null;
 		    sardine = null;
 		    name = null;
+		    children = null;
 		} catch (IOException e) {
 			throw new  ResourceException(e);
 		};
@@ -99,13 +100,25 @@ public class WebContainer implements ResourceContainer {
 	@Override
 	public void setName(String name) throws ResourceException {
 		try {
-			if(name.contains("/")) throw new ResourceException("illegal name " + name);
-			URL dest = new URL(url, name);
+			if(name.contains("/")||name.startsWith(".")
+					) throw new ResourceException("illegal name " + name);
+			URL dest = new URL(url, "../" + name + "/");
 			if(sardine.exists(dest.toExternalForm()))
 				throw new ResourceException("name exists " + name);
 			sardine.move(url.toExternalForm(), dest.toExternalForm());
+			parent.children.remove(this.name);
+			parent.children.put(name, this);
+			this.name = name;
+			this.url = dest;
+			reparentChildren();
 		} catch (IOException e) {
 			throw new  ResourceException(e);
+		}
+	}
+
+	private void reparentChildren() {
+		for (CachedResource resource : children.values()) {
+			resource.reparent(url);
 		}
 	}
 
@@ -288,7 +301,42 @@ public class WebContainer implements ResourceContainer {
 	@Override
 	public ResourceContainer createContainer(String name)
 			throws ResourceException {
-		return null;
+		if(name.startsWith("/"))
+			return getRoot().createContainer(name.substring(1));
+		while(name.startsWith("../"))
+		{
+			name = name.substring(3);
+			if(parent != null)
+				return parent.createContainer(name);
+		}
+		while(name.startsWith("./"))
+		{
+			name = name.substring(2);
+		}
+		int i = name.indexOf('/');
+		if(i >= 0) {
+			String dir = name.substring(0,i);
+			name = name.substring(i+1);
+			return openContainer(dir).createContainer(name);
+		}
+		if(".".equals(name) || "".equals(name))
+			readonly();
+		if("..".equals(name))
+		{
+			readonly();
+		}
+		
+		try {
+			URL u = new URL(url, name );
+			String externalForm = u.toExternalForm();
+			if(sardine.exists(externalForm))
+				readonly();
+			sardine.createDirectory(externalForm);
+			return (ResourceContainer) open(u);
+			
+		} catch (Exception e) {
+			throw new ResourceException(e);
+		}
 	}
 
 	@Override
@@ -326,21 +374,29 @@ public class WebContainer implements ResourceContainer {
 
 	Resource open( DavResource r0) throws MalformedURLException {
 		String name = r0.getDisplayName();
-		Resource r;
+		CachedResource r = children.get(name);
 		URL object = r0.getHref().toURL();
 		if(r0.isDirectory())
+		{
+			if(r instanceof WebContainer)
+				return r;
 			r = new WebContainer(object, name, this);	
+		}
 		else
-		{	if(object.getPath().endsWith("/"))
+		{	
+			if(r instanceof WebResource)
+				return r;
+			if(object.getPath().endsWith("/"))
 			{
 			   object = new URL(object.getProtocol(), object.getHost(), object.getPort(), strip(object.getPath()));
 			}
 			r = new WebResource(object, name, this, r0.getContentType());
 		}
+		children.put(name, r);
 		return r;
 	}
 
-	private String strip(String path) {
+	protected String strip(String path) {
 		return path.substring(0, path.length()-1);
 	}
 
@@ -381,4 +437,17 @@ public class WebContainer implements ResourceContainer {
 		return true;
 	}
 
+	@Override
+	public void reparent(URL url) {
+		try {
+			this.url = new URL(url, name + "/");
+			reparentChildren();
+		} catch (MalformedURLException e) {
+		}
+		
+	}
+
+	public String toString() {
+		return getName();
+	}
 }

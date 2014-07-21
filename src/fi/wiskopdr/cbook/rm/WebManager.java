@@ -26,10 +26,9 @@ public class WebManager implements ResourceManager {
 		URL url = null;
 		try {
 			url = new URL(root, "Widget/" + this.widget + "/");
-			sardine.createDirectory(url.toExternalForm());
 		} catch (IOException _) {
 		}
-		return global = new WebContainer(url, "/", sardine);
+		return global = new RootContainer(url, "/", sardine);
 	}
 
 	public WebManager(URL root, String widget, String unit, String instance,
@@ -48,11 +47,10 @@ public class WebManager implements ResourceManager {
 			return perinstance;
 		URL url = null;
 		try {
-			url = new URL(root, "Instance/" + this.unit + "/"+ this.instance + "/");
-			sardine.createDirectory(url.toExternalForm());
+			url = new URL(root, "Unit/" + this.unit + "/"+ this.instance + "/");
 		} catch (IOException _) {
 		}
-		return perinstance = new WebContainer(url, "/", sardine);
+		return perinstance = new RootContainer(url, "/", sardine);
 	}
 
 	@Override
@@ -62,10 +60,9 @@ public class WebManager implements ResourceManager {
 		URL url = null;
 		try {
 			url = new URL(root, "Student/" + this.unit + "/"+ this.student + "/" + this.instance + "/");
-			sardine.createDirectory(url.toExternalForm());
 		} catch (IOException _) {
 		}
-		return perstudent = new WebContainer(url, "/", sardine);
+		return perstudent = new RootContainer(url, "/", sardine);
 	}
 
 }

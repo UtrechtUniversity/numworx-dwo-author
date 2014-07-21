@@ -52,6 +52,7 @@ import fi.wiskopdr.copyright.FIButton;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.Link;
 import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.LinkRegel;
@@ -1366,5 +1367,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		return "scoViewNr";
 
+	}
+	
+	public static int getEditPageNr() {
+		return OpdrNavStructEdit.getInstance().geefOpdrachtNr();
 	}
 }

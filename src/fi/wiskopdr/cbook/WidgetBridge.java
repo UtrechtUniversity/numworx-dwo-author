@@ -66,7 +66,6 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 	private static WeakHashMap<String, ResourceManager> rmmap = new WeakHashMap<String, ResourceManager>();
 	
 	static ResourceManager getResourceManager(String widget, String instance) {
-		instance = WiskOpdr.getPageNr() + "/" + instance;
 		String key = widget + "/" + instance;
 		ResourceManager rm = rmmap.get(key);
 		if(rm != null) return rm;

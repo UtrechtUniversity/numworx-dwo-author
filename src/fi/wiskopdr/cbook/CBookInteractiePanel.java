@@ -278,7 +278,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
 		{ 
 			String clazzName = Service.getClassName(widget);
-			String instance_id = getInstanceId();
+			String instance_id = WiskOpdr.getPageNr() + "/" + getInstanceId();
 			return WidgetBridge.getResourceManager(clazzName, instance_id);
 		}
 

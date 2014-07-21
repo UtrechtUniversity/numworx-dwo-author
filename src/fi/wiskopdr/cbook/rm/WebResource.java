@@ -15,7 +15,7 @@ import org.cbook.cbookif.rm.ResourceException;
 
 import com.github.sardine.Sardine;
 
-public class WebResource implements Resource {
+public class WebResource implements CachedResource {
 
 	WebContainer parent;
 	URL url;
@@ -51,19 +51,6 @@ public class WebResource implements Resource {
 		}
 	}
 
-	public Reader getReader() throws ResourceException {
-		try {
-			URLConnection c = url.openConnection();
-			String type = c.getContentType();
-			String charset = "UTF-8";
-			int index = type.indexOf("charset=");
-			if(index >=0) charset = type.substring(index+7);
-			return new InputStreamReader(c.getInputStream(), charset);
-		} catch (Exception e) {
-			throw new ResourceException(e);
-		} 
-	}
-
 	@Override
 	public String getMimeType() {
 		if(type == null) {
@@ -85,6 +72,7 @@ public class WebResource implements Resource {
 		Sardine sardine = parent.sardine;
 		try {
 			sardine.delete(url.toExternalForm());
+			parent.children.remove(name);
 			url = null;
 			parent = null;
 			name = null;
@@ -103,8 +91,10 @@ public class WebResource implements Resource {
 			if(sardine.exists(destinationUrl.toExternalForm()))
 				throw new ResourceException("name exists "  + name);
 			sardine.move(sourceUrl, destinationUrl.toExternalForm());
+			parent.children.remove(this.name);
 			this.name = name;
 			this.url = destinationUrl;
+			parent.children.put(name, this);
 		} catch (IOException e) {
 			throw new ResourceException(e);
 		}
@@ -156,4 +146,16 @@ public class WebResource implements Resource {
 		return true;
 	}
 
+	@Override
+	public void reparent(URL url) {
+		try {
+			this.url = new URL(url, name);
+		} catch (MalformedURLException e) {
+		}
+		
+	}
+
+	public String toString() {
+		return getName();
+	}
 }
