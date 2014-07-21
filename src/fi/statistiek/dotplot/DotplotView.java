@@ -15,6 +15,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -266,24 +268,57 @@ public class DotplotView extends JPanel implements Observer
 		this.update(null, null);
 	}
 
+	@Override
+	public void setBounds(int x, int y, int w, int h)
+	{
+//		System.out.println("DotplotView.setBounds(x=" + x + ", y=" + y 
+//			+ ", w=" + w + ", h=" + h + ")");
+
+		super.setBounds(x, y, w, h);
+
+		this.setMainPanelSize();
+		
+		this.scrollPane.setViewportView(mainPanel);
+
+		// System.out.println("DotplotView.setBounds(): Size histogram: " +
+		// this.getBounds().toString()
+		// + ", scrollbarVisible=" +
+		// scrollPane.getVerticalScrollBar().isVisible());
+		
+//		 System.out.println("DotplotView.setBounds(): scrollPane w="
+//			 + scrollPane.getWidth()
+//			 + ", h=" + scrollPane.getHeight());
+	}
+
 	private void setMainPanelSize()
+	{
+		int colorLegendWidth = this.colorLegend.isVisible() ? this.colorLegend
+			.getPreferredSize().width : 0;
+			
+		int preferredWidth = this.scrollPane.getWidth() - colorLegendWidth - 20;
+		int preferredHeight = this.determinePreferredHeight();
+		
+		this.mainPanel.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+		
+//		System.out.println("DotplotView.setMainPanelSize(): preferredWidth = "
+//			+ preferredWidth + ", preferredHeight = " + preferredHeight);
+	}
+
+	private int determinePreferredHeight()
 	{
 		int splitClasses = this.model.getTableModel().splitVarClasses(
 			this.model.getSplitOptions());
-		int colorLegendWidth = this.colorLegend.isVisible() ? this.colorLegend
-			.getPreferredSize().width : 0;
+		int preferredHeight = 0;
+
 		if (this.model.splitInSingleView())
 		{
-			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
-				.getWidth() - colorLegendWidth - 20, this.scrollPane
-				.getHeight() - 5));
+			preferredHeight = this.scrollPane.getHeight() - 5;
 		}
 		else
 		{
-			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
-				.getWidth() - colorLegendWidth - 20, splitClasses
-				* (this.scrollPane.getHeight() - 5) + 1));
+			preferredHeight = splitClasses * (this.scrollPane.getHeight() - 5) + 1;
 		}
+		return preferredHeight;
 	}
 
 	private boolean updateColorLegend()
@@ -352,13 +387,7 @@ public class DotplotView extends JPanel implements Observer
 
 		// updateColorLegend() retourneert boolean, maar voert ook update uit
 		this.updateColorLegend();
-		// test syl: TODO voor horizontale scrollbar bij brede labels wellicht setMainPanelSize() nodig?
-		//this.setMainPanelSize();
-
-		// test syl
-		this.mainPanel.setBackground(Color.WHITE);
-//		if (this.getParent().getParent() != null)
-//			this.getParent().getParent().setBackground(Color.WHITE);
+		this.setMainPanelSize();
 
 		userOptionsPanel.update();
 		
@@ -368,7 +397,6 @@ public class DotplotView extends JPanel implements Observer
 //		if (SwingUtilities.getWindowAncestor(this.scrollPane) != null)
 //			SwingUtilities.getWindowAncestor(this.scrollPane).pack();
 
-//		this.scrollPane.revalidate();
 		this.mainPanel.revalidate();
 
 		this.repaint();
@@ -1120,10 +1148,10 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String name = this.model.getTableModel().getColumnName(
 				this.model.getSplitOptions().getColumnSplitIndex());
+			String splitClassLabel = this.model.getSplitOptions().getSplitClassLabel(splitClass,
+				this.model.getTableModel());
 			String s = name
-				+ ": "
-				+ this.model.getSplitOptions().getSplitClassLabel(splitClass,
-					this.model.getTableModel());
+				+ ": " + splitClassLabel;
 			g.drawString(s, 10, this.scrollPane.getHeight() + this.X_AS_OFFSET
 				- 37 + yOffset);
 		}
@@ -2008,6 +2036,7 @@ public class DotplotView extends JPanel implements Observer
 	{
 		int[][] coords = new int[this.model.getTableModel().getRowCount()][2];
 		int[] splitClasses = new int[this.model.getTableModel().getRowCount()];
+		int[][] sortedData = null;
 
 		/*
 		 * int drawHeight = this.getHeight() - DotplotView.X_AS_OFFSET;
@@ -2033,38 +2062,146 @@ public class DotplotView extends JPanel implements Observer
 				splitClasses[i] = 0;
 
 			coords[i][0] = this.determineXCoord(i);
-
-			// find the lowest y value for point i such that the distance to all
-			// other points is
-			// greater than DotplotView.KEEP_CLEAR_PART
-			int y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial
-																			// y
-
-			for (int j = 0; j < i; j++)
-			{
-				if (!this.model.getTableModel()
-					.getValueAt(j, this.model.getColumnXIndex())
-					.equals(ColumnType.WILDCARD)
-					&& splitClasses[i] == splitClasses[j]
-					&& (Math.pow(coords[j][0] - coords[i][0], 2) + Math.pow(
-						coords[j][1] - y, 2)) < dotSizeSquared)
-				{
-					// some other object is too close, so start over with
-					// smaller y
-					y -= 2;
-					j = -1; // j = -1 will cause the for loop to start over with
-							// j = 0
-				}
-			}
-
-			coords[i][1] = y;
+		}
+		
+		// sortedData = [x, y, split, original index]
+		sortedData = new int[this.model.getTableModel().getRowCount()][4];
+		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		{
+			sortedData[i][0] = coords[i][0];
+			sortedData[i][2] = splitClasses[i];
+			sortedData[i][3] = i;
+		}
+		
+		Arrays.sort(sortedData, new Comparator<int[]>() {
+            @Override
+            /**
+             * Compare [x1, y1, split1] to [x2, y2, split2] on x-coordinate
+             * and split. 
+             * @param o1
+             * @param o2
+             * @return
+             */
+            public int compare(int[] o1, int[] o2) 
+            {
+            	// compare the x coordinates
+            	if (o1[0] < o2[0])
+            		return -1;
+            	else if (o1[0] > o2[0])
+            		return 1;
+            	else // same x coordinates
+            	{
+            		if (o1[2] < o2[2])
+            			return -1;
+            		else if (o1[2] > o2[2])
+            			return 1;
+            		else // same split
+            			return 0;
+            	}
+            }
+        });
+		
+		// bepaal de y-correctie die zo nodig gedaan wordt per split: max y / max aantal dots per x
+		int[] maxFrequencyXPerSplit = this.getMaxFrequencyXPerSplit(sortedData);
+		int[] correctionYPerSplit = new int[this.splitClasses]; 
+			
+		for (int split = 0; split < this.splitClasses; split++)
+		{
+			correctionYPerSplit[split] = Math.min(this.dotSize * 2, (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight) / maxFrequencyXPerSplit[split]);
 		}
 
+		int y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+		
+		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		{
+			if (i > 0)
+			{
+				// look at the previous x-coordinate...
+				// if x-coord and split the same, then adjust y-coord
+				if (sortedData[i][0] == sortedData[i-1][0]) // same x coordinate
+				{
+					if (sortedData[i][2] == sortedData[i-1][2]) // same split
+					{
+						// some other object is too close, so correct y
+						y = sortedData[i-1][1] - correctionYPerSplit[sortedData[i][2]];
+					}
+					else // same x coordinate, next split 
+					{
+						// reset y to initial value
+						y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+					}
+				}
+				else // different x coordinate
+				{
+					// reset y to initial value
+					y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+				}
+			}
+			
+			sortedData[i][1] = y;
+			
+//			System.out.println("DotplotView.determineCoordsXSingleVar(): i = " + i 
+//				+ ", (" + coords[i][0] + ", " + coords[i][1] + ")");
+		} // i-loop
+
+		// zet sortedData in coords in de originele volgorde
+		for (int i = 0; i < sortedData.length; i++)
+		{
+			int index = sortedData[i][3]; // index within the original order
+			coords[index][0] = sortedData[i][0];
+			coords[index][1] = sortedData[i][1];
+		}
+		
 		return coords;
 	}
 
 	/**
-	 * Determine the coordinates for all objects Used only in single variable
+	 * Get the frequency of the most frequently occurring value in sortedData[0].
+	 * 
+	 * @param sortedData
+	 * @return
+	 * 		The frequency of the most frequently occurring value in sortedData[0].
+	 */
+	private int[] getMaxFrequencyXPerSplit(int[][] sortedData)
+	{
+	    int[] maxCount = new int [this.splitClasses];
+		
+		if ((sortedData != null) && (sortedData.length != 0))
+		{
+			for (int split = 0; split < this.splitClasses; split++)
+			{
+			    int previous = sortedData[0][0];
+			    int count = 1;
+		
+				for (int i = 1; i < sortedData.length; i++)
+				{
+			        if (sortedData[i][0] == previous) // x coordinate same as previous one
+			        {
+			        	if (sortedData[i][2] == split) //  in split
+			        		count++;
+			        }
+			        else // different x coordinate
+			        {
+			            if (count > maxCount[split]) 
+			            {
+			                maxCount[split] = count;
+			            }
+			            previous = sortedData[i][0];
+			            count = 1;
+			        }
+			    }
+	            if (count > maxCount[split]) 
+	            {
+	                maxCount[split] = count;
+	            }
+			}
+		}
+		
+		return maxCount;
+	}
+
+	/**
+	 * Determine the coordinates for all objects. Used only in single variable
 	 * cases, with that variable on the y-axis
 	 * 
 	 * @return a matrix containing the x and y coordinate for all objects
@@ -2215,15 +2352,6 @@ public class DotplotView extends JPanel implements Observer
 		{
 			return;
 		}
-
-		if (this.model.splitInSingleView())
-			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
-				.getWidth() - 20, this.scrollPane.getHeight() - 5));
-		else
-			this.mainPanel.setPreferredSize(new Dimension(this.scrollPane
-				.getWidth() - 20, splitClasses
-				* (this.scrollPane.getHeight() - 5)));
-		this.scrollPane.setViewportView(mainPanel);
 	}
 	
 	/**
@@ -2374,7 +2502,8 @@ public class DotplotView extends JPanel implements Observer
 		public void paintComponent(Graphics g)
 		{
 			// test syl: tbv background white
-//			System.out.println("DotplotView$DotPanel.paintComponent()");
+//			System.out.println("DotplotView$DotPanel.paintComponent(): w = " 
+//				+ this.getWidth() + ", h = " + this.getHeight());
 			super.paintComponent(g);
 			DotplotView.super.paintComponent(g);
 
@@ -2561,7 +2690,7 @@ public class DotplotView extends JPanel implements Observer
 				}
 			}
 
-			// draw the bottom line
+			// draw the bottom line and labels
 			for (int i = 0; i < (DotplotView.this.isSplitSingleViewSelected() ? 1
 				: splitClasses); i++)
 			{
