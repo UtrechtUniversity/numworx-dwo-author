@@ -3,6 +3,8 @@ package fi.statistiek.types;
 import java.io.Serializable;
 import java.text.CollationKey;
 import java.text.Collator;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Locale;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
@@ -263,9 +265,42 @@ public class ColumnType implements Serializable
 		}
 	}
 
+	/**
+	 * Get enum options with the options sorted alphabetically
+	 * and '*' as last option.
+	 * @return
+	 */
 	public String[] getEnumOptions()
 	{
-		return this.enumOptions;
+		String[] sortedEnumOptions = new String[this.enumOptions.length];
+		sortedEnumOptions = this.enumOptions;
+		
+		Arrays.sort(sortedEnumOptions, new Comparator<String>() {
+            @Override
+            /**
+             * Compare strings alphabetically. 
+             * A wildcard is larger than any other string.
+             * @param s1
+             * @param s2
+             * @return
+             */
+            public int compare(String s1, String s2) 
+            {
+            	// check for wildcard among the strings
+            	if (s1.equals(ColumnType.WILDCARD))
+            		return 1;
+            	else if (s2.equals(ColumnType.WILDCARD))
+            		return -1;
+            	else 
+            	{
+            		// apart from '*' sort the enum options alphabetically
+            		return s1.compareTo(s2);
+            	}
+            }
+        });
+		
+		return sortedEnumOptions;
+//		return this.enumOptions;
 	}
 
 	/**
