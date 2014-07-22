@@ -59,7 +59,7 @@ public class WebManager implements ResourceManager {
 			return perstudent;
 		URL url = null;
 		try {
-			url = new URL(root, "Student/" + this.unit + "/"+ this.student + "/" + this.instance + "/");
+			url = new URL(root, "Student/" + this.student + "/"+ this.unit + "/" + this.instance + "/");
 		} catch (IOException _) {
 		}
 		return perstudent = new RootContainer(url, "/", sardine);
