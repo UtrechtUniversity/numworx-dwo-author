@@ -398,8 +398,28 @@ public class HistogramView extends JPanel implements Observer
 			g.setColor(c);
 			Point p = this.dotLocation(barLength, barNumber);
 			int size = 4;
+			
+			if ((highlightedBar == barNumber) && (highlightInSplit == splitClass))
+			{
+//				System.out.println("HIGHLIGHT! HistogramView.paintBar(): barNumber = " + barNumber
+//					+ ", splitClass = " + splitClass + ", numberOfBars = "
+//					+ numberOfBars + ", totalBars = " + totalBars);
+
+				Graphics2D g2 = (Graphics2D) g;
+		        g2.setStroke(new BasicStroke(3));
+				g.drawOval(p.x - size, p.y - size + ySplitOffset, 2 * size,
+					2 * size);
+		        g2.setStroke(new BasicStroke(1));
+			}
+
 			g.fillOval(p.x - size, p.y - size + ySplitOffset, 2 * size,
 				2 * size);
+			
+			// Add 'dot' to barRectangles 
+			this.barRectangles.add(new Rectangle(
+				p.x - size, p.y - size + ySplitOffset, 2 * size,
+				2 * size));
+
 			if (this.model.isFrequencyPolygonCumulativeMode()
 				&& this.lastPolygonPoint == null)
 			{
@@ -412,7 +432,7 @@ public class HistogramView extends JPanel implements Observer
 			}
 
 			this.lastPolygonPoint = p;
-		}
+		} // frequency polygon
 		else
 		{
 			int columnIndex = this.model.getColumnIndex();
@@ -2837,7 +2857,7 @@ public class HistogramView extends JPanel implements Observer
 		{
 			// Method mouseMoved() implements showing tooltip & highlight
 			
-			if (!HistogramView.this.model.isFrequencyPolygonMode())
+			//if (!HistogramView.this.model.isFrequencyPolygonMode())
 			{
     			Point p = me.getPoint();
     			FrequencyTuple[][] frequencies_enum = HistogramView.this.model
@@ -2935,12 +2955,61 @@ public class HistogramView extends JPanel implements Observer
     			//System.out.println("HistogramView.HistogramBarPanel.mouseMoved(): aantal_totaal = " + aantal_totaal);
     
     			Rectangle rect;
+    			double value = 0;
+    			double[] cumulativeValuePerSplit = new double[numberOfSplits];
     			for (int i = 0; i < numberOfSplits && !found; i++)
     			{
     				for (int j = 0; j < noBins && !found; j++) // j <
     														   // HistogramView.this.barRectangles.size()
     				{
     					rect = HistogramView.this.barRectangles.get(j + i * noBins);
+    					
+    					if (HistogramView.this.model.isFrequencyPolygonCumulativeMode())
+    					{
+    						// calculate value and add to cumulativeValue
+    						if (isPercentage)
+    						{
+    							if (frequencies_number != null)
+    							{
+    								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+    								{
+               							value = ((double) frequencies_number[i][j * 2] / aantalPerSplit[i]) * 100;
+    								}
+    								else // geen split
+    								{
+        								// percentage t.o.v. totaal
+            							value = ((double) frequencies_number[i][j * 2] / aantal_totaal) * 100; 
+    								}
+    							}
+    							else if (frequencies_enum != null)
+    							{
+    								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+    								{
+                						value = ((double) frequencies_enum[i][j].frequency / aantalPerSplit[i]) * 100;
+    								}
+    								else // geen split
+    								{
+        								// percentage berekenen t.o.v. totaal
+            							value = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
+    								}
+    							}
+    							
+    							if (Double.isNaN(value) || Double.isInfinite(value))
+    								value = 0;
+    						} // isPercentage
+    						else
+    						{
+    							if (frequencies_number != null)
+    							{
+    								value = frequencies_number[i][j * 2];
+    							}
+    							else if (frequencies_enum != null)
+    							{
+    								value = frequencies_enum[i][j].frequency;
+    							}
+    						}
+    						cumulativeValuePerSplit[i] += value;
+    					}
     
     					if (isOverToolTipArea(p, rect))
     					{
@@ -2948,41 +3017,41 @@ public class HistogramView extends JPanel implements Observer
 //    							+ p.x + ", " + p.y + "): bij bovenkant van staaf "
 //    							+ (j + i * noBins + 1) + ", isOverToolTipArea!");
     
-    						String waardeString = "0";
     						if (isPercentage)
     						{
-    							double waarde = 0;
+    							value = 0;
     							
     							if (frequencies_number != null)
     							{
     								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
     								{
-    									if (HistogramView.this.model.isSplitInSingleView())
+    									if (HistogramView.this.model.isSplitInSingleView() 
+    										&& !HistogramView.this.model.isFrequencyPolygonMode())
             							{
-        									if (HistogramView.this.isNextToEachOtherSelected())
+    										if (HistogramView.this.isNextToEachOtherSelected())
         									{
 //        										System.out.println("HistogramBarPanel.mouseMoved(): split nextToEachOther!");
         										// als naast elkaar, dan percentage relatief aan totaalaantal
-        										waarde = ((double) frequencies_number[i][j*2] / aantal_totaal) * 100;
+        										value = ((double) frequencies_number[i][j*2] / aantal_totaal) * 100;
         									}
         									else
         									{
 //        										System.out.println("HistogramBarPanel.mouseMoved(): split gestapeld!");
                 								// als gestapeld in 1 view, dan percentage relatief aan totaal per bin 
-                    							waarde = ((double) frequencies_number[i][j * 2] / aantalPerBin[j]) * 100;
+                    							value = ((double) frequencies_number[i][j * 2] / aantalPerBin[j]) * 100;
         									}
 
             							}
             							else
-            							{
+            							{ // Voor frequentiepolygoon bij split altijd deze waarde
             								// split in meerdere views
-                							waarde = ((double) frequencies_number[i][j * 2] / aantalPerSplit[i]) * 100;
+                							value = ((double) frequencies_number[i][j * 2] / aantalPerSplit[i]) * 100;
             							}
     								}
     								else // geen split
     								{
         								// percentage t.o.v. totaal
-            							waarde = ((double) frequencies_number[i][j * 2] / aantal_totaal) * 100; 
+            							value = ((double) frequencies_number[i][j * 2] / aantal_totaal) * 100; 
     								}
     							}
     							else if (frequencies_enum != null)
@@ -2995,65 +3064,73 @@ public class HistogramView extends JPanel implements Observer
         									{
 //        										System.out.println("HistogramBarPanel.mouseMoved(): split nextToEachOther!");
         										// als naast elkaar, dan percentage relatief aan totaalaantal
-        										waarde = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
+        										value = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
         									}
         									else
         									{
 //        										System.out.println("HistogramBarPanel.mouseMoved(): split gestapeld!");
                 								// als gestapeld in 1 view, dan percentage relatief aan totaal per bin 
-                    							waarde = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
+                    							value = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
         									}
         								}
         								else
         								{
             								// split in meerdere views
-                							waarde = ((double) frequencies_enum[i][j].frequency / aantalPerSplit[i]) * 100;
+                							value = ((double) frequencies_enum[i][j].frequency / aantalPerSplit[i]) * 100;
         								}
     								}
     								else // geen split
     								{
         								// percentage berekenen t.o.v. totaal
-            							waarde = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
+            							value = ((double) frequencies_enum[i][j].frequency / aantal_totaal) * 100;
     								}
-    							}
-    							
-    							if (!Double.isNaN(waarde) && !Double.isInfinite(waarde))
-    								waarde = Statistiek.round(waarde, 1);
-    							else
-    								waarde = 0;
-    							
-    							// Test of waarde een integer is 
-    							if ((waarde == Math.floor(waarde)) && !Double.isInfinite(waarde))
-    							{
-    								// als integer, dan zonder decimalen
-    								waardeString = String.valueOf((int) waarde);
-    							}
-    							else
-    							{
-    								waardeString = String.valueOf(waarde);
     							}
     						} // isPercentage
     						else
     						{
-    							int waarde = 0;
+//    							int waarde = 0;
+    							value = 0;
     							
     							if (frequencies_number != null)
     							{
-    								waarde = frequencies_number[i][j * 2];
+    								value = frequencies_number[i][j * 2];
     							}
     							else if (frequencies_enum != null)
     							{
-    								waarde = frequencies_enum[i][j].frequency;
+    								value = frequencies_enum[i][j].frequency;
     							}
-    							waardeString = String.valueOf(waarde);
     						}
     
-    						//System.out.println("... waardeString = " + waardeString);
-    
-    						if (HistogramView.this.model.isFrequencyPolygonMode() || !waardeString.equals("0"))
+    						//System.out.println("... valueString = " + valueString);
+    						
+    						if (HistogramView.this.model.isFrequencyPolygonCumulativeMode())
     						{
-    							// System.out.println("... waarde != 0");
-    
+    							value = cumulativeValuePerSplit[i]; 
+    						}
+    						
+							// round to one decimal
+							if (!Double.isNaN(value) && !Double.isInfinite(value))
+								value = Statistiek.round(value, 1);
+							else
+								value = 0;
+							
+							// Get valueString for showing tooltip text
+    						String valueString = "0";
+							// Test of waarde een integer is 
+							if ((value == Math.floor(value)) && !Double.isInfinite(value))
+							{
+								// als integer, dan zonder decimalen
+								valueString = String.valueOf((int) value);
+							}
+							else
+							{
+								valueString = String.valueOf(value);
+							}
+    						
+    						if (!valueString.equals("0") || HistogramView.this.model.isFrequencyPolygonMode())
+    						{
+    							// For frequency polygon show tooltip and highlight for every dot
+    							
     							highlightedBar = j;
     							highlightInSplit = i;
 
@@ -3064,9 +3141,9 @@ public class HistogramView extends JPanel implements Observer
     							// show tooltip
     							ToolTipManager.sharedInstance().setEnabled(true);
     							if (isPercentage)
-    								this.setToolTipText(waardeString + "%");
+    								this.setToolTipText(valueString + "%");
     							else
-    								this.setToolTipText("aantal = " + waardeString);
+    								this.setToolTipText("aantal = " + valueString);
     						}
     						else
     						{
@@ -3088,6 +3165,7 @@ public class HistogramView extends JPanel implements Observer
 //			else // frequency polygon
 //			{
 //				// tooltip en highlight bij bolletje
+//				System.out.println("HistogramBarPanel.mouseMoved(): isFrequencyPolygon");
 //			}
 		}
 
