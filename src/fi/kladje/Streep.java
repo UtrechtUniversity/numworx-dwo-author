@@ -566,7 +566,7 @@ public class Streep
 		double m10 = 0;
 		double m11 = 1;
 		double b0 = 0;
-		double b1 = 1;
+		double b1 = 0;
 		
 		if (h.containsKey("kleur"))
 			kleur = (Color) h.get("kleur");
@@ -632,6 +632,10 @@ public class Streep
 			
 		}
 		
+		double cxNew = at.m00 * cx + at.m01 * cy + at.b0;
+		double cyNew = at.m10 * cx + at.m11 * cy + at.b1;
+		cx = cxNew;
+		cy = cyNew;
 		bb.transformBy(at);
 		
 		makeHandleBox();
@@ -759,8 +763,8 @@ public class Streep
 	public void translate(int dx, int dy)
 	{
 		for (int pCnt = 0; pCnt < puntenXD.length; pCnt++)
-		{	puntenXD[pCnt] += dx;
-			puntenYD[pCnt] += dy;
+		{	//puntenXD[pCnt] += dx;
+			//puntenYD[pCnt] += dy;
 			pXD[pCnt] += dx;
 			pYD[pCnt] += dy; 
 		}
@@ -1182,7 +1186,7 @@ class Lijn
 		double m10 = 0;
 		double m11 = 1;
 		double b0 = 0;
-		double b1 = 1;
+		double b1 = 0;
 
 		
 		if (h.containsKey("kleur"))
@@ -1235,13 +1239,18 @@ class Lijn
 
 		double fXNew = at.m00 * fX + at.m01 * fY + at.b0;
 		double fYNew = at.m10 * fX + at.m11 * fY + at.b1;
-		fX = (int) Math.round(fXNew);
-		fY = (int) Math.round(fYNew);
+		fX = fXNew;
+		fY = fYNew;
 		
 		double tXNew = at.m00 * tX + at.m01 * tY + at.b0;
 		double tYNew = at.m10 * tX + at.m11 * tY + at.b1;
-		tX = (int) Math.round(tXNew);
-		tY = (int) Math.round(tYNew);
+		tX = tXNew;
+		tY = tYNew;
+
+		double cxNew = at.m00 * cx + at.m01 * cy + at.b0;
+		double cyNew = at.m10 * cx + at.m11 * cy + at.b1;
+		cx = cxNew;
+		cy = cyNew;
 
 		bb.transformBy(at);
 		
@@ -1347,10 +1356,10 @@ class Lijn
 
 	public void translate(int dx, int dy)
 	{
-		fromX += dx;
-		fromY += dy;
-		toX += dx; 
-		toY += dy;
+		//fromX += dx;
+		//fromY += dy;
+		//toX += dx; 
+		//toY += dy;
 		cx += dx;
 		cy += dy;
 
@@ -1358,6 +1367,9 @@ class Lijn
 		fY += dy;
 		tX += dx; 
 		tY += dy;
+		
+		AffineTransform trans = new AffineTransform(1,0,0,1,dx,dy);
+		at = at.leftMultiplyBy(trans);
 		
 		bb.translate(dx, dy);
 
@@ -1694,7 +1706,7 @@ class Rechthoek
 		double m10 = 0;
 		double m11 = 1;
 		double b0 = 0;
-		double b1 = 1;
+		double b1 = 0;
 
 		
 		if (h.containsKey("kleur"))
@@ -1750,6 +1762,11 @@ class Rechthoek
 		rechthoek.transformBy(at);
 		outerRechthoek.transformBy(at);
 		innerRechthoek.transformBy(at);
+		
+		double cxNew = at.m00 * cx + at.m01 * cy + at.b0;
+		double cyNew = at.m10 * cx + at.m11 * cy + at.b1;
+		cx = cxNew;
+		cy = cyNew;
 		
 		makeHandleBox();
 		
@@ -1850,10 +1867,14 @@ class Rechthoek
 
 	public void translate(int dx, int dy)
 	{
-		topLeftX += dx;
-		topLeftY += dy;
+		//topLeftX += dx;
+		//topLeftY += dy;
+		
 		cx += dx;
 		cy += dy;
+		
+		AffineTransform trans = new AffineTransform(1,0,0,1,dx,dy);
+		at = at.leftMultiplyBy(trans);
 		
 		rechthoek.translate(dx, dy);
 		outerRechthoek.translate(dx, dy);
@@ -2200,7 +2221,7 @@ class Ellips
 		double m10 = 0;
 		double m11 = 1;
 		double b0 = 0;
-		double b1 = 1;
+		double b1 = 0;
 
 
 		if (h.containsKey("kleur"))
@@ -2253,6 +2274,12 @@ class Ellips
 		ellips.transformBy(at);
 		outerEllips.transformBy(at);
 		innerEllips.transformBy(at);
+		
+		double cxNew = at.m00 * cx + at.m01 * cy + at.b0;
+		double cyNew = at.m10 * cx + at.m11 * cy + at.b1;
+		cx = cxNew;
+		cy = cyNew;
+
 		
 		makeHandleBox();
 		
@@ -2356,8 +2383,11 @@ class Ellips
 
 	public void translate(int dx, int dy)
 	{
-		topLeftX += dx;
-		topLeftY += dy;
+		//topLeftX += dx;
+		//topLeftY += dy;
+		
+		AffineTransform trans = new AffineTransform(1,0,0,1,dx,dy);
+		at = at.leftMultiplyBy(trans);
 		
 		ellips.translate(dx, dy);
 		outerEllips.translate(dx, dy);
@@ -2731,7 +2761,7 @@ class TekstElement
 		double m10 = 0;
 		double m11 = 1;
 		double b0 = 0;
-		double b1 = 1;
+		double b1 = 0;
 
 		
 		

@@ -121,7 +121,15 @@ class KladjePolygon
 	public int geefPuntY(int nr)
 	{ 	return puntenY[nr];
 	}
+
+	public double geefPuntXD(int nr)
+	{ 	return doubleX[nr];
+	}
 	
+	public double geefPuntYD(int nr)
+	{ 	return doubleY[nr];
+	}
+
 	public int geefAantalPunten()
 	{	return aantalPunten;
 	}

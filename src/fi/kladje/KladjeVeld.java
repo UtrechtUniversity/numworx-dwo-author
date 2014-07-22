@@ -2416,8 +2416,14 @@ System.out.println("returned " + (numHistories - 1));
 			else if (mouseMode == selecteren)
 			{
 
-				
-				if (objectSelectedHandlesContain(e.getX(), e.getY()))
+				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				{
+					resetSelectedObject();
+					sleepSelectie = true;
+					startX = e.getX();
+					startY = e.getY();
+				}
+				else if (objectSelectedHandlesContain(e.getX(), e.getY()))
 				{
 					startX = e.getX();
 					startY = e.getY();
@@ -2446,6 +2452,7 @@ System.out.println("returned " + (numHistories - 1));
 
 					objectMoved = false;
 				}
+/*				
 				else if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
 				{
 					resetSelectedObject();
@@ -2453,6 +2460,7 @@ System.out.println("returned " + (numHistories - 1));
 					startX = e.getX();
 					startY = e.getY();
 				}
+*/				
 				else
 				{
 					sleepSelectie = false;
