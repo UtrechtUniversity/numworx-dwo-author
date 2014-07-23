@@ -444,11 +444,11 @@ public class HistogramView extends JPanel implements Observer
 			{
 				spacing = 4;
 			}
-			if (labelUnderBinItemSelected() && type.equals(AllowedTypes.INTEGER) && getBinWidth() == 1)
-			{
-//				System.out.println("HistogramView.paintBar(): INT & 1, spacing!");
-				spacing = 4;
-			}
+//			if (labelUnderBinItemSelected() && type.equals(AllowedTypes.INTEGER) && getBinWidth() == 1)
+//			{
+////				System.out.println("HistogramView.paintBar(): INT & 1, spacing!");
+//				spacing = 4;
+//			}
 			
 //			System.out.println("HistogramView.paintBar(): type = " + type + ", binWidth = " 
 //				+ getBinWidth() + ", spacing = " + spacing);
@@ -917,9 +917,10 @@ public class HistogramView extends JPanel implements Observer
 
 	private int barAreaWidth()
 	{
-		// return this.getWidth() - HistogramView.Y_AS_OFFSET;
+		// breedte verticale scrollbar aftrekken
 		return this.getWidth() - this.yAxisOffset
-			- (this.colorLegend.isVisible() ? this.colorLegend.getWidth() : 0);
+			- (this.colorLegend.isVisible() ? this.colorLegend.getWidth() : 0)
+			- this.scrollPane.getVerticalScrollBar().getWidth();
 	}
 
 	private int barAreaHeight()
@@ -1729,15 +1730,10 @@ public class HistogramView extends JPanel implements Observer
 							String s_labelUnderBin;
 							if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
 							{
-								if (!HistogramView.this.model.isFrequencyPolygonMode())
-									s_labelUnderBin = s;
-								else
-								{
-									s_labelUnderBin = s;
-									// for frequency polygon always
-									// draw marker
-									g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
-								}
+								s_labelUnderBin = s;
+								// for frequency polygon always
+								// draw marker
+								g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 //								System.out.println("HistogramView.paintNumberClass(): INT & binwidth = 1, s_labelUnderBin = " 
 //									+ s_labelUnderBin);
 							}
@@ -1759,8 +1755,10 @@ public class HistogramView extends JPanel implements Observer
 						}
 						else
 						{
-							// draw last marker
-							g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+							if (!type.equals(AllowedTypes.INTEGER) || ((int) getBinWidth()) != 1)
+								// draw last marker
+								// test syl: kan dit weg? Markers worden altijd al getekend...?
+								g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 						}
 					}
 					else
@@ -1793,8 +1791,17 @@ public class HistogramView extends JPanel implements Observer
 						// put label under bin
 						if (i < this.model.getBinBoundaries().size() - 1)
 						{
-							String s_labelUnderBin = s + "-<" +
-								getStringValue(this.model.getBinBoundaries().get(i + 1));
+							String s_labelUnderBin;
+							if (type.equals(AllowedTypes.INTEGER) && ((int) getBinWidth()) == 1)
+							{
+								// Voor gehele getallen met 1 waarde per klasse, 1 getal tonen onder de staaf
+								s_labelUnderBin = s;
+							}
+							else
+							{
+								s_labelUnderBin = s + "-<" +
+									getStringValue(this.model.getBinBoundaries().get(i + 1));
+							}
 							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
 							int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
 							int heightRotatedLabel = (int) (offset_labelUnderBin * -Math.sin(theta));
@@ -2646,10 +2653,8 @@ public class HistogramView extends JPanel implements Observer
 		{
 			if (this.scrollPane.getWidth() == 0)
 			{
-				// syl: even hardcoded op de gebruikelijke maat... Hoe komt scrollPane 0x0?
+				// even hardcoded op de gebruikelijke maat... Hoe komt scrollPane 0x0?
 				this.mainPanel.setPreferredSize(new Dimension(653, 677));
-				// test: iets kleiner om het verschil te zien
-//				this.mainPanel.setPreferredSize(new Dimension(500, 500));
 			}
 			else
 			{
