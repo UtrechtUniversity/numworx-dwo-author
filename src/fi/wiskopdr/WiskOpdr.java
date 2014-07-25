@@ -127,7 +127,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private long sessionStartTime;
 	private ScormEditComponentIF scormEditComponent;
 
-	private OpdrNavStruct ons;
+	public OpdrNavStruct ons;
 	private Hashtable defaultParamValues, launchData;
 
 	private Button viewButton;
@@ -941,7 +941,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 	public void destroy() {
 		if (ons != null)
+		{
 			ons.destroy();
+			ons = null;
+		}
 		if (scormEditComponent != null)
 			scormEditComponent.end();
 	}
@@ -1249,7 +1252,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 				ons.getState();
 				ons.getScoresObjectives();
 				// System.out.println("score "+ ons.getScore());
-
+				ons = null;
 			}
 			repaint();
 		}
@@ -1356,6 +1359,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	
 	public static int getPageNr() {
+		if(applet == null || applet.ons == null)
+			return getEditPageNr();
 		return applet.ons.geefOpdrachtNr();
 	}
 	

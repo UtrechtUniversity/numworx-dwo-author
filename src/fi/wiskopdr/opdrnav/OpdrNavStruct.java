@@ -203,8 +203,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 * launchData, dan wel een applet waaraan deze launchData kan worden
 	 * opgevraagd mbv getParameter(String)
 	 */
-	public OpdrNavStruct(Applet applet, MyOpdrContainer opdrContainer, int x, int y, int b, int h, SCORM12APIInterface api, Hashtable launchData)
+	public OpdrNavStruct(WiskOpdr applet, MyOpdrContainer opdrContainer, int x, int y, int b, int h, SCORM12APIInterface api, Hashtable launchData)
 	{
+		if(applet != null) applet.ons = this; // FIXME static reference mogelijk naar 'this' 
 		setLayout(null);
 		setBounds(x, y, b, h);
 		setBackground(WiskOpdr.bgcolor);
