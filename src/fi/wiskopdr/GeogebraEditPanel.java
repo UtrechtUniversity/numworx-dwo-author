@@ -272,7 +272,9 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
     
 	public void zetMode(int mode){}
 	
-    public void stop(){}
+    public void stop(){
+    	geogebraPanel.destroy();
+    }
     
     public void start(){}
 	

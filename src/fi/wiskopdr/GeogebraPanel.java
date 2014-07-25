@@ -890,6 +890,7 @@ System.out.println("end refresh geogebra");System.out.flush();
     	kijkNa();
     	try {
 			geogebraApplet.getGeoGebraAPI().stopAnimation();
+			geogebraApplet.destroy();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -901,6 +902,7 @@ System.out.println("end refresh geogebra");System.out.flush();
     
     public void destroy() {
   		p.remove(geogebraApplet);
+  		geogebraApplet.destroy();
 		geogebraApplet = null;
 		//System.gc();
 		System.out.println("destroyed");
