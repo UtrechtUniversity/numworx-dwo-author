@@ -332,17 +332,17 @@ public class DescriptivesView extends JPanel implements Observer
 			if (this.frequencies_number != null)
 			{
 				int[] frequencies = frequencies_number[splitClass];
-				int sum = 0;
-				for (int i = 0; i < frequencies.length/2; i++)
-				{
-					if (selection == 0)
-						sum += frequencies[2*i];
-					else
-						sum += frequencies[2*i + 1];
-				}
-				
+//				int sum = 0;
+//				for (int i = 0; i < frequencies.length/2; i++)
+//				{
+//					if (selection == 0)
+//						sum += frequencies[2*i];
+//					else
+//						sum += frequencies[2*i + 1];
+//				}
 //				numberOfCases = sum;
-				// altijd maar 1 bin...
+				
+				// Er is altijd maar 1 bin; bovenstaande voor het geval er meerdere bins zijn
 				if (selection == 0)
 					numberOfCases = frequencies[0];
 				else
@@ -353,7 +353,20 @@ public class DescriptivesView extends JPanel implements Observer
 		{ // enum or string
 			if (frequencies_enum != null)
 			{
+				FrequencyTuple[] frequencies = frequencies_enum[splitClass];
+				int sum = 0;
 				
+				for (int i = 0; i < frequencies.length; i++)
+				{
+					if (!frequencies[i].label.equals(ColumnType.WILDCARD))
+					{
+						if (selection == 0)
+							sum += frequencies[i].frequency;
+						else
+							sum += frequencies[i].selectionFrequency;
+					}
+				}
+				numberOfCases = sum;
 			}
 		}
 		
