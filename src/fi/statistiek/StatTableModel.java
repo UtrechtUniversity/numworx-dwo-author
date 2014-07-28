@@ -575,12 +575,12 @@ public class StatTableModel implements TableModel
 			}
 			else
 			{
-				System.out.println("Invalid input");
+				System.out.println("StatTableModel.setValueAtWithoutEvent(): Invalid input o = " + o.toString());
 			}
 		}
 		else
 		{
-			System.out.println("Error in setValueAt: goal cel not in table");
+			System.out.println("Error in StatTableModel.setValueAtWithoutEvent(): goal cel not in table");
 		}
 	}
 
@@ -1108,26 +1108,35 @@ public class StatTableModel implements TableModel
 		{
 			return 0;
 		}
-		Double min = Double.MAX_VALUE;
-		for (int i = 0; i < this.rowCount; i++)
+		
+		try
 		{
-			Object o = this.getValueAt(i, columnIndex);
-			if (!o.equals(ColumnType.WILDCARD))
+			Double min = Double.MAX_VALUE;
+			for (int i = 0; i < this.rowCount; i++)
 			{
-				Double d = Double.parseDouble((String) o);
-				if (d < min)
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
 				{
-					min = d;
+					Double d = Double.parseDouble((String) o);
+					if (d < min)
+					{
+						min = d;
+					}
 				}
 			}
+			if (min.equals(Double.MAX_VALUE))
+			{
+				return 0;
+			}
+			else
+			{
+				return min.doubleValue();
+			}
 		}
-		if (min.equals(Double.MAX_VALUE))
+		catch (NumberFormatException e)
 		{
+			System.out.println("StatTableModel.getColumnMin(): no numerical data");
 			return 0;
-		}
-		else
-		{
-			return min.doubleValue();
 		}
 	}
 
@@ -1142,7 +1151,7 @@ public class StatTableModel implements TableModel
 	 */
 	public String getColumnMinOfSelection(int columnIndex)
 	{
-		String minString = null;
+		String minString = Statistiek.rb.getString("notAvailable");
 		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
@@ -1196,26 +1205,35 @@ public class StatTableModel implements TableModel
 		{
 			return 100;
 		}
-		Double max = Double.MIN_VALUE;
-		for (int i = 0; i < this.rowCount; i++)
+		
+		try
 		{
-			Object o = this.getValueAt(i, columnIndex);
-			if (!o.equals(ColumnType.WILDCARD))
+			Double max = Double.MIN_VALUE;
+			for (int i = 0; i < this.rowCount; i++)
 			{
-				Double d = Double.parseDouble((String) o);
-				if (d > max)
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
 				{
-					max = d;
+					Double d = Double.parseDouble((String) o);
+					if (d > max)
+					{
+						max = d;
+					}
 				}
 			}
+			if (max.equals(Double.MIN_VALUE))
+			{
+				return 100;
+			}
+			else
+			{
+				return max.doubleValue();
+			}
 		}
-		if (max.equals(Double.MIN_VALUE))
+		catch (NumberFormatException e)
 		{
+			System.out.println("StatTableModel.getColumnMax(): no numerical data");
 			return 100;
-		}
-		else
-		{
-			return max.doubleValue();
 		}
 	}
 	
@@ -1231,7 +1249,7 @@ public class StatTableModel implements TableModel
 	 */
 	public String getColumnMaxOfSelection(int columnIndex)
 	{
-		String maxString = null;
+		String maxString = Statistiek.rb.getString("notAvailable");
 		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
@@ -1315,7 +1333,7 @@ public class StatTableModel implements TableModel
 	 */
 	public String getColumnMeanOfSelection(int columnIndex)
 	{
-		String meanString = null;
+		String meanString = Statistiek.rb.getString("notAvailable");
 		
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
 		if (!(type.equals(AllowedTypes.DOUBLE) 
@@ -1561,7 +1579,7 @@ public class StatTableModel implements TableModel
 	public String getColumnMode(int columnIndex)
 	{
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
-		String mode = "";
+		String mode = Statistiek.rb.getString("notAvailable");
 		int maxFreq = 0;
 		boolean multipleModes = false;
 		
@@ -1609,16 +1627,19 @@ public class StatTableModel implements TableModel
 				for (int i = 0; i < frequencies_enum[0].length; i++)
 				{
 					FrequencyTuple ft = frequencies_enum[0][i];
-					if (ft.frequency > maxFreq)
+					if (!ft.label.equals(ColumnType.WILDCARD))
 					{
-						maxFreq = ft.frequency;
-						mode = ft.label;
-						multipleModes = false;
-					}
-					else if ((ft.frequency != 0) && (ft.frequency == maxFreq))
-					{
-						// there are two modes
-						multipleModes = true;
+						if (ft.frequency > maxFreq)
+						{
+							maxFreq = ft.frequency;
+							mode = ft.label;
+							multipleModes = false;
+						}
+						else if ((ft.frequency != 0) && (ft.frequency == maxFreq))
+						{
+							// there are two modes
+							multipleModes = true;
+						}
 					}
 				}
 			}
@@ -1640,7 +1661,7 @@ public class StatTableModel implements TableModel
 	public String getColumnModeOfSelection(int columnIndex)
 	{
 		AllowedTypes type = this.getColumnTypes().get(columnIndex).getType();
-		String mode = "";
+		String mode = Statistiek.rb.getString("notAvailable");
 		int maxFreq = 0;
 		boolean multipleModes = false;
 		
@@ -1691,16 +1712,19 @@ public class StatTableModel implements TableModel
 				for (int i = 0; i < frequencies_enum[0].length; i++)
 				{
 					FrequencyTuple ft = frequencies_enum[0][i];
-					if (ft.selectionFrequency > maxFreq)
+					if (!ft.label.equals(ColumnType.WILDCARD))
 					{
-						maxFreq = ft.selectionFrequency;
-						mode = ft.label;
-						multipleModes = false;
-					}
-					else if ((ft.selectionFrequency != 0) && (ft.selectionFrequency == maxFreq))
-					{
-						// there are two modes
-						multipleModes = true;
+						if (ft.selectionFrequency > maxFreq)
+						{
+							maxFreq = ft.selectionFrequency;
+							mode = ft.label;
+							multipleModes = false;
+						}
+						else if ((ft.selectionFrequency != 0) && (ft.selectionFrequency == maxFreq))
+						{
+							// there are two modes
+							multipleModes = true;
+						}
 					}
 				}
 			}
@@ -1852,11 +1876,27 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * clear stringFrequencies
+	 * Clear stringFrequencies.
 	 */
 	public void clearStringFrequencies()
 	{
 		this.stringFrequencies = new ArrayList<Hashtable<String, Integer>>();
+	}
+
+	/**
+	 * Clear selectionList.
+	 */
+	public void clearSelectionList()
+	{
+		this.selectionList = new ArrayList<Boolean>();
+	}
+
+	/**
+	 * Clear listeners.
+	 */
+	public void clearListeners()
+	{
+		this.listeners = new ArrayList<TableModelListener>();
 	}
 
 	public synchronized void setSelectionList(ArrayList<Boolean> selectionList)
