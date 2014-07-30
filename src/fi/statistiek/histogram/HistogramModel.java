@@ -16,24 +16,8 @@ import fi.statistiek.types.ColumnType;
 /**
  * MVC model for StatistiekView Histogram
  * 
- * @author Manu Drijvers
+ * @author Manu Drijvers, Sylvia van Borkulo
  * 
- */
-/**
- * @author borku102
- *
- */
-/**
- * @author borku102
- *
- */
-/**
- * @author borku102
- *
- */
-/**
- * @author borku102
- *
  */
 public class HistogramModel extends Observable implements TableModelListener,
 	SelectionListener, StatBinsModel
