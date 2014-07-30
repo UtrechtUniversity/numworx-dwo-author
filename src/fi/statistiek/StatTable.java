@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-
 import javax.imageio.ImageIO;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -40,21 +39,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
-
-/*
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-*/
-
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
 import fi.statistiek.addcolumndialog.AddColumnDialogView;
@@ -73,6 +64,7 @@ public class StatTable extends JPanel implements StatistiekView,
 	SelectionListener
 {
 	private static final String RESET_ICON_PATH = "resources/reseticon.gif";
+	private static final String DELIMITER = ";";
 	private StatTableModel statTableModel;
 
 	// Include field statInteractiePanel to process the reset actions
@@ -219,6 +211,9 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.table.getTableHeader().addMouseListener(popupListener);
 
 		super.add(this.scrollPane, BorderLayout.CENTER);
+		
+		ToolTipManager.sharedInstance().setInitialDelay(0);
+		ToolTipManager.sharedInstance().setReshowDelay(0);
 
 		// maak editDataPanel
 		GridLayout gl = new GridLayout();
@@ -229,8 +224,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.importButton = new JButton(Statistiek.rb.getString("importButton"));
 		this.importButton.setToolTipText(Statistiek.rb.getString("importButton"));
 		this.importButton.addActionListener(this);
-		// test syl
-		//this.editDataPanel.add(this.importButton);
+		this.editDataPanel.add(this.importButton);
 
 		this.addRowButton = new JButton(Statistiek.rb.getString("addrowButton"));
 		this.addRowButton.setToolTipText(Statistiek.rb.getString("addrowButton"));
@@ -272,7 +266,7 @@ public class StatTable extends JPanel implements StatistiekView,
 
 		super.add(this.editDataPanel, BorderLayout.SOUTH);
 		
-		// test syl: set up the file chooser to open a data file
+		// set up the file chooser to open a data file
 		setUpFileChooser();
 	}
 
@@ -282,7 +276,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		try
 		{
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Excel (*.xls, *.xlsx)", "xls", "xlsx");
+				"CSV files (*csv)", "csv");
 		    fileChooser.setFileFilter(filter);
 		    fileChooser.setAcceptAllFileFilterUsed(false);
 		}
@@ -602,7 +596,8 @@ public class StatTable extends JPanel implements StatistiekView,
 			AddColumnDialogModel m = new AddColumnDialogModel(
 				this.statTableModel,
 				this.statTableModel.getColumnName(this.popUpColumnIndex),
-				this.statTableModel.getColumnTypes().get(popUpColumnIndex));
+				this.statTableModel.getColumnTypes().get(popUpColumnIndex),
+				this.popUpColumnIndex);
 			AddColumnDialogView v;
 
 			Container c = Statistiek.getTopLevelAcestor(this);
@@ -637,8 +632,11 @@ public class StatTable extends JPanel implements StatistiekView,
     				.getResetHashtable();
     
     			// clear stringFrequencies
-    			this.statInteractiePanel.getModel().getData()
-    				.clearStringFrequencies();
+    			this.statTableModel.clearStringFrequencies();
+
+    			// clear selectionList and listeners
+    			this.statTableModel.clearSelectionList();
+    			this.statTableModel.clearListeners();
     
     			// System.out.println("reset clicked! this.statInteractiePanel.getModel().getResetHashtable()="
     			// + resetHashtable);
@@ -681,117 +679,60 @@ public class StatTable extends JPanel implements StatistiekView,
 		{
 //			System.out.println("You chose to open this file: " +
 //				fileChooser.getSelectedFile().getName());
-//			processCSVDataFile(fileChooser.getSelectedFile());
 			
-			// Verwijder oude views: onderstaande verwijdert ook de tabelview
-			//removeViews();
+			// Remove old views
+			this.removeViews();
 			
-			//processExcelDataFile(fileChooser.getSelectedFile());
+			processCSVDataFile(fileChooser.getSelectedFile());
 		}
 	}
 	
+	/**
+	 * Remove views except Table.
+	 */
 	private void removeViews()
 	{
-		this.statInteractiePanel.getModel().removeViewsWithoutEvent();		
+		ArrayList<StatistiekView> views = new ArrayList<StatistiekView>();
+		
+		// In edit-mode is statInteractiePanel null
+		if (this.statInteractiePanel != null)
+			views = this.statInteractiePanel.getModel().getViews();
+		
+        Iterator<StatistiekView> iterator = views.iterator();
+        while (iterator.hasNext()) 
+        {
+        	StatistiekView view = iterator.next();
+        	if (!view.getViewName().equals(this.viewName))
+        	{
+        		iterator.remove();
+        		this.statInteractiePanel.getModel().removeView(view.getViewName());
+        	}
+        }
 	}
 
 	
-
-	/*
-	 * Process the excel data file. Reads the first sheet.
-	 */
-//	private void processExcelDataFile(File file)
-//	{
-//		// test syl: moet deze methode synchronized vanwege zetten waarden kolommen?
-//		try
-//		{
-//			//FileInputStream fileInputStream = new FileInputStream(file);
-//			Workbook workbook = WorkbookFactory.create(file);
-//			
-//			//Get first sheet from the workbook
-//			Sheet sheet = workbook.getSheetAt(0);
-//			Row headerRow;
-//			ArrayList<String> headerStrings = new ArrayList<String>();
-//			Row row;
-//			Cell cell;
-// 
-//            //Iterate through each rows one by one
-//			Iterator<Row> rowIterator = sheet.rowIterator();
-//			
-//			// Read header row
-//			if (rowIterator.hasNext())
-//			{
-//				headerRow = (Row) rowIterator.next();
-//				
-//				 //For each row, iterate through all the columns
-//                Iterator<Cell> cellIterator = headerRow.cellIterator();
-//                 
-//                while (cellIterator.hasNext())
-//                {
-//                    cell = (Cell) cellIterator.next();
-//                    
-//                    headerStrings.add(cell.toString());
-//                }
-//                //System.out.println("...headers=" + headerStrings);
-//                
-//                clearStatTableModel();
-//                createColumns(headerStrings);
-//			}
-//			
-//			// Read data rows
-//			int rowIndex = 0;
-//            while (rowIterator.hasNext())
-//            {
-//                row = (Row) rowIterator.next();
-//
-//                // Add empty row to statTableModel
-//                this.statTableModel.addRow();
-//                
-//                //For each row, iterate through all the columns
-//                Iterator<Cell> cellIterator = row.cellIterator();
-//                int columnIndex = 0;
-//                while (cellIterator.hasNext())
-//                {
-//                    cell = (Cell) cellIterator.next();
-//                    
-//                    // Fill current row in statTableModel with data for each column
-//                    this.statTableModel.setValueAt(cell.toString(), rowIndex, columnIndex);
-//                    
-//                    //Check the cell type and format accordingly
-////                    switch (cell.getCellType())
-////                    {
-////                        case Cell.CELL_TYPE_NUMERIC:
-////                            System.out.print(cell.getNumericCellValue() + "-");
-////                            break;
-////                        case Cell.CELL_TYPE_STRING:
-////                            System.out.print(cell.getStringCellValue() + "-");
-////                            break;
-////                    }
-//                    columnIndex++;
-//                }
-////              System.out.println("...row processed");
-//                rowIndex++;
-//            }
-//            //fileInputStream.close();
-//		}
-//		catch (Exception e)
-//		{
-//			// TODO: gebruikersmelding
-//			e.printStackTrace();
-//		}
-//	}
-
 	/*
 	 * Create columns based on the names. 
 	 */
-	private void createColumns(ArrayList<String> names)
+	private void createColumns(String[] names)
 	{
-		System.out.println("StatTable.createColumns(): " + names);
-		// test syl: eerst even allemaal type string
-		for (int i = 0; i < names.size(); i++)
+		//System.out.println("StatTable.createColumns(): " + names.toString());
+		for (int i = 0; i < names.length; i++)
 		{
-    		this.statTableModel.addColumn(names.get(i),
+    		this.statTableModel.addColumn(names[i],
     			new ColumnType(AllowedTypes.STRING));
+		}
+	}
+
+	/*
+	 * Remove all columns. 
+	 */
+	private void removeColumns()
+	{
+		//System.out.println("StatTable.removeColumns()");
+		for (int i = this.statTableModel.getColumnCount() - 1; i >= 0; i--)
+		{
+    		this.statTableModel.removeColumn(i);
 		}
 	}
 
@@ -800,34 +741,31 @@ public class StatTable extends JPanel implements StatistiekView,
 	 */
 	private void clearStatTableModel()
 	{
-		// test syl
 		// statTable rij voor rij, kolom voor kolom leegmaken
 		int numberOfRows = this.statTableModel.getRowCount();
 		for (int i = numberOfRows - 1; i >= 0; i--)
 		{
-			System.out.println("StatTable.clearStatTableModel(): remove row " + i);
+			//System.out.println("StatTable.clearStatTableModel(): remove row " + i);
 			this.statTableModel.removeRow(i);
 		}
 
 		int numberOfColumns = this.statTableModel.getColumnCount(); 
 		for (int i = numberOfColumns - 1; i >=0; i--)
 		{
-			System.out.println("StatTable.clearStatTableModel(): remove column " + i);
+			//System.out.println("StatTable.clearStatTableModel(): remove column " + i);
 			this.statTableModel.removeColumn(i);
 		}
 	}
 
 	/*
 	 * Process the CSV data file.
-	 * Not ready, maybe not necessary...
 	 */
 	private void processCSVDataFile(File file)
 	{
 		BufferedReader br = null;
 		String line = "";
-		String cvsSplitBy = ";";
-		ArrayList<String> dataRows;
-		String[] headers;
+		ArrayList<String> dataRows = null;
+		String[] headers = null;
 	 
 		try 
 		{
@@ -837,23 +775,13 @@ public class StatTable extends JPanel implements StatistiekView,
 			// read the header line
 			if ((line = br.readLine()) != null)
 			{
-				headers = line.split(cvsSplitBy);
-				if (headers != null)
-				{
-					for (int i = 0; i < headers.length; i++)
-						System.out.println("headers[" + i + "]=" + headers[i]);
-				}
+				headers = line.split(StatTable.DELIMITER);
 			}
 
 			// read the data
 			while ((line = br.readLine()) != null) 
 			{
 				dataRows.add(line);
-			}
-			
-			for (int i = 0; i < dataRows.size(); i++)
-			{
-				System.out.println("dataRows[" + i + "]: " + dataRows.get(i));
 			}
 		} 
 		catch (FileNotFoundException e) 
@@ -879,7 +807,49 @@ public class StatTable extends JPanel implements StatistiekView,
 			}
 		}
 	 
-		System.out.println("Done");
+		// clear the old data
+		this.clearStatTableModel();
+		
+		// create string columns from headers
+		this.createColumns(headers);
+		
+		// add row data
+		this.addDataRows(dataRows);
+		
+		this.statTableModel.updateNumericalColumnTypes();
+		
+		// update the view
+		if (this.statInteractiePanel != null)
+			this.statInteractiePanel.getView().update(null, null);
+	}
+
+	/**
+	 * Add the row data to the table.
+	 * @param dataRows
+	 */
+	private void addDataRows(ArrayList<String> dataRows)
+	{
+        Iterator<String> rowIterator = dataRows.iterator();
+        int rowIndex = 0;
+        while (rowIterator.hasNext()) 
+        {
+        	String dataRow = rowIterator.next();
+        	this.statTableModel.addRow();
+        	
+        	// add the data
+        	String[] values = dataRow.split(";");
+        	int columnIndex = 0;
+            for (int i = 0; i < values.length; i++) 
+            {
+            	String value = values[i];
+//                System.out.println("value = " + value);
+                this.statTableModel.setValueAt(value, rowIndex, columnIndex);
+                
+                columnIndex++;
+            }
+        	
+        	rowIndex++;
+        }
 	}
 
 	public Object getState()
