@@ -2,11 +2,13 @@ package fi.statistiek.addcolumndialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -23,6 +25,7 @@ import fi.statistiek.Statistiek;
 import fi.statistiek.orderablejlist.OrderableJList;
 import fi.statistiek.orderablejlist.OrderableJListModel;
 import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
 
 /**
  * View for add column dialog
@@ -49,8 +52,12 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JTextField addEnumElementField;
 	// private JTextArea enumElementsView;
 	private OrderableJList enumElementsList;
+	private ArrayList stringOptions;
+	private AllowedTypes originalColumnType;
 	private JScrollPane enumScrollPane;
+	private JPanel enumSouthPanel;
 	private JButton removeSelectedElement;
+	private JButton removeAllElements;
 
 	private JPanel typePanel;
 	private JPanel uitlegPanel;
@@ -166,11 +173,20 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.removeSelectedElement.setFont(this.font);
 		this.removeSelectedElement.setActionCommand("removeSelectedElement");
 
+		this.removeAllElements = new JButton(
+			Statistiek.rb.getString("removeAllElements"));
+		this.removeAllElements.setFont(this.font);
+		this.removeAllElements.setActionCommand("removeAllElements");
+		this.enumSouthPanel = new JPanel();
+		this.enumSouthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		enumSouthPanel.add(this.removeSelectedElement);
+		enumSouthPanel.add(this.removeAllElements);
+
 		this.createEnumPanel = new JPanel();
 		this.createEnumPanel.setLayout(new BorderLayout());
 		this.createEnumPanel.add(enumScrollPane, BorderLayout.CENTER);
 		this.createEnumPanel
-			.add(this.removeSelectedElement, BorderLayout.SOUTH);
+			.add(this.enumSouthPanel, BorderLayout.SOUTH);
 		this.createEnumPanel.add(this.addEnumElementPanel, BorderLayout.NORTH);
 
 		this.typePanel = new JPanel();
@@ -196,8 +212,20 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.alles.add(this.typePanel);
 		this.alles.add(this.uitlegPanel);
 		this.add(this.alles);
+		
+		this.originalColumnType = this.model.getType();
+		this.setStringOptions();
 
 		this.update(null, null);
+	}
+
+	private void setStringOptions()
+	{
+		if (!this.wasEnum())
+		{
+			this.stringOptions = this.model.getTableModel().
+				getStringOptions(this.model.getColumnIndex());
+		}
 	}
 
 	private void setTypeBox()
@@ -256,6 +284,16 @@ public class AddColumnDialogView extends JDialog implements Observer
 	}
 
 	/**
+	 * Get the string options.
+	 * 
+	 * @return The string options
+	 */
+	public ArrayList getStringOptions()
+	{
+		return this.stringOptions;
+	}
+
+	/**
 	 * @return The text in the nameField textfield
 	 */
 	public String getCurrentName()
@@ -266,7 +304,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 	/**
 	 * @return The index of the selected enum item in the enum elements list
 	 */
-	public int getSelectedEnumOptionIndex()
+	public int getSelectedOptionInListIndex()
 	{
 		return this.enumElementsList.getSelectedIndex();
 	}
@@ -282,6 +320,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.typeBox.addActionListener(al);
 		this.addEnumElementField.addActionListener(al);
 		this.removeSelectedElement.addActionListener(al);
+		this.removeAllElements.addActionListener(al);
 		this.doneButton.addActionListener(al);
 		this.nameField.addActionListener(al);
 	}
@@ -327,14 +366,77 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.enumElementsList.setVisible(this.model.getType().equals(
 			AllowedTypes.ENUM));
 
-		// update string representation of current enumeration
-		this.enumElementsList.setModel(new OrderableJListModel(this.model
-			.getEnumOptions()));
+		// Update the list with options of current enumeration
+		// or with string options if there is no current enumeration
+		if (this.wasEnum())
+		{
+			this.enumElementsList.setModel(new OrderableJListModel(this.model
+				.getEnumOptions()));
+		}
+		else
+		{
+			// vul met stringOptions
+			this.enumElementsList.setModel(new OrderableJListModel(
+				this.stringOptions));
+		}
 
 		this.nameField.setText(this.model.getName());
 
 		this.uitlegArea.setText(this.model.getUitleg());
 
 		super.validate();
+	}
+
+	public AllowedTypes getOriginalColumnType()
+	{
+		return this.originalColumnType;
+	}
+
+	/**
+	 * Return whether the column originally was of type enumeration.
+	 * @return
+	 */
+	private boolean wasEnum()
+	{
+		return this.originalColumnType.equals(AllowedTypes.ENUM);
+	}
+
+	public void removeStringOption(int index)
+	{
+		if (index > -1)
+		{
+			this.stringOptions.remove(index);
+		}
+	}
+
+	public void addStringOption(String s)
+	{
+		this.stringOptions.add(s);
+	}
+
+	/**
+	 * Add the options in stringOptions to the enum options.
+	 */
+	public void updateEnumOptions()
+	{
+		for (int i = 0; i < this.stringOptions.size(); i++)
+		{
+			String newElement = (String) this.stringOptions.get(i);
+			this.model.addEnumOption(newElement);
+		}
+	}
+
+	/**
+	 * Remove all string options except '*' from the string options.
+	 */
+	public void removeAllStringOptions()
+	{
+		for (int i = this.stringOptions.size() - 1; i > -1 ; i--)
+		{
+			if (!this.stringOptions.get(i).equals(ColumnType.WILDCARD))
+			{
+				this.stringOptions.remove(i);
+			}
+		}
 	}
 }
