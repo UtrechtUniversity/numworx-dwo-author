@@ -44,10 +44,10 @@ public class AllowedTypes implements Serializable
 	{
 		return this.type;
 	}
-
+	
 	/**
-	 * Tests if o is valid instance of this AllowedType Enums must be tested in
-	 * ColumnType
+	 * Tests if o is valid instance of this AllowedType.
+	 * Enums must be tested in ColumnType.
 	 * 
 	 * @param o
 	 *            Object to be tested
