@@ -207,7 +207,7 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		else if (viewType.equals("Kengetallen"))
 		{
-			System.out.println("Statistiek.createView(): viewName = " + viewName);
+			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DescriptivesController(model, viewName, startVar);
 		}
 		else
