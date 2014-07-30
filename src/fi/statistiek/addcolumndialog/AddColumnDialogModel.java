@@ -17,6 +17,7 @@ public class AddColumnDialogModel extends Observable
 	private String name;
 	private String oldName;
 	private AllowedTypes type;
+	private int columnIndex;
 	private ArrayList<String> enumOptions;
 	private String uitleg;
 	private StatTableModel tableModel;
@@ -48,12 +49,13 @@ public class AddColumnDialogModel extends Observable
 	 *            The initial column type
 	 */
 	public AddColumnDialogModel(StatTableModel tableModel, String name,
-		ColumnType cType)
+		ColumnType cType, int columnIndex)
 	{
 		this.name = name;
 		this.oldName = name;
 		this.tableModel = tableModel;
 		this.type = cType.getType();
+		this.columnIndex = columnIndex;
 		this.enumOptions = new ArrayList<String>();
 		if (this.type.equals(AllowedTypes.ENUM))
 		{
@@ -82,6 +84,11 @@ public class AddColumnDialogModel extends Observable
 		this.type = type;
 		this.setChanged();
 		this.notifyObservers();
+	}
+	
+	public int getColumnIndex()
+	{
+		return this.columnIndex;
 	}
 
 	public boolean getDonePressed()
@@ -251,6 +258,14 @@ public class AddColumnDialogModel extends Observable
 	{
 		return this.type;
 	}
+	
+	/**
+	 * @return The statTableModel
+	 */
+	public StatTableModel getTableModel()
+	{
+		return this.tableModel;
+	}
 
 	/**
 	 * @return this column's uitleg
@@ -258,5 +273,21 @@ public class AddColumnDialogModel extends Observable
 	public String getUitleg()
 	{
 		return this.uitleg;
+	}
+
+	/**
+	 * Remove al enum options except '*'.
+	 */
+	public void removeAllEnumOption()
+	{
+		for (int i = this.enumOptions.size() - 1; i > -1; i--)
+		{
+			if (!this.enumOptions.get(i).equals(ColumnType.WILDCARD))
+			{
+				this.enumOptions.remove(i);
+			}
+		}
+		this.setChanged();
+		this.notifyObservers();
 	}
 }
