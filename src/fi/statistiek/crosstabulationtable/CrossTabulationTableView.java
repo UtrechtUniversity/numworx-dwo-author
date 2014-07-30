@@ -1342,7 +1342,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					ArrayList<String> options = CrossTabulationTableView.this.model
 						.getTableModel().stringColumnOptions(
 							CrossTabulationTableView.this.model.getColumnIndex());
-					System.out.println("CrossTabulationTableView.RowClickListener.rowClicked(): " + options);
+					//System.out.println("CrossTabulationTableView.RowClickListener.rowClicked(): " + options);
 					clicked = options.get(rowNumber);
 				}
 
