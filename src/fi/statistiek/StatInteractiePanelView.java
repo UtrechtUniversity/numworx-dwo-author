@@ -501,14 +501,14 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		{
 			if (sv == dialog.sv)
 			{
-				System.out.println("Dialog for statistiekview "
-					+ sv.getViewName() + " already exists.");
+//				System.out.println("Dialog for statistiekview "
+//					+ sv.getViewName() + " already exists.");
 				return true;
 			}
 		}
 
-		System.out.println("Dialog for statistiekview " + sv.getViewName()
-			+ " doesn't exist yet");
+//		System.out.println("Dialog for statistiekview " + sv.getViewName()
+//			+ " doesn't exist yet");
 		return false;
 	}
 
@@ -555,7 +555,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
-		// System.out.println("StatInteractiePanelView.update()");
+		//System.out.println("StatInteractiePanelView.update()");
 		super.removeAll();
 
 		// test syl; hoe krijg ik de button op het goede panel?
