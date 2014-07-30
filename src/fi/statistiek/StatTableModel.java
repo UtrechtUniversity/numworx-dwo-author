@@ -573,9 +573,9 @@ public class StatTableModel implements TableModel
 					this.increaseKeyHashtable((String) o, columnIndex);
 				}
 			}
-			else
+			else // invalid input
 			{
-				System.out.println("StatTableModel.setValueAtWithoutEvent(): Invalid input o = " + o.toString());
+				//System.out.println("StatTableModel.setValueAtWithoutEvent(): Invalid input o = " + o.toString());
 			}
 		}
 		else
@@ -731,6 +731,27 @@ public class StatTableModel implements TableModel
 			if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
 			{
 				this.setValueAt(ColumnType.WILDCARD, row, columnIndex);
+			}
+			else
+			{
+				// valid input but comma in double fields should be replaced
+				if (cType.getType().equals(AllowedTypes.DOUBLE) 
+					&& (((String) this.getValueAt(row, columnIndex)).indexOf(",") > -1))
+				{
+					String s = "";
+					try
+					{
+						// Allow commas in doubles
+						s = ((String) this.getValueAt(row, columnIndex)).replaceAll(",", ".");
+						Double.parseDouble((String) s);
+					}
+					catch (NumberFormatException e)
+					{
+						// This should not happen since it is validInput
+					}
+
+					this.setValueAt(s, row, columnIndex);
+				}
 			}
 		}
 
@@ -2255,5 +2276,115 @@ public class StatTableModel implements TableModel
 			// column type is not a String of Enum, return null
 			return null;
 		}
+	}
+
+	/**
+	 * Update the column types. Columns with numerical values will be
+	 * of type INTEGER or DOUBLE. Else the type will remain the same.
+	 */
+	public void updateNumericalColumnTypes()
+	{
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			if (this.hasIntegerValues(i))
+			{
+				this.editColumn(i, this.getColumnName(i), 
+					new ColumnType(AllowedTypes.INTEGER));
+			}
+			else if (this.hasDoubleValues(i))
+			{
+				this.editColumn(i, this.getColumnName(i), 
+					new ColumnType(AllowedTypes.DOUBLE));
+			} 
+		}
+	}
+
+	/**
+	 * Returns whether the given column has all double values.
+	 * @param columnIndex
+	 * @return
+	 */
+	private boolean hasDoubleValues(int columnIndex)
+	{
+		boolean hasDoubleValues = true;
+		
+		for (int row = 0; row < this.rowCount; row++)
+		{
+			String value = (String) this.getValueAt(row, columnIndex);
+
+			if (!value.equals(ColumnType.WILDCARD) 
+				&& !this.isDouble(value))
+			{
+				// a non-double value found, so return false
+				hasDoubleValues = false;
+				break;
+			}	
+		}
+
+		return hasDoubleValues;
+	}
+	
+	/**
+	 * Returns whether the given column has all integer values.
+	 * @param columnIndex
+	 * @return
+	 */
+	private boolean hasIntegerValues(int columnIndex)
+	{
+		boolean hasIntegerValues = true;
+		
+		for (int row = 0; row < this.rowCount; row++)
+		{
+			String value = (String) this.getValueAt(row, columnIndex);
+
+			if (!value.equals(ColumnType.WILDCARD) 
+				&& !this.isInteger(value))
+			{
+				// a non-integer value found, so return false
+				hasIntegerValues = false;
+				break;
+			}	
+		}
+
+		return hasIntegerValues;
+	}
+	
+	/**
+	 * Returns true if the string contains an integer value, else false.
+	 * @param s
+	 * @return
+	 */
+	public boolean isInteger(String s)
+	{
+		try
+		{
+			Integer.parseInt(s);
+		}
+		catch (NumberFormatException e)
+		{
+			return false;
+		}
+		// only got here if we didn't return false
+		return true;
+	}
+
+	/**
+	 * Returns true if the string contains a double value, else false.
+	 * @param s
+	 * @return
+	 */
+	public boolean isDouble(String s)
+	{
+		try
+		{
+			s = (String) this.processDoubleValue(s);
+			Double.parseDouble(s);
+		}
+		catch (NumberFormatException e)
+		{
+			return false;
+		} 
+		// only got here if we didn't return false
+		return true;
 	}
 }
