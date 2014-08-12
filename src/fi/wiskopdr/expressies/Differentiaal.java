@@ -62,6 +62,8 @@ public class Differentiaal extends Expressie
 	
 	public Expressie vervangDifferentialen(String var) {
 		
+		if(var.equals(kind1.toString()))
+			return this;
 		return new Vermenigvuldiging(new Diff(kind1, new BasisExpressie(var)), new Differentiaal(new BasisExpressie(var)));
 	}
 	

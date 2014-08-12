@@ -45,6 +45,9 @@ public class Integraal extends Expressie
 	public Expressie vervangDifferentialen(String var)
 	{	//return new Integraal(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind3.vervangDifferentialen(var), kind4.vervangDifferentialen(var));
 	
+		if(var.equals(kind4.toString()))
+			return new Integraal(kind1.vervangDifferentialen(var), kind2, kind3, kind4);
+		
 		Expressie e1 = new Vermenigvuldiging(kind1.vervangDifferentialen(var), new Diff(kind4, new BasisExpressie(var)));
 		Expressie e4 = new BasisExpressie(var);
 	
