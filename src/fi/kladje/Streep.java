@@ -2435,6 +2435,7 @@ class TekstElement
 	double scaleY = 1;
 	
 	AffineTransform at = new AffineTransform();
+	//AffineTransform atGWT = new AffineTransform();
 
 	
 	int tekstX, tekstY;
@@ -2611,6 +2612,7 @@ class TekstElement
 
 	}
 
+/*	
 	public void makeBB(Rectangle r)
 	{
 		bb = new Rectangle(tekstX + r.x, tekstY + r.y, r.width, r.height); 
@@ -2622,7 +2624,7 @@ class TekstElement
 		bb2.addPoint(tekstX + r.x, tekstY + r.y + 2 * r.height);
 
 	}
-	
+*/	
 	public void rotate(double rotateStep)
 	{	rotation += rotateStep;
 		
@@ -2632,8 +2634,7 @@ class TekstElement
 				  cx - Math.cos(rotateStep) * cx + Math.sin(rotateStep) * cy, 
 				  cy - Math.sin(rotateStep) * cx - Math.cos(rotateStep) * cy);
 		at = at.leftMultiplyBy(rot);
-
-	
+		
 		//makeBB();
 		//bb2.rotate(rotateStep, cx, cy);
 		//setCenter();
@@ -2650,6 +2651,20 @@ class TekstElement
 				  dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy);
 		at = at.leftMultiplyBy(rot);
 
+		double cxCopy = cx;
+		double cyCopy = cy;
+		double rotatedCxCopy = Math.cos(rotateStep) * cxCopy - Math.sin(rotateStep) * cyCopy + 
+			                   dx - Math.cos(rotateStep) * dx + Math.sin(rotateStep) * dy;
+		double rotatedCyCopy = Math.sin(rotateStep) * cxCopy + Math.cos(rotateStep) * cyCopy + 
+							   dy - Math.sin(rotateStep) * dx - Math.cos(rotateStep) * dy;
+		int deltax = (int) Math.round(rotatedCxCopy - cxCopy);
+		int deltay = (int) Math.round(rotatedCyCopy - cyCopy);
+		
+		//AffineTransform trans = new AffineTransform (1,0,0,1,deltax,deltay);
+		//atGWT = atGWT.leftMultiplyBy(trans);
+		
+		
+		
 		//makeBB();
 		//bb2.rotate(rotateStep, dx, dy);
 		//setCenter();
@@ -2667,6 +2682,8 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * cx, (1 - scaleStep) * cy);
 		at = at.leftMultiplyBy(sc);
 
+		//atGWT = atGWT.leftMultiplyBy(sc);
+		
 		//makeBB();
 		//bb2.scale(scaleStep, cx, cy);
 		//setCenter();
@@ -2683,6 +2700,8 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(scaleStep, 0, 0, scaleStep, (1 - scaleStep) * dx, (1 - scaleStep) * dy);
 		at = at.leftMultiplyBy(sc);
 
+		//atGWT = atGWT.leftMultiplyBy(sc);
+		
 		//makeBB();
 		//bb2.scale(scaleStep, dx, dy);
 		//setCenter();
@@ -2698,6 +2717,7 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * cx, (1 - sy) * cy);
 		at = at.leftMultiplyBy(sc);
 		
+		//atGWT = atGWT.leftMultiplyBy(sc);
 		//makeBB();
 		//bb2.scale(sx, sy, cx, cy);
 		//setCenter();
@@ -2714,6 +2734,7 @@ class TekstElement
 		AffineTransform sc = new AffineTransform(sx, 0, 0, sy, (1 - sx) * dx, (1 - sy) * dy);
 		at = at.leftMultiplyBy(sc);
 
+		//atGWT = atGWT.leftMultiplyBy(sc);
 		//makeBB();
 		//bb2.scale(sx, sy, dx, dy);
 		//setCenter();
@@ -2741,6 +2762,12 @@ class TekstElement
 		h.put("b0", new Double(at.b0));
 		h.put("b1", new Double(at.b1));
 
+		//h.put("m00GWT", new Double(atGWT.m00));
+		//h.put("m10GWT", new Double(atGWT.m10));
+		//h.put("m01GWT", new Double(atGWT.m01));
+		//h.put("m11GWT", new Double(atGWT.m11));
+		//h.put("b0GWT", new Double(atGWT.b0));
+		//h.put("b1GWT", new Double(atGWT.b1));
 		
 		return h;
 	}
@@ -2763,6 +2790,12 @@ class TekstElement
 		double b0 = 0;
 		double b1 = 0;
 
+		//double m00GWT = 1;
+		//double m01GWT = 0;
+		//double m10GWT = 0;
+		//double m11GWT = 1;
+		//double b0GWT = 0;
+		//double b1GWT = 0;
 		
 		
 		if (h.containsKey("kleur"))
@@ -2794,6 +2827,18 @@ class TekstElement
 		if (h.containsKey("b1"))
 			b1 = ((Double) h.get("b1")).doubleValue();
 		
+		//if (h.containsKey("m00GWT"))
+		//	m00GWT = ((Double) h.get("m00GWT")).doubleValue();
+		//if (h.containsKey("m10GWT"))
+		//	m10GWT = ((Double) h.get("m10GWT")).doubleValue();
+		//if (h.containsKey("m01GWT"))
+		//	m01GWT = ((Double) h.get("m01GWT")).doubleValue();
+		//if (h.containsKey("m11GWT"))
+		//	m11GWT = ((Double) h.get("m11GWT")).doubleValue();
+		//if (h.containsKey("b0GWT"))
+		//	b0GWT = ((Double) h.get("b0GWT")).doubleValue();
+		//if (h.containsKey("b1GWT"))
+		//	b1GWT = ((Double) h.get("b1GWT")).doubleValue();
 		
 		TekstElement tekstElement = new TekstElement(kleur, tekst, xPos, yPos);
 		tekstElement.rotation = rotation;
@@ -2804,6 +2849,7 @@ class TekstElement
 		else
 		{
 			tekstElement.transformBy(m00, m01, m10, m11, b0, b1);
+			//tekstElement.transformGWTBy(m00GWT, m01GWT, m10GWT, m11GWT, b0GWT, b1GWT);
 		}
 		
 		
@@ -2816,6 +2862,12 @@ class TekstElement
 		at = new AffineTransform(m00, m01, m10, m11, b0, b1);
 	}
 	
+//	public void transformGWTBy(double m00, double m01, double m10, double m11, double b0, double b1)
+//	{
+		
+//		atGWT = new AffineTransform(m00, m01, m10, m11, b0, b1);
+//	}
+	
 	public void teken(Graphics2D g)
 	{
 		
@@ -2825,7 +2877,9 @@ class TekstElement
 		makeHandleBox();
 		
 		java.awt.geom.AffineTransform oldAT = g.getTransform();
-		
+
+//System.out.println(oldAT.toString());
+
 		java.awt.geom.AffineTransform tempAT = 
 			new java.awt.geom.AffineTransform(at.m00, at.m10, at.m01, at.m11, at.b0, at.b1); 
 		
@@ -2967,6 +3021,8 @@ class TekstElement
 		
 		AffineTransform trans = new AffineTransform (1,0,0,1,dx,dy);
 		at = at.leftMultiplyBy(trans);
+		
+		//atGWT = atGWT.leftMultiplyBy(trans);
 		
 		bb.translate(dx, dy);
 		cx += dx;
