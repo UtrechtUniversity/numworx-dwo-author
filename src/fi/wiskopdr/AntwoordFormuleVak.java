@@ -1916,6 +1916,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 					{	pastGelijkwaardig = true;
 						pastHerleid = true;
 						pastExact = true;
+						pastSignificant = true;
 					}
 				}
 				else
