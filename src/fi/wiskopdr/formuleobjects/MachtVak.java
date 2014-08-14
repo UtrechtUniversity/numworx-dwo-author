@@ -37,11 +37,15 @@ public class MachtVak extends RegelVak
 	}
 	
 	public void zetMaat()
-	{	int vgh = ((FormuleRegel)getParent()).geefVoorgangerHoogte(this);
-		int vgah = ((FormuleRegel)getParent()).geefVoorgangerAsHoogte(this);
+	{	int vgh = 0;
+		int vgah = 0;
+		if(getParent() != null)
+		{	vgh = ((FormuleRegel)getParent()).geefVoorgangerHoogte(this);
+			vgah = ((FormuleRegel)getParent()).geefVoorgangerAsHoogte(this);
+		}
 		setSize(kind1.getSize().width, kind1.getSize().height - 2*fm.getAscent()/3 -  fm.getDescent() + vgh);
 		ashoogte = kind1.getSize().height - 2*fm.getAscent()/3 -  fm.getDescent() + vgah;
-		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
+		if(getParent() != null && getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
 	}
 	
 	public String toString()

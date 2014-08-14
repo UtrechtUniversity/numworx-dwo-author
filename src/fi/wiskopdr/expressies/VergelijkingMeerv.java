@@ -475,16 +475,27 @@ public class VergelijkingMeerv
 		return new VergelijkingMeerv(vergelijkingenNieuw);
 	}
 	
-	public VergelijkingMeerv vervangDifferentialen(String var)
+	public VergelijkingMeerv vervangDifferentialen(String diffVar)
 	{
 		Vergelijking[] vergelijkingenNieuw = new Vergelijking[vergelijkingen.length];
 		for(int i = 0; i < vergelijkingen.length; i++)
 		{
-			vergelijkingenNieuw[i] = vergelijkingen[i].vervangDifferentialen(var);
+			vergelijkingenNieuw[i] = vergelijkingen[i].vervangDifferentialen(diffVar);
 		}
 		return new VergelijkingMeerv(vergelijkingenNieuw);
 	}
-
+	
+	public VergelijkingMeerv vervangDiffs(Expressie[][] substs, String var)
+	{
+		Vergelijking[] vergelijkingenNieuw = new Vergelijking[vergelijkingen.length];
+		Expressie subst = substs[0][0];
+		for(int i = 0; i < vergelijkingen.length; i++)
+		{
+			vergelijkingenNieuw[i] = vergelijkingen[i].vervangDiffs(subst, var);
+		}
+		return new VergelijkingMeerv(vergelijkingenNieuw);
+	}
+	
 	public Object visit(AbstractConverter instance) {
 		Object[] objects  = new Object[vergelijkingen.length];
 		for (int i = 0; i < objects.length; i++) {

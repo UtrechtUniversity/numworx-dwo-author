@@ -412,12 +412,19 @@ public class Vergelijking
 		return new Vergelijking(e1, e2, vergelijkingsTeken);
 	}
 	
-	public Vergelijking vervangDifferentialen(String var)
+	public Vergelijking vervangDifferentialen(String diffVar)
 	{
-		Expressie e1 = kind1.vervangDifferentialen(var);
-		Expressie e2 = kind2.vervangDifferentialen(var);
+		Expressie e1 = kind1.vervangDifferentialen(diffVar);
+		Expressie e2 = kind2.vervangDifferentialen(diffVar);
 		
-		
+		return new Vergelijking(e1, e2, vergelijkingsTeken);
+	}
+	
+	//public Vergelijking berekenDiffs(Expressie subst, String var, String diffVar)
+	public Vergelijking vervangDiffs(Expressie subst, String var)
+	{
+		Expressie e1 = kind1.vervangDiffs(subst, var);
+		Expressie e2 = kind2.vervangDiffs(subst, var);
 		
 		return new Vergelijking(e1, e2, vergelijkingsTeken);
 	}

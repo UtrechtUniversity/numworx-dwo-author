@@ -124,6 +124,11 @@ public class BasisExpressie extends Expressie
 	{	return new BasisExpressie(basisString);
 	}
 	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new BasisExpressie(basisString);
+	}
+	
 	public boolean isWaarde(double subst)
 	{	if(Double.isNaN(geefWaarde()))return false;
 		return true;

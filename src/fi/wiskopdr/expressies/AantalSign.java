@@ -87,6 +87,11 @@ public class AantalSign extends Expressie
 	{
 		return new AantalSign(kind1.vervangDifferentialen(var));
 	}
+	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new AantalSign(kind1.vervangDiffs(subst, var));
+	}
 		
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

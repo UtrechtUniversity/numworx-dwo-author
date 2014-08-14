@@ -44,7 +44,17 @@ public class DiffPartial extends Expressie
 	}
 	
 	public Expressie vervangDifferentialen(String var)
-	{	return new Diff(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+	{	if(kind1.isVar() && var.equals(kind2.toString()))
+			return this;
+	
+		return new Diff(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
+	}
+	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{	if(var.equals(kind1.toString()))
+			return new Diff(subst, kind2.vervangDiffs(subst, var));
+	
+		return new Diff(kind1.vervangDiffs(subst, var), kind2.vervangDiffs(subst, var));
 	}
 	
 	

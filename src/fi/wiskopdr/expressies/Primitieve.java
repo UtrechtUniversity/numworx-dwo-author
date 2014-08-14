@@ -41,11 +41,18 @@ public class Primitieve extends Expressie
 	}
 	
 	public Expressie vervangDifferentialen(String var)
-	{	Expressie e1 = new Vermenigvuldiging(kind1.vervangDifferentialen(var), new Diff(kind2, new BasisExpressie(var)));
+	{	if(var.equals(kind2.toString()))
+			return new Primitieve(kind1.vervangDifferentialen(var), kind4);
+		
+		Expressie e1 = new Vermenigvuldiging(kind1.vervangDifferentialen(var), new Diff(kind2, new BasisExpressie(var)));
 		Expressie e2 = new BasisExpressie(var);
-		
-		
+	
 		return new Primitieve(e1, e2);
+	}
+	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new Primitieve(kind1.vervangDiffs(subst, var), kind2);
 	}
 	
 	public boolean isWaarde(double subst)

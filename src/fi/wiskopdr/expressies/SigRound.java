@@ -60,8 +60,12 @@ public class SigRound extends Expressie
 	}
 	
 	public Expressie vervangDifferentialen(String var)
-	{	SigRound exp = new SigRound(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind2.vervangDifferentialen(var));
-		
+	{	SigRound exp = new SigRound(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind3.vervangDifferentialen(var));
+		return exp;
+	}
+	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{	SigRound exp = new SigRound(kind1.vervangDiffs(subst, var), kind2.vervangDiffs(subst, var), kind3.vervangDiffs(subst, var));
 		return exp;
 	}
 	

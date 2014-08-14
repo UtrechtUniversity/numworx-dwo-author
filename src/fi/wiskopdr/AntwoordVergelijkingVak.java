@@ -2425,6 +2425,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		{
 			for (int i = 0; i < antwoordSubstituties.length; i++)
 			{
+				//hier wil ik de isEindOplossing weer weghalen. Ik ga deze substituties voor differentialen niet meer gebruiken. 
 				if(antwoord.isEindOplossing(var))
 					antwoord = antwoord.substitueerEindOplossing(antwoordSubstituties[i].geefExpRechts(), antwoordSubstituties[i].geefExpLinks().geefVarNaam());
 				else	
@@ -2488,8 +2489,11 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				}
 			}
 			antwoord = antwoord.vervangDifferentialen(diffVar);
+			antwoord = antwoord.vervangDiffs(gewensteEindOplossing.geefEindOplossingen(var), var);
+			//antwoord = antwoord.berekenDiffs(gewensteEindOplossing.geefEindOplossingen(var), var, diffVar);
 			
 			boolean isGelijkwaardigEind = antwoord.isOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
+			
 
 			// Hiermee wordt, in geval er geen eindoplossing is, maar wel een
 			// voorlopige tussenoplossing, aan het eind gevraagd de oplossing te
@@ -2527,7 +2531,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			isJuisteVorm = false;
 			for (int i = 0; i < juisteVormen.length; i++)
 			{
-				isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoord, juisteVormen[i]);
+				//isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoord, juisteVormen[i]); //in plaats hiervan antwoordIngevuld gebruiken, omdat met antwoord allerlei substituties kunnen zijn uitgevoerd.
+				isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoordIngevuld, juisteVormen[i]);
 				if (isJuisteVorm)
 					break;
 			}

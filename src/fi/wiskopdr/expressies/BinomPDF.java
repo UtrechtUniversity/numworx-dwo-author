@@ -73,6 +73,10 @@ public class BinomPDF extends Expressie
 	{	return new BinomPDF(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind3.vervangDifferentialen(var));
 	}
 	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new BinomPDF(kind1.vervangDiffs(subst, var), kind2.vervangDiffs(subst, var), kind3.vervangDiffs(subst, var));
+	}
 	
 	public boolean isWaarde(double subst)
 	{	return (kind1.isWaarde(subst) && kind2.isWaarde(subst) && kind3.isWaarde(subst));

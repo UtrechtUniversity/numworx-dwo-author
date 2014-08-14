@@ -50,6 +50,11 @@ public class Prv extends Expressie
 	{	return new Prv(kind1.vervangDifferentialen(var), kind2.vervangDifferentialen(var), kind3.vervangDifferentialen(var), kind4.vervangDifferentialen(var));
 	}
 	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new Prv(kind1.vervangDiffs(subst, var), kind2.vervangDiffs(subst, var), kind3.vervangDiffs(subst, var), kind4.vervangDiffs(subst, var));
+	}
+	
 	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);

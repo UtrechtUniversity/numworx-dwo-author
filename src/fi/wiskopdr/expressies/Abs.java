@@ -55,7 +55,12 @@ public class Abs extends Expressie
 	{
 		return new Abs(kind1.vervangDifferentialen(var));
 	}
-		
+	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new Abs(kind1.vervangDiffs(subst, var));
+	}
+	
 	public boolean isWaarde(double subst)
 	{	return kind1.isWaarde(subst);
 	}

@@ -67,6 +67,11 @@ public class Differentiaal extends Expressie
 		return new Vermenigvuldiging(new Diff(kind1, new BasisExpressie(var)), new Differentiaal(new BasisExpressie(var)));
 	}
 	
+	public Expressie vervangDiffs(Expressie subst, String var)
+	{
+		return new Differentiaal(kind1.vervangDiffs(subst, var));
+	}
+	
 	public String toString()
 	{	if(kind1.toString().length() == 1 || kind1.toString().contains("$s") && kind1.toString().length() == 5)
 		{
