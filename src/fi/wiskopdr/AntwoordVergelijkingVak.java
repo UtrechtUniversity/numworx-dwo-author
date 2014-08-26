@@ -2419,7 +2419,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		String var = "x";
 		if (gewensteEindOplossing != null)
 			var = gewensteEindOplossing.geefVergelijkingVar();
-		System.out.println("checkAntwoord: var = " + var);
+		//System.out.println("checkAntwoord: var = " + var);
 
 		if (antwoordSubstituties != null && antwoord != null)
 		{
