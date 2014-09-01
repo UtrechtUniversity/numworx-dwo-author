@@ -2120,7 +2120,8 @@ public class DotplotView extends JPanel implements Observer
 				// if x-coord and split the same, then adjust y-coord
 				if (sortedData[i][0] == sortedData[i-1][0]) // same x coordinate
 				{
-					if (sortedData[i][2] == sortedData[i-1][2]) // same split
+					if ((sortedData[i][2] != -1) // skip wildcards; sortedData[i][2] == -1 if row i contains a wildcard
+						&& (sortedData[i][2] == sortedData[i-1][2])) // same split
 					{
 						// some other object is too close, so correct y
 						y = sortedData[i-1][1] - correctionYPerSplit[sortedData[i][2]];
