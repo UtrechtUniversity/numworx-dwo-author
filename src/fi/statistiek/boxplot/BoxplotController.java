@@ -94,9 +94,9 @@ public class BoxplotController implements StatistiekView, ActionListener
 			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
 				.getSplitOptions().getColumnSplitIndex())
 			{
-				this.model.setColumnSplitIndexWithoutEvent(this.view
+				this.model.setColumnSplitIndex(this.view
 					.getSplitVarBoxSelectedIndex() - 1);
-				this.model.setSplitOptionsWithoutEvent(this.model.getSplitOptions());
+				this.model.setSplitOptions(this.model.getSplitOptions());
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.setSplitType(this.model
