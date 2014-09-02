@@ -127,7 +127,8 @@ public class KladjeVeld extends JPanel
 	
 	boolean initialState = false;
 	
-		
+	Graphics kvGraphics = null;	
+	
 	public KladjeVeld(int w, int h)
 	{
 		breedte = w;
@@ -453,6 +454,7 @@ System.out.println("returned " + (numHistories - 1));
 			initialState = true;
 		}
 		
+		paint();
 	}
 	
 	public void setOldState(Vector stateVector)
@@ -661,8 +663,22 @@ System.out.println("returned " + (numHistories - 1));
 			return doublePoints;
 	}
 	
+	public void paint()
+	{
+		if (kvGraphics != null)
+		{	paintComponent(kvGraphics);
+System.out.println("paint");		
+		}
+	}
+	
 	public void paintComponent(Graphics g)
 	{
+		boolean firstPaint = false;
+		
+		if (kvGraphics == null)
+		{	kvGraphics = getGraphics();
+			firstPaint = true;
+		}
 		
 		Graphics2D g2D = (Graphics2D) g;		
 
@@ -703,6 +719,8 @@ System.out.println("returned " + (numHistories - 1));
 		
 		tekenProgramma(g2D, false);
 		
+		if (firstPaint)
+			paintComponent(g);
 	}
 	
 	
@@ -1469,42 +1487,14 @@ System.out.println("returned " + (numHistories - 1));
 				
 			}
 
-			int tlx = selecteerRechthoek.x;
-			int tly = selecteerRechthoek.y;
-			int b = selecteerRechthoek.width;
-			int h = selecteerRechthoek.height;
-				
-			int ntlx = (int) Math.round(sc * tlx + (1 - sc) * crx);
-			int ntly = (int) Math.round(sc * tly + (1 - sc) * cry);
-			int nb = (int) Math.round(sc * b);
-			int nh = (int) Math.round(sc * h);
-			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			updateSelecteerRechthoek();
 			
-			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
-			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
-			topLeftHandle.translate(ntlx - tlx, ntly - tly);
-			topLeftRect.translate(ntlx - tlx, ntly - tly);
-			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
-			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
-
-			if (roteren)
-			{	
-				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
-				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
-			}	
 			
 		}
 		else if (scalingTopLeft)
 		{
 			double dxDouble = (double) dx;
 			double dyDouble = (double) dy;
-			
-			//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-			//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-			//double oldWidth = (double) selectedStreep.breedte / 2;
-			//double oldHeight = (double) selectedStreep.hoogte / 2;
 			
 			double oldWidth = (double) selecteerRechthoek.width / 2;
 			double oldHeight = (double) selecteerRechthoek.height / 2;
@@ -1530,42 +1520,14 @@ System.out.println("returned " + (numHistories - 1));
 				
 			}
 
-			int tlx = selecteerRechthoek.x;
-			int tly = selecteerRechthoek.y;
-			int b = selecteerRechthoek.width;
-			int h = selecteerRechthoek.height;
-				
-			int ntlx = (int) Math.round(sx * tlx + (1 - sx) * crx);
-			int ntly = (int) Math.round(sy * tly + (1 - sy) * cry);
-			int nb = (int) Math.round(sx * b);
-			int nh = (int) Math.round(sy * h);
-			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			updateSelecteerRechthoek();
 			
-			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
-			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
-			topLeftHandle.translate(ntlx - tlx, ntly - tly);
-			topLeftRect.translate(ntlx - tlx, ntly - tly);
-			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
-			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
-
-			if (roteren)
-			{	
-				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
-				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
-			}	
 
 		}
 		else if (scalingBottomLeft)
 		{
 			double dxDouble = (double) dx;
 			double dyDouble = (double) dy;
-			
-			//double dxInvRot = selectedStreep.inverseRotX(dxDouble, dyDouble);
-			//double dyInvRot = selectedStreep.inverseRotY(dxDouble, dyDouble);
-			//double oldWidth = (double) selectedStreep.breedte / 2;
-			//double oldHeight = (double) selectedStreep.hoogte / 2;
 			
 			double oldWidth = (double) selecteerRechthoek.width / 2;
 			double oldHeight = (double) selecteerRechthoek.height / 2;
@@ -1591,31 +1553,8 @@ System.out.println("returned " + (numHistories - 1));
 				
 			}
 			
-			int tlx = selecteerRechthoek.x;
-			int tly = selecteerRechthoek.y;
-			int b = selecteerRechthoek.width;
-			int h = selecteerRechthoek.height;
-				
-			int ntlx = (int) Math.round(sx * tlx + (1 - sx) * crx);
-			int ntly = (int) Math.round(sy * tly + (1 - sy) * cry);
-			int nb = (int) Math.round(sx * b);
-			int nh = (int) Math.round(sy * h);
-			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			updateSelecteerRechthoek();
 			
-			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
-			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
-			topLeftHandle.translate(ntlx - tlx, ntly - tly);
-			topLeftRect.translate(ntlx - tlx, ntly - tly);
-			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
-			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
-			
-			if (roteren)
-			{	
-				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
-				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
-			}	
 
 		}
 		else if (scalingBottomRight)
@@ -1650,31 +1589,8 @@ System.out.println("returned " + (numHistories - 1));
 				
 			}
 
-			int tlx = selecteerRechthoek.x;
-			int tly = selecteerRechthoek.y;
-			int b = selecteerRechthoek.width;
-			int h = selecteerRechthoek.height;
-				
-			int ntlx = (int) Math.round(sc * tlx + (1 - sc) * crx);
-			int ntly = (int) Math.round(sc * tly + (1 - sc) * cry);
-			int nb = (int) Math.round(sc * b);
-			int nh = (int) Math.round(sc * h);
-			selecteerRechthoek = new Rectangle(ntlx, ntly, nb, nh);
+			updateSelecteerRechthoek();
 			
-			topRightHandle.translate(ntlx + nb - tlx - b, ntly - tly);
-			topRightRect.translate(ntlx + nb - tlx - b, ntly - tly);
-			topLeftHandle.translate(ntlx - tlx, ntly - tly);
-			topLeftRect.translate(ntlx - tlx, ntly - tly);
-			bottomRightHandle.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomRightRect.translate(ntlx + nb - tlx - b, ntly + nh - tly - h);
-			bottomLeftHandle.translate(ntlx - tlx, ntly + nh - tly - h);
-			bottomLeftRect.translate(ntlx - tlx, ntly + nh- tly - h);
-
-			if (roteren)
-			{	
-				rotateEastHandle.translate(ntlx + nb - tlx - b, ntly + nh/2 - tly - h/2);
-				rotateWestHandle.translate(ntlx - tlx, ntly + nh/2 - tly - h/2);
-			}	
 
 		}
 		
@@ -2092,7 +2008,7 @@ System.out.println("returned " + (numHistories - 1));
 		}
 		else if (selectedTekstElement != null)
 		{
-
+// wordt niet gebruikt
 			if (scalingTopRight)
 			{
 				double aspectDirX = selectedTekstElement.handleBox.x + selectedTekstElement.handleBox. width - 
@@ -2111,6 +2027,7 @@ System.out.println("returned " + (numHistories - 1));
 				double sc = ((double) newWidth) / oldWidth;
 				selectedTekstElement.scale(sc);
 			}
+// wordt niet gebruikt			
 			else if (scalingTopLeft)
 			{
 				double dxDouble = (double) dx;
@@ -2125,6 +2042,7 @@ System.out.println("returned " + (numHistories - 1));
 				double sy = newHeight / oldHeight;
 				selectedTekstElement.scale(sx,sy);
 			}
+// wordt niet gebruikt			
 			else if (scalingBottomLeft)
 			{
 				double dxDouble = (double) dx;
@@ -2159,7 +2077,11 @@ System.out.println("returned " + (numHistories - 1));
 				double newHeight = oldHeight + asYDouble;
 				double sc = ((double) newWidth) / oldWidth;
 				
-				selectedTekstElement.scale(sc);
+				if (sc < 1)
+					selectedTekstElement.scale(scaleDownStep);
+				else
+					selectedTekstElement.scale(scaleUpStep);
+				//selectedTekstElement.scale(sc);
 				
 			}
 			else if (rotatingEast)
@@ -2169,6 +2091,7 @@ System.out.println("returned " + (numHistories - 1));
 				selectedTekstElement.rotate(angle);
 				
 			}
+// wordt niet gebruikt			
 			else if (rotatingWest)
 			{
 				// hier is alleen dy van belang

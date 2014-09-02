@@ -31,5 +31,20 @@ public class AffineTransform
 				
 		return result;
 	}
+	
+	public String toString()
+	{
+		String result = "";
+		
+		result += "m00=" + UF.format(m00, 2) + " "; 
+		result += "m01=" + UF.format(m01, 2) + " ";
+		result += "m10=" + UF.format(m10, 2) + " ";
+		result += "m11=" + UF.format(m11, 2) + " ";
+		result += "b0=" + UF.format(b0, 2) + " ";
+		result += "b1=" + UF.format(b1, 2);
+		
+		
+		return result;
+	}
 
 }
