@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -28,7 +26,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fi.statistiek.DialogButton;
-import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.Statistiek;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -455,13 +452,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8, hb9, hb10, hb11, hb12, hb13, hb14;
 		Box vb1, vb2, vb3, vb4, vb5, vb6, vb7;
 
-		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb1.add(varLabel);
-
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		hb2.add(varBox);
+		// create some extra space after varBox
+		hb2.add(Box.createRigidArea(new Dimension(50, 25)));
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
@@ -488,13 +483,19 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		hb1.add(Box.createHorizontalStrut(5));
 		hb1.add(Box.createHorizontalGlue());
 		hb1.add(this.minBoundaryField);
+		// set maximum size prevents hb1 filling up vertical space
+		// and makes hb1 adjust its height to the content
+		hb1.setMaximumSize(new Dimension(250, 200));
 
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		hb2.add(this.binWidthLabel);
-		hb2.add(Box.createHorizontalGlue());
 		hb2.add(Box.createHorizontalStrut(5));
+		hb2.add(Box.createHorizontalGlue());
 		hb2.add(this.binWidthField);
+		// set maximum size prevents hb2 filling up vertical space
+		// and makes hb2 adjust its height to the content
+		hb2.setMaximumSize(new Dimension(250, 200));
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -725,7 +726,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	public void resize(JComponent c)
 	{
-//		System.out.println("HistogramUserOptionsPanel.resize(): c = " + c.toString());
+		//System.out.println("HistogramUserOptionsPanel.resize(): c = " + c.toString());
 		Dimension d = c.getPreferredSize();
 		panel.setSize(new Dimension(d.width + 10, d.height));
 		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
