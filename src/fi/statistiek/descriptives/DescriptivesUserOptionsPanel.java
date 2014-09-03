@@ -223,8 +223,10 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		// Selected variable settings
 		
 		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		hb1.add(columnIndexBox);
+		// create some extra space after columnIndexBox
+		hb1.add(Box.createRigidArea(new Dimension(25, 25)));
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -319,12 +321,13 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		vb2.add(hb13);
 		vb2.add(hb14);
 		vb2.add(Box.createVerticalGlue());
-
+		
 		Box hb0 = Box.createHorizontalBox();
 		hb0.add(Box.createHorizontalStrut(10));
 		hb0.add(vb1);
 		hb0.add(Box.createHorizontalStrut(10));
 		hb0.add(vb2);
+		hb0.add(Box.createHorizontalStrut(50));
 
 		vb0 = Box.createVerticalBox();
 		vb0.add(hb0);
@@ -385,13 +388,23 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		updateColumnIndexBox();
 		updateSplitSettings();
 
-		this.pack();
+		this.resize(vb0);
 	}
 	
-	private void pack()
+	public void resize(JComponent c)
 	{
-		if (SwingUtilities.getWindowAncestor(this.panel) != null)
-			SwingUtilities.getWindowAncestor(this.panel).pack();
+		//System.out.println("DescriptivesUserOptionsPanel.resize(): c = " + c.toString());
+		Dimension d = c.getPreferredSize();
+		panel.setSize(new Dimension(d.width + 10, d.height));
+		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
+	}
+	
+	public void init()
+	{
+		setVisibleSplitBoundaryOptions(false);
+		if (vb0 != null)
+			resize(vb0);
+
 	}
 
 	private void updateSplitSettings()
@@ -597,7 +610,7 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 			}
 
 			this.updateSplitSettings();
-			this.pack();
+			this.resize(vb0);
 		}
 		else if (e.getSource() == splitButton)
 		{
@@ -611,7 +624,7 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 				setVisibleSplitOptions(true);
 			}
 
-			this.pack();
+			this.resize(vb0);
 		}
 		else if (e.getSource() == okButton)
 		{
@@ -630,7 +643,12 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 					catch (InterruptedException e)
 					{
 					}
-					//init();
+					
+					if (vb0 != null)
+						resize(vb0);
+
+					init();
+					update();
 					repaint();
 				}
 			};
