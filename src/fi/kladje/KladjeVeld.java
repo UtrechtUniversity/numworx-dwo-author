@@ -2077,11 +2077,11 @@ System.out.println("paint");
 				double newHeight = oldHeight + asYDouble;
 				double sc = ((double) newWidth) / oldWidth;
 				
-				if (sc < 1)
-					selectedTekstElement.scale(scaleDownStep);
-				else
-					selectedTekstElement.scale(scaleUpStep);
-				//selectedTekstElement.scale(sc);
+				//if (sc < 1)
+				//	selectedTekstElement.scale(scaleDownStep);
+				//else
+				//	selectedTekstElement.scale(scaleUpStep);
+				selectedTekstElement.scale(sc);
 				
 			}
 			else if (rotatingEast)

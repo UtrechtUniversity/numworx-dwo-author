@@ -2826,7 +2826,6 @@ class TekstElement
 	
 	public void scale(double scaleStep)
 	{	
-		
 		scaleX *= scaleStep;
 		scaleY *= scaleStep;
 		
@@ -2930,9 +2929,16 @@ class TekstElement
 	{	Hashtable h = new Hashtable();
 
 //System.out.println("te getstate " + tekst);
-if (tekst.equals("PPP"))
+if (tekst.indexOf("P") >= 0)
 {		
 System.out.println("getState atGWT " + tekst + " = " + atGWT.toString());
+//System.out.println("xPos = " + xPos);
+//System.out.println("yPos = " + yPos);
+//System.out.println("scaleX = " + scaleX);
+//System.out.println("scaleY = " + scaleY);
+System.out.println("breedte = " + breedte);
+System.out.println("hoogte = " + hoogte);
+
 }
 
 
@@ -2941,6 +2947,9 @@ System.out.println("getState atGWT " + tekst + " = " + atGWT.toString());
 		h.put("tekst", new String(tekst));
 		h.put("xPos", new Integer(xPos));
 		h.put("yPos", new Integer(yPos));
+		h.put("bGWT", new Integer(breedte));
+		h.put("hGWT", new Integer(hoogte));
+		
 		
 		h.put("rotation", new Double(rotation));
 		h.put("scaleX", new Double(scaleX));
