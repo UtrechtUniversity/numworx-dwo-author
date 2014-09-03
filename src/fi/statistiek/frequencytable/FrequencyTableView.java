@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observable;
@@ -609,6 +610,9 @@ public class FrequencyTableView extends JPanel implements Observer
 			{
 				double d = freq * 100 / (double) sum;
 				d = Math.round(d * 100) / (double) 100;
+				// round to one decimal
+				int decimals = 1;
+				d = Statistiek.round(d, decimals);
 				JLabel percLabel = new JLabel(getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				percLabel.setFont(Statistiek.font);
@@ -627,6 +631,9 @@ public class FrequencyTableView extends JPanel implements Observer
 	    	{
 				double d = (double) cumulative * 100 / (double) sum;
 				d = Math.round(d * 100) / (double) 100;
+				// round to one decimal
+				int decimals = 1;
+				d = Statistiek.round(d, decimals);
 				JLabel cumulPercLabel = new JLabel(getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				cumulPercLabel.setFont(Statistiek.font);
@@ -653,7 +660,8 @@ public class FrequencyTableView extends JPanel implements Observer
 		}
 		else
 		{
-			waardeString = String.valueOf(waarde);
+			DecimalFormat df = new DecimalFormat("0.#");
+			waardeString = df.format(waarde);
 		}
 		
 		return waardeString;
