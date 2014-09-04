@@ -216,7 +216,9 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.splitVarBox.setPreferredSize(new Dimension(100, 25));
 		this.splitVarBox.setMaximumSize(new Dimension(100, 25));
 		this.splitVarBox.setActionCommand("splitVarBox");
-		this.splitVarBox.addActionListener(this.controller);
+		// changes in split variable have GUI consequences,
+		// so action is performed by the userOptionsPanel
+		this.splitVarBox.addActionListener(this);
 
 		this.splitBinsLabel = new JLabel(
 			Statistiek.rb.getString("noClassesLabel"));
@@ -310,6 +312,8 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		hb1 = Box.createHorizontalBox();
 		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		hb1.add(columnIndexBox);
+		// create some extra space after varBox
+		hb1.add(Box.createRigidArea(new Dimension(50, 25)));
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -327,12 +331,18 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		hb1.add(Box.createHorizontalStrut(5));
 		hb1.add(Box.createHorizontalGlue());
 		hb1.add(this.minBoundaryField);
+		// set maximum size prevents hb1 filling up vertical space
+		// and makes hb1 adjust its height to the content
+		hb1.setMaximumSize(new Dimension(250, 200));
 
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		hb2.add(this.binWidthLabel);
 		hb2.add(Box.createHorizontalGlue());
 		hb2.add(this.binWidthField);
+		// set maximum size prevents hb2 filling up vertical space
+		// and makes hb2 adjust its height to the content
+		hb2.setMaximumSize(new Dimension(250, 200));
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -615,8 +625,11 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 					sb.append("\n");
 				}
 
-				sb.substring(0, sb.length() - 1);
-				this.boundariesArea.setText(sb.toString());
+				// sb heeft soms lengte 0
+				String s = "";
+				if (sb.length() > 0)
+					s = sb.substring(0, sb.length() - 1);
+				this.boundariesArea.setText(s);
 				setEnumClasses(true);
 			}
 		}
@@ -649,7 +662,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	
 		this.splitVarBox.addActionListener(this.controller);
 
-		// test syl: combobox met aantal bins nog niet geimplementeerd
+		// test syl: combobox met aantal bins (nog) niet geimplementeerd
 //		this.binsBox.removeActionListener(this.controller);
 //		this.binsBox.setSelectedItem(new Integer(this.model.getNoBins()));
 //		this.binsBox.addActionListener(this.controller);
@@ -748,6 +761,20 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public double getSplitMinBoundary()
+	{
+		String s = this.splitMinBoundaryField.getText();
+		s = s.replace(',', '.');
+		return Double.parseDouble(s);
+	}
+
+	public double getSplitBinWidth()
+	{
+		String s = this.splitBinWidthField.getText();
+		s = s.replace(',', '.');
+		return Double.parseDouble(s);
+	}
+
 	private void setEnumClasses(boolean b)
 	{
 		//System.out.println("FrequencyTableUserOptionsPanel.setEnumClasses(" + b + ")");
@@ -775,7 +802,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			if (splitOptionsVisible)
 			{
 				setVisibleSplitOptions(false);
-				this.splitVarBox.setSelectedIndex(0);
+				this.clearGUISplitSettings();
 			}
 			else
 			{
@@ -791,6 +818,26 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			else
 			{
 				setVisibleSplitBoundaryOptions(true);
+			}
+		}
+		else if (e.getSource() == splitVarBox)
+		{
+			// System.out.println("FrequencyTableUserOptionsPanel.actionPerformed(): splitVarBox, SplitColumnUpdate!");
+			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
+				.getSplitOptions().getColumnSplitIndex())
+			{
+				if (this.view.getSplitVarBoxSelectedIndex() != -1)
+					this.model.setColumnSplitIndex(this.view
+						.getSplitVarBoxSelectedIndex() - 1);
+				this.model.setSplitOptions(this.model.getSplitOptions());
+				if (this.view.getSplitVarBoxSelectedIndex() > 0)
+				{
+					this.controller.setSplitType(this.model
+						.getTableModel()
+						.getColumnTypes()
+						.get(this.model.getSplitOptions().getColumnSplitIndex())
+						.getType());
+				}
 			}
 		}
 		else if (e.getSource() == dialogButton)
@@ -811,6 +858,32 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			};
 			startDraad.start();
 		}
+		
+		resize(vb0);
+	}
+
+	/**
+	 * Clear all split GUI components, i.e. 
+	 * split variable, bin settings and labels with information 
+	 * about number of objects and minimum and maximum values.
+	 */
+	private void clearGUISplitSettings()
+	{
+		this.splitVarBox.setSelectedIndex(0);
+		this.splitBinWidthField.setText("");
+		this.splitMinBoundaryField.setText("");
+		this.splitBoundariesArea.setText("");
+		this.splitNoObjectsLabel.setText("");
+		this.splitMinValueLabel.setText("");
+		this.splitMaxValueLabel.setText("");
+	}
+
+	public void resize(JComponent c)
+	{
+		//System.out.println("FrequencyTableUserOptionsPanel.resize(): c = " + c.toString());
+		Dimension d = c.getPreferredSize();
+		panel.setSize(new Dimension(d.width + 10, d.height));
+		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
 	}
 
 	public boolean isShowPercBoxSelected()
