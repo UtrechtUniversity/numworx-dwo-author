@@ -219,7 +219,7 @@ public class HistogramView extends JPanel implements Observer
 	
 	public double getSplitMinBoundary()
 	{
-		return userOptionsPanel.getSplitminBoundary();
+		return userOptionsPanel.getSplitMinBoundary();
 	}
 
 	public double getBinWidth()
