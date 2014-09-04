@@ -250,9 +250,6 @@ public class DescriptivesView extends JPanel implements Observer
 		// update the components in the useroptionspanel
 		userOptionsPanel.update();
 
-		if (SwingUtilities.getWindowAncestor(this.scrollPane) != null)
-			SwingUtilities.getWindowAncestor(this.scrollPane).pack();
-
 		this.mainPanel.revalidate();
 
 		this.repaint();
