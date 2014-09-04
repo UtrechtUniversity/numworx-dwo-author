@@ -95,31 +95,32 @@ public class FrequencyTableController implements StatistiekView,
 		{
 			updateBoundariesFromBinSettings();
 		}
-		else if (action.equals("splitVarBox"))
-		{
-			// System.out.println("FrequencyTableController.actionPerformed(): splitVarBox, SplitColumnUpdate!");
-			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
-				.getSplitOptions().getColumnSplitIndex())
-			{
-				this.model.setColumnSplitIndex(this.view
-					.getSplitVarBoxSelectedIndex() - 1);
-				this.model.setSplitOptions(this.model.getSplitOptions());
-				if (this.view.getSplitVarBoxSelectedIndex() > 0)
-				{
-					this.setSplitType(this.model
-						.getTableModel()
-						.getColumnTypes()
-						.get(this.model.getSplitOptions().getColumnSplitIndex())
-						.getType());
-				}
-			}
-		}
 		else if (action.equals("splitBinsBox"))
 		{
 			this.setSplitType(this.model.getTableModel().getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType());
 		}
+		else if (action.equals("splitMinBoundary"))
+		{
+			updateSplitBoundaries();
+		}
+		else if (action.equals("splitBinWidth"))
+		{
+			updateSplitBoundaries();
+		}
+	}
+
+	private void updateSplitBoundaries()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
+		{
+			boundaries.add(new Double(view.getSplitMinBoundary() + i
+				* view.getSplitBinWidth()));
+		}
+		this.model.setSplitBoundaries(boundaries);
+		this.view.setModel(this.model);
 	}
 
 	public void setUp(Frame owner)
@@ -261,7 +262,7 @@ public class FrequencyTableController implements StatistiekView,
 		this.model.setBinBoundaries(boundaries);
 	}
 	
-	private void setSplitType(AllowedTypes type)
+	public void setSplitType(AllowedTypes type)
 	{
 		if (type.isNumber())
 		{
