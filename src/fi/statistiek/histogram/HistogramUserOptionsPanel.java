@@ -54,6 +54,9 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	// bin settings
 	private JLabel binsLabel;
+	/**
+	 * Box for choosing the number of split bins.
+	 */
 	private JComboBox binsBox;
 	/**
 	 * Separator between bin boundaries settings and number of bins setting 
@@ -89,9 +92,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	// split settings
 	private JButton splitButton;
-	private JLabel splitsVarLabel;
+	private JLabel splitVarLabel;
 	private JComboBox splitVarBox;
 	private JLabel splitBinsLabel;
+	/**
+	 * Box for choosing the number of split bins.
+	 */
 	private JComboBox splitBinsBox;
 	private JButton splitChooseBoundariesButton;
 	/**
@@ -140,9 +146,9 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.panel = new JPanel(new FlowLayout());
 		this.panel.setBackground(new Color(230, 230, 230));
 
-		this.splitsVarLabel = new JLabel(
+		this.splitVarLabel = new JLabel(
 			Statistiek.rb.getString("splitvariableLabel"));
-		this.splitsVarLabel.setFont(Statistiek.font);
+		this.splitVarLabel.setFont(Statistiek.font);
 
 		// var settings
 		this.varLabel = new JLabel(Statistiek.rb.getString("variableLabel"));
@@ -326,16 +332,18 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.splitButton.setActionCommand("splitButton");
 		this.splitButton.addActionListener(this);
 
-		this.splitsVarLabel = new JLabel(
+		this.splitVarLabel = new JLabel(
 			Statistiek.rb.getString("splitvariableLabel"));
-		this.splitsVarLabel.setFont(Statistiek.font);
+		this.splitVarLabel.setFont(Statistiek.font);
 
 		this.splitVarBox = new JComboBox();
 		this.splitVarBox.setFont(Statistiek.font);
 		this.splitVarBox.setPreferredSize(new Dimension(100, 25));
 		this.splitVarBox.setMaximumSize(new Dimension(100, 25));
 		this.splitVarBox.setActionCommand("splitVarBox");
-		this.splitVarBox.addActionListener(this.controller);
+		// changes in split variable have GUI consequences,
+		// so action is performed by the userOptionsPanel
+		this.splitVarBox.addActionListener(this);
 
 		this.splitBinsLabel = new JLabel(
 			Statistiek.rb.getString("noClassesLabel"));
@@ -619,7 +627,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb2.add(splitsVarLabel);
+		hb2.add(splitVarLabel);
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -788,7 +796,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
 		String s = this.splitMinBoundaryField.getText();
 		s = s.replace(',', '.');
@@ -846,7 +854,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	public void update()
 	{
-		// System.out.println("HistogramUserOptionsPanel.update()");
+		//System.out.println("HistogramUserOptionsPanel.update()");
 
 		this.varBox.removeActionListener(this.controller);
 		this.varBox.removeAllItems();
@@ -884,8 +892,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		}
 		else
 		{
-			// set no item selected
-			this.splitVarBox.setSelectedIndex(-1);
+			// set no split variable selected
+			this.splitVarBox.setSelectedIndex(0);
 		}
 	
 		this.splitVarBox.addActionListener(this.controller);
@@ -1170,7 +1178,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		aboveEachOtherRadioItem.getParent().setVisible(b);
 		separateRadioItem.getParent().setVisible(b);
 		singleViewRadioItem.getParent().setVisible(b);
-		splitsVarLabel.getParent().setVisible(b);
+		splitVarLabel.getParent().setVisible(b);
 		splitVarBox.getParent().setVisible(b);
 		if (!b)
 			splitBinsLabel.getParent().setVisible(b);
@@ -1212,7 +1220,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (splitOptionsVisible)
 			{
 				setVisibleSplitOptions(false);
-				this.splitVarBox.setSelectedIndex(0);
+				this.clearGUISplitComponents();
 			}
 			else
 			{
@@ -1227,6 +1235,33 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (splitVarBox.getSelectedIndex() == 0)
 				setVisibleSplitOptions(false);
 			dialogButton.closeDialog();
+		}
+		else if (e.getSource() == splitVarBox)
+		{
+			//System.out.println("HistogramUserOptionsPanel.actionPerformed(): splitVarBox, SplitColumnUpdate!");
+			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
+				.getSplitOptions().getColumnSplitIndex())
+			{
+				if (this.view.getSplitVarBoxSelectedIndex() != -1)
+					this.model.setColumnSplitIndex(this.view
+						.getSplitVarBoxSelectedIndex() - 1);
+				this.model.setSplitOptions(this.model.getSplitOptions());
+				if (this.view.getSplitVarBoxSelectedIndex() > 0)
+				{
+					this.controller.setSplitType(this.model
+						.getTableModel()
+						.getColumnTypes()
+						.get(this.model.getSplitOptions().getColumnSplitIndex())
+						.getType());
+				}
+				// boolean b = this.view.isNextToEachOtherSelected();
+				// this.model.setNextToEachOther(!b);
+				// this.model.setNextToEachOther(b);
+
+				// als je een splitsvariabele kiest, dan wordt de
+				// splitsing effectief
+				this.model.setSplitInSingleView(false);
+			}
 		}
 		else if (e.getSource() == dialogButton)
 		{
@@ -1247,5 +1282,22 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			};
 			startDraad.start();
 		}
+	}
+	
+	/**
+	 * Clear all split GUI components, i.e. 
+	 * split variable, bin settings and labels with information 
+	 * about number of objects and minimum and maximum values.
+	 */
+	private void clearGUISplitComponents()
+	{
+		//System.out.println("HistogramUserOptionsPanel.clearGUISplitComponents()");
+		this.splitVarBox.setSelectedIndex(0);
+		this.splitBinWidthField.setText("");
+		this.splitMinBoundaryField.setText("");
+		this.splitBoundariesArea.setText("");
+		this.splitNoObjectsLabel.setText("");
+		this.splitMinValueLabel.setText("");
+		this.splitMaxValueLabel.setText("");
 	}
 }
