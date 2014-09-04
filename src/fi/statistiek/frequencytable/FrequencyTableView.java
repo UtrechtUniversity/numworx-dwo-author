@@ -809,6 +809,16 @@ public class FrequencyTableView extends JPanel implements Observer
 		return userOptionsPanel.getSplitVarBoxSelectedIndex();
 	}
 
+	public double getSplitMinBoundary()
+	{
+		return userOptionsPanel.getSplitMinBoundary();
+	}
+
+	public double getSplitBinWidth()
+	{
+		return userOptionsPanel.getSplitBinWidth();
+	}
+
 	public int getSplitBinsBoxSelectedInt()
 	{
 		return userOptionsPanel.getSplitBinsBoxSelectedInt();
