@@ -207,32 +207,6 @@ public class HistogramController implements StatistiekView, ActionListener,
 			this.model.setFrequencyPolygonStackMode(this.view
 				.isStackModeBoxSelected());
 		}
-		else if (ac.equals("splitVarBox"))
-		{
-			// System.out.println("HistogramController.actionPerformed(): splitVarBox, SplitColumnUpdate!");
-			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
-				.getSplitOptions().getColumnSplitIndex())
-			{
-				this.model.setColumnSplitIndex(this.view
-					.getSplitVarBoxSelectedIndex() - 1);
-				this.model.setSplitOptions(this.model.getSplitOptions());
-				if (this.view.getSplitVarBoxSelectedIndex() > 0)
-				{
-					this.setSplitType(this.model
-						.getTableModel()
-						.getColumnTypes()
-						.get(this.model.getSplitOptions().getColumnSplitIndex())
-						.getType());
-				}
-				// boolean b = this.view.isNextToEachOtherSelected();
-				// this.model.setNextToEachOther(!b);
-				// this.model.setNextToEachOther(b);
-
-				// als je een splitsvariabele kiest, dan wordt de
-				// splitsing effectief
-				this.model.setSplitInSingleView(false);
-			}
-		}
 		else if (ac.equals("splitBinsBox"))
 		{
 			this.setSplitType(this.model.getTableModel().getColumnTypes()
@@ -285,7 +259,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 		else
 		{
-			System.out.println("Unknown action source! " + e);
+			//System.out.println("HistogramController.actionPerformed(): Unknown action source! " + e);
 		}
 	}
 
@@ -354,7 +328,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		this.view.setModel(this.model);
 	}
 
-	private void setSplitType(AllowedTypes type)
+	public void setSplitType(AllowedTypes type)
 	{
 		if (type.isNumber())
 		{
