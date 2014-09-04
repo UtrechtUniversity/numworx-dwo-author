@@ -656,8 +656,8 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		}
 		else
 		{
-			// set no item selected
-			this.splitVarBox.setSelectedIndex(-1);
+			// set no split variable selected
+			this.splitVarBox.setSelectedIndex(0);
 		}
 	
 		this.splitVarBox.addActionListener(this.controller);
