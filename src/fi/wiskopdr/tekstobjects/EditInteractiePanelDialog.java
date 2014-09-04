@@ -12,11 +12,16 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.security.auth.callback.TextInputCallback;
 import javax.swing.*;
 
 import org.cbook.cbookif.CBookWidgetIF;
+
+
+
 
 
 
@@ -709,6 +714,17 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		Dimension size = p.getInstanceSize();
 		breedteTF.setText( Integer.toString(size.width));
 		hoogteTF.setText(Integer.toString(size.height));
+		
+		p.addPropertyChangeListener("instanceSize", new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				Dimension size = (Dimension) evt.getNewValue();
+				breedteTF.setText( Integer.toString(size.width));
+				hoogteTF.setText(Integer.toString(size.height));			
+			}});
+		
+		
 	}
 
 	/*public void itemStateChanged(ItemEvent e)
@@ -827,6 +843,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 
 	public void setCrossWidgetId(String crossWidgetId) {
 		this.crossWidgetId = crossWidgetId;
+	}
+
+	public void stop() {
+		interactieEditPanel.stop();
 	}
     
     

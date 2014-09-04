@@ -1787,7 +1787,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return;
 		}
 		if(e.getActionCommand().equals("ok"))
-		{	launchData = editInteractiePanelDialog.getEditState();
+		{	editInteractiePanelDialog.stop();
+			launchData = editInteractiePanelDialog.getEditState();
 			editInteractiePanelDialog.removeActionListener(this);
 			
 			if(launchData !=null)
@@ -1804,7 +1805,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return;
 		}
 		if(e.getActionCommand().equals("cancel"))
-		{	editInteractiePanelDialog.removeActionListener(this);
+		{
+			editInteractiePanelDialog.stop();
+			editInteractiePanelDialog.removeActionListener(this);
 			editInteractiePanelDialog.dispose();
 			editInteractiePanelDialog = null;
 			if(launchData ==null || interactiePanel==null)

@@ -195,6 +195,9 @@ public class Service {
 
 	private static void initialize() {
 		classMap = new HashMap<String, CBookWidgetIF>();
+		//if(true) {CBookWidgetIF cbif = new widgetsample.SampleWidget(); classMap.put(cbif.getClass().getName(), cbif);return;}
+		//
+		//if(true) {CBookWidgetIF cbif = new org.cbook.mediaman.MediaMan(); classMap.put(cbif.getClass().getName(), cbif);return;}
 	try {	
 		URL codebase = WiskOpdr.applet.getCodeBase();
 		//codebase = new URL("http://localhost:8888/dwo/widgets/");

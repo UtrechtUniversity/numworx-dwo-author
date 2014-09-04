@@ -16,7 +16,7 @@ public class WebManager implements ResourceManager {
 	private String widget;
 	private String unit, instance, student;
 	private Sardine sardine;
-	private WebContainer global,perinstance,perstudent;
+	private WebContainer global,perinstance,perstudent,perunit;
 	
 	
 	@Override
@@ -63,6 +63,18 @@ public class WebManager implements ResourceManager {
 		} catch (IOException _) {
 		}
 		return perstudent = new RootContainer(url, "/", sardine);
+	}
+
+	@Override
+	public ResourceContainer getUnitContainer() {
+		if(perunit != null)
+			return perunit;
+		URL url = null;
+		try {
+			url = new URL(root, "WidgetUnit/" + this.unit + "/" + this.widget + "/");
+		} catch (IOException _) {
+		}
+		return perunit = new RootContainer(url, "/", sardine);
 	}
 
 }

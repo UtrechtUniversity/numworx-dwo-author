@@ -78,6 +78,7 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		URL root = null;
 		try {
 			root = new URL("https://mc2-resource.appspot.com/dav/");
+			//root = new URL("http://localhost:8888/dav/"); // LOCAL
 		} catch (MalformedURLException _) {}
 		
 		rm = new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);

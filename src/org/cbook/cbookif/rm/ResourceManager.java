@@ -1,8 +1,12 @@
 package org.cbook.cbookif.rm;
 
 /**
- * The resource manager
- * @author wim
+ * The resource manager. It manages three containers. A global for read-only global resources.
+ * One for the widget designer to use and one for the student.
+ * It can be accessed via the getProperty method of a CBookContext
+ * @see org.cbook.cbookif.CBookContext#getProperty(String)
+ * @see org.cbook.cbookif.Constants#RESOURCE_MANAGER
+ * @author Wim van Velthoven
  *
  */
 public interface ResourceManager {
@@ -14,7 +18,7 @@ public interface ResourceManager {
 	
 	/**
 	 * The global container. Read-only.
-	 * @return a container or resources
+	 * @return a container of resources
 	 */
 	ResourceContainer getWidgetContainer();
 
@@ -30,5 +34,8 @@ public interface ResourceManager {
 	 * @return a container of resources
 	 */
 	ResourceContainer getStudentContainer();
-
+	/**
+	 * A container for unit resources. All instances from a single unit share these container.
+	 */
+	ResourceContainer getUnitContainer();
 }

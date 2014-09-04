@@ -2,6 +2,7 @@ package fi.wiskopdr.cbook;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -9,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -37,8 +39,20 @@ public class CBookInteractieEditPanel extends JPanel implements
 	
 	JCheckBox teltMee;
 	String clazzName, instance;
+	private JComponent delegate;
 	
 	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		delegate.addPropertyChangeListener(listener);
+	}
+
+	@Override
+	public void addPropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		delegate.addPropertyChangeListener(propertyName, listener);
+	}
+
 	public CBookInteractieEditPanel(CBookWidgetIF widget, Locale locale, String uuid) {
 		super(new BorderLayout());
 		instance = uuid;
@@ -53,7 +67,8 @@ public class CBookInteractieEditPanel extends JPanel implements
 				break;
 			}
 		}
-		add(editor.asComponent(), BorderLayout.CENTER);
+		delegate = editor.asComponent();
+		add(delegate, BorderLayout.CENTER);
 /* Hier wordt de rest van de onafhankelijke parameters gezet
  * logid, logging
  * objectives
