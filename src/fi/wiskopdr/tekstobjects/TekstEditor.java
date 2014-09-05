@@ -22,7 +22,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
 	private FormuleButton tabletButton, wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, ndelogKnop,integraalKnop, prvKnop, haakjesKnop, absKnop, rmKnop;
-	private FormuleButton cbookKnop, cindyKnop, eslateKnop;
+	private FormuleButton cbookKnop, cindyKnop, eslateKnop, epsilonKnop;
 	public FormuleButton crosswidgetKnop;
 	protected TekstVak tekstVak, tekstVakActief;
 	protected FormuleVak formuleVak;
@@ -208,7 +208,12 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		eslateKnop.setBounds(64+26+26+26+26+26+26+26+26+26,2,20,20);
 		eslateKnop.addActionListener(this);
 		//if(form)headerPanel.add(eslateKnop);
-		
+
+		epsilonKnop = new FormuleButton("epsilonwriter");
+		epsilonKnop.setBounds(64+26+26+26+26+26+26+26+26+26+26,2,20,20);
+		epsilonKnop.addActionListener(this);
+		//if(form)headerPanel.add(epsilonKnop);
+
 		appletKnop = new FormuleButton("interactiecomponent");
 		appletKnop.setBounds(64+26+26+26,2,20,20);
 		appletKnop.addActionListener(this);
@@ -473,6 +478,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			cbookKnop.setVisible(false);
 			cindyKnop.setVisible(false);
 			eslateKnop.setVisible(false);
+			epsilonKnop.setVisible(false);
 			wortelKnop.setVisible(true);
 			machtKnop.setVisible(true);
 			kwadraatKnop.setVisible(true);
@@ -500,6 +506,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			cbookKnop.setVisible(true);
 			cindyKnop.setVisible(true);
 			eslateKnop.setVisible(true);
+			epsilonKnop.setVisible(true);
 			tabletButton.setVisible(false);
 			wortelKnop.setVisible(false);
 			machtKnop.setVisible(false);
@@ -586,6 +593,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		}
 		else if(e.getSource()==eslateKnop)
 		{	tekstVakActief.insertTekstInteractiePanelVak(7);
+		}
+		else if(e.getSource()==epsilonKnop)
+		{	tekstVakActief.insertTekstInteractiePanelVak(TekstInteractiePanelVak.EpsilonSetNr);
 		}
 		else if(e.getSource()==crosswidgetKnop)
 		{	tekstVak.setCrossWidgetViewActief(crosswidgetKnop.isToggleAan());

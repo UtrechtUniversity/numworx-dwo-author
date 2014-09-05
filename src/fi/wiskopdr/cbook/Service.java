@@ -1,5 +1,6 @@
 package fi.wiskopdr.cbook;
 
+import java.awt.Dimension;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AllPermission;
@@ -27,6 +28,8 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.cbook.cbookif.*;
 
@@ -80,6 +83,159 @@ public class Service {
 
 	}
 	
+	static class ErrorWidget extends JPanel implements CBookWrap , CBookWidgetInstanceIF, CBookWidgetEditIF, CBookEventListener{
+		private String className;
+		private Throwable message; 
+		private Dimension instanceSize = new Dimension(100,100);
+		ErrorWidget(String className, Throwable e) {
+			super();
+			this.className = className;
+			this.message = e;
+		}
+
+		@Override
+		public String toString() {
+			return "Exception for " + className + ":" + message;
+		}
+
+		private Map<String, ?> data;
+		private Map<String, ?> state;
+		
+		@Override
+		public CBookWidgetInstanceIF getInstance(CBookContext context) {
+			return this;
+		}
+
+		@Override
+		public CBookWidgetEditIF getEditor(CBookContext context) {
+			return this;
+		}
+
+		@Override
+		public Icon getIcon() {
+			return null;
+		}
+
+		@Override
+		public String getClassName() {
+			return className;
+		}
+
+		@Override
+		public JComponent asComponent() {
+			return this;
+		}
+
+		@Override
+		public void setLaunchData(Map<String, ?> data,
+				Map<String, Number> randomValues) {
+			this.data = data;
+		}
+
+		@Override
+		public void setAssessmentMode(AssessmentMode mode) {
+		}
+
+		@Override
+		public void setState(Map<String, ?> state) {
+			this.state = state;
+		}
+
+		@Override
+		public Map<String, ?> getState() {
+			return state;
+		}
+
+		@Override
+		public int getScore() {
+			return 0;
+		}
+
+		@Override
+		public SuccessStatus getSuccessStatus() {
+			return SuccessStatus.UNKNOWN;
+		}
+
+		@Override
+		public void addCBookEventListener(CBookEventListener listener,
+				String command) {
+		}
+
+		@Override
+		public void removeCBookEventListener(CBookEventListener listener,
+				String command) {
+		}
+
+		@Override
+		public void init() {
+		}
+
+		@Override
+		public void start() {
+		}
+
+		@Override
+		public void stop() {
+		}
+
+		@Override
+		public void destroy() {
+		}
+
+		@Override
+		public void reset() {
+		}
+
+		@Override
+		public CBookEventListener asEventListener() {
+			return this;
+		}
+
+		@Override
+		public Map<String, ?> getLaunchData() {
+			return data;
+		}
+
+		@Override
+		public void setLaunchData(Map<String, ?> data) {
+			this.data = data;
+		}
+
+		@Override
+		public int getMaxScore() {
+			return 0;
+		}
+
+		@Override
+		public void setInstanceWidth(int width) {	
+			instanceSize.width = width;
+		}
+
+		@Override
+		public void setInstanceHeight(int height) {
+			instanceSize.height = height;
+		}
+
+		@Override
+		public Dimension getInstanceSize() {
+			return new Dimension(instanceSize);
+		}
+
+		@Override
+		public String[] getAcceptedCmds() {
+			return null;
+		}
+
+		@Override
+		public String[] getSendCmds() {
+			return null;
+		}
+
+		@Override
+		public void acceptCBookEvent(CBookEvent event) {
+		}
+		
+	}
 	static class Proxy implements CBookWrap, CBookWidgetFactoryIF, CBookLaunchData  {
 		final private String className;
 		final private ClassLoader loader;
@@ -98,13 +254,13 @@ public class Service {
 					delegate= (CBookWidgetIF)Class.forName(className, false, loader).newInstance();
 					classMap.put(className, delegate);
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
+					delegate = new ErrorWidget(className,e);
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
+					delegate = new ErrorWidget(className,e);
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
+					delegate = new ErrorWidget(className,e);
 					e.printStackTrace();
 				}
 			}
@@ -196,7 +352,6 @@ public class Service {
 	private static void initialize() {
 		classMap = new HashMap<String, CBookWidgetIF>();
 		//if(true) {CBookWidgetIF cbif = new widgetsample.SampleWidget(); classMap.put(cbif.getClass().getName(), cbif);return;}
-		//
 		//if(true) {CBookWidgetIF cbif = new org.cbook.mediaman.MediaMan(); classMap.put(cbif.getClass().getName(), cbif);return;}
 	try {	
 		URL codebase = WiskOpdr.applet.getCodeBase();
@@ -289,10 +444,15 @@ public class Service {
 			return singleton(widgetForName("de.cinderella.CindyWidget"));
 		case TekstInteractiePanelVak.ESlateSetNr:
 			return singleton(widgetForName("widgetESlate.ESlateWidget"));
+		case TekstInteractiePanelVak.EpsilonSetNr:
+			Collection<CBookWidgetIF> set = new ArrayList<CBookWidgetIF>(2);
+			set.addAll( singleton(widgetForName("ewcbook.EpsilonWidget")));
+			set.addAll( singleton(widgetForName("ewcbook.EpsilonChatWidget")));			
+			return set;
 		}
 		Collection<CBookWidgetIF> values = classMap.values();
 		Iterator<CBookWidgetIF> iterator = values.iterator();
-		values = new TreeSet(new WidgetComparator());
+		values = new TreeSet<CBookWidgetIF>(new WidgetComparator());
 		while (iterator.hasNext()) {
 			CBookWidgetIF cBookWidgetIF = (CBookWidgetIF) iterator.next();
 			values.addAll( singleton(cBookWidgetIF));

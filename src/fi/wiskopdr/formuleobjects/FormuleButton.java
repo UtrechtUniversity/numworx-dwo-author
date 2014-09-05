@@ -46,6 +46,7 @@ public class FormuleButton extends JButton implements MouseListener
 		"cbook.png",
 		"cindy.png",
 		"eslate.gif",
+		"epsilonwriter.png",
 		"reseticon.gif",
 		
 		"wnformbutton.gif",
@@ -539,6 +540,11 @@ public class FormuleButton extends JButton implements MouseListener
 		else if(code.equals("eslate"))
 		{	//g.drawString("I",7,15);
 			g.drawImage(getImage("eslate.gif"),2,2,null);
+			//if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+		}
+		else if(code.equals("epsilonwriter"))
+		{	//g.drawString("I",7,15);
+			g.drawImage(getImage("epsilonwriter.png"),2,2,null);
 			//if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
 		}
 		else if(code.equals("rmvakklein"))

@@ -244,7 +244,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{10,39},
 		{-2},
 		{-2},
-		{-2}
+		{-2},
+		{-2},
 	};
 	
 	public static String[] interactiePanelSetNames =
@@ -256,7 +257,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"geogebra",
 		"c-book widget",
 		"cindy widget",
-		"eslate widget"
+		"eslate widget",
+		"epsilon widget"
 	};
 	
 	public static int AntwoordvakkenSetNr = 0;
@@ -267,7 +269,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public final static int CBookSetNr = 5;
 	public final static int CindySetNr = 6;
 	public final static int ESlateSetNr = 7;
-	
+	public final static int EpsilonSetNr = 8;
 	public int currentSetNr = 0;
 	
 	private DialogFacade popupFrame;

@@ -155,7 +155,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			while(iter.hasNext())
 				soortAntwoordVakKeuze.addItem(iter.next());
 		}
-		else if(setNr == TekstInteractiePanelVak.ESlateSetNr)
+		else if(setNr == TekstInteractiePanelVak.ESlateSetNr 
+			 || setNr == TekstInteractiePanelVak.EpsilonSetNr)
 		{
 			Iterator iter = Service.getWidgets(setNr).iterator();
 			while(iter.hasNext())
