@@ -374,6 +374,7 @@ public class WebContainer implements ResourceContainer, CachedResource {
 
 	Resource open( DavResource r0) throws MalformedURLException {
 		String name = r0.getDisplayName();
+		Long length = r0.getContentLength();
 		CachedResource r = children.get(name);
 		URL object = r0.getHref().toURL();
 		if(r0.isDirectory())
@@ -385,12 +386,14 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		else
 		{	
 			if(r instanceof WebResource)
+			{	((WebResource)r).length = length;
 				return r;
+			}
 			if(object.getPath().endsWith("/"))
 			{
 			   object = new URL(object.getProtocol(), object.getHost(), object.getPort(), strip(object.getPath()));
 			}
-			r = new WebResource(object, name, this, r0.getContentType());
+			r = new WebResource(object, name, this, r0.getContentType(), length);
 		}
 		children.put(name, r);
 		return r;
@@ -437,7 +440,6 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		return true;
 	}
 
-	@Override
 	public void reparent(URL url) {
 		try {
 			this.url = new URL(url, name + "/");
@@ -449,5 +451,9 @@ public class WebContainer implements ResourceContainer, CachedResource {
 
 	public String toString() {
 		return getName();
+	}
+
+	public Long getContentLength() {
+		return null;
 	}
 }

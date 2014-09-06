@@ -53,4 +53,9 @@ public interface Resource {
 	 * @throws ResourceException
 	 */
 	void setName(String name) throws ResourceException;
+	/**
+	 * Get the length of a resource. If unknown, null is returned. 
+	 * @return size of resource
+	 */
+	Long getContentLength();
 }

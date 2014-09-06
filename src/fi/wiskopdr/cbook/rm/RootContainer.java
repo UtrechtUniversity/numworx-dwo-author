@@ -68,7 +68,7 @@ public class RootContainer extends WebContainer {
 				sardine.createDirectory(u);
 				return;
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println(e);
 			}
 			String p = u.substring(0, u.lastIndexOf('/'));
 			makeExists(p);

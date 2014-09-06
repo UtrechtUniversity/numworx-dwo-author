@@ -21,6 +21,7 @@ public class WebResource implements CachedResource {
 	URL url;
 	String name;
 	private String type;
+	Long length;
 	
 	@Override
 	public boolean isContainer() {
@@ -100,13 +101,17 @@ public class WebResource implements CachedResource {
 		}
 	}
 
-	public WebResource(URL url, String name, WebContainer parent, String type) {
+	public WebResource(URL url, String name, WebContainer parent, String type, Long length) {
 		super();
 		this.url = url;
 		this.name = name;
 		this.parent = parent;
-		if("httpd/url".equals(type)) type = null;
+		if("httpd/url".equals(type)){
+			type = null;
+			length = null;
+		}
 		this.type = type;
+		this.length = length;
 	}
 
 	/* (non-Javadoc)
@@ -157,5 +162,10 @@ public class WebResource implements CachedResource {
 
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public Long getContentLength() {
+		return length;
 	}
 }
