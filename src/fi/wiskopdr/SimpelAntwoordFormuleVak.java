@@ -71,6 +71,12 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
+	static boolean fontOvererving;
+	
+	public static void zetFontOverervingForm(boolean b)
+	{	fontOvererving = b;
+	}
+	
 	public SimpelAntwoordFormuleVak()
 	{
 		setLayout(null);
@@ -221,7 +227,18 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	{	minBreedte = b;	
 	}
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
-	{	antwoordFormuleVak.zetOpdracht(h, randomVars, randomValues);
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleComponent.setFont(formuleVakFont);
+			antwoordFormuleVak.getComponentSimpel().setFont(formuleVakFont);
+		}
+		
+		antwoordFormuleVak.zetOpdracht(h, randomVars, randomValues);
 	
 		scoreGoedComponent.setLocation(getSize().width-17,0);
 		scoreFoutComponent.setLocation(getSize().width-17,0);
@@ -245,11 +262,22 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		//antwoordFormuleVak.zetSimpelFormuleVak(((FormuleVak)formuleComponent));
 		//closePopup();
 		
+		
+		
 	}
 	
 	public void setEditState(Hashtable h) 
-	{	antwoordFormuleVak.setEditState(h);
-	
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleComponent.setFont(formuleVakFont);
+		}
+		
+		antwoordFormuleVak.setEditState(h);
 	
 		antwoordFormuleVak.zetStartString("$f@"); // hierdoor komt het simpel antwoordvak netjes in de regel te liggen in de editor (forceert zetMaat())
 		requestFocus(); //want antwoordFormuleVak moet geen focus krijgen in de editor

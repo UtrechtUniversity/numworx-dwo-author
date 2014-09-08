@@ -302,11 +302,15 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
+				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
+				{"OPT_fontOverervingForm" , "Font-overerving formulevakken"},
+				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},
 				{"OBJ_categorieBox", "Leerdoelen in meerdere categorieen"},
 				{"OBJ_kolomMeerButton", "Voeg kolom toe"},
 				{"OBJ_kolomMinderButton", "Verwijder kolom"},
+				
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Variabelen van de functie"},

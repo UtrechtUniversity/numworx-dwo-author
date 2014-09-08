@@ -296,6 +296,9 @@ public class Text_es extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Páginas previas sin corrección"},
 				{"OPT_significantie" , "Comprobar la opción número significativo"},
 				{"OPT_objectives" , "Objetivos"},
+				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				
 				{"OBJ_leerdoel", "Objetivo"},
 				{"OBJ_categorie", "Categoría"},
 				{"OBJ_categorieBox", "Objetivos en las múltiples categorías"},

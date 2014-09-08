@@ -41,6 +41,7 @@ import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstArea;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 {
@@ -198,6 +199,12 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	
 	private boolean eigenOpdr = false;
 	private FormuleButton wisKnop;
+	
+	static boolean fontOvererving;
+	
+	public static void zetFontOverervingForm(boolean b)
+	{	fontOvererving = b;
+	}
 	
 	public AntwoordFormuleVak()
 	{	super(true);
@@ -575,10 +582,19 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	}
 	
 	public void setEditState(Hashtable h)
-	{	if(h.containsKey("hasFeedback"))
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleVakken[0].setFont(formuleVakFont);
+			formuleVakSimpel.setFont(formuleVakFont);
+		}
+		if(h.containsKey("hasFeedback"))
 			hasFeedback = ((Boolean)h.get("hasFeedback")).booleanValue();
 		feedbackIC.setVisible(hasFeedback);
-		
 	}
 	
 	public void setAnswerModel(int nr)
@@ -667,6 +683,16 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleVakken[0].setFont(formuleVakFont);
+			formuleVakSimpel.setFont(formuleVakFont);
+		}
+		
 		randomVarNamen = randomVars;
         randomVarWaarden = randomValues;
         
@@ -817,6 +843,9 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         wisKnop.setVisible(eigenOpdr && !this.startString);
         zetMetRand(boxMetRand);
         feedbackIC.setVisible(false);
+        
+        
+		
 	}
 	
 	public void setIdeas(Hashtable h)

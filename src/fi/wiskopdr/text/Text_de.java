@@ -51,6 +51,12 @@ public class Text_de extends java.util.ListResourceBundle
 				{ "opnieuwPanelTitel" , "Noch einmal?"},
 				{ "lockToetsCBLabel" , "Test schützen"},
 				{ "lockToetsLabel" , "Test schützen"},
+				{ "newPageMenuItem" ,  "New (insert)"},
+				{ "deletePageMenuItem" ,  "Delete"},
+				{ "copyPageMenuItem" ,  "Copy"},
+				{ "cutPageMenuItem" ,  "Cut"},
+				{ "pastePageMenuItem" ,  "Paste (insert)"},
+				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 								
 				{ "choiceOefenen" , "Üben" },
 				{ "choiceOefenenEindloos" , "Endlos üben" },
@@ -249,7 +255,9 @@ public class Text_de extends java.util.ListResourceBundle
 				{"formStructIpLabel" , "[test] FormStruct"},
 				{"graphToolIpLabel" , "[test] GraphTool"},
 				{"draabankIpLabel" , "[test] Drehbank"}, 
-				
+				{"waarmakersIpLabel" , "[test] Truemakers"},
+				{"statSimIpLabel" , "[test] Statistics Simulations"},
+								
 				//InstellingenPanel
 				{"OPT_wiskundeLabel" , "Mathematik"},
                 {"OPT_navigatieLabel" , "Navigation"},
@@ -279,6 +287,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OPT_margeOnderLabel" , "Unten"},
 				{"OPT_fToets" , "F-Tasten für Formeln"},
 				{"OPT_globalParam" , "Globale Einstellungen"},
+				{"OPT_diffOperatoren" , "Differential operators"},
 				{"OPT_voortgangKnop", "'Fortschritt' statt 'Gesamt'"},
 				{"OPT_conditionalNav" , "Bedingte Navigation"},
 				{"OPT_conditionalPercLabel" , "Prozentsatz"},
@@ -289,6 +298,9 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Keine Korrektur vorhergehender Seiten"},
 				{"OPT_significantie" , "Option für signifikatene Stellen"},
 				{"OPT_objectives" , "Ziele"},
+				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				
 				{"OBJ_leerdoel", "Lernziel"},
 				{"OBJ_categorie", "Kategorie"},
 				{"OBJ_categorieBox", "Ziele in mehreren Kategorien"},
@@ -396,6 +408,8 @@ public class Text_de extends java.util.ListResourceBundle
                 {"TVEP_balansVergCom" , "Waage-Gleichung-Kasten Kommunikation"},
                 {"TVEP_aftrekPopup" , "Popup zieht Punkte ab"},
                 {"TVEP_callOut" , "Sprechblase"},
+                {"TVEP_vulHoogte" , "Fill height"},
+                {"TVEP_inklapbaar" , "Fold/unfold"},
                 {"TVEP_uitwerkingenPopup" , "Schritte"},
                 {"TVEP_random" , "zufällig"},
                 {"TVEP_linkObject" , "Objekt verknüpfen"},

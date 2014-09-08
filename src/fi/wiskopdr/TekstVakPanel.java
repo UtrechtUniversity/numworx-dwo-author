@@ -71,6 +71,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.manager = manager;
 	}
 
+	public static boolean fontOvererving = false;
 	protected int score;
 	protected int scoreMax;
 	protected boolean correct = true;
@@ -252,6 +253,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 
 		tekstVak = tekstVakken[0][0];
+	}
+	
+	public static void zetFontOvererving(boolean b)
+	{	fontOvererving = b;
 	}
 
 	public void zetTeksten(String[][] teksten)
@@ -932,9 +937,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			}
 		}
 		//if(anderFont) setFont(new Font("SansSerif", Font.BOLD, WiskOpdr.tekstFont.getSize()*7/6));
-		Font f = new Font(font.getName(), font.getStyle(), font.getSize());
-		if (anderFont)
-			setFont(f);
+		
 
 		for (int i = 0; i < aantalRijen; i++)
 		{
@@ -966,6 +969,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			zetTransparant(true);//setBackground(WiskOpdr.bgcolor);
 
 		setForeground(fgColor);
+		
+		Font f = new Font(font.getName(), font.getStyle(), font.getSize());
+		
+		if (anderFont)
+		{	setFont(f);
+			setForeground(fgColor);
+		}
+		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			Color fgColorOvererving = ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground();
+			setFont(geerftFont);
+			setForeground(fgColorOvererving);
+		}
 
 		Vector v = geefInteractiePanels();
 		for (int i = 0; i < v.size(); i++)
@@ -2455,8 +2471,18 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 		Font ff = new Font(font.getName(), font.getStyle(), font.getSize());
 		if (anderFont)
-			setFont(ff);
+		{	setFont(ff);
+			setForeground(fgColor);
+		}
+		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			Color fgColorOvererving = getParent() instanceof TekstInteractiePanelVak ? ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground() : fgColor;
+			setFont(geerftFont);
+			setForeground(fgColorOvererving);
+		}
 		//if(anderFont) setFont(font);
+		
+		
 
 		Vector v = geefInteractiePanels();
 		for (int i = 0; i < v.size(); i++)

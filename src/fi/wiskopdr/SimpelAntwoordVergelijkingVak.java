@@ -54,6 +54,12 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	
 	private boolean uitklapVak;
 	
+	static boolean fontOvererving;
+	
+	public static void zetFontOverervingForm(boolean b)
+	{	fontOvererving = b;
+	}
+	
 	public SimpelAntwoordVergelijkingVak()
 	{
 		setLayout(null);
@@ -171,7 +177,17 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	{	minBreedte = b;	
 	}
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
-	{	antwoordVergelijkingVak.zetOpdracht(h, randomVars, randomValues);
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleComponent.setFont(formuleVakFont);
+			antwoordVergelijkingVak.getComponentSimpel().setFont(formuleVakFont);
+		}
+		antwoordVergelijkingVak.zetOpdracht(h, randomVars, randomValues);
 		scoreGoedComponent.setLocation(getSize().width-18,0);
 		scoreFoutComponent.setLocation(getSize().width-18,0);
 		scoreHalfComponent.setLocation(getSize().width-18,0);
@@ -194,7 +210,16 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	}
 	
 	public void setEditState(Hashtable h) 
-	{	antwoordVergelijkingVak.setEditState(h);
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleComponent.setFont(formuleVakFont);
+		}
+		antwoordVergelijkingVak.setEditState(h);
 		antwoordVergelijkingVak.zetStartString("$f@"); // hierdoor komt het simpel antwoordvak netjes in de regel te liggen in de editor (forceert zetMaat())
 		requestFocus(); //want antwoordFormuleVak moet geen focus krijgen in de editor
 		

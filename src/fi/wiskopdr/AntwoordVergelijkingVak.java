@@ -47,6 +47,7 @@ import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstArea;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePanel, CBookAware {
 	static int GOED = 1;
@@ -212,6 +213,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private boolean balansKoppeling = false;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
+	static boolean fontOvererving;
+	
+	public static void zetFontOverervingForm(boolean b)
+	{	fontOvererving = b;
+	}
 
 	public AntwoordVergelijkingVak() {
 		super(true);
@@ -751,7 +758,17 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	}
 
 	public void setEditState(Hashtable h) 
-	{	if(h.containsKey("hasFeedback"))
+	{	
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleVakken[0].setFont(formuleVakFont);
+			formuleVakSimpel.setFont(formuleVakFont);
+		}
+		if(h.containsKey("hasFeedback"))
 			hasFeedback = ((Boolean)h.get("hasFeedback")).booleanValue();
 		feedbackIC.setVisible(hasFeedback);
 	}
@@ -887,6 +904,16 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	}
 
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleVakken[0].setFont(formuleVakFont);
+			formuleVakSimpel.setFont(formuleVakFont);
+		}
+		
 		randomVarNamen = randomVars;
 		randomVarWaarden = randomValues;
 

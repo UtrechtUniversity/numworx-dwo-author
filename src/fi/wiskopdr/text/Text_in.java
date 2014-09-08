@@ -289,6 +289,14 @@ public class Text_in extends java.util.ListResourceBundle
 				{"OPT_zelftoetsGeenCorr" , "No correction self test"},
 				{"OPT_significantie" , "check option significant numbers"},
 				{"OPT_objectives" , "Objectives"},
+				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				
+				{"OBJ_leerdoel", "Objective"},
+				{"OBJ_categorie", "Category"},
+				{"OBJ_categorieBox", "Objectives in multiple categories"},
+				{"OBJ_kolomMeerButton", "Add column"},
+				{"OBJ_kolomMinderButton", "Remove column"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Variabel-variabel fungsi"},

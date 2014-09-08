@@ -18,6 +18,7 @@ import fi.wiskopdr.opdrnav.*;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
 
+
 public class InstellingenPanel extends JPanel implements ActionListener
 {
 	private JCheckBox maalTekenCB;
@@ -46,6 +47,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
+	private JCheckBox fontOverervingCB;
+	private JCheckBox fontOverervingFormCB;
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
 	
@@ -324,6 +327,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		formTimesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_formTimes"), boxv3, true);//"formules in Times Roman"
 		paginaCB = maakCheckBox(WiskOpdr.rb.getString("OPT_paginaIpvOpdracht"), boxv3, false);//"pagina ipv opdracht"
 		abcDeelOpdrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_deelOpdr"), boxv3, false);//"F-toetsen gebruiken of niet"
+		fontOverervingCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
+		fontOverervingFormCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
 		
 		boxv3.add(Box.createVerticalStrut(70));
 		
@@ -452,6 +457,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int margeRechts = 15;
 		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
 		int margeOnder = 15;
+		boolean fontOvererving = false;
+		boolean fontOverervingForm = false;
 		boolean fToets = true;
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
@@ -495,6 +502,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		pagina = paginaCB.isSelected();
 		formTimes = formTimesCB.isSelected();
 		fontName = (String)fontNameCO.getSelectedItem();
+		fontOvererving = fontOverervingCB.isSelected();
+		fontOverervingForm = fontOverervingFormCB.isSelected();
 		fToets = fToetsCB.isSelected();
 		globalParam = globalParamCB.isSelected();
 		diffOperatoren = diffOperatorenCB.isSelected();
@@ -538,6 +547,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("formTimes", new Boolean(formTimes));
 		h.put("navigatieSize", new Integer(navigatieSize));
 		h.put("fontName", fontName);
+		h.put("fontOvererving", new Boolean(fontOvererving));
+		h.put("fontOverervingForm", new Boolean(fontOverervingForm));
 		h.put("margeLinks", new Integer(margeLinks));
 		h.put("margeRechts", new Integer(margeRechts));
 		h.put("margeBoven", new Integer(margeBoven));
@@ -596,6 +607,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
 		int margeOnder = 15;
 		boolean fToets = true;
+		boolean fontOvererving = false;
+		boolean fontOverervingForm = false;
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
 		boolean voortgang = false;
@@ -630,6 +643,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("formTimes")) formTimes = ((Boolean)h.get("formTimes")).booleanValue();
 		if(h.containsKey("navigatieSize")) navigatieSize = ((Integer)h.get("navigatieSize")).intValue();
 		if(h.containsKey("fontName")) fontName = (String)h.get("fontName");
+		if(h.containsKey("fontOvererving")) fontOvererving = ((Boolean)h.get("fontOvererving")).booleanValue();
+		if(h.containsKey("fontOverervingForm")) fontOverervingForm = ((Boolean)h.get("fontOverervingForm")).booleanValue();
 		if(h.containsKey("margeLinks")) margeLinks = ((Integer)h.get("margeLinks")).intValue();
 		if(h.containsKey("margeRechts")) margeRechts = ((Integer)h.get("margeRechts")).intValue();
 		if(h.containsKey("margeBoven")) margeBoven = ((Integer)h.get("margeBoven")).intValue();
@@ -674,6 +689,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		paginaCB.setSelected(pagina);
 		formTimesCB.setSelected(formTimes);
 		fontNameCO.setSelectedItem(fontName);
+		fontOverervingCB.setSelected(fontOvererving);
+		fontOverervingFormCB.setSelected(fontOverervingForm);
 		margeLinksTF.setText(""+margeLinks);
 		margeRechtsTF.setText(""+margeRechts);
 		margeBovenTF.setText(""+margeBoven);
@@ -733,6 +750,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fontName = (String)fontNameCO.getSelectedItem();
 		WiskOpdr.zetFont(fontName,fontSize);
 		WiskOpdr.setFormTimes(formTimesCB.isSelected());
+		TekstVakPanel.zetFontOvererving(fontOverervingCB.isSelected());
+		AntwoordFormuleVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		AntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		SimpelAntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());
 		//opdrNavStruct.zetItemOpnieuwMogelijk(itemOpnieuwCB.isSelected());

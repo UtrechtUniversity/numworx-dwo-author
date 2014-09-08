@@ -302,6 +302,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "No correction previous pages"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Objectives"},
+				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},
 				{"OBJ_categorieBox", "Objectives in multiple categories"},

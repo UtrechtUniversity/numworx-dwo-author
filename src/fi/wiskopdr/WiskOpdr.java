@@ -543,7 +543,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 
 		deployVariant = super.getParameter("deployVariant");
-		//deployVariant = "MW";
+		//deployVariant = "GR";
 
 		defaultParamValues = makeDefaultParamValues(0);
 

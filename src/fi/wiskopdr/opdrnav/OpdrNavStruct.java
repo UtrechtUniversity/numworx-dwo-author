@@ -38,11 +38,16 @@ import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.beans.wnwidgets.OpnieuwPanel;
+import fi.wiskopdr.AntwoordFormuleVak;
 import fi.wiskopdr.AntwoordFormuleVakEditPanel;
+import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.KlaarKnop;
 import fi.wiskopdr.ScoresObjectivesPanel;
+import fi.wiskopdr.SimpelAntwoordFormuleVak;
+import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.TimerPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Expressie;
@@ -921,6 +926,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean formTimes = true;
 		int navigatieSize = 12;
 		String fontName = "SansSerif";
+		boolean fontOvererving = false;
+		boolean fontOverervingForm = false;
 		int margeLinks = 18;
 		int margeRechts = 15;
 		int margeBoven = 15;
@@ -980,6 +987,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			navigatieSize = ((Integer) h.get("navigatieSize")).intValue();
 		if (h != null && h.containsKey("fontName"))
 			fontName = (String) h.get("fontName");
+		if (h != null && h.containsKey("fontOvererving"))
+			fontOvererving = ((Boolean) h.get("fontOvererving")).booleanValue();
+		if (h != null && h.containsKey("fontOverervingForm"))
+		fontOverervingForm = ((Boolean) h.get("fontOverervingForm")).booleanValue();
 		if (h != null && h.containsKey("margeLinks"))
 			margeLinks = ((Integer) h.get("margeLinks")).intValue();
 		if (h != null && h.containsKey("margeRechts"))
@@ -1031,6 +1042,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
+		
+		TekstVakPanel.zetFontOvererving(fontOvererving);
+		AntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
+		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
+		AntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingForm);
+		SimpelAntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingForm);
+		
 		setFont(WiskOpdr.tekstFont);
 
 		setNavigatieSize(navigatieSize);

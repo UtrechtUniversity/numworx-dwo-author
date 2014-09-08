@@ -290,6 +290,15 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"OPT_deelOpdr" , "شماره گزینه ها: a,b,c و غیره"},
 				{"OPT_zelftoetsGeenCorr" , "خود آزمون غیر اصلاح شونده"},
 				{"OPT_significantie" , "گزینه بررسی اعداد ویژه"},
+				{"OPT_objectives" , "Objectives"},
+				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				
+				{"OBJ_leerdoel", "Objective"},
+				{"OBJ_categorie", "Category"},
+				{"OBJ_categorieBox", "Objectives in multiple categories"},
+				{"OBJ_kolomMeerButton", "Add column"},
+				{"OBJ_kolomMinderButton", "Remove column"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "متغیرهای توابع"},
