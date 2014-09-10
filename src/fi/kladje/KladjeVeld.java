@@ -103,6 +103,7 @@ public class KladjeVeld extends JPanel
 	Rechthoek selectedRechthoek = null;
 	Ellips selectedEllips = null;
 	TekstElement selectedTekstElement = null;
+	TekstElement oldSelectedTekstElement = null;
 	Vector objectsSelected = new Vector();
 	
 	Cursor textCursor = null;
@@ -127,7 +128,8 @@ public class KladjeVeld extends JPanel
 	
 	boolean initialState = false;
 	
-	Graphics kvGraphics = null;	
+	//Graphics kvGraphics = null;
+	
 	
 	public KladjeVeld(int w, int h)
 	{
@@ -454,7 +456,7 @@ System.out.println("returned " + (numHistories - 1));
 			initialState = true;
 		}
 		
-		paint();
+		//paint();
 	}
 	
 	public void setOldState(Vector stateVector)
@@ -663,22 +665,22 @@ System.out.println("returned " + (numHistories - 1));
 			return doublePoints;
 	}
 	
-	public void paint()
-	{
-		if (kvGraphics != null)
-		{	paintComponent(kvGraphics);
-System.out.println("paint");		
-		}
-	}
+///	public void paint()
+//	{
+//		if (kvGraphics != null)
+//		{	paintComponent(kvGraphics);
+//System.out.println("paint");		
+//		}
+//	}
 	
 	public void paintComponent(Graphics g)
 	{
 		boolean firstPaint = false;
 		
-		if (kvGraphics == null)
-		{	kvGraphics = getGraphics();
-			firstPaint = true;
-		}
+		//if (kvGraphics == null)
+		//{	kvGraphics = getGraphics();
+		//	firstPaint = true;
+		//}
 		
 		Graphics2D g2D = (Graphics2D) g;		
 
@@ -719,13 +721,16 @@ System.out.println("paint");
 		
 		tekenProgramma(g2D, false);
 		
-		if (firstPaint)
-			paintComponent(g);
+		//if (firstPaint)
+		//	paintComponent(g);
 	}
 	
 	
 	void tekenProgramma(Graphics2D g, boolean wis)
 	{
+		
+//System.out.println("tekenProgramma");
+
 		if (wis)
 		{	
 			g.setColor(backgroundColor);
@@ -769,6 +774,7 @@ System.out.println("paint");
 		for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
 		{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
 			tekstElement.teken(g);
+		
 		}
 			
 		
@@ -909,7 +915,7 @@ System.out.println("paint");
 				selectedEllips.tekenHandleBox(g);
 			}
 			if (selectedTekstElement != null)
-			{	//selectedTekstElement.tekenBB(g);
+			{	selectedTekstElement.tekenBB(g);
 				selectedTekstElement.tekenHandleBox(g);
 			}
 			
@@ -2081,7 +2087,12 @@ System.out.println("paint");
 				//	selectedTekstElement.scale(scaleDownStep);
 				//else
 				//	selectedTekstElement.scale(scaleUpStep);
+//System.out.println("te scbr " + sc);
 				selectedTekstElement.scale(sc);
+				
+				updateAction2();
+				
+
 				
 			}
 			else if (rotatingEast)
@@ -2089,6 +2100,10 @@ System.out.println("paint");
 				// hier is alleen dy van belang
 				double angle = Math.atan(((double) dy) / (selectedTekstElement.handleBox.width/2));
 				selectedTekstElement.rotate(angle);
+				
+				updateAction2();				
+				
+
 				
 			}
 // wordt niet gebruikt			
@@ -2289,6 +2304,47 @@ System.out.println("paint");
 		return handleAction;
 	}
 	
+	public void updateAction()
+	{
+		if (selectedTekstElement != null )
+		{
+
+//System.out.println("ua");
+
+			for (int tCnt = 0; tCnt < tekstElementVector.size(); tCnt++)
+			{	TekstElement tekstElement = (TekstElement) tekstElementVector.elementAt(tCnt);
+
+				if (oldSelectedTekstElement.isEqualTo(tekstElement))
+				{	
+					selectedTekstElement = selectedTekstElement.updateState();
+					// extra want selectedTekstElement wordt niet getekend
+					selectedTekstElement.makeBB();
+					selectedTekstElement.setCenter();
+					selectedTekstElement.bb2.rotate(selectedTekstElement.rotation, selectedTekstElement.cx, selectedTekstElement.cy);
+					selectedTekstElement.makeHandleBox();
+					tekstElement = tekstElement.updateState(selectedTekstElement);
+					tekstElementVector.setElementAt(tekstElement, tCnt);
+//System.out.println(selectedTekstElement.printTekst());
+//System.out.println(tekstElement.printTekst());
+				}	
+			}
+		}
+		
+	}
+	
+	public void updateAction2()
+	{
+		if (selectedTekstElement != null )
+		{
+			selectedTekstElement = selectedTekstElement.updateState();
+			// extra want selectedTekstElement wordt niet getekend
+			selectedTekstElement.makeBB();
+			selectedTekstElement.setCenter();
+			selectedTekstElement.bb2.rotate(selectedTekstElement.rotation, selectedTekstElement.cx, selectedTekstElement.cy);
+			selectedTekstElement.makeHandleBox();
+		}
+				
+	}
 	
 	class MLMML extends MouseAdapter implements MouseMotionListener
 	{
@@ -2339,7 +2395,15 @@ System.out.println("paint");
 			else if (mouseMode == selecteren)
 			{
 
-				if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				if (selecteerRechthoekHandlesContain(e.getX(), e.getY()))
+				{
+					startX = e.getX();
+					startY = e.getY();
+//System.out.println("mp oshc");			
+					
+					objectHandled = false;
+				}
+				else if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
 				{
 					resetSelectedObject();
 					sleepSelectie = true;
@@ -2351,9 +2415,17 @@ System.out.println("paint");
 					startX = e.getX();
 					startY = e.getY();
 //System.out.println("mp oshc");			
-					
+//System.out.println("mp ha " + handleAction);
+//System.out.println("mp ta " + scalingBottomRight);
+
 					objectHandled = false;
+					
+					if (selectedTekstElement != null)
+					{	oldSelectedTekstElement = selectedTekstElement;
+//System.out.println("old = " + oldSelectedTekstElement.printTekst());					
+					}
 				}
+/*				
 				else if (selecteerRechthoekHandlesContain(e.getX(), e.getY()))
 				{
 					startX = e.getX();
@@ -2362,6 +2434,7 @@ System.out.println("paint");
 					
 					objectHandled = false;
 				}
+*/				
 				// individueel object aangeklikt, was mogelijk al geselecteerd
 				else if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
 				{
@@ -2612,6 +2685,8 @@ System.out.println("paint");
 
 					processHandleAction(dx,dy);
 					
+//System.out.println("md ha");
+
 					startX = e.getX();
 					startY = e.getY();
 					
@@ -2837,7 +2912,10 @@ System.out.println("paint");
 				}
 				
 				if (objectHandled)
+				{
+					updateAction();
 					addToHistory();
+				}
 				objectHandled = false;
 				handleAction = false;
 				groupHandleAction = false;
@@ -2847,11 +2925,14 @@ System.out.println("paint");
 				scalingBottomLeft = false;
 				rotatingEast = false;
 				rotatingWest = false;
-				angleSum = 0; 
+				angleSum = 0;
+				
+				repaint();
 
 			}
 
 		}
+		
 		
 		public void mouseMoved(MouseEvent e)
 		{
