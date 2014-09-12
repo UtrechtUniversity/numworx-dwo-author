@@ -5,7 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -22,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorPreviewer;
@@ -46,18 +48,41 @@ public class FrequencyTableView extends JPanel implements Observer
 	private JPanel mainPanel;
 	private JScrollPane scrollPane;
 	private FrequencyTablePanel[] splitClassPanels;
+	/**
+	 * If the frequency table has a split, splitClassLabelPanel contains a
+	 * panel with the split label (e.g., "Geslacht: m"; actually, the last panel
+	 * is stored). It is used to determine the height of the panel when determining 
+	 * the row clicked 
+	 */
+	private JPanel splitClassLabelPanel;
 	private int numberOfSplitClasses = 1;
 
-	private int mainPanelRows;
+	/**
+	 * The number of rows in the frequency table, including
+	 * header and total row.
+	 */
+	private int frequencyTableRows;
 	private int mainPanelColumns;
-	private int minRowHeight = 30;
-	private int splitClassLabelPanelHeight = 60; 
-
+	/**
+	 * Array of maximum column widths, to be used to paint 
+	 * row selection.
+	 */
+	private int[] maxColumnWidth;
 	private Color[][] rowColors;
+	/**
+	 * Maximum number of rows for performance reasons.
+	 */
 	private int maxRows = 100;
 	public static final int MAIN_GRID_HGAP = 8;
-	public static final int MAIN_GRID_VGAP = 8;
+	public static final int GRID_TOPGAP = 5;
+	public static final int GRID_BOTTOMGAP = 5;
+	public static final int GRID_LEFTGAP = 5;
+	public static final int GRID_RIGHTGAP = 5;
 	public static final Color SELECTED_COLOR = ColorGenerator.SELECTION_COLOR;
+	private int rowHeight;
+	private int tableWidth;
+	private int tableHeight;
+	private boolean isTableHeightSet;
 
 	/**
 	 * Constructor
@@ -127,6 +152,9 @@ public class FrequencyTableView extends JPanel implements Observer
 			super.setPreferredSize(d);
 		}		
 		
+		/**
+		 * Paint a white background and the selected rows in the frequency table panel.
+		 */
 		public void paintComponent(Graphics g)
 		{
 			if (!FrequencyTableView.this.model.columnIndexValid())
@@ -134,24 +162,12 @@ public class FrequencyTableView extends JPanel implements Observer
 				// variable is not valid, so there is nothing to paint
 				return;
 			}
-			else if (FrequencyTableView.this.mainPanelRows > FrequencyTableView.this.maxRows)
+			else if (FrequencyTableView.this.frequencyTableRows > FrequencyTableView.this.maxRows)
 			{
 				return;
 			}
 
-//			System.out.println("FrequencyTableView.FrequencyTablePanel.paintComponent(): rows = " + FrequencyTableView.this.mainPanelRows);
-
 			g.setColor(Color.BLACK);
-
-			double columnWidth = this.getWidth()
-				/ (double) FrequencyTableView.this.mainPanelColumns;
-			int rowAreaHeight = this.getHeight()
-				- (FrequencyTableView.this.mainPanelRows + 2)
-				* FrequencyTableView.MAIN_GRID_HGAP;
-
-			double rowHeight = (rowAreaHeight / (double) (FrequencyTableView.this.mainPanelRows + 2))
-				+ MAIN_GRID_HGAP;
-			int roundRowHeight = (int) rowHeight;
 
 			g.setColor(Color.WHITE);
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -164,45 +180,10 @@ public class FrequencyTableView extends JPanel implements Observer
 					g.setColor(FrequencyTableView.this.rowColors[i][this.splitClass]);
 					g.fillRect(
 						0,
-						(int) ((i + 1) * rowHeight),
-						this.getWidth(), roundRowHeight);
+						(i + 1) * FrequencyTableView.this.rowHeight, 
+						FrequencyTableView.this.tableWidth, FrequencyTableView.this.rowHeight);
 				}
 			}
-
-			// draw vertical lines
-			// first line black
-			g.setColor(Color.BLACK);
-			if (FrequencyTableView.this.mainPanelColumns > 0)
-			{
-				int x = (int) (columnWidth);
-				g.drawLine(x, 0, x, this.getHeight());
-			}
-			
-			// other lines grey
-			g.setColor(ColorGenerator.getGreyLineColor());
-			for (int i = 2; i < FrequencyTableView.this.mainPanelColumns; i++)
-			{
-				int x = (int) (columnWidth * i);
-				g.drawLine(x, 0, x, this.getHeight());
-			}
-
-			// draw horizontal lines
-			g.setColor(Color.BLACK);
-			// lijn boven t.b.v. meerdere tabellen bij split
-			g.drawLine(0, 0, this.getWidth(), 0);
-
-			// lijn na eerste header-rij
-			g.drawLine(0, roundRowHeight, this.getWidth(), roundRowHeight);
-
-			// lijn boven totaalrij
-			int y = (int) ((FrequencyTableView.this.mainPanelRows + 1)
-					* rowHeight);
-			g.drawLine(0, y, this.getWidth(), y);
-			// lijn onder t.b.v. meerdere tabellen bij split
-//			System.out.println("FrequencyTableView.FrequencyTablePanel.paintComponent(): h = " + this.getHeight()
-//				+ ", w = " + this.getWidth());
-			g.setColor(ColorGenerator.getGreyLineColor());
-			g.drawLine(0, this.getHeight() - 1, this.getWidth(), this.getHeight() - 1);
 		}
 	}
 	
@@ -268,14 +249,15 @@ public class FrequencyTableView extends JPanel implements Observer
 	{
 		try
 		{
-	//		this.noBinsField.setText(Integer.toString(this.model.getBinBoundaries()
-	//			.size() - 1));
-	//
-			// this.userOptionsPanel.setVisible(this.model.getTableModel().isViewsEditable());
 			this.dialogButton.setVisible(this.model.getTableModel()
 				.isViewsEditable());
 			
 			this.mainPanel.removeAll();
+			
+			// initialize table height
+			this.tableHeight = 0;
+			this.isTableHeightSet = false;
+			
 			if (this.model.columnIndexValid())
 			{
 				ColumnType cType = this.model.getTableModel().getColumnTypes()
@@ -300,14 +282,14 @@ public class FrequencyTableView extends JPanel implements Observer
 				int[] frequencies = null;
 				numberOfSplitClasses = this.model.getTableModel().splitVarClasses(
 					this.model.getSplitOptions());
-				splitClassPanels = new FrequencyTablePanel[numberOfSplitClasses];
+				this.splitClassPanels = new FrequencyTablePanel[numberOfSplitClasses];
 				
 				if (type.isNumber())
 				{
-					this.mainPanelRows = this.model.getBinBoundaries().size() - 1;
-					if (this.mainPanelRows < 0)
+					this.frequencyTableRows = this.model.getBinBoundaries().size() + 1;
+					if (this.frequencyTableRows < 0)
 					{
-						this.mainPanelRows = 0;
+						this.frequencyTableRows = 0;
 					}
 					
 					if (this.model.numberClassFrequency() != null)
@@ -316,13 +298,15 @@ public class FrequencyTableView extends JPanel implements Observer
 				else
 				{
 					frequencyTuple = this.model.enumClassFrequency();
-					this.mainPanelRows = frequencyTuple[0].length;
+					this.frequencyTableRows = 0;
+					if (frequencyTuple != null)
+						this.frequencyTableRows = frequencyTuple[0].length + 2; // add 2 for header and total row
 					
-					this.rowColors = new Color[this.mainPanelRows][numberOfSplitClasses];
+					this.rowColors = new Color[this.frequencyTableRows - 2][numberOfSplitClasses];
 				}
 				
 				//System.out.println("FrequencyTableView.update(): rows = " + this.mainPanelRows);
-				if (this.mainPanelRows > this.maxRows)
+				if (this.frequencyTableRows > this.maxRows)
 				{
 					String s = Statistiek.rb.getString("messageNrRowsMoreThan") + this.maxRows
 						+ ". " + Statistiek.rb.getString("messageChooseOtherVar");
@@ -335,47 +319,20 @@ public class FrequencyTableView extends JPanel implements Observer
 					return;
 				}
 	
-				// set gridlayout, +2 rows for header and sum rows
-				GridLayout gl = new GridLayout(this.mainPanelRows + 2,
-					this.mainPanelColumns);
-				gl.setHgap(FrequencyTableView.MAIN_GRID_HGAP);
-				gl.setVgap(FrequencyTableView.MAIN_GRID_VGAP);
-				//System.out.println("FrequencyTableView.update(): gl = " + gl);
 				this.mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 				
 				Dimension dimension;
-	//			int noBins = this.model.getNoBins();
 				
+				int h = this.scrollPane.getViewport().getHeight();
+				int w = this.scrollPane.getViewport().getWidth();
+				if (h <= 0) // for some reason scrollPane is 0 sometimes...
+					h = 340; // hardcoded...
+				if (w <= 0)
+					w = 653;
+
 				for (int i = 0; i < numberOfSplitClasses; i++)
 				{
-					splitClassPanels[i] = new FrequencyTablePanel(gl, i);
-					
-	//				System.out.println("FrequencyTableView.update(): noBins = "
-	//					+ noBins + ", scrollPane.h = " + this.scrollPane.getHeight()
-	//					+ ", scrollPane.viewPort.h = " 
-	//					+ this.scrollPane.getViewport().getHeight() 
-	//					+ ", scrollPane.w = " + this.scrollPane.getViewport().getWidth());
-					
-					int h = this.scrollPane.getViewport().getHeight();
-					int w = this.scrollPane.getViewport().getWidth();
-					if (h <= 0) // for some reason scrollPane is 0 sometimes...
-						h = 340; // hardcoded...
-					if (w <= 0)
-						w = 653;
-					
-		    		if (this.mainPanelRows * minRowHeight > h)
-		    		{
-		    			dimension = new Dimension(w, this.mainPanelRows * minRowHeight);
-		    		}
-		    		else
-		    		{
-		    			dimension = new Dimension(w, h);
-		    		}
-	
-	//				System.out.println("... FrequencyTableView.update(): splitClassPanel.setPreferredSize(h = " 
-	//					+ dimension.height + ", w = " + dimension.width + ")");
-	
-					splitClassPanels[i].setPreferredSize(dimension);
+					splitClassPanels[i] = new FrequencyTablePanel(new GridBagLayout(), i);
 					
 					makeHeaderRow(splitClassPanels[i]);
 					
@@ -405,6 +362,12 @@ public class FrequencyTableView extends JPanel implements Observer
 					
 					makeTotalRow(splitClassPanels[i], sum);
 	
+	    			dimension = new Dimension(w, this.tableHeight);
+
+					splitClassPanels[i].setPreferredSize(dimension);
+					//System.out.println("FrequencyTableView.update(): this.tableHeight = " + this.tableHeight);
+					this.isTableHeightSet  = true;
+					
 					// set colors for background
 					if (type.isNumber())
 					{
@@ -442,19 +405,21 @@ public class FrequencyTableView extends JPanel implements Observer
 					
 					if (numberOfSplitClasses > 1)
 					{
-						// add extra panel with splitclass label
+						// add panel with splitclass label
 						JPanel labelPanel = new JPanel();
 						labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-						labelPanel.setPreferredSize(new Dimension(
-							this.mainPanel.getWidth(), this.splitClassLabelPanelHeight));
 						labelPanel.setBackground(Color.WHITE);
 						String splitVar = this.model.getTableModel()
 							.getColumnName(this.model.getSplitOptions().getColumnSplitIndex());
 						JLabel label = new JLabel(splitVar + ": " + this.model.getSplitOptions()
 							.getSplitClassLabel(i, this.model.getTableModel()));
-						label.setFont(Statistiek.font);	
+						label.setFont(Statistiek.font);
+						label.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 						labelPanel.add(label);
 						this.mainPanel.add(labelPanel);
+						
+						// store a labelPanel in order to be able to access its height when painting row selection 
+						this.splitClassLabelPanel = labelPanel;
 					}
 				}
 	
@@ -468,7 +433,7 @@ public class FrequencyTableView extends JPanel implements Observer
 			this.setMainPanelSize();
 	
 			this.mainPanel.revalidate();
-			
+
 			this.repaint();
 		}
 		catch (Exception e)
@@ -477,19 +442,68 @@ public class FrequencyTableView extends JPanel implements Observer
 		}
 	}
 
+	/**
+	 * In order to determine the maximum width of column i, set the max width to the 
+	 * width of label if label width is larger than the value in maxColumnWidth.
+	 *  
+	 * @param i
+	 * @param label
+	 */
+	private void updateMaxColumnWidth(int i, JLabel label)
+	{
+		if (label.getPreferredSize().width > this.maxColumnWidth[i])
+			this.maxColumnWidth[i] = label.getPreferredSize().width;
+	}
+
+	/**
+	 * Calculate the width of the frequency table as visible on the screen,
+	 * ignoring dummy labels.
+	 */
+	private void setTableWidth()
+	{
+		this.tableWidth = 0;
+		
+		for (int i = 0; i < this.maxColumnWidth.length; i++)
+		{
+			this.tableWidth += this.maxColumnWidth[i];
+		}
+
+		//System.out.println("FrequencyTableView.setTableWidth(): width = " + this.TABLE_WIDTH);
+	}
+
 	private void makeTotalRow(JPanel panel, int sum)
 	{
 		//System.out.println("FrequencyTableView.makeTotalRow(sum=" + sum + ")");
 		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;		
+		Border paddingBorder = BorderFactory.createEmptyBorder(this.GRID_TOPGAP, this.GRID_LEFTGAP,
+			this.GRID_BOTTOMGAP, this.GRID_RIGHTGAP);
+		// borders on all sides except the top and left side
+		Border matteBorder = BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK);
+
 		JLabel totalLabel = new JLabel(Statistiek.rb.getString("totalLabel"));
 		totalLabel.setFont(Statistiek.font);
-		panel.add(totalLabel);
+		totalLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		c.gridx = 0;
+		c.gridy = this.frequencyTableRows - 1;
+		panel.add(totalLabel, c);
+		// administer the maximum column width
+		this.updateMaxColumnWidth(0, totalLabel);
+		// update table height with the height of the first label in the last row
+		this.updateTableHeight(totalLabel);
 		
 		JLabel freqLabel = new JLabel(Integer.toString(sum),
 			SwingConstants.TRAILING);
 		freqLabel.setFont(Statistiek.font);
-		panel.add(freqLabel);
+		freqLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		c.gridx = 1;
+		c.gridy = this.frequencyTableRows - 1;
+		panel.add(freqLabel, c);
+		this.updateMaxColumnWidth(1, freqLabel);
     	
+		int percentage = 0;
     	if (this.model.isShowPercentage())
     	{
     		String percString;
@@ -499,7 +513,12 @@ public class FrequencyTableView extends JPanel implements Observer
     			percString = "100%";
     		JLabel percLabel = new JLabel(percString, SwingConstants.TRAILING);
     		percLabel.setFont(Statistiek.font);
-    		panel.add(percLabel);
+    		percLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+    		c.gridx = 2;
+    		c.gridy = this.frequencyTableRows - 1;
+    		panel.add(percLabel, c);
+    		this.updateMaxColumnWidth(2, percLabel);
+    		percentage++;
     	}
     	
     	if (this.model.isShowCumulative())
@@ -507,7 +526,11 @@ public class FrequencyTableView extends JPanel implements Observer
     		JLabel cumulLabel = new JLabel(Integer.toString(sum),
     			SwingConstants.TRAILING);
     		cumulLabel.setFont(Statistiek.font);
-    		panel.add(cumulLabel);
+    		cumulLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+    		c.gridx = 2 + percentage;
+    		c.gridy = this.frequencyTableRows - 1;
+    		panel.add(cumulLabel, c);
+    		this.updateMaxColumnWidth(2 + percentage, cumulLabel);
     	}
     	
     	if (this.model.isShowPercentage() && this.model.isShowCumulative())
@@ -519,8 +542,23 @@ public class FrequencyTableView extends JPanel implements Observer
     			percString = "100%";
     		JLabel cumulPercLabel = new JLabel(percString, SwingConstants.TRAILING);
     		cumulPercLabel.setFont(Statistiek.font);
-    		panel.add(cumulPercLabel);
-    	}		
+    		cumulPercLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+    		c.gridx = 4;
+    		c.gridy = this.frequencyTableRows - 1;
+    		panel.add(cumulPercLabel, c);
+    		this.updateMaxColumnWidth(4, cumulPercLabel);
+    	}
+    	
+		// add extra cell under last row to fill the space 
+		// and make the table start at the northwest corner
+		c.gridx = 0;
+		c.gridy = this.frequencyTableRows;
+		c.weighty = 1;
+		c.fill = GridBagConstraints.REMAINDER;
+		JLabel dummy0Rest = new JLabel(" ");
+		dummy0Rest.setFont(Statistiek.font);
+		dummy0Rest.setPreferredSize(new Dimension(0, 0));
+		panel.add(dummy0Rest, c);
 	}
 
 	/**
@@ -529,31 +567,67 @@ public class FrequencyTableView extends JPanel implements Observer
 	 */
 	private void makeHeaderRow(JPanel panel)
 	{
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;		
+		c.weightx = 0;
+
+		Border paddingBorder = BorderFactory.createEmptyBorder(this.GRID_TOPGAP, this.GRID_LEFTGAP,
+			this.GRID_BOTTOMGAP, this.GRID_RIGHTGAP);
+		// borders on all sides
+		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
+		// borders on all sides except the left side
+		Border matteBorder = BorderFactory.createMatteBorder(1, 0, 1, 1, Color.BLACK);
+
+		this.maxColumnWidth = new int[this.getNumberOfColumns()];
+
 		JLabel variableName = new JLabel(this.model.getTableModel()
 			.getColumnName(this.model.getColumnIndex()));
 		variableName.setFont(Statistiek.font);
 		// test syl: toon gridlines m.b.v. lineborders
 //		variableName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		panel.add(variableName);
-		
-//		System.out.println("FrequencyTableView.makeHeaderRow(panel): panel.getLayout() = " 
-//			+ panel.getLayout() + ", variableName.getPreferredSize() = " + variableName.getPreferredSize());
+		variableName.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		c.gridx = 0;
+		c.gridy = 0;
+		panel.add(variableName, c);
+		// administer the maximum column width
+		this.updateMaxColumnWidth(0, variableName);
+		// update table height with the height of the first label in the first row
+		this.updateTableHeight(variableName);
 		
 		JLabel freq = new JLabel("Freq.", SwingConstants.TRAILING);
 		freq.setFont(Statistiek.font);
-		panel.add(freq);
+		freq.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+		c.gridx = 1;
+		c.gridy = 0;
+		panel.add(freq, c);
+		this.updateMaxColumnWidth(1, freq);
 
+		int xDummy = 2;
+		int percentage = 0;
 		if (this.model.isShowPercentage())
 		{
 			JLabel freqPerc = new JLabel("Freq.%", SwingConstants.TRAILING);
 			freqPerc.setFont(Statistiek.font);
-			panel.add(freqPerc);
+			freqPerc.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+			c.gridx = 2;
+			c.gridy = 0;
+			panel.add(freqPerc, c);
+			this.updateMaxColumnWidth(2, freqPerc);
+			// increase the x grid coordinate of the dummy variable at the end of the row
+			xDummy++;
+			percentage++;
 		}
 		if (this.model.isShowCumulative())
 		{
 			JLabel cumul = new JLabel("Cumul.", SwingConstants.TRAILING);
 			cumul.setFont(Statistiek.font);
-			panel.add(cumul);
+			cumul.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+			c.gridx = 2 + percentage;
+			c.gridy = 0;
+			panel.add(cumul, c);
+			this.updateMaxColumnWidth(2 + percentage, cumul);
+			xDummy++;
     	}
     	
     	if (this.model.isShowPercentage() && this.model.isShowCumulative())
@@ -561,8 +635,51 @@ public class FrequencyTableView extends JPanel implements Observer
 			JLabel cumulPerc = new JLabel("Cumul.%",
 				SwingConstants.TRAILING);
 			cumulPerc.setFont(Statistiek.font);
-			panel.add(cumulPerc);
+			cumulPerc.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+			c.gridx = 4;
+			c.gridy = 0;
+			panel.add(cumulPerc, c);
+			this.updateMaxColumnWidth(4, cumulPerc);
+			xDummy++;
 		}
+    	
+    	// add dummy variable at the end of the row
+		c.fill = GridBagConstraints.REMAINDER;
+		c.gridx = xDummy;
+		c.gridy = 0;
+		c.weightx = 1;
+		JLabel dummyRest0 = new JLabel(" ");
+		dummyRest0.setFont(Statistiek.font);
+		dummyRest0.setPreferredSize(new Dimension(0, 0));
+		panel.add(dummyRest0, c);
+	}
+
+	/**
+	 * Update the table height with the height of the given label.
+	 * @param label
+	 */
+	private void updateTableHeight(JLabel label)
+	{
+		if (!this.isTableHeightSet)
+			this.tableHeight += label.getPreferredSize().height;
+	}
+
+	/**
+	 * Get the number of columns in the frequency table.
+	 * @return
+	 */
+	private int getNumberOfColumns()
+	{
+		int n = 2;
+		
+		if (this.model.isShowPercentage())
+			n++;
+		if (this.model.isShowCumulative())
+			n++;
+		if (this.model.isShowPercentage() && this.model.isShowCumulative())
+			n = 5;
+		
+		return n;
 	}
 
 	/**
@@ -576,13 +693,22 @@ public class FrequencyTableView extends JPanel implements Observer
 	private void makeMiddlePart(JPanel panel, AllowedTypes type, int[] frequencies, 
 		FrequencyTuple[] frequencyTuple, double sum)
 	{
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;		
+		Border paddingBorder = BorderFactory.createEmptyBorder(this.GRID_TOPGAP, this.GRID_LEFTGAP,
+			this.GRID_BOTTOMGAP, this.GRID_RIGHTGAP);
+		// borders on all sides except the top and left side
+		Border matteBorder = BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK);
+
 		int cumulative = 0;
 		int freq;
 		
 		//System.out.println("FrequencyTableView.makeMiddlePart(): mainPanelRows = " + this.mainPanelRows);
 		
-		for (int bin = 0; bin < this.mainPanelRows; bin++)
+		for (int bin = 0; bin < this.frequencyTableRows - 2; bin++)
 		{
+			// first column
 			if (type.isNumber())
 			{
 				freq = frequencies[bin * 2];
@@ -591,21 +717,47 @@ public class FrequencyTableView extends JPanel implements Observer
 					+ " -< "
 					+ this.model.getBinBoundaries().get(bin + 1).toString());
 				label.setFont(Statistiek.font);
-				panel.add(label);
+				label.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				c.gridx = 0;
+				c.gridy = bin + 1;
+				panel.add(label, c);
+				// administer the maximum column width
+				this.updateMaxColumnWidth(0, label);
+				// update table height with the height of the first label in row bin + 1
+				this.updateTableHeight(label);
 			}
 			else
 			{
 				freq = frequencyTuple[bin].frequency;
 				JLabel label = new JLabel(frequencyTuple[bin].label);
 				label.setFont(Statistiek.font);
-				panel.add(label);
+				label.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				c.gridx = 0;
+				c.gridy = bin + 1;
+				panel.add(label, c);
+				// administer the maximum column width
+				this.updateMaxColumnWidth(0, label);
+				// update table height with the height of the first label in row bin + 1
+				this.updateTableHeight(label);
 			}
-
+			
+			// second column
 			JLabel freqLabel = new JLabel(Integer.toString(freq),
 				SwingConstants.TRAILING);
 			freqLabel.setFont(Statistiek.font);
-			panel.add(freqLabel);
+			freqLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+			c.gridx = 1;
+			c.gridy = bin + 1;
+			panel.add(freqLabel, c);
+			this.updateMaxColumnWidth(1, freqLabel);
 
+			// set row height, to be used for row click calculations
+			this.rowHeight = freqLabel.getPreferredSize().height;
+//			System.out.println("FrequencyTableView.makeMiddelPart(): freqLabel.getPreferredSize() = " 
+//				+ freqLabel.getPreferredSize());
+
+			int percentage = 0;
+			// third column
 			if (this.model.isShowPercentage())
 			{
 				double d = freq * 100 / (double) sum;
@@ -616,17 +768,29 @@ public class FrequencyTableView extends JPanel implements Observer
 				JLabel percLabel = new JLabel(getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				percLabel.setFont(Statistiek.font);
-				panel.add(percLabel);
+				percLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				c.gridx = 2;
+				c.gridy = bin + 1;
+				panel.add(percLabel, c);
+				this.updateMaxColumnWidth(2, percLabel);
+				percentage++;
 			}
+			
+			// fourth column
 			if (this.model.isShowCumulative())
 			{
 				cumulative += freq;
 				JLabel cumulLabel = new JLabel(Integer.toString(cumulative),
 					SwingConstants.TRAILING);
 				cumulLabel.setFont(Statistiek.font);
-				panel.add(cumulLabel);
+				cumulLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				c.gridx = 2 + percentage;
+				c.gridy = bin + 1;
+				panel.add(cumulLabel, c);
+				this.updateMaxColumnWidth(2 + percentage, cumulLabel);
 	    	}
 	    	
+			// fifth column
 	    	if (this.model.isShowPercentage() && this.model.isShowCumulative())
 	    	{
 				double d = (double) cumulative * 100 / (double) sum;
@@ -637,7 +801,11 @@ public class FrequencyTableView extends JPanel implements Observer
 				JLabel cumulPercLabel = new JLabel(getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				cumulPercLabel.setFont(Statistiek.font);
-				panel.add(cumulPercLabel);
+				cumulPercLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
+				c.gridx = 4;
+				c.gridy = bin + 1;
+				panel.add(cumulPercLabel, c);
+				this.updateMaxColumnWidth(4, cumulPercLabel);
 			}
 		}
 	}
@@ -683,32 +851,16 @@ public class FrequencyTableView extends JPanel implements Observer
 	
 	private void setMainPanelSize()
 	{
-		int noBins;
+		this.setTableWidth();
 		
-		if (this.model.columnIndexValid())
-		{
-			ColumnType cType = this.model.getTableModel().getColumnTypes()
-				.get(this.model.getColumnIndex());
-			AllowedTypes type = cType.getType();
-			if (type.isNumber())
-			{
-				noBins = this.model.getNoBins();
-			}
-		} 
-		
-		noBins = this.mainPanelRows;
-			
 		Dimension dimension;
-		
-//		System.out.println("frequencyTableView.setMainPanelSize(): numberOfSplitClasses = "
-//			+ numberOfSplitClasses);
 		
 		if (this.model.getSplitOptions().getColumnSplitIndex() == -1)
 		{
-    		if (noBins * minRowHeight > this.scrollPane.getHeight())
+    		if (this.tableHeight > this.scrollPane.getHeight())
     		{
     			dimension = new Dimension(this.scrollPane.getViewport()
-    				.getWidth(), noBins * minRowHeight);
+    				.getWidth(), this.tableHeight);
     		}
     		else
     		{
@@ -722,28 +874,14 @@ public class FrequencyTableView extends JPanel implements Observer
 			int correctieBreedte = 20;
 			int correctieHoogte = 20;
 
-			if (noBins * minRowHeight > this.scrollPane.getHeight())
-    		{
-    			dimension = new Dimension(this.scrollPane
-    				.getWidth() - correctieBreedte, numberOfSplitClasses
-    				* (noBins * minRowHeight) + this.splitClassLabelPanelHeight
-    				- correctieHoogte);
-    		}
-    		else
-    		{
-    			dimension = new Dimension(this.scrollPane
-    				.getWidth() - correctieBreedte, numberOfSplitClasses
-    				* (this.scrollPane.getHeight() - 5) + this.splitClassLabelPanelHeight
-    				- correctieHoogte);
-    		}
+			int totalHeight = this.tableHeight + this.splitClassLabelPanel.getPreferredSize().height; 
+			dimension = new Dimension(this.scrollPane.getWidth() - correctieBreedte, 
+				numberOfSplitClasses * totalHeight);
 		}
 		
 		// Vreemde situatie: scrollPane = 0x0 als we na een paginawissel direct een frequentietabel tonen
 		if (scrollPane.getHeight() == 0 || scrollPane.getWidth() == 0)
 		{
-//			System.out.println("....... scrollPane.getViewPort().setPreferredSize(671, 343)!");
-//			scrollPane.getViewport().setPreferredSize(new Dimension(671, 343));
-//			scrollPane.setPreferredSize(new Dimension(671, 343));
 			// even hardcoded op iets groots...
 			int h;
 			int h_singlePanel = 340;
@@ -837,14 +975,17 @@ public class FrequencyTableView extends JPanel implements Observer
 		{
 			if (FrequencyTableView.this.splitClassPanels[0] != null)
 			{
+				int x = arg0.getPoint().x;
 				int y = arg0.getPoint().y;
 				int y_transformed = y;
 				int heightSplitClassPanel = FrequencyTableView.this.splitClassPanels[0].getHeight();
-				int heightLabelPanel = FrequencyTableView.this.splitClassLabelPanelHeight;
+				int heightLabelPanel = 0;
+				if (FrequencyTableView.this.splitClassLabelPanel != null)
+					heightLabelPanel = FrequencyTableView.this.splitClassLabelPanel.getHeight();
 				// total height of a split class frequency table
 				int heightSplitFrequencyTable = heightSplitClassPanel + heightLabelPanel;
 				// number of data rows in a frequency table
-				int numberOfRows = FrequencyTableView.this.mainPanelRows;
+				int numberOfRows = FrequencyTableView.this.frequencyTableRows - 2;
 				
 				int count = 0;
 				// transform y
@@ -855,12 +996,8 @@ public class FrequencyTableView extends JPanel implements Observer
 	//				System.out.println("FrequencyTableView.RowClickListener.mouseClicked(): y_transformed = "
 	//					+ y_transformed + ", count = " + count);
 				}
-				
-				double rowHeight = (heightSplitClassPanel / (double) (numberOfRows + 2));
-				// int roundRowHeight = (int)Math.round(rowHeight);
-				int roundRowHeight = (int) rowHeight;
-	
-				int clicked = (y_transformed / roundRowHeight) - 1;
+
+				int clicked = (y_transformed / FrequencyTableView.this.rowHeight) - 1;
 	
 	//			System.out.println("FrequencyTableView.RowClickListener.mouseClicked(): y = "
 	//				+ y + ", y_transformed = " + y_transformed + ", count = " + count
@@ -869,7 +1006,8 @@ public class FrequencyTableView extends JPanel implements Observer
 	//				+ ", roundRowHeight = " + roundRowHeight
 	//				+ ", clicked = " + clicked);			
 	
-				if (clicked >= 0 && clicked < FrequencyTableView.this.mainPanelRows)
+				if (clicked >= 0 && clicked < numberOfRows 
+					&& x <= FrequencyTableView.this.tableWidth)
 				{
 					int clicked_transformed = clicked + (count * numberOfRows);
 					this.rowClicked(clicked_transformed);
