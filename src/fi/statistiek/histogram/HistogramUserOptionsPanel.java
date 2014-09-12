@@ -1063,7 +1063,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.setVisibleSplitOptions(split);
 		
 		this.singleViewRadioItem.setSelected(this.model.splitInSingleView()
-			&& split);
+			&& split && this.model.isFrequencyPolygonMode());
 		this.separateRadioItem.setSelected(!this.model.splitInSingleView()
 			&& split);
 		// System.out.println("HistogramUserOptionsPanel.update(): this.separateRadioItem.setSelected("
@@ -1080,7 +1080,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		// + ")");
 
 		this.aboveEachOtherRadioItem.setSelected(this.model.splitInSingleView()
-			&& !this.model.isNextToEachOther() && split);
+			&& !this.model.isNextToEachOther() && split && !this.model.isFrequencyPolygonMode());
 
 		this.stackModeBox.setSelected(this.model.isFrequencyPolygonStackMode());
 		this.stackModeBox.setEnabled(this.model.isFrequencyPolygonMode()
@@ -1254,13 +1254,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
 				}
-				// boolean b = this.view.isNextToEachOtherSelected();
-				// this.model.setNextToEachOther(!b);
-				// this.model.setNextToEachOther(b);
-
-				// als je een splitsvariabele kiest, dan wordt de
-				// splitsing effectief
-				this.model.setSplitInSingleView(false);
 			}
 		}
 		else if (e.getSource() == dialogButton)
