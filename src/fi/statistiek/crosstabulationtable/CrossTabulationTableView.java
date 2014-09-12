@@ -273,8 +273,8 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		this.mainPanel.removeAll();
 		if (this.model.columnIndexValid())
 		{
-			GridBagLayout layout = new GridBagLayout();
-			GridBagConstraints c = new GridBagConstraints();
+//			GridBagLayout layout = new GridBagLayout();
+//			GridBagConstraints c = new GridBagConstraints();
 
 			ColumnType cTypeRows = this.model.getTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
@@ -902,7 +902,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		mainPanel.add(totaalLabel, c);
 		this.ROW_HEIGHT = totaalLabel.getPreferredSize().height;
 		// Set the max of column numberOfColumnBins + 2
-		setMaxColumnWidth(numberOfColumnBins + 2, totaalLabel);
+		updateMaxColumnWidth(numberOfColumnBins + 2, totaalLabel);
 		
 		c.gridx = numberOfColumnBins + 3;
 		c.gridy = 0;
@@ -947,7 +947,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 				binLabelsColumns[i].setHorizontalAlignment(SwingConstants.CENTER);
 				mainPanel.add(binLabelsColumns[i], c);
 				// Set the max of column i + 2
-				setMaxColumnWidth(i + 2, binLabelsColumns[i]);
+				updateMaxColumnWidth(i + 2, binLabelsColumns[i]);
 			}
 		}
 		
@@ -966,7 +966,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	 * @param i
 	 * @param label
 	 */
-	private void setMaxColumnWidth(int i, JLabel label)
+	private void updateMaxColumnWidth(int i, JLabel label)
 	{
 		if (label.getPreferredSize().width > this.maxColumnWidth[i])
 			this.maxColumnWidth[i] = label.getPreferredSize().width;		
@@ -1015,7 +1015,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		c.gridheight = numberOfRowBins;
 		mainPanel.add(variableRowsName, c);
 		// Set the max of column 0
-		setMaxColumnWidth(0, variableRowsName);
+		updateMaxColumnWidth(0, variableRowsName);
 		
 		// borders on all sides except the top and left side
 		matteBorder = BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK);
@@ -1036,7 +1036,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 				mainPanel.add(binLabelsRows[i], c);
 
 				// Set the max of column 1
-				setMaxColumnWidth(1, binLabelsRows[i]);
+				updateMaxColumnWidth(1, binLabelsRows[i]);
 			}
 		}
 
@@ -1056,7 +1056,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		c.gridheight = 1;
 		mainPanel.add(totalLabel, c);
 		// Set the max of column 0
-		setMaxColumnWidth(0, totalLabel);
+		updateMaxColumnWidth(0, totalLabel);
 		
 		// borders on all sides except the top and left side
 		matteBorder = BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK);
@@ -1087,7 +1087,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 						data[i][j].setOpaque(true);
 						mainPanel.add(data[i][j], c);
 						// Set the max of column i + 2
-						setMaxColumnWidth(i + 2, data[i][j]);
+						updateMaxColumnWidth(i + 2, data[i][j]);
 					}
 				}
 				
@@ -1109,7 +1109,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 							data[numberOfColumnBins][j].setFont(Statistiek.font);
 						mainPanel.add(data[numberOfColumnBins][j], c);
 						// Set the max of column numberOfColumnBins + 2
-						setMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][j]);
+						updateMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][j]);
 					}
 				}
 			}
@@ -1132,7 +1132,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 						data[i][numberOfRowBins].setFont(Statistiek.font);
 					mainPanel.add(data[i][numberOfRowBins], c);
 					// Set the max of column i + 2
-					setMaxColumnWidth(i + 2, data[i][numberOfRowBins]);
+					updateMaxColumnWidth(i + 2, data[i][numberOfRowBins]);
 				}
 			}
 			
@@ -1151,7 +1151,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					data[numberOfColumnBins][numberOfRowBins].setFont(Statistiek.font);
 				mainPanel.add(data[numberOfColumnBins][numberOfRowBins], c);
 				// Set the max of column i + 2
-				setMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][numberOfRowBins]);
+				updateMaxColumnWidth(numberOfColumnBins + 2, data[numberOfColumnBins][numberOfRowBins]);
 			}
 
 			
