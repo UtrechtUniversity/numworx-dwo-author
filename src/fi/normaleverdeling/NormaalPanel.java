@@ -3467,7 +3467,9 @@ grensDecimals = findGrensDecimals();
 						checkMu.charAt(checkMu.length() - 1) == '#') 
 						antwoordMu = substitueerRandom(antwoordMu, checkMu, randomVars, randomValues);
 					else if (!checkMu.equals(""))
+					{	checkMu = checkMu.replace(',', '.');	
 						antwoordMu = Double.parseDouble(checkMu);
+					}
 					
 //System.out.println("am = " + antwoordMu);					
 				}
@@ -3481,7 +3483,9 @@ grensDecimals = findGrensDecimals();
 						checkSigma.charAt(checkSigma.length() - 1) == '#') 
 						antwoordSigma = substitueerRandom(antwoordSigma, checkSigma, randomVars, randomValues);
 					else if (!checkSigma.equals(""))
+					{	checkSigma = checkSigma.replace(',', '.');
 						antwoordSigma = Double.parseDouble(checkSigma);
+					}
 				}
 			}
 			antwoordGrens = antwoordMu - 1;
@@ -3493,7 +3497,9 @@ grensDecimals = findGrensDecimals();
 						checkGrens.charAt(checkGrens.length() - 1) == '#') 
 						antwoordGrens = substitueerRandom(antwoordGrens, checkGrens, randomVars, randomValues);
 					else if (!checkGrens.equals(""))
-						antwoordGrens = Double.parseDouble(checkGrens);
+					{	checkGrens = checkGrens.replace(',', '.');	
+					 	antwoordGrens = Double.parseDouble(checkGrens);
+					} 	
 				}
 			}
 			antwoordGrensLinks = antwoordMu - 1;
@@ -3505,7 +3511,9 @@ grensDecimals = findGrensDecimals();
 						checkGrensLinks.charAt(checkGrensLinks.length() - 1) == '#') 
 						antwoordGrensLinks = substitueerRandom(antwoordGrensLinks, checkGrensLinks, randomVars, randomValues);
 					else if (!checkGrensLinks.equals(""))
+					{	checkGrensLinks = checkGrensLinks.replace(',', '.');	
 						antwoordGrensLinks = Double.parseDouble(checkGrensLinks);
+					}
 				}
 			}
 			antwoordGrensRechts = antwoordMu + 1;
@@ -3517,7 +3525,9 @@ grensDecimals = findGrensDecimals();
 						checkGrensRechts.charAt(checkGrensRechts.length() - 1) == '#') 
 						antwoordGrensRechts = substitueerRandom(antwoordGrensRechts, checkGrensRechts, randomVars, randomValues);
 					else if (!checkGrensRechts.equals(""))
+					{	checkGrensRechts = checkGrensRechts.replace(',', '.');
 						antwoordGrensRechts = Double.parseDouble(checkGrensRechts);
+					}
 				}
 			}
 			antwoordKans = 25e-2d;
@@ -3529,7 +3539,12 @@ grensDecimals = findGrensDecimals();
 						checkKans.charAt(checkKans.length() - 1) == '#') 
 						antwoordKans = substitueerRandom(antwoordKans, checkKans, randomVars, randomValues);
 					else if (!checkKans.equals(""))
+					{	
+//System.out.println("" + checkKans);						
+						checkKans  = checkKans.replace(',', '.');
+//System.out.println("" + checkKans);						
 						antwoordKans = Double.parseDouble(checkKans);
+					}
 				}
 			}
 			maxScore = 0;
