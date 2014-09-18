@@ -51,22 +51,27 @@ public class AddColumnDialogController implements ActionListener,
 			{
 				String newElement = this.view.getEnumOption();
 				this.model.addEnumOption(newElement);
-				this.view.clearAddEnumElementField();
 			}
 			else
 			{
 				this.view.addStringOption(this.view.getEnumOption());
 				this.view.update(null, null);
 			}
+
+			// clear the text in the input field
+			this.view.clearAddEnumElementField();
 		}
 		else if (actionCommand.equals("removeSelectedElement"))
 		{
 			if (this.wasEnum())
 			{
+				// Changes are definitively made in the model
 				this.model.removeEnumOption(this.view.getSelectedOptionInListIndex());
 			}
 			else
 			{
+				// Changes are preliminarily made in the view.
+				// Changes are made definitive after click on OK button.
 				this.view.removeStringOption(this.view.getSelectedOptionInListIndex());
 				this.view.update(null, null);
 			}
@@ -82,6 +87,54 @@ public class AddColumnDialogController implements ActionListener,
 				this.view.removeAllStringOptions();
 				this.view.update(null, null);
 			}
+		}
+		else if (actionCommand.equals("sortElements"))
+		{
+			if (this.wasEnum())
+			{
+				this.model.sortEnumOptions();
+			}
+			else
+			{
+				this.view.sortStringOptions();
+				this.view.update(null, null);
+			}
+		}
+		else if (actionCommand.equals("moveElementUp"))
+		{
+			int index = this.view.getSelectedOptionInListIndex();
+			
+			if (this.wasEnum())
+			{
+				this.model.swapEnumOptions(index,
+					index - 1);
+			}
+			else
+			{
+				this.view.swapStringOptions(index,
+					index - 1);
+				this.view.update(null, null);
+			}
+			
+			this.view.setSelectedOptionInListIndex(index - 1);
+		}
+		else if (actionCommand.equals("moveElementDown"))
+		{
+			int index = this.view.getSelectedOptionInListIndex();
+			
+			if (this.wasEnum())
+			{
+				this.model.swapEnumOptions(index,
+					index + 1);
+			}
+			else
+			{
+				this.view.swapStringOptions(index,
+					index + 1);
+				this.view.update(null, null);
+			}
+			
+			this.view.setSelectedOptionInListIndex(index + 1);
 		}
 		else if (actionCommand.equals("typeBox"))
 		{
@@ -105,6 +158,11 @@ public class AddColumnDialogController implements ActionListener,
 	
 	/**
 	 * Return whether the column originally was of type enumeration.
+	 * When the type was originally string, a list of stringOptions is generated 
+	 * as possible enum options. Changes in the string options list are
+	 * not immediately processed, but effecuated when OK button is clicked. 
+	 * When the original type was enum, the current enum options are shown. 
+	 * Changes in the enum list are immediately processed.
 	 * @return
 	 */
 	private boolean wasEnum()
