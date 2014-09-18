@@ -1,6 +1,9 @@
 package fi.statistiek.addcolumndialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Observable;
 
 import fi.statistiek.StatTableModel;
@@ -224,7 +227,7 @@ public class AddColumnDialogModel extends Observable
 	 */
 	public void setUitleg(String uitleg)
 	{
-		System.out.println("setUitleg(" + uitleg + ")");
+		//System.out.println("setUitleg(" + uitleg + ")");
 		this.uitleg = uitleg;
 		this.setChanged();
 		this.notifyObservers();
@@ -289,5 +292,79 @@ public class AddColumnDialogModel extends Observable
 		}
 		this.setChanged();
 		this.notifyObservers();
+	}
+
+	/**
+	 * Sort enum options alphabetically
+	 */
+	public void sortEnumOptions()
+	{
+		String[] sortedEnumOptions = new String[this.enumOptions.size()];
+		sortedEnumOptions = this.enumOptions.toArray(sortedEnumOptions);
+		
+		Arrays.sort(sortedEnumOptions, new Comparator<String>() {
+            @Override
+            /**
+             * Compare strings alphabetically. 
+             * A wildcard is larger than any other string.
+             * @param s1
+             * @param s2
+             * @return
+             */
+            public int compare(String s1, String s2) 
+            {
+            	// check for wildcard among the strings
+            	if (s1.equals(ColumnType.WILDCARD))
+            		return 1;
+            	else if (s2.equals(ColumnType.WILDCARD))
+            		return -1;
+            	else 
+            	{
+            		// apart from '*' sort the enum options alphabetically
+            		return s1.compareTo(s2);
+            	}
+            }
+        });
+		
+		this.enumOptions = new ArrayList(Arrays.asList(sortedEnumOptions));
+
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	/**
+	 * Swap enum options with index1 and index2. A wildcard is not swapped. 
+	 * @param index1
+	 * @param index2
+	 */
+	public void swapEnumOptions(int index1, int index2)
+	{
+		if (this.validEnumIndex(index1) && this.validEnumIndex(index2)
+			&& !this.enumOptions.get(index1).equals(ColumnType.WILDCARD) // the wildcard should stay at the end
+			&& !this.enumOptions.get(index2).equals(ColumnType.WILDCARD))
+		{
+			Collections.swap(this.enumOptions, index1, index2);
+			
+			this.setChanged();
+			this.notifyObservers();
+		}
+	}
+
+	/**
+	 * Check whether index is a valid index in enum options.
+	 * @param index
+	 * @return True if index is a valid index, else false.
+	 */
+	private boolean validEnumIndex(int index)
+	{
+		boolean isValid = false;
+		
+//		if ((this.enumOptions == null) || this.enumOptions.size() == 0)
+//			isValid = false;
+//		else 
+			if ((index > -1) && (index < this.enumOptions.size()))
+			isValid = true;
+		
+		return isValid;
 	}
 }
