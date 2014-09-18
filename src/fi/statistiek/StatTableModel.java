@@ -273,7 +273,10 @@ public class StatTableModel implements TableModel
 
 	public ArrayList<String> getStringOptions(int column)
 	{
-		return this.stringOptions.get(column);
+		if (this.stringOptions.size() != 0)
+			return this.stringOptions.get(column);
+		else
+			return new ArrayList<String>();
 	}
 
 	public boolean isColumnIndexValid(int columnIndex)
