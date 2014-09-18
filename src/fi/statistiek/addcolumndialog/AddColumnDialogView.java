@@ -9,9 +9,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -20,7 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
+import fi.statistiek.ColorGenerator;
 import fi.statistiek.Statistiek;
 import fi.statistiek.orderablejlist.OrderableJList;
 import fi.statistiek.orderablejlist.OrderableJListModel;
@@ -52,12 +59,22 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JTextField addEnumElementField;
 	// private JTextArea enumElementsView;
 	private OrderableJList enumElementsList;
-	private ArrayList stringOptions;
+	private ArrayList<String> stringOptions;
 	private AllowedTypes originalColumnType;
 	private JScrollPane enumScrollPane;
+	/**
+	 * Panel with 'remove selected' and 'remove all' buttons for enumeration.
+	 */
 	private JPanel enumSouthPanel;
+	/**
+	 * Panel with move up/down and sort buttons for enumeration.
+	 */
+	private JPanel enumEastPanel;
 	private JButton removeSelectedElement;
 	private JButton removeAllElements;
+	private JButton sortElements;
+	private JButton moveElementUp;
+	private JButton moveElementDown;
 
 	private JPanel typePanel;
 	private JPanel uitlegPanel;
@@ -116,17 +133,19 @@ public class AddColumnDialogView extends JDialog implements Observer
 	{
 		super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-		this.font = new Font("Default", Font.PLAIN, 12);
+		this.font = Statistiek.font;
+		Border border = BorderFactory.createEmptyBorder(5, 0, 5, 5);
 
 		this.kiesNaam = new JLabel(Statistiek.rb.getString("columnname"));
 		this.kiesNaam.setFont(this.font);
+		this.kiesNaam.setBorder(border);
 		this.nameField = new JTextField();
 		this.nameField.setFont(this.font);
 		this.nameField.setActionCommand("nameField");
 		this.kiesType = new JLabel(Statistiek.rb.getString("choosetype"));
 		this.kiesType.setFont(this.font);
+		this.kiesType.setBorder(border);
 
-//		this.typeBox = new JComboBox(AllowedTypes.allowedTypes);
 		// Use strings from text file to create combobox
 		String[] types = {
 			Statistiek.rb.getString("integer"),
@@ -135,8 +154,8 @@ public class AddColumnDialogView extends JDialog implements Observer
 			Statistiek.rb.getString("enum")
 		};
 		this.typeBox = new JComboBox(types);
+		this.typeBox.setFont(this.font);
 
-//		this.typeBox.setSelectedItem(this.model.getType());
 		setTypeBox();
 
 		this.typeBox.setActionCommand("typeBox");
@@ -151,6 +170,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.addEnumElementLabel = new JLabel(
 			Statistiek.rb.getString("addenumeration"));
 		this.addEnumElementLabel.setFont(this.font);
+		this.addEnumElementLabel.setBorder(border);
 		this.addEnumElementField = new JTextField();
 		this.addEnumElementField.setFont(this.font);
 		this.addEnumElementField.setActionCommand("addEnumElementField");
@@ -167,6 +187,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		 */
 		this.enumElementsList = new OrderableJList(new OrderableJListModel(
 			this.model.getEnumOptions()));
+		this.enumElementsList.setFont(this.font);
 		this.enumScrollPane = new JScrollPane(this.enumElementsList);
 		this.removeSelectedElement = new JButton(
 			Statistiek.rb.getString("removeselectedelement"));
@@ -177,17 +198,51 @@ public class AddColumnDialogView extends JDialog implements Observer
 			Statistiek.rb.getString("removeAllElements"));
 		this.removeAllElements.setFont(this.font);
 		this.removeAllElements.setActionCommand("removeAllElements");
+		
 		this.enumSouthPanel = new JPanel();
 		this.enumSouthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		enumSouthPanel.add(this.removeSelectedElement);
 		enumSouthPanel.add(this.removeAllElements);
+		
+		this.sortElements = new JButton(
+			Statistiek.rb.getString("sortElements"));
+		this.sortElements.setFont(Statistiek.font_bold);
+		this.sortElements.setForeground(ColorGenerator.BUTTON_TEXT_GREY);
+		this.sortElements.setActionCommand("sortElements");
+		this.sortElements.setToolTipText(Statistiek.rb.getString("sortElementsTooltip"));
+
+		this.moveElementUp = new JButton();
+		this.moveElementUp.setFont(this.font);
+		this.moveElementUp.setActionCommand("moveElementUp");
+		java.net.URL imageURL = Statistiek.class.getResource("resources/arrow-137-16_525252up.gif");
+		if (imageURL != null) 
+		{
+			this.moveElementUp.setIcon(new ImageIcon(imageURL));
+		}
+		this.moveElementUp.setToolTipText(Statistiek.rb.getString("moveElementUpTooltip"));
+
+		this.moveElementDown = new JButton();
+		this.moveElementDown.setFont(this.font);
+		this.moveElementDown.setActionCommand("moveElementDown");
+		imageURL = Statistiek.class.getResource("resources/arrow-199-16_525252down.gif");
+		if (imageURL != null) 
+		{
+			this.moveElementDown.setIcon(new ImageIcon(imageURL));
+		}
+		this.moveElementDown.setToolTipText(Statistiek.rb.getString("moveElementDownTooltip"));
+
+		this.enumEastPanel = new JPanel();
+		this.enumEastPanel.setLayout(new GridLayout(3, 1, 0, 10));
+		this.enumEastPanel.add(this.moveElementUp);
+		this.enumEastPanel.add(this.moveElementDown);
+		this.enumEastPanel.add(this.sortElements);
 
 		this.createEnumPanel = new JPanel();
 		this.createEnumPanel.setLayout(new BorderLayout());
-		this.createEnumPanel.add(enumScrollPane, BorderLayout.CENTER);
-		this.createEnumPanel
-			.add(this.enumSouthPanel, BorderLayout.SOUTH);
 		this.createEnumPanel.add(this.addEnumElementPanel, BorderLayout.NORTH);
+		this.createEnumPanel.add(this.enumScrollPane, BorderLayout.CENTER);
+		this.createEnumPanel.add(this.enumEastPanel, BorderLayout.EAST);
+		this.createEnumPanel.add(this.enumSouthPanel, BorderLayout.SOUTH);
 
 		this.typePanel = new JPanel();
 		this.typePanel.setLayout(new BorderLayout());
@@ -195,9 +250,12 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.typePanel.add(this.setTypePanel, BorderLayout.NORTH);
 
 		this.uitlegLabel = new JLabel(Statistiek.rb.getString("uitlegbijkolom"));
+		this.uitlegLabel.setFont(this.font);
+		this.uitlegLabel.setBorder(border);
 		this.uitlegArea = new JTextArea();
 		this.uitlegScrollPane = new JScrollPane(this.uitlegArea);
 		this.doneButton = new JButton(Statistiek.rb.getString("doneButton"));
+		this.doneButton.setFont(this.font);
 		this.doneButton.setActionCommand("doneButton");
 		this.uitlegPanel = new JPanel();
 		this.uitlegPanel.setLayout(new BorderLayout());
@@ -221,13 +279,22 @@ public class AddColumnDialogView extends JDialog implements Observer
 
 	private void setStringOptions()
 	{
-		if (!this.wasEnum())
+		// Voor integerkolommen (dus ook nieuwe kolom) worden bij een switch naar enum 
+		// de waarden niet vooringevuld in stringoptions
+		if (this.wasInteger())
+		{
+			this.stringOptions = new ArrayList<String>();
+		}
+		else if (!this.wasEnum())
 		{
 			this.stringOptions = this.model.getTableModel().
 				getStringOptions(this.model.getColumnIndex());
 		}
 	}
 
+	/**
+	 * Select the column's type in the type box. 
+	 */
 	private void setTypeBox()
 	{
 		String typeString = "";
@@ -308,6 +375,15 @@ public class AddColumnDialogView extends JDialog implements Observer
 	{
 		return this.enumElementsList.getSelectedIndex();
 	}
+	
+	/**
+	 * Set selected index in enum elements list.
+	 * @param i The index to be selected
+	 */
+	public void setSelectedOptionInListIndex(int i)
+	{
+		this.enumElementsList.setSelectedIndex(i);
+	}
 
 	/**
 	 * Add a actionlistener to all buttons and fields
@@ -321,6 +397,9 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.addEnumElementField.addActionListener(al);
 		this.removeSelectedElement.addActionListener(al);
 		this.removeAllElements.addActionListener(al);
+		this.sortElements.addActionListener(al);
+		this.moveElementUp.addActionListener(al);
+		this.moveElementDown.addActionListener(al);
 		this.doneButton.addActionListener(al);
 		this.nameField.addActionListener(al);
 	}
@@ -401,6 +480,15 @@ public class AddColumnDialogView extends JDialog implements Observer
 		return this.originalColumnType.equals(AllowedTypes.ENUM);
 	}
 
+	/**
+	 * Return whether the column originally was of type integer.
+	 * @return
+	 */
+	private boolean wasInteger()
+	{
+		return this.originalColumnType.equals(AllowedTypes.INTEGER);
+	}
+
 	public void removeStringOption(int index)
 	{
 		if (index > -1)
@@ -438,5 +526,73 @@ public class AddColumnDialogView extends JDialog implements Observer
 				this.stringOptions.remove(i);
 			}
 		}
+	}
+
+	/**
+	 * Sort string options alphabetically ascending.
+	 */
+	public void sortStringOptions()
+	{
+		String[] sortedStringOptions = new String[this.stringOptions.size()];
+		sortedStringOptions = this.stringOptions.toArray(sortedStringOptions);
+		
+		Arrays.sort(sortedStringOptions, new Comparator<String>() {
+            @Override
+            /**
+             * Compare strings alphabetically. 
+             * A wildcard is larger than any other string.
+             * @param s1
+             * @param s2
+             * @return
+             */
+            public int compare(String s1, String s2) 
+            {
+            	// check for wildcard among the strings
+            	if (s1.equals(ColumnType.WILDCARD))
+            		return 1;
+            	else if (s2.equals(ColumnType.WILDCARD))
+            		return -1;
+            	else 
+            	{
+            		// apart from '*' sort the enum options alphabetically
+            		return s1.compareTo(s2);
+            	}
+            }
+        });
+		
+		this.stringOptions = new ArrayList(Arrays.asList(sortedStringOptions));
+	}
+
+	/**
+	 * Swap string options with index1 and index2. A wildcard is not swapped
+	 * @param index1
+	 * @param index2
+	 */
+	public void swapStringOptions(int index1, int index2)
+	{
+		if (this.validStringOptionsIndex(index1) && this.validStringOptionsIndex(index2)
+			&& !this.stringOptions.get(index1).equals(ColumnType.WILDCARD) // the wildcard should stay at the end
+			&& !this.stringOptions.get(index2).equals(ColumnType.WILDCARD))
+		{
+			Collections.swap(this.stringOptions, index1, index2);
+		}
+	}
+
+	/**
+	 * Check whether index is a valid index in string options.
+	 * @param index
+	 * @return True if index is a valid index, else false.
+	 */
+	private boolean validStringOptionsIndex(int index)
+	{
+		boolean isValid = false;
+		
+//		if ((this.enumOptions == null) || this.enumOptions.size() == 0)
+//			isValid = false;
+//		else 
+			if ((index > -1) && (index < this.stringOptions.size()))
+			isValid = true;
+		
+		return isValid;
 	}
 }
