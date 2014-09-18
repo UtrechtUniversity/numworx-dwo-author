@@ -588,9 +588,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			{
 				StringBuilder sb = new StringBuilder();
 				java.util.List<String> list = Arrays.asList(cType.getEnumOptions());
-				// Use collator to sort for example 'é' correctly
-				Collator collator = Collator.getInstance(Locale.getDefault());
-				Collections.sort(list, collator);
 				
 				for (String s : list)
 				{
@@ -600,7 +597,9 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 						sb.append("\n");
 					}
 				}
-				sb.substring(0, sb.length() - 1);
+				
+				if (sb.length() > 0)
+					sb.substring(0, sb.length() - 1);
 				this.boundariesArea.setText(sb.toString());
 				setEnumClasses(true);
 			}
