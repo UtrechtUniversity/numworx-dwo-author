@@ -17,6 +17,7 @@ import fi.statistiek.addcolumndialog.AddColumnDialogModel;
  */
 public class ColumnType implements Serializable
 {
+	private static final long serialVersionUID = -5946721420887586167L;
 	private AllowedTypes type;
 	private String[] enumOptions;
 	private String uitleg;
@@ -122,7 +123,7 @@ public class ColumnType implements Serializable
 	}
 
 	/**
-	 * Compare two objects
+	 * Compare two objects. A wildcard is larger than any other object.
 	 * 
 	 * @param a
 	 *            Object a
@@ -265,12 +266,50 @@ public class ColumnType implements Serializable
 		}
 	}
 
+	public String[] getEnumOptions()
+	{
+		// sort wildcard to the end
+		Arrays.sort(this.enumOptions, new Comparator<String>() {
+            @Override
+            /**
+             * Compare strings alphabetically. 
+             * A wildcard is larger than any other string.
+             * @param s1
+             * @param s2
+             * @return
+             */
+            public int compare(String s1, String s2) 
+            {
+            	// check for wildcard among the strings
+            	if (s1.equals(ColumnType.WILDCARD))
+            		return 1;
+            	else if (s2.equals(ColumnType.WILDCARD))
+            		return -1;
+            	else 
+            	{
+            		// apart from '*' don't sort the enum options
+            		return 0;
+            	}
+            }
+        });
+
+		return this.enumOptions;
+	}
+	
+	/**
+	 * Sort enum options alphabetically ascending.
+	 */
+	public void sortEnumOptions()
+	{
+		this.enumOptions = this.getEnumOptionsSorted();
+	}
+	
 	/**
 	 * Get enum options with the options sorted alphabetically
 	 * and '*' as last option.
 	 * @return
 	 */
-	public String[] getEnumOptions()
+	public String[] getEnumOptionsSorted()
 	{
 		String[] sortedEnumOptions = new String[this.enumOptions.length];
 		sortedEnumOptions = this.enumOptions;
@@ -300,7 +339,6 @@ public class ColumnType implements Serializable
         });
 		
 		return sortedEnumOptions;
-//		return this.enumOptions;
 	}
 
 	/**
