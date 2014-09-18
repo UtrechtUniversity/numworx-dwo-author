@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class AllowedTypes implements Serializable
 {
+	private static final long serialVersionUID = -6262339455107483614L;
 	private String type;
 	private Class typeClass;
 
