@@ -29,7 +29,8 @@ public class ColorGenerator
 	private static final Color LIGHT_GREY = new Color(240, 240, 240);
 	private static final Color GREY = new Color(220, 220, 220);
 	public static final Color DEFAULT_VIEW_ELEMENT_COLOR = new Color(67,147,195); // blue
-	public static final Color SELECTION_COLOR = Color.LIGHT_GRAY; // 
+	public static final Color SELECTION_COLOR = Color.LIGHT_GRAY; //
+	public static final Color BUTTON_TEXT_GREY = new Color(82, 82, 82);
 	
 	private static ArrayList<Color> colorList = 
 		new ArrayList<Color>(Arrays.asList(COLORS));
