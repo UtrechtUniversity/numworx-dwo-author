@@ -121,11 +121,11 @@ public class CrossTabulationTableController implements StatistiekView,
 		}
 		else if (action.equals("minBoundaryColumns"))
 		{
-			updateBoundariesFromRowsBinSettings();
+			updateBoundariesFromColumnsBinSettings();
 		}
 		else if (action.equals("binWidthColumns"))
 		{
-			updateBoundariesFromRowsBinSettings();
+			updateBoundariesFromColumnsBinSettings();
 		}
 	}
 
