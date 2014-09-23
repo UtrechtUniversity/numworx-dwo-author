@@ -2348,11 +2348,6 @@ public class DotplotView extends JPanel implements Observer
 		// Graphics2D g2D = (Graphics2D)g;
 		// g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		// RenderingHints.VALUE_ANTIALIAS_ON);
-
-		if (this.model.isUseColorScale() && !this.model.columnColorIndexValid())
-		{
-			return;
-		}
 	}
 	
 	/**
@@ -2531,9 +2526,7 @@ public class DotplotView extends JPanel implements Observer
 			g.setColor(Color.BLACK);
 
 			if (DotplotView.this.model.columnXIndexValid()
-				&& DotplotView.this.model.columnYIndexValid()
-				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
-					.columnColorIndexValid()))
+				&& DotplotView.this.model.columnYIndexValid())
 			{
 				// all variables are valid, draw a scatterplot
 				DotplotView.this.determineDotSize();
@@ -2560,11 +2553,10 @@ public class DotplotView extends JPanel implements Observer
 				{
 					DotplotView.this.drawPoint(g2d, row);
 				}
-			}
-			else if (DotplotView.this.model.columnXIndexValid()
-				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
-					.columnColorIndexValid()))
+			} // scatterplot
+			else if (DotplotView.this.model.columnXIndexValid())
 			{
+				// X variable is valid, so draw dotplot
 				for (int i = 0; i < DotplotView.this.splitClasses; i++)
 				{
 					DotplotView.this.paintXAxis(g, i
@@ -2626,11 +2618,11 @@ public class DotplotView extends JPanel implements Observer
 						}
 					}
 				}
-			}
-			else if (DotplotView.this.model.columnYIndexValid()
-				&& (!DotplotView.this.model.isUseColorScale() || DotplotView.this.model
-					.columnColorIndexValid()))
+			} // dotplot
+			else if (DotplotView.this.model.columnYIndexValid())
 			{
+				// Y variable is valid, so draw dotplot
+
 				for (int i = 0; i < DotplotView.this.splitClasses; i++)
 				{
 					DotplotView.this.paintYAxis(g, i
