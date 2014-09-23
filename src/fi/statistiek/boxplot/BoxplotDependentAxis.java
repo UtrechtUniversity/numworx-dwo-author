@@ -156,9 +156,6 @@ public class BoxplotDependentAxis extends JPanel
 					pString = Double.toString(p);
 				}
 				
-//				g.drawString(Double.toString(p),
-//					super.getWidth() - 7 - fm.stringWidth(Double.toString(p)),
-//					y + (int) (0.5 * fm.getHeight()));
 				g.drawString(pString,
 					super.getWidth() - 7 - fm.stringWidth(pString),
 					y + (int) (0.5 * fm.getHeight()));
@@ -172,14 +169,9 @@ public class BoxplotDependentAxis extends JPanel
 			AffineTransform at = new AffineTransform();
 			at.rotate(Math.PI * 1.5);
 			Font rotateFont = g.getFont().deriveFont(at);
-			// geen bold voor variabelelabels
-			//rotateFont = rotateFont.deriveFont(Font.BOLD);
 			g.setFont(rotateFont);
-//			g.drawString(this.columnName, fm.getHeight() + 2, super.getHeight()
-//				/ 2 + fm.stringWidth(columnName));
-			// iets meer naar de rand
 			g.drawString(this.columnName, fm.getHeight()/2 + 4, super.getHeight()
-				/ 2 + fm.stringWidth(columnName));
+				/ 2 + fm.stringWidth(columnName) / 2);
 			g.setFont(normalFont);
 		} // vertical boxes
 		else
@@ -209,9 +201,6 @@ public class BoxplotDependentAxis extends JPanel
 					pString = Double.toString(p);
 				}
 				
-//				g.drawString(Double.toString(p),
-//					x - (int) (fm.stringWidth(Double.toString(p)) / 2),
-//					7 + fm.getHeight());
 				g.drawString(pString,
 					x - (int) (fm.stringWidth(pString) / 2),
 					7 + fm.getHeight());
@@ -221,14 +210,8 @@ public class BoxplotDependentAxis extends JPanel
 
 			g.drawLine(0, 0, super.getWidth(), 0);
 
-			// geen bold voor variabelelabels
-			// Font boldFont = normalFont.deriveFont(Font.BOLD);
-			// g.setFont(boldFont);
-
-			// label iets verder van de onderrand
-			// g.drawString(this.columnName, super.getWidth()/2-fm.stringWidth(columnName), super.getHeight()-2);
 			g.drawString(this.columnName,
-				super.getWidth() / 2 - fm.stringWidth(columnName),
+				super.getWidth() / 2 - fm.stringWidth(columnName) / 2,
 				super.getHeight() - 6);
 		}
 
