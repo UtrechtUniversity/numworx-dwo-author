@@ -188,9 +188,9 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 * @param useColorScale
 	 *            the useColorScale to set
 	 */
-	public void setUseColorScale(boolean useColorScale)
+	public void setUseColorScale(boolean b)
 	{
-		this.useColorScale = useColorScale;
+		this.useColorScale = b;
 		this.changed();
 	}
 
