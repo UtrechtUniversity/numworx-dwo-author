@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -30,9 +29,7 @@ import javax.swing.border.TitledBorder;
 
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
-import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.Statistiek;
-import fi.statistiek.histogram.HistogramUserOptionsPanel;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
@@ -61,8 +58,8 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 	private JLabel varColorLabel;
 	private JComboBox varColorBox;
 	private ColorPreviewer colorPreviewPanel;
-	private JSeparator separator2;
-	private JSeparator separator2a;
+	private JSeparator separatorColorScale_splitOptions;
+	private JSeparator separatorSplitOptions_correlation;
 	private JRadioButton singleViewRadioItem;
 	private JRadioButton separateRadioItem;
 
@@ -181,10 +178,10 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.colorPreviewPanel.setPreferredSize(new Dimension(100, 25));
 		this.colorPreviewPanel.setMaximumSize(new Dimension(100, 25));
 
-		this.separator2 = new JSeparator();
-		this.separator2.setBorder(BorderFactory
+		this.separatorColorScale_splitOptions = new JSeparator();
+		this.separatorColorScale_splitOptions.setBorder(BorderFactory
 			.createEtchedBorder(EtchedBorder.LOWERED));
-		this.separator2.setMaximumSize(new Dimension(140, 3));
+		this.separatorColorScale_splitOptions.setMaximumSize(new Dimension(140, 3));
 
 		this.singleViewRadioItem = new JRadioButton(
 			Statistiek.rb.getString("splitsingleviewCheckBox"), false);
@@ -204,10 +201,10 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		buttonGroup2.add(this.singleViewRadioItem);
 		buttonGroup2.add(this.separateRadioItem);
 
-		this.separator2a = new JSeparator();
-		this.separator2a.setBorder(BorderFactory
+		this.separatorSplitOptions_correlation = new JSeparator();
+		this.separatorSplitOptions_correlation.setBorder(BorderFactory
 			.createEtchedBorder(EtchedBorder.LOWERED));
-		this.separator2a.setMaximumSize(new Dimension(140, 3));
+		this.separatorSplitOptions_correlation.setMaximumSize(new Dimension(140, 3));
 
 		// split settings
 		this.splitButton = new JButton(
@@ -384,11 +381,6 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 		// Display
 
-		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb1.add(showCorrelationBox);
-		hb1.add(Box.createHorizontalGlue());
-
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		hb2.add(useColorScaleBox);
@@ -408,7 +400,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 		hb6 = Box.createHorizontalBox();
 		hb6.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		hb6.add(separator2);
+		hb6.add(separatorColorScale_splitOptions);
 
 		hb7 = Box.createHorizontalBox();
 		hb7.add(separateRadioItem);
@@ -420,7 +412,12 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 		hb9 = Box.createHorizontalBox();
 		hb9.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
-		hb9.add(separator2a);
+		hb9.add(separatorSplitOptions_correlation);
+
+		hb1 = Box.createHorizontalBox();
+		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb1.add(showCorrelationBox);
+		hb1.add(Box.createHorizontalGlue());
 
 		vb3 = Box.createVerticalBox();
 		vb3.setBorder(BorderFactory.createTitledBorder(border,
@@ -758,9 +755,15 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		boolean correlatieMogelijk = this.model.getColumnXIndex() > -1
 			&& this.model.getColumnYIndex() > -1;
 		this.showCorrelationBox.getParent().setVisible(correlatieMogelijk);
-		this.separator2a.getParent().setVisible(correlatieMogelijk);
+		this.separatorSplitOptions_correlation.getParent().setVisible(correlatieMogelijk);
 
-		boolean colorScale = this.model.columnColorIndexValid();
+		boolean colorScale;
+		if (this.isSplit())
+			// voor split geen colorScale tonen
+			colorScale = false;
+		else
+			colorScale = this.model.isUseColorScale();
+		
 		setColorOptionsVisible(colorScale);
 
 		// als geen splitvariabele is gekozen, verdwijnt de split dialoog...
@@ -769,6 +772,10 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 		this.separateRadioItem.setSelected(!this.model.splitInSingleView());
 		this.singleViewRadioItem.setSelected(this.model.splitInSingleView());
+		this.separateRadioItem.getParent().setVisible(this.isSplit());
+		this.separateRadioItem.setVisible(this.isSplit());
+		this.singleViewRadioItem.getParent().setVisible(this.isSplit());
+		this.singleViewRadioItem.setVisible(this.isSplit());
 
 		if (this.model.isScatterplotMode() 
 			&& this.view.getXType().isNumber() && this.view.getYType().isNumber()
@@ -865,7 +872,6 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		// + b + ")");
 
 		splitOptionsVisible = b;
-		separator2.getParent().setVisible(b);
 		singleViewRadioItem.getParent().setVisible(b);
 		separateRadioItem.getParent().setVisible(b);
 		splitsVarLabel.getParent().setVisible(b);
@@ -889,10 +895,24 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 	private void setColorOptionsVisible(boolean b)
 	{
-		varColorLabel.getParent().setVisible(b);
-		varColorBox.getParent().setVisible(b);
-		colorPreviewPanel.getParent().setVisible(b);
+		this.varColorLabel.getParent().setVisible(b);
+		this.varColorBox.getParent().setVisible(b);
+		this.colorPreviewPanel.getParent().setVisible(b);
 
+		if (this.isSplit()) // dotplot of scatterplot met split
+		{
+			// bij split geen kleurschaal
+			this.useColorScaleBox.getParent().setVisible(false);
+			this.separatorColorScale_splitOptions.getParent().setVisible(false);
+		}
+		else // dotplot of scatterplot zonder split
+		{
+			this.useColorScaleBox.getParent().setVisible(true);
+			this.useColorScaleBox.setSelected(b);
+			this.colorPreviewPanel.setColorA(this.model.getColorA());
+			this.colorPreviewPanel.setColorB(this.model.getColorB());
+			this.separatorColorScale_splitOptions.getParent().setVisible(false);
+		}
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -927,12 +947,15 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 				{
 					// for a split no correlation should be shown 
 					this.model.setShowCorrelation(false);
+					this.enableCorrelationCheckBox(false);
 				}
 			}
 			resize(vb0);
 		}
 		else if (e.getSource() == useColorScaleBox)
 		{
+			this.model.setUseColorScale(this.view.getUseColorScaleBoxSelected());
+
 			setColorOptionsVisible(useColorScaleBox.isSelected());
 			varColorBox.setSelectedIndex(-1);
 			resize(vb0);
