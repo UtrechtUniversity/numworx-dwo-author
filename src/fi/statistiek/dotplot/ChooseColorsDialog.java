@@ -58,17 +58,16 @@ public class ChooseColorsDialog extends JDialog implements ActionListener {
 		JPanel centerPanel = new JPanel(new GridLayout(1,2));
 		this.chooserA = new JColorChooser(initialA);
 		this.chooserB = new JColorChooser(initialB);
-
-		centerPanel.add(this.chooserA);
-		centerPanel.add(this.chooserB);
-		panel.add(centerPanel, BorderLayout.CENTER);
 		
-		this.doneButton = new JButton("Done");
+		panel.add(this.chooserA, BorderLayout.NORTH);
+		panel.add(this.chooserB, BorderLayout.CENTER);
+		
+		this.doneButton = new JButton("OK");
 		this.doneButton.addActionListener(this);
 		panel.add(this.doneButton, BorderLayout.SOUTH);
 		
 		super.setContentPane(panel);
-		super.setSize(300, 300);
+		super.setSize(625, 680);
 	}
 
 	/**
