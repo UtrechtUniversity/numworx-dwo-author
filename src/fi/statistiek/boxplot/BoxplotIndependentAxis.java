@@ -229,12 +229,7 @@ public class BoxplotIndependentAxis extends JPanel
 
 					if (normalFit)
 					{
-						//int x2 = x1 - (int) (0.5 * fm.stringWidth(s));
-//						g.drawString(s, x2, 5 + fm.getHeight());
-						// x-parameter was te groot
 						g.drawString(s, x, 5 + fm.getHeight());
-//						System.out.println("BoxplotIndependentAxis.paintComponent(): vertical, s = " + s
-//							+ ", x = " + x2 + ", y = " + (5 + fm.getHeight()));
 //						System.out.println("BoxplotIndependentAxis.paintComponent(): vertical, s = " + s
 //							+ ", x = " + x + ", y = " + (5 + fm.getHeight()));
 					}
@@ -246,11 +241,8 @@ public class BoxplotIndependentAxis extends JPanel
 				}
 			}
 
-			// geen bold voor variabelelabel
-			// Font boldFont = normalFont.deriveFont(Font.BOLD);
-			// g.setFont(boldFont);
 			g.drawString(this.columnName,
-				super.getWidth() / 2 - fm.stringWidth(columnName),
+				super.getWidth() / 2 - fm.stringWidth(columnName) / 2,
 				super.getHeight() - 2);
 
 		} // vertical boxplots
@@ -288,15 +280,10 @@ public class BoxplotIndependentAxis extends JPanel
 							.getStringOptions(this.model.getColumnSplitIndex())
 							.get(i);
 					}
+
 					int y = super.getHeight()
 						- (boxplotView.getDependentAxisHeight() + (int) Math
 							.round((i + 0.5) * this.boxWidth));
-					// int y =
-					// (int)Math.round((this.model.getSplitClasses()-i-0.5)*this.boxWidth);
-
-//					g.drawString(s, this.getWidth() - fm.stringWidth(s) - 2, y
-//						- (int) (0.5 * fm.getHeight()));
-					// labels iets lager
 					g.drawString(s, this.getWidth() - fm.stringWidth(s) - 4, y);
 				}
 			}
@@ -307,12 +294,8 @@ public class BoxplotIndependentAxis extends JPanel
 			Font rotateFont2 = normalFont.deriveFont(at);
 			// rotateFont2 = boldRotateFont.deriveFont(Font.BOLD);
 			g.setFont(rotateFont2);
-//			g.drawString(this.columnName, fm.getHeight() + 2, super.getHeight()
-//				/ 2 + fm.stringWidth(columnName));
-			// iets verder van as af
-			g.drawString(this.columnName, fm.getHeight(), super.getHeight()
-				/ 2 + fm.stringWidth(columnName)/2);
-
+			g.drawString(this.columnName, fm.getHeight(), 
+				super.getHeight() / 2 + fm.stringWidth(columnName) / 2);
 		}
 
 		g.setFont(normalFont);
