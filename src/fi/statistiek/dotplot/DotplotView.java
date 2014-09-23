@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -2408,12 +2409,38 @@ public class DotplotView extends JPanel implements Observer
 					// if i < pointsList.size() then a dot was clicked, so
 					// select the object
 					// create a new selection list
-					ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-						pointList.size());
-					for (int j = 0; j < pointList.size(); j++)
+					ArrayList<Boolean> selectionList;
+					
+					// detect control click
+					boolean controlClicked = false;
+					if ((arg0.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK) 
+						controlClicked = true;
+					
+					if (controlClicked)
 					{
-						selectionList.add(i == j);
+						// get the current selection list
+						selectionList = model.getTableModel().getSelectionList();
+						
+						for (int j = 0; j < pointList.size(); j++)
+						{
+							if (i == j)
+								// add selection to current selectionlist
+								selectionList.set(j, true);
+						}
 					}
+					else
+					{
+						// new selection list
+						selectionList = new ArrayList<Boolean>(
+							pointList.size());
+					
+						for (int j = 0; j < pointList.size(); j++)
+						{
+							selectionList.add(i == j);
+						}
+					}
+					
+					// update the selection
 					model.getTableModel().setSelectionList(selectionList);
 				}
 			}
@@ -2464,12 +2491,36 @@ public class DotplotView extends JPanel implements Observer
 				Math.abs(x1 - x2), Math.abs(y1 - y2));
 
 			// determine which points were selected
-			ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-				pointList.size());
-			for (int i = 0; i < pointList.size(); i++)
+			ArrayList<Boolean> selectionList;
+			
+			// detect control click
+			boolean controlClicked = false;
+			if ((arg0.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK) 
+				controlClicked = true;
+			
+			if (controlClicked)
 			{
-				Point p = pointList.get(i);
-				selectionList.add(p != null && r.contains(p));
+				// get the current selection list
+				selectionList = model.getTableModel().getSelectionList();
+
+				for (int i = 0; i < pointList.size(); i++)
+				{
+					Point p = pointList.get(i);
+					if (p != null && r.contains(p))
+						selectionList.set(i, true);
+				}
+			}
+			else
+			{
+				// new selection list
+				selectionList = new ArrayList<Boolean>(
+					pointList.size());
+
+				for (int i = 0; i < pointList.size(); i++)
+				{
+					Point p = pointList.get(i);
+					selectionList.add(p != null && r.contains(p));
+				}
 			}
 
 			// update the selection
