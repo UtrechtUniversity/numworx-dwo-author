@@ -13,12 +13,9 @@ import java.util.Hashtable;
 
 import javax.swing.JComponent;
 
-import fi.statistiek.SplitOptions;
-import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.StatistiekView;
-import fi.statistiek.histogram.DefineBinBoundariesDialog;
 import fi.statistiek.types.AllowedTypes;
 
 /**
@@ -96,11 +93,6 @@ public class DotplotController implements StatistiekView, ActionListener,
 		// else if(actionCommand.equals("varSplitBox")) {
 		// this.model.setColumnSplitIndex(this.view.getVarSplitBoxSelected());
 		// }
-		else if (actionCommand.equals("useColorScaleBox"))
-		{
-			this.model
-				.setUseColorScale(this.view.getUseColorScaleBoxSelected());
-		}
 		else if (actionCommand.equals("showCorrelationBox"))
 		{
 			this.model.setShowCorrelation(this.view
@@ -242,7 +234,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		h.put("columnYIndex", this.model.getColumnYIndex());
 
 		h.put("colorA", this.model.getColorA());
-		h.put("colorA", this.model.getColorA());
+		h.put("colorB", this.model.getColorB());
 
 		h.put("viewName", this.model.getViewName());
 
@@ -399,6 +391,11 @@ public class DotplotController implements StatistiekView, ActionListener,
 	public String toString()
 	{
 		return this.getViewName();
+	}
+
+	public DotplotModel getModel()
+	{
+		return this.model;
 	}
 
 }
