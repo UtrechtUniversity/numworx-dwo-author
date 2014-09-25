@@ -638,7 +638,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Add a row, but don't fire an event.
+	 * Add an empty row, but don't fire an event.
 	 */
 	public synchronized void addRowWithoutEvent()
 	{
@@ -662,7 +662,26 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Add a row
+	 * Add a row with the data of objects, but don't fire an event.
+	 */
+	public synchronized void addRowWithoutEvent(ArrayList<Object> objects)
+	{
+		this.values.add((objects));
+		this.selectionList.add(false);
+		this.rowCount++;
+
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			if (!this.getColumnTypes().get(i).getType().isNumber())
+			{
+				this.increaseKeyHashtable(objects.get(i).toString(), i);
+			}
+		}
+
+	}
+
+	/**
+	 * Add an empty row.
 	 */
 	public synchronized void addRow()
 	{
@@ -833,7 +852,8 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Increases the value of key 'key' in a hashtable of type <T, Integer>
+	 * Increases the value of key 'key' in a hashtable of type <T, Integer>. 
+	 * Return true if the hashtable did not contain the key yet.
 	 * 
 	 * @param <T>
 	 *            The type of keys in this hashtable
