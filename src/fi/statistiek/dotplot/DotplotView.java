@@ -29,6 +29,7 @@ import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
+import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -1634,7 +1635,7 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Find the mean value of a column. In case of an Enum type column, it find
+	 * Get the mean value of a column. In case of an Enum type column, it find
 	 * the average index in the enum options In case of a String type column, it
 	 * finds the average index in the options list
 	 * 
@@ -1684,10 +1685,60 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
-	 * Finds a column's standard deviation In case of an Enum type column, this
-	 * uses the index in the enumoptions instead of the enum value In case of a
+	 * Get the sum value of a column. In case of an Enum type column, it returns
+	 * the average index in the enum options. In case of a String type column, it
+	 * returns the average index in the options list.
+	 * 
+	 * @param column
+	 *            The index of the column
+	 * @param options
+	 *            All possible unique elements of this column, only necessary
+	 *            for string columns
+	 * @return The mean value of the column
+	 */
+	private double getColumnSum(int column, ArrayList<String> options)
+	{
+		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+			.get(column);
+		AllowedTypes type = columnType.getType();
+		int count = 0;
+		double sum = 0;
+		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		{
+			String valueString = (String) this.model.getTableModel()
+				.getValueAt(i, column);
+			if (valueString.equals(ColumnType.WILDCARD))
+			{
+				continue;
+			}
+			else
+			{
+				count++;
+
+				if (type.equals(AllowedTypes.DOUBLE)
+					|| type.equals(AllowedTypes.INTEGER))
+				{
+					sum += Double.parseDouble(valueString);
+				}
+				else if (type.equals(AllowedTypes.ENUM))
+				{
+					sum += columnType.indexOfStringInEnum(valueString);
+				}
+				else
+				{
+					sum += options.indexOf(valueString);
+				}
+			}
+		}
+
+		return sum;
+	}
+
+	/**
+	 * Finds a column's standard deviation. In case of an Enum type column, this
+	 * uses the index in the enumoptions instead of the enum value. In case of a
 	 * String type column, this uses the index in the options arraylist instead
-	 * of the string value
+	 * of the string value.
 	 * 
 	 * @param column
 	 *            The index of the column
@@ -1733,21 +1784,76 @@ public class DotplotView extends JPanel implements Observer
 				}
 			}
 		}
+		
+		// test syl: algorithm (John Cook, see http://www.johndcook.com/standard_deviation.html)
+		// does not seem to be correct now...
+//		double oldMean = 0;
+//		double newMean = 0;
+//		double oldS = 0;
+//		double newS = 0;
+//		double value;
+//		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+//		{
+//			String valueString = (String) this.model.getTableModel()
+//				.getValueAt(i, column);
+//			if (valueString.equals(ColumnType.WILDCARD))
+//			{
+//				continue;
+//			}
+//			else
+//			{
+//				count++;
+//
+//				if (type.equals(AllowedTypes.DOUBLE)
+//					|| type.equals(AllowedTypes.INTEGER))
+//				{
+//					value = Double.parseDouble(valueString);
+//				}
+//				else if (type.equals(AllowedTypes.ENUM))
+//				{
+//					value = columnType.indexOfStringInEnum(valueString);
+//				}
+//				else
+//				{
+//					value = options.indexOf(valueString);
+//				}
+//			}
+//			
+//			if (count ==1)
+//			{
+//				oldMean = value;
+//				newMean = value;
+//				oldS = 0.0;
+//			}
+//			else
+//			{
+//				newMean = oldMean + (value - oldMean)/count;
+//				newS = oldS + (value - oldMean) * (value - newMean);
+//			}
+//		} // new algorith
+//		
+//		double variance;
+//		if (count > 1)
+//			variance = newS/(count - 1);
+//		else
+//			variance = 0;
+//		double stdDev = Math.sqrt(variance);
+//		return stdDev; // new algorithm's return value
 
 		return Math.sqrt(sum / (double) count);
 	}
 
 	/**
-	 * Find the covariance between two columns
+	 * Get the covariance between two columns.
 	 * 
-	 * @param columnA
+	 * @param indexColumnA
 	 *            Index of the first column
 	 * @param meanA
 	 *            mean value of the first column
 	 * @param optionsA
 	 *            All possible unique elements of the first column, only
 	 *            necessary for string columns
-	 * @param columnB
+	 * @param indexColumnB
 	 *            Index of the first column
 	 * @param meanB
 	 *            mean value of the first column
@@ -1756,28 +1862,95 @@ public class DotplotView extends JPanel implements Observer
 	 *            necessary for string columns
 	 * @return The covariance between columnA and columnB
 	 */
-	private double getCovariance(int columnA, double meanA,
-		ArrayList<String> optionsA, int columnB, double meanB,
+	private double getCovariance(int indexColumnA, double meanA,
+		ArrayList<String> optionsA, int indexColumnB, double meanB,
 		ArrayList<String> optionsB)
 	{
 		ColumnType columnTypeA = this.model.getTableModel().getColumnTypes()
-			.get(columnA);
+			.get(indexColumnA);
 		AllowedTypes typeA = columnTypeA.getType();
 		ColumnType columnTypeB = this.model.getTableModel().getColumnTypes()
-			.get(columnB);
+			.get(indexColumnB);
 		AllowedTypes typeB = columnTypeB.getType();
 
 		int count = 0;
-		double sum = 0;
+		
+		// old algorithm is extremely slow for large datasets...
+//		double sum = 0;
+//		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+//		{
+//			System.out.println("DotplotView.getCovariance(): i = " + i);
+//			
+//			String valueStringA = (String) this.model.getTableModel()
+//				.getValueAt(i, indexColumnA);
+//			if (valueStringA.equals(ColumnType.WILDCARD))
+//			{
+//				continue;
+//			}
+//			double valueA;
+//			if (typeA.equals(AllowedTypes.DOUBLE)
+//				|| typeA.equals(AllowedTypes.INTEGER))
+//			{
+//				valueA = Double.parseDouble(valueStringA);
+//			}
+//			else if (typeA.equals(AllowedTypes.ENUM))
+//			{
+//				valueA = columnTypeA.indexOfStringInEnum(valueStringA);
+//			}
+//			else
+//			{
+//				valueA = optionsA.indexOf(valueStringA);
+//			}
+//			for (int j = 0; j < this.model.getTableModel().getRowCount(); j++)
+//			{
+//				String valueStringB = (String) this.model.getTableModel()
+//					.getValueAt(i, indexColumnB);
+//				if (valueStringB.equals(ColumnType.WILDCARD))
+//				{
+//					continue;
+//				}
+//
+//				double valueB;
+//				if (typeB.equals(AllowedTypes.DOUBLE)
+//					|| typeB.equals(AllowedTypes.INTEGER))
+//				{
+//					valueB = Double.parseDouble(valueStringB);
+//				}
+//				else if (typeB.equals(AllowedTypes.ENUM))
+//				{
+//					valueB = columnTypeB.indexOfStringInEnum(valueStringB);
+//				}
+//				else
+//				{
+//					valueB = optionsB.indexOf(valueStringB);
+//				}
+//
+//				count++;
+//				sum += (valueA - meanA) * (valueB - meanB);
+//			} // for j-loop
+//		} // for i-loop
+		
+		// new algorithm (see http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+		int sumAB = 0;
+		double sumA = this.getColumnSum(indexColumnA, optionsA);
+		double sumB = this.getColumnSum(indexColumnB, optionsB);
+		
 		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
 		{
 			String valueStringA = (String) this.model.getTableModel()
-				.getValueAt(i, columnA);
-			if (valueStringA.equals(ColumnType.WILDCARD))
+				.getValueAt(i, indexColumnA);
+			String valueStringB = (String) this.model.getTableModel()
+				.getValueAt(i, indexColumnB);
+			
+			if (valueStringA.equals(ColumnType.WILDCARD) || valueStringB.equals(ColumnType.WILDCARD))
 			{
 				continue;
 			}
+			
+			count++;
 			double valueA;
+			double valueB;
+			
 			if (typeA.equals(AllowedTypes.DOUBLE)
 				|| typeA.equals(AllowedTypes.INTEGER))
 			{
@@ -1791,36 +1964,28 @@ public class DotplotView extends JPanel implements Observer
 			{
 				valueA = optionsA.indexOf(valueStringA);
 			}
-			for (int j = 0; j < this.model.getTableModel().getRowCount(); j++)
+			
+			if (typeB.equals(AllowedTypes.DOUBLE)
+				|| typeB.equals(AllowedTypes.INTEGER))
 			{
-				String valueStringB = (String) this.model.getTableModel()
-					.getValueAt(i, columnB);
-				if (valueStringB.equals(ColumnType.WILDCARD))
-				{
-					continue;
-				}
-
-				double valueB;
-				if (typeB.equals(AllowedTypes.DOUBLE)
-					|| typeB.equals(AllowedTypes.INTEGER))
-				{
-					valueB = Double.parseDouble(valueStringB);
-				}
-				else if (typeB.equals(AllowedTypes.ENUM))
-				{
-					valueB = columnTypeB.indexOfStringInEnum(valueStringB);
-				}
-				else
-				{
-					valueB = optionsB.indexOf(valueStringB);
-				}
-
-				count++;
-				sum += (valueA - meanA) * (valueB - meanB);
+				valueB = Double.parseDouble(valueStringB);
 			}
+			else if (typeB.equals(AllowedTypes.ENUM))
+			{
+				valueB = columnTypeB.indexOfStringInEnum(valueStringB);
+			}
+			else
+			{
+				valueB = optionsB.indexOf(valueStringB);
+			}
+			
+			sumAB += valueA * valueB;
 		}
+		
+		double covariance = (sumAB - sumA * sumB / count) / count;
+		return covariance; // new algorithm's return value
 
-		return sum / (double) count;
+		//return sum / (double) count;
 	}
 
 	/**
@@ -1848,6 +2013,11 @@ public class DotplotView extends JPanel implements Observer
 			double sdA = this.getStdDev(columnAIndex, meanA, this.getXStringOptions());
 			double sdB = this.getStdDev(columnBIndex, meanB, this.getYStringOptions());
 			double correlation = covar / (sdA * sdB);
+			
+//			System.out.println("DotplotView.drawCorrelation(): covar = " + covar
+//				+ ", sdA = " + sdA
+//				+ ", sdB = " + sdB
+//				+ ", corr = " + correlation);
 
 			int y = (this.model.getTableModel().isViewsEditable() ? this
 				.getHeight() - 10 - DotplotView.KEUZEBALK_HOOGTE : this
@@ -2104,14 +2274,21 @@ public class DotplotView extends JPanel implements Observer
 		
 		// bepaal de y-correctie die zo nodig gedaan wordt per split: max y / max aantal dots per x
 		int[] maxFrequencyXPerSplit = this.getMaxFrequencyXPerSplit(sortedData);
-		int[] correctionYPerSplit = new int[this.splitClasses]; 
+		// correction in double values to avoid rounding errors
+		double[] correctionYPerSplit = new double[this.splitClasses]; 
 			
 		for (int split = 0; split < this.splitClasses; split++)
 		{
-			correctionYPerSplit[split] = Math.min(this.dotSize * 2, (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight) / maxFrequencyXPerSplit[split]);
+			correctionYPerSplit[split] = Math.min(
+				this.dotSize * 2, 
+				((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight - 2 * this.dotSize) / maxFrequencyXPerSplit[split]);
 		}
 
-		int y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+		// set initial y
+		double y_initial = (1 - DotplotView.KEEP_CLEAR_PART) * drawHeight;
+		double y = y_initial;
+		// use double values to get a precise calculation for large data sets
+		double[] y_doubles = new double[this.model.getTableModel().getRowCount()];
 		
 		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
 		{
@@ -2124,28 +2301,32 @@ public class DotplotView extends JPanel implements Observer
 					if ((sortedData[i][2] != -1) // skip wildcards; sortedData[i][2] == -1 if row i contains a wildcard
 						&& (sortedData[i][2] == sortedData[i-1][2])) // same split
 					{
-						// some other object is too close, so correct y
-						y = sortedData[i-1][1] - correctionYPerSplit[sortedData[i][2]];
+						// dot with the same x-coordinate in the same split, so calculate y based on 
+						// the previous y
+						y = y_doubles[i-1] - correctionYPerSplit[sortedData[i][2]];
 					}
 					else // same x coordinate, next split 
 					{
 						// reset y to initial value
-						y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+						y = y_initial;
 					}
 				}
 				else // different x coordinate
 				{
 					// reset y to initial value
-					y = (int) ((1 - DotplotView.KEEP_CLEAR_PART) * drawHeight); // initial y
+					y = y_initial;
 				}
 			}
 			
-			sortedData[i][1] = y;
-			
-//			System.out.println("DotplotView.determineCoordsXSingleVar(): i = " + i 
-//				+ ", (" + coords[i][0] + ", " + coords[i][1] + ")");
+			y_doubles[i] = y;
 		} // i-loop
 
+		// round double values to int coordinates
+		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		{
+			sortedData[i][1] = (int) y_doubles[i];
+		}
+		
 		// zet sortedData in coords in de originele volgorde
 		for (int i = 0; i < sortedData.length; i++)
 		{
@@ -2575,6 +2756,40 @@ public class DotplotView extends JPanel implements Observer
 			}
 
 			g.setColor(Color.BLACK);
+			
+			// sorteer de rij-indices zodat selected rijen op het eind staan
+			// en de bijbehorende dots als laatste worden getekend
+			final StatTableModel tableModel = DotplotView.this.model.getTableModel();
+			int nrRows = tableModel.getRowCount();
+			Integer[] indexDataRows = new Integer[nrRows];
+			for (int i = 0; i < nrRows; i++)
+			{
+				indexDataRows[i] = i;
+			}
+			
+			Arrays.sort(indexDataRows, new Comparator<Integer>() {
+	            @Override
+	            /**
+	             * Compare [x1, y1, split1] to [x2, y2, split2] on x-coordinate
+	             * and split. 
+	             * @param o1
+	             * @param o2
+	             * @return
+	             */
+	            public int compare(Integer i1, Integer i2) 
+	            {
+	            	// if both rows are selected, the order doesn't matter
+            		if (tableModel.isRowSelected(i1) && tableModel.isRowSelected(i2))
+            			return 0;
+	            	// indices of selected rows are always larger 
+            		else if (tableModel.isRowSelected(i2))
+	            		return -1;
+	            	else if (tableModel.isRowSelected(i1))
+	            		return 1;
+	            	else // if none of the rows is selected, the order doesn't matter
+            			return 0;
+	            }
+	        });
 
 			if (DotplotView.this.model.columnXIndexValid()
 				&& DotplotView.this.model.columnYIndexValid())
@@ -2602,7 +2817,9 @@ public class DotplotView extends JPanel implements Observer
 				for (int row = 0; row < DotplotView.this.model.getTableModel()
 					.getRowCount(); row++)
 				{
-					DotplotView.this.drawPoint(g2d, row);
+//					DotplotView.this.drawPoint(g2d, row);
+					// use the ordered indices so that selected dots will be drawn at last
+					DotplotView.this.drawPoint(g2d, indexDataRows[row]);
 				}
 			} // scatterplot
 			else if (DotplotView.this.model.columnXIndexValid())
@@ -2641,31 +2858,24 @@ public class DotplotView extends JPanel implements Observer
 							splitClass = 0;
 						if (splitClass >= 0)
 						{
-							int heightOffset = (splitClass)
-								* (DotplotView.this.scrollPane.getHeight() - 5);
+							int heightOffset;
 							if (DotplotView.this.model.getColumnSplitIndex() > -1
 								&& DotplotView.this.model.splitInSingleView())
 							{
 								heightOffset = 0;
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
-
-							}
-							else if (DotplotView.this.model
-								.getColumnSplitIndex() > -1)
-							{
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
 							}
 							else
 							{
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
+								heightOffset = (splitClass)
+										* (DotplotView.this.scrollPane.getHeight() - 5);
 							}
 
+							// use the ordered indices so that selected dots will be drawn at last
+							int index = indexDataRows[i];
+
+							DotplotView.this.drawPointAtLocation(g2d,
+								coords[index][0], coords[index][1] + heightOffset,
+								index);
 						}
 					}
 				}
@@ -2705,30 +2915,22 @@ public class DotplotView extends JPanel implements Observer
 							splitClass = 0;
 						if (splitClass >= 0)
 						{
-							int heightOffset = (splitClass)
-								* (DotplotView.this.scrollPane.getHeight() - 5);
+							int heightOffset;
 							if (DotplotView.this.model.getColumnSplitIndex() > -1
 								&& DotplotView.this.model.splitInSingleView())
 							{
 								heightOffset = 0;
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
-
-							}
-							else if (DotplotView.this.model
-								.getColumnSplitIndex() > -1)
-							{
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
 							}
 							else
 							{
-								DotplotView.this.drawPointAtLocation(g2d,
-									coords[i][0], coords[i][1] + heightOffset,
-									i);
+								heightOffset = (splitClass)
+									* (DotplotView.this.scrollPane.getHeight() - 5);
 							}
+
+							// test syl: TODO use sorted indices indexdataRows[]?
+							DotplotView.this.drawPointAtLocation(g2d,
+								coords[i][0], coords[i][1] + heightOffset,
+								i);
 						}
 					}
 				}
