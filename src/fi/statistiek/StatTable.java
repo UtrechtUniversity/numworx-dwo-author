@@ -2,6 +2,7 @@ package fi.statistiek;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -23,8 +24,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
+
 import javax.imageio.ImageIO;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -46,6 +49,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
+
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
 import fi.statistiek.addcolumndialog.AddColumnDialogView;
@@ -762,6 +766,8 @@ public class StatTable extends JPanel implements StatistiekView,
 	 */
 	private void processCSVDataFile(File file)
 	{
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		
 		BufferedReader br = null;
 		String line = "";
 		ArrayList<String> dataRows = null;
@@ -814,41 +820,33 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.createColumns(headers);
 		
 		// add row data
-		this.addDataRows(dataRows);
+		this.addDataRowsWithoutEvent(dataRows);
 		
 		this.statTableModel.updateNumericalColumnTypes();
 		
 		// update the view
 		if (this.statInteractiePanel != null)
 			this.statInteractiePanel.getView().update(null, null);
+		
+		this.setCursor(Cursor.getDefaultCursor());
 	}
 
 	/**
 	 * Add the row data to the table.
 	 * @param dataRows
 	 */
-	private void addDataRows(ArrayList<String> dataRows)
+	private void addDataRowsWithoutEvent(ArrayList<String> dataRows)
 	{
         Iterator<String> rowIterator = dataRows.iterator();
         int rowIndex = 0;
         while (rowIterator.hasNext()) 
         {
         	String dataRow = rowIterator.next();
-        	this.statTableModel.addRow();
         	
-        	// add the data
         	String[] values = dataRow.split(";");
-        	int columnIndex = 0;
-            for (int i = 0; i < values.length; i++) 
-            {
-            	String value = values[i];
-//                System.out.println("value = " + value);
-                this.statTableModel.setValueAt(value, rowIndex, columnIndex);
-                
-                columnIndex++;
-            }
+        	ArrayList<Object> valuesList= new ArrayList<Object>(Arrays.asList(values));
         	
-        	rowIndex++;
+        	this.statTableModel.addRowWithoutEvent(valuesList);
         }
 	}
 
