@@ -304,10 +304,13 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 		return 0;
 	}
 
+	/**
+	 * Retourneert altijd true, want in de statistiekcomponent wordt
+	 * niets nagekeken.
+	 */
 	public boolean isCorrect()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean isFout()
