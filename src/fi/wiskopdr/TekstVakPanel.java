@@ -1046,12 +1046,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		klapUitButton.setBackground(Color.white);
 		klapUitButton.setBorder(BorderFactory.createEmptyBorder());
 		klapUitButton.setMargin(new Insets(0,0,0,0));
-		if(inklapKnopPos==0)
-			klapUitButton.setLocation(1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
-		else if(inklapKnopPos==1) 
-			klapUitButton.setLocation(getWidth()-klapUitButton.getWidth()-cellMarge-1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
-		else 
-			klapUitButton.setLocation(tekstVakken[0][0].getContentBreedte(), (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
+		setKlapUitButtonLocation();
 		//klapUitButton.setBounds(1,1,klapUitButtonWidth, tekstVakken[0][0].getHeight()-2);
 		//klapUitButton.setFont(new Font("SansSerif",Font.PLAIN,klapUitButton.getHeight()-2));
 		add(klapUitButton,0);
@@ -3119,6 +3114,28 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		return "".equals(getIpExpString()) || "$f@".equals(getIpExpString());
 	}
 	
+	public int getFirstRowMinHeight(TekstVak tv)
+	{
+		if(tv!=tekstVakken[0][0] || !pasAanH) 
+			return 0;
+		int minHeight = 2*bovenMarge;
+		if(inklapbaar && klapUitButton!=null) 
+			minHeight = minHeight + klapUitButton.getHeight();
+		return minHeight;
+	}
+	
+	public void setKlapUitButtonLocation()
+	{
+		if(klapUitButton==null)
+			return;
+		if(inklapKnopPos==0)
+			klapUitButton.setLocation(1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
+		else if(inklapKnopPos==1) 
+			klapUitButton.setLocation(getWidth()-klapUitButton.getWidth()-cellMarge-1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
+		else 
+			klapUitButton.setLocation(tekstVakken[0][0].getContentBreedte(), (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
+	}
+	
 	private void updateUitklapHoogtes()
 	{
 		if(!ingeklapt)
@@ -3188,6 +3205,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (e.getSource()==klapUitButton)
 		{	
 			klapUitAction();
+			setPopupUsed(true);
 			produceAction("resize");
 		}
 		if (e.getActionCommand().equals("tekst"))

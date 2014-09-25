@@ -30,11 +30,11 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		setOpaque(false);
 		
 		checkButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		checkButton.setBounds(0,5,80,20);
+		checkButton.setBounds(0,0,80,20);
 		checkButton.addActionListener(this);
 		add(checkButton);
 		
-		setSize(checkButton.getWidth(), checkButton.getHeight()+5);
+		setSize(checkButton.getWidth(), checkButton.getHeight());
 	}
 	
 	
@@ -115,12 +115,12 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 
 	@Override
 	public void zetMaat(){
-		setSize(checkButton.getWidth(), checkButton.getHeight()+5);
+		setSize(checkButton.getWidth(), checkButton.getHeight());
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 	}
 	
 	public int geefAsHoogte()
-	{	return checkButton.getHeight()/2+11;
+	{	return checkButton.getHeight()/2+6;
 	}
 
 	@Override

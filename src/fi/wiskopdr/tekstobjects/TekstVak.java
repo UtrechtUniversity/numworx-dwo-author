@@ -753,8 +753,21 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		for(int i=0 ; i<getComponentCount() ; i++)
 		{	hoogte = Math.max(hoogte, getComponent(i).getLocation().y + getComponent(i).getSize().height);
 		}
+		
+		if(getParent()instanceof TekstVakPanel) 
+		{
+			TekstVakPanel tvp = (TekstVakPanel)getParent();
+			hoogte = Math.max(hoogte, tvp.getFirstRowMinHeight(this));
+		}
+		
 		if(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).isWidthResizable()) setSize(nieuweBreedte,hoogte);	
 		else setSize(breedte,hoogte);
+		
+		if(getParent()instanceof TekstVakPanel) 
+		{
+			TekstVakPanel tvp = (TekstVakPanel)getParent();
+			tvp.setKlapUitButtonLocation();
+		}
 		
 		if(crossWidgetView!=null)
 		{	crossWidgetView.setSize(getWidth(), getHeight());
