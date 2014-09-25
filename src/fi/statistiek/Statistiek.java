@@ -118,25 +118,32 @@ public class Statistiek implements WiskOpdrApplet
 		initViews();
 
 		JFrame frame = new JFrame();
-		StatEditPanelController c = new StatEditPanelController();
-		Hashtable oudeState = c.getEditState();
+		// edit panel
+//		StatEditPanelController statEditPanelController = new StatEditPanelController();
+//		Hashtable oudeState = statEditPanelController.getEditState();
+		
+		// interactie panel
+		StatInteractiePanel statInteractiePanel = new StatInteractiePanel();
+		Statistiek s = new Statistiek();
 
-		try
-		{
-			FileInputStream fin = new FileInputStream("C:\\StatistiekIrisSet.epic");
-			ObjectInputStream ois = new ObjectInputStream(fin);
-			Hashtable h = (Hashtable) ois.readObject();
-			c.setEditState(h);
-			System.out.println("Iris dataset loaded");
-			ois.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			c.setEditState(oudeState);
-		}
+		// try to set a specific state in edit panel
+//		try
+//		{
+//			FileInputStream fin = new FileInputStream("C:\\StatistiekIrisSet.epic");
+//			ObjectInputStream ois = new ObjectInputStream(fin);
+//			Hashtable h = (Hashtable) ois.readObject();
+//			c.setEditState(h);
+//			System.out.println("Iris dataset loaded");
+//			ois.close();
+//		}
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//			statEditPanelController.setEditState(oudeState);
+//		}
 
-		frame.setContentPane(c);
+//		frame.setContentPane(statEditPanelController);
+		frame.setContentPane(statInteractiePanel);
 
 		frame.setVisible(true);
 		frame.setSize(new Dimension(1024, 768));
