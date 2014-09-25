@@ -8,14 +8,18 @@ import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -23,6 +27,7 @@ import java.util.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,6 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.MouseInputListener;
 
 import fi.statistiek.Statistiek;
 
@@ -613,7 +619,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				this.tabPane.add(this.addViewTab, "+");
 			}
 
-			this.tabPane.addMouseListener(new DraggedTabListener(this.tabPane));
+			DraggedTabListener listener = new DraggedTabListener(this.tabPane);
+			this.tabPane.addMouseListener(listener);
+			// test syl: ook mouseMotion voor mouseDragged()
+			this.tabPane.addMouseMotionListener(listener);
 			super.add(this.tabPane, BorderLayout.CENTER);
 
 		}
@@ -773,11 +782,13 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	 * @author Manu Drijvers
 	 * 
 	 */
-	public class DraggedTabListener implements MouseListener
+	public class DraggedTabListener implements MouseInputListener // MouseListener
 	{
 		private Point startPoint;
+		private Point currentPoint; // test syl
 		private boolean inDrag;
 		private int draggedTab;
+		private ImageIcon draggedImage;
 
 		private JTabbedPane tabPane;
 
@@ -794,6 +805,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			
 			// initialize with an invalid value
 			this.draggedTab = -1;
+			
+			java.net.URL imageURL = Statistiek.class.getResource("resources/arrow-137-16_525252up.gif");
+			this.draggedImage = new ImageIcon(imageURL);
 		}
 
 		public void mouseClicked(MouseEvent arg0)
@@ -814,12 +828,12 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		public void mousePressed(MouseEvent arg0)
 		{
 			int tab = this.tabPane.indexAtLocation(arg0.getPoint().x, arg0.getPoint().y);
-//			System.out.println("StatInteractiePanelView.mousePressed(): tab=" + tab);
+			//System.out.println("StatInteractiePanelView.mousePressed(): tab = " + tab);
 			if (tab < 0)
 			{
 				return;
 			}
-
+			
 			//System.out.println("---------------- MousePressed " + tab);
 			if (arg0.getButton() == MouseEvent.BUTTON1
 				&& !(StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView))
@@ -831,8 +845,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 					&& this.draggedTab < StatInteractiePanelView.this.model
 						.getMainWindowViews().size())
 				{
-					StatInteractiePanelView.super.setCursor(new Cursor(
-						Cursor.MOVE_CURSOR));
+					// test syl: move cursor blijft
+//					StatInteractiePanelView.super.setCursor(new Cursor(
+//						Cursor.MOVE_CURSOR));
 				}
 			}
 			else if (arg0.getButton() == MouseEvent.BUTTON2
@@ -911,6 +926,44 @@ public class StatInteractiePanelView extends JPanel implements Observer
 //					 + this.draggedTab + ")");
 				}
 			}
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent arg0)
+		{
+			// test syl
+			//System.out.println("StatInteractiePanelView.DraggedTabListener.mouseDragged()!");
+			// test syl: deze toont alleen boven StatInteractiePanelView; je wilt hem boven het hele scherm
+			//StatInteractiePanelView.super.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			// A tab is dragged
+			if (this.draggedTab >= 0)
+			{
+				// tab is dragged -> creates new instance of dialog each method call... 
+//				int viewIndex = StatInteractiePanelView.this.model
+//					.mainWindowIndexToGeneralIndex(this.draggedTab);
+//				StatInteractiePanelView.this.showViewInDialog(
+//					StatInteractiePanelView.this.model.getViews().get(
+//						viewIndex), arg0.getLocationOnScreen());
+				
+				//repaint();
+				StatInteractiePanelView.super.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			} // test syl
+
+		}
+		
+//		public void paint(Graphics g) 
+//		{
+//		    Graphics2D g2 = (Graphics2D) g;
+//		    g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//		    this.draggedImage.paintIcon(this, g, this.currentPoint.x, this.currentPoint.y);
+//		    g2.draw(this.draggedImage, this.currentPoint.x, 
+//		        this.currentPoint.y, this.draggedImage.getIconWidth(), 
+//		        this.draggedImage.getIconHeight(), this);
+//		}
+
+		@Override
+		public void mouseMoved(MouseEvent arg0)
+		{
 		}
 	}
 
