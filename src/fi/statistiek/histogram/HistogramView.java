@@ -17,8 +17,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observable;
@@ -31,7 +29,6 @@ import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorLegend;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.Statistiek;
-import fi.statistiek.frequencytable.FrequencyTableView;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -217,9 +214,27 @@ public class HistogramView extends JPanel implements Observer
 		return this.userOptionsPanel.getMinBoundary();
 	}
 	
+	/**
+	 * Set min boundary with value min
+	 * @param min
+	 */
+	public void setMinBoundary(double min)
+	{
+		this.userOptionsPanel.setMinBoundary(min);
+	}
+
 	public double getSplitMinBoundary()
 	{
 		return userOptionsPanel.getSplitMinBoundary();
+	}
+
+	/**
+	 * Set min boundary with value min
+	 * @param min
+	 */
+	public void setSplitMinBoundary(double min)
+	{
+		this.userOptionsPanel.setSplitMinBoundary(min);
 	}
 
 	public double getBinWidth()
@@ -227,9 +242,19 @@ public class HistogramView extends JPanel implements Observer
 		return this.userOptionsPanel.getBinWidth();
 	}
 
+	public void setBinWidth(double d)
+	{
+		this.userOptionsPanel.setBinWidth(d);
+	}
+
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
+	}
+
+	public void setSplitBinWidth(double d)
+	{
+		this.userOptionsPanel.setSplitBinWidth(d);
 	}
 
 	/**
