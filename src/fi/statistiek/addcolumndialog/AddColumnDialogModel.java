@@ -189,6 +189,24 @@ public class AddColumnDialogModel extends Observable
 	}
 
 	/**
+	 * Add an element to enumeration without firing an event
+	 * 
+	 * @param option
+	 *            new element
+	 */
+	public void addEnumOptionWithoutEvent(String option)
+	{
+		if (!this.enumOptions.contains(option))
+		{
+			// set as last element of current arraylist
+			this.enumOptions.set(this.enumOptions.size() - 1, option);
+
+			// add WILDCARD again
+			this.enumOptions.add(ColumnType.WILDCARD);
+		}
+	}
+
+	/**
 	 * Remove last element from enumeration
 	 */
 	public void removeLastEnumOption()
