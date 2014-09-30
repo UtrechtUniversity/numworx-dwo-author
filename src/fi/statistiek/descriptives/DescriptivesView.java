@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import fi.statistiek.ColorGenerator;
@@ -619,7 +618,7 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 		double waarde;
 		String waardeString;
-		DecimalFormat df = new DecimalFormat("0.#");
+		DecimalFormat df = Statistiek.getDecimalFormat();
 		
 		if (divisor != 0)
 		{
@@ -924,7 +923,10 @@ public class DescriptivesView extends JPanel implements Observer
 		for (int i = 0; i < list.size(); i++)
 		{
 			if (list.get(i).booleanValue())
+			{
 				hasSelection = true;
+				break;
+			}
 		}
 		
 		return hasSelection;
