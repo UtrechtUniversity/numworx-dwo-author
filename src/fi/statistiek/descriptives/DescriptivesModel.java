@@ -2,6 +2,8 @@ package fi.statistiek.descriptives;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 import javax.swing.event.TableModelEvent;
@@ -60,8 +62,8 @@ public class DescriptivesModel extends Observable implements
 		this.columnIndex = -1;
 		this.noBins = 1;
 		this.binBoundaries = new ArrayList<Double>();
-		this.binBoundaries.add(new Double(-100));
-		this.binBoundaries.add(new Double(100));
+		this.binBoundaries.add(new Double(-100)); // why??
+		this.binBoundaries.add(new Double(100)); // why??
 	}
 
 	/**
@@ -356,12 +358,21 @@ public class DescriptivesModel extends Observable implements
 				
 			Collections.sort(data);
 			
+			// for-loop om de frequenties te berekenen
+			Map<String, Integer> frequencyMap = new HashMap<String, Integer>();
 			for (int i = 0; i < data.size(); i++)
 			{
-				int freq_i = Collections.frequency(data, data.get(i));
+				Integer currentCount = frequencyMap.get(data.get(i));
+				frequencyMap.put(data.get(i), (currentCount == null ? 1 : currentCount.intValue() + 1));
+			}
+			
+			for (int i = 0; i < data.size(); i++)
+			{
+//				int freq_i = Collections.frequency(data, data.get(i)); // Collections.frequency() is traag voor grote datasets...
+				int freq_i = frequencyMap.get(data.get(i)).intValue();
 				if (freq_i > maxFreq)
 				{
-					maxFreq = Collections.frequency(data, data.get(i));
+					maxFreq = freq_i;
 					mode = String.valueOf(data.get(i));
 					multipleModes = false;
 				}
