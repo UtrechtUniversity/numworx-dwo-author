@@ -3,13 +3,9 @@ package fi.statistiek.crosstabulationtable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
@@ -19,22 +15,17 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import fi.statistiek.ColorGenerator;
 import fi.statistiek.ColorPreviewer;
 import fi.statistiek.Statistiek;
-import fi.statistiek.histogram.HistogramView;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -800,7 +791,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	{
 		double waarde;
 		String waardeString;
-		DecimalFormat df = new DecimalFormat("0.#");
+		DecimalFormat df = Statistiek.getDecimalFormat();
 		
 		if (divisor != 0)
 		{
