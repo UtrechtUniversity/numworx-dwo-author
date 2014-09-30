@@ -354,6 +354,8 @@ public class Statistiek implements WiskOpdrApplet
 	/**
 	 * Determine appropriate bin boundaries from given min, max, bin width and 
 	 * the minimum bin boundary, and determine the number of bins.
+	 * If the bin boundaries cannot be calculated for the given parameters
+	 * null is returned.
 	 * 
 	 * @param min
 	 *            The minimum value in the dataset
@@ -363,11 +365,21 @@ public class Statistiek implements WiskOpdrApplet
 	 *            The desired bin width
 	 * @param minBoundary
 	 *            The minimum bin boundary
-	 * @return ArrayList containing appropriate bin boundaries
+	 * @return ArrayList containing appropriate bin boundaries. If the bin
+	 * boundaries cannot be calculated from the given parameters, null is
+	 * returned.
 	 */
 	public static ArrayList<Double> appropriateBoundariesFromBinSettings(
 		double min, double max, double binWidth, double minBoundary)
 	{
+		// check if parameters are valid
+		if ((binWidth <= 0) || (binWidth > 2 * (max - min)) 
+			|| (binWidth < (max - min)/50))
+			return null;
+		
+		if ((minBoundary > min) || (minBoundary < (min - 0.5 * max)))
+			return null;
+		
 		// calculate decimal bin boundaries smaller than 1 
 		if ((Math.abs(min) < 1) && (Math.abs(max) < 1))
 		{
@@ -434,6 +446,10 @@ public class Statistiek implements WiskOpdrApplet
 			boundaries.add(d);
 		}
 
+//		System.out.println("Statistiek.appropriateBoundariesFromBinSettings(min = "
+//			+ min + ", max = " + max + ", binWidth = " + binWidth + ", minBoundary = " 
+//			+ minBoundary + "): " + boundaries);
+		
 		return boundaries;
 	}
 
