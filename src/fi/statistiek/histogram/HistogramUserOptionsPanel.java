@@ -55,7 +55,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	// bin settings
 	private JLabel binsLabel;
 	/**
-	 * Box for choosing the number of split bins.
+	 * Box for choosing the number of bins.
 	 */
 	private JComboBox binsBox;
 	/**
@@ -796,11 +796,21 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public void setMinBoundary(double d)
+	{
+		this.minBoundaryField.setText(String.valueOf(d));
+	}
+
 	public double getSplitMinBoundary()
 	{
 		String s = this.splitMinBoundaryField.getText();
 		s = s.replace(',', '.');
 		return Double.parseDouble(s);
+	}
+
+	public void setSplitMinBoundary(double d)
+	{
+		this.splitMinBoundaryField.setText(String.valueOf(d));
 	}
 
 	public double getBinWidth()
@@ -815,9 +825,14 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		catch (NumberFormatException e)
 		{
 			System.out.println("Klassenbreedte heeft niet het goede formaat. Cannot parse bin width " + s);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return d;
+	}
+	
+	public void setBinWidth(double d)
+	{
+		this.binWidthField.setText(String.valueOf(d));
 	}
 	
 	public double getSplitBinWidth()
@@ -827,6 +842,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+	
 	public boolean xAxisSelected()
 	{
 		return this.axisBox.getSelectedIndex() == 0;
@@ -873,7 +893,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		}
 		this.varBox.addActionListener(this.controller);
 
-		this.splitVarBox.removeActionListener(this.controller);
+		this.splitVarBox.removeActionListener(this);
 		this.splitVarBox.removeAllItems();
 		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
 		for (int column = 0; column < this.model.getTableModel()
@@ -896,7 +916,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			this.splitVarBox.setSelectedIndex(0);
 		}
 	
-		this.splitVarBox.addActionListener(this.controller);
+		this.splitVarBox.addActionListener(this);
 
 		this.binsBox.removeActionListener(this.controller);
 		this.binsBox.setSelectedItem(new Integer(this.model.getNoBins()));
@@ -977,6 +997,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     					.get(1)
     					- this.model.getSplitOptions().getBinBoundaries().get(0);
     				this.splitBinWidthField.setText(Statistiek.df.format(d));
+    				
     				StringBuilder sb = new StringBuilder();
     				for (int i = 0; i < this.model.getSplitOptions()
     					.getBinBoundaries().size() - 1; i++)
