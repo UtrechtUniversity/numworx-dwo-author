@@ -129,7 +129,6 @@ public class NakijkModelButton extends JButton implements ActionListener
 	    	
 	    	currentY += height + 2 * offset;
 	    	
-	    	aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTrekkingenTekst"));
 	    	aantalTrekkingen.setFont(theFont);
 	    	aantalTrekkingen.setBounds(currentX, currentY, 100, height);
 	    	paramPanel.add(aantalTrekkingen);
@@ -212,9 +211,10 @@ public class NakijkModelButton extends JButton implements ActionListener
 			scrollPane = new JScrollPane(paramPanel);
 	    }
 	    
-		public void zetTeksten(String[] naamoptietekst)
+		public void zetTeksten(String[] naamoptietekst, String trekkingMvTekst)
 		{
-			for(int i = 1; i<7; i++)
+			aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTekst") + trekkingMvTekst+":");
+	    	for(int i = 1; i<7; i++)
 			{
 				aantalOptie[i] = new JLabel(Kansbomen.rb.getString("aantalTekst")+naamoptietekst[i]+":");
 			}

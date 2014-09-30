@@ -8,6 +8,7 @@ public class Text_en extends java.util.ListResourceBundle
             //{	"welkomTekst" , "Welcome to Java" },
             	 	
         	{	"trekkingBalkTekst", "Draw" },
+        	{	"trekkingBalkTekstMv", "draws"},
         	{	"metTerugleggenTekst" , "With replacement" },
             {	"zonderTerugleggenTekst" , "Without replacement"},
             {	"geenLabelTekst", "Label: none"},
@@ -20,7 +21,7 @@ public class Text_en extends java.util.ListResourceBundle
 		    {	"kansOnderTekst", "Probability visible"},
 			{	"volgordeTekst", "Order visible"},
 			{	"letterTekst", "Characters visible"},
-			{ 	"aantalTrekkingenTekst" , "Number of draws" },
+			//{ 	"aantalTrekkingenTekst" , "Number of draws" },
 			{ 	"aantalOptiesTekst" , "Number of options" },
 			{	"naamLetterTekst", "Names and characters"},
 			//{ 	"naamOptieTekst" , "Name option " },
@@ -44,7 +45,9 @@ public class Text_en extends java.util.ListResourceBundle
 	        {	"kijkNaTekst", "Check"},
 	        {	"nakijkModelTekst", "Answer model"},
 	        {	"maxScoreTekst", "Maximal score"},
-	        {	"bovenbalkTekst", "Upper beam"}
+	        {	"externControlerenTekst", "Check external"},
+	        {	"bovenbalkTekst", "Upper beam"},
+	        { 	"bovenbalkMvTekst", "Plural"}
 		//	....
 		
 		};

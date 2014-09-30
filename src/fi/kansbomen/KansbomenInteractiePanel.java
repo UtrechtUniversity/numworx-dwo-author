@@ -70,6 +70,7 @@ JTextField[] aantalOptieVeld;
 String[] naamOptieTekst;
 String[] letterString = new String[7]; //{"d","d","d","d","d","d","d"}
 String trekkingTekst = Kansbomen.rb.getString("trekkingBalkTekst");
+String trekkingMvTekst = Kansbomen.rb.getString("trekkingBalkTekstMv");
 
 int aantalOpties = 2;
 int[] aantalInt = new int[] {4,4,4,4,4,4,4};
@@ -82,6 +83,7 @@ JPanel kijkNaPanel;
 JLabel groenVinkjeLabel;
 JLabel geelVinkjeLabel;
 JLabel kruisjeLabel;
+private boolean checkExternal = false;
 
 int score;
 int scoreMax = 10;
@@ -130,7 +132,7 @@ private int mode;
 		add(terugleggenBox);
 		terugleggenBox.addActionListener(this);
 		
-		aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTrekkingenTekst"));
+		aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTekst") + trekkingMvTekst);
 		aantalTrekkingen.setFont(theFont);
 		aantalTrekkingen.setBounds(currentX, currentY, 100, height);
 		add(aantalTrekkingen);
@@ -360,6 +362,22 @@ private int mode;
 		}
 		zetOpties(aantalOpties,aantalInt);
 	}
+	
+	public void zetCheckExternal(boolean b)
+	{
+		checkExternal = b;
+		if(checkExternal)
+		{
+			kijkNaButton.setVisible(false);
+		}
+		else
+		{	kijkNaButton.setVisible(true);
+			//gaat dit goed als de button al op het panel zit?
+		}
+		
+		
+	}
+
 
 	public void zetTeruglegZichtbaar(boolean b)
 	{
@@ -529,6 +547,12 @@ private int mode;
 		kansboom.repaint();
 	}
 	
+	public void zetTrekkingMvTekst(String s)
+	{
+		trekkingMvTekst = s;
+		aantalTrekkingen.setText(Kansbomen.rb.getString("aantalTekst") + trekkingMvTekst);
+	}
+	
 	public void zetKijkNa(boolean b)
 	{
 		kijkNaActief = b;
@@ -646,6 +670,8 @@ private int mode;
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
 		if (h.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer)h.get("labelsKeuze")).intValue();
 		if(h.containsKey("kleur"))
@@ -675,7 +701,8 @@ private int mode;
 			nakijkModel = (int[]) h.get("nakijkModel");
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
-		
+		if(h.containsKey("trekkingMvTekst"))
+			trekkingMvTekst = ((String) h.get("trekkingMvTekst"));
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
 		if(h.containsKey("kbipHoogte"))
@@ -688,6 +715,7 @@ private int mode;
 		zetLegendaZichtbaar(legendaZichtbaar);
 		zetBovenbalkZichtbaar(bovenbalkZichtbaar);
 		zetKijkNa(kijkNaActief);
+		zetCheckExternal(checkExternal);
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
@@ -696,12 +724,15 @@ private int mode;
 		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
+		zetTrekkingMvTekst(trekkingMvTekst);
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
-		zetBeginStatus();	
+		zetBeginStatus();
+		
 	}
 
 
 	public void setState(Hashtable h) {
+		
 		if(h.containsKey("terugleggenKeuze"))
 			terugleggenKeuze = ((Integer)h.get("terugleggenKeuze")).intValue();
 		zetTerugleggen(terugleggenKeuze); 
@@ -741,6 +772,8 @@ private int mode;
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
 		if (h.containsKey("kijkNa"))
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
 		if (h.containsKey("labelsKeuze"))
 			labelsKeuze = ((Integer)h.get("labelsKeuze")).intValue();
 		if(h.containsKey("kleur"))
@@ -767,7 +800,8 @@ private int mode;
 		
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
-	
+		if(h.containsKey("trekkingMvTekst"))
+			trekkingMvTekst = ((String) h.get("trekkingMvTekst"));
 		//nodig?
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
@@ -786,6 +820,7 @@ private int mode;
 		zetLegendaZichtbaar(legendaZichtbaar);
 		zetBovenbalkZichtbaar(bovenbalkZichtbaar);
 		zetKijkNa(kijkNaActief);
+		zetCheckExternal(checkExternal);
 		zetLabelsKeuze(labelsKeuze);
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
@@ -794,6 +829,7 @@ private int mode;
 		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
+		zetTrekkingMvTekst(trekkingMvTekst);
 		setBounds(0, 0, kbipBreedte, kbipHoogte);	
 	}
 
@@ -830,6 +866,7 @@ private int mode;
 		boolean legendaZichtbaar = true;
 		boolean bovenbalkZichtbaar = true;
 		boolean kijkNaActief = false;
+		boolean checkExternal = false;
 		int labelsKeuze = 0;
 		boolean kleur = true;
 		int kansVolgordeKeuze = 0;
@@ -841,7 +878,8 @@ private int mode;
 		int[] aantalInt = null;
 		int scoreMax = 10;
 		int[] nakijkModel = null;
-		String trekkingTekst = "trekking";
+		String trekkingTekst = "Trekking";
+		String trekkingMvTekst = "trekkingen";
 				
 		teruglegZichtbaar = this.teruglegZichtbaar;
 		trekkingZichtbaar = this.trekkingZichtbaar;
@@ -850,6 +888,7 @@ private int mode;
 		legendaZichtbaar = this.legendaZichtbaar;
 		bovenbalkZichtbaar = this.bovenbalkZichtbaar;
 		kijkNaActief = this.kijkNaActief;
+		checkExternal = this.checkExternal;
 		labelsKeuze = this.labelsKeuze;
 		kleur = this.kleur;
 		kansVolgordeKeuze = this.kansVolgordeKeuze;
@@ -862,6 +901,7 @@ private int mode;
 		scoreMax = this.scoreMax;
 		nakijkModel = this.nakijkModel;
 		trekkingTekst = this.trekkingTekst;
+		trekkingMvTekst = this.trekkingMvTekst;
 				
 		Hashtable h = new Hashtable();
 		
@@ -872,6 +912,7 @@ private int mode;
 		h.put("legendaZichtbaar", legendaZichtbaar);
 		h.put("bovenbalkZichtbaar", bovenbalkZichtbaar);
 		h.put("kijkNaActief", kijkNaActief);
+		h.put("checkExternal", checkExternal);
 		h.put("labelsKeuze", labelsKeuze);
 		h.put("kleur", kleur);
 		h.put("kansVolgordeKeuze", kansVolgordeKeuze);
@@ -884,6 +925,7 @@ private int mode;
 		h.put("scoreMax", scoreMax);
 		h.put("nakijkModel", nakijkModel);
 		h.put("trekkingTekst", trekkingTekst);
+		h.put("trekkingMvTekst", trekkingMvTekst);
 		
 		return h;
 	}
@@ -937,7 +979,7 @@ private int mode;
 
 	public void zetMode(int mode) {
 		this.mode = mode;
-		kijkNaButton.setVisible(mode == 0 || mode == 1);
+		kijkNaButton.setVisible((mode == 0 || mode == 1) && !checkExternal);
 		
 	}
 

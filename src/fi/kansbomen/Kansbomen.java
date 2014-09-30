@@ -85,7 +85,7 @@ public class Kansbomen extends JApplet implements ScormAppletIF, WiskOpdrApplet
 		*/
 		
 		kbiep = new KansbomenInteractieEditPanel();
-		kbiep.setBounds(0,0,800,600);
+		kbiep.setBounds(0,0,800,620);
 		add(kbiep,0);
 		
 	}
