@@ -4,14 +4,11 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -57,12 +54,11 @@ public class Statistiek implements WiskOpdrApplet
 	{
 		Locale language = new Locale("nl", "");
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
+		
 		dfs = new DecimalFormatSymbols();
-		if (language.toString().equals("nl"))
-			dfs.setDecimalSeparator(',');
-		else
-			dfs.setDecimalSeparator('.');
-		df = new DecimalFormat("0.0####", dfs);
+		// separator is '.' for consistency
+		dfs.setDecimalSeparator('.');
+		df = new DecimalFormat("0.#", dfs);
 		initViews();
 	}
 
@@ -483,5 +479,13 @@ public class Statistiek implements WiskOpdrApplet
 			s = String.valueOf(d);
 		
 		return s;
+	}
+	
+	/**
+	 * Get the decimal format.
+	 */
+	public static DecimalFormat getDecimalFormat()
+	{
+		return df;
 	}
 }
