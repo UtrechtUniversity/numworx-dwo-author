@@ -510,7 +510,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		for (int i = 0; i < this.stringOptions.size(); i++)
 		{
 			String newElement = (String) this.stringOptions.get(i);
-			this.model.addEnumOption(newElement);
+			this.model.addEnumOptionWithoutEvent(newElement);
 		}
 	}
 
