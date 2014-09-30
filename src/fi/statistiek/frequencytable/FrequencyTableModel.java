@@ -1,7 +1,6 @@
 package fi.statistiek.frequencytable;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Observable;
 
 import javax.swing.event.TableModelEvent;
@@ -11,11 +10,8 @@ import fi.statistiek.SelectionListener;
 import fi.statistiek.SplitOptions;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
-import fi.statistiek.histogram.HistogramModel;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.histogram.StatBinsModel;
-import fi.statistiek.types.AllowedTypes;
-import fi.statistiek.types.ColumnType;
 
 /**
  * MVC model for StatistiekView FrequencyTable
@@ -57,7 +53,8 @@ public class FrequencyTableModel extends Observable implements
 		this.viewName = viewName;
 
 		// set initial values
-		this.noBins = 10;
+		// initialize number of bins with an invalid value
+		this.noBins = -1;
 		this.columnIndex = -1;
 		this.binBoundaries = new ArrayList<Double>();
 		this.binBoundaries.add(new Double(-100));
@@ -235,6 +232,8 @@ public class FrequencyTableModel extends Observable implements
 				&& this.tableModel.getColumnTypes().get(this.columnIndex)
 					.getType().isNumber())
 			{
+				if (this.noBins == -1)
+					this.noBins = 6; // default
 				this.binBoundaries = Statistiek.appropriateBoundaries(
 					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex),
