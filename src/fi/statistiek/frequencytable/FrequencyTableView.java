@@ -463,9 +463,12 @@ public class FrequencyTableView extends JPanel implements Observer
 	{
 		this.tableWidth = 0;
 		
-		for (int i = 0; i < this.maxColumnWidth.length; i++)
+		if (this.maxColumnWidth != null)
 		{
-			this.tableWidth += this.maxColumnWidth[i];
+			for (int i = 0; i < this.maxColumnWidth.length; i++)
+			{
+				this.tableWidth += this.maxColumnWidth[i];
+			}
 		}
 
 		//System.out.println("FrequencyTableView.setTableWidth(): width = " + this.TABLE_WIDTH);
@@ -828,7 +831,7 @@ public class FrequencyTableView extends JPanel implements Observer
 		}
 		else
 		{
-			DecimalFormat df = new DecimalFormat("0.#");
+			DecimalFormat df = Statistiek.getDecimalFormat();
 			waardeString = df.format(waarde);
 		}
 		
