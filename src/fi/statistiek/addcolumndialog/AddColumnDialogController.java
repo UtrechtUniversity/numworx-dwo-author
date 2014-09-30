@@ -142,7 +142,8 @@ public class AddColumnDialogController implements ActionListener,
 		}
 		else if (actionCommand.equals("doneButton"))
 		{
-			if (!this.wasEnum())
+			// als type gewijzigd in enum, update enum options
+			if (!this.wasEnum() && this.model.getType().equals(AllowedTypes.ENUM))
 			{
 				this.view.updateEnumOptions();
 			}
