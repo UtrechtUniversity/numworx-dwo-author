@@ -1,15 +1,15 @@
 package fi.statistiek;
 
-import java.awt.Color;
-import java.awt.font.MultipleMaster;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.event.TableModelEvent;
@@ -879,6 +879,33 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
+	 * Increases the value of key 'key' in a hashmap of type <T, Integer>. 
+	 * Return true if the hashmap did not contain the key yet.
+	 * 
+	 * @param <T>
+	 *            The type of keys in this hashmap
+	 * @param key
+	 *            the key
+	 * @param hashMap
+	 *            the hashmap in which a value will be increased
+	 * @return true iff the hashmap did not contain the key yet
+	 */
+	private static <T> boolean increaseKeyHashMap(T key,
+		HashMap<T, Integer> hashMap)
+	{
+		if (hashMap.containsKey(key))
+		{
+			hashMap.put(key, hashMap.get(key) + 1);
+			return false;
+		}
+		else
+		{
+			hashMap.put(key, 1);
+			return true;
+		}
+	}
+
+	/**
 	 * Decrease the value of key 'key' in hashtable 'ht'
 	 * 
 	 * @param <T>
@@ -899,6 +926,38 @@ public class StatTableModel implements TableModel
 			if (ht.get(key) == 0)
 			{
 				ht.remove(key);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+			return false;
+	}
+
+	/**
+	 * Decrease the value of key 'key' in hashmap.
+	 * 
+	 * @param <T>
+	 *            the type of keys in hashmap
+	 * @param key
+	 *            the key value
+	 * @param hashMap
+	 *            the hashmap in which a value will be decreased
+	 * @return true iff the value of 'key' is now zero
+	 */
+	private static <T> boolean decreaseKeyHashMap(T key,
+		HashMap<T, Integer> hashMap)
+	{
+		// check of ht de key bevat
+		if (hashMap.get(key) != null)
+		{
+			hashMap.put(key, hashMap.get(key) - 1);
+			if (hashMap.get(key) == 0)
+			{
+				hashMap.remove(key);
 				return true;
 			}
 			else
@@ -1647,12 +1706,21 @@ public class StatTableModel implements TableModel
 			
 			Collections.sort(data);
 			
+			// for-loop om de frequenties te berekenen
+			Map<Double, Integer> frequencyMap = new HashMap<Double, Integer>();
 			for (int i = 0; i < data.size(); i++)
 			{
-				int freq_i = Collections.frequency(data, data.get(i));
+				Integer currentCount = frequencyMap.get(data.get(i));
+				frequencyMap.put(data.get(i), (currentCount == null ? 1 : currentCount.intValue() + 1));
+			}
+			
+			for (int i = 0; i < data.size(); i++)
+			{
+//				int freq_i = Collections.frequency(data, data.get(i)); // Collections.frequency() is traag voor grote datasets...
+				int freq_i = frequencyMap.get(data.get(i)).intValue();
 				if (freq_i > maxFreq)
 				{
-					maxFreq = Collections.frequency(data, data.get(i));
+					maxFreq = freq_i;
 					mode = String.valueOf(data.get(i));
 					multipleModes = false;
 				}
@@ -1732,12 +1800,21 @@ public class StatTableModel implements TableModel
 			
 			Collections.sort(data);
 			
+			// for-loop om de frequenties te berekenen
+			Map<Double, Integer> frequencyMap = new HashMap<Double, Integer>();
 			for (int i = 0; i < data.size(); i++)
 			{
-				int freq_i = Collections.frequency(data, data.get(i));
+				Integer currentCount = frequencyMap.get(data.get(i));
+				frequencyMap.put(data.get(i), (currentCount == null ? 1 : currentCount.intValue() + 1));
+			}
+			
+			for (int i = 0; i < data.size(); i++)
+			{
+//				int freq_i = Collections.frequency(data, data.get(i)); // Collections.frequency() is traag voor grote datasets...
+				int freq_i = frequencyMap.get(data.get(i)).intValue();
 				if (freq_i > maxFreq)
 				{
-					maxFreq = Collections.frequency(data, data.get(i));
+					maxFreq = freq_i;
 					mode = String.valueOf(data.get(i));
 					multipleModes = false;
 				}
@@ -2041,28 +2118,42 @@ public class StatTableModel implements TableModel
 		{
 			int splitClasses = this.splitVarClasses(splitOptions);
 			//System.out.println(splitClasses + " splitclasses");
-			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
-			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
+			// test syl: hashmap lijkt niet veel beter
+//			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
+//			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
+			HashMap<String, Integer>[] frequencyTable = new HashMap[splitClasses];
+			HashMap<String, Integer>[] frequencySelectionTable = new HashMap[splitClasses];
 
 			for (int i = 0; i < splitClasses; i++)
 			{
-				frequencyTable[i] = new Hashtable<String, Integer>();
-				frequencySelectionTable[i] = new Hashtable<String, Integer>();
+//				frequencyTable[i] = new Hashtable<String, Integer>();
+//				frequencySelectionTable[i] = new Hashtable<String, Integer>();
+				frequencyTable[i] = new HashMap<String, Integer>();
+				frequencySelectionTable[i] = new HashMap<String, Integer>();
 			}
 
 			for (int i = 0; i < this.getRowCount(); i++)
 			{
+				// test syl: loop 1 en 2 zijn traag bij grote aantallen...
+				//System.out.println("StatTableModel.enumClassFrequency(): 1e loop, i = " + i);
+				
 				int split = this.classifyObject(i, splitOptions);
 				if (split > -1)
 				{
-					StatTableModel.increaseKeyHashtable(
+//					StatTableModel.increaseKeyHashtable(
+//						(String) this.getValueAt(i, columnIndex),
+//						frequencyTable[this.classifyObject(i, splitOptions)]);
+					StatTableModel.increaseKeyHashMap(
 						(String) this.getValueAt(i, columnIndex),
-						frequencyTable[this.classifyObject(i, splitOptions)]);
+						frequencyTable[split]);
 					if (this.isRowSelected(i))
 					{
-						StatTableModel.increaseKeyHashtable(
+//						StatTableModel.increaseKeyHashtable(
+//							(String) this.getValueAt(i, columnIndex),
+//							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+						StatTableModel.increaseKeyHashMap(
 							(String) this.getValueAt(i, columnIndex),
-							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
+							frequencySelectionTable[split]);
 					}
 				}
 				else
@@ -2072,21 +2163,24 @@ public class StatTableModel implements TableModel
 				}
 			}
 
-			// create FreqencyTuple array from hashtable
+			// create FrequencyTuple array from hashtable
 
 			FrequencyTuple[][] ret = new FrequencyTuple[splitClasses][];
 			for (int splitClass = 0; splitClass < splitClasses; splitClass++)
 			{
 				if (cType.getType().equals(AllowedTypes.ENUM))
 				{
-					ret[splitClass] = new FrequencyTuple[cType.getEnumOptions().length - 1];
-					for (int i = 0, j = 0; i < cType.getEnumOptions().length - 1; i++)
+					String[] enumOptions = cType.getEnumOptions();
+					ret[splitClass] = new FrequencyTuple[enumOptions.length - 1];
+					for (int i = 0, j = 0; i < enumOptions.length - 1; i++)
 					{
-						if (cType.getEnumOptions()[i + j].equals(ColumnType.WILDCARD))
+						//System.out.println("StatTableModel.enumClassFrequency(): 2e loop, i = " + i);
+						
+						if (enumOptions[i + j].equals(ColumnType.WILDCARD))
 						{
 							j++;
 						}
-						String option = cType.getEnumOptions()[i + j];
+						String option = enumOptions[i + j];
 						int freq;
 						int selectionFreq;
 						if (frequencyTable[splitClass].containsKey(option))
@@ -2114,7 +2208,9 @@ public class StatTableModel implements TableModel
 				else
 				{ // String
 					Set<String> keySet = new HashSet<String>();
-					for (Hashtable<String, Integer> h : frequencyTable)
+					// test syl: hashmap lijkt niet veel beter
+//					for (Hashtable<String, Integer> h : frequencyTable)
+					for (HashMap<String, Integer> h : frequencyTable)
 					{
 						keySet.addAll(h.keySet());
 					}
@@ -2219,14 +2315,16 @@ public class StatTableModel implements TableModel
 			{
 				if (cType.getType().equals(AllowedTypes.ENUM))
 				{
-					ret[splitClass] = new FrequencyTuple[cType.getEnumOptions().length - 1];
-					for (int i = 0, j = 0; i < cType.getEnumOptions().length - 1; i++)
+					String[] enumOptions = cType.getEnumOptions();
+
+					ret[splitClass] = new FrequencyTuple[enumOptions.length - 1];
+					for (int i = 0, j = 0; i < enumOptions.length - 1; i++)
 					{
-						if (cType.getEnumOptions()[i + j].equals(ColumnType.WILDCARD))
+						if (enumOptions[i + j].equals(ColumnType.WILDCARD))
 						{
 							j++;
 						}
-						String option = cType.getEnumOptions()[i + j];
+						String option = enumOptions[i + j];
 						int freq;
 						int selectionFreq;
 						if (frequencyTable[splitClass].containsKey(option))
