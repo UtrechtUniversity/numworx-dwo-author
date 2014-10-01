@@ -5,13 +5,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -26,7 +27,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fi.statistiek.DialogButton;
-import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.Statistiek;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -210,7 +210,19 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitMinBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.splitMinBoundaryField.setActionCommand("splitMinBoundary");
 		this.splitMinBoundaryField.addActionListener(controller);
-		// this.minBoundaryField.addFocusListener(controller);
+		this.splitMinBoundaryField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				BoxplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBinWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -222,6 +234,19 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBinWidthField.setPreferredSize(new Dimension(40, 25));
 		this.splitBinWidthField.setActionCommand("splitBinWidth");
 		this.splitBinWidthField.addActionListener(controller);
+		this.splitBinWidthField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				BoxplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBoundariesLabel = new JLabel(
 			Statistiek.rb.getString("binsButton"));
@@ -447,11 +472,16 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		return ((Integer) this.splitBinsBox.getSelectedItem()).intValue();
 	}
 
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
 		String s = this.splitMinBoundaryField.getText();
 		s = s.replace(',', '.');
 		return Double.parseDouble(s);
+	}
+
+	public void setSplitMinBoundary(double d)
+	{
+		this.splitMinBoundaryField.setText(String.valueOf(d));
 	}
 
 	public double getSplitBinWidth()
@@ -461,6 +491,11 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+	
 	public void setModel(BoxplotModel model)
 	{
 		this.model = model;
@@ -531,7 +566,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 						.getBinBoundaries().get(i + 1)));
 					sb.append("\n");
 				}
-				sb.delete(sb.length() - 3, sb.length());
+				//sb.delete(sb.length() - 3, sb.length());
 				this.splitBoundariesArea.setText(sb.toString());
 				this.splitNoObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
