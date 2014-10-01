@@ -135,11 +135,11 @@ public class DescriptivesController implements StatistiekView,
 		}
 		else if (action.equals("splitMinBoundary"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 		else if (action.equals("splitBinWidth"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 	}
 
@@ -162,17 +162,30 @@ public class DescriptivesController implements StatistiekView,
 	private void updateSplitBoundariesFromBinSettings()
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
+
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getSplitOptions().getColumnSplitIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getSplitOptions().getColumnSplitIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
-			this.model.getTableModel().getColumnMin(
-				this.model.getSplitOptions().getColumnSplitIndex()),
-			this.model.getTableModel().getColumnMax(
-				this.model.getSplitOptions().getColumnSplitIndex()),
+			min,
+			max,
 			view.getSplitBinWidth(),
 			view.getSplitMinBoundary());
-		this.model.setSplitBoundaries(boundaries);
-		this.view.setModel(this.model);
-
+		
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setSplitBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			this.view.setSplitBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+		}
 	}
 	
 	private void setSplitType(AllowedTypes type)
