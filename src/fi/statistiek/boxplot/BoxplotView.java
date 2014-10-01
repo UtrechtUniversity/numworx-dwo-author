@@ -4,22 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-
-import fi.statistiek.Statistiek;
 import fi.statistiek.DialogButton;
-import fi.statistiek.histogram.HistogramModel;
-import fi.statistiek.histogram.HistogramUserOptionsPanel;
 
 /**
  * MVC View for statistiekview Boxplot
@@ -129,12 +118,22 @@ public class BoxplotView extends JPanel implements Observer
 
 	public double getSplitminBoundary()
 	{
-		return userOptionsPanel.getSplitminBoundary();
+		return userOptionsPanel.getSplitMinBoundary();
+	}
+
+	public void setSplitMinBoundary(double d)
+	{
+		this.userOptionsPanel.setSplitMinBoundary(d);
 	}
 
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
+	}
+
+	public void setSplitBinWidth(double d)
+	{
+		this.userOptionsPanel.setSplitBinWidth(d);
 	}
 
 	public int getDependentAxisWidth()
