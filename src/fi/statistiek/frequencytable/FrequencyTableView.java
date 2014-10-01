@@ -170,7 +170,10 @@ public class FrequencyTableView extends JPanel implements Observer
 			g.setColor(Color.BLACK);
 
 			g.setColor(Color.WHITE);
+//			g.setColor(Color.PINK);
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			// test syl
+//			g.fillRect(0, 0, this.getWidth(), this.getPreferredSize().height);
 
 			// draw selection color of rows
 			if (FrequencyTableView.this.rowColors != null)
@@ -192,11 +195,25 @@ public class FrequencyTableView extends JPanel implements Observer
 		return this.userOptionsPanel.getBinWidth();
 	}
 
+	public void setBinWidth(double d)
+	{
+		this.userOptionsPanel.setBinWidth(d);
+	}
+
 	public double getMinBoundary()
 	{
 		return this.userOptionsPanel.getMinBoundary();
 	}
-	
+
+	/**
+	 * Set min boundary with value d
+	 * @param d
+	 */
+	public void setMinBoundary(double d)
+	{
+		this.userOptionsPanel.setMinBoundary(d);
+	}
+
 //	public JTextField getNoBinsField()
 //	{
 //		return this.noBinsField;
@@ -365,7 +382,7 @@ public class FrequencyTableView extends JPanel implements Observer
 	    			dimension = new Dimension(w, this.tableHeight);
 
 					splitClassPanels[i].setPreferredSize(dimension);
-					//System.out.println("FrequencyTableView.update(): this.tableHeight = " + this.tableHeight);
+//					System.out.println("FrequencyTableView.update(): this.tableHeight = " + this.tableHeight);
 					this.isTableHeightSet  = true;
 					
 					// set colors for background
@@ -409,6 +426,8 @@ public class FrequencyTableView extends JPanel implements Observer
 						JPanel labelPanel = new JPanel();
 						labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 						labelPanel.setBackground(Color.WHITE);
+						// test syl
+//						labelPanel.setBackground(Color.CYAN);
 						String splitVar = this.model.getTableModel()
 							.getColumnName(this.model.getSplitOptions().getColumnSplitIndex());
 						JLabel label = new JLabel(splitVar + ": " + this.model.getSplitOptions()
@@ -955,9 +974,23 @@ public class FrequencyTableView extends JPanel implements Observer
 		return userOptionsPanel.getSplitMinBoundary();
 	}
 
+	/**
+	 * Set min boundary with value min
+	 * @param min
+	 */
+	public void setSplitMinBoundary(double min)
+	{
+		this.userOptionsPanel.setSplitMinBoundary(min);
+	}
+
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
+	}
+
+	public void setSplitBinWidth(double d)
+	{
+		this.userOptionsPanel.setSplitBinWidth(d);
 	}
 
 	public int getSplitBinsBoxSelectedInt()
