@@ -342,11 +342,12 @@ public class BoxplotModel extends Observable implements TableModelListener
 					// get the value
 					Double d = Double.parseDouble(valueString);
 
+					int index = this.tableModel.classifyObject(valueSplitString,
+						this.splitOptions.getColumnSplitIndex(),
+						this.splitOptions.getBinBoundaries());
 					// add the value to a list based on the splitclass
-					sortedData.get(
-						this.tableModel.classifyObject(valueSplitString,
-							this.splitOptions.getColumnSplitIndex(),
-							this.splitOptions.getBinBoundaries())).add(d);
+					if (index > -1)
+						sortedData.get(index).add(d);
 				}
 			}
 
