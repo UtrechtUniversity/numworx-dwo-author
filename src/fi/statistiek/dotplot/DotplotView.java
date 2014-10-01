@@ -516,9 +516,23 @@ public class DotplotView extends JPanel implements Observer
 		return userOptionsPanel.getSplitMinBoundary();
 	}
 
+	/**
+	 * Set min boundary with value min
+	 * @param min
+	 */
+	public void setSplitMinBoundary(double min)
+	{
+		this.userOptionsPanel.setSplitMinBoundary(min);
+	}
+
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
+	}
+
+	public void setSplitBinWidth(double d)
+	{
+		this.userOptionsPanel.setSplitBinWidth(d);
 	}
 
 	// public int getVarSplitBoxSelected() {
@@ -2463,7 +2477,10 @@ public class DotplotView extends JPanel implements Observer
 				.get(this.model.getColumnSplitIndex());
 			if (this.splitType.isNumber())
 			{
-				return this.model.getSplitBinBoundaries().size() - 1;
+				if (this.model.getSplitBinBoundaries() == null)
+					return 1;
+				else
+					return this.model.getSplitBinBoundaries().size() - 1;
 			}
 			else if (this.splitType.equals(AllowedTypes.ENUM))
 			{
@@ -2761,19 +2778,19 @@ public class DotplotView extends JPanel implements Observer
 			// en de bijbehorende dots als laatste worden getekend
 			final StatTableModel tableModel = DotplotView.this.model.getTableModel();
 			int nrRows = tableModel.getRowCount();
-			Integer[] indexDataRows = new Integer[nrRows];
+			Integer[] indexSortedOnSelected = new Integer[nrRows];
 			for (int i = 0; i < nrRows; i++)
 			{
-				indexDataRows[i] = i;
+				indexSortedOnSelected[i] = i;
 			}
 			
-			Arrays.sort(indexDataRows, new Comparator<Integer>() {
+			Arrays.sort(indexSortedOnSelected, new Comparator<Integer>() {
 	            @Override
 	            /**
-	             * Compare [x1, y1, split1] to [x2, y2, split2] on x-coordinate
+	             * Compare integers i1 and i2 on being selected.
 	             * and split. 
-	             * @param o1
-	             * @param o2
+	             * @param i1
+	             * @param i2
 	             * @return
 	             */
 	            public int compare(Integer i1, Integer i2) 
@@ -2819,7 +2836,7 @@ public class DotplotView extends JPanel implements Observer
 				{
 //					DotplotView.this.drawPoint(g2d, row);
 					// use the ordered indices so that selected dots will be drawn at last
-					DotplotView.this.drawPoint(g2d, indexDataRows[row]);
+					DotplotView.this.drawPoint(g2d, indexSortedOnSelected[row]);
 				}
 			} // scatterplot
 			else if (DotplotView.this.model.columnXIndexValid())
@@ -2848,12 +2865,15 @@ public class DotplotView extends JPanel implements Observer
 				int[][] coords = DotplotView.this.determineCoordsXSingleVar();
 				for (int i = 0; i < coords.length; i++)
 				{
+					// use the ordered indices so that selected dots will be drawn at last
+					int index = indexSortedOnSelected[i];
+
 					if (!DotplotView.this.model
 						.getTableModel()
-						.getValueAt(i, DotplotView.this.model.getColumnXIndex())
+						.getValueAt(index, DotplotView.this.model.getColumnXIndex())
 						.equals(ColumnType.WILDCARD))
 					{
-						int splitClass = DotplotView.this.getSplitClass(i);
+						int splitClass = DotplotView.this.getSplitClass(index);
 						if (DotplotView.this.model.splitInSingleView())
 							splitClass = 0;
 						if (splitClass >= 0)
@@ -2869,9 +2889,6 @@ public class DotplotView extends JPanel implements Observer
 								heightOffset = (splitClass)
 										* (DotplotView.this.scrollPane.getHeight() - 5);
 							}
-
-							// use the ordered indices so that selected dots will be drawn at last
-							int index = indexDataRows[i];
 
 							DotplotView.this.drawPointAtLocation(g2d,
 								coords[index][0], coords[index][1] + heightOffset,
@@ -2905,12 +2922,15 @@ public class DotplotView extends JPanel implements Observer
 				int[][] coords = DotplotView.this.determineCoordsYSingleVar();
 				for (int i = 0; i < coords.length; i++)
 				{
+					// use the ordered indices so that selected dots will be drawn at last
+					int index = indexSortedOnSelected[i];
+
 					if (!DotplotView.this.model
 						.getTableModel()
-						.getValueAt(i, DotplotView.this.model.getColumnYIndex())
+						.getValueAt(index, DotplotView.this.model.getColumnYIndex())
 						.equals(ColumnType.WILDCARD))
 					{
-						int splitClass = DotplotView.this.getSplitClass(i);
+						int splitClass = DotplotView.this.getSplitClass(index);
 						if (DotplotView.this.model.splitInSingleView())
 							splitClass = 0;
 						if (splitClass >= 0)
@@ -2929,8 +2949,8 @@ public class DotplotView extends JPanel implements Observer
 
 							// test syl: TODO use sorted indices indexdataRows[]?
 							DotplotView.this.drawPointAtLocation(g2d,
-								coords[i][0], coords[i][1] + heightOffset,
-								i);
+								coords[index][0], coords[index][1] + heightOffset,
+								index);
 						}
 					}
 				}
