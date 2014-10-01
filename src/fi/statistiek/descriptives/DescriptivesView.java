@@ -983,9 +983,22 @@ public class DescriptivesView extends JPanel implements Observer
 		return userOptionsPanel.getSplitminBoundary();
 	}
 
+	/**
+	 * Set min boundary with value min
+	 * @param min
+	 */
+	public void setSplitMinBoundary(double min)
+	{
+		this.userOptionsPanel.setSplitMinBoundary(min);
+	}
+
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.userOptionsPanel.setSplitBinWidth(d);
+	}
 }
