@@ -1,6 +1,5 @@
 package fi.statistiek.frequencytable;
 
-import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -12,11 +11,9 @@ import java.util.Hashtable;
 
 import javax.swing.JComponent;
 
-import fi.statistiek.Copy;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.StatistiekView;
-import fi.statistiek.histogram.DefineBinBoundariesDialog;
 import fi.statistiek.types.AllowedTypes;
 
 /**
@@ -103,11 +100,11 @@ public class FrequencyTableController implements StatistiekView,
 		}
 		else if (action.equals("splitMinBoundary"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 		else if (action.equals("splitBinWidth"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 	}
 
@@ -123,6 +120,39 @@ public class FrequencyTableController implements StatistiekView,
 		this.view.setModel(this.model);
 	}
 
+	/*
+	 * Update the split bin boundaries using the settings for the minimum boundary
+	 * and the bin width, and determine the number of bins.
+	 */
+	public void updateSplitBoundariesFromBinSettings()
+	{
+		ArrayList<Double> boundaries = new ArrayList<Double>();
+
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getSplitOptions().getColumnSplitIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getSplitOptions().getColumnSplitIndex());
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			min,
+			max,
+			view.getSplitBinWidth(),
+			view.getSplitMinBoundary());
+		
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setSplitBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			this.view.setSplitBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+		}
+	}
+	
 	public void setUp(Frame owner)
 	{
 		// TODO Auto-generated method stub
@@ -251,15 +281,29 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getColumnIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getColumnIndex());
+		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
-			this.model.getTableModel().getColumnMin(
-				this.model.getColumnIndex()),
-			this.model.getTableModel().getColumnMax(
-				this.model.getColumnIndex()),
+			min,
+			max,
 			view.getBinWidth(),
 			view.getMinBoundary());
 		
-		this.model.setBinBoundaries(boundaries);
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setBinBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
+			this.view.setBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setMinBoundary(oldBoundaries.get(0));
+		}
 	}
 	
 	public void setSplitType(AllowedTypes type)
