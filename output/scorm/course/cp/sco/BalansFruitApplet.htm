@@ -1,0 +1,34 @@
+<HTML>
+	<HEAD>
+		<TITLE>BalansFruitApplet</TITLE>
+		<SCRIPT type="text/javascript" src="script/FiScoScript.js"></SCRIPT>
+		<SCRIPT>
+			var exitPageStatus;
+			
+			function quit()
+			{	if (exitPageStatus != true)
+				{	balansfruitapplet.stopSco();
+					exit();
+					exitPageStatus=true;
+				}
+			}
+		</SCRIPT>
+	</HEAD>
+	<BODY  bgcolor="#DDEEFF" onload="javascript:init();" onbeforeunload="javascript:quit();" onunload="javascript:quit();">
+		<center>
+		<h1>BalansFruitApplet</h1>
+		<APPLET
+			id		= "balansfruitapplet"
+			name	= "balansfruitapplet"
+			codebase= "http://www.fi.uu.nl/javaclasses/"
+			code	= "fi.balansfruitapplet.BalansFruitApplet.class"
+			width	= "750"
+			height	= "460"
+			archive = "jars/balansfruitapplet.jar"
+			mayscript="mayscript">
+			<PARAM NAME="API" VALUE="fi.beans.scorm.JSScormAPI"/>
+			<PARAM NAME="bgcolor" VALUE="#DDEEFF"/>
+			<PARAM NAME="language" VALUE="nl"/>
+		</APPLET>
+	</BODY>
+</HTML>
