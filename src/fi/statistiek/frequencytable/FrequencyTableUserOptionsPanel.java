@@ -3,9 +3,10 @@ package fi.statistiek.frequencytable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,14 +15,12 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -31,7 +30,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import fi.statistiek.ColorPreviewer;
 import fi.statistiek.DialogButton;
 import fi.statistiek.Statistiek;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
@@ -261,6 +259,19 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.splitMinBoundaryField.setPreferredSize(new Dimension(40, 25));
 		this.splitMinBoundaryField.setActionCommand("splitMinBoundary");
 		this.splitMinBoundaryField.addActionListener(controller);
+		this.splitMinBoundaryField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				FrequencyTableUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBinWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
@@ -272,6 +283,19 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.splitBinWidthField.setPreferredSize(new Dimension(40, 25));
 		this.splitBinWidthField.setActionCommand("splitBinWidth");
 		this.splitBinWidthField.addActionListener(controller);
+		this.splitBinWidthField.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				FrequencyTableUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+			}
+		});
 
 		this.splitBoundariesLabel = new JLabel(
 			Statistiek.rb.getString("binsButton"));
@@ -636,7 +660,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.showPercBox.setSelected(this.model.isShowPercentage());
 		this.showCumulativeBox.setSelected(this.model.isShowCumulative());
 		
-		this.splitVarBox.removeActionListener(this.controller);
+		this.splitVarBox.removeActionListener(this);
 		this.splitVarBox.removeAllItems();
 		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
 		for (int column = 0; column < this.model.getTableModel()
@@ -659,7 +683,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			this.splitVarBox.setSelectedIndex(0);
 		}
 	
-		this.splitVarBox.addActionListener(this.controller);
+		this.splitVarBox.addActionListener(this);
 
 		// test syl: combobox met aantal bins (nog) niet geimplementeerd
 //		this.binsBox.removeActionListener(this.controller);
@@ -704,7 +728,6 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
     						.getBinBoundaries().get(i + 1)));
     					sb.append("\n");
     				}
-    				sb.delete(sb.length() - 3, sb.length());
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb
     					.getString("numberLabel")
@@ -753,11 +776,21 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setBinWidth(double d)
+	{
+		this.binWidthField.setText(String.valueOf(d));
+	}
+	
 	public double getMinBoundary()
 	{
 		String s = this.minBoundaryField.getText();
 		s = s.replace(',', '.');
 		return Double.parseDouble(s);
+	}
+
+	public void setMinBoundary(double d)
+	{
+		this.minBoundaryField.setText(String.valueOf(d));
 	}
 
 	public double getSplitMinBoundary()
@@ -767,6 +800,11 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitMinBoundary(double d)
+	{
+		this.splitMinBoundaryField.setText(String.valueOf(d));
+	}
+
 	public double getSplitBinWidth()
 	{
 		String s = this.splitBinWidthField.getText();
@@ -774,6 +812,11 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+	
 	private void setEnumClasses(boolean b)
 	{
 		//System.out.println("FrequencyTableUserOptionsPanel.setEnumClasses(" + b + ")");
