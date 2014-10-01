@@ -143,11 +143,11 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		else if (actionCommand.equals("splitMinBoundary"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 		else if (actionCommand.equals("splitBinWidth"))
 		{
-			updateSplitBoundaries();
+			updateSplitBoundariesFromBinSettings();
 		}
 		else if (actionCommand.equals("splitSingleView"))
 		{
@@ -331,15 +331,29 @@ public class DotplotController implements StatistiekView, ActionListener,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getSplitOptions().getColumnSplitIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getSplitOptions().getColumnSplitIndex());
+		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
-			this.model.getTableModel().getColumnMin(
-				this.model.getSplitOptions().getColumnSplitIndex()),
-			this.model.getTableModel().getColumnMax(
-				this.model.getSplitOptions().getColumnSplitIndex()),
+			min,
+			max,
 			view.getSplitBinWidth(),
 			view.getSplitMinBoundary());
-		this.model.setSplitBoundaries(boundaries);
-		this.view.setModel(this.model);
+
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setSplitBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			this.view.setSplitBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+		}
 	}
 	
 	public void mouseClicked(MouseEvent arg0)
