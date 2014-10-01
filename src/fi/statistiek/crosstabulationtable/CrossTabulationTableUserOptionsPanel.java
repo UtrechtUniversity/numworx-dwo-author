@@ -3,13 +3,10 @@ package fi.statistiek.crosstabulationtable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -686,6 +683,11 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setBinWidthRows(double d)
+	{
+		this.binWidthRowsField.setText(String.valueOf(d));
+	}
+	
 	public double getMinBoundaryRows()
 	{
 		String s = this.minBoundaryRowsField.getText();
@@ -693,6 +695,11 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 	
+	public void setMinBoundaryRows(double d)
+	{
+		this.minBoundaryRowsField.setText(String.valueOf(d));
+	}
+
 	public JTextField getBinWidthRowsField()
 	{
 		return binWidthRowsField;
@@ -720,11 +727,21 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setBinWidthColumns(double d)
+	{
+		this.binWidthColumnsField.setText(String.valueOf(d));
+	}
+	
 	public double getMinBoundaryColumns()
 	{
 		String s = this.minBoundaryColumnsField.getText();
 		s = s.replace(',', '.');
 		return Double.parseDouble(s);
+	}
+
+	public void setMinBoundaryColumns(double d)
+	{
+		this.minBoundaryColumnsField.setText(String.valueOf(d));
 	}
 
 	private void setEnumClassesRows(boolean b)
