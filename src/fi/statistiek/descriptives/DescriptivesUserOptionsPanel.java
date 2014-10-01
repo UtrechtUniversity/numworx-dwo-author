@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -468,7 +467,6 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
     						.getBinBoundaries().get(i + 1)));
     					sb.append("\n");
     				}
-    				sb.delete(sb.length() - 3, sb.length());
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb
     					.getString("numberLabel")
@@ -584,6 +582,11 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitMinBoundary(double d)
+	{
+		this.splitMinBoundaryField.setText(String.valueOf(d));
+	}
+
 	public double getSplitBinWidth()
 	{
 		String s = this.splitBinWidthField.getText();
@@ -591,6 +594,11 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+	
 	public int getSplitBinsBoxSelectedInt()
 	{
 		return ((Integer) this.splitNoBinsBox.getSelectedItem()).intValue();
