@@ -162,14 +162,33 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		return this.userOptionsPanel.getBinWidthRows();
 	}
 
+	public void setBinWidthRows(double d)
+	{
+		this.userOptionsPanel.setBinWidthRows(d);
+	}
+
 	public double getMinBoundaryRows()
 	{
 		return this.userOptionsPanel.getMinBoundaryRows();
 	}
 	
+	/**
+	 * Set min boundary field for the row variable with value min
+	 * @param min
+	 */
+	public void setMinBoundaryRows(double min)
+	{
+		this.userOptionsPanel.setMinBoundaryRows(min);
+	}
+
 	public double getBinWidthColumns()
 	{
 		return this.userOptionsPanel.getBinWidthColumns();
+	}
+
+	public void setBinWidthColumns(double d)
+	{
+		this.userOptionsPanel.setBinWidthColumns(d);
 	}
 
 	public double getMinBoundaryColumns()
@@ -177,6 +196,15 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		return this.userOptionsPanel.getMinBoundaryColumns();
 	}
 	
+	/**
+	 * Set min boundary field for the column variable with value min
+	 * @param min
+	 */
+	public void setMinBoundaryColumns(double min)
+	{
+		this.userOptionsPanel.setMinBoundaryColumns(min);
+	}
+
 	public int varRowsBoxSelectedIndex()
 	{
 		return this.userOptionsPanel.getVarRowsBoxSelectedIndex();
