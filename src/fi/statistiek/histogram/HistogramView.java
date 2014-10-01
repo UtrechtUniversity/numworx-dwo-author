@@ -215,12 +215,12 @@ public class HistogramView extends JPanel implements Observer
 	}
 	
 	/**
-	 * Set min boundary with value min
-	 * @param min
+	 * Set min boundary with value d
+	 * @param d
 	 */
-	public void setMinBoundary(double min)
+	public void setMinBoundary(double d)
 	{
-		this.userOptionsPanel.setMinBoundary(min);
+		this.userOptionsPanel.setMinBoundary(d);
 	}
 
 	public double getSplitMinBoundary()
