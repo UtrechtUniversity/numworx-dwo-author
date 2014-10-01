@@ -91,11 +91,14 @@ public class Statistiek implements WiskOpdrApplet
 	{
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		dfs = new DecimalFormatSymbols();
-		if (language.toString().equals("nl"))
-			dfs.setDecimalSeparator(',');
-		else
-			dfs.setDecimalSeparator('.');
-		df = new DecimalFormat("0.0####", dfs);
+		// separator is '.' for consistency
+		dfs.setDecimalSeparator('.');
+		df = new DecimalFormat("0.#", dfs);
+//		if (language.toString().equals("nl"))
+//			dfs.setDecimalSeparator(',');
+//		else
+//			dfs.setDecimalSeparator('.');
+//		df = new DecimalFormat("0.0####", dfs);
 		initViews();
 	}
 
