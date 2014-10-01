@@ -261,15 +261,29 @@ public class CrossTabulationTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getColumnIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getColumnIndex());
+		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
-			this.model.getTableModel().getColumnMin(
-				this.model.getColumnIndex()),
-			this.model.getTableModel().getColumnMax(
-				this.model.getColumnIndex()),
+			min,
+			max,
 			view.getBinWidthRows(),
 			view.getMinBoundaryRows());
 		
-		this.model.setBinBoundaries(boundaries);
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setBinBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
+			this.view.setBinWidthRows(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setMinBoundaryRows(oldBoundaries.get(0));
+		}
 	}
 	
 	/**
@@ -282,14 +296,28 @@ public class CrossTabulationTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
+		double min = this.model.getTableModel().getColumnMin(
+			this.model.getColumnSplitIndex());
+		double max = this.model.getTableModel().getColumnMax(
+			this.model.getColumnSplitIndex());
+		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
-			this.model.getTableModel().getColumnMin(
-				this.model.getColumnSplitIndex()),
-			this.model.getTableModel().getColumnMax(
-				this.model.getColumnSplitIndex()),
+			min,
+			max,
 			this.view.getBinWidthColumns(),
 			this.view.getMinBoundaryColumns());
 		
-		this.model.setSplitBoundaries(boundaries);
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setSplitBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			this.view.setBinWidthColumns(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setMinBoundaryColumns(oldBoundaries.get(0));
+		}
 	}
 }
