@@ -607,6 +607,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitMinBoundary(double d)
+	{
+		this.splitMinBoundaryField.setText(String.valueOf(d));
+	}
+
 	public double getSplitBinWidth()
 	{
 		String s = this.splitBinWidthField.getText();
@@ -614,6 +619,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public void setSplitBinWidth(double d)
+	{
+		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+	
 	public void setModel(DotplotModel model)
 	{
 		this.model = model;
@@ -719,7 +729,6 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 						.getBinBoundaries().get(i + 1)));
 					sb.append("\n");
 				}
-				sb.delete(sb.length() - 3, sb.length());
 				this.splitBoundariesArea.setText(sb.toString());
 				this.splitNoObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
