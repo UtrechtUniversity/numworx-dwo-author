@@ -181,7 +181,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		
 		
-        
+        destroyPanel();
 		return h;
 	}
 
@@ -273,6 +273,10 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 	public void zetMode(int mode){}
 	
     public void stop(){
+    	//if(geogebraPanel!=null)geogebraPanel.destroy(); // hier is een ordenings probleem. na stop mag geen getEditState meer!
+    }
+    
+    private void destroyPanel() {
     	if(geogebraPanel!=null)geogebraPanel.destroy();
     }
     
