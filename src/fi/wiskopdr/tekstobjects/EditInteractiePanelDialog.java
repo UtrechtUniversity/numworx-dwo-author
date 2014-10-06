@@ -847,7 +847,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	}
 
 	public void stop() {
-		interactieEditPanel.stop();
+		if(interactieEditPanel != null)
+			interactieEditPanel.stop();
 	}
     
     
