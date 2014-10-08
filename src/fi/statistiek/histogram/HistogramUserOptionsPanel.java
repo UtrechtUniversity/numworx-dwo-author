@@ -1009,7 +1009,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     						.getBinBoundaries().get(i + 1)));
     					sb.append("\n");
     				}
-    				sb.delete(sb.length() - 3, sb.length());
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb
     					.getString("numberLabel")
