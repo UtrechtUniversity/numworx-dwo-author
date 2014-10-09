@@ -543,7 +543,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 
 		deployVariant = super.getParameter("deployVariant");
-		//deployVariant = "GR";
+		//deployVariant = "MW";
 
 		defaultParamValues = makeDefaultParamValues(0);
 
@@ -879,7 +879,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 						return;
 					}
-					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked) {
+					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked && ons.getMode()==3) {
 						return;
 					}
 					

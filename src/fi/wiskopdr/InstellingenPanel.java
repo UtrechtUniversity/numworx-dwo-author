@@ -755,6 +755,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		AntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		SimpelAntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		AntwoordTekstVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());

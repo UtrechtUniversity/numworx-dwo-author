@@ -578,10 +578,15 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	//{	super.paint(g);
 	//}
 	
-	public void layoutTekst()
-	{	if(tekst!=null)vulVak(tekst.toString());
-		produceAction("resize");
 	
+	//private boolean layouting = false;
+	public void layoutTekst()
+	{	//if(layouting)
+		//	return;
+		//layouting = true;
+		if(tekst!=null)vulVak(tekst.toString());
+		produceAction("resize");
+		//layouting = false;
 	}
 	
 	public void setBounds(int x, int y, int b, int h)

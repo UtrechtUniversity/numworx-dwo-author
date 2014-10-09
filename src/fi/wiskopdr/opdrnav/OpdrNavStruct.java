@@ -2080,6 +2080,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 	}
 
+	public int getMode()
+	{
+		return mode;
+	}
+	
 	public int geefAantalActiviteiten()
 	{
 		return aantalActiviteiten;

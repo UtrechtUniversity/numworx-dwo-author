@@ -32,6 +32,7 @@ import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstElement;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder
 {
@@ -94,6 +95,12 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	private int errorCount;
 	private int attemptsCount;
 	private Vector attempts;
+	
+	static boolean fontOvererving;
+	
+	public static void zetFontOverervingForm(boolean b)
+	{	fontOvererving = b;
+	}
 
 	/*private static String[] imageNames = 
 	{	"goedkrul.gif",
@@ -297,6 +304,16 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			add(antwoordTF);
 		}
 		zetJuisteAntwoord(antwoordString);
+		
+		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			antwoordTF.setFont(geerftFont);
+			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
+				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
+			}
+			formuleVakFont = geerftFont;
+			formuleVak.setFont(formuleVakFont);
+		}
 
 	}
 
