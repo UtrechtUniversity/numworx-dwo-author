@@ -499,8 +499,6 @@ public class HistogramView extends JPanel implements Observer
 					barWidth = barWidth - 1;
 				}
 				
-				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
-
 				if (type.equals(AllowedTypes.ENUM) 
 					|| (type.equals(AllowedTypes.INTEGER)) && getBinWidth() == 1 && labelUnderBinItemSelected())
 				{
@@ -520,10 +518,6 @@ public class HistogramView extends JPanel implements Observer
     				// draw selected bar
     				y_coordinate = y + barLength - selectedLength + ySplitOffset;
     				height = selectedLength;
-//    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
-//						colorMixSymm);
-//    				fillRectWithSymmShade(x_coordinate, y_coordinate, 
-//    					width, height, g, colorSelectedBar, shadingColor, true);
 
     				// draw the selected bar darker in its original color c 
     				shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE,
@@ -550,10 +544,6 @@ public class HistogramView extends JPanel implements Observer
     				// paint selected bar
     				y_coordinate = y + barLength - selectedLength + ySplitOffset;
     				height = selectedLength;
-//    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE, colorMix);
-//    				fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
-//    					width, height, g, colorSelectedBar, shadingColor,
-//    					true);
 
     				// draw the selected bar darker in its original color c 
     				shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE, colorMix);
@@ -562,11 +552,6 @@ public class HistogramView extends JPanel implements Observer
     					true);
 				}
 				
-				// fill the rectangle above the bar white to get the correct
-				// color mixing when using alpha values
-				// g.setColor(Color.WHITE);
-				// g.fillRect(x1, ySplitOffset, x2-x1,
-				// this.barAreaHeight()-barLength);
 				g.setColor(Color.BLACK);
 				
 				if ((highlightedBar == barNumber) && (highlightInSplit == splitClass))
@@ -605,8 +590,6 @@ public class HistogramView extends JPanel implements Observer
 					barWidth = barWidth - 1;
 				}
 
-				Color colorSelectedBar = HistogramView.SELECTED_BAR_COLOR;
-
 				if (type.equals(AllowedTypes.ENUM) 
 					|| (getBinWidth() == 1 && type.equals(AllowedTypes.INTEGER) && labelUnderBinItemSelected()))
 				{
@@ -624,10 +607,10 @@ public class HistogramView extends JPanel implements Observer
     				// draw selected bar
     				x_coordinate = x1 + xSplitOffset;
     				width = selectedLength;
-    				shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
+    				shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE,
 						colorMixSymm);
     				fillRectWithSymmShade(x_coordinate, y_coordinate, 
-    					width, height, g, colorSelectedBar, shadingColor, false);
+    					width, height, g, c.darker().darker(), shadingColor, false);
 
 				}	
 				else
@@ -648,12 +631,12 @@ public class HistogramView extends JPanel implements Observer
     					width, height, g, c, shadingColor, false);
 
 					// paint selected bar
-					shadingColor = ColorPreviewer.mixColors(colorSelectedBar, Color.WHITE,
+					shadingColor = ColorPreviewer.mixColors(c.darker().darker(), Color.WHITE,
 						colorMix);
 					x_coordinate = x1 + xSplitOffset;
 					width = selectedLength;
 					fillRectWithShadeToUpperBinSide(x_coordinate, y_coordinate, 
-						width, height, g, colorSelectedBar, shadingColor, false);
+						width, height, g, c.darker().darker(), shadingColor, false);
 				}
 
 				g.setColor(Color.BLACK);
