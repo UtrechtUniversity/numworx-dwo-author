@@ -190,6 +190,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	
 	private boolean vulHoogte = false;
 	private boolean inklapbaar = false;
+	private boolean checkUitklapVak = false;
 	private int inklapKnopPos = 1;
 	private JToggleButton klapUitButton;
 	//private int klapUitButtonWidth = 20;
@@ -1521,6 +1522,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int puntenAftrekPopup = 5;
 		boolean vulHoogte = false;
 		boolean inklapbaar = false;
+		boolean checkUitklapVak = false;
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
@@ -1581,6 +1583,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		puntenAftrekPopup = this.puntenAftrekPopup;
 		vulHoogte = this.vulHoogte;
 		inklapbaar = this.inklapbaar;
+		checkUitklapVak = this.checkUitklapVak;
 		inklapKnopPos = this.inklapKnopPos;
 		knopImageString1 = this.knopImageString1;
 		knopImageString2 = this.knopImageString2;
@@ -1694,6 +1697,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			h.put("ingeklapt", new Boolean(ingeklapt));
 			h.put("uitklapHoogtes", uitklapHoogtes);
 			h.put("inklapKnopPos", inklapKnopPos);
+			h.put("checkUitklapVak", new Boolean(checkUitklapVak));
 		}
 		h.put("callOut", new Boolean(callOut));
 		h.put("callOutMargeX0", new Integer(callOutMargeX0));
@@ -2146,6 +2150,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean callOut = false;
 		boolean vulHoogte = false;
 		boolean inklapbaar = false;
+		boolean checkUitklapVak = false;
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
@@ -2256,6 +2261,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			vulHoogte = ((Boolean) h.get("vulHoogte")).booleanValue();
 		if (h.containsKey("inklapbaar"))
 			inklapbaar = ((Boolean) h.get("inklapbaar")).booleanValue();
+		if (h.containsKey("checkUitklapVak"))
+			checkUitklapVak = ((Boolean) h.get("checkUitklapVak")).booleanValue();
 		if(h.containsKey("inklapKnopPos")) 
 			inklapKnopPos = ((Integer)h.get("inklapKnopPos")).intValue();
 		if(h.containsKey("knopImageString1"))
@@ -2348,6 +2355,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.puntenAftrekPopup = puntenAftrekPopup;
 		this.vulHoogte = vulHoogte;
 		this.inklapbaar = inklapbaar;
+		this.checkUitklapVak = checkUitklapVak;
 		this.inklapKnopPos = inklapKnopPos;
 		this.knopImageString1 = knopImageString1;
 		this.knopImageString2 = knopImageString2;

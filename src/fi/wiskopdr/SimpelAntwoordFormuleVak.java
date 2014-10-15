@@ -311,7 +311,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		formuleComponent.setLocation(0,0);
 		add(formuleComponent);
 		zetMaat();
-		int uitw = vakUitwerking?20:0;
+		int uitw = (vakUitwerking && !uitklapVak)?20:0;
 		scoreGoedComponent.setLocation(getSize().width-17-uitw,0);
 		scoreFoutComponent.setLocation(getSize().width-17-uitw,0);
 		scoreHalfComponent.setLocation(getSize().width-17-uitw,0);
@@ -419,7 +419,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 			}*/
 			
 			produceAction(e.getActionCommand());
-			int uitw = vakUitwerking?20:0;
+			int uitw = (vakUitwerking && !uitklapVak)?20:0;
 			scoreGoedComponent.setLocation(getSize().width-17-uitw,0);
 			scoreFoutComponent.setLocation(getSize().width-17-uitw,0);
 			scoreHalfComponent.setLocation(getSize().width-17-uitw,0);

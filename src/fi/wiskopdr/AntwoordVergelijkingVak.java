@@ -1358,8 +1358,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				pijlVakken[i].setLocation(getSize().width - pijlX - 30, y);
 			if ("GR".equals(WiskOpdr.deployVariant) && pijlVakOperatoren != null && pijlVakOperatoren[i] != null && (pijlVakOperatoren[i].equals("sub") || pijlVakOperatoren[i].equals("abc")))
 				pijlVakken[i].setLocation(getSize().width - pijlX - 60, y);
-			if (pijl)
-				add(pijlVakken[i]);
+			
+			add(pijlVakken[i]);
+			pijlVakken[i].setPijlVisible(pijl);
 		}
 
 		this.ingevuld = ingevuld;
@@ -1894,7 +1895,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			{
 				formuleVak = formuleVakken[i];
 				checkAntwoord();
-				if (stepsForLinKwad && pijl && start > 0)
+				//if (stepsForLinKwad && pijl && start > 0)
+				if (stepsForLinKwad && start > 0)
 				{
 					checkStap(i - 1, formuleVakken[i - 1], formuleVakken[i]);
 					if (i == stapNr)
@@ -2703,8 +2705,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			pijlVakken[stapNr] = new PijlVak("implicatie");
 			int y = formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height / 2;
 			pijlVakken[stapNr].setLocation(getSize().width - pijlX, y);
-			if (pijl)
+			//if (pijl)
 				add(pijlVakken[stapNr]);
+				pijlVakken[stapNr].setPijlVisible(pijl);
 			pijlVak = pijlVakken[stapNr];
 
 			// formuleVakken[stapNr].setEditable(false);
@@ -2746,8 +2749,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			pijlVakken[stapNr - 1] = new PijlVak(operator);
 			int y = formuleVakken[stapNr - 1].getLocation().y + formuleVakken[stapNr - 1].getSize().height / 2;
 			pijlVakken[stapNr - 1].setLocation(getSize().width - pijlX, y);
-			if (pijl)
+			//if (pijl)
 				add(pijlVakken[stapNr - 1]);
+				pijlVakken[stapNr - 1].setPijlVisible(pijl);
 			pijlVak = pijlVakken[stapNr - 1];
 
 			formuleVakken[stapNr] = new FormuleVak();
@@ -2778,8 +2782,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				pijlVakken[stapNr - 1].setLocation(getSize().width - pijlX - 30, y);
 			if ("GR".equals(WiskOpdr.deployVariant) && (operator.equals("abc") || operator.equals("sub")))
 				pijlVakken[stapNr - 1].setLocation(getSize().width - pijlX - 60, y);
-			if (pijl)
+			//if (pijl)
 				add(pijlVakken[stapNr - 1]);
+				pijlVakken[stapNr - 1].setPijlVisible(pijl);
 			pijlVak = pijlVakken[stapNr - 1];
 			formuleVak = pijlVak.formuleVak;
 			pijlVak.requestFocus();

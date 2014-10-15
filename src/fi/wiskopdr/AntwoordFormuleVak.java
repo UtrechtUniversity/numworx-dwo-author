@@ -422,7 +422,12 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	}
 	
 	public void zetSimpelFormuleVak(FormuleVak f)
-	{	f.setLocation(formuleVakX,10);
+	{	
+		
+		int x = formuleVakX + (hasPrefix ? prefixVakken[0].getSize().width : 0);
+		//formuleVakken[0].setLocation(x,formuleVakY);
+		f.setLocation(x,formuleVakY);
+		//f.setLocation(formuleVakX,10);
 		f.setBorder(true);
 		
 		if(stapNr>0)//(!startString && stapNr>0 || stapNr>1)

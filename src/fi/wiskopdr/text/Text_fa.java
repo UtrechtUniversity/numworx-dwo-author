@@ -407,6 +407,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 {"TVEP_linkObject" , "Link object"},
                 {"TVEP_editLink" , "Edit link"},
                 {"TVEP_defaultBijNull" , "default  "},
+                {"TVEP_checkUitklapVak" , "check"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "گزینه ذخیره کردن"},

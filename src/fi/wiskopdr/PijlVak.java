@@ -129,6 +129,14 @@ public class PijlVak extends FormuleElement implements ActionListener
 		formuleVak.setFont(f);
 	}
 	
+	public void setPijlVisible(boolean b)
+	{
+		if(!b && operator.equals("implicatie") && "".equals(pijlTekst))
+			setVisible(false);
+		else
+			setVisible(true);
+	}
+	
 	public void paintComponent(Graphics g)
 	{	//Graphics g;
         //if(WiskOpdr.deployVariant!=null && WiskOpdr.deployVariant.equals("GR"))

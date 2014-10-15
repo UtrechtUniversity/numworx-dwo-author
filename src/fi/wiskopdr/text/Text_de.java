@@ -415,6 +415,7 @@ public class Text_de extends java.util.ListResourceBundle
                 {"TVEP_linkObject" , "Objekt verknüpfen"},
                 {"TVEP_editLink" , "Verknüpfung ändern"},
                 {"TVEP_defaultBijNull" , "standard  )"},
+                {"TVEP_checkUitklapVak" , "check"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Abspeichern möglich"},

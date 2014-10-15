@@ -409,6 +409,7 @@ public class Text_gr extends java.util.ListResourceBundle
                 {"TVEP_linkObject" , "Σύνδεση αντικειμένου"},
                 {"TVEP_editLink" , "Επεξεργασία σύνδεσης"},
                 {"TVEP_defaultBijNull" , "εξ ορισμού  )"},
+                {"TVEP_checkUitklapVak" , "check"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Αποθήκευση επιλογής"},

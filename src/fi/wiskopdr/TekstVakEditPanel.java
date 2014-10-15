@@ -126,6 +126,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean callOut;
 	private JCheckBox inklapbaarCB;
 	private boolean inklapbaar;
+	private boolean checkUitklapVak;
 	
 	String[][][] randomteksten = null;
 	Hashtable[][] randomIpLaunchdata = null;
@@ -159,6 +160,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private Image knopImage1;
 	private Image knopImage2;
 	private JRadioButton posBeginRB, posEindRB, posNaTekstRB;
+	private JCheckBox checkUitklapVakCB;
 	
 	private JPanel optionsPanel;
 	private JPanel layoutOptionsPanel, interactionOptionsPanel; 
@@ -255,10 +257,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
 		inklapbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_inklapbaar"), 10,415,120,20, inklapbaar, layoutOptionsPanel);
+		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
 		
 		sleepHandleCB.setVisible(false);
 		colorSelectionCB.setVisible(false);
+		checkUitklapVakCB.setVisible(false);
 		sleepbaarCB.setEnabled(false);
 		sleepdoelCB.setEnabled(false);
 		
@@ -623,6 +627,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean callOut = false;
 		boolean vulHoogte = false;
 		boolean inklapbaar = false;
+		boolean checkUitklapVak = false;
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
@@ -685,6 +690,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOut = this.callOut;
 		vulHoogte = this.vulHoogte;
 		inklapbaar = this.inklapbaar;
+		checkUitklapVak = this.checkUitklapVak;	
 		knopImageString1 = this.knopImageString1;
 		knopImageString2 = this.knopImageString2;
 		randomteksten = this.randomteksten;
@@ -778,6 +784,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	h.put("knopImageString1", knopImageString1);
 			h.put("knopImageString2", knopImageString2);
 			h.put("inklapKnopPos", inklapKnopPos);
+			h.put("checkUitklapVak", new Boolean(checkUitklapVak));
 		}
 		h.put("random", new Boolean(random));
 		h.put("isLink", new Boolean(isLink));
@@ -840,6 +847,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean callOut = false;
 		boolean vulHoogte = false;
 		boolean inklapbaar = false;
+		boolean checkUitklapVak = false;
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
@@ -896,6 +904,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("callOut")) callOut = ((Boolean)h.get("callOut")).booleanValue();
 		if(h.containsKey("vulHoogte")) vulHoogte = ((Boolean)h.get("vulHoogte")).booleanValue();
 		if(h.containsKey("inklapbaar")) inklapbaar = ((Boolean)h.get("inklapbaar")).booleanValue();
+		if(h.containsKey("checkUitklapVak")) checkUitklapVak = ((Boolean)h.get("checkUitklapVak")).booleanValue();
 		if(h.containsKey("inklapKnopPos")) inklapKnopPos = ((Integer)h.get("inklapKnopPos")).intValue();
 		if(h.containsKey("knopImageString1")) knopImageString1 = (String)h.get("knopImageString1");
 		if(h.containsKey("knopImageString2")) knopImageString2 = (String)h.get("knopImageString2");
@@ -948,6 +957,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.callOut = callOut;
 		this.vulHoogte = vulHoogte;
 		this.inklapbaar = inklapbaar;
+		this.checkUitklapVak = checkUitklapVak;	
 		this.knopImageString1 = knopImageString1;
 		this.knopImageString2 = knopImageString2;
 		this.random = random;
@@ -989,6 +999,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB.setSelected(callOut);
 		vulHoogteCB.setSelected(vulHoogte);
 		inklapbaarCB.setSelected(inklapbaar);
+		checkUitklapVakCB.setSelected(checkUitklapVak);
 		posBeginRB.setSelected(inklapKnopPos==0);
 		posBeginRB.setVisible(inklapbaar);
 		posEindRB.setSelected(inklapKnopPos==1);
@@ -997,6 +1008,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		posNaTekstRB.setVisible(inklapbaar);
 		knopImageButton1.setVisible(inklapbaar);
 		knopImageButton2.setVisible(inklapbaar);
+		checkUitklapVakCB.setVisible(inklapbaar);
 		linkCB.setSelected(isLink);
 		defaultBijNullCB.setSelected(defaultBijNull);
 		linkButton.setVisible(isLink);
@@ -1474,11 +1486,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			posBeginRB.setVisible(inklapbaar);
 			posEindRB.setVisible(inklapbaar);
 			posNaTekstRB.setVisible(inklapbaar);
+			checkUitklapVakCB.setVisible(inklapbaar);
 			
 			repaint();
 		}
 		if(e.getSource().equals(posBeginRB) || e.getSource().equals(posEindRB) || e.getSource().equals(posNaTekstRB))
 		{	tekstVakPanel.setEditState(getEditState());
+		}
+		if(e.getSource().equals(checkUitklapVakCB))
+		{	checkUitklapVak = checkUitklapVakCB.isSelected();
+			tekstVakPanel.setEditState(getEditState());
 		}
 		if(e.getSource().equals(sleepdoelCB))
 		{	sleepdoel = sleepdoelCB.isSelected();

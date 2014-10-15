@@ -413,6 +413,7 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TVEP_linkObject" , "Objeto vinculante"},
                 {"TVEP_editLink" , "Editar el vínculo"},
                 {"TVEP_defaultBijNull" , "por defecto  )"},
+                {"TVEP_checkUitklapVak" , "check"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Opción guardar"},

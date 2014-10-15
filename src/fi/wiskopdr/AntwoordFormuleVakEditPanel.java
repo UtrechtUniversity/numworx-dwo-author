@@ -45,6 +45,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	private boolean	significant;
 	static boolean	significantieAan=false;
 	private boolean	stappen = true;
+	private boolean	stappenDefault = true;
 	private boolean	subKnop = false;
 	private boolean	subKnopExtra = false;
 	
@@ -254,11 +255,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
        add(ideasButton);
        
        if(soort==0)
-		{	stappen = true;				
+		{	stappen = true;	
+			stappenDefault = true;	
 		}
 		
 		else if(soort==2)
 		{	stappen = false;
+			stappenDefault = false;
 			startLabel.setVisible(false);
 			startEditor.setVisible(false);
 			rmKnopCB.setVisible(false);
@@ -459,7 +462,27 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		setAnswerModel(answerModels[answerModelNr]);	
 	}
 	
-			
+	public Hashtable changeToCompatibleEditState(Hashtable interactiePanelLaunchState)
+    {	Hashtable compatibleLaunchSate = new Hashtable();
+    	compatibleLaunchSate.putAll(interactiePanelLaunchState);
+    	compatibleLaunchSate.remove("startString");
+    	compatibleLaunchSate.remove("stappen");
+    	compatibleLaunchSate.remove("subKnop");
+    	compatibleLaunchSate.remove("subKnopExtra");
+    	compatibleLaunchSate.remove("formuleToolBijFocus");
+    	compatibleLaunchSate.remove("rmKnop");
+    	compatibleLaunchSate.remove("linStrategieVersie");
+    	compatibleLaunchSate.remove("linOefenVersie");
+    	compatibleLaunchSate.remove("bordjesMethode");
+    	compatibleLaunchSate.remove("tips");
+    	compatibleLaunchSate.remove("ideasInstellingen");
+    	
+    	compatibleLaunchSate.remove("uitw");
+    	compatibleLaunchSate.remove("aantalDecRm");
+    	compatibleLaunchSate.remove("eigenOpdr");
+    	return compatibleLaunchSate;
+    }
+	
 	public void setEditState(Hashtable interactiePanelLaunchState)
 	{			
 				String antwoordString = "$f@";
@@ -467,7 +490,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean herleiding = false;
 				boolean exact = false;
 				boolean significant = false;
-				boolean stappen = true;
+				boolean stappen = stappenDefault;
 				int soortHerleiding = 0;
 				int puntenGelijkwaardig = 10;
 				int puntenHerleiding = 0;
@@ -551,11 +574,12 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				this.stappen = stappen;
 				this.formuleToolBijFocus = formuleToolBijFocus;
 				
-				this.answerModels = new Hashtable[answerModels.length];
-				for(int i=0 ; i<answerModels.length ; i++)
-				{	this.answerModels[i] = answerModels[i];
+				if(answerModels != null)
+				{	this.answerModels = new Hashtable[answerModels.length];
+					for(int i=0 ; i<answerModels.length ; i++)
+					{	this.answerModels[i] = answerModels[i];
+					}
 				}
-					
 					//this.answerModels = answerModels;
 				
 				this.subKnop = subKnop;

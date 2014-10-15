@@ -47,6 +47,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	static boolean	significantieAan=false;
     
     private boolean stappen = true;
+    private boolean stappenDefault = true;
     
     private boolean abcKnop;
     private boolean subKnop;
@@ -302,11 +303,13 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
         if(soort==1)
         {   stappen = true;
+       		stappenDefault = true;
         	formuleToolBijFocusCB.setVisible(false);
         	uitwCB.setVisible(false);
         }
         else if(soort==3)
         {   stappen = false;
+        	stappenDefault = false;
             zetVergelijkingKnoppen(false);
             startLabel.setVisible(false);
             startEditor.setVisible(false);
@@ -511,6 +514,37 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         setAnswerModel(answerModels[answerModelNr]);    
     }
     
+    public Hashtable changeToCompatibleEditState(Hashtable interactiePanelLaunchState)
+    {	Hashtable compatibleLaunchSate = new Hashtable();
+    	compatibleLaunchSate.putAll(interactiePanelLaunchState);
+    	compatibleLaunchSate.remove("startString");
+    	compatibleLaunchSate.remove("stappen");
+    	compatibleLaunchSate.remove("bewerkingKnoppen");
+    	compatibleLaunchSate.remove("bewerkingKnoppenExtra");
+    	compatibleLaunchSate.remove("abcKnop");
+    	compatibleLaunchSate.remove("subKnop");
+    	compatibleLaunchSate.remove("subKnopExtra");
+    	compatibleLaunchSate.remove("formuleToolBijFocus");
+    	compatibleLaunchSate.remove("pijl");
+    	compatibleLaunchSate.remove("linStrategieVersie");
+    	compatibleLaunchSate.remove("linOefenVersie");
+    	compatibleLaunchSate.remove("bordjesMethode");
+    	compatibleLaunchSate.remove("tips");
+    	compatibleLaunchSate.remove("ideasInstellingen");
+    	compatibleLaunchSate.remove("tipOpBalk");
+    	compatibleLaunchSate.remove("hulpOpBalk");
+    	compatibleLaunchSate.remove("stapOpBalk");
+    	compatibleLaunchSate.remove("solveOpBalk");
+    	compatibleLaunchSate.remove("tipBijFout");
+    	compatibleLaunchSate.remove("meerTips");
+    	compatibleLaunchSate.remove("feedbackBijFout");
+    	compatibleLaunchSate.remove("hulpBijTip");
+    	compatibleLaunchSate.remove("changedTexts");
+    	compatibleLaunchSate.remove("strategieDomein");
+    	compatibleLaunchSate.remove("uitw");
+    	compatibleLaunchSate.remove("casAntw");
+    	return compatibleLaunchSate;
+   }
             
     public void setEditState(Hashtable interactiePanelLaunchState)
     {           String antwoordString = "$f@";
@@ -518,7 +552,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 boolean vorm = false;
                 boolean exact = false;
                 boolean significant = false;
-				boolean stappen = true;
+				boolean stappen = stappenDefault;
                 int puntenGelijkwaardig = 10;
                 int puntenVorm = 0;
                 int puntenExact = 0;

@@ -20,13 +20,6 @@ import javax.swing.*;
 
 import org.cbook.cbookif.CBookWidgetIF;
 
-
-
-
-
-
-
-
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -41,6 +34,8 @@ import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakEditPanel;
+import fi.wiskopdr.AntwoordFormuleVakEditPanel;
+import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.TekstVakPanel;
@@ -63,6 +58,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 {
 
 	private InteractieEditPanel interactieEditPanel;
+	private int huidigSoortInteractiePanel = -1;
 	private JButton okButton;
     private JButton cancelButton;
     private JComboBox soortAntwoordVakKeuze;
@@ -614,6 +610,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("popupImageString", popupImageString);
         if(crossWidgetId != null)
         	h.put("crossWidgetId", crossWidgetId);
+        System.out.println("LaunchState: "+interactiePanelLaunchState.toString());
         
 		return h;
     }
@@ -660,19 +657,45 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
             
         }
         else if(e.getSource()==soortAntwoordVakKeuze)
-		{	if(interactieEditPanel!=null) getContentPane().remove((Component)interactieEditPanel);
+		{	Hashtable oldInteractiePanelLaunchState = null;
+		 	int oldSoortInteractiePanel = huidigSoortInteractiePanel;
+        	if(interactieEditPanel!=null) 
+			{	Hashtable h = getEditState();
+				if(h.containsKey("interactiePanelLaunchState")) oldInteractiePanelLaunchState = (Hashtable)h.get("interactiePanelLaunchState");
+				
+				getContentPane().remove((Component)interactieEditPanel);
+			}
 			int selectNr = soortAntwoordVakKeuze.getSelectedIndex()-1;
 			Object o = soortAntwoordVakKeuze.getSelectedItem();
+			int soortInteractiePanel = -1;
 			if(o instanceof CBookWidgetIF)
 			{
 				makeInteractieEditPanel( (CBookWidgetIF) o, getCrossWidgetId());
 			} else
 			{
-				int soortInteractiePanel = -1;
+				
 				if(selectNr >-1 )soortInteractiePanel = set[selectNr];
 				makeInteractieEditPanel(soortInteractiePanel);
 			} 
 			plaatsEditInteractiePanel();
+			huidigSoortInteractiePanel = soortInteractiePanel;
+			if(oldInteractiePanelLaunchState!=null)
+			{	
+				System.out.println("oldSoortInteractiePanel: "+oldSoortInteractiePanel);
+				System.out.println("soortInteractiePanel: "+soortInteractiePanel);
+				Hashtable compatibleLaunchState = null;
+				boolean compatibleFormuleVak = 	oldSoortInteractiePanel==0 && soortInteractiePanel==2 || oldSoortInteractiePanel==2 && soortInteractiePanel==0 ;
+				boolean compatibleVergelijkingVak = oldSoortInteractiePanel==1 && soortInteractiePanel==3 || oldSoortInteractiePanel==3 && soortInteractiePanel==1 ;
+				
+				if(compatibleFormuleVak)
+					compatibleLaunchState = ((AntwoordFormuleVakEditPanel)interactieEditPanel).changeToCompatibleEditState(oldInteractiePanelLaunchState);
+				if(compatibleVergelijkingVak)
+					compatibleLaunchState = ((AntwoordVergelijkingVakEditPanel)interactieEditPanel).changeToCompatibleEditState(oldInteractiePanelLaunchState);
+				if(compatibleLaunchState!=null)	
+				{	interactieEditPanel.setEditState(compatibleLaunchState);
+					System.out.println("compatibleLaunchState: "+compatibleLaunchState.toString());
+				}
+			}
 		}
         else if (e.getSource() == breedteTF) {
         	if(interactieEditPanel!=null) interactieEditPanel.zetBreedte(Integer.parseInt(breedteTF.getText()));
