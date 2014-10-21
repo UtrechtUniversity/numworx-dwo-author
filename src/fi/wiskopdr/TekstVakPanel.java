@@ -606,6 +606,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int callOutPointY = 0;
 		boolean vulHoogte = false;
 		boolean inklapbaar = false;
+		boolean checkUitklapVak = false;
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
@@ -718,6 +719,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			knopImageString2 = (String)h.get("knopImageString2");
 		if (h.containsKey("ingeklapt"))
 			ingeklapt = ((Boolean) h.get("ingeklapt")).booleanValue();
+		if (h.containsKey("checkUitklapVak"))
+			checkUitklapVak = ((Boolean) h.get("checkUitklapVak")).booleanValue();
 		if (h.containsKey("uitklapHoogtes"))
 			uitklapHoogtes = (int[])h.get("uitklapHoogtes");
 		if (h.containsKey("callOut"))
@@ -814,6 +817,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.puntenAftrekPopup = puntenAftrekPopup;
 		this.vulHoogte = vulHoogte;
 		this.inklapbaar = inklapbaar;
+		this.checkUitklapVak = checkUitklapVak;
 		this.uitklapHoogtes = uitklapHoogtes;
 		this.inklapKnopPos = inklapKnopPos;
 		this.knopImageString1 = knopImageString1;
@@ -1020,7 +1024,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		klapUitButton = new JToggleButton();
 		klapUitButton.setIcon(new ImageIcon(WiskOpdr.class.getResource("resources/klapuit1.png")));
 		klapUitButton.setSelectedIcon(new ImageIcon(WiskOpdr.class.getResource("resources/klapuit2.png")));
-		klapUitButton.setSize(15,15);
+		klapUitButton.setSize(checkUitklapVak?30:15,15);
 		
 		if(knopImageString1!=null && !"".equals(knopImageString1))
        	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -1029,7 +1033,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    		klapUitButton.setIcon(new ImageIcon(knopImage1));
 		    int imWidth = iconman.getWidth(knopImageString1);
 			int imHeight = iconman.getHeight(knopImageString1);
-			if(imWidth == -1) imWidth = 15;
+			if(imWidth == -1) imWidth = checkUitklapVak?30:15;
 			if(imHeight == -1) imHeight = 15;
 			klapUitButton.setSize(imWidth,imHeight);
 		}
@@ -3204,6 +3208,18 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			klapUitButton.setBackground(Color.white);
 			produceAction("tvpKlapIn");
 			//klapUitButton.setSelected(false);
+			
+			
+			if(checkUitklapVak) 
+			{	boolean vakinhoudCorrect = true;
+				Vector v = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanels();
+				for (int i = 0; i < v.size(); i++)
+				{	vakinhoudCorrect = vakinhoudCorrect && ((InteractiePanelContainerIF) v.elementAt(i)).isCorrect();
+					
+				}
+				if(correct)klapUitButton.setIcon(new ImageIcon(WiskOpdr.class.getResource("resources/klapuit1goed.png")));
+				else klapUitButton.setIcon(new ImageIcon(WiskOpdr.class.getResource("resources/klapuit1.png")));
+			}
 		}
 		if(editable)
 			WiskOpdr.setLaunchDataChanged();
