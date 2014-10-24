@@ -92,7 +92,8 @@ public class RoundedPanel extends JLayeredPane {
 								RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setColor( borderColor);
 		int macC = 0;
-		if(WiskOpdr.mac && !(System.getProperty("java.specification.version").equals("1.6") || System.getProperty("java.specification.version").equals("1.7"))) macC = 1;
+		String jVersion =  System.getProperty("java.specification.version");
+		if(WiskOpdr.mac && (jVersion.equals("1.3") || jVersion.equals("1.4") || jVersion.equals("1.5"))) macC = 1;
 		if(!transparant && borderThickness > 0) g2.fillRoundRect(callOutX0 + -macC, callOutY0 + -macC, getWidth()+macC-callOutX0-callOutX1, getHeight()+macC-callOutY0-callOutY1, curvature, curvature);
 		else if(borderThickness>0) 
 			for(int i=0 ; i<borderThickness ; i++)

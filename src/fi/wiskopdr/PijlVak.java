@@ -131,7 +131,7 @@ public class PijlVak extends FormuleElement implements ActionListener
 	
 	public void setPijlVisible(boolean b)
 	{
-		if(!b && operator.equals("implicatie") && "".equals(pijlTekst))
+		if(!b && operator.equals("implicatie") && (pijlTekst.getText()==null  || pijlTekst.getText().trim().length()<1))
 			setVisible(false);
 		else
 			setVisible(true);

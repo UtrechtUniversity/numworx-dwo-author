@@ -142,7 +142,8 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 		Graphics g ;
 	    //if(WiskOpdr.deployVariant!=null && WiskOpdr.deployVariant.equals("GR"))
 	    {   g = (Graphics2D)gr;
-	    	if(System.getProperty("java.specification.version").equals("1.6") || System.getProperty("java.specification.version").equals("1.7") )
+		    String jVersion =  System.getProperty("java.specification.version");
+	    	if(!(jVersion.equals("1.3") || jVersion.equals("1.4") || jVersion.equals("1.5")))
 			{	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 		        ((Graphics2D)g).setRenderingHint(KEY_TEXT_LCD_CONTRAST, new Integer(100));
 		    }

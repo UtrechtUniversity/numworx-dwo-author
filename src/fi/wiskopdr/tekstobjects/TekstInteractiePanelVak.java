@@ -37,6 +37,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -1840,6 +1841,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			setLocation(xNieuw, yNieuw);
 			((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
 			repaint();
+			
 			WiskOpdr.setLaunchDataChanged();
 		}
 		else if(resizeModus)
@@ -1968,7 +1970,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				}
 			}
 			else  if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&((TekstVakPanel)interactiePanel).isIpSleepbaar())
-			{	if(getParent()instanceof TekstVak)((TekstVak)getParent()).add(this,0);
+			{	//if(getParent()instanceof TekstVak)
+				//	((TekstVak)getParent()).add(this,0);
+				if(getParent()instanceof TekstVak)
+					getParent().setComponentZOrder(this, 0);
+				
 				((TekstVakPanel)interactiePanel).startDrag();
 				sleepModus = true;
 				startX = e.getX();
