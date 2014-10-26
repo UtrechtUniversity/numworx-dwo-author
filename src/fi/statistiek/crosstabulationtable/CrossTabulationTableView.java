@@ -313,18 +313,28 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			else
 			{
 				// er is geen split
-//				System.out.println("CrossTabulationTable.update(): this.model.getColumnSplitIndex() > -1");
+				System.out.println("CrossTabulationTable.update(): this.model.getColumnSplitIndex() > -1");
+				return;
 			}
 
 			if (typeRows.isNumber())
 				numberOfRowBins = this.model.getBinBoundaries().size() - 1;
 			else 
 			{ // ENUM or STRING
-				if (this.model.enumClassFrequency() != null)
-					numberOfRowBins = this.model.enumClassFrequency()[0].length;
+				FrequencyTuple[][] freq = this.model.enumClassFrequency();
+				if (freq != null)
+					numberOfRowBins = freq[0].length;
 				else
 					numberOfRowBins = 0;
 			}
+			
+			// test syl
+			if (numberOfRowBins > 100)
+			{
+				System.out.println("CrossTabulationTableView.update(): number of rows is more than 100");
+				return;
+			}
+			
 						
 			numberOfColumnBins = this.model.getTableModel().splitVarClasses(
 				this.model.getSplitOptions());
