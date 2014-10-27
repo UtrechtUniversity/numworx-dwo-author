@@ -195,12 +195,20 @@ public class DotplotView extends JPanel implements Observer
 		// this.colorLegend.setVisible(false);
 	}
 
+	/**
+	 * Get the string options of column X.
+	 * @return
+	 */
 	private ArrayList<String> getXStringOptions()
 	{
 		return this.model.getTableModel().getStringOptions(
 			this.model.getColumnXIndex());
 	}
 
+	/**
+	 * Get the string options of column Y.
+	 * @return
+	 */
 	private ArrayList<String> getYStringOptions()
 	{
 		return this.model.getTableModel().getStringOptions(
@@ -1889,7 +1897,7 @@ public class DotplotView extends JPanel implements Observer
 
 		int count = 0;
 		
-		// old algorithm is extremely slow for large datasets...
+//		 old algorithm is extremely slow for large datasets...
 //		double sum = 0;
 //		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
 //		{
@@ -2014,30 +2022,33 @@ public class DotplotView extends JPanel implements Observer
 		if (this.model.isShowCorrelation()
 			&& !this.model.columnSplitIndexValid())
 		{
+			double correlation;
+			double r;
+			
 			g.setColor(Color.BLACK);
 
 			int columnAIndex = this.model.getColumnXIndex();
 			int columnBIndex = this.model.getColumnYIndex();
-			double meanA = this.getColumnMean(columnAIndex, this.getXStringOptions());
-			double meanB = this.getColumnMean(columnBIndex, this.getYStringOptions());
+//			double meanA = this.getColumnMean(columnAIndex, this.getXStringOptions());
+//			double meanB = this.getColumnMean(columnBIndex, this.getYStringOptions());
 
-			double covar = this.getCovariance(columnAIndex, meanA,
-				this.getXStringOptions(), columnBIndex, meanB,
-				this.getYStringOptions());
-			double sdA = this.getStdDev(columnAIndex, meanA, this.getXStringOptions());
-			double sdB = this.getStdDev(columnBIndex, meanB, this.getYStringOptions());
-			double correlation = covar / (sdA * sdB);
+//			double covar = this.getCovariance(columnAIndex, meanA,
+//				this.getXStringOptions(), columnBIndex, meanB,
+//				this.getYStringOptions());
+//			double sdA = this.getStdDev(columnAIndex, meanA, this.getXStringOptions());
+//			double sdB = this.getStdDev(columnBIndex, meanB, this.getYStringOptions());
+//			correlation = covar / (sdA * sdB);
 			
 //			System.out.println("DotplotView.drawCorrelation(): covar = " + covar
 //				+ ", sdA = " + sdA
 //				+ ", sdB = " + sdB
 //				+ ", corr = " + correlation);
 
-			int y = (this.model.getTableModel().isViewsEditable() ? this
-				.getHeight() - 10 - DotplotView.KEUZEBALK_HOOGTE : this
-				.getHeight() - 3);
+//			int y = (this.model.getTableModel().isViewsEditable() ? this
+//				.getHeight() - 10 - DotplotView.KEUZEBALK_HOOGTE : this
+//				.getHeight() - 3);
 			
-			double r = Math.round(correlation * 100) / 100.0;
+			//r = Math.round(correlation * 100) / 100.0;
 			
 			String correlationInfoString;
 			
@@ -2045,13 +2056,21 @@ public class DotplotView extends JPanel implements Observer
 			String pString;
 			// calculate significance met Common math package
 //			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
+			
+			// voor algoritme zie http://onlinestatbook.com/2/describing_bivariate_data/calculation.html
+			correlation = this.getCorrelation(data[0], data[1]);
+			r = Math.round(correlation * 100) / 100.0;
+			int n = data[0].length;
+//			double t = correlation * Math.sqrt(n - 2) / Math.sqrt(1 - Math.pow(correlation, 2)); 
+			// getting p value from t distribution without using apache.commons is not trivial..., so use significance table
+			
 			try
 			{
 //				RealMatrix pValues = pearsonCorrelation.getCorrelationPValues();
 //				double p1 = Statistiek.round((double) pValues.getEntry(0, 1), 3);
 
 				// determine p value with significance table
-				double p = getLevelOfSignificance(correlation, data.length);
+				double p = getLevelOfSignificance(correlation, n);
 				
 				if (p == 0)
 				{
@@ -2077,6 +2096,7 @@ public class DotplotView extends JPanel implements Observer
 						"r=" + Double.toString(r) 
 //						+ ", p_common=" + p1
 						+ ", p<" + pString;
+				
 			}
 			catch (Exception e)
 			{
@@ -2088,6 +2108,54 @@ public class DotplotView extends JPanel implements Observer
 				3, this.scrollPane.getHeight()
 				+ this.X_AS_OFFSET - 37);
 		}
+	}
+
+	/**
+	 * Get Pearson's correlation coefficient r for column X and Y. 
+	 * For algorithm, see: http://onlinestatbook.com/2/describing_bivariate_data/calculation.html
+	 * 
+	 * @param columnX An array with valid values of column X.
+	 * @param columnY An array with valid values of column Y.
+	 */
+	private double getCorrelation(double[] columnX, double[] columnY)
+	{
+		// column A and B should be of the same length, providing valid value pairs
+		int n = Math.min(columnX.length, columnY.length);
+		
+		double[] xy = new double[n];
+		double[] xSquared = new double[n];
+		double[] ySquared = new double[n];
+		for (int i = 0; i < n; i++)
+		{
+		    xy[i] = columnX[i] * columnY[i];
+		    xSquared[i] = Math.pow(columnX[i], 2);
+		    ySquared[i] = Math.pow(columnY[i], 2);
+		}
+			    
+		double sumX = this.sum(columnX);
+		double sumY = this.sum(columnY);
+		double sumXY = this.sum(xy);
+		double sumXSquared = this.sum(xSquared);
+		double sumYSquared = this.sum(ySquared);
+
+		return (sumXY - ((sumX * sumY)/n)) / 
+			(Math.sqrt(sumXSquared - (Math.pow(sumX, 2)/n)) 
+				* Math.sqrt(sumYSquared - (Math.pow(sumY, 2)/n)));
+	}
+
+	/**
+	 * Sum the elements in the doubles array.
+	 * @param doubles
+	 * @return
+	 */
+	private double sum(double[] doubles)
+	{
+		double sum = 0;
+		
+		for (double value:doubles)
+		     sum += value;
+		
+		return sum;
 	}
 
 	/**
@@ -2140,7 +2208,7 @@ public class DotplotView extends JPanel implements Observer
 			i = 39;
 		else if ((n > 400) && (n <= 500))
 			i = 40;
-		else if ((n > 500) && (n <= 1000))
+		else if ((n > 500))//test syl && (n <= 1000))
 			i = 41;
 			
 		// read the table for row i
@@ -2164,51 +2232,6 @@ public class DotplotView extends JPanel implements Observer
 			level = -1;
 		
 		return level;
-	}
-
-	/**
-	 * Creates a matrix with the values of column A and column B.
-	 * @param columnBIndex 
-	 * @param columnAIndex 
-	 * @return An array with doubles. If column A or column B contains non-numerical values,
-	 * these values are not set in the array and count as missing. 
-	 */
-	private double[][] getDataColumnsForCorrelation(int columnAIndex, int columnBIndex)
-	{
-		double[][] data = new double[this.model.getTableModel().getRowCount()][2];
-		
-		// count the valid pairs of values
-		int count = 0;
-
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
-		{
-			try
-			{
-				// column A value
-				data[count][0] = Double.parseDouble(((String) this.model.getTableModel().getValueAt(i, columnAIndex)));
-				// column B value
-				data[count][1] = Double.parseDouble(((String) this.model.getTableModel().getValueAt(i, columnBIndex)));
-				// if both column values are valid, increase count
-				count++;
-			}
-			catch (NumberFormatException e)
-			{
-				// data contains non-numerical values; these count as missing
-			}
-		}
-		
-		// return the data with non-valid pairs of values excluded
-		double[][] data_missingExcluded = new double[count][2];
-		
-		for (int i = 0; i < count; i++)
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				data_missingExcluded[i][j] = data[i][j];
-			}
-		}
-		
-		return data_missingExcluded;
 	}
 
 	/**
