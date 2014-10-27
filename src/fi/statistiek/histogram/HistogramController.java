@@ -238,7 +238,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		 */
 		else if (ac.equals("chooseBinsButton"))
 		{
-			Container c = Statistiek.getTopLevelAcestor(this.view);
+			Container c = Statistiek.getTopLevelAncestor(this.view);
 
 			DefineBinBoundariesDialog dialog = null;
 			if (c instanceof Dialog)
