@@ -528,7 +528,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	 */
 	public void showViewInDialog(StatistiekView sv, Point location)
 	{
-		Container owner = Statistiek.getTopLevelAcestor(this);
+		Container owner = Statistiek.getTopLevelAncestor(this);
 		if (owner instanceof Frame)
 		{
 			Frame frameOwner = (Frame) owner;
@@ -665,6 +665,8 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	{
 //		System.out.println("StatInteractiePanelView.updateStartVarBox()");
 
+		// test syl: moet deze methode niet zonder actionListener op startVarBox?
+		
 		// Alleen updaten als er kolomnamen zijn 
 		if (this.model.getData().getColumnNames().size() > 0)
 		{
@@ -724,6 +726,8 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	{
 //		System.out.println("StatInteractiePanelView.updateStartVar2Box()");
 
+		// test syl: moet deze methode niet zonder actionListener op startVar2Box?
+		
 		// Alleen updaten als er kolomnamen zijn 
 		if (this.model.getData().getColumnNames().size() > 0)
 		{
@@ -864,7 +868,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				&& StatInteractiePanelView.this.model.getData()
 					.isViewsEditable())
 			{
-				Container c = Statistiek.getTopLevelAcestor(StatInteractiePanelView.this);
+				Container c = Statistiek.getTopLevelAncestor(StatInteractiePanelView.this);
 				if (c instanceof Frame)
 				{
 					ChangeViewNameDialog dialog = new ChangeViewNameDialog(
