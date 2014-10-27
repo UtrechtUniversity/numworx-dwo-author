@@ -547,7 +547,7 @@ public class StatTable extends JPanel implements StatistiekView,
 			AddColumnDialogView dialogView;
 
 			// Try to find the top level ancestor (Dialog or Frame)
-			Container c = Statistiek.getTopLevelAcestor(this);
+			Container c = Statistiek.getTopLevelAncestor(this);
 			if (c instanceof Frame)
 			{
 				dialogView = new AddColumnDialogView((Frame) c, dialogModel);
@@ -604,7 +604,7 @@ public class StatTable extends JPanel implements StatistiekView,
 				this.popUpColumnIndex);
 			AddColumnDialogView v;
 
-			Container c = Statistiek.getTopLevelAcestor(this);
+			Container c = Statistiek.getTopLevelAncestor(this);
 			if (c instanceof Frame)
 			{
 				v = new AddColumnDialogView((Frame) c, m);
@@ -843,11 +843,27 @@ public class StatTable extends JPanel implements StatistiekView,
         {
         	String dataRow = rowIterator.next();
         	
-        	String[] values = dataRow.split(";");
+         	String[] values = dataRow.split(";", -1);
+         	this.replaceMissingValues(values);
         	ArrayList<Object> valuesList= new ArrayList<Object>(Arrays.asList(values));
         	
         	this.statTableModel.addRowWithoutEvent(valuesList);
         }
+	}
+
+	/**
+	 * Replace empty values with missing value wildcard.
+	 * @param values
+	 */
+	private void replaceMissingValues(String[] values)
+	{
+		for (int i = 0; i < values.length; i++)
+		{
+			if (values[i].equals(""))
+			{
+				values[i] = ColumnType.WILDCARD;
+			}
+		}
 	}
 
 	public Object getState()
