@@ -244,7 +244,7 @@ public class Statistiek implements WiskOpdrApplet
 	 *            The component to get the top level ancestor of
 	 * @return c's top level ancestor
 	 */
-	public static Container getTopLevelAcestor(JComponent c)
+	public static Container getTopLevelAncestor(JComponent c)
 	{
 		Container container = c.getTopLevelAncestor();
 		while (container.getParent() != null)
