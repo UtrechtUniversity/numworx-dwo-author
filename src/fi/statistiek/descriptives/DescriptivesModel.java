@@ -692,6 +692,7 @@ public class DescriptivesModel extends Observable implements
 	public String getColumnSD(int columnIndex, int splitClass, boolean forSelection)
 	{
 		String sdString = null;
+		String notAvailable = Statistiek.rb.getString("notAvailable");
 
 		double sd;
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
@@ -701,12 +702,16 @@ public class DescriptivesModel extends Observable implements
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
 			// type is not numerical
-			sdString = Statistiek.rb.getString("notAvailable");
+			sdString = notAvailable;
 		}
 		else if (splitColumnIndex == -1)
 		{
 			// there is no split
-			sdString = Statistiek.getStringValue(this.tableModel.getColumnSD(columnIndex));
+			
+			if (!forSelection)
+				sdString = Statistiek.getStringValue(this.tableModel.getColumnSD(columnIndex));
+			else
+				sdString = Statistiek.getStringValue(this.tableModel.getColumnSDOfSelection(columnIndex));
 		}
 		else
 		{
@@ -719,33 +724,41 @@ public class DescriptivesModel extends Observable implements
 			int count = 0; // number of valid values
 			double mean;
 			
-			mean = Double.parseDouble(this.getColumnMean(columnIndex, splitClass, forSelection));
-			for (int i = 0; i < this.tableModel.getRowCount(); i++)
+			String meanString = this.getColumnMean(columnIndex, splitClass, forSelection);
+			if (meanString.equals(notAvailable))
 			{
-				if ((forSelection && this.tableModel.getSelectionList().get(i))
-					|| (!forSelection))
+				sdString = notAvailable;
+			}
+			else
+			{
+				mean = Double.parseDouble(meanString);
+				for (int i = 0; i < this.tableModel.getRowCount(); i++)
 				{
-					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
-					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
-	
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if ((forSelection && this.tableModel.getSelectionList().get(i))
+						|| (!forSelection))
 					{
-						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
-						
-						if (valueInSplit)
+						valueString = (String) this.tableModel.getValueAt(i, columnIndex);
+						splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
+		
+						if (!valueString.equals(ColumnType.WILDCARD))
 						{
-							Double d = Double.parseDouble(valueString);
-							sum += Math.pow(d - mean, 2);
-							count++;
+							valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
+							
+							if (valueInSplit)
+							{
+								Double d = Double.parseDouble(valueString);
+								sum += Math.pow(d - mean, 2);
+								count++;
+							}
 						}
 					}
 				}
+				
+				if (count > 0) // dit kan eigenlijk niet voorkomen; als er een gemiddelde is, is er ook een SD
+					sdString = Statistiek.getStringValue(Math.sqrt(sum/count));
+				else
+					sdString = Statistiek.rb.getString("notAvailable");
 			}
-			
-			if (count > 0)
-				sdString = Statistiek.getStringValue(Math.sqrt(sum/count));
-			else
-				sdString = Statistiek.rb.getString("notAvailable");
 		} // there is a split
 		
 		return sdString;
