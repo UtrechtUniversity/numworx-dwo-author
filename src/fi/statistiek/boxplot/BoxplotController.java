@@ -67,7 +67,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 		}
 		else if (actionCommand.equals("splitButton"))
 		{
-			Container c = Statistiek.getTopLevelAcestor(this.view);
+			Container c = Statistiek.getTopLevelAncestor(this.view);
 
 			SplitOptionsDialog dialog = null;
 			if (c instanceof Dialog)
