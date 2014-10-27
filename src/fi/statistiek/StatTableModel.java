@@ -1861,12 +1861,13 @@ public class StatTableModel implements TableModel
 	 * Creates a matrix with valid pairs of values of column A and column B.
 	 * @param columnAIndex 
 	 * @param columnBIndex 
-	 * @return An array with doubles. If column A or column B contains non-numerical values,
+	 * @return A matrix with valid pairs of values of column A and column B. If column A or column B contains non-numerical values,
 	 * these values count as missing and are not set in the array. 
 	 */
 	public double[][] getDataColumnsForCorrelation(int columnAIndex, int columnBIndex)
 	{
-		double[][] data = new double[this.getRowCount()][2];
+//		double[][] data = new double[this.getRowCount()][2];
+		double[][] data = new double[2][this.getRowCount()]; // flip matrix to make it easier to extract the data columns
 		
 		// count the valid pairs of values
 		int count = 0;
@@ -1876,9 +1877,11 @@ public class StatTableModel implements TableModel
 			try
 			{
 				// column A value
-				data[count][0] = Double.parseDouble(((String) this.getValueAt(i, columnAIndex)));
+//				data[count][0] = Double.parseDouble(((String) this.getValueAt(i, columnAIndex)));
+				data[0][count] = Double.parseDouble(((String) this.getValueAt(i, columnAIndex)));
 				// column B value
-				data[count][1] = Double.parseDouble(((String) this.getValueAt(i, columnBIndex)));
+//				data[count][1] = Double.parseDouble(((String) this.getValueAt(i, columnBIndex)));
+				data[1][count] = Double.parseDouble(((String) this.getValueAt(i, columnBIndex)));
 				// if both column values are valid, increase count
 				count++;
 			}
@@ -1889,11 +1892,16 @@ public class StatTableModel implements TableModel
 		}
 		
 		// return the data with non-valid pairs of values excluded
-		double[][] data_missingExcluded = new double[count][2];
+//		double[][] data_missingExcluded = new double[count][2];
+		double[][] data_missingExcluded = new double[2][count];
 		
-		for (int i = 0; i < count; i++)
+//		for (int i = 0; i < count; i++)
+//		{
+//			for (int j = 0; j < 2; j++)
+//			{
+		for (int j = 0; j < count; j++)
 		{
-			for (int j = 0; j < 2; j++)
+			for (int i = 0; i < 2; i++)
 			{
 				data_missingExcluded[i][j] = data[i][j];
 			}
