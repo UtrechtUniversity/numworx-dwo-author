@@ -358,7 +358,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 	
 	public void mouseClicked(MouseEvent arg0)
 	{
-		Container c = Statistiek.getTopLevelAcestor(this.view);
+		Container c = Statistiek.getTopLevelAncestor(this.view);
 		ChooseColorsDialog dialog;
 		if (c instanceof Frame)
 		{
