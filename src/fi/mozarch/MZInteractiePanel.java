@@ -32,9 +32,17 @@ public class MZInteractiePanel extends JPanel implements InteractiePanel, Intera
 	int fractielType = 1;
 	int aantalHoekpunten = 3;
 	int aantalPerZijde = 1;
- 
 	
-	boolean noSetBounds = false;	
+	boolean noSetBounds = false;
+	
+	// parametrisatie
+	boolean triangles = true;
+	boolean squares = true;
+	boolean pentagons = false;
+	boolean hexagons = true;
+	boolean octagons = true;
+	boolean dekagons = false;
+	boolean dodekagons = true;
 	
 	public MZInteractiePanel()
 	{
@@ -54,6 +62,14 @@ System.out.println("mzip zetOpdracht");
 		int aantalHoekpunten = 3;
 		int aantalPerZijde = 1;
 		int fractielType = 1;
+
+		boolean triangles = true;
+		boolean squares = true;
+		boolean pentagons = false;
+		boolean hexagons = true;
+		boolean octagons = true;
+		boolean dekagons = false;
+		boolean dodekagons = true;
 
 		if (b.containsKey("appletLaunchData"))
 		{
@@ -138,7 +154,22 @@ System.out.println("aLD found");
 				aantalHoekpunten = ((Integer) b.get("aantalHoekpunten")).intValue();
 			if (b.containsKey("aantalPerZijde"))
 				aantalPerZijde = ((Integer) b.get("aantalPerZijde")).intValue();
-			
+
+			if (b.containsKey("triangles"))
+				triangles = ((Boolean) b.get("triangles")).booleanValue();
+			if (b.containsKey("squares"))
+				squares = ((Boolean) b.get("squares")).booleanValue();
+			if (b.containsKey("pentagons"))
+				pentagons = ((Boolean) b.get("pentagons")).booleanValue();
+			if (b.containsKey("hexagons"))
+				hexagons = ((Boolean) b.get("hexagons")).booleanValue();
+			if (b.containsKey("octagons"))
+				octagons = ((Boolean) b.get("octagons")).booleanValue();
+			if (b.containsKey("dekagons"))
+				dekagons = ((Boolean) b.get("dekagons")).booleanValue();
+			if (b.containsKey("dodekagons"))
+				dodekagons = ((Boolean) b.get("dodekagons")).booleanValue();
+
 		}
 		
 		zetFractielen(fractielen);
@@ -147,6 +178,14 @@ System.out.println("aLD found");
 		zetAantalHoekpunten(aantalHoekpunten);
 		zetAantalPerZijde(aantalPerZijde);
 
+		setTriangles(triangles);
+		setSquares(squares);
+		setPentagons(pentagons);
+		setHexagons(hexagons);
+		setOctagons(octagons);
+		setDekagons(dekagons);
+		setDodekagons(dodekagons);
+		
 		//HIER state
 		if (b.containsKey("appletEditState"))
 		{
@@ -694,6 +733,14 @@ System.out.println("mzip setEditState");
 		int aantalPerZijde = 1;
 		int fractielType = 1;
 
+		boolean triangles = true;
+		boolean squares = true;
+		boolean pentagons = false;
+		boolean hexagons = true;
+		boolean octagons = true;
+		boolean dekagons = false;
+		boolean dodekagons = true;
+
 		if (b.containsKey("appletLaunchData"))
 		{
 System.out.println("aLD found");
@@ -778,6 +825,21 @@ System.out.println("aLD found");
 			if (b.containsKey("aantalPerZijde"))
 				aantalPerZijde = ((Integer) b.get("aantalPerZijde")).intValue();
 			
+			if (b.containsKey("triangles"))
+				triangles = ((Boolean) b.get("triangles")).booleanValue();
+			if (b.containsKey("squares"))
+				squares = ((Boolean) b.get("squares")).booleanValue();
+			if (b.containsKey("pentagons"))
+				pentagons = ((Boolean) b.get("pentagons")).booleanValue();
+			if (b.containsKey("hexagons"))
+				hexagons = ((Boolean) b.get("hexagons")).booleanValue();
+			if (b.containsKey("octagons"))
+				octagons = ((Boolean) b.get("octagons")).booleanValue();
+			if (b.containsKey("dekagons"))
+				dekagons = ((Boolean) b.get("dekagons")).booleanValue();
+			if (b.containsKey("dodekagons"))
+				dodekagons = ((Boolean) b.get("dodekagons")).booleanValue();
+			
 		}
 		
 		zetFractielen(fractielen);
@@ -785,6 +847,15 @@ System.out.println("aLD found");
 		zetFractielType(fractielType);
 		zetAantalHoekpunten(aantalHoekpunten);
 		zetAantalPerZijde(aantalPerZijde);
+
+		setTriangles(triangles);
+		setSquares(squares);
+		setPentagons(pentagons);
+		setHexagons(hexagons);
+		setOctagons(octagons);
+		setDekagons(dekagons);
+		setDodekagons(dodekagons);
+		
 		
 		//HIER state
 		if (b.containsKey("appletEditState"))
@@ -1102,7 +1173,16 @@ System.out.println("set: h contains vv");
 		h.put("aantalHoekpunten", new Integer(aantalHoekpunten));
 		h.put("aantalPerZijde", new Integer(aantalPerZijde));
 		
+		h.put("triangles", new Boolean(triangles));
+		h.put("squares", new Boolean(squares));
+		h.put("pentagons", new Boolean(pentagons));
+		h.put("hexagons", new Boolean(hexagons));
+		h.put("octagons", new Boolean(octagons));
+		h.put("dekagons", new Boolean(dekagons));
+		h.put("dodekagons", new Boolean(dodekagons));
+		
 		Vector vlakdelenVector = new Vector();
+		
 		for (int i = 0; i < tekenPanel.aantalVlakdelen; i++)
 		{	Hashtable hv = new Hashtable();
 			hv.put("fractielType", new Integer(tekenPanel.vlakdelen[i].fractielType));
@@ -1186,6 +1266,49 @@ System.out.println("set: h contains vv");
 		tekenPanel.initialiseer2();
 		tekenPanel.repaint();
 		
+	}
+	
+	public void setTriangles(boolean b)
+	{	triangles = b;
+		tekenPanel.triangles = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setSquares(boolean b)
+	{	squares = b;
+		tekenPanel.squares = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setPentagons(boolean b)
+	{	pentagons = b;
+		tekenPanel.pentagons = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setHexagons(boolean b)
+	{	hexagons = b;
+		tekenPanel.hexagons = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setOctagons(boolean b)
+	{	octagons = b;
+		tekenPanel.octagons = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setDekagons(boolean b)
+	{	dekagons = b;
+		tekenPanel.dekagons = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
+	}
+	public void setDodekagons(boolean b)
+	{	dodekagons = b;
+		tekenPanel.dodekagons = b;
+		tekenPanel.initialiseer2();
+		tekenPanel.repaint();
 	}
 	
 	public InteractieEditPanel getEditPanel()

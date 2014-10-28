@@ -51,6 +51,36 @@ public class TekenPanel extends JPanel implements ActionListener
     
     double dummyX, startX, startY;
     
+	// parametrisatie
+	boolean triangles = true;
+	boolean squares = true;
+	boolean pentagons = false;
+	boolean hexagons = true;
+	boolean octagons = true;
+	boolean dekagons = false;
+	boolean dodekagons = true;
+
+	int triangleHeight = 40;
+	int squareHeight = 40;
+	int pentagonHeight = 66;
+	int hexagonHeight = 80;
+	int octagonHeight = 98;
+	int dekagonHeight = 130;
+	int dodekagonHeight = 150;
+	
+	int triangleVOffset = 15;
+	int squareVOffset = 15;
+	int pentagonVOffset = 15;
+	int hexagonVOffset = 15;
+	int octagonVOffset = 15;
+	int dekagonVOffset = 15;
+	int dodekagonVOffset = 15;
+	
+	
+	
+	int stapelsBoven;
+
+    
 	//-----------------------------------------------------------------------------------------
 	// initalisatie
 	//-----------------------------------------------------------------------------------------
@@ -201,7 +231,7 @@ public class TekenPanel extends JPanel implements ActionListener
 	}
 	
 	
-	void maakVeelhoek(int aantalPerZijde, int n, double x, double y, Color k)
+	int maakVeelhoek(int aantalPerZijde, int n, double x, double y, Color k)
 	{	
 		double r = zijde * aantalPerZijde / (2 * Math.sin(Math.PI / n));
 		
@@ -231,7 +261,9 @@ public class TekenPanel extends JPanel implements ActionListener
 		}
 		
 		vlakdelen[aantalVlakdelen].hoekpunten[aantalPerZijde * n + 1] = vlakdelen[aantalVlakdelen].hoekpunten[1];
-		aantalVlakdelen++;														
+		aantalVlakdelen++;
+		
+		return (aantalVlakdelen - 1);
 	}
 	
 	void maakFractiel(int type, int aantalPerZijde, double x, double y, Color k)
@@ -404,9 +436,13 @@ public class TekenPanel extends JPanel implements ActionListener
 		vulAan(vd.kleur);
 		
 		for (int i = 0; i < len; i++)
-		{	stap(vd.hoekpunten[(i + 1 + num) % len].x - vd.hoekpunten[(i + num) % len].x , 
+		{	
+			if ((i + 1 + num) % len == 0 || (i + num) % len == 0)
+				tb.zetVul(false);
+			stap(vd.hoekpunten[(i + 1 + num) % len].x - vd.hoekpunten[(i + num) % len].x , 
 				 vd.hoekpunten[(i + 1 + num) % len].y - vd.hoekpunten[(i + num) % len].y);
 			vd.hoekpunten[(i + 1 + num) % len].tekenpunt = new Punt(geefPunt());
+			tb.zetVul(true);
 		}
 		vulUit();
 		vd.tekenvlak = geefVlak();
@@ -424,9 +460,116 @@ public class TekenPanel extends JPanel implements ActionListener
 		tb.zetStart();
 	}	
 	
+	public void maakStapels()
+	{
+		int currentBoven = stapelsBoven;
+		//maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
+		if (triangles)
+		{	maakVeelhoek(1,  3, stapelX,  currentBoven - triangleHeight / 2, new Color(255, 0, 0));
+			currentBoven -= triangleHeight + triangleVOffset;
+		}	
+		//maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
+		if (squares)
+		{	maakVeelhoek(1,  4, stapelX,  currentBoven - squareHeight / 2, new Color(255, 255, 0));
+			currentBoven -= squareHeight + squareVOffset;;
+		}	
+		if (pentagons)
+		{	int index = maakVeelhoek(1,  5, stapelX,  currentBoven - pentagonHeight / 2, new Color(255, 0, 255));
+			currentBoven -= pentagonHeight + pentagonVOffset;;
+//System.out.println("h5 = " + vlakdelen[index].getHeight());
+		}
+		//maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
+		if (hexagons)
+		{	maakVeelhoek(1,  6, stapelX,  currentBoven - hexagonHeight / 2, new Color(0, 255, 0));
+			currentBoven -= hexagonHeight + hexagonVOffset;;
+		}	
+		//maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
+		if (octagons)
+		{	maakVeelhoek(1,  8, stapelX,  currentBoven - octagonHeight / 2, new Color(0, 255, 255));
+			currentBoven -= octagonHeight + octagonVOffset;
+		}	
+		if (dekagons)
+		{	int index = maakVeelhoek(1,  10, stapelX,  currentBoven - dekagonHeight / 2, new Color(255, 127, 0));
+			currentBoven -= dekagonHeight + dekagonVOffset;;
+//System.out.println("h10 = " + vlakdelen[index].getHeight());
+		}
+		//maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+		if (dodekagons)
+		{	maakVeelhoek(1, 12, stapelX,  currentBoven - dodekagonHeight / 2, new Color(0, 0, 255));
+		}
+		
+	}
+
+	public void maakStapel()
+	{
+		
+//System.out.println("maakStapel");		
+
+		if (actiefVlakdeel == null)
+		{	
+//System.out.println("avd = null");			
+			return;
+		}
+
+		stapelsBoven = cY - 10; //30;
+		
+		int pts = actiefVlakdeel.aantalPunten;
+//System.out.println("avdpts = " + pts);		
+		
+		int currentBoven = stapelsBoven;
+		//maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
+		if (triangles && (pts == 4))
+		{	maakVeelhoek(1,  3, stapelX,  currentBoven - triangleHeight / 2, new Color(255, 0, 0));
+		}
+		if (triangles)
+			currentBoven -= triangleHeight + triangleVOffset;
+			
+		//maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
+		if (squares && (pts == 5))
+		{	maakVeelhoek(1,  4, stapelX,  currentBoven - squareHeight / 2, new Color(255, 255, 0));
+		}
+		if (squares)
+			currentBoven -= squareHeight + squareVOffset;;
+			
+		if (pentagons && (pts == 6))
+		{	int index = maakVeelhoek(1,  5, stapelX,  currentBoven - pentagonHeight / 2, new Color(255, 0, 255));
+		}
+		if (pentagons)
+			currentBoven -= pentagonHeight + pentagonVOffset;;
+//System.out.println("h5 = " + vlakdelen[index].getHeight());
+		
+		//maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
+		if (hexagons && (pts == 7))
+		{	maakVeelhoek(1,  6, stapelX,  currentBoven - hexagonHeight / 2, new Color(0, 255, 0));
+		}
+		if (hexagons)
+			currentBoven -= hexagonHeight + hexagonVOffset;;
+			
+		//maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
+		if (octagons && (pts == 9))
+		{	maakVeelhoek(1,  8, stapelX,  currentBoven - octagonHeight / 2, new Color(0, 255, 255));
+		}
+		if (octagons)
+			currentBoven -= octagonHeight + octagonVOffset;
+			
+		if (dekagons && (pts == 11))
+		{	int index = maakVeelhoek(1,  10, stapelX,  currentBoven - dekagonHeight / 2, new Color(255, 127, 0));
+		}
+		if (dekagons)
+			currentBoven -= dekagonHeight + dekagonVOffset;;
+//System.out.println("h10 = " + vlakdelen[index].getHeight());
+		
+		//maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+		if (dodekagons && (pts == 13))
+		{	maakVeelhoek(1, 12, stapelX,  currentBoven - dodekagonHeight / 2, new Color(0, 0, 255));
+		}
+		
+	}
+	
 	public void initialiseer()
 	{	
-		
+//System.out.println("initialiseer");
+
 		bgcolor = Color.white;
 		
 		if (fractielen)
@@ -493,6 +636,9 @@ public class TekenPanel extends JPanel implements ActionListener
 		
 //System.out.println("startX = " + startX);
 //System.out.println("startY = " + startY);
+		
+		stapelsBoven = cY - 10; //30;
+		
 
 		// originele versie
 		if (!fractielen)
@@ -501,12 +647,35 @@ public class TekenPanel extends JPanel implements ActionListener
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, dummyX, startY, new Color(230, 230, 230));
 			else 
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, startX, startY, new Color(230, 230, 230));
+
+
+			maakStapels();
+/*			
+			int currentBoven = stapelsBoven;
+			//maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
+			int index = maakVeelhoek(1,  3, stapelX,  currentBoven - triangleHeight / 2, new Color(255, 0, 0));
+			currentBoven += - triangleHeight - triangleVOffset;
+System.out.println("h3 = " + vlakdelen[index].getHeight());			
+
+//maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
+			index = maakVeelhoek(1,  4, stapelX,  currentBoven - squareHeight / 2, new Color(255, 255, 0));
+			currentBoven += - squareHeight - squareVOffset;
+System.out.println("h4 = " + vlakdelen[index].getHeight());
+
+			//maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
+			index = maakVeelhoek(1,  6, stapelX,  currentBoven - hexagonHeight / 2, new Color(0, 255, 0));
+			currentBoven += - hexagonHeight - hexagonVOffset;;
+System.out.println("h6 = " + vlakdelen[index].getHeight());			
 			
-			maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
-			maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
-			maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
-			maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
-			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+			//maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
+			index = maakVeelhoek(1,  8, stapelX,  currentBoven - octagonHeight / 2, new Color(0, 255, 255));
+			currentBoven += - octagonHeight - octagonVOffset;;
+System.out.println("h8 = " + vlakdelen[index].getHeight());			
+			
+			//maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+			index = maakVeelhoek(1, 12, stapelX,  currentBoven - dodekagonHeight / 2, new Color(0, 0, 255));
+System.out.println("h12 = " + vlakdelen[index].getHeight());			
+*/			
 			
 			if (beginFig)
 				vlakdelen[0].nieuw = false;
@@ -540,6 +709,7 @@ public class TekenPanel extends JPanel implements ActionListener
 	
 	public void initialiseer2()
 	{	
+//System.out.println("initialiseer2");		
 		
 		if (fractielen)
 			rightWidth = fractielRightWidth;
@@ -591,6 +761,8 @@ public class TekenPanel extends JPanel implements ActionListener
 //System.out.println("startX2 = " + startX);
 //System.out.println("startY2 = " + startY);
 		
+		stapelsBoven = cY - 10; //30;
+		
 		// originele versie
 		if (!fractielen)
 		{	
@@ -599,12 +771,35 @@ public class TekenPanel extends JPanel implements ActionListener
 			else 
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, startX, startY, new Color(230, 230, 230));
 			
-			maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
-			maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
-			maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
-			maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
-			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
-			
+
+			maakStapels();
+/*			
+			int currentBoven = stapelsBoven;
+			//maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
+			if (triangles)
+			{	maakVeelhoek(1,  3, stapelX,  currentBoven - triangleHeight / 2, new Color(255, 0, 0));
+				currentBoven -= triangleHeight + triangleVOffset;
+			}	
+			//maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
+			if (squares)
+			{	maakVeelhoek(1,  4, stapelX,  currentBoven - squareHeight / 2, new Color(255, 255, 0));
+				currentBoven -= squareHeight + squareVOffset;;
+			}	
+			//maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
+			if (hexagons)
+			{	maakVeelhoek(1,  6, stapelX,  currentBoven - hexagonHeight / 2, new Color(0, 255, 0));
+				currentBoven -= hexagonHeight + hexagonVOffset;;
+			}	
+			//maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
+			if (octagons)
+			{	maakVeelhoek(1,  8, stapelX,  currentBoven - octagonHeight / 2, new Color(0, 255, 255));
+				currentBoven -= octagonHeight + octagonVOffset;
+			}	
+			//maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+			if (dodekagons)
+			{	maakVeelhoek(1, 12, stapelX,  currentBoven - dodekagonHeight / 2, new Color(0, 0, 255));
+			}
+*/			
 			if (beginFig)
 				vlakdelen[0].nieuw = false;
 		
@@ -700,7 +895,9 @@ public class TekenPanel extends JPanel implements ActionListener
 			
 			// originele versie	
 			if (!fractielen)
-			{	
+			{
+				maakStapel();
+/*				
 				if (actiefVlakdeel.aantalPunten == 4)
 					maakVeelhoek(1, 3, stapelX, cY - 30, new Color(255, 0, 0));
 				else if (actiefVlakdeel.aantalPunten == 5)
@@ -711,6 +908,7 @@ public class TekenPanel extends JPanel implements ActionListener
 					maakVeelhoek(1, 8, stapelX, cY -270, new Color(0, 255, 255));
 				else if (actiefVlakdeel.aantalPunten == 13)
 					maakVeelhoek(1, 12, stapelX, cY - 410, new Color(0, 0, 255));
+*/					
 			}
 			else // fractielen versie
 			{	
@@ -872,12 +1070,16 @@ public class TekenPanel extends JPanel implements ActionListener
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, dummyX, startY, new Color(230, 230, 230));
 			else 
 				maakVeelhoek(beginFigAantalPz, beginFigAantalHp, startX, startY, new Color(230, 230, 230));
-        
+  
+
+			maakStapels();
+/*			
 			maakVeelhoek(1,  3, stapelX,  cY - 30, new Color(255, 0, 0));
 			maakVeelhoek(1,  4, stapelX,  cY - 90, new Color(255, 255, 0));
 			maakVeelhoek(1,  6, stapelX,  cY - 170, new Color(0, 255, 0));
 			maakVeelhoek(1,  8, stapelX,  cY - 270, new Color(0, 255, 255));
 			maakVeelhoek(1, 12, stapelX,  cY - 410, new Color(0, 0, 255));
+*/			
 			tekenOpnieuw();
         
 			if (beginFig)

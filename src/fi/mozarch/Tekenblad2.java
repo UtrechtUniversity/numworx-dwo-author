@@ -113,6 +113,10 @@ class Tekenblad2 extends JPanel
 	void penUit()
 	{	pen = false;
 	}
+	
+	void zetVul(boolean b)
+	{	vul = b;
+	}
 	void vulAan()
 	{	vul = true;
 		veelvlak = new Polygon();

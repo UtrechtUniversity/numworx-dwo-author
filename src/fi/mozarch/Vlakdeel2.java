@@ -2,6 +2,7 @@ package fi.mozarch;
 
 import java.io.Serializable;
 
+import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Color;
 import java.applet.Applet;
@@ -48,6 +49,30 @@ public class Vlakdeel2
 		
 //System.out.println("hoekpunten = " + hoekpunten.length);		
 	}
+	
+	public int getHeight()
+	{
+		//double xMin = 1000;
+		//double xMax = 0;
+		double yMin = 1000;
+		double yMax = 0;
+		for (int hCnt = 0; hCnt < hoekpunten.length; hCnt++)
+		{
+			//if (hoekpunten[hCnt].x < xMin)
+			//	xMin = hoekpunten[hCnt].x;
+			//if (hoekpunten[hCnt].x > xMax)
+			//	xMax = hoekpunten[hCnt].x;
+			if (hoekpunten[hCnt].y < yMin)
+				yMin = hoekpunten[hCnt].y;
+			if (hoekpunten[hCnt].y > yMax)
+				yMax = hoekpunten[hCnt].y;
+		}
+
+		return (int) Math.round(yMax - yMin);
+		
+		
+	}
+	
 	
 	public void klikVast(int hoekn, int vlakdeeln, int hoeknVlakdeel)
 	{	beginnummer = hoekn;

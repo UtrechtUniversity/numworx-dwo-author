@@ -40,6 +40,18 @@ public class MZInteractieEditPanel extends JPanel implements InteractieEditPanel
 	boolean aantalHoekpuntenComboEnabled = true, aantalPerZijdeComboEnabled = true, 
 	        fractielTypeComboEnabled = true;
 	
+	JLabel stapelsLabel;
+	JCheckBox drieBox, vierBox, vijfBox, zesBox, achtBox, tienBox, twaalfBox;
+	
+	// parametrisatie
+	boolean triangles = true;
+	boolean squares = true;
+	boolean pentagons = false;
+	boolean hexagons = true;
+	boolean octagons = true;
+	boolean dekagons = false;
+	boolean dodekagons = true;
+
 	public MZInteractieEditPanel()
 	{
 		setLayout(null);
@@ -147,8 +159,82 @@ public class MZInteractieEditPanel extends JPanel implements InteractieEditPanel
 		add(aantalPerZijdeCombo);
 		aantalPerZijdeCombo.addActionListener(this);
 		
-		currentY += height + offset / 2;		
+		currentY += height + 2 * offset;
 		
+		stapelsLabel = new JLabel(MozArch.rb.getString("stapelsTekst"));
+		stapelsLabel.setFont(theFont);
+		stapelsLabel.setBackground(Color.white);
+		width = theFM.stringWidth(stapelsLabel.getText());
+		stapelsLabel.setBounds(currentX + offset, currentY, width, theFM.getHeight());
+		add(stapelsLabel);
+
+		currentY += height;
+		
+		drieBox = new JCheckBox(MozArch.rb.getString("driehoekTekst"), triangles);
+		drieBox.setFont(theFont);
+		drieBox.setBackground(Color.white);
+		width = editWidth - 3 * offset;
+		drieBox.setBounds(currentX, currentY, width, height);
+		add(drieBox);
+		drieBox.addActionListener(this);
+		
+		currentY += height;
+
+		vierBox = new JCheckBox(MozArch.rb.getString("vierkantTekst"), squares);
+		vierBox.setFont(theFont);
+		vierBox.setBackground(Color.white);
+		vierBox.setBounds(currentX, currentY, width, height);
+		add(vierBox);
+		vierBox.addActionListener(this);
+		
+		currentY += height;
+
+		vijfBox = new JCheckBox(MozArch.rb.getString("vijfhoekTekst"), pentagons);
+		vijfBox.setFont(theFont);
+		vijfBox.setBackground(Color.white);
+		vijfBox.setBounds(currentX, currentY, width, height);
+		add(vijfBox);
+		vijfBox.addActionListener(this);
+		
+		currentY += height;
+
+		zesBox = new JCheckBox(MozArch.rb.getString("zeshoekTekst"), hexagons);
+		zesBox.setFont(theFont);
+		zesBox.setBackground(Color.white);
+		zesBox.setBounds(currentX, currentY, width, height);
+		add(zesBox);
+		zesBox.addActionListener(this);
+		
+		currentY += height;
+
+		achtBox = new JCheckBox(MozArch.rb.getString("achthoekTekst"), octagons);
+		achtBox.setFont(theFont);
+		achtBox.setBackground(Color.white);
+		achtBox.setBounds(currentX, currentY, width, height);
+		add(achtBox);
+		achtBox.addActionListener(this);
+		
+		currentY += height;
+
+		tienBox = new JCheckBox(MozArch.rb.getString("tienhoekTekst"), dekagons);
+		tienBox.setFont(theFont);
+		tienBox.setBackground(Color.white);
+		tienBox.setBounds(currentX, currentY, width, height);
+		add(tienBox);
+		tienBox.addActionListener(this);
+		
+		currentY += height;
+
+		twaalfBox = new JCheckBox(MozArch.rb.getString("twaalfhoekTekst"), dodekagons);
+		twaalfBox.setFont(theFont);
+		twaalfBox.setBackground(Color.white);
+		twaalfBox.setBounds(currentX, currentY, width, height);
+		add(twaalfBox);
+		twaalfBox.addActionListener(this);
+		
+		currentY += height;
+
+
 		componentsCreated = true;
 	}	
 	
@@ -165,6 +251,16 @@ public class MZInteractieEditPanel extends JPanel implements InteractieEditPanel
 			fractielTypeCombo.setLocation(mzip.getSize().width + 5 * offset, fractielTypeCombo.getLocation().y);
 			aantalPerZijdeLabel.setLocation(mzip.getSize().width + 2 * offset, aantalPerZijdeLabel.getLocation().y);
 			aantalPerZijdeCombo.setLocation(mzip.getSize().width + 5 * offset, aantalPerZijdeCombo.getLocation().y);
+			
+			stapelsLabel.setLocation(mzip.getSize().width + 2 * offset, stapelsLabel.getLocation().y);
+			drieBox.setLocation(mzip.getSize().width + 2 * offset, drieBox.getLocation().y);
+			vierBox.setLocation(mzip.getSize().width + 2 * offset, vierBox.getLocation().y);
+			vijfBox.setLocation(mzip.getSize().width + 2 * offset, vijfBox.getLocation().y);
+			zesBox.setLocation(mzip.getSize().width + 2 * offset, zesBox.getLocation().y);
+			achtBox.setLocation(mzip.getSize().width + 2 * offset, achtBox.getLocation().y);
+			tienBox.setLocation(mzip.getSize().width + 2 * offset, tienBox.getLocation().y);
+			twaalfBox.setLocation(mzip.getSize().width + 2 * offset, twaalfBox.getLocation().y);
+			
 		}
 	}
 	
@@ -262,6 +358,23 @@ System.out.println("aLD found");
 				aantalHoekpunten = ((Integer) b.get("aantalHoekpunten")).intValue();
 			if (b.containsKey("aantalPerZijde"))
 				aantalPerZijde = ((Integer) b.get("aantalPerZijde")).intValue();
+		
+			if (b.containsKey("triangles"))
+				triangles = ((Boolean) b.get("triangles")).booleanValue();
+			if (b.containsKey("squares"))
+				squares = ((Boolean) b.get("squares")).booleanValue();
+			if (b.containsKey("pentagons"))
+				pentagons = ((Boolean) b.get("pentagons")).booleanValue();
+			if (b.containsKey("hexagons"))
+				hexagons = ((Boolean) b.get("hexagons")).booleanValue();
+			if (b.containsKey("octagons"))
+				octagons = ((Boolean) b.get("octagons")).booleanValue();
+			if (b.containsKey("dekagons"))
+				dekagons = ((Boolean) b.get("dekagons")).booleanValue();
+			if (b.containsKey("dodekagons"))
+				dodekagons = ((Boolean) b.get("dodekagons")).booleanValue();
+			
+			
 			
 		}
 		
@@ -300,6 +413,16 @@ System.out.println("aLD found");
 		fractielTypeLabel.setEnabled(startFiguurBox.isSelected());
 		fractielTypeCombo.setEnabled(startFiguurBox.isSelected());
 		
+		drieBox.setSelected(triangles);
+		vierBox.setSelected(squares);
+		vijfBox.setSelected(pentagons);
+		zesBox.setSelected(hexagons);
+		achtBox.setSelected(octagons);
+		tienBox.setSelected(dekagons);
+		twaalfBox.setSelected(dodekagons);
+		
+		enableStapelKeuze(!fractielenBox.isSelected());
+		
 		
 		if (b.containsKey("mzipBreedte"))
 			mzipBreedte = ((Integer) b.get("mzipBreedte")).intValue();
@@ -311,6 +434,18 @@ System.out.println("aLD found");
 		// HIER !!
 		mzip.setEditState(b);		
 		
+	}
+	
+	public void enableStapelKeuze(boolean b)
+	{
+		stapelsLabel.setEnabled(b);
+		drieBox.setEnabled(b);
+		vierBox.setEnabled(b);
+		vijfBox.setEnabled(b);
+		zesBox.setEnabled(b); 
+		achtBox.setEnabled(b);
+		tienBox.setEnabled(b);
+		twaalfBox.setEnabled(b);
 	}
 	
 	public Hashtable getEditState()
@@ -395,6 +530,7 @@ System.out.println("mziep getEditState");
 			fractielTypeLabel.setVisible(fractielenBox.isSelected());
 			fractielTypeCombo.setVisible(fractielenBox.isSelected());
 			
+			enableStapelKeuze(!fractielenBox.isSelected());
 		
 		}
 		else if (e.getSource() == startFiguurBox)
@@ -444,6 +580,35 @@ System.out.println("mziep getEditState");
 			
 			mzip.zetFractielType(index + 1);
 			
+		}
+	
+		else if (e.getSource() == drieBox)
+		{
+			mzip.setTriangles(drieBox.isSelected());
+		}
+		else if (e.getSource() == vierBox)
+		{
+			mzip.setSquares(vierBox.isSelected());
+		}
+		else if (e.getSource() == vijfBox)
+		{
+			mzip.setPentagons(vijfBox.isSelected());
+		}
+		else if (e.getSource() == zesBox)
+		{
+			mzip.setHexagons(zesBox.isSelected());
+		}
+		else if (e.getSource() == achtBox)
+		{
+			mzip.setOctagons(achtBox.isSelected());
+		}
+		else if (e.getSource() == tienBox)
+		{
+			mzip.setDekagons(tienBox.isSelected());
+		}
+		else if (e.getSource() == twaalfBox)
+		{
+			mzip.setDodekagons(twaalfBox.isSelected());
 		}
 		
 

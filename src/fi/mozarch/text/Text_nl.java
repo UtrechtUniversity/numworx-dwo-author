@@ -14,6 +14,16 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "aantalHoekpuntenTekst", "Aantal hoekpunten" },
 				{ "aantalPerZijdeTekst", "Aantal figuren per zijde" },
 				{ "fractielTypeTekst", "Type fractiel" },
+				
+				{ "stapelsTekst", "Gebruik" },
+				
+				{ "driehoekTekst", "Driehoeken" },
+				{ "vierkantTekst", "Vierkanten" },
+				{ "vijfhoekTekst", "Vijfhoeken" },
+				{ "zeshoekTekst", "Zeshoeken" },
+				{ "achthoekTekst", "Achthoeken" },
+				{ "tienhoekTekst", "Tienhoeken" },
+				{ "twaalfhoekTekst", "Twaalfhoeken" },
 					
 				
         };

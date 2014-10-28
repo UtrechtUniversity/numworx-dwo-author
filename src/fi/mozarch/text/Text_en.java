@@ -15,6 +15,17 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "aantalPerZijdeTekst", "Number of figures per edge" },
 				{ "fractielTypeTekst", "Fractile type" },
 				
+				{ "stapelsTekst", "Construct using" },
+				
+				{ "driehoekTekst", "Triangles" },
+				{ "vierkantTekst", "Squares" },
+				{ "vijfhoekTekst", "Pentagons" },
+				{ "zeshoekTekst", "Hexagons" },
+				{ "achthoekTekst", "Octagons" },
+				{ "tienhoekTekst", "Decagons" },
+				{ "twaalfhoekTekst", "Dodecagons" },
+
+				
         };
 }
 
