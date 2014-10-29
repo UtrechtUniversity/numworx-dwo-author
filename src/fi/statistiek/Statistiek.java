@@ -331,12 +331,19 @@ public class Statistiek implements WiskOpdrApplet
 			start = (Math.ceil(min / step) - 1) * step;
 		}
 
+		// make sure step is not too large
+		// use min value instead of start to be more constraining 
+		while (min + step >= max)
+		{
+			step = Math.ceil(step / 2);
+		}
+		
 		// make sure the maximum value is covered by the bins
 		while ((start + noBins * step) <= max)
 		{
-			step++;
+			step = increaseStep(step);
 		}
-
+		
 		// build arraylist
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		// correct afronden op basis van decimalen in start en binWidth
@@ -352,6 +359,68 @@ public class Statistiek implements WiskOpdrApplet
 			boundaries.add(d);
 		}
 		return boundaries;
+	}
+
+	/**
+	 * Increase the step with a value that is reasonable taking
+	 * into account the size of the step.
+	 * 
+	 * @param step
+	 * @return
+	 */
+	private static double increaseStep(double step)
+	{
+		double newStep = step;
+		boolean found = false;
+		
+		if (divisibleBy(step, 10)) // tiental
+		{
+			int count = 0;
+			double result = step;
+			
+			while (divisibleBy(result, 10))
+			{
+				// deel door 10 tot niet meer mogelijk
+				result = result / 10;
+				count++;
+			}
+			
+			if (result >= 3)
+			{
+				// bepaal de nieuwe step, bijv.
+				// step = 30  -> newStep = 40
+				// step = 300 -> newStep = 400
+				newStep = step + Math.pow(10, count);
+				found = true;
+			}
+		}
+		
+		if (!found)
+		{
+			if (divisibleBy(step, 5)) // vijftal (inclusief tiental < 30)
+			{
+				if (step / 5 > 1) // vijftal > 5
+				{
+					newStep = step + 5;
+				}
+			}
+			else
+			{
+				newStep = step + 1;
+			}
+		}
+		
+		return newStep;
+	}
+
+	private static boolean divisibleBy(double step, int factor)
+	{
+		boolean divisible = false;
+		
+		if ((int) step % factor == 0)
+			divisible = true;
+		
+		return divisible;
 	}
 
 	/**
