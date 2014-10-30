@@ -687,31 +687,78 @@ public class StatTable extends JPanel implements StatistiekView,
 			// Remove old views
 			this.removeViews();
 			
+			// remove listeners related to views
+			this.removeViewListeners();
+			
 			processCSVDataFile(fileChooser.getSelectedFile());
 		}
 	}
-	
+
+	/**
+	 * Remove listeners related to views, except the table view.
+	 */
+	private void removeViewListeners()
+	{
+		// remove table model listeners
+		ArrayList<TableModelListener> listeners = this.statTableModel.getTableModelListeners();
+		
+		for (int i = listeners.size() - 1; i >= 0; i--)
+		{
+			TableModelListener l = listeners.get(i);
+			
+			// check for listeners other than listeners related to the table view
+			if (!(l instanceof StatModel) 
+				&& !(l instanceof StatTable)
+				&& !(l.getClass().getName().equals("fi.statistiek.StatTable$1"))
+				&& !(l instanceof RowNumberTable))
+			{
+				// remove listener related to a view other than table
+				this.statTableModel.removeTableModelListener(l);
+			}
+		}
+		
+		// remove selection listeners
+		ArrayList<SelectionListener> selectionListeners = this.statTableModel.getSelectionListeners();
+		
+		for (int i = selectionListeners.size() - 1; i >= 0; i--)
+		{
+			SelectionListener l = selectionListeners.get(i);
+			
+			// check for listeners other than listeners related to the table view
+			if (!(l instanceof StatTable))
+			{
+				// remove selection listener related to a view other than table
+				this.statTableModel.removeSelectionListener(l);
+			}
+		}
+	}
+
 	/**
 	 * Remove views except Table.
 	 */
 	private void removeViews()
 	{
+		// test syl
+		//System.out.println("StatTable.removeViews()");
+		
 		ArrayList<StatistiekView> views = new ArrayList<StatistiekView>();
 		
-		// In edit-mode is statInteractiePanel null
+		// In edit-mode en standalone is statInteractiePanel null... De tabs blijven daar gewoon staan
 		if (this.statInteractiePanel != null)
+		{
 			views = this.statInteractiePanel.getModel().getViews();
 		
-        Iterator<StatistiekView> iterator = views.iterator();
-        while (iterator.hasNext()) 
-        {
-        	StatistiekView view = iterator.next();
-        	if (!view.getViewName().equals(this.viewName))
-        	{
-        		iterator.remove();
-        		this.statInteractiePanel.getModel().removeView(view.getViewName());
-        	}
-        }
+	        Iterator<StatistiekView> iterator = views.iterator();
+	        while (iterator.hasNext()) 
+	        {
+	        	StatistiekView view = iterator.next();
+	        	if (!view.getViewName().equals(this.viewName))
+	        	{
+	        		iterator.remove();
+	        		this.statInteractiePanel.getModel().removeView(view.getViewName());
+	        	}
+	        }
+		}
 	}
 
 	
@@ -750,14 +797,14 @@ public class StatTable extends JPanel implements StatistiekView,
 		for (int i = numberOfRows - 1; i >= 0; i--)
 		{
 			//System.out.println("StatTable.clearStatTableModel(): remove row " + i);
-			this.statTableModel.removeRow(i);
+			this.statTableModel.removeRowWithoutEvent(i);
 		}
 
 		int numberOfColumns = this.statTableModel.getColumnCount(); 
 		for (int i = numberOfColumns - 1; i >=0; i--)
 		{
 			//System.out.println("StatTable.clearStatTableModel(): remove column " + i);
-			this.statTableModel.removeColumn(i);
+			this.statTableModel.removeColumnWithoutEvent(i);
 		}
 	}
 
