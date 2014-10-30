@@ -387,7 +387,9 @@ public class StatTableModel implements TableModel
 	 *            the index of the column by which data is split
 	 * @param binBoundaries
 	 *            the bin boundaries to split numerical data by
-	 * @return the split class in which the given value is
+	 * @return the split class in which the given value is.
+	 * Returns -1 if the value can not be classified
+	 * TODO:, for example when value is a wildcard ('*').
 	 */
 	public int classifyObject(String value, int columnIndex,
 		ArrayList<Double> binBoundaries)
@@ -396,6 +398,8 @@ public class StatTableModel implements TableModel
 			|| ColumnType.WILDCARD.equals(value))
 		{
 			return 0;
+			// test syl
+//			return -1;
 		}
 
 		ColumnType cType = this.getColumnTypes().get(columnIndex);
@@ -427,11 +431,14 @@ public class StatTableModel implements TableModel
 		}
 		else if (type.equals(AllowedTypes.ENUM))
 		{
-			int ret = 0;
+//			int ret = 0;
+			// test syl
+			int ret = -1;
 			for (String option : cType.getEnumOptions())
 			{
 				if (option.equals(value))
 				{
+					ret++;
 					break;
 				}
 				else if (!option.equals(ColumnType.WILDCARD))
@@ -517,6 +524,17 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
+	 * unsubscribe from events
+	 * 
+	 * @param l
+	 *            the listener to unsubscribe
+	 */
+	public synchronized void removeSelectionListener(SelectionListener l)
+	{
+		this.selectionListeners.remove(l);
+	}
+
+	/**
 	 * Checks if the input is valid
 	 * 
 	 * @param o
@@ -531,7 +549,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Set the value of a cell, without fireing an event
+	 * Set the value of a cell, without firing an event
 	 * 
 	 * @param o
 	 *            the new value
@@ -669,6 +687,10 @@ public class StatTableModel implements TableModel
 		this.values.add((objects));
 		this.selectionList.add(false);
 		this.rowCount++;
+		
+		// test syl
+//		System.out.println("StatTableModel.addRowWithoutEvent(): rowCount = " + rowCount
+//			+ ", objects = " + objects.toString());
 
 		for (int i = 0; i < this.columnCount; i++)
 		{
@@ -717,6 +739,34 @@ public class StatTableModel implements TableModel
 
 		this.fireEvent(new TableModelEvent(this));
 		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+	}
+
+	/**
+	 * Add a column, without firing an event. 
+	 * Used when importing a csv file.
+	 * 
+	 * @param columnName
+	 *            this column's name
+	 * @param columnType
+	 *            this colum's ColumnType
+	 */
+	public synchronized void addColumnWithoutEvent(String columnName, ColumnType columnType)
+	{
+		this.columnClass.add(columnType);
+		this.columnNames.add(columnName);
+
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			this.values.get(i).add(ColumnType.WILDCARD);
+		}
+		this.columnCount++;
+
+//		System.out.println("StatTableModel.addColumn(" 
+//			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
+//			+ this.buildColumnStringOptions(this.columnCount - 1) 
+//			+ "); stringFrequencies = " + stringFrequencies);
+		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
+		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
 	}
 
 	/**
@@ -782,6 +832,65 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
+	 * Edit a column without firing an event.
+	 * 
+	 * @param columnIndex
+	 *            the index of the column to edit
+	 * @param columnName
+	 *            the new column name
+	 * @param cType
+	 *            the new column type
+	 */
+	public synchronized void editColumnWithoutEvent(int columnIndex, String columnName,
+		ColumnType cType)
+	{
+		this.columnNames.set(columnIndex, columnName);
+		this.columnClass.set(columnIndex, cType);
+
+		if (!cType.getType().isNumber())
+		{
+			this.stringFrequencies.set(columnIndex,
+				this.buildColumnStringOptions(columnIndex));
+			this.stringOptions.set(columnIndex, this
+				.stringsInHashtable(this.stringFrequencies.get(columnIndex)));
+		}
+		else
+		{
+			this.stringFrequencies.set(columnIndex,new Hashtable<String, Integer>());
+			this.stringOptions.set(columnIndex, new ArrayList<String>());
+		}
+
+		for (int row = 0; row < this.rowCount; row++)
+		{
+			if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
+			{
+				this.setValueAt(ColumnType.WILDCARD, row, columnIndex);
+			}
+			else
+			{
+				// valid input but comma in double fields should be replaced
+				if (cType.getType().equals(AllowedTypes.DOUBLE) 
+					&& (((String) this.getValueAt(row, columnIndex)).indexOf(",") > -1))
+				{
+					String s = "";
+					try
+					{
+						// Allow commas in doubles
+						s = ((String) this.getValueAt(row, columnIndex)).replaceAll(",", ".");
+						Double.parseDouble((String) s);
+					}
+					catch (NumberFormatException e)
+					{
+						// This should not happen since it is validInput
+					}
+
+					this.setValueAtWithoutEvent(s, row, columnIndex);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Get the index of a column
 	 * 
 	 * @param columnName
@@ -826,6 +935,32 @@ public class StatTableModel implements TableModel
 			this.selectionList.remove(row);
 			this.rowCount--;
 			this.fireEvent(new TableModelEvent(this));
+		}
+	}
+
+	/**
+	 * Remove a row, without firing an event
+	 * 
+	 * @param row
+	 *            index of the row to remove
+	 */
+	public synchronized void removeRowWithoutEvent(int row)
+	{
+//		System.out.println("StatTableModel.removeRowWithoutEvent(row=" + row + "), this.hashCode()=" + this.hashCode());
+
+		if (row >= 0)
+		{
+			for (int i = 0; i < this.columnCount; i++)
+			{
+				if (!this.columnClass.get(i).getType().isNumber())
+				{
+					this.decreaseKeyHashtable((String) this.getValueAt(row, i), i);
+				}
+			}
+
+			this.values.remove(row);
+			this.selectionList.remove(row);
+			this.rowCount--;
 		}
 	}
 
@@ -1019,6 +1154,29 @@ public class StatTableModel implements TableModel
 			// specifiekere fireEvent en fireEvent voor headers
 			this.fireEvent(new TableModelEvent(this, 0, this.rowCount, column, TableModelEvent.DELETE));
 			this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
+		}
+	}
+
+	/**
+	 * Remove a column, without firing an event. To be used when clearing stattabelmodel
+	 * for the import of a csv file.
+	 * 
+	 * @param column
+	 *            index of the column to remove
+	 */
+	public synchronized void removeColumnWithoutEvent(int column)
+	{
+		if (column >= 0)
+		{
+			this.columnNames.remove(column);
+			this.columnClass.remove(column);
+			this.stringFrequencies.remove(column);
+			
+			for (ArrayList<Object> row : this.values)
+			{
+				row.remove(column);
+			}
+			this.columnCount--;
 		}
 	}
 
@@ -2027,6 +2185,24 @@ public class StatTableModel implements TableModel
 	{
 		this.listeners = new ArrayList<TableModelListener>();
 	}
+	
+	/**
+	 * Get the table model listeners.
+	 * @return
+	 */
+	public ArrayList<TableModelListener> getTableModelListeners()
+	{
+		return this.listeners;
+	}
+
+	/**
+	 * Get the selection listeners.
+	 * @return
+	 */
+	public ArrayList<SelectionListener> getSelectionListeners()
+	{
+		return this.selectionListeners;
+	}
 
 	public synchronized void setSelectionList(ArrayList<Boolean> selectionList)
 	{
@@ -2419,11 +2595,16 @@ public class StatTableModel implements TableModel
 			{
 				this.editColumn(i, this.getColumnName(i), 
 					new ColumnType(AllowedTypes.INTEGER));
+				// test syl
+//				this.editColumnWithoutEvent(i, this.getColumnName(i), 
+//					new ColumnType(AllowedTypes.INTEGER));
 			}
 			else if (this.hasDoubleValues(i))
 			{
 				this.editColumn(i, this.getColumnName(i), 
 					new ColumnType(AllowedTypes.DOUBLE));
+//				this.editColumnWithoutEvent(i, this.getColumnName(i), 
+//					new ColumnType(AllowedTypes.DOUBLE));
 			} 
 		}
 	}
