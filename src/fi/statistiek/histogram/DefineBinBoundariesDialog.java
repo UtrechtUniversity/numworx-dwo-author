@@ -20,7 +20,8 @@ import javax.swing.JTextField;
 import fi.statistiek.Statistiek;
 
 /**
- * Dialog in which the user can manually define bin boundaries
+ * Dialog in which the user can manually define bin boundaries.
+ * test syl: wordt niet meer gebruikt
  * @author Manu Drijvers
  *
  */
