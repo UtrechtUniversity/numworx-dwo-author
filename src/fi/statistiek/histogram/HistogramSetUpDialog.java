@@ -18,7 +18,8 @@ import javax.swing.JTextField;
 import fi.statistiek.Statistiek;
 
 /**
- * Dialog for setting up a Histogram
+ * Dialog for setting up a Histogram.
+ * test syl: wordt niet meer gebruikt
  * @author ManuDrijvers
  *
  */
