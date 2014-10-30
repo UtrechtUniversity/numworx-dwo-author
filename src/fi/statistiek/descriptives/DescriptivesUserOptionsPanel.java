@@ -105,10 +105,28 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		this.panel.setBackground(backgroundColor);
 
 		// selected variable settings
-		this.columnIndexBox = new JComboBox<String>();
+		// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
+		// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
+		// Solution: subclass and return a reasonable height
+		this.columnIndexBox = new JComboBox<String>() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			/** 
+             * @inherited <p>
+             */
+            @Override
+            public Dimension getMaximumSize() {
+                Dimension max = super.getMaximumSize();
+                max.height = getPreferredSize().height;
+                return max;
+            }
+        };
 		this.columnIndexBox.setFont(Statistiek.font);
 		this.columnIndexBox.setPreferredSize(new Dimension(100, 25));
-		this.columnIndexBox.setMaximumSize(new Dimension(100, 25));
+//		this.columnIndexBox.setMaximumSize(new Dimension(100, 25));
 		this.columnIndexBox.setActionCommand("columnIndexBox");
 		this.columnIndexBox.addActionListener(this.controller);
 
@@ -216,7 +234,7 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 	private void layoutGuiComponents()
 	{
 		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8, hb9, hb10, 
-			hb11, hb12, hb13, hb14;
+			hb11, hb12, hb13, hb14, hb15;
 		Box vb1, vb2;
 
 		// Selected variable settings
@@ -224,8 +242,6 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		hb1 = Box.createHorizontalBox();
 		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		hb1.add(columnIndexBox);
-		// create some extra space after columnIndexBox
-		hb1.add(Box.createRigidArea(new Dimension(25, 25)));
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -233,79 +249,80 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 			Statistiek.rb.getString("variableLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
 		vb1.add(hb1);
+		vb1.add(Box.createRigidArea(new Dimension(5,0)));
 		vb1.add(Box.createVerticalGlue());
+		vb1.add(Box.createHorizontalGlue());
 
 		// splitOptions
-		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
-		hb1.add(splitButton);
-
 		hb2 = Box.createHorizontalBox();
-		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb2.add(splitVarLabel);
+		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
+		hb2.add(splitButton);
 
 		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb3.add(splitVarBox);
+		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb3.add(splitVarLabel);
 
 		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb4.add(splitNoBinsLabel);
+		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb4.add(splitVarBox);
 
 		hb5 = Box.createHorizontalBox();
-		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb5.add(splitNoBinsBox);
+		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb5.add(splitNoBinsLabel);
 
 		hb6 = Box.createHorizontalBox();
 		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb6.add(separatorSplitBoundaries);
+		hb6.add(splitNoBinsBox);
 
 		hb7 = Box.createHorizontalBox();
 		hb7.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb7.add(splitChooseBoundariesButton);
+		hb7.add(separatorSplitBoundaries);
 
 		hb8 = Box.createHorizontalBox();
 		hb8.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb8.add(this.splitMinBoundaryLabel);
-		hb8.add(Box.createHorizontalStrut(5));
-		hb8.add(Box.createHorizontalGlue());
-		hb8.add(this.splitMinBoundaryField);
+		hb8.add(splitChooseBoundariesButton);
 
 		hb9 = Box.createHorizontalBox();
 		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb9.add(this.splitBinWidthLabel);
-		hb9.add(Box.createHorizontalStrut(5));
+		hb9.add(this.splitMinBoundaryLabel);
+		hb9.add(Box.createRigidArea(new Dimension(5,0)));
 		hb9.add(Box.createHorizontalGlue());
-		hb9.add(this.splitBinWidthField);
+		hb9.add(this.splitMinBoundaryField);
 
 		hb10 = Box.createHorizontalBox();
 		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb10.add(this.splitBoundariesLabel);
+		hb10.add(this.splitBinWidthLabel);
+		hb10.add(Box.createRigidArea(new Dimension(5,0)));
+		hb10.add(Box.createHorizontalGlue());
+		hb10.add(this.splitBinWidthField);
 
 		hb11 = Box.createHorizontalBox();
 		hb11.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb11.add(this.splitBoundariesAreaScrollPane);
+		hb11.add(this.splitBoundariesLabel);
 
 		hb12 = Box.createHorizontalBox();
-		hb12.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb12.add(this.splitNoObjectsLabel);
-		hb12.add(Box.createHorizontalGlue());
+		hb12.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb12.add(this.splitBoundariesAreaScrollPane);
 
 		hb13 = Box.createHorizontalBox();
 		hb13.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb13.add(this.splitMinValueLabel);
+		hb13.add(this.splitNoObjectsLabel);
 		hb13.add(Box.createHorizontalGlue());
 
 		hb14 = Box.createHorizontalBox();
 		hb14.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb14.add(this.splitMaxValueLabel);
+		hb14.add(this.splitMinValueLabel);
 		hb14.add(Box.createHorizontalGlue());
+
+		hb15 = Box.createHorizontalBox();
+		hb15.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb15.add(this.splitMaxValueLabel);
+		hb15.add(Box.createHorizontalGlue());
 
 		vb2 = Box.createVerticalBox();
 		vb2.setBorder(BorderFactory.createTitledBorder(border,
 			Statistiek.rb.getString("splitsLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
-		vb2.add(hb1);
 		vb2.add(hb2);
 		vb2.add(hb3);
 		vb2.add(hb4);
@@ -319,20 +336,22 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		vb2.add(hb12);
 		vb2.add(hb13);
 		vb2.add(hb14);
+		vb2.add(hb15);
 		vb2.add(Box.createVerticalGlue());
 		
 		Box hb0 = Box.createHorizontalBox();
-		hb0.add(Box.createHorizontalStrut(10));
+		hb0.add(Box.createRigidArea(new Dimension(10,0)));
 		hb0.add(vb1);
-		hb0.add(Box.createHorizontalStrut(10));
+		hb0.add(Box.createRigidArea(new Dimension(10,0)));
 		hb0.add(vb2);
-		hb0.add(Box.createHorizontalStrut(50));
+		hb0.add(Box.createRigidArea(new Dimension(10,0)));
+		hb0.add(Box.createHorizontalGlue());
 
 		vb0 = Box.createVerticalBox();
 		vb0.add(hb0);
-		vb0.add(Box.createVerticalStrut(10));
+		vb0.add(Box.createRigidArea(new Dimension(0,10)));
 		vb0.add(okButton);
-		vb0.add(Box.createVerticalStrut(20));
+		vb0.add(Box.createRigidArea(new Dimension(0,20)));
 
 		panel.add(vb0);
 	}
@@ -382,11 +401,11 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 	
 	public void update()
 	{
-//		System.out.println("DescriptivesUserOptionsPanel.update()");
+		//System.out.println("DescriptivesUserOptionsPanel.update()");
 		
 		updateColumnIndexBox();
 		updateSplitSettings();
-
+		
 		this.resize(vb0);
 	}
 	
@@ -394,6 +413,7 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 	{
 		//System.out.println("DescriptivesUserOptionsPanel.resize(): c = " + c.toString());
 		Dimension d = c.getPreferredSize();
+		
 		panel.setSize(new Dimension(d.width + 10, d.height));
 		panel.setPreferredSize(new Dimension(d.width + 10, d.height));
 	}
