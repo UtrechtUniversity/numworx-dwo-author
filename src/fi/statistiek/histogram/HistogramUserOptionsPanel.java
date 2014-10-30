@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -155,9 +156,29 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.varLabel.setFont(Statistiek.font);
 
 		this.varBox = new JComboBox();
+		// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
+		// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
+		// Solution: subclass and return a reasonable height
+		this.varBox = new JComboBox<String>() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			/** 
+             * @inherited <p>
+             */
+            @Override
+            public Dimension getMaximumSize() {
+                Dimension max = super.getMaximumSize();
+                max.height = getPreferredSize().height;
+                return max;
+            }
+        };
+
 		this.varBox.setFont(Statistiek.font);
 		this.varBox.setPreferredSize(new Dimension(100, 25));
-		this.varBox.setMaximumSize(new Dimension(100, 25));
+//		this.varBox.setMaximumSize(new Dimension(100, 25));
 		this.varBox.setActionCommand("varBox");
 		this.varBox.addActionListener(this.controller);
 
@@ -463,8 +484,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		hb2.add(varBox);
-		// create some extra space after varBox
-		hb2.add(Box.createRigidArea(new Dimension(50, 25)));
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
