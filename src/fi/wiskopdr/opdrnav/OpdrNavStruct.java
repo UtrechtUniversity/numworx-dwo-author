@@ -2134,6 +2134,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 	public void destroy()
 	{
+		opdrContainer.destroy();
 	}
 
 	/**

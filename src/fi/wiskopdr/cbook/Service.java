@@ -12,7 +12,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -364,9 +366,32 @@ public class Service {
 		Properties properties = new Properties();
 		properties.load(url.openStream());
 		String trusted = (String) properties.remove("Trusted");
-		List<String> trust = Collections.EMPTY_LIST;
+		List<String> trust = Collections.emptyList();
 		if(trusted != null) 
 			trust = Arrays.asList(trusted.split(" "));
+		Set<String> done = new HashSet<String>();
+		done.add(url.toExternalForm());
+		done.add("");
+		List<String> work = new LinkedList<String>();
+// patch
+		do {
+			String includes = (String) properties.remove("includes");
+			if(includes != null) {
+				work.addAll(Arrays.asList(includes.split(" ")));
+			}
+			if (work.isEmpty()) break;
+			index = work.remove(0);
+			if(done.contains(index)) continue;
+			done.add(index);
+			url = new URL(index);
+			Properties p = new Properties();
+			p.load(url.openStream());
+			p.keySet().removeAll(properties.keySet());
+			properties.putAll(p);			
+		} while (true);
+		
+		
+		
 		Set<Entry<Object, Object>> entries = properties.entrySet();
 		ClassLoader sandbox = Thread.currentThread().getContextClassLoader();
 		ClassLoader orig = Service.class.getClassLoader();

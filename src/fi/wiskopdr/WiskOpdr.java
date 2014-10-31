@@ -838,7 +838,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public void stop() {
 		if (api != null && loaded) {
-			
+					ons.stop();
 			//Thread stopDraad = new Thread() {
 			//	public void run() {
 					String s;
