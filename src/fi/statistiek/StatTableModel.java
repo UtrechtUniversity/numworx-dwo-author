@@ -388,18 +388,20 @@ public class StatTableModel implements TableModel
 	 * @param binBoundaries
 	 *            the bin boundaries to split numerical data by
 	 * @return the split class in which the given value is.
+	 * Returns 0 if column index is not valid.
 	 * Returns -1 if the value can not be classified
-	 * TODO:, for example when value is a wildcard ('*').
+	 * Returns -2 is the value is a wildcard ('*').
 	 */
 	public int classifyObject(String value, int columnIndex,
 		ArrayList<Double> binBoundaries)
 	{
-		if (!this.isColumnIndexValid(columnIndex)
-			|| ColumnType.WILDCARD.equals(value))
+		if (!this.isColumnIndexValid(columnIndex))
 		{
 			return 0;
-			// test syl
-//			return -1;
+		}
+		if (ColumnType.WILDCARD.equals(value))
+		{
+			return -2;
 		}
 
 		ColumnType cType = this.getColumnTypes().get(columnIndex);
@@ -2265,11 +2267,12 @@ public class StatTableModel implements TableModel
 								binFrequency[split][2 * bin + 1]++;
 							}
 						}
-						else
+						else if (split == -1)
 						{
 							System.out.println("StatTableModel.numberClassFrequency() returns null. Objects cannot be classified");
 							return null;
 						}
+						// split == -2 is a wildcard
 					}
 				}
 			}
@@ -2340,11 +2343,12 @@ public class StatTableModel implements TableModel
 							frequencySelectionTable[split]);
 					}
 				}
-				else
+				else if (split == -1)
 				{
 					System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
 					return null;
 				}
+				// split == -2 is a wildcard
 			}
 
 			// create FrequencyTuple array from hashtable
@@ -2485,11 +2489,12 @@ public class StatTableModel implements TableModel
 							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
 					}
 				}
-				else
+				else if (split == -1)
 				{
 					System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
 					return null;
 				}
+				// split == -2 is a wildcard
 			}
 
 			// create FreqencyTuple array from hashtable
