@@ -19,6 +19,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -295,6 +296,8 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		   swapButton.setIcon(new ImageIcon(imageURL));
 		}
 
+		// set tooltip
+		ToolTipManager.sharedInstance().setEnabled(true);
 		this.swapButton.setToolTipText(Statistiek.rb.getString("swapTooltip"));
 		this.swapButton.addActionListener(this);
 
