@@ -128,10 +128,30 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.panel.setBackground(backgroundColor);
 
 		// var settings
-		this.columnIndexBox = new JComboBox();
+		//this.columnIndexBox = new JComboBox();
+		// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
+		// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
+		// Solution: subclass and return a reasonable height
+		this.columnIndexBox = new JComboBox<String>() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			/** 
+             * @inherited <p>
+             */
+            @Override
+            public Dimension getMaximumSize() {
+                Dimension max = super.getMaximumSize();
+                max.height = getPreferredSize().height;
+                return max;
+            }
+        };
+
 		this.columnIndexBox.setFont(Statistiek.font);
 		this.columnIndexBox.setPreferredSize(new Dimension(100, 25));
-		this.columnIndexBox.setMaximumSize(new Dimension(100, 25));
+		//this.columnIndexBox.setMaximumSize(new Dimension(100, 25));
 		this.columnIndexBox.setActionCommand("columnIndexBox");
 		this.columnIndexBox.addActionListener(this.controller);
 
@@ -337,7 +357,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		hb1.add(columnIndexBox);
 		// create some extra space after varBox
-		hb1.add(Box.createRigidArea(new Dimension(50, 25)));
+		//hb1.add(Box.createRigidArea(new Dimension(50, 25)));
 
 		vb1 = Box.createVerticalBox();
 		Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
