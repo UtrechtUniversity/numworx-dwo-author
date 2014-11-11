@@ -1316,6 +1316,11 @@ public class DotplotView extends JPanel implements Observer
 					minorStepsPerMajorStep = step;
 			}
 			
+			if (minorStep == 0)
+			{
+				System.out.println("DotplotView.paintXAxis(): minorStep == 0!");
+			}
+			
 			double min = this.xMin - DotplotView.KEEP_CLEAR_PART
 				* (this.xMax - this.xMin);
 			double max = this.xMax + DotplotView.KEEP_CLEAR_PART
@@ -1346,6 +1351,10 @@ public class DotplotView extends JPanel implements Observer
 				g.drawLine(x, y + heightOffset, x, y + 2 + heightOffset);
 
 				p += minorStep;
+				
+				// check for invalid value of minorStep
+				if (minorStep == 0)
+					break;
 			}
 
 			p = Math.ceil(min / step) * step;
