@@ -123,10 +123,30 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		this.varXLabel = new JLabel(Statistiek.rb.getString("variableXLabel"));
 		this.varXLabel.setFont(Statistiek.font);
 
-		this.varXBox = new JComboBox();
+		//this.varXBox = new JComboBox();
+		// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
+		// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
+		// Solution: subclass and return a reasonable height
+		this.varXBox = new JComboBox<String>() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			/** 
+             * @inherited <p>
+             */
+            @Override
+            public Dimension getMaximumSize() {
+                Dimension max = super.getMaximumSize();
+                max.height = getPreferredSize().height;
+                return max;
+            }
+        };
+        
 		this.varXBox.setFont(Statistiek.font);
 		this.varXBox.setPreferredSize(new Dimension(100, 25));
-		this.varXBox.setMaximumSize(new Dimension(100, 25));
+		//this.varXBox.setMaximumSize(new Dimension(100, 25));
 		this.varXBox.setActionCommand("varXBox");
 		this.varXBox.addActionListener(this.controller);
 
@@ -135,10 +155,30 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			this.varYLabel = new JLabel(Statistiek.rb.getString("variableYLabel"));
 			this.varYLabel.setFont(Statistiek.font);
 	
-			this.varYBox = new JComboBox();
+			//this.varYBox = new JComboBox();
+			// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
+			// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
+			// Solution: subclass and return a reasonable height
+			this.varYBox = new JComboBox<String>() {
+	            /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				/** 
+	             * @inherited <p>
+	             */
+	            @Override
+	            public Dimension getMaximumSize() {
+	                Dimension max = super.getMaximumSize();
+	                max.height = getPreferredSize().height;
+	                return max;
+	            }
+	        };
+
 			this.varYBox.setFont(Statistiek.font);
 			this.varYBox.setPreferredSize(new Dimension(100, 25));
-			this.varYBox.setMaximumSize(new Dimension(100, 25));
+			//this.varYBox.setMaximumSize(new Dimension(100, 25));
 			this.varYBox.setActionCommand("varYBox");
 			this.varYBox.addActionListener(this.controller);
 		}
