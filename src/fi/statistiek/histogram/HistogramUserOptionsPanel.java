@@ -155,7 +155,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.varLabel = new JLabel(Statistiek.rb.getString("variableLabel"));
 		this.varLabel.setFont(Statistiek.font);
 
-		this.varBox = new JComboBox();
+		//this.varBox = new JComboBox();
 		// error in swing: JComboBox is misbehaving (the same as JTextField) in reporting an unbounded max height
 		// see also: http://stackoverflow.com/questions/7581846/swing-boxlayout-problem-with-jcombobox-without-using-setxxxsize/7582033#7582033
 		// Solution: subclass and return a reasonable height
