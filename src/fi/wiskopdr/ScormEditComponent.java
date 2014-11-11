@@ -87,7 +87,13 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 	}
 	
 	public Hashtable getLaunchData()
-    {   if(! WiskOpdr.launchDataChanged)return launchData;
+    {   if(! WiskOpdr.launchDataChanged)
+    	{
+    		if(onsEdit.useLocation) {
+    			launchData.put("cmi.location", String.valueOf(onsEdit.geefOpdrachtNr()));
+    		}
+    		return launchData;
+    	}
 		Hashtable h = onsEdit.getEditState();
     	String language = getParameter("language");
     	String bgcolor = getParameter("bgcolor");

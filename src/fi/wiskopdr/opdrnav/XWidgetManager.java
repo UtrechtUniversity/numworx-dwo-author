@@ -126,6 +126,7 @@ public class XWidgetManager {
 			oldnew.put(oldKey, newKey);
 			entry.getValue().setCrossWidgetId(newKey);
 			entry.getValue().getConnections().clear(); // TODO !!
+			
 		}
 	}
 

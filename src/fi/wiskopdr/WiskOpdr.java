@@ -779,8 +779,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			String s = api.LMSGetValue(CMI_SUSPEND_DATA);
 			lessonMode = api.LMSGetValue(CMI_CORE_LESSON_MODE);
 			review = reviewMode();
-			if (review) {
-				String locString = api.LMSGetValue(CMI_CORE_LESSON_LOCATION);
+			String locString = api.LMSGetValue(CMI_CORE_LESSON_LOCATION);
+			if (review || !locString.isEmpty()) {
 				//System.out.println("locString: " + locString);
 				int loc = -1;
 				try {
@@ -864,8 +864,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						WiskOpdr.deployVariant = "";
 						return;
 					}
+					api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd!
 					if (review) {
-						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
+//						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
 							return;
 						suspendData.put("reviewData", reviewData);

@@ -20,6 +20,7 @@ import javax.swing.ListCellRenderer;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
+import org.cbook.cbookif.Constants;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -830,6 +831,8 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			
 			//cbookEventHandler.fire("index", "index", new Integer(antwoordKV.getSelectedIndex()));
 			cbookEventHandler.fire("index", (new Integer(antwoordKV.getSelectedIndex())).toString());
+			if(antwoordKV.getSelectedIndex() != 0) 
+				cbookEventHandler.fire(Constants.USER_INPUT, antwoordKV.getSelectedItem().toString());
 
 		}
 		else if (e.getSource() == feedbackButton)
@@ -898,7 +901,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 	@Override
 	public String[] getSendCmds() {
-		String[] sendCommands = {"index"};
+		String[] sendCommands = {"index", Constants.USER_INPUT};
 		return sendCommands;
 	}
 

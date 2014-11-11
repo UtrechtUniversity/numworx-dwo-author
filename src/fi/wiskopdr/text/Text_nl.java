@@ -99,10 +99,10 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "herleidingKeuze_0" , "Geen" },
 				{ "herleidingKeuze_1" , "Veelterm herleid zonder haakjes" },
-				{ "herleidingKeuze_2" , "Als ��n macht" },
+				{ "herleidingKeuze_2" , "Als één macht" },
 				{ "herleidingKeuze_3" , "Zonder gebroken of negatieve exponenten" },
-				{ "herleidingKeuze_4" , "Als ��n breuk" },
-				{ "herleidingKeuze_5" , "Als ��n log" },
+				{ "herleidingKeuze_4" , "Als één breuk" },
+				{ "herleidingKeuze_5" , "Als één log" },
 				{ "herleidingKeuze_6" , "Met alleen enkelvoudige log's (bv log(x)+log(3))" },
 				
 				{ "feedbackTekst01" , "Deze stap bevat correcte en niet correcte onderdelen. Verwijder of vervang de delen die niet correct zijn." },
@@ -132,7 +132,7 @@ public class Text_nl extends java.util.ListResourceBundle
 									+ " wordt gewerkt, is het eerste teken\n" 
 									+ "van de woordvariabele altijd een letter." },
                 { "xVarMessage2" , "De onafhankelijk variabele kan uit\n" 
-									+ "slechts ��n letter bestaan.\n" 
+									+ "slechts één letter bestaan.\n" 
 									+ "Alleen als de optie \"woordformule\" \n" 
 									+ "is geselecteerd, dan kan de onafhankelijke\n" 
 									+ "variabele uit meer letters bestaan." },

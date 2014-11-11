@@ -441,7 +441,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
 		{	
-			cbookEventHandler.fire("input",formuleComponent.toString());
+			cbookEventHandler.fire("input" + ".out",formuleComponent.toString());
 			System.out.println("fired");
 			
 		}
@@ -778,8 +778,8 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
  	@Override
  	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
-		System.out.println("accepted");
-		if(command.equals("input") || command.equals("index"))
+		System.out.println("accepted " + command);
+		if(command.startsWith("input") || command.equals("index"))
 		{
 	 		String formuleString = (String)event.getMessage();
 	 		if(formuleString.charAt(0)!='$') formuleString = "$f" + formuleString + "@";
@@ -806,13 +806,13 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT, "index"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT  + ".in", "index"};
 		return s;
 	}
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT,"index"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT + ".out"/*,"index"*/};
 		return s;
 	}
 

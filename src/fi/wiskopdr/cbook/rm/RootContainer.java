@@ -9,7 +9,6 @@ import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceException;
 
 import com.github.sardine.Sardine;
-import com.sun.org.apache.xml.internal.serializer.ToUnknownStream;
 
 public class RootContainer extends WebContainer {
 

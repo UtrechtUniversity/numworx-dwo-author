@@ -675,6 +675,21 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				}
 				volg.mouseDragged(ed);	
 			}
+// Wim: als ik het goed begrijp....
+			else if(e.getY() < 0) {
+				TekstRegel vorig = tekstVak.geefVorigeRegel(this);
+				if(vorig == null) return;
+				setSelection(0,startx);
+				MouseEvent en = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), vorig.getWidth(),vorig.getHeight(),1,false);
+				MouseEvent ed = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()+vorig.getHeight(),1,false);
+				
+				if(eersteKeer)
+				{	vorig.mousePressed(en);
+					eersteKeer=false;
+				}
+				vorig.mouseDragged(ed);	
+			}
+// tot hier
 			else
 			{	terug = true;
 				tekstVak.setSelected(false);

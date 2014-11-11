@@ -15,15 +15,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 
 public class CrossWidgetViewPanel extends JPanel implements MouseListener
 {
@@ -33,7 +37,8 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
 	private ArrayList<Map> connectionInfo = new ArrayList<Map>();
 	private static final String KEY_SENDER = "sender";
 	private static final String KEY_LISTENER = "listener";
-	private static final String KEY_COMMAND = "command";
+	private static final String KEY_COMMAND = "commandIn";
+	private static final String KEY_COMMANDOUT = "commandOut";
 	private static final String KEY_CLICK_AREA = "clickarea";
 	
 	private final int ARR_SIZE = 8;
@@ -105,19 +110,26 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
         
         connectionInfo.clear();
 		for (int i=0 ; i<crossWidgetContainers.size() ; i++)
-    	{	TekstInteractiePanelVak startVak = crossWidgetContainers.get(i);
-    		if(startVak!=null)
-    		{	Point start = calculatePosInTekstVak(crossWidgetContainers.get(i));
-	    		List connections = crossWidgetContainers.get(i).getConnections();
-	    		ArrayList<TekstInteractiePanelVak> eindVakken = new ArrayList<TekstInteractiePanelVak>();
-				Iterator iter = connections.iterator();
-	    		while(iter.hasNext())
-				{	Map<String, String> type = (Map)iter.next();
+    	{	TekstInteractiePanelVak eindVak = crossWidgetContainers.get(i);
+    		if(eindVak!=null)
+    		{	Point eind = calculatePosInTekstVak(eindVak);
+	    		//List connections = crossWidgetContainers.get(i).getConnections();
+    			Map<String, Set<Connector>> subscriptions = eindVak.getSubscriptions();
+    			if(subscriptions == null) continue;
+	    		Collection<TekstInteractiePanelVak> startVakken = new ArrayList<TekstInteractiePanelVak>();
+				Iterator<Map.Entry<String,Set<Connector>>> it = subscriptions.entrySet().iterator();
+	    		while(it.hasNext())
+				{	Map.Entry<String,Set<Connector>> e = it.next();
+					String commandIn = e.getKey();
+					Set<Connector> set = e.getValue();
+	    			Iterator<Connector> iter = set.iterator();
+	    			while(iter.hasNext()) {
+	    			Map<String, String> type = iter.next();
 					Map.Entry<String,String> entry = type.entrySet().iterator().next();
-					TekstInteractiePanelVak eindVak = tekstVak.getWidgetContainer(entry.getValue());
-					if(eindVak != null && !eindVakken.contains(eindVak))
-					{	eindVakken.add(eindVak);
-						Point eind = calculatePosInTekstVak(eindVak);
+					TekstInteractiePanelVak startVak = tekstVak.getWidgetContainer(entry.getKey());
+					if(startVak != null && !startVakken.contains(startVak))
+					{	startVakken.add(startVak);
+						Point start = calculatePosInTekstVak(startVak);
 						drawArrow(g, start.x, start.y, eind.x, eind.y);
 						double dx = eind.x-start.x;
 						double dy = eind.y-start.y;
@@ -127,12 +139,13 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
 						HashMap<String,Object> connection = new HashMap<String,Object>();
 						connection.put(KEY_SENDER, startVak);
 						connection.put(KEY_LISTENER, eindVak);
-						connection.put(KEY_COMMAND, entry.getKey());
+						connection.put(KEY_COMMAND, commandIn);
+						connection.put(KEY_COMMANDOUT, entry.getValue());
 						connection.put(KEY_CLICK_AREA, clickRect);
 						connectionInfo.add(connection);
 					}
 					
-				}
+				}}
     		}
     	}
     }
@@ -152,19 +165,22 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
 			{	final TekstInteractiePanelVak sender = (TekstInteractiePanelVak)connectionInfo.get(i).get(KEY_SENDER);
 				final TekstInteractiePanelVak listener = (TekstInteractiePanelVak)connectionInfo.get(i).get(KEY_LISTENER);
 				final String command = (String)connectionInfo.get(i).get(KEY_COMMAND);
+				final String commandOut = (String) connectionInfo.get(i).get(KEY_COMMANDOUT);
 				if(e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
 				{	sender.removeConnection(listener, command);
+					listener.removeSubscription(command, sender.getCrossWidgetId(), commandOut);
 					sender.removeActionListener(listener);
 					repaint();
 				}
 				else
 				{	popup.removeAll();
-					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(command);
+					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(commandOut + "→" + command);
 					item.setSelected(true);
 					item.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent e){
 							if(!item.isSelected()){
 								sender.removeConnection(listener, command);
+								listener.removeSubscription(command, sender.getCrossWidgetId(), commandOut);
 								sender.removeActionListener(listener);
 								popup.setVisible(false);
 								repaint();

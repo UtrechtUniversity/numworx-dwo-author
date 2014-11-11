@@ -1300,7 +1300,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 							bezocht[j][i] = false;
 					}
 			}
-		if (activiteitNr == 0 && reviewLocation != -1)
+		if (activiteitNr == 0 && reviewLocation >=0 && reviewLocation < aantalOpdrachten[0])
 			opdrachtNr = reviewLocation;
 
 		//this.aantalActiviteiten = aantalActiviteiten;

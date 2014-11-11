@@ -85,6 +85,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	private JPopupMenu orPopup;
 	private JMenuItem newPageMenuItem, insertCopyMenuItem, deletePageMenuItem, copyPageMenuItem, cutPageMenuItem, pastePageMenuItem;
 	private Clipboard systemClipboard;
+
+	public boolean useLocation;
 	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
@@ -284,6 +286,18 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		deletePageMenuItem = new JMenuItem(WiskOpdr.rb.getString("deletePageMenuItem"));
 		deletePageMenuItem.addActionListener(this);
 		orPopup.add(deletePageMenuItem);
+		
+// paging:
+		String loc = (String) launchData.get("cmi.location");
+		this.useLocation = loc != null;
+		try {
+			int i = Integer.parseInt(loc);
+			if(activiteitNr == 0 && i < aantalOpdrachten[0] && i >= 0)
+			kiesOpdracht(activiteitNr, i);
+		} catch(RuntimeException _) {}
+		
+		
+		
 	}
 
 	/**
@@ -458,6 +472,11 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		h.put("gekoppeldeOpdrachten", new String("" + gekoppeldeOpdrachten));
 		h.put("instellingen", StringCodeObject.encodeObjectToString(instellingen));
 
+		if(this.useLocation)
+		{
+			h.put("cmi.location", String.valueOf(opdrachtNr));
+		}
+		
 		return h;
 	}
 	

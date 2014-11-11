@@ -3,7 +3,9 @@ package fi.wiskopdr.tekstobjects;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +14,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.Vector;
@@ -44,6 +48,7 @@ import fi.wiskopdr.cbook.CBookInteractiePanel;
 import fi.wiskopdr.cbook.Service;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 //import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.beans.base64code.StringCodeObject;
@@ -80,6 +85,105 @@ import fi.wiskopdr.GetallenlijnSprongPanel;
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
 {
 	
+	public static class Connector extends AbstractMap<String, String> implements Entry<String,String>, Serializable, Comparable<Connector> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private String key;
+		private String value;
+
+		public String toString() {
+			return key + "→" + value;
+		}
+		
+		public Connector(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		@Override
+		public Set<Entry<String, String>> entrySet() {
+			Entry<String,String> set = this;
+			return Collections.singleton(set);
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		@Override
+		public String getValue() {
+			return value;
+		}
+
+		@Override
+		public String setValue(String value) {
+			return value;
+		}
+
+		@Override
+		public int compareTo(Connector other) {
+			return toString().compareTo(other.toString());
+		}
+
+	}
+
+	static class EventDecorator extends CBookEvent {
+		public EventDecorator(String command) {
+			super(command, command);
+		}
+		CBookEvent event;
+		/**
+		 * @return
+		 * @see org.cbook.cbookif.CBookEvent#getParameters()
+		 */
+		public Map<String, ?> getParameters() {
+			return event.getParameters();
+		}
+		/**
+		 * @param key
+		 * @return
+		 * @see org.cbook.cbookif.CBookEvent#getParameter(java.lang.String)
+		 */
+		public Object getParameter(String key) {
+			return event.getParameter(key);
+		}
+		/**
+		 * @return
+		 * @see org.cbook.cbookif.CBookEvent#getMessage()
+		 */
+		public String getMessage() {
+			return event.getMessage();
+		}
+		/**
+		 * @return
+		 * @see java.util.EventObject#getSource()
+		 */
+		public Object getSource() {
+			return event.getSource();
+		}
+		
+	}
+
+	public static class CBEDecorator implements CBookEventListener {
+
+		private EventDecorator event;
+		private CBookEventListener listener;
+		public CBEDecorator(InteractiePanel interactiePanel, String command) {
+			event = new EventDecorator(command);
+			listener = (CBookEventListener) interactiePanel;
+		}
+
+		@Override
+		public void acceptCBookEvent(CBookEvent event) {
+			this.event.event = event;
+			listener.acceptCBookEvent(this.event);
+		}
+
+	}
+
 	class PopupContainer extends Container implements XWidgetManager.HasWidgetManager {
 
 		@Override
@@ -123,8 +227,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public static TekstInteractiePanelVak potentialSource, potentialDest;
 	//private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	private String crossWidgetId = null;
+	@Deprecated
 	private List<Map<String, String>> connections = new ArrayList<Map<String, String>>();
-	
+	private Map<String,Set<Connector>> subscriptions;
 	
 	public static String[][] wiskOpdrInteractiePanels = 
 	{
@@ -357,8 +462,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	{	this.crossWidgetId = crossWidgetId;
 	}
 	
+	@Deprecated
 	public List getConnections()
 	{	return connections;
+	}
+	public Map<String,Set<Connector>> getSubscriptions() {
+		return subscriptions;
 	}
 	
 	public void initConnections(XWidgetManager manager)
@@ -368,6 +477,33 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else
 		{	//System.out.println("initConnections");
 			//System.out.println("connections: "+connections.toString());
+			if( subscriptions != null ) 
+			{
+				for( Entry<String, Set<Connector>> entry: subscriptions.entrySet())
+				{
+					String command = entry.getKey();
+					Iterator<Connector> iter = entry.getValue().iterator();
+					while (iter.hasNext()) {
+						Connector c = iter.next();
+						String sender = c.getKey();
+						TekstInteractiePanelVak tipv = manager.getWidgetContainer(sender);
+						if (tipv.interactiePanel instanceof CBookAware) 
+						{
+							CBookAware senderPanel = (CBookAware) tipv.interactiePanel;
+							String commandSender = c.get(sender);
+							if(commandSender .equals( command ))
+								senderPanel.addCBookEventListener((CBookEventListener) interactiePanel, command);
+							else
+								senderPanel.addCBookEventListener(new CBEDecorator(interactiePanel, command), commandSender);
+						} else
+							iter.remove();
+					}
+				}
+			} 
+			{
+			
+			
+			
 			
 			Iterator<Map<String, String>> iter = connections.iterator();
 			while(iter.hasNext()){ 
@@ -380,10 +516,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				if(tipv != null && tipv.interactiePanel instanceof CBookAware)
 				{	((CBookAware)interactiePanel).addCBookEventListener((CBookAware)tipv.interactiePanel, entry.getKey());
 					//System.out.println("addCBookEventListener: "+ entry.getKey());
+					tipv.addSubscription(entry.getKey(), getCrossWidgetId(), entry.getKey());
 				}
 				else
 					iter.remove();
 				
+			}
 			}
 			manager.setCrossWidgetView(this);
 		}
@@ -420,18 +558,25 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		return tipv;
 	}
 	
-	public void connect(TekstInteractiePanelVak dest, Set set)
+	public void connect(TekstInteractiePanelVak dest, Set<Connector> set)
 	{
 		if(dest == this || !(dest.interactiePanel instanceof CBookAware)) return;
 		
 		CBookAware listener = (CBookAware)(dest.interactiePanel);
 		Object[] possibleValues = set.toArray();
 		Object selectedValue = JOptionPane.showInputDialog(this, "Choose one", "Command", JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
-		String command = (String)selectedValue;
-		Map connection = Collections.singletonMap(command, dest.getCrossWidgetId());
-		if(command!=null && !checkConnectionExists(connection))
-		{	((CBookAware)interactiePanel).addCBookEventListener(listener, command);
-			connections.add(connection);
+		Connector commands = (Connector)selectedValue;
+		if(commands == null) return;
+		String commandOut = commands.getKey();
+		String commandIn = commands.getValue();
+		//Map connection = Collections.singletonMap(command, dest.getCrossWidgetId());
+		if(
+				//command!=null && !checkConnectionExists(connection)
+			 !dest.checkSubscriptionExists(commandIn, getCrossWidgetId(), commandOut)
+		)
+		{	((CBookAware)interactiePanel).addCBookEventListener(new CBEDecorator(dest.interactiePanel, commandIn), commandOut);
+			//connections.add(connection);
+			dest.addSubscription(commandIn, getCrossWidgetId(), commandOut);
 			//System.out.println("connected:"+command +" "+dest.getCrossWidgetId());
 		}
 		getCrossWidgetId(); // zender OOK CrossWidgetId!
@@ -440,6 +585,27 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.setLaunchDataChanged();
 	}
 	
+	private void addSubscription(String commandIn, String xwid,
+			String commandOut) {
+		if(subscriptions == null) {
+			subscriptions = new TreeMap<String, Set<Connector>>();
+		}
+		Set<Connector> map = subscriptions.get(commandIn);
+		if (map == null) {
+			map = new TreeSet<Connector>();
+			subscriptions.put(commandIn, map);
+		}
+		map.add(new Connector(xwid, commandOut));
+	}
+
+	
+	private boolean checkSubscriptionExists(String commandIn, String xWid, String commandOut) {
+		if(subscriptions == null) return false;
+		Set<Connector> set = subscriptions.get(commandIn);
+		return set != null && set.contains(new Connector(xWid, commandOut));
+	}
+	
+	@Deprecated
 	private boolean checkConnectionExists(Map connection)
 	{	boolean exists = false;
 		Map<String, String> type0 = connection;
@@ -458,8 +624,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		return exists;
 	}
+	@Deprecated
 	public void removeConnection(TekstInteractiePanelVak dest, String command)
 	{
+		dest.removeSubscription(command, getCrossWidgetId(), command);
+
 		Iterator<Map<String, String>> iter = connections.iterator();
 		final String destWidgetId = dest.getCrossWidgetId0();
 		while(iter.hasNext())
@@ -472,6 +641,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 	}
+	
+	public void removeSubscription(String commandIn, String xWid, String commandOut){
+		if(subscriptions == null) return;
+		Set<?> set = subscriptions.get(commandIn);
+		if(set == null) return;
+		Connector c = new Connector(xWid,commandOut);
+		set.remove(c);
+	}
+	
 	
 	public InteractieEditPanel getInteractieEditPanel()
 	{
@@ -667,6 +845,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         boolean studentEditor = false;
         String popupImageString = null;
         List connections = new JSONArray();
+        Map  subscriptions = null;
         String crossWidgetId = null;
         
 		if(h.containsKey("soortInteractiePanel")) soortInteractiePanel = ((Integer)h.get("soortInteractiePanel")).intValue();
@@ -682,7 +861,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(h.containsKey("popupImageString")) popupImageString = (String)h.get("popupImageString");
         if(h.containsKey("crossWidgetId")) crossWidgetId = (String)h.get("crossWidgetId");
         if(h.containsKey("connections")) connections = (List)h.get("connections");
-       
+        if(h.containsKey("subscriptions")) subscriptions = (Map) h.get("subscriptions");
         
         if(volledigeBreedte)setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);        
         else setSize(breedte, hoogte);
@@ -702,7 +881,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			manager.updateCrossWidgetId(this);
         }
         this.connections = connections;
-        
+        this.subscriptions = subscriptions;
         
         if(soortInteractiePanel == 0)
 		{	if(interactiePanel==null || !(interactiePanel instanceof AntwoordFormuleVak))
@@ -1092,10 +1271,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		boolean studentEditor = false;
 		String crossWidgetId;
 		List connections;
+		Map  subscriptions;
 		
 		studentEditor = this.studentEditor;
 		crossWidgetId = this.crossWidgetId;
 		connections = this.connections;
+		subscriptions = this.subscriptions;
 	       		
 		if((interactiePanel instanceof TekstVakPanel && !popup)){
 			Hashtable interactiePanelLaunchState = interactiePanel.getEditState();
@@ -1133,7 +1314,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				launchData.put("crossWidgetId", crossWidgetId);
 			if(!connections.isEmpty())
 				launchData.put("connections", connections);
-		
+			if(subscriptions != null && !subscriptions.isEmpty())
+				launchData.put("subscriptions", subscriptions);
+			
 			Hashtable interactiePanelLaunchState = interactiePanel.getEditState();
 			if(studentEditor && interactiePanelLaunchState!=null)launchData.put("interactiePanelLaunchState", interactiePanelLaunchState);
 		}
@@ -1158,6 +1341,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         String popupImageString = null;
         //String crossWidgetId = null;
 		List connections = new JSONArray();
+		Map  subscriptions = null;
         
 		
 		if(h.containsKey("soortInteractiePanel")) soortInteractiePanel = ((Integer)h.get("soortInteractiePanel")).intValue();
@@ -1173,7 +1357,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(h.containsKey("popupImageString")) popupImageString = (String)h.get("popupImageString");
         if(h.containsKey("crossWidgetId")) crossWidgetId = (String)h.get("crossWidgetId");
         if(h.containsKey("connections")) connections = (List)h.get("connections");
-        
+        if(h.containsKey("subscriptions")) subscriptions = (Map) h.get("subscriptions");
         //System.out.println("in zetopdracht: crossWidgetId: "+ crossWidgetId);
         if(crossWidgetId != null)
         	tekstVak.getXWidgetManager().updateCrossWidgetId(this);
@@ -1186,6 +1370,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         this.soortInteractiePanel = soortInteractiePanel;
         this.studentEditor = studentEditor;
         this.connections = connections;
+        this.subscriptions = subscriptions;
         //this.crossWidgetId = crossWidgetId;
 
         
@@ -2116,9 +2301,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(sendCmds != null && acceptedCmds != null)
 		{	Set<String> srcSet = new TreeSet<String>(Arrays.asList(sendCmds));
 			Set<String> destSet = new TreeSet<String>(Arrays.asList(acceptedCmds));
-			destSet.retainAll(srcSet);
+			TreeSet<Connector> result = new TreeSet<Connector>();
+			//destSet.retainAll(srcSet);
+			for( String s: srcSet) for(String d: destSet) {
+				int dot;
+				dot = s.indexOf('.');
+				String ps = dot >=0 ? s.substring(0,dot) : s; // prefix match "input.XXX" matches "input" or "input.YYY"
+				dot = d.indexOf('.');
+				String pd = dot >=0 ? d.substring(0,dot) : d;
+				if(pd.equals(ps))
+					result.add(new Connector(s,d));
+			}
 			if(!destSet.isEmpty())
-			{	potentialSource.connect(potentialDest, destSet);
+			{	potentialSource.connect(potentialDest, result);
 			}
 		}
 		//System.out.println("connect");

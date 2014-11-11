@@ -1119,22 +1119,22 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	{   if (editable)
         {   keyStrokeUpdated = false;
 			kc = e.getKeyCode();
-            if (e.isControlDown() && kc == KeyEvent.VK_V)
+            if (isControlDown(e) && kc == KeyEvent.VK_V)
             {	deleteSelection();
               	if(!pasteFromSystemClipboard())tekstVak.insertDups(TekstVak.clipboard);
             }
-            else if (e.isControlDown() && kc == KeyEvent.VK_C)
+            else if (isControlDown(e) && kc == KeyEvent.VK_C)
             {	copySelection();
             }
-            else if (e.isControlDown() && kc == KeyEvent.VK_X)
+            else if (isControlDown(e) && kc == KeyEvent.VK_X)
             {	copySelection();
             	deleteSelection();
             }
-            if (e.isControlDown() && kc == KeyEvent.VK_Z)
+            if (isControlDown(e) && kc == KeyEvent.VK_Z)
             {	undo();
             	return;
             }
-            if (e.isControlDown() && kc == KeyEvent.VK_Y)
+            if (isControlDown(e) && kc == KeyEvent.VK_Y)
             {	redo();
             	return;
             }
@@ -1230,7 +1230,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
          	
 		}
 	}
-    public void keyReleased(KeyEvent e) 
+
+	/**
+	 * Op de mac gebruikt iedereen het appeltje.
+	 * @param e
+	 * @return
+	 */
+	private boolean isControlDown(KeyEvent e) {
+		return  e.isControlDown()|| (WiskOpdr.mac && e.isMetaDown());
+	}
+ 
+	public void keyReleased(KeyEvent e) 
     {	int kt = e.getKeyChar();
 	    if (	!(kc == KeyEvent.VK_RIGHT) && 	
 	    		!(kc == KeyEvent.VK_LEFT) &&
@@ -1277,7 +1287,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                		(kc != KeyEvent.VK_LEFT) &&
                		(kc != KeyEvent.VK_RIGHT) &&
                		(kt != '@')
-                    && !e.isControlDown()
+                    && !isControlDown(e)
                     && !(e.isAltDown() && kc == KeyEvent.VK_F)
                     
                    )
