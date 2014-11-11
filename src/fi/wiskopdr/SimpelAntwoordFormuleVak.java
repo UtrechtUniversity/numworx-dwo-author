@@ -441,7 +441,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
 		{	
-			cbookEventHandler.fire("input" + ".out",formuleComponent.toString());
+			cbookEventHandler.fire("input",formuleComponent.toString());
 			System.out.println("fired");
 			
 		}
@@ -806,13 +806,13 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT  + ".in", "index"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT, "index"};
 		return s;
 	}
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT + ".out"/*,"index"*/};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT /*,"index"*/};
 		return s;
 	}
 
