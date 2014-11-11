@@ -403,6 +403,11 @@ public class Statistiek implements WiskOpdrApplet
 				{
 					newStep = step + 5;
 				}
+				else
+				{
+					// step = 5 -> newStep = 6
+					newStep = step + 1;
+				}
 			}
 			else
 			{
