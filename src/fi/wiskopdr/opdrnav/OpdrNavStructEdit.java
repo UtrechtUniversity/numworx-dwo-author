@@ -432,7 +432,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		aantalNivKnop.setBounds(actKeuzePanelX - 2, actKeuzePanelY + aantalActiviteiten * 20, 16, 20);
 		aantalOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16);
 		nivPositieKnop.setBounds(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16);
-		opdrPositieKnop.setBounds(orPosX, orPosY + 30, 20, 16);
+		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 30, 20, 16);
 		modeChoice.setBounds(actKeuzePanelX + 193, actKeuzePanelY + aantalActiviteiten * 20 - 22, 140, 24);
 		gekoppeldeOpdrCB.setBounds(10, orPosY + 30, 50, 15);
 		gekoppeldeOpdrCB.addItemListener(this);

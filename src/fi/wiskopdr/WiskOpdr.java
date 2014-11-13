@@ -1210,6 +1210,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public ScormEditComponentIF getEditComponent(Hashtable launchData) {
 		ScormEditComponent sec = new ScormEditComponent(launchData, this);
+		launchDataChanged = false;
 		return sec;
 	}
 
@@ -1333,6 +1334,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 				int opdrnr = Integer.parseInt(nr.substring(1));
 				int actnr  = ons.geefActiviteitNr();
 				ons.kiesOpdracht(actnr, opdrnr-1);
+				ons.stelNavigatieIn(actnr, opdrnr-1);
 			} catch(Exception _) {}
 			return false;
 		}

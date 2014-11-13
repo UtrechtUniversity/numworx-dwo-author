@@ -1220,6 +1220,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (activiteitNr == 0 && reviewLocation != -1)
 			opdrachtNr = reviewLocation;
 		opdrContainer.zetOpdracht(opdrachten[activiteitNr][opdrachtNr]);
+		stelNavigatieIn(activiteitNr, opdrachtNr);
+		or[activiteitNr].setSelected(opdrachtNr+1);
 	}
 
 	/**
