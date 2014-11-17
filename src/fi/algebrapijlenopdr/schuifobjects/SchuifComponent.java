@@ -47,7 +47,7 @@ public class SchuifComponent extends JPanel//Container
 	{	schuifveld.start();
 		startx = e.getX();
 		starty = e.getY();
-		schuifveld.zetSchuiver(this);
+		//schuifveld.zetSchuiver(this);
 	}
 	
 	public void mouseDragged(MouseEvent e)
@@ -71,7 +71,7 @@ public class SchuifComponent extends JPanel//Container
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	schuifveld.losSchuiver(this);
+	{	//schuifveld.losSchuiver(this);
 	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}

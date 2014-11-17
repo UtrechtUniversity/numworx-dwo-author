@@ -128,23 +128,28 @@ public class SchuifVeld extends JPanel
 	public boolean isGesloten()
 	{	return gesloten;
 	}
-	
+/*	
 	public void zetSchuiver(SchuifComponent sc)
 	{	veranderd = true;
 		schuiflaag.add(sc, 0);
 	}
-	
+*/
+/*	
 	public void losSchuiver(SchuifComponent sc)
 	{	veranderd = true;
 		add(sc, 0);
 	}
-	
+*/
+/*	
 	public void zetOpSchuifLaag(Component c)
 	{	veranderd = true;
 		schuiflaag.add(c, 0);
 	}
+*/
+/*	
 	public void zetTerugSchuifLaag(Component c)
 	{	veranderd = true;
 		add(c, 0);
 	}
+*/	
 }

@@ -133,7 +133,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		heenKnop.addActionListener(this);
 		//add(heenKnop, 0);
 		
-		add(schuiflaag, 0);
+//tijdelijk		
+		//add(schuiflaag, 0);
 		
 		maakStapel();
 		
@@ -1231,7 +1232,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		g.drawString(s, 55 - lengte / 2, 80);
 		
 	}
-	
+
+/*	
 	public void zetSchuiver(SchuifComponent sc)
 	{	add(schuiflaag, 0);
 		schuiflaag.add(sc, 0);
@@ -1252,7 +1254,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 		tekenOpnieuw();
 	}
-	
+*/
+/*	
 	public void losSchuiver(SchuifComponent sc)
 	{	add(sc, 0);
 		AlgebraSchuifComponent asc = (AlgebraSchuifComponent) sc;
@@ -1272,7 +1275,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 		tekenOpnieuw();
 	}
-	
+*/	
 	public void zetStapel(AlgebraSchuifComponent asc)
 	{	int x = asc.getLocation().x;
 		int y = asc.getLocation().y;
