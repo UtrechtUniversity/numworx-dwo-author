@@ -107,7 +107,8 @@ public class SchuifVeld extends JPanel //Panel
 	public boolean isGesloten()
 	{	return gesloten;
 	}
-	
+
+/*	
 	public void zetSchuiver(SchuifComponent sc)
 	{	veranderd = true;
 		schuiflaag.add(sc,0);
@@ -126,4 +127,5 @@ public class SchuifVeld extends JPanel //Panel
 	{	veranderd = true;
 		add(c,0);
 	}
+*/	
 }

@@ -266,7 +266,8 @@ public class Pijl extends JComponent //Component
 		
 		
 		schuifveld.start();
-		schuifveld.zetOpSchuifLaag(this);
+//tijdelijk		
+		//schuifveld.zetOpSchuifLaag(this);
 		requestFocus();
 		vast = false;
 		actief = true;
@@ -317,14 +318,16 @@ public class Pijl extends JComponent //Component
 				 ontvanger = schuifveld.schuifcomponenten[i];
 				 zender.voegPijlToe(new Pijl(schuifveld));				
 				 actief = false;
-				 schuifveld.zetTerugSchuifLaag(this);
+//tijdelijk				 
+				 //schuifveld.zetTerugSchuifLaag(this);
 				 return;
 			}
 		}
 		if (actief)
 			pijlTerug();
 		actief = false;
-		schuifveld.zetTerugSchuifLaag(this);
+//tijdelijk		
+		//schuifveld.zetTerugSchuifLaag(this);
 	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}

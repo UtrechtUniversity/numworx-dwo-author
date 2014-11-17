@@ -1093,7 +1093,7 @@ System.out.println("aantalStapels = " + aantalStapels);
 		g.drawString(s, 50 - lengte / 2, 95); // was 125
 		
 	}
-	
+/*	
 	public void zetSchuiver(SchuifComponent sc)
 	{	add(schuiflaag, 0);
 		schuiflaag.add(sc, 0);
@@ -1114,7 +1114,8 @@ System.out.println("aantalStapels = " + aantalStapels);
 		}
 		tekenOpnieuw();
 	}
-	
+*/
+/*	
 	public void losSchuiver(SchuifComponent sc)
 	{	add(sc, 0);
 		AlgebraSchuifComponent asc = (AlgebraSchuifComponent) sc;
@@ -1135,7 +1136,7 @@ System.out.println("aantalStapels = " + aantalStapels);
 		}
 		tekenOpnieuw();
 	}
-	
+*/	
 	public void zetStapel(AlgebraSchuifComponent asc)
 	{	int x = asc.getLocation().x;
 		int y = asc.getLocation().y;
