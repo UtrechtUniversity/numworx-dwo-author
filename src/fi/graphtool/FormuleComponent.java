@@ -807,7 +807,8 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	}
 	
 	public void parseFormule(int regelnummer, boolean setState)
-	{	if(regelnummer >= formuleVakken.length)
+	{	System.out.println("parseFormule(" + regelnummer + ", " + Boolean.toString(setState));
+		if(regelnummer >= formuleVakken.length)
 			return;
 		if(formuleVakken[regelnummer].functieBeginVak == null || formuleVakken[regelnummer].functieBeginVak.toString().length() == 0)
 		{	String s = formuleVakken[regelnummer].formuleVak.toString();
@@ -828,7 +829,8 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	
 	//public Vergelijking parseFormule(String s)
 	public void parseFormule(String s, int regelnummer, boolean setState)
-	{	//In alle lijstjes met expressies het huidige regelnummer verwijderen. 
+	{	System.out.println("parseFormule(" + s + ", " + regelnummer + ", " + Boolean.toString(setState));
+		//In alle lijstjes met expressies het huidige regelnummer verwijderen. 
 		//Zo voorkom je dat expressies blijven staan als het type expressie verandert.
 		//Hier moet ik nog even goed naar kijken in het geval van parametrisaties, omdat je dan twee regelnummers tegelijk nodig hebt.
 		

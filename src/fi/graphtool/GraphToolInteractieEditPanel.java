@@ -900,6 +900,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			explanLabel2.setVisible(false);
 			
 			docentTabelComponent.zetTabelPunten(interactiePanel.getPoints(interactiePanel.getActiveIndex(), true), true);
+			
 				
 			if(!setState)
 				leerlingZietTabel = true;

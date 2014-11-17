@@ -1169,6 +1169,7 @@ class GrafiekVeld extends JComponent{
 		return lijn;
 	}
 	
+	
 	public boolean berekenParabool(Vector points, int nauwkeurigheid)
 	{	double nauwkeurigDouble = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
 		
@@ -1210,6 +1211,7 @@ class GrafiekVeld extends JComponent{
 		}
 		return parabool;
 	}
+	
 	
 	public void tekenOngelijkheden(Graphics gr)
 	{	Graphics2D g = (Graphics2D) gr;

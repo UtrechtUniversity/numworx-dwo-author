@@ -1122,9 +1122,10 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetTabelComponent(leerlingZietTabel, setState);
 			zetFormuleComponent(false, setState);
 			zetFormeleFuncties(formeleFuncties, setState);
-			zetDocentFuncties(Arrays.copyOfRange(docentFuncties, 0, 1));
+			if(docentFuncties != null)
+				zetDocentFuncties(Arrays.copyOfRange(docentFuncties, 0, 1));
 			
-			if(docentFunctieStrings != null && docentFuncties[0] != null)
+			if(docentFunctieStrings != null && docentFuncties != null && docentFuncties[0] != null)
 				docentFunctieStrings[0] = "$f" + docentFuncties[0].toString() + "@";
 			else if(docentFunctieStrings != null)
 				docentFunctieStrings[0] = "$f@";
@@ -3715,16 +3716,67 @@ MouseListener, MouseMotionListener, CBookAware {
 						hits[i][j] = 0;
 					if(checkPoints[i].size() > 0)
 						for(int pCnt = 0; pCnt < checkPoints[i].size(); pCnt++)
-						{	RealPoint lPoint = (RealPoint) checkPoints[i].elementAt(pCnt);
+						{	
+							RealPoint lPoint = (RealPoint) checkPoints[i].elementAt(pCnt);
 							Point lPixel = realPointToPixels(lPoint);
 							for(int j = 0; j < aantalFuncties; j++)
-							{	double dWaarde = docentFuncties[j].geefWaarde(lPoint.getX());
+							{	//Vergelijk getekende punt (lPoint) met het punt met dezelfde x-coördinaat en 
+								//als y-coördinaat de functiewaarde van de door auteur opgegeven functie.
+								
+								double dWaarde = docentFuncties[j].geefWaarde(lPoint.getX());
 								RealPoint dPoint = new RealPoint(lPoint.getX(), dWaarde);
 								Point dPixel = realPointToPixels(dPoint);
-								double dis = Math.sqrt((lPixel.x - dPixel.x) * (lPixel.x - dPixel.x) +
-								     	   (lPixel.y - dPixel.y) * (lPixel.y - dPixel.y)); 
+								double dis = 1000;
+								try{
+									dis = Math.sqrt((lPixel.x - dPixel.x) * (lPixel.x - dPixel.x) +
+								     	   (lPixel.y - dPixel.y) * (lPixel.y - dPixel.y));
+								}
+								catch(Exception e)
+								{}
 								if (dis < nauwkeurigheid[j])
 									hits[i][j]++;
+								else
+								{
+									for(int k = 1; k < nauwkeurigheid[j]; k++)
+									{
+										int xWaarde = lPixel.x - k;
+										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										if(xAsLog)
+											dPoint.setX(Math.pow(10, dPoint.getX()));
+										
+										dWaarde = docentFuncties[j].geefWaarde(dPoint.getX());
+										dPoint.setY(dWaarde);
+										dPixel = realPointToPixels(dPoint);
+										dis = 1000;
+										try{
+										dis =  Math.sqrt((lPixel.x - dPixel.x) * (lPixel.x - dPixel.x) +
+										     	   (lPixel.y - dPixel.y) * (lPixel.y - dPixel.y));
+										}
+										catch(Exception e){}
+										if (dis < nauwkeurigheid[j])
+										{	hits[i][j]++;
+											break;
+										}
+										xWaarde = lPixel.x + k;
+										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										if(xAsLog)
+											dPoint.setX(Math.pow(10, dPoint.getX()));
+										
+										dWaarde = docentFuncties[j].geefWaarde(dPoint.getX());
+										dPoint.setY(dWaarde);
+										dPixel = realPointToPixels(dPoint);
+										dis = 1000;
+										try{
+											dis =  Math.sqrt((lPixel.x - dPixel.x) * (lPixel.x - dPixel.x) +
+											     	   (lPixel.y - dPixel.y) * (lPixel.y - dPixel.y));
+											}
+										catch(Exception e){}
+										if (dis < nauwkeurigheid[j])
+										{	hits[i][j]++;
+											break;
+										}
+									}
+								}
 							}
 						}
 				}
@@ -3867,10 +3919,19 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 				Vector llgPtsCopy = new Vector();
 				for (int pCnt = 0; pCnt < graphPoints.size(); pCnt++)
-				{	llgPtsCopy.addElement(graphPoints.elementAt(pCnt));
+				{	RealPoint pt = (RealPoint) graphPoints.elementAt(pCnt);
+					//alleen naar punten van actieve tabel (= grafiek met index 0) kijken; 
+					//in andere tabellen kan de docent punten hebben getekend, die moeten niet worden meegenomen.
+					if(pt.getIndex() == 1)
+						llgPtsCopy.addElement(graphPoints.elementAt(pCnt));
 				}
-				RealPoint[] llgPtsArray = new RealPoint[graphPoints.size()];
-				
+				//RealPoint[] llgPtsArray = new RealPoint[graphPoints.size()];
+				RealPoint[] llgPtsArray = new RealPoint[llgPtsCopy.size()];
+				if(llgPtsArray.length == 0)
+				{	ingevuld = false;
+					return;
+				}
+								
 				for (int dCnt = 0; dCnt < docentGraphPoints.size(); dCnt++)
 				{
 					RealPoint dPt = (RealPoint) docentGraphPoints.elementAt(dCnt);
@@ -3906,10 +3967,10 @@ MouseListener, MouseMotionListener, CBookAware {
 						hits++;
 				}
 				
-				int scorePerPunt = scoreMax / Math.max(docentGraphPoints.size(), graphPoints.size());
+				int scorePerPunt = scoreMax / Math.max(docentGraphPoints.size(), llgPtsArray.length);
 				if (hits == 0)
 					score = 0;
-				else if (hits == graphPoints.size())
+				else if (hits == llgPtsArray.length)
 				{
 					color = new Color(0, 200, 0);
 					score = scoreMax;
