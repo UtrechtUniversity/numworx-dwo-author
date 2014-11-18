@@ -3716,8 +3716,7 @@ MouseListener, MouseMotionListener, CBookAware {
 						hits[i][j] = 0;
 					if(checkPoints[i].size() > 0)
 						for(int pCnt = 0; pCnt < checkPoints[i].size(); pCnt++)
-						{	
-							RealPoint lPoint = (RealPoint) checkPoints[i].elementAt(pCnt);
+						{	RealPoint lPoint = (RealPoint) checkPoints[i].elementAt(pCnt);
 							Point lPixel = realPointToPixels(lPoint);
 							for(int j = 0; j < aantalFuncties; j++)
 							{	//Vergelijk getekende punt (lPoint) met het punt met dezelfde x-coördinaat en 
@@ -3737,6 +3736,8 @@ MouseListener, MouseMotionListener, CBookAware {
 									hits[i][j]++;
 								else
 								{
+									double yVerschil = 100;
+									boolean positiefVerschil = false;
 									for(int k = 1; k < nauwkeurigheid[j]; k++)
 									{
 										int xWaarde = lPixel.x - k;
@@ -3757,6 +3758,14 @@ MouseListener, MouseMotionListener, CBookAware {
 										{	hits[i][j]++;
 											break;
 										}
+										yVerschil = lPoint.getY() - dWaarde;
+										if(k == 1)
+											positiefVerschil = yVerschil > 0;
+										else if(positiefVerschil != yVerschil > 0)
+										{
+											hits[i][j]++;
+											break;
+										}
 										xWaarde = lPixel.x + k;
 										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
 										if(xAsLog)
@@ -3773,6 +3782,12 @@ MouseListener, MouseMotionListener, CBookAware {
 										catch(Exception e){}
 										if (dis < nauwkeurigheid[j])
 										{	hits[i][j]++;
+											break;
+										}
+										yVerschil = lPoint.getY() - dWaarde;
+										if(positiefVerschil != yVerschil > 0)
+										{
+											hits[i][j]++;
 											break;
 										}
 									}
@@ -3807,6 +3822,16 @@ MouseListener, MouseMotionListener, CBookAware {
 				int[] scorePerPunt = new int[aantalFuncties];
 				for(int i = 0; i < aantalFuncties; i++)
 					scorePerPunt[koppeling[i]] = maxScores[i] / Math.max(checkPoints[i].size(), minimumPunten[koppeling[i]]);
+				//aantal relevante punten bereken 
+				//punten die een auteur eventueel al heeft klaargezet tellen niet mee)
+				int aantalPunten = 0;
+				for(int i = 0; i < graphPoints.size(); i++)
+				{
+					RealPoint p = (RealPoint) graphPoints.get(i);
+					if(p.getIndex() <= aantalFuncties)
+						aantalPunten++;
+				}
+				
 				if(totaalHits == 0)
 				{	score = 0; 
 					fout = true;
@@ -3814,7 +3839,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
-				else if(totaalHits == Math.max(graphPoints.size(), somMinimum))
+				else if(totaalHits == Math.max(aantalPunten, somMinimum))
 				{	for(int i = 0; i < aantalFuncties; i++)
 						color = new Color(0, 200, 0);
 					for(int i = 0; i < aantalFuncties; i++)
