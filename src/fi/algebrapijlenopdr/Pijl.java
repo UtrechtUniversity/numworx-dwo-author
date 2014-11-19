@@ -331,6 +331,8 @@ public class Pijl extends JComponent
 			return;
 		
 
+		getParent().setComponentZOrder(this, 0);
+		
 		schuifveld.start();
 //tijdelijk		
 		//schuifveld.zetOpSchuifLaag(this);

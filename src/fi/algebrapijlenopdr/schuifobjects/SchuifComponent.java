@@ -47,6 +47,7 @@ public class SchuifComponent extends JPanel//Container
 	{	schuifveld.start();
 		startx = e.getX();
 		starty = e.getY();
+		getParent().setComponentZOrder(this, 0);
 		//schuifveld.zetSchuiver(this);
 	}
 	
