@@ -48,6 +48,7 @@ public class SchuifComponent extends JPanel //Container
 		startx = e.getX();
 		starty = e.getY();
 		//schuifveld.zetSchuiver(this);
+		getParent().setComponentZOrder(this, 0);
 	}
 	
 	public void mouseDragged(MouseEvent e)

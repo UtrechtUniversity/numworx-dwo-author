@@ -263,7 +263,7 @@ public class Pijl extends JComponent //Component
 		if (schuifveld.frozen)
 			return;
 		
-		
+		getParent().setComponentZOrder(this, 0);
 		
 		schuifveld.start();
 //tijdelijk		
