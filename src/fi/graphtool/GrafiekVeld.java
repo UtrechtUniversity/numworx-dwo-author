@@ -394,9 +394,10 @@ class GrafiekVeld extends JComponent{
 					g.setStroke(new BasicStroke(1.2f));
 					g.draw(curve);
 				}
-		if(//gtip.typeFormuleComponent != 1 && 
-				(gtip.nagekeken || gtip.mode == 0 || gtip.mode == 1))
-		{
+		//if(//gtip.typeFormuleComponent != 1 && 
+		//		gtip.nagekeken || gtip.mode == 0 || gtip.mode == 1)
+		//	Dit klopt niet!!!
+		//{
 			for(int j=0 ; j<gtip.functies.length ; j++)
 			{	if(gtip.functies[j]!=null && gtip.yAsNaam.equals(gtip.grafiekYAsNaam))
 				{	g.setColor(Color.black);
@@ -565,7 +566,7 @@ class GrafiekVeld extends JComponent{
 							}
 						}
 					}
-				}
+		//		}
 			}
 		}
 		//if(gtip.typeFormuleComponent == 1)
