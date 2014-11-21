@@ -396,10 +396,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(window instanceof Dialog)editInteractiePanelDialog = new EditInteractiePanelDialog((Dialog)window, "", false, currentSetNr, launchData, tv.getXWidgetManager());
 		
 		editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
-		editInteractiePanelDialog.setVisible(true);
-		editInteractiePanelDialog.requestFocusInWindow();
 		editInteractiePanelDialog.addActionListener(this);
 		editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		showDialog(false);
 	}
 	
 	public TekstInteractiePanelVak(TekstVak tv, InteractiePanel ip)
@@ -1805,6 +1804,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     
     public void stop()
     {   if(interactiePanel!=null)interactiePanel.stop();
+    	if(editInteractiePanelDialog != null)
+    	{
+    		editInteractiePanelDialog.dispose();
+    		editInteractiePanelDialog = null;
+    	}
     	closePopup();
     }
     
@@ -2124,11 +2128,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				
 				//editInteractiePanelDialog = new EditInteractiePanelDialog(WiskOpdr.getFrame(), "", false, currentSetNr, launchData);
 				editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
-				editInteractiePanelDialog.setVisible(true);
-				editInteractiePanelDialog.requestFocusInWindow();
 				editInteractiePanelDialog.addActionListener(this);
 				editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				interactiePanel.start();
+				showDialog(true);
 			}
 			else  if((e.getSource()==afdekPanel || e.getSource()==resizePanel && e.isShiftDown()) &&((TekstVakPanel)interactiePanel).isZwevend())
 			{
@@ -2195,6 +2198,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 			
 		
+	}
+/**
+ * Laat het editInteractionPanel zien 
+ * @param modal true: de methode blokkeert.
+ */
+	public void showDialog(boolean modal) {
+		if(editInteractiePanelDialog != null) {
+			editInteractiePanelDialog.setVisible(false);
+			editInteractiePanelDialog.setModal(modal);
+			editInteractiePanelDialog.toFront(); 		// FIXME orderening (met Events)
+			editInteractiePanelDialog.requestFocus(); 
+			editInteractiePanelDialog.setVisible(true); // BLOKKEERT als 'modal' true
+		}
 	}
 	
 	public void mouseClicked(MouseEvent e){;}
@@ -2272,11 +2288,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			
 			//editInteractiePanelDialog = new EditInteractiePanelDialog(WiskOpdr.getFrame(), "", false, currentSetNr, launchData);
 			editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
-			editInteractiePanelDialog.setVisible(true);
-			editInteractiePanelDialog.requestFocusInWindow();
 			editInteractiePanelDialog.addActionListener(this);
 			editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			//if(interactiePanel!=null)interactiePanel.start();    // dit snap ik niet
+			showDialog(true);
+
 		}
 	}
 	public void mouseEntered(MouseEvent e){

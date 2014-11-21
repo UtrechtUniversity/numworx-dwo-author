@@ -522,6 +522,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		vulVak(tekst.toString());
 		repaint();
 		produceAction("resize");
+// last change:
+		tfvNieuw.showDialog(true); // BLOK		
 	}
 	
 	// alleen nog te gebruiken voor een grafiekencomponent
