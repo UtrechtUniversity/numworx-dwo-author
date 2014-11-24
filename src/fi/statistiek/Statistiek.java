@@ -312,7 +312,7 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			e = (int) Math.floor(Math.log10(b));
 		}
-		// test syl: voor lengte min 156, max 171 en noBins 2 wordt step 20 i.p.v. 10
+
 		double step = Math.ceil(b * Math.pow(10, -e)) * Math.pow(10, e);
 		
 		if (step == 0)
