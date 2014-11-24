@@ -359,30 +359,40 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	 */
 	private int determineTab(int view)
 	{
-		int tab;
+		int tab = 0;
 		int count = 0;
 
 		ArrayList<Boolean> viewInOwnWindow = getModel().getViewInOwnWindow();
-
+//		System.out.println("StatInteractiePanelView.determineTab(" + view 
+//			+ "): viewInOwnWindow.size() = " + viewInOwnWindow.size());
+ 
 		// System.out.println("determineTab(view=" + view +
 		// "): viewInOwnWindow=" + viewInOwnWindow);
 
-		if (viewInOwnWindow.get(view).booleanValue())
+		try
 		{
-			// view is not in tabPane
-			tab = 0;
-		}
-		else
-		{
-			for (int i = 0; i < view; i++)
+			if (viewInOwnWindow.get(view).booleanValue())
 			{
-				if (!viewInOwnWindow.get(i).booleanValue())
-				{
-					// count the number of views in tabPane
-					count++;
-				}
+				// view is not in tabPane
+				tab = determineTab(previousSelectedView);
 			}
-			tab = count;
+			else
+			{
+				for (int i = 0; i < view; i++)
+				{
+					if (!viewInOwnWindow.get(i).booleanValue())
+					{
+						// count the number of views in tabPane
+						count++;
+					}
+				}
+				tab = count;
+			}
+		}
+		catch (Exception e)
+		{
+			// caused by triggering updates while part of the objects are still in old state
+			tab = 0;
 		}
 
 		// System.out.println("determineTab(view=" + view + "): count=" +
@@ -478,14 +488,26 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		return view;
 	}
 
+	/**
+	 * Check whether view is shown in its own window.
+	 * @param view
+	 * @return true if view is shown in its own window, else return false
+	 */
 	private boolean isInOwnWindow(int view)
 	{
 		ArrayList<Boolean> viewInOwnWindow = getModel().getViewInOwnWindow();
 
-		if (viewInOwnWindow.get(view))
-			return true;
-		else
+		try
+		{
+			if ((viewInOwnWindow.size() > 0) && viewInOwnWindow.get(view))
+				return true;
+			else
+				return false;
+		}
+		catch (Exception e)
+		{
 			return false;
+		}
 	}
 
 	public int indexOfTabComponent(Component tabComponent)
@@ -556,7 +578,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	 */
 	public void selectLastTab()
 	{
-		this.tabPane.setSelectedIndex(this.tabPane.getTabCount() - 2);
+		this.processSelectedTab(this.tabPane.getTabCount() - 2);
 	}
 
 	public void update(Observable arg0, Object arg1)
@@ -618,10 +640,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			{
 				this.tabPane.add(this.addViewTab, "+");
 			}
-
+			
 			DraggedTabListener listener = new DraggedTabListener(this.tabPane);
 			this.tabPane.addMouseListener(listener);
-			// test syl: ook mouseMotion voor mouseDragged()
+			// test syl: ook mouseMotion t.b.v. mouseDragged()
 			this.tabPane.addMouseMotionListener(listener);
 			super.add(this.tabPane, BorderLayout.CENTER);
 
@@ -648,6 +670,18 @@ public class StatInteractiePanelView extends JPanel implements Observer
 					+ (int) (0.5 * super.getWidth()), super.getY()
 					+ (int) (0.5 * super.getHeight())));
 			}
+		}
+
+		// update the selected view in tabPane
+//		System.out.println("StatInteractiePanelView.update(): selectedView = " + this.selectedView
+//			+ ", selectedViewInPane = " + this.selectedViewInTabPane);
+		if (this.isInOwnWindow(selectedView))
+		{
+			this.setTabPane(previousSelectedView);
+		}
+		else
+		{
+			this.setTabPane(selectedViewInTabPane);
 		}
 
 		// Fill boxes with variable names
@@ -868,22 +902,29 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				&& StatInteractiePanelView.this.model.getData()
 					.isViewsEditable())
 			{
-				Container c = Statistiek.getTopLevelAncestor(StatInteractiePanelView.this);
-				if (c instanceof Frame)
+				// set the selected tab
+				StatInteractiePanelView.this.controller
+					.setSelectedTab(tab);
+
+				if (tab < StatInteractiePanelView.this.model.getViews().size())
 				{
-					ChangeViewNameDialog dialog = new ChangeViewNameDialog(
-						(Frame) c, StatInteractiePanelView.this.model, tab,
-						StatInteractiePanelView.this,
-						StatInteractiePanelView.this.getLocationOnScreen());
-					dialog.setVisible(true);
-				}
-				else if (c instanceof Dialog)
-				{
-					ChangeViewNameDialog dialog = new ChangeViewNameDialog(
-						(Dialog) c, StatInteractiePanelView.this.model, tab,
-						StatInteractiePanelView.this,
-						StatInteractiePanelView.this.getLocationOnScreen());
-					dialog.setVisible(true);
+					Container c = Statistiek.getTopLevelAncestor(StatInteractiePanelView.this);
+					if (c instanceof Frame)
+					{
+						ChangeViewNameDialog dialog = new ChangeViewNameDialog(
+							(Frame) c, StatInteractiePanelView.this.model, tab,
+							StatInteractiePanelView.this,
+							StatInteractiePanelView.this.getLocationOnScreen());
+						dialog.setVisible(true);
+					}
+					else if (c instanceof Dialog)
+					{
+						ChangeViewNameDialog dialog = new ChangeViewNameDialog(
+							(Dialog) c, StatInteractiePanelView.this.model, tab,
+							StatInteractiePanelView.this,
+							StatInteractiePanelView.this.getLocationOnScreen());
+						dialog.setVisible(true);
+					}
 				}
 			}
 		}
@@ -1024,10 +1065,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			// Deze methode wordt aangeroepen als een window wordt aangeklikt,
 			// en dus ook als een window wordt gesloten.
 
-			// System.out.println("StatInteractiePanelView.SeparateViewDialog.windowActivated()");
-			// System.out.println("... selectedView = " + selectedView);
-			// System.out.println("... indexOf(sv) = " +
-			// StatInteractiePanelView.this.getModel().getViews().indexOf(sv));
+//			System.out.println("StatInteractiePanelView.SeparateViewDialog.windowActivated()");
+//			System.out.println("... selectedView = " + selectedView);
+//			System.out.println("... indexOf(sv) = " +
+//			StatInteractiePanelView.this.getModel().getViews().indexOf(sv));
 
 			int view = StatInteractiePanelView.this.getModel().getViews()
 				.indexOf(sv);
@@ -1041,36 +1082,19 @@ public class StatInteractiePanelView extends JPanel implements Observer
 
 		public void windowClosing(WindowEvent arg0)
 		{
-			// System.out.println("windowClosing(): previousSelectedView="
-			// + StatInteractiePanelView.this.previousSelectedView +
-			// ", selectedView=" + selectedView);
+//			 System.out.println("windowClosing(): previousSelectedView="
+//				 + StatInteractiePanelView.this.previousSelectedView +
+//				 ", selectedView=" + selectedView);
 
-			// oldSelectedTab is de oude selectedIndex van tabPane.
-			int oldSelectedTab = tabPane.getSelectedIndex();
-
-			int newSelectedTab;
-
-			// System.out.println("VOOR setViewSeparateWindow..... tabPane.getSelectedIndex()="
-			// + tabPane.getSelectedIndex());
+//			 System.out.println("VOOR setViewSeparateWindow..... tabPane.getSelectedIndex()="
+//				 + tabPane.getSelectedIndex());
 
 			// zet de view terug in tabPane; hierna is tabPane.selectedIndex 0
 			StatInteractiePanelView.this.model.setViewSeparateWindowByObject(
 				this.sv, false);
-			// System.out.println("NA setViewSeparateWindow..... tabPane.getSelectedIndex()="
-			// + tabPane.getSelectedIndex());
 
-			// Als er een view wordt teruggezet vòòr de oude selectedTab,
-			// dan wordt de nieuwe selectedTab 1 hoger
-			if (selectedView <= oldSelectedTab)
-				newSelectedTab = oldSelectedTab + 1;
-			else
-				newSelectedTab = oldSelectedTab;
-			StatInteractiePanelView.this.processSelectedTab(newSelectedTab);
-
-			// System.out.println("windowClosing(): tabPane.setSelectedIndex(selectedTab="
-			// + selectedTab + ")");
-			// dit geeft problemen, omdat selectedView niet is gezet
-			// tabPane.setSelectedIndex(selectedTab);
+//			System.out.println("NA setViewSeparateWindow..... tabPane.getSelectedIndex()="
+//				+ tabPane.getSelectedIndex());
 		}
 
 		public void windowDeactivated(WindowEvent arg0)
