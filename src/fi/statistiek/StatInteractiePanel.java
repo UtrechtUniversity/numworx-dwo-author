@@ -139,12 +139,9 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 
 		if (b.containsKey("selectedView"))
 		{
-			// test syl
 //			System.out.println("StatInteractiePanel.zetOpdracht(): selectedView in hashtable = "
-//			 + ((Integer)b.get("selectedView")).intValue());
+//				+ ((Integer)b.get("selectedView")).intValue());
 			this.view.processSelectedTab(((Integer) b.get("selectedView")).intValue());
-			// test syl
-//			this.view.processSelectedTab(1); // ?? geeft geen tab 1??!!
 		}
 	}
 
@@ -240,15 +237,14 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 		if (b.containsKey("selectedView"))
 		{
 			int index = ((Integer) b.get("selectedView")).intValue();
-			// System.out.println("StatInteractiePanel.setState(): selectedView in hashtable = "
-			// + index);
+			System.out.println("StatInteractiePanel.setState(): selectedView in hashtable = "
+				+ index);
 			this.view.processSelectedTab(index);
 		}
 	}
 
 	public Hashtable getEditState()
 	{
-		// test syl
 		//System.out.println("StatInteractiePanel.getEditState()");
 		return this.getState();
 		//return null;
