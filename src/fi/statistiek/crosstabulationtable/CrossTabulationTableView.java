@@ -313,7 +313,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			else
 			{
 				// er is geen split
-				System.out.println("CrossTabulationTable.update(): this.model.getColumnSplitIndex() > -1");
+				//System.out.println("CrossTabulationTableView.update(): this.model.getColumnSplitIndex() > -1");
 				return;
 			}
 
