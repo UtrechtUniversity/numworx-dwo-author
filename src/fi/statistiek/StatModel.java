@@ -121,8 +121,8 @@ public class StatModel extends Observable implements TableModelListener
 	 */
 	public void setViewSeparateWindow(int viewIndex, boolean isSeparate)
 	{
-		System.out.println("View " + viewIndex
-			+ " is set to show in separate window: " + isSeparate);
+		System.out.println("StatModel.setViewSeparateWindow(" + viewIndex
+			+ ", show in separate window: " + isSeparate + ")");
 		this.viewInOwnWindow.set(viewIndex, isSeparate);
 		super.setChanged();
 		super.notifyObservers();
