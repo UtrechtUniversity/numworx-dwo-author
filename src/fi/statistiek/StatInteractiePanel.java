@@ -159,10 +159,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 	{
 		Hashtable h = new Hashtable();
 
-		if (this.model.getData().isDataEditable())
-		{
-			h.put("tableModel", this.model.getData().getState());
-		}
+		h.put("tableModel", this.model.getData().getState());
 
 		h.put("selectionList", this.model.getData().getSelectionList());
 
