@@ -106,7 +106,10 @@ public class Text_en extends java.util.ListResourceBundle
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....
-		
+            {  "CBA_input", "input" },
+            {  "CBA_vergelijking", "equation" },
+            {  "CBA_parameterwaarde", "parameter value" },
+
 		};
 }
 

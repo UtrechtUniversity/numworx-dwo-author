@@ -105,6 +105,10 @@ public class Text_nl extends java.util.ListResourceBundle
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....
 		
+            {  "CBA_input", "invoer" },
+            {  "CBA_vergelijking", "vergelijking" },
+            {  "CBA_parameterwaarde", "parameterwaarde" },
+            
 		};
 }
 

@@ -5272,5 +5272,11 @@ MouseListener, MouseMotionListener, CBookAware {
 			return s;
 		}
 
+		@Override
+		public String getLocalizedCmd(String cmd) {
+			cmd = GraphTool.rb.getString(CBA_PREFIX + cmd);
+			return cmd;
+		}
+
 }
 
