@@ -816,4 +816,9 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		return s;
 	}
 
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
+
 }

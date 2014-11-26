@@ -333,4 +333,11 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 			cBookInteractieEditPanel = new CBookInteractieEditPanel(widget, getLocale(), uuid);
 		return cBookInteractieEditPanel;
 	}
+	
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return getEditor().getLocalizedCmd(cmd);
+	}
+
+	
 }

@@ -3,6 +3,8 @@ package fi.wiskopdr.cbook;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -18,6 +20,7 @@ import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.WiskOpdr;
 
@@ -163,6 +166,25 @@ public class CBookInteractieEditPanel extends JPanel implements
 
 	String[] getSendCmds() {
 		return editor.getAcceptedCmds();
+	}
+
+	public String getLocalizedCmd(String cmd) {
+		try {
+			Method method = editor.getClass().getMethod("getLocalizedCmd", String.class);
+			return String.valueOf(method.invoke(editor, cmd));			
+		} catch (NoSuchMethodException e) {
+		} catch (SecurityException e) {
+		} catch (IllegalAccessException e) {
+		} catch (IllegalArgumentException e) {
+		} catch (InvocationTargetException e) {
+		}
+		
+		try {
+			String translated = WiskOpdr.rb.getString(CBookAware.CBA_PREFIX + cmd);
+			if(!translated.startsWith(CBookAware.CBA_PREFIX)) cmd = translated;
+		} catch (Exception e) {
+		}
+		return cmd;
 	}
 
 }

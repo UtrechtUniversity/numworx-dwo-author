@@ -42,6 +42,10 @@ import org.json.simple.JSONArray;
 
 
 
+
+
+
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -93,14 +97,27 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		private static final long serialVersionUID = 1L;
 		private String key;
 		private String value;
+		
+		private TekstInteractiePanelVak source, dest;
 
 		public String toString() {
-			return key + "→" + value;
+			String tkey = source != null ? source.getLocalizedCmd(key): key;
+			String tdest = dest != null ? dest.getLocalizedCmd(value): value;
+			return tkey + "→" + tdest;
 		}
 		
 		public Connector(String key, String value) {
 			this.key = key;
 			this.value = value;
+		}
+
+		public Connector(String s, String d,
+				TekstInteractiePanelVak source,
+				TekstInteractiePanelVak dest) {
+			this(s,d);
+			this.source = source;
+			this.dest = dest;
+			
 		}
 
 		@Override
@@ -401,6 +418,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		showDialog(false);
 	}
 	
+	public String getLocalizedCmd(String key) {
+		if(interactiePanel instanceof CBookAware)
+		{
+			try {
+				key = ((CBookAware) interactiePanel).getLocalizedCmd(key);
+			} catch (Throwable e) {
+				System.err.println(e);
+			}
+		}
+		return key;
+	}
+
 	public TekstInteractiePanelVak(TekstVak tv, InteractiePanel ip)
 	{	this(tv);
 		interactiePanel = ip;	
@@ -2325,7 +2354,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				dot = d.indexOf('.');
 				String pd = dot >=0 ? d.substring(0,dot) : d;
 				if(pd.equals(ps))
-					result.add(new Connector(s,d));
+					result.add(new Connector(s,d, potentialSource, potentialDest));
 			}
 			if(!destSet.isEmpty())
 			{	potentialSource.connect(potentialDest, result);

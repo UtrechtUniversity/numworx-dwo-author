@@ -3849,4 +3849,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		return commands;
 	}
 
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
+
 }

@@ -910,4 +910,12 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
+	
+	
+	
 }

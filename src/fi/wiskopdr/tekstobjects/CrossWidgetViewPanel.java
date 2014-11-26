@@ -174,7 +174,7 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
 				}
 				else
 				{	popup.removeAll();
-					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(commandOut + "→" + command);
+					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(sender.getLocalizedCmd(commandOut) + "→" + listener.getLocalizedCmd(command));
 					item.setSelected(true);
 					item.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent e){

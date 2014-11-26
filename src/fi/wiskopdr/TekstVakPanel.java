@@ -3609,4 +3609,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		return sendCommands;
 	}
 
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
+
 }

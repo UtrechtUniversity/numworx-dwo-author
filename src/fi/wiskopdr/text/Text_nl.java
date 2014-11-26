@@ -671,7 +671,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CN_regelMinder", "Verwijder regel"},
 					
 				
-				
+				{"CBA_input", "invoer"},
+				{"CBA_index", "keuze" },
 				
 		};
 }
