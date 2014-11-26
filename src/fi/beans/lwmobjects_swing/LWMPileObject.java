@@ -209,10 +209,13 @@ public class LWMPileObject extends LWMObject
 				LWMPileObject remains = (LWMPileObject)clone();
 				isCopy = true;						// 'this' will be the copy
 				remains.isCopy = false;				// 'clone' will be put back
-				remains.removeMouseListener(this);		// let clone listen to its own MouseEvents
-				remains.removeMouseMotionListener(this);
-				remains.addMouseListener(remains);
-				remains.addMouseMotionListener(remains);
+
+// later OK maken?				
+//				remains.removeMouseListener(this);		// let clone listen to its own MouseEvents
+//				remains.removeMouseMotionListener(this);
+//				remains.addMouseListener(remains);
+//				remains.addMouseMotionListener(remains);
+				
 				remains.dragging = false;				// clone is NOT being dragged!
 				if ( pileCount == 0 )					// pile has zero copies left
 				{	remains.setMovable(false);			// no further pickups!

@@ -16,12 +16,11 @@ import fi.beans.lwmobjects_swing.LWMBufferPanel;
 import fi.beans.lwmobjects_swing.LWMButton;
 import fi.beans.lwmobjects_swing.LWMComponent;
 import fi.beans.lwmobjects_swing.LWMContainer;
+import fi.beans.lwmobjects_swing.LWMMouseHandler;
 import fi.beans.lwmobjects_swing.MovePermissions;
 import fi.beans.wiskopdrbeans.*;
 import fi.beans.appletutil.*;
 import fi.beans.stringutils.StringUtils;
-
-
 
 import javax.swing.*;
 
@@ -30,10 +29,11 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 
-public class BalansFruitInteractiePanel extends JPanel implements   InteractiePanel, InteractieEditPanel, ActionListener, MouseListener, CBookAware
+public class BalansFruitInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel, ActionListener, 
+																  MouseListener,CBookAware
 {
 	
-public static int MAXAANTAL = 20;			// max aantal per soort
+	public static int MAXAANTAL = 20;			// max aantal per soort
 	
 	public static int OFFSETY = 40;			// verticale offset van balansplaatje
 	public static int EVENWICHTY = 151;		// hoogte van SchaalContainer in evenwicht
@@ -57,6 +57,8 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	protected LWMContainer voorraad;
 	private LWMButton schoon;
 	
+	private LWMMouseHandler mouseHandler;
+	
 	MovePermissions mp;					// movePermissions for fruit only
 		
 	// Images
@@ -78,7 +80,7 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	private boolean viewEquation=false;
 	private boolean showEenheden = true;
 	
-	private JPanel afdekPanel;
+	//private JPanel afdekPanel;
 	private JButton resetButton;
 	private JTextField textArea; 
 	private JLabel vergelijkingLabel;
@@ -87,6 +89,9 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	private String huidigeVergelijking = "0=0";
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
+	boolean resetting = false;
+	boolean editMode = false;
 	
 	protected String[] imageNames = {
 			"ananas.gif",
@@ -155,9 +160,15 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		main.addActionListener(this);
 		
 		// de schoon-knop
-		schoon = new LWMButton(getImage("minibalansgoed"), "", 50, 25);
-		schoon.addActionListener(main);
-		main.addLWMComponent(schoon, 225, 10);
+		//schoon = new LWMButton(getImage("minibalansgoed"), "", 50, 25);
+		//schoon.addActionListener(main);
+		//main.addLWMComponent(schoon, 225, 10);
+		
+		mouseHandler = new LWMMouseHandler(0, 0, TOTAALBREED, TOTAALHOOG);
+		add(mouseHandler);
+		mouseHandler.addLWMContainer(voorraad);
+		mouseHandler.addLWMContainer(links);
+		mouseHandler.addLWMContainer(rechts);
 		
 		// MovePermissions-object maken voor FruitObjecten: mogen naar links, rechts en voorraad
 		mp = new MovePermissions();
@@ -168,7 +179,7 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		balansLinks = getImage("balanslinks.gif");
 		balansEvenwicht = getImage("balansgoed.gif");
 		balansRechts = getImage("balansrechts.gif");
-		wisknopImage = getImage("minibalansgoed.gif");
+		//wisknopImage = getImage("minibalansgoed.gif");
 		
 		// load images, add fruitobjects
 		//Thread t = new Thread(this);
@@ -177,9 +188,11 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		setSize(TOTAALBREED, TOTAALHOOG); 
 		setVisible(true);
 		
-		afdekPanel = new JPanel();
-		afdekPanel.setOpaque(false);
-		afdekPanel.addMouseListener(this);
+		//afdekPanel = new JPanel();
+		//afdekPanel.setBounds(0,0, TOTAALBREED, TOTAALHOOG);
+		//afdekPanel.setOpaque(false);
+		//afdekPanel.addMouseListener(this);
+		//afdekPanel.setVisible(false);
 		
 		resetButton = new JButton();
 		resetButton.setIcon(new ImageIcon(getImage("reseticon.gif")));
@@ -195,6 +208,7 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		vergelijkingLabel.setAlignmentX(CENTER_ALIGNMENT);
 		vergelijkingLabel.setFont(new Font("SansSerif", Font.PLAIN,18));
 		add(vergelijkingLabel,0);
+		vergelijkingLabel.setVisible(false);
 		
 		messageLabel = new JLabel("",JLabel.CENTER);
 		messageLabel.setBounds(0,20,500,20);
@@ -390,12 +404,14 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		if(aantalXLinks==0 && aantal1Links==0 && aantalXRechts==0 && aantal1Rechts==0
 				|| gewichten[8]<0 || Math.rint(gewichten[8])-gewichten[8]!=0 ) 
 		{	messageLabel.setText("No balance view possible");
-			add(afdekPanel,0);
+			//add(afdekPanel,0);
+			mouseHandler.fixed = true;
 		}
 		else
 		{	messageLabel.setText("");
 			if(!fixedOptie)
-				remove(afdekPanel);
+				mouseHandler.fixed = false;
+				//remove(afdekPanel); 
 			
 			for(int i=0 ; i<aantalXLinks; i++)
 		    {	links.addLWMComponent(fruitObjects[i],i*tussenruimteLinks,0);
@@ -416,6 +432,9 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	
 	public String geefBalansVergelijking()
 	{
+		
+//System.out.println("geefBalansVerg");
+
 		int aantalXLinks = 0;
 		int aantalXRechts = 0;
 		int aantal1Links = 0;
@@ -453,7 +472,10 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	}
 	
 	public void zetEenheden(boolean b)
-	{	for(int i=0 ; i<aantalFruitObjects; i++)
+	{	
+		showEenheden = b;
+		
+		for(int i=0 ; i<aantalFruitObjects; i++)
 			voorraad.addLWMComponent(fruitObjects[i],fruitObjects[i].getLocation().x,fruitObjects[i].getLocation().y);
 	
 		main.setBalance();
@@ -484,7 +506,43 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		
 	}		
 			
-	
+
+	public void zetFixedOptie(boolean b)
+	{
+		fixedOptie = b;
+		
+		mouseHandler.fixed = fixedOptie;
+		
+		repaint();
+
+	}
+
+	public void zetResetOptie(boolean b)
+	{
+		resetOptie = b;
+		if(resetOptie)add(resetButton,0);
+		else remove(resetButton);
+		
+		repaint();
+
+	}
+
+	public void zetViewEquation(boolean b)
+	{
+		
+//System.out.println("zetViewEquation " + b);
+
+		viewEquation = b;
+		vergelijkingLabel.setVisible(viewEquation);
+		
+		if (viewEquation)
+			vergelijkingLabel.setText(this.geefBalansVergelijking());
+		//if(viewEquation)add(vergelijkingLabel,0);
+		//else remove(vergelijkingLabel);
+		
+		repaint();
+
+	}
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{
@@ -493,8 +551,6 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		//Thread t = new Thread(this);
 		//t.start();
 		run();
-		
-	
 		
 		int aantalFruitObjects=0;
 		int[] stukFruitX=null;
@@ -530,25 +586,33 @@ public static int MAXAANTAL = 20;			// max aantal per soort
    	    }
 		main.setBalance();
 		
-		this.fixedOptie=fixedOptie;
+		//this.fixedOptie=fixedOptie;
 		this.bewaarOptie=bewaarOptie;
-		this.resetOptie=resetOptie;
-		this.viewEquation=viewEquation;
+		//this.resetOptie=resetOptie;
+		//this.viewEquation=viewEquation;
 		this.showEenheden = showEenheden;
 		
-		if(fixedOptie)add(afdekPanel,0);
-		else remove(afdekPanel);
+		//if(fixedOptie)add(afdekPanel,0);
+		//else remove(afdekPanel);
 		
-		if(resetOptie)add(resetButton,0);
-		else remove(resetButton);
+		//if(resetOptie)add(resetButton,0);
+		//else remove(resetButton);
 		
-		if(viewEquation)add(vergelijkingLabel,0);
-		else remove(vergelijkingLabel);
+		//if(viewEquation)add(vergelijkingLabel,0);
+		//else remove(vergelijkingLabel);
+		
+		zetFixedOptie(fixedOptie);
+		zetResetOptie(resetOptie);
+		zetViewEquation(viewEquation);
+		
 	}
 	
 	public void setState(Hashtable h)
 	{
-		if(!bewaarOptie)return;
+		
+//System.out.println("setState " + bewaarOptie + " " + resetting);
+
+		if(!bewaarOptie && !resetting)return;
 		
 		int aantalFruitObjects=0;
 		int[] stukFruitX=null;
@@ -569,12 +633,15 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	    {	if(containerNr[i]==0) 
 	    	{	voorraad.addLWMComponent(fruitObjects[i],stukFruitX[i],fruitObjects[i].getLocation().y);
 	    		//fruitObjects[i].setLocation(stukFruitX[i],fruitObjects[i].getLocation().y);
+//System.out.println("voorraad");	    	
 	    	}
 	    	if(containerNr[i]==1) 
 	    	{	links.addLWMComponent(fruitObjects[i],stukFruitX[i],fruitObjects[i].getLocation().y);
+//System.out.println("links");	    	
 	    	}
 	    	if(containerNr[i]==2) 
 	    	{	rechts.addLWMComponent(fruitObjects[i],stukFruitX[i],fruitObjects[i].getLocation().y);
+//System.out.println("rechts");	    	
 	    	}
    	    }
 		
@@ -596,14 +663,26 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 		int[] containerNr=null;
 		boolean showEenheden = true;
 		
+		boolean fixedOptie=false;
+		boolean resetOptie=false;
+		boolean viewEquation=false;
+		boolean bewaarOptie = false;
+		
 		if(h.containsKey("aantalFruitObjects")) aantalFruitObjects = ((Integer)h.get("aantalFruitObjects")).intValue();
 		if(h.containsKey("stukFruitX")) stukFruitX = (int[])h.get("stukFruitX");
 		if(h.containsKey("containerNr")) containerNr = (int[])h.get("containerNr");
 		if(h.containsKey("showEenheden")) showEenheden = ((Boolean)h.get("showEenheden")).booleanValue();
+
+		if(h.containsKey("fixedOptie")) fixedOptie = ((Boolean)h.get("fixedOptie")).booleanValue();
+		if(h.containsKey("bewaarOptie")) bewaarOptie = ((Boolean)h.get("bewaarOptie")).booleanValue();
+		if(h.containsKey("resetOptie")) resetOptie = ((Boolean)h.get("resetOptie")).booleanValue();
+		if(h.containsKey("viewEquation")) viewEquation = ((Boolean)h.get("viewEquation")).booleanValue();
 		
 		this.aantalFruitObjects = aantalFruitObjects;
 		this.showEenheden = showEenheden;
 		zetEenheden(showEenheden);
+		
+		this.bewaarOptie=bewaarOptie;
 		
 		for(int i=0 ; i<aantalFruitObjects; i++)
 	    {	if(containerNr[i]==0) fruitObjects[i].setLocation(stukFruitX[i],fruitObjects[i].getLocation().y);
@@ -616,6 +695,11 @@ public static int MAXAANTAL = 20;			// max aantal per soort
    	    }
 		
 		main.setBalance();
+		
+		zetFixedOptie(fixedOptie);
+		zetResetOptie(resetOptie);
+		zetViewEquation(viewEquation);
+
 	}
 	
 	
@@ -688,7 +772,7 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	public InteractieEditPanel getEditPanel(){return new BalansFruitInteractieEditPanel();}
 		
 	public void setBounds(int x, int y, int b, int h)
-	{	if(afdekPanel!=null) afdekPanel.setBounds(x,y,b,h);
+	{	//if(afdekPanel!=null) afdekPanel.setBounds(x,y,b,h);
 		super.setBounds(x,y,b,h);
 	}
 	
@@ -735,7 +819,13 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 	{	
 		if(e.getSource()==main)
 		{
+			
+//System.out.println("main is source");
+
 			vergelijkingLabel.setText(this.geefBalansVergelijking());
+
+			
+			
 			if(!geefBalansVergelijking().equals("0=0") &&  !geefBalansVergelijking().equals(huidigeVergelijking))
 			{	sendCommand("balansvergelijking");
 				
@@ -748,7 +838,22 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 			}
 			
 		}
-		else run();
+		else if ((e.getSource() == resetButton) && !editMode)
+		{	
+//System.out.println("resetButton");
+
+			if (launchData == null)
+			{	run();
+//System.out.println("launchData == null");			
+			}
+			else
+			{	resetting = true;
+				setState(launchData);
+				resetting = false;
+//System.out.println("launchData not null");			
+			}
+		
+		}
 	}
 	
 	
@@ -862,7 +967,6 @@ public static int MAXAANTAL = 20;			// max aantal per soort
 			
 			}
 		}
-
 		@Override
 		public void acceptCBookEvent(CBookEvent event) {
 			String command = event.getCommand();

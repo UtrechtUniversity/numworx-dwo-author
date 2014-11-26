@@ -90,6 +90,8 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	private LWMContainer voorraad;
 	private LWMButton schoon;
 	
+	private LWMMouseHandler mouseHandler;
+	
 	MovePermissions mp;					// movePermissions for fruit only
 		
 	// Images
@@ -203,6 +205,12 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 		schoon.addActionListener(main);
 		main.addLWMComponent(schoon, 225, 10);
 		
+		mouseHandler = new LWMMouseHandler(0, 0, TOTAALBREED, TOTAALHOOG);
+		add(mouseHandler);
+		mouseHandler.addLWMContainer(voorraad);
+		mouseHandler.addLWMContainer(links);
+		mouseHandler.addLWMContainer(rechts);
+				
 		// MovePermissions-object maken voor FruitObjecten: mogen naar links, rechts en voorraad
 		mp = new MovePermissions();
 		mp.addPermission(voorraad);

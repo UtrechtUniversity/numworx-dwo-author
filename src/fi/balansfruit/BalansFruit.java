@@ -56,6 +56,9 @@ class BalansFruit extends LWMRootContainer
 	
 	public void setBalance()
 	{
+		
+//System.out.println("setBalance");
+
 		int newBalanceStatus;
 		double wl = links.getTotalWeight();
 		double wr = rechts.getTotalWeight();
@@ -109,6 +112,9 @@ class BalansFruit extends LWMRootContainer
 	
 	public void maakWeegschaalLeeg()
 	{
+		
+//System.out.println("maakWeegschaalLeeg");
+
 		LWMComponent c;
 		int teller;
 		int aantal;
@@ -157,7 +163,10 @@ class BalansFruit extends LWMRootContainer
     }   
     
     public void produceAction(String command)
-    {   if (actionListener != null)
+    {   
+//System.out.println("balans produce action");
+
+    	if (actionListener != null)
         {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
         }
     }

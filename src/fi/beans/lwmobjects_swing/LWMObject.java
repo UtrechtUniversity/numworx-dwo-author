@@ -26,8 +26,10 @@ public class LWMObject extends LWMComponent
 	private void commonConstructorPart(int w, int h)
 	{	setSize(w, h);
 		isMovable = true;
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		
+//		addMouseListener(this);
+//		addMouseMotionListener(this);
+
 		initListeners();
 	}
 
@@ -150,6 +152,10 @@ public class LWMObject extends LWMComponent
 	public void paint(Graphics g)
 	{	paintComponent(g);
 		// super.paint(g);			// Belangrijk verschil met LWMContainer!!!!!!!!!!!
+	
+//g.setColor(Color.black);
+//g.drawRect(0,0, getWidth() - 1, getHeight() - 1) ;	
+	
 	}
 	
 }

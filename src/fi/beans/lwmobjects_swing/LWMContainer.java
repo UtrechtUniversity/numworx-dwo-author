@@ -68,8 +68,10 @@ public class LWMContainer extends LWMComponent
 		keepInside = false;
 		gravity = GONOWHERE;
 		isMovable = true;
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		
+		//addMouseListener(this);
+		//addMouseMotionListener(this);
+		
 		initListeners();
 	}
 

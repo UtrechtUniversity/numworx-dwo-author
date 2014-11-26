@@ -25,7 +25,7 @@ import javax.swing.*;
  */
 
 public abstract class LWMComponent extends Container
-	implements MouseListener, MouseMotionListener
+	//implements MouseListener, MouseMotionListener
 {	
 // ----------- Constants ----------
 /**
@@ -583,15 +583,25 @@ public abstract class LWMComponent extends Container
  *
  * @see LWMComponent#pickupLWMComponent(Point ap)
  */
-	public void mousePressed(MouseEvent e)
-	{	if ( isMovable )
+	//public void mousePressed(MouseEvent e)
+	public void mousePressed(int xPressed, int yPressed)
+	{	
+		
+//System.out.println("mousePressed " + isMovable + " " + xPressed + " " + yPressed);
+
+		if ( isMovable )
 		{	// remember old location
 			setPreviousPosition();
 			// initiate move
 			dragging = true;
-			startpunt = new Point(e.getX(), e.getY());
+			//startpunt = new Point(e.getX(), e.getY());
+			startpunt = new Point(xPressed, yPressed);
 			Point ap = getAbsLocation();
+
+//System.out.println("absLoc " + ap.x + " " + ap.y);			
+			
 			pickupLWMComponent(ap);
+
 		}
 	}
 	
@@ -605,23 +615,37 @@ public abstract class LWMComponent extends Container
  *
  * @see LWMComponent#dropLWMComponent(LWMContainer dest, Point ap)
  */
-	public void mouseReleased(MouseEvent e) 
- 	{	if ( dragging )			// check nodig? niet de meest elegante manier.....
+	//public void mouseReleased(MouseEvent e)
+	public void mouseReleased(int xReleased, int yReleased)
+ 	{	
+//System.out.println("mouseReleased " + dragging + " " + xReleased + " " + yReleased);		
+		
+
+		
+		if ( dragging )			// check nodig? niet de meest elegante manier.....
 		{	dragging = false;
-			startpunt = null;
+			//startpunt = null;
 			// 1. Vind absolute positie
  			Point ap = getAbsLocation();
+ 			
+//System.out.println("absLoc " + ap.x + " " + ap.y);
+//System.out.println("startpunt " + startpunt.x + " " + startpunt.y);
+
  			// 2. Verwijder Component uit boom (anders vindt Container.getComponentAt
  			// 	de Component zelf!
 			mybox.removeLWMComponent(this);
 			// 3. Zoek de nieuwe LWMContainer
- 			LWMContainer dest = allbox.getLWMContainerAt(ap.x+e.getX(), ap.y+e.getY() );
+ 			//LWMContainer dest = allbox.getLWMContainerAt(ap.x+e.getX(), ap.y+e.getY() );
+			//LWMContainer dest = allbox.getLWMContainerAt(ap.x+xReleased, ap.y+yReleased);
+			LWMContainer dest = allbox.getLWMContainerAt(ap.x, ap.y);
  			// 4. Check permission
- 			if ( dest != null && ( myPermissions == null || myPermissions.isPermitted(dest) ) )
+ 			if ( dest != null && (myPermissions == null || myPermissions.isPermitted(dest)))
  			{	// 5a. dropLWMComponent will by default calculate the Component's location
  				// 	and add it to dest.
  				dropLWMComponent(dest, ap);
  				tellListeners(previousContainer, dest);
+ 				
+ 				
  			} else
  			{	// 5b. Terug, tis niet goed!
  				//	NB: ook index in componentlist terugzetten?
@@ -630,57 +654,57 @@ public abstract class LWMComponent extends Container
  				dropLWMComponent(previousContainer, p2);
  				// Note: we must use dropLWMComponent(..) to ensure that copies of a pile are
  				// returned to their pile, all specials are done by this method....
+ 				
+ 				
+ 				
  			}
  			allbox.repaint();
+ 			
+ 			startpunt = null;
  		}
  	}  
 
 /**
- * Does nothing.
- */
-	public void mouseEntered(MouseEvent e)
-	{}
-	
-/**
- * Does nothing.
- */
-	public void mouseExited(MouseEvent e)
-	{}
-	
-/**
- * Does nothing.
- */
-	public void mouseClicked(MouseEvent e)
-	{}
-	
-// ------- Event handling: MouseMotionListener --------------
-	
-/**
- * Does nothing.
- */
-	public void mouseMoved(MouseEvent e)
-	{}
-
-/**
  * Drag the LWMComponent around. Just changes the components location.
  */
-	public void mouseDragged(MouseEvent e) 
- 	{	if ( dragging )
-		{	int dx = e.getX() - startpunt.x;
-			int dy = e.getY() - startpunt.y;
+	//public void mouseDragged(MouseEvent e)
+	public void mouseDragged(int xDragged, int yDragged)
+ 	{	
+		
+//System.out.println("mouseDragged " + dragging + " " + xDragged + " " + yDragged);
+
+
+		if ( dragging )
+		{	//int dx = e.getX() - startpunt.x;
+			int dx = xDragged - startpunt.x;
+			//int dy = e.getY() - startpunt.y;
+			int dy = yDragged - startpunt.y;
+			
 			int x = getLocation().x + dx;		// NB drag is steeds relatief tov de huidige positie!
 			int y = getLocation().y + dy;
+			
 			if (stayInsideRoot)
 			{	if ( x < 0 )
-					x = 0;
+				{	x = 0;
+					dx = x - getLocation().x;
+				}
 				else if ( x + width > allbox.getBounds().width )
-					x = allbox.getBounds().width - width;
+				{	x = allbox.getBounds().width - width;
+					dx = x - getLocation().x; 
+				}
 
 				if ( y < 0 )
-					y = 0;
+				{	y = 0;
+					dy = y - getLocation().y;
+				}
 				else if ( y + height > allbox.getBounds().height )
-					y = allbox.getBounds().height - height;
+				{	y = allbox.getBounds().height - height;
+					dy = y - getLocation().y;
+				}
 			}
+			
+			startpunt.x += dx;
+			startpunt.y += dy;
 
 			setLocation(x, y);
 			repaint();

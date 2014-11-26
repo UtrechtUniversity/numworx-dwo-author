@@ -27,7 +27,7 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 	
 	public BalansFruitInteractieEditPanel()
 	{	super();
-	
+		editMode = true;
 		
 		setLayout(null);
 		aantalSoorten = imageNames.length-4;
@@ -74,7 +74,7 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 		add(resetOptieCB);
 		
 		viewEquationCB = new JCheckBox("View Equation");
-		viewEquationCB.setBounds(20,590,180,20);
+		viewEquationCB.setBounds(20,490,180,20);
 		viewEquationCB.addActionListener(this);
 		add(viewEquationCB);
 		
@@ -209,6 +209,8 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 		this.aantalFruitObjects = aantalFruitObjects;
 		
 		zetEenheden(showEenheden);
+		
+		
 		for(int i = 11; i < 17; i++)
 			imageComponenten[i].setImage(getImage(imageNames[i]));
 		
@@ -229,6 +231,11 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 		viewEquationCB.setSelected(viewEquation);
 		variabelenCB.setSelected(variabelen);
 		eenhedenCB.setSelected(showEenheden);
+		
+		zetFixedOptie(fixedOptie);
+		zetResetOptie(resetOptie);
+		zetViewEquation(viewEquation);
+//System.out.println("bfiep setEditState " + viewEquation);		
 		
 		int height = 10;
 		int start = 0;
@@ -271,6 +278,8 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 
 	public void actionPerformed(ActionEvent e)
 	{
+		super.actionPerformed(e);
+		
 		for(int i=0 ; i<aantalSoorten ; i++)
 		{	if(aantalFields[i]==e.getSource() || gewichtFields[i]==e.getSource()) verwerkInvoer(i);
 		}
@@ -297,6 +306,19 @@ public class BalansFruitInteractieEditPanel extends BalansFruitInteractiePanel i
 			                 
 			repaint();
 		}
+		if (e.getSource() == resetOptieCB)
+		{
+			zetResetOptie(resetOptieCB.isSelected());
+		}
+		if (e.getSource() == fixedOptieCB)
+		{
+			zetFixedOptie(fixedOptieCB.isSelected());
+		}
+		if (e.getSource() == viewEquationCB)
+		{
+			zetViewEquation(viewEquationCB.isSelected());
+		}
+
 	}
 	
 	public void focusLost(FocusEvent e)
