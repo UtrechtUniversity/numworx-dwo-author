@@ -16,5 +16,9 @@ public interface CBookAware extends CBookEventListener {
 	String[] getSendCmds();
 
 	String[] getAcceptedCmds();
+	
+	String getLocalizedCmd(String cmd);
+	
+	String CBA_PREFIX = "CBA_";
 
 }

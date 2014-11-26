@@ -1023,6 +1023,12 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 			String[] commands = {"balansvergelijking", "zetOplossing", "parameterwaarde"};
 			return commands;
 		}
+
+
+		@Override
+		public String getLocalizedCmd(String cmd) {
+			return cmd;
+		}
 	
 }
 
