@@ -1,6 +1,7 @@
 package fi.wiskopdr.cbook;
 
 import java.awt.Dimension;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AllPermission;
@@ -364,7 +365,9 @@ public class Service {
 		URL url = new URL(codebase, index);
 		System.out.println(url);
 		Properties properties = new Properties();
-		properties.load(url.openStream());
+		InputStream indexStream = url.openStream();
+		properties.load(indexStream);
+		indexStream.close();
 		String trusted = (String) properties.remove("Trusted");
 		List<String> trust = Collections.emptyList();
 		if(trusted != null) 
@@ -383,9 +386,10 @@ public class Service {
 			index = work.remove(0);
 			if(done.contains(index)) continue;
 			done.add(index);
-			url = new URL(index);
 			Properties p = new Properties();
-			p.load(url.openStream());
+			InputStream openStream = new URL(index).openStream();
+			p.load(openStream);
+			openStream.close();
 			p.keySet().removeAll(properties.keySet());
 			properties.putAll(p);			
 		} while (true);
