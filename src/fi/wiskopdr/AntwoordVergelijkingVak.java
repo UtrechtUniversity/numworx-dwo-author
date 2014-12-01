@@ -2517,8 +2517,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					break;
 				}
 			}
-			antwoord = antwoord.vervangDifferentialen(diffVar);
-			antwoord = antwoord.vervangDiffs(gewensteEindOplossing.geefEindOplossingen(var), var);
+			if(FormuleParser.isDiffOperatoren())
+			{	antwoord = antwoord.vervangDifferentialen(diffVar);
+				antwoord = antwoord.vervangDiffs(gewensteEindOplossing.geefEindOplossingen(var), var);
+			}
 			//antwoord = antwoord.berekenDiffs(gewensteEindOplossing.geefEindOplossingen(var), var, diffVar);
 			
 			boolean isGelijkwaardigEind = antwoord.isOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
