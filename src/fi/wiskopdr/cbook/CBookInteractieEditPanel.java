@@ -19,10 +19,13 @@ import javax.swing.JTextField;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
+import org.cbook.cbookif.Constants;
 
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 /**
  * Maak van een CBook widget een InteractieEditPanel.
@@ -43,6 +46,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 	JCheckBox teltMee;
 	String clazzName, instance;
 	private JComponent delegate;
+	private ObjectiveChoiceButton logObjectivesButton;
 	
 	
 	@Override
@@ -88,10 +92,19 @@ public class CBookInteractieEditPanel extends JPanel implements
 		{  top.add(logging);
 			top.add(logid);
 		}
+// objectives:
+	    logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        if(logObjectivesButton.isVisible())
+        	top.add(logObjectivesButton);
+    
+		
 		add(top, BorderLayout.NORTH);
 		
 	}
 
+	private static String LOG_OBJECTIVES = "logObjectives";
+	
 	public void setEditState(Hashtable b) {
 		launchData = b;
 		Map<String, ?> data = (Map<String, ?>) launchData.get(WidgetBridge.LAUNCH_DATA);
@@ -107,6 +120,11 @@ public class CBookInteractieEditPanel extends JPanel implements
 			logid.setText(String.valueOf(getProperty(WidgetBridge.LOG_ID)));
 			logging.setSelected(Boolean.TRUE.equals(getProperty(WidgetBridge.LOGGING)));
 		}
+		
+		boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(LOG_OBJECTIVES));
+        logObjectivesButton.setChoices(logObjectives);
+
+		
 	}
 
 	public Hashtable getEditState() {
@@ -117,13 +135,18 @@ public class CBookInteractieEditPanel extends JPanel implements
 		int maxScore = editor.getMaxScore();
 		if(! teltMee.isSelected())
 			maxScore = 0;
-		launchData.put(WidgetBridge.SCORE_MAX, maxScore);
+		launchData.put(Constants.MAX_SCORE, maxScore);
 		launchData.put(WidgetBridge.TELT_MEE, teltMee.isSelected());
 		if(canLog)
 		{	
 			launchData.put(WidgetBridge.LOGGING, logging.isSelected());
 			launchData.put(WidgetBridge.LOG_ID, logid.getText());
-		}		
+		}
+		if(logObjectivesButton.isVisible())
+		{
+			launchData.put(LOG_OBJECTIVES, logObjectivesButton.getChoices());
+		}
+		
 		return launchData;
 	}
 
@@ -149,10 +172,10 @@ public class CBookInteractieEditPanel extends JPanel implements
 		if("locale".equals(key)) return getLocale();
 		if(WidgetBridge.UUID.equals(key))
 			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getEditPageNr() + "-" + instance;
-		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
-		{ 
-			return WidgetBridge.getResourceManager(clazzName, WiskOpdr.getEditPageNr() + "/" + instance);
-		}
+//		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
+//		{ 
+//			return WidgetBridge.getResourceManager(clazzName, WiskOpdr.getEditPageNr() + "/" + instance);
+//		}
 		return launchData.get(key);
 	}
 

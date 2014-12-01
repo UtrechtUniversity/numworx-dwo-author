@@ -497,6 +497,15 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return "learner_name";
 	}
 	
+	public static String getOAuthToken() {
+		if( applet != null) {
+			String token =  applet.getParameter("oauth_token");
+			if(token != null) return token;
+		}
+		return "oauth_token";
+	}
+	
+	
 	/**
 	 * Default contructor
 	 */
@@ -1380,4 +1389,5 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static int getEditPageNr() {
 		return OpdrNavStructEdit.getInstance().geefOpdrachtNr();
 	}
+
 }

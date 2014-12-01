@@ -25,6 +25,7 @@ import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
+import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -178,7 +179,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 
 	public int getScoreMax() {
 		if(isTeltMee())
-			return ((Number) launchData.get(WidgetBridge.SCORE_MAX)).intValue();
+			return ((Number) launchData.get(Constants.MAX_SCORE)).intValue();
 		return 0;
 	}
 

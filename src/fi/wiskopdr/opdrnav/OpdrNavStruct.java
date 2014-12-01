@@ -1533,7 +1533,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return null;
 	}
 
-	static boolean[][] toBooleanArrayArray(Object object)
+	static public boolean[][] toBooleanArrayArray(Object object)
 	{
 		if (object == null || object instanceof boolean[][])
 			return (boolean[][]) object;

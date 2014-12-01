@@ -20,7 +20,6 @@ import fi.wiskopdr.tekstobjects.LinkRegel;
 
 public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 
-	public static final Object SCORE_MAX = "scoreMax";
 	public static final String TELT_MEE = "teltMee";
 
 	public static final String JSOBJECT = "JSObject";
@@ -72,8 +71,8 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		
 		String student = WiskOpdr.getLearner_id();
 		String unit    = WiskOpdr.getUnit_id();
-		String user    = widget;
-		String passwd  = widget;
+		String user    = student;
+		String passwd  = WiskOpdr.getOAuthToken();
 
 		URL root = null;
 		try {
