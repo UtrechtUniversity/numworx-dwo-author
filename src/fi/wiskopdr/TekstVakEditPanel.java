@@ -120,6 +120,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean aftrekPopup;
 	private int puntenAftrekPopup = 5;
 	private JTextField aftrekPopupTF;
+	private JLabel aftrekPopupLabel;
 	private JCheckBox vulHoogteCB;
 	private boolean vulHoogte;
 	private JCheckBox callOutCB;
@@ -171,6 +172,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int defaultIpWidth = 680; //hier stond 270
 	private int defaultOpWidth = 280;
 	private int defaultOpHeight= 580;
+	
+	private JCheckBox logCB;
+	private JTextField logIDField;
 	
 	
 	public TekstVakEditPanel(XWidgetManager manager)
@@ -259,6 +263,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		inklapbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_inklapbaar"), 10,415,120,20, inklapbaar, layoutOptionsPanel);
 		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
+		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
+        
+		logIDField = new JTextField("0");
+		logIDField.setBounds(80,250,70,20);
+		logIDField.setFont(ifFont);
+		logIDField.setVisible(false);
+		logIDField.addActionListener(this);
+		logIDField.addFocusListener(this);
+		interactionOptionsPanel.add(logIDField);
+        
 		
 		sleepHandleCB.setVisible(false);
 		colorSelectionCB.setVisible(false);
@@ -482,12 +496,18 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(interactiePanelIdTF);
 		
 		aftrekPopupTF = new JTextField(""+puntenAftrekPopup);
-		aftrekPopupTF.setBounds(235,213,30,20);
+		aftrekPopupTF.setBounds(240,220,30,20);
 		aftrekPopupTF.setFont(ifFont);
 		aftrekPopupTF.addActionListener(this);
 		aftrekPopupTF.addFocusListener(this);
 		aftrekPopupTF.setVisible(false);
 		interactionOptionsPanel.add(aftrekPopupTF);
+		
+		aftrekPopupLabel = new JLabel("Puntenaftrek");
+		aftrekPopupLabel.setBounds(165,220,70,20);
+		aftrekPopupLabel.setFont(ifFont);
+		aftrekPopupLabel.setVisible(false);
+		interactionOptionsPanel.add(aftrekPopupLabel);
 		
 		randomTF = new JTextField(randomVar);
 		randomTF.setBounds(320,22,30,20);
@@ -649,6 +669,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		double[] breedtes = null;
 		double[] hoogtes = null;
 		
+		boolean logOption = false;
+		String logID = "";
+		
 		this.ronding = Integer.parseInt(rondingTF.getText());
 		this.hoek = Integer.parseInt(hoekTF.getText());
 		this.ipId = Integer.parseInt(interactiePanelIdTF.getText());
@@ -706,6 +729,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		linkWidth = link.getWidth();
 		linkWidth = link.getHeight();
 		
+		logOption = logCB.isSelected();
+		logID = logIDField.getText();
+			
 		/*
 		Vector v = geefInteractiePanels();
 		interactiePanelLaunchData = new Hashtable[v.size()];
@@ -803,6 +829,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			h.put("linkWidth", new Integer(linkWidth));
 			h.put("linkHeight", new Integer(linkHeight));
 		}
+		h.put("logOption",new Boolean(logOption));
+		h.put("logID",logID);
 		
 		return h;
 	}
@@ -858,6 +886,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int[] grensScores = null;
 		int linkWidth = 400;
 		int linkHeight = 400;
+		boolean logOption = false;
+		String logID = "";
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -920,6 +950,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("grensScores")) grensScores = (int[]) h.get("grensScores");
 		if(h.containsKey("linkWidth")) linkWidth = ((Integer)h.get("linkWidth")).intValue();
 		if(h.containsKey("linkHeight")) linkHeight = ((Integer)h.get("linkHeight")).intValue();
+		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
+        if(h.containsKey("logID")) logID = (String)h.get("logID");
+		
+        System.out.println("logOption: "+logOption);
 
 		this.randZichtbaar = randZichtbaar;
 		this.randDikte = randDikte;
@@ -996,6 +1030,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		balansVergComCB.setSelected(balansVergCom);
 		aftrekPopupCB.setSelected(aftrekPopup);
 		aftrekPopupTF.setVisible(aftrekPopup);
+		aftrekPopupLabel.setVisible(aftrekPopup);
 		callOutCB.setSelected(callOut);
 		vulHoogteCB.setSelected(vulHoogte);
 		inklapbaarCB.setSelected(inklapbaar);
@@ -1012,6 +1047,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		linkCB.setSelected(isLink);
 		defaultBijNullCB.setSelected(defaultBijNull);
 		linkButton.setVisible(isLink);
+		
+		logCB.setSelected(logOption);
+        logIDField.setVisible(logOption);
+        //logObjectivesButton.setVisible(logOption);
+        logIDField.setText(logID);
 		
 		randomCB.setSelected(random);
 		randomTF.setVisible(random);
@@ -1464,6 +1504,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(aftrekPopupCB))
 		{	aftrekPopup = aftrekPopupCB.isSelected();
 			aftrekPopupTF.setVisible(aftrekPopup);
+			aftrekPopupLabel.setVisible(aftrekPopup);
 			tekstVakPanel.setEditState(getEditState());
 			repaint();
 		}
@@ -1682,6 +1723,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             repaint();
             imageDialog2.setVisible(false);
             WiskOpdr.setLaunchDataChanged();
+	    }
+	    
+	    if(e.getSource()==logCB)
+	    {   logIDField.setVisible(logCB.isSelected());   
 	    }
 
 	}
