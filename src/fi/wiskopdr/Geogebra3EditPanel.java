@@ -17,10 +17,15 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 
 	public Geogebra3EditPanel()
 	{	
-		super();
+		super(null);
 	}
 
-	protected void createGeogebraPanel() {
+	JCheckBox getBigdataCB() { // not supported (yet)
+		return new JCheckBox();
+	}
+
+	@Override
+	protected void createGeogebraPanel(String id) {
 		geogebraPanel = new Geogebra3Panel(true);
 		geogebraPanel.refreshGeogebra();
 		add(geogebraPanel);

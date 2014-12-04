@@ -13,6 +13,8 @@ import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.rm.ResourceManager;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
+import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.LinkIF;
@@ -64,6 +66,14 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 
 	private static WeakHashMap<String, ResourceManager> rmmap = new WeakHashMap<String, ResourceManager>();
 	
+	static ResourceManager getResourceManager(String widget, int page, String instance) {
+		return getResourceManager(widget, page + "/" + instance);
+	}
+		
+	static ResourceManager getResourceManager(ResourceManagerClient panel) {
+		return getResourceManager(panel.getClassName(), WiskOpdr.getPageNr(), panel.getInstanceId());
+	}
+	
 	static ResourceManager getResourceManager(String widget, String instance) {
 		String key = widget + "/" + instance;
 		ResourceManager rm = rmmap.get(key);
@@ -84,5 +94,22 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		rmmap.put(key, rm);
 		return rm;
 
+	}
+	
+	public static ResourceManagerClient.ResourceManagerFactory getFactory(final ResourceManagerClient client) {
+		return new ResourceManagerClient.ResourceManagerFactory() {
+			public ResourceManager getResourceManager() {
+				return WidgetBridge.getResourceManager(client);
+			}
+		};
+	}
+
+	public static ResourceManagerFactory getFactory(final CBookWidgetIF w,
+			final String instance) {
+		return new ResourceManagerFactory() {
+			public ResourceManager getResourceManager() {
+				return WidgetBridge.getResourceManager(Service.getClassName(w), WiskOpdr.getPageNr(), instance);
+			}
+		};
 	}
 }

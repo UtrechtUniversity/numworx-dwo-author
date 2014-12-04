@@ -31,7 +31,9 @@ import org.cbook.cbookif.SuccessStatus;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 /**
  * Wrapper om een CBookWidget instance.
@@ -40,17 +42,19 @@ import fi.wiskopdr.WiskOpdr;
  * @author velth101
  *
  */
-public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware {
+public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware, ResourceManagerClient {
 	
 	private CBookWidgetInstanceIF instance;
 	private CBookWidgetIF widget;
 	private Hashtable launchData;
 	private CBookEventHandler handler;
 	private String uuid;
+	private boolean[][] logObjectives;
 	
-	public CBookInteractiePanel(CBookWidgetIF widget, String uuid) {
+	public CBookInteractiePanel(CBookWidgetIF widget, String uuid, ResourceManagerFactory factory) {
 		super(null);
-		this.uuid = uuid;
+		setInstanceId(uuid);
+		setFactory(factory);
 		setLocale(WiskOpdr.language);
 		this.widget = widget;
 		instance = widget.getInstance(this);
@@ -84,6 +88,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 	public void zetOpdracht(Hashtable b, String[] randomVars,
 			Hashtable randomValues) {
 		this.launchData = b;
+		this.logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(LOG_OBJECTIVES));
 		Map m = (Map)b.get(WidgetBridge.LAUNCH_DATA);
 		
 		if(m == null)
@@ -172,9 +177,21 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		return 0;
 	}
 
-	public int[][] getScoreObjectives() {
-		// TODO Auto-generated method stub
-		return null;
+	public int[][] getScoreObjectives()
+	{
+		if (logObjectives == null)
+			return null;
+		int score = getScore();
+		int[][] scoreObjectives = new int[logObjectives.length][];
+		for (int i = 0; i < logObjectives.length; i++)
+		{	scoreObjectives[i] = new int[logObjectives[i].length];
+			for (int j = 0; j < logObjectives[i].length; j++)
+			{
+				if (logObjectives[i][j])
+					scoreObjectives[i][j] = score;
+			}
+		}
+		return scoreObjectives;
 	}
 
 	public int getScoreMax() {
@@ -243,6 +260,8 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		}
 	};
 	private CBookInteractieEditPanel cBookInteractieEditPanel;
+	private ResourceManagerFactory factory;
+	static String LOG_OBJECTIVES = "logObjectives";
 
 	public Object getProperty(String key) {
 		if("locale".equals(key)) return getLocale();
@@ -278,9 +297,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getPageNr() + "-" + getInstanceId();
 		if(WidgetBridge.RESOURCE_MANAGER.equals(key))
 		{ 
-			String clazzName = Service.getClassName(widget);
-			String instance_id = WiskOpdr.getPageNr() + "/" + getInstanceId();
-			return WidgetBridge.getResourceManager(clazzName, instance_id);
+			return factory.getResourceManager();
 		}
 
 		if(launchData != null)
@@ -289,9 +306,8 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 	}
 
 
-	private String getInstanceId() {
+	public String getInstanceId() {
 		return uuid;
-		//return String.valueOf(launchData.get(WidgetBridge.UUID));
 	}
 	
 	public Icon getIcon() {
@@ -339,6 +355,20 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 	public String getLocalizedCmd(String cmd) {
 		return getEditor().getLocalizedCmd(cmd);
 	}
-
 	
+	@Override
+	public void setInstanceId(String id) {
+		uuid = id;
+	}
+
+	@Override
+	public String getClassName() {
+		return Service.getClassName(widget);
+	}
+
+	@Override
+	public void setFactory(ResourceManagerFactory factory) {
+		this.factory = factory;		
+	}
+
 }

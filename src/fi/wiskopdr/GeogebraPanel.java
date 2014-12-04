@@ -52,6 +52,10 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import org.cbook.cbookif.rm.ResourceContainer;
+import org.cbook.cbookif.rm.ResourceManager;
+
+import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.formuleobjects.EditorContentPanel;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
@@ -64,11 +68,12 @@ import fi.beans.base64code.StringCodeObject;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import geogebra.GeoGebraApplet;
 import geogebra.GeoGebra;
 
-public class GeogebraPanel extends JRootPane implements  ActionListener, InteractiePanel, InteractieEditPanel
+public class GeogebraPanel extends JRootPane implements  ActionListener, InteractiePanel, InteractieEditPanel, ResourceManagerClient
 {	
 	private static final int MENUBAR_HEIGHT = 25; // afpassen!
 	private String[] randomVars;
@@ -614,8 +619,13 @@ System.out.println("end refresh geogebra");System.out.flush();
 				resetButton.setVisible(showResetIcon);
 		}
 		
-
 		try {
+			if(Boolean.TRUE.equals(file) && fileUrl != null)
+			{
+				ResourceContainer unit = rm().getInstanceContainer();
+				URL u = unit.open(fileUrl).getURL();
+				geogebraApplet.getGeoGebraAPI().openFile(u.toExternalForm());
+			} else
 			if(ggbFile != null)
 			{
 				setGGBfile(ggbFile);
@@ -767,22 +777,22 @@ System.out.println("end refresh geogebra");System.out.flush();
 	    }
 	    
 	    
-	
-	public MyOpdrEditContainer getMyOpdrEditContainer(){	
-		Component parent = this;
-		for(int i=0 ; parent!=null && i<50 ; i++){	
-			if(parent instanceof MyOpdrEditContainer) {	
-				break;
-			}
-			else if(parent instanceof Frame) parent = ((Frame)parent).getOwner();
-			else if(parent instanceof Dialog) parent = ((Dialog)parent).getOwner();
-			else if(parent!=null){	
-				parent = parent.getParent();
-			}
-		}
-		if(parent instanceof MyOpdrEditContainer) return (MyOpdrEditContainer)parent;
-		else return null;
-	}
+//  @Deprecated	
+//	public MyOpdrEditContainer getMyOpdrEditContainer(){	
+//		Component parent = this;
+//		for(int i=0 ; parent!=null && i<50 ; i++){	
+//			if(parent instanceof MyOpdrEditContainer) {	
+//				break;
+//			}
+//			else if(parent instanceof Frame) parent = ((Frame)parent).getOwner();
+//			else if(parent instanceof Dialog) parent = ((Dialog)parent).getOwner();
+//			else if(parent!=null){	
+//				parent = parent.getParent();
+//			}
+//		}
+//		if(parent instanceof MyOpdrEditContainer) return (MyOpdrEditContainer)parent;
+//		else return null;
+//	}
 	
 	public Hashtable getEditState() {		
 		Hashtable h = new Hashtable();
@@ -798,11 +808,11 @@ System.out.println("end refresh geogebra");System.out.flush();
 	}
 	
 	public InteractieEditPanel getEditPanel(){	
-		return newEditPanel();
+		return newEditPanel(getInstanceId());
 	}
 
-	public static InteractieEditPanel newEditPanel() {
-		return new GeogebraEditPanel();
+	public static InteractieEditPanel newEditPanel(String id) {
+		return new GeogebraEditPanel(id);
 	}
 	
 	public void zetBreedte(int b){	
@@ -1028,10 +1038,31 @@ System.out.println("end refresh geogebra");System.out.flush();
 	protected void finalize() throws Throwable {
 		if(geogebraApplet != null) {
 			// Is dit alles? Wat er is?
-			//KeyboardFocusManager.getCurrentKeyboardFocusManager()
-			//.removeKeyEventDispatcher(geogebraApplet.getGeoGebraAPI().getApplication());
+			geogebraApplet.destroy();
 			geogebraApplet = null;
 		}
 	}
+
+	private String id;
+	public void setInstanceId(String id) {
+		this.id = id;
+	}
+
+	public String getInstanceId() {
+		return id;
+	}
     
+	public String getClassName() {
+		return getClass().getName();
+	}
+
+	ResourceManagerFactory factory;
+	@Override
+	public void setFactory(ResourceManagerFactory factory) {
+		this.factory = factory;
+	}
+	
+	ResourceManager rm() {
+		return factory.getResourceManager();
+	}
 }

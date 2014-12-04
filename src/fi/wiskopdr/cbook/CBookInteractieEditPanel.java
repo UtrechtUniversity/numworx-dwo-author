@@ -103,8 +103,6 @@ public class CBookInteractieEditPanel extends JPanel implements
 		
 	}
 
-	private static String LOG_OBJECTIVES = "logObjectives";
-	
 	public void setEditState(Hashtable b) {
 		launchData = b;
 		Map<String, ?> data = (Map<String, ?>) launchData.get(WidgetBridge.LAUNCH_DATA);
@@ -121,7 +119,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 			logging.setSelected(Boolean.TRUE.equals(getProperty(WidgetBridge.LOGGING)));
 		}
 		
-		boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(LOG_OBJECTIVES));
+		boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(CBookInteractiePanel.LOG_OBJECTIVES));
         logObjectivesButton.setChoices(logObjectives);
 
 		
@@ -144,7 +142,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 		}
 		if(logObjectivesButton.isVisible())
 		{
-			launchData.put(LOG_OBJECTIVES, logObjectivesButton.getChoices());
+			launchData.put(CBookInteractiePanel.LOG_OBJECTIVES, logObjectivesButton.getChoices());
 		}
 		
 		return launchData;

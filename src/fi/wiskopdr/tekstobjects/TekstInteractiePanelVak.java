@@ -30,7 +30,14 @@ import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
+import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.JSONArray;
+
+
+
+
+
+
 
 
 
@@ -50,7 +57,9 @@ import org.json.simple.JSONArray;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
 import fi.wiskopdr.cbook.Service;
+import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 //import fi.wiskopdr.tekstobjects.*;
@@ -61,6 +70,7 @@ import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.CheckButtonPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
@@ -1011,16 +1021,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else if(soortInteractiePanel == 39)
 		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
-			{	interactiePanel = new GeogebraPanel();
-				//((TekstVakPanel)interactiePanel).setEditable(true);
-				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-				((Component)interactiePanel).setBackground(getBackground());
+			{	GeogebraPanel geogebraPanel = new GeogebraPanel();
+				interactiePanel = geogebraPanel;
+				geogebraPanel.setInstanceId(getCrossWidgetId());
+				geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
+				geogebraPanel.setBackground(getBackground());
 				interactiePanel.addActionListener(this);
-				
-			//add((Component)interactiePanel,0);
-			
 			}
-			//interactiePanel.setEditState(interactiePanelLaunchState);
 		}
 		else if(soortInteractiePanel == 12)
 		{	if(interactiePanel==null || !(interactiePanel instanceof CheckUnitPanel))
@@ -1133,9 +1140,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else if(soortInteractiePanel == CBOOKWIDGET)
 		{
 			String clazz = String.valueOf(h.get(CBOOKWIDGET_NAME));
-			CBookWidgetIF widget = Service.widgetForName(clazz);
+			final CBookWidgetIF widget = Service.widgetForName(clazz);
 			if(widget != null){
-				interactiePanel = new CBookInteractiePanel(widget, getCrossWidgetId());
+				ResourceManagerFactory factory = WidgetBridge.getFactory(widget, getCrossWidgetId());
+				interactiePanel = new CBookInteractiePanel(widget, getCrossWidgetId(), factory);
 				interactiePanel.addActionListener(this);
 			}
 			else
@@ -1493,16 +1501,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else if(soortInteractiePanel == 39)
 		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
-			{	interactiePanel = new GeogebraPanel();
-				//((TekstVakPanel)interactiePanel).setEditable(true);
-				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-				((Component)interactiePanel).setBackground(getBackground());
+			{	GeogebraPanel geogebraPanel = new GeogebraPanel();
+				interactiePanel = geogebraPanel;
+				geogebraPanel.setBackground(getBackground());
+				geogebraPanel.setInstanceId(getCrossWidgetId());
+				geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
 				interactiePanel.addActionListener(this);
-				
-			//add((Component)interactiePanel,0);
-			
 			}
-			//interactiePanel.setEditState(interactiePanelLaunchState);
 		}
 		else if(soortInteractiePanel == 12)
 		{	if(interactiePanel==null || !(interactiePanel instanceof CheckUnitPanel))
@@ -1610,9 +1615,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else if(soortInteractiePanel == CBOOKWIDGET)
 		{	
 			String widgetname = (String) launchData.get(CBOOKWIDGET_NAME);
-			CBookWidgetIF w = Service.widgetForName(widgetname);
+			final CBookWidgetIF w = Service.widgetForName(widgetname);
 			if(w != null){
-				interactiePanel = new CBookInteractiePanel(w, getCrossWidgetId());
+				ResourceManagerFactory factory = WidgetBridge.getFactory(w, getCrossWidgetId());
+				interactiePanel = new CBookInteractiePanel(w, getCrossWidgetId(), factory);
 				interactiePanel.addActionListener(this);
 			}
 		}
@@ -1797,7 +1803,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			|| interactiePanel instanceof CheckSleepUnitPanel
 			|| interactiePanel instanceof AntwoordTekstVak
 			|| interactiePanel instanceof AntwoordKeuzeVak
-			|| interactiePanel instanceof CheckValueUnitPanel))
+			|| interactiePanel instanceof CheckValueUnitPanel
+			|| interactiePanel instanceof CBookInteractiePanel
+			))
 			return interactiePanel.getScoreObjectives();
 		else return null;
 	}
@@ -1818,6 +1826,26 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		Hashtable interactiePanelLaunchState = null;
 	    if(launchData.containsKey("interactiePanelLaunchState")) interactiePanelLaunchState = (Hashtable)launchData.get("interactiePanelLaunchState");
 	    if(interactiePanelLaunchState.containsKey("scoreMaxObjectives")) scoreMaxObjectives = (int[][])interactiePanelLaunchState.get("scoreMaxObjectives");
+// default implementation of "scoreMaxObjectives"
+	    else if(interactiePanelLaunchState.containsKey("logObjectives")) {
+	    	boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(interactiePanelLaunchState.get("logObjectives"));
+			if(logObjectives!=null)
+			{	
+				int scoreMax = getScoreMax();
+				scoreMaxObjectives = new int[logObjectives.length][];
+				for(int j=0 ; j<scoreMaxObjectives.length; j++)
+				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
+					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
+					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
+					}
+				}
+			}
+ 
+	    }
+	    
+	    
+	    
+	    
 	    return scoreMaxObjectives;
 	}
 

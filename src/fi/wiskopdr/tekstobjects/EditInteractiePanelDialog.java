@@ -419,7 +419,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(500);
 		}
 		else if(soortInteractiePanel == 39)
-		{	interactieEditPanel = GeogebraPanel.newEditPanel();
+		{	interactieEditPanel = GeogebraPanel.newEditPanel(getCrossWidgetId());
 			breedteTF.setText("800");
 			hoogteTF.setText("500");
 			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(800);

@@ -2,15 +2,20 @@ package fi.wiskopdr;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayInputStream;
 import java.util.*;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.rm.ResourceContainer;
+import org.cbook.cbookif.rm.ResourceException;
+
 import fi.beans.wiskopdrbeans.*;
+import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
 
-public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionListener, TabletOwner
+class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionListener, TabletOwner
 {
 	private GeogebraPanel geogebraPanel;
 	protected Rectangle defaultPanelBounds = new Rectangle(5,5,800,580);
@@ -41,11 +46,13 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private JLabel maxScoreLabel;
 	private JTextField maxScoreTF;
+	private JCheckBox bigdataCB;
+	private boolean  bigdata;
 	
 	protected int version() { return GeogebraParamButton.GEOGEBRA4; }
 	
 	
-	public GeogebraEditPanel()
+	GeogebraEditPanel(String id)
 	{	
 		addMouseListener(new MouseAdapter()
 			{	public void mousePressed(MouseEvent e)
@@ -56,7 +63,8 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		setLayout(null);
 		setBackground(WiskOpdr.bgcolor);
-		createGeogebraPanel();
+		createGeogebraPanel(id);
+		
 		
 		showResetIcon = true;
 		bewaarOptie = false; 
@@ -64,8 +72,10 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		nakijken = false;
 		nakijkenCheckDWO = false;
 		nakijkenGemaakteObjecten = false;
+		bigdata = false;
 		
-		showResetIconCB = maakCheckBox(WiskOpdr.rb.getString("GEP_resetIcon"), 500,110,160,20, showResetIcon);
+		showResetIconCB = maakCheckBox(WiskOpdr.rb.getString("GEP_resetIcon"), 500+10,110,160,20, showResetIcon);
+        
 		bewaarOptieCB	= maakCheckBox(WiskOpdr.rb.getString("GEP_bewaarOptie"), 500,20,160,20, bewaarOptie);
 		borderCB	= maakCheckBox(WiskOpdr.rb.getString("GEP_rand"), 500,80,160,20, border);
 		
@@ -94,18 +104,28 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		geogebraDesiredObjectsButton.setBounds(500,270,150,20);
 		geogebraDesiredObjectsButton.setVisible(false);
         add(geogebraDesiredObjectsButton);
+
+        bigdataCB = getBigdataCB();
         
-		
 	}
 
+	JCheckBox getBigdataCB() {
+		return new JCheckBox(); // dummy
+		//return  maakCheckBox("Bigdata", 500,300,160,20, bigdata);
+	}
+
+	
 
 	/**
+	 * @param id 
 	 * 
 	 */
-	protected void createGeogebraPanel() {
+	protected void createGeogebraPanel(String id) {
 		geogebraPanel = new GeogebraPanel(true);
 		geogebraPanel.refreshGeogebra();
 		geogebraPanel.buildGUI();
+		geogebraPanel.setInstanceId(id);
+		geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
 		add(geogebraPanel);
 		setGeogebraBounds();
 	}
@@ -115,6 +135,8 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 	 	int br = 170; 
 		showResetIconCB.setLocation(getSize().width-br, showResetIconCB.getLocation().y);
 		bewaarOptieCB.setLocation(getSize().width-br, bewaarOptieCB.getLocation().y);
+		bigdataCB.setLocation(getSize().width-br, bigdataCB.getLocation().y);
+
 		borderCB.setLocation(getSize().width-br, borderCB.getLocation().y);
 		nakijkenCB.setLocation(getSize().width-br, nakijkenCB.getLocation().y);
 		nakijkenCheckDWOCB.setLocation(getSize().width-br+20, nakijkenCheckDWOCB.getLocation().y);
@@ -148,6 +170,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		Hashtable geogebraParams = new Hashtable();
 		boolean nakijken = false;
 		boolean nakijkenGemaakteObjecten = false;
+		boolean bigdata = false;
 		int scoreMax = 0;
 		String[] geogebraCheckObjects = null;
 		int[] geogebraCheckScores = null;
@@ -157,6 +180,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		border = this.border;
 		geogebraParams = geogebraParamButton.getParams();
 		nakijken = this.nakijken;
+		bigdata = this.bigdata;
 		nakijkenGemaakteObjecten = this.nakijkenGemaakteObjecten;
 		scoreMax = Integer.parseInt(maxScoreTF.getText());
 		if(nakijkenGemaakteObjecten){
@@ -171,6 +195,21 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("border", new Boolean(border));
 		h.put("geogebraParams", geogebraParams);
 		h.put("nakijken", new Boolean(nakijken));
+		if(bigdata) {
+			try {
+				byte[] data = (byte[]) h.get("ggbFile");
+				String uuid = "geogebraPanel" + ".ggb";
+//				uuid = org.apache.commons.codec.digest.DigestUtils.shaHex(data);
+				ResourceContainer rc = geogebraPanel.rm().getInstanceContainer();
+				rc.create(uuid, new ByteArrayInputStream(data), "application/vnd.geogebra.file");
+				h.remove("ggbFile");
+				h.put("fileUrl", uuid);
+				h.put("file", Boolean.TRUE);
+			} catch (Exception e) {
+				h.put("file", Boolean.FALSE);
+				e.printStackTrace();
+			}
+		}
 		if(nakijken){
 		    h.put("scoreMax", new Integer(scoreMax));
 		    h.put("nakijkenGemaakteObjecten", new Boolean(nakijkenGemaakteObjecten));
@@ -200,6 +239,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
         Hashtable geogebraParams = new Hashtable();
         boolean nakijken = false;
         boolean nakijkenGemaakteObjecten = false;
+        boolean bigdata = false;
         int scoreMax = 0;
         String[] geogebraCheckObjects = null;
         int[] geogebraCheckScores = null;
@@ -216,7 +256,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
 		if (h.containsKey("geogebraCheckObjects")) geogebraCheckObjects = (String[]) h.get("geogebraCheckObjects");
 		if (h.containsKey("geogebraCheckScores")) geogebraCheckScores = (int[]) h.get("geogebraCheckScores");
-                	
+        if (h.containsKey("file")) bigdata = ((Boolean)h.get("file")).booleanValue();        	
 		this.showResetIcon = showResetIcon;
 		this.bewaarOptie = bewaarOptie;
 		this.border = border;
@@ -224,7 +264,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		this.nakijken = nakijken;
 		this.nakijkenGemaakteObjecten = nakijkenGemaakteObjecten;
 		this.nakijkenCheckDWO = nakijken && !nakijkenGemaakteObjecten;
-		
+		this.bigdata = bigdata;
 		updateNakijkOpties();
 	    
 		showResetIconCB.setSelected(showResetIcon);
@@ -233,6 +273,7 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 		borderCB.setSelected(border);
 		geogebraParamButton.setParams(geogebraParams);
 		nakijkenCB.setSelected(nakijken);
+        bigdataCB.setSelected(bigdata);
         
 		setGeogebraEditState(h);
 		if(!nakijkenGemaakteObjecten)maxScoreTF.setText(""+scoreMax);
@@ -284,6 +325,12 @@ public class GeogebraEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	public void actionPerformed(ActionEvent e)
 	{	
+		if(e.getSource()==bigdataCB)
+		{
+			bigdata = bigdataCB.isSelected();
+			return;
+		}
+		
 		if(e.getSource().equals(showResetIconCB))
 		{	showResetIcon = showResetIconCB.isSelected();
 			setGeogebraEditState(getEditState());
