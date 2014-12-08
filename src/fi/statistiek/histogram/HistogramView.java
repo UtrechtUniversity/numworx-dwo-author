@@ -2783,6 +2783,21 @@ public class HistogramView extends JPanel implements Observer
 		return System.identityHashCode(o);
 	}
 	
+	/**
+	 * Return true if the view has a split, else false.
+	 * 
+	 * @return whether the view has a split
+	 */
+	public boolean hasSplit()
+	{
+		boolean hasSplit = false;
+		
+		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
+			hasSplit = true;
+		
+		return hasSplit;
+	}
+	
 	private class HistogramBarPanel extends JPanel implements MouseMotionListener
 	{
 		public void paintComponent(Graphics g)
@@ -3009,7 +3024,7 @@ public class HistogramView extends JPanel implements Observer
 						{
 							if (frequencies_number != null)
 							{
-								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+								if (HistogramView.this.hasSplit())
 								{
            							value = ((double) frequencies_number[i][j * 2] / aantalPerSplit[i]) * 100;
 								}
@@ -3021,7 +3036,7 @@ public class HistogramView extends JPanel implements Observer
 							}
 							else if (frequencies_enum != null)
 							{
-								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+								if (HistogramView.this.hasSplit())
 								{
             						value = ((double) frequencies_enum[i][j].frequency / aantalPerSplit[i]) * 100;
 								}
@@ -3047,7 +3062,7 @@ public class HistogramView extends JPanel implements Observer
 							}
 						}
 						cumulativeValuePerSplit[i] += value;
-					}
+					} // isFrequencyPolygonCumulativeMode()
 
 					if (isOverToolTipArea(p, rect))
 					{
@@ -3061,7 +3076,7 @@ public class HistogramView extends JPanel implements Observer
 							
 							if (frequencies_number != null)
 							{
-								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+								if (HistogramView.this.hasSplit())
 								{
 									if (HistogramView.this.model.isSplitInSingleView() 
 										&& !HistogramView.this.model.isFrequencyPolygonMode())
@@ -3094,7 +3109,7 @@ public class HistogramView extends JPanel implements Observer
 							}
 							else if (frequencies_enum != null)
 							{
-								if (HistogramView.this.model.getSplitOptions().getColumnSplitIndex() > 0)
+								if (HistogramView.this.hasSplit())
 								{
     								if (HistogramView.this.model.isSplitInSingleView())
     								{
@@ -3198,7 +3213,7 @@ public class HistogramView extends JPanel implements Observer
 					}
 				}
 			}
-		}
+		} // class HistogramBarPanel
 
 		private boolean isOverToolTipArea(Point p, Rectangle rect)
 		{
@@ -3380,5 +3395,5 @@ public class HistogramView extends JPanel implements Observer
 
 		}
 
-	}
+	} // class BarClickListener
 }
