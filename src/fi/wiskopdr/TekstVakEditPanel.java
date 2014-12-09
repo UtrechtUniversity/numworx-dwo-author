@@ -1417,6 +1417,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			tekstVakPanel.setEditState(getEditState());
 			fontButton.setVisible(anderFont);
 			fgColorButton.setVisible(anderFont);
+			if(!anderFont)
+				fgColor = new Color(0, 0, 0);
 		}
 		if(e.getSource().equals(buttonCB))
 		{	buttonOptie = buttonCB.isSelected();
