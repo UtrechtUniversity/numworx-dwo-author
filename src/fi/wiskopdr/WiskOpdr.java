@@ -878,15 +878,20 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
 							return;
-						suspendData.put("reviewData", reviewData);
+						//suspendData.put("reviewData", reviewData);
 						//System.out.println("bij stop: " + suspendData);
 						String suspendDataString;
 						if(doJSON)
 							suspendDataString = JSONValue.toJSONString(suspendData);
 						else
 							suspendDataString = StringCodeObject.encodeObjectToString(suspendData);
-						api.LMSSetValue(CMI_SUSPEND_DATA, suspendDataString);
-
+						//api.LMSSetValue(CMI_SUSPEND_DATA, suspendDataString);
+						Object o = reviewData.get("toetsLocked");
+						if( Boolean.TRUE.equals(o))
+							api.LMSSetValue("cmi.completion_status", "completed");
+						else if(Boolean.FALSE.equals(o))
+							api.LMSSetValue("cmi.completion_status",  "incomplete");
+							
 						return;
 					}
 					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked && ons.getMode()==3) {
@@ -981,6 +986,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			if (value != null)
 				reviewData.putAll((Map) value);
 			toetsLocked = Boolean.TRUE.equals(reviewData.get("toetsLocked"));
+			toetsLocked |= "complete".equals(api.LMSGetValue("cmi.completion_status"));
 
 			WiskOpdr.log = log;
 			WiskOpdr.reviewData = reviewData;
@@ -1021,6 +1027,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			toetsLocked = ((Boolean) reviewData.get("toetsLocked")).booleanValue();
 		else
 			toetsLocked = false;
+		toetsLocked |= "completed".equals(api.LMSGetValue("cmi.completion_status"));
+
 		ons.zetToetsLocked(toetsLocked);
 		ons.setState(onsState);
 

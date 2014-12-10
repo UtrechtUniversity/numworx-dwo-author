@@ -1198,7 +1198,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 */
 	public void setEmptyState()
 	{
-		zetToetsLocked(false); // Wim: toetslocked blijft op 'true' staan.
+		zetToetsLocked("completed".equals(api.LMSGetValue("cmi.completion_status"))); // Wim: toetslocked blijft op 'true' staan.
 		for (int i = 0; i < aantalActiviteiten; i++)
 		{
 			int totaal = 0;
