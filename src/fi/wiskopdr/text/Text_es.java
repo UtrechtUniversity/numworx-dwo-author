@@ -414,6 +414,7 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TVEP_editLink" , "Editar el vínculo"},
                 {"TVEP_defaultBijNull" , "por defecto  )"},
                 {"TVEP_checkUitklapVak" , "check"},
+                {"TVEP_logIDLabelLabel" , "label"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Opción guardar"},

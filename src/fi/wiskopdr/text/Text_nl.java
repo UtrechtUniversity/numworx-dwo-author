@@ -419,6 +419,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_editLink" , "Edit link"},
                 {"TVEP_defaultBijNull" , "default )"},
                 {"TVEP_checkUitklapVak" , "check"},
+                {"TVEP_logIDLabelLabel" , "label"},
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},

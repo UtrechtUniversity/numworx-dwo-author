@@ -85,6 +85,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	private JCheckBox teltMeeCB;
 	private JCheckBox logCB;
 	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
 		
 	private JTextField aantalDecRmField;
@@ -192,6 +194,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		puntenLabel = makeLabel(460,385,40,20,WiskOpdr.rb.getString("puntenLabel"),true);
 		checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
 		checkTotaalLabel.setForeground(Color.red);
+		logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
 		
 		gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
 		gelijkwaardigCB.addMouseListener(this);
@@ -200,7 +203,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		exactCB = makeCheckBox(320,significantieAan?485:460,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
 		stappenCB = makeCheckBox(630,50,200,20,WiskOpdr.rb.getString("stappenCBLabel"),true,false);
 		rekenVakCB = makeCheckBox(630,50,200,20,"Formulevak als calculator",false,false);
-		formuleToolBijFocusCB = makeCheckBox(530,25,270,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,false);
+		formuleToolBijFocusCB = makeCheckBox(530,50,270,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,false);
 		subKnopCB = makeCheckBox(650,55,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
 		subKnopExtraCB = makeCheckBox(650,80,100,20,WiskOpdr.rb.getString("subKnopExtraCBLabel"),false,false);
 		rmKnopCB = makeCheckBox(650,105,100,20,WiskOpdr.rb.getString("rmCBLabel"),false,true);
@@ -209,7 +212,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
-        uitwCB = makeCheckBox(530,50,80,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
+        logIDLabelField = makeTextField(520,25,60,20,"",false);
+        uitwCB = makeCheckBox(530,75,80,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
         boxMetRandCB = makeCheckBox(500,105,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
@@ -508,6 +512,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean teltMee = true;
 				boolean logOption = false;
 				String logID = "";
+				String logIDLabel = "";
 				boolean[][] logObjectives = null; 
 				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
@@ -543,6 +548,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
+				if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 				if(interactiePanelLaunchState.containsKey("eqTestValueMin")) eqTestValueMin = ((Double)interactiePanelLaunchState.get("eqTestValueMin")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("aantalDecRm")) aantalDecRm = ((Integer)interactiePanelLaunchState.get("aantalDecRm")).intValue();
@@ -648,8 +654,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				//startEditor.setVisible(uitw);
 	                
 	            logIDField.setVisible(logOption);
+	            logIDLabelField.setVisible(logOption);
+	            logIDLabelLabel.setVisible(logOption);
 	            //logObjectivesButton.setVisible(hasObjectives);
 	            logIDField.setText(logID);
+	            logIDLabelField.setText(logIDLabel);
 	            logObjectivesButton.setChoices(logObjectives);
 	            
 	            aantalDecRmField.setVisible(rmKnop);
@@ -715,6 +724,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			boolean teltMee = true;
 			boolean logOption = false;
 			String logID = "";
+			String logIDLabel = "";
 			boolean[][] logObjectives = null;
 			double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
@@ -782,6 +792,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			teltMee = teltMeeCB.isSelected();
 			logOption = logCB.isSelected();
 			logID = logIDField.getText();
+			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
 			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
@@ -844,6 +855,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
 			interactiePanelLaunchState.put("logOption",new Boolean(logOption));
 			interactiePanelLaunchState.put("logID",logID);
+			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
 			interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("aantalDecRm",new Integer(aantalDecRm));
@@ -1163,6 +1175,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		}
 		else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());
+	    	logIDLabelField.setVisible(logCB.isSelected());
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
 		else if(e.getSource()==uitwCB)

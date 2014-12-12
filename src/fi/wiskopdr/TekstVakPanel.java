@@ -207,6 +207,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	
 	private boolean logOption = false;
 	private String logID = "";
+	private String logIDLabel = "";
 	
 	public TekstVakPanel()
 	{
@@ -632,6 +633,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int linkHeight = 400;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
@@ -774,6 +776,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			logOption = ((Boolean)h.get("logOption")).booleanValue();
         if(h.containsKey("logID")) 
         	logID = (String)h.get("logID");
+        if(h.containsKey("logIDLabel")) 
+        	logIDLabel = (String)h.get("logIDLabel");
 
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -846,7 +850,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 		this.logOption = logOption;
 	    this.logID = logID;
-
+	    this.logIDLabel = logIDLabel;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1570,6 +1574,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int linkHeight = 400;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 
 		randZichtbaar = this.randZichtbaar;
 		bgColorZichtbaar = this.bgColorZichtbaar;
@@ -1633,6 +1638,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		linkHeight = link.getHeight();
 		logOption = this.logOption;
 		logID = this.logID;
+		logIDLabel = this.logIDLabel;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -1751,6 +1757,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
+		h.put("logIDLabel",logIDLabel);
 		
 		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
@@ -1958,7 +1965,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 			Hashtable logMap = new Hashtable();
 
-			logMap.put("logAnswer", "" + (popupUsed ? 1 : 0));
+			logMap.put("logIDLabel", logIDLabel);
+			logMap.put("logAnswer", "" + (aftrekPopup ? (popupUsed ? "Ja" : "") : "|"));
 
 			logMap.put("logScore", new Integer(popupUsed ? -puntenAftrekPopup : 0));
 			logMap.put("logMaxScore", new Integer(0));
@@ -2218,6 +2226,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int linkHeight = 400;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
@@ -2359,7 +2368,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			logOption = ((Boolean)h.get("logOption")).booleanValue();
         if(h.containsKey("logID")) 
         	logID = (String)h.get("logID");
-
+        if(h.containsKey("logIDLabel")) 
+        	logIDLabel = (String)h.get("logIDLabel");
+        
        	this.randZichtbaar = randZichtbaar;
 		this.bgColorZichtbaar = bgColorZichtbaar;
 		this.anderFont = anderFont;
@@ -2444,6 +2455,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.aantalKolommen = teksten[0].length;
 		this.logOption = logOption;
 	    this.logID = logID;
+	    this.logIDLabel = logIDLabel;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();

@@ -142,6 +142,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	
 	private boolean logOption;
 	private String logID;
+	private String logIDLabel;
 	
 	private boolean[][] logObjectives;
 	
@@ -723,6 +724,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		boolean teltMee = true;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 		double eqTestValueMin = 0;
 		double eqTestValueMax = 5;
 		int aantalDecRm = 10;
@@ -766,6 +768,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
+		if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
 		if(h.containsKey("eqTestValueMin")) eqTestValueMin = ((Double)h.get("eqTestValueMin")).doubleValue();
 		if(h.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)h.get("eqTestValueMax")).doubleValue();
 		if(h.containsKey("aantalDecRm")) aantalDecRm = ((Integer)h.get("aantalDecRm")).intValue();
@@ -830,6 +833,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         this.teltMee = teltMee;
         this.logOption = logOption;
         this.logID = logID;
+        this.logIDLabel = logIDLabel;
         this.eqTestValueMin = eqTestValueMin;
         this.eqTestValueMax = eqTestValueMax;
         this.aantalDecRm = aantalDecRm;
@@ -962,6 +966,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 				logString = FormuleParser.pel(string);
 			}
 			
+			logMap.put("logIDLabel", logIDLabel);
 			logMap.put("logAnswer", logString);
 			logMap.put("logScore", new Integer(score));
 			logMap.put("logMaxScore", new Integer(scoreMax));

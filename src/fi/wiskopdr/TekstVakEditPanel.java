@@ -175,6 +175,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
+	
 	
 	
 	public TekstVakEditPanel(XWidgetManager manager)
@@ -266,12 +269,26 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
         
 		logIDField = new JTextField("0");
-		logIDField.setBounds(80,250,70,20);
+		logIDField.setBounds(100,250,70,20);
 		logIDField.setFont(ifFont);
 		logIDField.setVisible(false);
 		logIDField.addActionListener(this);
 		logIDField.addFocusListener(this);
 		interactionOptionsPanel.add(logIDField);
+		
+		logIDLabelField = new JTextField("");
+		logIDLabelField.setBounds(100,275,70,20);
+		logIDLabelField.setFont(ifFont);
+		logIDLabelField.setVisible(false);
+		logIDLabelField.addActionListener(this);
+		logIDLabelField.addFocusListener(this);
+		interactionOptionsPanel.add(logIDLabelField);
+		
+		logIDLabelLabel = new JLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"));//"Gebruikersinteractie");
+		logIDLabelLabel.setBounds(30,275,70,20);
+		logIDLabelLabel.setFont(ifFont);
+		logIDLabelLabel.setVisible(false);
+		interactionOptionsPanel.add(logIDLabelLabel);
         
 		
 		sleepHandleCB.setVisible(false);
@@ -671,6 +688,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 		
 		this.ronding = Integer.parseInt(rondingTF.getText());
 		this.hoek = Integer.parseInt(hoekTF.getText());
@@ -731,6 +749,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
+		logIDLabel = logIDLabelField.getText();
 			
 		/*
 		Vector v = geefInteractiePanels();
@@ -831,6 +850,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
+		h.put("logIDLabel",logIDLabel);
 		
 		return h;
 	}
@@ -888,6 +908,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int linkHeight = 400;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -952,6 +973,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("linkHeight")) linkHeight = ((Integer)h.get("linkHeight")).intValue();
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
         if(h.containsKey("logID")) logID = (String)h.get("logID");
+        if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
 		
         System.out.println("logOption: "+logOption);
 
@@ -1050,8 +1072,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
+        logIDLabelField.setVisible(logOption); 
+    	logIDLabelLabel.setVisible(logOption); 
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
+        logIDLabelField.setText(logIDLabel);
 		
 		randomCB.setSelected(random);
 		randomTF.setVisible(random);
@@ -1729,6 +1754,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	    
 	    if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());   
+	    	logIDLabelField.setVisible(logCB.isSelected()); 
+	    	logIDLabelLabel.setVisible(logCB.isSelected()); 
 	    }
 
 	}
