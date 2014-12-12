@@ -734,6 +734,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		else if (e.getSource() == aantalOpdrKnop) {
 			if (e.getActionCommand().equals("min") && aantalOpdrachten[activiteitNr] > 1) {
 				WiskOpdr.setLaunchDataChanged();
+// delete laatste opdracht.
 				opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
 				opdrachten[activiteitNr][aantalOpdrachten[activiteitNr] - 1] = null;
 
@@ -757,6 +758,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			}
 			if (e.getActionCommand().equals("plus") && aantalOpdrachten[activiteitNr] < maxAantalOpdrachten) {
 				WiskOpdr.setLaunchDataChanged();
+// dupliceer laatste opdracht, of huidige opdracht???
 				aantalOpdrachten[activiteitNr]++;
 				opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
 				opdrachten[activiteitNr][aantalOpdrachten[activiteitNr] - 1] = opdrachten[activiteitNr][aantalOpdrachten[activiteitNr] - 2];
@@ -863,6 +865,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		} else if (e.getSource() == opdrPositieKnop) {
 			if (e.getActionCommand().equals("min") && opdrachtNr > 0) {
 				WiskOpdr.setLaunchDataChanged();
+// swap opdrachtNr met opdrachtNr-1
 				String s = opdrachten[activiteitNr][opdrachtNr];
 				opdrachten[activiteitNr][opdrachtNr] = opdrachten[activiteitNr][opdrachtNr - 1];
 				opdrachten[activiteitNr][opdrachtNr - 1] = s;
@@ -872,6 +875,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			}
 			if (e.getActionCommand().equals("plus") && opdrachtNr < aantalOpdrachten[activiteitNr] - 1) {
 				WiskOpdr.setLaunchDataChanged();
+// swap opdrachtNr met opdrachtNr+1
 				String s = opdrachten[activiteitNr][opdrachtNr];
 				opdrachten[activiteitNr][opdrachtNr] = opdrachten[activiteitNr][opdrachtNr + 1];
 				opdrachten[activiteitNr][opdrachtNr + 1] = s;

@@ -6,7 +6,10 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.rm.ResourceManager;
+
 import fi.beans.wiskopdrbeans.*;
+import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
 
@@ -15,18 +18,16 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 	private Geogebra3Panel geogebraPanel;
 	protected int version() { return GeogebraParamButton.GEOGEBRA3; }
 
-	public Geogebra3EditPanel()
+	public Geogebra3EditPanel(String id)
 	{	
-		super(null);
-	}
-
-	JCheckBox getBigdataCB() { // not supported (yet)
-		return new JCheckBox();
+		super(id);
 	}
 
 	@Override
 	protected void createGeogebraPanel(String id) {
 		geogebraPanel = new Geogebra3Panel(true);
+		geogebraPanel.setInstanceId(id);
+		geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
 		geogebraPanel.refreshGeogebra();
 		add(geogebraPanel);
 		setGeogebraBounds();
@@ -50,6 +51,11 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 	}
 	public void zetHoogte(int h)
 	{	geogebraPanel.setSize(geogebraPanel.getSize().width, h);
+	}
+
+	@Override
+	ResourceManager rm() {
+		return geogebraPanel.rm();
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceException;
+import org.cbook.cbookif.rm.ResourceManager;
 
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.cbook.WidgetBridge;
@@ -199,8 +200,8 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 			try {
 				byte[] data = (byte[]) h.get("ggbFile");
 				String uuid = "geogebraPanel" + ".ggb";
-//				uuid = org.apache.commons.codec.digest.DigestUtils.shaHex(data);
-				ResourceContainer rc = geogebraPanel.rm().getInstanceContainer();
+//				uuid = org.apache.commons.codec.digest.DigestUtils.shaHex(data) + ".ggb";
+				ResourceContainer rc = rm().getInstanceContainer();
 				rc.create(uuid, new ByteArrayInputStream(data), "application/vnd.geogebra.file");
 				h.remove("ggbFile");
 				h.put("fileUrl", uuid);
@@ -222,6 +223,11 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 		
         destroyPanel();
 		return h;
+	}
+
+
+	ResourceManager rm() {
+		return geogebraPanel.rm();
 	}
 
 

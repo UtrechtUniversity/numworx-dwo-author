@@ -1008,16 +1008,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else if(soortInteractiePanel == 10)
 		{	if(interactiePanel==null || !(interactiePanel instanceof Geogebra3Panel))
-			{	interactiePanel = new Geogebra3Panel();
-				//((TekstVakPanel)interactiePanel).setEditable(true);
-				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-				((Component)interactiePanel).setBackground(getBackground());
+			{	Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
+				interactiePanel = geogebra3Panel;
+				geogebra3Panel.setInstanceId(getCrossWidgetId());
+				geogebra3Panel.setFactory(WidgetBridge.getFactory(geogebra3Panel));
+				geogebra3Panel.setBackground(getBackground());
 				interactiePanel.addActionListener(this);
-				
-			//add((Component)interactiePanel,0);
-			
 			}
-			//interactiePanel.setEditState(interactiePanelLaunchState);
 		}
 		else if(soortInteractiePanel == 39)
 		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
@@ -1489,14 +1486,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else if(soortInteractiePanel == 10)
 		{	if(interactiePanel==null || !(interactiePanel instanceof Geogebra3Panel))
-			{	interactiePanel = new Geogebra3Panel();
-				//((TekstVakPanel)interactiePanel).setEditable(true);
-				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-				((Component)interactiePanel).setBackground(getBackground());
+			{	Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
+				interactiePanel = geogebra3Panel;
+				geogebra3Panel.setBackground(getBackground());
+				geogebra3Panel.setInstanceId(getCrossWidgetId());
+				geogebra3Panel.setFactory(WidgetBridge.getFactory(geogebra3Panel));
 				interactiePanel.addActionListener(this);
-				
-			//add((Component)interactiePanel,0);
-			
 			}
 		}
 		else if(soortInteractiePanel == 39)

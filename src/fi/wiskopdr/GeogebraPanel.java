@@ -468,7 +468,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 			if(Boolean.TRUE.equals(file) && fileUrl != null)
 			{
 				ResourceContainer unit = rm().getInstanceContainer();
-				URL u = unit.open(fileUrl).getURL();
+				URL u = new URL( unit.getURL(), fileUrl );
 				geogebraApplet.openFile(u);
 			} else
 				if(ggbFile != null)

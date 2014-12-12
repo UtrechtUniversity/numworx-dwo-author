@@ -50,6 +50,10 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.rm.ResourceContainer;
+import org.cbook.cbookif.rm.ResourceException;
+import org.cbook.cbookif.rm.ResourceManager;
+
 import fi.wiskopdr.formuleobjects.EditorContentPanel;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
@@ -57,18 +61,18 @@ import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.MyOpdrEditContainer;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
-
 import fi.beans.base64code.Base64StringEncoder;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-
+import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import v3.geogebra.GeoGebraApplet;
 import v3.geogebra.GeoGebra;
 
-public class Geogebra3Panel extends JLayeredPane implements  ActionListener, InteractiePanel, InteractieEditPanel, AppletStub, AppletContext
+public class Geogebra3Panel extends JLayeredPane implements  ActionListener, InteractiePanel, InteractieEditPanel, AppletStub, AppletContext, ResourceManagerClient
 {	
 	private String[] randomVars;
 	private Hashtable randomValues;
@@ -401,32 +405,49 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 		
 		refreshGeogebra();
 		
-		if(alsTool) {	
-			if(ggbFile != null && hasLoadGGBfile)
-				setGGBfile(ggbFile);
-			else
-				geogebraApplet.setXML(state);
-			for(int i=0 ; i<randomVars.length ; i++)
-			{	
-				String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
-				varClean = StringUtils.replaceStr(varClean,")","");
-				geogebraApplet.setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
+		try {
+			if(alsTool) {	
+				if(Boolean.TRUE.equals(file) && fileUrl != null)
+				{
+					ResourceContainer unit = rm().getInstanceContainer();
+					URL u; //u = unit.open(fileUrl).getURL();
+					u = new URL(unit.getURL(), fileUrl);
+					geogebraApplet.openFile(u.toExternalForm());
+				} else
+				if(ggbFile != null && hasLoadGGBfile)
+					setGGBfile(ggbFile);
+				else
+					geogebraApplet.setXML(state);
+				for(int i=0 ; i<randomVars.length ; i++)
+				{	
+					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
+					varClean = StringUtils.replaceStr(varClean,")","");
+					geogebraApplet.setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
+				}
 			}
-		}
-		else {	
-			if(ggbFile != null && hasLoadGGBfile)
-				setGGBfile(ggbFile);
-			else
-			{
-				if(state == null) state = "";
-				if(!geogebraNieuw) state = StringUtils.replaceStr(state,"<show algebraView=\"false\"", "<show algebraView=\"true\"");
-				geogebraApplet.setXML(state);
+			else {	
+				if(Boolean.TRUE.equals(file) && fileUrl != null)
+				{
+					ResourceContainer unit = rm().getInstanceContainer();
+					URL u = new URL(unit.getURL(), fileUrl);
+					geogebraApplet.openFile(u.toExternalForm());
+				} else
+				if(ggbFile != null && hasLoadGGBfile)
+					setGGBfile(ggbFile);
+				else
+				{
+					if(state == null) state = "";
+					if(!geogebraNieuw) state = StringUtils.replaceStr(state,"<show algebraView=\"false\"", "<show algebraView=\"true\"");
+					geogebraApplet.setXML(state);
+				}
+				for(int i=0 ; i<randomVars.length ; i++){	
+					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
+					varClean = StringUtils.replaceStr(varClean,")","");
+					geogebraApplet.setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
+				}
 			}
-			for(int i=0 ; i<randomVars.length ; i++){	
-				String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
-				varClean = StringUtils.replaceStr(varClean,")","");
-				geogebraApplet.setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		launchState = getGGBfile(); // voor reset
@@ -756,7 +777,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 	}
 	
 	public InteractieEditPanel getEditPanel(){	
-		return new Geogebra3EditPanel();
+		return newEditPanel(getInstanceId());
 	}
 	
 	public void zetBreedte(int b){	
@@ -1031,5 +1052,34 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
         }
     }
     //
-    
+	ResourceManagerFactory factory;
+	@Override
+	public void setFactory(ResourceManagerFactory factory) {
+		this.factory = factory;
+	}
+	
+	ResourceManager rm() {
+		return factory.getResourceManager();
+	}
+
+	String id;
+	@Override
+	public void setInstanceId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getInstanceId() {
+		return id;
+	}
+
+	@Override
+	public String getClassName() {
+		return getClass().getName();
+	}
+
+	public static InteractieEditPanel newEditPanel(String id) {
+		return new Geogebra3EditPanel(id);
+	}
+
 }
