@@ -185,7 +185,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private boolean zelftoetsNagekeken = false;
 	private int condPerc = 100;
 	
-	private JCheckBox lockToetsCB;
+//	private JCheckBox lockToetsCB;
 	private JLabel lockToetsLabel;
 	private boolean toetsLocked;
 
@@ -580,12 +580,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (aantalActiviteiten == 1 && aantalOpdrachten[0] == 1)
 			remove(or[0]);
 
-		lockToetsCB = new JCheckBox(WiskOpdr.rb.getString("lockToetsCBLabel"));
-		lockToetsCB.setFont(font);
-		lockToetsCB.setOpaque(false);
-		lockToetsCB.addActionListener(this);
-		lockToetsCB.setVisible(mode == 3 && lessonMode.equals("review"));
-		add(lockToetsCB, 0);
+//		lockToetsCB = new JCheckBox(WiskOpdr.rb.getString("lockToetsCBLabel"));
+//		lockToetsCB.setFont(font);
+//		lockToetsCB.setOpaque(false);
+//		lockToetsCB.addActionListener(this);
+//		lockToetsCB.setVisible(mode == 3 && lessonMode.equals("review"));
+//		add(lockToetsCB, 0);
 
 		volgendeKnop.setEnabled(opdrachtNr < aantalOpdrachten[activiteitNr] - 1);
 		vorigeKnop.setEnabled(opdrachtNr > 0);
@@ -758,7 +758,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				opnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 20, orPosY + 4, 2 * orSize + 50, orSize - 5);
 			else
 				opnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 70, orPosY + 4, 2 * orSize + 50, orSize - 5);
-			lockToetsCB.setBounds(getWidth() - 220, getHeight() - 23, 120, 20);
+//			lockToetsCB.setBounds(getWidth() - 220, getHeight() - 23, 120, 20);
 			aantalSessiesLabel.setBounds(getWidth() - 320, getHeight() - 23, 120, 20);
 			lockToetsLabel.setBounds(getWidth() - 120, getHeight() - 23, 100, 20);
 
@@ -2023,8 +2023,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		toetsLocked = b;
 		if (lessonMode.equals("normal"))
 			lockToetsLabel.setVisible(b);
-		if (lessonMode.equals("review"))
-			lockToetsCB.setSelected(b);
+//		if (lessonMode.equals("review"))
+//			lockToetsCB.setSelected(b);
 	}
 
 	/**
@@ -2077,8 +2077,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				scoresObjectivesKnop.setVisible(objectivesAanwezig);
 			}
 			klaarKnop.setVisible(false);
-			if ("review".equals(lessonMode) && lockToetsCB != null)
-				lockToetsCB.setVisible(true);
+//			if ("review".equals(lessonMode) && lockToetsCB != null)
+//				lockToetsCB.setVisible(true);
 		}
 	}
 
@@ -2426,10 +2426,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == lockToetsCB)
-		{
-			WiskOpdr.setReviewData("toetsLocked", new Boolean(lockToetsCB.isSelected()));
-		}
+//		if (e.getSource() == lockToetsCB)
+//		{
+//			WiskOpdr.setReviewData("toetsLocked", new Boolean(lockToetsCB.isSelected()));
+//		}
 		if (e.getSource() == timerPanel)
 		{
 			if (e.getActionCommand().equals("telaat"))
