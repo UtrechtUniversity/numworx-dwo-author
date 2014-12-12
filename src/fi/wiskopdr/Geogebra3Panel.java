@@ -590,6 +590,18 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 		if(geogebraNieuw)showAlgebraViewShift = -1;
 		refreshGeogebra();
 
+		if(Boolean.TRUE.equals(file) && fileUrl != null)
+		{
+			ResourceContainer unit = rm().getInstanceContainer();
+			try {
+				URL u; //u = unit.open(fileUrl).getURL();
+				u = new URL(unit.getURL(), fileUrl);
+				geogebraApplet.openFile(u.toExternalForm());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else
 		if(ggbFile != null && hasLoadGGBfile)
 		{
 			setGGBfile(ggbFile);

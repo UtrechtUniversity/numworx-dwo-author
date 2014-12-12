@@ -198,8 +198,8 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		try {
 			URL u = new URL(url, name );
 			String externalForm = u.toExternalForm();
-			if(sardine.exists(externalForm))
-				readonly();
+//			if(sardine.exists(externalForm))
+//				readonly();
 			sardine.put(externalForm, in, mimetype, false);
 			return open(u);
 			
@@ -243,8 +243,8 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		try {
 			URL u = new URL(url, name );
 			String externalForm = u.toExternalForm();
-			if(sardine.exists(externalForm))
-				readonly();
+//			if(sardine.exists(externalForm))
+//				readonly();
 			sardine.put(externalForm, in.toExternalForm().getBytes(), LINK);
 			return open(u);
 			
@@ -284,8 +284,8 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		try {
 			URL u = new URL(url, name );
 			String externalForm = u.toExternalForm();
-			if(sardine.exists(externalForm))
-				readonly();
+//			if(sardine.exists(externalForm))
+//				readonly();
 			sardine.copy(resource.getURL().toExternalForm(), externalForm);
 			return open(u);
 			
@@ -329,8 +329,8 @@ public class WebContainer implements ResourceContainer, CachedResource {
 		try {
 			URL u = new URL(url, name );
 			String externalForm = u.toExternalForm();
-			if(sardine.exists(externalForm))
-				readonly();
+//			if(sardine.exists(externalForm))
+//				readonly();
 			sardine.createDirectory(externalForm);
 			return (ResourceContainer) open(u);
 			
