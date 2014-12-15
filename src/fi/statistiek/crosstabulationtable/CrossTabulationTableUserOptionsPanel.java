@@ -65,7 +65,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	private JLabel minValueRowsLabel;
 	private JLabel maxValueRowsLabel;
 	
-	// COLUMNS variable settings
+	// COLUMNS (split) variable settings
 	/**
 	 * The box for choosing the variable for the columns in the crosstab
 	 */
@@ -583,11 +583,10 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryRowsField.setText(Statistiek.df.format(this.model
-					.getBinBoundaries().get(0)));
-				Double d = this.model.getBinBoundaries().get(1)
-					- this.model.getBinBoundaries().get(0);
-				this.binWidthRowsField.setText(Statistiek.df.format(d));
+				this.minBoundaryRowsField.setText(this.model
+					.getBinBoundaries().get(0).toString());
+				// set the row bin width based on the row's bin boundaries
+				this.binWidthRowsField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsRowsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
@@ -619,11 +618,9 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryColumnsField.setText(Statistiek.df.format(this.model
-					.getSplitOptions().getBinBoundaries().get(0)));
-				Double d = this.model.getSplitOptions().getBinBoundaries().get(1)
-					- this.model.getSplitOptions().getBinBoundaries().get(0);
-				this.binWidthColumnsField.setText(Statistiek.df.format(d));
+				this.minBoundaryColumnsField.setText(this.model.getSplitOptions().getBinBoundaries().get(0).toString());
+				// set the column bin width based on the column's bin boundaries
+				this.binWidthColumnsField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 				this.noObjectsColumnsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
@@ -691,6 +688,14 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		this.binWidthRowsField.setText(String.valueOf(d));
 	}
 	
+	/**
+	 *Set the bin width based on the model's bin boundaries. 
+	 */
+	public void setBinWidthRows()
+	{
+		this.binWidthRowsField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
+	}
+	
 	public double getMinBoundaryRows()
 	{
 		String s = this.minBoundaryRowsField.getText();
@@ -733,6 +738,14 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	public void setBinWidthColumns(double d)
 	{
 		this.binWidthColumnsField.setText(String.valueOf(d));
+	}
+	
+	/**
+	 *Set the column (split) bin width based on the model's column (split) bin boundaries. 
+	 */
+	public void setBinWidthColumns()
+	{
+		this.binWidthColumnsField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 	}
 	
 	public double getMinBoundaryColumns()
