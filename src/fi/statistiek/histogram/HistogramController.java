@@ -291,7 +291,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 			// reset to old values
 			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
-			this.view.setBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setBinWidth();
 			this.view.setMinBoundary(oldBoundaries.get(0));
 		}
 	}
@@ -325,7 +325,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 			// reset to old values
 			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
-			this.view.setSplitBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setSplitBinWidth();
 			this.view.setSplitMinBoundary(oldBoundaries.get(0));
 		}
 	}
