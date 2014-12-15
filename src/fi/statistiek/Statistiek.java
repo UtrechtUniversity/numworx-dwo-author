@@ -583,4 +583,49 @@ public class Statistiek implements WiskOpdrApplet
 	{
 		return df;
 	}
+	
+	/**
+	 * Get the binWidth based on the values in bins. The number of 
+	 * decimals of d will be the maximum number of decimals
+	 * among the values in bins.
+	 * 
+	 * @param bins An arraylist of bin boundaries
+	 * @return The string value of the bin width
+	 */
+	public static String getFormattedBinWidth(ArrayList<Double> bins)
+	{
+		String formattedValueString;
+		int maxNumberOfDecimals = 0;
+		String binValueString;
+		
+		Double d = bins.get(1) - bins.get(0);
+		
+		for (int i = 0; i < bins.size(); i++)
+		{
+			binValueString = String.valueOf(bins.get(i));
+			int numberOfDecimals = binValueString.length() - binValueString.indexOf('.') - 1;
+			
+			if (numberOfDecimals > maxNumberOfDecimals)
+				maxNumberOfDecimals = numberOfDecimals;
+		}
+
+		// get format with numberOfDecimals
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setDecimalSeparator('.');
+		String pattern = "0";
+		
+		if (maxNumberOfDecimals > 0)
+		{
+			// set the pattern according to the number of decimals
+			pattern = pattern + ".";
+			for (int i = 0; i < maxNumberOfDecimals; i++)
+			{
+				pattern = pattern + "#";
+			}
+		}
+		DecimalFormat df = new DecimalFormat(pattern, dfs);
+		formattedValueString = df.format(d.doubleValue());
+		
+		return formattedValueString;
+	}
 }
