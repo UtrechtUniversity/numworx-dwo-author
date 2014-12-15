@@ -281,7 +281,7 @@ public class CrossTabulationTableController implements StatistiekView,
 		{
 			// reset to old values
 			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
-			this.view.setBinWidthRows(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setBinWidthRows();
 			this.view.setMinBoundaryRows(oldBoundaries.get(0));
 		}
 	}
@@ -316,7 +316,7 @@ public class CrossTabulationTableController implements StatistiekView,
 		{
 			// reset to old values
 			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
-			this.view.setBinWidthColumns(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setBinWidthColumns();
 			this.view.setMinBoundaryColumns(oldBoundaries.get(0));
 		}
 	}
