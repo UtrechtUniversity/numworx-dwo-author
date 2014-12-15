@@ -247,6 +247,11 @@ public class HistogramView extends JPanel implements Observer
 		this.userOptionsPanel.setBinWidth(d);
 	}
 
+	public void setBinWidth()
+	{
+		this.userOptionsPanel.setBinWidth();
+	}
+
 	public double getSplitBinWidth()
 	{
 		return userOptionsPanel.getSplitBinWidth();
@@ -255,6 +260,11 @@ public class HistogramView extends JPanel implements Observer
 	public void setSplitBinWidth(double d)
 	{
 		this.userOptionsPanel.setSplitBinWidth(d);
+	}
+
+	public void setSplitBinWidth()
+	{
+		this.userOptionsPanel.setSplitBinWidth();
 	}
 
 	/**
