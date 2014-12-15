@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -853,6 +856,14 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	{
 		this.binWidthField.setText(String.valueOf(d));
 	}
+
+	/**
+	 *Set the bin width based on the models bin boundaries. 
+	 */
+	public void setBinWidth()
+	{
+		this.binWidthField.setText(this.getFormattedBinWidth(this.model.getBinBoundaries()));
+	}
 	
 	public double getSplitBinWidth()
 	{
@@ -864,6 +875,14 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	public void setSplitBinWidth(double d)
 	{
 		this.splitBinWidthField.setText(String.valueOf(d));
+	}
+
+	/**
+	 *Set the split bin width based on the models split bin boundaries. 
+	 */
+	public void setSplitBinWidth()
+	{
+		this.splitBinWidthField.setText(this.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 	}
 	
 	public boolean xAxisSelected()
@@ -964,11 +983,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryField.setText(Statistiek.df.format(this.model
-					.getBinBoundaries().get(0)));
-				Double d = this.model.getBinBoundaries().get(1)
-					- this.model.getBinBoundaries().get(0);
-				this.binWidthField.setText(Statistiek.df.format(d));
+				this.minBoundaryField.setText(this.model
+					.getBinBoundaries().get(0).toString());
+				// set the bin width based on the bin boundaries
+				this.binWidthField.setText(this.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
@@ -1009,13 +1027,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     			if (splitType.equals(AllowedTypes.DOUBLE)
     				|| splitType.equals(AllowedTypes.INTEGER))
     			{
-    				this.splitMinBoundaryField.setText(Statistiek.df
-    					.format(this.model.getSplitOptions().getBinBoundaries()
-    						.get(0)));
-    				Double d = this.model.getSplitOptions().getBinBoundaries()
-    					.get(1)
-    					- this.model.getSplitOptions().getBinBoundaries().get(0);
-    				this.splitBinWidthField.setText(Statistiek.df.format(d));
+    				this.splitMinBoundaryField.setText(
+    					this.model.getSplitOptions().getBinBoundaries().get(0).toString());
+    				// set the split bin width based on the split bin boundaries
+    				this.splitBinWidthField.setText(this.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				
     				StringBuilder sb = new StringBuilder();
     				for (int i = 0; i < this.model.getSplitOptions()
@@ -1124,6 +1139,52 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.stackModeBox.setSelected(this.model.isFrequencyPolygonStackMode());
 		this.stackModeBox.setEnabled(this.model.isFrequencyPolygonMode()
 			&& this.model.isFrequencyPolygonCumulativeMode());
+	}
+
+	/**
+	 * Get the binWidth based on the values in bins. The number of 
+	 * decimals of d will be the maximum number of decimals
+	 * among the values in bins.
+	 * 
+	 * @param binWidth
+	 * @param bins An arraylist of bin boundaries
+	 * @return The string value of the bin width
+	 */
+	private String getFormattedBinWidth(ArrayList<Double> bins)
+	{
+		String formattedValueString;
+		int maxNumberOfDecimals = 0;
+		String binValueString;
+		
+		Double d = bins.get(1) - bins.get(0);
+		
+		for (int i = 0; i < bins.size(); i++)
+		{
+			binValueString = String.valueOf(bins.get(i));
+			int numberOfDecimals = binValueString.length() - binValueString.indexOf('.') - 1;
+			
+			if (numberOfDecimals > maxNumberOfDecimals)
+				maxNumberOfDecimals = numberOfDecimals;
+		}
+
+		// get format with numberOfDecimals
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setDecimalSeparator('.');
+		String pattern = "0";
+		
+		if (maxNumberOfDecimals > 0)
+		{
+			// set the pattern according to the number of decimals
+			pattern = pattern + ".";
+			for (int i = 0; i < maxNumberOfDecimals; i++)
+			{
+				pattern = pattern + "#";
+			}
+		}
+		DecimalFormat df = new DecimalFormat(pattern, dfs);
+		formattedValueString = df.format(d.doubleValue());
+		
+		return formattedValueString;
 	}
 
 	public void init()
