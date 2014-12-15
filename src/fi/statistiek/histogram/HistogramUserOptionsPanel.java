@@ -858,11 +858,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	}
 
 	/**
-	 *Set the bin width based on the models bin boundaries. 
+	 *Set the bin width based on the model's bin boundaries. 
 	 */
 	public void setBinWidth()
 	{
-		this.binWidthField.setText(this.getFormattedBinWidth(this.model.getBinBoundaries()));
+		this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 	}
 	
 	public double getSplitBinWidth()
@@ -878,11 +878,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	}
 
 	/**
-	 *Set the split bin width based on the models split bin boundaries. 
+	 *Set the split bin width based on the model's split bin boundaries. 
 	 */
 	public void setSplitBinWidth()
 	{
-		this.splitBinWidthField.setText(this.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
+		this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 	}
 	
 	public boolean xAxisSelected()
@@ -986,7 +986,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				this.minBoundaryField.setText(this.model
 					.getBinBoundaries().get(0).toString());
 				// set the bin width based on the bin boundaries
-				this.binWidthField.setText(this.getFormattedBinWidth(this.model.getBinBoundaries()));
+				this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
@@ -1030,7 +1030,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     				this.splitMinBoundaryField.setText(
     					this.model.getSplitOptions().getBinBoundaries().get(0).toString());
     				// set the split bin width based on the split bin boundaries
-    				this.splitBinWidthField.setText(this.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
+    				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				
     				StringBuilder sb = new StringBuilder();
     				for (int i = 0; i < this.model.getSplitOptions()
@@ -1139,52 +1139,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.stackModeBox.setSelected(this.model.isFrequencyPolygonStackMode());
 		this.stackModeBox.setEnabled(this.model.isFrequencyPolygonMode()
 			&& this.model.isFrequencyPolygonCumulativeMode());
-	}
-
-	/**
-	 * Get the binWidth based on the values in bins. The number of 
-	 * decimals of d will be the maximum number of decimals
-	 * among the values in bins.
-	 * 
-	 * @param binWidth
-	 * @param bins An arraylist of bin boundaries
-	 * @return The string value of the bin width
-	 */
-	private String getFormattedBinWidth(ArrayList<Double> bins)
-	{
-		String formattedValueString;
-		int maxNumberOfDecimals = 0;
-		String binValueString;
-		
-		Double d = bins.get(1) - bins.get(0);
-		
-		for (int i = 0; i < bins.size(); i++)
-		{
-			binValueString = String.valueOf(bins.get(i));
-			int numberOfDecimals = binValueString.length() - binValueString.indexOf('.') - 1;
-			
-			if (numberOfDecimals > maxNumberOfDecimals)
-				maxNumberOfDecimals = numberOfDecimals;
-		}
-
-		// get format with numberOfDecimals
-		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-		dfs.setDecimalSeparator('.');
-		String pattern = "0";
-		
-		if (maxNumberOfDecimals > 0)
-		{
-			// set the pattern according to the number of decimals
-			pattern = pattern + ".";
-			for (int i = 0; i < maxNumberOfDecimals; i++)
-			{
-				pattern = pattern + "#";
-			}
-		}
-		DecimalFormat df = new DecimalFormat(pattern, dfs);
-		formattedValueString = df.format(d.doubleValue());
-		
-		return formattedValueString;
 	}
 
 	public void init()
