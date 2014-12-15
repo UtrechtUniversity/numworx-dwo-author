@@ -167,6 +167,11 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		this.userOptionsPanel.setBinWidthRows(d);
 	}
 
+	public void setBinWidthRows()
+	{
+		this.userOptionsPanel.setBinWidthRows();
+	}
+
 	public double getMinBoundaryRows()
 	{
 		return this.userOptionsPanel.getMinBoundaryRows();
@@ -189,6 +194,11 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	public void setBinWidthColumns(double d)
 	{
 		this.userOptionsPanel.setBinWidthColumns(d);
+	}
+
+	public void setBinWidthColumns()
+	{
+		this.userOptionsPanel.setBinWidthColumns();
 	}
 
 	public double getMinBoundaryColumns()
