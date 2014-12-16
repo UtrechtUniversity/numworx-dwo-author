@@ -300,6 +300,27 @@ public class StatistiekTest
 		assertArrayEquals("", expected.toArray(), actual.toArray());
 	}
 
+	/**
+	 * Minimum 9.73 (9d73), 
+	 * maximum 10.28 (10d28),
+	 * bin width 0.05 (w0d05),
+	 * start bin 9.7 (s9d7)
+	 */
+	@Test
+	public void testAppropriateBoundariesFromBinSettings9d73_10d28_w0d05_s9d7()
+	{
+		double min = 9.73;
+		double max = 10.28;
+		double binWidth = 0.05;
+		double minBoundary = 9.7;
+		
+		ArrayList<Double> expected = new ArrayList(Arrays.asList(
+			9.7, 9.75, 9.8, 9.85, 9.9, 9.95, 10.0, 10.05, 10.1, 10.15, 10.2, 10.25, 10.3));
+		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
+		assertEquals("Expected " + expected.toArray()
+			+ ", actual " + actual.toArray(), actual, expected);
+	}
+
 	@Test
 	public void testAppropriateBoundariesFromBinSettings()
 	{
