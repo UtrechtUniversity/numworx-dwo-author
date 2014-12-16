@@ -59,7 +59,7 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
 			|| dataMinValue == null || dataMaxValue == null)
 		{
 			drawable = false;
-			System.out.println("SingleBoxplotView(): Niet drawable!");
+			//System.out.println("SingleBoxplotView(): Niet drawable!");
 			return;
 		}
 		else
