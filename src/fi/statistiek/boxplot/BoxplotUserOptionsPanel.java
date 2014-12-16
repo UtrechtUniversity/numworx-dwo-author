@@ -278,9 +278,9 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 			this.splitBoundariesArea);
 		this.splitBoundariesArea.setBorder(BorderFactory
 			.createLoweredBevelBorder());
-		this.splitBoundariesArea.setMaximumSize(new Dimension(120, 140));
-		this.splitBoundariesArea.setMinimumSize(new Dimension(120, 140));
-		this.splitBoundariesArea.setPreferredSize(new Dimension(130, 140));
+		this.splitBoundariesAreaScrollPane.setMaximumSize(new Dimension(120, 140));
+		this.splitBoundariesAreaScrollPane.setMinimumSize(new Dimension(120, 140));
+		this.splitBoundariesAreaScrollPane.setPreferredSize(new Dimension(130, 140));
 
 		this.splitNoObjectsLabel = new JLabel("");
 		this.splitNoObjectsLabel.setFont(Statistiek.font);
@@ -516,6 +516,14 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitBinWidthField.setText(String.valueOf(d));
 	}
 	
+	/**
+	 *Set the split bin width based on the model's split bin boundaries. 
+	 */
+	public void setSplitBinWidth()
+	{
+		this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitBinBoundaries()));
+	}
+	
 	public void setModel(BoxplotModel model)
 	{
 		this.model = model;
@@ -560,6 +568,11 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 
 		}
 
+		this.splitBinsBox.removeActionListener(this.controller);
+		this.splitBinsBox.setSelectedItem(new Integer(this.model
+			.getSplitOptions().getBinBoundaries().size() - 1));
+		this.splitBinsBox.addActionListener(this.controller);
+
 		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
 		{
 			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
@@ -568,22 +581,18 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 			if (splitType.equals(AllowedTypes.DOUBLE)
 				|| splitType.equals(AllowedTypes.INTEGER))
 			{
-				this.splitMinBoundaryField.setText(Statistiek.df
-					.format(this.model.getSplitOptions().getBinBoundaries()
-						.get(0)));
-				Double d = this.model.getSplitOptions().getBinBoundaries()
-					.get(1)
-					- this.model.getSplitOptions().getBinBoundaries().get(0);
-				this.splitBinWidthField.setText(Statistiek.df.format(d));
+				this.splitMinBoundaryField.setText(
+					this.model.getSplitOptions().getBinBoundaries().get(0).toString());
+				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitBinBoundaries()));
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < this.model.getSplitOptions()
 					.getBinBoundaries().size() - 1; i++)
 				{
-					sb.append(Statistiek.df.format(this.model.getSplitOptions()
-						.getBinBoundaries().get(i)));
+					sb.append(this.model.getSplitOptions()
+						.getBinBoundaries().get(i).toString());
 					sb.append(" - ");
-					sb.append(Statistiek.df.format(this.model.getSplitOptions()
-						.getBinBoundaries().get(i + 1)));
+					sb.append(this.model.getSplitOptions()
+						.getBinBoundaries().get(i + 1).toString());
 					sb.append("\n");
 				}
 				//sb.delete(sb.length() - 3, sb.length());
