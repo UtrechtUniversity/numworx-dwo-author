@@ -184,7 +184,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 		{
 			// reset to old values
 			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
-			this.view.setSplitBinWidth(oldBoundaries.get(1) - oldBoundaries.get(0));
+			this.view.setSplitBinWidth();
 			this.view.setSplitMinBoundary(oldBoundaries.get(0));
 		}
 	}
