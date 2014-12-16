@@ -1001,4 +1001,12 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 		this.userOptionsPanel.setSplitBinWidth(d);
 	}
+
+	/**
+	 *Set the split bin width based on the model's split bin boundaries. 
+	 */
+	public void setSplitBinWidth()
+	{
+		this.userOptionsPanel.setSplitBinWidth();
+	}
 }
