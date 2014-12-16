@@ -543,6 +543,11 @@ public class DotplotView extends JPanel implements Observer
 		this.userOptionsPanel.setSplitBinWidth(d);
 	}
 
+	public void setSplitBinWidth()
+	{
+		this.userOptionsPanel.setSplitBinWidth();
+	}
+
 	// public int getVarSplitBoxSelected() {
 	// return this.varSplitBox.getSelectedIndex();
 	// }
