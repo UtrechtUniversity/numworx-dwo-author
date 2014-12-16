@@ -200,6 +200,11 @@ public class FrequencyTableView extends JPanel implements Observer
 		this.userOptionsPanel.setBinWidth(d);
 	}
 
+	public void setBinWidth()
+	{
+		this.userOptionsPanel.setBinWidth();
+	}
+
 	public double getMinBoundary()
 	{
 		return this.userOptionsPanel.getMinBoundary();
@@ -991,6 +996,11 @@ public class FrequencyTableView extends JPanel implements Observer
 	public void setSplitBinWidth(double d)
 	{
 		this.userOptionsPanel.setSplitBinWidth(d);
+	}
+
+	public void setSplitBinWidth()
+	{
+		this.userOptionsPanel.setSplitBinWidth();
 	}
 
 	public int getSplitBinsBoxSelectedInt()
