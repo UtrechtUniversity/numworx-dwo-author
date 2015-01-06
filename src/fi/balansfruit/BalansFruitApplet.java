@@ -5,10 +5,10 @@ import java.awt.event.*;
 import java.net.URL;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
 import java.applet.*;
 // import java.awt.image.*;
 import java.util.*;
+
 // import java.applet.AudioClip;
 // import fi.balansfruit.tekst.*;
 import fi.beans.appletutil.AppletUtil;
@@ -119,13 +119,13 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	public BalansFruitApplet()
 	{	Locale language = new Locale ("nl", "");
 		applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		rb = ResourceBundle.getBundle("fi.balansfruit.text.Text",language);
 	}
 	
 	public BalansFruitApplet(Locale language)
 	{	
 		applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		rb = ResourceBundle.getBundle("fi.balansfruit.text.Text",language);
 	}
 	
 	
@@ -137,14 +137,13 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	
  
 	public void init()
-	{	// get the language parameter, default: "nl", other value: "en"
-		// String langArg;
-		// Locale language;
-		// langArg = getParameter("language");
-		// if ( langArg == null ) langArg = "nl";		
-		// language = new Locale (langArg, "");
-		// rb = ResourceBundle.getBundle("fi.balansfruit.tekst.Tekst", language);
-		
+	{	
+		//instelling taal
+		String langArg = getParameter("language");
+		if ( langArg == null) langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.fruitbalans.text.Text",language);
+
 		
 		
 		String launchDataString = super.getParameter("launchData");

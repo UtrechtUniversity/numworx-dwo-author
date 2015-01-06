@@ -55,6 +55,10 @@ class BalansFruit extends LWMRootContainer
 	}
 	
 	public void setBalance()
+	{	setBalance(true);
+	}
+	
+	public void setBalance(boolean communicate)
 	{
 		
 //System.out.println("setBalance");
@@ -76,7 +80,8 @@ class BalansFruit extends LWMRootContainer
 			rechts.setSize(rechts.getWidth(), BalansFruitApplet.EVENWICHTY + balanceStatus* BalansFruitApplet.VERSCHIL);
 			repaint();
 		}
-		produceAction("setBalanced");
+		if(communicate)
+			produceAction("setBalanced");
 	}
 	
 	public void componentMoved(LWMComponent obj, LWMContainer from, LWMContainer to)

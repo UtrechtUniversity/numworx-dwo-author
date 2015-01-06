@@ -398,7 +398,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		int tussenruimteRechts = Math.min(20,20*8/(aantalXRechts+aantal1Rechts==0 ? 1 : aantalXRechts+aantal1Rechts));
 		
 		main.maakWeegschaalLeeg();
-		main.setBalance();
+		main.setBalance(false);
 		
 		
 		if(aantalXLinks==0 && aantal1Links==0 && aantalXRechts==0 && aantal1Rechts==0
@@ -425,7 +425,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 			for(int i=aantal1Links ; i<aantal1Links + aantal1Rechts; i++)
 		    {	rechts.addLWMComponent(fruitObjects[i+aantalStuks[8]],(i+aantalXRechts-aantal1Links)*tussenruimteRechts,0);
 		    }
-			main.setBalance();
+			main.setBalance(false);
 		}
 		huidigeVergelijking = s;
 	}
@@ -584,7 +584,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 	    	{	rechts.addLWMComponent(fruitObjects[i],stukFruitX[i],fruitObjects[i].getLocation().y);
 	    	}
    	    }
-		main.setBalance();
+		main.setBalance(false);
 		
 		//this.fixedOptie=fixedOptie;
 		this.bewaarOptie=bewaarOptie;
@@ -618,14 +618,18 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		int[] stukFruitX=null;
 		int[] containerNr=null;
 		boolean showEenheden = true;
+		double[] gewichten = null;
 		
 		if(h.containsKey("aantalFruitObjects")) aantalFruitObjects = ((Integer)h.get("aantalFruitObjects")).intValue();
 		if(h.containsKey("stukFruitX")) stukFruitX = (int[])h.get("stukFruitX");
 		if(h.containsKey("containerNr")) containerNr = (int[])h.get("containerNr");
 		if(h.containsKey("showEenheden")) showEenheden = ((Boolean)h.get("showEenheden")).booleanValue();
+		if(h.containsKey("gewichten")) gewichten = (double[])h.get("gewichten");
 		
 		this.aantalFruitObjects = aantalFruitObjects;
 		this.showEenheden = showEenheden;
+		if(gewichten!=null)
+			this.gewichten = gewichten;
 		
 		zetEenheden(showEenheden);
 		
@@ -645,7 +649,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 	    	}
    	    }
 		
-		main.setBalance();
+		main.setBalance(false);
 		
 		
 	}
@@ -710,9 +714,11 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		int[] stukFruitX;
 		int[] containerNr;
 		boolean showEenheden = true;
+		double[] gewichten = null;
 	    
 		aantalFruitObjects = this.aantalFruitObjects;
 		showEenheden = this.showEenheden;
+		gewichten = this.gewichten;
 	    
 		stukFruitX = new int[aantalFruitObjects];
 		containerNr = new int[aantalFruitObjects];
@@ -731,6 +737,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 	    h.put("stukFruitX", stukFruitX);
 	    h.put("containerNr", containerNr);
 	    h.put("showEenheden", new Boolean(showEenheden));
+	    h.put("gewichten", gewichten);
 	    
 	    if(bewaarOptie) return h;
 	    else return new Hashtable();
@@ -980,7 +987,7 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		 		double xWaarde = ((Double)event.getParameter("zetOplossing")).doubleValue();
 		 		zetBalansWaardeX(xWaarde);
 			}
-			if(command.equals("parameterwaarde"))
+			if(command.equals("double.xValue"))
 			{
 				Map map = (Map)event.getParameters();
 				if(map!=null)
@@ -988,6 +995,14 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 					double xWaarde = ((Double)map.get("value")).doubleValue();
 					for(int i=0 ; "x".equals(name) && i<aantalStuks[8]; i++)
 				    {	fruitObjects[i].setWeight(xWaarde);
+				    }
+					main.setBalance();
+				}
+				else
+				{	String message = event.getMessage();
+					double waarde = Double.parseDouble(message);
+					for(int i=0 ;i<aantalStuks[8]; i++)
+				    {	fruitObjects[i].setWeight(waarde);
 				    }
 					main.setBalance();
 				}
@@ -1020,14 +1035,14 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 
 		@Override
 		public String[] getAcceptedCmds() {
-			String[] commands = {"balansvergelijking", "zetOplossing", "parameterwaarde"};
+			String[] commands = {"balansvergelijking", "zetOplossing", "double.xValue"};
 			return commands;
 		}
 
 
 		@Override
 		public String getLocalizedCmd(String cmd) {
-			return cmd;
+			return BalansFruitApplet.rb.getString(CBA_PREFIX + cmd);
 		}
 	
 }
