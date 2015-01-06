@@ -106,8 +106,14 @@ public class Text_nl extends java.util.ListResourceBundle
 		//	....
 		
             {  "CBA_input", "invoer" },
-            {  "CBA_vergelijking", "vergelijking" },
-            {  "CBA_parameterwaarde", "parameterwaarde" },
+            {  "CBA_equation.twoGraphs", "twee grafieken" },
+            {  "CBA_double.parameter", "parameterwaarde" },
+            {  "CBA_double.trace", "tracewaarde" },
+            {  "CBA_expression.1", "functie 1" },
+            {  "CBA_expression.2", "functie 2" },
+            {  "CBA_expression.3", "functie 3" },
+            {  "CBA_expression.4", "functie 4" },
+            {  "CBA_expression.5", "functie 5" },
             
 		};
 }

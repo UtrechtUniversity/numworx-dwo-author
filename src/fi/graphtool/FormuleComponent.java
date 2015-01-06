@@ -1098,13 +1098,32 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		//zetFunctieBeginAanpasbaar(false, false);
 		//zetFormeleFuncties(false, false);
 		VergelijkingMeerv v = FormuleParser.parseVergelijking(vergelijkingString);
-		formuleVakken[0].formuleVak.vulVak("$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@");
+		String functieString0 = "$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@";
+		if(functieBeginAanpasbaar)
+			functieString0 = "$fy=" + functieString0.substring(2);
+		formuleVakken[0].formuleVak.vulVak(functieString0);
 		if(aantalRegels<2) maakNieuweRegel();
-		formuleVakken[1].formuleVak.vulVak("$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@");
+		String functieString1 = "$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@";
+		if(functieBeginAanpasbaar)
+			functieString1 = "$fy=" + functieString1.substring(2);
+		formuleVakken[1].formuleVak.vulVak(functieString1);
 		checkboxen[0].setSelected(true);
 		checkboxen[1].setSelected(true);
 		parseFormule(0, false);
 		parseFormule(1, false);
+	}
+	
+	public void zetFunctie(int regelNr, String functieString)
+	{
+		if(functieBeginAanpasbaar)
+			functieString = "$fy=" + functieString.substring(2);
+		if(regelNr==0) 
+			formuleVakken[0].formuleVak.vulVak(functieString);
+		while(aantalRegels-1<regelNr) 
+			maakNieuweRegel();
+		formuleVakken[regelNr].formuleVak.vulVak(functieString);
+		checkboxen[regelNr].setSelected(true);
+		parseFormule(regelNr, false);
 	}
 	
 	public void actionPerformed(ActionEvent e)

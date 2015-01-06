@@ -5219,20 +5219,29 @@ MouseListener, MouseMotionListener, CBookAware {
 				getFormuleComponent().geefFormuleVak().vulVak(formuleString);
 				getFormuleComponent().geefFormuleVak().finish();
 			}
-			if(command.equals("vergelijking"))
+			if(command.startsWith("expression"))
+			{	String indexString = command.substring(11);
+				int index = Integer.parseInt(indexString)-1;
+				String formuleString = (String)event.getMessage();
+		 		System.out.println("expression:: "+formuleString);
+		 		getFormuleComponent().zetFunctie(index, formuleString);
+			}
+			if(command.equals("equation.twoGraphs"))
 			{
 				String vergelijkingString = (String)event.getMessage();
-				if(vergelijkingString.charAt(0)!='$') vergelijkingString = "$f"+vergelijkingString+"@";
+				if(!vergelijkingString.substring(0,2).equals("$f")) vergelijkingString = "$f"+vergelijkingString+"@";
 				System.out.println("vergelijkingString: "+vergelijkingString);
 				getFormuleComponent().zetVergelijking(0, vergelijkingString);
 				
 			}
-			if(command.equals("parameterwaarde"))
+			if(event.getCommand().equals("double.trace"))
 			{
+				System.out.println("CBookEvent:: "+ event.toString());
+				System.out.println("Source:: "+ event.getCommand());
 				Map map = (Map)event.getParameters();
 				if(map!=null)
 				{	String name = (String)map.get("name");
-					if("x".equals(name)) 
+					if(grafiekXAsNaam.equals(name)) 
 					{
 						tracing = true;
 						double xWaarde = ((Double)map.get("value")).doubleValue();
@@ -5243,26 +5252,38 @@ MouseListener, MouseMotionListener, CBookAware {
 						
 						repaint();
 					}
-					
-					else 
-					{
-						double waarde = ((Double)map.get("value")).doubleValue();
-						SchuifParameter schuifParameter = geefSchuifParameter(name);
-						if(schuifParameter==null)
-						{	
-							schuifParameter = new SchuifParameter(200,name);
-							voegSchuifParameterToe(schuifParameter,false);
-						}
-						schuifParameter.zetWaarde(waarde, false);
-						gv.repaint();
-					}
 				}
 			}
+			if(event.getCommand().equals("double.parameter"))
+			{	
+				Map map = (Map)event.getParameters();
+				if(map!=null)
+				{	String name = (String)map.get("name");
+					double waarde = ((Double)map.get("value")).doubleValue();
+					SchuifParameter schuifParameter = geefSchuifParameter(name);
+					if(schuifParameter==null)
+					{	
+						schuifParameter = new SchuifParameter(200,name);
+						voegSchuifParameterToe(schuifParameter,false);
+					}
+					schuifParameter.zetWaarde(waarde, false);
+					gv.repaint();
+				}
+				
+			}
+			
 		}
 		
 		@Override
 		public String[] getAcceptedCmds() {
-			String[] s = {"input", "vergelijking", "parameterwaarde"};
+			String[] s = {"expression.1",
+					"expression.2",
+					"expression.3",
+					"expression.4",
+					"expression.5",
+					"equation.twoGraphs", 
+					"double.parameter", 
+					"double.trace"};
 			return s;
 		}
 
