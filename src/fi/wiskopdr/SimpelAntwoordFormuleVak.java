@@ -23,6 +23,7 @@ import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
 
+import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.TabletOwner;
@@ -38,6 +39,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+
 
 public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
 {
@@ -441,9 +443,21 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
 		{	
+			String inputString = formuleComponent.toString();
+			inputString = inputString.substring(2,inputString.length()-1);
 			cbookEventHandler.fire("input",formuleComponent.toString());
-			System.out.println("fired");
+			cbookEventHandler.fire("expression",formuleComponent.toString());
 			
+			double d = Double.NaN;
+			try 
+			{	d = Double.parseDouble(inputString);
+			}
+			catch(NumberFormatException nfe)
+			{	d = Double.NaN;
+			}
+			if(!Double.isNaN(d))
+			{	cbookEventHandler.fire("double",inputString);
+			}
 		}
 		else if(e.getSource()==feedbackButton)
 		{	Component c = antwoordFormuleVak.getFeedbackComponent();
@@ -779,12 +793,28 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
  	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
 		System.out.println("accepted " + command);
-		if(command.startsWith("input") || command.equals("index"))
+		if(command.startsWith("input") || command.startsWith("expression"))
 		{
 	 		String formuleString = (String)event.getMessage();
 	 		if(formuleString.charAt(0)!='$') formuleString = "$f" + formuleString + "@";
 			((FormuleVak)formuleComponent).vulVak(formuleString);
 			
+		}
+		if(command.startsWith("double"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	double waarde = ((Double)map.get("value")).doubleValue();
+				new Expressie();
+				String doubleString = Expressie.df.format(waarde);	
+				doubleString = "$f" + doubleString + "@";
+				((FormuleVak)formuleComponent).vulVak(doubleString);
+			}
+			else
+			{	String message = event.getMessage();
+				String doubleString = "$f" + message + "@";
+				((FormuleVak)formuleComponent).vulVak(doubleString);
+			}
 		}
 		
 	}
@@ -806,13 +836,13 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT, "index"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT, "double", "expression"};
 		return s;
 	}
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT /*,"index"*/};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT , "double", "expression"};
 		return s;
 	}
 

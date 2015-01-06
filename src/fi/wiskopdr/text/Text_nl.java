@@ -674,6 +674,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{"CBA_input", "invoer"},
 				{"CBA_index", "keuze" },
+				{"CBA_balansvergelijking", "balansvergelijking"},
+				{"CBA_zetOplossing", "zet oplossing" },
+				{"CBA_maakStap", "maak stap" },
+				{"CBA_vergelijking", "vergelijking" },
+				{"CBA_double", "nummerieke waarde"},
+				{"CBA_expression", "expressie"}
 				
 		};
 }

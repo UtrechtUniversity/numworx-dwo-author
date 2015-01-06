@@ -652,6 +652,15 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CN_sorteer","Sort"},
 				{"CN_regelMeer", "Add line"},
 				{"CN_regelMinder", "Remove line"},
+				
+				{"CBA_input", "input"},
+				{"CBA_index", "choice" },
+				{"CBA_balansvergelijking", "balance equation"},
+				{"CBA_zetOplossing", "set solution" },
+				{"CBA_maakStap", "make step" },
+				{"CBA_vergelijking", "equation" },
+				{"CBA_double", "nummerical value"},
+				{"CBA_expression", "expression"}
 		};
 }
 

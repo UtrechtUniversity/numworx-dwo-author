@@ -2499,7 +2499,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					System.out.println("na vulvak");
 					huidigeVergelijking = antwoord;
 					sendCommand("balansvergelijking");
-					sendCommand("vergelijking");
+					sendCommand("equation");
 					
 				}
 			System.out.println("$f" + antwoordIngevuld.toString() + "@");
@@ -3177,7 +3177,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 						if (vmAntw != null)
 							def = vmAntw.toString();
 						zetJuisteAntwoord("$f" + def + "@");
-						sendCommand("vergelijking");
+						sendCommand("equation");
 						sendCommand("zetOplossing");
 						sendCommand("balansvergelijking");
 						
@@ -3190,7 +3190,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 						if (vmAntw != null)
 							def = vmAntw.toString();
 						zetJuisteAntwoord("$f" + def + "@");
-						sendCommand("vergelijking");
+						sendCommand("equation");
 					}
 					hasStartString = true;
 					stapOk = true;
@@ -3791,7 +3791,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			}
 		
 		}
-		if(command.equals("vergelijking"))
+		if(command.equals("equation"))
 		{	
 			Vergelijking balansVerg = null;
 			if(huidigeVergelijking!=null)
@@ -3841,13 +3841,13 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"balansvergelijking", "zetOplossing", "vergelijking"};
+		String[] commands = {"balansvergelijking", "double.solution", "equation"};
 		return commands;
 	}
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"balansvergelijking", "maakStap", "vergelijking"};
+		String[] commands = {"balansvergelijking", "maakStap", "equation"};
 		return commands;
 	}
 

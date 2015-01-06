@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Main-Class: fi.wiskopdr.WiskOpdr
 Trusted-Only: true
 Permissions: all-permissions
-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn
+Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Application-Name: DWO
-Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn
+Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Class-Path: nabouwenaanzichten.jar 
  algebrapijlenopdr.jar 
  flowdiagrams.jar 

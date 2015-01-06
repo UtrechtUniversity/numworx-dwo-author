@@ -894,7 +894,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 							
 						return;
 					}
-					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked && ons.getMode()==3) {
+					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked) { // && ons.getMode()==3
 						return;
 					}
 					

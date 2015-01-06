@@ -602,7 +602,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		
 		CBookAware listener = (CBookAware)(dest.interactiePanel);
 		Object[] possibleValues = set.toArray();
-		Object selectedValue = JOptionPane.showInputDialog(this, "Choose one", "Command", JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
+		Object selectedValue = null;
+		if(possibleValues.length>0)
+			selectedValue = JOptionPane.showInputDialog(this, "Choose one", "Command", JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
 		Connector commands = (Connector)selectedValue;
 		if(commands == null) return;
 		String commandOut = commands.getKey();
