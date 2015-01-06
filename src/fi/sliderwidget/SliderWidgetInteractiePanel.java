@@ -192,19 +192,35 @@ public class SliderWidgetInteractiePanel extends JPanel implements InteractiePan
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"parameterwaarde"};
+		String[] commands = {"double.sliderValue"};
 		return commands;
 	}
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"parameterwaarde"};
+		String[] commands = {"double.sliderValue"};
 		return commands;
 	}
 
 	@Override
-	public void acceptCBookEvent(CBookEvent arg0) {
-		// TODO Auto-generated method stub
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("double"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	String name = (String)map.get("name");
+				double waarde = ((Double)map.get("value")).doubleValue();
+				if(name.equals(schuifParameter.geefNaam()))
+			    {	schuifParameter.zetWaarde(waarde, false);
+			    }				
+			}
+			else
+			{	String message = event.getMessage();
+				double waarde = Double.parseDouble(message);
+				schuifParameter.zetWaarde(waarde, false);
+			}
+		}
 		
 	}
 
@@ -215,9 +231,15 @@ public class SliderWidgetInteractiePanel extends JPanel implements InteractiePan
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("name", schuifParameter.geefNaam());
 			map.put("value", new Double(schuifParameter.geefDoubleStand()));
-			cbookEventHandler.fire("parameterwaarde",map);
+			cbookEventHandler.fire("double.sliderValue",map);
 		}
 		
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		// TODO Auto-generated method stub
+		return SliderWidget.rb.getString(CBA_PREFIX + cmd);
 	}
 
 }

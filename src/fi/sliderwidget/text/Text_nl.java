@@ -15,7 +15,9 @@ public class Text_nl extends java.util.ListResourceBundle
            	{	"param_bovengrens" , "param_bovengrens" },
            	{	"param_beginstand" , "param_beginstand" },
            	{	"param_stapgrootte" , "param_stapgrootte" },
-           	{	"param_sliderlengte" , "param_sliderlengte" }
+           	{	"param_sliderlengte" , "param_sliderlengte" },
+           	
+           	{	"CBA_double.sliderValue", "slider-waarde"},
 		};
 }
 

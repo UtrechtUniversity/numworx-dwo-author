@@ -5,11 +5,14 @@ public class Text_en extends java.util.ListResourceBundle
         public Object [] [] getContents() { return contents; }
         static final Object [] [] contents =
         {
-            {	"welkomTekst" , "Welcome to Java" },
-            	 	
-        //	{	"button1Label" , "text1_en" },
-		//	{ 	"button2Label" , "text2_en" },
-		//	....
+        	{	"param_naam" , "param_naam" },
+            {	"param_ondergrens" , "param_minimum" },
+            {	"param_bovengrens" , "param_maximum" },
+            {	"param_beginstand" , "param_start" },
+            {	"param_stapgrootte" , "param_step" },
+            {	"param_sliderlengte" , "param_slider length" },
+            
+            {	"CBA_double.sliderValue", "slider value"},
 		
 		};
 }
