@@ -416,6 +416,18 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return times[0];
 	}
 	
+	
+	public static boolean isCijfersOfLetters(String launchData) {
+		Object o = StringCodeObject.decodeStringToObject(launchData);
+		if (o == null) return false; // cijfers
+		Map h = (Map) o;
+		o = h.get("instellingen");
+		if(o == null) return false;
+		o = StringCodeObject.decodeStringToObject(o.toString());
+		if(o != null) h = (Map)o;
+		return Boolean.TRUE.equals(h.get("abcDeelOpdr"));
+		
+	}
 	/**
 	 * Hiermee worden de maximale scores uit de launchData gehaald. 
 	 * 
@@ -603,7 +615,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		// Fi-logo, copyright
 		FIButton fiButton = new FIButton("WiskOpdr", new String[] { 
-				"versie-info:20121209", 
+				"versie-info:20150101", 
 				"auteur: Peter Boon", 
 				"programmeur: Peter Boon",
 				"Freudenthal Instituut", 
@@ -1104,6 +1116,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		String[] scoresMax, scoresRaw, sessions;
 		scoresMax = geefPaginaScoresMax(launchData);
+		boolean cijfersOfLetters = isCijfersOfLetters(launchData);
 		if (scoresMax == null)
 			return Collections.EMPTY_LIST;
 		scoresRaw = geefPaginaScores(suspendData);
@@ -1117,6 +1130,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			else
 				map.put(PartialScoreIF.SCORE_RAW, "");
 			map.put(PartialScoreIF.LOCATION, String.valueOf(i)); // tellen vanaf 1?
+
+			if(cijfersOfLetters)
+				map.put(PartialScoreIF.DESCRIPTION, Character.toString((char) ('a'+i)));
+			else
+				map.put(PartialScoreIF.DESCRIPTION, String.valueOf(i+1));
 												// voor sylvia
 			if (sessions != null && sessions.length > i && sessions[i] != null)
 				map.put(PartialScoreIF.SESSION_TIME, sessions[i]);
