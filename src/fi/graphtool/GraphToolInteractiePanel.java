@@ -5212,7 +5212,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		{	Expressie e = null;
 			s = s.replaceAll("root", "sqrt");
 			s = s.replaceAll("$", "");
-			e = FormuleParser.parse(s);
+			e = FormuleParser.parse("$f"+s+"@");
 			return e;
 		}
 		
@@ -5253,7 +5253,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			{
 				Map map = (Map)event.getParameters();
 				if(map!=null)
-				{	String numberString = (String)map.get("number");
+				{	/*String numberString = (String)map.get("number");
 					int number = 0;
 					try	{	
 						number = Integer.parseInt(numberString);
@@ -5288,8 +5288,8 @@ MouseListener, MouseMotionListener, CBookAware {
 						}
 						
 					}
-					
-					
+					*/
+					getFormuleComponent().zetFuncties(map);
 				}
 			}
 			

@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -1124,6 +1125,72 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		formuleVakken[regelNr].formuleVak.vulVak(functieString);
 		checkboxen[regelNr].setSelected(true);
 		parseFormule(regelNr, false);
+	}
+	
+	public void zetFuncties(Map map)
+	{
+		String numberString = (String)map.get("number");
+		int number = 0;
+		try	{	
+			number = Integer.parseInt(numberString);
+		}
+		catch (NumberFormatException nfe) {
+			System.out.println(nfe.toString());
+		}
+		String clear = (String)map.get("clear");
+		String abscissa_name = (String)map.get("abscissa_name");
+		String abscissa_min = (String)map.get("abscissa_min");
+		String abscissa_max = (String)map.get("abscissa_max");
+		String ordinate_name = (String)map.get("ordinate_name");
+		String ordinate_min = (String)map.get("ordinate_min");
+		String ordinate_max = (String)map.get("ordinate_max");
+		
+		zetXAsNaam(abscissa_name,false);
+		zetYAsNaam(ordinate_name,false);
+		
+		//Expressie[] functions = new Expressie[number];
+		//Color[] colors = null;
+		//double[] thicknesses = null;
+		
+		for(int i=0 ; i<number ; i++)
+		{
+			String functionString = (String)map.get("function_"+i);
+			functionString = functionString.replaceAll("root", "sqrt");
+			functionString = functionString.replaceAll("$", "");
+
+			functionString = "$"+yAsNaam+"=" + functionString.substring(2);
+			formuleVakken[i].formuleVak.vulVak(functionString);
+			checkboxen[i].setSelected(true);
+			parseFormule(i, false);
+			if(i<number-1)
+				maakNieuweRegel();
+			//functions[i] = popcornParse(functionString);
+			//String colorString = (String)map.get("color_"+i);
+			//colors[i] = colorParse(colorString);
+			//String thicknessString = (String)map.get("thickness_"+i);
+			//try	{	
+			//	thicknesses[i] = Double.parseDouble(thicknessString);
+			//}
+			//catch (NumberFormatException nfe) {
+			//	System.out.println(nfe.toString());
+			//}
+			
+		}
+	}
+	
+	public Expressie popcornParse(String s)
+	{	Expressie e = null;
+		s = s.replaceAll("root", "sqrt");
+		s = s.replaceAll("$", "");
+		e = FormuleParser.parse("$f"+s+"@");
+		return e;
+	}
+	
+	public Color colorParse(String s)
+	{
+		Color c = null;
+		
+		return c;
 	}
 	
 	public void actionPerformed(ActionEvent e)
