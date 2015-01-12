@@ -5207,6 +5207,21 @@ MouseListener, MouseMotionListener, CBookAware {
 			cbookEventHandler.removeCBookEventListener(listener, command);
 			
 		}
+		
+		public Expressie popcornParse(String s)
+		{	Expressie e = null;
+			s = s.replaceAll("root", "sqrt");
+			s = s.replaceAll("$", "");
+			e = FormuleParser.parse(s);
+			return e;
+		}
+		
+		public Color colorParse(String s)
+		{
+			Color c = null;
+			
+			return c;
+		}
 
 		
 		@Override
@@ -5234,10 +5249,52 @@ MouseListener, MouseMotionListener, CBookAware {
 				getFormuleComponent().zetVergelijking(0, vergelijkingString);
 				
 			}
+			if(event.getCommand().equals("draw_functions"))
+			{
+				Map map = (Map)event.getParameters();
+				if(map!=null)
+				{	String numberString = (String)map.get("number");
+					int number = 0;
+					try	{	
+						number = Integer.parseInt(numberString);
+					}
+					catch (NumberFormatException nfe) {
+						System.out.println(nfe.toString());
+					}
+					String clear = (String)map.get("clear");
+					String abscissa_name = (String)map.get("abscissa_name");
+					String abscissa_min = (String)map.get("abscissa_min");
+					String abscissa_max = (String)map.get("abscissa_max");
+					String ordinate_name = (String)map.get("ordinate_name");
+					String ordinate_min = (String)map.get("ordinate_min");
+					String ordinate_max = (String)map.get("ordinate_max");
+					
+					Expressie[] functions = new Expressie[number];
+					Color[] colors = null;
+					double[] thicknesses = null;
+					
+					for(int i=0 ; i<number ; i++)
+					{
+						String functionString = (String)map.get("function_"+i);
+						functions[i] = popcornParse(functionString);
+						String colorString = (String)map.get("color_"+i);
+						colors[i] = colorParse(colorString);
+						String thicknessString = (String)map.get("thickness_"+i);
+						try	{	
+							thicknesses[i] = Double.parseDouble(thicknessString);
+						}
+						catch (NumberFormatException nfe) {
+							System.out.println(nfe.toString());
+						}
+						
+					}
+					
+					
+				}
+			}
+			
 			if(event.getCommand().equals("double.trace"))
 			{
-				System.out.println("CBookEvent:: "+ event.toString());
-				System.out.println("Source:: "+ event.getCommand());
 				Map map = (Map)event.getParameters();
 				if(map!=null)
 				{	String name = (String)map.get("name");
@@ -5283,7 +5340,8 @@ MouseListener, MouseMotionListener, CBookAware {
 					"expression.5",
 					"equation.twoGraphs", 
 					"double.parameter", 
-					"double.trace"};
+					"double.trace",
+					"draw_functions"};
 			return s;
 		}
 
