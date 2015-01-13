@@ -17,6 +17,8 @@ import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.cbook.rm.AbstractPageManager;
+import fi.wiskopdr.cbook.rm.PageManager;
 import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.LinkRegel;
 
@@ -83,18 +85,32 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		String unit    = WiskOpdr.getUnit_id();
 		String user    = student;
 		String passwd  = WiskOpdr.getOAuthToken();
+		URL root = getResourceRoot();		
 
-		URL root = null;
-		try {
-			root = new URL("https://mc2-resource.appspot.com/dav/");
-			//root = new URL("http://localhost:8888/dav/"); // LOCAL
-		} catch (MalformedURLException _) {}
-		
 		rm = new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
 		rmmap.put(key, rm);
 		return rm;
 
 	}
+
+	private static URL getResourceRoot() {
+		try {
+			return new URL("https://mc2-resource.appspot.com/dav/");
+			//return new URL("http://localhost:8888/dav/"); // LOCAL
+		} catch (MalformedURLException _) {
+			return null;
+		}
+	}
+	
+	static AbstractPageManager getPageManager() {
+		if(true) return new AbstractPageManager();
+		String student = WiskOpdr.getLearner_id();
+		String unit    = WiskOpdr.getUnit_id();
+		String user    = student;
+		String passwd  = WiskOpdr.getOAuthToken();
+		return new PageManager(getResourceRoot(), unit, user, passwd);
+	}
+	
 	
 	public static ResourceManagerClient.ResourceManagerFactory getFactory(final ResourceManagerClient client) {
 		return new ResourceManagerClient.ResourceManagerFactory() {

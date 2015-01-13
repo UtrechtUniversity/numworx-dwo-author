@@ -645,7 +645,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		repaint();
 		WiskOpdr.setLaunchDataChanged();
 	}
-	
+	/**
+	 * 1,2,3 - insertCopyPage(2) - 1,2,2,3
+	 */
 	public void insertCopyPage() {
 		opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
 		String copyState = opdrEditContainer.getEditState();
