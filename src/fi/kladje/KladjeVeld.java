@@ -501,12 +501,14 @@ System.out.println("returned " + (numHistories - 1));
 	}
 	
 	public void zetLijnen(boolean b)
-	{	lijnen = b;
+	{	lineDistance = 20;
+		lijnen = b;
 		repaint();
 	}
 
-	public void zetRuitjes(boolean b)
-	{	ruitjes = b;
+	public void zetRuitjes(boolean b, int size)
+	{	lineDistance = size;	
+		ruitjes = b;
 		repaint();
 	}
 	

@@ -78,6 +78,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	boolean kleurkeuze = true;
 	boolean lijnen = false;
 	boolean ruitjes = false;
+	int ruitjessize = 20;
 	boolean lijnTekenen = true;
 	boolean rechthoekTekenen = true;
 	boolean cirkelTekenen = true;
@@ -486,7 +487,10 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		boolean ruitjes = false;
 		if (b.containsKey("ruitjes"))
 			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
-		zetRuitjes(ruitjes);
+		int ruitjessize = 20;
+		if (b.containsKey("ruitjessize"))
+			ruitjessize = ((Integer) b.get("ruitjessize")).intValue();
+		zetRuitjes(ruitjes,ruitjessize);
 
 		boolean lijnTekenen = true;
 		if (b.containsKey("lijnTekenen"))
@@ -565,7 +569,10 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		boolean ruitjes = false;
 		if (b.containsKey("ruitjes"))
 			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
-		zetRuitjes(ruitjes);
+		int ruitjessize = 20;
+		if (b.containsKey("ruitjessize"))
+			ruitjessize = ((Integer) b.get("ruitjessize")).intValue();
+		zetRuitjes(ruitjes,ruitjessize);
 
 		boolean lijnTekenen = true;
 		if (b.containsKey("lijnTekenen"))
@@ -635,6 +642,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		h.put("kleurkeuze", new Boolean(kleurkeuze));
 		h.put("lijnen", new Boolean(lijnen));
 		h.put("ruitjes", new Boolean(ruitjes));
+		h.put("ruitjessize", new Integer(ruitjessize));
 		h.put("lijnTekenen", new Boolean(lijnTekenen));
 		h.put("rechthoekTekenen", new Boolean(rechthoekTekenen));
 		h.put("cirkelTekenen", new Boolean(cirkelTekenen));
@@ -676,16 +684,17 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 		if (lijnen)
 			ruitjes = false;
 		kladjeVeld.zetLijnen(lijnen);
-		kladjeVeld.zetRuitjes(ruitjes);
+		kladjeVeld.zetRuitjes(ruitjes, 20);
 	}
 	
-	public void zetRuitjes(boolean b)
+	public void zetRuitjes(boolean b, int size)
 	{
 		ruitjes = b;
+		ruitjessize = size;
 		if (ruitjes)
 			lijnen = false;
 		kladjeVeld.zetLijnen(lijnen);
-		kladjeVeld.zetRuitjes(ruitjes);
+		kladjeVeld.zetRuitjes(ruitjes, size);
 		
 	}
 	
@@ -1066,7 +1075,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			}
 			
 			kladjeVeld.zetLijnen(lijnen);
-			kladjeVeld.zetRuitjes(ruitjes);
+			kladjeVeld.zetRuitjes(ruitjes,ruitjessize);
 			
 			
 		}
@@ -1103,7 +1112,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 			verkleinButton.setSize(verkleinButton.getSize().width, getSize().height - 20 - offSet);
 			
 			kladjeVeld.zetLijnen(lijnen);
-			kladjeVeld.zetRuitjes(ruitjes);
+			kladjeVeld.zetRuitjes(ruitjes,ruitjessize);
 			
 			zetLijnTekenen(lijnTekenen);
 			zetRechthoekTekenen(rechthoekTekenen);

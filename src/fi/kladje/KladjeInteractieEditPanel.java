@@ -35,7 +35,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;
-	JRadioButton blancoButton, lijnenButton, ruitjesButton; 
+	JRadioButton blancoButton, lijnenButton, ruitjes20Button, ruitjes40Button, ruitjes80Button; 
 	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox;
 	JCheckBox roterenBox, schalenBox;
 	
@@ -77,7 +77,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		blancoButton.addActionListener(this);
 		achtergrondGroep.add(blancoButton);
 		
-		currentY += height + offset / 2;		
+		currentY += height + offset / 3;		
 		
 		lijnenButton = new JRadioButton(Kladje.rb.getString("lijnenTekst"), false);
 		lijnenButton.setFont(theFont);
@@ -87,17 +87,41 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		lijnenButton.addActionListener(this);
 		achtergrondGroep.add(lijnenButton);
 		
-		currentY += height + offset / 2;		
+		currentY += height + offset / 3;		
 		
-		ruitjesButton = new JRadioButton(Kladje.rb.getString("ruitjesTekst"), false);
-		ruitjesButton.setFont(theFont);
-		ruitjesButton.setBackground(Color.white);
-		ruitjesButton.setBounds(currentX, currentY, width, height);
-		add(ruitjesButton);
-		ruitjesButton.addActionListener(this);
-		achtergrondGroep.add(ruitjesButton);
+		ruitjes20Button = new JRadioButton(Kladje.rb.getString("ruitjesTekst"), false);
+		ruitjes20Button.setFont(theFont);
+		ruitjes20Button.setBackground(Color.white);
+		ruitjes20Button.setBounds(currentX, currentY, width, height);
+		add(ruitjes20Button);
+		ruitjes20Button.addActionListener(this);
+		achtergrondGroep.add(ruitjes20Button);
+		
+		currentY += height + offset / 3;
+		
+		ruitjes40Button = new JRadioButton(Kladje.rb.getString("ruitjes40Tekst"), false);
+		ruitjes40Button.setFont(theFont);
+		ruitjes40Button.setBackground(Color.white);
+		ruitjes40Button.setBounds(currentX, currentY, width, height);
+		add(ruitjes40Button);
+		ruitjes40Button.addActionListener(this);
+		achtergrondGroep.add(ruitjes40Button);
+		
+		currentY += height + offset / 3;
+		
+		ruitjes80Button = new JRadioButton(Kladje.rb.getString("ruitjes80Tekst"), false);
+		ruitjes80Button.setFont(theFont);
+		ruitjes80Button.setBackground(Color.white);
+		ruitjes80Button.setBounds(currentX, currentY, width, height);
+		add(ruitjes80Button);
+		ruitjes80Button.addActionListener(this);
+		achtergrondGroep.add(ruitjes80Button);
 		
 		currentY += height + 2 * offset;
+		
+		
+		
+		
 		
 		lijnTekenenBox = new JCheckBox(Kladje.rb.getString("lijnTekenenTekst"), true);
 		lijnTekenenBox.setFont(theFont);
@@ -164,7 +188,9 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			kleurkeuzeBox.setLocation(klip.getSize().width + offset, kleurkeuzeBox.getLocation().y);
 			blancoButton.setLocation(klip.getSize().width + offset, blancoButton.getLocation().y);
 			lijnenButton.setLocation(klip.getSize().width + offset, lijnenButton.getLocation().y);
-			ruitjesButton.setLocation(klip.getSize().width + offset, ruitjesButton.getLocation().y);
+			ruitjes20Button.setLocation(klip.getSize().width + offset, ruitjes20Button.getLocation().y);
+			ruitjes40Button.setLocation(klip.getSize().width + offset, ruitjes40Button.getLocation().y);
+			ruitjes80Button.setLocation(klip.getSize().width + offset, ruitjes80Button.getLocation().y);
 			
 			lijnTekenenBox.setLocation(klip.getSize().width + offset, lijnTekenenBox.getLocation().y);
 			rechthoekTekenenBox.setLocation(klip.getSize().width + offset, rechthoekTekenenBox.getLocation().y);
@@ -192,7 +218,15 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		boolean ruitjes = false;
 		if (b.containsKey("ruitjes"))
 			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
-		ruitjesButton.setSelected(ruitjes);
+		int ruitjessize = 20;
+		if (b.containsKey("ruitjessize"))
+			ruitjessize = ((Integer) b.get("ruitjessize")).intValue();
+		if (ruitjessize == 40)
+			ruitjes40Button.setSelected(true);
+		else if (ruitjessize == 80)
+			ruitjes80Button.setSelected(true);
+		else
+			ruitjes20Button.setSelected(true);
 		
 		boolean lijnTekenen = true;
 		if (b.containsKey("lijnTekenen"))
@@ -311,15 +345,23 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == blancoButton)
 		{
 			klip.zetLijnen(false);
-			klip.zetRuitjes(false);
+			klip.zetRuitjes(false,20);
 		}
 		else if (e.getSource() == lijnenButton)
 		{
 			klip.zetLijnen(lijnenButton.isSelected());
 		}
-		else if (e.getSource() == ruitjesButton)
+		else if (e.getSource() == ruitjes20Button)
 		{
-			klip.zetRuitjes(ruitjesButton.isSelected());
+			klip.zetRuitjes(ruitjes20Button.isSelected(),20);
+		}
+		else if (e.getSource() == ruitjes40Button)
+		{
+			klip.zetRuitjes(ruitjes40Button.isSelected(),40);
+		}
+		else if (e.getSource() == ruitjes80Button)
+		{
+			klip.zetRuitjes(ruitjes80Button.isSelected(),80);
 		}
 		else if (e.getSource() == lijnTekenenBox)
 		{
