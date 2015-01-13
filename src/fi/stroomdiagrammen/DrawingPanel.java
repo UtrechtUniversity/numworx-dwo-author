@@ -277,6 +277,11 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
                                   getSize().width - 2 * GRIDSIZE,
                                   getSize().height - 2 * GRIDSIZE);
 */
+    
+    
+//System.out.println("defSp !real = " + owner.getSize().height);
+//System.out.println("defSp real = " + getSize().height);
+
     	if (!realDWO)
     	{	
     		workSpace = new Rectangle(GRIDSIZE, GRIDSIZE,
@@ -754,8 +759,11 @@ Font fo = new Font("Helvetica", Font.PLAIN, 11);
                 // save old position
                 oldPos = new Point(v.getLocation().x, v.getLocation().y);
                 // put on top
-                remove(v);
-                add(v, 0);
+                // Java 8 resistent!
+                setComponentZOrder(v,0);
+                //remove(v);
+                //add(v, 0);
+                
                 // set anker point relative to v!!!
                 anker = new Point(e.getComponent().getLocation().x + e.getX(), 
                                   e.getComponent().getLocation().y + e.getY());
@@ -2122,9 +2130,16 @@ class Edge
         {   DrawingPanel dp = (DrawingPanel) e.getComponent().getParent();
             // put capacity field on top
 //            if (!dp.deleteMode)
-//            {   
-                dp.remove(capacityField);
-                dp.add(capacityField, 0);
+//            { 
+
+//System.out.println("mp capacityField on top");
+
+        		// Java 8 resistent !
+        		dp.setComponentZOrder(capacityField, 0);
+                //dp.remove(capacityField);
+                //dp.add(capacityField, 0);
+        		
+        		dp.repaint();
                 
 //            }  
 //            else // deleteMode on
@@ -2319,6 +2334,8 @@ class DiagramManager
     	if (owner.workSpace == null)
     		owner.defineSpaces(false);
     	
+//System.out.println("wsp y = " + owner.workSpace.y);    	
+    	
     	// horizontal position
         int horPos = owner.workSpace.x + owner.leftSpace +
                      layerNum * (owner.vertexWidth + owner.layerDistance);
@@ -2327,8 +2344,8 @@ class DiagramManager
                       vertexLayers[layerNum].size() * 
                       (owner.vertexHeight + owner.labelHeight);
 
+//System.out.println("wsh = " + owner.workSpace.height);        
 //System.out.println("sp = " + spacing); 
-//System.out.println("wsh = " + owner.workSpace.height);
         
         if (spacing >= 0)              
             spacing /= vertexLayers[layerNum].size() + 1;             
@@ -2344,9 +2361,12 @@ class DiagramManager
                                       i * (owner.vertexHeight + owner.labelHeight + spacing));  
             else 
                 w.setLocation(horPos, owner.workSpace.y + owner.topSpace +
-                                      i * (owner.vertexHeight + owner.labelHeight + spacing));  
+                                      i * (owner.vertexHeight + owner.labelHeight + spacing));
+            
+//System.out.println("vl = " + layerNum + " w #" + i + " y = " + w.getLocation().y);            
         }    
         owner.repaint();
+        
     }  // updateVertexLayer
 
 /*

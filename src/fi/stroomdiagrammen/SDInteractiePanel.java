@@ -198,10 +198,13 @@ System.out.println("sdip zetOpdracht");
 		int aantalBronnen = 1;
 		
 		boolean isDemo = false;
+		
+		int sdipBreedte = 500; 
+		int sdipHoogte = 450; 
 
 		if (b.containsKey("appletLaunchData"))
 		{
-System.out.println("aLD found");
+//System.out.println("aLD found");
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 
 			String berekenMenuString = "true";
@@ -264,6 +267,12 @@ System.out.println("aLD found");
 			if (b.containsKey("isDemo"))
 				isDemo = ((Boolean) b.get("isDemo")).booleanValue();
 			
+			if (b.containsKey("sdipBreedte"))
+				sdipBreedte = ((Integer) b.get("sdipBreedte")).intValue();
+			if (b.containsKey("sdipHoogte"))
+				sdipHoogte = ((Integer) b.get("sdipHoogte")).intValue();
+
+			
 			
 		}
 		
@@ -277,10 +286,12 @@ System.out.println("aLD found");
 		
 		zetIsDemo(isDemo);
 
+		setBounds(0,0,sdipBreedte,sdipHoogte);
+		
 		//DiagramCopy diagramCopy = null;
 		if (b.containsKey("appletEditState"))
 		{
-System.out.println("aES found");
+//System.out.println("aES found");
 			String appletEditState = (String) b.get("appletEditState");
 			
 			// decodeer de string
@@ -339,7 +350,7 @@ System.out.println("aES found");
 	{
 		if (b.containsKey("appletState"))
 		{
-System.out.println("aS found");
+//System.out.println("aS found");
 			String appletState = (String) b.get("appletState");
 			
 			// decodeer de string
@@ -410,9 +421,13 @@ System.out.println("sdip setEditState");
 
 		boolean isDemo = false;
 		
+		int sdipBreedte = 500; 
+		int sdipHoogte = 450; 
+		
+		
 		if (b.containsKey("appletLaunchData"))
 		{
-System.out.println("aLD found");
+//System.out.println("aLD found");
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 
 			String berekenMenuString = "true";
@@ -475,8 +490,15 @@ System.out.println("aLD found");
 			if (b.containsKey("isDemo"))
 				isDemo = ((Boolean) b.get("isDemo")).booleanValue();
 			
+			if (b.containsKey("sdipBreedte"))
+				sdipBreedte = ((Integer) b.get("sdipBreedte")).intValue();
+			if (b.containsKey("sdipHoogte"))
+				sdipHoogte = ((Integer) b.get("sdipHoogte")).intValue();
+			
 		}
 
+		
+		
 		zetToonBerekeningenMenu(toonBerekeningenMenu);
 		zetBerekenInBreuken(berekenInBreuken);
 		zetToonStroombreedteMenu(toonStroombreedteMenu);
@@ -487,9 +509,11 @@ System.out.println("aLD found");
 		
 		zetIsDemo(isDemo);		
 		
+		setBounds(0,0,sdipBreedte,sdipHoogte);
+		
 		if (b.containsKey("appletEditState"))
 		{
-System.out.println("aES found");
+//System.out.println("aES found");
 			String appletEditState = (String) b.get("appletEditState");
 			
 			// decodeer de string
@@ -683,6 +707,8 @@ System.out.println("diagramcopy encoded");
 		stroombreedteMenu.setVisible(toonStroombreedteMenu);
 		optiesMenu.setVisible(toonOptiesMenu);
 		
+		setBounds(0,0,getSize().width,getSize().height);
+		
 	}
 	
 	public void layoutMenuPanel()
@@ -768,29 +794,38 @@ System.out.println("diagramcopy encoded");
 		{	
 
 			sdPanel = new JPanel();
-			//sdPanel.setLayout(null);
-			sdPanel.setLayout(new BorderLayout());
+			sdPanel.setLayout(null);
+			//sdPanel.setLayout(new BorderLayout());
 //sdPanel.setBackground(Color.orange);			
 			sdPanel.setBounds(0, 0, b, h);
 			add(sdPanel);
 			
-//			menuPanel.setBounds(0, 0, b, menuHeight);
-//			sdPanel.add(menuPanel);
+			menuBar.setBounds(0, 0, b, menuHeight);
+			menuBar.setVisible(false);
+			sdPanel.add(menuBar);
+			if (toonBerekeningenMenu || toonStroombreedteMenu || toonOptiesMenu)
+				menuBar.setVisible(true);
 			
-			sdPanel.add(menuBar, BorderLayout.NORTH);
-			
+			//sdPanel.add(menuBar, BorderLayout.NORTH);
+
 			drawingPanel = new DrawingPanel(eigenaar, true, this);
-			//drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
+			if (menuBar.isVisible())
+				drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
+			else
+				drawingPanel.setBounds(0, 0, b, h - eigenaar.bottomHeight);
+			sdPanel.add(drawingPanel);
 			//drawingPanel.initialize();
-			sdPanel.add(drawingPanel, BorderLayout.CENTER);
+			
+			//sdPanel.add(drawingPanel, BorderLayout.CENTER);
 			
 			
 			bottomPanel = new BottomPanel(eigenaar, true, this);
-			//bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
+			bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
 			//bottomPanel.initialize();
-			sdPanel.add(bottomPanel, BorderLayout.SOUTH);
+			sdPanel.add(bottomPanel);
+			//sdPanel.add(bottomPanel, BorderLayout.SOUTH);
 			
-			sdPanel.validate();
+			//sdPanel.validate();
 			
 			drawingPanel.initialize();
 			bottomPanel.initialize();
@@ -807,13 +842,18 @@ System.out.println("diagramcopy encoded");
 			
 		//menuPanel.setSize(b, menuHeight);
 
-			sdPanel.validate();
-/*			
-			if (menuPanel.isVisible())
+			//sdPanel.validate();
+
+			if (toonBerekeningenMenu || toonStroombreedteMenu || toonOptiesMenu)
+				menuBar.setVisible(true);
+			else
+				menuBar.setVisible(false);
+		
+			if (menuBar.isVisible())
 				drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
 			else
 				drawingPanel.setBounds(0, 0, b, h - eigenaar.bottomHeight);
-*/			
+			
 			drawingPanel.defineSpaces(true);
 			drawingPanel.updateWork();
 			drawingPanel.repaint();
