@@ -273,6 +273,20 @@ public class StatistiekTest
 	}
 
 	@Test
+	public void testAppropriateBoundariesTenBins2_3()
+	{
+		double min = 2;
+		double max = 3;
+		int noBins = 10;
+		
+		ArrayList<Double> expected = new ArrayList(Arrays.asList(
+			2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0));
+		
+		ArrayList<Double> actual = Statistiek.appropriateBoundaries(min, max, noBins);
+		assertArrayEquals("", expected.toArray(), actual.toArray());
+	}
+
+	@Test
 	public void testAppropriateBoundariesSixBins2d48_2d57()
 	{
 		double min = 2.48;
