@@ -334,9 +334,12 @@ public class Statistiek implements WiskOpdrApplet
 
 		// make sure step is not too large
 		// use min value instead of start to be more constraining 
-		while (min + step >= max)
+		if (step > 1)
 		{
-			step = Math.ceil(step / 2);
+			while (min + step >= max)
+			{
+				step = Math.ceil(step / 2);
+			}
 		}
 		
 		// make sure the maximum value is covered by the bins
