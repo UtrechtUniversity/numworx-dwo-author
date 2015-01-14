@@ -403,7 +403,7 @@ System.out.println(Color.orange.toString());
 		}
 		
 		kladjeVeld.zetLijnen(lijnen);
-		kladjeVeld.zetRuitjes(ruitjes);
+		kladjeVeld.zetRuitjes(ruitjes,20);
 		
 		layoutBottom();
 		
