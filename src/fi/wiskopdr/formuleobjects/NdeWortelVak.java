@@ -40,11 +40,11 @@ public class NdeWortelVak extends RegelVak
 		Font font2 = new Font(formuleVak.getFont().getName(),formuleVak.getFont().getStyle(),2*formuleVak.getFont().getSize()/3);
 		fm2 = getFontMetrics(font2);
 		
-		setSize(5*fm.getAscent()/6 + kind1.getSize().width+5, fm.getAscent()/4 + kind1.getSize().height);
+		setSize(5*fm.getAscent()/6 + kind1.getSize().width+ kind2.getSize().width - 2, fm.getAscent()/4 + kind1.getSize().height);
 		ashoogte = kind1.ashoogte + fm.getAscent()/4 ;
 		
 		kind1.setFont(f);
-		kind1.setLocation(5*fm.getAscent()/7+5,fm.getAscent()/4);
+		kind1.setLocation(5*fm.getAscent()/7+kind2.getSize().width - 2,fm.getAscent()/4);
 		
 		kind2.setFont(font2);
 		kind2.setLocation(5,0);
@@ -68,18 +68,19 @@ public class NdeWortelVak extends RegelVak
 		}
 		if(selected)g.setColor(Color.white);
 		else g.setColor(fgColor);
-		g.drawLine(5,2*getSize().height/3,fm.getAscent()/3+5,getSize().height);
-		g.drawLine(6,2*getSize().height/3,fm.getAscent()/3+6,getSize().height);
-		g.drawLine(fm.getAscent()/3+5,getSize().height,2*fm.getAscent()/3+4,fm.getAscent()/8);
-		g.drawLine(2*fm.getAscent()/3+5,fm.getAscent()/8,getSize().width+5,fm.getAscent()/8);
+		g.drawLine(kind2.getSize().width-2,2*getSize().height/3,fm.getAscent()/3+kind2.getSize().width-2,getSize().height);
+		g.drawLine(kind2.getSize().width-1,2*getSize().height/3,fm.getAscent()/3+kind2.getSize().width-1,getSize().height);
+		g.drawLine(fm.getAscent()/3+kind2.getSize().width-2,getSize().height,2*fm.getAscent()/3+kind2.getSize().width-3,fm.getAscent()/8);
+		g.drawLine(2*fm.getAscent()/3+kind2.getSize().width-2,fm.getAscent()/8,getSize().width+5,fm.getAscent()/8);
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		
 		super.paint(g);
 	}
 		
 	public void zetMaat()
-	{	setSize(5*fm.getAscent()/6 + kind1.getSize().width+5, fm.getAscent()/4 + kind1.getSize().height);
+	{	setSize(5*fm.getAscent()/6 + kind1.getSize().width+kind2.getSize().width - 2, fm.getAscent()/4 + kind1.getSize().height);
 		ashoogte = kind1.ashoogte + fm.getAscent()/4 ;
+		kind1.setLocation(5*fm.getAscent()/7+kind2.getSize().width - 2,fm.getAscent()/4);
 		//Font font2 = new Font(formuleVak.getFont().getName(),formuleVak.getFont().getStyle(),2*formuleVak.getFont().getSize()/3);
 		//for(int i=0 ; i<kind2.getComponentCount()  ; i++)
 		//{	kind2.getComponent(i).setFont(font2);
