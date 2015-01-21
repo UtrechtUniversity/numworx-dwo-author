@@ -456,6 +456,8 @@ public class Service {
 	
 	
 	static private Map<String,CBookWidgetIF> classMap;
+	static private Properties patches;
+	
 	private static final CBookContext context = new CBookContext() {
 
 		public Object getProperty(String key) {
@@ -475,8 +477,8 @@ public class Service {
 			return singleton(widgetForName("widgetESlate.ESlateWidget"));
 		case TekstInteractiePanelVak.EpsilonSetNr:
 			Collection<CBookWidgetIF> set = new ArrayList<CBookWidgetIF>(2);
-			set.addAll( singleton(widgetForName("ewcbook.EpsilonWidget")));
-			set.addAll( singleton(widgetForName("ewcbook.EpsilonChatWidget")));			
+			set.addAll( singleton(widgetForName("ewcbook.EpsilonWriterWidget")));
+			//set.addAll( singleton(widgetForName("ewcbook.EpsilonChatWidget")));			
 			return set;
 		}
 		Collection<CBookWidgetIF> values = classMap.values();
@@ -492,6 +494,8 @@ public class Service {
 	private static Collection<CBookWidgetIF> singleton(
 			CBookWidgetIF widget) {
 		if(widget == null) return Collections.emptySet();
+// no patches
+		if(hasPatch(getClassName(widget))) return Collections.emptySet();
 		if(widget instanceof CBookWidgetFactoryIF)
 		{
 			Collection<CBookWidgetIF> result = new ArrayList<CBookWidgetIF>();
@@ -512,11 +516,17 @@ public class Service {
 		return Collections.singleton(widget);
 	}
 
+	
+	
+	
 	public static CBookWidgetIF widgetForName(String widgetname) {
 //System.err.println("widgetForName " + widgetname);
 		if(classMap == null) initialize();
 		int haak = widgetname.indexOf('[');
 		if(haak > 0) widgetname = widgetname.substring(0, haak);
+		
+		widgetname = patch(widgetname);
+		
 		CBookWidgetIF widget = classMap.get(widgetname);
 		if(widget == null) {
 			try {
@@ -532,6 +542,24 @@ public class Service {
 			
 		}
 		return widget;
+	}
+
+	public static String patch(String widgetname) {
+		if(patches == null) initializePatches();
+		return patches.getProperty(widgetname, widgetname);
+	}
+	
+	public static boolean hasPatch(String widgetname) {
+		if(patches == null) initializePatches();
+		return patches.containsKey(widgetname);
+	}
+
+	private static synchronized void initializePatches() {
+		if(patches == null) {
+			Properties p = new Properties();
+			p.setProperty("ewcbook.EpsilonWidget", "ewcbook.EpsilonWriterWidget");
+			patches = p;
+		}
 	}
 
 	public static String getClassName(CBookWidgetIF widget) {
