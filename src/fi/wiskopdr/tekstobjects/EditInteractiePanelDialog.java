@@ -293,6 +293,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	String className = item.getClass().getName();
         	if(item instanceof CBookWrap)
         		className = ((CBookWrap) item).getClassName();
+        	if(! className.endsWith("]"))
+        	{
+        		int index = o.indexOf('[');
+        		if(index >= 0) o = o.substring(0,index);
+        	}
 			if(className.equals(o))
         		soortAntwoordVakKeuze.setSelectedIndex(i);
         }}

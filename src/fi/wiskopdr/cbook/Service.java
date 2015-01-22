@@ -329,7 +329,9 @@ public class Service {
 
 		public CBookWidgetEditIF getEditor(CBookContext context) {
 			CBookWidgetEditIF editor = widget.getEditor(context);
-			editor.setLaunchData(launchData.getLaunchData());
+			Map<String, ?> data = launchData.getLaunchData();
+			if(data != null && ! data.isEmpty() )
+				editor.setLaunchData(data);
 			return editor;
 		}
 
