@@ -169,7 +169,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	}
 	
 	public InteractiePanel getInteractiePanel()
-	{	return new InteractiePanelAdapter(this);
+	{	return null;
 	}
 	
 	public void tekenprogramma()
