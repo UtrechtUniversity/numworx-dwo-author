@@ -529,15 +529,44 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void zetGoedFout(boolean b)
 	{
-		zetTransparant(false);
+		/*zetTransparant(false);
 		if (b)
 			setBorder(new Color(50, 225, 50), 5);
 		else
 			setBorder(new Color(225, 50, 50), 5);
-		repaint();
+		repaint();*/
+		
+		Vector v = geefInteractiePanels();
+		if (v.size() > 0)
+		{	InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(0);
+			if (ipc instanceof TekstInteractiePanelVak)
+			{	InteractiePanel ip = ((TekstInteractiePanelVak) ipc).getInteractiePanel();
+				if (ip instanceof SimpelAntwoordFormuleVak)
+				{	((SimpelAntwoordFormuleVak) ip).zetGoedFout(b?1:0);
+				}
+			}
+		}
 	}
 
 	public void wisGoedFout()
+	{
+		/*zetTransparant(!bgColorZichtbaar);
+		if (randZichtbaar)
+			setBorder(Color.gray);
+		repaint();*/
+		
+		Vector v = geefInteractiePanels();
+		if (v.size() > 0)
+		{	InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(0);
+			if (ipc instanceof TekstInteractiePanelVak)
+			{	InteractiePanel ip = ((TekstInteractiePanelVak) ipc).getInteractiePanel();
+				if (ip instanceof SimpelAntwoordFormuleVak)
+				{	((SimpelAntwoordFormuleVak) ip).zetGoedFout(3);
+				}
+			}
+		}
+	}
+	public void wisGoedFoutSleep()
 	{
 		zetTransparant(!bgColorZichtbaar);
 		if (randZichtbaar)
@@ -556,10 +585,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				int marge = sleepObjecten[i].geefSleepdoelMarge();
 				if (dx < Math.min(1, marge) && dy < Math.min(1, marge))
 				{
-					sleepObjecten[i].zetGoedFout(b);
+					sleepObjecten[i].zetGoedFoutSleep(b);
 					break;
 				}
 			}
+		}
+		if(!sleepdoel)
+		{
+			zetTransparant(false);
+			if (b)
+				setBorder(new Color(50, 225, 50), 5);
+			else
+				setBorder(new Color(225, 50, 50), 5);
+			repaint();
 		}
 	}
 

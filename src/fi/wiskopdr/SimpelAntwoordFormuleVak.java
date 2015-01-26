@@ -128,9 +128,16 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		
 		setOpaque(false);
 		
+	}
+	
+	public void zetGoedFout(int uitslag)
+	{
 		
-		
-		
+		antwoordFormuleVak.zetGoedFout(uitslag);
+		scoreGoedComponent.setLocation(getSize().width-17,0);
+		scoreFoutComponent.setLocation(getSize().width-17,0);
+		scoreHalfComponent.setLocation(getSize().width-17,0);
+		repaint();
 	}
 	
 	public void maakPopupFrame()

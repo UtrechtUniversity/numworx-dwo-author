@@ -53,6 +53,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -78,6 +79,7 @@ import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.GrafiekPanel;
 //import fi.wiskopdr.GrafiekTekenPanel;
 import fi.wiskopdr.ImageComponent;
+import fi.wiskopdr.ReactieVergelijkingVak;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.AntwoordFormuleVak;
 //import fi.wiskopdr.AntwoordVakEditPanel;
@@ -363,13 +365,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.rb.getString("statSimIpLabel"),//"[test] StatSim"
 		"CheckButton",//WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
 		"Slider",
-		"DataPlot"
+		"DataPlot",
+		"ReactieVergelijking"
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
-		{0,1,2,3,4,13,14,12,16,25,33,49},
+		{0,1,2,3,4,13,14,12,16,25,33,49,52},
 		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51
 		},
 		{45},
@@ -1121,6 +1124,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
+		else if(soortInteractiePanel == 52)
+        {   if(interactiePanel==null || !(interactiePanel instanceof ReactieVergelijkingVak))
+            {   interactiePanel = new ReactieVergelijkingVak();
+                //((TekstVakPanel)interactiePanel).setEditable(true);
+                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+                
+            //add((Component)interactiePanel,0);
+            
+            }
+            //interactiePanel.setEditState(interactiePanelLaunchState);
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -1584,6 +1600,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else if(soortInteractiePanel == 49)
         {   if(interactiePanel==null || !(interactiePanel instanceof CheckButtonPanel))
             {   interactiePanel = new CheckButtonPanel();
+                //((TekstVakPanel)interactiePanel).setEditable(true);
+                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+                
+            //add((Component)interactiePanel,0);
+            
+            }
+            //interactiePanel.setEditState(interactiePanelLaunchState);
+        }
+		else if(soortInteractiePanel == 52)
+        {   if(interactiePanel==null || !(interactiePanel instanceof ReactieVergelijkingVak))
+            {   interactiePanel = new ReactieVergelijkingVak();
                 //((TekstVakPanel)interactiePanel).setEditable(true);
                 //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
                 ((Component)interactiePanel).setBackground(getBackground());

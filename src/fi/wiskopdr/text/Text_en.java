@@ -653,6 +653,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CN_regelMeer", "Add line"},
 				{"CN_regelMinder", "Remove line"},
 				
+				// crossswidget commands
 				{"CBA_input", "input"},
 				{"CBA_index", "choice" },
 				{"CBA_balansvergelijking", "balance equation"},
@@ -660,7 +661,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_maakStap", "make step" },
 				{"CBA_vergelijking", "equation" },
 				{"CBA_double", "nummerical value"},
-				{"CBA_expression", "expression"}
+				{"CBA_expression", "expression"},
+				{"CBA_equation", "equation"}
 		};
 }
 

@@ -648,6 +648,17 @@ public class Text_de extends java.util.ListResourceBundle
 				{"CN_sorteer","Sortieren"},
 				{"CN_regelMeer", "Zeile hinzufügen"},
 				{"CN_regelMinder", "Zeile entfernen"},
+				
+				// crossswidget commands
+				{"CBA_input", "input"},
+				{"CBA_index", "choice" },
+				{"CBA_balansvergelijking", "balance equation"},
+				{"CBA_zetOplossing", "set solution" },
+				{"CBA_maakStap", "make step" },
+				{"CBA_vergelijking", "equation" },
+				{"CBA_double", "nummerical value"},
+				{"CBA_expression", "expression"},
+				{"CBA_equation", "equation"}
 		};
 }
 

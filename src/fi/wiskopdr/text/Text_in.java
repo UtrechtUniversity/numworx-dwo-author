@@ -595,7 +595,18 @@ public class Text_in extends java.util.ListResourceBundle
 				{"algebra.equations.linear.balance.buggy.par6"		,"Kesalahan dalam membuka tanda kurung, kalikan kedua suku di antara tanda kurung (4)"	},
 				{"algebra.equations.linear.balance.buggy.par7"		,"Kesalahan dalam membuka tanda kurung, kalikan kedua suku di antara tanda kurung dengan -1"	},
 				{"algebra.equations.linear.balance.buggy.par8"		,"Kesalahan dalam membuka tanda kurung, perhatikan dengan cermat di manakah tanda kurung itu"	},
-				{"algebra.equations.linear.balance.buggy.par9"		,"Kesalahan dalam membuka tanda kurung, kesalahan perkalian (2)"	}
+				{"algebra.equations.linear.balance.buggy.par9"		,"Kesalahan dalam membuka tanda kurung, kesalahan perkalian (2)"	},
+				
+				// crossswidget commands
+				{"CBA_input", "input"},
+				{"CBA_index", "choice" },
+				{"CBA_balansvergelijking", "balance equation"},
+				{"CBA_zetOplossing", "set solution" },
+				{"CBA_maakStap", "make step" },
+				{"CBA_vergelijking", "equation" },
+				{"CBA_double", "nummerical value"},
+				{"CBA_expression", "expression"},
+				{"CBA_equation", "equation"}
 				
 		};
 }

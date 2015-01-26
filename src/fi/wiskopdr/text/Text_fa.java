@@ -629,7 +629,18 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"algebra.equations.linear.balance.buggy.par6"		,"خطا در حذف پرانتز، هر دو عبارت داخل پرانتز را ضرب کنید (4) "	},
 				{"algebra.equations.linear.balance.buggy.par7"		,"خطا در حذف پرانتز، هر دو عبارت داخل پرانتز را در 1- ضرب کنید "	},
 				{"algebra.equations.linear.balance.buggy.par8"		,"خطا در حذف پرانتزها، به دقت به مکان پرانتزها دقت کنید"	},
-				{"algebra.equations.linear.balance.buggy.par9"		,"خطا در حذف پرانتز، اشتباه در ضرب (2) "	}
+				{"algebra.equations.linear.balance.buggy.par9"		,"خطا در حذف پرانتز، اشتباه در ضرب (2) "	},
+				
+				// crossswidget commands
+				{"CBA_input", "input"},
+				{"CBA_index", "choice" },
+				{"CBA_balansvergelijking", "balance equation"},
+				{"CBA_zetOplossing", "set solution" },
+				{"CBA_maakStap", "make step" },
+				{"CBA_vergelijking", "equation" },
+				{"CBA_double", "nummerical value"},
+				{"CBA_expression", "expression"},
+				{"CBA_equation", "equation"}
 				
 		};
 }

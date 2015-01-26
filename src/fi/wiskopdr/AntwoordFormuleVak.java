@@ -1054,9 +1054,18 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	{	return formuleVak.toString();
 	}
 	
-	private void zetGoedFout(int uitslag, int formuleVakNr)
+	public void zetGoedFout(int uitslag)
+	{
+		boolean checkWas = check;
+		check = true;
+		zetGoedFout(uitslag,-1);
+		check = checkWas;
+		
+	}
+	
+	public void zetGoedFout(int uitslag, int formuleVakNr)
 	{	
-	    if(!check) return;
+	    if(!check && uitslag!=GEEN) return;
 	    if(formuleVakNr==-1)
 		{	if(huidigIC!=null)
             {   huidigIC.setVisible(false);

@@ -577,7 +577,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         	if(formuleStrings!=null)
         	{
         		for(int i=0 ; i<aantalSleepObjects ; i++)
-    	        {   ((TekstVakPanel)sleepObjecten[i]).wisGoedFout();
+    	        {   ((TekstVakPanel)sleepObjecten[i]).wisGoedFoutSleep();
     	        }
         		
         		boolean hasLocationStrings = false;
@@ -660,7 +660,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         else
         {
         	for(int i=0 ; i<aantalSleepObjects ; i++)
-	        {	((TekstVakPanel)ipListSleep[i]).wisGoedFout();
+	        {	((TekstVakPanel)ipListSleep[i]).wisGoedFoutSleep();
 	        }
         	boolean stapJuist = true;
 	        for(int i=0 ; i<aantalDoelObjects ; i++)
@@ -677,7 +677,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	        	
 	        	
 	        	if(view){
-    				if(stapJuist) ((TekstVakPanel)ipListSleep[i]).zetGoedFout(stapJuist);
+    				if(stapJuist) ((TekstVakPanel)ipListSleep[i]).zetGoedFoutSleep(stapJuist);
     				else 
     					for(int j=0 ; j<ipListDoel.length ; j++)
 	    	            {
@@ -685,7 +685,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	    		        	dy = Math.abs(posities[i].y - doelPosities[j].y);
 	    		        	//if(dx*dx + dy*dy > acceptedMarge*acceptedMarge) 
 	    		        	if(dx < acceptedMarge && dy < acceptedMarge) 
-	    		        	{	((TekstVakPanel)ipListSleep[i]).zetGoedFout(false);
+	    		        	{	((TekstVakPanel)ipListSleep[i]).zetGoedFoutSleep(false);
 	    		        		break;
 	    		        	}
 	    	            }
@@ -708,7 +708,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	            }
 	        	juist = juist && stapJuist;
 	        	if(view && !stapJuist)
-    				((TekstVakPanel)ipListSleep[i]).zetGoedFout(stapJuist);
+    				((TekstVakPanel)ipListSleep[i]).zetGoedFoutSleep(stapJuist);
 	        }
 	        if(answer.length()>0 && answer.charAt(answer.length()-1)==',')answer = answer.substring(0,answer.length()-1);
         }
