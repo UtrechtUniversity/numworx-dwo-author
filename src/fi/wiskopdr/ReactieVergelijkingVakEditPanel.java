@@ -20,15 +20,12 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, TabletOwner
 {
-    private FormuleEditor antwoordvak,startEditor,vormEditor;
-    private JLabel antwoordLabel, startLabel, feedbackLabel;
-    private JCheckBox  gelijkwaardigCB, vormCB, exactCB, stappenCB, eindOplossingCB, bewerkingKnoppenCB, 
-    	bewerkingKnoppenExtraCB, abcKnopCB, subKnopExtraCB,subKnopCB;
+    private FormuleEditor antwoordvak,vormEditor;
+    private JLabel antwoordLabel, feedbackLabel;
+    private JCheckBox  gelijkwaardigCB, vormCB, exactCB, eindOplossingCB;
     private JCheckBox  significantCB;
-    private JCheckBox linStrategieVersieCB,linOefenVersieCB, bordjesMethodeCB;
     private JLabel ScoringLabel, puntenLabel, checkTotaalLabel;
     private JTextField gelijkwaardigPV, vormPV, exactPV, significantPV, eindOplossingPV, feedbackPV;
-    private JCheckBox tipsCB;
         
     
     private int puntenGelijkwaardig = 0;
@@ -45,16 +42,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     private boolean	significant;
     
 	static boolean	significantieAan=false;
-    
-    private boolean stappen = true;
-    private boolean stappenDefault = true;
-    
-    private boolean abcKnop;
-    private boolean subKnop;
-    private boolean subKnopExtra;
-    private boolean bewerkingKnoppen;
-    private boolean bewerkingKnoppenExtra;
-    
     
     //private AntwoordEditPanel antwoordEditPanel;
     private TekstEditor feedbackEditor;
@@ -82,21 +69,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     private Tablet tablet;
     private boolean tabletAdded;
     private FormuleVakHouder tabletUser;
-    private boolean tips;
-    private IdeasInstellingenButton ideasButton;
-    
-    //private JCheckBox antwoordSubstitutiesCB;
-    //private boolean antwoordSubstituties;
-    private JButton substitutiesButton;
-    private FormuleEditor antwoordSubstitutiesVak;
-    
-    private JButton solveButton;
-    private FormuleEditor antwoordSolveVak;
-    private JTextField solveTF;
-    
-    private JCheckBox pijlCB;
-    private boolean pijl = true;
-    
+        
     private JCheckBox checkCB;
     private JCheckBox teltMeeCB;
     
@@ -107,26 +80,11 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     private double eqTestValueMin = 0;
 	private double eqTestValueMax = 5;
 	
-	private DialogFacade startEditorPopupFrame;
 	private DialogFacade vormEditorPopupFrame;
 	private DialogFacade feedbackEditorPopupFrame;
 	
-	private JCheckBox uitwCB;
-	private JCheckBox casAntwCB;
 	private JCheckBox boxMetRandCB;
 	
-	private static String[][] strategieDomeinNamen = {
-    		{IdeasIF.MATH_LINEQ,"algebra.equations.linear"},
-    		{IdeasIF.MATH_QUADREQ,"algebra.equations.quadratic"},
-    		{IdeasIF.MATH_QUADREQ_WITH_APPROX,"algebra.equations.quadratic.approximate"},
-    		{IdeasIF.MATH_QUADREQ_NO_ABC,"algebra.equations.quadratic.no-abc"},
-    		{IdeasIF.MATH_HIGHERDEGREE,"algebra.equations.polynomial"},
-    		{IdeasIF.MATH_LININEQ,"algebra.inequalities.linear"},
-    		{IdeasIF.MATH_QUADRINEQ,"algebra.inequalities.quadratic"},
-    		{IdeasIF.MATH_INEQHIGHERDEGREE,"algebra.inequalities.polynomial"},
-    		{IdeasIF.MATH_COVERUP,"algebra.equations.coverup"}
-    };
-	public static Hashtable strategieOudNieuw = new Hashtable();
 	
 	public static void zetSignificantieAan(boolean b)
 	{	significantieAan = b;
@@ -141,17 +99,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         addMouseMotionListener(this);
         
         
-        startLabel = makeLabel(5,30,770,20,WiskOpdr.rb.getString("startVergLabel"),true);
+       
                 
-        startEditor = new FormuleEditor(false);
-        startEditor.setHeader(true);
-		startEditor.setBounds(5,50,470,105);
-        startEditor.setFont(font);
-        startEditor.setResizable(true);	
-        startEditor.addActionListener(this);
-        add(startEditor);
-        
-        
+       
         antwoordLabel = makeLabel(5,160,770,20,WiskOpdr.rb.getString("antwoordLabel"),true);
                 
         antwoordvak = new FormuleEditor(true);
@@ -159,42 +109,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         antwoordvak.setFont(font);
         antwoordvak.addActionListener(this);
         add(antwoordvak);
-        //antwoordvak.setResizable(true);
-        
-        antwoordSubstitutiesVak = new FormuleEditor(true);
-        antwoordSubstitutiesVak.setBounds(15,270,570,150);
-        antwoordSubstitutiesVak.setFont(font);
-        antwoordSubstitutiesVak.addActionListener(this);
-        antwoordSubstitutiesVak.setMultiLine(true);
-        antwoordSubstitutiesVak.setResizable(true);
-        setLayer((Component)antwoordSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
-        
-        substitutiesButton = new JButton(WiskOpdr.rb.getString("substitutiesButtonLabel"));
-        substitutiesButton.setBounds(10,305,100,20);
-        substitutiesButton.setMargin(new Insets(3,2,3,2));
-        substitutiesButton.setFont(font);
-        substitutiesButton.addActionListener(this);
-        setLayer((Component)substitutiesButton, JLayeredPane.PALETTE_LAYER.intValue());
-        add(substitutiesButton,0);
-        
-        antwoordSolveVak = new FormuleEditor(true);
-        antwoordSolveVak.setBounds(15,130,480,150);
-        antwoordSolveVak.setFont(font);
-        antwoordSolveVak.addActionListener(this);
-        antwoordSolveVak.setMultiLine(true);
-        antwoordSolveVak.setResizable(true);
-        setLayer((Component)antwoordSolveVak, JLayeredPane.POPUP_LAYER.intValue());
-        
-        solveButton = new JButton(WiskOpdr.rb.getString("antwoordmodelButtonLabel"));
-        solveButton.setBounds(270,130,175,20);
-        solveButton.setFont(font);
-        solveButton.addActionListener(this);
-        setLayer((Component)solveButton, JLayeredPane.PALETTE_LAYER.intValue());
-        add(solveButton,0);
-        
-        solveTF = makeTextField(450,130,20,20,"x",true);
-        setLayer((Component)solveTF, JLayeredPane.PALETTE_LAYER.intValue());
-        
+       
         feedbackCB = makeCheckBox(145,160,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
         
         String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("doorLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
@@ -254,41 +169,18 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         vormCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("vormCBLabel"),false,true);
         exactCB = makeCheckBox(320,significantieAan?510:485,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
         significantCB = makeCheckBox(320,485,120,20,WiskOpdr.rb.getString("significantCBLabel"),false,significantieAan?true:false);
-		stappenCB = makeCheckBox(630,50,200,20,WiskOpdr.rb.getString("stappenCBLabel"),true,false);
-        bewerkingKnoppenCB = makeCheckBox(500,115,130,20,WiskOpdr.rb.getString("bewerkingKnoppenCBLabel"),false,true);
-        bewerkingKnoppenExtraCB = makeCheckBox(500,135,230,20,WiskOpdr.rb.getString("bewerkingKnoppenExtraCBLabel"),false,true);
-        abcKnopCB = makeCheckBox(630,115,60,20,WiskOpdr.rb.getString("abcCBLabel"),false,true);
-        subKnopCB = makeCheckBox(690,115,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
-        subKnopExtraCB = makeCheckBox(690,135,100,20,WiskOpdr.rb.getString("subKnopExtraCBLabel"),false,false);
-        eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
-        tipsCB = makeCheckBox(690,40,280,20,"Ideas [test]",false,true);
-		formuleToolBijFocusCB = makeCheckBox(600,40,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,true);
-		pijlCB = makeCheckBox(500,95,130,20,WiskOpdr.rb.getString("pijlCBLabel"),true,true);
-		linStrategieVersieCB = makeCheckBox(500,40,190,15,WiskOpdr.rb.getString("strategieVersieLabel"),false,true);
-		linOefenVersieCB = makeCheckBox(500,55,190,15,WiskOpdr.rb.getString("oefenVersieLabel"),false,true);
-		bordjesMethodeCB = makeCheckBox(500,70,190,15,WiskOpdr.rb.getString("bordjesVersieLabel"),false,true);
+		eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
+        formuleToolBijFocusCB = makeCheckBox(600,40,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,true);
 		checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
-        uitwCB = makeCheckBox(600,65,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,true);
-        casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("casAntwCBLabel")+" [test]",false,true);
         boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
-        
-        ideasButton = new IdeasInstellingenButton();
-        ideasButton.setFont(font);
-        ideasButton.setBounds(695,65,80,20);
-        ideasButton.setVisible(false);
-        add(ideasButton);
-        
-        for (int i = 0; i < strategieDomeinNamen.length; i++) {
-        	strategieOudNieuw.put(strategieDomeinNamen[i][0],strategieDomeinNamen[i][1]);
-		}
         
         gelijkwaardigPV = makeTextField(460,410,30,20,""+puntenGelijkwaardig,true);
         vormPV = makeTextField(460,435,30,20,""+puntenVorm,false);
@@ -302,25 +194,10 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         setFeedbackOption(false);
         
         if(soort==1)
-        {   stappen = true;
-       		stappenDefault = true;
-        	formuleToolBijFocusCB.setVisible(false);
-        	uitwCB.setVisible(false);
+        {   formuleToolBijFocusCB.setVisible(false);
         }
         else if(soort==3)
-        {   stappen = false;
-        	stappenDefault = false;
-            zetVergelijkingKnoppen(false);
-            startLabel.setVisible(false);
-            startEditor.setVisible(false);
-            linStrategieVersieCB.setVisible(false);
-            linOefenVersieCB.setVisible(false);
-            bordjesMethodeCB.setVisible(false);
-            //feedbackCB.setVisible(false);
-            tipsCB.setVisible(false);
-            formuleToolBijFocusCB.setVisible(true);
-            solveButton.setVisible(false);
-            solveTF.setVisible(false);
+        {   formuleToolBijFocusCB.setVisible(true);
         }
         
         	
@@ -442,8 +319,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             if(h.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)h.get("eindOplossingNodig")).booleanValue();
             if(h.containsKey("exact")) exact = ((Boolean)h.get("exact")).booleanValue();
             if(h.containsKey("significant")) significant = ((Boolean)h.get("significant")).booleanValue();
-			if(h.containsKey("stappen")) stappen = ((Boolean)h.get("stappen")).booleanValue();
-            if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
+			if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
             if(h.containsKey("feedback")) feedback = (String)h.get("feedback");
             if(h.containsKey("feedbackWidth")) feedbackWidth = ((Integer)h.get("feedbackWidth")).intValue();
 			if(h.containsKey("feedbackHeight")) feedbackHeight = ((Integer)h.get("feedbackHeight")).intValue();
@@ -552,46 +428,26 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 boolean vorm = false;
                 boolean exact = false;
                 boolean significant = false;
-				boolean stappen = stappenDefault;
-                int puntenGelijkwaardig = 10;
+				int puntenGelijkwaardig = 10;
                 int puntenVorm = 0;
                 int puntenExact = 0;
                 int puntenSignificant = 0;
 				boolean eindOplossingNodig = true;
                 int puntenEindOplossing = 10;
-                boolean bewerkingKnoppen = false;
-                boolean bewerkingKnoppenExtra = false;
-                boolean abcKnop = false;
-                boolean subKnop = false;
-                boolean subKnopExtra = false;
-				boolean formuleToolBijFocus = false;
+                boolean formuleToolBijFocus = false;
                 Hashtable[] answerModels = null;
                 boolean hasFeedback = false;
                 boolean feedbackSize = false;
                 String vormString = "$f@";
-                boolean tips = false;
-                Hashtable ideasInstellingen = null;
                 String strategieDomein = "";
                 int feedbackModus = 0;
                 String[] antwoordSubStrings = null;
-                boolean pijl = true;
-                boolean linStrategieVersie = false;
-                boolean linOefenVersie = false;
-                boolean bordjesMethode = false;
                 boolean check = true;
                 boolean teltMee = true;
                 boolean logOption = false;
 				String logID = "";
 				boolean[][] logObjectives = null;
-                boolean tipOpBalk = true;
-                boolean hulpOpBalk = false;
-                boolean stapOpBalk = false;
-                boolean solveOpBalk = false;
-                boolean meerTips = false;
-                boolean tipBijFout = false;
-                boolean feedbackBijFout = false;
-                boolean hulpBijTip = false;
-                Hashtable changedTexts = new Hashtable();
+				Hashtable changedTexts = new Hashtable();
                 double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
 				boolean uitw = false;
@@ -603,45 +459,18 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 if(interactiePanelLaunchState.containsKey("vorm")) vorm = ((Boolean)interactiePanelLaunchState.get("vorm")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("exact")) exact = ((Boolean)interactiePanelLaunchState.get("exact")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("significant")) significant = ((Boolean)interactiePanelLaunchState.get("significant")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("stappen")) stappen = ((Boolean)interactiePanelLaunchState.get("stappen")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("puntenGelijkwaardig")) puntenGelijkwaardig = ((Integer)interactiePanelLaunchState.get("puntenGelijkwaardig")).intValue();
+				if(interactiePanelLaunchState.containsKey("puntenGelijkwaardig")) puntenGelijkwaardig = ((Integer)interactiePanelLaunchState.get("puntenGelijkwaardig")).intValue();
                 if(interactiePanelLaunchState.containsKey("puntenVorm")) puntenVorm = ((Integer)interactiePanelLaunchState.get("puntenVorm")).intValue();
                 if(interactiePanelLaunchState.containsKey("puntenExact")) puntenExact = ((Integer)interactiePanelLaunchState.get("puntenExact")).intValue();
                 if(interactiePanelLaunchState.containsKey("puntenSignificant")) puntenSignificant = ((Integer)interactiePanelLaunchState.get("puntenSignificant")).intValue();
 				if(interactiePanelLaunchState.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)interactiePanelLaunchState.get("eindOplossingNodig")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("puntenEindOplossing")) puntenEindOplossing = ((Integer)interactiePanelLaunchState.get("puntenEindOplossing")).intValue();
-                if(interactiePanelLaunchState.containsKey("bewerkingKnoppen")) bewerkingKnoppen = ((Boolean)interactiePanelLaunchState.get("bewerkingKnoppen")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("bewerkingKnoppenExtra")) bewerkingKnoppenExtra = ((Boolean)interactiePanelLaunchState.get("bewerkingKnoppenExtra")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("abcKnop")) abcKnop = ((Boolean)interactiePanelLaunchState.get("abcKnop")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("subKnop")) subKnop = ((Boolean)interactiePanelLaunchState.get("subKnop")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("subKnopExtra")) subKnopExtra = ((Boolean)interactiePanelLaunchState.get("subKnopExtra")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
                 if(interactiePanelLaunchState.containsKey("hasFeedback")) hasFeedback = ((Boolean)interactiePanelLaunchState.get("hasFeedback")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("feedbackSize")) feedbackSize = ((Boolean)interactiePanelLaunchState.get("feedbackSize")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
-                if(interactiePanelLaunchState.containsKey("tips")) tips = ((Boolean)interactiePanelLaunchState.get("tips")).booleanValue();
-                if(tips) {
-                	if(interactiePanelLaunchState.containsKey("ideasInstellingen")) ideasInstellingen = (Hashtable)interactiePanelLaunchState.get("ideasInstellingen");
-                    if(ideasInstellingen==null) { // voor de backwards comp.
-                    	if(interactiePanelLaunchState.containsKey("tipOpBalk")) tipOpBalk = ((Boolean)interactiePanelLaunchState.get("tipOpBalk")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("hulpOpBalk")) hulpOpBalk = ((Boolean)interactiePanelLaunchState.get("hulpOpBalk")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("stapOpBalk")) stapOpBalk = ((Boolean)interactiePanelLaunchState.get("stapOpBalk")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("solveOpBalk")) solveOpBalk = ((Boolean)interactiePanelLaunchState.get("solveOpBalk")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("meerTips")) meerTips = ((Boolean)interactiePanelLaunchState.get("meerTips")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("tipBijFout")) tipBijFout = ((Boolean)interactiePanelLaunchState.get("tipBijFout")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("feedbackBijFout")) feedbackBijFout = ((Boolean)interactiePanelLaunchState.get("feedbackBijFout")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("hulpBijTip")) hulpBijTip = ((Boolean)interactiePanelLaunchState.get("hulpBijTip")).booleanValue();
-                        if(interactiePanelLaunchState.containsKey("changedTexts")) changedTexts = (Hashtable)interactiePanelLaunchState.get("changedTexts");
-                        if(interactiePanelLaunchState.containsKey("strategieDomein")) strategieDomein = (String)interactiePanelLaunchState.get("strategieDomein");
-                        
-                    }
-                }
                 if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
-                if(interactiePanelLaunchState.containsKey("pijl")) pijl = ((Boolean)interactiePanelLaunchState.get("pijl")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("linStrategieVersie")) linStrategieVersie = ((Boolean)interactiePanelLaunchState.get("linStrategieVersie")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("linOefenVersie")) linOefenVersie = ((Boolean)interactiePanelLaunchState.get("linOefenVersie")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("bordjesMethode")) bordjesMethode = ((Boolean)interactiePanelLaunchState.get("bordjesMethode")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("check")) check = ((Boolean)interactiePanelLaunchState.get("check")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
                 
@@ -661,14 +490,8 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 this.puntenVorm = puntenVorm;
                 this.puntenExact = puntenExact;
                 this.puntenSignificant = puntenSignificant;
-				this.stappen = stappen;
-                this.eindOplossingNodig = eindOplossingNodig;
+				this.eindOplossingNodig = eindOplossingNodig;
                 this.puntenEindOplossing = puntenEindOplossing;
-                this.bewerkingKnoppen = bewerkingKnoppen;
-                this.bewerkingKnoppenExtra = bewerkingKnoppenExtra;
-                this.abcKnop = abcKnop;
-                this.subKnop = subKnop;
-                this.subKnopExtra = subKnopExtra;
                 this.formuleToolBijFocus = formuleToolBijFocus;
                 
                 this.answerModels = new Hashtable[answerModels.length];
@@ -677,8 +500,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				}
 					
 					//this.answerModels = answerModels;
-                this.tips = tips;
-                this.pijl = pijl;
                 this.eqTestValueMin = eqTestValueMin;
 				this.eqTestValueMax = eqTestValueMax;
 				this.hasFeedback = hasFeedback;
@@ -706,8 +527,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 }
                 
                 antwoordvak.geefFormuleVak().vulVak(antwoordString);
-                startEditor.geefFormuleVak().vulVak(startString);
-                
+               
                 String[] vormStrings = StringUtils.split(vormString, "::");
                 for(int i=0 ; i<vormStrings.length ; i++)
             	{	if(i==0) vormStrings[i] = vormStrings[i] + "@";
@@ -717,25 +537,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 vormEditor.zetRegels(vormStrings);
                 //vormEditor.geefFormuleVak().vulVak(vormString);
                 
-                antwoordSubstitutiesVak.zetRegels(antwoordSubStrings);
-                
-                stappenCB.setSelected(stappen);
-                abcKnopCB.setSelected(abcKnop);
-                subKnopCB.setSelected(subKnop);
-                subKnopExtraCB.setVisible(subKnop);
-                subKnopExtraCB.setSelected(subKnopExtra);
-                bewerkingKnoppenCB.setSelected(bewerkingKnoppen);
-                bewerkingKnoppenExtraCB.setSelected(bewerkingKnoppenExtra);
                 formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
-                pijlCB.setSelected(pijl);
-                
-                
-                
-               
-                linStrategieVersieCB.setSelected(linStrategieVersie);
-                linOefenVersieCB.setSelected(linOefenVersie);
-                bordjesMethodeCB.setSelected(bordjesMethode);
-                
                 checkCB.setSelected(check);
                 teltMeeCB.setSelected(teltMee);
                 
@@ -745,33 +547,10 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	            logIDField.setText(logID);
 	            logObjectivesButton.setChoices(logObjectives);
                 
-                uitwCB.setSelected(uitw);
-                casAntwCB.setSelected(casAntw);
                 boxMetRandCB.setSelected(boxMetRand);
 	            //startLabel.setVisible(uitw);
 				//startEditor.setVisible(uitw);
                 
-                tipsCB.setSelected(tips);
-                ideasButton.setVisible(tips);
-                if(tips && ideasInstellingen !=null)
-                {  	ideasButton.zetInstellingen(ideasInstellingen);
-                }
-                else if(tips)
-                {	// converteer naar nieuwe opzet
-                	ideasInstellingen = new Hashtable();
-                	ideasInstellingen.put("tipOpBalk", new Boolean(tipOpBalk));
-                	ideasInstellingen.put("hulpOpBalk", new Boolean(hulpOpBalk));
-                	ideasInstellingen.put("stapOpBalk", new Boolean(stapOpBalk));
-                	ideasInstellingen.put("solveOpBalk", new Boolean(solveOpBalk));
-                	ideasInstellingen.put("meerTips", new Boolean(meerTips));
-                	ideasInstellingen.put("tipBijFout", new Boolean(tipBijFout));
-                	ideasInstellingen.put("feedbackBijFout", new Boolean(feedbackBijFout));
-                	ideasInstellingen.put("hulpBijTip", new Boolean(hulpBijTip));
-                	if(strategieOudNieuw.containsKey(strategieDomein)) strategieDomein = (String)strategieOudNieuw.get(strategieDomein);
-                	ideasInstellingen.put("strategieDomein", strategieDomein);
-                	
-                	ideasButton.zetInstellingen(ideasInstellingen);
-                }
                 setFeedbackOption(hasFeedback);
                 feedbackCB.setSelected(hasFeedback);
                 feedbackSizeCB.setSelected(feedbackSize);
@@ -811,22 +590,15 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
         
             String antwoordString = null;
-            String startString = null;
             boolean vorm = false;
             boolean exact = false;
             boolean significant = false;
-			boolean stappen = false;
-            int puntenGelijkwaardig = 10;
+			int puntenGelijkwaardig = 10;
             int puntenVorm = 0;
             int puntenExact = 0; 
             int puntenSignificant = 0; 
 			boolean eindOplossingNodig = true;
             int puntenEindOplossing = 10;
-            boolean bewerkingKnoppen = false;
-            boolean bewerkingKnoppenExtra = false;
-            boolean abcKnop = false;
-            boolean subKnop = false;
-            boolean subKnopExtra = false;
             int scoreMax = 0;
             int[][] scoreMaxObjectives = null;
             boolean formuleToolBijFocus = false;
@@ -834,14 +606,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             boolean hasFeedback;
             boolean feedbackSize;
             String vormString = "$f@";
-            boolean tips;
-            Hashtable ideasInstellingen = new Hashtable();
             int feedbackModus = 0;
-            String[] antwoordSubStrings = null;
-            boolean pijl = true;
-            boolean linStrategieVersie = false;
-            boolean linOefenVersie = false;
-            boolean bordjesMethode = false;
             boolean check = true;
             boolean teltMee = true;
             boolean logOption = false;
@@ -850,7 +615,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean uitw = false;
-			boolean casAntw = false;
 			boolean boxMetRand = true;
 			
             getAnswerModel();
@@ -858,7 +622,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             if(answerModels!=null)setAnswerModel(answerModels[0]);
             
             antwoordString = antwoordvak.geefFormuleVak().toString();
-            startString = startEditor.geefFormuleVak().toString();
             String[] vormStrings = vormEditor.geefRegels();
             if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
             else
@@ -871,10 +634,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             vorm = this.vorm;
             exact = this.exact;
             significant = this.significant;
-			stappen = this.stappen;
-            tips = this.tips;
-            if(tips)ideasInstellingen = ideasButton.geefInstellingen();
-            
+			
             try
             {   puntenGelijkwaardig = Integer.parseInt(gelijkwaardigPV.getText());
                 this.puntenGelijkwaardig = puntenGelijkwaardig;
@@ -911,12 +671,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             puntenSignificant = this.puntenSignificant;
 			eindOplossingNodig = this.eindOplossingNodig;
             puntenEindOplossing = this.puntenEindOplossing;
-            bewerkingKnoppen = this.bewerkingKnoppen;
-            bewerkingKnoppenExtra = this.bewerkingKnoppenExtra;
-            abcKnop = this.abcKnop;
-            subKnop = this.subKnop;
-            subKnopExtra = this.subKnopExtra;
-            pijl = this.pijl;
             formuleToolBijFocus = this.formuleToolBijFocus;
             scoreMax = puntenGelijkwaardig + puntenVorm + puntenEindOplossing + puntenExact;
             hasFeedback = this.hasFeedback;
@@ -925,22 +679,13 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             
             //if(tips) feedbackModus = feedbackModusKeuze.getSelectedIndex();
             
-            antwoordSubStrings = antwoordSubstitutiesVak.geefRegels();
-            
-            linStrategieVersie = linStrategieVersieCB.isSelected();
-            linOefenVersie = linOefenVersieCB.isSelected();
-            bordjesMethode = bordjesMethodeCB.isSelected();
-            
-            if(linStrategieVersie || linOefenVersie) bewerkingKnoppen = true;
-            
+           
             check = checkCB.isSelected();
             teltMee = teltMeeCB.isSelected();
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
 			logObjectives = logObjectivesButton.getChoices();
 			
-			uitw = uitwCB.isSelected();
-			casAntw = casAntwCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
 			
 			
@@ -962,37 +707,21 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			eqTestValueMax = this.eqTestValueMax;
             
             interactiePanelLaunchState.put("antwoordString",antwoordString);
-            interactiePanelLaunchState.put("startString",startString);
             interactiePanelLaunchState.put("vorm",new Boolean(vorm));
             interactiePanelLaunchState.put("exact",new Boolean(exact));
             interactiePanelLaunchState.put("significant",new Boolean(significant));
-			interactiePanelLaunchState.put("stappen",new Boolean(stappen));
-            interactiePanelLaunchState.put("puntenGelijkwaardig",new Integer(puntenGelijkwaardig));
+			interactiePanelLaunchState.put("puntenGelijkwaardig",new Integer(puntenGelijkwaardig));
             interactiePanelLaunchState.put("puntenVorm",new Integer(puntenVorm));
             interactiePanelLaunchState.put("puntenExact",new Integer(puntenExact));
             interactiePanelLaunchState.put("puntenSignificant",new Integer(puntenSignificant));
 			interactiePanelLaunchState.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
             interactiePanelLaunchState.put("puntenEindOplossing",new Integer(puntenEindOplossing));
-            interactiePanelLaunchState.put("bewerkingKnoppen",new Boolean(bewerkingKnoppen));
-            interactiePanelLaunchState.put("bewerkingKnoppenExtra",new Boolean(bewerkingKnoppenExtra));
-            interactiePanelLaunchState.put("abcKnop",new Boolean(abcKnop));
-            interactiePanelLaunchState.put("subKnop",new Boolean(subKnop));
-            interactiePanelLaunchState.put("subKnopExtra",new Boolean(subKnopExtra));
             interactiePanelLaunchState.put("formuleToolBijFocus",new Boolean(formuleToolBijFocus));
             interactiePanelLaunchState.put("scoreMax",new Integer(scoreMax));
             if(answerModels!=null)interactiePanelLaunchState.put("answerModels",answerModels);
             interactiePanelLaunchState.put("hasFeedback",new Boolean(hasFeedback));
             interactiePanelLaunchState.put("feedbackSize",new Boolean(feedbackSize));
 			interactiePanelLaunchState.put("vormString",vormString);
-            interactiePanelLaunchState.put("tips",new Boolean(tips));
-            if(tips){
-            	interactiePanelLaunchState.put("ideasInstellingen",ideasInstellingen);
-            }
-            interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
-            interactiePanelLaunchState.put("pijl",new Boolean(pijl));
-            interactiePanelLaunchState.put("linStrategieVersie",new Boolean(linStrategieVersie));
-            interactiePanelLaunchState.put("linOefenVersie",new Boolean(linOefenVersie));
-            interactiePanelLaunchState.put("bordjesMethode",new Boolean(bordjesMethode));
             interactiePanelLaunchState.put("check",new Boolean(check));
             interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
             interactiePanelLaunchState.put("logOption",new Boolean(logOption));
@@ -1000,7 +729,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
-			interactiePanelLaunchState.put("casAntw",new Boolean(casAntw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
@@ -1028,7 +756,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     }
     
     
-    
+    /*
    
     public void maakStartPopupFrame()
 	{
@@ -1050,6 +778,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			}
 		});
 	}
+    */
     
     public void maakVormPopupFrame()
 	{
@@ -1190,11 +919,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         else if(e.getSource()==feedbackSizeCB)
 		{	feedbackEditor.setResizable(feedbackSizeCB.isSelected());
 			
-		}
-        else if(e.getSource()==tipsCB)
-		{	tips = tipsCB.isSelected();
-			ideasButton.setVisible(tips);
-			//if(tips)presentRules();
 		}
         else if(e.getSource()==gelijkwaardigCB)
         {   gelijkwaardig = gelijkwaardigCB.isSelected();
@@ -1345,136 +1069,14 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 puntenSignificant = 0;
             }
         }
-        else if(e.getSource()==stappenCB)
-        {   boolean b = stappenCB.isSelected();
-            stappen = b;
-        }
-        else if(e.getSource()==bewerkingKnoppenCB)
-        {   boolean b = bewerkingKnoppenCB.isSelected();
-            bewerkingKnoppen = b;
-        }
-        else if(e.getSource()==bewerkingKnoppenExtraCB)
-        {   boolean b = bewerkingKnoppenExtraCB.isSelected();
-            bewerkingKnoppenExtra = b;
-        }
-        else if(e.getSource()==abcKnopCB)
-        {   boolean b = abcKnopCB.isSelected();
-            abcKnop = b;
-        }
-        else if(e.getSource()==subKnopCB)
-	    {   subKnop = subKnopCB.isSelected();
-	    	subKnopExtraCB.setVisible(subKnop);
-	    	if(!subKnop)subKnopExtraCB.setSelected(subKnop);
-	    }
-		else if(e.getSource()==subKnopExtraCB)
-	    {   subKnopExtra = subKnopExtraCB.isSelected();
-	    }
-        else if(e.getSource()==pijlCB)
-        {   pijl = pijlCB.isSelected();
-        }
-        else if(e.getSource()==linStrategieVersieCB)
-        {   if(linStrategieVersieCB.isSelected()) {
-        		linOefenVersieCB.setSelected(false);
-        		bordjesMethodeCB.setSelected(false);
-    		}
-        }
-        else if(e.getSource()==linOefenVersieCB)
-        {   if(linOefenVersieCB.isSelected()){ 
-        		linStrategieVersieCB.setSelected(false);
-        		bordjesMethodeCB.setSelected(false);
-    		}
-        }
-        else if(e.getSource()==bordjesMethodeCB)
-        {   if(bordjesMethodeCB.isSelected()) {
-        		linStrategieVersieCB.setSelected(false);
-        		linOefenVersieCB.setSelected(false);
-        	}
-        }
         else if(e.getSource()==formuleToolBijFocusCB)
         {   boolean b = formuleToolBijFocusCB.isSelected();
             formuleToolBijFocus = b;
         }
-        else if(e.getSource() == antwoordSubstitutiesVak)
-        {  	remove(antwoordSubstitutiesVak);
-        	repaint();
-        }
-        else if(e.getSource() == substitutiesButton)
-        {  	add(antwoordSubstitutiesVak,0);
-        	repaint();
-        }
-        else if(e.getSource() == antwoordSolveVak)
-        {  	remove(antwoordSolveVak);
-        	repaint();
-        }
-        else if(e.getSource() == solveButton)
-        {  	
-        	
-        	String vergStringE = startEditor.geefFormuleVak().toString();
-        	String vergString = StringUtils.replaceStr(vergStringE,"#","");
-        	boolean rand = vergStringE.length() != vergString.length();
-        	System.out.println(vergStringE);
-        	System.out.println(vergString);
-        	
-        	VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString);
-        	String vergStringCas = "$f@";
-        	
-        	VergelijkingMeerv vmAntw = null;
-        	if(vm!=null)
-        	{
-        		Vergelijking v = vm.geefVergelijking(0);
-        		vergStringCas = v.geefExpLinks().toStringCAS() + "==" + v.geefExpRechts().toStringCAS();
-        		vmAntw = // Expressie.solveWithCAS(vergStringCas, solveTF.getText());
-        				Expressie.solve(v, solveTF.getText());
-        		String def = "";
-        		if(rand && vmAntw!=null)
-        		{
-        			Vergelijking[] vs = new Vergelijking[vmAntw.geefAantal()];
-        			for(int i=0 ; i<vmAntw.geefAantal() ; i++)
-        			{	if(i>0) def = def + "  "+WiskOpdr.rb.getString("ofLabel")+"  ";
-        				vs[i] = vmAntw.geefVergelijking(i);
-        				def = def + vs[i].geefExpLinks().toString() + " = #" + vs[i].geefExpRechts().toString() + "#";
-        			}
-        			
-        		}
-        		else if(vmAntw!=null) def = vmAntw.toString();
-        		antwoordSolveVak.geefFormuleVak().vulVak("$f"+def+"@");
-        		
-        	}
-        	add(antwoordSolveVak,0);
-        }
-        
         else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());   
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
-        else if(e.getSource()==uitwCB)
-	    {   //startLabel.setVisible(uitwCB.isSelected());
-			//startEditor.setVisible(uitwCB.isSelected());
-	    }
-        else if(e.getSource()==startEditor)
-		{	if(e.getActionCommand().equals("vergroot"))
-			{	if(startEditorPopupFrame==null)	maakStartPopupFrame();
-				Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
-				int x = startEditor.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 500));
-				int y = startEditor.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 400));
-				startEditorPopupFrame.setVisible(true);
-				startLabel.setVisible(false);
-				startEditorPopupFrame.getContentPane().add(startEditor);
-				startEditorPopupFrame.pack();
-				startEditorPopupFrame.setSize(500,400);
-				startEditorPopupFrame.setLocation(x,y);
-			}
-			if(e.getActionCommand().equals("verklein"))
-			{	startEditorPopupFrame.setVisible(false);
-				startLabel.setVisible(true);
-				startEditor.setBounds(5,50,470,105);
-		        startLabel.setBounds(5,30,770,20);
-				add(startEditor);
-				startEditorPopupFrame.dispose();
-			}
-			revalidate();
-            repaint();
-		}
         else if(e.getSource()==vormEditor)
 		{	if(e.getActionCommand().equals("vergroot"))
 			{	if(vormEditorPopupFrame==null)	maakVormPopupFrame();
@@ -1612,15 +1214,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         if(b)setAnswerModel();
     }
     
-    
-    public void zetVergelijkingKnoppen(boolean b)
-    {   bewerkingKnoppenCB.setVisible(b);
-    	bewerkingKnoppenExtraCB.setVisible(b);
-    	pijlCB.setVisible(b);
-        abcKnopCB.setVisible(b);
-        subKnopCB.setVisible(b);
-        
-    }
     
     public void zetTabletUser(FormuleVakHouder formuleVakHouder)
     {   if(tablet==null) return;

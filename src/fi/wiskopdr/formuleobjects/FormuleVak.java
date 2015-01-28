@@ -3,12 +3,15 @@ package fi.wiskopdr.formuleobjects;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
+
 import javax.swing.*;
+
 //import fi.wiskopdr.InteractiePanel;
 import fi.wiskopdr.expressies.*;
+import fi.wiskopdr.scheikundeexpressies.ReactieParser;
+import fi.wiskopdr.scheikundeexpressies.ReactieVergelijking;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.WiskOpdr;
-
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class FormuleVak extends RegelVak implements MouseListener, ActionListener
@@ -410,6 +413,12 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	public VergelijkingMeerv geefVergelijking()
 	{	String s = toString();
 		return FormuleParser.parseVergelijking(s);
+	}
+	
+	public ReactieVergelijking geefReactieVergelijking()
+	{
+		String s = toString();
+		return ReactieParser.parseVergelijking(s);
 	}
 	
 	public boolean partEquationSelected(int nr)
