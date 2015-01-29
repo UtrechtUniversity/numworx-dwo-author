@@ -287,8 +287,8 @@ public class AddColumnDialogView extends JDialog implements Observer
 		}
 		else if (!this.wasEnum())
 		{
-			this.stringOptions = this.model.getTableModel().
-				getStringOptions(this.model.getColumnIndex());
+			this.stringOptions = new ArrayList<String>(this.model.getTableModel().
+				getStringOptions(this.model.getColumnIndex()));
 		}
 	}
 
