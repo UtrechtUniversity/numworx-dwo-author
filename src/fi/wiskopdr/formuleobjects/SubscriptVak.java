@@ -46,5 +46,9 @@ public class SubscriptVak extends RegelVak
 	public String toString()
 	{	return "$s" + kind1.toString() + "@";
 	}
+	
+	public String toMathML()
+	{	return kind1.toMathML();
+	}
 }
 

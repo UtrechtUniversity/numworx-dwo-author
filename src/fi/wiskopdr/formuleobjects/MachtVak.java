@@ -51,5 +51,9 @@ public class MachtVak extends RegelVak
 	public String toString()
 	{	return "$m" + kind1.toString() + "@";
 	}
+	
+	public String toMathML() {
+		return kind1.toMathML();
+	}
 }
 

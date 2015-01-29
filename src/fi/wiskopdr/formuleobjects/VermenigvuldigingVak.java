@@ -96,5 +96,10 @@ public class VermenigvuldigingVak extends RegelVak
 	public String toString()
 	{	return "$v" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() {
+		// INVISIBLE TIMES \u2062 see http://www.unicode.org/reports/tr25/
+				return "<mrow>" + kind1.toMathML() + "<mo>\u2062</mo>" + kind2.toMathML() + "</mrow>";
+			}
 }
 

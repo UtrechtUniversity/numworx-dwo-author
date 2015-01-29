@@ -131,5 +131,9 @@ public class IntegraalVak extends RegelVak
 	public String toString()
 	{	return "$i" + kind1.toString() + "$n" + kind2.toString() + "$k" + kind3.toString() + "$l" + kind4.toString() + "@@@@";//"$n" + kind3.toString() + 
 	}
+	
+	public String toMathML() {
+		return "<mrow><msubsup><mo>\u222b</mo>"+ kind2.toMathML()+ kind3.toMathML() + "</msubsup>" + kind1.toMathML() +"<mo>d</mo>" + kind4.toMathML()+"</mrow>" ;
+	}
 }
 

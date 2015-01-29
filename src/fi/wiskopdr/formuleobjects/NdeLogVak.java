@@ -8,8 +8,12 @@ import fi.wiskopdr.WiskOpdr;
 
 public class NdeLogVak extends RegelVak
 {	
+	private boolean isEN;
+	
 	public NdeLogVak(FormuleVak  fv)
 	{	formuleVak = fv;
+	
+		isEN = WiskOpdr.language.getLanguage().equals("en");
 		
 		setLayout(null);
 		super.setFont(fv.getFont());
@@ -68,7 +72,7 @@ public class NdeLogVak extends RegelVak
 		if(selected)g.setColor(Color.white);
 		else g.setColor(fgColor);
 		
-		if(WiskOpdr.language.toString().equals("en"))g.drawString("log", 3 ,ashoogte + asc/2 + asc/12);
+		if(isEN)g.drawString("log", 3 ,ashoogte + asc/2 + asc/12);
 		else g.drawString("log", 5+k2w ,ashoogte + asc/2 + asc/12);
 		
 		//Font font2 = new Font(formuleVak.getFont().getName(),formuleVak.getFont().getStyle(),2*formuleVak.getFont().getSize()/3);
@@ -110,7 +114,7 @@ public class NdeLogVak extends RegelVak
         int fStr = fm.stringWidth("log");
         setSize(2*asc/3+k2w + fStr + k1w + asc/2, k2h/2 + k1h);
         ashoogte = kind1.ashoogte+ k2h/2;
-        if(WiskOpdr.language.toString().equals("en"))ashoogte = kind1.ashoogte;
+        if(isEN)ashoogte = kind1.ashoogte;
         
         kind1.setLocation(k2w + fStr + 3*asc/4, k2h/2);
         kind2.setLocation(asc/3, ashoogte-(k2h/2 + asc/2));
@@ -131,6 +135,16 @@ public class NdeLogVak extends RegelVak
 	
 	public String toString()
 	{	return "$L" + kind1.toString() + "$n" + kind2.toString() + "@@";
+	}
+	
+	public String toMathML() 
+	{
+// if language is 'en' grondtal als subscript
+		if(isEN)
+		{
+			return "<mrow><msub><mi>log</mi>" + kind2.toMathML() + "</msub><mfenced>" + kind1.toMathML() + "</mfenced></mrow>";
+		}
+		return "<mrow><mmultiscripts><mi>log</mi><mprescripts /><none />" + kind2.toMathML() + "</mmultiscripts><mfenced>" + kind1.toMathML() + "</mfenced></mrow>";
 	}
 }
 

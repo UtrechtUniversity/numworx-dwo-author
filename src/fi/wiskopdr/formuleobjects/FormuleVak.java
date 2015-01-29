@@ -462,6 +462,10 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 		return "$f" + kind1.toString() + "@";
 	}
 	
+	public String toMathML() {
+		return "<math xmlns='http://www.w3.org/1998/Math/MathML'>"+kind1.toMathML()+"</math>";
+	}
+	
 	public void addActionListener(ActionListener listener)
 	{	actionListener = AWTEventMulticaster.add(actionListener, listener);
 	}

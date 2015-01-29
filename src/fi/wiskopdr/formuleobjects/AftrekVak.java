@@ -101,5 +101,10 @@ public class AftrekVak extends RegelVak
 	public String toString()
 	{	return "$a" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() {
+		// MINUS SIGN \u2212 see http://www.unicode.org/reports/tr25/
+				return "<mrow>" + kind1.toMathML() + "<mo>\u2212</mo>" + kind2.toMathML() + "</mrow>";
+			}
 }
 

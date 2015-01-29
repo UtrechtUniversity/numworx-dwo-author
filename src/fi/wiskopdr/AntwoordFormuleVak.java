@@ -961,9 +961,11 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			
 			if("$f@".equals(string))logString = "";
 			else
-			{	string = FormuleParser.schoon(FormuleParser.formuleString(string));
-				string = StringUtils.replaceStr(string, "(0-", "(-");
-				logString = FormuleParser.pel(string);
+			{	//string = FormuleParser.schoon(FormuleParser.formuleString(string));
+				//string = StringUtils.replaceStr(string, "(0-", "(-");
+				//logString = FormuleParser.pel(string);
+				
+				logString = formuleVakken[stapNr].toMathML();
 			}
 			
 			logMap.put("logIDLabel", logIDLabel);

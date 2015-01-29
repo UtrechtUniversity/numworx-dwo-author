@@ -1,7 +1,10 @@
 package fi.wiskopdr.formuleobjects;
 
 import java.awt.*;
+
 import javax.swing.*;
+
+import fi.beans.stringutils.StringUtils;
 
 public class FormuleElement extends JPanel
 {	
@@ -49,4 +52,11 @@ public class FormuleElement extends JPanel
 	public String toString()
 	{	return null;
 	}
+	public String toMathML() {
+		// TODO more escapes? nu: &, <
+				String string = toString();
+				string = StringUtils.replaceStr(string, "&", "&amp;"); // THIS ORDER
+				string = StringUtils.replaceStr(string, "<", "&lt;");
+				return "<mtext>"+ string + "</mtext>";
+			}
 }

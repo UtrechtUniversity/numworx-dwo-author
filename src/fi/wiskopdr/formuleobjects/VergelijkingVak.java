@@ -95,5 +95,9 @@ public class VergelijkingVak extends RegelVak
 	public String toString()
 	{	return kind1.toString() + "=" + kind2.toString();
 	}
+	
+	public String toMathML() {
+		return "<mrow>"+ kind1.toString() + "<mo>=</mo>" + kind2.toString() + "</mrow>";
+	}
 }
 

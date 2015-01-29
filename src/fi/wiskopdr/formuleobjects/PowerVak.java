@@ -90,5 +90,10 @@ public class PowerVak extends RegelVak
 	public String toString()
 	{	return "$p" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() 
+	{
+		return "<msup>" + kind1.toMathML() + kind2.toMathML() + "</msup>";
+	}
 }
 

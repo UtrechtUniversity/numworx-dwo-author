@@ -203,5 +203,9 @@ public class BreukVak extends RegelVak
 	public String toString()
 	{	return "$b" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() {
+		return "<mfrac>" + kind1.toMathML() + kind2.toMathML() + "</mfrac>";
+	}
 }
 

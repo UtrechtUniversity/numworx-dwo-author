@@ -88,5 +88,10 @@ public class HaakjesVak extends RegelVak
 	public String toString()
 	{	return "$h" + kind1.toString() + "@";
 	}
+	
+	public String toMathML() 
+	{
+		return "<mfenced>" + kind1.toMathML() + "</mfenced>";
+	}
 }
 

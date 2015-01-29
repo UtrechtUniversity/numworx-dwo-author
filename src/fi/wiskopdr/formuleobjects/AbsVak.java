@@ -82,5 +82,10 @@ public class AbsVak extends RegelVak
 	public String toString()
 	{	return "$r" + kind1.toString() + "@";
 	}
+	
+	public String toMathML() 
+	{
+		return "<mfenced open='|' close='|'>" + kind1.toMathML() + "</mfenced>";
+	}
 }
 

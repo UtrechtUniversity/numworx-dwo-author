@@ -92,5 +92,9 @@ public class BinVak extends RegelVak
 	public String toString()
 	{	return "$y" + kind1.toString() + "$n"+ kind2.toString() + "@@";
 	}
+	
+	public String toMathML() {
+		return "<mfrac linethickness='0'>" + kind1.toMathML() + kind2.toMathML() + "</mfrac>";
+	}
 }
 

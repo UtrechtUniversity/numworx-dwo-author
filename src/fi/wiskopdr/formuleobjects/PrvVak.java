@@ -176,5 +176,10 @@ public class PrvVak extends RegelVak
 	{	
 	    return "$q" + kind1.toString() + "$n" + kind2.toString() + "$k" + kind3.toString() + "$l" + kind4.toString() + "@@@@";//"$n" + kind3.toString() + 
 	}
+	
+	public String toMathML()
+	{
+		return "<msubsup><mfenced open='[' close = ']' >"+kind1.toMathML()+"</mfenced>" + kind2.toMathML() + kind3.toMathML() + "</msubsup>";
+	}
 }
 

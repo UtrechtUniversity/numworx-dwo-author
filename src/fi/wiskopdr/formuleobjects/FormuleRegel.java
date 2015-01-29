@@ -1873,6 +1873,44 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		return s;
 	}
 	
+	public String toMathML() {		
+		int count = getComponentCount();
+		if(count == 1)
+			return ((FormuleElement) getComponent(0)).toMathML();
+		int pos = 0;
+		int next = 0;
+		StringBuffer sb = new StringBuffer("<mrow>");
+		for(int i=0 ; i<count  ; i++)
+		{	
+			FormuleElement f = (FormuleElement) getComponent(i);
+			next = sb.length();
+			String mathML = f.toMathML();
+			if(f instanceof MachtVak)
+			{
+				sb.insert(pos, "<msup>");				
+				sb.append(mathML);
+				sb.append("</msup>");
+			} else if(f instanceof SubscriptVak)
+			{
+				sb.insert(pos, "<msub>");				
+				sb.append(mathML);
+				sb.append("</msub>");
+			} else
+			{ // merge mtext here.
+				if(sb.length()>=15 && sb.substring(next-8, next).equals("</mtext>") && mathML.startsWith("<mtext>"))
+				{
+					sb.setLength(next-8);
+					sb.append(mathML.substring(7));
+					next = pos;
+				} else
+					sb.append(mathML);
+			}
+			pos = next;
+		}
+		sb.append("</mrow>");
+		return sb.toString();
+	}
+	
 	class KnipperDraad extends Thread 
 	{	boolean dood = false;
 		public void run()

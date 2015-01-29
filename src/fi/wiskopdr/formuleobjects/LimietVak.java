@@ -198,5 +198,18 @@ public class LimietVak extends RegelVak
 	public String toString()
 	{	return "$T" + kind1.toString() + "$n"+ kind2.toString() + "$k" + kind3.toString() + "$l" + kind4.toString() + "@@@@";
 	}
+	
+	public String toMathML() {
+		return "<mrow><munder><mi>lim</mi><mrow>" + kind2.toMathML() + arrow(kind4) + kind3.toMathML() + "</mrow></munder>" + kind1.toMathML() + "</mrow>";
+	}
+
+	private String arrow(FormuleRegel k) {
+		char x = '\u2192';
+		if("2".equals(k.toString()))
+			x = '\u2191';
+		else if("1".equals(k.toString()))
+			x = '\u2193';
+		return "<mo>"+ x + "</mo>";
+	}
 }
 

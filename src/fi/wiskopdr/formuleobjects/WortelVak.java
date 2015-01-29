@@ -78,5 +78,10 @@ public class WortelVak extends RegelVak
 	public String toString()
 	{	return "$w" + kind1.toString() + "@";
 	}
+	
+	public String toMathML() 
+	{
+		return "<msqrt>" + kind1.toMathML() + "</msqrt>";
+	}
 }
 

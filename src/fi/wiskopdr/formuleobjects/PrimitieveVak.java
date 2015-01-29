@@ -105,5 +105,9 @@ public class PrimitieveVak extends RegelVak
 	public String toString()
 	{	return "$P" + kind1.toString() + "$n" + kind2.toString() + "@@";//"$n" + kind3.toString() + 
 	}
+	
+	public String toMathML() {
+		return "<mrow><mo>\u222b</mo>"+ kind1.toMathML() + "<mo>d<mo>" + kind2.toMathML() + "</mrow>";
+	}
 }
 

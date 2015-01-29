@@ -94,5 +94,10 @@ public class NdeWortelVak extends RegelVak
 	public String toString()
 	{	return "$W" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML()
+	{
+		return "<mroot>" + kind1.toMathML() + kind2.toMathML() + "</mroot>";
+	}
 }
 

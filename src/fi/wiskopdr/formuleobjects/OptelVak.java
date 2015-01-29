@@ -94,5 +94,9 @@ public class OptelVak extends RegelVak
 	public String toString()
 	{	return "$o" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() {
+		return "<mrow>" + kind1.toMathML() + "<mo>+</mo>" + kind2.toMathML() + "</mrow>";
+	}
 }
 

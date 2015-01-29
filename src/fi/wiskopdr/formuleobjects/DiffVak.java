@@ -118,5 +118,10 @@ public class DiffVak extends RegelVak
 	public String toString()
 	{	return "$d" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+	
+	public String toMathML() 
+	{
+		return "<mfrac><mrow><mo>d</mo>" + kind1.toMathML() + "</mrow><mrow><mo>d</mo>" + kind2.toMathML() + "</mrow></mfrac>";
+	}
 }
 
