@@ -83,4 +83,18 @@ public interface Constants {
 	 * CBookEvent.
 	 */
 	String CHECK = "check";
+	/**
+	 * Context property for the preferences API.
+	 */
+	String PREFERENCES = "preferences";
+	/**
+	 * Context properties for the CAS API.
+	 */
+	String CAS = "cas";
+	/**
+	 * Context property for user data.
+	 * This exports information about school, class(es), course, role..
+	 *  
+	 */
+	String USER_INFO = "user_info";
 }
