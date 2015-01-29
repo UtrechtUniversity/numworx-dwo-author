@@ -2,23 +2,22 @@ package fi.wiskopdr;
 
 import java.applet.*;
 import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.*;
 import java.awt.event.*;
-import java.beans.XMLEncoder;
 
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.dwomaccess.ByteArray;
 import fi.beans.dwomaccess.JSONEncoder;
 import fi.beans.mainframe.*;
 import fi.beans.scorm.*;
 
 import java.util.zip.*;
-import java.util.jar.*;
 
 public class ScormEditMainFrame extends MainFrame implements ActionListener
-{	ScormEditComponentIF scormEditComponent;
+{
+	private static final String SAVE_AS_FACET = "opslaan als FACET Item (CI)";
+ScormEditComponentIF scormEditComponent;
 	FileDialog openDial, saveDial;
 	String titel;
 	
@@ -55,6 +54,11 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 		mi.addActionListener(this);
 		bestandMenu.add(mi);
 		
+		mi = new MenuItem(SAVE_AS_FACET);
+		mi.addActionListener(this);
+		mi.setActionCommand(SAVE_AS_FACET);
+		bestandMenu.add(mi);
+
 		mi = new MenuItem("print");
 		mi.addActionListener(this);
 		//bestandMenu.add(mi);
@@ -103,8 +107,45 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			out.close();
 		}
 	}
+
+	public void saveFacet() throws IOException {
+		saveDial.show();
+		String naam = saveDial.getFile();
+		if(naam != null ) {
+			
+			File directory = new File(saveDial.getDirectory());
+			File file = new File(directory, naam);
+			ZipOutputStream ci = new ZipOutputStream(new FileOutputStream(file));
+			// directories
+			createDirectories(new String[] { "ref", "ref/html", "ref/json", "ref/script", "ref/style"}, ci);
+			
+			ZipEntry entry = new ZipEntry("ref/html/"+naam+".json");
+			ci.putNextEntry(entry);
+			Hashtable launchData = scormEditComponent.getLaunchData();
+			Writer out  = new OutputStreamWriter(ci);
+			JSONEncoder.encode(launchData, out);
+			out.flush();
+			ci.closeEntry();
+			String[] resources = { "ref/html/player.txt", "ref/html/player.html", "ref/script/player.js", "ref/style/player.css"};
+			copyResources(resources, ci, new byte[10240]);
+			String manifest = "{ (0) }";
+			entry = new ZipEntry("ref/json/" +naam +".manifest.json");
+			ci.putNextEntry(entry);
+			out.write(MessageFormat.format(manifest, naam));
+			out.flush();
+			ci.closeEntry();
+			ci.close();
+		}
+	}
 	
 	
+	private void createDirectories(String[] strings, ZipOutputStream ci) throws IOException {
+		for (String string : strings) {
+			if( !string.endsWith("/")) string += "/";
+			ci.putNextEntry(new ZipEntry(string));
+		}
+	}
+
 	public void print()
 	{	try
 		{	PrintJob pjob = getToolkit().getPrintJob(this, "Printing Test", null);
@@ -306,19 +347,20 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			end = string.indexOf("/>");
 		}
 		scormEditComponent.setState(params);
+		scormEditComponent.getComponent().repaint();
 	}
 	
-	public void createZip(String zipName)
-	{	String jarname = System.getProperty( "java.class.path" );
-		int index = jarname.lastIndexOf('\\');
-		String filename = jarname.substring(0,index+1) + "data.txt";
-		File dataFile = new File(filename);
+	public void createZip(String zipName) 
+	{
+		try 
+    {
+		String filename;
+		File dataFile = File.createTempFile("data", "txt");
+		filename = dataFile.getAbsolutePath();
 		schrijfFile(filename);
 		
 	    byte[] buf = new byte[1024];
 	    
-	    try 
-	    {
 	        String outFilename = zipName + ".zip";
 	        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFilename));
 	        
@@ -331,23 +373,33 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 	        fin.close();
 	        String scriptname = "sco/script/FiScoScript.js";
 	        String[] scormFileNames = {"adlcp_rootv1p2.xsd","ims_xml.xsd","imscp_rootv1p1p2.xsd","imsmanifest.xml","imsmd_rootv1p2p1.xsd",scriptname};
-	        JarFile jar = new JarFile(new File(jarname));
-	        for (int i=0; i<scormFileNames.length; i++) 
-	        {
-	            JarEntry entry = jar.getJarEntry(scormFileNames[i]);
-	            InputStream in = jar.getInputStream(entry);
-	            out.putNextEntry(new ZipEntry(scormFileNames[i]));
-	            while ((len = in.read(buf)) > 0) {
-	                out.write(buf, 0, len);
-	            }
-	            out.closeEntry();
-	            in.close();
-	        }
+	        copyResources(scormFileNames, out, buf);
 	        out.close();
+			dataFile.delete();
 	    } 
 	    catch (IOException e) 
 	    {   }
-		dataFile.delete();
+	}
+
+	private void copyResources(String[] scormFileNames, ZipOutputStream out,
+			byte[] buf) throws IOException {
+		int len;
+		for (int i=0; i<scormFileNames.length; i++) 
+		{
+		    String filename = scormFileNames[i];
+			InputStream in = getResource(filename);
+		    if(in == null) continue;
+		    out.putNextEntry(new ZipEntry(filename));
+		    while ((len = in.read(buf)) > 0) {
+		        out.write(buf, 0, len);
+		    }
+		    out.closeEntry();
+		    in.close();
+		}
+	}
+
+	private InputStream getResource(String filename) {
+		return getClass().getResourceAsStream(filename);
 	}
 	
 	public void readZip(String zipName)
@@ -361,7 +413,7 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			if(entry==null) entry = zipFile.getEntry("sco/Sco.htm");
 			//
 			
-			dataFile = new File("data.txt");
+			dataFile = File.createTempFile("data","txt");
 		    
 		    InputStream in =  zipFile.getInputStream(entry);
 		    OutputStream out = new BufferedOutputStream(new FileOutputStream(dataFile));
@@ -380,7 +432,7 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 		    ioe.printStackTrace();
 		    return;
 		}
-		leesFile("data.txt");
+		leesFile(dataFile.getAbsolutePath());
 		dataFile.delete();
     }
   
@@ -405,5 +457,12 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			}
 		}
 		else if(keuze.equals("print"))this.print();
+		else if(keuze.equals(SAVE_AS_FACET))
+			try {
+				this.saveFacet();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	}
 }
