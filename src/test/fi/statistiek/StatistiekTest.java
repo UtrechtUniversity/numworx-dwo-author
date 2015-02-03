@@ -287,6 +287,20 @@ public class StatistiekTest
 	}
 
 	@Test
+	public void testAppropriateBoundariesTenBins16_16()
+	{
+		double min = 16;
+		double max = 16;
+		int noBins = 10;
+		
+		ArrayList<Double> expected = new ArrayList(Arrays.asList(
+			16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0));
+		
+		ArrayList<Double> actual = Statistiek.appropriateBoundaries(min, max, noBins);
+		assertArrayEquals("", expected.toArray(), actual.toArray());
+	}
+
+	@Test
 	public void testAppropriateBoundariesSixBins2d48_2d57()
 	{
 		double min = 2.48;
@@ -330,6 +344,26 @@ public class StatistiekTest
 		
 		ArrayList<Double> expected = new ArrayList(Arrays.asList(
 			9.7, 9.75, 9.8, 9.85, 9.9, 9.95, 10.0, 10.05, 10.1, 10.15, 10.2, 10.25, 10.3));
+		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
+		assertEquals("Expected " + expected.toArray()
+			+ ", actual " + actual.toArray(), actual, expected);
+	}
+
+	/**
+	 * Minimum 16.0, 
+	 * maximum 16.0,
+	 * bin width 1.0,
+	 * start bin 16.0
+	 */
+	@Test
+	public void testAppropriateBoundariesFromBinSettings16_16_w1_s16()
+	{
+		double min = 16.0;
+		double max = 16.0;
+		double binWidth = 1.0;
+		double minBoundary = 16.0;
+		
+		ArrayList<Double> expected = new ArrayList(Arrays.asList(16.0, 17.0));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
 			+ ", actual " + actual.toArray(), actual, expected);
