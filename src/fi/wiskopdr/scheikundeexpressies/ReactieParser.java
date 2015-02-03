@@ -122,7 +122,8 @@ public class ReactieParser {
 				s = s.substring(0, i - 1) + s.substring(i + 1);
 		}
 		
-		//onderstaande gaat niet werken, want er kunnen plusjes in de ladingen zitten. Dus alleen plus op niveau 0 telt mee.
+		//Expressie splitsen in verschillende moleculen. 
+		//Er kunnen plusjes in de ladingen zitten. Dus alleen plus op niveau 0 telt mee.
 		int niv = 0;
 		for(int i = 0; i < s.length(); i++)
 		{
@@ -144,7 +145,7 @@ public class ReactieParser {
 			
 		}
 		
-		//nu zit er geen plus meer in, dus is het één combinatie van coëfficiënt en molecuul. Zou wel een maalteken in kunnen zitten..
+		//Nu is het een enkele molecuulexpressie (combinatie van coëfficiënt en molecuul). 
 		//bepalen wat het molecuul en het aantal moeten worden. 
 		int startIndex = 0;
 		for(int i = 0; i < s.length(); i++)
@@ -170,12 +171,46 @@ public class ReactieParser {
 		double aantal = Double.valueOf(aantalString);
 		
 		//molecuul zelf ontleden
-		//beste: eerst de lading eraf peuteren. Dan zit er een macht in. 
+		//Eerst de lading bepalen. Als het molecuul een lading heeft, zit er een macht in, anders niet. 
 		int lading = 0;
 		if(molecuulString.contains("^"))
 		{
-			//nog even laten...			String ladingString = molecuulString.substring(molecuulString.indexOf('^'));
-			molecuulString = molecuulString.substring(0, molecuulString.indexOf('^') - 1);
+			//ladingstring is het deel achter het dakje. Daarom begint en eindigt de ladingstring met een haakje. 
+			String ladingString = molecuulString.substring(molecuulString.indexOf('^') + 1);
+			ladingString = ladingString.substring(1, ladingString.length() - 1);
+			if(ladingString.endsWith("-"))
+			{
+				ladingString = ladingString.substring(0, ladingString.length() - 1);
+				try{
+					if(ladingString.length() > 0)
+						lading = - Integer.parseInt(ladingString);
+					else
+						lading = -1;
+				}
+				catch(Exception e)
+				{
+					System.out.println("catch bij negatieve lading");
+					return null;
+				}
+			}
+			else if(ladingString.endsWith("+"))
+			{
+				ladingString = ladingString.substring(0, ladingString.length() - 1);
+				try{
+					if(ladingString.length() > 0)
+						lading = Integer.parseInt(ladingString);
+					else
+						lading = 1;
+				}
+				catch(Exception e)
+				{
+					System.out.println("catch bij positieve lading");
+					return null;
+				}
+			}
+			else
+				System.out.println("lading eindigt niet op + of -");
+			molecuulString = molecuulString.substring(0, molecuulString.indexOf('^'));
 		}
 		
 		
@@ -250,8 +285,13 @@ public class ReactieParser {
 	public static String formuleString(String s)
 	{	s = "(" + s.substring(2,s.length()-1) + ")";
 		
-		
-		int n = s.indexOf("$s");
+		int n = s.indexOf(" ");
+		while(n>-1)
+		{
+			s = s.substring(0,n)+s.substring(n+1);
+			n = s.indexOf(" ");
+		}
+		n = s.indexOf("$s");
         while(n>-1)
         {   s = s.substring(0,n) + "?(" + s.substring(n+2);
             n = s.indexOf("$s");

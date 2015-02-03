@@ -116,7 +116,7 @@ public class ReactieExpressie {
 		String s = "";
 		for(int i = 0; i < moleculen.length; i++)
 		{
-			s = s + moleculen[i] + "+";
+			s = s + aantallen[i] + moleculen[i] + "+";
 		}
 		s = s.substring(0, s.length() - 1);
 		return s;

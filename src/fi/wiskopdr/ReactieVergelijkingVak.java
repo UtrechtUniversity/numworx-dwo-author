@@ -1170,8 +1170,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 					zetGoedFout(GOED);
 				// zetCorrectFoutStap(stapNr,true,false,false,"feedbackTekst16");//"Dit is een correcte vergelijking"
 
-				// Nu kan het vak gebruikt worden als 'balans' voor het checken
-				// van ware beweringen
 			}
 		}
 		else
@@ -1236,7 +1234,9 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	{
 		
 		if (gewensteEindOplossing == null)
+		{	System.out.println("gewensteEindoplossing null");
 			return;
+		}
 
 		//Algebra.setTestValues(eqTestValueMin, eqTestValueMax);
 		ingevuld = false;
@@ -1267,6 +1267,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		{
 			//er is iets mis met ingevulde antwoord; 
 			isGelijkwaardig = false;
+			System.out.println("antwoordIngevuld = null");
 		}
 		else
 			isGelijkwaardig = antwoordIngevuld.isGelijkwaardig(gewensteEindOplossing);
