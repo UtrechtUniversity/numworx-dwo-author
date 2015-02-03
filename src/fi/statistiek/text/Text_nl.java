@@ -7,7 +7,7 @@ public class Text_nl extends java.util.ListResourceBundle
         {
             {	"addaviewKnopTekst" , "Voeg een view toe: " },
             {   "chooseaviewOption", "Kies een view" },
-            {   "changeviewnameDialog", "Verander view naam" },
+            {   "changeviewnameDialog", "Wijzig viewnaam" },
             {   "enternameLabel", "Geef een nieuwe naam" },
             {   "namealreadyinuseLabel", "Deze naam is al in gebruik. Geef een andere naam" },
             {   "dataeditableCheckBox", "Data is bewerkbaar" },
