@@ -27,6 +27,12 @@ public class Molecuul {
 	
 	public boolean isGelijkwaardig(Molecuul m)
 	{
+		boolean gelijkWaardig = isGelijkwaardigZonderLading(m);
+		return gelijkWaardig && m.lading == lading;
+	}
+	
+	public boolean isGelijkwaardigZonderLading(Molecuul m)
+	{
 		if(atoomDelen.length != m.atoomDelen.length)
 			return false;
 		Vector<AtoomDeel> a1 = new Vector<AtoomDeel>();

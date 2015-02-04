@@ -126,6 +126,15 @@ public class Text_en extends java.util.ListResourceBundle
                 { "feedbackTekst18" , "The answer is correct, but the number of significant figures isn't right." },
                 { "feedbackTekst19" , "The answer is correct, but doesn't have the right form and the number of significant figures isn't right." },
                 { "feedbackTekst20" , "The answer is correct, number of significant figures is right, but doesn't have the right form." },
+                
+                { "feedbackReactieVerg01" , "Je reactievergelijking bevat nog niet de juiste moleculen."},
+                { "feedbackReactieVerg02" , "De elementenbalans van je reactievergelijking klopt niet."},
+                { "feedbackReactieVerg03" , "De ladingen bij de moleculen kloppen niet."},
+                { "feedbackReactieVerg04" , "De ladingenbalans van je reactievergelijking klopt niet."},
+                { "feedbackReactieVerg05" , "Is het een evenwichtsreactie of een aflopende reactie?" },
+                { "feedbackReactieVerg06" , "Je kunt de vergelijking eenvoudiger schrijven."},
+                { "feedbackReactieVerg07" , "Dit is een kloppende reactie, maar niet die waar om werd gevraagd."},
+
                 { "xVarMessage1" , "The independent variable is alway\n" 
 									+ "a letter.\n " 
 									+ "In the case of word variables\n" 

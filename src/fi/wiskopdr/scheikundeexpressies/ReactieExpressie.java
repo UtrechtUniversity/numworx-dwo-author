@@ -102,6 +102,7 @@ public class ReactieExpressie {
 					molecuulKomtVoor =true;
 					if(aantallen[i] != exp.aantallen[j])
 						return false;
+					break;
 				}
 			}
 			if(!molecuulKomtVoor)
@@ -110,6 +111,47 @@ public class ReactieExpressie {
 		return true;
 	}
 	
+	public boolean isGelijkwaardigMoleculen(ReactieExpressie exp)
+	{
+		if(exp.moleculen.length != moleculen.length)
+			return false;
+		
+		for(int i = 0; i < moleculen.length; i++)
+		{	boolean molecuulKomtVoor = false;
+			for(int j = 0; j < exp.moleculen.length; j++)
+			{
+				if(moleculen[i].isGelijkwaardigZonderLading(exp.moleculen[j]))
+				{
+					molecuulKomtVoor = true;
+					break;
+				}
+			}
+			if(!molecuulKomtVoor)
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean isGelijkwaardigMoleculenLading(ReactieExpressie exp)
+	{
+		if(exp.moleculen.length != moleculen.length)
+			return false;
+		
+		for(int i = 0; i < moleculen.length; i++)
+		{	boolean molecuulKomtVoor = false;
+			for(int j = 0; j < exp.moleculen.length; j++)
+			{
+				if(moleculen[i].isGelijkwaardig(exp.moleculen[j]))
+				{
+					molecuulKomtVoor = true;
+					break;
+				}
+			}
+			if(!molecuulKomtVoor)
+				return false;
+		}
+		return true;
+	}
 	
 	public String toString()
 	{

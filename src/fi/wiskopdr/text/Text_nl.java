@@ -126,6 +126,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "feedbackTekst19" , "Oplossing is goed, maar nog niet in de juiste vorm en de significantie klopt niet." },
                 { "feedbackTekst20" , "Oplossing is goed, significantie klopt maar heeft nog niet de juiste vorm." },
                 
+                { "feedbackReactieVerg01" , "Je reactievergelijking bevat nog niet de juiste moleculen."},
+                { "feedbackReactieVerg02" , "De elementenbalans van je reactievergelijking klopt niet."},
+                { "feedbackReactieVerg03" , "De ladingen bij de moleculen kloppen niet."},
+                { "feedbackReactieVerg04" , "De ladingenbalans van je reactievergelijking klopt niet."},
+                { "feedbackReactieVerg05" , "Is het een evenwichtsreactie of een aflopende reactie?" },
+                { "feedbackReactieVerg06" , "Je kunt de vergelijking eenvoudiger schrijven."},
+                { "feedbackReactieVerg07" , "Dit is een kloppende reactie, maar niet die waar om werd gevraagd."},
+                
                 { "xVarMessage1" , "De onafhankelijk variabele is altijd\n" 
 									+ "een letter.\n " 
 									+ "In het geval er met woordformules\n" 

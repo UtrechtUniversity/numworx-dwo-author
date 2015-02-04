@@ -62,6 +62,11 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	//private boolean eindOplossingNodig;
 	//private boolean exactNodig;
 	private boolean isGelijkwaardig = false;
+	private boolean isGelijkwaardigMoleculen = false;
+	private boolean isGelijkwaardigMoleculenLading = false;
+	private boolean pijlKlopt = false;
+	private boolean elementenBalansKlopt = false;
+	private boolean ladingenBalansKlopt = false;
 	//private boolean isEindOplossing = false;
 	//private boolean isEindOplossingExact = false;
 	//private boolean isEindOplossingSignificant = false;
@@ -72,12 +77,12 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	//private boolean moetNogAfgerond = false;
 	//private boolean moetNogOngelijkheid = false;
 	
-	private int puntenGelijkwaardig = 0;
-	private int puntenVorm = 0;
-	private int puntenEindOplossing = 10;
-	private int puntenExact = 0;
-	private int puntenSignificant = 0;
-
+	private int puntenCorrect = 0;
+	private int puntenMoleculen = 0;
+	private int puntenElementen = 0;
+	private int puntenLadingen = 0;
+	private int puntenVereenvoudigbaar = 0;
+	
 	private int score;
 	private int scoreMax;
 	private boolean correct;
@@ -552,10 +557,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		boolean eindOplossingNodig = false;
 		boolean exact = false;
 		boolean significant = false;
-		int soortHerleiding = 0;
-		int puntenGelijkwaardig = 10;
-		int puntenHerleiding = 0;
-		int puntenExact = 0;
 		int puntenFeedback = 0;
 		String feedback = "";
 		int feedbackWidth = 200;
@@ -576,14 +577,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 				exact = ((Boolean) h.get("exact")).booleanValue();
 			if(h.containsKey("significant")) 
 				significant = ((Boolean)h.get("significant")).booleanValue();
-			if (h.containsKey("soortHerleiding"))
-				soortHerleiding = ((Integer) h.get("soortHerleiding")).intValue();
-			if (h.containsKey("puntenGelijkwaardig"))
-				puntenGelijkwaardig = ((Integer) h.get("puntenGelijkwaardig")).intValue();
-			if (h.containsKey("puntenHerleiding"))
-				puntenHerleiding = ((Integer) h.get("puntenHerleiding")).intValue();
-			if (h.containsKey("puntenExact"))
-				puntenExact = ((Integer) h.get("puntenExact")).intValue();
 			if (h.containsKey("puntenFeedback"))
 				puntenFeedback = ((Integer) h.get("puntenFeedback")).intValue();
 			if (h.containsKey("feedback"))
@@ -657,11 +650,11 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		randomVarWaarden = randomValues;
 
 		String antwoordString = "$f@";
-		int puntenGelijkwaardig = 10;
-		int puntenExact = 0;
-		int puntenSignificant = 0;
-		int puntenEindOplossing = 0;
-		int puntenVorm = 0;
+		int puntenCorrect = 10;
+		int puntenMoleculen = 0;
+		int puntenElementen = 0;
+		int puntenLadingen = 0;
+		int puntenVereenvoudigbaar = 0;
 		Hashtable[] answerModels = null;
 		boolean hasFeedback = false;
 		boolean feedbackSize = false;
@@ -680,16 +673,16 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		
 		if (h.containsKey("antwoordString"))
 			antwoordString = (String) h.get("antwoordString");
-		if (h.containsKey("puntenGelijkwaardig"))
-			puntenGelijkwaardig = ((Integer) h.get("puntenGelijkwaardig")).intValue();
-		if (h.containsKey("puntenExact"))
-			puntenExact = ((Integer) h.get("puntenExact")).intValue();
-		if(h.containsKey("puntenSignificant")) 
-			puntenSignificant = ((Integer)h.get("puntenSignificant")).intValue();
-		if (h.containsKey("puntenVorm"))
-			puntenVorm = ((Integer) h.get("puntenVorm")).intValue();
-		if (h.containsKey("puntenEindOplossing"))
-			puntenEindOplossing = ((Integer) h.get("puntenEindOplossing")).intValue();
+		if (h.containsKey("puntenCorrect"))
+			puntenCorrect = ((Integer) h.get("puntenCorrect")).intValue();
+		if (h.containsKey("puntenMoleculen"))
+			puntenMoleculen = ((Integer) h.get("puntenMoleculen")).intValue();
+		if (h.containsKey("puntenElementen"))
+			puntenElementen = ((Integer) h.get("puntenElementen")).intValue();
+		if (h.containsKey("puntenLadingen"))
+			puntenLadingen = ((Integer) h.get("puntenLadingen")).intValue();
+		if (h.containsKey("puntenVereenvoudigbaar"))
+			puntenVereenvoudigbaar = ((Integer) h.get("puntenVereenvoudigbaar")).intValue();
 		if (h.containsKey("answerModels"))
 			answerModels = (Hashtable[]) h.get("answerModels");
 		if (h.containsKey("hasFeedback"))
@@ -730,11 +723,11 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		this.eqTestValueMin = eqTestValueMin;
 		this.eqTestValueMax = eqTestValueMax;
 
-		this.puntenGelijkwaardig = puntenGelijkwaardig;
-		this.puntenVorm = puntenVorm;
-		this.puntenEindOplossing = puntenEindOplossing;
-		this.puntenExact = puntenExact;
-		this.puntenSignificant = puntenSignificant;
+		this.puntenCorrect = puntenCorrect;
+		this.puntenMoleculen = puntenMoleculen;
+		this.puntenElementen = puntenElementen;
+		this.puntenLadingen = puntenLadingen;
+		this.puntenVereenvoudigbaar = puntenVereenvoudigbaar;
 		this.logObjectives = logObjectives;
 
 //		try {
@@ -942,18 +935,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		return 0;
 	}
 
-	public void setScoreDataVergelijking(boolean vorm, boolean eindOplossingNodig, boolean exactNodig, int puntenGelijkwaardig, int puntenVorm, int puntenEindOplossing, int puntenExact)
-	{
-		//this.vorm = vorm;
-		//this.eindOplossingNodig = eindOplossingNodig;
-		//this.exactNodig = exactNodig;
-		this.puntenGelijkwaardig = puntenGelijkwaardig;
-		this.puntenVorm = puntenVorm;
-		this.puntenEindOplossing = puntenEindOplossing;
-		this.puntenExact = puntenExact;
-	}
-
-	
+		
 	public void vulVak(String s)
 	{
 		formuleVak.vulVak(s);
@@ -1162,24 +1144,101 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		}
 		else if (isGelijkwaardig)
 		{
-			{
-				score = puntenGelijkwaardig;
-				correct = true;
-				fout = false;
-				if(show)
-					zetGoedFout(GOED);
-				// zetCorrectFoutStap(stapNr,true,false,false,"feedbackTekst16");//"Dit is een correcte vergelijking"
+		
+			score = puntenCorrect;
+			correct = true;
+			fout = false;
+			if(show)
+				zetGoedFout(GOED);
+			// zetCorrectFoutStap(stapNr,true,false,false,"feedbackTekst16");//"Dit is een correcte vergelijking"
 
+			
+		}
+		else if(!isGelijkwaardigMoleculen)
+		{
+			score = 0;
+			correct = false;
+			fout = true;
+			if(show)
+			{	setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg01"), true);
+				zetGoedFout(FOUT);
 			}
 		}
+		else if(!elementenBalansKlopt)
+		{
+			score = puntenMoleculen;
+			correct = false;
+			fout = false;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg02"), true);
+				zetGoedFout(HALF);
+			}
+		}
+		else if(!isGelijkwaardigMoleculenLading)
+		{
+			score = puntenElementen;
+			correct = false;
+			fout = false;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg03"), true);
+				zetGoedFout(HALF);
+			}
+		}
+		else if(!ladingenBalansKlopt)
+		{
+			score = puntenElementen;
+			correct = false;
+			fout = false;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg04"), true);
+				zetGoedFout(HALF);
+			}
+		}
+		else if(!pijlKlopt)
+		{
+			score = puntenLadingen;
+			correct = false;
+			fout = false;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg05"), true);
+				zetGoedFout(HALF);
+			}
+		}
+//		else if(kanVereenvoudigd)
+//		{
+//			score = puntenVereenvoudigbaar;
+//			correct = false;
+//			fout = false;
+//			if(show)
+//			{
+//				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg06"), true);
+//				zetGoedFout(HALF);
+//			}
+//		}
 		else
 		{
 			score = 0;
 			correct = false;
 			fout = true;
 			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg07"), true);
 				zetGoedFout(FOUT);
+			}
 		}
+		
+//		else
+//		{
+//			score = 0;
+//			correct = false;
+//			fout = true;
+//			if(show)
+//				zetGoedFout(FOUT);
+//		}
 
 		
 
@@ -1263,19 +1322,30 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 //			antwoord = antwoordAlles;
 //			antwoordIngevuld = antwoordAlles;
 //		}
-		if(antwoordIngevuld == null)
+		isGelijkwaardig = false;
+		isGelijkwaardigMoleculen = false;
+		isGelijkwaardigMoleculenLading = false;
+		elementenBalansKlopt = false;
+		ladingenBalansKlopt = false;
+		pijlKlopt = false;
+		if(antwoordIngevuld != null)
 		{
-			//er is iets mis met ingevulde antwoord; 
-			isGelijkwaardig = false;
-			System.out.println("antwoordIngevuld = null");
-		}
-		else
 			isGelijkwaardig = antwoordIngevuld.isGelijkwaardig(gewensteEindOplossing);
-		
-		
-			
-		
-		
+			if(isGelijkwaardig)
+			{
+				isGelijkwaardigMoleculen = true;
+				isGelijkwaardigMoleculenLading = true;
+			}
+			else
+			{
+				isGelijkwaardigMoleculen = antwoordIngevuld.isGelijkwaardigMoleculen(gewensteEindOplossing);
+				isGelijkwaardigMoleculenLading = antwoordIngevuld.isGelijkwaardigMoleculenLading(gewensteEindOplossing);
+	
+			}
+			elementenBalansKlopt = antwoordIngevuld.elementenBalansKlopt();
+			ladingenBalansKlopt = antwoordIngevuld.ladingenBalansKlopt();
+			pijlKlopt = antwoordIngevuld.isGelijkwaardigPijl(gewensteEindOplossing);
+		}
 		
 
 //		isGelijkwaardig = isGelijkwaardigEind;
