@@ -371,6 +371,7 @@ ScormEditComponentIF scormEditComponent;
 	        {	out.write(buf, 0, len);
 	        }
 	        fin.close();
+	        out.closeEntry();
 	        String scriptname = "sco/script/FiScoScript.js";
 	        String[] scormFileNames = {"adlcp_rootv1p2.xsd","ims_xml.xsd","imscp_rootv1p1p2.xsd","imsmanifest.xml","imsmd_rootv1p2p1.xsd",scriptname};
 	        copyResources(scormFileNames, out, buf);

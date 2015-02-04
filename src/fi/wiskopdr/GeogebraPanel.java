@@ -483,7 +483,6 @@ System.out.println("end refresh geogebra");System.out.flush();
 					geogebraApplet.getGeoGebraAPI().setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
 				}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		setGeogebraParameters();
@@ -988,6 +987,8 @@ System.out.println("end refresh geogebra");System.out.flush();
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (RuntimeException e) {
+				e.printStackTrace();
 			}
 		else {
 // GGB 4.0 setbase64
@@ -995,7 +996,6 @@ System.out.println("end refresh geogebra");System.out.flush();
 				String data = Base64StringEncoder.encode(state);
 				geogebraApplet.getGeoGebraAPI().setBase64(data);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

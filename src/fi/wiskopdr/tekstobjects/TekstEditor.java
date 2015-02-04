@@ -217,7 +217,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		epsilonKnop = new FormuleButton("epsilonwriter");
 		epsilonKnop.setBounds(64+26+26+26+26+26+26+26+26+26+26,2,20,20);
 		epsilonKnop.addActionListener(this);
-		//if(form)headerPanel.add(epsilonKnop);
+		if(form)headerPanel.add(epsilonKnop);
 
 		appletKnop = new FormuleButton("interactiecomponent");
 		appletKnop.setBounds(64+26+26+26,2,20,20);

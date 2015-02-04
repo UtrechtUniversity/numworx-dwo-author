@@ -412,12 +412,12 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 					ResourceContainer unit = rm().getInstanceContainer();
 					URL u; //u = unit.open(fileUrl).getURL();
 					u = new URL(unit.getURL(), fileUrl);
-					geogebraApplet.openFile(u.toExternalForm());
+					openGGBfile(u);
 				} else
 				if(ggbFile != null && hasLoadGGBfile)
 					setGGBfile(ggbFile);
 				else
-					geogebraApplet.setXML(state);
+					setGGBXML(state);
 				for(int i=0 ; i<randomVars.length ; i++)
 				{	
 					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
@@ -430,7 +430,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 				{
 					ResourceContainer unit = rm().getInstanceContainer();
 					URL u = new URL(unit.getURL(), fileUrl);
-					geogebraApplet.openFile(u.toExternalForm());
+					openGGBfile(u);
 				} else
 				if(ggbFile != null && hasLoadGGBfile)
 					setGGBfile(ggbFile);
@@ -438,7 +438,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 				{
 					if(state == null) state = "";
 					if(!geogebraNieuw) state = StringUtils.replaceStr(state,"<show algebraView=\"false\"", "<show algebraView=\"true\"");
-					geogebraApplet.setXML(state);
+					setGGBXML(state);
 				}
 				for(int i=0 ; i<randomVars.length ; i++){	
 					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
@@ -465,6 +465,22 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 		
 		repaintGeogebra();
 	}
+
+	private void openGGBfile(URL u) {
+		try {
+			geogebraApplet.openFile(u.toExternalForm());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setGGBXML(String state) {
+		try {
+			geogebraApplet.setXML(state);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	// set suspend state (recover the state in which a student left it when finishing the activity)
 	public void setState(Hashtable h){	
@@ -490,7 +506,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			//if(ggbFile != null && hasLoadGGBfile)
 			//	setGGBfile(ggbFile);
 			//else {
-				geogebraApplet.setXML(state);
+				setGGBXML(state);
 			//}
 		}
 		repaint();
@@ -596,7 +612,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			try {
 				URL u; //u = unit.open(fileUrl).getURL();
 				u = new URL(unit.getURL(), fileUrl);
-				geogebraApplet.openFile(u.toExternalForm());
+				openGGBfile(u);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -607,14 +623,14 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			setGGBfile(ggbFile);
 		} else
 		if(editapplet){	
-			geogebraApplet.setXML(state);
+			setGGBXML(state);
 		}
 		else if(alsTool){	
-			geogebraApplet.setXML(state);
+			setGGBXML(state);
 		}
 		else {
 			if(!geogebraNieuw) state = StringUtils.replaceStr(state,"<show algebraView=\"false\"", "<show algebraView=\"true\"");
-			geogebraApplet.setXML(state);
+			setGGBXML(state);
 		}
 		
 		repaintGeogebra();
@@ -1037,12 +1053,16 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (RuntimeException e) {
+				e.printStackTrace();
 			}
 		else
 			try {
-				geogebraApplet.setXML(new String(state, UTF8));
+				setGGBXML(new String(state, UTF8));
 			} catch (UnsupportedEncodingException e) {
-				geogebraApplet.setXML(new String(state));
+				setGGBXML(new String(state));
+			} catch (RuntimeException e) {
+				e.printStackTrace();
 			}
     	
     }
