@@ -1,4 +1,4 @@
-package fi.wiskopdr.scheikundeexpressies;
+package fi.wiskopdr.scheikundeobjects;
 
 public class ReactieVergelijking {
 
@@ -117,6 +117,29 @@ public class ReactieVergelijking {
 	public boolean isGelijkwaardigPijl(ReactieVergelijking vergelijking)
 	{
 		return vergelijking.pijl == pijl;
+	}
+	
+	public boolean kanVereenvoudigd(ReactieVergelijking vergelijking)
+	{
+		ReactieExpressie e1 = vergelijking.expressie1;
+		ReactieExpressie e2 = vergelijking.expressie2;
+		
+		if(e1.isGelijkwaardigMoleculenLading(expressie1))
+		{
+			double factor1 = e1.vereenvoudigFactor(expressie1);
+			double factor2 = e2.vereenvoudigFactor(expressie2);
+			if(factor1 != -999 && factor1 == factor2)
+				return true;
+		}
+		else if(pijl == EVENWICHTSREACTIE && e1.isGelijkwaardigMoleculenLading(expressie2))
+		{
+			double factor1 = e1.vereenvoudigFactor(expressie2);
+			double factor2 = e2.vereenvoudigFactor(expressie1);
+			if(factor1 != -999 && factor1 == factor2)
+				return true;
+		}
+		return false;
+		 
 	}
 	
 	public String toString()

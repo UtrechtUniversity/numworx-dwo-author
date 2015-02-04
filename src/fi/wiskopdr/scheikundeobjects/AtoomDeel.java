@@ -1,4 +1,4 @@
-package fi.wiskopdr.scheikundeexpressies;
+package fi.wiskopdr.scheikundeobjects;
 
 
 /*

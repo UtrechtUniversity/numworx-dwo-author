@@ -3,6 +3,7 @@ package fi.wiskopdr.formuleobjects;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -14,6 +15,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 {	
 		
 	protected FormuleButton wortelKnop, machtKnop, kwadraatKnop, breukKnop, haakjesKnop, ndewortelKnop, ndelogKnop, integraalKnop, prvKnop, absKnop;
+	protected FormuleButton subscriptKnop, enkelePijlKnop, dubbelePijlKnop;
 	protected FormuleButton tabletButton;
 	public FormuleVak formuleVak;
 	private boolean actief;
@@ -235,6 +237,30 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		
 		
 		
+	}
+	
+	public void zetReactieVergelijkingMode()
+	{
+		headerPanel.remove(wortelKnop);
+		headerPanel.remove(kwadraatKnop);
+		headerPanel.remove(breukKnop);
+		headerPanel.remove(haakjesKnop);
+		headerPanel.remove(tabletButton);
+		
+		subscriptKnop = new FormuleButton("subscript");
+		subscriptKnop.setBounds(2,2,20,20);
+		subscriptKnop.addActionListener(this);
+		headerPanel.add(subscriptKnop);
+
+		enkelePijlKnop = new FormuleButton("\u2192");
+		enkelePijlKnop.setBounds(46, 2, 20, 20);
+		enkelePijlKnop.addActionListener(this);
+		headerPanel.add(enkelePijlKnop);
+
+		dubbelePijlKnop = new FormuleButton("\u21c4");//pijl andersom is u21c6. Als veranderd, dan ook bij actionlistener en in parser.
+		dubbelePijlKnop.setBounds(68, 2, 20, 20);
+		dubbelePijlKnop.addActionListener(this);
+		headerPanel.add(dubbelePijlKnop);
 	}
 	
 	public void zetGrafiekOfEdit(boolean b)
@@ -584,6 +610,17 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		{	if(formuleVak!=null && formuleVak.isEditable())
 			{	formuleVak.zetAbsVak();
 			}
+		}
+		else if(e.getSource()==subscriptKnop)
+		{	if(formuleVak!=null && formuleVak.isEditable())formuleVak.zetSubscriptVak();
+		}
+		else if(e.getSource() == enkelePijlKnop)
+		{
+			if(formuleVak != null && formuleVak.isEditable())formuleVak.insert(" \u2192 ");
+		}
+		else if(e.getSource() == dubbelePijlKnop)
+		{
+			if(formuleVak != null && formuleVak.isEditable())formuleVak.insert(" \u21c4 ");
 		}
 		else if(e.getSource()==tabletButton)
 		{	activateTablet();

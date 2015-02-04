@@ -1,4 +1,4 @@
-package fi.wiskopdr.scheikundeexpressies;
+package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 
@@ -66,7 +66,15 @@ public class ReactieParser {
 			s = s.substring(2,s.length()-1);
 			if(s.length()==0)return null;
 			
-			String[] expressieStrings = StringUtils.split(s, "=");
+			String[]expressieStrings = null;
+			int pijl = 0;
+			if(s.contains("\u2192"))
+			{	expressieStrings = StringUtils.split(s, "\u2192");
+			}
+			else if(s.contains("\u21c4"))
+			{	expressieStrings = StringUtils.split(s, "\u21c4");
+				pijl = 1;
+			}
 			if(expressieStrings.length != 2)
 				return null;
 			ReactieExpressie e1 = parse(formuleString("$f" + expressieStrings[0] + "@"));
@@ -74,7 +82,7 @@ public class ReactieParser {
 			if(e1 == null || e2 == null)
 				return null;
 			else
-				return new ReactieVergelijking(e1, e2);
+				return new ReactieVergelijking(e1, e2, pijl);
 		}
 		catch(Exception e)
 		{

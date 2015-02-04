@@ -1,4 +1,4 @@
-package fi.wiskopdr.scheikundeexpressies;
+package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 

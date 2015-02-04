@@ -127,13 +127,21 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "feedbackTekst20" , "Oplossing is goed, significantie klopt maar heeft nog niet de juiste vorm." },
                 
                 { "feedbackReactieVerg01" , "Je reactievergelijking bevat nog niet de juiste moleculen."},
-                { "feedbackReactieVerg02" , "De elementenbalans van je reactievergelijking klopt niet."},
-                { "feedbackReactieVerg03" , "De ladingen bij de moleculen kloppen niet."},
-                { "feedbackReactieVerg04" , "De ladingenbalans van je reactievergelijking klopt niet."},
+                { "feedbackReactieVerg02" , "Je hebt de juiste moleculen, maar de elementenbalans van je reactievergelijking klopt nog niet."},
+                { "feedbackReactieVerg03" , "Je hebt de juiste moleculen, maar de ladingen bij de moleculen kloppen nog niet."},
+                { "feedbackReactieVerg04" , "Je hebt de juiste moleculen, maar de ladingenbalans van je reactievergelijking klopt nog niet."},
                 { "feedbackReactieVerg05" , "Is het een evenwichtsreactie of een aflopende reactie?" },
                 { "feedbackReactieVerg06" , "Je kunt de vergelijking eenvoudiger schrijven."},
                 { "feedbackReactieVerg07" , "Dit is een kloppende reactie, maar niet die waar om werd gevraagd."},
                 
+                { "rvScoreCorrect" , "Score voor correcte vergelijking: "},
+                { "rvAftrekVereenvoudigbaar", "Aftrek als vereenvoudigbaar:"},
+                { "rvLossePunten", "Als niet correct, geef punten voor (punten hieronder zijn cumulatief): "},
+                { "rvScoreMoleculen", "Correcte moleculen aanwezig:"},
+                { "rvScoreElementen", "Elementenbalans klopt:"},
+                { "rvScoreLadingen", "Ladingenbalans klopt:"},
+                
+               
                 { "xVarMessage1" , "De onafhankelijk variabele is altijd\n" 
 									+ "een letter.\n " 
 									+ "In het geval er met woordformules\n" 

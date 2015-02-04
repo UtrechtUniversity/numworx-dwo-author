@@ -1,4 +1,4 @@
-package fi.wiskopdr;
+package fi.wiskopdr.scheikundeobjects;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
@@ -34,6 +34,11 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wnwidgets.NWButtonUI;
+import fi.wiskopdr.AntwoordVak;
+import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.ImageComponent;
+import fi.wiskopdr.TekstVakPanel;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 //import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -41,8 +46,6 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
-import fi.wiskopdr.scheikundeexpressies.ReactieParser;
-import fi.wiskopdr.scheikundeexpressies.ReactieVergelijking;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
@@ -52,36 +55,27 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	static int HALF = 2;
 	static int GEEN = 3;
 
-	private FormuleButton plusKnop, minKnop, maalKnop, deelKnop, haakjesKnop, herleidKnop, abcKnop, subKnop;
-	private FormuleButton ontbindKnop, splitsKnop, wortelBewerkKnop;
+	//private FormuleButton plusKnop, minKnop, maalKnop, deelKnop, haakjesKnop, herleidKnop, abcKnop, subKnop;
+	//private FormuleButton ontbindKnop, splitsKnop, wortelBewerkKnop;
+	protected FormuleButton subscriptKnop, enkelePijlKnop, dubbelePijlKnop;
+	
 	
 	private boolean ingevuld = false;
 	boolean nagekeken = false;
 
-	//private boolean vorm;
-	//private boolean eindOplossingNodig;
-	//private boolean exactNodig;
 	private boolean isGelijkwaardig = false;
 	private boolean isGelijkwaardigMoleculen = false;
 	private boolean isGelijkwaardigMoleculenLading = false;
 	private boolean pijlKlopt = false;
 	private boolean elementenBalansKlopt = false;
 	private boolean ladingenBalansKlopt = false;
-	//private boolean isEindOplossing = false;
-	//private boolean isEindOplossingExact = false;
-	//private boolean isEindOplossingSignificant = false;
-	//private boolean isJuisteVorm = false;
-
-	//private boolean bevatFouteOplossing = false;
-	//private boolean bevatVoldoetNiet = false;
-	//private boolean moetNogAfgerond = false;
-	//private boolean moetNogOngelijkheid = false;
+	private boolean kanVereenvoudigd = false;
 	
 	private int puntenCorrect = 0;
 	private int puntenMoleculen = 0;
 	private int puntenElementen = 0;
 	private int puntenLadingen = 0;
-	private int puntenVereenvoudigbaar = 0;
+	private int aftrekVereenvoudigbaar = 0;
 	
 	private int score;
 	private int scoreMax;
@@ -93,9 +87,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	private ImageComponent goedIC, foutIC, halfIC, huidigIC;
 	private ImageComponent feedbackIC;
 	private ReactieVergelijking gewensteEindOplossing;
-	//private VergelijkingMeerv gewensteEindOplossing;
-	//private VergelijkingMeerv gewensteTussenOplossing;
-
+	
 	//private VergelijkingMeerv[] juisteVormen;
 
 	private ImageComponent[] imageComponenten;
@@ -111,7 +103,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	//private Expressie substitutie;
 	private TekstArea feedbackTekst;
 	
-	//private String gekozenAntwoordString, gekozenStartString; 
 	private String formuleVakString;
 
 	private Hashtable[] answerModels;
@@ -122,11 +113,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	private boolean feedbackSize;
 	private int feedbackWidth = 200;
 	private int feedbackHeight = 20;
-	private boolean exactP;
-	private boolean significantP;
-	private boolean vormP;
-	private boolean eindOplossingNodigP;
-	private boolean gelijkwaardigP;
 	private boolean hasFeedback;
 	private int puntenFeedback;
 	private int goedHalfFout;
@@ -135,7 +121,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	//private String[] antwoordStringSubstituties;
 	//private Vergelijking[] gebruikersSubstituties;
 	//private FormuleEditor gebruikersSubstitutiesVak;
-	private boolean pijl = true;
 	
 	private Vector log;
 	private JButton logKnop;
@@ -159,7 +144,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	private boolean uitw = false;
 	private FormuleButton wisKnop;
 	
-	private ReactieVergelijking huidigeVergelijking;
+	//private ReactieVergelijking huidigeVergelijking;
 	//private VergelijkingMeerv huidigeVergelijking;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
@@ -174,7 +159,9 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		super(true);
 		remove(formuleVak);
 		formuleVak.removeActionListener(this);
-
+	
+		this.zetReactieVergelijkingMode();
+		
 		goedIC = new ImageComponent(WiskOpdr.GOEDKRUL);
 		goedIC.setLocation(0, 0);
 		goedIC.setVisible(false);
@@ -226,97 +213,97 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		formuleVak.setLocation(formuleVakX, formuleVakY);
 		add(formuleVak);
 
-		plusKnop = new FormuleButton("plus", FormuleButton.BEWERKINGSKNOP);
-		plusKnop.setBounds(knoppenStartX + 140, 2, 20, 20);
-		plusKnop.addActionListener(this);
-		zetOpBalk(plusKnop);
-		plusKnop.setVisible(false);
-
-		minKnop = new FormuleButton("min", FormuleButton.BEWERKINGSKNOP);
-		minKnop.setBounds(knoppenStartX + 162, 2, 20, 20);
-		minKnop.addActionListener(this);
-		zetOpBalk(minKnop);
-		minKnop.setVisible(false);
-
-		maalKnop = new FormuleButton("maal", FormuleButton.BEWERKINGSKNOP);
-		maalKnop.setBounds(knoppenStartX + 184, 2, 20, 20);
-		maalKnop.addActionListener(this);
-		zetOpBalk(maalKnop);
-		maalKnop.setVisible(false);
-
-		deelKnop = new FormuleButton("deel", FormuleButton.BEWERKINGSKNOP);
-		deelKnop.setBounds(knoppenStartX + 206, 2, 20, 20);
-		deelKnop.addActionListener(this);
-		zetOpBalk(deelKnop);
-		deelKnop.setVisible(false);
-
-		haakjesKnop = new FormuleButton("haakjesweg", FormuleButton.BEWERKINGSKNOP);
-		haakjesKnop.setBounds(knoppenStartX + 236, 2, 20, 20);
-		haakjesKnop.addActionListener(this);
-		zetOpBalk(haakjesKnop);
-		haakjesKnop.setVisible(false);
-
-		herleidKnop = new FormuleButton("herleid", FormuleButton.BEWERKINGSKNOP);
-		herleidKnop.setBounds(knoppenStartX + 258, 2, 20, 20);
-		herleidKnop.addActionListener(this);
-		zetOpBalk(herleidKnop);
-		herleidKnop.setVisible(false);
-
-		ontbindKnop = new FormuleButton("ontbind", FormuleButton.BEWERKINGSKNOP);
-		ontbindKnop.setBounds(knoppenStartX + 280, 2, 20, 20);
-		ontbindKnop.setToolTipText("Ontbind");
-		ontbindKnop.addActionListener(this);
-		zetOpBalk(ontbindKnop);
-		ontbindKnop.setVisible(false);
-
-		splitsKnop = new FormuleButton("splits", FormuleButton.BEWERKINGSKNOP);
-		splitsKnop.setBounds(knoppenStartX + 312, 2, 20, 20);
-		splitsKnop.setToolTipText("Splits");
-		splitsKnop.addActionListener(this);
-		zetOpBalk(splitsKnop);
-		splitsKnop.setVisible(false);
-
-		wortelBewerkKnop = new FormuleButton("wortelbewerk", FormuleButton.BEWERKINGSKNOP);
-		wortelBewerkKnop.setBounds(knoppenStartX + 334, 2, 20, 20);
-		wortelBewerkKnop.setToolTipText("Wortels");
-		wortelBewerkKnop.addActionListener(this);
-		zetOpBalk(wortelBewerkKnop);
-		wortelBewerkKnop.setVisible(false);
-
-		abcKnop = new FormuleButton("abc", FormuleButton.BEWERKINGSKNOP);
-		abcKnop.setBounds(knoppenStartX + 285, 2, 20, 20);
-		abcKnop.addActionListener(this);
-		zetOpBalk(abcKnop);
-		abcKnop.setVisible(false);
-
-		subKnop = new FormuleButton("sub", FormuleButton.BEWERKINGSKNOP);
-		subKnop.setBounds(knoppenStartX + 309, 2, 20, 20);
-		subKnop.addActionListener(this);
-		zetOpBalk(subKnop);
-		subKnop.setVisible(false);
-
-		if ("MW".equals(WiskOpdr.deployVariant)) {
-			plusKnop.setBounds(knoppenStartX + 220, 0, 22, 23);
-			minKnop.setBounds(knoppenStartX + 244, 0, 22, 23);
-			maalKnop.setBounds(knoppenStartX + 268, 0, 22, 23);
-			deelKnop.setBounds(knoppenStartX + 292, 0, 22, 23);
-			haakjesKnop.setBounds(knoppenStartX + 324, 0, 22, 23);
-			herleidKnop.setBounds(knoppenStartX + 348, 0, 22, 23);
-			abcKnop.setBounds(knoppenStartX + 377, 0, 22, 23);
-			subKnop.setBounds(knoppenStartX + 403, 0, 22, 23);
-		}
-
-		if ("GR".equals(WiskOpdr.deployVariant)) {
-			plusKnop.setBounds(knoppenStartX + 150, 0, 22, 23);
-			minKnop.setBounds(knoppenStartX + 174, 0, 22, 23);
-			maalKnop.setBounds(knoppenStartX + 198, 0, 22, 23);
-			deelKnop.setBounds(knoppenStartX + 222, 0, 22, 23);
-			haakjesKnop.setBounds(knoppenStartX + 254, 0, 22, 23);
-			herleidKnop.setBounds(knoppenStartX + 278, 0, 22, 23);
-			abcKnop.setBounds(knoppenStartX + 377, 0, 22, 23);
-			subKnop.setBounds(knoppenStartX + 403, 0, 22, 23);
-
-		}
+//		plusKnop = new FormuleButton("plus", FormuleButton.BEWERKINGSKNOP);
+//		plusKnop.setBounds(knoppenStartX + 140, 2, 20, 20);
+//		plusKnop.addActionListener(this);
+//		zetOpBalk(plusKnop);
+//		plusKnop.setVisible(false);
+//
+//		minKnop = new FormuleButton("min", FormuleButton.BEWERKINGSKNOP);
+//		minKnop.setBounds(knoppenStartX + 162, 2, 20, 20);
+//		minKnop.addActionListener(this);
+//		zetOpBalk(minKnop);
+//		minKnop.setVisible(false);
+//
+//		maalKnop = new FormuleButton("maal", FormuleButton.BEWERKINGSKNOP);
+//		maalKnop.setBounds(knoppenStartX + 184, 2, 20, 20);
+//		maalKnop.addActionListener(this);
+//		zetOpBalk(maalKnop);
+//		maalKnop.setVisible(false);
+//
+//		deelKnop = new FormuleButton("deel", FormuleButton.BEWERKINGSKNOP);
+//		deelKnop.setBounds(knoppenStartX + 206, 2, 20, 20);
+//		deelKnop.addActionListener(this);
+//		zetOpBalk(deelKnop);
+//		deelKnop.setVisible(false);
+//
+//		haakjesKnop = new FormuleButton("haakjesweg", FormuleButton.BEWERKINGSKNOP);
+//		haakjesKnop.setBounds(knoppenStartX + 236, 2, 20, 20);
+//		haakjesKnop.addActionListener(this);
+//		zetOpBalk(haakjesKnop);
+//		haakjesKnop.setVisible(false);
+//
+//		herleidKnop = new FormuleButton("herleid", FormuleButton.BEWERKINGSKNOP);
+//		herleidKnop.setBounds(knoppenStartX + 258, 2, 20, 20);
+//		herleidKnop.addActionListener(this);
+//		zetOpBalk(herleidKnop);
+//		herleidKnop.setVisible(false);
+//
+//		ontbindKnop = new FormuleButton("ontbind", FormuleButton.BEWERKINGSKNOP);
+//		ontbindKnop.setBounds(knoppenStartX + 280, 2, 20, 20);
+//		ontbindKnop.setToolTipText("Ontbind");
+//		ontbindKnop.addActionListener(this);
+//		zetOpBalk(ontbindKnop);
+//		ontbindKnop.setVisible(false);
+//
+//		splitsKnop = new FormuleButton("splits", FormuleButton.BEWERKINGSKNOP);
+//		splitsKnop.setBounds(knoppenStartX + 312, 2, 20, 20);
+//		splitsKnop.setToolTipText("Splits");
+//		splitsKnop.addActionListener(this);
+//		zetOpBalk(splitsKnop);
+//		splitsKnop.setVisible(false);
+//
+//		wortelBewerkKnop = new FormuleButton("wortelbewerk", FormuleButton.BEWERKINGSKNOP);
+//		wortelBewerkKnop.setBounds(knoppenStartX + 334, 2, 20, 20);
+//		wortelBewerkKnop.setToolTipText("Wortels");
+//		wortelBewerkKnop.addActionListener(this);
+//		zetOpBalk(wortelBewerkKnop);
+//		wortelBewerkKnop.setVisible(false);
+//
+//		abcKnop = new FormuleButton("abc", FormuleButton.BEWERKINGSKNOP);
+//		abcKnop.setBounds(knoppenStartX + 285, 2, 20, 20);
+//		abcKnop.addActionListener(this);
+//		zetOpBalk(abcKnop);
+//		abcKnop.setVisible(false);
+//
+//		subKnop = new FormuleButton("sub", FormuleButton.BEWERKINGSKNOP);
+//		subKnop.setBounds(knoppenStartX + 309, 2, 20, 20);
+//		subKnop.addActionListener(this);
+//		zetOpBalk(subKnop);
+//		subKnop.setVisible(false);
+//
+//		if ("MW".equals(WiskOpdr.deployVariant)) {
+//			plusKnop.setBounds(knoppenStartX + 220, 0, 22, 23);
+//			minKnop.setBounds(knoppenStartX + 244, 0, 22, 23);
+//			maalKnop.setBounds(knoppenStartX + 268, 0, 22, 23);
+//			deelKnop.setBounds(knoppenStartX + 292, 0, 22, 23);
+//			haakjesKnop.setBounds(knoppenStartX + 324, 0, 22, 23);
+//			herleidKnop.setBounds(knoppenStartX + 348, 0, 22, 23);
+//			abcKnop.setBounds(knoppenStartX + 377, 0, 22, 23);
+//			subKnop.setBounds(knoppenStartX + 403, 0, 22, 23);
+//		}
+//
+//		if ("GR".equals(WiskOpdr.deployVariant)) {
+//			plusKnop.setBounds(knoppenStartX + 150, 0, 22, 23);
+//			minKnop.setBounds(knoppenStartX + 174, 0, 22, 23);
+//			maalKnop.setBounds(knoppenStartX + 198, 0, 22, 23);
+//			deelKnop.setBounds(knoppenStartX + 222, 0, 22, 23);
+//			haakjesKnop.setBounds(knoppenStartX + 254, 0, 22, 23);
+//			herleidKnop.setBounds(knoppenStartX + 278, 0, 22, 23);
+//			abcKnop.setBounds(knoppenStartX + 377, 0, 22, 23);
+//			subKnop.setBounds(knoppenStartX + 403, 0, 22, 23);
+//
+//		}
 
 		feedbackTekst = new TekstArea();
 		feedbackTekst.setSize(195, 20);
@@ -464,19 +451,19 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 														// subKnop.setBounds(260,2,20,20);
 														// }
 														//
-		if ("MW".equals(WiskOpdr.deployVariant)) {
-			abcKnop.setLocation(b - 114, 0);
-			subKnop.setLocation(b - 90, 0);
-		} else if ("GR".equals(WiskOpdr.deployVariant)) {
-			subKnop.setLocation(b - 66, 0);
-			if (subKnop.isVisible())
-				abcKnop.setLocation(b - 90, 0);
-			else
-				abcKnop.setLocation(b - 66, 0);
-		} else {
-			abcKnop.setLocation(b - 112, 2);
-			subKnop.setLocation(b - 90, 2);
-		}
+//		if ("MW".equals(WiskOpdr.deployVariant)) {
+//			abcKnop.setLocation(b - 114, 0);
+//			subKnop.setLocation(b - 90, 0);
+//		} else if ("GR".equals(WiskOpdr.deployVariant)) {
+//			subKnop.setLocation(b - 66, 0);
+//			if (subKnop.isVisible())
+//				abcKnop.setLocation(b - 90, 0);
+//			else
+//				abcKnop.setLocation(b - 66, 0);
+//		} else {
+//			abcKnop.setLocation(b - 112, 2);
+//			subKnop.setLocation(b - 90, 2);
+//		}
 
 		logKnop.setBounds(b - 65, h - 55, 60, 21);
 
@@ -591,15 +578,9 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 				goedHalfFout = ((Integer) h.get("goedHalfFout")).intValue();
 
 		}
-		exactP = exact;
-		significantP = significant;
-		vormP = vorm;
-		eindOplossingNodigP = eindOplossingNodig;
-		gelijkwaardigP = gelijkwaardig;
 		this.goedHalfFout = goedHalfFout;
 		this.puntenFeedback = puntenFeedback;
 
-		// System.out.println("antwoordztring :"+antwoordString);
 
 //		try {
 //			antwoordString = FormuleParser.randomizeString(antwoordString, randomVarNamen, randomVarWaarden);
@@ -654,11 +635,11 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		int puntenMoleculen = 0;
 		int puntenElementen = 0;
 		int puntenLadingen = 0;
-		int puntenVereenvoudigbaar = 0;
+		int aftrekVereenvoudigbaar = 0;
 		Hashtable[] answerModels = null;
 		boolean hasFeedback = false;
 		boolean feedbackSize = false;
-		String vormString = "$f@";
+		//String vormString = "$f@";
 		//int feedbackModus = 0;
 		boolean check = true;
 		boolean teltMee = true;
@@ -681,8 +662,8 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			puntenElementen = ((Integer) h.get("puntenElementen")).intValue();
 		if (h.containsKey("puntenLadingen"))
 			puntenLadingen = ((Integer) h.get("puntenLadingen")).intValue();
-		if (h.containsKey("puntenVereenvoudigbaar"))
-			puntenVereenvoudigbaar = ((Integer) h.get("puntenVereenvoudigbaar")).intValue();
+		if (h.containsKey("aftrekVereenvoudigbaar"))
+			aftrekVereenvoudigbaar = ((Integer) h.get("aftrekVereenvoudigbaar")).intValue();
 		if (h.containsKey("answerModels"))
 			answerModels = (Hashtable[]) h.get("answerModels");
 		if (h.containsKey("hasFeedback"))
@@ -690,10 +671,8 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		if(h.containsKey("feedbackSize")) 
 			feedbackSize = ((Boolean)h.get("feedbackSize")).booleanValue();
 		
-		if (h.containsKey("vormString"))
-			vormString = (String) h.get("vormString");
-		if (h.containsKey("pijl"))
-			pijl = ((Boolean) h.get("pijl")).booleanValue();
+//		if (h.containsKey("vormString"))
+//			vormString = (String) h.get("vormString");
 		if (h.containsKey("check"))
 			check = ((Boolean) h.get("check")).booleanValue();
 		if (h.containsKey("teltMee"))
@@ -727,7 +706,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		this.puntenMoleculen = puntenMoleculen;
 		this.puntenElementen = puntenElementen;
 		this.puntenLadingen = puntenLadingen;
-		this.puntenVereenvoudigbaar = puntenVereenvoudigbaar;
+		this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
 		this.logObjectives = logObjectives;
 
 //		try {
@@ -1208,17 +1187,17 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 				zetGoedFout(HALF);
 			}
 		}
-//		else if(kanVereenvoudigd)
-//		{
-//			score = puntenVereenvoudigbaar;
-//			correct = false;
-//			fout = false;
-//			if(show)
-//			{
-//				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg06"), true);
-//				zetGoedFout(HALF);
-//			}
-//		}
+		else if(kanVereenvoudigd)
+		{
+			score = puntenCorrect - aftrekVereenvoudigbaar;
+			correct = false;
+			fout = false;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg06"), true);
+				zetGoedFout(HALF);
+			}
+		}
 		else
 		{
 			score = 0;
@@ -1328,6 +1307,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		elementenBalansKlopt = false;
 		ladingenBalansKlopt = false;
 		pijlKlopt = false;
+		kanVereenvoudigd = false;
 		if(antwoordIngevuld != null)
 		{
 			isGelijkwaardig = antwoordIngevuld.isGelijkwaardig(gewensteEindOplossing);
@@ -1345,43 +1325,10 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			elementenBalansKlopt = antwoordIngevuld.elementenBalansKlopt();
 			ladingenBalansKlopt = antwoordIngevuld.ladingenBalansKlopt();
 			pijlKlopt = antwoordIngevuld.isGelijkwaardigPijl(gewensteEindOplossing);
+			if(pijlKlopt && ladingenBalansKlopt && elementenBalansKlopt && isGelijkwaardigMoleculenLading)
+				kanVereenvoudigd = antwoordIngevuld.kanVereenvoudigd(gewensteEindOplossing);
 		}
 		
-
-//		isGelijkwaardig = isGelijkwaardigEind;
-//		if (gewensteTussenOplossing != null && !isGelijkwaardig)
-//			isGelijkwaardig = antwoord.isOplossing(gewensteTussenOplossing.geefEindOplossingen(var), var, gewensteTussenOplossing.geefVergTekens());
-//
-//		isEindOplossing = isGelijkwaardigEind && antwoord.isEindOplossing(var);
-//
-//		isEindOplossingSignificant = isGelijkwaardigEind && antwoord.isEindOplossingSignificant(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
-//
-//		isEindOplossingExact = isGelijkwaardigEind && antwoord.isEindOplossingExact(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
-//
-//		isDeelOplossing = antwoord.isDeelOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
-//		if (gewensteTussenOplossing != null && !isDeelOplossing)
-//			isDeelOplossing = antwoord.isDeelOplossing(gewensteTussenOplossing.geefEindOplossingen(var), var, gewensteTussenOplossing.geefVergTekens());
-//
-//		boolean bevatFouteOplossingEind = antwoord.bevatFouteOplossing(gewensteEindOplossing, var, gewensteEindOplossing.geefVergTekens());
-//		bevatFouteOplossing = bevatFouteOplossingEind;
-//		if (gewensteTussenOplossing != null && bevatFouteOplossing)
-//			bevatFouteOplossing = antwoord.bevatFouteOplossing(gewensteTussenOplossing, var, gewensteTussenOplossing.geefVergTekens());
-//
-//		bevatVoldoetNiet = bevatFouteOplossingEind && !bevatFouteOplossing && isEindOplossing;
-//		// System.out.println(""+bevatVoldoetNiet);
-//
-//		moetNogAfgerond = isGelijkwaardig && !isGelijkwaardigEind && antwoord.isEindOplossing(var) && gewensteEindOplossing.toString().indexOf("\u2248") > -1;
-//
-//		moetNogOngelijkheid = isGelijkwaardig && !isGelijkwaardigEind && antwoord.isEindOplossing(var) && gewensteEindOplossing.isOngelijkheid();
-//
-//		isJuisteVorm = false;
-//		for (int i = 0; i < juisteVormen.length; i++)
-//		{
-//			//isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoord, juisteVormen[i]); //in plaats hiervan antwoordIngevuld gebruiken, omdat met antwoord allerlei substituties kunnen zijn uitgevoerd.
-//			isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoordIngevuld, juisteVormen[i]);
-//			if (isJuisteVorm)
-//				break;
-//		}
 		repaint();
 
 	
@@ -1533,7 +1480,6 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			}
 			formuleVak.requestFocus();
 		}
-		
 	}
 
 	public String formatRuleText(RuleIF rule, String text)

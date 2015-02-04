@@ -54,6 +54,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -62,6 +63,7 @@ import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 //import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.AntwoordVergelijkingVak;
@@ -79,7 +81,6 @@ import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.GrafiekPanel;
 //import fi.wiskopdr.GrafiekTekenPanel;
 import fi.wiskopdr.ImageComponent;
-import fi.wiskopdr.ReactieVergelijkingVak;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.AntwoordFormuleVak;
 //import fi.wiskopdr.AntwoordVakEditPanel;

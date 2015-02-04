@@ -8,8 +8,8 @@ import javax.swing.*;
 
 //import fi.wiskopdr.InteractiePanel;
 import fi.wiskopdr.expressies.*;
-import fi.wiskopdr.scheikundeexpressies.ReactieParser;
-import fi.wiskopdr.scheikundeexpressies.ReactieVergelijking;
+import fi.wiskopdr.scheikundeobjects.ReactieParser;
+import fi.wiskopdr.scheikundeobjects.ReactieVergelijking;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.WiskOpdr;
 import fi.beans.wiskopdrbeans.InteractiePanel;

@@ -1,4 +1,4 @@
-package fi.wiskopdr;
+package fi.wiskopdr.scheikundeobjects;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -8,40 +8,42 @@ import javax.swing.*;
 
 import fi.beans.base64code.*;
 import fi.beans.ideas.*;
+import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.ObjectiveChoiceButton;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
-
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
-public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, TabletOwner
+public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  TabletOwner //, MouseListener
 {
-    private FormuleEditor antwoordvak,vormEditor;
+    private FormuleEditor antwoordvak;//,vormEditor;
     private JLabel antwoordLabel, feedbackLabel;
-    private JCheckBox  gelijkwaardigCB, vormCB, exactCB, eindOplossingCB;
-    private JCheckBox  significantCB;
-    private JLabel ScoringLabel, puntenLabel, checkTotaalLabel;
-    private JTextField gelijkwaardigPV, vormPV, exactPV, significantPV, eindOplossingPV, feedbackPV;
+  //  private JCheckBox  gelijkwaardigCB, vormCB, exactCB, eindOplossingCB;
+    //private JLabel ScoringLabel, puntenLabel;
+    private JLabel correctScoreLabel, aftrekVereenvoudigbaarLabel, lossePuntenLabel, moleculenLabel, elementenLabel, ladingenLabel;
+    private JTextField correctPV, moleculenPV, elementenPV, ladingenPV, vereenvoudigbaarPV, feedbackPV;
         
     
-    private int puntenGelijkwaardig = 0;
-    private int puntenVorm = 0;
-    private int puntenEindOplossing = 10;
-    private int puntenExact = 0;
-    private int puntenSignificant = 0;
+    private int puntenCorrect = 10;
+	private int puntenMoleculen = 0;
+	private int puntenElementen = 0;
+	private int puntenLadingen = 0;
+	private int aftrekVereenvoudigbaar = 0;
     private int puntenFeedback = 0;
     
-    private boolean gelijkwaardig = true;
-    private boolean vorm;
-    private boolean eindOplossingNodig = true;
-    private boolean exact;
-    private boolean	significant;
-    
-	static boolean	significantieAan=false;
+//    private boolean gelijkwaardig = true;
+//    private boolean vorm;
+//    private boolean eindOplossingNodig = true;
+//    private boolean exact;
+//    private boolean	significant;
+//    
+//	static boolean	significantieAan=false;
     
     //private AntwoordEditPanel antwoordEditPanel;
     private TekstEditor feedbackEditor;
@@ -86,25 +88,16 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	private JCheckBox boxMetRandCB;
 	
 	
-	public static void zetSignificantieAan(boolean b)
-	{	significantieAan = b;
-	}
-    
-    public ReactieVergelijkingVakEditPanel(int soort)
+	public ReactieVergelijkingVakEditPanel(int soort)
     {   setLayout(null);
         super.setSize(770,520); //voor dwo
         setBackground(Color.white); 
         setOpaque(true);
-        addMouseListener(this);
-        addMouseMotionListener(this);
         
-        
-       
-                
-       
         antwoordLabel = makeLabel(5,160,770,20,WiskOpdr.rb.getString("antwoordLabel"),true);
                 
         antwoordvak = new FormuleEditor(true);
+        antwoordvak.zetReactieVergelijkingMode();
         antwoordvak.setBounds(5,180,770,150);
         antwoordvak.setFont(font);
         antwoordvak.addActionListener(this);
@@ -147,29 +140,37 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
         feedbackSizeCB = makeCheckBox(80,330,180,20,WiskOpdr.rb.getString("feedbackSizeCBLabel"),false,true);
 		        
-        vormEditor = new FormuleEditor(true);
-        vormEditor.setResizable(true);
-        vormEditor.setMultiLine(true);
-        vormEditor.setScrollHorizontal(true);
-        vormEditor.setBounds(515,350,260,160);
-        vormEditor.setFont(font);
-        vormEditor.addActionListener(this);
-        vormEditor.setVisible(false);
-        add(vormEditor,0);
+//        vormEditor = new FormuleEditor(true);
+//        vormEditor.setResizable(true);
+//        vormEditor.setMultiLine(true);
+//        vormEditor.setScrollHorizontal(true);
+//        vormEditor.setBounds(515,350,260,160);
+//        vormEditor.setFont(font);
+//        vormEditor.addActionListener(this);
+//        vormEditor.setVisible(false);
+//        add(vormEditor,0);
         //vormEditor.setResizable(true);
         
+        correctScoreLabel = makeLabel(250, 360, 200, 20, WiskOpdr.rb.getString("rvScoreCorrect"), true);
+        aftrekVereenvoudigbaarLabel = makeLabel(250, 385, 200, 20, WiskOpdr.rb.getString("rvAftrekVereenvoudigbaar"), true);
+        lossePuntenLabel = makeLabel(250, 410, 400, 20, WiskOpdr.rb.getString("rvLossePunten"), true);
+        moleculenLabel = makeLabel(250, 435, 200, 20, WiskOpdr.rb.getString("rvScoreMoleculen"), true);
+        elementenLabel = makeLabel(250, 460, 200, 20, WiskOpdr.rb.getString("rvScoreElementen"), true);
+        ladingenLabel = makeLabel(250, 485, 200, 20, WiskOpdr.rb.getString("rvScoreLadingen"), true);
         
-        ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
-        puntenLabel = makeLabel(460,385,40,20,WiskOpdr.rb.getString("puntenLabel"),true);
-        checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
-        checkTotaalLabel.setForeground(Color.red);
+//        ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
+//        puntenLabel = makeLabel(460,385,40,20,WiskOpdr.rb.getString("puntenLabel"),true);
+//        checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
+//        checkTotaalLabel.setForeground(Color.red);
         
-        gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
-        gelijkwaardigCB.addMouseListener(this);
-        vormCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("vormCBLabel"),false,true);
-        exactCB = makeCheckBox(320,significantieAan?510:485,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
-        significantCB = makeCheckBox(320,485,120,20,WiskOpdr.rb.getString("significantCBLabel"),false,significantieAan?true:false);
-		eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
+//        gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
+//        gelijkwaardigCB.addMouseListener(this);
+//        vormCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("vormCBLabel"),false,true);
+//        exactCB = makeCheckBox(320,significantieAan?510:485,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
+//        significantCB = makeCheckBox(320,485,120,20,WiskOpdr.rb.getString("significantCBLabel"),false,significantieAan?true:false);
+//		eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
+       
+        
         formuleToolBijFocusCB = makeCheckBox(600,40,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,true);
 		checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
@@ -182,12 +183,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
-        gelijkwaardigPV = makeTextField(460,410,30,20,""+puntenGelijkwaardig,true);
-        vormPV = makeTextField(460,435,30,20,""+puntenVorm,false);
-        eindOplossingPV = makeTextField(460,460,30,20,""+puntenEindOplossing,true);
-        exactPV = makeTextField(460,significantieAan?510:485,30,20,""+puntenExact,false);
-        significantPV = makeTextField(460,485,30,20,"0",false);
-		feedbackPV = makeTextField(460,385,30,20,""+puntenFeedback,false);
+        correctPV = makeTextField(460,360,30,20,""+puntenCorrect,true);
+        vereenvoudigbaarPV = makeTextField(460,385,30,20,""+aftrekVereenvoudigbaar,true);
+        moleculenPV = makeTextField(460,435,30,20,""+puntenMoleculen, true);
+        elementenPV = makeTextField(460,460,30,20,""+puntenElementen,true);
+        ladingenPV = makeTextField(460,485,30,20,""+puntenLadingen,true);
+		feedbackPV = makeTextField(460,385,30,20,""+puntenFeedback,true);
         
         
         
@@ -244,11 +245,11 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     private Hashtable fillAnswerModel(Hashtable h)
     {
         String antwoordString = "$f@";
-        boolean gelijkwaardig = true;
-        boolean vorm = false;
-        boolean eindOplossingNodig = true;
-        boolean exact = false;
-        boolean significant = false;
+//        boolean gelijkwaardig = true;
+//        boolean vorm = false;
+//        boolean eindOplossingNodig = true;
+//        boolean exact = false;
+//        boolean significant = false;
         int puntenFeedback = 0;
         String feedback = "";
         int feedbackWidth = 200;
@@ -257,11 +258,11 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         int goedHalfFout = 3;
         
         antwoordString = antwoordvak.geefFormuleVak().toString();
-        gelijkwaardig = this.gelijkwaardig;
-        vorm = this.vorm;
-        eindOplossingNodig = this.eindOplossingNodig;
-        exact = this.exact;
-        significant = this.significant;
+//        gelijkwaardig = this.gelijkwaardig;
+//        vorm = this.vorm;
+//        eindOplossingNodig = this.eindOplossingNodig;
+//        exact = this.exact;
+//        significant = this.significant;
 		
                 
         puntenFeedback = (Integer.parseInt(feedbackPV.getText()));
@@ -271,28 +272,28 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			feedbackHeight = feedbackEditorPopupFrame.getSize().height - feedbackEditorPopupFrame.getInsets().top - feedbackEditorPopupFrame.getInsets().bottom;
 		}
         //vormString = vormEditor.geefFormuleVak().toString();
-        String[] vormStrings = vormEditor.geefRegels();
-        if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
-        else
-        {	vormString = "$f";
-        	for(int i=0 ; i<vormStrings.length ; i++)
-        	{	vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
-        	}
-        	vormString = vormString.substring(0,vormString.length()-2) + "@";
-        }
+//        String[] vormStrings = vormEditor.geefRegels();
+//        if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
+//        else
+//        {	vormString = "$f";
+//        	for(int i=0 ; i<vormStrings.length ; i++)
+//        	{	vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
+//        	}
+//        	vormString = vormString.substring(0,vormString.length()-2) + "@";
+//        }
         goedHalfFout = goedFoutIP.geefKeuze()-1;
         
         h.put("antwoordString",antwoordString);
-        h.put("gelijkwaardig",new Boolean(gelijkwaardig));
-        h.put("vorm",new Boolean(vorm));
-        h.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
-        h.put("exact",new Boolean(exact));
-        h.put("significant",new Boolean(significant));
+//        h.put("gelijkwaardig",new Boolean(gelijkwaardig));
+//        h.put("vorm",new Boolean(vorm));
+//        h.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
+//        h.put("exact",new Boolean(exact));
+//        h.put("significant",new Boolean(significant));
         h.put("puntenFeedback",new Integer(puntenFeedback));
         h.put("feedback",feedback);
         h.put("feedbackWidth",new Integer(feedbackWidth));
 		h.put("feedbackHeight",new Integer(feedbackHeight));
-		h.put("vormString",vormString);
+		//h.put("vormString",vormString);
         h.put("goedHalfFout",new Integer(goedHalfFout));
         
         return h;
@@ -309,57 +310,47 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         String feedback = "";
         int feedbackWidth = 0;
         int feedbackHeight = 0;
-		String vormString = "$f@";
+		//String vormString = "$f@";
         int goedHalfFout = 3;
         
         if(h!=null) 
         {   if(h.containsKey("antwoordString")) antwoordString = (String)h.get("antwoordString");
-            if(h.containsKey("gelijkwaardig")) gelijkwaardig = ((Boolean)h.get("gelijkwaardig")).booleanValue();
-            if(h.containsKey("vorm")) vorm = ((Boolean)h.get("vorm")).booleanValue();
-            if(h.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)h.get("eindOplossingNodig")).booleanValue();
-            if(h.containsKey("exact")) exact = ((Boolean)h.get("exact")).booleanValue();
-            if(h.containsKey("significant")) significant = ((Boolean)h.get("significant")).booleanValue();
+//            if(h.containsKey("gelijkwaardig")) gelijkwaardig = ((Boolean)h.get("gelijkwaardig")).booleanValue();
+//            if(h.containsKey("vorm")) vorm = ((Boolean)h.get("vorm")).booleanValue();
+//            if(h.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)h.get("eindOplossingNodig")).booleanValue();
+//            if(h.containsKey("exact")) exact = ((Boolean)h.get("exact")).booleanValue();
+//            if(h.containsKey("significant")) significant = ((Boolean)h.get("significant")).booleanValue();
 			if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
             if(h.containsKey("feedback")) feedback = (String)h.get("feedback");
             if(h.containsKey("feedbackWidth")) feedbackWidth = ((Integer)h.get("feedbackWidth")).intValue();
 			if(h.containsKey("feedbackHeight")) feedbackHeight = ((Integer)h.get("feedbackHeight")).intValue();
-            if(h.containsKey("vormString")) vormString = (String)h.get("vormString");
+           // if(h.containsKey("vormString")) vormString = (String)h.get("vormString");
             if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
             
         }
-        this.vorm = vorm;
-        this.gelijkwaardig = gelijkwaardig;
-        this.eindOplossingNodig = eindOplossingNodig;
-        this.exact = exact;
-        this.significant = significant;
+//        this.vorm = vorm;
+//        this.gelijkwaardig = gelijkwaardig;
+//        this.eindOplossingNodig = eindOplossingNodig;
+//        this.exact = exact;
+//        this.significant = significant;
 		this.puntenFeedback = puntenFeedback;
         
         antwoordvak.geefFormuleVak().vulVak(antwoordString);
         
-        String[] vormStrings = StringUtils.split(vormString, "::");
-        for(int i=0 ; i<vormStrings.length ; i++)
-    	{	if(i==0) vormStrings[i] = vormStrings[i] + "@";
-    		else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
-    		else  vormStrings[i] = "$f" + vormStrings[i] + "@";
-    	}
-        vormEditor.verwijderRegels();
-        vormEditor.zetRegels(vormStrings);
+//        String[] vormStrings = StringUtils.split(vormString, "::");
+//        for(int i=0 ; i<vormStrings.length ; i++)
+//    	{	if(i==0) vormStrings[i] = vormStrings[i] + "@";
+//    		else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
+//    		else  vormStrings[i] = "$f" + vormStrings[i] + "@";
+//    	}
+        //vormEditor.verwijderRegels();
+        //vormEditor.zetRegels(vormStrings);
         
         //vormEditor.geefFormuleVak().vulVak(vormString);
             
-        vormCB.setVisible(true);
-        exactCB.setVisible(true);
-        if(significantieAan) significantCB.setVisible(true);
-		
-                
-        gelijkwaardigCB.setSelected(gelijkwaardig);
-        vormCB.setSelected(vorm);
-        eindOplossingCB.setSelected(eindOplossingNodig);
-        exactCB.setSelected(exact);
-        significantCB.setSelected(significant);
-		
+       
         
-        vormEditor.setVisible(vorm);
+       // vormEditor.setVisible(vorm);
         
         feedbackPV.setVisible(hasFeedback);
         feedbackPV.setText(""+puntenFeedback);
@@ -390,55 +381,20 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         setAnswerModel(answerModels[answerModelNr]);    
     }
     
-    public Hashtable changeToCompatibleEditState(Hashtable interactiePanelLaunchState)
-    {	Hashtable compatibleLaunchSate = new Hashtable();
-    	compatibleLaunchSate.putAll(interactiePanelLaunchState);
-    	compatibleLaunchSate.remove("startString");
-    	compatibleLaunchSate.remove("stappen");
-    	compatibleLaunchSate.remove("bewerkingKnoppen");
-    	compatibleLaunchSate.remove("bewerkingKnoppenExtra");
-    	compatibleLaunchSate.remove("abcKnop");
-    	compatibleLaunchSate.remove("subKnop");
-    	compatibleLaunchSate.remove("subKnopExtra");
-    	compatibleLaunchSate.remove("formuleToolBijFocus");
-    	compatibleLaunchSate.remove("pijl");
-    	compatibleLaunchSate.remove("linStrategieVersie");
-    	compatibleLaunchSate.remove("linOefenVersie");
-    	compatibleLaunchSate.remove("bordjesMethode");
-    	compatibleLaunchSate.remove("tips");
-    	compatibleLaunchSate.remove("ideasInstellingen");
-    	compatibleLaunchSate.remove("tipOpBalk");
-    	compatibleLaunchSate.remove("hulpOpBalk");
-    	compatibleLaunchSate.remove("stapOpBalk");
-    	compatibleLaunchSate.remove("solveOpBalk");
-    	compatibleLaunchSate.remove("tipBijFout");
-    	compatibleLaunchSate.remove("meerTips");
-    	compatibleLaunchSate.remove("feedbackBijFout");
-    	compatibleLaunchSate.remove("hulpBijTip");
-    	compatibleLaunchSate.remove("changedTexts");
-    	compatibleLaunchSate.remove("strategieDomein");
-    	compatibleLaunchSate.remove("uitw");
-    	compatibleLaunchSate.remove("casAntw");
-    	return compatibleLaunchSate;
-   }
             
     public void setEditState(Hashtable interactiePanelLaunchState)
     {           String antwoordString = "$f@";
                 String startString = "$f@";
-                boolean vorm = false;
-                boolean exact = false;
-                boolean significant = false;
-				int puntenGelijkwaardig = 10;
-                int puntenVorm = 0;
-                int puntenExact = 0;
-                int puntenSignificant = 0;
-				boolean eindOplossingNodig = true;
-                int puntenEindOplossing = 10;
+                int puntenCorrect = 10;
+            	int puntenMoleculen = 0;
+            	int puntenElementen = 0;
+            	int puntenLadingen = 0;
+            	int aftrekVereenvoudigbaar = 0;
                 boolean formuleToolBijFocus = false;
                 Hashtable[] answerModels = null;
                 boolean hasFeedback = false;
                 boolean feedbackSize = false;
-                String vormString = "$f@";
+               // String vormString = "$f@";
                 String strategieDomein = "";
                 int feedbackModus = 0;
                 String[] antwoordSubStrings = null;
@@ -456,20 +412,16 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				
                 if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
                 if(interactiePanelLaunchState.containsKey("startString")) startString = (String)interactiePanelLaunchState.get("startString");
-                if(interactiePanelLaunchState.containsKey("vorm")) vorm = ((Boolean)interactiePanelLaunchState.get("vorm")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("exact")) exact = ((Boolean)interactiePanelLaunchState.get("exact")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("significant")) significant = ((Boolean)interactiePanelLaunchState.get("significant")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("puntenGelijkwaardig")) puntenGelijkwaardig = ((Integer)interactiePanelLaunchState.get("puntenGelijkwaardig")).intValue();
-                if(interactiePanelLaunchState.containsKey("puntenVorm")) puntenVorm = ((Integer)interactiePanelLaunchState.get("puntenVorm")).intValue();
-                if(interactiePanelLaunchState.containsKey("puntenExact")) puntenExact = ((Integer)interactiePanelLaunchState.get("puntenExact")).intValue();
-                if(interactiePanelLaunchState.containsKey("puntenSignificant")) puntenSignificant = ((Integer)interactiePanelLaunchState.get("puntenSignificant")).intValue();
-				if(interactiePanelLaunchState.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)interactiePanelLaunchState.get("eindOplossingNodig")).booleanValue();
-                if(interactiePanelLaunchState.containsKey("puntenEindOplossing")) puntenEindOplossing = ((Integer)interactiePanelLaunchState.get("puntenEindOplossing")).intValue();
-                if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
+                if(interactiePanelLaunchState.containsKey("puntenCorrect")) puntenCorrect = ((Integer)interactiePanelLaunchState.get("puntenCorrect")).intValue();
+                if(interactiePanelLaunchState.containsKey("puntenMoleculen")) puntenMoleculen = ((Integer)interactiePanelLaunchState.get("puntenMoleculen")).intValue();
+                if(interactiePanelLaunchState.containsKey("puntenElementen")) puntenElementen = ((Integer)interactiePanelLaunchState.get("puntenElementen")).intValue();
+                if(interactiePanelLaunchState.containsKey("puntenLadingen")) puntenLadingen = ((Integer)interactiePanelLaunchState.get("puntenLadingen")).intValue();
+                if(interactiePanelLaunchState.containsKey("aftrekVereenvoudigbaar")) aftrekVereenvoudigbaar = ((Integer)interactiePanelLaunchState.get("aftrekVereenvoudigbaar")).intValue();
+				 if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
                 if(interactiePanelLaunchState.containsKey("hasFeedback")) hasFeedback = ((Boolean)interactiePanelLaunchState.get("hasFeedback")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("feedbackSize")) feedbackSize = ((Boolean)interactiePanelLaunchState.get("feedbackSize")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
+				//if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
                 if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
                 if(interactiePanelLaunchState.containsKey("check")) check = ((Boolean)interactiePanelLaunchState.get("check")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
@@ -483,16 +435,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
 				
-                this.vorm = vorm;
-                this.exact = exact;
-                this.significant = significant;
-				this.puntenGelijkwaardig = puntenGelijkwaardig;
-                this.puntenVorm = puntenVorm;
-                this.puntenExact = puntenExact;
-                this.puntenSignificant = puntenSignificant;
-				this.eindOplossingNodig = eindOplossingNodig;
-                this.puntenEindOplossing = puntenEindOplossing;
-                this.formuleToolBijFocus = formuleToolBijFocus;
+                this.puntenCorrect = puntenCorrect;
+                this.puntenMoleculen = puntenMoleculen;
+                this.puntenElementen = puntenElementen;
+                this.puntenLadingen = puntenLadingen;
+                this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
+				this.formuleToolBijFocus = formuleToolBijFocus;
                 
                 this.answerModels = new Hashtable[answerModels.length];
 				for(int i=0 ; i<answerModels.length ; i++)
@@ -528,14 +476,14 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 
                 antwoordvak.geefFormuleVak().vulVak(antwoordString);
                
-                String[] vormStrings = StringUtils.split(vormString, "::");
-                for(int i=0 ; i<vormStrings.length ; i++)
-            	{	if(i==0) vormStrings[i] = vormStrings[i] + "@";
-            		else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
-            		else  vormStrings[i] = "$f" + vormStrings[i] + "@";
-            	}
-                vormEditor.zetRegels(vormStrings);
-                //vormEditor.geefFormuleVak().vulVak(vormString);
+//                String[] vormStrings = StringUtils.split(vormString, "::");
+//                for(int i=0 ; i<vormStrings.length ; i++)
+//            	{	if(i==0) vormStrings[i] = vormStrings[i] + "@";
+//            		else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
+//            		else  vormStrings[i] = "$f" + vormStrings[i] + "@";
+//            	}
+//                vormEditor.zetRegels(vormStrings);
+//                //vormEditor.geefFormuleVak().vulVak(vormString);
                 
                 formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
                 checkCB.setSelected(check);
@@ -558,30 +506,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				
                 if(hasFeedback)return;
                 
-                eindOplossingCB.setSelected(eindOplossingNodig);
-                eindOplossingPV.setVisible(eindOplossingNodig);
-                eindOplossingPV.setText(""+puntenEindOplossing);
+                correctPV.setText(""+puntenCorrect);
+                vereenvoudigbaarPV.setText(""+aftrekVereenvoudigbaar);
+                moleculenPV.setText(""+puntenMoleculen);
+                elementenPV.setText(""+puntenElementen);
+                ladingenPV.setText(""+puntenLadingen);
                     
-                gelijkwaardigPV.setText(""+puntenGelijkwaardig);
-                                
-                exactCB.setSelected(exact);
-                exactPV.setVisible(exact);
-                exactPV.setText(""+puntenExact);
-                
-                significantCB.setSelected(significant);
-                significantPV.setVisible(significant && significantieAan);
-                significantPV.setText(""+puntenSignificant);
-                
-                               
-                vormCB.setSelected(vorm);
-                vormPV.setVisible(vorm);
-                vormPV.setText(""+puntenVorm);
-                    
-                vormEditor.setVisible(vorm);
-                    
-                exactCB.setSelected(exact);
-                exactPV.setVisible(exact);
-                exactPV.setText(""+puntenExact);
     }
     
     public Hashtable getEditState()
@@ -590,22 +520,18 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
         
             String antwoordString = null;
-            boolean vorm = false;
-            boolean exact = false;
-            boolean significant = false;
-			int puntenGelijkwaardig = 10;
-            int puntenVorm = 0;
-            int puntenExact = 0; 
-            int puntenSignificant = 0; 
-			boolean eindOplossingNodig = true;
-            int puntenEindOplossing = 10;
+            int puntenCorrect = 10;
+        	int puntenMoleculen = 0;
+        	int puntenElementen = 0;
+        	int puntenLadingen = 0;
+        	int aftrekVereenvoudigbaar = 0;
             int scoreMax = 0;
             int[][] scoreMaxObjectives = null;
             boolean formuleToolBijFocus = false;
             Hashtable[] answerModels;
             boolean hasFeedback;
             boolean feedbackSize;
-            String vormString = "$f@";
+            //String vormString = "$f@";
             int feedbackModus = 0;
             boolean check = true;
             boolean teltMee = true;
@@ -622,57 +548,53 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             if(answerModels!=null)setAnswerModel(answerModels[0]);
             
             antwoordString = antwoordvak.geefFormuleVak().toString();
-            String[] vormStrings = vormEditor.geefRegels();
-            if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
-            else
-            {	vormString = "$f";
-            	for(int i=0 ; i<vormStrings.length ; i++)
-            	{	vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
-            	}
-            	vormString = vormString.substring(0,vormString.length()-2) + "@";
-            }
-            vorm = this.vorm;
-            exact = this.exact;
-            significant = this.significant;
-			
+//            String[] vormStrings = vormEditor.geefRegels();
+//            if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
+//            else
+//            {	vormString = "$f";
+//            	for(int i=0 ; i<vormStrings.length ; i++)
+//            	{	vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
+//            	}
+//            	vormString = vormString.substring(0,vormString.length()-2) + "@";
+//            }
+            
             try
-            {   puntenGelijkwaardig = Integer.parseInt(gelijkwaardigPV.getText());
-                this.puntenGelijkwaardig = puntenGelijkwaardig;
+            {   puntenCorrect = Integer.parseInt(correctPV.getText());
+                this.puntenCorrect = puntenCorrect;
             }   
             catch(Exception ex)
             {   }
             try
-            {   puntenVorm = Integer.parseInt(vormPV.getText());
-                this.puntenVorm = puntenVorm;
+            {   aftrekVereenvoudigbaar = Integer.parseInt(vereenvoudigbaarPV.getText());
+                this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
             }   
             catch(Exception ex)
             {   }
             try
-            {   puntenExact = Integer.parseInt(exactPV.getText());
-                this.puntenExact = puntenExact;
+            {   puntenMoleculen = Integer.parseInt(moleculenPV.getText());
+                this.puntenMoleculen = puntenMoleculen;
             }   
             catch(Exception ex)
             {   }
             try
-			{	puntenSignificant = Integer.parseInt(significantPV.getText());
-				this.puntenSignificant = puntenSignificant;
+            {   puntenElementen = Integer.parseInt(elementenPV.getText());
+                this.puntenElementen = puntenElementen;
+            }   
+            catch(Exception ex)
+            {   }
+            try
+			{	puntenLadingen = Integer.parseInt(ladingenPV.getText());
+				this.puntenLadingen = puntenLadingen;
 			}	
 			catch(Exception ex)
 			{	}
-            try
-            {   puntenEindOplossing = Integer.parseInt(eindOplossingPV.getText());
-                this.puntenEindOplossing = puntenEindOplossing;
-            }   
-            catch(Exception ex)
-            {   }
-            puntenGelijkwaardig = this.puntenGelijkwaardig;
-            puntenVorm = this.puntenVorm;
-            puntenExact = this.puntenExact;
-            puntenSignificant = this.puntenSignificant;
-			eindOplossingNodig = this.eindOplossingNodig;
-            puntenEindOplossing = this.puntenEindOplossing;
+            puntenCorrect = this.puntenCorrect;
+            aftrekVereenvoudigbaar = this.aftrekVereenvoudigbaar;
+            puntenMoleculen = this.puntenMoleculen;
+            puntenElementen = this.puntenElementen;
+			puntenLadingen = this.puntenLadingen;
             formuleToolBijFocus = this.formuleToolBijFocus;
-            scoreMax = puntenGelijkwaardig + puntenVorm + puntenEindOplossing + puntenExact;
+            scoreMax = puntenCorrect;
             hasFeedback = this.hasFeedback;
             if(hasFeedback)scoreMax = puntenFeedback;
             feedbackSize = feedbackSizeCB.isSelected();
@@ -707,21 +629,17 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			eqTestValueMax = this.eqTestValueMax;
             
             interactiePanelLaunchState.put("antwoordString",antwoordString);
-            interactiePanelLaunchState.put("vorm",new Boolean(vorm));
-            interactiePanelLaunchState.put("exact",new Boolean(exact));
-            interactiePanelLaunchState.put("significant",new Boolean(significant));
-			interactiePanelLaunchState.put("puntenGelijkwaardig",new Integer(puntenGelijkwaardig));
-            interactiePanelLaunchState.put("puntenVorm",new Integer(puntenVorm));
-            interactiePanelLaunchState.put("puntenExact",new Integer(puntenExact));
-            interactiePanelLaunchState.put("puntenSignificant",new Integer(puntenSignificant));
-			interactiePanelLaunchState.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
-            interactiePanelLaunchState.put("puntenEindOplossing",new Integer(puntenEindOplossing));
+            interactiePanelLaunchState.put("puntenCorrect",new Integer(puntenCorrect));
+            interactiePanelLaunchState.put("aftrekVereenvoudigbaar",new Integer(aftrekVereenvoudigbaar));
+            interactiePanelLaunchState.put("puntenMoleculen",new Integer(puntenMoleculen));
+            interactiePanelLaunchState.put("puntenElementen",new Integer(puntenElementen));
+			interactiePanelLaunchState.put("puntenLadingen",new Integer(puntenLadingen));
             interactiePanelLaunchState.put("formuleToolBijFocus",new Boolean(formuleToolBijFocus));
             interactiePanelLaunchState.put("scoreMax",new Integer(scoreMax));
             if(answerModels!=null)interactiePanelLaunchState.put("answerModels",answerModels);
             interactiePanelLaunchState.put("hasFeedback",new Boolean(hasFeedback));
             interactiePanelLaunchState.put("feedbackSize",new Boolean(feedbackSize));
-			interactiePanelLaunchState.put("vormString",vormString);
+			//interactiePanelLaunchState.put("vormString",vormString);
             interactiePanelLaunchState.put("check",new Boolean(check));
             interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
             interactiePanelLaunchState.put("logOption",new Boolean(logOption));
@@ -780,26 +698,26 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	}
     */
     
-    public void maakVormPopupFrame()
-	{
-    	vormEditorPopupFrame = DialogFacade.newInstance(this, "");
-		vormEditorPopupFrame.getContentPane().setLayout(null);
-		vormEditorPopupFrame.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent e)
-			{   vormEditor.produceAction("verklein");
-				vormEditor.setEnlarged(false);
-			}
-		});
-		vormEditorPopupFrame.addComponentListener(new ComponentAdapter(){
-			public void componentResized(ComponentEvent e)
-			{   int x = 0;
-				int y = 0;
-				int b = vormEditorPopupFrame.getSize().width - vormEditorPopupFrame.getInsets().left - vormEditorPopupFrame.getInsets().right;
-				int h = vormEditorPopupFrame.getSize().height - vormEditorPopupFrame.getInsets().top - vormEditorPopupFrame.getInsets().bottom;
-				vormEditor.setBounds(x,y,b,h);
-			}
-		});
-	}
+//    public void maakVormPopupFrame()
+//	{
+//    	vormEditorPopupFrame = DialogFacade.newInstance(this, "");
+//		vormEditorPopupFrame.getContentPane().setLayout(null);
+//		vormEditorPopupFrame.addWindowListener(new WindowAdapter(){
+//			public void windowClosing(WindowEvent e)
+//			{   vormEditor.produceAction("verklein");
+//				vormEditor.setEnlarged(false);
+//			}
+//		});
+//		vormEditorPopupFrame.addComponentListener(new ComponentAdapter(){
+//			public void componentResized(ComponentEvent e)
+//			{   int x = 0;
+//				int y = 0;
+//				int b = vormEditorPopupFrame.getSize().width - vormEditorPopupFrame.getInsets().left - vormEditorPopupFrame.getInsets().right;
+//				int h = vormEditorPopupFrame.getSize().height - vormEditorPopupFrame.getInsets().top - vormEditorPopupFrame.getInsets().bottom;
+//				vormEditor.setBounds(x,y,b,h);
+//			}
+//		});
+//	}
     
     public void maakFeedbackEditorPopupFrame()
     {
@@ -920,155 +838,155 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 		{	feedbackEditor.setResizable(feedbackSizeCB.isSelected());
 			
 		}
-        else if(e.getSource()==gelijkwaardigCB)
-        {   gelijkwaardig = gelijkwaardigCB.isSelected();
-            if(!hasFeedback && answerModelNr==0)gelijkwaardigPV.setVisible(gelijkwaardig);
-            
-        }
-        else if(e.getSource()==vormCB)
-        {   boolean b = vormCB.isSelected();
-            vorm = b; 
-            if(!hasFeedback && answerModelNr==0)vormPV.setVisible(b);
-            vormEditor.setVisible(b);
-            if(b)
-            {   eindOplossingNodig = false;
-            	eindOplossingCB.setSelected(false);
-            	eindOplossingPV.setText("0");
-            	eindOplossingPV.setVisible(false);
-            	puntenEindOplossing = 0;
-            	
-            	exact = false;
-            	exactCB.setSelected(false);
-            	exactPV.setText("0");
-            	exactPV.setVisible(false);
-            	puntenExact = 0;
-            	
-            	gelijkwaardigPV.setText("0");
-            	puntenGelijkwaardig = 0;
-            	
-            	vormPV.setText("10");
-            	//vormPV.setVisible(true);
-            	puntenVorm = 10;
-                
-            }
-            else
-            {
-            	gelijkwaardigPV.setText("10");
-            	puntenGelijkwaardig = 10;
-            }
-            /*
-            if(b && !eindOplossingNodig)
-            {   gelijkwaardigPV.setText("0");
-                puntenGelijkwaardig = 0;
-                vormPV.setText("10");
-                puntenVorm = 10;
-            }
-            if(!b && !eindOplossingNodig)
-            {   gelijkwaardigPV.setText("10");
-                puntenGelijkwaardig = 10;
-                vormPV.setText("0");
-                puntenVorm = 0;
-            }
-            */
-        }
-        else if(e.getSource()==exactCB)
-        {   boolean b = exactCB.isSelected();
-            exact = b;
-            if(!hasFeedback && answerModelNr==0)exactPV.setVisible(b);
-            
-            if(b)
-            {   eindOplossingNodig = true;
-                eindOplossingCB.setSelected(true);
-                if(!hasFeedback)eindOplossingPV.setVisible(true);
-                
-                vorm = false;
-                vormCB.setSelected(false);
-            	vormPV.setVisible(false);
-            	vormEditor.setVisible(false);
-                
-                gelijkwaardigPV.setText("0");
-                vormPV.setText("0");
-                eindOplossingPV.setText("0");
-                exactPV.setText("10");
-                
-                puntenEindOplossing = 0;
-                puntenGelijkwaardig = 0;
-                puntenExact = 10;
-            }
-            else
-            {   
-                gelijkwaardigPV.setText("0");
-                vormPV.setText("0");
-                eindOplossingPV.setText("10");
-                exactPV.setText("0");
-            
-                puntenGelijkwaardig = 0;
-                puntenVorm = 0;
-                puntenEindOplossing = 10;
-                puntenExact = 0;
-            }   
-        }
-        else if(e.getSource()==significantCB)
-		{
-			boolean b = significantCB.isSelected();
-			significant = b;
-			if(!hasFeedback && answerModelNr==0)significantPV.setVisible(b);
-			if(b)
-	        {   eindOplossingNodig = true;
-	            eindOplossingCB.setSelected(true);
-	            if(!hasFeedback)eindOplossingPV.setVisible(true);
-	            eindOplossingPV.setText("10");
-	            puntenEindOplossing = 10;
-	        }
-		}
-        else if(e.getSource()==eindOplossingCB)
-        {   boolean b = eindOplossingCB.isSelected();
-            eindOplossingNodig = b;
-            if(!hasFeedback && answerModelNr==0)eindOplossingPV.setVisible(b);
-            if(b)
-            {   vorm = false;
-            	vormCB.setSelected(false);
-            	vormPV.setVisible(false);
-            	vormEditor.setVisible(false);
-            	gelijkwaardigPV.setText("0");
-                vormPV.setText("0");
-                eindOplossingPV.setText("10");
-                exactPV.setText("0");
-                
-                puntenGelijkwaardig = 0;
-                puntenVorm = 0;
-                puntenEindOplossing = 10;
-                puntenExact = 0;
-            }
-            else
-            {   exactCB.setSelected(false);
-                exactPV.setVisible(false);
-                
-                significantCB.setSelected(false);
-              	significantPV.setVisible(false);
-                
-                gelijkwaardigPV.setText("10");
-                if(vorm)
-                {   gelijkwaardigPV.setText("0");
-                    vormPV.setText("10");
-                    puntenGelijkwaardig = 0;
-                    puntenVorm = 10;
-                }
-                else
-                {   gelijkwaardigPV.setText("10");
-                    vormPV.setText("0");
-                    puntenGelijkwaardig = 10;
-                    puntenVorm = 0;
-                }
-                eindOplossingPV.setText("0");
-                exactPV.setText("0");
-                significantPV.setText("0");
-                
-                puntenEindOplossing = 0;
-                puntenExact = 0;
-                puntenSignificant = 0;
-            }
-        }
+//        else if(e.getSource()==gelijkwaardigCB)
+//        {   gelijkwaardig = gelijkwaardigCB.isSelected();
+//            if(!hasFeedback && answerModelNr==0)gelijkwaardigPV.setVisible(gelijkwaardig);
+//            
+//        }
+//        else if(e.getSource()==vormCB)
+//        {   boolean b = vormCB.isSelected();
+//            vorm = b; 
+//            if(!hasFeedback && answerModelNr==0)vormPV.setVisible(b);
+//            vormEditor.setVisible(b);
+//            if(b)
+//            {   eindOplossingNodig = false;
+//            	eindOplossingCB.setSelected(false);
+//            	eindOplossingPV.setText("0");
+//            	eindOplossingPV.setVisible(false);
+//            	puntenEindOplossing = 0;
+//            	
+//            	exact = false;
+//            	exactCB.setSelected(false);
+//            	exactPV.setText("0");
+//            	exactPV.setVisible(false);
+//            	puntenExact = 0;
+//            	
+//            	gelijkwaardigPV.setText("0");
+//            	puntenGelijkwaardig = 0;
+//            	
+//            	vormPV.setText("10");
+//            	//vormPV.setVisible(true);
+//            	puntenVorm = 10;
+//                
+//            }
+//            else
+//            {
+//            	gelijkwaardigPV.setText("10");
+//            	puntenGelijkwaardig = 10;
+//            }
+//            /*
+//            if(b && !eindOplossingNodig)
+//            {   gelijkwaardigPV.setText("0");
+//                puntenGelijkwaardig = 0;
+//                vormPV.setText("10");
+//                puntenVorm = 10;
+//            }
+//            if(!b && !eindOplossingNodig)
+//            {   gelijkwaardigPV.setText("10");
+//                puntenGelijkwaardig = 10;
+//                vormPV.setText("0");
+//                puntenVorm = 0;
+//            }
+//            */
+//        }
+//        else if(e.getSource()==exactCB)
+//        {   boolean b = exactCB.isSelected();
+//            exact = b;
+//            if(!hasFeedback && answerModelNr==0)exactPV.setVisible(b);
+//            
+//            if(b)
+//            {   eindOplossingNodig = true;
+//                eindOplossingCB.setSelected(true);
+//                if(!hasFeedback)eindOplossingPV.setVisible(true);
+//                
+//                vorm = false;
+//                vormCB.setSelected(false);
+//            	vormPV.setVisible(false);
+//            	vormEditor.setVisible(false);
+//                
+//                gelijkwaardigPV.setText("0");
+//                vormPV.setText("0");
+//                eindOplossingPV.setText("0");
+//                exactPV.setText("10");
+//                
+//                puntenEindOplossing = 0;
+//                puntenGelijkwaardig = 0;
+//                puntenExact = 10;
+//            }
+//            else
+//            {   
+//                gelijkwaardigPV.setText("0");
+//                vormPV.setText("0");
+//                eindOplossingPV.setText("10");
+//                exactPV.setText("0");
+//            
+//                puntenGelijkwaardig = 0;
+//                puntenVorm = 0;
+//                puntenEindOplossing = 10;
+//                puntenExact = 0;
+//            }   
+//        }
+//        else if(e.getSource()==significantCB)
+//		{
+//			boolean b = significantCB.isSelected();
+//			significant = b;
+//			if(!hasFeedback && answerModelNr==0)significantPV.setVisible(b);
+//			if(b)
+//	        {   eindOplossingNodig = true;
+//	            eindOplossingCB.setSelected(true);
+//	            if(!hasFeedback)eindOplossingPV.setVisible(true);
+//	            eindOplossingPV.setText("10");
+//	            puntenEindOplossing = 10;
+//	        }
+//		}
+//        else if(e.getSource()==eindOplossingCB)
+//        {   boolean b = eindOplossingCB.isSelected();
+//            eindOplossingNodig = b;
+//            if(!hasFeedback && answerModelNr==0)eindOplossingPV.setVisible(b);
+//            if(b)
+//            {   vorm = false;
+//            	vormCB.setSelected(false);
+//            	vormPV.setVisible(false);
+//            	vormEditor.setVisible(false);
+//            	gelijkwaardigPV.setText("0");
+//                vormPV.setText("0");
+//                eindOplossingPV.setText("10");
+//                exactPV.setText("0");
+//                
+//                puntenGelijkwaardig = 0;
+//                puntenVorm = 0;
+//                puntenEindOplossing = 10;
+//                puntenExact = 0;
+//            }
+//            else
+//            {   exactCB.setSelected(false);
+//                exactPV.setVisible(false);
+//                
+//                significantCB.setSelected(false);
+//              	significantPV.setVisible(false);
+//                
+//                gelijkwaardigPV.setText("10");
+//                if(vorm)
+//                {   gelijkwaardigPV.setText("0");
+//                    vormPV.setText("10");
+//                    puntenGelijkwaardig = 0;
+//                    puntenVorm = 10;
+//                }
+//                else
+//                {   gelijkwaardigPV.setText("10");
+//                    vormPV.setText("0");
+//                    puntenGelijkwaardig = 10;
+//                    puntenVorm = 0;
+//                }
+//                eindOplossingPV.setText("0");
+//                exactPV.setText("0");
+//                significantPV.setText("0");
+//                
+//                puntenEindOplossing = 0;
+//                puntenExact = 0;
+//                puntenSignificant = 0;
+//            }
+//        }
         else if(e.getSource()==formuleToolBijFocusCB)
         {   boolean b = formuleToolBijFocusCB.isSelected();
             formuleToolBijFocus = b;
@@ -1077,27 +995,27 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	    {   logIDField.setVisible(logCB.isSelected());   
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
-        else if(e.getSource()==vormEditor)
-		{	if(e.getActionCommand().equals("vergroot"))
-			{	if(vormEditorPopupFrame==null)	maakVormPopupFrame();
-				Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
-				int x = vormEditor.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 500));
-				int y = vormEditor.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 400));
-				vormEditorPopupFrame.setVisible(true);
-				vormEditorPopupFrame.getContentPane().add(vormEditor);
-				vormEditorPopupFrame.pack();
-				vormEditorPopupFrame.setSize(500,400);
-				vormEditorPopupFrame.setLocation(x,y);
-			}
-			if(e.getActionCommand().equals("verklein"))
-			{	vormEditorPopupFrame.setVisible(false);
-				vormEditor.setBounds(515,350,260,160);
-		        add(vormEditor);
-				vormEditorPopupFrame.dispose();
-			}
-			revalidate();
-            repaint();
-		}
+//        else if(e.getSource()==vormEditor)
+//		{	if(e.getActionCommand().equals("vergroot"))
+//			{	if(vormEditorPopupFrame==null)	maakVormPopupFrame();
+//				Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+//				int x = vormEditor.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 500));
+//				int y = vormEditor.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 400));
+//				vormEditorPopupFrame.setVisible(true);
+//				vormEditorPopupFrame.getContentPane().add(vormEditor);
+//				vormEditorPopupFrame.pack();
+//				vormEditorPopupFrame.setSize(500,400);
+//				vormEditorPopupFrame.setLocation(x,y);
+//			}
+//			if(e.getActionCommand().equals("verklein"))
+//			{	vormEditorPopupFrame.setVisible(false);
+//				vormEditor.setBounds(515,350,260,160);
+//		        add(vormEditor);
+//				vormEditorPopupFrame.dispose();
+//			}
+//			revalidate();
+//            repaint();
+//		}
         else if(e.getSource()==feedbackEditor)
         {   if(e.getActionCommand().equals("vergroot"))
             {   if(feedbackEditorPopupFrame==null)  maakFeedbackEditorPopupFrame();
@@ -1132,48 +1050,48 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         }
         else
         {
-            int puntenGelijkwaardig = 0;
-            int puntenHerleiding = 0;
-            int puntenExact = 0;
-            int puntenSignificant = 0;
-			int puntenEindOplossing = 0;
+            int puntenCorrect = 0;
+            int aftrekVereenvoudigbaar = 0;
+            int puntenMoleculen = 0;
+            int puntenElementen = 0;
+			int puntenLadingen = 0;
             
-            if(e.getSource()==gelijkwaardigPV)
+            if(e.getSource()==correctPV)
             {   try
-                {   puntenGelijkwaardig = Integer.parseInt(gelijkwaardigPV.getText());
-                    this.puntenGelijkwaardig = puntenGelijkwaardig;
+                {   puntenCorrect = Integer.parseInt(correctPV.getText());
+                    this.puntenCorrect = puntenCorrect;
                 }   
                 catch(Exception ex)
                 {   }
             }
-            if(e.getSource()==vormPV)
+            if(e.getSource()==vereenvoudigbaarPV)
             {   try
-                {   puntenHerleiding = Integer.parseInt(vormPV.getText());
-                    this.puntenVorm = puntenVorm;
+                {   aftrekVereenvoudigbaar = Integer.parseInt(vereenvoudigbaarPV.getText());
+                    this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
                 }   
                 catch(Exception ex)
                 {   }
             }
-            if(e.getSource()==exactPV)
+            if(e.getSource()==moleculenPV)
             {   try
-                {   puntenExact = Integer.parseInt(exactPV.getText());
-                    this.puntenExact = puntenExact;
+                {   puntenMoleculen = Integer.parseInt(moleculenPV.getText());
+                    this.puntenMoleculen = puntenMoleculen;
                 }   
                 catch(Exception ex)
                 {   }
             }
-            if(e.getSource()==significantPV)
+            if(e.getSource()==elementenPV)
 			{	try
-				{	puntenSignificant = Integer.parseInt(significantPV.getText());
-					this.puntenSignificant = puntenSignificant;
+				{	puntenElementen = Integer.parseInt(elementenPV.getText());
+					this.puntenElementen = puntenElementen;
 				}	
 				catch(Exception ex)
 				{	}
 			}
-            if(e.getSource()==eindOplossingPV)
+            if(e.getSource()==ladingenPV)
             {   try
-                {   puntenEindOplossing = Integer.parseInt(eindOplossingPV.getText());
-                    this.puntenEindOplossing = puntenEindOplossing;
+                {   puntenLadingen = Integer.parseInt(ladingenPV.getText());
+                    this.puntenLadingen = puntenLadingen;
                 }   
                 catch(Exception ex)
                 {   }
@@ -1197,13 +1115,13 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         tabPositieKnop.setVisible(b);
         feedbackPV.setVisible(b);
         goedFoutIP.setVisible(b);
-        puntenLabel.setVisible(!b);
+        //puntenLabel.setVisible(!b);
         
-        gelijkwaardigPV.setVisible(!b);
-        if(b || vorm)vormPV.setVisible(!b);
-        if(b || eindOplossingNodig) eindOplossingPV.setVisible(!b);
-        if(b || exact)exactPV.setVisible(!b);
-        if(b || significant && significantieAan) significantPV.setVisible(!b);
+//        gelijkwaardigPV.setVisible(!b);
+//        if(b || vorm)vormPV.setVisible(!b);
+//        if(b || eindOplossingNodig) eindOplossingPV.setVisible(!b);
+//        if(b || exact)exactPV.setVisible(!b);
+//        if(b || significant && significantieAan) significantPV.setVisible(!b);
 		
         
         //eindOplossingCB.setVisible(!b);
@@ -1262,38 +1180,22 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	{	return tablet;
 	}
     
-    public void mousePressed(MouseEvent e)
-    {   if(e.getSource()==gelijkwaardigCB && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
-		{	try{
-			new Expressie();
-			String intervalString = JOptionPane.showInputDialog(this, "testwaarden interval is nu [" + Expressie.df.format(eqTestValueMin) + ";" + Expressie.df.format(eqTestValueMax) +"]", "Keuze testWaarden", JOptionPane.QUESTION_MESSAGE);
-			intervalString = StringUtils.replaceStr(intervalString, "[", "");
-			intervalString = StringUtils.replaceStr(intervalString, "]", "");
-			String[] parts = StringUtils.split(intervalString, ";");
-			eqTestValueMin = Double.parseDouble(parts[0]);
-			eqTestValueMax = Double.parseDouble(parts[1]);
-			} catch(Exception ex){}
-			
-		}
-    }
+//    public void mousePressed(MouseEvent e)
+//    {   if(e.getSource()==gelijkwaardigCB && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
+//		{	try{
+//			new Expressie();
+//			String intervalString = JOptionPane.showInputDialog(this, "testwaarden interval is nu [" + Expressie.df.format(eqTestValueMin) + ";" + Expressie.df.format(eqTestValueMax) +"]", "Keuze testWaarden", JOptionPane.QUESTION_MESSAGE);
+//			intervalString = StringUtils.replaceStr(intervalString, "[", "");
+//			intervalString = StringUtils.replaceStr(intervalString, "]", "");
+//			String[] parts = StringUtils.split(intervalString, ";");
+//			eqTestValueMin = Double.parseDouble(parts[0]);
+//			eqTestValueMax = Double.parseDouble(parts[1]);
+//			} catch(Exception ex){}
+//			
+//		}
+//    }
     
-    public void mouseClicked(MouseEvent e){;}
-    public void mouseReleased(MouseEvent e)
-    {   
-    }
-    public void mouseEntered(MouseEvent e)
-    {   
-    }
-    public void mouseExited(MouseEvent e)
-    {   
-    }
-    
-    public void mouseDragged(MouseEvent e)
-    {   
-    }
-    public void mouseMoved(MouseEvent e)
-    {   
-    }
+   
         
     //ActionProducer
     private ActionListener actionListener = null;

@@ -1,4 +1,4 @@
-package fi.wiskopdr.scheikundeexpressies;
+package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 
@@ -151,6 +151,22 @@ public class ReactieExpressie {
 				return false;
 		}
 		return true;
+	}
+	
+	public double vereenvoudigFactor(ReactieExpressie exp)
+	{
+		if(exp.aantallen.length != aantallen.length)
+			return -999;
+		if(aantallen.length == 0)
+			return -999;
+		double factor = aantallen[0]/exp.aantallen[0];
+		for(int i = 1; i < aantallen.length; i++)
+		{
+			double factor2 = aantallen[i]/exp.aantallen[i];
+			if(factor2 != factor)
+				return -999;
+		}
+		return factor;
 	}
 	
 	public String toString()

@@ -21,6 +21,7 @@ import javax.swing.*;
 import org.cbook.cbookif.CBookWidgetIF;
 
 
+
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -32,7 +33,6 @@ import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.CheckButtonPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
-import fi.wiskopdr.ReactieVergelijkingVak;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakEditPanel;
@@ -54,6 +54,7 @@ import fi.wiskopdr.formuleobjects.FormuleButton;
 //import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 
 
 public class EditInteractiePanelDialog extends JDialog implements ActionListener,  WindowListener , FocusListener, XWidgetManager.HasWidgetManager
