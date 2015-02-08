@@ -459,7 +459,8 @@ public class Statistiek implements WiskOpdrApplet
 			|| (binWidth < (max - min)/50))
 			return null;
 		
-		if ((minBoundary > min) || (minBoundary < (min - 0.5 * max)))
+		if ((minBoundary > min) 
+				|| (minBoundary < (min - 1 - 0.5 * max))) // minus 1 to avoid problems in case of small and negative values of min and max
 			return null;
 		
 		// calculate decimal bin boundaries smaller than 1 
