@@ -284,13 +284,13 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     
     public int getScore() {
         // TODO Auto-generated method stub
-        return 0;
+        return correct?10:0;
     }
 
     
     public int getScoreMax() {
         // TODO Auto-generated method stub
-        return 0;
+        return 10;
     }
 
     
@@ -520,12 +520,18 @@ System.out.println("correct = " + correct);
     {
 //System.out.println("tvip setState");    	
     	tekenVeelvlak.setState(h);
-    	double viewerDraaiX = ((Double) h.get("draaiX")).doubleValue();
-    	double viewerDraaiY = ((Double) h.get("draaiY")).doubleValue();
+    	double viewerDraaiX = 20;
+    	double viewerDraaiY = -30;
+    	
+    	if (h.containsKey("draaiX"))
+    		viewerDraaiX = ((Double) h.get("draaiX")).doubleValue();
+    	if (h.containsKey("draaiY"))
+    		viewerDraaiY = ((Double) h.get("draaiY")).doubleValue();
     	if (h.containsKey("viewerDraaiX"))
     		viewerDraaiX = ((Double) h.get("viewerDraaiX")).doubleValue(); 
     	if (h.containsKey("viewerDraaiY"))
     		viewerDraaiY = ((Double) h.get("viewerDraaiY")).doubleValue();
+    	
     	if (viewerPosition == TekenVeelvlakInteractiePanel.MOVEABLE)
     		viewer.zetBeginHoeken(viewerDraaiX, viewerDraaiY);
     			

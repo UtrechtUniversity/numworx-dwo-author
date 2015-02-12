@@ -454,6 +454,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 */        
 		h.put("tvipBreedte", new Integer(tvipBreedte));
 		h.put("tvipHoogte", new Integer(tvipHoogte));
+		h.put("scoreMax", new Integer(10));
         
         return h;
     }
