@@ -296,13 +296,13 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     
     public boolean isCorrect() {
         // TODO Auto-generated method stub
-        return true;
+        return correct;
     }
 
     
     public boolean isFout() {
         // TODO Auto-generated method stub
-        return false;
+        return !correct;
     }
 
     
