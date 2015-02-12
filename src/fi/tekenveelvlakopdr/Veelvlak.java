@@ -446,21 +446,21 @@ class Veelvlak
 		vlakken = new Vlak[500];
 		hoekpunten = new Hoekpunt[1000];
 
-		for(int i=0 ; i<hp.length/3 ; i++)
-		{	voegHoekpuntToe(hp[3*i],hp[3*i+1],hp[3*i+2]);
+		for (int i = 0; i < hp.length / 3; i++)
+		{	voegHoekpuntToe(hp[3*i], hp[3*i+1], hp[3*i+2]);
 		}
 		int teller = 1;
-		for(int i=0 ; i<vl[0] ; i++)
+		for (int i = 0; i < vl[0]; i++)
 		{	int aantalHpV = vl[teller];
 			int[] hpv = new int[aantalHpV]; 
-			for(int j=0 ; j<aantalHpV ; j++)
+			for (int j = 0; j < aantalHpV; j++)
 			{	hpv[j] = vl[teller+1+j];
 			}
-			voegVlakToe(aantalHpV,hpv);
+			voegVlakToe(aantalHpV, hpv);
 			teller = teller + aantalHpV + 1;
 		}
-		for(int i=0 ; i<ln[0] ; i++)
-		{	maakLijn(ln[2*i+1],ln[2*i+2], "rood");
+		for (int i = 0; i < ln[0]; i++)
+		{	maakLijn(ln[2*i+1], ln[2*i+2], "rood");
 		}
 	}
 
@@ -497,7 +497,7 @@ class Veelvlak
 		for(int i=0 ; i<n ; i++)
 		{	hpv[i] = hoekpunten[hpnrs[i]];
 		}
-		vlakken[aantalVlakken] = new Vlak(n,hpv);
+		vlakken[aantalVlakken] = new Vlak(n, hpv);
 		aantalVlakken++;
 	}
 	
@@ -657,6 +657,11 @@ class Vlak
 		zb = ((a1*b2-a2*b1)-(a0*b2-a2*b0)+(a0*b1-a1*b0))/d;
 		middenb = new Hoekpunt(xb, yb, zb);
 
+	}
+	
+	public void zetVulkleur(String vk)
+	{
+		vulkleur = vk;
 	}
 }
 class Hoekpunt

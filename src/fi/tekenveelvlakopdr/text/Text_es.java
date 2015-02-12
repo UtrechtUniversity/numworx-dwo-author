@@ -18,10 +18,29 @@ public class Text_es extends java.util.ListResourceBundle
 				{ "dodecaederLabel" , "dodecahedron" },
 				{ "octaederLabel" , "octahedron" },
 				{ "icosaederLabel" , "icosahedron" },
+				
+                { "kleurVlakKnopLabel" , "Color faces" },
+                { "wisKleurKnopLabel" , "Clear colored" },
                 
-                { "alleenViewerCBLabel" , "Viewer Only" },
-                { "draaibaarCBLabel" , "Rotatable" },
-                { "hulpPuntenCBLabel" , "Help points" },
+				{ "hulpPuntenCBLabel" , "help points on edges" },
+                
+				{ "vooraanzichtPijlCBLabel" , "Arrow indicating front" },
+                
+                { "alleenViewerCBLabel" , "Show viewer" },
+                { "draaibaarRBLabel" , "Viewer rotatable" },
+                { "vooraanzichtRBLabel" , "Viewer front view" },
+                { "achteraanzichtRBLabel" , "Viewer back view" },
+                { "bovenaanzichtRBLabel" , "Viewer top view" },
+                { "onderaanzichtRBLabel" , "Viewer bottom view" },
+                { "linkeraanzichtRBLabel" , "Viewer left view" },
+                { "rechteraanzichtRBLabel" , "Viewer right view" },
+
+                { "alleenProfielenCBLabel" , "Show profiles" },
+                
+                { "vlakkenKleurenCBLabel" , "Coloring faces" },
+                { "inProfielenRBLabel" , "of the profiles" },
+                { "inFiguurRBLabel" , "of the object" },
+
 
         };
 }

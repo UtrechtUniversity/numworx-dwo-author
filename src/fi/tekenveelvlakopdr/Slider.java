@@ -67,21 +67,27 @@ public class Slider	extends JPanel implements MouseListener, MouseMotionListener
 	public int geefStand()
 	{	return stand;
 	}
+
+	public int geefLengte()
+	{	return lengte;
+	}
 	
 	public void zetStand(int std)
-	{	if(std>lengte)stand = lengte;
-		else if(std<0)stand = 0;
-		else stand = std;
+	{	if (std > lengte)stand = lengte;
+		else if(std < 0)
+			stand = 0;
+		else 
+			stand = std;
 		repaint();
 	}
 	
 	public void mousePressed(MouseEvent e)
 	{	raak = true;//(new Rectangle(stand-5,0,20,20)).contains(e.getX(), e.getY());
 		stand = e.getX()-5;
-		if(stand>lengte) 
+		if (stand > lengte) 
 		{	stand = lengte;
 		}
-		else if(stand<0) 
+		else if(stand < 0) 
 		{	stand = 0;
 		}
 		repaint();
@@ -93,11 +99,11 @@ public class Slider	extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(!raak && new Rectangle(stand+5,0,10,20).contains(e.getX(), e.getY()))
+	{	if (!raak && new Rectangle(stand+5,0,10,20).contains(e.getX(), e.getY()))
 		{	raak = true;
 			muisStartX = e.getX();
 		}
-		if(raak)
+		if (raak)
 		{	int x = e.getX();
 			int dx = x - muisStartX;
 			stand = x-5;//stand + dx;

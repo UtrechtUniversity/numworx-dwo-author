@@ -60,8 +60,14 @@ public class TekenApplet3D extends JPanel
 	public void setBounds(int x, int y, int b, int h)
 	{
 		super.setBounds(x,y,b,h);
-		if(tb!=null)tb.setBounds(0,0,getSize().width-150,getSize().height);
-		if(rg!=null)rg.setBounds(getSize().width-140,0,130,getSize().height);
+		if (tb!=null)
+		{	tb.setBounds(0,0,getSize().width-150,getSize().height);
+		
+		}
+		if (rg!=null)
+		{	rg.setBounds(getSize().width-140,0,130,getSize().height);
+		
+		}
 	}
 		
 	public void stop()
@@ -274,6 +280,8 @@ class Tekenblad3D extends JPanel
 	public boolean bezigMetTekenen;
 	private double afstand;
 	
+	int[] sorteerRij;
+	
 	public Tekenblad3D(TekenApplet3D ap)
 	{	achtergrondkleur = Color.white;
 		leeg = false;
@@ -285,51 +293,74 @@ class Tekenblad3D extends JPanel
 		{	l[i] = new Lichaam3D();
 			l[i].zetAfstand(afstand);
 		}
+		sorteerRij = new int[200];
 		eigenaar = ap;
 		mat = new Matrix3D();
 		
 	}
+	
+	
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
 	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
 	//zorgt "tekenOpnieuw()" of "tekenErbij()" hiervoor. "TekenOpImage()" zorgt voor het vullen 
 	//van de image, metbehulp van het door de leerlingen geimplementeerde "tekenprogramma()",
 	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
-	//-------------------------------------------------------------------------------------------  	
-	public void paint(Graphics g)
-  	{ 	bezigMetTekenen = true;
-		if(im==null)
-		{	breedte = getSize().width;
-			hoogte = getSize().height;	
-			double startschaal = 1;//Math.min((double)breedte/500,(double)hoogte/500);
-			mat.initialiseer(0,0,0,startschaal);	
+	//-------------------------------------------------------------------------------------------
+	
+	
+	public void paintComponent(Graphics g)
+  	{ 	
+		
+//System.out.println("tb paint");
+
+		gIm = g;
+		
+		bezigMetTekenen = true;
+//		if(im==null)
+//		{	
+			breedte = getSize().width;
+			hoogte = getSize().height;
+			
+//System.out.println("b = " + breedte);
+//System.out.println("h = " + hoogte);
+			
+			//double startschaal = 1;
+			//double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
+			//mat.initialiseer(0,0,0,startschaal);	
 			startpunt = new Punt3D(breedte/2,hoogte/2,0);
 			for(int i=0 ; i<5 ; i++)
 			{	l[i].maakNulpunt(breedte/2,hoogte/2,0);
 			}
-			im = createImage(breedte,hoogte);
-  			gIm = im.getGraphics();
-			tekenOpImage(true);
-		}
-    	g.drawImage(im, 0, 0, null);
+			//im = createImage(breedte,hoogte);
+  			//gIm = im.getGraphics();
+			//tekenOpImage(true, g);
+//		}
+    	//g.drawImage(im, 0, 0, null);
+		
+		tekenOpImage(true, g);
+		
 		bezigMetTekenen = false;
   	}
 	public void zetAfstand(double afst)
 	{	afstand = afst;
 		for(int i=0 ; i<5 ; i++)
-			{	l[i].zetAfstand(afst);
-			}
+		{	l[i].zetAfstand(afst);
+		}
 	}
 	public void zetSchaduw(boolean s)
 	{	schaduw = s;
 	}
 
-  	public void tekenOpImage(boolean wis)
-  	{ 	beginpunt = new Punt3D(startpunt);
+  	public void tekenOpImage(boolean wis, Graphics g)
+  	{ 	startpunt = new Punt3D(breedte/2,hoogte/2,0);
+  		
+  		beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
 		//mat.initialiseer();
 	  	gIm.setColor(achtergrondkleur);
-    	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
+    	if (wis)
+    		gIm.fillRect(0, 0, breedte, hoogte);
 		//gIm.setColor(Color.black);
 		//gIm.drawRect(0,0,breedte-1, hoogte-1);
     	penAan(0,0,0);
@@ -338,26 +369,32 @@ class Tekenblad3D extends JPanel
 		for(int i=0 ; i<5 ; i++)
 		{	l[i].sorteer();
 		}
-			
+		for(int i=0 ; i<200 ; i++)
+		{	sorteerRij[i] = l[1].sorteerRij[i];
+		}			
 		for(int j=0 ; j<5 ; j++)
 		{
+//System.out.println("tv lich = " + j + " ap = " + l[j].aantalPolygonen);
+
 			for(int i=0 ; i<l[j].aantalPolygonen ; i++)
 			{
-				if(l[j].vlakken[i].normaal.z >0)
-				{	if(schaduw)
+				if (l[j].vlakken[i].normaal.z > 0)
+				{	if (schaduw)
 					{	double grijsfactor = 0.5*((-l[j].vlakken[i].normaal.x - l[j].vlakken[i].normaal.y + l[j].vlakken[i].normaal.z)/Math.sqrt(3)+1);
 						if(grijsfactor<0)grijsfactor=0;if(grijsfactor>1)grijsfactor=1;
 						int roodwaarde = 50+(int)(l[j].vlakken[i].vulkleur.getRed()*grijsfactor*0.75);
 						int groenwaarde = 50+(int)(l[j].vlakken[i].vulkleur.getGreen()*grijsfactor*0.75);
 						int blauwwaarde = 50+(int)(l[j].vlakken[i].vulkleur.getBlue()*grijsfactor*0.75);
 						gIm.setColor(new Color(roodwaarde,groenwaarde,blauwwaarde));
+//System.out.println("tv schaduw");						
 					}
 					else
 					{	gIm.setColor(l[j].vlakken[i].vulkleur);
 					}
-					if(!l[j].vlakken[i].isLeeg)gIm.fillPolygon(l[j].vlakken[i].pol);
+					if(!l[j].vlakken[i].isLeeg)
+						gIm.fillPolygon(l[j].vlakken[i].pol);
 					gIm.setColor(l[j].vlakken[i].lijnkleur);
-					if(!l[j].vlakken[i].isLijn && l[j].vlakken[i].isOmlijnd )
+					if (!l[j].vlakken[i].isLijn && l[j].vlakken[i].isOmlijnd )
 					{	gIm.setColor(l[j].vlakken[i].lijnkleur);
 						gIm.drawPolygon(l[j].vlakken[i].pol);
 					}
@@ -380,20 +417,31 @@ class Tekenblad3D extends JPanel
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
 	//-------------------------------------------------------------------------------------------
 	void tekenOpnieuw()
-	{	if(im==null)return;
+	{	
+		
+		repaint();
+		
+/*		
+		if(im==null)return;
 		bezigMetTekenen = true;
-		tekenOpImage(true);
+		tekenOpImage(true, gIm);
 		Graphics g = getGraphics();
 		g.drawImage(im, 0, 0, null); 
 		bezigMetTekenen = false;
+*/		
 	}
   
   	void tekenErbij()
-	{	bezigMetTekenen = true;
-		tekenOpImage(false);
+	{	
+  		repaint();
+  		
+/*  		
+  		bezigMetTekenen = true;
+		tekenOpImage(false,gIm);
 		Graphics g = getGraphics();
 		g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
+*/		
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -473,7 +521,8 @@ class Tekenblad3D extends JPanel
 	}
 	void vulAan(String kl)
 	{	vul = true;
-		if(kl.equals("transparant"))leeg = true;
+		if (kl.equals("transparant"))
+			leeg = true;
 		vulkleur = maakKleur(kl);
 	}
 	void vulAan(int r, int g, int b)
@@ -487,7 +536,8 @@ class Tekenblad3D extends JPanel
 	void vulAan(int n,String kl)
 	{	vul = true;
 		lnummer=n;
-		if(kl.equals("transparant"))leeg = true;
+		if (kl.equals("transparant"))
+			leeg = true;
 		vulkleur = maakKleur(kl);
 	}
 	void vulAan(int n,int r, int g, int b)
@@ -539,28 +589,49 @@ class Tekenblad3D extends JPanel
 	}
 
 	Polygon geefVlak()
-	{	if(l[0].vlakken[l[0].aantalPolygonen-1].normaal.z > 0)
-		return l[0].vlakken[l[0].aantalPolygonen-1].pol;
-		else return new Polygon();
+	{	if (l[0].vlakken[l[0].aantalPolygonen-1].normaal.z > 0)
+			return l[0].vlakken[l[0].aantalPolygonen-1].pol;
+		else 
+			return new Polygon();
 	}
 	
+	Polygon geefVlak(int n)
+	{	if (l[n].vlakken[l[n].aantalPolygonen-1].normaal.z > 0)
+			return l[n].vlakken[l[n].aantalPolygonen-1].pol;
+		else 
+			return new Polygon();
+	}
 	
  	//-------------------------------------------------------------------------------------------
 	//deze methode wordt gebruikt een kleur in de vorm van een string om te zetten in een Color
 	//-------------------------------------------------------------------------------------------
 	private Color maakKleur(String kl)
-	{	if(kl.equals("rood")) return Color.red;
-		else if(kl.equals("groen")) return Color.green;
-		else if(kl.equals("blauw")) return Color.blue;
-		else if(kl.equals("geel")) return Color.yellow;
-		else if(kl.equals("cyaan")) return Color.cyan;
-		else if(kl.equals("roze")) return Color.pink;
-		else if(kl.equals("zwart")) return Color.black;
-		else if(kl.equals("grijs")) return Color.gray;
-		else if(kl.equals("lichtgrijs")) return Color.lightGray;
-		else if(kl.equals("magenta")) return Color.magenta;
-		else if(kl.equals("wit")) return Color.white;
-		else if(kl.equals("oranje")) return Color.orange;
+	{	if (kl.equals("rood")) 
+			return Color.red;
+		else if (kl.equals("roodoranje")) 
+			return Color.red;
+		else if (kl.equals("groen")) 
+			return Color.green;
+		else if (kl.equals("blauw")) 
+			return Color.blue;
+		else if (kl.equals("geel")) 
+			return Color.yellow;
+		else if (kl.equals("cyaan")) 
+			return Color.cyan;
+		else if (kl.equals("roze")) 
+			return Color.pink;
+		else if (kl.equals("zwart")) 
+			return Color.black;
+		else if (kl.equals("grijs")) 
+			return Color.gray;
+		else if (kl.equals("lichtgrijs")) 
+			return Color.lightGray;
+		else if (kl.equals("magenta")) 
+			return Color.magenta;
+		else if (kl.equals("wit")) 
+			return Color.white;
+		else if (kl.equals("oranje")) 
+			return Color.orange;
 		else return Color.black;		
 	}	
 }
@@ -979,6 +1050,8 @@ class Lichaam3D
 	public double[] xcoord;
 	public double[] ycoord;
 	public double[] zcoord;
+	
+	public int[] sorteerRij;
 
 	public Polygon3D[] vlakken, vlakkenSort;
 	public int aantalPunten, aantalPolygonen;
@@ -996,6 +1069,7 @@ class Lichaam3D
 		zcoord = new double[2000];
 
 		vlakken = new Polygon3D[2000];
+		sorteerRij = new int[200];
 		aantalPunten = 0;
 		aantalPolygonen = 0;
 		nulpunt = new Punt3D(0,0,0);
@@ -1063,12 +1137,18 @@ class Lichaam3D
 	}
 
 	public void sorteer()
-	{	for(int j=0 ; j<aantalPolygonen ;j++)
+	{	
+		for (int i = 0; i < 200 ; i++)
+		{	sorteerRij[i] = i;
+		}
+		for (int j = 0; j < aantalPolygonen; j++)
 		{
-			for(int i=j+1 ; i<aantalPolygonen ; i++)
+			for(int i = j+1; i < aantalPolygonen; i++)
 			{
-				if(vlakken[j].gemz > vlakken[i].gemz)
-				{
+				if (vlakken[j].gemz > vlakken[i].gemz)
+				{	int res = sorteerRij[j];
+					sorteerRij[j] = sorteerRij[i];
+					sorteerRij[i] = res;
 					huidigePolygon = vlakken[j];
 					vlakken[j] = vlakken[i];
 					vlakken[i] = huidigePolygon;

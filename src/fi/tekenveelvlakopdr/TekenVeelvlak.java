@@ -21,11 +21,31 @@ import fi.tekenveelvlakopdr.opdrnav.*;
 
 public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,ItemListener
 {	
+	TekenVeelvlakInteractiePanel tvip;
+	
 	Slider zijdeSl;
 	Matrix3D matrot, matres,mateenh;
-	double k, xhoek,yhoek;
-
+	double k;
+	double kMinFac = 60e-2d;
+	double kMaxFac = 140e-2d;
+	double k50 = 180;
+	double kMin, kMax;
+	double zoomFac = 5e-1d;
+	double xhoek,yhoek;
+	double beginx = 20, beginy = -30;
+	
+	boolean klikAan = false;
+	boolean muisDrukAan = true;
+	
+	int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
+	boolean muisAan = true; // muis van de viewer
+	
 	Veelvlak v, tv;
+	Veelvlak voorkantPijl = null;
+	
+	Polygon[] p;
+	int aantalVlakkenRood = 0;
+	
 	Punt[] trefpunten;
 	boolean[] trefpuntRaak;
 	int aantalHpNieuw, aantalGetekendeHoekpunten;
@@ -33,6 +53,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	Punt[] trefpuntenNieuw;
 	boolean begin, basisZichtbaar,maakLijn, maakVlak, vaktekening;
 	JButton basisKnop, terugKnop, wisKnop, wisVKnop, lijnKnop, vlakKnop, vaktekKnop;
+	JButton kleurVlakKnop, wisKleurKnop;
 	JComboBox kiesV;
 	JLabel l;
 	
@@ -42,10 +63,19 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	Font font = new Font ("SansSerif",Font.PLAIN,11);
 	Font fontBold = new Font ("SansSerif",Font.BOLD,11);
 	
-	int bStarH = 30;
+	int bStarH = 20;
+	
+	public TekenVeelvlak(TekenVeelvlakInteractiePanel tvip)
+	{
+		this.tvip = tvip;
+	}
 	
 	public void initialiseer()
-	{	setOpaque(true);
+	{	
+		
+//System.out.println("initialiseer");
+
+		setOpaque(true);
 	    setBackground(getBackground());
 		maakMuisActieMogelijk();
 		
@@ -69,7 +99,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		l.setBounds(45,bStarH+40,100,20);
 		rg.add(l);
 		
-		zijdeSl = new Slider(100,40);
+		zijdeSl = new Slider(100,50);
 		zijdeSl.addActionListener(this);
 		zijdeSl.setBounds(10,bStarH+60,110,20);
 		zijdeSl.setBackground(new Color(208,228,255));
@@ -110,7 +140,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		wisKnop.addActionListener(this);
 		wisKnop.setBounds(8,bStarH+230,114,25);
 		rg.add(wisKnop);
-		
+
 		wisVKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisVlakKnopLabel"));
 		wisVKnop.setFont(font);
 		wisVKnop.setMargin(new Insets(4,10,4,10));
@@ -118,7 +148,22 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		wisVKnop.setBounds(8,bStarH+260,114,25);
 		rg.add(wisVKnop);
 		
+		kleurVlakKnop = new JButton(TekenVeelvlakOpdr.rb.getString("kleurVlakKnopLabel"));
+		kleurVlakKnop.setFont(font);
+		kleurVlakKnop.setMargin(new Insets(4,10,4,10));
+		kleurVlakKnop.addActionListener(this);
+		kleurVlakKnop.setBounds(8,bStarH+310,114,25);
+		rg.add(kleurVlakKnop);
+		kleurVlakKnop.setEnabled(false);
 		
+		wisKleurKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisKleurKnopLabel"));
+		wisKleurKnop.setFont(font);
+		wisKleurKnop.setMargin(new Insets(4,10,4,10));
+		wisKleurKnop.addActionListener(this);
+		wisKleurKnop.setBounds(8,bStarH+340,114,25);
+		rg.add(wisKleurKnop);
+		wisKleurKnop.setEnabled(false);
+
 		vaktekKnop = new JButton("vaktekening");
 		vaktekKnop.addActionListener(this);
 		//rg.add(vaktekKnop);
@@ -127,7 +172,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		matres = new Matrix3D();
 		mateenh = new Matrix3D();
 		tb.mat = matres;
-		k=180;
+		k = 180; //k=180; // ik: 130
 		begin=true;
 		basisZichtbaar=true;
 		maakLijn=true;
@@ -142,8 +187,10 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		aantalPuntenRood = 0;
 		puntnr = new int[20];
 		
+		
 		//v = (new Icosaeder(1.3)).dualiseer();
-		v = (new Kubus(1.3));
+		//v = (new Kubus(1.3));
+		v = (new Kubus(1));
 		
 		int n = 0;
 		int aantalHp = 8;
@@ -165,7 +212,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 			}
 		}
 											
-		for(int i=0 ; i<v.aantalVlakken ; i++)
+		for (int i = 0; i < v.aantalVlakken; i++)
 		{	v.vlakken[i].vulkleur = "transparant";
 		}
 		
@@ -179,39 +226,141 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 	public void setBounds(int x, int y, int b, int h)
-	{	k=180.0/500*Math.min(b-90, h);
+	{	
+
+//System.out.println("tv setBounds " + x + " " + y + " " + b + " " + h);
+//System.out.println("k before " + k);
+		
+		//k=180.0/500*Math.min(b-90, h);
+		k50 = 180.0/500*Math.min(b-150, h);
+		kMin = kMinFac * k50;
+		kMax = kMaxFac * k50;
+		
+//System.out.println("tvv kMin = " + UF.format(kMin, 1));
+//System.out.println("tvv kMax = " + UF.format(kMax, 1));
+
+		k = zoomFac * (kMax - kMin) + kMin; 
+		
+		//k=180.0/500*Math.min(b-150, h);
+
+if (k > 0)		
+{	//System.out.println("tvv b = " + b + " h = " + h);		
+	//System.out.println("tvv k = " + UF.format(k, 1));
+}	
+
 		super.setBounds(x,y,b,h);
+		
+		//if (tb != null)
+		//	tekenOpnieuw();
+	}
+	
+	public void zetZoomFac(double zFac)
+	{
+		zoomFac = zFac;
+		
+		k50 = 180.0/500*Math.min(getSize().width-150, getSize().height);
+		kMin = kMinFac * k50;
+		kMax = kMaxFac * k50;
+
+		k = zoomFac * (kMax - kMin) + kMin; 
+		
+//System.out.println("tvv setZoomFac k = " + UF.format(k, 1));		
+		
+	}
+	
+	public void zetViewerPosition(int vPos, boolean muis)
+	{
+		viewerPosition = vPos;
+		muisAan = muis;
 	}
 	
 	public void setState(Hashtable h)
 	{	
+		
+//System.out.println("tv setState");
+
 		double[] hoekpunten = null;
 		int[] vlakken = null;
 		int[] lijnen = null;
+		String[] kleuren = null;
+		int aantalVlakkenRood = 0;
+		
 		boolean basisZichtbaar = true;
 		
-		hoekpunten = (double[])h.get("hoekpunten");
-		vlakken = (int[])h.get("vlakken");
-		lijnen = (int[])h.get("lijnen");
-		basisZichtbaar = ((Boolean)h.get("basisZichtbaar")).booleanValue();
+		double zoomFac = 5e-1d;
+		double draaiX = 20;
+		double draaiY = -30;
 		
-		aantalPuntenRood=0;
+		int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
+		boolean muisAan = true;
+
+		hoekpunten = (double[]) h.get("hoekpunten");
+		vlakken = (int[]) h.get("vlakken");
+		lijnen = (int[]) h.get("lijnen");
+		if (h.containsKey("kleuren"))
+			kleuren = (String[]) h.get("kleuren");
+		if (h.containsKey("kleuren"))
+			kleuren = (String[]) h.get("kleuren");
+		if (h.containsKey("aantalVlakkenRood"))
+			aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
+		
+		
+		if (h.containsKey("basisZichtbaar"))
+			basisZichtbaar = ((Boolean)h.get("basisZichtbaar")).booleanValue();
+		if (h.containsKey("zoomFac"))
+			zoomFac = ((Double) h.get("zoomFac")).doubleValue();
+		if (h.containsKey("draaiX"))
+			draaiX = ((Double) h.get("draaiX")).doubleValue();
+		if (h.containsKey("draaiY"))
+			draaiY = ((Double) h.get("draaiY")).doubleValue();
+
+		if (h.containsKey("viewerPosition"))
+			viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
+		if (h.containsKey("muisAan"))
+			muisAan = ((Boolean) h.get("muisAan")).booleanValue();
+
+		this.viewerPosition = viewerPosition;
+		this.muisAan = muisAan;
+		this.aantalVlakkenRood = aantalVlakkenRood;
+		
+		aantalPuntenRood = 0;
 		wisTrefpunten();
 		//tv.wisLijnen();
 		aantalHpNieuw = 0;
 		
 		this.basisZichtbaar = basisZichtbaar;
-		if(!basisZichtbaar) basisKnop.setLabel(TekenVeelvlakOpdr.rb.getString("toonBasisKnopLabel"));
+		if (!basisZichtbaar) 
+			basisKnop.setText(TekenVeelvlakOpdr.rb.getString("toonBasisKnopLabel"));
+		
+//System.out.println("zoomFac = " + UF.format(zoomFac,3));		
+		
+		this.zoomFac = zoomFac;
+		int stand = (int) Math.round(zoomFac * zijdeSl.geefLengte());
+		zijdeSl.zetStand(stand);
+		zetZoomFac(zoomFac);
+
+		zetBeginHoeken(draaiX, draaiY);
+//System.out.println("draaiX = " + UF.format(draaiX,1) + " draaiY = " + UF.format(draaiY,1));		
+
+		
 		tv = new Veelvlak(hoekpunten, vlakken, lijnen);
+
+		if (kleuren != null)
+		{	for (int i = 0; i < tv.aantalVlakken; i++)
+			{	tv.vlakken[i].vulkleur = kleuren[i];
+			}
+		}
 		
 		
-		for(int i=0 ; i<v.aantalHoekpunten ; i++)
+		for (int i = 0; i < v.aantalHoekpunten; i++)
 		{	hoekpuntenNieuw[aantalHpNieuw] = v.hoekpunten[i];
 			aantalHpNieuw++;
 		}
 	
 		maakAlleSnijpunten();
-		//tekenOpnieuw();
+		
+		begin = true;
+		tekenOpnieuw();
 		
 	}
 	
@@ -226,29 +375,93 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		terugKnop.setBounds(8,bStarH+200,114,25);
 		wisKnop.setBounds(8,bStarH+230,114,25);
 		wisVKnop.setBounds(8,bStarH+260,114,25);
-		
+		kleurVlakKnop.setBounds(8,bStarH+310,114,25);
+		wisKleurKnop.setBounds(8,bStarH+340,114,25);
 	}
 	
 	public Hashtable getState()
-	{	double[] hoekpunten = null;
+	{	
+//System.out.println("tv getState");		
+		
+		double[] hoekpunten = null;
 		int[] vlakken = null;
 		int[] lijnen = null;
+		String[] kleuren = null;
+				
 		boolean basisZichtbaar = true;
+		
+		double zoomFac = 5e-1d;
+		
+		double draaiX = 20;
+		double draaiY = -30;
 		
 		hoekpunten = tv.hpRij;
 		vlakken = tv.vlRij;
 		lijnen = tv.lnRij;
+		kleuren = new String[tv.aantalVlakken];
+		for (int vCnt = 0; vCnt < kleuren.length; vCnt++)
+		{	kleuren[vCnt] = tv.vlakken[vCnt].vulkleur;
+		}
+		
 		basisZichtbaar = this.basisZichtbaar;
+		
+		zoomFac = this.zoomFac;
+		draaiX = geefDraaiX();
+		draaiY = geefDraaiY();
+
+//System.out.println("zoomFac = " + UF.format(zoomFac,3));
 		
 		Hashtable h = new Hashtable();
 		
 		h.put("hoekpunten", hoekpunten);
 		h.put("vlakken", vlakken);
 		h.put("lijnen", lijnen);
+		h.put("kleuren", kleuren);
+		h.put("aantalVlakkenRood", new Integer(aantalVlakkenRood));
+		
 		h.put("basisZichtbaar", new Boolean(basisZichtbaar));
+		
+		h.put("zoomFac", new Double(zoomFac));
+		
+		h.put("draaiX", new Double(draaiX));
+		h.put("draaiY", new Double(draaiY));
+//System.out.println("draaiX = " + UF.format(draaiX,1) + " draaiY = " + UF.format(draaiY,1));		
+
+		h.put("viewerPosition", new Integer(viewerPosition));
+		h.put("muisAan", new Boolean(muisAan));
 		
 		return h;
 	}
+	
+	public void zetAfstand(double afst)
+	{	
+		tb.zetAfstand(afst);
+	}
+	public void zetSchaduw(boolean s)
+	{	tb.zetSchaduw(s);
+	}
+	public void zetBeginHoeken(double hx, double hy)
+	{	beginx = hx;
+		beginy = hy;
+		xhoek = 0;
+		yhoek = 0;
+	}
+	public void zetKlikAan(boolean b)
+	{	klikAan = b;
+		muisDrukAan = !b;
+		//rg.setVisible(!b);
+	}
+	public double geefDraaiX()
+	{	
+//System.out.println("gdX " + beginx + " " + xhoek);		
+		return beginx+xhoek;
+	}
+	public double geefDraaiY()
+	{	
+//System.out.println("gdY " + beginy + " " + yhoek);		
+		return beginy+yhoek;
+	}
+	
 	
 	public int geefBasisFiguur()
 	{	return kiesV.getSelectedIndex();
@@ -259,8 +472,16 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		kiesV.setSelectedIndex(basisFiguur);
 	}
 	
+	public void toonVoorkantPijl(Veelvlak vkPijl)
+	{
+		voorkantPijl = vkPijl;
+		
+		repaint();
+	}
+	
 	public void tekenprogramma()
-	{	if(vaktekening)
+	{	
+		if(vaktekening)
 		{	begindraai(0,0);
 			
 			tb.gIm.drawRect(20,220,200,200);
@@ -308,21 +529,41 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 			
 		}
 		else
-		{	begindraai(20,-30);
-			if(basisZichtbaar)tekenVeelvlak(2,v);
+		{	
+			
+//System.out.println("tekenProgramma !vaktekening");
+
+			if (begin)
+				begindraai(beginx,beginy);
+			if (basisZichtbaar)
+				tekenVeelvlak(2,v);
 			tekenVeelvlak(1,tv);
 			maakTrefpunten(tv);
+			
+			if (voorkantPijl != null)
+			{	tekenVeelvlak(1,voorkantPijl);
+			}
+			
 		}
 	}
 	void begindraai(double xdr,double ydr)
-	{	if(begin)
+	{	
+		
+//System.out.println("begindraai " + begin);
+
+		if(begin)
 		{	//lijnKnop.setSize(100,25);
 			//basisKnop.setSize(100,25);
 			//terugKnop.setSize(100,25);
 			//wisKnop.setSize(100,25);
 			//wisVKnop.setSize(100,25);
 			//vlakKnop.setSize(100,25);
+			beginx = xdr;
+			beginy = ydr;
 						
+//System.out.println("beginx = " + beginx);
+//System.out.println("beginy = " + beginy);
+
 			tb.mat.initialiseer();
 			matrot.initialiseer();
 			matrot.ydraaiAbs(ydr);
@@ -365,13 +606,33 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		}
 	}
 	void tekenVeelvlak(int n,Veelvlak vv)
-	{	for(int i=0 ; i<vv.aantalVlakken ; i++)
-		{	tekenVlak(n,vv.vlakken[i]);
+	{	
+		if ((n == 1) && (vv == tv))
+		{	p = new Polygon[vv.aantalVlakken];
 		}
-		for(int i=0 ; i<vv.aantalLijnen ; i++)
+		for (int i = 0; i < vv.aantalVlakken; i++)
+		{	tekenVlak(n, vv.vlakken[i]);
+			if ((n == 1) && (vv == tv))
+			{	p[i] = tb.geefVlak(1);
+//System.out.println("p" + i + " " + polygonString(p[i]));			
+			}
+		}
+		for (int i = 0; i < vv.aantalLijnen; i++)
 		{	tekenLijn(vv.lijnen[i]);
 		}
 	}
+	
+	public String polygonString(Polygon p)
+	{
+		String result = "";
+		for (int i = 0; i < p.npoints; i++)
+		{
+			result += "(" + p.xpoints[i] + "," + p.ypoints[i] + ") ";  
+		}
+		
+		return result;
+	}
+
 	void tekenLijn(Lijn l)
 	{	penUit();
 		stap(k*l.hpunt1.x, k*l.hpunt1.y, k*l.hpunt1.z);
@@ -383,23 +644,40 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	void tekenVlak(int n,Vlak v)
 	{	penUit();
 		stap(k*v.punten[0].x, k*v.punten[0].y, k*v.punten[0].z);
-		if(!(v.lijnkleur=="transparant"))penAan("lichtgrijs");
-		if(v.vulkleur=="transparant")
-		{	if(n==2)vulAan(v.vulkleur);
-			else if(n==1)vulAan(1,v.vulkleur);
-		}
-		else 
-		{	if(n==2)vulAan("grijs");
-			else if(n==1)vulAan(1,"grijs");
-		}
-		for(int i=v.aantalHoekpunten-1 ; i>-1 ; i--)
-		{	int a=i ; int b=(i+1)%v.aantalHoekpunten;
-			stap(k*(v.punten[a].x-v.punten[b].x), k*(v.punten[a].y-v.punten[b].y), k*(v.punten[a].z-v.punten[b].z));
-		}
-		if(n==2)vulUit();
-		else if(n==1)vulUit(1);
 		
-		if(!(v.lijnkleur=="transparant"))penAan(v.lijnkleur);
+		
+		if (!(v.lijnkleur=="transparant"))
+			penAan("lichtgrijs");
+		
+		if (v.vulkleur=="transparant")
+		{	if (n==2)
+				vulAan(v.vulkleur);
+			else if (n==1)
+				vulAan(1,v.vulkleur);
+		}
+		else if (v.vulkleur != "zwart") 
+		{	if (n==2)
+			{	vulAan("grijs");
+			}
+			else if (n==1)
+			{	vulAan(1,"grijs");
+			}
+		}
+		
+		if (v.vulkleur != "zwart")
+		{
+			for(int i=v.aantalHoekpunten-1 ; i>-1 ; i--)
+			{	int a=i ; int b=(i+1)%v.aantalHoekpunten;
+				stap(k*(v.punten[a].x-v.punten[b].x), k*(v.punten[a].y-v.punten[b].y), k*(v.punten[a].z-v.punten[b].z));
+			}
+			if (n==2)
+				vulUit();
+			else if (n==1)
+				vulUit(1);
+		}
+		
+		if (!(v.lijnkleur=="transparant"))
+			penAan(v.lijnkleur);
 		vulAan(n,v.vulkleur);
 		for(int i=0 ; i<v.aantalHoekpunten ; i++)
 		{	int a=i ; int b=(i+1)%v.aantalHoekpunten;
@@ -495,77 +773,112 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		else return false; 
 	}
 	public void actionPerformed(ActionEvent e)
-	{		boolean animatieWasAan=false;
+	{		boolean animatieWasAan = false;
 		
-			if(e.getSource()==zijdeSl)
-			{	k = 5*zijdeSl.geefStand();
+			if (e.getSource() != kleurVlakKnop)
+			{
+				zetKlikAan(false);
+				kleurVlakKnop.setFont(font);
+			}
+	
+			if (e.getSource() == zijdeSl)
+			{	
+				int stand = zijdeSl.geefStand();
+				int lengte = zijdeSl.geefLengte();
+				double kMin = kMinFac * k50;
+				double kMax = kMaxFac * k50;
+				zoomFac = (double) stand / (double) (lengte);
+				k = zoomFac * (kMax - kMin) + kMin; 
+
+				//tvip.viewer.zetZoomFac(zoomFac);
+				//k = 2*zijdeSl.geefStand(); //k = 5*zijdeSl.geefStand(); 
 			}
 			
-			else if(e.getSource()==basisKnop)
-			{	if(basisKnop.getLabel()==TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"))
+			else if (e.getSource() == basisKnop)
+			{	if (basisKnop.getText() == TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"))
 				{	
 					basisZichtbaar = false;
-					basisKnop.setLabel(TekenVeelvlakOpdr.rb.getString("toonBasisKnopLabel"));
+					basisKnop.setText(TekenVeelvlakOpdr.rb.getString("toonBasisKnopLabel"));
 					
 				}
 				else
 				{	basisZichtbaar = true;
-					basisKnop.setLabel(TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"));
+					basisKnop.setText(TekenVeelvlakOpdr.rb.getString("verbergBasisKnopLabel"));
 				}
 			}	
-			else if(e.getSource()==terugKnop)
-			{	aantalPuntenRood=0;
+			else if (e.getSource() == terugKnop)
+			{	aantalPuntenRood = 0;
 				wisTrefpunten();
-				if(maakLijn)
-				{	if(tv.aantalLijnen>0)tv.wisVorigeLijn();
+				if (maakLijn)
+				{	if (tv.aantalLijnen > 0)
+						tv.wisVorigeLijn();
 				}
-				if(maakVlak)
-				{	if(tv.aantalVlakken>0)tv.wisVorigVlak();
+				if (maakVlak)
+				{	if (tv.aantalVlakken > 0)
+						tv.wisVorigVlak();
 				}
 			}
-			else if(e.getSource()==lijnKnop)
+			else if (e.getSource() == lijnKnop)
 			{	maakLijn = true;
 				maakVlak = false;
 				//lijnKnop.setBackground(Color.white);
 				//vlakKnop.setBackground(Color.lightGray);
 				lijnKnop.setFont(fontBold);
                 vlakKnop.setFont(font);
+                kleurVlakKnop.setFont(font);
 				aantalPuntenRood=0;
 				wisTrefpunten();
 			}
-			else if(e.getSource()==vlakKnop)
+			else if (e.getSource() == vlakKnop)
 			{	maakLijn = false;
 				maakVlak = true;
 				//lijnKnop.setBackground(Color.lightGray);
 				//vlakKnop.setBackground(Color.white);
 				lijnKnop.setFont(font);
                 vlakKnop.setFont(fontBold);
-				aantalPuntenRood=0;
+                kleurVlakKnop.setFont(font);
+				aantalPuntenRood = 0;
 				wisTrefpunten();
 			}
-			else if(e.getSource()==wisKnop)
-			{	aantalPuntenRood=0;
+			else if (e.getSource() == wisKnop)
+			{	aantalPuntenRood = 0;
 				wisTrefpunten();
 				tv.wisLijnen();
 				aantalHpNieuw = 0;
-				for(int i=0 ; i<v.aantalHoekpunten ; i++)
+				for (int i = 0; i < v.aantalHoekpunten; i++)
 				{	hoekpuntenNieuw[aantalHpNieuw] = v.hoekpunten[i];
 					aantalHpNieuw++;
 				}
 			}
-			else if(e.getSource()==wisVKnop)
-			{	aantalPuntenRood=0;
+			else if(e.getSource() == wisVKnop)
+			{	aantalPuntenRood = 0;
 				wisTrefpunten();
 				tv.wisVlakken();
 				
 			}
+			else if(e.getSource() == kleurVlakKnop)
+			{	
+				lijnKnop.setFont(font);
+                vlakKnop.setFont(font);
+                kleurVlakKnop.setFont(fontBold);
+				zetKlikAan(true);
+			}
+			else if(e.getSource() == wisKleurKnop)
+			{	
+				for (int i = 0; i < tv.aantalVlakken; i++)
+				{	tv.vlakken[i].vulkleur = "oranje";
+				}
+
+			}
 			
-			else if(animatieStatus())
+			else if (animatieStatus())
 			{	onderbreekAnimatie();
 				animatieWasAan = true;
 			}
 			tekenOpnieuw();
-			if(animatieWasAan)beginAnimatie();
+			
+			if (animatieWasAan)
+				beginAnimatie();
 		
 		
 		
@@ -573,20 +886,27 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 	public void nieuw()
-	{	String soortV = (String)kiesV.getSelectedItem();
+	{	String soortV = (String) kiesV.getSelectedItem();
 
-		if (soortV==TekenVeelvlakOpdr.rb.getString("kubusLabel"))v = new Kubus(1);
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("octaederLabel"))v = (new Kubus(Math.sqrt(3))).dualiseer();
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("icosaederLabel"))v = new Icosaeder(1);
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("dodecaederLabel"))v = (new Icosaeder(1.3)).dualiseer();
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("tetraederLabel"))v = new Tetraeder(1);
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("prismaLabel"))v = new Prisma(0.7,6,1);
-		else if (soortV==TekenVeelvlakOpdr.rb.getString("ruiten12Label"))v = new Kuboctaeder(1.8).dualiseerb();
+		if (soortV == TekenVeelvlakOpdr.rb.getString("kubusLabel"))
+			v = new Kubus(1);
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("octaederLabel"))
+			v = (new Kubus(Math.sqrt(3))).dualiseer();
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("icosaederLabel"))
+			v = new Icosaeder(1);
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("dodecaederLabel"))
+			v = (new Icosaeder(1.3)).dualiseer();
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("tetraederLabel"))
+			v = new Tetraeder(1);
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("prismaLabel"))
+			v = new Prisma(0.7,6,1);
+		else if (soortV == TekenVeelvlakOpdr.rb.getString("ruiten12Label"))
+			v = new Kuboctaeder(1.8).dualiseerb();
 		
-		for(int i=0 ; i<v.aantalVlakken ; i++)
+		for (int i = 0; i < v.aantalVlakken; i++)
 		{	v.vlakken[i].vulkleur = "transparant";
 		}
-		aantalPuntenRood=0;
+		aantalPuntenRood = 0;
 		wisTrefpunten();
 		tv.wisLijnen();
 		aantalHpNieuw = 0;
@@ -741,52 +1061,63 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		for(int i=0 ; i<v.aantalVlakken ; i++)
 		{	v.vlakken[i].vulkleur = "transparant";
 		}
+		
+//System.out.println("zetBasis fig = " + figNr + " hp = " + aantalRibPunten);		
+		tekenOpnieuw();
 	}
 	
 	public void itemStateChanged(ItemEvent e)
-	{	boolean animatieWasAan=false;
+	{	boolean animatieWasAan = false;
 		
 		nieuw();
 		
-		if(animatieStatus())
+		if (animatieStatus())
 		{	onderbreekAnimatie();
 			animatieWasAan = true;
 		}
 		tekenOpnieuw();
-		if(animatieWasAan)beginAnimatie();
+		if (animatieWasAan)
+			beginAnimatie();
 	}
 
 	public void muisDrukActie()
-	{	boolean raak = false;
+	{	
+		if (!muisDrukAan)
+			return;
+			
+		boolean raak = false;
 		int max = tv.aantalHoekpunten;
-		for(int i=0 ; i<max ; i++)
+		// loop langs de trefpunten, dat zijn tv's hoekpunten, 
+		for (int i = 0; i < max; i++)
 		{	double ax = trefpunten[i].x - geefDrukx();
 			double ay =  trefpunten[i].y - geefDruky();
-			if((ax<4 && ax>-4)&&(ay<4 && ay>-4))
+			if ((ax < 4 && ax > -4) && (ay < 4 && ay > -4))
 			{	raak = true;
-				if(maakLijn)
-				{	if(aantalPuntenRood==0)
+				if (maakLijn)
+				{	if (aantalPuntenRood == 0)
 					{	puntnr1 = i;
 						aantalPuntenRood++;
-						trefpuntRaak[i]=true;
+						trefpuntRaak[i] = true;
 					}
 					else 
 					{	puntnr2 = i;
-						if(puntnr1!=puntnr2)tv.maakLijn(puntnr1,puntnr2,"rood");
-						aantalPuntenRood=0;
+						if (puntnr1 != puntnr2)
+							tv.maakLijn(puntnr1,puntnr2,"rood");
+						aantalPuntenRood = 0;
 						wisTrefpunten();
-						trefpuntRaak[puntnr1]=false;
-						if(tv.aantalLijnen>1)zoekSnijpunten();
+						trefpuntRaak[puntnr1] = false;
+						if (tv.aantalLijnen > 1)
+							zoekSnijpunten();
 					}
 				}
-				else if(maakVlak)
-				{	if(aantalPuntenRood>0 && i==puntnr[aantalPuntenRood-1])
+				else if (maakVlak)
+				{	if (aantalPuntenRood > 0 && i == puntnr[aantalPuntenRood-1])
 					{	wisTrefpunten();
-						aantalPuntenRood=0;
+						aantalPuntenRood = 0;
 					}
-					else if(aantalPuntenRood>1 && i==puntnr[aantalPuntenRood-2])
+					else if (aantalPuntenRood > 1 && i == puntnr[aantalPuntenRood-2])
 					{	wisTrefpunten();
-						aantalPuntenRood=0;
+						aantalPuntenRood = 0;
 					}
 					else if(i!=puntnr[0] || aantalPuntenRood==0)
 					{	if(aantalPuntenRood<3)
@@ -815,19 +1146,19 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 					}
 				}
 				break;
-			}
-		}
-		if(raak)
+			} // trefpunt geraakt
+		} // for loop trefpunten
+		if (raak)
 		{	tekenOpnieuw();
 			return;
 		}
-		else
-		{	raak=false; 
+		else 
+		{	raak = false; 
 			max = aantalHpNieuw;
-			for(int i=0 ; i<max ; i++)
+			for (int i = 0; i < max; i++)
 			{	double ax = trefpuntenNieuw[i].x - geefDrukx();
 				double ay = trefpuntenNieuw[i].y - geefDruky();
-				if((ax<4 && ax>-4)&&(ay<4 && ay>-4))
+				if ((ax < 4 && ax > -4) && (ay < 4 && ay > -4))
 				{	//if(aantalPuntenRood>2 && !checkVlak(hoekpuntenNieuw[i]))
 					//{	return;
 					//}
@@ -896,23 +1227,60 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 					break;
 				}
 			}
-			if(raak)
+			if (raak)
 			{	tekenOpnieuw();
 				return;
 			}
 		}
 	}
 	public void muisSleepActie()
-	{	if(!vaktekening)
-		{	xhoek=-0.5*geefSleepdy();
-			yhoek=0.5*geefSleepdx();
-			matrot.initialiseer();
-			matrot.ydraaiAbs(yhoek);
-			matrot.xdraaiAbs(xhoek);
-			matres.mult(matrot);
+	{	if (!vaktekening)
+		{	//xhoek = -0.5*geefSleepdy();
+			//yhoek = 0.5*geefSleepdx();
+			xhoek -= 0.5*geefSleepdy();
+			yhoek += 0.5*geefSleepdx();
+			//matrot.initialiseer();
+			//matrot.ydraaiAbs(yhoek);
+			//matrot.xdraaiAbs(xhoek);
+			//matres.mult(matrot);
+			matres.initialiseer();
+			matres.xdraai(beginx+xhoek);
+			matres.ydraai(beginy+yhoek);
 			tekenOpnieuw();
+			
+//System.out.println("xhoek = " + xhoek + " yhoek = " + yhoek);			
 		}
 	}
+	
+	public void muisLosActie()
+	{	if ((klikAan && (geefDrukx()-geefX())*(geefDrukx()-geefX()) + 
+			            (geefDruky()-geefY())*(geefDruky()-geefY()) < 10))
+		{	muisKkActie();
+		}
+		tekenOpnieuw();
+	}
+	public void muisKkActie()
+	{	
+		// p is vanzelf gesorteerd
+		for (int j = tv.aantalVlakken - 1; j > -1; j--)
+		{	
+			if (p[j].contains(geefDrukx(),geefDruky()))
+			{	
+				if (tv.vlakken[j].vulkleur.equals("oranje"))
+				{   tv.vlakken[j].vulkleur = "roodoranje";
+					aantalVlakkenRood++;
+				}
+				else 
+				{	tv.vlakken[j].vulkleur = "oranje";
+					aantalVlakkenRood--;
+				}
+				
+				tekenOpnieuw();
+				return;
+			}
+		}
+	}
+
 	public void animatie()
 	{	while(animatieStatus() && !vaktekening)
 		{	matrot.initialiseer();
@@ -955,7 +1323,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	//}
 
 
-	public Hashtable getEditState() {
+	public Hashtable getEditState() 
+	{
 		return getState();
 	}
 
@@ -1008,7 +1377,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 
-	public void setEditState(Hashtable h) {
+	public void setEditState(Hashtable h) 
+	{
 		setState(h);
 		rg.add(kiesV);
 		
@@ -1039,8 +1409,8 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	}
 
 
-	public void zetOpdracht(Hashtable h, String[] randomVars,
-			Hashtable randomValues) {
+	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
+	{
 		setState(h);
 		rg.remove(kiesV);
 		

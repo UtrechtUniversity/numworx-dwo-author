@@ -22,9 +22,28 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "ruiten12Label" , "rombendodecahedron" },
                 { "icosaederLabel" , "icosaeder" },
                 
-                { "alleenViewerCBLabel" , "Alleen viewer" },
-                { "draaibaarCBLabel" , "draaibaar" },
-                { "hulpPuntenCBLabel" , "hulppunten op ribben" }
+                { "kleurVlakKnopLabel" , "Kleur vlakken" },
+                { "wisKleurKnopLabel" , "Wis gekleurd" },
+                
+                { "hulpPuntenCBLabel" , "hulppunten op ribben" },
+                
+                { "vooraanzichtPijlCBLabel" , "Pijl voor vooraanzicht" },
+                
+                { "alleenViewerCBLabel" , "Toon viewer" },
+                { "draaibaarRBLabel" , "Viewer draaibaar" },
+                { "vooraanzichtRBLabel" , "Viewer vooraanzicht" },
+                { "achteraanzichtRBLabel" , "Viewer achteraanzicht" },
+                { "bovenaanzichtRBLabel" , "Viewer bovenaanzicht" },
+                { "onderaanzichtRBLabel" , "Viewer onderaanzicht" },
+                { "linkeraanzichtRBLabel" , "Viewer linker aanzicht" },
+                { "rechteraanzichtRBLabel" , "Viewer rechter aanzicht" },
+                
+                { "alleenProfielenCBLabel" , "Toon profielen" },
+                
+                { "vlakkenKleurenCBLabel" , "Vlakken kleuren" },
+                { "inProfielenRBLabel" , "van de profielen" },
+                { "inFiguurRBLabel" , "van de figuur" },
+                
                 
 				
         };

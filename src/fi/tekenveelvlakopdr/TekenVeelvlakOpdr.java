@@ -46,12 +46,18 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 	}
 	
 	public TekenVeelvlakOpdr()
-	{	Locale language = new Locale ("nl", "");
+	{	
+//System.out.println("tvOpdr1");
+
+		Locale language = new Locale ("nl", "");
 		rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
 	}
 	
 	public TekenVeelvlakOpdr(Locale language)
-	{	rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
+	{	
+//System.out.println("tvOpdr2");
+
+		rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
 	}
 	
 	public void init()
@@ -109,7 +115,7 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 		p2.setLayout(null);
 		p2.setBounds(200,10,getSize().width-200,getSize().height-80);
 		add(p2);
-		tekenVeelvlak = new TekenVeelvlak();
+		tekenVeelvlak = new TekenVeelvlak(null);
 		tekenVeelvlak.setBounds(0,0,getSize().width-200,getSize().height-80);
 		tekenVeelvlak.setBackground(bgcolor);
 		tekenVeelvlak.init();
