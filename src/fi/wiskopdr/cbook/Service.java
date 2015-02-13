@@ -329,9 +329,13 @@ public class Service {
 
 		public CBookWidgetEditIF getEditor(CBookContext context) {
 			CBookWidgetEditIF editor = widget.getEditor(context);
-			Map<String, ?> data = launchData.getLaunchData();
-			if(data != null && ! data.isEmpty() )
-				editor.setLaunchData(data);
+			try {
+				Map<String, ?> data = launchData.getLaunchData();
+				if(data != null && ! data.isEmpty() )
+					editor.setLaunchData(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return editor;
 		}
 
@@ -360,8 +364,9 @@ public class Service {
 		//if(true) {CBookWidgetIF cbif = new org.cbook.mediaman.MediaMan(); classMap.put(cbif.getClass().getName(), cbif);return;}
 	try {	
 		URL codebase = WiskOpdr.applet.getCodeBase();
-		//codebase = new URL("http://localhost:8888/dwo/widgets/");
+//codebase = new URL("http://localhost:8888/dwo/widgets/");
 		String index = "index.properties";
+//index = "single.properties";
 		String param = WiskOpdr.applet.getParameter("widget_index");
 		if(param != null) index = param;
 		URL url = new URL(codebase, index);
@@ -476,9 +481,14 @@ public class Service {
 		case TekstInteractiePanelVak.CindySetNr:
 			return singleton(widgetForName("de.cinderella.CindyWidget"));
 		case TekstInteractiePanelVak.ESlateSetNr:
-			return singleton(widgetForName("widgetESlate.ESlateWidget"));
-		case TekstInteractiePanelVak.EpsilonSetNr:
+			Collection<CBookWidgetIF> eslate = singleton(widgetForName("widgetESlate.ESlateWidget"));
+			Collection<CBookWidgetIF> malt =   singleton(widgetForName("maltsample.maltWidget"));
 			Collection<CBookWidgetIF> set = new ArrayList<CBookWidgetIF>(2);
+			set.addAll(eslate);
+			set.addAll(malt);
+			return set;
+		case TekstInteractiePanelVak.EpsilonSetNr:
+			 set = new ArrayList<CBookWidgetIF>(2);
 			set.addAll( singleton(widgetForName("ewcbook.EpsilonWriterWidget")));
 			//set.addAll( singleton(widgetForName("ewcbook.EpsilonChatWidget")));			
 			return set;
