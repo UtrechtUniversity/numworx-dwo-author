@@ -5,6 +5,7 @@ import java.text.CollationKey;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.Locale;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
@@ -358,4 +359,15 @@ public class ColumnType implements Serializable
 		}
 		return ret;
 	}
+	
+	public Hashtable toMap()
+	{
+		Hashtable result = new Hashtable();
+		result.put("@type", getClass().getName());
+		result.put("type", type.toString());
+		result.put("uitleg", uitleg);
+		result.put("enumOptions", enumOptions);
+		return result;
+	}
+
 }
