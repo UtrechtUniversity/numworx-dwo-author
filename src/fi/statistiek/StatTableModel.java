@@ -118,6 +118,12 @@ public class StatTableModel implements TableModel
 		h.put("columnCount", new Integer(this.columnCount));
 		h.put("columnNames", this.columnNames);
 		h.put("columnClass", this.columnClass);
+		List columnClassMap = new ArrayList();
+		for (ColumnType type : this.columnClass)
+		{
+			columnClassMap.add(type.toMap());
+		}
+		h.put("columnClassMapped", columnClassMap);
 		h.put("values", this.values);
 
 		h.put("viewsEditable", this.viewsEditable);
