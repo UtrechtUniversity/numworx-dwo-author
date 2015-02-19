@@ -30,6 +30,7 @@ import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -166,7 +167,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		setLayer((Component) foutIC, JLayeredPane.PALETTE_LAYER.intValue());
 		add(foutIC);
 
-		feedbackTekst = new TekstArea();
+		feedbackTekst = new FeedbackTekstArea();
 		feedbackTekst.setSize(200, 20);
 		feedbackTekst.setBackground(new Color(255, 255, 200));
 		feedbackTekst.setBorders(true);

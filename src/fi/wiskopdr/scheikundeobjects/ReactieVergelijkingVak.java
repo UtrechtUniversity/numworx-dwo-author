@@ -46,6 +46,7 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
@@ -305,7 +306,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 //
 //		}
 
-		feedbackTekst = new TekstArea();
+		feedbackTekst = new FeedbackTekstArea();
 		feedbackTekst.setSize(195, 20);
 		feedbackTekst.setBackground(new Color(255, 255, 200));
 		if ("MW".equals(WiskOpdr.deployVariant))

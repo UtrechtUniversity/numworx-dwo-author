@@ -28,6 +28,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 import fi.wiskopdr.tekstobjects.TekstArea;
 
 public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, ActionListener, CBookAware
@@ -154,7 +155,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		setLayer((Component) foutIC, JLayeredPane.PALETTE_LAYER.intValue());
 		add(foutIC);
 
-		feedbackTekst = new TekstArea();
+		feedbackTekst = new FeedbackTekstArea();
 		feedbackTekst.setSize(200, 20);
 		feedbackTekst.setBackground(new Color(255, 255, 200));
 		feedbackTekst.setBorders(true);

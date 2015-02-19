@@ -1914,8 +1914,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     
     public void destroy()
     {   if(interactiePanel!=null)interactiePanel.destroy();
-    	XWidgetManager manager = tekstVak.getXWidgetManager();
-		manager.remove(this);
+    	try {
+			XWidgetManager manager = tekstVak.getXWidgetManager();
+			manager.remove(this);
+		} catch (IllegalArgumentException e) {
+			// without manager nothing to remove.
+		}
         
     }
     
