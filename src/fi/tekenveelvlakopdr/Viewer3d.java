@@ -42,7 +42,7 @@ public class Viewer3d extends JPanel
 	double k50;
 	double kMinFac = 60e-2d;
 	double kMaxFac = 140e-2d;
-	double zoomFac = 5e-1d;
+	double zoomFac = 1.0;
 	
 	boolean voorkantPijlZichtbaar = false;
 	int voorkantPijlIndex = -1;
@@ -276,7 +276,7 @@ if (k > 0)
 		if (h.containsKey("kleuren"))
 			kleuren = (String[]) h.get("kleuren");
 		
-		double zoomFac = 5e-1d;
+		double zoomFac = 1.0;
 		double draaiX = 20;
 		double draaiY = -30;
 

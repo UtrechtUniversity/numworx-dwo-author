@@ -340,7 +340,7 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         tekenVeelvlak.setBounds(0,0,b,h);
         tekenVeelvlak.setButtonHeights(h/2-170);
         //houdt de viewer vierkant
-        int vb = b - 150; 
+        int vb = b; //b-150
         int vh = h; 
         int vs = Math.min(vb,vh);
         
