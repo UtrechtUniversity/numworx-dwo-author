@@ -155,6 +155,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		kleurVlakKnop.setBounds(8,bStarH+310,114,25);
 		rg.add(kleurVlakKnop);
 		kleurVlakKnop.setEnabled(false);
+		//kleurVlakKnop.setVisible(false);
 		
 		wisKleurKnop = new JButton(TekenVeelvlakOpdr.rb.getString("wisKleurKnopLabel"));
 		wisKleurKnop.setFont(font);
@@ -163,6 +164,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		wisKleurKnop.setBounds(8,bStarH+340,114,25);
 		rg.add(wisKleurKnop);
 		wisKleurKnop.setEnabled(false);
+		//wisKleurKnop.setVisible(false);
 
 		vaktekKnop = new JButton("vaktekening");
 		vaktekKnop.addActionListener(this);

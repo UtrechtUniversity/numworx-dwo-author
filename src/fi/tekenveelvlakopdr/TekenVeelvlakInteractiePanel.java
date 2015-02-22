@@ -6,6 +6,7 @@ import java.util.Hashtable;
 
 import javax.swing.JPanel;
 
+
 //import fi.beans.tekstobjects.TekstArea;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -290,13 +291,15 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     
     public int getScoreMax() {
         // TODO Auto-generated method stub
-        return 10;
+        return 0;
     }
 
     
     public boolean isCorrect() {
         // TODO Auto-generated method stub
-        return correct;
+    	if(vlakkenKleurenOptie && (profielenKleurenOptie && profilesOnly || !profielenKleurenOptie && !profilesOnly))
+    	   return correct;
+    	return true;//correct;
     }
 
     
@@ -308,11 +311,11 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     
     public void kijkNa() 
     {
-    	if (vlakkenKleurenOptie && profielenKleurenOptie)
+    	if (vlakkenKleurenOptie && profielenKleurenOptie && profilesOnly)
     	{
     		correct = vaktek.evalueer(aantalVlakkenRood);
     	}
-    	else if (vlakkenKleurenOptie && !profielenKleurenOptie)
+    	else if (vlakkenKleurenOptie && !profielenKleurenOptie && !profilesOnly)
     	{
     		correct = viewer.evalueer();
     	}
