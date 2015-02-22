@@ -16,38 +16,38 @@ public class Faculteit extends Expressie
 	
 	public double geefWaarde()
 	{	long w = (int)Math.round(kind1.geefWaarde());
-		double antw = w;
-		for(long i=w-1 ; i>0 ; i--) antw = antw*i;
+		double antw = 1;
+		for(long i=w ; i>0 ; i--) antw = antw*i;
 		return antw;
 	}
 	
 	public double geefWaarde(double subst)
 	{	long w = (int)Math.round(kind1.geefWaarde(subst));
-		double antw = w;
-		for(long i=w-1 ; i>0 ; i--) antw = antw*i;
+		double antw = 1;
+		for(long i=w ; i>0 ; i--) antw = antw*i;
 		return antw;
 	}
 	
 	public Complex geefWaardeComplex()
 	{	long w = 0;
 		if(kind1!=null && kind1.geefWaardeComplex()!=null)w = (int)Math.round(kind1.geefWaardeComplex().getReal());
-		double antw = w;
-		for(long i=w-1 ; i>0 ; i--) antw = antw*i;
+		double antw = 1;
+		for(long i=w ; i>0 ; i--) antw = antw*i;
 		return new Complex(antw);
 	}
 	
 	public Complex geefWaardeComplex(Complex subst)
 	{	long w = 0;
 		if(kind1!=null && kind1.geefWaardeComplex()!=null)w = (int)Math.round(kind1.geefWaardeComplex(subst).getReal());
-		double antw = w;
-		for(long i=w-1 ; i>0 ; i--) antw = antw*i;
+		double antw = 1;
+		for(long i=w ; i>0 ; i--) antw = antw*i;
 		return new Complex(antw);
 	}
 	
 	public double geefWaarde(double[] subst, String[] vars)
 	{	long w = (int)Math.round(kind1.geefWaarde(subst, vars));
-		double antw = w;
-		for(long i=w-1 ; i>0 ; i--) antw = antw*i;
+		double antw = 1;
+		for(long i=w ; i>0 ; i--) antw = antw*i;
 		return antw;
 	}
 	
