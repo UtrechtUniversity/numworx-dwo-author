@@ -16,7 +16,79 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
+	static final String CALCULATOR_BUTTON = "MyButton.";
+
 	public class MyButtonUI extends BasicButtonUI {
+
+
+		@Override
+		public void installUI(JComponent c) {
+			// TODO Auto-generated method stub
+			super.installUI(c);
+		}
+
+		@Override
+		protected void installDefaults(AbstractButton b) {
+			// TODO Auto-generated method stub
+			super.installDefaults(b);
+		}
+
+		@Override
+		public int getDefaultTextIconGap(AbstractButton b) {
+			// TODO Auto-generated method stub
+			return super.getDefaultTextIconGap(b);
+		}
+
+		@Override
+		public void paint(Graphics g, JComponent c) {
+			// TODO Auto-generated method stub
+			super.paint(g, c);
+		}
+
+		@Override
+		protected String getPropertyPrefix() {
+			// TODO Zie constructor voor de naam
+			return CALCULATOR_BUTTON;
+		}
+
+		@Override
+		protected void paintText(Graphics g, JComponent c, Rectangle textRect,
+				String text) {
+			// TODO Auto-generated method stub
+			super.paintText(g, c, textRect, text);
+		}
+
+		@Override
+		protected void paintText(Graphics g, AbstractButton b,
+				Rectangle textRect, String text) {
+			// TODO Auto-generated method stub
+			super.paintText(g, b, textRect, text);
+		}
+
+		@Override
+		protected void paintFocus(Graphics g, AbstractButton b,
+				Rectangle viewRect, Rectangle textRect, Rectangle iconRect) {
+			// TODO Auto-generated method stub
+			super.paintFocus(g, b, viewRect, textRect, iconRect);
+		}
+
+		@Override
+		protected void paintButtonPressed(Graphics g, AbstractButton b) {
+			// TODO Auto-generated method stub
+			super.paintButtonPressed(g, b);
+		}
+
+		@Override
+		protected void setTextShiftOffset() {
+			// TODO Auto-generated method stub
+			super.setTextShiftOffset();
+		}
+
+		@Override
+		public Dimension getPreferredSize(JComponent c) {
+			// TODO Auto-generated method stub
+			return super.getPreferredSize(c);
+		}
 
 		
 	}
@@ -105,8 +177,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		donkergrijs = new Color(98, 98, 98);
 		
 		defaults = UIManager.getDefaults();
-		defaults.put("Button.margin", new Insets(0,0,0,0));
-		defaults.put("Button.contentMargins", new Insets(0,0,0,0));
+		defaults.put(CALCULATOR_BUTTON + "margin", new Insets(0,0,0,0));
+		defaults.put(CALCULATOR_BUTTON + "contentMargins", new Insets(0,0,0,0));
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
@@ -262,8 +334,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		button.setBorderPainted(false);
 		button.setBackground(backGround);
 		button.setForeground(foreGround);
-		button.setUI(new MyButtonUI());
-		//button.setMargin(new Insets(0, 0, 0, 0));
+		button.setBorder(BorderFactory.createEmptyBorder()); // HIERO
+		button.setMargin(new Insets(0, 0, 0, 0));
+		//button.setUI(new MyButtonUI());
 		return button;
 	}
 	
@@ -1218,7 +1291,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			if(Character.isDigit(sb.charAt(pos-1)))
 			{	while(beginPos >= 0 && Character.isDigit(sb.charAt(beginPos)))
 					beginPos --;
-				//doet het één keer te vaak:
+				//doet het ����n keer te vaak:
 				beginPos++;
 				
 				if(beginPos != 0 && sb.charAt(beginPos-1)=='.')
@@ -1337,7 +1410,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				//int eindPos = pos+1;
 				while(eindPos <= sb.length()-1 && Character.isDigit(sb.charAt(eindPos)))
 					eindPos ++;
-				//doet het één keer te vaak:
+				//doet het ����n keer te vaak:
 				eindPos--;
 								
 				if(eindPos < sb.length()-1 && sb.charAt(eindPos+1)=='.')
