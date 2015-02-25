@@ -6,8 +6,9 @@ import java.util.Hashtable;
 import java.util.Locale;
 
 import javax.swing.*;
-import javax.swing.plaf.ButtonUI;
-import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.border.BevelBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultCaret;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -16,83 +17,6 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
-	static final String CALCULATOR_BUTTON = "MyButton.";
-
-	public class MyButtonUI extends BasicButtonUI {
-
-
-		@Override
-		public void installUI(JComponent c) {
-			// TODO Auto-generated method stub
-			super.installUI(c);
-		}
-
-		@Override
-		protected void installDefaults(AbstractButton b) {
-			// TODO Auto-generated method stub
-			super.installDefaults(b);
-		}
-
-		@Override
-		public int getDefaultTextIconGap(AbstractButton b) {
-			// TODO Auto-generated method stub
-			return super.getDefaultTextIconGap(b);
-		}
-
-		@Override
-		public void paint(Graphics g, JComponent c) {
-			// TODO Auto-generated method stub
-			super.paint(g, c);
-		}
-
-		@Override
-		protected String getPropertyPrefix() {
-			// TODO Zie constructor voor de naam
-			return CALCULATOR_BUTTON;
-		}
-
-		@Override
-		protected void paintText(Graphics g, JComponent c, Rectangle textRect,
-				String text) {
-			// TODO Auto-generated method stub
-			super.paintText(g, c, textRect, text);
-		}
-
-		@Override
-		protected void paintText(Graphics g, AbstractButton b,
-				Rectangle textRect, String text) {
-			// TODO Auto-generated method stub
-			super.paintText(g, b, textRect, text);
-		}
-
-		@Override
-		protected void paintFocus(Graphics g, AbstractButton b,
-				Rectangle viewRect, Rectangle textRect, Rectangle iconRect) {
-			// TODO Auto-generated method stub
-			super.paintFocus(g, b, viewRect, textRect, iconRect);
-		}
-
-		@Override
-		protected void paintButtonPressed(Graphics g, AbstractButton b) {
-			// TODO Auto-generated method stub
-			super.paintButtonPressed(g, b);
-		}
-
-		@Override
-		protected void setTextShiftOffset() {
-			// TODO Auto-generated method stub
-			super.setTextShiftOffset();
-		}
-
-		@Override
-		public Dimension getPreferredSize(JComponent c) {
-			// TODO Auto-generated method stub
-			return super.getPreferredSize(c);
-		}
-
-		
-	}
-
 	int cdipBreedte = 500;
 	int cdipHoogte = 300;
 	
@@ -107,7 +31,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
 	JButton lnKnop, logKnop, eKnop, nWortelKnop, expKnop;
 	
-	UIDefaults defaults; // om knoppen op Mac ook mooi te krijgen.
+	//UIDefaults defaults; // om knoppen op Mac ook mooi te krijgen.
 	
 	JLabel[] leegLabel;
 	JLabel sinInvLabel, cosInvLabel, tanInvLabel, decLabel;
@@ -176,9 +100,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		grijs = Color.gray;
 		donkergrijs = new Color(98, 98, 98);
 		
-		defaults = UIManager.getDefaults();
-		defaults.put(CALCULATOR_BUTTON + "margin", new Insets(0,0,0,0));
-		defaults.put(CALCULATOR_BUTTON + "contentMargins", new Insets(0,0,0,0));
+		//defaults = UIManager.getDefaults();
+		//defaults.put(CALCULATOR_BUTTON + "margin", new Insets(0,0,0,0));
+		//defaults.put(CALCULATOR_BUTTON + "contentMargins", new Insets(0,0,0,0));
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
@@ -328,15 +252,26 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	
 	public JButton maakButton(String s, Color backGround, Color foreGround)
 	{
-		JButton button = new JButton(s);
+		final JButton button = new JButton(s);
 		button.setFont(theLargeFont);
 		button.setOpaque(true);
-		button.setBorderPainted(false);
+		//button.setBorderPainted(false);
 		button.setBackground(backGround);
 		button.setForeground(foreGround);
-		button.setBorder(BorderFactory.createEmptyBorder()); // HIERO
+		button.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 		button.setMargin(new Insets(0, 0, 0, 0));
 		//button.setUI(new MyButtonUI());
+		button.getModel().addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent e) {
+	            ButtonModel model = (ButtonModel) e.getSource();
+	            if (model.isRollover()) {
+	                button.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray, 1), BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)));
+	            } else {
+	                button.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+	            }
+	        }
+	    });
 		return button;
 	}
 	
