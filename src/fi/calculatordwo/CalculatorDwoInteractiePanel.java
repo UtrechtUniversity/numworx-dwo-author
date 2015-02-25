@@ -6,6 +6,8 @@ import java.util.Hashtable;
 import java.util.Locale;
 
 import javax.swing.*;
+import javax.swing.plaf.ButtonUI;
+import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.text.DefaultCaret;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -14,6 +16,11 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, InteractiePanel
 {
+	public class MyButtonUI extends BasicButtonUI {
+
+		
+	}
+
 	int cdipBreedte = 500;
 	int cdipHoogte = 300;
 	
@@ -27,6 +34,8 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		ansKnop, isKnop;
 	JButton sinKnop, cosKnop, tanKnop, invKnop, piKnop;
 	JButton lnKnop, logKnop, eKnop, nWortelKnop, expKnop;
+	
+	UIDefaults defaults; // om knoppen op Mac ook mooi te krijgen.
 	
 	JLabel[] leegLabel;
 	JLabel sinInvLabel, cosInvLabel, tanInvLabel, decLabel;
@@ -95,6 +104,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		grijs = Color.gray;
 		donkergrijs = new Color(98, 98, 98);
 		
+		defaults = UIManager.getDefaults();
+		defaults.put("Button.margin", new Insets(0,0,0,0));
+		defaults.put("Button.contentMargins", new Insets(0,0,0,0));
 		
 		getalKnop = new JButton[10];
 		for(int i = 0; i<getalKnop.length; i++)
@@ -246,9 +258,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 	{
 		JButton button = new JButton(s);
 		button.setFont(theLargeFont);
+		button.setOpaque(true);
+		button.setBorderPainted(false);
 		button.setBackground(backGround);
 		button.setForeground(foreGround);
-		button.setMargin(new Insets(0, 0, 0, 0));
+		button.setUI(new MyButtonUI());
+		//button.setMargin(new Insets(0, 0, 0, 0));
 		return button;
 	}
 	
@@ -2318,5 +2333,7 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			
 		
 	}
+	
+	
 
 }
