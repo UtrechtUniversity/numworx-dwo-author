@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -44,6 +46,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
  */
 public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware, ResourceManagerClient {
 	
+	private final Logger LOGGER = java.util.logging.Logger.getLogger(getClass().getName());
 	private CBookWidgetInstanceIF instance;
 	private CBookWidgetIF widget;
 	private Hashtable launchData;
@@ -127,14 +130,18 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 			map = new HashMap(map);
 			instance.setLaunchData(map, Collections.EMPTY_MAP);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING,"setEditState()" , e);
 		}
 	}
 
 	public Hashtable getState() {
 		Hashtable h = new Hashtable();
-		Map hh = instance.getState();
-		h.putAll(hh); // conversie?
+		try {
+			Map hh = instance.getState();
+			h.putAll(hh); // conversie?
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING,"getState()" , e);
+		}
 		return h;
 	}
 
