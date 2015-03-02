@@ -83,6 +83,8 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JTextArea uitlegArea;
 	private JButton doneButton;
 
+	private boolean isViewOnly = false;
+
 	private Font font;
 
 	public static final int DEFAULT_WIDTH = 600;
@@ -96,10 +98,15 @@ public class AddColumnDialogView extends JDialog implements Observer
 	 * @param model
 	 *            MVC Model
 	 */
-	public AddColumnDialogView(Frame owner, AddColumnDialogModel model)
+	public AddColumnDialogView(Frame owner, AddColumnDialogModel model, String text)
 	{
-		super(owner, "Add a column", true);
+		super(owner, text, true);
 		super.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+		if (text.equals(Statistiek.rb.getString("columninfo")))
+		{
+			this.isViewOnly = true;
+		}
 
 		this.model = model;
 		this.model.addObserver(this);
@@ -115,10 +122,15 @@ public class AddColumnDialogView extends JDialog implements Observer
 	 * @param model
 	 *            MVC Model
 	 */
-	public AddColumnDialogView(Dialog owner, AddColumnDialogModel model)
+	public AddColumnDialogView(Dialog owner, AddColumnDialogModel model, String text)
 	{
-		super(owner, Statistiek.rb.getString("addacolumn"), true);
+		super(owner, text, true);
 		super.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+		if (text.equals(Statistiek.rb.getString("columninfo")))
+		{
+			this.isViewOnly = true;
+		}
 
 		this.model = model;
 		this.model.addObserver(this);
@@ -274,7 +286,37 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.originalColumnType = this.model.getType();
 		this.setStringOptions();
 
+		if (this.isViewOnly)
+		{
+			this.setColumnInfoMode(false);
+		}
+
 		this.update(null, null);
+	}
+
+	/**
+	 * Set column info mode yes/no, i.e. in column info mode
+	 * show info fields disabled 
+	 * and hide the irrelevant components.
+	 * 
+	 * @param b column info mode yes/no
+	 */
+	private void setColumnInfoMode(boolean b)
+	{
+		// set enabled
+		this.nameField.setEnabled(b);
+		this.typeBox.setEnabled(b);
+		this.enumElementsList.setEnabled(b);
+		this.uitlegArea.setEnabled(b);
+
+		// hide or show add enum element components
+		this.addEnumElementLabel.setVisible(b);
+		this.addEnumElementField.setVisible(b);
+		this.removeSelectedElement.setVisible(b);
+		this.removeAllElements.setVisible(b);
+		this.sortElements.setVisible(b);
+		this.moveElementUp.setVisible(b);
+		this.moveElementDown.setVisible(b);
 	}
 
 	private void setStringOptions()
