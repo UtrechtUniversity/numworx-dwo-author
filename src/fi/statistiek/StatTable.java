@@ -137,25 +137,28 @@ public class StatTable extends JPanel implements StatistiekView,
 	{
 		if (!this.statTableModel.isDataEditable())
 		{
-			if (this.popup.getSubElements().length == 3)
+			if (this.popup.getSubElements().length == 4)
 			{
-				this.popup.remove(2);			
-				this.popup.remove(1);
+				// remove options edit and delete
+				int indexEditItem = 1;
+				int indexDeleteItem = 2;
+				this.popup.remove(indexDeleteItem);
+				this.popup.remove(indexEditItem);
 			}
 		}
 		else
 		{
-			if (this.popup.getSubElements().length == 1)
+			if (this.popup.getSubElements().length == 2)
 			{
-				// add menu items
+				// add menu items edit and delete
 				JMenuItem editItem = new JMenuItem(Statistiek.rb.getString("editcolumnItem"));
 				editItem.setActionCommand("editItem");
 				editItem.addActionListener(this);
 				JMenuItem deleteItem = new JMenuItem(Statistiek.rb.getString("deletecolumnItem"));
 				deleteItem.setActionCommand("deleteItem");
 				deleteItem.addActionListener(this);
-				this.popup.add(editItem);
-				this.popup.add(deleteItem);
+				this.popup.add(editItem, 1);
+				this.popup.add(deleteItem, 2);
 			}
 		}
 	}
@@ -199,18 +202,27 @@ public class StatTable extends JPanel implements StatistiekView,
 		JMenuItem sortItem = new JMenuItem(Statistiek.rb.getString("sortItem"));
 		sortItem.setActionCommand("sortItem");
 		sortItem.addActionListener(this);
+		
 		JMenuItem editItem = new JMenuItem(Statistiek.rb.getString("editcolumnItem"));
 		editItem.setActionCommand("editItem");
 		editItem.addActionListener(this);
+		
 		JMenuItem deleteItem = new JMenuItem(Statistiek.rb.getString("deletecolumnItem"));
 		deleteItem.setActionCommand("deleteItem");
 		deleteItem.addActionListener(this);
+		
+		JMenuItem columnInfoItem = new JMenuItem(Statistiek.rb.getString("infocolumnItem"));
+		columnInfoItem.setActionCommand("infocolumnItem");
+		columnInfoItem.addActionListener(this);
+		
 		this.popup.add(sortItem);
 		if (this.statTableModel.isDataEditable())
 		{
 			this.popup.add(editItem);
 			this.popup.add(deleteItem);
 		}
+		this.popup.add(columnInfoItem);
+		
 		MouseListener popupListener = new PopupListener();
 		this.table.getTableHeader().addMouseListener(popupListener);
 
@@ -550,11 +562,11 @@ public class StatTable extends JPanel implements StatistiekView,
 			Container c = Statistiek.getTopLevelAncestor(this);
 			if (c instanceof Frame)
 			{
-				dialogView = new AddColumnDialogView((Frame) c, dialogModel);
+				dialogView = new AddColumnDialogView((Frame) c, dialogModel, Statistiek.rb.getString("addacolumn"));
 			}
 			else if (c instanceof Dialog)
 			{
-				dialogView = new AddColumnDialogView((Dialog) c, dialogModel);
+				dialogView = new AddColumnDialogView((Dialog) c, dialogModel, Statistiek.rb.getString("addacolumn"));
 			}
 			else
 			{
@@ -607,11 +619,11 @@ public class StatTable extends JPanel implements StatistiekView,
 			Container c = Statistiek.getTopLevelAncestor(this);
 			if (c instanceof Frame)
 			{
-				v = new AddColumnDialogView((Frame) c, m);
+				v = new AddColumnDialogView((Frame) c, m, Statistiek.rb.getString("editacolumn"));
 			}
 			else if (c instanceof Dialog)
 			{
-				v = new AddColumnDialogView((Dialog) c, m);
+				v = new AddColumnDialogView((Dialog) c, m, Statistiek.rb.getString("editacolumn"));
 			}
 			else
 			{
@@ -627,6 +639,39 @@ public class StatTable extends JPanel implements StatistiekView,
 				this.statTableModel.editColumn(this.popUpColumnIndex,
 					m.getName(), new ColumnType(m));
 			}
+		}
+		else if (actionCommand.equals("infocolumnItem"))
+		{
+			AddColumnDialogModel m = new AddColumnDialogModel(
+				this.statTableModel,
+				this.statTableModel.getColumnName(this.popUpColumnIndex),
+				this.statTableModel.getColumnTypes().get(popUpColumnIndex),
+				this.popUpColumnIndex);
+			AddColumnDialogView v;
+
+			Container c = Statistiek.getTopLevelAncestor(this);
+			if (c instanceof Frame)
+			{
+				v = new AddColumnDialogView((Frame) c, m, Statistiek.rb.getString("columninfo"));
+			}
+			else if (c instanceof Dialog)
+			{
+				v = new AddColumnDialogView((Dialog) c, m, Statistiek.rb.getString("columninfo"));
+			}
+			else
+			{
+				System.out.println("Error finding top level frame/dialog.");
+				return;
+			}
+			AddColumnDialogController c2 = new AddColumnDialogController(m, v);
+
+			v.setVisible(true);
+
+//			if (m.getDonePressed())
+//			{
+//				this.statTableModel.editColumn(this.popUpColumnIndex,
+//					m.getName(), new ColumnType(m));
+//			}
 		}
 		else if (e.getSource() == this.resetButton)
 		{
