@@ -1,6 +1,7 @@
 package fi.statistiek;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dialog;
@@ -23,11 +24,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
-
 import javax.imageio.ImageIO;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -41,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
@@ -48,6 +50,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
@@ -177,13 +180,15 @@ public class StatTable extends JPanel implements StatistiekView,
 				{
 					public String getToolTipText(MouseEvent e)
 					{
-						String tip = null;
+						String text = null;
 						java.awt.Point p = e.getPoint();
 						int index = columnModel.getColumnIndexAtX(p.x);
 						int realIndex = columnModel.getColumn(index)
 							.getModelIndex();
-						return StatTable.this.statTableModel.getColumnTypes()
+						text = StatTable.this.statTableModel.getColumnTypes()
 							.get(realIndex).getUitleg();
+						
+						return text;
 					}
 				};
 			}
@@ -321,7 +326,92 @@ public class StatTable extends JPanel implements StatistiekView,
 				StatTable.this.popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
-	}
+	} // class PopupListener
+	
+	/**
+	 * Class to render decimal format correctly depending on language settings.
+	 * 
+	 * @author Sylvia van Borkulo
+	 *
+	 */
+	static class DecimalRenderer extends DefaultTableCellRenderer
+	{
+		DecimalFormat df;
+
+		public DecimalRenderer()
+		{
+			super();
+		}
+
+		public void setValue(Object value)
+		{
+			if (((String)value).equals(ColumnType.WILDCARD))
+			{
+				// a wildcard remains a wildcard
+				setText((String)value);
+			}
+			else
+			{
+				// set the text with value in the correct format
+				Double doubleValue = Double.parseDouble((String) value);
+				df = Statistiek.getDecimalFormat(doubleValue);
+				setText((value == null) ? "" : df.format(doubleValue));
+			}
+		}
+	} // class DecimalRenderer
+
+	/**
+	 * Class to edit decimal format correctly depending on language settings.
+	 * 
+	 * @author Sylvia van Borkulo
+	 *
+	 */
+	static class DecimalEditor extends DefaultCellEditor
+	{
+//		DecimalFormat df;
+		JTextField textField;
+
+		public DecimalEditor(JTextField textField)
+		{
+			super(textField);
+//			this.df = Statistiek.getDefaultDecimalFormat();
+			this.textField = textField;
+		}
+
+		public void setValue(Object value)
+		{
+			Double doubleValue = Double.parseDouble((String) value);
+			DecimalFormat df = Statistiek.getDecimalFormat(doubleValue);
+			setValue((value == null) ? "" : df.format(doubleValue));
+		}
+		
+//		@Override
+//		public Object getCellEditorValue()
+//		{
+//			Object value = (String) super.getCellEditorValue();
+//			return (value == null) ? "" : value;
+//		}
+		
+		@Override
+		public Component getTableCellEditorComponent(
+			JTable table, Object value, boolean isSelected,
+			int row, int column)
+		{
+			if (((String)value).equals(ColumnType.WILDCARD))
+			{
+				// a wildcard remains a wildcard
+				textField.setText((String)value);
+			}
+			else
+			{
+				Double doubleValue = Double.valueOf(value.toString());
+				DecimalFormat df = Statistiek.getDecimalFormat(doubleValue);
+				textField.setText(df.format(doubleValue));
+			}
+			
+			return textField;
+		}
+	} // class DecimalEditor
 
 	/**
 	 * Implementation of TableModelListener
@@ -351,10 +441,12 @@ public class StatTable extends JPanel implements StatistiekView,
 	 */
 	private void setCellRenderers()
 	{
-		// System.out.println("Setting cell renderers!");
-		int i = 0;
-		for (ColumnType type : this.statTableModel.getColumnTypes())
+		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
+		
+		// loop over de columns
+		for (int i = 0; i < this.statTableModel.getColumnCount(); i++)
 		{
+			ColumnType type = types.get(i);
 			if (type.getType().equals(AllowedTypes.ENUM))
 			{
 				// Enums get a dropdownbox as editor
@@ -366,7 +458,13 @@ public class StatTable extends JPanel implements StatistiekView,
 				this.table.getColumnModel().getColumn(i)
 					.setCellEditor(new DefaultCellEditor(box));
 			}
-			i++;
+			else if (type.getType().equals(AllowedTypes.DOUBLE))
+			{
+				this.table.getColumnModel().getColumn(i)
+					.setCellRenderer(new DecimalRenderer());
+				this.table.getColumnModel().getColumn(i)
+					.setCellEditor(new DecimalEditor(new JTextField()));// welk jtextfield?
+			}
 		}
 	}
 
