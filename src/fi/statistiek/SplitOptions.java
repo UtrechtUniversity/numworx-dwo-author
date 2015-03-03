@@ -59,22 +59,28 @@ public class SplitOptions
 	 */
 	public String getSplitClassLabel(int splitClass, StatTableModel model)
 	{
+		String label;
 		ColumnType splitCType = model.getColumnTypes().get(
 			this.columnSplitIndex);
+		
 		if (splitCType.getType().isNumber())
 		{
-			return this.binBoundaries.get(splitClass) + " - "
-				+ this.binBoundaries.get(splitClass + 1);
+			// use getStringValue() to show the correct decimal separator
+			String binValue1 = Statistiek.getStringValue(this.binBoundaries.get(splitClass));
+			String binValue2 = Statistiek.getStringValue(this.binBoundaries.get(splitClass + 1));
+			label = binValue1 + " -< " + binValue2;
 		}
 		else if (splitCType.getType().equals(AllowedTypes.ENUM))
 		{
-			return splitCType.getEnumOptions()[splitClass];
+			label = splitCType.getEnumOptions()[splitClass];
 		}
 		else
 		{
-			return model.getStringOptions(this.columnSplitIndex)
+			label = model.getStringOptions(this.columnSplitIndex)
 				.get(splitClass);
 		}
+		
+		return label;
 	}
 
 	public SplitOptions clone()
