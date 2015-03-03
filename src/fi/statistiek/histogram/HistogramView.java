@@ -953,7 +953,7 @@ public class HistogramView extends JPanel implements Observer
 	}
 
 	/**
-	 * Paint the axis labels
+	 * Paint the axis text labels
 	 * 
 	 * @param g
 	 *            The graphics in which the labels will be painted
@@ -983,7 +983,7 @@ public class HistogramView extends JPanel implements Observer
 			this.barAreaHeight() / 2 + fm.stringWidth(s1) / 2 + yOffset);
 		g.setFont(font);
 		g.drawString(s2,
-			(this.getWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
+			(this.barAreaWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
 				+ this.yAxisOffset, 
 			this.barAreaHeight() + this.xAxisOffset - 10 + yOffset);
 
@@ -1226,7 +1226,7 @@ public class HistogramView extends JPanel implements Observer
 	}
 
 	/**
-	 * Paint the axes and bars for numerical data.
+	 * Paint the axes with number labels and bars for numerical data.
 	 * 
 	 * @param g
 	 *	The graphics in which the bars will be painted
@@ -1292,7 +1292,7 @@ public class HistogramView extends JPanel implements Observer
 				
 				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
-					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 					if (i < this.model.getBinBoundaries().size() - 1)
 					{
 						String s_labelUnderBin;
@@ -1306,7 +1306,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-    							getStringValue(this.model.getBinBoundaries().get(i + 1));
+    							Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 //							System.out.println("HistogramView.paintNumberClass(): s_labelUnderBin = " 
 //								+ s_labelUnderBin);
 						}
@@ -1327,7 +1327,7 @@ public class HistogramView extends JPanel implements Observer
 			{
 				for (Double d : this.model.getBinBoundaries())
 				{
-					width = fm.stringWidth(d.toString());
+					width = fm.stringWidth(Statistiek.getStringValue(d));
 					if (width > this.verticalBarWidth)
 					{
 						normalFit = false;
@@ -1365,7 +1365,7 @@ public class HistogramView extends JPanel implements Observer
 				
 				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
-					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 					if (i < this.model.getBinBoundaries().size() - 1)
 					{
 						String s_labelUnderBin;
@@ -1377,7 +1377,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-    							getStringValue(this.model.getBinBoundaries().get(i + 1));
+    							Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 						}
 //						System.out.println("HistogramView.paintNumberClass(): s_labelUnderBin = " + s_labelUnderBin);
 						
@@ -1737,7 +1737,7 @@ public class HistogramView extends JPanel implements Observer
 					int x = (int) (this.yAxisOffset + i + i * this.verticalBarWidth);
 					
 					// Get the string value (integer or double)
-					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 
 					int offset = fm.stringWidth(s) / 2;
 					if (this.model.getLabelUnderBin())
@@ -1758,7 +1758,7 @@ public class HistogramView extends JPanel implements Observer
 							else
 							{
 								s_labelUnderBin = s + "-<" +
-									getStringValue(this.model.getBinBoundaries().get(i + 1));
+									Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 								// draw marker
 								g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 							}
@@ -1801,7 +1801,7 @@ public class HistogramView extends JPanel implements Observer
 					g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 					
 					// Get the string value (integer or double)
-					String s = getStringValue(this.model.getBinBoundaries().get(i));
+					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 					int offset = fm.stringWidth(s);
 					
 					if (this.model.getLabelUnderBin())
@@ -1818,7 +1818,7 @@ public class HistogramView extends JPanel implements Observer
 							else
 							{
 								s_labelUnderBin = s + "-<" +
-									getStringValue(this.model.getBinBoundaries().get(i + 1));
+									Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 							}
 							int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
 							int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
@@ -1846,7 +1846,7 @@ public class HistogramView extends JPanel implements Observer
 				int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
 				int x = this.yAxisOffset;
 				// Get the string value (integer or double)
-				String s = getStringValue(this.model.getBinBoundaries().get(i));
+				String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 				
 				if (this.model.getLabelUnderBin())
 				{
@@ -1868,7 +1868,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
 							s_labelUnderBin = s + "-<" +
-								getStringValue(this.model.getBinBoundaries().get(i + 1));
+								Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 							// draw marker
 							g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
 						}
@@ -1905,7 +1905,7 @@ public class HistogramView extends JPanel implements Observer
 			int marge = 5;
 			for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 			{
-				String s = getStringValue(this.model.getBinBoundaries().get(i));
+				String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
 				if (i < this.model.getBinBoundaries().size() - 1)
 				{
 					String s_labelUnderBin;
@@ -1917,7 +1917,7 @@ public class HistogramView extends JPanel implements Observer
 					else
 					{
 						s_labelUnderBin = s + "-<" +
-								getStringValue(this.model.getBinBoundaries().get(i + 1));
+							Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 					}
 					
 					if (fm.stringWidth(s_labelUnderBin) + marge > this.verticalBarWidth)
@@ -1941,37 +1941,6 @@ public class HistogramView extends JPanel implements Observer
 		}
 		
 		return normalFit;
-	}
-
-	/**
-	 * Get the string value of d according to the type (Integer or Double).
-	 * @param d
-	 * @return
-	 */
-	private String getStringValue(double d)
-	{
-		String s;
-		int columnIndex = this.model.getColumnIndex();
-		String type = this.model.getTableModel().getColumnTypes().get(columnIndex).toString();
-		
-//		System.out.println("HistogramView.getStringValue(d=" + d + "): columnIndex = " 
-//		+ columnIndex + ", type = " + type + ", AllowedTypes.DOUBLE = " + AllowedTypes.DOUBLE);
-	
-		if (type.equals(AllowedTypes.INTEGER.toString()))
-		{
-			s = String.valueOf((int) d);
-//			System.out.println("INTEGER! s = " + s);
-		}
-		else if (type.equals(AllowedTypes.DOUBLE.toString()))
-		{
-//			s = Double.toString(d);
-			s = String.valueOf((double) d);
-//			System.out.println("DOUBLE! s = " + s);
-		}
-		else
-			s = "";
-		
-		return s;
 	}
 
 	private int determineDependentAxisWidth(double scale)
