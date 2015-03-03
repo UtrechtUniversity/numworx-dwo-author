@@ -984,19 +984,21 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryField.setText(this.model
-					.getBinBoundaries().get(0).toString());
+				this.minBoundaryField.setText(
+					Statistiek.getStringValue(this.model.getBinBoundaries().get(0)));
 				// set the bin width based on the bin boundaries
 				this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
+				String minValueString = Statistiek.getStringValue(this.model.getTableModel().getColumnMin(
+					this.model.getColumnIndex()));
 				this.minValueLabel.setText(Statistiek.rb.getString("minLabel")
-					+ this.model.getTableModel().getColumnMin(
-						this.model.getColumnIndex()));
+					+ minValueString);
+				String maxValueString = Statistiek.getStringValue(this.model.getTableModel().getColumnMax(
+					this.model.getColumnIndex()));
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
-					+ this.model.getTableModel().getColumnMax(
-						this.model.getColumnIndex()));
+					+ maxValueString);
 				this.separator1.getParent().setVisible(true);
 				this.separator4.getParent().setVisible(true);
 				this.labelBetweenBinsRadioItem.getParent().setVisible(true);
@@ -1029,7 +1031,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     				|| splitType.equals(AllowedTypes.INTEGER))
     			{
     				this.splitMinBoundaryField.setText(
-    					this.model.getSplitOptions().getBinBoundaries().get(0).toString());
+    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
     				// set the split bin width based on the split bin boundaries
     				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				
@@ -1037,25 +1039,24 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     				for (int i = 0; i < this.model.getSplitOptions()
     					.getBinBoundaries().size() - 1; i++)
     				{
-    					sb.append(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i).toString());
+    					sb.append(Statistiek.getStringValue(this.model.getSplitOptions()
+    						.getBinBoundaries().get(i)));
     					sb.append(" -< ");
-    					sb.append(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i + 1).toString());
+    					sb.append(Statistiek.getStringValue(this.model.getSplitOptions()
+    						.getBinBoundaries().get(i + 1)));
     					sb.append("\n");
     				}
     				this.splitBoundariesArea.setText(sb.toString());
-    				this.splitNoObjectsLabel.setText(Statistiek.rb
-    					.getString("numberLabel")
+    				this.splitNoObjectsLabel.setText(Statistiek.rb.getString("numberLabel")
     					+ this.model.getTableModel().getRowCount());
-    				this.splitMinValueLabel.setText(Statistiek.rb
-    					.getString("minLabel")
-    					+ this.model.getTableModel().getColumnMin(
-    						this.model.getSplitOptions().getColumnSplitIndex()));
-    				this.splitMaxValueLabel.setText(Statistiek.rb
-    					.getString("maxLabel")
-    					+ this.model.getTableModel().getColumnMax(
-    						this.model.getSplitOptions().getColumnSplitIndex()));
+    				String splitMinValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMin(
+						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel")
+    					+ splitMinValue);
+    				String splitMaxValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMax(
+						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel")
+    					+ splitMaxValue);
     				this.splitBinsBox.getParent().setVisible(true);
     				this.splitBinsLabel.getParent().setVisible(true);
     				setSplitEnumClasses(false);
