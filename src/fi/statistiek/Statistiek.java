@@ -49,6 +49,7 @@ public class Statistiek implements WiskOpdrApplet
 											// "Dotplot", "Frequentietabel",
 											// "Frequentiepolygoon", "Boxplot", "Crosstab",
 											// "Scatterplot", "Descriptive statistics"};
+	private static String language;
 
 	public Statistiek()
 	{
@@ -56,8 +57,8 @@ public class Statistiek implements WiskOpdrApplet
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		
 		dfs = new DecimalFormatSymbols();
-		// separator is '.' for consistency
-		dfs.setDecimalSeparator('.');
+		// separator is ','
+		dfs.setDecimalSeparator(',');
 		df = new DecimalFormat("0.#", dfs);
 		initViews();
 	}
@@ -91,14 +92,18 @@ public class Statistiek implements WiskOpdrApplet
 	{
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		dfs = new DecimalFormatSymbols();
-		// separator is '.' for consistency
-		dfs.setDecimalSeparator('.');
+		
+		if (language.toString().equals("nl"))
+		{
+			Statistiek.language = language.toString();
+			dfs.setDecimalSeparator(',');
+		}
+		else
+		{
+			dfs.setDecimalSeparator('.');
+		}
+
 		df = new DecimalFormat("0.#", dfs);
-//		if (language.toString().equals("nl"))
-//			dfs.setDecimalSeparator(',');
-//		else
-//			dfs.setDecimalSeparator('.');
-//		df = new DecimalFormat("0.0####", dfs);
 		initViews();
 	}
 
@@ -582,11 +587,61 @@ public class Statistiek implements WiskOpdrApplet
 	}
 	
 	/**
-	 * Get the decimal format.
+	 * Get the default decimal format, with one decimal.
 	 */
-	public static DecimalFormat getDecimalFormat()
+	public static DecimalFormat getDefaultDecimalFormat()
 	{
 		return df;
+	}
+	
+	/**
+	 * Get the decimal format with number of decimals of the given double.
+	 * 
+	 * @param d The double 
+	 */
+	public static DecimalFormat getDecimalFormat(Double d)
+	{
+		String value = String.valueOf(d);
+		int numberOfDecimals = Statistiek.getNumberOfDecimals(value);
+		
+		if (Statistiek.language.equals("nl"))
+			dfs.setDecimalSeparator(',');
+		else
+			dfs.setDecimalSeparator('.');
+
+		String pattern = "0";
+		String decimal;
+		for (int i = 0; i < numberOfDecimals; i++)
+		{
+			if (i == 0)
+				decimal = ".#";
+			else
+				decimal = "#";
+
+			pattern = pattern + decimal; 
+		}
+		DecimalFormat decimalFormat = new DecimalFormat(pattern, dfs);
+
+		return decimalFormat;
+	}
+	
+	/**
+	 * Get the number of decimals of the given double string.
+	 * 
+	 * @param d
+	 * @return
+	 */
+	private static int getNumberOfDecimals(String doubleString)
+	{
+		int decimalPlaces = 0;
+		
+		int integerPlaces = doubleString.indexOf('.');
+		if (integerPlaces > -1)
+		{
+			decimalPlaces = doubleString.length() - integerPlaces - 1;
+		}
+		
+		return decimalPlaces;
 	}
 	
 	/**
