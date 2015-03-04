@@ -94,7 +94,7 @@ public class FrequencyTableController implements StatistiekView,
 		}
 		else if (action.equals("splitBinsBox"))
 		{
-			this.setSplitType(this.model.getTableModel().getColumnTypes()
+			this.setSplitType(this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType());
 		}
@@ -128,9 +128,9 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getSplitOptions().getColumnSplitIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -281,9 +281,9 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getColumnIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -312,9 +312,9 @@ public class FrequencyTableController implements StatistiekView,
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
 			boundaries = Statistiek.appropriateBoundaries(
-				this.model.getTableModel().getColumnMin(
+				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.view.getSplitBinsBoxSelectedInt());
 
