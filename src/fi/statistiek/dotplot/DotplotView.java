@@ -1139,6 +1139,13 @@ public class DotplotView extends JPanel implements Observer
 		this.objectLocations.set(rowIndex, new Point(x, y));
 	}
 
+	/**
+	 * Paint the axis text labels.
+	 * 
+	 * @param g
+	 * @param yOffset
+	 * @param splitClass
+	 */
 	private void paintAxisLabels(Graphics g, int yOffset, int splitClass)
 	{
 		Font font = super.getFont().deriveFont(super.getFont().getStyle());
@@ -1166,7 +1173,7 @@ public class DotplotView extends JPanel implements Observer
 
 		// draw label x-axis
 		g.drawString(s2,
-			(this.getWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
+			(this.dotAreaWidth() - this.yAxisOffset - fm.stringWidth(s2)) / 2
 				+ this.yAxisOffset, this.scrollPane.getHeight()
 				+ this.X_AS_OFFSET - 37 + yOffset);
 
@@ -1249,7 +1256,7 @@ public class DotplotView extends JPanel implements Observer
 				g.setFont(font);
 			}
 
-		}
+		} // enum
 		else if (this.xType.equals(AllowedTypes.STRING))
 		{
 			boolean normalFit = this.determineNormalFitForString();
@@ -1273,7 +1280,7 @@ public class DotplotView extends JPanel implements Observer
 					y + 5 + fm.getHeight() + heightOffset);
 				g.setFont(font);
 			}
-		}
+		} // string
 		else
 		{
 			// xType is int or double
@@ -1380,17 +1387,14 @@ public class DotplotView extends JPanel implements Observer
 				drawHelpLine(g, x, heightOffset + 5, y - 5, 0);
 			    
 				// get the right string value for integer or double
-				String pString = getStringValueForXVar(p);
-//				g.drawString(Double.toString(p),
-//					x - (int) (0.5 * fm.stringWidth(Double.toString(p))), y + 5
-//						+ fm.getHeight() + heightOffset);
+				String pString = Statistiek.getStringValue(p);//getStringValueForXVar(p);
 				g.drawString(pString,
 					x - (int) (0.5 * fm.stringWidth(pString)), y + 5
 						+ fm.getHeight() + heightOffset);
 
 				p += step;
 			}
-		}
+		} // numerical xType
 	}
 
 	private boolean determineNormalFitForString()
@@ -1660,7 +1664,7 @@ public class DotplotView extends JPanel implements Observer
 				drawHelpLine(g, x, y + heightOffset, this.getWidth() - this.yAxisOffset, 1);
 				
 				// get the right string value for integer or double
-				String pString = getStringValueForYVar(p);
+				String pString = Statistiek.getStringValue(p);//getStringValueForYVar(p);
 				g.drawString(pString,
 					x - 7 - fm.stringWidth(pString), y
 						+ (int) (0.5 * fm.getHeight() - 3) + heightOffset);
@@ -2349,7 +2353,7 @@ public class DotplotView extends JPanel implements Observer
 				// if x-coord and split the same, then adjust y-coord
 				if (sortedData[i][0] == sortedData[i-1][0]) // same x coordinate
 				{
-					if ((sortedData[i][2] != -1) // skip wildcards; sortedData[i][2] == -1 if row i contains a wildcard
+					if ((sortedData[i][2] > -1)//!= -1) // skip wildcards; sortedData[i][2] == -2 if row i contains a wildcard
 						&& (sortedData[i][2] == sortedData[i-1][2])) // same split
 					{
 						// dot with the same x-coordinate in the same split, so calculate y based on 
@@ -2537,6 +2541,8 @@ public class DotplotView extends JPanel implements Observer
 	 * @param rowIndex
 	 *            the index of the object to classify
 	 * @return the split class in which the object at rowIndex is
+	 * 		Is -1 if the object cannot be classified.
+	 * 		Is -2 if the object is a wildcard.
 	 */
 	private int getSplitClass(int rowIndex)
 	{
