@@ -103,10 +103,25 @@ public class HistogramModel extends Observable implements TableModelListener,
 		return this.splitOptions;
 	}
 
+	/**
+	 * Set the split options without.
+	 * 
+	 * @param splitOptions
+	 */
 	public void setSplitOptions(SplitOptions splitOptions)
 	{
 		this.splitOptions = splitOptions;
 		this.changed();
+	}
+
+	/**
+	 * Set the split options without triggering an event.
+	 * 
+	 * @param splitOptions
+	 */
+	public void setSplitOptionsWithoutEvent(SplitOptions splitOptions)
+	{
+		this.splitOptions = splitOptions;
 	}
 
 	/**
@@ -129,6 +144,26 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.noBins = this.binBoundaries.size() - 1;
 //		System.out.println("HistogramModel.setBinBoundaries(): this.getBinBoundaries=" + this.getBinBoundaries());
 		this.changed();
+	}
+
+	/**
+	 * Set the bin boundaries without triggering an event.
+	 * 
+	 * @param bins
+	 *            The new bin boundaries
+	 */
+	public void setBinBoundariesWithoutEvent(ArrayList<Double> bins)
+	{
+		// Make a deep copy, not only copy the reference, since this will cause strange behavior
+		ArrayList<Double> copy = new ArrayList<Double>(bins.size());
+		for (Double d: bins)
+		{
+			copy.add(new Double(d));
+		}
+		
+		this.binBoundaries = copy; 
+			
+		this.noBins = this.binBoundaries.size() - 1;
 	}
 
 	/**
@@ -181,6 +216,27 @@ public class HistogramModel extends Observable implements TableModelListener,
 		}
 
 		this.changed();
+	}
+
+	/**
+	 * Set the number of bins without triggering an event.
+	 * 
+	 * @param noBins
+	 *            the new number of bins
+	 */
+	public void setNoBinsWithoutEvent(int noBins)
+	{
+		this.noBins = noBins;
+
+		// set appropriate boundaries
+		if (this.tableModel.getRowCount() > 0 && this.columnIndexValid())
+		{
+			double min = this.tableModel.getColumnMin(this.columnIndex);
+			double max = this.tableModel.getColumnMax(this.columnIndex);
+			this.binBoundaries = Statistiek.appropriateBoundaries(min, max,
+				this.noBins);
+			//System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
+		}
 	}
 
 	/**
@@ -237,7 +293,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	/**
 	 * @return the data table
 	 */
-	public StatTableModel getTableModel()
+	public StatTableModel getStatTableModel()
 	{
 		return this.tableModel;
 	}
@@ -321,10 +377,25 @@ public class HistogramModel extends Observable implements TableModelListener,
 		}
 	}
 
+	/**
+	 * Set the split bin boundaries.
+	 * 
+	 * @param boundaries
+	 */
 	public void setSplitBoundaries(ArrayList<Double> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
+	}
+
+	/**
+	 * Set the split bin boundaries without triggering an event.
+	 * 
+	 * @param boundaries
+	 */
+	public void setSplitBoundariesWithoutEvent(ArrayList<Double> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
 	}
 
 	/**
@@ -361,6 +432,18 @@ public class HistogramModel extends Observable implements TableModelListener,
 	{
 		return this.columnIndex >= 0
 			&& this.columnIndex < this.tableModel.getColumnCount();
+	}
+	
+	/**
+	 * Check if the current split column index is a valid column index
+	 * 
+	 * @return true iff valid
+	 */
+	public boolean columnSplitIndexValid()
+	{
+		return this.splitOptions.getColumnSplitIndex() >= 0
+			&& this.splitOptions.getColumnSplitIndex() < this.tableModel
+				.getColumnCount();
 	}
 
 	public int binOfNumber(double d)
@@ -430,6 +513,21 @@ public class HistogramModel extends Observable implements TableModelListener,
 		{
 			this.labelUnderBin = b;
 			this.changed();
+		}
+	}
+
+	/**
+	 * Set whether the Histogram will display labels under the bins
+	 * or between the bins, without triggering an event.
+	 * 
+	 * @param b
+	 *            true for label under bin, false for label between bins
+	 */
+	public void setLabelUnderBinWithoutEvent(boolean b)
+	{
+		if (!(this.labelUnderBin == b))
+		{
+			this.labelUnderBin = b;
 		}
 	}
 
@@ -606,7 +704,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 //			+ this.getColumnIndex());
 		if (this.getColumnIndex() > -1)
 		{
-    		ColumnType cType = this.getTableModel().getColumnTypes()
+    		ColumnType cType = this.getStatTableModel().getColumnTypes()
     			.get(this.getColumnIndex());
     		AllowedTypes type = cType.getType();
 //			System.out.println("HistogramModel.setDefaultLabelPositioning(): type = " 
