@@ -532,7 +532,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		this.rowIndexBox.removeActionListener(this.controller);
 		this.rowIndexBox.removeAllItems();
 
-		for (String varName : this.model.getTableModel().getColumnNames())
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
 			this.rowIndexBox.addItem(varName);
 		}
@@ -555,12 +555,12 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 		this.columnIndexBox.removeActionListener(this.controller);
 		this.columnIndexBox.removeAllItems();
 
-		for (String varName : this.model.getTableModel().getColumnNames())
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
 			this.columnIndexBox.addItem(varName);
 		}
 		
-		if (this.model.getTableModel().isColumnIndexValid(this.model.getColumnSplitIndex()))
+		if (this.model.getStatTableModel().isColumnIndexValid(this.model.getColumnSplitIndex()))
 		{
 			this.columnIndexBox.setSelectedIndex(this.model.getColumnSplitIndex());
 		}
@@ -577,7 +577,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	{
 		if (this.model.columnIndexValid())
 		{
-			ColumnType cType = this.model.getTableModel().getColumnTypes()
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			AllowedTypes type = cType.getType();
 			if (type.equals(AllowedTypes.DOUBLE)
@@ -589,13 +589,13 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				this.binWidthRowsField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsRowsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
+					+ this.model.getStatTableModel().getRowCount());
 				String minValueRows = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMin(this.model.getColumnIndex()));
+					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()));
 				this.minValueRowsLabel.setText(Statistiek.rb.getString("minLabel")
 					+ minValueRows);
 				String maxValueRows = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMax(this.model.getColumnIndex()));
+					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()));
 				this.maxValueRowsLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ maxValueRows);
 				setEnumClassesRows(false);
@@ -615,7 +615,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 	{
 		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
 		{
-			AllowedTypes type = this.model.getTableModel().getColumnTypes().get(this.model.getSplitOptions().getColumnSplitIndex()).getType();
+			AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(this.model.getSplitOptions().getColumnSplitIndex()).getType();
 			
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
@@ -626,14 +626,13 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				this.binWidthColumnsField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 				this.noObjectsColumnsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
+					+ this.model.getStatTableModel().getRowCount());
 				String minValueColumns = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
+					this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
 				this.minValueColumnsLabel.setText(Statistiek.rb.getString("minLabel")
 					+ minValueColumns);
 				String maxValueColumns = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMax(
-						this.model.getSplitOptions().getColumnSplitIndex()));
+					this.model.getStatTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
 				this.maxValueColumnsLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ maxValueColumns);
 				setEnumClassesColumns(false);
