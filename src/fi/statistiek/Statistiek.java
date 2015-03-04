@@ -8,9 +8,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -49,11 +53,12 @@ public class Statistiek implements WiskOpdrApplet
 											// "Dotplot", "Frequentietabel",
 											// "Frequentiepolygoon", "Boxplot", "Crosstab",
 											// "Scatterplot", "Descriptive statistics"};
-	private static String language;
+	private static Locale language;
 
 	public Statistiek()
 	{
 		Locale language = new Locale("nl", "");
+		this.language = language;
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		
 		dfs = new DecimalFormatSymbols();
@@ -95,7 +100,7 @@ public class Statistiek implements WiskOpdrApplet
 		
 		if (language.toString().equals("nl"))
 		{
-			Statistiek.language = language.toString();
+			Statistiek.language = language;
 			dfs.setDecimalSeparator(',');
 		}
 		else
@@ -280,9 +285,11 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			// determine the number of decimals of min and max
 			String minString = String.valueOf(min);
-			int decimalPlacesMin = minString.length() - minString.indexOf('.') - 1;
+			int decimalPlacesMin = Statistiek.getNumberOfDecimals(minString);
+			
 			String maxString = String.valueOf(max);
-			int decimalPlacesMax = maxString.length() - maxString.indexOf('.') - 1;
+			int decimalPlacesMax = Statistiek.getNumberOfDecimals(maxString);
+
 			int numberOfDecimals = Math.max(decimalPlacesMin, decimalPlacesMax);
 			
 			min = min * (Math.pow(10, numberOfDecimals)); 
@@ -357,9 +364,9 @@ public class Statistiek implements WiskOpdrApplet
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		// correct afronden op basis van decimalen in start en binWidth
 		String startString = String.valueOf(start);
-		int decimalPlacesStart = startString.length() - startString.indexOf('.') - 1;
+		int decimalPlacesStart = Statistiek.getNumberOfDecimals(startString);//startString.length() - startString.indexOf('.') - 1;
 		String binWidthString = String.valueOf(step);
-		int decimalPlacesBinWidth = binWidthString.length() - binWidthString.indexOf('.') - 1;
+		int decimalPlacesBinWidth = Statistiek.getNumberOfDecimals(binWidthString);//binWidthString.length() - binWidthString.indexOf('.') - 1;
 		int numberOfDecimals = Math.max(decimalPlacesStart, decimalPlacesBinWidth);
 		for (int i = 0; i <= noBins; i++)
 		{
@@ -474,9 +481,11 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			// determine the number of decimals of min and max
 			String minString = String.valueOf(min);
-			int decimalPlacesMin = minString.length() - minString.indexOf('.') - 1;
+			int decimalPlacesMin = Statistiek.getNumberOfDecimals(minString);
+			
 			String maxString = String.valueOf(max);
-			int decimalPlacesMax = maxString.length() - maxString.indexOf('.') - 1;
+			int decimalPlacesMax = Statistiek.getNumberOfDecimals(maxString);
+
 			int numberOfDecimals = Math.max(decimalPlacesMin, decimalPlacesMax);
 			
 			min = min * (Math.pow(10, numberOfDecimals)); 
@@ -485,13 +494,17 @@ public class Statistiek implements WiskOpdrApplet
 			minBoundary = minBoundary * (Math.pow(10, numberOfDecimals));
 			
 			ArrayList<Double> binBoundaries = appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
-			// divide each bin boundary by Math.pow(10, numberOfDecimals)
-			for (int i = 0; i < binBoundaries.size(); i++)
+			
+			if (binBoundaries != null)
 			{
-				// divide the bin boundary by Math.pow(10, numberOfDecimals)
-				// and round to the correct number of decimals (because of possible rounding errors)
-				double newValue = round(binBoundaries.get(i) / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
-				binBoundaries.set(i, newValue);
+				// divide each bin boundary by Math.pow(10, numberOfDecimals)
+				for (int i = 0; i < binBoundaries.size(); i++)
+				{
+					// divide the bin boundary by Math.pow(10, numberOfDecimals)
+					// and round to the correct number of decimals (because of possible rounding errors)
+					double newValue = round(binBoundaries.get(i) / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
+					binBoundaries.set(i, newValue);
+				}
 			}
 			return binBoundaries; 
 		}
@@ -523,9 +536,9 @@ public class Statistiek implements WiskOpdrApplet
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		// correct afronden op basis van decimalen in start en binWidth
 		String startString = String.valueOf(start);
-		int decimalPlacesStart = startString.length() - startString.indexOf('.') - 1;
+		int decimalPlacesStart = Statistiek.getNumberOfDecimals(startString);//startString.length() - startString.indexOf('.') - 1;
 		String binWidthString = String.valueOf(binWidth);
-		int decimalPlacesBinWidth = binWidthString.length() - binWidthString.indexOf('.') - 1;
+		int decimalPlacesBinWidth = Statistiek.getNumberOfDecimals(binWidthString);//binWidthString.length() - binWidthString.indexOf('.') - 1;
 		int numberOfDecimals = Math.max(decimalPlacesStart, decimalPlacesBinWidth);
 		
 		for (int i = 0; i <= noBins; i++)
@@ -572,6 +585,9 @@ public class Statistiek implements WiskOpdrApplet
 	/**
 	 * Get the string value of double. If the value is an integer value
 	 * a string is returned without decimals.
+	 * The decimal format related to the language is used,
+	 * with the number of decimals of d.
+	 *  
 	 * @param d The double value
 	 * @return The string value
 	 */
@@ -581,7 +597,29 @@ public class Statistiek implements WiskOpdrApplet
 		if ((d == Math.floor(d)) && !Double.isInfinite(d))
 			s = String.valueOf((int) d);
 		else
-			s = String.valueOf(d);
+		{
+			DecimalFormat decimalFormat = Statistiek.getDecimalFormat(d);
+			s = String.valueOf(decimalFormat.format(d)); // use decimal format for the correct decimal separator
+		}
+		
+		return s;
+	}
+	
+	/**
+	 * Get the string value of double. If the value is an integer value
+	 * a string is returned without decimals.
+	 * The default decimal format related to language is used, with one decimal.
+	 *  
+	 * @param d The double value
+	 * @return The string value
+	 */
+	public static String getStringValueWithOneDecimal(double d)
+	{
+		String s;
+		if ((d == Math.floor(d)) && !Double.isInfinite(d))
+			s = String.valueOf((int) d);
+		else
+			s = String.valueOf(df.format(d)); // use the default decimal format for the correct decimal separator
 		
 		return s;
 	}
@@ -604,25 +642,69 @@ public class Statistiek implements WiskOpdrApplet
 		String value = String.valueOf(d);
 		int numberOfDecimals = Statistiek.getNumberOfDecimals(value);
 		
-		if (Statistiek.language.equals("nl"))
+		if (Statistiek.language.toString().equals("nl"))
 			dfs.setDecimalSeparator(',');
 		else
 			dfs.setDecimalSeparator('.');
 
 		String pattern = "0";
-		String decimal;
+		
+		if (numberOfDecimals > 0)
+			pattern = pattern + ".";
 		for (int i = 0; i < numberOfDecimals; i++)
 		{
-			if (i == 0)
-				decimal = ".#";
-			else
-				decimal = "#";
-
-			pattern = pattern + decimal; 
+			pattern = pattern + "#"; 
 		}
 		DecimalFormat decimalFormat = new DecimalFormat(pattern, dfs);
 
 		return decimalFormat;
+	}
+	
+	/**
+	 * Parse the double value in doubleString to double 
+	 * using the locale language settings.
+	 * 
+	 * @param doubleString
+	 * @return
+	 */
+	public static double parseDouble(String doubleString)
+	{
+		double d;
+		
+		NumberFormat format = NumberFormat.getInstance(Statistiek.getLocale());
+		Number number = null;
+		try
+		{
+			number = format.parse(doubleString);
+		}
+		catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
+		
+		d = number.doubleValue();
+		
+		return d;
+	}
+	
+	/**
+	 * Get locale with language setting of statistiek.
+	 * 
+	 * @return
+	 */
+	public static Locale getLocale()
+	{
+		return Statistiek.language;
+	}
+	
+	/**
+	 * Set locale with language setting of statistiek.
+	 * 
+	 * @return
+	 */
+	public static void setLocale(Locale l)
+	{
+		Statistiek.language = l;
 	}
 	
 	/**
@@ -631,14 +713,35 @@ public class Statistiek implements WiskOpdrApplet
 	 * @param d
 	 * @return
 	 */
-	private static int getNumberOfDecimals(String doubleString)
+	public static int getNumberOfDecimals(String doubleString)
 	{
 		int decimalPlaces = 0;
+		boolean isScientificNotation = doubleString.indexOf("E") > -1;
 		
-		int integerPlaces = doubleString.indexOf('.');
-		if (integerPlaces > -1)
+		if (!isScientificNotation)
 		{
-			decimalPlaces = doubleString.length() - integerPlaces - 1;
+			int integerPlaces = doubleString.indexOf('.');
+			if (integerPlaces > -1)
+			{
+				decimalPlaces = doubleString.length() - integerPlaces - 1;
+			}
+		}
+		else
+		{
+			// met regular expressions
+			String patternString = "(?:\\.(\\d+))?(?:[eE]([+-]?\\d+))";
+			
+			Pattern pattern = Pattern.compile(patternString);
+			Matcher matcher = pattern.matcher(doubleString);
+			if (matcher.find())
+			{
+				// doubleString heeft een goed formaat
+				decimalPlaces = 
+					// Number of digits right of decimal point.
+				    (((matcher.group(1) != null) && Integer.valueOf(matcher.group(1).toString()) != 0) ? matcher.group(1).length() : 0)
+				    // Adjust for scientific notation.
+				    - (matcher.group(2) != null ? Integer.valueOf(matcher.group(2).toString()) : 0);
+			}
 		}
 		
 		return decimalPlaces;
@@ -663,7 +766,7 @@ public class Statistiek implements WiskOpdrApplet
 		for (int i = 0; i < bins.size(); i++)
 		{
 			binValueString = String.valueOf(bins.get(i));
-			int numberOfDecimals = binValueString.length() - binValueString.indexOf('.') - 1;
+			int numberOfDecimals = Statistiek.getNumberOfDecimals(binValueString);//binValueString.length() - binValueString.indexOf('.') - 1;
 			
 			if (numberOfDecimals > maxNumberOfDecimals)
 				maxNumberOfDecimals = numberOfDecimals;
@@ -671,7 +774,8 @@ public class Statistiek implements WiskOpdrApplet
 
 		// get format with numberOfDecimals
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-		dfs.setDecimalSeparator('.');
+		char separator = Statistiek.getDecimalSeparator();
+		dfs.setDecimalSeparator(separator);
 		String pattern = "0";
 		
 		if (maxNumberOfDecimals > 0)
@@ -687,5 +791,16 @@ public class Statistiek implements WiskOpdrApplet
 		formattedValueString = df.format(d.doubleValue());
 		
 		return formattedValueString;
+	}
+
+	private static char getDecimalSeparator()
+	{
+		char separator = '.';
+		if (language.toString().equals("nl"))
+		{
+			separator = ',';
+		}
+		
+		return separator;
 	}
 }
