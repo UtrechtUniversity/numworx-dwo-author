@@ -525,7 +525,7 @@ public class StatTableModelTest
 	{
 		this.setSelectionListThreeSelected();
 		
-		String expected = "0.03";
+		String expected = "0,03";
 		String actual = this.statTableModel.getColumnMinOfSelection(3);
 		assertEquals("", expected, actual);
 		
@@ -537,7 +537,7 @@ public class StatTableModelTest
 	{
 		this.setSelectionListThreeSelected();
 		
-		String expected = "0.04";
+		String expected = "0,04"; // komma voor nl
 		String actual = this.statTableModel.getColumnMaxOfSelection(3);
 		assertEquals("", expected, actual);
 		
@@ -551,7 +551,7 @@ public class StatTableModelTest
 		
 		double expected = 0.0333;
 		double actual = Statistiek.round(
-			Double.parseDouble(this.statTableModel.getColumnMeanOfSelection(3)), 4);
+			Statistiek.parseDouble(this.statTableModel.getColumnMeanOfSelection(3)), 4);
 		assertEquals("", expected, actual, delta);
 		
 		this.setSelectionListNoneSelected();
