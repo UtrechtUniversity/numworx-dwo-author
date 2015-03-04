@@ -731,7 +731,7 @@ public class DescriptivesModel extends Observable implements
 			}
 			else
 			{
-				mean = Double.parseDouble(meanString);
+				mean = Statistiek.parseDouble(meanString);
 				for (int i = 0; i < this.tableModel.getRowCount(); i++)
 				{
 					if ((forSelection && this.tableModel.getSelectionList().get(i))
