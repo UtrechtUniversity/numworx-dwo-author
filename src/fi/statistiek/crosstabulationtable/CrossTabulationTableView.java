@@ -293,7 +293,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	{
 //		System.out.println("CrossTabulationTableView.update(): splitIndex = " + this.model.getSplitOptions().getColumnSplitIndex());
 		
-		this.dialogButton.setVisible(this.model.getTableModel()
+		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
 	
 		// update the components in the useroptionspanel
@@ -305,7 +305,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 //			GridBagLayout layout = new GridBagLayout();
 //			GridBagConstraints c = new GridBagConstraints();
 
-			ColumnType cTypeRows = this.model.getTableModel().getColumnTypes()
+			ColumnType cTypeRows = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			typeRows = cTypeRows.getType();
 			
@@ -314,7 +314,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			ColumnType cTypeColumns;
 			if (this.model.getColumnSplitIndex() > -1)
 			{
-				cTypeColumns = this.model.getTableModel().getColumnTypes()
+				cTypeColumns = this.model.getStatTableModel().getColumnTypes()
 					.get(this.model.getColumnSplitIndex());
 				typeColumns = cTypeColumns.getType();
 
@@ -346,7 +346,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			}
 			
 						
-			numberOfColumnBins = this.model.getTableModel().splitVarClasses(
+			numberOfColumnBins = this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions());
 			
 //			System.out.println("CrossTabulationTableView.update(): numberOfRowBins = "
@@ -463,7 +463,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		aantalPerRowBin = null;
 		aantalTotaal = 0;
 		
-		int numberOfSplits = CrossTabulationTableView.this.model.getTableModel()
+		int numberOfSplits = CrossTabulationTableView.this.model.getStatTableModel()
 			.splitVarClasses(CrossTabulationTableView.this.model.getSplitOptions());
 
 		aantalPerColumnBin = new int[numberOfSplits];
@@ -585,7 +585,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 				for (int splitClass = 0; splitClass < numberOfColumnBins; splitClass++)
 				{
 					String text = this.model.getSplitOptions().getSplitClassLabel(splitClass,
-						this.model.getTableModel());
+						this.model.getStatTableModel());
 					binLabelsColumns[splitClass] = new JLabel(text);
 					binLabelsColumns[splitClass].setFont(Statistiek.font);
 				}
@@ -904,7 +904,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		if (columnsVarIndex < 0)
 			columnsNameString = "onbekende variabele";
 		else 
-			columnsNameString = this.model.getTableModel()
+			columnsNameString = this.model.getStatTableModel()
 				.getColumnName(columnsVarIndex);
 		
 		// FIRST ROW with dummy labels, column variable name and "total" 
@@ -1039,7 +1039,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		Border matteBorder = BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK);
 
 		// add the row variable name to the first column
-		JLabel variableRowsName = new JLabel(this.model.getTableModel()
+		JLabel variableRowsName = new JLabel(this.model.getStatTableModel()
 			.getColumnName(this.model.getColumnIndex()));
 		variableRowsName.setFont(Statistiek.font);
 		variableRowsName.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
@@ -1334,31 +1334,31 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			
 			// update the selectionList
 
-			ColumnType cType = CrossTabulationTableView.this.model.getTableModel()
+			ColumnType cType = CrossTabulationTableView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(CrossTabulationTableView.this.model.getColumnIndex());
 
 			if (typeRows.isNumber())
 			{
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					CrossTabulationTableView.this.model.getTableModel().getRowCount());
+					CrossTabulationTableView.this.model.getStatTableModel().getRowCount());
 				for (int i = 0; i < CrossTabulationTableView.this.model
-					.getTableModel().getRowCount(); i++)
+					.getStatTableModel().getRowCount(); i++)
 				{
-					Object o = CrossTabulationTableView.this.model.getTableModel()
+					Object o = CrossTabulationTableView.this.model.getStatTableModel()
 						.getValueAt(i,
 							CrossTabulationTableView.this.model.getColumnIndex());
 
 					selectionList.add(!o.equals(ColumnType.WILDCARD)
 						&& CrossTabulationTableView.this.model.binOfNumber(Double
 							.parseDouble((String) o)) == rowNumber
-						&& CrossTabulationTableView.this.model.getTableModel()
+						&& CrossTabulationTableView.this.model.getStatTableModel()
 							.classifyObject(i,
 								CrossTabulationTableView.this.model.getSplitOptions()) == columnNumber);
 
 				}
 
-				CrossTabulationTableView.this.model.getTableModel().setSelectionList(
+				CrossTabulationTableView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 			else
@@ -1377,29 +1377,29 @@ public class CrossTabulationTableView extends JPanel implements Observer
 				else
 				{
 					ArrayList<String> options = CrossTabulationTableView.this.model
-						.getTableModel().stringColumnOptions(
+						.getStatTableModel().stringColumnOptions(
 							CrossTabulationTableView.this.model.getColumnIndex());
 					//System.out.println("CrossTabulationTableView.RowClickListener.rowClicked(): " + options);
 					clicked = options.get(rowNumber);
 				}
 
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					CrossTabulationTableView.this.model.getTableModel().getRowCount());
+					CrossTabulationTableView.this.model.getStatTableModel().getRowCount());
 				for (int i = 0; i < CrossTabulationTableView.this.model
-					.getTableModel().getRowCount(); i++)
+					.getStatTableModel().getRowCount(); i++)
 				{
-					Object o = CrossTabulationTableView.this.model.getTableModel()
+					Object o = CrossTabulationTableView.this.model.getStatTableModel()
 						.getValueAt(i,
 							CrossTabulationTableView.this.model.getColumnIndex());
 
 					selectionList
 					.add(!o.equals(ColumnType.WILDCARD)
 						&& ((String) o).equals(clicked)
-						&& CrossTabulationTableView.this.model.getTableModel()
+						&& CrossTabulationTableView.this.model.getStatTableModel()
 							.classifyObject(i,
 								CrossTabulationTableView.this.model.getSplitOptions()) == columnNumber);
 				}
-				CrossTabulationTableView.this.model.getTableModel().setSelectionList(
+				CrossTabulationTableView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 			
