@@ -575,7 +575,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.columnIndexBox.removeActionListener(this.controller);
 		this.columnIndexBox.removeAllItems();
 
-		for (String varName : this.model.getTableModel().getColumnNames())
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
 			this.columnIndexBox.addItem(varName);
 		}
@@ -594,7 +594,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		
 		if (this.model.columnIndexValid())
 		{
-			ColumnType cType = this.model.getTableModel().getColumnTypes()
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			AllowedTypes type = cType.getType();
 			if (type.equals(AllowedTypes.DOUBLE)
@@ -616,13 +616,13 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 				this.boundariesArea.setText(sb.toString());
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
+					+ this.model.getStatTableModel().getRowCount());
 				String minValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMin(this.model.getColumnIndex()));
+					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()));
 				this.minValueLabel.setText(Statistiek.rb.getString("minLabel")
 					+ minValue);
 				String maxValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMax(this.model.getColumnIndex()));
+					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()));
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ maxValue);
 				setEnumClasses(false);
@@ -682,10 +682,10 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		this.splitVarBox.removeActionListener(this);
 		this.splitVarBox.removeAllItems();
 		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
-		for (int column = 0; column < this.model.getTableModel()
+		for (int column = 0; column < this.model.getStatTableModel()
 			.getColumnCount(); column++)
 		{
-			splitVarBox.addItem(this.model.getTableModel()
+			splitVarBox.addItem(this.model.getStatTableModel()
 				.getColumnName(column));
 		}
 		
@@ -719,7 +719,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 		{
     		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
     		{
-    			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
+    			ColumnType cSplitType = this.model.getStatTableModel().getColumnTypes()
     				.get(this.model.getSplitOptions().getColumnSplitIndex());
     			
 //    			System.out.println("FrequencyTableUserOptionsPanel.update(): cSplitType = " +
@@ -746,12 +746,12 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
     				}
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb.getString("numberLabel")
-    					+ this.model.getTableModel().getRowCount());
+    					+ this.model.getStatTableModel().getRowCount());
     				String splitMinValue = Statistiek.getStringValue(
-    					this.model.getTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
+    					this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
     				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel") + splitMinValue);
     				String splitMaxValue = Statistiek.getStringValue(
-    					this.model.getTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
+    					this.model.getStatTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
     				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel")
     					+ splitMaxValue);
     				this.splitBinsBox.getParent().setVisible(true);
@@ -905,7 +905,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.controller.setSplitType(this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getColumnTypes()
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
