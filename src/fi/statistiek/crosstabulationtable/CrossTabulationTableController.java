@@ -58,7 +58,7 @@ public class CrossTabulationTableController implements StatistiekView,
 		if (index > -1)
 		{
 			this.setSplitType(this.model
-				.getTableModel()
+				.getStatTableModel()
 				.getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType(), CrossTabulationTableModel.DEFAULT_NUMBER_OF_BINS);//index);
@@ -76,17 +76,17 @@ public class CrossTabulationTableController implements StatistiekView,
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
 			boundaries = Statistiek.appropriateBoundaries(
-				this.model.getTableModel().getColumnMin(
+				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				noBins);
 			
 			// test syl: niet fraai; opnieuw boundaries berekenen met de hierboven berekende binwidth
 			// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
-			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getTableModel().getColumnMin(
+			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()), 
 					boundaries.get(1) - boundaries.get(0), boundaries.get(0));
 
@@ -261,9 +261,9 @@ public class CrossTabulationTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getColumnIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -296,9 +296,9 @@ public class CrossTabulationTableController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnSplitIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getColumnSplitIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
