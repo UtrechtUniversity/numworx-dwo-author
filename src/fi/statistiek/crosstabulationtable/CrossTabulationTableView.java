@@ -544,9 +544,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		{
 			for (int i = 0; i < binLabelsRows.length; i++)
 			{
-				String text = this.model.getBinBoundaries().get(i).toString() 
+				String text = Statistiek.getStringValue(this.model.getBinBoundaries().get(i)) 
 					+ "-<" 
-					+ this.model.getBinBoundaries().get(i + 1).toString();
+					+ Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
 				binLabelsRows[i] = new JLabel(text);
 				binLabelsRows[i].setFont(Statistiek.font);
 			}
@@ -573,9 +573,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			{
 				for (int i = 0; i < binLabelsColumns.length; i++)
 				{
-					String text = this.model.getSplitOptions().getBinBoundaries().get(i).toString() 
+					String text = Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)) 
 						+ "-<" 
-						+ this.model.getSplitOptions().getBinBoundaries().get(i + 1).toString();
+						+ Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1));
 					binLabelsColumns[i] = new JLabel(text);
 					binLabelsColumns[i].setFont(Statistiek.font);
 				}
@@ -830,6 +830,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	/**
 	 * Calculates the percentage value of the ratio frequency/divisor. If divisor is 0, 0 is returned.
 	 * If the percentage value is an integer value, no decimals are returned in waardeString.
+	 * If percentage is a decimal value, one decimal is shown.
 	 * 
 	 * @param frequency
 	 * @param divisor
@@ -839,15 +840,12 @@ public class CrossTabulationTableView extends JPanel implements Observer
 	{
 		double waarde;
 		String waardeString;
-		DecimalFormat df = Statistiek.getDecimalFormat();
+		DecimalFormat df = Statistiek.getDefaultDecimalFormat();
 		
 		if (divisor != 0)
 		{
 			waarde = ((double) frequency/divisor)*100;
-//			if (waarde == Math.floor(waarde))
-//				waardeString = String.valueOf((int) waarde);
-//			else
-				waardeString = df.format(waarde);
+			waardeString = df.format(waarde);
 		}
 		else
 			waardeString = "0";
