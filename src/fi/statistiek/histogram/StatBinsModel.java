@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import fi.statistiek.StatTableModel;
 
-public interface StatBinsModel {
-	public StatTableModel getTableModel();
+public interface StatBinsModel
+{
+	public StatTableModel getStatTableModel();
+
 	public int getColumnIndex();
+
 	public ArrayList<Double> getBinBoundaries();
 }
