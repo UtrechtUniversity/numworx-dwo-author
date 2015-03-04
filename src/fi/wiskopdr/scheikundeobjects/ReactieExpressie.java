@@ -50,11 +50,27 @@ public class ReactieExpressie {
 		Vector<String> v = new Vector<String>();
 		for(int i = 0; i < moleculen.length; i++)
 		{
-			for(int j = 0; j < moleculen[i].atoomDelen.length; j++)
-			{	String s = moleculen[i].atoomDelen[j].atoomNaam;
-				if(!v.contains(s))
-					v.add(s);
-			
+			if(moleculen[i].samengesteldeIonDelen == null)
+			{
+				for(int j = 0; j < moleculen[i].atoomDelen.length; j++)
+				{	String s = moleculen[i].atoomDelen[j].atoomNaam;
+					if(!v.contains(s) && !s.equals("e"))
+						v.add(s);
+				}
+			}
+			else
+			{
+				for(int j = 0; j < moleculen[i].samengesteldeIonDelen.length; j++)
+				{
+					Vector<String> v2 = moleculen[i].samengesteldeIonDelen[j].bepaalAtoomNamen();
+					for(int k = 0; k < v2.size(); k++)
+					{
+						String s = v2.elementAt(k);
+						if(!v.contains(s) && !s.equals("e"))
+							v.add(s);
+					}
+				}
+				
 			}
 		}
 		atoomNamen = new String[v.size()];

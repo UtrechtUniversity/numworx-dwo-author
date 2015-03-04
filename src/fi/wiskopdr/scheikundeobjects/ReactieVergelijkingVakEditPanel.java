@@ -26,15 +26,17 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     private JLabel antwoordLabel, feedbackLabel;
   //  private JCheckBox  gelijkwaardigCB, vormCB, exactCB, eindOplossingCB;
     //private JLabel ScoringLabel, puntenLabel;
-    private JLabel correctScoreLabel, aftrekVereenvoudigbaarLabel, lossePuntenLabel, moleculenLabel, elementenLabel, ladingenLabel;
-    private JTextField correctPV, moleculenPV, elementenPV, ladingenPV, vereenvoudigbaarPV, feedbackPV;
+    private JLabel correctScoreLabel, aftrekVereenvoudigbaarLabel, aftrekPijlLabel, lossePuntenLabel, beginstoffenLabel, productenLabel, elementenLabel, ladingenLabel;
+    private JTextField correctPV, beginstoffenPV, productenPV, elementenPV, ladingenPV, vereenvoudigbaarPV, onjuistePijlPV, feedbackPV;
         
     
     private int puntenCorrect = 10;
-	private int puntenMoleculen = 0;
+	private int puntenBeginstoffen = 0;
+	private int puntenProducten = 0;
 	private int puntenElementen = 0;
 	private int puntenLadingen = 0;
 	private int aftrekVereenvoudigbaar = 0;
+	private int aftrekOnjuistePijl = 0;
     private int puntenFeedback = 0;
     
 //    private boolean gelijkwaardig = true;
@@ -103,7 +105,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         antwoordvak.addActionListener(this);
         add(antwoordvak);
        
-        feedbackCB = makeCheckBox(145,160,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
+        feedbackCB = makeCheckBox(145,160,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,false);
         
         String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("doorLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
         goedFoutIP = new ActKeuzePanel(items,440,420,80,80);
@@ -153,8 +155,10 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
         correctScoreLabel = makeLabel(250, 360, 200, 20, WiskOpdr.rb.getString("rvScoreCorrect"), true);
         aftrekVereenvoudigbaarLabel = makeLabel(250, 385, 200, 20, WiskOpdr.rb.getString("rvAftrekVereenvoudigbaar"), true);
+        aftrekPijlLabel = makeLabel(500, 385, 200, 20, WiskOpdr.rb.getString("rvAftrekPijl"), true);
         lossePuntenLabel = makeLabel(250, 410, 400, 20, WiskOpdr.rb.getString("rvLossePunten"), true);
-        moleculenLabel = makeLabel(250, 435, 200, 20, WiskOpdr.rb.getString("rvScoreMoleculen"), true);
+        beginstoffenLabel = makeLabel(250, 435, 200, 20, WiskOpdr.rb.getString("rvScoreBeginstoffen"), true);
+        productenLabel = makeLabel(500, 435, 200, 20, WiskOpdr.rb.getString("rvScoreProducten"), true);
         elementenLabel = makeLabel(250, 460, 200, 20, WiskOpdr.rb.getString("rvScoreElementen"), true);
         ladingenLabel = makeLabel(250, 485, 200, 20, WiskOpdr.rb.getString("rvScoreLadingen"), true);
         
@@ -183,12 +187,14 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
-        correctPV = makeTextField(460,360,30,20,""+puntenCorrect,true);
-        vereenvoudigbaarPV = makeTextField(460,385,30,20,""+aftrekVereenvoudigbaar,true);
-        moleculenPV = makeTextField(460,435,30,20,""+puntenMoleculen, true);
-        elementenPV = makeTextField(460,460,30,20,""+puntenElementen,true);
-        ladingenPV = makeTextField(460,485,30,20,""+puntenLadingen,true);
-		feedbackPV = makeTextField(460,385,30,20,""+puntenFeedback,true);
+        correctPV = makeTextField(440,360,30,20,""+puntenCorrect,true);
+        vereenvoudigbaarPV = makeTextField(440,385,30,20,""+aftrekVereenvoudigbaar,true);
+        onjuistePijlPV = makeTextField(650, 385, 30, 20, "" + aftrekOnjuistePijl, true);
+        beginstoffenPV = makeTextField(440,435,30,20,""+ puntenBeginstoffen, true);
+        productenPV = makeTextField(650, 435, 30, 20, "" + puntenProducten, true);
+        elementenPV = makeTextField(440,460,30,20,""+puntenElementen,true);
+        ladingenPV = makeTextField(440,485,30,20,""+puntenLadingen,true);
+		feedbackPV = makeTextField(440,385,30,20,""+puntenFeedback,true);
         
         
         
@@ -386,10 +392,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
     {           String antwoordString = "$f@";
                 String startString = "$f@";
                 int puntenCorrect = 10;
-            	int puntenMoleculen = 0;
+            	int puntenBeginstoffen = 0;
+            	int puntenProducten = 0;
             	int puntenElementen = 0;
             	int puntenLadingen = 0;
             	int aftrekVereenvoudigbaar = 0;
+            	int aftrekOnjuistePijl = 0;
                 boolean formuleToolBijFocus = false;
                 Hashtable[] answerModels = null;
                 boolean hasFeedback = false;
@@ -413,11 +421,13 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
                 if(interactiePanelLaunchState.containsKey("startString")) startString = (String)interactiePanelLaunchState.get("startString");
                 if(interactiePanelLaunchState.containsKey("puntenCorrect")) puntenCorrect = ((Integer)interactiePanelLaunchState.get("puntenCorrect")).intValue();
-                if(interactiePanelLaunchState.containsKey("puntenMoleculen")) puntenMoleculen = ((Integer)interactiePanelLaunchState.get("puntenMoleculen")).intValue();
+                if(interactiePanelLaunchState.containsKey("puntenBeginstoffen")) puntenBeginstoffen = ((Integer)interactiePanelLaunchState.get("puntenBeginstoffen")).intValue();
+                if(interactiePanelLaunchState.containsKey("puntenProducten")) puntenProducten = ((Integer)interactiePanelLaunchState.get("puntenProducten")).intValue();
                 if(interactiePanelLaunchState.containsKey("puntenElementen")) puntenElementen = ((Integer)interactiePanelLaunchState.get("puntenElementen")).intValue();
                 if(interactiePanelLaunchState.containsKey("puntenLadingen")) puntenLadingen = ((Integer)interactiePanelLaunchState.get("puntenLadingen")).intValue();
                 if(interactiePanelLaunchState.containsKey("aftrekVereenvoudigbaar")) aftrekVereenvoudigbaar = ((Integer)interactiePanelLaunchState.get("aftrekVereenvoudigbaar")).intValue();
-				 if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("aftrekOnjuistePijl")) aftrekOnjuistePijl = ((Integer)interactiePanelLaunchState.get("aftrekOnjuistePijl")).intValue();
+                if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
                 if(interactiePanelLaunchState.containsKey("hasFeedback")) hasFeedback = ((Boolean)interactiePanelLaunchState.get("hasFeedback")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("feedbackSize")) feedbackSize = ((Boolean)interactiePanelLaunchState.get("feedbackSize")).booleanValue();
@@ -436,10 +446,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
 				
                 this.puntenCorrect = puntenCorrect;
-                this.puntenMoleculen = puntenMoleculen;
+                this.puntenBeginstoffen = puntenBeginstoffen;
+                this.puntenProducten = puntenProducten;
                 this.puntenElementen = puntenElementen;
                 this.puntenLadingen = puntenLadingen;
                 this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
+                this.aftrekOnjuistePijl = aftrekOnjuistePijl;
 				this.formuleToolBijFocus = formuleToolBijFocus;
                 
                 this.answerModels = new Hashtable[answerModels.length];
@@ -508,7 +520,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 
                 correctPV.setText(""+puntenCorrect);
                 vereenvoudigbaarPV.setText(""+aftrekVereenvoudigbaar);
-                moleculenPV.setText(""+puntenMoleculen);
+                onjuistePijlPV.setText("" + aftrekOnjuistePijl);
+                beginstoffenPV.setText(""+puntenBeginstoffen);
+                productenPV.setText("" + puntenProducten);
                 elementenPV.setText(""+puntenElementen);
                 ladingenPV.setText(""+puntenLadingen);
                     
@@ -521,10 +535,12 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
             String antwoordString = null;
             int puntenCorrect = 10;
-        	int puntenMoleculen = 0;
+        	int puntenBeginstoffen = 0;
+        	int puntenProducten = 0;
         	int puntenElementen = 0;
         	int puntenLadingen = 0;
         	int aftrekVereenvoudigbaar = 0;
+        	int aftrekOnjuistePijl = 0;
             int scoreMax = 0;
             int[][] scoreMaxObjectives = null;
             boolean formuleToolBijFocus = false;
@@ -571,8 +587,21 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             catch(Exception ex)
             {   }
             try
-            {   puntenMoleculen = Integer.parseInt(moleculenPV.getText());
-                this.puntenMoleculen = puntenMoleculen;
+            {
+            	aftrekOnjuistePijl = Integer.parseInt(onjuistePijlPV.getText());
+            	this.aftrekOnjuistePijl = aftrekOnjuistePijl;
+            }
+            catch(Exception ex)
+            {   }
+            try
+            {   puntenBeginstoffen = Integer.parseInt(beginstoffenPV.getText());
+                this.puntenBeginstoffen = puntenBeginstoffen;
+            }   
+            catch(Exception ex)
+            {   }
+            try
+            {   puntenProducten = Integer.parseInt(productenPV.getText());
+                this.puntenProducten = puntenProducten;
             }   
             catch(Exception ex)
             {   }
@@ -590,7 +619,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			{	}
             puntenCorrect = this.puntenCorrect;
             aftrekVereenvoudigbaar = this.aftrekVereenvoudigbaar;
-            puntenMoleculen = this.puntenMoleculen;
+            aftrekOnjuistePijl = this.aftrekOnjuistePijl;
+            puntenBeginstoffen = this.puntenBeginstoffen;
+            puntenProducten = this.puntenProducten;
             puntenElementen = this.puntenElementen;
 			puntenLadingen = this.puntenLadingen;
             formuleToolBijFocus = this.formuleToolBijFocus;
@@ -631,7 +662,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             interactiePanelLaunchState.put("antwoordString",antwoordString);
             interactiePanelLaunchState.put("puntenCorrect",new Integer(puntenCorrect));
             interactiePanelLaunchState.put("aftrekVereenvoudigbaar",new Integer(aftrekVereenvoudigbaar));
-            interactiePanelLaunchState.put("puntenMoleculen",new Integer(puntenMoleculen));
+            interactiePanelLaunchState.put("aftrekOnjuistePijl", new Integer(aftrekOnjuistePijl));
+            interactiePanelLaunchState.put("puntenBeginstoffen",new Integer(puntenBeginstoffen));
+            interactiePanelLaunchState.put("puntenProducten", new Integer(puntenProducten));
             interactiePanelLaunchState.put("puntenElementen",new Integer(puntenElementen));
 			interactiePanelLaunchState.put("puntenLadingen",new Integer(puntenLadingen));
             interactiePanelLaunchState.put("formuleToolBijFocus",new Boolean(formuleToolBijFocus));
@@ -1052,7 +1085,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         {
             int puntenCorrect = 0;
             int aftrekVereenvoudigbaar = 0;
-            int puntenMoleculen = 0;
+            int aftrekOnjuistePijl = 0;
+            int puntenBeginstoffen = 0;
+            int puntenProducten = 0;
             int puntenElementen = 0;
 			int puntenLadingen = 0;
             
@@ -1072,10 +1107,28 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 catch(Exception ex)
                 {   }
             }
-            if(e.getSource()==moleculenPV)
+            if(e.getSource() == onjuistePijlPV)
+            {
+            	try
+            	{
+            		aftrekOnjuistePijl = Integer.parseInt(onjuistePijlPV.getText());
+            		this.aftrekOnjuistePijl = aftrekOnjuistePijl;
+            	}
+            	catch(Exception ex)
+                {   }
+            }
+            if(e.getSource()==beginstoffenPV)
             {   try
-                {   puntenMoleculen = Integer.parseInt(moleculenPV.getText());
-                    this.puntenMoleculen = puntenMoleculen;
+                {   puntenBeginstoffen = Integer.parseInt(beginstoffenPV.getText());
+                    this.puntenBeginstoffen = puntenBeginstoffen;
+                }   
+                catch(Exception ex)
+                {   }
+            }
+            if(e.getSource()==productenPV)
+            {   try
+                {   puntenProducten = Integer.parseInt(productenPV.getText());
+                    this.puntenProducten = puntenProducten;
                 }   
                 catch(Exception ex)
                 {   }

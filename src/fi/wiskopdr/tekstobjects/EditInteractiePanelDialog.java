@@ -485,9 +485,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		else if(soortInteractiePanel == 52)
         {   interactieEditPanel = (new ReactieVergelijkingVak()).getEditPanel();
             breedteTF.setText("300");
-            hoogteTF.setText("250");
+            hoogteTF.setText("150");
             if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(300);
-            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(250);
+            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(150);
         }
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		if(soortInteractiePanel == TekstInteractiePanelVak.interactiePanelSets[1][30])

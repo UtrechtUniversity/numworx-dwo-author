@@ -296,7 +296,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.spot_problems_dwo.Spot_Problems_dwo" , "Stippelalgebra" },
 		{ "fi.kladje.Kladje" , "Kladje" },
 		{ "fi.kansbomen.Kansbomen" , "Kansbomen" },
-		{ "fi.calculatordwo.CalculatorDwo" , "[test] Rekenmachine" },
+		{ "fi.calculatordwo.CalculatorDwo" , "Rekenmachine" },
 		{ "fi.formstruct.FormStruct" , "[test] FormStruct" },
 		{ "fi.graphtool.GraphTool" , "[test] GraphTool" },
 		{ "fi.draaibank.Draaibank" , "[test] Draaibank" },
@@ -357,8 +357,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.rb.getString("geogebraIpLabel"),//"Geogebra",
 		WiskOpdr.rb.getString("spotProblemsIpLabel"),//"[test] SpotProblem"
 		WiskOpdr.rb.getString("kladjeIpLabel"),//"[test] Kladje"
-		WiskOpdr.rb.getString("kansbomenIpLabel"),//"[test] Kansbomen"
-		WiskOpdr.rb.getString("rekenmachineIpLabel"),//"[test] Rekenmachine"
+		WiskOpdr.rb.getString("kansbomenIpLabel"),//"Kansbomen"
+		WiskOpdr.rb.getString("rekenmachineIpLabel"),//"Rekenmachine"
 		WiskOpdr.rb.getString("formStructIpLabel"),//"[test] FormStruct"
 		WiskOpdr.rb.getString("graphToolIpLabel"),//"[test] GraphTool"
 		WiskOpdr.rb.getString("draaibankIpLabel"),//"[test] Draaibank"

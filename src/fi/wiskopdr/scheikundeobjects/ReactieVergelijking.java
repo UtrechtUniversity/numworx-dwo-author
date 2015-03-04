@@ -86,14 +86,39 @@ public class ReactieVergelijking {
 				
 	}
 	
-	public boolean isGelijkwaardigMoleculen(ReactieVergelijking vergelijking)
+	public boolean isGelijkwaardigBeginstoffen(ReactieVergelijking vergelijking)
 	{
 		ReactieExpressie e1 = vergelijking.expressie1;
-		ReactieExpressie e2 = vergelijking.expressie2;
-		if(e1.isGelijkwaardigMoleculen(expressie1) && e2.isGelijkwaardigMoleculen(expressie2))
+		if(e1.isGelijkwaardigMoleculen(expressie1))
 			return true;
 		else if(pijl == EVENWICHTSREACTIE)
 		{
+			if(e1.isGelijkwaardigMoleculen(expressie2))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isGelijkwaardigProducten(ReactieVergelijking vergelijking)
+	{
+		ReactieExpressie e1 = vergelijking.expressie1;
+		ReactieExpressie e2 = vergelijking.expressie2;
+		if(e2.isGelijkwaardigMoleculen(expressie2))
+			return true;
+		else if(pijl == EVENWICHTSREACTIE)
+		{
+			if(e2.isGelijkwaardigMoleculen(expressie1) && !e1.isGelijkwaardigMoleculen(expressie1))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean beginEnEindVerwisseld(ReactieVergelijking vergelijking)
+	{
+		if(pijl == AFLOPEND)
+		{
+			ReactieExpressie e1 = vergelijking.expressie1;
+			ReactieExpressie e2 = vergelijking.expressie2;
 			if(e1.isGelijkwaardigMoleculen(expressie2) && e2.isGelijkwaardigMoleculen(expressie1))
 				return true;
 		}

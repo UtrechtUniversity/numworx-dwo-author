@@ -65,18 +65,22 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	boolean nagekeken = false;
 
 	private boolean isGelijkwaardig = false;
-	private boolean isGelijkwaardigMoleculen = false;
+	private boolean isGelijkwaardigBeginstoffen = false;
+	private boolean isGelijkwaardigProducten = false;
 	private boolean isGelijkwaardigMoleculenLading = false;
 	private boolean pijlKlopt = false;
 	private boolean elementenBalansKlopt = false;
 	private boolean ladingenBalansKlopt = false;
 	private boolean kanVereenvoudigd = false;
+	private boolean beginEnEindVerwisseld = false;
 	
 	private int puntenCorrect = 0;
-	private int puntenMoleculen = 0;
+	private int puntenBeginstoffen = 0;
+	private int puntenProducten = 0;
 	private int puntenElementen = 0;
 	private int puntenLadingen = 0;
 	private int aftrekVereenvoudigbaar = 0;
+	private int aftrekOnjuistePijl = 0;
 	
 	private int score;
 	private int scoreMax;
@@ -633,10 +637,12 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 
 		String antwoordString = "$f@";
 		int puntenCorrect = 10;
-		int puntenMoleculen = 0;
+		int puntenBeginstoffen = 0;
+		int puntenProducten = 0;
 		int puntenElementen = 0;
 		int puntenLadingen = 0;
 		int aftrekVereenvoudigbaar = 0;
+		int aftrekOnjuistePijl = 0;
 		Hashtable[] answerModels = null;
 		boolean hasFeedback = false;
 		boolean feedbackSize = false;
@@ -657,14 +663,18 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			antwoordString = (String) h.get("antwoordString");
 		if (h.containsKey("puntenCorrect"))
 			puntenCorrect = ((Integer) h.get("puntenCorrect")).intValue();
-		if (h.containsKey("puntenMoleculen"))
-			puntenMoleculen = ((Integer) h.get("puntenMoleculen")).intValue();
+		if (h.containsKey("puntenBeginstoffen"))
+			puntenBeginstoffen = ((Integer) h.get("puntenBeginstoffen")).intValue();
+		if (h.containsKey("puntenProducten"))
+			puntenProducten = ((Integer) h.get("puntenProducten")).intValue();
 		if (h.containsKey("puntenElementen"))
 			puntenElementen = ((Integer) h.get("puntenElementen")).intValue();
 		if (h.containsKey("puntenLadingen"))
 			puntenLadingen = ((Integer) h.get("puntenLadingen")).intValue();
 		if (h.containsKey("aftrekVereenvoudigbaar"))
 			aftrekVereenvoudigbaar = ((Integer) h.get("aftrekVereenvoudigbaar")).intValue();
+		if (h.containsKey("aftrekOnjuistePijl"))
+			aftrekOnjuistePijl = ((Integer) h.get("aftrekOnjuistePijl")).intValue();
 		if (h.containsKey("answerModels"))
 			answerModels = (Hashtable[]) h.get("answerModels");
 		if (h.containsKey("hasFeedback"))
@@ -704,10 +714,12 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		this.eqTestValueMax = eqTestValueMax;
 
 		this.puntenCorrect = puntenCorrect;
-		this.puntenMoleculen = puntenMoleculen;
+		this.puntenBeginstoffen = puntenBeginstoffen;
+		this.puntenProducten = puntenProducten;
 		this.puntenElementen = puntenElementen;
 		this.puntenLadingen = puntenLadingen;
 		this.aftrekVereenvoudigbaar = aftrekVereenvoudigbaar;
+		this.aftrekOnjuistePijl = aftrekOnjuistePijl;
 		this.logObjectives = logObjectives;
 
 //		try {
@@ -1134,19 +1146,44 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 
 			
 		}
-		else if(!isGelijkwaardigMoleculen)
+		else if(beginEnEindVerwisseld)
 		{
-			score = 0;
+			score = puntenBeginstoffen + puntenProducten;
 			correct = false;
 			fout = true;
 			if(show)
-			{	setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg01"), true);
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg08"), true);
+				zetGoedFout(FOUT);
+			}
+		}
+		else if(!isGelijkwaardigBeginstoffen)
+		{
+			if(isGelijkwaardigProducten)
+				score = puntenProducten;
+			else
+				score = 0;
+			correct = false;
+			fout = true;
+			if(show)
+			{	setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg01a"), true);
+				zetGoedFout(FOUT);
+			}
+		}
+		else if(!isGelijkwaardigProducten)
+		{
+			score = puntenBeginstoffen;
+			correct = false;
+			fout = true;
+			if(show)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackReactieVerg01b"), true);
 				zetGoedFout(FOUT);
 			}
 		}
 		else if(!elementenBalansKlopt)
 		{
-			score = puntenMoleculen;
+			score = puntenBeginstoffen + puntenProducten;
 			correct = false;
 			fout = false;
 			if(show)
@@ -1179,7 +1216,10 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		}
 		else if(!pijlKlopt)
 		{
-			score = puntenLadingen;
+			if(kanVereenvoudigd)
+				score = puntenCorrect - aftrekOnjuistePijl - aftrekVereenvoudigbaar;
+			else
+				score = puntenCorrect - aftrekOnjuistePijl;
 			correct = false;
 			fout = false;
 			if(show)
@@ -1303,8 +1343,10 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 //			antwoordIngevuld = antwoordAlles;
 //		}
 		isGelijkwaardig = false;
-		isGelijkwaardigMoleculen = false;
+		isGelijkwaardigBeginstoffen = false;
+		isGelijkwaardigProducten = false;
 		isGelijkwaardigMoleculenLading = false;
+		beginEnEindVerwisseld = false;
 		elementenBalansKlopt = false;
 		ladingenBalansKlopt = false;
 		pijlKlopt = false;
@@ -1314,19 +1356,26 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			isGelijkwaardig = antwoordIngevuld.isGelijkwaardig(gewensteEindOplossing);
 			if(isGelijkwaardig)
 			{
-				isGelijkwaardigMoleculen = true;
+				isGelijkwaardigBeginstoffen = true;
+				isGelijkwaardigProducten = true;
 				isGelijkwaardigMoleculenLading = true;
 			}
 			else
 			{
-				isGelijkwaardigMoleculen = antwoordIngevuld.isGelijkwaardigMoleculen(gewensteEindOplossing);
+				//isGelijkwaardigMoleculen = antwoordIngevuld.isGelijkwaardigMoleculen(gewensteEindOplossing);
+				isGelijkwaardigBeginstoffen = antwoordIngevuld.isGelijkwaardigBeginstoffen(gewensteEindOplossing);
+				isGelijkwaardigProducten = antwoordIngevuld.isGelijkwaardigProducten(gewensteEindOplossing);
 				isGelijkwaardigMoleculenLading = antwoordIngevuld.isGelijkwaardigMoleculenLading(gewensteEindOplossing);
+				if(!(isGelijkwaardigBeginstoffen || isGelijkwaardigProducten))
+				{
+					beginEnEindVerwisseld = antwoordIngevuld.beginEnEindVerwisseld(gewensteEindOplossing);
+				}
 	
 			}
 			elementenBalansKlopt = antwoordIngevuld.elementenBalansKlopt();
 			ladingenBalansKlopt = antwoordIngevuld.ladingenBalansKlopt();
 			pijlKlopt = antwoordIngevuld.isGelijkwaardigPijl(gewensteEindOplossing);
-			if(pijlKlopt && ladingenBalansKlopt && elementenBalansKlopt && isGelijkwaardigMoleculenLading)
+			if(ladingenBalansKlopt && elementenBalansKlopt && isGelijkwaardigMoleculenLading)
 				kanVereenvoudigd = antwoordIngevuld.kanVereenvoudigd(gewensteEindOplossing);
 		}
 		
