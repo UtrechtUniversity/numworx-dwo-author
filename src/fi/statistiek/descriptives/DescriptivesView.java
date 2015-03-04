@@ -291,7 +291,7 @@ public class DescriptivesView extends JPanel implements Observer
 
 			s = this.model.getColumnMode(columnIndex, i, false);
 			if (this.isNumeric(s))
-				this.mode[0][i] = this.getStringValue(Double.valueOf(s));
+				this.mode[0][i] = Statistiek.getStringValue(Double.valueOf(s));
 			else
 				this.mode[0][i] = s;
 			
@@ -300,7 +300,7 @@ public class DescriptivesView extends JPanel implements Observer
 //				s = this.model.getTableModel().getColumnModeOfSelection(columnIndex);
 				s = this.model.getColumnMode(columnIndex, i, true);
 				if (this.isNumeric(s))
-					this.mode[1][i] = this.getStringValue(Double.valueOf(s));
+					this.mode[1][i] = Statistiek.getStringValue(Double.valueOf(s));
 				else
 					this.mode[1][i] = s;
 			}
@@ -450,15 +450,15 @@ public class DescriptivesView extends JPanel implements Observer
 				meanString = this.model.getColumnMean(columnIndex, splitClass, false);
 				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
 				{
-					meanString = this.getStringValue(
-						Statistiek.round(Double.parseDouble(meanString), numberOfDecimals));
+					meanString = Statistiek.getStringValue(
+						Statistiek.round(Statistiek.parseDouble(meanString), numberOfDecimals));
 				}
 				
 				sdString = this.model.getColumnSD(columnIndex, splitClass, false);
 				if (!sdString.equals(Statistiek.rb.getString("notAvailable")))
 				{
-					sdString = this.getStringValue(
-						Statistiek.round(Double.parseDouble(sdString), numberOfDecimals));
+					sdString = Statistiek.getStringValue(
+						Statistiek.round(Statistiek.parseDouble(sdString), numberOfDecimals));
 				}
 				medianString = getMedianValue(columnIndex, splitClass, false);
 			}
@@ -470,15 +470,15 @@ public class DescriptivesView extends JPanel implements Observer
 				meanString = this.model.getColumnMean(columnIndex, splitClass, true);
 				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
 				{
-					meanString = this.getStringValue(
-						Statistiek.round(Double.parseDouble(meanString), numberOfDecimals));
+					meanString = Statistiek.getStringValue(
+						Statistiek.round(Statistiek.parseDouble(meanString), numberOfDecimals));
 				}
 				
 				sdString = this.model.getColumnSD(columnIndex, splitClass, true);
 				if (!meanString.equals(Statistiek.rb.getString("notAvailable")))
 				{
-					sdString = this.getStringValue(
-						Statistiek.round(Double.parseDouble(sdString), numberOfDecimals));
+					sdString = Statistiek.getStringValue(
+						Statistiek.round(Statistiek.parseDouble(sdString), numberOfDecimals));
 				}
 				medianString = getMedianValue(columnIndex, splitClass, true);
 			}
@@ -543,7 +543,7 @@ public class DescriptivesView extends JPanel implements Observer
 
 		double medianDouble = this.model.getColumnMedian(columnIndex, splitClass, forSelection);
 
-		medianValue = getStringValue(Statistiek.round(medianDouble, numberOfDecimals));
+		medianValue = Statistiek.getStringValue(Statistiek.round(medianDouble, numberOfDecimals));
 		
 		return medianValue;
 	}
@@ -560,23 +560,6 @@ public class DescriptivesView extends JPanel implements Observer
 		String minimumValue = this.model.getColumnMin(columnIndex, splitClass, forSelection);
 		
 		return minimumValue;
-	}
-
-	/**
-	 * Get the string value of double. If the value is an integer value
-	 * a string is returned without decimals.
-	 * @param d The double value
-	 * @return
-	 */
-	private String getStringValue(double d)
-	{
-		String s;
-		if ((d == Math.floor(d)) && !Double.isInfinite(d))
-			s = String.valueOf((int) d);
-		else
-			s = String.valueOf(d);
-		
-		return s;
 	}
 
 	/**
@@ -618,15 +601,12 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 		double waarde;
 		String waardeString;
-		DecimalFormat df = Statistiek.getDecimalFormat();
+		DecimalFormat df = Statistiek.getDefaultDecimalFormat();
 		
 		if (divisor != 0)
 		{
 			waarde = ((double) frequency/divisor)*100;
-//			if (waarde == Math.floor(waarde))
-//				waardeString = String.valueOf((int) waarde);
-//			else
-				waardeString = df.format(waarde);
+			waardeString = df.format(waarde);
 		}
 		else
 			waardeString = "0";
