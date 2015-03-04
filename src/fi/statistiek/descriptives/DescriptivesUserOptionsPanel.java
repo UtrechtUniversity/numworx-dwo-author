@@ -469,32 +469,28 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
     			if (splitType.equals(AllowedTypes.DOUBLE)
     				|| splitType.equals(AllowedTypes.INTEGER))
     			{
-    				this.splitMinBoundaryField.setText(this.model.getSplitOptions().getBinBoundaries()
-    						.get(0).toString());
+    				this.splitMinBoundaryField.setText(
+    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
     				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				StringBuilder sb = new StringBuilder();
     				for (int i = 0; i < this.model.getSplitOptions()
     					.getBinBoundaries().size() - 1; i++)
     				{
-    					sb.append(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i).toString());
-    					sb.append(" - ");
-    					sb.append(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i + 1).toString());
+    					sb.append(Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)));
+    					sb.append(" -< ");
+    					sb.append(Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1)));
     					sb.append("\n");
     				}
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb
     					.getString("numberLabel")
     					+ this.model.getTableModel().getRowCount());
-    				this.splitMinValueLabel.setText(Statistiek.rb
-    					.getString("minLabel")
-    					+ this.model.getTableModel().getColumnMin(
-    						this.model.getSplitOptions().getColumnSplitIndex()));
-    				this.splitMaxValueLabel.setText(Statistiek.rb
-    					.getString("maxLabel")
-    					+ this.model.getTableModel().getColumnMax(
-    						this.model.getSplitOptions().getColumnSplitIndex()));
+    				String splitMinValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMin(
+						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel") + splitMinValue);
+    				String splitMaxValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMax(
+						this.model.getSplitOptions().getColumnSplitIndex()));
+    				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel") + splitMaxValue);
     				setVisibleSplitEnumClasses(false);
     			}
     			else if (splitType.equals(AllowedTypes.ENUM))
