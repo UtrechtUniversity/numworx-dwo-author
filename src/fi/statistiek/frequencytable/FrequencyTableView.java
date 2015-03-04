@@ -739,10 +739,10 @@ public class FrequencyTableView extends JPanel implements Observer
 			if (type.isNumber())
 			{
 				freq = frequencies[bin * 2];
-				JLabel label = new JLabel(this.model.getBinBoundaries()
-					.get(bin).toString()
+				JLabel label = new JLabel(
+					Statistiek.getStringValue(this.model.getBinBoundaries().get(bin))
 					+ " -< "
-					+ this.model.getBinBoundaries().get(bin + 1).toString());
+					+ Statistiek.getStringValue(this.model.getBinBoundaries().get(bin + 1)));
 				label.setFont(Statistiek.font);
 				label.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 				c.gridx = 0;
@@ -792,7 +792,7 @@ public class FrequencyTableView extends JPanel implements Observer
 				// round to one decimal
 				int decimals = 1;
 				d = Statistiek.round(d, decimals);
-				JLabel percLabel = new JLabel(getStringValue(d) + "%",
+				JLabel percLabel = new JLabel(Statistiek.getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				percLabel.setFont(Statistiek.font);
 				percLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
@@ -825,7 +825,7 @@ public class FrequencyTableView extends JPanel implements Observer
 				// round to one decimal
 				int decimals = 1;
 				d = Statistiek.round(d, decimals);
-				JLabel cumulPercLabel = new JLabel(getStringValue(d) + "%",
+				JLabel cumulPercLabel = new JLabel(Statistiek.getStringValue(d) + "%",
 					SwingConstants.TRAILING);
 				cumulPercLabel.setFont(Statistiek.font);
 				cumulPercLabel.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
@@ -835,31 +835,6 @@ public class FrequencyTableView extends JPanel implements Observer
 				this.updateMaxColumnWidth(4, cumulPercLabel);
 			}
 		}
-	}
-
-	/**
-	 * Get the string value of waarde. If waarde is an integer
-	 * then a string without decimals is returned. 
-	 * @param waarde
-	 * @return
-	 */
-	private String getStringValue(double waarde)
-	{
-		String waardeString;
-		
-		// Test of waarde een integer is 
-		if ((waarde == Math.floor(waarde)) && !Double.isInfinite(waarde))
-		{
-			// als integer, dan zonder decimalen
-			waardeString = String.valueOf((int) waarde);
-		}
-		else
-		{
-			DecimalFormat df = Statistiek.getDecimalFormat();
-			waardeString = df.format(waarde);
-		}
-		
-		return waardeString;
 	}
 
 	public void paintComponent(Graphics g)
