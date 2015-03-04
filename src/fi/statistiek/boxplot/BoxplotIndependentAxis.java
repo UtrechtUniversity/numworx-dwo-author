@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
+import fi.statistiek.Statistiek;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
@@ -78,9 +79,10 @@ public class BoxplotIndependentAxis extends JPanel
 		{
 			for (Double d : this.model.getSplitBinBoundaries())
 			{
-				if (fm.stringWidth(d.toString()) > maxStringLength)
+				int width = fm.stringWidth(Statistiek.getStringValue(d));
+				if (width > maxStringLength)
 				{
-					maxStringLength = fm.stringWidth(d.toString());
+					maxStringLength = width;
 				}
 			}
 		}
@@ -191,7 +193,7 @@ public class BoxplotIndependentAxis extends JPanel
 					g.drawLine(x1, 0, x1, 4);
 
 					// draw text
-					s = this.model.getSplitBinBoundaries().get(i).toString();
+					s = Statistiek.getStringValue(this.model.getSplitBinBoundaries().get(i));
 					
 					if (normalFit)
 					{
@@ -255,7 +257,7 @@ public class BoxplotIndependentAxis extends JPanel
 			{
 				for (int i = 0; i <= this.model.getSplitClasses(); i++)
 				{
-					String s = Double.toString(this.model.getSplitOptions()
+					String s = Statistiek.getStringValue(this.model.getSplitOptions()
 						.getBinBoundaries().get(i));
 					int y = super.getHeight()
 						- (boxplotView.getDependentAxisHeight() + (int) Math
@@ -264,9 +266,9 @@ public class BoxplotIndependentAxis extends JPanel
 					g.drawString(s, this.getWidth() - fm.stringWidth(s) - 7, y
 						+ (int) (0.5 * fm.getHeight()));
 				}
-			}
+			} // number
 			else
-			{
+			{ // non number
 				String s;
 				for (int i = 0; i < this.model.getSplitClasses(); i++)
 				{
@@ -286,7 +288,8 @@ public class BoxplotIndependentAxis extends JPanel
 							.round((i + 0.5) * this.boxWidth));
 					g.drawString(s, this.getWidth() - fm.stringWidth(s) - 4, y);
 				}
-			}
+			} // non number
+			
 			at = new AffineTransform();
 			at.rotate(Math.PI * 1.5);
 
