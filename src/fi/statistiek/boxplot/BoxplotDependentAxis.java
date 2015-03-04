@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
+import fi.statistiek.Statistiek;
 import fi.statistiek.dotplot.DotplotView;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
@@ -153,7 +154,7 @@ public class BoxplotDependentAxis extends JPanel
 				}
 				else
 				{
-					pString = Double.toString(p);
+					pString = Statistiek.getStringValue(p);//Double.toString(p);
 				}
 				
 				g.drawString(pString,
@@ -198,7 +199,7 @@ public class BoxplotDependentAxis extends JPanel
 				}
 				else
 				{
-					pString = Double.toString(p);
+					pString = Statistiek.getStringValue(p);//Double.toString(p);
 				}
 				
 				g.drawString(pString,
