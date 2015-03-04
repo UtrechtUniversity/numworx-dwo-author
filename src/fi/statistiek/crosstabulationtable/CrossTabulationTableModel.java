@@ -215,7 +215,7 @@ public class CrossTabulationTableModel extends Observable implements
 	/**
 	 * @return the data table
 	 */
-	public StatTableModel getTableModel()
+	public StatTableModel getStatTableModel()
 	{
 		return this.tableModel;
 	}
