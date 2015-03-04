@@ -501,4 +501,31 @@ public class StatistiekTest
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void testgetNumberOfDecimals0d00099()
+	{
+		String doubleString = "9.9E-4";
+		int expected = 5;
+		int actual = Statistiek.getNumberOfDecimals(doubleString);
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testgetNumberOfDecimals8d5()
+	{
+		String doubleString = "8.5";
+		int expected = 1;
+		int actual = Statistiek.getNumberOfDecimals(doubleString);
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testgetNumberOfDecimals0d0001()
+	{
+		String doubleString = "1.0E-4";
+		int expected = 4;
+		int actual = Statistiek.getNumberOfDecimals(doubleString);
+		assertEquals(expected, actual);
+	}
 }
