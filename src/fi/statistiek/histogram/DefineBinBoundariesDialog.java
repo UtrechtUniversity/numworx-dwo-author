@@ -141,11 +141,11 @@ public class DefineBinBoundariesDialog extends JDialog implements ActionListener
 
 		southPanel.add(waarnemingenLabel);
 		JPanel subPanel = new JPanel(new GridLayout(1,3));
-		this.noObjectsLabel = new JLabel(Statistiek.rb.getString("numberLabel") + this.model.getTableModel().getRowCount());
+		this.noObjectsLabel = new JLabel(Statistiek.rb.getString("numberLabel") + this.model.getStatTableModel().getRowCount());
 		subPanel.add(this.noObjectsLabel);
-		this.minValueLabel = new JLabel(Statistiek.rb.getString("minLabel") + this.model.getTableModel().getColumnMin(this.model.getColumnIndex()));
+		this.minValueLabel = new JLabel(Statistiek.rb.getString("minLabel") + this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()));
 		subPanel.add(this.minValueLabel);
-		this.maxValueLabel = new JLabel(Statistiek.rb.getString("maxLabel") + this.model.getTableModel().getColumnMax(this.model.getColumnIndex()));
+		this.maxValueLabel = new JLabel(Statistiek.rb.getString("maxLabel") + this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()));
 		subPanel.add(this.maxValueLabel);
 		southPanel.add(subPanel);
 		this.doneButton = new JButton(Statistiek.rb.getString("doneButton"));
