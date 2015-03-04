@@ -271,7 +271,7 @@ public class FrequencyTableView extends JPanel implements Observer
 	{
 		try
 		{
-			this.dialogButton.setVisible(this.model.getTableModel()
+			this.dialogButton.setVisible(this.model.getStatTableModel()
 				.isViewsEditable());
 			
 			this.mainPanel.removeAll();
@@ -282,7 +282,7 @@ public class FrequencyTableView extends JPanel implements Observer
 			
 			if (this.model.columnIndexValid())
 			{
-				ColumnType cType = this.model.getTableModel().getColumnTypes()
+				ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 					.get(this.model.getColumnIndex());
 				AllowedTypes type = cType.getType();
 	
@@ -302,7 +302,7 @@ public class FrequencyTableView extends JPanel implements Observer
 	
 				FrequencyTuple[][] frequencyTuple = null;
 				int[] frequencies = null;
-				numberOfSplitClasses = this.model.getTableModel().splitVarClasses(
+				numberOfSplitClasses = this.model.getStatTableModel().splitVarClasses(
 					this.model.getSplitOptions());
 				this.splitClassPanels = new FrequencyTablePanel[numberOfSplitClasses];
 				
@@ -433,10 +433,10 @@ public class FrequencyTableView extends JPanel implements Observer
 						labelPanel.setBackground(Color.WHITE);
 						// test syl
 //						labelPanel.setBackground(Color.CYAN);
-						String splitVar = this.model.getTableModel()
+						String splitVar = this.model.getStatTableModel()
 							.getColumnName(this.model.getSplitOptions().getColumnSplitIndex());
 						JLabel label = new JLabel(splitVar + ": " + this.model.getSplitOptions()
-							.getSplitClassLabel(i, this.model.getTableModel()));
+							.getSplitClassLabel(i, this.model.getStatTableModel()));
 						label.setFont(Statistiek.font);
 						label.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 						labelPanel.add(label);
@@ -608,7 +608,7 @@ public class FrequencyTableView extends JPanel implements Observer
 
 		this.maxColumnWidth = new int[this.getNumberOfColumns()];
 
-		JLabel variableName = new JLabel(this.model.getTableModel()
+		JLabel variableName = new JLabel(this.model.getStatTableModel()
 			.getColumnName(this.model.getColumnIndex()));
 		variableName.setFont(Statistiek.font);
 		// test syl: toon gridlines m.b.v. lineborders
@@ -1071,7 +1071,7 @@ public class FrequencyTableView extends JPanel implements Observer
 				return;
 			}
 
-			int bins = FrequencyTableView.this.model.getTableModel()
+			int bins = FrequencyTableView.this.model.getStatTableModel()
 				.splitVarClasses(FrequencyTableView.this.model.getColumnIndex(),
 					FrequencyTableView.this.model.getBinBoundaries());
 			int row = rowNumber % bins;
@@ -1080,31 +1080,31 @@ public class FrequencyTableView extends JPanel implements Observer
 //			System.out.println("FrequencyTableView.RowClickListener.rowClicked(): rowNumber = " 
 //				+ rowNumber + ", row " + row + " in splitClass " + splitClass);
 
-			ColumnType cType = FrequencyTableView.this.model.getTableModel()
+			ColumnType cType = FrequencyTableView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(FrequencyTableView.this.model.getColumnIndex());
 			AllowedTypes type = cType.getType();
 			if (type.isNumber())
 			{
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					FrequencyTableView.this.model.getTableModel().getRowCount());
+					FrequencyTableView.this.model.getStatTableModel().getRowCount());
 				for (int i = 0; i < FrequencyTableView.this.model
-					.getTableModel().getRowCount(); i++)
+					.getStatTableModel().getRowCount(); i++)
 				{
-					Object o = FrequencyTableView.this.model.getTableModel()
+					Object o = FrequencyTableView.this.model.getStatTableModel()
 						.getValueAt(i,
 							FrequencyTableView.this.model.getColumnIndex());
 
 					selectionList.add(!o.equals(ColumnType.WILDCARD)
 						&& FrequencyTableView.this.model.binOfNumber(Double
 							.parseDouble((String) o)) == row
-						&& FrequencyTableView.this.model.getTableModel()
+						&& FrequencyTableView.this.model.getStatTableModel()
 							.classifyObject(i,
 								FrequencyTableView.this.model.getSplitOptions()) == splitClass);
 
 				}
 
-				FrequencyTableView.this.model.getTableModel().setSelectionList(
+				FrequencyTableView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 			else
@@ -1130,22 +1130,22 @@ public class FrequencyTableView extends JPanel implements Observer
 				}
 
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					FrequencyTableView.this.model.getTableModel().getRowCount());
+					FrequencyTableView.this.model.getStatTableModel().getRowCount());
 				for (int i = 0; i < FrequencyTableView.this.model
-					.getTableModel().getRowCount(); i++)
+					.getStatTableModel().getRowCount(); i++)
 				{
-					Object o = FrequencyTableView.this.model.getTableModel()
+					Object o = FrequencyTableView.this.model.getStatTableModel()
 						.getValueAt(i,
 							FrequencyTableView.this.model.getColumnIndex());
 
 					selectionList
 					.add(!o.equals(ColumnType.WILDCARD)
 						&& ((String) o).equals(clicked)
-						&& FrequencyTableView.this.model.getTableModel()
+						&& FrequencyTableView.this.model.getStatTableModel()
 							.classifyObject(i,
 								FrequencyTableView.this.model.getSplitOptions()) == splitClass);
 				}
-				FrequencyTableView.this.model.getTableModel().setSelectionList(
+				FrequencyTableView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 			
