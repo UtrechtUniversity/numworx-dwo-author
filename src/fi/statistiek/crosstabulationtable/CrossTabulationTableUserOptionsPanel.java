@@ -583,19 +583,21 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryRowsField.setText(this.model
-					.getBinBoundaries().get(0).toString());
+				this.minBoundaryRowsField.setText(
+					Statistiek.getStringValue(this.model.getBinBoundaries().get(0)));
 				// set the row bin width based on the row's bin boundaries
 				this.binWidthRowsField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsRowsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
+				String minValueRows = Statistiek.getStringValue(
+					this.model.getTableModel().getColumnMin(this.model.getColumnIndex()));
 				this.minValueRowsLabel.setText(Statistiek.rb.getString("minLabel")
-					+ this.model.getTableModel().getColumnMin(
-						this.model.getColumnIndex()));
+					+ minValueRows);
+				String maxValueRows = Statistiek.getStringValue(
+					this.model.getTableModel().getColumnMax(this.model.getColumnIndex()));
 				this.maxValueRowsLabel.setText(Statistiek.rb.getString("maxLabel")
-					+ this.model.getTableModel().getColumnMax(
-						this.model.getColumnIndex()));
+					+ maxValueRows);
 				setEnumClassesRows(false);
 			}
 			else if (type.equals(AllowedTypes.ENUM))
@@ -618,18 +620,22 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryColumnsField.setText(this.model.getSplitOptions().getBinBoundaries().get(0).toString());
+				this.minBoundaryColumnsField.setText(
+					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
 				// set the column bin width based on the column's bin boundaries
 				this.binWidthColumnsField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 				this.noObjectsColumnsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
 					+ this.model.getTableModel().getRowCount());
+				String minValueColumns = Statistiek.getStringValue(
+					this.model.getTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
 				this.minValueColumnsLabel.setText(Statistiek.rb.getString("minLabel")
-					+ this.model.getTableModel().getColumnMin(
+					+ minValueColumns);
+				String maxValueColumns = Statistiek.getStringValue(
+					this.model.getTableModel().getColumnMax(
 						this.model.getSplitOptions().getColumnSplitIndex()));
 				this.maxValueColumnsLabel.setText(Statistiek.rb.getString("maxLabel")
-					+ this.model.getTableModel().getColumnMax(
-						this.model.getSplitOptions().getColumnSplitIndex()));
+					+ maxValueColumns);
 				setEnumClassesColumns(false);
 			}
 			else if (type.equals(AllowedTypes.ENUM))
