@@ -471,7 +471,7 @@ public class HistogramView extends JPanel implements Observer
 		else
 		{
 			int columnIndex = this.model.getColumnIndex();
-			AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
+			AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 			
 			int spacing = 0;
 					
@@ -969,12 +969,12 @@ public class HistogramView extends JPanel implements Observer
 		String s1 = this.model.hasVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
 			.getString("percentageLabel") : Statistiek.rb
 			.getString("frequentieLabel"))
-			: this.model.getTableModel().getColumnName(
+			: this.model.getStatTableModel().getColumnName(
 				this.model.getColumnIndex());
 		String s2 = !this.model.hasVerticalBars() ? (this.model.getPercentage() ? Statistiek.rb
 			.getString("percentageLabel") : Statistiek.rb
 			.getString("frequentieLabel"))
-			: this.model.getTableModel().getColumnName(
+			: this.model.getStatTableModel().getColumnName(
 				this.model.getColumnIndex());
 			
 		g.setColor(Color.BLACK);
@@ -987,16 +987,16 @@ public class HistogramView extends JPanel implements Observer
 				+ this.yAxisOffset, 
 			this.barAreaHeight() + this.xAxisOffset - 10 + yOffset);
 
-		if (this.model.getTableModel().splitVarClasses(
+		if (this.model.getStatTableModel().splitVarClasses(
 			this.model.getSplitOptions()) > 1
 			&& !this.model.isSplitInSingleView())
 		{
-			String name = this.model.getTableModel().getColumnName(
+			String name = this.model.getStatTableModel().getColumnName(
 				this.model.getSplitOptions().getColumnSplitIndex());
 			String s = name
 				+ ": "
 				+ this.model.getSplitOptions().getSplitClassLabel(splitClass,
-					this.model.getTableModel());
+					this.model.getStatTableModel());
 			g.drawString(s, 10, this.barAreaHeight() + this.xAxisOffset - 10
 				+ yOffset);
 		}
@@ -1285,7 +1285,7 @@ public class HistogramView extends JPanel implements Observer
 			{
 				int marge = 5;
 				int columnIndex = this.model.getColumnIndex();
-				AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
+				AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 				
 //				System.out.println("HistogramView.paintNumberClass(): type = " + type
 //					+ ", getBinWidth() = " + getBinWidth());
@@ -1361,7 +1361,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.getLabelUnderBin())
 			{
 				int columnIndex = this.model.getColumnIndex();
-				AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
+				AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 				
 				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
 				{
@@ -1408,7 +1408,7 @@ public class HistogramView extends JPanel implements Observer
 		// correct scales
 		if (this.model.getPercentage())
 		{
-			if (this.model.getTableModel().splitVarClasses(
+			if (this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 			{
 				// er is een split
@@ -1448,7 +1448,7 @@ public class HistogramView extends JPanel implements Observer
 		} // percentage
 		else
 		{ // aantallen
-			if (this.model.getTableModel().splitVarClasses(
+			if (this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 			{
 				// er is een split
@@ -1487,7 +1487,7 @@ public class HistogramView extends JPanel implements Observer
 		ArrayList<String> splitLabels = new ArrayList<String>();
 
 		if (this.model.isSplitInSingleView()
-			&& this.model.getTableModel().splitVarClasses(
+			&& this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 		{
 			if (this.model.isFrequencyPolygonMode()
@@ -1504,7 +1504,7 @@ public class HistogramView extends JPanel implements Observer
 					splitColors.add(c);
 					splitLabels.add(this.model.getSplitOptions()
 						.getSplitClassLabel(splitClass,
-							this.model.getTableModel()));
+							this.model.getStatTableModel()));
 
 					for (int i = 0; i < splitFreq.length / 2; i++)
 					{
@@ -1560,7 +1560,7 @@ public class HistogramView extends JPanel implements Observer
 						splitColors.add(c);
 						splitLabels.add(this.model.getSplitOptions()
 							.getSplitClassLabel(splitClass,
-								this.model.getTableModel()));
+								this.model.getStatTableModel()));
 
 						int frequencySum = 0;
 						int frequencySelectedSum = 0;
@@ -1595,7 +1595,7 @@ public class HistogramView extends JPanel implements Observer
 						splitColors.add(c);
 						splitLabels.add(this.model.getSplitOptions()
 							.getSplitClassLabel(splitClass,
-								this.model.getTableModel()));
+								this.model.getStatTableModel()));
 
 						for (int i = 0; i < frequencies.length / 2; i++)
 						{
@@ -1653,7 +1653,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode())
 			{
-				if (this.model.getTableModel().splitVarClasses(
+				if (this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 				{
 					// split in multiple views
@@ -1661,7 +1661,7 @@ public class HistogramView extends JPanel implements Observer
 					splitColors.add(c);
 					splitLabels.add(this.model.getSplitOptions()
 						.getSplitClassLabel(splitClass,
-							this.model.getTableModel()));
+							this.model.getStatTableModel()));
 
 					int frequencySum = 0;
 					int frequencySelectedSum = 0;
@@ -1717,7 +1717,7 @@ public class HistogramView extends JPanel implements Observer
 		g.setColor(Color.BLACK);
 
 		int columnIndex = this.model.getColumnIndex();
-		AllowedTypes type = this.model.getTableModel().getColumnTypes().get(columnIndex).getType();
+		AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 
 		// PAINT BIN BOUNDARY LABELS
 		if (this.model.hasVerticalBars())
@@ -2227,7 +2227,7 @@ public class HistogramView extends JPanel implements Observer
 
 		if (this.model.getPercentage())
 		{
-			if (this.model.getTableModel().splitVarClasses(
+			if (this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 			{
 				// er is een split
@@ -2279,7 +2279,7 @@ public class HistogramView extends JPanel implements Observer
 		ArrayList<String> splitLabels = new ArrayList<String>();
 
 		if (this.model.isSplitInSingleView()
-			&& this.model.getTableModel().splitVarClasses(
+			&& this.model.getStatTableModel().splitVarClasses(
 				this.model.getSplitOptions()) > 1)
 		{
 			if (this.model.isFrequencyPolygonMode()
@@ -2430,7 +2430,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.isFrequencyPolygonMode()
 				&& this.model.isFrequencyPolygonCumulativeMode())
 			{
-				if (this.model.getTableModel().splitVarClasses(
+				if (this.model.getStatTableModel().splitVarClasses(
 					this.model.getSplitOptions()) > 1)
 					{
 						// split in multiple views
@@ -2438,7 +2438,7 @@ public class HistogramView extends JPanel implements Observer
 						splitColors.add(c);
 						splitLabels.add(this.model.getSplitOptions()
 							.getSplitClassLabel(splitClass,
-								this.model.getTableModel()));
+								this.model.getStatTableModel()));
 
 						int frequencySum = 0;
 						int frequencySelectedSum = 0;
@@ -2623,7 +2623,7 @@ public class HistogramView extends JPanel implements Observer
 
 	private void setMainPanelSize()
 	{
-		int splitClasses = this.model.getTableModel().splitVarClasses(
+		int splitClasses = this.model.getStatTableModel().splitVarClasses(
 			this.model.getSplitOptions());
 		int colorLegendWidth = this.colorLegend.isVisible() ? this.colorLegend
 			.getPreferredSize().width : 0;
@@ -2682,8 +2682,14 @@ public class HistogramView extends JPanel implements Observer
 	// Implements Observer
 	public void update(Observable arg0, Object arg1)
 	{
+		// voor het geval de data of type is gewijzigd van columnIndex of splitColumnIndex
+		if (this.model.columnIndexValid())
+			this.recalculateBinBoundaries(this.model.getColumnIndex(), true);
+		if (this.model.columnSplitIndexValid())
+			this.recalculateSplitBinBoundaries(this.model.getSplitOptions().getColumnSplitIndex());
+		
 		// this.userOptionsPanel.setVisible(this.model.getTableModel().isViewsEditable());
-		this.dialogButton.setVisible(this.model.getTableModel()
+		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
 
 		if (this.updateColorLegend() || true)
@@ -2714,11 +2720,11 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private boolean updateColorLegend()
 	{
-		int splitClasses = this.model.getTableModel().splitVarClasses(
+		int splitClasses = this.model.getStatTableModel().splitVarClasses(
 			this.model.getSplitOptions());
 		if (splitClasses > 1 && this.model.isSplitInSingleView())
 		{
-			this.colorLegend.setColumnString(this.model.getTableModel()
+			this.colorLegend.setColumnString(this.model.getStatTableModel()
 				.getColumnName(
 					this.model.getSplitOptions().getColumnSplitIndex()));
 			ArrayList<String> splitStrings = new ArrayList<String>(splitClasses);
@@ -2726,7 +2732,7 @@ public class HistogramView extends JPanel implements Observer
 			for (int i = 0; i < splitClasses; i++)
 			{
 				splitStrings.add(this.model.getSplitOptions()
-					.getSplitClassLabel(i, this.model.getTableModel()));
+					.getSplitClassLabel(i, this.model.getStatTableModel()));
 				splitColors.add(this.getColor(i));
 			}
 			this.colorLegend.setColors(splitStrings, splitColors);
@@ -2754,6 +2760,89 @@ public class HistogramView extends JPanel implements Observer
 			{
 				return false;
 			}
+		}
+	}
+
+	/**
+	 * Recalculate the bin boundaries for column with columnIndex
+	 * if possible.
+	 * 
+	 * @param columnIndex
+	 * 		The index of the column for which the bin
+	 *      boundaries will be calculated.
+	 * @param typeHasChanged
+	 * 		The type has changed yes/no.
+	 */
+	public void recalculateBinBoundaries(int columnIndex, boolean typeHasChanged)
+	{
+			if (this.model.columnIndexValid())
+			{
+				ArrayList<ColumnType> list = this.model.getStatTableModel().getColumnTypes();
+				if (list.get(this.model.getColumnIndex())
+					.getType().isNumber())
+				{
+    				// binBoundaries worden hier standaard gezet
+    				ArrayList<Double> binBoundaries = Statistiek.appropriateBoundaries(
+    						this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
+    						this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()),
+    						this.model.getNoBins());
+    				this.model.setBinBoundariesWithoutEvent(binBoundaries);
+    				
+    				
+    				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen 
+    				// met de berekende binboundaries, omdat er mogelijk minder bins nodig zijn
+    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+    				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
+    					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
+    					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()), 
+    					binBoundaries.get(1) - binBoundaries.get(0), binBoundaries.get(0));
+    				this.model.setBinBoundariesWithoutEvent(binBoundaries);
+    				
+    				this.model.setNoBinsWithoutEvent(binBoundaries.size() - 1);
+				}
+
+				if (typeHasChanged)
+				{
+					// set bin label positioning
+					AllowedTypes type = list.get(this.model.getColumnIndex()).getType(); 
+					if (type.equals(AllowedTypes.INTEGER))
+					{
+						this.model.setLabelUnderBinWithoutEvent(true);
+					}
+					else if (type.equals(AllowedTypes.DOUBLE))
+					{
+						this.model.setLabelUnderBinWithoutEvent(false);
+					}
+				}
+			}
+	}
+
+	/**
+	 * Recalculate the split bin boundaries for column with columnSplitIndex
+	 * if possible.
+	 * 
+	 * @param columnIndex
+	 * 		The index of the column for which the bin
+	 *      boundaries will be calculated.
+	 * @param typeHasChanged
+	 * 		The type has changed yes/no.
+	 */
+	public void recalculateSplitBinBoundaries(int columnSplitIndex)
+	{
+		AllowedTypes splitType = this.model.getStatTableModel().getColumnTypes().get(columnSplitIndex).getType();
+		if (splitType.isNumber())
+		{
+			ArrayList<Double> boundaries = new ArrayList<Double>();
+			boundaries = Statistiek.appropriateBoundaries(
+				this.model.getStatTableModel().getColumnMin(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getStatTableModel().getColumnMax(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.getSplitBinsBoxSelectedInt());
+
+			this.model.setSplitBoundariesWithoutEvent(boundaries);
+			this.model.setSplitOptionsWithoutEvent(this.model.getSplitOptions());
+			//this.setModel(this.model);
 		}
 	}
 
@@ -2796,7 +2885,7 @@ public class HistogramView extends JPanel implements Observer
 			// clear locations of bars
 			HistogramView.this.barRectangles = new ArrayList<Rectangle>(
 				HistogramView.this.model.getNoBins()
-					* HistogramView.this.model.getTableModel().splitVarClasses(
+					* HistogramView.this.model.getStatTableModel().splitVarClasses(
 						HistogramView.this.model.getSplitOptions()));
 
 			if (!HistogramView.this.model.columnIndexValid())
@@ -2805,11 +2894,11 @@ public class HistogramView extends JPanel implements Observer
 			}
 
 			// get the data type
-			AllowedTypes type = HistogramView.this.model.getTableModel()
+			AllowedTypes type = HistogramView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(HistogramView.this.model.getColumnIndex()).getType();
 
-			int splitClasses = HistogramView.this.model.getTableModel()
+			int splitClasses = HistogramView.this.model.getStatTableModel()
 				.splitVarClasses(HistogramView.this.model.getSplitOptions());
 
 			if (HistogramView.this.model.isSplitInSingleView())
@@ -2910,7 +2999,7 @@ public class HistogramView extends JPanel implements Observer
 			ToolTipManager.sharedInstance().setReshowDelay(0);
 
 			int noBins = 0;
-			int numberOfSplits = HistogramView.this.model.getTableModel()
+			int numberOfSplits = HistogramView.this.model.getStatTableModel()
 				.splitVarClasses(HistogramView.this.model.getSplitOptions());
 
 			// System.out.println("... numberOfSplits = " + numberOfSplits);
@@ -3259,11 +3348,11 @@ public class HistogramView extends JPanel implements Observer
 				// no bin was clicked, deselect all
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>();
 				for (int row = 0; row < HistogramView.this.model
-					.getTableModel().getRowCount(); row++)
+					.getStatTableModel().getRowCount(); row++)
 				{
 					selectionList.add(false);
 				}
-				HistogramView.this.model.getTableModel().setSelectionList(
+				HistogramView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 		}
@@ -3275,7 +3364,7 @@ public class HistogramView extends JPanel implements Observer
 				return;
 			}
 
-			int bins = HistogramView.this.model.getTableModel()
+			int bins = HistogramView.this.model.getStatTableModel()
 				.splitVarClasses(HistogramView.this.model.getColumnIndex(),
 					HistogramView.this.model.getBinBoundaries());
 			int bin = bar % bins;
@@ -3283,18 +3372,18 @@ public class HistogramView extends JPanel implements Observer
 
 //			System.out.println("HistogramView.BarClickListener.barClicked(): bin " + bin + " clicked");
 //			System.out.println("HistogramView.BarClickListener.barClicked(): splitClass " + splitClass + " clicked");
-			ColumnType cType = HistogramView.this.model.getTableModel()
+			ColumnType cType = HistogramView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(HistogramView.this.model.getColumnIndex());
 			AllowedTypes type = cType.getType();
 			if (type.isNumber())
 			{
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					HistogramView.this.model.getTableModel().getRowCount());
-				for (int i = 0; i < HistogramView.this.model.getTableModel()
+					HistogramView.this.model.getStatTableModel().getRowCount());
+				for (int i = 0; i < HistogramView.this.model.getStatTableModel()
 					.getRowCount(); i++)
 				{
-					Object o = HistogramView.this.model.getTableModel()
+					Object o = HistogramView.this.model.getStatTableModel()
 						.getValueAt(i,
 							HistogramView.this.model.getColumnIndex());
 
@@ -3302,12 +3391,12 @@ public class HistogramView extends JPanel implements Observer
 						.add(!o.equals(ColumnType.WILDCARD)
 							&& HistogramView.this.model.binOfNumber(Double
 								.parseDouble((String) o)) == bin
-							&& HistogramView.this.model.getTableModel()
+							&& HistogramView.this.model.getStatTableModel()
 								.classifyObject(i,
 									HistogramView.this.model.getSplitOptions()) == splitClass);
 				}
 
-				HistogramView.this.model.getTableModel().setSelectionList(
+				HistogramView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 			else
@@ -3331,21 +3420,21 @@ public class HistogramView extends JPanel implements Observer
 				}
 
 				ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-					HistogramView.this.model.getTableModel().getRowCount());
-				for (int i = 0; i < HistogramView.this.model.getTableModel()
+					HistogramView.this.model.getStatTableModel().getRowCount());
+				for (int i = 0; i < HistogramView.this.model.getStatTableModel()
 					.getRowCount(); i++)
 				{
-					Object o = HistogramView.this.model.getTableModel()
+					Object o = HistogramView.this.model.getStatTableModel()
 						.getValueAt(i,
 							HistogramView.this.model.getColumnIndex());
 					selectionList
 						.add(!o.equals(ColumnType.WILDCARD)
 							&& ((String) o).equals(clicked)
-							&& HistogramView.this.model.getTableModel()
+							&& HistogramView.this.model.getStatTableModel()
 								.classifyObject(i,
 									HistogramView.this.model.getSplitOptions()) == splitClass);
 				}
-				HistogramView.this.model.getTableModel().setSelectionList(
+				HistogramView.this.model.getStatTableModel().setSelectionList(
 					selectionList);
 			}
 		}
