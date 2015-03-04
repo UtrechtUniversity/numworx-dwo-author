@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class DescriptivesModelTest
 	private void setUpTestCase1()
 	{
 		Statistiek statistiek = new Statistiek();
+		Statistiek.setLocale(Locale.getDefault());
 
 		// use the test data
 		StatTableModelTest statTableModelTest = new StatTableModelTest();
@@ -68,6 +70,7 @@ public class DescriptivesModelTest
 	private void setUpTestCase2()
 	{
 		Statistiek statistiek = new Statistiek();
+		Statistiek.setLocale(Locale.getDefault());
 
 		// use the test data
 		StatTableModelTest statTableModelTest = new StatTableModelTest();
@@ -406,7 +409,7 @@ public class DescriptivesModelTest
 	public void testGetColumnMeanSplit1NoSelection()
 	{
 		double expected = 51.86;
-		double actual = Statistiek.round(Double.parseDouble(this.model.getColumnMean(
+		double actual = Statistiek.round(Statistiek.parseDouble(this.model.getColumnMean(
 			1, 1, false)), 2); // columnIndex = 1 (gewicht), split 1 (v), no selection
 		
 		assertEquals("", expected, actual, delta);
@@ -436,7 +439,7 @@ public class DescriptivesModelTest
 	public void testGetColumnSDSplit0NoSelection()
 	{
 		Double expected = 8.04;
-		Double actual = Statistiek.round(Double.parseDouble(this.model.getColumnSD(
+		Double actual = Statistiek.round(Statistiek.parseDouble(this.model.getColumnSD(
 			1, 0, false)), 2); // columnIndex = 1 (gewicht), split 0, no selection
 		
 		assertEquals("", expected, actual);
@@ -446,7 +449,7 @@ public class DescriptivesModelTest
 	public void testGetColumnSDSplit1NoSelection()
 	{
 		Double expected = 5.11;
-		Double actual = Statistiek.round(Double.parseDouble(this.model.getColumnSD(
+		Double actual = Statistiek.round(Statistiek.parseDouble(this.model.getColumnSD(
 			1, 1, false)), 2); // columnIndex = 1 (gewicht), split 1, no selection
 		
 		assertEquals("", expected, actual);
@@ -465,7 +468,7 @@ public class DescriptivesModelTest
 	public void testGetColumnSDSplit1Selection()
 	{
 		Double expected = 6.48;
-		Double actual = Statistiek.round(Double.parseDouble(this.model.getColumnSD(
+		Double actual = Statistiek.round(Statistiek.parseDouble(this.model.getColumnSD(
 			1, 1, true)), 2); // columnIndex = 1 (gewicht), split 1, selection
 		
 		assertEquals("", expected, actual);
