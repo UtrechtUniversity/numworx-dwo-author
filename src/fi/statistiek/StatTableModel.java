@@ -1692,7 +1692,7 @@ public class StatTableModel implements TableModel
 		}
 		Double sum = 0.0;
 		int count = 0; // number of valid values
-		double mean = Double.parseDouble(this.getColumnMeanOfSelection(columnIndex));
+		double mean = Statistiek.parseDouble(this.getColumnMeanOfSelection(columnIndex));
 		
 		for (int i = 0; i < this.rowCount; i++)
 		{
