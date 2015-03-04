@@ -917,7 +917,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 		this.varBox.removeActionListener(this.controller);
 		this.varBox.removeAllItems();
-		for (String varName : this.model.getTableModel().getColumnNames())
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
 			this.varBox.addItem(varName);
 		}
@@ -935,10 +935,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.splitVarBox.removeActionListener(this);
 		this.splitVarBox.removeAllItems();
 		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
-		for (int column = 0; column < this.model.getTableModel()
+		for (int column = 0; column < this.model.getStatTableModel()
 			.getColumnCount(); column++)
 		{
-			splitVarBox.addItem(this.model.getTableModel()
+			splitVarBox.addItem(this.model.getStatTableModel()
 				.getColumnName(column));
 		}
 		
@@ -978,7 +978,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 		if (this.model.columnIndexValid())
 		{
-			ColumnType cType = this.model.getTableModel().getColumnTypes()
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			AllowedTypes type = cType.getType();
 			if (type.equals(AllowedTypes.DOUBLE)
@@ -990,12 +990,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
-				String minValueString = Statistiek.getStringValue(this.model.getTableModel().getColumnMin(
+					+ this.model.getStatTableModel().getRowCount());
+				String minValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
 					this.model.getColumnIndex()));
 				this.minValueLabel.setText(Statistiek.rb.getString("minLabel")
 					+ minValueString);
-				String maxValueString = Statistiek.getStringValue(this.model.getTableModel().getColumnMax(
+				String maxValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
 					this.model.getColumnIndex()));
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
 					+ maxValueString);
@@ -1024,7 +1024,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		{
     		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
     		{
-    			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
+    			ColumnType cSplitType = this.model.getStatTableModel().getColumnTypes()
     				.get(this.model.getSplitOptions().getColumnSplitIndex());
     			AllowedTypes splitType = cSplitType.getType();
     			if (splitType.equals(AllowedTypes.DOUBLE)
@@ -1048,12 +1048,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     				}
     				this.splitBoundariesArea.setText(sb.toString());
     				this.splitNoObjectsLabel.setText(Statistiek.rb.getString("numberLabel")
-    					+ this.model.getTableModel().getRowCount());
-    				String splitMinValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMin(
+    					+ this.model.getStatTableModel().getRowCount());
+    				String splitMinValue = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
 						this.model.getSplitOptions().getColumnSplitIndex()));
     				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel")
     					+ splitMinValue);
-    				String splitMaxValue = Statistiek.getStringValue(this.model.getTableModel().getColumnMax(
+    				String splitMaxValue = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
 						this.model.getSplitOptions().getColumnSplitIndex()));
     				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel")
     					+ splitMaxValue);
@@ -1305,7 +1305,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.controller.setSplitType(this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getColumnTypes()
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
