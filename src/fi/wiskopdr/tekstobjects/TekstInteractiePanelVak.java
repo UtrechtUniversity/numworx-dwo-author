@@ -2417,13 +2417,24 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 			if(!destSet.isEmpty())
 			{	potentialSource.connect(potentialDest, result);
-			}
+			} else
+				noConnectionPossible();
+		} else {
+			noConnectionPossible();
 		}
 		//System.out.println("connect");
 		potentialSource = null;
 		connected = false;
 	}
 	
+	/**
+	 * waarschuwing als geen verbinding mogelijk is.
+	 * TODO internationalisatie.
+	 */
+	private void noConnectionPossible() {
+		JOptionPane.showMessageDialog(this, "Not possible", "Command", JOptionPane.WARNING_MESSAGE);
+	}
+
 	public void mouseExited(MouseEvent e){
 		if(connected && selectable && e.getSource()==afdekPanel && e.isShiftDown()  && getBasisTekstVak().crossWidgetViewActief())
 		{	//System.out.println("potentialSource != null "+(potentialSource!=null));
