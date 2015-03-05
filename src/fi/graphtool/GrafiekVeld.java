@@ -627,7 +627,7 @@ class GrafiekVeld extends JComponent{
 						   2 * GraphToolInteractiePanel.PRAD +1, 2 * GraphToolInteractiePanel.PRAD + 1);
 		}
 		// verbinden met lijnen
-		if (gtip.tekenComponent.getConnectMode() == gtip.tekenComponent.LINES && indexPoints.size() > 1)
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.LINES && indexPoints.size() > 1)
 		{	RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
 			Point pix0 = gtip.realPointToPixels(rp0);
 			RealPoint rp1 = null;
@@ -642,7 +642,7 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 		
-		if (gtip.tekenComponent.getConnectMode() == gtip.tekenComponent.CURVE && indexPoints.size() == 2)
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() == 2)
 		{	RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
 			RealPoint rp1 = (RealPoint) indexPoints.elementAt(1);
 			Point pix0 = gtip.realPointToPixels(rp0);
@@ -650,7 +650,7 @@ class GrafiekVeld extends JComponent{
 			if(pix0 != null && pix1 != null)
 				g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
 		}    
-		if (gtip.tekenComponent.getConnectMode() == gtip.tekenComponent.CURVE && indexPoints.size() > 2)
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2)
 		{	Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
@@ -813,7 +813,7 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 		
-		if (gtip.tekenComponent.getConnectMode() == gtip.tekenComponent.CURVE_EXTRA && indexPoints.size() == 2)
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() == 2)
 		{	
 			RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
 			RealPoint rp1 = (RealPoint) indexPoints.elementAt(1);
@@ -850,7 +850,7 @@ class GrafiekVeld extends JComponent{
 				g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
 			
 		}
-		if (gtip.tekenComponent.getConnectMode() == gtip.tekenComponent.CURVE_EXTRA && indexPoints.size() > 2)
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() > 2)
 		{	Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			

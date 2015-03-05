@@ -1111,7 +1111,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			//zetDocentDomeinen(docentDomeinen);
 			zetDocentDomeinen(docentDomeinStrings);
 			tekenComponent.zetAantalGrafieken(aantalFuncties);
-			tekenComponent.setConnectMode(tekenComponent.NONE);
+			tekenComponent.setConnectMode(TekenComponent.NONE);
 			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie); //niet meer nodig..
 			zetKijkNaButton(true);
 		}

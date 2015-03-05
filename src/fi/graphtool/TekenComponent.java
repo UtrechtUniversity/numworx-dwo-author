@@ -163,7 +163,7 @@ public class TekenComponent extends JPanel {
 		grKeuze.setRenderer(new GrKeuzeRenderer());
 		grKeuze.addActionListener(new NumGraphAL());
 		
-		resetButton = new GraphToolKnop("teken_wisknop.gif", 0);
+		resetButton = new GraphToolKnop("reseticon.gif", 0);
 		resetButton.setBounds(100,2,20,20);
 		add(resetButton);	
 		resetButton.addActionListener(new ResetAL());
@@ -276,6 +276,8 @@ public class TekenComponent extends JPanel {
 	public void setConnectMode(int mode)
 	{	if ((mode < 0) || (mode > CURVE_EXTRA))
 			connectMode = NONE;
+		else
+			connectMode = mode;
 		if (connectMode == NONE)
 		{	puntenButton.setSelected(true);
 			puntenButton.zetActief(true);

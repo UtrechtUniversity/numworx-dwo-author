@@ -38,6 +38,7 @@ public class GraphToolKnop extends FormuleButton implements MouseListener	{
 			"zoominyknop.gif",
 			"zoomuityknop.gif",
 			"teken_wisknop.gif",
+			"reseticon.gif",
 			"pijllinks.gif",
 			"pijlrechts.gif"
 		};
