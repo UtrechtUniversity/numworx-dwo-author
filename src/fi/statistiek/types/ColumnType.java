@@ -365,7 +365,7 @@ public class ColumnType implements Serializable
 		Hashtable result = new Hashtable();
 		result.put("@type", getClass().getName());
 		result.put("type", this.type.toString());
-		result.put("uitleg", this.uitleg);
+		result.put("uitleg", this.uitleg != null ? this.uitleg : "");
 		if (enumOptions != null)
 			result.put("enumOptions", this.enumOptions);
 		else
