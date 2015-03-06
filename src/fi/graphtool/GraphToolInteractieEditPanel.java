@@ -913,8 +913,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			int maxY = 110 + docentTabelComponent.getSize().height + 40;
 
 			domeinControlerenBox.setVisible(false);
-			tekenMetExtrapolatieCB.setVisible(false);
-			tekenZonderExtrapolatieCB.setVisible(false);
+			tekenMetExtrapolatieCB.setVisible(true);
+			tekenZonderExtrapolatieCB.setVisible(true);
 			leerlingZietTabelBox.setLocation(leerlingZietTabelBox.getLocation().x, maxY);
 			leerlingZietTabelBox.setVisible(true);
 			maxY += 40;
@@ -937,8 +937,18 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 				scoreMaxTF[i].setVisible(false);
 			}
 			maxY += 40;
+			tekenMetExtrapolatieCB.setLocation(tekenMetExtrapolatieCB.getLocation().x, maxY);
+			maxY += 25;
+			tekenZonderExtrapolatieCB.setLocation(tekenZonderExtrapolatieCB.getLocation().x, maxY);
+			maxY += 25;
 			checkExternalCB.setLocation(65, maxY);
 			checkExternalCB.setVisible(true);
+			if(!setState) 
+			{	krommeMetExtrapolatie = false;
+				krommeZonderExtrapolatie = false;
+			}
+			tekenMetExtrapolatieCB.setSelected(krommeMetExtrapolatie);
+			tekenZonderExtrapolatieCB.setSelected(krommeZonderExtrapolatie);
 			checkExternalCB.setSelected(checkExternal);
 			
 			minimumPuntenLabel.setVisible(false);
@@ -946,6 +956,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 				minimumPuntenTF[i].setVisible(false);
 			leerlingZietTabelBox.setSelected(leerlingZietTabel);
 			docentTabelComponent.produceAction("points changed");
+			interactiePanel.zetKrommeKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 		}
 		processMaxScore();
 		processNauwkeurigheid();
@@ -954,7 +965,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		docentFormuleComponent.zetGrafiekKleuren();
 		interactiePanel.getFormuleComponent().setEditable(false);
 		interactiePanel.getTabelComponent().setFrozen(true);
-		interactiePanel.getTekenComponent().setFrozen(true);
+		//interactiePanel.getTekenComponent().setFrozen(true);
 		
 	}
 	

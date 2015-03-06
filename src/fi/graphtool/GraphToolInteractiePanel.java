@@ -1059,7 +1059,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			tabelComponent.setFrozen(false);
 			tekenComponent.zetAantalGrafieken(3);
 			tekenComponent.zetLijnenKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
-			tekenComponent.setFrozen(false);
+			//tekenComponent.setFrozen(false);
 			zetKijkNaButton(false);
 		}
 		else if(typeOpdracht == GEENOPDRACHT) // setState
@@ -1112,6 +1112,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetDocentDomeinen(docentDomeinStrings);
 			tekenComponent.zetAantalGrafieken(aantalFuncties);
 			tekenComponent.setConnectMode(TekenComponent.NONE);
+			System.out.println("krommezonderextra = " + Boolean.toString(krommeZonderExtrapolatie) + " en krommemetextra = " + Boolean.toString(krommeMetExtrapolatie));
 			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie); //niet meer nodig..
 			zetKijkNaButton(true);
 		}
@@ -1138,12 +1139,13 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetTabelAlsTekenTool(false, setState);
 			tabelComponent.setXVakEditable(false);
 			tabelComponent.setYVakEditable(false);
-			
 			tabelComponent.zetEenTabel(true);
 			tabelComponent.zetYAsNaam(yAsNaam, false);
 			
 			tekenComponent.zetAantalGrafieken(1);
-			tekenComponent.zetLijnenKnoppen(false, false, false);
+			tekenComponent.setConnectMode(TekenComponent.NONE);
+			System.out.println("krommezonderextra = " + Boolean.toString(krommeZonderExtrapolatie) + " en krommemetextra = " + Boolean.toString(krommeMetExtrapolatie));
+			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 			tabelComponent.zetEenTabel(true);
 			tabelComponent.zetTabelPunten(docentGraphPoints, true);
 			tabelComponent.zetReset(false);

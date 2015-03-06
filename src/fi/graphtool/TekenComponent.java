@@ -58,7 +58,7 @@ public class TekenComponent extends JPanel {
 
 	private GraphToolInteractiePanel grafiekComponent;		
 	
-	private boolean frozen = false;
+	//private boolean frozen = false;
 	private int aantalGrafieken = 3;
 	
 	private boolean lijnenZichtbaar = true;
@@ -326,11 +326,11 @@ public class TekenComponent extends JPanel {
 		
 	}
 	
-	public void setFrozen(boolean b)
-    {
-    	frozen = b;
-    	drawButton.setEnabled(!b);
-    }
+//	public void setFrozen(boolean b)
+//    {
+//    	frozen = b;
+//    	drawButton.setEnabled(!b);
+//    }
 	
 	public void zetSelectedIndexGrKeuze(int i)
 	{	grKeuze.setSelectedIndex(i);
@@ -342,8 +342,8 @@ public class TekenComponent extends JPanel {
 	class CursorModeIL implements ItemListener
 	{	public void itemStateChanged(ItemEvent e)
 		{	
-			if (frozen)
-				return;
+			//if (frozen)
+			//	return;
 		
 			cursorItemChanged = true;
 			if (drawButton.isSelected())
@@ -371,8 +371,8 @@ public class TekenComponent extends JPanel {
 	
 	class DrawButtonsAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	if (frozen)
-				return;
+		{	//if (frozen)
+			//	return;
 			
 			if (!cursorItemChanged)
 			{	noneButton.setSelected(true);
@@ -387,8 +387,10 @@ public class TekenComponent extends JPanel {
 	class ConnectModeIL implements ItemListener
 	{	public void itemStateChanged(ItemEvent e)
 		{	
-			if (frozen)
-				return;
+			//if (frozen)
+			//{	System.out.println("tekencomponent frozen");
+			//	return;
+			//}
 			
 			if (puntenButton.isSelected())
 			{	connectMode = NONE;
@@ -420,8 +422,8 @@ public class TekenComponent extends JPanel {
 	
 	class ConnectModeAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	if (frozen)
-				return;
+		{	//if (frozen)
+			//	return;
 			
 			if(puntenButton.isSelected())
 				puntenButton.zetActief(true);
@@ -454,8 +456,8 @@ public class TekenComponent extends JPanel {
 	
 	class ResetAL implements ActionListener
 	{	public void actionPerformed(ActionEvent e)
-		{	if (frozen)
-			return;
+		{	//if (frozen)
+			//return;
 			
 			if(!e.getActionCommand().equals("focus"))
 			{	grafiekComponent.removePoints(grafiekComponent.getActiveIndex(), false);
