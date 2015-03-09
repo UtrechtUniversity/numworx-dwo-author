@@ -2682,10 +2682,13 @@ public class HistogramView extends JPanel implements Observer
 	// Implements Observer
 	public void update(Observable arg0, Object arg1)
 	{
+		// first update useroptionspanel, so that binWidth fields etc can be read
+		userOptionsPanel.update();
+
 		// voor het geval de data of type is gewijzigd van columnIndex of splitColumnIndex
 		if (this.model.columnIndexValid())
 			this.recalculateBinBoundaries(this.model.getColumnIndex(), true);
-		if (this.model.columnSplitIndexValid())
+		if (this.model.columnSplitIndexValid() && this.model.getSplitOptions().getBinBoundaries() != null)
 			this.recalculateSplitBinBoundaries(this.model.getSplitOptions().getColumnSplitIndex());
 		
 		// this.userOptionsPanel.setVisible(this.model.getTableModel().isViewsEditable());
@@ -2697,7 +2700,7 @@ public class HistogramView extends JPanel implements Observer
 			this.setMainPanelSize();
 		}
 
-		userOptionsPanel.update();
+//		userOptionsPanel.update();
 
 		// Revalidate the mainPanel to reset the scrollbar
 		this.mainPanel.revalidate();
@@ -2778,24 +2781,42 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.columnIndexValid())
 			{
 				ArrayList<ColumnType> list = this.model.getStatTableModel().getColumnTypes();
-				if (list.get(this.model.getColumnIndex())
-					.getType().isNumber())
+				ArrayList<Double> binBoundaries;
+				if (list.get(this.model.getColumnIndex()).getType().isNumber())
 				{
+					binBoundaries = null;
     				// binBoundaries worden hier standaard gezet
-    				ArrayList<Double> binBoundaries = Statistiek.appropriateBoundaries(
-    						this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
-    						this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()),
-    						this.model.getNoBins());
-    				this.model.setBinBoundariesWithoutEvent(binBoundaries);
-    				
-    				
+//    				binBoundaries = Statistiek.appropriateBoundaries(
+//    						this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
+//    						this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()),
+//    						this.model.getNoBins());
+//    				this.model.setBinBoundariesWithoutEvent(binBoundaries);
+				
     				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen 
     				// met de berekende binboundaries, omdat er mogelijk minder bins nodig zijn
-    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt
     				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
     					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
     					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()), 
-    					binBoundaries.get(1) - binBoundaries.get(0), binBoundaries.get(0));
+    					this.getBinWidth(), this.getMinBoundary()); // met invoervelden
+    				
+    				if (binBoundaries == null) // ongeldige waarden in invoervelden
+    				{
+        				binBoundaries = Statistiek.appropriateBoundaries(
+    						this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
+    						this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()),
+    						this.model.getNoBins());
+        				
+        				int bin0Decimals = Statistiek.getNumberOfDecimals(binBoundaries.get(0).toString());
+        				int bin1Decimals = Statistiek.getNumberOfDecimals(binBoundaries.get(1).toString());
+        				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+
+        				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
+        					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
+        					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()), 
+        					Statistiek.round(binBoundaries.get(1) - binBoundaries.get(0), maxNumberOfDecimals), binBoundaries.get(0));
+    				}
+    				
     				this.model.setBinBoundariesWithoutEvent(binBoundaries);
     				
     				this.model.setNoBinsWithoutEvent(binBoundaries.size() - 1);
@@ -2833,12 +2854,19 @@ public class HistogramView extends JPanel implements Observer
 		if (splitType.isNumber())
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
-			boundaries = Statistiek.appropriateBoundaries(
+//			boundaries = Statistiek.appropriateBoundaries(
+//				this.model.getStatTableModel().getColumnMin(
+//					this.model.getSplitOptions().getColumnSplitIndex()),
+//				this.model.getStatTableModel().getColumnMax(
+//					this.model.getSplitOptions().getColumnSplitIndex()),
+//				this.getSplitBinsBoxSelectedInt());
+			boundaries = Statistiek.appropriateBoundariesFromBinSettings(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.getSplitBinsBoxSelectedInt());
+				this.getSplitBinWidth(),
+				this.getSplitMinBoundary());
 
 			this.model.setSplitBoundariesWithoutEvent(boundaries);
 			this.model.setSplitOptionsWithoutEvent(this.model.getSplitOptions());
