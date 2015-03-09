@@ -227,16 +227,6 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public void setNoBinsWithoutEvent(int noBins)
 	{
 		this.noBins = noBins;
-
-		// set appropriate boundaries
-		if (this.tableModel.getRowCount() > 0 && this.columnIndexValid())
-		{
-			double min = this.tableModel.getColumnMin(this.columnIndex);
-			double max = this.tableModel.getColumnMax(this.columnIndex);
-			this.binBoundaries = Statistiek.appropriateBoundaries(min, max,
-				this.noBins);
-			//System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
-		}
 	}
 
 	/**
@@ -324,10 +314,15 @@ public class HistogramModel extends Observable implements TableModelListener,
     				
     				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen 
     				// met de berekende binboundaries, omdat er mogelijk minder bins nodig zijn
-    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt
+    				int bin0Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(0).toString());
+    				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
+    				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+    				
     				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
     					this.tableModel.getColumnMax(this.columnIndex), 
-    					this.binBoundaries.get(1) - this.binBoundaries.get(0), this.binBoundaries.get(0));
+    					// door afronding kan de aftreksom heel veel decimalen hebben
+    					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
     				
     				this.noBins = this.binBoundaries.size() - 1;
 				}
@@ -374,6 +369,21 @@ public class HistogramModel extends Observable implements TableModelListener,
 		{
 			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
 			this.changed();
+		}
+	}
+
+	/**
+	 * Set the column split index without triggering an event.
+	 * Used in initial HistogramController.setState().
+	 * Event in setState() is triggered after the related HistogramController.setSplitBoundaries().
+	 * 
+	 * @param columnSplitIndex
+	 */
+	public void setColumnSplitIndexWithoutEvent(int columnSplitIndex)
+	{
+		if (this.splitOptions.getColumnSplitIndex() != columnSplitIndex)
+		{
+			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
 		}
 	}
 
