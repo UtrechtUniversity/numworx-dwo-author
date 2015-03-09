@@ -755,6 +755,12 @@ public class Algebra
 		else if(e1 instanceof PoissonPDF || e2 instanceof PoissonPDF)
 		{	return false;
 		}
+		else if(e1 instanceof Functie && e2 instanceof Functie && ((Functie)e1).geefFunctieNaam().equals(((Functie)e2).geefFunctieNaam()))
+		{	return zijnGelijk(e1.kind1,e2.kind1,vorm) && zijnGelijk(e1.kind2,e2.kind2,vorm);
+		}
+		else if(e1 instanceof Functie || e2 instanceof Functie)
+		{	return false;
+		}
 		else if(e1 instanceof Aftrekking && e2 instanceof Aftrekking && e1.kind1 instanceof BasisExpressie && e1.kind1.geefWaarde()==0 && e2.kind1 instanceof BasisExpressie && e2.kind1.geefWaarde()==0)
 		{	return zijnGelijk(e1.kind2,e2.kind2,vorm);
 		}
@@ -933,7 +939,7 @@ public class Algebra
 	}
 	/*Bepaalt of twee polynoom expressies evenredig zijn. e1 = k*e2
 	 *Dit gebeurde door de standaardvorm te maken en de coefficienten
-	 *te vergelijken (daardoor slecht één variabele magoelijk).
+	 *te vergelijken (daardoor slecht ï¿½ï¿½n variabele magoelijk).
 	 *Nu wordt: zijnEvenredig aangeroepen. Hierdoor werkt het 
 	 *ook op expressies met meer variabelen 
 	 */
@@ -967,10 +973,10 @@ public class Algebra
 		}
 		return false;*/
 	}
-	/*Bepaalt of de oplossing van vergelijking e1 = 0 één van de oplossingen is
+	/*Bepaalt of de oplossing van vergelijking e1 = 0 ï¿½ï¿½n van de oplossingen is
 	 *van e2 = 0.
 	 *Werkt alleen als e1 lineair en e2 kwadratisch, beide polynomen met 
-	 *één variabele. Geeft exception bij expressies van meer variabelen.
+	 *ï¿½ï¿½n variabele. Geeft exception bij expressies van meer variabelen.
 	 */ 
 	public static boolean isDeeloplossingVan(Expressie e1,Expressie e2)
 	{	String[] varNamen = geefVarNamen(new Optelling(e1,e2));
@@ -1188,7 +1194,7 @@ public class Algebra
 		
 	}
 	
-	/*Geeft de coefficienten van een polynoom van één variabele.
+	/*Geeft de coefficienten van een polynoom van ï¿½ï¿½n variabele.
 	 *coefficienten worden teruggegeven in een array met doubles
 	 */	
 	public static double[] geefCoefficienten(Expressie e)
@@ -1200,7 +1206,7 @@ public class Algebra
 		}
 		return coeff;
 	}
-	/* Geeft de coefficienten van een polynoom in één variabele.
+	/* Geeft de coefficienten van een polynoom in ï¿½ï¿½n variabele.
 	 *De coefficienten worden teruggegeven als een array van (getals)expressies.
 	 */
 	public static Expressie[] geefCoefficientenExpressies(Expressie e)
@@ -1436,7 +1442,7 @@ public class Algebra
 	} 
 	
 	/*toevoeging voor "Herleiden" 
-	 *Geeft het aantal factoren in alle termen samen. Machten worden als één factor geteld.
+	 *Geeft het aantal factoren in alle termen samen. Machten worden als ï¿½ï¿½n factor geteld.
 	 */
 	public static Vector geefFactorenBeperkt(Expressie e, Vector v)
 	{	if(e instanceof Aftrekking && e.kind1.geefWaarde()==0)
@@ -1795,6 +1801,10 @@ public class Algebra
         if(e instanceof BinomPDF)return new BinomPDF(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
         if(e instanceof PoissonCDF)return new PoissonCDF(herleid(e.kind1),herleid(e.kind2));
         if(e instanceof PoissonPDF)return new PoissonPDF(herleid(e.kind1),herleid(e.kind2));
+        if(e instanceof Functie)
+        {	String functieNaam = ((Functie)e).geefFunctieNaam();
+        	return new Functie(functieNaam, herleid(e.kind1));
+        }
 		if(e instanceof E)return e;
 		if(e instanceof PI)return e;
 		Vector v = Algebra.geefTermen(e,new Vector());
@@ -2327,7 +2337,7 @@ public class Algebra
 		}
 	}
 	/*Brengt factoren buiten haakjes van een willekeurige expressie evt met 
-	 *meer variabelen. Brengt ook onder één noemer indien nodig.
+	 *meer variabelen. Brengt ook onder ï¿½ï¿½n noemer indien nodig.
 	 */
 	public static Expressie ontbind(Expressie e)
 	{	//Voor alle termen wordt bekeken uit welke bouwstenen ze zijn opgebouwd.

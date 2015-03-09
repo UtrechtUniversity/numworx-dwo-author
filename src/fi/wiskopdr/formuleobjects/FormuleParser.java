@@ -54,9 +54,15 @@ public class FormuleParser
 	{
 		return diffOperatoren;
 	}
-		
+	
 	public static VergelijkingMeerv parseVergelijking(String s)
-	{	try
+	{
+		return parseVergelijking(s, null);
+	}
+	
+	public static VergelijkingMeerv parseVergelijking(String s, FunctieDefSet fds)
+	{	Functie.setFunctieDefSet(fds);
+		try
 		{
 			s = s.substring(2,s.length()-1);
 			if(s.length()==0)return null;
@@ -155,12 +161,14 @@ public class FormuleParser
 			    }
 			    if(!split && vergelijkingen[i]==null)return null;
 			}
+			Functie.setFunctieDefSet(null);
 			return new VergelijkingMeerv(vergelijkingen); 
 			
 		}
 		catch(Exception e)
-		{
+		{	Functie.setFunctieDefSet(null);
 			return null;
+			
 		}
 	}
 	
@@ -523,7 +531,7 @@ public class FormuleParser
 			}
 		}
 		
-		String[] fMetMaal 	= {
+		String[] fMetMaalBasis 	= {
 		 		"s*q*r*t*", 
 				"r*n*d*", 
 				"r*n*s*", 
@@ -568,6 +576,15 @@ public class FormuleParser
 				"l*n*",
 				"l*n"
 				};
+		String[] fMetMaalFunctie = Functie.getFunctieDefSet().geefFunctieNamenSubst();
+		String[] fMetMaal = new String[fMetMaalBasis.length + fMetMaalFunctie.length];
+		for(int i=0 ; i<fMetMaalBasis.length ; i++)
+		{	fMetMaal[i] = fMetMaalBasis[i];
+		}
+		for(int i=0 ; i<fMetMaalFunctie.length ; i++)
+		{	fMetMaal[i+fMetMaalBasis.length] = fMetMaalFunctie[i];
+		}
+		//String[] fMetMaal = fMetMaalBasis;
 		for(int i=0 ; i<fMetMaal.length ; i++)
 		{	int fLength = fMetMaal[i].length();
 			String fZonderMaal = StringUtils.replaceStr(fMetMaal[i],"*", "");
@@ -895,6 +912,8 @@ public class FormuleParser
 			}
 			//else return exp;
 		}
+		
+		
 			
 		
 		String[] maalFnct = {
@@ -1033,6 +1052,8 @@ public class FormuleParser
 			}
 			return null;
 		}
+		
+		
 		
 		if(s.length()>6 && s.substring(0,6).equals("arcsin") && s.charAt(6) != '(')
 		{	Expressie e = parse(s.substring(6));
@@ -1215,6 +1236,17 @@ public class FormuleParser
                     return new BasisExpressie(s.substring(0,i) + "?" + s.substring(i+1));
                 }
             }
+        
+       
+            String[] functieNamen = Functie.getFunctieDefSet().geefFunctieNamen();
+	        for(int i = 0 ; i<functieNamen.length ; i++)
+	        {	String functieNaam = functieNamen[i];
+	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
+	    		{	Expressie e = parse(s.substring(functieNaam.length(),s.length()));
+	    			if(e==null)return null;
+	    			return new Functie(functieNaam,e);
+	    		}
+	        }		
 		
 		//is het een wortel
 		if(s.length()>4 && s.substring(0,4).equals("sqrt"))
@@ -1438,8 +1470,22 @@ public class FormuleParser
 	{	return parse(schoon(formuleString(codeString)));
 	}
 	
+	public static Expressie geefExpressie(String codeString, FunctieDefSet fds)
+	{	Functie.setFunctieDefSet(fds);
+		Expressie e = parse(schoon(formuleString(codeString)));
+		Functie.setFunctieDefSet(null);
+		return e;
+	}
+	
 	public static Expressie geefExpressie(String codeString, boolean woordformule)
 	{	return parse(schoon(formuleString(codeString),woordformule),woordformule);
+	}
+	
+	public static Expressie geefExpressie(String codeString, boolean woordformule, FunctieDefSet fds)
+	{	Functie.setFunctieDefSet(fds);
+		Expressie e = parse(schoon(formuleString(codeString),woordformule),woordformule);
+		Functie.setFunctieDefSet(null);
+		return e;
 	}
 	
 	public static String randomizeString(String s, String[] randomVars, Hashtable randomValues) throws Exception

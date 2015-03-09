@@ -55,6 +55,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -374,8 +375,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public static int[][] interactiePanelSets =
 	{
 		{0,1,2,3,4,13,14,12,16,25,33,49,52},
-		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51
-		},
+		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51},
 		{45},
 		{9},
 		{10,39},
@@ -2320,7 +2320,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			if(doelPosities != null) 
 			{	boolean snapped = false;
 				for(int i=0 ; i<doelPosities.length ; i++)
-				{	int dx = Math.abs(getLocation().x - doelPosities[i].x);
+				{	
+					if(doelPosities[i]==null) {
+			    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
+			    		break;
+			    	}
+					int dx = Math.abs(getLocation().x - doelPosities[i].x);
 					int dy = Math.abs(getLocation().y - doelPosities[i].y);
 					//if(snap && dx*dx+dy*dy < marge*marge)
 					if(snap && dx < marge && dy < marge) 

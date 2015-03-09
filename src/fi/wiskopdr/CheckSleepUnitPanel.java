@@ -232,23 +232,36 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         this.verzamelDoel = verzamelDoel;
         this.logObjectives = logObjectives;
        
+        if(aantalDoelObjects > aantalSleepObjects) {
+    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nAantal sleepobjecten is kleiner dan het aantal doelobjecten");
+    	}
         Point[] doelPosities = new Point[aantalDoelObjects];
         ipListDoel = new InteractiePanel[aantalDoelObjects];
         for(int i=0 ; i<ipListDoel.length ; i++)
         {   ipListDoel[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(-(i+1));
-            ipListDoel[i].addActionListener(this);
-            doelPosities[i] = ((TekstVakPanel)ipListDoel[i]).geefLocatie();
+        	if(ipListDoel[i]==null) {
+        		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
+        	}
+        	else {
+	            ipListDoel[i].addActionListener(this);
+	            doelPosities[i] = ((TekstVakPanel)ipListDoel[i]).geefLocatie();
+        	}
         }
         
         ipListSleep = new InteractiePanel[aantalSleepObjects];
         for(int i=0 ; i<ipListSleep.length ; i++)
         {   ipListSleep[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(i+1);
-            ipListSleep[i].addActionListener(this);
-            ((TekstVakPanel)ipListSleep[i]).zetSleepDoelPosities(doelPosities);
-            ((TekstVakPanel)ipListSleep[i]).zetSleepdoelMarge(acceptedMarge);
-            ((TekstVakPanel)ipListSleep[i]).zetSleepSnap(snapToTarget);
-            ((TekstVakPanel)ipListSleep[i]).setRelocate(relocate);
-            if(relocate)((TekstVakPanel)ipListSleep[i]).setStartSleep();
+	        if(ipListSleep[i]==null) {
+	    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle sleepobjecten zijn aanwezig.\nSleepobject met ID="+(i+1)+" kan niet gevonden worden.");
+	    	}
+	        else {
+	            ipListSleep[i].addActionListener(this);
+	            ((TekstVakPanel)ipListSleep[i]).zetSleepDoelPosities(doelPosities);
+	            ((TekstVakPanel)ipListSleep[i]).zetSleepdoelMarge(acceptedMarge);
+	            ((TekstVakPanel)ipListSleep[i]).zetSleepSnap(snapToTarget);
+	            ((TekstVakPanel)ipListSleep[i]).setRelocate(relocate);
+	            if(relocate)((TekstVakPanel)ipListSleep[i]).setStartSleep();
+	        }
         }
         
         
@@ -558,7 +571,12 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         ipListDoel = new InteractiePanel[aantalDoelObjects];
         for(int i=0 ; i<ipListDoel.length ; i++)
         {   ipListDoel[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(-(i+1));
-            doelPosities[i] = ((TekstVakPanel)ipListDoel[i]).geefLocatie();
+	        if(ipListDoel[i]==null) {
+	    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
+	    		break;
+	    	}
+	        else
+	        	doelPosities[i] = ((TekstVakPanel)ipListDoel[i]).geefLocatie();
         }
         
         Point[] posities = new Point[aantalSleepObjects];
@@ -567,9 +585,15 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         
         for(int i=0 ; i<ipListSleep.length ; i++)
         {   ipListSleep[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(i+1);
-            ipListSleep[i].addActionListener(this);
-            posities[i] = ((TekstVakPanel)ipListSleep[i]).geefLocatie();
-            sleepObjecten[i] = (TekstVakPanel)ipListSleep[i];
+	        if(ipListSleep[i]==null) {
+	    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle sleepobjecten zijn aanwezig.\nSleepobject met ID="+(i+1)+" kan niet gevonden worden.");
+	    		break;
+	    	}
+	        else {
+	            ipListSleep[i].addActionListener(this);
+	            posities[i] = ((TekstVakPanel)ipListSleep[i]).geefLocatie();
+	            sleepObjecten[i] = (TekstVakPanel)ipListSleep[i];
+	        }
         }
         
         if(checkFormule)
@@ -660,11 +684,24 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         else
         {
         	for(int i=0 ; i<aantalSleepObjects ; i++)
-	        {	((TekstVakPanel)ipListSleep[i]).wisGoedFoutSleep();
+	        {	
+        		if(ipListSleep[i]==null) {
+    	    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle sleepobjecten zijn aanwezig.\nSleepobject met ID="+(i+1)+" kan niet gevonden worden.");
+    	    		break;
+    	    	}
+        		((TekstVakPanel)ipListSleep[i]).wisGoedFoutSleep();
 	        }
         	boolean stapJuist = true;
 	        for(int i=0 ; i<aantalDoelObjects ; i++)
-	        {   int dx = Math.abs(posities[i].x - doelPosities[i].x);
+	        {	if(ipListDoel[i]==null) {
+		    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
+		    		break;
+		    	}
+		        if(ipListSleep[i]==null) {
+		    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle sleepobjecten zijn aanwezig.\nSleepobject met ID="+(i+1)+" kan niet gevonden worden.");
+		    		break;
+		    	}
+		        int dx = Math.abs(posities[i].x - doelPosities[i].x);
 	        	int dy = Math.abs(posities[i].y - doelPosities[i].y);
 	        	
 	        	//if(dx*dx + dy*dy > acceptedMarge*acceptedMarge) 

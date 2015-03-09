@@ -94,6 +94,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "Calculadora" },
 				{ "pijlCBLabel" , "Flecha" },
 				{ "substitutiesButtonLabel" , "sustituciones" },
+				{ "functiesButtonLabel" , "defined functions" },
 				{ "strategieVersieLabel" , "Versión estratégica" },
 				{ "oefenVersieLabel" , "Estrategia + versión" },
 				{ "bordjesVersieLabel" , "Método de encubrir la versión" },

@@ -49,6 +49,8 @@ import fi.beans.scorm.WNScormAPI;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
+import fi.wiskopdr.expressies.Functie;
+import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;

@@ -90,6 +90,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "ماشين حساب" },
 				{ "pijlCBLabel" , "پيکان" },
 				{ "substitutiesButtonLabel" , "جايگرين" },
+				{ "functiesButtonLabel" , "defined functions" },
 				{ "strategieVersieLabel" , "نسخه استراتژي" },
 				{ "oefenVersieLabel" , "استراتژي+نسخه" },
 				{ "bordjesVersieLabel" , "نسخه متد دفاعي" },

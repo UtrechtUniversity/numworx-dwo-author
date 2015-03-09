@@ -94,6 +94,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "Rechner" },
 				{ "pijlCBLabel" , "Pfeil" },
 				{ "substitutiesButtonLabel" , "Ersetzungen" },
+				{ "functiesButtonLabel" , "defined functions" },
 				{ "strategieVersieLabel" , "Strategie-Version" },
 				{ "oefenVersieLabel" , "Strategie+ Version" },
 				{ "bordjesVersieLabel" , "Aufdeck-Methoden-Version" },

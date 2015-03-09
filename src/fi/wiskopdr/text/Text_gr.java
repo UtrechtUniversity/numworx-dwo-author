@@ -88,6 +88,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "Υπολογιστής" },
 				{ "pijlCBLabel" , "Βέλος" },
 				{ "substitutiesButtonLabel" , "αντικαταστάσεις" },
+				{ "functiesButtonLabel" , "defined functions" },
 				{ "strategieVersieLabel" , "Strategy version" },
 				{ "oefenVersieLabel" , "Strategy+ version" },
 				{ "bordjesVersieLabel" , "Cover-up method version" },

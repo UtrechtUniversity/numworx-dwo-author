@@ -25,5 +25,11 @@
 	<classpathentry kind="lib" path="output/jar/sardine.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="/BalansFruitApplet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Kladje"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TekenVeelvlakOpdr"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BlokkenProgramma"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SliderWidget"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AlgebraPijlenOpdr"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataPlot"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>

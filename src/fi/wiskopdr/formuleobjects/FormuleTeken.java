@@ -40,6 +40,9 @@ public class FormuleTeken extends FormuleElement
 		/*else if(tk=='2')
 		{	teken = null;
 		}*/
+		else if(tk=='\'')
+		{	teken = null;
+		}
 		else if(tk=='z')
 		{	teken = null;
 		}
@@ -147,6 +150,9 @@ public class FormuleTeken extends FormuleElement
 		else if(character=='z')
 		{	setSize(fm.stringWidth("2"),fm.getAscent()+fm.getDescent());
 		}
+		else if(character=='\'')
+		{	setSize(fm.stringWidth("'")+2,fm.getAscent()+fm.getDescent());
+		}
 		else if(character=='y')
 		{	setSize(fm.stringWidth("y"),fm.getAscent()+fm.getDescent());
 		}
@@ -236,6 +242,11 @@ public class FormuleTeken extends FormuleElement
 		}*/
 		else if(character=='z')
 		{	g.drawString("z", x,y+fm.getAscent());
+			//boolean b = getFont().getSize()==12 && (getFont().getName().equals("SansSerif") || getFont().getName().equals("Arial"));
+			//g.drawLine(x-1,y+fm.getAscent()-1,x+fm.getAscent()/3,y+fm.getAscent()-2-fm.getAscent()/3);
+		}
+		else if(character=='\'')
+		{	g.drawString("'", x+2,y+fm.getAscent());
 			//boolean b = getFont().getSize()==12 && (getFont().getName().equals("SansSerif") || getFont().getName().equals("Arial"));
 			//g.drawLine(x-1,y+fm.getAscent()-1,x+fm.getAscent()/3,y+fm.getAscent()-2-fm.getAscent()/3);
 		}

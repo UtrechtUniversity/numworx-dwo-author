@@ -90,6 +90,7 @@ public class Text_in extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "Kalkulator" },
 				{ "pijlCBLabel" , "Panah" },
 				{ "substitutiesButtonLabel" , "pensubstitusian" },
+				{ "functiesButtonLabel" , "defined functions" },
 				{ "strategieVersieLabel" , "versi strategi" },
 				{ "oefenVersieLabel" , "Strategi + versi" },
 				{ "bordjesVersieLabel" , "versi metode Cover-up" },

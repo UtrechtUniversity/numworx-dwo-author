@@ -204,7 +204,11 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         ipList = new InteractiePanel[juisteSelecties.length];
         for(int i=0 ; i<ipList.length ; i++)
         {   ipList[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(i+1);
-            ipList[i].addActionListener(this);
+	        if(ipList[i]==null) {
+	    		JOptionPane.showMessageDialog(this, "Selectie-unit fout.\nNiet alle selectieobjecten zijn aanwezig.\nSelectieobject met ID="+(i+1)+" kan niet gevonden worden.");
+	    	}
+	        else
+             ipList[i].addActionListener(this);
         }
         
         if(randomizePositions && !positionsRandomized) randomizePositions();
@@ -498,6 +502,11 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         	        for(int i=0 ; i<ipList.length ; i++)
         	        {   
         	        	ipList[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(i+1);
+        	        	if(ipList[i]==null) {
+        		    		JOptionPane.showMessageDialog(this, "Selectie-unit fout.\nNiet alle selectieobjecten zijn aanwezig.\nSelectieobject met ID="+(i+1)+" kan niet gevonden worden.");
+        		    		break;
+        	        	}
+        	        	
         	        	Expressie e = ((TekstVakPanel)ipList[i]).isIpSelected() ? ((TekstVakPanel)ipList[i]).geefObjectWaarde() : new BasisExpressie(0);
     	        		if(e!=null) 
     	        		{	v[h] = v[h].substitueer(e, "V?("+(i+1)+")");

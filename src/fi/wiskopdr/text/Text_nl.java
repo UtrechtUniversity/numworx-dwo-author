@@ -93,6 +93,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "rmCBLabel" , "rekenmachine" },
 				{ "pijlCBLabel" , "Pijl" },
 				{ "substitutiesButtonLabel" , "substituties" },
+				{ "functiesButtonLabel" , "gedefinieerde functies" },
 				{ "strategieVersieLabel" , "Strategieversie" },
 				{ "oefenVersieLabel" , "Strategie-oefenversie" },
 				{ "bordjesVersieLabel" , "bordjesmethodeversie" },

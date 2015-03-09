@@ -3,6 +3,7 @@ package fi.wiskopdr;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 
@@ -12,7 +13,6 @@ import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
-
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -89,6 +89,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     //private boolean antwoordSubstituties;
     private JButton substitutiesButton;
     private FormuleEditor antwoordSubstitutiesVak;
+    
+    private JButton functiesButton;
+    private FormuleEditor antwoordFunctiesVak;
     
     private JButton solveButton;
     private FormuleEditor antwoordSolveVak;
@@ -170,12 +173,28 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         setLayer((Component)antwoordSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
         
         substitutiesButton = new JButton(WiskOpdr.rb.getString("substitutiesButtonLabel"));
-        substitutiesButton.setBounds(10,305,100,20);
+        substitutiesButton.setBounds(10,305,150,20);
         substitutiesButton.setMargin(new Insets(3,2,3,2));
         substitutiesButton.setFont(font);
         substitutiesButton.addActionListener(this);
         setLayer((Component)substitutiesButton, JLayeredPane.PALETTE_LAYER.intValue());
         add(substitutiesButton,0);
+        
+        antwoordFunctiesVak = new FormuleEditor(true);
+        antwoordFunctiesVak.setBounds(125,270,570,150);
+        antwoordFunctiesVak.setFont(font);
+        antwoordFunctiesVak.addActionListener(this);
+        antwoordFunctiesVak.setMultiLine(true);
+        antwoordFunctiesVak.setResizable(true);
+        setLayer((Component)antwoordFunctiesVak, JLayeredPane.POPUP_LAYER.intValue());
+        
+        functiesButton = new JButton(WiskOpdr.rb.getString("functiesButtonLabel"));
+        functiesButton.setBounds(180,305,150,20);
+        functiesButton.setMargin(new Insets(3,2,3,2));
+        functiesButton.setFont(font);
+        functiesButton.addActionListener(this);
+        setLayer((Component)functiesButton, JLayeredPane.PALETTE_LAYER.intValue());
+        add(functiesButton,0);
         
         antwoordSolveVak = new FormuleEditor(true);
         antwoordSolveVak.setBounds(15,130,480,150);
@@ -574,6 +593,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 String strategieDomein = "";
                 int feedbackModus = 0;
                 String[] antwoordSubStrings = null;
+                String[] antwoordFuncStrings = null;
                 boolean pijl = true;
                 boolean linStrategieVersie = false;
                 boolean linOefenVersie = false;
@@ -638,6 +658,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                     }
                 }
                 if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
+                if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
                 if(interactiePanelLaunchState.containsKey("pijl")) pijl = ((Boolean)interactiePanelLaunchState.get("pijl")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("linStrategieVersie")) linStrategieVersie = ((Boolean)interactiePanelLaunchState.get("linStrategieVersie")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("linOefenVersie")) linOefenVersie = ((Boolean)interactiePanelLaunchState.get("linOefenVersie")).booleanValue();
@@ -718,6 +739,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 //vormEditor.geefFormuleVak().vulVak(vormString);
                 
                 antwoordSubstitutiesVak.zetRegels(antwoordSubStrings);
+                antwoordFunctiesVak.zetRegels(antwoordFuncStrings);
                 
                 stappenCB.setSelected(stappen);
                 abcKnopCB.setSelected(abcKnop);
@@ -838,6 +860,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             Hashtable ideasInstellingen = new Hashtable();
             int feedbackModus = 0;
             String[] antwoordSubStrings = null;
+            String[] antwoordFuncStrings = null;
             boolean pijl = true;
             boolean linStrategieVersie = false;
             boolean linOefenVersie = false;
@@ -926,6 +949,32 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             //if(tips) feedbackModus = feedbackModusKeuze.getSelectedIndex();
             
             antwoordSubStrings = antwoordSubstitutiesVak.geefRegels();
+            antwoordFuncStrings = antwoordFunctiesVak.geefRegels();
+           	
+    		for (int i = 0; i < antwoordFuncStrings.length; i++)
+    		{
+    			if(antwoordFuncStrings[i]==null || antwoordFuncStrings[i].equals("$f@"))
+    				break;
+    			String[] functieDelen = antwoordFuncStrings[i].split("=");
+    			if(functieDelen.length!=2) {
+    				JOptionPane.showMessageDialog(this, "Syntax van functiedefinitie klopt niet");
+    				break;
+    			}
+    			String functieExpressieString = "$f"+functieDelen[1];
+    			Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
+    			if(functieExpressie==null) {
+    				JOptionPane.showMessageDialog(this, "Syntax van functie-expressie klopt niet");
+    				break;
+    			}
+    			System.out.println(functieDelen[0].substring(2));
+    			String pattern = "[a-zA-Z]+[']?[(][a-zA-Z][)]";
+    	        boolean matches = Pattern.matches(pattern, functieDelen[0].substring(2));
+    	        if(!matches)
+    	        {	JOptionPane.showMessageDialog(this, "Syntax klopt niet. Gebruik bv:\n f(x)=expressie \n of \n func(x)=expressie");
+    	        	break;
+    	        }
+    		}
+    		
             
             linStrategieVersie = linStrategieVersieCB.isSelected();
             linOefenVersie = linOefenVersieCB.isSelected();
@@ -989,6 +1038,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             	interactiePanelLaunchState.put("ideasInstellingen",ideasInstellingen);
             }
             interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
+            interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);
             interactiePanelLaunchState.put("pijl",new Boolean(pijl));
             interactiePanelLaunchState.put("linStrategieVersie",new Boolean(linStrategieVersie));
             interactiePanelLaunchState.put("linOefenVersie",new Boolean(linOefenVersie));
@@ -1402,6 +1452,14 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         {  	add(antwoordSubstitutiesVak,0);
         	repaint();
         }
+        else if(e.getSource() == antwoordFunctiesVak)
+        {  	remove(antwoordFunctiesVak);
+        	repaint();
+        }
+        else if(e.getSource() == functiesButton)
+        {  	add(antwoordFunctiesVak,0);
+        	repaint();
+        }
         else if(e.getSource() == antwoordSolveVak)
         {  	remove(antwoordSolveVak);
         	repaint();
@@ -1412,8 +1470,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         	String vergStringE = startEditor.geefFormuleVak().toString();
         	String vergString = StringUtils.replaceStr(vergStringE,"#","");
         	boolean rand = vergStringE.length() != vergString.length();
-        	System.out.println(vergStringE);
-        	System.out.println(vergString);
+        	//System.out.println(vergStringE);
+        	//System.out.println(vergString);
         	
         	VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString);
         	String vergStringCas = "$f@";

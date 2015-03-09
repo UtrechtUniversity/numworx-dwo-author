@@ -89,6 +89,7 @@ public class Text_fr extends java.util.ListResourceBundle
                                 { "rmCBLabel" , "Calculatrice" },
                                 { "pijlCBLabel" , "Flèche" },
                                 { "substitutiesButtonLabel" , "substitutions" },
+                                { "functiesButtonLabel" , "defined functions" },
                                 { "strategieVersieLabel" , "Stratégie version" },
                                 { "oefenVersieLabel" , "Stratégie+ version" },
                                 { "bordjesVersieLabel" , "Méthode de masque version" },
