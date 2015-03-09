@@ -241,13 +241,18 @@ public class FrequencyTableModel extends Observable implements
 				
 				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen met de berekende binboundaries
 				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+				int bin0Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(0).toString());
+				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
+				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+
 				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex), 
-					this.binBoundaries.get(1) - this.binBoundaries.get(0), this.binBoundaries.get(0));
+					// door afronding kan de aftreksom heel veel decimalen hebben
+					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
 				this.noBins = this.binBoundaries.size() - 1;
 			}
-			this.setChanged();
-			this.notifyObservers();
+
+			this.changed();
 		}
 	}
 
