@@ -84,11 +84,16 @@ public class CrossTabulationTableController implements StatistiekView,
 			
 			// test syl: niet fraai; opnieuw boundaries berekenen met de hierboven berekende binwidth
 			// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+			int bin0Decimals = Statistiek.getNumberOfDecimals(boundaries.get(0).toString());
+			int bin1Decimals = Statistiek.getNumberOfDecimals(boundaries.get(1).toString());
+			int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+			
 			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()), 
-					boundaries.get(1) - boundaries.get(0), boundaries.get(0));
+					// door afronding kan de aftreksom heel veel decimalen hebben
+					Statistiek.round(boundaries.get(1) - boundaries.get(0), maxNumberOfDecimals), boundaries.get(0));
 
 			this.model.setSplitBoundaries(boundaries);
 			this.model.setSplitOptions(this.model.getSplitOptions());
