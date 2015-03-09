@@ -972,8 +972,16 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		 * this.setVisibleBoundaryOptions(false); }
 		 */
 		this.splitBinsBox.removeActionListener(this.controller);
-		this.splitBinsBox.setSelectedItem(new Integer(this.model
-			.getSplitOptions().getBinBoundaries().size() - 1));
+		Integer nr = null;
+		if (this.model.getSplitOptions().getBinBoundaries() != null)
+		{
+			nr = new Integer(this.model.getSplitOptions().getBinBoundaries().size() - 1);
+		}
+		else
+		{
+			nr = new Integer(2);
+		}
+		this.splitBinsBox.setSelectedItem(nr);
 		this.splitBinsBox.addActionListener(this.controller);
 
 		if (this.model.columnIndexValid())
@@ -1022,7 +1030,8 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		// check of column index valid
 		if (this.model.columnIndexValid())
 		{
-    		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
+    		if ((this.model.getSplitOptions().getColumnSplitIndex() > -1)
+    			&& (this.model.getSplitOptions().getBinBoundaries() != null)) // als binBoundaries null, dan is onderstaande van de update (nog) niet nodig
     		{
     			ColumnType cSplitType = this.model.getStatTableModel().getColumnTypes()
     				.get(this.model.getSplitOptions().getColumnSplitIndex());
