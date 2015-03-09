@@ -480,14 +480,29 @@ public class Statistiek implements WiskOpdrApplet
 			|| (((max - min) < 1) && ((max - min) != 0)))
 		{
 			// determine the number of decimals of min and max
-			String minString = String.valueOf(min);
-			int decimalPlacesMin = Statistiek.getNumberOfDecimals(minString);
-			
-			String maxString = String.valueOf(max);
-			int decimalPlacesMax = Statistiek.getNumberOfDecimals(maxString);
+//			String minString = String.valueOf(min);
+//			int decimalPlacesMin = Statistiek.getNumberOfDecimals(minString);
+//			String maxString = String.valueOf(max);
+//			int decimalPlacesMax = Statistiek.getNumberOfDecimals(maxString);
+//			int numberOfDecimals = Math.max(decimalPlacesMin, decimalPlacesMax);
 
-			int numberOfDecimals = Math.max(decimalPlacesMin, decimalPlacesMax);
-			
+			// alternative using number of decimals of start and binwidth
+			double start;
+			if (minBoundary <= min)
+			{
+				start = minBoundary;
+			}
+			else
+			{
+				start = min;
+			}
+
+			String startString = String.valueOf(start);
+			int decimalPlacesStart = Statistiek.getNumberOfDecimals(startString);//startString.length() - startString.indexOf('.') - 1;
+			String binWidthString = String.valueOf(binWidth);
+			int decimalPlacesBinWidth = Statistiek.getNumberOfDecimals(binWidthString);//binWidthString.length() - binWidthString.indexOf('.') - 1;
+			int numberOfDecimals = Math.max(decimalPlacesStart, decimalPlacesBinWidth);
+
 			min = min * (Math.pow(10, numberOfDecimals)); 
 			max = max * (Math.pow(10, numberOfDecimals));
 			binWidth = binWidth * (Math.pow(10, numberOfDecimals));
