@@ -322,7 +322,10 @@ public class StatTableModel implements TableModel
 			AllowedTypes type = cType.getType();
 			if (type.isNumber())
 			{
-				return binBoundaries.size() - 1;
+				if (binBoundaries != null)
+					return binBoundaries.size() - 1;
+				else 
+					return 1;
 			}
 			else if (type.equals(AllowedTypes.ENUM))
 			{
@@ -408,6 +411,10 @@ public class StatTableModel implements TableModel
 		if (ColumnType.WILDCARD.equals(value))
 		{
 			return -2;
+		}
+		if (binBoundaries == null)
+		{
+			return 0;
 		}
 
 		ColumnType cType = this.getColumnTypes().get(columnIndex);
