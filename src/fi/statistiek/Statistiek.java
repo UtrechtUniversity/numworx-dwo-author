@@ -753,7 +753,7 @@ public class Statistiek implements WiskOpdrApplet
 				// doubleString heeft een goed formaat
 				decimalPlaces = 
 					// Number of digits right of decimal point.
-				    (((matcher.group(1) != null) && Integer.valueOf(matcher.group(1).toString()) != 0) ? matcher.group(1).length() : 0)
+				    ((matcher.group(1) != null) && (!matcher.group(1).toString().equals("0")) ? matcher.group(1).length() : 0)
 				    // Adjust for scientific notation.
 				    - (matcher.group(2) != null ? Integer.valueOf(matcher.group(2).toString()) : 0);
 			}
