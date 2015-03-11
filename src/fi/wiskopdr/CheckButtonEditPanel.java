@@ -43,6 +43,8 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
+		this.knopImageString = knopImageString;
+		
 		knopImageButton.setPopupButtonImage(knopImage);
 	    iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
 	    if(knopImageString!=null && !"".equals(knopImageString)) {
