@@ -52,18 +52,18 @@ public class KansbomenInteractieEditPanel extends JPanel implements ActionListen
 	JTextField bovenbalkVeld, bovenbalkMvVeld;
 	JLabel[] optieLabel, aantalOptie, letterOptie;
 	JTextField[] naamOptieVeld, aantalOptieVeld, letterOptieVeld;
-	String[] letterString = new String[7];
+	String[] letterString = new String[6];
 	String[] aantalString;
 	String trekkingTekst = Kansbomen.rb.getString("trekkingBalkTekst");
 	String trekkingMvTekst = Kansbomen.rb.getString("trekkingBalkTekstMv");
 	
 	//startwaarden editpanel
 	boolean kleur = true;
-	boolean terugleggen = true;
-	boolean letter = false;
-	int aantalOpties = 2;
+	//boolean terugleggen = true;
+	//boolean letter = false;
+	//int aantalOpties = 4;
 	int kansVolgordeKeuze = 0;
-	int terugleggenKeuze = 0;
+	//int terugleggenKeuze = 0;
 	int labelsKeuze = 0;
 	
 	String[] naamOptieTekst;
@@ -89,7 +89,6 @@ public KansbomenInteractieEditPanel ()
 	width = editWidth - 2 * offset;
 	height = 3 * theFM.getHeight() / 2;
 	currentX = kbip.getSize().width + offset;
-	int currentX2 = offset;
 	currentY = offset;
 	
 	String[] labelsKeuzes = { Kansbomen.rb.getString("geenLabelTekst"), Kansbomen.rb.getString("letterLabelTekst"), 
@@ -148,12 +147,12 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += height + offset2;
 	
-	optieLabel = new JLabel[7];
-	for(int i=1; i<7; i++)
-	{	optieLabel[i] = new JLabel(Kansbomen.rb.getString("optieTekst")+i+":"); 
+	optieLabel = new JLabel[6];
+	for(int i=0; i<6; i++)
+	{	optieLabel[i] = new JLabel(Kansbomen.rb.getString("optieTekst")+(i + 1)+":"); 
 		optieLabel[i].setFont(theFont);
 		optieLabel[i].setBounds(currentX, currentY, 
-				theFM.stringWidth(Kansbomen.rb.getString("optieTekst")+i+":"), height);
+				theFM.stringWidth(Kansbomen.rb.getString("optieTekst")+(i+1)+":"), height);
 		add(optieLabel[i]);
 		currentY += height + offset2;
 	}
@@ -161,16 +160,16 @@ public KansbomenInteractieEditPanel ()
 	currentY -= 6 * height + 6 * offset2;
 	currentX += optieLabel[1].getWidth() + offset;
 	
-	naamOptieTekst = new String[7];
-	naamOptieTekst[1] = Kansbomen.rb.getString("naam1StringTekst");
-	naamOptieTekst[2] = Kansbomen.rb.getString("naam2StringTekst");
-	naamOptieTekst[3] = Kansbomen.rb.getString("naam3StringTekst");
-	naamOptieTekst[4] = Kansbomen.rb.getString("naam4StringTekst");
-	naamOptieTekst[5] = Kansbomen.rb.getString("naam5StringTekst");
-	naamOptieTekst[6] = Kansbomen.rb.getString("naam6StringTekst");
+	naamOptieTekst = new String[6];
+	naamOptieTekst[0] = Kansbomen.rb.getString("naam1StringTekst");
+	naamOptieTekst[1] = Kansbomen.rb.getString("naam2StringTekst");
+	naamOptieTekst[2] = Kansbomen.rb.getString("naam3StringTekst");
+	naamOptieTekst[3] = Kansbomen.rb.getString("naam4StringTekst");
+	naamOptieTekst[4] = Kansbomen.rb.getString("naam5StringTekst");
+	naamOptieTekst[5] = Kansbomen.rb.getString("naam6StringTekst");
 	
-	naamOptieVeld = new JTextField[7];
-	for(int i=1; i<7; i++)
+	naamOptieVeld = new JTextField[6];
+	for(int i=0; i<6; i++)
 	{ 	naamOptieVeld[i] = new JTextField(naamOptieTekst[i]);
 		naamOptieVeld[i].setFont(theFont);
 		naamOptieVeld[i].setBounds(currentX, currentY, width - 
@@ -183,13 +182,13 @@ public KansbomenInteractieEditPanel ()
 		
 	currentY -= 6 * height + 6 * offset2;
 	
-	for(int i=1; i<7; i++)
+	for(int i=0; i<6; i++)
 		letterString[i] = naamOptieTekst[i].substring(0,1).toLowerCase();
 	
 	currentX += naamOptieVeld[1].getWidth() + offset;
 	
-	letterOptieVeld = new JTextField[7];
-	for(int i=1; i<7; i++)
+	letterOptieVeld = new JTextField[6];
+	for(int i=0; i<6; i++)
 	{ 	letterOptieVeld[i] = new JTextField(letterString[i]);
 		letterOptieVeld[i].setFont(theFont);
 		letterOptieVeld[i].setBounds(currentX, currentY, 2 * theFM.charWidth('m') + 2 * offset, height);
@@ -201,7 +200,7 @@ public KansbomenInteractieEditPanel ()
 	
 	currentY += offset - offset2;
 	
-	currentX -= optieLabel[1].getWidth() + naamOptieVeld[1].getWidth() + 2 * offset;
+	currentX -= optieLabel[0].getWidth() + naamOptieVeld[0].getWidth() + 2 * offset;
 	
 	bovenbalkLabel = new JLabel(Kansbomen.rb.getString("bovenbalkTekst")+":");
 	bovenbalkLabel.setFont(theFont);
@@ -320,7 +319,7 @@ public void plaatsComponenten()
 		kleurBox.setLocation(indent, kleurBox.getLocation().y);
 		kansVolgordeBox.setLocation(indent, kansVolgordeBox.getLocation().y);
 		naamLetterLabel.setLocation(indent, naamLetterLabel.getLocation().y);
-		for(int i=1; i<7; i++)
+		for(int i=0; i<6; i++)
 		{
 			optieLabel[i].setLocation(indent, optieLabel[i].getLocation().y);
 			naamOptieVeld[i].setLocation(indent + optieLabel[i].getSize().width + offset, naamOptieVeld[i].getLocation().y);
@@ -361,6 +360,8 @@ public void actionPerformed(ActionEvent e)
 	{	labelsKeuze=labelsBox.getSelectedIndex();
 		kbip.zetLabelsKeuze(labelsKeuze);	
 	}
+	else if(e.getSource() == naamOptieVeld[0])
+		actieNaamOptieVeld(0);
 	else if(e.getSource() == naamOptieVeld[1])
 		actieNaamOptieVeld(1);
 	else if(e.getSource() == naamOptieVeld[2])
@@ -371,8 +372,8 @@ public void actionPerformed(ActionEvent e)
 		actieNaamOptieVeld(4);
 	else if(e.getSource() == naamOptieVeld[5])
 		actieNaamOptieVeld(5);
-	else if(e.getSource() == naamOptieVeld[6])
-		actieNaamOptieVeld(6);
+	else if(e.getSource() == letterOptieVeld[0])
+		actieLetterOptieVeld(0);
 	else if(e.getSource() == letterOptieVeld[1])
 		actieLetterOptieVeld(1);
 	else if(e.getSource() == letterOptieVeld[2])
@@ -383,8 +384,6 @@ public void actionPerformed(ActionEvent e)
 		actieLetterOptieVeld(4);
 	else if(e.getSource() == letterOptieVeld[5])
 		actieLetterOptieVeld(5);
-	else if(e.getSource() == letterOptieVeld[6])
-		actieLetterOptieVeld(6);
 	else if(e.getSource() == bovenbalkVeld)
 	{
 		trekkingTekst = bovenbalkVeld.getText();
@@ -420,7 +419,7 @@ public void actionPerformed(ActionEvent e)
 	{	ballenZichtbaar = ballenZichtbaarBox.isSelected();
 		kbip.zetBallenZichtbaar(ballenZichtbaar);
 		for(int i = 1; i < 7; i++)
-			nakijkModelButton.nakijkModel[i] = kbip.aantalInt[i];
+			nakijkModelButton.nakijkModel[i] = kbip.aantalInt[i - 1];
 		nakijkModelButton.itemsEnabled[3] = ballenZichtbaar;
 		kijkNaAlleenAlsMogelijk();
 	}	
@@ -448,7 +447,7 @@ public void actionPerformed(ActionEvent e)
 		if(!nakijkModelIngesteld)
 		{	nakijkModel[0] = 10;
 			for(int i = 1; i < 7; i++)
-				nakijkModel[i] = kbip.aantalInt[i];
+				nakijkModel[i] = kbip.aantalInt[i - 1];
 			nakijkModel[7] = kbip.terugleggenKeuze;
 			nakijkModel[8] = kbip.trekkingen;
 			nakijkModel[9] = kbip.aantalOpties;
@@ -483,7 +482,9 @@ public void kijkNaAlleenAlsMogelijk()
 
 public void focusLost(FocusEvent e)  
 {
-	if(e.getSource() == naamOptieVeld[1])
+	if(e.getSource() == naamOptieVeld[0])
+		actieNaamOptieVeld(0);
+	else if(e.getSource() == naamOptieVeld[1])
 		actieNaamOptieVeld(1);
 	else if(e.getSource() == naamOptieVeld[2])
 		actieNaamOptieVeld(2);
@@ -493,8 +494,8 @@ public void focusLost(FocusEvent e)
 		actieNaamOptieVeld(4);
 	else if(e.getSource() == naamOptieVeld[5])
 		actieNaamOptieVeld(5);
-	else if(e.getSource() == naamOptieVeld[6])
-		actieNaamOptieVeld(6);
+	else if(e.getSource() == letterOptieVeld[0])
+		actieLetterOptieVeld(0);
 	else if(e.getSource() == letterOptieVeld[1])
 		actieLetterOptieVeld(1);
 	else if(e.getSource() == letterOptieVeld[2])
@@ -505,8 +506,6 @@ public void focusLost(FocusEvent e)
 		actieLetterOptieVeld(4);
 	else if(e.getSource() == letterOptieVeld[5])
 		actieLetterOptieVeld(5);
-	else if(e.getSource() == letterOptieVeld[6])
-		actieLetterOptieVeld(6);
 	else if(e.getSource() == bovenbalkVeld)
 	{
 		trekkingTekst = bovenbalkVeld.getText();
@@ -596,12 +595,12 @@ public void setEditState(Hashtable h) {
 	
 	if (h.containsKey("naamOptieTekst"))
 		naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
-	for(int i = 1; i < 7; i++)
+	for(int i = 0; i < 6; i++)
 		naamOptieVeld[i].setText(naamOptieTekst[i]);	
 	if (h.containsKey("letterString"))
 		letterString = ((String[]) h.get("letterString"));	
 
-	for(int i = 1; i < 7; i++)
+	for(int i = 0; i < 6; i++)
 		letterOptieVeld[i].setText(letterString[i]);
 	if (h.containsKey("trekkingTekst"))
 		trekkingTekst = ((String) h.get("trekkingTekst"));

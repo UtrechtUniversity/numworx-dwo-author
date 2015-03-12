@@ -44,7 +44,7 @@ boolean terugleggen = true;
 boolean letter = false;
 int terugleggenKeuze = 0;
 int labelsKeuze = 0;
-int trekkingen = 2;
+int trekkingen = 3;
 
 int offset=5;
 
@@ -63,18 +63,17 @@ JComboBox terugleggenBox;
 JComboBox trekkingenBox, optiesBox;
 JLabel aantalTrekkingen, aantalOptiesLabel, legendaKop;
 JLabel[] aantalOptie, legendaOptie;
-Color[] kleurRij = new Color[7];
+Color[] kleurRij = new Color[6];
 Color[] gekleurdeRij, zwarteRij;
 LijntjeLabel[] legendaKleur;
 JTextField[] aantalOptieVeld;	
 String[] naamOptieTekst;
-String[] letterString = new String[7]; //{"d","d","d","d","d","d","d"}
+String[] letterString = new String[6]; //{"d","d","d","d","d","d","d"}
 String trekkingTekst = Kansbomen.rb.getString("trekkingBalkTekst");
 String trekkingMvTekst = Kansbomen.rb.getString("trekkingBalkTekstMv");
 
-int aantalOpties = 2;
-int[] aantalInt = new int[] {4,4,4,4,4,4,4};
-int[] aantalIntOud = new int[] {4,4,4,4,4,4,4};
+int aantalOpties = 4; 
+int[] aantalInt = new int[] {4,4,4,4,4,4};
 int breedteAantalVeld;
 
 boolean kijkNaActief;
@@ -112,16 +111,16 @@ private int mode;
 		currentX = offset;
 		//currentY = offset;
 		
-		gekleurdeRij = new Color[7];
-		gekleurdeRij[1] = new Color(0,0,255);
-		gekleurdeRij[2] = new Color(0,200,0);
-		gekleurdeRij[3] = new Color(255,50,50);
-		gekleurdeRij[4] = new Color(0,220,220);
-		gekleurdeRij[5] = new Color(255,180,0);
-		gekleurdeRij[6] = new Color(220,0,220);
+		gekleurdeRij = new Color[6];
+		gekleurdeRij[0] = new Color(0,0,255);
+		gekleurdeRij[1] = new Color(0,200,0);
+		gekleurdeRij[2] = new Color(255,50,50);
+		gekleurdeRij[3] = new Color(0,220,220);
+		gekleurdeRij[4] = new Color(255,180,0);
+		gekleurdeRij[5] = new Color(220,0,220);
 		
-		zwarteRij = new Color[7];
-		for(int i = 1; i < 7; i++)
+		zwarteRij = new Color[6];
+		for(int i = 0; i < 6; i++)
 			zwarteRij[i] = new Color(0,0,0);		
 	
 		String[] teruglegKeuzes = { Kansbomen.rb.getString("metTerugleggenTekst"), Kansbomen.rb.getString("zonderTerugleggenTekst")};
@@ -141,7 +140,7 @@ private int mode;
 		
 		String[] momentenKeuzes={"1","2","3","4","5","6"};
 		trekkingenBox = new JComboBox(momentenKeuzes);
-		trekkingenBox.setSelectedIndex(trekkingen);
+		trekkingenBox.setSelectedIndex(trekkingen - 1);
 		trekkingenBox.setFont(theFont);
 		trekkingenBox.setBounds(currentX, currentY, width - aantalTrekkingen.getWidth() - offset, height);
 		add(trekkingenBox);
@@ -158,7 +157,7 @@ private int mode;
 		
 		String[] optiesKeuzes={"2","3","4","5","6"};
 		optiesBox = new JComboBox(optiesKeuzes);
-		optiesBox.setSelectedIndex(aantalOpties);
+		optiesBox.setSelectedIndex(aantalOpties - 2);
 		optiesBox.setFont(theFont);
 		optiesBox.setBounds(currentX, currentY, width - aantalOptiesLabel.getWidth() - offset, height);
 		add(optiesBox);
@@ -168,31 +167,31 @@ private int mode;
 		
 		breedteAantalVeld = theFM.stringWidth("000")+ 2 * offset;
 				                       
-		aantalOptieVeld = new JTextField[7];
-		for(int i=1; i<7; i++)
+		aantalOptieVeld = new JTextField[6];
+		for(int i=0; i<6; i++)
 		{	aantalOptieVeld[i] = new JTextField(""+aantalInt[i]);
 			aantalOptieVeld[i].setFont(theFont);
 			aantalOptieVeld[i].setBounds(currentX + width - breedteAantalVeld, currentY, breedteAantalVeld, height);
 		}
 			
-		naamOptieTekst = new String[7];
-		naamOptieTekst[1] = Kansbomen.rb.getString("naam1StringTekst");
-		naamOptieTekst[2] = Kansbomen.rb.getString("naam2StringTekst");
-		naamOptieTekst[3] = Kansbomen.rb.getString("naam3StringTekst");
-		naamOptieTekst[4] = Kansbomen.rb.getString("naam4StringTekst");
-		naamOptieTekst[5] = Kansbomen.rb.getString("naam5StringTekst");
-		naamOptieTekst[6] = Kansbomen.rb.getString("naam6StringTekst");
+		naamOptieTekst = new String[6];
+		naamOptieTekst[0] = Kansbomen.rb.getString("naam1StringTekst");
+		naamOptieTekst[1] = Kansbomen.rb.getString("naam2StringTekst");
+		naamOptieTekst[2] = Kansbomen.rb.getString("naam3StringTekst");
+		naamOptieTekst[3] = Kansbomen.rb.getString("naam4StringTekst");
+		naamOptieTekst[4] = Kansbomen.rb.getString("naam5StringTekst");
+		naamOptieTekst[5] = Kansbomen.rb.getString("naam6StringTekst");
 		       
-		for(int i=1; i<7; i++)
+		for(int i=0; i<6; i++)
 			letterString[i] = naamOptieTekst[i].substring(0,1).toLowerCase();
 		                            
-		aantalOptie = new JLabel[7];
-		for (int i=1; i<7; i++)
+		aantalOptie = new JLabel[6];
+		for (int i=0; i<6; i++)
 		{	aantalOptie[i] = new JLabel(Kansbomen.rb.getString("aantalTekst")+naamOptieTekst[i]+":");
 			aantalOptie[i].setFont(theFont);
 			aantalOptie[i].setBounds(currentX, currentY, width - breedteAantalVeld, height);
 		}
-		for(int i=1; i<7; i++)
+		for(int i=0; i<6; i++)
 	{		add(aantalOptie[i]);
 			add(aantalOptieVeld[i]);
 			aantalOptieVeld[i].addActionListener(this);
@@ -204,15 +203,15 @@ private int mode;
 		legendaKop.setBounds(currentX, currentY, width, height);
 		add(legendaKop);
 		
-		legendaOptie = new JLabel[7];
-		legendaKleur = new LijntjeLabel[7];
+		legendaOptie = new JLabel[6];
+		legendaKleur = new LijntjeLabel[6];
 		
 		if(kleur) 
 			kleurRij = gekleurdeRij;
 		else
 			kleurRij = zwarteRij;
 		
-		for (int i=1; i<7; i++)
+		for (int i=0; i<6; i++)
 		{
 			legendaKleur[i] = new LijntjeLabel(kleurRij[i]);
 			legendaKleur[i].setBounds(currentX, currentY, width / 5, height);
@@ -305,7 +304,7 @@ private int mode;
 			optiesBox.setLocation(optiesBox.getLocation().x, currentY);
 		    currentY += aantalOptiesLabel.getSize().height + offset;
 		}
-		for(int i = 1; i<7; i++)
+		for(int i = 0; i<6; i++)
 		{	
 			if (aantalOptieVeld[i].isVisible())
 			{	
@@ -319,7 +318,7 @@ private int mode;
 			legendaKop.setLocation(legendaKop.getLocation().x, currentY);
 		    currentY += legendaKop.getSize().height + offset;
 		}
-		for(int i = 1; i<7; i++)
+		for(int i = 0; i<6; i++)
 		{
 			if (legendaOptie[i].isVisible())
 			{	
@@ -405,8 +404,8 @@ private int mode;
 	public void zetBallenZichtbaar(boolean b)
 	{
 		ballenZichtbaar = b;
-		for(int p = 1; p < 7; p++)
-		{	if(aantalOpties+2 > p-1)
+		for(int p = 0; p < 6; p++)
+		{	if(aantalOpties > p)
 			{	aantalOptie[p].setVisible(b);
 				aantalOptieVeld[p].setVisible(b);
 			}
@@ -423,8 +422,8 @@ private int mode;
 		legendaZichtbaar = b;
 		legendaKop.setVisible(b);
 		
-		for(int p = 1; p < 7; p++)
-		{	if(aantalOpties+2 > p-1)
+		for(int p = 0; p < 6; p++)
+		{	if(aantalOpties > p)
 			{	legendaKleur[p].setVisible(b);
 				legendaOptie[p].setVisible(b);
 			}	
@@ -485,9 +484,9 @@ private int mode;
 
 	public void zetTrekkingen(int i)
 	{
-		trekkingen = i-1;
+		trekkingen = i;
 		kansboom.zetTrekkingen(i);
-		trekkingenBox.setSelectedIndex(trekkingen);
+		trekkingenBox.setSelectedIndex(trekkingen  - 1);
 	}
 	
 	public void zetLabelsKeuze(int i)
@@ -500,13 +499,13 @@ private int mode;
 	{	aantalInt = opties;
 		aantalOpties = k;
 		kansboom.zetOpties(k, opties);
-		for(int i = 1; i<aantalInt.length; i++)
+		for(int i = 0; i<aantalInt.length; i++)
 		{	zetLegendaTekst(i);
 			aantalOptieVeld[i].setText(""+aantalInt[i]);
 		}
-		optiesBox.setSelectedIndex(k);
-		for(int p = 1; p < 7; p++)
-		{	if(aantalOpties + 2 > p-1)
+		optiesBox.setSelectedIndex(k - 2);
+		for(int p = 0; p < 6; p++)
+		{	if(aantalOpties > p)
 			{
 				aantalOptie[p].setVisible(ballenZichtbaar);
 				aantalOptieVeld[p].setVisible(ballenZichtbaar);
@@ -536,7 +535,7 @@ private int mode;
 		else
 			kleurRij = zwarteRij;			
 		
-		for (int i = 1; i < 7; i++)
+		for (int i = 0; i < 6; i++)
 			legendaKleur[i].setColor(kleurRij[i]);
 	}	
 	
@@ -570,7 +569,7 @@ private int mode;
 	{
 		leerlingAntwoorden[0] = beginStatus[0];
 		for(int i = 1; i < 7; i++)
-			leerlingAntwoorden[i] = aantalInt[i];
+			leerlingAntwoorden[i] = aantalInt[i - 1];
 		leerlingAntwoorden[7] = terugleggenKeuze;
 		leerlingAntwoorden[8] = trekkingen;
 		leerlingAntwoorden[9] = aantalOpties;	
@@ -579,7 +578,7 @@ private int mode;
 	public void zetBeginStatus()
 	{
 		for(int i = 1; i < 7; i++)
-			beginStatus[i] = aantalInt[i];
+			beginStatus[i] = aantalInt[i - 1];
 		beginStatus[7] = terugleggenKeuze;
 		beginStatus[8] = trekkingen;
 		beginStatus[9] = aantalOpties;
@@ -591,16 +590,18 @@ private int mode;
 		{	zetTerugleggen(terugleggenBox.getSelectedIndex());
 		}
 		else if(e.getSource() == trekkingenBox)
-		{	trekkingen = trekkingenBox.getSelectedIndex();
-			zetTrekkingen(trekkingen+1);
+		{	trekkingen = trekkingenBox.getSelectedIndex() + 1;
+			zetTrekkingen(trekkingen);
 			//hier set size?
 		}
 		else if(e.getSource() == optiesBox)
 		{
-			aantalOpties = optiesBox.getSelectedIndex();
+			aantalOpties = optiesBox.getSelectedIndex() + 2;
 			zetOpties(aantalOpties, aantalInt);
 		
 		}	
+		else if(e.getSource() == aantalOptieVeld[0])
+			actieAantalOptieVeld(0);
 		else if(e.getSource() == aantalOptieVeld[1])
 			actieAantalOptieVeld(1);
 		else if(e.getSource() == aantalOptieVeld[2])
@@ -611,8 +612,6 @@ private int mode;
 			actieAantalOptieVeld(4);
 		else if(e.getSource() == aantalOptieVeld[5])
 			actieAantalOptieVeld(5);
-		else if(e.getSource() == aantalOptieVeld[6])
-			actieAantalOptieVeld(6);
 		else if(e.getSource() == kijkNaButton)
 		{
 			kijkNa();
@@ -621,7 +620,9 @@ private int mode;
 	
 	public void focusLost(FocusEvent e) 
 	{
-		if(e.getSource() == aantalOptieVeld[1])
+		if(e.getSource() == aantalOptieVeld[0])
+			actieAantalOptieVeld(0);
+		else if(e.getSource() == aantalOptieVeld[1])
 			actieAantalOptieVeld(1);
 		else if(e.getSource() == aantalOptieVeld[2])
 			actieAantalOptieVeld(2);
@@ -631,12 +632,11 @@ private int mode;
 			actieAantalOptieVeld(4);
 		else if(e.getSource() == aantalOptieVeld[5])
 			actieAantalOptieVeld(5);
-		else if(e.getSource() == aantalOptieVeld[6])
-			actieAantalOptieVeld(6);
 	}
 	
 	public void actieAantalOptieVeld(int i)
 	{
+		int[] aantalIntOud = new int[aantalInt.length];
 		try
 		{ 	aantalIntOud[i] = aantalInt[i];
 			aantalInt[i] = Integer.parseInt( aantalOptieVeld[i].getText() );
@@ -679,12 +679,30 @@ private int mode;
 		if (h.containsKey("kansVolgordeKeuze"))
 			kansVolgordeKeuze = ((Integer)h.get("kansVolgordeKeuze")).intValue();
 		if (h.containsKey("naamOptieTekst"))
-			naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
-		for(int i = 1; i < 7; i++)
+		{	String[] naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
+			if(naamOptieTekst.length == 6)
+				this.naamOptieTekst = naamOptieTekst;
+			else if(naamOptieTekst.length == 7)
+			{
+				this.naamOptieTekst = new String[6];
+				for(int i = 0; i < this.naamOptieTekst.length; i++)
+					this.naamOptieTekst[i] = naamOptieTekst[i+1];
+			}
+		}
+		for(int i = 0; i < 6; i++)
 			zetNaamOptie(i, naamOptieTekst[i]);
 		if (h.containsKey("letterString"))
-			letterString = ((String[]) h.get("letterString"));
-		for(int i = 1; i < 7; i++)
+		{	String[] letterString = ((String[]) h.get("letterString"));
+			if(letterString.length == 6)
+				this.letterString = letterString;
+			else if(letterString.length == 7)
+			{
+				this.letterString = new String[6];
+				for(int i = 0; i < this.letterString.length; i++)
+					this.letterString[i] = letterString[i+1];
+			}
+		}
+		for(int i = 0; i < 6; i++)
 			zetLetterOptie(i, letterString[i]);
 		if(h.containsKey("terugleggenKeuze"))
 			terugleggenKeuze = ((Integer)h.get("terugleggenKeuze")).intValue();
@@ -693,8 +711,19 @@ private int mode;
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
 		if (h.containsKey("aantalInt"))
-			aantalInt = ((int[]) h.get("aantalInt"));
-		
+		{	int[] aantalInt = ((int[]) h.get("aantalInt"));
+			if(aantalInt.length == 6)
+				this.aantalInt = aantalInt;
+			else if(aantalInt.length == 7)
+			{
+				this.aantalInt = new int[6];
+				for(int i = 0; i < this.aantalInt.length; i++)
+					this.aantalInt[i] = aantalInt[i+1];
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				aantalOpties += 2;
+				trekkingen += 1;
+			}
+		}
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
 		if(h.containsKey("nakijkModel"))
@@ -720,7 +749,7 @@ private int mode;
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
 		zetTerugleggen(terugleggenKeuze);
-		zetTrekkingen(trekkingen+1); 		
+		zetTrekkingen(trekkingen); 		
 		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
@@ -739,13 +768,25 @@ private int mode;
 		
 		if(h.containsKey("trekkingen"))
 			trekkingen = ((Integer)h.get("trekkingen")).intValue();
-		zetTrekkingen(trekkingen+1); 
 		
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
 		
 		if (h.containsKey("aantalInt"))
-			aantalInt = ((int[]) h.get("aantalInt"));
+		{	int[] aantalInt = ((int[]) h.get("aantalInt"));
+			if(aantalInt.length == 6)
+				this.aantalInt = aantalInt;
+			else if(aantalInt.length == 7)
+			{
+				this.aantalInt = new int[6];
+				for(int i = 0; i < this.aantalInt.length; i++)
+					this.aantalInt[i] = aantalInt[i+1];
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				aantalOpties += 2;
+				trekkingen += 1;
+			}
+		}
+		zetTrekkingen(trekkingen); 
 		zetOpties(aantalOpties, aantalInt);
 		
 		if (h.containsKey("ingevuld")) 
@@ -781,12 +822,30 @@ private int mode;
 		if (h.containsKey("kansVolgordeKeuze"))
 			kansVolgordeKeuze = ((Integer)h.get("kansVolgordeKeuze")).intValue();
 		if (h.containsKey("naamOptieTekst"))
-			naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
-		for(int i = 1; i < 7; i++)
+		{	String[] naamOptieTekst = ((String[]) h.get("naamOptieTekst"));
+			if(naamOptieTekst.length == 6)
+				this.naamOptieTekst = naamOptieTekst;
+			else if(naamOptieTekst.length == 7)
+			{
+				this.naamOptieTekst = new String[6];
+				for(int i = 0; i < this.naamOptieTekst.length; i++)
+					this.naamOptieTekst[i] = naamOptieTekst[i+1];
+			}
+		}
+		for(int i = 0; i < 6; i++)
 			zetNaamOptie(i, naamOptieTekst[i]);
 		if (h.containsKey("letterString"))
-			letterString = ((String[]) h.get("letterString"));
-		for(int i = 1; i < 7; i++)
+		{	String[] letterString = ((String[]) h.get("letterString"));
+			if(letterString.length == 6)
+				this.letterString = letterString;
+			else if(letterString.length == 7)
+			{
+				this.letterString = new String[6];
+				for(int i = 0; i < this.letterString.length; i++)
+					this.letterString[i] = letterString[i+1];
+			}
+		}
+		for(int i = 0; i < 6; i++)
 			zetLetterOptie(i, letterString[i]);
 		if(h.containsKey("terugleggenKeuze"))
 			terugleggenKeuze = ((Integer)h.get("terugleggenKeuze")).intValue();
@@ -796,7 +855,19 @@ private int mode;
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
 		
 		if (h.containsKey("aantalInt"))
-			aantalInt = ((int[]) h.get("aantalInt"));
+		{	int[] aantalInt = ((int[]) h.get("aantalInt"));
+			if(aantalInt.length == 6)
+				this.aantalInt = aantalInt;
+			else if(aantalInt.length == 7)
+			{
+				this.aantalInt = new int[6];
+				for(int i = 0; i < this.aantalInt.length; i++)
+					this.aantalInt[i] = aantalInt[i+1];
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				aantalOpties += 2;
+				trekkingen += 1;
+			}
+		}
 		
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
@@ -825,7 +896,7 @@ private int mode;
 		zetKleur(kleur);
 		zetKansVolgorde(kansVolgordeKeuze);
 		zetTerugleggen(terugleggenKeuze);
-		zetTrekkingen(trekkingen+1); 
+		zetTrekkingen(trekkingen); 
 		zetOpties(aantalOpties, aantalInt);
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
@@ -838,12 +909,23 @@ private int mode;
 		int terugleggenKeuze = 0;
 		int trekkingen = 2;
 		int aantalOpties = 2;
-		int[] aantalInt = {4,4,4,4,4,4,4};
+		int[] aantalInt = {4,4,4,4,4,4};
 		
 		terugleggenKeuze = this.terugleggenKeuze;
 		trekkingen = this.trekkingen;
 		aantalOpties = this.aantalOpties;
-		aantalInt = this.aantalInt;
+		if(this.aantalInt.length == 7)
+		{	aantalInt = new int[6];
+			for(int i = 0; i < aantalInt.length; i++)
+			{
+				aantalInt[i] = this.aantalInt[i+1];
+			}
+			//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+			aantalOpties += 2;
+			trekkingen += 1;
+		}
+		else
+			aantalInt = this.aantalInt;
 		
 		Hashtable h = new Hashtable();
 		
@@ -892,12 +974,41 @@ private int mode;
 		labelsKeuze = this.labelsKeuze;
 		kleur = this.kleur;
 		kansVolgordeKeuze = this.kansVolgordeKeuze;
-		naamOptieTekst = this.naamOptieTekst;
-		letterString = this.letterString;
+		if(this.naamOptieTekst.length == 7)
+		{
+			naamOptieTekst = new String[6];
+			for(int i = 0; i < naamOptieTekst.length; i++)
+			{
+				naamOptieTekst[i] = this.naamOptieTekst[i+1];
+			}
+		}
+		else
+			naamOptieTekst = this.naamOptieTekst;
+		if(this.letterString.length == 7)
+		{
+			letterString = new String[6];
+			for(int i = 0; i < letterString.length; i++)
+			{
+				letterString[i] = this.letterString[i+1];
+			}
+		}
+		else
+			letterString = this.letterString;
 		terugleggenKeuze = this.terugleggenKeuze;
 		trekkingen = this.trekkingen;
 		aantalOpties = this.aantalOpties;
-		aantalInt = this.aantalInt;
+		if(this.aantalInt.length == 7)
+		{	aantalInt = new int[6];
+			for(int i = 0; i < aantalInt.length; i++)
+			{
+				aantalInt[i] = this.aantalInt[i+1];
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				aantalOpties += 2;
+				trekkingen += 1;
+			}
+		}
+		else
+			aantalInt = this.aantalInt;
 		scoreMax = this.scoreMax;
 		nakijkModel = this.nakijkModel;
 		trekkingTekst = this.trekkingTekst;
