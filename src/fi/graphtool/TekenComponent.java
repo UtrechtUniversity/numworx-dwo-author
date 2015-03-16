@@ -295,6 +295,39 @@ public class TekenComponent extends JPanel {
 			extrapoleerButton.zetActief(true);
 		}
 	}
+	
+	public void setCursorMode(int mode)
+	{
+		if(mode < 0 || mode > DRAG)
+			cursorMode = NOCUR;
+		else
+			cursorMode = mode;
+		if(cursorMode == NONE)
+		{
+			drawButton.setSelected(false);
+			deleteButton.setSelected(false);
+			dragButton.setSelected(false);
+			drawButton.zetActief(false);
+			deleteButton.zetActief(false);
+			dragButton.zetActief(false);
+		}
+		else if(cursorMode == DRAW)
+		{
+			drawButton.setSelected(true);
+			drawButton.zetActief(true);
+		}
+		else if(cursorMode == DELETE)
+		{
+			deleteButton.setSelected(true);
+			deleteButton.zetActief(true);
+		}
+		else if(cursorMode == DRAG)
+		{
+			dragButton.setSelected(true);
+			dragButton.zetActief(true);
+		}
+		
+	}
 
 	public int getConnectMode()
 	{	return connectMode;
@@ -307,22 +340,31 @@ public class TekenComponent extends JPanel {
 	
 	public Hashtable getState()
 	{	int connectMode = NONE;		
+		int cursorMode = NOCUR;
 		connectMode = this.connectMode;
+		cursorMode = this.cursorMode;
 		
 		Hashtable h = new Hashtable();
-		h.put("connectMode", new Integer(connectMode));		
+		h.put("connectMode", new Integer(connectMode));
+		h.put("cursorMode", new Integer(cursorMode));
 		return h;
 	}
 	
 	public void setState(Hashtable h)
     {	
-		int connectMode = NONE;				
+		int connectMode = NONE;	
+		int cursorMode = NOCUR;
 		
 		if(h.containsKey("connectMode")) 
 			connectMode = ((Number)h.get("connectMode")).intValue();
+		if(h.containsKey("cursorMode"))
+			cursorMode = ((Number)h.get("cursorMode")).intValue();
     	
 		this.connectMode = connectMode;						
 		setConnectMode(connectMode);	
+		this.cursorMode = cursorMode;
+		setCursorMode(cursorMode);
+		cursorItemChanged = false;
 		
 	}
 	
@@ -344,7 +386,6 @@ public class TekenComponent extends JPanel {
 		{	
 			//if (frozen)
 			//	return;
-		
 			cursorItemChanged = true;
 			if (drawButton.isSelected())
 			{	cursorMode = DRAW;
@@ -361,10 +402,6 @@ public class TekenComponent extends JPanel {
 				drawButton.zetActief(false);
 				deleteButton.zetActief(false);
 			}		
-			else 
-			{	cursorMode = NOCUR;
-				
-			}
 			grafiekComponent.repaint();
 		}
 	}
@@ -373,14 +410,17 @@ public class TekenComponent extends JPanel {
 	{	public void actionPerformed(ActionEvent e)
 		{	//if (frozen)
 			//	return;
-			
 			if (!cursorItemChanged)
-			{	noneButton.setSelected(true);
+			{	
+				noneButton.setSelected(true);
+				cursorMode = NOCUR;
+				drawButton.zetActief(false);
+				deleteButton.zetActief(false);
+				dragButton.zetActief(false);
 				
 			}
-			
+			grafiekComponent.repaint();
 			cursorItemChanged = false;
-			
 		}
 	}
 
