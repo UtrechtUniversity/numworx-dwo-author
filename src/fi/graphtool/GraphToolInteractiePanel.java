@@ -1112,7 +1112,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetDocentDomeinen(docentDomeinStrings);
 			tekenComponent.zetAantalGrafieken(aantalFuncties);
 			tekenComponent.setConnectMode(TekenComponent.NONE);
-			System.out.println("krommezonderextra = " + Boolean.toString(krommeZonderExtrapolatie) + " en krommemetextra = " + Boolean.toString(krommeMetExtrapolatie));
 			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie); //niet meer nodig..
 			zetKijkNaButton(true);
 		}
@@ -1144,7 +1143,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 			tekenComponent.zetAantalGrafieken(1);
 			tekenComponent.setConnectMode(TekenComponent.NONE);
-			System.out.println("krommezonderextra = " + Boolean.toString(krommeZonderExtrapolatie) + " en krommemetextra = " + Boolean.toString(krommeMetExtrapolatie));
 			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 			tabelComponent.zetEenTabel(true);
 			tabelComponent.zetTabelPunten(docentGraphPoints, true);
@@ -2903,7 +2901,6 @@ MouseListener, MouseMotionListener, CBookAware {
 				catch(Exception e)
 				{	xString = "";
 				}
-				System.out.println("xString in randomParsen: " + xString);
 				boolean xParam = false;
 				if(schuifParameters != null)
 				{	for(int i = 0; i < schuifParameters.length; i++)
