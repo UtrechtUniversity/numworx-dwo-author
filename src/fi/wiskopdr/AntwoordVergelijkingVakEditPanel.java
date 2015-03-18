@@ -960,12 +960,12 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     				JOptionPane.showMessageDialog(this, "Syntax van functiedefinitie klopt niet");
     				break;
     			}
-    			String functieExpressieString = "$f"+functieDelen[1];
-    			Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
-    			if(functieExpressie==null) {
-    				JOptionPane.showMessageDialog(this, "Syntax van functie-expressie klopt niet");
-    				break;
-    			}
+    			//String functieExpressieString = "$f"+functieDelen[1];
+    			//Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
+    			//if(functieExpressie==null) {
+    			//	JOptionPane.showMessageDialog(this, "Syntax van functie-expressie klopt niet");
+    			//	break;
+    			//}
     			System.out.println(functieDelen[0].substring(2));
     			String pattern = "[a-zA-Z]+[']?[(][a-zA-Z][)]";
     	        boolean matches = Pattern.matches(pattern, functieDelen[0].substring(2));
