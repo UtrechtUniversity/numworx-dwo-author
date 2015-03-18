@@ -42,12 +42,15 @@ public class Text_nl extends java.util.ListResourceBundle
 	        {	"ballenZichtbaarTekst", "Aantal ballen per optie"},
 	        {	"legendaZichtbaarTekst", "Legenda zichtbaar"},
 	        {	"bovenbalkZichtbaarTekst", "Bovenbalk zichtbaar"},
+	        {	"aantallenZichtbaarTekst", "Aantallen zichtbaar"},
 	        {	"kijkNaTekst", "Kijk na"},
 	        {	"nakijkModelTekst", "Nakijkmodel"},
 	        {	"maxScoreTekst", "Maximum score"},
 	        {	"externControlerenTekst", "Extern controleren"},
 	        {	"bovenbalkTekst", "Bovenbalk"},
-	        {	"bovenbalkMvTekst", "Meervoud"}
+	        {	"bovenbalkMvTekst", "Meervoud"},
+	        { 	"viewerOpties", "Viewer-opties" },
+			{ 	"nakijkOpties", "Nakijkopties" },
         
         
 		//	....

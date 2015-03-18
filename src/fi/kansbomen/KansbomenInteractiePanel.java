@@ -36,8 +36,9 @@ boolean teruglegZichtbaar = true;
 boolean trekkingZichtbaar = true;
 boolean optiesZichtbaar = true;
 boolean ballenZichtbaar = true;
-boolean legendaZichtbaar = true;
 boolean bovenbalkZichtbaar = true;
+boolean legendaZichtbaar = true;
+boolean aantallenZichtbaar = true;
 boolean kleur = true;
 int kansVolgordeKeuze = 0;
 boolean terugleggen = true;
@@ -89,9 +90,14 @@ int scoreMax = 10;
 
 Vector listeners = new Vector();
 
-int[] nakijkModel = new int[] {10, 4, 4, 4, 4, 4, 4, 0, 2, 2};
-int[] leerlingAntwoorden = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 2, 2};
-int[] beginStatus = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 2, 2};
+int[] nakijkModel = new int[] {10, 4, 4, 4, 4, 4, 4, 0, 3, 4}; 
+
+//oude situatie:
+//9e entry is aantal trekkingen, 10e aantal opties. 
+//De getallen voor aantal trekkingen en aantal opties geven de selected index van de combobox aan, niet het aantal zelf. 
+//Zou mooi zijn om dat aan te passen, maar dan goed rekening houden met backwards compatibility
+int[] leerlingAntwoorden = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 3, 4};
+int[] beginStatus = new int[] {0, 4, 4, 4, 4, 4, 4, 0, 3, 4};
 
 private boolean ingevuld;
 private boolean nagekeken;
@@ -435,6 +441,15 @@ private int mode;
 		setBounds(0, 0, kbipBreedte, kbipHoogte);
 	}
 	
+	public void zetAantallenZichtbaar(boolean b)
+	{
+		aantallenZichtbaar = b;
+		for(int i = 0; i < 6; i++)
+		{
+			zetLegendaTekst(i);
+		}
+	}
+	
 	public void zetBovenbalkZichtbaar(boolean b)
 	{
 		bovenbalkZichtbaar = b;
@@ -525,7 +540,10 @@ private int mode;
 	
 	public void zetLegendaTekst(int i)
 	{
-		legendaOptie[i].setText(naamOptieTekst[i]+" ("+aantalInt[i]+")");
+		if(aantallenZichtbaar)
+			legendaOptie[i].setText(naamOptieTekst[i]+" ("+aantalInt[i]+")");
+		else
+			legendaOptie[i].setText(naamOptieTekst[i]);
 	}
 	
 	public void zetLegendaKleur(boolean b)
@@ -666,6 +684,8 @@ private int mode;
 			ballenZichtbaar = ((Boolean) h.get("ballenZichtbaar")).booleanValue();
 		if (h.containsKey("legendaZichtbaar"))
 			legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
+		if (h.containsKey("aantallenZichtbaar"))
+			aantallenZichtbaar = ((Boolean) h.get("aantallenZichtbaar")).booleanValue();
 		if (h.containsKey("bovenbalkZichtbaar"))
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
 		if (h.containsKey("kijkNaActief"))
@@ -710,6 +730,8 @@ private int mode;
 			trekkingen = ((Integer)h.get("trekkingen")).intValue();
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
+		if(h.containsKey("nakijkModel"))
+			nakijkModel = (int[]) h.get("nakijkModel");
 		if (h.containsKey("aantalInt"))
 		{	int[] aantalInt = ((int[]) h.get("aantalInt"));
 			if(aantalInt.length == 6)
@@ -719,15 +741,15 @@ private int mode;
 				this.aantalInt = new int[6];
 				for(int i = 0; i < this.aantalInt.length; i++)
 					this.aantalInt[i] = aantalInt[i+1];
-				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties, aantalTrekkingen en nakijkModel omzetten naar nieuwe versie.
 				aantalOpties += 2;
 				trekkingen += 1;
+				nakijkModel[8] += 1;
+				nakijkModel[9] += 2;
 			}
 		}
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
-		if(h.containsKey("nakijkModel"))
-			nakijkModel = (int[]) h.get("nakijkModel");
 		if(h.containsKey("trekkingTekst"))
 			trekkingTekst = ((String) h.get("trekkingTekst"));
 		if(h.containsKey("trekkingMvTekst"))
@@ -809,6 +831,8 @@ private int mode;
 			ballenZichtbaar = ((Boolean) h.get("ballenZichtbaar")).booleanValue();
 		if (h.containsKey("legendaZichtbaar"))
 			legendaZichtbaar = ((Boolean) h.get("legendaZichtbaar")).booleanValue();
+		if (h.containsKey("aantallenZichtbaar"))
+			aantallenZichtbaar = ((Boolean) h.get("aantallenZichtbaar")).booleanValue();
 		if (h.containsKey("bovenbalkZichtbaar"))
 			bovenbalkZichtbaar = ((Boolean) h.get("bovenbalkZichtbaar")).booleanValue();
 		if (h.containsKey("kijkNa"))
@@ -853,7 +877,9 @@ private int mode;
 			trekkingen = ((Integer)h.get("trekkingen")).intValue();
 		if(h.containsKey("aantalOpties"))
 			aantalOpties = ((Integer)h.get("aantalOpties")).intValue();
-		
+		if(h.containsKey("nakijkModel"))
+			nakijkModel = (int[]) h.get("nakijkModel");
+
 		if (h.containsKey("aantalInt"))
 		{	int[] aantalInt = ((int[]) h.get("aantalInt"));
 			if(aantalInt.length == 6)
@@ -863,9 +889,12 @@ private int mode;
 				this.aantalInt = new int[6];
 				for(int i = 0; i < this.aantalInt.length; i++)
 					this.aantalInt[i] = aantalInt[i+1];
-				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties, aantalTrekkingen en nakijkmodel omzetten naar nieuwe versie.
 				aantalOpties += 2;
 				trekkingen += 1;
+				this.nakijkModel[8] += 1;
+				this.nakijkModel[9] += 2;
+				
 			}
 		}
 		
@@ -876,9 +905,6 @@ private int mode;
 		//nodig?
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
-		if(h.containsKey("nakijkModel"))
-			nakijkModel = (int[]) h.get("nakijkModel");
-
 		if(h.containsKey("kbipBreedte"))
 			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
 		if(h.containsKey("kbipHoogte"))
@@ -946,6 +972,7 @@ private int mode;
 		boolean optiesZichtbaar = true;
 		boolean ballenZichtbaar = true;
 		boolean legendaZichtbaar = true;
+		boolean aantallenZichtbaar = true;
 		boolean bovenbalkZichtbaar = true;
 		boolean kijkNaActief = false;
 		boolean checkExternal = false;
@@ -958,8 +985,8 @@ private int mode;
 		int trekkingen = 2;
 		int aantalOpties = 2;
 		int[] aantalInt = null;
-		int scoreMax = 10;
-		int[] nakijkModel = null;
+		//int scoreMax = 10;
+		//int[] nakijkModel = null;
 		String trekkingTekst = "Trekking";
 		String trekkingMvTekst = "trekkingen";
 				
@@ -968,6 +995,7 @@ private int mode;
 		optiesZichtbaar = this.optiesZichtbaar;
 		ballenZichtbaar = this.ballenZichtbaar;
 		legendaZichtbaar = this.legendaZichtbaar;
+		aantallenZichtbaar = this.aantallenZichtbaar;
 		bovenbalkZichtbaar = this.bovenbalkZichtbaar;
 		kijkNaActief = this.kijkNaActief;
 		checkExternal = this.checkExternal;
@@ -997,20 +1025,22 @@ private int mode;
 		terugleggenKeuze = this.terugleggenKeuze;
 		trekkingen = this.trekkingen;
 		aantalOpties = this.aantalOpties;
+		//nakijkModel = this.nakijkModel;
 		if(this.aantalInt.length == 7)
 		{	aantalInt = new int[6];
 			for(int i = 0; i < aantalInt.length; i++)
 			{
 				aantalInt[i] = this.aantalInt[i+1];
-				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties en aantalTrekkingen omzetten naar nieuwe versie.
+				//kennelijk bevat de state nog oude launchdata. Ook aantalOpties, aantalTrekkingen en nakijkModel omzetten naar nieuwe versie.
 				aantalOpties += 2;
 				trekkingen += 1;
+		//		nakijkModel[8] += 1;
+		//		nakijkModel[9] += 2;
 			}
 		}
 		else
 			aantalInt = this.aantalInt;
-		scoreMax = this.scoreMax;
-		nakijkModel = this.nakijkModel;
+		//scoreMax = this.scoreMax;
 		trekkingTekst = this.trekkingTekst;
 		trekkingMvTekst = this.trekkingMvTekst;
 				
@@ -1021,6 +1051,7 @@ private int mode;
 		h.put("optiesZichtbaar", optiesZichtbaar);
 		h.put("ballenZichtbaar", ballenZichtbaar);
 		h.put("legendaZichtbaar", legendaZichtbaar);
+		h.put("aantallenZichtbaar", aantallenZichtbaar);
 		h.put("bovenbalkZichtbaar", bovenbalkZichtbaar);
 		h.put("kijkNaActief", kijkNaActief);
 		h.put("checkExternal", checkExternal);
@@ -1033,8 +1064,8 @@ private int mode;
 		h.put("trekkingen", trekkingen);
 		h.put("aantalOpties", aantalOpties);
 		h.put("aantalInt", aantalInt);
-		h.put("scoreMax", scoreMax);
-		h.put("nakijkModel", nakijkModel);
+		//h.put("scoreMax", scoreMax);
+		//h.put("nakijkModel", nakijkModel);
 		h.put("trekkingTekst", trekkingTekst);
 		h.put("trekkingMvTekst", trekkingMvTekst);
 		
@@ -1135,8 +1166,8 @@ private int mode;
     	}		                                   
     	
     	leerlingAntwoorden[0] = nakijkModel[0];
-    	for(int i = nakijkModel[9] + 3; i < 7; i++)
-    		leerlingAntwoorden[i] = nakijkModel[i];
+    	for(int i = nakijkModel[9]; i < 6; i++)
+    		leerlingAntwoorden[i + 1] = nakijkModel[i + 1];
     	if(Arrays.equals(leerlingAntwoorden,nakijkModel))
     	{	score = scoreMax;
     		kruisjeLabel.setVisible(false);
