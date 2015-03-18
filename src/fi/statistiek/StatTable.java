@@ -315,7 +315,7 @@ public class StatTable extends JPanel implements StatistiekView,
 
 		public void mouseReleased(MouseEvent e)
 		{
-			if (e.isPopupTrigger())
+			if (e.isPopupTrigger())  // test syl: CTRL - klik?
 			{
 				Point p = e.getPoint();
 				int column = StatTable.this.table.columnAtPoint(p);
