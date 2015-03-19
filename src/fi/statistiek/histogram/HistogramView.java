@@ -3191,7 +3191,7 @@ public class HistogramView extends JPanel implements Observer
     										// percentage relatief aan totaalaantal
     										//value = ((double) frequencies_number[i][j*2] / aantal_totaal) * 100;
     										
-    										// test syl: bij gestapeld moet de waarde relatief aan totaal 
+    										// bij gestapeld moet de waarde relatief aan totaal 
     										// en tooltip de waarde aan de as
     										for (int k = 0; k <= i; k++)
     										{
@@ -3228,7 +3228,14 @@ public class HistogramView extends JPanel implements Observer
     									{
 //        										System.out.println("HistogramBarPanel.mouseMoved(): split gestapeld!");
             								// als gestapeld in 1 view, dan percentage relatief aan totaal per bin 
-                							value = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
+                							//value = ((double) frequencies_enum[i][j].frequency / aantalPerBin[j]) * 100;
+    										
+    										// bij gestapeld moet de waarde relatief aan totaal 
+    										// en tooltip de waarde aan de as
+    										for (int k = 0; k <= i; k++)
+    										{
+    											value = value + ((double) frequencies_enum[k][j].frequency / aantal_totaal) * 100;
+    										}
     									}
     								}
     								else
