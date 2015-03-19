@@ -235,7 +235,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
-		instellingenPanel.setBounds(0, 0, 650, 560);
+		instellingenPanel.setBounds(0, 0, 650, 620);
 		instellingenPanel.zetInstellingen(instellingen);
 
 		instellingenDialog.getContentPane().add(instellingenPanel);

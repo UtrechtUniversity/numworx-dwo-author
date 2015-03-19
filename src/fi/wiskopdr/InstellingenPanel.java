@@ -77,6 +77,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
 	private int margeOnder = 15;
 	
+	private JLabel keyboardLabel;
+	private JComboBox keyboardCombobox;
+	private JLabel writeMathLabel;
+	private JComboBox writeMathCombobox;
+	
 	private String[] fontNames = {
 			"SansSerif",
 			"Verdana",
@@ -141,6 +146,38 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		diffOperatorenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
 		//diffOperatorenCB.setVisible(false);
 		
+		Box boxh = Box.createHorizontalBox();
+		keyboardLabel = new JLabel("Tablet keyboard"+" ");
+		keyboardLabel.setFont(font);
+		boxh.add(keyboardLabel);
+		boxh.add(Box.createHorizontalStrut(10));
+		
+		keyboardCombobox = new JComboBox();
+		keyboardCombobox.setFont(font);
+		keyboardCombobox.addItem("Onderbouw-keyboard");
+		keyboardCombobox.addItem("Algebra-keyboard");
+		keyboardCombobox.addItem("Gonio-keyboard");
+		keyboardCombobox.addItem("Statistiek-keyboard");
+		keyboardCombobox.addItem("Meetkunde-keyboard");
+		boxh.add(keyboardCombobox);
+		boxh.add(Box.createHorizontalStrut(80));
+		boxv1.add(boxh);
+		boxv1.add(Box.createVerticalStrut(5));
+		
+		boxh = Box.createHorizontalBox();
+		writeMathLabel = new JLabel("Tablet handschriftset"+" ");
+		writeMathLabel.setFont(font);
+		boxh.add(writeMathLabel);
+		boxh.add(Box.createHorizontalStrut(10));
+		
+		writeMathCombobox = new JComboBox();
+		writeMathCombobox.setFont(font);
+		writeMathCombobox.addItem("Basis");
+		writeMathCombobox.addItem("Uitgebreid");
+		boxh.add(writeMathCombobox);
+		boxh.add(Box.createHorizontalStrut(80));
+		boxv1.add(boxh);
+		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();
 		navigatieLabel = maakLabel(WiskOpdr.rb.getString("OPT_navigatieLabel"), boxv2);
@@ -152,7 +189,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condNavCB.addActionListener(this);
 		
 		
-		Box boxh;
+		//Box boxh;
 		boxh = Box.createHorizontalBox();
 		//condNavCB = new JCheckBox(WiskOpdr.rb.getString("OPT_conditionalNav"));
 		//condNavCB.setOpaque(false);
@@ -462,6 +499,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean fToets = true;
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
+		int keyboardNr = 0;
+		int writeMathSetNr = 0;
 		boolean voortgang = false;
 		boolean condNav = false;
 		boolean condNavPerc = true;
@@ -507,6 +546,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fToets = fToetsCB.isSelected();
 		globalParam = globalParamCB.isSelected();
 		diffOperatoren = diffOperatorenCB.isSelected();
+		keyboardNr = keyboardCombobox.getSelectedIndex();
+		writeMathSetNr = writeMathCombobox.getSelectedIndex();
 		voortgang = voortgangCB.isSelected();
 		condNav = condNavCB.isSelected();
 		if(condNav)
@@ -556,6 +597,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("fToets", new Boolean(fToets));
 		h.put("globalParam", new Boolean(globalParam));
 		h.put("diffOperatoren", new Boolean(diffOperatoren));
+		h.put("keyboardNr", new Integer(keyboardNr));
+		h.put("writeMathSetNr", new Integer(writeMathSetNr));
 		h.put("voortgang", new Boolean(voortgang));
 		h.put("condNav", new Boolean(condNav));
 		if(condNav)
@@ -611,6 +654,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean fontOverervingForm = false;
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
+		int keyboardNr = 0;
+		int writeMathSetNr = 0;
 		boolean voortgang = false;
 		boolean condNav = false;
 		boolean condNavPerc = true;
@@ -652,6 +697,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("fToets")) fToets = ((Boolean)h.get("fToets")).booleanValue();
 		if(h.containsKey("globalParam")) globalParam = ((Boolean)h.get("globalParam")).booleanValue();
 		if(h.containsKey("diffOperatoren")) diffOperatoren = ((Boolean)h.get("diffOperatoren")).booleanValue();
+		if(h.containsKey("keyboardNr")) keyboardNr = ((Integer)h.get("keyboardNr")).intValue();
+		if(h.containsKey("writeMathSetNr")) writeMathSetNr = ((Integer)h.get("writeMathSetNr")).intValue();
 		if(h.containsKey("voortgang")) voortgang = ((Boolean)h.get("voortgang")).booleanValue();
 		if(h.containsKey("condNav")) condNav = ((Boolean)h.get("condNav")).booleanValue();
 		if(h.containsKey("condPerc")) condPerc = ((Integer)h.get("condPerc")).intValue();
@@ -698,6 +745,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fToetsCB.setSelected(fToets);
 		globalParamCB.setSelected(globalParam);
 		diffOperatorenCB.setSelected(diffOperatoren);
+		keyboardCombobox.setSelectedIndex(keyboardNr);
+		writeMathCombobox.setSelectedIndex(writeMathSetNr);
 		voortgangCB.setSelected(voortgang);
 		condNavCB.setSelected(condNav);
 		condNavPercentageRB.setVisible(condNav);
