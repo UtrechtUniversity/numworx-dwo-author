@@ -1,11 +1,17 @@
 package fi.tekenveelvlakopdr;
 
 import java.awt.*;
+import java.awt.event.*;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 class VaktekPanel extends JPanel
 {	
+	TekenVeelvlakInteractiePanel tvip;
+	
 	int breedte, hoogte;
 	int vakBreedte;
 	Viewer3d va, ba, ra, la;
@@ -14,11 +20,18 @@ class VaktekPanel extends JPanel
 	boolean vlakkenKleurenOptie = false;
     boolean profielenKleurenOptie = true;
     //boolean viewerKleurenOptie = false;
+    String vaktekKleuren = null;
+    
+    boolean docentModus = false;
+    
+	JButton kijkNaButton;
+	JPanel kijkNaPanel;
+	JLabel vinkjeLabel;
+	JLabel kruisjeLabel;
 	
-	public VaktekPanel(int x, int y, int b, int h)
+	public VaktekPanel(int x, int y, int b, int h, TekenVeelvlakInteractiePanel tvip)
 	{	
-		
-		this(new Veelvlak(),new Veelvlak(),new Veelvlak(),new Veelvlak(),x,y,b,h);
+		this(new Veelvlak(),new Veelvlak(),new Veelvlak(),new Veelvlak(),x,y,b,h,tvip);
 /*		
 		setBounds(x,y,b,h);
 		setLayout(null);
@@ -36,8 +49,12 @@ class VaktekPanel extends JPanel
 		
 	}	
 	
-	public VaktekPanel(Veelvlak vva, Veelvlak vra, Veelvlak vla ,Veelvlak  vba, int x, int y, int b, int h)
-	{	setBounds(x,y,b,h);
+	public VaktekPanel(Veelvlak vva, Veelvlak vra, Veelvlak vla ,Veelvlak  vba, int x, int y, int b, int h,
+					   TekenVeelvlakInteractiePanel tvip)
+	{	
+		this.tvip = tvip;
+		
+		setBounds(x,y,b,h);
 		setLayout(null);
 		setBackground(Color.white);
 		
@@ -45,7 +62,7 @@ class VaktekPanel extends JPanel
 		hoogte = h;
 		vakBreedte = Math.min((breedte-6)/3, (hoogte-6)/2);
 				
-		la = new Viewer3d(vla, breedte/2-3*vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1);
+		la = new Viewer3d(vla, breedte/2-3*vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
 		la.k = 230;
 		la.zetAfstand(10000000);
 		la.zetSchaduw(false);
@@ -53,7 +70,7 @@ class VaktekPanel extends JPanel
 		la.zetMuisAan(false);
 		add(la);
 		
-		ba = new Viewer3d(vba, breedte/2-vakBreedte/2+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1);
+		ba = new Viewer3d(vba, breedte/2-vakBreedte/2+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1,tvip);
 		ba.k = 230;
 		ba.zetAfstand(10000000);
 		ba.zetSchaduw(false);
@@ -61,7 +78,7 @@ class VaktekPanel extends JPanel
 		ba.zetMuisAan(false);
 		add(ba);
 		
-		va = new Viewer3d(vva, breedte/2-vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1);
+		va = new Viewer3d(vva, breedte/2-vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
 		va.k = 230;
 		va.zetAfstand(10000000);
 		va.zetSchaduw(false);
@@ -69,7 +86,7 @@ class VaktekPanel extends JPanel
 		va.zetMuisAan(false);
 		add(va);
 		
-		ra = new Viewer3d(vra, breedte/2-vakBreedte/2+vakBreedte+1, hoogte/2+1, vakBreedte-1, vakBreedte-1);
+		ra = new Viewer3d(vra, breedte/2-vakBreedte/2+vakBreedte+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
 		ra.k = 230;
 		ra.zetAfstand(10000000);
 		ra.zetSchaduw(false);
@@ -79,8 +96,79 @@ class VaktekPanel extends JPanel
 		
 		vr = new VaktekRooster();
 		add(vr);
+		
+		kijkNaButton = new JButton(TekenVeelvlakOpdr.rb.getString("kijkNaLabel"));
+		//kijkNaButton.setFont(theFont);
+		kijkNaButton.setBounds(0, 0, 100, 20);
+		kijkNaButton.addActionListener(new KijkNaAL());
+		
+		java.net.URL imageURL = TekenVeelvlakOpdr.class.getResource("resources/goedkrul_en_klein.gif");
+		if (imageURL != null) {
+		    vinkjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading goedkrul_en_klein.gif.");
+			vinkjeLabel = new JLabel();
+		}
+		vinkjeLabel.setBounds(100, 0, 20, 20);
+		imageURL = TekenVeelvlakOpdr.class.getResource("resources/foutkruis_klein.gif");
+		if (imageURL != null) {
+		    kruisjeLabel = new JLabel(new ImageIcon(imageURL));
+		}
+		else {
+			System.out.println("Error reading foutkruis_klein.gif.");
+			kruisjeLabel = new JLabel();
+		}
+		kruisjeLabel.setBounds(100, 0, 20, 20);
+		
+		vinkjeLabel.setVisible(false);
+		kruisjeLabel.setVisible(false);
+		
+		kijkNaPanel = new JPanel(null);
+		kijkNaPanel.setBackground(Color.WHITE);
+		//kijkNaPanel.setBounds(getSize().width - 130, getSize().height - 30, 120, 20);
+		kijkNaPanel.setBounds(5, 5, 120, 20);
+		
+		//kijkNaPanel.setSize(120, 20);
+		kijkNaPanel.add(kijkNaButton);
+		kijkNaPanel.add(vinkjeLabel);
+		
+		kijkNaPanel.add(kruisjeLabel);
+		kijkNaPanel.setVisible(false);
+		
+		add(kijkNaPanel);
+
 	}	
+
+	class KijkNaAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+//System.out.println("vaktek kijkNa");			
+			tvip.kijkNa();
+			if (tvip.correct)
+			{
+				vinkjeLabel.setVisible(true);
+				kruisjeLabel.setVisible(false);
+			}
+			else
+			{
+				vinkjeLabel.setVisible(false);
+				kruisjeLabel.setVisible(true);
+				
+			}
+		}
+			
+	}
 	
+	public void zetDocentModus(boolean b)
+	{	docentModus = b;
+		va.zetDocentModus(b);
+		ra.zetDocentModus(b);
+		la.zetDocentModus(b);
+		ba.zetDocentModus(b);
+		
+	}
 	public void zetVlakkenKleurenOptie(boolean b)
     {	vlakkenKleurenOptie = b;
     	va.zetVlakkenKleurenOptie(b);
@@ -95,6 +183,23 @@ class VaktekPanel extends JPanel
     	la.zetProfielenKleurenOptie(b,leerling);
     	ba.zetProfielenKleurenOptie(b,leerling);
     }
+    
+    public void resetColors()
+    {
+    	va.resetColors();
+    	ra.resetColors();
+    	la.resetColors();
+    	ba.resetColors();
+    }
+    
+    public void resetLeerlingColors()
+    {
+    	va.resetLeerlingColors();
+    	ra.resetLeerlingColors();
+    	la.resetLeerlingColors();
+    	ba.resetLeerlingColors();
+    }
+
     //public void zetViewerKleurenOptie(boolean b)
     //{	viewerKleurenOptie = b;
     //	va.zetViewerKleurenOptie(b);
@@ -103,19 +208,47 @@ class VaktekPanel extends JPanel
     //	ba.zetViewerKleurenOptie(b);
     //}
 	
+    public String[] getKleuren()
+    {
+    	String[] vaKleuren = getVaKleuren();
+    	String[] raKleuren = getVaKleuren();
+    	String[] laKleuren = getVaKleuren();
+    	String[] baKleuren = getVaKleuren();
+    	String[] result = new String[vaKleuren.length];
+    	for (int cCnt = 0; cCnt < vaKleuren.length; cCnt++)
+    	{	result[cCnt] = vaKleuren[cCnt];
+    		if (raKleuren[cCnt].equals("roodoranje"))
+    			result[cCnt] = "roodoranje";
+    		if (laKleuren[cCnt].equals("roodoranje"))
+    			result[cCnt] = "roodoranje";
+    		if (baKleuren[cCnt].equals("roodoranje"))
+    			result[cCnt] = "roodoranje";
+    		
+    	}
+    	
+    	
+    	return result;
+    }
+    
     public String[] getVaKleuren()
-    {  	return va.getViewerKleuren();
+    {  	return va.getKleuren();
     }
     public String[] getRaKleuren()
-    {  	return ra.getViewerKleuren();
+    {  	return ra.getKleuren();
     }
     public String[] getLaKleuren()
-    {  	return la.getViewerKleuren();
+    {  	return la.getKleuren();
     }
     public String[] getBaKleuren()
-    {  	return ba.getViewerKleuren();
+    {  	return ba.getKleuren();
     }
 
+    public void setVaktekKleuren(String[] kleuren)
+    {  	setVaKleuren(kleuren);
+    	setRaKleuren(kleuren);
+    	setLaKleuren(kleuren);
+    	setBaKleuren(kleuren);
+    }
     public void setVaKleuren(String[] kleuren)
     {  	va.setViewerKleuren(kleuren);
     }
@@ -129,8 +262,21 @@ class VaktekPanel extends JPanel
     {  	ba.setViewerKleuren(kleuren);
     }
     
+    public void updateViewerKleuren()
+    {	va.updateViewerKleuren();
+    	ra.updateViewerKleuren();
+    	la.updateViewerKleuren();
+    	ba.updateViewerKleuren();
+    	
+    }
+    
     public boolean evalueer(int aantalVlakkenRood)
     {
+    	
+    	boolean correct = va.evalueer() && ra.evalueer() && la.evalueer() && ba.evalueer();
+    	return correct;
+    	
+/*    	
 		int roodoranjeroodCnt = 0;
 		int oranjeroodCnt = 0;
 
@@ -140,8 +286,10 @@ class VaktekPanel extends JPanel
 				roodoranjeroodCnt++;
 			if (viewerKleuren[i].equals("oranjerood"))
 				oranjeroodCnt++;
+			
 		}
-
+System.out.println("vaktek eval ror = va " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
+		
     	viewerKleuren = ra.getViewerKleuren();
 		for (int i = 0; i < viewerKleuren.length; i++)
 		{	if (viewerKleuren[i].equals("roodoranjerood"))
@@ -149,7 +297,7 @@ class VaktekPanel extends JPanel
 			if (viewerKleuren[i].equals("oranjerood"))
 				oranjeroodCnt++;
 		}
-		
+System.out.println("vaktek eval ror = ra " + roodoranjeroodCnt + " or = " + oranjeroodCnt);		
     	viewerKleuren = la.getViewerKleuren();
 		for (int i = 0; i < viewerKleuren.length; i++)
 		{	if (viewerKleuren[i].equals("roodoranjerood"))
@@ -157,7 +305,7 @@ class VaktekPanel extends JPanel
 			if (viewerKleuren[i].equals("oranjerood"))
 				oranjeroodCnt++;
 		}
-		
+System.out.println("vaktek eval ror = la " + roodoranjeroodCnt + " or = " + oranjeroodCnt);		
     	viewerKleuren = ba.getViewerKleuren();
 		for (int i = 0; i < viewerKleuren.length; i++)
 		{	if (viewerKleuren[i].equals("roodoranjerood"))
@@ -165,15 +313,16 @@ class VaktekPanel extends JPanel
 			if (viewerKleuren[i].equals("oranjerood"))
 				oranjeroodCnt++;
 		}
+System.out.println("vaktek eval ror = ba " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
+		
+System.out.println("vaktek eval ror = " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
+System.out.println("vaktek eval avr = " + aantalVlakkenRood);
 
-//System.out.println("vaktek eval ror = " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
-//System.out.println("vaktek eval avr = " + aantalVlakkenRood);
-
-		roodoranjeroodCnt = roodoranjeroodCnt / 4;
-		oranjeroodCnt = oranjeroodCnt / 4;
+		//roodoranjeroodCnt = roodoranjeroodCnt / 4;
+		//oranjeroodCnt = oranjeroodCnt / 4;
 		
 		return (roodoranjeroodCnt == aantalVlakkenRood) && (oranjeroodCnt == 0);    
-		
+*/		
     }
     
 	public void zetAchtergrond(Color c)

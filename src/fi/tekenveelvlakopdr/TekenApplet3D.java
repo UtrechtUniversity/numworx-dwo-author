@@ -609,7 +609,7 @@ class Tekenblad3D extends JPanel
 	{	if (kl.equals("rood")) 
 			return Color.red;
 		else if (kl.equals("roodoranje")) 
-			return Color.red;
+			return Color.orange;
 		else if (kl.equals("groen")) 
 			return Color.green;
 		else if (kl.equals("blauw")) 
@@ -632,7 +632,8 @@ class Tekenblad3D extends JPanel
 			return Color.white;
 		else if (kl.equals("oranje")) 
 			return Color.orange;
-		else return Color.black;		
+		else 
+			return Color.orange;		
 	}	
 }
 

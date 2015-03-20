@@ -37,12 +37,30 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "onderaanzichtRBLabel" , "Viewer onderaanzicht" },
                 { "linkeraanzichtRBLabel" , "Viewer linker aanzicht" },
                 { "rechteraanzichtRBLabel" , "Viewer rechter aanzicht" },
+                { "docentDraaihoekRBLabel" , "Docent draaihoek" },
+                //{ "docentDraaihoekRBLabel" , "Teacher set rotation" },                
                 
                 { "alleenProfielenCBLabel" , "Toon profielen" },
                 
                 { "vlakkenKleurenCBLabel" , "Vlakken kleuren" },
                 { "inProfielenRBLabel" , "van de profielen" },
                 { "inFiguurRBLabel" , "van de figuur" },
+                
+                { "tekenVVOptiesLabel" , "Teken Veelvlak Opties" },
+                { "nakijkOptiesLabel" , "Nakijkopties" },
+                
+                { "kijkDraaihoekNaCBLabel" , "Kijk de draaihoek na" },
+                { "kijkVlakkenNaCBLabel" , "Kijk de gekleurde" },
+                { "kijkVlakkenNaCBLabel2" , "vlakken na" },
+                { "kijkNaLabel" , "Kijk na" }, 
+                
+                { "dezeDraaihoekRBLabel" , "Deze draaihoek" },
+                { "voorkantRBLabel" , "Voorkant" },
+                { "achterkantRBLabel" , "Achterkant" },
+                { "bovenkantRBLabel" , "Bovenkant" },
+                { "onderkantRBLabel" , "Onderkant" },
+                { "linkerkantRBLabel" , "Linkerkant" },
+                { "rechterkantRBLabel" , "Rechterkant" },
                 
                 
 				

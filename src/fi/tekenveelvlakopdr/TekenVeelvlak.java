@@ -34,11 +34,11 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 	double xhoek,yhoek;
 	double beginx = 20, beginy = -30;
 	
-	boolean klikAan = false;
+	//boolean klikAan = false;
 	boolean muisDrukAan = true;
 	
-	int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
-	boolean muisAan = true; // muis van de viewer
+	//int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
+	//boolean muisAan = true; // muis van de viewer
 	
 	Veelvlak v, tv;
 	Veelvlak voorkantPijl = null;
@@ -153,7 +153,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		kleurVlakKnop.setMargin(new Insets(4,10,4,10));
 		kleurVlakKnop.addActionListener(this);
 		kleurVlakKnop.setBounds(8,bStarH+310,114,25);
-		rg.add(kleurVlakKnop);
+		//rg.add(kleurVlakKnop);
 		kleurVlakKnop.setEnabled(false);
 		//kleurVlakKnop.setVisible(false);
 		
@@ -162,7 +162,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		wisKleurKnop.setMargin(new Insets(4,10,4,10));
 		wisKleurKnop.addActionListener(this);
 		wisKleurKnop.setBounds(8,bStarH+340,114,25);
-		rg.add(wisKleurKnop);
+		//rg.add(wisKleurKnop);
 		wisKleurKnop.setEnabled(false);
 		//wisKleurKnop.setVisible(false);
 
@@ -270,21 +270,26 @@ if (k > 0)
 		
 	}
 	
+/*	
 	public void zetViewerPosition(int vPos, boolean muis)
 	{
 		viewerPosition = vPos;
 		muisAan = muis;
 	}
-	
+*/	
 	public void setState(Hashtable h)
 	{	
 		
 //System.out.println("tv setState");
 
-		double[] hoekpunten = null;
-		int[] vlakken = null;
-		int[] lijnen = null;
-		String[] kleuren = null;
+		//double[] hoekpunten = null;
+		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
+		//int[] vlakken = null;
+		ArrayList<Integer> vlakkenAL = new ArrayList<Integer>();
+		//int[] lijnen = null;
+		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
+		//String[] kleuren = null;
+		ArrayList<String> kleurenAL = new ArrayList<String>();
 		int aantalVlakkenRood = 0;
 		
 		boolean basisZichtbaar = true;
@@ -296,13 +301,18 @@ if (k > 0)
 		int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
 		boolean muisAan = true;
 
-		hoekpunten = (double[]) h.get("hoekpunten");
-		vlakken = (int[]) h.get("vlakken");
-		lijnen = (int[]) h.get("lijnen");
+		//hoekpunten = (double[]) h.get("hoekpunten");
+		if (h.containsKey("hoekpunten"))
+			hoekpuntenAL = (ArrayList<Double>) h.get("hoekpunten");
+		//vlakken = (int[]) h.get("vlakken");
+		if (h.containsKey("vlakken"))
+			vlakkenAL = (ArrayList<Integer>) h.get("vlakken");
+		//lijnen = (int[]) h.get("lijnen");
+		if (h.containsKey("lijnen"))
+			lijnenAL = (ArrayList<Integer>) h.get("lijnen");
 		if (h.containsKey("kleuren"))
-			kleuren = (String[]) h.get("kleuren");
-		if (h.containsKey("kleuren"))
-			kleuren = (String[]) h.get("kleuren");
+			kleurenAL = (ArrayList<String>) h.get("kleuren");
+		
 		if (h.containsKey("aantalVlakkenRood"))
 			aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
 		
@@ -316,13 +326,26 @@ if (k > 0)
 		if (h.containsKey("draaiY"))
 			draaiY = ((Double) h.get("draaiY")).doubleValue();
 
-		if (h.containsKey("viewerPosition"))
-			viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
-		if (h.containsKey("muisAan"))
-			muisAan = ((Boolean) h.get("muisAan")).booleanValue();
+		//if (h.containsKey("viewerPosition"))
+		//	viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
+		//if (h.containsKey("muisAan"))
+		//	muisAan = ((Boolean) h.get("muisAan")).booleanValue();
 
-		this.viewerPosition = viewerPosition;
-		this.muisAan = muisAan;
+		//this.viewerPosition = viewerPosition;
+		//this.muisAan = muisAan;
+		double[] hoekpunten = new double[hoekpuntenAL.size()];
+		for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
+			hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
+		int[] vlakken = new int[vlakkenAL.size()];
+		for (int v = 0; v < vlakkenAL.size(); v++)
+			vlakken[v] = vlakkenAL.get(v).intValue();
+		int[] lijnen = new int[lijnenAL.size()];
+		for (int l = 0; l < lijnenAL.size(); l++)
+			lijnen[l] = lijnenAL.get(l).intValue();
+		String[] kleuren = new String[kleurenAL.size()];
+		for (int s = 0; s < kleurenAL.size(); s++)
+			kleuren[s] = kleurenAL.get(s);
+		
 		this.aantalVlakkenRood = aantalVlakkenRood;
 		
 		aantalPuntenRood = 0;
@@ -385,10 +408,14 @@ if (k > 0)
 	{	
 //System.out.println("tv getState");		
 		
-		double[] hoekpunten = null;
-		int[] vlakken = null;
-		int[] lijnen = null;
-		String[] kleuren = null;
+		//double[] hoekpunten = null;
+		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
+		//int[] vlakken = null;
+		ArrayList<Integer> vlakkenAL = new ArrayList<Integer>();
+		//int[] lijnen = null;
+		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
+		//String[] kleuren = null;
+		ArrayList<String> kleurenAL = new ArrayList<String>();
 				
 		boolean basisZichtbaar = true;
 		
@@ -396,13 +423,19 @@ if (k > 0)
 		
 		double draaiX = 20;
 		double draaiY = -30;
-		
-		hoekpunten = tv.hpRij;
-		vlakken = tv.vlRij;
-		lijnen = tv.lnRij;
-		kleuren = new String[tv.aantalVlakken];
-		for (int vCnt = 0; vCnt < kleuren.length; vCnt++)
-		{	kleuren[vCnt] = tv.vlakken[vCnt].vulkleur;
+
+		//hoekpunten = tv.hpRij;
+		for (int h = 0; h < tv.hpRij.length; h++)
+			hoekpuntenAL.add(new Double(tv.hpRij[h]));
+		//vlakken = tv.vlRij;
+		for (int v = 0; v < tv.vlRij.length; v++)
+			vlakkenAL.add(new Integer(tv.vlRij[v]));
+		//lijnen = tv.lnRij;
+		for (int k = 0; k < tv.lnRij.length; k++)
+			lijnenAL.add(new Integer(tv.lnRij[k]));
+		//kleuren = new String[tv.aantalVlakken];
+		for (int vCnt = 0; vCnt < tv.aantalVlakken; vCnt++)
+		{	kleurenAL.add(tv.vlakken[vCnt].vulkleur);
 		}
 		
 		basisZichtbaar = this.basisZichtbaar;
@@ -415,10 +448,11 @@ if (k > 0)
 		
 		Hashtable h = new Hashtable();
 		
-		h.put("hoekpunten", hoekpunten);
-		h.put("vlakken", vlakken);
-		h.put("lijnen", lijnen);
-		h.put("kleuren", kleuren);
+		h.put("hoekpunten", hoekpuntenAL);
+		h.put("vlakken", vlakkenAL);
+		h.put("lijnen", lijnenAL);
+		h.put("kleuren", kleurenAL);
+		
 		h.put("aantalVlakkenRood", new Integer(aantalVlakkenRood));
 		
 		h.put("basisZichtbaar", new Boolean(basisZichtbaar));
@@ -429,8 +463,8 @@ if (k > 0)
 		h.put("draaiY", new Double(draaiY));
 //System.out.println("draaiX = " + UF.format(draaiX,1) + " draaiY = " + UF.format(draaiY,1));		
 
-		h.put("viewerPosition", new Integer(viewerPosition));
-		h.put("muisAan", new Boolean(muisAan));
+		//h.put("viewerPosition", new Integer(viewerPosition));
+		//h.put("muisAan", new Boolean(muisAan));
 		
 		return h;
 	}
@@ -448,11 +482,15 @@ if (k > 0)
 		xhoek = 0;
 		yhoek = 0;
 	}
+	
+/*	
 	public void zetKlikAan(boolean b)
 	{	klikAan = b;
 		muisDrukAan = !b;
 		//rg.setVisible(!b);
 	}
+	
+*/	
 	public double geefDraaiX()
 	{	
 //System.out.println("gdX " + beginx + " " + xhoek);		
@@ -776,10 +814,12 @@ if (k > 0)
 	}
 	public void actionPerformed(ActionEvent e)
 	{		boolean animatieWasAan = false;
+	
+			tvip.resetColors();
 		
 			if (e.getSource() != kleurVlakKnop)
 			{
-				zetKlikAan(false);
+//				zetKlikAan(false);
 				kleurVlakKnop.setFont(font);
 			}
 	
@@ -863,7 +903,7 @@ if (k > 0)
 				lijnKnop.setFont(font);
                 vlakKnop.setFont(font);
                 kleurVlakKnop.setFont(fontBold);
-				zetKlikAan(true);
+				//zetKlikAan(true);
 			}
 			else if(e.getSource() == wisKleurKnop)
 			{	
@@ -1254,6 +1294,7 @@ if (k > 0)
 		}
 	}
 	
+/*	
 	public void muisLosActie()
 	{	if ((klikAan && (geefDrukx()-geefX())*(geefDrukx()-geefX()) + 
 			            (geefDruky()-geefY())*(geefDruky()-geefY()) < 10))
@@ -1261,6 +1302,8 @@ if (k > 0)
 		}
 		tekenOpnieuw();
 	}
+*/	
+/*
 	public void muisKkActie()
 	{	
 		// p is vanzelf gesorteerd
@@ -1282,7 +1325,7 @@ if (k > 0)
 			}
 		}
 	}
-
+*/
 	public void animatie()
 	{	while(animatieStatus() && !vaktekening)
 		{	matrot.initialiseer();

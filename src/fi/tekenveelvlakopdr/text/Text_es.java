@@ -34,6 +34,7 @@ public class Text_es extends java.util.ListResourceBundle
                 { "onderaanzichtRBLabel" , "Viewer bottom view" },
                 { "linkeraanzichtRBLabel" , "Viewer left view" },
                 { "rechteraanzichtRBLabel" , "Viewer right view" },
+                { "docentDraaihoekRBLabel" , "Teacher set rotation" },
 
                 { "alleenProfielenCBLabel" , "Show profiles" },
                 
@@ -41,6 +42,21 @@ public class Text_es extends java.util.ListResourceBundle
                 { "inProfielenRBLabel" , "of the profiles" },
                 { "inFiguurRBLabel" , "of the object" },
 
+                { "tekenVVOptiesLabel" , "drawing polygon options" },
+                { "nakijkOptiesLabel" , "check options" },
+	
+                { "kijkDraaihoekNaCBLabel" , "Check the rotation" },
+                { "kijkVlakkenNaCBLabel" , "Check the coloured" },
+                { "kijkVlakkenNaCBLabel2" , "faces" },
+                { "kijkNaLabel" , "Check" },
+                
+                { "dezeDraaihoekRBLabel" , "This rotation" },
+                { "voorkantRBLabel" , "Front side" },
+                { "achterkantRBLabel" , "Back side" },
+                { "bovenkantRBLabel" , "Top side" },
+                { "onderkantRBLabel" , "Bottom side" },
+                { "linkerkantRBLabel" , "Left side" },
+                { "rechterkantRBLabel" , "Right side" },
 
         };
 }
