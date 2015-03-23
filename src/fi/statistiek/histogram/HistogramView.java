@@ -3258,11 +3258,37 @@ public class HistogramView extends JPanel implements Observer
 							
 							if (frequencies_number != null)
 							{
-								value = frequencies_number[i][j * 2];
+								if (HistogramView.this.hasSplit()
+										&& HistogramView.this.model.isSplitInSingleView()
+										&& !HistogramView.this.isNextToEachOtherSelected())
+								{
+									// voor gestapeld toon tooltip van as-waarde
+									for (int k = 0; k <= i; k++)
+									{
+										value = value + frequencies_number[k][j*2];
+									}
+								}
+								else
+								{
+									value = frequencies_number[i][j * 2];
+								}
 							}
 							else if (frequencies_enum != null)
 							{
-								value = frequencies_enum[i][j].frequency;
+								if (HistogramView.this.hasSplit()
+										&& HistogramView.this.model.isSplitInSingleView()
+										&& !HistogramView.this.isNextToEachOtherSelected())
+								{
+									// voor gestapeld toon tooltip van as-waarde
+									for (int k = 0; k <= i; k++)
+									{
+										value = value + frequencies_enum[k][j].frequency;
+									}
+								}
+								else
+								{
+									value = frequencies_enum[i][j].frequency;
+								}
 							}
 						}
 
