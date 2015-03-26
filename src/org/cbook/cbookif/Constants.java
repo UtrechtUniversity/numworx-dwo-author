@@ -97,4 +97,11 @@ public interface Constants {
 	 *  
 	 */
 	String USER_INFO = "user_info";
+	
+	/**
+	 * The lesson mode. Context property, enum LessonMode.
+	 * taken from imsglobal scorm 2004 cmi.mode
+	 * @see LessonMode
+	 */
+	String LESSON_MODE = "lessonMode";
 }
