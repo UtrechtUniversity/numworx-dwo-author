@@ -291,8 +291,10 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 		if (formuleVak != null)
 			formuleVak.zetStippels(!boxMetRand);
-		if (!boxMetRand)
+		if (!boxMetRand){
 			antwoordTF.setBorder(BorderFactory.createEmptyBorder());
+			antwoordTF.setOpaque(false);
+		}
 
 		if (formuleMode)
 		{

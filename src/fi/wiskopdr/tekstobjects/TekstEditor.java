@@ -808,6 +808,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		zetFormuleKnop(formuleKnop);
 		zetFormuleToolPopup(formuleToolPopup);
 		zetMetRand(boxMetRand);
+		setOpaque(boxMetRand);
+		basisPanel.setOpaque(boxMetRand);
+		scrollPane.setOpaque(boxMetRand);
+		scrollPane.getViewport().setOpaque(boxMetRand);
+		contentPane.setOpaque(boxMetRand);
+		//tekstVak.setOpaque(boxMetRand);
+		//tekstVakActief.setOpaque(boxMetRand);
+		
 		
 		if(interactiePanelLaunchData!=null)
 		{	Vector v = geefInteractiePanels();
@@ -821,8 +829,12 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	}
 	
 	public void zetMetRand(boolean b)
-	{	Color c = b ? Color.gray : Color.white;
-		scrollPane.setBorder(BorderFactory.createLineBorder(c));
+	{	//Color c = b ? Color.gray : Color.white;
+		Color c = Color.gray;
+		if(b)
+			scrollPane.setBorder(BorderFactory.createLineBorder(c));
+		else
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 	
 	public void setState(Hashtable h)
