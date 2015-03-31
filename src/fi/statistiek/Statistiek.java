@@ -98,9 +98,9 @@ public class Statistiek implements WiskOpdrApplet
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		dfs = new DecimalFormatSymbols();
 		
+		Statistiek.language = language;
 		if (language.toString().equals("nl"))
 		{
-			Statistiek.language = language;
 			dfs.setDecimalSeparator(',');
 		}
 		else
