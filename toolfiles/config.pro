@@ -20,6 +20,14 @@
     <methods>;
 }
 
+-keep class fi.statistiek.Statistiek {
+    <methods>;
+}
+
+-keep class fi.statistiek.types.* {
+	<methods>;
+	<fields>;
+}
 
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.

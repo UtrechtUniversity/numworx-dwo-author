@@ -661,7 +661,6 @@ public class Statistiek implements WiskOpdrApplet
 			dfs.setDecimalSeparator(',');
 		else
 			dfs.setDecimalSeparator('.');
-
 		String pattern = "0";
 		
 		if (numberOfDecimals > 0)
