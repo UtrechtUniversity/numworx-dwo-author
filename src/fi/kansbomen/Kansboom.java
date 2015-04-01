@@ -8,12 +8,10 @@ import javax.swing.JPanel;
 public class Kansboom extends JPanel
 
 { 
-	static int HOOGTE = 400; 
-	static int BREEDTE = 600;
 	static int BREEDTEVOLGORDE=60;
-	int hoogteKansboomveld;
+	int hoogteKansboomveld = 400;
 	int hoogteKansboom;
-	int breedteKansboomveld;
+	int breedteKansboomveld = 600;
 	int aantalKolommen;
 	int breedteKolom;
 	int rijhoogte;
@@ -58,8 +56,6 @@ public class Kansboom extends JPanel
 		for(int i = 0; i < 6; i++)
 			zwarteRij[i] = new Color(0,0,0);
 		
-    	hoogteKansboomveld = HOOGTE; 
-    	breedteKansboomveld = BREEDTE;
     	aantalKolommen = 3; 
     	    	
     	aantalOpties = 4; 
@@ -184,28 +180,6 @@ public class Kansboom extends JPanel
 					break;
 				}
 			}
-		
-//			if(h >= (int) 5 * Math.pow(10,p))
-//			{	teller[5]++;
-//				h = (int) (h - 5 * Math.pow(10,p));
-//			}
-//			else if(h >= (int) 4 * Math.pow(10,p))
-//			{	teller[4]++;
-//				h = (int) (h - 4 * Math.pow(10,p));
-//			}
-//			else if(h >= (int) 3 * Math.pow(10,p))
-//			{	teller[3]++;
-//				h = (int) (h - 3 * Math.pow(10,p));
-//			}
-//			else if(h >= (int) 2 * Math.pow(10,p))
-//			{	teller[2]++;
-//				h = (int) (h - 2 * Math.pow(10,p));
-//			}
-//			else if(h >= (int) Math.pow(10,p))
-//			{	teller[1]++;
-//				h = (int) (h - Math.pow(10,p));
-//			}
-//			else teller[0]++;
 		}	
 	}
 	
@@ -355,35 +329,6 @@ public class Kansboom extends JPanel
 			}
 		}
 		return volgordeString;
-		
-//		for(int i=1; i<n+1; i++)
-//			if(positie<Math.pow(k,n-i))
-//				volgordeString = volgordeString + letter[0];
-//			else if(positie<2*Math.pow(k,n-i))
-//			{
-//				volgordeString = volgordeString + letter[1];
-//				positie -= Math.pow(k,n-i);
-//			}
-//			else if(positie<3*Math.pow(k,n-i))
-//			{
-//				volgordeString = volgordeString + letter[2];
-//				positie -= 2*Math.pow(k,n-i);
-//			}
-//			else if(positie<4*Math.pow(k,n-i))
-//			{	
-//				volgordeString = volgordeString + letter[3];
-//				positie -= 3*Math.pow(k,n-i);
-//			}
-//			else if(positie<5*Math.pow(k,n-i))
-//			{	
-//				volgordeString = volgordeString + letter[4];
-//				positie -= 4*Math.pow(k,n-i);
-//			}
-//			else if(positie<6*Math.pow(k,n-i))
-//			{	
-//				volgordeString = volgordeString + letter[5];
-//				positie -= 5*Math.pow(k,n-i);
-//			}
 	}
 	
 	public int[] eindkansMetTerug()

@@ -25,8 +25,8 @@ Kansboom kansboom;
 int editWidth = 170;
 int editHeight = 450;
 
-int kbipBreedte = 500;
-int kbipHoogte = 450;
+int breedte = 500;
+int hoogte = 450;
 
 int kansboomBreedte;
 
@@ -49,8 +49,8 @@ int trekkingen = 3;
 
 int offset=5;
 
-int width;
-int height;
+int instellingenWidth;
+int instellingenHeight;
 int currentX;
 int currentY;
 
@@ -112,8 +112,8 @@ private int mode;
 		theBoldFont = new Font("Dialog", Font.BOLD, 12);
 		theBoldFM = getFontMetrics(theBoldFont);
 		
-		width = editWidth - 2 * offset;
-		height = 3 * theFM.getHeight() / 2;
+		instellingenWidth = editWidth - 2 * offset;
+		instellingenHeight = 3 * theFM.getHeight() / 2;
 		currentX = offset;
 		//currentY = offset;
 		
@@ -133,13 +133,13 @@ private int mode;
 		terugleggenBox = new JComboBox(teruglegKeuzes);
 		terugleggenBox.setSelectedIndex(terugleggenKeuze);
 		terugleggenBox.setFont(theFont);
-		terugleggenBox.setBounds(currentX, currentY, width, height);
+		terugleggenBox.setBounds(currentX, currentY, instellingenWidth, instellingenHeight);
 		add(terugleggenBox);
 		terugleggenBox.addActionListener(this);
 		
 		aantalTrekkingen = new JLabel(Kansbomen.rb.getString("aantalTekst") + trekkingMvTekst);
 		aantalTrekkingen.setFont(theFont);
-		aantalTrekkingen.setBounds(currentX, currentY, 100, height);
+		aantalTrekkingen.setBounds(currentX, currentY, 100, instellingenHeight);
 		add(aantalTrekkingen);
 		
 		currentX += aantalTrekkingen.getWidth()+ offset;
@@ -148,7 +148,7 @@ private int mode;
 		trekkingenBox = new JComboBox(momentenKeuzes);
 		trekkingenBox.setSelectedIndex(trekkingen - 1);
 		trekkingenBox.setFont(theFont);
-		trekkingenBox.setBounds(currentX, currentY, width - aantalTrekkingen.getWidth() - offset, height);
+		trekkingenBox.setBounds(currentX, currentY, instellingenWidth - aantalTrekkingen.getWidth() - offset, instellingenHeight);
 		add(trekkingenBox);
 		trekkingenBox.addActionListener(this);
 		
@@ -156,7 +156,7 @@ private int mode;
 		
 		aantalOptiesLabel = new JLabel(Kansbomen.rb.getString("aantalOptiesTekst"));
 		aantalOptiesLabel.setFont(theFont);
-		aantalOptiesLabel.setBounds(currentX, currentY, 100, height);
+		aantalOptiesLabel.setBounds(currentX, currentY, 100, instellingenHeight);
 		add(aantalOptiesLabel);
 		
 		currentX += aantalOptiesLabel.getWidth()+ offset;
@@ -165,7 +165,7 @@ private int mode;
 		optiesBox = new JComboBox(optiesKeuzes);
 		optiesBox.setSelectedIndex(aantalOpties - 2);
 		optiesBox.setFont(theFont);
-		optiesBox.setBounds(currentX, currentY, width - aantalOptiesLabel.getWidth() - offset, height);
+		optiesBox.setBounds(currentX, currentY, instellingenWidth - aantalOptiesLabel.getWidth() - offset, instellingenHeight);
 		add(optiesBox);
 		optiesBox.addActionListener(this);
 		
@@ -177,7 +177,7 @@ private int mode;
 		for(int i=0; i<6; i++)
 		{	aantalOptieVeld[i] = new JTextField(""+aantalInt[i]);
 			aantalOptieVeld[i].setFont(theFont);
-			aantalOptieVeld[i].setBounds(currentX + width - breedteAantalVeld, currentY, breedteAantalVeld, height);
+			aantalOptieVeld[i].setBounds(currentX + instellingenWidth - breedteAantalVeld, currentY, breedteAantalVeld, instellingenHeight);
 		}
 			
 		naamOptieTekst = new String[6];
@@ -195,7 +195,7 @@ private int mode;
 		for (int i=0; i<6; i++)
 		{	aantalOptie[i] = new JLabel(Kansbomen.rb.getString("aantalTekst")+naamOptieTekst[i]+":");
 			aantalOptie[i].setFont(theFont);
-			aantalOptie[i].setBounds(currentX, currentY, width - breedteAantalVeld, height);
+			aantalOptie[i].setBounds(currentX, currentY, instellingenWidth - breedteAantalVeld, instellingenHeight);
 		}
 		for(int i=0; i<6; i++)
 	{		add(aantalOptie[i]);
@@ -206,7 +206,7 @@ private int mode;
 		
 		legendaKop = new JLabel(Kansbomen.rb.getString("legendaTekst"));
 		legendaKop.setFont(theBoldFont);
-		legendaKop.setBounds(currentX, currentY, width, height);
+		legendaKop.setBounds(currentX, currentY, instellingenWidth, instellingenHeight);
 		add(legendaKop);
 		
 		legendaOptie = new JLabel[6];
@@ -220,15 +220,15 @@ private int mode;
 		for (int i=0; i<6; i++)
 		{
 			legendaKleur[i] = new LijntjeLabel(kleurRij[i]);
-			legendaKleur[i].setBounds(currentX, currentY, width / 5, height);
+			legendaKleur[i].setBounds(currentX, currentY, instellingenWidth / 5, instellingenHeight);
 			add(legendaKleur[i]);
-			currentX += width / 5 + offset;
+			currentX += instellingenWidth / 5 + offset;
 			
 			legendaOptie[i] = new JLabel(naamOptieTekst[i]+" ("+aantalInt[i]+")");
 			legendaOptie[i].setFont(theFont);
-			legendaOptie[i].setBounds(currentX, currentY, 4* width / 5, height);
+			legendaOptie[i].setBounds(currentX, currentY, 4* instellingenWidth / 5, instellingenHeight);
 			add(legendaOptie[i]);
-			currentX -= width / 5 + offset;
+			currentX -= instellingenWidth / 5 + offset;
 		}
 			
 		kijkNaButton = new JButton(Kansbomen.rb.getString("kijkNaTekst"));
@@ -279,7 +279,7 @@ private int mode;
 		
 		kijkNaPanel = new JPanel(null);
 		kijkNaPanel.setOpaque(false);
-		kijkNaPanel.setBounds(editWidth - 95, editHeight-height, 95, 24);
+		kijkNaPanel.setBounds(editWidth - 95, editHeight-instellingenHeight, 95, 24);
 		kijkNaPanel.add(kijkNaButton);
 		kijkNaPanel.add(groenVinkjeLabel);
 		kijkNaPanel.add(geelVinkjeLabel);
@@ -335,17 +335,19 @@ private int mode;
 		}
 		
 		if (kijkNaPanel.isVisible())
-			kijkNaPanel.setLocation(kijkNaPanel.getLocation().x, kbipHoogte-24);
+			kijkNaPanel.setLocation(kijkNaPanel.getLocation().x, hoogte-24);
 		
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
 		super.setBounds(x,y,b,h);
+		breedte = b;
+		hoogte = h;
 		if(teruglegZichtbaar || trekkingZichtbaar || optiesZichtbaar || ballenZichtbaar
 				|| legendaZichtbaar)
-		{	currentX = width + 2 * offset;
-			kansboomBreedte = b - width - 3 * offset;
+		{	currentX = instellingenWidth + 2 * offset;
+			kansboomBreedte = b - instellingenWidth - 3 * offset;
 		}
 		else
 		{	currentX = offset;
@@ -388,7 +390,7 @@ private int mode;
 	{
 		teruglegZichtbaar = b;
 		terugleggenBox.setVisible(teruglegZichtbaar);
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		setBounds(0, 0, breedte, hoogte);
 	}
 	
 	public void zetTrekkingZichtbaar(boolean b)
@@ -396,7 +398,7 @@ private int mode;
 		trekkingZichtbaar = b;
 		trekkingenBox.setVisible(trekkingZichtbaar);
 		aantalTrekkingen.setVisible(trekkingZichtbaar);
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		setBounds(0, 0, breedte, hoogte);
 	}
 	
 	public void zetOptiesZichtbaar(boolean b)
@@ -404,7 +406,7 @@ private int mode;
 		optiesZichtbaar = b;
 		optiesBox.setVisible(optiesZichtbaar);
 		aantalOptiesLabel.setVisible(optiesZichtbaar);
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		setBounds(0, 0, breedte, hoogte);
 	}
 	
 	public void zetBallenZichtbaar(boolean b)
@@ -420,7 +422,7 @@ private int mode;
 				aantalOptieVeld[p].setVisible(false);
 			}
 		}
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		setBounds(0, 0, breedte, hoogte);
 	}
 	
 	public void zetLegendaZichtbaar(boolean b)
@@ -438,7 +440,7 @@ private int mode;
 				legendaOptie[p].setVisible(false);
 			}
 		}
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		setBounds(0, 0, breedte, hoogte);
 	}
 	
 	public void zetAantallenZichtbaar(boolean b)
@@ -579,7 +581,10 @@ private int mode;
 	
 	public void zetNakijkModel(int[] waardes)
 	{
-		scoreMax = waardes[0];
+		if(kijkNaActief)
+			scoreMax = waardes[0];
+		else
+			scoreMax = 0;
 		nakijkModel = waardes;
 	}
 	
@@ -754,11 +759,10 @@ private int mode;
 			trekkingTekst = ((String) h.get("trekkingTekst"));
 		if(h.containsKey("trekkingMvTekst"))
 			trekkingMvTekst = ((String) h.get("trekkingMvTekst"));
-		if(h.containsKey("kbipBreedte"))
-			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
-		if(h.containsKey("kbipHoogte"))
-			kbipHoogte = ((Integer)h.get("kbipHoogte")).intValue();
-		
+//		if(h.containsKey("breedte"))
+//			breedte = ((Integer)h.get("kbipBreedte")).intValue();
+//		if(h.containsKey("kbipHoogte"))
+//			kbipHoogte = ((Integer)h.get("kbipHoogte")).intValue();
 		zetTeruglegZichtbaar(teruglegZichtbaar);
 		zetTrekkingZichtbaar(trekkingZichtbaar);
 		zetOptiesZichtbaar(optiesZichtbaar);
@@ -776,7 +780,9 @@ private int mode;
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
 		zetTrekkingMvTekst(trekkingMvTekst);
-		setBounds(0, 0, kbipBreedte, kbipHoogte);
+		//System.out.println("setBounds in zetOpdracht; breedte = " + breedte + " en kbipHoogte = " + kbipHoogte);
+		
+		//setBounds(0, 0, breedte, kbipHoogte);
 		zetBeginStatus();
 		
 	}
@@ -905,10 +911,10 @@ private int mode;
 		//nodig?
 		if(h.containsKey("scoreMax"))
 			scoreMax = ((Integer)h.get("scoreMax")).intValue();
-		if(h.containsKey("kbipBreedte"))
-			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
-		if(h.containsKey("kbipHoogte"))
-			kbipHoogte = ((Integer)h.get("kbipHoogte")).intValue();
+//		if(h.containsKey("kbipBreedte"))
+//			kbipBreedte = ((Integer)h.get("kbipBreedte")).intValue();
+//		if(h.containsKey("kbipHoogte"))
+//			kbipHoogte = ((Integer)h.get("kbipHoogte")).intValue();
 		
 		zetTeruglegZichtbaar(teruglegZichtbaar);
 		zetTrekkingZichtbaar(trekkingZichtbaar);
@@ -927,7 +933,8 @@ private int mode;
 		zetNakijkModel(nakijkModel);
 		kansboom.trekkingTekst = trekkingTekst;
 		zetTrekkingMvTekst(trekkingMvTekst);
-		setBounds(0, 0, kbipBreedte, kbipHoogte);	
+		//setBounds(0, 0, kbipBreedte, kbipHoogte);	
+		
 	}
 
 
