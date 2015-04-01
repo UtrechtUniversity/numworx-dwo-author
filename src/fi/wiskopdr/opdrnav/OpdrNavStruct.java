@@ -1471,6 +1471,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			zetAfdekPanel(locked, 0);
 
 		this.zelftoetsNagekeken = zelftoetsNagekeken;
+		
 		nakijkKnop.setEnabled(lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr));
 		scoresObjectivesKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) || 
 				(mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
@@ -1483,6 +1484,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					alBezocht = true;
 			zetAfdekPanelLeeg(alBezocht);
 		}
+		if(zelftoetsNagekeken && zelftoetsGeenCorr)
+			zetAfdekPanelLeeg(true);
 		
 		for (int i = 0; i < aantalActiviteiten; i++)
 			for (int j = 0; j < aantalOpdrachten[i]; j++)
@@ -2573,6 +2576,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				aantalNakijkLabel.setVisible(false);
 			}
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			zelftoetsNagekeken = false;
 			repaint();
 
 			if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
