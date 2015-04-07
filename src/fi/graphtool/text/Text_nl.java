@@ -89,6 +89,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"feedbackTekstGrafiekenDeels", "Nog niet alle grafieken zijn goed getekend."},
             {	"feedbackTekstLabelsAssen", "Zet de juiste letters bij de assen."},
             {	"feedbackTekstTekenGrafiek", "Let op: teken ook de grafiek."},
+            {	"feedbackTekstTeWeinigPunten", "Let op: je hebt nog niet voldoende punten getekend."},
             
             {	"fc_huidigDomein", "Domein is nu: "},
             {	"fc_domeinBijFunctie", "Domein bij functie"},

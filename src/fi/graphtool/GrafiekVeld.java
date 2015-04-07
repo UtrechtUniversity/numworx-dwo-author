@@ -53,17 +53,19 @@ class GrafiekVeld extends JComponent{
 		
 		int maxWoordBreedteY = 0;
 		int maxWoordHoogteX = 10;
-		boolean witruimteX = false;
+		boolean witruimteX = by <= 12;
 		boolean witruimteY = false;
+		int maxHoogteLijn = hoogte-Math.max(witruimteX?maxWoordHoogteX:0,(gtip.yPositief?by:0));
 		
+		
+		g.setFont(gtip.font);
 		gtip.fm = g.getFontMetrics();
 		
-		if (gtip.roosterZichtbaar)
+		if (gtip.roosterZichtbaar || gtip.schaalZichtbaar)
 		{	int imin = -(int)Math.round(gtip.beginx/gtip.eenheidx); 
 			int imax = 1+breedte/gtip.eenheidx-(int)Math.round(gtip.beginx/gtip.eenheidx);
 			int jmin = -(int)Math.round(gtip.beginy/gtip.eenheidy); 
 			int jmax = 1+hoogte/gtip.eenheidy-(int)Math.round(gtip.beginy/gtip.eenheidy);
-			
 			
 			for(int j=jmin+1 ; j<jmax-1 ; j++)
 			{	String getal = gtip.df.format(gtip.schaalFactorY*(j));
@@ -74,82 +76,84 @@ class GrafiekVeld extends JComponent{
 				{	maxWoordBreedteY = Math.max(maxWoordBreedteY, woordbreedte);
 				}
 			}
+			witruimteY = maxWoordBreedteY >= bx - 2;
+			//log-roosterlijnen tekenen (iets lichter dan gewone roosterlijnen):
 			g.setColor(new Color(240, 240, 240));
 			if(gtip.roosterX)
 				for(int i = imin+1; i < imax; i++)
 					if((!gtip.xPositief || i > 0) && gtip.xAsLog && !gtip.roosterGrof)
 						for(int k = 1; k < 10; k++)
 							g.drawLine((int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD), 0, 
-									(int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD), hoogte - (gtip.yPositief?by:0));
+									(int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD), maxHoogteLijn);
 			
 			if(gtip.roosterY)
 				for(int j = jmin; j < jmax; j++)
 					if((!gtip.yPositief || j > 0) && gtip.yAsLog && !gtip.roosterGrof)
 						for(int k = 1; k < 10; k++)
-							g.drawLine(gtip.xPositief?bx:0, (int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD)), breedte, 
+							g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0), (int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD)), breedte, 
 									(int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD)));
-					
+			
+			//gewone roosterlijnen tekenen:
+			Color lijnenKleur = new Color(210, 210, 210);
 			g.setColor(new Color(210, 210, 210));
-			
-			if(gtip.roosterX)
-				for(int i=imin+1 ; i<imax ; i++)
-					if((!gtip.xPositief || i>0) && i%((gtip.roosterGrof && !gtip.xAsLog)?2:1)==0)  
-						g.drawLine((int)(bx+i*gtip.eenheidxD),0,(int)(bx+i*gtip.eenheidxD),hoogte - (gtip.yPositief?by:0));
-			
-			if(gtip.roosterY)
-				for(int j=jmin ; j<jmax ; j++)
-					if((!gtip.yPositief || j>0) && j%((gtip.roosterGrof && !gtip.yAsLog)?2:1)==0) 
-						g.drawLine(gtip.xPositief?bx:0,(int)(hoogte-(by+j*gtip.eenheidyD)),breedte,(int)(hoogte-(by+j*gtip.eenheidyD)));
+			for(int i=imin+1 ; i<imax ; i++)
+			{	
+				String getal = gtip.df.format(gtip.schaalFactorX*(i));
+				if(gtip.xAsLog)
+					getal = 10 + toSuperScript(getal);
+				int woordbreedte = gtip.fm.stringWidth(getal);
+				int xLabel = (int)(gtip.beginx+i*gtip.eenheidxD-woordbreedte/2);
+				int yLabel = Math.min(hoogte-1, hoogte-by+11);
+				boolean schaalTekenen = (i%2 == 0 || gtip.xAsLog) && gtip.schaalZichtbaar && gtip.schaalX;
+				//witruimteX = yLabel==hoogte-1;
+				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0))
+				{	if(schaalTekenen) 
+					{	g.drawLine((int)(bx+i*gtip.eenheidxD), 0, (int)(bx+i*gtip.eenheidxD), Math.min(yLabel - 9, maxHoogteLijn));
+						if(maxHoogteLijn > yLabel + 2)
+							g.drawLine((int)(bx+i*gtip.eenheidxD), yLabel + 2, (int)(bx+i*gtip.eenheidxD), maxHoogteLijn);
+					}
+					else if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog)
+						g.drawLine((int)(bx+i*gtip.eenheidxD),0,(int)(bx+i*gtip.eenheidxD), maxHoogteLijn);
+				}
+				if(schaalTekenen && i != 0)
+				{
+					g.setColor(Color.black);
+					g.drawString(getal,	xLabel,	yLabel);
+					g.setColor(lijnenKleur);
+				}
+			}
+			for(int j=jmin ; j<jmax ; j++)
+			{	String getal = gtip.df.format(gtip.schaalFactorY*(j));
+				if(gtip.yAsLog)
+					getal = 10 + toSuperScript(getal);
+				int woordbreedte = gtip.fm.stringWidth(getal);
+				int xLabel = Math.max(maxWoordBreedteY-woordbreedte,bx-2-woordbreedte);
+				int yLabel = (int)(gtip.veldh+5-(gtip.beginy+j*gtip.eenheidyD));
+				witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
+				int minimaalBegin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
+				boolean schaalTekenen = (j%2 == 0 || gtip.yAsLog) && gtip.schaalZichtbaar && gtip.schaalY;
+				if((!gtip.yPositief || j>0) && hoogte-(by+j*gtip.eenheidyD) <= maxHoogteLijn) 
+				{
+					if(schaalTekenen) 
+					{
+						if(xLabel - 1 > minimaalBegin)
+							g.drawLine(minimaalBegin, (int)(hoogte-(by+j*gtip.eenheidyD)), xLabel - 1, (int)(hoogte-(by+j*gtip.eenheidyD)));
+						g.drawLine(Math.max(minimaalBegin, xLabel + woordbreedte + 1), (int)(hoogte-(by+j*gtip.eenheidyD)), breedte, (int)(hoogte-(by+j*gtip.eenheidyD)));
+						
+					}
+					else if(j%2 == 0 || gtip.yAsLog || !gtip.roosterGrof)
+						g.drawLine(minimaalBegin,(int)(hoogte-(by+j*gtip.eenheidyD)),breedte,(int)(hoogte-(by+j*gtip.eenheidyD)));
+							
+				}
+				if(schaalTekenen && j != 0)
+				{
+					g.setColor(Color.black);
+					g.drawString(getal,	xLabel,yLabel);
+					g.setColor(lijnenKleur);
+				}
+			}
 		}
 		
-		if (gtip.schaalZichtbaar)
-		{	g.setFont(gtip.font);
-			
-			int imin = -(int)Math.round(gtip.beginx/gtip.eenheidx); 
-			int imax = 1+gtip.veldb/gtip.eenheidx-(int)Math.round(gtip.beginx/gtip.eenheidx);
-			int jmin = -(int)Math.round(gtip.beginy/gtip.eenheidy); 
-			int jmax = 1+gtip.veldh/gtip.eenheidy-(int)Math.round(gtip.beginy/gtip.eenheidy);
-						
-			boolean gedaanX = false;
-			if(gtip.schaalX)
-				for(int i=imin+1 ; i<imax-1 ; i++)
-				{	String getal = gtip.df.format(gtip.schaalFactorX*(i));
-					if(gtip.xAsLog)
-						getal = 10 + toSuperScript(getal);
-					int woordbreedte = gtip.fm.stringWidth(getal);
-					int xLabel = (int)(gtip.beginx+i*gtip.eenheidxD-woordbreedte/2);
-					int yLabel = Math.min(hoogte-1, hoogte-by+11);
-					witruimteX = yLabel==hoogte-1;
-					if(i!=0 && (i%2==0 || gtip.xAsLog) && (!gtip.xPositief || i>0))
-					{	g.setColor(Color.white);
-						if(witruimteX && !gedaanX)g.fillRect(0, yLabel-9, breedte, 11);
-						else g.fillRect(xLabel-1, yLabel-9, woordbreedte+2, 11);
-						g.setColor(Color.black);
-						g.drawString(getal,	xLabel,	yLabel);
-						gedaanX = true;
-					}
-				}
-			boolean gedaanY = false;
-			if(gtip.schaalY)
-				for(int j=jmin+1 ; j<jmax-1 ; j++)
-				{	String getal = gtip.df.format(gtip.schaalFactorY*(j));
-					if(gtip.yAsLog)
-						getal = 10 + toSuperScript(getal);
-					int woordbreedte = gtip.fm.stringWidth(getal);
-					int xLabel = Math.max(maxWoordBreedteY-woordbreedte,bx-2-woordbreedte);
-					int yLabel = (int)(gtip.veldh+5-(gtip.beginy+j*gtip.eenheidyD));
-					witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
-					if(j!=0 && (j%2==0 || gtip.yAsLog) && (!gtip.yPositief || j>0))
-					{	g.setColor(Color.white);
-						if(witruimteY && !gedaanY)g.fillRect(xLabel-1+woordbreedte-maxWoordBreedteY, 0, maxWoordBreedteY+2, hoogte);
-						else g.fillRect(xLabel-1, yLabel-9, woordbreedte+2, 11);
-						g.setColor(Color.black);
-						g.drawString(getal,	xLabel,yLabel);
-						gedaanY = true;
-					}
-				}
-		}
-
 		if (gtip.piLijnenZichtbaar)
 		{	
 			int dashStep = 5;
@@ -278,8 +282,8 @@ class GrafiekVeld extends JComponent{
 		{
 			g.setColor(Color.black);
 			if(bx>1 && bx<breedte)
-			{	g.drawLine(bx-1,0,bx-1,hoogte-Math.max(witruimteX?maxWoordHoogteX:0,(gtip.yPositief?by:0)));
-				g.drawLine(bx,0,bx,hoogte-Math.max(witruimteX?maxWoordHoogteX:0,(gtip.yPositief?by:0)));
+			{	g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
+				g.drawLine(bx,0,bx,maxHoogteLijn);
 			}
 			if(by>0 && by<hoogte)
 			{	g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));

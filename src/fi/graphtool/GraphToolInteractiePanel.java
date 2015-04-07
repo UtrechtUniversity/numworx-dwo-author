@@ -200,9 +200,9 @@ MouseListener, MouseMotionListener, CBookAware {
 	JPanel kijkNaPanel;
 	int kijkNaPanelHoogte;
 	TekstArea feedbackTekst;
-	private Image feedbackBallonImage;
-	private JPanel mwFeedbackPanel;
-	private JButton feedbackCloseButton;
+	//private Image feedbackBallonImage;
+	//private JPanel mwFeedbackPanel;
+	//private JButton feedbackCloseButton;
 	Icon goedkrulIcon, goedkrulHalfIcon, foutkruisIcon;
 	
 	boolean kijkNaButtonZichtbaar = false;
@@ -218,7 +218,8 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 	public GraphToolInteractiePanel() {
 		setLayout(null);
-		setBackground(Color.white);
+		//setBackground(Color.white);
+		this.setOpaque(false);
 		addActionListener(this);
 		opdrachtKleuren = new Color[10];
 		gewoneKleuren = new Color[10];
@@ -542,8 +543,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		kijkNaPanel.setOpaque(false);
 		
 		kijkNaPanelHoogte = 30;
-		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
-			kijkNaPanelHoogte = 50;
+		//if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
+		//	kijkNaPanelHoogte = 50;
 		kijkNaPanel.setSize(100, kijkNaPanelHoogte);
 		
 		kijkNaPanel.add(kijkNaButton);
@@ -556,54 +557,54 @@ MouseListener, MouseMotionListener, CBookAware {
 		feedbackTekst = new TekstArea();
 		feedbackTekst.setSize(195,20);
 		feedbackTekst.setBackground(new Color(255,255,200));
-		if("MW".equals(WiskOpdr.deployVariant))feedbackTekst.setBackground(new Color(250,255,220));
-		if("GR".equals(WiskOpdr.deployVariant))feedbackTekst.setBackground(new Color(255,255,255));
+		//if("MW".equals(WiskOpdr.deployVariant))feedbackTekst.setBackground(new Color(250,255,220));
+		//if("GR".equals(WiskOpdr.deployVariant))feedbackTekst.setBackground(new Color(255,255,255));
 		feedbackTekst.setBorders(true);
 		feedbackTekst.setCloseable(true);
 		feedbackTekst.addActionListener(this);
 		
-		if("MW".equals(WiskOpdr.deployVariant))
-		{
-			feedbackBallonImage = NWButtonUI.loadImage("DWO-tekstballon.png", this);
-			mwFeedbackPanel = new JPanel()
-			{	public void paintComponent(Graphics g)
-				{	int H = feedbackTekst.getHeight()+20;
-					int w = getWidth();
-					g.drawImage(feedbackBallonImage, 0, 0, w, 20, 0, 0, w, 20, this);
-					g.drawImage(feedbackBallonImage, 0, 20, w, H-10, 0, 20, w, 25, this);
-					g.drawImage(feedbackBallonImage, 0, H-10, w, H,0, 49, w, 59,  this);
-				}
-			};
-			mwFeedbackPanel.setLayout(null);
-			mwFeedbackPanel.setSize(283,59);
-			feedbackCloseButton = new FormuleButton("maal",FormuleButton.MEERKNOP);
-			feedbackCloseButton.addActionListener(this);
-			feedbackCloseButton.setBackground(new Color(255,255,200));
-			feedbackCloseButton.setBounds(mwFeedbackPanel.getSize().width-17, 5, 12,12);
-			mwFeedbackPanel.add(feedbackCloseButton);
-			feedbackTekst.setBorders(false);
-		}
-		if("GR".equals(WiskOpdr.deployVariant))
-		{
-			if("GR".equals(WiskOpdr.deployVariant))feedbackBallonImage = NWButtonUI.loadImage("DWO-tekstballon-gr.png", this);
-			mwFeedbackPanel = new JPanel()
-			{	public void paintComponent(Graphics g)
-				{	int H = feedbackTekst.getHeight()+40;
-					int w = getWidth();
-					g.drawImage(feedbackBallonImage, 0, 0, w, 40, 0, 0, w, 40, this);
-					g.drawImage(feedbackBallonImage, 0, 40, w, H-10, 0, 40, w, 44, this);
-					g.drawImage(feedbackBallonImage, 0, H-10, w, H,0, 44, w, 54,  this);
-				}
-			};
-			mwFeedbackPanel.setLayout(null);
-			mwFeedbackPanel.setSize(206,54);
-			feedbackCloseButton = new FormuleButton("maal",FormuleButton.MEERKNOP);
-			feedbackCloseButton.addActionListener(this);
-			feedbackCloseButton.setBackground(new Color(255,255,255));
-			feedbackCloseButton.setBounds(mwFeedbackPanel.getSize().width-18, 18, 12,12);
-			mwFeedbackPanel.add(feedbackCloseButton);
-			feedbackTekst.setBorders(false);
-		}
+//		if("MW".equals(WiskOpdr.deployVariant))
+//		{
+//			feedbackBallonImage = NWButtonUI.loadImage("DWO-tekstballon.png", this);
+//			mwFeedbackPanel = new JPanel()
+//			{	public void paintComponent(Graphics g)
+//				{	int H = feedbackTekst.getHeight()+20;
+//					int w = getWidth();
+//					g.drawImage(feedbackBallonImage, 0, 0, w, 20, 0, 0, w, 20, this);
+//					g.drawImage(feedbackBallonImage, 0, 20, w, H-10, 0, 20, w, 25, this);
+//					g.drawImage(feedbackBallonImage, 0, H-10, w, H,0, 49, w, 59,  this);
+//				}
+//			};
+//			mwFeedbackPanel.setLayout(null);
+//			mwFeedbackPanel.setSize(283,59);
+//			feedbackCloseButton = new FormuleButton("maal",FormuleButton.MEERKNOP);
+//			feedbackCloseButton.addActionListener(this);
+//			feedbackCloseButton.setBackground(new Color(255,255,200));
+//			feedbackCloseButton.setBounds(mwFeedbackPanel.getSize().width-17, 5, 12,12);
+//			mwFeedbackPanel.add(feedbackCloseButton);
+//			feedbackTekst.setBorders(false);
+//		}
+//		if("GR".equals(WiskOpdr.deployVariant))
+//		{
+//			if("GR".equals(WiskOpdr.deployVariant))feedbackBallonImage = NWButtonUI.loadImage("DWO-tekstballon-gr.png", this);
+//			mwFeedbackPanel = new JPanel()
+//			{	public void paintComponent(Graphics g)
+//				{	int H = feedbackTekst.getHeight()+40;
+//					int w = getWidth();
+//					g.drawImage(feedbackBallonImage, 0, 0, w, 40, 0, 0, w, 40, this);
+//					g.drawImage(feedbackBallonImage, 0, 40, w, H-10, 0, 40, w, 44, this);
+//					g.drawImage(feedbackBallonImage, 0, H-10, w, H,0, 44, w, 54,  this);
+//				}
+//			};
+//			mwFeedbackPanel.setLayout(null);
+//			mwFeedbackPanel.setSize(206,54);
+//			feedbackCloseButton = new FormuleButton("maal",FormuleButton.MEERKNOP);
+//			feedbackCloseButton.addActionListener(this);
+//			feedbackCloseButton.setBackground(new Color(255,255,255));
+//			feedbackCloseButton.setBounds(mwFeedbackPanel.getSize().width-18, 18, 12,12);
+//			mwFeedbackPanel.add(feedbackCloseButton);
+//			feedbackTekst.setBorders(false);
+//		}
 			
 		
 		resetDocentFunctie();
@@ -1412,6 +1413,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		
 		tabelComponent.reset();
+		this.remove(feedbackTekst);
 		produceAction("points changed");
 	}
 	
@@ -3533,8 +3535,9 @@ MouseListener, MouseMotionListener, CBookAware {
 	    nagekeken = false;
 	    ingevuld = false;
 	    if(feedbackTekst!=null)
-	    {	if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))	remove(mwFeedbackPanel);
-	    	else remove(feedbackTekst);
+	    {	//if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))	remove(mwFeedbackPanel);
+	    	//else 
+	    		remove(feedbackTekst);
 	    }
 	    graphPoints = null;
 	    //nog meer? domeinen wissen? functies, ongelijkheden etc wissen?
@@ -3612,6 +3615,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		ingevuld = false;
 		remove(feedbackTekst);
+//		if(mwFeedbackPanel != null)
+//			remove(mwFeedbackPanel);
 		if(typeOpdracht == VINDFORMULEBIJGRAFIEK)
 		{	if(functies != null)
 			{	boolean[] functieCorrect = new boolean[aantalFuncties];
@@ -3690,7 +3695,12 @@ MouseListener, MouseMotionListener, CBookAware {
 				correct = false;
 				produceAction("changed");
 				if(graphPoints.size() > 0)	
-					ingevuld = true;
+				{	ingevuld = true;
+					if(checkExternal && show)
+					{	setFeedback(GraphTool.rb.getString("feedbackTekstTeWeinigPunten"),true);
+						repaint();
+					}
+				}	
 				return;
 			}
 			if (docentFuncties != null)
@@ -3931,6 +3941,13 @@ MouseListener, MouseMotionListener, CBookAware {
 			{	score = 0;
 				correct = false;
 				produceAction("changed");
+				if(graphPoints.size() > 0)	
+				{	ingevuld = true;
+					if(checkExternal && show)
+					{	setFeedback(GraphTool.rb.getString("feedbackTekstTeWeinigPunten"),true);
+						repaint();
+					}
+				}
 				return;
 			}
 			if (graphPoints.size() > 0)
@@ -4057,30 +4074,31 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if(checkExternal)
 			feedbackTekst.setLocation(veldb - 220, gv.getY() + gv.getHeight() - feedbackTekst.getHeight());
-		if("MW".equals(WiskOpdr.deployVariant))
-		{	
-			int h = feedbackTekst.getHeight()+20;
-			mwFeedbackPanel.setSize(mwFeedbackPanel.getWidth(),h);
-			//mwFeedbackPanel.setLocation(getSize().width-310,formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 5);
-			mwFeedbackPanel.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
-			feedbackTekst.setLocation(50,10);
-			mwFeedbackPanel.add(feedbackTekst,0);
-			add(mwFeedbackPanel,0);
-		}
-		else if("GR".equals(WiskOpdr.deployVariant))
-		{	
-		    feedbackTekst.setOpaque(false);
-            int h = feedbackTekst.getHeight()+40;
-			mwFeedbackPanel.setSize(mwFeedbackPanel.getWidth(),h);
-			//int fbx = Math.min(getSize().width-220, formuleVakken[stapNr].getLocation().x + formuleVakken[stapNr].getSize().width + 5);
-			//int fby = formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 5;
-			//mwFeedbackPanel.setLocation(fbx, fby);
-			mwFeedbackPanel.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
-			feedbackTekst.setLocation(5,25);
-			mwFeedbackPanel.add(feedbackTekst,0);
-			add(mwFeedbackPanel,0);
-		}
-		else add(feedbackTekst, 0);
+//		if("MW".equals(WiskOpdr.deployVariant))
+//		{	
+//			int h = feedbackTekst.getHeight()+20;
+//			mwFeedbackPanel.setSize(mwFeedbackPanel.getWidth(),h);
+//			//mwFeedbackPanel.setLocation(getSize().width-310,formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 5);
+//			mwFeedbackPanel.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
+//			feedbackTekst.setLocation(50,10);
+//			mwFeedbackPanel.add(feedbackTekst,0);
+//			add(mwFeedbackPanel,0);
+//		}
+//		else if("GR".equals(WiskOpdr.deployVariant))
+//		{	
+//		    feedbackTekst.setOpaque(false);
+//            int h = feedbackTekst.getHeight()+40;
+//			mwFeedbackPanel.setSize(mwFeedbackPanel.getWidth(),h);
+//			//int fbx = Math.min(getSize().width-220, formuleVakken[stapNr].getLocation().x + formuleVakken[stapNr].getSize().width + 5);
+//			//int fby = formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 5;
+//			//mwFeedbackPanel.setLocation(fbx, fby);
+//			mwFeedbackPanel.setLocation(kijkNaPanel.getLocation().x + kijkNaPanel.getWidth(), kijkNaPanel.getLocation().y);
+//			feedbackTekst.setLocation(5,25);
+//			mwFeedbackPanel.add(feedbackTekst,0);
+//			add(mwFeedbackPanel,0);
+//		}
+//		else 
+		add(feedbackTekst, 0);
 		produceAction("feedback");
 	}
     
@@ -4892,7 +4910,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	{	if(zoomDraad!=null && zoomDraad.isAlive())return;
 	
 		if(e.getSource()==feedbackTekst)
-		{	if(feedbackTekst.getParent()!=null)feedbackTekst.getParent().remove(feedbackTekst);
+		{	remove(feedbackTekst); //doet niets...
 		}
 		if(e.getActionCommand().equals("focus")) ;
 		else 

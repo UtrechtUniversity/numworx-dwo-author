@@ -37,7 +37,7 @@ public class TekenComponent extends JPanel {
 	public static int DRAW = 1;
 	public static int DELETE = 2;
 	public static int DRAG = 3;
-	private int cursorMode = NOCUR;	
+	private int cursorMode = DRAW;	
 	
 	// verbindingen	
 	public static int NONE = 0;
@@ -76,6 +76,7 @@ public class TekenComponent extends JPanel {
 		
 		drawButton.setBounds(2, 2, 20, 20);
 		add(drawButton);
+		drawButton.zetActief(true);
 		
 		deleteButton = new GraphToolToggleKnop("teken_gumknop.gif");
 		deleteButton.setBounds(24, 2, 20, 20);

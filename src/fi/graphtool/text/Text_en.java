@@ -91,6 +91,8 @@ public class Text_en extends java.util.ListResourceBundle
             {	"feedbackTekstGrafiekenDeels", "Not all graphs are drawn correctly (yet)."},
             {	"feedbackTekstLabelsAssen", "Put the correct labels at the axes."},
             {	"feedbackTekstTekenGrafiek", "Also draw the graph."},
+            {	"feedbackTekstTeWeinigPunten", "You still need to draw more points."},
+            
             
             {	"fc_huidigDomein", "Current domain is: "},
             {	"fc_domeinBijFunctie", "Domain for function"},
