@@ -253,7 +253,8 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         {   for(int i=0 ; i<ipList.length ; i++)
 	        {   
 	        	Point p = randomizedPositions[i];
-	            ((TekstVakPanel)ipList[i]).zetLocatie(p.x, p.y);
+	        	if(p != null)
+	        		((TekstVakPanel)ipList[i]).zetLocatie(p.x, p.y);
 	        }
 	        (((TekstInteractiePanelVak)((Component)ipList[0]).getParent()).getTekstVak()).layoutTekst();
         }
