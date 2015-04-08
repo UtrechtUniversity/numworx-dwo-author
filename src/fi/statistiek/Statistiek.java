@@ -61,9 +61,7 @@ public class Statistiek implements WiskOpdrApplet
 		this.language = language;
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		
-		dfs = new DecimalFormatSymbols();
-		// separator is ','
-		dfs.setDecimalSeparator(',');
+		dfs = DecimalFormatSymbols.getInstance(language);
 		df = new DecimalFormat("0.#", dfs);
 		initViews();
 	}
@@ -95,19 +93,9 @@ public class Statistiek implements WiskOpdrApplet
 
 	public Statistiek(Locale language)
 	{
-		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
-		dfs = new DecimalFormatSymbols();
-		
 		Statistiek.language = language;
-		if (language.toString().equals("nl"))
-		{
-			dfs.setDecimalSeparator(',');
-		}
-		else
-		{
-			dfs.setDecimalSeparator('.');
-		}
-
+		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
+		dfs = DecimalFormatSymbols.getInstance(language);
 		df = new DecimalFormat("0.#", dfs);
 		initViews();
 	}
