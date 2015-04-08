@@ -3307,16 +3307,7 @@ public class HistogramView extends JPanel implements Observer
 						
 						// Get valueString for showing tooltip text
 						String valueString = "0";
-						// Test of waarde een integer is 
-						if ((value == Math.floor(value)) && !Double.isInfinite(value))
-						{
-							// als integer, dan zonder decimalen
-							valueString = String.valueOf((int) value);
-						}
-						else
-						{
-							valueString = String.valueOf(value);
-						}
+						valueString = Statistiek.getStringValue(value);
 						
 						if (!valueString.equals("0") || HistogramView.this.model.isFrequencyPolygonMode())
 						{
