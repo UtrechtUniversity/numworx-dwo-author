@@ -68,6 +68,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	private boolean antwoordFormuleVakActief = false;
 	private boolean vakUitwerking = false;
 	private boolean boxMetRand = true;
+	private boolean check = true;
 	
 	private boolean uitklapVak;
 	
@@ -235,6 +236,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	public void zetMinBreedte(int b)
 	{	minBreedte = b;	
 	}
+	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
 	{	
 		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
@@ -256,6 +258,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		if(h.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)h.get("formuleToolBijFocus")).booleanValue();
 		if(h.containsKey("uitw")) vakUitwerking = ((Boolean)h.get("uitw")).booleanValue();
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
+		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
 		
 		uitklapVak = checkUitklapMogelijkheid();
 		
@@ -264,9 +267,11 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 			popupButton.setBounds(0,0,5,20);
 			popupButton.addActionListener(this);
 			add(popupButton,0);
-			zetMaat();
+			//zetMaat();
 		}
+		
 		((FormuleVak)formuleComponent).zetStippels(!boxMetRand);
+		zetMaat();
 		
 		//antwoordFormuleVak.zetSimpelFormuleVak(((FormuleVak)formuleComponent));
 		//closePopup();
@@ -292,6 +297,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		requestFocus(); //want antwoordFormuleVak moet geen focus krijgen in de editor
 		if(h.containsKey("uitw")) vakUitwerking = ((Boolean)h.get("uitw")).booleanValue();
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
+		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
 		
 		//uitklapVak = checkUitklapMogelijkheid();
 		
@@ -300,9 +306,10 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 			popupButton.setBounds(0,0,5,20);
 			popupButton.addActionListener(this);
 			add(popupButton,0);
-			zetMaat();
+			//zetMaat();
 		}
 		((FormuleVak)formuleComponent).zetStippels(!boxMetRand);
+		zetMaat();
 	}
 	
 	public Hashtable getEditState() 
@@ -333,8 +340,9 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	
 	public void zetMaat()
 	{	int uitw = (vakUitwerking && !uitklapVak)?20:0;
-		if(!sizeFixed)setSize(Math.max(minBreedte+uitw, formuleComponent.getSize().width+20+uitw), formuleComponent.getSize().height+8);
-		else setSize(minBreedte+uitw+20, formuleComponent.getSize().height+8);
+		int checkWidth = check ? 20 : 5;
+		if(!sizeFixed)setSize(Math.max(minBreedte+uitw, formuleComponent.getSize().width+checkWidth+uitw), formuleComponent.getSize().height+8);
+		else setSize(minBreedte+checkWidth+uitw, formuleComponent.getSize().height+8);
 		formuleComponent.setLocation(4,4);
 		feedbackButton.setBounds(getSize().width-15-uitw, getSize().height-12, 15,15);
 		if(popupButton!=null)popupButton.setBounds(getSize().width-uitw,2,20,formuleComponent.getSize().height+5);
