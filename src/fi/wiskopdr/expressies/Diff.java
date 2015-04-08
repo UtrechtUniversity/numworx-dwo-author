@@ -46,7 +46,10 @@ public class Diff extends Expressie
 	}
 	
 	public Expressie substitueer(double subst, String var)
-	{	if(var.equals(kind2.geefVarNaam()))	return this;			
+	{	if(var.equals(kind2.geefVarNaam()))	
+		{
+			return kind1.geefDiff((BasisExpressie)kind2).substitueer(subst, var);
+		}
 		return new Diff(kind1.substitueer(subst,var), kind2.substitueer(subst,var));
 	}
 	

@@ -823,12 +823,10 @@ public class FormuleParser
 		}
 		
 		if(diffOperatoren && s.charAt(0) == 'd' && (s.charAt(1) == '*')) //(als charAt(1) i is, dan heb je een diff)
-		{	System.out.println("Differentiaaloperator? " + s);
-			//begin met een d, en dan ofwel een haakje openen die hoort bij het haakje sluiten
+		{	//begin met een d, en dan ofwel een haakje openen die hoort bij het haakje sluiten
 			//helemaal achteraan, of één teken, of een subscript-constructie.
 			if(s.length() == 3)
-			{	System.out.println("kind wordt: " + s.substring(2, s.length()));
-				return new Differentiaal(parse(s.substring(2, s.length())));
+			{	return new Differentiaal(parse(s.substring(2, s.length())));
 			}
 			boolean isDifferentiaal = true;
 			if(s.charAt(2) == '(')
