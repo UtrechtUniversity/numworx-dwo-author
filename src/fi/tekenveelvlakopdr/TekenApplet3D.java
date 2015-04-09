@@ -113,8 +113,16 @@ public class TekenApplet3D extends JPanel
 	//deze methoden worden gebruikt in de animatiehandler en muishandlers en doogegeven aan 
 	//Tekenblad
 	//-------------------------------------------------------------------------------------------
-	public void tekenOpnieuw(){tb.tekenOpnieuw();}
-	public void tekenErbij(){tb.tekenErbij();}
+	public void tekenOpnieuw()
+	{	//tb.tekenOpnieuw();
+	
+		repaint();
+	}
+	public void tekenErbij()
+	{	//tb.tekenErbij();
+	
+		repaint();
+	}
 	
   	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "initialiseer" en doorgegeven aan Tekenblad tb (of 

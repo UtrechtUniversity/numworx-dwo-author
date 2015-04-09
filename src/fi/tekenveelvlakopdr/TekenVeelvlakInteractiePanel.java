@@ -36,6 +36,9 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     double docentDraaihoekX = 1e5d;
     double docentDraaihoekY = 1e5d;
     
+    String[] docentKleuren;
+    String[] viewerKleuren; 
+    
     static int MOVEABLE = 0;
     static int FRONTVIEW = 1;
     static int BACKVIEW = 2;
@@ -132,12 +135,16 @@ System.out.println("tvip getEditState");
 //let nog even op dat de muis aanstaat    		
 		}
 
+		if ((editMode != null) && editMode.nakijkOptiesPanel.isVisible() && 
+			 editMode.kijkVlakkenNaCB.isSelected() && editMode.tvipProfilesOnly)
+		{	
+			viewerOnly = false;
+    		profilesOnly = true;
+		}
 
+		
     	Hashtable tvState = new Hashtable();
     	
-    	//if (viewerOnly)
-    	//	viewer.getState();
-    	//else	
    		tvState = tekenVeelvlak.getState();
     	int basisFiguur = tekenVeelvlak.geefBasisFiguur();
     	
@@ -148,14 +155,14 @@ System.out.println("tvip getEditState");
         h.put("profilesOnly", new Boolean(profilesOnly));
         h.put("viewerPosition", new Integer(viewerPosition));
         
-System.out.println("vp = " + viewerPosition);
+//System.out.println("vp = " + viewerPosition);
 
         h.put("basisFiguur", new Integer(basisFiguur));
         h.put("aantalHulppunten", new Integer(aantalHulppunten));
         h.put("toonVooraanzichtPijl", new Boolean(toonVooraanzichtPijl));
         
         h.put("vlakkenKleurenOptie", new Boolean(vlakkenKleurenOptie));
-        h.put("profielenKleurenOptie", new Boolean(profielenKleurenOptie));
+//        h.put("profielenKleurenOptie", new Boolean(profielenKleurenOptie));
         //h.put("viewerKleurenOptie", new Boolean(viewerKleurenOptie));
         
         h.put("kijkDraaihoekNa", new Boolean(kijkDraaihoekNa));
@@ -164,14 +171,21 @@ System.out.println("vp = " + viewerPosition);
         
         h.put("kijkVlakkenNa", new Boolean(kijkVlakkenNa));
         
-    	String[] viewerKleuren = viewer.getViewerKleuren();
+        if (docentKleuren != null)
+        {	ArrayList<String> docentKleurenAL = new ArrayList<String>();
+			for (int dk = 0; dk < docentKleuren.length; dk++)
+				docentKleurenAL.add(docentKleuren[dk]);
+			h.put("docentKleuren", docentKleurenAL);
+        }
+        
     	if (viewerKleuren != null)
     	{	ArrayList<String> viewerKleurenAL = new ArrayList<String>();
     		for (int vk = 0; vk < viewerKleuren.length; vk++)
     			viewerKleurenAL.add(viewerKleuren[vk]);
     		h.put("viewerKleuren", viewerKleurenAL);
     	}	
-    	
+
+/*    	
     	String[] vaKleuren = vaktek.getVaKleuren();
     	if (vaKleuren != null)
     	{	
@@ -205,7 +219,9 @@ System.out.println("vp = " + viewerPosition);
     		for (int ba = 0; ba < baKleuren.length; ba++)
     			baKleurenAL.add(baKleuren[ba]);
     		h.put("baKleuren", baKleurenAL);
-    	}	
+    	}
+*/
+/*    	
     	if (vlakkenKleurenOptie && !profielenKleurenOptie)
     	{	
     		for (int c = 0; c < viewerKleuren.length; c++)
@@ -233,29 +249,48 @@ System.out.println("vp = " + viewerPosition);
 	 	 	}
 	 	    aantalVlakkenRood = aantalVlakkenRood / 4;
     	 }
-	 	 h.put("aantalVlakkenRood", aantalVlakkenRood);
+*/    	 
+//	 	 h.put("aantalVlakkenRood", aantalVlakkenRood);
 
-System.out.println("avr = " + aantalVlakkenRood);	 	 
+//System.out.println("avr = " + aantalVlakkenRood);	 	 
         return h;
     }
 
     public void resetColors()
     {
-    	viewer.resetColors();
-    	vaktek.resetColors();
+    	//viewer.resetColors();
+    	//vaktek.resetColors();
     }
     public void setViewerOnly(boolean b)
     {	viewerOnly = b;
     	if (viewerOnly)
-    	{	tekenVeelvlak.setVisible(false);
+    	{    		
+    		tekenVeelvlak.setVisible(false);
     		vaktek.setVisible(false);
+    		//remove(vaktek);
     		profilesOnly = false;
     		//viewer.setVisible(true);
     		viewerPanel.setVisible(true);
     		tvState = tekenVeelvlak.getState();
     		viewer.setState(tvState);
     		viewer.muisAan = (viewerPosition == 0);
+ 
+    		if (viewerKleuren != null)
+    		{	viewer.zetKleuren(viewerKleuren);
+//System.out.println("VO true vk != null");    		
+    		}
+    		else
+    		{
+    			viewerKleuren = tekenVeelvlak.getKleuren();
+//System.out.println("VO true vk = null");    			
+    		}
+     		
     		viewer.repaint();
+    		if (editMode != null)
+    		{	editMode.showNakijkOpties(true);
+    		
+    			editMode.vlakkenKleurenCB.setEnabled(true);
+    		}
     	}	
     	else
     	{	//viewer.setVisible(false);
@@ -268,62 +303,73 @@ System.out.println("avr = " + aantalVlakkenRood);
 				{	//tekenVeelvlak.setState(viewer.getState());
 					tekenVeelvlak.zetBeginHoeken(viewer.geefDraaiX(), viewer.geefDraaiY());
 				}
+				
+				viewerKleuren = null;
+//System.out.println("VO false vk = null");				
+				
 				tekenVeelvlak.repaint();
+				
+	    		if (editMode != null)
+	    		{	editMode.showNakijkOpties(false);
+	    		
+	    			editMode.vlakkenKleurenCB.setSelected(false);
+	    			editMode.vlakkenKleurenCB.setEnabled(false);
+	    		}
+
     		}	
     	}
     	
     }
-/*
-    public void setDocentViewerOnly(boolean b, boolean muisAan)
-    {	//viewerOnly = b;
-    	if (b)
-    	{	tekenVeelvlak.setVisible(false);
-    		vaktek.setVisible(false);
-    		viewer.setVisible(true);
-    		tvState = tekenVeelvlak.getState();
-    		viewer.setState(tvState);
-    		viewer.muisAan = muisAan;
-    		viewer.repaint();
-    	}	
-    	else
-    	{	tekenVeelvlak.setVisible(false);
-			viewer.setVisible(false);
-			vaktek.setVisible(true);
-   	 		if (tekenVeelvlak.tv != null)
-   	 		{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
-   	 		}
-//   	 	else
-//System.out.println("tvv.tv == null");       	 		
-   	 		vaktek.repaint();
-    			
-    	}
-    	
-    }
-*/    
+    
     public void setProfilesOnly(boolean b)
     {	profilesOnly = b;
     	if (profilesOnly)
     	{	tekenVeelvlak.setVisible(false);
+    	
+    		tvState = tekenVeelvlak.getState();
     		//viewer.setVisible(false);
     		viewerPanel.setVisible(false);
     		viewerOnly = false;
     		vaktek.setVisible(true);
+    		//add(vaktek);
        	 	if (tekenVeelvlak.tv != null)
        	 	{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
        	 	}
+       	 	
+    		if (viewerKleuren != null)
+    			vaktek.setVaktekKleuren(viewerKleuren);
+    		else
+    			viewerKleuren = tekenVeelvlak.getKleuren();
+
     		vaktek.repaint();
+    		if (editMode != null)
+    		{	editMode.showNakijkOpties(true);
+    		
+    			editMode.vlakkenKleurenCB.setEnabled(true);
+    		}
+
     	}	
     	else
     	{	vaktek.setVisible(false);
+    		//remove(vaktek);
     		if (!viewerOnly)
     		{	
     			tekenVeelvlak.setVisible(true);
 			
-    		//viewer.setVisible(false);
-    			//if (viewer.getState() != null)
-    			//{	tekenVeelvlak.setState(viewer.getState());
-    			//}
+    			tekenVeelvlak.setState(tvState);
+    			
+    			viewerKleuren = null;
+//System.out.println("PO false vk = null");    			
+    			
     			tekenVeelvlak.repaint();
+        		if (editMode != null)
+        		{	editMode.showNakijkOpties(false);
+        		
+        			editMode.vlakkenKleurenCB.setSelected(false);
+        			editMode.vlakkenKleurenCB.setEnabled(false);
+        			
+        		}
+
     		}	
     	}
     	
@@ -331,13 +377,15 @@ System.out.println("avr = " + aantalVlakkenRood);
 
     public void zetVlakkenKleurenOptie(boolean b)
     {	vlakkenKleurenOptie = b;
-    	//tekenVeelvlak.kleurVlakKnop.setEnabled(b);
-    	//tekenVeelvlak.wisKleurKnop.setEnabled(b);
     	viewer.zetVlakkenKleurenOptie(b);
     	vaktek.zetVlakkenKleurenOptie(b);
-    	zetProfielenKleurenOptie(profielenKleurenOptie);
+    	viewer.zetKlikAan(b);
+    	vaktek.zetKlikAan(b);
+    	//zetProfielenKleurenOptie(profielenKleurenOptie);
     	
     }
+    
+/*    
     public void zetProfielenKleurenOptie(boolean b)
     {	profielenKleurenOptie = b;
 //    	viewerKleurenOptie = !b;
@@ -350,7 +398,7 @@ System.out.println("avr = " + aantalVlakkenRood);
     	//vaktek.zetViewerKleurenOptie(!b);
     	
     }
-    
+*/    
 /*    
     public void zetViewerKleurenOptie(boolean b)
     {	viewerKleurenOptie = b;
@@ -475,14 +523,15 @@ System.out.println("avr = " + aantalVlakkenRood);
     	if (!kijkNaActief)
     		return;
     	
-    	if (vlakkenKleurenOptie && profielenKleurenOptie && profilesOnly)
+    	//if (vlakkenKleurenOptie && profielenKleurenOptie && profilesOnly)
+    	if (vlakkenKleurenOptie && profilesOnly)
     	{
-    		correct = vaktek.evalueer(aantalVlakkenRood);
+    		correct = vaktek.evalueer(docentKleuren);
     		nagekeken = true;
     	}
-    	else if (vlakkenKleurenOptie && !profielenKleurenOptie && !profilesOnly)
+    	else if (vlakkenKleurenOptie && viewerOnly)
     	{
-    		correct = viewer.evalueer();
+    		correct = viewer.evalueer(docentKleuren);
     		nagekeken = true;
     	}
     	else if (kijkDraaihoekNa)
@@ -554,8 +603,6 @@ System.out.println("tvip setEditState");
          double docentDraaihoekX = 0;
          double docentDraaihoekY = 0;
          
-         int aantalVlakkenRood = 0;
-         
          if (h.containsKey("tvState"))
          {	 tvState = (Hashtable)h.get("tvState");
 //System.out.println("h contains tvState");         
@@ -577,8 +624,8 @@ System.out.println("tvip setEditState");
          
          if(h.containsKey("vlakkenKleurenOptie"))
         	 vlakkenKleurenOptie = ((Boolean)h.get("vlakkenKleurenOptie")).booleanValue();
-         if (h.containsKey("profielenKleurenOptie"))
-        	 profielenKleurenOptie = ((Boolean)h.get("profielenKleurenOptie")).booleanValue();
+//         if (h.containsKey("profielenKleurenOptie"))
+//        	 profielenKleurenOptie = ((Boolean)h.get("profielenKleurenOptie")).booleanValue();
          
          if (h.containsKey("kijkDraaihoekNa"))
          	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
@@ -590,37 +637,26 @@ System.out.println("tvip setEditState");
          if (h.containsKey("docentDraaihoekY"))
          	docentDraaihoekY = ((Double) h.get("docentDraaihoekY")).doubleValue();
 
-        	ArrayList<String> viewerKleurenAL = new ArrayList<String>();
-        	ArrayList<String> vaKleurenAL = new ArrayList<String>();
-        	ArrayList<String> raKleurenAL = new ArrayList<String>();
-        	ArrayList<String> laKleurenAL = new ArrayList<String>();
-        	ArrayList<String> baKleurenAL = new ArrayList<String>();
-        	if (h.containsKey("viewerKleuren"))
-        		viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
-        	if (h.containsKey("vaKleuren"))
-        		vaKleurenAL = (ArrayList<String>) h.get("vaKleuren");
-        	if (h.containsKey("raKleuren"))
-        		raKleurenAL = (ArrayList<String>) h.get("raKleuren");
-        	if (h.containsKey("laKleuren"))
-        		laKleurenAL = (ArrayList<String>) h.get("laKleuren");
-        	if (h.containsKey("baKleuren"))
-        		baKleurenAL = (ArrayList<String>) h.get("baKleuren");
-        	String[] viewerKleuren = new String[viewerKleurenAL.size()];
-        	String[] vaKleuren = new String[vaKleurenAL.size()];
-        	String[] raKleuren = new String[raKleurenAL.size()];
-        	String[] laKleuren = new String[laKleurenAL.size()];
-        	String[] baKleuren = new String[baKleurenAL.size()];
-        	for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
+     	ArrayList<String> docentKleurenAL = null;
+    	ArrayList<String> viewerKleurenAL = null;
+    	if (h.containsKey("docentKleuren"))
+    		docentKleurenAL = (ArrayList<String>) h.get("docentKleuren");
+    	if (h.containsKey("viewerKleuren"))
+    		viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
+    	if (docentKleurenAL != null)
+    	{
+    		docentKleuren = new String[docentKleurenAL.size()];
+    		for (int dk = 0; dk < docentKleurenAL.size(); dk++)
+        		docentKleuren[dk] = docentKleurenAL.get(dk);
+    		
+    	}
+    	if (viewerKleurenAL != null)
+    	{
+    		viewerKleuren = new String[viewerKleurenAL.size()];
+    		for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
         		viewerKleuren[vk] = viewerKleurenAL.get(vk);
-        	for (int va = 0; va < vaKleurenAL.size(); va++)
-        		vaKleuren[va] = vaKleurenAL.get(va);
-        	for (int ra = 0; ra < raKleurenAL.size(); ra++)
-        		raKleuren[ra] = raKleurenAL.get(ra);
-        	for (int la = 0; la < laKleurenAL.size(); la++)
-        		laKleuren[la] = laKleurenAL.get(la);
-        	for (int ba = 0; ba < baKleurenAL.size(); ba++)
-        		baKleuren[ba] = baKleurenAL.get(ba);
-         
+    	}
+
         	
          this.kijkDraaihoekNa = kijkDraaihoekNa;
          this.kijkVlakkenNa = kijkVlakkenNa;
@@ -630,48 +666,11 @@ System.out.println("tvip setEditState");
          
          if (kijkDraaihoekNa)
         	 viewer.kijkNaPanel.setVisible(true);
-         if (vlakkenKleurenOptie && !profielenKleurenOptie)
-        	 viewer.kijkNaPanel.setVisible(true);
-         if (vlakkenKleurenOptie && profielenKleurenOptie)
-        	 vaktek.kijkNaPanel.setVisible(true);
+         if (vlakkenKleurenOptie && kijkVlakkenNa)// && !profielenKleurenOptie)
+         { 	 viewer.kijkNaPanel.setVisible(true);
+           	 vaktek.kijkNaPanel.setVisible(true);
+         }  	 
          
-/*         
-     	 if (vlakkenKleurenOptie && !profielenKleurenOptie)
-    	 {   
-    	 	 for (int c = 0; c < viewerKleuren.length; c++)
-    	 	 {	 if (viewerKleuren[c].equals("roodoranje"))
-    	 			 aantalVlakkenRood++;
-    	 	 }
-    	 }
-    	 else if (vlakkenKleurenOptie && profielenKleurenOptie)	
-    	 {	 
-    	 	 for (int c = 0; c < vaKleuren.length; c++)
-    	 	 {	 if (vaKleuren[c].equals("roodoranje"))
-    	 			 aantalVlakkenRood++;
-    	 	 }
-    	 	 for (int c = 0; c < raKleuren.length; c++)
-    	 	 {	 if (raKleuren[c].equals("roodoranje"))
-    	 			 aantalVlakkenRood++;
-    	 	 }
-    	 	 for (int c = 0; c < laKleuren.length; c++)
-    	 	 {	 if (laKleuren[c].equals("roodoranje"))
-    	 			 aantalVlakkenRood++;
-    	 	 }
-    	 	 for (int c = 0; c < baKleuren.length; c++)
-    	 	 {	 if (baKleuren[c].equals("roodoranje"))
-    	 			 aantalVlakkenRood++;
-    	 	 }
-
-    	 	 aantalVlakkenRood = aantalVlakkenRood / 4;  
-    	 }
-
-//System.out.println("avr = " + aantalVlakkenRood);
-
-*/
-         if (h.containsKey("aantalVlakkenRood"))
-         	 aantalVlakkenRood = ((Integer) tvState.get("aantalVlakkenRood")).intValue();
-         
-         this.aantalVlakkenRood = aantalVlakkenRood;
          
          toonVooraanzichtPijl(toonVooraanzichtPijl);
          
@@ -682,12 +681,18 @@ System.out.println("tvip setEditState");
          this.profilesOnly = profilesOnly;
          
          zetVlakkenKleurenOptie(vlakkenKleurenOptie);
-         zetProfielenKleurenOptie(profielenKleurenOptie);
+//         zetProfielenKleurenOptie(profielenKleurenOptie);
          
          tekenVeelvlak.zetKiesV(basisFiguur);
     	 tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
          tekenVeelvlak.setState(tvState);
          
+    	 viewer.setState(tvState);
+    	 if (tekenVeelvlak.tv != null)
+  	 	 {   vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+   	 	 }
+
+    	 
          if (viewerOnly)
          {	 
 //System.out.println("viewerOnly");
@@ -695,7 +700,10 @@ System.out.println("tvip setEditState");
         	 tekenVeelvlak.setVisible(false);
         	 vaktek.setVisible(false);
         	 viewerPanel.setVisible(true);
-        	 viewer.setState(tvState);
+        	 //viewer.setState(tvState);
+        	 
+        	 if (viewerKleuren != null)
+        		 viewer.zetKleuren(viewerKleuren);
 //HIER        	 
         	 zetViewerPosition(viewerPosition);
          }
@@ -704,11 +712,12 @@ System.out.println("tvip setEditState");
         	 tekenVeelvlak.setVisible(false);
         	 viewerPanel.setVisible(false);
         	 vaktek.setVisible(true);
-       	 	 if (tekenVeelvlak.tv != null)
-      	 	 {   vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
-       	 	 }
-       	 	 else
-System.out.println("tvv.tv == null");       	 		
+       	 	 //if (tekenVeelvlak.tv != null)
+      	 	 //{   vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+       	 	 //}
+
+        	 if (viewerKleuren != null)
+        		 vaktek.setVaktekKleuren(viewerKleuren);
         	 
          }
          else
@@ -716,57 +725,37 @@ System.out.println("tvv.tv == null");
         	 viewerPanel.setVisible(false);
         	 vaktek.setVisible(false);
         	 tekenVeelvlak.setVisible(true);
-        	 //tekenVeelvlak.zetKiesV(basisFiguur);
-        	 //tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
-	         //tekenVeelvlak.setState(tvState);
 	         tekenVeelvlak.begin = true;
 	         tekenVeelvlak.tekenOpnieuw();
 	         
 	         
          }
          
-         resetLeerlingKleuren(viewerKleuren);
-         resetLeerlingKleuren(vaKleuren);
-         resetLeerlingKleuren(raKleuren);
-         resetLeerlingKleuren(laKleuren);
-         resetLeerlingKleuren(baKleuren);
+// niet nodig?/          
+         //resetLeerlingKleuren(viewerKleuren);
          
-     	 if (vlakkenKleurenOptie && !profielenKleurenOptie)
-    	 {   viewer.setViewerKleuren(viewerKleuren);
-    	 	 viewer.aantalVlakkenRood = aantalVlakkenRood;
+//         resetLeerlingKleuren(vaKleuren);
+//         resetLeerlingKleuren(raKleuren);
+//         resetLeerlingKleuren(laKleuren);
+//         resetLeerlingKleuren(baKleuren);
+         
+     	 if (vlakkenKleurenOptie)// && !profielenKleurenOptie)
+    	 {   
     	 	 viewer.zetDocentModus(false);
     	 	 vaktek.zetDocentModus(false);
-    	 	 viewer.zetKlikAan(false);
-    	 	 vaktek.zetKlikAan(false);
+    	 	 
+    	 	 viewer.zetKleuren(viewerKleuren);
+    	 	 vaktek.setVaktekKleuren(viewerKleuren);
+    	 	 viewer.zetKlikAan(true);
+    	 	 vaktek.zetKlikAan(true);
     	 }
-    	 else if (vlakkenKleurenOptie && profielenKleurenOptie)	
-    	 {	 vaktek.setVaKleuren(vaKleuren);
-    		 vaktek.setRaKleuren(raKleuren);
-    		 vaktek.setLaKleuren(laKleuren);
-    		 vaktek.setBaKleuren(baKleuren);
-    		 vaktek.va.aantalVlakkenRood = aantalVlakkenRood;
-    		 vaktek.ra.aantalVlakkenRood = aantalVlakkenRood;
-    		 vaktek.la.aantalVlakkenRood = aantalVlakkenRood;
-    		 vaktek.ba.aantalVlakkenRood = aantalVlakkenRood;
-    	 	 viewer.zetDocentModus(false);
-    	 	 vaktek.zetDocentModus(false);
-    	 	 viewer.zetKlikAan(false);
-    	 	 vaktek.zetKlikAan(false);
-
-    	 }	 
     }
 
     public void resetLeerlingKleuren(String[] kleuren)
     {
-		for (int j = 0; j < kleuren.length; j++)
-		{	if (kleuren[j].equals("roodoranjerood"))
-			{	kleuren[j] = "roodoranje";
-			}
-			if (kleuren[j].equals("oranjerood"))
-			{	kleuren[j] = "oranje";
-			}
-		}
-
+    	
+    	viewer.zetKleuren(kleuren);
+    	vaktek.setVaktekKleuren(kleuren);
     }
     
     public void start() {
@@ -817,50 +806,24 @@ System.out.println("tvip getState");
     	h.put("viewerDraaiX", new Double(viewerDraaiX));
     	h.put("viewerDraaiY", new Double(viewerDraaiY));
     	
-    	String[] viewerKleuren = viewer.getViewerKleuren();
-    	if (viewerKleuren != null)
-    	{	
-    		ArrayList<String> viewerKleurenAL = new ArrayList<String>();
-    		for (int vk = 0; vk < viewerKleuren.length; vk++)
-    			viewerKleurenAL.add(viewerKleuren[vk]);
-    		h.put("viewerKleuren", viewerKleurenAL);
+    	String[] leerlingKleuren = null;
+    	
+    	if (vlakkenKleurenOptie && viewerOnly)
+    	{	leerlingKleuren = viewer.getKleuren();
+    		ArrayList<String> leerlingKleurenAL = new ArrayList<String>();
+    		for (int lk = 0; lk < leerlingKleuren.length; lk++)
+    			leerlingKleurenAL.add(leerlingKleuren[lk]);
+    		h.put("leerlingKleuren", leerlingKleurenAL);
     	}
     	
-    	String[] vaKleuren = vaktek.getVaKleuren();
-    	if (vaKleuren != null)
-    	{
-    		ArrayList<String> vaKleurenAL = new ArrayList<String>();
-    		for (int va = 0; va < vaKleuren.length; va++)
-    			vaKleurenAL.add(vaKleuren[va]);
-    		h.put("vaKleuren", vaKleurenAL);
-    	}
-
-    	String[] raKleuren = vaktek.getRaKleuren();
-    	if (raKleuren != null)
-    	{
-    		ArrayList<String> raKleurenAL = new ArrayList<String>();
-    		for (int ra = 0; ra < raKleuren.length; ra++)
-    			raKleurenAL.add(raKleuren[ra]);
-    		h.put("raKleuren", raKleurenAL);
-    	}
-
-    	String[] laKleuren = vaktek.getLaKleuren();
-    	if (laKleuren != null)
-    	{
-    		ArrayList<String> laKleurenAL = new ArrayList<String>();
-    		for (int la = 0; la < laKleuren.length; la++)
-    			laKleurenAL.add(laKleuren[la]);
-    		h.put("laKleuren", laKleurenAL);
+    	if (vlakkenKleurenOptie && profilesOnly)
+    	{	leerlingKleuren = vaktek.getKleuren();
+    		ArrayList<String> leerlingKleurenAL = new ArrayList<String>();
+    		for (int lk = 0; lk < leerlingKleuren.length; lk++)
+    			leerlingKleurenAL.add(leerlingKleuren[lk]);
+    		h.put("leerlingKleuren", leerlingKleurenAL);
     	}
     	
-    	String[] baKleuren = vaktek.getBaKleuren();
-    	if (baKleuren != null)
-    	{
-    		ArrayList<String> baKleurenAL = new ArrayList<String>();
-    		for (int ba = 0; ba < baKleuren.length; ba++)
-    			baKleurenAL.add(baKleuren[ba]);
-    		h.put("baKleuren", baKleurenAL);
-    	}
     	
 //kijkNa();    	
 //System.out.println("get nagekeken = " + nagekeken);
@@ -892,51 +855,26 @@ System.out.println("tvip getState");
     	if (viewerPosition == TekenVeelvlakInteractiePanel.MOVEABLE)
     		viewer.zetBeginHoeken(viewerDraaiX, viewerDraaiY);
     			
-    	//String[] viewerKleuren = null;
-    	//String[] vaKleuren = null;
-    	//String[] raKleuren = null;
-    	//String[] laKleuren = null;
-    	//String[] baKleuren = null;
-    	ArrayList<String> viewerKleurenAL = new ArrayList<String>();
-    	ArrayList<String> vaKleurenAL = new ArrayList<String>();
-    	ArrayList<String> raKleurenAL = new ArrayList<String>();
-    	ArrayList<String> laKleurenAL = new ArrayList<String>();
-    	ArrayList<String> baKleurenAL = new ArrayList<String>();
-    	if (h.containsKey("viewerKleuren"))
-    		viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
-    	if (h.containsKey("vaKleuren"))
-    		vaKleurenAL = (ArrayList<String>) h.get("vaKleuren");
-    	if (h.containsKey("raKleuren"))
-    		raKleurenAL = (ArrayList<String>) h.get("raKleuren");
-    	if (h.containsKey("laKleuren"))
-    		laKleurenAL = (ArrayList<String>) h.get("laKleuren");
-    	if (h.containsKey("baKleuren"))
-    		baKleurenAL = (ArrayList<String>) h.get("baKleuren");
-    	String[] viewerKleuren = new String[viewerKleurenAL.size()];
-    	String[] vaKleuren = new String[vaKleurenAL.size()];
-    	String[] raKleuren = new String[raKleurenAL.size()];
-    	String[] laKleuren = new String[laKleurenAL.size()];
-    	String[] baKleuren = new String[baKleurenAL.size()];
-    	for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
-    		viewerKleuren[vk] = viewerKleurenAL.get(vk);
-    	for (int va = 0; va < vaKleurenAL.size(); va++)
-    		vaKleuren[va] = vaKleurenAL.get(va);
-    	for (int ra = 0; ra < raKleurenAL.size(); ra++)
-    		raKleuren[ra] = raKleurenAL.get(ra);
-    	for (int la = 0; la < laKleurenAL.size(); la++)
-    		laKleuren[la] = laKleurenAL.get(la);
-    	for (int ba = 0; ba < baKleurenAL.size(); ba++)
-    		baKleuren[ba] = baKleurenAL.get(ba);
+    	ArrayList<String> leerlingKleurenAL = null; 
+    	if (h.containsKey("leerlingKleuren"))
+    		leerlingKleurenAL = (ArrayList<String>) h.get("leerlingKleuren");
+    	
+    	if (leerlingKleurenAL != null)
+    	{	
+    		String[] leerlingKleuren = new String[leerlingKleurenAL.size()];
+    		for (int lk = 0; lk < leerlingKleurenAL.size(); lk++)
+    			leerlingKleuren[lk] = leerlingKleurenAL.get(lk);
 
-    	if (viewerOnly && vlakkenKleurenOptie && !profielenKleurenOptie)
-    	{	viewer.setViewerKleuren(viewerKleuren);
-    	}
-    	else if (profilesOnly && vlakkenKleurenOptie && profielenKleurenOptie)	
-    	{	vaktek.setVaKleuren(vaKleuren);
-    		vaktek.setRaKleuren(raKleuren);
-    		vaktek.setLaKleuren(laKleuren);
-    		vaktek.setBaKleuren(baKleuren);
-    	}
+    		if (vlakkenKleurenOptie && viewerOnly)
+    		{	viewer.setKleuren(leerlingKleuren);
+    		}
+    		if (vlakkenKleurenOptie && profilesOnly)	
+    		{	vaktek.setVaKleuren(leerlingKleuren);
+    			vaktek.setRaKleuren(leerlingKleuren);
+    			vaktek.setLaKleuren(leerlingKleuren);
+    			vaktek.setBaKleuren(leerlingKleuren);
+    		}
+    	}	
     	
     	boolean nagekeken = false;
     	boolean correct = false;
@@ -986,7 +924,6 @@ System.out.println("tvip zetOpdracht");
         boolean toonVooraanzichtPijl = false;
         
         boolean vlakkenKleurenOptie = false;
-        boolean profielenKleurenOptie = true;
         
         boolean kijkDraaihoekNa = false;
         boolean kijkVlakkenNa = false;
@@ -1024,8 +961,6 @@ System.out.println("tvip zetOpdracht");
         if (h.containsKey("docentDraaihoekY"))
         	docentDraaihoekY = ((Double) h.get("docentDraaihoekY")).doubleValue();
 
-        //hier nog de kleuren
-        
         this.kijkDraaihoekNa = kijkDraaihoekNa;
         this.kijkVlakkenNa = kijkVlakkenNa;
         kijkNaActief = kijkDraaihoekNa || kijkVlakkenNa;
@@ -1033,70 +968,59 @@ System.out.println("tvip zetOpdracht");
         this.docentDraaihoekY = docentDraaihoekY;
 
         if (kijkDraaihoekNa)
-       	 viewer.kijkNaPanel.setVisible(true);
-        if (vlakkenKleurenOptie && !profielenKleurenOptie)
-       	 viewer.kijkNaPanel.setVisible(true);
-        if (vlakkenKleurenOptie && profielenKleurenOptie)
-       	 vaktek.kijkNaPanel.setVisible(true);
+       	 	viewer.kijkNaPanel.setVisible(true);
+        if (vlakkenKleurenOptie && kijkVlakkenNa)
+        {  	viewer.kijkNaPanel.setVisible(true);
+       	 	vaktek.kijkNaPanel.setVisible(true);
+        } 	
 
-    	ArrayList<String> viewerKleurenAL = new ArrayList<String>();
-    	ArrayList<String> vaKleurenAL = new ArrayList<String>();
-    	ArrayList<String> raKleurenAL = new ArrayList<String>();
-    	ArrayList<String> laKleurenAL = new ArrayList<String>();
-    	ArrayList<String> baKleurenAL = new ArrayList<String>();
+    	ArrayList<String> docentKleurenAL = null;
+    	ArrayList<String> viewerKleurenAL = null;
+    	if (h.containsKey("docentKleuren"))
+    		docentKleurenAL = (ArrayList<String>) h.get("docentKleuren");
     	if (h.containsKey("viewerKleuren"))
     		viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
-    	if (h.containsKey("vaKleuren"))
-    		vaKleurenAL = (ArrayList<String>) h.get("vaKleuren");
-    	if (h.containsKey("raKleuren"))
-    		raKleurenAL = (ArrayList<String>) h.get("raKleuren");
-    	if (h.containsKey("laKleuren"))
-    		laKleurenAL = (ArrayList<String>) h.get("laKleuren");
-    	if (h.containsKey("baKleuren"))
-    		baKleurenAL = (ArrayList<String>) h.get("baKleuren");
-    	String[] viewerKleuren = new String[viewerKleurenAL.size()];
-    	String[] vaKleuren = new String[vaKleurenAL.size()];
-    	String[] raKleuren = new String[raKleurenAL.size()];
-    	String[] laKleuren = new String[laKleurenAL.size()];
-    	String[] baKleuren = new String[baKleurenAL.size()];
-    	for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
-    		viewerKleuren[vk] = viewerKleurenAL.get(vk);
-    	for (int va = 0; va < vaKleurenAL.size(); va++)
-    		vaKleuren[va] = vaKleurenAL.get(va);
-    	for (int ra = 0; ra < raKleurenAL.size(); ra++)
-    		raKleuren[ra] = raKleurenAL.get(ra);
-    	for (int la = 0; la < laKleurenAL.size(); la++)
-    		laKleuren[la] = laKleurenAL.get(la);
-    	for (int ba = 0; ba < baKleurenAL.size(); ba++)
-    		baKleuren[ba] = baKleurenAL.get(ba);
-        
-        if (h.containsKey("aantalVlakkenRood"))
-       	 	aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
-        
-//System.out.println("avr = " + aantalVlakkenRood);        
-        this.aantalVlakkenRood = aantalVlakkenRood;
+    	if (docentKleurenAL != null)
+    	{
+    		docentKleuren = new String[docentKleurenAL.size()];
+    		for (int dk = 0; dk < docentKleurenAL.size(); dk++)
+    		{	docentKleuren[dk] = docentKleurenAL.get(dk);
+//System.out.println("dk " + " dk " + docentKleuren[dk]);    		
+    		}
+    		
+    	}
+    	if (viewerKleurenAL != null)
+    	{
+    		viewerKleuren = new String[viewerKleurenAL.size()];
+    		for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
+        		viewerKleuren[vk] = viewerKleurenAL.get(vk);
+    	}
 
-        toonVooraanzichtPijl(toonVooraanzichtPijl);
+    	toonVooraanzichtPijl(toonVooraanzichtPijl);
         
         this.viewerOnly = viewerOnly;
         this.profilesOnly = profilesOnly;
 
         zetVlakkenKleurenOptie(vlakkenKleurenOptie);
-        zetProfielenKleurenOptie(profielenKleurenOptie);
-
-        //viewer.zetViewerPosition(viewerPosition);
-
-        //tekenVeelvlak.zetKiesV(basisFiguur);
+        
    	 	tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
         tekenVeelvlak.setState(tvState);
         tekenVeelvlak.rg.remove(tekenVeelvlak.kiesV);
+       	viewer.setState(tvState);
+       	if (tekenVeelvlak.tv != null)
+   	 	{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+   	 	}
         
         if (viewerOnly)
         {	tekenVeelvlak.setVisible(false);
    	 		vaktek.setVisible(false); 
         	viewerPanel.setVisible(true);
 	       	 
-	       	viewer.setState(tvState);
+	       	//viewer.setState(tvState);
+	       	
+	       	if (viewerKleuren != null)
+	       		viewer.zetKleuren(viewerKleuren);
+	       	
 	       	zetViewerPosition(viewerPosition);
 
         }
@@ -1105,11 +1029,11 @@ System.out.println("tvip zetOpdracht");
        	 	tekenVeelvlak.setVisible(false);
        	 	viewerPanel.setVisible(false);
        	 	vaktek.setVisible(true);
-       	 	if (tekenVeelvlak.tv != null)
-       	 	{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
-       	 	}
-//       	 	else
-//System.out.println("tvv.tv == null");       	 		
+       	 	//if (tekenVeelvlak.tv != null)
+       	 	//{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+       	 	//}
+	       	if (viewerKleuren != null)
+	       		vaktek.setVaktekKleuren(viewerKleuren);
         }
 
         else
@@ -1117,30 +1041,21 @@ System.out.println("tvip zetOpdracht");
 	       	viewerPanel.setVisible(false);
 	       	vaktek.setVisible(false);
 	       	tekenVeelvlak.setVisible(true);
-	       	//tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
-	        //tekenVeelvlak.zetOpdracht(tvState,randomVars,randomValues);
 	        tekenVeelvlak.begin = true;
 	        tekenVeelvlak.tekenOpnieuw();
         }
 
-    	if (vlakkenKleurenOptie && !profielenKleurenOptie)
-    	{   viewer.setViewerKleuren(viewerKleuren);
+    	if (vlakkenKleurenOptie)// && !profielenKleurenOptie)
+    	{   
+   	 	 	viewer.zetDocentModus(false);
+   	 	 	vaktek.zetDocentModus(false);
+    		
+    		viewer.zetKleuren(viewerKleuren);
+    		vaktek.setVaktekKleuren(viewerKleuren);
     		viewer.zetKlikAan(true);
-   	 	 	viewer.aantalVlakkenRood = aantalVlakkenRood;
-    	}
-    	if ((vlakkenKleurenOptie && profielenKleurenOptie))
-    	{
-    		vaktek.setVaKleuren(vaKleuren);
-    		vaktek.setRaKleuren(raKleuren);
-    		vaktek.setLaKleuren(laKleuren);
-    		vaktek.setBaKleuren(baKleuren);
     		vaktek.zetKlikAan(true);
-    		vaktek.va.aantalVlakkenRood = aantalVlakkenRood;
-   		 	vaktek.ra.aantalVlakkenRood = aantalVlakkenRood;
-   		 	vaktek.la.aantalVlakkenRood = aantalVlakkenRood;
-   		 	vaktek.ba.aantalVlakkenRood = aantalVlakkenRood;
-    	}
 
+    	}
     }
 
 }

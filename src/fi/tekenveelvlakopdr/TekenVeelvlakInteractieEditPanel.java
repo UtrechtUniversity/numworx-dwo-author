@@ -65,8 +65,8 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	JCheckBox kijkVlakkenNaCB;
 	JLabel kijkVlakkenNaLabel;
 	
-	JRadioButton profielenKleurenRB, viewerKleurenRB;
-    ButtonGroup kleurGroup;
+	//JRadioButton profielenKleurenRB, viewerKleurenRB;
+    //ButtonGroup kleurGroup;
     
 	double laatsteDraaiX, laatsteDraaiY;
 	
@@ -92,6 +92,8 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		nakijkOptiesPanel = new JPanel();
 		nakijkOptiesPanel.setLayout(null);
 		tabbedPane.addTab(TekenVeelvlakOpdr.rb.getString("nakijkOptiesLabel"), nakijkOptiesPanel);
+		
+		tabbedPane.setEnabledAt(1,false);
 		
 		tabbedPane.setBounds(getSize().width - editWidth, 0, editWidth, getSize().height);
 		add(tabbedPane);
@@ -235,6 +237,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         tekenVVOptiesPanel.add(vlakkenKleurenCB);
         vlakkenKleurenCB.addItemListener(this);
         //vlakkenKleurenCB.addActionListener(this);
+        vlakkenKleurenCB.setEnabled(false);
         
         currentY += height; // + offSet;
 
@@ -332,31 +335,56 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         nakijkOptiesPanel.add(kijkVlakkenNaLabel);
                 
         currentY += height;
-        
+  
+/*        
         kleurGroup = new ButtonGroup();
         
         profielenKleurenRB = new JRadioButton(TekenVeelvlakOpdr.rb.getString("inProfielenRBLabel"),false);
         profielenKleurenRB.setBounds(currentX,currentY,width,height);
         profielenKleurenRB.setOpaque(false);
-        nakijkOptiesPanel.add(profielenKleurenRB);
-        profielenKleurenRB.addItemListener(this);
-        kleurGroup.add(profielenKleurenRB);
+        //nakijkOptiesPanel.add(profielenKleurenRB);
+        //profielenKleurenRB.addItemListener(this);
+        //kleurGroup.add(profielenKleurenRB);
         
         currentY += height; // + offSet/4;
-
+*/        
+/*
         viewerKleurenRB = new JRadioButton(TekenVeelvlakOpdr.rb.getString("inFiguurRBLabel"),true);
         viewerKleurenRB.setBounds(currentX,currentY,width,height);
         viewerKleurenRB.setOpaque(false);
-        nakijkOptiesPanel.add(viewerKleurenRB);
-        viewerKleurenRB.addItemListener(this);
-        kleurGroup.add(viewerKleurenRB);
+        //nakijkOptiesPanel.add(viewerKleurenRB);
+        //viewerKleurenRB.addItemListener(this);
+        //kleurGroup.add(viewerKleurenRB);
         
         currentY += height + 4 * offSet;
-        
+*/        
         zetVlakkenKleurenEnabled(false);
         
 		componentsCreated = true;
 		
+    }
+
+    public void showNakijkOpties(boolean b)
+    {
+    	tabbedPane.setEnabledAt(1,b);
+    	if (b)
+    	{
+    	}
+    	else
+    	{	kijkDraaihoekNaCB.setSelected(false);
+    		kijkDraaihoekNaCB.setEnabled(false);
+    		dezeDraaihoekRB.setSelected(true);
+    		zetDraaihoekOptiesEnabled(false);
+    		tvip.docentDraaihoekX = 1e-5d;
+    		tvip.docentDraaihoekY = 1e-5d;
+    		
+    		kijkVlakkenNaCB.setSelected(false);
+    		kijkVlakkenNaCB.setEnabled(false);
+    		tvip.docentKleuren = null;
+    		tvip.viewer.kijkNaPanel.setVisible(false);
+    		tvip.vaktek.kijkNaPanel.setVisible(false);
+    	
+    	}
     }
     
     public void plaatsComponenten()
@@ -458,9 +486,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	
     	else if (e.getSource() == profilesOnlyCB)
     	{
-    		
-//System.out.println("profilesOnlyCB item");
-
     		tvip.setProfilesOnly(profilesOnlyCB.isSelected());
     		zetViewerOptiesEnabled(false);
     		if (profilesOnlyCB.isSelected())
@@ -475,6 +500,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     		
     		moveableRB.setSelected(true);
     		zetViewerOptiesEnabled(!vlakkenKleurenCB.isSelected() && viewerOnlyCB.isSelected());
+    		   		
     		 
     		
     	}
@@ -488,11 +514,13 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     			kijkVlakkenNaCB.setSelected(false);
     			zetVlakkenKleurenOptiesEnabled(false);
     			tvip.viewer.kijkNaPanel.setVisible(true);
+    			tvip.vaktek.kijkNaPanel.setVisible(true);
     		}
     		else
     		{
     			zetDraaihoekOptiesEnabled(false);
     			tvip.viewer.kijkNaPanel.setVisible(false);
+    			tvip.vaktek.kijkNaPanel.setVisible(false);
     		}
     	}
     	else if (e.getSource() == dezeDraaihoekRB)
@@ -609,12 +637,12 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     			zetVlakkenKleurenOptiesEnabled(true);
     			kijkDraaihoekNaCB.setSelected(false);
     			zetDraaihoekOptiesEnabled(false);
-    			
+/*    			
     			// we hebben al een viewer
     			if (profielenKleurenRB.isSelected())
     			{
     				tvip.setProfilesOnly(true);
-    				tvip.zetProfielenKleurenOptie(true);
+    				//tvip.zetProfielenKleurenOptie(true);
     				tvip.vaktek.zetDocentModus(true);
     				tvip.vaktek.zetKlikAan(true);
     				tvip.vaktek.kijkNaPanel.setVisible(true);
@@ -623,17 +651,18 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     			}
     			else
     			{
-    				tvip.zetProfielenKleurenOptie(false);
+*/    			
+    				//tvip.zetProfielenKleurenOptie(false);
     				tvip.viewer.zetDocentModus(true);
     				tvip.viewer.zetKlikAan(true); 
     				tvip.viewer.kijkNaPanel.setVisible(true);
     				tvip.viewer.updateViewerKleuren();
-    			}
+//    			}
     			
     		}
     		else
     		{
-    			zetVlakkenKleurenOptiesEnabled(false);
+  //  			zetVlakkenKleurenOptiesEnabled(false);
     			tvip.vaktek.zetDocentModus(false);
 				tvip.vaktek.zetKlikAan(false);
 				tvip.vaktek.resetColors();
@@ -644,9 +673,10 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 				tvip.vaktek.kijkNaPanel.setVisible(false);
     		}
     	}
+/*    	
     	else if (e.getSource() == profielenKleurenRB)
     	{
-    		tvip.zetProfielenKleurenOptie(profielenKleurenRB.isSelected());
+    		//tvip.zetProfielenKleurenOptie(profielenKleurenRB.isSelected());
     		tvip.setProfilesOnly(true);
     		tvip.setViewerOnly(false);
     		tvip.vaktek.zetDocentModus(true);
@@ -658,9 +688,11 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			tvip.vaktek.kijkNaPanel.setVisible(true);
 
     	}
+*/    	
+/*    	
     	else if (e.getSource() == viewerKleurenRB)
     	{
-    		tvip.zetProfielenKleurenOptie(!viewerKleurenRB.isSelected());
+    		//tvip.zetProfielenKleurenOptie(!viewerKleurenRB.isSelected());
     		tvip.setViewerOnly(true);
     		tvip.setProfilesOnly(false);
     		tvip.viewer.zetDocentModus(true);
@@ -672,7 +704,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			tvip.vaktek.kijkNaPanel.setVisible(false);
 			
     	}
-    	
+*/    	
     	
     }
 
@@ -784,39 +816,23 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		{
 			tvip.viewer.zetDocentModus(false);
 			tvip.vaktek.zetDocentModus(false);
-			tvip.viewer.zetKlikAan(false);
-			tvip.vaktek.zetKlikAan(false);
 
-			if (profielenKleurenRB.isSelected())
-			{	
-				tvip.vaktek.setVaktekKleuren(tvip.vaktek.getKleuren());
-				tvip.viewer.setViewerKleuren(tvip.vaktek.getKleuren());
-				profilesOnlyCB.setSelected(true);
-				viewerOnlyCB.setSelected(false);
-				
-System.out.println("tvip vO = " + tvip.viewerOnly);
-System.out.println("tvip pO = " + tvip.profilesOnly);
-				
-			}
-			else // viewerKleurenRB.isSelected()
-			{
-				
-				tvip.viewer.setViewerKleuren(tvip.viewer.getKleuren());
-				tvip.vaktek.setVaktekKleuren(tvip.viewer.getKleuren());
-				viewerOnlyCB.setSelected(true);
-				profilesOnlyCB.setSelected(false);
-			}
-			
-			
-			// kleuren in profielen: laat viewer zien met kleuren
-			
-			// kleuren in viewer: laat profielen zien met kleuren
+			tvip.viewer.zetKleuren(tvip.viewerKleuren);
+			tvip.vaktek.setVaktekKleuren(tvip.viewerKleuren);
+			//viewerOnlyCB.setSelected(true);
+			//profilesOnlyCB.setSelected(false);
+			if (tvipViewerOnly)
+				tvip.setViewerOnly(tvipViewerOnly);
+			if (tvipProfilesOnly)
+				tvip.setProfilesOnly(tvipProfilesOnly);
 			
 		}
 		else // geen van twee
 		{
-			tvip.setViewerOnly(tvipViewerOnly);
-			tvip.setProfilesOnly(tvipProfilesOnly);
+			if (tvipViewerOnly)
+				tvip.setViewerOnly(tvipViewerOnly);
+			if (tvipProfilesOnly)
+				tvip.setProfilesOnly(tvipProfilesOnly);
 			if (tvip.viewerOnly)
 			{
 				tvip.viewer.zetBeginHoeken(tvipDraaiX, tvipDraaiY);				
@@ -843,6 +859,9 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 			tvipDraaiY = tvip.tekenVeelvlak.geefDraaiY();
 		}
 		
+		if (tvip.viewerKleuren == null)
+			tvip.viewerKleuren = tvip.viewer.getKleuren();
+		
 		if (kijkDraaihoekNaCB.isSelected())
 		{
 			tvip.setViewerOnly(true);
@@ -862,19 +881,13 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 		else if (kijkVlakkenNaCB.isSelected())
 		{
 			tvip.viewer.zetDocentModus(true);
-			tvip.vaktek.zetDocentModus(true);
-			tvip.viewer.zetKlikAan(true);
-			tvip.vaktek.zetKlikAan(true);
-			// kleuren in profielen: laat profielen zien met gekleurde docent-vlakken
-			// kleuren in viewer: laat viewer zien met gekleurde docent-vlakken
-			if (profielenKleurenRB.isSelected())
-			{	
-				tvip.setProfilesOnly(true);
-			}
-			else // viewerKleurenRB.isSelected()
-			{
-				tvip.setViewerOnly(true);
-			}
+			//tvip.vaktek.zetDocentModus(true);
+			// dit is al zo
+			//tvip.viewer.zetKlikAan(true);
+			//tvip.vaktek.zetKlikAan(true);
+			tvip.setViewerOnly(true);
+			if (tvip.docentKleuren != null)
+				tvip.viewer.zetKleuren(tvip.docentKleuren);
 
 		}
 		else // geen van twee
@@ -883,6 +896,7 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 			tvip.setViewerOnly(true);
 			laatsteDraaiX = tvip.viewer.geefDraaiX();
 			laatsteDraaiY = tvip.viewer.geefDraaiY();
+			tvip.viewer.resetColors();
 		}
     	
     }
@@ -911,6 +925,8 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 	}	
     public void zetViewerOptiesEnabled(boolean b)
     {
+    	if (!b)
+    		moveableRB.setSelected(true);
     	moveableRB.setEnabled(b);
 		frontViewRB.setEnabled(b);
 		backViewRB.setEnabled(b);
@@ -925,6 +941,8 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 
     public void zetDraaihoekOptiesEnabled(boolean b)
     {
+    	if (!b)
+    		dezeDraaihoekRB.setSelected(true);
     	dezeDraaihoekRB.setEnabled(b);
 		voorkantRB.setEnabled(b);
 		achterkantRB.setEnabled(b);
@@ -935,12 +953,13 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
     	
     }
 
+    
     public void zetVlakkenKleurenOptiesEnabled(boolean b)
     {
     	//kijkVlakkenNaCB.setEnabled(b);
     	//kijkVlakkenNaLabel.setEnabled(b);
-    	profielenKleurenRB.setEnabled(b);
-		viewerKleurenRB.setEnabled(b);
+    	//profielenKleurenRB.setEnabled(b);
+		//viewerKleurenRB.setEnabled(b);
     	
     }
 
@@ -956,9 +975,11 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
     	{	kijkVlakkenNaCB.setSelected(false);
     		kijkVlakkenNaCB.setEnabled(b);
 			kijkVlakkenNaLabel.setEnabled(b);
-			zetVlakkenKleurenOptiesEnabled(b);
-			tvip.viewer.resetColors();
-			tvip.vaktek.resetColors();
+			tvip.docentKleuren = null;
+			
+			//zetVlakkenKleurenOptiesEnabled(b);
+			//tvip.viewer.resetColors();
+			//tvip.vaktek.resetColors();
     		//profielenKleurenRB.setEnabled(b);
     		//viewerKleurenRB.setEnabled(b);
     	}
@@ -1080,6 +1101,7 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
 	    profilesOnlyCB.setSelected(profilesOnly);
 	    
 	    vlakkenKleurenCB.setSelected(vlakkenKleurenOptie);
+	    vlakkenKleurenCB.setEnabled(viewerOnly || profilesOnly);
 //	    profielenKleurenRB.setSelected(profielenKleurenOptie);
 //	    viewerKleurenRB.setSelected(viewerKleurenOptie);
 	    
@@ -1148,18 +1170,11 @@ System.out.println("tvip pO = " + tvip.profilesOnly);
         if (h.containsKey("kijkVlakkenNa"))
         	kijkVlakkenNa = ((Boolean) h.get("kijkVlakkenNa")).booleanValue();
         
-        boolean profielenKleurenOptie = true;
-        boolean viewerKleurenOptie = false;
-        
-        if (h.containsKey("profielenKleurenOptie"))
-        	profielenKleurenOptie = ((Boolean) h.get("profielenKleurenOptie")).booleanValue();
-        if (h.containsKey("viewerKleurenOptie"))
-        	viewerKleurenOptie = ((Boolean) h.get("viewerKleurenOptie")).booleanValue();
-	    
-	    profielenKleurenRB.setSelected(profielenKleurenOptie);
-	    viewerKleurenRB.setSelected(viewerKleurenOptie);
 	
 	    kijkVlakkenNaCB.setSelected(kijkVlakkenNa);
+	    
+	    if (kijkDraaihoekNa || kijkVlakkenNa)
+	    	tabbedPane.setEnabledAt(1,true);
 	    
 	    
 	    setBounds(getLocation().x, getLocation().y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));

@@ -289,8 +289,8 @@ if (k > 0)
 		//int[] lijnen = null;
 		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
 		//String[] kleuren = null;
-		ArrayList<String> kleurenAL = new ArrayList<String>();
-		int aantalVlakkenRood = 0;
+		//ArrayList<String> kleurenAL = new ArrayList<String>();
+		//int aantalVlakkenRood = 0;
 		
 		boolean basisZichtbaar = true;
 		
@@ -310,11 +310,11 @@ if (k > 0)
 		//lijnen = (int[]) h.get("lijnen");
 		if (h.containsKey("lijnen"))
 			lijnenAL = (ArrayList<Integer>) h.get("lijnen");
-		if (h.containsKey("kleuren"))
-			kleurenAL = (ArrayList<String>) h.get("kleuren");
+		//if (h.containsKey("kleuren"))
+		//	kleurenAL = (ArrayList<String>) h.get("kleuren");
 		
-		if (h.containsKey("aantalVlakkenRood"))
-			aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
+		//if (h.containsKey("aantalVlakkenRood"))
+		//	aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
 		
 		
 		if (h.containsKey("basisZichtbaar"))
@@ -342,11 +342,11 @@ if (k > 0)
 		int[] lijnen = new int[lijnenAL.size()];
 		for (int l = 0; l < lijnenAL.size(); l++)
 			lijnen[l] = lijnenAL.get(l).intValue();
-		String[] kleuren = new String[kleurenAL.size()];
-		for (int s = 0; s < kleurenAL.size(); s++)
-			kleuren[s] = kleurenAL.get(s);
+		//String[] kleuren = new String[kleurenAL.size()];
+		//for (int s = 0; s < kleurenAL.size(); s++)
+		//	kleuren[s] = kleurenAL.get(s);
 		
-		this.aantalVlakkenRood = aantalVlakkenRood;
+		//this.aantalVlakkenRood = aantalVlakkenRood;
 		
 		aantalPuntenRood = 0;
 		wisTrefpunten();
@@ -370,11 +370,11 @@ if (k > 0)
 		
 		tv = new Veelvlak(hoekpunten, vlakken, lijnen);
 
-		if (kleuren != null)
-		{	for (int i = 0; i < tv.aantalVlakken; i++)
-			{	tv.vlakken[i].vulkleur = kleuren[i];
-			}
-		}
+		//if (kleuren != null)
+		//{	for (int i = 0; i < tv.aantalVlakken; i++)
+		//	{	tv.vlakken[i].vulkleur = kleuren[i];
+		//	}
+		//}
 		
 		
 		for (int i = 0; i < v.aantalHoekpunten; i++)
@@ -404,6 +404,15 @@ if (k > 0)
 		wisKleurKnop.setBounds(8,bStarH+340,114,25);
 	}
 	
+	public String[] getKleuren()
+	{
+		String[] kleuren = new String[tv.aantalVlakken];
+		for (int vCnt = 0; vCnt < tv.aantalVlakken; vCnt++)
+		{	kleuren[vCnt] = tv.vlakken[vCnt].vulkleur;
+		}
+		return kleuren;
+	}
+	
 	public Hashtable getState()
 	{	
 //System.out.println("tv getState");		
@@ -415,7 +424,7 @@ if (k > 0)
 		//int[] lijnen = null;
 		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
 		//String[] kleuren = null;
-		ArrayList<String> kleurenAL = new ArrayList<String>();
+		//ArrayList<String> kleurenAL = new ArrayList<String>();
 				
 		boolean basisZichtbaar = true;
 		
@@ -434,9 +443,9 @@ if (k > 0)
 		for (int k = 0; k < tv.lnRij.length; k++)
 			lijnenAL.add(new Integer(tv.lnRij[k]));
 		//kleuren = new String[tv.aantalVlakken];
-		for (int vCnt = 0; vCnt < tv.aantalVlakken; vCnt++)
-		{	kleurenAL.add(tv.vlakken[vCnt].vulkleur);
-		}
+		//for (int vCnt = 0; vCnt < tv.aantalVlakken; vCnt++)
+		//{	kleurenAL.add(tv.vlakken[vCnt].vulkleur);
+		//}
 		
 		basisZichtbaar = this.basisZichtbaar;
 		
@@ -451,7 +460,7 @@ if (k > 0)
 		h.put("hoekpunten", hoekpuntenAL);
 		h.put("vlakken", vlakkenAL);
 		h.put("lijnen", lijnenAL);
-		h.put("kleuren", kleurenAL);
+		//h.put("kleuren", kleurenAL);
 		
 		h.put("aantalVlakkenRood", new Integer(aantalVlakkenRood));
 		
@@ -913,14 +922,14 @@ if (k > 0)
 
 			}
 			
-			else if (animatieStatus())
-			{	onderbreekAnimatie();
-				animatieWasAan = true;
-			}
+			//else if (animatieStatus())
+			//{	onderbreekAnimatie();
+			//	animatieWasAan = true;
+			//}
 			tekenOpnieuw();
 			
-			if (animatieWasAan)
-				beginAnimatie();
+			//if (animatieWasAan)
+			//	beginAnimatie();
 		
 		
 		

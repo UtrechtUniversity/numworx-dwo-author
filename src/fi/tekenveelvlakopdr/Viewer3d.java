@@ -36,8 +36,6 @@ public class Viewer3d extends JPanel
 	double draaiX = 20, draaiY = -30;
 	
 	Polygon[] p;
-//	private int[] sorteerRij;
-//	private int pnr;
 	
 	int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
 	
@@ -52,11 +50,6 @@ public class Viewer3d extends JPanel
 	int voorkantPijlIndex = -1;
 	
 	boolean vlakkenKleurenOptie = false;
-    boolean profielenKleurenOptie = true;
-    //boolean viewerKleurenOptie = false;
-    int aantalVlakkenRood = 0;
-    
-    String[] viewerKleuren = null;
     
     boolean docentModus = false;
     
@@ -64,6 +57,8 @@ public class Viewer3d extends JPanel
 	JPanel kijkNaPanel;
 	JLabel vinkjeLabel;
 	JLabel kruisjeLabel;
+	
+	VaktekPanel vaktek = null;
 	
 	public Viewer3d(int x, int y,int b, int h, TekenVeelvlakInteractiePanel tvip)
 	{	this(new Veelvlak(), x, y, b, h, tvip);
@@ -79,7 +74,6 @@ public class Viewer3d extends JPanel
 		vvRij = new Veelvlak[5];
 		vvRij[0] = v;
 		p = new Polygon[v.aantalVlakken+4];
-		//ab = new AnimatieBeheerder(this);
 		mb = new MuisBeheerder(this);
 		addMouseListener(mb);
 		addMouseMotionListener(mb);
@@ -94,12 +88,10 @@ public class Viewer3d extends JPanel
 		{	l[i] = new Lichaam3D();
 			l[i].zetAfstand(afstand);
 		}
-//		sorteerRij = new int[200];
 		mat = new Matrix3D();
 		if(mb!=null && ab!=null)				
 		{	mb.meldAnimatieBeheerder(ab);		
 		}
-		//vv = new Kubus(1);
 		k = 180; //k=200;
 		xhoek = 0;
 		yhoek = 0;
@@ -107,7 +99,6 @@ public class Viewer3d extends JPanel
 		beginy = -30;
 		
 		kijkNaButton = new JButton(TekenVeelvlakOpdr.rb.getString("kijkNaLabel"));
-		//kijkNaButton.setFont(theFont);
 		kijkNaButton.setBounds(0, 0, 100, 20);
 		kijkNaButton.addActionListener(new KijkNaAL());
 		
@@ -135,11 +126,8 @@ public class Viewer3d extends JPanel
 		
 		kijkNaPanel = new JPanel(null);
 		kijkNaPanel.setBackground(Color.WHITE);
-		//kijkNaPanel.setBounds(getSize().width - 130, getSize().height - 30, 120, 20);
 		kijkNaPanel.setBounds(5, getSize().height, 120, 20);
-		//kijkNaPanel.setBounds(5, tvip.viewerPanel.getSize().height - 25, 120, 20);
 		
-		//kijkNaPanel.setSize(120, 20);
 		kijkNaPanel.add(kijkNaButton);
 		kijkNaPanel.add(vinkjeLabel);
 		kijkNaPanel.add(kruisjeLabel);
@@ -153,6 +141,9 @@ public class Viewer3d extends JPanel
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			if (tvip.editMode != null)
+				return;
+			
 			tvip.kijkNa();
 			if (tvip.correct)
 			{
@@ -205,28 +196,7 @@ if (k > 0)
     public void zetVlakkenKleurenOptie(boolean b)
     {	vlakkenKleurenOptie = b;
     }
-    public void zetProfielenKleurenOptie(boolean b, boolean leerling)
-    {	profielenKleurenOptie = b;
     
-//System.out.println("v3d leerling = " + leerling);
-    
-/*    
-    
-    	if (!leerling)
-    		return;
-    	if (vlakkenKleurenOptie && (afstand == 1000))
-    		zetKlikAan(!b);
-    	else if (vlakkenKleurenOptie && (afstand > 10000))
-    		zetKlikAan(b);
-    		
-*/    		
-    	
-//System.out.println("v3d klikAan = " + klikAan);    	
-    }
-    //public void zetViewerKleurenOptie(boolean b)
-    //{	viewerKleurenOptie = b;
-    	
-    //}
 	
 	public void zetZoomFac(double zFac)
 	{
@@ -283,26 +253,6 @@ if (k > 0)
 	
 		tekenOpnieuw();
 	}
-/*	
-	public String geefAanzichtTekst(int a)
-	{	if(a==1) return ProfielenDraaien.rb.getString("vaLabel");
-		else if(a==2) return ProfielenDraaien.rb.getString("raLabel");
-		else if(a==3) return ProfielenDraaien.rb.getString("laLabel");
-		else if(a==4) return ProfielenDraaien.rb.getString("baLabel");
-		else if(a==5) return ProfielenDraaien.rb.getString("oaLabel");
-		else if(a==6) return ProfielenDraaien.rb.getString("aaLabel");
-		else return "";
-	}
-*/
-
-	public String[] getViewerKleuren()
-	{
-		//String[] viewerKleuren = new String[vvRij[0].aantalVlakken];
-		//for (int vCnt = 0; vCnt < viewerKleuren.length; vCnt++)
-		//{	viewerKleuren[vCnt] = vvRij[0].vlakken[vCnt].vulkleur;
-		//}
-		return viewerKleuren;
-	}
 
 	public String[] getKleuren()
 	{
@@ -313,23 +263,27 @@ if (k > 0)
 		return kleuren;
 	}
 	
-	public boolean evalueer()
+	public void zetKleuren(String[] kleuren)
 	{
-		String[] viewerKleuren = getKleuren();
-		int roodoranjeroodCnt = 0;
-		int oranjeroodCnt = 0;
-		for (int i = 0; i < viewerKleuren.length; i++)
-		{	if (viewerKleuren[i].equals("roodoranjerood"))
-				roodoranjeroodCnt++;
-			if (viewerKleuren[i].equals("oranjerood"))
-				oranjeroodCnt++;
+		for (int vCnt = 0; vCnt < kleuren.length; vCnt++)
+		{	vvRij[0].vlakken[vCnt].vulkleur = kleuren[vCnt];
 		}
 
-//System.out.println("v3d eval ror = " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
-//System.out.println("v3d eval avr = " + aantalVlakkenRood);
-		
-		
-		return (roodoranjeroodCnt == aantalVlakkenRood) && (oranjeroodCnt == 0);
+		tekenOpnieuw();
+	}
+	
+	
+	public boolean evalueer(String[] nakijkKleuren)
+	{
+		String[] viewerKleuren = getKleuren();
+		boolean result = true;
+		for (int i = 0; i < viewerKleuren.length; i++)
+		{	
+			result = result && viewerKleuren[i].equals(nakijkKleuren[i]);
+			
+		}
+
+		return result;
 	}
 	
 	public boolean evalueer(double gevraagdX, double gevraagdY)	
@@ -341,29 +295,8 @@ if (k > 0)
 			return true;
 		else
 			return false;
-/*		
-		if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.FRONTVIEW && 
-			Math.abs(drx) < tol && Math.abs(dry) <tol)
-			return true;
-		else if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.RIGHTVIEW && 
-				Math.abs(drx)< tol && Math.abs(dry + 90) <tol)
-			return true;
-		else if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.LEFTVIEW && 
-				Math.abs(drx) < tol && Math.abs(dry - 90) < tol)
-			return true;
-		else if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.TOPVIEW && 
-				Math.abs(drx-90) < tol && Math.abs(dry) < tol)
-			return true;
-		else if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.BOTTOMVIEW && 
-				Math.abs(drx + 90)< tol && Math.abs(dry) < tol)
-			return true;
-		else if (gevraagdAanzicht == TekenVeelvlakInteractiePanel.BACKVIEW && 
-				Math.abs(drx)<tol && (Math.abs(dry - 180) < tol || Math.abs(dry + 180)< tol))
-			return true;
-		
-		return false;
-*/		
 	}
+
 	public void setState(Hashtable h)
 	{	
 		
@@ -415,9 +348,6 @@ System.out.println("viewer setState");
 		
 //System.out.println("vPos = " + viewerPosition);
 
-		//if (h.containsKey("aantalVlakkenRood"))
-		//	aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
-
 		double[] hoekpunten = new double[hoekpuntenAL.size()];
 		for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
 			hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
@@ -431,7 +361,6 @@ System.out.println("viewer setState");
 		for (int s = 0; s < kleurenAL.size(); s++)
 			kleuren[s] = kleurenAL.get(s);
 		
-		//this.zoomFac = zoomFac;
 		zetZoomFac(zoomFac);
 		
 		this.draaiX = draaiX;
@@ -441,42 +370,49 @@ System.out.println("viewer setState");
 		
 		this.muisAan = muisAan;
 		
-		//this.aantalVlakkenRood = aantalVlakkenRood;
-
-//System.out.println("vPos = " + viewerPosition);		
-		
-//System.out.println("hp = " + hoekpunten.length + " vl = " + vlakken.length + " ln = " + lijnen.length);
 
 		Veelvlak v = new Veelvlak(hoekpunten, vlakken, lijnen);
-		if ((viewerKleuren != null) && (viewerKleuren.length == v.aantalVlakken))
-		{	
-			for (int i = 0; i < v.aantalVlakken; i++)
-			{	v.vlakken[i].vulkleur = viewerKleuren[i];
-			}
-		}
-		else
-			viewerKleuren = null;
 		vvRij[0] = v;
 		
 		tekenOpnieuw();
 	}
 	
-	public void setViewerKleuren(String[] kleuren)
+	public void setKleuren(String[] kleuren)
 	{
-		viewerKleuren = kleuren;
 		for (int i = 0; i < vvRij[0].aantalVlakken; i++)
 		{	vvRij[0].vlakken[i].vulkleur = kleuren[i];
 		}
 		tekenOpnieuw();
+		
 	}
 
 	public void updateViewerKleuren()
 	{
-		viewerKleuren = new String[vvRij[0].aantalVlakken];
+		String[] viewerKleuren = new String[vvRij[0].aantalVlakken];
 		for (int i = 0; i < viewerKleuren.length; i++)
 		{	viewerKleuren[i] = vvRij[0].vlakken[i].vulkleur;
 		}
 
+		if (tvip.editMode != null)
+		{
+			if (docentModus)
+			{	tvip.docentKleuren = viewerKleuren;
+			}
+			else if (vaktek == null) 
+			{	tvip.viewerKleuren = viewerKleuren;
+			}
+			else if (vaktek != null)
+			{
+				vaktek.updateViewerKleuren();
+			}
+		}
+		else
+		{
+			if (vaktek != null)
+			{
+				vaktek.synchronizeViewerKleuren(this);
+			}
+		}
 	}
 	
 /*
@@ -581,15 +517,9 @@ System.out.println("vPos = " + viewerPosition);
 	public void zetVeelvlak(Veelvlak v)
 	{	vvRij[0] = v;
 	
-		if ((viewerKleuren != null) && (viewerKleuren.length == vvRij[0].aantalVlakken))
-		{	
-			for (int i = 0; i < vvRij[0].aantalVlakken; i++)
-			{	vvRij[0].vlakken[i].vulkleur = viewerKleuren[i];
-			}
-		}
 		tekenOpnieuw();
-//System.out.println("v3d zetVeelvlak vko = " + vlakkenKleurenOptie);
-//System.out.println("v3d zetVeelvlak pko = " + profielenKleurenOptie);
+
+
 	}
 	public void zetVeelvlak(Veelvlak v, int n)
 	{	vvRij[n] = v;
@@ -969,35 +899,8 @@ System.out.println("vPos = " + viewerPosition);
 	private Color maakKleur(String kl)
 	{	if (kl.equals("rood")) 
 			return Color.red;
-		else if (kl.equals("roodoranje")) 
-		{	
-			if (docentModus)
-			{
-				return Color.red;
-			}
-			else
-			{	// roodoranje niet zichtbaar in vaktek
-				if (vlakkenKleurenOptie && profielenKleurenOptie && (afstand > 10000))
-					return Color.orange;
-				// roodoranje wel zichtbaar in viewer
-				else if (vlakkenKleurenOptie && profielenKleurenOptie && (afstand == 1000))
-					return Color.red;
-				// roodoranje wel zichtbaar in vaktek
-				else if (vlakkenKleurenOptie && !profielenKleurenOptie && (afstand > 10000))
-					return Color.red;
-				// roodoranje niet zichtbaar in viewer
-				else if (vlakkenKleurenOptie && !profielenKleurenOptie && (afstand == 1000))
-					return Color.orange;
-				else
-					return Color.red;
-			}
-		}
 		else if (kl.equals("oranje"))
 			return Color.orange;
-		else if (kl.equals("oranjerood"))
-			return Color.red;
-		else if (kl.equals("roodoranjerood"))
-			return Color.red;
 		else if (kl.equals("groen")) 
 			return Color.green;
 		else if (kl.equals("blauw")) 
@@ -1026,27 +929,12 @@ System.out.println("vPos = " + viewerPosition);
 	{
 		for (int j = vvRij[0].aantalVlakken - 1; j > -1; j--)
 		{	vvRij[0].vlakken[j].vulkleur = "oranje";
-			if (viewerKleuren != null)
-				viewerKleuren[j] = "oranje";
 		}
 		tekenOpnieuw();
 	}
 	
 	public void resetLeerlingColors()
 	{
-		for (int j = vvRij[0].aantalVlakken - 1; j > -1; j--)
-		{	if (vvRij[0].vlakken[j].vulkleur.equals("roodoranjerood"))
-			{	vvRij[0].vlakken[j].vulkleur = "roodoranje";
-				if (viewerKleuren != null)
-					viewerKleuren[j] = "roodoranje";
-			}
-			if (vvRij[0].vlakken[j].vulkleur.equals("oranjerood"))
-			{	vvRij[0].vlakken[j].vulkleur = "oranje";
-				if (viewerKleuren != null)
-					viewerKleuren[j] = "oranje";
-			}
-		}
-		tekenOpnieuw();
 	}
 	
 	
@@ -1071,42 +959,39 @@ System.out.println("vPos = " + viewerPosition);
 					{
 						// een oranje vlak dat rood gekleurd wordt
 						if (vvRij[0].vlakken[j].vulkleur.equals("oranje"))
-						{	vvRij[0].vlakken[j].vulkleur = "roodoranje";
-//System.out.println("muisKkActie oranje wordt oranjerood");					
+						{	vvRij[0].vlakken[j].vulkleur = "rood";
+//System.out.println("muisKkActie oranje wordt rood");					
 						}
 						// een rood vlak dat weer oranje gekleurd wordt
-						else if (vvRij[0].vlakken[j].vulkleur.equals("roodoranje"))
+						else if (vvRij[0].vlakken[j].vulkleur.equals("rood"))
 						{	vvRij[0].vlakken[j].vulkleur = "oranje";
-//System.out.println("muisKkActie oranjerood wordt oranje");					
+//System.out.println("muisKkActie ood wordt oranje");					
 						}
 						
 					}
 					else // leerling
 					{
-//System.out.println("v3d muisKkActie in");
+System.out.println("v3d muisKkActie");
 //System.out.println("vk " + j + " " + vvRij[0].vlakken[j].vulkleur);
 
 						// een oranje vlak dat rood gekleurd wordt
 						if (vvRij[0].vlakken[j].vulkleur.equals("oranje"))
-						{	vvRij[0].vlakken[j].vulkleur = "oranjerood";
-//System.out.println("muisKkActie oranje wordt oranjerood");					
+						{	vvRij[0].vlakken[j].vulkleur = "rood";
+//System.out.println("muisKkActie oranje wordt rood");					
 						}
 						// een rood vlak dat weer oranje gekleurd wordt
-						else if (vvRij[0].vlakken[j].vulkleur.equals("oranjerood"))
+						else if (vvRij[0].vlakken[j].vulkleur.equals("rood"))
 						{	vvRij[0].vlakken[j].vulkleur = "oranje";
-//System.out.println("muisKkActie oranjerood wordt oranje");					
+//System.out.println("muisKkActie rood wordt oranje");					
 						}
-						// dit vlak is elders rood gemaakt maar ziet er oranje uit, het wordt nu rood
-						else if (vvRij[0].vlakken[j].vulkleur.equals("roodoranje"))
-						{	vvRij[0].vlakken[j].vulkleur = "roodoranjerood";
-//System.out.println("muisKkActie roodoranje wordt roodoranjerood");					
-						}
-						// dit is een elders rood gemaakt vlak dat rood gekleurd is, het wordt nu oranje
-						else if (vvRij[0].vlakken[j].vulkleur.equals("roodoranjerood"))
-						{	vvRij[0].vlakken[j].vulkleur = "roodoranje";
-//System.out.println("muisKkActie roodoranjerood wordt roodoranje");					
-						}
+						vinkjeLabel.setVisible(false);
+						kruisjeLabel.setVisible(false);
 						
+						if (vaktek != null)
+						{
+							vaktek.vinkjeLabel.setVisible(false);
+							vaktek.kruisjeLabel.setVisible(false);
+						}
 						//updateViewerKleuren();
 					}// leerling
 					updateViewerKleuren();

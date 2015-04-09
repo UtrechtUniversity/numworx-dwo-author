@@ -18,9 +18,6 @@ class VaktekPanel extends JPanel
 	VaktekRooster vr;
 	
 	boolean vlakkenKleurenOptie = false;
-    boolean profielenKleurenOptie = true;
-    //boolean viewerKleurenOptie = false;
-    String vaktekKleuren = null;
     
     boolean docentModus = false;
     
@@ -32,20 +29,6 @@ class VaktekPanel extends JPanel
 	public VaktekPanel(int x, int y, int b, int h, TekenVeelvlakInteractiePanel tvip)
 	{	
 		this(new Veelvlak(),new Veelvlak(),new Veelvlak(),new Veelvlak(),x,y,b,h,tvip);
-/*		
-		setBounds(x,y,b,h);
-		setLayout(null);
-		setBackground(Color.white);
-		
-		breedte = b;
-		hoogte = h;
-		vakBreedte = Math.min((breedte-6)/3, (hoogte-6)/2);
-
-		vr = new VaktekRooster();
-		add(vr);
-*/		
-		//Veelvlak dummy = new Veelvlak();
-		//this(dummy,dummy,dummy,dummy,x,y,b,h);
 		
 	}	
 	
@@ -63,6 +46,7 @@ class VaktekPanel extends JPanel
 		vakBreedte = Math.min((breedte-6)/3, (hoogte-6)/2);
 				
 		la = new Viewer3d(vla, breedte/2-3*vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
+		la.vaktek = this;
 		la.k = 230;
 		la.zetAfstand(10000000);
 		la.zetSchaduw(false);
@@ -71,6 +55,7 @@ class VaktekPanel extends JPanel
 		add(la);
 		
 		ba = new Viewer3d(vba, breedte/2-vakBreedte/2+1, hoogte/2-vakBreedte+1, vakBreedte-1, vakBreedte-1,tvip);
+		ba.vaktek = this;
 		ba.k = 230;
 		ba.zetAfstand(10000000);
 		ba.zetSchaduw(false);
@@ -79,6 +64,7 @@ class VaktekPanel extends JPanel
 		add(ba);
 		
 		va = new Viewer3d(vva, breedte/2-vakBreedte/2+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
+		va.vaktek = this;
 		va.k = 230;
 		va.zetAfstand(10000000);
 		va.zetSchaduw(false);
@@ -87,6 +73,7 @@ class VaktekPanel extends JPanel
 		add(va);
 		
 		ra = new Viewer3d(vra, breedte/2-vakBreedte/2+vakBreedte+1, hoogte/2+1, vakBreedte-1, vakBreedte-1,tvip);
+		ra.vaktek = this;
 		ra.k = 230;
 		ra.zetAfstand(10000000);
 		ra.zetSchaduw(false);
@@ -139,12 +126,11 @@ class VaktekPanel extends JPanel
 		add(kijkNaPanel);
 
 	}	
-
+	
 	class KijkNaAL implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-//System.out.println("vaktek kijkNa");			
 			tvip.kijkNa();
 			if (tvip.correct)
 			{
@@ -175,15 +161,8 @@ class VaktekPanel extends JPanel
     	ra.zetVlakkenKleurenOptie(b);
     	la.zetVlakkenKleurenOptie(b);
     	ba.zetVlakkenKleurenOptie(b);
-    }	
-    public void zetProfielenKleurenOptie(boolean b, boolean leerling)
-    {	profielenKleurenOptie = b;
-    	va.zetProfielenKleurenOptie(b,leerling);
-    	ra.zetProfielenKleurenOptie(b,leerling);
-    	la.zetProfielenKleurenOptie(b,leerling);
-    	ba.zetProfielenKleurenOptie(b,leerling);
     }
-    
+
     public void resetColors()
     {
     	va.resetColors();
@@ -200,32 +179,23 @@ class VaktekPanel extends JPanel
     	ba.resetLeerlingColors();
     }
 
-    //public void zetViewerKleurenOptie(boolean b)
-    //{	viewerKleurenOptie = b;
-    //	va.zetViewerKleurenOptie(b);
-    //	ra.zetViewerKleurenOptie(b);
-    //	la.zetViewerKleurenOptie(b);
-    //	ba.zetViewerKleurenOptie(b);
-    //}
-	
     public String[] getKleuren()
     {
     	String[] vaKleuren = getVaKleuren();
-    	String[] raKleuren = getVaKleuren();
-    	String[] laKleuren = getVaKleuren();
+    	String[] raKleuren = getRaKleuren();
+    	String[] laKleuren = getLaKleuren();
     	String[] baKleuren = getVaKleuren();
     	String[] result = new String[vaKleuren.length];
     	for (int cCnt = 0; cCnt < vaKleuren.length; cCnt++)
     	{	result[cCnt] = vaKleuren[cCnt];
-    		if (raKleuren[cCnt].equals("roodoranje"))
-    			result[cCnt] = "roodoranje";
-    		if (laKleuren[cCnt].equals("roodoranje"))
-    			result[cCnt] = "roodoranje";
-    		if (baKleuren[cCnt].equals("roodoranje"))
-    			result[cCnt] = "roodoranje";
+    		if (raKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
+    		if (laKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
+    		if (baKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
     		
     	}
-    	
     	
     	return result;
     }
@@ -250,79 +220,86 @@ class VaktekPanel extends JPanel
     	setBaKleuren(kleuren);
     }
     public void setVaKleuren(String[] kleuren)
-    {  	va.setViewerKleuren(kleuren);
+    {  	va.setKleuren(kleuren);
     }
     public void setRaKleuren(String[] kleuren)
-    {  	ra.setViewerKleuren(kleuren);
+    {  	ra.setKleuren(kleuren);
     }
     public void setLaKleuren(String[] kleuren)
-    {  	la.setViewerKleuren(kleuren);
+    {  	la.setKleuren(kleuren);
     }
     public void setBaKleuren(String[] kleuren)
-    {  	ba.setViewerKleuren(kleuren);
+    {  	ba.setKleuren(kleuren);
+    }
+ 
+    public void synchronizeViewerKleuren(Viewer3d v3d)
+    {	
+    	String[] result = null;
+    	if (v3d == va)
+    	{	result = getVaKleuren();
+    	}
+    	else if (v3d == ra)
+    	{	result = getRaKleuren();
+    	}
+    	else if (v3d == la)
+    	{	result = getLaKleuren();
+    	}
+    	else if (v3d == ba)
+    	{	result = getBaKleuren();
+    	}
+    	
+       	String[] vaKleuren = getVaKleuren();
+    	String[] raKleuren = getRaKleuren();
+    	String[] laKleuren = getLaKleuren();
+    	String[] baKleuren = getBaKleuren();
+    	
+    	for (int cCnt = 0; cCnt < result.length; cCnt++)
+    	{	vaKleuren[cCnt] = result[cCnt];
+    		raKleuren[cCnt] = result[cCnt];
+    		laKleuren[cCnt] = result[cCnt];
+    		baKleuren[cCnt] = result[cCnt];
+    	}
+    	
+    	va.zetKleuren(result);
+    	ra.zetKleuren(result);
+    	la.zetKleuren(result);
+    	ba.zetKleuren(result);
     }
     
     public void updateViewerKleuren()
-    {	va.updateViewerKleuren();
-    	ra.updateViewerKleuren();
-    	la.updateViewerKleuren();
-    	ba.updateViewerKleuren();
+    {	
+    	
+       	String[] vaKleuren = getVaKleuren();
+    	String[] raKleuren = getRaKleuren();
+    	String[] laKleuren = getLaKleuren();
+    	String[] baKleuren = getBaKleuren();
+    	String[] result = new String[vaKleuren.length];
+    	for (int cCnt = 0; cCnt < vaKleuren.length; cCnt++)
+    	{	result[cCnt] = vaKleuren[cCnt];
+    		if (raKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
+    		if (laKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
+    		if (baKleuren[cCnt].equals("rood"))
+    			result[cCnt] = "rood";
+    		
+    	}
+    	
+    	tvip.viewerKleuren = result;
     	
     }
     
-    public boolean evalueer(int aantalVlakkenRood)
+    public boolean evalueer(String[] nakijkKleuren)
     {
-    	
-    	boolean correct = va.evalueer() && ra.evalueer() && la.evalueer() && ba.evalueer();
-    	return correct;
-    	
-/*    	
-		int roodoranjeroodCnt = 0;
-		int oranjeroodCnt = 0;
+		String[] viewerKleuren = getKleuren();
+		boolean result = true;
+		for (int i = 0; i < viewerKleuren.length; i++)
+		{	
+			result = result && viewerKleuren[i].equals(nakijkKleuren[i]);
+		}
 
-    	String[] viewerKleuren = va.getViewerKleuren();
-		for (int i = 0; i < viewerKleuren.length; i++)
-		{	if (viewerKleuren[i].equals("roodoranjerood"))
-				roodoranjeroodCnt++;
-			if (viewerKleuren[i].equals("oranjerood"))
-				oranjeroodCnt++;
-			
-		}
-System.out.println("vaktek eval ror = va " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
-		
-    	viewerKleuren = ra.getViewerKleuren();
-		for (int i = 0; i < viewerKleuren.length; i++)
-		{	if (viewerKleuren[i].equals("roodoranjerood"))
-				roodoranjeroodCnt++;
-			if (viewerKleuren[i].equals("oranjerood"))
-				oranjeroodCnt++;
-		}
-System.out.println("vaktek eval ror = ra " + roodoranjeroodCnt + " or = " + oranjeroodCnt);		
-    	viewerKleuren = la.getViewerKleuren();
-		for (int i = 0; i < viewerKleuren.length; i++)
-		{	if (viewerKleuren[i].equals("roodoranjerood"))
-				roodoranjeroodCnt++;
-			if (viewerKleuren[i].equals("oranjerood"))
-				oranjeroodCnt++;
-		}
-System.out.println("vaktek eval ror = la " + roodoranjeroodCnt + " or = " + oranjeroodCnt);		
-    	viewerKleuren = ba.getViewerKleuren();
-		for (int i = 0; i < viewerKleuren.length; i++)
-		{	if (viewerKleuren[i].equals("roodoranjerood"))
-				roodoranjeroodCnt++;
-			if (viewerKleuren[i].equals("oranjerood"))
-				oranjeroodCnt++;
-		}
-System.out.println("vaktek eval ror = ba " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
-		
-System.out.println("vaktek eval ror = " + roodoranjeroodCnt + " or = " + oranjeroodCnt);
-System.out.println("vaktek eval avr = " + aantalVlakkenRood);
-
-		//roodoranjeroodCnt = roodoranjeroodCnt / 4;
-		//oranjeroodCnt = oranjeroodCnt / 4;
-		
-		return (roodoranjeroodCnt == aantalVlakkenRood) && (oranjeroodCnt == 0);    
-*/		
+		return result;
+    	
     }
     
 	public void zetAchtergrond(Color c)
