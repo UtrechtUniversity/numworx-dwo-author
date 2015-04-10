@@ -303,15 +303,17 @@ if (k > 0)
 System.out.println("viewer setState");
 
 
-		//double[] hoekpunten = null;
-		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
-		//int[] vlakken = null;
-		ArrayList<Integer> vlakkenAL = new ArrayList<Integer>();
-		//int[] lijnen = null;
-		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
+		double[] hoekpunten = null;
+		ArrayList<Double> hoekpuntenAL = null;
+		int[] vlakken = null;
+		ArrayList<Integer> vlakkenAL = null;
+		int[] lijnen = null;
+		ArrayList<Integer> lijnenAL = null;
+		
 		//String[] kleuren = null;
 		ArrayList<String> kleurenAL = new ArrayList<String>();
-		
+
+/*		
 		//hoekpunten = (double[]) h.get("hoekpunten");
 		if (h.containsKey("hoekpunten"))
 			hoekpuntenAL = (ArrayList<Double>) h.get("hoekpunten");
@@ -321,6 +323,23 @@ System.out.println("viewer setState");
 		//lijnen = (int[]) h.get("lijnen");
 		if (h.containsKey("lijnen"))
 			lijnenAL = (ArrayList<Integer>) h.get("lijnen");
+*/
+		Object hoekpuntenObject = null;
+		if (h.containsKey("hoekpunten"))
+		{	//hoekpuntenAL = (ArrayList<Double>) h.get("hoekpunten");
+			hoekpuntenObject = h.get("hoekpunten");
+		}
+		Object vlakkenObject = null;
+		if (h.containsKey("vlakken"))
+		{	//vlakkenAL = (ArrayList<Integer>) h.get("vlakken");
+			vlakkenObject = h.get("vlakken");
+		}
+		Object lijnenObject = null;
+		if (h.containsKey("lijnen"))
+		{	//lijnenAL = (ArrayList<Integer>) h.get("lijnen");
+			lijnenObject = h.get("lijnen");
+		}
+
 		if (h.containsKey("kleuren"))
 			kleurenAL = (ArrayList<String>) h.get("kleuren");
 		
@@ -345,7 +364,54 @@ System.out.println("viewer setState");
 
 		if (h.containsKey("viewerPosition"))
 			viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
-		
+
+		if (hoekpuntenObject != null)
+		{	boolean error = false;
+			try
+			{	hoekpuntenAL = (ArrayList<Double>) hoekpuntenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				hoekpunten = (double[]) hoekpuntenObject; 
+			}
+			if (!error)
+			{	hoekpunten = new double[hoekpuntenAL.size()];
+				for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
+					hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
+			}
+		}
+		if (vlakkenObject != null)
+		{	boolean error = false;
+			try
+			{	vlakkenAL = (ArrayList<Integer>) vlakkenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				vlakken = (int[]) vlakkenObject; 
+			}
+			if (!error)
+			{	vlakken = new int[vlakkenAL.size()];
+				for (int v = 0; v < vlakkenAL.size(); v++)
+					vlakken[v] = vlakkenAL.get(v).intValue();
+			}
+		}
+		if (lijnenObject != null)
+		{	boolean error = false;
+			try
+			{	lijnenAL = (ArrayList<Integer>) lijnenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				lijnen = (int[]) lijnenObject; 
+			}
+			if (!error)
+			{	lijnen = new int[lijnenAL.size()];
+				for (int l = 0; l < lijnenAL.size(); l++)
+					lijnen[l] = lijnenAL.get(l).intValue();
+			}
+		}
+
+/*		
 		double[] hoekpunten = new double[hoekpuntenAL.size()];
 		for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
 			hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
@@ -355,6 +421,8 @@ System.out.println("viewer setState");
 		int[] lijnen = new int[lijnenAL.size()];
 		for (int l = 0; l < lijnenAL.size(); l++)
 			lijnen[l] = lijnenAL.get(l).intValue();
+			
+*/			
 		String[] kleuren = new String[kleurenAL.size()];
 		for (int s = 0; s < kleurenAL.size(); s++)
 			kleuren[s] = kleurenAL.get(s);
