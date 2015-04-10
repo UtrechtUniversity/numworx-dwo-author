@@ -37,7 +37,7 @@ class VaktekPanel extends JPanel
 	{	
 		this.tvip = tvip;
 		
-		setBounds(x,y,b,h);
+		setBounds(x,y,b,h+25);
 		setLayout(null);
 		setBackground(Color.white);
 		
@@ -114,7 +114,7 @@ class VaktekPanel extends JPanel
 		kijkNaPanel = new JPanel(null);
 		kijkNaPanel.setBackground(Color.WHITE);
 		//kijkNaPanel.setBounds(getSize().width - 130, getSize().height - 30, 120, 20);
-		kijkNaPanel.setBounds(5, 5, 120, 20);
+		kijkNaPanel.setBounds((getSize().width-120)/2, h+3, 120, 20);
 		
 		//kijkNaPanel.setSize(120, 20);
 		kijkNaPanel.add(kijkNaButton);

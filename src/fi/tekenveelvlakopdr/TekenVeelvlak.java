@@ -282,15 +282,12 @@ if (k > 0)
 		
 //System.out.println("tv setState");
 
-		//double[] hoekpunten = null;
-		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
-		//int[] vlakken = null;
-		ArrayList<Integer> vlakkenAL = new ArrayList<Integer>();
-		//int[] lijnen = null;
-		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
-		//String[] kleuren = null;
-		//ArrayList<String> kleurenAL = new ArrayList<String>();
-		//int aantalVlakkenRood = 0;
+		double[] hoekpunten = null;
+		ArrayList<Double> hoekpuntenAL = null;
+		int[] vlakken = null;
+		ArrayList<Integer> vlakkenAL = null;
+		int[] lijnen = null;
+		ArrayList<Integer> lijnenAL = null;
 		
 		boolean basisZichtbaar = true;
 		
@@ -301,20 +298,21 @@ if (k > 0)
 		int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
 		boolean muisAan = true;
 
-		//hoekpunten = (double[]) h.get("hoekpunten");
+		Object hoekpuntenObject = null;
 		if (h.containsKey("hoekpunten"))
-			hoekpuntenAL = (ArrayList<Double>) h.get("hoekpunten");
-		//vlakken = (int[]) h.get("vlakken");
+		{	//hoekpuntenAL = (ArrayList<Double>) h.get("hoekpunten");
+			hoekpuntenObject = h.get("hoekpunten");
+		}
+		Object vlakkenObject = null;
 		if (h.containsKey("vlakken"))
-			vlakkenAL = (ArrayList<Integer>) h.get("vlakken");
-		//lijnen = (int[]) h.get("lijnen");
+		{	//vlakkenAL = (ArrayList<Integer>) h.get("vlakken");
+			vlakkenObject = h.get("vlakken");
+		}
+		Object lijnenObject = null;
 		if (h.containsKey("lijnen"))
-			lijnenAL = (ArrayList<Integer>) h.get("lijnen");
-		//if (h.containsKey("kleuren"))
-		//	kleurenAL = (ArrayList<String>) h.get("kleuren");
-		
-		//if (h.containsKey("aantalVlakkenRood"))
-		//	aantalVlakkenRood = ((Integer) h.get("aantalVlakkenRood")).intValue();
+		{	//lijnenAL = (ArrayList<Integer>) h.get("lijnen");
+			lijnenObject = h.get("lijnen");
+		}
 		
 		
 		if (h.containsKey("basisZichtbaar"))
@@ -326,27 +324,52 @@ if (k > 0)
 		if (h.containsKey("draaiY"))
 			draaiY = ((Double) h.get("draaiY")).doubleValue();
 
-		//if (h.containsKey("viewerPosition"))
-		//	viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
-		//if (h.containsKey("muisAan"))
-		//	muisAan = ((Boolean) h.get("muisAan")).booleanValue();
-
-		//this.viewerPosition = viewerPosition;
-		//this.muisAan = muisAan;
-		double[] hoekpunten = new double[hoekpuntenAL.size()];
-		for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
-			hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
-		int[] vlakken = new int[vlakkenAL.size()];
-		for (int v = 0; v < vlakkenAL.size(); v++)
-			vlakken[v] = vlakkenAL.get(v).intValue();
-		int[] lijnen = new int[lijnenAL.size()];
-		for (int l = 0; l < lijnenAL.size(); l++)
-			lijnen[l] = lijnenAL.get(l).intValue();
-		//String[] kleuren = new String[kleurenAL.size()];
-		//for (int s = 0; s < kleurenAL.size(); s++)
-		//	kleuren[s] = kleurenAL.get(s);
+		if (hoekpuntenObject != null)
+		{	boolean error = false;
+			try
+			{	hoekpuntenAL = (ArrayList<Double>) hoekpuntenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				hoekpunten = (double[]) hoekpuntenObject; 
+			}
+			if (!error)
+			{	hoekpunten = new double[hoekpuntenAL.size()];
+				for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
+					hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
+			}
+		}
+		if (vlakkenObject != null)
+		{	boolean error = false;
+			try
+			{	vlakkenAL = (ArrayList<Integer>) vlakkenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				vlakken = (int[]) vlakkenObject; 
+			}
+			if (!error)
+			{	vlakken = new int[vlakkenAL.size()];
+				for (int v = 0; v < vlakkenAL.size(); v++)
+					vlakken[v] = vlakkenAL.get(v).intValue();
+			}
+		}
+		if (lijnenObject != null)
+		{	boolean error = false;
+			try
+			{	lijnenAL = (ArrayList<Integer>) lijnenObject;
+			}
+			catch (ClassCastException cce)
+			{	error = true;
+				lijnen = (int[]) lijnenObject; 
+			}
+			if (!error)
+			{	lijnen = new int[lijnenAL.size()];
+				for (int l = 0; l < lijnenAL.size(); l++)
+					lijnen[l] = lijnenAL.get(l).intValue();
+			}
+		}
 		
-		//this.aantalVlakkenRood = aantalVlakkenRood;
 		
 		aantalPuntenRood = 0;
 		wisTrefpunten();
@@ -417,14 +440,12 @@ if (k > 0)
 	{	
 //System.out.println("tv getState");		
 		
-		//double[] hoekpunten = null;
+		//double[] hoekpuntenAL = null;
 		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
-		//int[] vlakken = null;
+		//int[] vlakkenAL = null;
 		ArrayList<Integer> vlakkenAL = new ArrayList<Integer>();
-		//int[] lijnen = null;
+		//int[] lijnenAL = null;
 		ArrayList<Integer> lijnenAL = new ArrayList<Integer>();
-		//String[] kleuren = null;
-		//ArrayList<String> kleurenAL = new ArrayList<String>();
 				
 		boolean basisZichtbaar = true;
 		
@@ -433,19 +454,15 @@ if (k > 0)
 		double draaiX = 20;
 		double draaiY = -30;
 
-		//hoekpunten = tv.hpRij;
+		//hoekpuntenAL = tv.hpRij;
 		for (int h = 0; h < tv.hpRij.length; h++)
 			hoekpuntenAL.add(new Double(tv.hpRij[h]));
-		//vlakken = tv.vlRij;
+		//vlakkenAL = tv.vlRij;
 		for (int v = 0; v < tv.vlRij.length; v++)
 			vlakkenAL.add(new Integer(tv.vlRij[v]));
-		//lijnen = tv.lnRij;
+		//lijnenAL = tv.lnRij;
 		for (int k = 0; k < tv.lnRij.length; k++)
 			lijnenAL.add(new Integer(tv.lnRij[k]));
-		//kleuren = new String[tv.aantalVlakken];
-		//for (int vCnt = 0; vCnt < tv.aantalVlakken; vCnt++)
-		//{	kleurenAL.add(tv.vlakken[vCnt].vulkleur);
-		//}
 		
 		basisZichtbaar = this.basisZichtbaar;
 		

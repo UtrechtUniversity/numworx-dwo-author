@@ -126,7 +126,7 @@ public class Viewer3d extends JPanel
 		
 		kijkNaPanel = new JPanel(null);
 		kijkNaPanel.setBackground(Color.WHITE);
-		kijkNaPanel.setBounds(5, getSize().height, 120, 20);
+		kijkNaPanel.setBounds((getSize().width-120)/2, getSize().height, 120, 20);
 		
 		kijkNaPanel.add(kijkNaButton);
 		kijkNaPanel.add(vinkjeLabel);
@@ -302,6 +302,7 @@ if (k > 0)
 		
 System.out.println("viewer setState");
 
+
 		//double[] hoekpunten = null;
 		ArrayList<Double> hoekpuntenAL = new ArrayList<Double>();
 		//int[] vlakken = null;
@@ -331,7 +332,6 @@ System.out.println("viewer setState");
 		
 		int viewerPosition = TekenVeelvlakInteractiePanel.MOVEABLE;
 		
-		//int aantalVlakkenRood = 0; 
 		
 		if (h.containsKey("zoomFac"))
 			zoomFac = ((Double) h.get("zoomFac")).doubleValue();
@@ -346,8 +346,6 @@ System.out.println("viewer setState");
 		if (h.containsKey("viewerPosition"))
 			viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
 		
-//System.out.println("vPos = " + viewerPosition);
-
 		double[] hoekpunten = new double[hoekpuntenAL.size()];
 		for (int hp = 0; hp < hoekpuntenAL.size(); hp++)
 			hoekpunten[hp] = hoekpuntenAL.get(hp).doubleValue();
@@ -366,7 +364,6 @@ System.out.println("viewer setState");
 		this.draaiX = draaiX;
 		this.draaiY = draaiY;
 		zetViewerPosition(viewerPosition);
-		//zetBeginHoeken(draaiX, draaiY);
 		
 		this.muisAan = muisAan;
 		
@@ -375,6 +372,8 @@ System.out.println("viewer setState");
 		vvRij[0] = v;
 		
 		tekenOpnieuw();
+		
+		
 	}
 	
 	public void setKleuren(String[] kleuren)

@@ -185,74 +185,7 @@ System.out.println("tvip getEditState");
     		h.put("viewerKleuren", viewerKleurenAL);
     	}	
 
-/*    	
-    	String[] vaKleuren = vaktek.getVaKleuren();
-    	if (vaKleuren != null)
-    	{	
-    		ArrayList<String> vaKleurenAL = new ArrayList<String>();
-    		for (int va = 0; va < vaKleuren.length; va++)
-    			vaKleurenAL.add(vaKleuren[va]);
-    		h.put("vaKleuren", vaKleurenAL);
-    	}
 
-    	String[] raKleuren = vaktek.getRaKleuren();
-    	if (raKleuren != null)
-    	{	
-    		ArrayList<String> raKleurenAL = new ArrayList<String>();
-    		for (int ra = 0; ra < raKleuren.length; ra++)
-    			raKleurenAL.add(raKleuren[ra]);
-    		h.put("raKleuren", raKleurenAL);
-    	}
-    	
-    	String[] laKleuren = vaktek.getLaKleuren();
-    	if (laKleuren != null)
-    	{	
-    		ArrayList<String> laKleurenAL = new ArrayList<String>();
-    		for (int la = 0; la < laKleuren.length; la++)
-    			laKleurenAL.add(laKleuren[la]);
-    		h.put("laKleuren", laKleurenAL);
-    	}
-    	String[] baKleuren = vaktek.getBaKleuren();
-    	if (baKleuren != null)
-    	{	
-    		ArrayList<String> baKleurenAL = new ArrayList<String>();
-    		for (int ba = 0; ba < baKleuren.length; ba++)
-    			baKleurenAL.add(baKleuren[ba]);
-    		h.put("baKleuren", baKleurenAL);
-    	}
-*/
-/*    	
-    	if (vlakkenKleurenOptie && !profielenKleurenOptie)
-    	{	
-    		for (int c = 0; c < viewerKleuren.length; c++)
-    		{	 if (viewerKleuren[c].equals("roodoranje"))
-    				aantalVlakkenRood++;
-    		}	
-    	} 
-    	if (vlakkenKleurenOptie && profielenKleurenOptie)
-    	{	
-    		for (int c = 0; c < vaKleuren.length; c++)
-	 	 	{	 if (vaKleuren[c].equals("roodoranje"))
-	 		 		aantalVlakkenRood++;
-	 	 	}
-	 	 	for (int c = 0; c < raKleuren.length; c++)
-	 	 	{	 if (raKleuren[c].equals("roodoranje"))
-	 		 		aantalVlakkenRood++;
-	 	 	}
-	 	 	for (int c = 0; c < laKleuren.length; c++)
-	 	 	{	if (laKleuren[c].equals("roodoranje"))
-	 		 		aantalVlakkenRood++;
-	 	 	}
-	 	 	for (int c = 0; c < baKleuren.length; c++)
-	 	 	{	if (baKleuren[c].equals("roodoranje"))
-	 		 		aantalVlakkenRood++;
-	 	 	}
-	 	    aantalVlakkenRood = aantalVlakkenRood / 4;
-    	 }
-*/    	 
-//	 	 h.put("aantalVlakkenRood", aantalVlakkenRood);
-
-//System.out.println("avr = " + aantalVlakkenRood);	 	 
         return h;
     }
 
@@ -524,12 +457,12 @@ System.out.println("tvip getEditState");
     		return;
     	
     	//if (vlakkenKleurenOptie && profielenKleurenOptie && profilesOnly)
-    	if (vlakkenKleurenOptie && profilesOnly)
+    	if (kijkVlakkenNa && profilesOnly)
     	{
     		correct = vaktek.evalueer(docentKleuren);
     		nagekeken = true;
     	}
-    	else if (vlakkenKleurenOptie && viewerOnly)
+    	else if (kijkVlakkenNa && viewerOnly)
     	{
     		correct = viewer.evalueer(docentKleuren);
     		nagekeken = true;
@@ -566,7 +499,7 @@ System.out.println("tvip getEditState");
         int vs = Math.min(vb,vh);
         
         viewerPanel.setBounds(0,0,vs,vs);
-        viewer.kijkNaPanel.setLocation(5, vs-25);
+        viewer.kijkNaPanel.setLocation((vs-120)/2, vs-25);
         viewer.setBounds(0,0,vs,vs-25);
         
     }

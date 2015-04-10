@@ -514,7 +514,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     			kijkVlakkenNaCB.setSelected(false);
     			zetVlakkenKleurenOptiesEnabled(false);
     			tvip.viewer.kijkNaPanel.setVisible(true);
-    			tvip.vaktek.kijkNaPanel.setVisible(true);
+    			//tvip.vaktek.kijkNaPanel.setVisible(true);
     		}
     		else
     		{
@@ -826,6 +826,8 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			if (tvipProfilesOnly)
 				tvip.setProfilesOnly(tvipProfilesOnly);
 			
+			tvip.vaktek.kijkNaPanel.setVisible(true);
+			
 		}
 		else // geen van twee
 		{
@@ -892,11 +894,19 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		}
 		else // geen van twee
 		{
+		
 			// doe maar een viewer
 			tvip.setViewerOnly(true);
 			laatsteDraaiX = tvip.viewer.geefDraaiX();
 			laatsteDraaiY = tvip.viewer.geefDraaiY();
 			tvip.viewer.resetColors();
+			
+			//zetDraaihoekOptiesEnabled(true);
+			dezeDraaihoekRB.setSelected(true);
+			
+			//if (tvip)
+			 
+			
 		}
     	
     }
@@ -1064,15 +1074,17 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 //System.out.println("tviep setEditState");    	
 
     	// tekenVVOptiesPanel
-    	
+
+    	boolean toonVooraanzichtPijl = false;
         boolean viewerOnly = false; 
         boolean profilesOnly = false;
         int viewerPosition = 0;
         int aantalHulppunten = 0;
         
         boolean vlakkenKleurenOptie = false;
-//        boolean profielenKleurenOptie = true;
-//        boolean viewerKleurenOptie = false;
+        
+        if(h.containsKey("toonVooraanzichtPijl"))
+          	 toonVooraanzichtPijl = ((Boolean)h.get("toonVooraanzichtPijl")).booleanValue();
         
         if(h.containsKey("viewerOnly"))
         	viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
@@ -1096,14 +1108,14 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 //        	profielenKleurenOptie = ((Boolean) h.get("profielenKleurenOptie")).booleanValue();
 //        if (h.containsKey("viewerKleurenOptie"))
 //        	viewerKleurenOptie = ((Boolean) h.get("viewerKleurenOptie")).booleanValue();
-        
+
+        frontArrowCB.setSelected(toonVooraanzichtPijl);
 	    viewerOnlyCB.setSelected(viewerOnly);
 	    profilesOnlyCB.setSelected(profilesOnly);
 	    
 	    vlakkenKleurenCB.setSelected(vlakkenKleurenOptie);
 	    vlakkenKleurenCB.setEnabled(viewerOnly || profilesOnly);
-//	    profielenKleurenRB.setSelected(profielenKleurenOptie);
-//	    viewerKleurenRB.setSelected(viewerKleurenOptie);
+	    
 	    
 	    zetVlakkenKleurenOptiesEnabled(vlakkenKleurenOptie);
 	    	    
@@ -1173,7 +1185,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	
 	    kijkVlakkenNaCB.setSelected(kijkVlakkenNa);
 	    
-	    if (kijkDraaihoekNa || kijkVlakkenNa)
+	    if (viewerOnly || profilesOnly)
 	    	tabbedPane.setEnabledAt(1,true);
 	    
 	    
