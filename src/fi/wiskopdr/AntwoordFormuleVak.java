@@ -2457,7 +2457,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			else try
 			{	Expressie antwoord = formuleVak.geefExpressie();
 				if(antwoord!=null)
-				{	formuleVak.vulVak("$f" + antwoord.toString() + "@");
+				{	//formuleVak.vulVak("$f" + antwoord.toString() + "@"); // of is deze herschrijving echt nodig?
 					requestFocus();
 				}
 				setAttempt();
