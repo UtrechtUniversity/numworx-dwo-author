@@ -448,18 +448,25 @@ public class FormuleParser
 		index = 0;
 		while(index >-1)
 		{	index = s.indexOf("*-");
-			
+			System.out.println("s1: "+s);
 			int tel = index+2;
-			while(tel<s.length() && (Character.isDigit(s.charAt(tel)) || s.charAt(tel)=='.' ))
+			while(tel<s.length() && (Character.isDigit(s.charAt(tel)) || s.charAt(tel)=='.'))
 			{	tel++;
 			}
-			if(index >-1 && tel>index+2) s = s.substring(0,index) + "(" + s.substring(index+1,tel) + ")" + s.substring(tel);
+			
+			if(index >-1 && tel>index+2 && s.charAt(tel)=='^') 
+				s = s.substring(0,index) + "(-1)" + s.substring(index+2);
+			
+			else if(index >-1 && tel>index+2) 
+				s = s.substring(0,index) + "(" + s.substring(index+1,tel) + ")" + s.substring(tel);
 			
 			else if(index >-1 && index+2<s.length() && Character.isLetter(s.charAt(index+2))) 
 			{	tel = index+3;
 				s = s.substring(0,index) + "(-1)" + s.substring(index+2);
 			}	
 			else if(index >-1 && index+2<s.length())s = s.substring(0,index) + "(-1)" + s.substring(index+2);
+			
+			System.out.println("s2: "+s);
 		}
 		
 		//vervangt /-6 door /(-6)
