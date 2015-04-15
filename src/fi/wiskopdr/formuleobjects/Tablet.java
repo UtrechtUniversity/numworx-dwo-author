@@ -30,7 +30,7 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 	{	
 		{"wortel","macht","kwadraat","breuk","haakjes","ndewortel","integraal","prv","ndelog","abs","subscript","bin"},
 		//{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","\u2190", "\u2192","\u3008","\u3009","[","]"},
-		{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","conjug", "\u2192","sigma","\u3008","\u3009","diff_partial"},
+		{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","conjug", "stelsel","sigma","\u3008","\u3009","diff_partial"}, 
 		{"x","y","(",")","1","2","3","/","back"},
 		{"a","b","k","e","pi","4","5","6","maal","del"},
 		{"p","q","t","<",">","7","8","9","min","enter"},
@@ -69,12 +69,12 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 	{	
 		{"haakjes",  "breuk",  		"kwadraat", "macht",  	"wortel", 	"ndewortel", "ndelog"},
 		{"diff", 	"primitieve",   "integraal","prv", 	    "abs",		"subscript",	"bin"},
-		{"limiet0",	"limiet1",		"limiet2",	"\u221e",	"±",		"\u2248",	"\u2260"},
+		{"limiet0",	"limiet1",		"limiet2",	"\u221e",	"ï¿½",		"\u2248",	"\u2260"},
 		{"<",		"\u2264",		"\u2265",	">",		"\u2227",	"\u2228",	"\u2205"},
 		{"[",		"]",		"\u3008",	"\u3009",		"\u2190",	"\u2192",	"\u00b0"},
 		{"pi",		"e",		"\u03b1",	"\u03b2",		"\u03b3",	"\u03bc",	"\u03c3"}
 		
-		//{"±",      	"\u2248",  		"\u2260", 	"<",  	  	"\u2264", 	"\u2265",  	">",  		"\u2227", 	"\u2228"},
+		//{"ï¿½",      	"\u2248",  		"\u2260", 	"<",  	  	"\u2264", 	"\u2265",  	">",  		"\u2227", 	"\u2228"},
 		//{"\u2205", 	"pi",      		"e",  		"\u03b1", 	"\u03b2",	"\u03b3",	"\u03bc",	"\u03c3",	"\u2218"},
 		//{"\u221e",	"haakjes",		"breuk",	"kwadraat",	"macht",	"wortel",	"ndewortel","ndelog" , 	"diff"},
 		//{"primitieve","integraal",	"prv",		"abs",		"subscript","bin",		"limiet0",	"limiet1",	"limiet2"}
@@ -650,6 +650,8 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
         else if (code.equals("primitieve")) formuleVakHouder.geefFormuleVak().zetPrimitieveVak();
         else if (code.equals("sigma")) formuleVakHouder.geefFormuleVak().zetSigmaVak();
         else if (code.equals("conjug")) formuleVakHouder.geefFormuleVak().zetConjugVak();
+        else if(code.equals("stelsel")) formuleVakHouder.geefFormuleVak().zetStelselVak();
+		
 				
 		else if (code.equals("del"))formuleVakHouder.geefFormuleVak().delete();
 		else if (code.equals("back"))formuleVakHouder.geefFormuleVak().backspace();

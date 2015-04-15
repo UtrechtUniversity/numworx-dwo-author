@@ -234,6 +234,14 @@ public class RegelVak extends FormuleElement
 					iv.vulVak(s.substring(2,eind));
 					s = s.substring(eind);
 				}
+				else if(ch1 == 'Q')
+				{
+					StelselVak sv = new StelselVak(formuleVak);
+					sv.setFGColor(fgColor);
+					formuleRegel.add(sv);
+					sv.vulVak(s.substring(2, eind));
+					s = s.substring(eind);
+				}
                 else if(ch1=='s')
                 {   SubscriptVak sv = new SubscriptVak(formuleVak);
                 	sv.setFGColor(fgColor);

@@ -354,7 +354,7 @@ public class FormuleParser
         {   s = s.substring(0,n) + "(prv(" + s.substring(n+2);
             n = s.indexOf("$q");
         }
-		n = s.indexOf("@");
+        n = s.indexOf("@");
 		while(n>-1)
 		{	s = s.substring(0,n) + ")" + s.substring(n+1);
 			n = s.indexOf("@");

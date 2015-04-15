@@ -65,8 +65,6 @@ public class SigmaVak extends RegelVak
 		if(selected)g.setColor(Color.white);
 		else g.setColor(fgColor);
 		
-		
-		System.out.println(kind4.toString());
 		Font f = fm.getFont();
 		Font font0 = new Font(f.getName(), f.getStyle(), f.getSize()*3/2);
 		g.setFont(font0);

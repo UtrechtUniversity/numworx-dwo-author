@@ -214,6 +214,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		
 		formuleVak = new FormuleVak();
 		formuleVak.setFont(formuleVakFont);
+		formuleVak.geefActieveRegel().zetReactieVergelijking(true);
 		formuleVak.addActionListener(this);
 		formuleVak.setLocation(formuleVakX, formuleVakY);
 		add(formuleVak);
@@ -443,7 +444,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 	}
 
 	public InteractieEditPanel getEditPanel() {
-		return new ReactieVergelijkingVakEditPanel(1);
+		return new ReactieVergelijkingVakEditPanel();
 	}
 
 	public void setBounds(int x, int y, int b, int h) { // if(WiskOpdr.deployVariant!=null
@@ -821,6 +822,8 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 			
 		}
 		
+		formuleVak.geefActieveRegel().zetReactieVergelijking(true);
+		
 	}
 
 	public Hashtable getState() {
@@ -1022,6 +1025,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 
 	public void opnieuw()
 	{
+		System.out.println("Opnieuw");
 		score = 0;
 		correct = false;
 		for (int i = 0; i < 100; i++)
@@ -1033,6 +1037,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		formuleVak.setFont(formuleVakFont);
 		formuleVak.addActionListener(this);
 		formuleVak.setLocation(formuleVakX, formuleVakY);
+		formuleVak.geefActieveRegel().zetReactieVergelijking(true);
 		add(formuleVak);
 	}
 
@@ -1462,8 +1467,8 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 					ReactieVergelijking antwoordIngevuld = formuleVak.geefReactieVergelijking();
 					if (antwoordIngevuld != null)
 					{
-						String vergString = antwoordIngevuld.toString();
-						formuleVak.vulVak("$f" + vergString + "@");
+						//String vergString = antwoordIngevuld.toString();
+						//formuleVak.vulVak("$f" + vergString + "@");
 						requestFocus();
 					}
 				}

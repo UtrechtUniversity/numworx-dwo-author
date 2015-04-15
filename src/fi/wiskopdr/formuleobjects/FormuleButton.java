@@ -496,6 +496,23 @@ public class FormuleButton extends JButton implements MouseListener
 	        g.drawLine(9,17,11,17);
 	        g.drawLine(11,3,11,17);
 		}
+		else if(code.equals("stelsel"))
+		{
+			g.setColor(Color.white);
+            g.fillRect(10,4,4,5);
+            g.fillRect(10,11,4,5);
+            g.setColor(Color.gray);
+            g.drawRect(10,4,4,5);
+            g.drawRect(10,11,4,5);
+	        
+			g.setColor(Color.black);
+			g.drawArc(5, 2, 6, 6, 90, 90);
+			g.drawLine(5, 4, 5, 7);
+			g.drawArc(-1, 4, 6, 6, 270, 90);
+			g.drawArc(-1, 10, 6, 6, 0, 90);
+			g.drawLine(5, 12, 5, 15);
+			g.drawArc(5, 11, 6, 6, 180, 90);
+		}
 		else if(code.equals("formule"))
 		{	//g.drawString("F",7,15);
 			g.drawImage(getImage("formuleknop.gif"),1,1,null);

@@ -39,6 +39,8 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 	Color bgColor = new Color(255,255,255);
 	Color fgColor = new Color(0,0,0);
 	
+	private boolean reactieVergelijking;
+	
 	public FormuleRegel(FormuleVak fv)
 	{	formuleVak = fv;
 		editable = fv.isEditable();
@@ -303,11 +305,21 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					insert(iv);
 					s = s.substring(eind);
 				}
+				else if(ch1=='Q')
+				{
+					StelselVak sv = new StelselVak(formuleVak);
+					sv.vulVak(s.substring(2, eind));
+					insert(sv);
+					s = s.substring(eind);
+				}
 				
 				
 			}
 			else
-			{	insert(new FormuleTeken(s.charAt(0)));
+			{	FormuleTeken formuleTeken = new FormuleTeken(s.charAt(0));
+				if(reactieVergelijking)
+					formuleTeken.zetFunctieTeken(true);
+				insert(formuleTeken);
 				int nr = getComponentCount();
 				FormuleTeken ft1, ft2, ft3;
 				Component cm1;
@@ -598,6 +610,11 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		}
 		
 		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
+	}
+	
+	public void zetReactieVergelijking(boolean b)
+	{
+		reactieVergelijking = b;
 	}
 
 	public void zetWortelVak()
@@ -997,6 +1014,37 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
         zetMaat();
         
     }
+	
+	public void zetStelselVak()
+	{	
+		FormuleElement[] selectieRij = new FormuleElement[100];
+		int aantalElementen = 0;
+		for(int i=0 ; i<getComponentCount()  ; i++)
+		{	if(((FormuleElement)getComponent(i)).isSelected())
+			{	selectieRij[aantalElementen] = ((FormuleElement)getComponent(i));
+				aantalElementen++;
+			}
+		}
+		if(!caretVisible)
+		{	deleteSelection();
+		}
+		StelselVak sv = new StelselVak(formuleVak);
+		sv.setFGColor(fgColor);
+		add(sv,caretPos);
+		formuleVak.changed();
+		int x=0;
+		for(int i=0 ; i<aantalElementen  ; i++)
+		{	sv.geefKind1().insert(selectieRij[i]);
+		}
+		sv.geefKind1().zetMaat();
+		
+		caretVisible = false;
+		hasFocus = false;
+		sv.geefKind1().requestFocus();
+		formuleVak.zetActieveRegel(sv.geefKind1());
+		zetMaat();
+		
+	}
 	
 	public void zetBreukVak()
 	{	FormuleElement[] selectieRij = new FormuleElement[100];
@@ -1412,6 +1460,8 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 			else if(getComponentCount()==0 )
 			{	deleteThis();
 			}
+			else if(getParent() instanceof StelselVak)
+				((StelselVak) getParent()).deleteKind();
 		}
 		formuleVak.addState();
 	}
@@ -1425,6 +1475,10 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 				remove(caretPos);
 				zetMaat();
 			}
+			else if(getParent() instanceof StelselVak)
+			{
+				((StelselVak) getParent()).deleteKind();
+			}
 			else if(getComponentCount()==0 || caretPos==0 
 					&& (getParent() instanceof WortelVak 
 							|| getParent() instanceof HaakjesVak 
@@ -1432,6 +1486,8 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 							|| getParent() instanceof NdeLogVak))
 			{	deleteThis();
 			}
+			
+
 		}
 		formuleVak.addState();
 	}
@@ -1627,6 +1683,14 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 {   if(((PrvVak)getParent()).kind1.hasFocus())((PrvVak)getParent()).kind3.neemFocus("rechts");
                     if(((PrvVak)getParent()).kind2.hasFocus())((PrvVak)getParent()).kind1.neemFocus("rechts");
                 }
+                else if (kc == KeyEvent.VK_UP && getParent() instanceof StelselVak)
+                {
+                	((StelselVak)getParent()).focusKindOmhoog();
+                }
+                else if (kc == KeyEvent.VK_DOWN && getParent() instanceof StelselVak)
+                {
+                	((StelselVak)getParent()).focusKindOmlaag();
+                }
                 
                 else if (kc == KeyEvent.VK_HOME)
                 {   caretPos = 0;
@@ -1660,7 +1724,9 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 int kt = e.getKeyChar();
                 formuleVak.changed();
                 if (kt == KeyEvent.VK_ENTER)
-                {	formuleVak.finish();
+                {	if(getParent() instanceof StelselVak)
+                		((StelselVak)getParent()).focusKindOmlaag();
+                	formuleVak.finish();
 					//formuleVak.requestFocus();
 				}
                 
@@ -1818,7 +1884,7 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 } // all typed keys except Esc, Backspace, Enter
             zetMaat();   
             repaint();
-            }
+		}
 	}
 	
 	public void copySelection()

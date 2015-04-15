@@ -90,7 +90,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	private JCheckBox boxMetRandCB;
 	
 	
-	public ReactieVergelijkingVakEditPanel(int soort)
+	public ReactieVergelijkingVakEditPanel()
     {   setLayout(null);
         super.setSize(770,520); //voor dwo
         setBackground(Color.white); 
@@ -199,13 +199,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         
         
         setFeedbackOption(false);
-        
-        if(soort==1)
-        {   formuleToolBijFocusCB.setVisible(false);
-        }
-        else if(soort==3)
-        {   formuleToolBijFocusCB.setVisible(true);
-        }
+        formuleToolBijFocusCB.setVisible(false);
         
         	
     }

@@ -254,6 +254,13 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	{	return selectable;
 	}
 	
+	public void zetStelselVak()
+	{
+		actieveRegel.zetStelselVak();
+		actieveRegel.deSelect();
+		formuleVak.addState();
+	}
+	
 	public void zetWortelVak()
 	{	actieveRegel.zetWortelVak();
 		actieveRegel.deSelect();

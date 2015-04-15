@@ -261,6 +261,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		dubbelePijlKnop.setBounds(68, 2, 20, 20);
 		dubbelePijlKnop.addActionListener(this);
 		headerPanel.add(dubbelePijlKnop);
+		formuleVak.geefActieveRegel().zetReactieVergelijking(true);
 	}
 	
 	public void zetGrafiekOfEdit(boolean b)
