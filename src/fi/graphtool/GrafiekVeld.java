@@ -115,7 +115,7 @@ class GrafiekVeld extends JComponent{
 					else if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog)
 						g.drawLine((int)(bx+i*gtip.eenheidxD),0,(int)(bx+i*gtip.eenheidxD), maxHoogteLijn);
 				}
-				if(schaalTekenen && i != 0)
+				if((!gtip.xPositief || i > 0) && schaalTekenen && i != 0)
 				{
 					g.setColor(Color.black);
 					g.drawString(getal,	xLabel,	yLabel);
@@ -145,7 +145,7 @@ class GrafiekVeld extends JComponent{
 						g.drawLine(minimaalBegin,(int)(hoogte-(by+j*gtip.eenheidyD)),breedte,(int)(hoogte-(by+j*gtip.eenheidyD)));
 							
 				}
-				if(schaalTekenen && j != 0)
+				if((!gtip.yPositief || j>0) && schaalTekenen && j != 0)
 				{
 					g.setColor(Color.black);
 					g.drawString(getal,	xLabel,yLabel);
