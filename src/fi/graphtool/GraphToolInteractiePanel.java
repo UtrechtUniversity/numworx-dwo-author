@@ -720,7 +720,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			}
 		}//p.zetLocatie(offset, gv.getY() + gv.getHeight() - offset - (schuifParameters.length - 1) * 15);
 		
-		if(checkExternal)
+		if(checkExternal || mode == 2 || mode == 3)
 		{
 			groenVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
 			oranjeVinkjeLabel.setLocation(veldb - 15, gv.getY() + gv.getHeight() - 22);
@@ -857,7 +857,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	{
 		checkExternal = b;
 		zetKijkNaButton(typeOpdracht == TEKENPUNTENBIJFORMULE || typeOpdracht == TEKENTABELPUNTEN);
-		if(checkExternal)
+		if(checkExternal || mode == 2 || mode == 3)
 		{
 			kijkNaPanel.remove(groenVinkjeLabel);
 			kijkNaPanel.remove(oranjeVinkjeLabel);
@@ -955,12 +955,13 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	public void zetKijkNaButton(boolean b)
-	{	if(mode != 2 && mode != 3 && !checkExternal)
-			kijkNaButtonZichtbaar = b;
-		else
+	{	if(mode == 2 || mode == 3 || checkExternal)
 			kijkNaButtonZichtbaar = false;
+		else
+			kijkNaButtonZichtbaar = b;
 		kijkNaPanel.setVisible(kijkNaButtonZichtbaar);
 		kijkNaButton.setVisible(kijkNaButtonZichtbaar);
+		plaatsComponenten();
 	}
 	
 	public void zetZoomOptie(boolean b)
@@ -3608,7 +3609,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	public void kijkNa(boolean show)
-	{	if(checkExternal)
+	{	if(checkExternal || mode == 2 || mode == 3)
 		{	add(groenVinkjeLabel, 0);
 			add(oranjeVinkjeLabel, 0);
 			add(kruisjeLabel, 0);
@@ -3696,7 +3697,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				produceAction("changed");
 				if(graphPoints.size() > 0)	
 				{	ingevuld = true;
-					if(checkExternal && show)
+					if((checkExternal || mode == 2 || mode == 3) && show)
 					{	setFeedback(GraphTool.rb.getString("feedbackTekstTeWeinigPunten"),true);
 						repaint();
 					}
@@ -3894,8 +3895,8 @@ MouseListener, MouseMotionListener, CBookAware {
 					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
 					{	correct = false; 
 						fout = true;
-						//groenVinkjeLabel.setVisible(false);
-						//oranjeVinkjeLabel.setVisible(show);
+						groenVinkjeLabel.setVisible(false);
+						oranjeVinkjeLabel.setVisible(show);
 						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
 					}
 				}
@@ -3907,8 +3908,8 @@ MouseListener, MouseMotionListener, CBookAware {
 					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
 					{	correct = false;
 						fout = true;
-						//groenVinkjeLabel.setVisible(false);
-						//oranjeVinkjeLabel.setVisible(show);
+						groenVinkjeLabel.setVisible(false);
+						oranjeVinkjeLabel.setVisible(show);
 						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
 					} 
 				}	
@@ -3943,7 +3944,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				produceAction("changed");
 				if(graphPoints.size() > 0)	
 				{	ingevuld = true;
-					if(checkExternal && show)
+					if((checkExternal || mode == 2 || mode == 3) && show)
 					{	setFeedback(GraphTool.rb.getString("feedbackTekstTeWeinigPunten"),true);
 						repaint();
 					}
@@ -4060,7 +4061,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		
 		//feedbackTekst.setSize(195,20);
-		if(checkExternal)
+		if(checkExternal || mode == 2 || mode == 3)
 		{	feedbackTekst.setSize(200, 40);
 			feedbackTekst.setLocation(veldb - 220, gv.getY() + gv.getHeight() - 40);
 		}
@@ -4072,7 +4073,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		feedbackTekst.setText(tekst);
 		feedbackTekst.resize();
 		
-		if(checkExternal)
+		if(checkExternal || mode == 2 || mode == 3)
 			feedbackTekst.setLocation(veldb - 220, gv.getY() + gv.getHeight() - feedbackTekst.getHeight());
 //		if("MW".equals(WiskOpdr.deployVariant))
 //		{	
@@ -5320,7 +5321,6 @@ MouseListener, MouseMotionListener, CBookAware {
 						tracing = true;
 						double xWaarde = ((Double)map.get("value")).doubleValue();
 						tracex =(int)(eenheidxD*(xWaarde)/schaalFactorX+beginx);
-						System.out.println("tracex: "+ tracex);
 						tracexD = tracex;
 						slider.zetStand(tracex);
 						
