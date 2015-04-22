@@ -130,7 +130,8 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		frontArrowCB.setOpaque(false);
 		frontArrowCB.setSelected(false);
 		tekenVVOptiesPanel.add(frontArrowCB);
-		frontArrowCB.addItemListener(this);
+		//frontArrowCB.addItemListener(this);
+		frontArrowCB.addActionListener(this);
         
 		currentY += height + offSet;
 		
@@ -428,11 +429,11 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     public void itemStateChanged(ItemEvent e)
     {
 
-    	if (e.getSource() == frontArrowCB)
-    	{
-    		tvip.toonVooraanzichtPijl(frontArrowCB.isSelected());
-    	}
-    	else if (e.getSource() == viewerOnlyCB)
+//    	if (e.getSource() == frontArrowCB)
+//   	{
+//    		tvip.toonVooraanzichtPijl(frontArrowCB.isSelected());
+//    	}
+    	if (e.getSource() == viewerOnlyCB)
     	{
     		
 //System.out.println("viewerOnlyCB item");
@@ -751,7 +752,12 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
             tvip.zetAantalHulppunten(aantalHulppunten);
 
     	}
-    	
+
+    	else if (e.getSource() == frontArrowCB)
+    	{
+    		tvip.toonVooraanzichtPijl(frontArrowCB.isSelected());
+    	}
+
     	else if (e.getSource() == viewerOnlyCB)
     	{
 //System.out.println("viewerOnlyCB action");

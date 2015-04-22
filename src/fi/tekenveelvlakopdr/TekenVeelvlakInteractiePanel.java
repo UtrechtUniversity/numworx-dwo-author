@@ -154,9 +154,9 @@ System.out.println("tvip getEditState");
         h.put("viewerOnly", new Boolean(viewerOnly));
         h.put("profilesOnly", new Boolean(profilesOnly));
         h.put("viewerPosition", new Integer(viewerPosition));
-        
-//System.out.println("vp = " + viewerPosition);
 
+//System.out.println("vp = " + viewerPosition);        
+        
         h.put("basisFiguur", new Integer(basisFiguur));
         h.put("aantalHulppunten", new Integer(aantalHulppunten));
         h.put("toonVooraanzichtPijl", new Boolean(toonVooraanzichtPijl));

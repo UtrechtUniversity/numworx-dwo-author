@@ -598,7 +598,10 @@ System.out.println("vPos = " + viewerPosition);
 	}
 
 	public void voegVooraanzichtPijlToe(Veelvlak p)
-	{	vvRij[aantalVeelvlakken] = p;
+	{	
+		
+//System.out.println("viewer voeg pijl toe");		
+		vvRij[aantalVeelvlakken] = p;
 		voorkantPijlZichtbaar = true;
 		voorkantPijlIndex = aantalVeelvlakken;
 		aantalVeelvlakken++;
@@ -608,9 +611,13 @@ System.out.println("vPos = " + viewerPosition);
 	// neem aan pijl is de laatste
 	public void verwijderVooraanzichtPijl()
 	{	
+		
+//System.out.println("viewer verwijder pijl " + voorkantPijlZichtbaar);		
 		if (voorkantPijlZichtbaar)
 		{	
-			vvRij[aantalVeelvlakken] = null;
+			
+//System.out.println("aantalVeelvlakken = " + aantalVeelvlakken);			
+			vvRij[aantalVeelvlakken-1] = null;
 			voorkantPijlZichtbaar = false;
 			voorkantPijlIndex = -1;
 			aantalVeelvlakken--;
