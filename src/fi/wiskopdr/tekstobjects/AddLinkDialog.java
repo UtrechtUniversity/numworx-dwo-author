@@ -37,6 +37,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     private int[] grensScores = null;
 	
     private JCheckBox voorwaardelijkBox;
+    private JCheckBox embeddedCB;
     private VoorwaardelijkeLinkButton voorwaardelijkButton;
 
     
@@ -537,6 +538,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         	voorwaardelijkButton.setGrensScores(grensScores);
         }
         
+        embeddedCB = new JCheckBox();
+        embeddedCB.setBounds(10, 150, 300, 20);
+        this.add(embeddedCB);
+        embeddedCB.addActionListener(this);
         
         //Hierdoor merkt niemand iets van aanbouw voorwaardelijke link 
         //Als de voorwaardelijke checkbox verdwijnt: stuk na else behouden.
