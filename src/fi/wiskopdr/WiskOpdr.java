@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 
+import org.cbook.cbookif.LessonMode;
 import org.json.simple.JSONValue;
 
 import fi.beans.appletutil.AppletUtil;
@@ -71,9 +72,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private static final String CMI_CORE_SESSION_TIME = "cmi.core.session_time";
 	private static final String CMI_CORE_SCORE_MAX = "cmi.core.score.max";
 	private static final String LESSON_STATUS_completed = "completed";
-	private static final String LESSON_MODE_browse = "browse";
-	private static final String LESSON_MODE_normal = "normal";
-	private static final String LESSON_MODE_review = "review";
+	private static final LessonMode LESSON_MODE_browse = LessonMode.browse;
+	private static final LessonMode LESSON_MODE_normal = LessonMode.normal;
+	private static final LessonMode LESSON_MODE_review = LessonMode.review;
 	
 	private static Hashtable suspendData = new Hashtable();
 	private static Hashtable log = new Hashtable();
@@ -137,7 +138,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private boolean loaded;
 	private boolean toetsLocked;
 	private boolean review;
-	private String lessonMode;
+	private LessonMode lessonMode;
 	public static final String CAS_IDEAS = "ideas", CAS_LOCAL = "local";
 	public static String doCAS;
 
@@ -578,6 +579,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						.decodeStringToObject(launchDataString);
 		} catch (Exception e) {
 		}
+// init time: set lessonMode early
+		try {
+			lessonMode = LessonMode.valueOf(api.LMSGetValue(CMI_CORE_LESSON_MODE));
+		} catch (Exception e1) {
+			lessonMode = LESSON_MODE_normal;
+		}
 
 		if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)) {
 			deployDwoGrading = false;
@@ -671,10 +678,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Vraag of het applet in de nakijkmodus wordt gebruikt.
 	 */
 	public boolean reviewMode() {
-		if (api != null && lessonMode != null)
-			return lessonMode.equals(LESSON_MODE_review);
-		else
-			return false;
+		return api != null && lessonMode == LESSON_MODE_review;
 	}
 
 	/**
@@ -800,7 +804,6 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		sessionStartTime = System.currentTimeMillis();
 		if (api != null) {
 			String s = api.LMSGetValue(CMI_SUSPEND_DATA);
-			lessonMode = api.LMSGetValue(CMI_CORE_LESSON_MODE);
 			review = reviewMode();
 			String locString = api.LMSGetValue(CMI_CORE_LESSON_LOCATION);
 			if (review || !locString.isEmpty()) {
@@ -875,15 +878,14 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						score = 1.0 * score / 100;
 					String d = new Double(score).toString();
 					String t = getSessionTime();
-					//String lessonMode = api.LMSGetValue(CMI_CORE_LESSON_MODE);
 					String location = "0";
 					if(ons!=null ) location = "" + ons.geefOpdrachtNr(); // NPE want geen ons?
 
 					//ons.getScoresObjectives();
 
 					if (lessonMode == null)
-						lessonMode = "";
-					if (lessonMode.equals(LESSON_MODE_browse)) {
+						lessonMode = LESSON_MODE_normal;
+					if (lessonMode == LESSON_MODE_browse) {
 						WiskOpdr.deployVariant = "";
 						return;
 					}
@@ -908,7 +910,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 							
 						return;
 					}
-					if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked) { // && ons.getMode()==3
+					if (lessonMode ==LESSON_MODE_normal && toetsLocked) { // && ons.getMode()==3
 						return;
 					}
 					
@@ -943,12 +945,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		final String d = new Double(score).toString();
 
 		if (api != null) {
-			//String lessonMode = api.LMSGetValue(CMI_CORE_LESSON_MODE);
 			if (lessonMode == null)
-				lessonMode = "";
-			if (lessonMode.equals(LESSON_MODE_browse) || review)
+				lessonMode = LESSON_MODE_normal;
+			if (lessonMode == LESSON_MODE_browse || review)
 				return;
-			if (lessonMode.equals(LESSON_MODE_normal) && toetsLocked) {
+			if (lessonMode == LESSON_MODE_normal && toetsLocked) {
 				return;
 			}
 			
@@ -1411,8 +1412,14 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 				return parameter; 
 		}
 		return "scoViewNr";
-
 	}
+	
+	public static LessonMode getLessonMode() {
+		if (applet != null)
+			return applet.lessonMode;
+		return LESSON_MODE_browse;
+	}
+	
 	
 	public static int getEditPageNr() {
 		return OpdrNavStructEdit.getInstance().geefOpdrachtNr();

@@ -28,6 +28,7 @@ import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.Constants;
+import org.cbook.cbookif.LessonMode;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -306,6 +307,10 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		{ 
 			return factory.getResourceManager();
 		}
+		if(WidgetBridge.LESSON_MODE.equals(key))
+			return WiskOpdr.getLessonMode();
+		if(WidgetBridge.PREFERENCES.equals(key))
+			return WidgetBridge.getPreferences(getClassName());
 
 		if(launchData != null)
 			return launchData.get(key);

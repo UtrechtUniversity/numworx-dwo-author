@@ -20,6 +20,7 @@ import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
+import org.cbook.cbookif.LessonMode;
 
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -174,6 +175,10 @@ public class CBookInteractieEditPanel extends JPanel implements
 //		{ 
 //			return WidgetBridge.getResourceManager(clazzName, WiskOpdr.getEditPageNr() + "/" + instance);
 //		}
+		if(WidgetBridge.LESSON_MODE.equals(key))
+			return LessonMode.editable;
+		if(WidgetBridge.PREFERENCES.equals(key))
+			return WidgetBridge.getPreferences(clazzName);
 		return launchData.get(key);
 	}
 

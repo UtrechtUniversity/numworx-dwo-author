@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.WeakHashMap;
+import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 
@@ -127,5 +128,10 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 				return WidgetBridge.getResourceManager(Service.getClassName(w), WiskOpdr.getPageNr(), instance);
 			}
 		};
+	}
+
+	public static Preferences getPreferences(String clazzName) {
+		String nodeName = clazzName.replace('.', '/');
+		return Preferences.userRoot().node(nodeName);
 	}
 }
