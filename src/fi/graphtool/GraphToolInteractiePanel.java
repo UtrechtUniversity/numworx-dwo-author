@@ -136,7 +136,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	DecimalFormat dfTrace;
 	
 	boolean assenZichtbaar, schaalZichtbaar, schaalX, schaalY, roosterZichtbaar, roosterGrof, roosterX, roosterY, piLijnenZichtbaar, 
-		xPositief, yPositief, xAsLog, yAsLog, xVarEditable, yVarEditable, snapToGridPoints, krommeZonderExtrapolatie, krommeMetExtrapolatie, zoomInTabel; //tekenGrafiekAan;
+		xPositief, yPositief, xAsLog, yAsLog, xVarEditable, yVarEditable, snapToGridPoints, rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie, zoomInTabel; //tekenGrafiekAan;
 	boolean zoomOptie, traceOptie, dragOptie;
 	boolean grafiekKleuren, kleurInstelbaar, functieBeginZichtbaar, functieBeginAanpasbaar, formeleFuncties, domeinInstelbaar;
 	boolean functieToegestaan, ongelijkheidToegestaan, implicieteFunctieToegestaan, verticaleLijnToegestaan, parametrisatieToegestaan;
@@ -319,6 +319,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		xVarEditable = false;
 		yVarEditable = false;
 		snapToGridPoints = false;
+		rechteVerbindingen = true;
 		krommeZonderExtrapolatie = true;
 		krommeMetExtrapolatie = true;
 		zoomInTabel = true;
@@ -830,7 +831,9 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 	
 	public void zetKrommeKnoppen(boolean lijnen, boolean zonder, boolean met)
-	{	krommeZonderExtrapolatie = zonder;
+	{	
+		rechteVerbindingen = lijnen;
+		krommeZonderExtrapolatie = zonder;
 		krommeMetExtrapolatie = met;
 		tekenComponent.zetLijnenKnoppen(lijnen, zonder, met);
 	}
@@ -1060,7 +1063,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetTabelAlsTekenTool(false, setState);
 			tabelComponent.setFrozen(false);
 			tekenComponent.zetAantalGrafieken(3);
-			tekenComponent.zetLijnenKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+			tekenComponent.zetLijnenKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 			//tekenComponent.setFrozen(false);
 			zetKijkNaButton(false);
 		}
@@ -1114,7 +1117,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			zetDocentDomeinen(docentDomeinStrings);
 			tekenComponent.zetAantalGrafieken(aantalFuncties);
 			tekenComponent.setConnectMode(TekenComponent.NONE);
-			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie); //niet meer nodig..
+			tekenComponent.zetLijnenKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie); //niet meer nodig..
 			zetKijkNaButton(true);
 		}
 		else if (typeOpdracht == TEKENTABELPUNTEN)
@@ -1145,7 +1148,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 			tekenComponent.zetAantalGrafieken(1);
 			tekenComponent.setConnectMode(TekenComponent.NONE);
-			tekenComponent.zetLijnenKnoppen(false, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+			tekenComponent.zetLijnenKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 			tabelComponent.zetEenTabel(true);
 			tabelComponent.zetTabelPunten(docentGraphPoints, true);
 			tabelComponent.zetReset(false);
@@ -1654,6 +1657,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
+		boolean rechteVerbindingen = true;
 		boolean krommeZonderExtrapolatie = true;
 		boolean krommeMetExtrapolatie = true;
 		int tekenGrafiekNauwkeurigheid = 5;
@@ -1773,6 +1777,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			yVarEditable = ((Boolean) h.get("yVarEditable")).booleanValue();
 		if (h.containsKey("snapToGridPoints"))
 			snapToGridPoints = ((Boolean) h.get("snapToGridPoints")).booleanValue();
+		if (h.containsKey("rechteVerbindingen"))
+			rechteVerbindingen = ((Boolean) h.get("rechteVerbindingen")).booleanValue();
 		if (h.containsKey("krommeZonderExtrapolatie"))
 			krommeZonderExtrapolatie = ((Boolean) h.get("krommeZonderExtrapolatie")).booleanValue();
 		if (h.containsKey("krommeMetExtrapolatie"))
@@ -1872,6 +1878,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.xVarEditable = xVarEditable;
 		this.yVarEditable = yVarEditable;
 		this.snapToGridPoints = snapToGridPoints;
+		this.rechteVerbindingen = rechteVerbindingen;
 		this.krommeZonderExtrapolatie = krommeZonderExtrapolatie;
 		this.krommeMetExtrapolatie = krommeMetExtrapolatie;
 		this.tekenGrafiekNauwkeurigheid = tekenGrafiekNauwkeurigheid;
@@ -2160,6 +2167,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
+		boolean rechteVerbindingen = true;
 		boolean krommeZonderExtrapolatie = true;
 		boolean krommeMetExtrapolatie = true;
 		int tekenGrafiekNauwkeurigheid = 5;
@@ -2222,6 +2230,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		yVarEditable = this.yVarEditable;
 		grafiekKleuren = this.grafiekKleuren;
 		snapToGridPoints = this.snapToGridPoints;
+		rechteVerbindingen = this.rechteVerbindingen;
 		krommeZonderExtrapolatie = this.krommeZonderExtrapolatie;
 		krommeMetExtrapolatie = this.krommeMetExtrapolatie;
 		tekenGrafiekNauwkeurigheid = this.tekenGrafiekNauwkeurigheid;
@@ -2311,6 +2320,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("xVarEditable", new Boolean(xVarEditable));
 		h.put("yVarEditable", new Boolean(yVarEditable));
 		h.put("snapToGridPoints", new Boolean(snapToGridPoints));
+		h.put("rechteVerbindingen", new Boolean(rechteVerbindingen));
 		h.put("krommeZonderExtrapolatie", new Boolean(krommeZonderExtrapolatie));
 		h.put("krommeMetExtrapolatie", new Boolean(krommeMetExtrapolatie));
 		h.put("tekenGrafiekNauwkeurigheid", new Integer(tekenGrafiekNauwkeurigheid));
@@ -2490,6 +2500,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
+		boolean rechteVerbindingen = true;
 		boolean krommeZonderExtrapolatie = true;
 		boolean krommeMetExtrapolatie = true;
 		int tekenGrafiekNauwkeurigheid = 5;
@@ -2622,6 +2633,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			yVarEditable = ((Boolean) h.get("yVarEditable")).booleanValue();
 		if (h.containsKey("snapToGridPoints"))
 			snapToGridPoints = ((Boolean) h.get("snapToGridPoints")).booleanValue();
+		if (h.containsKey("rechteVerbindingen"))
+			rechteVerbindingen = ((Boolean) h.get("rechteVerbindingen")).booleanValue();
 		if (h.containsKey("krommeZonderExtrapolatie"))
 			krommeZonderExtrapolatie = ((Boolean) h.get("krommeZonderExtrapolatie")).booleanValue();
 		if (h.containsKey("krommeMetExtrapolatie"))
@@ -2725,6 +2738,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.xVarEditable = xVarEditable;
 		this.yVarEditable = yVarEditable;
 		this.snapToGridPoints = snapToGridPoints;
+		this.rechteVerbindingen = rechteVerbindingen;
 		this.krommeZonderExtrapolatie = krommeZonderExtrapolatie;
 		this.krommeMetExtrapolatie = krommeMetExtrapolatie;
 		this.tekenGrafiekNauwkeurigheid = tekenGrafiekNauwkeurigheid;
@@ -3000,7 +3014,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetYAsLog(yAsLog);
 		zetXVarEditable(xVarEditable);
 		zetYVarEditable(yVarEditable);
-		zetKrommeKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+		zetKrommeKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 		
 		zetMaxScores(maxScores);
 		zetDocentFuncties(docentFuncties);
@@ -3097,6 +3111,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
+		boolean rechteVerbindingen = true;
 		boolean krommeZonderExtrapolatie = true;
 		boolean krommeMetExtrapolatie = true;
 		int tekenGrafiekNauwkeurigheid = 5;
@@ -3229,6 +3244,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			yVarEditable = ((Boolean) h.get("yVarEditable")).booleanValue();
 		if (h.containsKey("snapToGridPoints"))
 			snapToGridPoints = ((Boolean) h.get("snapToGridPoints")).booleanValue();
+		if (h.containsKey("rechteVerbindingen"))
+			rechteVerbindingen = ((Boolean) h.get("rechteVerbindingen")).booleanValue();
 		if (h.containsKey("krommeZonderExtrapolatie"))
 			krommeZonderExtrapolatie = ((Boolean) h.get("krommeZonderExtrapolatie")).booleanValue();
 		if (h.containsKey("krommeMetExtrapolatie"))
@@ -3332,6 +3349,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.xVarEditable = xVarEditable;
 		this.yVarEditable = yVarEditable;
 		this.snapToGridPoints = snapToGridPoints;
+		this.rechteVerbindingen = rechteVerbindingen;
 		this.krommeZonderExtrapolatie = krommeZonderExtrapolatie;
 		this.krommeMetExtrapolatie = krommeMetExtrapolatie;
 		this.tekenGrafiekNauwkeurigheid = tekenGrafiekNauwkeurigheid;
@@ -3498,7 +3516,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetYAsLog(yAsLog);
 		zetXVarEditable(xVarEditable);
 		zetYVarEditable(yVarEditable);
-		zetKrommeKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+		zetKrommeKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 		
 		zetMaxScores(maxScores);
 		zetDocentFuncties(docentFuncties);
@@ -3900,8 +3918,10 @@ MouseListener, MouseMotionListener, CBookAware {
 						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
 					}
 				}
-				if((krommeMetExtrapolatie || krommeZonderExtrapolatie) && tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
-						tekenComponent.getConnectMode() != tekenComponent.CURVE)
+				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
+						tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
+						tekenComponent.getConnectMode() != tekenComponent.CURVE &&
+						tekenComponent.getConnectMode() != tekenComponent.LINES)
 				{	if(score > 0)
 					color = new Color(255, 193, 0);
 					score = Math.max(score - 2, 0);
@@ -3923,7 +3943,7 @@ MouseListener, MouseMotionListener, CBookAware {
 							colors[i] = Color.red;
 					}
 					tekenDocentFuncties = new Expressie[aantalFuncties];
-					if(!krommeMetExtrapolatie && !krommeZonderExtrapolatie)
+					if(!krommeMetExtrapolatie && !krommeZonderExtrapolatie && !rechteVerbindingen)
 					{	for(int i = 0; i < aantalFuncties; i++)
 						{	if (functieCorrect[i])
 							{	tekenDocentFuncties[i] = docentFuncties[i];

@@ -210,6 +210,10 @@ public class TekenComponent extends JPanel {
 		krommeButton.setVisible(kromme);
 		extrapoleerButton.setVisible(extrapoleer);
 		
+		if(!(lijnen || kromme || extrapoleer))
+			puntenButton.setVisible(false);
+		else
+			puntenButton.setVisible(true);
 		int xLocatie = 98;
 		if(lijnen)
 			xLocatie += 22;

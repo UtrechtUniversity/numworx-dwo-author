@@ -81,6 +81,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"Opdr_antwoordFormule", "Voer in de formule-editor hieronder de antwoordformule in."},
             {	"Opdr_tabelPuntenX", "Vul in de tabel hieronder de x-waarden van de grafiekpunten in."},
             {	"Opdr_tabelPunten", "Vul in de tabel hieronder de te tekenen punten in."},    
+            {	"Opdr_tekenRechte", "Leerling tekent grafiek (rechte verbindingen)"},
             {	"Opdr_tekenMetExtrapolatie", "Leerling tekent grafiek (met extrapolatie)"},
             {	"Opdr_tekenZonderExtrapolatie", "Leerling tekent grafiek (zonder extrapolatie)"},
             {	"Opdr_checkExternal", "Extern controleren"},

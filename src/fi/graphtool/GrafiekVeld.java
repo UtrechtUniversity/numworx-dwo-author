@@ -1157,7 +1157,8 @@ class GrafiekVeld extends JComponent{
 	}
 	
 	public boolean berekenLijn(Vector points, int nauwkeurigheid)
-	{	double nauwkeurigDouble = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
+	{	double nauwkeurigDoubleX = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
+		double nauwkeurigDoubleY = gtip.schaalFactorY * nauwkeurigheid / gtip.eenheidyD;
 		
 		RealPoint rpMin = (RealPoint) points.elementAt(0);
 		RealPoint rpMax = (RealPoint) points.elementAt(points.size() - 1);
@@ -1167,22 +1168,24 @@ class GrafiekVeld extends JComponent{
 		boolean lijn = true;
 		
 		for(int i = 1; i < points.size() - 1 && lijn; i++)
-			{	RealPoint rpi = (RealPoint) points.elementAt(i);
-				double xs = (a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + (gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - a*b)/(a*a + 1);
-				double ys = (a*a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + a*(gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) + b)/(a*a + 1);
-				double afstand = ((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs)*((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) + 
-						((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys)*((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys);
-				
-				afstand = Math.sqrt(afstand);
-				if(afstand > nauwkeurigDouble)
-					lijn = false;
-			}
+		{	RealPoint rpi = (RealPoint) points.elementAt(i);
+			double xs = (a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + (gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - a*b)/(a*a + 1);
+			double ys = (a*a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + a*(gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) + b)/(a*a + 1);
+//				double afstand = ((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs)*((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) + 
+//						((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys)*((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys);
+			boolean afstandxKleinGenoeg = Math.abs((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) <= nauwkeurigDoubleX;
+			boolean afstandyKleinGenoeg = Math.abs((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys) <= nauwkeurigDoubleY; 
+			//afstand = Math.sqrt(afstand);
+			if(!(afstandxKleinGenoeg && afstandyKleinGenoeg))
+				lijn = false;
+		}
 		return lijn;
 	}
 	
 	
 	public boolean berekenParabool(Vector points, int nauwkeurigheid)
-	{	double nauwkeurigDouble = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
+	{	double nauwkeurigDoubleX = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
+		double nauwkeurigDoubleY = gtip.schaalFactorY * nauwkeurigheid / gtip.eenheidyD;
 		
 		RealPoint rpMin = (RealPoint) points.elementAt(0);
 		RealPoint rpMax = (RealPoint) points.elementAt(points.size() - 1);
@@ -1212,9 +1215,15 @@ class GrafiekVeld extends JComponent{
 				deel2 = nieuweDeel2;
 				double xs = (-3*a*b+Math.pow(3, 1.0/3.0)*deel2 - (Math.pow(3, 2.0/3.0)*a*a*deel1)/deel2)/(6*a*a);
 				double ys = a*xs*xs + b*xs + c;
-				double afstand = (rpi.getX() - xs)*(rpi.getX() - xs) + (rpi.getY() - ys)*(rpi.getY() - ys);
-				afstand = Math.sqrt(afstand);
-				if(afstand > nauwkeurigDouble)
+				boolean afstandxKleinGenoeg = Math.abs((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) <= nauwkeurigDoubleX;
+				boolean afstandyKleinGenoeg = Math.abs((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys) <= nauwkeurigDoubleY; 
+//				
+//				
+//				
+//				double afstand = (rpi.getX() - xs)*(rpi.getX() - xs) + (rpi.getY() - ys)*(rpi.getY() - ys);
+//				afstand = Math.sqrt(afstand);
+//				if(afstand > nauwkeurigDouble)
+				if(!(afstandxKleinGenoeg && afstandyKleinGenoeg))
 				{	parabool = false;
 					break;
 				}
