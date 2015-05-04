@@ -254,7 +254,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 			else 
 				formuleVakken[regelnummer].formuleVak.vulVak("$f"+yAsNaam+"=@");
 		}
-		else if(functieBeginZichtbaar)
+		else if(functieBeginZichtbaar && !functieBeginAanpasbaar)
 		{	if (formeleFuncties) 
 				formuleVakken[regelnummer].functieBeginVak.vulVak("$f"+namen[regelnummer]+"(" + xAsNaam + ")=@");
 			else if (aantalRegels > 1)
@@ -813,6 +813,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 			return;
 		if(formuleVakken[regelnummer].functieBeginVak == null || formuleVakken[regelnummer].functieBeginVak.toString().length() == 0)
 		{	String s = formuleVakken[regelnummer].formuleVak.toString();
+			System.out.println("in parseFormule a: " + s);
 			parseFormule(s, regelnummer, setState);
 		}
 		else
@@ -822,6 +823,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 				s1 = s1.substring(0, s1.length() - 1);
 				s2 = s2.substring(2);
 				String s = s1 + s2;
+				System.out.println("in parseFormule b: " + s);
 				parseFormule(s, regelnummer, setState);
 			}
 			catch(Exception e){}
