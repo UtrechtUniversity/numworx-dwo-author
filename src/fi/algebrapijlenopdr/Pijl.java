@@ -138,7 +138,9 @@ public class Pijl extends JComponent
 			gIm.drawPolygon(pijlpuntEind);
 			
 			if (!isStapel && !vast && !actief && (im != null))
-				gIm.drawImage(im, x0, y0, this);
+			{	gIm.drawImage(im, x0, y0, this);
+//System.out.println("im rechts");			
+			}
 		}
 		else // pijl naar links
 		{	gIm.setColor(Color.black);
@@ -211,7 +213,9 @@ public class Pijl extends JComponent
 			gIm.drawPolygon(pijlpuntEind);
 			
 			if (!isStapel && !vast && !actief && (im != null))
-				gIm.drawImage(im,x0,y0, this);			
+			{	gIm.drawImage(im,x0,y0, this);
+//System.out.println("im links");			
+			}
 		}	
 			
 		
@@ -387,6 +391,8 @@ public class Pijl extends JComponent
 		if (schuifveld.frozen)
 			return;
 	
+		schuifveld.changed = true;
+		
 		plaatsOpGridEind();
 		for (int i = 0 ; i < schuifveld.aantalSc; i++)
 		{	boolean b = false;

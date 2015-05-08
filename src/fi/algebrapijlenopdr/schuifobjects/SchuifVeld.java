@@ -14,6 +14,7 @@ public class SchuifVeld extends JPanel
 	public boolean resized;
 	public boolean start = true;
 	
+	public boolean changed = false;
 	
 	public SchuifVeld()
 	{	setOpaque(false);

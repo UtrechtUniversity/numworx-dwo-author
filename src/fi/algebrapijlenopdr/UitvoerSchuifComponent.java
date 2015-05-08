@@ -51,9 +51,13 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	
 	boolean isBeginExpressie = false;
 	
+	AlgebraSchuifVeld asv;
+	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1,asv,x,y,b,h);
 		
+		this.asv = asv;
+	
 		toonWaarde = !((AlgebraSchuifVeld) schuifveld).ip.isExpr();
 		labelZichtbaar = false;
 		tabelZichtbaar = false;
@@ -160,7 +164,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	    h.put("labelZichtbaar", new Boolean(labelZichtbaar));
         h.put("kettingZichtbaar", new Boolean(kettingZichtbaar));
         h.put("labelTekst", labelTekst);
-        
+
         h.put("scrollable", new Boolean(scrollable));
         h.put("zoomInTabel", new Boolean(zoomInTabel));
         
@@ -185,6 +189,8 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         boolean isBeginExpressie = false;
         String beginExpString = "";
         
+        //String imageString = "null";
+        
     	if (h.containsKey("basisExp")) 
     		basisExp = (String) h.get("basisExp");
     	if (h.containsKey("defaultVarnaam")) 
@@ -197,6 +203,16 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
         	kettingZichtbaar = ((Boolean) h.get("kettingZichtbaar")).booleanValue();
         if (h.containsKey("labelTekst")) 
         	labelTekst = (String) h.get("labelTekst");
+
+/*        
+        if (h.containsKey("imageString")) 
+        	imageString = (String) h.get("imageString");
+        if (imageString.equals("goedkrul"))
+        	pijlUit[0].im = asv.apip.goedkrul;
+        if (imageString.equals("foutkruis"))
+        	pijlUit[0].im = asv.apip.foutkruis;
+*/        
+        
         
         if (h.containsKey("scrollable")) 
         	scrollable = ((Boolean) h.get("scrollable")).booleanValue();
@@ -235,6 +251,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 		zetMaat();
 		
     }
+    
     public void zetScroll(boolean b)
 	{	scrollable = b;
 	
@@ -535,6 +552,11 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			verborgenExpressie = pijlIn1.zender.geefVerborgenUitvoer(20);
 			zoomInKnop.setVisible(false);
 			zoomUitKnop.setVisible(false);
+			
+			pijlUit[0].im = null;
+			
+			if (asv.apip.kijkNaActief)
+				asv.apip.answerChanged();
 		}
 		else if (!isBeginExpressie)
 		{	if (scrollable  && expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))

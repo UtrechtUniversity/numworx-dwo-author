@@ -69,9 +69,13 @@ public class AlgebraSchuifVeld extends SchuifVeld
 //	int origX;
 //	int origBreedte;
 	
-	public AlgebraSchuifVeld(int x, int y, int b, int h)
+	AlgebraPijlenOpdrInteractiePanel apip;
+	
+	public AlgebraSchuifVeld(int x, int y, int b, int h, AlgebraPijlenOpdrInteractiePanel apip)
 	{	super(x, y, b, h);
 	
+		this.apip = apip; 
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
@@ -842,6 +846,8 @@ public class AlgebraSchuifVeld extends SchuifVeld
 				}
 			}
 	    }
+	    
+	    
 	    if (grafiek)
 	    {  	for (int i = 0; i < 10; i++)
 			{	if (graphConnections[i] != -1)

@@ -22,7 +22,7 @@ public class MyOpdrEditContainer extends OpdrContainer implements ActionListener
 	{	setLayout(null);
 		super.setSize(790,500); //voor dwo
 		
-		as = new AlgebraSchuifVeld(240,10,550,395);
+		as = new AlgebraSchuifVeld(240,10,550,395,null);
 		add(as);
 		
 		titelEditor = new TekstArea();

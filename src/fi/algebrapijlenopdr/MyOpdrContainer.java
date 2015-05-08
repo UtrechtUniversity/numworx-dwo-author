@@ -41,7 +41,7 @@ public class MyOpdrContainer extends OpdrContainer implements ActionListener
 		tekstArea.setFont(new Font("SansSerif",Font.PLAIN,12));
 		add(tekstArea);
 				
-		as = new AlgebraSchuifVeld(218,10,b-220,h-94);
+		as = new AlgebraSchuifVeld(218,10,b-220,h-94,null);
 		//as.setBackground(getBackground());
 		add(as);
 		

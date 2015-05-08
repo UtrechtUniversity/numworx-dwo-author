@@ -73,6 +73,7 @@ public class SchuifComponent extends JPanel//Container
 	
 	public void mouseReleased(MouseEvent e)
 	{	//schuifveld.losSchuiver(this);
+		schuifveld.changed = true;
 	}
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}
