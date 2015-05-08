@@ -201,6 +201,8 @@ public class AlgebraSchuifComponent extends SchuifComponent
 			{	pijlUit[i].ontvanger.zetVeranderd(max - 1);
 			}
 		}
+	
+		schuifveld.changed = true;
 	}
 	
 	public void mousePressed(MouseEvent e)

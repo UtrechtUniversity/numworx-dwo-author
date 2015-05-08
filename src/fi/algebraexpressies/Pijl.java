@@ -310,6 +310,8 @@ public class Pijl extends JComponent //Component
 		if (schuifveld.frozen)
 			return;
 		
+		schuifveld.changed = true;
+		
 		plaatsOpGridEind();
 		for (int i = 0; i < schuifveld.aantalSc; i++)
 		{	boolean b = schuifveld.schuifcomponenten[i].meldAan(this,x1,y1+5);

@@ -87,9 +87,12 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	
+		
+		
 		if (h.containsKey("docentExpressieStrings"))
 			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
 		
+		boolean kijkNaActief = false;
 		if (h.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		zetKijkNaActief(kijkNaActief);
@@ -98,21 +101,37 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
 		algebraSchuifVeld.setEditModeState(h);
+	
+		algebraSchuifVeld.changed = false;		
+
 	}
 	
 	public void setState(Hashtable h)
 	{	
-		if (h.containsKey("kijkNaActief"))
-			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
-		zetKijkNaActief(kijkNaActief);
+//		if (h.containsKey("kijkNaActief"))
+//			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+//		zetKijkNaActief(kijkNaActief);
 
-		if (h.containsKey("docentExpressieStrings"))
-			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
+//		if (h.containsKey("docentExpressieStrings"))
+//			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
 
-		if (h.containsKey("scoreMax"))
-			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+//		if (h.containsKey("scoreMax"))
+//			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		
+		if (h.containsKey("nagekeken"))
+			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+		
+		if (h.containsKey("ingevuld"))
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
 		
 		algebraSchuifVeld.setState(h);
+		
+		if (!ingevuld)
+			algebraSchuifVeld.changed = false;
+
+		if (ingevuld && (mode == 0 || nagekeken)) 
+			kijkNa();
+
 	}
 	
 	public void setEditState(Hashtable h)
@@ -121,20 +140,34 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			if (h.containsKey("docentExpressiesString"))
 				docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
 		
+			boolean kijkNaActief = false;
 			if (h.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
-			zetKijkNaActief(kijkNaActief);
+			//zetKijkNaActief(kijkNaActief);
 
 			if (h.containsKey("scoreMax"))
 				scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
 			algebraSchuifVeld.setEditModeState(h);
+			
+			zetKijkNaActief(kijkNaActief);
 		}	
 	}
 	
 	public Hashtable getState()
 	{	
-		return algebraSchuifVeld.getState();
+		boolean nagekeken = false;
+		boolean ingevuld = false;
+	    
+		nagekeken = this.nagekeken;
+		ingevuld = this.ingevuld;
+		
+		Hashtable h = algebraSchuifVeld.getState();
+		h.put("nagekeken",new Boolean(nagekeken));
+		h.put("ingevuld",new Boolean(ingevuld));
+		
+		return h;
+
 	}
 	
 	public Hashtable getEditState()
@@ -213,7 +246,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 		
 		super.setBounds(x, y, b, h);
 		if (algebraSchuifVeld == null) 
-		{	algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h);
+		{	algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h, this);
 			add(algebraSchuifVeld, 0);
 			
 			algebraSchuifVeld.zetPlaatjes(goedkrul, foutkruis, halfkrul);
@@ -298,7 +331,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 
 	
-    public void stop(){}
+    public void stop()
+    {
+    	kijkNa();
+    }
     
     public void start()
     {	algebraSchuifVeld.tekenOpnieuw();
@@ -323,7 +359,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
     {	if (!kijkNaActief)
     		return;
 
-    	ingevuld = !algebraSchuifVeld.veldIsLeeg();
+//System.out.println("kijkNa");
+
+    	//ingevuld = !algebraSchuifVeld.veldIsLeeg();
+    	ingevuld = algebraSchuifVeld.changed;
 
     	if (!ingevuld)
     		return;
@@ -349,12 +388,14 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			Expressie llgExp = null;
 			if (uvs.geefUitvoer(0) != null)
 				llgExp = uvs.geefUitvoer(0);
-			else if (uvs.geefVerborgenUitvoer(0) != null)
-				llgExp = uvs.geefVerborgenUitvoer(0);
+//			else if (uvs.geefVerborgenUitvoer(0) != null)
+//				llgExp = uvs.geefVerborgenUitvoer(0);
 
+			if (llgExp == null)
+				return;
+			
 			String llgExpStr = llgExp.toString();
 //System.out.println(llgExpStr);
-//System.out.println(uvs.geefBronDefaultVarnaam());
 			Vector varNamen = Algebra.geefVarN(llgExp);
 			String llgExpStrC = new String(llgExpStr);
 			for (int i = 0; i < varNamen.size(); i++)
@@ -362,7 +403,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 				String varNaam = (String) varNamen.elementAt(i);
 				llgExpStrC = llgExpStr.replaceAll(varNaam, "x");
 			}
-			//String llgExpStrC = llgExpStr.replaceAll(uvs.geefBronDefaultVarnaam(), "x");
+
 //System.out.println(llgExpStrC);
 			llgExp = FormuleParser_ap.geefExpressie("$f" + llgExpStrC + "@");
 
@@ -372,8 +413,14 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 				
 				for (int dCnt = 0; dCnt < docentExpressies.size(); dCnt++)
 				{	Expressie docExp = (Expressie) docentExpressies.elementAt(dCnt);
+
+				
 //System.out.println("docExp = " + docExp.toString());
+
+//if (llgExp != null)
 //System.out.println("llgExp = " + llgExp.toString());
+//else
+//System.out.println("llgExp = null");
 					if (Algebra.isGelijkwaardig(docExp, llgExp))
 					{	hits++;
 						correct = true;
@@ -412,6 +459,13 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 */		
     	
     }
+    
+    public void answerChanged()
+    {
+    	score = 0;
+    	fireChangeEvent();
+    }
+
 
     public void fireChangeEvent()
     {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");

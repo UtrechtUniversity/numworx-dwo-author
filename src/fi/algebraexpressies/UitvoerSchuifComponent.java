@@ -49,11 +49,15 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 	private double beginx;
 	private String defaultVarnaam = "qq" + 1000 * Math.random();
 	
-	private Color vakKleur, vakKleurSoft;	
+	private Color vakKleur, vakKleurSoft;
+	
+	AlgebraSchuifVeld asv;
 	
 	public UitvoerSchuifComponent(AlgebraSchuifVeld asv,int x, int y, int b, int h)
 	{	super(1, asv, x, y, b, h);
 		
+		this.asv = asv;
+	
 		toonWaarde = !((AlgebraSchuifVeld) schuifveld).ip.isExpr();
 		labelZichtbaar = false;
 		tabelZichtbaar = false;
@@ -469,6 +473,12 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 //System.out.println("ve = " + verborgenExpressie.toString());	
 			//zoomInKnop.setVisible(false);
 			//zoomUitKnop.setVisible(false);
+			
+			pijlUit[0].im = null;
+			
+			if (asv.aeip.kijkNaActief)
+				asv.aeip.answerChanged();
+
 		}
 		else 
 		{	

@@ -52,10 +52,14 @@ public class AlgebraSchuifVeld extends SchuifVeld
 	boolean scrollOptie = true;
 	boolean zoomOptie = true; 
 	
+	AlgebraExprInteractiePanel aeip;
 	
-	public AlgebraSchuifVeld(int x, int y, int b, int h)
+	
+	public AlgebraSchuifVeld(int x, int y, int b, int h, AlgebraExprInteractiePanel aeip)
 	{	
 		super(x,y,b,h);
+		
+		this.aeip = aeip;
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);

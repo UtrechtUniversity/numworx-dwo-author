@@ -15,6 +15,7 @@ public class SchuifVeld extends JPanel //Panel
 	public boolean start = true;
 //	public boolean imklaar = true;
 	
+	public boolean changed = false;
 	
 	public SchuifVeld()
 	{	setOpaque(false);
