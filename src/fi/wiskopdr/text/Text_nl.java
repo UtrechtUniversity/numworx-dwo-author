@@ -69,6 +69,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "randVarLabel" , "Variabelen voor random parameters:" },
 				{ "startExpLabel" , "Startexpressie:" },
 				{ "startVergLabel" , "Startvergelijking:" },
+				{ "variabelenLabel", "Variabelen: "},
 				{ "antwoordLabel" , "Antwoordmodel:" },
 				{ "scoringLabel" , "Scoring van het antwoord:" },
 				{ "puntenLabel" , "Punten:" },
@@ -87,6 +88,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "grafiekToolKnopLabel" , "Grafiekentool" },
 				{ "vergelijkingCBLabel" , "Vergelijking" },
 				{ "eindOplossingCBLabel" , "Eindoplossing" },
+				{ "onafhankelijkCBLabel", "Onafhankelijk"},
 				{ "checkCBLabel" , "Kijk na" },
 				{ "teltMeeCBLabel" , "Telt mee in score" },
 				{ "logCBLabel" , "logID" },
@@ -126,6 +128,9 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "feedbackTekst18" , "De oplossing is goed, maar het aantal significante cijfers klopt niet." },
                 { "feedbackTekst19" , "Oplossing is goed, maar nog niet in de juiste vorm en de significantie klopt niet." },
                 { "feedbackTekst20" , "Oplossing is goed, significantie klopt maar heeft nog niet de juiste vorm." },
+                { "feedbackTekst21" , "Je hebt alle oplossingen gevonden, vul ze onderaan in."},
+                { "feedbackTekst22" , "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."},
+                	
                 
                 { "feedbackReactieVerg01a" , "Je reactievergelijking bevat nog niet de juiste beginstoffen."},
                 { "feedbackReactieVerg01b" , "Je reactievergelijking bevat nog niet de juiste reactieproducten."},
@@ -217,6 +222,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"boxMetRand" , "Box"},
 				{"keuzeVakKiesLabel" , "Kies"},
 				{"verzamelDoelCBLabel" , "Doelobject als verzamelgebied"},
+				{"oplossingenRegelZichtbaar", "Oplossingenregel zichtbaar"},
+				{"rekenVakZichtbaar", "Rekenvak zichtbaar"},
 				
 				{"vormCBLabel" , "Vorm"},
 				{"formuleToolCBLabel" , "Formule-invoer editor"},
@@ -282,6 +289,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"draaibankIpLabel" , "[test] Draaibank"},
                 {"waarmakersIpLabel" , "[test] Waarmakers"},
                 {"statSimIpLabel" , "[test] Statistiek Simulaties"},
+                {"stelselVakLabel", "[test] Stelsel-antwoordvak"},
                 
 				//InstellingenPanel
                 {"OPT_wiskundeLabel" , "Wiskunde"},
@@ -701,8 +709,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_vergelijking", "vergelijking" },
 				{"CBA_double", "nummerieke waarde"},
 				{"CBA_expression", "expressie"},
-				{"CBA_equation", "vergelijking"}
+				{"CBA_equation", "vergelijking"},
 				
+				{"oplossingenLabel", "Oplossingen"},
 		};
 }
 

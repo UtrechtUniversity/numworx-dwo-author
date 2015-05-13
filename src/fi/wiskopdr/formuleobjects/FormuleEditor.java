@@ -530,7 +530,8 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
     //}
     
     public void setNewScrollSize()
-    {   int maxX = 0; 
+    {   
+    	int maxX = 0; 
         int maxY = 0; 
         for(int i=0 ; i<contentPane.getComponentCount() ; i++)
         {   Component c = contentPane.getComponent(i);
@@ -539,8 +540,12 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
             int h = c.getLocation().y + c.getSize().height + 20;
             if(h>maxY) maxY = h;
         }
-        if(scrollHorizontal)contentPane.setPreferredSize(new Dimension(maxX,maxY));
-        else contentPane.setPreferredSize(new Dimension(contentPane.getSize().width-20, maxY));
+        if(scrollHorizontal)
+        {	contentPane.setPreferredSize(new Dimension(maxX,maxY));
+        }
+        else 
+        {	contentPane.setPreferredSize(new Dimension(contentPane.getSize().width-20, maxY));
+        }
         contentPane.scrollRectToVisible(new Rectangle(0,maxY-10, contentPane.getSize().width, maxY));
         contentPane.revalidate();
         contentPane.doLayout();

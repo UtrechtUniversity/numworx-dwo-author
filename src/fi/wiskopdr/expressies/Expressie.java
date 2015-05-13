@@ -241,14 +241,14 @@ public class Expressie
        	
     	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
     	else
-    	{	System.out.println(evalCommand);
+    	{	//System.out.println(evalCommand);
        	
 	        try
 	        {   WiskOpdr.phrasebook.eval("ClearAll[x]");
 	            s = WiskOpdr.phrasebook.eval("InputForm[" + evalCommand + "]");
 	            //s = WiskOpdr.phrasebook.eval(evalCommand);
 	            
-	            System.out.println(s);
+	            //System.out.println(s);
 	        }
 	        catch(Exception ex)
 	        {}
@@ -346,12 +346,12 @@ public class Expressie
        	
     	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
     	else
-    	{	System.out.println(evalCommand);
+    	{	//System.out.println(evalCommand);
        	
 	        try
-	        {   System.out.println(s);
+	        {   //System.out.println(s);
 	        	s = WiskOpdr.phrasebook.eval("InputForm[" + arg+"/."+"Solve[" + evalCommand + "," + arg + "]" + "]");
-	            System.out.println(s);
+	            //System.out.println(s);
 	        }
 	        catch(Exception ex)
 	        {ex.printStackTrace();}

@@ -197,6 +197,60 @@ public class Vergelijking
 		
 	}
 	
+	public boolean isOplossing(Expressie[] subst, String[] vars)
+	{	
+		// herleidMild om de afgeleiden eruit te halen
+		
+		Expressie e1 = null;
+		Expressie e2 = null; 
+		
+		if(kind1.toString().indexOf("$d")>-1 || kind2.toString().indexOf("$d")>-1)
+		{
+			Expressie k1 = kind1;
+			Expressie k2 = kind2;
+			for(int i = 0; i < subst.length; i++)
+			{	k1 = Algebra.herleidMild(k1).substitueer(subst[i], vars[i]);
+				k2 = Algebra.herleidMild(k2).substitueer(subst[i], vars[i]);
+			}
+			e1 = evalCAS(Algebra.herleidMild(k1));
+			e2 = evalCAS(Algebra.herleidMild(k2));
+		}
+		else
+		{
+			Expressie k1 = kind1;
+			Expressie k2 = kind2;
+			for(int i = 0; i < subst.length; i++)
+			{
+				k1 = k1.substitueer(subst[i], vars[i]);
+				k2 = k2.substitueer(subst[i], vars[i]);
+			}
+			e1 = evalCAS(k1);
+			e2 = evalCAS(k2);
+		}
+		
+		if(Algebra.isGelijkwaardig(e1,e2))
+		{	return true;
+		}
+//		else if(subst instanceof Optelling && Algebra.isGelijkDouble(subst.kind2.geefWaarde(),0.1234567))
+//		{	//System.out.println(""+ Algebra.geefNormDiscriminant(this));
+//			//System.out.println(""+ subst.kind1.geefWaarde());
+//			return Algebra.isGelijkDouble(Algebra.geefNormDiscriminant(this),subst.kind1.geefWaarde());
+//		}
+//		else if(subst instanceof Optelling && Algebra.isGelijkDouble(subst.kind2.geefWaarde(),0.2345678))
+//		{	double a = subst.kind1.kind1.geefWaarde();
+//			double b = subst.kind1.kind2.kind1.geefWaarde() / a;
+//			double c = subst.kind1.kind2.kind2.geefWaarde() / a;
+//			double[] coeff = Algebra.geefCoefficienten(this);
+//			if(coeff==null) return false;
+//			if(coeff.length!=3 || coeff[2]==0) return false;
+//			boolean b0 = Algebra.isGelijkDouble(coeff[0]/coeff[2],c);
+//			boolean b1 = Algebra.isGelijkDouble(coeff[1]/coeff[2],b);
+//			return b0 && b1 ;
+//		}
+		else return false;
+		
+	}
+	
 	public boolean isOplossing(Expressie subst, String var, String vergTeken)
 	{	boolean grensKlopt = isOplossing(subst, var);
 		if(vergTeken.equals("=") && vergelijkingsTeken.equals("=")) return grensKlopt;
@@ -254,6 +308,17 @@ public class Vergelijking
 			}
 		}
 		return false;
+	}
+	
+	public boolean bevatStelselOplossing(Expressie[][] subst, String[] vars)
+	{
+		for(int i = 0; i < subst.length; i++)
+		{	if(isOplossing(subst[i], vars))
+			{	return true;
+			}
+		}
+		return false;
+		
 	}
 	
 	public boolean bevatOplossingP(Expressie[] subst, String var, String vergTeken)
@@ -348,6 +413,27 @@ public class Vergelijking
 				|| kind1.isVar() && kind1.geefVarNaam().equals("D?(D)") && !(kind2.isVar() && kind2.geefVarNaam().equals("D?(D)")) && !Algebra.bevatVarNaam(kind2, var)
 				|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var));
 			if(b)return b;
+		}
+		return false;
+	}
+	
+	public boolean isStelselEindOplossing(String var, String[] vars)
+	{
+		if(kind1.isVar() && kind1.geefVarNaam().equals(vars))
+		{
+			for(int i = 0; i < vars.length; i++)
+			{	if(Algebra.bevatVarNaam(kind2, var))
+					return false;
+			}
+			return true;
+		}
+		if(kind2.isVar() && kind2.geefVarNaam().equals(vars))
+		{
+			for(int i = 0; i < vars.length; i++)
+			{	if(Algebra.bevatVarNaam(kind1, var))
+					return false;
+			}
+			return true;
 		}
 		return false;
 	}

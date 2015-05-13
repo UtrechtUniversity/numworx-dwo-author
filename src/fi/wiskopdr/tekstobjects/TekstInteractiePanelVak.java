@@ -36,26 +36,6 @@ import org.json.simple.JSONArray;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -65,6 +45,7 @@ import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
+import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 //import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.AntwoordVergelijkingVak;
@@ -368,13 +349,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"CheckButton",//WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
 		"Slider",
 		"DataPlot",
-		"ReactieVergelijking"
+		"ReactieVergelijking",
+		//binnenkort: WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
-		{0,1,2,3,4,13,14,12,16,25,33,49,52},
+		{0,1,2,3,4,13,14,12,16,25,33,49,52}, //binnenkort: ,53},
 		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51},
 		{45},
 		{9},
@@ -1138,6 +1120,20 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
+        //binnenkort:
+//		else if(soortInteractiePanel == 53)
+//        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
+//            {   interactiePanel = new StelselAntwoordVak();
+//                //((TekstVakPanel)interactiePanel).setEditable(true);
+//                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+//                ((Component)interactiePanel).setBackground(getBackground());
+//                interactiePanel.addActionListener(this);
+//                
+//            //add((Component)interactiePanel,0);
+//            
+//            }
+//            //interactiePanel.setEditState(interactiePanelLaunchState);
+//        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -1624,6 +1620,20 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
+        //binnenkort:
+//		else if(soortInteractiePanel == 53)
+//        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
+//            {   interactiePanel = new StelselAntwoordVak();
+//                //((TekstVakPanel)interactiePanel).setEditable(true);
+//                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+//                ((Component)interactiePanel).setBackground(getBackground());
+//                interactiePanel.addActionListener(this);
+//                
+//            //add((Component)interactiePanel,0);
+//            
+//            }
+//            //interactiePanel.setEditState(interactiePanelLaunchState);
+//        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])

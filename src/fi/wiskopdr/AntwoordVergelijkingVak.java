@@ -48,15 +48,16 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.stelselsvergelijkingen.StelselEditor;
 import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePanel, CBookAware {
-	static int GOED = 1;
-	static int FOUT = 0;
-	static int HALF = 2;
-	static int GEEN = 3;
+	protected static int GOED = 1;
+	protected static int FOUT = 0;
+	protected static int HALF = 2;
+	protected static int GEEN = 3;
 
 	private FormuleButton plusKnop, minKnop, maalKnop, deelKnop, haakjesKnop, herleidKnop, abcKnop, subKnop;
 	private FormuleButton ontbindKnop, splitsKnop, wortelBewerkKnop;
@@ -113,7 +114,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private ImageComponent[] imageComponentenStap;
 
 	private boolean stappen;
-	private int mode = 0;
+	protected int mode = 0;
 
 	private int formuleVakX = 30;
 	private int formuleVakY = 10;
@@ -1644,6 +1645,11 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	{
 		return formuleVakken[stapNr - 1].geefVergelijking();
 	}
+	
+	public FormuleVak geefLaatsteFormuleVak()
+	{
+		return formuleVakken[stapNr];
+	}
 
 	public void zetStartString(String s)
 	{
@@ -1715,7 +1721,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		return formuleVak.toString();
 	}
 
-	private void zetGoedFout(int uitslag, int formuleVakNr)
+	protected void zetGoedFout(int uitslag, int formuleVakNr)
 	{
 		if (!check || balansKoppeling)
 			return;
@@ -2446,7 +2452,6 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				formuleVakString = StringUtils.replaceStr(formuleVakString,aKey,aValue);
 			}*/
 		}
-		System.out.println("formuleVakStringNa " + formuleVakString);
 		
 		//VergelijkingMeerv antwoordIngevuld = formuleVak.geefVergelijking();
 		VergelijkingMeerv antwoordIngevuld = FormuleParser.parseVergelijking(formuleVakString, functieDefSet);
@@ -2717,7 +2722,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		return fout;
 	}
 
-	private void maakStap()
+	public void maakStap()
 	{
 		if (!stappen)
 			return;
@@ -2937,7 +2942,11 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				if (tips && diagnose)
 					kijkNaIdeas();
 				else
-					kijkNa();
+				{	if(this instanceof StelselEditor)
+						((StelselEditor) this).kijkNa(-1, true, true);
+					else
+						kijkNa();
+				}
 			}
 			else
 			{
@@ -3886,4 +3895,65 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
 	}
 
+	public int bepaalHoogte()
+	{
+		int hoogte = 0;
+		for(int i = 0; i < stapNr + 1; i++)
+		{
+			hoogte += formuleVakken[i].getSize().height + stapH;
+		}
+		if (feedbackTekst != null && feedbackTekst.isShowing()) 
+			hoogte += 30 + feedbackTekst.getHeight();
+		else
+			hoogte += 20;
+		return hoogte;
+	}
+	
+	public void zetPijl(boolean p)
+	{
+		pijl = p;
+	}
+	
+	public void zetCheck(boolean c)
+	{
+		check = c;
+	}
+	
+	public boolean getCheck()
+	{
+		return check;
+	}
+
+	public int getStapNr()
+	{
+		return stapNr;
+	}
+	
+//	public boolean getIngevuld()
+//	{
+//		return ingevuld;
+//	}
+//	
+//	public void setIngevuld(boolean ingevuld)
+//	{
+//		this.ingevuld = ingevuld;
+//	}
+//	
+//	public boolean getNagekeken()
+//	{
+//		return nagekeken;
+//	}
+//	
+//	public void setNagekeken(boolean nagekeken)
+//	{
+//		this.nagekeken = nagekeken;
+//	}
+//
+//	public boolean isGelijkwaardig() {
+//		return isGelijkwaardig;
+//	}
+//
+//	public void setGelijkwaardig(boolean isGelijkwaardig) {
+//		this.isGelijkwaardig = isGelijkwaardig;
+//	}
 }

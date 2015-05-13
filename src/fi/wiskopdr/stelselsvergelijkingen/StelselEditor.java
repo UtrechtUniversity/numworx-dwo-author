@@ -1,0 +1,830 @@
+package fi.wiskopdr.stelselsvergelijkingen;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import fi.beans.stringutils.StringUtils;
+import fi.wiskopdr.AntwoordVergelijkingVak;
+import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.expressies.Algebra;
+import fi.wiskopdr.expressies.BasisExpressie;
+import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.Vergelijking;
+import fi.wiskopdr.expressies.VergelijkingMeerv;
+import fi.wiskopdr.formuleobjects.FormuleParser;
+
+public class StelselEditor extends AntwoordVergelijkingVak {
+	
+	StelselRekenVak hoofdPanel;
+	private StelselEditor[] kinderen;
+	private StelselEditor parent;
+	private boolean[] oplossingGevonden;
+	private String[] varNamen; 
+	private Expressie[][] oplossingen; 
+	private int hoogte;
+	
+	private boolean[][] eindOplossingGevonden;
+	private boolean[][] eindOplossingStelselGevonden;
+	private boolean[][] eindOplossingExactGevonden;
+	private boolean bevatVoldoetNiet = false;
+	
+	private boolean isEindOplossing = false;
+	private boolean isEindOplossingStelsel = false;
+	private boolean isEindOplossingExact = false;
+	
+	private boolean eindOplossingNodig = true;
+	private boolean onafhankelijkNodig = false;
+	private boolean exactNodig = true;
+	
+	private boolean ingevuld = false;
+	private boolean nagekeken = false;
+	private boolean isGelijkwaardig = false;
+	private boolean isDeelOplossing = false;
+	private boolean bevatFouteOplossing = false;
+	
+	private boolean hasFeedback = false;
+	
+	private boolean correct = false;
+	private boolean fout = false;
+	
+	private boolean heeftFocus = false;
+	
+	
+	public StelselEditor(StelselRekenVak hoofdPanel)
+	{
+		super();
+		setHeader(true);
+		zetStandaardOpties();
+		zetCheck(true);//TODO: dit afhankelijk maken van of check is aangevinkt in editPanel.
+		heeftFocus = true;
+		this.hoofdPanel = hoofdPanel;
+		hoogte = hoofdPanel.getHeight();
+	}
+	
+	public StelselEditor(StelselEditor parent)
+	{
+		super();
+		this.parent = parent;
+		this.varNamen = parent.geefVarNamen();
+		setHeader(false);
+		zetStandaardOpties();
+		zetCheck(parent.getCheck());
+		hoofdPanel = parent.geefHoofdPanel();
+		hoogte = 100;//TODO: hier wat zinnigs invullen. Minimum van bijv 50 en de ruimte die je nog tot de bodem hebt?
+		//oplossingenGevonden en oplossingen instellen. 
+	}
+	
+	public void zetStandaardOpties()
+	{
+		zetStappen(true);
+		zetPijl(false);
+		zetScrollOptie(false);
+		zetMetRand(false);
+	}
+	
+	public void zetVarNamen(String[] varNamen)
+	{
+		this.varNamen = varNamen;
+	}
+	
+	public void zetOplossingen(Expressie[][] oplossingen)
+	{
+		this.oplossingen = oplossingen;
+		eindOplossingGevonden = new boolean[oplossingen.length][varNamen.length];
+		eindOplossingStelselGevonden = new boolean[oplossingen.length][varNamen.length];
+		eindOplossingExactGevonden = new boolean[oplossingen.length][varNamen.length];
+		for(int i = 0; i < oplossingen.length; i++)
+		{
+			for(int j = 0; j < varNamen.length; j++)
+			{	//TODO: hier overnemen van wat al is opgelost voor deze kolom.
+				eindOplossingGevonden[i][j] = false;
+				eindOplossingStelselGevonden[i][j] = false;
+				eindOplossingExactGevonden[i][j] = false;
+			}
+		}
+	}
+	
+	public void zetOplossingen(Expressie[][] oplossingen, boolean[][] eindOplossing, boolean[][] eindOplossingStelsel, boolean[][] eindOplossingExact)
+	{
+		this.oplossingen = oplossingen;
+		eindOplossingGevonden = eindOplossing;
+		eindOplossingStelselGevonden = eindOplossingStelsel;
+		eindOplossingExactGevonden = eindOplossingExact;
+	}
+	
+	public String[] geefVarNamen()
+	{
+		return varNamen;
+	}
+	
+	public StelselRekenVak geefHoofdPanel()
+	{
+		return hoofdPanel;
+	}
+	
+	public void splits()
+	{
+		hoogte = bepaalHoogte();
+		
+		//hoogte = 100; //TODO: hier hoogte invullen die je op dit moment voor dit panel nodig hebt. Die blijft vanaf nu gelijk.
+		
+		VergelijkingMeerv vergelijkingen = geefVergelijking(); // deze bestaat uit k vergelijkingen. 
+		int k = vergelijkingen.geefAantal();
+		kinderen = new StelselEditor[k];
+		
+		for(int i = 0; i < k; i++)
+		{
+			StelselEditor editor = new StelselEditor(this);
+			Vergelijking vergelijking = vergelijkingen.geefVergelijking(i);
+			int teller = 0;
+			for(int j = 0; j < oplossingen.length; j++)
+			{
+				if(vergelijking.isOplossing(oplossingen[j], varNamen))
+					teller++;
+			}
+			Expressie[][] oplossingenKind = new Expressie[teller][varNamen.length];
+			boolean[][] eindOplossingen = new boolean[teller][varNamen.length];
+			boolean[][] eindOplossingenExact = new boolean[teller][varNamen.length];
+			boolean[][] eindOplossingenStelsel = new boolean[teller][varNamen.length];
+			teller = 0;
+			for(int j = 0; j < oplossingen.length; j++)
+			{	
+				if(vergelijking.isOplossing(oplossingen[j], varNamen))
+				{	
+					oplossingenKind[teller] = oplossingen[j];
+					for(int n = 0; n < varNamen.length; n++)
+					{
+						eindOplossingen[teller][n] = eindOplossingGevonden[j][n];
+						eindOplossingenExact[teller][n] = eindOplossingExactGevonden[j][n];
+						eindOplossingenStelsel[teller][n] = eindOplossingStelselGevonden[j][n];
+					}
+					teller++;
+				}
+			}
+			editor.zetOplossingen(oplossingenKind, eindOplossingen, eindOplossingenStelsel, eindOplossingenExact);
+			
+			kinderen[i] = editor;
+			hoofdPanel.add(editor);
+		}
+		hoofdPanel.plaatsEditors();
+		kinderen[0].requestFocus();
+	}
+	
+	public void requestFocus()
+	{
+		if(isHoofdEditor())
+			this.formuleVak = geefLaatsteFormuleVak();
+		else
+			hoofdPanel.geefHoofdEditor().formuleVak = this.formuleVak;
+		this.formuleVak.setEditable(true);
+		hoofdPanel.geefHoofdEditor().zetFocusFalse();
+		heeftFocus = true;
+		this.formuleVak.requestFocus();
+	}
+	
+	public boolean heeftKinderen()
+	{
+		return kinderen != null;
+	}
+	
+	public StelselEditor[] geefKinderen()
+	{
+		return kinderen;
+	}
+	
+	public int geefHoogte()
+	{
+		return hoogte;
+	}
+	
+	public int geefBreedte(int kolomBreedte)
+	{
+		if(kinderen == null)
+			return kolomBreedte;
+		int breedte = 0;
+		for(int i = 0; i < kinderen.length; i++)
+			breedte += kinderen[i].geefBreedte(kolomBreedte);			
+		return breedte;
+	}
+	
+	public int geefEindAantalKinderen()
+	{
+		if(kinderen == null)
+			return 1;
+		int aantalKinderen = 0;
+		for(int i = 0; i < kinderen.length; i++)
+		{
+			aantalKinderen += kinderen[i].geefEindAantalKinderen();
+		}
+		return aantalKinderen;
+	}
+	
+	public void kijkNa(int stapNr)
+	{
+		kijkNa(stapNr, true);
+	}
+	
+	public void kijkNa(int stapNr, boolean show)
+	{
+		kijkNa(stapNr, show, false);
+	}
+	
+	public void kijkNa(int stapNr, boolean show, boolean backStep)
+	{
+		checkAntwoord();
+		
+		if (!ingevuld)
+		{
+			System.out.println("niet ingevuld");
+			if (show)
+				zetGoedFout(GEEN, -1);
+			if (formuleVak.toString().equals("$f@") && show)
+			{
+//				if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
+//					remove(mwFeedbackPanel);
+//				else
+				remove(getFeedbackComponent());
+				produceAction("feedbackWeg");
+			}
+			return;
+		}
+		
+//		else if (hasFeedback)
+//		{
+//			if (goedHalfFout == 0)
+//			{
+//				if (show)
+//					zetGoedFout(GOED, stapNr);
+//				score = puntenFeedback;
+//				correct = true;
+//				fout = false;
+//				if (show)
+//					stapOk = false;
+//				if (!pijl && show)
+//					stapOk = true;
+//			}
+//			else if (goedHalfFout == 1)
+//			{
+//				if (show)
+//					zetGoedFout(HALF, stapNr);
+//				score = puntenFeedback;
+//				correct = false;
+//				fout = false;
+//				if (show)
+//					stapOk = true;
+//			}
+//			else if (goedHalfFout == 2)
+//			{
+//				if (show)
+//					zetGoedFout(HALF, stapNr);
+//				score = puntenFeedback;
+//				correct = false;
+//				fout = false;
+//				if (show)
+//					stapOk = false;
+//			}
+//			else if (goedHalfFout == 3)
+//			{ // zetGoedFout(FOUT,stapNr);
+//				//if (feedbackModus == 1 && show)
+//				//	zetCorrectFoutStap(stapNr, false, true, false, "", show);
+//				//else 
+//				if (show)
+//					zetGoedFout(FOUT, stapNr);
+//				score = puntenFeedback;
+//				correct = false;
+//				fout = true;
+//				if (show)
+//					stapOk = false;
+//			}
+//		}
+		else if (isGelijkwaardig)
+		{
+			
+//			if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing &&
+//										// bevatFouteOplossing
+//			{
+//				score = 0;
+//				zetCorrectFoutStap(stapNr, false, true, false, "", show);// "
+//				// foutenTeller++;
+//			}
+//			else if (vorm)
+//			{
+//				if (isJuisteVorm) // isGelijkwaardig && vorm && isJuisteVorm
+//				{
+//					score = puntenGelijkwaardig + puntenVorm;
+//					zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst16", show);// "Dit is een correcte vergelijking"
+//				}
+//				else
+//				// isGelijkwaardig && vorm && !isJuisteVorm
+//				{
+//					score = puntenGelijkwaardig;
+//					zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst17", show); // "Deze vergelijking heeft (nog)niet de juiste vorm"
+//				}
+//			}
+			if (eindOplossingNodig)
+			{
+				if (bevatVoldoetNiet) // isGelijkwaardig && eindOplossingNodig
+				{
+					zetCorrectFoutStap(stapNr, false, false, false, "feedbackTekst02", show); // "Niet alle oplossingen voldoen aan de oorspronkelijke vergelijking. Verwijder de oplossingen die niet voldoen."
+				}
+				else if (isEindOplossing)
+				{
+					if (exactNodig)
+					{
+						if (isEindOplossingExact) // isGelijkwaardig &&
+													// eindOplossingNodig &&
+													// isEindOplossing &&
+													// exactNodig &&
+													// isEindOplossingExact
+						{
+							//score = puntenGelijkwaardig + puntenEindOplossing + puntenSignificant + puntenExact;
+//							if (gewensteEindOplossing.isOngelijkheid())
+//							{
+//								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst03", show);// "De ongelijkheid is correct opgelost"
+//							}
+//							else if (gewensteEindOplossing.isAfronding())
+//							{
+//								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst11", show);// "De oplossing is correct afgerond"
+//							}
+//							else
+//							{
+							correct = true;
+							if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
+								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+							else
+								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
+//							}
+						}
+						else
+						// isGelijkwaardig && eindOplossingNodig &&
+						// isEindOplossing && exactNodig &&
+						// isEindOplossingExact
+						{
+//							if (significantNodig)
+//							{
+//								if (isEindOplossingSignificant)
+//								{
+//									score = puntenGelijkwaardig + puntenEindOplossing + puntenSignificant;
+//									zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst20", show);// "Oplossing is goed, significantie klopt maar heeft nog niet in de juiste vorm."
+//								}
+//								else
+//								{
+//									score = puntenGelijkwaardig + puntenEindOplossing;
+//									zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst19", show);// "Oplossing is goed, maar nog niet in de juiste vorm en de significantie klopt niet."
+//								}
+//							}
+//							else
+//							{
+								//score = puntenGelijkwaardig + puntenEindOplossing;
+								zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst10", show);// "Oplossing is goed, maar nog niet in de juiste vorm."
+//							}
+						}
+					}
+					else
+					// isGelijkwaardig && eindOplossingNodig &&
+					// isEindOplossing && ! exactNodig
+					{
+
+						//score = puntenGelijkwaardig + puntenEindOplossing;
+//						if (gewensteEindOplossing.isOngelijkheid())
+//						{
+//							zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst03", show);// "De ongelijkheid is correct opgelost"
+//						}
+//						else if (gewensteEindOplossing.isAfronding())
+//						{
+//							zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst11", show);// "De oplossing is correct afgerond"
+//						}
+//						else
+//						{
+//							if (significantNodig)
+//							{
+//								if (isEindOplossingSignificant)
+//								{
+//									score = puntenGelijkwaardig + puntenEindOplossing + puntenSignificant;
+//									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst04", show);// "De vergelijking is correct opgelost"
+//								}
+//								else
+//								{
+//									score = puntenGelijkwaardig + puntenEindOplossing;
+//									zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst18", show);// "De oplossing is goed, maar het aantal significante cijfers klopt niet."
+//								}
+//							}
+//							else
+//							{
+								correct = true;
+								if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
+									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+								else
+									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
+//							}
+//						}
+					}
+				}
+				else
+				// isGelijkwaardig && eindOplossingNodig &&
+				// !isEindOplossing
+				{
+//					if (moetNogAfgerond) // isGelijkwaardig &&
+//											// eindOplossingNodig &&
+//											// !isEindOplossing
+//					{
+//						score = 0;
+//						zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst05", show); // "Geef de gevraagde afronding"
+//					}
+//					else if (moetNogOngelijkheid) // isGelijkwaardig &&
+//													// eindOplossingNodig &&
+//													// !isEindOplossing
+//					{
+//						score = 0;
+//						zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst06", show); // "Geef nu de oplossing(en) van de ongelijkheid"
+//					}
+//					else
+//					{
+						//score = puntenGelijkwaardig;
+						zetCorrectFoutStap(stapNr, false, false, true, "", show);
+//					}
+				}
+			}
+			else
+			// isGelijkwaardig && !vorm && !eindOplossingNodig
+			
+				//score = puntenGelijkwaardig;
+				// zetCorrectFoutStap(stapNr,true,false,false,"feedbackTekst16");//"Dit is een correcte vergelijking"
+
+				// Nu kan het vak gebruikt worden als 'balans' voor het checken
+				// van ware beweringen
+				zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst16", show);// "Dit is een correcte vergelijking"
+		}
+		else
+		// niet isGelijkwaardig
+		{	
+			if (isDeelOplossing)
+			{
+				if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing
+											// && bevatFouteOplossing
+				{
+					//score = 0;
+					zetCorrectFoutStap(stapNr, false, true, false, "feedbackTekst01", show);// "Deze stap bevat correcte en niet correcte onderdelen. Verwijder of vervang de delen die niet correct zijn"
+				}
+				else
+				// !isGelijkwaardig && isDeelOplossing &&
+				// !bevatFouteOplossing
+				{
+					//score = 0;
+					zetCorrectFoutStap(stapNr, false, true, false, "feedbackTekst07", show);// "Er ontbreken oplossingen. Vul aan."
+				}
+			}
+			else
+			// niet isDeelOplossing
+			{
+			//	score = 0;
+				zetCorrectFoutStap(stapNr, false, true, true, "", show);
+			}
+		}
+		
+		if(backStep)
+			return;
+		
+		//TODO: opnemen dat je niet splitst als je alle oplossingen al hebt gevonden met deze laatste stap.
+		if ((mode == 0 || mode == 1) && hasFeedback && !correct)
+		{
+			splitsOfMaakStap();
+		}
+		else if ((mode == 0 || mode == 1) && !hasFeedback && isGelijkwaardig && (onafhankelijkNodig && !isEindOplossingStelsel || eindOplossingNodig && !isEindOplossing || exactNodig && !isEindOplossingExact))
+		{
+			splitsOfMaakStap();
+//			if (moetNogAfgerond)
+//				formuleVakken[stapNr].vulVak("$f" + gewensteEindOplossing.geefVergelijkingVar() + "\u2248@");
+		}
+		else
+		{	hoogte = bepaalHoogte();
+			hoofdPanel.plaatsEditors();
+		}
+		if ((mode == 2 || mode == 3) && !formuleVak.toString().equals("$f@"))
+		{
+			VergelijkingMeerv antwoordIngevuld = formuleVak.geefVergelijking();
+			if (antwoordIngevuld == null)
+			{
+				setFeedback(WiskOpdr.rb.getString("feedbackTekst09"), true);
+			}
+			else
+			{
+				splitsOfMaakStap();
+				//remove(feedbackTekst);
+			}
+		}
+		
+	}
+	
+	public void zetCorrectFoutStap(int stapNr, boolean correct, boolean fout, boolean stapOk, String feedbackKey, boolean show)
+	{
+		this.correct = correct;
+		this.fout = fout;
+		super.zetCorrectFoutStap(stapNr, correct, fout, stapOk, feedbackKey, show);
+	}
+	
+	public void splitsOfMaakStap()
+	{
+		if(isGelijkwaardig && geefVergelijking().geefAantal() > 1)
+			splits();
+		else
+		{	super.maakStap();
+			hoogte = bepaalHoogte();
+			hoofdPanel.plaatsEditors();
+		}
+	}
+	
+	public void setSizes(int kolomBreedte)
+	{
+		this.setSize(geefBreedte(kolomBreedte), hoogte);
+		if(kinderen != null)
+		{	for(int i = 0; i < kinderen.length; i++)
+				kinderen[i].setSizes(kolomBreedte);
+		}
+	}
+	
+	public void setLocations()
+	{
+		int x = 0;
+		int y = this.getLocation().y + hoogte;
+		for(int i = 0; i < kinderen.length; i++)
+		{	kinderen[i].setLocation(x, y);
+			kinderen[i].scrollRectToVisible(new Rectangle(0, 0, 1, 1));
+			x += kinderen[i].getWidth();
+			if(kinderen[i].heeftKinderen())
+				kinderen[i].setLocations();
+		}
+	}
+	
+	public void checkAntwoord()
+	{
+		//Algebra.setTestValues(eqTestValueMin, eqTestValueMax);
+		ingevuld = false;
+		remove(getFeedbackComponent());
+		
+		//TODO: bevatVoldoetNiet bepalen.
+		VergelijkingMeerv antwoord = null;
+		
+		String formuleVakString = formuleVak.toString();
+		
+		VergelijkingMeerv antwoordIngevuld = FormuleParser.parseVergelijking(formuleVakString);
+		
+		antwoord = antwoordIngevuld;
+		
+		if (antwoord != null)
+		{ 	//if (!geenOplossing)
+			//{
+				//String antwoordIngevuldString = antwoordIngevuld.toString();
+				//System.out.println("antwoordIngevuldVoor " + antwoordIngevuldString);
+				
+				//formuleVak.vulVak("$f" + antwoordIngevuldString + "@");
+				//huidigeVergelijking = antwoord;
+				
+			//}
+			ingevuld = true;
+			
+			String diffVar = "x";
+			for(int i = 0; i < antwoord.geefAantal(); i++)
+			{	String diffVar2 = antwoord.geefVergelijking(i).geefVarNaam();
+				if(diffVar2 != null && !diffVar2.equals(""))
+				{	diffVar = diffVar2;
+					break;
+				}
+			}
+//			if(FormuleParser.isDiffOperatoren())
+//			{	antwoord = antwoord.vervangDifferentialen(diffVar);
+//				antwoord = antwoord.vervangDiffs(gewensteEindOplossing.geefEindOplossingen(var), var);
+//			}
+			
+			boolean isGelijkwaardigEind = antwoord.isStelselOplossing(oplossingen, varNamen);
+			//boolean isGelijkwaardigEind = antwoord.isOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
+			
+
+			// Hiermee wordt, in geval er geen eindoplossing is, maar wel een
+			// voorlopige tussenoplossing, aan het eind gevraagd de oplossing te
+			// verwerpen
+//			if (gewensteEindOplossing.isOplossing(0.1234567))
+//				isGelijkwaardigEind = true;
+			//
+
+			isGelijkwaardig = isGelijkwaardigEind;
+//			if (gewensteTussenOplossing != null && !isGelijkwaardig)
+//				isGelijkwaardig = antwoord.isOplossing(gewensteTussenOplossing.geefEindOplossingen(var), var, gewensteTussenOplossing.geefVergTekens());
+//
+			isEindOplossing = true;
+			isEindOplossingExact = true;
+			isEindOplossingStelsel = true;
+			
+			for(int i = 0; i < oplossingen.length; i++)
+			{
+				for(int j = 0; j < varNamen.length; j++)
+				{	if(!eindOplossingGevonden[i][j])
+					{	eindOplossingGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossing(varNamen[j]);
+						if(!eindOplossingGevonden[i][j])
+							isEindOplossing = false;
+					}
+					if(!eindOplossingStelselGevonden[i][j])
+					{	eindOplossingStelselGevonden[i][j] = isGelijkwaardigEind && antwoord.isStelselEindOplossing(varNamen[j], varNamen);
+						if(!eindOplossingStelselGevonden[i][j])
+							isEindOplossingStelsel = false;
+					}
+					if(!eindOplossingExactGevonden[i][j])
+					{	eindOplossingExactGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossingExact(oplossingen[i], varNamen[j], "=");
+						if(!eindOplossingExactGevonden[i][j])
+							isEindOplossingExact = false;
+					}
+				}
+			}
+			
+//
+//			isEindOplossingSignificant = isGelijkwaardigEind && antwoord.isEindOplossingSignificant(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
+//
+			//isEindOplossingExact = isGelijkwaardigEind && antwoord.isEindOplossingExact(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
+//
+			isDeelOplossing = antwoord.isStelselDeelOplossing(oplossingen, varNamen);
+//			if (gewensteTussenOplossing != null && !isDeelOplossing)
+//				isDeelOplossing = antwoord.isDeelOplossing(gewensteTussenOplossing.geefEindOplossingen(var), var, gewensteTussenOplossing.geefVergTekens());
+//
+//			boolean bevatFouteOplossingEind = antwoord.bevatFouteOplossing(gewensteEindOplossing, var, gewensteEindOplossing.geefVergTekens());
+			
+			bevatFouteOplossing = antwoord.bevatFouteStelselOplossing(oplossingen, varNamen);
+//			bevatFouteOplossing = bevatFouteOplossingEind;
+//			if (gewensteTussenOplossing != null && bevatFouteOplossing)
+//				bevatFouteOplossing = antwoord.bevatFouteOplossing(gewensteTussenOplossing, var, gewensteTussenOplossing.geefVergTekens());
+//
+//			bevatVoldoetNiet = bevatFouteOplossingEind && !bevatFouteOplossing && isEindOplossing;
+//			// System.out.println(""+bevatVoldoetNiet);
+//
+//			moetNogAfgerond = isGelijkwaardig && !isGelijkwaardigEind && antwoord.isEindOplossing(var) && gewensteEindOplossing.toString().indexOf("\u2248") > -1;
+//
+//			moetNogOngelijkheid = isGelijkwaardig && !isGelijkwaardigEind && antwoord.isEindOplossing(var) && gewensteEindOplossing.isOngelijkheid();
+
+//			isJuisteVorm = false;
+//			for (int i = 0; i < juisteVormen.length; i++)
+//			{
+//				//isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoord, juisteVormen[i]); //in plaats hiervan antwoordIngevuld gebruiken, omdat met antwoord allerlei substituties kunnen zijn uitgevoerd.
+//				isJuisteVorm = isJuisteVorm || Algebra.gelijkGevormd(antwoordIngevuld, juisteVormen[i]);
+//				if (isJuisteVorm)
+//					break;
+//			}
+			repaint();
+
+		}
+		else
+		{
+			isGelijkwaardig = false;
+			isEindOplossing = false;
+			isEindOplossingExact = false;
+			isEindOplossingStelsel = false;
+//			isEindOplossing = false;
+//			isEindOplossingExact = false;
+//			isDeelOplossing = false;
+//			bevatFouteOplossing = false;
+//			bevatVoldoetNiet = false;
+			if (formuleVak.toString().indexOf("|") > -1)
+			{ // setFeedback("Gebruik geen absoluut strepen ( bv: |x-3| )");
+				setFeedback(WiskOpdr.rb.getString("feedbackTekst08"), false);
+			}
+			else if (formuleVak.toString().length() > 3)
+			{ // setFeedback("De notatie van de vergelijking of oplossingen is niet juist");
+				if (mode == 2 || mode == 3)
+					ingevuld = true;
+				setFeedback(WiskOpdr.rb.getString("feedbackTekst09"), false);
+			}
+		}
+		Algebra.setDefaultTestValues();
+	}
+	
+//	public void actionPerformed(ActionEvent e)
+//	{
+//		super.actionPerformed(e);
+//		
+//		if (e.getSource() != formuleVak || !e.getActionCommand().equals("ingevuld"))
+//			return;
+//		
+//		
+//	}
+	
+	public boolean isCorrect()
+	{
+		return correct;
+	}
+	
+	public boolean zijnEditorOfKinderenCorrect()
+	{
+		if(kinderen == null && !correct)
+			return false;
+		else if(kinderen == null)
+			return true;
+		else
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				if(!kinderen[i].zijnEditorOfKinderenCorrect())
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	public void setNewScrollSize()
+    {   
+		//voorkomen dat al onderstaande gebeurt, of in elk geval scrollRectToVisible.
+    	//int maxX = 0; 
+        //int maxY = 0; 
+//        for(int i=0 ; i<contentPane.getComponentCount() ; i++)
+//        {   Component c = contentPane.getComponent(i);
+//            int b = c.getLocation().x + c.getSize().width;
+//            if(b>maxX) maxX = b;
+//            int h = c.getLocation().y + c.getSize().height + 20;
+//            if(h>maxY) maxY = h;
+//        }
+//        if(scrollHorizontal)
+//        {	contentPane.setPreferredSize(new Dimension(maxX,maxY));
+//        }
+//        else 
+//        {	contentPane.setPreferredSize(new Dimension(contentPane.getSize().width-20, maxY));
+//        }
+//        contentPane.scrollRectToVisible(new Rectangle(0,maxY-10, contentPane.getSize().width, maxY));
+//        contentPane.revalidate();
+//        contentPane.doLayout();
+        
+    }
+	
+	public boolean isHoofdEditor()
+	{
+		return this.equals(hoofdPanel.geefHoofdEditor());
+	}
+	
+	public void maakStap()
+	{
+		splitsOfMaakStap();
+	}
+	
+	public void stapTerug()
+	{
+		if(heeftFocus)
+		{
+			if(this.getStapNr() > 0)
+				super.stapTerug();
+			else
+			{	if(isHoofdEditor())
+				{
+					//eerste regel leegmaken?
+				}
+				else
+				{
+					for(int i = 0; i < parent.kinderen.length; i++)
+						hoofdPanel.remove(parent.kinderen[i]);
+					parent.kinderen = null;
+					parent.hoogte = parent.bepaalHoogte();
+					hoofdPanel.plaatsEditors();
+					parent.requestFocus();
+				}
+			}
+		}
+		else
+		{
+			StelselEditor editorMetFocus = vindKindMetFocus();
+			editorMetFocus.stapTerug();
+		}
+	}
+	
+	public StelselEditor vindKindMetFocus()
+	{
+		if(heeftFocus)
+			return this;
+		else if(kinderen == null)
+			return null;
+		for(int i = 0; i < kinderen.length; i++)
+		{
+			StelselEditor kind = kinderen[i].vindKindMetFocus();
+			if(kind != null)
+				return kind;
+		}
+		return null;
+	}
+	
+	public void zetFocusFalse()
+	{
+		heeftFocus = false;
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+				kinderen[i].zetFocusFalse();
+		}
+	}
+
+	
+	
+}

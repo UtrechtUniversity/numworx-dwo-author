@@ -448,7 +448,7 @@ public class FormuleParser
 		index = 0;
 		while(index >-1)
 		{	index = s.indexOf("*-");
-			System.out.println("s1: "+s);
+			//System.out.println("s1: "+s);
 			int tel = index+2;
 			while(tel<s.length() && (Character.isDigit(s.charAt(tel)) || s.charAt(tel)=='.'))
 			{	tel++;
@@ -466,7 +466,7 @@ public class FormuleParser
 			}	
 			else if(index >-1 && index+2<s.length())s = s.substring(0,index) + "(-1)" + s.substring(index+2);
 			
-			System.out.println("s2: "+s);
+			//System.out.println("s2: "+s);
 		}
 		
 		//vervangt /-6 door /(-6)

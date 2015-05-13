@@ -1,4 +1,4 @@
-package fi.wiskopdr;
+package fi.wiskopdr.stelselsvergelijkingen;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.Color;
@@ -22,6 +22,10 @@ import javax.swing.JTextField;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.wiskopdr.ImageComponent;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.expressies.Algebra;
+import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -35,7 +39,7 @@ import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
-public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder
+public class StelselOplossingenVak extends JLayeredPane implements ActionListener, MouseListener, FormuleVakHouder
 {
 	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 
@@ -55,10 +59,10 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	static int HALF = 2;
 	static int GEEN = 3;
 	
-	private JTextField antwoordTF;
-
-	private String antwoordString;
-	private String[] juisteAntwoorden;
+	//private String variabelenString;
+	private String[] varNamen;
+	private Expressie[][] juisteOplossingen;
+	//private String[] juisteAntwoorden;
 	private Hashtable[] answerModels;
 	private boolean hasFeedback;
 
@@ -80,7 +84,6 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	private Font formuleVakFont = (!WiskOpdr.formTimes) || WiskOpdr.mac || WiskOpdr.zoefi ? WiskOpdr.formuleFont1Mac : WiskOpdr.formuleFont1; //new Font("TimesRoman",Font.PLAIN,16);
 
-	private boolean formuleMode;
 	private FormuleVak formuleVak;
 	private int minBreedte;
 	private int ashoogte;
@@ -119,19 +122,11 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		HALFKRUL = hk;
 	}*/
 
-	public AntwoordTekstVak()
+	public StelselOplossingenVak()
 	{
 		setLayout(null);
 
 		attempts = new Vector();
-
-		antwoordTF = new JTextField();
-		antwoordTF.setBorder(BorderFactory.createLineBorder(new Color(153, 153, 153)));
-		antwoordTF.setBounds(0, 0, 80, 21);
-		antwoordTF.addActionListener(this);
-		if ("GR".equals(WiskOpdr.deployVariant))
-			antwoordTF.setBackground(new Color(230, 230, 230));
-		//add(antwoordTF);
 
 		formuleVak = new FormuleVak();
 		formuleVak.setFont(formuleVakFont);
@@ -139,30 +134,24 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		formuleVak.addActionListener(this);
 		formuleVak.setLocation(4, 4);
 		addMouseListener(this);
-		//add(formuleVak);
-
-		/*if(images==null)
-		{	images = new Hashtable();
-			WiskOpdr.loadImages(images,imageNames);
-		}*/
-
+		
 		goedIC = new ImageComponent(WiskOpdr.GOEDKRUL);
 		((ImageComponent) goedIC).zetKlein(true);
-		goedIC.setLocation(antwoordTF.getWidth(), 0);
+		goedIC.setLocation(formuleVak.getWidth(), 0);
 		goedIC.setVisible(false);
 		setLayer((Component) goedIC, JLayeredPane.PALETTE_LAYER.intValue());
 		add(goedIC, 0);
 
 		halfIC = new ImageComponent(WiskOpdr.HALFKRUL);
 		((ImageComponent) halfIC).zetKlein(true);
-		halfIC.setLocation(antwoordTF.getWidth(), 0);
+		halfIC.setLocation(formuleVak.getWidth(), 0);
 		halfIC.setVisible(false);
 		setLayer((Component) halfIC, JLayeredPane.PALETTE_LAYER.intValue());
 		add(halfIC);
 
 		foutIC = new ImageComponent(WiskOpdr.FOUTKRUIS);
 		((ImageComponent) foutIC).zetKlein(true);
-		foutIC.setLocation(antwoordTF.getWidth(), 0);
+		foutIC.setLocation(formuleVak.getWidth(), 0);
 		foutIC.setVisible(false);
 		setLayer((Component) foutIC, JLayeredPane.PALETTE_LAYER.intValue());
 		add(foutIC);
@@ -184,7 +173,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		feedbackPanel = new JPanel();
 		feedbackPanel.setLayout(null);
 
-		setSize(antwoordTF.getWidth() + 30, 20);
+		setSize(formuleVak.getWidth() + 30, 20);
 
 	}
 
@@ -193,57 +182,41 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		minBreedte = b;
 	}
 	
-	public void zetFormuleMode(boolean b)
-	{
-		formuleMode = b;
-	}
-
 	public void paintComponent(Graphics g)
 	{
-		if (formuleMode)
+		
+		g.setColor(Color.white);
+		if ("GR".equals(WiskOpdr.deployVariant))
 		{
-			g.setColor(Color.white);
-			if ("GR".equals(WiskOpdr.deployVariant))
+			for (int i = 0; i < 12; i++)
 			{
-				for (int i = 0; i < 12; i++)
-				{
-					g.setColor(new Color(230 + i, 230 + i, 230 + i));
-					g.fillRect(i * getWidth() / 12, 2, getWidth() / 12 + 1, getHeight() - 4);
-				}
+				g.setColor(new Color(230 + i, 230 + i, 230 + i));
+				g.fillRect(i * getWidth() / 12, 2, getWidth() / 12 + 1, getHeight() - 4);
 			}
-			else
-				g.fillRect(1, 2, getSize().width - 2, getSize().height - 4);
-			g.setColor(Color.gray);
-			if ("GR".equals(WiskOpdr.deployVariant))
-				g.setColor(new Color(153, 153, 153));
-			g.drawRect(1, 2, getSize().width - 2, getSize().height - 4);
 		}
 		else
-			super.paintComponent(g);
+			g.fillRect(1, 2, getSize().width - 2, getSize().height - 4);
+		g.setColor(Color.gray);
+		if ("GR".equals(WiskOpdr.deployVariant))
+			g.setColor(new Color(153, 153, 153));
+		g.drawRect(1, 2, getSize().width - 2, getSize().height - 4);
+		
 	}
-
-	/*public static Image getImage(String name)
-	{	return(Image)images.get(name);
-	}*/
 
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{
-		String antwoordString = "";
 		int puntenGelijkwaardig = 10;
 		Hashtable[] answerModels = null;
 		boolean hasFeedback = false;
 		int scoreMax = 10;
 		boolean check = true;
 		boolean teltMee = true;
-		boolean formuleMode = false;
 		boolean formuleToolBijFocus = false;
 		boolean logOption = false;
 		String logID = "";
 		boolean boxMetRand = true;
 		boolean[][] logObjectives = null;
 
-		if (h.containsKey("antwoordString"))
-			antwoordString = (String) h.get("antwoordString");
 		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		if (h.containsKey("answerModels"))
@@ -254,8 +227,6 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			check = ((Boolean) h.get("check")).booleanValue();
 		if (h.containsKey("teltMee"))
 			teltMee = ((Boolean) h.get("teltMee")).booleanValue();
-		if (h.containsKey("formuleMode"))
-			formuleMode = ((Boolean) h.get("formuleMode")).booleanValue();
 		if (h.containsKey("formuleToolBijFocus"))
 			formuleToolBijFocus = ((Boolean) h.get("formuleToolBijFocus")).booleanValue();
 		if (h.containsKey("logOption"))
@@ -267,20 +238,6 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		if (h.containsKey("logObjectives"))
 			logObjectives = (boolean[][]) h.get("logObjectives");
 
-		try
-		{
-			antwoordString = FormuleParser.randomizeTekstVakString(antwoordString, randomVars, randomValues);
-		}
-		catch (Exception e)
-		{
-		}
-		if (!formuleMode)
-			antwoordString = StringUtils.replaceStr(antwoordString, "@", "");
-		if (!formuleMode)
-			antwoordString = StringUtils.replaceStr(antwoordString, "$f", "");
-		antwoordString = StringUtils.replaceStr(antwoordString, " ", "");
-
-		this.antwoordString = antwoordString;
 		this.scoreMax = scoreMax;
 		this.answerModels = answerModels;
 		this.hasFeedback = hasFeedback;
@@ -288,7 +245,6 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		this.teltMee = teltMee;
 		this.randomVars = randomVars;
 		this.randomValues = randomValues;
-		this.formuleMode = formuleMode;
 		this.formuleToolBijFocus = formuleToolBijFocus;
 		this.logOption = logOption;
 		this.logID = logID;
@@ -296,26 +252,11 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 		if (formuleVak != null)
 			formuleVak.zetStippels(!boxMetRand);
-		if (!boxMetRand){
-			antwoordTF.setBorder(BorderFactory.createEmptyBorder());
-			antwoordTF.setOpaque(false);
-		}
-
-		if (formuleMode)
-		{
-			remove(antwoordTF);
-			add(formuleVak);
-		}
-		else
-		{
-			remove(formuleVak);
-			add(antwoordTF);
-		}
-		zetJuisteAntwoord(antwoordString);
+		
+		add(formuleVak);
 		
 		if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
 		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
-			antwoordTF.setFont(geerftFont);
 			if (!geerftFont.getName().equals("TimesRoman") && WiskOpdr.formTimes && !WiskOpdr.mac) {
 				geerftFont = new Font("TimesRoman", geerftFont.getStyle(), geerftFont.getSize() * 6 / 5);
 			}
@@ -365,24 +306,21 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			feedback = "$f???@";
 		}
 
-		if (!formuleMode)
-			antwoordString = StringUtils.replaceStr(antwoordString, "@", "");
-		if (!formuleMode)
-			antwoordString = StringUtils.replaceStr(antwoordString, "$f", "");
-		antwoordString = StringUtils.replaceStr(antwoordString, " ", "");
-
 		this.goedHalfFout = goedHalfFout;
 		this.puntenFeedback = puntenFeedback;
-		this.antwoordString = antwoordString;
+		//this.antwoordString = antwoordString;
 		this.feedback = feedback;
 
-		zetJuisteAntwoord(antwoordString);
-
+	}
+	
+	public void zetVarNamen(String[] namen)
+	{
+		varNamen = namen;
 	}
 
-	public void zetJuisteAntwoord(String s)
+	public void zetJuisteOplossingen(Expressie[][] oplossingen)
 	{
-		juisteAntwoorden = StringUtils.split(s, "::");
+		juisteOplossingen = oplossingen;
 		//juisteAntwoorden = new String[antwoordStrings.length];
 	}
 
@@ -414,30 +352,15 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
 
-		if (formuleMode)
-			formuleVak.vulVak(antwoord);
-		else
-			antwoordTF.setText(antwoord);
-
+		formuleVak.vulVak(antwoord);
+		
 		if (ingevuld && (mode == 0 || nagekeken))
 			kijkNa();
 	}
 
 	public void setEditState(Hashtable h)
 	{
-		boolean formuleMode = false;
-
-		if (h.containsKey("formuleMode"))
-			formuleMode = ((Boolean) h.get("formuleMode")).booleanValue();
-
-		this.formuleMode = formuleMode;
-
-		remove(antwoordTF);
-		remove(formuleVak);
-		if (formuleMode)
-			add(formuleVak);
-		else
-			add(antwoordTF);
+		
 	}
 
 	public Hashtable getState()
@@ -453,10 +376,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 		ingevuld = this.ingevuld;
 		nagekeken = this.nagekeken;
-		if (formuleMode)
-			antwoord = formuleVak.toString();
-		else
-			antwoord = antwoordTF.getText();
+		antwoord = formuleVak.toString();
 		attempts = this.attempts;
 		attemptsCount = this.attemptsCount;
 		errorCount = this.errorCount;
@@ -466,11 +386,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			Hashtable logMap = new Hashtable();
 
 			String logString = "";
-			if (formuleMode)
-				logString = formuleVak.toString();
-			else
-				logString = antwoordTF.getText();
-
+			logString = formuleVak.toString();
+			
 			logMap.put("logAnswer", logString);
 			logMap.put("logScore", new Integer(score));
 			logMap.put("logMaxScore", new Integer(scoreMax));
@@ -508,19 +425,13 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			goedFout = "fout";
 
 		String antwoord = "";
-		if (formuleMode)
-			antwoord = formuleVak.toString();
-		else
-			antwoord = antwoordTF.getText();
+		antwoord = formuleVak.toString();
 		if (antwoord.equals(""))
 			return;
 
-		if (formuleMode)
-		{
-			String attemptFormuleString = FormuleParser.schoon(FormuleParser.formuleString(antwoord));
-			attemptFormuleString = StringUtils.replaceStr(attemptFormuleString, "(0-", "(-");
-			antwoord = FormuleParser.pel(attemptFormuleString);
-		}
+		String attemptFormuleString = FormuleParser.schoon(FormuleParser.formuleString(antwoord));
+		attemptFormuleString = StringUtils.replaceStr(attemptFormuleString, "(0-", "(-");
+		antwoord = FormuleParser.pel(attemptFormuleString);
 		String fbTekst = "";
 		if (feedbackTekst.isVisible() && feedbackTekst.getParent() != null)
 			fbTekst = feedbackTekst.getText();
@@ -546,16 +457,9 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		return null;
 	}
 
-	public InteractieEditPanel getEditPanel()
-	{
-		return new AntwoordTekstVakEditPanel();
-	}
-
 	public void setBounds(int x, int y, int b, int h)
 	{
-
-		antwoordTF.setBounds(1, 2, b - 2, h - 3);
-		feedbackButton.setBounds(antwoordTF.getWidth() - 15, getSize().height - 14, 14, 14);
+		feedbackButton.setBounds(formuleVak.getWidth() - 15, getSize().height - 14, 14, 14);
 		goedIC.setLocation(getWidth() - 18, 0);
 		halfIC.setLocation(getWidth() - 18, 0);
 		foutIC.setLocation(getWidth() - 18, 0);
@@ -580,17 +484,10 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	public void zetMaat()
 	{
-		if (formuleMode)
-			setSize(Math.max(minBreedte, formuleVak.getSize().width + 24), formuleVak.getSize().height + 8);
-		else
-			setSize(Math.max(minBreedte, antwoordTF.getSize().width + 2), antwoordTF.getSize().height + 4);
+		setSize(Math.max(minBreedte, formuleVak.getSize().width + 24), formuleVak.getSize().height + 8);
 		formuleVak.setLocation(4, 4);
-		antwoordTF.setLocation(1, 2);
 		feedbackButton.setBounds(getSize().width - 15, getSize().height - 12, 15, 15);
-		if (formuleMode)
-			ashoogte = formuleVak.ashoogte + 4;
-		else
-			ashoogte = antwoordTF.getHeight() + 3;
+		ashoogte = formuleVak.ashoogte + 4;
 		if (getParent() instanceof FormuleElement)
 			((FormuleElement) getParent()).zetMaat();
 		if (getParent() instanceof TekstElement)
@@ -609,11 +506,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	public int geefAsHoogte()
 	{
-		if (formuleMode)
-		{
-			return formuleVak.ashoogte + (getFontMetrics(formuleVakFont)).getAscent() / 2 + 5;
-		}
-		return antwoordTF.getHeight() / 2 + (getFontMetrics(formuleVakFont)).getAscent() / 2;
+		return formuleVak.ashoogte + (getFontMetrics(formuleVakFont)).getAscent() / 2 + 5;
 	}
 
 	public int getIpId()
@@ -736,11 +629,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	{
 		checkAntwoord(show);
 
-		if (formuleMode)
-			ingevuld = !(formuleVak.toString() == null || formuleVak.toString().equals("$f@"));
-		else
-			ingevuld = !(antwoordTF.getText() == null || antwoordTF.getText().equals(""));
-
+		ingevuld = !(formuleVak.toString() == null || formuleVak.toString().equals("$f@"));
+		
 		correct = false;
 		fout = true;
 		score = 0;
@@ -902,20 +792,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			for (int h = 0; h < aantalAnswerModels; h++)
 			{
 				setAnswerModel(h);
-				gelijkwaardig = false;
-				for (int i = 0; i < juisteAntwoorden.length; i++)
-				{
-					String antw = antwoordTF.getText();
-					if (formuleMode)
-					{
-						antw = formuleVak.toString();
-						//antw = antw.substring(2, antw.length()-1);
-					}
-					antw = StringUtils.replaceStr(antw, " ", "");
-					gelijkwaardig = gelijkwaardig || antw.equals(juisteAntwoorden[i]);
-
-				}
-
+				gelijkwaardig = bepaalGelijkwaardig();
+				
 				if (gelijkwaardig || h == aantalAnswerModels - 1)
 				{
 					if (!feedback.trim().equals("") && show)
@@ -941,20 +819,80 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		}
 		else
 		{
-			gelijkwaardig = false;
-			for (int i = 0; i < juisteAntwoorden.length; i++)
-			{
-				String antw = antwoordTF.getText();
-				if (formuleMode)
-				{
-					antw = formuleVak.toString();
-					//antw = antw.substring(2, antw.length()-1);
-				}
-				antw = StringUtils.replaceStr(antw, " ", "");
-				gelijkwaardig = gelijkwaardig || antw.equals(juisteAntwoorden[i]);
-			}
+			gelijkwaardig = bepaalGelijkwaardig();
+			
+			
+//			for (int i = 0; i < juisteAntwoorden.length; i++)
+//			{	String antw = formuleVak.toString();
+//				antw = StringUtils.replaceStr(antw, " ", "");
+//				gelijkwaardig = gelijkwaardig || antw.equals(juisteAntwoorden[i]);
+//			}
 		}
 		repaint();
+	}
+	
+	public Expressie[][] bepaalOplossingen(String antwoordString)
+	{
+		antwoordString = StringUtils.replaceStr(antwoordString, " ", "");
+		Expressie[][] oplossingen;
+		try{
+			//splitsen in verschillende oplossingen. Eerst $f en @ weghalen.
+			antwoordString = antwoordString.substring(2, antwoordString.length() - 1);
+			antwoordString = StringUtils.replaceStr(antwoordString, "),(", "):(");
+			String[] oplossingenStrings = StringUtils.split(antwoordString, ":");
+			oplossingen = new Expressie[oplossingenStrings.length][varNamen.length];
+			for(int i = 0; i < oplossingenStrings.length; i++)
+			{
+				//haakjes verwijderen:
+				String opl = oplossingenStrings[i].substring(1, oplossingenStrings[i].length() - 1);
+				String[] varWaardes;
+				if(opl.contains(";"))
+					varWaardes = StringUtils.split(opl, ";");
+				else
+					varWaardes = StringUtils.split(opl, ",");
+				for(int j = 0; j < varNamen.length; j++)
+				{	oplossingen[i][j] = FormuleParser.geefExpressie("$f" + varWaardes[j] + "@");
+				}
+			}
+			return oplossingen;
+		}
+		catch(Exception e)
+		{return null;}
+	}
+	
+	public boolean bepaalGelijkwaardig()
+	{
+		boolean gelijkwaardig = true;
+		Expressie[][] oplossingen = bepaalOplossingen(formuleVak.toString());
+		boolean[] oplossingenCorrect = new boolean[oplossingen.length];
+		for(int i = 0; i < oplossingenCorrect.length; i++)
+			oplossingenCorrect[i] = false;
+		for(int i = 0; i < oplossingen.length; i++)
+		{
+			Expressie[] leerlingOpl = oplossingen[i];
+			for(int j = 0; j < juisteOplossingen.length; j++)
+			{
+				boolean gelijk = true;
+				for(int k = 0; k < varNamen.length; k++)
+				{
+					if(!Algebra.isGelijkwaardig(leerlingOpl[k], juisteOplossingen[j][k]))
+					{
+						gelijk = false;
+						break;
+					}
+				}
+				if(gelijk)
+					oplossingenCorrect[j] = true;
+			}
+		}
+		gelijkwaardig = true;
+		for(int i = 0; i < oplossingenCorrect.length; i++)
+		{	if(!oplossingenCorrect[i])
+			{	gelijkwaardig = false;
+				break;
+			}
+		}
+		return gelijkwaardig;
 	}
 
 	public void mousePressed(MouseEvent e)
@@ -987,18 +925,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == antwoordTF)
-		{
-			if (mode == 0 || mode == 1)
-			{
-				kijkNa();
-				zetNagekeken(true);
-				if (ingevuld)
-					produceAction("checked");
-			}
-
-		}
-		else if (e.getSource() == formuleVak && e.getActionCommand().equals("ingevuld"))
+		if (e.getSource() == formuleVak && e.getActionCommand().equals("ingevuld"))
 		{
 			if (mode == 0 || mode == 1)
 			{

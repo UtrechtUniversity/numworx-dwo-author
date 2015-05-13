@@ -251,6 +251,19 @@ public class VergelijkingMeerv
 		}
 		return false;
 	}
+	
+	public boolean bevatFouteStelselOplossing(Expressie[][] oplossingen, String[] vars)
+	{
+		for(int j = 0; j < vergelijkingen.length; j++)
+		{
+			if(!vergelijkingen[j].bevatStelselOplossing(oplossingen, vars))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean isOplossing(double[] subst)
 	{	String[] varNamen = geefVarNamen();
 		if(varNamen.length > 1) return false;
@@ -288,6 +301,25 @@ public class VergelijkingMeerv
 		{	if(!bevatOplossing(subst[i],var, vergTekens[i]))return false;
 		}
 		return true;
+	}
+	
+	public boolean isStelselOplossing(Expressie[][] subst, String[] vars)
+	{
+		for(int i = 0; i < subst.length; i++)
+		{
+			if(!isStelselOplossing(subst[i], vars))return false;
+		}
+		return true;
+	}
+	
+	public boolean isStelselOplossing(Expressie[] subst, String[] vars)
+	{
+		boolean isOplossing = false;
+		for(int j=0 ; j<vergelijkingen.length ; j++)
+		{	if(!isOplossing)
+			isOplossing = vergelijkingen[j].isOplossing(subst, vars);
+		}
+		return isOplossing;
 	}
 	
 	public boolean bevatOplossing(Expressie[] subst, String var, String vergTekens)
@@ -329,6 +361,15 @@ public class VergelijkingMeerv
 			{	if(vergelijkingen[j].bevatOplossingP(subst[i],var, vergTekens[i]))return true;
 			}
 		
+		}
+		return false;
+	}
+	
+	public boolean isStelselDeelOplossing(Expressie[][] subst, String[] vars)
+	{
+		for(int i = 0; i < subst.length; i++)
+		{
+			if(isStelselOplossing(subst[i], vars))return true;
 		}
 		return false;
 	}
@@ -415,6 +456,14 @@ public class VergelijkingMeerv
 		return true;
 	}
 	
+	public boolean isStelselEindOplossing(String var, String[] vars)
+	{
+		for(int i = 0; i < vergelijkingen.length; i++)
+		{
+			if(!vergelijkingen[i].isStelselEindOplossing(var, vars))return false;
+		}
+		return true;
+	}
 	
 	
 	/*
