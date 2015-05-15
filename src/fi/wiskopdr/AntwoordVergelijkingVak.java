@@ -107,7 +107,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private PijlVak[] pijlVakken;
 	private PijlVak pijlVak;
 	private int pijlX = "GR".equals(WiskOpdr.deployVariant) ? 105 : 130;
-	private FormuleVak[] formuleVakken;
+	protected FormuleVak[] formuleVakken;
 	private int stapNr;
 
 	private ImageComponent[] imageComponenten;

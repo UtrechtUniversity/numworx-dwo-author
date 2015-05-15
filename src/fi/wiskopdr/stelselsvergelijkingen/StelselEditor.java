@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -22,6 +23,7 @@ import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
 import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 public class StelselEditor extends AntwoordVergelijkingVak {
 	
@@ -190,6 +192,161 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		hoofdPanel.geefHoofdEditor().zetFocusFalse();
 		heeftFocus = true;
 		this.formuleVak.requestFocus();
+	}
+	
+	public Hashtable getState()
+	{
+		//Hashtable h = super.getState();
+		
+		//stapNrs nodig?
+		
+		//boolean[] takEindes = geefTakEindes();
+		int[] aantalKinderen = geefAantalKinderen();
+		Vector<Integer> stapNrsVector = geefStapNrsEditorEnKinderen();
+		int[] stapNrs = new int[stapNrsVector.size()];
+		for(int i = 0; i < stapNrs.length; i++)
+			stapNrs[i] = stapNrsVector.get(i);
+		Vector<String> formuleVakInhoudenVector = geefFormuleVakInhouden();
+		String[] formuleVakInhouden = new String[formuleVakInhoudenVector.size()];
+		for(int i = 0; i < formuleVakInhouden.length; i++)
+			formuleVakInhouden[i] = formuleVakInhoudenVector.get(i);
+		
+		Hashtable h = new Hashtable();
+		h.put("aantalKinderen", aantalKinderen);
+		h.put("stapNrs", stapNrs);
+		h.put("formuleVakInhouden", formuleVakInhouden);
+		
+		return h;
+	}
+	
+	public void setState(Hashtable h)
+	{
+		int[] aantalKinderen = null;
+		int[] stapNrs = null;
+		String[] formuleVakInhouden = null;
+		if(h.containsKey("aantalKinderen"))
+			aantalKinderen = OpdrNavStruct.toIntArray(h.get("aantalKinderen"));
+		if(h.containsKey("stapNrs"))
+			stapNrs = OpdrNavStruct.toIntArray(h.get("stapNrs"));
+		if(h.containsKey("formuleVakInhouden"))
+			formuleVakInhouden = OpdrNavStruct.toStringArray(h.get("formuleVakInhouden"));
+		
+		setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, 0, 0);
+	}
+	
+	public int[] setStateEditorEnKinderen(int[] aantalKinderen, int[] stapNrs, String[] formuleVakInhouden, int formuleTeller, int editorTeller)
+	{
+		//eerst: setState van deze editor. Hashtable met geschikte info maken en super.setState aanroepen;
+		Hashtable h = new Hashtable();
+		int stapNr = stapNrs[editorTeller];
+		String[] formuleVakInhoudenEditor = new String[stapNr + 1];
+		for(int i = 0; i < stapNr + 1; i++)
+			formuleVakInhoudenEditor[i] = formuleVakInhouden[formuleTeller + i];
+		//kijken of hier nog meer in moet, zoals ingevuld en nagekeken. Dan misschien toch beter h doorgeven.
+		super.setState(h);
+		
+		//vervolgens: kinderen maken (als van toepassing)
+		//zorgen dat goede oplossingen worden meegegeven...
+		if(aantalKinderen[editorTeller] > 0)
+		{
+			splits(); //gewoon proberen...
+		}
+		
+		
+		formuleTeller += stapNrs[editorTeller] + 1;
+		editorTeller++;
+		//dan: setStateEditorEnKinderen voor de kinderen aanroepen
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				int[] tellers = setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, formuleTeller, editorTeller);
+				formuleTeller = tellers[0];
+				editorTeller = tellers[1];
+			}
+		}
+		int[] tellers = new int[2];
+		tellers[0] = formuleTeller;
+		tellers[1] = editorTeller;
+		return tellers;
+	}
+	
+	public boolean[] geefTakEindes()
+	{
+		Vector<Boolean> v = new Vector<Boolean>();
+		v.add(kinderen != null);
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				boolean[] v2 = kinderen[i].geefTakEindes();
+				for(int j = 0; j < v2.length; j++)
+					v.add(v2[j]);
+			}
+		}
+		boolean[] b = new boolean[v.size()];
+		for(int i = 0; i < v.size(); i++)
+			b[i] = v.get(i);
+		return b;
+	}
+	
+	public int[] geefAantalKinderen()
+	{
+		if(kinderen == null)
+			return new int[] {0};
+		Vector<Integer> v = new Vector<Integer>();
+		v.add(kinderen.length);
+		for(int i = 0; i < kinderen.length; i++)
+		{
+			int[] k = kinderen[i].geefAantalKinderen();
+			for(int j = 0; j < k.length; j++)
+				v.add(k[j]);
+		}
+		int[] aantalKinderen = new int[v.size()];
+		for(int i = 0; i < aantalKinderen.length; i++)
+			aantalKinderen[i] = v.get(i);
+		return aantalKinderen;
+	}
+	
+	public Vector<String> geefFormuleVakInhouden()
+	{
+		Vector<String> v = new Vector<String>();
+		for(int i = 0; i < getStapNr() + 1; i++)
+		{
+			if(formuleVakken[i]==null) 
+				v.add("$f@");
+			else 
+				v.add(formuleVakken[i].toString());
+		}
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				Vector<String> v2 = kinderen[i].geefFormuleVakInhouden();
+				for(int j = 0; j < v2.size(); j++)
+					v.add(v2.get(j));
+			}
+		}
+		
+		return v;
+	}
+	
+	
+	
+	public Vector<Integer> geefStapNrsEditorEnKinderen()
+	{
+		Vector<Integer> v = new Vector<Integer>();
+		v.add(getStapNr());
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				Vector<Integer> v2 = kinderen[i].geefStapNrsEditorEnKinderen();
+				for(int j = 0; j < v2.size(); j++)
+					v.add(v2.get(j));
+			}
+		}
+		return v;
 	}
 	
 	public boolean heeftKinderen()

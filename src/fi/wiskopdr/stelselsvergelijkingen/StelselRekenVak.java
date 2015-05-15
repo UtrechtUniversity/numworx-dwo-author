@@ -225,6 +225,17 @@ public class StelselRekenVak extends JPanel  {
 		hoofdEditor.zetVarNamen(varNamen);
 	}
 	
+	public Hashtable getState()
+	{
+		return hoofdEditor.getState();
+		
+	}
+	
+	public void setState(Hashtable h)
+	{
+		hoofdEditor.setState(h);
+	}
+	
 	public void zetJuisteOplossingen(Expressie[][] oplossingen)
 	{
 		this.oplossingen = oplossingen;
@@ -234,7 +245,6 @@ public class StelselRekenVak extends JPanel  {
 	
 	public void plaatsEditors()
 	{
-		System.out.println("plaatsEditors");
 		//uitrekenen hoeveel kolommen er onderaan zijn. 
 		//Die allemaal evenveel ruimte geven
 		//De breedtes van de kolommen erboven zijn dan de sommen van de breedtes van hun kinderen.

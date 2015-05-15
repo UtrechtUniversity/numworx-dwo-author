@@ -330,8 +330,13 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	@Override
 	public void setState(Hashtable b) {
-		// TODO Auto-generated method stub
-		
+		if(rekenVakZichtbaar)
+			rekenVak.setState(b);
+		if(oplossingenRegelZichtbaar)
+		{	//oplossingenRegel.setState(b);
+			
+		}
+			
 	}
 
 	@Override
@@ -352,7 +357,11 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	@Override
 	public Hashtable getState() {
-		// TODO Auto-generated method stub
+		Hashtable h = new Hashtable();
+		if(rekenVakZichtbaar)
+		{	h = rekenVak.getState();
+		
+		}
 		return null;
 	}
 
