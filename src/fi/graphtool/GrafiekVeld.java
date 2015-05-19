@@ -309,8 +309,8 @@ class GrafiekVeld extends JComponent{
 		}	
 		if (gtip.tekenDocentFuncties != null && (gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJGRAFIEK
 				|| gtip.typeOpdracht == GraphToolInteractiePanel.TEKENPUNTENBIJFORMULE && gtip.score > 0 && (gtip.mode == 0 || gtip.mode == 1 || gtip.nagekeken)))
-			for(int j = 0; j < gtip.tekenDocentFuncties.length; j++)
-				if(gtip.tekenDocentFuncties[j] != null)
+		{	for(int j = 0; j < gtip.tekenDocentFuncties.length; j++)
+			{	if(gtip.tekenDocentFuncties[j] != null)
 				{	g.setColor(gtip.docentColor);
 					GeneralPath curve = new GeneralPath();
 					int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
@@ -398,6 +398,8 @@ class GrafiekVeld extends JComponent{
 					g.setStroke(new BasicStroke(1.2f));
 					g.draw(curve);
 				}
+			}
+		}
 		//if(//gtip.typeFormuleComponent != 1 && 
 		//		gtip.nagekeken || gtip.mode == 0 || gtip.mode == 1)
 		//	Dit klopt niet!!!
