@@ -80,12 +80,15 @@ public class ReactieParser {
 			ReactieExpressie e1 = parse(formuleString("$f" + expressieStrings[0] + "@"));
 			ReactieExpressie e2 = parse(formuleString("$f" + expressieStrings[1] + "@"));
 			if(e1 == null || e2 == null)
+			{	System.out.println("e1 is null of e2 is null");
 				return null;
+			}
 			else
 				return new ReactieVergelijking(e1, e2, pijl);
 		}
 		catch(Exception e)
 		{
+			System.out.println("Fout in parseVergelijking: " + e.toString());
 			return null;
 		}
 	}
@@ -154,12 +157,17 @@ public class ReactieParser {
 			
 			//Nu is het een enkele molecuulexpressie (combinatie van coëfficiënt en molecuul). 
 			//bepalen wat het molecuul en het aantal moeten worden. 
+			System.out.println("enkele molecuulexpressie: " + s);
+			
 			int startIndex = -1;
 			for(int i = 0; i < s.length(); i++)
 			{
 				if(Character.isUpperCase(s.charAt(i)))
 				{
 					startIndex = i;
+					while(startIndex > 0 && s.charAt(startIndex - 1) == '(')
+					{	startIndex--;
+					}
 					break;
 				}
 			}
@@ -167,36 +175,45 @@ public class ReactieParser {
 			{
 				for(int i = 0; i < s.length(); i++)
 				{
-					if(Character.isLetter(s.charAt(i)) && s.charAt(i) != 'e')
-					{
-						break;
-					}
-					else if(s.charAt(i) == 'e')
+					if(s.charAt(i) == 'e')
 					{
 						startIndex = i;
 						break;
 					}
+					//else if(Character.isLetter(s.charAt(i)))
+					//{
+					//	break;
+					//}
 				}
 			}
 			if(startIndex == -1)
 				return null;
 			String aantalString = s.substring(0, startIndex);
 			String molecuulString = s.substring(startIndex);
-			
+			System.out.println("aantalString = " + aantalString + " en molecuulString = " + molecuulString);
 			//aantal van het molecuul bepalen
-			try
+			Expressie b = new BasisExpressie(aantalString);
+			if(aantalString.length() > 1 && aantalString.contains("n"))
 			{
-				Double d = Double.valueOf(aantalString);
+				b = FormuleParser.geefExpressie("$f" + aantalString + "@"); 
 			}
-			catch(NumberFormatException nfe)
-			{
-				aantalString = "1";
-			}
-			return new ReactieExpressie(parseMolecuul(molecuulString), Double.valueOf(aantalString));
+			//BasisExpressie b = new BasisExpressie(aantalString);
+			if(aantalString.length() == 0)
+				b = new BasisExpressie(1);
+//			try
+//			{
+//				Double d = Double.valueOf(aantalString);
+//			}
+//			catch(NumberFormatException nfe)
+//			{
+//				aantalString = "1";
+//			}
+			return new ReactieExpressie(parseMolecuul(molecuulString), b);
 		
 		}
 		catch(Exception e)
 		{
+			System.out.println("Fout in parse reactieExpressie: " + e.toString());
 			return null;
 		}
 	}
@@ -331,25 +348,27 @@ public class ReactieParser {
 							}
 						}
 						Molecuul m = parseMolecuul(molecuulString);
+						BasisExpressie b = new BasisExpressie(1);
 						if(coefficientString.length() > 0)
 						{
-							try{
-								coefficient = (int) Double.parseDouble(coefficientString.substring(2, coefficientString.length() - 1)); //"?(" voor getal en ")" na getal weglaten.
-							}
-							catch(NumberFormatException nfe)
-							{
-								return null;
-							}
+							b = new BasisExpressie(coefficientString.substring(2, coefficientString.length() - 1));
+//							try{
+//								coefficient = (int) Double.parseDouble(coefficientString.substring(2, coefficientString.length() - 1)); //"?(" voor getal en ")" na getal weglaten.
+//							}
+//							catch(NumberFormatException nfe)
+//							{
+//								return null;
+//							}
 						}
 						if(m.samengesteldeIonDelen == null)
-							samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.atoomDelen, coefficient);
+							samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.atoomDelen, b);
 						else
-							samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.samengesteldeIonDelen, coefficient);
+							samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.samengesteldeIonDelen, b);
 					}
 					else
 					{
 						Molecuul m = parseMolecuul(iondeel);
-						samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.atoomDelen, 1);
+						samengesteldeIonDelen[i] = new SamengesteldIonDeel(m.atoomDelen, new BasisExpressie(1));
 					}
 				}
 				return new Molecuul(samengesteldeIonDelen, lading);
@@ -372,7 +391,7 @@ public class ReactieParser {
 					if(s.charAt(0) == 'e')
 					{
 						AtoomDeel[] delen = new AtoomDeel[1];
-						delen[0] = new AtoomDeel("e", 1);
+						delen[0] = new AtoomDeel("e", new BasisExpressie(1));
 						return new Molecuul(delen, lading);
 					}
 				}
@@ -414,17 +433,19 @@ public class ReactieParser {
 							break;
 						}
 					}
+					BasisExpressie b = new BasisExpressie(1);
 					if(aantalElementenString.length() > 0)
 					{
-						try{
-							aantalElementen = (int) Double.parseDouble(aantalElementenString.substring(2, aantalElementenString.length() - 1)); //"?(" voor getal en ")" na getal weglaten.
-						}
-						catch(NumberFormatException nfe)
-						{
-							return null;
-						}
+						b = new BasisExpressie(aantalElementenString.substring(2, aantalElementenString.length() - 1));
+//						try{
+//							aantalElementen = (int) Double.parseDouble(aantalElementenString.substring(2, aantalElementenString.length() - 1)); //"?(" voor getal en ")" na getal weglaten.
+//						}
+//						catch(NumberFormatException nfe)
+//						{
+//							return null;
+//						}
 					}
-					atoomdelen[i] = new AtoomDeel(atoomNaam, aantalElementen);
+					atoomdelen[i] = new AtoomDeel(atoomNaam, b);
 				}
 				return new Molecuul(atoomdelen, lading);
 			}

@@ -1,5 +1,7 @@
 package fi.wiskopdr.scheikundeobjects;
 
+import fi.wiskopdr.expressies.*;
+
 
 /*
  * De klasse specificeert een atoomdeel in een molecuul, met (afgekorte) naam, 
@@ -8,9 +10,9 @@ package fi.wiskopdr.scheikundeobjects;
 public class AtoomDeel {
 
 	String atoomNaam;
-	int aantalElementen;
+	Expressie aantalElementen;
 	
-	public AtoomDeel(String s, int aantal)
+	public AtoomDeel(String s, Expressie aantal)
 	{	
 		atoomNaam = s;
 		aantalElementen = aantal;
@@ -18,7 +20,14 @@ public class AtoomDeel {
 	
 	public boolean isGelijkwaardig(AtoomDeel a)
 	{
-		if(atoomNaam.equals(a.atoomNaam) && aantalElementen == a.aantalElementen)
+		boolean aantalElementenGelijk = false;
+		if(aantalElementen.isWaarde() && a.aantalElementen.isWaarde())
+			aantalElementenGelijk = aantalElementen.geefWaarde() == a.aantalElementen.geefWaarde();
+		else
+		{
+			aantalElementenGelijk = aantalElementen.substitueer(0.54321, "n").geefWaarde() == a.aantalElementen.substitueer(0.54321, "n").geefWaarde();
+		}
+		if(atoomNaam.equals(a.atoomNaam) && aantalElementenGelijk)
 			return true;
 		return false;
 	}

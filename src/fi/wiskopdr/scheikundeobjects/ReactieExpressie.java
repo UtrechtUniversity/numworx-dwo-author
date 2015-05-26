@@ -2,6 +2,8 @@ package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 
+import fi.wiskopdr.expressies.*;
+
 /*
  * Het deel van een reactievergelijking voor of na de pijl. 
  * Bestaat uit een optelling van verschillende moleculen.
@@ -10,19 +12,20 @@ public class ReactieExpressie {
 
 	Molecuul[] moleculen;
 	String[] atoomNamen;
-	double[] aantallen;
+	//double[] aantallen;
+	Expressie[] aantallen;
 	
-	public ReactieExpressie(Molecuul[] moleculen, double[] aantallen)
+	public ReactieExpressie(Molecuul[] moleculen, Expressie[] aantallen)
 	{
 		this.moleculen = moleculen;
 		this.aantallen = aantallen;
 		bepaalAtoomNamen();
 	}
 	
-	public ReactieExpressie(Molecuul molecuul, double aantal)
+	public ReactieExpressie(Molecuul molecuul, Expressie aantal)
 	{
 		moleculen = new Molecuul[1];
-		aantallen = new double[1];
+		aantallen = new Expressie[1];
 		moleculen[0] = molecuul;
 		aantallen[0] = aantal;
 		bepaalAtoomNamen();
@@ -31,7 +34,7 @@ public class ReactieExpressie {
 	public ReactieExpressie (ReactieExpressie expressie1, ReactieExpressie expressie2)
 	{
 		moleculen = new Molecuul[expressie1.moleculen.length + expressie2.moleculen.length];
-		aantallen = new double[moleculen.length];
+		aantallen = new Expressie[moleculen.length];
 		for(int i = 0; i < expressie1.moleculen.length; i++)
 		{
 			moleculen[i] = expressie1.moleculen[i];
@@ -81,12 +84,14 @@ public class ReactieExpressie {
 	/*
 	 * Bepaal voor deze expressie het aantal elementen van een atoomsoort
 	 */
-	public int geefAantalAtoomElementen(String naam)
+	public Expressie geefAantalAtoomElementen(String naam)
 	{
-		int aantalElementen = 0;
+		Expressie aantalElementen = new BasisExpressie(0);
+		//int aantalElementen = 0;
 		for(int i = 0; i < moleculen.length; i++)
 		{
-			aantalElementen += aantallen[i] * moleculen[i].geefAantalAtoomElementen(naam);
+			aantalElementen = new Optelling(aantalElementen, new Vermenigvuldiging(aantallen[i], moleculen[i].geefAantalAtoomElementen(naam)));
+			//aantalElementen += aantallen[i] * moleculen[i].geefAantalAtoomElementen(naam);
 		}
 		return aantalElementen;
 	}
@@ -94,12 +99,14 @@ public class ReactieExpressie {
 	/*
 	 * Bepaal voor deze expressie de totale lading van een atoomsoort 
 	 */
-	public int geefTotaleLading()
+	public Expressie geefTotaleLading()
 	{
-		int totaleLading = 0;
+		Expressie totaleLading = new BasisExpressie(0);
+		//int totaleLading = 0;
 		for(int i = 0; i < moleculen.length; i++)
 		{
-			totaleLading += aantallen[i] * moleculen[i].lading;
+			totaleLading = new Optelling(totaleLading, new Vermenigvuldiging(aantallen[i], new BasisExpressie(moleculen[i].lading)));
+			//totaleLading += aantallen[i] * moleculen[i].lading;
 		}
 		return totaleLading;
 	}
@@ -115,8 +122,14 @@ public class ReactieExpressie {
 			{
 				if(moleculen[i].isGelijkwaardig(exp.moleculen[j]))
 				{
-					molecuulKomtVoor =true;
-					if(aantallen[i] != exp.aantallen[j])
+					molecuulKomtVoor = true;
+					if(!Double.isNaN(aantallen[i].geefWaarde()) && !Double.isNaN(exp.aantallen[i].geefWaarde()))
+					{	if(aantallen[i].geefWaarde() != exp.aantallen[i].geefWaarde())
+							return false;
+					}
+					else if(!Double.isNaN(aantallen[i].geefWaarde()) || !Double.isNaN(exp.aantallen[i].geefWaarde()))
+						return false;
+					else if(aantallen[i].substitueer(0.54321, "n").geefWaarde() != exp.aantallen[i].substitueer(0.54321, "n").geefWaarde())
 						return false;
 					break;
 				}
@@ -129,14 +142,18 @@ public class ReactieExpressie {
 	
 	public boolean isGelijkwaardigMoleculen(ReactieExpressie exp)
 	{
-		if(exp.moleculen.length != moleculen.length)
+		//Elektronen buiten beschouwing laten, die tellen niet mee voor moleculen, maar alleen voor ladingen.
+		Molecuul[] moleculen1 = moleculenZonderElektronen(exp.moleculen);
+		Molecuul[] moleculen2 = moleculenZonderElektronen(moleculen);
+		
+		if(moleculen1.length != moleculen2.length)
 			return false;
 		
-		for(int i = 0; i < moleculen.length; i++)
+		for(int i = 0; i < moleculen2.length; i++)
 		{	boolean molecuulKomtVoor = false;
-			for(int j = 0; j < exp.moleculen.length; j++)
+			for(int j = 0; j < moleculen1.length; j++)
 			{
-				if(moleculen[i].isGelijkwaardigZonderLading(exp.moleculen[j]))
+				if(moleculen2[i].isGelijkwaardigZonderLading(moleculen1[j]))
 				{
 					molecuulKomtVoor = true;
 					break;
@@ -150,14 +167,19 @@ public class ReactieExpressie {
 	
 	public boolean isGelijkwaardigMoleculenLading(ReactieExpressie exp)
 	{
-		if(exp.moleculen.length != moleculen.length)
+		Molecuul[] moleculen1 = moleculenZonderElektronen(exp.moleculen);
+		Molecuul[] moleculen2 = moleculenZonderElektronen(moleculen);
+		//Molecuul[] moleculen1 = exp.moleculen;
+		//Molecuul[] moleculen2 = moleculen;
+				
+		if(moleculen1.length != moleculen2.length)
 			return false;
 		
-		for(int i = 0; i < moleculen.length; i++)
+		for(int i = 0; i < moleculen2.length; i++)
 		{	boolean molecuulKomtVoor = false;
-			for(int j = 0; j < exp.moleculen.length; j++)
+			for(int j = 0; j < moleculen1.length; j++)
 			{
-				if(moleculen[i].isGelijkwaardig(exp.moleculen[j]))
+				if(moleculen2[i].isGelijkwaardig(moleculen1[j]))
 				{
 					molecuulKomtVoor = true;
 					break;
@@ -169,20 +191,51 @@ public class ReactieExpressie {
 		return true;
 	}
 	
+	public Molecuul[] moleculenZonderElektronen(Molecuul[] moleculen)
+	{
+		int verwijderIndex = -1;
+		for(int i = 0; i < moleculen.length; i++)
+		{
+			Molecuul m = moleculen[i];
+			if(m.atoomDelen != null && m.atoomDelen.length == 1 && m.atoomDelen[0].atoomNaam.equals("e"))
+			{
+				verwijderIndex = i;
+				break;
+			}
+		}
+		if(verwijderIndex == -1)
+			return moleculen;
+		Molecuul[] moleculen1 = new Molecuul[moleculen.length - 1];
+		if(verwijderIndex > -1)
+		{
+			for(int i = 0; i < verwijderIndex; i++)
+				moleculen1[i] = moleculen[i];
+			for(int i = verwijderIndex + 1; i < moleculen.length; i++)
+				moleculen1[i-1] = moleculen[i];
+		}
+		return moleculen1;
+	}
+	
+	
 	public double vereenvoudigFactor(ReactieExpressie exp)
 	{
 		if(exp.aantallen.length != aantallen.length)
 			return -999;
 		if(aantallen.length == 0)
 			return -999;
-		double factor = aantallen[0]/exp.aantallen[0];
-		for(int i = 1; i < aantallen.length; i++)
-		{
-			double factor2 = aantallen[i]/exp.aantallen[i];
-			if(factor2 != factor)
-				return -999;
+		try{
+			double factor = new Deling(aantallen[0], exp.aantallen[0]).geefWaarde();
+			for(int i = 1; i < aantallen.length; i++)
+			{
+				double factor2 = new Deling(aantallen[i], exp.aantallen[i]).geefWaarde();
+				if(factor2 != factor)
+					return -999;
+			}
+			return factor;
 		}
-		return factor;
+		catch(Exception e){
+			return -999;
+		}
 	}
 	
 	public String toString()

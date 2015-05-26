@@ -2,18 +2,20 @@ package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 
+import fi.wiskopdr.expressies.Expressie;
+
 public class SamengesteldIonDeel extends Molecuul
 {
 
-	int coefficient;
+	Expressie coefficient;
 	
-	public SamengesteldIonDeel(AtoomDeel[] delen, int coefficient)
+	public SamengesteldIonDeel(AtoomDeel[] delen, Expressie coefficient)
 	{
 		super(delen, 0);
 		this.coefficient = coefficient;
 	}
 	
-	public SamengesteldIonDeel(SamengesteldIonDeel[] delen, int coefficient)
+	public SamengesteldIonDeel(SamengesteldIonDeel[] delen, Expressie coefficient)
 	{
 		super(delen, 0);
 		this.coefficient = coefficient;
@@ -49,13 +51,13 @@ public class SamengesteldIonDeel extends Molecuul
 	public String toString()
 	{
 		String s = "";
-		if(coefficient > 1)
+		if(!coefficient.isWaarde() || coefficient.geefWaarde() > 1)
 			s = "(";
 		for(int i = 0; i < atoomDelen.length; i++)
 		{
 			s = s + atoomDelen[i].toString();
 		}
-		if(coefficient > 1)
+		if(!coefficient.isWaarde() || coefficient.geefWaarde() > 1)
 			s = s + ")$s" + coefficient + "@";
 		return s;
 	}

@@ -1,5 +1,7 @@
 package fi.wiskopdr.scheikundeobjects;
 
+import fi.wiskopdr.expressies.*;
+
 public class ReactieVergelijking {
 
 	ReactieExpressie expressie1, expressie2;
@@ -55,16 +57,32 @@ public class ReactieVergelijking {
 	
 	public boolean elementenBalansKlopt(String atoomNaam)
 	{
-		int aantalElementen1 = expressie1.geefAantalAtoomElementen(atoomNaam);
-		int aantalElementen2 = expressie2.geefAantalAtoomElementen(atoomNaam);
-		return aantalElementen1 == aantalElementen2;
+		Expressie aantalElementen1 = expressie1.geefAantalAtoomElementen(atoomNaam);
+		Expressie aantalElementen2 = expressie2.geefAantalAtoomElementen(atoomNaam);
+		if(!Double.isNaN(aantalElementen1.geefWaarde()) && !Double.isNaN(aantalElementen2.geefWaarde()))
+			return aantalElementen1.geefWaarde() == aantalElementen2.geefWaarde();
+		else if(Double.isNaN(aantalElementen1.geefWaarde()) && Double.isNaN(aantalElementen2.geefWaarde()))
+		{	aantalElementen1 = aantalElementen1.substitueer(.54321, "n");
+			aantalElementen2 = aantalElementen2.substitueer(.54321, "n");
+			return aantalElementen1.geefWaarde() == aantalElementen2.geefWaarde();
+		}
+		else
+			return false;
 	}
 	
 	public boolean ladingenBalansKlopt()
 	{
-		int lading1 = expressie1.geefTotaleLading();
-		int lading2 = expressie2.geefTotaleLading();
-		return lading1 == lading2;
+		Expressie lading1 = expressie1.geefTotaleLading();
+		Expressie lading2 = expressie2.geefTotaleLading();
+		if(!Double.isNaN(lading1.geefWaarde()) && !Double.isNaN(lading2.geefWaarde()))
+			return lading1.geefWaarde() == lading2.geefWaarde();
+		else if(Double.isNaN(lading1.geefWaarde()) && Double.isNaN(lading2.geefWaarde()))
+		{	lading1 = lading1.substitueer(.54321, "n");
+			lading1 = lading2.substitueer(.54321, "n");
+			return lading1.geefWaarde() == lading2.geefWaarde();
+		}
+		else
+			return false;
 	}
 	
 	public boolean isGelijkwaardig(ReactieVergelijking vergelijking)

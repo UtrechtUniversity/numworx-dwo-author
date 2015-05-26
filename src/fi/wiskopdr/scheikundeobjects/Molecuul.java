@@ -2,6 +2,8 @@ package fi.wiskopdr.scheikundeobjects;
 
 import java.util.Vector;
 
+import fi.wiskopdr.expressies.*;
+
 
 public class Molecuul {
 
@@ -23,23 +25,23 @@ public class Molecuul {
 		this.lading = lading;
 	}
 	
-	public int geefAantalAtoomElementen(String naam)
+	public Expressie geefAantalAtoomElementen(String naam)
 	{
 		if(samengesteldeIonDelen == null)
-		{	int aantalElementen = 0;
+		{	Expressie aantalElementen = new BasisExpressie(0);
 			for(int i = 0; i < atoomDelen.length; i++)
 			{
 				if(atoomDelen[i].atoomNaam.equals(naam))
-					aantalElementen += atoomDelen[i].aantalElementen;
+					aantalElementen = new Optelling(aantalElementen, atoomDelen[i].aantalElementen);
 			}
 			return aantalElementen;
 		}
 		else
 		{
-			int aantalElementen = 0;
+			Expressie aantalElementen = new BasisExpressie(0);
 			for(int i = 0; i < samengesteldeIonDelen.length; i++)
 			{
-				aantalElementen += samengesteldeIonDelen[i].coefficient * samengesteldeIonDelen[i].geefAantalAtoomElementen(naam);
+				aantalElementen = new Optelling(aantalElementen, new Vermenigvuldiging(samengesteldeIonDelen[i].coefficient, samengesteldeIonDelen[i].geefAantalAtoomElementen(naam)));
 			}
 			return aantalElementen;
 		}

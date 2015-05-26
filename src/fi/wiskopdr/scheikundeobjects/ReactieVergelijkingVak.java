@@ -1199,7 +1199,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		}
 		else if(!isGelijkwaardigMoleculenLading)
 		{
-			score = puntenElementen;
+			score = puntenBeginstoffen + puntenProducten + puntenElementen;
 			correct = false;
 			fout = false;
 			if(show)
@@ -1210,7 +1210,7 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		}
 		else if(!ladingenBalansKlopt)
 		{
-			score = puntenElementen;
+			score = puntenBeginstoffen + puntenProducten + puntenElementen;
 			correct = false;
 			fout = false;
 			if(show)
@@ -1359,15 +1359,8 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 		if(antwoordIngevuld != null)
 		{
 			isGelijkwaardig = antwoordIngevuld.isGelijkwaardig(gewensteEindOplossing);
-			if(isGelijkwaardig)
+			if(!isGelijkwaardig)
 			{
-				isGelijkwaardigBeginstoffen = true;
-				isGelijkwaardigProducten = true;
-				isGelijkwaardigMoleculenLading = true;
-			}
-			else
-			{
-				//isGelijkwaardigMoleculen = antwoordIngevuld.isGelijkwaardigMoleculen(gewensteEindOplossing);
 				isGelijkwaardigBeginstoffen = antwoordIngevuld.isGelijkwaardigBeginstoffen(gewensteEindOplossing);
 				isGelijkwaardigProducten = antwoordIngevuld.isGelijkwaardigProducten(gewensteEindOplossing);
 				isGelijkwaardigMoleculenLading = antwoordIngevuld.isGelijkwaardigMoleculenLading(gewensteEindOplossing);
@@ -1375,13 +1368,13 @@ public class ReactieVergelijkingVak extends AntwoordVak implements InteractiePan
 				{
 					beginEnEindVerwisseld = antwoordIngevuld.beginEnEindVerwisseld(gewensteEindOplossing);
 				}
-	
+				elementenBalansKlopt = antwoordIngevuld.elementenBalansKlopt();
+				ladingenBalansKlopt = antwoordIngevuld.ladingenBalansKlopt();
+				pijlKlopt = antwoordIngevuld.isGelijkwaardigPijl(gewensteEindOplossing);
+				if(ladingenBalansKlopt && elementenBalansKlopt && isGelijkwaardigMoleculenLading)
+					kanVereenvoudigd = antwoordIngevuld.kanVereenvoudigd(gewensteEindOplossing);
 			}
-			elementenBalansKlopt = antwoordIngevuld.elementenBalansKlopt();
-			ladingenBalansKlopt = antwoordIngevuld.ladingenBalansKlopt();
-			pijlKlopt = antwoordIngevuld.isGelijkwaardigPijl(gewensteEindOplossing);
-			if(ladingenBalansKlopt && elementenBalansKlopt && isGelijkwaardigMoleculenLading)
-				kanVereenvoudigd = antwoordIngevuld.kanVereenvoudigd(gewensteEindOplossing);
+			
 		}
 		
 		repaint();
