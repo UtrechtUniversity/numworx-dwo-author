@@ -134,13 +134,13 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		return hoofdPanel;
 	}
 	
-	public void splits()
+	public void splits(VergelijkingMeerv vergelijkingen)
 	{
 		hoogte = bepaalHoogte();
 		
 		//hoogte = 100; //TODO: hier hoogte invullen die je op dit moment voor dit panel nodig hebt. Die blijft vanaf nu gelijk.
 		
-		VergelijkingMeerv vergelijkingen = geefVergelijking(); // deze bestaat uit k vergelijkingen. 
+		//VergelijkingMeerv vergelijkingen = geefVergelijking(); // deze bestaat uit k vergelijkingen. 
 		int k = vergelijkingen.geefAantal();
 		kinderen = new StelselEditor[k];
 		
@@ -198,8 +198,6 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	{
 		//Hashtable h = super.getState();
 		
-		//stapNrs nodig?
-		
 		//boolean[] takEindes = geefTakEindes();
 		int[] aantalKinderen = geefAantalKinderen();
 		Vector<Integer> stapNrsVector = geefStapNrsEditorEnKinderen();
@@ -207,14 +205,24 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		for(int i = 0; i < stapNrs.length; i++)
 			stapNrs[i] = stapNrsVector.get(i);
 		Vector<String> formuleVakInhoudenVector = geefFormuleVakInhouden();
-		String[] formuleVakInhouden = new String[formuleVakInhoudenVector.size()];
-		for(int i = 0; i < formuleVakInhouden.length; i++)
-			formuleVakInhouden[i] = formuleVakInhoudenVector.get(i);
+		//String[] formuleVakInhouden;
+//		if(formuleVakInhoudenVector.size() > 0)
+//		{	
+			String [] formuleVakInhouden = new String[formuleVakInhoudenVector.size()];
+			for(int i = 0; i < formuleVakInhouden.length; i++)
+				formuleVakInhouden[i] = formuleVakInhoudenVector.get(i);
+//		}
+//		else
+//		{	formuleVakInhouden = new String[1];
+//				formuleVakInhouden[0] = "$f@";
+//		}
 		
 		Hashtable h = new Hashtable();
 		h.put("aantalKinderen", aantalKinderen);
 		h.put("stapNrs", stapNrs);
 		h.put("formuleVakInhouden", formuleVakInhouden);
+		h.put("ingevuld", new Boolean(ingevuld));
+		h.put("nagekeken", new Boolean(nagekeken));
 		
 		return h;
 	}
@@ -224,12 +232,21 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		int[] aantalKinderen = null;
 		int[] stapNrs = null;
 		String[] formuleVakInhouden = null;
+		boolean ingevuld = false;
+		boolean nagekeken = false;
 		if(h.containsKey("aantalKinderen"))
 			aantalKinderen = OpdrNavStruct.toIntArray(h.get("aantalKinderen"));
 		if(h.containsKey("stapNrs"))
 			stapNrs = OpdrNavStruct.toIntArray(h.get("stapNrs"));
 		if(h.containsKey("formuleVakInhouden"))
 			formuleVakInhouden = OpdrNavStruct.toStringArray(h.get("formuleVakInhouden"));
+		if(h.containsKey("ingevuld"))
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
+		if(h.containsKey("nagekeken"))
+			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+		
+		this.ingevuld = ingevuld;
+		this.nagekeken = nagekeken;
 		
 		setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, 0, 0);
 	}
@@ -243,13 +260,19 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		for(int i = 0; i < stapNr + 1; i++)
 			formuleVakInhoudenEditor[i] = formuleVakInhouden[formuleTeller + i];
 		//kijken of hier nog meer in moet, zoals ingevuld en nagekeken. Dan misschien toch beter h doorgeven.
+		String antwoordString = formuleVakInhoudenEditor[formuleVakInhoudenEditor.length - 1];
+		h.put("stapNr", new Integer(stapNr));
+		h.put("formuleVakInhouden", formuleVakInhoudenEditor);
+		h.put("ingevuld", new Boolean(ingevuld));
+		h.put("nagekeken", new Boolean(nagekeken));
+		h.put("antwoordString", antwoordString);
 		super.setState(h);
 		
 		//vervolgens: kinderen maken (als van toepassing)
-		//zorgen dat goede oplossingen worden meegegeven...
 		if(aantalKinderen[editorTeller] > 0)
 		{
-			splits(); //gewoon proberen...
+			splits(geefLaatsteFormuleVak().geefVergelijking()); 
+			System.out.println("splits is goed gegaan");
 		}
 		
 		
@@ -260,7 +283,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		{
 			for(int i = 0; i < kinderen.length; i++)
 			{
-				int[] tellers = setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, formuleTeller, editorTeller);
+				int[] tellers = kinderen[i].setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, formuleTeller, editorTeller);
 				formuleTeller = tellers[0];
 				editorTeller = tellers[1];
 			}
@@ -313,9 +336,9 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		Vector<String> v = new Vector<String>();
 		for(int i = 0; i < getStapNr() + 1; i++)
 		{
-			if(formuleVakken[i]==null) 
-				v.add("$f@");
-			else 
+			if(formuleVakken[i] != null && (i == 0 || !formuleVakken[i].toString().equals("$f@"))) 
+			//	v.add("$f@");
+			//else 
 				v.add(formuleVakken[i].toString());
 		}
 		if(kinderen != null)
@@ -336,15 +359,22 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	public Vector<Integer> geefStapNrsEditorEnKinderen()
 	{
 		Vector<Integer> v = new Vector<Integer>();
-		v.add(getStapNr());
+		
 		if(kinderen != null)
-		{
+		{	v.add(getStapNr());
 			for(int i = 0; i < kinderen.length; i++)
 			{
 				Vector<Integer> v2 = kinderen[i].geefStapNrsEditorEnKinderen();
 				for(int j = 0; j < v2.size(); j++)
 					v.add(v2.get(j));
 			}
+		}
+		else
+		{
+			int stapNr = getStapNr();
+			if(stapNr > 0 && (formuleVakken[stapNr] == null || formuleVakken[stapNr].toString().equals("$f@")))
+				stapNr--;
+			v.add(stapNr);
 		}
 		return v;
 	}
@@ -386,6 +416,16 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		return aantalKinderen;
 	}
 	
+	public void kijkNa()
+	{
+		if (mode == 0 || mode == 1)
+		{
+			kijkNa(-1);
+			if (ingevuld)
+				produceAction("changed");
+		}
+	}
+	
 	public void kijkNa(int stapNr)
 	{
 		kijkNa(stapNr, true);
@@ -402,7 +442,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		
 		if (!ingevuld)
 		{
-			System.out.println("niet ingevuld");
+			System.out.println("kijkNa; niet ingevuld");
 			if (show)
 				zetGoedFout(GEEN, -1);
 			if (formuleVak.toString().equals("$f@") && show)
@@ -466,6 +506,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //		}
 		else if (isGelijkwaardig)
 		{
+			System.out.println("kijkNa; isGelijkwaardig");
 			
 //			if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing &&
 //										// bevatFouteOplossing
@@ -489,21 +530,22 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //				}
 //			}
 			if (eindOplossingNodig)
-			{
+			{	System.out.println("eindOplossingNodig");
 				if (bevatVoldoetNiet) // isGelijkwaardig && eindOplossingNodig
 				{
 					zetCorrectFoutStap(stapNr, false, false, false, "feedbackTekst02", show); // "Niet alle oplossingen voldoen aan de oorspronkelijke vergelijking. Verwijder de oplossingen die niet voldoen."
 				}
 				else if (isEindOplossing)
 				{
+					System.out.println("isEindOplossing");
 					if (exactNodig)
-					{
+					{	System.out.println("exactNodig");
 						if (isEindOplossingExact) // isGelijkwaardig &&
 													// eindOplossingNodig &&
 													// isEindOplossing &&
 													// exactNodig &&
 													// isEindOplossingExact
-						{
+						{	System.out.println("isExact");
 							//score = puntenGelijkwaardig + puntenEindOplossing + puntenSignificant + puntenExact;
 //							if (gewensteEindOplossing.isOngelijkheid())
 //							{
@@ -527,6 +569,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 						// isEindOplossing && exactNodig &&
 						// isEindOplossingExact
 						{
+							System.out.println("is niet exact");
 //							if (significantNodig)
 //							{
 //								if (isEindOplossingSignificant)
@@ -550,7 +593,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 					else
 					// isGelijkwaardig && eindOplossingNodig &&
 					// isEindOplossing && ! exactNodig
-					{
+					{	System.out.println("niet exact nodig");
 
 						//score = puntenGelijkwaardig + puntenEindOplossing;
 //						if (gewensteEindOplossing.isOngelijkheid())
@@ -590,7 +633,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 				else
 				// isGelijkwaardig && eindOplossingNodig &&
 				// !isEindOplossing
-				{
+				{	System.out.println("niet eindoplossing");
 //					if (moetNogAfgerond) // isGelijkwaardig &&
 //											// eindOplossingNodig &&
 //											// !isEindOplossing
@@ -614,19 +657,21 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			}
 			else
 			// isGelijkwaardig && !vorm && !eindOplossingNodig
-			
+			{
 				//score = puntenGelijkwaardig;
 				// zetCorrectFoutStap(stapNr,true,false,false,"feedbackTekst16");//"Dit is een correcte vergelijking"
 
 				// Nu kan het vak gebruikt worden als 'balans' voor het checken
 				// van ware beweringen
+				System.out.println("geen eindoplossing nodig");
 				zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst16", show);// "Dit is een correcte vergelijking"
+			}
 		}
 		else
 		// niet isGelijkwaardig
-		{	
+		{	System.out.println("niet gelijkwaardig");
 			if (isDeelOplossing)
-			{
+			{	System.out.println("isDeelOplossing");
 				if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing
 											// && bevatFouteOplossing
 				{
@@ -693,7 +738,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	public void splitsOfMaakStap()
 	{
 		if(isGelijkwaardig && geefVergelijking().geefAantal() > 1)
-			splits();
+			splits(geefVergelijking());
 		else
 		{	super.maakStap();
 			hoogte = bepaalHoogte();
@@ -786,11 +831,11 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			{
 				for(int j = 0; j < varNamen.length; j++)
 				{	if(!eindOplossingGevonden[i][j])
-					{	eindOplossingGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossing(varNamen[j]);
+					{	eindOplossingGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossing(oplossingen[i], varNamen[j], "=");
 						if(!eindOplossingGevonden[i][j])
 							isEindOplossing = false;
 					}
-					if(!eindOplossingStelselGevonden[i][j])
+					if(!eindOplossingStelselGevonden[i][j]) //TODO: kijken of hier ook nog als argument de oplossing moet worden meegegeven en zoja hoe.
 					{	eindOplossingStelselGevonden[i][j] = isGelijkwaardigEind && antwoord.isStelselEindOplossing(varNamen[j], varNamen);
 						if(!eindOplossingStelselGevonden[i][j])
 							isEindOplossingStelsel = false;

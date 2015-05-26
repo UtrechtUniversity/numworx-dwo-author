@@ -362,7 +362,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		{	h = rekenVak.getState();
 		
 		}
-		return null;
+		return h;
 	}
 
 	@Override
