@@ -7,7 +7,7 @@ public class SchuifVeld extends JPanel
 {
 	private Image im, imb ;
   	private Graphics gIm, gImb;
-	public SchuifLaag schuiflaag, achtergrondlaag;
+	public SchuifLaag schuiflaag;
 	private boolean veranderd;
 	private boolean resized;
 	private boolean gesloten;
@@ -79,12 +79,12 @@ public class SchuifVeld extends JPanel
 	}
 	
 	
-	public void zetSchuiver(SchuifComponent sc)
+	public void zetSchuiver(Component sc)
 	{	veranderd = true;
 		schuiflaag.add(sc,0);
 	}
 	
-	public void losSchuiver(SchuifComponent sc)
+	public void losSchuiver(Component sc)
 	{	veranderd = true;
 		add(sc,0);
 	}

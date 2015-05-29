@@ -4,6 +4,7 @@
  */
 package fi.beans.stringutils;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /*
@@ -174,8 +175,6 @@ public class StringUtils {
         int upperBound = inputString.length();
         String results[] = new String[count + 1];
 
-        /* -- */
-
         index = 0;
         count = 0;
 
@@ -191,12 +190,37 @@ public class StringUtils {
 
             index = nextIndex + splitString.length();
         }
-
-        // we should never get here
-
         return results;
     }
 
+	/**
+	 * Splits an inputString into an ArrayList of trimmed lines, using EOL as separator
+	 * This method also trims the lines. It seems that the matching with "\n" sometimes leaves
+	 * a bit of junk (part of CR-LF????) in the substrings.
+	 * 
+	 * @param inputString	String to be split
+	 * @return				ArrayList of substrings between the occurrences of splitString
+	 */
+	public static ArrayList<String> splitLines(String inputString)
+	{
+		String splitString = "\n";
+		ArrayList<String> lines = new ArrayList<String>();
+        int index = 0;
+        int upperBound = inputString.length();
+        while (index < upperBound) {
+            int nextIndex = inputString.indexOf(splitString, index);
+            if (nextIndex == -1) {
+                lines.add(inputString.substring(index).trim());
+                return lines;
+            } else {
+                lines.add(inputString.substring(index, nextIndex).trim());
+            }
+            index = nextIndex + splitString.length();
+        }
+        
+		return lines;
+	}
+	
     /**
      * <p>
      * This method behaves like String.replace(), but replaces substrings rather
@@ -221,27 +245,5 @@ public class StringUtils {
 
         return buffer.toString();
     }
-
-    private static Random rn = new Random();
-
-    private static int rand(int lo, int hi) {
-        int n = hi - lo + 1;
-        int i = rn.nextInt() % n;
-        if (i < 0)
-            i = -i;
-        return lo + i;
-    }
-
-    private static String randomstring(int lo, int hi) {
-        int n = rand(lo, hi);
-        byte b[] = new byte[n];
-        for (int i = 0; i < n; i++)
-            b[i] = (byte) rand('a', 'z');
-        return new String(b, 0);
-    }
-
-    public static String randomstring() {
-        return randomstring(10, 20);
-    }
-    
+        
 }

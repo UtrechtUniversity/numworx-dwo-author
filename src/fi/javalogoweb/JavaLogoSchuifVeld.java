@@ -2,297 +2,213 @@ package fi.javalogoweb;
 
 import fi.javalogoweb.schuifobjects.*;
 import fi.beans.stringutils.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
 
 import logotekenap.*;
 
-public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
+/**
+ * @author PBgv, changes made
+ * 	19/2/2015 changed commandComponents ffrom array to ArrayList, deleted int: aantalCC
+ *
+ */
+public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, MouseListener, MouseMotionListener
 {
-	private CommandComponent[] commandComponents;
-	private int aantalCC;
-	private ProgrammaComponent programmaComponent, pcActief;
-	//private DeeltaakCComponent dtc1, dtc2, dtc3;
-	private DeeltaakCComponent[] deeltaakComponenten;
-	private int aantalDeeltaakComponenten = 5;
-	private int pcSizeHeightDefault;
-	private int pcSizeWidthDefault;
-	private int pcLocXDefault;
-	private int pcLocYDefault;
-	private int opdrSizeWidthDefault;
-	private int opdrSizeHeightDefault;
-	private int opdrLocXDefault;
-	private int opdrLocYDefault;
-	private ScrollSlider scrollSlider;
-	private JLabel tekenProgrammaLabel;
-	//private ImageButton editButton1, editButton2, editButton3;
-	private ImageButton[] editButtons;
+	/**
+	 * 
+	 */
+	public static final int aantalDeeltaken = 5;
+	/**
+	 * commCompLargeWidth: width of two-column component (in pile)
+	 */
+	public static final int cclw = 160;
+	/**
+	 * commCompSmallWidth: width of single column component (in pile)
+	 */
+	public static final int ccsw = cclw/2-5;
+	/**
+	 * deeltaakCompWidth: width of deeltaak call (in pile)
+	 */
+	public static final int dtcw = cclw-30;
+	/**
+	 * commCompLargeHeight: width of herhaal/keuze component (in pile)
+	 */
+	public static final int cclh = 50;
+	/**
+	 * commCompSmallHeight: height of simple component
+	 */
+	public static final int ccsh = 25;
+	/**
+	 * CommandComponentX: x-pos of left column
+	 */
+	public static final int ccx = 10;
+	/**
+	 * CommandComponentX2: x-pos of right column
+	 */
+	public static final int ccx2 = ccx+cclw/2+5;
+	/**
+	 * CommandComponentY: y-pos of TOP cc
+	 */
+	public static final int ccy = 10;
+	
+	/**
+	 * ProgrammaPanelWidth
+	 */
+	public static final int ppw = 400;
+	/**
+	 * ProgrammaPanelHeight
+	 */
+	public static final int pph = 520;
+	/**
+	 * ProgrammaPanelX
+	 */
+	public static final int ppx = 190;
+	/**
+	 * ProgrammaPanelY
+	 */
+	public static final int ppy = 10;
+	//public static final int
+	//public static final int
+	
+	
+	
+	private JPanel programmaPanel;
+	private ProgrammaComponent programmaComponent;
+	private DeeltaakBodyComponent[] deeltaakComponenten;
 	private JButton runButton;
 	private JButton exportButton;
 	private JButton importButton;
-	private Tekenblad tekenblad;
-	private Rekenblad rekenblad ;
-	private DeeltaakHeader deeltaakHeader;
+	private Uitvoerblad uitvoerblad;
 	
+	private VardisplayPanel vartracer = null;
+	private boolean isVartracing = false;
 	
-	public JavaLogoSchuifVeld(int x, int y, int b, int h, Tekenblad tb)
-	{	super(x,y,b,h);
-		
-		tekenblad = tb;
-		//rekenblad = rb;
-		commandComponents = new CommandComponent[1000];
-		
-	}
-	public JavaLogoSchuifVeld(int x, int y, int b, int h, Rekenblad rb)
-	{	super(x,y,b,h);
-		
-		//tekenblad = tb;
-		rekenblad = rb;
-		commandComponents = new CommandComponent[1000];
-		
+	public JavaLogoSchuifVeld(int x, int y, int b, int h, Uitvoerblad tb)
+	{	
+		super(x,y,b,h);
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		uitvoerblad = tb;
 	}
 	
-	public void teken(Tekenblad tb)
-	{	programmaComponent.teken(tb, new VarSet());
-		
-	}
-	
-	public void reken(Rekenblad rb)
-	{	programmaComponent.reken(rb, new VarSet());
-		
+	public void execute(Uitvoerblad ub)
+	{	
+		programmaComponent.execute(ub, new VarSet());
 	}
 	
 	public void initialize()
-	{	pcSizeWidthDefault = getWidth()-220;
-		pcSizeHeightDefault = 395;
-		pcLocXDefault = 190;
-		pcLocYDefault = 38;
+	{	
+		// programmaPanel bevat de 'programma's' waar we componenten op kunnen droppen
+		programmaPanel = new JPanel();
+		programmaPanel.setBounds(ppx, ppy, ppw, pph);
+		programmaPanel.setBackground(Color.WHITE);
+		programmaPanel.setLayout(null);
+		add(programmaPanel,0);
 		
-		programmaComponent = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
+		programmaComponent = new ProgrammaComponent(0, 0, ProgrammaComponent.pcsw, pph, JavaLogoWeb.rb.getString("Tekenalgoritme"), this);
 		programmaComponent.zetVast(true);
-		commandComponents[0]= programmaComponent;
-		add(commandComponents[0],0);
-		pcActief = programmaComponent;
+		programmaPanel.add(programmaComponent);
 		
-		JPanel pBoven = new JPanel();
-		pBoven.setBackground(getBackground());
-		pBoven.setBounds(pcLocXDefault,0,pcSizeWidthDefault,pcLocYDefault);
-		add(pBoven,0);
+		vartracer = new VardisplayPanel();
+		vartracer.setBounds(ccx+10, ccy-10, 140, 320);
+				
+		CommandComponent currentCC;
 		
-		JPanel pOnder = new JPanel();
-		pOnder.setBackground(getBackground());
-		pOnder.setBounds(pcLocXDefault,pcLocYDefault + pcSizeHeightDefault,pcSizeWidthDefault,500);
-		add(pOnder,0);
+		currentCC = new VooruitCComponent(ccx,ccy,ccsw,ccsh, this);
+		add(currentCC,0);
 		
-		tekenProgrammaLabel = new JLabel("tekenalgoritme");
-		tekenProgrammaLabel.setBackground(getBackground());
-		//tekenProgrammaLabel.setAlignment(Label.CENTER);
-		tekenProgrammaLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		tekenProgrammaLabel.setBounds(pcLocXDefault+40,10,pcSizeWidthDefault, pcLocYDefault-10);
-		add(tekenProgrammaLabel,0);
+		currentCC = new StapCComponent(ccx2,ccy,ccsw,ccsh, this);
+		add(currentCC,0);
+	
+		currentCC = new LinksCComponent(ccx,ccy+30,ccsw,ccsh, this);
+		add(currentCC,0);
 		
-		opdrSizeWidthDefault = 160;
-		opdrSizeHeightDefault = 370;
-		opdrLocXDefault = 10;
-		opdrLocYDefault = 50;
-		
-		JLabel opdrLabel = new JLabel("opdrachten");
-		opdrLabel.setBackground(getBackground());
-		//opdrLabel.setAlignment(Label.CENTER);
-		opdrLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		opdrLabel.setBounds(opdrLocXDefault+40,10,opdrSizeWidthDefault, opdrLocYDefault-22);
-		add(opdrLabel,0);
-		
-		JLabel deeltaakLabel = new JLabel("deeltaken");
-		deeltaakLabel.setBackground(getBackground());
-		//deeltaakLabel.setAlignment(Label.CENTER);
-		deeltaakLabel.setFont(new Font("SansSerif",Font.PLAIN, 20));
-		deeltaakLabel.setBounds(opdrLocXDefault+40,340,opdrSizeWidthDefault, opdrLocYDefault-22);
-		add(deeltaakLabel,0);
-		
-		if(tekenblad!=null)
-		{
-			commandComponents[1] = new PenAanCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[1],0);
+		currentCC = new RechtsCComponent(ccx2,ccy+30,ccsw,ccsh, this);
+		add(currentCC,0);
 			
-			commandComponents[2] = new PenUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[2],0);
+		currentCC = new PenAanCComponent(ccx,ccy+60,ccsw,ccsh, this);
+		add(currentCC,0);
 			
-			commandComponents[3] = new VooruitCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[3],0);
+		currentCC = new PenUitCComponent(ccx2,ccy+60,ccsw,ccsh, this);
+		add(currentCC,0);
 			
-			commandComponents[4] = new StapCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[4],0);
+		currentCC = new VulAanCComponent(ccx,ccy+90,ccsw,ccsh, this);
+		add(currentCC,0);
+			
+		currentCC = new VulUitCComponent(ccx2,ccy+90,ccsw,ccsh, this);
+		add(currentCC,0);
+
+		currentCC = new VulBladCComponent(ccx,ccy+120,ccsw,ccsh, this);
+		add(currentCC,0);
+			
+		currentCC = new PrintCComponent(ccx,ccy+150,ccsw,ccsh, this);
+		add(currentCC,0);
+			
+		currentCC = new PrintlCComponent(ccx2,ccy+150,ccsw,ccsh, this);
+		add(currentCC,0);
 		
-			commandComponents[5] = new LinksCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[5],0);
-			
-			commandComponents[6] = new RechtsCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[6],0);
-			
-			commandComponents[7] = new VulAanCComponent(opdrLocXDefault,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[7],0);
-			
-			commandComponents[8] = new VulUitCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+90,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[8],0);
-			
-		}
-		else if(tekenblad!=null)
-		{
-			commandComponents[1] = new PrintStringCComponent(opdrLocXDefault,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[1],0);
-			
-			commandComponents[2] = new PrintVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[2],0);
-			
-			commandComponents[3] = new PrintLStringCComponent(opdrLocXDefault,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[3],0);
-			
-			commandComponents[4] = new PrintLVarCComponent(opdrLocXDefault+opdrSizeWidthDefault/2+5,opdrLocYDefault+30,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[4],0);
-			
-			commandComponents[5] = new InvoerCComponent(opdrLocXDefault,opdrLocYDefault+60,opdrSizeWidthDefault/2-5,25, this);
-			add(commandComponents[5],0);
+		currentCC = new HerhaalCommandComponent(ccx,ccy+200,cclw,cclh, this);
+		add(currentCC,0);
 		
-		}
-		
-		
-		commandComponents[9] = new HerhaalCommandComponent(opdrLocXDefault,opdrLocYDefault+130,opdrSizeWidthDefault,48, this);
-		add(commandComponents[9],0);
-		
-		commandComponents[10] = new KeuzeCommandComponent(opdrLocXDefault,opdrLocYDefault+190,opdrSizeWidthDefault,48, this);
-        add(commandComponents[10],0);
+		currentCC = new KeuzeCommandComponent(ccx,ccy+260,cclw,cclh, this);
+		add(currentCC,0);
         
-		commandComponents[11] = new VarCComponent(opdrLocXDefault,opdrLocYDefault+250,opdrSizeWidthDefault,25, this);
-		add(commandComponents[11],0);
+		currentCC = new VarCComponent(ccx,ccy+320,cclw,ccsh, this);
+		add(currentCC,0);
 		
-		deeltaakComponenten = new DeeltaakCComponent[aantalDeeltaakComponenten];
-		editButtons = new ImageButton[aantalDeeltaakComponenten];
-		for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
+		deeltaakComponenten = new DeeltaakBodyComponent[aantalDeeltaken];
+		for(int i=0; i<aantalDeeltaken; i++)
 		{
-			deeltaakComponenten[i] = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+330+30*i,opdrSizeWidthDefault-30,25, this);
-			deeltaakComponenten[i].setCommandName("deeltaak"+i);
-			add(deeltaakComponenten[i]);
-			commandComponents[11+2*i] = deeltaakComponenten[i];
-			
-			ProgrammaComponent pc = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
-			pc.zetVast(true);
-			deeltaakComponenten[i].zetDeeltaakContainer(pc);
-			commandComponents[12+2*i]= pc;
-			
-			editButtons[i] = new ImageButton(JavaLogoWeb.editImage);
-			editButtons[i].setBounds(opdrLocXDefault,opdrLocYDefault+335+30*i,20,20);
-			editButtons[i].addActionListener(this);
-			add(editButtons[i],0);
+			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+360+30*i,cclw,ccsh, i+1, this);
+			add(dtc,0);
+			// create with dummy location and height
+			deeltaakComponenten[i] = new DeeltaakBodyComponent(0,0,ProgrammaComponent.pcsw,ProgrammaComponent.pcclosedh, JavaLogoWeb.rb.getString("deeltaak")+(i+1), this);
+			deeltaakComponenten[i].zetVast(false);
+			dtc.setBody(deeltaakComponenten[i]);
+			programmaPanel.add(deeltaakComponenten[i]);
 		}
-		
-		/*dtc1 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+270,opdrSizeWidthDefault-30,25, this);
-		dtc1.setCommandName("deeltaak1");
-		add(dtc1);
-		commandComponents[11] = dtc1;
-		
-		ProgrammaComponent pc1 = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
-		pc1.zetVast(true);
-		dtc1.zetDeeltaakContainer(pc1);
-		commandComponents[12]= pc1;
-		
-		editButton1 = new ImageButton(JavaLogoWeb.editImage);
-		editButton1.setBounds(opdrLocXDefault,opdrLocYDefault+275,20,20);
-		editButton1.addActionListener(this);
-		add(editButton1);
-		
-		dtc2 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+300,opdrSizeWidthDefault-30,25, this);
-		dtc2.setCommandName("deeltaak2");
-		add(dtc2);
-		commandComponents[13] = dtc2;
-		
-		ProgrammaComponent pc2 = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
-		pc2.zetVast(true);
-		dtc2.zetDeeltaakContainer(pc2);
-		commandComponents[14]= pc2;
-		
-		editButton2 = new ImageButton(JavaLogoWeb.editImage);
-		editButton2.setBounds(opdrLocXDefault,opdrLocYDefault+305,20,20);
-		editButton2.addActionListener(this);
-		add(editButton2);
-		
-		dtc3 = new DeeltaakCComponent(opdrLocXDefault+30,opdrLocYDefault+330,opdrSizeWidthDefault-30,25, this);
-		dtc3.setCommandName("deeltaak3");
-		add(dtc3);
-		commandComponents[15] = dtc3;
-		
-		ProgrammaComponent pc3 = new ProgrammaComponent(pcLocXDefault,pcLocYDefault,pcSizeWidthDefault,pcSizeHeightDefault, this);
-		pc3.zetVast(true);
-		dtc3.zetDeeltaakContainer(pc3);
-		commandComponents[16]= pc3;
-		
-		editButton3 = new ImageButton(JavaLogoWeb.editImage);
-		editButton3.setBounds(opdrLocXDefault,opdrLocYDefault+335,20,20);
-		editButton3.addActionListener(this);
-		add(editButton3);
-		*/
-		
-		
-		aantalCC = 18;
-		
-		scrollSlider = new ScrollSlider(pcSizeHeightDefault-25,0,false);
-		scrollSlider.setBackground(getBackground());
-		scrollSlider.zetStand(0);
-		scrollSlider.setLocation(pcSizeWidthDefault+pcLocXDefault+5,pcLocYDefault+12);
-		scrollSlider.addActionListener(this);
-		super.add(scrollSlider);
-		scrollSlider.setVisible(false);
+		// set location and height right, one by one...
+		deeltaakComponenten[0].setLocation(ppw-ProgrammaComponent.pcsw, 0);
+		deeltaakComponenten[0].changeHeight();			// was initialialized as closed, so this will open it.
+		deeltaakComponenten[1].setLocation(ProgrammaComponent.pcsw+10, 180);
+		deeltaakComponenten[1].changeHeight();
+		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 455);
+		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 470);
+		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 485);
 		
 		runButton = new JButton("Run");
-		runButton.setBounds(190,430,200,25);
+		runButton.setBounds(ppx, getHeight()-52, 80, 50);
+		runButton.setFont(JavaLogoWeb.boldfont);
 		runButton.setMargin(new Insets(3,5,3,5));
 		runButton.addActionListener(this);
 		add(runButton,0);
 		
 		importButton = new JButton("Import code");
-		importButton.setBounds(190,460,95,25);
-		importButton.setMargin(new Insets(3,5,3,5));
+		importButton.setBounds(ppx+180, getHeight()-52, 120, 23);
+		importButton.setFont(JavaLogoWeb.boldfont);
+		importButton.setMargin(new Insets(2,5,2,5));
 		importButton.addActionListener(this);
 		add(importButton,0);
 		
 		exportButton = new JButton("Export code");
-		exportButton.setBounds(295,460,95,25);
-		exportButton.setMargin(new Insets(3,5,3,5));
+		exportButton.setBounds(ppx+180, getHeight()-25, 120, 23);
+		exportButton.setFont(JavaLogoWeb.boldfont);
+		exportButton.setMargin(new Insets(2,5,2,5));
 		exportButton.addActionListener(this);
 		add(exportButton,0);
-		
-		deeltaakHeader = new DeeltaakHeader(pcLocXDefault,pcLocYDefault-11, pcSizeWidthDefault, 25);
-		//deeltaakHeader.zetDeeltaakCComponent(dtc1);
-		deeltaakHeader.addActionListener(this);
-		
 	}
 	
-	public void scroll(boolean adjustLocation)
-	{	int extraHoogte = pcActief.getSize().height - pcSizeHeightDefault;
-		if(extraHoogte > 0 && adjustLocation)
-		{	pcActief.setLocation(pcActief.getLocation().x,   pcLocYDefault - extraHoogte);
-			if(scrollSlider!=null) 
-			{	scrollSlider.zetStand(extraHoogte);
-				scrollSlider.setVisible(true);
-			}
-		}
-		else if(extraHoogte > 0)
-		{	if(scrollSlider!=null) 
-			{	scrollSlider.setVisible(true);
-			}
-		}
-		else 
-		{	pcActief.setLocation(pcActief.getLocation().x, pcLocYDefault);
-			if(scrollSlider!=null) 
-			{	scrollSlider.zetStand(0);
-				scrollSlider.setVisible(false);
-			}
-		}
-		
+	void addToProgrammaPanel(CommandComponent c)
+	{
+		programmaPanel.add(c, 0);
 	}
 	
 	public void zetStapel(CommandComponent cc)
@@ -303,119 +219,82 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		//if(asc instanceof InvoerSchuifComponent)
 		//{ schuifcomponenten[aantalSc] = new InvoerSchuifComponent(this ,x,y,b,h);
 		//}
-		if(cc instanceof PrintStringCComponent)
-		{ 	commandComponents[aantalCC] = new PrintStringCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		CommandComponent currentCC;
+		if(cc instanceof PrintCComponent)
+		{ 	currentCC = new PrintCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
-		if(cc instanceof PrintLStringCComponent)
-		{ 	commandComponents[aantalCC] = new PrintLStringCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		if(cc instanceof VulBladCComponent)
+		{ 	currentCC = new VulBladCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
-		if(cc instanceof PrintVarCComponent)
-		{ 	commandComponents[aantalCC] = new PrintVarCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		if(cc instanceof PrintlCComponent)
+		{ 	currentCC = new PrintlCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
-		if(cc instanceof PrintLVarCComponent)
-		{ 	commandComponents[aantalCC] = new PrintLVarCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		if(cc instanceof PrintCComponent)
+		{ 	currentCC = new PrintCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof InvoerCComponent)
-		{ 	commandComponents[aantalCC] = new InvoerCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new InvoerCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof PenAanCComponent)
-		{ 	commandComponents[aantalCC] = new PenAanCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new PenAanCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof PenUitCComponent)
-		{ 	commandComponents[aantalCC] = new PenUitCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new PenUitCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		
 		if(cc instanceof VooruitCComponent)
-		{ 	commandComponents[aantalCC] = new VooruitCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new VooruitCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof LinksCComponent)
-		{ 	commandComponents[aantalCC] = new LinksCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new LinksCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof RechtsCComponent)
-		{ 	commandComponents[aantalCC] = new RechtsCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new RechtsCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof VulAanCComponent)
-		{ 	commandComponents[aantalCC] = new VulAanCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new VulAanCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof VulUitCComponent)
-		{ 	commandComponents[aantalCC] = new VulUitCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new VulUitCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof StapCComponent)
-		{ 	commandComponents[aantalCC] = new StapCComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new StapCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof HerhaalCommandComponent)
-		{ 	commandComponents[aantalCC] = new HerhaalCommandComponent(x,y,b,h, this);
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new HerhaalCommandComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
 		if(cc instanceof KeuzeCommandComponent)
-        {   commandComponents[aantalCC] = new KeuzeCommandComponent(x,y,b,h, this);
-            add(commandComponents[aantalCC],0);
-            aantalCC++;
+        {   currentCC = new KeuzeCommandComponent(x,y,b,h, this);
+			add(currentCC,0);
         }
 		if(cc instanceof VarCComponent)
-		{ 	commandComponents[aantalCC] = new VarCComponent(x,y,b,h, this);
-			//varTeller++;
-			//commandComponents[aantalCC].setLabel(varNamen[varTeller%26]+"  =  ");
-			
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		{ 	currentCC = new VarCComponent(x,y,b,h, this);
+			add(currentCC,0);
 		}
-		if(cc instanceof DeeltaakCComponent)
-		{ 	commandComponents[aantalCC] = new DeeltaakCComponent(x,y,b,h, this);
-			((DeeltaakCComponent)commandComponents[aantalCC]).setCommandName(((DeeltaakCComponent)cc).getCommandName());
-			((DeeltaakCComponent)commandComponents[aantalCC]).zetDeeltaakContainer(((DeeltaakCComponent)cc).geefProgrammaComponent());
-			((DeeltaakCComponent)commandComponents[aantalCC]).setDtcParent(((DeeltaakCComponent)cc).getDtcParent());
-			add(commandComponents[aantalCC],0);
-			aantalCC++;
+		if(cc instanceof DeeltaakCallCComponent)
+		{ 	currentCC = new DeeltaakCallCComponent( (DeeltaakCallCComponent)cc, this);
+			add(currentCC,0);
 		}
-		
-		
-	}
-	
-	public void voegToe(CommandComponent cc)
-	{	commandComponents[aantalCC] = cc;
-		aantalCC++;
 	}
 	
 	public void verwijder(CommandComponent cc)
-	{	for(int i=0 ; i<aantalCC ; i++)
-		{	if(commandComponents[i]==cc)
-			{	remove(cc);
-				for(int j=i ; j<aantalCC ; j++)
-				{	commandComponents[j] = commandComponents[j+1];
-				}
-				aantalCC--;
-				tekenOpnieuw();
-				return;
-			}
-		}
+	{	
+		remove(cc);
+		tekenOpnieuw();
 	}
 	
 	public void tekenAchtergrond(Graphics g)
@@ -424,20 +303,31 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		g.fillRect(0,0,dd.width,dd.height);
 		g.setColor(getBackground());
 		g.fillRect(0, 0, dd.width, dd.height);
-		g.setColor(Color.black);
-		//g.drawLine(dd.width-1, 0, dd.width-1, dd.height-59);
 	}
 	
 	public CommandContainer getCommandContainerAt(int x, int y)
-	{	CommandContainer cc = null;
-		Component c = getComponentAt(x,y);
-		if(c!=this && c!=null && c instanceof CommandContainer) 
-		{	cc = (CommandContainer)c;
-			return cc.getCommandContainerAt(x - cc.getLocation().x,y - cc.getLocation().y);
+	{	
+		// find the deepest component in programmaPanel
+		Component c = programmaPanel.findComponentAt(x-ppx,y-ppy);
+		// if c is a CommandComponent, move to the CommandContainer that holds this object
+		if ( c instanceof CommandComponent)
+		{
+			c = c.getParent();
+		}
+		if( c instanceof CommandContainer) 
+		{	
+			CommandContainer cc =  (CommandContainer)c;
+			// don't add to the Commands that are in the piles, for pickup of new ones
+			//if ( cc.getOwner().isStapel ) not needed anymore (find in programmaPanel)
+			//{
+			//	return null;
+			//}
+			return cc;
 		}
 		return null;
 	}
 	
+	/* unused
 	public CommandComponent getCommandComponentAt(int x, int y)
 	{	CommandComponent cc = null;
 		Component c = getComponentAt(x,y);
@@ -446,72 +336,43 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 			return cc.getCommandComponentAt(x - cc.getLocation().x,y - cc.getLocation().y);
 		}
 		return null;
-	}
+	} */
 	
-	public void losSchuiver(SchuifComponent sc)
-	{	int x = sc.getLocation().x;// + sc.getSize().width/2;
-		int y = sc.getLocation().y + sc.getSize().height/2;
-		boolean terugOpVeld = true;
-		Component cc = getCommandContainerAt(x,y);
-		if(cc != null && cc!=sc)
-		{	((CommandContainer)cc).add(sc);
+	public void losSchuiver(CommandComponent sc, int x, int y)
+	{	
+		CommandContainer cc = getCommandContainerAt(x,y);
+		if(cc != null )
+		{	cc.addCComponent(sc);
 			tekenOpnieuw();
-			terugOpVeld = false;
+		} else
+		{
+			super.losSchuiver(sc);
 		}
-		if(terugOpVeld)super.losSchuiver(sc);
 	}
 	
-	public void zetSchuiver(SchuifComponent sc)
-	{	if(sc.getParent()!=this && sc.getParent().getParent()!=this && sc.getParent().getParent().getParent()!=this)
-		{	int newLx = sc.getLocation().x + sc.getParent().getLocation().x + sc.getParent().getParent().getLocation().x + sc.getParent().getParent().getParent().getLocation().x;
-			int newLy = sc.getLocation().y + sc.getParent().getLocation().y + sc.getParent().getParent().getLocation().y + sc.getParent().getParent().getParent().getLocation().y;
-			sc.setBounds(newLx,newLy,opdrSizeWidthDefault/2-5,sc.getSize().height);
-			//((CommandComponent)sc).zetMaat();
-		}
-		else if(sc.getParent()!=this && sc.getParent().getParent()!=this)
-		{	int newLx = sc.getLocation().x + sc.getParent().getLocation().x + sc.getParent().getParent().getLocation().x;
-			int newLy = sc.getLocation().y + sc.getParent().getLocation().y + sc.getParent().getParent().getLocation().y;
-			sc.setBounds(newLx,newLy,opdrSizeWidthDefault/2-5,sc.getSize().height);
-			//((CommandComponent)sc).zetMaat();
-		}
-		else if(sc.getParent()!=this)
-		{	int newLx = sc.getLocation().x + sc.getParent().getLocation().x;
-			int newLy = sc.getLocation().y + sc.getParent().getLocation().y;
-			sc.setBounds(newLx,newLy,opdrSizeWidthDefault/2-5,sc.getSize().height);
-			//((CommandComponent)sc).zetMaat();
-		}
-		if(sc.getParent() instanceof CommandComponent)
-		{	//((CommandComponent)sc.getParent()).kind = null;
-		}
-		/*for(int i=0 ; i<aantalCC; i++)
-		{	if(sc==commandComponents[i])
-			{	for(int j=i ; j>0 ; j--)
-				{	commandComponents[j] = commandComponents[j-1];
-				}
-				commandComponents[0] = (CommandComponent)sc;
-				break;
-			}
-		}*/
+	public void zetSchuiver(CommandComponent sc)
+	{	int newLx = sc.getAbsoluteLocation().x;
+		int newLy = sc.getAbsoluteLocation().y;
+		sc.setBounds(newLx,newLy,sc.getDragWidth(),sc.getSize().height);
 		super.zetSchuiver(sc);
-		((CommandComponent)sc).zetMaat();
 	}
 	
-	public void traceComponent(CommandComponent sc)
-	{	int x = sc.getLocation().x;//sc.getLocation().x + sc.getSize().width/2;
-		int y = sc.getLocation().y + sc.getSize().height/2;
-		
-		for(int i=0 ; i<aantalCC; i++)
-		{	commandComponents[i].showCaret(x,y,false);
+	void traceComponent(CommandComponent sc, int ex, int ey)
+	{	
+		if ( !sc.isTraceable() ) return;
+		// find component in programmaPanel, so nothing on the left side nor the dragged CC itself will be found
+		Component c = programmaPanel.findComponentAt(ex-ppx,ey-ppy);
+		// if c is a CommandComponent set Caret on that component
+		if ( c instanceof CommandComponent )
+		{
+			((CommandComponent)c).setCaret(ey);
 		}
-		tekenOpnieuw();	
-
-		CommandComponent cc = getCommandComponentAt(x,y);
-		if(cc != null && cc instanceof ProgrammaComponent && cc!=sc || cc != null && cc.getParent() instanceof CommandContainer && cc!=sc && !cc.vast)
-		{	cc.showCaret(x,y,true);
-			tekenOpnieuw();	
+		// if c is a CommandContainer, then it must be over the empty space, so set caret
+		// to top of the container if it is empty, bottom of last component otherwise
+		if( c instanceof CommandContainer) 
+		{	
+			((CommandContainer)c).setCaret(ey);
 		}
-		
-		
 	}
 	
 	private void exportFrame(String contents) {
@@ -535,172 +396,205 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener
 		f.toFront();
 	}
 	
-	private void importFrame(String contents) {
-		final TextArea area = new TextArea(contents, 0, 0, TextArea.SCROLLBARS_NONE);
-		Frame f = new Frame("Code van het algoritme");
-		f.setLayout(new BorderLayout());
-		f.add(area,BorderLayout.CENTER);
-		f.addWindowListener(new WindowAdapter() {
-			public void windowOpened(WindowEvent e) {
-				area.requestFocus();
-				area.setCaretPosition(0);
-			}
-			public void windowActivated(WindowEvent e) {
-				area.selectAll();
-			}
-			public void windowClosing(WindowEvent e) {
-				setCode(area.getText());	
-				e.getWindow().dispose();
-			} });
-		f.pack();
-		f.setVisible(true);
-		f.toFront();
-	}
-	
-	public DeeltaakCComponent[] geefDtcCommands()
+	private void clearProgram()
 	{
-		//DeeltaakCComponent[] dtcs = new DeeltaakCComponent[3];
-		//dtcs[0] = dtc1;
-		//dtcs[1] = dtc2;
-		//dtcs[2] = dtc3;
-		//return dtcs;
-		
-		return deeltaakComponenten;
-	}
-	
-	public void setCode(String code)
-	{	code += "\n";
-		String[] codeParts = StringUtils.split(code,"Deeltaak:");
-		for(int i=1 ; i<codeParts.length ; i++)
+		programmaComponent.clearProgram();
+		for ( int i=0; i<aantalDeeltaken; i++ )
 		{
-			if(codeParts.length>i)
-			{	deeltaakComponenten[i-1].setCommandName(codeParts[i].substring(0,codeParts[i].indexOf("\n")).trim());
-				deeltaakComponenten[i-1].geefProgrammaComponent().removeAll();
-				deeltaakComponenten[i-1].geefProgrammaComponent().setCode(codeParts[i].substring(codeParts[i].indexOf("\n")+1));
-				
-			}
+			deeltaakComponenten[i].clearProgram();
+			deeltaakComponenten[i].setDeeltaakHeader("deeltaak"+(i+1), "");
 		}
-		
-		/*if(codeParts.length>1)
-		{	dtc1.setCommandName(codeParts[1].substring(0,codeParts[1].indexOf("\n")).trim());
-			dtc1.geefProgrammaComponent().setCode(codeParts[1].substring(codeParts[1].indexOf("\n")+1));
-		}
-		if(codeParts.length>2)
-		{	dtc2.setCommandName(codeParts[2].substring(0,codeParts[2].indexOf("\n")).trim());
-			dtc2.geefProgrammaComponent().setCode(codeParts[2].substring(codeParts[2].indexOf("\n")+1));
-		}
-		if(codeParts.length>3)
-		{	dtc3.setCommandName(codeParts[3].substring(0,codeParts[3].indexOf("\n")).trim());
-			dtc3.geefProgrammaComponent().setCode(codeParts[3].substring(codeParts[3].indexOf("\n")+1));
-		}*/
-		programmaComponent.removeAll();
-		programmaComponent.setCode(codeParts[0]);
 	}
 	
+	DeeltaakBodyComponent getDeeltaakBody(int i)
+	{
+		return deeltaakComponenten[i];
+	}
+	
+	ProgrammaComponent getProgramma()
+	{
+		return programmaComponent;
+	}
+	
+	void importeer(String s)
+	{
+		clearProgram();
+		tekenOpnieuw();
+		ProgrammaImporter pi = new ProgrammaImporter(this);
+		pi.importProgramma(s);
+	}
+	
+	private void importFrame() 
+	{
+		try
+		{
+			ImporterFrame imf = new ImporterFrame("Importeer code", this);
+			imf.pack();
+			imf.setVisible(true);
+			imf.toFront();
+		} 
+		catch ( Exception e )
+		{ 
+			System.out.println("Mis!  "+e.getMessage());
+		}
+	}
+
 	public String getCode()
 	{	String s0 = programmaComponent.getCode("");
-		for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
-		{	String s = "\nDeeltaak: " + deeltaakComponenten[i].commandString + "\n" + deeltaakComponenten[i].geefProgrammaComponent().getCode("");
-			s0 = s0 + s;
+		for(int i=0 ; i<aantalDeeltaken ; i++)
+		{	
+			s0 = s0 + deeltaakComponenten[i].getCode("");
 		}
-		//String s1 = "\nDeeltaak: " + dtc1.commandString + "\n" + dtc1.geefProgrammaComponent().getCode("");
-		//String s2 = "\nDeeltaak: " + dtc2.commandString + "\n" + dtc2.geefProgrammaComponent().getCode("");
-		//String s3 = "\nDeeltaak: " + dtc3.commandString + "\n" + dtc3.geefProgrammaComponent().getCode("");
-		//return s0+s1+s2+s3+"\n";
 		return s0+"\n";
+	}
+
+	public void setVartracing(boolean vt)
+	{
+		if ( vt )
+		{
+			add(vartracer, 0);
+			isVartracing = true;
+		} else
+		{
+			isVartracing = false;
+			this.remove(vartracer);
+			vartracer.setContent("");
+		}
+		tekenOpnieuw();
+	}
+	
+	/**
+	 * Reapint this component and update the component holding the trace of the variables.
+	 * This method will be called from the execute-methods in the CC's, when trace is on.
+	 * 
+	 * @param varset	the current set of variables in tracing mode
+	 */
+	void updateView(VarSet varset)
+	{
+		if ( isVartracing )
+		{
+			vartracer.setContent(varset.toString());
+		}
+		tekenOpnieuw();
 	}
 	
 	public void actionPerformed(ActionEvent e)
-	{	for(int i=0 ; i<aantalDeeltaakComponenten ; i++)
-		{	if(e.getSource()==editButtons[i])
-			{	remove(pcActief);
-				tekenProgrammaLabel.setVisible(false);
-				runButton.setVisible(false);
-				deeltaakComponenten[i].addDeeltaakContainer();
-				pcActief = deeltaakComponenten[i].geefProgrammaComponent();
-				deeltaakHeader.zetDeeltaakCComponent(deeltaakComponenten[i]);
-				add(deeltaakHeader,0);
-				scroll(true);
-			}
-			
-		}
+	{	
 		if(e.getSource()==runButton)
-		{	if(rekenblad!=null)
-			{	rekenblad.init();
-				rekenblad.tekenOpnieuw();
-			}
-			else
-			{	tekenblad.tekenOpnieuw();
-				
-			}
+		{	//uitvoerblad.setVisible(true);
+			uitvoerblad.tekenOpnieuw();
 		}
 		else if(e.getSource()==importButton)
-		{	importFrame("");
+		{	importFrame();
 		}
 		else if(e.getSource()==exportButton)
 		{	exportFrame(getCode());
 		}
-		else if(e.getSource()==scrollSlider)
-		{
-			pcActief.setLocation(pcActief.getLocation().x, pcLocYDefault - scrollSlider.geefStand());
-			tekenOpnieuw();
-		}
-		
-		/*else if(e.getSource()==editButton1)
-		{	remove(pcActief);
-			tekenProgrammaLabel.setVisible(false);
-			runButton.setVisible(false);
-			dtc1.addDeeltaakContainer();
-			pcActief = dtc1.geefProgrammaComponent();
-			deeltaakHeader.zetDeeltaakCComponent(dtc1);
-			add(deeltaakHeader,0);
-		}
-		else if(e.getSource()==editButton2)
-		{	remove(pcActief);
-			tekenProgrammaLabel.setVisible(false);
-			runButton.setVisible(false);
-			dtc2.addDeeltaakContainer();
-			pcActief = dtc2.geefProgrammaComponent();
-			deeltaakHeader.zetDeeltaakCComponent(dtc2);
-			add(deeltaakHeader,0);
-		}
-		else if(e.getSource()==editButton3)
-		{	remove(pcActief);
-			tekenProgrammaLabel.setVisible(false);
-			runButton.setVisible(false);
-			dtc3.addDeeltaakContainer();
-			pcActief = dtc3.geefProgrammaComponent();
-			deeltaakHeader.zetDeeltaakCComponent(dtc3);
-			add(deeltaakHeader,0);
-		}*/
-		else  if(e.getSource()==deeltaakHeader)
-		{	if(e.getActionCommand().equals("close"))
-			{	remove(deeltaakHeader);
-				remove(pcActief);
-				pcActief = programmaComponent;
-				add(pcActief,0);
-				tekenProgrammaLabel.setVisible(true);
-				runButton.setVisible(true);
-				scroll(true);
-			}
-			else
-			{	for(int i=0 ; i<aantalCC; i++)
-				{	CommandComponent cc = commandComponents[i];
-					if(cc instanceof DeeltaakCComponent)
-					{	DeeltaakCComponent dtc = ((DeeltaakCComponent)cc);
-						if(dtc.getDtcParent().equals(deeltaakHeader.geefDeeltaakCComponent()))
-						{	dtc.setCommandName(e.getActionCommand());
-							
-						}
-					}
-				}
-				deeltaakHeader.geefDeeltaakCComponent().setCommandName(e.getActionCommand());
-					
-			}
-			
-		}
 		tekenOpnieuw();
+	}
+
+	/* PBgv: Fix voor het probleem van het verlies van de MouseListeners in Java8.
+	 * Outline:
+	 * Listeners move to main Panel (this). At mousePressed the CC that's being clicked is locate, 
+	 * and remembered. The event is passed on, just as the ensueing drag and release events. 
+	 * Outline phase 2:
+	 * For scrolling, we want the ProgrammaComponents to implement MouseWheelListener.
+	 * Unfortunately, when you implement this interface, ALL mouseEvents will be passed to the
+	 * ProgrammaComponent. So PC needs to implement MouseListener and MouseMotionListener. 
+	 * But then, these events have wrong x,y: local to the ProgrammaComponent.
+	 * This is solved by having methods like mousePressed(x, y, modifiers) which do the real work.
+	 * The methods from the interfaces will compute the right (x,y) from the event and the CC's
+	 * absolute position and call the 'work-methods'. Pfff, Bloody hell...
+	 * Note: modifiers are as yet unused. Maybe in the future: shift-click to select & drag >1 CC!
+	 */
 	
+	private CommandComponent mouseTargetComponent = null;
+	
+	public void mousePressed(int x, int y, int modifiers) 
+	{
+		//System.out.println("MuisPressed: "+x+", "y);
+		Component c = this.findComponentAt(x, y);
+		//System.out.println(c.getClass().getName()+" - "+c.getX()+" - "+c.getY());
+		if ( c instanceof CommandComponent )
+		{
+			mouseTargetComponent = (CommandComponent)c;
+			mouseTargetComponent.mousePressed(x, y, modifiers);
+		} else 
+		{
+			requestFocus();		// end possible editing of parameters, see ParameterTextField for details	
+			if ( c instanceof CommandContainer)
+			{
+				Component c2 = c.getParent();
+				if ( c2 instanceof CompositeCommandComponent )
+				{
+					mouseTargetComponent = (CommandComponent)c2;
+					mouseTargetComponent.mousePressed(x, y, modifiers);
+				}
+			}
+		}
 	}
 	
+	public void mouseReleased(int x, int y, int modifiers) 
+	{
+		if ( mouseTargetComponent != null )
+		{
+			mouseTargetComponent.mouseReleased(x, y, modifiers);
+			mouseTargetComponent = null;
+		}
+	}
+	
+	public void mouseDragged(int x, int y, int modifiers) 
+	{
+		if ( mouseTargetComponent != null )
+		{
+			mouseTargetComponent.mouseDragged(x, y, modifiers);
+		}
+	}
+	
+	/*
+	 * The methods form the mouse(Motion)Listener interfaces
+	 */
+	
+	@Override
+	public void mousePressed(MouseEvent e) 
+	{
+		mousePressed(e.getX(), e.getY(), e.getModifiersEx());
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) 
+	{
+		mouseReleased(e.getX(), e.getY(), e.getModifiersEx());
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) 
+	{
+		mouseDragged(e.getX(), e.getY(), e.getModifiersEx());
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) 
+	{
+		// unused		
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) 
+	{
+		// unused		
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e) 
+	{
+		// unused
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) 
+	{
+		// unused
+	}
+
 }

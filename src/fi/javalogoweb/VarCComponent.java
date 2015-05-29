@@ -1,95 +1,171 @@
 package fi.javalogoweb;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import logotekenap.Rekenblad;
-import logotekenap.Tekenblad;
-
-import fi.javalogoweb.schuifobjects.SchuifVeld;
+import logotekenap.Uitvoerblad;
+import fi.beans.stringutils.StringUtils;
 import fi.javalogoweb.expressies.*;
 
-public class VarCComponent extends CommandComponent implements ActionListener
+public class VarCComponent extends SimpleCommandComponent implements ParameterEditorListener
 {
+	private NumericParameter waarde;
+	private IdentifierParameter varnaamParam;
 	
-	public VarCComponent(int x, int y, int b, int h, SchuifVeld sv)
-	{	super(x,y,b,h,sv);
-		commandString = "";
-		kommaString = " = ";
-		haakjeString = "";
+	private boolean editingName = false;
+	private boolean editingValue = false;
+	private ParameterTextField paramEditor;
+	
+	private int separatorX;
+	private String equalsString = " = ";
+	private int equalsWidth;
+	FontMetrics fm;
+	
+	public VarCComponent(int x, int y, int b, int h, JavaLogoSchuifVeld sv)
+	{	
+		super(x,y,b,h,sv);
+		commandName = "variabele";				// is virtually irrelevant, parameter holds the real name
+		commandNameTranslated = JavaLogoWeb.rb.getString(commandName);
+		waarde = new NumericParameter();
+		varnaamParam = new IdentifierParameter(commandName);
 		
-		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("variabele"),21);
-		//gc1.zetInstelbaar(true);
-		gc1.zetWaarde(new BasisExpressie("variabele"));
-		gc1.addActionListener(this);
-		add(gc1,0);
-		
-		gc2 = new GetalComponent(locationGc2,2,fm.stringWidth("0"),21);
-		//gc2.zetInstelbaar(true);
-		gc2.zetWaarde(0);
-		gc2.addActionListener(this);
-		add(gc2,0);
-				
-		zetMaat();
+		fm = getFontMetrics(JavaLogoWeb.defaultfont);
+		separatorX = 10+fm.stringWidth(commandName+equalsString);
+		equalsWidth = fm.stringWidth(equalsString);
+		paramEditor = new ParameterTextField(10, 4, 60, 17, this);
+		add(paramEditor);		
 	}
 	
-	public void paint(Graphics g)
-	{	g.setColor(new Color(240,240,240));
-		if(traceKleur)g.setColor(traceActiveColor);
-		g.fillRect(0,0,getSize().width-1,getSize().height-1);
-		g.setColor(Color.black);
-		g.drawRect(0,0,getSize().width-1,getSize().height-1);
-		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		if(caretUp)
-		{	g.drawLine(2,2,getSize().width-3,2);
-			g.drawLine(2,3,getSize().width-3,3);
+	@Override
+	public void parameterEdited(String text)
+	{
+		if ( editingName )
+		{
+			varnaamParam.setParameter(text);
+			editingName = false;
+			separatorX = 10+fm.stringWidth(varnaamParam.getParameterText()+equalsString);
+		} 
+		else if ( editingValue )
+		{
+			waarde.setParameter(text);
+			editingValue = false;
 		}
-		if(caretDown)
-		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
-			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
+		schuifveld.tekenOpnieuw();
+	}
+
+	public void editParameter(boolean name)
+	{
+		if ( name )
+		{
+			paramEditor.setLocation(10, 4);
+			paramEditor.vulIn(varnaamParam.getParameterText());
+			separatorX = paramEditor.getX()+paramEditor.getWidth()+1;
+			editingName = true;
 		}
-		if(label!=null)g.drawString(label,20,18);
-		super.paint(g);
+		else
+		{
+			paramEditor.setLocation(separatorX+2, 4);
+			paramEditor.vulIn(waarde.getParameterText());
+			editingValue = true;
+		}
+		//schuifveld.tekenOpnieuw();
+	}
+
+	/**
+	 * Determine what to edit given the click on pos x,y
+	 * 
+	 * This method looks a bit messy because the flow is:
+	 * 1. when currently not editing: edit the part nearest to x
+	 * 2. when editing a part and x is near the other part: switch editing to the other part
+	 * 3. when editing a part and x is near the same part: stop editing.
+	 * 
+	 * @see fi.javalogoweb.ParameterEditorListener#parameterComponentClicked(int, int)
+	 */
+	@Override
+	public void parameterComponentClicked(int x, int y)
+	{
+		boolean newEdit;
+		boolean onName = ( x < separatorX );
+		if ( editingName )
+		{
+			newEdit = !onName;				// newEdit true: going from name to value
+			parameterEdited(paramEditor.getText());
+		}
+		else if ( editingValue )
+		{
+			newEdit = onName;				// newEdit true: going from value to name
+			parameterEdited(paramEditor.getText());
+		} else
+		{
+			newEdit = true;					// we weren't editing anything, so start
+		}
+		if ( newEdit )
+		{	
+			editParameter(onName);
+		} else
+		{
+			paramEditor.setVisible(false);
+			paramEditor.setEnabled(false);
+			
+		}
+		schuifveld.tekenOpnieuw();
 	}
 	
-	public boolean teken(Tekenblad tb, VarSet varSet)
-	{	double value = gc2.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc2.geefExpressie());
-		if(Double.isNaN(value))return false;
+	/**
+	 * Set varnamee & expression directly (ProgrammaImporter)
+	 * 
+	 * @param name
+	 * @param exp
+	 */
+	void setVariable(String name, String exp)
+	{
+		varnaamParam.setParameter(name.trim());
+		separatorX = 10+fm.stringWidth(varnaamParam.getParameterText()+equalsString);
+		waarde.setParameter(exp);
+	}
 	
-		String s1 = gc1.geefExpressie().toString();
-		String s2 = gc2.geefExpressie().toString();
-		
-		varSet.setVar((gc1.geefExpressie()).toString(), gc2.geefExpressie());
-		traceKleur = tb.varAanpassing(s1,Expressie.format(value));
-		if(traceKleur)schuifveld.tekenOpnieuw();
+	public boolean execute(Uitvoerblad ub, VarSet varSet)
+	{	
+		// don't add to VarSet when name is wrong or expression is wrong 
+		// determine the correctness of the expression for real, with the current varSet!
+		if ( !(varnaamParam.isCorrect()  && waarde.isCorrect(varSet)) ) return false; 
+		varSet.setVar(varnaamParam.getParameterText(), waarde.getExpressie());		
+		traceKleur = ub.varAanpassing(varnaamParam.getParameterText(),""+waarde.getValue());
+		if ( traceKleur ) 
+		{
+			schuifveld.updateView(varSet);
+		}
 		return traceKleur;
 	}
 	
-	public boolean reken(Rekenblad rb, VarSet varSet)
-	{	double value = gc2.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc2.geefExpressie());
-		if(Double.isNaN(value))return false;
-	
-		String s1 = gc1.geefExpressie().toString();
-		String s2 = gc2.geefExpressie().toString();
-		
-		varSet.setVar((gc1.geefExpressie()).toString(), gc2.geefExpressie());
-		traceKleur = rb.varAanpassing(s1,Expressie.format(value));
-		if(traceKleur)schuifveld.tekenOpnieuw();
-		return traceKleur;
+	@Override
+	protected void paintCommand(Graphics g)
+	{
+		g.setFont(JavaLogoWeb.defaultfont);
+		g.setColor(Color.BLACK);
+		if ( editingName )
+		{
+			g.drawString(equalsString+waarde.getParameterText(), separatorX, 18);		
+		}
+		else if ( editingValue )
+		{
+			g.drawString(varnaamParam.getParameterText()+equalsString, 10, 18);
+		} else
+		{	// paint parts of the equation in RED if they are incorrect;
+			if ( !varnaamParam.isCorrect() ) g.setColor(Color.RED);
+			g.drawString(varnaamParam.getParameterText(), 10, 18);
+			g.setColor(Color.BLACK);
+			if ( !(varnaamParam.isCorrect()  && waarde.isCorrect()) ) g.setColor(Color.RED);
+			g.drawString(equalsString, separatorX-equalsWidth, 18);
+			g.setColor(Color.BLACK);
+			if ( !waarde.isCorrect() )g.setColor(Color.RED);
+			g.drawString(waarde.getParameterText(), separatorX, 18);
+		}
 	}
 	
 	public String getCode(String tab)
-	{	String s = tab + gc1.geefTekst() + " = " + gc2.geefTekst() +  "\n";
+	{	String s = tab + varnaamParam.getParameterText()+equalsString+waarde.getParameterText() + "\n";
 		return s;
-	}
-	
-	
-	public void actionPerformed(ActionEvent e)
-	{
-		schuifveld.tekenOpnieuw();
-	}
+	}	
 }

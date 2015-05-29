@@ -3,76 +3,65 @@ package logotekenap;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import fi.javalogoweb.JavaLogoSchuifVeld;
+import fi.javalogoweb.JavaLogoWeb;
 
-public class TraceBeheerder extends JPanel implements ActionListener,Runnable
+public class TraceBeheerder extends JPanel implements ActionListener,Runnable, ItemListener
 {
 	private JButton stapKnop,terugKnop,loopKnop,beginKnop,traceKnop;
+	private JCheckBox showVariables;
 	private JTextField methodeVeld;
 	private int maxAantalStappen,aantalStappen,aantalStappenTekening;
-	private Regelaar rg;
 	private Tekenblad tb;
-	private Rekenblad rb;
-	private AnimatieBeheerder ab;
-	private MuisBeheerder mb;
+	private JavaLogoSchuifVeld jlsveld;
 	private boolean loopAan,traceAan;
 	private Thread loop;
 	
-	public TraceBeheerder(Tekenblad tb, Regelaar rg)
-	{	setLayout(null);
-				
+	public TraceBeheerder(Tekenblad tb, JavaLogoSchuifVeld v)
+	{	
+		setLayout(null);
 		makeGUI();
-		
 		aantalStappen = 0;
 		maxAantalStappen = 0;
 		aantalStappenTekening = 1;
 		this.tb = tb;
-		this.rg = rg;
+		jlsveld = v;
 		loopAan = false;
 		traceAan = false;
 		naarBegin();
-		
-	}
-	
-	public TraceBeheerder(Rekenblad rb, Regelaar rg)
-	{	setLayout(null);
-				
-		makeGUI();
-		
-		aantalStappen = 0;
-		maxAantalStappen = 0;
-		aantalStappenTekening = 1;
-		this.rb = rb;
-		this.rg = rg;
-		loopAan = false;
-		traceAan = false;
-		naarBegin();
-		
 	}
 	
 	public void makeGUI()
 	{
 		beginKnop = new JButton("begin");
-		beginKnop.setBounds(20,5,40,20);
+		beginKnop.setBounds(0,5,60,23);
+		beginKnop.setFont(JavaLogoWeb.boldfont);
 		beginKnop.setMargin(new Insets(0,0,0,0));
 		beginKnop.addActionListener(this);
 		add(beginKnop);
 		stapKnop = new JButton("stap");
-		stapKnop.setBounds(70,5,40,20);
+		stapKnop.setBounds(70,5,60,23);
+		stapKnop.setFont(JavaLogoWeb.boldfont);
 		stapKnop.setMargin(new Insets(0,0,0,0));
 		stapKnop.addActionListener(this);
 		add(stapKnop);
 		terugKnop = new JButton("terug");
-		terugKnop.setBounds(120,5,40,20);
+		terugKnop.setBounds(140,5,60,23);
+		terugKnop.setFont(JavaLogoWeb.boldfont);
 		terugKnop.setMargin(new Insets(0,0,0,0));
 		terugKnop.addActionListener(this);
 		add(terugKnop);
 		methodeVeld = new JTextField("",15);
-		methodeVeld.setBounds(170,5,120,20);
+		methodeVeld.setBounds(210,5,160,23);
+		methodeVeld.setFont(JavaLogoWeb.defaultfont);
 		methodeVeld.setMargin(new Insets(0,0,0,0));
 		add(methodeVeld);
 		loopKnop = new JButton("loop");
@@ -80,28 +69,31 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable
 		loopKnop.setMargin(new Insets(0,0,0,0));
 		loopKnop.addActionListener(this);
 		//add(loopKnop);
-		traceKnop = new JButton("trace aanschakelen");
-		traceKnop.setBounds(130,30,140,25);
+		traceKnop = new JButton("Trace aanschakelen");
+		traceKnop.setBounds(0,32,200,23);
+		traceKnop.setFont(JavaLogoWeb.boldfont);
 		traceKnop.setMargin(new Insets(0,0,0,0));
 		traceKnop.addActionListener(this);
 		add(traceKnop);
+
+		showVariables = new JCheckBox("Toon variabelen");
+		showVariables.addItemListener(this);
+		showVariables.setEnabled(true);
+		showVariables.setSelected(false);
+		showVariables.setBounds(210, 32, 160, 23);
+		showVariables.setFont(JavaLogoWeb.boldfont);
+		add(showVariables);
 	}
+	
 	public void naarBegin()
 	{	methodeVeld.setVisible(false);
 		beginKnop.setVisible(false);
 		stapKnop.setVisible(false);
 		loopKnop.setVisible(false);
 		terugKnop.setVisible(false);
+		showVariables.setVisible(false);
 	}
-	//-------------------------------------------------------------------------------------------
-	//de AnimatieBeheerder en Muisbeheerder maken zich met deze methoden bekend 
-	//-------------------------------------------------------------------------------------------
-	public void meldAnimatieBeheerder(AnimatieBeheerder ab)
-	{	this.ab = ab;
-	}
-	public void meldMuisBeheerder(MuisBeheerder mb)
-	{	this.mb = mb;
-	}
+
 	//-------------------------------------------------------------------------------------------
 	// het Tekenblad vraagt hiermee op of de Tracefunctie aanstaat 
 	//-------------------------------------------------------------------------------------------
@@ -125,17 +117,13 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable
 	//stap terugloopt
 	//-------------------------------------------------------------------------------------------
 	public boolean volgendeMethode(String naam)
-	{	aantalStappen++;
+	{	
+		aantalStappen++;
 		boolean traceStap = false;
 		if(aantalStappen == maxAantalStappen && traceAan)
-		{	if(tb!=null){
-				tb.tekenCursor();
-				tb.tekenTraceImage();
-			}
-			if(rb!=null){
-				rb.tekenTraceImage();
-			}
-			
+		{	
+			tb.tekenCursor();
+			tb.tekenTraceImage();
 			if(!loopAan)methodeVeld.setText(naam);
 			else methodeVeld.setText("");
 			traceStap = true;
@@ -149,87 +137,79 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable
 	//-------------------------------------------------------------------------------------------
 	public void actionPerformed(ActionEvent e)
 	{	if(e.getSource() == stapKnop)
-		{	loopAan=false;
+		{	
+			loopAan=false;
 			maxAantalStappen++;
 			aantalStappen = 0;
-			if(tb!=null)tb.tekenOpnieuw();
-			if(rb!=null)rb.tekenOpnieuw();
+			tb.tekenOpnieuw();
 		}
 		if(e.getSource() == terugKnop)
 		{	loopAan=false;
 			maxAantalStappen--;
 			if(maxAantalStappen<0)maxAantalStappen=0;
 			aantalStappen = 0;
-			if(tb!=null)tb.tekenOpnieuw();
-			if(rb!=null)rb.tekenOpnieuw();
+			tb.tekenOpnieuw();
 		}
 		if(e.getSource() == loopKnop)
 		{	if(loop==null)
 			{	loopAan=true;
 				loop = new Thread(this);
 				loop.start();
-				loopKnop.setLabel("stop");
+				loopKnop.setText("stop");
 			}
 		
 			else
 			{	loopAan=false;
 				loop = null;
-				loopKnop.setLabel("loop");
+				loopKnop.setText("loop");
 			}
 		}
 		if(e.getSource() == beginKnop)
 		{	loopAan=false;
 			maxAantalStappen = 1;
 			aantalStappen = 0;
-			if(tb!=null)tb.tekenOpnieuw();
-			if(rb!=null)rb.tekenOpnieuw();
+			tb.tekenOpnieuw();
 			produceAction("changed");
 		}
 		if(e.getSource() == traceKnop)
 		{	if(!traceAan)
 			{	traceAan = true;
 				//rg.setEnableAll(false);
-				if(ab!=null)ab.setEnableAnimatieKnop(false);
-				if(mb!=null)mb.setEnableMuisActie(false);
-				traceKnop.setLabel("trace uitschakelen");
+				traceKnop.setText("Trace uitschakelen");
 				methodeVeld.setVisible(true);
 				beginKnop.setVisible(true);
 				stapKnop.setVisible(true);
 				terugKnop.setVisible(true);
 				loopKnop.setVisible(true);
-				
+				showVariables.setVisible(true);
 			}
 			else
 			{	traceAan = false;
 				loopAan = false;
 				//rg.setEnableAll(true);
-				if(ab!=null)ab.setEnableAnimatieKnop(true);
-				if(mb!=null)mb.setEnableMuisActie(true);
-				if(tb!=null)tb.tekenOpnieuw();
-				if(rb!=null)rb.tekenOpnieuw();
+				tb.tekenOpnieuw();
+				showVariables.setSelected(false);
+				showVariables.setVisible(false);
+				jlsveld.setVartracing(false);
 				methodeVeld.setVisible(false);
 				beginKnop.setVisible(false);
 				stapKnop.setVisible(false);
 				loopKnop.setVisible(false);
 				terugKnop.setVisible(false);
-				traceKnop.setLabel("trace aanschakelen");
+				traceKnop.setText("Trace aanschakelen");
 				produceAction("changed");
 			}
-				
 			maxAantalStappen = 1;
 			aantalStappen = 0;
-			if(tb!=null)tb.tekenOpnieuw();
-			if(rb!=null)rb.tekenOpnieuw();
+			tb.tekenOpnieuw();
 			repaint();
-			
 		}
 	}
 	public void run()
 	{	while(loopAan && aantalStappenTekening>maxAantalStappen)
 		{	maxAantalStappen++;
 			aantalStappen = 0;
-			if(tb!=null)tb.tekenOpnieuw();
-			if(rb!=null)rb.tekenOpnieuw();
+			tb.tekenOpnieuw();
 			try	
 			{   loop.sleep(100);
 			}
@@ -237,7 +217,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable
 		}
 		loopAan=false;
 		loop = null;
-		loopKnop.setLabel("loop");
+		loopKnop.setText("loop");
 		if(aantalStappenTekening<maxAantalStappen)maxAantalStappen = 0; 
 	}
 	
@@ -258,4 +238,11 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable
  		}
  	}
  	//end ActionProducer
+
+	@Override
+	public void itemStateChanged(ItemEvent e)
+	{
+		boolean vartrace = ( e.getStateChange() == ItemEvent.SELECTED );
+		jlsveld.setVartracing(vartrace);
+	}
 }

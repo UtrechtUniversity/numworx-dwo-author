@@ -1525,8 +1525,8 @@ public class FormuleParser
 			}
 		}
 		
-		System.out.println(formString);
-		System.out.println(sNieuw);
+		//System.out.println(formString);
+		//System.out.println(sNieuw);
 		return sNieuw;
 	}
 	

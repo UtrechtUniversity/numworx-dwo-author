@@ -1,14 +1,11 @@
 package fi.javalogoweb;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.applet.*;
 import java.net.URL;
 import java.util.*;
 
 import javax.swing.JApplet;
 
-import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.appletutil.AppletUtil;
@@ -17,36 +14,36 @@ import logotekenap.*;
 
 public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParamEditApplet
 {
-	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
-	private Tekenblad tekenblad;
-	private Rekenblad rekenblad;
-	private boolean rekenApplet;
+	private Uitvoerblad uitvoerblad;
 	
-	public static Image editImage;
+	//public static Image editImage;
+	public static final Font defaultfont = new Font("Calibri", Font.PLAIN, 12);
+	public static final Font boldfont = new Font("Verdana", Font.BOLD, 12);
+	
+	protected static ResourceBundle rb;
 	
 	
 	public static void main(String[] args)    
-	{	int width = 900;
-        int height = 600;
+	{	int width = 1160;
+        int height = 650;
 		ScormMainFrame mf = new ScormMainFrame(new JavaLogoWeb(),width, height);
 		mf.setTitle("JavaLogoWeb");
 		mf.pack();
-		mf.show();
+		mf.setVisible(true);
 		mf.setSize(width, height);
 	}
 	
 	public JavaLogoWeb()
 	{	Locale language = new Locale ("nl", "");
-		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		// applet=this;
 	}
 	
 	public JavaLogoWeb(Locale language)
 	{	
 		//applet=this;
-		//rb = ResourceBundle.getBundle("fi.fruitbalanceapplet.text.Text",language);
+		rb = ResourceBundle.getBundle("fi.javalogoweb.text.Text",language);
 	}
 	
 	public void init() 
@@ -57,94 +54,40 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		
 		setLayout(null);
 		
-		URL url = this.getCodeBase();
-		if(url!=null && (url.getHost().equals("www.informatica-actief.stoas.nl"))){
-			System.out.println(url.toString());
-			System.out.println(url.getHost());
-		}
-		//else return;
 		
-		
-		//instelling taal
 		String langArg = getParameter("language");
-		if ( langArg == null) langArg = "nl";
+		if (langArg == null) langArg = "en";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.javalogoweb.text.Text",language);
 		
 		//instelling achtergrondkleur
-		Color bgcolor = new Color(230,240,255);
-		String kleurcode = getParameter("bgcolor");
-		//if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
+		Color bgcolor = Color.white;//new Color(230,240,255);
 		getContentPane().setBackground(bgcolor);
 		setBackground(bgcolor);
-		
-		//instelling rekenApplet/tekenApplet
-		String rekenAppletString = getParameter("rekenApplet");
-		if ( rekenAppletString != null && rekenAppletString.equals("true")) rekenApplet = true;
-				
-		
-		//Fi-logo, copyright
-		FIButton fiButton = new FIButton("JavaLogoWeb",new String[]
-			{	"versie-info: ...",
-				"auteur: ...",
-				"programmeur: ...",
-				"Freudenthal Instituut",
-				"www.fi.uu.nl",
-				""
-			});
-		fiButton.setBounds(0,0,20,30);
-		//add(fiButton);
-		
+	/* no explicit edit button needed anymore...			
 		AppletUtil au = new AppletUtil(this);
 		editImage = au.getImage("resources/edit.gif");
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(editImage,0);
 		try{tr.waitForAll();} catch(Exception e) {}
-		
-		if(rekenApplet)
-		{
-			rekenblad = new Rekenblad(this);
-			rekenblad.setBounds(620, 10, getSize().width-631, getSize().height-171);
-			add(rekenblad);
+	*/	
+		uitvoerblad = new Tekenblad(this);
+		uitvoerblad.setBounds(620, 10, getWidth()-631, getHeight()-71);
+		add(uitvoerblad);
 			
-			javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 618, getSize().height-2, rekenblad);
-			javaLogoSchuifVeld.setBackground(getBackground());
-			add(javaLogoSchuifVeld);
-			javaLogoSchuifVeld.initialize();
+		javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 618, getHeight()-2, uitvoerblad);
+		javaLogoSchuifVeld.setBackground(getBackground());
+		add(javaLogoSchuifVeld);
+		javaLogoSchuifVeld.initialize();
 			
-			TraceBeheerder trb = new TraceBeheerder( rekenblad,null);
-			trb.setBounds(618,getSize().height-59,getSize().width-619,58);
-			trb.setBackground(getBackground());
-			trb.addActionListener(javaLogoSchuifVeld);
-			add(trb);
+		TraceBeheerder trb = new TraceBeheerder( (Tekenblad)uitvoerblad, javaLogoSchuifVeld);
+		trb.setBounds(620, getHeight()-59, getWidth()-631, 58);
+		trb.setBackground(getBackground());
+		trb.addActionListener(javaLogoSchuifVeld);
+		add(trb);
 			
-			tekenblad.meldTraceBeheerder(trb);
-		}
-		else
-		{
-			tekenblad = new Tekenblad(this);
-			tekenblad.setBounds(420, 10, getSize().width-431, getSize().height-71);
-			add(tekenblad);
-			
-			javaLogoSchuifVeld = new JavaLogoSchuifVeld(1, 1, 418, getSize().height-2, tekenblad);
-			javaLogoSchuifVeld.setBackground(getBackground());
-			add(javaLogoSchuifVeld);
-			javaLogoSchuifVeld.initialize();
-			
-			TraceBeheerder trb = new TraceBeheerder( tekenblad,null);
-			trb.setBounds(418,getSize().height-59,getSize().width-419,58);
-			trb.setBackground(getBackground());
-			trb.addActionListener(javaLogoSchuifVeld);
-			add(trb);
-			
-			tekenblad.meldTraceBeheerder(trb);
-			//trb.naarBegin();
-		}
-		
-		Label versieLabel = new Label("v20100620");
-		versieLabel.setFont(new Font("SansSerif",Font.PLAIN,10));
-		versieLabel.setBounds(getSize().width-60,getSize().height-20,60,15);
-		add(versieLabel,0);
+		uitvoerblad.meldTraceBeheerder(trb);
+		//trb.naarBegin();
 	}
 	
 	public Hashtable getDefaultParameters()
@@ -172,13 +115,8 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	{	return null;
 	}
 	
-	public void tekenprogramma()
-	{	javaLogoSchuifVeld.teken(tekenblad);
-		
-	}
-	
-	public void rekenprogramma()
-	{	javaLogoSchuifVeld.reken(rekenblad);
+	public void execprogramma()
+	{	javaLogoSchuifVeld.execute(uitvoerblad);
 		
 	}
 	
@@ -222,7 +160,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		
 		if(h.containsKey("code")) code = (String)h.get("code");
 		
-		javaLogoSchuifVeld.setCode(code);
+		//javaLogoSchuifVeld.setCode(code);
 	}
 	
 	public String getState()

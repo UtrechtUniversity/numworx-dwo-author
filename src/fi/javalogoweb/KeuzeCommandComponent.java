@@ -3,264 +3,235 @@ package fi.javalogoweb;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import logotekenap.Rekenblad;
-import logotekenap.Tekenblad;
+import logotekenap.Uitvoerblad;
 
-import fi.javalogoweb.schuifobjects.SchuifVeld;
-import javax.swing.JPanel;
-
-public class KeuzeCommandComponent extends CommandContainer  implements ActionListener
+public class KeuzeCommandComponent extends CompositeCommandComponent implements ParameterEditorListener
 {
-	protected boolean caretIn;
-	String jaString = "ja";
-	String neeString = "nee";
-	BlokCommandComponent blokJa, blokNee;
+	private BooleanParameter condition;
 	
+	private String jaString = "ja";
+	private String neeString = "nee";
+	public static final int ifBlockX = 0;
+	// note: elseBlockX is variable, given by a method
+	public static final int blockY = 25;
 	
-	public KeuzeCommandComponent(int x, int y, int b, int h, SchuifVeld sv)
-	{	super(x,y,b,h,sv);
-		commandString = "Keuze ";
-		kommaString = null;
-		haakjeString = "  ";
-		
-		
-		
-		bc = new BooleanComponent(locationGc1,2,fm.stringWidth("0"),21);
-		bc.zetInstelbaar(true);
-		bc.zetTekst("0=0");
-		bc.addActionListener(this);
-		add(bc,0);
-		
-		blokJa = new BlokCommandComponent(0,25,b/2,h-26);
-		((JPanel)this).add(blokJa,0);
-		
-		blokNee = new BlokCommandComponent(b/2,25,b/2,h-26);
-		((JPanel)this).add(blokNee,0);
-		
-		
-				
-		zetMaat();
-	}
+	private boolean inIfBlock = true;
 	
+	private CommandContainer ifBlock;
+	private CommandContainer elseBlock;
 	
-
-	public Component add(Component c)
-	{	if(caretPos==-1 || isStapel)
-		{	return getParent().add(c);
-		}
-		if(c instanceof CommandComponent) {
-		    c.setBounds(c.getX()-getLocationOpSchuifveld().x,25+getComponentCount()*23, getSize().width/2+1, c.getSize().height);
-		    return blokJa.add(c,0);
-		}
-		//Component comp = super.add(c, caretPos);
-		//reArange();
-		//caretPos = getComponentCount();
-		//return comp;
-		return null;
-	}
+	private boolean isEditing = false;
+	private ParameterTextField conditionEditor;
 	
-	public void showCaret(int x, int y, boolean b)
-	{	Rectangle upRect = new Rectangle(0,0,getSize().width,10);
-		Rectangle downRect = new Rectangle(0,getSize().height-10,getSize().width,10);
-		boolean up = upRect.contains(x-getAbsLocation().x, y-getAbsLocation().y);
-		boolean down = downRect.contains(x-getAbsLocation().x, y-getAbsLocation().y);
-		if(b)
-		{	caretUp = up;
-			caretDown = down;
-			caretIn = !up && !down;
-		}
-		else 
-		{	caretUp = false;
-			caretDown = false;
-			caretIn = false;
-		}
-		if(b) ((CommandContainer)getParent()).setCaret(this,up);
-		if(getParent() instanceof CommandContainer && (caretUp || caretDown)) setCaretPos(-1);
-		else setCaretPos(0);
-	}
-	
-	public void setSize(int b, int h)
-	{	for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) c.setSize(b-25,c.getSize().height);
-		}
-		super.setSize(b,h);
-	}
-	
-	public void setBounds(int x, int y, int b, int h)
-	{	for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) c.setSize(b/2+1,c.getSize().height);
-		}
-		super.setBounds(x,y,b,h);
-	}
-	
-	public void reArange()
+	public KeuzeCommandComponent(int x, int y, int b, int h, JavaLogoSchuifVeld sv)
 	{	
-		//blokJa.reArange();
-		//blokNee.reArange();
+		super(x,y,b,h,sv);
+		commandName = "Keuze";
+		condition = new BooleanParameter();
 		
-		/*int hoogteLinks = 25;
-		for(int i=0 ; i<getComponentCount(); i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent && c.getX()<getWidth()/2-3) 
-			{	c.setLocation(0,hoogteLinks);
-			   	hoogteLinks += c.getSize().height-2;
-			}
-		}
-		int hoogteRechts = 25;
-		for(int i=0 ; i<getComponentCount(); i++)
-        {   Component c = getComponent(i);
-            if(c instanceof CommandComponent && c.getX()>getWidth()/2-4) 
-            {   c.setLocation(getWidth()/2-1,hoogteRechts);
-            	hoogteRechts += c.getSize().height-2;
-            }
-        }
-		setSize(getSize().width, Math.max(48,Math.max(hoogteLinks,hoogteRechts)+2));
-		if(getParent() instanceof CommandContainer)((CommandContainer)getParent()).reArange();
-		locationGc1 = getSize().width/2-10;
-		bc.setLocation(locationGc1, 2);*/
+		ifBlock = new CommandContainer(ifBlockX, blockY, blockWidth(), h-blockY, this);
+		add(ifBlock);
+		elseBlock = new CommandContainer(elseBlockX(), blockY, blockWidth(), h-blockY, this);
+		add(elseBlock);
+		
+		conditionEditor = new ParameterTextField((getWidth()-80)/2, 4, 80, 17, this);
+		// note: xpos must change, since TextField will always be centered
+		add(conditionEditor);
 	}
 	
-	public void paint(Graphics g)
-	{	g.setColor(Color.orange);
-		if(traceKleur)g.setColor(traceActiveColor);
-		g.fillRect(0,0,getSize().width-1,getSize().height-1);
-		g.setColor(Color.white);
-		g.fillRect(0,25,getSize().width,getSize().height-26);
-		g.setColor(Color.black);
-		g.drawRect(0,0,getSize().width-1,getSize().height-1);
-		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		//if(caretUp)g.drawLine(2,2,getSize().width-3,2);
-		//if(caretIn)g.drawLine(27,27,getSize().width-3,27);
-		//if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
-		if(caretUp)
-		{	g.drawLine(2,2,getSize().width-3,2);
-			g.drawLine(2,3,getSize().width-3,3);
-		}
-		if(caretIn)
-		{
-			g.drawLine(0,27,getSize().width-3,27);
-			g.drawLine(0,28,getSize().width-3,28);
-			
-		}
-		if(caretDown)
-		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
-			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
-		}
-		if(label!=null)g.drawString(label,20,18);
-		g.drawLine(0,0,getSize().width/2,25);
-		g.drawLine(0,1,getSize().width/2,26);
-		g.drawLine(getSize().width,0,getSize().width/2,25);
-        g.drawLine(getSize().width,1,getSize().width/2,26);
-        g.drawLine(0,25,getSize().width,25);
-        g.drawRect(0,26,getSize().width/2-1,getSize().height-28);
-		g.drawRect(getSize().width/2,26,getSize().width/2,getSize().height-28);
-		
-		g.drawString(jaString, 10, 20);
-		g.drawString(neeString, getSize().width-30, 20);
-		super.paint(g);
-	}
-	
-	public boolean teken(Tekenblad tb, VarSet varSet)
-	{	boolean value = bc.geefWaarde(varSet);
-		traceKleur = tb.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
-		if(traceKleur)schuifveld.tekenOpnieuw();
-		
-		CommandComponent cc = null;
-		if(value)
-		{	for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent && c.getX()==0)
-				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
-					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
-				}
-			}
-		}
-		else
-		{	for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent && c.getX()>0)
-				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
-					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
-				}
-			}
-		}
-		
-		
-		
-		return false;
-	}
-	
-	public boolean reken(Rekenblad rb, VarSet varSet)
-	{	boolean value = bc.geefWaarde(varSet);
-		traceKleur = rb.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
-		if(traceKleur)schuifveld.tekenOpnieuw();
-		
-		CommandComponent cc = null;
-		if(value)
-		{	for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent && c.getX()==0)
-				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
-					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
-				}
-			}
-		}
-		else
-		{	for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent && c.getX()>0)
-				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
-					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
-				}
-			}
-		}
-		
-		
-		
-		return false;
-	}
-	
-	public String getCode(String tab)
-	{	String s = tab + "Keuze " + bc.geefTekst()  + "\n" + tab +"{";
-		String tabExtra = "      ";
-		String tabNieuw = tab + tabExtra;
-		for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent)
-			{	if(i==0) s = s +((CommandComponent)c).getCode(tabExtra.substring(2));
-				else s = s +((CommandComponent)c).getCode(tabNieuw);
-				
-			}
-		}
-		s = s + tab + "}\n";
-		return s;
-	}
-	
-	public void actionPerformed(ActionEvent e)
+	/**
+	 * xpos of elseBlock cannot be a constant
+	 * 
+	 * @return	elseBlockX
+	 */
+	public final int elseBlockX()
 	{
+		return getWidth()/2-1;
+	}
+		
+	public final int blockWidth()
+	{
+		return getWidth()/2+1;
+	}
+		
+	/**
+	 * PBgv: set the boolean expression (from programImporter).
+	 * 
+	 * @param expression	the boolean expression as a String
+	 */
+	public void setBoolExpression (String expression)
+	{
+		condition.setParameter(expression);
+	}
+
+	/**
+	 * Select a container for future adding of components. Only relevant for scripting (ProgrammaImporter)
+	 * 
+	 * @param inIfBlock		true/false for obvious container selection
+	 */
+	public void setInIfBlock(boolean inIfBlock)
+	{
+		this.inIfBlock = inIfBlock;
+	}
+
+	/**
+	 * Add a CommandComponent from source code, for instance by the ProgarammaImporter
+	 * Note: Drag&drop will add a CC directly into one of the CommandContainers
+	 * 
+	 * @param cc			CommandComponent to be added
+	 * @param inIfBlock		in if- or elseBlock
+	 */
+	@Override
+	void addCComponent(CommandComponent cc)
+	{	
+		if ( inIfBlock )
+		{
+			ifBlock.addCComponent(cc);					
+		} else
+		{	
+			elseBlock.addCComponent(cc);		
+		}
+	}
+	
+	@Override
+	public void setSize(int w, int h)
+	{	
+		super.setSize(w,h);
+		ifBlock.setWidth(blockWidth());
+		// also move elseBlock to the middle
+		elseBlock.setLocation(elseBlockX(), blockY);
+		elseBlock.setWidth(blockWidth());
+	}
+	
+	@Override
+	public void setBounds(int x, int y, int w, int h)
+	{	
+		super.setBounds(x,y,w,h);
+		if ( ifBlock != null && elseBlock != null)		// constructor will call setBounds before containers are made
+		{
+			ifBlock.setWidth(blockWidth());
+			elseBlock.setLocation(elseBlockX(), blockY);
+			elseBlock.setWidth(blockWidth());
+		}
+	}
+	
+	@Override
+	void containerHeightChanged(int h)
+	{
+		// call doesn't specify the contaier, so get heights of both.
+		int maxh = Math.max(ifBlock.getHeight(), elseBlock.getHeight());
+		// also adjust heights of containers, or one may be too short
+		ifBlock.setSize(ifBlock.getWidth(), maxh);
+		elseBlock.setSize(elseBlock.getWidth(), maxh);
+		super.setSize(getWidth(), maxh+blockY);
+		((CommandContainer)getParent()).reArrange();
+	}
+	
+	@Override
+	public void parameterEdited(String text)
+	{
+		condition.setParameter(text);
+		isEditing = false;
 		schuifveld.tekenOpnieuw();
 	}
+
+	@Override
+	public void parameterComponentClicked(int x, int y)
+	{
+		if ( isEditing )
+		{
+			condition.setParameter(conditionEditor.getText());
+			conditionEditor.setVisible(false);
+			conditionEditor.setEditable(false);
+			isEditing = false;
+		} else
+		{	if ( y < blockY )
+			{
+				isEditing = true;
+				conditionEditor.vulIn(condition.getParameterText());
+				conditionEditor.setLocation( (getWidth()-conditionEditor.getWidth())/2, 4);
+			}
+		}
+		schuifveld.tekenOpnieuw();
+	}
+
+	@Override
+	protected void paintBackground(Graphics g)
+	{
+		g.setColor(Color.orange);
+		if(traceKleur)g.setColor(traceActiveColor);
+		g.fillRect(0, 0, getSize().width-1, getSize().height-1);
+		g.setColor(Color.black);
+		g.drawRect(0, 0, getSize().width-1, getSize().height-1);
+		g.drawRect(1, 1, getSize().width-3, getSize().height-3);
+		g.drawLine(0, 0, blockWidth(), blockY);
+		g.drawLine(0, 1, blockWidth(), blockY+1);
+		g.drawLine(getSize().width, 0, blockWidth(), blockY);
+		g.drawLine(getSize().width, 1, blockWidth(), blockY+1);
+		g.setFont(JavaLogoWeb.defaultfont);
+		g.drawString(jaString, 10, 20);
+		g.drawString(neeString, getSize().width-30, 20);		
+	}
+
+	@Override
+	protected void paintCommand(Graphics g)
+	{
+		if ( isEditing ) return;			// nothing to paint, only the TextField
+		g.setFont(JavaLogoWeb.defaultfont);
+		if ( condition.isCorrect() )
+		{
+			g.setColor(Color.black);			
+		} else
+		{
+			g.setColor(Color.RED);
+		}
+		g.drawString(condition.getParameterText(),getSize().width/2-10,18);
+		
+	}
+	
+	@Override
+	public boolean execute(Uitvoerblad ub, VarSet varSet)
+	{	
+		if ( !condition.isCorrect(varSet) ) return false; 
+		boolean value = condition.getValue();
+		//traceKleur =ub.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
+		if(traceKleur)schuifveld.tekenOpnieuw();
+		
+		if(value)
+		{	for(int j=0 ; j<ifBlock.getComponentCount() ; j++)
+			{	Component c = ifBlock.getComponent(j);
+				if(c instanceof CommandComponent)
+				{	boolean tracekleur = ((CommandComponent)c).execute(ub, varSet);
+					if(tracekleur) return true;
+				}
+			}
+		}
+		else
+		{	for(int j=0 ; j<elseBlock.getComponentCount() ; j++)
+			{	Component c = elseBlock.getComponent(j);
+				if(c instanceof CommandComponent)
+				{	boolean tracekleur = ((CommandComponent)c).execute(ub, varSet);
+					if(tracekleur) return true;
+				}
+			}
+		}
+		return false;
+	}
+		
+	@Override
+	public String getCode(String tab)
+	{	String s = tab + "Keuze: Als "+condition.getParameterText()+" Dan\n" + tab +"{\n";
+		String tabNieuw = tab + "    ";
+		s = s + ifBlock.getCode(tabNieuw);
+		s = s + tab + "}\n";
+		if ( elseBlock.getComponentCount() > 0 )
+		{
+			s = s + tab + "Anders\n" + tab +"{\n";
+			s = s + elseBlock.getCode(tabNieuw);
+			s = s + tab + "}\n";
+		}
+		return s;
+	}
+
 }

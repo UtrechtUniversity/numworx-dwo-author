@@ -2,188 +2,158 @@ package fi.javalogoweb;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import logotekenap.Rekenblad;
-import logotekenap.Tekenblad;
+import fi.javalogoweb.expressies.*;
+import fi.javalogoweb.formuleobjects.*;
+import logotekenap.Uitvoerblad;
 
-import fi.javalogoweb.schuifobjects.SchuifVeld;
-
-public class HerhaalCommandComponent extends CommandContainer  implements ActionListener
+public class HerhaalCommandComponent extends CompositeCommandComponent implements ParameterEditorListener
 {
-	protected boolean caretIn;
+	private NumericParameter loopCount;
 	
-	public HerhaalCommandComponent(int x, int y, int b, int h, SchuifVeld sv)
-	{	super(x,y,b,h,sv);
-		commandString = "Herhaal ";
-		kommaString = null;
-		haakjeString = " keer ";
+	private CommandContainer loopBlock;
+	public static final int blockX = 25;
+	public static final int blockY = 25;
+
+	private boolean isEditing = false;
+	private ParameterTextField countEditor;
+	private String naString = " keer";
+	private String naStringTranslated = JavaLogoWeb.rb.getString(naString);
+
+	public HerhaalCommandComponent(int x, int y, int b, int h, JavaLogoSchuifVeld sv)
+	{	
+		super(x,y,b,h,sv);
+		commandName = "Herhaal";
+		commandNameTranslated = JavaLogoWeb.rb.getString(commandName);
+		loopCount = new NumericParameter();
 		
-		gc1 = new GetalComponent(locationGc1,2,fm.stringWidth("0"),21);
-		//gc1.zetInstelbaar(true);
-		gc1.zetWaarde(0);
-		gc1.addActionListener(this);
-		add(gc1,0);
-				
-		zetMaat();
+		loopBlock = new CommandContainer(blockX, blockY, b-blockX, h-blockY, this);
+		add(loopBlock);
+		
+		FontMetrics fm = getFontMetrics(JavaLogoWeb.defaultfont);
+		int tfx = 10+fm.stringWidth(commandNameTranslated+" ");
+		countEditor = new ParameterTextField(tfx, 4, 80, 17, this);
+		add(countEditor);
 	}
 
-	public Component add(Component c)
-	{	if(caretPos==-1 || isStapel)
-		{	return getParent().add(c);
-		}
-		if(c instanceof CommandComponent) c.setBounds(25,25+getComponentCount()*23, getSize().width-25, c.getSize().height);
-		Component comp = super.add(c, caretPos);
-		reArange();
-		caretPos = getComponentCount();
-		return comp;
+	@Override
+	void addCComponent(CommandComponent cc)
+	{	
+		loopBlock.addCComponent(cc);
 	}
 	
-	public void showCaret(int x, int y, boolean b)
-	{	Rectangle upRect = new Rectangle(0,0,getSize().width,10);
-		Rectangle downRect = new Rectangle(0,getSize().height-10,getSize().width,10);
-		boolean up = upRect.contains(x-getAbsLocation().x, y-getAbsLocation().y);
-		boolean down = downRect.contains(x-getAbsLocation().x, y-getAbsLocation().y);
-		if(b)
-		{	caretUp = up;
-			caretDown = down;
-			caretIn = !up && !down;
-		}
-		else 
-		{	caretUp = false;
-			caretDown = false;
-			caretIn = false;
-		}
-		if(b) ((CommandContainer)getParent()).setCaret(this,up);
-		if(getParent() instanceof CommandContainer && (caretUp || caretDown)) setCaretPos(-1);
-		else setCaretPos(0);
+	public void setSize(int w, int h)
+	{	
+		loopBlock.setWidth(w);
+		super.setSize(w,h);
 	}
 	
-	public void setSize(int b, int h)
-	{	for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) c.setSize(b-25,c.getSize().height);
+	public void setBounds(int x, int y, int w, int h)
+	{	
+		if ( loopBlock != null )		// for constructor only: loopBlock made later on
+		{
+			loopBlock.setWidth(w-blockX);			
 		}
-		super.setSize(b,h);
+		super.setBounds(x,y,w,h);
 	}
 	
-	public void setBounds(int x, int y, int b, int h)
-	{	for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) c.setSize(b-25,c.getSize().height);
-		}
-		super.setBounds(x,y,b,h);
+	@Override
+	void containerHeightChanged(int h)
+	{
+		// this is callback from CommandContainer that has been adjeusted. Just change height of this component
+		super.setSize(getWidth(), h+blockY);
+		((CommandContainer)getParent()).reArrange();
 	}
 	
-	public void reArange()
-	{	int hoogte = 25;
-		for(int i=0 ; i<getComponentCount()  ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent) 
-			{	c.setLocation(25,hoogte);
-				hoogte += c.getSize().height-2;
+	/**
+	 * Set loop count directly (programmaImporter)
+	 * 
+	 * @param s
+	 */
+	void setLoopCount(String s)
+	{
+		loopCount.setParameter(s);
+	}
+	
+	@Override
+	public void parameterEdited(String text)
+	{
+		loopCount.setParameter(text);
+		isEditing = false;
+		schuifveld.tekenOpnieuw();
+	}
+
+	@Override
+	public void parameterComponentClicked(int x, int y)
+	{
+		if ( isEditing )
+		{
+			loopCount.setParameter(countEditor.getText());
+			countEditor.setVisible(false);
+			countEditor.setEditable(false);
+			isEditing = false;
+		} else
+		{	if ( y < blockY )
+			{
+				isEditing = true;
+				countEditor.vulIn(loopCount.getParameterText());
 			}
 		}
-		setSize(getSize().width, Math.max(48,hoogte+2));
-		if(getParent() instanceof CommandContainer)((CommandContainer)getParent()).reArange();
+		schuifveld.tekenOpnieuw();
 	}
 	
-	public void paint(Graphics g)
-	{	g.setColor(Color.orange);
+	@Override
+	protected void paintBackground(Graphics g)
+	{
+		g.setColor(Color.orange);
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
-		g.setColor(Color.white);
-		g.fillRect(25,25,getSize().width-26,getSize().height-26);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
-		g.drawRect(1,1,getSize().width-3,getSize().height-3);
-		//if(caretUp)g.drawLine(2,2,getSize().width-3,2);
-		//if(caretIn)g.drawLine(27,27,getSize().width-3,27);
-		//if(caretDown)g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
-		if(caretUp)
-		{	g.drawLine(2,2,getSize().width-3,2);
-			g.drawLine(2,3,getSize().width-3,3);
-		}
-		if(caretIn)
+		g.drawRect(1,1,getSize().width-3,getSize().height-3);		
+	}
+
+	@Override
+	protected void paintCommand(Graphics g)
+	{
+		g.setFont(JavaLogoWeb.defaultfont);
+		g.setColor(Color.black);
+		if ( isEditing )
 		{
-			g.drawLine(27,27,getSize().width-3,27);
-			g.drawLine(27,28,getSize().width-3,28);
-			
+			g.drawString(commandNameTranslated+" ", 10, 18);
+			g.drawString(naStringTranslated, countEditor.getX()+countEditor.getWidth()+1, 18);		
+		} else
+		{
+			if ( !loopCount.isCorrect() )g.setColor(Color.RED);
+			g.drawString(commandNameTranslated+" "+loopCount.getParameterText()+naStringTranslated, 10, 18);		
 		}
-		if(caretDown)
-		{	g.drawLine(2,getSize().height-3,getSize().width-3,getSize().height-3);
-			g.drawLine(2,getSize().height-4,getSize().width-3,getSize().height-4);
-		}
-		if(label!=null)g.drawString(label,20,18);
-		g.drawRect(25,25,getSize().width-26,getSize().height-26);
-		g.drawRect(26,26,getSize().width-28,getSize().height-28);
-		super.paint(g);
 	}
 	
-	public boolean teken(Tekenblad tb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))return false;
-		for(int i=0 ; i<value ; i++)
-		{	CommandComponent cc = null;
-			for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
+	public boolean execute(Uitvoerblad ub, VarSet varSet)
+	{	
+		if ( !loopCount.isCorrect(varSet) ) return false; 
+		for(int i=0 ; i<(int)loopCount.getValue() ; i++)
+		{	
+			for(int j=0 ; j<loopBlock.getComponentCount() ; j++)
+			{	
+				Component c = loopBlock.getComponent(j);
 				if(c instanceof CommandComponent)
-				{	boolean tracekleur = ((CommandComponent)c).teken(tb, varSet);
+				{	boolean tracekleur = ((CommandComponent)c).execute(ub, varSet);
 					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
 				}
 			}
-			if(cc!=null) break;
 		}
 		return false;
 	}
-	
-	public boolean reken(Rekenblad rb, VarSet varSet)
-	{	double value = gc1.geefWaarde();
-		if(Double.isNaN(value))value = varSet.getExpressionValue(gc1.geefExpressie());
-		if(Double.isNaN(value))return false;
-		for(int i=0 ; i<value ; i++)
-		{	CommandComponent cc = null;
-			for(int j=0 ; j<getComponentCount() ; j++)
-			{	Component c = getComponent(j);
-				if(c instanceof CommandComponent)
-				{	boolean tracekleur = ((CommandComponent)c).reken(rb, varSet);
-					if(tracekleur) return true;
-					//if(!(c instanceof CommandContainer) && ((CommandComponent)c).traceKleur) 
-					//{	cc = (CommandComponent)c;
-					//	break;
-					//}
-				}
-			}
-			if(cc!=null) break;
-		}
-		return false;
-	}
-	
+		
+	@Override
 	public String getCode(String tab)
-	{	String s = tab + "Herhaal " + gc1.geefTekst() + " keer" + "\n" + tab +"{";
-		String tabExtra = "      ";
-		String tabNieuw = tab + tabExtra;
-		for(int i=0 ; i<getComponentCount() ; i++)
-		{	Component c = getComponent(i);
-			if(c instanceof CommandComponent)
-			{	if(i==0) s = s +((CommandComponent)c).getCode(tabExtra.substring(2));
-				else s = s +((CommandComponent)c).getCode(tabNieuw);
-				
-			}
-		}
+	{	String s = tab + "Herhaal "+loopCount.getParameterText()+naString + "\n" + tab +"{\n";
+		String tabNieuw = tab + "    ";
+		s= s+ loopBlock.getCode(tabNieuw);
 		s = s + tab + "}\n";
 		return s;
 	}
-	
-	public void actionPerformed(ActionEvent e)
-	{
-		schuifveld.tekenOpnieuw();
-	}
+
 }

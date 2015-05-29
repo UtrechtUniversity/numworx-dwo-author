@@ -1,14 +1,17 @@
 package logotekenap;
 
 import javax.swing.JPanel;
+
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Polygon;
+
 import fi.javalogoweb.*;
 
-public class Tekenblad extends JPanel
+public class Tekenblad extends Uitvoerblad
 {
 	private int breedte,hoogte;
 	private Punt beginpunt,eindpunt,startpunt;
@@ -17,11 +20,13 @@ public class Tekenblad extends JPanel
   	private Graphics gIm ;
 	public Matrix2D mat;  
 	private JavaLogoWeb eigenaar;
-	private TraceBeheerder trb;
 	private boolean pen, vul;
-  	private Color penkleur,vulkleur,achtergrondkleur;
+  	private Color penkleur, vulkleur, achtergrondkleur;
 	public boolean bezigMetTekenen;
-	public int printX =20, printY = 20;
+	public static int consoleStartX = 10;
+	public static int consoleStartY = 16;
+	private int consoleX = consoleStartX;
+	private int consoleY = consoleStartY;
 	  
 	public Tekenblad(JavaLogoWeb ap)
 	{	achtergrondkleur = Color.white;
@@ -30,11 +35,6 @@ public class Tekenblad extends JPanel
 		mat = new Matrix2D();					// zorgt voor de tekenrichting
 	}
 	
-	
-	
-	public void meldTraceBeheerder(TraceBeheerder trb)
-	{	this.trb = trb;
-	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
 	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
@@ -62,11 +62,13 @@ public class Tekenblad extends JPanel
   	{ 	beginpunt = new Punt(startpunt);
     	eindpunt = new Punt(beginpunt);
     	mat.initialiseer();
+    	achtergrondkleur = Color.WHITE;
 	  	gIm.setColor(achtergrondkleur);
     	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
     	gIm.setColor(Color.black);
     	gIm.drawRect(0, 0, breedte-1, hoogte-1);
-    	printY=20;
+    	consoleX = consoleStartX;
+    	consoleY = consoleStartY;
     	//penAan(0,0,0);
     	pen = true;
     	penkleur = Color.black;
@@ -74,7 +76,7 @@ public class Tekenblad extends JPanel
     	penAan();
 		vul = false;
     	vulkleur = Color.black;
-    	eigenaar.tekenprogramma();
+    	eigenaar.execprogramma();
 	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
@@ -98,6 +100,7 @@ public class Tekenblad extends JPanel
 	//-------------------------------------------------------------------------------------------
 	public void naarVolgendPunt(double dx,double dy)
 	{	eindpunt = mat.geefVolgendPunt(beginpunt,dx,dy);
+		gIm.setColor(penkleur);
 		if(pen)gIm.drawLine((int)Math.rint(beginpunt.x),(int)Math.rint(beginpunt.y),(int)Math.rint(eindpunt.x),(int)Math.rint(eindpunt.y));
 		if(vul) veelvlak.addPoint((int)Math.rint(beginpunt.x),(int)Math.rint(beginpunt.y));
 		beginpunt.x = eindpunt.x;
@@ -106,9 +109,18 @@ public class Tekenblad extends JPanel
 	void tekenPolygon()
 	{	gIm.setColor(vulkleur);
 		gIm.fillPolygon(veelvlak);
-		gIm.setColor(penkleur);
-		if(pen)gIm.drawPolygon(veelvlak);
+		if ( pen ) 
+		{
+			gIm.setColor(penkleur);
+			gIm.drawPolygon(veelvlak);
+		}
 	}
+  	void vulBlad(Color c)
+  	{
+  		gIm.setColor(c);
+  		gIm.fillRect(1, 1, breedte-2, hoogte-2);
+  	}
+	
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door de TraceBeheerder
 	//-------------------------------------------------------------------------------------------
@@ -130,9 +142,7 @@ public class Tekenblad extends JPanel
 		gIm.setColor(new Color(0,0,255));
 		gIm.drawPolygon(cursor);
 	}
- 	//-------------------------------------------------------------------------------------------
-	//deze methoden worden gebruikt in "tekenprogramma()" 
-	//-------------------------------------------------------------------------------------------
+
 	public boolean links(double dHoek)
 	{	mat.draai(dHoek);
 		if(trb!=null && trb.geefTraceStatus())
@@ -227,6 +237,14 @@ public class Tekenblad extends JPanel
 			return trb.volgendeMethode("vulUit()");
 		else return false;
 	}
+	public boolean vulBlad(int r, int g, int b)
+	{
+		vulBlad(new Color(r,g,b));
+		if(trb!=null && trb.geefTraceStatus())
+			return trb.volgendeMethode("ag("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+		else return false;
+	}
+
 	
 	public boolean varAanpassing(String varNaam, String varValue)
 	{	if(trb!=null && trb.geefTraceStatus())
@@ -234,61 +252,44 @@ public class Tekenblad extends JPanel
 		else return false;
 	}
 	
-	public boolean checkKeuze(String voorwaarde)
-	{	if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode(voorwaarde);
-		else return false;
-	}
-
-	
-	/*public void penAan()
-	{	pen = true;
-	}
-	public void penAan(String kl)
-	{	pen = true;
-		penkleur = maakKleur(kl);
-		gIm.setColor(penkleur);
-	}
-	public void penAan(int r, int g, int b)
-	{	pen = true;
-		penkleur = new Color(r,g,b);
-		gIm.setColor(penkleur);
-	}
-	public void penUit()
-	{	pen = false;
-	}
-	public void vulAan()
-	{	vul = true;
-		veelvlak = new Polygon();
-	}
-	public void vulAan(String kl)
-	{	vul = true;	
-		vulkleur = maakKleur(kl);
-		veelvlak = new Polygon();
-	}
-	public void vulAan(int r, int g, int b)
-	{	vul = true;	
-		vulkleur = new Color(r,g,b);
-		veelvlak = new Polygon();
-	}
-	public void vulUit()
-	{	tekenPolygon();
-		vul = false;
-	}*/
 	void achtergrondkleur(String kl)
-	{	achtergrondkleur = maakKleur(kl);
+	{	
+		achtergrondkleur = maakKleur(kl);
 	}
+	
 	void achtergrondkleur(int r, int g, int b)
-	{	achtergrondkleur = new Color(r,g,b);
+	{	
+		achtergrondkleur = new Color(r,g,b);
 	}
-	public boolean schrijf(String s)
-	{	//gIm.drawString(s, (int)beginpunt.x, (int)beginpunt.y);
-		gIm.drawString(s, printX, printY);
-		printY += 20;
+	
+	public boolean printConsole(String s)
+	{	
+		gIm.setFont(JavaLogoWeb.defaultfont);
+		gIm.drawString(s, consoleX, consoleY);
 		if(trb!=null && trb.geefTraceStatus())
 			return trb.volgendeMethode("print("+s+")");
 		else return false;
 	}
+	
+	@Override
+	public boolean printl(String s)
+	{
+		boolean b = printConsole(s);
+		consoleX = consoleStartX;
+		consoleY = consoleY+16;
+		return b;
+	}
+
+	@Override
+	public boolean print(String s)
+	{
+		boolean b = printConsole(s);
+		FontMetrics fm = getFontMetrics(JavaLogoWeb.defaultfont);
+		consoleX = consoleX + fm.stringWidth(s);
+		return b;
+	}
+
+	
 	void schrijf(String s, Font f)
 	{	gIm.setFont(f);
 		gIm.drawString(s, (int)beginpunt.x, (int)beginpunt.y);
@@ -314,6 +315,22 @@ public class Tekenblad extends JPanel
 		else if(kl.equals("magenta")) return Color.magenta;
 		else if(kl.equals("wit")) return Color.white;
 		else if(kl.equals("oranje")) return Color.orange;
-		else return Color.black;		
-	}	
+		else return Color.black;
+	}
+
+	@Override
+	public double geefInvoer()
+	{
+		// no message needed, this is response to invoer(String)
+		return 0;
+	}
+
+	@Override
+	public boolean invoer(String varNaam)
+	{
+		System.out.println("De opdracht 'invoer' is niet beschikbaar in de tekenapplet.");
+		return false;
+	}
+
+
 }
