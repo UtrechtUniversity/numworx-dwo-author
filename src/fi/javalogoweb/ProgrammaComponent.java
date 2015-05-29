@@ -220,7 +220,7 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 	@Override
 	protected void paintBackground(Graphics g)
 	{
-		g.setColor(new Color(187,221,255));
+		g.setColor(new Color(187,221,255));new Color(230,240,255);
 		g.fillRect(1,1,getWidth()-1,headerHeight-1);
 		g.setColor(Color.BLACK);
 		g.drawRect(0,0,getWidth()-1,headerHeight);

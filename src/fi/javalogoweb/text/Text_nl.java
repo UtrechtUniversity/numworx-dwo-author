@@ -22,52 +22,25 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "variabele" , "variabele" },
 				{ "Tekenalgoritme" , "Tekenalgoritme" },
 				
-				{ "icosaederLabel" , "icosaeder" },
-                { "prismaLabel" , "prisma" },
-                { "ruiten12Label" , "rombendodecahedron" },
-                { "icosaederLabel" , "icosaeder" },
+				{ "runButtonLabel" , "Run" },
+				{ "importButtonLabel" , "Import code" },
+				{ "exportButtonLabel" , "Export code" },
+				{ "importCodeLabel" , "Importeer code" },
+				
+				{ "beginKnopLabel" , "begin" },
+				{ "stapKnopLabel" , "stap" },
+				{ "terugKnopLabel" , "terug" },
+				{ "loopKnopLabel" , "loop" },
+				{ "stopKnopLabel" , "stop" },
+				
+				{ "traceOnLabel" , "Trace inschakelen" },
+				{ "traceOffLabel" , "Trace uitschakelen" },
+				{ "showVarLabel" , "Toon Variabelen" },
                 
-                { "kleurVlakKnopLabel" , "Kleur vlakken" },
-                { "wisKleurKnopLabel" , "Wis gekleurd" },
-                
-                { "hulpPuntenCBLabel" , "hulppunten op ribben" },
-                
-                { "vooraanzichtPijlCBLabel" , "Pijl voor vooraanzicht" },
-                
-                { "alleenViewerCBLabel" , "Toon viewer" },
-                { "draaibaarRBLabel" , "Viewer draaibaar" },
-                { "vooraanzichtRBLabel" , "Viewer vooraanzicht" },
-                { "achteraanzichtRBLabel" , "Viewer achteraanzicht" },
-                { "bovenaanzichtRBLabel" , "Viewer bovenaanzicht" },
-                { "onderaanzichtRBLabel" , "Viewer onderaanzicht" },
-                { "linkeraanzichtRBLabel" , "Viewer linker aanzicht" },
-                { "rechteraanzichtRBLabel" , "Viewer rechter aanzicht" },
-                { "docentDraaihoekRBLabel" , "Docent draaihoek" },
-                //{ "docentDraaihoekRBLabel" , "Teacher set rotation" },                
-                
-                { "alleenProfielenCBLabel" , "Toon profielen" },
-                
-                { "vlakkenKleurenCBLabel" , "Vlakken kleuren" },
-                { "inProfielenRBLabel" , "van de profielen" },
-                { "inFiguurRBLabel" , "van de figuur" },
-                
-                { "tekenVVOptiesLabel" , "Teken Veelvlak Opties" },
-                { "nakijkOptiesLabel" , "Nakijkopties" },
-                
-                { "kijkDraaihoekNaCBLabel" , "Kijk de draaihoek na" },
-                { "kijkVlakkenNaCBLabel" , "Kijk de gekleurde" },
-                { "kijkVlakkenNaCBLabel2" , "vlakken na" },
-                { "kijkNaLabel" , "Kijk na" }, 
-                
-                { "dezeDraaihoekRBLabel" , "Deze draaihoek" },
-                { "voorkantRBLabel" , "Voorkant" },
-                { "achterkantRBLabel" , "Achterkant" },
-                { "bovenkantRBLabel" , "Bovenkant" },
-                { "onderkantRBLabel" , "Onderkant" },
-                { "linkerkantRBLabel" , "Linkerkant" },
-                { "rechterkantRBLabel" , "Rechterkant" },
-                
-                
+				{ "jaLabel" , "ja" },
+				{ "neeLabel" , "nee" },
+				
+				{ "variabelenLabel" , "Variabelen:" },
 				
         };
 }

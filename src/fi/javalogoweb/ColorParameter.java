@@ -111,6 +111,20 @@ class ColorParameter extends TAParameter
 		else if ( s.equals("magenta")) theColor = Color.MAGENTA;
 		else if ( s.equals("wit")) theColor = Color.WHITE;
 		else if ( s.equals("oranje")) theColor = Color.ORANGE;
+		
+		else if ( s.equals("red")) theColor = Color.RED;
+		else if ( s.equals("green")) theColor = Color.GREEN;
+		else if ( s.equals("blue")) theColor = Color.BLUE;
+		else if ( s.equals("yellow")) theColor = Color.YELLOW;
+		else if ( s.equals("cyan")) theColor = Color.CYAN;
+		else if ( s.equals("pink")) theColor = Color.PINK;
+		else if ( s.equals("black")) theColor = Color.BLACK;
+		else if ( s.equals("gray")) theColor = Color.GRAY;
+		else if ( s.equals("lightGray")) theColor = Color.LIGHT_GRAY;
+		else if ( s.equals("magenta")) theColor = Color.MAGENTA;
+		else if ( s.equals("white")) theColor = Color.WHITE;
+		else if ( s.equals("orange")) theColor = Color.ORANGE;
+		
 		else isCorrect = false;		// ... here
 	}
 

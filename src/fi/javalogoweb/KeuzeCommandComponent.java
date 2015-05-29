@@ -10,8 +10,8 @@ public class KeuzeCommandComponent extends CompositeCommandComponent implements 
 {
 	private BooleanParameter condition;
 	
-	private String jaString = "ja";
-	private String neeString = "nee";
+	private String jaString = JavaLogoWeb.rb.getString("jaLabel");
+	private String neeString = JavaLogoWeb.rb.getString("neeLabel");
 	public static final int ifBlockX = 0;
 	// note: elseBlockX is variable, given by a method
 	public static final int blockY = 25;

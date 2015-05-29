@@ -8,11 +8,12 @@ import javax.swing.JApplet;
 
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import logotekenap.*;
 
-public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParamEditApplet
+public class JavaLogoWeb extends JApplet implements WiskOpdrApplet
 {
 	protected SCORM12APIInterface api;
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
@@ -22,7 +23,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	public static final Font defaultfont = new Font("Calibri", Font.PLAIN, 12);
 	public static final Font boldfont = new Font("Verdana", Font.BOLD, 12);
 	
-	protected static ResourceBundle rb;
+	public static ResourceBundle rb;
 	
 	
 	public static void main(String[] args)    
@@ -47,13 +48,8 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	}
 	
 	public void init() 
-	{	try
-		{	api = Scorm.findAPI(this);
-		}
-		catch(Exception e){}
-		
+	{	
 		setLayout(null);
-		
 		
 		String langArg = getParameter("language");
 		if (langArg == null) langArg = "en";
@@ -70,7 +66,7 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(editImage,0);
 		try{tr.waitForAll();} catch(Exception e) {}
-	*/	
+		
 		uitvoerblad = new Tekenblad(this);
 		uitvoerblad.setBounds(620, 10, getWidth()-631, getHeight()-71);
 		add(uitvoerblad);
@@ -88,6 +84,10 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 			
 		uitvoerblad.meldTraceBeheerder(trb);
 		//trb.naarBegin();
+	*/
+		JavaLogoInteractiePanel jlip = new JavaLogoInteractiePanel();
+		jlip.setBounds(0,0,1160,600);
+		add(jlip);
 	}
 	
 	public Hashtable getDefaultParameters()
@@ -179,20 +179,6 @@ public class JavaLogoWeb extends JApplet implements ScormAppletIF, WiskOpdrParam
 	{	return 0.5;
 	}
 	
-	public boolean hasEditMode()
-	{	return false;
-	}
-
-    public ScormEditComponentIF getEditComponent(Hashtable launchdata)
-    {	return null;
-    }
-    
-    public Parameter[] getEditableParameters()
-	{	return null;
-    }
-
-    public Parameter[] getAllParameters()
-    {	return null;
-    }
+	
     
 }

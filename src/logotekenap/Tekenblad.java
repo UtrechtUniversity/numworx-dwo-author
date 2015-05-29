@@ -19,7 +19,7 @@ public class Tekenblad extends Uitvoerblad
   	private Image im ;
   	private Graphics gIm ;
 	public Matrix2D mat;  
-	private JavaLogoWeb eigenaar;
+	private JavaLogoInteractiePanel eigenaar;
 	private boolean pen, vul;
   	private Color penkleur, vulkleur, achtergrondkleur;
 	public boolean bezigMetTekenen;
@@ -28,7 +28,7 @@ public class Tekenblad extends Uitvoerblad
 	private int consoleX = consoleStartX;
 	private int consoleY = consoleStartY;
 	  
-	public Tekenblad(JavaLogoWeb ap)
+	public Tekenblad(JavaLogoInteractiePanel ap)
 	{	achtergrondkleur = Color.white;
 		veelvlak = new Polygon();
 		eigenaar = ap;
@@ -65,7 +65,7 @@ public class Tekenblad extends Uitvoerblad
     	achtergrondkleur = Color.WHITE;
 	  	gIm.setColor(achtergrondkleur);
     	if(wis)gIm.fillRect(0, 0, breedte, hoogte);
-    	gIm.setColor(Color.black);
+    	gIm.setColor(Color.gray);
     	gIm.drawRect(0, 0, breedte-1, hoogte-1);
     	consoleX = consoleStartX;
     	consoleY = consoleStartY;
@@ -146,19 +146,19 @@ public class Tekenblad extends Uitvoerblad
 	public boolean links(double dHoek)
 	{	mat.draai(dHoek);
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("links("+Integer.toString((int)Math.rint(dHoek))+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("links")+"("+Integer.toString((int)Math.rint(dHoek))+")");
 		else return false;
 	}
   	public boolean rechts(double dHoek)
 	{	mat.draai(-dHoek);		
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("rechts("+Integer.toString((int)Math.rint(dHoek))+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("rechts")+"("+Integer.toString((int)Math.rint(dHoek))+")");
 		else return false;
 	}
 	public boolean vooruit(double dy)
 	{	naarVolgendPunt(0,-dy);	
 		if(trb!=null)
-			return trb.volgendeMethode("vooruit("+Integer.toString((int)Math.rint(dy))+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vooruit")+"("+Integer.toString((int)Math.rint(dy))+")");
 		else return false;
 	}
 	public boolean stapy(double dy)
@@ -176,13 +176,13 @@ public class Tekenblad extends Uitvoerblad
 	public boolean stap(double dx,double dy)
 	{	naarVolgendPunt(dx,-dy);
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("stap("+Integer.toString((int)Math.rint(dx))+","+Integer.toString((int)Math.rint(dy))+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("stap")+"("+Integer.toString((int)Math.rint(dx))+","+Integer.toString((int)Math.rint(dy))+")");
 		else return false;
 	}
 	public boolean penAan()
 	{	pen = true;							
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("penAan()");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("penAan")+"()");
 		else return false;
 	}
 	public boolean penAan(String kl)
@@ -190,7 +190,7 @@ public class Tekenblad extends Uitvoerblad
 		penkleur = maakKleur(kl);
 		gIm.setColor(penkleur);			
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("penAan("+kl+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("penAan")+"("+kl+")");
 		else return false;
 	}
 	public boolean penAan(int r, int g, int b)
@@ -198,20 +198,20 @@ public class Tekenblad extends Uitvoerblad
 		penkleur = new Color(r,g,b);
 		gIm.setColor(penkleur);
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("penAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("penAan")+"("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
 		else return false;
 	}
 	public boolean penUit()
 	{	pen = false;							
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("penUit()");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("penUit")+"()");
 		else return false;
 	}
 	public boolean vulAan()
 	{	vul = true;
 		veelvlak = new Polygon();							
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("vulAan()");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vulAan")+"()");
 		else return false;
 	}
 	public boolean vulAan(String kl)
@@ -219,7 +219,7 @@ public class Tekenblad extends Uitvoerblad
 		vulkleur = maakKleur(kl);
 		veelvlak = new Polygon();				
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("vulAan("+kl+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vulAan")+"("+kl+")");
 		else return false;
 	}
 	public boolean vulAan(int r, int g, int b)
@@ -227,21 +227,21 @@ public class Tekenblad extends Uitvoerblad
 		vulkleur = new Color(r,g,b);
 		veelvlak = new Polygon();	
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("vulAan("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vulAan")+"("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
 		else return false;
 	}
 	public boolean vulUit()
 	{	tekenPolygon();
 		vul = false;							
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("vulUit()");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vulUit")+"()");
 		else return false;
 	}
 	public boolean vulBlad(int r, int g, int b)
 	{
 		vulBlad(new Color(r,g,b));
 		if(trb!=null && trb.geefTraceStatus())
-			return trb.volgendeMethode("ag("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
+			return trb.volgendeMethode(JavaLogoWeb.rb.getString("vulBlad")+"("+Integer.toString(r)+Integer.toString(g)+Integer.toString(b)+")");
 		else return false;
 	}
 
@@ -315,6 +315,20 @@ public class Tekenblad extends Uitvoerblad
 		else if(kl.equals("magenta")) return Color.magenta;
 		else if(kl.equals("wit")) return Color.white;
 		else if(kl.equals("oranje")) return Color.orange;
+	
+		else if(kl.equals("red")) return Color.red;
+		else if(kl.equals("green")) return Color.green;
+		else if(kl.equals("blue")) return Color.blue;
+		else if(kl.equals("yellow")) return Color.yellow;
+		else if(kl.equals("cyan")) return Color.cyan;
+		else if(kl.equals("pink")) return Color.pink;
+		else if(kl.equals("black")) return Color.black;
+		else if(kl.equals("gray")) return Color.gray;
+		else if(kl.equals("lightGray")) return Color.lightGray;
+		else if(kl.equals("magenta")) return Color.magenta;
+		else if(kl.equals("white")) return Color.white;
+		else if(kl.equals("orange")) return Color.orange;
+	
 		else return Color.black;
 	}
 

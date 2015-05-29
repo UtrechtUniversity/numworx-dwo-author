@@ -20,7 +20,7 @@ import logotekenap.*;
  * 	19/2/2015 changed commandComponents ffrom array to ArrayList, deleted int: aantalCC
  *
  */
-public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, MouseListener, MouseMotionListener
+public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, MouseMotionListener
 {
 	/**
 	 * 
@@ -66,7 +66,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 	/**
 	 * ProgrammaPanelHeight
 	 */
-	public static final int pph = 520;
+	public static final int pph = 505;
 	/**
 	 * ProgrammaPanelX
 	 */
@@ -83,9 +83,6 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 	private JPanel programmaPanel;
 	private ProgrammaComponent programmaComponent;
 	private DeeltaakBodyComponent[] deeltaakComponenten;
-	private JButton runButton;
-	private JButton exportButton;
-	private JButton importButton;
 	private Uitvoerblad uitvoerblad;
 	
 	private VardisplayPanel vartracer = null;
@@ -118,7 +115,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		programmaPanel.add(programmaComponent);
 		
 		vartracer = new VardisplayPanel();
-		vartracer.setBounds(ccx+10, ccy-10, 140, 320);
+		vartracer.setBounds(ccx, ccy, 2*ccsw+10, 515);
 				
 		CommandComponent currentCC;
 		
@@ -180,31 +177,13 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		deeltaakComponenten[0].changeHeight();			// was initialialized as closed, so this will open it.
 		deeltaakComponenten[1].setLocation(ProgrammaComponent.pcsw+10, 180);
 		deeltaakComponenten[1].changeHeight();
-		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 455);
-		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 470);
-		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 485);
+		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 440);
+		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 455);
+		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 470);
 		
-		runButton = new JButton("Run");
-		runButton.setBounds(ppx, getHeight()-52, 80, 50);
-		runButton.setFont(JavaLogoWeb.boldfont);
-		runButton.setMargin(new Insets(3,5,3,5));
-		runButton.addActionListener(this);
-		add(runButton,0);
 		
-		importButton = new JButton("Import code");
-		importButton.setBounds(ppx+180, getHeight()-52, 120, 23);
-		importButton.setFont(JavaLogoWeb.boldfont);
-		importButton.setMargin(new Insets(2,5,2,5));
-		importButton.addActionListener(this);
-		add(importButton,0);
-		
-		exportButton = new JButton("Export code");
-		exportButton.setBounds(ppx+180, getHeight()-25, 120, 23);
-		exportButton.setFont(JavaLogoWeb.boldfont);
-		exportButton.setMargin(new Insets(2,5,2,5));
-		exportButton.addActionListener(this);
-		add(exportButton,0);
 	}
+	
 	
 	void addToProgrammaPanel(CommandComponent c)
 	{
@@ -297,12 +276,14 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		tekenOpnieuw();
 	}
 	
-	public void tekenAchtergrond(Graphics g)
+	public void paintComponent(Graphics g)
 	{	Dimension dd = getSize();
 		g.setColor(getBackground());
 		g.fillRect(0,0,dd.width,dd.height);
-		g.setColor(getBackground());
-		g.fillRect(0, 0, dd.width, dd.height);
+		g.setColor(new Color(230,240,255));
+		g.fillRect(0,0,180,600);
+		g.setColor(Color.gray);
+		//g.drawLine(180, 0, 180, getHeight());
 	}
 	
 	public CommandContainer getCommandContainerAt(int x, int y)
@@ -375,7 +356,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		}
 	}
 	
-	private void exportFrame(String contents) {
+	void exportFrame(String contents) {
 		final TextArea area = new TextArea(contents, 0, 0, TextArea.SCROLLBARS_NONE);
 		Frame f = new Frame("Code van het algoritme");
 		f.setLayout(new BorderLayout());
@@ -424,7 +405,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		pi.importProgramma(s);
 	}
 	
-	private void importFrame() 
+	void importFrame() 
 	{
 		try
 		{
@@ -478,20 +459,17 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements ActionListener, Mo
 		tekenOpnieuw();
 	}
 	
-	public void actionPerformed(ActionEvent e)
+	public void setSize(int b, int h)
 	{	
-		if(e.getSource()==runButton)
-		{	//uitvoerblad.setVisible(true);
-			uitvoerblad.tekenOpnieuw();
-		}
-		else if(e.getSource()==importButton)
-		{	importFrame();
-		}
-		else if(e.getSource()==exportButton)
-		{	exportFrame(getCode());
-		}
-		tekenOpnieuw();
+		if ((getSize().width == b) && (getSize().height == h))
+			return;
+		
+		
+		super.setSize(b, h);
+	
 	}
+	
+	
 
 	/* PBgv: Fix voor het probleem van het verlies van de MouseListeners in Java8.
 	 * Outline:

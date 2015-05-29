@@ -41,19 +41,19 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 	
 	public void makeGUI()
 	{
-		beginKnop = new JButton("begin");
+		beginKnop = new JButton(JavaLogoWeb.rb.getString("beginKnopLabel"));
 		beginKnop.setBounds(0,5,60,23);
 		beginKnop.setFont(JavaLogoWeb.boldfont);
 		beginKnop.setMargin(new Insets(0,0,0,0));
 		beginKnop.addActionListener(this);
 		add(beginKnop);
-		stapKnop = new JButton("stap");
+		stapKnop = new JButton(JavaLogoWeb.rb.getString("stapKnopLabel"));
 		stapKnop.setBounds(70,5,60,23);
 		stapKnop.setFont(JavaLogoWeb.boldfont);
 		stapKnop.setMargin(new Insets(0,0,0,0));
 		stapKnop.addActionListener(this);
 		add(stapKnop);
-		terugKnop = new JButton("terug");
+		terugKnop = new JButton(JavaLogoWeb.rb.getString("terugKnopLabel"));
 		terugKnop.setBounds(140,5,60,23);
 		terugKnop.setFont(JavaLogoWeb.boldfont);
 		terugKnop.setMargin(new Insets(0,0,0,0));
@@ -64,19 +64,20 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 		methodeVeld.setFont(JavaLogoWeb.defaultfont);
 		methodeVeld.setMargin(new Insets(0,0,0,0));
 		add(methodeVeld);
-		loopKnop = new JButton("loop");
+		loopKnop = new JButton(JavaLogoWeb.rb.getString("loopKnopLabel"));
 		loopKnop.setBounds(300,5,40,20);
 		loopKnop.setMargin(new Insets(0,0,0,0));
 		loopKnop.addActionListener(this);
 		//add(loopKnop);
-		traceKnop = new JButton("Trace aanschakelen");
+		traceKnop = new JButton(JavaLogoWeb.rb.getString("traceOnLabel"));
 		traceKnop.setBounds(0,32,200,23);
 		traceKnop.setFont(JavaLogoWeb.boldfont);
 		traceKnop.setMargin(new Insets(0,0,0,0));
 		traceKnop.addActionListener(this);
 		add(traceKnop);
 
-		showVariables = new JCheckBox("Toon variabelen");
+		showVariables = new JCheckBox(JavaLogoWeb.rb.getString("showVarLabel"));
+		showVariables.setOpaque(false);
 		showVariables.addItemListener(this);
 		showVariables.setEnabled(true);
 		showVariables.setSelected(false);
@@ -155,13 +156,13 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 			{	loopAan=true;
 				loop = new Thread(this);
 				loop.start();
-				loopKnop.setText("stop");
+				loopKnop.setText(JavaLogoWeb.rb.getString("stopKnopLabel"));
 			}
 		
 			else
 			{	loopAan=false;
 				loop = null;
-				loopKnop.setText("loop");
+				loopKnop.setText(JavaLogoWeb.rb.getString("loopKnopLabel"));
 			}
 		}
 		if(e.getSource() == beginKnop)
@@ -175,7 +176,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 		{	if(!traceAan)
 			{	traceAan = true;
 				//rg.setEnableAll(false);
-				traceKnop.setText("Trace uitschakelen");
+				traceKnop.setText(JavaLogoWeb.rb.getString("traceOffLabel"));
 				methodeVeld.setVisible(true);
 				beginKnop.setVisible(true);
 				stapKnop.setVisible(true);
@@ -196,7 +197,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 				stapKnop.setVisible(false);
 				loopKnop.setVisible(false);
 				terugKnop.setVisible(false);
-				traceKnop.setText("Trace aanschakelen");
+				traceKnop.setText(JavaLogoWeb.rb.getString("traceOnLabel"));
 				produceAction("changed");
 			}
 			maxAantalStappen = 1;

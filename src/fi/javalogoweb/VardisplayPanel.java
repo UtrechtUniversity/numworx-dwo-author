@@ -26,11 +26,11 @@ public class VardisplayPanel extends JPanel
 		displayarea.setMargin(new Insets(3,5,3,5));
 		displayarea.setFont(JavaLogoWeb.defaultfont);
 		displayarea.setBackground(new Color(221, 255, 221));
-		displayarea.setBounds(0, 25, 140, 295);
+		displayarea.setBounds(0, 25, 160, 475);
 		add(displayarea, BorderLayout.CENTER);
 		
-		JLabel toelichting = new JLabel("Variabelen:");
-		toelichting.setBounds(0, 0, 140, 25);
+		JLabel toelichting = new JLabel(JavaLogoWeb.rb.getString("variabelenLabel"));
+		toelichting.setBounds(10, 0, 150, 25);
 		toelichting.setFont(JavaLogoWeb.boldfont);
 		add(toelichting, BorderLayout.NORTH);
 	}

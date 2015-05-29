@@ -22,44 +22,25 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "variabele" , "variable" },
 				{ "Tekenalgoritme" , "Program" },
 				
-                { "kleurVlakKnopLabel" , "Color faces" },
-                { "wisKleurKnopLabel" , "Clear colored" },
-                
-				{ "hulpPuntenCBLabel" , "help points on edges" },
-                
-				{ "vooraanzichtPijlCBLabel" , "Arrow indicating front" },
-                
-                { "alleenViewerCBLabel" , "Show viewer" },
-                { "draaibaarRBLabel" , "Viewer rotatable" },
-                { "vooraanzichtRBLabel" , "Viewer front view" },
-                { "achteraanzichtRBLabel" , "Viewer back view" },
-                { "bovenaanzichtRBLabel" , "Viewer top view" },
-                { "onderaanzichtRBLabel" , "Viewer bottom view" },
-                { "linkeraanzichtRBLabel" , "Viewer left view" },
-                { "rechteraanzichtRBLabel" , "Viewer right view" },
-                { "docentDraaihoekRBLabel" , "Teacher set rotation" },
-
-                { "alleenProfielenCBLabel" , "Show profiles" },
-                
-                { "vlakkenKleurenCBLabel" , "Coloring faces" },
-                { "inProfielenRBLabel" , "of the profiles" },
-                { "inFiguurRBLabel" , "of the object" },
-
-                { "tekenVVOptiesLabel" , "drawing polygon options" },
-                { "nakijkOptiesLabel" , "check options" },
-	
-                { "kijkDraaihoekNaCBLabel" , "Check the rotation" },
-                { "kijkVlakkenNaCBLabel" , "Check the coloured" },
-                { "kijkVlakkenNaCBLabel2" , "faces" },
-                { "kijkNaLabel" , "Check" },
-
-                { "dezeDraaihoekRBLabel" , "This rotation" },
-                { "voorkantRBLabel" , "Front side" },
-                { "achterkantRBLabel" , "Back side" },
-                { "bovenkantRBLabel" , "Top side" },
-                { "onderkantRBLabel" , "Bottom side" },
-                { "linkerkantRBLabel" , "Left side" },
-                { "rechterkantRBLabel" , "Right side" },
+                { "runButtonLabel" , "Run" },
+                { "importButtonLabel" , "Import code" },
+				{ "exportButtonLabel" , "Export code" },
+				{ "importCodeLabel" , "Import code" },
+				
+				{ "beginKnopLabel" , "start" },
+				{ "stapKnopLabel" , "step" },
+				{ "terugKnopLabel" , "back" },
+				{ "loopKnopLabel" , "loop" },
+				{ "stopKnopLabel" , "stop" },
+				
+				{ "traceOnLabel" , "Trace on" },
+				{ "traceOffLabel" , "Trace off" },
+				{ "showVarLabel" , "Show variables" },
+				
+				{ "jaLabel" , "yes" },
+				{ "neeLabel" , "no" },
+				{ "variabelenLabel" , "Variables:" },
+				
 
         };
 }
