@@ -193,9 +193,21 @@ public class VergelijkingMeerv
 		return isOplossing;
 	}
 	
-	public boolean isEindOplossingExact(Expressie[] subst, String var, String vergTeken)
-	{	String[] varNamen = geefVarNamen();
+	public boolean isEindOplossing(Expressie[] subst, String var, String vergTeken)
+	{
 		boolean isOplossing = false;
+		for(int j = 0; j < vergelijkingen.length; j++)
+		{
+			if(!isOplossing)
+			{
+				isOplossing = vergelijkingen[j].bevatOplossingP(subst, var, vergTeken);
+			}
+		}
+		return isOplossing;
+	}
+	
+	public boolean isEindOplossingExact(Expressie[] subst, String var, String vergTeken)
+	{	boolean isOplossing = false;
 		for(int j=0 ; j<vergelijkingen.length ; j++)
 		{	if(!isOplossing)
 			{	isOplossing = vergelijkingen[j].bevatOplossingP(subst, var, vergTeken);

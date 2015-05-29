@@ -128,7 +128,8 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "feedbackTekst18" , "De oplossing is goed, maar het aantal significante cijfers klopt niet." },
                 { "feedbackTekst19" , "Oplossing is goed, maar nog niet in de juiste vorm en de significantie klopt niet." },
                 { "feedbackTekst20" , "Oplossing is goed, significantie klopt maar heeft nog niet de juiste vorm." },
-                { "feedbackTekst21" , "Je hebt alle oplossingen gevonden, vul ze onderaan in."},
+                { "feedbackTekst21a" , "Je hebt alle oplossingen gevonden, vul ze onderaan in."},
+                { "feedbackTekst21b" , "Je hebt alle oplossingen gevonden."},
                 { "feedbackTekst22" , "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."},
                 	
                 

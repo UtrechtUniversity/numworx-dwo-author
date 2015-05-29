@@ -7,6 +7,7 @@ import javax.swing.*;
 import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.AntwoordFormuleVak;
+import fi.wiskopdr.stelselsvergelijkingen.StelselEditor;
 import fi.wiskopdr.tekstobjects.TekstEditor;
 
 public class EditorContentPanel extends JPanel //implements Scrollable
@@ -40,7 +41,7 @@ public class EditorContentPanel extends JPanel //implements Scrollable
         }
         //System.out.println("kijk");
         setPreferredSize(new Dimension(maxX,maxY));
-        if(formuleEditor!=null)
+        if(formuleEditor!=null && !(formuleEditor instanceof StelselEditor))
         	scrollRectToVisible(new Rectangle(maxX-10,maxY-10, maxX, maxY));
         revalidate();
         doLayout();   

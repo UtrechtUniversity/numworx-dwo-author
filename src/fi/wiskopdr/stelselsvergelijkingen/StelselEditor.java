@@ -1,5 +1,6 @@
 package fi.wiskopdr.stelselsvergelijkingen;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -29,7 +30,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	StelselRekenVak hoofdPanel;
 	private StelselEditor[] kinderen;
-	private StelselEditor parent;
+	private StelselEditor parent = null;
 	private boolean[] oplossingGevonden;
 	private String[] varNamen; 
 	private Expressie[][] oplossingen; 
@@ -71,6 +72,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		heeftFocus = true;
 		this.hoofdPanel = hoofdPanel;
 		hoogte = hoofdPanel.getHeight();
+		
 	}
 	
 	public StelselEditor(StelselEditor parent)
@@ -137,8 +139,9 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	public void splits(VergelijkingMeerv vergelijkingen)
 	{
 		hoogte = bepaalHoogte();
+		//TODO: oranje vinkje weghalen uit deze editor en of bovenin volgende editor plakken, of even in StelselRekenVak plakken.
 		
-		//hoogte = 100; //TODO: hier hoogte invullen die je op dit moment voor dit panel nodig hebt. Die blijft vanaf nu gelijk.
+		//hoogte = 100;
 		
 		//VergelijkingMeerv vergelijkingen = geefVergelijking(); // deze bestaat uit k vergelijkingen. 
 		int k = vergelijkingen.geefAantal();
@@ -176,7 +179,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			editor.zetOplossingen(oplossingenKind, eindOplossingen, eindOplossingenStelsel, eindOplossingenExact);
 			
 			kinderen[i] = editor;
-			hoofdPanel.add(editor);
+			hoofdPanel.contentPanel.add(editor);
 		}
 		hoofdPanel.plaatsEditors();
 		kinderen[0].requestFocus();
@@ -184,6 +187,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void requestFocus()
 	{
+		System.out.println("request Focus");
 		if(isHoofdEditor())
 			this.formuleVak = geefLaatsteFormuleVak();
 		else
@@ -394,6 +398,19 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		return hoogte;
 	}
 	
+	public int geefHoogteEditorEnKinderen()
+	{
+		if(kinderen == null)
+			return hoogte;
+		else
+		{
+			int maxKindHoogte = 0;
+			for(int i = 0; i < kinderen.length; i++)
+				maxKindHoogte = Math.max(maxKindHoogte, kinderen[i].geefHoogteEditorEnKinderen());
+			return hoogte + maxKindHoogte;
+		}
+	}
+	
 	public int geefBreedte(int kolomBreedte)
 	{
 		if(kinderen == null)
@@ -559,10 +576,17 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //							{
 							correct = true;
 							if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
-								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+							{	//TODO: feedback maken voor als oplossingenvak niet aanwezig is.
+								if(hoofdPanel.geefAntwoordVak().oplossingenRegelZichtbaar)
+									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21a", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+								else
+									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21b", show);// "Je hebt alle oplossingen gevonden."
+								geefFocusDoor();
+							}
 							else
-								zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
-//							}
+							{	zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
+								geefFocusDoor();
+							}
 						}
 						else
 						// isGelijkwaardig && eindOplossingNodig &&
@@ -593,8 +617,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 					else
 					// isGelijkwaardig && eindOplossingNodig &&
 					// isEindOplossing && ! exactNodig
-					{	System.out.println("niet exact nodig");
-
+					{	
 						//score = puntenGelijkwaardig + puntenEindOplossing;
 //						if (gewensteEindOplossing.isOngelijkheid())
 //						{
@@ -623,9 +646,17 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //							{
 								correct = true;
 								if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
-									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+								{	//TODO: feedback maken voor als oplossingenvak niet aanwezig is.
+									if(hoofdPanel.geefAntwoordVak().oplossingenRegelZichtbaar)
+										zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21a", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
+									else
+										zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21b", show);// "Je hebt alle oplossingen gevonden."
+									geefFocusDoor();
+								}
 								else
-									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
+								{	zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst22", show);// "Je hebt de oplossingen in deze tak gevonden, ga verder met een andere tak."
+									geefFocusDoor();
+								}
 //							}
 //						}
 					}
@@ -728,6 +759,72 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		
 	}
 	
+	public void geefFocusDoor()
+	{
+		if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
+		{
+			if(hoofdPanel.geefAntwoordVak().oplossingenRegelZichtbaar)
+				hoofdPanel.geefAntwoordVak().oplossingenVak.requestFocus();
+		}
+		else
+			//volgende nog niet compleet afgeronde kind bepalen; als aan eind gekomen, dan aan begin verder, tot je weer bij dit kind komt.
+			//Dit kind heeft in elk geval geen kinderen, dus eerste stap is naar parent.
+		{	
+			StelselEditor se = parent;
+			StelselEditor se2 = this;
+			while(se != null)
+			{
+				if(se.kinderen == null)
+				{	se.requestFocus();
+					return;
+				}
+				for(int i = 0; i < se.kinderen.length; i++)
+				{	boolean kindGevonden = false;
+					if(se2.equals(se.kinderen[i]))
+					{
+						kindGevonden = true;
+					}
+					else if(kindGevonden && !se.kinderen[i].zijnEditorOfKinderenCorrect())
+					{
+						//focus moet naar dit kind, of één van zijn kinderen/kleinkinderen etc
+						se.kinderen[i].focusEersteVrijeKind();
+						return;
+					}
+				}
+				//alle volgende kinderen zijn nu kennelijk al klaar.
+				//door naar parent.
+				se2 = se;
+				se = se.parent;
+			}
+			//als hier gekomen, dan is verderop geen vrije tak meer. Nu vanaf begin verder zoeken, tot aan this.
+			for(int i = 0; i < hoofdPanel.geefHoofdEditor().kinderen.length; i++)
+			{
+				if(!hoofdPanel.geefHoofdEditor().kinderen[i].zijnEditorOfKinderenCorrect())
+				{
+					hoofdPanel.geefHoofdEditor().kinderen[i].focusEersteVrijeKind();
+					return;
+				}
+					
+			}
+		}
+	}
+	
+	public void focusEersteVrijeKind()
+	{
+		if(kinderen == null)
+			requestFocus();
+		else 
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				if(!kinderen[i].zijnEditorOfKinderenCorrect())
+				{	kinderen[i].focusEersteVrijeKind();
+					return;
+				}
+			}
+		}
+	}
+	
 	public void zetCorrectFoutStap(int stapNr, boolean correct, boolean fout, boolean stapOk, String feedbackKey, boolean show)
 	{
 		this.correct = correct;
@@ -737,6 +834,8 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void splitsOfMaakStap()
 	{
+		if(geefVergelijking() == null)
+			return;
 		if(isGelijkwaardig && geefVergelijking().geefAantal() > 1)
 			splits(geefVergelijking());
 		else
@@ -757,7 +856,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void setLocations()
 	{
-		int x = 0;
+		int x = this.getLocation().x;
 		int y = this.getLocation().y + hoogte;
 		for(int i = 0; i < kinderen.length; i++)
 		{	kinderen[i].setLocation(x, y);

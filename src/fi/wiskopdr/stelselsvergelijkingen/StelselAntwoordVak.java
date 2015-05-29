@@ -56,7 +56,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 	{
 		setLayout(null);
 		setBorder(BorderFactory.createLineBorder(Color.gray));
-		rekenVak = new StelselRekenVak();
+		rekenVak = new StelselRekenVak(this);
 		add(rekenVak);
 		
 		oplossingenRegel = new JPanel(){

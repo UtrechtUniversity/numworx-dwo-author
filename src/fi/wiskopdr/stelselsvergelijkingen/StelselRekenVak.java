@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -26,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
@@ -68,12 +70,23 @@ public class StelselRekenVak extends JPanel  {
 	private String[] randomVars;
 	private Hashtable randomValues;
 	
-//	JScrollPane scrollPane;
-//	JPanel contentPanel;
+	StelselAntwoordVak antwoordVak;
 	
-	public StelselRekenVak()
+	JScrollPane scrollPane;
+	JPanel contentPanel;
+	
+	public StelselRekenVak(StelselAntwoordVak antwoordVak)
 	{
 		setLayout(null);
+		
+		contentPanel = new JPanel();
+		contentPanel.setLayout(null);
+		contentPanel.setBackground(Color.yellow);
+		scrollPane = new JScrollPane(contentPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		add(scrollPane);
+		scrollPane.setLocation(0,0);
+		
+		this.antwoordVak = antwoordVak;
 		setBackground(Color.white);
 //		contentPanel = new JPanel();
 //		contentPanel.setLayout(null);
@@ -82,14 +95,18 @@ public class StelselRekenVak extends JPanel  {
 //		super.add(scrollPane);
 		
 		hoofdEditor = new StelselEditor(this);
-		hoofdEditor.setBounds(0, 0, getWidth(), getHeight());
-		add(hoofdEditor);
+		contentPanel.add(hoofdEditor);
+		hoofdEditor.setLocation(0, 0);
+		
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
+		System.out.println("setBounds: " + x + ", " + y + ", " + b + ", " + h);
 		super.setBounds(x, y, b, h);
-//		contentPanel.setBounds(x, y, b, h);
+		//contentPanel.setBounds(0, 30, b/2, 30);
+		//scrollPane.setPreferredSize(new Dimension(b, h));
+		scrollPane.setSize(b, h);
 		hoofdEditor.setBounds(0, 0, b, h);
 	}
 	
@@ -245,6 +262,7 @@ public class StelselRekenVak extends JPanel  {
 	
 	public void plaatsEditors()
 	{
+		System.out.println("plaatsEditors");
 		//uitrekenen hoeveel kolommen er onderaan zijn. 
 		//Die allemaal evenveel ruimte geven
 		//De breedtes van de kolommen erboven zijn dan de sommen van de breedtes van hun kinderen.
@@ -257,8 +275,15 @@ public class StelselRekenVak extends JPanel  {
 		hoofdEditor.scrollRectToVisible(new Rectangle(0, 0, 1, 1));
 		if(hoofdEditor.heeftKinderen())
 			hoofdEditor.setLocations();
+		System.out.println("contentPanel.getWidth: " + contentPanel.getWidth() + " en height: " + contentPanel.getHeight());
+		int h = hoofdEditor.geefHoogteEditorEnKinderen();
+		contentPanel.setSize(contentPanel.getWidth(), h); //dit doet niets...
 		repaint();
-		
+	}
+	
+	public StelselAntwoordVak geefAntwoordVak()
+	{
+		return antwoordVak;
 	}
 	
 	public StelselEditor geefHoofdEditor()

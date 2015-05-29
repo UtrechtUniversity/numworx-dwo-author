@@ -3903,9 +3903,13 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			hoogte += formuleVakken[i].getSize().height + stapH;
 		}
 		if (feedbackTekst != null && feedbackTekst.isShowing()) 
+		{	System.out.println("bepaalHoogte: + hoogte feedbacktekst");
 			hoogte += 30 + feedbackTekst.getHeight();
+		}
 		else
+		{	System.out.println("bepaalHoogte: geen feedbacktekst");
 			hoogte += 20;
+		}
 		return hoogte;
 	}
 	
