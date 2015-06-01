@@ -1055,7 +1055,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 
 		layoutTekst();
-		if (selectable)
+		if (selectable || isLink)
 			zetKlikPanel(true);
 
 		if (balansVergCom)
