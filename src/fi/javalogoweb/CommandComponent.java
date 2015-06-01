@@ -153,6 +153,7 @@ public abstract class CommandComponent extends JPanel
 				}
 				//schuifveld.begin();
 				schuifveld.zetSchuiver(this);
+				startCompx = Math.max(x-getDragWidth()+10, startCompx);
 			}
 			schuifveld.traceComponent(this, x, y);
 			moveComponent(dx, dy);
