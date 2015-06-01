@@ -456,7 +456,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	{	
 		if ((getSize().width == b) && (getSize().height == h))
 			return;
-		programmaPanel.setSize(programmaPanel.getWidth(), h);
+		programmaPanel.setSize(b-ppx, h);
 		programmaComponent.setSize(programmaComponent.getWidth(), h-20);
 		super.setSize(b, h);
 	
