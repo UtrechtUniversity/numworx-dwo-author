@@ -28,6 +28,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 	public TraceBeheerder(Tekenblad tb, JavaLogoSchuifVeld v)
 	{	
 		setLayout(null);
+		setOpaque(false);
 		makeGUI();
 		aantalStappen = 0;
 		maxAantalStappen = 0;
@@ -60,7 +61,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 		terugKnop.addActionListener(this);
 		add(terugKnop);
 		methodeVeld = new JTextField("",15);
-		methodeVeld.setBounds(210,5,160,23);
+		methodeVeld.setBounds(210,5,120,23);
 		methodeVeld.setFont(JavaLogoWeb.defaultfont);
 		methodeVeld.setMargin(new Insets(0,0,0,0));
 		add(methodeVeld);
@@ -175,6 +176,7 @@ public class TraceBeheerder extends JPanel implements ActionListener,Runnable, I
 		if(e.getSource() == traceKnop)
 		{	if(!traceAan)
 			{	traceAan = true;
+				
 				//rg.setEnableAll(false);
 				traceKnop.setText(JavaLogoWeb.rb.getString("traceOffLabel"));
 				methodeVeld.setVisible(true);

@@ -38,25 +38,32 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		add(uitvoerblad);
 		
 		runButton = new JButton(JavaLogoWeb.rb.getString("runButtonLabel"));
-		runButton.setBounds(240, 540, 80, 50);
+		runButton.setBounds(155, 540, 80, 50);
 		runButton.setFont(JavaLogoWeb.boldfont);
 		runButton.setMargin(new Insets(3,5,3,5));
 		runButton.addActionListener(this);
 		add(runButton,0);
 		
 		importButton = new JButton(JavaLogoWeb.rb.getString("importButtonLabel"));
-		importButton.setBounds(10, 540, 120, 23);
+		importButton.setBounds(5, 540, 120, 23);
 		importButton.setFont(JavaLogoWeb.boldfont);
 		importButton.setMargin(new Insets(2,5,2,5));
 		importButton.addActionListener(this);
 		add(importButton,0);
 		
 		exportButton = new JButton(JavaLogoWeb.rb.getString("exportButtonLabel"));
-		exportButton.setBounds(10, 567, 120, 23);
+		exportButton.setBounds(5, 567, 120, 23);
 		exportButton.setFont(JavaLogoWeb.boldfont);
 		exportButton.setMargin(new Insets(2,5,2,5));
 		exportButton.addActionListener(this);
 		add(exportButton,0);
+	}
+	
+	private void layoutGui()
+	{
+		runButton.setBounds(155, getHeight()-60, 80, 50);
+		importButton.setBounds(5, getHeight()-60, 120, 23);
+		exportButton.setBounds(5, getHeight()-33, 120, 23);
 	}
 	
 	public void execprogramma()
@@ -66,29 +73,30 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	
 	public void paintComponent(Graphics g)
 	{
-		g.setColor(new Color(230,230,230));
-		g.fillRect(0, 530, getWidth(), 70);
-		g.fillRect(610, 0, getWidth()-610, getHeight());
+		g.setColor(new Color(225,225,225));
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.WHITE);
+		g.fillRect(5, 5, 610, getHeight()-78);
 		g.setColor(Color.gray);
-		g.drawLine(0, 530, 610, 530);
-		g.drawLine(610, 530, 610, 0);
+		g.drawRect(5, 5, 610, getHeight()-78);
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
 		super.setBounds(x,y,b,h);
-		uitvoerblad.setBounds(620, 5, getWidth()-625, getHeight()-75);
-		
-		
+		layoutGui();
+		uitvoerblad.setBounds(620, 5, getWidth()-625, getHeight()-77);
+						
 		if (javaLogoSchuifVeld == null) 
 		{	
-			javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 610, getHeight()-71, uitvoerblad);
+			javaLogoSchuifVeld = new JavaLogoSchuifVeld(6, 6, 609, getHeight()-79, uitvoerblad);
 			javaLogoSchuifVeld.setBackground(Color.white);
+			javaLogoSchuifVeld.zetGesloten(true);
 			add(javaLogoSchuifVeld);
 			javaLogoSchuifVeld.initialize();
 			
 			trb = new TraceBeheerder( (Tekenblad)uitvoerblad, javaLogoSchuifVeld);
-			trb.setBounds(620, getHeight()-65, getWidth()-631, 58);
+			trb.setBounds(265, getHeight()-64, 340, 58);
 			trb.setBackground(new Color(230,230,230));
 			trb.addActionListener(this);
 			add(trb);
@@ -96,16 +104,16 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 			uitvoerblad.meldTraceBeheerder(trb);
 		}
 		else
-		{	javaLogoSchuifVeld.setSize(b, h);
-					
+		{	javaLogoSchuifVeld.setSize(609, getHeight()-79);
+			trb.setBounds(265, getHeight()-64, 340, 58);
+			uitvoerblad.repaint();
 		}
-		javaLogoSchuifVeld.tekenOpnieuw();
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{	
 		if(e.getSource()==runButton)
-		{	//uitvoerblad.setVisible(true);
+		{	
 			uitvoerblad.tekenOpnieuw();
 		}
 		else if(e.getSource()==importButton)
@@ -114,7 +122,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		else if(e.getSource()==exportButton)
 		{	javaLogoSchuifVeld.exportFrame(javaLogoSchuifVeld.getCode());
 		}
-		javaLogoSchuifVeld.tekenOpnieuw();
+		javaLogoSchuifVeld.repaint();
 	}
 	
 	
@@ -131,8 +139,6 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		String code = "";
 		
 		if(h.containsKey("code")) code = (String)h.get("code");
-		
-		//javaLogoSchuifVeld.setCode(code);
 	}
 	
 	@Override

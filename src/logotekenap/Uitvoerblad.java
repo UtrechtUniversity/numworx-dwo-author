@@ -63,7 +63,7 @@ public abstract class Uitvoerblad extends JPanel
 	 * Algemeen
 	 */
  	public abstract void tekenOpnieuw();
-		
-	public abstract boolean varAanpassing(String varNaam, String varValue);
+ 	
+ 	public abstract boolean varAanpassing(String varNaam, String varValue);
 	
 }

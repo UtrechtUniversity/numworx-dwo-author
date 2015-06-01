@@ -51,7 +51,7 @@ public class VarCComponent extends SimpleCommandComponent implements ParameterEd
 			waarde.setParameter(text);
 			editingValue = false;
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	public void editParameter(boolean name)
@@ -109,7 +109,7 @@ public class VarCComponent extends SimpleCommandComponent implements ParameterEd
 			paramEditor.setEnabled(false);
 			
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	/**

@@ -64,7 +64,7 @@ public abstract class ParameterCommandComponent extends SimpleCommandComponent i
 	{
 		parameter1.setParameter(text);
 		isEditing = false;
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public abstract class ParameterCommandComponent extends SimpleCommandComponent i
 			paramEditor.setLocation(10+fm.stringWidth(getCommandName()+strOpen), 4);
 			paramEditor.vulIn(parameter1.getParameterText());
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	/**

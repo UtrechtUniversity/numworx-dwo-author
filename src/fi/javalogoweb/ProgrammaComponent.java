@@ -17,7 +17,7 @@ import logotekenap.*;
 public class ProgrammaComponent extends CompositeCommandComponent implements MouseWheelListener, MouseListener, MouseMotionListener
 {	
 	protected String defaultName = "";
-	private CommandContainer commandBlock;
+	protected CommandContainer commandBlock;
 	
 	protected JPanel maskPanel;
 	
@@ -220,7 +220,7 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 	@Override
 	protected void paintBackground(Graphics g)
 	{
-		g.setColor(new Color(187,221,255));new Color(230,240,255);
+		g.setColor(new Color(187,221,255));//new Color(230,240,255);
 		g.fillRect(1,1,getWidth()-1,headerHeight-1);
 		g.setColor(Color.BLACK);
 		g.drawRect(0,0,getWidth()-1,headerHeight);
@@ -298,8 +298,8 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 		// Bring the component to the front, only if it's not already in front, because of focus
 		if ( this != getParent().getComponent(0) )
 		{	
-			getParent().add(this, 0);
-			schuifveld.tekenOpnieuw();
+			getParent().setComponentZOrder(this, 0);
+			schuifveld.repaint();
 		}
 		// remember location in case of dragging
 		previousX = getX();
@@ -310,14 +310,14 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 			if ( e.getX() > getWidth()-headerHeight )
 			{
 				changeWidth();
-				schuifveld.tekenOpnieuw();
+				schuifveld.repaint();
 				// after resize, no further mouse handling
 				return;
 			} else
 			{
 				if ( !isHeightFixed )
 				{	changeHeight();
-					schuifveld.tekenOpnieuw();
+					schuifveld.repaint();
 					// after resize, no further mouse handling
 					return;
 				}
@@ -337,6 +337,7 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 	public void mouseDragged(MouseEvent e) 
 	{
 		schuifveld.mouseDragged(getAbsoluteLocation().x+e.getX(), getAbsoluteLocation().y+e.getY(), e.getModifiersEx());
+		
 	}
 	
 	@Override

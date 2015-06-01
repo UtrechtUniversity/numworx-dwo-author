@@ -50,7 +50,7 @@ public class StapCComponent extends ParameterCommandComponent implements Paramet
 		strBeforeEditor = strOpen;
 		strAfterEditor = strClose;
 		separatorX = 10+fm.stringWidth(getCommandName()+strOpen+parameter1.getParameterText());
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	void editParameter(boolean first)
@@ -103,7 +103,7 @@ public class StapCComponent extends ParameterCommandComponent implements Paramet
 			paramEditor.setEnabled(false);
 			separatorX = fm.stringWidth(getCommandName()+strOpen+parameter1.getParameterText());
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	@Override

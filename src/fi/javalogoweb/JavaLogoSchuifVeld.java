@@ -1,6 +1,5 @@
 package fi.javalogoweb;
 
-import fi.javalogoweb.schuifobjects.*;
 import fi.beans.stringutils.*;
 
 import java.awt.*;
@@ -20,7 +19,7 @@ import logotekenap.*;
  * 	19/2/2015 changed commandComponents ffrom array to ArrayList, deleted int: aantalCC
  *
  */
-public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, MouseMotionListener
+public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseMotionListener
 {
 	/**
 	 * 
@@ -75,22 +74,19 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 	 * ProgrammaPanelY
 	 */
 	public static final int ppy = 10;
-	//public static final int
-	//public static final int
-	
-	
-	
+		
 	private JPanel programmaPanel;
 	private ProgrammaComponent programmaComponent;
 	private DeeltaakBodyComponent[] deeltaakComponenten;
 	private Uitvoerblad uitvoerblad;
-	
 	private VardisplayPanel vartracer = null;
 	private boolean isVartracing = false;
+	private boolean gesloten;
 	
 	public JavaLogoSchuifVeld(int x, int y, int b, int h, Uitvoerblad tb)
 	{	
-		super(x,y,b,h);
+		setLayout(null);
+		setBounds(x,y,b,h);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		uitvoerblad = tb;
@@ -195,9 +191,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 		int y = cc.getLocation().y;
 		int b = cc.getSize().width;
 		int h = cc.getSize().height;
-		//if(asc instanceof InvoerSchuifComponent)
-		//{ schuifcomponenten[aantalSc] = new InvoerSchuifComponent(this ,x,y,b,h);
-		//}
+		
 		CommandComponent currentCC;
 		if(cc instanceof PrintCComponent)
 		{ 	currentCC = new PrintCComponent(x,y,b,h, this);
@@ -273,17 +267,16 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 	public void verwijder(CommandComponent cc)
 	{	
 		remove(cc);
-		tekenOpnieuw();
+		repaint();
 	}
 	
 	public void paintComponent(Graphics g)
 	{	Dimension dd = getSize();
 		g.setColor(getBackground());
 		g.fillRect(0,0,dd.width,dd.height);
-		g.setColor(new Color(230,240,255));
-		g.fillRect(0,0,180,600);
+		g.setColor(new Color(205,230,255));
+		g.fillRect(4,4,172,dd.height-8);
 		g.setColor(Color.gray);
-		//g.drawLine(180, 0, 180, getHeight());
 	}
 	
 	public CommandContainer getCommandContainerAt(int x, int y)
@@ -308,34 +301,26 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 		return null;
 	}
 	
-	/* unused
-	public CommandComponent getCommandComponentAt(int x, int y)
-	{	CommandComponent cc = null;
-		Component c = getComponentAt(x,y);
-		if(c!=this && c!=null && c instanceof CommandComponent) 
-		{	cc = (CommandComponent)c;
-			return cc.getCommandComponentAt(x - cc.getLocation().x,y - cc.getLocation().y);
-		}
-		return null;
-	} */
-	
 	public void losSchuiver(CommandComponent sc, int x, int y)
 	{	
 		CommandContainer cc = getCommandContainerAt(x,y);
 		if(cc != null )
 		{	cc.addCComponent(sc);
-			tekenOpnieuw();
-		} else
-		{
-			super.losSchuiver(sc);
-		}
+			repaint();
+		} 
 	}
 	
 	public void zetSchuiver(CommandComponent sc)
 	{	int newLx = sc.getAbsoluteLocation().x;
 		int newLy = sc.getAbsoluteLocation().y;
 		sc.setBounds(newLx,newLy,sc.getDragWidth(),sc.getSize().height);
-		super.zetSchuiver(sc);
+		setComponentZOrder(sc, 0);
+		if(sc instanceof CommandComponent)
+		{
+			CommandContainer cc = getCommandContainerAt(newLx,newLy);
+			if(cc!=null) cc.reArrange();
+		}
+		
 	}
 	
 	void traceComponent(CommandComponent sc, int ex, int ey)
@@ -400,7 +385,7 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 	void importeer(String s)
 	{
 		clearProgram();
-		tekenOpnieuw();
+		repaint();
 		ProgrammaImporter pi = new ProgrammaImporter(this);
 		pi.importProgramma(s);
 	}
@@ -441,7 +426,15 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 			this.remove(vartracer);
 			vartracer.setContent("");
 		}
-		tekenOpnieuw();
+		repaint();
+	}
+	
+	public boolean isGesloten()
+	{	return gesloten;
+	}
+	
+	public void zetGesloten(boolean b)
+	{	gesloten = b;
 	}
 	
 	/**
@@ -456,15 +449,15 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 		{
 			vartracer.setContent(varset.toString());
 		}
-		tekenOpnieuw();
+		repaint();
 	}
 	
 	public void setSize(int b, int h)
 	{	
 		if ((getSize().width == b) && (getSize().height == h))
 			return;
-		
-		
+		programmaPanel.setSize(programmaPanel.getWidth(), h);
+		programmaComponent.setSize(programmaComponent.getWidth(), h-20);
 		super.setSize(b, h);
 	
 	}
@@ -490,18 +483,17 @@ public class JavaLogoSchuifVeld extends SchuifVeld implements  MouseListener, Mo
 	
 	public void mousePressed(int x, int y, int modifiers) 
 	{
-		//System.out.println("MuisPressed: "+x+", "y);
 		Component c = this.findComponentAt(x, y);
-		//System.out.println(c.getClass().getName()+" - "+c.getX()+" - "+c.getY());
 		if ( c instanceof CommandComponent )
 		{
 			mouseTargetComponent = (CommandComponent)c;
 			mouseTargetComponent.mousePressed(x, y, modifiers);
-		} else 
+		} 
+		else 
 		{
 			requestFocus();		// end possible editing of parameters, see ParameterTextField for details	
 			if ( c instanceof CommandContainer)
-			{
+			{	
 				Component c2 = c.getParent();
 				if ( c2 instanceof CompositeCommandComponent )
 				{

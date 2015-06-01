@@ -9,6 +9,7 @@ import javax.swing.JPanel;
  */
 public abstract class CompositeCommandComponent extends CommandComponent
 {	
+	
 	public CompositeCommandComponent(int x, int y, int b, int h, JavaLogoSchuifVeld sv)
 	{
 		super(x, y, b, h, sv);

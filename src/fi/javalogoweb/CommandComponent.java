@@ -151,12 +151,12 @@ public abstract class CommandComponent extends JPanel
 				{	schuifveld.zetStapel(this);		// get new copy from pile in GUI
 					isStapel = false;
 				}
-				schuifveld.begin();
+				//schuifveld.begin();
 				schuifveld.zetSchuiver(this);
 			}
 			schuifveld.traceComponent(this, x, y);
 			moveComponent(dx, dy);
-			schuifveld.tekenOpnieuw();
+			schuifveld.repaint();
 		}
 	}
 	
@@ -221,7 +221,7 @@ public abstract class CommandComponent extends JPanel
 	}
 		
 	public void tekenOpnieuw()
-	{	schuifveld.tekenOpnieuw();
+	{	schuifveld.repaint();
 	}
 	
 	/**

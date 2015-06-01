@@ -1,6 +1,8 @@
 package fi.javalogoweb;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.net.URL;
 import java.util.*;
 
@@ -13,7 +15,7 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import logotekenap.*;
 
-public class JavaLogoWeb extends JApplet implements WiskOpdrApplet
+public class JavaLogoWeb extends JApplet implements WiskOpdrApplet,  ComponentListener
 {
 	protected SCORM12APIInterface api;
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
@@ -25,10 +27,12 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet
 	
 	public static ResourceBundle rb;
 	
+	JavaLogoInteractiePanel jlip;
+	
 	
 	public static void main(String[] args)    
-	{	int width = 1160;
-        int height = 650;
+	{	int width = 1168;
+        int height = 627;
 		ScormMainFrame mf = new ScormMainFrame(new JavaLogoWeb(),width, height);
 		mf.setTitle("JavaLogoWeb");
 		mf.pack();
@@ -49,7 +53,7 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet
 	
 	public void init() 
 	{	
-		setLayout(null);
+		//setLayout(null);
 		
 		String langArg = getParameter("language");
 		if (langArg == null) langArg = "en";
@@ -60,34 +64,26 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet
 		Color bgcolor = Color.white;//new Color(230,240,255);
 		getContentPane().setBackground(bgcolor);
 		setBackground(bgcolor);
-	/* no explicit edit button needed anymore...			
-		AppletUtil au = new AppletUtil(this);
-		editImage = au.getImage("resources/edit.gif");
-		MediaTracker tr = new MediaTracker(this);
-		tr.addImage(editImage,0);
-		try{tr.waitForAll();} catch(Exception e) {}
+			
+		addComponentListener(this);
 		
-		uitvoerblad = new Tekenblad(this);
-		uitvoerblad.setBounds(620, 10, getWidth()-631, getHeight()-71);
-		add(uitvoerblad);
-			
-		javaLogoSchuifVeld = new JavaLogoSchuifVeld(0, 0, 618, getHeight()-2, uitvoerblad);
-		javaLogoSchuifVeld.setBackground(getBackground());
-		add(javaLogoSchuifVeld);
-		javaLogoSchuifVeld.initialize();
-			
-		TraceBeheerder trb = new TraceBeheerder( (Tekenblad)uitvoerblad, javaLogoSchuifVeld);
-		trb.setBounds(620, getHeight()-59, getWidth()-631, 58);
-		trb.setBackground(getBackground());
-		trb.addActionListener(javaLogoSchuifVeld);
-		add(trb);
-			
-		uitvoerblad.meldTraceBeheerder(trb);
-		//trb.naarBegin();
-	*/
-		JavaLogoInteractiePanel jlip = new JavaLogoInteractiePanel();
+		jlip = new JavaLogoInteractiePanel();
 		jlip.setBounds(0,0,1160,600);
 		add(jlip);
+	}
+	
+	public void componentResized(ComponentEvent e) {
+		//jlip.setBounds(0,0,getWidth()-8,getHeight()-27);
+
+	}
+
+	public void componentMoved(ComponentEvent e) {
+	}
+
+	public void componentShown(ComponentEvent e) {
+	}
+
+	public void componentHidden(ComponentEvent e) {
 	}
 	
 	public Hashtable getDefaultParameters()

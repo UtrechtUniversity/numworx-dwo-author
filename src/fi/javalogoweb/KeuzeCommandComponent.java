@@ -133,7 +133,7 @@ public class KeuzeCommandComponent extends CompositeCommandComponent implements 
 	{
 		condition.setParameter(text);
 		isEditing = false;
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class KeuzeCommandComponent extends CompositeCommandComponent implements 
 				conditionEditor.setLocation( (getWidth()-conditionEditor.getWidth())/2, 4);
 			}
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class KeuzeCommandComponent extends CompositeCommandComponent implements 
 		if ( !condition.isCorrect(varSet) ) return false; 
 		boolean value = condition.getValue();
 		//traceKleur =ub.checkKeuze(bc.geefTekst() + "? " + (value?"ja":"nee"));
-		if(traceKleur)schuifveld.tekenOpnieuw();
+		if(traceKleur)schuifveld.repaint();
 		
 		if(value)
 		{	for(int j=0 ; j<ifBlock.getComponentCount() ; j++)

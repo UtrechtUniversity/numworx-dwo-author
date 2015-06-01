@@ -166,6 +166,7 @@ public class CommandContainer extends JPanel
 		int h = Math.max(contentHeight+12, minimumHeight);
 		setSize(getSize().width, h);
 		owner.containerHeightChanged(h);
+		
 	}
 	
 	int getContentHeight()

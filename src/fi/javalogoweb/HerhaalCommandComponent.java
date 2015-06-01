@@ -82,7 +82,7 @@ public class HerhaalCommandComponent extends CompositeCommandComponent implement
 	{
 		loopCount.setParameter(text);
 		isEditing = false;
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class HerhaalCommandComponent extends CompositeCommandComponent implement
 				countEditor.vulIn(loopCount.getParameterText());
 			}
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	@Override

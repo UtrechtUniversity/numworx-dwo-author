@@ -1,7 +1,7 @@
 -classpath %JAVA_HOME%\jre\lib\rt.jar
--manifestMain
 ..\output\classes\fi
 ..\output\classes\logotekenap
+..\output\classes\META-INF
 -keepInterface fi.?
 -keepInterface logotekenap.?
 -o ..\output\jar\javalogoweb.jar

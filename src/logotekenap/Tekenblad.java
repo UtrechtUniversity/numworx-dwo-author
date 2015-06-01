@@ -27,6 +27,7 @@ public class Tekenblad extends Uitvoerblad
 	public static int consoleStartY = 16;
 	private int consoleX = consoleStartX;
 	private int consoleY = consoleStartY;
+	private boolean veranderd = true;
 	  
 	public Tekenblad(JavaLogoInteractiePanel ap)
 	{	achtergrondkleur = Color.white;
@@ -44,7 +45,7 @@ public class Tekenblad extends Uitvoerblad
 	//-------------------------------------------------------------------------------------------
   	public void paintComponent(Graphics g)
   	{ 	bezigMetTekenen = true;
-		if(im==null)
+		if(im==null || veranderd)
 		{	breedte = getSize().width;
 			hoogte = getSize().height;	
 			double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
@@ -53,13 +54,17 @@ public class Tekenblad extends Uitvoerblad
  			im = createImage(breedte,hoogte);
   			gIm = im.getGraphics();
 			tekenOpImage(true);
+			veranderd = false;
 		}
+		
     	if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
-		bezigMetTekenen = false;
+		bezigMetTekenen = false;	
   	}
-	  
+  	
+  	 
   	public void tekenOpImage(boolean wis)
-  	{ 	beginpunt = new Punt(startpunt);
+  	{ 	if(startpunt==null) return;
+  		beginpunt = new Punt(startpunt);
     	eindpunt = new Punt(beginpunt);
     	mat.initialiseer();
     	achtergrondkleur = Color.WHITE;
@@ -85,14 +90,22 @@ public class Tekenblad extends Uitvoerblad
 	{	bezigMetTekenen = true;
 		tekenOpImage(true);
 		Graphics g = getGraphics();
-		if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
+		if(trb == null || !trb.geefTraceStatus())
+			g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
 	}
+ 	
+ 	public void repaint()
+	{	veranderd = true;
+		super.repaint();
+	}
+ 	
   	void tekenErbij()
 	{	bezigMetTekenen = true;
 		tekenOpImage(false);
 		Graphics g = getGraphics();
-		if(trb == null || !trb.geefTraceStatus())g.drawImage(im, 0, 0, null);
+		if(trb == null || !trb.geefTraceStatus())
+			g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
 	}
 	//-------------------------------------------------------------------------------------------

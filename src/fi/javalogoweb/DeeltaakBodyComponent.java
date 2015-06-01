@@ -42,7 +42,6 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 		if ( isEditingName )
 		{
 			deeltaaknaamParam.setParameter(text);
-			//hasParameter = pmParam.isEmpty();
 			isEditingName = false;
 			separatorX = 10+fm.stringWidth(deeltaaknaamParam.getParameterText()+"(");
 		} 
@@ -52,7 +51,7 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 			hasParameter = ( pmParam.isCorrect() );
 			isEditingParamName = false;
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	public void editParameter(boolean name)
@@ -70,7 +69,6 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 			naamEditor.vulIn(pmParam.getParameterText());
 			isEditingParamName = true;
 		}
-		//schuifveld.tekenOpnieuw();
 	}
 
 	/**
@@ -105,7 +103,7 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 			naamEditor.setVisible(false);
 			naamEditor.setEnabled(false);
 		}
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 	
 	/**
@@ -195,7 +193,7 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 		}
 		setLocation(newX, newY);
 		schuifveld.addToProgrammaPanel(this);
-		schuifveld.tekenOpnieuw();
+		schuifveld.repaint();
 	}
 
 	@Override

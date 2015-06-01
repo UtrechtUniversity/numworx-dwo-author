@@ -1,3 +1,3 @@
 call jshrink
-call exe
-call zipscorm
+call sign
+call export-jar
