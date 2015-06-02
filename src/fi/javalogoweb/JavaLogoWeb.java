@@ -53,7 +53,7 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet,  ComponentLi
 	
 	public void init() 
 	{	
-		//setLayout(null);
+		setLayout(null);
 		
 		String langArg = getParameter("language");
 		if (langArg == null) langArg = "en";
@@ -68,12 +68,12 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet,  ComponentLi
 		addComponentListener(this);
 		
 		jlip = new JavaLogoInteractiePanel();
-		jlip.setBounds(0,0,1160,600);
+		jlip.setBounds(0,0,getWidth(),getHeight());
 		add(jlip);
 	}
 	
 	public void componentResized(ComponentEvent e) {
-		//jlip.setBounds(0,0,getWidth()-8,getHeight()-27);
+		jlip.setBounds(0,0,getWidth(),getHeight());
 
 	}
 
