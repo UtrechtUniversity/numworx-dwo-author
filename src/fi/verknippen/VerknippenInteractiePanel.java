@@ -425,7 +425,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		this.grijzeFiguurString = grijzeFiguurString;
 		this.grijzeFiguurCoordinaten = grijzeFiguurCoordinaten;
 		if (taakNummer == 4)
-			drawingPanel2.grijsPolygon = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.LEFTAL);
+			drawingPanel2.grijsPolygon = new KnipPolygon2(drawingPanel2, grijzeFiguurCoordinaten, KnipPolygon2.LEFTAL);
 		
 	}
 
