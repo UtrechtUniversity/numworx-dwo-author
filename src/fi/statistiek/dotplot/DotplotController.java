@@ -235,6 +235,10 @@ public class DotplotController implements StatistiekView, ActionListener,
 
 		h.put("colorA", this.model.getColorA());
 		h.put("colorB", this.model.getColorB());
+		
+		// for HTML5 version add color strings
+		h.put("colorAString", this.model.getColorAString());
+		h.put("colorBString", this.model.getColorBString());
 
 		h.put("viewName", this.model.getViewName());
 
