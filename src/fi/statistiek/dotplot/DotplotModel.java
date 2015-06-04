@@ -415,4 +415,36 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
 	}
+
+	/**
+	 * Get color A in string format, for example "rgb(255,0,0)".
+	 * 
+	 * @return
+	 */
+	public Object getColorAString()
+	{
+		String colorAString = "rgb(";
+		
+		colorAString = colorAString + this.colorA.getRed()
+			+ "," + this.colorA.getGreen()
+			+ "," + this.colorA.getBlue() + ")";
+		
+		return colorAString;
+	}
+	
+	/**
+	 * Get color B in string format, for example "rgb(255,0,0)".
+	 * 
+	 * @return
+	 */
+	public Object getColorBString()
+	{
+		String colorBString = "rgb(";
+		
+		colorBString = colorBString + this.colorB.getRed()
+			+ "," + this.colorB.getGreen()
+			+ "," + this.colorB.getBlue() + ")";
+		
+		return colorBString;
+	}
 }
