@@ -238,6 +238,12 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					insert(dv);
 					s = s.substring(eind);
 				}
+				else if(ch1=='D')
+				{	DiffPartialVak dv = new DiffPartialVak(formuleVak);
+					dv.vulVak(s.substring(2,eind));
+					insert(dv);
+					s = s.substring(eind);
+				}
 				else if(ch1=='P')
 				{	PrimitieveVak pv = new PrimitieveVak(formuleVak);
 					pv.vulVak(s.substring(2,eind));
