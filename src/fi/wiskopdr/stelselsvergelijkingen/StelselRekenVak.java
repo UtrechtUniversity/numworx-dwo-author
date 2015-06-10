@@ -21,6 +21,7 @@ import java.util.MissingResourceException;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -70,10 +71,14 @@ public class StelselRekenVak extends JPanel  {
 	private String[] randomVars;
 	private Hashtable randomValues;
 	
+	int headerHoogte = 23;
+	int marge = 3;
+	
 	StelselAntwoordVak antwoordVak;
 	
 	JScrollPane scrollPane;
 	JPanel contentPanel;
+	JPanel headerPanel;
 	
 	public StelselRekenVak(StelselAntwoordVak antwoordVak)
 	{
@@ -81,10 +86,11 @@ public class StelselRekenVak extends JPanel  {
 		
 		contentPanel = new JPanel();
 		contentPanel.setLayout(null);
-		contentPanel.setBackground(Color.yellow);
-		scrollPane = new JScrollPane(contentPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		contentPanel.setBackground(Color.white);
+		scrollPane = new JScrollPane(contentPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		scrollPane.setLocation(0,0);
+		scrollPane.setLocation(0,26);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		
 		this.antwoordVak = antwoordVak;
 		setBackground(Color.white);
@@ -96,18 +102,21 @@ public class StelselRekenVak extends JPanel  {
 		
 		hoofdEditor = new StelselEditor(this);
 		contentPanel.add(hoofdEditor);
-		hoofdEditor.setLocation(0, 0);
+		hoofdEditor.setLocation(-1, 0);
+		headerPanel = hoofdEditor.getHeaderPanel();
+		add(headerPanel);
+		
 		
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
-		System.out.println("setBounds: " + x + ", " + y + ", " + b + ", " + h);
 		super.setBounds(x, y, b, h);
 		//contentPanel.setBounds(0, 30, b/2, 30);
 		//scrollPane.setPreferredSize(new Dimension(b, h));
-		scrollPane.setSize(b, h);
-		hoofdEditor.setBounds(0, 0, b, h);
+		scrollPane.setSize(b, h - headerHoogte - marge);
+		hoofdEditor.setBounds(-1, 0, b, h - headerHoogte - marge);
+		headerPanel.setBounds(0, 0, b, headerHoogte);
 	}
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
@@ -262,24 +271,34 @@ public class StelselRekenVak extends JPanel  {
 	
 	public void plaatsEditors()
 	{
-		System.out.println("plaatsEditors");
-		//uitrekenen hoeveel kolommen er onderaan zijn. 
-		//Die allemaal evenveel ruimte geven
-		//De breedtes van de kolommen erboven zijn dan de sommen van de breedtes van hun kinderen.
-		
 		int aantalKolommen = hoofdEditor.geefEindAantalKinderen();
-		
 		int kolomBreedte = getWidth()/aantalKolommen;
 		hoofdEditor.setSizes(kolomBreedte);
-		hoofdEditor.setLocation(0, 0);
+		hoofdEditor.setLocation(-1, 0);
 		hoofdEditor.scrollRectToVisible(new Rectangle(0, 0, 1, 1));
 		if(hoofdEditor.heeftKinderen())
 			hoofdEditor.setLocations();
-		System.out.println("contentPanel.getWidth: " + contentPanel.getWidth() + " en height: " + contentPanel.getHeight());
 		int h = hoofdEditor.geefHoogteEditorEnKinderen();
-		contentPanel.setSize(contentPanel.getWidth(), h); //dit doet niets...
+		if(h > scrollPane.getHeight())
+			contentPanel.setPreferredSize(new Dimension(scrollPane.getWidth() - 20, h));
+		else
+			contentPanel.setPreferredSize(new Dimension(scrollPane.getWidth() - 3, h)); 
+		int x = 0;
+		int y = 0;
+		if(hoofdEditor.vindKindMetFocus() != null)
+		{
+			x = hoofdEditor.vindKindMetFocus().getX() + 30;
+			y = hoofdEditor.vindKindMetFocus().getY() + hoofdEditor.vindKindMetFocus().geefFormuleVak().getY();
+			
+		}
+		contentPanel.revalidate();
+		contentPanel.scrollRectToVisible(new Rectangle(x, y + 45, 1, 1));
+		contentPanel.doLayout();
+		headerPanel.setBounds(0, 0, getWidth(), headerHoogte);
 		repaint();
 	}
+	
+	
 	
 	public StelselAntwoordVak geefAntwoordVak()
 	{
@@ -289,6 +308,32 @@ public class StelselRekenVak extends JPanel  {
 	public StelselEditor geefHoofdEditor()
 	{
 		return hoofdEditor;
+	}
+	
+	public boolean isCorrect()
+	{
+		return hoofdEditor.zijnEditorOfKinderenCorrect();
+	}
+	
+	public boolean isFout()
+	{
+		//TODO: invullen.
+		return false;
+	}
+	
+	public void kijkNa()
+	{
+		//TODO: invullen (editors nakijken).
+	}
+	
+	public void kijkNa(int stapNr)
+	{
+		//TODO: invullen (editors nakijken).
+	}
+	
+	public void start()
+	{
+		//TODO: invullen.
 	}
 	
 //	public Component add(Component c)

@@ -57,6 +57,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "cutPageMenuItem" ,  "Knip"},
 				{ "pastePageMenuItem" ,  "Plak (invoegen)"},
 				{ "insertCopyMenuItem" ,  "Kopie (invoegen)"},
+				{ "deelscoresKnopLabel", "Deelscores"},
 				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },
@@ -69,7 +70,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "randVarLabel" , "Variabelen voor random parameters:" },
 				{ "startExpLabel" , "Startexpressie:" },
 				{ "startVergLabel" , "Startvergelijking:" },
-				{ "variabelenLabel", "Variabelen: "},
+				{ "variabelenLabel", "Variabelen (gescheiden door komma's): "},
 				{ "antwoordLabel" , "Antwoordmodel:" },
 				{ "scoringLabel" , "Scoring van het antwoord:" },
 				{ "puntenLabel" , "Punten:" },

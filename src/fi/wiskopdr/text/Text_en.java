@@ -57,6 +57,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "cutPageMenuItem" ,  "Cut"},
 				{ "pastePageMenuItem" ,  "Paste (insert)"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
+				{ "deelscoresKnopLabel", "Partial scores"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },

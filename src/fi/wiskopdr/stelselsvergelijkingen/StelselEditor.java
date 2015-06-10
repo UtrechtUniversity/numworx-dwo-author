@@ -2,6 +2,7 @@ package fi.wiskopdr.stelselsvergelijkingen;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -10,19 +11,24 @@ import java.awt.event.FocusListener;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import fi.beans.stringutils.StringUtils;
 import fi.wiskopdr.AntwoordVergelijkingVak;
+import fi.wiskopdr.ImageComponent;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.BasisExpressie;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
+import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
@@ -62,11 +68,15 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	private boolean heeftFocus = false;
 	
+	private FormuleButton feedbackButton;
+	
+	private StelselPijl[] pijlen = null;
+	
 	
 	public StelselEditor(StelselRekenVak hoofdPanel)
 	{
 		super();
-		setHeader(true);
+		setHeader(false);
 		zetStandaardOpties();
 		zetCheck(true);//TODO: dit afhankelijk maken van of check is aangevinkt in editPanel.
 		heeftFocus = true;
@@ -94,6 +104,14 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		zetPijl(false);
 		zetScrollOptie(false);
 		zetMetRand(false);
+		zetLinkerRand();
+		
+		feedbackButton = new FormuleButton("?");
+		feedbackButton.addActionListener(this);
+		feedbackButton.setBackground(new Color(215,215,215));
+		feedbackButton.setSize(15, 15);
+		feedbackButton.setVisible(false);
+		add(feedbackButton);
 	}
 	
 	public void zetVarNamen(String[] varNamen)
@@ -110,7 +128,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		for(int i = 0; i < oplossingen.length; i++)
 		{
 			for(int j = 0; j < varNamen.length; j++)
-			{	//TODO: hier overnemen van wat al is opgelost voor deze kolom.
+			{	
 				eindOplossingGevonden[i][j] = false;
 				eindOplossingStelselGevonden[i][j] = false;
 				eindOplossingExactGevonden[i][j] = false;
@@ -136,16 +154,24 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		return hoofdPanel;
 	}
 	
-	public void splits(VergelijkingMeerv vergelijkingen)
+	public void splits()
 	{
+		VergelijkingMeerv vergelijkingen = formuleVak.geefVergelijking();
 		hoogte = bepaalHoogte();
-		//TODO: oranje vinkje weghalen uit deze editor en of bovenin volgende editor plakken, of even in StelselRekenVak plakken.
+		Component huidigIC = getHuidigIC();
+		remove(huidigIC);
+		hoofdPanel.contentPanel.add(huidigIC, 0);
+		huidigIC.setLocation(this.getX() + 5, this.getY() + hoogte - 20);
+		//getHuidigIC().setVisible(false);
+		
 		
 		//hoogte = 100;
 		
 		//VergelijkingMeerv vergelijkingen = geefVergelijking(); // deze bestaat uit k vergelijkingen. 
 		int k = vergelijkingen.geefAantal();
 		kinderen = new StelselEditor[k];
+		pijlen = new StelselPijl[k];
+		int breedteVergelijkingen = this.getX() + formuleVak.getX();
 		
 		for(int i = 0; i < k; i++)
 		{
@@ -180,6 +206,13 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			
 			kinderen[i] = editor;
 			hoofdPanel.contentPanel.add(editor);
+			
+			editor.vulVak("$f"+ vergelijking.toString() + "@");
+			int xBegin = breedteVergelijkingen + editor.geefFormuleVak().getWidth()/2;
+			breedteVergelijkingen += editor.geefFormuleVak().getWidth() + 20; //+20 voor breedte van woordje 'of', moet misschien nog wat preciezer ingesteld.
+			editor.vulVak("$f@");
+			pijlen[i] = new StelselPijl(xBegin, editor.geefFormuleVak().getWidth()/3); //wat hier op de tweede plek staat maakt niets uit, dat regel je nog in plaatsEditors.
+			hoofdPanel.contentPanel.add(pijlen[i], 0);
 		}
 		hoofdPanel.plaatsEditors();
 		kinderen[0].requestFocus();
@@ -187,7 +220,6 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void requestFocus()
 	{
-		System.out.println("request Focus");
 		if(isHoofdEditor())
 			this.formuleVak = geefLaatsteFormuleVak();
 		else
@@ -265,20 +297,13 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			formuleVakInhoudenEditor[i] = formuleVakInhouden[formuleTeller + i];
 		//kijken of hier nog meer in moet, zoals ingevuld en nagekeken. Dan misschien toch beter h doorgeven.
 		String antwoordString = formuleVakInhoudenEditor[formuleVakInhoudenEditor.length - 1];
+		ingevuld = !antwoordString.equals("$f@");
 		h.put("stapNr", new Integer(stapNr));
 		h.put("formuleVakInhouden", formuleVakInhoudenEditor);
 		h.put("ingevuld", new Boolean(ingevuld));
 		h.put("nagekeken", new Boolean(nagekeken));
 		h.put("antwoordString", antwoordString);
 		super.setState(h);
-		
-		//vervolgens: kinderen maken (als van toepassing)
-		if(aantalKinderen[editorTeller] > 0)
-		{
-			splits(geefLaatsteFormuleVak().geefVergelijking()); 
-			System.out.println("splits is goed gegaan");
-		}
-		
 		
 		formuleTeller += stapNrs[editorTeller] + 1;
 		editorTeller++;
@@ -523,7 +548,6 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //		}
 		else if (isGelijkwaardig)
 		{
-			System.out.println("kijkNa; isGelijkwaardig");
 			
 //			if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing &&
 //										// bevatFouteOplossing
@@ -547,22 +571,19 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //				}
 //			}
 			if (eindOplossingNodig)
-			{	System.out.println("eindOplossingNodig");
-				if (bevatVoldoetNiet) // isGelijkwaardig && eindOplossingNodig
+			{	if (bevatVoldoetNiet) // isGelijkwaardig && eindOplossingNodig
 				{
 					zetCorrectFoutStap(stapNr, false, false, false, "feedbackTekst02", show); // "Niet alle oplossingen voldoen aan de oorspronkelijke vergelijking. Verwijder de oplossingen die niet voldoen."
 				}
 				else if (isEindOplossing)
 				{
-					System.out.println("isEindOplossing");
 					if (exactNodig)
-					{	System.out.println("exactNodig");
-						if (isEindOplossingExact) // isGelijkwaardig &&
+					{	if (isEindOplossingExact) // isGelijkwaardig &&
 													// eindOplossingNodig &&
 													// isEindOplossing &&
 													// exactNodig &&
 													// isEindOplossingExact
-						{	System.out.println("isExact");
+						{	
 							//score = puntenGelijkwaardig + puntenEindOplossing + puntenSignificant + puntenExact;
 //							if (gewensteEindOplossing.isOngelijkheid())
 //							{
@@ -593,7 +614,6 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 						// isEindOplossing && exactNodig &&
 						// isEindOplossingExact
 						{
-							System.out.println("is niet exact");
 //							if (significantNodig)
 //							{
 //								if (isEindOplossingSignificant)
@@ -664,7 +684,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 				else
 				// isGelijkwaardig && eindOplossingNodig &&
 				// !isEindOplossing
-				{	System.out.println("niet eindoplossing");
+				{	
 //					if (moetNogAfgerond) // isGelijkwaardig &&
 //											// eindOplossingNodig &&
 //											// !isEindOplossing
@@ -694,16 +714,13 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 
 				// Nu kan het vak gebruikt worden als 'balans' voor het checken
 				// van ware beweringen
-				System.out.println("geen eindoplossing nodig");
 				zetCorrectFoutStap(stapNr, false, false, true, "feedbackTekst16", show);// "Dit is een correcte vergelijking"
 			}
 		}
 		else
 		// niet isGelijkwaardig
-		{	System.out.println("niet gelijkwaardig");
-			if (isDeelOplossing)
-			{	System.out.println("isDeelOplossing");
-				if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing
+		{	if (isDeelOplossing)
+			{	if (bevatFouteOplossing) // !isGelijkwaardig && isDeelOplossing
 											// && bevatFouteOplossing
 				{
 					//score = 0;
@@ -724,6 +741,10 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 				zetCorrectFoutStap(stapNr, false, true, true, "", show);
 			}
 		}
+		System.out.println("this.getY = " + this.getY() + ", laatsteFormuleVak.getY = " + this.geefLaatsteFormuleVak().getY());
+		feedbackButton.setBounds(30, this.geefLaatsteFormuleVak().getY() + this.geefLaatsteFormuleVak().getHeight() + 5, 15, 15);
+		if(!(getFeedbackComponent().getText().equals("") || getFeedbackComponent().getText().equals("\n")))
+			feedbackButton.setVisible(true);
 		
 		if(backStep)
 			return;
@@ -837,7 +858,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		if(geefVergelijking() == null)
 			return;
 		if(isGelijkwaardig && geefVergelijking().geefAantal() > 1)
-			splits(geefVergelijking());
+			splits();
 		else
 		{	super.maakStap();
 			hoogte = bepaalHoogte();
@@ -847,7 +868,10 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void setSizes(int kolomBreedte)
 	{
-		this.setSize(geefBreedte(kolomBreedte), hoogte);
+		int h = hoogte;
+		if(kinderen == null) //door laten lopen tot onderrand
+			h = hoofdPanel.getHeight() - this.getLocation().y;
+		this.setSize(geefBreedte(kolomBreedte), h);
 		if(kinderen != null)
 		{	for(int i = 0; i < kinderen.length; i++)
 				kinderen[i].setSizes(kolomBreedte);
@@ -858,12 +882,24 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	{
 		int x = this.getLocation().x;
 		int y = this.getLocation().y + hoogte;
+		int breedteVergelijkingen = x + geefLaatsteFormuleVak().getX();
+		StelselEditor hulpEditor = new StelselEditor(this);
 		for(int i = 0; i < kinderen.length; i++)
 		{	kinderen[i].setLocation(x, y);
 			kinderen[i].scrollRectToVisible(new Rectangle(0, 0, 1, 1));
-			x += kinderen[i].getWidth();
+			if(kinderen[i].getHuidigIC() != null && kinderen[i].getHuidigIC().getParent().equals(hoofdPanel.contentPanel))
+				kinderen[i].getHuidigIC().setLocation(x + 5, y + hoogte - 20);
+			hulpEditor.vulVak("$f" + geefLaatsteFormuleVak().geefVergelijking().geefVergelijking(i));
+			pijlen[i].zetBeginX(breedteVergelijkingen + hulpEditor.geefFormuleVak().getWidth() / 2);
+			breedteVergelijkingen += hulpEditor.geefFormuleVak().getWidth() + 20;//20 correctie voor woordje 'of'.
+			pijlen[i].zetEindX(x + kinderen[i].getWidth()/3);
+			pijlen[i].setLocation(Math.min(pijlen[i].xBegin, pijlen[i].xEind), y - 15);
 			if(kinderen[i].heeftKinderen())
 				kinderen[i].setLocations();
+			x += kinderen[i].getWidth();
+			
+			
+			
 		}
 	}
 	
@@ -930,7 +966,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			{
 				for(int j = 0; j < varNamen.length; j++)
 				{	if(!eindOplossingGevonden[i][j])
-					{	eindOplossingGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossing(oplossingen[i], varNamen[j], "=");
+					{	eindOplossingGevonden[i][j] = isGelijkwaardigEind && antwoord.isEindOplossing(oplossingen[i][j], varNamen[j], "=");
 						if(!eindOplossingGevonden[i][j])
 							isEindOplossing = false;
 					}
@@ -1086,8 +1122,11 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 				else
 				{
 					for(int i = 0; i < parent.kinderen.length; i++)
-						hoofdPanel.remove(parent.kinderen[i]);
+					{	hoofdPanel.remove(parent.kinderen[i]);
+						hoofdPanel.remove(parent.pijlen[i]);
+					}
 					parent.kinderen = null;
+					parent.pijlen = null;
 					parent.hoogte = parent.bepaalHoogte();
 					hoofdPanel.plaatsEditors();
 					parent.requestFocus();
@@ -1126,6 +1165,35 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		}
 	}
 
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getSource()==feedbackButton)
+		{	Component c = getFeedbackComponent();
+			//c.setLocation(0,0);
+			hoofdPanel.contentPanel.add(c, 0);
+			System.out.println("hoofdPanel.getWidth = " + hoofdPanel.getWidth() + " en hoofdPanel.getHeight = " + hoofdPanel.getHeight() + " en c.getHeight = " + c.getHeight());
+			c.setLocation(Math.min(this.getX(), hoofdPanel.getWidth() - 200), 
+					Math.min(this.getY() + this.geefLaatsteFormuleVak().getY() + this.geefLaatsteFormuleVak().getHeight() + 5, hoofdPanel.getHeight() - c.getHeight()));
+			//feedbackPanel.setSize(c.getSize().width, c.getSize().height);
+			//feedbackPanel.add(c);
+			//this.activateFeedback(feedbackPanel);
+			feedbackButton.setVisible(false);
+		}
+		else if(e.getActionCommand().equals("closeFeedback"))
+		{	feedbackButton.setVisible(true);
+			hoofdPanel.contentPanel.remove(getFeedbackComponent());
+			hoofdPanel.repaint();
+//			if(feedbackPanel.getParent()!=null)
+//			{	Container c = feedbackPanel.getParent();
+//				c.remove(feedbackPanel);
+//				c.repaint();
+//			}
+//			return;
+		}
+		else
+			super.actionPerformed(e);
+	}
+	
 	
 	
 }

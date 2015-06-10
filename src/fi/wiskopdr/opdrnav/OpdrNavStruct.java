@@ -146,7 +146,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	//private JButton condVolgendeKnop; // , condVorigeKnop;
 	private String[] urls = null;
 	private int[] grensScores = null;
-	private Link condLink;
+	//private Link condLink;
 	
 	private JPanel afdekPanel;
 	private TimerPanel timerPanel;
@@ -297,7 +297,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 		}
 		
-		condLink = new Link("", urls, 400, 400, grensScores);
+		//condLink = new Link("", urls, 400, 400, grensScores);
 		bezocht = new boolean[aantalActiviteiten][maxAantalOpdrachten];
 		for(int j = 0; j < aantalActiviteiten; j++)
 		{	for(int i = 0; i < bezocht[j].length; i++)
@@ -650,7 +650,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		aantalSessiesLabel.setVisible(false);
 		add(aantalSessiesLabel);
 
-		scoresObjectivesKnop = new JButton("Deelscores");
+		scoresObjectivesKnop = new JButton(WiskOpdr.rb.getString("deelscoresKnopLabel"));
 		scoresObjectivesKnop.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		scoresObjectivesKnop.setVisible(false);
 		add(scoresObjectivesKnop, 0);

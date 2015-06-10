@@ -97,7 +97,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private int attemptsCount;
 	private boolean stapOk;
 
-	private ImageComponent goedIC, foutIC, halfIC, huidigIC;
+	private ImageComponent goedIC, foutIC, halfIC;
+	private ImageComponent huidigIC;
 	private ImageComponent feedbackIC;
 	private VergelijkingMeerv gewensteEindOplossing;
 	private VergelijkingMeerv gewensteTussenOplossing;
@@ -646,6 +647,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 	public Component getHalfIC() {
 		return halfIC;
+	}
+	
+	public Component getHuidigIC() {
+		return huidigIC;
 	}
 
 	public Component getFeedbackIC()
@@ -1963,9 +1968,14 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		feedbackTekst.setText("");
 		feedbackTekst.setCloseable(closeable);
 		feedbackTekst.setSize(195, 20);
-		feedbackTekst.setLocation(getSize().width - 250, formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 10);
 		feedbackTekst.setText(tekst);
 		feedbackTekst.resize();
+		
+		if(this instanceof StelselEditor)
+			feedbackTekst.setLocation(10, formuleVakken[stapNr].getLocation().y);
+			
+		feedbackTekst.setLocation(getSize().width - 250, formuleVakken[stapNr].getLocation().y + formuleVakken[stapNr].getSize().height + 10);
+		
 		if ("MW".equals(WiskOpdr.deployVariant))
 		{
 			int h = feedbackTekst.getHeight() + 20;
@@ -1987,7 +1997,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			mwFeedbackPanel.add(feedbackTekst, 0);
 			add(mwFeedbackPanel, 0);
 		}
-		else
+		else if (!(this instanceof StelselEditor))
 			add(feedbackTekst, 0);
 		produceAction("feedback");
 	}
@@ -3908,7 +3918,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		}
 		else
 		{	System.out.println("bepaalHoogte: geen feedbacktekst");
-			hoogte += 20;
+			//hoogte += 20;
 		}
 		return hoogte;
 	}

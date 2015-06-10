@@ -101,6 +101,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 	private Vector attempts;
 	
 	static boolean fontOvererving;
+	private StelselAntwoordVak parent;
 	
 	public static void zetFontOverervingForm(boolean b)
 	{	fontOvererving = b;
@@ -122,9 +123,10 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		HALFKRUL = hk;
 	}*/
 
-	public StelselOplossingenVak()
+	public StelselOplossingenVak(StelselAntwoordVak parent)
 	{
 		setLayout(null);
+		this.parent = parent;
 
 		attempts = new Vector();
 
@@ -351,7 +353,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		this.attempts = attempts;
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
-
+		System.out.println("oplossingenvak setState: antwoord = " + antwoord);
 		formuleVak.vulVak(antwoord);
 		
 		if (ingevuld && (mode == 0 || nagekeken))
@@ -683,7 +685,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		}
 
 		if (ingevuld && show && mode != -1)
-			produceAction("changed");
+			parent.produceAction("changed");
 	}
 
 	public void kijkNa(int stapNr)
@@ -864,6 +866,8 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 	{
 		boolean gelijkwaardig = true;
 		Expressie[][] oplossingen = bepaalOplossingen(formuleVak.toString());
+		if(oplossingen == null)
+			return false;
 		boolean[] oplossingenCorrect = new boolean[oplossingen.length];
 		for(int i = 0; i < oplossingenCorrect.length; i++)
 			oplossingenCorrect[i] = false;
@@ -922,6 +926,16 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 	{
 		;
 	}
+	
+	public boolean isIngevuld()
+	{
+		return ingevuld;
+	}
+	
+	public boolean isNagekeken()
+	{
+		return nagekeken;
+	}
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -932,7 +946,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 				kijkNa();
 				zetNagekeken(true);
 				if (ingevuld)
-					produceAction("checked");
+					parent.produceAction("checked");
 			}
 		}
 		else if (e.getSource() == formuleVak && e.getActionCommand().equals("formChanged"))
@@ -940,7 +954,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 			if (feedbackTekst != null && getParent() == null && feedbackTekst.getParent() != null)
 			{
 				remove(feedbackTekst);
-				produceAction("feedbackWeg");
+				parent.produceAction("feedbackWeg");
 			}
 			zetGoedFout(GEEN);
 		}
@@ -962,28 +976,5 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 			}
 			feedbackButton.setVisible(true);
 		}
-
 	}
-
-	//ActionProducer
-	private ActionListener actionListener = null;
-
-	public void addActionListener(ActionListener l)
-	{
-		actionListener = AWTEventMulticaster.add(actionListener, l);
-	}
-
-	public void removeActionListener(ActionListener l)
-	{
-		actionListener = AWTEventMulticaster.remove(actionListener, l);
-	}
-
-	public void produceAction(String command)
-	{
-		if (actionListener != null)
-		{
-			actionListener.actionPerformed(new ActionEvent(this, 0, command));
-		}
-	}
-	//
 }

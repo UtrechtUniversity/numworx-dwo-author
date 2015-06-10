@@ -562,6 +562,11 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	{	Color c = b ? Color.gray : Color.white;
 		scrollPane.setBorder(BorderFactory.createLineBorder(c));
 	}
+	
+	public void zetLinkerRand()
+	{
+		scrollPane.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.LIGHT_GRAY));
+	}
 		
 	public void zetRandverhoging(boolean b)
 	{	randVerhoging = b;
@@ -721,6 +726,11 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 			&& getParent().getParent().getParent().getParent() instanceof JDialog) 
 		return true;
 		return false;
+	}
+	
+	public JPanel getHeaderPanel()
+	{
+		return headerPanel;
 	}
 	
 	// methoden TabletOwner

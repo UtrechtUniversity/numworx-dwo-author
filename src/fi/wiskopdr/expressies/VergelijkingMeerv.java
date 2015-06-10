@@ -193,17 +193,24 @@ public class VergelijkingMeerv
 		return isOplossing;
 	}
 	
-	public boolean isEindOplossing(Expressie[] subst, String var, String vergTeken)
+	public boolean isEindOplossing(Expressie subst, String var, String vergTeken)
 	{
-		boolean isOplossing = false;
 		for(int j = 0; j < vergelijkingen.length; j++)
 		{
-			if(!isOplossing)
-			{
-				isOplossing = vergelijkingen[j].bevatOplossingP(subst, var, vergTeken);
+			if(vergelijkingen[j].isOplossing(subst, var, vergTeken))
+			{	if(vergelijkingen[j].isEindOplossing(var))
+					return true;
 			}
+			
 		}
-		return isOplossing;
+		return false;
+	}
+	
+	public boolean bevatOplossing(Expressie[] subst, String var, String vergTekens)
+	{	for(int i=0 ; i<vergelijkingen.length ; i++)
+		{	if(vergelijkingen[i].bevatOplossingP(subst,var, vergTekens))return true;
+		}
+		return false;
 	}
 	
 	public boolean isEindOplossingExact(Expressie[] subst, String var, String vergTeken)
@@ -333,14 +340,6 @@ public class VergelijkingMeerv
 		}
 		return isOplossing;
 	}
-	
-	public boolean bevatOplossing(Expressie[] subst, String var, String vergTekens)
-	{	for(int i=0 ; i<vergelijkingen.length ; i++)
-		{	if(vergelijkingen[i].bevatOplossingP(subst,var, vergTekens))return true;
-		}
-		return false;
-	}
-	
 	
 	
 	public boolean isDeelOplossing(double[] subst)

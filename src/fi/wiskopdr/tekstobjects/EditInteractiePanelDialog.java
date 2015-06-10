@@ -493,14 +493,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
             if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(300);
             if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(150);
         }
-    	//wordt binnenkort actief:
-//		else if(soortInteractiePanel == 53)
-//		{   interactieEditPanel = (new StelselAntwoordVak()).getEditPanel();
-//	        breedteTF.setText("300");
-//	        hoogteTF.setText("250");
-//	        if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(300);
-//	        if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(250);
-//	    }
+    	
+		else if(soortInteractiePanel == 53)
+		{   interactieEditPanel = (new StelselAntwoordVak()).getEditPanel();
+	        breedteTF.setText("300");
+	        hoogteTF.setText("250");
+	        if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(300);
+	        if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(250);
+	    }
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		if(soortInteractiePanel == TekstInteractiePanelVak.interactiePanelSets[1][30])
 				{	interactieEditPanel = maakInteractieEditPanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][0], WiskOpdr.language);

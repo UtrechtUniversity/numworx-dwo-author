@@ -1,11 +1,13 @@
 package fi.wiskopdr.stelselsvergelijkingen;
 
+import java.awt.AWTEventMulticaster;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
@@ -85,7 +87,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		oplossingenLabel.setLocation(5,2);
 		oplossingenRegel.add(oplossingenLabel);
 		
-		oplossingenVak = new StelselOplossingenVak();
+		oplossingenVak = new StelselOplossingenVak(this);
 		oplossingenRegel.add(oplossingenVak);
 		oplossingenVak.setBounds(getWidth() - 200, 1, 198, 24);
 	}
@@ -272,8 +274,11 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		variabelenString = StringUtils.replaceStr(variabelenString, " ", "");
 		
 		try{
-			//haakjes weghalen
-			variabelenString = variabelenString.substring(3, variabelenString.length() - 2);
+			//als nodig: haakjes weghalen. Anders alleen $f en @ weghalen.
+			if(variabelenString.startsWith("$f("))
+				variabelenString = variabelenString.substring(3, variabelenString.length() - 2);
+			else
+				variabelenString = variabelenString.substring(2, variabelenString.length() -1);
 			varNamen = StringUtils.split(variabelenString, ",");
 		
 			//splitsen in verschillende oplossingen. Eerst $f en @ weghalen.
@@ -333,8 +338,11 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		if(rekenVakZichtbaar)
 			rekenVak.setState(b);
 		if(oplossingenRegelZichtbaar)
-		{	//oplossingenRegel.setState(b);
-			
+		{	if(b.containsKey("oplRegelState"))
+			{
+				Hashtable h1 = (Hashtable) b.get("oplRegelState");
+				oplossingenVak.setState(h1);
+			}
 		}
 			
 	}
@@ -360,7 +368,11 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		Hashtable h = new Hashtable();
 		if(rekenVakZichtbaar)
 		{	h = rekenVak.getState();
-		
+		}
+		if(oplossingenRegelZichtbaar)
+		{
+			Hashtable h1 = oplossingenVak.getState();
+			h.put("oplRegelState", h1);
 		}
 		return h;
 	}
@@ -396,8 +408,11 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	@Override
 	public int getScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		if(oplossingenRegelZichtbaar)
+			return oplossingenVak.getScore();
+		else
+			return rekenVak.geefHoofdEditor().getScore();
+		//TODO: dit laatste is waarschijnlijk nog niet handig. Naar kijken voor als oplossingenregel niet zichtbaar.
 	}
 
 	@Override
@@ -408,20 +423,23 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	@Override
 	public int getScoreMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		return scoreMax;
 	}
 
 	@Override
 	public boolean isCorrect() {
-		// TODO Auto-generated method stub
-		return false;
+		if(oplossingenRegelZichtbaar)
+			return oplossingenVak.isCorrect();
+		else
+			return rekenVak.isCorrect();
 	}
 
 	@Override
 	public boolean isFout() {
-		// TODO Auto-generated method stub
-		return false;
+		if(oplossingenRegelZichtbaar)
+			return oplossingenVak.isFout();
+		else
+			return rekenVak.isFout();
 	}
 
 	@Override
@@ -433,7 +451,6 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 	@Override
 	public void zetNagekeken(boolean b) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -444,8 +461,10 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-		
+		if(oplossingenRegelZichtbaar)
+			oplossingenVak.start();
+		if(rekenVakZichtbaar)
+			rekenVak.start();
 	}
 
 	@Override
@@ -463,19 +482,40 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 	@Override
 	public void kijkNa() {
 		// TODO Auto-generated method stub
-		
+		if(oplossingenRegelZichtbaar)
+			oplossingenVak.kijkNa();
+		if(rekenVakZichtbaar)
+			rekenVak.kijkNa();
 	}
 
 	@Override
 	public void kijkNa(int stapNr) {
-		// TODO Auto-generated method stub
-		
+		if(oplossingenRegelZichtbaar)
+			oplossingenVak.kijkNa(stapNr);
+		if(rekenVakZichtbaar)
+			rekenVak.kijkNa(stapNr);
 	}
 
-	@Override
-	public void addActionListener(ActionListener al) {
-		// TODO Auto-generated method stub
-		
-	}
+	// ActionProducer
+		private ActionListener actionListener = null;
+
+		public void addActionListener(ActionListener l)
+		{
+			actionListener = AWTEventMulticaster.add(actionListener, l);
+		}
+
+		public void removeActionListener(ActionListener l)
+		{
+			actionListener = AWTEventMulticaster.remove(actionListener, l);
+		}
+
+		public void produceAction(String command)
+		{
+			if (actionListener != null)
+			{
+				actionListener.actionPerformed(new ActionEvent(this, 0, command));
+			}
+		}
+		//
 
 }

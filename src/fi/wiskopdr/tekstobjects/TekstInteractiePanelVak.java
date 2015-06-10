@@ -350,13 +350,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"Slider",
 		"DataPlot",
 		"ReactieVergelijking",
-		//binnenkort: WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
+		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
-		{0,1,2,3,4,13,14,12,16,25,33,49,52}, //binnenkort: ,53},
+		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
 		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51},
 		{45},
 		{9},
@@ -1120,20 +1120,20 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
-        //binnenkort:
-//		else if(soortInteractiePanel == 53)
-//        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
-//            {   interactiePanel = new StelselAntwoordVak();
-//                //((TekstVakPanel)interactiePanel).setEditable(true);
-//                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-//                ((Component)interactiePanel).setBackground(getBackground());
-//                interactiePanel.addActionListener(this);
-//                
-//            //add((Component)interactiePanel,0);
-//            
-//            }
-//            //interactiePanel.setEditState(interactiePanelLaunchState);
-//        }
+        
+		else if(soortInteractiePanel == 53)
+        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
+            {   interactiePanel = new StelselAntwoordVak();
+                //((TekstVakPanel)interactiePanel).setEditable(true);
+                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+                
+            //add((Component)interactiePanel,0);
+            
+            }
+            //interactiePanel.setEditState(interactiePanelLaunchState);
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -1620,20 +1620,20 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
-        //binnenkort:
-//		else if(soortInteractiePanel == 53)
-//        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
-//            {   interactiePanel = new StelselAntwoordVak();
-//                //((TekstVakPanel)interactiePanel).setEditable(true);
-//                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-//                ((Component)interactiePanel).setBackground(getBackground());
-//                interactiePanel.addActionListener(this);
-//                
-//            //add((Component)interactiePanel,0);
-//            
-//            }
-//            //interactiePanel.setEditState(interactiePanelLaunchState);
-//        }
+        
+		else if(soortInteractiePanel == 53)
+        {   if(interactiePanel==null || !(interactiePanel instanceof StelselAntwoordVak))
+            {   interactiePanel = new StelselAntwoordVak();
+                //((TekstVakPanel)interactiePanel).setEditable(true);
+                //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+                
+            //add((Component)interactiePanel,0);
+            
+            }
+            //interactiePanel.setEditState(interactiePanelLaunchState);
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
