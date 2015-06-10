@@ -147,6 +147,12 @@ public class StelselVak extends RegelVak
 		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();	
 	}
 	
+	public void setEditable(boolean b)
+	{
+		for(int i = 0; i < kinderen.size(); i++)
+			kinderen.get(i).setEditable(b);
+	}
+	
 	public void vulVak(String s)
 	{
 		//hier komt altijd een string in waarin de elementen zijn gescheiden door $n. 
