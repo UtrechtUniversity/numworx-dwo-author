@@ -125,7 +125,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         add(variabelenEditor);
         
         
-        antwoordLabel = makeLabel(5,160,770,20,WiskOpdr.rb.getString("antwoordLabel"),true);
+        antwoordLabel = makeLabel(5,160,770,20,WiskOpdr.rb.getString("antwoordLabelStelsel"),true);
                 
         antwoordvak = new FormuleEditor(true);
         antwoordvak.setBounds(5,180,770,150);
