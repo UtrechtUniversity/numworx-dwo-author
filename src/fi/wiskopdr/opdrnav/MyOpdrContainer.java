@@ -271,6 +271,10 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 	}
 
 	public void setNewScrollSize()
+	{	setNewScrollSize(true);
+	}
+	
+	public void setNewScrollSize(boolean scrollBack)
 	{
 		int maxb = 0;
 		int maxh = 0;
@@ -287,7 +291,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		contentPane.setPreferredSize(new Dimension(maxb, maxh));
 		if ("MW".equals(WiskOpdr.deployVariant) && !WiskOpdr.deployDwoGrading)
 			contentPane.setPreferredSize(new Dimension(scrollPane.getWidth(), maxh));
-		contentPane.scrollRectToVisible(new Rectangle(0, 0, 10, maxh));
+		if(scrollBack)contentPane.scrollRectToVisible(new Rectangle(0, 0, 10, maxh));
 		contentPane.revalidate();
 		contentPane.doLayout();
 	}
@@ -1057,7 +1061,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 	{
 		if (e.getActionCommand().equals("resizeTekstArea"))
 		{
-			setNewScrollSize();
+			setNewScrollSize(false);
 		}
 		if (!e.getActionCommand().equals("resize"))
 		{
