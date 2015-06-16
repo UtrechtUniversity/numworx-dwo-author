@@ -37,8 +37,10 @@ import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.BasisExpressie;
 import fi.wiskopdr.expressies.Expressie;
-import fi.wiskopdr.expressies.Functie;
-import fi.wiskopdr.expressies.FunctieDefSet;
+//import fi.wiskopdr.expressies.Functie;
+//import fi.wiskopdr.expressies.FunctieDefSet;
+import fi.wiskopdr.expressies.FunctieMV;
+import fi.wiskopdr.expressies.FunctieMVDefSet;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
 import fi.wiskopdr.formuleobjects.FormuleButton;
@@ -156,7 +158,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	//private boolean hulpGebruikt;
 	//private int aftrekTipHulp;
 
-	private FunctieDefSet functieDefSet = new FunctieDefSet();
+	//private FunctieDefSet functieDefSet = new FunctieDefSet();
+	private FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
 	
 	private Vergelijking[] antwoordSubstituties;
 	private String[] antwoordStringSubstituties;
@@ -539,7 +542,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		if (start)
 			string = formuleVakken[0].toString();
 
-		VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieDefSet);
+		//VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieDefSet);
+		VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieMVDefSet);
 
 		int i = 0;
 		while (v != null && v.geefVergelijking(i) != null) {
@@ -1135,7 +1139,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				try
 				{
 					antwoordSubStrings[i] = FormuleParser.randomizeString(antwoordSubStrings[i], randomVars, randomValues);
-					antwoordSubstituties[i] = (FormuleParser.parseVergelijking(antwoordSubStrings[i], functieDefSet)).geefVergelijking(0);
+					//antwoordSubstituties[i] = (FormuleParser.parseVergelijking(antwoordSubStrings[i], functieDefSet)).geefVergelijking(0);
+					antwoordSubstituties[i] = (FormuleParser.parseVergelijking(antwoordSubStrings[i], functieMVDefSet)).geefVergelijking(0);
 					if (!antwoordSubstituties[i].geefExpLinks().isVar())
 						subCorrect = false;
 				} catch (Exception e) {
@@ -1178,8 +1183,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				if(functieDelen.length<2) break;
 				String functieExpressieString = "$f"+functieDelen[1];
 				String functieNaam = functieDelen[0].substring(2, functieDelen[0].indexOf('('));
-				String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
-				
+				String varString = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf(')'));
+				String[] functieMVVariabelen = varString.split(",");
+				//String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
+				System.out.println("varString:"+varString);
+				System.out.println("functieExpressieString:"+functieExpressieString);
+				System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
 				try
 				{
 					functieExpressieString = FormuleParser.randomizeString(functieExpressieString, randomVars, randomValues);
@@ -1188,7 +1197,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					
 				}
 				Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
-				functieDefSet.addFunctieExpressie(functieNaam, functieVariabele, functieExpressie);
+				//functieDefSet.addFunctieExpressie(functieNaam, functieVariabele, functieExpressie);
+				functieMVDefSet.addFunctieMVExpressie(functieNaam, functieMVVariabelen, functieExpressie);
 			}
 		}
 
@@ -1208,7 +1218,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		}
 
 		if (bordjesMethode && startString.length()>3) {
-			startString = "$f" + (FormuleParser.parseVergelijking(startString, functieDefSet)).toStringStrikt() + "@";
+			startString = "$f" + (FormuleParser.parseVergelijking(startString, functieMVDefSet)).toStringStrikt() + "@";
+			//startString = "$f" + (FormuleParser.parseVergelijking(startString, functieDefSet)).toStringStrikt() + "@";
 			// System.out.println(startString);
 		}
 		zetStartString(startString);
@@ -1433,7 +1444,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		
 		if (casAntw && !hasStartString) {
 			String vergString = formuleVakken[0].toString();
-        	VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
+        	//VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
+        	VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieMVDefSet);
         	String vergStringCas = "$f@";
         	
         	VergelijkingMeerv vmAntw = null;
@@ -1544,7 +1556,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 			String formule = "";
 			String string = formuleVakInhouden[stapNr];
-			VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieDefSet);
+			//VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieDefSet);
+			VergelijkingMeerv v = FormuleParser.parseVergelijking(string, functieMVDefSet);
 
 			int i = 0;
 			while (v != null && v.geefVergelijking(i) != null)
@@ -1815,10 +1828,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		if (index > -1)
 		{
 			String s1 = s.substring(0, index) + "@";
-			gewensteTussenOplossing = p.parseVergelijking(s1, functieDefSet);
+			//gewensteTussenOplossing = p.parseVergelijking(s1, functieDefSet);
+			gewensteTussenOplossing = p.parseVergelijking(s1, functieMVDefSet);
 			s = "$f" + s.substring(index + 1);
 		}
-		gewensteEindOplossing = p.parseVergelijking(s, functieDefSet);
+		//gewensteEindOplossing = p.parseVergelijking(s, functieDefSet);
+		gewensteEindOplossing = p.parseVergelijking(s, functieMVDefSet);
 	}
 
 	public void zetJuisteVorm(String s)
@@ -1832,7 +1847,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		for (int i = 0; i < antwoordStrings.length; i++)
 		{
 			String antwoordStr = "$f" + antwoordStrings[i] + "@";
-			juisteVormen[i] = p.parseVergelijking(antwoordStr, functieDefSet);
+			//juisteVormen[i] = p.parseVergelijking(antwoordStr, functieDefSet);
+			juisteVormen[i] = p.parseVergelijking(antwoordStr, functieMVDefSet);
 		}
 
 	}
@@ -2464,7 +2480,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		}
 		
 		//VergelijkingMeerv antwoordIngevuld = formuleVak.geefVergelijking();
-		VergelijkingMeerv antwoordIngevuld = FormuleParser.parseVergelijking(formuleVakString, functieDefSet);
+		//VergelijkingMeerv antwoordIngevuld = FormuleParser.parseVergelijking(formuleVakString, functieDefSet);
+		VergelijkingMeerv antwoordIngevuld = FormuleParser.parseVergelijking(formuleVakString, functieMVDefSet);
 		
 		antwoord = antwoordIngevuld;
 		if (antwoord == null)
@@ -2658,7 +2675,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			{
 				try
 				{
-					gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i], functieDefSet)).geefVergelijking(0);
+					//gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i], functieDefSet)).geefVergelijking(0);
+					gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i], functieMVDefSet)).geefVergelijking(0);
 					if (!gebruikersSubstituties[i].geefExpLinks().isVar())
 						subCorrect = false;
 				}
@@ -3202,7 +3220,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			else if (stapNr == 0 && casAntw && !hasStartString)
 			{
 				String vergString = formuleVak.toString();
-				VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
+				//VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
+				VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieMVDefSet);
 				String vergStringCas = "$f@";
 
 				VergelijkingMeerv vmAntw = null;
@@ -3584,7 +3603,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				return;
 			}
 			String exprString = vertaalIdeasExpressie(rule.getExpr());
-			VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+			//VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+			VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieMVDefSet);
 			String feedback = formatRuleText(rule, translateRule(rule.getId()));
 			setFeedback("Tip: \n" + feedback + "\n" + "\n" + "$f" + vgl + "@\n" + "      " + WiskOpdr.rb.getString("ideasWordtDan") + ":\n" + "$f" + v.toString() + "@\n", true);
 			//			if (feedbackModus == 1 && !hulpGebruikt)
@@ -3608,7 +3628,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				return;
 			}
 			String exprString = vertaalIdeasExpressie(rule.getExpr());
-			VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+			//VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+			VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieMVDefSet);
 			if (stapNr > 0)
 				pijlVakken[stapNr - 1].zetPijlTekst("", false);
 			maakStap();
@@ -3650,7 +3671,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				// System.out.println(rules[i].getExpr());
 				String exprString = vertaalIdeasExpressie(rules[i].getExpr());
 
-				VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+				//VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieDefSet);
+				VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + exprString + "@", functieMVDefSet);
 
 				String feedback = formatRuleText(rules[i], translateRule(rules[i].getId()));
 				pijlVakken[stapNr - 1].zetPijlTekst(feedback, false);
@@ -3865,7 +3887,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		String command = event.getCommand();
 		if(command.equals("balansvergelijking"))
 		{	String vergelijkingString = (String)event.getParameter("balansvergelijking");
-			zetBalansVergelijking(FormuleParser.parseVergelijking("$f" + vergelijkingString + "@", functieDefSet));
+			//zetBalansVergelijking(FormuleParser.parseVergelijking("$f" + vergelijkingString + "@", functieDefSet));
+			zetBalansVergelijking(FormuleParser.parseVergelijking("$f" + vergelijkingString + "@", functieMVDefSet));
 		}
 		if(command.equals("maakStap"))
 		{	maakBalansStap();

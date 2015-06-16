@@ -967,12 +967,12 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     			//	break;
     			//}
     			System.out.println(functieDelen[0].substring(2));
-    			String pattern = "[a-zA-Z]+[']?[(][a-zA-Z][)]";
+    			/*String pattern = "[a-zA-Z]+[']?[(][a-zA-Z][)]";
     	        boolean matches = Pattern.matches(pattern, functieDelen[0].substring(2));
     	        if(!matches)
     	        {	JOptionPane.showMessageDialog(this, "Syntax klopt niet. Gebruik bv:\n f(x)=expressie \n of \n func(x)=expressie");
     	        	break;
-    	        }
+    	        }*/
     		}
     		
             

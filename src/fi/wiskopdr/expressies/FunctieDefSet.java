@@ -12,6 +12,7 @@ public class FunctieDefSet
 	public HashMap<String,String> functieVariabelen = new HashMap<String,String>();
 	public HashMap<String,String> functieNamenSubst = new HashMap<String,String>();
 	
+	
 	public void addFunctieExpressie(String functieString)
 	{
 		String[] functieDelen = functieString.split("=");
@@ -48,15 +49,18 @@ public class FunctieDefSet
 	{	functieExpressies.clear();
 		functieVariabelen.clear();
 		functieNamenSubst.clear();
+		
 	}
 	
 	public String[] geefFunctieNamen()
 	{	return functieExpressies.keySet().toArray(new String[0]);
 	}
 	
+	
 	public String[] geefFunctieNamenSubst()
 	{	return functieNamenSubst.values().toArray(new String[0]);
 	}
+	
 	
 	public String geefFunctieVariabele(String functieNaam)
 	{	if(functieNaam!=null && functieVariabelen.containsKey(functieNaam))
@@ -64,11 +68,11 @@ public class FunctieDefSet
 		return null;
 	}
 	
+		
 	public Expressie geefFunctieExpressie(String functieNaam)
 	{	if(functieNaam!=null && functieExpressies.containsKey(functieNaam))
 			return functieExpressies.get(functieNaam);
 		return null;
 	}
-	
 	
 }

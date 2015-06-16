@@ -60,8 +60,9 @@ public class FormuleParser
 		return parseVergelijking(s, null);
 	}
 	
-	public static VergelijkingMeerv parseVergelijking(String s, FunctieDefSet fds)
-	{	Functie.setFunctieDefSet(fds);
+	public static VergelijkingMeerv parseVergelijking(String s, FunctieMVDefSet fds) //FunctieDefSet
+	{	//Functie.setFunctieDefSet(fds);
+		FunctieMV.setFunctieMVDefSet(fds);
 		try
 		{
 			s = s.substring(2,s.length()-1);
@@ -161,12 +162,14 @@ public class FormuleParser
 			    }
 			    if(!split && vergelijkingen[i]==null)return null;
 			}
-			Functie.setFunctieDefSet(null);
+			//Functie.setFunctieDefSet(null);
+			FunctieMV.setFunctieMVDefSet(null);
 			return new VergelijkingMeerv(vergelijkingen); 
 			
 		}
 		catch(Exception e)
-		{	Functie.setFunctieDefSet(null);
+		{	//Functie.setFunctieDefSet(null);
+			FunctieMV.setFunctieMVDefSet(null);
 			return null;
 			
 		}
@@ -409,6 +412,7 @@ public class FormuleParser
 		s = vervangFunctieScheidingstekens(s,"poissoncdf");
 		s = vervangFunctieScheidingstekens(s,"poissonpdf");
 		s = vervangFunctieScheidingstekens(s,"gcd");
+		
 	
 		s = s.replace(',','.');
 		s = s.replace(':','/');
@@ -583,7 +587,8 @@ public class FormuleParser
 				"l*n*",
 				"l*n"
 				};
-		String[] fMetMaalFunctie = Functie.getFunctieDefSet().geefFunctieNamenSubst();
+		//String[] fMetMaalFunctie = Functie.getFunctieDefSet().geefFunctieNamenSubst();
+		String[] fMetMaalFunctie = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamenSubst();
 		String[] fMetMaal = new String[fMetMaalBasis.length + fMetMaalFunctie.length];
 		for(int i=0 ; i<fMetMaalBasis.length ; i++)
 		{	fMetMaal[i] = fMetMaalBasis[i];
@@ -1243,7 +1248,8 @@ public class FormuleParser
             }
         
        
-            String[] functieNamen = Functie.getFunctieDefSet().geefFunctieNamen();
+            /*String[] functieNamen = Functie.getFunctieDefSet().geefFunctieNamen();
+            String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieNamen();
 	        for(int i = 0 ; i<functieNamen.length ; i++)
 	        {	String functieNaam = functieNamen[i];
 	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
@@ -1251,7 +1257,24 @@ public class FormuleParser
 	    			if(e==null)return null;
 	    			return new Functie(functieNaam,e);
 	    		}
-	        }		
+	        }*/	
+	        
+	        String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
+	        for(int i = 0 ; i<functieNamen.length ; i++)
+	        {	String functieNaam = functieNamen[i];
+	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
+	    		{	//Expressie e = parse(s.substring(functieNaam.length(),s.length()));
+	        		int aantalVar = FunctieMV.getFunctieMVDefSet().geefFunctieMVVariabele(functieNaam).length;
+	        		String string = s.substring(functieNaam.length(),s.length());
+	        		Expressie[] expressies = splitExpressieParameters(string,'_',aantalVar);
+	    			boolean parseOK = true;
+	    			for(int j=0 ; j<expressies.length ; j++)
+	    				parseOK = parseOK && expressies[j] !=null;
+	        		if(parseOK==false)
+	        			return null;
+	    			return new FunctieMV(functieNaam,expressies);
+	    		}
+	        }
 		
 		//is het een wortel
 		if(s.length()>4 && s.substring(0,4).equals("sqrt"))
@@ -1475,10 +1498,12 @@ public class FormuleParser
 	{	return parse(schoon(formuleString(codeString)));
 	}
 	
-	public static Expressie geefExpressie(String codeString, FunctieDefSet fds)
-	{	Functie.setFunctieDefSet(fds);
+	public static Expressie geefExpressie(String codeString, FunctieMVDefSet fds) //FunctieDefSet
+	{	//Functie.setFunctieDefSet(fds);
+		FunctieMV.setFunctieMVDefSet(fds);
 		Expressie e = parse(schoon(formuleString(codeString)));
-		Functie.setFunctieDefSet(null);
+		//Functie.setFunctieDefSet(null);
+		FunctieMV.setFunctieMVDefSet(null);
 		return e;
 	}
 	
@@ -1486,10 +1511,12 @@ public class FormuleParser
 	{	return parse(schoon(formuleString(codeString),woordformule),woordformule);
 	}
 	
-	public static Expressie geefExpressie(String codeString, boolean woordformule, FunctieDefSet fds)
-	{	Functie.setFunctieDefSet(fds);
+	public static Expressie geefExpressie(String codeString, boolean woordformule, FunctieMVDefSet fds) //FunctieDefSet
+	{	//Functie.setFunctieDefSet(fds);
+		FunctieMV.setFunctieMVDefSet(fds);
 		Expressie e = parse(schoon(formuleString(codeString),woordformule),woordformule);
-		Functie.setFunctieDefSet(null);
+		//Functie.setFunctieDefSet(null);
+		FunctieMV.setFunctieMVDefSet(null);
 		return e;
 	}
 	
