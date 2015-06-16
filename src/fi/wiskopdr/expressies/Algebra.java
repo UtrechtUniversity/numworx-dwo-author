@@ -755,10 +755,21 @@ public class Algebra
 		else if(e1 instanceof PoissonPDF || e2 instanceof PoissonPDF)
 		{	return false;
 		}
-		else if(e1 instanceof Functie && e2 instanceof Functie && ((Functie)e1).geefFunctieNaam().equals(((Functie)e2).geefFunctieNaam()))
+		/*else if(e1 instanceof Functie && e2 instanceof Functie && ((Functie)e1).geefFunctieNaam().equals(((Functie)e2).geefFunctieNaam()))
 		{	return zijnGelijk(e1.kind1,e2.kind1,vorm) && zijnGelijk(e1.kind2,e2.kind2,vorm);
 		}
 		else if(e1 instanceof Functie || e2 instanceof Functie)
+		{	return false;
+		}*/
+		else if(e1 instanceof FunctieMV && e2 instanceof FunctieMV && ((FunctieMV)e1).geefFunctieNaam().equals(((FunctieMV)e2).geefFunctieNaam()))
+		{	int aantalVar = ((FunctieMV)e1).kinderen.length;
+			boolean kinderenGelijk = true;
+			for(int i=0 ; i<aantalVar ; i++)
+			{	kinderenGelijk = kinderenGelijk && zijnGelijk(((FunctieMV)e1).kinderen[i],((FunctieMV)e2).kinderen[i],vorm);
+			}
+			return kinderenGelijk;
+		}
+		else if(e1 instanceof FunctieMV || e2 instanceof FunctieMV)
 		{	return false;
 		}
 		else if(e1 instanceof Aftrekking && e2 instanceof Aftrekking && e1.kind1 instanceof BasisExpressie && e1.kind1.geefWaarde()==0 && e2.kind1 instanceof BasisExpressie && e2.kind1.geefWaarde()==0)
@@ -1801,9 +1812,17 @@ public class Algebra
         if(e instanceof BinomPDF)return new BinomPDF(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
         if(e instanceof PoissonCDF)return new PoissonCDF(herleid(e.kind1),herleid(e.kind2));
         if(e instanceof PoissonPDF)return new PoissonPDF(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Functie)
-        {	String functieNaam = ((Functie)e).geefFunctieNaam();
-        	return new Functie(functieNaam, herleid(e.kind1));
+        //if(e instanceof Functie)
+        //{	String functieNaam = ((Functie)e).geefFunctieNaam();
+        //	return new Functie(functieNaam, herleid(e.kind1));
+        //}
+        if(e instanceof FunctieMV)
+        {	String functieNaam = ((FunctieMV)e).geefFunctieNaam();
+        	Expressie[] es = new Expressie[((FunctieMV)e).kinderen.length];
+        	for(int i=0 ; i<es.length ; i++)
+        	{	es[i] = herleid(((FunctieMV)e).kinderen[i]);
+        	}
+        	return new FunctieMV(functieNaam, es);
         }
 		if(e instanceof E)return e;
 		if(e instanceof PI)return e;

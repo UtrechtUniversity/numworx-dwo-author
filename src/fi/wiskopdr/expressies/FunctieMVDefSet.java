@@ -25,9 +25,11 @@ public class FunctieMVDefSet
 	
 	public void addFunctieMVExpressie(String functieNaam, String[] functieMVVariabelen, Expressie functieExpressie)
 	{	functieMVExpressies.put(functieNaam, functieExpressie);
-		//functieExpressies.put(functieNaam+"'", functieExpressie.geefDiff(new BasisExpressie(functieVariabele)));
+		if(functieMVVariabelen.length==1)
+			functieMVExpressies.put(functieNaam+"'", functieExpressie.geefDiff(new BasisExpressie(functieMVVariabelen[0])));
 		this.functieMVVariabelen.put(functieNaam, functieMVVariabelen);
-		//functieVariabelen.put(functieNaam+"'", functieVariabele);
+		if(functieMVVariabelen.length==1)
+			this.functieMVVariabelen.put(functieNaam+"'", functieMVVariabelen);
 		
 		String fn = functieNaam;
 		String fnn = "";

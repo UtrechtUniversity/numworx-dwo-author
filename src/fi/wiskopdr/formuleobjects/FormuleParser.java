@@ -413,6 +413,11 @@ public class FormuleParser
 		s = vervangFunctieScheidingstekens(s,"poissonpdf");
 		s = vervangFunctieScheidingstekens(s,"gcd");
 		
+		String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
+        for(int i = 0 ; i<functieNamen.length ; i++)
+        {	s = vervangFunctieScheidingstekens(s,functieNamen[i]);
+        }
+		
 	
 		s = s.replace(',','.');
 		s = s.replace(':','/');
@@ -693,7 +698,8 @@ public class FormuleParser
 	}
 	
 	public static Expressie[] splitExpressieParameters(String string, char scheidingsChar)
-	{	int lev=1;
+	{	
+		int lev=1;
 	    int index1 = -1;
 	    int index2 = -1;
 	    int index3 = -1;
@@ -704,6 +710,12 @@ public class FormuleParser
 	        if(index1==-1 && lev==1 && string.charAt(i)==scheidingsChar) index1 = i;
 	        else if(index2==-1 && lev==1 && string.charAt(i)==scheidingsChar) index2 = i;
 	        else if(index3==-1 && lev==1 && string.charAt(i)==scheidingsChar) index3 = i;
+	    }
+	    if(index1==-1)
+	    {	Expressie[] expressies = new Expressie[1];
+    		expressies[0] = parse(string);
+    		if(expressies[0]==null)return null;
+            else return expressies;
 	    }
 	    if(index2==-1)
         { 	Expressie[] expressies = new Expressie[2];
@@ -1262,11 +1274,16 @@ public class FormuleParser
 	        String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
 	        for(int i = 0 ; i<functieNamen.length ; i++)
 	        {	String functieNaam = functieNamen[i];
+	        System.out.println("parseString:"+s);
+	        System.out.println("functieNaam:"+functieNaam);
+	        System.out.println("fit:"+(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='('));
 	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
 	    		{	//Expressie e = parse(s.substring(functieNaam.length(),s.length()));
 	        		int aantalVar = FunctieMV.getFunctieMVDefSet().geefFunctieMVVariabele(functieNaam).length;
-	        		String string = s.substring(functieNaam.length(),s.length());
+	        		String string = s.substring(functieNaam.length()+1,s.length()-1);
+	        		System.out.println("splitString:"+string);
 	        		Expressie[] expressies = splitExpressieParameters(string,'_',aantalVar);
+	        		System.out.println("parseFunctie:"+expressies.toString());
 	    			boolean parseOK = true;
 	    			for(int j=0 ; j<expressies.length ; j++)
 	    				parseOK = parseOK && expressies[j] !=null;

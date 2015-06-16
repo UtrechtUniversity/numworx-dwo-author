@@ -10,7 +10,7 @@ public class FunctieMV extends Expressie
 {	
 	public static FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
 	
-	private Expressie[] kinderen;
+	public Expressie[] kinderen;
 	
 	public static void setFunctieMVDefSet(FunctieMVDefSet functieMVDefSet)
 	{	FunctieMV.functieMVDefSet = functieMVDefSet;
