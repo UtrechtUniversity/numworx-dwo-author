@@ -253,6 +253,10 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"formStructIpLabel" , "[test] FormStruct"},
 				{"graphToolIpLabel" , "[test] GraphTool"},
 				{"draabankIpLabel" , "[test] Turning lathe"}, 
+				{"waarmakersIpLabel" , "[test] Truemakers"},
+				{"statSimIpLabel" , "[test] Statistics Simulations"},
+				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+	            {"javaLogoIpLabel", "JavaLogo"},
 				
 				//InstellingenPanel
 				{"OPT_wiskundeLabel" , "Μαθηματικά"},

@@ -251,6 +251,10 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"formStructIpLabel" , "[test] FormStruct"},
                                 {"graphToolIpLabel" , "[test] GraphTool"},
                                 {"draabankIpLabel" , "[test] Fraiseuse"}, 
+                                {"waarmakersIpLabel" , "[test] Truemakers"},
+                				{"statSimIpLabel" , "[test] Statistics Simulations"},
+                				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+                	            {"javaLogoIpLabel", "JavaLogo"},
                                 
                                 //InstellingenPanel
                                 {"OPT_wiskundeLabel" , "Mathématique"},

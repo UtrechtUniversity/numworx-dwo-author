@@ -285,7 +285,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.waarmakersdwo.WaarmakersDwo" , "[test] Waarmaker" },
 		{ "fi.statsim.StatSim" , "[test] Statistiek Simulaties" },
 		{ "fi.sliderwidget.SliderWidget" , "[test] Slider" },
-		{ "fi.dataplot.DataPlot" , "[test] DataPlot" }
+		{ "fi.dataplot.DataPlot" , "[test] DataPlot" },
+		{ "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" }
 	};
 	
 	
@@ -351,13 +352,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"DataPlot",
 		"ReactieVergelijking",
 		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
+		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
 		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
-		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51},
+		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54},
 		{45},
 		{9},
 		{10,39},

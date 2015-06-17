@@ -293,6 +293,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"waarmakersIpLabel" , "[test] Waarmakers"},
                 {"statSimIpLabel" , "[test] Statistiek Simulaties"},
                 {"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+                {"javaLogoIpLabel", "JavaLogo"},
                 
 				//InstellingenPanel
                 {"OPT_wiskundeLabel" , "Wiskunde"},

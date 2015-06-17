@@ -274,6 +274,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{"draabankIpLabel" , "[test] Turning lathe"}, 
 				{"waarmakersIpLabel" , "[test] Truemakers"},
 				{"statSimIpLabel" , "[test] Statistics Simulations"},
+				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+	            {"javaLogoIpLabel", "JavaLogo"},
+
 				
 				//InstellingenPanel
 				{"OPT_wiskundeLabel" , "Mathematics"},

@@ -256,7 +256,11 @@ public class Text_es extends java.util.ListResourceBundle
 				{"rekenmachineIpLabel" , "[prueba] Calculadora"},
 				{"formStructIpLabel" , "[prueba] FormStruct"}, 
 				{"graphToolIpLabel" , "[prueba] GraphTool"}, 
-				{"draabankIpLabel" , "[prueba] Turning lathe"},  
+				{"draabankIpLabel" , "[prueba] Turning lathe"},
+				{"waarmakersIpLabel" , "[test] Truemakers"},
+				{"statSimIpLabel" , "[test] Statistics Simulations"},
+				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+	            {"javaLogoIpLabel", "JavaLogo"},
 				
 				//InstellingenPanel
 				{"OPT_wiskundeLabel" , "Matemáticas"},
