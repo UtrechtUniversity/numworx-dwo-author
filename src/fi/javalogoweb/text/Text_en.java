@@ -7,6 +7,9 @@ public class Text_en extends java.util.ListResourceBundle
         {
 				{ "Herhaal" , "Repeat" },
 				{ " keer" , " times" },
+				{ "Zolang" , "While" },
+				{ " herhaal" , " repeat" },
+				{ "loopexcess" , "Loop goes more than 100 times, check your condition!!" },
 				{ "vooruit" , "forward" },
 				{ "stap" , "step" },
 				{ "links" , "left" },
@@ -41,7 +44,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "neeLabel" , "no" },
 				{ "variabelenLabel" , "Variables:" },
 				
-
+				{ "uitvoerVeldCBLabel" , "Output panel" },
+				{ "programmaVeldCBLabel" , "Program panel" },
         };
 }
 

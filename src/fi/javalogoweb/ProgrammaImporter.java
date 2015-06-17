@@ -9,6 +9,13 @@ public class ProgrammaImporter
 	private JavaLogoSchuifVeld veld;
 	private String[] deeltaaknamen = { "deeltaak1", "deeltaak2", "deeltaak3", "deeltaak4", "deeltaak5"};
 	
+	private String strIf1 = "Keuze: Als";
+	private String strIf2 = "Dan";
+	private String strFor1 = "Herhaal";
+	private String strFor2 = "keer";
+	private String strWhile1 = "Zolang";
+	private String strWhile2 = "herhaal";
+	
 	public ProgrammaImporter(JavaLogoSchuifVeld v)
 	{
 		veld = v;
@@ -84,6 +91,31 @@ public class ProgrammaImporter
 		readBlock(codeLines, veld.getProgramma());
 	}
 	
+	/**
+	 * Check if a line of code starts & ends with the keywords for a control structure
+	 * 
+	 * @param s			the code line
+	 * @param start		starting keyword
+	 * @param end		closing keyword
+	 * @return			boolean
+	 */
+	private boolean checkHeader(String s, String start, String end)
+	{
+		return ( s.length()>start.length()+end.length()+1 && s.startsWith(start) && s.endsWith(end) );
+	}
+	
+	/**
+	 * Strip a line of code of the start & end keywords for a control structure. to obtain condition/loop count
+	 * 
+	 * @param s			the code line
+	 * @param start		starting keyword
+	 * @param end		closing keyword
+	 * @return			String, the condition/loop count
+	 */
+	private String stripKeywords(String s, String start, String end)
+	{
+		return s.substring(start.length(),s.length()-end.length()).trim();
+	}
 	
 	/**
 	 * Cuts a block of code from a given list of code lines. The block must start with a line containing "{"
@@ -138,8 +170,13 @@ public class ProgrammaImporter
 			line = lines.remove(0);
 			if ( line.startsWith("Herhaal"))
 			{
-				//System.out.println("+++  Start Herhaal");
-				ccomp = readHerhaalCommand(ccont, line, lines);
+				//System.out.println("+++  Start For-loop");
+				ccomp = readForLoopCommand(ccont, line, lines);
+			}
+			if ( line.startsWith("Zolang"))
+			{
+				//System.out.println("+++  Start While-loop");
+				ccomp = readWhileLoopCommand(ccont, line, lines);
 			}
 			else if ( line.startsWith("Keuze:"))
 			{
@@ -158,31 +195,58 @@ public class ProgrammaImporter
 	}
 	
 	/**
-	 * Generate a HerhaalCommandComponent from a header line s and a list of code lines, containing ALL of the remaining code.
+	 * Generate a ForLoopCommandComponent from a header line s and a list of code lines, containing ALL of the remaining code.
 	 * The number of repetitions in the loop will be read from <em>headerline</em>.
 	 * The method will cut a block of lines (from '{' to the corresponding '}' from the list 'lines'.
 	 * Therefore this list will be changed!
 	 * 
 	 * @param headerline	header line, with number of repetitions
 	 * @param lines			remaining list of code lines. WILL BE CHANGED!
-	 * @return				the HerhaalCommandComponent
+	 * @return				the ForLoopCommandComponent
 	 */
-	private CommandComponent readHerhaalCommand(CompositeCommandComponent ccont, String headerline, ArrayList<String> lines)
+	private CommandComponent readForLoopCommand(CompositeCommandComponent ccont, String headerline, ArrayList<String> lines)
 	{
-		// ToDo: location etc.
-		HerhaalCommandComponent cc= new HerhaalCommandComponent(0, 0, 0, 0, veld);
+		ForLoopCommandComponent cc= new ForLoopCommandComponent(0, 0, 0, 0, veld);
 		cc.clearStapel();
 		// strip headerline of "Herhaal" and "keer" and add remainder as parameter
-		if( headerline.length()>12 && headerline.endsWith("keer"))
+		if ( checkHeader(headerline, strFor1, strFor2) )
 		{
-			String nrrep = headerline.substring(7,headerline.length()-4).trim();
+			String nrrep = stripKeywords(headerline, strFor1, strFor2);
 			//System.out.println("+++  aantal: "+nrrep);
-			((HerhaalCommandComponent)cc).setLoopCount(nrrep);
+			cc.setLoopCount(nrrep);
 			ccont.addCComponent(cc);				// need to assign this loop to a Container before adding CC's to this one
 		}
 		ArrayList<String> body = getBlock(lines);
 		readBlock(body, cc);
 		//System.out.println("+++  Eind Herhaal");
+		return cc;
+	}
+
+	/**
+	 * Generate a WhileLoopCommandComponent from a header line s and a list of code lines, containing ALL of the remaining code.
+	 * The condition of the while-loop will be read from <em>headerline</em>.
+	 * The method will cut a block of lines (from '{' to the corresponding '}' from the list 'lines'.
+	 * Therefore this list will be changed!
+	 * 
+	 * @param headerline	header line, with condition
+	 * @param lines			remaining list of code lines. WILL BE CHANGED!
+	 * @return				the WhileLoopCommandComponent
+	 */
+	private CommandComponent readWhileLoopCommand(CompositeCommandComponent ccont, String headerline, ArrayList<String> lines)
+	{
+		WhileLoopCommandComponent cc= new WhileLoopCommandComponent(0, 0, 0, 0, veld);
+		cc.clearStapel();
+		// strip headerline of "Zolang" and "herhaal" and add remainder as parameter
+		if ( checkHeader(headerline, strWhile1, strWhile2) )
+		{
+			String nrrep = stripKeywords(headerline, strWhile1, strWhile2);
+			//System.out.println("+++  voorwaarde: "+nrrep);
+			cc.setLoopCount(nrrep);
+			ccont.addCComponent(cc);				// need to assign this loop to a Container before adding CC's to this one
+		}
+		ArrayList<String> body = getBlock(lines);
+		readBlock(body, cc);
+		//System.out.println("+++  Eind While");
 		return cc;
 	}
 
@@ -202,9 +266,9 @@ public class ProgrammaImporter
 		KeuzeCommandComponent cc= new KeuzeCommandComponent(0, 0, 0, 0, veld);
 		cc.clearStapel();
 		// strip headerline of "Keuze: Als" and "Dan" and add remainder as parameter
-		if( headerline.length()>14 && headerline.startsWith("Keuze: Als") && headerline.endsWith("Dan"))
+		if ( checkHeader(headerline, strIf1, strIf2) )
 		{
-			String condition = headerline.substring(10,headerline.length()-3).trim();
+			String condition = stripKeywords(headerline, strIf1, strIf2);
 			//System.out.println("+++  voorwaarde: "+condition);
 			cc.setBoolExpression( condition );
 			ccont.addCComponent(cc);					// see Herhaal

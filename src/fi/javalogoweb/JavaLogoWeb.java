@@ -108,7 +108,7 @@ public class JavaLogoWeb extends JApplet implements WiskOpdrApplet,  ComponentLi
 	}
 	
 	public InteractiePanel getInteractiePanel()
-	{	return null;
+	{	return new JavaLogoInteractiePanel();
 	}
 	
 	public void execprogramma()

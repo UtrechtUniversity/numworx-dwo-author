@@ -104,10 +104,10 @@ public class VarSet
 	
 	public VergelijkingMeerv getSubstEquation(VergelijkingMeerv v)
 	{	
-		for ( TAVariable tav: variabelen )
-		{	Expressie e = new BasisExpressie(tav.getValue());
-			v = v.substitueer(e, tav.getName());
-			
+		for ( int i=variabelen.size()-1; i>=0; i-- )
+		{	
+			Expressie e = new BasisExpressie(variabelen.get(i).getValue());
+			v = v.substitueer(e, variabelen.get(i).getName());
 		}
 		return v;
 	}

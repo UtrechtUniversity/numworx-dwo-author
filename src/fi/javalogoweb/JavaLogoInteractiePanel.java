@@ -41,6 +41,10 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private int dragStartX;
 	private int dragStartY;
 	
+	private boolean uitvoerVeldZichtbaar = true;
+	private boolean programmaVeldZichtbaar = true;
+	
+	
 	public JavaLogoInteractiePanel()
 	{
 		setLayout(null);
@@ -88,17 +92,38 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	{
 		g.setColor(new Color(225,225,225));
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.WHITE);
-		g.fillRect(5, 5, scheidingX-5, getHeight()-78);
-		g.setColor(Color.gray);
-		g.drawRect(5, 5, scheidingX-5, getHeight()-78);
+		if(programmaVeldZichtbaar && uitvoerVeldZichtbaar)
+		{	g.setColor(Color.WHITE);
+			g.fillRect(5, 5, scheidingX-5, getHeight()-78);
+			g.setColor(Color.gray);
+			g.drawRect(5, 5, scheidingX-5, getHeight()-78);
+		}
+		else if(programmaVeldZichtbaar && !uitvoerVeldZichtbaar)
+		{
+			g.setColor(Color.WHITE);
+			g.fillRect(5, 5, getWidth()-10, getHeight()-78);
+			g.setColor(Color.gray);
+			g.drawRect(5, 5, getWidth()-10, getHeight()-78);
+		}
+		else
+		{
+			g.setColor(Color.WHITE);
+			g.fillRect(5, 5, getWidth()-10, getHeight()-10);
+			g.setColor(Color.gray);
+			g.drawRect(5, 5, getWidth()-10, getHeight()-10);
+		}
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
 		super.setBounds(x,y,b,h);
 		layoutGui();
-		uitvoerblad.setBounds(scheidingX+5, 5, getWidth()-scheidingX-10, getHeight()-77);
+		int ubx = programmaVeldZichtbaar ? scheidingX+5 : 5;
+		int uby = 5;
+		int ubb = getWidth()-(programmaVeldZichtbaar ? scheidingX+10 : 10);
+		int ubh = programmaVeldZichtbaar ? getHeight()-77 : getHeight()-10;
+		
+		uitvoerblad.setBounds(ubx, uby, ubb, ubh);
 						
 		if (javaLogoSchuifVeld == null) 
 		{	
@@ -117,7 +142,10 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 			uitvoerblad.meldTraceBeheerder(trb);
 		}
 		else
-		{	javaLogoSchuifVeld.setSize(scheidingX-6, getHeight()-79);
+		{	
+			int jsb = uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 10;
+			int jsh = getHeight()-79;
+			javaLogoSchuifVeld.setSize(jsb, jsh);
 			trb.setBounds(265, getHeight()-64, 340, 58);
 			uitvoerblad.repaint();
 		}
@@ -152,6 +180,10 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		String code = "";
 		
 		if(h.containsKey("code")) code = (String)h.get("code");
+		
+		System.out.println("code: "+code);
+		
+		javaLogoSchuifVeld.importeer(code);
 	}
 	
 	@Override
@@ -182,8 +214,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 
 	@Override
 	public InteractieEditPanel getEditPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		return  new JavaLogoInteractieEditPanel();
 	}
 
 	@Override
@@ -344,6 +375,29 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		else
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		
+	}
+	
+	public void zetUitvoerVeldZichtbaar(boolean b)
+	{
+		uitvoerVeldZichtbaar = b;
+		uitvoerblad.setVisible(b);
+	}
+	
+	public void zetProgrammaVeldZichtbaar(boolean b)
+	{	programmaVeldZichtbaar = b;
+		javaLogoSchuifVeld.setVisible(b);
+		runButton.setVisible(b);
+		exportButton.setVisible(b);
+		importButton.setVisible(b);
+		trb.setVisible(b);
+		if(b)
+		{
+			
+		}
+		else
+		{
+			
+		}
 	}
 
 }

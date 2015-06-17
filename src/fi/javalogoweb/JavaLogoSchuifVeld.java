@@ -148,19 +148,22 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		currentCC = new PrintlCComponent(ccx2,ccy+150,ccsw,ccsh, this);
 		add(currentCC,0);
 		
-		currentCC = new HerhaalCommandComponent(ccx,ccy+200,cclw,cclh, this);
+		currentCC = new VarCComponent(ccx,ccy+190,cclw,ccsh, this);
 		add(currentCC,0);
 		
-		currentCC = new KeuzeCommandComponent(ccx,ccy+260,cclw,cclh, this);
+		currentCC = new ForLoopCommandComponent(ccx,ccy+230,cclw,cclh, this);
+		add(currentCC,0);
+		
+		currentCC = new WhileLoopCommandComponent(ccx,ccy+290,cclw,cclh, this);
+		add(currentCC,0);
+		
+		currentCC = new KeuzeCommandComponent(ccx,ccy+350,cclw,cclh, this);
 		add(currentCC,0);
         
-		currentCC = new VarCComponent(ccx,ccy+320,cclw,ccsh, this);
-		add(currentCC,0);
-		
 		deeltaakComponenten = new DeeltaakBodyComponent[aantalDeeltaken];
 		for(int i=0; i<aantalDeeltaken; i++)
 		{
-			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+360+30*i,cclw,ccsh, i+1, this);
+			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+410+30*i,cclw,ccsh, i+1, this);
 			add(dtc,0);
 			// create with dummy location and height
 			deeltaakComponenten[i] = new DeeltaakBodyComponent(0,0,ProgrammaComponent.pcsw,ProgrammaComponent.pcclosedh, JavaLogoWeb.rb.getString("deeltaak")+(i+1), this);
@@ -176,10 +179,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 440);
 		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 455);
 		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 470);
-		
-		
 	}
-	
 	
 	void addToProgrammaPanel(CommandComponent c)
 	{
@@ -246,8 +246,12 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		{ 	currentCC = new StapCComponent(x,y,b,h, this);
 			add(currentCC,0);
 		}
-		if(cc instanceof HerhaalCommandComponent)
-		{ 	currentCC = new HerhaalCommandComponent(x,y,b,h, this);
+		if(cc instanceof ForLoopCommandComponent)
+		{ 	currentCC = new ForLoopCommandComponent(x,y,b,h, this);
+			add(currentCC,0);
+		}
+		if(cc instanceof WhileLoopCommandComponent)
+		{ 	currentCC = new WhileLoopCommandComponent(x,y,b,h, this);
 			add(currentCC,0);
 		}
 		if(cc instanceof KeuzeCommandComponent)

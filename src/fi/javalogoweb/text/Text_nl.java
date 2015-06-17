@@ -6,7 +6,10 @@ public class Text_nl extends java.util.ListResourceBundle
         static final Object [] [] contents =
         {
 				{ "Herhaal" , "Herhaal" },
-				{ " keer" , "  times" },
+				{ " keer" , " keer" },
+				{ "Zolang" , "Zolang" },
+				{ " herhaal" , " herhaal" },
+				{ "loopexcess" , "Loop meer dan 100 keer, controleer je voorwaarde!!" },
 				{ "vooruit" , "vooruit" },
 				{ "stap" , "stap" },
 				{ "links" , "links" },
@@ -41,6 +44,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "neeLabel" , "nee" },
 				
 				{ "variabelenLabel" , "Variabelen:" },
+				
+				{ "uitvoerVeldCBLabel" , "Uitvoerpanel" },
+				{ "programmaVeldCBLabel" , "Programmapanel" },
 				
         };
 }

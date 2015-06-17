@@ -80,7 +80,7 @@ public abstract class ParameterCommandComponent extends SimpleCommandComponent i
 		} else
 		{
 			isEditing = true;
-			paramEditor.setLocation(10+fm.stringWidth(getCommandName()+strOpen), 4);
+			paramEditor.setLocation(10+fm.stringWidth(getCommandNameTranslated()+strOpen), 4);
 			paramEditor.vulIn(parameter1.getParameterText());
 		}
 		schuifveld.repaint();

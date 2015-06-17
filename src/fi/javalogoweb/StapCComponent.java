@@ -66,7 +66,7 @@ public class StapCComponent extends ParameterCommandComponent implements Paramet
 			paramEditor.vulIn(parameter1.getParameterText());
 		} else
 		{
-			strBeforeEditor = commandName+"( "+parameter1.getParameterText()+", ";
+			strBeforeEditor = "( "+parameter1.getParameterText()+", ";
 			strAfterEditor = " )";
 			paramEditor.setLocation(10+fm.stringWidth(getCommandName()+strBeforeEditor), paramEditor.getY());
 			separatorX = paramEditor.getX();

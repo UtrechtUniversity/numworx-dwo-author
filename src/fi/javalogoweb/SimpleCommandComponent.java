@@ -21,7 +21,11 @@ public abstract class SimpleCommandComponent extends CommandComponent
 	protected void paintBackground(Graphics g)
 	{
 		g.setColor(new Color(238,238,238));
-		if(traceKleur)g.setColor(traceActiveColor);
+		if(traceKleur)
+		{
+			g.setColor(traceActiveColor);
+			traceKleur = false;
+		}
 		g.fillRect(0,0,getSize().width-1,getSize().height-1);
 		g.setColor(Color.black);
 		g.drawRect(0,0,getSize().width-1,getSize().height-1);
