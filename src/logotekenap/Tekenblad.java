@@ -87,7 +87,9 @@ public class Tekenblad extends Uitvoerblad
 	//deze methoden worden gebruikt door handlers van het leerlingprogramma
 	//-------------------------------------------------------------------------------------------
  	public void tekenOpnieuw()
-	{	bezigMetTekenen = true;
+	{	if(!isVisible())
+			return;
+ 		bezigMetTekenen = true;
 		tekenOpImage(true);
 		Graphics g = getGraphics();
 		if(trb == null || !trb.geefTraceStatus())
