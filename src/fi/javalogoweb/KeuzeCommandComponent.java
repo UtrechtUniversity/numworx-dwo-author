@@ -30,9 +30,9 @@ public class KeuzeCommandComponent extends CompositeCommandComponent implements 
 		commandName = "Keuze";
 		condition = new BooleanParameter();
 		
-		ifBlock = new CommandContainer(ifBlockX, blockY, blockWidth(), h-blockY, this);
+		ifBlock = new CommandContainer(ifBlockX, blockY, blockWidth(), schuifveld.ccsh, this);
 		add(ifBlock);
-		elseBlock = new CommandContainer(elseBlockX(), blockY, blockWidth(), h-blockY, this);
+		elseBlock = new CommandContainer(elseBlockX(), blockY, blockWidth(), schuifveld.ccsh, this);
 		add(elseBlock);
 		
 		conditionEditor = new ParameterTextField((getWidth()-80)/2, 4, 80, 17, this);

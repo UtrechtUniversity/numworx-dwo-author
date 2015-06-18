@@ -151,19 +151,19 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		currentCC = new VarCComponent(ccx,ccy+190,cclw,ccsh, this);
 		add(currentCC,0);
 		
-		currentCC = new ForLoopCommandComponent(ccx,ccy+230,cclw,cclh, this);
+		currentCC = new ForLoopCommandComponent(ccx,ccy+230,cclw,ccsh, this);
 		add(currentCC,0);
 		
-		currentCC = new WhileLoopCommandComponent(ccx,ccy+290,cclw,cclh, this);
+		currentCC = new WhileLoopCommandComponent(ccx,ccy+260,cclw,ccsh, this);
 		add(currentCC,0);
 		
-		currentCC = new KeuzeCommandComponent(ccx,ccy+350,cclw,cclh, this);
+		currentCC = new KeuzeCommandComponent(ccx,ccy+290,cclw,ccsh, this);
 		add(currentCC,0);
         
 		deeltaakComponenten = new DeeltaakBodyComponent[aantalDeeltaken];
 		for(int i=0; i<aantalDeeltaken; i++)
 		{
-			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+410+30*i,cclw,ccsh, i+1, this);
+			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+330+30*i,cclw,ccsh, i+1, this);
 			add(dtc,0);
 			// create with dummy location and height
 			deeltaakComponenten[i] = new DeeltaakBodyComponent(0,0,ProgrammaComponent.pcsw,ProgrammaComponent.pcclosedh, JavaLogoWeb.rb.getString("deeltaak")+(i+1), this);
@@ -176,9 +176,9 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		deeltaakComponenten[0].changeHeight();			// was initialialized as closed, so this will open it.
 		deeltaakComponenten[1].setLocation(ProgrammaComponent.pcsw+10, 180);
 		deeltaakComponenten[1].changeHeight();
-		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 440);
-		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 455);
-		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 470);
+		deeltaakComponenten[2].setLocation(ProgrammaComponent.pcsw+20, 400);
+		deeltaakComponenten[3].setLocation(ProgrammaComponent.pcsw+30, 415);
+		deeltaakComponenten[4].setLocation(ProgrammaComponent.pcsw+40, 430);
 	}
 	
 	void addToProgrammaPanel(CommandComponent c)
@@ -249,14 +249,17 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		if(cc instanceof ForLoopCommandComponent)
 		{ 	currentCC = new ForLoopCommandComponent(x,y,b,h, this);
 			add(currentCC,0);
+			cc.setSize(cc.getWidth(), cclh);
 		}
 		if(cc instanceof WhileLoopCommandComponent)
 		{ 	currentCC = new WhileLoopCommandComponent(x,y,b,h, this);
 			add(currentCC,0);
+			cc.setSize(cc.getWidth(), cclh);
 		}
 		if(cc instanceof KeuzeCommandComponent)
         {   currentCC = new KeuzeCommandComponent(x,y,b,h, this);
 			add(currentCC,0);
+			cc.setSize(cc.getWidth(), cclh);
         }
 		if(cc instanceof VarCComponent)
 		{ 	currentCC = new VarCComponent(x,y,b,h, this);
@@ -417,7 +420,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		}
 		return s0+"\n";
 	}
-
+	
 	public void setVartracing(boolean vt)
 	{
 		if ( vt )
@@ -439,6 +442,22 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	
 	public void zetGesloten(boolean b)
 	{	gesloten = b;
+	}
+	
+	public void zetDeeltaken(boolean b)
+	{
+		for(int i=0; i<getComponentCount(); i++)
+		{
+			Component c = getComponent(i);
+			if(c instanceof DeeltaakCallCComponent)
+			{
+				for(int j=0; j<aantalDeeltaken; j++)
+				{
+					((DeeltaakCallCComponent)c).getBody().setVisible(b);
+					c.setVisible(b);
+				}
+			}
+		}
 	}
 	
 	/**

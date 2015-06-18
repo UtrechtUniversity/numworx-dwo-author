@@ -16,6 +16,7 @@ public abstract class CommandComponent extends JPanel
 	protected boolean caretUp, caretDown;
 	protected boolean isStapel = true;
 	
+	
 	protected String commandName;
 	protected String commandNameTranslated;
 			
@@ -150,7 +151,7 @@ public abstract class CommandComponent extends JPanel
 				if(isStapel)
 				{	schuifveld.zetStapel(this);		// get new copy from pile in GUI
 					isStapel = false;
-				}
+				}				
 				//schuifveld.begin();
 				schuifveld.zetSchuiver(this);
 				startCompx = Math.max(x-getDragWidth()+10, startCompx);
@@ -173,7 +174,7 @@ public abstract class CommandComponent extends JPanel
 	{
 		return JavaLogoSchuifVeld.ccsw;
 	}
-
+	
 	/**
 	 * Standard CC's enable tracing (carets), but DeeltaakBody's won't (will override to return false)
 	 * 

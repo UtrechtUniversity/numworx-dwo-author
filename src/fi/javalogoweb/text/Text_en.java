@@ -46,6 +46,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "uitvoerVeldCBLabel" , "Output panel" },
 				{ "programmaVeldCBLabel" , "Program panel" },
+				{ "deeltakenCBLabel" , "Subroutines" }
         };
 }
 

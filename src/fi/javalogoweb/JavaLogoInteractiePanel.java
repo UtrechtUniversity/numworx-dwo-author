@@ -43,6 +43,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	
 	private boolean uitvoerVeldZichtbaar = true;
 	private boolean programmaVeldZichtbaar = true;
+	private boolean deeltakenZichtbaar = true;
 	
 	
 	public JavaLogoInteractiePanel()
@@ -127,7 +128,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 						
 		if (javaLogoSchuifVeld == null) 
 		{	
-			javaLogoSchuifVeld = new JavaLogoSchuifVeld(6, 6, scheidingX-6, getHeight()-79, uitvoerblad);
+			javaLogoSchuifVeld = new JavaLogoSchuifVeld(6, 6, (uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 11), getHeight()-79, uitvoerblad);
 			javaLogoSchuifVeld.setBackground(Color.white);
 			javaLogoSchuifVeld.zetGesloten(true);
 			add(javaLogoSchuifVeld);
@@ -143,7 +144,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		}
 		else
 		{	
-			int jsb = uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 10;
+			int jsb = uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 11;
 			int jsh = getHeight()-79;
 			javaLogoSchuifVeld.setSize(jsb, jsh);
 			trb.setBounds(265, getHeight()-64, 340, 58);
@@ -168,38 +169,71 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	
 	
 	@Override
-	public void zetOpdracht(Hashtable b, String[] randomVars,
-			Hashtable randomValues) {
-		// TODO Auto-generated method stub
+	public void zetOpdracht(Hashtable h, String[] randomVars,Hashtable randomValues) {
+		Hashtable state = null;
+		Hashtable antwoordModel = null;
+		boolean uitvoerVeldZichtbaar = false;
+		boolean programmaVeldZichtbaar = false;
+		int scoreMax = 0;
 		
+		if(h.containsKey("state")) state = (Hashtable) h.get("state");
+		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
+		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
+		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
+		
+		
+		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
+		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
+		zetDeeltaken(deeltakenZichtbaar);
+		setState(state);
 	}
 
 	@Override
 	public void setState(Hashtable h)
 	{	
 		String code = "";
+		int scheidingX = 615;
 		
 		if(h.containsKey("code")) code = (String)h.get("code");
-		
-		System.out.println("code: "+code);
+		if(h.containsKey("scheidingX")) scheidingX = ((Integer)h.get("scheidingX")).intValue();
 		
 		javaLogoSchuifVeld.importeer(code);
+		this.scheidingX = scheidingX;
+		setBounds(getBounds());
 	}
 	
 	@Override
-	public void setEditState(Hashtable b) {
-		// TODO Auto-generated method stub
+	public void setEditState(Hashtable h) {
+		Hashtable state = null;
+		Hashtable antwoordModel = null;
+		boolean uitvoerVeldZichtbaar = false;
+		boolean programmaVeldZichtbaar = false;
+		int scoreMax = 0;
+		
+		if(h.containsKey("state")) state = (Hashtable) h.get("state");
+		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
+		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
+		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
+		
+		
+		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
+		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
+		zetDeeltaken(deeltakenZichtbaar);
+		setState(state);
 		
 	}
 
 	@Override
 	public Hashtable getState()
 	{	String code = "";
+		int scheidingX = 615;
 	
 		code = javaLogoSchuifVeld.getCode();
+		scheidingX = this.scheidingX;
 		 
 	    Hashtable h = new Hashtable();
 	    h.put("code", code);
+	    h.put("scheidingX", new Integer(scheidingX));
 	    
 	    return h;
 	}
@@ -359,11 +393,14 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		{
 			int dx = e.getX() - dragStartX;
 			scheidingX += dx;
-			javaLogoSchuifVeld.setSize(javaLogoSchuifVeld.getWidth()+dx, javaLogoSchuifVeld.getHeight());
-			uitvoerblad.setBounds(scheidingX+5+dx, 5, uitvoerblad.getWidth()-dx, uitvoerblad.getHeight());
-			//uitvoerblad.tekenOpnieuw();
-			repaint();
 			dragStartX = e.getX();
+			setBounds(getBounds());
+			//javaLogoSchuifVeld.setSize(javaLogoSchuifVeld.getWidth()+dx, javaLogoSchuifVeld.getHeight());
+			//uitvoerblad.setBounds(scheidingX+5+dx, 5, uitvoerblad.getWidth()-dx, uitvoerblad.getHeight());
+			//uitvoerblad.tekenOpnieuw();
+			
+			//repaint();
+			
 		}
 		
 	}
@@ -390,14 +427,12 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		exportButton.setVisible(b);
 		importButton.setVisible(b);
 		trb.setVisible(b);
-		if(b)
-		{
-			
-		}
-		else
-		{
-			
-		}
 	}
-
+	
+	public void zetDeeltaken(boolean b)
+	{
+		deeltakenZichtbaar = b;
+		javaLogoSchuifVeld.zetDeeltaken(b);
+	}
+	
 }

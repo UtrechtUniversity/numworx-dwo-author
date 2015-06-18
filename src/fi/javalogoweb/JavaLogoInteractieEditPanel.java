@@ -26,6 +26,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		
 		private JCheckBox uitvoerVeldCB;
 		private JCheckBox programmaVeldCB;
+		private JCheckBox deeltakenCB;
 		
 		
 		//// Einde voorbeeldcode
@@ -54,6 +55,12 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			programmaVeldCB.setSelected(true);
 			optionsPanel.add(programmaVeldCB);
 			
+			deeltakenCB = new JCheckBox(JavaLogoWeb.rb.getString("deeltakenCBLabel"));
+			deeltakenCB.setBounds(20, 140, 200, 20);
+			deeltakenCB.addActionListener(this);
+			deeltakenCB.setSelected(true);
+			optionsPanel.add(deeltakenCB);
+			
 		}
 		
 		public Hashtable getEditState() {
@@ -64,6 +71,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			h.put("state", state);
 			h.put("uitvoerVeldZichtbaar",  new Boolean(uitvoerVeldCB.isSelected()));
 			h.put("programmaVeldZichtbaar",  new Boolean(programmaVeldCB.isSelected()));
+			h.put("deeltakenZichtbaar",  new Boolean(deeltakenCB.isSelected()));
 			
 			return h;
 		}
@@ -71,16 +79,20 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		
 		public void setEditState(Hashtable h) {
 			Hashtable state = null;
-			Hashtable antwoordModel = null;
-			boolean aanpasbaar = false;
-			boolean nakijken = false;
-			int scoreMax = 0;
-			
+						
 			if(h.containsKey("state")) state = (Hashtable) h.get("state");
 			if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldCB.setSelected((Boolean)h.get("uitvoerVeldZichtbaar"));
 			if(h.containsKey("programmaVeldZichtbaar")) programmaVeldCB.setSelected((Boolean)h.get("programmaVeldZichtbaar"));
+			if(h.containsKey("deeltakenZichtbaar")) deeltakenCB.setSelected((Boolean)h.get("deeltakenZichtbaar"));
 			
+			
+			interactiePanel.zetUitvoerVeldZichtbaar(uitvoerVeldCB.isSelected());
+			interactiePanel.zetProgrammaVeldZichtbaar(programmaVeldCB.isSelected());
+			interactiePanel.zetDeeltaken(deeltakenCB.isSelected());
 			interactiePanel.setState(state);
+			
+			interactiePanel.setBounds(interactiePanel.getBounds());
+			
 			
 		}
 		
@@ -127,7 +139,10 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			if(e.getSource()==programmaVeldCB) {
 				interactiePanel.zetProgrammaVeldZichtbaar(programmaVeldCB.isSelected());
 			}
-			
+			if(e.getSource()==deeltakenCB) {
+				interactiePanel.zetDeeltaken(deeltakenCB.isSelected());
+			}
+			interactiePanel.setBounds(interactiePanel.getBounds());
 		}
 
 	

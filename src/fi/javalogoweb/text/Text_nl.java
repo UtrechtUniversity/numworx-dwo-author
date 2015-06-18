@@ -47,6 +47,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "uitvoerVeldCBLabel" , "Uitvoerpanel" },
 				{ "programmaVeldCBLabel" , "Programmapanel" },
+				{ "deeltakenCBLabel" , "Deeltaken" }
 				
         };
 }

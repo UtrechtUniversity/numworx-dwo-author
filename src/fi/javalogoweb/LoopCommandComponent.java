@@ -26,7 +26,7 @@ public abstract class LoopCommandComponent extends CompositeCommandComponent imp
 	{	
 		super(x,y,b,h,sv);
 		
-		loopBlock = new CommandContainer(blockX, blockY, b-blockX, h-blockY, this);
+		loopBlock = new CommandContainer(blockX, blockY, b-blockX, schuifveld.ccsh, this);
 		add(loopBlock);
 	}
 
