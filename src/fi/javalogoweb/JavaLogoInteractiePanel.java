@@ -44,6 +44,11 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private boolean uitvoerVeldZichtbaar = true;
 	private boolean programmaVeldZichtbaar = true;
 	private boolean deeltakenZichtbaar = true;
+	private boolean whileLoopZichtbaar = true;
+	private boolean printCommandsZichtbaar = true;
+	private boolean tekenCommandsZichtbaar = true;
+	private boolean traceZichtbaar = true;
+	private boolean codeIOZichtbaar = true;
 	
 	
 	public JavaLogoInteractiePanel()
@@ -171,20 +176,33 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	@Override
 	public void zetOpdracht(Hashtable h, String[] randomVars,Hashtable randomValues) {
 		Hashtable state = null;
-		Hashtable antwoordModel = null;
-		boolean uitvoerVeldZichtbaar = false;
-		boolean programmaVeldZichtbaar = false;
-		int scoreMax = 0;
+		boolean uitvoerVeldZichtbaar = true;
+		boolean programmaVeldZichtbaar = true;
+		boolean deeltakenZichtbaar = true;
+		boolean whileLoopZichtbaar = true;
+		boolean printCommandsZichtbaar = true;
+		boolean tekenCommandsZichtbaar = true;
+		boolean traceZichtbaar = true;
+		boolean codeIOZichtbaar = true;
 		
 		if(h.containsKey("state")) state = (Hashtable) h.get("state");
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
 		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
 		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
-		
-		
+		if(h.containsKey("whileLoopZichtbaar")) whileLoopZichtbaar = ((Boolean)h.get("whileLoopZichtbaar"));
+		if(h.containsKey("printCommandsZichtbaar")) printCommandsZichtbaar = ((Boolean)h.get("printCommandsZichtbaar"));
+		if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsZichtbaar = ((Boolean)h.get("tekenCommandsZichtbaar"));
+		if(h.containsKey("traceZichtbaar")) traceZichtbaar = ((Boolean)h.get("traceZichtbaar"));
+		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
+				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
 		zetDeeltaken(deeltakenZichtbaar);
+		zetWhileLoopZichtbaar(whileLoopZichtbaar);
+		zetPrintCommandsZichtbaar(printCommandsZichtbaar);
+		zetTekenCommandsZichtbaar(tekenCommandsZichtbaar);
+		zetTraceZichtbaar(traceZichtbaar);
+		zetCodeIOZichtbaar(codeIOZichtbaar);
 		setState(state);
 	}
 
@@ -214,11 +232,20 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
 		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
 		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
-		
-		
+		if(h.containsKey("whileLoopZichtbaar")) whileLoopZichtbaar = ((Boolean)h.get("whileLoopZichtbaar"));
+		if(h.containsKey("printCommandsZichtbaar")) printCommandsZichtbaar = ((Boolean)h.get("printCommandsZichtbaar"));
+		if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsZichtbaar = ((Boolean)h.get("tekenCommandsZichtbaar"));
+		if(h.containsKey("traceZichtbaar")) traceZichtbaar = ((Boolean)h.get("traceZichtbaar"));
+		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
+				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
 		zetDeeltaken(deeltakenZichtbaar);
+		zetWhileLoopZichtbaar(whileLoopZichtbaar);
+		zetPrintCommandsZichtbaar(printCommandsZichtbaar);
+		zetTekenCommandsZichtbaar(tekenCommandsZichtbaar);
+		zetTraceZichtbaar(traceZichtbaar);
+		zetCodeIOZichtbaar(codeIOZichtbaar);
 		setState(state);
 		
 	}
@@ -415,8 +442,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	}
 	
 	public void zetUitvoerVeldZichtbaar(boolean b)
-	{
-		uitvoerVeldZichtbaar = b;
+	{	uitvoerVeldZichtbaar = b;
 		uitvoerblad.setVisible(b);
 	}
 	
@@ -430,9 +456,34 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	}
 	
 	public void zetDeeltaken(boolean b)
-	{
-		deeltakenZichtbaar = b;
+	{	deeltakenZichtbaar = b;
 		javaLogoSchuifVeld.zetDeeltaken(b);
+	}
+	
+	public void zetWhileLoopZichtbaar(boolean b)
+	{	whileLoopZichtbaar = b;
+		javaLogoSchuifVeld.zetWhileLoopZichtbaar(b);
+	}
+	
+	public void zetPrintCommandsZichtbaar(boolean b)
+	{	printCommandsZichtbaar = b;
+		javaLogoSchuifVeld.zetPrintCommandsZichtbaar(b);
+	}
+	
+	public void zetTekenCommandsZichtbaar(boolean b)
+	{	tekenCommandsZichtbaar = b;
+		javaLogoSchuifVeld.zetTekenCommandsZichtbaar(b);
+	}
+	
+	public void zetTraceZichtbaar(boolean b)
+	{	traceZichtbaar = b;
+		trb.setVisible(b);
+	}
+	
+	public void zetCodeIOZichtbaar(boolean b)
+	{	codeIOZichtbaar = b;
+		exportButton.setVisible(b);
+		importButton.setVisible(b);
 	}
 	
 }

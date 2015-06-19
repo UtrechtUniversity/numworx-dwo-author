@@ -27,6 +27,12 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		private JCheckBox uitvoerVeldCB;
 		private JCheckBox programmaVeldCB;
 		private JCheckBox deeltakenCB;
+		private JCheckBox whileLoopCB;
+		private JCheckBox printCommandsCB;
+		private JCheckBox tekenCommandsCB;
+		private JCheckBox traceCB;
+		private JCheckBox codeIOCB;
+		
 		
 		
 		//// Einde voorbeeldcode
@@ -60,6 +66,38 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			deeltakenCB.addActionListener(this);
 			deeltakenCB.setSelected(true);
 			optionsPanel.add(deeltakenCB);
+						
+			whileLoopCB = new JCheckBox(JavaLogoWeb.rb.getString("whileLoopCBLabel"));
+			whileLoopCB.setBounds(20, 170, 200, 20);
+			whileLoopCB.addActionListener(this);
+			whileLoopCB.setSelected(true);
+			optionsPanel.add(whileLoopCB);
+			
+			printCommandsCB = new JCheckBox(JavaLogoWeb.rb.getString("printCommandsCBLabel"));
+			printCommandsCB.setBounds(20, 200, 200, 20);
+			printCommandsCB.addActionListener(this);
+			printCommandsCB.setSelected(true);
+			optionsPanel.add(printCommandsCB);
+			
+			tekenCommandsCB = new JCheckBox(JavaLogoWeb.rb.getString("tekenCommandsCBLabel"));
+			tekenCommandsCB.setBounds(20, 230, 200, 20);
+			tekenCommandsCB.addActionListener(this);
+			tekenCommandsCB.setSelected(true);
+			optionsPanel.add(tekenCommandsCB);
+			
+			traceCB = new JCheckBox(JavaLogoWeb.rb.getString("traceCBLabel"));
+			traceCB.setBounds(20, 260, 200, 20);
+			traceCB.addActionListener(this);
+			traceCB.setSelected(true);
+			optionsPanel.add(traceCB);
+			
+			codeIOCB = new JCheckBox(JavaLogoWeb.rb.getString("codeIOCBLabel"));
+			codeIOCB.setBounds(20, 290, 200, 20);
+			codeIOCB.addActionListener(this);
+			codeIOCB.setSelected(true);
+			optionsPanel.add(codeIOCB);
+			
+			
 			
 		}
 		
@@ -72,6 +110,11 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			h.put("uitvoerVeldZichtbaar",  new Boolean(uitvoerVeldCB.isSelected()));
 			h.put("programmaVeldZichtbaar",  new Boolean(programmaVeldCB.isSelected()));
 			h.put("deeltakenZichtbaar",  new Boolean(deeltakenCB.isSelected()));
+			h.put("whileLoopZichtbaar",  new Boolean(whileLoopCB.isSelected()));
+			h.put("printCommandsZichtbaar",  new Boolean(printCommandsCB.isSelected()));
+			h.put("tekenCommandsZichtbaar",  new Boolean(tekenCommandsCB.isSelected()));
+			h.put("traceZichtbaar",  new Boolean(traceCB.isSelected()));
+			h.put("codeIOZichtbaar",  new Boolean(codeIOCB.isSelected()));
 			
 			return h;
 		}
@@ -84,11 +127,21 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldCB.setSelected((Boolean)h.get("uitvoerVeldZichtbaar"));
 			if(h.containsKey("programmaVeldZichtbaar")) programmaVeldCB.setSelected((Boolean)h.get("programmaVeldZichtbaar"));
 			if(h.containsKey("deeltakenZichtbaar")) deeltakenCB.setSelected((Boolean)h.get("deeltakenZichtbaar"));
+			if(h.containsKey("whileLoopZichtbaar")) whileLoopCB.setSelected((Boolean)h.get("whileLoopZichtbaar"));
+			if(h.containsKey("printCommandsZichtbaar")) printCommandsCB.setSelected((Boolean)h.get("printCommandsZichtbaar"));
+			if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsCB.setSelected((Boolean)h.get("tekenCommandsZichtbaar"));
+			if(h.containsKey("traceZichtbaar")) traceCB.setSelected((Boolean)h.get("traceZichtbaar"));
+			if(h.containsKey("codeIOZichtbaar")) codeIOCB.setSelected((Boolean)h.get("codeIOZichtbaar"));
 			
 			
 			interactiePanel.zetUitvoerVeldZichtbaar(uitvoerVeldCB.isSelected());
 			interactiePanel.zetProgrammaVeldZichtbaar(programmaVeldCB.isSelected());
 			interactiePanel.zetDeeltaken(deeltakenCB.isSelected());
+			interactiePanel.zetWhileLoopZichtbaar(whileLoopCB.isSelected());
+			interactiePanel.zetPrintCommandsZichtbaar(printCommandsCB.isSelected());
+			interactiePanel.zetTekenCommandsZichtbaar(tekenCommandsCB.isSelected());
+			interactiePanel.zetTraceZichtbaar(traceCB.isSelected());
+			interactiePanel.zetCodeIOZichtbaar(codeIOCB.isSelected());
 			interactiePanel.setState(state);
 			
 			interactiePanel.setBounds(interactiePanel.getBounds());
@@ -131,7 +184,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		public void addActionListener(ActionListener al) {
 				
 		}
-
+		
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource()==uitvoerVeldCB) {
 				interactiePanel.zetUitvoerVeldZichtbaar(uitvoerVeldCB.isSelected());
@@ -141,6 +194,21 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			}
 			if(e.getSource()==deeltakenCB) {
 				interactiePanel.zetDeeltaken(deeltakenCB.isSelected());
+			}
+			if(e.getSource()==whileLoopCB) {
+				interactiePanel.zetWhileLoopZichtbaar(whileLoopCB.isSelected());
+			}
+			if(e.getSource()==printCommandsCB) {
+				interactiePanel.zetPrintCommandsZichtbaar(printCommandsCB.isSelected());
+			}
+			if(e.getSource()==tekenCommandsCB) {
+				interactiePanel.zetTekenCommandsZichtbaar(tekenCommandsCB.isSelected());
+			}
+			if(e.getSource()==traceCB) {
+				interactiePanel.zetTraceZichtbaar(traceCB.isSelected());
+			}
+			if(e.getSource()==codeIOCB) {
+				interactiePanel.zetCodeIOZichtbaar(codeIOCB.isSelected());
 			}
 			interactiePanel.setBounds(interactiePanel.getBounds());
 		}

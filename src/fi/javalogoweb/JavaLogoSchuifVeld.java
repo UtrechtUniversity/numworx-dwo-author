@@ -164,7 +164,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		for(int i=0; i<aantalDeeltaken; i++)
 		{
 			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+330+30*i,cclw,ccsh, i+1, this);
-			add(dtc,0);
+			add(dtc);
 			// create with dummy location and height
 			deeltaakComponenten[i] = new DeeltaakBodyComponent(0,0,ProgrammaComponent.pcsw,ProgrammaComponent.pcclosedh, JavaLogoWeb.rb.getString("deeltaak")+(i+1), this);
 			deeltaakComponenten[i].zetVast(false);
@@ -269,6 +269,11 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		{ 	currentCC = new DeeltaakCallCComponent( (DeeltaakCallCComponent)cc, this);
 			add(currentCC,0);
 		}
+	}
+	
+	public void herschikStapel()
+	{
+		
 	}
 	
 	public void verwijder(CommandComponent cc)
@@ -457,6 +462,43 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 					c.setVisible(b);
 				}
 			}
+		}
+	}
+	
+	public void zetWhileLoopZichtbaar(boolean b)
+	{	
+		for(int i=0; i<getComponentCount(); i++)
+		{	Component c = getComponent(i);
+			if(c instanceof WhileLoopCommandComponent)
+				c.setVisible(b);
+		}
+		herschikStapel();
+	}
+	
+	public void zetPrintCommandsZichtbaar(boolean b)
+	{	
+		for(int i=0; i<getComponentCount(); i++)
+		{	Component c = getComponent(i);
+			if(c instanceof PrintCComponent || c instanceof PrintlCComponent)
+				c.setVisible(b);
+		}
+		herschikStapel();
+	}
+	
+	public void zetTekenCommandsZichtbaar(boolean b)
+	{	
+		for(int i=0; i<getComponentCount(); i++)
+		{	Component c = getComponent(i);
+			if(c instanceof VooruitCComponent 
+					|| c instanceof StapCComponent
+					|| c instanceof LinksCComponent
+					|| c instanceof RechtsCComponent
+					|| c instanceof PenAanCComponent
+					|| c instanceof PenUitCComponent
+					|| c instanceof VulAanCComponent
+					|| c instanceof VulUitCComponent
+					|| c instanceof VulBladCComponent)
+				c.setVisible(b);
 		}
 	}
 	

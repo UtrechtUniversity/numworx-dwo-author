@@ -20,7 +20,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "vulUit" , "fillOff" },
 				{ "print" , "print" },
 				{ "println" , "println" },
-				{ "vulBlad" , "bgColor" },
+				{ "vulBlad" , "fill area" },
 				{ "deeltaak" , "subroutine" },
 				{ "variabele" , "variable" },
 				{ "Tekenalgoritme" , "Program" },
@@ -46,7 +46,12 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "uitvoerVeldCBLabel" , "Output panel" },
 				{ "programmaVeldCBLabel" , "Program panel" },
-				{ "deeltakenCBLabel" , "Subroutines" }
+				{ "deeltakenCBLabel" , "Subroutines" },
+				{ "whileLoopCBLabel" , "While loop" },
+				{ "printCommandsCBLabel" , "Print commands" },
+				{ "tekenCommandsCBLabel" , "Draw commands" },
+				{ "traceCBLabel" , "Trace option" },
+				{ "codeIOCBLabel" , "Code import/export" },
         };
 }
 
