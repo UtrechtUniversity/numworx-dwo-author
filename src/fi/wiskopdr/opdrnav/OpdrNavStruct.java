@@ -1295,12 +1295,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresMaxObjectives = (int[][][][]) h.get("scoresMaxObjectives");
 		if (h.containsKey("bezocht"))
 			try{	
-				bezocht = (boolean[][]) h.get("bezocht");
+				bezocht = toBooleanArrayArray( h.get("bezocht") );
 			}
 			catch(Exception e)
 			{
 				bezocht = new boolean[aantalActiviteiten][];
-				bezocht[0] = (boolean[]) h.get("bezocht");
+				bezocht[0] = toBooleanArray( h.get("bezocht") );
 				if(aantalActiviteiten > 1)
 					for(int j = 1; j < aantalActiviteiten; j++)
 					{	bezocht[j] = new boolean[aantalOpdrachten[j]];
