@@ -180,14 +180,14 @@ public class DeeltaakBodyComponent extends ProgrammaComponent implements Paramet
 	{
 		int newX = previousX;
 		int newY = previousY;
-		Rectangle r = new Rectangle(JavaLogoSchuifVeld.ppx, JavaLogoSchuifVeld.ppy, JavaLogoSchuifVeld.ppw, JavaLogoSchuifVeld.pph);
+		Rectangle r = new Rectangle(JavaLogoSchuifVeld.ppx, JavaLogoSchuifVeld.ppy, schuifveld.getWidth(), JavaLogoSchuifVeld.pph);
 		if ( r.contains(x, y) )
 		{
 			// Note: the actual mouse position, given by the parameters, is irrelevant, because we want to position
 			// the DBC exactly where it is now. So, just translate the current (absolute-JLSV) coordinates 
 			// to the ProgrammaPanel and apply min/max rules to keep it inside.
 			newX = getX()-JavaLogoSchuifVeld.ppx;
-			newX = Math.max(80, Math.min(newX, JavaLogoSchuifVeld.ppw-getWidth()));
+			newX = Math.max(80, Math.min(newX, schuifveld.getWidth()-getWidth()));
 			newY = getY()-JavaLogoSchuifVeld.ppy;
 			newY = Math.max(0, Math.min(newY, JavaLogoSchuifVeld.pph-getHeight()));
 		}

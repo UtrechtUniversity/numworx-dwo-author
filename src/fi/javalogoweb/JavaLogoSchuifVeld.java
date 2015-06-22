@@ -5,6 +5,8 @@ import fi.beans.stringutils.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -83,6 +85,25 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	private boolean isVartracing = false;
 	private boolean gesloten;
 	
+	private CommandComponent vooruitCC;
+	private CommandComponent stapCC;
+	private CommandComponent linksCC;
+	private CommandComponent rechtsCC;
+	private CommandComponent penAanCC;
+	private CommandComponent penUitCC;
+	private CommandComponent vulAanCC;
+	private CommandComponent vulUitCC;
+	private CommandComponent vulbladCC;
+	private CommandComponent printCC;
+	private CommandComponent printlCC;
+	private CommandComponent varCC;
+	private CommandComponent herhaalCC;
+	private CommandComponent whileCC;
+	private CommandComponent keuzeCC;
+	private CommandComponent[] deeltaakCC;
+	
+	private Hashtable<String, Double> inputVars = new Hashtable<String, Double>();
+	
 	public JavaLogoSchuifVeld(int x, int y, int b, int h, Uitvoerblad tb)
 	{	
 		setLayout(null);
@@ -92,9 +113,28 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		uitvoerblad = tb;
 	}
 	
+	public void setInputVar(String name, double value)
+	{	inputVars.put("input"+name, new Double(value));
+	}
+	
+	public void setInputVars(Hashtable<String, Double> inputVars)
+	{	this.inputVars = inputVars;
+	}
+	
+	public Hashtable<String, Double> getInputVars()
+	{	return inputVars;
+	}
+	
 	public void execute(Uitvoerblad ub)
 	{	
-		programmaComponent.execute(ub, new VarSet());
+		VarSet varSet = new VarSet();
+		Iterator iter = (inputVars.keySet()).iterator();
+		while (iter.hasNext()) {
+			String key = (String)iter.next();
+			double value = ((Double)inputVars.get(key).doubleValue());
+			varSet.setParameter(key, value);
+		}
+		programmaComponent.execute(ub, varSet);
 	}
 	
 	public void initialize()
@@ -113,62 +153,65 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		vartracer = new VardisplayPanel();
 		vartracer.setBounds(ccx, ccy, 2*ccsw+10, 515);
 				
-		CommandComponent currentCC;
-		
-		currentCC = new VooruitCComponent(ccx,ccy,ccsw,ccsh, this);
-		add(currentCC,0);
-		
-		currentCC = new StapCComponent(ccx2,ccy,ccsw,ccsh, this);
-		add(currentCC,0);
 	
-		currentCC = new LinksCComponent(ccx,ccy+30,ccsw,ccsh, this);
-		add(currentCC,0);
 		
-		currentCC = new RechtsCComponent(ccx2,ccy+30,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new PenAanCComponent(ccx,ccy+60,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new PenUitCComponent(ccx2,ccy+60,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new VulAanCComponent(ccx,ccy+90,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new VulUitCComponent(ccx2,ccy+90,ccsw,ccsh, this);
-		add(currentCC,0);
-
-		currentCC = new VulBladCComponent(ccx,ccy+120,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new PrintCComponent(ccx,ccy+150,ccsw,ccsh, this);
-		add(currentCC,0);
-			
-		currentCC = new PrintlCComponent(ccx2,ccy+150,ccsw,ccsh, this);
-		add(currentCC,0);
 		
-		currentCC = new VarCComponent(ccx,ccy+190,cclw,ccsh, this);
-		add(currentCC,0);
+		vooruitCC = new VooruitCComponent(ccx,ccy,ccsw,ccsh, this);
+		add(vooruitCC,0);
 		
-		currentCC = new ForLoopCommandComponent(ccx,ccy+230,cclw,ccsh, this);
-		add(currentCC,0);
+		stapCC = new StapCComponent(ccx2,ccy,ccsw,ccsh, this);
+		add(stapCC,0);
+	
+		linksCC = new LinksCComponent(ccx,ccy+30,ccsw,ccsh, this);
+		add(linksCC,0);
 		
-		currentCC = new WhileLoopCommandComponent(ccx,ccy+260,cclw,ccsh, this);
-		add(currentCC,0);
+		rechtsCC = new RechtsCComponent(ccx2,ccy+30,ccsw,ccsh, this);
+		add(rechtsCC,0);
+			
+		penAanCC = new PenAanCComponent(ccx,ccy+60,ccsw,ccsh, this);
+		add(penAanCC,0);
+			
+		penUitCC = new PenUitCComponent(ccx2,ccy+60,ccsw,ccsh, this);
+		add(penUitCC,0);
+			
+		vulAanCC = new VulAanCComponent(ccx,ccy+90,ccsw,ccsh, this);
+		add(vulAanCC,0);
+			
+		vulUitCC = new VulUitCComponent(ccx2,ccy+90,ccsw,ccsh, this);
+		add(vulUitCC,0);
 		
-		currentCC = new KeuzeCommandComponent(ccx,ccy+290,cclw,ccsh, this);
-		add(currentCC,0);
+		vulbladCC = new VulBladCComponent(ccx,ccy+120,ccsw,ccsh, this);
+		add(vulbladCC,0);
+			
+		printCC = new PrintCComponent(ccx,ccy+150,ccsw,ccsh, this);
+		add(printCC,0);
+			
+		printlCC = new PrintlCComponent(ccx2,ccy+150,ccsw,ccsh, this);
+		add(printlCC,0);
+		
+		varCC = new VarCComponent(ccx,ccy+190,cclw,ccsh, this);
+		add(varCC,0);
+		
+		herhaalCC = new ForLoopCommandComponent(ccx,ccy+230,cclw,ccsh, this);
+		add(herhaalCC,0);
+		
+		whileCC = new WhileLoopCommandComponent(ccx,ccy+260,cclw,ccsh, this);
+		add(whileCC,0);
+		
+		keuzeCC = new KeuzeCommandComponent(ccx,ccy+290,cclw,ccsh, this);
+		add(keuzeCC,0);
         
 		deeltaakComponenten = new DeeltaakBodyComponent[aantalDeeltaken];
+		deeltaakCC = new DeeltaakCallCComponent[aantalDeeltaken];
 		for(int i=0; i<aantalDeeltaken; i++)
 		{
-			DeeltaakCallCComponent dtc= new DeeltaakCallCComponent(ccx,ccy+330+30*i,cclw,ccsh, i+1, this);
-			add(dtc);
+			deeltaakCC[i] = new DeeltaakCallCComponent(ccx,ccy+330+30*i,cclw,ccsh, i+1, this);
+			add(deeltaakCC[i],0);
+
 			// create with dummy location and height
 			deeltaakComponenten[i] = new DeeltaakBodyComponent(0,0,ProgrammaComponent.pcsw,ProgrammaComponent.pcclosedh, JavaLogoWeb.rb.getString("deeltaak")+(i+1), this);
 			deeltaakComponenten[i].zetVast(false);
-			dtc.setBody(deeltaakComponenten[i]);
+			((DeeltaakCallCComponent)deeltaakCC[i]).setBody(deeltaakComponenten[i]);
 			programmaPanel.add(deeltaakComponenten[i]);
 		}
 		// set location and height right, one by one...
@@ -193,89 +236,115 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		int h = cc.getSize().height;
 		
 		CommandComponent currentCC;
-		if(cc instanceof PrintCComponent)
-		{ 	currentCC = new PrintCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == printCC)
+		{ 	printCC = new PrintCComponent(x,y,b,h, this);
+			add(printCC,0);
 		}
-		if(cc instanceof VulBladCComponent)
-		{ 	currentCC = new VulBladCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == vulbladCC)
+		{ 	vulbladCC = new VulBladCComponent(x,y,b,h, this);
+			add(vulbladCC,0);
 		}
-		if(cc instanceof PrintlCComponent)
-		{ 	currentCC = new PrintlCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == printlCC)
+		{ 	printlCC = new PrintlCComponent(x,y,b,h, this);
+			add(printlCC,0);
 		}
-		if(cc instanceof PrintCComponent)
-		{ 	currentCC = new PrintCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		//if(cc instanceof InvoerCComponent)
+		//{ 	currentCC = new InvoerCComponent(x,y,b,h, this);
+		//	add(currentCC,0);
+		//}
+		if(cc == penAanCC)
+		{ 	penAanCC = new PenAanCComponent(x,y,b,h, this);
+			add(penAanCC,0);
 		}
-		if(cc instanceof InvoerCComponent)
-		{ 	currentCC = new InvoerCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == penUitCC)
+		{ 	penUitCC = new PenUitCComponent(x,y,b,h, this);
+			add(penUitCC,0);
+		}		
+		if(cc == vooruitCC)
+		{ 	vooruitCC = new VooruitCComponent(x,y,b,h, this);
+			add(vooruitCC,0);
 		}
-		if(cc instanceof PenAanCComponent)
-		{ 	currentCC = new PenAanCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == linksCC)
+		{ 	linksCC = new LinksCComponent(x,y,b,h, this);
+			add(linksCC,0);
 		}
-		if(cc instanceof PenUitCComponent)
-		{ 	currentCC = new PenUitCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == rechtsCC)
+		{ 	rechtsCC = new RechtsCComponent(x,y,b,h, this);
+			add(rechtsCC,0);
 		}
-		
-		if(cc instanceof VooruitCComponent)
-		{ 	currentCC = new VooruitCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == vulAanCC)
+		{ 	vulAanCC = new VulAanCComponent(x,y,b,h, this);
+			add(vulAanCC,0);
 		}
-		if(cc instanceof LinksCComponent)
-		{ 	currentCC = new LinksCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == vulUitCC)
+		{ 	vulUitCC = new VulUitCComponent(x,y,b,h, this);
+			add(vulUitCC,0);
 		}
-		if(cc instanceof RechtsCComponent)
-		{ 	currentCC = new RechtsCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == stapCC)
+		{ 	stapCC = new StapCComponent(x,y,b,h, this);
+			add(stapCC,0);
 		}
-		if(cc instanceof VulAanCComponent)
-		{ 	currentCC = new VulAanCComponent(x,y,b,h, this);
-			add(currentCC,0);
-		}
-		if(cc instanceof VulUitCComponent)
-		{ 	currentCC = new VulUitCComponent(x,y,b,h, this);
-			add(currentCC,0);
-		}
-		if(cc instanceof StapCComponent)
-		{ 	currentCC = new StapCComponent(x,y,b,h, this);
-			add(currentCC,0);
-		}
-		if(cc instanceof ForLoopCommandComponent)
-		{ 	currentCC = new ForLoopCommandComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == herhaalCC)
+		{ 	herhaalCC = new ForLoopCommandComponent(x,y,b,h, this);
+			add(herhaalCC,0);
 			cc.setSize(cc.getWidth(), cclh);
 		}
-		if(cc instanceof WhileLoopCommandComponent)
-		{ 	currentCC = new WhileLoopCommandComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == whileCC)
+		{ 	whileCC = new WhileLoopCommandComponent(x,y,b,h, this);
+			add(whileCC,0);
 			cc.setSize(cc.getWidth(), cclh);
 		}
-		if(cc instanceof KeuzeCommandComponent)
-        {   currentCC = new KeuzeCommandComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == keuzeCC)
+        {   keuzeCC = new KeuzeCommandComponent(x,y,b,h, this);
+			add(keuzeCC,0);
 			cc.setSize(cc.getWidth(), cclh);
         }
-		if(cc instanceof VarCComponent)
-		{ 	currentCC = new VarCComponent(x,y,b,h, this);
-			add(currentCC,0);
+		if(cc == varCC)
+		{ 	varCC = new VarCComponent(x,y,b,h, this);
+			add(varCC,0);
 		}
-		if(cc instanceof DeeltaakCallCComponent)
-		{ 	currentCC = new DeeltaakCallCComponent( (DeeltaakCallCComponent)cc, this);
-			add(currentCC,0);
+		for(int i=0; i<aantalDeeltaken; i++)
+		{	if(cc == deeltaakCC[i])
+			{ 	deeltaakCC[i] = new DeeltaakCallCComponent( (DeeltaakCallCComponent)cc, this);
+				add(deeltaakCC[i],0);
+			}
 		}
 	}
 	
-	public void herschikStapel()
-	{
+	private void herschikStapel()
+	{	int yLocation = ccy;
 		
+		if(vooruitCC.isVisible())
+			yLocation += 150;
+		printCC.setLocation(printCC.getX(), yLocation);
+		printlCC.setLocation(printlCC.getX(), yLocation);
+		
+		if(printCC.isVisible())
+			yLocation += 40;
+		else
+			yLocation += 10;
+		varCC.setLocation(varCC.getX(), yLocation);
+		
+		yLocation += 40;
+		herhaalCC.setLocation(herhaalCC.getX(), yLocation);
+		
+		yLocation += 30;
+		whileCC.setLocation(whileCC.getX(), yLocation);
+		
+		if(whileCC.isVisible())
+			yLocation += 30;
+		keuzeCC.setLocation(keuzeCC.getX(), yLocation);
+		
+		if(keuzeCC.isVisible())
+			yLocation += 40;
+		else
+			yLocation += 10;
+		for(int i=0 ; i<5 ; i++)
+		{	deeltaakCC[i].setLocation(ccx,yLocation);
+			yLocation +=30;
+		}
 	}
-	
+
 	public void verwijder(CommandComponent cc)
 	{	
 		remove(cc);
@@ -450,56 +519,34 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	}
 	
 	public void zetDeeltaken(boolean b)
-	{
-		for(int i=0; i<getComponentCount(); i++)
-		{
-			Component c = getComponent(i);
-			if(c instanceof DeeltaakCallCComponent)
-			{
-				for(int j=0; j<aantalDeeltaken; j++)
-				{
-					((DeeltaakCallCComponent)c).getBody().setVisible(b);
-					c.setVisible(b);
-				}
-			}
+	{	for(int i=0; i<aantalDeeltaken; i++)
+		{	deeltaakCC[i].setVisible(b);
+			((DeeltaakCallCComponent)deeltaakCC[i]).getBody().setVisible(b);
 		}
 	}
 	
 	public void zetWhileLoopZichtbaar(boolean b)
-	{	
-		for(int i=0; i<getComponentCount(); i++)
-		{	Component c = getComponent(i);
-			if(c instanceof WhileLoopCommandComponent)
-				c.setVisible(b);
-		}
+	{	whileCC.setVisible(b);
 		herschikStapel();
 	}
 	
 	public void zetPrintCommandsZichtbaar(boolean b)
-	{	
-		for(int i=0; i<getComponentCount(); i++)
-		{	Component c = getComponent(i);
-			if(c instanceof PrintCComponent || c instanceof PrintlCComponent)
-				c.setVisible(b);
-		}
+	{	printCC.setVisible(b);
+		printlCC.setVisible(b);
 		herschikStapel();
 	}
 	
 	public void zetTekenCommandsZichtbaar(boolean b)
-	{	
-		for(int i=0; i<getComponentCount(); i++)
-		{	Component c = getComponent(i);
-			if(c instanceof VooruitCComponent 
-					|| c instanceof StapCComponent
-					|| c instanceof LinksCComponent
-					|| c instanceof RechtsCComponent
-					|| c instanceof PenAanCComponent
-					|| c instanceof PenUitCComponent
-					|| c instanceof VulAanCComponent
-					|| c instanceof VulUitCComponent
-					|| c instanceof VulBladCComponent)
-				c.setVisible(b);
-		}
+	{	vooruitCC.setVisible(b);
+		stapCC.setVisible(b);
+		linksCC.setVisible(b);
+		rechtsCC.setVisible(b);
+		penAanCC.setVisible(b);
+		penUitCC.setVisible(b);
+		vulAanCC.setVisible(b);
+		vulUitCC.setVisible(b);
+		vulbladCC.setVisible(b);
+		herschikStapel();
 	}
 	
 	/**

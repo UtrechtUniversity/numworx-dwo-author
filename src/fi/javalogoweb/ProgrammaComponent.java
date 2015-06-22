@@ -168,13 +168,13 @@ public class ProgrammaComponent extends CompositeCommandComponent implements Mou
 		if ( isWide )
 		{
 			setSize(pcsw, getHeight());
-			setLocation(narrowX, getY());
+			//setLocation(narrowX, getY());
 			isWide = false;
 		} else
 		{
 			setSize(pclw, getHeight());
 			narrowX = getX();
-			setLocation(Math.min(getX(), JavaLogoSchuifVeld.ppw-pclw), getY());
+			//setLocation(Math.min(getX(), JavaLogoSchuifVeld.ppw-pclw), getY());
 			isWide = true;
 		}
 	}

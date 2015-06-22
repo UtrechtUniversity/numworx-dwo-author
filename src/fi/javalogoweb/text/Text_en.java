@@ -52,6 +52,13 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "tekenCommandsCBLabel" , "Draw commands" },
 				{ "traceCBLabel" , "Trace option" },
 				{ "codeIOCBLabel" , "Code import/export" },
+				
+				{ "CBA_text.program", "program"},
+				{ "CBA_double.input", "input variable"},
+				{ "CBA_double.input1", "input 1"},
+				{ "CBA_double.input2", "input 2"},
+				{ "CBA_double.input3", "input 3"},
+				{ "CBA_double.input4", "input 4"},
         };
 }
 

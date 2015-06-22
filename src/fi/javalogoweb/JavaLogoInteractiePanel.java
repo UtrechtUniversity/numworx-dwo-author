@@ -11,19 +11,25 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import logotekenap.Tekenblad;
 import logotekenap.TraceBeheerder;
 import logotekenap.Uitvoerblad;
-import fi.beans.base64code.StringCodeObject;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, ActionListener, MouseMotionListener, MouseListener
+public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, ActionListener, MouseMotionListener, MouseListener,  CBookAware
 {
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
 	private Uitvoerblad uitvoerblad;
@@ -49,6 +55,8 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private boolean tekenCommandsZichtbaar = true;
 	private boolean traceZichtbaar = true;
 	private boolean codeIOZichtbaar = true;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	
 	
 	public JavaLogoInteractiePanel()
@@ -84,7 +92,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	
 	private void layoutGui()
 	{
-		runButton.setBounds(155, getHeight()-60, 80, 50);
+		runButton.setBounds(codeIOZichtbaar ? 155 : 5, getHeight()-60, 80, 50);
 		importButton.setBounds(5, getHeight()-60, 120, 23);
 		exportButton.setBounds(5, getHeight()-33, 120, 23);
 	}
@@ -140,7 +148,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 			javaLogoSchuifVeld.initialize();
 			
 			trb = new TraceBeheerder( (Tekenblad)uitvoerblad, javaLogoSchuifVeld);
-			trb.setBounds(265, getHeight()-64, 340, 58);
+			trb.setBounds(codeIOZichtbaar ? 265 : 115, getHeight()-64, 340, 58);
 			trb.setBackground(new Color(230,230,230));
 			trb.addActionListener(this);
 			add(trb);
@@ -152,7 +160,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 			int jsb = uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 11;
 			int jsh = getHeight()-79;
 			javaLogoSchuifVeld.setSize(jsb, jsh);
-			trb.setBounds(265, getHeight()-64, 340, 58);
+			trb.setBounds(codeIOZichtbaar ? 265 : 115, getHeight()-64, 340, 58);
 			uitvoerblad.repaint();
 		}
 	}
@@ -162,6 +170,13 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(e.getSource()==runButton)
 		{	
 			uitvoerblad.tekenOpnieuw();
+			
+			String code = javaLogoSchuifVeld.getCode();
+			Hashtable<String, Double> inputVars = javaLogoSchuifVeld.getInputVars();
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("program", code);
+			map.put("inputVars", inputVars);
+			cbookEventHandler.fire("text.program",map);
 		}
 		else if(e.getSource()==importButton)
 		{	javaLogoSchuifVeld.importFrame();
@@ -484,6 +499,92 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	{	codeIOZichtbaar = b;
 		exportButton.setVisible(b);
 		importButton.setVisible(b);
+		if(b)
+		{	runButton.setLocation(155,runButton.getY());
+			trb.setLocation(265,trb.getY());
+		}
+		else
+		{	runButton.setLocation(5,runButton.getY());
+			trb.setLocation(115,trb.getY());
+		}
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"text.program"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"text.program", "double.input", "double.input1", "double.input2", "double.input3", "double.input4"};
+		return commands;
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("text"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	String code = (String)map.get("program");
+				Hashtable<String,Double> inputVars = (Hashtable<String,Double>)map.get("inputVars");
+				javaLogoSchuifVeld.setInputVars(inputVars);
+				javaLogoSchuifVeld.importeer(code);	
+				uitvoerblad.tekenOpnieuw();
+				
+				
+			}
+		}
+		if(command.startsWith("double"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null && command.equals("double.input"))
+			{	String name = (String)map.get("name");
+				double waarde = ((Double)map.get("value")).doubleValue();
+				javaLogoSchuifVeld.setInputVar(name, waarde);
+				uitvoerblad.tekenOpnieuw();
+			}
+			else if(map!=null && command.startsWith("double.input"))
+			{	String name = command.substring(command.length()-1);
+				double waarde = ((Double)map.get("value")).doubleValue();
+				javaLogoSchuifVeld.setInputVar(name, waarde);
+				uitvoerblad.tekenOpnieuw();
+			}
+			else if(map==null && command.startsWith("double.input"))
+			{	String message = event.getMessage();
+				double waarde = Double.parseDouble(message);
+				String name = command.substring(command.length()-1);
+				javaLogoSchuifVeld.setInputVar(name, waarde);
+				uitvoerblad.tekenOpnieuw();
+			}
+			
+			String code = javaLogoSchuifVeld.getCode();
+			Hashtable<String, Double> inputVars = javaLogoSchuifVeld.getInputVars();
+			Map<String,Object> map1 = new HashMap<String,Object>();
+			map1.put("program", code);
+			map1.put("inputVars", inputVars);
+			cbookEventHandler.fire("text.program",map1);
+		}
+	}
+
+	
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return JavaLogoWeb.rb.getString(CBA_PREFIX + cmd);
 	}
 	
 }

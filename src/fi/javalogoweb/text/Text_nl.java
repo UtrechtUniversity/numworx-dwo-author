@@ -23,7 +23,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "vulBlad" , "vulBlad" },
 				{ "deeltaak" , "deeltaak" },
 				{ "variabele" , "variabele" },
-				{ "Tekenalgoritme" , "Tekenalgoritme" },
+				{ "Tekenalgoritme" , "Programma" },
 				
 				{ "runButtonLabel" , "Run" },
 				{ "importButtonLabel" , "Import code" },
@@ -53,6 +53,13 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "tekenCommandsCBLabel" , "Tekenopdrachten" },
 				{ "traceCBLabel" , "Trace optie" },
 				{ "codeIOCBLabel" , "Code import/export" },
+				
+				{ "CBA_text.program", "programma"},
+				{ "CBA_double.input", "invoer-variabele"},
+				{ "CBA_double.input1", "invoer 1"},
+				{ "CBA_double.input2", "invoer 2"},
+				{ "CBA_double.input3", "invoer 3"},
+				{ "CBA_double.input4", "invoer 4"},
 				
         };
 }
