@@ -12,7 +12,7 @@ public class SubscriptVak extends RegelVak
 		
 		setLayout(null);
 		
-		setFont(new Font(fv.getFont().getName(),fv.getFont().getStyle(),2*fv.getFont().getSize()/3));
+		super.setFont(new Font(fv.getFont().getName(),fv.getFont().getStyle(),2*fv.getFont().getSize()/3));
 		fm = getFontMetrics(getFont());
 		
 		setSize(fm.getAscent()/2,3*fm.getAscent()/2 + fm.getDescent());
@@ -24,6 +24,15 @@ public class SubscriptVak extends RegelVak
 		setOpaque(false);
 	}
 	
+	public void setFont(Font f)
+	{
+		super.setFont(new Font(f.getName(),f.getStyle(),2*f.getSize()/3));
+		fm = getFontMetrics(getFont());
+		if(kind1==null)return;
+		kind1.setFont(getFont());
+		maakMaat();
+	}
+	
 	public void paintComponent(Graphics g)
 	{	//zetMaat();
 		if(selected)
@@ -33,13 +42,17 @@ public class SubscriptVak extends RegelVak
 		//super.paint(g);
 	}
 	
-	public void zetMaat()
-	{	int vgh = ((FormuleRegel)getParent()).geefVoorgangerHoogte(this);
+	public void maakMaat()
+	{
+		int vgh = ((FormuleRegel)getParent()).geefVoorgangerHoogte(this);
 		int vgah = ((FormuleRegel)getParent()).geefVoorgangerAsHoogte(this);
-		
-        setSize(kind1.getSize().width, kind1.getSize().height + vgh - 2*fm.getAscent()/3);
+		setSize(kind1.getSize().width, kind1.getSize().height + vgh - 2*fm.getAscent()/3);
         kind1.setLocation(0,vgh - 2*fm.getAscent()/3);
 		ashoogte = vgah;
+	}
+	
+	public void zetMaat()
+	{	maakMaat();
 		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
 	}
 	

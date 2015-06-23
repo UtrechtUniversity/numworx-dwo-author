@@ -55,9 +55,13 @@ public class DiffPartialVak extends RegelVak
         Font font0 = new Font(f.getName(), f.getStyle(), f.getSize()-1);
         g.setFont(font0);
         
-		g.drawLine(asc/8,(height-(2*asc+2*desc+asc/4))/2+asc+desc,asc/8+asc,(height-(2*asc+2*desc+asc/4))/2+asc+desc);
-		g.drawString(dString, asc/8+ (diffBreuk?0:asc/4),(height-(2*asc+2*desc+asc/4))/2+asc);
-		g.drawString(dString, asc/8, height-desc-(height-(2*asc+2*desc+asc/4))/2-asc/6);
+//		g.drawLine(asc/8,(height-(2*asc+2*desc+asc/4))/2+asc+desc,asc/8+asc,(height-(2*asc+2*desc+asc/4))/2+asc+desc);
+//		g.drawString(dString, asc/8+ (diffBreuk?0:asc/4),(height-(2*asc+2*desc+asc/4))/2+asc);
+//		g.drawString(dString, asc/8, height-desc-(height-(2*asc+2*desc+asc/4))/2-asc/6);
+		
+        g.drawLine(asc/8, ashoogte + asc/8 + 1, asc/8 + asc, ashoogte + asc/8 + 1);
+		g.drawString(dString, asc/8 + (diffBreuk?0:asc/4), ashoogte + asc/8 + 1 - desc);
+		g.drawString(dString, asc/8, ashoogte + asc + asc/4 + asc/8 - asc/6 + 1);
 		
 		
 		int hoogte = kind1.getSize().height;
@@ -94,8 +98,9 @@ public class DiffPartialVak extends RegelVak
     {   super.zetMaat();
      	diffBreuk = kind1.toString().length()==1 && Character.isLetter(kind1.toString().charAt(0));
         width = asc/8+asc+asc/3+k1w+asc/3+asc/4;
-        height = Math.max(k1h, 2*(asc+desc)+asc/4);
-        if(diffBreuk) width = asc/8+k1w+asc/3+asc/4;
+        height = Math.max(k1h, asc+desc + k2h + asc/4);
+        if(diffBreuk) 
+        	width = asc/8+k1w+asc/3+asc/4;
         k1x = asc/8+asc+asc/3+1;
         k1y = (height-k1h)/2-1;
         if(diffBreuk) 
@@ -103,11 +108,11 @@ public class DiffPartialVak extends RegelVak
             k1y = 0;
         }
         k2x = asc/8+asc/2-2;
-        k2y = (height-(2*(asc+desc)+asc/4))/2+asc+desc+asc/8;
-        
-        ashoogte = k2y- fm.getAscent()/8-2;//k1a + k1y;
-        if(diffBreuk) ashoogte = kind1.getSize().height - fm.getAscent()/8-1;
+        //ashoogte = k2y- fm.getAscent()/8-2;//k1a + k1y;
+        ashoogte = k1a + k1y;
+        if(diffBreuk) ashoogte = asc + desc - asc/8-1;
     	
+        k2y = ashoogte + asc/8 + asc/8 + 1;
         
         setSize(width, height);
         kind1.setLocation(k1x,k1y);
