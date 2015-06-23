@@ -5,10 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -275,7 +279,8 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 			drawingPanel2.removeAllKnipPolygons();
 		
 		if (drawingPanel2.knipPolygons.size() == 0)
-			zetRodeFiguur(rodeFiguurString);
+		{	zetRodeFiguur(rodeFiguurString);
+		}
 		else
 		{	rodeFiguurCoordinaten = processFiguurString(rodeFiguurString);
 		}
@@ -409,7 +414,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		else
 			kp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.RIGHTAL);
 		drawingPanel2.addKnipPolygon(kp);
-		
+		drawingPanel2.oval3Pos = kp.getRotationPoint().toPoint();
 		zetSchaduwZichtbaar(schaduwZichtbaar);
 	
 	}
@@ -1223,6 +1228,49 @@ System.out.println("vip getState");
     	
     	h.put("rechthoeken", drawingPanel2.rectangles);
     	
+    	// voor GWT
+    	ArrayList<Map<String,Object>> polygonMaps = new ArrayList<Map<String,Object>>(); 
+    	
+    	for (int pCnt = 0; pCnt < drawingPanel2.knipPolygons.size(); pCnt++)
+    	{	
+    		ArrayList<Double> polygonX = new ArrayList<Double>();
+        	ArrayList<Double> polygonY = new ArrayList<Double>();
+        	Map<String,Object> polygonMap = new HashMap<String,Object>();
+    		
+    		KnipPolygon2 kp = (KnipPolygon2) drawingPanel2.knipPolygons.elementAt(pCnt);
+
+    		for (int qCnt = 0; qCnt < kp.realPoints.length; qCnt++)
+    		{	polygonX.add(new Double(kp.realPoints[qCnt].x));
+    			polygonY.add(new Double(kp.realPoints[qCnt].y));
+    		}
+    		polygonMap.put("polygonX", polygonX);
+    		polygonMap.put("polygonY", polygonY);
+    		polygonMap.put("oppervlakte", new Integer(kp.oppervlakte));
+    		
+    		polygonMaps.add(polygonMap);
+    		
+    	}
+    	h.put("polygonMaps", polygonMaps);
+    	
+    	ArrayList<Integer> rectanglesX = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesY = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesW = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesH = new ArrayList<Integer>();
+    	for (int rCnt = 0; rCnt < drawingPanel2.rectangles.size(); rCnt++)
+    	{	Rectangle r = (Rectangle) drawingPanel2.rectangles.elementAt(rCnt);
+    		rectanglesX.add(new Integer(r.x));
+    		rectanglesY.add(new Integer(r.y));
+    		rectanglesW.add(new Integer(r.width));
+    		rectanglesH.add(new Integer(r.height));
+    	}
+    
+    	h.put("rectanglesX", rectanglesX);
+    	h.put("rectanglesY", rectanglesY);
+    	h.put("rectanglesW", rectanglesW);
+    	h.put("rectanglesH", rectanglesH);
+    	
+    	
+    	
 		return h;
 		
 	}
@@ -1263,6 +1311,46 @@ System.out.println("vip getEditState");
     	
     	h.put("rechthoeken", drawingPanel2.rectangles);    	
 //System.out.println("put rects = " + drawingPanel2.rectangles.size());    	
+    	// voor GWT
+    	ArrayList<Map<String,Object>> polygonMaps = new ArrayList<Map<String,Object>>(); 
+    	
+    	for (int pCnt = 0; pCnt < drawingPanel2.knipPolygons.size(); pCnt++)
+    	{	
+    		ArrayList<Double> polygonX = new ArrayList<Double>();
+        	ArrayList<Double> polygonY = new ArrayList<Double>();
+        	Map<String,Object> polygonMap = new HashMap<String,Object>();
+    		
+    		KnipPolygon2 kp = (KnipPolygon2) drawingPanel2.knipPolygons.elementAt(pCnt);
+
+    		for (int qCnt = 0; qCnt < kp.realPoints.length; qCnt++)
+    		{	polygonX.add(new Double(kp.realPoints[qCnt].x));
+    			polygonY.add(new Double(kp.realPoints[qCnt].y));
+    		}
+    		polygonMap.put("polygonX", polygonX);
+    		polygonMap.put("polygonY", polygonY);
+    		polygonMap.put("oppervlakte", new Integer(kp.oppervlakte));
+    		
+    		polygonMaps.add(polygonMap);
+    		
+    	}
+    	h.put("polygonMaps", polygonMaps);
+    	
+    	ArrayList<Integer> rectanglesX = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesY = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesW = new ArrayList<Integer>();
+    	ArrayList<Integer> rectanglesH = new ArrayList<Integer>();
+    	for (int rCnt = 0; rCnt < drawingPanel2.rectangles.size(); rCnt++)
+    	{	Rectangle r = (Rectangle) drawingPanel2.rectangles.elementAt(rCnt);
+    		rectanglesX.add(new Integer(r.x));
+    		rectanglesY.add(new Integer(r.y));
+    		rectanglesW.add(new Integer(r.width));
+    		rectanglesH.add(new Integer(r.height));
+    	}
+    
+    	h.put("rectanglesX", rectanglesX);
+    	h.put("rectanglesY", rectanglesY);
+    	h.put("rectanglesW", rectanglesW);
+    	h.put("rectanglesH", rectanglesH);
 		
 		return h;
 	}
@@ -1296,6 +1384,9 @@ System.out.println("vip getEditState");
 			// zet de defaultfiguur	
 			KnipPolygon2 kp = new KnipPolygon2(drawingPanel2, rodeFiguurCoordinaten, KnipPolygon2.CENTER);
 			drawingPanel2.addKnipPolygon(kp);
+			drawingPanel2.oval3Pos = kp.getRotationPoint().toPoint();
+			if ((taakNummer == 2) || (taakNummer == 3))		
+				kp.setLabelPoint();
 			add(drawingPanel2);
 			
 			resetKnop = new JButton(new ImageIcon(resetImage));
