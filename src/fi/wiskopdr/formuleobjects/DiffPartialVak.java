@@ -127,5 +127,11 @@ public class DiffPartialVak extends RegelVak
 	public String toString()
 	{	return "$D" + kind1.toString() + "$n" + kind2.toString() + "@@";
 	}
+
+	public String toMathML() 
+	{
+		return "<mfrac><mrow><mo>\u2202</mo>" + kind1.toMathML() + "</mrow><mrow><mo>\u2202</mo>" + kind2.toMathML() + "</mrow></mfrac>";
+	}
+
 }
 

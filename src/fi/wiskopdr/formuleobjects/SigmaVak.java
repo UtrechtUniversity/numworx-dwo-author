@@ -116,5 +116,10 @@ public class SigmaVak extends RegelVak
 	public String toString()
 	{	return "$S" + kind1.toString() + "$n"+ kind2.toString() + "$k" + kind3.toString() + "$l" + kind4.toString() + "@@@@";
 	}
+	
+	public String toMathML() {
+		return "<mrow><munderover><mo>\u03a3</mo><mrow>"+ kind2.toMathML()+ "<mo>=</mo>"+ kind3.toMathML() + "</mrow>"+ kind4.toMathML() + "</munderover>" + kind1.toMathML() +"</mrow>" ;
+	}
+
 }
 
