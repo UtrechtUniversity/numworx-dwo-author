@@ -66,5 +66,12 @@ public class ConjugVak extends RegelVak
 	public String toString()
 	{	return "$c" + kind1.toString() + "@";
 	}
+	
+	@Override
+	public String toMathML() {
+/* geen idee welke van de twee de meest gesupporte is */
+		//return "<menclose notation='top' >" + kind1.toMathML() + "</menclose>";
+		return "<mover>" + kind1.toMathML() + "<mo>\u00AF</mo></mover>"; // UNICODE MACRON
+	}
 }
 
