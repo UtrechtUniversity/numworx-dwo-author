@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -207,9 +208,9 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
        
 	    if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
-	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Integer)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Integer)h.get("errorCount")).intValue();
+	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
+	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
         
         this.ingevuld = ingevuld;
         this.nagekeken = nagekeken;

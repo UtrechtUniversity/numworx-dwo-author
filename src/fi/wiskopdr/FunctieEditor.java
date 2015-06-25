@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import javax.swing.*;
 
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.expressies.*;
 
 public class FunctieEditor extends FormuleEditor implements FocusListener
@@ -381,9 +382,9 @@ public class FunctieEditor extends FormuleEditor implements FocusListener
 		String yNaam = this.yNaam;
 		
     	if(h.containsKey("expressieStrings")) 
-    		expressieStrings = (String[])h.get("expressieStrings");
+    		expressieStrings = OpdrNavStruct.toStringArray(h.get("expressieStrings"));
     	if(h.containsKey("geselecteerd")) 
-    		geselecteerd = (boolean[])h.get("geselecteerd");
+    		geselecteerd = OpdrNavStruct.toBooleanArray(h.get("geselecteerd"));
     	if(h.containsKey("varNaam")) varNaam = (String)h.get("varNaam");
     	if(h.containsKey("yNaam")) yNaam = (String)h.get("yNaam");
     	

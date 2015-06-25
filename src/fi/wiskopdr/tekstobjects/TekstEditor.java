@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -13,6 +14,7 @@ import fi.wiskopdr.TekstEditorEditPanel;
 import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -844,8 +846,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		Hashtable[] interactiePanelLaunchData = null;
 		
 		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
-		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = (Hashtable[])h.get("interactiePanelLaunchData");
-		if(h.containsKey("interactiePanelStates")) interactiePanelStates = (Hashtable[])h.get("interactiePanelStates");
+		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = OpdrNavStruct.toHashtableArray(h.get("interactiePanelLaunchData"));
+		if(h.containsKey("interactiePanelStates")) interactiePanelStates = OpdrNavStruct.toHashtableArray(h.get("interactiePanelStates"));
 		
 		
 		//if(antwoordVak.getText()==null || antwoordVak.getText().trim().equals("")) 

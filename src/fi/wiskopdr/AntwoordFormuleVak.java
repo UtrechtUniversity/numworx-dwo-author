@@ -2200,16 +2200,16 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		if(h.containsKey("antwoordString")) formuleVakString = (String)h.get("antwoordString");
 		//if(h.containsKey("startString")) gekozenStartString = (String)h.get("startString");
 		if(h.containsKey("substitutieString")) substitutieString = (String)h.get("substitutieString");
-		if(h.containsKey("pijlVakInhouden"))pijlVakInhouden = (String[])h.get("pijlVakInhouden");
-	    if(h.containsKey("pijlVakOperatoren"))pijlVakOperatoren = (String[])h.get("pijlVakOperatoren");
-	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Integer)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Integer)h.get("errorCount")).intValue();
-	    if(h.containsKey("gebruikersSubStrings"))gebruikersSubStrings = (String[])h.get("gebruikersSubStrings");
-	    if(h.containsKey("ideasPuntenAftrek")) ideasPuntenAftrek = ((Integer)h.get("ideasPuntenAftrek")).intValue();
+		if(h.containsKey("pijlVakInhouden"))pijlVakInhouden = OpdrNavStruct.toStringArray(h.get("pijlVakInhouden"));
+	    if(h.containsKey("pijlVakOperatoren"))pijlVakOperatoren =  OpdrNavStruct.toStringArray(h.get("pijlVakOperatoren"));
+	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
+	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
+	    if(h.containsKey("gebruikersSubStrings"))gebruikersSubStrings = OpdrNavStruct.toStringArray(h.get("gebruikersSubStrings"));
+	    if(h.containsKey("ideasPuntenAftrek")) ideasPuntenAftrek = ((Number)h.get("ideasPuntenAftrek")).intValue();
 	    
 	    
-		if(ingevuld)vulVak(formuleVakString) ;
+		if(ingevuld && formuleVakString.length()>2 )vulVak(formuleVakString) ;
 		//zetJuisteAntwoord(gekozenAntwoordString);
 		FormuleParser p = new FormuleParser();
 		if(!substitutieString.equals(""))substitutie = p.parse(p.schoon(p.formuleString(substitutieString)));

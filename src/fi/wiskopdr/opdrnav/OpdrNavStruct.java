@@ -1233,8 +1233,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	/**
 	 * De status van het applet wordt gezet met behulp de suspenddata.
 	 * (aangeroepen door setState van WiskOpdr)
+	 * @param patch 
 	 */
-	public void setState(Hashtable h)
+	public void setState(Hashtable h) { setState(h,false); }
+	
+	private void setState(Hashtable h, boolean patch)
 	{
 		//int aantalActiviteiten = this.aantalActiviteiten;
 		int activiteitNr = 0;
@@ -1314,7 +1317,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		//this.aantalActiviteiten = aantalActiviteiten;
 		if (strafpunten != null)
 			this.strafpunten = strafpunten;
+		if(orGoedFout[0].length < aantalOpdrachten[0]) {
+			boolean x[] = orGoedFout[0];
+			orGoedFout[0] = new boolean[aantalOpdrachten[0]];
+			System.arraycopy(x, 0, orGoedFout[0], 0, x.length);
+		}
 		this.opdrachtenCorrect = orGoedFout;
+
 		if(bezocht == null)
 		{	bezocht = new boolean[aantalActiviteiten][];
 			for(int j = 0; j < aantalActiviteiten; j++)
@@ -1370,6 +1379,22 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				this.opdrachtNr = j;
 				Hashtable[] opdrachtStates = opdrContStates[i];
 				states[i][j] = j < opdrachtStates.length ? opdrachtStates[j] : null; // NPE
+
+// XXX LET OP de html5 suspend_data heeft een kunstmatige tekstvak, de applet variant niet.
+// dat betekent dat de interactiePanelStates één nivo dieper zit.
+				
+				if(patch && states[i][j] != null)
+				{
+					Object object = states[i][j].get("interactiePanelStates");
+					List l = (List) object;
+					object = l.get(5);
+					Map m = (Map) object;
+					object = m.get("interactiePanelStates");
+					l = (List) object;
+					for(int x=0; x<5; x++) l.add(0, null);
+					states[i][j].put("interactiePanelStates", object);
+				}
+
 				if (orTimes != null)
 					times[i][j] = orTimes[i][j];
 				else
@@ -1377,11 +1402,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				
 				if (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
 				{
-					or[i].zetGemaakt(j + 1, orGoedFout[i][j]);
-					allCorrect = allCorrect && orGoedFout[i][j];
-					or[i].zetScore(j + 1, orScores[i][j]);
+					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
+					allCorrect = allCorrect && getBoolean(orGoedFout, i, j);
+					or[i].zetScore(j + 1, getInt(orScores,i,j));
 				}
-				totaal += orScores[i][j];
+				totaal += getInt(orScores,i,j);
 			}
 			if (mode == 2 && totaal > 0)
 				totaal = Math.max(0, totaal - (aantalNakijken[i] - 1) * nakijkStraf);
@@ -1412,7 +1437,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
 					this.scores[i][j] = orScores[i][j];
-					isCorrect[i][j] = orGoedFout[i][j];
+					isCorrect[i][j] = getBoolean(orGoedFout, i, j);
 				}
 			}
 		}
@@ -1425,7 +1450,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
-					or[i].zetGemaakt(j + 1, orGoedFout[i][j]);
+					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
 					or[i].zetScore(j + 1, orScores[i][j]);
 				}
 			}
@@ -1480,7 +1505,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if(eerderGeenCorr)
 		{	boolean alBezocht = false;
 			for(int i = opdrachtNr + 1; i < aantalOpdrachten[activiteitNr]; i++)
-				if(bezocht[activiteitNr][i])
+				if(getBoolean(bezocht, activiteitNr, i))
 					alBezocht = true;
 			zetAfdekPanelLeeg(alBezocht);
 		}
@@ -1494,6 +1519,27 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 
+	}
+
+	/**
+	 * Save access to boolean array[][] that is too short.
+	 * @param array
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	private boolean getBoolean(boolean[][] array, int i, int j) {
+		if(i >= array.length) return false;
+		boolean[] a = array[i];
+		if(j >= a.length) return false;
+		return a[j];
+	}
+
+	private int getInt(int[][] array, int i, int j) {
+		if(i >= array.length) return 0;
+		int[] a = array[i];
+		if(j >= a.length) return 0;
+		return a[j];
 	}
 
 	static String[][] toStringArrayArray(Object object)
@@ -1559,7 +1605,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return null;
 	}
 
-	private static boolean[] toBooleanArray(Object object)
+	public static boolean[] toBooleanArray(Object object)
 	{
 		if (object == null || object instanceof boolean[])
 			return (boolean[]) object;
@@ -2683,7 +2729,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				strafpunten[activiteitNr][opdrachtNr] += foutStraf;
 			}
-			score = Math.max(0, score - strafpunten[activiteitNr][opdrachtNr]);
+			score = Math.max(0, score - getInt(strafpunten,activiteitNr,opdrachtNr));
 			if (mode != 3)
 			{
 				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
@@ -2956,6 +3002,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			return new Vector((Collection) object);
 		}
 		return null;
+	}
+
+	public void setJSONState(Hashtable onsState) {
+		setState(onsState, true);
+		
+		
 	}
 
 }

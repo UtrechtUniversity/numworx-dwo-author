@@ -60,6 +60,7 @@ import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.MyOpdrEditContainer;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.beans.base64code.Base64StringEncoder;
 import fi.beans.base64code.StringCodeObject;
@@ -498,9 +499,9 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 		//if(h.containsKey("ggbFile")) ggbFile = (byte[])h.get("ggbFile");
 		if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
-	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Integer)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Integer)h.get("errorCount")).intValue();
+	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
+	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
         
 		if(bewaarOptie){	
 			//if(ggbFile != null && hasLoadGGBfile)

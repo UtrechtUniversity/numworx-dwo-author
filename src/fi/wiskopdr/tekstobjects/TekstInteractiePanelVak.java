@@ -20,6 +20,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 
@@ -32,6 +34,9 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.JSONArray;
+
+
+
 
 
 
@@ -1782,7 +1787,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void setState(Hashtable h)
 	{
-		if(interactiePanel!=null)interactiePanel.setState(h);
+		try {
+			if(interactiePanel!=null)interactiePanel.setState(h);
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
+		}
 		if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isIpSleepbaar()) 
 		{	
 			int x = ((TekstVakPanel)interactiePanel).geefLocatie().x;

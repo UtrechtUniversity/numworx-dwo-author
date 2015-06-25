@@ -304,7 +304,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	    if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
 	    if(h.containsKey("positions")) positions = (Point[])h.get("positions");
-	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
+	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
 	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
 	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
         

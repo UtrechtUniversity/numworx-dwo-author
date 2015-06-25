@@ -1008,7 +1008,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			suspendData = new Hashtable(h);
 
 			ons.zetToetsLocked(toetsLocked);
-			ons.setState(onsState);
+			ons.setJSONState(onsState);
 			if (review)
 				ons.toonAantalSessies();
 		}

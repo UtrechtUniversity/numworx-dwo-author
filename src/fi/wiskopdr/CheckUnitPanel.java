@@ -17,6 +17,7 @@ import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -164,7 +165,7 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		String[] formuleStrings = null;
 		boolean[][] logObjectives = null;
 		String knopImageString = "";
-        
+       
         if(h.containsKey("juisteSelecties")) juisteSelecties = (boolean[])h.get("juisteSelecties");
         if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
 	    if(h.containsKey("randomizePositions")) randomizePositions = ((Boolean)h.get("randomizePositions")).booleanValue();
@@ -234,13 +235,25 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 	    Vector attempts = new Vector();
 	    int attemptsCount = 0;
 		int errorCount = 0;
-        
+// TODO controleer of dit zo goed is!
+		if(h.containsKey("randomizedPositionsX"))
+        {
+        	int[] randomizedPositionsX = OpdrNavStruct.toIntArray(h.get("randomizedPositionsX"));
+        	int[] randomizedPositionsY = OpdrNavStruct.toIntArray(h.get("randomizedPositionsY"));
+        	randomizedPositions = new Point[randomizedPositionsX.length];
+        	for (int i = 0; i < randomizedPositionsY.length; i++) {
+				int x = randomizedPositionsX[i];
+				int y = randomizedPositionsY[i];
+				randomizedPositions[i] = new Point(x,y);
+			}
+        } else
+// oude opslag:
 	    if(h.containsKey("randomizedPositions")) randomizedPositions = (Point[])h.get("randomizedPositions");
 	    if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
-	    if(h.containsKey("attempts"))attempts = (Vector)h.get("attempts");
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Integer)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Integer)h.get("errorCount")).intValue();
+	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
+	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
         
         this.randomizedPositions = randomizedPositions;
         this.ingevuld = ingevuld;
