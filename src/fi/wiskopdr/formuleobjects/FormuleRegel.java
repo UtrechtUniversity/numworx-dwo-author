@@ -1697,6 +1697,20 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 {
                 	((StelselVak)getParent()).focusKindOmlaag();
                 }
+                else if (kc == KeyEvent.VK_DOWN && getParent() instanceof DiffVak)
+                {   ((DiffVak)getParent()).kind2.neemFocus("rechts");
+                }
+				else if (kc == KeyEvent.VK_UP && getParent() instanceof DiffVak)
+                {   ((DiffVak)getParent()).kind1.neemFocus("rechts");
+                }
+				else if (kc == KeyEvent.VK_DOWN && getParent() instanceof DiffPartialVak)
+                {   ((DiffPartialVak)getParent()).kind2.neemFocus("rechts");
+                }
+				else if (kc == KeyEvent.VK_UP && getParent() instanceof DiffPartialVak)
+                {   ((DiffPartialVak)getParent()).kind1.neemFocus("rechts");
+                }
+				
+                		
                 
                 else if (kc == KeyEvent.VK_HOME)
                 {   caretPos = 0;
