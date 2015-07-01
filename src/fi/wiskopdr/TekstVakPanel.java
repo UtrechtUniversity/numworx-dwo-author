@@ -21,7 +21,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -36,6 +38,7 @@ import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 
 import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 import fi.beans.iconan.Iconan;
@@ -208,6 +211,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean logOption = false;
 	private String logID = "";
 	private String logIDLabel = "";
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
 	public TekstVakPanel()
 	{
@@ -2136,6 +2141,16 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{
 		locationX = x;
 		locationY = y;
+		
+		Map<String,Object> mapx = new HashMap<String,Object>();
+		mapx.put("name", "xcoordinate");
+		mapx.put("value", locationX);
+		cbookEventHandler.fire("double.xcoordinate",mapx);
+		
+		Map<String,Object> mapy = new HashMap<String,Object>();
+		mapy.put("name", "xcoordinate");
+		mapy.put("value", locationY);
+		cbookEventHandler.fire("double.ycoordinate",mapy);
 	}
 
 	public void setStartSleep(int x, int y)
@@ -3680,23 +3695,21 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	}
 
 	@Override
-	public void addCBookEventListener(CBookEventListener listener,
-			String command) {
-		// TODO Auto-generated method stub
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
 		
 	}
 
 	@Override
-	public void removeCBookEventListener(CBookEventListener listener,
-			String command) {
-		// TODO Auto-generated method stub
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
 		
 	}
 
 	@Override
 	public String[] getSendCmds() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] sendCommands = {"double.xcoordinate", "double.ycoordinate"};
+		return sendCommands;
 	}
 
 	@Override
@@ -3707,7 +3720,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public String getLocalizedCmd(String cmd) {
-		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		String locString = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(locString==null)
+			locString = cmd;
+		return locString;
 	}
 
 }
