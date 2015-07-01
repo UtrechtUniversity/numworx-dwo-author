@@ -201,13 +201,13 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane2.setVisible(false);
 	    
 	    voeruit=new JButton(StatSim.rb.getString("execute"));
-	    voeruit.setSize(100,20);
+	    voeruit.setSize(120,20);
 	    voeruit.setLocation(240,7);
 	    voeruit.addActionListener(this);
 	    add(voeruit);
 	    
 	    wis=new JButton(StatSim.rb.getString("erase"));
-	    wis.setSize(100,20);
+	    wis.setSize(120,20);
 	    wis.setLocation(240,32);
 	    wis.addActionListener(this);
 	    wis.setEnabled(false);
@@ -268,8 +268,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane3 = new JScrollPane(table3);
 	   
 	    add(pane3);
-	    pane3.setLocation(350,0);
-	    pane3.setSize(440,115);
+	    pane3.setLocation(370,0);
+	    pane3.setSize(420,115);
 	   
 	    model4 = new DefaultTableModel(col4,1); 
 	    table4=new JTable(model4){@Override
@@ -289,8 +289,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane4 = new JScrollPane(table4);
 	   
 	    add(pane4);
-	    pane4.setLocation(350,0);
-	    pane4.setSize(440,115);
+	    pane4.setLocation(370,0);
+	    pane4.setSize(420,115);
 	    
 	    pane4.setVisible(false);
 	    
@@ -313,8 +313,8 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	    pane5 = new JScrollPane(table5);
 	   
 	    add(pane5);
-	    pane5.setLocation(350,0);
-	    pane5.setSize(440,115);
+	    pane5.setLocation(70,0);
+	    pane5.setSize(420,115);
 	    
 	    pane5.setVisible(false);
 	    
@@ -333,16 +333,16 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			panel1.setVisible(showInstellingen);
 			voeruit.setLocation(240,7);
 			wis.setLocation(240,32);
-			pane3.setLocation(350,0);
-			pane4.setLocation(350,0);
-			pane5.setLocation(350,0);
+			pane3.setLocation(370,0);
+			pane4.setLocation(370,0);
+			pane5.setLocation(370,0);
 		} else {
 			panel1.setVisible(showInstellingen);
 			voeruit.setLocation(10,7);
 			wis.setLocation(10,32);
-			pane3.setLocation(120,0);
-			pane4.setLocation(120,0);
-			pane5.setLocation(120,0);
+			pane3.setLocation(140,0);
+			pane4.setLocation(140,0);
+			pane5.setLocation(140,0);
 		}
 		if (showResultaten==false) {
 			pane3.setVisible(false);
@@ -429,12 +429,12 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		pane2.setSize(230,this.getHeight()-125);
 		table2.setSize(230,this.getHeight()-125);
 		
-		pane3.setSize(this.getWidth()-350,115);
-		table3.setSize(this.getWidth()-350,115);
-		pane4.setSize(this.getWidth()-350,115);
-		table4.setSize(this.getWidth()-350,115);
-		pane5.setSize(this.getWidth()-350,115);
-		table5.setSize(this.getWidth()-350,115);
+		pane3.setSize(this.getWidth()-370,115);
+		table3.setSize(this.getWidth()-370,115);
+		pane4.setSize(this.getWidth()-370,115);
+		table4.setSize(this.getWidth()-370,115);
+		pane5.setSize(this.getWidth()-370,115);
+		table5.setSize(this.getWidth()-370,115);
 	    
 		setZichtbaar();
 	}

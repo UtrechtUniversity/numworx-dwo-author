@@ -46,7 +46,12 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "grid", "Rooster" },
             {   "execute", "Voer uit" },
             {   "erase", "Wis resultaten" },
-            {   "execute1", "Voer" }
+            {   "execute1", "Voer" },
+            {   "coins", "Munten" },
+            {   "table", "Tabel" },
+            {   "dice", "Dobbelstenen" },
+            {   "binominalDraw", "Binominale trekking" },
+            {   "grid", "Rooster" }
         //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

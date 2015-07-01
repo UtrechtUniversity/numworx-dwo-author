@@ -159,13 +159,13 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		kansOpKopLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		aantalWorpenText=new JTextField();
 		aantalWorpenText.setSize(50, 20);
-		aantalWorpenText.setLocation(100,50);
+		aantalWorpenText.setLocation(150,50);
 		aantalWorpenText.setColumns(5);
 		aantalWorpenText.setText("100");
 		kansOpKopText=new JTextField();
 		kansOpKopText.setColumns(5);
 		kansOpKopText.setSize(50,20);
-		kansOpKopText.setLocation(100,70);
+		kansOpKopText.setLocation(150,70);
 		kansOpKopText.setText("0.5");
 		panel1.add(aantalWorpenLabel);
 		panel1.add(aantalWorpenText);
@@ -175,20 +175,20 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		voeruit=new JButton(StatSim.rb.getString("execute"));
 		buttonPanel.add(voeruit);
 		voeruit.setLocation(235,7);
-		voeruit.setSize(100,20);
+		voeruit.setSize(120,20);
 		voeruit.addActionListener(this);
 		
 		stap = new JButton(StatSim.rb.getString("step"));
 		buttonPanel.add(stap);
 		stap.setLocation(235,32);
-		stap.setSize(100,20);
+		stap.setSize(120,20);
 		stap.addActionListener(this);
 		stap.setEnabled(true);
 		
 		wis = new JButton(StatSim.rb.getString("erase"));
 		buttonPanel.add(wis);
 		wis.setLocation(235,57);
-		wis.setSize(100,20);
+		wis.setSize(120,20);
 		wis.addActionListener(this);
 		wis.setEnabled(false);
 		
@@ -197,8 +197,8 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		panel2.setLayout(null);
 		panel2.setBackground(Color.white);
 		buttonPanel.add(panel2);
-		panel2.setSize(360,95);
-		panel2.setLocation(345,0);
+		panel2.setSize(340,95);
+		panel2.setLocation(365,0);
 		panel2.setBorder(BorderFactory.createTitledBorder(border2,StatSim.rb.getString("results"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
 		gemiddeldeLabel=new JLabel(StatSim.rb.getString("mean"));
@@ -234,7 +234,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 		aantalKop = new JRadioButton(StatSim.rb.getString("numberOfHeads"));
 		aantalKop.setBackground(Color.white);
-		aantalKop.setSize(100,20);
+		aantalKop.setSize(200,20);
 		aantalKop.setLocation(10,20);
 		aantalKop.setSelected(true);
 		panel2.add(aantalKop);
@@ -243,7 +243,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 		percentageKop=new JRadioButton(StatSim.rb.getString("percentageHeads"));
 		percentageKop.setBackground(Color.white);
-		percentageKop.setSize(120,20);
+		percentageKop.setSize(200,20);
 		percentageKop.setLocation(10,50);
 		panel2.add(percentageKop);
 		percentageKop.addActionListener(this);
@@ -410,13 +410,13 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			voeruit.setLocation(235,7);
 			stap.setLocation(235,32);
 			wis.setLocation(235,57);
-			panel2.setLocation(345,0);
+			panel2.setLocation(365,0);
 		} else {
 			panel1.setVisible(showInstellingen);
 			voeruit.setLocation(10,7);
 			stap.setLocation(10,32);
 			wis.setLocation(10,57);
-			panel2.setLocation(120,0);
+			panel2.setLocation(140,0);
 		}
 		if (showTabel) {
 			if (eenMuntRadio.isSelected()) {
@@ -476,7 +476,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			paintPanel.setSize(this.getWidth()-230,this.getHeight()-115);
 		setZichtbaar();
 		if (this.getWidth()<660) {
-			panel2.setSize(310,95);
+			panel2.setSize(290,95);
 			
 			gemiddeldeLabel.setLocation(150,20);
 			gemiddeldeText.setLocation(250,20);
@@ -486,7 +486,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			maximumText.setLocation(250,60);
 			
 		} else {
-		    panel2.setSize(this.getWidth()-345,95);
+		    panel2.setSize(this.getWidth()-365,95);
 
 			gemiddeldeLabel.setLocation(this.getWidth()-510,20);
 			gemiddeldeText.setLocation(this.getWidth()-410,20);

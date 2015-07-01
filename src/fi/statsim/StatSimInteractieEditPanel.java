@@ -52,117 +52,117 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		optionsPanel.setBounds(defaultIpWidth+30,20,defaultOpWidth,defaultHeight);
 		add(optionsPanel);
 		
-		muntenRadio=new JRadioButton("Munten");
+		muntenRadio=new JRadioButton(StatSim.rb.getString("coins"));
 		muntenRadio.setLocation(10,10);
 		muntenRadio.setSize(200,20);
 		muntenRadio.addActionListener(this);
 		muntenRadio.setSelected(true);
 		optionsPanel.add(muntenRadio);
 		
-		muntenInstellingenCheckBox = new JCheckBox("Instellingen");
+		muntenInstellingenCheckBox = new JCheckBox(StatSim.rb.getString("settings"));
 		muntenInstellingenCheckBox.setLocation(30,30);
 		muntenInstellingenCheckBox.setSize(200,20);
 		muntenInstellingenCheckBox.addActionListener(this);
 		muntenInstellingenCheckBox.setSelected(true);
 		optionsPanel.add(muntenInstellingenCheckBox);
 		
-		muntenResultatenCheckBox = new JCheckBox("Resultaten");
+		muntenResultatenCheckBox = new JCheckBox(StatSim.rb.getString("results"));
 		muntenResultatenCheckBox.setLocation(30,50);
 		muntenResultatenCheckBox.setSize(200,20);
 		muntenResultatenCheckBox.addActionListener(this);
 		muntenResultatenCheckBox.setSelected(true);
 		optionsPanel.add(muntenResultatenCheckBox);
 		
-		muntenGrafiekCheckBox = new JCheckBox("Grafiek");
+		muntenGrafiekCheckBox = new JCheckBox(StatSim.rb.getString("graph"));
 		muntenGrafiekCheckBox.setLocation(30,70);
 		muntenGrafiekCheckBox.setSize(200,20);
 		muntenGrafiekCheckBox.addActionListener(this);
 		muntenGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(muntenGrafiekCheckBox);
 		
-		muntenTabelCheckBox = new JCheckBox("Tabel");
+		muntenTabelCheckBox = new JCheckBox(StatSim.rb.getString("table"));
 		muntenTabelCheckBox.setLocation(30,90);
 		muntenTabelCheckBox.setSize(200,20);
 		muntenTabelCheckBox.addActionListener(this);
 		muntenTabelCheckBox.setSelected(true);
 		optionsPanel.add(muntenTabelCheckBox);
 		
-		muntenFrequentieCheckBox = new JCheckBox("Frequentie");
+		muntenFrequentieCheckBox = new JCheckBox(StatSim.rb.getString("frequency"));
 		muntenFrequentieCheckBox.setLocation(30,110);
 		muntenFrequentieCheckBox.setSize(200,20);
 		muntenFrequentieCheckBox.addActionListener(this);
 		muntenFrequentieCheckBox.setSelected(true);
 		optionsPanel.add(muntenFrequentieCheckBox);
 		
-		dobbelstenenRadio=new JRadioButton("Dobbelstenen");
+		dobbelstenenRadio=new JRadioButton(StatSim.rb.getString("dice"));
 		dobbelstenenRadio.setLocation(10,130);
 		dobbelstenenRadio.setSize(200,20);
 		dobbelstenenRadio.addActionListener(this);
 		optionsPanel.add(dobbelstenenRadio);
 		
-		dobbelstenenInstellingenCheckBox = new JCheckBox("Instellingen");
+		dobbelstenenInstellingenCheckBox = new JCheckBox(StatSim.rb.getString("settings"));
 		dobbelstenenInstellingenCheckBox.setLocation(30,150);
 		dobbelstenenInstellingenCheckBox.setSize(200,20);
 		dobbelstenenInstellingenCheckBox.addActionListener(this);
 		dobbelstenenInstellingenCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenInstellingenCheckBox);
 		
-		dobbelstenenResultatenCheckBox = new JCheckBox("Resultaten");
+		dobbelstenenResultatenCheckBox = new JCheckBox(StatSim.rb.getString("results"));
 		dobbelstenenResultatenCheckBox.setLocation(30,170);
 		dobbelstenenResultatenCheckBox.setSize(200,20);
 		dobbelstenenResultatenCheckBox.addActionListener(this);
 		dobbelstenenResultatenCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenResultatenCheckBox);
 		
-		dobbelstenenGrafiekCheckBox = new JCheckBox("Grafiek");
+		dobbelstenenGrafiekCheckBox = new JCheckBox(StatSim.rb.getString("graph"));
 		dobbelstenenGrafiekCheckBox.setLocation(30,190);
 		dobbelstenenGrafiekCheckBox.setSize(200,20);
 		dobbelstenenGrafiekCheckBox.addActionListener(this);
 		dobbelstenenGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenGrafiekCheckBox);
 		
-		dobbelstenenTabelCheckBox = new JCheckBox("Tabel");
+		dobbelstenenTabelCheckBox = new JCheckBox(StatSim.rb.getString("table"));
 		dobbelstenenTabelCheckBox.setLocation(30,210);
 		dobbelstenenTabelCheckBox.setSize(200,20);
 		dobbelstenenTabelCheckBox.addActionListener(this);
 		dobbelstenenTabelCheckBox.setSelected(true);
 		optionsPanel.add(dobbelstenenTabelCheckBox);
 		
-		binomTrekkingRadio=new JRadioButton("Binominale trekking");
+		binomTrekkingRadio=new JRadioButton(StatSim.rb.getString("binominalDraw"));
 		binomTrekkingRadio.setLocation(10,230);
 		binomTrekkingRadio.setSize(200,20);
 		binomTrekkingRadio.addActionListener(this);
 		optionsPanel.add(binomTrekkingRadio);
 	
-		binomTrekkingInstellingenCheckBox = new JCheckBox("Instellingen");
+		binomTrekkingInstellingenCheckBox = new JCheckBox(StatSim.rb.getString("settings"));
 		binomTrekkingInstellingenCheckBox.setLocation(30,250);
 		binomTrekkingInstellingenCheckBox.setSize(200,20);
 		binomTrekkingInstellingenCheckBox.addActionListener(this);
 		binomTrekkingInstellingenCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingInstellingenCheckBox);
 	
-		binomTrekkingGrafiekCheckBox = new JCheckBox("Grafiek");
+		binomTrekkingGrafiekCheckBox = new JCheckBox(StatSim.rb.getString("graph"));
 		binomTrekkingGrafiekCheckBox.setLocation(30,270);
 		binomTrekkingGrafiekCheckBox.setSize(200,20);
 		binomTrekkingGrafiekCheckBox.addActionListener(this);
 		binomTrekkingGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingGrafiekCheckBox);
 		
-		binomTrekkingTabelCheckBox = new JCheckBox("Tabel");
+		binomTrekkingTabelCheckBox = new JCheckBox(StatSim.rb.getString("table"));
 		binomTrekkingTabelCheckBox.setLocation(30,290);
 		binomTrekkingTabelCheckBox.setSize(200,20);
 		binomTrekkingTabelCheckBox.addActionListener(this);
 		binomTrekkingTabelCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingTabelCheckBox);
 		
-		binomTrekkingFrequentieCheckBox = new JCheckBox("Frequentie");
+		binomTrekkingFrequentieCheckBox = new JCheckBox(StatSim.rb.getString("frequency"));
 		binomTrekkingFrequentieCheckBox.setLocation(30,310);
 		binomTrekkingFrequentieCheckBox.setSize(200,20);
 		binomTrekkingFrequentieCheckBox.addActionListener(this);
 		binomTrekkingFrequentieCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingFrequentieCheckBox);
 		
-		binomTrekkingRoosterCheckBox = new JCheckBox("Rooster");
+		binomTrekkingRoosterCheckBox = new JCheckBox(StatSim.rb.getString("grid"));
 		binomTrekkingRoosterCheckBox.setLocation(30,330);
 		binomTrekkingRoosterCheckBox.setSize(200,20);
 		binomTrekkingRoosterCheckBox.addActionListener(this);

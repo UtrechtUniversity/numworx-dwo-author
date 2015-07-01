@@ -26,6 +26,10 @@ public class StatSim extends Applet implements ScormAppletIF, WiskOpdrApplet {
 	
 	public StatSim(Locale language) {	
 		rb = ResourceBundle.getBundle("fi.statsim.text.Text",language);
+
+		//Locale language1 = new Locale ("en", "");
+		//rb = ResourceBundle.getBundle("fi.statsim.text.Text",language1);
+
 	}
 	
 	public StatSim()	{	

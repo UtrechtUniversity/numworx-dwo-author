@@ -46,7 +46,12 @@ public class Text_en extends java.util.ListResourceBundle
             {   "grid", "Grid" },
             {   "execute", "Execute" },
             {   "erase", "Erase results" },
-            {   "execute1", "Execute" }
+            {   "execute1", "Execute" },
+            {   "coins", "Coins" },
+            {   "table", "Table" },
+            {   "dice", "Dice" },
+            {   "binominalDraw", "Binominal draw" },
+            {   "grid", "Grid" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....
