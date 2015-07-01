@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -1123,6 +1125,8 @@ System.out.println("set: h contains vv");
 		Hashtable h = new Hashtable();
 		
 		Vector vlakdelenVector = new Vector();
+		//ArrayList<Map<String,Object>> vlakdelenList = new ArrayList<Map<String,Object>>();
+		
 		for (int i = 0; i < tekenPanel.aantalVlakdelen; i++)
 		{	Hashtable hv = new Hashtable();
 			hv.put("fractielType", new Integer(tekenPanel.vlakdelen[i].fractielType));
@@ -1130,7 +1134,9 @@ System.out.println("set: h contains vv");
 			hv.put("aantalPuntenPerZijde", new Integer(tekenPanel.vlakdelen[i].aantalPuntenPerZijde));
 			hv.put("positiex", new Double(tekenPanel.vlakdelen[i].draaipunt.x));
 			hv.put("positiey", new Double(tekenPanel.vlakdelen[i].draaipunt.y));
+			//Color kleur = tekenPanel.vlakdelen[i].kleur;
 			hv.put("kleur", tekenPanel.vlakdelen[i].kleur);
+			//hv.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
 			hv.put("orientatie", new Double(tekenPanel.vlakdelen[i].orientatie));
 			hv.put("nieuw", new Boolean(tekenPanel.vlakdelen[i].nieuw));
 			hv.put("beginnummer", new Integer(tekenPanel.vlakdelen[i].beginnummer));
@@ -1140,24 +1146,31 @@ System.out.println("set: h contains vv");
 			hv.put("volgorde", new Integer(tekenPanel.volgorde[i]));
 			
 			Vector hoekpuntenVector = new Vector();
+			//ArrayList<Double> hoekpuntenXList = new ArrayList<Double>();
+			//ArrayList<Double> hoekpuntenYList = new ArrayList<Double>();
 			for (int j = 0; j < tekenPanel.vlakdelen[i].aantalPunten + 1; j++)
 			{	hoekpuntenVector.addElement(
-					
 					// zonder plakken
 					new Punt(tekenPanel.vlakdelen[i].hoekpunten[j].x, tekenPanel.vlakdelen[i].hoekpunten[j].y));
-			
 					// met plakken
 					//tekenPanel.vlakdelen[i].hoekpunten[j]);
+				//hoekpuntenXList.add(new Double(tekenPanel.vlakdelen[i].hoekpunten[j].x));
+				//hoekpuntenYList.add(new Double(tekenPanel.vlakdelen[i].hoekpunten[j].y));
+
 			}
 			hv.put("hoekpuntenVector", hoekpuntenVector);
+			//hv.put("hoekpuntenXList", hoekpuntenXList);
+			//hv.put("hoekpuntenYList", hoekpuntenYList);
 
 //System.out.println("get: hv = " + hoekpuntenVector.size());			
 			
 			vlakdelenVector.addElement(hv);
+			//vlakdelenList.add(hv);
 		}
 //System.out.println("get: vv = " + vlakdelenVector.size());
 
 		h.put("vlakdelenVector", vlakdelenVector);
+		//h.put("vlakdelenList", vlakdelenList);
 		
 		return h;
 		
@@ -1182,7 +1195,7 @@ System.out.println("set: h contains vv");
 		h.put("dodekagons", new Boolean(dodekagons));
 		
 		Vector vlakdelenVector = new Vector();
-		
+		ArrayList<Map<String,Object>> vlakdelenList = new ArrayList<Map<String,Object>>();
 		for (int i = 0; i < tekenPanel.aantalVlakdelen; i++)
 		{	Hashtable hv = new Hashtable();
 			hv.put("fractielType", new Integer(tekenPanel.vlakdelen[i].fractielType));
@@ -1191,6 +1204,8 @@ System.out.println("set: h contains vv");
 			hv.put("positiex", new Double(tekenPanel.vlakdelen[i].draaipunt.x));
 			hv.put("positiey", new Double(tekenPanel.vlakdelen[i].draaipunt.y));
 			hv.put("kleur", tekenPanel.vlakdelen[i].kleur);
+			Color kleur = tekenPanel.vlakdelen[i].kleur;
+			hv.put("kleurgwt", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
 			hv.put("orientatie", new Double(tekenPanel.vlakdelen[i].orientatie));
 			hv.put("nieuw", new Boolean(tekenPanel.vlakdelen[i].nieuw));
 			hv.put("beginnummer", new Integer(tekenPanel.vlakdelen[i].beginnummer));
@@ -1200,24 +1215,30 @@ System.out.println("set: h contains vv");
 			hv.put("volgorde", new Integer(tekenPanel.volgorde[i]));
 			
 			Vector hoekpuntenVector = new Vector();
+			ArrayList<Double> hoekpuntenXList = new ArrayList<Double>();
+			ArrayList<Double> hoekpuntenYList = new ArrayList<Double>();
 			for (int j = 0; j < tekenPanel.vlakdelen[i].aantalPunten + 1; j++)
 			{	hoekpuntenVector.addElement(
-					
-					// zonder plakken
-					new Punt(tekenPanel.vlakdelen[i].hoekpunten[j].x, tekenPanel.vlakdelen[i].hoekpunten[j].y));
-			
-					// met plakken
-					//tekenPanel.vlakdelen[i].hoekpunten[j]);
+				// zonder plakken
+				new Punt(tekenPanel.vlakdelen[i].hoekpunten[j].x, tekenPanel.vlakdelen[i].hoekpunten[j].y));
+				// met plakken
+				//tekenPanel.vlakdelen[i].hoekpunten[j]);
+				hoekpuntenXList.add(new Double(tekenPanel.vlakdelen[i].hoekpunten[j].x));
+				hoekpuntenYList.add(new Double(tekenPanel.vlakdelen[i].hoekpunten[j].y));
 			}
 			hv.put("hoekpuntenVector", hoekpuntenVector);
+			hv.put("hoekpuntenXList", hoekpuntenXList);
+			hv.put("hoekpuntenYList", hoekpuntenYList);
 
 //System.out.println("get: hv = " + hoekpuntenVector.size());			
 			
 			vlakdelenVector.addElement(hv);
+			vlakdelenList.add(hv);
 		}
 //System.out.println("get: vv = " + vlakdelenVector.size());
 
 		h.put("vlakdelenVector", vlakdelenVector);
+		h.put("vlakdelenList", vlakdelenList);
 		
 		
 		return h;
