@@ -1365,16 +1365,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 
 		else if(interactiePanel!=null)//Ook nodig bij andere interactiePanels?????
 		{	launchData.put("studentEditor", new Boolean(studentEditor));
-			if(crossWidgetId != null)
-				launchData.put("crossWidgetId", crossWidgetId);
-			if(!connections.isEmpty())
-				launchData.put("connections", connections);
-			if(subscriptions != null && !subscriptions.isEmpty())
-				launchData.put("subscriptions", subscriptions);
 			
 			Hashtable interactiePanelLaunchState = interactiePanel.getEditState();
 			if(studentEditor && interactiePanelLaunchState!=null)launchData.put("interactiePanelLaunchState", interactiePanelLaunchState);
 		}
+		if(crossWidgetId != null)
+			launchData.put("crossWidgetId", crossWidgetId);
+		if(!connections.isEmpty())
+			launchData.put("connections", connections);
+		if(subscriptions != null && !subscriptions.isEmpty())
+			launchData.put("subscriptions", subscriptions);
 
 		return launchData;
 	}
@@ -2242,7 +2242,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				interactiePanel.start();
 				showDialog(true);
 			}
-			else  if((e.getSource()==afdekPanel || e.getSource()==resizePanel && e.isShiftDown()) &&((TekstVakPanel)interactiePanel).isZwevend())
+			else  if((e.getSource()==afdekPanel || e.getSource()==resizePanel && e.isShiftDown()) &&((TekstVakPanel)interactiePanel).isZwevend() &&  !getBasisTekstVak().crossWidgetViewActief())
 			{
 				sleepModus = true;
 				if(anchor!=null)
@@ -2266,7 +2266,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					
 				}
 			}
-			else  if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&((TekstVakPanel)interactiePanel).isIpSleepbaar())
+			else  if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&((TekstVakPanel)interactiePanel).isIpSleepbaar()&&  !getBasisTekstVak().crossWidgetViewActief())
 			{	//if(getParent()instanceof TekstVak)
 				//	((TekstVak)getParent()).add(this,0);
 				if(getParent()instanceof TekstVak)
@@ -2280,6 +2280,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 			else  if(e.getSource()==afdekPanel)
 			{
+				if(e.isShiftDown() && getBasisTekstVak().crossWidgetViewActief())
+				{	if(selectable && interactiePanel instanceof CBookAware)
+					{	TekstInteractiePanelVak.potentialSource = this;
+						//System.out.println("potentialSource = this;");
+						setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					}
+				}
 				
 				if(selectable)
 				{	tekstVak.zetTekstFocus();
@@ -2305,8 +2312,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				
 			}
 		}
-			
-		
 	}
 /**
  * Laat het editInteractionPanel zien 
@@ -2379,8 +2384,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(!editMode || studentEditor)return;
 	
 		if(interactiePanel instanceof TekstVakPanel)
-		{	((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
-			if(getParent()!=null && getParent().getParent()instanceof TekstVak)((TekstVak)getParent().getParent()).layoutTekst();
+		{	
+			if(editInteractiePanelDialog==null && connected && potentialSource != null && potentialDest != null)
+			{
+				doConnect();
+			} 
+			else
+			{ 	((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
+				if(getParent()!=null && getParent().getParent()instanceof TekstVak)((TekstVak)getParent().getParent()).layoutTekst();
+				
+			}
 			return;
 		}
 		

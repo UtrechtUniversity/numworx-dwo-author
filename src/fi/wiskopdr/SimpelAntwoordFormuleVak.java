@@ -819,7 +819,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		{
 			Map map = (Map)event.getParameters();
 			if(map!=null)
-			{	double waarde = ((Double)map.get("value")).doubleValue();
+			{	double waarde = ((Number)map.get("value")).doubleValue();
 				new Expressie();
 				String doubleString = Expressie.df.format(waarde);	
 				doubleString = "$f" + doubleString + "@";
@@ -857,7 +857,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT , "double", "expression"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,"index", "double", "expression"};
 		return s;
 	}
 

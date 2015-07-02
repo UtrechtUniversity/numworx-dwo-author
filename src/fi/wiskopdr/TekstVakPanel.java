@@ -2148,7 +2148,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		cbookEventHandler.fire("double.xcoordinate",mapx);
 		
 		Map<String,Object> mapy = new HashMap<String,Object>();
-		mapy.put("name", "xcoordinate");
+		mapy.put("name", "(double)xcoordinate");
 		mapy.put("value", locationY);
 		cbookEventHandler.fire("double.ycoordinate",mapy);
 	}
