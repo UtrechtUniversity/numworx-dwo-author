@@ -481,8 +481,65 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
     	        		}
     		        }
         			
-        			System.out.println(""+v[h].toString());
+        			String[][] tekenParen = {{"<","<"},{"<","\u2264"},{"\u2264","<"},{"\u2264","\u2264"},{">",">"},{"\u2265",">"},{">","\u2265"},{"\u2265","\u2265"}};
         			
+        			
+        			System.out.println(""+v[h].toString());
+        			boolean[] stappenJuist = new boolean[v[h].geefAantal()];
+        			for(int k=0 ; k<stappenJuist.length ; k++)
+        			{
+        				stappenJuist[k] = false;
+        				if(v[h].geefVergelijking(k).geefVergTeken().equals(">") 
+        						|| v[h].geefVergelijking(k).geefVergTeken().equals("<")
+        						|| v[h].geefVergelijking(k).geefVergTeken().equals("\u2265") //groter dan of gelijk aan
+        						|| v[h].geefVergelijking(k).geefVergTeken().equals("\u2264")
+        						|| v[h].geefVergelijking(k).geefVergTeken().equals("~")) //kleiner dan of gelijk aan
+            			{	Expressie expL = v[h].geefVergelijking(k).geefExpLinks();
+            				Expressie expR = v[h].geefVergelijking(k).geefExpRechts();
+            				if(expL.isWaarde() && expR.isWaarde() && v[h].geefVergelijking(k).geefVergTeken().equals("<"))
+            					stappenJuist[k] = expL.geefWaarde() < expR.geefWaarde()-0.000000001;
+            				else if(expL.isWaarde() && expR.isWaarde() && v[h].geefVergelijking(k).geefVergTeken().equals(">"))
+            					stappenJuist[k] = expL.geefWaarde() > expR.geefWaarde()+0.000000001;
+            				else if(expL.isWaarde() && expR.isWaarde() && v[h].geefVergelijking(k).geefVergTeken().equals("\u2264"))
+            					stappenJuist[k] = expL.geefWaarde() < expR.geefWaarde()+0.000000001;
+            				else if(expL.isWaarde() && expR.isWaarde() && v[h].geefVergelijking(k).geefVergTeken().equals("\u2265"))
+            					stappenJuist[k] = expL.geefWaarde() > expR.geefWaarde()-0.000000001;
+            				else if(v[h].geefVergelijking(k).geefVergTeken().equals("~"))
+            				{	Expressie e1 = expR.kind2.kind1;
+            					Expressie e2 = expL;
+            					Expressie e3 = expR.kind2.kind2;
+            					if(e1.isWaarde() && e2.isWaarde() && e3.isWaarde())
+            					{
+            						if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 0)) //{"<","<"}
+            							stappenJuist[k] = e1.geefWaarde() < e2.geefWaarde()-0.000000001 && e2.geefWaarde() < e3.geefWaarde()-0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 1)) //{"<","\u2264"}
+            							stappenJuist[k] = e1.geefWaarde() < e2.geefWaarde()-0.000000001 && e2.geefWaarde() < e3.geefWaarde()+0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 2)) //{"\u2264","<"}
+            							stappenJuist[k] = e1.geefWaarde() < e2.geefWaarde()+0.000000001 && e2.geefWaarde() < e3.geefWaarde()-0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 3)) //{"\u2264","\u2264"}
+            							stappenJuist[k] = e1.geefWaarde() < e2.geefWaarde()+0.000000001 && e2.geefWaarde() < e3.geefWaarde()+0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 4)) //{">",">"}
+            							stappenJuist[k] = e1.geefWaarde() > e2.geefWaarde()+0.000000001 && e2.geefWaarde() > e3.geefWaarde()+0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 5)) //{"\u2265",">"}
+            							stappenJuist[k] = e1.geefWaarde() > e2.geefWaarde()-0.000000001 && e2.geefWaarde() > e3.geefWaarde()+0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 6)) //{">","\u2265"}
+            							stappenJuist[k] = e1.geefWaarde() > e2.geefWaarde()+0.000000001 && e2.geefWaarde() > e3.geefWaarde()-0.000000001;
+            						else if(Algebra.isGelijkDouble(expR.kind1.geefWaarde(), 7)) //{"\u2265","\u2265"}
+            							stappenJuist[k] = e1.geefWaarde() > e2.geefWaarde()-0.000000001 && e2.geefWaarde() > e3.geefWaarde()-0.000000001;
+            					}
+            				}
+                				
+            			}
+            			else stappenJuist[k] = v[h].geefVergelijking(k).isOplossing(new BasisExpressie(1.212131415),"q");
+        				
+        				if(k==0)
+        					stapJuist = stappenJuist[k];
+        				else
+        					stapJuist = stapJuist || stappenJuist[k];
+        			}
+        			
+        			
+        			/*
         			if(v[h].geefAantal()==1 && (v[h].geefVergelijking(0).geefVergTeken().equals(">") || v[h].geefVergelijking(0).geefVergTeken().equals("<")))
         			{	// een nog zwakke manier om ongelijkheden te checken als de expressies nummeriek zijn en bij een enkelvoudige vergelijking
         				Expressie expL = v[h].geefVergelijking(0).geefExpLinks();
@@ -493,7 +550,9 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
         					stapJuist = expL.geefWaarde() > expR.geefWaarde()+0.000000001;
         			}
         			else stapJuist = v[h].isOplossing(new BasisExpressie(1.212131415),"q");
+        			*/
         			juist = juist && stapJuist;
+        			
         			if(!juist && locationStrings==null) break;
         			
         			if(locationStrings!=null){
