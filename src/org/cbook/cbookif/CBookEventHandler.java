@@ -36,8 +36,8 @@ public class CBookEventHandler {
 			listeners.put(command, list = new HashSet<CBookEventListener>());
 		}
  		if(listener != null) list.add(listener);
- 		System.out.println("list: "+list.toString());
- 		System.out.println("listeners: "+listeners.toString());
+ 		//System.out.println("list: "+list.toString());
+ 		//System.out.println("listeners: "+listeners.toString());
 	}
 
 	/**
@@ -54,6 +54,10 @@ public class CBookEventHandler {
  		list.remove(listener);
 	}
 	
+	public boolean hasListeners()
+	{	return !listeners.isEmpty();
+	}
+	
 	/**
 	 * Fire a CBookEvent. Invoke all interested listeners.
 	 * @param event the event
@@ -63,12 +67,12 @@ public class CBookEventHandler {
 		System.out.println("handlerFired");
 		HashSet<CBookEventListener> set = new HashSet<CBookEventListener>();
 		Set<CBookEventListener> list = listeners.get(event.getCommand());
-		System.out.println("list: "+list);
-		System.out.println("event.getCommand(): "+event.getCommand());
+		//System.out.println("list: "+list);
+		//System.out.println("event.getCommand(): "+event.getCommand());
 		if(list != null) set.addAll(list);
 		list = listeners.get(null);
 		if(list != null) set.addAll(list);
-		System.out.println("set: "+set.toString());
+		//System.out.println("set: "+set.toString());
 		for (Iterator<CBookEventListener> iterator = set.iterator(); iterator.hasNext();) {
 			System.out.println("handlertoListener");
 			CBookEventListener l = iterator.next();

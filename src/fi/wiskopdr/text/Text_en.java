@@ -678,7 +678,10 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_vergelijking", "equation" },
 				{"CBA_double", "nummerical value"},
 				{"CBA_expression", "expression"},
-				{"CBA_equation", "equation"}
+				{"CBA_equation", "equation"},
+				{"CBA_text", "text"},
+				
+				{"oplossingenLabel", "Solutions"},
 		};
 }
 

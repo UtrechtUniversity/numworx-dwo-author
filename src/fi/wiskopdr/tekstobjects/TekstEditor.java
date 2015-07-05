@@ -3,11 +3,17 @@ package fi.wiskopdr.tekstobjects;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstEditorEditPanel;
@@ -15,10 +21,11 @@ import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class TekstEditor extends JLayeredPane implements TabletOwner, InteractiePanel, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder
+public class TekstEditor extends JLayeredPane implements TabletOwner, InteractiePanel, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder, CBookAware
 {	
 	private boolean resized;
 	
@@ -61,6 +68,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     private boolean tabletAdded;
     
     private boolean studentEditor;
+    private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
+	private JButton sendCommandButton;
 	
     public TekstEditor()
 	{	this(true,true, true);
@@ -706,6 +715,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				enlarged = true;
 			}
 		}
+		else if(e.getSource()==sendCommandButton)
+		{
+			String text = getText();
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("content", text);
+			cbookEventHandler.fire("text",map);
+		}
 	}
 	
 	public void setEnlarged(boolean b)
@@ -1135,4 +1151,62 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
  		}
  	}
  	//
+ 	
+ 	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("text"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	
+				
+				
+			}
+		}
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		if(sendCommandButton==null)
+		{
+			sendCommandButton = new JButton("Send");
+			sendCommandButton.setBounds(basisPanel.getWidth()-80,basisPanel.getHeight()-25, 75, 20 );
+			sendCommandButton.addActionListener(this);
+			basisPanel.add(sendCommandButton,BorderLayout.SOUTH);
+			
+		}
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		if(cbookEventHandler.hasListeners())
+		{
+			
+		}
+		String[] commands = {"text"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"text"};
+		return commands;
+	}
+	
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 }

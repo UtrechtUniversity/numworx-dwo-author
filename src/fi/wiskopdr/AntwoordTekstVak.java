@@ -12,16 +12,25 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.beans.stringutils.StringUtils;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.javalogoweb.JavaLogoWeb;
+import fi.nabouwenaanzichten.NabouwenAanzichten;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -35,7 +44,7 @@ import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
-public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder
+public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
 {
 	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 
@@ -98,6 +107,9 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	private Vector attempts;
 	
 	static boolean fontOvererving;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
+	private JButton sendCommandButton;
 	
 	public static void zetFontOverervingForm(boolean b)
 	{	fontOvererving = b;
@@ -1059,4 +1071,51 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		}
 	}
 	//
+
+	// CrossWidget Communivcation doet nog niets
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("text"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	
+				
+				
+			}
+		}
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"text"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"text"};
+		return commands;
+	}
+	
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 }

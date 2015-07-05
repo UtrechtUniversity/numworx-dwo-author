@@ -716,6 +716,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_equation", "vergelijking"},
 				{"CBA_double.xcoordinate", "x-coordinaat"},
 				{"CBA_double.ycoordinate", "y-coordinaat"},
+				{"CBA_text", "tekst"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 		};

@@ -518,7 +518,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 						Connector c = iter.next();
 						String sender = c.getKey();
 						TekstInteractiePanelVak tipv = manager.getWidgetContainer(sender);
-						if (tipv.interactiePanel instanceof CBookAware) 
+						if (tipv != null && tipv.interactiePanel instanceof CBookAware) 
 						{
 							CBookAware senderPanel = (CBookAware) tipv.interactiePanel;
 							String commandSender = c.get(sender);
