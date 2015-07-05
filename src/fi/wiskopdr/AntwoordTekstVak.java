@@ -29,8 +29,6 @@ import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
-import fi.javalogoweb.JavaLogoWeb;
-import fi.nabouwenaanzichten.NabouwenAanzichten;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleParser;
