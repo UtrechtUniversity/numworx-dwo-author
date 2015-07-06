@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import fi.beans.lwmobjects_swing.LWMBufferPanel;
@@ -607,6 +608,40 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		
 	}
 	
+	private static int[] toIntArray(Object object)
+	{
+		if (object == null || object instanceof int[])
+			return (int[]) object;
+		if (object instanceof List)
+		{
+			List c = (List) object;
+			int[] result = new int[c.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = ((Number) c.get(i)).intValue();
+			}
+			return result;
+		}
+		return null;
+	}
+
+	private static double[] toDoubleArray(Object object)
+	{
+		if (object == null || object instanceof double[])
+			return (double[]) object;
+		if (object instanceof List)
+		{
+			List c = (List) object;
+			double[] result = new double[c.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = ((Number) c.get(i)).doubleValue();
+			}
+			return result;
+		}
+		return null;
+	}
+	
 	public void setState(Hashtable h)
 	{
 		
@@ -620,11 +655,11 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		boolean showEenheden = true;
 		double[] gewichten = null;
 		
-		if(h.containsKey("aantalFruitObjects")) aantalFruitObjects = ((Integer)h.get("aantalFruitObjects")).intValue();
-		if(h.containsKey("stukFruitX")) stukFruitX = (int[])h.get("stukFruitX");
-		if(h.containsKey("containerNr")) containerNr = (int[])h.get("containerNr");
+		if(h.containsKey("aantalFruitObjects")) aantalFruitObjects = ((Number)h.get("aantalFruitObjects")).intValue();
+		if(h.containsKey("stukFruitX")) stukFruitX = toIntArray(h.get("stukFruitX"));
+		if(h.containsKey("containerNr")) containerNr = toIntArray(h.get("containerNr"));
 		if(h.containsKey("showEenheden")) showEenheden = ((Boolean)h.get("showEenheden")).booleanValue();
-		if(h.containsKey("gewichten")) gewichten = (double[])h.get("gewichten");
+		if(h.containsKey("gewichten")) gewichten = toDoubleArray(h.get("gewichten"));
 		
 		this.aantalFruitObjects = aantalFruitObjects;
 		this.showEenheden = showEenheden;
