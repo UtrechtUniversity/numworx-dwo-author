@@ -1169,7 +1169,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	@Override
 	public void addCBookEventListener(CBookEventListener listener, String command) {
 		cbookEventHandler.addCBookEventListener(listener, command);
-		if(sendCommandButton==null)
+		if(sendCommandButton==null 
+				&& cbookEventHandler.hasListeners("text") // Alleen als er 'text' messages kunnen worden ontvangen
+		)
 		{
 			sendCommandButton = new JButton("Send");
 			sendCommandButton.setBounds(basisPanel.getWidth()-80,basisPanel.getHeight()-25, 75, 20 );
@@ -1188,10 +1190,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 
 	@Override
 	public String[] getSendCmds() {
-		if(cbookEventHandler.hasListeners())
-		{
-			
-		}
+//		if(cbookEventHandler.hasListeners()) Peter, dit kan nooit werken! Wim
+//		{
+//			
+//		}
 		String[] commands = {"text"};
 		return commands;
 	}

@@ -54,9 +54,24 @@ public class CBookEventHandler {
  		list.remove(listener);
 	}
 	
+	/**
+	 * 
+	 * @return true (most of the time)
+	 * @deprecated use {@link #hasListeners(String)}
+	 */
 	public boolean hasListeners()
 	{	return !listeners.isEmpty();
 	}
+	
+	/**
+	 * check for optimalization if a command has listeners.
+	 * @param command String
+	 * @return bollean command has listeners
+	 */
+	public boolean hasListeners(String command) {
+		return listeners.containsKey(command) || listeners.containsKey(null);
+	}
+	
 	
 	/**
 	 * Fire a CBookEvent. Invoke all interested listeners.
