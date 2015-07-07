@@ -520,7 +520,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		aftrekPopupTF.setVisible(false);
 		interactionOptionsPanel.add(aftrekPopupTF);
 		
-		aftrekPopupLabel = new JLabel("Puntenaftrek");
+		aftrekPopupLabel = new JLabel(WiskOpdr.rb.getString("TVEP_puntenaftrek"));
 		aftrekPopupLabel.setBounds(165,220,70,20);
 		aftrekPopupLabel.setFont(ifFont);
 		aftrekPopupLabel.setVisible(false);
@@ -571,14 +571,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		knopImageButton2.setVisible(false);
 		layoutOptionsPanel.add(knopImageButton2);
 		
-		posBeginRB = new JRadioButton("Knop links");
+		posBeginRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopLinks"));
 		posBeginRB.setBounds(20,440,200,20);
 		posBeginRB.addActionListener(this);
 		posBeginRB.setFont(ifFont);
 		posBeginRB.setVisible(false);
 		layoutOptionsPanel.add(posBeginRB);
 		
-		posEindRB = new JRadioButton("Knop rechts");
+		posEindRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopRechts"));
 		posEindRB.setBounds(20,460,200,20);
 		posEindRB.addActionListener(this);
 		posEindRB.setFont(ifFont);
@@ -586,7 +586,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		posEindRB.setVisible(false);
 		layoutOptionsPanel.add(posEindRB);
 		
-		posNaTekstRB = new JRadioButton("Knop achter de tekst");
+		posNaTekstRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopAchterTekst"));
 		posNaTekstRB.setBounds(20,480,200,20);
 		posNaTekstRB.addActionListener(this);
 		posNaTekstRB.setFont(ifFont);

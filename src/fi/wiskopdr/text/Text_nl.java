@@ -446,6 +446,9 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_callOut" , "Commentaar ballon"},
                 {"TVEP_vulHoogte" , "Hoogte opvullen"},
                 {"TVEP_inklapbaar" , "In-/uitklapbaar"},
+                {"TVEP_knopLinks" , "Knop links"},
+                {"TVEP_knopRechts" , "Knop rechts"},
+                {"TVEP_knopAchterTekst" , "Knop achter tekst"},
                 {"TVEP_uitwerkingenPopup" , "Uitwerking"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Linkobject"},
@@ -453,6 +456,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_defaultBijNull" , "default )"},
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
+                {"TVEP_puntenaftrek", "Puntenaftrek"},
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},

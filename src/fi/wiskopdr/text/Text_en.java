@@ -400,7 +400,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"TVEP_zwevend" , "Floating above text"},
 				{"TVEP_anderFont" , "Other font"},
 				{"TVEP_rondingHoeken" , "Rounding corners"},
-				{"TVEP_rotatieHoek" , "Rotatioin angle"},
+				{"TVEP_rotatieHoek" , "Rotation angle"},
 				{"TVEP_centreerHor" , "Center horizontally"},
 				{"TVEP_centreerVert" , "Center vertically"},
 				{"TVEP_pasAanH" , "Fit height"},
@@ -430,6 +430,9 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_callOut" , "Call out box"},
                 {"TVEP_vulHoogte" , "Fill height"},
                 {"TVEP_inklapbaar" , "Fold/unfold"},
+                {"TVEP_knopLinks" , "Button left"},
+                {"TVEP_knopRechts" , "Button right"},
+                {"TVEP_knopAchterTekst" , "Button behind text"},
                 {"TVEP_uitwerkingenPopup" , "Steps"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Link object"},
@@ -437,6 +440,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_defaultBijNull" , "default  )"},
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
+                {"TVEP_puntenaftrek" , "Deduction of points"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},
