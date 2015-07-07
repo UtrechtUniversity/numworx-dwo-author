@@ -2,6 +2,8 @@ package fi.wiskopdr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Hashtable;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,7 +20,7 @@ import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
-public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener
+public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener
 {
 	private FormuleEditor formuleEditor;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);
@@ -79,6 +81,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		aantalSelectablesTF = new JTextField("0");
 		aantalSelectablesTF.setBounds(190,50,40,20);
 		aantalSelectablesTF.addActionListener(this);
+		aantalSelectablesTF.addFocusListener(this);
 		add(aantalSelectablesTF);
 		
 		maxScoreLabel = new JLabel(WiskOpdr.rb.getString("score"));//Score");
@@ -393,5 +396,23 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 
 	    if(imageDialog!=null)
 	        imageDialog.setVisible(false);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if(e.getSource()==aantalSelectablesTF)
+		{
+			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(aantalSelectablesTF.getText()));
+			if(aantal != aantalSelectables)
+			{	verwijderCheckboxes();
+				aantalSelectables = aantal;
+				maakCheckboxes();
+			}
+		}
 	}
 }
