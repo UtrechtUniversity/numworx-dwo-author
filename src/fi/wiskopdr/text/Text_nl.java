@@ -268,7 +268,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"geomAlgebra1dIpLabel" , "Geom.algebra 1d"},
                 {"normaleVerdelingIpLabel" , "Normale verdeling"},
                 {"mp3PlayerIpLabel" , "Mp3-player"},
-                {"binominaleVerdelingIpLabel" , "Binominale verdeling"},
+                {"binominaleVerdelingIpLabel" , "Binomiale verdeling"},
                 {"getallenlijnIpLabel" , "Getallenlijn (sprong)"},
                 {"tekenVeelvlakIpLabel" , "Tekenveelvlak"},
                 {"mozaikIpLabel" , "Mozaik"},

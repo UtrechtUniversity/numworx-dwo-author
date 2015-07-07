@@ -250,8 +250,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"geomAlgebra1dIpLabel" , "Geom.algebra 1d"},
 				{"normaleVerdelingIpLabel" , "Normal distribution"},
 				{"mp3PlayerIpLabel" , "Mp3-player"},
-				{"binominaleVerdelingIpLabel" , "Binominal distribution"},
-				{"getallenlijnIpLabel" , "Numberline (jump)"},
+				{"binominaleVerdelingIpLabel" , "Binomial distribution"},
+				{"getallenlijnIpLabel" , "Number line (jump)"},
 				{"tekenVeelvlakIpLabel" , "Drawing in space"},
 				{"mozaikIpLabel" , "Mozaik"},
 				{"veelvlakkenIpLabel" , "Polyhedra"},
@@ -274,7 +274,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"draabankIpLabel" , "[test] Turning lathe"}, 
 				{"waarmakersIpLabel" , "[test] Truemakers"},
 				{"statSimIpLabel" , "[test] Statistics Simulations"},
-				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
+				{"stelselVakLabel", "[test] System of equations"},
 	            {"javaLogoIpLabel", "JavaLogo"},
 
 				
