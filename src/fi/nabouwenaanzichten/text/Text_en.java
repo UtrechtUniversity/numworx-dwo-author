@@ -17,6 +17,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "opdrachtKnopLabel2" , "Start" },
 				{ "ipRegel1Label" , "Build" },
 				{ "ipRegel2Label" , "Break down" },
+				{ "bouwOpdracht" , "build" },
+				{ "sloopOpdracht" , "break" },
 				{ "fig1" , "Figure 1" },
 				{ "fig2" , "Figure 2" },
 				{ "fig3" , "Figure 3" },
@@ -116,6 +118,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "maxScoreTekst" , "Maximum score" },
 				
 				{ "blokjesTekst" , "cube(s)" },
+				
+				{ "CBA_blockBuilding", "block building"},
+				{ "CBA_text.buildingProgram", "building program"},
         };
 }
 

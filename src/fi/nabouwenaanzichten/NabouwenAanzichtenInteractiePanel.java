@@ -7,12 +7,15 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.beans.scorm.*;
 import fi.beans.copyright.*;
 import fi.beans.base64code.*;
-
 import fi.beans.appletutil.*;
-
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -22,7 +25,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  */
 
 public class NabouwenAanzichtenInteractiePanel extends JPanel 
-	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener
+	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener, CBookAware
 {	
 	protected SCORM12APIInterface api;
 	
@@ -111,6 +114,8 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	private int mode;
 	
 	NabouwenAanzichtenInteractieEditPanel naiep;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	
 	public NabouwenAanzichtenInteractiePanel()
 	{	setLayout(null);
@@ -2128,6 +2133,11 @@ newViewer = false;
 */		
 		if (docentV != null && docentV.isVisible())
 			docentV.tekenOpnieuw();
+		
+		boolean[][][]  booleanKR = kr.geefBooleanRooster();
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		map1.put("booleanKR", booleanKR);
+		cbookEventHandler.fire("blockBuilding",map1);
 	}
 	
 	
@@ -2721,5 +2731,70 @@ newViewer = false;
     public void addActionListener(ActionListener al)
     {	listeners.addElement(al);
     }
+
+    @Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"blockBuilding"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"blockBuilding", "text.buildingProgram"};
+		return commands;
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("blockBuilding"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	boolean[][][] booleanKR = (boolean[][][])map.get("booleanKR");
+				kr = new KubusRooster(booleanKR, 1); 
+				v.zetKubusRooster(kr);
+				vp.zetKubusRooster(kr);
+				na.setValue(kr.maxAantal);
+				kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));	
+			}
+			
+		}
+		if(command.startsWith("text.buildingProgram"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{
+				String programText = (String)map.get("content");
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				kr.maakLeeg();
+				Interpreter interpreter = new Interpreter(kr);
+				interpreter.execute(programText);
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				zetVeranderd();
+			}
+		}
+	}
+			
+	
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = NabouwenAanzichten.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 	
 }
