@@ -1229,6 +1229,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         			add((Component)interactiePanel,0);
         			if(volledigeBreedte)
         				setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);
+        			else
+        				setSize(breedte, hoogte);
         			interactiePanel.setEditState(interactiePanelLaunchState);
         			
         			
