@@ -419,9 +419,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		else if(soortInteractiePanel == 9)
 		{	interactieEditPanel = (new TekstVakPanel(manager)).getEditPanel();
 			breedteTF.setText("50");
-			hoogteTF.setText("25");
+			hoogteTF.setText("16");
 			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(50);
-	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(25);
+	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(16);
+	    	((TekstVakEditPanel) interactieEditPanel).addActionListener(this);
 		}
 		else if(soortInteractiePanel == 10)
 		{	interactieEditPanel = Geogebra3Panel.newEditPanel(getCrossWidgetId());
@@ -601,7 +602,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			} else 			
 				soortInteractiePanel = set[selectNr];
 		}
-		System.out.println(soortInteractiePanel + " " + soortInteractiePanelClass);
+		//System.out.println(soortInteractiePanel + " " + soortInteractiePanelClass);
 		
 		
 		breedte = new Integer(breedteTF.getText()).intValue();
@@ -681,7 +682,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	boolean b = volledigeBreedteCB.isSelected();
         	breedteTF.setVisible(!b);
         	breedteLabel.setVisible(!b);
-            
+        	if(!b && interactieEditPanel != null)
+        		interactieEditPanel.zetBreedte(Integer.parseInt(breedteTF.getText()));
         }
         else if(e.getSource()==soortAntwoordVakKeuze)
 		{	Hashtable oldInteractiePanelLaunchState = null;
@@ -749,6 +751,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
                 repaint();
             }
         }
+        else if(e.getSource()==interactieEditPanel && e.getActionCommand().equals("pasMaatAan"))
+        {
+        	interactieEditPanel.zetHoogte(Integer.parseInt(hoogteTF.getText()));
+        	interactieEditPanel.zetBreedte(Integer.parseInt(breedteTF.getText()));
+        	
+        }
 
         if(imageDialog!=null)
             imageDialog.hide();
@@ -796,6 +804,15 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
 	}*/
 
+    public int geefHoogte()
+    {
+    	return Integer.parseInt(hoogteTF.getText());
+    }
+    
+    public int geefBreedte()
+    {
+    	return Integer.parseInt(breedteTF.getText());
+    }
     
     public void focusLost(FocusEvent e)
     {

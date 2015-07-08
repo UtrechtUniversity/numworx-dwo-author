@@ -1164,7 +1164,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int bOud = getSize().width;
 		setSize(b, getSize().height);
 		//setTableBounds(b,getSize().height,bOud,getSize().height);
-
 		layoutTekst();
 		zetMaat();
 		repaint();

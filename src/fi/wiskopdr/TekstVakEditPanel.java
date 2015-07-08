@@ -209,7 +209,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		hoek = 0;
 		centerH = false;
 		centerV = false;
-		pasAanH = false;
+		pasAanH = true;
 		pasAanB = false;
 		selectable = false;
 		sleepbaar = false;
@@ -250,8 +250,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//buttonCB = maakCheckBox("Weergave via pop-up", 10,180,160,20, buttonOptie, layoutOptionsPanel);
 		centerHCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_centreerHor"), 10,175,160,20, centerH, layoutOptionsPanel);
 		centerVCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_centreerVert"), 10,200,160,20, centerV, layoutOptionsPanel);
-		pasAanHCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanH"), 10,225,120,20, centerH, layoutOptionsPanel);
-		pasAanBCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanB"), 150,225,120,20, centerV, layoutOptionsPanel);
+		pasAanHCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanH"), 10,225,120,20, pasAanH, layoutOptionsPanel);
+		pasAanBCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanB"), 150,225,120,20, pasAanB, layoutOptionsPanel);
 		selectableCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieObject"), 10,70,150,20, selectable, interactionOptionsPanel);
 		colorSelectionCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieKleur"), 160,70,100,20, selectable, interactionOptionsPanel);
 		sleepbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepObject"), 10,95,140,20, sleepbaar, interactionOptionsPanel);
@@ -1467,12 +1467,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(pasAanHCB))
 		{	pasAanH = pasAanHCB.isSelected();
 			tekstVakPanel.setEditState(getEditState());
-			repaint();
+			produceAction("pasMaatAan");
+		//	repaint();
 		}
 		if(e.getSource().equals(pasAanBCB))
 		{	pasAanB = pasAanBCB.isSelected();
 			tekstVakPanel.setEditState(getEditState());
-			repaint();
+			produceAction("pasMaatAan");
+		//	repaint();
 		}
 		if(e.getSource().equals(selectableCB))
 		{	selectable = selectableCB.isSelected();

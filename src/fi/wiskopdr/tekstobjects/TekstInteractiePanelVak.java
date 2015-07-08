@@ -896,11 +896,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(h.containsKey("connections")) connections = (List)h.get("connections");
         if(h.containsKey("subscriptions")) subscriptions = (Map) h.get("subscriptions");
         
-        if(volledigeBreedte)setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);        
-        else setSize(breedte, hoogte);
-        
-        setLocation(locationX,locationY);
-        
         this.currentSetNr = setNr;
         this.popup = popup;
         this.soortInteractiePanel = soortInteractiePanel;
@@ -1173,6 +1168,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			
 		}
         
+        //pas hier setSize om te zorgen dat maat vh interactiePanel ook meteen goed wordt gezet 
+        //(bijv belangrijk voor volledige breedte tekstvakpanel). 
+        if(volledigeBreedte)setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);        
+        else setSize(breedte, hoogte);
+        
+        setLocation(locationX,locationY);
+        
+        
+        
         boolean ipAdded = false;
         if(interactiePanel!=null) 
         {	interactiePanel.setBounds(0,0,getSize().width, getSize().height);
@@ -1219,10 +1223,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         		}
         		else
         		{	
-        			if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
-    	        	else interactiePanel.setBounds(0,0,breedte,hoogte);
+        			//if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
+    	        	//else interactiePanel.setBounds(0,0,breedte,hoogte);
+        			
         			add((Component)interactiePanel,0);
+        			if(volledigeBreedte)
+        				setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);
         			interactiePanel.setEditState(interactiePanelLaunchState);
+        			
         			
         		}	
         	}
