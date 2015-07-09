@@ -641,7 +641,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				this.tabPane.add(this.addViewTab, "+");
 			}
 			
-			DraggedTabListener listener = new DraggedTabListener(this.tabPane);
+			TabListener listener = new TabListener(this.tabPane);
 			this.tabPane.addMouseListener(listener);
 			// test syl: ook mouseMotion t.b.v. mouseDragged()
 			this.tabPane.addMouseMotionListener(listener);
@@ -815,17 +815,18 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	}
 
 	/**
-	 * class that handles tabs being dragged out of the JTabbedPane
+	 * Class that handles tabs being selected or dragged out of the JTabbedPane.
 	 * 
-	 * @author Manu Drijvers
+	 * @author Manu Drijvers, Sylvia van Borkulo
 	 * 
 	 */
-	public class DraggedTabListener implements MouseInputListener // MouseListener
+	public class TabListener implements MouseInputListener // MouseListener
 	{
 		private Point startPoint;
 		private Point currentPoint; // test syl
 		private boolean inDrag;
 		private int draggedTab;
+		private int selectedTab;
 		private ImageIcon draggedImage;
 
 		private JTabbedPane tabPane;
@@ -837,7 +838,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		 *            the DraggedTabListener will look for tabs being dragged
 		 *            out of this JTabbedPane
 		 */
-		public DraggedTabListener(JTabbedPane tabPane)
+		public TabListener(JTabbedPane tabPane)
 		{
 			this.tabPane = tabPane;
 			
@@ -866,13 +867,19 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		public void mousePressed(MouseEvent arg0)
 		{
 			int tab = this.tabPane.indexAtLocation(arg0.getPoint().x, arg0.getPoint().y);
-			//System.out.println("StatInteractiePanelView.mousePressed(): tab = " + tab);
+
 			if (tab < 0)
 			{
 				return;
 			}
 			
-			//System.out.println("---------------- MousePressed " + tab);
+			if (StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView)
+			{
+				// only set the selected tab; dragging is not allowed
+				selectedTab = tab;
+				return;
+			}
+			
 			if (arg0.getButton() == MouseEvent.BUTTON1
 				&& !(StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView))
 			{
@@ -933,42 +940,42 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		{
 			if (StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView)
 			{
-				return;
+				// set the selected tab
+				StatInteractiePanelView.this.controller
+					.setSelectedTab(this.selectedTab);
+
 			}
-			this.inDrag = false;
-			StatInteractiePanelView.super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//			System.out.println("Drag finished, dragged from " + this.startPoint
-//				+ " to " + arg0.getPoint());
-			if (this.draggedTab >= 0
-				&& this.draggedTab < StatInteractiePanelView.this.model
-					.getMainWindowViews().size())
+			else
 			{
-//				 System.out.println("This dragged tab: " + this.draggedTab);
+				this.inDrag = false;
+				StatInteractiePanelView.super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
-				// Test if tab is dragged outside of tabPane
-				if (!this.tabPane.contains(arg0.getPoint()))
+				if (this.draggedTab >= 0
+					&& this.draggedTab < StatInteractiePanelView.this.model
+						.getMainWindowViews().size())
 				{
-					// tab is dragged outside of tabPane
-					int viewIndex = StatInteractiePanelView.this.model
-						.mainWindowIndexToGeneralIndex(this.draggedTab);
-					StatInteractiePanelView.this.showViewInDialog(
-						StatInteractiePanelView.this.model.getViews().get(
-							viewIndex), arg0.getLocationOnScreen());
-
-					StatInteractiePanelView.this.model.setViewSeparateWindow(
-						StatInteractiePanelView.this.model
-							.mainWindowIndexToGeneralIndex(this.draggedTab),
-						true);
-				}
-				else
-				{
-					// tab is not dragged but selected
-					// set the selected tab
-					StatInteractiePanelView.this.controller
-						.setSelectedTab(this.draggedTab);
-
-//					 System.out.println("mouseReleased(): setSelectedTab(draggedTab="
-//					 + this.draggedTab + ")");
+					// Test if tab is dragged outside of tabPane
+					if (!this.tabPane.contains(arg0.getPoint()))
+					{
+						// tab is dragged outside of tabPane
+						int viewIndex = StatInteractiePanelView.this.model
+							.mainWindowIndexToGeneralIndex(this.draggedTab);
+						StatInteractiePanelView.this.showViewInDialog(
+							StatInteractiePanelView.this.model.getViews().get(
+								viewIndex), arg0.getLocationOnScreen());
+	
+						StatInteractiePanelView.this.model.setViewSeparateWindow(
+							StatInteractiePanelView.this.model
+								.mainWindowIndexToGeneralIndex(this.draggedTab),
+							true);
+					}
+					else
+					{
+						// tab is not dragged but selected
+						// set the selected tab
+						StatInteractiePanelView.this.controller
+							.setSelectedTab(this.draggedTab);
+					}
 				}
 			}
 		}
@@ -996,16 +1003,6 @@ public class StatInteractiePanelView extends JPanel implements Observer
 
 		}
 		
-//		public void paint(Graphics g) 
-//		{
-//		    Graphics2D g2 = (Graphics2D) g;
-//		    g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-//		    this.draggedImage.paintIcon(this, g, this.currentPoint.x, this.currentPoint.y);
-//		    g2.draw(this.draggedImage, this.currentPoint.x, 
-//		        this.currentPoint.y, this.draggedImage.getIconWidth(), 
-//		        this.draggedImage.getIconHeight(), this);
-//		}
-
 		@Override
 		public void mouseMoved(MouseEvent arg0)
 		{
