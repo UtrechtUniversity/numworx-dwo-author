@@ -723,6 +723,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_text", "tekst"},
 				
 				{"oplossingenLabel", "Oplossingen"},
+				{"executeLabel", "Uitvoeren"},
+				
 		};
 }
 

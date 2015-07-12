@@ -686,6 +686,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_text", "text"},
 				
 				{"oplossingenLabel", "Solutions"},
+				{"executeLabel", "Execute"},
 		};
 }
 

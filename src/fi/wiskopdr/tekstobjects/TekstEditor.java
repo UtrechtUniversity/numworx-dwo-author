@@ -1160,8 +1160,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			Map map = (Map)event.getParameters();
 			if(map!=null)
 			{	
-				
-				
+				String textString = (String)map.get("content");
+				zetTekst(textString);
 			}
 		}
 	}
@@ -1173,7 +1173,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				&& cbookEventHandler.hasListeners("text") // Alleen als er 'text' messages kunnen worden ontvangen
 		)
 		{
-			sendCommandButton = new JButton("Send");
+			sendCommandButton = new JButton(WiskOpdr.rb.getString("executeLabel"));
 			sendCommandButton.setBounds(basisPanel.getWidth()-80,basisPanel.getHeight()-25, 75, 20 );
 			sendCommandButton.addActionListener(this);
 			basisPanel.add(sendCommandButton,BorderLayout.SOUTH);
