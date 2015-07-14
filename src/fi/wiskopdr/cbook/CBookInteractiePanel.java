@@ -47,7 +47,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
  */
 public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware, ResourceManagerClient {
 	
-	private final Logger LOGGER = java.util.logging.Logger.getLogger(getClass().getName());
+	private final Logger LOGGER = Logger.getLogger(getClass().getName());
 	private CBookWidgetInstanceIF instance;
 	private CBookWidgetIF widget;
 	private Hashtable launchData;
@@ -359,7 +359,10 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 	
 	private CBookInteractieEditPanel getEditor() {
 		if(cBookInteractieEditPanel == null)
+		{
 			cBookInteractieEditPanel = new CBookInteractieEditPanel(widget, getLocale(), uuid);
+			if(launchData != null) cBookInteractieEditPanel.setEditState(launchData);
+		}
 		return cBookInteractieEditPanel;
 	}
 	
