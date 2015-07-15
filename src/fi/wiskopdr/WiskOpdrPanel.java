@@ -37,10 +37,10 @@ public class WiskOpdrPanel extends JPanel
 		this.launchData = launchData;
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
 		
-		String langArg = getParameter("language");
-        if ( langArg == null || langArg.equals("")) langArg = "en";
-        Locale language = new Locale (langArg, "");
-        WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
+//		String langArg = getParameter("language");
+//        if ( langArg == null || langArg.equals("")) langArg = "en";
+//        Locale language = new Locale (langArg, "");
+//        WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
         
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
 	    opdrContainer = new  fi.wiskopdr.opdrnav.MyOpdrContainer(0,0,700, 300);  

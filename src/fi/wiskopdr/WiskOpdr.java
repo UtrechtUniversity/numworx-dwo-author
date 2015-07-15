@@ -331,12 +331,15 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return log;
 	}
 	
-	
-	
+	@Deprecated
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString) {
+		return getWiskOpdrPanel(launchDataString, language);
+	}
 	/**
 	 * Hiermee vraagt de DWO een WiskOpdr-panel op voor tekst enz. op de modulepagina. 
 	 */
-	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString) {
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale) {
+		language = locale;
 		WiskOpdr wiskOpdr = new WiskOpdr();
 		Hashtable launchData = null;
 		if (launchDataString != null) {
