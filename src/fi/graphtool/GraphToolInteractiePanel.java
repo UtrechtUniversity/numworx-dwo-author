@@ -1594,8 +1594,6 @@ MouseListener, MouseMotionListener, CBookAware {
 
 	public void setState(Hashtable h) 	
 	{	
-		//hier hoeven eigenlijk alleen maar dingen in die een leerling zou kunnen veranderen. 
-		//Misschien is het dus goed om deze methode eens flink op te schonen.
 		//double beginxDocent = 1;
 		//double beginyDocent = 1;
 		double beginx = 1;
