@@ -1596,12 +1596,12 @@ MouseListener, MouseMotionListener, CBookAware {
 	{	
 		//hier hoeven eigenlijk alleen maar dingen in die een leerling zou kunnen veranderen. 
 		//Misschien is het dus goed om deze methode eens flink op te schonen.
-		double beginxDocent = 1;
-		double beginyDocent = 1;
+		//double beginxDocent = 1;
+		//double beginyDocent = 1;
 		double beginx = 1;
 		double beginy = 1;
-		double docentSchaalFactorX = 1;
-		double docentSchaalFactorY = 1;
+		//double docentSchaalFactorX = 1;
+		//double docentSchaalFactorY = 1;
 		double schaalFactorX = 1;
 		double schaalFactorY = 1;
 		//graphPoints
@@ -1631,66 +1631,66 @@ MouseListener, MouseMotionListener, CBookAware {
 		int activeIndex = 1;
 		String grafiekXAsNaam = "x";
 		String grafiekYAsNaam = "y";
-		String xAsNaam = "x";
-		String yAsNaam = "y";
-		boolean formuleComponentAan = true;
-		boolean tekenComponentAan = false;
-		boolean tabelComponentAan = false;
-		boolean assenZichtbaar = true;
-		boolean roosterZichtbaar = true;
-		boolean roosterGrof = false; 
-		boolean roosterX = true;
-		boolean roosterY = true;
-		boolean schaalZichtbaar = true;
-		boolean schaalX = true;
-		boolean schaalY = true;
-		boolean piLijnenZichtbaar = false; 
-		boolean zoomOptie = true; 
-		boolean traceOptie = true; 
-		boolean dragOptie = true; 
-		boolean zoomInTabel = true;
-		boolean tabelAlsTekenTool = false; 
-		boolean xPositief = false; 
-		boolean yPositief = false; 
-		boolean xAsLog = false;
-		boolean yAsLog = false;
-		boolean xVarEditable = false;
-		boolean yVarEditable = false;
-		boolean snapToGridPoints = false;
-		boolean rechteVerbindingen = true;
-		boolean krommeZonderExtrapolatie = true;
-		boolean krommeMetExtrapolatie = true;
-		int tekenGrafiekNauwkeurigheid = 5;
+		//String xAsNaam = "x";
+		//String yAsNaam = "y";
+		//boolean formuleComponentAan = true;
+		//boolean tekenComponentAan = false;
+		//boolean tabelComponentAan = false;
+		//boolean assenZichtbaar = true;
+		//boolean roosterZichtbaar = true;
+		//boolean roosterGrof = false; 
+		//boolean roosterX = true;
+		//boolean roosterY = true;
+		//boolean schaalZichtbaar = true;
+		//boolean schaalX = true;
+		//boolean schaalY = true;
+		//boolean piLijnenZichtbaar = false; 
+		//boolean zoomOptie = true; 
+		//boolean traceOptie = true; 
+		//boolean dragOptie = true; 
+		//boolean zoomInTabel = true;
+		//boolean tabelAlsTekenTool = false; 
+		//boolean xPositief = false; 
+		//boolean yPositief = false; 
+		//boolean xAsLog = false;
+		//boolean yAsLog = false;
+		//boolean xVarEditable = false;
+		//boolean yVarEditable = false;
+		//boolean snapToGridPoints = false;
+		//boolean rechteVerbindingen = true;
+		//boolean krommeZonderExtrapolatie = true;
+		//boolean krommeMetExtrapolatie = true;
+		//int tekenGrafiekNauwkeurigheid = 5;
 		int selectnummer = 999;
 		int beginwaarde = 0;
 		double tracexD = -2;
 		
-		boolean grafiekKleuren = true;
-		boolean kleurInstelbaar = true;
-		boolean functieBeginZichtbaar = true;
-		boolean functieBeginAanpasbaar = true;
-		boolean formeleFuncties = true;
-		boolean domeinInstelbaar = true;
-		int formuleComponentHoogte = 120;
+		//boolean grafiekKleuren = true;
+		//boolean kleurInstelbaar = true;
+		//boolean functieBeginZichtbaar = true;
+		//boolean functieBeginAanpasbaar = true;
+		//boolean formeleFuncties = true;
+		//boolean domeinInstelbaar = true;
+		//int formuleComponentHoogte = 120;
 		
-		boolean functieToegestaan = true;
-		boolean ongelijkheidToegestaan = true;
-		boolean implicieteFunctieToegestaan = true;
-		boolean verticaleLijnToegestaan = true;
-		boolean parametrisatieToegestaan = true;
+		//boolean functieToegestaan = true;
+		//boolean ongelijkheidToegestaan = true;
+		//boolean implicieteFunctieToegestaan = true;
+		//boolean verticaleLijnToegestaan = true;
+		//boolean parametrisatieToegestaan = true;
 		
-		if(h.containsKey("beginxDocent"))
-	    	beginxDocent = ((Number)h.get("beginxDocent")).doubleValue();
-    	if(h.containsKey("beginyDocent"))
-    		beginyDocent = ((Number)h.get("beginyDocent")).doubleValue();
+		//if(h.containsKey("beginxDocent"))
+	    //	beginxDocent = ((Number)h.get("beginxDocent")).doubleValue();
+    	//if(h.containsKey("beginyDocent"))
+    	//	beginyDocent = ((Number)h.get("beginyDocent")).doubleValue();
     	if(h.containsKey("beginx")) 
     		beginx = ((Number)h.get("beginx")).doubleValue();
     	if(h.containsKey("beginy")) 
     		beginy = ((Number)h.get("beginy")).doubleValue();
-    	if(h.containsKey("docentSchaalFactorX"))
-    		docentSchaalFactorX = ((Number)h.get("docentSchaalFactorX")).doubleValue();
-    	if(h.containsKey("docentSchaalFactorY"))
-    		docentSchaalFactorY = ((Number)h.get("docentSchaalFactorY")).doubleValue();
+    	//if(h.containsKey("docentSchaalFactorX"))
+    	//	docentSchaalFactorX = ((Number)h.get("docentSchaalFactorX")).doubleValue();
+    	//if(h.containsKey("docentSchaalFactorY"))
+    	//	docentSchaalFactorY = ((Number)h.get("docentSchaalFactorY")).doubleValue();
     	if(h.containsKey("schaalFactorX")) 
     		schaalFactorX = ((Number)h.get("schaalFactorX")).doubleValue();
     	if(h.containsKey("schaalFactorY")) 
@@ -1725,66 +1725,66 @@ MouseListener, MouseMotionListener, CBookAware {
     		grafiekXAsNaam = ((String)h.get("grafiekXAsNaam"));
     	if(h.containsKey("grafiekYAsNaam"))
     		grafiekYAsNaam = ((String)h.get("grafiekYAsNaam"));
-		if (h.containsKey("xAsNaam")) 
-			xAsNaam = (String) h.get("xAsNaam");
-		if (h.containsKey("yAsNaam")) 
-			yAsNaam = (String) h.get("yAsNaam");
-		if (h.containsKey("formuleComponentAan")) 
-			formuleComponentAan = ((Boolean) h.get("formuleComponentAan")).booleanValue();
-		if (h.containsKey("tekenComponentAan")) 
-			tekenComponentAan = ((Boolean) h.get("tekenComponentAan")).booleanValue();
-		if (h.containsKey("tabelComponentAan")) 
-			tabelComponentAan = ((Boolean) h.get("tabelComponentAan")).booleanValue();
-		if (h.containsKey("assenZichtbaar")) 
-			assenZichtbaar = ((Boolean) h.get("assenZichtbaar")).booleanValue();
-		if (h.containsKey("roosterZichtbaar")) 
-			roosterZichtbaar = ((Boolean) h.get("roosterZichtbaar")).booleanValue();
-		if (h.containsKey("roosterGrof")) 
-			roosterGrof = ((Boolean) h.get("roosterGrof")).booleanValue();
-		if (h.containsKey("roosterX"))
-			roosterX = ((Boolean) h.get("roosterX")).booleanValue();
-		if (h.containsKey("roosterY"))
-			roosterY = ((Boolean) h.get("roosterY")).booleanValue();
-		if (h.containsKey("schaalZichtbaar")) 
-			schaalZichtbaar = ((Boolean) h.get("schaalZichtbaar")).booleanValue();
-		if (h.containsKey("schaalX"))
-			schaalX = ((Boolean) h.get("schaalX")).booleanValue();
-		if (h.containsKey("schaalY"))
-			schaalY = ((Boolean) h.get("schaalY")).booleanValue();
-		if (h.containsKey("piLijnenZichtbaar")) 
-			piLijnenZichtbaar = ((Boolean) h.get("piLijnenZichtbaar")).booleanValue();
-		if (h.containsKey("zoomOptie")) 
-			zoomOptie = ((Boolean) h.get("zoomOptie")).booleanValue();
-		if (h.containsKey("traceOptie")) 
-			traceOptie = ((Boolean) h.get("traceOptie")).booleanValue();
-		if (h.containsKey("dragOptie")) 
-			dragOptie = ((Boolean) h.get("dragOptie")).booleanValue();
-		if (h.containsKey("zoomInTabel")) 
-			zoomInTabel = ((Boolean) h.get("zoomInTabel")).booleanValue();
-		if (h.containsKey("tabelAlsTekenTool")) 
-			tabelAlsTekenTool = ((Boolean) h.get("tabelAlsTekenTool")).booleanValue();
-		if (h.containsKey("xPositief")) 
-			xPositief = ((Boolean) h.get("xPositief")).booleanValue();
-		if (h.containsKey("yPositief")) 
-			yPositief = ((Boolean) h.get("yPositief")).booleanValue();
-		if (h.containsKey("xAsLog")) 
-			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
-		if (h.containsKey("yAsLog")) 
-			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
-		if (h.containsKey("xVarEditable")) 
-			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
-		if (h.containsKey("yVarEditable")) 
-			yVarEditable = ((Boolean) h.get("yVarEditable")).booleanValue();
-		if (h.containsKey("snapToGridPoints"))
-			snapToGridPoints = ((Boolean) h.get("snapToGridPoints")).booleanValue();
-		if (h.containsKey("rechteVerbindingen"))
-			rechteVerbindingen = ((Boolean) h.get("rechteVerbindingen")).booleanValue();
-		if (h.containsKey("krommeZonderExtrapolatie"))
-			krommeZonderExtrapolatie = ((Boolean) h.get("krommeZonderExtrapolatie")).booleanValue();
-		if (h.containsKey("krommeMetExtrapolatie"))
-			krommeMetExtrapolatie = ((Boolean) h.get("krommeMetExtrapolatie")).booleanValue();
-		if (h.containsKey("tekenGrafiekNauwkeurigheid"))
-			tekenGrafiekNauwkeurigheid = ((Number) h.get("tekenGrafiekNauwkeurigheid")).intValue();
+//		if (h.containsKey("xAsNaam")) 
+//			xAsNaam = (String) h.get("xAsNaam");
+//		if (h.containsKey("yAsNaam")) 
+//			yAsNaam = (String) h.get("yAsNaam");
+//		if (h.containsKey("formuleComponentAan")) 
+//			formuleComponentAan = ((Boolean) h.get("formuleComponentAan")).booleanValue();
+//		if (h.containsKey("tekenComponentAan")) 
+//			tekenComponentAan = ((Boolean) h.get("tekenComponentAan")).booleanValue();
+//		if (h.containsKey("tabelComponentAan")) 
+//			tabelComponentAan = ((Boolean) h.get("tabelComponentAan")).booleanValue();
+//		if (h.containsKey("assenZichtbaar")) 
+//			assenZichtbaar = ((Boolean) h.get("assenZichtbaar")).booleanValue();
+//		if (h.containsKey("roosterZichtbaar")) 
+//			roosterZichtbaar = ((Boolean) h.get("roosterZichtbaar")).booleanValue();
+//		if (h.containsKey("roosterGrof")) 
+//			roosterGrof = ((Boolean) h.get("roosterGrof")).booleanValue();
+//		if (h.containsKey("roosterX"))
+//			roosterX = ((Boolean) h.get("roosterX")).booleanValue();
+//		if (h.containsKey("roosterY"))
+//			roosterY = ((Boolean) h.get("roosterY")).booleanValue();
+//		if (h.containsKey("schaalZichtbaar")) 
+//			schaalZichtbaar = ((Boolean) h.get("schaalZichtbaar")).booleanValue();
+//		if (h.containsKey("schaalX"))
+//			schaalX = ((Boolean) h.get("schaalX")).booleanValue();
+//		if (h.containsKey("schaalY"))
+//			schaalY = ((Boolean) h.get("schaalY")).booleanValue();
+//		if (h.containsKey("piLijnenZichtbaar")) 
+//			piLijnenZichtbaar = ((Boolean) h.get("piLijnenZichtbaar")).booleanValue();
+//		if (h.containsKey("zoomOptie")) 
+//			zoomOptie = ((Boolean) h.get("zoomOptie")).booleanValue();
+//		if (h.containsKey("traceOptie")) 
+//			traceOptie = ((Boolean) h.get("traceOptie")).booleanValue();
+//		if (h.containsKey("dragOptie")) 
+//			dragOptie = ((Boolean) h.get("dragOptie")).booleanValue();
+//		if (h.containsKey("zoomInTabel")) 
+//			zoomInTabel = ((Boolean) h.get("zoomInTabel")).booleanValue();
+//		if (h.containsKey("tabelAlsTekenTool")) 
+//			tabelAlsTekenTool = ((Boolean) h.get("tabelAlsTekenTool")).booleanValue();
+//		if (h.containsKey("xPositief")) 
+//			xPositief = ((Boolean) h.get("xPositief")).booleanValue();
+//		if (h.containsKey("yPositief")) 
+//			yPositief = ((Boolean) h.get("yPositief")).booleanValue();
+//		if (h.containsKey("xAsLog")) 
+//			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
+//		if (h.containsKey("yAsLog")) 
+//			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
+//		if (h.containsKey("xVarEditable")) 
+//			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
+//		if (h.containsKey("yVarEditable")) 
+//			yVarEditable = ((Boolean) h.get("yVarEditable")).booleanValue();
+//		if (h.containsKey("snapToGridPoints"))
+//			snapToGridPoints = ((Boolean) h.get("snapToGridPoints")).booleanValue();
+//		if (h.containsKey("rechteVerbindingen"))
+//			rechteVerbindingen = ((Boolean) h.get("rechteVerbindingen")).booleanValue();
+//		if (h.containsKey("krommeZonderExtrapolatie"))
+//			krommeZonderExtrapolatie = ((Boolean) h.get("krommeZonderExtrapolatie")).booleanValue();
+//		if (h.containsKey("krommeMetExtrapolatie"))
+//			krommeMetExtrapolatie = ((Boolean) h.get("krommeMetExtrapolatie")).booleanValue();
+//		if (h.containsKey("tekenGrafiekNauwkeurigheid"))
+//			tekenGrafiekNauwkeurigheid = ((Number) h.get("tekenGrafiekNauwkeurigheid")).intValue();
 		if (h.containsKey("selectnummer"))
 			selectnummer = ((Number) h.get("selectnummer")).intValue();
 		if (h.containsKey("beginwaarde"))
@@ -1792,39 +1792,39 @@ MouseListener, MouseMotionListener, CBookAware {
 		if (h.containsKey("tracexD"))
 			tracexD = ((Number) h.get("tracexD")).doubleValue();
 		
-		if(h.containsKey("grafiekKleuren"))
-			grafiekKleuren = ((Boolean)h.get("grafiekKleuren")).booleanValue();
-		if(h.containsKey("kleurInstelbaar"))
-			kleurInstelbaar = ((Boolean)h.get("kleurInstelbaar")).booleanValue();
-		if(h.containsKey("functieBeginZichtbaar"))
-			functieBeginZichtbaar = ((Boolean)h.get("functieBeginZichtbaar")).booleanValue();
-		if(h.containsKey("functieBeginAanpasbaar"))
-			functieBeginAanpasbaar = ((Boolean)h.get("functieBeginAanpasbaar")).booleanValue();
-		if(h.containsKey("formeleFuncties"))
-			formeleFuncties = ((Boolean)h.get("formeleFuncties")).booleanValue();
-		if(h.containsKey("domeinInstelbaar"))
-			domeinInstelbaar = ((Boolean)h.get("domeinInstelbaar")).booleanValue();
-		if(h.containsKey("formuleComponentHoogte"))
-			formuleComponentHoogte = ((Number)h.get("formuleComponentHoogte")).intValue();
-		
-		if(h.containsKey("functieToegestaan"))
-			functieToegestaan = ((Boolean)h.get("functieToegestaan")).booleanValue();
-		if(h.containsKey("ongelijkheidToegestaan"))
-			ongelijkheidToegestaan = ((Boolean)h.get("ongelijkheidToegestaan")).booleanValue();
-		if(h.containsKey("implicieteFunctieToegestaan"))
-			implicieteFunctieToegestaan = ((Boolean)h.get("implicieteFunctieToegestaan")).booleanValue();
-		if(h.containsKey("verticaleLijnToegestaan"))
-			verticaleLijnToegestaan = ((Boolean)h.get("verticaleLijnToegestaan")).booleanValue();
-		if(h.containsKey("parametrisatieToegestaan"))
-			parametrisatieToegestaan = ((Boolean)h.get("parametrisatieToegestaan")).booleanValue();
+//		if(h.containsKey("grafiekKleuren"))
+//			grafiekKleuren = ((Boolean)h.get("grafiekKleuren")).booleanValue();
+//		if(h.containsKey("kleurInstelbaar"))
+//			kleurInstelbaar = ((Boolean)h.get("kleurInstelbaar")).booleanValue();
+//		if(h.containsKey("functieBeginZichtbaar"))
+//			functieBeginZichtbaar = ((Boolean)h.get("functieBeginZichtbaar")).booleanValue();
+//		if(h.containsKey("functieBeginAanpasbaar"))
+//			functieBeginAanpasbaar = ((Boolean)h.get("functieBeginAanpasbaar")).booleanValue();
+//		if(h.containsKey("formeleFuncties"))
+//			formeleFuncties = ((Boolean)h.get("formeleFuncties")).booleanValue();
+//		if(h.containsKey("domeinInstelbaar"))
+//			domeinInstelbaar = ((Boolean)h.get("domeinInstelbaar")).booleanValue();
+//		if(h.containsKey("formuleComponentHoogte"))
+//			formuleComponentHoogte = ((Number)h.get("formuleComponentHoogte")).intValue();
+//		
+//		if(h.containsKey("functieToegestaan"))
+//			functieToegestaan = ((Boolean)h.get("functieToegestaan")).booleanValue();
+//		if(h.containsKey("ongelijkheidToegestaan"))
+//			ongelijkheidToegestaan = ((Boolean)h.get("ongelijkheidToegestaan")).booleanValue();
+//		if(h.containsKey("implicieteFunctieToegestaan"))
+//			implicieteFunctieToegestaan = ((Boolean)h.get("implicieteFunctieToegestaan")).booleanValue();
+//		if(h.containsKey("verticaleLijnToegestaan"))
+//			verticaleLijnToegestaan = ((Boolean)h.get("verticaleLijnToegestaan")).booleanValue();
+//		if(h.containsKey("parametrisatieToegestaan"))
+//			parametrisatieToegestaan = ((Boolean)h.get("parametrisatieToegestaan")).booleanValue();
 		
 		//hiervan doe je ook nog heel veel bij het zetten van de instellingen iets verderop..
-		this.beginxDocent = beginxDocent;
-		this.beginyDocent = beginyDocent;
+		//this.beginxDocent = beginxDocent;
+		//this.beginyDocent = beginyDocent;
     	this.beginx = beginx;
 		this.beginy = beginy;
-		this.docentSchaalFactorX = docentSchaalFactorX;
-		this.docentSchaalFactorY = docentSchaalFactorY;
+		//this.docentSchaalFactorX = docentSchaalFactorX;
+		//this.docentSchaalFactorY = docentSchaalFactorY;
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
 		//this.graphPoints = graphPoints;
@@ -1854,151 +1854,151 @@ MouseListener, MouseMotionListener, CBookAware {
 			}
 		}
 		this.activeIndex = activeIndex;
-		this.xAsNaam = xAsNaam;
-		this.yAsNaam = yAsNaam;
-		this.formuleComponentAan = formuleComponentAan;
-		this.tekenComponentAan = tekenComponentAan;
-		this.tabelComponentAan = tabelComponentAan;
-		this.assenZichtbaar = assenZichtbaar;
-		this.roosterZichtbaar = roosterZichtbaar;
-		this.roosterGrof = roosterGrof;
-		this.roosterX = roosterX;
-		this.roosterY = roosterY;
-		this.schaalZichtbaar = schaalZichtbaar;
-		this.schaalX = schaalX;
-		this.schaalY = schaalY;
-		this.piLijnenZichtbaar = piLijnenZichtbaar;
-		this.zoomOptie = zoomOptie;
-		this.traceOptie = traceOptie;
-		this.dragOptie = dragOptie;
-		this.zoomInTabel = zoomInTabel;
-		this.tabelAlsTekenTool = tabelAlsTekenTool;
-		this.xPositief = xPositief;
-		this.yPositief = yPositief;
-		this.xVarEditable = xVarEditable;
-		this.yVarEditable = yVarEditable;
-		this.snapToGridPoints = snapToGridPoints;
-		this.rechteVerbindingen = rechteVerbindingen;
-		this.krommeZonderExtrapolatie = krommeZonderExtrapolatie;
-		this.krommeMetExtrapolatie = krommeMetExtrapolatie;
-		this.tekenGrafiekNauwkeurigheid = tekenGrafiekNauwkeurigheid;
+//		this.xAsNaam = xAsNaam;
+//		this.yAsNaam = yAsNaam;
+//		this.formuleComponentAan = formuleComponentAan;
+//		this.tekenComponentAan = tekenComponentAan;
+//		this.tabelComponentAan = tabelComponentAan;
+//		this.assenZichtbaar = assenZichtbaar;
+//		this.roosterZichtbaar = roosterZichtbaar;
+//		this.roosterGrof = roosterGrof;
+//		this.roosterX = roosterX;
+//		this.roosterY = roosterY;
+//		this.schaalZichtbaar = schaalZichtbaar;
+//		this.schaalX = schaalX;
+//		this.schaalY = schaalY;
+//		this.piLijnenZichtbaar = piLijnenZichtbaar;
+//		this.zoomOptie = zoomOptie;
+//		this.traceOptie = traceOptie;
+//		this.dragOptie = dragOptie;
+//		this.zoomInTabel = zoomInTabel;
+//		this.tabelAlsTekenTool = tabelAlsTekenTool;
+//		this.xPositief = xPositief;
+//		this.yPositief = yPositief;
+//		this.xVarEditable = xVarEditable;
+//		this.yVarEditable = yVarEditable;
+//		this.snapToGridPoints = snapToGridPoints;
+//		this.rechteVerbindingen = rechteVerbindingen;
+//		this.krommeZonderExtrapolatie = krommeZonderExtrapolatie;
+//		this.krommeMetExtrapolatie = krommeMetExtrapolatie;
+//		this.tekenGrafiekNauwkeurigheid = tekenGrafiekNauwkeurigheid;
 		this.selectnummer = selectnummer;
 		this.beginwaarde = beginwaarde;
 		this.tracexD = tracexD;
 		tracex = (int) Math.round(tracexD);
 		
-		this.grafiekKleuren = grafiekKleuren;
-		this.kleurInstelbaar = kleurInstelbaar;
-		this.functieBeginZichtbaar = functieBeginZichtbaar;
-		this.functieBeginAanpasbaar = functieBeginAanpasbaar;
-		this.formeleFuncties = formeleFuncties;
-		this.domeinInstelbaar = domeinInstelbaar;
-		this.formuleComponentHoogte = formuleComponentHoogte;
+//		this.grafiekKleuren = grafiekKleuren;
+//		this.kleurInstelbaar = kleurInstelbaar;
+//		this.functieBeginZichtbaar = functieBeginZichtbaar;
+//		this.functieBeginAanpasbaar = functieBeginAanpasbaar;
+//		this.formeleFuncties = formeleFuncties;
+//		this.domeinInstelbaar = domeinInstelbaar;
+//		this.formuleComponentHoogte = formuleComponentHoogte;
+//		
+//		this.functieToegestaan = functieToegestaan;
+//		this.ongelijkheidToegestaan = ongelijkheidToegestaan;
+//		this.implicieteFunctieToegestaan = implicieteFunctieToegestaan;
+//		this.verticaleLijnToegestaan = verticaleLijnToegestaan;
+//		this.parametrisatieToegestaan = parametrisatieToegestaan;
 		
-		this.functieToegestaan = functieToegestaan;
-		this.ongelijkheidToegestaan = ongelijkheidToegestaan;
-		this.implicieteFunctieToegestaan = implicieteFunctieToegestaan;
-		this.verticaleLijnToegestaan = verticaleLijnToegestaan;
-		this.parametrisatieToegestaan = parametrisatieToegestaan;
-		
-		zetXAsNaam(xAsNaam, true);
-		zetYAsNaam(yAsNaam, true);
+		//zetXAsNaam(xAsNaam, true);
+		//zetYAsNaam(yAsNaam, true);
 		this.grafiekXAsNaam = grafiekXAsNaam;
 		this.grafiekYAsNaam = grafiekYAsNaam;
 		xAsNaamTF.setText(grafiekXAsNaam);
 		yAsNaamTF.setText(grafiekYAsNaam);
 		
 			// opdrachten
-		int typeOpdracht = GEENOPDRACHT;
-		int[] maxScores = new int[9];
-		int[] nauwkeurigheid = new int[3];
-		int[] minimumPunten = new int[3];
-		int scoreMax = 0;
-		boolean domeinControleren = false;
-		boolean leerlingZietTabel = true;
+		//int typeOpdracht = GEENOPDRACHT;
+		//int[] maxScores = new int[9];
+		//int[] nauwkeurigheid = new int[3];
+		//int[] minimumPunten = new int[3];
+		//int scoreMax = 0;
+		//boolean domeinControleren = false;
+		//boolean leerlingZietTabel = true;
 		//Expressie[] docentFuncties = new Expressie[maxAantalExpressies];
-		String[] docentFunctieStrings = null; // new String[maxAantalExpressies];
+		//String[] docentFunctieStrings = null; // new String[maxAantalExpressies];
 		//double[][] docentDomeinen = new double[maxAantalExpressies][2];
-		String[][] docentDomeinStrings = new String[maxAantalExpressies][2];
+		//String[][] docentDomeinStrings = new String[maxAantalExpressies][2];
 		//Vector docentGraphPoints = new Vector();
-		double[] docentGraphPointsX = null;
-		double[] docentGraphPointsY = null;
-		int[] docentGraphPointsIndex = null;
-		int[] docentGraphPointsTabelIndex = null;
-		String[] docentGraphPointsXString = null;
-		String[] docentGraphPointsYString = null;
+		//double[] docentGraphPointsX = null;
+		//double[] docentGraphPointsY = null;
+		//int[] docentGraphPointsIndex = null;
+		//int[] docentGraphPointsTabelIndex = null;
+		//String[] docentGraphPointsXString = null;
+		//String[] docentGraphPointsYString = null;
 		boolean ingevuld = false;
 		boolean nagekeken = false;
 		
 		
-		if (h.containsKey("typeOpdracht")) 
-			typeOpdracht = ((Integer) h.get("typeOpdracht")).intValue();		
-		if (h.containsKey("maxScores")) 
-			maxScores = (int[]) h.get("maxScores");		
-		if (h.containsKey("docentFunctieStrings")) 
-			docentFunctieStrings = (String[]) h.get("docentFunctieStrings");
+//		if (h.containsKey("typeOpdracht")) 
+//			typeOpdracht = ((Integer) h.get("typeOpdracht")).intValue();		
+//		if (h.containsKey("maxScores")) 
+//			maxScores = (int[]) h.get("maxScores");		
+//		if (h.containsKey("docentFunctieStrings")) 
+//			docentFunctieStrings = (String[]) h.get("docentFunctieStrings");
 		//if (h.containsKey("docentDomeinen"))
 		//	docentDomeinen = (double[][])h.get("docentDomeinen");
-		if (h.containsKey("docentDomeinStrings"))
-			docentDomeinStrings = (String[][])h.get("docentDomeinStrings");
+//		if (h.containsKey("docentDomeinStrings"))
+//			docentDomeinStrings = (String[][])h.get("docentDomeinStrings");
 		//if (h.containsKey("docentGraphPoints")) 
 			//docentGraphPoints = (Vector) h.get("docentGraphPoints");		
-		if(h.containsKey("docentGraphPointsX"))
-			docentGraphPointsX = ((double[])h.get("docentGraphPointsX"));
-    	if(h.containsKey("docentGraphPointsY"))
-    		docentGraphPointsY = ((double[])h.get("docentGraphPointsY"));
-    	if(h.containsKey("docentGraphPointsIndex"))
-    		docentGraphPointsIndex = ((int[])h.get("docentGraphPointsIndex"));
-    	if(h.containsKey("docentGraphPointsTabelIndex"))
-    		docentGraphPointsTabelIndex = ((int[])h.get("docentGraphPointsTabelIndex"));
-    	if(h.containsKey("docentGraphPointsXString"))
-    		docentGraphPointsXString = ((String[])h.get("docentGraphPointsXString"));
-    	if(h.containsKey("docentGraphPointsYString"))
-    		docentGraphPointsYString = ((String[])h.get("docentGraphPointsYString"));
-    	if (h.containsKey("nauwkeurigheid")) 
-			nauwkeurigheid = (int[]) h.get("nauwkeurigheid");		
-		if (h.containsKey("minimumPunten")) 
-			minimumPunten = (int[]) h.get("minimumPunten");	
-		if (h.containsKey("scoreMax"))
-			scoreMax = ((Integer) h.get("scoreMax")).intValue();
-		if (h.containsKey("domeinControleren"))
-			domeinControleren = ((Boolean) h.get("domeinControleren")).booleanValue();
-		if (h.containsKey("leerlingZietTabel")) 
-			leerlingZietTabel = ((Boolean) h.get("leerlingZietTabel")).booleanValue();		
+//		if(h.containsKey("docentGraphPointsX"))
+//			docentGraphPointsX = ((double[])h.get("docentGraphPointsX"));
+//    	if(h.containsKey("docentGraphPointsY"))
+//    		docentGraphPointsY = ((double[])h.get("docentGraphPointsY"));
+//    	if(h.containsKey("docentGraphPointsIndex"))
+//    		docentGraphPointsIndex = ((int[])h.get("docentGraphPointsIndex"));
+//    	if(h.containsKey("docentGraphPointsTabelIndex"))
+//    		docentGraphPointsTabelIndex = ((int[])h.get("docentGraphPointsTabelIndex"));
+//    	if(h.containsKey("docentGraphPointsXString"))
+//    		docentGraphPointsXString = ((String[])h.get("docentGraphPointsXString"));
+//    	if(h.containsKey("docentGraphPointsYString"))
+//    		docentGraphPointsYString = ((String[])h.get("docentGraphPointsYString"));
+//    	if (h.containsKey("nauwkeurigheid")) 
+//			nauwkeurigheid = (int[]) h.get("nauwkeurigheid");		
+//		if (h.containsKey("minimumPunten")) 
+//			minimumPunten = (int[]) h.get("minimumPunten");	
+//		if (h.containsKey("scoreMax"))
+//			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+//		if (h.containsKey("domeinControleren"))
+//			domeinControleren = ((Boolean) h.get("domeinControleren")).booleanValue();
+//		if (h.containsKey("leerlingZietTabel")) 
+//			leerlingZietTabel = ((Boolean) h.get("leerlingZietTabel")).booleanValue();		
 		if (h.containsKey("ingevuld")) 
 			ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
 		if (h.containsKey("nagekeken")) 
 			nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
 		
-		this.typeOpdracht = typeOpdracht;
-		this.maxScores = maxScores;	
-		this.nauwkeurigheid = nauwkeurigheid;
-		this.minimumPunten = minimumPunten; 
-		this.scoreMax = scoreMax;
-		this.domeinControleren = domeinControleren;
-		this.leerlingZietTabel = leerlingZietTabel;
-		if(docentFunctieStrings != null) this.docentFunctieStrings = docentFunctieStrings;
-		if(docentFunctieStrings != null)
-		{	docentFuncties = new Expressie[docentFunctieStrings.length];
-			for(int i = 0; i < docentFunctieStrings.length; i++)
-				if (!docentFunctieStrings[i].equals("$f@"))
-					docentFuncties[i] = FormuleParser.geefExpressie(docentFunctieStrings[i]);
-		}
+//		this.typeOpdracht = typeOpdracht;
+//		this.maxScores = maxScores;	
+//		this.nauwkeurigheid = nauwkeurigheid;
+//		this.minimumPunten = minimumPunten; 
+//		this.scoreMax = scoreMax;
+//		this.domeinControleren = domeinControleren;
+//		this.leerlingZietTabel = leerlingZietTabel;
+//		if(docentFunctieStrings != null) this.docentFunctieStrings = docentFunctieStrings;
+//		if(docentFunctieStrings != null)
+//		{	docentFuncties = new Expressie[docentFunctieStrings.length];
+//			for(int i = 0; i < docentFunctieStrings.length; i++)
+//				if (!docentFunctieStrings[i].equals("$f@"))
+//					docentFuncties[i] = FormuleParser.geefExpressie(docentFunctieStrings[i]);
+//		}
 		// anders blijft docentFunctie null	
 		//this.docentFuncties = docentFuncties;
-		updateAantalFuncties();
+//		updateAantalFuncties();
 		
 		
-		this.docentDomeinStrings = docentDomeinStrings;
-		if(docentDomeinStrings != null)
-		{	docentDomeinen = new double[docentDomeinStrings.length][2];
-			for(int i = 0; i < docentDomeinStrings.length; i++)
-			{	if(docentDomeinStrings[i][0]!= null) docentDomeinen[i][0] = FormuleParser.geefExpressie(docentDomeinStrings[i][0]).geefWaarde();
-				if(docentDomeinStrings[i][1]!= null) docentDomeinen[i][1] = FormuleParser.geefExpressie(docentDomeinStrings[i][1]).geefWaarde();
-				//Hier nog try/catch inbouwen? Geeft deze een exception bij randomvariabelen?
-			}
-			
-		}
+//		this.docentDomeinStrings = docentDomeinStrings;
+//		if(docentDomeinStrings != null)
+//		{	docentDomeinen = new double[docentDomeinStrings.length][2];
+//			for(int i = 0; i < docentDomeinStrings.length; i++)
+//			{	if(docentDomeinStrings[i][0]!= null) docentDomeinen[i][0] = FormuleParser.geefExpressie(docentDomeinStrings[i][0]).geefWaarde();
+//				if(docentDomeinStrings[i][1]!= null) docentDomeinen[i][1] = FormuleParser.geefExpressie(docentDomeinStrings[i][1]).geefWaarde();
+//				//Hier nog try/catch inbouwen? Geeft deze een exception bij randomvariabelen?
+//			}
+//			
+//		}
 		/*
 		if(docentDomeinen == null)
 			this.docentDomeinen = null;
@@ -2016,16 +2016,16 @@ MouseListener, MouseMotionListener, CBookAware {
 		for(int i = 1; i < aantalFuncties; i++)
 			if(minimumPunten[i] < kleinsteMinimum)
 				kleinsteMinimum = minimumPunten[i];
-		this.docentGraphPoints = new Vector();
-		if(docentGraphPointsX!= null)
-		for(int i = 0; i < docentGraphPointsX.length; i++)
-		{	RealPoint rp = new RealPoint(docentGraphPointsX[i], docentGraphPointsY[i]);
-			rp.setIndex(docentGraphPointsIndex[i]);
-			rp.setTabelIndex(docentGraphPointsTabelIndex[i]);
-			rp.setxString(docentGraphPointsXString[i]);
-			rp.setyString(docentGraphPointsYString[i]);
-			docentGraphPoints.add(rp);
-		}
+//		this.docentGraphPoints = new Vector();
+//		if(docentGraphPointsX!= null)
+//		for(int i = 0; i < docentGraphPointsX.length; i++)
+//		{	RealPoint rp = new RealPoint(docentGraphPointsX[i], docentGraphPointsY[i]);
+//			rp.setIndex(docentGraphPointsIndex[i]);
+//			rp.setTabelIndex(docentGraphPointsTabelIndex[i]);
+//			rp.setxString(docentGraphPointsXString[i]);
+//			rp.setyString(docentGraphPointsYString[i]);
+//			docentGraphPoints.add(rp);
+//		}
 		this.ingevuld = ingevuld;
 		this.nagekeken = nagekeken;
 		if((typeOpdracht == TEKENTABELPUNTEN && graphPoints.size() >= docentGraphPoints.size())
@@ -2036,25 +2036,25 @@ MouseListener, MouseMotionListener, CBookAware {
 		beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 		selectnummer = selectnummer + b - beginwaarde;
 		
-		zetZoomOptie(zoomOptie);
-		zetTraceOptie(traceOptie);
+//		zetZoomOptie(zoomOptie);
+//		zetTraceOptie(traceOptie);
 		if(traceOptie && tracex != -2) 
 			slider.zetStand(tracex);
 		tabelComponent.setState(h, false);
 		
-		zetZoomInTabel(zoomInTabel);
-		zetTabelAlsTekenTool(tabelAlsTekenTool, true);
-		zetXAsLog(xAsLog);
-		zetYAsLog(yAsLog);
-		zetXVarEditable(xVarEditable);
-		zetYVarEditable(yVarEditable);
-		zetKrommeKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
-		zetMaxScores(maxScores);
-		zetDocentFuncties(docentFuncties);
+//		zetZoomInTabel(zoomInTabel);
+//		zetTabelAlsTekenTool(tabelAlsTekenTool, true);
+//		zetXAsLog(xAsLog);
+//		zetYAsLog(yAsLog);
+//		zetXVarEditable(xVarEditable);
+//		zetYVarEditable(yVarEditable);
+//		zetKrommeKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
+//		zetMaxScores(maxScores);
+//		zetDocentFuncties(docentFuncties);
 		//zetDocentDomeinen(docentDomeinen);
-		zetDocentDomeinen(docentDomeinStrings);
-		zetFormuleEditorOpties(null, true);
-		zetTypeOpdracht(typeOpdracht, true);
+//		zetDocentDomeinen(docentDomeinStrings);
+//		zetFormuleEditorOpties(null, true);
+//		zetTypeOpdracht(typeOpdracht, true);
 		
 		tekenComponent.setState(h);
 		
