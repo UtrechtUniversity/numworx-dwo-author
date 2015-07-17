@@ -41,6 +41,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -51,6 +52,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
+import fi.wiskopdr.symbolen.SymboolPanel;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 //import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.AntwoordVergelijkingVak;
@@ -358,6 +360,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"ReactieVergelijking",
 		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
 		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
+		"Symbool",
 	};
 	
 	
@@ -366,7 +369,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
 		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54},
 		{45},
-		{9},
+		{9, 55},
 		{10,39},
 		{-2},
 		{-2},
@@ -1136,6 +1139,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
+		else if(soortInteractiePanel == 55)
+		{
+			if(interactiePanel == null || !(interactiePanel instanceof SymboolPanel))
+			{
+				interactiePanel = new SymboolPanel();
+				((Component)interactiePanel).setBackground(getBackground());
+				interactiePanel.addActionListener(this);
+			}
+		}
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -1651,6 +1663,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             }
             //interactiePanel.setEditState(interactiePanelLaunchState);
         }
+		else if(soortInteractiePanel == 55)
+		{
+			if(interactiePanel == null || !(interactiePanel instanceof SymboolPanel))
+			{
+				interactiePanel = new SymboolPanel();
+				((Component)interactiePanel).setBackground(getBackground());
+				interactiePanel.addActionListener(this);
+			}
+		}
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
