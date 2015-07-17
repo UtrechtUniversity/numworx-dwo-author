@@ -253,9 +253,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     public void addInteractieEditPanel(Hashtable launchData)
     {
     	if(launchData==null) 
-    	{	 if(soortAntwoordVakKeuze.getModel().getSize()==2)
-			{	soortAntwoordVakKeuze.setSelectedIndex(1);
+    	{	if(soortAntwoordVakKeuze.getModel().getSize()==2)
+    		{	soortAntwoordVakKeuze.setSelectedIndex(1);
 			}
+    		else if(setNr == 3) //Bij Tekstvak is nu keuze tussen tekstvak en symbool. Ik wil dat standaard tekstvak verschijnt, geen keuze.
+    			soortAntwoordVakKeuze.setSelectedIndex(1);
     		return;
     	}
 		

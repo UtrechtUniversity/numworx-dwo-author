@@ -151,6 +151,8 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		}
 		else if(symboolKeuze == Symbool.ELLIPS)
 		{
+			richtingString = new String[1];
+			richtingString[0] = "Geen richting";
 			//nog kijken wat ik hiermee doe. Schuine ellipsen mogelijk maken? 
 			//anders is richting kiezen hier vrij zinloos. 
 		}
@@ -160,16 +162,18 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		int y = richtingKeuzeBox.getLocation().y;
 		remove(richtingKeuzeBox);
 		richtingKeuzeBox = new JComboBox(richtingString);
-		richtingKeuzeBox.setBounds(x, y, width, height);
+		richtingKeuzeBox.setBounds(x, y, 200, height);
 		richtingKeuzeBox.setFont(theFont);
 		add(richtingKeuzeBox);
 		richtingKeuzeBox.addActionListener(this);
+		this.revalidate(); //om te zorgen dat pijltje in richting-combobox verschijnt.
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == symboolKeuzeBox)
 		{
+			symboolPanel.zetRichtingKeuze(0);
 			int keuze = symboolKeuzeBox.getSelectedIndex();
 			symboolPanel.zetSymboolKeuze(keuze);
 			zetRichtingKeuzes(keuze);
@@ -177,7 +181,6 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		else if(e.getSource() == richtingKeuzeBox)
 		{
 			symboolPanel.zetRichtingKeuze(richtingKeuzeBox.getSelectedIndex());
-			//kijken of op deze manier slim is; richting is ook afhankelijk van symboolkeuze
 		}
 		else if(e.getSource() == dikteField)
 		{
@@ -204,8 +207,42 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 	}
 
 	@Override
-	public void setEditState(Hashtable b) {
+	public void setEditState(Hashtable h) {
+		int dikte = 1;
+		int richting = 0;
+		int type = 0;
+		//Color kleur = Color.black;
 		
+		if(h.containsKey("dikte"))
+			dikte = ((Integer) h.get("dikte")).intValue();
+		if(h.containsKey("richting"))
+			richting = ((Integer) h.get("richting")).intValue();
+		if(h.containsKey("type"))
+			type = ((Integer) h.get("type")).intValue();
+		
+		symboolKeuzeBox.setSelectedIndex(type);
+		if(type == Symbool.GEEN)
+			richting = 0;
+		else if(type == Symbool.LIJN)
+		{	if(richting < 2)
+				richting = 0;
+			else if(richting < 4)
+				richting = 1;
+			else if(richting < 6)
+				richting = 2;
+			else
+				richting = 3;
+		}
+		
+//		else if(type == Symbool.ELLIPS)
+//		{
+//			//nog kijken wat ik hiermee doe. Schuine ellipsen mogelijk maken? 
+//			//anders is richting kiezen hier vrij zinloos. 
+//		}
+		
+		richtingKeuzeBox.setSelectedIndex(richting);
+		dikteField.setText("" + dikte);
+		symboolPanel.zetOpdracht(h, null, null);
 	}
 
 	@Override
@@ -219,18 +256,20 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 
 	@Override
 	public void zetBreedte(int b) {
+		System.out.println("zetBreedte");
 		symboolBreedte = b;
-		
+		symboolPanel.zetBreedte(b);
 		setBounds(getLocation().x, getLocation().y, symboolBreedte + width + 3 * offset, Math.max(symboolHoogte, editHeight));		
 		plaatsComponenten();
+		
 	}
 
 	@Override
 	public void zetHoogte(int h) {
 		symboolHoogte = h;
-		
+		symboolPanel.zetHoogte(h);
 		setBounds(getLocation().x, getLocation().y, symboolBreedte + width + 3 * offset, Math.max(symboolHoogte, editHeight));		
-
+		
 	}
 
 	@Override

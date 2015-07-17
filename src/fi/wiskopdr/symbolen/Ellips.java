@@ -1,6 +1,8 @@
 package fi.wiskopdr.symbolen;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 
 public class Ellips extends Symbool{
 	
@@ -15,7 +17,9 @@ public class Ellips extends Symbool{
 		//uitzoeken hoe ik dikte goed kan verwerken. Meerdere lijnen naast elkaar? Of kan ik één dikke stroke maken?
 		//iets met rendering?
 		
-		//nog invullen.
+		Graphics2D g2 = (Graphics2D) g;
+		g2.draw(new Ellipse2D.Double(0, 0, this.getWidth(), this.getHeight()));
+                
 	}
 	
 	public int geefType()

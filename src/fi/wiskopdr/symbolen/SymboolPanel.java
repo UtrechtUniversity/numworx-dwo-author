@@ -13,7 +13,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 
 	Symbool symbool;
 	boolean vulHoogte, vulBreedte;
-	int hoogte, breedte;
+	//int hoogte, breedte;
 	int richting = 0;
 	
 	public SymboolPanel()
@@ -97,12 +97,41 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 	{
 		symbool.zetKleur(kleur);
 	}
+	
+	public void zetBreedte(int b)
+	{
+		this.setSize(b, this.getHeight());
+		symbool.setSize(b, this.getHeight());
+	}
+	
+	public void zetHoogte(int h)
+	{
+		this.setSize(this.getWidth(), h);
+		symbool.setSize(this.getWidth(), h);
+	}
 
 	@Override
-	public void zetOpdracht(Hashtable b, String[] randomVars,
+	public void zetOpdracht(Hashtable h, String[] randomVars,
 			Hashtable randomValues) {
-		// TODO Auto-generated method stub
 		
+		int dikte = 1;
+		int richting = 0;
+		int type = 0;
+		//Color kleur = Color.black;
+		
+		if(h.containsKey("dikte"))
+			dikte = ((Integer) h.get("dikte")).intValue();
+		if(h.containsKey("richting"))
+			richting = ((Integer) h.get("richting")).intValue();
+		if(h.containsKey("type"))
+			type = ((Integer) h.get("type")).intValue();
+		//if(h.containsKey("kleur"))
+		//	kleur = h.get("kleur");
+		
+		zetSymboolKeuze(type);
+		symbool.zetDikte(dikte);
+		this.richting = richting;
+		symbool.zetRichting(richting);
 	}
 
 	@Override
@@ -112,7 +141,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 
 	@Override
 	public void setEditState(Hashtable b) {
-		
+		zetOpdracht(b, null, null);
 	}
 
 	@Override
@@ -135,6 +164,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		h.put("dikte", new Integer(dikte));
 		h.put("richting", new Integer(richting));
 		h.put("type", new Integer(type));
+		h.put("kleur", kleur);
 		return h;
 	}
 
