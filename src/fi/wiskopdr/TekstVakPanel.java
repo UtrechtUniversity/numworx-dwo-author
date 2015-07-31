@@ -2937,11 +2937,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 					hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
 			}
 			hoogteCum -= cellSpaceRow;
+			if(callOut)
+				hoogteCum += this.callOutMargeY0 + this.callOutMargeY1;
 			for (int j = 0; j < aantalKolommen; j++)
 			{
 				breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 			}
 			breedteCum -= cellSpaceColumn;
+			if(callOut)
+				breedteCum += this.callOutMargeX0 + this.callOutMargeX1;
 			if (pasAanB && pasAanH)
 			{	setSize((int) Math.round(breedteCum) - 1, (int) Math.round(hoogteCum));
 			}
