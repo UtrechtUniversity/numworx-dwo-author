@@ -231,7 +231,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		instellingenKnop.addActionListener(this);
 		add(instellingenKnop,0);
 
-		instellingenDialog = DialogFacade.newInstance(this, "Opties", true);
+		instellingenDialog = DialogFacade.newInstance(this, WiskOpdr.rb.getString("optiesButtonLabel"), true);
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
