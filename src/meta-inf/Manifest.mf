@@ -4,4 +4,5 @@ Trusted-Only: true
 Permissions: all-permissions
 Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
 Application-Name: Graph Tool
+Application-Library-Allowable-Codebase: *
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
