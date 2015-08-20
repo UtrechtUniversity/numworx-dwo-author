@@ -30,6 +30,7 @@ import fi.wiskopdr.expressies.DecRound;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
+import fi.wiskopdr.expressies.FunctieMVDefSet;
 import fi.wiskopdr.expressies.repr.MPReduce;
 import fi.wiskopdr.expressies.repr.MPReduceConverter;
 import fi.wiskopdr.expressies.repr.MathematicaConverter;
@@ -203,6 +204,9 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	private FormuleButton wisKnop;
 	
 	static boolean fontOvererving;
+	
+	private FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
+	private Vergelijking[] antwoordSubstituties;
 	
 	public static void zetFontOverervingForm(boolean b)
 	{	fontOvererving = b;
@@ -746,6 +750,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         boolean eigenOpdr = false;
         boolean boxMetRand = true;
         boolean[][] logObjectives = null;
+        String[] antwoordSubStrings = null;
+		String[] antwoordFuncStrings = null;
         		
 		if(h.containsKey("antwoordString")) antwoordString = (String)h.get("antwoordString");
 		if(h.containsKey("startString")) startString = (String)h.get("startString");
@@ -782,7 +788,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			if(h.containsKey("ideasInstellingen")) ideasInstellingen = (Hashtable)h.get("ideasInstellingen");
 	    }
 		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
-		
+		if (h.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[]) h.get("antwoordSubStrings");
+		if (h.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[]) h.get("antwoordFuncStrings");
 		//setScoreDataFormule(herleiding,exact,soortHerleiding, puntenGelijkwaardig, puntenHerleiding, puntenExact);
 		
 		this.herleiding = herleiding;
@@ -821,6 +828,56 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         {   startString = "$f???@";
         }
 		zetStartString(startString);
+		
+		if (antwoordSubStrings != null) {
+			boolean subCorrect = true;
+			antwoordSubstituties = new Vergelijking[antwoordSubStrings.length];
+			for (int i = 0; i < antwoordSubStrings.length; i++)
+			{
+				try
+				{
+					antwoordSubStrings[i] = FormuleParser.randomizeString(antwoordSubStrings[i], randomVars, randomValues);
+					//antwoordSubstituties[i] = (FormuleParser.parseVergelijking(antwoordSubStrings[i], functieDefSet)).geefVergelijking(0);
+					antwoordSubstituties[i] = (FormuleParser.parseVergelijking(antwoordSubStrings[i], functieMVDefSet)).geefVergelijking(0);
+					if (!antwoordSubstituties[i].geefExpLinks().isVar())
+						subCorrect = false;
+				} catch (Exception e) {
+					subCorrect = false;
+				}
+			}
+			if (!subCorrect)
+				antwoordSubstituties = null;
+			
+		}
+		else
+			antwoordSubstituties = null;
+		
+		if (antwoordFuncStrings != null) {
+			
+			for (int i = 0; i < antwoordFuncStrings.length; i++)
+			{
+				String[] functieDelen = antwoordFuncStrings[i].split("=");
+				if(functieDelen.length<2) break;
+				String functieExpressieString = "$f"+functieDelen[1];
+				String functieNaam = functieDelen[0].substring(2, functieDelen[0].indexOf('('));
+				String varString = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf(')'));
+				String[] functieMVVariabelen = varString.split(",");
+				//String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
+				//System.out.println("varString:"+varString);
+				//System.out.println("functieExpressieString:"+functieExpressieString);
+				//System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
+				try
+				{
+					functieExpressieString = FormuleParser.randomizeString(functieExpressieString, randomVars, randomValues);
+					
+				} catch (Exception e) {
+					
+				}
+				Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
+				//functieDefSet.addFunctieExpressie(functieNaam, functieVariabele, functieExpressie);
+				functieMVDefSet.addFunctieMVExpressie(functieNaam, functieMVVariabelen, functieExpressie);
+			}
+		}
 		
         //this.gekozenAntwoordString = antwoordString;
         //this.gekozenStartString = startString;
@@ -1159,21 +1216,24 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 				if(antwoordDelen.length>1)
 				{
 					String antwoordStr = "$f" + antwoordDelen[0] + "@";
-					juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
-					Expressie e = FormuleParser.geefExpressie("$f" + antwoordDelen[1] + "@");
+					//juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+					juisteAntwoorden[i] = FormuleParser.geefExpressie(antwoordStr, functieMVDefSet);
+					Expressie e = FormuleParser.geefExpressie("$f" + antwoordDelen[1] + "@", functieMVDefSet);
 					if (e !=null && !Double.isNaN(e.geefWaarde())) absPrecisions[i] = e.geefWaarde();
 					
 				}
 				else
 				{
 					String antwoordStr = "$f" + antwoordStrings[i] + "@";
-					juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+					//juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+					juisteAntwoorden[i] = FormuleParser.geefExpressie(antwoordStr, functieMVDefSet);
 				}
 			}
 			else
 			{
 				String antwoordStr = "$f" + antwoordStrings[i] + "@";
-				juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+				//juisteAntwoorden[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+				juisteAntwoorden[i] = FormuleParser.geefExpressie(antwoordStr, functieMVDefSet);
 			}
 		}
 		
@@ -1190,7 +1250,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		FormuleParser p = new FormuleParser();
 		for(int i=0 ; i<antwoordStrings.length; i++) 
 		{	String antwoordStr = "$f" + antwoordStrings[i] + "@";
-			juisteVormen[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+			//juisteVormen[i] = p.parse(p.schoon(p.formuleString(antwoordStr)));
+			juisteVormen[i] = FormuleParser.geefExpressie(antwoordStr, functieMVDefSet);
 		}
 		
 	}
@@ -1393,7 +1454,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			if(antwoordString.charAt(antwoordString.length()-2)=='=' || antwoordString.charAt(antwoordString.length()-2)=='\u2248')
 			{	int isIndex = antwoordString.length()-2;
 				antwoordString = antwoordString.substring(0,isIndex)+"@";
-				e1 = FormuleParser.geefExpressie(antwoordString);
+				//e1 = FormuleParser.geefExpressie(antwoordString);
+				e1 = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
 		Expressie e2 = fv2.geefExpressie();
@@ -1402,7 +1464,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			if(antwoordString.charAt(antwoordString.length()-2)=='=' || antwoordString.charAt(antwoordString.length()-2)=='\u2248')
 			{	int isIndex = antwoordString.length()-2;
 				antwoordString = antwoordString.substring(0,isIndex)+"@";
-				e2 = FormuleParser.geefExpressie(antwoordString);
+				//e2 = FormuleParser.geefExpressie(antwoordString);
+				e2 = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
 		if(e1==null || e2==null)
@@ -1453,12 +1516,14 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		}
 		String eStringVorig = fvVorig.toString();
 		eStringVorig = verwijderIsTeken(eStringVorig);
-		String vglStriktVorig = FormuleParser.geefExpressie(eStringVorig).toStringStrikt();
+		//String vglStriktVorig = FormuleParser.geefExpressie(eStringVorig).toStringStrikt();
+		String vglStriktVorig = FormuleParser.geefExpressie(eStringVorig, functieMVDefSet).toStringStrikt();
 		vglStriktVorig = vertaalNaarIdeasExpressie(vglStriktVorig);
 		
 		String eStringHuidig = fvHuidig.toString();
 		eStringHuidig = verwijderIsTeken(eStringHuidig);
-		String vglStriktHuidig = FormuleParser.geefExpressie(eStringHuidig).toStringStrikt();
+		//String vglStriktHuidig = FormuleParser.geefExpressie(eStringHuidig).toStringStrikt();
+		String vglStriktHuidig = FormuleParser.geefExpressie(eStringHuidig, functieMVDefSet).toStringStrikt();
 		//System.out.println(vglStriktHuidig);
 		vglStriktHuidig = vertaalNaarIdeasExpressie(vglStriktHuidig);
 		
@@ -1791,7 +1856,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         	gebruikersSubstituties = new Vergelijking[gebruikersSubstitutieStrings.length];
         	for(int i=0 ; i<gebruikersSubstitutieStrings.length ; i++)
 			{	try         
-		        {   gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i])).geefVergelijking(0);
+		        {   gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i], functieMVDefSet)).geefVergelijking(0);
+			        //gebruikersSubstituties[i] = (FormuleParser.parseVergelijking(gebruikersSubstitutieStrings[i])).geefVergelijking(0);
 		        	if(!gebruikersSubstituties[i].geefExpLinks().isVar()) subCorrect = false;
 		        }
 		        catch(Exception e)
@@ -1866,7 +1932,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	private VergelijkingMeerv getVergelijkingMeerv() {
 		String ans = "$h" + toString().substring(2); // $h ans @
 		String vgl = StringUtils.replaceStr(casString, "{ANS}", ans);
-		VergelijkingMeerv check = FormuleParser.parseVergelijking("$f" + vgl + "@");
+		VergelijkingMeerv check = FormuleParser.parseVergelijking("$f" + vgl + "@", functieMVDefSet);
 		return check;
 	}
 
@@ -1910,13 +1976,19 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			{	antwoord = antwoord.substitueer(gebruikersSubstituties[i].geefExpRechts(),gebruikersSubstituties[i].geefExpLinks().geefVarNaam());
 			}
 		}
+		if(antwoordSubstituties!=null && antwoord!=null) 
+		{	for(int i=0 ; i<antwoordSubstituties.length  ; i++)
+			{	antwoord = antwoord.substitueer(antwoordSubstituties[i].geefExpRechts(),antwoordSubstituties[i].geefExpLinks().geefVarNaam());
+			}
+		}
 		
 		if(antwoord==null) 
 		{	String antwoordString = formuleVak.toString();
 			if(antwoordString.charAt(antwoordString.length()-2)=='=' || antwoordString.charAt(antwoordString.length()-2)=='\u2248')
 			{	int isIndex = antwoordString.length()-2;
 				antwoordString = antwoordString.substring(0,isIndex)+"@";
-				antwoord = FormuleParser.geefExpressie(antwoordString);
+				//antwoord = FormuleParser.geefExpressie(antwoordString);
+				antwoord = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
 		if(antwoord!=null)
@@ -2211,8 +2283,9 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	    
 		if(ingevuld && formuleVakString.length()>2 )vulVak(formuleVakString) ;
 		//zetJuisteAntwoord(gekozenAntwoordString);
-		FormuleParser p = new FormuleParser();
-		if(!substitutieString.equals(""))substitutie = p.parse(p.schoon(p.formuleString(substitutieString)));
+		//FormuleParser p = new FormuleParser();
+		//if(!substitutieString.equals(""))substitutie = p.parse(p.schoon(p.formuleString(substitutieString)));
+		if(!substitutieString.equals(""))substitutie = FormuleParser.geefExpressie(substitutieString,functieMVDefSet);
 			
 		
 		this.stapNr = stapNr;
@@ -2299,12 +2372,14 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	    
 	    if (eigenOpdr && !startString) {
 			String eString = formuleVakken[0].toString();
-			Expressie exp = FormuleParser.geefExpressie(eString);
+			//Expressie exp = FormuleParser.geefExpressie(eString);
+			Expressie exp = FormuleParser.geefExpressie(eString,functieMVDefSet);
 			if(exp==null) 
 			{	if(eString.charAt(eString.length()-2)=='=' || eString.charAt(eString.length()-2)=='\u2248')
 				{	int isIndex = eString.length()-2;
 					eString = eString.substring(0,isIndex)+"@";
-					exp = FormuleParser.geefExpressie(eString);
+					//exp = FormuleParser.geefExpressie(eString);
+					exp = FormuleParser.geefExpressie(eString,functieMVDefSet);
 				}
 			}
         	String eStringCas = "$f@";
@@ -2390,7 +2465,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			if(expString.charAt(expString.length()-2)=='=' || expString.charAt(expString.length()-2)=='\u2248')
 			{	int isIndex = expString.length()-2;
 				expString = expString.substring(0,isIndex)+"@";
-				exp = FormuleParser.geefExpressie(expString);
+				//exp = FormuleParser.geefExpressie(expString);
+				exp = FormuleParser.geefExpressie(expString,functieMVDefSet);
 			}
 		}
 		if(exp==null ||  Double.isNaN(exp.geefWaarde()) || exp instanceof BasisExpressie)
@@ -2426,7 +2502,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			
 			if (stapNr==0 && eigenOpdr && !startString) {
 				String eString = formuleVak.toString();
-				Expressie exp = FormuleParser.geefExpressie(eString);
+				//Expressie exp = FormuleParser.geefExpressie(eString);
+				Expressie exp = FormuleParser.geefExpressie(eString,functieMVDefSet);
 	        	//String eStringCas = "$f@";
 	        	
 	        	Expressie expAntw = null;
@@ -2580,7 +2657,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			
 			String eString = fv.toString();
 			eString = verwijderIsTeken(eString);
-			String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			//String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			String vglStrikt = FormuleParser.geefExpressie(eString,functieMVDefSet).toStringStrikt();
 			vglStrikt = vertaalNaarIdeasExpressie(vglStrikt);
 			//String vgl = fv.geefExpressie().toString();
 			if(meerTips)
@@ -2622,7 +2700,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			String eString = fv.toString();
 			eString = verwijderIsTeken(eString);
 			
-			String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			//String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			String vglStrikt = FormuleParser.geefExpressie(eString, functieMVDefSet).toStringStrikt();
 			vglStrikt = vertaalNaarIdeasExpressie(vglStrikt);
 
 			RuleIF rule = WiskOpdr.ideas.getOneFirst(vglStrikt,strategieDomein);
@@ -2631,7 +2710,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 				return;
 			}
 			String exprString = vertaalIdeasExpressie(rule.getExpr());
-			Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+			//Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+			Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@", functieMVDefSet);
 			setFeedback("Tip: \n" 
 					+ translateRule(rule.getId()) + "\n"
 					+ "\n"
@@ -2652,7 +2732,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			if(formuleVak.geefExpressie()!=null && isGelijkwaardig) fv = formuleVak;
 			String eString = fv.toString();
 			eString = verwijderIsTeken(eString);
-			String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			//String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			String vglStrikt = FormuleParser.geefExpressie(eString, functieMVDefSet).toStringStrikt();
 			vglStrikt = vertaalNaarIdeasExpressie(vglStrikt);
 			//System.out.println(vglStrikt);
 			RuleIF rule = WiskOpdr.ideas.getOneFirst(vglStrikt,strategieDomein);
@@ -2666,7 +2747,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			//System.out.println(exprString);
 		    
 			
-			Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+			//Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+			Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@", functieMVDefSet);
 			if(stapNr>0)pijlVakken[stapNr-1].zetPijlTekst("", false);
 			//pijlVakken[stapNr-1].setLocation(getSize().width-pijlX,pijlVakken[stapNr-1].getLocation().y);
 			maakStap();
@@ -2689,7 +2771,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		{	ideasPuntenAftrek += aftrekSolve;
 			String eString = formuleVakken[0].toString();
 			eString = verwijderIsTeken(eString);
-			String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			//String vglStrikt = FormuleParser.geefExpressie(eString).toStringStrikt();
+			String vglStrikt = FormuleParser.geefExpressie(eString, functieMVDefSet).toStringStrikt();
 			System.out.println(vglStrikt.toString());
 		    RuleIF[] rules = WiskOpdr.ideas.getDerivation(vglStrikt,strategieDomein);
 		    if(rules==null)
@@ -2705,7 +2788,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 				String exprString = vertaalIdeasExpressie(rules[i].getExpr());
 				
                 
-				Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+				//Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@");
+				Expressie v = FormuleParser.geefExpressie("$f" + exprString + "@", functieMVDefSet);
 				pijlVakken[stapNr-1].zetPijlTekst(translateRule(rules[i].getId()), false);
 				//pijlVakken[stapNr-1].zetPijlTekst(rules[i].getId(), false);
                 pijlVakken[stapNr-1].setLocation(getSize().width-pijlX-150,pijlVakken[stapNr-1].getLocation().y);

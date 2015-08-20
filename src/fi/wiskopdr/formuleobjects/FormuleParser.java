@@ -748,7 +748,8 @@ public class FormuleParser
 	}
 	
 	public static Expressie parse(String s, boolean woordformule)
-	{	Expressie exp = null;
+	{	
+		Expressie exp = null;
 		//verwijder overbodige haakjes
 		try
 		{

@@ -1186,9 +1186,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				String varString = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf(')'));
 				String[] functieMVVariabelen = varString.split(",");
 				//String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
-				System.out.println("varString:"+varString);
-				System.out.println("functieExpressieString:"+functieExpressieString);
-				System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
+				//System.out.println("varString:"+varString);
+				//System.out.println("functieExpressieString:"+functieExpressieString);
+				//System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
 				try
 				{
 					functieExpressieString = FormuleParser.randomizeString(functieExpressieString, randomVars, randomValues);

@@ -107,6 +107,12 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     
     private JCheckBox eigenOpdrCB;
     
+    private JButton substitutiesButton;
+    private FormuleEditor antwoordSubstitutiesVak;
+    
+    private JButton functiesButton;
+    private FormuleEditor antwoordFunctiesVak;
+    
     public static void zetSignificantieAan(boolean b)
     {	significantieAan = b;
     }
@@ -140,6 +146,38 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		antwoordvak.addActionListener(this);
 		add(antwoordvak);
 		antwoordvak.setResizable(true);
+		
+		antwoordSubstitutiesVak = new FormuleEditor(true);
+        antwoordSubstitutiesVak.setBounds(15,270,570,150);
+        antwoordSubstitutiesVak.setFont(font);
+        antwoordSubstitutiesVak.addActionListener(this);
+        antwoordSubstitutiesVak.setMultiLine(true);
+        antwoordSubstitutiesVak.setResizable(true);
+        setLayer((Component)antwoordSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
+        
+        substitutiesButton = new JButton(WiskOpdr.rb.getString("substitutiesButtonLabel"));
+        substitutiesButton.setBounds(10,305,150,20);
+        substitutiesButton.setMargin(new Insets(3,2,3,2));
+        substitutiesButton.setFont(font);
+        substitutiesButton.addActionListener(this);
+        setLayer((Component)substitutiesButton, JLayeredPane.PALETTE_LAYER.intValue());
+        add(substitutiesButton,0);
+        
+        antwoordFunctiesVak = new FormuleEditor(true);
+        antwoordFunctiesVak.setBounds(125,270,570,150);
+        antwoordFunctiesVak.setFont(font);
+        antwoordFunctiesVak.addActionListener(this);
+        antwoordFunctiesVak.setMultiLine(true);
+        antwoordFunctiesVak.setResizable(true);
+        setLayer((Component)antwoordFunctiesVak, JLayeredPane.POPUP_LAYER.intValue());
+        
+        functiesButton = new JButton(WiskOpdr.rb.getString("functiesButtonLabel"));
+        functiesButton.setBounds(180,305,150,20);
+        functiesButton.setMargin(new Insets(3,2,3,2));
+        functiesButton.setFont(font);
+        functiesButton.addActionListener(this);
+        setLayer((Component)functiesButton, JLayeredPane.PALETTE_LAYER.intValue());
+        add(functiesButton,0);
 		
 		feedbackCB = makeCheckBox(145,160,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
 		eigenOpdrCB = makeCheckBox(690,160,270,20,WiskOpdr.rb.getString("eigenOpdrCBLabel"),false,true);
@@ -523,6 +561,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 Hashtable ideasInstellingen = new Hashtable();
                 boolean eigenOpdr = false;
                 boolean boxMetRand = true;
+                String[] antwoordSubStrings = null;
+                String[] antwoordFuncStrings = null;
                 
 				
 				if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
@@ -568,6 +608,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         			hasObjectives = ((Boolean)interactiePanelLaunchState.get("hasObjectives")).booleanValue();
         		else
         			hasObjectives = logObjectives != null;
+        		if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
+                if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
                 
 				this.herleiding = herleiding;
 				this.exact = exact;
@@ -630,6 +672,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
             	}
                 vormEditor.zetRegels(vormStrings);
                 
+                antwoordSubstitutiesVak.zetRegels(antwoordSubStrings);
+                antwoordFunctiesVak.zetRegels(antwoordFuncStrings);
+                               
 				stappenCB.setSelected(stappen);
 				formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
 				
@@ -734,7 +779,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			Hashtable ideasInstellingen = new Hashtable();
 			boolean eigenOpdr = false;
 			boolean boxMetRand = true;
-            
+			String[] antwoordSubStrings = null;
+            String[] antwoordFuncStrings = null;
             
 			
 			getAnswerModel();
@@ -787,6 +833,33 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			}	
 			catch(Exception ex)
 			{	}
+			
+			antwoordSubStrings = antwoordSubstitutiesVak.geefRegels();
+            antwoordFuncStrings = antwoordFunctiesVak.geefRegels();
+           	
+    		for (int i = 0; i < antwoordFuncStrings.length; i++)
+    		{
+    			if(antwoordFuncStrings[i]==null || antwoordFuncStrings[i].equals("$f@"))
+    				break;
+    			String[] functieDelen = antwoordFuncStrings[i].split("=");
+    			if(functieDelen.length!=2) {
+    				JOptionPane.showMessageDialog(this, "Syntax van functiedefinitie klopt niet");
+    				break;
+    			}
+    			//String functieExpressieString = "$f"+functieDelen[1];
+    			//Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
+    			//if(functieExpressie==null) {
+    			//	JOptionPane.showMessageDialog(this, "Syntax van functie-expressie klopt niet");
+    			//	break;
+    			//}
+    			System.out.println(functieDelen[0].substring(2));
+    			/*String pattern = "[a-zA-Z]+[']?[(][a-zA-Z][)]";
+    	        boolean matches = Pattern.matches(pattern, functieDelen[0].substring(2));
+    	        if(!matches)
+    	        {	JOptionPane.showMessageDialog(this, "Syntax klopt niet. Gebruik bv:\n f(x)=expressie \n of \n func(x)=expressie");
+    	        	break;
+    	        }*/
+    		}
 			
 			check = checkCB.isSelected();
 			teltMee = teltMeeCB.isSelected();
@@ -870,6 +943,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
 	        }
+	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
+            interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);
+            
 			
 		return interactiePanelLaunchState;
 	}
@@ -1170,6 +1246,22 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		{	boolean b = formuleToolBijFocusCB.isSelected();
 			formuleToolBijFocus = b;
 		}
+		else if(e.getSource() == antwoordSubstitutiesVak)
+        {  	remove(antwoordSubstitutiesVak);
+        	repaint();
+        }
+        else if(e.getSource() == substitutiesButton)
+        {  	add(antwoordSubstitutiesVak,0);
+        	repaint();
+        }
+        else if(e.getSource() == antwoordFunctiesVak)
+        {  	remove(antwoordFunctiesVak);
+        	repaint();
+        }
+        else if(e.getSource() == functiesButton)
+        {  	add(antwoordFunctiesVak,0);
+        	repaint();
+        }
 		else if(e.getSource()==herleidingsKeuze)
 		{	soortHerleiding = herleidingsKeuze.getSelectedIndex();
 		}
