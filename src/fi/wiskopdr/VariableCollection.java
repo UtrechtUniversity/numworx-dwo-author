@@ -3,6 +3,7 @@ package fi.wiskopdr;
 import java.util.*;
 
 import fi.beans.stringutils.StringUtils;
+import fi.wiskopdr.expressies.Expressie;
 
 public class VariableCollection
 {
@@ -114,5 +115,13 @@ public class VariableCollection
 			h.put(varName,new Integer(value));
 		}
 		return h;
+	}
+	
+	public boolean checkBorders()
+	{	boolean bordersOK = true;
+		for(int i=0 ; i<variables.size(); i++)
+		{	bordersOK = bordersOK && ((Variable)variables.elementAt(i)).checkBorders();
+		}
+		return bordersOK;
 	}
 }

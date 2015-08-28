@@ -417,6 +417,16 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 		return FormuleParser.geefExpressie(s);
 	}
 	
+	public Expressie geefExpressie(FunctieMVDefSet fds)
+	{	String s = toString();
+		return FormuleParser.geefExpressie(s, fds);
+	}
+	
+	public VergelijkingMeerv geefVergelijking(FunctieMVDefSet fds)
+	{	String s = toString();
+		return FormuleParser.parseVergelijking(s,fds);
+	}
+	
 	public VergelijkingMeerv geefVergelijking()
 	{	String s = toString();
 		return FormuleParser.parseVergelijking(s);

@@ -28,6 +28,7 @@ import fi.wiskopdr.expressies.Algebra;
 import fi.wiskopdr.expressies.BasisExpressie;
 import fi.wiskopdr.expressies.DecRound;
 import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.FunctieMV;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
 import fi.wiskopdr.expressies.FunctieMVDefSet;
@@ -655,7 +656,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		this.goedHalfFout = goedHalfFout;
 		this.puntenFeedback = puntenFeedback;
 		
-		
+		FunctieMV.setFunctieMVDefSet(functieMVDefSet);
         try         
         {   antwoordString = FormuleParser.randomizeString(antwoordString,randomVarNamen,randomVarWaarden);
         }
@@ -680,8 +681,11 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
         catch(Exception e)
         {   feedback = "$f???@";
         }
+        FunctieMV.setFunctieMVDefSet(null);
+        
         zetJuisteAntwoord(antwoordString, false);
         zetJuisteVorm(vormString);
+        
        
         //this.gekozenAntwoordString = antwoordString;
         this.feedback = feedback;
@@ -803,7 +807,34 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		this.logObjectives = logObjectives;
 		
 		zetStappen(stappen);
-        
+		
+		if (antwoordFuncStrings != null) {
+			
+			for (int i = 0; i < antwoordFuncStrings.length; i++)
+			{
+				String[] functieDelen = antwoordFuncStrings[i].split("=");
+				if(functieDelen.length<2) break;
+				String functieExpressieString = "$f"+functieDelen[1];
+				String functieNaam = functieDelen[0].substring(2, functieDelen[0].indexOf('('));
+				String varString = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf(')'));
+				String[] functieMVVariabelen = varString.split(",");
+				//String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
+				//System.out.println("varString:"+varString);
+				//System.out.println("functieExpressieString:"+functieExpressieString);
+				//System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
+				try
+				{
+					functieExpressieString = FormuleParser.randomizeString(functieExpressieString, randomVars, randomValues);
+					
+				} catch (Exception e) {
+					
+				}
+				Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
+				//functieDefSet.addFunctieExpressie(functieNaam, functieVariabele, functieExpressie);
+				functieMVDefSet.addFunctieMVExpressie(functieNaam, functieMVVariabelen, functieExpressie);
+			}
+		}
+		FunctieMV.setFunctieMVDefSet(functieMVDefSet);
         try         
         {   antwoordString = FormuleParser.randomizeString(antwoordString,randomVars,randomValues);
         }
@@ -852,32 +883,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		else
 			antwoordSubstituties = null;
 		
-		if (antwoordFuncStrings != null) {
-			
-			for (int i = 0; i < antwoordFuncStrings.length; i++)
-			{
-				String[] functieDelen = antwoordFuncStrings[i].split("=");
-				if(functieDelen.length<2) break;
-				String functieExpressieString = "$f"+functieDelen[1];
-				String functieNaam = functieDelen[0].substring(2, functieDelen[0].indexOf('('));
-				String varString = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf(')'));
-				String[] functieMVVariabelen = varString.split(",");
-				//String functieVariabele = functieDelen[0].substring(functieDelen[0].indexOf('(')+1, functieDelen[0].indexOf('(')+2);
-				//System.out.println("varString:"+varString);
-				//System.out.println("functieExpressieString:"+functieExpressieString);
-				//System.out.println("functieMVVariabelen:"+functieMVVariabelen[0]);
-				try
-				{
-					functieExpressieString = FormuleParser.randomizeString(functieExpressieString, randomVars, randomValues);
-					
-				} catch (Exception e) {
-					
-				}
-				Expressie functieExpressie = FormuleParser.geefExpressie(functieExpressieString);
-				//functieDefSet.addFunctieExpressie(functieNaam, functieVariabele, functieExpressie);
-				functieMVDefSet.addFunctieMVExpressie(functieNaam, functieMVVariabelen, functieExpressie);
-			}
-		}
+		FunctieMV.setFunctieMVDefSet(null);
+		
 		
         //this.gekozenAntwoordString = antwoordString;
         //this.gekozenStartString = startString;
@@ -1966,7 +1973,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 		syntaxFout = false;
 		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))removeSoft(mwFeedbackPanel);
 		else removeSoft(feedbackTekst);
-		Expressie antwoord = formuleVak.geefExpressie();
+		Expressie antwoord = formuleVak.geefExpressie(functieMVDefSet);
 		
 		Expressie antwoordNonSub = antwoord;
 		

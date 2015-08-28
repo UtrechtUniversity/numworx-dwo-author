@@ -24,6 +24,21 @@ public class NormalCDF extends Expressie
 	{	return (1 + StatUtil.erf(z / Math.sqrt(2))) / 2;
 	}
 
+	/*private double[] recalculateBorders(double grensLinks, double grensRechts, double mu, double sigma)
+	{
+		double[] grenzen = new double[2];
+		if(grensLinks < mu - 20*sigma)
+			grenzen[0] = mu - 20*sigma;
+		else
+			grenzen[0] = grensLinks;
+		
+		if(grensRechts > mu + 20*sigma)
+			grenzen[1] = mu + 20*sigma;
+		else
+			grenzen[1] = grensRechts;
+		
+		return grenzen;
+	}*/
 	
 	public double geefWaarde()
 	{	
@@ -31,6 +46,9 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde();
 		double mu = kind3.geefWaarde();
 		double sigma = kind4.geefWaarde();
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			
@@ -42,6 +60,9 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde(subst);
 		double mu = kind3.geefWaarde(subst);
 		double sigma = kind4.geefWaarde(subst);
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			
@@ -54,8 +75,11 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde(subst,vars);
 		double mu = kind3.geefWaarde(subst,vars);
 		double sigma = kind4.geefWaarde(subst,vars);
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
-		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
+		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma) || grensRechts<grensLinks)waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			
 		return waarde;
 	}
@@ -71,6 +95,9 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde(substD,vars);
 		double mu = kind3.geefWaarde(substD,vars);
 		double sigma = kind4.geefWaarde(substD,vars);
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			
@@ -84,6 +111,9 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde(substD);
 		double mu = kind3.geefWaarde(substD);
 		double sigma = kind4.geefWaarde(substD);
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			
@@ -96,6 +126,9 @@ public class NormalCDF extends Expressie
 		double grensRechts = kind2.geefWaarde();
 		double mu = kind3.geefWaarde();
 		double sigma = kind4.geefWaarde();
+		//double[] nieuweGrenzen = recalculateBorders(grensLinks, grensRechts, mu,sigma);
+		//grensLinks = nieuweGrenzen[0];
+		//grensRechts = nieuweGrenzen[1];
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = phi((grensRechts - mu) / sigma) - phi((grensLinks - mu) / sigma);			

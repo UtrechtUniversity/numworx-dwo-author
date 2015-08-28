@@ -118,6 +118,23 @@ public class Variable
 		}
 	}
 	
+	public boolean checkBorders()
+	{	boolean bordersOK = true;
+		for(int i=0 ; i<borders.size(); i+=2)
+		{	double bl = ((Expressie)borders.elementAt(i)).geefWaarde();
+			double br = ((Expressie)borders.elementAt(i+1)).geefWaarde();
+			if(bl > br
+				|| !Double.isNaN(bl) && bl < Integer.MIN_VALUE
+				|| !Double.isNaN(bl) && bl > Integer.MAX_VALUE
+				|| !Double.isNaN(br) && br < Integer.MIN_VALUE
+				|| !Double.isNaN(br) && br > Integer.MAX_VALUE)
+			{	bordersOK = false;
+				break;
+			}	
+		}
+		return bordersOK;
+	}
+	
 	public int[] getValues()
 	{	makeValues();
 		int[] intValues = new int[values.size()];

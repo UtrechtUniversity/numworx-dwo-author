@@ -28,6 +28,7 @@ import fi.beans.base64code.*;
 import fi.wiskopdr.AntwoordEditPanel;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrEditPanel;
 import fi.wiskopdr.tekstobjects.*;
@@ -750,6 +751,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		tekst = tekstEditor.getText();
 		tekst2 = tekstEditor2.getText();
 		randVarString = randomVarEditor.getText();
+		
+		//VariableCollection vc = new VariableCollection();
+		//boolean wellSet = vc.setVariables(randVarString);
+		//if(!wellSet || !vc.checkBorders())
+		//{
+		//	JOptionPane.showMessageDialog(this, "fout in definitie randomvariabelen");
+		//}
+		
 		scheidingX = this.scheidingX;
 		eindX = this.eindX;
 		hasTitle = this.hasTitle;

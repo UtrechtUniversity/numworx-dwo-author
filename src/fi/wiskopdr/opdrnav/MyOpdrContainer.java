@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -377,10 +378,14 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		{
 			try
 			{
-				varnamen = vc.getVariableNames();
-				waarden = vc.getRandomValues();
-				RandomVarNamen = varnamen;
-				RandomVarWaarden = waarden;
+				//if(vc.checkBorders())
+				{	varnamen = vc.getVariableNames();
+					waarden = vc.getRandomValues();
+					RandomVarNamen = varnamen;
+					RandomVarWaarden = waarden;
+				}
+				//else
+				//	JOptionPane.showMessageDialog(this, "Fout in definitie randomvariabelen.\n Geen correcte initialisatie.");
 			}
 			catch (Exception ex)
 			{
