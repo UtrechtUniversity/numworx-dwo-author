@@ -133,7 +133,9 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "correlationNoShow", "Correlatie kan niet berekend worden"},
             {   "significanceNoShow", "significantie kan niet berekend worden"},
             {   "notAvailable", "Niet beschikbaar"},
-            {   "selection", "selectie"}
+            {   "selection", "selectie"},
+            
+            { 	"CBA_text.csv", "CSV-data"},
             
          //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },

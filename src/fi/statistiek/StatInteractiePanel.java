@@ -1,6 +1,7 @@
 package fi.statistiek;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -11,10 +12,19 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.statistiek.types.ColumnType;
 
 /**
  * Statistiek InteractiePanel MVC Controller
@@ -22,12 +32,12 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
-public class StatInteractiePanel extends JPanel implements InteractiePanel,
-	ActionListener
+public class StatInteractiePanel extends JPanel implements InteractiePanel,	ActionListener, CBookAware
 {
 	private StatModel model;
 	private StatInteractiePanelView view;
 	public static final boolean DEBUG = false;
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 
 	/**
 	 * Constructor
@@ -552,5 +562,76 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,
 			cnfe.printStackTrace();
 		}
 		return (Hashtable) copy;
+	}
+
+	
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("text.csv"))
+		{
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	Hashtable h = this.getState();
+				h.remove("selectionList");
+				Hashtable tableModel = (Hashtable) h.get("tableModel");
+				int columnCount = ((Integer) tableModel.get("columnCount")).intValue();
+				boolean dataFitting = true;
+				String dataString = (String)map.get("content");
+				String[] regels = dataString.split("\n");
+				ArrayList<ArrayList<Object>> values = new ArrayList<ArrayList<Object>>();
+				for(int i=0 ; i<regels.length ; i++)
+				{	String[] waarden = regels[i].split(";");
+					if(waarden.length!=columnCount)
+					{	JOptionPane.showMessageDialog(this, "Data not fitting");
+						dataFitting = false;
+	    				break;
+					}
+					values.add(new ArrayList<Object>());
+					for(int j=0 ; j<waarden.length ; j++)
+					{	values.get(i).add(waarden[j]);
+					}
+				}
+				if(dataFitting)
+				{	tableModel.put("rowCount", new Integer(regels.length));
+					tableModel.put("values", values);
+					h.put("tableModel", tableModel);
+					this.setState(h);
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"text.csv"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"text.csv"};
+		return commands;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = Statistiek.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
 	}
 }

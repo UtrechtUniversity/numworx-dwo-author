@@ -134,7 +134,9 @@ public class Text_en extends java.util.ListResourceBundle
             {   "correlationNoShow", "Correlatie cannot be calculated"},
             {   "significanceNoShow", "significance cannot be calculated"},
             {   "notAvailable", "Not available"},
-            {   "selection", "selection"}
+            {   "selection", "selection"},
+            
+            { 	"CBA_text.csv", "CSV-data"},
 
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
