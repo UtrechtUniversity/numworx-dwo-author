@@ -380,18 +380,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * wordt ook aangeroepen door getScoreMapList(...)
 	 */
 	public static String[] geefPaginaScores(String suspendData) {
-		Object o = StringCodeObject.decodeStringToObject(suspendData);
-		if (o == null)
-			return null;
-		Hashtable h = (Hashtable) o;
-
+		Map h = toSuspendData(suspendData);
+		if(h == null) return null;
+		
 		int[][] scores = null;
 		boolean[][] bezocht = null;
-		if (h != null && h.containsKey("onsState")) {
-			Hashtable onsState = (Hashtable) h.get("onsState");
+		if (h.containsKey("onsState")) {
+			Map onsState = (Map) h.get("onsState");
 			if (onsState.containsKey("orScores"))
-				scores = (int[][]) onsState.get("orScores");
-			bezocht = (boolean[][]) onsState.get("bezocht");
+				scores = OpdrNavStruct.toIntArrayArray(onsState.get("orScores"));
+			bezocht = OpdrNavStruct.toBooleanArrayArray(onsState.get("bezocht"));
 		}
 		if (scores == null || scores.length == 0 || scores[0].length == 0)
 			return null;
@@ -403,19 +401,26 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return log;
 	}
 
+	private static Map toSuspendData(String suspendData) {
+		Object o;
+		if(suspendData != null && suspendData.startsWith("{"))
+			o = JSONValue.parse(suspendData);
+		else
+			o = StringCodeObject.decodeStringToObject(suspendData);
+		return (Map) o;
+	}
+
 	/**
 	 * Hiermee worden de paginatijden uit de suspenddata gehaald. 
 	 * (hoe lang een leerling op een pagina bezig is)
 	 */
 	private static String[] geefPaginaTijden(String suspendData) {
-		Object o = StringCodeObject.decodeStringToObject(suspendData);
-		if (o == null)
-			return null;
-		Hashtable h = (Hashtable) o;
+		Map h = toSuspendData(suspendData);
+		if(h == null) return null;
 		String[][] times = null;
-		if (h != null && h.containsKey("onsState")) {
-			Hashtable onsState = (Hashtable) h.get("onsState");
-			times = (String[][]) onsState.get("orTimes");
+		if ( h.containsKey("onsState")) {
+			Map onsState = (Map) h.get("onsState");
+			times = OpdrNavStruct.toStringArrayArray( onsState.get("orTimes"));
 		}
 		if (times == null || times.length == 0 || times[0].length == 0)
 			return null;

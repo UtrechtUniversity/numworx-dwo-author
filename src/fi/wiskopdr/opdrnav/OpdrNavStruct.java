@@ -1542,7 +1542,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return a[j];
 	}
 
-	static String[][] toStringArrayArray(Object object)
+	public static String[][] toStringArrayArray(Object object)
 	{
 		if (object == null || object instanceof String[][])
 			return (String[][]) object;
@@ -1571,7 +1571,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return null;
 	}
 
-	static int[][] toIntArrayArray(Object object)
+	public static int[][] toIntArrayArray(Object object)
 	{
 		if (object == null || object instanceof int[][])
 			return (int[][]) object;
