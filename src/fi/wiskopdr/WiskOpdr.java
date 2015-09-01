@@ -305,15 +305,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Hiermee haalt de DWO de score per objective uit de suspenddata. 
 	 */
 	public static Hashtable getScoresPerObjective(String suspendData) {
-		Object o = StringCodeObject.decodeStringToObject(suspendData);
-		if (o == null)
+		Map h = toSuspendData(suspendData);
+		if (h == null)
 			return null;
-		Hashtable h = (Hashtable) o;
 		Hashtable scoresPerObjective = null;
 		if (h != null &&  h.containsKey("onsState")) {
-			Hashtable onsState = (Hashtable) h.get("onsState");
+			Map onsState = (Map) h.get("onsState");
 			if (onsState.containsKey("scoresPerObjective"))
-				scoresPerObjective = (Hashtable) onsState.get("scoresPerObjective");
+			{
+				scoresPerObjective = new Hashtable( (Map) onsState.get("scoresPerObjective") ) ;
+			}
 		}
 		return scoresPerObjective;
 	}
@@ -322,11 +323,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Hiermee haalt de DWO de loggegevens per gelogd item uit de suspenddata. 
 	 */
 	public static Hashtable getLog(String suspendData) {
-		Object o = StringCodeObject.decodeStringToObject(suspendData);
-		Hashtable h = (Hashtable) o;
+		Map h = toSuspendData(suspendData);
 		Hashtable log = new Hashtable();
 		if (h != null && h.containsKey("log")) {
-			log = (Hashtable) h.get("log");
+			log.putAll( (Map)  h.get("log") );
 		}
 		return log;
 	}
