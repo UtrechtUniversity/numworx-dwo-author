@@ -4,6 +4,7 @@ import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -1745,7 +1746,39 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				kr.zetVulkleur("zwart"); 
 			}
 			/*cpfiw*/			
+		} else if(h.containsKey("stateNew")) { // JSONArray from NabouwenAanzichtenGWT
+			List rooster = (List) h.get("stateNew");
+			boolean[][][] booleanKR = new boolean[rooster.size()][][];
+			for (int i = 0; i < booleanKR.length; i++) {
+				List roosteri = (List) rooster.get(i);
+				boolean[][] booleanKRi = new boolean[roosteri.size()][];
+				for (int j = 0; j < booleanKRi.length; j++) {
+					List roosterij = (List) roosteri.get(j);
+					boolean booleanKRij[] = new boolean[roosterij.size()];
+					for (int k = 0; k < booleanKRij.length; k++) {
+						booleanKRij[k] = Boolean.TRUE.equals(roosterij.get(k));
+					}
+					booleanKRi[j] = booleanKRij;					
+				}
+				booleanKR[i] = booleanKRi;				
+			}
+			{	kr = new KubusRooster(booleanKR, 1); //later uitbreiden naar meer kubusroosters
+			}
+			v.zetKubusRooster(kr);
+			vp.zetKubusRooster(kr);
+			na.setValue(kr.maxAantal);
+			
+			
+			if (silhouet &&  !(bovenAanzichtMetHoogtes || maakAanzicht))
+			{
+				kr.zetVulkleur("zwart"); 
+			}
+			
+			
+			
 		}
+		
+		
 		
 		if (h.containsKey("ingevuld")) 
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();

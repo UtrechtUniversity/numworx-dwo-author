@@ -5,3 +5,4 @@ Permissions: all-permissions
 Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Application-Name: Nabouwen aanzichten
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
+Application-Library-Allowable-Codebase: *
