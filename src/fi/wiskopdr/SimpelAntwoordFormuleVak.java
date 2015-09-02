@@ -24,6 +24,7 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.repr.PopcornConverter;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.TabletOwner;
@@ -43,6 +44,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
 {
+	public static final String POPCORN_FORMULA = "popcorn.formula";
 	private AntwoordFormuleVak antwoordFormuleVak;
 	private Component formuleComponent, scoreGoedComponent, scoreFoutComponent, scoreHalfComponent;
 	private Component feedbackComponent;
@@ -463,6 +465,17 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 			cbookEventHandler.fire("input",formuleComponent.toString());
 			cbookEventHandler.fire("expression",formuleComponent.toString());
 			
+			if(cbookEventHandler.hasListeners(POPCORN_FORMULA))
+			{ 
+				Expressie expr = antwoordFormuleVak.formuleVak.geefExpressie();
+				if(expr != null)
+					cbookEventHandler.fire(POPCORN_FORMULA, 
+							expr.visit(
+									PopcornConverter.getInstance()).toString());
+				else
+					cbookEventHandler.fire(POPCORN_FORMULA, "nums1.NaN");
+			}
+			
 			double d = Double.NaN;
 			try 
 			{	d = Double.parseDouble(inputString);
@@ -857,7 +870,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,"index", "double", "expression"};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,"index", "double", "expression", POPCORN_FORMULA};
 		return s;
 	}
 
