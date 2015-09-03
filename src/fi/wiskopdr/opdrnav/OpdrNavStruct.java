@@ -2218,6 +2218,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrContainer.sessionStop();
 		states[activiteitNr][opdrachtNr] = opdrContainer.getState();
 		scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
+		
 		if (objectives != null)
 			scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
 		// FIXME op verzoek sylvia HIERO
@@ -2730,12 +2731,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				strafpunten[activiteitNr][opdrachtNr] += foutStraf;
 			}
 			score = Math.max(0, score - getInt(strafpunten,activiteitNr,opdrachtNr));
-			if (mode != 3)
-			{
-				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
-				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
-				or[activiteitNr].zetScore(opdrachtNr + 1, score);
-			}
+//!! Dubbel met wat hieronder staat... Alleen niet voor zelftoets, maar daarvoor wil je op dit moment geen score zetten.
+//			if (mode != 3)
+//			{
+//				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
+//				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
+//				or[activiteitNr].zetScore(opdrachtNr + 1, score);
+//			}
 			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
 			{
 				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
