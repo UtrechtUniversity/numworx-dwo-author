@@ -125,7 +125,7 @@ public class KubusRooster
 	
 
 	
-	public void voegKubusToe(int x, int z, int y)
+	public boolean voegKubusToe(int x, int z, int y)
 	{	if (x < maxAantal && y < maxAantal && z < maxAantal && x > -1 && y > -1 && z > -1)
 		{	kubussen[x][z][y] = new RKubus(ribLengte, beginpos + x * ribLengte, beginpos + y * ribLengte, beginpos + z * ribLengte);
 			aantalKubussen++;
@@ -153,12 +153,15 @@ public class KubusRooster
 			{	kubussen[x+1][z][y].isOnbedekt[4] = false;
 				kubussen[x][z][y].isOnbedekt[2] = false;
 			}
+			return true;
 		}
+		else
+			return false;
 	}
 	
 	
 	
-	public void verwijderKubus(int x, int z, int y)
+	public boolean verwijderKubus(int x, int z, int y)
 	{	if(x<maxAantal && y<maxAantal && z<maxAantal && x>-1 && y>-1 && z>-1)
 		{	//isZichtbaar[x][z][y] = false;
 			if(kubussen[x][z][y] != null)aantalKubussen--;
@@ -169,8 +172,10 @@ public class KubusRooster
 			if(z<maxAantal-1 && kubussen[x][z+1][y] !=null)kubussen[x][z+1][y].isOnbedekt[1] = true;
 			if(x>0 && kubussen[x-1][z][y] !=null)kubussen[x-1][z][y].isOnbedekt[2] = true;
 			if(x<maxAantal-1 && kubussen[x+1][z][y] !=null)kubussen[x+1][z][y].isOnbedekt[4] = true;
-			
+			return true;
 		}
+		else
+			return false;
 	}
 	
 	public void maakVol()

@@ -36,6 +36,7 @@ public class Viewer3d extends JComponent
     private CubeRemoveThread cubeRemoveThread;
     private boolean removed = false;
     private boolean removing = false;
+    private String lastBuildCommand = "";
     
     
     public Viewer3d(KubusRooster kr, int x, int y,int b, int h, NabouwenAanzichtenIF hb)
@@ -90,6 +91,14 @@ public class Viewer3d extends JComponent
         yhoek = 0;
         beginx = 30;
         beginy = -30;
+    }
+    
+    public String getLastBuildCommand()
+    {	return lastBuildCommand;
+    }
+    
+    public void setLastBuildCommand(String s)
+    {	lastBuildCommand = s;
     }
     
     public void zetAfstand(double afst)
@@ -634,50 +643,70 @@ public class Viewer3d extends JComponent
         }
     }
     public void muisKkActie(MouseEvent e, boolean remove)
-    {   
+    {   boolean changed = false;
         for(int q=aantalKv-1 ; q>-1 ; q--)
         {   int n = sorteerRij[q];
             if(kv[n].m == 6 && kv[n].k == 0 && p[kv[n].i][kv[n].j].contains(mb.geefDrukx(),mb.geefDruky()))
             {   if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() || remove))
-                {   kr.voegKubusToe(kv[n].i,kv[n].j,0);
+                {   changed = kr.voegKubusToe(kv[n].i,kv[n].j,0);
+                	updateLastBuildCommand(changed, true, kv[n].i, kv[n].j, 0);
                     if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
                 }
                 else
-                {   kr.verwijderKubus(kv[n].i,kv[n].j,0);
+                {   changed = kr.verwijderKubus(kv[n].i,kv[n].j,0);
+	                updateLastBuildCommand(changed, false, kv[n].i,kv[n].j,0);
                     if(gr!=null)gr.verlaag(kv[n].i,kv[n].j);
                 }
-                return;
+	            return;
             }
             else if(kv[n].m != 6 && pp[kv[n].i][kv[n].j][kv[n].k][kv[n].m].contains(mb.geefDrukx(),mb.geefDruky()))
             {   if(eigenaar.isBouwen() && !(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown() ||remove) && !maakAanzicht)
                 {   if(kv[n].m==0)
-                    {   kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k+1);
-                        if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
+                    {   changed = kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k+1);
+	                    updateLastBuildCommand(changed, true, kv[n].i,kv[n].j,kv[n].k+1);
+	                    if(gr!=null)gr.verhoog(kv[n].i,kv[n].j);
                     }
                 	else if(kv[n].m==1)
-                    {   kr.voegKubusToe(kv[n].i,kv[n].j-1,kv[n].k);
+                    {   changed = kr.voegKubusToe(kv[n].i,kv[n].j-1,kv[n].k);
+	                    updateLastBuildCommand(changed, true, kv[n].i,kv[n].j-1,kv[n].k);
                     }
                 	else if(kv[n].m==2)
-                    {   kr.voegKubusToe(kv[n].i+1,kv[n].j,kv[n].k);
+                    {   changed = kr.voegKubusToe(kv[n].i+1,kv[n].j,kv[n].k);
+	                    updateLastBuildCommand(changed, true, kv[n].i+1,kv[n].j,kv[n].k);
                     }
                 	else if(kv[n].m==3)
-                    {   kr.voegKubusToe(kv[n].i,kv[n].j+1,kv[n].k);
+                    {   changed = kr.voegKubusToe(kv[n].i,kv[n].j+1,kv[n].k);
+	                    updateLastBuildCommand(changed, true, kv[n].i,kv[n].j+1,kv[n].k);
                     }
                 	else if(kv[n].m==4)
-                    {   kr.voegKubusToe(kv[n].i-1,kv[n].j,kv[n].k);
+                    {   changed = kr.voegKubusToe(kv[n].i-1,kv[n].j,kv[n].k);
+	                   updateLastBuildCommand(changed, true, kv[n].i-1,kv[n].j,kv[n].k);
                     }
                 	else if(kv[n].m==5)
-                    {   kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k-1);
+                    {   changed = kr.voegKubusToe(kv[n].i,kv[n].j,kv[n].k-1);
+	                    updateLastBuildCommand(changed, true, kv[n].i,kv[n].j,kv[n].k-1);
                     }
                 }
                 else
-                {   kr.verwijderKubus(kv[n].i,kv[n].j,kv[n].k);
-                    if(gr!=null)gr.verlaag(kv[n].i,kv[n].j);
+                {   changed = kr.verwijderKubus(kv[n].i,kv[n].j,kv[n].k);
+                	updateLastBuildCommand(changed, false, kv[n].i,kv[n].j,kv[n].k);
+	                if(gr!=null)gr.verlaag(kv[n].i,kv[n].j);
                 }
+            		
                 return;
             }
         }
     }
+    
+    private void updateLastBuildCommand(boolean changed, boolean bouw, int x, int y, int z)
+    {	if(changed && bouw)
+    		lastBuildCommand = NabouwenAanzichten.rb.getString("bouwOpdracht") + " " + (x+1) + "," + (y+1) + "," + (z+1);
+    	else if(changed && !bouw)
+    		lastBuildCommand = NabouwenAanzichten.rb.getString("sloopOpdracht") + " " + (x+1) + "," + (y+1) + "," + (z+1);
+    	else
+    		lastBuildCommand = "";
+    }
+    
     public void muisDrukActie(MouseEvent e){
         if(removing) return;
         removing = true;

@@ -117,6 +117,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	NabouwenAanzichtenInteractieEditPanel naiep;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
+	private String buildHistory = "";
 	
 	public NabouwenAanzichtenInteractiePanel()
 	{	setLayout(null);
@@ -2168,9 +2169,16 @@ newViewer = false;
 			docentV.tekenOpnieuw();
 		
 		boolean[][][]  booleanKR = kr.geefBooleanRooster();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("booleanKR", booleanKR);
+		cbookEventHandler.fire("blockBuilding",map);
+		
+		String lastBuildCommand = v.getLastBuildCommand();
+		if(!"".equals(lastBuildCommand))
+			buildHistory = buildHistory + lastBuildCommand + "\n";
 		Map<String,Object> map1 = new HashMap<String,Object>();
-		map1.put("booleanKR", booleanKR);
-		cbookEventHandler.fire("blockBuilding",map1);
+		map1.put("content", buildHistory);
+		cbookEventHandler.fire("text.buildingProgram",map1);
 	}
 	
 	
@@ -2219,6 +2227,8 @@ newViewer = false;
 				kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel2"));
 				if(bovenAanzichtMetHoogtes)
 					v.zetHoogtes();
+				buildHistory = "";
+				v.setLastBuildCommand("");
 				zetVeranderd();
 			}
 			else
@@ -2226,6 +2236,8 @@ newViewer = false;
 				kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
 				if(bovenAanzichtMetHoogtes)
 					v.wisHoogtes();
+				buildHistory = "";
+				v.setLastBuildCommand("");
 				zetVeranderd();
 			}
 		}
@@ -2779,7 +2791,7 @@ newViewer = false;
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"blockBuilding"};
+		String[] commands = {"blockBuilding", "text.buildingProgram"};
 		return commands;
 	}
 
