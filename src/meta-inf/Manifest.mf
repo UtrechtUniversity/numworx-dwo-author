@@ -4,6 +4,7 @@ Trusted-Only: true
 Permissions: all-permissions
 Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Application-Name: DWO
+Application-Library-Allowable-Codebase: *
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.toegang.nu *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Class-Path: nabouwenaanzichten.jar 
  algebrapijlenopdr.jar 
