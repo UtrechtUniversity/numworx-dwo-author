@@ -14,6 +14,7 @@ public class Link
 	private boolean voorwaardelijk = false;
 	private int width=400;
 	private int height=400;
+	private boolean embedded = false;
 	
 	public static void setJSObjectOwner(LinkIF wiskOpdr)
 	{	Link.wiskOpdr = wiskOpdr;
@@ -34,13 +35,14 @@ public class Link
 	}
 	*/
 	
-	public Link (String linkTekst, String[] urls, int width, int height, int[] grensScores)
+	public Link (String linkTekst, String[] urls, int width, int height, boolean embedded, int[] grensScores)
 	{
 		this.linkTekst = linkTekst;
 		this.urls = urls;
 		this.width = width;
 		this.height = height;
-		this.grensScores = grensScores;
+		this.height = height;
+		this.embedded = embedded;
 		//this.url = urls[0];
 		if(grensScores != null)
 			voorwaardelijk = true;
@@ -110,11 +112,15 @@ public class Link
 	{	return height;
 	}
 	
+	public boolean getEmbedded()
+	{	return embedded;
+	}
+	
 	
 	public String toString()
 	{	if(grensScores == null)
 		{	url = urls[0];
-			return "$U" + url + "@$B" + width + "@$C" + height + "@";
+			return "$U" + url + "@$B" + width + "@$C" + height + "@$E" + embedded + "@";
 		}
 		else
 		{	String urlString = "";
@@ -125,7 +131,7 @@ public class Link
 			{	urlString = urlString + "@$U" + urls[i];
 				grensString = grensString + "@$G" + grensScores[i];
 			}
-			return urlString + grensString + "@$B" + width + "@$C" + height + "@";
+			return urlString + grensString + "@$B" + width + "@$C" + height + "@$E" + embedded + "@";
 			
 		}
 	}

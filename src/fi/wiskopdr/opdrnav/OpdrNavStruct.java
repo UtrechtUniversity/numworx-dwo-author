@@ -386,7 +386,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 			}
 		String[] eindeUrls = new String[] {"goto:0"};
-		eindeLink = new Link("", eindeUrls, 400, 400, null);
+		eindeLink = new Link("", eindeUrls, 400, 400, false, null);
 			
 		orPopup = new JPopupMenu();
 		

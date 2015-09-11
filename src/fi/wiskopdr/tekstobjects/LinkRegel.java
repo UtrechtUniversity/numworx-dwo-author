@@ -42,7 +42,7 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 	String[] httpString = new String[] {"http://", "http://", "http://", "http://",
 			"http://", "http://", "http://", "http://", "http://", "http://"};
 	
-	private Link link = new Link("link", httpString, 400, 400, null);
+	private Link link = new Link("link", httpString, 400, 400, false, null);
 	
 	public static void setJSObjectOwner(LinkIF linkIF)
 	{	LinkRegel.wiskOpdr = linkIF;

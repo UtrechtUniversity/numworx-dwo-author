@@ -19,6 +19,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	//private String url="http://";
     private int height = 400;
     private int width = 400;
+    private boolean embedded = false;
      	
     private TextField linkTekstField;
     private TextField urlField;
@@ -208,10 +209,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     public static Link addLink(Component owner) {
         String[] httpString = new String[] {"http://", "http://","http://", "http://",
         		"http://", "http://","http://", "http://","http://", "http://"};
-    	AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", httpString, 400, 400, null);
+    	AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", httpString, 400, 400, false, null);
         asd.show();
         if (asd.isConfirmed()) {
-            Link link = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getGrensScores());
+            Link link = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getEmbedded(), asd.getGrensScores());
             if(link == null) { //something went wrong, reshow the dialog
                 link = addLink(owner);
             }
@@ -259,6 +260,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	        int[] grensScores = link.getGrensScores();
 	        int height = link.getHeight();
 	        int width = link.getWidth();
+	        boolean embedded = link.getEmbedded();
 	        //dit hieronder lijkt me niet verstandig; even kijken
 	        //welke foutmeldingen ik nu krijg.
 	        //if(urls==null) 
@@ -267,10 +269,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	        //		urls[i] = "";
 	        //}
 	                
-	        AddLinkDialog asd = new AddLinkDialog(owner, "URLgegevens wijzigen", linkTekst, urls, width, height, grensScores);
+	        AddLinkDialog asd = new AddLinkDialog(owner, "URLgegevens wijzigen", linkTekst, urls, width, height, embedded, grensScores);
 	        asd.show();
 	        if (asd.isConfirmed()) {
-	        	Link newLink = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getGrensScores());
+	        	Link newLink = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getEmbedded(), asd.getGrensScores());
 	            if(newLink == null) { //something went wrong, reshow the dialog
 	            	newLink = editLink(owner, newLink);
 	            }
@@ -327,6 +329,8 @@ public class AddLinkDialog extends Dialog implements ActionListener,
             try {width = Integer.parseInt(widthField.getText());}
             catch(Exception ex){}
             try {height = Integer.parseInt(heightField.getText());}
+            catch(Exception ex){}
+            try {embedded = embeddedCB.isSelected();}
             catch(Exception ex){}
             confirmed = true;
             this.setVisible(false);
@@ -421,12 +425,15 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     public int getHeight() {
         return height;
     }
+    public boolean getEmbedded() {
+        return embedded;
+    }
 
     
     
     //Nieuw en uitproberend!!
     
-    public AddLinkDialog(Component owner, String windowTitle, String linkTekst, String[] urls, int width, int height, int[] grensScores) {
+    public AddLinkDialog(Component owner, String windowTitle, String linkTekst, String[] urls, int width, int height, boolean embedded, int[] grensScores) {
         super((owner instanceof Frame) ? (Frame) owner : new Frame(),
                 windowTitle, true);
         this.setLayout(null);
@@ -434,6 +441,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         this.linkTekst = linkTekst;
         this.urls = urls;
         this.height = height;
+        this.embedded = embedded;
         this.width = width;
         this.grensScores = grensScores;
         if(grensScores == null)
@@ -524,13 +532,13 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         voorwaardelijkBox = new JCheckBox("Voorwaardelijke link (work in progress)");//nog aanpassen!
         voorwaardelijkBox.setBounds(10, 150, 300, 20);
         voorwaardelijkBox.setSelected(voorwaardelijk);
-        this.add(voorwaardelijkBox);
+        //this.add(voorwaardelijkBox);
         voorwaardelijkBox.addActionListener(this);
         
         voorwaardelijkButton = new VoorwaardelijkeLinkButton();
         voorwaardelijkButton.setBounds(310, 150, 120, 20);
         voorwaardelijkButton.setVisible(voorwaardelijk);
-        this.add(voorwaardelijkButton);
+        //this.add(voorwaardelijkButton);
         voorwaardelijkButton.addActionListener(this);
         
         if(voorwaardelijk)
@@ -538,9 +546,11 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         	voorwaardelijkButton.setGrensScores(grensScores);
         }
         
-        embeddedCB = new JCheckBox();
-        embeddedCB.setBounds(10, 150, 300, 20);
-        this.add(embeddedCB);
+        embeddedCB = new JCheckBox("embedded");
+        embeddedCB.setBounds(150, 150, 300, 20);
+        embeddedCB.setSelected(embedded);
+        embeddedCB.setOpaque(false);
+        add(embeddedCB,0);
         embeddedCB.addActionListener(this);
         
         //Hierdoor merkt niemand iets van aanbouw voorwaardelijke link 
@@ -562,17 +572,17 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	        add(cancelButton);
         }
         else
-        {	this.setSize(460, 200);
+        {	this.setSize(460, 230);
 
 	        /* Register button */
 	        okButton = new Button("OK");
-	        okButton.setBounds(50,160,80,20);
+	        okButton.setBounds(50,190,80,20);
 	        okButton.addActionListener(this);
 	        add(okButton);
 	        
 	        /* Reset button */
 	        cancelButton = new Button("Cancel");
-	        cancelButton.setBounds(150,160,80,20);
+	        cancelButton.setBounds(150,190,80,20);
 	        cancelButton.addActionListener(this);
 	        add(cancelButton);
 	    }

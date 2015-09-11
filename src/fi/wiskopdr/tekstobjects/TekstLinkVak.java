@@ -2,6 +2,12 @@ package fi.wiskopdr.tekstobjects;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
+
+import javax.swing.BorderFactory;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.WiskOpdr;
@@ -9,6 +15,8 @@ import fi.wiskopdr.WiskOpdr;
 public class TekstLinkVak extends TekstDeelVak implements ActionListener
 {
 	private LinkRegel linkRegel;
+	private JTextPane tp;
+	private JScrollPane js;
 	//private Font font = new Font("SansSerif",Font.BOLD,12);
 	private FontMetrics fm;
 	private boolean selected = false;
@@ -29,6 +37,10 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		linkRegel.setSelectable(false);
 		
 		add(linkRegel,0);
+		
+		//tp = new JTextPane();
+		//js = new JScrollPane();
+		//js.getViewport().add(tp);
 				
 		setSize(linkRegel.getSize().width,linkRegel.getSize().height);
 		ashoogte = linkRegel.getAsHoogte();
@@ -55,7 +67,10 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		
 		if("GR".equals(WiskOpdr.deployVariant))linkRegel.setFont(new Font("Arial",Font.PLAIN,13));
 		else linkRegel.setFont(f);
-		setSize(linkRegel.getSize().width, linkRegel.getSize().height);
+		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded())
+			setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
+		else
+			setSize(linkRegel.getSize().width, linkRegel.getSize().height);
 		ashoogte = linkRegel.getAsHoogte();
 	}
 	public void editLink()
@@ -131,10 +146,38 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		int heightEnd = s.indexOf("@",heightStart);
 		int height = Integer.parseInt(s.substring(heightStart,heightEnd));
 		
+		boolean embedded = false;
+		if(s.indexOf("$E")>=0)
+		{	int embeddedStart = s.indexOf("$E")+2;
+			int embeddedEind = s.indexOf("@",embeddedStart);
+			embedded = Boolean.parseBoolean(s.substring(embeddedStart,embeddedEind));
+		}
 		//linkRegel.setLink(new Link(linkTekst,url,width,height));
-		linkRegel.setLink(new Link(linkTekst, urls, width, height, grensScores));
+		linkRegel.setLink(new Link(linkTekst, urls, width, height, embedded, grensScores));
 		linkRegel.setUnderlined(true);
-	
+		
+		if(embedded) 
+		{	setSize(width, height);
+			super.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+			super.setOpaque(true);
+			super.setBackground(Color.LIGHT_GRAY);
+			linkRegel.setLocation(1,1);
+			/*remove(linkRegel);
+			/*remove(linkRegel);
+			add(js);
+			
+			js.setBounds(0,0,width,height);
+			try 
+			{
+			    URL url = new URL(urls[0]);
+			    if(url!=null)tp.setPage(url);
+			} 
+			  catch (Exception e) 
+			{
+			    e.printStackTrace();
+			}*/
+			
+		}
 	}
 	
 	public LinkRegel geefTekstVak()
@@ -159,7 +202,15 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	}
 	
 	public void zetMaat()
-	{	setSize(linkRegel.getSize().width, linkRegel.getSize().height);
+	{	
+		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded())
+		{	setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
+			super.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+			super.setOpaque(true);
+			super.setBackground(Color.LIGHT_GRAY);
+		}
+		else
+			setSize(linkRegel.getSize().width, linkRegel.getSize().height);
 		linkRegel.setLocation(0,0);
 		ashoogte = linkRegel.getAsHoogte();
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
@@ -190,6 +241,10 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	
 	public int getFrameHeight()
 	{	return linkRegel.getLink().getHeight();
+	}
+	
+	public boolean getEmbedded()
+	{	return linkRegel.getLink().getEmbedded();
 	}
 	
 	public void actionPerformed(ActionEvent e)

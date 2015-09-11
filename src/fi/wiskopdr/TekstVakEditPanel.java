@@ -145,7 +145,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	String[] httpString = new String[] {"http://", "http://", "http://", "http://",
 			"http://", "http://", "http://", "http://", "http://", "http://"};
 	
-	private Link link = new Link("link", httpString, 400, 400, null);
+	private Link link = new Link("link", httpString, 400, 400, false, null);
 	//private Link link = new Link("link", null, 400, 400, null);
 	// kijken of nu de http's wel tevoorschijn komen
 	
@@ -1026,7 +1026,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
-			link = new Link("", linkUrls, linkWidth, linkHeight, grensScores);
+			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
 		
 		randZichtbaarCB.setSelected(randZichtbaar);
 		randDikteTF.setVisible(randZichtbaar);

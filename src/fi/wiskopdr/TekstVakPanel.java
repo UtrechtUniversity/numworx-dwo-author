@@ -191,7 +191,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	String[] httpString = new String[] {"http://", "http://", "http://", "http://",
 			"http://", "http://", "http://", "http://", "http://", "http://"};
 	
-	private Link link = new Link("link", httpString, 400, 400, null);
+	private Link link = new Link("link", httpString, 400, 400, false, null);
 	//private Link link = new Link("link", null, 400, 400, null);
 	
 	private boolean vulHoogte = false;
@@ -902,7 +902,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			}
 		
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
-			link = new Link("", linkUrls, linkWidth, linkHeight, grensScores);
+			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
 		}
 		setCallOut(callOut);
 
@@ -2493,7 +2493,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			}
 		
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
-			link = new Link("", linkUrls, linkWidth, linkHeight, grensScores);
+			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
 		}
 		
 
