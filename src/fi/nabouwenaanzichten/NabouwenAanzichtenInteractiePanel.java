@@ -2560,7 +2560,7 @@ newViewer = false;
 	    
 	    h.put("checkAantalKubus", new Boolean(checkAantalKubus));	    
 	    
-	    h.put("scoreMax", new Integer(scoreMax));
+	    h.put("scoreMax", new Integer(kijkNaActief ? scoreMax : 0 ));
 	    
 		int aantalDocentKR = 0;
 		boolean[][][][] booleanDocentKRs = null;
