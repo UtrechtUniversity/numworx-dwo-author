@@ -99,7 +99,7 @@ public class AlgebraExpressies extends JApplet implements ScormAppletIF, WiskOpd
 											 "Freudenthal Instituut",
 											 "www.fi.uu.nl",""});
 		
-		as = new AlgebraSchuifVeld(0, 0, getSize().width, getSize().height);
+		as = new AlgebraSchuifVeld(0, 0, getSize().width, getSize().height, null);
 		as.setVisible(false);
 		getContentPane().add(as);
 		as.setVisible(true);

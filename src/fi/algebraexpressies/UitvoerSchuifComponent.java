@@ -476,7 +476,7 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			
 			pijlUit[0].im = null;
 			
-			if (asv.aeip.kijkNaActief)
+			if (asv.aeip!=null && asv.aeip.kijkNaActief)
 				asv.aeip.answerChanged();
 
 		}
