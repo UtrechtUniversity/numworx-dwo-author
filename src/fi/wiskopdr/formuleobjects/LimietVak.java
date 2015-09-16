@@ -62,9 +62,6 @@ public class LimietVak extends RegelVak
 		if(selected)g.setColor(Color.white);
 		else g.setColor(fgColor);
 		
-		
-		System.out.println(kind4.toString());
-		
 		g.drawString("lim", k2x+k2w/2,k3y);//(height-(2*asc+2*desc+asc/4))/2+3*asc/2+desc);
 		if(kind4!=null && kind4.toString().equals("0"))
 		{	

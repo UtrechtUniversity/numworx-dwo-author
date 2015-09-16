@@ -216,7 +216,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			setSize(antwoordKV.getWidth() + 50, 20);
 			this.setText((String) value);
 
-			System.out.println("ooo" + (String) value);
+			//System.out.println("ooo" + (String) value);
 
 			resize();
 			setPreferredSize(new Dimension(antwoordKV.getWidth() + 50, getHeight() + 1));
