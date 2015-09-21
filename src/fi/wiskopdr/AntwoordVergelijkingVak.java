@@ -2516,7 +2516,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		{
 			for (int i = 0; i < antwoordSubstituties.length; i++)
 			{
-				//hier wil ik de isEindOplossing weer weghalen. Ik ga deze substituties voor differentialen niet meer gebruiken. 
+				//dit onderscheid blijven maken, voor het geval een variabele zowel gesubstitueerd zou kunnen worden als als eindvariabele gebruikt zou kunnen worden. 
+				//bijvoorbeeld in werk van Harm Houwing voor oplossen van stelsels vergelijkingen.
 				if(antwoord.isEindOplossing(var))
 					antwoord = antwoord.substitueerEindOplossing(antwoordSubstituties[i].geefExpRechts(), antwoordSubstituties[i].geefExpLinks().geefVarNaam());
 				else	
