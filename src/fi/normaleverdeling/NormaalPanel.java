@@ -4056,6 +4056,8 @@ grensDecimals = findGrensDecimals();
     	if (kijkOpdrachtNa) 
 		{	correct = false;
 			fout = false;
+			nagekeken = false;
+			score = 0;
     		vinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(false);
     		fireChangeEvent();
