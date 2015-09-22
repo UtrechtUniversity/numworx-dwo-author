@@ -113,6 +113,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		
 //System.out.println("setState");
 
+		algebraSchuifVeld.setState(h);
+
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
 		
@@ -122,14 +124,20 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 		
 //System.out.println("nagekeken " + nagekeken);
 //System.out.println("ingevuld " + ingevuld);
+//System.out.println("kijkNaActief " + kijkNaActief);
 
-		algebraSchuifVeld.setState(h);
+		//algebraSchuifVeld.setState(h);
 		
 		if (!ingevuld)
-			algebraSchuifVeld.changed = false;
+		{	algebraSchuifVeld.changed = false;
+		}
 		
-		if (ingevuld && (mode == 0 || nagekeken)) 
-			kijkNa();
+//System.out.println("nagekeken " + nagekeken);		
+		if (ingevuld && (mode == 0 || nagekeken))
+		//if (nagekeken)
+		{	kijkNa();
+//System.out.println("na kijkNa");		
+		}
 	}
 	
 	public void setEditState(Hashtable h)
@@ -166,6 +174,9 @@ System.out.println("getState");
 	    
 		nagekeken = this.nagekeken;
 		ingevuld = this.ingevuld;
+
+System.out.println("nagekeken " + nagekeken);
+System.out.println("ingevuld " + ingevuld);
 		
 		Hashtable h = algebraSchuifVeld.getState();
 		h.put("nagekeken",new Boolean(nagekeken));
@@ -369,15 +380,18 @@ System.out.println("getState");
     }
     
     public void kijkNa()
-    {	if (!kijkNaActief)
+    {	
+System.out.println("kijkNa pre");    	
+    	
+    	if (!kijkNaActief)
     		return;
   
-//System.out.println("kijkNa");    
+System.out.println("kijkNa");    
     
     	//ingevuld = !algebraSchuifVeld.veldIsLeeg();
     	ingevuld = algebraSchuifVeld.changed;
     	
-//System.out.println("ingevuld " + ingevuld);    	
+System.out.println("ingevuld " + ingevuld);    	
     	
     	if (!ingevuld)
     		return;
@@ -462,7 +476,8 @@ System.out.println("getState");
 			correct = true;
 			fout = false;
 		}
-		
+
+		nagekeken = true;
 /*		
 		// leerlingExpressieUVS.size() - hits is aantal foute expressies
 		if (leerlingExpressieUVS.size() >= docentExpressies.size())
@@ -490,8 +505,12 @@ System.out.println("getState");
     {
     	if (kijkNaActief)
     	{	
+    		algebraSchuifVeld.changed = true;
     		correct = false;
     		fout = false;
+    		score = 0;
+    		nagekeken = false;
+    		ingevuld = true;
     		fireChangeEvent();
     	}	
     }
