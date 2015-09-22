@@ -143,6 +143,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private int antwoordPopulatie;
 	
 	private int score;
+	boolean nagekeken = false;
+	int mode;
+	boolean correct = true;
+	boolean fout = false;
 	
 	/**
 	 * Constructor
@@ -1037,6 +1041,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				}
 			}
 			this.staafjesPanel.bepaalGrenzenMetSlider();
+			this.staafjesPanel.updateSuccessenSliderPosition();
 		}
 		else {
 			this.nText.setText(this.nInvoer.getInput());
@@ -1150,6 +1155,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.populatieTextUpdate();
 			this.vernieuw();
 		}
+		
+		changed();
+		
 	}
 	
 	/**
@@ -1215,10 +1223,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 			this.setHypergeometrisch(this.hyperComboBox.getSelectedIndex() == 1);
 		}
 		
+		changed(); 
+		
 		if(arg0.getSource() == this.kijkNaButton) {
 			this.kijkNa();
 		}
 		this.vernieuw();
+		
+		
 	}
 	
 	/**
@@ -1357,6 +1369,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("showHyperKeuze", new Boolean(this.showHyperKeuze));
 		
 		h.put("hypergeometrisch", new Boolean(this.hypergeometrisch));
+		
+		h.put("nagekeken",new Boolean(nagekeken));
+		
 		return h;
 	}
 
@@ -1466,20 +1481,50 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.setNSlider();
 		this.setPopulatieSlider();
 		this.setPSlider();
+	
+		if (b.containsKey("nagekeken"))
+			nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
+		
+		if ((mode == 0 || nagekeken))
+		//if (nagekeken)
+			kijkNa();
+
 	}
 	
-	public boolean isCorrect() {
-		return this.score == this.maxScore;
+	public boolean isCorrect() 
+	{
+		if (kijkOpdrachtNa)
+			return correct;
+		else
+			return true;
 	}
 	
-	public boolean isFout() {
-		return this.score != this.maxScore;
+	public boolean isFout() 
+	{
+		if (kijkOpdrachtNa)
+			return fout;
+		else
+			return false;
 	}
 	
+    public void changed()
+    {
+    	if (kijkOpdrachtNa) 
+		{
+    		correct = false;
+    		fout = false;
+    		vinkjeLabel.setVisible(false);
+    		kruisjeLabel.setVisible(false);
+    		
+    		fireChangeEvent();
+		}
+    }
+
 	/**
 	 * Vergelijk de ingevulde waarden met het opgegeven antwoordmodel, zet de score in this.score en vuur een actionEvent naar alle listeners.
 	 */
-	public void kijkNa() {
+	public void kijkNa() 
+	{
 		boolean correct = true;
 		if(this.kijkOpdrachtNa) {
 			if(this.kijkGrenzenNa) {
@@ -1528,6 +1573,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 				correct = correct && this.checkP(this.antwoordP);
 			}
 		}
+		this.correct = correct;
+		fout = !correct;
 		if(correct) {
 			this.score = this.maxScore;
 		}
@@ -1538,13 +1585,27 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.vinkjeLabel.setVisible(correct);
 		this.kruisjeLabel.setVisible(!correct);
 		
+		zetNagekeken(true);
 		
-		//fire actionEvent
+		fireChangeEvent();
+/*		
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		Iterator<ActionListener> iterator = this.listeners.iterator();
 		while(iterator.hasNext()) {
 			iterator.next().actionPerformed(event);
 		}
+*/		
+		
+	}
+	
+	public void fireChangeEvent()
+	{
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		Iterator<ActionListener> iterator = this.listeners.iterator();
+		while(iterator.hasNext()) {
+			iterator.next().actionPerformed(event);
+		}
+		
 	}
 	
 	private boolean checkP(BVInvoer antwoordP) {
@@ -1617,10 +1678,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	public void zetMaat() {
 	}
 
-	public void zetMode(int mode) {
+	public void zetMode(int mode) 
+	{
+		this.mode = mode;
+    	if (kijkOpdrachtNa)    
+    		kijkOpdrachtNa = (mode == 0 || mode == 1);
+
 	}
 
-	public void zetNagekeken(boolean b) {
+	public void zetNagekeken(boolean b) 
+	{	nagekeken = b;
 	}
 
 	/**

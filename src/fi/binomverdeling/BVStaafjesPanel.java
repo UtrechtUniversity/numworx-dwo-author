@@ -524,6 +524,8 @@ public class BVStaafjesPanel extends JPanel implements ActionListener {
 		}
 		this.interactiePanel.updateKansBalk();
 		this.repaint();
+		this.interactiePanel.changed();
+		
 		
 	}
 }

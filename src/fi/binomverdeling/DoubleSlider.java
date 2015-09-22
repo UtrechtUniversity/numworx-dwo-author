@@ -181,7 +181,8 @@ public class DoubleSlider extends JComponent implements MouseListener,
 	}
 
 	public void zetStandRechts(int std)
-	{	if (std > maximumRechts)
+	{	
+		if (std > maximumRechts)
 			standRechts = maximumRechts;
 		else if (std < minimumRechts)
 			standRechts = minimumRechts;
@@ -287,7 +288,8 @@ public class DoubleSlider extends JComponent implements MouseListener,
 	}
 	
 	public void mouseReleased(MouseEvent e)
-	{	if (actionListener != null)
+	{	
+		if (actionListener != null)
 		{	actionListener.actionPerformed( new ActionEvent(this, 0, "stop") );
 		}
 	}
