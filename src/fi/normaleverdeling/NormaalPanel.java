@@ -3665,8 +3665,8 @@ grensDecimals = findGrensDecimals();
 		if (b.containsKey("nagekeken"))
 			nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
 		
-		//if ((mode == 0 || nagekeken))
-		if (nagekeken)
+		if ((mode == 0 || nagekeken))
+		//if (nagekeken)
 			kijkNa();
 
 	}
