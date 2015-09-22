@@ -34,6 +34,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
     boolean ingevuld;
 	private boolean nagekeken;
 	private int mode;
+	boolean correct = true;
+	boolean fout = false;
 	
 	Vector docentExpressieStrings = new Vector();
 	Vector docentExpressies = new Vector();
@@ -317,16 +319,11 @@ System.out.println("getState");
 	}
 	
 	public boolean isCorrect()
-	{	if (!kijkNaActief)
-			return true;
-		return 
-			score == scoreMax;
+	{	return correct;
 	}
 	
 	public boolean isFout()
-	{	if (!kijkNaActief)
-			return false;
-		return score == 0;
+	{	return fout;
 	}
 	
 	public void zetMode(int mode)
@@ -445,11 +442,20 @@ System.out.println("getState");
 		
 		int scorePerExpressie = scoreMax / docentExpressies.size();
 		if (hits == 0)
-			score = 0;
+		{	score = 0;
+			correct = false;
+			fout = true;
+		}
 		else if (hits == docentExpressies.size())
-			score = scoreMax;
+		{	score = scoreMax;
+			correct = true;
+			fout = false;
+		}
 		else
-			score = hits * scorePerExpressie;
+		{	score = hits * scorePerExpressie;
+			correct = true;
+			fout = false;
+		}
 		
 /*		
 		// leerlingExpressieUVS.size() - hits is aantal foute expressies
@@ -476,8 +482,12 @@ System.out.println("getState");
     
     public void answerChanged()
     {
-    	score = 0;
-    	fireChangeEvent();
+    	if (kijkNaActief)
+    	{	
+    		correct = false;
+    		fout = false;
+    		fireChangeEvent();
+    	}	
     }
     public void fireChangeEvent()
     {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
