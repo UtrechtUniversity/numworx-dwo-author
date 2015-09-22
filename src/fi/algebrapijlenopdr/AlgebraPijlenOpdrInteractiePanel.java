@@ -34,7 +34,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
     boolean ingevuld;
 	private boolean nagekeken;
 	private int mode;
-	boolean correct = true;
+	boolean correct = false;
 	boolean fout = false;
 	
 	Vector docentExpressieStrings = new Vector();
@@ -319,11 +319,17 @@ System.out.println("getState");
 	}
 	
 	public boolean isCorrect()
-	{	return correct;
+	{	if (kijkNaActief)
+			return correct;
+		else
+			return true;
 	}
 	
 	public boolean isFout()
-	{	return fout;
+	{	if (kijkNaActief)
+			return correct;
+		else
+			return true;
 	}
 	
 	public void zetMode(int mode)
