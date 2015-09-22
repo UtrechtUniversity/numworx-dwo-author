@@ -221,11 +221,16 @@ public class NormaalPanel extends JPanel implements
 	
 	int maxScore;	
 	int score;
-	
+		
 	JButton kijkNaButton;
 	JPanel kijkNaPanel;
 	JLabel vinkjeLabel;
 	JLabel kruisjeLabel;
+	
+	boolean nagekeken = false;
+	int mode;
+	boolean correct = false;
+	boolean fout = false;
 	
 	Vector listeners = new Vector();
 	
@@ -2848,6 +2853,8 @@ grensDecimals = findGrensDecimals();
 			bereken();	
 			
 			repaint();
+			
+			changed();
 		}
 	}
 
@@ -2866,7 +2873,9 @@ grensDecimals = findGrensDecimals();
 			else // grensRechtsButton
 				berekenKeuze = BEREKENGRENSRECHTS;
 
-			zetBerekenKeuze();	
+			zetBerekenKeuze();
+			
+			changed();
 			
 		}
 	}
@@ -2950,6 +2959,8 @@ grensDecimals = findGrensDecimals();
 			else if (inputTextField == kansTextField)
 			{	zetKans(userInput, true);
 			}
+			
+			changed();
 		} // focusLost
 	}
 
@@ -3024,7 +3035,7 @@ grensDecimals = findGrensDecimals();
 			{	zetKans(userInput, true);
 			}
 			
-			
+			changed();
 			
 		} // actionPerformed
 	}
@@ -3650,6 +3661,14 @@ grensDecimals = findGrensDecimals();
 		zetBerekenKeuze();
 		
 		bereken();
+		
+		if (b.containsKey("nagekeken"))
+			nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
+		
+		//if ((mode == 0 || nagekeken))
+		if (nagekeken)
+			kijkNa();
+
 	}
 	
 	public void setEditState(Hashtable b)
@@ -3826,7 +3845,6 @@ grensDecimals = findGrensDecimals();
 
 		bereken();
 		
-		
 // is dit allemaal nodig??
 // zie zetOpdracht		
 		
@@ -3867,6 +3885,8 @@ grensDecimals = findGrensDecimals();
 	    
 	    h.put("kanskeuze", new Integer(kansKeuze));
 	    h.put("berekenkeuze", new Integer(berekenKeuze));
+	    
+	    h.put("nagekeken",new Boolean(nagekeken));
 /*
 	    h.put("kanslinksoptie", new Boolean(kansLinksOptie));
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
@@ -3949,6 +3969,8 @@ grensDecimals = findGrensDecimals();
 	    h.put("kansString", kansString);
 	    
 
+	    h.put("nagekeken",new Boolean(nagekeken));
+	    
 	    return h;
 	}
 
@@ -3983,18 +4005,31 @@ grensDecimals = findGrensDecimals();
 	}
 	
 	public boolean isCorrect()
-	{	return score == maxScore;
+	{	
+		if (kijkOpdrachtNa)
+			return correct;
+		else
+			return true;
 	}
 	
 	public boolean isFout()
-	{	return score != maxScore;
+	{	if (kijkOpdrachtNa)
+			return fout;
+		else
+			return false;
 	}
 	
 	public void zetMode(int mode)
-	{}
+	{
+		this.mode = mode;
+    	if (kijkOpdrachtNa)    
+    		kijkOpdrachtNa = (mode == 0 || mode == 1);
+	}
 	
 	public void zetNagekeken(boolean b)
-	{}
+	{
+		nagekeken = b;
+	}
 
 	public void stop()
 	{}
@@ -4016,6 +4051,17 @@ grensDecimals = findGrensDecimals();
     public void opnieuw()
     {}
     
+    public void changed()
+    {
+    	if (kijkOpdrachtNa) 
+		{	correct = false;
+			fout = false;
+    		vinkjeLabel.setVisible(false);
+    		kruisjeLabel.setVisible(false);
+    		fireChangeEvent();
+		}
+    }
+
     public void kijkNa()
     {
 		boolean correct = true;
@@ -4059,7 +4105,8 @@ grensDecimals = findGrensDecimals();
 			
 			
 		}
-		
+		this.correct = correct;
+		fout = !correct;
 		if (correct) 
 		{	score = maxScore;
 		}
@@ -4069,16 +4116,17 @@ grensDecimals = findGrensDecimals();
 		vinkjeLabel.setVisible(correct);
 		kruisjeLabel.setVisible(!correct);
 		
+		zetNagekeken(true);
 		
-		//fire actionEvent
+		fireChangeEvent();
+/*		
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
 		{
 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
 		}
-		
-		
-/*		
+*/		
+		/*		
 		Iterator<ActionListener> iterator = this.listeners.iterator();
 		while(iterator.hasNext()) 
 		{
@@ -4087,6 +4135,15 @@ grensDecimals = findGrensDecimals();
 */		
 	}
     	
+    public void fireChangeEvent()
+    {
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		{
+			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		}
+
+    }
     
     public void kijkNa(int stapNr)
     {}
@@ -4101,16 +4158,19 @@ grensDecimals = findGrensDecimals();
 		if ((e.getSource() == muSlider) &&
 			e.getActionCommand().equals("verschoven"))
 		{	processMuSlider();
+			changed();
 		}		
 	
 		if ((e.getSource() == sigmaSlider) &&
 			e.getActionCommand().equals("verschoven"))
 		{	processSigmaSlider();
+			changed();
 		}		
 	
 		if ((e.getSource() == grensSlider) &&
 			e.getActionCommand().equals("verschoven"))
 		{	processGrensSlider();
+			changed();
 		}		
 		
 		if ((e.getSource() == grensSlider) &&
@@ -4131,6 +4191,7 @@ grensDecimals = findGrensDecimals();
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("verschovenLinks"))
 		{	processTweeGrenzenSlider(true);
+			changed();
 		}    
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("startLinks"))
@@ -4141,6 +4202,7 @@ grensDecimals = findGrensDecimals();
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("verschovenRechts"))
 		{	processTweeGrenzenSlider(false);
+			changed();
 		}    
 		if ((e.getSource() == tweeGrenzenSlider) &&
 		    e.getActionCommand().equals("startRechts"))
@@ -4161,6 +4223,7 @@ grensDecimals = findGrensDecimals();
 		if ((e.getSource() == kansSlider) &&
 			e.getActionCommand().equals("verschoven"))
 		{	processKansSlider();
+			changed();
 		}		
 		
 		
