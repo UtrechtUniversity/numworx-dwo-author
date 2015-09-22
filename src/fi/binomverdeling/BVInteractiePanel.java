@@ -1513,6 +1513,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		{
     		correct = false;
     		fout = false;
+    		score = 0;
+    		nagekeken = false;
     		vinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(false);
     		
