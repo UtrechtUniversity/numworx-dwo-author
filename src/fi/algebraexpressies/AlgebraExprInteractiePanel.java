@@ -37,7 +37,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
     boolean ingevuld;
 	private boolean nagekeken;
 	private int mode;
-	boolean correct = true;
+	boolean correct = false;
 	boolean fout = false;
 	
 	Vector docentExpressieStrings = new Vector();
@@ -309,8 +309,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 	
 	public boolean isCorrect()
-	{	
-		return correct;
+	{	if (kijkNaActief)
+			return correct;
+		else
+			return true;
 	}
 	
 	public boolean isFout()
