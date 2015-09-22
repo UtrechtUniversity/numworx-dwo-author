@@ -120,13 +120,15 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 //		if (h.containsKey("scoreMax"))
 //			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
+		algebraSchuifVeld.setState(h);
+		
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
 		
 		if (h.containsKey("ingevuld"))
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
 		
-		algebraSchuifVeld.setState(h);
+		//algebraSchuifVeld.setState(h);
 		
 		if (!ingevuld)
 			algebraSchuifVeld.changed = false;
@@ -455,6 +457,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			fout = false;
 		}
     	
+		nagekeken = true;
 		algebraSchuifVeld.tekenOpnieuw();
 		
 		fireChangeEvent();
@@ -472,8 +475,12 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
     public void answerChanged()
     {
     	if (kijkNaActief)
-    	{	correct = false;
+    	{	algebraSchuifVeld.changed = true;
+    		correct = false;
     		fout = false;
+    		score = 0;
+    		nagekeken = false;
+    		ingevuld = true;
     		fireChangeEvent();
     	}	
     }
