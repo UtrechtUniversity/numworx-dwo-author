@@ -474,14 +474,28 @@ public class UitvoerSchuifComponent extends AlgebraSchuifComponent implements Ac
 			//zoomInKnop.setVisible(false);
 			//zoomUitKnop.setVisible(false);
 			
-			pijlUit[0].im = null;
+			for (int pCnt = 0; pCnt < pijlUit.length; pCnt++)
+			{ 	if (pijlUit[pCnt] != null)
+					pijlUit[pCnt].im = null;
+			}
+
 			
 			if (asv.aeip!=null && asv.aeip.kijkNaActief)
 				asv.aeip.answerChanged();
 
 		}
 		else 
-		{	
+		{
+			
+			for (int pCnt = 0; pCnt < pijlUit.length; pCnt++)
+			{ 	if (pijlUit[pCnt] != null)
+					pijlUit[pCnt].im = null;
+			}
+
+			
+			if (asv.aeip != null && asv.aeip.kijkNaActief)
+				asv.aeip.answerChanged();
+
 			if (scrollable  && expressie != null && !Double.isNaN(expressie.geefWaarde().doubleValue()))
 			{	if (scrollCorr == 0)
 					add(plusMinKnop);
