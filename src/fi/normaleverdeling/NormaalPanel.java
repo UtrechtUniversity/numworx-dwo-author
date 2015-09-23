@@ -229,6 +229,7 @@ public class NormaalPanel extends JPanel implements
 	
 	boolean nagekeken = false;
 	int mode;
+	// d.i. niet ingevuld
 	boolean correct = false;
 	boolean fout = false;
 	
