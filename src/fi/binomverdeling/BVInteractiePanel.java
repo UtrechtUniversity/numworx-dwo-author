@@ -145,7 +145,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	private int score;
 	boolean nagekeken = false;
 	int mode;
-	boolean correct = true;
+	boolean correct = false;
 	boolean fout = false;
 	
 	/**
