@@ -338,9 +338,9 @@ System.out.println("ingevuld " + ingevuld);
 	
 	public boolean isFout()
 	{	if (kijkNaActief)
-			return correct;
+			return fout;
 		else
-			return true;
+			return false;
 	}
 	
 	public void zetMode(int mode)
