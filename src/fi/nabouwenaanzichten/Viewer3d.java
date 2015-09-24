@@ -305,9 +305,9 @@ public class Viewer3d extends JComponent
                 aantalKv++;
             }
         }
-        for(int i=0 ; i<kr.maxAantal ; i++)
-        {   for(int j=0 ; j<kr.maxAantal ; j++)
-            {   if(maakAanzicht) 
+        for (int i = 0; i < kr.maxAantal; i++)
+        {   for (int j = 0; j < kr.maxAantal; j++)
+            {   if (maakAanzicht) 
             	{	kr.vierkanten[i][j].vlakken[0].vulkleur = "wit";
             		kr.vierkanten[i][j].vlakken[0].vorigeKleur = "wit";
             	}
@@ -315,6 +315,7 @@ public class Viewer3d extends JComponent
 	            {  	kr.vierkanten[i][j].vlakken[0].vorigeKleur = "lichtgrijs";
 	            	kr.vierkanten[i][j].vlakken[0].vulkleur = "lichtgrijs";
 	            }
+            
         		tekenVlak(1, kr.vierkanten[i][j].vlakken[0]);
                 p[i][j] = geefVlak(1);
                 kv[aantalKv] = new Klikvlak(i,j,0,6);

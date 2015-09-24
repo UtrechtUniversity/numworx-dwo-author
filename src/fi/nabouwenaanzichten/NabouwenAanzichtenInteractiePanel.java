@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+// restore (3)
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
@@ -16,6 +17,7 @@ import fi.beans.scorm.*;
 import fi.beans.copyright.*;
 import fi.beans.base64code.*;
 import fi.beans.appletutil.*;
+// restore (1)
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -26,7 +28,9 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  */
 
 public class NabouwenAanzichtenInteractiePanel extends JPanel 
-	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener, CBookAware
+	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener
+// restore (1)	   
+	   			  , CBookAware
 {	
 	protected SCORM12APIInterface api;
 	
@@ -113,9 +117,13 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	private boolean ingevuld;
 	private boolean nagekeken;
 	private int mode;
+	boolean correct = false;
+	boolean fout = false;
+
 	
 	NabouwenAanzichtenInteractieEditPanel naiep;
 	
+// restore (1)	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	private String buildHistory = "";
 	
@@ -1746,6 +1754,11 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			{
 				kr.zetVulkleur("zwart"); 
 			}
+
+//System.out.println("state != null");
+
+			kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+			
 			/*cpfiw*/			
 		} else if(h.containsKey("stateNew")) { // JSONArray from NabouwenAanzichtenGWT
 			List rooster = (List) h.get("stateNew");
@@ -1775,7 +1788,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				kr.zetVulkleur("zwart"); 
 			}
 			
-			
+			kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
 			
 		}
 		
@@ -2152,6 +2165,9 @@ newViewer = false;
 	
 	public void zetVeranderd()
 	{	
+		
+//System.out.println("zetVeranderd");
+
 		if (v.isVisible())
 		{	v.tekenOpnieuw();
 		}
@@ -2168,9 +2184,12 @@ newViewer = false;
 		if (docentV != null && docentV.isVisible())
 			docentV.tekenOpnieuw();
 		
+		answerChanged();
+		
 		boolean[][][]  booleanKR = kr.geefBooleanRooster();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("booleanKR", booleanKR);
+// restore (1)		
 		cbookEventHandler.fire("blockBuilding",map);
 		
 		String lastBuildCommand = v.getLastBuildCommand();
@@ -2178,6 +2197,7 @@ newViewer = false;
 			buildHistory = buildHistory + lastBuildCommand + "\n";
 		Map<String,Object> map1 = new HashMap<String,Object>();
 		map1.put("content", buildHistory);
+// restore (1)		
 		cbookEventHandler.fire("text.buildingProgram",map1);
 	}
 	
@@ -2592,14 +2612,13 @@ newViewer = false;
 	public boolean isCorrect()
 	{	if (!kijkNaActief)
 			return true;
-		return 
-			score == scoreMax;
+		return correct; //cscore == scoreMax;
 	}
 	
 	public boolean isFout()
 	{	if (!kijkNaActief)
 			return false;
-		return score == 0;
+		return fout; //score == 0;
 	}
 	
 	public void zetMode(int mode)
@@ -2738,27 +2757,67 @@ newViewer = false;
         {	kruisjeLabel.setVisible(true);
         	geelVinkjeLabel.setVisible(false);
         	groenVinkjeLabel.setVisible(false);
+        	correct = false;
+        	fout = true;
         }
         else if (score < scoreMax)
         {	kruisjeLabel.setVisible(false);
         	geelVinkjeLabel.setVisible(true);
         	groenVinkjeLabel.setVisible(false);
+        	correct = false;
+        	fout = true;
+        	
         }
         else // score==maxScore
         {	kruisjeLabel.setVisible(false);
         	geelVinkjeLabel.setVisible(false);
         	groenVinkjeLabel.setVisible(true);
+        	correct = true;
+        	fout = false;
+
         }
 		
+        nagekeken = true;
 //System.out.println("score = " + score);		
-		//fire actionEvent
-		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		fireChangeEvent();
+		//ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+		//for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+		//{
+		//	((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+		//}
+    
+    	
+    }
+    
+    public void answerChanged()
+    {
+    	
+    	if (kijkNaActief)
+    	{	
+    		
+//System.out.println("changed");
+
+    		correct = false;
+    		fout = false;
+    		score = 0;
+    		nagekeken = false;
+    		ingevuld = true;
+    		
+    		kruisjeLabel.setVisible(false);
+        	geelVinkjeLabel.setVisible(false);
+        	groenVinkjeLabel.setVisible(false);
+        	
+    		fireChangeEvent();
+    	}	
+    }
+   
+    public void fireChangeEvent()
+    {
+    	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
 		{
 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
 		}
-    
-    	
     }
     
     public void kijkNa(int stapNr)
@@ -2777,30 +2836,40 @@ newViewer = false;
     {	listeners.addElement(al);
     }
 
+// restore method
+    
     @Override
 	public void addCBookEventListener(CBookEventListener listener, String command) {
 		cbookEventHandler.addCBookEventListener(listener, command);
 		
 	}
 
+// restore method
+    
 	@Override
 	public void removeCBookEventListener(CBookEventListener listener,String command) {
 		cbookEventHandler.removeCBookEventListener(listener, command);
 		
 	}
 
+// restore method
+    
 	@Override
 	public String[] getSendCmds() {
 		String[] commands = {"blockBuilding", "text.buildingProgram"};
 		return commands;
 	}
 
+// restore method
+    
 	@Override
 	public String[] getAcceptedCmds() {
 		String[] commands = {"blockBuilding", "text.buildingProgram"};
 		return commands;
 	}
 
+// restore method
+    
 	@Override
 	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
@@ -2834,6 +2903,8 @@ newViewer = false;
 	}
 			
 	
+// restore method
+    
 	@Override
 	public String getLocalizedCmd(String cmd) {
 		String localizedCmd = NabouwenAanzichten.rb.getString(CBA_PREFIX + cmd);
