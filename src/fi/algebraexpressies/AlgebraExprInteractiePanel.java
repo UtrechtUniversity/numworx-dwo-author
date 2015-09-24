@@ -318,13 +318,16 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 	
 	public boolean isFout()
-	{	return fout;
+	{	if (kijkNaActief)
+			return fout;
+		else
+			return false;
 	}
 	
 	public void zetMode(int mode)
     {   this.mode = mode;
     	if (kijkNaActief)    
-		zetKijkNaActief(mode == 0 || mode == 1);     
+    		zetKijkNaActief(mode == 0 || mode == 1);     
     }
 	
 	public void zetNagekeken(boolean b)
