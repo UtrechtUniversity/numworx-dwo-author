@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
+import fi.wiskopdr.tekstobjects.TekstRegel;
 
 public class SymboolPanel extends JPanel implements InteractiePanel{
 
@@ -98,6 +100,11 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		symbool.zetKleur(kleur);
 	}
 	
+	public Color getKleur()
+	{
+		return symbool.kleur;
+	}
+	
 	public void zetBreedte(int b)
 	{
 		this.setSize(b, this.getHeight());
@@ -117,7 +124,11 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		int dikte = 1;
 		int richting = 0;
 		int type = 0;
-		//Color kleur = Color.black;
+		int kleurR = 0;
+		int kleurG = 0;
+		int kleurB = 0;
+		boolean vulHoogte = false;
+		
 		
 		if(h.containsKey("dikte"))
 			dikte = ((Integer) h.get("dikte")).intValue();
@@ -125,13 +136,33 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 			richting = ((Integer) h.get("richting")).intValue();
 		if(h.containsKey("type"))
 			type = ((Integer) h.get("type")).intValue();
-		//if(h.containsKey("kleur"))
-		//	kleur = h.get("kleur");
+		if(h.containsKey("kleurR"))
+			kleurR = ((Integer) h.get("kleurR")).intValue();
+		if(h.containsKey("kleurG"))
+			kleurG = ((Integer) h.get("kleurG")).intValue();
+		if(h.containsKey("kleurB"))
+			kleurB = ((Integer) h.get("kleurB")).intValue();
+		if(h.containsKey("vulHoogte"))
+			vulHoogte = ((Boolean) h.get("vulHoogte")).booleanValue();
 		
 		zetSymboolKeuze(type);
 		symbool.zetDikte(dikte);
 		this.richting = richting;
 		symbool.zetRichting(richting);
+		symbool.zetKleur(new Color(kleurR, kleurG, kleurB));
+		this.vulHoogte = vulHoogte;
+		if(this.vulHoogte)
+		{	int hoogte = this.getHeight();
+			if(getParent() instanceof TekstInteractiePanelVak)
+			{	TekstInteractiePanelVak parent = (TekstInteractiePanelVak) getParent();
+				if(parent.getParent() instanceof TekstRegel)
+				{	TekstRegel regelParent = (TekstRegel) parent.getParent();
+					hoogte = regelParent.getTekstVak().getHeight();
+				}
+			}
+			zetHoogte(hoogte);
+		
+		}
 	}
 
 	@Override
@@ -154,17 +185,27 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		int dikte = 1;
 		int richting = 0;
 		int type = 0;
-		Color kleur = Color.black;
+		int kleurR = 0;
+		int kleurG = 0;
+		int kleurB = 0;
+		boolean vulHoogte = false;
 		
 		dikte = symbool.dikte;
 		richting = symbool.richting;
 		type = symbool.geefType();
+		kleurR = symbool.kleur.getRed();
+		kleurG = symbool.kleur.getGreen();
+		kleurB = symbool.kleur.getBlue();
+		vulHoogte = this.vulHoogte;
 		
 		Hashtable h = new Hashtable();
 		h.put("dikte", new Integer(dikte));
 		h.put("richting", new Integer(richting));
 		h.put("type", new Integer(type));
-		h.put("kleur", kleur);
+		h.put("kleurR", new Integer(kleurR));
+		h.put("kleurG", new Integer(kleurG));
+		h.put("kleurB", new Integer(kleurB));
+		h.put("vulHoogte", new Boolean(vulHoogte));
 		return h;
 	}
 
@@ -180,8 +221,6 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 
 	@Override
 	public void zetMaat() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

@@ -14,21 +14,16 @@ public class Lijn extends Symbool {
 	
 	public void paintComponent(Graphics g)
 	{
-		g.setColor(kleur);
-		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		((Graphics2D)g).setStroke(new BasicStroke(1.2f));
-	    
-		//uitzoeken hoe ik dikte goed kan verwerken. Meerdere lijnen naast elkaar? Of kan ik één dikke stroke maken?
-		//iets met rendering?
+		Graphics2D g2 = createGraphics2D(g);
 		
 		if(richting == RICHTING_LINKS || richting == RICHTING_RECHTS)
-			g.drawLine(0, this.getHeight()/2, this.getWidth(), this.getHeight()/2);
+			g2.drawLine(0, this.getHeight()/2, this.getWidth(), this.getHeight()/2);
 		else if(richting == RICHTING_BOVEN || richting == RICHTING_BENEDEN)
-			g.drawLine(this.getWidth()/2, 0, this.getWidth()/2, this.getHeight());
+			g2.drawLine(this.getWidth()/2, 0, this.getWidth()/2, this.getHeight());
 		else if(richting == RICHTING_LINKSBOVEN || richting == RICHTING_RECHTSONDER)
-			g.drawLine(0, 0, this.getWidth(), this.getHeight());
+			g2.drawLine(0, 0, this.getWidth(), this.getHeight());
 		else
-			g.drawLine(0, this.getHeight(), this.getWidth(), 0);
+			g2.drawLine(0, this.getHeight(), this.getWidth(), 0);
 			
 	}
 	

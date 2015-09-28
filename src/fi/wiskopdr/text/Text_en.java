@@ -276,7 +276,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"statSimIpLabel" , "[test] Statistics Simulations"},
 				{"stelselVakLabel", "[test] System of equations"},
 	            {"javaLogoIpLabel", "JavaLogo"},
-
+	            {"symboolIpLabel", "Symbol"},
 				
 				//InstellingenPanel
 				{"OPT_wiskundeLabel" , "Mathematics"},
@@ -687,6 +687,32 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},
+				
+				//symbolen
+				{"SYM_kiesSymbool", "Choose symbol"},
+				{"SYM_lijn", "Line"},
+				{"SYM_pijl", "Arrow"},
+				{"SYM_accolade", "Curly bracket"},
+				{"SYM_ellips", "Ellipse"},
+				{"SYM_kiesEerstSymbool", "Choose symbol first"},
+				{"SYM_dikte", "Line width"},
+				{"SYM_kleur", "Color"},
+				{"SYM_kiesKleur", "Choose color"},
+				{"SYM_vulHoogte", "Fill height"},
+								
+				{"SYM_horizontaal", "Horizontal"},
+				{"SYM_verticaal", "Vertical"},
+				{"SYM_diagonaalOmhoog", "Diagonal up"},
+				{"SYM_diagonaalOmlaag", "Diagonal down"},
+				{"SYM_links", "Left"},
+				{"SYM_rechts", "Right"},
+				{"SYM_boven", "Up"},
+				{"SYM_beneden", "Down"},
+				{"SYM_rechtsboven", "Right up"},
+				{"SYM_rechtsonder", "Right down"},
+				{"SYM_linksonder", "Left down"},
+				{"SYM_linksboven", "Left up"},
+				{"SYM_geenRichting", "No direction"},
 		};
 }
 

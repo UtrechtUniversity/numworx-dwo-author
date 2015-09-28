@@ -294,6 +294,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"statSimIpLabel" , "[test] Statistiek Simulaties"},
                 {"stelselVakLabel", "[test] Stelsel-antwoordvak"},
                 {"javaLogoIpLabel", "JavaLogo"},
+                {"symboolIpLabel", "Symbool"},
                 
 				//InstellingenPanel
                 {"OPT_wiskundeLabel" , "Wiskunde"},
@@ -724,6 +725,34 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
+				
+				//symbolen
+				{"SYM_kiesSymbool", "Kies symbool"},
+				{"SYM_lijn", "Lijn"},
+				{"SYM_pijl", "Pijl"},
+				{"SYM_accolade", "Accolade"},
+				{"SYM_ellips", "Ellips"},
+				{"SYM_kiesEerstSymbool", "Kies eerst symbool"},
+				{"SYM_dikte", "Dikte"},
+				{"SYM_kleur", "Kleur"},
+				{"SYM_kiesKleur", "Kies kleur"},
+				{"SYM_vulHoogte", "Vul hoogte"},
+								
+				{"SYM_horizontaal", "Horizontaal"},
+				{"SYM_verticaal", "Verticaal"},
+				{"SYM_diagonaalOmhoog", "Diagonaal omhoog"},
+				{"SYM_diagonaalOmlaag", "Diagonaal omlaag"},
+				{"SYM_links", "Links"},
+				{"SYM_rechts", "Rechts"},
+				{"SYM_boven", "Boven"},
+				{"SYM_beneden", "Beneden"},
+				{"SYM_rechtsboven", "Rechtsboven"},
+				{"SYM_rechtsonder", "Rechtsonder"},
+				{"SYM_linksonder", "Linksonder"},
+				{"SYM_linksboven", "Linksboven"},
+				{"SYM_geenRichting", "Geen richting"},
+				
+					
 				
 		};
 }

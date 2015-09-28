@@ -2556,16 +2556,16 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 							antwoordIngevuldString = StringUtils.replaceStr(antwoordIngevuldString,aValue,aKey);
 						}*/
 					}
-					System.out.println("antwoordIngevuldNa " + antwoordIngevuldString);
+					//System.out.println("antwoordIngevuldNa " + antwoordIngevuldString);
 					
 					formuleVak.vulVak("$f" + antwoordIngevuldString + "@");
-					System.out.println("na vulvak");
+					//System.out.println("na vulvak");
 					huidigeVergelijking = antwoord;
 					sendCommand("balansvergelijking");
 					sendCommand("equation");
 					
 				}
-			System.out.println("$f" + antwoordIngevuld.toString() + "@");
+			//System.out.println("$f" + antwoordIngevuld.toString() + "@");
 			ingevuld = true;
 			
 			//String var = "x";

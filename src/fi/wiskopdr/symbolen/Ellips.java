@@ -13,12 +13,9 @@ public class Ellips extends Symbool{
 
 	public void paintComponent(Graphics g)
 	{
-		g.setColor(kleur);
-		//uitzoeken hoe ik dikte goed kan verwerken. Meerdere lijnen naast elkaar? Of kan ik één dikke stroke maken?
-		//iets met rendering?
+		Graphics2D g2 = createGraphics2D(g);
 		
-		Graphics2D g2 = (Graphics2D) g;
-		g2.draw(new Ellipse2D.Double(0, 0, this.getWidth(), this.getHeight()));
+		g2.draw(new Ellipse2D.Double(dikte, dikte, this.getWidth() - 2 * dikte, this.getHeight() - 2 * dikte));
                 
 	}
 	

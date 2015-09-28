@@ -1,5 +1,6 @@
 package fi.wiskopdr.symbolen;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
@@ -8,13 +9,16 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Hashtable;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.wiskopdr.WiskOpdr;
 
 
 public class SymboolEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener{
@@ -36,6 +40,7 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 	JComboBox richtingKeuzeBox;
 	JLabel dikteLabel;
 	JTextField dikteField;
+	JButton kleurKnop;
 	JCheckBox vulHoogteCB;
 	
 	public SymboolEditPanel()
@@ -52,9 +57,9 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		int currentX = symboolBreedte + 2 * offset;
 		int currentY = offset;
 		
-		//TODO: alle teksten vervangen door rb.
-		String[] symboolString = {"Kies symbool", "Lijn", "Pijl", "Accolade", "Ellips"};
-				
+		String[] symboolString = {WiskOpdr.rb.getString("SYM_kiesSymbool"), 
+				WiskOpdr.rb.getString("SYM_lijn"), WiskOpdr.rb.getString("SYM_pijl"),
+				WiskOpdr.rb.getString("SYM_accolade"), WiskOpdr.rb.getString("SYM_ellips")};
 		symboolKeuzeBox = new JComboBox(symboolString);
 		symboolKeuzeBox.setBounds(currentX, currentY, width, height);
 		symboolKeuzeBox.setFont(theFont);
@@ -63,7 +68,7 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		
 		currentY += height + offset;
 		
-		String[] richtingString = {"Kies eerst symbool"};
+		String[] richtingString = {WiskOpdr.rb.getString("SYM_kiesEerstSymbool")};
 		richtingKeuzeBox  = new JComboBox(richtingString);
 		richtingKeuzeBox.setBounds(currentX, currentY, width, height);
 		richtingKeuzeBox.setFont(theFont);
@@ -72,26 +77,30 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		
 		currentY += height + offset;
 		
-		dikteLabel = new JLabel("Dikte");
+		dikteLabel = new JLabel(WiskOpdr.rb.getString("SYM_dikte"));
 		dikteLabel.setBounds(currentX, currentY, width / 2, height);
 		dikteLabel.setFont(theFont);
 		add(dikteLabel);
 		currentX += width / 2 + offset;
 		
-		dikteField = new JTextField("1");//TODO: als dikte nog variabele wordt in deze class, dan hier dikte invullen.
+		dikteField = new JTextField("1");
 		dikteField.setBounds(currentX, currentY, width / 2 - offset, height);
 		add(dikteField);
 		dikteField.addActionListener(this);
 		dikteField.addFocusListener(this);
 		
-		currentX -= width / 2 - offset;
+		currentX -= width / 2 + offset;
 		currentY += height + offset;
 		
-		//TODO: kleurknop toevoegen
+		kleurKnop = new JButton(WiskOpdr.rb.getString("SYM_kleur"));
+		kleurKnop.setBounds(currentX, currentY, width / 2, height);
+		kleurKnop.setFont(theFont);
+		add(kleurKnop);
+		kleurKnop.addActionListener(this);
 		
 		currentY += height + offset;
 		
-		vulHoogteCB = new JCheckBox("Vul hoogte");
+		vulHoogteCB = new JCheckBox(WiskOpdr.rb.getString("SYM_vulHoogte"));
 		vulHoogteCB.setBounds(currentX, currentY, width, height);
 		vulHoogteCB.setOpaque(false);
 		vulHoogteCB.setFont(theFont);
@@ -109,50 +118,49 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		richtingKeuzeBox.setLocation(indent, richtingKeuzeBox.getLocation().y);
 		dikteLabel.setLocation(indent, dikteLabel.getLocation().y);
 		dikteField.setLocation(indent + width / 2 + offset, dikteField.getLocation().y);
-		//locatie kleur zetten.
+		kleurKnop.setLocation(indent, kleurKnop.getLocation().y);
 		vulHoogteCB.setLocation(indent, vulHoogteCB.getLocation().y);
 	}
 	
 	public void zetRichtingKeuzes(int symboolKeuze)
 	{
-		//symboolkeuze loopt waarschijnlijk nog niet gelijk met symboolkeuzes uit lijstje in Symbool. +1?
 		String[] richtingString = {};
 		//in plaats van teksten zouden plaatjes mooier zijn. 
 		if(symboolKeuze == Symbool.GEEN)
 		{	richtingString = new String[1];
-			richtingString[0] = "Kies eerst symbool";
+			richtingString[0] = WiskOpdr.rb.getString("SYM_kiesEerstSymbool");
 		}
 		else if(symboolKeuze == Symbool.LIJN)
 		{	richtingString = new String[4];
-			richtingString[0] = "Horizontaal";
-			richtingString[1] = "Verticaal";
-			richtingString[2] = "Diagonaal omhoog";
-			richtingString[3] = "Diagonaal omlaag";
+			richtingString[0] = WiskOpdr.rb.getString("SYM_horizontaal");
+			richtingString[1] = WiskOpdr.rb.getString("SYM_verticaal");
+			richtingString[2] = WiskOpdr.rb.getString("SYM_diagonaalOmhoog");
+			richtingString[3] = WiskOpdr.rb.getString("SYM_diagonaalOmlaag");
 		}
 		else if(symboolKeuze == Symbool.PIJL)
 		{
 			richtingString = new String[8];
-			richtingString[0] = "Links";
-			richtingString[1] = "Rechts";
-			richtingString[2] = "Boven";
-			richtingString[3] = "Beneden";
-			richtingString[4] = "Rechtsboven";
-			richtingString[5] = "Rechtsonder";
-			richtingString[6] = "Linksonder";
-			richtingString[7] = "Linksboven";
+			richtingString[0] = WiskOpdr.rb.getString("SYM_links");
+			richtingString[1] = WiskOpdr.rb.getString("SYM_rechts");
+			richtingString[2] = WiskOpdr.rb.getString("SYM_boven");
+			richtingString[3] = WiskOpdr.rb.getString("SYM_beneden");
+			richtingString[4] = WiskOpdr.rb.getString("SYM_rechtsboven");
+			richtingString[5] = WiskOpdr.rb.getString("SYM_rechtsonder");
+			richtingString[6] = WiskOpdr.rb.getString("SYM_linksonder");
+			richtingString[7] = WiskOpdr.rb.getString("SYM_linksboven");
 		}
 		else if(symboolKeuze == Symbool.ACCOLADE)
 		{
 			richtingString = new String[4];
-			richtingString[0] = "Links";
-			richtingString[1] = "Rechts";
-			richtingString[2] = "Boven";
-			richtingString[3] = "Beneden";
+			richtingString[0] = WiskOpdr.rb.getString("SYM_links");
+			richtingString[1] = WiskOpdr.rb.getString("SYM_rechts");
+			richtingString[2] = WiskOpdr.rb.getString("SYM_boven");
+			richtingString[3] = WiskOpdr.rb.getString("SYM_beneden");
 		}
 		else if(symboolKeuze == Symbool.ELLIPS)
 		{
 			richtingString = new String[1];
-			richtingString[0] = "Geen richting";
+			richtingString[0] = WiskOpdr.rb.getString("SYM_geenRichting");
 			//nog kijken wat ik hiermee doe. Schuine ellipsen mogelijk maken? 
 			//anders is richting kiezen hier vrij zinloos. 
 		}
@@ -186,6 +194,12 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		{
 			symboolPanel.zetDikte(Integer.parseInt(dikteField.getText()));
 		}
+		else if(e.getSource() == kleurKnop)
+		{
+			Color kleur = JColorChooser.showDialog(this, WiskOpdr.rb.getString("SYM_kiesKleur"), symboolPanel.getKleur());
+			if(kleur != null)
+				symboolPanel.zetKleur(kleur);
+		}
 		else if(e.getSource() == vulHoogteCB)
 		{
 			symboolPanel.zetVulHoogte(vulHoogteCB.isSelected());
@@ -211,7 +225,7 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		int dikte = 1;
 		int richting = 0;
 		int type = 0;
-		//Color kleur = Color.black;
+		boolean vulHoogte = false;
 		
 		if(h.containsKey("dikte"))
 			dikte = ((Integer) h.get("dikte")).intValue();
@@ -219,6 +233,8 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 			richting = ((Integer) h.get("richting")).intValue();
 		if(h.containsKey("type"))
 			type = ((Integer) h.get("type")).intValue();
+		if(h.containsKey("vulHoogte"))
+			vulHoogte = ((Boolean) h.get("vulHoogte")).booleanValue();
 		
 		symboolKeuzeBox.setSelectedIndex(type);
 		if(type == Symbool.GEEN)
@@ -242,6 +258,7 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		
 		richtingKeuzeBox.setSelectedIndex(richting);
 		dikteField.setText("" + dikte);
+		vulHoogteCB.setSelected(vulHoogte);
 		symboolPanel.zetOpdracht(h, null, null);
 	}
 
@@ -256,7 +273,6 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 
 	@Override
 	public void zetBreedte(int b) {
-		System.out.println("zetBreedte");
 		symboolBreedte = b;
 		symboolPanel.zetBreedte(b);
 		setBounds(getLocation().x, getLocation().y, symboolBreedte + width + 3 * offset, Math.max(symboolHoogte, editHeight));		
