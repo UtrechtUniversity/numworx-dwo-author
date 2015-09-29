@@ -752,7 +752,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SYM_linksboven", "Linksboven"},
 				{"SYM_geenRichting", "Geen richting"},
 				
-					
+				// opdr nav struct
+				{"ONS_timeisup", "De tijd is om"},
+				{"ONS_timeready", "Op tijd klaar"},
 				
 		};
 }

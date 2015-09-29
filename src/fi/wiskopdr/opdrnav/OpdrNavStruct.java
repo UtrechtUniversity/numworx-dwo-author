@@ -839,9 +839,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					g.fillRoundRect(570, 330, 150, 60, 30, 30);
 					g.setColor(Color.black);
 					if (srt == 0)
-						g.drawString("De tijd is om", 580, 365);
+						g.drawString(WiskOpdr.rb.getString("ONS_timeisup"), 580, 365);
 					else
-						g.drawString("Op tijd klaar", 580, 365);
+						g.drawString(WiskOpdr.rb.getString("ONS_timeready"), 580, 365);
 				}
 			};
 			afdekPanel.setOpaque(false);

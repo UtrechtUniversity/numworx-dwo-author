@@ -713,6 +713,11 @@ public class Text_en extends java.util.ListResourceBundle
 				{"SYM_linksonder", "Left down"},
 				{"SYM_linksboven", "Left up"},
 				{"SYM_geenRichting", "No direction"},
+				
+				// opdr nav struct
+				{"ONS_timeisup", "The time is up"},
+				{"ONS_timeready", "Ready in time"},
+
 		};
 }
 
