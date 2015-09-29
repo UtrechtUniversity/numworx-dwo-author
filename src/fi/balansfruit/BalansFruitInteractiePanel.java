@@ -6,21 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import fi.beans.lwmobjects_swing.LWMBufferPanel;
 import fi.beans.lwmobjects_swing.LWMButton;
-import fi.beans.lwmobjects_swing.LWMComponent;
 import fi.beans.lwmobjects_swing.LWMContainer;
 import fi.beans.lwmobjects_swing.LWMMouseHandler;
 import fi.beans.lwmobjects_swing.MovePermissions;
 import fi.beans.wiskopdrbeans.*;
-import fi.beans.appletutil.*;
 import fi.beans.stringutils.StringUtils;
 
 import javax.swing.*;
@@ -113,6 +108,13 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 			"100g.gif",
 			"500g.gif",
 			"1leeg.gif",
+			"1blok_abstract.gif",
+			"2blok_abstract.gif",
+			"5blok_abstract.gif",
+			"10blok_abstract.gif",
+			"20blok_abstract.gif",
+			"50blok_abstract.gif",
+			"100blok_abstract.gif",
 			"balanslinks.gif",
 			"balansgoed.gif",
 			"balansrechts.gif",
