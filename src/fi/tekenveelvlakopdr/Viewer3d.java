@@ -1045,7 +1045,7 @@ System.out.println("vPos = " + viewerPosition);
 					}
 					else // leerling
 					{
-System.out.println("v3d muisKkActie");
+//System.out.println("v3d muisKkActie");
 //System.out.println("vk " + j + " " + vvRij[0].vlakken[j].vulkleur);
 
 						// een oranje vlak dat rood gekleurd wordt
@@ -1066,6 +1066,8 @@ System.out.println("v3d muisKkActie");
 							vaktek.vinkjeLabel.setVisible(false);
 							vaktek.kruisjeLabel.setVisible(false);
 						}
+						
+						tvip.answerChanged();
 						//updateViewerKleuren();
 					}// leerling
 					updateViewerKleuren();
@@ -1090,6 +1092,13 @@ System.out.println("v3d muisKkActie");
 			}	
 			yhoek += 0.5*mb.geefSleepdx();
 			tekenOpnieuw();
+			
+			if (!klikAan)
+			{	vinkjeLabel.setVisible(false);
+				kruisjeLabel.setVisible(false);
+
+				tvip.answerChanged();
+			}	
 		}
 	}
 	public void muisDrukActie(){}

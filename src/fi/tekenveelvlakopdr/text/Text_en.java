@@ -58,6 +58,7 @@ public class Text_en extends java.util.ListResourceBundle
                 { "linkerkantRBLabel" , "Left side" },
                 { "rechterkantRBLabel" , "Right side" },
 
+                { "maxScoreTekst" , "Maximum score" },
         };
 }
 

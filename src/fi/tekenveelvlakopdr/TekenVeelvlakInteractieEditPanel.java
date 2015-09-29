@@ -1,11 +1,16 @@
 package fi.tekenveelvlakopdr;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Hashtable;
 
 import javax.swing.JCheckBox;
@@ -74,6 +79,12 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	boolean tvipViewerOnly;
 	boolean tvipProfilesOnly;
 	int tvipViewerPosition;
+	
+	JLabel maxScoreLabel;	
+	JTextField maxScoreVeld;	
+
+	int scoreMax = 10;
+
     
     public TekenVeelvlakInteractieEditPanel()
     {
@@ -335,7 +346,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         kijkVlakkenNaLabel.setOpaque(false);
         nakijkOptiesPanel.add(kijkVlakkenNaLabel);
                 
-        currentY += height;
+        currentY += height + offSet;
   
 /*        
         kleurGroup = new ButtonGroup();
@@ -360,6 +371,33 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         currentY += height + 4 * offSet;
 */        
         zetVlakkenKleurenEnabled(false);
+        
+		maxScoreLabel = new JLabel(TekenVeelvlakOpdr.rb.getString("maxScoreTekst"));
+		maxScoreLabel.setFont(theFont);
+		maxScoreLabel.setBackground(Color.white);
+		width = theFM.stringWidth(maxScoreLabel.getText());
+		maxScoreLabel.setBounds(currentX + offSet, currentY + 3, width, theFM.getHeight());
+		//maxScoreLabel.setEnabled(false);
+		//maxScoreLabel.setVisible(false);
+		nakijkOptiesPanel.add(maxScoreLabel);
+		
+		currentY += height; // + offset;
+		
+		maxScoreVeld = new JTextField("" + scoreMax);
+		maxScoreVeld.setFont(theFont);
+		maxScoreVeld.setBackground(Color.white);
+		width = theFM.stringWidth("XXXXXX");
+		maxScoreVeld.setBounds(currentX + 2 * offSet, currentY, width, height);
+				//maxScoreLabel.getLocation().x + maxScoreLabel.getSize().width + offset,
+				//currentY, width, height);
+		nakijkOptiesPanel.add(maxScoreVeld);
+		//maxScoreVeld.setEditable(false);
+		//maxScoreVeld.setVisible(false);
+
+		maxScoreVeld.addKeyListener(new InputKL2(maxScoreVeld));
+		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
+		maxScoreVeld.addFocusListener(new TextFL2(maxScoreVeld));
+
         
 		componentsCreated = true;
 		
@@ -1044,10 +1082,10 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		h.put("tvipBreedte", new Integer(tvipBreedte));
 		h.put("tvipHoogte", new Integer(tvipHoogte));
 		
-		if(vlakkenKleurenCB.isSelected())
-			h.put("scoreMax", new Integer(10));
-		else
-			h.put("scoreMax", new Integer(0));
+		//if (vlakkenKleurenCB.isSelected())
+		h.put("scoreMax", new Integer(scoreMax));
+		//else
+		//	h.put("scoreMax", new Integer(0));
         
 		return h;
     }
@@ -1194,6 +1232,9 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	    if (viewerOnly || profilesOnly)
 	    	tabbedPane.setEnabledAt(1,true);
 	    
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer) h.get("scoreMax")).intValue();
+		maxScoreVeld.setText("" + scoreMax);
 	    
 	    setBounds(getLocation().x, getLocation().y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));
 	    
@@ -1244,6 +1285,207 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         // TODO Auto-generated method stub
         
     }
+
+	class TextFL2 implements FocusListener
+	{		
+		JTextField inputTextField;
+		
+		public TextFL2(JTextField input)
+		{	inputTextField = input;
+		}
+
+		public void focusGained(FocusEvent e)
+		{
+		}
+		public void focusLost(FocusEvent e)
+		{	// invoer user
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+//System.out.println("nfe");			
+			}
+			// dit zou niet moeten gebeuren
+			// Peter: nu wel bij de definitie van een random variabele ipv een double			
+			if (error)
+				return;
+
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 0) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+		} // focusLost
+	}
+
+
+	class TextAL2 implements ActionListener
+	{	
+		JTextField inputTextField;
+		
+		public TextAL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void actionPerformed(ActionEvent e)
+		{	
+			String text = inputTextField.getText();
+			String oldText = "" + scoreMax;
+			
+			inputTextField.setText(text);				
+
+			String format = new String(text);		
+			format = format.replace(',', '.');		
+
+			double userInput = 0;
+			boolean error = false;
+			try
+			{	userInput = Double.parseDouble(format);
+			}
+			catch (NumberFormatException nfe)
+			{	error = true;
+			}
+			// dit zou niet moeten gebeuren  
+			// Peter: nu wel bij de definitie van een random variabele ipv een double
+			if (error)
+			{	return;
+			}
+
+			
+			if (inputTextField == maxScoreVeld)
+			{	
+			
+				int mScore = (int) userInput;
+
+				if ((mScore >= 0) && (mScore <= 1500))
+				{
+					scoreMax = mScore;
+				}
+				else
+				{
+					inputTextField.setText(oldText);
+				}
+			}
+			
+			
+		} // actionPerformed
+	}
+	
+	public String trimTrailingZeros(String s, char decSep)
+	{	String txt = new String(s);
+		if (txt.indexOf(decSep) < 0)
+			return txt;
+		char c = txt.charAt(txt.length() - 1);
+		while (c == '0')
+		{	txt = removeCharAt(txt, txt.length() - 1);
+			c = txt.charAt(txt.length() - 1);
+		}	
+		c = txt.charAt(txt.length() - 1);
+		if (c == decSep)
+			txt = removeCharAt(txt, txt.length() - 1);
+		return txt;		
+	}				
+		
+	public String removeCharAt(String s, int index)
+	{	String txt = new String(s);
+		// eerste
+		if (index == 0)
+			txt = txt.substring(1);
+		// laatste	
+		else if (index == (txt.length() - 1))
+			txt = txt.substring(0, txt.length() - 1);
+		// middenin	
+		else
+		{	String txt1 = txt.substring(0, index);
+			String txt2 = txt.substring(index + 1);
+			txt = txt1 + txt2;
+		}
+		return txt;
+	}		
+
+	class InputKL2 extends KeyAdapter
+	{	
+		JTextField inputTextField;
+		
+		public InputKL2(JTextField input)
+		{	inputTextField = input;
+		}
+		
+		public void keyReleased(KeyEvent e)
+		{	
+			inputTextField.setForeground(Color.black);
+		
+			String txt = inputTextField.getText();
+			
+//System.out.println(txt);
+				
+			boolean corrected = false;
+
+			// kijk of txt illegale characters bevat
+			// dit zou er maximaal 1 moeten zijn
+			int index = -1;
+			for (int cCnt = 0; cCnt < txt.length(); cCnt++)
+			{	char c = txt.charAt(cCnt);
+				if (!isLegal(c))
+				{	index = cCnt;
+//System.out.println("illegal " + index);				
+				}
+			}	
+			// verwijder illegaal karakter
+			if (index >= 0)
+			{	txt = removeCharAt(txt, index);
+				corrected = true;
+//System.out.println("corr " + txt);							
+			}
+			
+//System.out.println(txt);			
+			
+			// leading zeros, leiden niet tot een NumberFormatException	
+			// geen minteken
+			if ((txt.indexOf('-') < 0) && (txt.length() >= 2) &&
+				(txt.charAt(0) == '0') && Character.isDigit(txt.charAt(1)))
+			{	txt = removeCharAt(txt, 0);
+				corrected = true;
+			}
+			
+			// trailing zeros na(!) decimale punt oplossen 
+			// bij actionPerformed of focusLost			
+
+			if (corrected)
+			{	
+//System.out.println("corr " + txt);							
+				inputTextField.setText(txt);
+			
+			}
+			
+		}
+		
+		
+		public boolean isLegal(char c)
+		{	return Character.isDigit(c);
+		}
+	}	
 
 }
 
