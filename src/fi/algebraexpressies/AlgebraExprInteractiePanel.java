@@ -105,6 +105,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 		algebraSchuifVeld.setEditModeState(h);
 	
 		algebraSchuifVeld.changed = false;		
+		ingevuld = false;
 
 	}
 	
@@ -121,6 +122,8 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 //			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
 		algebraSchuifVeld.setState(h);
+		
+		ingevuld = false;
 		
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
@@ -367,10 +370,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 //System.out.println("kijkNa");
 
     	//ingevuld = !algebraSchuifVeld.veldIsLeeg();
-    	ingevuld = algebraSchuifVeld.changed;
+    	ingevuld = true;//algebraSchuifVeld.changed;
 
-    	if (!ingevuld)
-    		return;
+    	//if (!ingevuld)
+    	//	return;
     	
     	maakDocentExpressies();
     	
