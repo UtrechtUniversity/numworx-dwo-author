@@ -64,6 +64,7 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 	private int mode;
 	boolean correct = false;
 	boolean fout = false;
+	boolean ingevuld = false;
 	
 	int score = 0;
     int scoreMax = 10;
@@ -481,6 +482,7 @@ System.out.println("answerChanged");
     		fout = false;
     		score = 0;
     		nagekeken = false;
+    		ingevuld = true;
     		fireChangeEvent();
     	}	
     }
@@ -499,7 +501,7 @@ System.out.println("kijkVlakkenNa profiles");
     		correct = vaktek.evalueer(docentKleuren);
     		fout = !correct;
     		if (correct)
-    			score = scoreMax;	
+    			score = scoreMax;
     		nagekeken = true;
     	}
     	else if (kijkVlakkenNa && viewerOnly)
@@ -520,7 +522,23 @@ System.out.println("kijkDraaihoekNa");
     			score = scoreMax;	
     		nagekeken = true;
     	}
+
+    	if (correct)
+		{	viewer.vinkjeLabel.setVisible(true);
+			vaktek.vinkjeLabel.setVisible(true);
+			viewer.kruisjeLabel.setVisible(false);
+			vaktek.kruisjeLabel.setVisible(false);
+
+		}
+		else
+		{
+			viewer.kruisjeLabel.setVisible(true);
+			vaktek.kruisjeLabel.setVisible(true);
+			viewer.vinkjeLabel.setVisible(false);
+			vaktek.vinkjeLabel.setVisible(false);
+		}
     	
+    	ingevuld = true;
 		fireChangeEvent();
         
     }
@@ -832,8 +850,8 @@ System.out.println("tvip getState");
 //kijkNa();    	
 //System.out.println("get nagekeken = " + nagekeken);
     	h.put("nagekeken", new Boolean(nagekeken));
-    	h.put("correct", new Boolean(correct));
-    			
+    	//h.put("correct", new Boolean(correct));
+    	h.put("ingevuld", new Boolean(ingevuld));
     			
 
     	return h;
@@ -842,7 +860,7 @@ System.out.println("tvip getState");
 
     public void setState(Hashtable h) 
     {
-//System.out.println("tvip setState");    	
+System.out.println("tvip setState");    	
     	tekenVeelvlak.setState(h);
     	double viewerDraaiX = 20;
     	double viewerDraaiY = -30;
@@ -880,17 +898,21 @@ System.out.println("tvip getState");
     		}
     	}	
     	
-    	boolean nagekeken = false;
-    	boolean correct = false;
+    	ingevuld = false;
+    	    	
     	if (h.containsKey("nagekeken"))
     		nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
-    	if (h.containsKey("correct"))
-    		correct = ((Boolean) h.get("correct")).booleanValue();
+    	if (h.containsKey("ingevuld"))
+    		ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
     	
-    	this.nagekeken = nagekeken;
-    	this.correct = correct; 
-    	
+System.out.println("nagekeken " + nagekeken);    	
+System.out.println("ingevuld " + ingevuld);
+System.out.println("mode " + mode);
 
+    	if (ingevuld && (nagekeken || mode == 0))
+    		kijkNa();
+    	
+/*    	
     	
     	if (kijkNaActief && nagekeken)
     	{
@@ -905,7 +927,7 @@ System.out.println("tvip getState");
     		}
     	}
     	
-
+*/
     	
         
     }
@@ -1064,6 +1086,8 @@ System.out.println("tvip zetOpdracht");
     		vaktek.zetKlikAan(true);
 
     	}
+    	
+    	ingevuld = false;
     }
 
 
