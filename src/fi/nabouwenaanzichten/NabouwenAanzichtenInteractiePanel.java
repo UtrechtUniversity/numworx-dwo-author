@@ -1792,15 +1792,6 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 			
 		}
 		
-		
-		
-		if (h.containsKey("ingevuld")) 
-			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
-	    if (h.containsKey("nagekeken")) 
-	    	nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
-	    if (ingevuld && (mode == 0 || nagekeken)) 
-	    	kijkNa();
-	    
 	    
 		String docentState = null;
 		
@@ -1818,8 +1809,14 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	    }
 	    docentV.zetKubusRooster(docentKr);
 	    
-	    //System.out.println("ingevuld: "+ingevuld);
-	    //System.out.println("nagekeken: "+nagekeken);
+		ingevuld = false;
+		
+		if (h.containsKey("ingevuld")) 
+			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
+	    if (h.containsKey("nagekeken")) 
+	    	nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
+	    if (ingevuld && (mode == 0 || nagekeken)) 
+	    	kijkNa();
 	    
 	}
 	
@@ -2093,6 +2090,7 @@ newViewer = false;
 //if (v!= null)
 //System.out.println("vw = " + v.getSize().width);
 
+	    ingevuld = false;
 	    
 	}
 	
@@ -2778,6 +2776,7 @@ newViewer = false;
         }
 		
         nagekeken = true;
+        ingevuld = true;
 //System.out.println("score = " + score);		
 		fireChangeEvent();
 		//ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
