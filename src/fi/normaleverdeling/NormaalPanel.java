@@ -232,6 +232,7 @@ public class NormaalPanel extends JPanel implements
 	// d.i. niet ingevuld
 	boolean correct = false;
 	boolean fout = false;
+	boolean ingevuld = false;
 	
 	Vector listeners = new Vector();
 	
@@ -3571,6 +3572,8 @@ grensDecimals = findGrensDecimals();
 			
 		}
 		
+		ingevuld = false;
+		
 /*		
 
 		boolean kijkGrensNa;
@@ -3663,10 +3666,15 @@ grensDecimals = findGrensDecimals();
 		
 		bereken();
 		
+		ingevuld = false;
+		
 		if (b.containsKey("nagekeken"))
 			nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
+		if (b.containsKey("ingevuld"))
+			ingevuld = ((Boolean) b.get("ingevuld")).booleanValue();
 		
-		if ((mode == 0 || nagekeken))
+		
+		if (ingevuld && (mode == 0 || nagekeken))
 		//if (nagekeken)
 			kijkNa();
 
@@ -3888,6 +3896,7 @@ grensDecimals = findGrensDecimals();
 	    h.put("berekenkeuze", new Integer(berekenKeuze));
 	    
 	    h.put("nagekeken",new Boolean(nagekeken));
+	    h.put("ingevuld",new Boolean(ingevuld));
 /*
 	    h.put("kanslinksoptie", new Boolean(kansLinksOptie));
 		h.put("kansrechtsoptie", new Boolean(kansRechtsOptie));	    	    
@@ -4058,6 +4067,7 @@ grensDecimals = findGrensDecimals();
 		{	correct = false;
 			fout = false;
 			nagekeken = false;
+			ingevuld = true;
 			score = 0;
     		vinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(false);
@@ -4120,6 +4130,7 @@ grensDecimals = findGrensDecimals();
 		kruisjeLabel.setVisible(!correct);
 		
 		zetNagekeken(true);
+		ingevuld = true;
 		
 		fireChangeEvent();
 /*		
