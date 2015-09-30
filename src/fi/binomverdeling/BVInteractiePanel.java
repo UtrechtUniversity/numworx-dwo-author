@@ -147,6 +147,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 	int mode;
 	boolean correct = false;
 	boolean fout = false;
+	boolean ingevuld = false;
 	
 	/**
 	 * Constructor
@@ -1371,6 +1372,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		h.put("hypergeometrisch", new Boolean(this.hypergeometrisch));
 		
 		h.put("nagekeken",new Boolean(nagekeken));
+		h.put("ingevuld",new Boolean(ingevuld));
 		
 		return h;
 	}
@@ -1481,11 +1483,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.setNSlider();
 		this.setPopulatieSlider();
 		this.setPSlider();
+		
+		ingevuld = false;
 	
 		if (b.containsKey("nagekeken"))
 			nagekeken = ((Boolean) b.get("nagekeken")).booleanValue();
+		if (b.containsKey("ingevuld"))
+			ingevuld = ((Boolean) b.get("ingevuld")).booleanValue();
+
 		
-		if ((mode == 0 || nagekeken))
+		if (ingevuld && (mode == 0 || nagekeken))
 		//if (nagekeken)
 			kijkNa();
 
@@ -1515,6 +1522,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
     		fout = false;
     		score = 0;
     		nagekeken = false;
+    		ingevuld = true;
     		vinkjeLabel.setVisible(false);
     		kruisjeLabel.setVisible(false);
     		
@@ -1588,6 +1596,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.kruisjeLabel.setVisible(!correct);
 		
 		zetNagekeken(true);
+		ingevuld = true;
 		
 		fireChangeEvent();
 /*		
@@ -1917,5 +1926,7 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		//update
 		this.vernieuw();
+		
+		ingevuld = false;
 	}
 }
