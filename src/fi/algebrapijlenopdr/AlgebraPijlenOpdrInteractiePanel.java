@@ -106,6 +106,7 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 //System.out.println("changed " + algebraSchuifVeld.changed);
 		
 		algebraSchuifVeld.changed = false;
+		ingevuld = false;
 	}
 	
 	public void setState(Hashtable h)
@@ -115,6 +116,8 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements Interact
 
 		algebraSchuifVeld.setState(h);
 
+		ingevuld = false;
+		
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
 		
@@ -381,20 +384,21 @@ System.out.println("ingevuld " + ingevuld);
     
     public void kijkNa()
     {	
-System.out.println("kijkNa pre");    	
+//System.out.println("kijkNa pre");    	
     	
     	if (!kijkNaActief)
     		return;
   
-System.out.println("kijkNa");    
+//System.out.println("kijkNa");    
     
     	//ingevuld = !algebraSchuifVeld.veldIsLeeg();
-    	ingevuld = algebraSchuifVeld.changed;
+//   	ingevuld = algebraSchuifVeld.changed;
+		ingevuld = true;
     	
-System.out.println("ingevuld " + ingevuld);    	
+//System.out.println("ingevuld " + ingevuld);    	
     	
-    	if (!ingevuld)
-    		return;
+//    	if (!ingevuld)
+//    		return;
 
 //    	if (!nagekeken)
 //    	{
