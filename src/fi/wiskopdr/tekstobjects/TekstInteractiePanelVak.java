@@ -731,6 +731,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else
 		{	scroll = true;
+			popupFrame.getContentPane().setLayout(new BorderLayout()); // no default borderlayout.
 // FIXME Component.setPreferredSize(Dimension) since 1.5
 // JComponent.setPreferredSize is wel 1.4
 			if(interactiePanel instanceof JComponent)
