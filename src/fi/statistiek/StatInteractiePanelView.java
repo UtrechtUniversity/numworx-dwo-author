@@ -882,6 +882,8 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			}
 			
 			if (arg0.getButton() == MouseEvent.BUTTON1
+				// check dat het geen control-klik is om viewnaam te wijzigen
+				&& !((arg0.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK)
 				&& !(StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView))
 			{
 				this.inDrag = true;
