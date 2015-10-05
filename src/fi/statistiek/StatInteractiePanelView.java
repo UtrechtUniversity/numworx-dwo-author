@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -875,9 +876,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			
 			if (StatInteractiePanelView.this.getParent().getParent() instanceof StatEditPanelView)
 			{
-				// only set the selected tab; dragging is not allowed
+				// only set the selected tab
 				selectedTab = tab;
-				return;
+				// dragging is not allowed, but the view name may be changed
 			}
 			
 			if (arg0.getButton() == MouseEvent.BUTTON1
@@ -905,7 +906,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 					.removeView(StatInteractiePanelView.this.model
 						.mainWindowIndexToGeneralIndex(tab));
 			}
-			else if (arg0.getButton() == MouseEvent.BUTTON3
+			else if (
+					((arg0.getButton() == MouseEvent.BUTTON3) 
+					// allow mac users to control-click to change the view name
+					|| ((arg0.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK))
 				&& StatInteractiePanelView.this.model.getData()
 					.isViewsEditable())
 			{
