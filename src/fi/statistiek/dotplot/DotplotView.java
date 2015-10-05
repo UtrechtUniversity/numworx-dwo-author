@@ -258,14 +258,23 @@ public class DotplotView extends JPanel implements Observer
 	private int dotAreaHeight()
 	{
 		int h = this.getHeight();
+		
+		/**
+		 * TODO: Het gebruik van X_AS_OFFSET en KEUZEBALK_HOOGTE moet beter worden uitgezocht.
+		 * this.getHeight() is niet de hoogte inclusief keuzebalk.
+		 * Het ziet er nu acceptabel uit. StatistiekGWT heeft het
+		 * ook weer anders gefixt. Even laten voor wat het is...
+		 */
 
 		if (this.model.columnXIndexValid())
 		{
-			h -= DotplotView.X_AS_OFFSET;
+			//h -= DotplotView.X_AS_OFFSET;
+			h -= 50;
 		}
 		if (this.model.getTableModel().isViewsEditable())
 		{
-			h -= DotplotView.KEUZEBALK_HOOGTE;
+//			h -= DotplotView.KEUZEBALK_HOOGTE;
+			h -= 25;
 		}
 		return h;
 	}
@@ -1217,8 +1226,9 @@ public class DotplotView extends JPanel implements Observer
 			.get(this.model.getColumnXIndex());
 
 		int y = this.model.getTableModel().isViewsEditable() ? this.getHeight()
-			- DotplotView.KEUZEBALK_HOOGTE - DotplotView.X_AS_OFFSET : this
-			.getHeight() - DotplotView.X_AS_OFFSET;
+			- DotplotView.KEUZEBALK_HOOGTE - DotplotView.X_AS_OFFSET : 
+//				this.getHeight() - DotplotView.X_AS_OFFSET;
+				this.getHeight() - 50;
 		
 		// draw x-axis
 		if (this.model.columnYIndexValid())
