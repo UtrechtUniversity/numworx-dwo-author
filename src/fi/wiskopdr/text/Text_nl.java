@@ -755,7 +755,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				// opdr nav struct
 				{"ONS_timeisup", "De tijd is om"},
 				{"ONS_timeready", "Op tijd klaar"},
-				
+				{"ONS_timesChecked", "{0} keer nagekeken" },
+				{"ONS_1timeChecked", "één keer nagekeken"},
+
 		};
 }
 

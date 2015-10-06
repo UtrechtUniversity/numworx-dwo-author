@@ -717,6 +717,8 @@ public class Text_en extends java.util.ListResourceBundle
 				// opdr nav struct
 				{"ONS_timeisup", "The time is up"},
 				{"ONS_timeready", "Ready in time"},
+				{"ONS_timesChecked", "{0} times checked"},
+				{"ONS_1timeChecked", "first time checked"},
 
 		};
 }

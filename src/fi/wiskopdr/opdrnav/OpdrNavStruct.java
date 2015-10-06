@@ -15,6 +15,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -1426,7 +1427,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 		aantalSessiesLabel.setText("Attemps: " + aantalSessies);
 
-		aantalNakijkLabel.setText("" + aantalNakijken[activiteitNr] + " keer nagekeken");
+		aantalNakijkLabel.setText(keerNagekeken(aantalNakijken[activiteitNr]));
 		if (mode == 2 && aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
 			aantalNakijkLabel.setVisible(true);
 		
@@ -2546,7 +2547,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				vorigeKnop.setVisible(vorigeKnopZichtbaar || !bolletjesZichtbaar && zelftoetsNagekeken);
 
 				totaal = Math.max(0, totaal - (Math.max(0, aantalNakijken[activiteitNr] - 1)) * nakijkStraf);
-				aantalNakijkLabel.setText("" + aantalNakijken[activiteitNr] + " keer nagekeken");
+				aantalNakijkLabel.setText(keerNagekeken(aantalNakijken[activiteitNr]));
 				if (aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
 					aantalNakijkLabel.setVisible(true);
 			}
@@ -2789,6 +2790,18 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			return;
 		}
 		
+	}
+
+	/**
+	 * @param aantal
+	 * @return localized string: n keer nagekeken.
+	 */
+	private String keerNagekeken(final int aantal) {
+		if(aantal == 1)
+			return WiskOpdr.rb.getString("ONS_1timeChecked");
+		String format = WiskOpdr.rb.getString("ONS_timesChecked");
+		return MessageFormat.format(format, Integer.valueOf(aantal));
+		//return "" + aantal + " keer nagekeken";
 	}
 
 	/**
