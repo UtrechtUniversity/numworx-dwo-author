@@ -980,7 +980,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			{
 				if (randomVar.equals(randomVars[i]))
 				{
-					int tabNummer = ((Integer) randomValues.get(randomVar)).intValue() - 1;
+					int tabNummer = ((Number) randomValues.get(randomVar)).intValue() - 1;
 					if (tabNummer < aantalRandom && tabNummer > -1)
 					{
 						teksten = randomteksten[tabNummer];
