@@ -1388,12 +1388,18 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				{
 					Object object = states[i][j].get("interactiePanelStates");
 					List l = (List) object;
-					object = l.get(5);
-					Map m = (Map) object;
-					object = m.get("interactiePanelStates");
-					l = (List) object;
-					for(int x=0; x<5; x++) l.add(0, null);
-					states[i][j].put("interactiePanelStates", object);
+					if(l.size() > 5)
+					{ 	
+						object = l.get(5);
+						Map m = (Map) object;
+						object = m.get("interactiePanelStates");
+						l = (List) object;
+						for(int x=0; x<5; x++) l.add(0, null);
+						states[i][j].put("interactiePanelStates", object);
+					} else {
+						//states[i][j].remove("interactiePanelStates");
+						//states[i][j] = null;
+					}
 				}
 
 				if (orTimes != null)
