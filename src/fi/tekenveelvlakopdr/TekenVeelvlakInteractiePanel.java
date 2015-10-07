@@ -866,13 +866,13 @@ System.out.println("tvip setState");
     	double viewerDraaiY = -30;
     	
     	if (h.containsKey("draaiX"))
-    		viewerDraaiX = ((Double) h.get("draaiX")).doubleValue();
+    		viewerDraaiX = ((Number) h.get("draaiX")).doubleValue();
     	if (h.containsKey("draaiY"))
-    		viewerDraaiY = ((Double) h.get("draaiY")).doubleValue();
+    		viewerDraaiY = ((Number) h.get("draaiY")).doubleValue();
     	if (h.containsKey("viewerDraaiX"))
-    		viewerDraaiX = ((Double) h.get("viewerDraaiX")).doubleValue(); 
+    		viewerDraaiX = ((Number) h.get("viewerDraaiX")).doubleValue(); 
     	if (h.containsKey("viewerDraaiY"))
-    		viewerDraaiY = ((Double) h.get("viewerDraaiY")).doubleValue();
+    		viewerDraaiY = ((Number) h.get("viewerDraaiY")).doubleValue();
     	
     	if (viewerPosition == TekenVeelvlakInteractiePanel.MOVEABLE)
     		viewer.zetBeginHoeken(viewerDraaiX, viewerDraaiY);

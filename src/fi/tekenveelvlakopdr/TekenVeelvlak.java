@@ -390,8 +390,8 @@ if (k > 0)
 		zetBeginHoeken(draaiX, draaiY);
 //System.out.println("draaiX = " + UF.format(draaiX,1) + " draaiY = " + UF.format(draaiY,1));		
 
-		
-		tv = new Veelvlak(hoekpunten, vlakken, lijnen);
+		if(hoekpunten != null)
+			tv = new Veelvlak(hoekpunten, vlakken, lijnen);
 
 		//if (kleuren != null)
 		//{	for (int i = 0; i < tv.aantalVlakken; i++)
