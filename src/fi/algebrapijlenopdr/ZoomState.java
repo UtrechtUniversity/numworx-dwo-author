@@ -40,23 +40,23 @@ public class ZoomState
 		double tracexD = 0;
 		
 		if (h.containsKey("schaalFactorY")) 
-			schaalFactorY = ((Double) h.get("schaalFactorY")).doubleValue();
+			schaalFactorY = ((Number) h.get("schaalFactorY")).doubleValue();
 		if (h.containsKey("factorRijNummerY")) 
-			factorRijNummerY = ((Integer) h.get("factorRijNummerY")).intValue();
+			factorRijNummerY = ((Number) h.get("factorRijNummerY")).intValue();
 		if (h.containsKey("schaalFactorX")) 
-			schaalFactorX = ((Double) h.get("schaalFactorX")).doubleValue();
+			schaalFactorX = ((Number) h.get("schaalFactorX")).doubleValue();
 		if (h.containsKey("factorRijNummerX")) 
-			factorRijNummerX = ((Integer) h.get("factorRijNummerX")).intValue();
+			factorRijNummerX = ((Number) h.get("factorRijNummerX")).intValue();
 		if (h.containsKey("beginwaarde")) 
-			beginwaarde = ((Integer) h.get("beginwaarde")).intValue();
+			beginwaarde = ((Number) h.get("beginwaarde")).intValue();
 		if (h.containsKey("selectnummer")) 
-			selectnummer = ((Integer) h.get("selectnummer")).intValue();
+			selectnummer = ((Number) h.get("selectnummer")).intValue();
 		if (h.containsKey("beginx")) 
-			beginx = ((Double) h.get("beginx")).doubleValue();
+			beginx = ((Number) h.get("beginx")).doubleValue();
 		if (h.containsKey("beginy")) 
-			beginy = ((Double) h.get("beginy")).doubleValue();
+			beginy = ((Number) h.get("beginy")).doubleValue();
 		if (h.containsKey("tracexD")) 
-			tracexD = ((Double) h.get("tracexD")).doubleValue();
+			tracexD = ((Number) h.get("tracexD")).doubleValue();
 		
 		this.schaalFactorY = schaalFactorY;
 		this.factorRijNummerY = factorRijNummerY;

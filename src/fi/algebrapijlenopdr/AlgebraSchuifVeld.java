@@ -762,21 +762,39 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		
 		try
 		{
-			aantalSc = ((Integer) h.get("aantalSc")).intValue();
-			classNames = (String[]) h.get("classNames");
-			posX = (int[]) h.get("posX");
-			posY = (int[]) h.get("posY");
-			scStates = (Hashtable[]) h.get("scStates");
-			connections = (boolean[][]) h.get("connections");
-			graphConnections = (int[]) h.get("graphConnections");
+			aantalSc = ((Number) h.get("aantalSc")).intValue();
+			if(h.containsKey("classNamesList"))
+				classNames = toStringArray( h.get("classNamesList"));
+			else 
+				classNames = (String[]) h.get("classNames");
+			if(h.containsKey("posXList"))
+				posX = toIntArray( h.get("posXList"));
+			else posX = (int[]) h.get("posX");
+			if(h.containsKey("posYList"))
+				posY = toIntArray( h.get("posYList"));
+			else posY = (int[]) h.get("posY");
+			if( h.containsKey("scStatesList"))
+				scStates = toHashtableArray( h.get("scStatesList"));
+			else
+				scStates = (Hashtable[]) h.get("scStates");
+			if(h.containsKey("connectionsList"))
+				connections = toBooleanArrayArray( h.get("connectionsList"), aantalSc);
+			else
+				connections = (boolean[][]) h.get("connections");
+			if(h.containsKey("graphConnectionsList"))
+				graphConnections = toIntArray( h.get("graphConnections"));
+			else
+					graphConnections = (int[]) h.get("graphConnections");
 			tabel = ((Boolean) h.get("tabel")).booleanValue();
 			grafiek = ((Boolean) h.get("grafiek")).booleanValue();
 			expressie = ((Boolean) h.get("expressie")).booleanValue();
 			links = ((Boolean) h.get("links")).booleanValue();
-			zoomStateHolderState = (Hashtable) h.get("zoomStateHolderState");
+			zoomStateHolderState = toMap( h.get("zoomStateHolderState") );
 		}
 		catch(Exception ex)
-		{	return;
+		{	
+			ex.printStackTrace();
+			return;
 		}
 		
 		zoomStateHolder.setState(zoomStateHolderState);
@@ -811,6 +829,7 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		    }
 	      	catch(Exception e)
 	      	{	
+	      		e.printStackTrace();
 	      	}
 	    }
 	    
@@ -964,7 +983,74 @@ public class AlgebraSchuifVeld extends SchuifVeld
 			
     }
 
-    public void paste()
+    private boolean[][] toBooleanArrayArray(Object object, int aantal) {
+		if( object instanceof boolean[][]) return (boolean[][])object;
+		if( object instanceof List) {
+			Iterator it = ((List) object).iterator();
+			boolean[][] result = new boolean[aantal][aantal];
+			for (int i = 0; i < result.length; i++) {
+				boolean b[] = result[i];
+				for (int j = 0; j < b.length; j++) {
+					b[j] = Boolean.TRUE.equals( it.next());
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
+	private Hashtable[] toHashtableArray(Object object) {
+		if(object instanceof Hashtable[]) return (Hashtable[]) object;
+		if(object instanceof List)
+		{	List<Object> list = (List<Object>) object;
+			Hashtable[] result = new Hashtable[list.size()];
+			for (int i = 0; i < result.length; i++) {
+				Object n = list.get(i);
+				if(n != null) result[i] = toMap(n);
+			}
+			return result;
+		}
+		return null;
+	}
+
+	private String[] toStringArray(Object object) {
+		if(object instanceof String[]) return (String[]) object;
+		if(object instanceof List)
+		{	List<String> list = (List<String>) object;
+			String[] result = new String[list.size()];
+			for (int i = 0; i < result.length; i++) {
+				String n = list.get(i);
+				if(n != null) {
+					if(n.startsWith("fi.")) result[i] = n;
+					else result[i] = "fi.algebrapijlenopdr." + n;
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
+	private int[] toIntArray(Object object) {
+		if(object instanceof int[]) return (int[]) object;
+		if(object instanceof List)
+		{	List<Number> list = (List<Number>) object;
+			int[] result = new int[list.size()];
+			for (int i = 0; i < result.length; i++) {
+				Number n = list.get(i);
+				if(n != null) result[i] = n.intValue();
+			}
+			return result;
+		}
+		return null;
+	}
+
+	static Hashtable toMap(Object object) {
+		if(object instanceof Hashtable) return (Hashtable) object;
+		if(object instanceof Map) return new Hashtable( (Map) object);
+		return null;
+	}
+
+	public void paste()
     {
     	if ((AlgebraPijlenOpdr.clipBoard != null) && !AlgebraPijlenOpdr.clipBoard.equals(""))
     	{

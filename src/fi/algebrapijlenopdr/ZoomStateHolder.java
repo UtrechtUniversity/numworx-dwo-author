@@ -41,7 +41,7 @@ public class ZoomStateHolder
 		while(en.hasMoreElements())
 		{	String key = (String) en.nextElement();
 			ZoomState zs = new ZoomState();
-			zs.setState((Hashtable) h.get(key));
+			zs.setState( AlgebraSchuifVeld.toMap( h.get(key) ));
 			zoomStates.put(key, zs);
 		}
     }
