@@ -2,6 +2,8 @@ package fi.wiskopdr.cbook;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,10 +13,18 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.html.HTMLDocument;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
@@ -26,6 +36,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 /**
@@ -35,7 +46,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
  *
  */
 public class CBookInteractieEditPanel extends JPanel implements
-		InteractieEditPanel, CBookContext {
+		InteractieEditPanel, CBookContext, ActionListener {
 
 	CBookWidgetEditIF editor;
 	Hashtable launchData = new Hashtable();
@@ -45,6 +56,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 	JTextField logid;
 	
 	JCheckBox teltMee;
+	JButton   infoBtn;
 	String clazzName, instance;
 	private JComponent delegate;
 	private ObjectiveChoiceButton logObjectivesButton;
@@ -98,8 +110,10 @@ public class CBookInteractieEditPanel extends JPanel implements
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         if(logObjectivesButton.isVisible())
         	top.add(logObjectivesButton);
-    
-		
+        infoBtn = new JButton("?");
+        infoBtn.addActionListener(this);
+        infoBtn.setActionCommand(INFO);
+        top.add(infoBtn);
 		add(top, BorderLayout.NORTH);
 		
 	}
@@ -211,6 +225,39 @@ public class CBookInteractieEditPanel extends JPanel implements
 		} catch (Exception e) {
 		}
 		return cmd;
+	}
+
+	String INFO = "info";
+	@Override	
+	public void actionPerformed(ActionEvent e) {
+		if(INFO.equals(e.getActionCommand()))
+		{
+			StringBuilder tekst = new StringBuilder("<html>");
+			tekst.append(editor.toString()).append("<br>");
+			tekst.append("id: ").append(instance).append("<br>");
+			tekst.append("<h2>sending</h2>");
+			append(tekst, getSendCmds());
+			tekst.append("<h3>accepting</h3><br>");
+			append(tekst, getAcceptedCmds());
+			tekst.append("</html>");
+			JEditorPane lbl = new JEditorPane("text/html", tekst.toString());
+			
+			JOptionPane.showMessageDialog(this, new JScrollPane(lbl));
+		}
+		
+	}
+
+	private void append(StringBuilder tekst, String[] cmds) {
+		for (int i = 0; i < cmds.length; i++) {
+			String m = cmds[i];
+			String m2 = getLocalizedCmd(m);
+			if(m.equals(m2)) {
+				tekst.append(m);
+			} else {
+				tekst.append(m2).append(" (").append(m).append(")");
+			}
+			tekst.append("<br>");
+		}
 	}
 
 }
