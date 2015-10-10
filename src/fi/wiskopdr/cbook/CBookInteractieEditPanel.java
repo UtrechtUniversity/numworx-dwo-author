@@ -46,17 +46,18 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
  *
  */
 public class CBookInteractieEditPanel extends JPanel implements
-		InteractieEditPanel, CBookContext, ActionListener {
+		InteractieEditPanel, CBookContext {
 
 	CBookWidgetEditIF editor;
 	Hashtable launchData = new Hashtable();
+	Object info;
 	
 	boolean canLog;
 	JCheckBox logging;
 	JTextField logid;
 	
 	JCheckBox teltMee;
-	JButton   infoBtn;
+	InfoButton   infoBtn;
 	String clazzName, instance;
 	private JComponent delegate;
 	private ObjectiveChoiceButton logObjectivesButton;
@@ -76,6 +77,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 	public CBookInteractieEditPanel(CBookWidgetIF widget, Locale locale, String uuid) {
 		super(new BorderLayout());
 		instance = uuid;
+		info = widget;
 		clazzName = Service.getClassName(widget);
 		setLocale(locale);
 		editor = widget.getEditor(this);
@@ -110,9 +112,7 @@ public class CBookInteractieEditPanel extends JPanel implements
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         if(logObjectivesButton.isVisible())
         	top.add(logObjectivesButton);
-        infoBtn = new JButton("?");
-        infoBtn.addActionListener(this);
-        infoBtn.setActionCommand(INFO);
+        infoBtn = new InfoButton(this);
         top.add(infoBtn);
 		add(top, BorderLayout.NORTH);
 		
@@ -182,6 +182,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 	}
 
 	public Object getProperty(String key) {
+		if(InfoButton.INFO.equals(key)) return info;
 		if("locale".equals(key)) return getLocale();
 		if(WidgetBridge.UUID.equals(key))
 			return WiskOpdr.getUnit_id() + "-" + WiskOpdr.getEditPageNr() + "-" + instance;
@@ -227,37 +228,8 @@ public class CBookInteractieEditPanel extends JPanel implements
 		return cmd;
 	}
 
-	String INFO = "info";
-	@Override	
-	public void actionPerformed(ActionEvent e) {
-		if(INFO.equals(e.getActionCommand()))
-		{
-			StringBuilder tekst = new StringBuilder("<html>");
-			tekst.append(editor.toString()).append("<br>");
-			tekst.append("id: ").append(instance).append("<br>");
-			tekst.append("<h2>sending</h2>");
-			append(tekst, getSendCmds());
-			tekst.append("<h3>accepting</h3><br>");
-			append(tekst, getAcceptedCmds());
-			tekst.append("</html>");
-			JEditorPane lbl = new JEditorPane("text/html", tekst.toString());
-			
-			JOptionPane.showMessageDialog(this, new JScrollPane(lbl));
-		}
-		
+	public String toString() {
+		return editor.toString();
 	}
-
-	private void append(StringBuilder tekst, String[] cmds) {
-		for (int i = 0; i < cmds.length; i++) {
-			String m = cmds[i];
-			String m2 = getLocalizedCmd(m);
-			if(m.equals(m2)) {
-				tekst.append(m);
-			} else {
-				tekst.append(m2).append(" (").append(m).append(")");
-			}
-			tekst.append("<br>");
-		}
-	}
-
+ 
 }
