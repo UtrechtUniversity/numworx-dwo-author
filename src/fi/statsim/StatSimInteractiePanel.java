@@ -2,15 +2,27 @@ package fi.statsim;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+
 import javax.swing.JPanel;
+
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
+public class StatSimInteractiePanel extends JPanel implements InteractiePanel, CBookAware {
 	Munten munten;
 	Dobbelstenen dobbelstenen;
 	BinomTrekking binomTrekking;
+	Steekproef steekproef;
+	
+    private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
 	public StatSimInteractiePanel () {
 		setLayout(null);
@@ -32,6 +44,69 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		//binomTrekking.setSize(790,450);
 		add(binomTrekking);
 		binomTrekking.setVisible(false);
+		
+		steekproef = new Steekproef(this);
+		steekproef.setLocation(0,0);
+		add(steekproef);
+		steekproef.setVisible(false);
+		
+	}
+	
+	@Override
+	public void acceptCBookEvent(CBookEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener,
+			String command) {
+		// TODO Auto-generated method stub
+		cbookEventHandler.addCBookEventListener(listener, command);
+
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,
+			String command) {
+		// TODO Auto-generated method stub
+		cbookEventHandler.removeCBookEventListener(listener, command);		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		// TODO Auto-generated method stub
+		String[] commands = {"text.sample","text.sampleCollection"};
+		return commands;
+
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		// TODO Auto-generated method stub
+		String[] commands = {"text"};
+		return commands;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		// TODO Auto-generated method stub
+		String localizedCmd = StatSim.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
+
+	
+	public void fireCBookSteekproef(String arg1, String arg2) {
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("content", arg1);
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		map1.put("content", arg2);
+	
+		cbookEventHandler.fire("text.sample",map);
+		cbookEventHandler.fire("text.sampleCollection",map1);
 	}
 	
 	public void setBounds(int a, int b, int c, int d) {
@@ -39,6 +114,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		munten.setSize(this.getWidth(),this.getHeight());
 		dobbelstenen.setSize(this.getWidth(),this.getHeight());
 		binomTrekking.setSize(this.getWidth(),this.getHeight());
+		steekproef.setSize(this.getWidth(),this.getHeight());
 	}
 	
 	public void setState(Hashtable h) {
@@ -344,7 +420,12 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		if(h.containsKey("binomTrekkingRooster")) binomTrekking.showRooster= ((Boolean)h.get("binomTrekkingRooster")).booleanValue();
 		binomTrekking.setZichtbaar();
 
-		Boolean eenMuntTweeMunt=true;
+		Boolean steekproefRadioBool=false;
+		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
+		steekproef.setVisible(steekproefRadioBool);
+		
+		
+		Boolean eenMuntTweeMunt=true;	
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
 		munten.eenMuntRadio.setSelected(eenMuntTweeMunt);
 		munten.tweeMuntenRadio.setSelected(!eenMuntTweeMunt);
@@ -392,6 +473,11 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel {
 		if(h.containsKey("binomTrekkingFrequentie")) binomTrekking.showFrequentie= ((Boolean)h.get("binomTrekkingFrequentie")).booleanValue();
 		if(h.containsKey("binomTrekkingRooster")) binomTrekking.showRooster= ((Boolean)h.get("binomTrekkingRooster")).booleanValue();
 		binomTrekking.setZichtbaar();
+		
+		Boolean steekproefRadioBool=false;
+		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
+		steekproef.setVisible(steekproefRadioBool);
+		
 		
 		Boolean eenMuntTweeMunt=true;
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();

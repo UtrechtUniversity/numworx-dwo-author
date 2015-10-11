@@ -51,7 +51,14 @@ public class Text_en extends java.util.ListResourceBundle
             {   "table", "Table" },
             {   "dice", "Dice" },
             {   "binominalDraw", "Binominal draw" },
-            {   "grid", "Grid" }
+            {   "grid", "Grid" },
+            {   "CBA_text.sample", "CSV Sample" },
+            {   "CBA_text.sampleCollection", "CSV Sample collection" },
+            {   "sample", "Sample" },
+            {   "sampleSize", "Sample size" },
+            {   "getSample", "Get sample"},
+            {   "getSample100Times" , "Get sample 100 times" },
+            {   "value", "Value" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

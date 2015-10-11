@@ -25,6 +25,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JRadioButton dobbelstenenRadio;
 	private JRadioButton muntenRadio;
 	private JRadioButton binomTrekkingRadio;
+	private JRadioButton steekproefRadio;
 	private JCheckBox muntenInstellingenCheckBox;
 	private JCheckBox muntenResultatenCheckBox;
 	private JCheckBox muntenGrafiekCheckBox;
@@ -39,6 +40,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox binomTrekkingTabelCheckBox;
 	private JCheckBox binomTrekkingFrequentieCheckBox;
 	private JCheckBox binomTrekkingRoosterCheckBox;
+	
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -169,10 +171,18 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		binomTrekkingRoosterCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingRoosterCheckBox);
 		
+		steekproefRadio=new JRadioButton(StatSim.rb.getString("sample"));
+		steekproefRadio.setLocation(10,350);
+		steekproefRadio.setSize(200,20);
+		steekproefRadio.addActionListener(this);
+		optionsPanel.add(steekproefRadio);
+	
+		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
 		buttonGroup1.add(dobbelstenenRadio);
 		buttonGroup1.add(binomTrekkingRadio);
+		buttonGroup1.add(steekproefRadio);
 	}
 	
 	public Hashtable getEditState() {
@@ -194,6 +204,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("binomTrekkingTabel", new Boolean(binomTrekkingTabelCheckBox.isSelected()));
 		h.put("binomTrekkingFrequentie", new Boolean(binomTrekkingFrequentieCheckBox.isSelected()));
 		h.put("binomTrekkingRooster", new Boolean(binomTrekkingRoosterCheckBox.isSelected()));
+		h.put("steekproefRadio", new Boolean(steekproefRadio.isSelected()));
 		return h;
 	}
 	
@@ -291,7 +302,12 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			interactiePanel.binomTrekking.showRooster=binomTrekkingRooster;
 			
 			interactiePanel.binomTrekking.setZichtbaar();		
-		
+
+		Boolean steekproefRadioBool=false;
+		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
+		steekproefRadio.setSelected(steekproefRadioBool);
+		interactiePanel.steekproef.setVisible(steekproefRadioBool);
+
 		interactiePanel.setEditState(h);
 		
 	}
@@ -335,6 +351,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.munten.setVisible(true);
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(false);
+			   interactiePanel.steekproef.setVisible(false);
 		   }
 		   if (e.getSource()==muntenInstellingenCheckBox) {
 			   interactiePanel.munten.showInstellingen=muntenInstellingenCheckBox.isSelected();
@@ -360,6 +377,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.munten.setVisible(false);
 			   interactiePanel.dobbelstenen.setVisible(true);
 			   interactiePanel.binomTrekking.setVisible(false);
+			   interactiePanel.steekproef.setVisible(false);
 		   }
 		   if (e.getSource()==dobbelstenenInstellingenCheckBox) {
 			   interactiePanel.dobbelstenen.showInstellingen=dobbelstenenInstellingenCheckBox.isSelected();
@@ -381,6 +399,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.munten.setVisible(false);
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(true);
+			   interactiePanel.steekproef.setVisible(false);
 		   }
 		   if (e.getSource()==binomTrekkingInstellingenCheckBox) {
 			   interactiePanel.binomTrekking.showInstellingen=binomTrekkingInstellingenCheckBox.isSelected();
@@ -401,6 +420,12 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		   if (e.getSource()==binomTrekkingRoosterCheckBox) {
 			   interactiePanel.binomTrekking.showRooster=binomTrekkingRoosterCheckBox.isSelected();
 			   interactiePanel.binomTrekking.setZichtbaar();
+		   }
+		   if (e.getSource()==steekproefRadio) {
+			   interactiePanel.munten.setVisible(false);
+			   interactiePanel.dobbelstenen.setVisible(false);
+			   interactiePanel.binomTrekking.setVisible(false);
+			   interactiePanel.steekproef.setVisible(true);
 		   }
 	}
 

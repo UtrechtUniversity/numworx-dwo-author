@@ -31,20 +31,21 @@ public class FrequentieClass extends JPanel{
 		g.drawString (StatSim.rb.getString("tails"),150,90);
 		
 		g.setColor(Color.yellow);
-		g.fillRect(65, 10+60-(int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75), 60, (int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75));
+		System.out.println("MaxCount"+munten.maxCount);
+		g.fillRect(65, 10+60-(int)(60*(munten.muntCount-munten.totaalmunt)/(double)(munten.maxCount*0.75)), 60, (int)(60*(munten.muntCount-munten.totaalmunt)/(double)(munten.maxCount*0.75)));
 		g.setColor(Color.black);
-		g.drawRect(65, 10+60-(int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75), 60, (int)60*(munten.muntCount-munten.totaalmunt)/(int)(munten.maxCount*0.75));
+		g.drawRect(65, 10+60-(int)(60*(munten.muntCount-munten.totaalmunt)/(double)(munten.maxCount*0.75)), 60, (int)(60*(munten.muntCount-munten.totaalmunt)/(double)(munten.maxCount*0.75)));
 		
 		g.setColor(Color.red);
-		g.fillRect(135, 10+60-60*(munten.totaalmunt)/(int)(munten.maxCount*0.75), 60, 60*munten.totaalmunt/(int)(munten.maxCount*0.75));
+		g.fillRect(135, 10+60-(int)(60*(munten.totaalmunt)/(double)(munten.maxCount*0.75)), 60, (int)(60*munten.totaalmunt/(double)(munten.maxCount*0.75)));
 		g.setColor(Color.black);
-		g.drawRect(135, 10+60-60*(munten.totaalmunt)/(int)(munten.maxCount*0.75), 60, 60*munten.totaalmunt/(int)(munten.maxCount*0.75));
+		g.drawRect(135, 10+60-(int)(60*(munten.totaalmunt)/(double)(munten.maxCount*0.75)), 60, (int)(60*munten.totaalmunt/(double)(munten.maxCount*0.75)));
 		
 		g.drawLine(55, 10, 55, 70);
 		g.drawLine(50,10,55,10);
 		g.drawLine(50, 70, 55, 70);
 		
 		g.drawString("0", 40, 75);
-		g.drawString((int)(munten.maxCount*0.75)+ "",25,15);
+		g.drawString((double)(munten.maxCount*0.75)+ "",25,15);
 	}
 }

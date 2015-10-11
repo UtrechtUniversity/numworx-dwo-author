@@ -1,12 +1,16 @@
 package fi.statsim;
 
 import java.awt.Color;
+
 import javax.swing.JRadioButton;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -23,8 +27,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class BinomTrekking extends JPanel implements ActionListener, FocusListener, Runnable{
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
+
+public class BinomTrekking extends JPanel implements ActionListener, FocusListener, Runnable, CBookAware{
 	
+    private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	JPanel panel1;
 	Border border1;
 	JLabel kansLabel;
@@ -306,6 +317,14 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			   
 		}
 		if (e.getSource()==stap) {
+			
+				//String text = getText();
+				String text=new String();
+				text="1;2\n3;4";
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("content", text);
+				cbookEventHandler.fire("text",map);
+			
 			if (!stapStarted1) {
 				voeruit.setEnabled(true);
 				keer.setEnabled(false);
@@ -442,6 +461,51 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			binomGrafiek.repaint();
 			binomRooster.repaint();
 		}
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener,
+			String command) {
+		// TODO Auto-generated method stub
+		cbookEventHandler.addCBookEventListener(listener, command);
+
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,
+			String command) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		// TODO Auto-generated method stub
+		String[] commands = {"text"};
+		return commands;
+
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		// TODO Auto-generated method stub
+		String[] commands = {"text"};
+		return commands;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		// TODO Auto-generated method stub
+		String localizedCmd = StatSim.rb.getString("CBook" + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
 	}
 
 }
