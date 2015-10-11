@@ -15,7 +15,6 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.security.auth.callback.TextInputCallback;
 import javax.swing.*;
 
 import org.cbook.cbookif.CBookWidgetIF;

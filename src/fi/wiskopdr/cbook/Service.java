@@ -237,6 +237,10 @@ public class Service {
 		@Override
 		public void acceptCBookEvent(CBookEvent event) {
 		}
+
+		public String getLocalizedCmd(String command) {
+			return command;
+		}
 		
 	}
 	static class Proxy implements CBookWrap, CBookWidgetFactoryIF, CBookLaunchData  {
