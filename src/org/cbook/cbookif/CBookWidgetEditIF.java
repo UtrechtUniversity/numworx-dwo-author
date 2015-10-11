@@ -79,5 +79,16 @@ public interface CBookWidgetEditIF {
 	 * @return array of commands
 	 */
 	String[] getSendCmds();
+	/**
+	 * Get the localized user readable string of a command.
+	 * The command is one of the accepted or send commands.
+	 * @param command
+	 * @return the translation
+	 * @see #getAcceptedCmds()
+	 * @see #getSendCmds()
+	 */
+	
+	String getLocalizedCmd(String command);
+	
 
 }

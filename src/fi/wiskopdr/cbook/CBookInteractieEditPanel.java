@@ -206,18 +206,15 @@ public class CBookInteractieEditPanel extends JPanel implements
 	}
 
 	String[] getSendCmds() {
-		return editor.getAcceptedCmds();
+		return editor.getSendCmds();
 	}
 
 	public String getLocalizedCmd(String cmd) {
 		try {
-			Method method = editor.getClass().getMethod("getLocalizedCmd", String.class);
+			Method method = CBookWidgetEditIF.class.getMethod("getLocalizedCmd", String.class);
 			return String.valueOf(method.invoke(editor, cmd));			
-		} catch (NoSuchMethodException e) {
-		} catch (SecurityException e) {
-		} catch (IllegalAccessException e) {
-		} catch (IllegalArgumentException e) {
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		try {

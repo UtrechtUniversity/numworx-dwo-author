@@ -56,7 +56,7 @@ public class InfoButton extends JButton implements Action, Icon, Constants {
 		append(tekst, cba.getAcceptedCmds());
 		tekst.append("</html>");
 		JEditorPane lbl = new JEditorPane("text/html", tekst.toString());
-		
+		lbl.setEditable(false);
 		String title = String.valueOf(context.getProperty(INFO));
 		JOptionPane.showMessageDialog(this, new JScrollPane(lbl), title, JOptionPane.PLAIN_MESSAGE);
 	}
@@ -64,7 +64,7 @@ public class InfoButton extends JButton implements Action, Icon, Constants {
 	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		g.setColor(c.getForeground());
-		g.drawOval(x, y, getIconWidth(), getIconHeight());
+		g.drawOval(x, y, getIconWidth()-1, getIconHeight()-1);
 		Font f = c.getFont();
 		FontMetrics fm = g.getFontMetrics(f);
 		Rectangle2D rect = fm.getStringBounds(INFO, g);
