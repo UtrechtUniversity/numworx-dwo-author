@@ -425,6 +425,8 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 	
 	public int getScore()
 	{	if(!teltMee) return 0;
+		if(mode==1)
+			return Math.max(0, score-errorCount*2);
 	    return score;
 	}
 	
@@ -435,8 +437,11 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 			scoreObjectives[i] = new int[logObjectives[i].length];
 		for(int i=0 ; i<logObjectives.length ; i++)
 			for(int j = 0; j<logObjectives[i].length; j++)
-		{	if(logObjectives[i][j]) scoreObjectives[i][j] = score;
-		}
+			{	if(logObjectives[i][j] && mode==1)
+					scoreObjectives[i][j] = Math.max(0, score - errorCount*2);
+				else if(logObjectives[i][j]) 
+					scoreObjectives[i][j] = score;
+			}
 		return scoreObjectives;
 	}
 	
@@ -452,7 +457,7 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 	
 	public boolean isFout()
 	{	if(!teltMee)return false;
-	    return fout;
+		return fout;
 	}
 	
 	public void zetMode(int mode)

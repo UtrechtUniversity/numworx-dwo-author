@@ -2120,6 +2120,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	{	if(!teltMee) return 0;
 		if (tips)
 			return Math.max(0, score - ideasPuntenAftrek);
+		if(mode==1)
+			return Math.max(0, score-errorCount*2);
 	    return score;
 	}
 	
@@ -2130,9 +2132,13 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 			scoreObjectives[i] = new int[logObjectives[i].length];
 		for(int i=0 ; i<logObjectives.length ; i++)
 			for(int j = 0; j<logObjectives[i].length; j++)
-		{	if(logObjectives[i][j]) scoreObjectives[i][j] = score;
-			if (tips) scoreObjectives[i][j] = Math.max(0, score - ideasPuntenAftrek);
-		}
+			{	if(logObjectives[i][j] && mode==1)
+					scoreObjectives[i][j] = Math.max(0, score - errorCount*2);
+				else if(logObjectives[i][j] && tips) 
+					scoreObjectives[i][j] = Math.max(0, score - ideasPuntenAftrek);
+				else if(logObjectives[i][j]) 
+					scoreObjectives[i][j] = score;
+			}
 		return scoreObjectives;
 	}
 	
@@ -2152,7 +2158,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	
 	public boolean isFout()
 	{	if(!teltMee)return false;
-	    return fout;
+		return fout;
 	}
 	
 	public boolean hasCheck()

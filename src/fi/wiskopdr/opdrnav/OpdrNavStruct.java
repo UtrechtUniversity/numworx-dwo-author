@@ -2343,7 +2343,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			
 			for(int i = 0; i < scorePaginas.length; i++)//kan fout gaat als scorePaginas leeg
 			{	if(bezocht[actNr][scorePaginas[i]-1])
-				{	scoreSelectie = scoreSelectie + scores[actNr][scorePaginas[i]-1]-strafpunten[actNr][scorePaginas[i]-1];
+				{	scoreSelectie = scoreSelectie + scores[actNr][scorePaginas[i]-1];//-strafpunten[actNr][scorePaginas[i]-1];
 					scoreMaxSelectie += scoresMax[actNr][scorePaginas[i]-1];
 				}
 			}
@@ -2431,7 +2431,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			
 			if(condNav && condNavPerc)
 			{	boolean conditie = or[actNr].geefNoScore(opdrNr + 1) || 
-						100.0 * (Math.max(0, scores[actNr][opdrNr] - strafpunten[actNr][opdrNr])) / scoresMax[actNr][opdrNr] >= condPerc;
+						100.0 * (Math.max(0, scores[actNr][opdrNr] /*- strafpunten[actNr][opdrNr]*/)) / scoresMax[actNr][opdrNr] >= condPerc;
 				//boolean conditie = or[actNr].geefNoScore(opdrNr + 1) ||
 					//	100.0 * or[actNr].geefScore(opdrNr + 1) / scoresMax[actNr][opdrNr] >= condPerc;
 				for(int i = opdrNr + 2; i < aantalOpdrachten[actNr]; i++)
@@ -2735,9 +2735,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 			if (e.getActionCommand().equals("checked") && fout && mode == OEFENEN_STRAFPUNTEN)
 			{
-				strafpunten[activiteitNr][opdrachtNr] += foutStraf;
+				//strafpunten niet hier aftrekken maar in het antwoordvak
+				//strafpunten[activiteitNr][opdrachtNr] += foutStraf;
 			}
-			score = Math.max(0, score - getInt(strafpunten,activiteitNr,opdrachtNr));
+			
+			// niet meer nodig bij nieuwe opzet strafpunten
+			//score = Math.max(0, score - getInt(strafpunten,activiteitNr,opdrachtNr));
+			
 //!! Dubbel met wat hieronder staat... Alleen niet voor zelftoets, maar daarvoor wil je op dit moment geen score zetten.
 //			if (mode != 3)
 //			{

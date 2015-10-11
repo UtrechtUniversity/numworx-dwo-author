@@ -395,10 +395,13 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
 
+		antwoordKV.removeActionListener(this);
 		antwoordKV.setSelectedItem(antwoord.trim());
-
-		if (ingevuld && (mode == 0 || mode == 1 || nagekeken))
-			kijkNa();
+		antwoordKV.addActionListener(this);
+		
+		if (ingevuld && (mode == 0 || nagekeken))
+		{	kijkNa();
+		}
 	}
 
 	public void setEditState(Hashtable h)
@@ -550,6 +553,8 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	{
 		if (!teltMee)
 			return 0;
+		if(mode==1)
+			return Math.max(0, score-errorCount*2);
 		return score;
 	}
 
@@ -561,9 +566,10 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		for (int i = 0; i < logObjectives.length; i++)
 			scoreObjectives[i] = new int[logObjectives[i].length];
 		for (int i = 0; i < logObjectives.length; i++)
-			for (int j = 0; j < logObjectives[i].length; j++)
-			{
-				if (logObjectives[i][j])
+			for(int j = 0; j<logObjectives[i].length; j++)
+			{	if(logObjectives[i][j] && mode==1)
+					scoreObjectives[i][j] = Math.max(0, score - errorCount*2);
+				else if(logObjectives[i][j]) 
 					scoreObjectives[i][j] = score;
 			}
 		return scoreObjectives;
@@ -818,8 +824,10 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 				kijkNa();
 				if (fout)
 					errorCount++;
+				System.out.println("errocount:"+errorCount);
 				attemptsCount++;
 				setAttempt();
+				zetNagekeken(true);
 				if (ingevuld)
 					produceAction("checked");
 

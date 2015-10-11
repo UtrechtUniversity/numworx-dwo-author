@@ -2709,6 +2709,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		//	return Math.max(0, score - aftrekTipHulp);
 		if (tips)
 			return Math.max(0, score - ideasPuntenAftrek);
+		if(mode==1)
+			return Math.max(0, score-errorCount*2);
 		return score;
 	}
 
@@ -2722,10 +2724,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		for (int i = 0; i < logObjectives.length; i++)
 			for (int j = 0; j < logObjectives[i].length; j++)
 			{
-				if (logObjectives[i][j])
-					scoreObjectives[i][j] = score;
-				if (tips)
+				if(logObjectives[i][j] && mode==1)
+					scoreObjectives[i][j] = score - errorCount*2;
+				else if(logObjectives[i][j] && tips)
 					scoreObjectives[i][j] = Math.max(0, score - ideasPuntenAftrek);
+				else if(logObjectives[i][j])
+					scoreObjectives[i][j] = score;
 			}
 		return scoreObjectives;
 	}

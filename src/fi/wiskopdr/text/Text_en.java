@@ -681,6 +681,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_maakStap", "make step" },
 				{"CBA_vergelijking", "equation" },
 				{"CBA_double", "nummerical value"},
+				{"CBA_double.solution", "oplossing"},
 				{"CBA_expression", "expression"},
 				{"CBA_equation", "equation"},
 				{"CBA_text", "text"},
