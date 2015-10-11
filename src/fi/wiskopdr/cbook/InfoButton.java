@@ -50,10 +50,18 @@ public class InfoButton extends JButton implements Action, Icon, Constants {
 		StringBuilder tekst = new StringBuilder("<html>");
 		tekst.append(cba).append("<br>");
 		tekst.append("id: ").append(context.getProperty(UUID)).append("<br>");
-		tekst.append("<h3>Sending</h3>");
-		append(tekst, cba.getSendCmds());
-		tekst.append("<h3>Accepting</h3>");
-		append(tekst, cba.getAcceptedCmds());
+		String[] sendCmds = cba.getSendCmds();
+		if(sendCmds != null && sendCmds.length>0)
+		{
+			tekst.append("<h3>Sending</h3>");
+			append(tekst, sendCmds);
+		}
+		String[] acceptedCmds = cba.getAcceptedCmds();
+		if(acceptedCmds != null && acceptedCmds.length>0)
+		{
+			tekst.append("<h3>Accepting</h3>");
+			append(tekst, acceptedCmds);
+		}
 		tekst.append("</html>");
 		JEditorPane lbl = new JEditorPane("text/html", tekst.toString());
 		lbl.setEditable(false);
