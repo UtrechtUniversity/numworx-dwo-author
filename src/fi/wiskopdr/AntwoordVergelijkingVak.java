@@ -2070,6 +2070,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			zetGoedFout(FOUT, stapNr);
 		if (feedbackKey != null && !feedbackKey.equals(""))
 			setFeedback(WiskOpdr.rb.getString(feedbackKey), true);
+		else if(this instanceof StelselEditor)
+			feedbackTekst.setText("");
+			
 		//		else if (fout && feedbackModus == 1) {
 		//			if (foutenTeller > 0)
 		//				setFeedback("", true, foutenTeller);
@@ -3941,13 +3944,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			hoogte += formuleVakken[i].getSize().height + stapH;
 		}
 		if (feedbackTekst != null && feedbackTekst.isShowing()) 
-		{	System.out.println("bepaalHoogte: + hoogte feedbacktekst");
 			hoogte += 30 + feedbackTekst.getHeight();
-		}
-		else
-		{	System.out.println("bepaalHoogte: geen feedbacktekst");
-			//hoogte += 20;
-		}
 		return hoogte;
 	}
 	

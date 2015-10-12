@@ -24,13 +24,14 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 
 	StelselRekenVak rekenVak;
 	StelselOplossingenVak oplossingenVak;
-	JLabel oplossingenLabel;
+	TekstArea oplossingenLabel;
 	JPanel oplossingenRegel;
 	
 	boolean rekenVakZichtbaar = true;
@@ -83,7 +84,10 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		
 		add(oplossingenRegel);
 		
-		oplossingenLabel = new JLabel(WiskOpdr.rb.getString("oplossingenLabel"));
+		//oplossingenLabel = new JLabel(WiskOpdr.rb.getString("oplossingenLabel"));
+		oplossingenLabel = new TekstArea();
+		oplossingenLabel.setOpaque(false);
+		oplossingenLabel.setText(WiskOpdr.rb.getString("oplossingenLabel"));
 		oplossingenLabel.setLocation(5,2);
 		oplossingenRegel.add(oplossingenLabel);
 		
@@ -306,6 +310,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 			//Font f = oplossingenLabel.getFont();
 			//FontMetrics fm = new FontMetrics(f){};
 			oplossingenLabel.setText(WiskOpdr.rb.getString("oplossingenLabel") + " (" + variabelenString + ")");
+			//TODO: zorgen dat je hier ook formules in kunt vullen, bijvoorbeeld voor variabelen met subscript (x_1, x_2). 
 			//oplossingenLabel.setSize(fm.stringWidth(oplossingenLabel.getText()), 20);
 			
 		}

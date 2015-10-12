@@ -89,7 +89,7 @@ public class StelselRekenVak extends JPanel  {
 		contentPanel.setBackground(Color.white);
 		scrollPane = new JScrollPane(contentPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane);
-		scrollPane.setLocation(0,26);
+		scrollPane.setLocation(0,headerHoogte + marge);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		
 		this.antwoordVak = antwoordVak;
@@ -275,7 +275,7 @@ public class StelselRekenVak extends JPanel  {
 		int kolomBreedte = getWidth()/aantalKolommen;
 		hoofdEditor.setSizes(kolomBreedte);
 		hoofdEditor.setLocation(-1, 0);
-		hoofdEditor.scrollRectToVisible(new Rectangle(0, 0, 1, 1));
+		//hoofdEditor.scrollRectToVisible(new Rectangle(0, 0, 1, 1));
 		if(hoofdEditor.heeftKinderen())
 			hoofdEditor.setLocations();
 		int h = hoofdEditor.geefHoogteEditorEnKinderen();

@@ -130,6 +130,9 @@ public class Text_en extends java.util.ListResourceBundle
                 { "feedbackTekst18" , "The answer is correct, but the number of significant figures isn't right." },
                 { "feedbackTekst19" , "The answer is correct, but doesn't have the right form and the number of significant figures isn't right." },
                 { "feedbackTekst20" , "The answer is correct, number of significant figures is right, but doesn't have the right form." },
+                { "feedbackTekst21a" , "You have found all solutions, fill them in in the solution bar."},
+                { "feedbackTekst21b" , "You have found all solutions."},
+                { "feedbackTekst22" , "You have found all solutions in this branch, continue with a different branch."},                
                 
                 { "feedbackReactieVerg01" , "Je reactievergelijking bevat nog niet de juiste moleculen."},
                 { "feedbackReactieVerg02" , "De elementenbalans van je reactievergelijking klopt niet."},
