@@ -10,6 +10,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstRegel;
+import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class SymboolPanel extends JPanel implements InteractiePanel{
 
@@ -113,8 +114,8 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 	
 	public void zetHoogte(int h)
 	{
-		this.setSize(this.getWidth(), h);
-		symbool.setSize(this.getWidth(), h);
+		this.setBounds(0, 0, this.getWidth(), h);
+		symbool.setBounds(0, 0, this.getWidth(), h);
 	}
 
 	@Override
@@ -152,17 +153,37 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		symbool.zetKleur(new Color(kleurR, kleurG, kleurB));
 		this.vulHoogte = vulHoogte;
 		if(this.vulHoogte)
-		{	int hoogte = this.getHeight();
-			if(getParent() instanceof TekstInteractiePanelVak)
-			{	TekstInteractiePanelVak parent = (TekstInteractiePanelVak) getParent();
-				if(parent.getParent() instanceof TekstRegel)
-				{	TekstRegel regelParent = (TekstRegel) parent.getParent();
-					hoogte = regelParent.getTekstVak().getHeight();
-				}
-			}
-			zetHoogte(hoogte);
+			zetHoogte(bepaalVulHoogte());
 		
+	}
+	
+	public int bepaalVulHoogte()
+	{
+		int hoogte = this.getHeight();
+		if(getParent() instanceof TekstInteractiePanelVak)
+		{	TekstInteractiePanelVak parent = (TekstInteractiePanelVak) getParent();
+			if(parent.getParent() instanceof TekstRegel)
+			{	TekstRegel regelParent = (TekstRegel) parent.getParent();
+				TekstVak vak = (TekstVak) regelParent.getTekstVak();
+				
+				hoogte = vak.getHeight();
+				//for(int i = 0; i < vak.)
+				//hoogte = regelParent.getTekstVak().geefOpgevuldeHoogte();
+			}
 		}
+		return hoogte;
+	}
+	
+	public void resize()
+	{
+		int hoogte = this.getHeight();
+		System.out.println("resize symboolpanel: hoogte: " + hoogte);
+		if(vulHoogte)
+			hoogte = bepaalVulHoogte();
+		System.out.println("nieuwe hoogte: " + hoogte);
+		zetHoogte(hoogte);
+		//setSize(this.getWidth(), hoogte);
+		//repaint();
 	}
 
 	@Override
@@ -245,7 +266,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 
 	@Override
 	public boolean isCorrect() {
-		return false;
+		return true;
 	}
 
 	@Override
