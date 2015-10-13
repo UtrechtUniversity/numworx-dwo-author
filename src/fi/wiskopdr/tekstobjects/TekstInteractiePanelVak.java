@@ -9,6 +9,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -34,6 +35,11 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.JSONArray;
+
+
+
+
+
 
 
 
@@ -913,7 +919,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			manager.updateCrossWidgetId(this);
         }
         this.connections = connections;
-        this.subscriptions = subscriptions;
+        this.subscriptions = toConnector(subscriptions);
         
         if(soortInteractiePanel == 0)
 		{	if(interactiePanel==null || !(interactiePanel instanceof AntwoordFormuleVak))
@@ -1340,6 +1346,26 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	
 	
+	private Map<String, Set<Connector>> toConnector(Map s) {
+		if (s == null)
+			return null;
+		TreeMap<String,Set<Connector>> result = new TreeMap();
+		Set<Entry<?,?>> entrySet = s.entrySet();
+		for (Entry<?, ?> entry : entrySet) {
+			String key = (String) entry.getKey();
+			TreeSet<Connector> newValue  = new TreeSet<Connector>();
+			Set<Map<String,String>> value = (Set) entry.getValue();
+			for (Map<String, String> map : value) {
+				for(Entry<String,String> connector : map.entrySet())
+				{
+					newValue.add(new Connector(connector.getKey(), connector.getValue()));
+				}
+			}
+			result.put(key, newValue);
+		}
+		return result;
+	}
+
 	public Hashtable getEditState()
 	{	
 		int locationX = 0;
@@ -1354,7 +1380,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		studentEditor = this.studentEditor;
 		crossWidgetId = this.crossWidgetId;
 		connections = this.connections;
-		subscriptions = this.subscriptions;
+		subscriptions = replaceConnector(this.subscriptions);
 	       		
 		if((interactiePanel instanceof TekstVakPanel && !popup)){
 			Hashtable interactiePanelLaunchState = interactiePanel.getEditState();
@@ -1402,6 +1428,23 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		return launchData;
 	}
 	
+	private Map<String,Set<Map<?,?>>> replaceConnector(Map<String, Set<Connector>> s) {
+		if(s == null) return null;
+		Map<String,Set<Map<?,?>>> result = new Hashtable<String, Set<Map<?, ?>>>();
+		Set<Entry<String, Set<Connector>>> entrySet = s.entrySet();
+		for (Entry<String, Set<Connector>> entry : entrySet) {
+			Set<Connector> value = entry.getValue();
+			if(value.isEmpty()) continue;
+			String key = entry.getKey();
+			Set newValue = new HashSet();
+			for (Connector connector : value) {
+				newValue.add(new Hashtable(connector));
+			}
+			result.put(key, newValue);
+		}
+		return result;
+	}
+
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	if(h==null)return;
 		launchData = h;
@@ -1448,7 +1491,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         this.soortInteractiePanel = soortInteractiePanel;
         this.studentEditor = studentEditor;
         this.connections = connections;
-        this.subscriptions = subscriptions;
+        this.subscriptions = toConnector(subscriptions);
         //this.crossWidgetId = crossWidgetId;
 
         
