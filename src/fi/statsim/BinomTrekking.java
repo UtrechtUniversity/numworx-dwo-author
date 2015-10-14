@@ -33,10 +33,9 @@ import org.cbook.cbookif.CBookEventListener;
 
 import fi.beans.wiskopdrbeans.CBookAware;
 
-public class BinomTrekking extends JPanel implements ActionListener, FocusListener, Runnable, CBookAware{
+public class BinomTrekking extends JPanel implements ActionListener, FocusListener, Runnable{
 	
-    private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
-	JPanel panel1;
+    JPanel panel1;
 	Border border1;
 	JLabel kansLabel;
 	JTextField kansText;
@@ -75,7 +74,12 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	Boolean stapStarted=false;
 	Boolean stapStarted1=false;
 	
-	public BinomTrekking () {
+	StatSimInteractiePanel ssip;
+	
+	public BinomTrekking (StatSimInteractiePanel ssip) {
+		
+		this.ssip=ssip;
+		
 		setLayout(null);
 		this.setBackground(Color.white);
 		
@@ -285,6 +289,15 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 		setZichtbaar();
 	}
 	
+	public void fireCBook() {
+		String string1="";
+		for (int i=0;i<=experiment;i++) {
+			string1=string1+table.getValueAt(i, 1)+"\n";
+		}
+				
+		ssip.fireCBookBinomTrekking(string1);		
+	}
+	
 	public void setStartStop() {
 		if (wis.isEnabled()==true) {
 			kansText.setEnabled(false);
@@ -314,16 +327,10 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
 			animatie=new Thread(this);
 			animatie.start();   
-			   
+			fireCBook();
 		}
 		if (e.getSource()==stap) {
 			
-				//String text = getText();
-				String text=new String();
-				text="1;2\n3;4";
-				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("content", text);
-				cbookEventHandler.fire("text",map);
 			
 			if (!stapStarted1) {
 				voeruit.setEnabled(true);
@@ -338,6 +345,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			if (trekkingCount==maxCount) {
 				stapStarted1=false;
 			}
+			fireCBook();
 		}
 		if (e.getSource()==keer) {
 			stopCounting=false;
@@ -349,7 +357,8 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
 			multipleTimes=true;
 			animatie=new Thread(this);
-			animatie.start();   
+			animatie.start();
+			fireCBook();
 		}
 		if (e.getSource()==wis) {
 			wis.setEnabled(false);
@@ -367,6 +376,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			binomFrequentie.repaint();
 			binomGrafiek.repaint();
 			binomRooster.repaint();
+			fireCBook();
 		}
 		if (e.getSource()==aantalTrekkingenText) {
 			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
@@ -461,51 +471,6 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			binomGrafiek.repaint();
 			binomRooster.repaint();
 		}
-	}
-
-	@Override
-	public void acceptCBookEvent(CBookEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addCBookEventListener(CBookEventListener listener,
-			String command) {
-		// TODO Auto-generated method stub
-		cbookEventHandler.addCBookEventListener(listener, command);
-
-	}
-
-	@Override
-	public void removeCBookEventListener(CBookEventListener listener,
-			String command) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String[] getSendCmds() {
-		// TODO Auto-generated method stub
-		String[] commands = {"text"};
-		return commands;
-
-	}
-
-	@Override
-	public String[] getAcceptedCmds() {
-		// TODO Auto-generated method stub
-		String[] commands = {"text"};
-		return commands;
-	}
-
-	@Override
-	public String getLocalizedCmd(String cmd) {
-		// TODO Auto-generated method stub
-		String localizedCmd = StatSim.rb.getString("CBook" + cmd);
-		if(localizedCmd==null)
-			return cmd;
-		return localizedCmd;
 	}
 
 }

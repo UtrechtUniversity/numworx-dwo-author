@@ -58,7 +58,9 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "sampleSize", "Steekproefgrootte" },
             {   "getSample", "Doe steekproef"},
             {   "getSample100Times", "Doe steekproef 100 keer" },
-            {   "value", "Waarde" }
+            {   "value", "Waarde" },
+            {   "leftTable", "Linker tabel" },
+            {   "rightTable", "Rechter tabel" }
             //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

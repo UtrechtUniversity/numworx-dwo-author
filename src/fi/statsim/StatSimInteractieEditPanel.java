@@ -40,6 +40,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox binomTrekkingTabelCheckBox;
 	private JCheckBox binomTrekkingFrequentieCheckBox;
 	private JCheckBox binomTrekkingRoosterCheckBox;
+	private JCheckBox steekproefLinkerTabelCheckBox;
+	private JCheckBox steekproefRechterTabelCheckBox;
 	
 	
 	public StatSimInteractieEditPanel() {
@@ -176,7 +178,20 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		steekproefRadio.setSize(200,20);
 		steekproefRadio.addActionListener(this);
 		optionsPanel.add(steekproefRadio);
-	
+
+		steekproefLinkerTabelCheckBox = new JCheckBox(StatSim.rb.getString("leftTable"));
+		steekproefLinkerTabelCheckBox.setLocation(30,370);
+		steekproefLinkerTabelCheckBox.setSize(200,20);
+		steekproefLinkerTabelCheckBox.addActionListener(this);
+		steekproefLinkerTabelCheckBox.setSelected(true);
+		optionsPanel.add(steekproefLinkerTabelCheckBox);
+		
+		steekproefRechterTabelCheckBox = new JCheckBox(StatSim.rb.getString("rightTable"));
+		steekproefRechterTabelCheckBox.setLocation(30,390);
+		steekproefRechterTabelCheckBox.setSize(200,20);
+		steekproefRechterTabelCheckBox.addActionListener(this);
+		steekproefRechterTabelCheckBox.setSelected(true);
+		optionsPanel.add(steekproefRechterTabelCheckBox);
 		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
@@ -205,6 +220,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("binomTrekkingFrequentie", new Boolean(binomTrekkingFrequentieCheckBox.isSelected()));
 		h.put("binomTrekkingRooster", new Boolean(binomTrekkingRoosterCheckBox.isSelected()));
 		h.put("steekproefRadio", new Boolean(steekproefRadio.isSelected()));
+		h.put("steekproefLinkerTabel", new Boolean(steekproefLinkerTabelCheckBox.isSelected()));
+		h.put("steekproefRechterTabel", new Boolean(steekproefRechterTabelCheckBox.isSelected()));
 		return h;
 	}
 	
@@ -309,6 +326,19 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		interactiePanel.steekproef.setVisible(steekproefRadioBool);
 
 		interactiePanel.setEditState(h);
+
+			Boolean steekproefLinkerTabel=true;
+			if(h.containsKey("steekproefLinkerTabel")) steekproefLinkerTabel = ((Boolean)h.get("steekproefLinkerTabel")).booleanValue();
+			steekproefLinkerTabelCheckBox.setSelected(steekproefLinkerTabel);
+			interactiePanel.steekproef.showLinkerTabel=steekproefLinkerTabel;
+		
+			Boolean steekproefRechterTabel=true;
+			if(h.containsKey("steekproefRechterTabel")) steekproefRechterTabel = ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
+			steekproefRechterTabelCheckBox.setSelected(steekproefRechterTabel);
+			interactiePanel.steekproef.showRechterTabel=steekproefRechterTabel;
+		
+			interactiePanel.binomTrekking.setZichtbaar();		
+
 		
 	}
 	
@@ -426,6 +456,14 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(false);
 			   interactiePanel.steekproef.setVisible(true);
+		   }
+		   if (e.getSource()==steekproefLinkerTabelCheckBox) {
+			   interactiePanel.steekproef.showLinkerTabel=steekproefLinkerTabelCheckBox.isSelected();
+			   interactiePanel.steekproef.setZichtbaar();
+		   }
+		   if (e.getSource()==steekproefRechterTabelCheckBox) {
+			   interactiePanel.steekproef.showRechterTabel=steekproefRechterTabelCheckBox.isSelected();
+			   interactiePanel.steekproef.setZichtbaar();
 		   }
 	}
 

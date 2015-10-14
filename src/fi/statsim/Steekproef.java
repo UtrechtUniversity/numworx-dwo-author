@@ -64,45 +64,14 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	double[] steekproefResultaat;
 	StatSimInteractiePanel ssip;
 	
+	boolean showLinkerTabel=true;
+	boolean showRechterTabel=true;
+	
 	public Steekproef (StatSimInteractiePanel ssip) {
 		setLayout(null);
 		this.setBackground(Color.white);
 		this.ssip=ssip;
-		border1=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-		panel1=new JPanel();
-		panel1.setLayout(null);
-		panel1.setBackground(Color.white);
-		add(panel1);
-		panel1.setSize(130,105);
-		panel1.setLocation(0,0);
-		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
-		muLabel=new JLabel("\u03BC =");
-		muLabel.setSize(100,20);
-		muLabel.setLocation(20,30);
-		muLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		panel1.add(muLabel);
-		
-		muText=new JTextField("0");
-		muText.setSize(50,20);
-		muText.setLocation(50,30);
-		muText.addActionListener(this);
-		muText.addFocusListener(this);
-		panel1.add(muText);
-		
-		sigmaLabel=new JLabel("\u03C3 =");
-		sigmaLabel.setSize(100,20);
-		sigmaLabel.setLocation(20,60);
-		sigmaLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		panel1.add(sigmaLabel);
-				
-		sigmaText=new JTextField("1");
-		sigmaText.setSize(50,20);
-		sigmaText.setLocation(50,60);
-		sigmaText.addActionListener(this);
-		sigmaText.addFocusListener(this);
-		panel1.add(sigmaText);
-
 
         URL imageURL = StatSimInteractiePanel.class.getResource("resources/gaussian.gif");
         ImageIcon image = new ImageIcon(imageURL);
@@ -111,9 +80,37 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		panelImage.add( labelImage, BorderLayout.CENTER );
 		
 		this.add(panelImage);
-		panelImage.setLocation(150,0);
+		panelImage.setLocation(85,0);
 		panelImage.setSize(350,105);
 		
+		
+		muLabel=new JLabel("\u03BC =");
+		muLabel.setSize(100,20);
+		muLabel.setLocation(5,30);
+		muLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
+		this.add(muLabel);
+		
+		muText=new JTextField("0");
+		muText.setSize(50,20);
+		muText.setLocation(35,30);
+		muText.addActionListener(this);
+		muText.addFocusListener(this);
+		this.add(muText);
+		
+		sigmaLabel=new JLabel("\u03C3 =");
+		sigmaLabel.setSize(100,20);
+		sigmaLabel.setLocation(5,60);
+		sigmaLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
+		this.add(sigmaLabel);
+				
+		sigmaText=new JTextField("1");
+		sigmaText.setSize(50,20);
+		sigmaText.setLocation(35,60);
+		sigmaText.addActionListener(this);
+		sigmaText.addFocusListener(this);
+		this.add(sigmaText);
+
+
 		muLabel1=new JLabel("0");
 		muLabel1.setSize(100,20);
 		muLabel1.setLocation(313,105);
@@ -140,24 +137,27 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		
 		steekproefGrootteText=new JTextField("10");
 		steekproefGrootteText.setSize(50,20);
-		steekproefGrootteText.setLocation(100,140);
+		steekproefGrootteText.setLocation(75,140);
 		steekproefGrootteText.addActionListener(this);
 		steekproefGrootteText.addFocusListener(this);
 		this.add(steekproefGrootteText);
 		
 		doeSteekproef=new JButton(StatSim.rb.getString("getSample"));
-	    doeSteekproef.setSize(165,20);
-	    doeSteekproef.setLocation(170,140);
+		doeSteekproef.setFont(new Font("SansSerif", Font.PLAIN, 12) );
+	    doeSteekproef.setSize(100,20);
+	    doeSteekproef.setLocation(135,140);
 	    doeSteekproef.addActionListener(this);
 	    this.add(doeSteekproef);
 
 		doeSteekproef100Keer=new JButton(StatSim.rb.getString("getSample100Times"));
+		doeSteekproef100Keer.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    doeSteekproef100Keer.setSize(165,20);
-	    doeSteekproef100Keer.setLocation(345,140);
+	    doeSteekproef100Keer.setLocation(245,140);
 	    doeSteekproef100Keer.addActionListener(this);
 	    this.add(doeSteekproef100Keer);
 	    
 		wisResultaten=new JButton(StatSim.rb.getString("erase"));
+		wisResultaten.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		wisResultaten.setSize(165,20);
 		wisResultaten.setLocation(0,this.getHeight()-30);
 		wisResultaten.addActionListener(this);
@@ -214,6 +214,23 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	}
 	
 	public void setZichtbaar() {
+		if (showLinkerTabel==true) {
+			pane.setVisible(true);
+			if (showRechterTabel==true) {
+				pane1.setVisible(true);
+				pane1.setLocation(210,170);
+			} else {
+				pane1.setVisible(false);
+			}
+		} else {
+			pane.setVisible(false);
+			if (showRechterTabel==true) {
+				pane1.setVisible(true);
+				pane1.setLocation(0,170);
+			} else {
+				pane1.setVisible(false);
+			}
+		}
 		wisResultaten.setLocation(0,this.getHeight()-30);
 	}
 	
@@ -296,6 +313,19 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			experiment++;
 		}
 	
+	public void fireCBook() {
+		String string1="";
+		for (int i=0;i<Integer.parseInt(steekproefGrootteText.getText());i++) {
+			string1=string1+table.getValueAt(i, 1)+"\n";
+		}
+		String string2="";
+		for (int i=0;i<experiment;i++) {
+			string2=string2+table1.getValueAt(i, 1)+";"+table1.getValueAt(i, 2)+"\n";
+		}
+		
+		
+		ssip.fireCBookSteekproef(string1,string2);		
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -303,18 +333,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			wisResultaten.setEnabled(true);
 			getSample();
 			
-			String string1="";
-			for (int i=0;i<Integer.parseInt(steekproefGrootteText.getText());i++) {
-				string1=string1+table.getValueAt(i, 1)+"\n";
-			}
-			String string2="";
-			for (int i=0;i<experiment;i++) {
-				string2=string2+table1.getValueAt(i, 1)+";"+table1.getValueAt(i, 2)+"\n";
-			}
-			
-			
-			ssip.fireCBookSteekproef(string1,string2);
-			
+			fireCBook();
 
 		}
 		if (e.getSource()==doeSteekproef100Keer) {
@@ -322,6 +341,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			for (int i=0;i<100;i++) {
 				getSample();
 			}
+			fireCBook();
 		}
 		if (e.getSource()==wisResultaten) {
 			wisResultaten.setEnabled(false);
@@ -333,6 +353,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			   table1.setValueAt("",i,1);
 			   table1.setValueAt("",i,2);
 			}
+			fireCBook();
 		}
 		if (e.getSource()==muText) {
 			updateGraph();

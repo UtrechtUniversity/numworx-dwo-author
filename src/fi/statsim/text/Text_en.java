@@ -58,7 +58,9 @@ public class Text_en extends java.util.ListResourceBundle
             {   "sampleSize", "Sample size" },
             {   "getSample", "Get sample"},
             {   "getSample100Times" , "Get sample 100 times" },
-            {   "value", "Value" }
+            {   "value", "Value" },
+            {   "leftTable", "Left table" },
+            {   "rightTable", "Right table" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....
