@@ -94,9 +94,25 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     private Dimension size;
 	private String crossWidgetId;
 	private XWidgetManager manager;
+	private Object subscriptions; // Not to loose. 
 
     public EditInteractiePanelDialog(Frame owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
     	super(owner, windowTitle, modal);
+    	initEditInteractiePanelDialog(setNr, launchData, manager);
+    }
+
+    /**
+     * Constuct an EditInsteractiePanelDialog met een Window.
+     * @param owner Frame of Dialog
+     * @param windowTitle
+     * @param modal
+     * @param setNr
+     * @param launchData
+     * @param manager
+     * @since 1.6
+     */
+    public EditInteractiePanelDialog(Window owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
+    	super(owner, windowTitle);setModal(modal);
     	initEditInteractiePanelDialog(setNr, launchData, manager);
     }
     
@@ -284,7 +300,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         if(launchData.containsKey("popupImageString")) popupImageString = (String)launchData.get("popupImageString");       
 // WIM TODO is dit okay?
         if(launchData.containsKey("crossWidgetId")) setCrossWidgetId((String)launchData.get("crossWidgetId"));
-        
+        subscriptions = launchData.get("subscriptions"); // do not loose
+
        if(soortInteractiePanel != -2) 
        {   for(int i=0 ; i<set.length ; i++)
        		{	if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
@@ -650,6 +667,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("popupImageString", popupImageString);
         if(crossWidgetId != null)
         	h.put("crossWidgetId", crossWidgetId);
+        if(subscriptions != null) 
+        	h.put("subscriptions", subscriptions);
         System.out.println("LaunchState: "+interactiePanelLaunchState.toString());
         
 		return h;
