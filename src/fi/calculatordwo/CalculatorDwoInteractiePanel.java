@@ -912,7 +912,11 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 				{	return sb;
 				}
 				if(sb.indexOf("^") < sb.length() - 1 && sb.charAt(sb.indexOf("^") + 1) == '(')
-				{	vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+				{	//lengte1 tijdelijk opslaan, wordt mogelijk aangepast door vindHaakjesUitdrukking hieronder
+					int lengte1 = this.lengte1;
+					vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+					//waarde van lengte1 weer terugzetten. 
+					this.lengte1 = lengte1;
 					rekenKind2 = uitkomst;
 					lengte2 = lengteHaakjesUitdrukking;
 				}
@@ -1501,7 +1505,9 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 		}
 		
 		if(sb.indexOf("^") < sb.length() - 1 && sb.charAt(sb.indexOf("^") + 1) == '(')
-		{	vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+		{	int lengte1 = this.lengte1;
+			vindHaakjesUitdrukking(sb, sb.indexOf("^") + 1);
+			this.lengte1 = lengte1;
 			teller2 = teller;
 			noemer2 = noemer;
 			lengte2 = lengteHaakjesUitdrukking;
