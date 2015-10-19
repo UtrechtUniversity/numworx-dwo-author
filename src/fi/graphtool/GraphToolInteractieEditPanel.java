@@ -1609,11 +1609,11 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 					nauwkeurigheidTF[aantalRegels].setLocation(nauwkeurigheidTF[aantalRegels].getLocation().x, maxY);
 					nauwkeurigheidTF[aantalRegels].setVisible(true);
 					nauwkeurigheidTF[aantalRegels].setText("" + 5);
-					maxY += 40;
+					maxY += 30;
 					minimumPuntenTF[aantalRegels].setLocation(minimumPuntenTF[aantalRegels].getLocation().x, maxY);
 					minimumPuntenTF[aantalRegels].setVisible(true);
 					minimumPuntenTF[aantalRegels].setText("" + 5);
-					maxY += 40;
+					maxY += 30;
 					scoreMaxTF[aantalRegels].setLocation(215 + aantalRegels * (50 + 2 * offset), maxY);
 					scoreMaxTF[aantalRegels].setVisible(true);
 					scoreMaxTF[aantalRegels].setText("" + 10);

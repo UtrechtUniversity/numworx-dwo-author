@@ -607,7 +607,7 @@ MouseListener, MouseMotionListener, CBookAware {
 //			feedbackTekst.setBorders(false);
 //		}
 			
-		
+		//dit komt neer op initialisatie van docentfuncties:
 		resetDocentFunctie();
 		resetDocentGraphPoints();
 		maxScores = new int[9];
@@ -3833,7 +3833,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				while(permutatie != null)
 				{	permutatieHits = 0;
 					for(int i = 0; i < permutatie.length; i++)
-						permutatieHits += hits[i][permutatie[i][0]];
+					{	permutatieHits += hits[i][permutatie[i][0]];
+					}
 					if(permutatieHits > totaalHits)
 					{	totaalHits = permutatieHits;
 						for(int i = 0; i < permutatie.length; i++)
@@ -3858,6 +3859,14 @@ MouseListener, MouseMotionListener, CBookAware {
 						aantalPunten++;
 				}
 				
+				boolean alleFunctiesCorrect = true;
+				for(int i = 0; i < aantalFuncties; i++)
+				{	if(hits[i][koppeling[i]] == Math.max(checkPoints[i].size(), minimumPunten[koppeling[i]]))
+						functieCorrect[koppeling[i]] = true;
+					else
+						alleFunctiesCorrect = false;
+				}
+				
 				if(totaalHits == 0)
 				{	score = 0; 
 					fout = true;
@@ -3865,11 +3874,11 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
-				else if(totaalHits == Math.max(aantalPunten, somMinimum))
+				else if(totaalHits == Math.max(aantalPunten, somMinimum) && alleFunctiesCorrect)
 				{	for(int i = 0; i < aantalFuncties; i++)
 						color = new Color(0, 200, 0);
-					for(int i = 0; i < aantalFuncties; i++)
-						functieCorrect[i] = true;
+//					for(int i = 0; i < aantalFuncties; i++)
+//						functieCorrect[i] = true;
 					score = scoreMax; 
 					correct = true;
 					groenVinkjeLabel.setVisible(show);
@@ -3879,9 +3888,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				else 
 				{	score = 0;
 					for(int i = 0; i < aantalFuncties; i++)
-						if(hits[i][koppeling[i]] == Math.max(checkPoints[i].size(), minimumPunten[koppeling[i]]))
-						{	functieCorrect[koppeling[i]] = true;
-							color = new Color(0, 200, 0);
+						if(functieCorrect[koppeling[i]])
+						{	color = new Color(0, 200, 0);
 							score += maxScores[koppeling[i]];
 						}
 						else
@@ -4930,6 +4938,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 		if(e.getSource()==feedbackTekst)
 		{	remove(feedbackTekst); //doet niets...
+			repaint();
 		}
 		if(e.getActionCommand().equals("focus")) ;
 		else 
