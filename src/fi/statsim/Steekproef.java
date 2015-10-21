@@ -53,7 +53,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	JTable table;
 	DefaultTableModel model;
 	JScrollPane pane;
-	String col[]={"exp.","Uitkomst"};
+	String col[]={"no.","Uitkomst"};
 	    
 	JTable table1;
 	DefaultTableModel model1;
@@ -81,7 +81,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		
 		this.add(panelImage);
 		panelImage.setLocation(85,0);
-		panelImage.setSize(350,105);
+		panelImage.setSize(297,104);
 		
 		
 		muLabel=new JLabel("\u03BC =");
@@ -113,19 +113,19 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 
 		muLabel1=new JLabel("0");
 		muLabel1.setSize(100,20);
-		muLabel1.setLocation(263,105);
+		muLabel1.setLocation(238,105);
 		muLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(muLabel1);
 		
 		sigmaLabel1=new JLabel("-2");
 		sigmaLabel1.setSize(100,20);
-		sigmaLabel1.setLocation(154,105);
+		sigmaLabel1.setLocation(129,105);
 		sigmaLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(sigmaLabel1);
 		
 		sigmaLabel2=new JLabel("2");
 		sigmaLabel2.setSize(100,20);
-		sigmaLabel2.setLocation(363,105);
+		sigmaLabel2.setLocation(338,105);
 		sigmaLabel2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(sigmaLabel2);
 		
@@ -165,7 +165,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	    this.add(wisResultaten);
 	    
 	    
-	    col[0]=StatSim.rb.getString("exp");
+	    //col[0]=StatSim.rb.getString("exp");
 	    col[1]=StatSim.rb.getString("value");
 	    
 	    model = new DefaultTableModel(col,1000); 
@@ -216,6 +216,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	public void setZichtbaar() {
 		if (showLinkerTabel==true) {
 			pane.setVisible(true);
+			wisResultaten.setLocation(0,this.getHeight()-30);
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
 				pane1.setLocation(210,170);
@@ -227,11 +228,12 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
 				pane1.setLocation(0,170);
+				wisResultaten.setLocation(0,this.getHeight()-30);
 			} else {
+				wisResultaten.setLocation(0,170);
 				pane1.setVisible(false);
 			}
-		}
-		wisResultaten.setLocation(0,this.getHeight()-30);
+		}		
 	}
 	
 	public void setSize(int width, int height) {

@@ -585,6 +585,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
 		steekproef.setVisible(steekproefRadioBool);
 		
+		if(h.containsKey("steekproefLinkerTabel")) steekproef.showLinkerTabel= ((Boolean)h.get("steekproefLinkerTabel")).booleanValue();
+		if(h.containsKey("steekproefRechterTabel")) steekproef.showRechterTabel= ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
+		steekproef.setZichtbaar();
 		
 		Boolean eenMuntTweeMunt=true;
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
@@ -627,6 +630,8 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		h.put("aantalTrekkingen", new String(binomTrekking.aantalTrekkingenText.getText()));
 		h.put("aantalKeer", new String(binomTrekking.aantalKeer.getText()));
 		
+		h.put("steekproefLinkerTabel", new Boolean(steekproef.showLinkerTabel));
+		h.put("steekproefRechterTabel", new Boolean(steekproef.showRechterTabel));
 		h.put("mu", new String(steekproef.muText.getText()));
 		h.put("sigma", new String(steekproef.sigmaText.getText()));
 		return h;
