@@ -677,7 +677,44 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"CBA_double", "数値"},
 				{"CBA_expression", "式"},
 				{"CBA_equation", "方程式"},
-				{"CBA_text", "text"}
+				{"CBA_text", "text"},
+				{"CBA_action.setNotEditable", "Action: set not editable"},
+				{"CBA_action.unfold", "Action: unfold"},
+				
+				{"oplossingenLabel", "Solutions"},
+				{"executeLabel", "Execute"},
+				
+				//symbolen
+				{"SYM_kiesSymbool", "Choose symbol"},
+				{"SYM_lijn", "Line"},
+				{"SYM_pijl", "Arrow"},
+				{"SYM_accolade", "Curly bracket"},
+				{"SYM_ellips", "Ellipse"},
+				{"SYM_kiesEerstSymbool", "Choose symbol first"},
+				{"SYM_dikte", "Line width"},
+				{"SYM_kleur", "Color"},
+				{"SYM_kiesKleur", "Choose color"},
+				{"SYM_vulHoogte", "Fill height"},
+								
+				{"SYM_horizontaal", "Horizontal"},
+				{"SYM_verticaal", "Vertical"},
+				{"SYM_diagonaalOmhoog", "Diagonal up"},
+				{"SYM_diagonaalOmlaag", "Diagonal down"},
+				{"SYM_links", "Left"},
+				{"SYM_rechts", "Right"},
+				{"SYM_boven", "Up"},
+				{"SYM_beneden", "Down"},
+				{"SYM_rechtsboven", "Right up"},
+				{"SYM_rechtsonder", "Right down"},
+				{"SYM_linksonder", "Left down"},
+				{"SYM_linksboven", "Left up"},
+				{"SYM_geenRichting", "No direction"},
+				
+				// opdr nav struct
+				{"ONS_timeisup", "The time is up"},
+				{"ONS_timeready", "Ready in time"},
+				{"ONS_timesChecked", "{0} times checked"},
+				{"ONS_1timeChecked", "first time checked"},
 		};
 }
 

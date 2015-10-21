@@ -3304,6 +3304,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			
 			klapUitButton.setSelected(true);
 			produceAction("tvpKlapUit");
+			cbookEventHandler.fire("action.unfold");
 			//klapUitButton.setBackground(Color.white);
 		}
 		else
@@ -3711,7 +3712,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public String[] getSendCmds() {
-		String[] sendCommands = {"double.xcoordinate", "double.ycoordinate"};
+		String[] sendCommands = {
+				"double.xcoordinate", 
+				"double.ycoordinate",
+				"action.unfold"};
 		return sendCommands;
 	}
 

@@ -71,6 +71,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	private JButton sendCommandButton;
 	
+	private boolean editable = true;
+	
     public TekstEditor()
 	{	this(true,true, true);
 	} 
@@ -860,10 +862,12 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		String tekst = "";
 		Hashtable[] interactiePanelStates = null;
 		Hashtable[] interactiePanelLaunchData = null;
+		boolean editable = true;
 		
 		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
 		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = OpdrNavStruct.toHashtableArray(h.get("interactiePanelLaunchData"));
 		if(h.containsKey("interactiePanelStates")) interactiePanelStates = OpdrNavStruct.toHashtableArray(h.get("interactiePanelStates"));
+		if(h.containsKey("editable")) editable = ((Boolean)h.get("editable")).booleanValue();
 		
 		
 		//if(antwoordVak.getText()==null || antwoordVak.getText().trim().equals("")) 
@@ -876,14 +880,22 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	    	if(ipc instanceof TekstInteractiePanelVak)((TekstInteractiePanelVak)ipc).setEditMode(false);
 	    	
 	    }
+	    this.editable = editable;
+	    tekstVak.setEditable(editable);
+	    if(editable)
+			tekstVak.setForeground(Color.black);
+		else
+			tekstVak.setForeground(Color.gray);
 	}
 	
 	public Hashtable getState()
 	{	String tekst = "";
 		Hashtable[] interactiePanelStates = null;
 		Hashtable[] interactiePanelLaunchData = null;
+		boolean editable = true;
 		
 		tekst = getText();
+		editable = this.editable;
 		
 		Vector v = geefInteractiePanels();
 		interactiePanelStates = new Hashtable[v.size()];
@@ -897,6 +909,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		h.put("tekst", tekst);
 		h.put("interactiePanelStates", interactiePanelStates);
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
+		h.put("editable", new Boolean(editable));
 		
 			
 		return h;
@@ -1164,6 +1177,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				zetTekst(textString);
 			}
 		}
+		else if(command.startsWith("action.setNotEditable"))
+		{	editable = false;
+			tekstVak.setEditable(editable);
+			if(editable)
+				tekstVak.setForeground(Color.black);
+			else
+				tekstVak.setForeground(Color.gray);
+		}
+		
 	}
 
 	@Override
@@ -1200,7 +1222,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"text"};
+		String[] commands = {
+				"text",
+				"action.setNotEditable"};
 		return commands;
 	}
 	

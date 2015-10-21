@@ -688,6 +688,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_expression", "expression"},
 				{"CBA_equation", "equation"},
 				{"CBA_text", "text"},
+				{"CBA_action.setNotEditable", "Action: set not editable"},
+				{"CBA_action.unfold", "Action: unfold"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},

@@ -723,6 +723,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_double.xcoordinate", "x-coordinaat"},
 				{"CBA_double.ycoordinate", "y-coordinaat"},
 				{"CBA_text", "tekst"},
+				{"CBA_action.setNotEditable", "Actie: zet tekstinvoer uit"},
+				{"CBA_action.unfold", "Actie: uitklappen"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
