@@ -32,14 +32,14 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 	
 	public StatSimInteractiePanel () {
 		setLayout(null);
-		munten = new Munten();
+		munten = new Munten(this);
 		munten.setLocation(0,0);
 		munten.setSize(this.getWidth(),this.getHeight());
 		
 		add(munten);
 		munten.setVisible(true);
 		
-		dobbelstenen = new Dobbelstenen();
+		dobbelstenen = new Dobbelstenen(this);
 		dobbelstenen.setLocation(0,0);
 		//dobbelstenen.setSize(790,450);
 		dobbelstenen.setVisible(false);
@@ -91,6 +91,14 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		else if (binomTrekkingRadioBool==true) {
 			commands = new String[1];
 			commands[0] = "text.sample";
+		} 
+		else if (dobbelstenenRadioBool==true) {
+			commands = new String[1];
+			commands[0] = "text.sample";
+		}
+		else if (muntenRadioBool==true) {
+			commands = new String[1];
+			commands[0] = "text.sample";
 		}
 		return commands;
 
@@ -132,6 +140,13 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		cbookEventHandler.fire("text.sample",map);
 	}
 	
+	public void fireCBookDobbelstenen(String arg1) {
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("content", arg1);
+		
+		cbookEventHandler.fire("text.sample",map);
+	}
 	
 	public void setBounds(int a, int b, int c, int d) {
 		super.setBounds(a,b,c,d);
@@ -302,6 +317,36 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		String kans="";
 		if(h.containsKey("kans")) kans= ((String)h.get("kans"));
 		binomTrekking.kansText.setText(kans);
+		
+		
+		// ******* Steekproef *********
+		String[] column71 = new String[1000];
+		String[] column72 = new String[1000];
+		if(h.containsKey("column71")) column71 =  (String[])h.get("column71");
+		if(h.containsKey("column72")) column72 =  (String[])h.get("column72");
+		for (int i=0;i<1000;i++) {
+			if (column71[i]=="null") steekproef.table.setValueAt("",i, 0); else steekproef.table.setValueAt(column71[i],i, 0);	
+			if (column72[i]=="null") steekproef.table.setValueAt("",i, 1); else steekproef.table.setValueAt(column72[i],i, 1);	
+		}
+		String[] column81 = new String[1000];
+		String[] column82 = new String[1000];
+		String[] column83 = new String[1000];
+		if(h.containsKey("column81")) column81 =  (String[])h.get("column81");
+		if(h.containsKey("column82")) column82 =  (String[])h.get("column82");
+		if(h.containsKey("column83")) column83 =  (String[])h.get("column83");
+		for (int i=0;i<1000;i++) {
+			if (column81[i]=="null") steekproef.table1.setValueAt("",i, 0); else steekproef.table1.setValueAt(column81[i],i, 0);	
+			if (column82[i]=="null") steekproef.table1.setValueAt("",i, 1); else steekproef.table1.setValueAt(column82[i],i, 1);	
+			if (column83[i]=="null") steekproef.table1.setValueAt("",i, 2); else steekproef.table1.setValueAt(column83[i],i, 2);
+		}
+		if(h.containsKey("experiment3")) steekproef.experiment= ((Integer)h.get("experiment3")).intValue();
+		String mu="";
+		if(h.containsKey("mu")) mu= ((String)h.get("mu"));
+		steekproef.muText.setText(mu);
+
+		String sigma="";
+		if(h.containsKey("sigma")) sigma= ((String)h.get("sigma"));
+		steekproef.sigmaText.setText(sigma);
 	}
 	
 	public Hashtable getState() {	
@@ -412,6 +457,36 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		h.put("startSelected2", new Boolean(binomTrekking.wis.isEnabled()));
 		h.put("maxCount2", new Integer(binomTrekking.maxCount));
 		h.put("kans", new String(binomTrekking.kansText.getText()));
+		
+		
+		//  ****** Steekproef *********
+
+		String[] column71 = new String[1000];
+		String[] column72 = new String[1000];
+		
+		for (int i=0;i<1000;i++) {
+			column71[i]=String.valueOf(steekproef.table.getValueAt(i, 0));	
+			column72[i]=String.valueOf(steekproef.table.getValueAt(i, 1));	
+		}
+		h.put("column71", column71);
+		h.put("column72", column72);
+		
+		String[] column81 = new String[1000];
+		String[] column82 = new String[1000];
+		String[] column83 = new String[1000];
+		
+		for (int i=0;i<1000;i++) {
+			column81[i]=String.valueOf(steekproef.table1.getValueAt(i, 0));	
+			column82[i]=String.valueOf(steekproef.table1.getValueAt(i, 1));	
+			column83[i]=String.valueOf(steekproef.table1.getValueAt(i, 2));
+		}
+		h.put("column81", column81);
+		h.put("column82", column82);
+		h.put("column83", column83);
+		
+		h.put("experiment3", new Integer(steekproef.experiment));
+		h.put("mu", new String(steekproef.muText.getText()));
+		h.put("sigma", new String(steekproef.sigmaText.getText()));
 		return h;
 	}
 	
@@ -473,7 +548,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("aantalKeer")) binomTrekking.aantalKeer.setText(((String)h.get("aantalKeer")));
 		binomTrekking.setZichtbaar();
 		
-		
+		if(h.containsKey("mu")) steekproef.muText.setText(((String)h.get("mu")));
+		if(h.containsKey("sigma")) steekproef.sigmaText.setText(((String)h.get("sigma")));
+		steekproef.setZichtbaar();
 	}
 
 	public void setEditState(Hashtable h) {
@@ -528,6 +605,10 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("aantalTrekkingen")) binomTrekking.aantalTrekkingenText.setText(((String)h.get("aantalTrekkingen")));
 		if(h.containsKey("aantalKeer")) binomTrekking.aantalKeer.setText(((String)h.get("aantalKeer")));
 		binomTrekking.setZichtbaar();
+		
+		if(h.containsKey("mu")) steekproef.muText.setText(((String)h.get("mu")));
+		if(h.containsKey("sigma")) steekproef.sigmaText.setText(((String)h.get("sigma")));
+		steekproef.setZichtbaar();
 	}
 
 	public Hashtable getEditState() {
@@ -537,7 +618,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		h.put("kansOpMunt", new String(munten.kansOpKopText.getText()));
 		
 		h.put("eenDobbelsteenRadio", new Boolean(dobbelstenen.eenDobbelsteenRadio.isSelected()));
-		h.put("TweeDobbelstenenRadio", new Boolean(dobbelstenen.tweeDobbelstenenRadio.isSelected()));
+		h.put("tweeDobbelstenenRadio", new Boolean(dobbelstenen.tweeDobbelstenenRadio.isSelected()));
 		h.put("drieDobbelstenenRadio", new Boolean(dobbelstenen.drieDobbelstenenRadio.isSelected()));
 		h.put("aantalWorpenDobbelsteen", new String(dobbelstenen.aantalWorpenText.getText()));
 		h.put("toonSom", new Boolean(dobbelstenen.toonSomCheckBox.isSelected()));
@@ -545,6 +626,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		h.put("kans", new String(binomTrekking.kansText.getText()));
 		h.put("aantalTrekkingen", new String(binomTrekking.aantalTrekkingenText.getText()));
 		h.put("aantalKeer", new String(binomTrekking.aantalKeer.getText()));
+		
+		h.put("mu", new String(steekproef.muText.getText()));
+		h.put("sigma", new String(steekproef.sigmaText.getText()));
 		return h;
 		//return getState();
 	}

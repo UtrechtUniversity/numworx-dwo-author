@@ -113,19 +113,19 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 
 		muLabel1=new JLabel("0");
 		muLabel1.setSize(100,20);
-		muLabel1.setLocation(313,105);
+		muLabel1.setLocation(263,105);
 		muLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(muLabel1);
 		
 		sigmaLabel1=new JLabel("-2");
 		sigmaLabel1.setSize(100,20);
-		sigmaLabel1.setLocation(204,105);
+		sigmaLabel1.setLocation(154,105);
 		sigmaLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(sigmaLabel1);
 		
 		sigmaLabel2=new JLabel("2");
 		sigmaLabel2.setSize(100,20);
-		sigmaLabel2.setLocation(413,105);
+		sigmaLabel2.setLocation(363,105);
 		sigmaLabel2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(sigmaLabel2);
 		

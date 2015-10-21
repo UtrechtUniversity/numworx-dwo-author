@@ -92,7 +92,12 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 	Boolean showGrafiek=true;
 	Boolean showFrequentie=true;
 	
-	public Munten() {
+	StatSimInteractiePanel ssip;
+	
+	public Munten(StatSimInteractiePanel ssip) {
+		
+		this.ssip=ssip;
+		
 		setBackground(Color.white);
 		maxCount=100;
 		
@@ -629,6 +634,19 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		
 	}
 	
+	public void fireCBook() {
+		String string1="";
+		for (int i=0;i<experiment;i++) {
+			if (eenMuntRadio.isSelected()==true) {
+				string1=string1+table.getValueAt(i, 1)+";"+table.getValueAt(i, 2)+"\n";
+			} else {
+				string1=string1+table1.getValueAt(i, 1)+";"+table1.getValueAt(i, 2)+";"+table1.getValueAt(i, 3)+"\n";
+			}
+		}
+				
+		ssip.fireCBookBinomTrekking(string1);		
+	}
+	
 	Boolean stapStarted=false;
    public void actionPerformed(ActionEvent e)
    {
@@ -670,6 +688,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		   geenKop=0;
 		   eenKop=0;
 		   tweeKop=0;
+		   fireCBook();
 		   frequentieClass.repaint();
 		   paintPanel.repaint();
 	   }
@@ -801,6 +820,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 		   setResults();
 	
 		   experiment++;
+		   fireCBook();
 	   }
 	   paintPanel.repaint();
 	   frequentieClass.repaint();

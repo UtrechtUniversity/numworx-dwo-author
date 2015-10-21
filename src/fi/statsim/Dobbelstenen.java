@@ -6,12 +6,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.ButtonGroup;
+
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
@@ -75,7 +77,11 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 	Boolean showGrafiek=true;
 	Boolean showResultaten=true;
 	
-	public Dobbelstenen () {
+	StatSimInteractiePanel ssip;
+	
+	public Dobbelstenen (StatSimInteractiePanel ssip) {
+		this.ssip=ssip;
+		
 		setLayout(null);
 		this.setBackground(Color.white);
 		
@@ -488,6 +494,47 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 		}
 	}
 	
+
+	public void fireCBook() {
+		String string1="";
+		
+		if (eenDobbelsteenRadio.isSelected()==true) {
+			for (int i=0;i<experiment;i++) {
+				for (int j=0;j<6;j++) {
+					string1=string1+table.getValueAt(i, j+1);
+					if (j<5)
+						string1=string1+";";							
+				}
+				if (i<experiment-1)
+					string1=string1+"\n";
+			}					
+		}
+		if (tweeDobbelstenenRadio.isSelected()==true) {
+			for (int i=0;i<experiment;i++) {
+				for (int j=0;j<11;j++) {
+					string1=string1+table1.getValueAt(i, j+1);
+					if (j<10)
+						string1=string1+";";							
+				}
+				if (i<experiment-1)
+					string1=string1+"\n";
+			}
+		}
+		if (drieDobbelstenenRadio.isSelected()==true) {
+			for (int i=0;i<experiment;i++) {
+				for (int j=0;j<16;j++) {
+					string1=string1+table2.getValueAt(i, j+1);
+					if (j<15)
+						string1=string1+";";							
+				}
+				if (i<experiment-1)
+					string1=string1+"\n";
+			}
+		}
+				
+		ssip.fireCBookDobbelstenen(string1);		
+	}
+		
 	public void actionPerformed(ActionEvent e) {
 		   if (e.getSource()==voeruit) {
 			   voeruit.setEnabled(false);
@@ -529,6 +576,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 			   }
 			   experiment=0;
 			   dobbelsteenCount=0;
+			   fireCBook();
 			   dobbelstenenGrafiek.repaint();
 		   }
 		   if (e.getSource()==eenDobbelsteenRadio) {
@@ -621,6 +669,7 @@ public class Dobbelstenen extends JPanel implements ActionListener, Runnable {
 				}
 			}
 			experiment++;
+			fireCBook();
 			voeruit.setEnabled(true);
 		}
 	}

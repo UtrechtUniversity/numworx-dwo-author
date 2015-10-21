@@ -291,7 +291,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	
 	public void fireCBook() {
 		String string1="";
-		for (int i=0;i<=experiment;i++) {
+		for (int i=0;i<experiment;i++) {
 			string1=string1+table.getValueAt(i, 1)+"\n";
 		}
 				
@@ -327,7 +327,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
 			animatie=new Thread(this);
 			animatie.start();   
-			fireCBook();
+			
 		}
 		if (e.getSource()==stap) {
 			
@@ -345,7 +345,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			if (trekkingCount==maxCount) {
 				stapStarted1=false;
 			}
-			fireCBook();
+			
 		}
 		if (e.getSource()==keer) {
 			stopCounting=false;
@@ -358,7 +358,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			multipleTimes=true;
 			animatie=new Thread(this);
 			animatie.start();
-			fireCBook();
+			
 		}
 		if (e.getSource()==wis) {
 			wis.setEnabled(false);
@@ -413,6 +413,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			binomGrafiek.repaint();
 			if (multipleTimes==false) {
 				stopCounting=true;
+				fireCBook();
 				keer.setEnabled(true);
 				voeruit.setEnabled(true);
 				stap.setEnabled(true);
@@ -421,6 +422,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 				if (numberOfTimes==0) {
 					stopCounting=true;
 					multipleTimes=false;
+					fireCBook();
 					keer.setEnabled(true);
 					voeruit.setEnabled(true);
 					stap.setEnabled(true);
@@ -429,6 +431,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 				totaal=0;
 			}
 		}
+		
 		binomFrequentie.repaint();
 		binomRooster.repaint();
 	}
