@@ -404,6 +404,12 @@ class GrafiekVeld extends JComponent{
 		//		gtip.nagekeken || gtip.mode == 0 || gtip.mode == 1)
 		//	Dit klopt niet!!!
 		//{
+		//Alleen niet tekenen als aan alle drie de volgende voorwaarden is voldaan:
+		//- modus is zelftoets of toets
+		//- Er is nog niet nagekeken
+		//- Opdrachttype is vindFormuleBijGrafiek of vindFormuleBijPunten
+		if(!((gtip.mode == 2 || gtip.mode == 3) && !gtip.nagekeken && 
+				(gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJGRAFIEK || gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJPUNTEN)))
 			for(int j=0 ; j<gtip.functies.length ; j++)
 			{	if(gtip.functies[j]!=null && gtip.yAsNaam.equals(gtip.grafiekYAsNaam))
 				{	g.setColor(Color.black);
