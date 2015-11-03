@@ -801,7 +801,7 @@ public class StatTable extends JPanel implements StatistiekView,
 			{
 				int reply = JOptionPane.showConfirmDialog(null, 
 					Statistiek.rb.getString("importWarning"),
-					"Waarschuwing", JOptionPane.OK_CANCEL_OPTION);
+					Statistiek.rb.getString("warning"), JOptionPane.OK_CANCEL_OPTION);
 				if (reply == JOptionPane.OK_OPTION)
 				{
 					openFileChooserDialog();
@@ -914,7 +914,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		//System.out.println("StatTable.createColumns(): " + names.toString());
 		for (int i = 0; i < names.length; i++)
 		{
-    		this.statTableModel.addColumn(names[i],
+    		this.statTableModel.addColumnWithoutEvent(names[i],
     			new ColumnType(AllowedTypes.STRING));
 		}
 	}
@@ -973,6 +973,29 @@ public class StatTable extends JPanel implements StatistiekView,
 			if ((line = br.readLine()) != null)
 			{
 				headers = line.split(StatTable.DELIMITER);
+				
+				if (hasDuplicates(headers))
+				{
+					int reply = JOptionPane.showConfirmDialog(null, 
+						Statistiek.rb.getString("importCSVformatWarning"),
+						Statistiek.rb.getString("error"), JOptionPane.OK_OPTION);
+					if (reply == JOptionPane.OK_OPTION)
+					{
+						if (br != null)
+						{
+							try 
+							{
+								br.close();
+							}
+							catch (IOException e) 
+							{
+								e.printStackTrace();
+							}
+						}
+						this.setCursor(Cursor.getDefaultCursor());
+						return;
+					}
+				}
 			}
 
 			// read the data
@@ -1020,6 +1043,30 @@ public class StatTable extends JPanel implements StatistiekView,
 			this.statInteractiePanel.getView().update(null, null);
 		
 		this.setCursor(Cursor.getDefaultCursor());
+	}
+
+	/**
+	 * Checkt in de string array of er duplicaten voorkomen.
+	 * 
+	 * @param items
+	 * @return
+	 */
+	private boolean hasDuplicates(String[] items)
+	{
+		boolean duplicates = false;
+		
+		for (int i = 0; i < items.length; i++)
+		{
+			for (int j = i + 1; j < items.length; j++)
+			{
+			    if ((j != i) && items[j].equals(items[i]))
+			    {
+			    	duplicates=true;
+			    	break;
+			    }
+			}
+		}
+		return duplicates;
 	}
 
 	/**
