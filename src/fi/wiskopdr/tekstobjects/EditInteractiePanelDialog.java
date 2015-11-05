@@ -122,7 +122,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     }
 
     public void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
-        
+        System.out.println("setNr: " + setNr);
         getContentPane().setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
         
@@ -134,8 +134,15 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         this.manager = manager;
         confirmed = false;
         
-        size = new Dimension(800,650);
-        if(setNr==4 || setNr==3)size = new Dimension(1000,700);
+        size = new Dimension(800,650); // Default value
+        if(setNr==4 || setNr==3) {
+        	size = new Dimension(1000,700);
+        } 
+        else {
+        	if (setNr == 2) {  // GraphTool
+            	size = new Dimension(870,700);
+        	}
+        }
 
         bottomPanel.setPreferredSize(new Dimension(1000,60));
 
