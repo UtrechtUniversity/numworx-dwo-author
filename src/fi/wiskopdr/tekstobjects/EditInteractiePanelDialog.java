@@ -140,7 +140,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         } 
         else {
         	if (setNr == 2) {  // GraphTool
-            	size = new Dimension(870,700);
+            	size = new Dimension(900,700);
         	}
         }
 
