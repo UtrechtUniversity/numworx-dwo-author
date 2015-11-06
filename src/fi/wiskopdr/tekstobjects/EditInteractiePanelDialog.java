@@ -122,7 +122,6 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     }
 
     public void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
-        System.out.println("setNr: " + setNr);
         getContentPane().setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
         
