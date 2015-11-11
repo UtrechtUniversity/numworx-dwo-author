@@ -65,14 +65,17 @@ import org.cbook.cbookif.CBookEventListener;
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
 MouseListener, MouseMotionListener, CBookAware {
 
-	int width = 280; // was 250
-	int height = 280;
+	int width = 300; // was 250
+	int height = 300;
 	int offset = 5;
+	
+	final double asDefaultXMin=-8, asDefaultXMax=10, asDefaultXStap=2;
+	final double asDefaultYMin=-7, asDefaultYMax=2, asDefaultYStap=2;
 	
 	private GraphToolKnop zoomInX, zoomUitX, zoomInY, zoomUitY, 
 		zoomIn, zoomUit, zoomStandaard;
 
-	private int eenheid = 16;
+	int eenheid = 16;
 	
 	private static double[] DEFAULTDOMEIN;
 	
@@ -117,9 +120,19 @@ MouseListener, MouseMotionListener, CBookAware {
 	double eenheidyD;
 	double schaalFactorX;
 	double schaalFactorY;
+	double eenheidxValue;
+	double eenheidyValue; 
+	
 	private double docentSchaalFactorX, docentSchaalFactorY;
+	private double docentEenheidxD, docentEenheidyD;
+	private double docentEenheidxValue, docentEenheidyValue;
 	private int factorRijNummerX, factorRijNummerY;
 	private ZoomDraad zoomDraad;
+	
+	double asDefXMin; // source variables for all scaling parameters
+	double asDefXMax;
+	private double asDefXStap;
+	private double asDefYMin, asDefYMax, asDefYStap; // in case of normal scaling (no logs)
 	
 	int startxv = 0;
 	int startyv = 0;
@@ -140,6 +153,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	boolean zoomOptie, traceOptie, dragOptie;
 	boolean grafiekKleuren, kleurInstelbaar, functieBeginZichtbaar, functieBeginAanpasbaar, formeleFuncties, domeinInstelbaar;
 	boolean functieToegestaan, ongelijkheidToegestaan, implicieteFunctieToegestaan, verticaleLijnToegestaan, parametrisatieToegestaan;
+	boolean manualScalingX, manualScalingY;
 	
 	boolean formuleComponentAan, tekenComponentAan, tabelComponentAan, tabelAlsTekenTool;
 	Color piColor = Color.gray;
@@ -160,7 +174,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	JTextField yAsNaamTF;
 	Rectangle yAsNaamActivator;
 	
-	Color docentColor = Color.black; 
+	Color docentColor = Color.black;  
 	
 	protected static int GEENOPDRACHT = 0;
 	protected static int VINDFORMULEBIJGRAFIEK = 1;
@@ -287,12 +301,18 @@ MouseListener, MouseMotionListener, CBookAware {
 		eenheidy = eenheid;
 		eenheidxD = eenheid;
 		eenheidyD = eenheid;
+		eenheidxValue = 1;
+		eenheidyValue = 1;
 		veldx = offset;
 		veldy = 30;
 		veldb = width - 2 * offset;
 		veldh = height - veldy - 2 * offset;
 		docentSchaalFactorX = 1;
 		docentSchaalFactorY = 1;
+		docentEenheidxD = eenheidxD;
+		docentEenheidxD = eenheidyD;
+		docentEenheidxValue = eenheidxValue;
+		docentEenheidyValue = eenheidyValue;
 		schaalFactorX = 1;
 		schaalFactorY = 1;
 		factorRijNummerX = 99;
@@ -348,9 +368,9 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		beginxDocent = veldb/2/eenheidx*eenheidx;
 		beginyDocent = veldh/2/eenheidy*eenheidy;
+		//docentSchaalFactorX =2;
 		beginx = beginxDocent;
-		beginy = beginyDocent;
-		
+		beginy = beginyDocent;		
 		
 		dfs = new DecimalFormatSymbols();
 		dfs.setDecimalSeparator('.');
@@ -760,6 +780,18 @@ MouseListener, MouseMotionListener, CBookAware {
 		repaint();
 	}
 	
+	public void	zetManualScalingX(boolean manualScalingX) {
+		this.manualScalingX = manualScalingX;
+		zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		repaint();
+	}
+	
+	public void	zetManualScalingY(boolean manualScalingY) {
+		this.manualScalingY = manualScalingY;
+		zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		repaint();
+	}
+	
 	public void zetRoosterX(boolean b)
 	{	roosterX = b;
 		repaint();
@@ -971,7 +1003,26 @@ MouseListener, MouseMotionListener, CBookAware {
 	{	zoomOptie = b;
 		zoomBalk.setVisible(b);
 		plaatsComponenten();
+		
+		if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		} 
+		
 	}
+	
+	public void zetZoomEnabled(boolean b)
+	{	//leave the "zoombalk" be, disable the components
+		if (zoomBalk.isEnabled()) {
+			zoomStandaard.setEnabled(b);
+			zoomIn.setEnabled(b);
+			zoomUit.setEnabled(b);
+			zoomInX.setEnabled(b);
+			zoomUitX.setEnabled(b);
+			zoomInY.setEnabled(b);
+			zoomUitY.setEnabled(b);
+		}
+	}
+		
 	
 	public void zetDragOptie(boolean b)
 	{	dragOptie = b;
@@ -986,6 +1037,11 @@ MouseListener, MouseMotionListener, CBookAware {
 	public void zetTekenComponent(boolean b)
 	{	tekenComponentAan = b;
 		plaatsComponenten();
+		
+		if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		} 
+
 	}
 	
 	public void zetTabelComponent(boolean b, boolean setState)
@@ -995,6 +1051,10 @@ MouseListener, MouseMotionListener, CBookAware {
 			tabelComponent.zetTabelPunten(getPoints(activeIndex, false), true);
 		else 
 			zetFunctie(activeIndex-1, functies[activeIndex-1], "$f@", formuleComponent.geefExpNaam(activeIndex-1), domeinen[activeIndex-1], true, setState, false);
+
+		if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		} 
 	}
 	
 	public void zetFormuleComponent(boolean b, boolean setState)
@@ -1003,6 +1063,10 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		formuleComponent.parseFormule(activeIndex, setState);
 		
+		if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		} 
+
 	}
 	
 	public void zetTabelAlsTekenTool(boolean b, boolean setState)
@@ -1257,18 +1321,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		repaint();
 	}
 	*/
-		
-		
-	public Point realPointToPixels(RealPoint rp)
-	{	if (Double.isNaN(rp.getX()) || Double.isNaN(rp.getY()))
-			return null;
-		
-		Point pix = new Point();
-		pix.x =	(int) Math.round(beginx + eenheidxD * (xAsLog?Math.log10(rp.getX()):rp.getX()) / schaalFactorX);
-		pix.y = (int) Math.round(gv.getSize().height -
-								(beginy + eenheidyD * (yAsLog?Math.log10(rp.getY()):rp.getY()) / schaalFactorY));
-		return pix;
-	}
+	
 	
 	public void setBounds(int x, int y, int b, int h)
 	{	super.setBounds(x,y,b,h);
@@ -1594,6 +1647,7 @@ MouseListener, MouseMotionListener, CBookAware {
 
 	public void setState(Hashtable h) 	
 	{	
+
 		//double beginxDocent = 1;
 		//double beginyDocent = 1;
 		double beginx = 1;
@@ -1602,6 +1656,12 @@ MouseListener, MouseMotionListener, CBookAware {
 		//double docentSchaalFactorY = 1;
 		double schaalFactorX = 1;
 		double schaalFactorY = 1;
+		double asDefXMin = asDefaultXMin;
+		double asDefXMax = asDefaultXMax;
+		double asDefXStap = asDefaultXStap;
+		double asDefYMin = asDefaultYMin;
+		double asDefYMax = asDefaultYMax;
+		double asDefYStap =asDefaultYStap;
 		//graphPoints
 		double[] graphPointsX = null;
 		double[] graphPointsY = null;
@@ -1650,6 +1710,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		//boolean tabelAlsTekenTool = false; 
 		//boolean xPositief = false; 
 		//boolean yPositief = false; 
+		//boolean manualScalingX = false;
+		//boolean manualScalingY = false;
 		//boolean xAsLog = false;
 		//boolean yAsLog = false;
 		//boolean xVarEditable = false;
@@ -1693,6 +1755,20 @@ MouseListener, MouseMotionListener, CBookAware {
     		schaalFactorX = ((Number)h.get("schaalFactorX")).doubleValue();
     	if(h.containsKey("schaalFactorY")) 
     		schaalFactorY = ((Number)h.get("schaalFactorY")).doubleValue();
+    	
+		if (h.containsKey("asDefXMin"))
+			asDefXMin = ((Double) h.get("asDefXMin")).doubleValue();
+		if (h.containsKey("asDefXMax"))
+			asDefXMax = ((Double) h.get("asDefXMax")).doubleValue();
+		if (h.containsKey("asDefXStap"))
+			asDefXStap = ((Double) h.get("asDefXStap")).doubleValue();
+		if (h.containsKey("asDefYMin"))
+			asDefYMin = ((Double) h.get("asDefYMin")).doubleValue();
+		if (h.containsKey("asDefYMax"))
+			asDefYMax = ((Double) h.get("asDefYMax")).doubleValue();
+		if (h.containsKey("asDefYStap"))
+			asDefYStap = ((Double) h.get("asDefYStap")).doubleValue();
+
     	//if(h.containsKey("leerlingGrafiek"))
     	//	leerlingGrafiek = (boolean[])h.get("leerlingGrafiek");
     	//if(h.containsKey("graphPoints"))
@@ -1769,6 +1845,11 @@ MouseListener, MouseMotionListener, CBookAware {
 //			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
 //		if (h.containsKey("yAsLog")) 
 //			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
+//		if (h.containsKey("manualScalingX")) 
+//			manualScalingX = ((Boolean) h.get("manualScalingX")).booleanValue();
+//		if (h.containsKey("manualScalingY")) 
+//			manualScalingY = ((Boolean) h.get("manualScalingY")).booleanValue();
+
 //		if (h.containsKey("xVarEditable")) 
 //			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
 //		if (h.containsKey("yVarEditable")) 
@@ -1825,6 +1906,9 @@ MouseListener, MouseMotionListener, CBookAware {
 		//this.docentSchaalFactorY = docentSchaalFactorY;
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
+		if (this.manualScalingX || this.manualScalingY) {
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		}
 		//this.graphPoints = graphPoints;
 		this.graphPoints = new Vector();
 		if(graphPointsX!=null)
@@ -2044,6 +2128,9 @@ MouseListener, MouseMotionListener, CBookAware {
 //		zetTabelAlsTekenTool(tabelAlsTekenTool, true);
 //		zetXAsLog(xAsLog);
 //		zetYAsLog(yAsLog);
+//		zetManualScalingX(manualScalingX);
+//		zetManualScalingY(manualScalingY);
+
 //		zetXVarEditable(xVarEditable);
 //		zetYVarEditable(yVarEditable);
 //		zetKrommeKnoppen(true, krommeZonderExtrapolatie, krommeMetExtrapolatie);
@@ -2068,6 +2155,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if((mode != 2 && mode != 3) || nagekeken)	kijkNa();
 		
+		
 	}
 	
 	public Hashtable getState() {	
@@ -2082,6 +2170,12 @@ MouseListener, MouseMotionListener, CBookAware {
 		double docentSchaalFactorY = 1;
 		double schaalFactorX  = 1;
 		double schaalFactorY  = 1;
+		double asDefXMin = asDefaultXMin;
+		double asDefXMax = asDefaultXMax;
+		double asDefXStap = asDefaultXStap;
+		double asDefYMin = asDefaultYMin;
+		double asDefYMax = asDefaultYMax;
+		double asDefYStap =asDefaultYStap;
 		
 		//graphPoints:
 		double[] graphPointsX = new double[graphPoints.size()];
@@ -2162,6 +2256,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean yPositief = false; 
 		boolean xAsLog = false;
 		boolean yAsLog = false;
+		boolean manualScalingX = false;
+		boolean manualScalingY = false;
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
@@ -2195,6 +2291,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		docentSchaalFactorY = this.docentSchaalFactorY;
 		schaalFactorX = this.schaalFactorX;
 		schaalFactorY = this.schaalFactorY;
+		
+		asDefXMin = this.asDefXMin;
+		asDefXMax = this.asDefXMax;
+		asDefXStap = this.asDefXStap;
+		asDefYMin = this.asDefYMin;
+		asDefYMax = this.asDefYMax;
+		asDefYStap = this.asDefYStap;
+
 		//graphPoints = this.graphPoints;
 		activeIndex = this.activeIndex;
 		grafiekXAsNaam = this.grafiekXAsNaam;
@@ -2224,6 +2328,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		yPositief = this.yPositief;
 		xAsLog = this.xAsLog;
 		yAsLog = this.yAsLog;
+		manualScalingX = this.manualScalingX;
+		manualScalingY = this.manualScalingY;
 		xVarEditable = this.xVarEditable;
 		yVarEditable = this.yVarEditable;
 		grafiekKleuren = this.grafiekKleuren;
@@ -2264,6 +2370,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			Object aValue = h2.get(aKey);
 			h.put(aKey, aValue);
 		}
+	
 		h.put("beginxDocent", new Double(beginxDocent));
 		h.put("beginyDocent", new Double(beginyDocent));
 	    h.put("beginx", new Double(beginx));
@@ -2272,6 +2379,12 @@ MouseListener, MouseMotionListener, CBookAware {
 	    h.put("docentSchaalFactorY", new Double(docentSchaalFactorY));
 	    h.put("schaalFactorX", new Double(schaalFactorX));
 	    h.put("schaalFactorY", new Double(schaalFactorY));
+	    h.put("asDefXMin", asDefXMin);
+		h.put("asDefXMax", asDefXMax);
+		h.put("asDefXStap", asDefXStap);
+		h.put("asDefYMin", asDefYMin);
+		h.put("asDefYMax", asDefYMax);
+		h.put("asDefYStap", asDefYStap);
 	    //h.put("graphPoints", new Vector(graphPoints));
 	    h.put("graphPointsX", graphPointsX);
 	    h.put("graphPointsY", graphPointsY);
@@ -2315,6 +2428,10 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("yPositief", new Boolean(yPositief));
 		h.put("xAsLog", new Boolean(xAsLog));
 		h.put("yAsLog", new Boolean(yAsLog));
+		
+		h.put("manualScalingX", new Boolean(manualScalingX));
+		h.put("manualScalingY", new Boolean(manualScalingY));
+		
 		h.put("xVarEditable", new Boolean(xVarEditable));
 		h.put("yVarEditable", new Boolean(yVarEditable));
 		h.put("snapToGridPoints", new Boolean(snapToGridPoints));
@@ -2424,13 +2541,14 @@ MouseListener, MouseMotionListener, CBookAware {
 	    h.put("docentGraphPointsYString", docentGraphPointsYString);
 		h.put("ingevuld", new Boolean(ingevuld));
 	    h.put("nagekeken", new Boolean(nagekeken));
-	   
+
 		return h;
 	}
 	
 	
-	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
-	{	double beginxDocent = 1;
+	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {	
+
+		double beginxDocent = 1;
 		double beginyDocent = 1;
 		double beginx = 1;
 		double beginy = 1;
@@ -2438,6 +2556,18 @@ MouseListener, MouseMotionListener, CBookAware {
 		double docentSchaalFactorY = 1;
 		double schaalFactorX = 1;
 		double schaalFactorY = 1;
+		
+		double docentEenheidxD = eenheidx;
+		double docentEenheidyD = eenheidy;
+		double docentEenheidxValue = 1;
+		double docentEenheidyValue = 1;
+		double asDefXMin = asDefaultXMin;
+		double asDefXMax = asDefaultXMax;
+		double asDefXStap = asDefaultXStap;
+		double asDefYMin = asDefaultYMin;
+		double asDefYMax = asDefaultYMax;
+		double asDefYStap =asDefaultYStap;
+		
 		//Vector graphPoints = new Vector();
 		//graphPoints
 		double[] graphPointsX = null;
@@ -2495,6 +2625,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean yPositief = false; 
 		boolean xAsLog = false;
 		boolean yAsLog = false;
+		boolean manualScalingX = false;
+		boolean manualScalingY = false;
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
@@ -2536,6 +2668,20 @@ MouseListener, MouseMotionListener, CBookAware {
     		schaalFactorX = ((Double)h.get("schaalFactorX")).doubleValue();
     	if(h.containsKey("schaalFactorY")) 
     		schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
+    	
+		if (h.containsKey("asDefXMin"))
+			asDefXMin = ((Double) h.get("asDefXMin")).doubleValue();
+		if (h.containsKey("asDefXMax"))
+			asDefXMax = ((Double) h.get("asDefXMax")).doubleValue();
+		if (h.containsKey("asDefXStap"))
+			asDefXStap = ((Double) h.get("asDefXStap")).doubleValue();
+		if (h.containsKey("asDefYMin"))
+			asDefYMin = ((Double) h.get("asDefYMin")).doubleValue();
+		if (h.containsKey("asDefYMax"))
+			asDefYMax = ((Double) h.get("asDefYMax")).doubleValue();
+		if (h.containsKey("asDefYStap"))
+			asDefYStap = ((Double) h.get("asDefYStap")).doubleValue();
+    	
     	//if(h.containsKey("graphPoints"))
     	//	graphPoints = (Vector)h.get("graphPoints");
     	if(h.containsKey("graphPointsX"))
@@ -2625,6 +2771,12 @@ MouseListener, MouseMotionListener, CBookAware {
 			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
 		if (h.containsKey("yAsLog")) 
 			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
+		
+		if (h.containsKey("manualScalingX")) 
+			manualScalingX = ((Boolean) h.get("manualScalingX")).booleanValue();
+		if (h.containsKey("manualScalingY")) 
+			manualScalingY = ((Boolean) h.get("manualScalingY")).booleanValue();
+
 		if (h.containsKey("xVarEditable")) 
 			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
 		if (h.containsKey("yVarEditable")) 
@@ -2680,6 +2832,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.docentSchaalFactorY = docentSchaalFactorY;
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
+		zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
 		this.graphPoints = new Vector();
 		if(graphPointsX != null)
 		for(int i = 0; i < graphPointsX.length; i++)
@@ -3010,6 +3163,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetTabelAlsTekenTool(tabelAlsTekenTool, true);
 		zetXAsLog(xAsLog);
 		zetYAsLog(yAsLog);
+		zetManualScalingX(manualScalingX);
+		zetManualScalingY(manualScalingY);
 		zetXVarEditable(xVarEditable);
 		zetYVarEditable(yVarEditable);
 		zetKrommeKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
@@ -3038,6 +3193,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			{	add(schuifParameters[i].geefSlider(), 0);
 				schuifParameters[i].geefSlider().addActionListener(this);
 			}
+		
 	}
 
 	public void setEditState(Hashtable h) {
@@ -3049,6 +3205,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		double docentSchaalFactorY = 1;
 		double schaalFactorX = 1;
 		double schaalFactorY = 1;
+		
+		double asDefXMin = asDefaultXMin;
+		double asDefXMax = asDefaultXMax;
+		double asDefXStap = asDefaultXStap;
+		double asDefYMin = asDefaultYMin;
+		double asDefYMax = asDefaultYMax;
+		double asDefYStap =asDefaultYStap;
+
 		//Vector graphPoints = new Vector();
 		//graphPoints
 		double[] graphPointsX = null;
@@ -3106,6 +3270,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean yPositief = false; 
 		boolean xAsLog = false;
 		boolean yAsLog = false;
+		boolean manualScalingX = false;
+		boolean manualScalingY = false;
 		boolean xVarEditable = false;
 		boolean yVarEditable = false;
 		boolean snapToGridPoints = false;
@@ -3149,6 +3315,21 @@ MouseListener, MouseMotionListener, CBookAware {
     		schaalFactorY = ((Double)h.get("schaalFactorY")).doubleValue();
     	//if(h.containsKey("graphPoints"))
     	//	graphPoints = (Vector)h.get("graphPoints");
+
+    	if (h.containsKey("asDefXMin"))
+			asDefXMin = ((Double) h.get("asDefXMin")).doubleValue();
+		if (h.containsKey("asDefXMax"))
+			asDefXMax = ((Double) h.get("asDefXMax")).doubleValue();
+		if (h.containsKey("asDefXStap"))
+			asDefXStap = ((Double) h.get("asDefXStap")).doubleValue();
+		if (h.containsKey("asDefYMin"))
+			asDefYMin = ((Double) h.get("asDefYMin")).doubleValue();
+		if (h.containsKey("asDefYMax"))
+			asDefYMax = ((Double) h.get("asDefYMax")).doubleValue();
+		if (h.containsKey("asDefYStap"))
+			asDefYStap = ((Double) h.get("asDefYStap")).doubleValue();
+
+		
     	if(h.containsKey("graphPointsX"))
     		graphPointsX = ((double[])h.get("graphPointsX"));
     	if(h.containsKey("graphPointsY"))
@@ -3236,6 +3417,12 @@ MouseListener, MouseMotionListener, CBookAware {
 			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
 		if (h.containsKey("yAsLog")) 
 			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
+		
+		if (h.containsKey("manualScalingX")) 
+			manualScalingX = ((Boolean) h.get("manualScalingX")).booleanValue();
+		if (h.containsKey("manualScalingY")) 
+			manualScalingY = ((Boolean) h.get("manualScalingY")).booleanValue();
+
 		if (h.containsKey("xVarEditable")) 
 			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
 		if (h.containsKey("yVarEditable")) 
@@ -3292,6 +3479,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.docentSchaalFactorY = docentSchaalFactorY;
 		this.schaalFactorX = schaalFactorX;
 		this.schaalFactorY = schaalFactorY;
+		zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+
 		//this.graphPoints = graphPoints;
 		this.graphPoints = new Vector();
 		if(graphPointsX!=null)  for(int i = 0; i < graphPointsX.length; i++)
@@ -3375,8 +3564,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.grafiekXAsNaam = grafiekXAsNaam;
 		this.grafiekYAsNaam = grafiekYAsNaam;
 		xAsNaamTF.setText(grafiekXAsNaam);
-		yAsNaamTF.setText(grafiekYAsNaam);
-		
+		yAsNaamTF.setText(grafiekYAsNaam);		
 		
 		// opdrachten
 		int typeOpdracht = GEENOPDRACHT;
@@ -3512,6 +3700,9 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetTabelAlsTekenTool(tabelAlsTekenTool, true);
 		zetXAsLog(xAsLog);
 		zetYAsLog(yAsLog);
+		zetManualScalingX(manualScalingX);
+		zetManualScalingY(manualScalingY);
+
 		zetXVarEditable(xVarEditable);
 		zetYVarEditable(yVarEditable);
 		zetKrommeKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
@@ -3535,6 +3726,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				schuifParameters[i].geefSlider().addMouseMotionListener(this);
 			}
 		zetCheckExternal(checkExternal);
+
 	}
 
 	public Hashtable getEditState() {
@@ -3745,8 +3937,8 @@ MouseListener, MouseMotionListener, CBookAware {
 						{	RealPoint lPoint = (RealPoint) checkPoints[i].elementAt(pCnt);
 							Point lPixel = realPointToPixels(lPoint);
 							for(int j = 0; j < aantalFuncties; j++)
-							{	//Vergelijk getekende punt (lPoint) met het punt met dezelfde x-coördinaat en 
-								//als y-coördinaat de functiewaarde van de door auteur opgegeven functie.
+							{	//Vergelijk getekende punt (lPoint) met het punt met dezelfde x-coï¿½rdinaat en 
+								//als y-coï¿½rdinaat de functiewaarde van de door auteur opgegeven functie.
 								
 								double dWaarde = docentFuncties[j].geefWaarde(lPoint.getX());
 								RealPoint dPoint = new RealPoint(lPoint.getX(), dWaarde);
@@ -3767,7 +3959,8 @@ MouseListener, MouseMotionListener, CBookAware {
 									for(int k = 1; k < nauwkeurigheid[j]; k++)
 									{
 										int xWaarde = lPixel.x - k;
-										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+// RPJ										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
 										if(xAsLog)
 											dPoint.setX(Math.pow(10, dPoint.getX()));
 										
@@ -3793,7 +3986,8 @@ MouseListener, MouseMotionListener, CBookAware {
 											break;
 										}
 										xWaarde = lPixel.x + k;
-										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+// RPJ										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
 										if(xAsLog)
 											dPoint.setX(Math.pow(10, dPoint.getX()));
 										
@@ -4250,22 +4444,101 @@ MouseListener, MouseMotionListener, CBookAware {
 		repaint();
 	}
 	
-	public RealPoint realPointToRealPixels(RealPoint rp)
-	{	RealPoint realPix = new RealPoint(
-			beginx + eenheidxD * (xAsLog?Math.log10(rp.getX()):rp.getX()) / schaalFactorX,
-			gv.getSize().height - (beginy + eenheidyD * (yAsLog?Math.log10(rp.getY()):rp.getY()) / schaalFactorY));
+	public Point realPointToPixels(RealPoint rp) {	
+		// RPJ		pix.x =	(int) Math.round(beginx + eenheidxD * (xAsLog?Math.log10(rp.getX()):rp.getX()) / schaalFactorX);
+		// RPJ		pix.y = (int) Math.round(gv.getSize().height -
+//		(beginy + eenheidyD * (yAsLog?Math.log10(rp.getY()):rp.getY()) / schaalFactorY));
+		
+		if (Double.isNaN(rp.getX()) || Double.isNaN(rp.getY()))
+			return null;
+		Point pix = new Point();
+		if (manualScalingX) {
+			pix.x =	(int) Math.round(beginx + eenheidxD * rp.getX() / eenheidxValue);			
+		} 
+		else {
+			if (xAsLog) {
+				pix.x =	(int) Math.round(beginx + eenheidxD * Math.log10(rp.getX()) / schaalFactorX);			
+			} else {
+				pix.x =	(int) Math.round(beginx + eenheidxD * rp.getX() / schaalFactorX);
+			}			
+		}
+		if (manualScalingY) {
+			pix.y = (int) Math.round( gv.getSize().height -
+										(beginy + eenheidyD * rp.getY() / eenheidyValue));			
+		}
+		else {
+			if (yAsLog) {
+				pix.y = (int) Math.round( gv.getSize().height -
+										  (beginy + eenheidyD * Math.log10(rp.getY()) / schaalFactorY));
+			} else {
+				pix.y = (int) Math.round( gv.getSize().height -
+											(beginy + eenheidyD * rp.getY() / schaalFactorY));
+			}			
+		}
+
+		return pix;
+	}
+	
+	public RealPoint realPointToRealPixels(RealPoint rp) {
+//	RPJ	RealPoint realPix = new RealPoint(
+//			beginx + eenheidxD * (xAsLog?Math.log10(rp.getX()):rp.getX()) / schaalFactorX,
+//			gv.getSize().height - (beginy + eenheidyD * (yAsLog?Math.log10(rp.getY()):rp.getY()) / schaalFactorY));
+
+		RealPoint realPix = new RealPoint();
+		if (manualScalingX) {
+			realPix.setX(beginx + eenheidxD * rp.getX() / eenheidxValue);			
+		}
+		else {
+			if (xAsLog) {
+				realPix.setX(beginx + eenheidxD * Math.log10(rp.getX()) / schaalFactorX);
+			} else {
+				realPix.setX(beginx + eenheidxD * rp.getX() / schaalFactorX);
+			}			
+		}
+		if (manualScalingY) {
+			realPix.setY(gv.getSize().height - (beginy + eenheidyD * rp.getY() / eenheidyValue));			
+		}
+		else {
+			if (yAsLog) {
+				realPix.setY(gv.getSize().height - (beginy + eenheidyD * Math.log10(rp.getY()) / schaalFactorY));
+			} else {
+				realPix.setY(gv.getSize().height - (beginy + eenheidyD * rp.getY() / schaalFactorY));
+			}			
+		}
 		return realPix;
 	}
 	
-	public RealPoint pixelsToRealPoint(Point pix)
-	{	RealPoint rp = new RealPoint(0, 0);
-		rp.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);
-		if(xAsLog)
-			rp.setX(Math.pow(10, rp.getX()));
-		rp.setY((schaalFactorY * (-beginy) / eenheidyD +
-				    schaalFactorY * (gv.getSize().height - pix.y) / eenheidyD));
-		if(yAsLog)
-			rp.setY(Math.pow(10, rp.getY()));
+	public RealPoint pixelsToRealPoint(Point pix) {	
+// RPJ	
+// 		rp.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);
+//		rp.setY((schaalFactorY * (-beginy) / eenheidyD +
+//	    		schaalFactorY * (gv.getSize().height - pix.y) / eenheidyD));
+
+		RealPoint rp = new RealPoint(0, 0);
+		if (manualScalingX) {
+			rp.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * pix.x / eenheidxD);						
+		}
+		else {
+			if(xAsLog) {
+		 		rp.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);
+				rp.setX(Math.pow(10, rp.getX()));
+			} else {
+				rp.setX(eenheidxValue * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);			
+			}			
+		}
+		if (manualScalingY) {
+			rp.setY((eenheidyValue * (-beginy) / eenheidyD +
+				    eenheidyValue * (gv.getSize().height - pix.y) / eenheidyD));						
+		} else {
+			if(yAsLog) {
+				rp.setY((schaalFactorY * (-beginy) / eenheidyD +
+						schaalFactorY * (gv.getSize().height - pix.y) / eenheidyD));
+				rp.setY(Math.pow(10, rp.getY()));
+			} else {
+				rp.setY((schaalFactorY * (-beginy) / eenheidyD +
+						schaalFactorY * (gv.getSize().height - pix.y) / eenheidyD));			
+			}			
+		}
 		rp.setxString(Double.toString(rp.getX()));
 		rp.setyString(Double.toString(rp.getY()));
 		return rp;
@@ -4458,6 +4731,7 @@ MouseListener, MouseMotionListener, CBookAware {
             	else	
             	{	// kijk of er op een point van de actuele grafiek is geklikt
 					// dat gaan we dan slepen
+
 					dragPoint = null;
 					Vector points = getPoints(getActiveIndex(), false);
 					{	for (int pCnt = 0; pCnt < points.size(); pCnt++)
@@ -4564,7 +4838,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				startxv = e.getX();
 				startyv = e.getY();
 			}
-		}
+		}		
+
 	}
 	
 	public void mouseDragged(MouseEvent e)
@@ -4680,6 +4955,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					int dy = e.getY() - startyv;					
 					beginx = beginx+dx;
 					beginy = beginy-dy;
+
 					
 					if(traceOptie && tracex!=-2) 
 					{	tracexD = tracexD+dx;
@@ -4728,11 +5004,15 @@ MouseListener, MouseMotionListener, CBookAware {
 	{	//resize = false;
 		if(sliderSlepend)
 			sliderSlepend = false;
-		if (!tekenComponentAan && e.getSource() == gv) 
+		if ( (!tekenComponentAan && e.getSource() == gv) && dragOptie )
 		{	double beginxR = beginx;
-			beginx = eenheidx*Math.round(beginx/eenheidx);
-			beginy = eenheidy*Math.round(beginy/eenheidy);
-			
+		
+			int dx = e.getX() - startxv;
+			int dy = e.getY() - startyv;					
+		
+			beginx = beginx+dx;
+			beginy = beginy-dy;
+
 			if(traceOptie && tracex!=-2) 
 			{	tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
@@ -4742,18 +5022,20 @@ MouseListener, MouseMotionListener, CBookAware {
 			repaint();
 		}
 		else if (e.getSource() == gv)
-		{	if (tekenComponent.getCursorMode() == tekenComponent.NOCUR)
+		{	if (( tekenComponent.getCursorMode() == tekenComponent.NOCUR) && dragOptie )
 			{	double beginxR = beginx;
-				beginx = eenheidx*Math.round(beginx/eenheidx);
-				beginy = eenheidy*Math.round(beginy/eenheidy);
+				int dx = e.getX() - startxv;
+				int dy = e.getY() - startyv;					
+		
+				beginx = beginx+dx;
+				beginy = beginy-dy;
 				
 				if(traceOptie && tracex!=-2) 
 				{	tracexD += beginx-beginxR;
 					tracex += beginx-beginxR;
 					slider.zetStand(tracex);
 				}
-				
-				
+								
 				repaint();
 			}
 			else if (tekenComponent.getCursorMode() == tekenComponent.DRAW)
@@ -4805,8 +5087,11 @@ MouseListener, MouseMotionListener, CBookAware {
 				// grafiek slepen
 				else if ((dragPoint == null) && (otherPoint == null) && dragOptie)
 				{	double beginxR = beginx;
-					beginx = eenheidx*Math.round(beginx/eenheidx);
-					beginy = eenheidy*Math.round(beginy/eenheidy);
+					int dx = e.getX() - startxv;
+					int dy = e.getY() - startyv;					
+			
+					beginx = beginx+dx;
+					beginy = beginy-dy;
 
 					if(traceOptie && tracex!=-2) 
 					{	tracexD += beginx-beginxR;
@@ -4841,8 +5126,7 @@ MouseListener, MouseMotionListener, CBookAware {
 									  (rpPix.y - movedY) * (rpPix.y - movedY)));
 						if (dis <= PRAD + 2)
 						{	drp = rp;
-						}
-						
+						}						
 					}
 				}
 				if (drp != null)
@@ -4872,8 +5156,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				}
 			}
 		}
-	}
-	
+	}	
 	
 	public void mouseExited(MouseEvent e)
 	{	if (e.getSource() == gv)
@@ -4929,9 +5212,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			}
 			
 		}
-	}	
-	
-	
+	}		
 	
 	public void actionPerformed(ActionEvent e)
 	{	if(zoomDraad!=null && zoomDraad.isAlive())return;
@@ -4942,7 +5223,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		if(e.getActionCommand().equals("focus")) ;
 		else 
-		{	if(e.getSource()==zoomUitY && factorRijNummerY<120)
+		{	if( (e.getSource()==zoomUitY && factorRijNummerY<120) &&
+			    !(manualScalingY && eenheidy<2) )
 			{	zoomDraad = new ZoomDraad(false,true,false);
 				zoomDraad.start();
 			}
@@ -4950,7 +5232,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			{	zoomDraad = new ZoomDraad(false,true,true);
 				zoomDraad.start();
 			}
-			else if(e.getSource()==zoomUitX && factorRijNummerX<120)
+			else if ( (e.getSource()==zoomUitX && factorRijNummerX<120) &&
+					!(manualScalingX && eenheidx<2) )
 			{	zoomDraad = new ZoomDraad(true,false,false);
 				zoomDraad.start();
 			}
@@ -4958,7 +5241,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			{	zoomDraad = new ZoomDraad(true,false,true);
 				zoomDraad.start();
 			}
-			else if(e.getSource()==zoomUit && factorRijNummerX<120 && factorRijNummerY<120)
+			else if( (e.getSource()==zoomUit && factorRijNummerX<120 && factorRijNummerY<120) &&
+		             ( !(manualScalingX && eenheidx<2) && !(manualScalingY && eenheidy<2) ) )
 			{	zoomDraad = new ZoomDraad(true,true,false);
 				zoomDraad.start();
 			}
@@ -4966,20 +5250,31 @@ MouseListener, MouseMotionListener, CBookAware {
 			{	zoomDraad = new ZoomDraad(true,true,true);
 				zoomDraad.start();
 			}
-			else if(e.getSource()==zoomStandaard)
-			{	beginx = beginxDocent;
+			else if(e.getSource()==zoomStandaard) {	
+				beginx = beginxDocent;
 				beginy = beginyDocent;
 				double beginxVorig = beginx;
-				tracexD = beginx -(beginxVorig - tracexD)*schaalFactorX;
+//				tracexD = beginx -(beginxVorig - tracexD)*schaalFactorX;
+				tracexD = beginx -(beginxVorig - tracexD)*eenheidxValue;
 				factorRijNummerX = 99;
 				factorRijNummerY = 99;
 				schaalFactorX = docentSchaalFactorX;
 				schaalFactorY = docentSchaalFactorY;
+
+				eenheidxD = docentEenheidxD;
+				eenheidyD = docentEenheidyD;
+				eenheidx = (int) Math.round(eenheidxD);
+				eenheidy = (int) Math.round(eenheidyD);
+				eenheidxValue = docentEenheidxValue;
+				eenheidyValue = docentEenheidyValue;
 				beginwaarde = 0;
 				selectnummer = 999;
 				
 				tracex = (int) Math.round(tracexD);
 				slider.zetStand(tracex);
+				if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+					zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+				} 
 				
 				repaint();
 			}
@@ -5119,11 +5414,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		
 		public void run()
-		{	if(x) selectnummer = 999;
-            eenheidxD = xAsLog?2*eenheid:eenheid;
-			eenheidyD = yAsLog?2*eenheid:eenheid;
-			eenheidx = xAsLog?2*eenheid:eenheid;
-			eenheidy = yAsLog?2*eenheid:eenheid;
+		{	
+			if(x) selectnummer = 999;
+// RPJ changed scaling - eenheid?D no longer fixed to 16!
+//          double eenheidxD = xAsLog?2*eenheid:eenheid; 
+//			double eenheidyD = yAsLog?2*eenheid:eenheid;
+//			double eenheidx = xAsLog?2*eenheid:eenheid;
+//			double eenheidy = yAsLog?2*eenheid:eenheid;
+			
 			double stapx, stapy;
 			double factorx = 1;
 			double factory = 1;
@@ -5164,14 +5462,19 @@ MouseListener, MouseMotionListener, CBookAware {
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
 				long t = System.currentTimeMillis();
+				
 				try
 				{	t = t+delay;
 					sleep(Math.max(1, t-System.currentTimeMillis()));
 				}
     			catch(InterruptedException e)    // geen ;
 				{   };
+
+// RPJ
 				eenheidxD = eenheidxD/stapx;
 				eenheidyD = eenheidyD/stapy;
+//				eenheidxD = eenheidxD*stapx;
+//				eenheidyD = eenheidyD*stapy;
 				eenheidx = (int) Math.round(eenheidxD);
 				eenheidy = (int) Math.round(eenheidyD);
 				beginx =  middenx -(middenx - beginx)/stapx;
@@ -5192,9 +5495,10 @@ MouseListener, MouseMotionListener, CBookAware {
 			schaalFactorY*=factory;
 			if(in && y)factorRijNummerY--;
 			if(!in && y)factorRijNummerY++;
-			
-			eenheidxD = eenheidxD*factorx;
-			eenheidyD = eenheidyD*factory;
+
+// RPJ
+//			eenheidxD = eenheidxD*factorx;
+//			eenheidyD = eenheidyD*factory;
 			
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
@@ -5205,10 +5509,13 @@ MouseListener, MouseMotionListener, CBookAware {
 				}
     			catch(InterruptedException e)    // geen ;
 				{   };
+// RPJ
 				eenheidxD = eenheidxD/stapx;
 				eenheidyD = eenheidyD/stapy;
-				eenheidx = (int) Math.round(eenheidxD);
-				eenheidy = (int) Math.round(eenheidyD);
+//				eenheidxD = eenheidxD*stapx;
+//				eenheidyD = eenheidyD*stapy;
+				eenheidx = Math.max(1,(int) Math.round(eenheidxD));
+				eenheidy = Math.max(1,(int) Math.round(eenheidyD));
 				beginx =  middenx -(middenx - beginx)/stapx;
 				beginy =  middeny -(middeny - beginy)/stapy;
 				
@@ -5226,7 +5533,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			tracexD = tracexD + eenheid*(beginwaardeD - beginwaarde);
 			tracex = (int) Math.round(tracexD);
 			slider.zetStand(tracex);
-			
 			if(x)selectnummer = 999;
 			
 			repaint();
@@ -5240,7 +5546,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		@Override
 		public void addCBookEventListener(CBookEventListener listener,
 				String command) {
-			System.out.println("addCBookEventListener: "+listener.toString() +"+"+command);
+			//System.out.println("addCBookEventListener: "+listener.toString() +"+"+command);
 			cbookEventHandler.addCBookEventListener(listener, command);
 			
 		}
@@ -5267,7 +5573,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 			return c;
 		}
-
 		
 		@Override
 		public void acceptCBookEvent(CBookEvent event) {
@@ -5401,5 +5706,65 @@ MouseListener, MouseMotionListener, CBookAware {
 			return cmd;
 		}
 
+		public void zetAssenDefinitie(double asDefXMin, double asDefXMax, double asDefXStap, double asDefYMin, double asDefYMax, double asDefYStap) {
+			
+			// keep originals (to be saved later)
+			this.asDefXMin = asDefXMin; 
+			this.asDefXMax = asDefXMax;
+			this.asDefXStap = asDefXStap;
+			this.asDefYMin = asDefYMin;
+			this.asDefYMax = asDefYMax;
+			this.asDefYStap = asDefYStap;
+
+			if (manualScalingX) {
+				// Calculate graph-parameters X
+				double rangeX = asDefXMax-asDefXMin;
+				eenheidxD = veldb/(rangeX/asDefXStap)/2; // gedeeld door 2 tbv een kleinere schaling dan de grove 
+				eenheidx = (int) Math.round(eenheidxD);
+				eenheidxValue = Math.abs(asDefXStap/2);  // we don't allow negative step-sizes (yet) 
+				beginx = -Math.round(asDefXMin/eenheidxValue * eenheidxD);
+
+				docentEenheidxValue = eenheidxValue; // set scaling to docent zoom
+				docentEenheidxD = eenheidxD;
+				beginxDocent = beginx;
+			}
+
+			if (manualScalingY) {
+				
+				// Calculate graph-parameters Y
+				double rangeY = asDefYMax-asDefYMin;
+				eenheidyD = veldh/(rangeY/asDefYStap)/2;
+				eenheidy = (int) Math.round(eenheidyD);
+				eenheidyValue = Math.abs(asDefYStap/2);  // gedeeld door 2 tbv een kleinere schaling dan de grove
+				beginy = -Math.round(asDefYMin/eenheidyValue * eenheidyD);			
+		
+				docentEenheidyValue = eenheidyValue;
+				docentEenheidyD = eenheidyD;
+				beginyDocent = beginy;			
+			}
+			
+//			System.out.println(":::::::::: zetAssenDefinitie ::::::::::");
+//			System.out.println("manualScalingX=" + manualScalingX);
+//			System.out.println("manualScalingY=" + manualScalingY);
+//			System.out.println("asDefXMin=" + asDefXMin);
+//			System.out.println("asDefXMax=" + asDefXMax);
+//			System.out.println("asDefXStap=" + asDefXStap);
+//			System.out.println("asDefYMin=" + asDefYMin);
+//			System.out.println("asDefYMax=" + asDefYMax);
+//			System.out.println("asDefYStap=" + asDefYStap);
+//			System.out.println("beginxReal=" + (-asDefXMin/asDefXStap * eenheidxD));
+//			System.out.println("beginyReal=" + (-asDefYMin/asDefYStap * eenheidyD));
+//			System.out.println("beginx=" + beginx);
+//			System.out.println("beginy=" + beginy);
+//			System.out.println("veldb=" + veldb);
+//			System.out.println("veldh=" + veldh);
+//			System.out.println("eenheidxD=" + eenheidxD);
+//			System.out.println("eenheidyD=" + eenheidyD);
+//			System.out.println("eenheidx=" + eenheidx);
+//			System.out.println("eenheidy=" + eenheidy);
+			
+			repaint();
+			
+		}
 }
 

@@ -122,7 +122,7 @@ public class GraphTool extends Applet implements ScormAppletIF, WiskOpdrApplet {
 	    //h.put("state", state);
 	      
 	    //codeer de hashtable tot string
-	    String s = StringCodeObject.encodeObjectToString(h);
+		String s = StringCodeObject.encodeObjectToString(h);
 	    return s;
 	}
 	

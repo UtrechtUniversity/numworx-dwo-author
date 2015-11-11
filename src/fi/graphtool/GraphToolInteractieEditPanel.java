@@ -41,17 +41,26 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
 	
-	private int defaultWidth = 800;
+	private int defaultWidth = 800; 
 	private int defaultIpHeight = 300;
 	private int defaultIpWidth = 300; //hier stond 270
-	private int defaultOpWidth = 470;
-	private int defaultOpHeight= 490;
+//	private int defaultOpWidth = 470;
+	private int defaultOpWidth = 560;
+	private int defaultOpHeight= 560;
+//	private int defaultOpHeight= 490;
 	
 	private Font theFont;
 	private FontMetrics theFM;
 	private Font theBoldFont;
 	private FontMetrics theBoldFM;
 	
+	double asDefXMin;
+	double asDefXMax;
+	double asDefXStap;
+	double asDefYMin;
+	double asDefYMax;
+	double asDefYStap;
+
 	private int offset = 4;
 	private int currentX;
 	private int currentY;
@@ -79,7 +88,18 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		piLijnenZichtbaar, zoomOptie, traceOptie, dragOptie, formeleFuncties, 
 		zoomInTabel, tabelAlsTekenTool, xPositief, yPositief, xAsLog, yAsLog,
 		xVarEditable, yVarEditable, 
-		snapToGridPoints, rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie;
+		snapToGridPoints, rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie,
+		manualScaling,
+		manualScalingX, manualScalingY;
+	
+	// Assen-definitie ui variabelen
+	private JLabel assenDefLabel;
+	private JLabel asDefXLabel, asDefXMinLabel, asDefXMaxLabel, asDefXStapLabel;
+	private JTextField asDefXMinTF, asDefXMaxTF, asDefXStapTF;
+	private JLabel asDefYLabel, asDefYMinLabel, asDefYMaxLabel, asDefYStapLabel;
+	private JTextField asDefYMinTF, asDefYMaxTF, asDefYStapTF;
+	
+	private JCheckBox asManualDefCB;
 	
 	//Opdrachtenpanel 
 	protected static int GEENOPDRACHT = 0;
@@ -130,14 +150,21 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private JButton paramVerwijderButton;
 	private JList schuifParamList;
 	private DefaultListModel schuifParamListElements;
-	//private JTextField paramNaamTF, paramOnderGrensTF, paramBovenGrensTF, paramBeginStandTF, paramLengteTF;
-	
+	//private JTextField paramNaamTF, paramOnderGrensTF, paramBovenGrensTF, paramBeginStandTF, paramLengteTF;	
 	
 	public GraphToolInteractieEditPanel() {
 		setLayout(null);
 		interactiePanel = new GraphToolInteractiePanel();
 		interactiePanel.setBounds(10,20,defaultIpWidth,defaultIpHeight);
 		add(interactiePanel);
+		
+		// Set Scaling defaults
+		asDefXMin = interactiePanel.asDefaultXMin;
+		asDefXMax = interactiePanel.asDefaultXMax;
+		asDefXStap = interactiePanel.asDefaultXStap;
+		asDefYMin = interactiePanel.asDefaultYMin;
+		asDefYMax = interactiePanel.asDefaultYMax;
+		asDefYStap = interactiePanel.asDefaultYStap;
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
@@ -305,7 +332,132 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		currentX -= yAsLabel.getWidth() + yAsNaamTF.getWidth() + 11 * offset;
 		currentY += height + 2 * offset;
 		
-		JLabel assenstelselLabel = new JLabel(GraphTool.rb.getString("GTIEP_assenLabel"));;
+		// RPJ Schaal-definitie gedeelte
+		asManualDefCB = maakCheckBox(GraphTool.rb.getString("GTIEP_schaalDefCB"), currentX, currentY, 2*width, height, manualScaling, toolsPanel);
+
+		currentY += height + offset; 
+		asDefXLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalXLabel"));
+		asDefXLabel.setBounds(currentX, currentY, 3*width/5, height);
+		asDefXLabel.setFont(theFont);
+		toolsPanel.add(asDefXLabel);
+		
+		currentX += asDefXLabel.getWidth() + 1 * offset;
+		asDefXMinLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalMinLabel"));
+		asDefXMinLabel.setBounds(currentX, currentY, width /6, height);
+		asDefXMinLabel.setFont(theFont);
+		toolsPanel.add(asDefXMinLabel);
+
+		currentX += asDefXMinLabel.getWidth() + 1 * offset;
+		asDefXMinTF = new JTextField(String.valueOf(asDefXMin));
+		asDefXMinTF.setEnabled(manualScalingX); // also enable/disable the input field according to its variable
+		asDefXMinTF.setBounds(currentX, currentY, 50, height);
+		asDefXMinTF.setFont(theFont);
+		asDefXMinTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefXMinTF.addActionListener(this);
+		asDefXMinTF.addFocusListener(this);
+		toolsPanel.add(asDefXMinTF);
+
+		currentX += asDefXMinTF.getWidth() + 5 * offset;
+		asDefXMaxLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalMaxLabel"));
+		asDefXMaxLabel.setBounds(currentX, currentY, width /6, height);
+		asDefXMaxLabel.setFont(theFont);
+		toolsPanel.add(asDefXMaxLabel);
+
+		currentX += asDefXMaxLabel.getWidth() + 1 * offset;
+		asDefXMaxTF = new JTextField(String.valueOf(asDefXMax));
+		asDefXMaxTF.setEnabled(manualScalingX); // also enable/disable the input field according to its variable
+		asDefXMaxTF.setBounds(currentX, currentY, 50, height);
+		asDefXMaxTF.setFont(theFont);
+		asDefXMaxTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefXMaxTF.addActionListener(this);
+		asDefXMaxTF.addFocusListener(this);
+		toolsPanel.add(asDefXMaxTF);
+
+		currentX += asDefXMaxTF.getWidth() + 5 * offset;
+		asDefXStapLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalStapLabel"));
+		asDefXStapLabel.setBounds(currentX, currentY, width /6, height);
+		asDefXStapLabel.setFont(theFont);
+		toolsPanel.add(asDefXStapLabel);
+
+		currentX += asDefXStapLabel.getWidth() + 1 * offset;
+		asDefXStapTF = new JTextField(String.valueOf(asDefXStap));
+		asDefXStapTF.setEnabled(manualScalingX); // also enable/disable the input field according to its variable
+		asDefXStapTF.setBounds(currentX, currentY, 50, height);
+		asDefXStapTF.setFont(theFont);
+		asDefXStapTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefXStapTF.addActionListener(this);
+		asDefXStapTF.addFocusListener(this);
+		toolsPanel.add(asDefXStapTF);
+
+		currentX -= asDefXLabel.getWidth() + 
+					asDefXMinLabel.getWidth() + asDefXMinTF.getWidth() + 
+					asDefXMaxLabel.getWidth() + asDefXMaxTF.getWidth() +
+					asDefXStapLabel.getWidth() +  
+				    14 * offset;
+
+		currentY += height + offset;
+		asDefYLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalYLabel"));
+		asDefYLabel.setBounds(currentX, currentY, 3*width/5, height);
+		asDefYLabel.setFont(theFont);
+		toolsPanel.add(asDefYLabel);
+		
+		currentX += asDefYLabel.getWidth() + 1 * offset;
+		asDefYMinLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalMinLabel"));
+		asDefYMinLabel.setBounds(currentX, currentY, width /6, height);
+		asDefYMinLabel.setFont(theFont);
+		toolsPanel.add(asDefYMinLabel);
+
+		currentX += asDefYMinLabel.getWidth() + 1 * offset;
+		asDefYMinTF = new JTextField(String.valueOf(asDefYMin));
+		asDefYMinTF.setEnabled(manualScalingY); // also enable/disable the input field according to its variable
+		asDefYMinTF.setBounds(currentX, currentY, 50, height);
+		asDefYMinTF.setFont(theFont);
+		asDefYMinTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefYMinTF.addActionListener(this);
+		asDefYMinTF.addFocusListener(this);
+		toolsPanel.add(asDefYMinTF);
+
+		currentX += asDefYMinTF.getWidth() + 5 * offset;
+		asDefYMaxLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalMaxLabel"));
+		asDefYMaxLabel.setBounds(currentX, currentY, width /6, height);
+		asDefYMaxLabel.setFont(theFont);
+		toolsPanel.add(asDefYMaxLabel);
+
+		currentX += asDefYMaxLabel.getWidth() + 1 * offset;
+		asDefYMaxTF = new JTextField(String.valueOf(asDefYMax));
+		asDefYMaxTF.setEnabled(manualScalingY); // also enable/disable the input field according to its variable
+		asDefYMaxTF.setBounds(currentX, currentY, 50, height);
+		asDefYMaxTF.setFont(theFont);
+		asDefYMaxTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefYMaxTF.addActionListener(this);
+		asDefYMaxTF.addFocusListener(this);
+		toolsPanel.add(asDefYMaxTF);
+		
+		currentX += asDefYMaxTF.getWidth() + 5 * offset;
+		asDefYStapLabel = new JLabel(GraphTool.rb.getString("GTIEP_schaalStapLabel"));
+		asDefYStapLabel.setBounds(currentX, currentY, width /6, height);
+		asDefYStapLabel.setFont(theFont);
+		toolsPanel.add(asDefYStapLabel);
+
+		currentX += asDefYStapLabel.getWidth() + 1 * offset;
+		asDefYStapTF = new JTextField(String.valueOf(asDefYStap));
+		asDefYStapTF.setEnabled(manualScalingY); // also enable/disable the input field according to its variable
+		asDefYStapTF.setBounds(currentX, currentY, 50, height);
+		asDefYStapTF.setFont(theFont);
+		asDefYStapTF.setHorizontalAlignment(JTextField.RIGHT);
+		asDefYStapTF.addActionListener(this);
+		asDefYStapTF.addFocusListener(this);
+		toolsPanel.add(asDefYStapTF);
+
+		currentX -= asDefYLabel.getWidth() + 
+					asDefYMinLabel.getWidth() + asDefYMinTF.getWidth() + 
+					asDefYMaxLabel.getWidth() + asDefYMaxTF.getWidth() +
+					asDefYStapLabel.getWidth() +  
+				    14 * offset;
+		
+		currentY += height + 2 * offset;
+		
+		JLabel assenstelselLabel = new JLabel(GraphTool.rb.getString("GTIEP_assenLabel"));
 		assenstelselLabel.setBounds(currentX, currentY, 2 * width, height);
 		toolsPanel.add(assenstelselLabel);
 		
@@ -583,6 +735,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		paramVerwijderButton.addActionListener(this);
 		paramVerwijderButton.setFont(theFont);
 		schuifParameterPanel.add(paramVerwijderButton);
+		
+		interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
 		
 	}
 	
@@ -1060,7 +1214,6 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			Object aValue = h2.get(aKey);
 			h.put(aKey, aValue);
 		}
-	
 		double beginxDocent = 0;
 		double beginyDocent = 0;
 		double docentSchaalFactorX = 1;
@@ -1073,6 +1226,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			docentSchaalFactorX = ((Double) h.get("schaalFactorX")).doubleValue();
 		if(h.containsKey("schaalFactorY"))
 			docentSchaalFactorY = ((Double) h.get("schaalFactorY")).doubleValue();
+		
 		h.put("beginxDocent", new Double(beginxDocent));
 		h.put("beginyDocent", new Double(beginyDocent));
 		h.put("docentSchaalFactorX", new Double(docentSchaalFactorX));
@@ -1080,11 +1234,17 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		h.put("defaultIpWidth", new Integer(defaultIpWidth));
 		h.put("defaultIpHeight", new Integer(defaultIpHeight));
 		
+		if (manualScaling) { // in case of manual scaling we need to reset the drag option for student use
+			h.put("dragOptie", new Boolean(dragOptie)); // TODO
+			h.put("zoomOptie", new Boolean(zoomOptie));
+		}
+		
 		return h;
 	}
 	
 	
 	public void setEditState(Hashtable h) {
+
 		if (h.containsKey("xAsNaam")) 
 			xAsNaam = (String) h.get("xAsNaam");
 		if (h.containsKey("yAsNaam")) 
@@ -1125,6 +1285,12 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			xAsLog = ((Boolean) h.get("xAsLog")).booleanValue();
 		if (h.containsKey("yAsLog"))
 			yAsLog = ((Boolean) h.get("yAsLog")).booleanValue();
+		
+		if (h.containsKey("manualScalingX")) 
+			manualScalingX = ((Boolean) h.get("manualScalingX")).booleanValue();
+		if (h.containsKey("manualScalingY")) 
+			manualScalingY = ((Boolean) h.get("manualScalingY")).booleanValue();
+
 		if (h.containsKey("xVarEditable")) 
 			xVarEditable = ((Boolean) h.get("xVarEditable")).booleanValue();
 		if (h.containsKey("yVarEditable")) 
@@ -1147,6 +1313,20 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			docentSchaalFactorX = ((Double) h.get("docentSchaalFactorX")).doubleValue();
 		if (h.containsKey("docentSchaalFactorY"))
 			docentSchaalFactorY = ((Double) h.get("docentSchaalFactorY")).doubleValue();
+		
+		if (h.containsKey("asDefXMin"))
+			asDefXMin = ((Double) h.get("asDefXMin")).doubleValue();
+		if (h.containsKey("asDefXMax"))
+			asDefXMax = ((Double) h.get("asDefXMax")).doubleValue();
+		if (h.containsKey("asDefXStap"))
+			asDefXStap = ((Double) h.get("asDefXStap")).doubleValue();
+		if (h.containsKey("asDefYMin"))
+			asDefYMin = ((Double) h.get("asDefYMin")).doubleValue();
+		if (h.containsKey("asDefYMax"))
+			asDefYMax = ((Double) h.get("asDefYMax")).doubleValue();
+		if (h.containsKey("asDefYStap"))
+			asDefYStap = ((Double) h.get("asDefYStap")).doubleValue();
+		
 		if (h.containsKey("typeOpdracht")) 
 			typeOpdracht = ((Integer) h.get("typeOpdracht")).intValue();		
 		if (h.containsKey("maxScores")) 
@@ -1183,6 +1363,14 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		
 		xAsNaamTF.setText(xAsNaam);
 		yAsNaamTF.setText(yAsNaam);
+		asDefXMinTF.setText(String.valueOf(asDefXMin));
+		asDefXMaxTF.setText(String.valueOf(asDefXMax));
+		asDefXStapTF.setText(String.valueOf(asDefXStap));
+		asDefYMinTF.setText(String.valueOf(asDefYMin));
+		asDefYMaxTF.setText(String.valueOf(asDefYMax));
+		asDefYStapTF.setText(String.valueOf(asDefYStap));
+		interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+
 		formuleComponentCB.setSelected(formuleComponentAan);
 		tekenComponentCB.setSelected(tekenComponentAan);
 		tabelComponentCB.setSelected(tabelComponentAan);
@@ -1204,6 +1392,14 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		yPositiefCB.setSelected(yPositief);
 		xAsLogCB.setSelected(xAsLog);
 		yAsLogCB.setSelected(yAsLog);
+		
+		asDefXMinTF.setEnabled(manualScalingX); // also enable/disable the input field
+		asDefXMaxTF.setEnabled(manualScalingX);
+		asDefXStapTF.setEnabled(manualScalingX);
+		asDefYMinTF.setEnabled(manualScalingY); // also enable/disable the input field
+		asDefYMaxTF.setEnabled(manualScalingY);
+		asDefYStapTF.setEnabled(manualScalingY);
+
 		xVarEditableCB.setSelected(xVarEditable);
 		yVarEditableCB.setSelected(yVarEditable);
 		snapToGridPointsCB.setSelected(snapToGridPoints);
@@ -1259,7 +1455,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			formuleOpties.put("parametrisatieToegestaan", h.get("parametrisatieToegestaan"));
 		
 		formuleEditorOptiesButton.setOptions(formuleOpties);
-		
+		System.out.println("setEditState :: interactiePanel.setEditState(h);");
+
 		interactiePanel.setEditState(h);
 		docentTabelComponent.zetXAsNaam(xAsNaam);
 		docentTabelComponent.zetYAsNaam(yAsNaam, true);
@@ -1288,11 +1485,21 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		interactiePanel.setBounds(0, 0, b,interactiePanel.getHeight());	
 		setBounds(getLocation().x, getLocation().y, b + defaultOpWidth + 10, Math.max(defaultIpHeight, defaultOpHeight));		
 		optionsPanel.setBounds(defaultIpWidth + 10, 20, defaultOpWidth, defaultOpHeight);
+		
+		System.out.println("zetBreedte manualScaling=" + manualScaling);
+
+		if (manualScaling) {
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		}
 	}
 	
 	public void zetHoogte(int h) {
 		defaultIpHeight = h;
 		interactiePanel.setBounds(0, 0, interactiePanel.getWidth(), h);	
+		System.out.println("zetHoogte manualScaling=" + manualScaling);
+		if (manualScaling) {
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		}
 	}
 	
 	public void wis() {
@@ -1315,26 +1522,26 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			
 	}
 	
-	 public void processNauwkeurigheid()
-	    {	for(int i = 0; i < nauwkeurigheid.length; i++)
-		    {	String msString = nauwkeurigheidTF[i].getText();
-		    	boolean error = false;
-				int ms = 0;
-				try
-				{	ms = Integer.parseInt(msString);
-				}
-				catch (NumberFormatException nfe)
-				{	error = true;
-				}
-				if (!error && (ms > 0) && (ms < 50))
-				{	nauwkeurigheid[i] = ms;
-				}
-				nauwkeurigheidTF[i].setText("" + nauwkeurigheid[i]);
+	public void processNauwkeurigheid() {	
+		for(int i = 0; i < nauwkeurigheid.length; i++) {	
+			String msString = nauwkeurigheidTF[i].getText();
+		    boolean error = false;
+			int ms = 0;
+			try {	
+				ms = Integer.parseInt(msString);
 			}
-	    	interactiePanel.zetNauwkeurigheid(nauwkeurigheid);
-	    }
+			catch (NumberFormatException nfe) {	
+				error = true;
+			}
+			if (!error && (ms > 0) && (ms < 50)) {	
+				nauwkeurigheid[i] = ms;
+			}
+			nauwkeurigheidTF[i].setText("" + nauwkeurigheid[i]);
+		}
+	    interactiePanel.zetNauwkeurigheid(nauwkeurigheid);
+	}
 
-	    public void processMinimumPunten()
+	public void processMinimumPunten()
 	    {	for(int i = 0; i < minimumPunten.length; i++)
 	    	{	String msString = minimumPuntenTF[i].getText();
 		    	boolean error = false;
@@ -1353,7 +1560,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			interactiePanel.zetMinimumPunten(minimumPunten);
 	    }
 	    
-	    public void processMaxScore()
+	public void processMaxScore()
 	    {	for(int i = 0; i < maxScores.length; i++)
 	    	{	String msString = scoreMaxTF[i].getText();
 		    	boolean error = false;
@@ -1371,7 +1578,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	    	}
 			interactiePanel.zetMaxScores(maxScores);
 	    }
-
+	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(formuleComponentCB))
 		{	formuleComponentAan = formuleComponentCB.isSelected();
@@ -1397,6 +1604,43 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		{	assenZichtbaar = assenZichtbaarCB.isSelected();
 			interactiePanel.zetAssen(assenZichtbaar);
 		}
+		if(e.getSource().equals(asManualDefCB)) {
+			manualScaling = asManualDefCB.isSelected();
+			manualScalingX = asManualDefCB.isSelected();
+			manualScalingY = asManualDefCB.isSelected();
+
+			interactiePanel.zetManualScalingX(manualScalingX);
+			interactiePanel.zetManualScalingY(manualScalingY);
+
+			asDefXMinTF.setEnabled(manualScalingY);
+			asDefXMaxTF.setEnabled(manualScalingY);
+			asDefXStapTF.setEnabled(manualScalingY);
+			asDefYMinTF.setEnabled(manualScalingY);
+			asDefYMaxTF.setEnabled(manualScalingY);
+			asDefYStapTF.setEnabled(manualScalingY);
+
+			if (manualScaling) {
+				xAsLog = false;
+				xAsLogCB.setSelected(xAsLog);
+				interactiePanel.zetXAsLog(xAsLog);
+				
+				yAsLog = false;
+				yAsLogCB.setSelected(yAsLog);
+				interactiePanel.zetYAsLog(yAsLog);
+
+				interactiePanel.zetDragOptie(!manualScaling);
+				interactiePanel.zetZoomEnabled(!manualScaling);
+				interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+
+			}
+			else {
+				interactiePanel.zetDragOptie(dragOptie);
+				interactiePanel.zetZoomEnabled(zoomOptie);
+			}
+			
+			piLijnenZichtbaarCB.setVisible(!xAsLog);
+		}
+		
 		if(e.getSource().equals(roosterZichtbaarCB))
 		{	roosterZichtbaar = roosterZichtbaarCB.isSelected();
 			roosterX = roosterZichtbaar;
@@ -1476,13 +1720,61 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		{	yPositief = yPositiefCB.isSelected();
 			interactiePanel.zetYPositief(yPositief);
 		}
-		if(e.getSource().equals(xAsLogCB))
-		{	xAsLog = xAsLogCB.isSelected();
+		if(e.getSource().equals(xAsLogCB)) {
+			xAsLog = xAsLogCB.isSelected();
 			interactiePanel.zetXAsLog(xAsLog);
+			if (xAsLog) {
+				piLijnenZichtbaarCB.setSelected(false);
+				piLijnenZichtbaar = false;
+				interactiePanel.zetPiLijnen(piLijnenZichtbaar);
+
+				manualScaling = false;
+				asManualDefCB.setSelected(manualScaling);
+				
+				manualScalingX = false;
+				interactiePanel.zetManualScalingX(manualScalingX);
+				asDefXMinTF.setEnabled(manualScalingX);
+				asDefXMaxTF.setEnabled(manualScalingX);
+				asDefXStapTF.setEnabled(manualScalingX);
+
+				manualScalingY = false;
+				interactiePanel.zetManualScalingX(manualScalingY);
+				asDefYMinTF.setEnabled(manualScalingY);
+				asDefYMaxTF.setEnabled(manualScalingY);
+				asDefYStapTF.setEnabled(manualScalingY);
+				
+				interactiePanel.zetDragOptie(dragOptie);
+				interactiePanel.zetZoomEnabled(zoomOptie);
+			}
+			
+			piLijnenZichtbaarCB.setVisible(!xAsLog);
 		}
-		if(e.getSource().equals(yAsLogCB))
+		
+		if(e.getSource().equals(yAsLogCB)) 
 		{	yAsLog = yAsLogCB.isSelected();
 			interactiePanel.zetYAsLog(yAsLog);
+			if (yAsLog) {
+				manualScaling = false;
+				asManualDefCB.setSelected(manualScaling);
+
+				manualScaling = false;
+				asManualDefCB.setSelected(manualScaling);
+				
+				manualScalingX = false;
+				interactiePanel.zetManualScalingX(manualScalingX);
+				asDefXMinTF.setEnabled(manualScalingX);
+				asDefXMaxTF.setEnabled(manualScalingX);
+				asDefXStapTF.setEnabled(manualScalingX);
+
+				manualScalingY = false;
+				interactiePanel.zetManualScalingX(manualScalingY);
+				asDefYMinTF.setEnabled(manualScalingY);
+				asDefYMaxTF.setEnabled(manualScalingY);
+				asDefYStapTF.setEnabled(manualScalingY);
+				
+				interactiePanel.zetDragOptie(dragOptie);
+				interactiePanel.zetZoomEnabled(zoomOptie);
+			}
 		}
 		if(e.getSource().equals(xVarEditableCB))
 		{	xVarEditable = xVarEditableCB.isSelected();
@@ -1690,14 +1982,118 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			interactiePanel.schuifParameters = parameters;
 			interactiePanel.repaint();
 		}
+		
+//		if ( (e.getSource().equals(schaalXMinTF)) || (e.getSource().equals(schaalXMaxTF)) || (e.getSource().equals(schaalXStapTF)) ||
+//			 (e.getSource().equals(schaalYMinTF)) || (e.getSource().equals(schaalYMaxTF)) || (e.getSource().equals(schaalYStapTF))
+//		   ) {
+		if ( e.getSource().equals(asDefXMinTF) ) {
+			try {  
+				asDefXMin = Double.parseDouble(asDefXMinTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXMin = asDefXMax-10*asDefXStap;
+				asDefXMinTF.setText(String.valueOf(asDefXMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			
+			if (asDefXMin>=asDefXMax) {
+				asDefXMin = asDefXMax-10*asDefXStap;
+				asDefXMinTF.setText(String.valueOf(asDefXMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_minGroterGelijkMax"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefXMaxTF) ) {
+			try {  
+				asDefXMax = Double.parseDouble(asDefXMaxTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXMax = asDefXMin+10*asDefXStap;
+				asDefXMaxTF.setText(String.valueOf(asDefXMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefXMax<=asDefXMin) {
+				asDefXMax = asDefXMin+10*asDefXStap;
+				asDefXMaxTF.setText(String.valueOf(asDefXMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_maxKleinerGelijkMin"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefXStapTF) ) {
+			try {  
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXStapTF.setText(String.valueOf((asDefXMax-asDefXMin)/10));
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefXStap<=0) {
+				asDefXStapTF.setText(String.valueOf((asDefXMax-asDefXMin)/10));
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_stapKleinerGelijk0"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYMinTF) ) {
+			try {  
+				asDefYMin = Double.parseDouble(asDefYMinTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYMin = asDefYMax-5*asDefYStap;
+				asDefYMinTF.setText(String.valueOf(asDefYMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYMin>=asDefYMax) {
+				asDefYMin = asDefYMax-5*asDefYStap;
+				asDefYMinTF.setText(String.valueOf(asDefYMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_minGroterGelijkMax"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYMaxTF) ) {
+			try {  
+				asDefYMax = Double.parseDouble(asDefYMaxTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYMax = asDefYMin+5*asDefYStap;
+				asDefYMaxTF.setText(String.valueOf(asDefYMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYMax<=asDefYMin) {
+				asDefYMax = asDefYMin+5*asDefYStap;
+				asDefYMaxTF.setText(String.valueOf(asDefYMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_maxKleinerGelijkMin"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYStapTF) ) {
+			try {  
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYStapTF.setText(String.valueOf((asDefYMax-asDefYMin)/5));
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYStap<=0) {
+				asDefYStapTF.setText(String.valueOf((asDefYMax-asDefYMin)/5));
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_stapKleinerGelijk0"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+
 	}
 	
 	public void focusGained(FocusEvent e)
 	{}
 	
-	public void focusLost(FocusEvent e)
-	{	if(e.getSource().equals(tekenGrafiekNauwkeurigheidTF))
-		{	try{
+	public void focusLost(FocusEvent e) {	
+		boolean defaultBehaviour = true;
+		if(e.getSource().equals(tekenGrafiekNauwkeurigheidTF)) {
+			defaultBehaviour = false;
+			try{
 				int tgn = Integer.parseInt(tekenGrafiekNauwkeurigheidTF.getText());
 				if(tgn > -1)
 					tekenGrafiekNauwkeurigheid = tgn;
@@ -1709,8 +2105,110 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			}
 			interactiePanel.zetTekenGrafiekNauwkeurigheid(tekenGrafiekNauwkeurigheid);
 		}
-		else
-		{
+		if ( e.getSource().equals(asDefXMinTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefXMin = Double.parseDouble(asDefXMinTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXMin = asDefXMax-10*asDefXStap;
+				asDefXMinTF.setText(String.valueOf(asDefXMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+		
+			if (asDefXMin>=asDefXMax) {
+				asDefXMin = asDefXMax-10*asDefXStap;
+				asDefXMinTF.setText(String.valueOf(asDefXMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_minGroterGelijkMax"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefXMaxTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefXMax = Double.parseDouble(asDefXMaxTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXMax = asDefXMin+10*asDefXStap;
+				asDefXMaxTF.setText(String.valueOf(asDefXMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefXMax<=asDefXMin) {
+				asDefXMax = asDefXMin+10*asDefXStap;
+				asDefXMaxTF.setText(String.valueOf(asDefXMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_maxKleinerGelijkMin"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefXStapTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefXStapTF.setText(String.valueOf((asDefXMax-asDefXMin)/10));
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefXStap<=0) {
+				asDefXStapTF.setText(String.valueOf((asDefXMax-asDefXMin)/10));
+				asDefXStap = Double.parseDouble(asDefXStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_stapKleinerGelijk0"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYMinTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefYMin = Double.parseDouble(asDefYMinTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYMin = asDefYMax-5*asDefYStap;
+				asDefYMinTF.setText(String.valueOf(asDefYMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYMin>=asDefYMax) {
+				asDefYMin = asDefYMax-5*asDefYStap;
+				asDefYMinTF.setText(String.valueOf(asDefYMin));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_minGroterGelijkMax"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYMaxTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefYMax = Double.parseDouble(asDefYMaxTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYMax = asDefYMin+5*asDefYStap;
+				asDefYMaxTF.setText(String.valueOf(asDefYMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYMax<=asDefYMin) {
+				asDefYMax = asDefYMin+5*asDefYStap;
+				asDefYMaxTF.setText(String.valueOf(asDefYMax));
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_maxKleinerGelijkMin"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if ( e.getSource().equals(asDefYStapTF) ) {
+			defaultBehaviour = false;
+			try {  
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+			}  
+			catch(NumberFormatException nfe) {  
+				asDefYStapTF.setText(String.valueOf((asDefYMax-asDefYMin)/5));
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_geenGetal"));
+			}  
+			if (asDefYStap<=0) {
+				asDefYStapTF.setText(String.valueOf((asDefYMax-asDefYMin)/5));
+				asDefYStap = Double.parseDouble(asDefYStapTF.getText());
+				JOptionPane.showMessageDialog(WiskOpdr.applet, GraphTool.rb.getString("GTIEP_fout_stapKleinerGelijk0"));
+			}
+			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+        }
+		if (defaultBehaviour) {
 			processNauwkeurigheid();
 			processMinimumPunten();
 			processMaxScore();

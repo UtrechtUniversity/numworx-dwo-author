@@ -13,6 +13,12 @@ public class Text_nl extends java.util.ListResourceBundle
             { 	"GTIEP_grafiekOptiesLabel", "Opties voor grafieken"},
             {	"GTIEP_varXLabel", "Variabele x-as:"},
             {	"GTIEP_varYLabel", "Variabele y-as:"},
+            {	"GTIEP_schaalDefCB", "Schaal definitie"},
+            {	"GTIEP_schaalXLabel", "Schaal x-as:"},
+            {	"GTIEP_schaalYLabel", "Schaal y-as:"},
+            {	"GTIEP_schaalMinLabel", "Min"},
+            {	"GTIEP_schaalMaxLabel", "Max"},
+            {	"GTIEP_schaalStapLabel", "Stap"},
             {	"GTIEP_varEditable", "Aanpasbaar voor leerling"},
             {	"GTIEP_assenZichtbaar", "Assen"},
             {	"GTIEP_roosterZichtbaar", "Rooster"},
@@ -67,6 +73,12 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"GTIEP_sliderlengte", "Lengte slider"},
             {	"GTIEP_dubbeleNaam", "De naam van deze parameter is al in gebruik"},
             {	"GTIEP_waarschuwing", "Waarschuwing"},
+            
+            {	"GTIEP_fout_stapKleinerGelijk0", "De stapgrootte dient groter te zijn dan nul."},
+            {	"GTIEP_fout_minGroterGelijkMax", "Het minimum dient kleiner te zijn dan het maximum."},
+            {	"GTIEP_fout_maxKleinerGelijkMin", "Het maximum dient groter te zijn dan het minimum."},
+            {	"GTIEP_fout_geenGetal", "De invoer hoort een getal te zijn."},
+
             
             {	"Opdr_kiesOpdracht", "Kies het type opdracht"},
             {	"Opdr_Opdracht1", "Vind de formule(s) bij de gegeven grafiek(en)"},
