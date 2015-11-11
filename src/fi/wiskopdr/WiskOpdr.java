@@ -1009,7 +1009,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			if (value != null)
 				reviewData.putAll((Map) value);
 			toetsLocked = Boolean.TRUE.equals(reviewData.get("toetsLocked"));
-			toetsLocked |= "complete".equals(api.LMSGetValue("cmi.completion_status"));
+			toetsLocked |= "completed".equals(api.LMSGetValue("cmi.completion_status"));
 
 			WiskOpdr.log = log;
 			WiskOpdr.reviewData = reviewData;
