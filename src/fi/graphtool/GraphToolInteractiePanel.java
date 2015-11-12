@@ -4523,7 +4523,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		 		rp.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);
 				rp.setX(Math.pow(10, rp.getX()));
 			} else {
-				rp.setX(eenheidxValue * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);			
+				rp.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * pix.x / eenheidxD);			
 			}			
 		}
 		if (manualScalingY) {
