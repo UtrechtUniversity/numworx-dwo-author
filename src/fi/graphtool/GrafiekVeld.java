@@ -1127,7 +1127,7 @@ class GrafiekVeld extends JComponent{
 				rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;
 			}
 			else {
-				rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
+				rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
 			}
 			double xRechts = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
 			double yRechts = gtip.yAsLog?Math.pow(10, helling * (rechterGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY())):
@@ -1276,7 +1276,7 @@ class GrafiekVeld extends JComponent{
 					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
 				}
 				else {
-					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
+					rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
 				}					
 
 				double xLaatst = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
