@@ -3959,8 +3959,13 @@ MouseListener, MouseMotionListener, CBookAware {
 									for(int k = 1; k < nauwkeurigheid[j]; k++)
 									{
 										int xWaarde = lPixel.x - k;
-// RPJ										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
-										dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
+										
+										// RPJ										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										if (manualScalingX) {
+											dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
+										} else {
+											dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										}
 										if(xAsLog)
 											dPoint.setX(Math.pow(10, dPoint.getX()));
 										
@@ -3987,7 +3992,11 @@ MouseListener, MouseMotionListener, CBookAware {
 										}
 										xWaarde = lPixel.x + k;
 // RPJ										dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
-										dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
+										if (manualScalingX) {
+											dPoint.setX(eenheidxValue * (-beginx)/eenheidxD + eenheidxValue * xWaarde / eenheidxD);
+										} else {
+											dPoint.setX(schaalFactorX * (-beginx)/eenheidxD + schaalFactorX * xWaarde / eenheidxD);
+										}
 										if(xAsLog)
 											dPoint.setX(Math.pow(10, dPoint.getX()));
 										
@@ -5222,8 +5231,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			repaint();
 		}
 		if(e.getActionCommand().equals("focus")) ;
-		else 
-		{	if( (e.getSource()==zoomUitY && factorRijNummerY<120) &&
+		else {	
+			if( (e.getSource()==zoomUitY && factorRijNummerY<120) &&
 			    !(manualScalingY && eenheidy<2) )
 			{	zoomDraad = new ZoomDraad(false,true,false);
 				zoomDraad.start();
@@ -5729,8 +5738,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				beginxDocent = beginx;
 			}
 
-			if (manualScalingY) {
-				
+			if (manualScalingY) {				
 				// Calculate graph-parameters Y
 				double rangeY = asDefYMax-asDefYMin;
 				eenheidyD = veldh/(rangeY/asDefYStap)/2;

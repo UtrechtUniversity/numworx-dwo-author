@@ -756,8 +756,15 @@ class GrafiekVeld extends JComponent{
 						int x = (int) Math.round(d);
 // RPJ						double d0 = ingevuldeExpressie.geefWaarde(gtip.xAsLog?Math.pow(10, (gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX):
 //							(gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX);
-						double d0 = ingevuldeExpressie.geefWaarde(pixelsXtoValue(gtip.selectnummer+gtip.beginwaarde));
-						
+						double d0;
+						if (gtip.manualScalingX) {
+							d0 = ingevuldeExpressie.geefWaarde(gtip.xAsLog?Math.pow(10, (gtip.selectnummer+gtip.beginwaarde)*gtip.eenheidxValue):
+											(gtip.selectnummer+gtip.beginwaarde)*gtip.eenheidxValue);
+						} else {
+							d0 = ingevuldeExpressie.geefWaarde(gtip.xAsLog?Math.pow(10, (gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX):
+								(gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX);
+							
+						}
 						if(!gtip.tracing && !Double.isNaN(d0) && gtip.selectnummer<8 && gtip.selectnummer>-1 &&
 								x >= gtip.domeinen[j][0] && x <= gtip.domeinen[j][1]) {	
 // RPJ							int y = (int)Math.round(gtip.yAsLog?Math.log10(hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY)):
@@ -772,8 +779,14 @@ class GrafiekVeld extends JComponent{
 							gtip.tracex = x;
 							gtip.slider.zetStand(gtip.tracex);
 							
-// RPJ 							double dTraceX = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
-							double dTraceX = pixelsXtoValue(gtip.tracexD);
+// RPJ 						double dTraceX = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
+							double dTraceX;
+							if (gtip.manualScalingX) {
+								dTraceX = gtip.eenheidxValue*(-gtip.beginx)/gtip.eenheidxD + gtip.eenheidxValue*gtip.tracexD/gtip.eenheidxD;
+							} else {
+								dTraceX = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
+							}
+							
 							double dTraceY = ingevuldeExpressie.geefWaarde(dTraceX);
 // RPJ							int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
 							int tracey = (int) Math.round(valueYtoPixels(dTraceY));
