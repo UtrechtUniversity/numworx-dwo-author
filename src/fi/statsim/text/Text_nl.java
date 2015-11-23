@@ -60,7 +60,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "getSample100Times", "Doe steekproef 100 keer" },
             {   "value", "Waarde" },
             {   "leftTable", "Linker tabel" },
-            {   "rightTable", "Rechter tabel" }
+            {   "rightTable", "Rechter tabel" },
+            {   "populationProportion", "Populatieproportie" }
             //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

@@ -42,7 +42,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox binomTrekkingRoosterCheckBox;
 	private JCheckBox steekproefLinkerTabelCheckBox;
 	private JCheckBox steekproefRechterTabelCheckBox;
-	
+	private JRadioButton kansButton;
+	private JRadioButton populatieProportieButton;
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -138,56 +139,68 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		binomTrekkingRadio.addActionListener(this);
 		optionsPanel.add(binomTrekkingRadio);
 	
+		kansButton=new JRadioButton(StatSim.rb.getString("chance"));
+		kansButton.setLocation(30,250);
+		kansButton.setSize(200,20);
+		kansButton.addActionListener(this);
+		optionsPanel.add(kansButton);
+		
+		populatieProportieButton=new JRadioButton(StatSim.rb.getString("populationProportion"));
+		populatieProportieButton.setLocation(30,270);
+		populatieProportieButton.setSize(200,20);
+		populatieProportieButton.addActionListener(this);
+		optionsPanel.add(populatieProportieButton);
+		
 		binomTrekkingInstellingenCheckBox = new JCheckBox(StatSim.rb.getString("settings"));
-		binomTrekkingInstellingenCheckBox.setLocation(30,250);
+		binomTrekkingInstellingenCheckBox.setLocation(30,290);
 		binomTrekkingInstellingenCheckBox.setSize(200,20);
 		binomTrekkingInstellingenCheckBox.addActionListener(this);
 		binomTrekkingInstellingenCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingInstellingenCheckBox);
 	
 		binomTrekkingGrafiekCheckBox = new JCheckBox(StatSim.rb.getString("graph"));
-		binomTrekkingGrafiekCheckBox.setLocation(30,270);
+		binomTrekkingGrafiekCheckBox.setLocation(30,310);
 		binomTrekkingGrafiekCheckBox.setSize(200,20);
 		binomTrekkingGrafiekCheckBox.addActionListener(this);
 		binomTrekkingGrafiekCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingGrafiekCheckBox);
 		
 		binomTrekkingTabelCheckBox = new JCheckBox(StatSim.rb.getString("table"));
-		binomTrekkingTabelCheckBox.setLocation(30,290);
+		binomTrekkingTabelCheckBox.setLocation(30,330);
 		binomTrekkingTabelCheckBox.setSize(200,20);
 		binomTrekkingTabelCheckBox.addActionListener(this);
 		binomTrekkingTabelCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingTabelCheckBox);
 		
 		binomTrekkingFrequentieCheckBox = new JCheckBox(StatSim.rb.getString("frequency"));
-		binomTrekkingFrequentieCheckBox.setLocation(30,310);
+		binomTrekkingFrequentieCheckBox.setLocation(30,350);
 		binomTrekkingFrequentieCheckBox.setSize(200,20);
 		binomTrekkingFrequentieCheckBox.addActionListener(this);
 		binomTrekkingFrequentieCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingFrequentieCheckBox);
 		
 		binomTrekkingRoosterCheckBox = new JCheckBox(StatSim.rb.getString("grid"));
-		binomTrekkingRoosterCheckBox.setLocation(30,330);
+		binomTrekkingRoosterCheckBox.setLocation(30,370);
 		binomTrekkingRoosterCheckBox.setSize(200,20);
 		binomTrekkingRoosterCheckBox.addActionListener(this);
 		binomTrekkingRoosterCheckBox.setSelected(true);
 		optionsPanel.add(binomTrekkingRoosterCheckBox);
 		
 		steekproefRadio=new JRadioButton(StatSim.rb.getString("sample"));
-		steekproefRadio.setLocation(10,350);
+		steekproefRadio.setLocation(10,390);
 		steekproefRadio.setSize(200,20);
 		steekproefRadio.addActionListener(this);
 		optionsPanel.add(steekproefRadio);
 
 		steekproefLinkerTabelCheckBox = new JCheckBox(StatSim.rb.getString("leftTable"));
-		steekproefLinkerTabelCheckBox.setLocation(30,370);
+		steekproefLinkerTabelCheckBox.setLocation(30,410);
 		steekproefLinkerTabelCheckBox.setSize(200,20);
 		steekproefLinkerTabelCheckBox.addActionListener(this);
 		steekproefLinkerTabelCheckBox.setSelected(true);
 		optionsPanel.add(steekproefLinkerTabelCheckBox);
 		
 		steekproefRechterTabelCheckBox = new JCheckBox(StatSim.rb.getString("rightTable"));
-		steekproefRechterTabelCheckBox.setLocation(30,390);
+		steekproefRechterTabelCheckBox.setLocation(30,430);
 		steekproefRechterTabelCheckBox.setSize(200,20);
 		steekproefRechterTabelCheckBox.addActionListener(this);
 		steekproefRechterTabelCheckBox.setSelected(true);
@@ -198,6 +211,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		buttonGroup1.add(dobbelstenenRadio);
 		buttonGroup1.add(binomTrekkingRadio);
 		buttonGroup1.add(steekproefRadio);
+		
+		ButtonGroup buttonGroup2=new ButtonGroup();
+		buttonGroup2.add(kansButton);
+		buttonGroup2.add(populatieProportieButton);
 	}
 	
 	public Hashtable getEditState() {
@@ -214,6 +231,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("dobbelstenenGrafiek", new Boolean(dobbelstenenGrafiekCheckBox.isSelected()));
 		h.put("dobbelstenenTabel", new Boolean(dobbelstenenTabelCheckBox.isSelected()));
 		h.put("binomTrekkingRadio", new Boolean(binomTrekkingRadio.isSelected()));
+		h.put("binomTrekkingKans", new Boolean(kansButton.isSelected()));
+		h.put("binomTrekkingPopulatieProportie", new Boolean(populatieProportieButton.isSelected()));
 		h.put("binomTrekkingInstellingen", new Boolean(binomTrekkingInstellingenCheckBox.isSelected()));
 		h.put("binomTrekkingGrafiek", new Boolean(binomTrekkingGrafiekCheckBox.isSelected()));
 		h.put("binomTrekkingTabel", new Boolean(binomTrekkingTabelCheckBox.isSelected()));
@@ -293,6 +312,16 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		binomTrekkingRadio.setSelected(binomTrekkingRadioBool);
 		interactiePanel.binomTrekking.setVisible(binomTrekkingRadioBool);
 
+			Boolean kansRadioBool=false;
+			if(h.containsKey("binomTrekkingKans")) kansRadioBool= ((Boolean)h.get("binomTrekkingKans")).booleanValue();
+			kansButton.setSelected(kansRadioBool);
+			interactiePanel.binomTrekking.showKans=kansRadioBool;
+
+			Boolean populatieProportieRadioBool=false;
+			if(h.containsKey("binomTrekkingPopulatieProportie")) kansRadioBool= ((Boolean)h.get("binomTrekkingPopulatieProportie")).booleanValue();
+			populatieProportieButton.setSelected(populatieProportieRadioBool);
+			interactiePanel.binomTrekking.showPopulatieProportie=populatieProportieRadioBool;
+		
 			Boolean binomTrekkingInstellingen=true;
 			if(h.containsKey("binomTrekkingInstellingen")) binomTrekkingInstellingen= ((Boolean)h.get("binomTrekkingInstellingen")).booleanValue();
 			binomTrekkingInstellingenCheckBox.setSelected(binomTrekkingInstellingen);
@@ -430,6 +459,16 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(true);
 			   interactiePanel.steekproef.setVisible(false);
+		   }
+		   if (e.getSource()==kansButton) {
+			   interactiePanel.binomTrekking.showKans=kansButton.isSelected();
+			   interactiePanel.binomTrekking.showPopulatieProportie=false;
+			   interactiePanel.binomTrekking.setZichtbaar();
+		   }
+		   if (e.getSource()==populatieProportieButton) {
+			   interactiePanel.binomTrekking.showPopulatieProportie=populatieProportieButton.isSelected();
+			   interactiePanel.binomTrekking.showKans=false;
+			   interactiePanel.binomTrekking.setZichtbaar();
 		   }
 		   if (e.getSource()==binomTrekkingInstellingenCheckBox) {
 			   interactiePanel.binomTrekking.showInstellingen=binomTrekkingInstellingenCheckBox.isSelected();

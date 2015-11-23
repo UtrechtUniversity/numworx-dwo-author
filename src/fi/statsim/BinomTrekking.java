@@ -69,6 +69,9 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	Boolean showRooster=true;
 	Boolean showInstellingen=true;
 	
+	
+	Boolean showKans=true;
+	Boolean showPopulatieProportie=false;
 	Boolean multipleTimes=false;
 	int numberOfTimes;
 	Boolean stapStarted=false;
@@ -88,19 +91,19 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 		panel1.setLayout(null);
 		panel1.setBackground(Color.white);
 		add(panel1);
-		panel1.setSize(200,105);
+		panel1.setSize(250,105);
 		panel1.setLocation(0,0);
 		panel1.setBorder(BorderFactory.createTitledBorder(border1,StatSim.rb.getString("settings"),TitledBorder.CENTER,TitledBorder.TOP,new Font("SansSerif", Font.PLAIN, 12)));
 		
 		kansLabel=new JLabel(StatSim.rb.getString("chance"));
-		kansLabel.setSize(100,20);
+		kansLabel.setSize(150,20);
 		kansLabel.setLocation(20,30);
 		kansLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		panel1.add(kansLabel);
 		
 		kansText=new JTextField("0.2");
 		kansText.setSize(50,20);
-		kansText.setLocation(130,30);
+		kansText.setLocation(180,30);
 		panel1.add(kansText);
 		
 		aantalTrekkingenLabel=new JLabel(StatSim.rb.getString("numberOfDraws"));
@@ -111,43 +114,43 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 				
 		aantalTrekkingenText=new JTextField("20");
 		aantalTrekkingenText.setSize(50,20);
-		aantalTrekkingenText.setLocation(130,60);
+		aantalTrekkingenText.setLocation(180,60);
 		aantalTrekkingenText.addActionListener(this);
 		aantalTrekkingenText.addFocusListener(this);
 		panel1.add(aantalTrekkingenText);
 
 	    voeruit=new JButton(StatSim.rb.getString("execute"));
 	    voeruit.setSize(80,20);
-	    voeruit.setLocation(210,5);
+	    voeruit.setLocation(260,5);
 	    voeruit.addActionListener(this);
 	    add(voeruit);
 	    
 	    stap=new JButton(StatSim.rb.getString("step"));
 	    stap.setSize(80,20);
-	    stap.setLocation(295,5);
+	    stap.setLocation(345,5);
 	    stap.addActionListener(this);
 	    add(stap);
 	    
 	    voerLabel = new JLabel(StatSim.rb.getString("execute1"));
 	    voerLabel.setBackground(Color.white);
 	    voerLabel.setSize(55,20);
-	    voerLabel.setLocation(210,30);
+	    voerLabel.setLocation(260,30);
 	    add(voerLabel);
 	    
 	    aantalKeer = new JTextField("20");
 	    aantalKeer.setSize(25,20);
-	    aantalKeer.setLocation(265,30);
+	    aantalKeer.setLocation(315,30);
 	    add(aantalKeer);
 
 	    keer=new JButton(StatSim.rb.getString("times"));
 	    keer.setSize(80,20);
-	    keer.setLocation(295,30);
+	    keer.setLocation(345,30);
 	    keer.addActionListener(this);
 	    add(keer);
 	    
 	    wis=new JButton(StatSim.rb.getString("erase"));
 	    wis.setSize(165,20);
-	    wis.setLocation(210,55);
+	    wis.setLocation(260,55);
 	    wis.addActionListener(this);
 	    wis.setEnabled(false);
 	    add(wis);
@@ -201,14 +204,18 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	}
 	
 	public void setZichtbaar() {
+		if (showKans)
+			kansLabel.setText(StatSim.rb.getString("chance"));
+		if (showPopulatieProportie)
+			kansLabel.setText(StatSim.rb.getString("populationProportion"));
 		if (showInstellingen) {
 			panel1.setVisible(showInstellingen);
-			voeruit.setLocation(210,5);
-			stap.setLocation(295,5);
-			voerLabel.setLocation(210,30);
-			aantalKeer.setLocation(265,30);
-			keer.setLocation(295,30);
-			wis.setLocation(210,55);
+			voeruit.setLocation(260,5);
+			stap.setLocation(345,5);
+			voerLabel.setLocation(260,30);
+			aantalKeer.setLocation(315,30);
+			keer.setLocation(345,30);
+			wis.setLocation(260,55);
 		} else {
 			panel1.setVisible(showInstellingen);
 			voeruit.setLocation(10,5);

@@ -513,6 +513,8 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		
 		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
 		binomTrekking.setVisible(binomTrekkingRadioBool);
+		if(h.containsKey("binomTrekkingKans")) binomTrekking.showKans= ((Boolean)h.get("binomTrekkingKans")).booleanValue();
+		if(h.containsKey("binomTrekkingPopulatieProportie")) binomTrekking.showPopulatieProportie= ((Boolean)h.get("binomTrekkingPopulatieProportie")).booleanValue();
 		if(h.containsKey("binomTrekkingInstellingen")) binomTrekking.showInstellingen= ((Boolean)h.get("binomTrekkingInstellingen")).booleanValue();
 		if(h.containsKey("binomTrekkingGrafiek")) binomTrekking.showGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
 		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
@@ -574,6 +576,8 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		
 		if(h.containsKey("binomTrekkingRadio")) binomTrekkingRadioBool= ((Boolean)h.get("binomTrekkingRadio")).booleanValue();
 		binomTrekking.setVisible(binomTrekkingRadioBool);
+		if(h.containsKey("binomTrekkingKans")) binomTrekking.showKans= ((Boolean)h.get("binomTrekkingKans")).booleanValue();
+		if(h.containsKey("binomTrekkingPopulatieProportie")) binomTrekking.showPopulatieProportie= ((Boolean)h.get("binomTrekkingPopulatieProportie")).booleanValue();
 		if(h.containsKey("binomTrekkingInstellingen")) binomTrekking.showInstellingen= ((Boolean)h.get("binomTrekkingInstellingen")).booleanValue();
 		if(h.containsKey("binomTrekkingGrafiek")) binomTrekking.showGrafiek= ((Boolean)h.get("binomTrekkingGrafiek")).booleanValue();
 		if(h.containsKey("binomTrekkingTabel")) binomTrekking.showTabel= ((Boolean)h.get("binomTrekkingTabel")).booleanValue();
