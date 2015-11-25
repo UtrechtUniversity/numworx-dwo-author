@@ -346,7 +346,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			}
 			
 						
-			numberOfColumnBins = this.model.getStatTableModel().splitVarClasses(
+			numberOfColumnBins = this.model.getStatTableModel().numberOfSplitVarClasses(
 				this.model.getSplitOptions());
 			
 //			System.out.println("CrossTabulationTableView.update(): numberOfRowBins = "
@@ -464,7 +464,7 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		aantalTotaal = 0;
 		
 		int numberOfSplits = CrossTabulationTableView.this.model.getStatTableModel()
-			.splitVarClasses(CrossTabulationTableView.this.model.getSplitOptions());
+			.numberOfSplitVarClasses(CrossTabulationTableView.this.model.getSplitOptions());
 
 		aantalPerColumnBin = new int[numberOfSplits];
 		aantalPerRowBin = new int[numberOfRowBins];
