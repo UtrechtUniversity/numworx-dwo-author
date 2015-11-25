@@ -609,7 +609,7 @@ public class StatTableModelTest
 	@Test
 	public void testGetColumnMaxProfiel()
 	{
-		double expected = 100;
+		double expected = 0;
 		double actual = this.statTableModel.getColumnMax(4);
 		assertEquals("", expected, actual, delta);
 	}
