@@ -27,12 +27,27 @@ public class HistogramModel extends Observable implements TableModelListener,
 	private int columnIndex;
 
 	private int noBins;
+	/**
+	 * Field bin width represents the distance between the
+	 * bin values in binBoundaries. However, for a
+	 * column without valid data rows, binBoundaries is [0.0, 0.0]
+	 * and binWidth can be set to show the histogram view
+	 * with a scale but without data (yet). For example,
+	 * to be used with cross-widget communication.
+	 */
+	private Double binWidth;
 	private ArrayList<Double> binBoundaries;
 
 	private SplitOptions splitOptions;
 
 	private boolean percentage; // true = show percentage, false = show
 								// frequency
+	/**
+	 * Indicates whether the percentage shown in the split category is relative
+	 * to the split total (true) or relative to the end total (false).
+	 */
+	private boolean percentage_splitTotal;
+	
 	private boolean hasVerticalBars; // true = vertical bars, false = horizontal
 								  // bars
 	private boolean labelUnderBin; 	// true = show labels under bin, false = 
@@ -52,6 +67,16 @@ public class HistogramModel extends Observable implements TableModelListener,
 	// each other
 	// false: display mutiple cumulative frequencyPolygons using mixing of
 	// colors
+	
+	private boolean optimizeScale;
+	/**
+	 * The minimum value the is used on the scale of the histogram.
+	 */
+	private double minOnScale;
+	/**
+	 * The maximum value the is used on the scale of the histogram.
+	 */
+	private double maxOnScale;
 
 	/**
 	 * Constructor
@@ -76,9 +101,10 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.noBins = 10;
 		this.columnIndex = -1;
 		this.binBoundaries = new ArrayList<Double>();
-		this.binBoundaries.add(new Double(-100));
-		this.binBoundaries.add(new Double(100));
+		this.binBoundaries.add(new Double(0));
+		this.binBoundaries.add(new Double(0));
 		this.percentage = false;
+		this.percentage_splitTotal = false;
 		this.hasVerticalBars = true;
 		this.showUserOptions = false;
 
@@ -86,6 +112,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.frequencyPolygonCumulativeMode = false;
 		this.splitInSingleView = true;
 		this.frequencyPolygonStackMode = false;
+		this.optimizeScale = true;
 	}
 
 	/**
@@ -176,6 +203,18 @@ public class HistogramModel extends Observable implements TableModelListener,
 		return this.binBoundaries;
 	}
 
+	/**
+	 * Get the maximum bin boundary.
+	 * 
+	 * @return max
+	 */
+	public double getMaxBinBoundaryValue()
+	{
+		int lastBinNumber = this.getNoBins();
+
+		return this.getBinBoundaries().get(lastBinNumber);
+	}
+
 	public boolean isFrequencyPolygonMode()
 	{
 		return this.frequencyPolygonMode;
@@ -219,6 +258,95 @@ public class HistogramModel extends Observable implements TableModelListener,
 	}
 
 	/**
+	 * Set the minimum value of the scale.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinOnScale(double min)
+	{
+		double minColumnValue = this.getStatTableModel().getColumnMin(
+			this.getColumnIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
+			|| ((min <= minColumnValue) && (min != this.minOnScale)))
+		{
+			this.minOnScale = min;
+			this.changed(); // niet nodig?
+		}
+	}
+
+	/**
+	 * Set the minimum value of the scale without triggering events.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinOnScaleWithoutEvent(double min)
+	{
+		double minColumnValue = this.getStatTableModel().getColumnMin(
+			this.getColumnIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
+			|| ((min <= minColumnValue) && (min != this.minOnScale)))
+		{
+			this.minOnScale = min;
+		}
+	}
+
+	/**
+	 * Set the maximum value of the scale. The maximum value is set to max or the number
+	 * that is a bin boundary upper to max.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxOnScale(double max)
+	{
+		double maxBinValue = this.getMaxBinBoundaryValue();
+
+		if ((this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
+			|| (max >= maxBinValue)) && (max != this.maxOnScale))
+		{
+			double newMax = this.minOnScale;
+			
+			for (int i = 1; max > newMax; i++)
+			{
+				newMax = newMax + getBinWidth();
+			}
+			
+			this.maxOnScale = newMax;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the maximum value of the scale without triggering events.
+	 * The maximum value is set to max or the number
+	 * that is a bin boundary upper to max.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxOnScaleWithoutEvent(double max)
+	{
+		double maxBinValue = this.getMaxBinBoundaryValue();
+
+		if ((this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
+			|| (max >= maxBinValue)) && (max != this.maxOnScale))
+		{
+			double newMax = this.minOnScale;
+			
+			for (int i = 1; max > newMax; i++)
+			{
+				newMax = newMax + getBinWidth();
+			}
+			
+			this.maxOnScale = newMax;
+		}
+	}
+
+	/**
 	 * Set the number of bins without triggering an event.
 	 * 
 	 * @param noBins
@@ -235,6 +363,80 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public int getNoBins()
 	{
 		return this.noBins;
+	}
+	
+	/**
+	 * Get the minimum value on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMinOnScale()
+	{
+		return this.minOnScale;
+	}
+	
+	/**
+	 * Get the maximum value on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMaxOnScale()
+	{
+		return this.maxOnScale;
+	}
+	
+	/**
+	 * Get the width of the bins in bin boundaries. If there is no valid data in the
+	 * histogram's column or if the scale is not optimized, this.binWidth is returned.  
+	 * 
+	 * @return
+	 */
+	public double getBinWidth()
+	{
+		double width = 0;
+		
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex()) || !this.isOptimizeScale())
+		{
+			if (this.binWidth == null)
+			{
+				this.setBinWidthWithoutEvent(Statistiek.BIN_WIDTH_DEFAULT);
+			}
+			return this.binWidth;
+		}
+		else if ((this.binBoundaries != null)
+			&& this.getNoBins() > 0)
+		{
+			width = this.binBoundaries.get(1) - this.binBoundaries.get(0);
+		}
+		
+		return width;
+	}
+	
+	/**
+	 * Set the bin width. Bin width can be different from
+	 * the width defined in binBoundaries, for example when the table is empty
+	 * and therefore binBoundaries = [0.0, 0.0].
+	 * 
+	 * @param w
+	 */
+	public void setBinWidth(double w)
+	{
+//		System.out.println("HistogramModel.setBinWidth(" + w + ")");
+		this.binWidth = w;
+		this.changed();
+	}
+
+	/**
+	 * Set the bin width without triggering event. Bin width can be different from
+	 * the width defined in binBoundaries, for example when the table is empty
+	 * and therefore binBoundaries = [0.0, 0.0].
+	 * 
+	 * @param w
+	 */
+	public void setBinWidthWithoutEvent(double w)
+	{
+//		System.out.println("HistogramModel.setBinWidthWithoutEvent(" + w + ")");
+		this.binWidth = w;
 	}
 
 	/**
@@ -353,9 +555,9 @@ public class HistogramModel extends Observable implements TableModelListener,
 		return this.columnIndex;
 	}
 
-	public boolean splitInSingleView()
+	public boolean isOptimizeScale()
 	{
-		return splitInSingleView;
+		return optimizeScale;
 	}
 
 	public boolean isNextToEachOther()
@@ -511,6 +713,23 @@ public class HistogramModel extends Observable implements TableModelListener,
 	}
 
 	/**
+	 * Set whether the Histogram will display percentage in the split category
+	 * relative to the split total (true) or relative to the end total (false).
+	 * 
+	 * @param b
+	 *            true for percentage relative to split total, 
+	 *            false for percentage relative to end total
+	 */
+	public void setPercentageSplitTotal(boolean b)
+	{
+		if (!(this.percentage_splitTotal == b))
+		{
+			this.percentage_splitTotal = b;
+			this.changed();
+		}
+	}
+
+	/**
 	 * Set whether the Histogram will display labels under the bins
 	 * or between the bins.
 	 * 
@@ -547,6 +766,15 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public boolean getPercentage()
 	{
 		return this.percentage;
+	}
+
+	/**
+	 * @return true if percentage in split category is relative to split total
+	 * 			false if percentage in split category is relative to end total
+	 */
+	public boolean getPercentageSplitTotal()
+	{
+		return this.percentage_splitTotal;
 	}
 
 	/**
@@ -622,6 +850,49 @@ public class HistogramModel extends Observable implements TableModelListener,
 				splitInSingleView = true;
 			this.changed();
 		}
+	}
+	
+	public void setOptimizeScale(boolean optimizeScale)
+	{
+		if (this.optimizeScale != optimizeScale)
+		{
+			this.optimizeScale = optimizeScale;
+			this.maxOnScale = this.getMaxBinBoundaryValue();
+			this.minOnScale = this.getMinBinBoundaryValue();
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set optimize scale without triggering events. Used in setState().
+	 * 
+	 * @param optimizeScale
+	 */
+	public void setOptimizeScaleWithoutEvent(boolean optimizeScale)
+	{
+		if (this.optimizeScale != optimizeScale)
+		{
+			this.optimizeScale = optimizeScale;
+//			this.maxOnScale = this.getMaxBinBoundaryValue();
+//			this.minOnScale = this.getMinBinBoundaryValue();
+//			this.changed();
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private double getMinBinBoundaryValue()
+	{
+		double value = 0;
+		
+		if (this.getBinBoundaries() != null)
+		{
+			value = this.getBinBoundaries().get(0);
+		}
+		
+		return value;
 	}
 
 	/**
