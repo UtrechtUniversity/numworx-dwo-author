@@ -7,10 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -57,6 +53,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	private JComboBox axisBox;
 
 	// bin settings
+	private JCheckBox optimizeScaleBox;
 	private JLabel binsLabel;
 	/**
 	 * Box for choosing the number of bins.
@@ -70,6 +67,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	private JTextField minBoundaryField;
 	private JLabel binWidthLabel;
 	private JTextField binWidthField;
+	private JLabel maxOnScaleLabel;
+	/**
+	 * Max boundary input field. To be used when the
+	 * scale is not automatically optimized.
+	 */
+	private JTextField maxOnScaleField;
 	private JLabel noObjectsLabel;
 	private JLabel minValueLabel;
 	private JLabel maxValueLabel;
@@ -82,17 +85,31 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	/**
 	 * Separator between amount/percentage settings and label positioning settings
 	 */
-	private JSeparator separator4;
+	private JSeparator separatorAmountLabel;
 	private JRadioButton labelUnderBinRadioItem; // labels midden onder staven
 	private JRadioButton labelBetweenBinsRadioItem; // labels tussen staven
 	/**
 	 * Separator between label positioning settings and split view setting
 	 */
-	private JSeparator separator2;
+	private JSeparator separatorLabelSplitView;
 	private JRadioButton nextToEachOtherRadioItem;
 	private JRadioButton aboveEachOtherRadioItem;
 	private JRadioButton separateRadioItem;
 	private JRadioButton singleViewRadioItem;
+	/**
+	 * Separator between split view setting and split percentage
+	 */
+	private JSeparator separatorSplitViewPercentage;
+	/**
+	 * Indicates that the percentage in the split is
+	 * relative to the end total.
+	 */
+	private JRadioButton percentage_endTotal;
+	/**
+	 * Indicates that the percentage in the split is
+	 * relative to the split total.
+	 */
+	private JRadioButton percentage_splitTotal;
 
 	// split settings
 	private JButton splitButton;
@@ -154,7 +171,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			Statistiek.rb.getString("splitvariableLabel"));
 		this.splitVarLabel.setFont(Statistiek.font);
 
-		// var settings
+		// VARIABLE SETTINGS
 		this.varLabel = new JLabel(Statistiek.rb.getString("variableLabel"));
 		this.varLabel.setFont(Statistiek.font);
 
@@ -198,7 +215,14 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.axisBox.setActionCommand("axisBox");
 		this.axisBox.addActionListener(this.controller);
 
-		// bin settings
+		// BIN SETTINGS
+		this.optimizeScaleBox = new JCheckBox(
+			Statistiek.rb.getString("optimizeScaleBox"), false);
+		this.optimizeScaleBox.setFont(Statistiek.font);
+		this.optimizeScaleBox.setOpaque(false);
+		this.optimizeScaleBox.setActionCommand("optimizeScaleBox");
+		this.optimizeScaleBox.addActionListener(controller);
+		
 		this.binsLabel = new JLabel(Statistiek.rb.getString("noClassesLabel"));
 		this.binsLabel.setFont(Statistiek.font);
 
@@ -231,6 +255,18 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.minBoundaryField.addActionListener(controller);
 		this.minBoundaryField.addFocusListener(controller);
 
+		this.maxOnScaleLabel = new JLabel(
+			Statistiek.rb.getString("maxValueLabel"));
+		this.maxOnScaleLabel.setFont(Statistiek.font);
+
+		this.maxOnScaleField = new JTextField();
+		this.maxOnScaleField.setMaximumSize(new Dimension(40, 25));
+		this.maxOnScaleField.setMinimumSize(new Dimension(40, 25));
+		this.maxOnScaleField.setPreferredSize(new Dimension(40, 25));
+		this.maxOnScaleField.setActionCommand("maxOnScale");
+		this.maxOnScaleField.addActionListener(controller);
+		this.maxOnScaleField.addFocusListener(controller);
+
 		this.binWidthLabel = new JLabel(
 			Statistiek.rb.getString("classwidthLabel"));
 		this.binWidthLabel.setFont(Statistiek.font);
@@ -252,7 +288,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.maxValueLabel = new JLabel("");
 		this.maxValueLabel.setFont(Statistiek.font);
 
-		// display settings
+		// DISPLAY SETTINGS
 		this.absRelLabel = new JLabel(Statistiek.rb.getString("absRelLabel"));
 		this.absRelLabel.setFont(Statistiek.font);
 
@@ -281,10 +317,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		this.cumulativeBox.setActionCommand("cumulativeBox");
 		this.cumulativeBox.addActionListener(controller);
 
-		this.separator4 = new JSeparator();
-		this.separator4.setBorder(BorderFactory
+		this.separatorAmountLabel = new JSeparator();
+		this.separatorAmountLabel.setBorder(BorderFactory
 			.createEtchedBorder(EtchedBorder.LOWERED));
-		this.separator4.setMaximumSize(new Dimension(140, 3));
+		this.separatorAmountLabel.setMaximumSize(new Dimension(140, 3));
 
 		// radiobuttons for position labels
 		this.labelBetweenBinsRadioItem = new JRadioButton(
@@ -305,10 +341,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		buttonGroup3.add(this.labelBetweenBinsRadioItem);
 		buttonGroup3.add(this.labelUnderBinRadioItem);
 
-		this.separator2 = new JSeparator();
-		this.separator2.setBorder(BorderFactory
+		this.separatorLabelSplitView = new JSeparator();
+		this.separatorLabelSplitView.setBorder(BorderFactory
 			.createEtchedBorder(EtchedBorder.LOWERED));
-		this.separator2.setMaximumSize(new Dimension(140, 3));
+		this.separatorLabelSplitView.setMaximumSize(new Dimension(140, 3));
 
 		this.nextToEachOtherRadioItem = new JRadioButton(
 			Statistiek.rb.getString("nextToEachOtherRadioItem"), false);
@@ -347,8 +383,31 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			buttonGroup2.add(this.aboveEachOtherRadioItem);
 		}
 		buttonGroup2.add(this.separateRadioItem);
+		
+		this.separatorSplitViewPercentage = new JSeparator();
+		this.separatorSplitViewPercentage.setBorder(BorderFactory
+			.createEtchedBorder(EtchedBorder.LOWERED));
+		this.separatorSplitViewPercentage.setMaximumSize(new Dimension(140, 3));
 
-		// split settings
+		this.percentage_splitTotal = new JRadioButton(
+			Statistiek.rb.getString("percentage_splitTotal"), false);
+		this.percentage_splitTotal.setFont(Statistiek.font);
+		this.percentage_splitTotal.setOpaque(false);
+		this.percentage_splitTotal.setActionCommand("percentage_splitTotal");
+		this.percentage_splitTotal.addActionListener(this.controller);
+
+		this.percentage_endTotal = new JRadioButton(
+			Statistiek.rb.getString("percentage_endTotal"), false);
+		this.percentage_endTotal.setFont(Statistiek.font);
+		this.percentage_endTotal.setOpaque(false);
+		this.percentage_endTotal.setActionCommand("percentage_endTotal");
+		this.percentage_endTotal.addActionListener(this.controller);
+
+		ButtonGroup buttonGroup4 = new ButtonGroup();
+		buttonGroup4.add(this.percentage_splitTotal);
+		buttonGroup4.add(this.percentage_endTotal);
+
+		// SPLIT SETTINGS
 		this.splitButton = new JButton(
 			Statistiek.rb.getString("splitoptionsButton"));
 		this.splitButton.setPreferredSize(new Dimension(140, 25));
@@ -481,7 +540,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 	private void layoutGuiComponents()
 	{
-		// Variable
+		// VARIABLE
 		Box hb1, hb2, hb3, hb4, hb5, hb6, hb7, hb8, hb9, hb10, hb11, hb12, hb13, hb14;
 		Box vb1, vb2, vb3, vb4, vb5, vb6, vb7;
 
@@ -507,53 +566,67 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		vb1.add(hb4);
 		vb1.add(Box.createVerticalGlue());
 
-		// Bins
+		// BIN SETTINGS
 		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb1.add(this.minBoundaryLabel);
-		hb1.add(Box.createHorizontalStrut(5));
-		hb1.add(Box.createHorizontalGlue());
-		hb1.add(this.minBoundaryField);
-		// set maximum size prevents hb1 filling up vertical space
-		// and makes hb1 adjust its height to the content
-		hb1.setMaximumSize(new Dimension(250, 200));
+		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb1.add(optimizeScaleBox);
 
 		hb2 = Box.createHorizontalBox();
 		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb2.add(this.binWidthLabel);
+		hb2.add(this.minBoundaryLabel);
 		hb2.add(Box.createHorizontalStrut(5));
 		hb2.add(Box.createHorizontalGlue());
-		hb2.add(this.binWidthField);
-		// set maximum size prevents hb2 filling up vertical space
-		// and makes hb2 adjust its height to the content
+		hb2.add(this.minBoundaryField);
+		// set maximum size prevents hb filling up vertical space
+		// and makes hb adjust its height to the content
 		hb2.setMaximumSize(new Dimension(250, 200));
 
 		hb3 = Box.createHorizontalBox();
 		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb3.add(separator1);
+		hb3.add(this.maxOnScaleLabel);
+		hb3.add(Box.createHorizontalStrut(5));
+		hb3.add(Box.createHorizontalGlue());
+		hb3.add(this.maxOnScaleField);
+		// set maximum size prevents hb filling up vertical space
+		// and makes hb adjust its height to the content
+		hb3.setMaximumSize(new Dimension(250, 200));
 
 		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb4.add(binsLabel);
+		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb4.add(this.binWidthLabel);
+		hb4.add(Box.createHorizontalStrut(5));
+		hb4.add(Box.createHorizontalGlue());
+		hb4.add(this.binWidthField);
+		// set maximum size prevents hb filling up vertical space
+		// and makes hb adjust its height to the content
+		hb4.setMaximumSize(new Dimension(250, 200));
 
 		hb5 = Box.createHorizontalBox();
-		hb5.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
-		hb5.add(binsBox);
+		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb5.add(separator1);
 
 		hb6 = Box.createHorizontalBox();
 		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb6.add(this.noObjectsLabel);
-		hb6.add(Box.createHorizontalGlue());
+		hb6.add(binsLabel);
 
 		hb7 = Box.createHorizontalBox();
-		hb7.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb7.add(this.minValueLabel);
-		hb7.add(Box.createHorizontalGlue());
+		hb7.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+		hb7.add(binsBox);
 
 		hb8 = Box.createHorizontalBox();
 		hb8.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb8.add(this.maxValueLabel);
+		hb8.add(this.noObjectsLabel);
 		hb8.add(Box.createHorizontalGlue());
+
+		hb9 = Box.createHorizontalBox();
+		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb9.add(this.minValueLabel);
+		hb9.add(Box.createHorizontalGlue());
+
+		hb10 = Box.createHorizontalBox();
+		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb10.add(this.maxValueLabel);
+		hb10.add(Box.createHorizontalGlue());
 
 		vb2 = Box.createVerticalBox();
 		vb2.setBorder(BorderFactory.createTitledBorder(border,
@@ -567,9 +640,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		vb2.add(hb6);
 		vb2.add(hb7);
 		vb2.add(hb8);
+		vb2.add(hb9);
+		vb2.add(hb10);
 		vb2.add(Box.createVerticalGlue());
 
-		// Display
+		// DISPLAY
 		hb1 = Box.createHorizontalBox();
 		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		hb1.add(absRelLabel);
@@ -590,7 +665,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 		hb4 = Box.createHorizontalBox();
 		hb4.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		hb4.add(separator4);
+		hb4.add(separatorAmountLabel);
 
 		hb5 = Box.createHorizontalBox();
 		hb5.add(labelBetweenBinsRadioItem);
@@ -602,7 +677,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 
 		hb7 = Box.createHorizontalBox();
 		hb7.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		hb7.add(separator2);
+		hb7.add(separatorLabelSplitView);
 
 		hb8 = Box.createHorizontalBox();
 		hb8.add(separateRadioItem);
@@ -617,9 +692,21 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		hb9.add(Box.createHorizontalGlue());
 
 		hb10 = Box.createHorizontalBox();
-		hb10.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		hb10.add(nextToEachOtherRadioItem);
 		hb10.add(Box.createHorizontalGlue());
+
+		hb11 = Box.createHorizontalBox();
+		hb11.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		hb11.add(separatorSplitViewPercentage);
+
+		hb12 = Box.createHorizontalBox();
+		hb12.add(percentage_splitTotal);
+		hb12.add(Box.createHorizontalGlue());
+
+		hb13 = Box.createHorizontalBox();
+		hb13.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		hb13.add(percentage_endTotal);
+		hb13.add(Box.createHorizontalGlue());
 
 		vb3 = Box.createVerticalBox();
 		vb3.setBorder(BorderFactory.createTitledBorder(border,
@@ -641,9 +728,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			vb3.add(hb9);
 			vb3.add(hb10);
 		}
+		vb3.add(hb11);
+		vb3.add(hb12);
+		vb3.add(hb13);
 		vb3.add(Box.createVerticalGlue());
 
-		// splitOptions
+		// SPLIT OPTIONS
 		hb1 = Box.createHorizontalBox();
 		hb1.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		hb1.add(splitButton);
@@ -730,7 +820,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		vb4.add(Box.createVerticalGlue());
 
 		Box hb0 = Box.createHorizontalBox();
-		// hb0.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		hb0.add(Box.createHorizontalStrut(10));
 		hb0.add(vb1);
 		hb0.add(Box.createHorizontalStrut(10));
@@ -742,8 +831,6 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		hb0.add(Box.createHorizontalStrut(10));
 
 		vb0 = Box.createVerticalBox();
-		// vb0.add(settingsLabel);
-		// vb0.add(Box.createVerticalStrut(10));
 		vb0.add(hb0);
 		vb0.add(Box.createVerticalStrut(10));
 		vb0.add(okButton);
@@ -796,6 +883,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		// + this.nextToEachOtherRadioItem.isSelected());
 		return this.nextToEachOtherRadioItem.isSelected();
 	}
+	
+	public boolean isOptimizeScale()
+	{
+		return this.optimizeScaleBox.isSelected();
+	}
 
 	public boolean isStackModeBoxSelected()
 	{
@@ -819,9 +911,36 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return Double.parseDouble(s);
 	}
 
+	public JCheckBox getOptimizeScaleBox()
+	{
+		return this.optimizeScaleBox;
+	}
+	
+	public JTextField getMinBoundaryTextField()
+	{
+		return this.minBoundaryField;
+	}
+	
+	public double getMaxOnScale()
+	{
+		String s = this.maxOnScaleField.getText();
+		s = s.replace(',', '.');
+		return Double.parseDouble(s);
+	}
+	
+	public JTextField getMaxOnScaleField()
+	{
+		return this.maxOnScaleField;
+	}
+
 	public void setMinBoundary(double d)
 	{
 		this.minBoundaryField.setText(String.valueOf(d));
+	}
+
+	public void setMaxOnScale(double d)
+	{
+		this.maxOnScaleField.setText(String.valueOf(d));
 	}
 
 	public double getSplitMinBoundary()
@@ -853,6 +972,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return d;
 	}
 	
+	public JTextField getBinWidthTextField()
+	{
+		return this.binWidthField;
+	}
+	
 	public void setBinWidth(double d)
 	{
 		this.binWidthField.setText(String.valueOf(d));
@@ -863,7 +987,15 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	 */
 	public void setBinWidth()
 	{
-		this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
+		String w;
+		if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
+		{
+			w = Statistiek.getStringValue(this.model.getBinWidth());
+		}
+		else
+		{
+			this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
+		}
 	}
 	
 	public double getSplitBinWidth()
@@ -896,6 +1028,11 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		return this.percentageRadioItem.isSelected();
 	}
 	
+	public boolean percentageSplitTotalSelected()
+	{
+		return this.percentage_splitTotal.isSelected();
+	}
+	
 	public boolean labelUnderBinSelected()
 	{
 		return this.labelUnderBinRadioItem.isSelected();
@@ -915,118 +1052,107 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	{
 		//System.out.println("HistogramUserOptionsPanel.update()");
 
-		this.varBox.removeActionListener(this.controller);
-		this.varBox.removeAllItems();
-		for (String varName : this.model.getStatTableModel().getColumnNames())
-		{
-			this.varBox.addItem(varName);
-		}
-		if (this.model.columnIndexValid())
-		{
-			this.varBox.setSelectedIndex(this.model.getColumnIndex());
-		}
-		else
-		{
-			// set no item selected
-			this.varBox.setSelectedIndex(-1);
-		}
-		this.varBox.addActionListener(this.controller);
+		this.optimizeScaleBox.removeActionListener(this.controller);
+		this.optimizeScaleBox.setSelected(this.model.isOptimizeScale());
+		this.optimizeScaleBox.addActionListener(this.controller);
 
-		this.splitVarBox.removeActionListener(this);
-		this.splitVarBox.removeAllItems();
-		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
-		for (int column = 0; column < this.model.getStatTableModel()
-			.getColumnCount(); column++)
+		updateVarBox();
+
+		updateSplitVarBox();
+
+		updateBinsBox();
+
+		updateSplitBinsBox();
+
+		updateBinSettings();
+
+		updateSplitBinSettings();
+
+		if (this.model.isFrequencyPolygonMode()
+			&& this.model.isFrequencyPolygonCumulativeMode() != this
+				.isCumulativeBoxSelected())
 		{
-			splitVarBox.addItem(this.model.getStatTableModel()
-				.getColumnName(column));
+			this.cumulativeBox.setSelected(this.model
+				.isFrequencyPolygonCumulativeMode());
 		}
 		
-		// check of columnindex valid
-		if (this.model.columnIndexValid())
+		if (this.model.getLabelUnderBin())
 		{
-			//System.out.println("HistogramUserOptionsPanel.update(): COLUMN INDEX VALID!");
-			this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
-				.getColumnSplitIndex() + 1);
+			this.labelUnderBinRadioItem.setSelected(true);
 		}
 		else
 		{
-			// set no split variable selected
-			this.splitVarBox.setSelectedIndex(0);
+			this.labelBetweenBinsRadioItem.setSelected(true);
 		}
-	
-		this.splitVarBox.addActionListener(this);
 
-		this.binsBox.removeActionListener(this.controller);
-		this.binsBox.setSelectedItem(new Integer(this.model.getNoBins()));
-		this.binsBox.addActionListener(this.controller);
-		/*
-		 * boolean b = this.model.columnIndexValid(); if(b) { AllowedTypes type
-		 * =
-		 * this.model.getTableModel().getColumnTypes().get(this.model.getColumnIndex
-		 * ()).getType(); b = !(type.equals(AllowedTypes.DOUBLE) ||
-		 * type.equals(AllowedTypes.INTEGER)); this.binsBox.setVisible(!b);
-		 * this.binsLabel.setVisible(!b); if(b) this.setEnumClasses(true); }
-		 * else { this.binsBox.setVisible(false);
-		 * this.binsLabel.setVisible(false);
-		 * this.setVisibleBoundaryOptions(false); }
-		 */
-		this.splitBinsBox.removeActionListener(this.controller);
-		Integer nr = null;
-		if (this.model.getSplitOptions().getBinBoundaries() != null)
+		if (this.model.getPercentage())
 		{
-			nr = new Integer(this.model.getSplitOptions().getBinBoundaries().size() - 1);
+			this.percentageRadioItem.removeActionListener(controller);
+			this.percentageRadioItem.setSelected(true);
+			this.percentageRadioItem.addActionListener(controller);
 		}
 		else
 		{
-			nr = new Integer(2);
+			this.amountRadioItem.removeActionListener(controller);
+			this.amountRadioItem.setSelected(true);
+			this.amountRadioItem.addActionListener(controller);
 		}
-		this.splitBinsBox.setSelectedItem(nr);
-		this.splitBinsBox.addActionListener(this.controller);
 
-		if (this.model.columnIndexValid())
+		this.axisBox.removeActionListener(controller);
+		if (this.model.hasVerticalBars())
 		{
-			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
-				.get(this.model.getColumnIndex());
-			AllowedTypes type = cType.getType();
-			if (type.equals(AllowedTypes.DOUBLE)
-				|| type.equals(AllowedTypes.INTEGER))
-			{
-				this.minBoundaryField.setText(
-					Statistiek.getStringValue(this.model.getBinBoundaries().get(0)));
-				// set the bin width based on the bin boundaries
-				this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
-				this.noObjectsLabel.setText(Statistiek.rb
-					.getString("numberLabel")
-					+ this.model.getStatTableModel().getRowCount());
-				String minValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
-					this.model.getColumnIndex()));
-				this.minValueLabel.setText(Statistiek.rb.getString("minLabel")
-					+ minValueString);
-				String maxValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
-					this.model.getColumnIndex()));
-				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
-					+ maxValueString);
-				this.separator1.getParent().setVisible(true);
-				this.separator4.getParent().setVisible(true);
-				this.labelBetweenBinsRadioItem.getParent().setVisible(true);
-				this.labelUnderBinRadioItem.getParent().setVisible(true);
-				this.binsBox.getParent().setVisible(true);
-				this.binsLabel.getParent().setVisible(true);
-				setEnumClasses(false);
-			}
-			else if (type.equals(AllowedTypes.ENUM) || type.equals(AllowedTypes.STRING))
-			{
-				this.separator1.getParent().setVisible(false);
-				this.separator4.getParent().setVisible(false);
-				this.labelBetweenBinsRadioItem.getParent().setVisible(false);
-				this.labelUnderBinRadioItem.getParent().setVisible(false);
-				this.binsBox.getParent().setVisible(false);
-				this.binsLabel.getParent().setVisible(false);
-				setEnumClasses(true);
-			}
+			this.axisBox.setSelectedIndex(0);
 		}
+		else
+		{
+			this.axisBox.setSelectedIndex(1);
+		}
+		this.axisBox.addActionListener(controller);
 
+		boolean split = this.model.getSplitOptions().getColumnSplitIndex() > -1;
+		this.setVisibleSplitOptions(split);
+		
+		this.setVisiblePercentageSettings(this.model.getPercentage() && split && !model.isSplitInSingleView());
+		
+		this.singleViewRadioItem.setSelected(this.model.isSplitInSingleView()
+			&& split && this.model.isFrequencyPolygonMode());
+		this.separateRadioItem.setSelected(!this.model.isSplitInSingleView()
+			&& split);
+
+		this.nextToEachOtherRadioItem.setSelected(this.model
+			.isSplitInSingleView() && this.model.isNextToEachOther() && split);
+
+		this.aboveEachOtherRadioItem.setSelected(this.model.isSplitInSingleView()
+			&& !this.model.isNextToEachOther() && split && !this.model.isFrequencyPolygonMode());
+
+		this.stackModeBox.setSelected(this.model.isFrequencyPolygonStackMode());
+		this.stackModeBox.setEnabled(this.model.isFrequencyPolygonMode()
+			&& this.model.isFrequencyPolygonCumulativeMode());
+		
+		this.resize(vb0);
+	}
+
+	/**
+	 * Set the visibility of components related to percentage.
+	 * 
+	 * @param percentage
+	 */
+	private void setVisiblePercentageSettings(boolean b)
+	{
+		separatorSplitViewPercentage.getParent().setVisible(b);
+		percentage_splitTotal.getParent().setVisible(b);
+		percentage_endTotal.getParent().setVisible(b);
+		
+		percentage_splitTotal.removeActionListener(controller);
+		percentage_endTotal.removeActionListener(controller);
+		percentage_splitTotal.setSelected(this.model.getPercentageSplitTotal());
+		percentage_endTotal.setSelected(!this.model.getPercentageSplitTotal());
+		percentage_splitTotal.addActionListener(controller);
+		percentage_endTotal.addActionListener(controller);
+	}
+
+	private void updateSplitBinSettings()
+	{
 		// check of column index valid
 		if (this.model.columnIndexValid())
 		{
@@ -1086,70 +1212,135 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     			}
     		}
 		}
+	}
 
-		if (this.model.isFrequencyPolygonMode()
-			&& this.model.isFrequencyPolygonCumulativeMode() != this
-				.isCumulativeBoxSelected())
+	private void updateBinSettings()
+	{
+		if (this.model.columnIndexValid())
 		{
-			this.cumulativeBox.setSelected(this.model
-				.isFrequencyPolygonCumulativeMode());
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
+				.get(this.model.getColumnIndex());
+			AllowedTypes type = cType.getType();
+			if (type.equals(AllowedTypes.DOUBLE)
+				|| type.equals(AllowedTypes.INTEGER))
+			{
+				this.minBoundaryField.setText(
+					Statistiek.getStringValue(this.view.getBinsOnScale().get(0)));
+				int last = this.view.getBinsOnScale().size() - 1;
+				this.maxOnScaleField.setText(Statistiek.getStringValue(this.view.getBinsOnScale().get(last)));
+				// set the bin width based on the bin boundaries
+				String binWidth;
+				if (this.model.isOptimizeScale())
+				{
+					binWidth = Statistiek.getFormattedBinWidth(this.model.getBinBoundaries());
+				}
+				else
+				{
+					binWidth = Statistiek.getStringValue(this.model.getBinWidth());
+				}
+				this.binWidthField.setText(binWidth);
+				this.noObjectsLabel.setText(Statistiek.rb
+					.getString("numberLabel")
+					+ this.model.getStatTableModel().getNumberOfValidDataRows(this.model.getColumnIndex()));
+				String minValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
+					this.model.getColumnIndex()));
+				this.minValueLabel.setText(Statistiek.rb.getString("minLabel")
+					+ minValueString);
+				String maxValueString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
+					this.model.getColumnIndex()));
+				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel")
+					+ maxValueString);
+				this.separator1.getParent().setVisible(true);
+				this.separatorAmountLabel.getParent().setVisible(true);
+				this.labelBetweenBinsRadioItem.getParent().setVisible(true);
+				this.labelUnderBinRadioItem.getParent().setVisible(true);
+				this.binsBox.getParent().setVisible(true);
+				this.binsLabel.getParent().setVisible(true);
+				this.optimizeScaleBox.getParent().setVisible(true);
+				setEnumClasses(false);
+			}
+			else if (type.equals(AllowedTypes.ENUM) || type.equals(AllowedTypes.STRING))
+			{
+				this.separator1.getParent().setVisible(false);
+				this.separatorAmountLabel.getParent().setVisible(false);
+				this.labelBetweenBinsRadioItem.getParent().setVisible(false);
+				this.labelUnderBinRadioItem.getParent().setVisible(false);
+				this.binsBox.getParent().setVisible(false);
+				this.binsLabel.getParent().setVisible(false);
+				this.optimizeScaleBox.getParent().setVisible(false);
+				setEnumClasses(true);
+			}
+		}
+	}
+
+	private void updateSplitBinsBox()
+	{
+		this.splitBinsBox.removeActionListener(this.controller);
+		Integer nr = null;
+		if (this.model.getSplitOptions().getBinBoundaries() != null)
+		{
+			nr = new Integer(this.model.getSplitOptions().getBinBoundaries().size() - 1);
+		}
+		else
+		{
+			nr = new Integer(2);
+		}
+		this.splitBinsBox.setSelectedItem(nr);
+		this.splitBinsBox.addActionListener(this.controller);
+	}
+
+	private void updateBinsBox()
+	{
+		this.binsBox.removeActionListener(this.controller);
+		this.binsBox.setSelectedItem(new Integer(this.model.getNoBins()));
+		this.binsBox.addActionListener(this.controller);
+	}
+
+	private void updateSplitVarBox()
+	{
+		this.splitVarBox.removeActionListener(this);
+		this.splitVarBox.removeAllItems();
+		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
+		for (int column = 0; column < this.model.getStatTableModel()
+			.getColumnCount(); column++)
+		{
+			splitVarBox.addItem(this.model.getStatTableModel()
+				.getColumnName(column));
 		}
 		
-//		System.out.println("HistogramUserOptionsPanel.update(): this.model.getLabelUnderBin() = "
-//			+ this.model.getLabelUnderBin());
-		if (this.model.getLabelUnderBin())
+		// check of columnindex valid
+		if (this.model.columnIndexValid())
 		{
-			this.labelUnderBinRadioItem.setSelected(true);
+			this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
+				.getColumnSplitIndex() + 1);
 		}
 		else
 		{
-			this.labelBetweenBinsRadioItem.setSelected(true);
+			// set no split variable selected
+			this.splitVarBox.setSelectedIndex(0);
 		}
+	
+		this.splitVarBox.addActionListener(this);
+	}
 
-		if (this.model.getPercentage())
+	private void updateVarBox()
+	{
+		this.varBox.removeActionListener(this.controller);
+		this.varBox.removeAllItems();
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
-			this.percentageRadioItem.setSelected(true);
+			this.varBox.addItem(varName);
+		}
+		if (this.model.columnIndexValid())
+		{
+			this.varBox.setSelectedIndex(this.model.getColumnIndex());
 		}
 		else
 		{
-			this.amountRadioItem.setSelected(true);
+			// set no item selected
+			this.varBox.setSelectedIndex(-1);
 		}
-
-		if (this.model.hasVerticalBars())
-		{
-			this.axisBox.setSelectedIndex(0);
-		}
-		else
-		{
-			this.axisBox.setSelectedIndex(1);
-		}
-
-		boolean split = this.model.getSplitOptions().getColumnSplitIndex() > -1;
-		this.setVisibleSplitOptions(split);
-		
-		this.singleViewRadioItem.setSelected(this.model.splitInSingleView()
-			&& split && this.model.isFrequencyPolygonMode());
-		this.separateRadioItem.setSelected(!this.model.splitInSingleView()
-			&& split);
-		// System.out.println("HistogramUserOptionsPanel.update(): this.separateRadioItem.setSelected("
-		// + (!this.model.splitInSingleView() && split) +
-		// "); !this.model.splitInSingleView()="
-		// + !this.model.splitInSingleView() + ", split=" + split);
-
-		this.nextToEachOtherRadioItem.setSelected(this.model
-			.splitInSingleView() && this.model.isNextToEachOther() && split);
-		// System.out.println("HistogramUserOptionsPanel.update(): nextToEachOtherRadioItem.setSelected(splitInSingleView="
-		// + this.model.splitInSingleView() + " && isNextToEachOther=" +
-		// this.model.isNextToEachOther()
-		// + " && split=" + split
-		// + ")");
-
-		this.aboveEachOtherRadioItem.setSelected(this.model.splitInSingleView()
-			&& !this.model.isNextToEachOther() && split && !this.model.isFrequencyPolygonMode());
-
-		this.stackModeBox.setSelected(this.model.isFrequencyPolygonStackMode());
-		this.stackModeBox.setEnabled(this.model.isFrequencyPolygonMode()
-			&& this.model.isFrequencyPolygonCumulativeMode());
+		this.varBox.addActionListener(this.controller);
 	}
 
 	public void init()
@@ -1169,15 +1360,20 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 		binWidthLabel.getParent().getParent().setVisible(!b);
 
 		// set visibility of the components on the vertical box
-		separator4.getParent().setVisible(!b);
+		separatorAmountLabel.getParent().setVisible(!b);
 		minBoundaryLabel.getParent().setVisible(!b);
 		minBoundaryField.getParent().setVisible(!b);
+		maxOnScaleLabel.getParent().setVisible(!b && !isOptimizeScale());
+		maxOnScaleField.getParent().setVisible(!b && !isOptimizeScale());
 		binWidthLabel.getParent().setVisible(!b);
 		binWidthField.getParent().setVisible(!b);
+		
+		binsLabel.getParent().setVisible(!b && isOptimizeScale());
+		binsBox.getParent().setVisible(!b && isOptimizeScale());
+		
 		noObjectsLabel.getParent().setVisible(!b);
 		minValueLabel.getParent().setVisible(!b);
 		maxValueLabel.getParent().setVisible(!b);
-		resize(vb0);
 	}
 
 	private void setSplitEnumClasses(boolean b)
@@ -1193,14 +1389,16 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			.setVisible(splitBoundariesVisible && !b);
 		splitMinValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
 		splitMaxValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
-		resize(vb0);
 	}
 
 	private void setVisibleBoundaryOptions()
 	{
 		separator1.getParent().setVisible(!enumClasses);
+		optimizeScaleBox.getParent().setVisible(!enumClasses);
 		minBoundaryLabel.getParent().setVisible(!enumClasses);
 		minBoundaryField.getParent().setVisible(!enumClasses);
+		maxOnScaleLabel.getParent().setVisible(!enumClasses && !isOptimizeScale());
+		maxOnScaleField.getParent().setVisible(!enumClasses && !isOptimizeScale());
 		binWidthLabel.getParent().setVisible(!enumClasses);
 		binWidthField.getParent().setVisible(!enumClasses);
 		noObjectsLabel.getParent().setVisible(!enumClasses);
@@ -1237,12 +1435,12 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	private void setVisibleSplitOptions(boolean b)
 	{
 		splitOptionsVisible = b;
-		separator2.getParent().setVisible(b);
-		// splitSingleViewBox.getParent().setVisible(b);
+		separatorLabelSplitView.getParent().setVisible(b);
 		nextToEachOtherRadioItem.getParent().setVisible(b);
 		aboveEachOtherRadioItem.getParent().setVisible(b);
 		separateRadioItem.getParent().setVisible(b);
 		singleViewRadioItem.getParent().setVisible(b);
+
 		splitVarLabel.getParent().setVisible(b);
 		splitVarBox.getParent().setVisible(b);
 		if (!b)
@@ -1285,11 +1483,13 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (splitOptionsVisible)
 			{
 				setVisibleSplitOptions(false);
+				setVisiblePercentageSettings(false);
 				this.clearGUISplitComponents();
 			}
 			else
 			{
 				setVisibleSplitOptions(true);
+				setVisiblePercentageSettings(model.getPercentage() && !model.isSplitInSingleView());
 			}
 			resize(vb0);
 		}
