@@ -302,7 +302,7 @@ public class FrequencyTableView extends JPanel implements Observer
 	
 				FrequencyTuple[][] frequencyTuple = null;
 				int[] frequencies = null;
-				numberOfSplitClasses = this.model.getStatTableModel().splitVarClasses(
+				numberOfSplitClasses = this.model.getStatTableModel().numberOfSplitVarClasses(
 					this.model.getSplitOptions());
 				this.splitClassPanels = new FrequencyTablePanel[numberOfSplitClasses];
 				
