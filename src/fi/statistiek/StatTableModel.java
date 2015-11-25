@@ -259,6 +259,27 @@ public class StatTableModel implements TableModel
 	{
 		return this.rowCount;
 	}
+	
+	/**
+	 * Get the number of valid data rows in the given column.
+	 * 
+	 * @return the amount of rows in the data
+	 */
+	public int getNumberOfValidDataRows(int columnIndex)
+	{
+		int count = 0;
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			Object o = this.getValueAt(i, columnIndex);
+			if (!o.equals(ColumnType.WILDCARD))
+			{
+				count++;
+			}
+		}
+
+		return count;
+	}	
 
 	/**
 	 * Get the column names
@@ -295,7 +316,7 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @return the amount of classes in which the split variable splits the data
 	 */
-	public int splitVarClasses(SplitOptions splitOptions)
+	public int numberOfSplitVarClasses(SplitOptions splitOptions)
 	{
 		if (splitOptions == null)
 		{
@@ -1471,7 +1492,7 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @param columnIndex
 	 *            The column index
-	 * @return The maximum value of a numerical column. Returns 100 if column is not numerical.
+	 * @return The maximum value of a numerical column. Returns 0 if column is not numerical.
 	 */
 	public double getColumnMax(int columnIndex)
 	{
@@ -1479,7 +1500,7 @@ public class StatTableModel implements TableModel
 		if (!(type.equals(AllowedTypes.DOUBLE) 
 			|| type.equals(AllowedTypes.INTEGER)))
 		{
-			return 100;
+			return 0;
 		}
 		
 		try
@@ -1499,7 +1520,7 @@ public class StatTableModel implements TableModel
 			}
 			if (max.equals(Double.MIN_VALUE))
 			{
-				return 100;
+				return 0;
 			}
 			else
 			{
@@ -1509,7 +1530,7 @@ public class StatTableModel implements TableModel
 		catch (NumberFormatException e)
 		{
 			System.out.println("StatTableModel.getColumnMax(): no numerical data");
-			return 100;
+			return 0;
 		}
 	}
 	
@@ -2246,9 +2267,9 @@ public class StatTableModel implements TableModel
 		ColumnType cType = this.getColumnTypes().get(columnIndex);
 		if (cType.getType().isNumber())
 		{
-			int[][] binFrequency = new int[this.splitVarClasses(splitOptions)]
+			int[][] binFrequency = new int[this.numberOfSplitVarClasses(splitOptions)]
 				[(binBoundaries.size() - 1) * 2];
-			for (int splitClass = 0; splitClass < this.splitVarClasses(splitOptions); splitClass++)
+			for (int splitClass = 0; splitClass < this.numberOfSplitVarClasses(splitOptions); splitClass++)
 			{
 				for (int i = 0; i < binBoundaries.size() - 1; i++)
 				{
@@ -2316,18 +2337,12 @@ public class StatTableModel implements TableModel
 		if (cType.getType().equals(AllowedTypes.STRING)
 			|| cType.getType().equals(AllowedTypes.ENUM))
 		{
-			int splitClasses = this.splitVarClasses(splitOptions);
-			//System.out.println(splitClasses + " splitclasses");
-			// test syl: hashmap lijkt niet veel beter
-//			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
-//			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
+			int splitClasses = this.numberOfSplitVarClasses(splitOptions);
 			HashMap<String, Integer>[] frequencyTable = new HashMap[splitClasses];
 			HashMap<String, Integer>[] frequencySelectionTable = new HashMap[splitClasses];
 
 			for (int i = 0; i < splitClasses; i++)
 			{
-//				frequencyTable[i] = new Hashtable<String, Integer>();
-//				frequencySelectionTable[i] = new Hashtable<String, Integer>();
 				frequencyTable[i] = new HashMap<String, Integer>();
 				frequencySelectionTable[i] = new HashMap<String, Integer>();
 			}
@@ -2340,17 +2355,11 @@ public class StatTableModel implements TableModel
 				int split = this.classifyObject(i, splitOptions);
 				if (split > -1)
 				{
-//					StatTableModel.increaseKeyHashtable(
-//						(String) this.getValueAt(i, columnIndex),
-//						frequencyTable[this.classifyObject(i, splitOptions)]);
 					StatTableModel.increaseKeyHashMap(
 						(String) this.getValueAt(i, columnIndex),
 						frequencyTable[split]);
 					if (this.isRowSelected(i))
 					{
-//						StatTableModel.increaseKeyHashtable(
-//							(String) this.getValueAt(i, columnIndex),
-//							frequencySelectionTable[this.classifyObject(i,splitOptions)]);
 						StatTableModel.increaseKeyHashMap(
 							(String) this.getValueAt(i, columnIndex),
 							frequencySelectionTable[split]);
@@ -2476,8 +2485,7 @@ public class StatTableModel implements TableModel
 		if (cType.getType().equals(AllowedTypes.STRING)
 			|| cType.getType().equals(AllowedTypes.ENUM))
 		{
-			int splitClasses = this.splitVarClasses(splitOptions);
-			//System.out.println(splitClasses + " splitclasses");
+			int splitClasses = this.numberOfSplitVarClasses(splitOptions);
 			Hashtable<String, Integer>[] frequencyTable = new Hashtable[splitClasses];
 			Hashtable<String, Integer>[] frequencySelectionTable = new Hashtable[splitClasses];
 
@@ -2714,5 +2722,50 @@ public class StatTableModel implements TableModel
 		} 
 		// only got here if we didn't return false
 		return true;
+	}
+	
+	/**
+	 * Returns whether or not the table is empty, i.e., the row count is zero.
+	 * 
+	 * @return
+	 */
+	public boolean isEmptyTable()
+	{
+		boolean isEmpty = (rowCount == 0);
+		
+		return isEmpty;
+	}
+
+	/**
+	 * Returns whether or not the column with the given index is empty, i.e., 
+	 * the row count is zero or the column contains only wildcards.
+	 * 
+	 * @return
+	 */
+	public boolean isEmptyColumn(int columnIndex)
+	{
+		boolean isEmpty;
+		
+		if (this.rowCount == 0)
+		{
+			isEmpty = true;
+		}
+		else
+		{
+			isEmpty = true;
+			
+			// check for wildcards
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				Object o = this.getValueAt(i, columnIndex);
+				if (!o.equals(ColumnType.WILDCARD))
+				{
+					isEmpty = false;
+					break;
+				}
+			}
+		}
+		
+		return isEmpty;
 	}
 }
