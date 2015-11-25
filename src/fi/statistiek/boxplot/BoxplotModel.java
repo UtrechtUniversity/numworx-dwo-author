@@ -247,7 +247,7 @@ public class BoxplotModel extends Observable implements TableModelListener
 
 	public int getSplitClasses()
 	{
-		return this.tableModel.splitVarClasses(this.splitOptions);
+		return this.tableModel.numberOfSplitVarClasses(this.splitOptions);
 	}
 
 	/**
