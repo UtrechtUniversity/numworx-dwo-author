@@ -325,7 +325,7 @@ public class DotplotView extends JPanel implements Observer
 
 	private int determinePreferredHeight()
 	{
-		int splitClasses = this.model.getTableModel().splitVarClasses(
+		int splitClasses = this.model.getTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions());
 		int preferredHeight = 0;
 
@@ -342,7 +342,7 @@ public class DotplotView extends JPanel implements Observer
 
 	private boolean updateColorLegend()
 	{
-		int splitClasses = this.model.getTableModel().splitVarClasses(
+		int splitClasses = this.model.getTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions());
 		if (splitClasses > 1)
 		{
@@ -1187,7 +1187,7 @@ public class DotplotView extends JPanel implements Observer
 				+ this.X_AS_OFFSET - 37 + yOffset);
 
 		// draw split variable class (e.g., "geslacht: m")
-		if (this.model.getTableModel().splitVarClasses(
+		if (this.model.getTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions()) > 1
 			&& !this.model.splitInSingleView())
 		{
