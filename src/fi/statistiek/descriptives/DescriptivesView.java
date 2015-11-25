@@ -260,7 +260,7 @@ public class DescriptivesView extends JPanel implements Observer
 	private void setData()
 	{
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
-			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 		
 		int columnIndex = this.model.getColumnIndex(); // this.varBoxSelectedIndex() is nog niet geupdate!
 
@@ -394,7 +394,7 @@ public class DescriptivesView extends JPanel implements Observer
 	private void setDataLabels()
 	{
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
-			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 
 		if (this.hasSelection())
 			dataLabels = new JLabel[this.NUMBER_OF_DESCRIPTIVES][2][numberOfSplits];
@@ -622,7 +622,7 @@ public class DescriptivesView extends JPanel implements Observer
 	private void makeDescritivesTable()
 	{
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
-			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 
 		for (int i = 0; i < numberOfSplits; i++)
 		{
@@ -879,7 +879,7 @@ public class DescriptivesView extends JPanel implements Observer
 	private boolean lastRowInView(int splitClass)
 	{
 		int numberOfSplits = DescriptivesView.this.model.getTableModel()
-			.splitVarClasses(DescriptivesView.this.model.getSplitOptions());
+			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 		
 		return (splitClass == numberOfSplits - 1);
 	}
