@@ -133,12 +133,15 @@ public class HistogramController implements StatistiekView, ActionListener,
 	public void actionPerformed(ActionEvent e)
 	{
 		String ac = e.getActionCommand();
-
-//		System.out.println("HistogramController.actionPerformed(): ac=" + ac);
+		//System.out.println("HistogramController.actionPerformed(): " + ac);
 
 		if (ac.equals("amountRadioItem") || ac.equals("percentageRadioItem"))
 		{
 			this.model.setPercentage(this.view.percentageItemSelected());
+		}
+		else if (ac.equals("percentage_splitTotal") || ac.equals("percentage_endTotal"))
+		{
+			this.model.setPercentageSplitTotal(this.view.percentageSplitTotalSelected());
 		}
 		else if (ac.equals("labelsBetweenBinsRadioItem") ||
 			ac.equals("labelsUnderBinRadioItem"))
@@ -148,7 +151,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		else if (ac.equals("varBox"))
 		{
 			this.model.setColumnIndex(this.view.getVarBoxSelectedIndex());
-			//System.out.println("Var set to " + this.model.getColumnIndex());
+			this.model.setOptimizeScale(true); // default
 		}
 		else if (ac.equals("binsBox"))
 		{
@@ -157,10 +160,47 @@ public class HistogramController implements StatistiekView, ActionListener,
 		else if (ac.equals("minBoundary"))
 		{
 			updateBoundariesFromBinSettings();
+
+			double maxBinValue = this.model.getMaxBinBoundaryValue();
+			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			{
+				// reset to latest value
+				this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+			}
+			else
+			{
+				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+			}
+		}
+		else if (ac.equals("maxOnScale"))
+		{
+			double maxBinValue = this.model.getMaxBinBoundaryValue();
+			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			{
+				// reset to what latest value
+				this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+			}
+			else
+			{
+				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+			}
 		}
 		else if (ac.equals("binWidth"))
 		{
+			this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
+			
+			// column index bin settings
 			updateBoundariesFromBinSettings();
+
+			double maxBinValue = this.model.getMaxBinBoundaryValue();
+			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			{
+				this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+			}
+			else
+			{
+				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+			}
 		}
 		else if (ac.equals("axisBox"))
 		{
@@ -256,7 +296,10 @@ public class HistogramController implements StatistiekView, ActionListener,
 				this.model.setBinBoundaries(dialog.getBoundaries());
 			}
 		}
-
+		else if (ac.equals("optimizeScaleBox"))
+		{
+			this.model.setOptimizeScale(this.view.getUserOptionsPanel().isOptimizeScale());
+		}
 		else
 		{
 			//System.out.println("HistogramController.actionPerformed(): Unknown action source! " + e);
@@ -285,7 +328,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 		// if result is valid, set boundaries
 		if (boundaries != null)
 		{
+			this.model.setMinOnScale(view.getMinBoundary());
 			this.model.setBinBoundaries(boundaries);
+			this.model.setBinWidthWithoutEvent(view.getBinWidth());
 		}
 		else
 		{
@@ -388,53 +433,25 @@ public class HistogramController implements StatistiekView, ActionListener,
 		Hashtable h = new Hashtable();
 
 		h.put("binBoundaries", this.model.getBinBoundaries());
-//		System.out.println("   binBoundaries=" +
-//			this.model.getBinBoundaries());
-
 		h.put("columnIndex", this.model.getColumnIndex());
-		// System.out.println("   columnIndex=" + this.model.getColumnIndex());
-
 		h.put("percentage", this.model.getPercentage());
-		// System.out.println("   percentage=" + this.model.getPercentage());
-
+		h.put("percentage_splitTotal", this.model.getPercentageSplitTotal());
 		h.put("labelUnderBin", this.model.getLabelUnderBin());
-		//System.out.println("   labelUnderBin=" + this.model.getLabelUnderBin());
-
 		h.put("showUserOptions", this.model.getShowUserOptions());
-		// System.out.println("   showUserOptions=" +
-		// this.model.getShowUserOptions());
-
 		h.put("verticalBars", this.model.hasVerticalBars());
-		// System.out.println("   verticalBars=" +
-		// this.model.getVerticalBars());
-
 		h.put("viewName", this.model.getViewName());
-		// System.out.println("   viewName=" + this.model.getViewName());
-
 		h.put("frequencyPolygonCumulativeMode",
 			this.model.isFrequencyPolygonCumulativeMode());
-		// System.out.println("   frequencyPolygonCumulativeMode=" +
-		// this.model.isFrequencyPolygonCumulativeMode());
-
 		h.put("columnSplitIndex", this.model.getSplitOptions()
 			.getColumnSplitIndex());
-		// System.out.println("   columnSplitIndex=" +
-		// this.model.getSplitOptions().getColumnSplitIndex());
-
 		h.put("splitBoundaries", this.model.getSplitOptions()
 			.getBinBoundaries());
-		// System.out.println("   splitBoundaries=" +
-		// this.model.getSplitOptions().getBinBoundaries());
-
 		h.put("splitInSingleView", this.model.isSplitInSingleView());
-		// System.out.println("   splitInSingleView=" +
-		// this.model.isSplitInSingleView());
-
 		h.put("nextToEachOther", this.model.isNextToEachOther());
-		// System.out.println("   nextToEachOther=" +
-		// this.model.isNextToEachOther());
-
-		// System.out.println("END HistogramController.getState()...");
+		h.put("optimizeScale", this.model.isOptimizeScale());
+		h.put("minOnScale", this.model.getMinOnScale());
+		h.put("maxOnScale", this.model.getMaxOnScale());
+		h.put("binWidth", this.model.getBinWidth());
 
 		return h;
 	}
@@ -505,6 +522,17 @@ public class HistogramController implements StatistiekView, ActionListener,
 			this.model.setPercentage(((Boolean) h.get("percentage"))
 				.booleanValue());
 		}
+		if (h.containsKey("percentage_splitTotal"))
+		{
+			this.model.setPercentageSplitTotal(((Boolean) h.get("percentage_splitTotal"))
+				.booleanValue());
+		}
+		else
+		{
+			// default is true
+			this.model.setPercentageSplitTotal(true);
+		}
+		
 		if (h.containsKey("labelUnderBin"))
 		{
 			this.model.setLabelUnderBin(((Boolean) h.get("labelUnderBin"))
@@ -551,6 +579,26 @@ public class HistogramController implements StatistiekView, ActionListener,
 			this.model.setNextToEachOther(((Boolean) h.get("nextToEachOther"))
 				.booleanValue());
 		}
+		if (h.containsKey("optimizeScale"))
+		{
+			this.model.setOptimizeScaleWithoutEvent(((Boolean) h.get("optimizeScale"))
+				.booleanValue());
+		}
+		if (h.containsKey("minOnScale"))
+		{
+			this.model.setMinOnScaleWithoutEvent(((Double) h.get("minOnScale"))
+				.doubleValue());
+		}
+		if (h.containsKey("maxOnScale"))
+		{
+			this.model.setMaxOnScaleWithoutEvent(((Double) h.get("maxOnScale"))
+				.doubleValue());
+		}
+		if (h.containsKey("binWidth"))
+		{
+			this.model.setBinWidth(((Double) h.get("binWidth"))
+				.doubleValue());
+		}
 	}
 
 	public String toString()
@@ -565,10 +613,94 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 	public void focusLost(FocusEvent e)
 	{
-//		System.out.println("HistogramController.focusLost(): e.getSource()="
-//			+ e.getSource());
+		if (e.getSource().equals(this.view.getUserOptionsPanel().getMinBoundaryTextField()))
+		{
+//			System.out.println("HistogramController.focusLost(): minBoundary");
 
-		// column index bin settings
-		updateBoundariesFromBinSettings();
+			// column index bin settings
+			updateBoundariesFromBinSettings();
+
+//			double maxBinValue = this.model.getMaxBinBoundaryValue();
+			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
+			double maxBinValue = this.view.getMaxBinOnScale();
+			
+			if ((this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue) 
+				&& !this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex())) // for empty table or column without any values every maximum is allowed
+			{
+				if (this.model.getMaxOnScale() < maxBinValue)
+				{
+					// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+					this.model.setMaxOnScale(maxBinValue);
+				}
+				else
+				{
+					// reset to latest value
+					this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				}
+			}
+			else
+			{
+				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+			}
+		}
+		else if (e.getSource().equals(this.view.getUserOptionsPanel().getBinWidthTextField()))
+		{
+//			System.out.println("HistogramController.focusLost(): binWidth");
+
+			this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
+			
+			// column index bin settings
+			updateBoundariesFromBinSettings();
+
+			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
+			double maxBinValue = this.view.getMaxBinOnScale();
+			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			{
+				this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+			}
+			else
+			{
+				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+			}
+		}
+		else if (e.getSource().equals(this.view.getUserOptionsPanel().getMaxOnScaleField()))
+		{
+//			System.out.println("HistogramController.focusLost(): maxOnScale");
+
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
+			{
+				// max < min is niet toegestaan
+				if (this.view.getUserOptionsPanel().getMaxOnScale() < this.view.getUserOptionsPanel().getMinBoundary())
+				{
+					// reset to latest value
+					this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				}
+				else
+				{
+					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				}
+			}
+			else
+			{
+				double maxBinValue = this.model.getMaxBinBoundaryValue();
+				if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+				{
+					if (this.model.getMaxOnScale() < maxBinValue)
+					{
+						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+						this.model.setMaxOnScale(maxBinValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				}
+			}
+		}
 	}
 }
