@@ -507,15 +507,8 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("binBoundaries"))
 		{
-//			System.out.println("HistogramController.setState(): binBoundaries="
-//				+ (ArrayList<Double>) h.get("binBoundaries"));
 			this.model.setBinBoundaries((ArrayList<Double>) h
 				.get("binBoundaries"));
-//			System.out.println("... (setState) identityHashCode(this.model)=" + identityHashCode(this.model));
-//			System.out.println("... (setState) identityHashCode(this.model.getBinBoundaries())=" + identityHashCode(this.model.getBinBoundaries()));
-//			System.out.println("... (setState) identityHashCode(this.view)=" + identityHashCode(this.view));
-//			System.out.println("... (setState) identityHashCode(this.view.getModel().getBinBoundaries())=" + identityHashCode(this.view.getModel().getBinBoundaries()));
-//			System.out.println("... (setState) identityHashCode(this)=" + identityHashCode(this));
 		}
 		if (h.containsKey("percentage"))
 		{
@@ -620,7 +613,6 @@ public class HistogramController implements StatistiekView, ActionListener,
 			// column index bin settings
 			updateBoundariesFromBinSettings();
 
-//			double maxBinValue = this.model.getMaxBinBoundaryValue();
 			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
 			double maxBinValue = this.view.getMaxBinOnScale();
 			
