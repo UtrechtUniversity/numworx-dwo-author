@@ -201,7 +201,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private ArrayList<String> getXStringOptions()
 	{
-		return this.model.getTableModel().getStringOptions(
+		return this.model.getStatTableModel().getStringOptions(
 			this.model.getColumnXIndex());
 	}
 
@@ -211,19 +211,19 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private ArrayList<String> getYStringOptions()
 	{
-		return this.model.getTableModel().getStringOptions(
+		return this.model.getStatTableModel().getStringOptions(
 			this.model.getColumnYIndex());
 	}
 
 	private ArrayList<String> getColorStringOptions()
 	{
-		return this.model.getTableModel().getStringOptions(
+		return this.model.getStatTableModel().getStringOptions(
 			this.model.getColumnColorIndex());
 	}
 
 	private ArrayList<String> getSplitStringOptions()
 	{
-		return this.model.getTableModel().getStringOptions(
+		return this.model.getStatTableModel().getStringOptions(
 			this.model.getColumnSplitIndex());
 	}
 
@@ -271,7 +271,7 @@ public class DotplotView extends JPanel implements Observer
 			//h -= DotplotView.X_AS_OFFSET;
 			h -= 50;
 		}
-		if (this.model.getTableModel().isViewsEditable())
+		if (this.model.getStatTableModel().isViewsEditable())
 		{
 //			h -= DotplotView.KEUZEBALK_HOOGTE;
 			h -= 25;
@@ -325,7 +325,7 @@ public class DotplotView extends JPanel implements Observer
 
 	private int determinePreferredHeight()
 	{
-		int splitClasses = this.model.getTableModel().numberOfSplitVarClasses(
+		int splitClasses = this.model.getStatTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions());
 		int preferredHeight = 0;
 
@@ -342,11 +342,11 @@ public class DotplotView extends JPanel implements Observer
 
 	private boolean updateColorLegend()
 	{
-		int splitClasses = this.model.getTableModel().numberOfSplitVarClasses(
+		int splitClasses = this.model.getStatTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions());
 		if (splitClasses > 1)
 		{
-			this.colorLegend.setColumnString(this.model.getTableModel()
+			this.colorLegend.setColumnString(this.model.getStatTableModel()
 				.getColumnName(
 					this.model.getSplitOptions().getColumnSplitIndex()));
 			ArrayList<String> splitStrings = new ArrayList<String>(splitClasses);
@@ -354,7 +354,7 @@ public class DotplotView extends JPanel implements Observer
 			for (int i = 0; i < splitClasses; i++)
 			{
 				splitStrings.add(this.model.getSplitOptions()
-					.getSplitClassLabel(i, this.model.getTableModel()));
+					.getSplitClassLabel(i, this.model.getStatTableModel()));
 				splitColors.add(this.getColor(i));
 			}
 			this.colorLegend.setColors(splitStrings, splitColors);
@@ -389,6 +389,7 @@ public class DotplotView extends JPanel implements Observer
 //		System.out.println("DotplotView.update()");
 		
 		this.setTypes();
+		this.updateMinMax();
 		this.setMinMax();
 
 		if (this.model.columnSplitIndexValid())
@@ -401,7 +402,7 @@ public class DotplotView extends JPanel implements Observer
 			splitClasses = 1;
 		}
 
-		this.dialogButton.setVisible(this.model.getTableModel()
+		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
 
 		// updateColorLegend() retourneert boolean, maar voert ook update uit
@@ -426,6 +427,48 @@ public class DotplotView extends JPanel implements Observer
 	}
 
 	/**
+	 * Check if the model's minimum and maximum on scale are valid and
+	 * update if necessary.
+	 */
+	private void updateMinMax()
+	{
+		if (this.model.columnXIndexValid() && this.xType.isNumber())
+		{
+			int columnXindex = this.model.getColumnXIndex();
+			
+			if (this.model.getStatTableModel().isEmptyColumn(columnXindex))
+			{
+				if (this.model.getMinXOnScale() > this.model.getMaxXOnScale())
+				{
+					// reset to zero
+					this.model.setMinXOnScale(0);
+					this.model.setMaxXOnScale(0);
+				}
+				// voor de rest is alles toegestaan
+			}
+			else
+			{ // data in column
+				
+				// check min on scale value
+				double minColumnXValue = this.model.getStatTableModel().getColumnMin(columnXindex);
+				if (this.model.getMinXOnScale() > minColumnXValue)
+				{
+					// minimum on scal is larger than the data's minimum, so reset
+					this.model.setMinXOnScale(minColumnXValue);
+				}
+				
+				// check max on scale value
+				double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
+				if (this.model.getMaxXOnScale() < maxColumnXValue)
+				{
+					// minimum on scal is larger than the data's minimum, so reset
+					this.model.setMaxXOnScale(maxColumnXValue);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Update y-axis offsets depending on 
 	 */
 	private void updateOffsets()
@@ -436,7 +479,7 @@ public class DotplotView extends JPanel implements Observer
 		// update offset y-axis
 		if (yIndex > -1)
 		{
-			ColumnType columnType = this.model.getTableModel().getColumnTypes()
+			ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 				.get(yIndex);
 			
 			Font font = super.getFont().deriveFont(super.getFont().getStyle());
@@ -578,19 +621,19 @@ public class DotplotView extends JPanel implements Observer
 	{
 		if (this.model.columnXIndexValid())
 		{
-			this.xType = this.model.getTableModel().getColumnTypes()
+			this.xType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnXIndex()).getType();
 		}
 		if (this.model.columnYIndexValid())
 		{
-			this.yType = this.model.getTableModel().getColumnTypes()
+			this.yType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnYIndex()).getType();
 		}
 
 		// if(this.model.isUseColorScale()) {
 		if (this.model.columnZIndexValid())
 		{
-			this.zType = this.model.getTableModel().getColumnTypes()
+			this.zType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnColorIndex()).getType();
 		}
 
@@ -602,7 +645,7 @@ public class DotplotView extends JPanel implements Observer
 
 	private void setSplitType()
 	{
-		this.splitType = this.model.getTableModel().getColumnTypes()
+		this.splitType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnSplitIndex()).getType();
 	}
 
@@ -613,31 +656,42 @@ public class DotplotView extends JPanel implements Observer
 	{
 		if (this.model.columnXIndexValid() && this.xType.isNumber())
 		{
-			xMin = this.model.getTableModel().getColumnMin(
-				this.model.getColumnXIndex());
-			xMax = this.model.getTableModel().getColumnMax(
-				this.model.getColumnXIndex());
+			if (this.model.isOptimizeScaleX())
+			{
+				xMin = this.model.getStatTableModel().getColumnMin(
+					this.model.getColumnXIndex());
+				xMax = this.model.getStatTableModel().getColumnMax(
+					this.model.getColumnXIndex());
+			}
+			else
+			{
+				xMin = this.model.getMinXOnScale();
+				xMax = this.model.getMaxXOnScale();
+			}
 		}
+		
 		if (this.model.columnYIndexValid() && this.yType.isNumber())
 		{
-			yMin = this.model.getTableModel().getColumnMin(
+			yMin = this.model.getStatTableModel().getColumnMin(
 				this.model.getColumnYIndex());
-			yMax = this.model.getTableModel().getColumnMax(
+			yMax = this.model.getStatTableModel().getColumnMax(
 				this.model.getColumnYIndex());
 		}
+		
 		// if(this.model.isUseColorScale() && this.zType.isNumber()) {
 		if (this.model.columnZIndexValid() && this.zType.isNumber())
 		{
-			zMin = this.model.getTableModel().getColumnMin(
+			zMin = this.model.getStatTableModel().getColumnMin(
 				this.model.getColumnColorIndex());
-			zMax = this.model.getTableModel().getColumnMax(
+			zMax = this.model.getStatTableModel().getColumnMax(
 				this.model.getColumnColorIndex());
 		}
+		
 		if (this.model.columnSplitIndexValid() && this.splitType.isNumber())
 		{
-			splitMin = this.model.getTableModel().getColumnMin(
+			splitMin = this.model.getStatTableModel().getColumnMin(
 				this.model.getColumnSplitIndex());
-			splitMax = this.model.getTableModel().getColumnMax(
+			splitMax = this.model.getStatTableModel().getColumnMax(
 				this.model.getColumnSplitIndex());
 		}
 	}
@@ -648,7 +702,7 @@ public class DotplotView extends JPanel implements Observer
 	private void determineDotSize()
 	{
 		double d = (this.getWidth() * this.getHeight())
-			/ (double) Math.max(10, this.model.getTableModel().getRowCount());
+			/ (double) Math.max(10, this.model.getStatTableModel().getRowCount());
 		this.dotSize = Math.max(2, (int) (0.25 * Math.pow(d, 1.0 / 3.0)));
 	}
 
@@ -664,7 +718,7 @@ public class DotplotView extends JPanel implements Observer
 	{
 		if (this.model.columnSplitIndexValid())
 		{
-			String s = (String) this.model.getTableModel().getValueAt(
+			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnSplitIndex());
 			if (s.equals(ColumnType.WILDCARD))
 			{
@@ -693,7 +747,7 @@ public class DotplotView extends JPanel implements Observer
 				else if (this.splitType.equals(AllowedTypes.ENUM))
 				{
 					// determine color for enum type objects
-					ColumnType columnType = this.model.getTableModel()
+					ColumnType columnType = this.model.getStatTableModel()
 						.getColumnTypes().get(this.model.getColumnSplitIndex());
 					int index = columnType.indexOfStringInEnum(s);
 					if (columnType.indexOfStringInEnum(ColumnType.WILDCARD) < index)
@@ -713,7 +767,7 @@ public class DotplotView extends JPanel implements Observer
 
 		else if (this.model.columnZIndexValid())
 		{
-			String s = (String) this.model.getTableModel().getValueAt(
+			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnColorIndex());
 			if (s.equals(ColumnType.WILDCARD))
 			{
@@ -734,7 +788,7 @@ public class DotplotView extends JPanel implements Observer
 				else if (this.zType.equals(AllowedTypes.ENUM))
 				{
 					// determine color for enum type objects
-					ColumnType columnType = this.model.getTableModel()
+					ColumnType columnType = this.model.getStatTableModel()
 						.getColumnTypes().get(this.model.getColumnColorIndex());
 					int index = columnType.indexOfStringInEnum(s);
 					if (columnType.indexOfStringInEnum(ColumnType.WILDCARD) < index)
@@ -776,7 +830,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int determineXCoord(int pointIndex)
 	{
-		String valueString = (String) this.model.getTableModel().getValueAt(
+		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnXIndex());
 		if (valueString.equals(ColumnType.WILDCARD))
 		{
@@ -850,7 +904,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int determineXCoordEnumClass(String value)
 	{
-		ColumnType cType = this.model.getTableModel().getColumnTypes()
+		ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
 
 		if (cType.getEnumOptions().length == 2) // including '*' which is not shown, so 1 class
@@ -936,7 +990,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int determineYCoord(int pointIndex)
 	{
-		String valueString = (String) this.model.getTableModel().getValueAt(
+		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnYIndex());
 
 		if (valueString.equals(ColumnType.WILDCARD))
@@ -986,7 +1040,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int determineYCoordEnumClass(String value)
 	{
-		ColumnType cType = this.model.getTableModel().getColumnTypes()
+		ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnYIndex());
 		int drawHeight = this.dotAreaHeight();
 
@@ -1104,7 +1158,7 @@ public class DotplotView extends JPanel implements Observer
 		
 		// highlight point if the object is selected
 		g.setColor(Color.BLACK);
-		if (this.model.getTableModel().isRowSelected(rowIndex))
+		if (this.model.getStatTableModel().isRowSelected(rowIndex))
 		{
 			g.fillOval(x - this.dotSize - 2, y - this.dotSize - 2,
 				2 * this.dotSize + 4, 2 * this.dotSize + 4); // because of transparency the highlighted dot will tone darker
@@ -1130,7 +1184,7 @@ public class DotplotView extends JPanel implements Observer
 		
 		// highlight point if the object is selected
 		g.setColor(Color.BLACK);
-		if (this.model.getTableModel().isRowSelected(rowIndex))
+		if (this.model.getStatTableModel().isRowSelected(rowIndex))
 		{
 			g.fillOval(x - this.dotSize - 2, y - this.dotSize - 2,
 				2 * this.dotSize + 4, 2 * this.dotSize + 4);
@@ -1166,10 +1220,10 @@ public class DotplotView extends JPanel implements Observer
 		String s1 = "";
 		String s2 = "";
 		if (this.model.columnYIndexValid())
-			s1 = this.model.getTableModel().getColumnName(
+			s1 = this.model.getStatTableModel().getColumnName(
 				this.model.getColumnYIndex());
 		if (this.model.columnXIndexValid())
-			s2 = this.model.getTableModel().getColumnName(
+			s2 = this.model.getStatTableModel().getColumnName(
 				this.model.getColumnXIndex());
 
 		g.setColor(Color.BLACK);
@@ -1187,14 +1241,14 @@ public class DotplotView extends JPanel implements Observer
 				+ this.X_AS_OFFSET - 37 + yOffset);
 
 		// draw split variable class (e.g., "geslacht: m")
-		if (this.model.getTableModel().numberOfSplitVarClasses(
+		if (this.model.getStatTableModel().numberOfSplitVarClasses(
 			this.model.getSplitOptions()) > 1
 			&& !this.model.splitInSingleView())
 		{
-			String name = this.model.getTableModel().getColumnName(
+			String name = this.model.getStatTableModel().getColumnName(
 				this.model.getSplitOptions().getColumnSplitIndex());
 			String splitClassLabel = this.model.getSplitOptions().getSplitClassLabel(splitClass,
-				this.model.getTableModel());
+				this.model.getStatTableModel());
 			String s = name
 				+ ": " + splitClassLabel;
 			g.drawString(s, 10, this.scrollPane.getHeight() + this.X_AS_OFFSET
@@ -1222,10 +1276,10 @@ public class DotplotView extends JPanel implements Observer
 		at.rotate(theta); 
 		Font rotateFont = super.getFont().deriveFont(at);
 
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
 
-		int y = this.model.getTableModel().isViewsEditable() ? this.getHeight()
+		int y = this.model.getStatTableModel().isViewsEditable() ? this.getHeight()
 			- DotplotView.KEUZEBALK_HOOGTE - DotplotView.X_AS_OFFSET : 
 //				this.getHeight() - DotplotView.X_AS_OFFSET;
 				this.getHeight() - 50;
@@ -1448,7 +1502,7 @@ public class DotplotView extends JPanel implements Observer
 	{
 		boolean normalFit = true;
 		
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnXIndex());
 		Font font = super.getFont().deriveFont(super.getFont().getStyle());
 		FontMetrics fm = super.getFontMetrics(font);
@@ -1568,7 +1622,7 @@ public class DotplotView extends JPanel implements Observer
 		Font font = super.getFont().deriveFont(super.getFont().getStyle());
 		FontMetrics fm = super.getFontMetrics(font);
 
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnYIndex());
 
 		int x = this.yAxisOffset;
@@ -1698,14 +1752,14 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private double getColumnMean(int column, ArrayList<String> options)
 	{
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(column);
 		AllowedTypes type = columnType.getType();
 		int count = 0;
 		double sum = 0;
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			String valueString = (String) this.model.getTableModel()
+			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
 			if (valueString.equals(ColumnType.WILDCARD))
 			{
@@ -1748,14 +1802,14 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private double getColumnSum(int column, ArrayList<String> options)
 	{
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(column);
 		AllowedTypes type = columnType.getType();
 		int count = 0;
 		double sum = 0;
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			String valueString = (String) this.model.getTableModel()
+			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
 			if (valueString.equals(ColumnType.WILDCARD))
 			{
@@ -1801,14 +1855,14 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private double getStdDev(int column, double mean, ArrayList<String> options)
 	{
-		ColumnType columnType = this.model.getTableModel().getColumnTypes()
+		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(column);
 		AllowedTypes type = columnType.getType();
 		int count = 0;
 		double sum = 0;
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			String valueString = (String) this.model.getTableModel()
+			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
 			if (valueString.equals(ColumnType.WILDCARD))
 			{
@@ -1916,10 +1970,10 @@ public class DotplotView extends JPanel implements Observer
 		ArrayList<String> optionsA, int indexColumnB, double meanB,
 		ArrayList<String> optionsB)
 	{
-		ColumnType columnTypeA = this.model.getTableModel().getColumnTypes()
+		ColumnType columnTypeA = this.model.getStatTableModel().getColumnTypes()
 			.get(indexColumnA);
 		AllowedTypes typeA = columnTypeA.getType();
-		ColumnType columnTypeB = this.model.getTableModel().getColumnTypes()
+		ColumnType columnTypeB = this.model.getStatTableModel().getColumnTypes()
 			.get(indexColumnB);
 		AllowedTypes typeB = columnTypeB.getType();
 
@@ -1985,11 +2039,11 @@ public class DotplotView extends JPanel implements Observer
 		double sumA = this.getColumnSum(indexColumnA, optionsA);
 		double sumB = this.getColumnSum(indexColumnB, optionsB);
 		
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			String valueStringA = (String) this.model.getTableModel()
+			String valueStringA = (String) this.model.getStatTableModel()
 				.getValueAt(i, indexColumnA);
-			String valueStringB = (String) this.model.getTableModel()
+			String valueStringB = (String) this.model.getStatTableModel()
 				.getValueAt(i, indexColumnB);
 			
 			if (valueStringA.equals(ColumnType.WILDCARD) || valueStringB.equals(ColumnType.WILDCARD))
@@ -2080,7 +2134,7 @@ public class DotplotView extends JPanel implements Observer
 			
 			String correlationInfoString;
 			
-			double[][] data = this.model.getTableModel().getDataColumnsForCorrelation(columnAIndex, columnBIndex);
+			double[][] data = this.model.getStatTableModel().getDataColumnsForCorrelation(columnAIndex, columnBIndex);
 			String pString;
 			// calculate significance met Common math package
 //			PearsonsCorrelation pearsonCorrelation = new PearsonsCorrelation(data);
@@ -2270,8 +2324,8 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int[][] determineCoordsXSingleVar()
 	{
-		int[][] coords = new int[this.model.getTableModel().getRowCount()][2];
-		int[] splitClasses = new int[this.model.getTableModel().getRowCount()];
+		int[][] coords = new int[this.model.getStatTableModel().getRowCount()][2];
+		int[] splitClasses = new int[this.model.getStatTableModel().getRowCount()];
 		int[][] sortedData = null;
 
 		/*
@@ -2281,9 +2335,9 @@ public class DotplotView extends JPanel implements Observer
 		 */
 		int drawHeight = this.dotAreaHeight();
 		int dotSizeSquared = (int) (Math.pow(2 * this.dotSize + 1, 2));
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			if (this.model.getTableModel()
+			if (this.model.getStatTableModel()
 				.getValueAt(i, this.model.getColumnXIndex())
 				.equals(ColumnType.WILDCARD))
 			{
@@ -2301,8 +2355,8 @@ public class DotplotView extends JPanel implements Observer
 		}
 		
 		// sortedData = [x, y, split, original index]
-		sortedData = new int[this.model.getTableModel().getRowCount()][4];
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		sortedData = new int[this.model.getStatTableModel().getRowCount()][4];
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			sortedData[i][0] = coords[i][0];
 			sortedData[i][2] = splitClasses[i];
@@ -2353,9 +2407,9 @@ public class DotplotView extends JPanel implements Observer
 		double y_initial = (1 - DotplotView.KEEP_CLEAR_PART) * drawHeight;
 		double y = y_initial;
 		// use double values to get a precise calculation for large data sets
-		double[] y_doubles = new double[this.model.getTableModel().getRowCount()];
+		double[] y_doubles = new double[this.model.getStatTableModel().getRowCount()];
 		
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			if (i > 0)
 			{
@@ -2387,7 +2441,7 @@ public class DotplotView extends JPanel implements Observer
 		} // i-loop
 
 		// round double values to int coordinates
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			sortedData[i][1] = (int) y_doubles[i];
 		}
@@ -2456,8 +2510,8 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int[][] determineCoordsYSingleVar()
 	{
-		int[][] coords = new int[this.model.getTableModel().getRowCount()][2];
-		int[] splitClasses = new int[this.model.getTableModel().getRowCount()];
+		int[][] coords = new int[this.model.getStatTableModel().getRowCount()][2];
+		int[] splitClasses = new int[this.model.getStatTableModel().getRowCount()];
 
 		/*
 		 * int drawHeight = this.getHeight() - DotplotView.X_AS_OFFSET;
@@ -2465,9 +2519,9 @@ public class DotplotView extends JPanel implements Observer
 		 * DotplotView.KEUZEBALK_HOOGTE; }
 		 */
 		int dotSizeSquared = (int) (Math.pow(2 * this.dotSize + 1, 2));
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			if (this.model.getTableModel()
+			if (this.model.getStatTableModel()
 				.getValueAt(i, this.model.getColumnYIndex())
 				.equals(ColumnType.WILDCARD))
 			{
@@ -2491,7 +2545,7 @@ public class DotplotView extends JPanel implements Observer
 
 			for (int j = 0; j < i; j++)
 			{
-				if (!this.model.getTableModel()
+				if (!this.model.getStatTableModel()
 					.getValueAt(j, this.model.getColumnYIndex())
 					.equals(ColumnType.WILDCARD)
 					&& splitClasses[i] == splitClasses[j]
@@ -2524,7 +2578,7 @@ public class DotplotView extends JPanel implements Observer
 		}
 		else
 		{
-			ColumnType cType = this.model.getTableModel().getColumnTypes()
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnSplitIndex());
 			if (this.splitType.isNumber())
 			{
@@ -2539,7 +2593,7 @@ public class DotplotView extends JPanel implements Observer
 			}
 			else
 			{
-				return this.model.getTableModel()
+				return this.model.getStatTableModel()
 					.getStringOptions(this.model.getColumnSplitIndex()).size();
 			}
 		}
@@ -2556,7 +2610,7 @@ public class DotplotView extends JPanel implements Observer
 	 */
 	private int getSplitClass(int rowIndex)
 	{
-		return this.model.getTableModel().classifyObject(rowIndex,
+		return this.model.getStatTableModel().classifyObject(rowIndex,
 			this.model.getSplitOptions());
 		/*
 		 * if(!this.model.columnSplitIndexValid()) { return 0; }
@@ -2670,7 +2724,7 @@ public class DotplotView extends JPanel implements Observer
 					if (controlClicked)
 					{
 						// get the current selection list
-						selectionList = model.getTableModel().getSelectionList();
+						selectionList = model.getStatTableModel().getSelectionList();
 						
 						for (int j = 0; j < pointList.size(); j++)
 						{
@@ -2692,7 +2746,7 @@ public class DotplotView extends JPanel implements Observer
 					}
 					
 					// update the selection
-					model.getTableModel().setSelectionList(selectionList);
+					model.getStatTableModel().setSelectionList(selectionList);
 				}
 			}
 
@@ -2752,7 +2806,7 @@ public class DotplotView extends JPanel implements Observer
 			if (controlClicked)
 			{
 				// get the current selection list
-				selectionList = model.getTableModel().getSelectionList();
+				selectionList = model.getStatTableModel().getSelectionList();
 
 				for (int i = 0; i < pointList.size(); i++)
 				{
@@ -2775,7 +2829,7 @@ public class DotplotView extends JPanel implements Observer
 			}
 
 			// update the selection
-			DotplotView.this.model.getTableModel().setSelectionList(
+			DotplotView.this.model.getStatTableModel().setSelectionList(
 				selectionList);
 
 			this.inDrag = false;
@@ -2829,7 +2883,7 @@ public class DotplotView extends JPanel implements Observer
 			
 			// sorteer de rij-indices zodat selected rijen op het eind staan
 			// en de bijbehorende dots als laatste worden getekend
-			final StatTableModel tableModel = DotplotView.this.model.getTableModel();
+			final StatTableModel tableModel = DotplotView.this.model.getStatTableModel();
 			int nrRows = tableModel.getRowCount();
 			Integer[] indexSortedOnSelected = new Integer[nrRows];
 			for (int i = 0; i < nrRows; i++)
@@ -2867,8 +2921,8 @@ public class DotplotView extends JPanel implements Observer
 				// all variables are valid, draw a scatterplot
 				DotplotView.this.determineDotSize();
 				DotplotView.this.objectLocations = new ArrayList<Point>(
-					DotplotView.this.model.getTableModel().getRowCount());
-				for (int i = 0; i < DotplotView.this.model.getTableModel()
+					DotplotView.this.model.getStatTableModel().getRowCount());
+				for (int i = 0; i < DotplotView.this.model.getStatTableModel()
 					.getRowCount(); i++)
 				{
 					DotplotView.this.objectLocations.add(null);
@@ -2884,7 +2938,7 @@ public class DotplotView extends JPanel implements Observer
 						* (DotplotView.this.scrollPane.getHeight() - 5));
 				}
 
-				for (int row = 0; row < DotplotView.this.model.getTableModel()
+				for (int row = 0; row < DotplotView.this.model.getStatTableModel()
 					.getRowCount(); row++)
 				{
 //					DotplotView.this.drawPoint(g2d, row);
@@ -2908,8 +2962,8 @@ public class DotplotView extends JPanel implements Observer
 				DotplotView.this.determineDotSize();
 				DotplotView.this.dotSize = DotplotView.this.dotSize * 2;
 				DotplotView.this.objectLocations = new ArrayList<Point>(
-					DotplotView.this.model.getTableModel().getRowCount());
-				for (int i = 0; i < DotplotView.this.model.getTableModel()
+					DotplotView.this.model.getStatTableModel().getRowCount());
+				for (int i = 0; i < DotplotView.this.model.getStatTableModel()
 					.getRowCount(); i++)
 				{
 					DotplotView.this.objectLocations.add(null);
@@ -2922,7 +2976,7 @@ public class DotplotView extends JPanel implements Observer
 					int index = indexSortedOnSelected[i];
 
 					if (!DotplotView.this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getValueAt(index, DotplotView.this.model.getColumnXIndex())
 						.equals(ColumnType.WILDCARD))
 					{
@@ -2965,8 +3019,8 @@ public class DotplotView extends JPanel implements Observer
 				DotplotView.this.determineDotSize();
 				DotplotView.this.dotSize = DotplotView.this.dotSize * 2;
 				DotplotView.this.objectLocations = new ArrayList<Point>(
-					DotplotView.this.model.getTableModel().getRowCount());
-				for (int i = 0; i < DotplotView.this.model.getTableModel()
+					DotplotView.this.model.getStatTableModel().getRowCount());
+				for (int i = 0; i < DotplotView.this.model.getStatTableModel()
 					.getRowCount(); i++)
 				{
 					DotplotView.this.objectLocations.add(null);
@@ -2979,7 +3033,7 @@ public class DotplotView extends JPanel implements Observer
 					int index = indexSortedOnSelected[i];
 
 					if (!DotplotView.this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getValueAt(index, DotplotView.this.model.getColumnYIndex())
 						.equals(ColumnType.WILDCARD))
 					{
@@ -3025,9 +3079,9 @@ public class DotplotView extends JPanel implements Observer
 			{
 				return;
 			}
-			String columnName = DotplotView.this.model.getTableModel()
+			String columnName = DotplotView.this.model.getStatTableModel()
 				.getColumnName(DotplotView.this.model.getColumnSplitIndex());
-			ColumnType cType = DotplotView.this.model.getTableModel()
+			ColumnType cType = DotplotView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(DotplotView.this.model.getColumnSplitIndex());
 			ArrayList<Double> boundaries = DotplotView.this.model
@@ -3046,7 +3100,7 @@ public class DotplotView extends JPanel implements Observer
 				else
 				{
 					s = DotplotView.this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getStringOptions(
 							DotplotView.this.model.getColumnSplitIndex())
 						.get(i);
