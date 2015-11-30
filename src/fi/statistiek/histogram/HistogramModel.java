@@ -22,7 +22,7 @@ import fi.statistiek.types.ColumnType;
 public class HistogramModel extends Observable implements TableModelListener,
 	SelectionListener, StatBinsModel
 {
-	private StatTableModel tableModel;
+	private StatTableModel statTableModel;
 	private String viewName;
 	private int columnIndex;
 
@@ -89,9 +89,9 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public HistogramModel(StatTableModel tableModel, String viewName,
 		boolean frequencyPolygonMode)
 	{
-		this.tableModel = tableModel;
-		this.tableModel.addTableModelListener(this);
-		this.tableModel.addSelectionListener(this);
+		this.statTableModel = tableModel;
+		this.statTableModel.addTableModelListener(this);
+		this.statTableModel.addSelectionListener(this);
 
 		this.splitOptions = new SplitOptions();
 
@@ -245,10 +245,10 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.noBins = noBins;
 
 		// set appropriate boundaries
-		if (this.tableModel.getRowCount() > 0 && this.columnIndexValid())
+		if (this.statTableModel.getRowCount() > 0 && this.columnIndexValid())
 		{
-			double min = this.tableModel.getColumnMin(this.columnIndex);
-			double max = this.tableModel.getColumnMax(this.columnIndex);
+			double min = this.statTableModel.getColumnMin(this.columnIndex);
+			double max = this.statTableModel.getColumnMax(this.columnIndex);
 			this.binBoundaries = Statistiek.appropriateBoundaries(min, max,
 				this.noBins);
 			//System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
@@ -272,7 +272,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 			|| ((min <= minColumnValue) && (min != this.minOnScale)))
 		{
 			this.minOnScale = min;
-			this.changed(); // niet nodig?
+			this.changed();
 		}
 	}
 
@@ -471,12 +471,12 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setTableModel(StatTableModel tableModel)
 	{
-		if (!(this.tableModel == tableModel))
+		if (!(this.statTableModel == tableModel))
 		{
-			this.tableModel.removeTableModelListener(this);
-			this.tableModel = tableModel;
-			this.tableModel.addTableModelListener(this);
-			this.tableModel.addSelectionListener(this);
+			this.statTableModel.removeTableModelListener(this);
+			this.statTableModel = tableModel;
+			this.statTableModel.addTableModelListener(this);
+			this.statTableModel.addSelectionListener(this);
 			this.changed();
 		}
 
@@ -487,7 +487,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public StatTableModel getStatTableModel()
 	{
-		return this.tableModel;
+		return this.statTableModel;
 	}
 
 	/**
@@ -504,14 +504,14 @@ public class HistogramModel extends Observable implements TableModelListener,
 			
 			if (this.columnIndexValid())
 			{
-				if (this.tableModel.getColumnTypes().get(this.columnIndex)
+				if (this.statTableModel.getColumnTypes().get(this.columnIndex)
 					.getType().isNumber())
 				{
     				// binBoundaries worden hier standaard gezet
     				this.binBoundaries = Statistiek
     					.appropriateBoundaries(
-    						this.tableModel.getColumnMin(this.columnIndex),
-    						this.tableModel.getColumnMax(this.columnIndex),
+    						this.statTableModel.getColumnMin(this.columnIndex),
+    						this.statTableModel.getColumnMax(this.columnIndex),
     						this.noBins);
     				
     				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen 
@@ -521,8 +521,8 @@ public class HistogramModel extends Observable implements TableModelListener,
     				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
     				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
     				
-    				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
-    					this.tableModel.getColumnMax(this.columnIndex), 
+    				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.statTableModel.getColumnMin(this.columnIndex),
+    					this.statTableModel.getColumnMax(this.columnIndex), 
     					// door afronding kan de aftreksom heel veel decimalen hebben
     					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
     				
@@ -530,7 +530,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 				}
 
 				// set bin label positioning
-				AllowedTypes type = this.tableModel.getColumnTypes().get(this.columnIndex)
+				AllowedTypes type = this.statTableModel.getColumnTypes().get(this.columnIndex)
 					.getType(); 
 				if (type.equals(AllowedTypes.INTEGER))
 				{
@@ -643,7 +643,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public boolean columnIndexValid()
 	{
 		return this.columnIndex >= 0
-			&& this.columnIndex < this.tableModel.getColumnCount();
+			&& this.columnIndex < this.statTableModel.getColumnCount();
 	}
 	
 	/**
@@ -654,7 +654,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	public boolean columnSplitIndexValid()
 	{
 		return this.splitOptions.getColumnSplitIndex() >= 0
-			&& this.splitOptions.getColumnSplitIndex() < this.tableModel
+			&& this.splitOptions.getColumnSplitIndex() < this.statTableModel
 				.getColumnCount();
 	}
 
@@ -679,7 +679,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public int[][] numberClassFrequency()
 	{
-		return this.tableModel.numberClassFrequency(this.binBoundaries,
+		return this.statTableModel.numberClassFrequency(this.binBoundaries,
 			this.columnIndex, this.splitOptions);
 	}
 
@@ -692,7 +692,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public FrequencyTuple[][] enumClassFrequency()
 	{
-		return this.tableModel.enumClassFrequency(this.columnIndex, 
+		return this.statTableModel.enumClassFrequency(this.columnIndex, 
 			this.splitOptions);
 
 	}
