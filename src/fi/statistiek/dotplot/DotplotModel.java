@@ -21,12 +21,26 @@ import fi.statistiek.Statistiek;
 public class DotplotModel extends Observable implements TableModelListener,
 	SelectionListener
 {
-	private StatTableModel tableModel;
+	private StatTableModel statTableModel;
 	private int columnXIndex;
 	private int columnYIndex;
 	private final boolean scatterplotMode;
 
 	private SplitOptions splitOptions;
+
+	/**
+	 * Whether or not the scale of variable X is optimized. Only available in dotplot,
+	 * not in scatterplot.
+	 */
+	private boolean optimizeScaleX;
+	/**
+	 * The minimum value of columnX that is used on the scale of the dotplot.
+	 */
+	private double minXOnScale;
+	/**
+	 * The maximum value of columnX that is used on the scale of the dotplot.
+	 */
+	private double maxXOnScale;
 
 	private boolean useColorScale;
 	private Color colorA;
@@ -51,9 +65,9 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public DotplotModel(StatTableModel tableModel, String viewName,
 		boolean scatterplotMode)
 	{
-		this.tableModel = tableModel;
-		this.tableModel.addTableModelListener(this);
-		this.tableModel.addSelectionListener(this);
+		this.statTableModel = tableModel;
+		this.statTableModel.addTableModelListener(this);
+		this.statTableModel.addSelectionListener(this);
 
 		this.viewName = viewName;
 		this.showCorrelation = false;
@@ -76,6 +90,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 		boundaries.add(100.0);
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.scatterplotMode = scatterplotMode;
+		this.optimizeScaleX = true;
 	}
 
 	private void changed()
@@ -92,12 +107,12 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 */
 	public void setTableModel(StatTableModel tableModel)
 	{
-		if (!(this.tableModel == tableModel))
+		if (!(this.statTableModel == tableModel))
 		{
-			this.tableModel.removeTableModelListener(this);
-			this.tableModel = tableModel;
-			this.tableModel.addTableModelListener(this);
-			this.tableModel.addSelectionListener(this);
+			this.statTableModel.removeTableModelListener(this);
+			this.statTableModel = tableModel;
+			this.statTableModel.addTableModelListener(this);
+			this.statTableModel.addSelectionListener(this);
 			this.changed();
 		}
 	}
@@ -105,9 +120,9 @@ public class DotplotModel extends Observable implements TableModelListener,
 	/**
 	 * @return The data table
 	 */
-	public StatTableModel getTableModel()
+	public StatTableModel getStatTableModel()
 	{
-		return this.tableModel;
+		return this.statTableModel;
 	}
 
 	/**
@@ -267,7 +282,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public boolean columnXIndexValid()
 	{
 		return this.columnXIndex >= 0
-			&& this.columnXIndex < this.tableModel.getColumnCount();
+			&& this.columnXIndex < this.statTableModel.getColumnCount();
 	}
 
 	/**
@@ -278,7 +293,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public boolean columnYIndexValid()
 	{
 		return this.columnYIndex >= 0
-			&& this.columnYIndex < this.tableModel.getColumnCount();
+			&& this.columnYIndex < this.statTableModel.getColumnCount();
 	}
 
 	/**
@@ -289,7 +304,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public boolean columnZIndexValid()
 	{
 		return this.columnColorIndex >= 0
-			&& this.columnColorIndex < this.tableModel.getColumnCount();
+			&& this.columnColorIndex < this.statTableModel.getColumnCount();
 	}
 
 	/**
@@ -300,13 +315,13 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public boolean columnColorIndexValid()
 	{
 		return this.columnColorIndex >= 0
-			&& this.columnColorIndex < this.tableModel.getColumnCount();
+			&& this.columnColorIndex < this.statTableModel.getColumnCount();
 	}
 
 	public boolean columnSplitIndexValid()
 	{
 		return this.splitOptions.getColumnSplitIndex() >= 0
-			&& this.splitOptions.getColumnSplitIndex() < this.tableModel
+			&& this.splitOptions.getColumnSplitIndex() < this.statTableModel
 				.getColumnCount();
 	}
 
@@ -359,9 +374,9 @@ public class DotplotModel extends Observable implements TableModelListener,
 	public void setNoSplitBins(int noBins)
 	{
 		this.splitOptions
-			.setBinBoundaries(Statistiek.appropriateBoundaries(this.tableModel
+			.setBinBoundaries(Statistiek.appropriateBoundaries(this.statTableModel
 				.getColumnMin(this.splitOptions.getColumnSplitIndex()),
-				this.tableModel.getColumnMax(this.splitOptions
+				this.statTableModel.getColumnMax(this.splitOptions
 					.getColumnSplitIndex()), noBins));
 		this.changed();
 	}
@@ -447,4 +462,125 @@ public class DotplotModel extends Observable implements TableModelListener,
 		
 		return colorBString;
 	}
+	
+	/**
+	 * Get the minimum value of columnX on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMinXOnScale()
+	{
+		return this.minXOnScale;
+	}
+	
+	/**
+	 * Set the minimum value of columnX on the scale.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinXOnScale(double min)
+	{
+		double minColumnValue = this.getStatTableModel().getColumnMin(
+			this.getColumnXIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
+			|| ((min <= minColumnValue) && (min != this.minXOnScale)))
+		{
+			this.minXOnScale = min;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the minimum value of columnX on the scale without triggering events.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinXOnScaleWithoutEvent(double min)
+	{
+		double minColumnValue = this.getStatTableModel().getColumnMin(
+			this.getColumnXIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
+			|| ((min <= minColumnValue) && (min != this.minXOnScale)))
+		{
+			this.minXOnScale = min;
+		}
+	}
+
+	/**
+	 * Get the maximum value of columnX on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMaxXOnScale()
+	{
+		return this.maxXOnScale;
+	}
+
+	/**
+	 * Set the maximum value of columnX on the scale.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxXOnScale(double max)
+	{
+		double maxColumnValue = this.getStatTableModel().getColumnMax(
+			this.getColumnXIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
+			|| ((max >= maxColumnValue) && (max != this.maxXOnScale)))
+		{
+			this.maxXOnScale = max;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the maximum value of columnX on the scale without triggering events.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxXOnScaleWithoutEvent(double max)
+	{
+		double maxColumnValue = this.getStatTableModel().getColumnMax(
+			this.getColumnXIndex());
+
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
+			|| ((max >= maxColumnValue) && (max != this.maxXOnScale)))
+		{
+			this.maxXOnScale = max;
+		}
+	}
+
+	/**
+	 * Returns whether the scale of columnX is optimized.
+	 * @return
+	 */
+	public boolean isOptimizeScaleX()
+	{
+		return optimizeScaleX;
+	}
+
+	public void setOptimizeScaleX(boolean b)
+	{
+		if (this.optimizeScaleX != b)
+		{
+			this.optimizeScaleX = b;
+			this.changed();
+		}
+	}
+
+	public void setOptimizeScaleXWithoutEvent(boolean b)
+	{
+		if (this.optimizeScaleX != b)
+		{
+			this.optimizeScaleX = b;
+		}
+	}
+
 }
