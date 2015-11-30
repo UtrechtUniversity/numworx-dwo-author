@@ -1347,9 +1347,9 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 	{
 		setVisibleBoundaryOptions();
 		setVisibleSplitBoundaryOptions(false);
+		
 		if (vb0 != null)
 			resize(vb0);
-
 	}
 
 	private void setEnumClasses(boolean b)
