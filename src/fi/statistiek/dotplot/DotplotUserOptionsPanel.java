@@ -33,7 +33,7 @@ import fi.statistiek.Statistiek;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
 
-public class DotplotUserOptionsPanel extends JPanel implements ActionListener
+public class DotplotUserOptionsPanel extends JPanel implements ActionListener, FocusListener
 {
 
 	private DotplotView view;
@@ -53,6 +53,27 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 	// display settings
 	private JLabel absRelLabel;
+	/**
+	 * Fields for setting the scale of the X variable
+	 */
+	private JCheckBox optimizeScaleXBox;
+	private JLabel minXOnScaleLabel;
+	private JTextField minXOnScaleField;
+	private JLabel maxXOnScaleLabel;
+	private JTextField maxXOnScaleField;
+//	private JLabel noObjectsLabel;
+	private JLabel minValueXLabel;
+	private JLabel maxValueXLabel;
+	/**
+	 * Fields for setting the scale of the Y variable
+	 */
+//	private JCheckBox optimizeScaleYBox;
+//	private JLabel minYOnScaleLabel;
+//	private JTextField minYOnScaleField;
+//	private JLabel maxYOnScaleLabel;
+//	private JTextField maxYOnScaleField;
+//	private JLabel minValueYLabel;
+//	private JLabel maxValueYLabel;
 	private JCheckBox useColorScaleBox;
 	private JCheckBox showCorrelationBox;
 	private JLabel varColorLabel;
@@ -146,7 +167,6 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
         
 		this.varXBox.setFont(Statistiek.font);
 		this.varXBox.setPreferredSize(new Dimension(100, 25));
-		//this.varXBox.setMaximumSize(new Dimension(100, 25));
 		this.varXBox.setActionCommand("varXBox");
 		this.varXBox.addActionListener(this.controller);
 
@@ -178,7 +198,6 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 			this.varYBox.setFont(Statistiek.font);
 			this.varYBox.setPreferredSize(new Dimension(100, 25));
-			//this.varYBox.setMaximumSize(new Dimension(100, 25));
 			this.varYBox.setActionCommand("varYBox");
 			this.varYBox.addActionListener(this.controller);
 		}
@@ -186,6 +205,82 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		// display settings
 		this.absRelLabel = new JLabel(Statistiek.rb.getString("absRelLabel"));
 		this.absRelLabel.setFont(Statistiek.font);
+
+		// fields for setting the scale of the X variable
+		this.optimizeScaleXBox = new JCheckBox(
+			Statistiek.rb.getString("optimizeScaleBox"), true);
+		this.optimizeScaleXBox.setFont(Statistiek.font);
+		this.optimizeScaleXBox.setOpaque(false);
+		this.optimizeScaleXBox.setActionCommand("optimizeScaleXBox");
+		this.optimizeScaleXBox.addActionListener(this);
+		
+		this.minXOnScaleLabel = new JLabel(
+			Statistiek.rb.getString("minValueLabel"));
+		this.minXOnScaleLabel.setFont(Statistiek.font);
+
+		this.minXOnScaleField = new JTextField();
+		this.minXOnScaleField.setMaximumSize(new Dimension(40, 25));
+		this.minXOnScaleField.setMinimumSize(new Dimension(40, 25));
+		this.minXOnScaleField.setPreferredSize(new Dimension(40, 25));
+		this.minXOnScaleField.setActionCommand("minOnScale");
+		this.minXOnScaleField.addActionListener(this);
+		this.minXOnScaleField.addFocusListener(this);
+
+		this.maxXOnScaleLabel = new JLabel(
+			Statistiek.rb.getString("maxValueLabel"));
+		this.maxXOnScaleLabel.setFont(Statistiek.font);
+
+		this.maxXOnScaleField = new JTextField();
+		this.maxXOnScaleField.setMaximumSize(new Dimension(40, 25));
+		this.maxXOnScaleField.setMinimumSize(new Dimension(40, 25));
+		this.maxXOnScaleField.setPreferredSize(new Dimension(40, 25));
+		this.maxXOnScaleField.setActionCommand("maxOnScale");
+		this.maxXOnScaleField.addActionListener(this);
+		this.maxXOnScaleField.addFocusListener(this);
+
+		this.minValueXLabel = new JLabel("");
+		this.minValueXLabel.setFont(Statistiek.font);
+
+		this.maxValueXLabel = new JLabel("");
+		this.maxValueXLabel.setFont(Statistiek.font);
+
+		// fields for setting the scale of the Y variable
+//		this.optimizeScaleYBox = new JCheckBox(
+//			Statistiek.rb.getString("optimizeScaleYBox"), true);
+//		this.optimizeScaleYBox.setFont(Statistiek.font);
+//		this.optimizeScaleYBox.setOpaque(false);
+//		this.optimizeScaleYBox.setActionCommand("optimizeScaleYBox");
+//		this.optimizeScaleYBox.addActionListener(this);
+//		
+//		this.minYOnScaleLabel = new JLabel(
+//			Statistiek.rb.getString("minValueLabel"));
+//		this.minYOnScaleLabel.setFont(Statistiek.font);
+//
+//		this.minYOnScaleField = new JTextField();
+//		this.minYOnScaleField.setMaximumSize(new Dimension(40, 25));
+//		this.minYOnScaleField.setMinimumSize(new Dimension(40, 25));
+//		this.minYOnScaleField.setPreferredSize(new Dimension(40, 25));
+//		this.minYOnScaleField.setActionCommand("minOnScale");
+//		this.minYOnScaleField.addActionListener(this);
+//		this.minYOnScaleField.addFocusListener(this);
+//
+//		this.maxYOnScaleLabel = new JLabel(
+//			Statistiek.rb.getString("maxValueLabel"));
+//		this.maxYOnScaleLabel.setFont(Statistiek.font);
+//
+//		this.maxYOnScaleField = new JTextField();
+//		this.maxYOnScaleField.setMaximumSize(new Dimension(40, 25));
+//		this.maxYOnScaleField.setMinimumSize(new Dimension(40, 25));
+//		this.maxYOnScaleField.setPreferredSize(new Dimension(40, 25));
+//		this.maxYOnScaleField.setActionCommand("maxOnScale");
+//		this.maxYOnScaleField.addActionListener(this);
+//		this.maxYOnScaleField.addFocusListener(this);
+//
+//		this.minValueYLabel = new JLabel("");
+//		this.minValueYLabel.setFont(Statistiek.font);
+//
+//		this.maxValueYLabel = new JLabel("");
+//		this.maxValueYLabel.setFont(Statistiek.font);
 
 		this.useColorScaleBox = new JCheckBox(
 			Statistiek.rb.getString("usecolorscaleCheckbox"));
@@ -375,7 +470,8 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 	private void layoutGuiComponents()
 	{
 		// Variable
-		Box hb1, hb2, hb3 = null, hb4 = null, hb5, hb6, hb7, hb8, hb9, hb10, hb11, hb12, hb13;
+		Box hb1, hb2, hb3 = null, hb4 = null, hb5, hb6, hb7, hb8, hb9, hb10, hb11, 
+			hb12, hb13, hb14, hb15, hb16, hb17, hb18, hb19;
 		Box vb1, vb2, vb3, vb4, vb5, vb6, vb7;
 
 		hb1 = Box.createHorizontalBox();
@@ -421,57 +517,135 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 		// Display
 
+		hb1 = Box.createHorizontalBox();
+		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb1.add(optimizeScaleXBox);
+
 		hb2 = Box.createHorizontalBox();
-		hb2.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
-		hb2.add(useColorScaleBox);
+		hb2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb2.add(this.minXOnScaleLabel);
+		hb2.add(Box.createHorizontalStrut(5));
 		hb2.add(Box.createHorizontalGlue());
+		hb2.add(this.minXOnScaleField);
+		// set maximum size prevents hb filling up vertical space
+		// and makes hb adjust its height to the content
+		hb2.setMaximumSize(new Dimension(250, 200));
 
 		hb3 = Box.createHorizontalBox();
-		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-		hb3.add(varColorLabel);
+		hb3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb3.add(this.maxXOnScaleLabel);
+		hb3.add(Box.createHorizontalStrut(5));
+		hb3.add(Box.createHorizontalGlue());
+		hb3.add(this.maxXOnScaleField);
+		// set maximum size prevents hb filling up vertical space
+		// and makes hb adjust its height to the content
+		hb3.setMaximumSize(new Dimension(250, 200));
 
 		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb4.add(varColorBox);
+		hb4.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb4.add(this.minValueXLabel);
+		hb4.add(Box.createHorizontalGlue());
 
 		hb5 = Box.createHorizontalBox();
-		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb5.add(colorPreviewPanel);
+		hb5.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb5.add(this.maxValueXLabel);
+		hb5.add(Box.createHorizontalGlue());
+		
+//		hb6 = Box.createHorizontalBox();
+//		hb6.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+//		hb6.add(optimizeScaleYBox);
+//
+//		hb7 = Box.createHorizontalBox();
+//		hb7.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//		hb7.add(this.minYOnScaleLabel);
+//		hb7.add(Box.createHorizontalStrut(5));
+//		hb7.add(Box.createHorizontalGlue());
+//		hb7.add(this.minYOnScaleField);
+//		// set maximum size prevents hb filling up vertical space
+//		// and makes hb adjust its height to the content
+//		hb7.setMaximumSize(new Dimension(250, 200));
+//
+//		hb8 = Box.createHorizontalBox();
+//		hb8.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//		hb8.add(this.maxYOnScaleLabel);
+//		hb8.add(Box.createHorizontalStrut(5));
+//		hb8.add(Box.createHorizontalGlue());
+//		hb8.add(this.maxYOnScaleField);
+//		// set maximum size prevents hb filling up vertical space
+//		// and makes hb adjust its height to the content
+//		hb8.setMaximumSize(new Dimension(250, 200));
+//
+//		hb9 = Box.createHorizontalBox();
+//		hb9.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+//		hb9.add(this.minValueYLabel);
+//		hb9.add(Box.createHorizontalGlue());
+//
+//		hb10 = Box.createHorizontalBox();
+//		hb10.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+//		hb10.add(this.maxValueYLabel);
+//		hb10.add(Box.createHorizontalGlue());
+		
+		hb11 = Box.createHorizontalBox();
+		hb11.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb11.add(useColorScaleBox);
+		hb11.add(Box.createHorizontalGlue());
 
-		hb6 = Box.createHorizontalBox();
-		hb6.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		hb6.add(separatorColorScale_splitOptions);
+		hb12 = Box.createHorizontalBox();
+		hb12.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+		hb12.add(varColorLabel);
 
-		hb7 = Box.createHorizontalBox();
-		hb7.add(separateRadioItem);
-		hb7.add(Box.createHorizontalGlue());
+		hb13 = Box.createHorizontalBox();
+		hb13.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb13.add(varColorBox);
 
-		hb8 = Box.createHorizontalBox();
-		hb8.add(singleViewRadioItem);
-		hb8.add(Box.createHorizontalGlue());
+		hb14 = Box.createHorizontalBox();
+		hb14.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb14.add(colorPreviewPanel);
 
-		hb9 = Box.createHorizontalBox();
-		hb9.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
-		hb9.add(separatorSplitOptions_correlation);
+		hb15 = Box.createHorizontalBox();
+		hb15.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		hb15.add(separatorColorScale_splitOptions);
 
-		hb1 = Box.createHorizontalBox();
-		hb1.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		hb1.add(showCorrelationBox);
-		hb1.add(Box.createHorizontalGlue());
+		hb16 = Box.createHorizontalBox();
+		hb16.add(separateRadioItem);
+		hb16.add(Box.createHorizontalGlue());
+
+		hb17 = Box.createHorizontalBox();
+		hb17.add(singleViewRadioItem);
+		hb17.add(Box.createHorizontalGlue());
+
+		hb18 = Box.createHorizontalBox();
+		hb18.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
+		hb18.add(separatorSplitOptions_correlation);
+
+		hb19 = Box.createHorizontalBox();
+		hb19.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		hb19.add(showCorrelationBox);
+		hb19.add(Box.createHorizontalGlue());
 
 		vb3 = Box.createVerticalBox();
 		vb3.setBorder(BorderFactory.createTitledBorder(border,
 			Statistiek.rb.getString("absRelLabel"), TitledBorder.CENTER,
 			TitledBorder.TOP, Statistiek.font));
+		vb3.add(hb1);
 		vb3.add(hb2);
 		vb3.add(hb3);
 		vb3.add(hb4);
 		vb3.add(hb5);
-		vb3.add(hb6);
-		vb3.add(hb7);
-		vb3.add(hb8);
-		vb3.add(hb9);
-		vb3.add(hb1);
+//		vb3.add(hb6);
+//		vb3.add(hb7);
+//		vb3.add(hb8);
+//		vb3.add(hb9);
+//		vb3.add(hb10);
+		vb3.add(hb11);
+		vb3.add(hb12);
+		vb3.add(hb13);
+		vb3.add(hb14);
+		vb3.add(hb15);
+		vb3.add(hb16);
+		vb3.add(hb17);
+		vb3.add(hb18);
+		vb3.add(hb19);
 		vb3.add(Box.createVerticalGlue());
 
 		// splitOptions
@@ -679,130 +853,23 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 
 	public void update()
 	{
-		this.varXBox.removeActionListener(this.controller);
-		this.varXBox.removeAllItems();
-		for (String varName : this.model.getTableModel().getColumnNames())
-		{
-			this.varXBox.addItem(varName);
-		}
-		if (this.model.columnXIndexValid())
-		{
-			this.varXBox.setSelectedIndex(this.model.getColumnXIndex());
-		}
-		else
-		{
-			// set no item selected
-			this.varXBox.setSelectedIndex(-1);
-		}
-		this.varXBox.addActionListener(this.controller);
+		updateOptimizeScaleXSettings();
+		setVisibleOptimizeScale();
+
+		updateVarXBox();
 
 		if (this.model.isScatterplotMode())
 		{
-			this.varYBox.removeActionListener(this.controller);
-			this.varYBox.removeAllItems();
-			for (String varName : this.model.getTableModel().getColumnNames())
-			{
-				this.varYBox.addItem(varName);
-			}
-			if (this.model.columnYIndexValid())
-			{
-				this.varYBox.setSelectedIndex(this.model.getColumnYIndex());
-			}
-			else
-			{
-				// set no item selected
-				this.varYBox.setSelectedIndex(-1);
-			}
-			this.varYBox.addActionListener(this.controller);
+			updateVarYBox();
 		} // scatterplot mode
 
-		this.varColorBox.removeActionListener(this.controller);
-		this.varColorBox.removeAllItems();
-		for (String varName : this.model.getTableModel().getColumnNames())
-		{
-			this.varColorBox.addItem(varName);
-		}
-		if (this.model.columnColorIndexValid())
-		{
-			this.varColorBox.setSelectedIndex(this.model.getColumnColorIndex());
-		}
-		else
-		{
-			// set no item selected
-			this.varColorBox.setSelectedIndex(-1);
-		}
-		this.varColorBox.addActionListener(this.controller);
+		updateVarColorBox();
 
-		this.splitVarBox.removeActionListener(this.controller);
-		this.splitVarBox.removeAllItems();
-		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
-		for (int column = 0; column < this.model.getTableModel()
-			.getColumnCount(); column++)
-		{
-			splitVarBox.addItem(this.model.getTableModel()
-				.getColumnName(column));
-		}
-		this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
-			.getColumnSplitIndex() + 1);
-		this.splitVarBox.addActionListener(this.controller);
+		updateSplitVarBox();
 
-		this.splitBinsBox.removeActionListener(this.controller);
-		this.splitBinsBox.setSelectedItem(new Integer(this.model
-			.getSplitOptions().getBinBoundaries().size() - 1));
-		this.splitBinsBox.addActionListener(this.controller);
+		updateSplitBinsBox();
 
-		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
-		{
-			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
-				.get(this.model.getSplitOptions().getColumnSplitIndex());
-			AllowedTypes splitType = cSplitType.getType();
-			if (splitType.equals(AllowedTypes.DOUBLE)
-				|| splitType.equals(AllowedTypes.INTEGER))
-			{
-				this.splitMinBoundaryField.setText(
-					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
-				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitBinBoundaries()));
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < this.model.getSplitOptions()
-					.getBinBoundaries().size() - 1; i++)
-				{
-					sb.append(
-						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)));
-					sb.append(" -< ");
-					sb.append(
-						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1)));
-					sb.append("\n");
-				}
-				this.splitBoundariesArea.setText(sb.toString());
-				this.splitNoObjectsLabel.setText(Statistiek.rb.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
-				String splitMinValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
-				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel")
-					+ splitMinValue);
-				String splitMaxValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
-				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel")
-					+ splitMaxValue);
-				this.splitBinsBox.getParent().setVisible(true);
-				this.splitBinsLabel.getParent().setVisible(true);
-				setSplitEnumClasses(false);
-			}
-			else if (splitType.equals(AllowedTypes.ENUM))
-			{
-				StringBuilder sb = new StringBuilder();
-				for (String s : cSplitType.getEnumOptions())
-				{
-					sb.append(s);
-					sb.append("\n");
-				}
-				sb.substring(0, sb.length() - 1);
-				this.splitBoundariesArea.setText(sb.toString());
-				this.splitBinsBox.getParent().setVisible(false);
-				this.splitBinsLabel.getParent().setVisible(false);
-				setSplitEnumClasses(true);
-			}
-		} // split
+		updateSplitBinSettings();
 
 		boolean correlatieMogelijk = this.model.getColumnXIndex() > -1
 			&& this.model.getColumnYIndex() > -1;
@@ -843,6 +910,272 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			// and disable
 			this.enableCorrelationCheckBox(false);
 		}
+		
+		resize(vb0);
+	}
+
+	/**
+	 * The optimize scale option is only avaliable for dotplots,
+	 * not for scatterplots.
+	 */
+	private void setVisibleOptimizeScale()
+	{
+		if (this.model.isScatterplotMode())
+		{
+			// show none
+			this.optimizeScaleXBox.getParent().setVisible(false);
+			setVisibleOptimizeScaleXSettings(false);
+		}
+		else
+		{
+			if (this.model.columnXIndexValid())
+			{
+				ColumnType cType = this.model.getStatTableModel().getColumnTypes()
+					.get(this.model.getColumnXIndex());
+				AllowedTypes type = cType.getType();
+				if (type.equals(AllowedTypes.DOUBLE)
+					|| type.equals(AllowedTypes.INTEGER))
+				{
+					// show optimize
+					this.optimizeScaleXBox.getParent().setVisible(true);
+					
+					if (isOptimizeScaleX())
+					{
+						// hide rest
+						setVisibleOptimizeScaleXSettings(false);
+					}
+					else
+					{
+						// show rest
+						setVisibleOptimizeScaleXSettings(true);						
+					}
+				}
+				else
+				{
+					// show none
+					this.optimizeScaleXBox.getParent().setVisible(false);
+					setVisibleOptimizeScaleXSettings(false);
+				}
+			}
+		}
+	}
+
+	private void setVisibleOptimizeScaleXSettings(boolean isVisible)
+	{
+		minXOnScaleLabel.getParent().setVisible(isVisible);
+		minXOnScaleField.getParent().setVisible(isVisible);
+		maxXOnScaleLabel.getParent().setVisible(isVisible);
+		maxXOnScaleField.getParent().setVisible(isVisible);
+		minValueXLabel.getParent().setVisible(isVisible);
+		maxValueXLabel.getParent().setVisible(isVisible);
+	}
+
+	private void setVisibleOptimizeScaleYSettings(boolean isVisible)
+	{
+//		minYOnScaleLabel.getParent().setVisible(isVisible);
+//		minYOnScaleField.getParent().setVisible(isVisible);
+//		maxYOnScaleLabel.getParent().setVisible(isVisible);
+//		maxYOnScaleField.getParent().setVisible(isVisible);
+//		minValueYLabel.getParent().setVisible(isVisible);
+//		maxValueYLabel.getParent().setVisible(isVisible);
+	}
+
+	private void updateOptimizeScaleXSettings()
+	{
+		this.optimizeScaleXBox.removeActionListener(this);
+		this.optimizeScaleXBox.setSelected(this.model.isOptimizeScaleX());
+		this.optimizeScaleXBox.addActionListener(this);
+		
+		if (this.model.columnXIndexValid())
+		{
+			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
+				.get(this.model.getColumnXIndex());
+			AllowedTypes type = cType.getType();
+			if (type.equals(AllowedTypes.DOUBLE)
+				|| type.equals(AllowedTypes.INTEGER))
+			{
+				this.minXOnScaleField.setText(
+					Statistiek.getStringValue(this.model.getMinXOnScale()));
+				this.maxXOnScaleField.setText(Statistiek.getStringValue(this.model.getMaxXOnScale()));
+				String minValueXString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
+					this.model.getColumnXIndex()));
+				this.minValueXLabel.setText(Statistiek.rb.getString("minLabel")
+					+ minValueXString);
+				String maxValueXString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
+					this.model.getColumnXIndex()));
+				this.maxValueXLabel.setText(Statistiek.rb.getString("maxLabel")
+					+ maxValueXString);
+			}
+		}
+	}
+
+	private void updateOptimizeScaleYSettings()
+	{
+//		this.optimizeScaleYBox.removeActionListener(this);
+//		this.optimizeScaleYBox.setSelected(this.model.isOptimizeScaleY());
+//		this.optimizeScaleYBox.addActionListener(this);
+//		
+//		if (this.model.columnYIndexValid())
+//		{
+//			ColumnType cType = this.model.getStatTableModel().getColumnTypes()
+//				.get(this.model.getColumnYIndex());
+//			AllowedTypes type = cType.getType();
+//			if (type.equals(AllowedTypes.DOUBLE)
+//				|| type.equals(AllowedTypes.INTEGER))
+//			{
+//				this.minYOnScaleField.setText(
+//					Statistiek.getStringValue(this.model.getMinYOnScale()));
+//				this.maxYOnScaleField.setText(Statistiek.getStringValue(this.model.getMaxYOnScale()));
+//				String minValueYString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMin(
+//					this.model.getColumnYIndex()));
+//				this.minValueXLabel.setText(Statistiek.rb.getString("minLabel")
+//					+ minValueYString);
+//				String maxValueYString = Statistiek.getStringValue(this.model.getStatTableModel().getColumnMax(
+//					this.model.getColumnYIndex()));
+//				this.maxValueXLabel.setText(Statistiek.rb.getString("maxLabel")
+//					+ maxValueYString);
+//			}
+//		}
+	}
+
+	private void updateSplitBinSettings()
+	{
+		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
+		{
+			ColumnType cSplitType = this.model.getStatTableModel().getColumnTypes()
+				.get(this.model.getSplitOptions().getColumnSplitIndex());
+			AllowedTypes splitType = cSplitType.getType();
+			if (splitType.equals(AllowedTypes.DOUBLE)
+				|| splitType.equals(AllowedTypes.INTEGER))
+			{
+				this.splitMinBoundaryField.setText(
+					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
+				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitBinBoundaries()));
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < this.model.getSplitOptions()
+					.getBinBoundaries().size() - 1; i++)
+				{
+					sb.append(
+						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)));
+					sb.append(" -< ");
+					sb.append(
+						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1)));
+					sb.append("\n");
+				}
+				this.splitBoundariesArea.setText(sb.toString());
+				this.splitNoObjectsLabel.setText(Statistiek.rb.getString("numberLabel")
+					+ this.model.getStatTableModel().getRowCount());
+				String splitMinValue = Statistiek.getStringValue(
+					this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
+				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel")
+					+ splitMinValue);
+				String splitMaxValue = Statistiek.getStringValue(
+					this.model.getStatTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
+				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel")
+					+ splitMaxValue);
+				this.splitBinsBox.getParent().setVisible(true);
+				this.splitBinsLabel.getParent().setVisible(true);
+				setSplitEnumClasses(false);
+			}
+			else if (splitType.equals(AllowedTypes.ENUM))
+			{
+				StringBuilder sb = new StringBuilder();
+				for (String s : cSplitType.getEnumOptions())
+				{
+					sb.append(s);
+					sb.append("\n");
+				}
+				sb.substring(0, sb.length() - 1);
+				this.splitBoundariesArea.setText(sb.toString());
+				this.splitBinsBox.getParent().setVisible(false);
+				this.splitBinsLabel.getParent().setVisible(false);
+				setSplitEnumClasses(true);
+			}
+		} // split
+	}
+
+	private void updateSplitBinsBox()
+	{
+		this.splitBinsBox.removeActionListener(this.controller);
+		this.splitBinsBox.setSelectedItem(new Integer(this.model
+			.getSplitOptions().getBinBoundaries().size() - 1));
+		this.splitBinsBox.addActionListener(this.controller);
+	}
+
+	private void updateSplitVarBox()
+	{
+		this.splitVarBox.removeActionListener(this.controller);
+		this.splitVarBox.removeAllItems();
+		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
+		for (int column = 0; column < this.model.getStatTableModel()
+			.getColumnCount(); column++)
+		{
+			splitVarBox.addItem(this.model.getStatTableModel()
+				.getColumnName(column));
+		}
+		this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
+			.getColumnSplitIndex() + 1);
+		this.splitVarBox.addActionListener(this.controller);
+	}
+
+	private void updateVarColorBox()
+	{
+		this.varColorBox.removeActionListener(this.controller);
+		this.varColorBox.removeAllItems();
+		for (String varName : this.model.getStatTableModel().getColumnNames())
+		{
+			this.varColorBox.addItem(varName);
+		}
+		if (this.model.columnColorIndexValid())
+		{
+			this.varColorBox.setSelectedIndex(this.model.getColumnColorIndex());
+		}
+		else
+		{
+			// set no item selected
+			this.varColorBox.setSelectedIndex(-1);
+		}
+		this.varColorBox.addActionListener(this.controller);
+	}
+
+	private void updateVarYBox()
+	{
+		this.varYBox.removeActionListener(this.controller);
+		this.varYBox.removeAllItems();
+		for (String varName : this.model.getStatTableModel().getColumnNames())
+		{
+			this.varYBox.addItem(varName);
+		}
+		if (this.model.columnYIndexValid())
+		{
+			this.varYBox.setSelectedIndex(this.model.getColumnYIndex());
+		}
+		else
+		{
+			// set no item selected
+			this.varYBox.setSelectedIndex(-1);
+		}
+		this.varYBox.addActionListener(this.controller);
+	}
+
+	private void updateVarXBox()
+	{
+		this.varXBox.removeActionListener(this.controller);
+		this.varXBox.removeAllItems();
+		for (String varName : this.model.getStatTableModel().getColumnNames())
+		{
+			this.varXBox.addItem(varName);
+		}
+		if (this.model.columnXIndexValid())
+		{
+			this.varXBox.setSelectedIndex(this.model.getColumnXIndex());
+		}
+		else
+		{
+			// set no item selected
+			this.varXBox.setSelectedIndex(-1);
+		}
+		this.varXBox.addActionListener(this.controller);
 	}
 
 	public void init()
@@ -854,9 +1187,9 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			setVisibleSplitOptions(false);
 
 		setVisibleSplitBoundaryOptions(false);
+		
 		if (vb0 != null)
 			resize(vb0);
-
 	}
 
 	/**
@@ -885,7 +1218,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 		splitMinValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
 		splitMaxValueLabel.getParent().setVisible(splitBoundariesVisible && !b);
 		// }
-		resize(vb0);
+//		resize(vb0);
 	}
 	
 	private void enableCorrelationCheckBox(boolean b)
@@ -1012,6 +1345,87 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			varColorBox.setSelectedIndex(-1);
 			resize(vb0);
 		}
+		else if (e.getSource() == optimizeScaleXBox)
+		{
+			this.model.setOptimizeScaleX(this.isOptimizeScaleX());
+			resize(vb0);
+		}
+		else if (e.getSource().equals(this.minXOnScaleField))
+		{
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
+			{
+				// min > max is niet toegestaan
+				if (this.getMinXOnScale() > this.getMaxXOnScale())
+				{
+					// reset to latest value
+					this.setMinXOnScale(this.model.getMinXOnScale());
+				}
+				else
+				{
+					this.model.setMinXOnScale(this.getMinXOnScale());
+				}
+			} // empty column
+			else
+			{ // data in column
+				double minColumnXValue = this.model.getStatTableModel().getColumnMin(this.model.getColumnXIndex());
+				if (this.getMinXOnScale() > minColumnXValue)
+				{
+					// invalid input
+					
+					if (this.model.getMinXOnScale() > minColumnXValue)
+					{
+						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
+						this.model.setMinXOnScale(minColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.setMinXOnScale(this.model.getMinXOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMinXOnScale(this.getMinXOnScale());
+				}
+			} // data in column
+		}
+		else if (e.getSource().equals(this.maxXOnScaleField))
+		{
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
+			{
+				// max < min is niet toegestaan
+				if (this.getMaxXOnScale() < this.getMinXOnScale())
+				{
+					// reset to latest value
+					this.setMaxXOnScale(this.model.getMaxXOnScale());
+				}
+				else
+				{
+					this.model.setMaxXOnScale(this.getMaxXOnScale());
+				}
+			} // empty column
+			else
+			{ // data in column
+				double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
+				if (this.getMaxXOnScale() < maxColumnXValue)
+				{
+					if (this.model.getMaxXOnScale() < maxColumnXValue)
+					{
+						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+						this.model.setMaxXOnScale(maxColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.setMaxXOnScale(this.model.getMaxXOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMaxXOnScale(this.getMaxXOnScale());
+				}
+			} // data in column
+		}
 		else if (e.getSource() == okButton)
 		{
 			setVisibleSplitBoundaryOptions(false);
@@ -1044,4 +1458,137 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener
 			startDraad.start();
 		}
 	}
+
+	@Override
+	public void focusGained(FocusEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e)
+	{
+		if (e.getSource().equals(this.minXOnScaleField))
+		{
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
+			{
+				// min > max is niet toegestaan
+				if (this.getMinXOnScale() > this.getMaxXOnScale())
+				{
+					// reset to latest value
+					this.setMinXOnScale(this.model.getMinXOnScale());
+				}
+				else
+				{
+					this.model.setMinXOnScale(this.getMinXOnScale());
+				}
+			} // empty column
+			else
+			{ // data in column
+				double minColumnXValue = this.model.getStatTableModel().getColumnMin(this.model.getColumnXIndex());
+				if (this.getMinXOnScale() > minColumnXValue)
+				{
+					// invalid input
+					
+					if (this.model.getMinXOnScale() > minColumnXValue)
+					{
+						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
+						this.model.setMinXOnScale(minColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.setMinXOnScale(this.model.getMinXOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMinXOnScale(this.getMinXOnScale());
+				}
+			} // data in column
+		}
+		else if (e.getSource().equals(this.maxXOnScaleField))
+		{
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
+			{
+				// max < min is niet toegestaan
+				if (this.getMaxXOnScale() < this.getMinXOnScale())
+				{
+					// reset to latest value
+					this.setMaxXOnScale(this.model.getMaxXOnScale());
+				}
+				else
+				{
+					this.model.setMaxXOnScale(this.getMaxXOnScale());
+				}
+			} // empty column
+			else
+			{ // data in column
+				double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
+				if (this.getMaxXOnScale() < maxColumnXValue)
+				{
+					if (this.model.getMaxXOnScale() < maxColumnXValue)
+					{
+						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+						this.model.setMaxXOnScale(maxColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.setMaxXOnScale(this.model.getMaxXOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMaxXOnScale(this.getMaxXOnScale());
+				}
+			} // data in column
+		}
+	}
+	
+	public boolean isOptimizeScaleX()
+	{
+		return this.optimizeScaleXBox.isSelected();
+	}
+
+	public JCheckBox getOptimizeScaleXBox()
+	{
+		return this.optimizeScaleXBox;
+	}
+	
+	/**
+	 * Get the maximum value of columnX on the scale as entered by the user.
+	 * 
+	 * @return
+	 */
+	public double getMaxXOnScale()
+	{
+		String s = this.maxXOnScaleField.getText();
+		s = s.replace(',', '.');
+		return Double.parseDouble(s);
+	}
+
+	/**
+	 * Get the minimum value of columnX on the scale as entered by the user.
+	 * 
+	 * @return
+	 */
+	public double getMinXOnScale()
+	{
+		String s = this.minXOnScaleField.getText();
+		s = s.replace(',', '.');
+		return Double.parseDouble(s);
+	}
+
+	public void setMaxXOnScale(double d)
+	{
+		this.maxXOnScaleField.setText(String.valueOf(d));
+	}
+
+	public void setMinXOnScale(double d)
+	{
+		this.minXOnScaleField.setText(String.valueOf(d));
+	}
+
 }
