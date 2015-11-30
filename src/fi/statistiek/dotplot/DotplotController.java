@@ -128,7 +128,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.setSplitType(this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getColumnTypes()
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
@@ -137,7 +137,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		else if (actionCommand.equals("splitBinsBox"))
 		{
-			this.setSplitType(this.model.getTableModel().getColumnTypes()
+			this.setSplitType(this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType());
 		}
@@ -177,9 +177,9 @@ public class DotplotController implements StatistiekView, ActionListener,
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
 			boundaries = Statistiek.appropriateBoundaries(
-				this.model.getTableModel().getColumnMin(
+				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.view.getSplitBinsBoxSelectedInt());
 
@@ -244,13 +244,13 @@ public class DotplotController implements StatistiekView, ActionListener,
 
 		h.put("columnSplitIndex", this.model.getSplitOptions()
 			.getColumnSplitIndex());
-		// System.out.println("   columnSplitIndex=" +
-		// this.model.getSplitOptions().getColumnSplitIndex());
 		h.put("splitBoundaries", this.model.getSplitBinBoundaries());
 
 		h.put("splitInSingleView", this.model.splitInSingleView());
-		// System.out.println("   splitInSingleView=" +
-		// this.model.splitInSingleView());
+
+		h.put("optimizeScaleX", this.model.isOptimizeScaleX());
+		h.put("minXOnScale", this.model.getMinXOnScale());
+		h.put("maxXOnScale", this.model.getMaxXOnScale());
 
 		return h;
 	}
@@ -310,11 +310,36 @@ public class DotplotController implements StatistiekView, ActionListener,
 			this.model.setSplitBoundaries((ArrayList<Double>) h
 				.get("splitBoundaries"));
 		}
-//		if (h.containsKey("scatterplotMode"))
-//		{
-//			this.model.setScatterplotMode(((Boolean) h
-//				.get("scatterplotMode")).booleanValue());
-//		}
+		
+		if (h.containsKey("optimizeScaleX"))
+		{
+			this.model.setOptimizeScaleXWithoutEvent(((Boolean) h.get("optimizeScaleX"))
+				.booleanValue());
+		}
+		
+		if (h.containsKey("minXOnScale"))
+		{
+			this.model.setMinXOnScaleWithoutEvent(((Double) h.get("minXOnScale"))
+				.doubleValue());
+		}
+		else
+		{
+			// default is the columnX's minimum value
+			double minColumnXValue = this.model.getStatTableModel().getColumnMin(this.model.getColumnXIndex());
+			this.model.setMinXOnScaleWithoutEvent(minColumnXValue);
+		}
+		
+		if (h.containsKey("maxXOnScale"))
+		{
+			this.model.setMaxXOnScale(((Double) h.get("maxXOnScale"))
+				.doubleValue());
+		}
+		else
+		{
+			// default is the columnX's maximum value
+			double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
+			this.model.setMaxXOnScale(maxColumnXValue);
+		}
 	}
 
 	public String getViewName()
@@ -335,9 +360,9 @@ public class DotplotController implements StatistiekView, ActionListener,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 		
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getSplitOptions().getColumnSplitIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -415,5 +440,4 @@ public class DotplotController implements StatistiekView, ActionListener,
 	{
 		return this.model;
 	}
-
 }
