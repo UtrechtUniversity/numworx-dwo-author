@@ -76,10 +76,14 @@ public class Text_en extends java.util.ListResourceBundle
             {	"GTIEP_dubbeleNaam", "The name for this parameter is already in use."},
             {	"GTIEP_waarschuwing", "Warning"},
             
+            {	"GTIEP_veldComponentAan", "Field editor"},
+            {	"GTIEP_veldGrafiekType", "Field plot type"},
+            {	"GTIEP_veldEditorOpties", "Options field editor"},
+            {	"GTIEP_veldComponentHoogte", "Height field editor"},
             {	"GTIEP_fout_stapKleinerGelijk0", "The stepsize needs to be greater than zero."},
             {	"GTIEP_fout_minGroterGelijkMax", "The minimum needs to be smaller than the maximum."},
             {	"GTIEP_fout_maxKleinerGelijkMin", "The maximum needs to be greater than the minimum."},
-            {	"GTIEP_fout_geenGetal", "The input needs to be a number."},
+            {	"GTIEP_fout_geenGetal", "The input needs to be a number."}, 
             
             {	"Opdr_kiesOpdracht", "Choose the task type"},
             {	"Opdr_Opdracht1", "Find the formula(s) for the given graph(s)"},

@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Hashtable;
 
 import javax.swing.Box;
@@ -264,6 +266,14 @@ public class FormuleEditorOptiesButton extends JButton implements ActionListener
 	        frame.getContentPane().setLayout(new BorderLayout());
 	        frame.getContentPane().add(scrollPane);
 	        frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+			frame.addWindowListener( new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent w) {
+				    frame.dispose();
+				    frame=null;
+				}
+			} );
+
 			frame.pack();
 		    frame.setVisible(true);
 		    

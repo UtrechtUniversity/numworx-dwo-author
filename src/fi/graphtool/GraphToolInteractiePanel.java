@@ -155,7 +155,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	boolean functieToegestaan, ongelijkheidToegestaan, implicieteFunctieToegestaan, verticaleLijnToegestaan, parametrisatieToegestaan;
 	boolean manualScalingX, manualScalingY;
 	
-	boolean formuleComponentAan, tekenComponentAan, tabelComponentAan, tabelAlsTekenTool;
+	boolean formuleComponentAan, veldComponentAan, tekenComponentAan, tabelComponentAan, tabelAlsTekenTool;
 	Color piColor = Color.gray;
 	private Color[] colors, gewoneKleuren;
 	private Color[] opdrachtKleuren;
@@ -1057,8 +1057,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		} 
 	}
 	
-	public void zetFormuleComponent(boolean b, boolean setState)
-	{	formuleComponentAan = b;
+	public void zetFormuleComponent(boolean b, boolean setState) {	
+		formuleComponentAan = b;
 		plaatsComponenten();
 		
 		formuleComponent.parseFormule(activeIndex, setState);
@@ -1068,6 +1068,19 @@ MouseListener, MouseMotionListener, CBookAware {
 		} 
 
 	}
+	
+	public void zetVeldComponent(boolean b, boolean setState) {	
+		veldComponentAan = b;
+		plaatsComponenten();
+		
+		// formuleComponent.parseFormule(activeIndex, setState); TODO
+		
+		if ((manualScalingX) || (manualScalingY) ) { // Reset the scaling parameters for the new height
+			zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
+		} 
+
+	}
+
 	
 	public void zetTabelAlsTekenTool(boolean b, boolean setState)
 	{
