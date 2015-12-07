@@ -35,6 +35,8 @@ import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.WiskOpdr;
 
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
+	
+	public final static int cVCMaxAantalFormules = 2;
 
 	private VergelijkingVak[] formuleVakken; 
 	private DomeinButton[] domeinButtons;
@@ -46,7 +48,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	private JButton[] enOfKnoppen;
 	private boolean[] isEn;
 	
-	private int maxAantalFormules=9;
+	private int maxAantalFormules = cVCMaxAantalFormules;
 	private int aantalRegels=1;
 	//private static Image GOEDKRUL,FOUTKRUIS;
 	private int actiefNummer;
@@ -617,8 +619,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		}
 	}
 	
-	public void zetFormuleRegels(int maxAantalFormules, boolean setState)
-	{	String[] exps = new String[maxAantalFormules];
+	public void zetFormuleRegels(int maxAantalFormules, boolean setState) {	
+		String[] exps = new String[maxAantalFormules];
 		for(int i = 0; i < maxAantalFormules; i++)
 			exps[i] = "$f@";
 		for(int i = 0; formuleVakken != null && i < formuleVakken.length; i++)
@@ -838,6 +840,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		//voor parametrisaties is er een aantal opties:
 		//er staat al een xparametrisatie, dan is de volgende regel ook een y-parametrisatie. Haal je die dan ook weg?
 		//in principe wel, als je een nieuwe xparametrisatie typt, dan wordt de volgende regel automatisch weer gemarkeerd als yparam.
+		System.out.println("regelnummer = "+ regelnummer);
+
 		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
 			domeinButtons[regelnummer].setVisible(false);
 		if(soortVak[regelnummer] == PARAMETRISATIEX)

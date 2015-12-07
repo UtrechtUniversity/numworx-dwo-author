@@ -101,7 +101,9 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 	private GrafiekVeld gv;
 	private FormuleComponent formuleComponent;
+	private VeldComponent veldComponent;
 	private int formuleComponentHoogte = 120;
+	private int veldComponentHoogte = 120;
 	TekenComponent tekenComponent;
 	private TabelComponent tabelComponent;
 	private JPanel zoomBalk;
@@ -445,6 +447,22 @@ MouseListener, MouseMotionListener, CBookAware {
 		formuleComponent.zetGrafiekComponent(this);
 		formuleComponent.addActionListener(this);
 		
+		System.out.println(":::::::::: VeldComponent ::::::::::");
+		veldComponent = new VeldComponent(true);
+		System.out.println("-V1-");
+		veldComponent.setSize(veldb, formuleComponentHoogte);
+		System.out.println("-V2-");
+		veldComponent.zetRandverhoging(false);
+		System.out.println("-V3-");
+		add(veldComponent);
+		System.out.println("-V4-");
+		veldComponent.zetFormuleRegels(VeldComponent.cVCMaxAantalFormules, false);
+		System.out.println("-V5-");
+		veldComponent.zetGrafiekComponent(this);
+		System.out.println("-V6-");
+		veldComponent.addActionListener(this);
+		System.out.println("-V7-");
+		
 		tabelComponent = new TabelComponent(veldb, false);
 		tabelComponent.setLocation(offset, 270);
 		add(tabelComponent);
@@ -712,6 +730,16 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		else 
 			formuleComponent.setVisible(false);
+		
+		if(veldComponentAan) 
+		{	veldComponent.setBounds(offset, currentYBottom - veldComponent.getHeight(), veldb, veldComponent.getHeight());
+			veldComponent.setVisible(true);
+			currentYBottom -= veldComponent.getHeight() + offset;
+			
+		}
+		else 
+			veldComponent.setVisible(false);
+
 		
 		if(tabelComponentAan)
 		{	tabelComponent.setBounds(offset, currentYBottom - tabelComponent.getHeight(), veldb, tabelComponent.getHeight());

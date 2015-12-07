@@ -185,9 +185,6 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 		frame.addWindowListener( new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent w) {
-				frame.getContentPane().removeAll();
-				frame.setVisible(false);
-			    frame.dispose();
 			    frame=null;
 			}
 		} );

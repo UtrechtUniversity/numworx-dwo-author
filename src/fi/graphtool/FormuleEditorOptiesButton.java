@@ -269,7 +269,6 @@ public class FormuleEditorOptiesButton extends JButton implements ActionListener
 			frame.addWindowListener( new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent w) {
-				    frame.dispose();
 				    frame=null;
 				}
 			} );
