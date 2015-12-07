@@ -103,7 +103,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	private FormuleComponent formuleComponent;
 	private VeldComponent veldComponent;
 	private int formuleComponentHoogte = 120;
-	private int veldComponentHoogte = 120;
+	private int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
 	TekenComponent tekenComponent;
 	private TabelComponent tabelComponent;
 	private JPanel zoomBalk;
@@ -448,7 +448,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		formuleComponent.addActionListener(this);
 		
 		veldComponent = new VeldComponent(true);
-		veldComponent.setSize(veldb, formuleComponentHoogte);
+		veldComponent.setSize(veldb, veldComponentHoogte);
 		veldComponent.zetRandverhoging(false);
 		add(veldComponent);
 		veldComponent.zetFormuleRegels(VeldComponent.cVCMaxAantalFormules, false);
@@ -722,7 +722,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		else 
 			formuleComponent.setVisible(false);
-		
+
 		if(veldComponentAan) 
 		{	veldComponent.setBounds(offset, currentYBottom - veldComponent.getHeight(), veldb, veldComponent.getHeight());
 			veldComponent.setVisible(true);
@@ -775,6 +775,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		grafiekXAsNaam = s;
 		xAsNaamTF.setText(s);
 		formuleComponent.zetXAsNaam(s, setState);
+		veldComponent.zetXAsNaam(s, setState);
 		tabelComponent.zetXAsNaam(s);
 		repaint();
 	}
@@ -784,6 +785,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		grafiekYAsNaam = s;
 		yAsNaamTF.setText(s);
 		formuleComponent.zetYAsNaam(s, setState);
+		veldComponent.zetYAsNaam(s, setState);
 		tabelComponent.zetYAsNaam(s, true);
 		repaint();
 	}
@@ -871,6 +873,19 @@ MouseListener, MouseMotionListener, CBookAware {
 				verticaleLijnToegestaan, parametrisatieToegestaan, setState);
 		
 	}
+	
+	public void zetVeldEditorOpties(Hashtable h, boolean setState)
+	{
+		if(h!=null)
+		{
+			if(h.containsKey("veldComponentHoogte"))
+				veldComponentHoogte = ((Integer)h.get("veldComponentHoogte")).intValue();
+		}
+		
+		veldComponent.setSize(veldComponent.getWidth(), veldComponentHoogte);
+		plaatsComponenten();		
+	}
+
 	
 	public void zetGrafiekKleuren(boolean b)
 	{	grafiekKleuren = b;

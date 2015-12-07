@@ -28,10 +28,6 @@ import fi.wiskopdr.DialogFacade;
 public class VeldEditorOptiesButton extends JButton implements ActionListener {	
 	public enum FieldGraphType {QUIVER, STREAMLINE};
 	
-	/* component defaults & contstants */
-	private final static int cDefault_VeldComponentHoogte = 120;
-	private final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
-	private final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
 	
 	private DialogFacade frame;
 	private GraphToolInteractieEditPanel graphToolInteractieEditPanel;
@@ -40,8 +36,8 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 	JComboBox veldGrafiekTypeLB;
 	private JTextField veldComponentHoogteTF;
 	
-	private int veldComponentHoogte = cDefault_VeldComponentHoogte;
-	private FieldGraphType veldGrafiekType = cDefault_VeldGrafiekType;
+	private int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
+	private FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
 	
 	private Font theFont = new Font("SansSerif", Font.PLAIN, 12);
 	
@@ -64,7 +60,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 	//soort setState-methode.
 	public void setOptions (Hashtable h) {	
 		FieldGraphType veldGrafiekType = FieldGraphType.QUIVER;
-		int veldComponentHoogte = cDefault_VeldComponentHoogte;
+		int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
 		
 		if(h!=null)
 		{
@@ -141,7 +137,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
         veldTypeLabel.setSize(veldTypeLabel.getPreferredSize());
         veldTypeLabel.setFont(theFont);
         optiesPanel.add(veldTypeLabel);
-        veldGrafiekTypeLB = new JComboBox(cVeldGrafiekTypeStrings);
+        veldGrafiekTypeLB = new JComboBox(VeldComponent.cVeldGrafiekTypeStrings);
 		veldGrafiekTypeLB.setSelectedIndex(0);
 		veldGrafiekTypeLB.setLocation(tab2, yBase + 1 * rowHeight);
 		veldGrafiekTypeLB.setSize(veldGrafiekTypeLB.getPreferredSize());
@@ -200,7 +196,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 			}
 			else if(e.getSource().equals(okButton)) {   
 				maakOpties();
-				graphToolInteractieEditPanel.zetFormuleEditorOpties(false);
+				graphToolInteractieEditPanel.zetVeldEditorOpties(false);
 	        	frame.setVisible(false);
 	            frame.dispose();
 	            frame=null;

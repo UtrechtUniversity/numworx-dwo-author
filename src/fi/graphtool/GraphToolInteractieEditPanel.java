@@ -815,6 +815,12 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		interactiePanel.zetFormuleEditorOpties(h, setState);
 	}
 	
+	public void zetVeldEditorOpties(boolean setState)
+	{
+		Hashtable h = veldEditorOptiesButton.getOptions();
+		interactiePanel.zetVeldEditorOpties(h, setState);
+	}
+	
 	private void zetOpdrachtKeuze(int keuze, boolean setState)
 	{	
 		int oudeKeuze = typeOpdracht;

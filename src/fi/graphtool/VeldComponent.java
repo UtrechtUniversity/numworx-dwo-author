@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import fi.beans.stringutils.StringUtils;
+import fi.graphtool.VeldEditorOptiesButton.FieldGraphType;
 //import fi.wiskopdr.GrafiekComponent;
 //import fi.wiskopdr.VergelijkingVak;
 //import fi.wiskopdr.GrafiekComponent;
@@ -36,7 +37,12 @@ import fi.wiskopdr.WiskOpdr;
 
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
 	
+	/* component defaults & contstants */
 	public final static int cVCMaxAantalFormules = 1;
+	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
+
+	public final static int cDefault_VeldComponentHoogte = 80;
+	public final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
 
 	private VergelijkingVak[] formuleVakken; 
 	private DomeinButton[] domeinButtons;
