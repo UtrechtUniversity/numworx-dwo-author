@@ -36,7 +36,7 @@ import fi.wiskopdr.WiskOpdr;
 
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
 	
-	public final static int cVCMaxAantalFormules = 2;
+	public final static int cVCMaxAantalFormules = 1;
 
 	private VergelijkingVak[] formuleVakken; 
 	private DomeinButton[] domeinButtons;
@@ -151,10 +151,11 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	{	formuleVakken[0].formuleVak.setEditable(b);	
 	}
 	
-	public void zetMaxAantalFormules(int num, boolean setState)
-	{	maxAantalFormules = num;
-		boolean knoppenNodig = maxAantalFormules > 1;
-		boolean checkboxenNodig = docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT));
+	public void zetMaxAantalFormules(int num, boolean setState) {	
+		maxAantalFormules = num;
+		boolean knoppenNodig = maxAantalFormules > 0;
+		boolean checkboxenNodig = docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT));
+		
 		nieuweRegelKnop.setVisible(knoppenNodig);
 		verwijderRegelKnop.setVisible(knoppenNodig);
 		checkboxen[0].setVisible(checkboxenNodig);
@@ -505,7 +506,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				formuleVakken[i].setVisible(true);
 				if(geselecteerd!=null)
 					checkboxen[i].setSelected(geselecteerd[i]);
-				if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+				if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				{	//System.out.println("hier visible gezet? " + i);
 					add(checkboxen[i],0);
 					//checkboxen[i].setVisible(true);
@@ -672,7 +673,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			formuleVakken[i].formuleVak.addFocusListener(this);
 		}
 		
-		if(maxAantalFormules > 1)
+		if(maxAantalFormules > 0)
 		//if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 		{	checkboxen = new JCheckBox[maxAantalFormules];
 			for(int i=0 ; i<maxAantalFormules ; i++)
@@ -697,7 +698,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		
 		for(int i = 0; i < aantalRegels; i++)
 		{	add(formuleVakken[i],0);
-			if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+			if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				add(checkboxen[i]);
 			add(domeinButtons[i]);
 		}
@@ -731,7 +732,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		formuleVak.requestFocus();
 		actiefNummer = 0;
 		
-		if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+		if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 		{	checkboxen[0].setVisible(true);	
 			checkboxen[0].setSelected(true);
 		}
@@ -840,7 +841,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		//voor parametrisaties is er een aantal opties:
 		//er staat al een xparametrisatie, dan is de volgende regel ook een y-parametrisatie. Haal je die dan ook weg?
 		//in principe wel, als je een nieuwe xparametrisatie typt, dan wordt de volgende regel automatisch weer gemarkeerd als yparam.
-		System.out.println("regelnummer = "+ regelnummer);
 
 		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
 			domeinButtons[regelnummer].setVisible(false);
@@ -1267,20 +1267,23 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			}
 			
 		}
-		for(int i=0 ; i<maxAantalFormules ; i++)
-		{	if(e.getSource()==checkboxen[i])
-			{	parseFormule(i, false);
-				if(checkboxen[i].isSelected())
-				{	produceAction("ingevuld");
+		if (checkboxen != null ) { 
+			for(int i=0 ; i<maxAantalFormules ; i++) {	
+
+				if(e.getSource()==checkboxen[i])
+				{	parseFormule(i, false);
+					if(checkboxen[i].isSelected())
+					{	produceAction("ingevuld");
+					}
+					else 
+					{	produceAction("verwijderd");
+					}
+					if(checkboxen[actiefNummer].isSelected())
+					{	parseFormule(actiefNummer, false);
+						produceAction("ingevuld");	
+					}	
+					break;
 				}
-				else 
-				{	produceAction("verwijderd");
-				}
-				if(checkboxen[actiefNummer].isSelected())
-				{	parseFormule(actiefNummer, false);
-					produceAction("ingevuld");	
-				}	
-				break;
 			}
 		}
 	for(int i=0 ; i<maxAantalFormules ; i++)
@@ -1298,16 +1301,17 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		super.actionPerformed(e);
 	}
 	
-	public void mousePressed(MouseEvent e)
-	{	for(int i = 0; i < aantalRegels; i++)
-		{	if(e.getSource().equals(checkboxen[i]) && (e.getModifiers() & e.BUTTON1_MASK) == 0)
-			{	Color kleur = JColorChooser.showDialog(this, GraphTool.rb.getString("kleurKiezer"), grafiekComponent.getFormuleColor(i));//new Color(255,255,180));
-				grafiekComponent.setColor(i,  kleur, false);
-				zetGrafiekKleuren();
+	public void mousePressed(MouseEvent e) {	
+		
+		if (checkboxen != null) {
+			for(int i = 0; i < aantalRegels; i++) {
+				if(e.getSource().equals(checkboxen[i]) && (e.getModifiers() & e.BUTTON1_MASK) == 0) {
+					Color kleur = JColorChooser.showDialog(this, GraphTool.rb.getString("kleurKiezer"), grafiekComponent.getFormuleColor(i));//new Color(255,255,180));
+					grafiekComponent.setColor(i,  kleur, false);
+					zetGrafiekKleuren();
+				}
 			}
 		}
-	
-    	
 		
 		for(int i = 0; i < aantalRegels; i++)
 		{	int yMin = formuleVakken[i].getLocation().y;

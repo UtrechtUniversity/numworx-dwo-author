@@ -447,21 +447,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		formuleComponent.zetGrafiekComponent(this);
 		formuleComponent.addActionListener(this);
 		
-		System.out.println(":::::::::: VeldComponent ::::::::::");
 		veldComponent = new VeldComponent(true);
-		System.out.println("-V1-");
 		veldComponent.setSize(veldb, formuleComponentHoogte);
-		System.out.println("-V2-");
 		veldComponent.zetRandverhoging(false);
-		System.out.println("-V3-");
 		add(veldComponent);
-		System.out.println("-V4-");
 		veldComponent.zetFormuleRegels(VeldComponent.cVCMaxAantalFormules, false);
-		System.out.println("-V5-");
 		veldComponent.zetGrafiekComponent(this);
-		System.out.println("-V6-");
 		veldComponent.addActionListener(this);
-		System.out.println("-V7-");
 		
 		tabelComponent = new TabelComponent(veldb, false);
 		tabelComponent.setLocation(offset, 270);
