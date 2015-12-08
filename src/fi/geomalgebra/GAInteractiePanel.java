@@ -453,6 +453,9 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	
 	public Hashtable getState()
 	{
+		
+//System.out.println("gaip getState");
+
 		Hashtable h = new Hashtable();
 		
 		State state = av.getStateState();
@@ -460,11 +463,13 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		{	h.put("state", state);
 			HashMap stateHM = NoSer.getStateState(state);
 			h.put("stateHM", stateHM);
+//System.out.println("av state not null");			
 		}
 		else
 		{
 			HashMap stateHM = new HashMap();
 			h.put("stateHM", stateHM);
+//System.out.println("av state null");			
 		}
 
 		
@@ -474,6 +479,9 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	
 	public Hashtable getEditState()
 	{
+		
+//System.out.println("gaip getEditState");
+
 		Hashtable h = new Hashtable();
 		
 		h.put("varWaardeZichtbaar", new Boolean(varWaardeZichtbaar));
@@ -495,11 +503,13 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		{	h.put("state", state);
 			HashMap stateHM = NoSer.getStateState(state);
 			h.put("stateHM", stateHM);
+//System.out.println("av state not null");			
 		}
 		else
 		{
 			HashMap stateHM = new HashMap();
 			h.put("stateHM", stateHM);
+//System.out.println("av state null");
 		}
 		
 		return h;

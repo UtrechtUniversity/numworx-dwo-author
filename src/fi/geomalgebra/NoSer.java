@@ -240,8 +240,13 @@ public class NoSer
 	
 	public static HashMap<String,Object> getStateState(State s)
 	{
+//System.out.println("NoSer getStateState");
+
 		HashMap<String,Object> h = new HashMap<String,Object>();
 		int aantalFg = s.geefAantalFiguren();
+		
+//System.out.println("aantalFg " + aantalFg);
+
 		h.put("aantalFg", new Integer(aantalFg));
 		
 		List<Map<String,Object>> figurenHash = new ArrayList<Map<String,Object>>(); 
