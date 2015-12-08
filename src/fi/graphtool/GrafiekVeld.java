@@ -98,16 +98,33 @@ class GrafiekVeld extends JComponent{
 		return pixelsY; 
 	}
 	
+	private void drawArrowhead(Point rpVectorStart, Point rpVectorEnd ) { 
+//	    double h = 10*Math.sqrt(3), w = 10;
+//	    Point U = (rpVectorStart - rpVectorStart)/(rpVectorStart - rpVectorStart).length();
+//	    vec V = vec(-U.y, U.x);
+//	    v1 = B - h*U + w*V;
+//	    v2 = B - h*U - w*V;
+	}
+
+/* EXAMPLE TODO	
+	void arrowhead(vec A, vec B, vec& v1, vec& v2) {
+	    float h = 10*sqrtf(3), w = 10;
+	    vec U = (B - A)/(B - A).length();
+	    vec V = vec(-U.y, U.x);
+	    v1 = B - h*U + w*V;
+	    v2 = B - h*U - w*V;
+	}	
+*/
+	
 	public void	paintComponent(Graphics gr)
 	{	Graphics2D g = (Graphics2D) gr;
-
+	
+	    if (gtip.functies != null) {
+	    	System.out.println("functie = " + gtip.functies[0]);
+	    }
 		
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
-//	RPJ	Stroke defaultStroke = g.getStroke();
-//	RPJ	float dash[] = {2.0f};
-//	RPJ	final BasicStroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-//	RPJ	                        						  10.0f, dash, 0.0f);
 		
 		int breedte = getSize().width;
 		int hoogte = getSize().height;
@@ -178,7 +195,11 @@ class GrafiekVeld extends JComponent{
 			ehyD = manScalingMultiplyY * ehyD;
 			ehy = (int) Math.round(ehyD);
 		}		
-
+		
+		RoosterDefinitie roosterDef = new RoosterDefinitie( gtip.beginx, gtip.beginy, ehxD, ehyD, 
+				gtip.manualScalingX, gtip.manualScalingY, gtip.xAsLog, gtip.yAsLog, 
+				gtip.eenheidxValue, gtip.eenheidyValue, gtip.schaalFactorX, gtip.schaalFactorY,
+				manScalingMultiplyX, manScalingMultiplyY);
 		
 		int maxWoordBreedteY = 0;
 		int maxWoordHoogteX = 10;
@@ -197,7 +218,7 @@ class GrafiekVeld extends JComponent{
 			int jmax = 1+hoogte/ehy-(int)Math.round(gtip.beginy/ehy);
 			
 			for(int j=jmin+1 ; j<jmax-1 ; j++) {	
-// RPJ				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
+// 				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
 				String getal;
 				if (gtip.manualScalingY) {
 					getal = gtip.df.format(gtip.eenheidyValue*(j));					
@@ -236,8 +257,8 @@ class GrafiekVeld extends JComponent{
 
 			for(int i=imin ; i<imax ; i++) {	// X-axis
 				
-// RPJ			for(int i=imin+1 ; i<imax ; i++) {	
-// RPJ				String getal = gtip.df.format(gtip.schaalFactorX*(i)); // draw graph based on scale -> old
+// 			for(int i=imin+1 ; i<imax ; i++) {	
+// 				String getal = gtip.df.format(gtip.schaalFactorX*(i)); // draw graph based on scale -> old
 //				String getal = gtip.df.format(gtip.eenheidxValue*(i));
 //				if(gtip.xAsLog)
 //					getal = 10 + toSuperScript(getal);
@@ -279,7 +300,7 @@ class GrafiekVeld extends JComponent{
 			}
 
 			for(int j=jmin ; j<jmax ; j++) {	
-// RPJ				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
+// 				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
 //				String getal = gtip.df.format(gtip.eenheidyValue*(j));
 //				if(gtip.yAsLog)
 //					getal = 10 + toSuperScript(getal);
@@ -360,7 +381,7 @@ class GrafiekVeld extends JComponent{
 									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
 						}	
 						g.setColor(Color.black);
-//	RPJ					double aantalPi = lCnt * gtip.schaalFactorX;
+//						double aantalPi = lCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *lCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
@@ -387,7 +408,7 @@ class GrafiekVeld extends JComponent{
 									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
 						}	
 						g.setColor(Color.black);
-// RPJ						double aantalPi = rCnt * gtip.schaalFactorX;
+// 						double aantalPi = rCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *rCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
@@ -542,24 +563,24 @@ class GrafiekVeld extends JComponent{
 					int xMax = breedte;
 					if(gtip.docentDomeinen != null && gtip.docentDomeinen[j] != null) {	
 						if(!Double.isInfinite(gtip.docentDomeinen[j][0])) {	
-// RPJ						int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.docentDomeinen[j][0]):gtip.docentDomeinen[j][0])
-// RPJ							/gtip.schaalFactorX + gtip.beginx);	
+// 						int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.docentDomeinen[j][0]):gtip.docentDomeinen[j][0])
+// 							/gtip.schaalFactorX + gtip.beginx);	
 							int xMin2 = (int) Math.round(valueXtoPixels(gtip.docentDomeinen[j][0]));
 							xMin = Math.max(xMin, xMin2);
 						}
 						if(!Double.isInfinite(gtip.docentDomeinen[j][1])) {	
 //							int xMax2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.docentDomeinen[j][1]):gtip.docentDomeinen[j][1])
-// RPJ							/gtip.schaalFactorX + gtip.beginx);
+// 							/gtip.schaalFactorX + gtip.beginx);
 							int xMax2 = (int) Math.round(valueXtoPixels(gtip.docentDomeinen[j][1]));
 							xMax = Math.min(xMax, xMax2);
 						}
 					}
 					for(int i=xMin ; i<xMax ; i++) {	
 						double ii = i;
-// RPJ						double d0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-// RPJ							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
-// RPJ						double d1 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
-// RPJ							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
+// 						double d0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+// 							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
+// 						double d1 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
+// 							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
 						double d0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii), gtip.xAsNaam)).geefWaarde();
 						double d1 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii), gtip.xAsNaam)).geefWaarde();
 						double d0waarde = d0;
@@ -568,7 +589,7 @@ class GrafiekVeld extends JComponent{
 						{	double newD1waarde = d0;
 							for(int k = 1; k < 20; k++) {	
 								double kd = k;
-// RPJ								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
+// 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
 //									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();
 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii+kd/20), gtip.xAsNaam)).geefWaarde();
 								if(Double.isNaN(dt0))
@@ -583,7 +604,7 @@ class GrafiekVeld extends JComponent{
 						{	double newD0waarde = d1;
 							for(int k = 19; k > 0; k--) {	
 								double kd = k;
-// RPJ								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
+// 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
 //									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();
 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii+kd/20), gtip.xAsNaam)).geefWaarde();
 								if(Double.isNaN(dt0))
@@ -598,7 +619,7 @@ class GrafiekVeld extends JComponent{
 						if(!(Double.isNaN(d0) && Double.isNaN(d1)) && (!gtip.yPositief || d0 >= 0 || d1 >= 0))
 						{	int x0 = i;
 							int x1 = i+1;
-// RPJ							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
+// 							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
 //							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1waarde):d1waarde)/gtip.schaalFactorY);
 							double dy0 = valueYtoPixels(d0waarde);
 							double dy1 = valueYtoPixels(d1waarde);
@@ -654,13 +675,13 @@ class GrafiekVeld extends JComponent{
 					if(gtip.domeinen != null && gtip.domeinen[j] != null) {	
 						if(!Double.isInfinite(gtip.domeinen[j][0])) {	
 //							int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.domeinen[j][0]):gtip.domeinen[j][0])
-// RPJ								/gtip.schaalFactorX + gtip.beginx);	
+// 								/gtip.schaalFactorX + gtip.beginx);	
 							int xMin2 = (int) Math.round(valueXtoPixels(gtip.domeinen[j][0]));
 							xMin = Math.max(xMin, xMin2);
 						}
 						if(!Double.isInfinite(gtip.domeinen[j][1])) {	
 //							int xMax2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.domeinen[j][1]):gtip.domeinen[j][1])
-// RPJ								/gtip.schaalFactorX + gtip.beginx);	
+// 								/gtip.schaalFactorX + gtip.beginx);	
 							int xMax2 = (int) Math.round(valueXtoPixels(gtip.domeinen[j][1]));
 							xMax = Math.min(xMax, xMax2);
 						}
@@ -676,7 +697,7 @@ class GrafiekVeld extends JComponent{
 					}
 					for(int i=xMin; i<xMax ; i++)
 					{	double ii = i;
-// RPJ						double d0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+// 						double d0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
 //								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
 //						double d1 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
 //								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
@@ -689,7 +710,7 @@ class GrafiekVeld extends JComponent{
 						{	double newD1waarde = d0;
 							for(int k = 1; k < 20; k++)
 							{	double kd = k;
-// RPJ								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
+// 								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
 //									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();
 								double dt0 = (ingevuldeExpressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
 								if(Double.isNaN(dt0))
@@ -704,7 +725,7 @@ class GrafiekVeld extends JComponent{
 						{	double newD0waarde = d1;
 							for(int k = 19; k > 0; k--)
 							{	double kd = k;
-// RPJ								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
+// 								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
 //									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();
 								double dt0 = (ingevuldeExpressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
 								if(Double.isNaN(dt0))
@@ -718,7 +739,7 @@ class GrafiekVeld extends JComponent{
 						if(!(Double.isNaN(d0) && Double.isNaN(d1)) && (!gtip.yPositief || d0 >= 0 || d1 >= 0))
 						{	int x0 = i;
 							int x1 = i+1;
-// RPJ							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
+// 							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
 //							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1waarde):d1waarde)/gtip.schaalFactorY);
 							double dy0 = valueYtoPixels(d0waarde);
 							double dy1 = valueYtoPixels(d1waarde);
@@ -754,7 +775,7 @@ class GrafiekVeld extends JComponent{
 						g.setColor(new Color(100,100,100));
 						double d = bx+1.0*((gtip.selectnummer+gtip.beginwaarde)*gtip.eenheidx);
 						int x = (int) Math.round(d);
-// RPJ						double d0 = ingevuldeExpressie.geefWaarde(gtip.xAsLog?Math.pow(10, (gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX):
+// 						double d0 = ingevuldeExpressie.geefWaarde(gtip.xAsLog?Math.pow(10, (gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX):
 //							(gtip.selectnummer+gtip.beginwaarde)*gtip.schaalFactorX);
 						double d0;
 						if (gtip.manualScalingX) {
@@ -767,7 +788,7 @@ class GrafiekVeld extends JComponent{
 						}
 						if(!gtip.tracing && !Double.isNaN(d0) && gtip.selectnummer<8 && gtip.selectnummer>-1 &&
 								x >= gtip.domeinen[j][0] && x <= gtip.domeinen[j][1]) {	
-// RPJ							int y = (int)Math.round(gtip.yAsLog?Math.log10(hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY)):
+// 							int y = (int)Math.round(gtip.yAsLog?Math.log10(hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY)):
 //								hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY));
 							int y = (int) Math.round(valueYtoPixels(d0));
 							g.fillOval(x-2,y-2,5,5);
@@ -779,7 +800,7 @@ class GrafiekVeld extends JComponent{
 							gtip.tracex = x;
 							gtip.slider.zetStand(gtip.tracex);
 							
-// RPJ 						double dTraceX = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
+//  						double dTraceX = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
 							double dTraceX;
 							if (gtip.manualScalingX) {
 								dTraceX = gtip.eenheidxValue*(-gtip.beginx)/gtip.eenheidxD + gtip.eenheidxValue*gtip.tracexD/gtip.eenheidxD;
@@ -788,7 +809,7 @@ class GrafiekVeld extends JComponent{
 							}
 							
 							double dTraceY = ingevuldeExpressie.geefWaarde(dTraceX);
-// RPJ							int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
+// 							int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
 							int tracey = (int) Math.round(valueYtoPixels(dTraceY));
 							
 							String xWaarde = gtip.dfTrace.format(dTraceX);
@@ -809,24 +830,24 @@ class GrafiekVeld extends JComponent{
 							g.drawString(yWaarde, Math.max(2,bx-woordBreedteY+2), tracey+woordHoogteY/2);
 						}
 						else {	
-// RPJ							double dTraceX = gtip.xAsLog?Math.pow(10, gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD):
+// 							double dTraceX = gtip.xAsLog?Math.pow(10, gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD):
 //								gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*gtip.tracexD/gtip.eenheidxD;
 							double dTraceX = pixelsXtoValue(gtip.tracexD);
-// RPJ2							double dTraceY = gtip.yAsLog?Math.log10((gtip.functies[j].substitueer(dTraceX, gtip.grafiekXAsNaam)).geefWaarde()):
+// 							double dTraceY = gtip.yAsLog?Math.log10((gtip.functies[j].substitueer(dTraceX, gtip.grafiekXAsNaam)).geefWaarde()):
 //								(ingevuldeExpressie.substitueer(dTraceX, gtip.grafiekXAsNaam)).geefWaarde();
 							double dTraceY = gtip.yAsLog?((gtip.functies[j].substitueer(dTraceX, gtip.grafiekXAsNaam)).geefWaarde()):
 										(ingevuldeExpressie.substitueer(dTraceX, gtip.grafiekXAsNaam)).geefWaarde();
 
 							if(!Double.isNaN(dTraceY) && gtip.tracex<gtip.veldb && gtip.tracex>-1 && (!gtip.xPositief || gtip.tracex>bx)
 									&& dTraceX >= gtip.domeinen[j][0] && dTraceX <= gtip.domeinen[j][1]) {	
-// RPJ								int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
+// 								int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
 								int tracey = (int) Math.round(valueYtoPixels(dTraceY));
 								g.fillOval(gtip.tracex-2,tracey-2,5,5);
 								g.drawLine(gtip.tracex,tracey,gtip.tracex,Math.min(hoogte-by, hoogte));
 								g.drawLine(gtip.tracex,tracey,Math.max(bx, 0),tracey);
 							
 								String xWaarde = gtip.dfTrace.format(dTraceX);
-// RPJ 2								String yWaarde = gtip.dfTrace.format(gtip.yAsLog?Math.pow(10,dTraceY):dTraceY);
+// 								String yWaarde = gtip.dfTrace.format(gtip.yAsLog?Math.pow(10,dTraceY):dTraceY);
 								String yWaarde = gtip.dfTrace.format(dTraceY);
 								g.setFont(gtip.font);
 								gtip.fm = g.getFontMetrics();
@@ -892,6 +913,11 @@ class GrafiekVeld extends JComponent{
 	
 	public void tekenFunctie()
 	{
+		
+	}
+	
+	public void tekenVeldFunctie() {
+		// Voor alle rasterpunten teken een vector of een "streamline"
 		
 	}
 	
@@ -971,7 +997,7 @@ class GrafiekVeld extends JComponent{
 				if(beginPuntPix != null && eindPuntPix != null)
 				{	for(int i=Math.max(0, beginPuntPix.x); i < Math.min(breedte, eindPuntPix.x) ; i++) {	
 						double ii = i;
-// RPJ						double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+// 						double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
 //							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, weights);
 //						double d1 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
 //								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, weights);
@@ -979,7 +1005,7 @@ class GrafiekVeld extends JComponent{
 						double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
 						int x0 = i;
 						int x1 = i+1;
-// RPJ						double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
+// 						double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
 //						double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/htip.schaalFactorY);
 						double dy0 = valueYtoPixels(d0);
 						double dy1 = valueYtoPixels(d1);
@@ -1113,7 +1139,7 @@ class GrafiekVeld extends JComponent{
 			
 			double helling = ((gtip.yAsLog?Math.log10(rp1.getY()):rp1.getY()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/
 					((gtip.xAsLog?Math.log10(rp1.getX()):rp1.getX()) - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()));
-// RPJ			double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
+// 			double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
 			double linkerGrens;
 
 			if (gtip.manualScalingX) {
@@ -1134,7 +1160,7 @@ class GrafiekVeld extends JComponent{
 			}
 			
 			double ii2 = breedte;
-// RPJ		double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD; 
+// 		double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD; 
 			double rechterGrens;
 			if (gtip.manualScalingX) {
 				rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;
@@ -1188,7 +1214,7 @@ class GrafiekVeld extends JComponent{
 				double[] weights = berekenGewichten(indexPoints);
 				for(int i=Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0) ; i<breedte ; i++)
 				{	double ii = i;
-// RPJ				double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+// 				double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
 //						/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, weights);
 //					double d1 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
 //							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, weights);
@@ -1244,7 +1270,7 @@ class GrafiekVeld extends JComponent{
 				//double ii = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
 				//double x0 = gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
 				//		/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD;
-// RPJ				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
+// 				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
 				double linkerGrens;
 				if (gtip.manualScalingX) {
 					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 
@@ -1283,7 +1309,7 @@ class GrafiekVeld extends JComponent{
 				
 				
 				double ii2 = breedte;
-// RPJ				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
+// 				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
 				double rechterGrens;
 				if (gtip.manualScalingX) {
 					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
@@ -1590,7 +1616,7 @@ class GrafiekVeld extends JComponent{
 				
 				for(int i=xMin; i<xMax ; i++)
 				{	double ii = i;
-// RPJ				double d0 = (gtip.ongelijkheden[j].substitueer(gtip.xAsLog?Math.pow(10, gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD):
+// 				double d0 = (gtip.ongelijkheden[j].substitueer(gtip.xAsLog?Math.pow(10, gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD):
 //						gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
 //					double d1 = (gtip.ongelijkheden[j].substitueer(gtip.xAsLog?Math.pow(10, gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD):
 //						gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
@@ -1599,7 +1625,7 @@ class GrafiekVeld extends JComponent{
 					if(!Double.isNaN(d0) && !Double.isNaN(d1))
 					{	int x0 = i;
 						int x1 = i+1;
-// RPJ						double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
+// 						double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
 //						double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/gtip.schaalFactorY);
 						double dy0 = valueYtoPixels(d0);
 						double dy1 = valueYtoPixels(d1);
@@ -1628,7 +1654,7 @@ class GrafiekVeld extends JComponent{
 						if(curve.getCurrentPoint()!=null)
 						{	int x1 = i + 1;
 							curve.lineTo((float)x1, horizontaleGrens);
-// RPJ							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/gtip.schaalFactorY);
+// 							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/gtip.schaalFactorY);
 							double dy1 = valueYtoPixels(d1);
 							if(dy1>1000)dy1 = 1000;
 							if(dy1<-1000)dy1 = -1000;
@@ -1645,7 +1671,7 @@ class GrafiekVeld extends JComponent{
 			}
 			if(gtip.ongelijkheden[j] != null && !gtip.isY[j])
 			{	double grens = gtip.ongelijkheden[j].geefWaarde();
-// RPJ				int pixelGrens = (int)((gtip.xAsLog?Math.log10(grens):grens)*gtip.eenheidxD/gtip.schaalFactorX + gtip.beginx);
+// 				int pixelGrens = (int)((gtip.xAsLog?Math.log10(grens):grens)*gtip.eenheidxD/gtip.schaalFactorX + gtip.beginx);
 				int pixelGrens = (int) Math.round(valueXtoPixels(grens));
 
 				if(gtip.isGroterGelijk[j])
@@ -1801,7 +1827,7 @@ class GrafiekVeld extends JComponent{
 		for(int j=0 ; j<gtip.verticaleLijnen.length ; j++)
 		{	if(gtip.verticaleLijnen[j]!=null)
 			{	double xWaarde = gtip.verticaleLijnen[j].geefWaarde();
-// RPJ				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
+// 				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
 				GeneralPath curve = new GeneralPath();
@@ -1975,7 +2001,7 @@ class GrafiekVeld extends JComponent{
 			
 				double currentX = (gtip.parametrisaties[j][0].substitueer(p.geefWaarde(), variabele)).geefWaarde();
 				double currentY = (gtip.parametrisaties[j][1].substitueer(p.geefWaarde(), variabele)).geefWaarde();
-// RPJ				double xPix = gtip.beginx + gtip.eenheidxD * (gtip.xAsLog?Math.log10(currentX):currentX)/gtip.schaalFactorX;
+// 				double xPix = gtip.beginx + gtip.eenheidxD * (gtip.xAsLog?Math.log10(currentX):currentX)/gtip.schaalFactorX;
 //				double yPix = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(currentY):currentY)/gtip.schaalFactorY);
 				double xPix = valueXtoPixels(currentX);
 				double yPix = valueYtoPixels(currentX);							

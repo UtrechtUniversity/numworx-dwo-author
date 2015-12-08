@@ -288,8 +288,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				else if(checkboxen!=null && checkboxen[i]!=null)
 					checkboxen[i].setLocation(4,hoogte+formuleVakken[i].ashoogte-5);
 				
-				
-				
 				if(domeinButtons!=null && domeinButtons[i]!=null)domeinButtons[i].setLocation(breedte, hoogte+formuleVakken[i].ashoogte-5);
 				if(i>0 && enOfKnoppen != null && enOfKnoppen[i-1] != null)enOfKnoppen[i-1].setLocation(breedte, hoogte - 15);
 				hoogte = hoogte + formuleVakken[i].getSize().height + 10;
