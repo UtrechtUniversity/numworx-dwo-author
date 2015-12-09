@@ -297,7 +297,9 @@ MouseListener, MouseMotionListener, CBookAware {
 		verticaleLijnen = new Expressie[maxAantalExpressies];
 		parametrisaties = new Expressie[maxAantalExpressies/2][2];
 		parametrisatieVariabelen = new String[maxAantalExpressies/2];
-		
+		veldFuncties = new Expressie[VeldComponent.cVeldComponentMaxAantalFormules][2];
+		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x@")));
+		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy@")));
 		beginwaarde = 0;
 		selectnummer = 999;
 		
@@ -453,7 +455,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		veldComponent.setSize(veldb, veldComponentHoogte);
 		veldComponent.zetRandverhoging(false);
 		add(veldComponent);
-		veldComponent.zetFormuleRegels(VeldComponent.cVCMaxAantalFormules, false);
+		veldComponent.zetFormuleRegels(VeldComponent.cVeldComponentMaxAantalFormules, false);
 		veldComponent.zetGrafiekComponent(this);
 		veldComponent.addActionListener(this);
 		

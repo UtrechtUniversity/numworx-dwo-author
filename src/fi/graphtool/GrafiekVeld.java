@@ -15,6 +15,7 @@ import java.awt.geom.Area;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.util.Vector;
+import javax.vecmath.Vector2d;
 
 import javax.swing.JComponent;
 
@@ -22,7 +23,6 @@ import fi.wiskopdr.expressies.Expressie;
 
 class GrafiekVeld extends JComponent{
 	private final int cMaxPiLinesOnScreen = 8;
-	private RoosterDefinitie roosterDef;
 		
 	private final GraphToolInteractiePanel gtip;
 
@@ -55,6 +55,24 @@ class GrafiekVeld extends JComponent{
 			valueX = Math.pow(10, valueX);
 		} 
 		return valueX;
+	}
+	
+	public double pixelsYtoValue(double pixelsY) { 
+		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsX 
+		double scalingMultiplier;		
+		if (gtip.manualScalingX) {
+			scalingMultiplier = gtip.eenheidxValue;
+		}
+		else {
+			scalingMultiplier = gtip.schaalFactorX;			
+		}
+//		double valueY = (pixelsX-gtip.beginx)/gtip.eenheidxD*scalingMultiplier;
+		double valueY = (scalingMultiplier * (-gtip.beginy) / gtip.eenheidyD +
+							scalingMultiplier * (getSize().height -pixelsY) / gtip.eenheidyD);
+		if (gtip.yAsLog) {
+			valueY = Math.pow(10, valueY);
+		} 
+		return valueY;
 	}
 
 	public double valueXtoPixels(double valueX) {
@@ -118,7 +136,23 @@ class GrafiekVeld extends JComponent{
 	}	
 */
 	
-	private void tekenVektor() {}
+	private Point tekenVector(Point vectorStartScherm, boolean tekenPijlpunt) {
+		double vectorStartXWaarde = pixelsXtoValue(vectorStartScherm.getX()); 
+		double vectorStartYWaarde = pixelsYtoValue(vectorStartScherm.getY());
+		
+		Expressie xAsExpressie = gtip.veldFuncties[0][0];
+		Expressie yAsExpressie = gtip.veldFuncties[0][1];
+		double vectorEindXWaarde = xAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
+		double vectorEindYWaarde = yAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
+		
+		Point vectorEindScherm = new Point();
+		vectorEindScherm.setLocation(valueXtoPixels(vectorEindXWaarde), valueYtoPixels(vectorEindYWaarde));
+		
+		if (tekenPijlpunt) {
+			
+		}
+		return (vectorEindScherm);
+	}
 	
 	private void tekenStroomlijn() {}
 
@@ -212,22 +246,6 @@ class GrafiekVeld extends JComponent{
 			ehy = (int) Math.round(ehyD);
 		}		
 		
-		roosterDef = new RoosterDefinitie( gtip.beginx, gtip.beginy, 
-				gtip.eenheidx, gtip.eenheidy, gtip.eenheidxD, gtip.eenheidyD, 
-				gtip.manualScalingX, gtip.manualScalingY, gtip.xAsLog, gtip.yAsLog, 
-				gtip.eenheidxValue, gtip.eenheidyValue, gtip.schaalFactorX, gtip.schaalFactorY,
-				manScalingMultiplyX, manScalingMultiplyY);
-		
-		System.out.println("gtip.eenheidxD=" + gtip.eenheidxD);
-		System.out.println("gtip.eenheidyD=" + gtip.eenheidyD);
-		System.out.println("gtip.eenheidx=" + gtip.eenheidx);
-		System.out.println("gtip.eenheidy=" + gtip.eenheidy);
-
-		System.out.println("roosterDef.getEenheidXD()=" + roosterDef.getEenheidXD());
-		System.out.println("roosterDef.getEenheidYD()=" + roosterDef.getEenheidYD());
-		System.out.println("roosterDef.getEenheidX()=" + roosterDef.getEenheidX());
-		System.out.println("roosterDef.getEenheidY()=" + roosterDef.getEenheidY());
-		
 		int maxWoordBreedteY = 0;
 		int maxWoordHoogteX = 10;
 		boolean witruimteX = by <= 12;
@@ -236,13 +254,13 @@ class GrafiekVeld extends JComponent{
 				
 		g.setFont(gtip.font);
 		gtip.fm = g.getFontMetrics();
+
+		int imin = -(int)Math.round(gtip.beginx/ehx); 
+		int imax = 1+breedte/ehx-(int)Math.round(gtip.beginx/ehx);
+		int jmin = -(int)Math.round(gtip.beginy/ehy); 
+		int jmax = 1+hoogte/ehy-(int)Math.round(gtip.beginy/ehy);
 		
 		if (gtip.roosterZichtbaar || gtip.schaalZichtbaar) {
-			
-			int imin = -(int)Math.round(gtip.beginx/ehx); 
-			int imax = 1+breedte/ehx-(int)Math.round(gtip.beginx/ehx);
-			int jmin = -(int)Math.round(gtip.beginy/ehy); 
-			int jmax = 1+hoogte/ehy-(int)Math.round(gtip.beginy/ehy);
 
 			for(int j=jmin+1 ; j<jmax-1 ; j++) {	
 // 				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
@@ -919,8 +937,30 @@ class GrafiekVeld extends JComponent{
 			sliderLoc = Math.min(sliderLoc,  getY() + hoogte - gtip.offset);
 			gtip.slider.setLocation(0, sliderLoc);
 		}
-		
-		tekenVeldFunctie();
+//		tekenVeldFunctie(manScalingMultiplyX, manScalingMultiplyY);
+		if ( (gtip.veldFuncties[0][0] != null) && (gtip.veldFuncties[0][1] != null) ) { // TODO - criterium
+			// roosterpunten aflopen
+			for(int i=imin ; i<imax ; i++) { // x-as aflopen
+				for(int j=jmin ; j<jmax ; j++) { // y-as aflopen
+					
+					// bepaal roosterpositie = begin van vector / stream
+					int vectorStartXScreen = (int) (bx+i*ehxD);
+					int vectorStartYScreen = (int) (hoogte-(by+j*ehyD));
+
+					if ( (i == imin || i==imin+1 ) && (j == jmin) )  { 
+						System.out.println("tekenVeld :: vectorStartXScreen =" + vectorStartXScreen);
+						System.out.println("tekenVeld :: vectorStartYScreen =" + vectorStartYScreen);
+	//					System.out.println("tekenVeld :: vectorStartXValue =" + vectorStartXValue);
+			//			System.out.println("tekenVeld :: vectorStartYvalue =" + vectorStartYvalue);
+					}
+
+					// tekenvector
+//					tekenVector(vectorStartXScreen, vectorStartYScreen);
+					tekenVector(vectorStartXScreen, vectorStartYScreen);
+				}
+			}
+		}
+
 		
 		/*
 		if(gtip.schuifParameters != null)
@@ -940,39 +980,8 @@ class GrafiekVeld extends JComponent{
 
 	}
 	
-	public void tekenFunctie()
+	public void tekenFunctie( )
 	{
-		
-	}
-	
-	public void tekenVeldFunctie() { // TODO
-		// Voor alle rasterpunten teken een vector of een "streamline"
-		
-		int breedte = getSize().width;
-		int hoogte = getSize().height;
-		
-		int ehx = (int) Math.round(roosterDef.getEenheidXD() * roosterDef.getManScalingMultiplyX());
-		int ehy = (int) Math.round(roosterDef.getEenheidYD() * roosterDef.getManScalingMultiplyY());
-		
-		int imin = -(int)Math.round(roosterDef.getBeginX()/ehx); 
-		int imax = 1+breedte/ehx-(int)Math.round(roosterDef.getBeginX()/ehx);
-		int jmin = -(int)Math.round(roosterDef.getBeginY()/ehy); 
-		int jmax = 1+hoogte/ehy-(int)Math.round(roosterDef.getBeginY()/ehy);
-
-		System.out.println("tekenVeldFunctie :: imin =" + imin);
-		System.out.println("tekenVeldFunctie :: imax =" + imax);
-		System.out.println("tekenVeldFunctie :: jmin =" + jmin);
-		System.out.println("tekenVeldFunctie :: jmax =" + jmax);
-		
-		for(int i=imin+1 ; i<imax-1 ; i++) { // x-as aflopen
-			for(int j=jmin+1 ; j<jmax-1 ; j++) { // y-as aflopen
-				// bepaal roosterpositie
-				
-				// bereken vector
-				
-				// teken vector
-			}
-		}
 		
 	}
 	

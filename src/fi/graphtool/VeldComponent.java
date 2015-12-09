@@ -38,7 +38,7 @@ import fi.wiskopdr.WiskOpdr;
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
 	
 	/* component defaults & contstants */
-	public final static int cVCMaxAantalFormules = 1;
+	public final static int cVeldComponentMaxAantalFormules = 1;
 	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
 
 	public final static int cDefault_VeldComponentHoogte = 80;
@@ -54,7 +54,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	private JButton[] enOfKnoppen;
 	private boolean[] isEn;
 	
-	private int maxAantalFormules = cVCMaxAantalFormules;
+	private int maxAantalFormules = cVeldComponentMaxAantalFormules;
 	private int aantalRegels=1;
 	//private static Image GOEDKRUL,FOUTKRUIS;
 	private int actiefNummer;
