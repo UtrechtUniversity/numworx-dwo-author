@@ -28,15 +28,15 @@ class RoosterDefinitie {
 	private int manScalingMultiplyY=1; // alleen geldig in manualschaling modus
 	                                  // originele eenheid in manual mode is deze factor * de eenheid	
 	
-	RoosterDefinitie (	double beginx, double beginy, double eenheidXD, double eenheidYD, 
+	RoosterDefinitie (	double beginx, double beginy, int eenheidx, int eenheidy, double eenheidXD, double eenheidYD, 
 						boolean manualScalingX, boolean manualScalingY, boolean xAsLog, boolean yAsLog, 
 						double eenheidxValue, double eenheidyValue, double schaalFactorX, double schaalFactorY,
 						int manScalingMultiplyX, int manScalingMultiplyY) {
 		// constructor, met alle parameters, eenheid? wordt afgeleid van eenheid?D
 		this.beginx = beginx;
 		this.beginy = beginy;
-		this.eenheidX = new Double(eenheidXD).intValue();
-		this.eenheidY = new Double(eenheidYD).intValue();
+		this.eenheidX = eenheidx;
+		this.eenheidY = eenheidy;
 		this.eenheidXD = eenheidXD;
 		this.eenheidYD = eenheidYD;
 		this.manualScalingX = manualScalingX;

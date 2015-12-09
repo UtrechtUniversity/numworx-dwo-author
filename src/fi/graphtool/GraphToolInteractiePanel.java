@@ -83,6 +83,8 @@ MouseListener, MouseMotionListener, CBookAware {
 	Expressie[] ongelijkheden;
 	Expressie[] verticaleLijnen;
 	Expressie[][] parametrisaties;
+	Expressie[][] veldFuncties;
+	
 	String[] parametrisatieVariabelen;
 	boolean[] isY;
 	boolean[] isGroterGelijk;
