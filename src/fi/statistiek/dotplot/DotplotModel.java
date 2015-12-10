@@ -511,6 +511,30 @@ public class DotplotModel extends Observable implements TableModelListener,
 	}
 
 	/**
+	 * Initialize the minimum value of columnX on the scale.
+	 * 
+	 */
+	public void initializeMinXOnScale()
+	{
+		double minColumnValue = this.getStatTableModel().getColumnMin(
+			this.getColumnXIndex());
+
+		this.minXOnScale = minColumnValue;
+	}
+
+	/**
+	 * Initialize the maximum value of columnX on the scale.
+	 * 
+	 */
+	public void initializeMaxXOnScale()
+	{
+		double maxColumnValue = this.getStatTableModel().getColumnMax(
+			this.getColumnXIndex());
+
+		this.maxXOnScale = maxColumnValue;
+	}
+
+	/**
 	 * Get the maximum value of columnX on the scale.
 	 * 
 	 * @return
