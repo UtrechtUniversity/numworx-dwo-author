@@ -43,6 +43,10 @@ public class DotplotController implements StatistiekView, ActionListener,
 	{
 		this.model = new DotplotModel(tableModel, viewName, false);
 		model.setColumnXIndex(startVar);
+		
+		model.initializeMinXOnScale();
+		model.initializeMaxXOnScale();
+		
 		this.view = new DotplotView(this.model, this);
 		this.view.update(null, null);
 	}
@@ -61,6 +65,10 @@ public class DotplotController implements StatistiekView, ActionListener,
 		this.model = new DotplotModel(tableModel, viewName, true);
 		model.setColumnXIndex(startVar1);
 		model.setColumnYIndex(startVar2);
+		
+		model.initializeMinXOnScale();
+		model.initializeMaxXOnScale();
+		
 		this.view = new DotplotView(this.model, this);
 		this.view.update(null, null);
 	}
