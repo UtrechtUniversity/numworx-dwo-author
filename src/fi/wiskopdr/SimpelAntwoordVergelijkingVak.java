@@ -13,6 +13,10 @@ import java.util.Hashtable;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.FormuleElement;
@@ -24,10 +28,11 @@ import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder
+public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
 {
 	private AntwoordVergelijkingVak antwoordVergelijkingVak;
 	private Component formuleComponent, scoreGoedComponent, scoreFoutComponent, scoreHalfComponent;
@@ -54,6 +59,8 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	
 	private boolean uitklapVak;
 	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+		
 	static boolean fontOvererving;
 	
 	public static void zetFontOverervingForm(boolean b)
@@ -421,6 +428,9 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 				
 			}
 			
+			if(antwoordVergelijkingVak.isCorrect())cbookEventHandler.fire("action.correct");
+			if(antwoordVergelijkingVak.isFout())cbookEventHandler.fire("action.false");
+			
 			//((FormuleVak)formuleComponent).setEditable(true);
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
@@ -669,5 +679,44 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
  		}
  	}
  	//end ActionProducer
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener,
+			String command) {
+		System.out.println("addCBookEventListener: "+listener.toString() +"+"+command);
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,
+			String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] s = {};
+		return s;
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] s = {				
+				"action.correct",
+				"action.false"};
+		return s;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
 
 }

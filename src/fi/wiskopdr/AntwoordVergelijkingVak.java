@@ -2083,6 +2083,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	public void kijkNa(int stapNr)
 	{
 		kijkNa(stapNr, true);
+		if(correct)cbookEventHandler.fire("action.correct");
+		if(fout)cbookEventHandler.fire("action.false");
 	}
 
 	public void kijkNa(int stapNr, boolean show)
@@ -3921,7 +3923,11 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"balansvergelijking", "double.solution", "equation"};
+		String[] commands = {"balansvergelijking", 
+				"double.solution",
+				"equation",
+				"action.correct",
+				"action.false"};
 		return commands;
 	}
 

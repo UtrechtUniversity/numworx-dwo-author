@@ -454,6 +454,9 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				if(antwoordFormuleVak.hasCheck())add(scoreToetsComponent);
 				repaint();
 			}
+			
+			if(antwoordFormuleVak.isCorrect())cbookEventHandler.fire("action.correct");
+			if(antwoordFormuleVak.isFout())cbookEventHandler.fire("action.false");
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
 		{	if(formuleToolBijFocus)zetTabletUser();
@@ -641,6 +644,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 
 	public void kijkNa() 
 	{	antwoordFormuleVak.kijkNa();
+		
 	}
 
 	public void kijkNa(int stapNr) 
@@ -870,7 +874,13 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,"index", "double", "expression", POPCORN_FORMULA};
+		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,
+				"index", 
+				"double", 
+				"expression", 
+				POPCORN_FORMULA,
+				"action.correct",
+				"action.false"};
 		return s;
 	}
 
