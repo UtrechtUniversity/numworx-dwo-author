@@ -1,5 +1,7 @@
 package fi.wiskopdr.text;
 
+import fi.wiskopdr.tekstobjects.ShareAction;
+
 public class Text_en extends java.util.ListResourceBundle
 {
         public Object [] [] getContents() { return contents; }
@@ -730,6 +732,10 @@ public class Text_en extends java.util.ListResourceBundle
 				{"ONS_timesChecked", "{0} times checked"},
 				{"ONS_1timeChecked", "first time checked"},
 
+				// shareAction
+				{ ShareAction.SHARE_KEY, "Shared key" },
+				{ ShareAction.SHARE_MAP, "Shared components" },
+				
 		};
 }
 

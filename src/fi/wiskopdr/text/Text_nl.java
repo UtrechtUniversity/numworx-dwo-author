@@ -1,6 +1,7 @@
 package fi.wiskopdr.text;
 
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.tekstobjects.ShareAction;
 
 public class Text_nl extends java.util.ListResourceBundle
 {
@@ -764,6 +765,10 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"ONS_timeready", "Op tijd klaar"},
 				{"ONS_timesChecked", "{0} keer nagekeken" },
 				{"ONS_1timeChecked", "één keer nagekeken"},
+				
+				// shareAction
+				{ ShareAction.SHARE_KEY, "gedeelde sleutel"},
+				{ ShareAction.SHARE_MAP, "Gecombineerde componenten" },
 
 		};
 }
