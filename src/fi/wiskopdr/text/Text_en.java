@@ -444,6 +444,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
                 {"TVEP_puntenaftrek" , "Deduction of points"},
+                {"TVEP_visible", "Visible"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},
@@ -690,6 +691,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_text", "text"},
 				{"CBA_action.setNotEditable", "Action: set not editable"},
 				{"CBA_action.unfold", "Action: unfold"},
+				{"CBA_action.correct", "Action: correct answer"},
+				{"CBA_action.false", "Action: incorrect antwoord"},
+				{"CBA_action.setVisible", "Action: set visible"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},

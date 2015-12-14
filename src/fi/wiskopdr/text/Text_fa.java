@@ -412,6 +412,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 {"TVEP_defaultBijNull" , "default  "},
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
+                {"TVEP_visible", "Visible"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "گزینه ذخیره کردن"},

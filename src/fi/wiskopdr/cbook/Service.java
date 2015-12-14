@@ -478,9 +478,6 @@ public class Service {
 			return null;
 		}};
 
-	
-		
-		
 		
 	public static Collection<CBookWidgetIF> getWidgets(int setNr) {
 		if (classMap == null) initialize();

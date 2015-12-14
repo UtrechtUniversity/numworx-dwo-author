@@ -1,6 +1,6 @@
 package fi.wiskopdr.tekstobjects;
 
-
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.awt.*;
@@ -18,12 +18,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.*;
 
 import org.cbook.cbookif.CBookWidgetIF;
-
-
-
-
-
-
 
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
@@ -69,7 +63,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	private int huidigSoortInteractiePanel = -1;
 	private JButton okButton;
     private JButton cancelButton;
-    private JComboBox soortAntwoordVakKeuze;
+    private JButton shareButton;
+    JComboBox soortAntwoordVakKeuze;
     private JTextField breedteTF, hoogteTF;
     private JLabel breedteLabel, hoogteLabel;
     private JCheckBox volledigeBreedteCB, popupCB;
@@ -94,7 +89,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     private Dimension size;
 	private String crossWidgetId;
 	private XWidgetManager manager;
-	private Object subscriptions; // Not to loose. 
+	Object subscriptions; // Not to loose. 
 
     public EditInteractiePanelDialog(Frame owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
     	super(owner, windowTitle, modal);
@@ -121,7 +116,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	initEditInteractiePanelDialog(setNr, launchData, manager);
     }
 
-    public void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
+    void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
         getContentPane().setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
         
@@ -165,34 +160,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		bottomPanel.add(soortAntwoordVakKeuze);
 		
 		
-		set = TekstInteractiePanelVak.interactiePanelSets[setNr];
-		soortAntwoordVakKeuze.addItem(WiskOpdr.rb.getString("interactieKeuzeLabel") + TekstInteractiePanelVak.interactiePanelSetNames[setNr]);
-		
-
-		if(setNr == TekstInteractiePanelVak.CBookSetNr)
-		{
-			Iterator iter = Service.getWidgets(setNr).iterator();
-			while(iter.hasNext())
-				soortAntwoordVakKeuze.addItem(iter.next());
-		}
-		else if(setNr == TekstInteractiePanelVak.CindySetNr)
-		{
-			Iterator iter = Service.getWidgets(setNr).iterator();
-			while(iter.hasNext())
-				soortAntwoordVakKeuze.addItem(iter.next());
-		}
-		else if(setNr == TekstInteractiePanelVak.ESlateSetNr 
-			 || setNr == TekstInteractiePanelVak.EpsilonSetNr)
-		{
-			Iterator iter = Service.getWidgets(setNr).iterator();
-			while(iter.hasNext())
-				soortAntwoordVakKeuze.addItem(iter.next());
-		}
-		else
-		{	for(int i=0 ; i<set.length ; i++)
-			{	soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[i]]);
-			}
-		}
+		initSet(setNr);
 		
 		/*
 		soortAntwoordVakKeuze.addItem("Kies soort interactievak");
@@ -256,8 +224,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		imageButton.setVisible(false);
 		bottomPanel.add(imageButton);
 		
+		shareButton = new JButton(shareAction);
+		shareButton.setBounds(762,10,24,20);
+		bottomPanel.add(shareButton);
+		
 		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
-        
+        launchData = shareAction.unwrap(launchData);
         addInteractieEditPanel(launchData);
         
         
@@ -265,6 +237,38 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         this.setSize(Math.max(size.width, widthEditPanel), size.height);
         doLayout();
     }
+
+	void initSet(int setNr) {
+		this.setNr = setNr;
+		set = TekstInteractiePanelVak.interactiePanelSets[setNr];
+		soortAntwoordVakKeuze.addItem(WiskOpdr.rb.getString("interactieKeuzeLabel") + TekstInteractiePanelVak.interactiePanelSetNames[setNr]);
+		
+
+		if(setNr == TekstInteractiePanelVak.CBookSetNr)
+		{
+			Iterator<?> iter = Service.getWidgets(setNr).iterator();
+			while(iter.hasNext())
+				soortAntwoordVakKeuze.addItem(iter.next());
+		}
+		else if(setNr == TekstInteractiePanelVak.CindySetNr)
+		{
+			Iterator iter = Service.getWidgets(setNr).iterator();
+			while(iter.hasNext())
+				soortAntwoordVakKeuze.addItem(iter.next());
+		}
+		else if(setNr == TekstInteractiePanelVak.ESlateSetNr 
+			 || setNr == TekstInteractiePanelVak.EpsilonSetNr)
+		{
+			Iterator iter = Service.getWidgets(setNr).iterator();
+			while(iter.hasNext())
+				soortAntwoordVakKeuze.addItem(iter.next());
+		}
+		else
+		{	for(int i=0 ; i<set.length ; i++)
+			{	soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[i]]);
+			}
+		}
+	}
     
     public void setBackground(Color c)
     {	super.setBackground(c);
@@ -609,7 +613,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         }
     }*/
     
-    public Hashtable getEditState()
+    public Hashtable getEditState() {
+    	
+    	return shareAction.wrap(getEditState_int());
+    }
+    
+    Hashtable getEditState_int()
     {  	
     	Hashtable interactiePanelLaunchState = null;
 		int soortInteractiePanel = 0;
@@ -913,6 +922,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     
   //ActionProducer
 	private ActionListener actionListener = null;
+	private ShareAction shareAction = new ShareAction(new ImageIcon(WiskOpdr.loadImage("resources/unshare.png")),this);
 	
 	public void addActionListener(ActionListener l) 
  	{	actionListener = AWTEventMulticaster.add(actionListener,l);

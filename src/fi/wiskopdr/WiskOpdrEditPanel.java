@@ -13,6 +13,7 @@ import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.ideas.IdeasClient;
 import fi.wiskopdr.opdrnav.*;
+import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 	
 
@@ -36,7 +37,8 @@ public class WiskOpdrEditPanel extends JPanel
 		}
 		if (launchData == null)
 			launchData = applet.makeDefaultParamValues(0);
-		
+
+		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
 		
 //		String langArg = getParameter("language");
@@ -59,6 +61,7 @@ public class WiskOpdrEditPanel extends JPanel
 		super.setSize(700,300); 
 		
 		this.launchData = launchData;
+		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
 		
 		String langArg = getParameter("language");
@@ -93,7 +96,10 @@ public class WiskOpdrEditPanel extends JPanel
     
     	if(language!=null) h.put("language",language);
     	if(bgcolor!=null) h.put("bgcolor",bgcolor);
-    	if(TekstImageVak.getImageMapString()!=null)h.put(TekstImageVak.IMAGE_MAP, TekstImageVak.getImageMapString());
+    	String imageMapString = TekstImageVak.getImageMapString();
+		if(imageMapString!=null)h.put(TekstImageVak.IMAGE_MAP, imageMapString);
+		String shareMapString = ShareAction.getSharedLaunchData();
+		if(shareMapString != null) h.put(ShareAction.SHARE_MAP, shareMapString);
     	return h;
 	}
 	

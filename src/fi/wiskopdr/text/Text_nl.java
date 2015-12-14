@@ -458,6 +458,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
                 {"TVEP_puntenaftrek", "Puntenaftrek"},
+                {"TVEP_visible", "Zichtbaar"},
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},
@@ -725,6 +726,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_text", "tekst"},
 				{"CBA_action.setNotEditable", "Actie: zet tekstinvoer uit"},
 				{"CBA_action.unfold", "Actie: uitklappen"},
+				{"CBA_action.correct", "Actie: correct antwoord"},
+				{"CBA_action.false", "Actie: fout antwoord"},
+				{"CBA_action.setVisible", "Actie: maak zichtbaar"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},

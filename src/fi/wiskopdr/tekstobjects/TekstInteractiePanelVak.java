@@ -514,7 +514,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	{
 		if(interactiePanel instanceof TekstVakPanel)
 			((TekstVakPanel)interactiePanel).initConnections(manager);
-		else
+		//else
 		{	//System.out.println("initConnections");
 			//System.out.println("connections: "+connections.toString());
 			if( subscriptions != null ) 
@@ -623,6 +623,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		getCrossWidgetId(); // zender OOK CrossWidgetId!
 		tekstVak.getXWidgetManager().setCrossWidgetView(this);
+		tekstVak.getXWidgetManager().setCrossWidgetView(dest); // dest is eindvak
 		getBasisTekstVak().updateCrossWidgetView();
 		WiskOpdr.setLaunchDataChanged();
 	}
@@ -874,7 +875,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public void setEditState(Hashtable h)
 	{
 		if(h==null)return;
-		
+		h = ShareAction.unwrapLaunchData(h); // here intervention for shared launchdata
 		launchData = h;
 		int soortInteractiePanel = 5;
 		Hashtable interactiePanelLaunchState = null;
@@ -1447,6 +1448,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	if(h==null)return;
+	
+		h = ShareAction.unwrapLaunchData(h); // intervention for launchdata (might be not nessessary)
 		launchData = h;
 		
 		int soortInteractiePanel = 0;
@@ -1862,6 +1865,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void setState(Hashtable h)
 	{
+		h = ShareAction.unwrapState(launchData, h);
+		// potentieel probleem dat widgets niet tegen lege state kunnen
+		if(h != null && !h.isEmpty()) // skip? hoe?
 		try {
 			if(interactiePanel!=null)interactiePanel.setState(h);
 		} catch (Exception e) {
@@ -1879,6 +1885,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	
 	public Hashtable getState()
+	{
+		return ShareAction.wrapState(launchData, getState_int());
+	}
+	
+	private Hashtable getState_int()
 	{		
 		if(interactiePanel!=null)return interactiePanel.getState();
 		else return null;

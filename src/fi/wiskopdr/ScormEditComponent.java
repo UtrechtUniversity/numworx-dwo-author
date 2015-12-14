@@ -4,6 +4,7 @@ import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
 import javax.swing.*;
 
 import fi.beans.appletutil.*;
@@ -12,6 +13,7 @@ import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.ideas.IdeasClient;
 import fi.wiskopdr.opdrnav.*;
+import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 	
 
@@ -28,6 +30,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 		super.setSize(790,520); //voor dwo
 		//setState(launchData);
 		this.launchData = launchData;
+		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
 		
 		String langArg = getParameter("language");
@@ -100,7 +103,10 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
     
     	if(language!=null) h.put("language",language);
     	if(bgcolor!=null) h.put("bgcolor",bgcolor);
-    	if(TekstImageVak.getImageMapString()!=null)h.put(TekstImageVak.IMAGE_MAP, TekstImageVak.getImageMapString());
+    	String imageMapString = TekstImageVak.getImageMapString();
+		if(imageMapString!=null)h.put(TekstImageVak.IMAGE_MAP, imageMapString);
+		String shareMapString = ShareAction.getSharedLaunchData();
+		if(shareMapString != null) h.put(ShareAction.SHARE_MAP, shareMapString);
     	return h;
 	}
 	
@@ -118,6 +124,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 		}
 		this.launchData = launchData;
         //ImageVak.setImageMap(launchData.get(ImageVak.IMAGE_MAP));
+		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
         
         String langArg = getParameter("language");

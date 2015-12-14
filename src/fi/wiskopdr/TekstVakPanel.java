@@ -167,6 +167,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	private boolean callOut = false;
 	private boolean callOutDrag = false;
+	
+	private boolean visible = true;
 
 	int callOutMargeX0 = 15;
 	int callOutMargeY0 = 15;
@@ -677,6 +679,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean logOption = false;
 		String logID = "";
 		String logIDLabel = "";
+		boolean visible = true;
 
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
@@ -821,6 +824,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	logID = (String)h.get("logID");
         if(h.containsKey("logIDLabel")) 
         	logIDLabel = (String)h.get("logIDLabel");
+        if(h.containsKey("visible")) 
+        	visible = ((Boolean)h.get("visible")).booleanValue();
 
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -894,6 +899,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.logOption = logOption;
 	    this.logID = logID;
 	    this.logIDLabel = logIDLabel;
+	    this.visible = visible;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1074,6 +1080,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 		this.randomVars = randomVars;
 		this.randomValues = randomValues;
+		
+		setVisible(visible);
 	}
 	
 	public void initConnections(XWidgetManager manager)
@@ -1617,6 +1625,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean logOption = false;
 		String logID = "";
 		String logIDLabel = "";
+		boolean visible = true;
 
 		randZichtbaar = this.randZichtbaar;
 		bgColorZichtbaar = this.bgColorZichtbaar;
@@ -1681,6 +1690,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		logOption = this.logOption;
 		logID = this.logID;
 		logIDLabel = this.logIDLabel;
+		visible = this.visible;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -1800,10 +1810,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
+		h.put("visible", new Boolean(visible));
 		
 		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
-			System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
+			//System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
 		}
 		
 		return h;
@@ -1918,7 +1929,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public void setState(Hashtable h)
 	{
 		if (h == null)
+		{
+// Wim: always initialize subcomponents, with 'no state';
+			Vector v = geefInteractiePanels();
+			for (int i = 0; i < v.size(); i++)
+			{
+					((InteractiePanelContainerIF) v.elementAt(i)).setState(null);
+			}
 			return;
+		}
 
 		Hashtable[] interactiePanelStates = null;
 		boolean selected = false;
@@ -1948,7 +1967,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{
 			if (interactiePanelStates.length > i && interactiePanelStates[i] != null)
 				((InteractiePanelContainerIF) v.elementAt(i)).setState(interactiePanelStates[i]);
-
+			else
+				((InteractiePanelContainerIF) v.elementAt(i)).setState(null);
+				
 		}
 		this.selected = selected;
 		this.nagekeken = nagekeken;
@@ -2279,6 +2300,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean logOption = false;
 		String logID = "";
 		String logIDLabel = "";
+		boolean visible = true;
 
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
@@ -2422,6 +2444,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	logID = (String)h.get("logID");
         if(h.containsKey("logIDLabel")) 
         	logIDLabel = (String)h.get("logIDLabel");
+        if (h.containsKey("visible"))
+        	visible = ((Boolean) h.get("visible")).booleanValue();
         
        	this.randZichtbaar = randZichtbaar;
 		this.bgColorZichtbaar = bgColorZichtbaar;
@@ -2508,6 +2532,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.logOption = logOption;
 	    this.logID = logID;
 	    this.logIDLabel = logIDLabel;
+	    this.visible = visible;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();
@@ -2814,6 +2839,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void paintComponent(Graphics gr)
 	{
+		//if(!visible) 
+		//	return;
 		Graphics2D g = (Graphics2D) gr;
 
 		//if(hoek!=0)
@@ -3665,32 +3692,37 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public void acceptCBookEvent(CBookEvent event) {
-		int index = 0;
 		String command = event.getCommand();
-		index = (Integer)event.getParameter(command);
-		System.out.println("index: "+index);
-		if (random && index < aantalRandom);
-		{	String[][] teksten = null;
-			Hashtable[] interactiePanelLaunchData = null;
-			int tabNummer = index - 1;
-			if (tabNummer < aantalRandom && tabNummer > -1)
-			{
-				teksten = randomteksten[tabNummer];
-				interactiePanelLaunchData = randomIpLaunchdata[tabNummer];
-			}
-			for (int i = 0; i < aantalRijen; i++)
-			{
-				for (int j = 0; j < aantalKolommen; j++)
+		if(command.startsWith("action.setVisible"))
+		{	visible = true;
+			setVisible(visible);
+		}
+		else if(command.startsWith("index"))
+		{	int index = 0;
+			index = (Integer)event.getParameter(command);
+			if (random && index < aantalRandom);
+			{	String[][] teksten = null;
+				Hashtable[] interactiePanelLaunchData = null;
+				int tabNummer = index - 1;
+				if (tabNummer < aantalRandom && tabNummer > -1)
 				{
-					tekstVakken[i][j].zetTekst(teksten[i][j]);
-					tekstVakken[i][j].setEditable(false);
+					teksten = randomteksten[tabNummer];
+					interactiePanelLaunchData = randomIpLaunchdata[tabNummer];
 				}
-			}
-			Vector v = geefInteractiePanels();
-			for (int i = 0; i < v.size(); i++)
-			{
-				((InteractiePanelContainerIF) v.elementAt(i)).zetOpdracht(interactiePanelLaunchData[i], randomVars, randomValues);
-				((InteractiePanelContainerIF) v.elementAt(i)).addActionListener(this);
+				for (int i = 0; i < aantalRijen; i++)
+				{
+					for (int j = 0; j < aantalKolommen; j++)
+					{
+						tekstVakken[i][j].zetTekst(teksten[i][j]);
+						tekstVakken[i][j].setEditable(false);
+					}
+				}
+				Vector v = geefInteractiePanels();
+				for (int i = 0; i < v.size(); i++)
+				{
+					((InteractiePanelContainerIF) v.elementAt(i)).zetOpdracht(interactiePanelLaunchData[i], randomVars, randomValues);
+					((InteractiePanelContainerIF) v.elementAt(i)).addActionListener(this);
+				}
 			}
 		}
 		
@@ -3721,7 +3753,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] sendCommands = {"index"};
+		String[] sendCommands = {"index",
+				"action.setVisible"};
 		return sendCommands;
 	}
 

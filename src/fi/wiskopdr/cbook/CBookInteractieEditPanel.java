@@ -130,9 +130,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 		teltMee.setSelected(!Boolean.FALSE.equals(getProperty(WidgetBridge.TELT_MEE)));
 		if(canLog)
 		{
-			Object property = getProperty(WidgetBridge.LOG_ID);
-			if (property == null) property = ""; // null staat zo slordig
-			logid.setText(String.valueOf(property));
+			logid.setText(String.valueOf(getProperty(WidgetBridge.LOG_ID)));
 			logging.setSelected(Boolean.TRUE.equals(getProperty(WidgetBridge.LOGGING)));
 		}
 		

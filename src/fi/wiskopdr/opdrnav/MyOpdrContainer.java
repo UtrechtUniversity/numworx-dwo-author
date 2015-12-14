@@ -500,7 +500,18 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		tekstArea2.setBackground(getBackground());
 
 		setNewScrollSize();
+// Wim: always set state to something, shared state
+		setStateNull();
+	}
 
+	private void setStateNull() {
+		for (int i = 0; i < interactiePanelCs.length; i++)
+		{
+			if (interactiePanelCs[i] != null )
+			{
+				interactiePanelCs[i].setState(null);
+			}
+		}
 	}
 
 	public void zetMode(int mode)

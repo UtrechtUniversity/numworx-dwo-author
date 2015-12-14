@@ -58,6 +58,7 @@ import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.tekstobjects.Link;
+import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 
@@ -223,7 +224,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 		if (api != null)
 			lessonMode = api.LMSGetValue("cmi.core.lesson_mode");
-
+		ShareAction.init(getData(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString(getData(TekstImageVak.IMAGE_MAP));
 
 		String gekoppeldeOpdrachtenString = getData("gekoppeldeOpdrachten");
@@ -1259,7 +1260,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int[][][][] scoresMaxObjectives = null;
 		boolean[][] bezocht = null;
 		
-
+		Object shareState = h.get(ShareAction.SHARE_MAP);
+		if(shareState instanceof Hashtable) 
+			ShareAction.setSharedState((Hashtable) shareState);
+		else
+			ShareAction.setSharedState(null);
+		
 		//if (h.containsKey("aantalActiviteiten"))
 		//	aantalActiviteiten = ((Number) h.get("aantalActiviteiten")).intValue();
 		if (h.containsKey("activiteitNr"))
@@ -1443,7 +1449,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
-					this.scores[i][j] = getInt( orScores, i, j);
+					this.scores[i][j] = orScores[i][j];
 					isCorrect[i][j] = getBoolean(orGoedFout, i, j);
 				}
 			}
@@ -1458,7 +1464,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
-					or[i].zetScore(j + 1, getInt(orScores,i,j));
+					or[i].zetScore(j + 1, orScores[i][j]);
 				}
 			}
 		}
@@ -1817,7 +1823,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		if (bezocht != null)
 			h.put("bezocht", bezocht);
-
+		Hashtable shareState = ShareAction.getSharedState();
+		if (shareState != null)
+			h.put(ShareAction.SHARE_MAP, shareState);
 		return h;
 	}
 
@@ -2585,6 +2593,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		else if (e.getSource() == opnieuwPanel && opnieuwPanel.isOk())
 		{
 			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+// alles opnieuw
+			ShareAction.clearSharedState();
 			opnieuwPanel.setVisible(false);
 			zetAfdekPanel(false, 0);
 			if (timer)

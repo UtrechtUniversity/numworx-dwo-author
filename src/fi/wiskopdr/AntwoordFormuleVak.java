@@ -19,8 +19,13 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.beans.ideas.RuleIF;
 import fi.beans.stringutils.StringUtils;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wnwidgets.NWButtonUI;
@@ -46,7 +51,7 @@ import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
-public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
+public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, CBookAware
 {
 	private static int GOED = 1;
 	private static int FOUT = 0;
@@ -208,6 +213,9 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	
 	private FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
 	private Vergelijking[] antwoordSubstituties;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
 	
 	public static void zetFontOverervingForm(boolean b)
 	{	fontOvererving = b;
@@ -1661,6 +1669,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
 	public void kijkNa(int stapNr)
 	{
 		kijkNa(stapNr, true);
+		if(correct)cbookEventHandler.fire("action.correct");
+		if(fout)cbookEventHandler.fire("action.false");
 	}
 	public void kijkNa(int stapNr, boolean show)
 	{	if(stapNr==-2)
@@ -2885,4 +2895,45 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel
  		}
  	}
  	//
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener,
+			String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,
+			String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"action.correct",
+				"action.false"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 }
