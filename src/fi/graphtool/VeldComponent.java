@@ -39,7 +39,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	/* component defaults & contstants */
 	public final static int cVeldComponentMaxAantalFormules = 1;
-	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
+//	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
+	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver" };
 
 	public final static int cDefault_VeldComponentHoogte = 80;
 	public final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
