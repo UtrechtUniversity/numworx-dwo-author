@@ -1449,7 +1449,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
-					this.scores[i][j] = orScores[i][j];
+					this.scores[i][j] = getInt( orScores, i, j);
 					isCorrect[i][j] = getBoolean(orGoedFout, i, j);
 				}
 			}
@@ -1464,7 +1464,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
-					or[i].zetScore(j + 1, orScores[i][j]);
+					or[i].zetScore(j + 1, getInt(orScores,i,j));
 				}
 			}
 		}
