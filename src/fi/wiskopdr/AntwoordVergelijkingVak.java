@@ -14,7 +14,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Vector;
 
@@ -3257,6 +3259,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 						zetJuisteAntwoord("$f" + def + "@");
 						sendCommand("equation");
 						sendCommand("zetOplossing");
+						sendCommand("double.solution");
 						sendCommand("balansvergelijking");
 						
 					}
@@ -3889,6 +3892,21 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
     		if(coeff.length==2 && coeff[1]!=0)	
     			cbookEventHandler.fire(command,command,new Double(-coeff[0]/coeff[1]));
 		
+		}
+		if(command.equals("double.solution"))
+		{	
+			Vergelijking balansVerg = geefInitBalansVergelijking();
+    		if(balansVerg==null) return;
+    		double[] coeff = Algebra.geefCoefficienten(balansVerg);
+    		if(coeff.length==2 && coeff[1]!=0)	{
+    			//cbookEventHandler.fire(command,command,new Double(-coeff[0]/coeff[1]));
+    			
+    			Map<String,Object> map = new HashMap<String,Object>();
+    			map.put("name", "x");
+    			map.put("value", new Double(-coeff[0]/coeff[1]));
+    			cbookEventHandler.fire(command,map);
+    			
+    		}
 		}
 	}
 
