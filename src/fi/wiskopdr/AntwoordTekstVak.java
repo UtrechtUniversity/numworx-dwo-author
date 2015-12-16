@@ -743,6 +743,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	public void kijkNa()
 	{
 		kijkNa(true);
+		if(correct)cbookEventHandler.fire("action.correct");
+    	if(fout)cbookEventHandler.fire("action.false");
 	}
 
 	public void kijkNa(boolean show)
@@ -1106,7 +1108,9 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"text"};
+		String[] commands = {"text",
+				"action.correct",
+				"action.false"};
 		return commands;
 	}
 

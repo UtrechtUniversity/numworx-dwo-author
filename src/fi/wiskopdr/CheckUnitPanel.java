@@ -12,6 +12,10 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.wiskopdr.expressies.BasisExpressie;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
@@ -25,7 +29,7 @@ import fi.beans.iconan.Iconan;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.*;
 
-public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionListener
+public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionListener, CBookAware
 {
 	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 	
@@ -83,6 +87,8 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 	
 	private boolean check;
 	private boolean teltMee;
+	
+	 private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 			
 	/*public static void zetPlaatjes(Image gk, Image fk, Image hk)
 	{	GOEDKRUL = gk;
@@ -627,4 +633,43 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         }
     }
     //
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"action.correct",
+				"action.false"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 }

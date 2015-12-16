@@ -12,6 +12,10 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
@@ -22,7 +26,7 @@ import fi.beans.wiskopdrbeans.*;
 import fi.beans.iconan.Iconan;
 import fi.beans.stringutils.*;
 
-public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, ActionListener
+public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, ActionListener, CBookAware
 {
 	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 	
@@ -81,6 +85,8 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	private boolean relocate;
 	private boolean view = false;
 	private boolean verzamelDoel;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
 	/*private static String[] imageNames = 
 	{	"goedkrul.gif",
@@ -556,6 +562,8 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
     public void kijkNa()
     {
     	kijkNa(true);
+    	if(correct)cbookEventHandler.fire("action.correct");
+    	if(fout)cbookEventHandler.fire("action.false");
     }
     
     public void kijkNa(boolean show)
@@ -817,4 +825,43 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         }
     }
     //
+    
+    @Override
+	public void acceptCBookEvent(CBookEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    @Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"action.correct",
+				"action.false"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
 }

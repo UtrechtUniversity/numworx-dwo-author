@@ -656,6 +656,8 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	public void kijkNa()
 	{
 		kijkNa(true);
+		if(correct)cbookEventHandler.fire("action.correct");
+    	if(fout)cbookEventHandler.fire("action.false");
 	}
 
 	public void kijkNa(boolean show)
@@ -887,43 +889,46 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	}
 	//
 
-	@Override
-	public void acceptCBookEvent(CBookEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void addCBookEventListener(CBookEventListener listener,
-			String command) {
-		System.out.println("addCBookEventListener: "+listener.toString() +"+"+command);
-		cbookEventHandler.addCBookEventListener(listener, command);
-		
-	}
+	 @Override
+		public void acceptCBookEvent(CBookEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+	    
+	    @Override
+		public void addCBookEventListener(CBookEventListener listener, String command) {
+			cbookEventHandler.addCBookEventListener(listener, command);
+			
+		}
 
-	@Override
-	public void removeCBookEventListener(CBookEventListener listener,
-			String command) {
-		cbookEventHandler.removeCBookEventListener(listener, command);
-		
-	}
+		@Override
+		public void removeCBookEventListener(CBookEventListener listener, String command) {
+			cbookEventHandler.removeCBookEventListener(listener, command);
+			
+		}
 
-	@Override
-	public String[] getSendCmds() {
-		String[] sendCommands = {"index", Constants.USER_INPUT};
-		return sendCommands;
-	}
+		@Override
+		public String[] getSendCmds() {
+			String[] commands = {"index",
+					"action.correct",
+					"action.false"};
+			return commands;
+		}
 
-	@Override
-	public String[] getAcceptedCmds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		@Override
+		public String[] getAcceptedCmds() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-	@Override
-	public String getLocalizedCmd(String cmd) {
-		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
-	}
+		@Override
+		public String getLocalizedCmd(String cmd) {
+			String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+			if(localizedCmd==null)
+				return cmd;
+			return localizedCmd;
+		}
 	
 	
 	
