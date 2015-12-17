@@ -164,6 +164,7 @@ public class ShareAction extends AbstractAction {
 		}
 
 		static private String getShareKey(Hashtable<String, ?> map) {
+			if(map == null) return null; // Should not happen, but it does
 			String s = (String) map.get(SHARE_KEY);
 			if(s == null || !shareMap.containsKey(s))
 				return null;
