@@ -298,8 +298,20 @@ MouseListener, MouseMotionListener, CBookAware {
 		parametrisaties = new Expressie[maxAantalExpressies/2][2];
 		parametrisatieVariabelen = new String[maxAantalExpressies/2];
 		veldFuncties = new Expressie[VeldComponent.cVeldComponentMaxAantalFormules][2];
-		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x@")));
-		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy@")));
+		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy@"))); // TODO
+		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x@")));
+//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x-y@"))); // TODO
+//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-2x-y@")));
+//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-1-x$m2@+y@"))); // TODO
+//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f1+x-y$m2@@")));
+		
+//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fx+2y@"))); // TODO
+//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-2x+y@")));
+//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy/(x$m2@+y$m2@)$m(0.5)@@"))); // TODO
+//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x/(x$m2@+y$m2@)$m(0.5)@@")));
+		//$fy/(x$m2@+y$m2@)$m(0.5)@@
+		//"$f-x/(x$m2@+y$m2@)$m(0.5)@@"
+		
 		beginwaarde = 0;
 		selectnummer = 999;
 		

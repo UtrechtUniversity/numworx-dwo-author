@@ -42,34 +42,37 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
 	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver" };
 
-	public final static int cDefault_VeldComponentHoogte = 80;
+	public final static int cDefault_VeldComponentHoogte = 150;
 	public final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
+	public final static int cAccoladeXPositie = 25;
+	public final static int cAantalFormulesPerStelsel = 2;
 
 	private VergelijkingVak[] formuleVakken; 
-	private DomeinButton[] domeinButtons;
-	private double[][] domeinen;
-	private String[][] domeinStrings;
+//	private DomeinButton[] domeinButtons;
+//	private double[][] domeinen;
+//	private String[][] domeinStrings;
 	private JCheckBox[] checkboxen;
 	private GraphToolInteractiePanel grafiekComponent;
 	
-	private JButton[] enOfKnoppen;
-	private boolean[] isEn;
+//	private JButton[] enOfKnoppen;
+//	private boolean[] isEn;
 	
-	private int maxAantalFormules = cVeldComponentMaxAantalFormules;
+	private int maxAantalStelsels = cVeldComponentMaxAantalFormules;
 	private int aantalRegels=1;
 	//private static Image GOEDKRUL,FOUTKRUIS;
 	private int actiefNummer;
 	
 	private String xAsNaam = "x";
 	private String yAsNaam = "y";
+	private String diffVarNaam = "t";
 	String[] namen = {"f","g","h","i","j","k","l","m","n"};
 	private boolean functieBeginZichtbaar = true;
-	private boolean formeleFuncties = true;
+	private boolean formeleFuncties = false;
 	private boolean domeinInstelbaar = false;
 	public boolean docent;
 	
 	boolean grafiekKleurInstelbaar = true;
-	boolean functieBeginAanpasbaar = true;
+	boolean functieBeginAanpasbaar = false;
 	
 	private boolean functieToegestaan = true;
 	private boolean ongelijkheidToegestaan = true;
@@ -87,6 +90,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	protected static int VERTICALELIJN = 3;
 	protected static int PARAMETRISATIEX = 4;
 	protected static int PARAMETRISATIEY = 5;
+	protected static int DIFFERENTIAALX = 6;
+	protected static int DIFFERENTIAALY = 7;
 	
 	private int[] soortVak;
 	//private boolean[] isOngelijkheid;
@@ -109,10 +114,17 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		zetGrafiekOfEdit(true);
 		setFocusable(true);
 		addFocusListener(this);
+		
 		remove(formuleVak);
 		formuleVak.removeActionListener(this);
 		formuleVak.removeFocusListener(this);
 		setScrollHorizontal(false);
+		
+		// Voorlopig maar 1 stelsel, daarom verwijderen we de nieuweRegelknop & verwijderRegelknop
+		headerPanel.remove(nieuweRegelKnop);
+		nieuweRegelKnop.removeActionListener(this);
+		headerPanel.remove(verwijderRegelKnop);
+		verwijderRegelKnop.removeActionListener(this);
 		
 		ndewortelKnop = new FormuleButton("ndewortel");
 		ndewortelKnop.setBounds(112,2,20,20);
@@ -126,87 +138,89 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		absKnop.setBounds(134,2,20,20);
 		absKnop.addActionListener(this);
 		
-		domeinStrings = new String[maxAantalFormules][2];
-		for(int i = 0; i < maxAantalFormules; i++)
-		{	domeinStrings[i][0] = "$f" + Double.NEGATIVE_INFINITY + "@";
-			domeinStrings[i][1] = "$f" + Double.POSITIVE_INFINITY + "@";
-		}
+//		domeinStrings = new String[maxAantalFormules][2];
+//		for(int i = 0; i < maxAantalFormules; i++)
+//		{	domeinStrings[i][0] = "$f" + Double.NEGATIVE_INFINITY + "@";
+//			domeinStrings[i][1] = "$f" + Double.POSITIVE_INFINITY + "@";
+//		}
 		
 		DEFAULTDOMEIN = new double[2];
 		DEFAULTDOMEIN[0] = Double.NEGATIVE_INFINITY;
 		DEFAULTDOMEIN[1] = Double.POSITIVE_INFINITY;
 		
-		domeinen = new double[maxAantalFormules][2];
-		for(int i = 0; i < maxAantalFormules; i++)
-		{	domeinen[i][0] = DEFAULTDOMEIN[0];
-			domeinen[i][1] = DEFAULTDOMEIN[1];
-		}		
+//		domeinen = new double[maxAantalFormules][2];
+//		for(int i = 0; i < maxAantalFormules; i++)
+//		{	domeinen[i][0] = DEFAULTDOMEIN[0];
+//			domeinen[i][1] = DEFAULTDOMEIN[1];
+//		}		
 		
-		soortVak = new int[maxAantalFormules];
-		for(int i = 0; i < maxAantalFormules; i++)
-			soortVak[i] = FUNCTIE;
+		soortVak = new int[2*maxAantalStelsels]; // ieder stelsel heeft 2 formulevakken
+		for(int i = 0; i < maxAantalStelsels; i++) {
+			soortVak[2*i] 		= 	DIFFERENTIAALX;
+			soortVak[(2*i)+1] 	= 	DIFFERENTIAALY;
+		}	
 		//isOngelijkheid = new boolean[maxAantalFormules];
 		//for(int i = 0; i < maxAantalFormules; i++)
 		//	isOngelijkheid[i] = false;
 		
-		isEn = new boolean[maxAantalFormules];
-		for(int i = 0; i<isEn.length; i++)
-			isEn[i] = true;
+//		isEn = new boolean[maxAantalFormules];
+//		for(int i = 0; i<isEn.length; i++)
+//			isEn[i] = true;
 	}
 	
-	public void setEditable(boolean b)
-	{	formuleVakken[0].formuleVak.setEditable(b);	
-	}
+//	public void setEditable(boolean b)
+//	{	formuleVakken[0].formuleVak.setEditable(b);	
+//	}
 	
-	public void zetMaxAantalFormules(int num, boolean setState) {	
-		maxAantalFormules = num;
-		boolean knoppenNodig = maxAantalFormules > 0;
-		boolean checkboxenNodig = docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT));
-		
-		nieuweRegelKnop.setVisible(knoppenNodig);
-		verwijderRegelKnop.setVisible(knoppenNodig);
-		checkboxen[0].setVisible(checkboxenNodig);
-		formuleX = checkboxenNodig ? 30 : 10;
-		if(aantalRegels > maxAantalFormules)
-			aantalRegels = maxAantalFormules;
-				
-		zetFormuleRegels(maxAantalFormules, setState);
-		if(maxAantalFormules > domeinen.length)
-		{	double[][] oudDomeinen = new double[domeinen.length][2];
-			for(int i = 0; i < oudDomeinen.length; i++)
-			{	oudDomeinen[i][0] = domeinen[i][0];
-				oudDomeinen[i][1] = domeinen[i][1];
-			}
-			domeinen = new double[maxAantalFormules][2];
-			for(int i = 0; i < oudDomeinen.length; i++)
-			{	domeinen[i][0] = oudDomeinen[i][0];
-				domeinen[i][1] = oudDomeinen[i][1];
-			}
-			for(int i = oudDomeinen.length; i < maxAantalFormules; i++)
-			{	domeinen[i][0] = DEFAULTDOMEIN[0];
-				domeinen[i][1] = DEFAULTDOMEIN[1];
-			}
-			String[][] oudDomeinStrings = new String[domeinStrings.length][2];
-			for(int i = 0; i < oudDomeinen.length; i++)
-			{	oudDomeinStrings[i][0] = domeinStrings[i][0];
-				oudDomeinStrings[i][1] = domeinStrings[i][1];
-			}
-			domeinStrings = new String[maxAantalFormules][2];
-			for(int i = 0; i < oudDomeinStrings.length; i++)
-			{	domeinStrings[i][0] = oudDomeinStrings[i][0];
-				domeinStrings[i][1] = oudDomeinStrings[i][1];
-			}
-			for(int i = oudDomeinStrings.length; i < maxAantalFormules; i++)
-			{	domeinStrings[i][0] = "$f" + Double.NEGATIVE_INFINITY + "@";
-				domeinStrings[i][1] = "$f" + Double.POSITIVE_INFINITY + "@";
-			}
-		}
-	}
+//	public void zetMaxAantalFormules(int num, boolean setState) {	
+//		maxAantalFormules = num;
+//		boolean knoppenNodig = maxAantalFormules > 0;
+//		boolean checkboxenNodig = docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT));
+//		
+//		nieuweRegelKnop.setVisible(knoppenNodig);
+//		verwijderRegelKnop.setVisible(knoppenNodig);
+//		checkboxen[0].setVisible(checkboxenNodig);
+//		formuleX = checkboxenNodig ? 30 : 10;
+//		if(aantalRegels > maxAantalFormules)
+//			aantalRegels = maxAantalFormules;
+//				
+//		zetFormuleRegels(maxAantalFormules, setState);
+//		if(maxAantalFormules > domeinen.length)
+//		{	double[][] oudDomeinen = new double[domeinen.length][2];
+//			for(int i = 0; i < oudDomeinen.length; i++)
+//			{	oudDomeinen[i][0] = domeinen[i][0];
+//				oudDomeinen[i][1] = domeinen[i][1];
+//			}
+//			domeinen = new double[maxAantalFormules][2];
+//			for(int i = 0; i < oudDomeinen.length; i++)
+//			{	domeinen[i][0] = oudDomeinen[i][0];
+//				domeinen[i][1] = oudDomeinen[i][1];
+//			}
+//			for(int i = oudDomeinen.length; i < maxAantalFormules; i++)
+//			{	domeinen[i][0] = DEFAULTDOMEIN[0];
+//				domeinen[i][1] = DEFAULTDOMEIN[1];
+//			}
+//			String[][] oudDomeinStrings = new String[domeinStrings.length][2];
+//			for(int i = 0; i < oudDomeinen.length; i++)
+//			{	oudDomeinStrings[i][0] = domeinStrings[i][0];
+//				oudDomeinStrings[i][1] = domeinStrings[i][1];
+//			}
+//			domeinStrings = new String[maxAantalFormules][2];
+//			for(int i = 0; i < oudDomeinStrings.length; i++)
+//			{	domeinStrings[i][0] = oudDomeinStrings[i][0];
+//				domeinStrings[i][1] = oudDomeinStrings[i][1];
+//			}
+//			for(int i = oudDomeinStrings.length; i < maxAantalFormules; i++)
+//			{	domeinStrings[i][0] = "$f" + Double.NEGATIVE_INFINITY + "@";
+//				domeinStrings[i][1] = "$f" + Double.POSITIVE_INFINITY + "@";
+//			}
+//		}
+//	}
 	
 	public void zetXAsNaam(String s, boolean setState)
 	{	String oudeXAsNaam = xAsNaam;
 		xAsNaam = s;
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		for(int i=0 ; i<maxAantalStelsels ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
 			String vervangSubString = vervangString.substring(2, vervangString.length() - 1);
 			vervangString = "$f" + vervangSubString.replaceAll(oudeXAsNaam, xAsNaam) + "@";
@@ -226,7 +240,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	{	String oudeYAsNaam = yAsNaam;
 		yAsNaam = s;
 		
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		for(int i=0 ; i<maxAantalStelsels ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
 			String vervangSubString = vervangString.substring(2, vervangString.length() - 1);
 			vervangString = "$f" + vervangSubString.replaceAll(oudeYAsNaam, yAsNaam) + "@";
@@ -237,64 +251,73 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	public void zetFormeleFuncties(boolean b, boolean setState)
 	{	formeleFuncties = b;
-		for(int i = 0; i < maxAantalFormules; i++)
+		for(int i = 0; i < maxAantalStelsels; i++)
 			zetVoorvoegsel(i);
 		grafiekComponent.updateTabelNames(geefExpNamen(), setState);	
 	}
 	
-	public void zetDomeinInstelbaar(boolean b, boolean setState)
-	{	domeinInstelbaar = b;
-		if(grafiekComponent != null && grafiekComponent.typeOpdracht == 1)
-			for(int i = 0; i < aantalRegels; i++)
-				if(i < domeinButtons.length)
-					domeinButtons[i].setVisible(domeinInstelbaar);
-		for(int i = 0; i < aantalRegels + 1; i++)
-			if(i < domeinButtons.length)
-				parseFormule(i, setState);
-	}
+//	public void zetDomeinInstelbaar(boolean b, boolean setState)
+//	{	domeinInstelbaar = b;
+//		if(grafiekComponent != null && grafiekComponent.typeOpdracht == 1)
+//			for(int i = 0; i < aantalRegels; i++)
+//				if(i < domeinButtons.length)
+//					domeinButtons[i].setVisible(domeinInstelbaar);
+//		for(int i = 0; i < aantalRegels + 1; i++)
+//			if(i < domeinButtons.length)
+//				parseFormule(i, setState);
+//	}
 	
 	public void zetVoorvoegsel(int regelnummer)
 	{	String huidigeTekst = formuleVakken[regelnummer].formuleVak.toString();
+
 		boolean vervangen = huidigeTekst.equals("$f@") || huidigeTekst.endsWith("=@");
-		if(functieBeginZichtbaar && functieBeginAanpasbaar && vervangen)
-		{	if (formeleFuncties) 
-				formuleVakken[regelnummer].formuleVak.vulVak("$f"+namen[regelnummer]+"(" + xAsNaam + ")=@");
-			else if (regelnummer > 1)
-				formuleVakken[regelnummer].formuleVak.vulVak("$f"+yAsNaam+"$s"+(regelnummer+1)+"@=@");
-			else 
-				formuleVakken[regelnummer].formuleVak.vulVak("$f"+yAsNaam+"=@");
+		System.out.println("zetVoorvoegsel - vervangen =" + vervangen);
+		System.out.println("zetVoorvoegsel - functieBeginZichtbaar =" + functieBeginZichtbaar);
+		System.out.println("zetVoorvoegsel - functieBeginAanpasbaar =" + functieBeginAanpasbaar);
+		System.out.println("zetVoorvoegsel - formeleFuncties =" + formeleFuncties);
+		String differentiaalStr, asNaam="";
+		System.out.println("zetVoorvoegsel - soortvak "+ regelnummer  +" = " + soortVak[regelnummer]);
+		
+		if (soortVak[regelnummer]==DIFFERENTIAALX) {
+			asNaam = xAsNaam; 
+		} else { // soortVak[regelnummer] must be DIFFERENTIAALY) 
+			asNaam = yAsNaam; 
 		}
-		else if(functieBeginZichtbaar && !functieBeginAanpasbaar)
-		{	if (formeleFuncties) 
-				formuleVakken[regelnummer].functieBeginVak.vulVak("$f"+namen[regelnummer]+"(" + xAsNaam + ")=@");
-			else if (aantalRegels > 1)
-				formuleVakken[regelnummer].functieBeginVak.vulVak("$f"+yAsNaam+"$s"+(regelnummer+1)+"@=@");
-			else 
-				formuleVakken[regelnummer].functieBeginVak.vulVak("$f"+yAsNaam+"=@");
-		}	
+		differentiaalStr = "$f$bd"+asNaam+"$nd"+diffVarNaam+"@@=@";
+		
+		if (functieBeginZichtbaar) {
+			if (functieBeginAanpasbaar) {
+				if (vervangen) {
+					formuleVakken[regelnummer].formuleVak.vulVak(differentiaalStr);
+				}
+			} else {
+				formuleVakken[regelnummer].functieBeginVak.vulVak(differentiaalStr);
+			}
+		}
+		
 	}
 	
 	public void layoutVakken(boolean setState)
 	{	int hoogte = 10;
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		for(int i=0 ; i<maxAantalStelsels ; i++)
 		{	if(formuleVakken[i]!=null)
 			{	formuleVakken[i].setLocation(formuleX,hoogte);
 				int breedte = this.getWidth() - 25;
 				if(getVerticalScrollBarVisible())	
 					breedte = this.getWidth() - 40;
-				if(soortVak[i] == PARAMETRISATIEX && checkboxen != null && checkboxen[i] != null)
-				{	maakParametrisatieVak(i);
+				if(soortVak[i] == DIFFERENTIAALX && checkboxen != null && checkboxen[i] != null)
+				{	maakDifferentiaalVak(i);
 					
 				}
 				else if(checkboxen!=null && checkboxen[i]!=null)
 					checkboxen[i].setLocation(4,hoogte+formuleVakken[i].ashoogte-5);
 				
-				if(domeinButtons!=null && domeinButtons[i]!=null)domeinButtons[i].setLocation(breedte, hoogte+formuleVakken[i].ashoogte-5);
-				if(i>0 && enOfKnoppen != null && enOfKnoppen[i-1] != null)enOfKnoppen[i-1].setLocation(breedte, hoogte - 15);
+//				if(domeinButtons!=null && domeinButtons[i]!=null)domeinButtons[i].setLocation(breedte, hoogte+formuleVakken[i].ashoogte-5);
+//				if(i>0 && enOfKnoppen != null && enOfKnoppen[i-1] != null)enOfKnoppen[i-1].setLocation(breedte, hoogte - 15);
 				hoogte = hoogte + formuleVakken[i].getSize().height + 10;
 			}
 		}
-		zetDomeinInstelbaar(domeinInstelbaar, setState);
+//		zetDomeinInstelbaar(domeinInstelbaar, setState);
 		repaint();
 	}
 	
@@ -322,89 +345,89 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	public void zetFunctieBeginZichtbaar(boolean b, boolean setState)
 	{	functieBeginZichtbaar = b;
-		zetFormuleRegels(maxAantalFormules, setState);
+		zetFormuleRegels(maxAantalStelsels, setState);
 	}
 	
-	public void zetFunctieBeginAanpasbaar(boolean b, boolean setState)
-	{	functieBeginAanpasbaar = b;
-		zetFormuleRegels(maxAantalFormules, setState);
-	}
+//	public void zetFunctieBeginAanpasbaar(boolean b, boolean setState)
+//	{	functieBeginAanpasbaar = b;
+//		zetFormuleRegels(maxAantalFormules, setState);
+//	}
 	
-	public void zetToegestaneFormules(boolean functie, boolean ongelijkheid, boolean impliciet, boolean verticaal, boolean parametrisatie, boolean setState)
-	{	functieToegestaan = functie;
-		ongelijkheidToegestaan = ongelijkheid;
-		implicieteFunctieToegestaan = impliciet;
-		verticaleLijnToegestaan = verticaal;
-		parametrisatieToegestaan = parametrisatie;
-		for(int i = 0; i < aantalRegels; i++)
-			parseFormule(i, setState);
-	}
+//	public void zetToegestaneFormules(boolean functie, boolean ongelijkheid, boolean impliciet, boolean verticaal, boolean parametrisatie, boolean setState)
+//	{	functieToegestaan = functie;
+//		ongelijkheidToegestaan = ongelijkheid;
+//		implicieteFunctieToegestaan = impliciet;
+//		verticaleLijnToegestaan = verticaal;
+//		parametrisatieToegestaan = parametrisatie;
+//		for(int i = 0; i < aantalRegels; i++)
+//			parseFormule(i, setState);
+//	}
 	
 	
-	public int getAantalRegels()
-	{
-		return aantalRegels;
-	}
+//	public int getAantalRegels()
+//	{
+//		return aantalRegels;
+//	}
 	
-	public Hashtable getDocentState()
-	{	String[] docentExpressieStrings = null;
-		boolean[] docentGeselecteerd = null;
-		double[][] docentDomeinen = null;
-		String[][] docentDomeinStrings = null;
-		boolean[] docentIsEn = null;
-		//hier moet nog bij: ingestelde kleuren (?) Of wordt dat ergens anders bewaard?
-	
-		docentExpressieStrings = new String[maxAantalFormules];
-		docentGeselecteerd = new boolean[maxAantalFormules];
-		docentIsEn = new boolean[maxAantalFormules];
-		docentDomeinStrings = domeinStrings;
-		if(domeinen == null)
-			docentDomeinen = null;
-		else
-		{	docentDomeinen = new double[domeinen.length][2];
-			for(int i = 0; i < domeinen.length; i++)
-			{	docentDomeinen[i][0] = domeinen[i][0];
-				docentDomeinen[i][1] = domeinen[i][1];
-			}
-		}
-		for(int i=0 ; i<maxAantalFormules ; i++)
-		{	if(functieBeginAanpasbaar)
-				docentExpressieStrings[i] = formuleVakken[i].formuleVak.toString();
-			else
-			{	String s1 = formuleVakken[i].functieBeginVak.toString();
-				String s2 = formuleVakken[i].formuleVak.toString();
-				try{
-					s1 = s1.substring(0, s1.length() - 1);
-					s2 = s2.substring(2);
-				}
-				catch(Exception e){}
-				docentExpressieStrings[i] = s1 + s2;
-			}
-			docentGeselecteerd[i] = checkboxen[i].isSelected();
-			docentIsEn[i] = isEn[i];
-		}		
-	
-		Hashtable h = new Hashtable();
-		h.put("docentExpressieStrings", docentExpressieStrings);
-		h.put("docentGeselecteerd", docentGeselecteerd);
-		h.put("docentDomeinen", docentDomeinen);
-		h.put("docentDomeinStrings", docentDomeinStrings);
-		h.put("docentIsEn", docentIsEn);
-		return h;
-		
-	}
+//	public Hashtable getDocentState()
+//	{	String[] docentExpressieStrings = null;
+//		boolean[] docentGeselecteerd = null;
+//		double[][] docentDomeinen = null;
+//		String[][] docentDomeinStrings = null;
+//		boolean[] docentIsEn = null;
+//		//hier moet nog bij: ingestelde kleuren (?) Of wordt dat ergens anders bewaard?
+//	
+//		docentExpressieStrings = new String[maxAantalFormules];
+//		docentGeselecteerd = new boolean[maxAantalFormules];
+//		docentIsEn = new boolean[maxAantalFormules];
+//		docentDomeinStrings = domeinStrings;
+//		if(domeinen == null)
+//			docentDomeinen = null;
+//		else
+//		{	docentDomeinen = new double[domeinen.length][2];
+//			for(int i = 0; i < domeinen.length; i++)
+//			{	docentDomeinen[i][0] = domeinen[i][0];
+//				docentDomeinen[i][1] = domeinen[i][1];
+//			}
+//		}
+//		for(int i=0 ; i<maxAantalFormules ; i++)
+//		{	if(functieBeginAanpasbaar)
+//				docentExpressieStrings[i] = formuleVakken[i].formuleVak.toString();
+//			else
+//			{	String s1 = formuleVakken[i].functieBeginVak.toString();
+//				String s2 = formuleVakken[i].formuleVak.toString();
+//				try{
+//					s1 = s1.substring(0, s1.length() - 1);
+//					s2 = s2.substring(2);
+//				}
+//				catch(Exception e){}
+//				docentExpressieStrings[i] = s1 + s2;
+//			}
+//			docentGeselecteerd[i] = checkboxen[i].isSelected();
+//			docentIsEn[i] = isEn[i];
+//		}		
+//	
+//		Hashtable h = new Hashtable();
+//		h.put("docentExpressieStrings", docentExpressieStrings);
+//		h.put("docentGeselecteerd", docentGeselecteerd);
+//		h.put("docentDomeinen", docentDomeinen);
+//		h.put("docentDomeinStrings", docentDomeinStrings);
+//		h.put("docentIsEn", docentIsEn);
+//		return h;
+//		
+//	}
 	
 	public Hashtable getState()
 	{	String[] expressieStrings = null;
 		boolean[] geselecteerd = null;
-		String[][] domeinStrings = null;
-		boolean[] isEn = null;
-		expressieStrings = new String[maxAantalFormules];
-		geselecteerd = new boolean[maxAantalFormules];
-		isEn = new boolean[maxAantalFormules];
-		domeinStrings = this.domeinStrings;
+//		String[][] domeinStrings = null;
+//		boolean[] isEn = null;
+		expressieStrings = new String[maxAantalStelsels];
+		geselecteerd = new boolean[maxAantalStelsels];
+//		isEn = new boolean[maxAantalFormules];
+//		domeinStrings = this.domeinStrings;
 		int teller = 0;
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		for(int i=0 ; i<maxAantalStelsels ; i++)
 		{	if(functieBeginAanpasbaar)
 				expressieStrings[i] = formuleVakken[i].formuleVak.toString();
 			else
@@ -420,13 +443,13 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			if(expressieStrings[i].endsWith("=@"))
 				expressieStrings[i] = "$f@";
 			geselecteerd[i] = checkboxen[i].isSelected();
-			isEn[i] = this.isEn[i];
+//			isEn[i] = this.isEn[i];
 		}		
 		Hashtable h = new Hashtable();
 	    h.put("expressieStrings", expressieStrings);
 		h.put("geselecteerd", geselecteerd);
-	    h.put("domeinStrings", domeinStrings);
-	    h.put("isEn", isEn);
+//	    h.put("domeinStrings", domeinStrings);
+//	    h.put("isEn", isEn);
 	    return h;
 	}
 	
@@ -461,37 +484,37 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
     	if(expressieStrings==null) 
     	{	return;
     	}
-    	this.domeinStrings = domeinStrings;
-    	if(domeinStrings != null)
-    		domeinen = new double[domeinStrings.length][2];
-     	for(int i=0 ; i<domeinStrings.length; i++)
-		{	
-     		if(domeinStrings != null && i < domeinStrings.length && i < domeinButtons.length)
-     		{	if(!domeinStrings[i].equals("$f@"))
-    			{	if(randomVars != null)
-    				{	try
-						{	domeinStrings[i][0] = FormuleParser.randomizeString(domeinStrings[i][0],randomVars,randomValues);
-						}
-						catch(Exception e)
-						{	domeinStrings[i][0] = "$f???@";
-							this.zetRandomFout(true);
-						}
-						try
-						{	domeinStrings[i][1] = FormuleParser.randomizeString(domeinStrings[i][1],randomVars,randomValues);
-						}
-						catch(Exception e)
-						{	domeinStrings[i][1] = "$f???@";
-							this.zetRandomFout(true);
-						}
-    				}
-    				zetDomein(domeinStrings[i], i);
-    			}
-     			domeinButtons[i].zetDomeinString(domeinStrings[i]);
-     		}
-		}
-     	if(docent)
-     		//grafiekComponent.zetDocentDomeinen(domeinen);
-     		grafiekComponent.zetDocentDomeinen(domeinStrings);
+//    	this.domeinStrings = domeinStrings;
+//    	if(domeinStrings != null)
+//    		domeinen = new double[domeinStrings.length][2];
+//     	for(int i=0 ; i<domeinStrings.length; i++)
+//		{	
+//     		if(domeinStrings != null && i < domeinStrings.length && i < domeinButtons.length)
+//     		{	if(!domeinStrings[i].equals("$f@"))
+//    			{	if(randomVars != null)
+//    				{	try
+//						{	domeinStrings[i][0] = FormuleParser.randomizeString(domeinStrings[i][0],randomVars,randomValues);
+//						}
+//						catch(Exception e)
+//						{	domeinStrings[i][0] = "$f???@";
+//							this.zetRandomFout(true);
+//						}
+//						try
+//						{	domeinStrings[i][1] = FormuleParser.randomizeString(domeinStrings[i][1],randomVars,randomValues);
+//						}
+//						catch(Exception e)
+//						{	domeinStrings[i][1] = "$f???@";
+//							this.zetRandomFout(true);
+//						}
+//    				}
+//    				zetDomein(domeinStrings[i], i);
+//    			}
+//     			domeinButtons[i].zetDomeinString(domeinStrings[i]);
+//     		}
+//		}
+//     	if(docent)
+//     		//grafiekComponent.zetDocentDomeinen(domeinen);
+//     		grafiekComponent.zetDocentDomeinen(domeinStrings);
      	for(int i = 0; i < expressieStrings.length; i++)	
      	{	if(!expressieStrings[i].equals("$f@") && !(i > 0 && expressieStrings[i].endsWith("=@") && docent))
 			{	if(randomVars != null)
@@ -511,24 +534,24 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				formuleVakken[i].setVisible(true);
 				if(geselecteerd!=null)
 					checkboxen[i].setSelected(geselecteerd[i]);
-				if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+				if(docent || (maxAantalStelsels > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				{	//System.out.println("hier visible gezet? " + i);
 					add(checkboxen[i],0);
 					//checkboxen[i].setVisible(true);
 				
 				}
-				add(domeinButtons[i], 0);
-				domeinButtons[i].setVisible(false);
-				this.isEn[i] = isEn[i];
+//				add(domeinButtons[i], 0);
+//				domeinButtons[i].setVisible(false);
+//				this.isEn[i] = isEn[i];
 				if(geselecteerd[i]) 
      				parseFormule(i, true);
-				if(i>0)
-				{	add(enOfKnoppen[i-1],0);
-					if(isEn[i-1])
-						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_En"));
-					else
-						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_Of"));
-				}
+//				if(i>0)
+//				{	add(enOfKnoppen[i-1],0);
+//					if(isEn[i-1])
+//						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_En"));
+//					else
+//						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_Of"));
+//				}
      			aantalRegels = i+1;
 			}
 			
@@ -538,97 +561,141 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		
     }
 	
-	public double[] getDomein()
-	{
-		return domeinen[0];
-	}
+//	public double[] getDomein()
+//	{
+//		return domeinen[0];
+//	}
 	
-	public double[][] getDomeinen()
-	{
-		return domeinen;
-	}
+//	public double[][] getDomeinen()
+//	{
+//		return domeinen;
+//	}
 	
-	public void zetDomein(double[] domein)
-	{
-		domeinen[0][0] = domein[0];
-		domeinen[0][1] = domein[1];
-	}
+//	public void zetDomein(double[] domein)
+//	{
+//		domeinen[0][0] = domein[0];
+//		domeinen[0][1] = domein[1];
+//	}
 	
-	public String[][] getDomeinStrings()
-	{
-		return domeinStrings;
-	}
+//	public String[][] getDomeinStrings()
+//	{
+//		return domeinStrings;
+//	}
 	
-	public void zetDomeinen(double[][] domein)
-	{	if(domein == null)
-			domeinen = null;
-		else
-		{	domeinen = new double[domein.length][2];
-			for(int i = 0; i < domeinen.length; i++)
-			{	domeinen[i][0] = domein[i][0];
-				domeinen[i][1] = domein[i][1];
-			}
-		}
-		for(int i = 0; i < domeinen.length; i++)
-		{	domeinStrings[i][0] = "$f" + Double.toString(domeinen[i][0]) + "@";
-			domeinStrings[i][1] = "$f" + Double.toString(domeinen[i][1]) + "@";
-		}
-		for(int i = 0; i < Math.min(domeinButtons.length, domeinen.length); i++)
-			domeinButtons[i].zetDomeinString(domeinStrings[i]);
-	}
+//	public void zetDomeinen(double[][] domein)
+//	{	if(domein == null)
+//			domeinen = null;
+//		else
+//		{	domeinen = new double[domein.length][2];
+//			for(int i = 0; i < domeinen.length; i++)
+//			{	domeinen[i][0] = domein[i][0];
+//				domeinen[i][1] = domein[i][1];
+//			}
+//		}
+//		for(int i = 0; i < domeinen.length; i++)
+//		{	domeinStrings[i][0] = "$f" + Double.toString(domeinen[i][0]) + "@";
+//			domeinStrings[i][1] = "$f" + Double.toString(domeinen[i][1]) + "@";
+//		}
+//		for(int i = 0; i < Math.min(domeinButtons.length, domeinen.length); i++)
+//			domeinButtons[i].zetDomeinString(domeinStrings[i]);
+//	}
 	
-	public void zetDomein(String[] domeinStrings, int i)
-	{	
-		if(domeinen.length > i)
-		{	if(domeinStrings == null)
-			{	domeinen[i][0] = DEFAULTDOMEIN[0];
-				domeinen[i][1] = DEFAULTDOMEIN[1];
-				return;
-			}
-			if(domeinStrings[0].equals("$f" + Double.NEGATIVE_INFINITY + "@"))
-			{	domeinen[i][0] = Double.NEGATIVE_INFINITY;
-			}
-			else if(FormuleParser.geefExpressie(domeinStrings[0]) == null)
-			{	domeinen[i][0] = Double.NEGATIVE_INFINITY;
-			}
-			else
-			{	domeinen[i][0] = FormuleParser.geefExpressie(domeinStrings[0]).geefWaarde();
-			}
-			if(domeinStrings[1].equals("$f" + Double.POSITIVE_INFINITY + "@"))
-				domeinen[i][1] = Double.POSITIVE_INFINITY;
-			else if(FormuleParser.geefExpressie(domeinStrings[1]) == null)
-				domeinen[i][1] = Double.POSITIVE_INFINITY;
-			else
-				domeinen[i][1] = FormuleParser.geefExpressie(domeinStrings[1]).geefWaarde();
-		}
-	}
+//	public void zetDomein(String[] domeinStrings, int i)
+//	{	
+//		if(domeinen.length > i)
+//		{	if(domeinStrings == null)
+//			{	domeinen[i][0] = DEFAULTDOMEIN[0];
+//				domeinen[i][1] = DEFAULTDOMEIN[1];
+//				return;
+//			}
+//			if(domeinStrings[0].equals("$f" + Double.NEGATIVE_INFINITY + "@"))
+//			{	domeinen[i][0] = Double.NEGATIVE_INFINITY;
+//			}
+//			else if(FormuleParser.geefExpressie(domeinStrings[0]) == null)
+//			{	domeinen[i][0] = Double.NEGATIVE_INFINITY;
+//			}
+//			else
+//			{	domeinen[i][0] = FormuleParser.geefExpressie(domeinStrings[0]).geefWaarde();
+//			}
+//			if(domeinStrings[1].equals("$f" + Double.POSITIVE_INFINITY + "@"))
+//				domeinen[i][1] = Double.POSITIVE_INFINITY;
+//			else if(FormuleParser.geefExpressie(domeinStrings[1]) == null)
+//				domeinen[i][1] = Double.POSITIVE_INFINITY;
+//			else
+//				domeinen[i][1] = FormuleParser.geefExpressie(domeinStrings[1]).geefWaarde();
+//		}
+//	}
 	
 	
-	public void resetDomeinen()
-	{	domeinStrings = new String[maxAantalFormules][2];
-		for(int i = 0; i < maxAantalFormules; i++)
-		{	domeinStrings[i][0] = "$f" + Double.toString(Double.NEGATIVE_INFINITY) + "@";
-			domeinStrings[i][1] = "$f" + Double.toString(Double.POSITIVE_INFINITY) + "@";
-		}
+//	public void resetDomeinen()
+//	{	domeinStrings = new String[maxAantalFormules][2];
+//		for(int i = 0; i < maxAantalFormules; i++)
+//		{	domeinStrings[i][0] = "$f" + Double.toString(Double.NEGATIVE_INFINITY) + "@";
+//			domeinStrings[i][1] = "$f" + Double.toString(Double.POSITIVE_INFINITY) + "@";
+//		}
+//		
+//		domeinen = new double[maxAantalFormules][2];
+//		for(int i = 0; i < maxAantalFormules; i++)
+//		{	domeinen[i][0] = DEFAULTDOMEIN[0];
+//			domeinen[i][1] = DEFAULTDOMEIN[1];
+//		}
+//		
+//	}
+	
+//	public void finish() 
+//	{	for(int i=0 ; i<maxAantalFormules ; i++)
+//		{	formuleVakken[i].formuleVak.finish();
+//		}
+//	}
+	
+	public void zetDifferentiaalStelsels(int maxAantalStelsels, boolean setState) {
+		// Save relevant existing equation- descriptions
+		String[] exps = new String[cAantalFormulesPerStelsel * maxAantalStelsels];
+		for(int i = 0; i < cAantalFormulesPerStelsel * maxAantalStelsels; i++){
+			exps[i] = "$f@";
+		}	
 		
-		domeinen = new double[maxAantalFormules][2];
-		for(int i = 0; i < maxAantalFormules; i++)
-		{	domeinen[i][0] = DEFAULTDOMEIN[0];
-			domeinen[i][1] = DEFAULTDOMEIN[1];
+		// clear all formulevakken
+		for(int i = 0; formuleVakken != null && i < formuleVakken.length; i++) {
+			if(formuleVakken[i] != null) {
+				if(i < maxAantalStelsels) {
+					if(functieBeginAanpasbaar) {	
+						exps[i] = formuleVakken[i].formuleVak.toString();
+					} else {	
+						String s1 = formuleVakken[i].functieBeginVak.toString();
+						String s2 = formuleVakken[i].formuleVak.toString();
+						try {
+							s1 = s1.substring(0, s1.length() - 1);
+							s2 = s2.substring(2);
+						} catch(Exception e) {
+						}
+						exps[i] = s1 + s2;
+					}
+				}
+				remove(formuleVakken[i]);
+			}
 		}
-		
-	}
+		// Save relevant selection info + clear all checkboxes
+		boolean[] geselecteerd = new boolean[maxAantalStelsels];
+		for(int i = 0; checkboxen != null && i < checkboxen.length; i++) {
+			if(checkboxen[i] != null) {	
+				if(i < geselecteerd.length) {
+					geselecteerd[i] = checkboxen[i].isSelected();
+				}
+				remove(checkboxen[i]);
+			}
+		}
+		this.maxAantalStelsels = maxAantalStelsels; 
+
+
+	} // end of zetDifferentiaalStelsels
 	
-	public void finish()
-	{	for(int i=0 ; i<maxAantalFormules ; i++)
-		{	formuleVakken[i].formuleVak.finish();
-		}
-	}
 	
 	public void zetFormuleRegels(int maxAantalFormules, boolean setState) {	
 		String[] exps = new String[maxAantalFormules];
-		for(int i = 0; i < maxAantalFormules; i++)
+		for(int i = 0; i < maxAantalFormules; i++){
 			exps[i] = "$f@";
+		}	
 		for(int i = 0; formuleVakken != null && i < formuleVakken.length; i++)
 			if(formuleVakken[i] != null)
 			{	if(i < maxAantalFormules)
@@ -656,14 +723,13 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 					geselecteerd[i] = checkboxen[i].isSelected();
 				remove(checkboxen[i]);
 			}
-		for(int i = 0; domeinButtons != null && i < domeinButtons.length; i++)
-			if(domeinButtons[i] != null)
-				remove(domeinButtons[i]);
+//		for(int i = 0; domeinButtons != null && i < domeinButtons.length; i++)
+//			if(domeinButtons[i] != null)
+//				remove(domeinButtons[i]);
 		
-		this.maxAantalFormules = maxAantalFormules; 
+		this.maxAantalStelsels = maxAantalFormules; 
 		
 		formuleVakken = new VergelijkingVak[maxAantalFormules];
-		
 		for(int i=0 ; i<maxAantalFormules ; i++)
 		{	formuleVakken[i] = new VergelijkingVak(functieBeginAanpasbaar);
 			formuleVakken[i].setFont(WiskOpdr.formuleFont0);
@@ -673,7 +739,23 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
 			if(functieBeginAanpasbaar)
 				formuleVakken[i].formuleVak.vulVak(exps[i]);
-			parseFormule(exps[i], i, setState);
+//			parseFormule(exps[i], i, setState);
+			formuleVakken[i].formuleVak.addActionListener(this);
+			formuleVakken[i].formuleVak.addFocusListener(this);
+		}
+
+		
+		formuleVakken = new VergelijkingVak[maxAantalFormules];
+		for(int i=0 ; i<maxAantalFormules ; i++)
+		{	formuleVakken[i] = new VergelijkingVak(functieBeginAanpasbaar);
+			formuleVakken[i].setFont(WiskOpdr.formuleFont0);
+			formuleVakken[i].setLocation(formuleX,10 + 35*i);
+			formuleVakken[i].setOpaque(false);
+			if(grafiekComponent != null)
+				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
+			if(functieBeginAanpasbaar)
+				formuleVakken[i].formuleVak.vulVak(exps[i]);
+//			parseFormule(exps[i], i, setState);
 			formuleVakken[i].formuleVak.addActionListener(this);
 			formuleVakken[i].formuleVak.addFocusListener(this);
 		}
@@ -692,34 +774,36 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 					checkboxen[i].addMouseListener(this);
 			}
 		}
-		domeinButtons = new DomeinButton[maxAantalFormules];
-		for(int i=0; i < maxAantalFormules; i++)
-		{	domeinButtons[i] = new DomeinButton();
-			if(i < domeinStrings.length)
-				domeinButtons[i].zetDomeinString(domeinStrings[i]);
-			domeinButtons[i].addActionListener(this);
-		}
-		domeinButtons[0].setLocation(this.getWidth() - 25, 5 + formuleVakken[0].ashoogte);
+
+//		domeinButtons = new DomeinButton[maxAantalFormules];
+//		for(int i=0; i < maxAantalFormules; i++)
+//		{	domeinButtons[i] = new DomeinButton();
+//			if(i < domeinStrings.length)
+//				domeinButtons[i].zetDomeinString(domeinStrings[i]);
+//			domeinButtons[i].addActionListener(this);
+//		}
+//		domeinButtons[0].setLocation(this.getWidth() - 25, 5 + formuleVakken[0].ashoogte);
+		System.out.println("4- zetFormuleRegels - soortvak 0 = " + soortVak[0]);
 		
 		for(int i = 0; i < aantalRegels; i++)
 		{	add(formuleVakken[i],0);
 			if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				add(checkboxen[i]);
-			add(domeinButtons[i]);
+//			add(domeinButtons[i]);
 		}
-		domeinButtons[0].setVisible(false);
-		isEn = new boolean[maxAantalFormules];
-		for(int i = 0; i<isEn.length; i++)
-			isEn[i] = true;
+//		domeinButtons[0].setVisible(false);
+//		isEn = new boolean[maxAantalFormules];
+//		for(int i = 0; i<isEn.length; i++)
+//			isEn[i] = true;
 		
-		enOfKnoppen = new JButton[maxAantalFormules];
-		for(int i=0 ; i<maxAantalFormules ; i++)
-		{	enOfKnoppen[i] = new JButton(GraphTool.rb.getString("enOfButton_En"));
-			enOfKnoppen[i].setMargin(new Insets(0,0,0,0));
-			enOfKnoppen[i].setSize(25, 20);
-			enOfKnoppen[i].setOpaque(false);
-			enOfKnoppen[i].addActionListener(this);
-		}
+//		enOfKnoppen = new JButton[maxAantalFormules];
+//		for(int i=0 ; i<maxAantalFormules ; i++)
+//		{	enOfKnoppen[i] = new JButton(GraphTool.rb.getString("enOfButton_En"));
+//			enOfKnoppen[i].setMargin(new Insets(0,0,0,0));
+//			enOfKnoppen[i].setSize(25, 20);
+//			enOfKnoppen[i].setOpaque(false);
+//			enOfKnoppen[i].addActionListener(this);
+//		}
 		
 		formuleVakken[0].setVisible(true);
 		for(int i = 0; i < formuleVakken.length; i++) //aangepast 20-1-2014; leidt dit tot problemen? Dan terugzetten naar alleen doen voor 0 en niet voor alle i.
@@ -741,8 +825,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		{	checkboxen[0].setVisible(true);	
 			checkboxen[0].setSelected(true);
 		}
-		
 		layoutVakken(setState);
+
 	}
 	
 	/*
@@ -762,8 +846,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	}
 	
 	public String[] geefExpNamen()
-	{	String[] expNaam = new String[maxAantalFormules];
-		for (int i = 0; i < maxAantalFormules; i++)
+	{	String[] expNaam = new String[maxAantalStelsels];
+		for (int i = 0; i < maxAantalStelsels; i++)
 		{	expNaam[i] = geefExpNaam(i);
 		}
 		return expNaam;
@@ -783,37 +867,37 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	public int getMaxAantalFuncties()
 	{
-		return maxAantalFormules;
+		return maxAantalStelsels;
 	}
 	
-	public boolean geefIsEn(int i)
-	{
-		return isEn[i];
-	}
+//	public boolean geefIsEn(int i)
+//	{
+//		return isEn[i];
+//	}
 	
-	public void terugNaarEenRegel(boolean setState)
-	{	for (int rCnt = aantalRegels; rCnt > 1; rCnt--)
-		{	
-			grafiekComponent.zetFunctie(aantalRegels - 1, null, "$f@", null, DEFAULTDOMEIN, true, setState, docent);
-			
-			formuleVakken[aantalRegels-1].formuleVak.vulVak("$f@");
-			remove(formuleVakken[aantalRegels-1]);
-			remove(checkboxen[aantalRegels-1]);
-			remove(domeinButtons[aantalRegels-1]);
-			layoutVakken(setState);
-			aantalRegels--;
-		}
-		if(functieBeginZichtbaar)
-		{	for(int i=0 ; i<maxAantalFormules ; i++)
-			{	zetVoorvoegsel(i);
-			}
-		}
-		else
-			for(int i = 0; i < maxAantalFormules; i++)
-				formuleVakken[i].formuleVak.vulVak("$f@");
-		
-		parseFormule("$f@", 0, setState);
-	}
+//	public void terugNaarEenRegel(boolean setState)
+//	{	for (int rCnt = aantalRegels; rCnt > 1; rCnt--)
+//		{	
+//			grafiekComponent.zetFunctie(aantalRegels - 1, null, "$f@", null, DEFAULTDOMEIN, true, setState, docent);
+//			
+//			formuleVakken[aantalRegels-1].formuleVak.vulVak("$f@");
+//			remove(formuleVakken[aantalRegels-1]);
+//			remove(checkboxen[aantalRegels-1]);
+////			remove(domeinButtons[aantalRegels-1]);
+//			layoutVakken(setState);
+//			aantalRegels--;
+//		}
+//		if(functieBeginZichtbaar)
+//		{	for(int i=0 ; i<maxAantalFormules ; i++)
+//			{	zetVoorvoegsel(i);
+//			}
+//		}
+//		else
+//			for(int i = 0; i < maxAantalFormules; i++)
+//				formuleVakken[i].formuleVak.vulVak("$f@");
+//		
+//		parseFormule("$f@", 0, setState);
+//	}
 	
 	public void parseFormule(int regelnummer, boolean setState)
 	{	//System.out.println("parseFormule(" + regelnummer + ", " + Boolean.toString(setState));
@@ -847,11 +931,11 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		//er staat al een xparametrisatie, dan is de volgende regel ook een y-parametrisatie. Haal je die dan ook weg?
 		//in principe wel, als je een nieuwe xparametrisatie typt, dan wordt de volgende regel automatisch weer gemarkeerd als yparam.
 
-		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
-			domeinButtons[regelnummer].setVisible(false);
+//		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
+//			domeinButtons[regelnummer].setVisible(false);
 		if(soortVak[regelnummer] == PARAMETRISATIEX)
 		{	soortVak[regelnummer] = FUNCTIE;
-			if(regelnummer < maxAantalFormules - 1)
+			if(regelnummer < maxAantalStelsels - 1)
 				soortVak[regelnummer + 1] = FUNCTIE;
 		}
 		else if(soortVak[regelnummer] != PARAMETRISATIEY)
@@ -934,8 +1018,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		    	{	boolean isGroterGelijk = true;
 		    		if(tekenGetal == 2 || tekenGetal == 3)
 		    			isGroterGelijk = false;
-		    		if(checkboxen[regelnummer].isSelected())
-		    			grafiekComponent.zetOngelijkheid(regelnummer, e2, false, isGroterGelijk, isEn[regelnummer]); 
+//		    		if(checkboxen[regelnummer].isSelected())
+//		    			grafiekComponent.zetOngelijkheid(regelnummer, e2, false, isGroterGelijk, isEn[regelnummer]); 
 		    		soortVak[regelnummer] = ONGELIJKHEID;
 		    		//isOngelijkheid[regelnummer] = true;
 		    	}
@@ -943,8 +1027,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		    	{	boolean isGroterGelijk = true;
 	    			if(tekenGetal == 2 || tekenGetal == 3)
 	    				isGroterGelijk = false;
-	    			if(checkboxen[regelnummer].isSelected())
-	    				grafiekComponent.zetOngelijkheid(regelnummer, e2, true, isGroterGelijk, isEn[regelnummer]); 
+//	    			if(checkboxen[regelnummer].isSelected())
+//	    				grafiekComponent.zetOngelijkheid(regelnummer, e2, true, isGroterGelijk, isEn[regelnummer]); 
 	    			soortVak[regelnummer] = ONGELIJKHEID;
 	    			//isOngelijkheid[regelnummer] = true;
 		    	}
@@ -955,12 +1039,12 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
 		    		return;
 		    	}
-		    	else
-			    {	if(checkboxen[regelnummer].isSelected() || docent)
-			    	{	grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
-			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
-			    	}
-			    } 
+//		    	else
+//			    {	if(checkboxen[regelnummer].isSelected() || docent)
+//			    	{	grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
+//			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
+//			    	}
+//			    } 
 		    }
 		    else if(expressieStrings[0].equals(xAsNaam))
 		    {	if(!verticaleLijnToegestaan)
@@ -977,9 +1061,9 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		    	}
 		    	if(soortVak[regelnummer] != PARAMETRISATIEX && soortVak[regelnummer] != PARAMETRISATIEY)
 		    	{	soortVak[regelnummer] = PARAMETRISATIEX;
-		    		if(regelnummer < maxAantalFormules - 1)
+		    		if(regelnummer < maxAantalStelsels - 1)
 		    		{	soortVak[regelnummer + 1] = PARAMETRISATIEY;
-		    			maakParametrisatieVak(regelnummer);
+//		    			maakParametrisatieVak(regelnummer);
 		    		}
 		    		//layoutVakken(setState);
 		    	}
@@ -1021,61 +1105,60 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		}
 		catch(Exception e)
 		{}
-		zetEnOfKnoppen();
-		
+//		zetEnOfKnoppen();
 	}
 	
-	public void maakParametrisatieVak(int regelnummer)
-	{
-		int yPositie = formuleVakken[regelnummer].getY();
-		checkboxen[regelnummer].setLocation(4, yPositie + formuleVakken[regelnummer].getSize().height);
-		if(regelnummer < maxAantalFormules - 1)
-		{	AccoladeLabel accoladeLabel = new AccoladeLabel(formuleVakken[regelnummer].getSize().height + 10  + formuleVakken[regelnummer + 1].getSize().height);
-			accoladeLabel.setLocation(15, yPositie);
-			add(accoladeLabel);
-		}
-		
-		//checken of alles al in parametrisatiestand staat. Anders daarvoor zorgen. Maar in principe moet ook alles uit parametrisatiestand
-				//aan begin van parsen... Dus moet dit altijd gebeuren. Bij het uit parametrisatiestand halen goed opletten dat je de formule wel netjes bewaart.
-				//laat de regel ook maar zichtbaar.
-				//accolade neerzetten
-				//volgende regel zichtbaar maken (als die niet al zichtbaar is).
-				//checkboxen weghalen of onzichtbaar maken (waarschijnlijk is dat laatste handiger)
-				//nieuwe checkbox terugzetten midden voor de accolade.
-				//yasnaam(variabele) klaarzetten op volgende regel, als die niet al een parametrisatie bevatte.
-				//Uberhaubt: volgende regel ook meteen zichtbaar maken.
-	}
+////	public void maakParametrisatieVak(int regelnummer)
+////	{
+////		int yPositie = formuleVakken[regelnummer].getY();
+////		checkboxen[regelnummer].setLocation(4, yPositie + formuleVakken[regelnummer].getSize().height);
+////		if(regelnummer < maxAantalFormules - 1)
+////		{	AccoladeLabel accoladeLabel = new AccoladeLabel(formuleVakken[regelnummer].getSize().height + 10  + formuleVakken[regelnummer + 1].getSize().height);
+////			accoladeLabel.setLocation(15, yPositie);
+////			add(accoladeLabel);
+////		}
+//		
+//		//checken of alles al in parametrisatiestand staat. Anders daarvoor zorgen. Maar in principe moet ook alles uit parametrisatiestand
+//				//aan begin van parsen... Dus moet dit altijd gebeuren. Bij het uit parametrisatiestand halen goed opletten dat je de formule wel netjes bewaart.
+//				//laat de regel ook maar zichtbaar.
+//				//accolade neerzetten
+//				//volgende regel zichtbaar maken (als die niet al zichtbaar is).
+//				//checkboxen weghalen of onzichtbaar maken (waarschijnlijk is dat laatste handiger)
+//				//nieuwe checkbox terugzetten midden voor de accolade.
+//				//yasnaam(variabele) klaarzetten op volgende regel, als die niet al een parametrisatie bevatte.
+//				//Uberhaubt: volgende regel ook meteen zichtbaar maken.
+//	}
 	
 	
-	/*
-	public void maakParametrisatieVak(int regelnummer)
+	
+	public void maakDifferentiaalVak(int stelselNummer)
 	{
-		soortVak[regelnummer] = PARAMETRISATIEX;
-		if(regelnummer == maxAantalFormules - 1)
+		soortVak[stelselNummer*2] = DIFFERENTIAALX;
+		if(stelselNummer > maxAantalStelsels - 1)
 			return;
 		
-		soortVak[regelnummer + 1] = PARAMETRISATIEY;
-		
-		JLabel accoladeLabel = new JLabel("{");
-		accoladeLabel.setFont(new Font("SansSerif", Font.PLAIN, 32));
-		accoladeLabel.setSize(20, 40);
-		accoladeLabel.setLocation(20, 10);
+		soortVak[stelselNummer*2 + 1] = DIFFERENTIAALY;
+		int yPositie = formuleVakken[stelselNummer*2].getY();
+		checkboxen[stelselNummer].setLocation(4, yPositie + formuleVakken[stelselNummer*2].getSize().height-2);
+		AccoladeLabel accoladeLabel = new AccoladeLabel(formuleVakken[stelselNummer*2].getSize().height + 10  + formuleVakken[stelselNummer*2 + 1].getSize().height);
+		accoladeLabel.setLocation(cAccoladeXPositie, yPositie);
 		add(accoladeLabel);
+
 	}
-	*/
 	
-	public void zetEnOfKnoppen()
-	{	for(int i = 0; i < maxAantalFormules - 1; i++)
-		{	if(i < enOfKnoppen.length)
-			{
-				if(soortVak[i] == ONGELIJKHEID && soortVak[i+1] == ONGELIJKHEID)
-					enOfKnoppen[i].setVisible(true);
-				else
-					enOfKnoppen[i].setVisible(false);
-			}
-		}
-		
-	}
+	
+//	public void zetEnOfKnoppen()
+//	{	for(int i = 0; i < maxAantalFormules - 1; i++)
+//		{	if(i < enOfKnoppen.length)
+//			{
+//				if(soortVak[i] == ONGELIJKHEID && soortVak[i+1] == ONGELIJKHEID)
+//					enOfKnoppen[i].setVisible(true);
+//				else
+//					enOfKnoppen[i].setVisible(false);
+//			}
+//		}
+//		
+//	}
 	
 	public void vulFunctieRegel(String deel1, String deel2, int regelnummer)
 	{	//if(functieBeginAanpasbaar)
@@ -1093,147 +1176,147 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			add(checkboxen[aantalRegels],0);
 		else
 			checkboxen[aantalRegels].setSelected(true);
-		add(domeinButtons[aantalRegels],0);
-		domeinButtons[aantalRegels].setVisible(false);
-		add(enOfKnoppen[aantalRegels - 1], 0);
-		enOfKnoppen[aantalRegels - 1].setVisible(false);
+//		add(domeinButtons[aantalRegels],0);
+//		domeinButtons[aantalRegels].setVisible(false);
+//		add(enOfKnoppen[aantalRegels - 1], 0);
+//		enOfKnoppen[aantalRegels - 1].setVisible(false);
 		layoutVakken(false);
 		formuleVakken[aantalRegels].formuleVak.requestFocus();
 		aantalRegels++;
 		produceAction("regel meer");
 	}
 	
-	public void zetVergelijking(int regelNr, String vergelijkingString)
-	{
-		//zetFunctieBeginAanpasbaar(false, false);
-		//zetFormeleFuncties(false, false);
-		VergelijkingMeerv v = FormuleParser.parseVergelijking(vergelijkingString);
-		String functieString0 = "$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@";
-		if(functieBeginAanpasbaar)
-			functieString0 = "$fy=" + functieString0.substring(2);
-		formuleVakken[0].formuleVak.vulVak(functieString0);
-		if(aantalRegels<2) maakNieuweRegel();
-		String functieString1 = "$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@";
-		if(functieBeginAanpasbaar)
-			functieString1 = "$fy=" + functieString1.substring(2);
-		formuleVakken[1].formuleVak.vulVak(functieString1);
-		checkboxen[0].setSelected(true);
-		checkboxen[1].setSelected(true);
-		parseFormule(0, false);
-		parseFormule(1, false);
-	}
+//	public void zetVergelijking(int regelNr, String vergelijkingString)
+//	{
+//		//zetFunctieBeginAanpasbaar(false, false);
+//		//zetFormeleFuncties(false, false);
+//		VergelijkingMeerv v = FormuleParser.parseVergelijking(vergelijkingString);
+//		String functieString0 = "$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@";
+//		if(functieBeginAanpasbaar)
+//			functieString0 = "$fy=" + functieString0.substring(2);
+//		formuleVakken[0].formuleVak.vulVak(functieString0);
+//		if(aantalRegels<2) maakNieuweRegel();
+//		String functieString1 = "$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@";
+//		if(functieBeginAanpasbaar)
+//			functieString1 = "$fy=" + functieString1.substring(2);
+//		formuleVakken[1].formuleVak.vulVak(functieString1);
+//		checkboxen[0].setSelected(true);
+//		checkboxen[1].setSelected(true);
+//		parseFormule(0, false);
+//		parseFormule(1, false);
+//	}
 	
-	public void zetFunctie(int regelNr, String functieString)
-	{
-		if(functieBeginAanpasbaar)
-			functieString = "$fy=" + functieString.substring(2);
-		if(regelNr==0) 
-			formuleVakken[0].formuleVak.vulVak(functieString);
-		while(aantalRegels-1<regelNr) 
-			maakNieuweRegel();
-		formuleVakken[regelNr].formuleVak.vulVak(functieString);
-		checkboxen[regelNr].setSelected(true);
-		parseFormule(regelNr, false);
-	}
+//	public void zetFunctie(int regelNr, String functieString)
+//	{
+//		if(functieBeginAanpasbaar)
+//			functieString = "$fy=" + functieString.substring(2);
+//		if(regelNr==0) 
+//			formuleVakken[0].formuleVak.vulVak(functieString);
+//		while(aantalRegels-1<regelNr) 
+//			maakNieuweRegel();
+//		formuleVakken[regelNr].formuleVak.vulVak(functieString);
+//		checkboxen[regelNr].setSelected(true);
+//		parseFormule(regelNr, false);
+//	}
+//	
+//	public void zetFuncties(Map map)
+//	{
+//		String numberString = (String)map.get("number");
+//		int number = 0;
+//		try	{	
+//			number = Integer.parseInt(numberString);
+//		}
+//		catch (NumberFormatException nfe) {
+//			System.out.println(nfe.toString());
+//		}
+//		String clear = (String)map.get("clear");
+//		String abscissa_name = (String)map.get("abscissa_name");
+//		String abscissa_min = (String)map.get("abscissa_min");
+//		String abscissa_max = (String)map.get("abscissa_max");
+//		String ordinate_name = (String)map.get("ordinate_name");
+//		String ordinate_min = (String)map.get("ordinate_min");
+//		String ordinate_max = (String)map.get("ordinate_max");
+//		
+//		zetXAsNaam(abscissa_name,false);
+//		zetYAsNaam(ordinate_name,false);
+//		
+//		//Expressie[] functions = new Expressie[number];
+//		//Color[] colors = null;
+//		//double[] thicknesses = null;
+//		
+//		for(int i=0 ; i<number ; i++)
+//		{
+//			String functionString = (String)map.get("function_"+i);
+//			functionString = functionString.replaceAll("root", "sqrt");
+//			functionString = functionString.replaceAll("$", "");
+//
+//			functionString = "$"+yAsNaam+"=" + functionString.substring(2);
+//			formuleVakken[i].formuleVak.vulVak(functionString);
+//			checkboxen[i].setSelected(true);
+//			parseFormule(i, false);
+//			if(i<number-1)
+//				maakNieuweRegel();
+//			//functions[i] = popcornParse(functionString);
+//			//String colorString = (String)map.get("color_"+i);
+//			//colors[i] = colorParse(colorString);
+//			//String thicknessString = (String)map.get("thickness_"+i);
+//			//try	{	
+//			//	thicknesses[i] = Double.parseDouble(thicknessString);
+//			//}
+//			//catch (NumberFormatException nfe) {
+//			//	System.out.println(nfe.toString());
+//			//}
+//			
+//		}
+//	}
 	
-	public void zetFuncties(Map map)
-	{
-		String numberString = (String)map.get("number");
-		int number = 0;
-		try	{	
-			number = Integer.parseInt(numberString);
-		}
-		catch (NumberFormatException nfe) {
-			System.out.println(nfe.toString());
-		}
-		String clear = (String)map.get("clear");
-		String abscissa_name = (String)map.get("abscissa_name");
-		String abscissa_min = (String)map.get("abscissa_min");
-		String abscissa_max = (String)map.get("abscissa_max");
-		String ordinate_name = (String)map.get("ordinate_name");
-		String ordinate_min = (String)map.get("ordinate_min");
-		String ordinate_max = (String)map.get("ordinate_max");
-		
-		zetXAsNaam(abscissa_name,false);
-		zetYAsNaam(ordinate_name,false);
-		
-		//Expressie[] functions = new Expressie[number];
-		//Color[] colors = null;
-		//double[] thicknesses = null;
-		
-		for(int i=0 ; i<number ; i++)
-		{
-			String functionString = (String)map.get("function_"+i);
-			functionString = functionString.replaceAll("root", "sqrt");
-			functionString = functionString.replaceAll("$", "");
-
-			functionString = "$"+yAsNaam+"=" + functionString.substring(2);
-			formuleVakken[i].formuleVak.vulVak(functionString);
-			checkboxen[i].setSelected(true);
-			parseFormule(i, false);
-			if(i<number-1)
-				maakNieuweRegel();
-			//functions[i] = popcornParse(functionString);
-			//String colorString = (String)map.get("color_"+i);
-			//colors[i] = colorParse(colorString);
-			//String thicknessString = (String)map.get("thickness_"+i);
-			//try	{	
-			//	thicknesses[i] = Double.parseDouble(thicknessString);
-			//}
-			//catch (NumberFormatException nfe) {
-			//	System.out.println(nfe.toString());
-			//}
-			
-		}
-	}
+//	public Expressie popcornParse(String s)
+//	{	Expressie e = null;
+//		s = s.replaceAll("root", "sqrt");
+//		s = s.replaceAll("$", "");
+//		e = FormuleParser.parse("$f"+s+"@");
+//		return e;
+//	}
 	
-	public Expressie popcornParse(String s)
-	{	Expressie e = null;
-		s = s.replaceAll("root", "sqrt");
-		s = s.replaceAll("$", "");
-		e = FormuleParser.parse("$f"+s+"@");
-		return e;
-	}
-	
-	public Color colorParse(String s)
-	{
-		Color c = null;
-		
-		return c;
-	}
+//	public Color colorParse(String s)
+//	{
+//		Color c = null;
+//		
+//		return c;
+//	}
 	
 	public void actionPerformed(ActionEvent e)
 	{	
-		if (e.getSource() == nieuweRegelKnop && aantalRegels < maxAantalFormules)
-		{	maakNieuweRegel();
-			return;
-		}
-		else if (e.getSource() == nieuweRegelKnop)
-			return;
-		else if (e.getSource() == verwijderRegelKnop && aantalRegels > 1)
-		{	
-			parseFormule("$f@", aantalRegels - 1, false);
-			//formuleVakken[aantalRegels - 1].formuleVak.vulVak("$f@");
-			if(functieBeginZichtbaar)
-			{	zetVoorvoegsel(aantalRegels - 1);
-			}
-			//else
-			//	formuleVakken[aantalRegels - 1].formuleVak.vulVak("$f@");
-			remove(formuleVakken[aantalRegels-1]);
-			remove(checkboxen[aantalRegels-1]);
-			if(!docent && grafiekComponent != null && grafiekComponent.typeOpdracht != GraphToolInteractiePanel.GEENOPDRACHT)
-				checkboxen[aantalRegels-1].setSelected(false);
-			remove(domeinButtons[aantalRegels-1]);
-			remove(enOfKnoppen[aantalRegels-2]);
-			isEn[aantalRegels - 2] = true;
-			enOfKnoppen[aantalRegels-2].setText(GraphTool.rb.getString("enOfButton_En"));
-			layoutVakken(false);
-			aantalRegels--;
-			produceAction("regel minder");
-			return;
-		}
+//		if (e.getSource() == nieuweRegelKnop && aantalRegels < maxAantalFormules)
+//		{	maakNieuweRegel();
+//			return;
+//		}
+//		else if (e.getSource() == nieuweRegelKnop)
+//			return;
+//		else if (e.getSource() == verwijderRegelKnop && aantalRegels > 1)
+//		{	
+//			parseFormule("$f@", aantalRegels - 1, false);
+//			//formuleVakken[aantalRegels - 1].formuleVak.vulVak("$f@");
+//			if(functieBeginZichtbaar)
+//			{	zetVoorvoegsel(aantalRegels - 1);
+//			}
+//			//else
+//			//	formuleVakken[aantalRegels - 1].formuleVak.vulVak("$f@");
+//			remove(formuleVakken[aantalRegels-1]);
+//			remove(checkboxen[aantalRegels-1]);
+//			if(!docent && grafiekComponent != null && grafiekComponent.typeOpdracht != GraphToolInteractiePanel.GEENOPDRACHT)
+//				checkboxen[aantalRegels-1].setSelected(false);
+//			remove(domeinButtons[aantalRegels-1]);
+//			remove(enOfKnoppen[aantalRegels-2]);
+//			isEn[aantalRegels - 2] = true;
+//			enOfKnoppen[aantalRegels-2].setText(GraphTool.rb.getString("enOfButton_En"));
+//			layoutVakken(false);
+//			aantalRegels--;
+//			produceAction("regel minder");
+//			return;
+//		}
 		
-		for(int i=0; i<maxAantalFormules; i++)
+		for(int i=0; i<maxAantalStelsels; i++)
 		{	if(e.getSource()==formuleVakken[i].formuleVak &&  (e.getActionCommand().equals("ingevuld") || 
 					  e.getActionCommand().equals("focuslost")))
 			{				
@@ -1247,7 +1330,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			
 			
 		}
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		for(int i=0 ; i<maxAantalStelsels ; i++)
 		{	if(e.getSource()==formuleVakken[i].formuleVak && 
 			   e.getActionCommand().equals("focus"))
 			{	if(formuleVak != formuleVakken[i].formuleVak)
@@ -1260,20 +1343,20 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			}
 			
 		}
-		for(int i = 0; i<maxAantalFormules; i++)
-		{	if(e.getSource()==enOfKnoppen[i])
-			{	isEn[i] = !isEn[i];
-				if(isEn[i])
-					enOfKnoppen[i].setText(GraphTool.rb.getString("enOfButton_En"));
-				else			
-					enOfKnoppen[i].setText(GraphTool.rb.getString("enOfButton_Of"));
-				parseFormule(i, false);
-				break;
-			}
-			
-		}
+//		for(int i = 0; i<maxAantalFormules; i++)
+//		{	if(e.getSource()==enOfKnoppen[i])
+//			{	isEn[i] = !isEn[i];
+//				if(isEn[i])
+//					enOfKnoppen[i].setText(GraphTool.rb.getString("enOfButton_En"));
+//				else			
+//					enOfKnoppen[i].setText(GraphTool.rb.getString("enOfButton_Of"));
+//				parseFormule(i, false);
+//				break;
+//			}
+//			
+//		}
 		if (checkboxen != null ) { 
-			for(int i=0 ; i<maxAantalFormules ; i++) {	
+			for(int i=0 ; i<maxAantalStelsels ; i++) {	
 
 				if(e.getSource()==checkboxen[i])
 				{	parseFormule(i, false);
@@ -1291,18 +1374,18 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				}
 			}
 		}
-	for(int i=0 ; i<maxAantalFormules ; i++)
-		{	
-		
-		if(e.getSource()==domeinButtons[i] && e.getActionCommand().equals("maak Domein"))
-			{	domeinStrings[i][0] = domeinButtons[i].getDomeinString()[0];
-				domeinStrings[i][1] = domeinButtons[i].getDomeinString()[1];
-				zetDomein(domeinStrings[i], i);
-				parseFormule(i, false);
-				
-				produceAction("ingevuld");
-			}
-		}
+//	for(int i=0 ; i<maxAantalFormules ; i++)
+//		{	
+//		
+//		if(e.getSource()==domeinButtons[i] && e.getActionCommand().equals("maak Domein"))
+//			{	domeinStrings[i][0] = domeinButtons[i].getDomeinString()[0];
+//				domeinStrings[i][1] = domeinButtons[i].getDomeinString()[1];
+//				zetDomein(domeinStrings[i], i);
+//				parseFormule(i, false);
+//				
+//				produceAction("ingevuld");
+//			}
+//		}
 		super.actionPerformed(e);
 	}
 	

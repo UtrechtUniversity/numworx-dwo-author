@@ -55,7 +55,7 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 	private String yAsNaam = "y";
 	String[] namen = {"f","g","h","i","j","k","l","m","n"};
 	private boolean functieBeginZichtbaar = true;
-	private boolean formeleFuncties = true;
+	private boolean formeleFuncties = true; 
 	private boolean domeinInstelbaar = false;
 	public boolean docent;
 	
