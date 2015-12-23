@@ -14,7 +14,7 @@ import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.WiskOpdr;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class FormuleVak extends RegelVak implements MouseListener, ActionListener
+public class FormuleVak extends RegelVak implements MouseListener, ActionListener 
 {	
 	protected static String clipboard;
 
@@ -218,12 +218,11 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	
 	public void focusLost(FormuleRegel fr)
 	{	
-		//if(actieveRegel==fr)
-		//{	if(actionListener!=null)
-		//	{	actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "focuslost"));
-		//	}
-		//}
-		
+//		if(actieveRegel==fr)
+//		{	if(actionListener!=null)
+//			{	actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "focuslost"));
+//			}
+//		}
 	}
 	
 	public void deSelect()
@@ -483,6 +482,16 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 		return "<math xmlns='http://www.w3.org/1998/Math/MathML'>"+kind1.toMathML()+"</math>";
 	}
 	
+	public void addFocusListener(FocusListener listener) {
+		// Doorsturen naar "kind" welke wel focus krijgt en verliest
+		actieveRegel.addFocusListener(listener);
+	}
+
+	public void removeFocusListener(FocusListener listener) {
+		// Doorsturen naar "kind" welke wel focus krijgt en verliest
+		actieveRegel.removeFocusListener(listener);
+	}
+	
 	public void addActionListener(ActionListener listener)
 	{	actionListener = AWTEventMulticaster.add(actionListener, listener);
 	}
@@ -516,5 +525,6 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	    	addState();
 		}
 	}
+
 }
 
