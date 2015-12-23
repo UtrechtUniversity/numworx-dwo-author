@@ -297,20 +297,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		verticaleLijnen = new Expressie[maxAantalExpressies];
 		parametrisaties = new Expressie[maxAantalExpressies/2][2];
 		parametrisatieVariabelen = new String[maxAantalExpressies/2];
-		veldFuncties = new Expressie[VeldComponent.cVeldComponentMaxAantalFormules][2];
-		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy@"))); // TODO
-		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x@")));
-//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x-y@"))); // TODO
-//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-2x-y@")));
-//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-1-x$m2@+y@"))); // TODO
-//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f1+x-y$m2@@")));
-		
-//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fx+2y@"))); // TODO
-//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-2x+y@")));
-//		veldFuncties[0][0] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$fy/(x$m2@+y$m2@)$m(0.5)@@"))); // TODO
-//		veldFuncties[0][1] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f-x/(x$m2@+y$m2@)$m(0.5)@@")));
-		//$fy/(x$m2@+y$m2@)$m(0.5)@@
-		//"$f-x/(x$m2@+y$m2@)$m(0.5)@@"
+		veldFuncties = new Expressie[VeldComponent.cVeldComponentMaxAantalStelsels][2];
 		
 		beginwaarde = 0;
 		selectnummer = 999;
@@ -467,7 +454,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		veldComponent.setSize(veldb, veldComponentHoogte);
 		veldComponent.zetRandverhoging(false);
 		add(veldComponent);
-		veldComponent.zetFormuleRegels(VeldComponent.cVeldComponentMaxAantalFormules, false);
+		veldComponent.zetDifferentiaalStelsels(VeldComponent.cVeldComponentMaxAantalStelsels, false);
 		veldComponent.zetGrafiekComponent(this);
 		veldComponent.addActionListener(this);
 		
@@ -4476,8 +4463,31 @@ MouseListener, MouseMotionListener, CBookAware {
 		repaint();
 	}
 	
-	public void zetFunctie(int nr, Expressie e, String expString, String expNaam, double[] domein, boolean update, boolean setState, boolean docent)
-	{	if(docent && docentFunctieStrings != null && nr < docentFunctieStrings.length)
+	public void zetVectorVeld(int nr, String sAs, Expressie expressie, boolean setState) {
+		if ( sAs == "X" ) {
+			veldFuncties[nr][0] = expressie;
+		} else { 
+			if (sAs == "Y") {
+				veldFuncties[nr][1] = expressie;
+			}
+		}
+		repaint();
+	}
+	
+
+	
+	public void zetFunctie(int nr, Expressie e, String expString, String expNaam, double[] domein, boolean update, boolean setState, boolean docent) {	
+//		System.out.println("ZetFunctie:: nr = " + nr);
+//		System.out.println("ZetFunctie:: e = " + e);
+//		System.out.println("ZetFunctie:: expString = " + expString);
+//		System.out.println("ZetFunctie:: expNaam = " + expNaam);
+//		System.out.println("ZetFunctie:: domein = " + domein);
+//		System.out.println("ZetFunctie:: update = " + update);
+//		System.out.println("ZetFunctie:: setState = " + setState);
+//		System.out.println("ZetFunctie:: docent = " + docent);
+		
+
+		if(docent && docentFunctieStrings != null && nr < docentFunctieStrings.length)
 		{	if(docentFuncties != null && nr < docentFuncties.length)
 				docentFuncties[nr] = e;
 			if(tekenDocentFuncties != null && nr < tekenDocentFuncties.length)

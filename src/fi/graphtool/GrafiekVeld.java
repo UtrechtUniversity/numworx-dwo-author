@@ -1014,6 +1014,9 @@ class GrafiekVeld extends JComponent{
 			gtip.slider.setLocation(0, sliderLoc);
 		}
 //		tekenVeldFunctie(manScalingMultiplyX, manScalingMultiplyY);
+//		System.out.println("GrafiekVeld :: VeldFuncties X = " + gtip.veldFuncties[0][0]);
+//		System.out.println("GrafiekVeld :: VeldFuncties Y = " + gtip.veldFuncties[0][1]);
+
 		if ( (gtip.veldFuncties[0][0] != null) && (gtip.veldFuncties[0][1] != null) ) { // TODO - criterium
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);

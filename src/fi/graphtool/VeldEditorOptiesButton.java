@@ -26,18 +26,17 @@ import javax.swing.SpringLayout;
 import fi.wiskopdr.DialogFacade;
 
 public class VeldEditorOptiesButton extends JButton implements ActionListener {	
-	public enum FieldGraphType {QUIVER, STREAMLINE};
-	
 	
 	private DialogFacade frame;
 	private GraphToolInteractieEditPanel graphToolInteractieEditPanel;
 //	public JCheckBox functieToegestaanCB, ongelijkheidToegestaanCB, implicieteFunctieToegestaanCB, verticaleLijnToegestaanCB, parametrisatieToegestaanCB;
 	
-	JComboBox veldGrafiekTypeLB;
-	private JTextField veldComponentHoogteTF;
+	JComboBox veldGrafiekTypeCombo, veldPijlGrootteCombo;
+	private JTextField veldComponentHoogteTF, veldPijlGrootteTF, veldPijlSchaalTF ;
 	
 	private int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
-	private FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+	private VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+	private VeldComponent.FieldGraphArrowSizeType veldPijlGrootteType = VeldComponent.cDefault_VeldPijlGrootteType;
 	
 	private Font theFont = new Font("SansSerif", Font.PLAIN, 12);
 	
@@ -59,7 +58,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 
 	//soort setState-methode.
 	public void setOptions (Hashtable h) {	
-		FieldGraphType veldGrafiekType = FieldGraphType.QUIVER;
+		VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
 		int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
 		
 		if(h!=null)
@@ -137,11 +136,11 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
         veldTypeLabel.setSize(veldTypeLabel.getPreferredSize());
         veldTypeLabel.setFont(theFont);
         optiesPanel.add(veldTypeLabel);
-        veldGrafiekTypeLB = new JComboBox(VeldComponent.cVeldGrafiekTypeStrings);
-		veldGrafiekTypeLB.setSelectedIndex(0);
-		veldGrafiekTypeLB.setLocation(tab2, yBase + 1 * rowHeight);
-		veldGrafiekTypeLB.setSize(veldGrafiekTypeLB.getPreferredSize());
-		optiesPanel.add(veldGrafiekTypeLB);
+        veldGrafiekTypeCombo = new JComboBox(VeldComponent.cVeldGrafiekTypeStrings);
+		veldGrafiekTypeCombo.setSelectedIndex(0);
+		veldGrafiekTypeCombo.setLocation(tab2, yBase + 1 * rowHeight);
+		veldGrafiekTypeCombo.setSize(veldGrafiekTypeCombo.getPreferredSize());
+		optiesPanel.add(veldGrafiekTypeCombo);
 
 		// Rij - Hoogte
 		JLabel hoogteLabel = new JLabel(GraphTool.rb.getString("GTIEP_veldComponentHoogte"));

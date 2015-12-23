@@ -26,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import fi.beans.stringutils.StringUtils;
-import fi.graphtool.VeldEditorOptiesButton.FieldGraphType;
 //import fi.wiskopdr.GrafiekComponent;
 //import fi.wiskopdr.VergelijkingVak;
 //import fi.wiskopdr.GrafiekComponent;
@@ -37,13 +36,17 @@ import fi.wiskopdr.WiskOpdr;
 
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
 	
+	public enum FieldGraphType {QUIVER, STREAMLINE};
+	public enum FieldGraphArrowSizeType { REALVALUE, FIXEDSIZE, SCALEDSIZE }	
+	
 	/* component defaults & contstants */
-	public final static int cVeldComponentMaxAantalFormules = 1;
+	public final static int cVeldComponentMaxAantalStelsels = 1;
 //	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
 	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver" };
 
 	public final static int cDefault_VeldComponentHoogte = 150;
 	public final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
+	public final static FieldGraphArrowSizeType cDefault_VeldPijlGrootteType = FieldGraphArrowSizeType.REALVALUE;
 	public final static int cAccoladeXPositie = 25;
 	public final static int cAantalFormulesPerStelsel = 2;
 
@@ -57,8 +60,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //	private JButton[] enOfKnoppen;
 //	private boolean[] isEn;
 	
-	private int maxAantalStelsels = cVeldComponentMaxAantalFormules;
-	private int aantalRegels=1;
+	private int maxAantalStelsels = cVeldComponentMaxAantalStelsels;
+	private int aantalStelsels=1;
 	//private static Image GOEDKRUL,FOUTKRUIS;
 	private int actiefNummer;
 	
@@ -220,13 +223,16 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void zetXAsNaam(String s, boolean setState)
 	{	String oudeXAsNaam = xAsNaam;
 		xAsNaam = s;
-		for(int i=0 ; i<maxAantalStelsels ; i++)
+		System.out.println("zetXAsNaam - oudeXAsNaam=" + oudeXAsNaam);
+		System.out.println("zetXAsNaam - xAsNaam=" + xAsNaam);
+
+		for(int i=0 ; i<formuleVakken.length ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
 			String vervangSubString = vervangString.substring(2, vervangString.length() - 1);
 			vervangString = "$f" + vervangSubString.replaceAll(oudeXAsNaam, xAsNaam) + "@";
 			formuleVakken[i].formuleVak.vulVak(vervangString);
 			
-			if(functieBeginZichtbaar)
+			if(!functieBeginAanpasbaar && functieBeginZichtbaar)
 			{	vervangString = formuleVakken[i].functieBeginVak.toString();
 				vervangSubString = vervangString.substring(2, vervangString.length() - 1);
 				vervangString = "$f" + vervangSubString.replaceAll(oudeXAsNaam, xAsNaam) + "@";
@@ -239,22 +245,32 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void zetYAsNaam(String s, boolean setState)
 	{	String oudeYAsNaam = yAsNaam;
 		yAsNaam = s;
-		
-		for(int i=0 ; i<maxAantalStelsels ; i++)
+		System.out.println("zetYAsNaam - oudeYAsNaam=" + oudeYAsNaam);
+		System.out.println("zetYAsNaam - yAsNaam=" + yAsNaam);
+
+		for(int i=0 ; i<formuleVakken.length ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
 			String vervangSubString = vervangString.substring(2, vervangString.length() - 1);
 			vervangString = "$f" + vervangSubString.replaceAll(oudeYAsNaam, yAsNaam) + "@";
 			formuleVakken[i].formuleVak.vulVak(vervangString);
+			
+			if(!functieBeginAanpasbaar && functieBeginZichtbaar)
+			{	vervangString = formuleVakken[i].functieBeginVak.toString();
+				vervangSubString = vervangString.substring(2, vervangString.length() - 1);
+				vervangString = "$f" + vervangSubString.replaceAll(oudeYAsNaam, yAsNaam) + "@";
+				formuleVakken[i].functieBeginVak.vulVak(vervangString);
+			}
+
 			parseFormule(i, setState);
 		}
 	}
 	
-	public void zetFormeleFuncties(boolean b, boolean setState)
-	{	formeleFuncties = b;
-		for(int i = 0; i < maxAantalStelsels; i++)
-			zetVoorvoegsel(i);
-		grafiekComponent.updateTabelNames(geefExpNamen(), setState);	
-	}
+//	public void zetFormeleFuncties(boolean b, boolean setState)
+//	{	formeleFuncties = b;
+//		for(int i = 0; i < maxAantalStelsels; i++)
+//			zetVoorvoegsel(i);
+//		grafiekComponent.updateTabelNames(geefExpNamen(), setState);	
+//	}
 	
 //	public void zetDomeinInstelbaar(boolean b, boolean setState)
 //	{	domeinInstelbaar = b;
@@ -271,12 +287,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	{	String huidigeTekst = formuleVakken[regelnummer].formuleVak.toString();
 
 		boolean vervangen = huidigeTekst.equals("$f@") || huidigeTekst.endsWith("=@");
-		System.out.println("zetVoorvoegsel - vervangen =" + vervangen);
-		System.out.println("zetVoorvoegsel - functieBeginZichtbaar =" + functieBeginZichtbaar);
-		System.out.println("zetVoorvoegsel - functieBeginAanpasbaar =" + functieBeginAanpasbaar);
-		System.out.println("zetVoorvoegsel - formeleFuncties =" + formeleFuncties);
 		String differentiaalStr, asNaam="";
-		System.out.println("zetVoorvoegsel - soortvak "+ regelnummer  +" = " + soortVak[regelnummer]);
 		
 		if (soortVak[regelnummer]==DIFFERENTIAALX) {
 			asNaam = xAsNaam; 
@@ -299,22 +310,23 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	public void layoutVakken(boolean setState)
 	{	int hoogte = 10;
-		for(int i=0 ; i<maxAantalStelsels ; i++)
-		{	if(formuleVakken[i]!=null)
-			{	formuleVakken[i].setLocation(formuleX,hoogte);
-				int breedte = this.getWidth() - 25;
-				if(getVerticalScrollBarVisible())	
-					breedte = this.getWidth() - 40;
-				if(soortVak[i] == DIFFERENTIAALX && checkboxen != null && checkboxen[i] != null)
-				{	maakDifferentiaalVak(i);
-					
-				}
-				else if(checkboxen!=null && checkboxen[i]!=null)
-					checkboxen[i].setLocation(4,hoogte+formuleVakken[i].ashoogte-5);
+		for(int i=0 ; i<maxAantalStelsels; i++) {	
+			for (int j=0; j<cAantalFormulesPerStelsel; j++) {
+				if(formuleVakken[(i*cAantalFormulesPerStelsel)+j]!=null) {	
+//					formuleVakken[i].setLocation(formuleX,hoogte);
+//					int breedte = this.getWidth() - 25;
+//					if(getVerticalScrollBarVisible())	
+//						breedte = this.getWidth() - 40;
+					if(soortVak[i * cAantalFormulesPerStelsel] == DIFFERENTIAALX && checkboxen != null && checkboxen[i] != null) {	
+						maakDifferentiaalVak( i * cAantalFormulesPerStelsel);
+					}
+					else if(checkboxen!=null && checkboxen[i]!=null)
+						checkboxen[i].setLocation(4,hoogte+formuleVakken[i].ashoogte-5);
 				
-//				if(domeinButtons!=null && domeinButtons[i]!=null)domeinButtons[i].setLocation(breedte, hoogte+formuleVakken[i].ashoogte-5);
-//				if(i>0 && enOfKnoppen != null && enOfKnoppen[i-1] != null)enOfKnoppen[i-1].setLocation(breedte, hoogte - 15);
-				hoogte = hoogte + formuleVakken[i].getSize().height + 10;
+//					if(domeinButtons!=null && domeinButtons[i]!=null)domeinButtons[i].setLocation(breedte, hoogte+formuleVakken[i].ashoogte-5);
+//					if(i>0 && enOfKnoppen != null && enOfKnoppen[i-1] != null)enOfKnoppen[i-1].setLocation(breedte, hoogte - 15);
+					hoogte = hoogte + formuleVakken[i].getSize().height + 10;
+				}
 			}
 		}
 //		zetDomeinInstelbaar(domeinInstelbaar, setState);
@@ -326,10 +338,22 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		zetGrafiekKleuren();
 	}
 	
-	public void zetGrafiekKleuren()
-	{	if(formuleVakken != null && grafiekComponent != null)
-			for(int i=0 ; i<formuleVakken.length ; i++)
-				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
+	public void zetGrafiekKleuren() {	
+		if(formuleVakken != null && grafiekComponent != null) {
+			Color stelselColor = null;
+			int colorIndex = 0;
+			for(int i=0 ; i<formuleVakken.length ; i++) {
+				if (i % cAantalFormulesPerStelsel == 0) {
+					stelselColor = grafiekComponent.getFormuleColor(colorIndex++);
+					formuleVakken[i].setFGColor(stelselColor); // First element in stelsel -> New color
+				} else {
+					formuleVakken[i].setFGColor(stelselColor); // Copy color of predecesor
+				}
+			}
+	}
+//		if(formuleVakken != null && grafiekComponent != null)
+//			for(int i=0 ; i<formuleVakken.length ; i++)
+//				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
 		repaint();
 	}
 	
@@ -343,10 +367,10 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		}
 	}
 	
-	public void zetFunctieBeginZichtbaar(boolean b, boolean setState)
-	{	functieBeginZichtbaar = b;
-		zetFormuleRegels(maxAantalStelsels, setState);
-	}
+//	public void zetFunctieBeginZichtbaar(boolean b, boolean setState)
+//	{	functieBeginZichtbaar = b;
+//		zetFormuleRegels(maxAantalStelsels, setState);
+//	}
 	
 //	public void zetFunctieBeginAanpasbaar(boolean b, boolean setState)
 //	{	functieBeginAanpasbaar = b;
@@ -527,7 +551,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
     			}
 				if(functieBeginAanpasbaar)
 					formuleVakken[i].formuleVak.vulVak(expressieStrings[i]);
-				parseFormule(expressieStrings[i], i, true);
+				parseFormule(i, true);
 			
      			if(i>0)
 					add(formuleVakken[i],0);
@@ -552,12 +576,12 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //					else
 //						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_Of"));
 //				}
-     			aantalRegels = i+1;
+     			aantalStelsels = i+1;
 			}
 			
 		}
      	layoutVakken(true);
-     	grafiekComponent.updateTabelNames(geefExpNamen(), true);
+//     	grafiekComponent.updateTabelNames(geefExpNamen(), true);
 		
     }
 	
@@ -686,86 +710,39 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			}
 		}
 		this.maxAantalStelsels = maxAantalStelsels; 
-
-
-	} // end of zetDifferentiaalStelsels
-	
-	
-	public void zetFormuleRegels(int maxAantalFormules, boolean setState) {	
-		String[] exps = new String[maxAantalFormules];
-		for(int i = 0; i < maxAantalFormules; i++){
-			exps[i] = "$f@";
-		}	
-		for(int i = 0; formuleVakken != null && i < formuleVakken.length; i++)
-			if(formuleVakken[i] != null)
-			{	if(i < maxAantalFormules)
-				{	if(functieBeginAanpasbaar)
-					{	exps[i] = formuleVakken[i].formuleVak.toString();
-					}
-					else
-					{	
-						String s1 = formuleVakken[i].functieBeginVak.toString();
-						String s2 = formuleVakken[i].formuleVak.toString();
-						try{
-							s1 = s1.substring(0, s1.length() - 1);
-							s2 = s2.substring(2);
-						}
-						catch(Exception e){}
-						exps[i] = s1 + s2;
-					}
-				}
-				remove(formuleVakken[i]);
-			}
-		boolean[] geselecteerd = new boolean[maxAantalFormules];
-		for(int i = 0; checkboxen != null && i < checkboxen.length; i++)
-			if(checkboxen[i] != null)
-			{	if(i < geselecteerd.length)
-					geselecteerd[i] = checkboxen[i].isSelected();
-				remove(checkboxen[i]);
-			}
-//		for(int i = 0; domeinButtons != null && i < domeinButtons.length; i++)
-//			if(domeinButtons[i] != null)
-//				remove(domeinButtons[i]);
+		Color stelselColor = null;
 		
-		this.maxAantalStelsels = maxAantalFormules; 
-		
-		formuleVakken = new VergelijkingVak[maxAantalFormules];
-		for(int i=0 ; i<maxAantalFormules ; i++)
+		formuleVakken = new VergelijkingVak[cAantalFormulesPerStelsel * maxAantalStelsels];
+		for(int i=0 ; i<cAantalFormulesPerStelsel * maxAantalStelsels ; i++)
 		{	formuleVakken[i] = new VergelijkingVak(functieBeginAanpasbaar);
 			formuleVakken[i].setFont(WiskOpdr.formuleFont0);
-			formuleVakken[i].setLocation(formuleX,10 + 35*i);
+			if (i==0) {
+				formuleVakken[i].setLocation(formuleX,10);
+			} else {
+				formuleVakken[i].setLocation(formuleX,10+10*i + 41*i);
+			}
 			formuleVakken[i].setOpaque(false);
-			if(grafiekComponent != null)
-				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
-			if(functieBeginAanpasbaar)
+//			if(grafiekComponent != null) {
+//				if (i % cAantalFormulesPerStelsel == 0) {
+//					stelselColor = grafiekComponent.getFormuleColor(i);
+//					formuleVakken[i].setFGColor(stelselColor); // First element in stelsel -> New color
+//				} else {
+//					formuleVakken[i].setFGColor(stelselColor); // Copy color of predecesor
+//				}
+//			}
+			if(functieBeginAanpasbaar) {
 				formuleVakken[i].formuleVak.vulVak(exps[i]);
-//			parseFormule(exps[i], i, setState);
-			formuleVakken[i].formuleVak.addActionListener(this);
-			formuleVakken[i].formuleVak.addFocusListener(this);
-		}
-
-		
-		formuleVakken = new VergelijkingVak[maxAantalFormules];
-		for(int i=0 ; i<maxAantalFormules ; i++)
-		{	formuleVakken[i] = new VergelijkingVak(functieBeginAanpasbaar);
-			formuleVakken[i].setFont(WiskOpdr.formuleFont0);
-			formuleVakken[i].setLocation(formuleX,10 + 35*i);
-			formuleVakken[i].setOpaque(false);
-			if(grafiekComponent != null)
-				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
-			if(functieBeginAanpasbaar)
-				formuleVakken[i].formuleVak.vulVak(exps[i]);
-//			parseFormule(exps[i], i, setState);
+			}
 			formuleVakken[i].formuleVak.addActionListener(this);
 			formuleVakken[i].formuleVak.addFocusListener(this);
 		}
 		
-		if(maxAantalFormules > 0)
+		if(maxAantalStelsels > 0)
 		//if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
-		{	checkboxen = new JCheckBox[maxAantalFormules];
-			for(int i=0 ; i<maxAantalFormules ; i++)
+		{	checkboxen = new JCheckBox[maxAantalStelsels];
+			for(int i=0 ; i<maxAantalStelsels ; i++)
 			{	checkboxen[i] = new JCheckBox();
-				checkboxen[i].setBounds(4,12 + 35*i, 17, 17);
+				checkboxen[i].setBounds(4,12 + 35*i*cAantalFormulesPerStelsel, 17, 17);
 				checkboxen[i].setOpaque(false);
 				checkboxen[i].addActionListener(this);
 				if(i < geselecteerd.length)
@@ -775,59 +752,159 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			}
 		}
 
-//		domeinButtons = new DomeinButton[maxAantalFormules];
-//		for(int i=0; i < maxAantalFormules; i++)
-//		{	domeinButtons[i] = new DomeinButton();
-//			if(i < domeinStrings.length)
-//				domeinButtons[i].zetDomeinString(domeinStrings[i]);
-//			domeinButtons[i].addActionListener(this);
-//		}
-//		domeinButtons[0].setLocation(this.getWidth() - 25, 5 + formuleVakken[0].ashoogte);
-		System.out.println("4- zetFormuleRegels - soortvak 0 = " + soortVak[0]);
-		
-		for(int i = 0; i < aantalRegels; i++)
-		{	add(formuleVakken[i],0);
-			if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+		for(int i = 0; i < aantalStelsels; i++) {	
+			add(formuleVakken[cAantalFormulesPerStelsel*i],0);
+			add(formuleVakken[cAantalFormulesPerStelsel*i+1],0);
+			if(docent || (maxAantalStelsels > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 				add(checkboxen[i]);
-//			add(domeinButtons[i]);
 		}
-//		domeinButtons[0].setVisible(false);
-//		isEn = new boolean[maxAantalFormules];
-//		for(int i = 0; i<isEn.length; i++)
-//			isEn[i] = true;
-		
-//		enOfKnoppen = new JButton[maxAantalFormules];
-//		for(int i=0 ; i<maxAantalFormules ; i++)
-//		{	enOfKnoppen[i] = new JButton(GraphTool.rb.getString("enOfButton_En"));
-//			enOfKnoppen[i].setMargin(new Insets(0,0,0,0));
-//			enOfKnoppen[i].setSize(25, 20);
-//			enOfKnoppen[i].setOpaque(false);
-//			enOfKnoppen[i].addActionListener(this);
-//		}
 		
 		formuleVakken[0].setVisible(true);
-		for(int i = 0; i < formuleVakken.length; i++) //aangepast 20-1-2014; leidt dit tot problemen? Dan terugzetten naar alleen doen voor 0 en niet voor alle i.
-		{
-			if(formuleVakken[i].formuleVak.toString().equals("$f@"))
+		for(int i = 0; i < formuleVakken.length; i++) {
+			if(formuleVakken[i].formuleVak.toString().equals("$f@")) {
 				zetVoorvoegsel(i);
-			else if(formuleVakken[i].formuleVak.toString().equals("$f"+namen[i]+"(" + xAsNaam + ")=@") ||
-					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"$s"+(i+1)+"@=@")||
-					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"=@"))
-				if(!functieBeginZichtbaar)
-					formuleVakken[i].formuleVak.vulVak("$f@");
+			}
+//			else if(formuleVakken[i].formuleVak.toString().equals("$f"+namen[i]+"(" + xAsNaam + ")=@") ||
+//					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"$s"+(i+1)+"@=@")||
+//					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"=@"))
+//				if(!functieBeginZichtbaar)
+//					formuleVakken[i].formuleVak.vulVak("$f@");
 		}
 			
 		formuleVak = formuleVakken[0].formuleVak;
 		formuleVak.requestFocus();
 		actiefNummer = 0;
 		
-		if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+		if(docent || (maxAantalStelsels > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
 		{	checkboxen[0].setVisible(true);	
 			checkboxen[0].setSelected(true);
 		}
 		layoutVakken(setState);
 
-	}
+	} // end of zetDifferentiaalStelsels
+	
+	
+//	public void zetFormuleRegels(int maxAantalFormules, boolean setState) {	
+//		String[] exps = new String[maxAantalFormules];
+//		for(int i = 0; i < maxAantalFormules; i++){
+//			exps[i] = "$f@";
+//		}	
+//		for(int i = 0; formuleVakken != null && i < formuleVakken.length; i++)
+//			if(formuleVakken[i] != null)
+//			{	if(i < maxAantalFormules)
+//				{	if(functieBeginAanpasbaar)
+//					{	exps[i] = formuleVakken[i].formuleVak.toString();
+//					}
+//					else
+//					{	
+//						String s1 = formuleVakken[i].functieBeginVak.toString();
+//						String s2 = formuleVakken[i].formuleVak.toString();
+//						try{
+//							s1 = s1.substring(0, s1.length() - 1);
+//							s2 = s2.substring(2);
+//						}
+//						catch(Exception e){}
+//						exps[i] = s1 + s2;
+//					}
+//				}
+//				remove(formuleVakken[i]);
+//			}
+//		boolean[] geselecteerd = new boolean[maxAantalFormules];
+//		for(int i = 0; checkboxen != null && i < checkboxen.length; i++)
+//			if(checkboxen[i] != null)
+//			{	if(i < geselecteerd.length)
+//					geselecteerd[i] = checkboxen[i].isSelected();
+//				remove(checkboxen[i]);
+//			}
+////		for(int i = 0; domeinButtons != null && i < domeinButtons.length; i++)
+////			if(domeinButtons[i] != null)
+////				remove(domeinButtons[i]);
+//		
+//		this.maxAantalStelsels = maxAantalFormules; 
+//		
+//		formuleVakken = new VergelijkingVak[maxAantalFormules];
+//		for(int i=0 ; i<maxAantalFormules ; i++)
+//		{	formuleVakken[i] = new VergelijkingVak(functieBeginAanpasbaar);
+//			formuleVakken[i].setFont(WiskOpdr.formuleFont0);
+//			formuleVakken[i].setLocation(formuleX,10 + 35*i);
+//			formuleVakken[i].setOpaque(false);
+//			if(grafiekComponent != null)
+//				formuleVakken[i].setFGColor(grafiekComponent.getFormuleColor(i));
+//			if(functieBeginAanpasbaar)
+//				formuleVakken[i].formuleVak.vulVak(exps[i]);
+////			parseFormule(exps[i], i, setState);
+//			formuleVakken[i].formuleVak.addActionListener(this);
+//			formuleVakken[i].formuleVak.addFocusListener(this);
+//		}
+//		
+//		if(maxAantalFormules > 0)
+//		//if(docent || (maxAantalFormules > 1 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+//		{	checkboxen = new JCheckBox[maxAantalFormules];
+//			for(int i=0 ; i<maxAantalFormules ; i++)
+//			{	checkboxen[i] = new JCheckBox();
+//				checkboxen[i].setBounds(4,12 + 35*i, 17, 17);
+//				checkboxen[i].setOpaque(false);
+//				checkboxen[i].addActionListener(this);
+//				if(i < geselecteerd.length)
+//					checkboxen[i].setSelected(geselecteerd[i]);
+//				if(grafiekKleurInstelbaar)
+//					checkboxen[i].addMouseListener(this);
+//			}
+//		}
+//
+////		domeinButtons = new DomeinButton[maxAantalFormules];
+////		for(int i=0; i < maxAantalFormules; i++)
+////		{	domeinButtons[i] = new DomeinButton();
+////			if(i < domeinStrings.length)
+////				domeinButtons[i].zetDomeinString(domeinStrings[i]);
+////			domeinButtons[i].addActionListener(this);
+////		}
+////		domeinButtons[0].setLocation(this.getWidth() - 25, 5 + formuleVakken[0].ashoogte);
+//		System.out.println("4- zetFormuleRegels - soortvak 0 = " + soortVak[0]);
+//		
+//		for(int i = 0; i < aantalStelsels; i++)
+//		{	add(formuleVakken[i],0);
+//			if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+//				add(checkboxen[i]);
+////			add(domeinButtons[i]);
+//		}
+////		domeinButtons[0].setVisible(false);
+////		isEn = new boolean[maxAantalFormules];
+////		for(int i = 0; i<isEn.length; i++)
+////			isEn[i] = true;
+//		
+////		enOfKnoppen = new JButton[maxAantalFormules];
+////		for(int i=0 ; i<maxAantalFormules ; i++)
+////		{	enOfKnoppen[i] = new JButton(GraphTool.rb.getString("enOfButton_En"));
+////			enOfKnoppen[i].setMargin(new Insets(0,0,0,0));
+////			enOfKnoppen[i].setSize(25, 20);
+////			enOfKnoppen[i].setOpaque(false);
+////			enOfKnoppen[i].addActionListener(this);
+////		}
+//		
+//		formuleVakken[0].setVisible(true);
+//		for(int i = 0; i < formuleVakken.length; i++) //aangepast 20-1-2014; leidt dit tot problemen? Dan terugzetten naar alleen doen voor 0 en niet voor alle i.
+//		{
+//			if(formuleVakken[i].formuleVak.toString().equals("$f@"))
+//				zetVoorvoegsel(i);
+//			else if(formuleVakken[i].formuleVak.toString().equals("$f"+namen[i]+"(" + xAsNaam + ")=@") ||
+//					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"$s"+(i+1)+"@=@")||
+//					formuleVakken[i].formuleVak.toString().equals("$f"+yAsNaam+"=@"))
+//				if(!functieBeginZichtbaar)
+//					formuleVakken[i].formuleVak.vulVak("$f@");
+//		}
+//			
+//		formuleVak = formuleVakken[0].formuleVak;
+//		formuleVak.requestFocus();
+//		actiefNummer = 0;
+//		
+//		if(docent || (maxAantalFormules > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
+//		{	checkboxen[0].setVisible(true);	
+//			checkboxen[0].setSelected(true);
+//		}
+//		layoutVakken(setState);
+//
+//	}
 	
 	/*
 	public static void zetPlaatjes(Image gk, Image fk)
@@ -840,30 +917,30 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	{	return formuleVak;
 	}
 	
-	public Expressie geefExpressie()
-	{	FormuleParser p = new FormuleParser();
+	public Expressie geefExpressie() {	
+		FormuleParser p = new FormuleParser();
 		return formuleVak.geefExpressie();
 	}
 	
-	public String[] geefExpNamen()
-	{	String[] expNaam = new String[maxAantalStelsels];
-		for (int i = 0; i < maxAantalStelsels; i++)
-		{	expNaam[i] = geefExpNaam(i);
-		}
-		return expNaam;
-	}
+//	public String[] geefExpNamen()
+//	{	String[] expNaam = new String[maxAantalStelsels];
+//		for (int i = 0; i < maxAantalStelsels; i++)
+//		{	expNaam[i] = geefExpNaam(i);
+//		}
+//		return expNaam;
+//	}
 	
-	public String geefExpNaam(int i)
-	{	String expNaam = "";
-		if(formeleFuncties)
-			expNaam = namen[i] + "(" + xAsNaam + ")";
-		else if (aantalRegels > 1)
-			expNaam = yAsNaam + (i + 1);
-		else
-			expNaam = yAsNaam;
-	
-		return expNaam;
-	}
+//	public String geefExpNaam(int i)
+//	{	String expNaam = "";
+//		if(formeleFuncties)
+//			expNaam = namen[i] + "(" + xAsNaam + ")";
+//		else if (aantalStelsels > 1)
+//			expNaam = yAsNaam + (i + 1);
+//		else
+//			expNaam = yAsNaam;
+//	
+//		return expNaam;
+//	}
 	
 	public int getMaxAantalFuncties()
 	{
@@ -898,215 +975,243 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //		
 //		parseFormule("$f@", 0, setState);
 //	}
-	
+
 	public void parseFormule(int regelnummer, boolean setState)
-	{	//System.out.println("parseFormule(" + regelnummer + ", " + Boolean.toString(setState));
-		if(regelnummer >= formuleVakken.length)
-			return;
-		if(formuleVakken[regelnummer].functieBeginVak == null || formuleVakken[regelnummer].functieBeginVak.toString().length() == 0)
-		{	String s = formuleVakken[regelnummer].formuleVak.toString();
-			parseFormule(s, regelnummer, setState);
+	{
+		String sExpressie = formuleVakken[regelnummer].formuleVak.toString();
+		int stelselNummer = -1;
+		Expressie expressie = null;
+		String sAs = "";
+		
+		if (soortVak[regelnummer] == DIFFERENTIAALX) {
+			sAs = "X";
+			stelselNummer = regelnummer / cAantalFormulesPerStelsel;
 		}
-		else
-		{	String s1 = formuleVakken[regelnummer].functieBeginVak.toString();
-			String s2 = formuleVakken[regelnummer].formuleVak.toString();
-			try{
-				s1 = s1.substring(0, s1.length() - 1);
-				s2 = s2.substring(2);
-				String s = s1 + s2;
-				parseFormule(s, regelnummer, setState);
-			}
-			catch(Exception e){}
+		
+		if (soortVak[regelnummer] == DIFFERENTIAALY) {
+			sAs = "Y";
+			stelselNummer = (regelnummer-1) / cAantalFormulesPerStelsel;
 		}
+
+		
+		if (checkboxen[stelselNummer].isSelected()) {
+			expressie = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString(sExpressie )));
+		}
+	
+		grafiekComponent.zetVectorVeld(stelselNummer, sAs, expressie, setState);
+		
 	}
+	
+//	public void parseFormule(int regelnummer, boolean setState)
+//	{	//System.out.println("parseFormule(" + regelnummer + ", " + Boolean.toString(setState));
+//		if(regelnummer >= formuleVakken.length)
+//			return;
+//		if(formuleVakken[regelnummer].functieBeginVak == null || formuleVakken[regelnummer].functieBeginVak.toString().length() == 0)
+//		{	String s = formuleVakken[regelnummer].formuleVak.toString();
+//			parseFormule(s, regelnummer, setState);
+//		}
+//		else
+//		{	String s1 = formuleVakken[regelnummer].functieBeginVak.toString();
+//			String s2 = formuleVakken[regelnummer].formuleVak.toString();
+//			try{
+//				s1 = s1.substring(0, s1.length() - 1);
+//				s2 = s2.substring(2);
+//				String s = s1 + s2;
+//				parseFormule(s, regelnummer, setState);
+//			}
+//			catch(Exception e){}
+//		}
+//	}
+
+
 	
 	//public Vergelijking parseFormule(String s)
-	public void parseFormule(String s, int regelnummer, boolean setState)
-	{	//System.out.println("parseFormule(" + s + ", " + regelnummer + ", " + Boolean.toString(setState));
-		//In alle lijstjes met expressies het huidige regelnummer verwijderen. 
-		//Zo voorkom je dat expressies blijven staan als het type expressie verandert.
-		//Hier moet ik nog even goed naar kijken in het geval van parametrisaties, omdat je dan twee regelnummers tegelijk nodig hebt.
-		
-		//voor parametrisaties is er een aantal opties:
-		//er staat al een xparametrisatie, dan is de volgende regel ook een y-parametrisatie. Haal je die dan ook weg?
-		//in principe wel, als je een nieuwe xparametrisatie typt, dan wordt de volgende regel automatisch weer gemarkeerd als yparam.
-
-//		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
-//			domeinButtons[regelnummer].setVisible(false);
-		if(soortVak[regelnummer] == PARAMETRISATIEX)
-		{	soortVak[regelnummer] = FUNCTIE;
-			if(regelnummer < maxAantalStelsels - 1)
-				soortVak[regelnummer + 1] = FUNCTIE;
-		}
-		else if(soortVak[regelnummer] != PARAMETRISATIEY)
-			soortVak[regelnummer] = FUNCTIE;
-		
-		//isOngelijkheid[regelnummer] = false;
-		if(grafiekComponent != null)
-		{	grafiekComponent.zetOngelijkheid(regelnummer, null, true, true, false);
-			grafiekComponent.zetFunctie(regelnummer, null, "$f@", null, DEFAULTDOMEIN, true, setState, docent);
-			grafiekComponent.zetVerticaleLijn(regelnummer, null);
-		}
-		
-		//Altijd tekst ook in formuleregel zetten, zodat geparste formule 'gelijk loopt' met wat er in de regel staat.
-		if(functieBeginAanpasbaar)
-		{	formuleVakken[regelnummer].formuleVak.vulVak(s);
-		}
-		else
-		{	try{
-			String[] splitString = StringUtils.split(s, "=");
-			formuleVakken[regelnummer].formuleVak.vulVak("$f" + splitString[1] + "@");
-			}
-			catch(Exception e)
-			{ 
-				formuleVakken[regelnummer].formuleVak.vulVak(s);
-			}
-		}
-		
-		try
-		{	s = s.substring(2,s.length()-1);
-			if(s.length()==0)
-			{	return;
-			}
-			String[] vergTekens = {"=", ">", "<", "\u2264", "\u2265"};
-			int tekenGetal = 0;
-			String[] expressieStrings = null;
-			Expressie e1 = null; //nu nog niet gebruikt, maar dat komt nog wel bij impliciete functies
-			Expressie e2 = null;
-			
-			boolean split = false;
-		    for(int j=0 ; j<vergTekens.length && !split; j++)
-		    {	expressieStrings  = StringUtils.split(s,vergTekens[j]);
-		        if(expressieStrings.length==2)
-		    	{ 	
-		        	e1 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[0] + "@")));
-	    			e2 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[1] + "@")));
-	    			
-	    			if(expressieStrings[0] == null || expressieStrings[1] == null) 
-			    	{	split = false;
-			    	}
-			    	else 
-			    	{	split = true;
-			    		tekenGetal = j;
-			    	}
-	    			break;
-		    	}
-			}
-		    
-		    if(!split)
-		    {	return;
-		    }
-		    while(expressieStrings[0].endsWith(" "))
-				expressieStrings[0] = expressieStrings[0].substring(0, expressieStrings[0].length() - 1);
-		    //if(!functieBeginAanpasbaar && expressieStrings.length == 2)
-		    	//vulFunctieRegel(expressieStrings[0], expressieStrings[1], vergTekens[tekenGetal], regelnummer);
-		    if(!functieBeginAanpasbaar && expressieStrings.length == 2)
-		    {	vulFunctieRegel(expressieStrings[0], expressieStrings[1], regelnummer);
-		    }
-		   		    
-		    /* Volgens mij niet nodig: 
-		    if(expressieStrings[0] == null || expressieStrings[1] == null)
-		    {	return;
-		    }
-		    */
-		    if(tekenGetal > 0 && !ongelijkheidToegestaan) // geval ongelijkheid
-		    {	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
-		    	return;
-		    }
-		    else if(tekenGetal > 0)	
-		    {	if(expressieStrings[0].equals(xAsNaam))
-		    	{	boolean isGroterGelijk = true;
-		    		if(tekenGetal == 2 || tekenGetal == 3)
-		    			isGroterGelijk = false;
-//		    		if(checkboxen[regelnummer].isSelected())
-//		    			grafiekComponent.zetOngelijkheid(regelnummer, e2, false, isGroterGelijk, isEn[regelnummer]); 
-		    		soortVak[regelnummer] = ONGELIJKHEID;
-		    		//isOngelijkheid[regelnummer] = true;
-		    	}
-		    	else if(expressieStrings[0].equals(yAsNaam))
-		    	{	boolean isGroterGelijk = true;
-	    			if(tekenGetal == 2 || tekenGetal == 3)
-	    				isGroterGelijk = false;
-//	    			if(checkboxen[regelnummer].isSelected())
-//	    				grafiekComponent.zetOngelijkheid(regelnummer, e2, true, isGroterGelijk, isEn[regelnummer]); 
-	    			soortVak[regelnummer] = ONGELIJKHEID;
-	    			//isOngelijkheid[regelnummer] = true;
-		    	}
-		    }//let op: neemt nu ook uitdrukkingen als sin(x) mee. Zorgen dat dat soort uitdrukkingen (impliciete functies) 
-		    //er voor deze tijd al uitgefilterd zijn.
-		    else if(expressieStrings[0].equals(yAsNaam) || expressieStrings[0].endsWith("(" + xAsNaam + ")"))
-		    {	if(!functieToegestaan)
-		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
-		    		return;
-		    	}
-//		    	else
-//			    {	if(checkboxen[regelnummer].isSelected() || docent)
-//			    	{	grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
-//			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
+//	public void parseFormule(String s, int regelnummer, boolean setState)
+//	{	//System.out.println("parseFormule(" + s + ", " + regelnummer + ", " + Boolean.toString(setState));
+//		//In alle lijstjes met expressies het huidige regelnummer verwijderen. 
+//		//Zo voorkom je dat expressies blijven staan als het type expressie verandert.
+//		//Hier moet ik nog even goed naar kijken in het geval van parametrisaties, omdat je dan twee regelnummers tegelijk nodig hebt.
+//		
+//		//voor parametrisaties is er een aantal opties:
+//		//er staat al een xparametrisatie, dan is de volgende regel ook een y-parametrisatie. Haal je die dan ook weg?
+//		//in principe wel, als je een nieuwe xparametrisatie typt, dan wordt de volgende regel automatisch weer gemarkeerd als yparam.
+//
+////		if(grafiekComponent != null && grafiekComponent.typeOpdracht != 1 && regelnummer < domeinButtons.length)
+////			domeinButtons[regelnummer].setVisible(false);
+//		if(soortVak[regelnummer] == PARAMETRISATIEX)
+//		{	soortVak[regelnummer] = FUNCTIE;
+//			if(regelnummer < maxAantalStelsels - 1)
+//				soortVak[regelnummer + 1] = FUNCTIE;
+//		}
+//		else if(soortVak[regelnummer] != PARAMETRISATIEY)
+//			soortVak[regelnummer] = FUNCTIE;
+//		
+//		//isOngelijkheid[regelnummer] = false;
+//		if(grafiekComponent != null)
+//		{	grafiekComponent.zetOngelijkheid(regelnummer, null, true, true, false);
+//			grafiekComponent.zetFunctie(regelnummer, null, "$f@", null, DEFAULTDOMEIN, true, setState, docent);
+//			grafiekComponent.zetVerticaleLijn(regelnummer, null);
+//		}
+//		
+//		//Altijd tekst ook in formuleregel zetten, zodat geparste formule 'gelijk loopt' met wat er in de regel staat.
+//		if(functieBeginAanpasbaar)
+//		{	formuleVakken[regelnummer].formuleVak.vulVak(s);
+//		}
+//		else
+//		{	try{
+//			String[] splitString = StringUtils.split(s, "=");
+//			formuleVakken[regelnummer].formuleVak.vulVak("$f" + splitString[1] + "@");
+//			}
+//			catch(Exception e)
+//			{ 
+//				formuleVakken[regelnummer].formuleVak.vulVak(s);
+//			}
+//		}
+//		
+//		try
+//		{	s = s.substring(2,s.length()-1);
+//			if(s.length()==0)
+//			{	return;
+//			}
+//			String[] vergTekens = {"=", ">", "<", "\u2264", "\u2265"};
+//			int tekenGetal = 0;
+//			String[] expressieStrings = null;
+//			Expressie e1 = null; //nu nog niet gebruikt, maar dat komt nog wel bij impliciete functies
+//			Expressie e2 = null;
+//			
+//			boolean split = false;
+//		    for(int j=0 ; j<vergTekens.length && !split; j++)
+//		    {	expressieStrings  = StringUtils.split(s,vergTekens[j]);
+//		        if(expressieStrings.length==2)
+//		    	{ 	
+//		        	e1 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[0] + "@")));
+//	    			e2 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[1] + "@")));
+//	    			
+//	    			if(expressieStrings[0] == null || expressieStrings[1] == null) 
+//			    	{	split = false;
 //			    	}
-//			    } 
-		    }
-		    else if(expressieStrings[0].equals(xAsNaam))
-		    {	if(!verticaleLijnToegestaan)
-		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
-		    		return;
-		    	}
-		    	if(checkboxen[regelnummer].isSelected())
-		    		grafiekComponent.zetVerticaleLijn(regelnummer, e2);
-		    }
-		    else if(expressieStrings[0].startsWith(xAsNaam + "("))
-		    {	if(!parametrisatieToegestaan)
-		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
-		    		return;
-		    	}
-		    	if(soortVak[regelnummer] != PARAMETRISATIEX && soortVak[regelnummer] != PARAMETRISATIEY)
-		    	{	soortVak[regelnummer] = PARAMETRISATIEX;
-		    		if(regelnummer < maxAantalStelsels - 1)
-		    		{	soortVak[regelnummer + 1] = PARAMETRISATIEY;
-//		    			maakParametrisatieVak(regelnummer);
-		    		}
-		    		//layoutVakken(setState);
-		    	}
-		    	if(checkboxen[regelnummer].isSelected())
-		    	{	String variabele = "";
-		    		try{
-		    			variabele = expressieStrings[0].substring(expressieStrings[0].indexOf("(") + 1, expressieStrings[0].indexOf(")"));
-		    		}
-		    		catch(Exception e){}
-		    		grafiekComponent.zetParametrisatie(regelnummer, e2, variabele, true);
-		    	}
-		    	//maar wat moet er gebeuren/hoe moet dat eruit zien met extra regel voor y?? Ik wil het liefst dat dit in dezelfde
-		    	//formuleregel gebeurt. Andere optie is dat het wel in de volgende regel gebeurt; dan neem ik ze samen. 
-		    	//Misschien is het een idee om meer dan 9 regels mogelijk te maken, die grens is vrij willekeurig. 
-		    	//Wat gebeurt er bijvoorbeeld als ik die naar 20 leg?
-		    	//Heb ik een PARAMETRISATIEX en PARAMETRISATIEY nodig?
-		    	
-		    }
-		    else if(expressieStrings[0].startsWith(yAsNaam + "("))
-		    {
-		    	if(!parametrisatieToegestaan || soortVak[regelnummer] != PARAMETRISATIEY)
-		    	{
-		    		formuleVakken[regelnummer].formuleVak.vulVak("$F@");
-		    		return;
-		    	}
-		    	if(checkboxen[regelnummer].isSelected())
-		    	{	String variabele = "";
-		    		try{
-		    			variabele = expressieStrings[0].substring(expressieStrings[0].indexOf("(")+1, expressieStrings[0].indexOf(")"));
-		    		}
-		    		catch(Exception e){}
-		    		grafiekComponent.zetParametrisatie(regelnummer, e2, variabele, false);
-	    	
-		    		
-		    	}
-		    }
-		    else
-		    	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
-		}
-		catch(Exception e)
-		{}
-//		zetEnOfKnoppen();
-	}
+//			    	else 
+//			    	{	split = true;
+//			    		tekenGetal = j;
+//			    	}
+//	    			break;
+//		    	}
+//			}
+//		    
+//		    if(!split)
+//		    {	return;
+//		    }
+//		    while(expressieStrings[0].endsWith(" "))
+//				expressieStrings[0] = expressieStrings[0].substring(0, expressieStrings[0].length() - 1);
+//		    //if(!functieBeginAanpasbaar && expressieStrings.length == 2)
+//		    	//vulFunctieRegel(expressieStrings[0], expressieStrings[1], vergTekens[tekenGetal], regelnummer);
+//		    if(!functieBeginAanpasbaar && expressieStrings.length == 2)
+//		    {	vulFunctieRegel(expressieStrings[0], expressieStrings[1], regelnummer);
+//		    }
+//		   		    
+//		    /* Volgens mij niet nodig: 
+//		    if(expressieStrings[0] == null || expressieStrings[1] == null)
+//		    {	return;
+//		    }
+//		    */
+//		    if(tekenGetal > 0 && !ongelijkheidToegestaan) // geval ongelijkheid
+//		    {	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
+//		    	return;
+//		    }
+//		    else if(tekenGetal > 0)	
+//		    {	if(expressieStrings[0].equals(xAsNaam))
+//		    	{	boolean isGroterGelijk = true;
+//		    		if(tekenGetal == 2 || tekenGetal == 3)
+//		    			isGroterGelijk = false;
+////		    		if(checkboxen[regelnummer].isSelected())
+////		    			grafiekComponent.zetOngelijkheid(regelnummer, e2, false, isGroterGelijk, isEn[regelnummer]); 
+//		    		soortVak[regelnummer] = ONGELIJKHEID;
+//		    		//isOngelijkheid[regelnummer] = true;
+//		    	}
+//		    	else if(expressieStrings[0].equals(yAsNaam))
+//		    	{	boolean isGroterGelijk = true;
+//	    			if(tekenGetal == 2 || tekenGetal == 3)
+//	    				isGroterGelijk = false;
+////	    			if(checkboxen[regelnummer].isSelected())
+////	    				grafiekComponent.zetOngelijkheid(regelnummer, e2, true, isGroterGelijk, isEn[regelnummer]); 
+//	    			soortVak[regelnummer] = ONGELIJKHEID;
+//	    			//isOngelijkheid[regelnummer] = true;
+//		    	}
+//		    }//let op: neemt nu ook uitdrukkingen als sin(x) mee. Zorgen dat dat soort uitdrukkingen (impliciete functies) 
+//		    //er voor deze tijd al uitgefilterd zijn.
+//		    else if(expressieStrings[0].equals(yAsNaam) || expressieStrings[0].endsWith("(" + xAsNaam + ")"))
+//		    {	if(!functieToegestaan)
+//		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
+//		    		return;
+//		    	}
+////		    	else
+////			    {	if(checkboxen[regelnummer].isSelected() || docent)
+////			    	{	grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
+////			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
+////			    	}
+////			    } 
+//		    }
+//		    else if(expressieStrings[0].equals(xAsNaam))
+//		    {	if(!verticaleLijnToegestaan)
+//		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
+//		    		return;
+//		    	}
+//		    	if(checkboxen[regelnummer].isSelected())
+//		    		grafiekComponent.zetVerticaleLijn(regelnummer, e2);
+//		    }
+//		    else if(expressieStrings[0].startsWith(xAsNaam + "("))
+//		    {	if(!parametrisatieToegestaan)
+//		    	{	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
+//		    		return;
+//		    	}
+//		    	if(soortVak[regelnummer] != PARAMETRISATIEX && soortVak[regelnummer] != PARAMETRISATIEY)
+//		    	{	soortVak[regelnummer] = PARAMETRISATIEX;
+//		    		if(regelnummer < maxAantalStelsels - 1)
+//		    		{	soortVak[regelnummer + 1] = PARAMETRISATIEY;
+////		    			maakParametrisatieVak(regelnummer);
+//		    		}
+//		    		//layoutVakken(setState);
+//		    	}
+//		    	if(checkboxen[regelnummer].isSelected())
+//		    	{	String variabele = "";
+//		    		try{
+//		    			variabele = expressieStrings[0].substring(expressieStrings[0].indexOf("(") + 1, expressieStrings[0].indexOf(")"));
+//		    		}
+//		    		catch(Exception e){}
+//		    		grafiekComponent.zetParametrisatie(regelnummer, e2, variabele, true);
+//		    	}
+//		    	//maar wat moet er gebeuren/hoe moet dat eruit zien met extra regel voor y?? Ik wil het liefst dat dit in dezelfde
+//		    	//formuleregel gebeurt. Andere optie is dat het wel in de volgende regel gebeurt; dan neem ik ze samen. 
+//		    	//Misschien is het een idee om meer dan 9 regels mogelijk te maken, die grens is vrij willekeurig. 
+//		    	//Wat gebeurt er bijvoorbeeld als ik die naar 20 leg?
+//		    	//Heb ik een PARAMETRISATIEX en PARAMETRISATIEY nodig?
+//		    	
+//		    }
+//		    else if(expressieStrings[0].startsWith(yAsNaam + "("))
+//		    {
+//		    	if(!parametrisatieToegestaan || soortVak[regelnummer] != PARAMETRISATIEY)
+//		    	{
+//		    		formuleVakken[regelnummer].formuleVak.vulVak("$F@");
+//		    		return;
+//		    	}
+//		    	if(checkboxen[regelnummer].isSelected())
+//		    	{	String variabele = "";
+//		    		try{
+//		    			variabele = expressieStrings[0].substring(expressieStrings[0].indexOf("(")+1, expressieStrings[0].indexOf(")"));
+//		    		}
+//		    		catch(Exception e){}
+//		    		grafiekComponent.zetParametrisatie(regelnummer, e2, variabele, false);
+//	    	
+//		    		
+//		    	}
+//		    }
+//		    else
+//		    	formuleVakken[regelnummer].formuleVak.vulVak("$f@");
+//		}
+//		catch(Exception e)
+//		{}
+////		zetEnOfKnoppen();
+//	}
 	
 ////	public void maakParametrisatieVak(int regelnummer)
 ////	{
@@ -1133,12 +1238,12 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	
 	public void maakDifferentiaalVak(int stelselNummer)
 	{
-		soortVak[stelselNummer*2] = DIFFERENTIAALX;
 		if(stelselNummer > maxAantalStelsels - 1)
 			return;
 		
-		soortVak[stelselNummer*2 + 1] = DIFFERENTIAALY;
+		soortVak[stelselNummer*2 + 1] = DIFFERENTIAALY; // alsie dat nog niet was dan issie dat nu
 		int yPositie = formuleVakken[stelselNummer*2].getY();
+
 		checkboxen[stelselNummer].setLocation(4, yPositie + formuleVakken[stelselNummer*2].getSize().height-2);
 		AccoladeLabel accoladeLabel = new AccoladeLabel(formuleVakken[stelselNummer*2].getSize().height + 10  + formuleVakken[stelselNummer*2 + 1].getSize().height);
 		accoladeLabel.setLocation(cAccoladeXPositie, yPositie);
@@ -1167,24 +1272,24 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		formuleVakken[regelnummer].formuleVak.vulVak("$f" + deel2 + "@");
 	}
 	
-	public void maakNieuweRegel()
-	{
-		parseFormule(aantalRegels - 1, false);
-		add(formuleVakken[aantalRegels],0);
-		zetVoorvoegsel(aantalRegels);	
-		if(docent || (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))
-			add(checkboxen[aantalRegels],0);
-		else
-			checkboxen[aantalRegels].setSelected(true);
-//		add(domeinButtons[aantalRegels],0);
-//		domeinButtons[aantalRegels].setVisible(false);
-//		add(enOfKnoppen[aantalRegels - 1], 0);
-//		enOfKnoppen[aantalRegels - 1].setVisible(false);
-		layoutVakken(false);
-		formuleVakken[aantalRegels].formuleVak.requestFocus();
-		aantalRegels++;
-		produceAction("regel meer");
-	}
+//	public void maakNieuweRegel()
+//	{
+//		parseFormule(aantalStelsels - 1, false);
+//		add(formuleVakken[aantalStelsels],0);
+//		zetVoorvoegsel(aantalStelsels);	
+//		if(docent || (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))
+//			add(checkboxen[aantalStelsels],0);
+//		else
+//			checkboxen[aantalStelsels].setSelected(true);
+////		add(domeinButtons[aantalRegels],0);
+////		domeinButtons[aantalRegels].setVisible(false);
+////		add(enOfKnoppen[aantalRegels - 1], 0);
+////		enOfKnoppen[aantalRegels - 1].setVisible(false);
+//		layoutVakken(false);
+//		formuleVakken[aantalStelsels].formuleVak.requestFocus();
+//		aantalStelsels++;
+//		produceAction("regel meer");
+//	}
 	
 //	public void zetVergelijking(int regelNr, String vergelijkingString)
 //	{
@@ -1285,8 +1390,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //		return c;
 //	}
 	
-	public void actionPerformed(ActionEvent e)
-	{	
+	public void actionPerformed(ActionEvent e) {
+
 //		if (e.getSource() == nieuweRegelKnop && aantalRegels < maxAantalFormules)
 //		{	maakNieuweRegel();
 //			return;
@@ -1316,30 +1421,34 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //			return;
 //		}
 		
-		for(int i=0; i<maxAantalStelsels; i++)
-		{	if(e.getSource()==formuleVakken[i].formuleVak &&  (e.getActionCommand().equals("ingevuld") || 
-					  e.getActionCommand().equals("focuslost")))
-			{				
-				parseFormule(i, false);
-				if(checkboxen[i].isSelected())
-				{	layoutVakken(false);
-					produceAction("ingevuld");
+		for(int i=0; i<maxAantalStelsels; i++) {
+			for (int j=0; j<cAantalFormulesPerStelsel; j++) {
+				if(e.getSource()==formuleVakken[(i*cAantalFormulesPerStelsel)+j].formuleVak &&  (e.getActionCommand().equals("ingevuld") || 
+						e.getActionCommand().equals("focuslost") || e.getActionCommand().equals("zetmaat"))) {				
+					if(checkboxen[i].isSelected()) {	
+						parseFormule((i*cAantalFormulesPerStelsel)+j, false);
+						layoutVakken(false);
+						produceAction("ingevuld");
+					}
+					break;
 				}
-				break;
 			}
 			
-			
 		}
-		for(int i=0 ; i<maxAantalStelsels ; i++)
-		{	if(e.getSource()==formuleVakken[i].formuleVak && 
-			   e.getActionCommand().equals("focus"))
-			{	if(formuleVak != formuleVakken[i].formuleVak)
-				{	formuleVak.deSelect();
-					Expressie exp = formuleVak.geefExpressie();
-					actiefNummer = i;
-					formuleVak = formuleVakken[i].formuleVak;
+		for(int i=0 ; i<maxAantalStelsels ; i++) {	
+			for (int j=0; j<cAantalFormulesPerStelsel; j++) {
+				if(e.getSource()==formuleVakken[(i*cAantalFormulesPerStelsel)+j].formuleVak && 
+						e.getActionCommand().equals("focus")) {	
+					if(formuleVak != formuleVakken[(i*cAantalFormulesPerStelsel)+j].formuleVak) {	
+						formuleVak.deSelect();
+						parseFormule(actiefNummer, false);
+					}
+
+					actiefNummer = (i*cAantalFormulesPerStelsel)+j;
+					formuleVak = formuleVakken[(i*cAantalFormulesPerStelsel)+j].formuleVak;
+					
+					break;
 				}
-				break;
 			}
 			
 		}
@@ -1358,15 +1467,16 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		if (checkboxen != null ) { 
 			for(int i=0 ; i<maxAantalStelsels ; i++) {	
 
-				if(e.getSource()==checkboxen[i])
-				{	parseFormule(i, false);
+				if(e.getSource()==checkboxen[i]) {	
+					parseFormule(i*cAantalFormulesPerStelsel, false);
+					parseFormule((i*cAantalFormulesPerStelsel)+1, false);
 					if(checkboxen[i].isSelected())
 					{	produceAction("ingevuld");
 					}
 					else 
 					{	produceAction("verwijderd");
 					}
-					if(checkboxen[actiefNummer].isSelected())
+					if(checkboxen[actiefNummer].isSelected()) 
 					{	parseFormule(actiefNummer, false);
 						produceAction("ingevuld");	
 					}	
@@ -1392,7 +1502,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void mousePressed(MouseEvent e) {	
 		
 		if (checkboxen != null) {
-			for(int i = 0; i < aantalRegels; i++) {
+			for(int i = 0; i < aantalStelsels; i++) {
 				if(e.getSource().equals(checkboxen[i]) && (e.getModifiers() & e.BUTTON1_MASK) == 0) {
 					Color kleur = JColorChooser.showDialog(this, GraphTool.rb.getString("kleurKiezer"), grafiekComponent.getFormuleColor(i));//new Color(255,255,180));
 					grafiekComponent.setColor(i,  kleur, false);
@@ -1401,32 +1511,34 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			}
 		}
 		
-		for(int i = 0; i < aantalRegels; i++)
-		{	int yMin = formuleVakken[i].getLocation().y;
-			int yMax = formuleVakken[i].getLocation().y + 
-					   formuleVakken[i].getSize().height+10;
-			if(e.getY() > yMin && e.getY() < yMax)
-			{	formuleVak.deSelect();
-				parseFormule(actiefNummer, false);
-				if(checkboxen[actiefNummer].isSelected())
-				{	produceAction("ingevuld");		
-				}	
-				actiefNummer = i;
-				formuleVak = formuleVakken[i].formuleVak;
-				formuleVak.requestFocus();
-				formuleVak.zetOpEind();
-				break;
+		for(int i = 0; i < aantalStelsels; i++) {	
+			for (int j=0; j < cAantalFormulesPerStelsel; j++) {
+				int yMin = formuleVakken[(i*cAantalFormulesPerStelsel) + j].getLocation().y;
+				int yMax = formuleVakken[(i*cAantalFormulesPerStelsel) + j].getLocation().y + 
+							formuleVakken[(i*cAantalFormulesPerStelsel) + j].getSize().height+10;
+				if(e.getY() > yMin && e.getY() < yMax) {	
+					formuleVak.deSelect();
+					parseFormule(actiefNummer, false);
+					if(checkboxen[((int) actiefNummer/cAantalFormulesPerStelsel)].isSelected()) {	
+						produceAction("ingevuld");		
+					}	
+					actiefNummer = (i*cAantalFormulesPerStelsel) + j;
+					formuleVak = formuleVakken[(i*cAantalFormulesPerStelsel) + j].formuleVak;
+					formuleVak.requestFocus();
+					formuleVak.zetOpEind();
+					break;
+				}
 			}
 		}
 	}
 	
-	public void focusGained(FocusEvent e)
-    {   
+	public void focusGained(FocusEvent e) {
 	}
-	public void focusLost(FocusEvent e)
-	{   parseFormule(actiefNummer, false);
+	
+	public void focusLost(FocusEvent e) {   
+		parseFormule(actiefNummer, false);
 		
-		if(checkboxen[actiefNummer].isSelected())
+		if(checkboxen[(int) actiefNummer / cAantalFormulesPerStelsel].isSelected())
 		{	produceAction("ingevuld");		
 		}
 		produceAction("focusLost");

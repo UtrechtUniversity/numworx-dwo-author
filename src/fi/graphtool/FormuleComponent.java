@@ -886,9 +886,10 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		    {	expressieStrings  = StringUtils.split(s,vergTekens[j]);
 		        if(expressieStrings.length==2)
 		    	{ 	
+		        	
 		        	e1 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[0] + "@")));
 	    			e2 = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f" + expressieStrings[1] + "@")));
-	    			
+
 	    			if(expressieStrings[0] == null || expressieStrings[1] == null) 
 			    	{	split = false;
 			    	}
@@ -948,7 +949,11 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		    	}
 		    	else
 			    {	if(checkboxen[regelnummer].isSelected() || docent)
-			    	{	grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
+			    	{	
+ 						System.out.println("Formule Component - ZetFunctie:: e1 = " + e1);
+ 						System.out.println("Formule Component - ZetFunctie:: e2 = " + e2);
+
+			    		grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
 			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
 			    	}
 			    } 
