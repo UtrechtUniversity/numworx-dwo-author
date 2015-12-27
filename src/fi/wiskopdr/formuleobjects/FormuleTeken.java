@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.RenderingHints.Key;
 import java.awt.event.*;
 import java.util.Vector;
+
 import javax.swing.*;
 
 import fi.wiskopdr.WiskOpdr;
@@ -109,7 +110,7 @@ public class FormuleTeken extends FormuleElement
 	public void setFont(Font f)
 	{	if(Character.isLetter(character))
 		{	boolean bold = f.getStyle()==Font.BOLD;
-			if(functieTeken)
+			if(functieTeken && !FormuleParser.isWoordFormule())
 			{	if(bold)super.setFont(new Font(f.getName(),Font.BOLD,f.getSize()));
 				else super.setFont(new Font(f.getName(),Font.PLAIN,f.getSize()));
 			}
