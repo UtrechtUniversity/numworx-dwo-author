@@ -489,8 +489,11 @@ public class FormuleParser
 		
 		//vervangt /-6 door /(-6)
 		index = 0;
-		while(index >-1)
-		{	index = s.indexOf("/-");
+		int check = 1000;
+		while(index >-1 && check>0)
+		{	
+			check--;
+			index = s.indexOf("/-");
 			
 			int tel = index+2;
 			while(tel<s.length() && Character.isDigit(s.charAt(tel)))
@@ -499,10 +502,11 @@ public class FormuleParser
 			
 			if(index >-1 && tel>index+2)s = s.substring(0,index) + "/(" + s.substring(index+1,tel) + ")" + s.substring(tel);
 			
-			else if(index >-1 && index+2<s.length() && Character.isLetter(s.charAt(index+2))) 
+			else if(index >-1 && index+2<s.length()) // && (Character.isLetter(s.charAt(index+2))
 			{	tel = index+3;
 				s = s.substring(0,index) + "(-1)/" + s.substring(index+2);
 			}	
+			
 		}
 		
 		//een breuk constructie als "2((1)/(2))" wordt vervangen door 2+1/2
