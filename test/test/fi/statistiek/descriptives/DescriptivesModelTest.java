@@ -130,7 +130,43 @@ public class DescriptivesModelTest
 	@Test
 	public void testNumberClassFrequency()
 	{
-		fail("Not yet implemented");
+		int[][] expected = this.getExpectedNumberClassFrequency(); 
+		
+		int[][] actual = this.model.numberClassFrequency();
+		
+		int numberOfColumnClasses = 1; // columnIndex = 1 (gewicht)
+		int numberOfSplitClasses = 2; // split = geslacht
+		for (int i = 0; i < numberOfSplitClasses; i++)
+		{
+			for (int j = 0; j < numberOfColumnClasses; j++)
+			{
+				assertEquals("", expected[i][j], actual[i][j]); // frequency
+				assertEquals("", expected[i][j + 1], actual[i][j + 1], delta); // selection frequency
+			}
+		}
+	}
+
+	private int[][] getExpectedNumberClassFrequency()
+	{
+		int numberOfColumnClasses = 1; // columnIndex = 1 (gewicht)
+		int numberOfSplitClasses = 2; // split = geslacht
+
+		int[][] expected = new int[numberOfSplitClasses][]; // split = geslacht
+		
+		int[][] frequencies = {{3}, {7}}; // m, v
+		int[][] freqSelection = {{0}, {3}}; // m, v
+		
+		for (int i = 0; i < numberOfSplitClasses; i++)
+		{
+			expected[i] = new int[numberOfColumnClasses * 2];
+			for (int j = 0; j < numberOfColumnClasses; j++)
+			{
+				expected[i][j] = frequencies[i][j];
+				expected[i][j + 1] = freqSelection[i][j];
+			}
+		}
+		
+		return expected;
 	}
 
 	@Test
@@ -272,7 +308,10 @@ public class DescriptivesModelTest
 	@Test
 	public void testGetColumnSplitIndex()
 	{
-		fail("Not yet implemented");
+		int expected = 5;
+		int actual = this.model.getColumnSplitIndex();
+		
+		assertEquals("", expected, actual);
 	}
 
 	@Test
@@ -475,9 +514,13 @@ public class DescriptivesModelTest
 	}
 
 	@Test
-	public void testGetColumnMedian()
+	public void testGetColumnMedianSplit1Selection()
 	{
-		fail("Not yet implemented");
+		Double expected = 52.0;
+		Double actual = Statistiek.round(this.model.getColumnMedian(
+			1, 1, true), 2); // columnIndex = 1 (gewicht), split 1, selection
+		
+		assertEquals("", expected, actual);
 	}
 
 }
