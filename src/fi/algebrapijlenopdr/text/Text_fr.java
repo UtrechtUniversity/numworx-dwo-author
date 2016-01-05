@@ -20,8 +20,8 @@ public class Text_fr extends java.util.ListResourceBundle
 				{ "popup1Label6" , "Cacher flèches algébriques" },
 				{ "popup2Label1" , "Select" },
 				{ "popup2Label2" , "Copy to clipboard" },
-				{ "terugKnopLabel" , "Retour" },
-				{ "heenKnopLabel" , "Aller" },
+				{ "terugKnopLabel" , "Gauche" },
+				{ "heenKnopLabel" , "Droit" },
 				{ "kopieerKnopLabel" , " " }
         };
 }
