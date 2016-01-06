@@ -716,7 +716,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 				formuleVakken[i].formuleVak.vulVak(exps[i]);
 			}
 			formuleVakken[i].formuleVak.addActionListener(this);
-			formuleVakken[i].formuleVak.addFocusListener(this);
+//			formuleVakken[i].formuleVak.addFocusListener(this);
+			formuleVakken[i].formuleVak.geefActieveRegel().addFocusListener(this);
 		}
 		
 		if(maxAantalStelsels > 0)
@@ -1525,7 +1526,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		if(checkboxen[(int) actiefNummer / cAantalFormulesPerStelsel].isSelected())
 		{	produceAction("ingevuld");		
 		}
-		produceAction("focusLost");
+//		produceAction("focusLost");
 	}
 	
 	//ActionProducer
