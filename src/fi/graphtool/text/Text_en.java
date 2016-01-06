@@ -76,10 +76,24 @@ public class Text_en extends java.util.ListResourceBundle
             {	"GTIEP_dubbeleNaam", "The name for this parameter is already in use."},
             {	"GTIEP_waarschuwing", "Warning"},
             
-            {	"GTIEP_veldComponentAan", "Field editor"},
-            {	"GTIEP_veldGrafiekType", "Field plot type"},
-            {	"GTIEP_veldEditorOpties", "Options field editor"},
-            {	"GTIEP_veldComponentHoogte", "Height field editor"},
+            {	"GTIEP_veldComponentAan", "Field graph editor"},
+            {	"GTIEP_veldGrafiekType", "Field graph plot type"},
+            {	"GTIEP_veldGrafiekType_Quiver", "Quiver"}, 
+            {	"GTIEP_veldGrafiekType_Streamline", "Streamline"}, 
+
+            {	"GTIEP_veldEditorOpties", "Options field graph editor"},
+            {	"GTIEP_veldComponentHoogte", "Height field graph editor"},
+            
+            {	"GTIEP_veldGrafiek_PijlGrootteModus", "Arrow size mode"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_RealValue", "Real value"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_FixedSize", "Fixed size (pixels)"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_ScaledSize", "Scaled Size"}, 
+            
+            {	"GTIEP_veldGrafiek_PijlGrootte", "Arrow size"}, 
+            {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Arrow scale factor"}, 
+
+            {	"GTIEP_veldGrafiek_GroterGridStartPunten", "Startpoints on larger grid"}, 
+
             {	"GTIEP_fout_stapKleinerGelijk0", "The stepsize needs to be greater than zero."},
             {	"GTIEP_fout_minGroterGelijkMax", "The minimum needs to be smaller than the maximum."},
             {	"GTIEP_fout_maxKleinerGelijkMin", "The maximum needs to be greater than the minimum."},

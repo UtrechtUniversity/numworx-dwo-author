@@ -105,7 +105,13 @@ MouseListener, MouseMotionListener, CBookAware {
 	private FormuleComponent formuleComponent;
 	private VeldComponent veldComponent;
 	private int formuleComponentHoogte = 120;
+	VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+	VeldComponent.FieldGraphArrowSizeMode veldPijlGrootteModus = VeldComponent.cDefault_VeldPijlGrootteModus;
+	int veldPijlGroottePixels = VeldComponent.cDefault_PijlGroottePixels;
+	double veldPijlSchaalfactor = VeldComponent.cDefault_PijlSchaalFactor;
 	private int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
+	boolean veldLargerGridStartPoints = VeldComponent.cDefault_VeldLargerGridStartPoints;
+	
 	TekenComponent tekenComponent;
 	private TabelComponent tabelComponent;
 	private JPanel zoomBalk;
@@ -450,12 +456,11 @@ MouseListener, MouseMotionListener, CBookAware {
 		formuleComponent.zetGrafiekComponent(this);
 		formuleComponent.addActionListener(this);
 		
-		veldComponent = new VeldComponent(true);
+		veldComponent = new VeldComponent(true, this);
 		veldComponent.setSize(veldb, veldComponentHoogte);
 		veldComponent.zetRandverhoging(false);
 		add(veldComponent);
 		veldComponent.zetDifferentiaalStelsels(VeldComponent.cVeldComponentMaxAantalStelsels, false);
-		veldComponent.zetGrafiekComponent(this);
 		veldComponent.addActionListener(this);
 		
 		tabelComponent = new TabelComponent(veldb, false);
@@ -881,12 +886,24 @@ MouseListener, MouseMotionListener, CBookAware {
 	{
 		if(h!=null)
 		{
+			if(h.containsKey("veldGrafiekType"))
+				veldGrafiekType = VeldComponent.FieldGraphType.values()[ ((Integer)h.get("veldGrafiekType")).intValue() ];
+			if(h.containsKey("veldPijlGrootteModus"))
+				veldPijlGrootteModus = VeldComponent.FieldGraphArrowSizeMode.values()[ ((Integer)h.get("veldPijlGrootteModus")).intValue() ];
+			if(h.containsKey("veldPijlGroottePixels"))
+				veldPijlGroottePixels = ((Integer)h.get("veldPijlGroottePixels")).intValue();
+			if(h.containsKey("veldPijlSchaalfactor"))
+				veldPijlSchaalfactor = ((Double)h.get("veldPijlSchaalfactor")).doubleValue();
+			if(h.containsKey("veldLargerGridStartPoints"))
+				veldLargerGridStartPoints = ((Boolean)h.get("veldLargerGridStartPoints")).booleanValue();
+
 			if(h.containsKey("veldComponentHoogte"))
 				veldComponentHoogte = ((Integer)h.get("veldComponentHoogte")).intValue();
 		}
 		
 		veldComponent.setSize(veldComponent.getWidth(), veldComponentHoogte);
 		plaatsComponenten();		
+		repaint();
 	}
 
 	
@@ -1186,6 +1203,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		{	zetTekenComponent(tekenComponentAan);
 			zetTabelComponent(tabelComponentAan, setState);
 			zetFormuleComponent(formuleComponentAan, setState);
+			zetVeldComponent(veldComponentAan, setState);
 		}
 		else if (typeOpdracht == VINDFORMULEBIJGRAFIEK)
 		{	formuleComponent.setSize(getSize().width-5, 100);
@@ -2195,6 +2213,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		tekenComponent.setState(h);
 		
 		formuleComponent.setState(h, null, null, false);
+		veldComponent.setState(h, null, null, false);
 		
 		setActiveIndex(activeIndex, true);
 		//if(schuifParameters != null)
@@ -2286,6 +2305,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		String xAsNaam = "x";
 		String yAsNaam = "y";
 		boolean formuleComponentAan = true;
+		boolean veldComponentAan = false;
 		boolean tekenComponentAan = false;
 		boolean tabelComponentAan = false;
 		boolean assenZichtbaar = true;
@@ -2334,6 +2354,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean verticaleLijnToegestaan = true;
 		boolean parametrisatieToegestaan = true;
 		
+		VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+		VeldComponent.FieldGraphArrowSizeMode veldPijlGrootteModus = VeldComponent.cDefault_VeldPijlGrootteModus;
+		int veldPijlGroottePixels = VeldComponent.cDefault_PijlGroottePixels;
+		double veldPijlSchaalfactor = VeldComponent.cDefault_PijlSchaalFactor;
+		int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
+		boolean veldLargerGridStartPoints = VeldComponent.cDefault_VeldLargerGridStartPoints;
+		
 		beginxDocent = this.beginxDocent;
 		beginyDocent = this.beginyDocent;
 		beginx = this.beginx;
@@ -2357,6 +2384,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		xAsNaam = this.xAsNaam;
 		yAsNaam = this.yAsNaam;
 		formuleComponentAan = this.formuleComponentAan;
+		veldComponentAan = this.veldComponentAan;
 		tekenComponentAan = this.tekenComponentAan;
 		tabelComponentAan = this.tabelComponentAan;
 		assenZichtbaar = this.assenZichtbaar;
@@ -2407,6 +2435,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		verticaleLijnToegestaan = this.verticaleLijnToegestaan;
 		parametrisatieToegestaan = this.parametrisatieToegestaan;
 		
+		veldGrafiekType = this.veldGrafiekType;
+		veldPijlGrootteModus = this.veldPijlGrootteModus;
+		veldPijlGroottePixels = this.veldPijlGroottePixels;
+		veldPijlSchaalfactor = this.veldPijlSchaalfactor;
+		veldLargerGridStartPoints = this.veldLargerGridStartPoints;
+		veldComponentHoogte = this.veldComponentHoogte;
+		
 		Hashtable h = new Hashtable();
 		h = tekenComponent.getState();
 		Hashtable h1 = formuleComponent.getState();
@@ -2419,6 +2454,12 @@ MouseListener, MouseMotionListener, CBookAware {
 		for(Enumeration e = h2.keys(); e.hasMoreElements();)
 		{	Object aKey = e.nextElement();
 			Object aValue = h2.get(aKey);
+			h.put(aKey, aValue);
+		}
+		Hashtable h3 = veldComponent.getState();
+		for (Enumeration e = h3.keys(); e.hasMoreElements();)
+		{	Object aKey = e.nextElement();
+			Object aValue = h3.get(aKey);
 			h.put(aKey, aValue);
 		}
 	
@@ -2459,6 +2500,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("xAsNaam", xAsNaam);
 		h.put("yAsNaam", yAsNaam);
 		h.put("formuleComponentAan", new Boolean(formuleComponentAan));
+		h.put("veldComponentAan", new Boolean(veldComponentAan));
 		h.put("tekenComponentAan", new Boolean(tekenComponentAan));
 		h.put("tabelComponentAan", new Boolean(tabelComponentAan));
 		h.put("assenZichtbaar", new Boolean(assenZichtbaar));
@@ -2507,6 +2549,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		h.put("implicieteFunctieToegestaan", new Boolean(implicieteFunctieToegestaan));
 		h.put("verticaleLijnToegestaan", new Boolean(verticaleLijnToegestaan));
 		h.put("parametrisatieToegestaan", new Boolean(parametrisatieToegestaan));
+		
+		h.put("veldGrafiekType", new Integer(veldGrafiekType.ordinal()));
+		h.put("veldPijlGrootteModus", new Integer(veldPijlGrootteModus.ordinal()));
+		h.put("veldPijlGroottePixels", new Integer(veldPijlGroottePixels));
+		h.put("veldPijlSchaalfactor", new Double(veldPijlSchaalfactor));
+		h.put("veldLargerGridStartPoints", new Boolean(veldLargerGridStartPoints));
+		h.put("veldComponentHoogte", new Integer(veldComponentHoogte));
 		
 				//Opdrachten
 		int typeOpdracht = GEENOPDRACHT;
@@ -2656,6 +2705,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		String xAsNaam = "x";
 		String yAsNaam = "y";
 		boolean formuleComponentAan = true;
+		boolean veldComponentAan = false;
 		boolean tekenComponentAan = false;
 		boolean tabelComponentAan = false;
 		boolean assenZichtbaar = true;
@@ -2702,6 +2752,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean implicieteFunctieToegestaan = true;
 		boolean verticaleLijnToegestaan = true;
 		boolean parametrisatieToegestaan = true;
+		
+		VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+		VeldComponent.FieldGraphArrowSizeMode veldPijlGrootteModus = VeldComponent.cDefault_VeldPijlGrootteModus;
+		int veldPijlGroottePixels = VeldComponent.cDefault_PijlGroottePixels;
+		double veldPijlSchaalfactor = VeldComponent.cDefault_PijlSchaalFactor;
+		int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
+		boolean veldLargerGridStartPoints = VeldComponent.cDefault_VeldLargerGridStartPoints;
 		
 		if(h.containsKey("beginxDocent"))
 	    	beginxDocent = ((Double)h.get("beginxDocent")).doubleValue();
@@ -2782,6 +2839,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			yAsNaam = (String) h.get("yAsNaam");
 		if (h.containsKey("formuleComponentAan")) 
 			formuleComponentAan = ((Boolean) h.get("formuleComponentAan")).booleanValue();
+		if (h.containsKey("veldComponentAan")) 
+			veldComponentAan = ((Boolean) h.get("veldComponentAan")).booleanValue();
 		if (h.containsKey("tekenComponentAan")) 
 			tekenComponentAan = ((Boolean) h.get("tekenComponentAan")).booleanValue();
 		if (h.containsKey("tabelComponentAan")) 
@@ -2875,6 +2934,19 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(h.containsKey("parametrisatieToegestaan"))
 			parametrisatieToegestaan = ((Boolean)h.get("parametrisatieToegestaan")).booleanValue();
 		
+		if(h.containsKey("veldGrafiekType"))
+			veldGrafiekType = VeldComponent.FieldGraphType.values()[ ((Integer)h.get("veldGrafiekType")).intValue() ];
+		if(h.containsKey("veldPijlGrootteModus"))
+			veldPijlGrootteModus = VeldComponent.FieldGraphArrowSizeMode.values()[ ((Integer)h.get("veldPijlGrootteModus")).intValue() ];
+		if(h.containsKey("veldPijlGroottePixels"))
+			veldPijlGroottePixels = ((Integer)h.get("veldPijlGroottePixels")).intValue();
+		if(h.containsKey("veldPijlSchaalfactor"))
+			veldPijlSchaalfactor = ((Double)h.get("veldPijlSchaalfactor")).doubleValue();
+		if(h.containsKey("veldLargerGridStartPoints"))
+			veldLargerGridStartPoints = ((Boolean)h.get("veldLargerGridStartPoints")).booleanValue();
+		if(h.containsKey("veldComponentHoogte"))
+			veldComponentHoogte = ((Integer)h.get("veldComponentHoogte")).intValue();
+		
 		this.beginxDocent = beginxDocent;
 		this.beginyDocent = beginyDocent;
     	this.beginx = beginx;
@@ -2919,6 +2991,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.xAsNaam = xAsNaam;
 		this.yAsNaam = yAsNaam;
 		this.formuleComponentAan = formuleComponentAan;
+		this.veldComponentAan = veldComponentAan;
 		this.tekenComponentAan = tekenComponentAan;
 		this.tabelComponentAan = tabelComponentAan;
 		this.assenZichtbaar = assenZichtbaar;
@@ -2962,6 +3035,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.implicieteFunctieToegestaan = implicieteFunctieToegestaan;
 		this.verticaleLijnToegestaan = verticaleLijnToegestaan;
 		this.parametrisatieToegestaan = parametrisatieToegestaan;
+		
+		this.veldGrafiekType = veldGrafiekType;
+		this.veldPijlGrootteModus = veldPijlGrootteModus;
+		this.veldPijlGroottePixels = veldPijlGroottePixels;
+		this.veldPijlSchaalfactor = veldPijlSchaalfactor;
+		this.veldComponentHoogte = veldComponentHoogte;
+		this.veldLargerGridStartPoints = veldLargerGridStartPoints;
 		
 		zetXAsNaam(xAsNaam, true);
 		zetYAsNaam(yAsNaam, true);
@@ -3237,6 +3317,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				
 		tekenComponent.setState(h);
 		formuleComponent.setState(h, randomVars, randomValues, false);
+		veldComponent.setState(h, randomVars, randomValues, false);
 			
 		setActiveIndex(activeIndex, true);
 		if(schuifParameters != null)
@@ -3301,6 +3382,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		String xAsNaam = "x";
 		String yAsNaam = "y";
 		boolean formuleComponentAan = true;
+		boolean veldComponentAan = true;
 		boolean tekenComponentAan = false;
 		boolean tabelComponentAan = false;
 		boolean assenZichtbaar = true;
@@ -3347,6 +3429,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean implicieteFunctieToegestaan = true;
 		boolean verticaleLijnToegestaan = true;
 		boolean parametrisatieToegestaan = true;
+		
+		VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
+		VeldComponent.FieldGraphArrowSizeMode veldPijlGrootteModus = VeldComponent.cDefault_VeldPijlGrootteModus;
+		int veldPijlGroottePixels = VeldComponent.cDefault_PijlGroottePixels;
+		double veldPijlSchaalfactor = VeldComponent.cDefault_PijlSchaalFactor;
+		int veldComponentHoogte = VeldComponent.cDefault_VeldComponentHoogte;
+		boolean veldLargerGridStartPoints = VeldComponent.cDefault_VeldLargerGridStartPoints;
 		
 		if(h.containsKey("beginxDocent"))
 	    	beginxDocent = ((Double)h.get("beginxDocent")).doubleValue();
@@ -3428,6 +3517,8 @@ MouseListener, MouseMotionListener, CBookAware {
 			yAsNaam = (String) h.get("yAsNaam");
 		if (h.containsKey("formuleComponentAan")) 
 			formuleComponentAan = ((Boolean) h.get("formuleComponentAan")).booleanValue();
+		if (h.containsKey("veldComponentAan")) 
+			veldComponentAan = ((Boolean) h.get("veldComponentAan")).booleanValue();
 		if (h.containsKey("tekenComponentAan")) 
 			tekenComponentAan = ((Boolean) h.get("tekenComponentAan")).booleanValue();
 		if (h.containsKey("tabelComponentAan")) 
@@ -3521,6 +3612,18 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(h.containsKey("parametrisatieToegestaan"))
 			parametrisatieToegestaan = ((Boolean)h.get("parametrisatieToegestaan")).booleanValue();
 		
+		if(h.containsKey("veldGrafiekType"))
+			veldGrafiekType = VeldComponent.FieldGraphType.values()[ ((Integer)h.get("veldGrafiekType")).intValue() ];
+		if(h.containsKey("veldPijlGrootteModus"))
+			veldPijlGrootteModus = VeldComponent.FieldGraphArrowSizeMode.values()[ ((Integer)h.get("veldPijlGrootteModus")).intValue() ];
+		if(h.containsKey("veldPijlGroottePixels"))
+			veldPijlGroottePixels = ((Integer)h.get("veldPijlGroottePixels")).intValue();
+		if(h.containsKey("veldPijlSchaalfactor"))
+			veldPijlSchaalfactor = ((Double)h.get("veldPijlSchaalfactor")).doubleValue();
+		if(h.containsKey("veldLargerGridStartPoints"))
+			veldLargerGridStartPoints = ((Boolean)h.get("veldLargerGridStartPoints")).booleanValue();
+		if(h.containsKey("veldComponentHoogte"))
+			veldComponentHoogte = ((Integer)h.get("veldComponentHoogte")).intValue();
 		
 		this.beginxDocent = beginxDocent;
 		this.beginyDocent = beginyDocent;
@@ -3565,6 +3668,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.xAsNaam = xAsNaam;
 		this.yAsNaam = yAsNaam;
 		this.formuleComponentAan = formuleComponentAan;
+		this.veldComponentAan = veldComponentAan;
 		this.tekenComponentAan = tekenComponentAan;
 		this.tabelComponentAan = tabelComponentAan;
 		this.assenZichtbaar = assenZichtbaar;
@@ -3609,6 +3713,13 @@ MouseListener, MouseMotionListener, CBookAware {
 		this.implicieteFunctieToegestaan = implicieteFunctieToegestaan;
 		this.verticaleLijnToegestaan = verticaleLijnToegestaan;
 		this.parametrisatieToegestaan = parametrisatieToegestaan;
+		
+		this.veldGrafiekType = veldGrafiekType;
+		this.veldPijlGrootteModus = veldPijlGrootteModus;
+		this.veldPijlGroottePixels = veldPijlGroottePixels;
+		this.veldPijlSchaalfactor = veldPijlSchaalfactor;
+		this.veldComponentHoogte = veldComponentHoogte;
+		this.veldLargerGridStartPoints = veldLargerGridStartPoints;
 		
 		zetXAsNaam(xAsNaam, true);
 		zetYAsNaam(yAsNaam, true);
@@ -3767,6 +3878,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		tekenComponent.setState(h);
 		formuleComponent.setState(h, null, null, false);
+		veldComponent.setState(h, null, null, false);
 			
 		setActiveIndex(activeIndex, true);
 		if(schuifParameters != null)

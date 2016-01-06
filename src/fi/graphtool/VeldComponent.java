@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -37,16 +38,20 @@ import fi.wiskopdr.WiskOpdr;
 public class VeldComponent extends FormuleEditor implements FocusListener, MouseListener {
 	
 	public enum FieldGraphType {QUIVER, STREAMLINE};
-	public enum FieldGraphArrowSizeType { REALVALUE, FIXEDSIZE, SCALEDSIZE }	
+	public enum FieldGraphArrowSizeMode { REALVALUE, FIXEDSIZE, SCALEDSIZE }	
 	
 	/* component defaults & contstants */
 	public final static int cVeldComponentMaxAantalStelsels = 1;
-//	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver", "Streamline" };
-	public final static String	cVeldGrafiekTypeStrings[] = { "Quiver" };
+	public static ArrayList<String> cVeldGrafiekTypeStrings = new ArrayList<String>();
+	public static ArrayList<String> cVeldGrafiekPijlGrootteModusStrings = new ArrayList<String>();	
 
 	public final static int cDefault_VeldComponentHoogte = 150;
+	public final static double cDefault_PijlSchaalFactor = 0.2;
+	public final static int cDefault_PijlGroottePixels = 12;
+	
 	public final static FieldGraphType cDefault_VeldGrafiekType = FieldGraphType.QUIVER;
-	public final static FieldGraphArrowSizeType cDefault_VeldPijlGrootteType = FieldGraphArrowSizeType.REALVALUE;
+	public final static FieldGraphArrowSizeMode cDefault_VeldPijlGrootteModus = FieldGraphArrowSizeMode.REALVALUE;
+	public final static boolean cDefault_VeldLargerGridStartPoints = false;
 	public final static int cAccoladeXPositie = 25;
 	public final static int cAantalFormulesPerStelsel = 2;
 
@@ -103,9 +108,22 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public static DecimalFormat df;
 	
 	
-	public VeldComponent(boolean b)
+	public VeldComponent(boolean b, GraphToolInteractiePanel gc)
 	{	super(b);
+	
+		zetGrafiekComponent(gc);
 		docent = false;
+		
+		if (cVeldGrafiekTypeStrings.size()<1) {
+			cVeldGrafiekTypeStrings.add(GraphTool.rb.getString("GTIEP_veldGrafiekType_Quiver"));
+//			cVeldGrafiekTypeStrings.add(GraphTool.rb.getString("GTIEP_veldGrafiekType_Streamline"));
+		}
+		
+		if (cVeldGrafiekPijlGrootteModusStrings.size()<1) {
+			cVeldGrafiekPijlGrootteModusStrings.add(GraphTool.rb.getString("GTIEP_veldGrafiek_PijlGrootteModus_RealValue"));
+			cVeldGrafiekPijlGrootteModusStrings.add(GraphTool.rb.getString("GTIEP_veldGrafiek_PijlGrootteModus_FixedSize"));
+			cVeldGrafiekPijlGrootteModusStrings.add(GraphTool.rb.getString("GTIEP_veldGrafiek_PijlGrootteModus_ScaledSize"));
+		}
 	
 		dfs = new DecimalFormatSymbols();
 		if(WiskOpdr.language.toString().equals("nl")) dfs.setDecimalSeparator(',');
@@ -333,7 +351,7 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 		repaint();
 	}
 	
-	public void zetGrafiekComponent(GraphToolInteractiePanel gc)
+	private void zetGrafiekComponent(GraphToolInteractiePanel gc)
 	{	grafiekComponent = gc;
 		zetGrafiekKleuren();
 	}
@@ -341,10 +359,12 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void zetGrafiekKleuren() {	
 		if(formuleVakken != null && grafiekComponent != null) {
 			Color stelselColor = null;
-			int colorIndex = 0;
+//			int colorIndex = 0;
 			for(int i=0 ; i<formuleVakken.length ; i++) {
 				if (i % cAantalFormulesPerStelsel == 0) {
-					stelselColor = grafiekComponent.getFormuleColor(colorIndex++);
+					// stelselColor = grafiekComponent.getFormuleColor(colorIndex++);
+					// For now - all is black
+					stelselColor = Color.black;
 					formuleVakken[i].setFGColor(stelselColor); // First element in stelsel -> New color
 				} else {
 					formuleVakken[i].setFGColor(stelselColor); // Copy color of predecesor
@@ -441,144 +461,106 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 //		
 //	}
 	
-	public Hashtable getState()
-	{	String[] expressieStrings = null;
-		boolean[] geselecteerd = null;
-//		String[][] domeinStrings = null;
-//		boolean[] isEn = null;
-		expressieStrings = new String[maxAantalStelsels];
-		geselecteerd = new boolean[maxAantalStelsels];
-//		isEn = new boolean[maxAantalFormules];
-//		domeinStrings = this.domeinStrings;
-		int teller = 0;
-		for(int i=0 ; i<maxAantalStelsels ; i++)
-		{	if(functieBeginAanpasbaar)
-				expressieStrings[i] = formuleVakken[i].formuleVak.toString();
-			else
-			{	String s1 = formuleVakken[i].functieBeginVak.toString();
-				String s2 = formuleVakken[i].formuleVak.toString();
-				try{
-					s1 = s1.substring(0, s1.length() - 1);
-					s2 = s2.substring(2);
+	public Hashtable getState() {	
+		String[] veldGrafiekExpressieStrings = null;
+		boolean[] veldGrafiekGeselecteerd = null;
+		
+		veldGrafiekExpressieStrings = new String[maxAantalStelsels * cAantalFormulesPerStelsel];
+		veldGrafiekGeselecteerd = new boolean[maxAantalStelsels];
+		
+		for(int i=0 ; i<maxAantalStelsels ; i++) {	
+			for (int j=0; j<cAantalFormulesPerStelsel; j++) {
+				if(functieBeginAanpasbaar) {
+					veldGrafiekExpressieStrings[i * cAantalFormulesPerStelsel + j] = formuleVakken[i * cAantalFormulesPerStelsel + j].formuleVak.toString();
+				} else {
+//					String s1 = formuleVakken[i * cAantalFormulesPerStelsel + j].functieBeginVak.toString();
+					String s1 = "";
+					String s2 = formuleVakken[i * cAantalFormulesPerStelsel + j].formuleVak.toString();
+					try{
+						s1 = s1.substring(0, s1.length() - 1);
+						s2 = s2.substring(2);
+					}
+					catch(Exception e){}
+					veldGrafiekExpressieStrings[i * cAantalFormulesPerStelsel + j] = s1 + s2;
 				}
-				catch(Exception e){}
-				expressieStrings[i] = s1 + s2;
+				if(veldGrafiekExpressieStrings[i * cAantalFormulesPerStelsel + j].endsWith("=@"))
+					veldGrafiekExpressieStrings[i * cAantalFormulesPerStelsel + j] = "$f@";
+				veldGrafiekGeselecteerd[i] = checkboxen[i].isSelected();
 			}
-			if(expressieStrings[i].endsWith("=@"))
-				expressieStrings[i] = "$f@";
-			geselecteerd[i] = checkboxen[i].isSelected();
-//			isEn[i] = this.isEn[i];
-		}		
+		}
 		Hashtable h = new Hashtable();
-	    h.put("expressieStrings", expressieStrings);
-		h.put("geselecteerd", geselecteerd);
-//	    h.put("domeinStrings", domeinStrings);
-//	    h.put("isEn", isEn);
+	    h.put("veldGrafiekExpressieStrings", veldGrafiekExpressieStrings);
+		h.put("veldGrafiekGeselecteerd", veldGrafiekGeselecteerd);
+
+		for (int i=0; i<veldGrafiekExpressieStrings.length; i++) { 
+			System.out.println("veld::Get::veldGrafiekExpressieStrings[" + i + "]=" + veldGrafiekExpressieStrings[i]);
+		}
+		for (int i=0; i<veldGrafiekGeselecteerd.length; i++) { 
+			System.out.println("veld::Get::veldGrafiekGeselecteerd[" + i + "]=" + veldGrafiekGeselecteerd[i]);
+		}
+
 	    return h;
 	}
 	
 	public void setState(Hashtable h, String[] randomVars, Hashtable randomValues, boolean docent)
-    {	String[] expressieStrings = null;
-		boolean[] geselecteerd = null;
-    	String[][] domeinStrings = null;
-    	boolean[] isEn = null;
+    {	String[] veldGrafiekExpressieStrings = null;
+		boolean[] veldGrafiekGeselecteerd = null;
     	
-    	if(docent)
-    	{	if(h.containsKey("docentExpressieStrings")) 
-    			expressieStrings = GraphToolInteractiePanel.toStringArray(h.get("docentExpressieStrings"));
-    		if(h.containsKey("docentGeselecteerd")) 
-    			geselecteerd = (boolean[])h.get("docentGeselecteerd");
-    		if(h.containsKey("docentDomeinStrings"))
-    			domeinStrings = (String[][])h.get("docentDomeinStrings");
-    		if(h.containsKey("docentIsEn")) 
-        		isEn = (boolean[])h.get("docentIsEn");
-        	
+    	if(h.containsKey("veldGrafiekExpressieStrings")) 
+    		veldGrafiekExpressieStrings = GraphToolInteractiePanel.toStringArray(h.get("veldGrafiekExpressieStrings"));
+   		if(h.containsKey("veldGrafiekGeselecteerd")) 
+   			veldGrafiekGeselecteerd = GraphToolInteractiePanel.toBooleanArray(h.get("veldGrafiekGeselecteerd"));
+   		
+		for (int i=0; i<veldGrafiekExpressieStrings.length; i++) { 
+			System.out.println("veld::Set::veldGrafiekExpressieStrings[" + i + "]=" + veldGrafiekExpressieStrings[i]);
+		}
+		for (int i=0; i<veldGrafiekGeselecteerd.length; i++) { 
+			System.out.println("veld::Set::veldGrafiekGeselecteerd[" + i + "]=" + veldGrafiekGeselecteerd[i]);
+		}
+
+    	if (veldGrafiekExpressieStrings==null) {	
+    		return;
     	}
-    	else
-    	{  	if(h.containsKey("expressieStrings")) 
-    			expressieStrings = GraphToolInteractiePanel.toStringArray(h.get("expressieStrings"));
-    		if(h.containsKey("geselecteerd")) 
-    			geselecteerd = GraphToolInteractiePanel.toBooleanArray(h.get("geselecteerd"));
-    		if(h.containsKey("domeinStrings"))
-    			domeinStrings = GraphToolInteractiePanel.toStringArrayArray(h.get("domeinStrings"));
-    		if(h.containsKey("isEn")) 
-        		isEn = GraphToolInteractiePanel.toBooleanArray(h.get("isEn"));
-        }
     	
-    	if(expressieStrings==null) 
-    	{	return;
-    	}
-//    	this.domeinStrings = domeinStrings;
-//    	if(domeinStrings != null)
-//    		domeinen = new double[domeinStrings.length][2];
-//     	for(int i=0 ; i<domeinStrings.length; i++)
-//		{	
-//     		if(domeinStrings != null && i < domeinStrings.length && i < domeinButtons.length)
-//     		{	if(!domeinStrings[i].equals("$f@"))
-//    			{	if(randomVars != null)
-//    				{	try
-//						{	domeinStrings[i][0] = FormuleParser.randomizeString(domeinStrings[i][0],randomVars,randomValues);
-//						}
-//						catch(Exception e)
-//						{	domeinStrings[i][0] = "$f???@";
-//							this.zetRandomFout(true);
-//						}
-//						try
-//						{	domeinStrings[i][1] = FormuleParser.randomizeString(domeinStrings[i][1],randomVars,randomValues);
-//						}
-//						catch(Exception e)
-//						{	domeinStrings[i][1] = "$f???@";
-//							this.zetRandomFout(true);
-//						}
-//    				}
-//    				zetDomein(domeinStrings[i], i);
-//    			}
-//     			domeinButtons[i].zetDomeinString(domeinStrings[i]);
-//     		}
-//		}
-//     	if(docent)
-//     		//grafiekComponent.zetDocentDomeinen(domeinen);
-//     		grafiekComponent.zetDocentDomeinen(domeinStrings);
-     	for(int i = 0; i < expressieStrings.length; i++)	
-     	{	if(!expressieStrings[i].equals("$f@") && !(i > 0 && expressieStrings[i].endsWith("=@") && docent))
-			{	if(randomVars != null)
+     	for(int i = 0; i < veldGrafiekExpressieStrings.length; i++)	 {	
+     		if(!veldGrafiekExpressieStrings[i].equals("$f@") && !(i > 0 && veldGrafiekExpressieStrings[i].endsWith("=@") && docent)) {	
+     			if(randomVars != null)
      			try			
-    			{	expressieStrings[i] = FormuleParser.randomizeString(expressieStrings[i],randomVars,randomValues);
+    			{	veldGrafiekExpressieStrings[i] = FormuleParser.randomizeString(veldGrafiekExpressieStrings[i],randomVars,randomValues);
     			}
     			catch(Exception e)
-    			{	expressieStrings[i] = "$f???@";
+    			{	veldGrafiekExpressieStrings[i] = "$f???@";
     				this.zetRandomFout(true);
     			}
-				if(functieBeginAanpasbaar)
-					formuleVakken[i].formuleVak.vulVak(expressieStrings[i]);
+//				if(functieBeginAanpasbaar)
+				formuleVakken[i].formuleVak.vulVak(veldGrafiekExpressieStrings[i]);
 				parseFormule(i, true);
 			
-     			if(i>0)
-					add(formuleVakken[i],0);
-				formuleVakken[i].setVisible(true);
-				if(geselecteerd!=null)
-					checkboxen[i].setSelected(geselecteerd[i]);
-				if(docent || (maxAantalStelsels > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT)))
-				{	//System.out.println("hier visible gezet? " + i);
+//     			if(i>0)
+//					add(formuleVakken[i],0);
+			}
+			formuleVakken[i].setVisible(true);
+
+     	}
+		aantalStelsels = veldGrafiekExpressieStrings.length / cAantalFormulesPerStelsel;
+     	
+    	if(veldGrafiekGeselecteerd==null) 
+    	{	return;
+    	}
+
+     	for(int i = 0; i < veldGrafiekGeselecteerd.length; i++)	 {	
+     	
+				checkboxen[i].setSelected(veldGrafiekGeselecteerd[i]);
+				if(docent || (maxAantalStelsels > 0 && (grafiekComponent == null || grafiekComponent.typeOpdracht == GraphToolInteractiePanel.GEENOPDRACHT))) {	
+					//System.out.println("hier visible gezet? " + i);
 					add(checkboxen[i],0);
 					//checkboxen[i].setVisible(true);
-				
 				}
-//				add(domeinButtons[i], 0);
-//				domeinButtons[i].setVisible(false);
-//				this.isEn[i] = isEn[i];
-				if(geselecteerd[i]) 
-     				parseFormule(i, true);
-//				if(i>0)
-//				{	add(enOfKnoppen[i-1],0);
-//					if(isEn[i-1])
-//						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_En"));
-//					else
-//						enOfKnoppen[i-1].setText(GraphTool.rb.getString("enOfButton_Of"));
-//				}
-     			aantalStelsels = i+1;
-			}
-			
+				if(veldGrafiekGeselecteerd[i]) {
+					for (int j=0; j<cAantalFormulesPerStelsel; j++ ) {
+						parseFormule(i*cAantalFormulesPerStelsel+j, true);
+					}
+				}
 		}
      	layoutVakken(true);
 //     	grafiekComponent.updateTabelNames(geefExpNamen(), true);
@@ -780,6 +762,8 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			checkboxen[0].setSelected(true);
 		}
 		layoutVakken(setState);
+		
+		zetGrafiekKleuren();
 
 	} // end of zetDifferentiaalStelsels
 	

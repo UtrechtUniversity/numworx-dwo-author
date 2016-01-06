@@ -1401,6 +1401,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		formuleComponentCB.setSelected(formuleComponentAan);
 		
 		veldComponentCB.setSelected(veldComponentAan);
+		veldEditorOptiesButton.setVisible(veldComponentAan);
 		tekenComponentCB.setSelected(tekenComponentAan);
 		tabelComponentCB.setSelected(tabelComponentAan);
 		assenZichtbaarCB.setSelected(assenZichtbaar);
@@ -1421,6 +1422,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		yPositiefCB.setSelected(yPositief);
 		xAsLogCB.setSelected(xAsLog);
 		yAsLogCB.setSelected(yAsLog);
+		
+		asManualDefCB.setSelected(manualScalingX && manualScalingY);
 		
 		asDefXMinTF.setEnabled(manualScalingX); // also enable/disable the input field
 		asDefXMaxTF.setEnabled(manualScalingX);
@@ -1484,7 +1487,19 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			formuleOpties.put("parametrisatieToegestaan", h.get("parametrisatieToegestaan"));
 		
 		formuleEditorOptiesButton.setOptions(formuleOpties);
-		veldEditorOptiesButton.setOptions(formuleOpties);
+		
+		Hashtable veldOpties = new Hashtable();
+		if(h.containsKey("veldGrafiekType"))
+			veldOpties.put("veldGrafiekType", h.get("veldGrafiekType"));
+		if(h.containsKey("veldPijlGrootteModus"))
+			veldOpties.put("veldPijlGrootteModus", h.get("veldPijlGrootteModus"));
+		if(h.containsKey("veldPijlGroottePixels"))
+			veldOpties.put("veldPijlGroottePixels", h.get("veldPijlGroottePixels"));
+		if(h.containsKey("veldPijlSchaalfactor"))
+			veldOpties.put("veldPijlSchaalfactor", h.get("veldPijlSchaalfactor"));
+		if(h.containsKey("veldComponentHoogte"))
+			veldOpties.put("veldComponentHoogte", h.get("veldComponentHoogte"));
+		veldEditorOptiesButton.setOptions(veldOpties);
 
 		interactiePanel.setEditState(h);
 		docentTabelComponent.zetXAsNaam(xAsNaam);

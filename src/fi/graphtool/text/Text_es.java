@@ -77,8 +77,22 @@ public class Text_es extends java.util.ListResourceBundle
             {	"GTIEP_fout_minGroterGelijkMax", "The minimum needs to be smaller than the maximum."},
             {	"GTIEP_fout_maxKleinerGelijkMin", "The maximum needs to be greater than the minimum."},
             {	"GTIEP_fout_geenGetal", "The input needs to be a number."},
+            
+            {	"GTIEP_veldComponentAan", "Field graph editor"},
+            {	"GTIEP_veldGrafiekType", "Field graph plot type"},
+            {	"GTIEP_veldGrafiekType_Quiver", "Quiver"}, 
+            {	"GTIEP_veldGrafiekType_Streamline", "Streamline"}, 
 
-
+            {	"GTIEP_veldEditorOpties", "Options field graph editor"},
+            {	"GTIEP_veldComponentHoogte", "Height field graph editor"},
+            
+            {	"GTIEP_veldGrafiek_PijlGrootteModus", "Arrow size mode"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_RealValue", "Real value"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_FixedSize", "Fixed size (pixels)"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_ScaledSize", "Scaled Size"}, 
+            
+            {	"GTIEP_veldGrafiek_PijlGrootte", "Arrow size"}, 
+            {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Arrow scale factor"}, 
             
             {	"Opdr_kiesOpdracht", "Choose the task type"},
             {	"Opdr_Opdracht1", "Find the formula(s) for the given graph(s)"},

@@ -494,8 +494,8 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
     			{	expressieStrings[i] = "$f???@";
     				this.zetRandomFout(true);
     			}
-				if(functieBeginAanpasbaar)
-					formuleVakken[i].formuleVak.vulVak(expressieStrings[i]);
+//				if(functieBeginAanpasbaar)
+				formuleVakken[i].formuleVak.vulVak(expressieStrings[i]);
 				parseFormule(expressieStrings[i], i, true);
 			
      			if(i>0)

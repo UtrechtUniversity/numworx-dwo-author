@@ -185,7 +185,7 @@ class GrafiekVeld extends JComponent{
 	}	
 */
 	
-	private Point tekenVector(Graphics2D g, Point vectorStartScherm, double maxLengte, boolean fixedSize, boolean tekenPijlpunt) {
+	private Point tekenVector(Graphics2D g, Point vectorStartScherm, boolean tekenPijlpunt) {
 		double vectorStartXWaarde = pixelsXtoValue(vectorStartScherm.getX()); 
 		double vectorStartYWaarde = pixelsYtoValue(vectorStartScherm.getY());
 		
@@ -196,16 +196,18 @@ class GrafiekVeld extends JComponent{
 				
 	    Vector2d vectorScherm = new Vector2d(valueXtoPixels(vectorEindXWaarde)-vectorStartScherm.getX(), valueYtoPixels(vectorEindYWaarde)-vectorStartScherm.getY());
 
-		if ( maxLengte > 0 && vectorScherm.length() > 0) {
-			//Resize vector
-			if ( (fixedSize) || (vectorScherm.length() > maxLengte) ) {
-				vectorScherm.normalize();
-				vectorScherm.scale(maxLengte);
-			} 
-		} 
-		else {
-			vectorScherm.scale(0.2);
-		}
+	    if (gtip.veldPijlGrootteModus == VeldComponent.FieldGraphArrowSizeMode.FIXEDSIZE) {
+	    	if ( gtip.veldPijlGroottePixels > 0 && vectorScherm.length() > 0) {
+	    		vectorScherm.normalize();
+				vectorScherm.scale(gtip.veldPijlGroottePixels);
+	    	}
+	    } else {
+		    if (gtip.veldPijlGrootteModus == VeldComponent.FieldGraphArrowSizeMode.SCALEDSIZE) {
+		    	if ( gtip.veldPijlSchaalfactor > 0 && vectorScherm.length() > 0) {
+		    		vectorScherm.scale(gtip.veldPijlSchaalfactor);
+		    	}		    	
+		    }
+	    }
 
 		Point vectorEindScherm = new Point();
 		vectorEindScherm.setLocation(vectorStartScherm.getX() + vectorScherm.x, vectorStartScherm.getY() + vectorScherm.y);
@@ -611,45 +613,46 @@ class GrafiekVeld extends JComponent{
 			}		
 		}
 		
-		if (gtip.assenZichtbaar)
-		{
-//			if(bx>1 && bx<breedte) {
-//			g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
-//			g.drawLine(bx,0,bx,maxHoogteLijn);
-//		}
+		if (gtip.assenZichtbaar) {
 			g.setColor(Color.black);
-			// assen moeten immer op het scherm blijven
-			if (bx<=1) {
-				g.drawLine(0,0,0,maxHoogteLijn);
-				g.drawLine(1,0,1,maxHoogteLijn);				
-			} 
-			else { // bx >1
-				if (bx<breedte) { //(bx>1 && bx<breedte)
-					g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
-					g.drawLine(bx,0,bx,maxHoogteLijn);
-				}
-				else { //bx >=breedte
-					g.drawLine(breedte-2,0,breedte-2,maxHoogteLijn);
-					g.drawLine(breedte-1,0,breedte-1,maxHoogteLijn);
-				}
+
+			if(bx>1 && bx<breedte) {
+				g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
+				g.drawLine(bx,0,bx,maxHoogteLijn);
 			}
-			if (by<=0) {// by<=0
-				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-2,breedte,hoogte-2);
-				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-1,breedte,hoogte-1);
+			if(by>0 && by<hoogte) {	
+				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
+				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
 			}
-			else { // by>0
-				if (by<hoogte) { // (by>0 && by<hoogte)
-					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
-					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
-				} 
-				else { // by>=hoogte
-					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),1,breedte,1);
-					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),0,breedte,0);
-				}
-			}
-//			if(by>0 && by<hoogte) {	
-//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
-//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
+
+//			// Variant :: assen moeten immer op het scherm blijven - Voorlopig weer uit!
+//			if (bx<=1) {
+//				g.drawLine(0,0,0,maxHoogteLijn);
+//				g.drawLine(1,0,1,maxHoogteLijn);				
+//			} 
+//			else { // bx >1
+//				if (bx<breedte) { //(bx>1 && bx<breedte)
+//					g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
+//					g.drawLine(bx,0,bx,maxHoogteLijn);
+//				}
+//				else { //bx >=breedte
+//					g.drawLine(breedte-2,0,breedte-2,maxHoogteLijn);
+//					g.drawLine(breedte-1,0,breedte-1,maxHoogteLijn);
+//				}
+//			}
+//			if (by<=0) {// by<=0
+//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-2,breedte,hoogte-2);
+//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-1,breedte,hoogte-1);
+//			}
+//			else { // by>0
+//				if (by<hoogte) { // (by>0 && by<hoogte)
+//					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
+//					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
+//				} 
+//				else { // by>=hoogte
+//					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),1,breedte,1);
+//					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),0,breedte,0);
+//				}
 //			}
 			g.setFont(new Font ("SansSerif",Font.ITALIC,10 ));
 			g.drawString("O",bx-11,hoogte-by+10);
@@ -1018,6 +1021,7 @@ class GrafiekVeld extends JComponent{
 //		System.out.println("GrafiekVeld :: VeldFuncties Y = " + gtip.veldFuncties[0][1]);
 
 		if ( (gtip.veldFuncties[0][0] != null) && (gtip.veldFuncties[0][1] != null) ) { // TODO - criterium
+			g.setColor(Color.black);
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
 			for(int i=imin ; i<imax ; i++) { // x-as aflopen
@@ -1033,10 +1037,11 @@ class GrafiekVeld extends JComponent{
 //						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), 12, true, true);
 //						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), 12, true, true);
 
-					if ((!gtip.roosterGrof) || ((i%2==0) && (j%2==0))) {
+
+					if ((!gtip.veldLargerGridStartPoints) || ((i%2==0) && (j%2==0))) {
 //						if ((i==2) && (j==2)) {
 //						calculateStream(new Point2D.Double(vectorStartXScreen, vectorStartYScreen), i, j,  fieldData, gtip.veldFuncties[0][0], gtip.veldFuncties[0][1]);
-						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), -1, false, true);
+						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), true);
 //						}
 
 					}
