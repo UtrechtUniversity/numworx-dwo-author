@@ -950,9 +950,6 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		    	else
 			    {	if(checkboxen[regelnummer].isSelected() || docent)
 			    	{	
- 						System.out.println("Formule Component - ZetFunctie:: e1 = " + e1);
- 						System.out.println("Formule Component - ZetFunctie:: e2 = " + e2);
-
 			    		grafiekComponent.zetFunctie(regelnummer, e2, "$f" + expressieStrings[1] +"@", expressieStrings[0], domeinen[regelnummer], true, setState, docent);
 			    		domeinButtons[regelnummer].setVisible(domeinInstelbaar);
 			    	}
