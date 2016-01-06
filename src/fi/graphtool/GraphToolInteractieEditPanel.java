@@ -68,13 +68,14 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private int height;
 	
 	//Tools-panel
-	private JCheckBox formuleComponentCB, tekenComponentCB, tabelComponentCB,
+	private JCheckBox formuleComponentCB, veldComponentCB, tekenComponentCB, tabelComponentCB,
 	  assenZichtbaarCB, roosterZichtbaarCB, roosterXCB, roosterYCB, roosterGrofCB, schaalZichtbaarCB, schaalXCB, schaalYCB,
 	  piLijnenZichtbaarCB, zoomOptieCB, traceOptieCB, dragOptieCB, 
 	  zoomInTabelCB, tabelAlsTekenToolCB, xPositiefCB, 
 	  yPositiefCB, xAsLogCB, yAsLogCB, xVarEditableCB, yVarEditableCB, 
 	  snapToGridPointsCB, krommeZonderExtrapolatieCB, krommeMetExtrapolatieCB; 
 	private FormuleEditorOptiesButton formuleEditorOptiesButton;
+	private VeldEditorOptiesButton veldEditorOptiesButton;
 	
 	private JLabel xAsLabel, yAsLabel, tekenGrafiekNauwkeurigheidLabel;
 	private JTextField xAsNaamTF, yAsNaamTF, tekenGrafiekNauwkeurigheidTF;
@@ -83,7 +84,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private String yAsNaam = "y";
 	private int tekenGrafiekNauwkeurigheid = 5;
 
-	private boolean formuleComponentAan, tekenComponentAan, tabelComponentAan,
+	private boolean formuleComponentAan, veldComponentAan, tekenComponentAan, tabelComponentAan,
 		assenZichtbaar, roosterZichtbaar, roosterX, roosterY, roosterGrof, schaalZichtbaar, schaalX, schaalY,
 		piLijnenZichtbaar, zoomOptie, traceOptie, dragOptie, formeleFuncties, 
 		zoomInTabel, tabelAlsTekenTool, xPositief, yPositief, xAsLog, yAsLog,
@@ -207,6 +208,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			
 		//Defaults voor het tools-panel
 		formuleComponentAan = true;
+		veldComponentAan = false;
 		tekenComponentAan = false;
 		tabelComponentAan = false;
 		assenZichtbaar = true;
@@ -557,7 +559,20 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		formuleEditorOptiesButton.setBounds(currentX, currentY, width, height);
 		formuleEditorOptiesButton.setFont(theFont);
 		formuleEditorOptiesButton.addActionListener(this);
+		formuleEditorOptiesButton.setVisible(formuleComponentAan);
 		toolsPanel.add(formuleEditorOptiesButton);
+		currentY += height + offset;
+		
+		veldComponentCB = 
+				maakCheckBox(GraphTool.rb.getString("GTIEP_veldComponentAan"), currentX, currentY, width, height, veldComponentAan, toolsPanel);
+		currentY += height + offset;
+
+		veldEditorOptiesButton = new VeldEditorOptiesButton(this);
+		veldEditorOptiesButton.setBounds(currentX, currentY, width, height);
+		veldEditorOptiesButton.setFont(theFont);
+		veldEditorOptiesButton.addActionListener(this);
+		veldEditorOptiesButton.setVisible(veldComponentAan);
+		toolsPanel.add(veldEditorOptiesButton);
 		
 		typeOpdracht = GEENOPDRACHT;
 		
@@ -800,6 +815,12 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		interactiePanel.zetFormuleEditorOpties(h, setState);
 	}
 	
+	public void zetVeldEditorOpties(boolean setState)
+	{
+		Hashtable h = veldEditorOptiesButton.getOptions();
+		interactiePanel.zetVeldEditorOpties(h, setState);
+	}
+	
 	private void zetOpdrachtKeuze(int keuze, boolean setState)
 	{	
 		int oudeKeuze = typeOpdracht;
@@ -838,11 +859,13 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			tekenComponentCB.setEnabled(true);
 			tabelComponentCB.setEnabled(true);
 			formuleComponentCB.setEnabled(true);
+			veldComponentCB.setEnabled(true);
 			tabelAlsTekenToolCB.setEnabled(true);
 			if(!tabelAlsTekenToolCB.isSelected())
 				zoomInTabelCB.setEnabled(true);
-			if(!setState)
-			{	formuleComponentAan = true;
+			if(!setState) {	
+				formuleComponentAan = true;
+				veldComponentAan = false;
 				tekenComponentAan = false;
 				tabelComponentAan = false;
 				zoomInTabel = true;
@@ -850,6 +873,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			}
 
 			formuleComponentCB.setSelected(formuleComponentAan);
+			veldComponentCB.setSelected(veldComponentAan);
 			tekenComponentCB.setSelected(tekenComponentAan);
 			tabelComponentCB.setSelected(tabelComponentAan);
 			zoomInTabelCB.setSelected(zoomInTabel);
@@ -878,6 +902,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		tekenComponentCB.setEnabled(false);
 		tabelComponentCB.setEnabled(false);
 		formuleComponentCB.setEnabled(false);
+		veldComponentCB.setEnabled(false);
 		zoomInTabelCB.setEnabled(false);
 		tabelAlsTekenToolCB.setEnabled(false);
 		
@@ -1251,6 +1276,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			yAsNaam = (String) h.get("yAsNaam");
 		if (h.containsKey("formuleComponentAan")) 
 			formuleComponentAan = ((Boolean) h.get("formuleComponentAan")).booleanValue();
+		if (h.containsKey("veldComponentAan")) 
+			veldComponentAan = ((Boolean) h.get("veldComponentAan")).booleanValue();
 		if (h.containsKey("tekenComponentAan")) 
 			tekenComponentAan = ((Boolean) h.get("tekenComponentAan")).booleanValue();
 		if (h.containsKey("tabelComponentAan")) 
@@ -1372,6 +1399,9 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
 
 		formuleComponentCB.setSelected(formuleComponentAan);
+		
+		veldComponentCB.setSelected(veldComponentAan);
+		veldEditorOptiesButton.setVisible(veldComponentAan);
 		tekenComponentCB.setSelected(tekenComponentAan);
 		tabelComponentCB.setSelected(tabelComponentAan);
 		assenZichtbaarCB.setSelected(assenZichtbaar);
@@ -1392,6 +1422,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		yPositiefCB.setSelected(yPositief);
 		xAsLogCB.setSelected(xAsLog);
 		yAsLogCB.setSelected(yAsLog);
+		
+		asManualDefCB.setSelected(manualScalingX && manualScalingY);
 		
 		asDefXMinTF.setEnabled(manualScalingX); // also enable/disable the input field
 		asDefXMaxTF.setEnabled(manualScalingX);
@@ -1455,7 +1487,19 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			formuleOpties.put("parametrisatieToegestaan", h.get("parametrisatieToegestaan"));
 		
 		formuleEditorOptiesButton.setOptions(formuleOpties);
-		System.out.println("setEditState :: interactiePanel.setEditState(h);");
+		
+		Hashtable veldOpties = new Hashtable();
+		if(h.containsKey("veldGrafiekType"))
+			veldOpties.put("veldGrafiekType", h.get("veldGrafiekType"));
+		if(h.containsKey("veldPijlGrootteModus"))
+			veldOpties.put("veldPijlGrootteModus", h.get("veldPijlGrootteModus"));
+		if(h.containsKey("veldPijlGroottePixels"))
+			veldOpties.put("veldPijlGroottePixels", h.get("veldPijlGroottePixels"));
+		if(h.containsKey("veldPijlSchaalfactor"))
+			veldOpties.put("veldPijlSchaalfactor", h.get("veldPijlSchaalfactor"));
+		if(h.containsKey("veldComponentHoogte"))
+			veldOpties.put("veldComponentHoogte", h.get("veldComponentHoogte"));
+		veldEditorOptiesButton.setOptions(veldOpties);
 
 		interactiePanel.setEditState(h);
 		docentTabelComponent.zetXAsNaam(xAsNaam);
@@ -1584,6 +1628,11 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		{	formuleComponentAan = formuleComponentCB.isSelected();
 			formuleEditorOptiesButton.setVisible(formuleComponentAan);
 			interactiePanel.zetFormuleComponent(formuleComponentAan, false);
+		}
+		if(e.getSource().equals(veldComponentCB))
+		{	veldComponentAan = veldComponentCB.isSelected();
+			veldEditorOptiesButton.setVisible(veldComponentAan);
+			interactiePanel.zetVeldComponent(veldComponentAan, false);
 		}
 		if(e.getSource().equals(tekenComponentCB))
 		{	tekenComponentAan = tekenComponentCB.isSelected();

@@ -78,7 +78,22 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"GTIEP_fout_minGroterGelijkMax", "Het minimum dient kleiner te zijn dan het maximum."},
             {	"GTIEP_fout_maxKleinerGelijkMin", "Het maximum dient groter te zijn dan het minimum."},
             {	"GTIEP_fout_geenGetal", "De invoer hoort een getal te zijn."},
+            
+            {	"GTIEP_veldComponentAan", "Veldgrafiek-editor"},
+            {	"GTIEP_veldGrafiekType", "Veldgrafiek plot type"},
+            {	"GTIEP_veldGrafiekType_Quiver", "Pijlen"}, 
+            {	"GTIEP_veldGrafiekType_Streamline", "Streamline"}, 
 
+            {	"GTIEP_veldEditorOpties", "Opties veldgrafiek-editor"},
+            {	"GTIEP_veldComponentHoogte", "Hoogte veldgrafiek-editor"},
+            
+            {	"GTIEP_veldGrafiek_PijlGrootteModus", "Pijlgrootte modus"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_RealValue", "Werkelijke waarde"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_FixedSize", "Vaste grootte (beeldpunten)"}, 
+            {	"GTIEP_veldGrafiek_PijlGrootteModus_ScaledSize", "Geschaalde grootte"}, 
+            
+            {	"GTIEP_veldGrafiek_PijlGrootte", "Pijlgrootte"}, 
+            {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Pijlgrootte schaalfactor"}, 
             
             {	"Opdr_kiesOpdracht", "Kies het type opdracht"},
             {	"Opdr_Opdracht1", "Vind de formule(s) bij de gegeven grafiek(en)"},
