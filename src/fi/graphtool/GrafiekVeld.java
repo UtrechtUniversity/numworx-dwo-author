@@ -185,12 +185,10 @@ class GrafiekVeld extends JComponent{
 	}	
 */
 	
-	private Point tekenVector(Graphics2D g, Point vectorStartScherm, boolean tekenPijlpunt) {
+	private Point tekenVector(Graphics2D g, Point vectorStartScherm, Expressie xAsExpressie, Expressie yAsExpressie,boolean tekenPijlpunt) {
 		double vectorStartXWaarde = pixelsXtoValue(vectorStartScherm.getX()); 
 		double vectorStartYWaarde = pixelsYtoValue(vectorStartScherm.getY());
 		
-		Expressie xAsExpressie = gtip.veldFuncties[0][0];
-		Expressie yAsExpressie = gtip.veldFuncties[0][1];
 		double vectorEindXWaarde = vectorStartXWaarde + xAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
 		double vectorEindYWaarde = vectorStartYWaarde + yAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
 				
@@ -658,7 +656,6 @@ class GrafiekVeld extends JComponent{
 			g.drawString("O",bx-11,hoogte-by+10);
 			
 			g.setColor(Color.black);
-//			System.out.println("Hij komt hier" );
 
 			g.setFont(new Font(gtip.font.getName(), Font.ITALIC, gtip.font.getSize()));
 			FontMetrics fm = g.getFontMetrics();
@@ -817,7 +814,6 @@ class GrafiekVeld extends JComponent{
 						{	SchuifParameter p = gtip.schuifParameters[i];
 							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefNaam());
 						}
-						
 					}
 					for(int i=xMin; i<xMax ; i++)
 					{	double ii = i;
@@ -1021,6 +1017,17 @@ class GrafiekVeld extends JComponent{
 //		System.out.println("GrafiekVeld :: VeldFuncties Y = " + gtip.veldFuncties[0][1]);
 
 		if ( (gtip.veldFuncties[0][0] != null) && (gtip.veldFuncties[0][1] != null) ) { // TODO - criterium
+			
+			Expressie xAsExpressie = gtip.veldFuncties[0][0];
+			Expressie yAsExpressie = gtip.veldFuncties[0][1];
+			if(gtip.schuifParameters != null) {	
+				for(int i = 0; i < gtip.schuifParameters.length; i++) {	
+					SchuifParameter p = gtip.schuifParameters[i];
+					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+				}
+			}
+
 			g.setColor(Color.black);
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
@@ -1041,7 +1048,7 @@ class GrafiekVeld extends JComponent{
 					if ((!gtip.veldLargerGridStartPoints) || ((i%2==0) && (j%2==0))) {
 //						if ((i==2) && (j==2)) {
 //						calculateStream(new Point2D.Double(vectorStartXScreen, vectorStartYScreen), i, j,  fieldData, gtip.veldFuncties[0][0], gtip.veldFuncties[0][1]);
-						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), true);
+						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), xAsExpressie, yAsExpressie, true);
 //						}
 
 					}

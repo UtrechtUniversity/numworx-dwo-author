@@ -284,7 +284,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
     }
 		
 		public void actionPerformed(ActionEvent e){
-			System.out.println("Action Source = "+ e.getSource());
+//			System.out.println("Action Source = "+ e.getSource());
 			if(e.getSource().equals(this) && frame==null){	
 				makeGUI();
 				makeFrame();
