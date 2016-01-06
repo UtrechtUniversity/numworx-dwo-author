@@ -1645,7 +1645,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			int[] result = new int[c.size()];
 			for (int i = 0; i < result.length; i++)
 			{
-				result[i] = ((Number) c.get(i)).intValue();
+				final Object o = c.get(i);
+				if(o instanceof Number)
+					result[i] = ((Number) o).intValue();
 			}
 			return result;
 		}
