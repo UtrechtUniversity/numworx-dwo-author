@@ -91,6 +91,8 @@ public class Text_es extends java.util.ListResourceBundle
             {	"GTIEP_veldGrafiek_PijlGrootteModus_FixedSize", "Fixed size (pixels)"}, 
             {	"GTIEP_veldGrafiek_PijlGrootteModus_ScaledSize", "Scaled Size"}, 
             
+            {	"GTIEP_veldGrafiek_GroterGridStartPunten", "Startpoints on larger grid"}, 
+            
             {	"GTIEP_veldGrafiek_PijlGrootte", "Arrow size"}, 
             {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Arrow scale factor"}, 
             

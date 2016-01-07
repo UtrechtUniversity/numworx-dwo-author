@@ -95,6 +95,8 @@ public class Text_nl extends java.util.ListResourceBundle
             {	"GTIEP_veldGrafiek_PijlGrootte", "Pijlgrootte"}, 
             {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Pijlgrootte schaalfactor"}, 
             
+            {	"GTIEP_veldGrafiek_GroterGridStartPunten", "Startpunten op grof grid"}, 
+            
             {	"Opdr_kiesOpdracht", "Kies het type opdracht"},
             {	"Opdr_Opdracht1", "Vind de formule(s) bij de gegeven grafiek(en)"},
             {	"Opdr_Opdracht2", "Vind de formule bij de gegeven grafiekpunten"},
