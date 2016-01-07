@@ -510,7 +510,11 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
     		veldGrafiekExpressieStrings = GraphToolInteractiePanel.toStringArray(h.get("veldGrafiekExpressieStrings"));
    		if(h.containsKey("veldGrafiekGeselecteerd")) 
    			veldGrafiekGeselecteerd = GraphToolInteractiePanel.toBooleanArray(h.get("veldGrafiekGeselecteerd"));
-   		
+
+    	if (veldGrafiekExpressieStrings==null) {	
+    		return;
+    	}
+    	
 		for (int i=0; i<veldGrafiekExpressieStrings.length; i++) { 
 			System.out.println("veld::Set::veldGrafiekExpressieStrings[" + i + "]=" + veldGrafiekExpressieStrings[i]);
 		}
@@ -518,9 +522,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 			System.out.println("veld::Set::veldGrafiekGeselecteerd[" + i + "]=" + veldGrafiekGeselecteerd[i]);
 		}
 
-    	if (veldGrafiekExpressieStrings==null) {	
-    		return;
-    	}
     	
      	for(int i = 0; i < veldGrafiekExpressieStrings.length; i++)	 {	
      		if(!veldGrafiekExpressieStrings[i].equals("$f@") && !(i > 0 && veldGrafiekExpressieStrings[i].endsWith("=@") && docent)) {	
