@@ -3382,7 +3382,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		String xAsNaam = "x";
 		String yAsNaam = "y";
 		boolean formuleComponentAan = true;
-		boolean veldComponentAan = true;
+		boolean veldComponentAan = false;
 		boolean tekenComponentAan = false;
 		boolean tabelComponentAan = false;
 		boolean assenZichtbaar = true;

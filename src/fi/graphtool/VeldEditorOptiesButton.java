@@ -34,7 +34,7 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 	JComboBox veldGrafiekTypeCombo, veldPijlGrootteModusCombo;
 	private JTextField veldComponentHoogteTF, veldPijlGrootteTF, veldPijlSchaalTF ;
 	private JLabel veldPijlGrootteLabel, veldPijlSchaalLabel;
-	public JCheckBox largerGridStartPointsCB;
+	private JCheckBox largerGridStartPointsCB;
 	
 	private VeldComponent.FieldGraphType veldGrafiekType = VeldComponent.cDefault_VeldGrafiekType;
 	private VeldComponent.FieldGraphArrowSizeMode veldPijlGrootteModus = VeldComponent.cDefault_VeldPijlGrootteModus;
@@ -79,8 +79,8 @@ public class VeldEditorOptiesButton extends JButton implements ActionListener {
 				veldPijlGroottePixels = ((Integer)h.get("veldPijlGroottePixels")).intValue();
 			if(h.containsKey("veldPijlSchaalfactor"))
 				veldPijlSchaalfactor = ((Double)h.get("veldPijlSchaalfactor")).doubleValue();
-			if(h.containsKey("largerGridStartPoints"))
-				veldLargerGridStartPoints = ((Boolean)h.get("largerGridStartPoints")).booleanValue();
+			if(h.containsKey("veldLargerGridStartPoints"))
+				veldLargerGridStartPoints = ((Boolean)h.get("veldLargerGridStartPoints")).booleanValue();
 			if(h.containsKey("veldComponentHoogte"))
 				veldComponentHoogte = ((Integer)h.get("veldComponentHoogte")).intValue();
 

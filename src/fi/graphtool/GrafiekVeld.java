@@ -220,7 +220,7 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 
-//		System.out.println("tekenVector :: vectorStartXWaarde =" + vectorStartXWaarde);
+//		System.out.println(" :: vectorStartXWaarde =" + vectorStartXWaarde);
 //		System.out.println("tekenVector :: vectorStartYWaarde =" + vectorStartYWaarde);
 //		System.out.println("tekenVector :: vectorEindXWaarde =" + vectorEindXWaarde);
 //		System.out.println("tekenVector :: vectorEindYWaarde =" + vectorEindYWaarde);
@@ -444,7 +444,7 @@ class GrafiekVeld extends JComponent{
 				witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
 				int minimaalBegin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
 				boolean schaalTekenen = (j%2 == 0 || gtip.yAsLog) && gtip.schaalZichtbaar && gtip.schaalY;
-				if((!gtip.yPositief || j>0) && hoogte-(by+j*ehyD) <= maxHoogteLijn) 
+				if(gtip.roosterZichtbaar && gtip.roosterY && (!gtip.yPositief || j>0) && hoogte-(by+j*ehyD) <= maxHoogteLijn) 
 				{
 					if(schaalTekenen ) 
 					{
@@ -1028,7 +1028,7 @@ class GrafiekVeld extends JComponent{
 				}
 			}
 
-			g.setColor(Color.black);
+			g.setColor(Color.gray);
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
 			for(int i=imin ; i<imax ; i++) { // x-as aflopen
