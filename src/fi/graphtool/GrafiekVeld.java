@@ -812,7 +812,7 @@ class GrafiekVeld extends JComponent{
 					if(gtip.schuifParameters != null)
 					{	for(int i = 0; i < gtip.schuifParameters.length; i++)
 						{	SchuifParameter p = gtip.schuifParameters[i];
-							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 						}
 					}
 					for(int i=xMin; i<xMax ; i++)
@@ -1023,8 +1023,8 @@ class GrafiekVeld extends JComponent{
 			if(gtip.schuifParameters != null) {	
 				for(int i = 0; i < gtip.schuifParameters.length; i++) {	
 					SchuifParameter p = gtip.schuifParameters[i];
-					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
-					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 				}
 			}
 
@@ -1986,7 +1986,15 @@ class GrafiekVeld extends JComponent{
 	{	Graphics2D g = (Graphics2D) gr;
 		for(int j=0 ; j<gtip.verticaleLijnen.length ; j++)
 		{	if(gtip.verticaleLijnen[j]!=null)
-			{	double xWaarde = gtip.verticaleLijnen[j].geefWaarde();
+			{	
+				Expressie ingevuldeExpressie = gtip.verticaleLijnen[j];
+				if(gtip.schuifParameters != null)
+				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
+					{	SchuifParameter p = gtip.schuifParameters[i];
+						ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					}
+				}
+				double xWaarde = ingevuldeExpressie.geefWaarde();
 // 				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
@@ -2010,7 +2018,7 @@ class GrafiekVeld extends JComponent{
 				int schuifParameterIndex = -1;
 				if(gtip.schuifParameters != null)
 				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
-					{	if(variabele.equals(gtip.schuifParameters[i].geefNaam()))
+					{	if(variabele.equals(gtip.schuifParameters[i].geefVarNaam()))
 						{	schuifParameterIndex = i;
 							break;
 						}

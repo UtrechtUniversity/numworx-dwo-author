@@ -763,8 +763,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if(schuifParameters != null)
 		{	for(int i = 0; i < schuifParameters.length; i++)
-			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte() || 
-					schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10)
+			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte()
+					|| schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10)
 					schuifParameters[i].zetLocatie(offset, currentYTop + veldh - 25*(i + 1));
 			}
 		}//p.zetLocatie(offset, gv.getY() + gv.getHeight() - offset - (schuifParameters.length - 1) * 15);
@@ -5566,9 +5566,9 @@ MouseListener, MouseMotionListener, CBookAware {
 						formuleComponent.parseFormule(j, false);
 					for(int j = 0; j < graphPoints.size(); j++)
 					{	RealPoint rp = (RealPoint) graphPoints.get(j);
-						if(rp.getxString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getxString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setX(schuifParameters[i].geefWaarde());
-						if(rp.getyString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getyString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setY(schuifParameters[i].geefWaarde());
 					}
 					gv.repaint();
