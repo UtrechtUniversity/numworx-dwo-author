@@ -1497,6 +1497,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			veldOpties.put("veldPijlGroottePixels", h.get("veldPijlGroottePixels"));
 		if(h.containsKey("veldPijlSchaalfactor"))
 			veldOpties.put("veldPijlSchaalfactor", h.get("veldPijlSchaalfactor"));
+		if(h.containsKey("veldLargerGridStartPoints"))
+			veldOpties.put("veldLargerGridStartPoints", h.get("veldLargerGridStartPoints"));
 		if(h.containsKey("veldComponentHoogte"))
 			veldOpties.put("veldComponentHoogte", h.get("veldComponentHoogte"));
 		veldEditorOptiesButton.setOptions(veldOpties);

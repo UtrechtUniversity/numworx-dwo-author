@@ -763,8 +763,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if(schuifParameters != null)
 		{	for(int i = 0; i < schuifParameters.length; i++)
-			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte() || 
-					schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10)
+			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte()
+					|| schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10) // TODO
 					schuifParameters[i].zetLocatie(offset, currentYTop + veldh - 25*(i + 1));
 			}
 		}//p.zetLocatie(offset, gv.getY() + gv.getHeight() - offset - (schuifParameters.length - 1) * 15);
@@ -1077,7 +1077,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			zoomUitY.setEnabled(b);
 		}
 	}
-		
 	
 	public void zetDragOptie(boolean b)
 	{	dragOptie = b;
@@ -3382,7 +3381,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		String xAsNaam = "x";
 		String yAsNaam = "y";
 		boolean formuleComponentAan = true;
-		boolean veldComponentAan = true;
+		boolean veldComponentAan = false;
 		boolean tekenComponentAan = false;
 		boolean tabelComponentAan = false;
 		boolean assenZichtbaar = true;
@@ -4420,6 +4419,30 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
+				System.out.println("KijkNa - Tabel - rechteVerbindingen =" + rechteVerbindingen);
+				System.out.println("KijkNa - Tabel - krommeMetExtrapolatie =" + krommeMetExtrapolatie);
+				System.out.println("KijkNa - Tabel - krommeZonderExtrapolatie =" + krommeZonderExtrapolatie);
+				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.CURVE_EXTRA =" + tekenComponent.CURVE_EXTRA);
+				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.CURVE =" + tekenComponent.CURVE);
+				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.LINES =" + tekenComponent.LINES);
+				System.out.println("KijkNa - Tabel - getConnectMode =" + tekenComponent.getConnectMode());
+
+//				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
+//						tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
+//						tekenComponent.getConnectMode() != tekenComponent.CURVE &&
+//						tekenComponent.getConnectMode() != tekenComponent.LINES)
+//				{	if(score > 0)
+//					color = new Color(255, 193, 0);
+//					score = Math.max(score - 2, 0);
+//					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
+//					{	correct = false;
+//						fout = true;
+//						groenVinkjeLabel.setVisible(false);
+//						oranjeVinkjeLabel.setVisible(show);
+//						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
+//					} 
+//				}	
+				
 				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
 				{	score = Math.max(score - 2, 0);
 					if(correct)
@@ -5554,6 +5577,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if (e.getSource() == kijkNaButton)
 			{
 				kijkNa();
+
 				if((mode == 0 || mode ==1) && ingevuld)
 					produceAction("checked");
 			}
@@ -5566,9 +5590,9 @@ MouseListener, MouseMotionListener, CBookAware {
 						formuleComponent.parseFormule(j, false);
 					for(int j = 0; j < graphPoints.size(); j++)
 					{	RealPoint rp = (RealPoint) graphPoints.get(j);
-						if(rp.getxString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getxString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setX(schuifParameters[i].geefWaarde());
-						if(rp.getyString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getyString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setY(schuifParameters[i].geefWaarde());
 					}
 					gv.repaint();

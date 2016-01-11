@@ -220,7 +220,7 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 
-//		System.out.println("tekenVector :: vectorStartXWaarde =" + vectorStartXWaarde);
+//		System.out.println(" :: vectorStartXWaarde =" + vectorStartXWaarde);
 //		System.out.println("tekenVector :: vectorStartYWaarde =" + vectorStartYWaarde);
 //		System.out.println("tekenVector :: vectorEindXWaarde =" + vectorEindXWaarde);
 //		System.out.println("tekenVector :: vectorEindYWaarde =" + vectorEindYWaarde);
@@ -444,7 +444,7 @@ class GrafiekVeld extends JComponent{
 				witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
 				int minimaalBegin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
 				boolean schaalTekenen = (j%2 == 0 || gtip.yAsLog) && gtip.schaalZichtbaar && gtip.schaalY;
-				if((!gtip.yPositief || j>0) && hoogte-(by+j*ehyD) <= maxHoogteLijn) 
+				if(gtip.roosterZichtbaar && gtip.roosterY && (!gtip.yPositief || j>0) && hoogte-(by+j*ehyD) <= maxHoogteLijn) 
 				{
 					if(schaalTekenen ) 
 					{
@@ -812,7 +812,7 @@ class GrafiekVeld extends JComponent{
 					if(gtip.schuifParameters != null)
 					{	for(int i = 0; i < gtip.schuifParameters.length; i++)
 						{	SchuifParameter p = gtip.schuifParameters[i];
-							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 						}
 					}
 					for(int i=xMin; i<xMax ; i++)
@@ -1023,12 +1023,12 @@ class GrafiekVeld extends JComponent{
 			if(gtip.schuifParameters != null) {	
 				for(int i = 0; i < gtip.schuifParameters.length; i++) {	
 					SchuifParameter p = gtip.schuifParameters[i];
-					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
-					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 				}
 			}
 
-			g.setColor(Color.black);
+			g.setColor(Color.gray);
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
 			for(int i=imin ; i<imax ; i++) { // x-as aflopen
@@ -1986,7 +1986,15 @@ class GrafiekVeld extends JComponent{
 	{	Graphics2D g = (Graphics2D) gr;
 		for(int j=0 ; j<gtip.verticaleLijnen.length ; j++)
 		{	if(gtip.verticaleLijnen[j]!=null)
-			{	double xWaarde = gtip.verticaleLijnen[j].geefWaarde();
+			{	
+				Expressie ingevuldeExpressie = gtip.verticaleLijnen[j];
+				if(gtip.schuifParameters != null)
+				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
+					{	SchuifParameter p = gtip.schuifParameters[i];
+						ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					}
+				}
+				double xWaarde = ingevuldeExpressie.geefWaarde();
 // 				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
@@ -2010,7 +2018,7 @@ class GrafiekVeld extends JComponent{
 				int schuifParameterIndex = -1;
 				if(gtip.schuifParameters != null)
 				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
-					{	if(variabele.equals(gtip.schuifParameters[i].geefNaam()))
+					{	if(variabele.equals(gtip.schuifParameters[i].geefVarNaam()))
 						{	schuifParameterIndex = i;
 							break;
 						}

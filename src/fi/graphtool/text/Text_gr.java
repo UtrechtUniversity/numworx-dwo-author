@@ -94,6 +94,8 @@ public class Text_gr extends java.util.ListResourceBundle
             {	"GTIEP_veldGrafiek_PijlGrootte", "Arrow size"}, 
             {	"GTIEP_veldGrafiek_PijlSchaalFactor", "Arrow scale factor"}, 
             
+            {	"GTIEP_veldGrafiek_GroterGridStartPunten", "Startpoints on larger grid"}, 
+            
             {	"Opdr_kiesOpdracht", "Choose the task type"},
             {	"Opdr_Opdracht1", "Find the formula(s) for the given graph(s)"},
             {	"Opdr_Opdracht2", "Find the formula for the given graph points"},
