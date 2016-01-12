@@ -495,6 +495,8 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
     public void kijkNa()
     {
     	kijkNa(true);
+    	if(correct)cbookEventHandler.fire("action.correct");
+    	if(fout)cbookEventHandler.fire("action.false");
     }
     
     public void kijkNa(boolean show)
