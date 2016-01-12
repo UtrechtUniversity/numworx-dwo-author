@@ -21,7 +21,8 @@ import fi.beans.scorm.ScormEditComponentIF;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
-public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApplet {
+public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApplet 
+{
 	protected static ResourceBundle rb;
 	private String langArg;
 	protected SCORM12APIInterface api;
@@ -38,12 +39,15 @@ public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApp
 		testframe.setVisible(true);
 	}
 
-	public BinomVerdeling(Locale language) {
+	public BinomVerdeling(Locale language) 
+	{
 		langArg = language.getLanguage();
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);
+
 	}
 
-	public BinomVerdeling() {
+	public BinomVerdeling() 
+	{
 		langArg = "nl";
 		Locale language = new Locale(langArg, "");
 		rb = ResourceBundle.getBundle("fi.binomverdeling.text.Text", language);

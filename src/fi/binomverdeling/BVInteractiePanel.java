@@ -249,12 +249,14 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		this.kansBalk.add(this.kansRadioRechts);
 		this.zuidBalk.add(this.kansBalk);
 		
-		this.grenzenBox = new JCheckBox("Twee grenswaarden", false);
+		//this.grenzenBox = new JCheckBox("Twee grenswaarden", false);
+		this.grenzenBox = new JCheckBox(BinomVerdeling.rb.getString("tweeGrenswaardenTekst"), false);
 		this.grenzenBox.setFont(this.font);
 		this.grenzenBox.setBackground(Color.WHITE);
 		this.grenzenBox.addActionListener(this);
 		
-		this.kijkNaButton = new JButton("Kijk Na");
+		//this.kijkNaButton = new JButton("Kijk Na");
+		this.kijkNaButton = new JButton(BinomVerdeling.rb.getString("kijkNaTekst"));
 		this.kijkNaButton.setFont(this.font);
 		this.kijkNaButton.addActionListener(this);
 		
@@ -314,7 +316,8 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.MLabel = new JLabel("M = ");
         this.MLabel.setFont(this.font);
         this.MLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        this.populatieLabel = new JLabel("populatie = ");
+        //this.populatieLabel = new JLabel("populatie = ");
+        this.populatieLabel = new JLabel(BinomVerdeling.rb.getString("populatieTekst") + " = ");
         this.populatieLabel.setFont(this.font);
         this.populatieLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         this.pLabel = new JLabel("p = ");
@@ -346,7 +349,9 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
         this.populatieSlider.addActionListener(this);
                 
         //maak het paneel wat in het NORTH gebied van de BorderLayout komt
-        String[] keuzes = {"Binomiaal", "Hypergeometrisch"};
+        //String[] keuzes = {"Binomiaal", "Hypergeometrisch"};
+        String[] keuzes = {BinomVerdeling.rb.getString("binomiaalTekst"),
+        				   BinomVerdeling.rb.getString("hypergeometrischTekst")};
         this.hyperComboBox = new JComboBox(keuzes);
         this.hyperComboBox.setBounds(0,0,this.getWidth(), this.COMBOBOXHEIGHT);
         this.hyperComboBox.setBackground(this.LABEL_BACKGROUND);
