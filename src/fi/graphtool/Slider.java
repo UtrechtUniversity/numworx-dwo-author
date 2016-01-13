@@ -78,7 +78,7 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	{
 		this.naam = naam;
 		if(naam.length() > 0)
-		{	linksMarge = 15;
+		{	linksMarge = 30;
 			bovenMarge = 15;
 		}
 		setSize(lengte + 2 * linksMarge, bovenMarge + 8);
@@ -126,8 +126,8 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 				g.drawString(naam + "=" + intWaarde, stand + linksMarge - fm.stringWidth(naam), 10);
 			}
 			
-			else
-			{	waarde = (double) Math.round(10*waarde)/10;
+			else {	
+				waarde = (double) Math.round(1000*waarde)/1000;
 				g.drawString(naam + "=" + waarde, stand + linksMarge - fm.stringWidth(naam), 10);
 			}
 			//
@@ -203,21 +203,32 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	
 	public void mouseReleased(MouseEvent e)
 	{
-		if(raak)
-		{	int aantalStappen = lengte;
-			int intStapGrootte = 1;
-			if(stapGrootte != 0)	
-			{	intStapGrootte = (int) Math.round(stapGrootte * lengte/(bovenGrens - onderGrens));
-				aantalStappen = (int) (lengte/intStapGrootte);
+		if(raak) {	
+			int intStapGrootte = (int) Math.round(stapGrootte * lengte/(bovenGrens - onderGrens));
+			if (intStapGrootte < 1) {
+				intStapGrootte = 1;
 			}
-			for(int i = 0; i < aantalStappen; i++)
-			{	if(stand < i * intStapGrootte + intStapGrootte/2)
-				{	stand = (int) (i * intStapGrootte);
-					break;
-				}
-			}
-			if(stand > (aantalStappen - 1) * intStapGrootte + intStapGrootte/2)
+			int aantalStappen = (int) (lengte/intStapGrootte); 
+
+// Below code is replaced by the above to overcome a divide by zero situation
+//			int aantalStappen = lengte;
+//			int intStapGrootte = 1;
+//			if(stapGrootte != 0) {	
+//				intStapGrootte = (int) Math.round(stapGrootte * lengte/(bovenGrens - onderGrens));
+//				aantalStappen = (int) (lengte/intStapGrootte); // -> possible divide by zero
+//			}
+
+			stand = Math.round(stand / intStapGrootte) * intStapGrootte;
+// above is a more efficient version of below code			
+//			for(int i = 0; i < aantalStappen; i++) {	
+//				if(stand < i * intStapGrootte + intStapGrootte/2) {	
+//					stand = (int) (i * intStapGrootte);
+//					break;
+//				}
+//			}
+			if(stand > (aantalStappen - 1) * intStapGrootte + intStapGrootte/2) {
 				stand = lengte;
+			}
 			repaint();
 		}
 	}
