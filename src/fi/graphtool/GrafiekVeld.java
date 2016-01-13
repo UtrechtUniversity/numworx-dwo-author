@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.vecmath.Vector2d;
+//import javax.vecmath.Vector2d;
+import fi.beans.lineairealgebra.Vector2d;
 import javax.swing.JComponent;
 
 import fi.wiskopdr.expressies.Expressie;
@@ -134,7 +135,7 @@ class GrafiekVeld extends JComponent{
 				vScherm.normalize();  // eenheidVector (1 pixel)
 				vScherm.scale(cSampleDist); // zet op sterkte van sample afstand
 			}
-			pScherm.setLocation(pScherm.getX()+vScherm.x, pScherm.getY()+vScherm.y);
+			pScherm.setLocation(pScherm.getX()+vScherm.getX(), pScherm.getY()+vScherm.getY());
 			if (i%50==0)
 				fieldData.verlengPad(xIndex, yIndex, pScherm);
 		}
@@ -147,7 +148,7 @@ class GrafiekVeld extends JComponent{
 		Vector2d vWerkelijk = new Vector2d(	xAsExpressie.substitueer(pWerkelijk.getX(), gtip.xAsNaam).substitueer(pWerkelijk.getY(), gtip.yAsNaam).geefWaarde(),
 											yAsExpressie.substitueer(pWerkelijk.getX(), gtip.xAsNaam).substitueer(pWerkelijk.getY(), gtip.yAsNaam).geefWaarde());
 		
-		Point2D.Double pEindWerkelijk = new Point2D.Double(pWerkelijk.getX()+vWerkelijk.x, pWerkelijk.getY()+vWerkelijk.y);
+		Point2D.Double pEindWerkelijk = new Point2D.Double(pWerkelijk.getX()+vWerkelijk.getX(), pWerkelijk.getY()+vWerkelijk.getY());
 		Point2D.Double pEindScherm = new Point2D.Double(valueXtoPixels(pEindWerkelijk.getX()),valueYtoPixels(pEindWerkelijk.getY()));
 
 		Vector2d vScherm = new Vector2d();
@@ -161,14 +162,14 @@ class GrafiekVeld extends JComponent{
 	    
 	    Vector2d Vec = new Vector2d(vectorEindScherm.getX()-vectorStartScherm.getX(), vectorEindScherm.getY()-vectorStartScherm.getY());
 	    
-	    Vector2d U = new Vector2d(Vec.x/Vec.length(), Vec.y/Vec.length());
+	    Vector2d U = new Vector2d(Vec.getX()/Vec.length(), Vec.getY()/Vec.length());
 	    //U.set(Vec.x/Vec.length(), Vec.y/Vec.length());
 	    
-		Vector2d V = new Vector2d(-U.y, U.x);
-		Vector2d v1 = new Vector2d(vectorEindScherm.getX() -h * U.x + w*V.x, vectorEindScherm.getY() -h * U.y + w*V.y);
-		Vector2d v2 = new Vector2d(vectorEindScherm.getX() -h * U.x - w*V.x, vectorEindScherm.getY() -h * U.y - w*V.y);
-		g.drawLine((int) v1.x, (int) v1.y, (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
-		g.drawLine((int) v2.x, (int) v2.y, (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+		Vector2d V = new Vector2d(-U.getY(), U.getX());
+		Vector2d v1 = new Vector2d(vectorEindScherm.getX() -h * U.getX() + w*V.getX(), vectorEindScherm.getY() -h * U.getY() + w*V.getY());
+		Vector2d v2 = new Vector2d(vectorEindScherm.getX() -h * U.getX() - w*V.getX(), vectorEindScherm.getY() -h * U.getY() - w*V.getY());
+		g.drawLine((int) v1.getX(), (int) v1.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+		g.drawLine((int) v2.getX(), (int) v2.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
 
 	}
 	
@@ -206,7 +207,7 @@ class GrafiekVeld extends JComponent{
 	    }
 
 	    Point2D.Double vectorEindScherm = new Point2D.Double();
-		vectorEindScherm.setLocation(vectorStartScherm.getX() + vectorScherm.x, vectorStartScherm.getY() + vectorScherm.y);
+		vectorEindScherm.setLocation(vectorStartScherm.getX() + vectorScherm.getX(), vectorStartScherm.getY() + vectorScherm.getY());
 		
 		if ( ((int) vectorStartScherm.getX()!= (int) vectorEindScherm.getX()) || ((int) vectorStartScherm.getY()!= (int)vectorEindScherm.getY()) ) { 
 			// alleen tekenen wanneer er lengte is
