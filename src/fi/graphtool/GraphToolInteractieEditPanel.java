@@ -1155,10 +1155,10 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			docentTabelComponent.produceAction("points changed");
 			interactiePanel.zetKrommeKnoppen(rechteVerbindingen, krommeZonderExtrapolatie, krommeMetExtrapolatie);
 		}
-		processMaxScore();
+		interactiePanel.zetTypeOpdracht(typeOpdracht, setState);
+		processMaxScore(); // processMaxScore is dependent of typeOpdracht, needs to be executed after zetTypeOpdracht!
 		processNauwkeurigheid();
 		processMinimumPunten();
-		interactiePanel.zetTypeOpdracht(typeOpdracht, setState);
 		docentFormuleComponent.zetGrafiekKleuren();
 		interactiePanel.getFormuleComponent().setEditable(false);
 		interactiePanel.getTabelComponent().setFrozen(true);

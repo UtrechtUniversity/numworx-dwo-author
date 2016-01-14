@@ -1302,8 +1302,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				}
 	}
 	
-	public void zetMaxScores(int[] ms)
-	{	
+	public void zetMaxScores(int[] ms) {	
 		maxScores = ms;
 		updateAantalFuncties();
 		if(typeOpdracht == VINDFORMULEBIJGRAFIEK || typeOpdracht == TEKENPUNTENBIJFORMULE)
@@ -1315,6 +1314,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			scoreMax = 0;
 		else
 			scoreMax = maxScores[0];
+
 	}
 
 	public void zetNauwkeurigheid(int[] ms)
@@ -4280,7 +4280,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				}
 				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
 				{	if(score > 0)
-					color = new Color(255, 193, 0);
+						color = new Color(255, 193, 0);
 					score = Math.max(score - 2, 0);
 					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
 					{	correct = false; 
@@ -4290,11 +4290,12 @@ MouseListener, MouseMotionListener, CBookAware {
 						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
 					}
 				}
-				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
-						tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
-						tekenComponent.getConnectMode() != tekenComponent.CURVE &&
-						tekenComponent.getConnectMode() != tekenComponent.LINES)
-				{	if(score > 0)
+				if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
+						( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
+						( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
+					  ) 
+					) {
+					if(score > 0)
 					color = new Color(255, 193, 0);
 					score = Math.max(score - 2, 0);
 					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
@@ -4420,17 +4421,40 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
-				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
-				{	score = Math.max(score - 2, 0);
+				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam)) {
+					if(score > 0)
+						color = new Color(255, 193, 0);
+					score = Math.max(score - 2, 0);
 					if(correct)
 					{	correct = false; 
 						groenVinkjeLabel.setVisible(false);
 						oranjeVinkjeLabel.setVisible(show);
+						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
 					}
 				}
+//				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
+//					tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
+//					tekenComponent.getConnectMode() != tekenComponent.CURVE &&
+//					tekenComponent.getConnectMode() != tekenComponent.LINES) {	
+				if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
+						( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
+						( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
+					  ) 
+					) {
+					if(score > 0)
+						color = new Color(255, 193, 0);
+					score = Math.max(score - 2, 0);
+					if(correct)
+					{	correct = false;
+						fout = true;
+						groenVinkjeLabel.setVisible(false);
+						oranjeVinkjeLabel.setVisible(show);
+						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
+					} 
+				}	
+
 				if(show)
 					setColor(0, color, true);
-				
 				repaint();
 			}
 		}
