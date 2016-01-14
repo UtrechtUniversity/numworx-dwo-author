@@ -476,15 +476,13 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		else
 		{
-			// check if parameters are valid
+			// check if parameters binWidth and minBoundary are valid
 			if (((binWidth <= 0) 
-				|| ((binWidth > 1) && (binWidth > 2 * (max - min) + 1)) 
-				|| (binWidth < (max - min)/50)) 
+				|| (binWidth < (max - min)/100)) 
 				&& (max != min)) // if max = min binwidth is not restricted
 				return null;
 			
 			if ((minBoundary > min) 
-				|| ((minBoundary < (min - 1 - 0.5 * max))) // minus 1 to avoid problems in case of small and negative values of min and max
 				&& (max != min)) // if max = min binwidth is not restricted
 				return null;
 			
@@ -492,14 +490,7 @@ public class Statistiek implements WiskOpdrApplet
 			if (((Math.abs(min) < 1) && (Math.abs(max) < 1))
 				|| (((max - min) < 1) && ((max - min) != 0)))
 			{
-				// determine the number of decimals of min and max
-	//			String minString = String.valueOf(min);
-	//			int decimalPlacesMin = Statistiek.getNumberOfDecimals(minString);
-	//			String maxString = String.valueOf(max);
-	//			int decimalPlacesMax = Statistiek.getNumberOfDecimals(maxString);
-	//			int numberOfDecimals = Math.max(decimalPlacesMin, decimalPlacesMax);
-	
-				// alternative using number of decimals of start and binwidth
+				// use number of decimals of start and binwidth
 				double start;
 				if (minBoundary <= min)
 				{
