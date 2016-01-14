@@ -4422,7 +4422,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					kruisjeLabel.setVisible(show);
 				}
 				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam)) {
-					if(score > 0)
+					if ( (score > 0) && (correct) )
 						color = new Color(255, 193, 0);
 					score = Math.max(score - 2, 0);
 					if(correct)
@@ -4441,7 +4441,7 @@ MouseListener, MouseMotionListener, CBookAware {
 						( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
 					  ) 
 					) {
-					if(score > 0)
+					if ( (score > 0) && (correct) )
 						color = new Color(255, 193, 0);
 					score = Math.max(score - 2, 0);
 					if(correct)
