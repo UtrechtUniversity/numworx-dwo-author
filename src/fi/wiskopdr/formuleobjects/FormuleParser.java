@@ -1600,10 +1600,14 @@ public class FormuleParser
 				for(int j=formString.length()-1 ; j>-1; j--)
 				{	if(formString.charAt(j)=='#')
 					{	int index1 = formString.substring(0,j).lastIndexOf("#");
-						String parseString = formString.substring(index1+1,j);
-						parseString = FormuleParser.substitueerRandom(parseString, randomVars, randomValues);
-						formString = ""+formString.substring(0,index1)+parseString+formString.substring(j+1);
-						j=index1;
+					    if(index1 >= 0) {
+					    	String parseString = formString.substring(index1+1,j);
+					    	parseString = FormuleParser.substitueerRandom(parseString, randomVars, randomValues);
+					    	formString = ""+formString.substring(0,index1)+parseString+formString.substring(j+1);
+					    	j=index1;
+					    } else {
+					    	break;
+					    }
 					}	
 				}	
 				for(int j=formString.length()-1 ; j>-1; j--)

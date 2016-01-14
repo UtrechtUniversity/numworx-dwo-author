@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -1008,6 +1010,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				catch (Exception e)
 				{
 					teksten[i][j] = "???";
+					Logger.getLogger(getClass().getName()).log(Level.WARNING, "teksten "+ j + " " + j, e);
 				}
 			}
 		}

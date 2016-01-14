@@ -48,6 +48,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -1803,8 +1804,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         	{	if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
 	        	else interactiePanel.setBounds(0,0,breedte,hoogte);
 		        add((Component)interactiePanel,0);
-		        interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
-				interactiePanel.start();
+		        try {
+					interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
+					interactiePanel.start();
+				} catch (Exception e) {
+					Logger.getLogger(getClass().getName()).log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
+				}
         	}
         }
         if(afdekPanel!=null) remove(afdekPanel);
