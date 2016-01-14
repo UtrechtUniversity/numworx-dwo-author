@@ -3979,6 +3979,49 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 	}
 	
+	private Color verwerkAsNaamBijNakijken(boolean show, Color color, boolean correctLogica) {
+		Color returnColor = color;
+		if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam)) {
+			if ( (score > 0) && (correctLogica) )
+				returnColor = new Color(255, 193, 0);
+			score = Math.max(score - 2, 0);
+			if (correctLogica) {	
+				correct = false; 
+				groenVinkjeLabel.setVisible(false);
+				oranjeVinkjeLabel.setVisible(show);
+				if (show) 
+					setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
+			}
+		}
+		return (returnColor);
+	}
+	
+	private Color verwerkTekenModusBijNakijken(boolean show, Color color, boolean correctLogica) {
+		Color returnColor = color;
+		//	if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
+		//	tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
+		//	tekenComponent.getConnectMode() != tekenComponent.CURVE &&
+		//	tekenComponent.getConnectMode() != tekenComponent.LINES) {	
+		if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
+				( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
+				( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
+			  ) 
+		   ) {
+			if ( (score > 0) && (correctLogica) )
+				returnColor = new Color(255, 193, 0);
+			score = Math.max(score - 2, 0);
+			if (correctLogica) {	
+				correct = false;
+				fout = true;
+				groenVinkjeLabel.setVisible(false);
+				oranjeVinkjeLabel.setVisible(show);
+				if (show) 
+					setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
+			}		 
+		}
+		return (returnColor);
+	}
+	
 	public void kijkNa(boolean show)
 	{	if(checkExternal || mode == 2 || mode == 3)
 		{	add(groenVinkjeLabel, 0);
@@ -4192,7 +4235,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				{	permutatie[i][0] = i;
 					permutatie[i][1] = -1;
 				}
-				permutatie[0][1] = 0;
+				if (permutatie.length > 0)
+					permutatie[0][1] = 0;
 				int totaalHits = 0;
 				int permutatieHits;
 				int[] koppeling = new int[aantalFuncties];
@@ -4278,34 +4322,9 @@ MouseListener, MouseMotionListener, CBookAware {
 						puntenCorrect = false;
 					}
 				}
-				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
-				{	if(score > 0)
-						color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
-					{	correct = false; 
-						fout = true;
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
-					}
-				}
-				if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
-						( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
-						( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
-					  ) 
-					) {
-					if(score > 0)
-					color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
-					{	correct = false;
-						fout = true;
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
-					} 
-				}	
+				boolean correctLogica = (correct || (oranjeVinkjeLabel.isVisible() && puntenCorrect));
+				color = verwerkAsNaamBijNakijken(show, color, correctLogica);
+				color = verwerkTekenModusBijNakijken(show, color, correctLogica);
 				
 				if(show) 
 				{	//leerlingcolor op juiste kleur zetten.
@@ -4421,37 +4440,8 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
-				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam)) {
-					if ( (score > 0) && (correct) )
-						color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct)
-					{	correct = false; 
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
-					}
-				}
-//				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
-//					tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
-//					tekenComponent.getConnectMode() != tekenComponent.CURVE &&
-//					tekenComponent.getConnectMode() != tekenComponent.LINES) {	
-				if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
-						( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
-						( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
-					  ) 
-					) {
-					if ( (score > 0) && (correct) )
-						color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct)
-					{	correct = false;
-						fout = true;
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
-					} 
-				}	
+				color = verwerkTekenModusBijNakijken(show, color, correct);
+				color = verwerkAsNaamBijNakijken(show, color, correct);
 
 				if(show)
 					setColor(0, color, true);
