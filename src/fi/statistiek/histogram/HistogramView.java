@@ -1471,6 +1471,9 @@ public class HistogramView extends JPanel implements Observer
 			int numberOfBinsOnScale = this.getNumberOfBinsfromBinsSettings(); 
 			this.setBarWidth(numberOfBinsOnScale);
 		}
+		
+		// bepaal de bins
+		ArrayList<Double> binsOnScale = this.getBinsOnScale();
 
 		if (this.model.hasVerticalBars())
 		{
@@ -1488,13 +1491,13 @@ public class HistogramView extends JPanel implements Observer
 				int columnIndex = this.model.getColumnIndex();
 				AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 				
-				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
+				for (int i = 0; i < binsOnScale.size(); i++)
 				{
-					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
-					if (i < this.model.getBinBoundaries().size() - 1)
+					String s = Statistiek.getStringValue(binsOnScale.get(i));
+					if (i < binsOnScale.size() - 1)
 					{
 						String s_labelUnderBin;
-						if (type.equals(AllowedTypes.INTEGER) && ((int) model.getBinWidth()) == 1)
+						if (type.equals(AllowedTypes.INTEGER) && ((int) model.getBinWidth()) == 1)// klopt binWidth als geen data?
 						{
 							// Voor gehele getallen met 1 waarde per klasse, 1 getal tonen onder de staaf
 							s_labelUnderBin = s;
@@ -1502,7 +1505,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-    							Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1));
 						}
 						
 						width = fm.stringWidth(s_labelUnderBin) + marge;
@@ -1519,7 +1522,7 @@ public class HistogramView extends JPanel implements Observer
 			} // label under bin
 			else // label between bins
 			{
-				for (Double d : this.model.getBinBoundaries())
+				for (Double d : binsOnScale)
 				{
 					width = fm.stringWidth(Statistiek.getStringValue(d));
 					if (width > this.verticalBarWidth)
@@ -1555,13 +1558,13 @@ public class HistogramView extends JPanel implements Observer
 				int columnIndex = this.model.getColumnIndex();
 				AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 				
-				for (int i = 0; i < this.model.getBinBoundaries().size(); i++)
+				for (int i = 0; i < binsOnScale.size(); i++)
 				{
-					String s = Statistiek.getStringValue(this.model.getBinBoundaries().get(i));
-					if (i < this.model.getBinBoundaries().size() - 1)
+					String s = Statistiek.getStringValue(binsOnScale.get(i));
+					if (i < binsOnScale.size() - 1)
 					{
 						String s_labelUnderBin;
-						if (type.equals(AllowedTypes.INTEGER) && ((int) model.getBinWidth()) == 1)
+						if (type.equals(AllowedTypes.INTEGER) && ((int) model.getBinWidth()) == 1) // klopt binWidth bij geen data?
 						{
 							// Voor gehele getallen met 1 waarde per klasse, 1 getal tonen bij de staaf
 							s_labelUnderBin = s;
@@ -1569,7 +1572,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-    							Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1));
 						}
 						
 						width = fm.stringWidth(s_labelUnderBin);
@@ -1583,7 +1586,7 @@ public class HistogramView extends JPanel implements Observer
 			else // labels between bins
 			{
 				// find longest binboundary label
-				for (Double d : this.model.getBinBoundaries())
+				for (Double d : binsOnScale)
 				{
 					width = fm.stringWidth(d.toString());
 					if (width > longest)
@@ -1934,9 +1937,6 @@ public class HistogramView extends JPanel implements Observer
 		int columnIndex = this.model.getColumnIndex();
 		AllowedTypes type = this.model.getStatTableModel().getColumnTypes().get(columnIndex).getType();
 
-		// bepaal de bins
-		ArrayList<Double> binsOnScale = this.getBinsOnScale();
-
 		// PAINT BIN BOUNDARY LABELS
 		if (this.model.hasVerticalBars())
 		{
@@ -2043,9 +2043,13 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	ArrayList<Double> getBinsOnScale()
 	{
-		ArrayList<Double> bins = new ArrayList<Double>(model.getBinBoundaries());
+		ArrayList<Double> bins;
 		
-		if (!model.isOptimizeScale())
+		if (model.isOptimizeScale())
+		{
+			bins = new ArrayList<Double>(model.getBinBoundaries());
+		}
+		else
 		{
 			bins = this.getBinsfromBinsSettings();
 		}
@@ -2301,58 +2305,68 @@ public class HistogramView extends JPanel implements Observer
 
 	private int determineDependentAxisWidth(double scale)
 	{
-		if (this.model.hasVerticalBars() && (scale != 0))
+		int width;
+		
+		if (this.model.hasVerticalBars())
 		{
-			int width = 5;
-			FontMetrics fm = this.getFontMetrics(this.getFont());
-
-			int panelHeight = (int) ((this.model.hasVerticalBars() ? this
-				.barAreaHeight() : this.barAreaWidth()));
-			int base = 1;
-			int exp = 0;
-			int step = (int) (base * Math.pow(10, exp));
-			while (step * 6 * scale < panelHeight)
+			if (scale == 0)
 			{
-				switch (base)
-				{
-				case 1:
-					base = 2;
-					break;
-				case 2:
-					base = 5;
-					break;
-				case 5:
-					base = 1;
-					exp++;
-					break;
-				}
-				step = (int) (base * Math.pow(10, exp));
+				width = 7;//14; 14 voor breedte van 2-cijferige y-aswaarden
 			}
-
-			int majorSteps = (int) Math.floor((panelHeight - 0.5 * fm
-				.getHeight()) / (step * scale));
-
-			// determine the width of the axis labels
-
-			for (int i = 0; i < majorSteps + 1; i++)
+			else
 			{
-				String s = new Integer(i * step).toString();
-				if (this.model.getPercentage())
+				width = 5;
+				FontMetrics fm = this.getFontMetrics(this.getFont());
+	
+				int panelHeight = (int) ((this.model.hasVerticalBars() ? this
+					.barAreaHeight() : this.barAreaWidth()));
+				int base = 1;
+				int exp = 0;
+				int step = (int) (base * Math.pow(10, exp));
+				while (step * 6 * scale < panelHeight)
 				{
-					s = s + "%";
+					switch (base)
+					{
+					case 1:
+						base = 2;
+						break;
+					case 2:
+						base = 5;
+						break;
+					case 5:
+						base = 1;
+						exp++;
+						break;
+					}
+					step = (int) (base * Math.pow(10, exp));
 				}
-				int stringWidth = fm.stringWidth(s);
-				if (stringWidth > width)
+	
+				int majorSteps = (int) Math.floor((panelHeight - 0.5 * fm
+					.getHeight()) / (step * scale));
+	
+				// determine the width of the axis labels
+	
+				for (int i = 0; i < majorSteps + 1; i++)
 				{
-					width = stringWidth;
+					String s = new Integer(i * step).toString();
+					if (this.model.getPercentage())
+					{
+						s = s + "%";
+					}
+					int stringWidth = fm.stringWidth(s);
+					if (stringWidth > width)
+					{
+						width = stringWidth;
+					}
 				}
 			}
-			return width;
 		}
 		else
 		{
-			return 40;
+			width = 40;
 		}
+
+		return width;
 	}
 
 	/**
