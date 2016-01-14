@@ -298,6 +298,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else if (ac.equals("optimizeScaleBox"))
 		{
+			this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
 			this.model.setOptimizeScale(this.view.getUserOptionsPanel().isOptimizeScale());
 		}
 		else
