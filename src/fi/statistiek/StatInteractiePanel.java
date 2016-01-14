@@ -566,41 +566,48 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 	
 	@Override
-	public void acceptCBookEvent(CBookEvent event) {
+	public void acceptCBookEvent(CBookEvent event)
+	{
 		String command = event.getCommand();
-		if(command.startsWith("text.csv"))
+		if (command.startsWith("text.csv"))
 		{
-			Map map = (Map)event.getParameters();
-			if(map!=null)
-			{	Hashtable h = this.getState();
+			Map map = (Map) event.getParameters();
+			if (map != null)
+			{
+				Hashtable h = this.getState();
 				h.remove("selectionList");
 				Hashtable tableModel = (Hashtable) h.get("tableModel");
-				int columnCount = ((Integer) tableModel.get("columnCount")).intValue();
+				int columnCount = ((Integer) tableModel.get("columnCount"))
+					.intValue();
 				boolean dataFitting = true;
-				String dataString = (String)map.get("content");
+				String dataString = (String) map.get("content");
 				String[] regels = dataString.split("\n");
 				ArrayList<ArrayList<Object>> values = new ArrayList<ArrayList<Object>>();
-				for(int i=0 ; i<regels.length ; i++)
-				{	String[] waarden = regels[i].split(";");
-					if(waarden.length!=columnCount)
-					{	JOptionPane.showMessageDialog(this, "Data not fitting");
+				for (int i = 0; i < regels.length; i++)
+				{
+					String[] waarden = regels[i].split(";");
+					if (waarden.length != columnCount)
+					{
+						JOptionPane.showMessageDialog(this,
+							"Data not fitting in number of columns");
 						dataFitting = false;
-	    				break;
+						break;
 					}
 					values.add(new ArrayList<Object>());
-					for(int j=0 ; j<waarden.length ; j++)
-					{	values.get(i).add(waarden[j]);
+					for (int j = 0; j < waarden.length; j++)
+					{
+						values.get(i).add(waarden[j]);
 					}
 				}
-				if(dataFitting)
-				{	tableModel.put("rowCount", new Integer(regels.length));
+				if (dataFitting)
+				{
+					tableModel.put("rowCount", new Integer(regels.length));
 					tableModel.put("values", values);
 					h.put("tableModel", tableModel);
 					this.setState(h);
 				}
 			}
 		}
-		
 	}
 
 	@Override
