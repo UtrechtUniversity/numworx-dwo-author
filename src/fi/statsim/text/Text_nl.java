@@ -52,16 +52,18 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "dice", "Dobbelstenen" },
             {   "binominalDraw", "Binominale trekking" },
             {   "grid", "Rooster" },
-            {   "CBA_text.sample", "CSV Steekproef" },
+            {   "CBA_text.sample", "CSV Steekproeven" },
+            {   "CBA_text.sampleProportion", "CSV Streekproefproporties" },
             {   "CBA_text.sampleCollection", "CSV Steekproef verzameling" },
             {   "sample", "Steekproef" },
             {   "sampleSize", "Steekproefgrootte" },
-            {   "getSample", "Doe steekproef"},
-            {   "getSample100Times", "Doe steekproef 100 keer" },
+            {   "getSample", "Voer uit"},
+            {   "getSample100Times", "Doe 100 keer" },
             {   "value", "Waarde" },
             {   "leftTable", "Linker tabel" },
             {   "rightTable", "Rechter tabel" },
-            {   "populationProportion", "Populatieproportie" }
+            {   "populationProportion", "Populatieproportie" },
+            //{   "sampleSize", "Steekproeflengte" }
             //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },
 		//	....

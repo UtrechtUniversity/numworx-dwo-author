@@ -89,8 +89,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 			commands[1] = "text.sampleCollection";
 		}
 		else if (binomTrekkingRadioBool==true) {
-			commands = new String[1];
+			commands = new String[2];
 			commands[0] = "text.sample";
+			commands[1] = "text.sampleProportion";
 		} 
 		else if (dobbelstenenRadioBool==true) {
 			commands = new String[1];
@@ -132,12 +133,25 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		cbookEventHandler.fire("text.sampleCollection",map1);
 	}
 	
-	public void fireCBookBinomTrekking(String arg1) {
+	public void fireCBookBinomTrekking(String arg1, String arg2) {
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("content", arg1);
 		
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		map1.put("content", arg2);
+		
 		cbookEventHandler.fire("text.sample",map);
+		cbookEventHandler.fire("text.sampleProportion",map1);
+	}
+	
+	public void fireCBookMunten(String arg1) {
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("content", arg1);
+				
+		cbookEventHandler.fire("text.sample",map);
+		
 	}
 	
 	public void fireCBookDobbelstenen(String arg1) {

@@ -644,7 +644,7 @@ public class Munten extends JPanel implements ActionListener, Runnable {
 			}
 		}
 				
-		ssip.fireCBookBinomTrekking(string1);		
+		ssip.fireCBookMunten(string1);		
 	}
 	
 	Boolean stapStarted=false;

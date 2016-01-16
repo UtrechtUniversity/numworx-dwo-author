@@ -53,6 +53,7 @@ public class Text_en extends java.util.ListResourceBundle
             {   "binominalDraw", "Binominal draw" },
             {   "grid", "Grid" },
             {   "CBA_text.sample", "CSV Sample" },
+            {   "CBA_text.sampleProportion", "CSV Sample Proportion" },
             {   "CBA_text.sampleCollection", "CSV Sample collection" },
             {   "sample", "Sample" },
             {   "sampleSize", "Sample size" },
@@ -61,7 +62,8 @@ public class Text_en extends java.util.ListResourceBundle
             {   "value", "Value" },
             {   "leftTable", "Left table" },
             {   "rightTable", "Right table" },
-            {   "populationProportion", "Population proportion" }
+            {   "populationProportion", "Population proportion" },
+        //    {   "sampleSize", "Sample size" }
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....

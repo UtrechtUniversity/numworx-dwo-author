@@ -130,14 +130,14 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		this.add(sigmaLabel2);
 		
 		steekproefGrootteLabel=new JLabel(StatSim.rb.getString("sampleSize"));
-		steekproefGrootteLabel.setSize(100,20);
+		steekproefGrootteLabel.setSize(110,20);
 		steekproefGrootteLabel.setLocation(0,140);
 		steekproefGrootteLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		this.add(steekproefGrootteLabel);
 		
 		steekproefGrootteText=new JTextField("10");
 		steekproefGrootteText.setSize(50,20);
-		steekproefGrootteText.setLocation(75,140);
+		steekproefGrootteText.setLocation(110,140);
 		steekproefGrootteText.addActionListener(this);
 		steekproefGrootteText.addFocusListener(this);
 		this.add(steekproefGrootteText);
@@ -145,20 +145,20 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		doeSteekproef=new JButton(StatSim.rb.getString("getSample"));
 		doeSteekproef.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    doeSteekproef.setSize(100,20);
-	    doeSteekproef.setLocation(135,140);
+	    doeSteekproef.setLocation(170,140);
 	    doeSteekproef.addActionListener(this);
 	    this.add(doeSteekproef);
 
 		doeSteekproef100Keer=new JButton(StatSim.rb.getString("getSample100Times"));
 		doeSteekproef100Keer.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-	    doeSteekproef100Keer.setSize(165,20);
-	    doeSteekproef100Keer.setLocation(245,140);
+	    doeSteekproef100Keer.setSize(130,20);
+	    doeSteekproef100Keer.setLocation(280,140);
 	    doeSteekproef100Keer.addActionListener(this);
 	    this.add(doeSteekproef100Keer);
 	    
 		wisResultaten=new JButton(StatSim.rb.getString("erase"));
 		wisResultaten.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		wisResultaten.setSize(165,20);
+		wisResultaten.setSize(160,20);
 		wisResultaten.setLocation(0,this.getHeight()-30);
 		wisResultaten.addActionListener(this);
 		wisResultaten.setEnabled(false);
@@ -306,8 +306,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			
 			sigmaResultaat=Math.sqrt(dummy);
 			
-			sigmaResultaat=((double)Math.round(sigmaResultaat*1000))/1000;
-			muResultaat=((double)Math.round(muResultaat*1000))/1000;
+			sigmaResultaat=((double)Math.round(sigmaResultaat*100))/100;
+			muResultaat=((double)Math.round(muResultaat*100))/100;
 			table1.setValueAt(experiment+1,experiment,0);
 			table1.setValueAt(muResultaat,experiment,1);
 			table1.setValueAt(sigmaResultaat,experiment,2);

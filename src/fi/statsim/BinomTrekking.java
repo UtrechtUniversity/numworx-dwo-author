@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -30,8 +32,6 @@ import javax.swing.table.TableColumn;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
-
-import fi.beans.wiskopdrbeans.CBookAware;
 
 public class BinomTrekking extends JPanel implements ActionListener, FocusListener, Runnable{
 	
@@ -79,7 +79,13 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	
 	StatSimInteractiePanel ssip;
 	
+	DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+	DecimalFormat df3;
+	
 	public BinomTrekking (StatSimInteractiePanel ssip) {
+		
+		dfs.setDecimalSeparator('.');
+		df3 = new DecimalFormat("0.##", dfs);
 		
 		this.ssip=ssip;
 		
@@ -206,8 +212,10 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	public void setZichtbaar() {
 		if (showKans)
 			kansLabel.setText(StatSim.rb.getString("chance"));
-		if (showPopulatieProportie)
+		if (showPopulatieProportie){
 			kansLabel.setText(StatSim.rb.getString("populationProportion"));
+			aantalTrekkingenLabel.setText(StatSim.rb.getString("sampleSize"));
+		}
 		if (showInstellingen) {
 			panel1.setVisible(showInstellingen);
 			voeruit.setLocation(260,5);
@@ -301,8 +309,13 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 		for (int i=0;i<experiment;i++) {
 			string1=string1+table.getValueAt(i, 1)+"\n";
 		}
+		String string2="";
+		for (int i=0;i<experiment;i++) {
+			double proportion = ((Integer)(table.getValueAt(i, 1))).doubleValue()/maxCount;
+			string2=string2+df3.format(proportion)+"\n";
+		}
 				
-		ssip.fireCBookBinomTrekking(string1);		
+		ssip.fireCBookBinomTrekking(string1, string2);		
 	}
 	
 	public void setStartStop() {
@@ -359,6 +372,7 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 			trekkingCount=0;
 			totaal=0;
 			keer.setEnabled(false);
+			wis.setEnabled(true);
 			voeruit.setEnabled(false);
 			numberOfTimes=Integer.parseInt(aantalKeer.getText());
 			maxCount=Integer.parseInt(aantalTrekkingenText.getText());
@@ -402,7 +416,8 @@ public class BinomTrekking extends JPanel implements ActionListener, FocusListen
 	public void doeStap() {
 		Random generator = new Random();
 		double r = generator.nextDouble();
-		
+		if(experiment>999)
+			return;
 		if (r<Double.parseDouble(replaceComma(kansText.getText()))) {
 			totaal=totaal+1;
 			trekkingenGeschiedenis[trekkingCount]=true;
