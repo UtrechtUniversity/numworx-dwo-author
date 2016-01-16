@@ -469,7 +469,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		h.put("column61", binomTrekking.trekkingen);
 		h.put("experiment2", new Integer(binomTrekking.experiment));
 		h.put("startSelected2", new Boolean(binomTrekking.wis.isEnabled()));
-		h.put("maxCount2", new Integer(binomTrekking.maxCount));
+		h.put("maxCount2", new Integer(Integer.parseInt(binomTrekking.aantalTrekkingenText.getText())));
 		h.put("kans", new String(binomTrekking.kansText.getText()));
 		
 		

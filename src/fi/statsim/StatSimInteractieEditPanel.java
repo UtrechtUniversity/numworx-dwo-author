@@ -318,7 +318,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			interactiePanel.binomTrekking.showKans=kansRadioBool;
 
 			Boolean populatieProportieRadioBool=false;
-			if(h.containsKey("binomTrekkingPopulatieProportie")) kansRadioBool= ((Boolean)h.get("binomTrekkingPopulatieProportie")).booleanValue();
+			if(h.containsKey("binomTrekkingPopulatieProportie")) populatieProportieRadioBool= ((Boolean)h.get("binomTrekkingPopulatieProportie")).booleanValue();
 			populatieProportieButton.setSelected(populatieProportieRadioBool);
 			interactiePanel.binomTrekking.showPopulatieProportie=populatieProportieRadioBool;
 		
