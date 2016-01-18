@@ -321,7 +321,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		docentSchaalFactorX = 1;
 		docentSchaalFactorY = 1;
 		docentEenheidxD = eenheidxD;
-		docentEenheidxD = eenheidyD;
+		docentEenheidyD = eenheidyD;
 		docentEenheidxValue = eenheidxValue;
 		docentEenheidyValue = eenheidyValue;
 		schaalFactorX = 1;
@@ -763,8 +763,12 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if(schuifParameters != null)
 		{	for(int i = 0; i < schuifParameters.length; i++)
-			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte() || 
-					schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10)
+			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte()
+					|| schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > this.getHeight() - 4 * offset)
+// It is now possible to drag the schuifparameters outside the graph (into the components)
+// old code ::
+//			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte()
+//				|| schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > currentYTop + veldh - 10) // TODO
 					schuifParameters[i].zetLocatie(offset, currentYTop + veldh - 25*(i + 1));
 			}
 		}//p.zetLocatie(offset, gv.getY() + gv.getHeight() - offset - (schuifParameters.length - 1) * 15);
@@ -1077,7 +1081,6 @@ MouseListener, MouseMotionListener, CBookAware {
 			zoomUitY.setEnabled(b);
 		}
 	}
-		
 	
 	public void zetDragOptie(boolean b)
 	{	dragOptie = b;
@@ -5478,6 +5481,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				eenheidyD = docentEenheidyD;
 				eenheidx = (int) Math.round(eenheidxD);
 				eenheidy = (int) Math.round(eenheidyD);
+
 				eenheidxValue = docentEenheidxValue;
 				eenheidyValue = docentEenheidyValue;
 				beginwaarde = 0;
@@ -5572,6 +5576,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if (e.getSource() == kijkNaButton)
 			{
 				kijkNa();
+
 				if((mode == 0 || mode ==1) && ingevuld)
 					produceAction("checked");
 			}
@@ -5584,9 +5589,9 @@ MouseListener, MouseMotionListener, CBookAware {
 						formuleComponent.parseFormule(j, false);
 					for(int j = 0; j < graphPoints.size(); j++)
 					{	RealPoint rp = (RealPoint) graphPoints.get(j);
-						if(rp.getxString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getxString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setX(schuifParameters[i].geefWaarde());
-						if(rp.getyString().equals(schuifParameters[i].geefNaam()))
+						if(rp.getyString().equals(schuifParameters[i].geefVarNaam()))
 							rp.setY(schuifParameters[i].geefWaarde());
 					}
 					gv.repaint();
@@ -5641,7 +5646,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			double stapx, stapy;
 			double factorx = 1;
 			double factory = 1;
-			
+
 			double middenx = veldb/2/eenheidx*eenheidx;
 			double middeny = veldh/2/eenheidy*eenheidy;
 			

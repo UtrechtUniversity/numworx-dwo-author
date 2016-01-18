@@ -55,6 +55,21 @@ public class SchuifParameter implements ActionListener{
 		return naam;
 	}
 	
+	public String geefVarNaam()
+	{	String naamNieuw = "";
+		if(naam.length()==2) 
+		{	char char1 = naam.charAt(0);
+	    	char char2 = naam.charAt(1);
+	    	if(Character.isLetter(char1) && Character.isDigit(char2)) 
+	    	{	naamNieuw = naamNieuw+char1+"?("+char2+")";
+	    	}
+	    	
+	    }
+		if("".equals(naamNieuw))
+			naamNieuw = naam;
+		return naamNieuw;
+	}
+	
 	public void zetLocatie(int x, int y)
 	{
 		this.x = x;

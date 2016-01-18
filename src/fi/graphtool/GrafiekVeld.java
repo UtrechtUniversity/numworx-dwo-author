@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.vecmath.Vector2d;
+//import javax.vecmath.Vector2d;
+import fi.beans.lineairealgebra.Vector2d;
 import javax.swing.JComponent;
 
 import fi.wiskopdr.expressies.Expressie;
@@ -54,6 +55,7 @@ class GrafiekVeld extends JComponent{
 		else {
 			scalingMultiplier = gtip.schaalFactorX;			
 		}
+
 		double valueX = (pixelsX-gtip.beginx)/gtip.eenheidxD*scalingMultiplier;
 		if (gtip.xAsLog) {
 			valueX = Math.pow(10, valueX);
@@ -63,14 +65,13 @@ class GrafiekVeld extends JComponent{
 	}
 	
 	public double pixelsYtoValue(double pixelsY) { 
-		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsX 
+		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsY 
 		double scalingMultiplier;		
-		
-		if (gtip.manualScalingX) {
-			scalingMultiplier = gtip.eenheidxValue;
+		if (gtip.manualScalingY) {
+			scalingMultiplier = gtip.eenheidyValue;
 		}
 		else {
-			scalingMultiplier = gtip.schaalFactorX;			
+			scalingMultiplier = gtip.schaalFactorY;			
 		}
 //		double valueY = (pixelsX-gtip.beginx)/gtip.eenheidxD*scalingMultiplier;
 		double valueY = (scalingMultiplier * (-gtip.beginy) / gtip.eenheidyD +
@@ -136,7 +137,7 @@ class GrafiekVeld extends JComponent{
 				vScherm.normalize();  // eenheidVector (1 pixel)
 				vScherm.scale(cSampleDist); // zet op sterkte van sample afstand
 			}
-			pScherm.setLocation(pScherm.getX()+vScherm.x, pScherm.getY()+vScherm.y);
+			pScherm.setLocation(pScherm.getX()+vScherm.getX(), pScherm.getY()+vScherm.getY());
 			if (i%50==0)
 				fieldData.verlengPad(xIndex, yIndex, pScherm);
 		}
@@ -149,7 +150,7 @@ class GrafiekVeld extends JComponent{
 		Vector2d vWerkelijk = new Vector2d(	xAsExpressie.substitueer(pWerkelijk.getX(), gtip.xAsNaam).substitueer(pWerkelijk.getY(), gtip.yAsNaam).geefWaarde(),
 											yAsExpressie.substitueer(pWerkelijk.getX(), gtip.xAsNaam).substitueer(pWerkelijk.getY(), gtip.yAsNaam).geefWaarde());
 		
-		Point2D.Double pEindWerkelijk = new Point2D.Double(pWerkelijk.getX()+vWerkelijk.x, pWerkelijk.getY()+vWerkelijk.y);
+		Point2D.Double pEindWerkelijk = new Point2D.Double(pWerkelijk.getX()+vWerkelijk.getX(), pWerkelijk.getY()+vWerkelijk.getY());
 		Point2D.Double pEindScherm = new Point2D.Double(valueXtoPixels(pEindWerkelijk.getX()),valueYtoPixels(pEindWerkelijk.getY()));
 
 		Vector2d vScherm = new Vector2d();
@@ -157,24 +158,20 @@ class GrafiekVeld extends JComponent{
 		return (vScherm);
 	}
 	
-	private void tekenPijlpunt(Graphics2D g, Point vectorStartScherm, Point vectorEindScherm ) { 
+	private void tekenPijlpunt(Graphics2D g, Point2D.Double vectorStartScherm, Point2D.Double vectorEindScherm ) { 
 	    double h = 3*Math.sqrt(3), w = 3;
 	    Vector2d A = new Vector2d();
 	    
 	    Vector2d Vec = new Vector2d(vectorEindScherm.getX()-vectorStartScherm.getX(), vectorEindScherm.getY()-vectorStartScherm.getY());
 	    
-	    Vector2d U = new Vector2d(Vec.x/Vec.length(), Vec.y/Vec.length());
+	    Vector2d U = new Vector2d(Vec.getX()/Vec.length(), Vec.getY()/Vec.length());
 	    //U.set(Vec.x/Vec.length(), Vec.y/Vec.length());
 	    
-//		System.out.println("tekenPijlpunt :: Vec.x =" + Vec.x);
-//		System.out.println("tekenPijlpunt :: Vec.y =" + Vec.y);
-//		System.out.println("tekenPijlpunt :: U.x =" + U.x);
-//		System.out.println("tekenPijlpunt :: U.y =" + U.y);
-		Vector2d V = new Vector2d(-U.y, U.x);
-		Vector2d v1 = new Vector2d(vectorEindScherm.getX() -h * U.x + w*V.x, vectorEindScherm.getY() -h * U.y + w*V.y);
-		Vector2d v2 = new Vector2d(vectorEindScherm.getX() -h * U.x - w*V.x, vectorEindScherm.getY() -h * U.y - w*V.y);
-		g.drawLine((int) v1.x, (int) v1.y, (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
-		g.drawLine((int) v2.x, (int) v2.y, (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+		Vector2d V = new Vector2d(-U.getY(), U.getX());
+		Vector2d v1 = new Vector2d(vectorEindScherm.getX() -h * U.getX() + w*V.getX(), vectorEindScherm.getY() -h * U.getY() + w*V.getY());
+		Vector2d v2 = new Vector2d(vectorEindScherm.getX() -h * U.getX() - w*V.getX(), vectorEindScherm.getY() -h * U.getY() - w*V.getY());
+		g.drawLine((int) v1.getX(), (int) v1.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+		g.drawLine((int) v2.getX(), (int) v2.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
 
 	}
 	
@@ -188,13 +185,14 @@ class GrafiekVeld extends JComponent{
 	}	
 */
 	
-	private Point tekenVector(Graphics2D g, Point vectorStartScherm, Expressie xAsExpressie, Expressie yAsExpressie,boolean tekenPijlpunt) {
+	private Point2D.Double tekenVector(Graphics2D g, Point2D.Double vectorStartScherm, Expressie xAsExpressie, Expressie yAsExpressie,boolean tekenPijlpunt) {
 		double vectorStartXWaarde = pixelsXtoValue(vectorStartScherm.getX()); 
 		double vectorStartYWaarde = pixelsYtoValue(vectorStartScherm.getY());
 		
 		double vectorEindXWaarde = vectorStartXWaarde + xAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
 		double vectorEindYWaarde = vectorStartYWaarde + yAsExpressie.substitueer(vectorStartXWaarde, gtip.xAsNaam).substitueer(vectorStartYWaarde, gtip.yAsNaam).geefWaarde();
-				
+		
+		
 	    Vector2d vectorScherm = new Vector2d(valueXtoPixels(vectorEindXWaarde)-vectorStartScherm.getX(), valueYtoPixels(vectorEindYWaarde)-vectorStartScherm.getY());
 
 	    if (gtip.veldPijlGrootteModus == VeldComponent.FieldGraphArrowSizeMode.FIXEDSIZE) {
@@ -210,29 +208,18 @@ class GrafiekVeld extends JComponent{
 		    }
 	    }
 
-		Point vectorEindScherm = new Point();
-		vectorEindScherm.setLocation(vectorStartScherm.getX() + vectorScherm.x, vectorStartScherm.getY() + vectorScherm.y);
+	    Point2D.Double vectorEindScherm = new Point2D.Double();
+		vectorEindScherm.setLocation(vectorStartScherm.getX() + vectorScherm.getX(), vectorStartScherm.getY() + vectorScherm.getY());
 		
 		if ( ((int) vectorStartScherm.getX()!= (int) vectorEindScherm.getX()) || ((int) vectorStartScherm.getY()!= (int)vectorEindScherm.getY()) ) { 
 			// alleen tekenen wanneer er lengte is
 			g.drawLine((int) vectorStartScherm.getX(), (int) vectorStartScherm.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
-
 			
 			if (tekenPijlpunt) {
 				tekenPijlpunt(g, vectorStartScherm, vectorEindScherm);
 			}
 		}
 
-//		System.out.println(" :: vectorStartXWaarde =" + vectorStartXWaarde);
-//		System.out.println("tekenVector :: vectorStartYWaarde =" + vectorStartYWaarde);
-//		System.out.println("tekenVector :: vectorEindXWaarde =" + vectorEindXWaarde);
-//		System.out.println("tekenVector :: vectorEindYWaarde =" + vectorEindYWaarde);
-//		System.out.println("tekenVector :: vectorStartScherm.x =" + vectorStartScherm.getX());
-//		System.out.println("tekenVector :: vectorStartScherm.y =" + vectorStartScherm.getY());
-//		System.out.println("tekenVector :: vectorEindScherm.x =" + vectorEindScherm.getX());
-//		System.out.println("tekenVector :: vectorEindScherm.y =" + vectorEindScherm.getY());
-
-		
 		return (vectorEindScherm);
 	}
 	
@@ -815,7 +802,7 @@ class GrafiekVeld extends JComponent{
 					if(gtip.schuifParameters != null)
 					{	for(int i = 0; i < gtip.schuifParameters.length; i++)
 						{	SchuifParameter p = gtip.schuifParameters[i];
-							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 						}
 					}
 					for(int i=xMin; i<xMax ; i++)
@@ -1016,8 +1003,6 @@ class GrafiekVeld extends JComponent{
 			gtip.slider.setLocation(0, sliderLoc);
 		}
 //		tekenVeldFunctie(manScalingMultiplyX, manScalingMultiplyY);
-//		System.out.println("GrafiekVeld :: VeldFuncties X = " + gtip.veldFuncties[0][0]);
-//		System.out.println("GrafiekVeld :: VeldFuncties Y = " + gtip.veldFuncties[0][1]);
 
 		if ( (gtip.veldFuncties[0][0] != null) && (gtip.veldFuncties[0][1] != null) ) { // TODO - criterium
 			
@@ -1026,8 +1011,8 @@ class GrafiekVeld extends JComponent{
 			if(gtip.schuifParameters != null) {	
 				for(int i = 0; i < gtip.schuifParameters.length; i++) {	
 					SchuifParameter p = gtip.schuifParameters[i];
-					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
-					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefNaam());
+					xAsExpressie = xAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					yAsExpressie = yAsExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 				}
 			}
 
@@ -1038,8 +1023,8 @@ class GrafiekVeld extends JComponent{
 				for(int j=jmin ; j<jmax ; j++) { // y-as aflopen
 					
 					// bepaal roosterpositie = begin van vector / stream
-					int vectorStartXScreen = (int) (bx+i*ehxD);
-					int vectorStartYScreen = (int) (hoogte-(by+j*ehyD));
+					double vectorStartXScreen =  (gtip.beginx+i*ehxD);
+					double vectorStartYScreen =  (hoogte-(gtip.beginy+j*ehyD));
 
 					// tekenvector
 //					if ((i==0) && (j==0))
@@ -1049,9 +1034,10 @@ class GrafiekVeld extends JComponent{
 
 
 					if ((!gtip.veldLargerGridStartPoints) || ((i%2==0) && (j%2==0))) {
-//						if ((i==2) && (j==2)) {
+//						if ((i==0) && (j==2)) {
 //						calculateStream(new Point2D.Double(vectorStartXScreen, vectorStartYScreen), i, j,  fieldData, gtip.veldFuncties[0][0], gtip.veldFuncties[0][1]);
-						tekenVector(g, new Point(vectorStartXScreen, vectorStartYScreen), xAsExpressie, yAsExpressie, true);
+							
+						tekenVector(g, new Point2D.Double(vectorStartXScreen, vectorStartYScreen), xAsExpressie, yAsExpressie, true);
 //						}
 
 					}
@@ -1311,7 +1297,6 @@ class GrafiekVeld extends JComponent{
 			else {
 				linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 								
 			}
-//			System.out.println("linkerGrens="+linkerGrens);
 
 			double xLinks = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens; 
 			double yLinks = gtip.yAsLog?Math.pow(10, helling * (linkerGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY())):
@@ -1441,7 +1426,6 @@ class GrafiekVeld extends JComponent{
 				else {
 					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 
 				}
-//				System.out.println("linkerGrens 2="+linkerGrens);
 
 				double x0 = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens;
 				double y0 = gtip.yAsLog?Math.pow(10, helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY())):
@@ -1989,7 +1973,15 @@ class GrafiekVeld extends JComponent{
 	{	Graphics2D g = (Graphics2D) gr;
 		for(int j=0 ; j<gtip.verticaleLijnen.length ; j++)
 		{	if(gtip.verticaleLijnen[j]!=null)
-			{	double xWaarde = gtip.verticaleLijnen[j].geefWaarde();
+			{	
+				Expressie ingevuldeExpressie = gtip.verticaleLijnen[j];
+				if(gtip.schuifParameters != null)
+				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
+					{	SchuifParameter p = gtip.schuifParameters[i];
+						ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
+					}
+				}
+				double xWaarde = ingevuldeExpressie.geefWaarde();
 // 				double xWaardePixels = gtip.beginx + gtip.eenheidxD*(gtip.xAsLog?Math.log10(xWaarde):xWaarde)/gtip.schaalFactorX;
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
@@ -2013,7 +2005,7 @@ class GrafiekVeld extends JComponent{
 				int schuifParameterIndex = -1;
 				if(gtip.schuifParameters != null)
 				{	for(int i = 0; i < gtip.schuifParameters.length; i++)
-					{	if(variabele.equals(gtip.schuifParameters[i].geefNaam()))
+					{	if(variabele.equals(gtip.schuifParameters[i].geefVarNaam()))
 						{	schuifParameterIndex = i;
 							break;
 						}

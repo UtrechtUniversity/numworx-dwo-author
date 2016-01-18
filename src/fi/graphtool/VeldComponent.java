@@ -241,8 +241,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void zetXAsNaam(String s, boolean setState)
 	{	String oudeXAsNaam = xAsNaam;
 		xAsNaam = s;
-		System.out.println("zetXAsNaam - oudeXAsNaam=" + oudeXAsNaam);
-		System.out.println("zetXAsNaam - xAsNaam=" + xAsNaam);
 
 		for(int i=0 ; i<formuleVakken.length ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
@@ -263,8 +261,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	public void zetYAsNaam(String s, boolean setState)
 	{	String oudeYAsNaam = yAsNaam;
 		yAsNaam = s;
-		System.out.println("zetYAsNaam - oudeYAsNaam=" + oudeYAsNaam);
-		System.out.println("zetYAsNaam - yAsNaam=" + yAsNaam);
 
 		for(int i=0 ; i<formuleVakken.length ; i++)
 		{	String vervangString = formuleVakken[i].formuleVak.toString();
@@ -492,13 +488,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
 	    h.put("veldGrafiekExpressieStrings", veldGrafiekExpressieStrings);
 		h.put("veldGrafiekGeselecteerd", veldGrafiekGeselecteerd);
 
-		for (int i=0; i<veldGrafiekExpressieStrings.length; i++) { 
-			System.out.println("veld::Get::veldGrafiekExpressieStrings[" + i + "]=" + veldGrafiekExpressieStrings[i]);
-		}
-		for (int i=0; i<veldGrafiekGeselecteerd.length; i++) { 
-			System.out.println("veld::Get::veldGrafiekGeselecteerd[" + i + "]=" + veldGrafiekGeselecteerd[i]);
-		}
-
 	    return h;
 	}
 	
@@ -515,13 +504,6 @@ public class VeldComponent extends FormuleEditor implements FocusListener, Mouse
     		return;
     	}
     	
-		for (int i=0; i<veldGrafiekExpressieStrings.length; i++) { 
-			System.out.println("veld::Set::veldGrafiekExpressieStrings[" + i + "]=" + veldGrafiekExpressieStrings[i]);
-		}
-		for (int i=0; i<veldGrafiekGeselecteerd.length; i++) { 
-			System.out.println("veld::Set::veldGrafiekGeselecteerd[" + i + "]=" + veldGrafiekGeselecteerd[i]);
-		}
-
     	
      	for(int i = 0; i < veldGrafiekExpressieStrings.length; i++)	 {	
      		if(!veldGrafiekExpressieStrings[i].equals("$f@") && !(i > 0 && veldGrafiekExpressieStrings[i].endsWith("=@") && docent)) {	

@@ -1545,7 +1545,6 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	public void zetHoogte(int h) {
 		defaultIpHeight = h;
 		interactiePanel.setBounds(0, 0, interactiePanel.getWidth(), h);	
-		System.out.println("zetHoogte manualScaling=" + manualScaling);
 		if (manualScaling) {
 			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
 		}
