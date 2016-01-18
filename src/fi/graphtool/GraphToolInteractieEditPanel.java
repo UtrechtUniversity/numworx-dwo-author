@@ -40,6 +40,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
+	private static final boolean cDefault_TraceOption = false;
 	
 	private int defaultWidth = 800; 
 	private int defaultIpHeight = 300;
@@ -221,7 +222,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		schaalY = true;
 		piLijnenZichtbaar = false; 
 		zoomOptie = true; 
-		traceOptie = true; 
+		traceOptie = cDefault_TraceOption; 
 		dragOptie = true; 
 		formeleFuncties = true;
 		zoomInTabel = true;
@@ -1414,7 +1415,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		schaalYCB.setSelected(schaalY);
 		piLijnenZichtbaarCB.setSelected(piLijnenZichtbaar);
 		zoomOptieCB.setSelected(zoomOptie);
-		traceOptieCB.setSelected(traceOptie);
+		traceOptieCB.setSelected(traceOptie && !tekenComponentAan);
 		dragOptieCB.setSelected(dragOptie);
 		zoomInTabelCB.setSelected(zoomInTabel);
 		tabelAlsTekenToolCB.setSelected(tabelAlsTekenTool);
@@ -1444,6 +1445,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		zoomInTabelCB.setEnabled(!tabelAlsTekenTool);
 		tabelAlsTekenToolCB.setVisible(tabelComponentAan);
 		snapToGridPointsCB.setVisible(tekenComponentAan);
+		traceOptieCB.setVisible(!tekenComponentAan);
+
 		krommeZonderExtrapolatieCB.setVisible(tekenComponentAan);
 		krommeMetExtrapolatieCB.setVisible(tekenComponentAan);
 		tekenGrafiekNauwkeurigheidLabel.setVisible(tekenComponentAan);// && tekenGrafiekAan);
@@ -1636,14 +1639,21 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			veldEditorOptiesButton.setVisible(veldComponentAan);
 			interactiePanel.zetVeldComponent(veldComponentAan, false);
 		}
-		if(e.getSource().equals(tekenComponentCB))
-		{	tekenComponentAan = tekenComponentCB.isSelected();
+		if(e.getSource().equals(tekenComponentCB)) {	
+			tekenComponentAan = tekenComponentCB.isSelected();
 			snapToGridPointsCB.setVisible(tekenComponentAan);
 			krommeZonderExtrapolatieCB.setVisible(tekenComponentAan);
 			krommeMetExtrapolatieCB.setVisible(tekenComponentAan);
 			tekenGrafiekNauwkeurigheidLabel.setVisible(tekenComponentAan);// && tekenGrafiekAan);
 			tekenGrafiekNauwkeurigheidTF.setVisible(tekenComponentAan);// && tekenGrafiekAan);
 			interactiePanel.zetTekenComponent(tekenComponentAan);
+			
+			if (tekenComponentAan) {
+				traceOptie = false;
+				traceOptieCB.setSelected(false);
+			}
+			traceOptieCB.setVisible(!tekenComponentAan);
+
 		}
 		if(e.getSource().equals(tabelComponentCB))
 		{	tabelComponentAan = tabelComponentCB.isSelected();
