@@ -1305,8 +1305,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				}
 	}
 	
-	public void zetMaxScores(int[] ms)
-	{	
+	public void zetMaxScores(int[] ms) {	
 		maxScores = ms;
 		updateAantalFuncties();
 		if(typeOpdracht == VINDFORMULEBIJGRAFIEK || typeOpdracht == TEKENPUNTENBIJFORMULE)
@@ -1318,6 +1317,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			scoreMax = 0;
 		else
 			scoreMax = maxScores[0];
+
 	}
 
 	public void zetNauwkeurigheid(int[] ms)
@@ -3982,6 +3982,49 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 	}
 	
+	private Color verwerkAsNaamBijNakijken(boolean show, Color color, boolean correctLogica) {
+		Color returnColor = color;
+		if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam)) {
+			if ( (score > 0) && (correctLogica) )
+				returnColor = new Color(255, 193, 0);
+			score = Math.max(score - 2, 0);
+			if (correctLogica) {	
+				correct = false; 
+				groenVinkjeLabel.setVisible(false);
+				oranjeVinkjeLabel.setVisible(show);
+				if (show) 
+					setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
+			}
+		}
+		return (returnColor);
+	}
+	
+	private Color verwerkTekenModusBijNakijken(boolean show, Color color, boolean correctLogica) {
+		Color returnColor = color;
+		//	if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
+		//	tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
+		//	tekenComponent.getConnectMode() != tekenComponent.CURVE &&
+		//	tekenComponent.getConnectMode() != tekenComponent.LINES) {	
+		if ( !( ( rechteVerbindingen && tekenComponent.getConnectMode() == tekenComponent.LINES) || 
+				( krommeZonderExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE) ||
+				( krommeMetExtrapolatie && tekenComponent.getConnectMode() == tekenComponent.CURVE_EXTRA)
+			  ) 
+		   ) {
+			if ( (score > 0) && (correctLogica) )
+				returnColor = new Color(255, 193, 0);
+			score = Math.max(score - 2, 0);
+			if (correctLogica) {	
+				correct = false;
+				fout = true;
+				groenVinkjeLabel.setVisible(false);
+				oranjeVinkjeLabel.setVisible(show);
+				if (show) 
+					setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
+			}		 
+		}
+		return (returnColor);
+	}
+	
 	public void kijkNa(boolean show)
 	{	if(checkExternal || mode == 2 || mode == 3)
 		{	add(groenVinkjeLabel, 0);
@@ -4195,7 +4238,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				{	permutatie[i][0] = i;
 					permutatie[i][1] = -1;
 				}
-				permutatie[0][1] = 0;
+				if (permutatie.length > 0)
+					permutatie[0][1] = 0;
 				int totaalHits = 0;
 				int permutatieHits;
 				int[] koppeling = new int[aantalFuncties];
@@ -4281,33 +4325,9 @@ MouseListener, MouseMotionListener, CBookAware {
 						puntenCorrect = false;
 					}
 				}
-				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
-				{	if(score > 0)
-					color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
-					{	correct = false; 
-						fout = true;
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstLabelsAssen"),true);
-					}
-				}
-				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
-						tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
-						tekenComponent.getConnectMode() != tekenComponent.CURVE &&
-						tekenComponent.getConnectMode() != tekenComponent.LINES)
-				{	if(score > 0)
-					color = new Color(255, 193, 0);
-					score = Math.max(score - 2, 0);
-					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
-					{	correct = false;
-						fout = true;
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
-					} 
-				}	
+				boolean correctLogica = (correct || (oranjeVinkjeLabel.isVisible() && puntenCorrect));
+				color = verwerkAsNaamBijNakijken(show, color, correctLogica);
+				color = verwerkTekenModusBijNakijken(show, color, correctLogica);
 				
 				if(show) 
 				{	//leerlingcolor op juiste kleur zetten.
@@ -4423,41 +4443,11 @@ MouseListener, MouseMotionListener, CBookAware {
 					oranjeVinkjeLabel.setVisible(false);
 					kruisjeLabel.setVisible(show);
 				}
-				System.out.println("KijkNa - Tabel - rechteVerbindingen =" + rechteVerbindingen);
-				System.out.println("KijkNa - Tabel - krommeMetExtrapolatie =" + krommeMetExtrapolatie);
-				System.out.println("KijkNa - Tabel - krommeZonderExtrapolatie =" + krommeZonderExtrapolatie);
-				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.CURVE_EXTRA =" + tekenComponent.CURVE_EXTRA);
-				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.CURVE =" + tekenComponent.CURVE);
-				System.out.println("KijkNa - Tabel - getConnectMode::tekenComponent.LINES =" + tekenComponent.LINES);
-				System.out.println("KijkNa - Tabel - getConnectMode =" + tekenComponent.getConnectMode());
+				color = verwerkTekenModusBijNakijken(show, color, correct);
+				color = verwerkAsNaamBijNakijken(show, color, correct);
 
-//				if((rechteVerbindingen || krommeMetExtrapolatie || krommeZonderExtrapolatie) && 
-//						tekenComponent.getConnectMode() != tekenComponent.CURVE_EXTRA && 
-//						tekenComponent.getConnectMode() != tekenComponent.CURVE &&
-//						tekenComponent.getConnectMode() != tekenComponent.LINES)
-//				{	if(score > 0)
-//					color = new Color(255, 193, 0);
-//					score = Math.max(score - 2, 0);
-//					if(correct || oranjeVinkjeLabel.isVisible() && puntenCorrect)
-//					{	correct = false;
-//						fout = true;
-//						groenVinkjeLabel.setVisible(false);
-//						oranjeVinkjeLabel.setVisible(show);
-//						if(show)setFeedback(GraphTool.rb.getString("feedbackTekstTekenGrafiek"),true);
-//					} 
-//				}	
-				
-				if(!grafiekXAsNaam.equals(xAsNaam) || !grafiekYAsNaam.equals(yAsNaam))
-				{	score = Math.max(score - 2, 0);
-					if(correct)
-					{	correct = false; 
-						groenVinkjeLabel.setVisible(false);
-						oranjeVinkjeLabel.setVisible(show);
-					}
-				}
 				if(show)
 					setColor(0, color, true);
-				
 				repaint();
 			}
 		}
@@ -4673,6 +4663,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if (Double.isNaN(rp.getX()) || Double.isNaN(rp.getY()))
 			return null;
+
 		Point pix = new Point();
 		if (manualScalingX) {
 			pix.x =	(int) Math.round(beginx + eenheidxD * rp.getX() / eenheidxValue);			
@@ -4697,6 +4688,7 @@ MouseListener, MouseMotionListener, CBookAware {
 											(beginy + eenheidyD * rp.getY() / schaalFactorY));
 			}			
 		}
+//		System.out.println("realPointToPixels :: output = [" + pix.getX() +","+ pix.getY() + "]");
 
 		return pix;
 	}
@@ -4727,6 +4719,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				realPix.setY(gv.getSize().height - (beginy + eenheidyD * rp.getY() / schaalFactorY));
 			}			
 		}
+//		System.out.println("realPointToRealPixels :: output = [" + realPix.getX() +","+ realPix.getY() + "]");
 		return realPix;
 	}
 	
@@ -4763,6 +4756,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		rp.setxString(Double.toString(rp.getX()));
 		rp.setyString(Double.toString(rp.getY()));
+//		System.out.println("pixelsToRealPoint :: output = [" + rp.getX() +","+ rp.getY() + "]");
 		return rp;
 	}
 	
@@ -5640,11 +5634,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		public void run()
 		{	
 			if(x) selectnummer = 999;
-// RPJ changed scaling - eenheid?D no longer fixed to 16!
-//          double eenheidxD = xAsLog?2*eenheid:eenheid; 
-//			double eenheidyD = yAsLog?2*eenheid:eenheid;
-//			double eenheidx = xAsLog?2*eenheid:eenheid;
-//			double eenheidy = yAsLog?2*eenheid:eenheid;
+			if (!manualScalingX) {
+				double eenheidxD = xAsLog?2*eenheid:eenheid; 
+				double eenheidx = xAsLog?2*eenheid:eenheid;
+			}
+			if (!manualScalingY) {
+				double eenheidyD = yAsLog?2*eenheid:eenheid;
+				double eenheidy = yAsLog?2*eenheid:eenheid;
+			}
 			
 			double stapx, stapy;
 			double factorx = 1;
@@ -5720,10 +5717,12 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(in && y)factorRijNummerY--;
 			if(!in && y)factorRijNummerY++;
 
-// RPJ
-//			eenheidxD = eenheidxD*factorx;
-//			eenheidyD = eenheidyD*factory;
-			
+			if (!manualScalingX) {
+				eenheidxD = eenheidxD*factorx;
+			}
+			if (!manualScalingY) {
+				eenheidyD = eenheidyD*factory;
+			}
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
 				long t = System.currentTimeMillis();
