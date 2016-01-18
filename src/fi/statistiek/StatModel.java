@@ -42,6 +42,11 @@ public class StatModel extends Observable implements TableModelListener
 		this.addView(Statistiek.createView("Table",
 			Statistiek.rb.getString("tableOption") + " 1", this.data, 0, 0, null));
 	}
+	
+	public void removeData()
+	{
+		data.removeAllRows();
+	}
 
 	/**
 	 * Find the lowest i >= 1 for which the view name "viewTypeName i" is free

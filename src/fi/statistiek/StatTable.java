@@ -346,7 +346,7 @@ public class StatTable extends JPanel implements StatistiekView,
 
 		public void setValue(Object value)
 		{
-			if (((String)value).equals(ColumnType.WILDCARD))
+			if (value==null || ((String)value).equals(ColumnType.WILDCARD))
 			{
 				// a wildcard remains a wildcard
 				setText((String)value);

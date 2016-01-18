@@ -577,16 +577,22 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 				Hashtable h = this.getState();
 				h.remove("selectionList");
 				Hashtable tableModel = (Hashtable) h.get("tableModel");
-				int columnCount = ((Integer) tableModel.get("columnCount"))
-					.intValue();
+				int columnCount = ((Integer) tableModel.get("columnCount")).intValue();
 				boolean dataFitting = true;
 				String dataString = (String) map.get("content");
+				
+				if("".equals(dataString))
+				{	model.removeData();
+					return;
+				}
+				
 				String[] regels = dataString.split("\n");
 				ArrayList<ArrayList<Object>> values = new ArrayList<ArrayList<Object>>();
-				for (int i = 0; i < regels.length; i++)
+				for (int i = 0; i < regels.length && !"".equals(dataString); i++)
 				{
 					String[] waarden = regels[i].split(";");
-					if (waarden.length != columnCount)
+					//System.out.println("Waardenlengte"+waarden.length);
+					if (waarden.length != columnCount && !"".equals(dataString))
 					{
 						JOptionPane.showMessageDialog(this,
 							"Data not fitting in number of columns");
@@ -595,14 +601,15 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 					}
 					values.add(new ArrayList<Object>());
 					for (int j = 0; j < waarden.length; j++)
-					{
-						values.get(i).add(waarden[j]);
+					{	//System.out.println("Waarden"+j+waarden[j]);
+						if(!"".equals(waarden[j].trim()))
+							values.get(i).add(waarden[j]);
 					}
 				}
 				if (dataFitting)
 				{
 					tableModel.put("rowCount", new Integer(regels.length));
-					tableModel.put("values", values);
+					if(regels.length>0)tableModel.put("values", values);
 					h.put("tableModel", tableModel);
 					this.setState(h);
 				}

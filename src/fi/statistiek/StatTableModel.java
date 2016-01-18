@@ -272,7 +272,7 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (!o.equals(ColumnType.WILDCARD))
+			if (o!=null && !o.equals(ColumnType.WILDCARD))
 			{
 				count++;
 			}
@@ -528,7 +528,7 @@ public class StatTableModel implements TableModel
 //				+ ", this.hashCode()=" + this.hashCode());
 //		}
 		
-		if (rowIndex < this.rowCount && columnIndex < this.columnCount)
+		if (this.values.size()>0 && this.values.get(rowIndex).size()>0 && rowIndex < this.rowCount && columnIndex < this.columnCount)
 		{
 			return (this.values.get(rowIndex)).get(columnIndex);
 		}
@@ -945,6 +945,14 @@ public class StatTableModel implements TableModel
 			i++;
 		}
 		return -1;
+	}
+	
+	public synchronized void removeAllRows()
+	{
+		int count = this.rowCount;
+		for (int i = count-1 ; i >-1; i--)
+		{	removeRow(i);
+		}
 	}
 
 	/**
@@ -1412,7 +1420,7 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
+				if (o!=null && !o.equals(ColumnType.WILDCARD))
 				{
 					Double d = Double.parseDouble((String) o);
 					if (d < min)
@@ -1464,7 +1472,7 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i))
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (!o.equals(ColumnType.WILDCARD))
+					if (o!=null && !o.equals(ColumnType.WILDCARD))
 					{
 						Double d = Double.parseDouble((String) o);
 						if (d < min)
@@ -1509,7 +1517,7 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
+				if (o!=null && !o.equals(ColumnType.WILDCARD))
 				{
 					Double d = Double.parseDouble((String) o);
 					if (d > max)
@@ -1562,7 +1570,7 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i)) // only process the selected items
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (!o.equals(ColumnType.WILDCARD))
+					if (o!=null && !o.equals(ColumnType.WILDCARD))
 					{
 						Double d = Double.parseDouble((String) o);
 						if (d > max)
@@ -1607,7 +1615,7 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (!o.equals(ColumnType.WILDCARD))
+			if (o!=null && !o.equals(ColumnType.WILDCARD))
 			{
 				Double d = Double.parseDouble((String) o);
 				sum += d;
@@ -1648,7 +1656,7 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i))
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (!o.equals(ColumnType.WILDCARD))
+					if (o!=null && !o.equals(ColumnType.WILDCARD))
 					{
 						Double d = Double.parseDouble((String) o);
 						sum += d;
@@ -1688,7 +1696,7 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (!o.equals(ColumnType.WILDCARD))
+			if (o!=null && !o.equals(ColumnType.WILDCARD))
 			{
 				Double d = Double.parseDouble((String) o);
 				sum += Math.pow(d - mean, 2);
@@ -1727,7 +1735,7 @@ public class StatTableModel implements TableModel
 			if (this.selectionList.get(i))
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
+				if (o!=null && !o.equals(ColumnType.WILDCARD))
 				{
 					Double d = Double.parseDouble((String) o);
 					sum += Math.pow(d - mean, 2);
@@ -2281,7 +2289,7 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.getRowCount(); i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (!ColumnType.WILDCARD.equals(o))
+				if (o!=null && !ColumnType.WILDCARD.equals(o))
 				{
 					Double d = Double.parseDouble((String) o);
 					int bin = -1;
@@ -2758,7 +2766,7 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (!o.equals(ColumnType.WILDCARD))
+				if (o!=null && !o.equals(ColumnType.WILDCARD))
 				{
 					isEmpty = false;
 					break;

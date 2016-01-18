@@ -720,7 +720,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnSplitIndex());
-			if (s.equals(ColumnType.WILDCARD))
+			if (s==null || s.equals(ColumnType.WILDCARD))
 			{
 				// TODO wildcard kleur?
 				return Color.PINK;
@@ -769,7 +769,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnColorIndex());
-			if (s.equals(ColumnType.WILDCARD))
+			if (s==null || s.equals(ColumnType.WILDCARD))
 			{
 				// TODO wildcard kleur?
 				return Color.PINK;
@@ -832,7 +832,7 @@ public class DotplotView extends JPanel implements Observer
 	{
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnXIndex());
-		if (valueString.equals(ColumnType.WILDCARD))
+		if (valueString==null || valueString.equals(ColumnType.WILDCARD))
 		{
 			return -1;
 		}
@@ -993,7 +993,7 @@ public class DotplotView extends JPanel implements Observer
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnYIndex());
 
-		if (valueString.equals(ColumnType.WILDCARD))
+		if (valueString==null || valueString.equals(ColumnType.WILDCARD))
 		{
 			return -1;
 		}
@@ -1761,7 +1761,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString.equals(ColumnType.WILDCARD))
+			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
 			{
 				continue;
 			}
@@ -1811,7 +1811,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString.equals(ColumnType.WILDCARD))
+			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
 			{
 				continue;
 			}
@@ -1864,7 +1864,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString.equals(ColumnType.WILDCARD))
+			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
 			{
 				continue;
 			}
@@ -2046,7 +2046,7 @@ public class DotplotView extends JPanel implements Observer
 			String valueStringB = (String) this.model.getStatTableModel()
 				.getValueAt(i, indexColumnB);
 			
-			if (valueStringA.equals(ColumnType.WILDCARD) || valueStringB.equals(ColumnType.WILDCARD))
+			if (valueStringA==null || valueStringB==null || valueStringA.equals(ColumnType.WILDCARD) || valueStringB.equals(ColumnType.WILDCARD))
 			{
 				continue;
 			}
@@ -2338,6 +2338,9 @@ public class DotplotView extends JPanel implements Observer
 		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			if (this.model.getStatTableModel()
+					.getValueAt(i, this.model.getColumnXIndex())==null
+				||	
+					this.model.getStatTableModel()
 				.getValueAt(i, this.model.getColumnXIndex())
 				.equals(ColumnType.WILDCARD))
 			{
@@ -2522,6 +2525,8 @@ public class DotplotView extends JPanel implements Observer
 		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			if (this.model.getStatTableModel()
+					.getValueAt(i, this.model.getColumnYIndex())==null
+				||	this.model.getStatTableModel()
 				.getValueAt(i, this.model.getColumnYIndex())
 				.equals(ColumnType.WILDCARD))
 			{
@@ -2545,7 +2550,9 @@ public class DotplotView extends JPanel implements Observer
 
 			for (int j = 0; j < i; j++)
 			{
-				if (!this.model.getStatTableModel()
+				if (this.model.getStatTableModel()
+						.getValueAt(j, this.model.getColumnYIndex())!=null
+						&& !this.model.getStatTableModel()
 					.getValueAt(j, this.model.getColumnYIndex())
 					.equals(ColumnType.WILDCARD)
 					&& splitClasses[i] == splitClasses[j]
@@ -2975,7 +2982,10 @@ public class DotplotView extends JPanel implements Observer
 					// use the ordered indices so that selected dots will be drawn at last
 					int index = indexSortedOnSelected[i];
 
-					if (!DotplotView.this.model
+					if (DotplotView.this.model
+						.getStatTableModel()
+						.getValueAt(index, DotplotView.this.model.getColumnXIndex())!=null
+						&& !DotplotView.this.model
 						.getStatTableModel()
 						.getValueAt(index, DotplotView.this.model.getColumnXIndex())
 						.equals(ColumnType.WILDCARD))
@@ -3032,7 +3042,10 @@ public class DotplotView extends JPanel implements Observer
 					// use the ordered indices so that selected dots will be drawn at last
 					int index = indexSortedOnSelected[i];
 
-					if (!DotplotView.this.model
+					if (DotplotView.this.model
+						.getStatTableModel()
+						.getValueAt(index, DotplotView.this.model.getColumnYIndex())!=null
+						&& !DotplotView.this.model
 						.getStatTableModel()
 						.getValueAt(index, DotplotView.this.model.getColumnYIndex())
 						.equals(ColumnType.WILDCARD))

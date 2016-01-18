@@ -40,7 +40,7 @@ public class Statistiek implements WiskOpdrApplet
 	public static Font font = new Font("SansSerif", Font.PLAIN, 12);
 	public static Font font_bold = new Font("SansSerif", Font.BOLD, 12);
 	static DecimalFormatSymbols dfs;
-	public static DecimalFormat df;
+	public static DecimalFormat df, df8;
 	public static int scrollSpeedUnit = 16;
 	public static Color backgroundColor = Color.WHITE;
 	public static double BIN_WIDTH_DEFAULT = 1;
@@ -64,6 +64,7 @@ public class Statistiek implements WiskOpdrApplet
 		
 		dfs = DecimalFormatSymbols.getInstance(language);
 		df = new DecimalFormat("0.#", dfs);
+		df8 = new DecimalFormat("0.########", dfs);
 		initViews();
 	}
 
@@ -98,6 +99,7 @@ public class Statistiek implements WiskOpdrApplet
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
 		dfs = DecimalFormatSymbols.getInstance(language);
 		df = new DecimalFormat("0.#", dfs);
+		df8 = new DecimalFormat("0.########", dfs);
 		initViews();
 	}
 
@@ -609,6 +611,9 @@ public class Statistiek implements WiskOpdrApplet
 	 */
 	public static String getStringValue(double d)
 	{
+		
+		return df8.format(d);
+		/*
 		String s;
 		if ((d == Math.floor(d)) && !Double.isInfinite(d))
 			s = String.valueOf((int) d);
@@ -619,6 +624,7 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		
 		return s;
+		*/
 	}
 	
 	/**
