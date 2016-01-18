@@ -44,7 +44,6 @@ class GrafiekVeld extends JComponent{
 	{	return gtip.yAsNaamActivator.contains(x,y);
 	}
 	
-
 	public double pixelsXtoValue(double pixelsX) { 
 		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsX 
 		double scalingMultiplier;
