@@ -4660,6 +4660,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		if (Double.isNaN(rp.getX()) || Double.isNaN(rp.getY()))
 			return null;
+
 		Point pix = new Point();
 		if (manualScalingX) {
 			pix.x =	(int) Math.round(beginx + eenheidxD * rp.getX() / eenheidxValue);			
@@ -4684,6 +4685,7 @@ MouseListener, MouseMotionListener, CBookAware {
 											(beginy + eenheidyD * rp.getY() / schaalFactorY));
 			}			
 		}
+//		System.out.println("realPointToPixels :: output = [" + pix.getX() +","+ pix.getY() + "]");
 
 		return pix;
 	}
@@ -4714,6 +4716,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				realPix.setY(gv.getSize().height - (beginy + eenheidyD * rp.getY() / schaalFactorY));
 			}			
 		}
+//		System.out.println("realPointToRealPixels :: output = [" + realPix.getX() +","+ realPix.getY() + "]");
 		return realPix;
 	}
 	
@@ -4750,6 +4753,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		rp.setxString(Double.toString(rp.getX()));
 		rp.setyString(Double.toString(rp.getY()));
+//		System.out.println("pixelsToRealPoint :: output = [" + rp.getX() +","+ rp.getY() + "]");
 		return rp;
 	}
 	
@@ -5625,11 +5629,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		public void run()
 		{	
 			if(x) selectnummer = 999;
-// RPJ changed scaling - eenheid?D no longer fixed to 16!
-//          double eenheidxD = xAsLog?2*eenheid:eenheid; 
-//			double eenheidyD = yAsLog?2*eenheid:eenheid;
-//			double eenheidx = xAsLog?2*eenheid:eenheid;
-//			double eenheidy = yAsLog?2*eenheid:eenheid;
+			if (!manualScalingX) {
+				double eenheidxD = xAsLog?2*eenheid:eenheid; 
+				double eenheidx = xAsLog?2*eenheid:eenheid;
+			}
+			if (!manualScalingY) {
+				double eenheidyD = yAsLog?2*eenheid:eenheid;
+				double eenheidy = yAsLog?2*eenheid:eenheid;
+			}
 			
 			double stapx, stapy;
 			double factorx = 1;
@@ -5705,10 +5712,12 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(in && y)factorRijNummerY--;
 			if(!in && y)factorRijNummerY++;
 
-// RPJ
-//			eenheidxD = eenheidxD*factorx;
-//			eenheidyD = eenheidyD*factory;
-			
+			if (!manualScalingX) {
+				eenheidxD = eenheidxD*factorx;
+			}
+			if (!manualScalingY) {
+				eenheidyD = eenheidyD*factory;
+			}
 			for(int i=0 ; i<5 ; i++)
 			{	int delay = 20;
 				long t = System.currentTimeMillis();

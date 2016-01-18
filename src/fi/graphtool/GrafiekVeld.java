@@ -46,7 +46,8 @@ class GrafiekVeld extends JComponent{
 
 	public double pixelsXtoValue(double pixelsX) { 
 		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsX 
-		double scalingMultiplier;		
+		double scalingMultiplier;
+		
 		if (gtip.manualScalingX) {
 			scalingMultiplier = gtip.eenheidxValue;
 		}
@@ -57,12 +58,14 @@ class GrafiekVeld extends JComponent{
 		if (gtip.xAsLog) {
 			valueX = Math.pow(10, valueX);
 		} 
+
 		return valueX;
 	}
 	
 	public double pixelsYtoValue(double pixelsY) { 
 		// This function also needs to perform for values in between pixels, therefore a double is used to represent pixelsX 
 		double scalingMultiplier;		
+		
 		if (gtip.manualScalingX) {
 			scalingMultiplier = gtip.eenheidxValue;
 		}
