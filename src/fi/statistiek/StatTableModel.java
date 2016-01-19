@@ -528,7 +528,11 @@ public class StatTableModel implements TableModel
 //				+ ", this.hashCode()=" + this.hashCode());
 //		}
 		
-		if (this.values.size()>0 && this.values.get(rowIndex).size()>0 && rowIndex < this.rowCount && columnIndex < this.columnCount)
+		if (this.values.size() > 0
+			&& this.values.size() > rowIndex
+			&& this.values.get(rowIndex).size() > 0 
+			&& rowIndex < this.rowCount 
+			&& columnIndex < this.columnCount)
 		{
 			return (this.values.get(rowIndex)).get(columnIndex);
 		}
@@ -2203,7 +2207,14 @@ public class StatTableModel implements TableModel
 
 	public boolean isRowSelected(int rowIndex)
 	{
-		return this.selectionList.get(rowIndex);
+		if (rowIndex >= selectionList.size())
+		{
+			return false;
+		}
+		else
+		{
+			return this.selectionList.get(rowIndex);
+		}
 	}
 
 	/**
