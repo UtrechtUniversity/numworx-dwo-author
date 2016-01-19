@@ -660,6 +660,10 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 //			System.out.println("HistogramController.focusLost(): maxOnScale");
 
+			// column index bin settings
+			// TODO hier gaat nog iets mis als max kleiner gezet wordt, groter dan de max waarde in dataset
+			updateBoundariesFromBinSettings();
+
 			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
 			{
 				// max < min is niet toegestaan
