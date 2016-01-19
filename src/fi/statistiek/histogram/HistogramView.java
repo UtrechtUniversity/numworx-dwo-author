@@ -2073,12 +2073,12 @@ public class HistogramView extends JPanel implements Observer
 			// use the settings without check for valid values
 			double minOnScale = model.getMinOnScale();
 			double binValue = minOnScale;
-			for (int i = 0; binValue < maxOnScale; i++)
+			for (int i = 0; binValue < maxOnScale; i++) // TODO vergelijk doubles met marge
 			{
 				binValue = minOnScale + i * binWidth;
+				binValue = Statistiek.round(binValue, 8);//Statistiek.parseDouble(Statistiek.df8.format(binValue)); // beetje omslachtig via string...
 				bins.add(binValue);
 			}
-			
 			if (minOnScale == maxOnScale)
 			{
 				bins.add(minOnScale);
