@@ -61,7 +61,7 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 		setFactory(factory);
 		setLocale(WiskOpdr.language);
 		this.widget = widget;
-		instance = widget.getInstance(this);
+		instance = createInstance();
 
 		instance.addCBookEventListener(bridge, WidgetBridge.CHANGED);
 		instance.addCBookEventListener(bridge, WidgetBridge.CHECKED);		
@@ -86,6 +86,17 @@ public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBo
 			public void componentShown(ComponentEvent ev) {
 				ev.getComponent().validate();
 			}});
+	}
+
+
+	private CBookWidgetInstanceIF createInstance() {
+		try {
+			return this.widget.getInstance(this);
+		} catch (Exception e) {
+			String name = this.widget.getClass().getName();
+			LOGGER.log(Level.SEVERE, name, e);;
+			return new ErrorWidget(name, e);
+		}
 	}
 	
 
