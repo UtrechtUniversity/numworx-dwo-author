@@ -91,7 +91,12 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	public KladjeInteractiePanel()
 	{
 		setLayout(null);
-		setBackground(bgColor);
+		//setBackground(bgColor);
+		setOpaque(false);
+		
+System.out.println("klip " + getBackground().toString());		
+		
+		
 		// echte initiatie vind pas plaats na setBounds
 		
 		java.net.URL imageURL = Kladje.class.getResource("resources/teken_penknop_default.gif");
@@ -471,8 +476,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 
 	public void paintComponent(Graphics g)
 	{
-		g.setColor(bgColor);
-		g.fillRect(0, 0, getSize().width, getSize().height);
+		//g.setColor(bgColor);
+		//g.fillRect(0, 0, getSize().width, getSize().height);
 	}
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{

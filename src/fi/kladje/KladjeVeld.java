@@ -137,6 +137,8 @@ public class KladjeVeld extends JPanel
 		hoogte = h;
 		setSize(breedte, hoogte);
 		
+		setOpaque(false);
+		
 		tekstFont = new Font("Sanserif", Font.BOLD, 14);
 		//tekenTekstFont = new Font("Sanserif", Font.PLAIN, 14);
 		tekstFM = getFontMetrics(tekstFont);
@@ -686,8 +688,8 @@ System.out.println("returned " + (numHistories - 1));
 		
 		Graphics2D g2D = (Graphics2D) g;		
 
-		g2D.setColor(backgroundColor);
-		g2D.fillRect(0, 0, getSize().width, getSize().height);
+		//g2D.setColor(backgroundColor);
+		//g2D.fillRect(0, 0, getSize().width, getSize().height);
 		
 		if (lijnen)
 		{
@@ -733,6 +735,7 @@ System.out.println("returned " + (numHistories - 1));
 		
 //System.out.println("tekenProgramma");
 
+//wis is altijd false		
 		if (wis)
 		{	
 			g.setColor(backgroundColor);

@@ -42,6 +42,9 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	public KladjeInteractieEditPanel()
 	{
 		setLayout(null);
+		//setOpaque(false);
+
+//System.out.println("kliep " + getBackground().toString());
 
 		klip = new KladjeInteractiePanel();
 		add(klip);
