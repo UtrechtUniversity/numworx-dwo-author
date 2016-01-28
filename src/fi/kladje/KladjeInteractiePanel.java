@@ -476,8 +476,8 @@ System.out.println("klip " + getBackground().toString());
 
 	public void paintComponent(Graphics g)
 	{
-		//g.setColor(bgColor);
-		//g.fillRect(0, 0, getSize().width, getSize().height);
+		g.setColor(bgColor);
+		g.fillRect(0, getSize().height - bottomHeight, getSize().width, bottomHeight);
 	}
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
