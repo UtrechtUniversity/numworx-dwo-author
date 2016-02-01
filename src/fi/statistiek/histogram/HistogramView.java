@@ -3096,8 +3096,12 @@ public class HistogramView extends JPanel implements Observer
 		userOptionsPanel.update();
 
 		// voor het geval de data columnIndex of splitColumnIndex
-		if (this.model.columnIndexValid())
+		if (this.model.columnIndexValid() 
+			&& !this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
+		{
 			this.recalculateBinBoundaries(this.model.getColumnIndex(), false);
+		}
+		
 		if (this.model.columnSplitIndexValid() && this.model.getSplitOptions().getBinBoundaries() != null)
 			this.recalculateSplitBinBoundaries(this.model.getSplitOptions().getColumnSplitIndex());
 		
