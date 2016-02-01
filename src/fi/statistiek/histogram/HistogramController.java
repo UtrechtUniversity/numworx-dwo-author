@@ -159,13 +159,25 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else if (ac.equals("minBoundary"))
 		{
+			// column index bin settings
 			updateBoundariesFromBinSettings();
 
-			double maxBinValue = this.model.getMaxBinBoundaryValue();
-			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
+			double maxBinValue = this.view.getMaxBinOnScale();
+			
+			if ((this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue) 
+				&& !this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex())) // for empty table or column without any values every maximum is allowed
 			{
-				// reset to latest value
-				this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				if (this.model.getMaxOnScale() < maxBinValue)
+				{
+					// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+					this.model.setMaxOnScale(maxBinValue);
+				}
+				else
+				{
+					// reset to latest value
+					this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				}
 			}
 			else
 			{
@@ -174,15 +186,44 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else if (ac.equals("maxOnScale"))
 		{
-			double maxBinValue = this.model.getMaxBinBoundaryValue();
-			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			double maxOnScale = this.view.getUserOptionsPanel().getMaxOnScale();
+			
+			// column index bin settings
+			updateBoundariesFromBinSettings();
+
+			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
 			{
-				// reset to what latest value
-				this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				// max < min is niet toegestaan
+				if (maxOnScale < this.view.getUserOptionsPanel().getMinBoundary())
+				{
+					// reset to latest value
+					this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+				}
+				else
+				{
+					this.model.setMaxOnScale(maxOnScale);
+				}
 			}
 			else
 			{
-				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				double maxBinValue = this.model.getMaxBinBoundaryValue();
+				if (maxOnScale < maxBinValue)
+				{
+					if (this.model.getMaxOnScale() < maxBinValue)
+					{
+						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+						this.model.setMaxOnScale(maxBinValue);
+					}
+					else
+					{
+						// reset to latest value
+						this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
+					}
+				}
+				else
+				{
+					this.model.setMaxOnScale(maxOnScale);
+				}
 			}
 		}
 		else if (ac.equals("binWidth"))
@@ -193,6 +234,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 			updateBoundariesFromBinSettings();
 
 			double maxBinValue = this.model.getMaxBinBoundaryValue();
+			
 			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
 			{
 				this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
@@ -660,27 +702,28 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 //			System.out.println("HistogramController.focusLost(): maxOnScale");
 
+			double maxOnScale = this.view.getUserOptionsPanel().getMaxOnScale();
+			
 			// column index bin settings
-			// TODO hier gaat nog iets mis als max kleiner gezet wordt, groter dan de max waarde in dataset
 			updateBoundariesFromBinSettings();
 
 			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
 			{
 				// max < min is niet toegestaan
-				if (this.view.getUserOptionsPanel().getMaxOnScale() < this.view.getUserOptionsPanel().getMinBoundary())
+				if (maxOnScale < this.view.getUserOptionsPanel().getMinBoundary())
 				{
 					// reset to latest value
 					this.view.getUserOptionsPanel().setMaxOnScale(this.model.getMaxOnScale());
 				}
 				else
 				{
-					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+					this.model.setMaxOnScale(maxOnScale);
 				}
 			}
 			else
 			{
 				double maxBinValue = this.model.getMaxBinBoundaryValue();
-				if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+				if (maxOnScale < maxBinValue)
 				{
 					if (this.model.getMaxOnScale() < maxBinValue)
 					{
@@ -695,9 +738,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 				}
 				else
 				{
-					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+					this.model.setMaxOnScale(maxOnScale);
 				}
 			}
-		}
+		} // maxOnScaleField
 	}
 }
