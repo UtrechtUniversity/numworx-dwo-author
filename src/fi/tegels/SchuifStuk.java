@@ -1,9 +1,11 @@
 package fi.tegels;
 
 import java.awt.*;
-import java.awt.Polygon;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 class SchuifStuk implements Serializable 
 {	
@@ -24,6 +26,26 @@ class SchuifStuk implements Serializable
 		kleur = kl;
 		positie = new Point(pos);
 		maakPol();
+	}
+
+	public HashMap<String,Object> getSSState()
+	{
+		HashMap<String,Object> h = new HashMap<String,Object>();
+		
+		h.put("aantalPunten", new Integer(aantalPunten));
+		ArrayList<Integer> puntenX = new ArrayList<Integer>();
+		for (int pCnt = 0; pCnt < punten.length; pCnt++)
+			puntenX.add(new Integer(punten[pCnt].x));
+		h.put("puntenX", puntenX);
+		ArrayList<Integer> puntenY = new ArrayList<Integer>();
+		for (int pCnt = 0; pCnt < punten.length; pCnt++)
+			puntenY.add(new Integer(punten[pCnt].y));
+		h.put("puntenY", puntenY);
+		h.put("kleur", new String("rgb(" + kleur.getRed()+ "," + kleur.getGreen() + "," + kleur.getBlue() + ")"));
+		h.put("positieX", new Integer(positie.x));
+		h.put("positieY", new Integer(positie.y));
+		
+		return h;
 	}
 	public SchuifStuk(boolean version, SchuifStuk s, int x, int y)
 	{	

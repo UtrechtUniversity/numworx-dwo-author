@@ -296,6 +296,8 @@ public class TegelsPanel extends JPanel implements MouseListener, MouseMotionLis
 
 	void zetTekenen()
 	{	maakVorm = true;
+	
+System.out.println("zetTekenen " + tegelKlaar);	
 		//if(basisv!=null)
 		//{	basisvOud = new SchuifStuk(basisv,basisv.positie.x,basisv.positie.y);
 		//	basisvOud.zetKleur(new Color(230,230,230));
@@ -310,15 +312,24 @@ public class TegelsPanel extends JPanel implements MouseListener, MouseMotionLis
 		{	basisvOud = new SchuifStuk(transVersion, aantalNieuwHp, nieuwHp, posBasis, new Color(230, 230, 230));
 		
 			if (!basisVormen.contains(basisv))
-			{	basisVormen.addElement(
+			{	
+System.out.println("not basisVormen.contains");				
+				basisVormen.addElement(
 					new SchuifStuk(transVersion, basisv.aantalPunten, basisv.punten, posBasis, basisv.kleur));
 				actualBasisVorm = basisVormen.size() - 1;
 				cp.downButton.setEnabled(false);
 				cp.upButton.setEnabled(true);
 			
 			}
-		
+			else
+			{
+System.out.println("basisVormen.contains");				
+			}
+System.out.println("zetLeggen");
+System.out.println("basisVormen = " + basisVormen.size());
 		}
+		
+		
 		tekenOpnieuw();
 	}
 	
@@ -412,7 +423,10 @@ public class TegelsPanel extends JPanel implements MouseListener, MouseMotionLis
 	}
 	
 	public void voegNieuwPuntToe(int x, int y)
-	{	if (tegelKlaar)
+	{	
+System.out.println("voegNieuwPuntToe");		
+		
+		if (tegelKlaar)
 			return;
 		
 		if ((aantalNieuwHp == 1 || aantalNieuwHp == 2) && x == nieuwHp[0].x && y == nieuwHp[0].y)

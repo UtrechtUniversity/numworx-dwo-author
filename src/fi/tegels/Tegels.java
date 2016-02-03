@@ -88,13 +88,17 @@ public class Tegels extends JApplet implements MouseListener, MouseMotionListene
 	}
 
     public Tegels()
-    {	langArg = "nl";
+    {	
+System.out.println("Tegels");    	
+    	langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.tegels.text.Text", language);	
 
     }
     public Tegels(Locale language)
     {
+System.out.println("Tegels Locale");
+
     	langArg = language.getLanguage();
     	rb = ResourceBundle.getBundle("fi.tegels.text.Text", language);
     }
