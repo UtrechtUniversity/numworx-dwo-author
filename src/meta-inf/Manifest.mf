@@ -5,3 +5,4 @@ Permissions: all-permissions
 Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
 Application-Name: Statistiek
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
+Application-Library-Allowable-Codebase: *
