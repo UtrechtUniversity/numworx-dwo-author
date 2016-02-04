@@ -3,6 +3,7 @@
 
 -libraryjars <java.home>\lib\rt.jar
 -libraryjars ..\lib\mayscript.jar
+-libraryjars ..\lib\cbookif-1.0.2.jar
 
 -target 1.6
 
