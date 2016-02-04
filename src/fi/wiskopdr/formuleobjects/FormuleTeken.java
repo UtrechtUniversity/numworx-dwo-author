@@ -65,6 +65,12 @@ public class FormuleTeken extends FormuleElement
 		else if(tk=='\u2220')
 		{	teken = null;
 		}
+		else if(tk=='\u0302')
+		{	teken = null;
+		}
+		else if(tk=='\u0304')
+		{	teken = null;
+		}
 		else teken = ""+tk;
 		
 		/*if(Character.isLetter(tk))
@@ -162,6 +168,12 @@ public class FormuleTeken extends FormuleElement
 		}
 		else if(character=='\u2220')
 		{	setSize(fm.getAscent(),fm.getAscent()+fm.getDescent());
+		}
+		else if(character=='\u0302')
+		{	setSize(0,fm.getAscent()+fm.getDescent());
+		}
+		else if(character=='\u0304')
+		{	setSize(0,fm.getAscent()+fm.getDescent());
 		}
 		ashoogte = fm.getAscent()/2;
 		
@@ -277,6 +289,12 @@ public class FormuleTeken extends FormuleElement
 		else if(character=='\u2220')
 		{	g.drawLine(x+fm.getAscent()/4,y+fm.getAscent()-1,x+fm.getAscent()/4+fm.getAscent()/2,y+fm.getAscent()-1);
 			g.drawLine(x+fm.getAscent()/4,y+fm.getAscent()-1,x+fm.getAscent()/4+fm.getAscent()/2,y+4*fm.getAscent()/8);
+		}
+		else if(character=='\u0302')
+		{	g.drawString("\u0302", x-fm.getAscent()/4,y+fm.getAscent()-1);
+		}
+		else if(character=='\u0304')
+		{	g.drawString("\u0304", x-fm.getAscent()/5,y+fm.getAscent()-1);
 		}
 	}
 	
