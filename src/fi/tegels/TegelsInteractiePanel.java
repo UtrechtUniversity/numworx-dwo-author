@@ -170,7 +170,7 @@ System.out.println("aES found");
 			Hashtable h = (Hashtable) o;
 
 			Vector schuifStukkenVector = new Vector();
-			if (h.containsKey("schuifstukken"))
+			if ((h!=null) && h.containsKey("schuifstukken"))
 				schuifStukkenVector = (Vector) h.get("schuifstukken");
 		
 			tegelsPanel.aantalSs = schuifStukkenVector.size();
@@ -179,7 +179,7 @@ System.out.println("aES found");
 			}
 
 			Vector basisVormenVector = new Vector();
-			if (h.containsKey("basisvormen"))
+			if ((h!=null) && h.containsKey("basisvormen"))
 				basisVormenVector = (Vector) h.get("basisvormen");
 
 			tegelsPanel.basisVormen = new Vector();
@@ -371,16 +371,17 @@ System.out.println("aES found");
 		}
 		h.put("basisVormenVector", basisVormenVector);
 
+		
 		//GWT
 		ArrayList<HashMap> schuifStukkenList = new ArrayList<HashMap>();
 		for (int sCnt = 0; sCnt < tegelsPanel.aantalSs; sCnt++)
-		{	schuifStukkenList.add(tegelsPanel.ss[sCnt].getSSState());
+		{	schuifStukkenList.add(NoSer.getSSState(tegelsPanel.ss[sCnt]));
 		}
 		h.put("schuifStukkenList", schuifStukkenList);
 		
 		ArrayList<HashMap> basisVormenList = new ArrayList<HashMap>();
 		for (int bCnt = 0; bCnt < tegelsPanel.basisVormen.size(); bCnt++)
-		{	basisVormenList.add(((SchuifStuk) tegelsPanel.basisVormen.elementAt(bCnt)).getSSState());
+		{	basisVormenList.add(NoSer.getSSState((SchuifStuk)tegelsPanel.basisVormen.elementAt(bCnt)));
 		}
 		h.put("basisVormenList", basisVormenList);
 		

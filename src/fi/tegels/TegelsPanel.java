@@ -305,15 +305,29 @@ System.out.println("zetTekenen " + tegelKlaar);
 		tekenOpnieuw();
 	}
 
+
+	public boolean basisVormenContains(SchuifStuk ss)
+	{	boolean found = false;
+		for (int vCnt = 0; vCnt < basisVormen.size(); vCnt++)
+		{	SchuifStuk bv = (SchuifStuk) basisVormen.elementAt(vCnt);
+			if (NoSer.equalSS(ss,bv))
+				found = true;
+			
+		}
+		
+		return found;
+	}
+	
 	void zetLeggen()
 	{	maakVorm = false;
 		wisTegelEerst = false;
 		if (tegelKlaar)
 		{	basisvOud = new SchuifStuk(transVersion, aantalNieuwHp, nieuwHp, posBasis, new Color(230, 230, 230));
 		
-			if (!basisVormen.contains(basisv))
+			//if (!basisVormen.contains(basisv))
+			if (!basisVormenContains(basisv))
 			{	
-System.out.println("not basisVormen.contains");				
+//System.out.println("not basisVormen.contains");				
 				basisVormen.addElement(
 					new SchuifStuk(transVersion, basisv.aantalPunten, basisv.punten, posBasis, basisv.kleur));
 				actualBasisVorm = basisVormen.size() - 1;
@@ -323,10 +337,10 @@ System.out.println("not basisVormen.contains");
 			}
 			else
 			{
-System.out.println("basisVormen.contains");				
+//System.out.println("basisVormen.contains");				
 			}
-System.out.println("zetLeggen");
-System.out.println("basisVormen = " + basisVormen.size());
+//System.out.println("zetLeggen");
+//System.out.println("basisVormen = " + basisVormen.size());
 		}
 		
 		
