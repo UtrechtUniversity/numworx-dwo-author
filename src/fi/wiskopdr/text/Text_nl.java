@@ -337,6 +337,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
+				{"OPT_misconceptions" , "Misconcepties"},
 				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
 				{"OPT_fontOverervingForm" , "Font-overerving formulevakken"},
 				
@@ -345,6 +346,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "Leerdoelen in meerdere categorieen"},
 				{"OBJ_kolomMeerButton", "Voeg kolom toe"},
 				{"OBJ_kolomMinderButton", "Verwijder kolom"},
+				{"MCC_misconception", "Misconceptie"},
+				{"MCC_categorie", "Vul naam in van categorie"},
+				{"MCC_categorieBox", "Misconcepties in meerdere categorieen"},
 				
 				
 				//grafiekenEditPanel

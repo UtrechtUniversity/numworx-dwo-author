@@ -33,9 +33,20 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	JPanel objectivesPanel = new JPanel();
 	JPanel bottomPanel = new JPanel();
 	JScrollPane scrollPane;
+	
+	private String buttonLabel;
+	private String rowLabel;
+	private String columnLabel;
 		
 	public ObjectiveSettingsButton(){	
-		super(WiskOpdr.rb.getString("OPT_objectives"));
+		this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.rb.getString("OBJ_leerdoel"), WiskOpdr.rb.getString("OBJ_categorie"));
+	}
+	
+	public ObjectiveSettingsButton(String buttonLabel, String rowLabel, String columnLabel){	
+		super(buttonLabel);
+		this.buttonLabel = buttonLabel;
+		this.rowLabel = rowLabel;
+		this.columnLabel = columnLabel;
 		addActionListener(this);
 	}
 	
@@ -82,7 +93,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
     	categorieString = new String[objectives.length];
     	for(int i = 0; i < objectives.length; i++)
     	{	categorieString[i] = categoryTextFields[i].getText();
-    		if(categorieString[i].equals(WiskOpdr.rb.getString("OBJ_categorie")+ " "  + (i+1)))
+    		if(categorieString[i].equals(columnLabel + " "  + (i+1)))
     			categorieString[i] = "";
     	}	
     }
@@ -101,11 +112,11 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	    objectiveLabels = new JLabel[maxObjectives];
 	    categoryTextFields = new JTextField[maxCategories];
 	    for(int j = 0; j < maxCategories; j++)
-	    {	categoryTextFields[j] = new JTextField(WiskOpdr.rb.getString("OBJ_categorie")+ " "  + (j+1));
+	    {	categoryTextFields[j] = new JTextField(columnLabel + " "  + (j+1));
 	    	categoryTextFields[j].setPreferredSize(new Dimension(180,20));
 	    }
 	    for(int i=0 ; i<maxObjectives ; i++)
-	    {	objectiveLabels[i] = new JLabel(WiskOpdr.rb.getString("OBJ_leerdoel")+ " " +(i+1));
+	    {	objectiveLabels[i] = new JLabel(rowLabel + " " +(i+1));
 	   		objectiveLabels[i].setPreferredSize(new Dimension(100,20));
 	   		for(int j = 0; j<maxCategories; j++)
 	        {	objectiveTextFields[j][i] = new JTextField("");

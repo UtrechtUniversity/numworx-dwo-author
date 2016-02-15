@@ -47,6 +47,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
+	private JCheckBox misconceptionsCB;
 	private JCheckBox fontOverervingCB;
 	private JCheckBox fontOverervingFormCB;
 	
@@ -99,6 +100,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private int timeLimit = 60;
 	
 	private ObjectiveSettingsButton objectivesButton;
+	private ObjectiveSettingsButton misconceptionsButton;
 	
 	private JButton okButton, cancelButton;
 	
@@ -419,7 +421,24 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		objectivesButton.setVisible(false);
 		boxh.add(objectivesButton);
 		boxh.add(Box.createHorizontalStrut(70));
+		boxv4.add(boxh);
 		
+		boxh = Box.createHorizontalBox();
+		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
+		
+		misconceptionsCB = new JCheckBox(WiskOpdr.rb.getString("OPT_misconceptions"));
+		misconceptionsCB.addActionListener(this);
+		misconceptionsCB.setOpaque(false);
+		misconceptionsCB.setFont(font);
+		misconceptionsCB.setSelected(false);
+		boxh.add(misconceptionsCB);
+		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
+		boxh.add(Box.createGlue());
+		
+		misconceptionsButton = new ObjectiveSettingsButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.rb.getString("MCC_misconception"), WiskOpdr.rb.getString("MCC_categorie"));
+		misconceptionsButton.setVisible(false);
+		boxh.add(misconceptionsButton);
+		boxh.add(Box.createHorizontalStrut(70));
 		boxv4.add(boxh);
 		boxv4.add(Box.createVerticalStrut(70));
 		
@@ -515,6 +534,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		boolean hasMisconceptions = false;
+		String[][] misconceptions = null;
+		String[] mccCategorieString = null;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -566,8 +588,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		eerderGeenCorr = eerderGeenCorrCB.isSelected();
 		significantie = significantieCB.isSelected();
 		hasObjectives = objectivesCB.isSelected();
+		hasMisconceptions = misconceptionsCB.isSelected();
 		objectives = objectivesButton.getObjectives();
+		misconceptions = misconceptionsButton.getObjectives();
 		categorieString = objectivesButton.getCategories();
+		mccCategorieString = misconceptionsButton.getCategories();
 		
 		Hashtable h = new Hashtable();
 		
@@ -620,6 +645,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	h.put("objectives", objectives);
 			h.put("categorieString", categorieString);
 		}
+		h.put("hasMisconceptions", new Boolean(hasMisconceptions));
+		if(hasMisconceptions && misconceptions!=null)
+		{	h.put("misconceptions", misconceptions);
+			h.put("mccCategorieString", mccCategorieString);
+		}
 		
 		return h;
 	}
@@ -670,6 +700,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		boolean hasMisconceptions = false;
+		String[][] misconceptions = null;
+		String[] mccCategorieString = null;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -718,6 +751,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 			}
 		if(h.containsKey("categorieString")) categorieString = (String[])h.get("categorieString");
+		if(h.containsKey("hasMisconceptions")) hasMisconceptions = ((Boolean)h.get("hasMisconceptions")).booleanValue();
+		if(h.containsKey("misconceptions")) 
+			try	{	
+				misconceptions = (String[][]) h.get("misconceptions");
+			} catch(Exception ex){
+				
+			}
+		if(h.containsKey("mccCategorieString")) mccCategorieString = (String[])h.get("mccCategorieString");
 		
 		fontSizeTF.setText(""+fontSize);
 		navigatieSizeTF.setText(""+navigatieSize);
@@ -772,6 +813,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(hasObjectives)
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
+		}
+		misconceptionsCB.setSelected(hasMisconceptions);
+		misconceptionsButton.setVisible(hasMisconceptions);
+		if(hasMisconceptions)
+		{	misconceptionsButton.setObjectives(misconceptions);
+			misconceptionsButton.setCategories(mccCategorieString);
 		}
 	}
 	
@@ -866,6 +913,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(e.getSource()==objectivesCB)
 		{
 			objectivesButton.setVisible(objectivesCB.isSelected());
+		}
+		if(e.getSource()==misconceptionsCB)
+		{
+			misconceptionsButton.setVisible(misconceptionsCB.isSelected());
 		}
 
 

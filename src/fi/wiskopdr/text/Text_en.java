@@ -323,6 +323,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "No correction previous pages"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Objectives"},
+				{"OPT_misconceptions" , "Misconceptions"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				
@@ -331,6 +332,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "Objectives in multiple categories"},
 				{"OBJ_kolomMeerButton", "Add column"},
 				{"OBJ_kolomMinderButton", "Remove column"},
+				{"MCC_misconception", "Misconception"},
+				{"MCC_categorie", "Category"},
+				{"MCC_categorieBox", "Misconceptions in multiple categories"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Variables of the function"},
