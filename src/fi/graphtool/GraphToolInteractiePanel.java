@@ -64,6 +64,11 @@ import org.cbook.cbookif.CBookEventListener;
 
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
 MouseListener, MouseMotionListener, CBookAware {
+	
+	/* contstants */
+	public static final String cFontString = "SansSerif";
+	public static final int cFontHeight = 10;
+	public static final int cFontStyle_Default = Font.PLAIN;
 
 	int width = 300; // was 250
 	int height = 300;
@@ -153,7 +158,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	RealPoint otherPoint = null;
 	
 	private DecimalFormatSymbols dfs;
-	Font font = new Font("SansSerif", Font.PLAIN, 10);
+	Font font = new Font(cFontString, cFontStyle_Default, cFontHeight);
 	FontMetrics fm;
 	DecimalFormat df;
 	DecimalFormat dfTrace;

@@ -19,14 +19,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+
+
+
+
 //import javax.vecmath.Vector2d;
 import fi.beans.lineairealgebra.Vector2d;
+
 import javax.swing.JComponent;
 
 import fi.wiskopdr.expressies.Expressie;
 
 class GrafiekVeld extends JComponent{
+	/* contstants */
 	private final int cMaxPiLinesOnScreen = 8;
+
+	private final int cExtraAxisMarge = 4;
+//	private final int cAxesThickness = 1;
+//	private final int cPiFromAxis = 25;
+//	private final int cDashStep = 5;
+//	private final int cSliderBoxBorderMargin = 2;
+//	private final double cLineWidth = 0.5d;
+//	private final double cLineWidthLogLines = 0.25d;
+//	private final double cLineWidthAxes = 1.00d;	
+	
+	int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
+	                        // range is used
+	int drawYmin, drawYmax;
+	
+	
 		
 	private final GraphToolInteractiePanel gtip;
 
@@ -234,8 +255,8 @@ class GrafiekVeld extends JComponent{
 	}	
 */
 	
-	public void	paintComponent(Graphics gr)
-	{	Graphics2D g = (Graphics2D) gr;
+	public void	paintComponent(Graphics gr) {	
+		Graphics2D g = (Graphics2D) gr;
 	
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
@@ -310,14 +331,29 @@ class GrafiekVeld extends JComponent{
 			ehy = (int) Math.round(ehyD);
 		}		
 		
+		g.setFont(gtip.font);
+		gtip.fm = g.getFontMetrics();
+		
+		drawXmin = 0; drawXmax = breedte;
+		drawYmin = 0; drawYmax = hoogte;
+		boolean drawXAxis = true;
+		boolean drawYAxis = true;
+		
+		if (by < drawYmin + gtip.fm.getHeight() + 2 * cExtraAxisMarge) {
+			drawYmax =  drawYmax - gtip.fm.getHeight() - 2 * cExtraAxisMarge; 
+			drawXAxis = false;
+		}
+		if (by > hoogte) {
+			drawYmin = drawYmin + gtip.fm.getHeight() + 2 * cExtraAxisMarge;
+			drawXAxis = false;
+		}
+		
 		int maxWoordBreedteY = 0;
 		int maxWoordHoogteX = 10;
 		boolean witruimteX = by <= 12;
 		boolean witruimteY = false;
 		int maxHoogteLijn = hoogte-Math.max(witruimteX?maxWoordHoogteX:0,(gtip.yPositief?by:0));
 				
-		g.setFont(gtip.font);
-		gtip.fm = g.getFontMetrics();
 
 		int imin = -(int)Math.round(gtip.beginx/ehx); 
 		int imax = 1+breedte/ehx-(int)Math.round(gtip.beginx/ehx);
@@ -343,6 +379,20 @@ class GrafiekVeld extends JComponent{
 				{	maxWoordBreedteY = Math.max(maxWoordBreedteY, woordbreedte);
 				}
 			}
+			
+			if (bx < drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge) {
+				drawXmin = drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge;
+				drawYAxis = false;
+			}
+			
+			if (bx > breedte) {
+				drawXmax = drawXmax - maxWoordBreedteY - 2 * cExtraAxisMarge; 
+				drawYAxis = false;
+			}
+			if (gtip.xPositief) {
+				drawXmin =  Math.min(drawXmax, Math.max(drawXmin, bx));
+			}
+
 			witruimteY = maxWoordBreedteY >= bx - 2;
 			//log-roosterlijnen tekenen (iets lichter dan gewone roosterlijnen):
 			g.setColor(new Color(240, 240, 240));
@@ -389,16 +439,25 @@ class GrafiekVeld extends JComponent{
 				
 				boolean schaalTekenen = (i%2 == 0 || gtip.xAsLog) && gtip.schaalZichtbaar && gtip.schaalX;
 				//witruimteX = yLabel==hoogte-1;
-				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0))
-				{	if(schaalTekenen ) 
-					{	g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - 9, maxHoogteLijn));
-						if(maxHoogteLijn > yLabel + 2) {
-							g.drawLine((int)(bx+i*ehxD), yLabel + 2, (int)(bx+i*ehxD), maxHoogteLijn);
-							
+				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0)) {	
+					if(schaalTekenen ) {
+						
+						if (drawYmin < yLabel - gtip.fm.getHeight())  { 
+							g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - gtip.fm.getHeight(), drawYmax));
+						}
+						if (drawYmax > yLabel + cExtraAxisMarge)  {	
+							g.drawLine((int)(bx+i*ehxD), yLabel + cExtraAxisMarge, (int)(bx+i*ehxD), drawYmax);
+						}
+//						g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - 9, maxHoogteLijn));
+//						if(maxHoogteLijn > yLabel + 2) {
+//							g.drawLine((int)(bx+i*ehxD), yLabel + 2, (int)(bx+i*ehxD), maxHoogteLijn);
+//						}
+					} else {
+						if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog) {
+//							g.drawLine((int)(bx+i*ehxD),0,(int)(bx+i*ehxD), maxHoogteLijn);
+							g.drawLine((int)(bx+i*ehxD),drawYmin,(int)(bx+i*ehxD), drawYmax);
 						}
 					}
-					else if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog)
-						g.drawLine((int)(bx+i*ehxD),0,(int)(bx+i*ehxD), maxHoogteLijn);
 				}
 				if((!gtip.xPositief || i > 0) && schaalTekenen && i != 0)
 				{
