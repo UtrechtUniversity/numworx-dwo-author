@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 
 import fi.statistiek.ColorGenerator;
+import fi.statistiek.Statistiek;
 
 /**
  * Draws a single dotplot
@@ -488,14 +489,14 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			&& (p.y > (locationMedian - 5)) && p.y < (locationMedian + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("mediaan = " + this.median);			
+    			this.setToolTipText(Statistiek.rb.getString("medianIs") + Statistiek.getStringValue(this.median));			
     			setHighlightValues(false, false, true, false, false);
     		}
     		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationMinValue - 5)) && p.y < (locationMinValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("minimum = " + this.minValue);
+    			this.setToolTipText(Statistiek.rb.getString("minimumIs") + Statistiek.getStringValue(this.minValue));
     			setHighlightValues(true, false, false, false, false);
     		}
     		// TODO: when e.g. minValue and lowerQuartile are close together or the same
@@ -504,21 +505,21 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			&& (p.y > (locationLowerQuartile - 5)) && p.y < (locationLowerQuartile + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("1e kwartiel = " + this.lowerQuartile);
+    			this.setToolTipText(Statistiek.rb.getString("firstQuartileIs") + Statistiek.getStringValue(this.lowerQuartile));
     			setHighlightValues(false, true, false, false, false);
     		}
     		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationUpperQuartile - 5)) && p.y < (locationUpperQuartile + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("3e kwartiel = " + this.upperQuartile);			
+    			this.setToolTipText(Statistiek.rb.getString("thirdQuartileIs") + Statistiek.getStringValue(this.upperQuartile));			
     			setHighlightValues(false, false, false, true, false);
     		}
     		else if (p.x > lower_x && p.x < upper_x
     			&& (p.y > (locationMaxValue - 5)) && p.y < (locationMaxValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("maximum = " + this.maxValue);			
+    			this.setToolTipText(Statistiek.rb.getString("maximumIs") + Statistiek.getStringValue(this.maxValue));			
     			setHighlightValues(false, false, false, false, true);
     		}
     		else
@@ -537,35 +538,35 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
     			&& (p.x > (locationMedian - 5)) && p.x < (locationMedian + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("mediaan = " + this.median);			
+    			this.setToolTipText(Statistiek.rb.getString("medianIs") + Statistiek.getStringValue(this.median));			
     			setHighlightValues(false, false, true, false, false);
     		}
     		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationMinValue - 5)) && p.x < (locationMinValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("minimum = " + this.minValue);
+    			this.setToolTipText(Statistiek.rb.getString("minimumIs") + Statistiek.getStringValue(this.minValue));
     			setHighlightValues(true, false, false, false, false);
     		}
     		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationLowerQuartile - 5)) && p.x < (locationLowerQuartile + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("1e kwartiel = " + this.lowerQuartile);			
+    			this.setToolTipText(Statistiek.rb.getString("firstQuartileIs") + Statistiek.getStringValue(this.lowerQuartile));
     			setHighlightValues(false, true, false, false, false);
     		}
     		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationUpperQuartile - 5)) && p.x < (locationUpperQuartile + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("3e kwartiel = " + this.upperQuartile);			
+    			this.setToolTipText(Statistiek.rb.getString("thirdQuartileIs") + Statistiek.getStringValue(this.upperQuartile));			
     			setHighlightValues(false, false, false, true, false);
     		}
     		else if (p.y > lower_y && p.y < upper_y
     			&& (p.x > (locationMaxValue - 5)) && p.x < (locationMaxValue + 5))
     		{
     			ToolTipManager.sharedInstance().setEnabled(true);
-    			this.setToolTipText("maximum = " + this.maxValue);			
+    			this.setToolTipText(Statistiek.rb.getString("maximumIs") + Statistiek.getStringValue(this.maxValue));			
     			setHighlightValues(false, false, false, false, true);
     		}
     		else
