@@ -307,14 +307,20 @@ public class BoxplotModel extends Observable implements TableModelListener
 			else
 			{
 				this.minValues.add(data.get(0));
+				ArrayList<Double> lowerDataHalf = new ArrayList<Double>(data.subList(0, (int) Math.ceil(0.5 * size)));
 				this.lowerQuartiles
-					.add(data.get((int) Math.ceil(0.25 * size) - 1));
+					.add(this.determineMedian(lowerDataHalf));
 				
-				//this.medians.add(data.get((int) Math.ceil(0.5 * size) - 1));
 				addMedian(data);
 				
+				int fromIndex;
+				if (size % 2 == 0) // even
+					fromIndex = (int) Math.ceil(0.5 * size);
+				else
+					fromIndex = (int) Math.ceil(0.5 * size) - 1;
+				ArrayList<Double> upperDataHalf = new ArrayList<Double>(data.subList(fromIndex, size));
 				this.upperQuartiles
-					.add(data.get((int) Math.ceil(0.75 * size) - 1));
+					.add(this.determineMedian(upperDataHalf));
 				this.maxValues.add(data.get(size - 1));
 			}
 			this.dataMinValue = this.getMinValue(0);
@@ -405,11 +411,13 @@ public class BoxplotModel extends Observable implements TableModelListener
 		}
 	}
 	
-	/*
-	 * Determine the median of the data set and 
-	 * add to medians.
+	/**
+	 * Determine the median of the given data set.
+	 * 
+	 * @param data
+	 * @return
 	 */
-	private void addMedian (ArrayList<Double> data)
+	private Double determineMedian(ArrayList<Double> data)
 	{
 		int index;
 		Double median;
@@ -422,8 +430,6 @@ public class BoxplotModel extends Observable implements TableModelListener
 			index = (size/2) - 1;
 			// mediaan is het gemiddelde van de twee waarden in het midden
 			median = (data.get(index) + data.get(index + 1))/2;
-//			System.out.println("BoxplotModel.addMedian(): even, median=" 
-//				+ median);
 		}
 		else
 		{
@@ -432,9 +438,18 @@ public class BoxplotModel extends Observable implements TableModelListener
 			index = (int) ((size + 1)/2) - 1;
 			// mediaan is de middelste waarde
 			median = data.get(index);
-//			System.out.println("BoxplotModel.addMedian(): odd, median=" 
-//				+ median);
 		}
+		
+		return median;
+	}
+	
+	/*
+	 * Determine the median of the data set and 
+	 * add to medians.
+	 */
+	private void addMedian (ArrayList<Double> data)
+	{
+		Double median = this.determineMedian(data);
 		
 		this.medians.add(median);
 	}
