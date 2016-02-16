@@ -23,6 +23,7 @@ import java.util.Vector;
 
 
 
+
 //import javax.vecmath.Vector2d;
 import fi.beans.lineairealgebra.Vector2d;
 
@@ -34,7 +35,7 @@ class GrafiekVeld extends JComponent{
 	/* contstants */
 	private final int cMaxPiLinesOnScreen = 8;
 
-	private final int cExtraAxisMarge = 4;
+	private final int cExtraAxisMarge = 2;
 //	private final int cAxesThickness = 1;
 //	private final int cPiFromAxis = 25;
 //	private final int cDashStep = 5;
@@ -432,18 +433,20 @@ class GrafiekVeld extends JComponent{
 					}
 				}
 				int woordbreedte = gtip.fm.stringWidth(getal);
-//				int xLabel = (int)(gtip.beginx+i*gtip.eenheidxD-woordbreedte/2);
+				
 				int xLabel = (int)(gtip.beginx+i*ehxD-woordbreedte/2);
-//				int yLabel = Math.min(hoogte-1, hoogte-by+11);
-				int yLabel = Math.max(11, Math.min(hoogte-4, hoogte-by+11));
+//				int yLabel = Math.max(11, Math.min(hoogte-4, hoogte-by+11));
+				int yLabel = Math.max(gtip.fm.getHeight(), Math.min(hoogte-cExtraAxisMarge, hoogte-by+cExtraAxisMarge+gtip.fm.getHeight()));
+
 				
 				boolean schaalTekenen = (i%2 == 0 || gtip.xAsLog) && gtip.schaalZichtbaar && gtip.schaalX;
 				//witruimteX = yLabel==hoogte-1;
-				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0)) {	
+				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0) && 
+						((bx+i*ehxD) >= drawXmin) &&  ((bx+i*ehxD) <= drawXmax)) {	
 					if(schaalTekenen ) {
 						
 						if (drawYmin < yLabel - gtip.fm.getHeight())  { 
-							g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - gtip.fm.getHeight(), drawYmax));
+							g.drawLine((int)(bx+i*ehxD), drawYmin, (int)(bx+i*ehxD), Math.min(yLabel - gtip.fm.getHeight(), drawYmax));
 						}
 						if (drawYmax > yLabel + cExtraAxisMarge)  {	
 							g.drawLine((int)(bx+i*ehxD), yLabel + cExtraAxisMarge, (int)(bx+i*ehxD), drawYmax);
