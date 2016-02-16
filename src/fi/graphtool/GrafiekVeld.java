@@ -24,6 +24,8 @@ import java.util.Vector;
 
 
 
+
+
 //import javax.vecmath.Vector2d;
 import fi.beans.lineairealgebra.Vector2d;
 
@@ -35,7 +37,7 @@ class GrafiekVeld extends JComponent{
 	/* contstants */
 	private final int cMaxPiLinesOnScreen = 8;
 
-	private final int cExtraAxisMarge = 2;
+	private final int cExtraAxisMarge = 3;
 //	private final int cAxesThickness = 1;
 //	private final int cPiFromAxis = 25;
 //	private final int cDashStep = 5;
@@ -340,12 +342,12 @@ class GrafiekVeld extends JComponent{
 		boolean drawXAxis = true;
 		boolean drawYAxis = true;
 		
-		if (by < drawYmin + gtip.fm.getHeight() + 2 * cExtraAxisMarge) {
-			drawYmax =  drawYmax - gtip.fm.getHeight() - 2 * cExtraAxisMarge; 
+		if (by < drawYmin + gtip.cFontHeight + 2 * cExtraAxisMarge) {
+			drawYmax =  drawYmax - gtip.cFontHeight - 2 * cExtraAxisMarge; 
 			drawXAxis = false;
 		}
 		if (by > hoogte) {
-			drawYmin = drawYmin + gtip.fm.getHeight() + 2 * cExtraAxisMarge;
+			drawYmin = drawYmin + gtip.cFontHeight + 2 * cExtraAxisMarge;
 			drawXAxis = false;
 		}
 		
@@ -415,6 +417,9 @@ class GrafiekVeld extends JComponent{
 			Color lijnenKleur = new Color(210, 210, 210);
 			g.setColor(new Color(210, 210, 210));
 
+							
+			System.out.println("drawYmin =" + drawYmin);
+			System.out.println("drawYmax =" + drawYmax);
 			for(int i=imin ; i<imax ; i++) {	// X-axis
 				
 // 			for(int i=imin+1 ; i<imax ; i++) {	
@@ -436,20 +441,23 @@ class GrafiekVeld extends JComponent{
 				
 				int xLabel = (int)(gtip.beginx+i*ehxD-woordbreedte/2);
 //				int yLabel = Math.max(11, Math.min(hoogte-4, hoogte-by+11));
-				int yLabel = Math.max(gtip.fm.getHeight(), Math.min(hoogte-cExtraAxisMarge, hoogte-by+cExtraAxisMarge+gtip.fm.getHeight()));
-
+				int yLabel = Math.max(gtip.cFontHeight+cExtraAxisMarge, Math.min(hoogte-cExtraAxisMarge, hoogte-by+cExtraAxisMarge+gtip.cFontHeight));
+				
+				System.out.println("xLabel =" + xLabel);
+				System.out.println("yLabel =" + yLabel);
 				
 				boolean schaalTekenen = (i%2 == 0 || gtip.xAsLog) && gtip.schaalZichtbaar && gtip.schaalX;
 				//witruimteX = yLabel==hoogte-1;
 				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0) && 
 						((bx+i*ehxD) >= drawXmin) &&  ((bx+i*ehxD) <= drawXmax)) {	
-					if(schaalTekenen ) {
-						
-						if (drawYmin < yLabel - gtip.fm.getHeight())  { 
-							g.drawLine((int)(bx+i*ehxD), drawYmin, (int)(bx+i*ehxD), Math.min(yLabel - gtip.fm.getHeight(), drawYmax));
+					if(schaalTekenen ) {						
+						if (drawYmin < yLabel - gtip.cFontHeight)  { 
+							g.drawLine((int)(bx+i*ehxD), drawYmin, (int)(bx+i*ehxD), Math.min(yLabel - gtip.cFontHeight, drawYmax));
+							System.out.println("drawLine Y 1 [" + (int)(bx+i*ehxD) +","+drawYmin+"]->["+ (int)(bx+i*ehxD)+","+Math.min(yLabel - gtip.cFontHeight, drawYmax)+"]");
 						}
 						if (drawYmax > yLabel + cExtraAxisMarge)  {	
 							g.drawLine((int)(bx+i*ehxD), yLabel + cExtraAxisMarge, (int)(bx+i*ehxD), drawYmax);
+							System.out.println("drawLine  Y 2 [" + (int)(bx+i*ehxD) +","+(yLabel+cExtraAxisMarge)+"]->["+ (int)(bx+i*ehxD)+","+drawYmax+"]");
 						}
 //						g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - 9, maxHoogteLijn));
 //						if(maxHoogteLijn > yLabel + 2) {
@@ -458,12 +466,16 @@ class GrafiekVeld extends JComponent{
 					} else {
 						if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog) {
 //							g.drawLine((int)(bx+i*ehxD),0,(int)(bx+i*ehxD), maxHoogteLijn);
+							System.out.println("drawLine  Y 3 [" + (int)(bx+i*ehxD) +","+drawYmin+"]->["+ (int)(bx+i*ehxD)+","+drawYmax+"]");
+
 							g.drawLine((int)(bx+i*ehxD),drawYmin,(int)(bx+i*ehxD), drawYmax);
 						}
 					}
 				}
-				if((!gtip.xPositief || i > 0) && schaalTekenen && i != 0)
-				{
+//				if((!gtip.xPositief || i > 0) && schaalTekenen && i != 0) {
+				if ( (!gtip.xPositief || i > 0) && (schaalTekenen) && (i != 0 || !drawXAxis) && 
+						((bx+i*ehxD)  >= drawXmin) &&
+						((bx+i*ehxD)  <= drawXmax)) {
 					g.setColor(Color.black);
 					g.drawString(getal,	xLabel,	yLabel);
 					g.setColor(lijnenKleur);
@@ -471,6 +483,8 @@ class GrafiekVeld extends JComponent{
 				}
 			}
 
+			System.out.println("drawXmin =" + drawXmin);
+			System.out.println("drawXmax =" + drawXmax);
 			for(int j=jmin ; j<jmax ; j++) {	
 // 				String getal = gtip.df.format(gtip.schaalFactorY*(j)); // draw graph based on scale -> old
 //				String getal = gtip.df.format(gtip.eenheidyValue*(j));
@@ -488,29 +502,46 @@ class GrafiekVeld extends JComponent{
 					}					
 				}
 				int woordbreedte = gtip.fm.stringWidth(getal);
-//				int xLabel = Math.max(maxWoordBreedteY-woordbreedte,bx-2-woordbreedte);
-//				int xLabel = Math.max(maxWoordBreedteY-woordbreedte+4,bx-2-woordbreedte);
-				int xLabel = Math.min(breedte-3-woordbreedte,Math.max(maxWoordBreedteY-woordbreedte+4,bx-2-woordbreedte));
-				int yLabel = (int)(gtip.veldh+5-(gtip.beginy+j*ehyD));
+//				int xLabel = Math.min(breedte-3-woordbreedte,Math.max(maxWoordBreedteY-woordbreedte+4,bx-2-woordbreedte));
+//				int yLabel = (int)(gtip.veldh+5-(gtip.beginy+j*ehyD));
+				int xLabel = Math.min(breedte-cExtraAxisMarge-woordbreedte,Math.max(maxWoordBreedteY-woordbreedte+cExtraAxisMarge,bx-cExtraAxisMarge-woordbreedte));
+				int yLabel = (int)(hoogte-(by+j*ehyD)+(gtip.cFontHeight/2));
+				
+				System.out.println("xLabel =" + xLabel);
+				System.out.println("yLabel =" + yLabel);
 				witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
+				
 				int minimaalBegin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
 				boolean schaalTekenen = (j%2 == 0 || gtip.yAsLog) && gtip.schaalZichtbaar && gtip.schaalY;
-				if(gtip.roosterZichtbaar && gtip.roosterY && (!gtip.yPositief || j>0) && hoogte-(by+j*ehyD) <= maxHoogteLijn) 
-				{
-					if(schaalTekenen ) 
-					{
-						if(xLabel - 1 > minimaalBegin) {
-							g.drawLine(minimaalBegin, (int)(hoogte-(by+j*ehyD)), xLabel - 1, (int)(hoogte-(by+j*ehyD)));
+				if(gtip.roosterZichtbaar && gtip.roosterY && (!gtip.yPositief || j>0) &&
+						(hoogte-(by+j*ehyD) <= drawYmax) && 
+						(hoogte-(by+j*ehyD) >= drawYmin) )  {
+//						hoogte-(by+j*ehyD) <= maxHoogteLijn) {
+					if(schaalTekenen ) {
+//						if(xLabel - 1 > minimaalBegin) {
+//							g.drawLine(minimaalBegin, (int)(hoogte-(by+j*ehyD)), xLabel - 1, (int)(hoogte-(by+j*ehyD)));
+//						}
+//						g.drawLine(Math.max(minimaalBegin, xLabel + woordbreedte + 1), (int)(hoogte-(by+j*ehyD)), breedte, (int)(hoogte-(by+j*ehyD)));
+						if(xLabel - cExtraAxisMarge > drawXmin) {	
+							g.drawLine(drawXmin, (int)(hoogte-(by+j*ehyD)), Math.min(drawXmax, xLabel - cExtraAxisMarge), (int)(hoogte-(by+j*ehyD)));
+							System.out.println("drawLine X 1 [" + drawXmin +","+(int)(hoogte-(by+j*ehyD))+"]->["+ Math.min(drawXmax, xLabel - cExtraAxisMarge)+","+(int)(hoogte-(by+j*ehyD))+"]");
 						}
-						g.drawLine(Math.max(minimaalBegin, xLabel + woordbreedte + 1), (int)(hoogte-(by+j*ehyD)), breedte, (int)(hoogte-(by+j*ehyD)));
+						if ( (drawXmax > xLabel + woordbreedte + cExtraAxisMarge)  ) {	
+							g.drawLine(Math.max(drawXmin, xLabel + woordbreedte + cExtraAxisMarge), (int)(hoogte-(by+j*ehyD)), drawXmax, (int)(hoogte-(by+j*ehyD)));
+							System.out.println("drawLine X 2 [" + Math.max(drawXmin, xLabel + woordbreedte + cExtraAxisMarge) +","+(int)(hoogte-(by+j*ehyD))+"]->["+(int)(hoogte-(by+j*ehyD))+","+ drawXmax+"]");
+						}
 						
 					}
-					else if(j%2 == 0 || gtip.yAsLog || !gtip.roosterGrof)
-						g.drawLine(minimaalBegin,(int)(hoogte-(by+j*ehyD)),breedte,(int)(hoogte-(by+j*ehyD)));
+					else if(j%2 == 0 || gtip.yAsLog || !gtip.roosterGrof) {
+						g.drawLine(drawXmin,(int)(hoogte-(by+j*ehyD)),drawXmax,(int)(hoogte-(by+j*ehyD)));
+						System.out.println("drawLine X 3 [" + drawXmin +","+(int)(hoogte-(by+j*ehyD))+"]->["+(int)(hoogte-(by+j*ehyD))+","+ drawXmax+"]");
+					}
 							
 				}
-				if((!gtip.yPositief || j>0) && schaalTekenen && j != 0)
-				{
+				if((!gtip.yPositief || j>0) && (schaalTekenen) && (j != 0 || !drawYAxis) && 
+						(hoogte-(by+j*ehyD) <= drawYmax) && 
+						(hoogte-(by+j*ehyD) >= drawYmin) )  {
+//				if((!gtip.yPositief || j>0) && schaalTekenen && j != 0) {
 					g.setColor(Color.black);
 					g.drawString(getal,	xLabel,yLabel);
 					g.setColor(lijnenKleur);
@@ -665,13 +696,25 @@ class GrafiekVeld extends JComponent{
 		if (gtip.assenZichtbaar) {
 			g.setColor(Color.black);
 
-			if(bx>1 && bx<breedte) {
-				g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
-				g.drawLine(bx,0,bx,maxHoogteLijn);
+//			if(bx>1 && bx<breedte) {
+//				g.drawLine(bx-1,0,bx-1,maxHoogteLijn);
+//				g.drawLine(bx,0,bx,maxHoogteLijn);
+//			}
+//			if(by>0 && by<hoogte) {	
+//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
+//				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
+//			}
+			
+			/* Y-as */
+			if(drawYAxis) {	
+				g.drawLine(bx-1,drawYmin,bx-1,drawYmax);
+				g.drawLine(bx,drawYmin,bx,drawYmax);
 			}
-			if(by>0 && by<hoogte) {	
-				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by+1),breedte,hoogte-(by+1));
-				g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),hoogte-(by),breedte,hoogte-(by));
+			
+			/* X-as */
+			if(drawXAxis) {	
+				g.drawLine(drawXmin, hoogte-(by+1),drawXmax,hoogte-(by+1));
+				g.drawLine(drawXmin, hoogte-(by),  drawXmax,hoogte-(by));
 			}
 
 //			// Variant :: assen moeten immer op het scherm blijven - Voorlopig weer uit!
