@@ -40,7 +40,7 @@ class GrafiekVeld extends JComponent{
 
 	private final int cExtraAxisMarge = 3;
 	private final int cAxesThickness = 1;
-	private final int cSelectMarge = 5;
+	private final int cSelectMarge = 10;
 //	private final int cPiFromAxis = 25;
 //	private final int cDashStep = 5;
 //	private final int cSliderBoxBorderMargin = 2;
@@ -750,30 +750,15 @@ class GrafiekVeld extends JComponent{
 			int xAsNaamLinks = drawXmax - woordBreedteX - 3 * cExtraAxisMarge;
 			int xAsNaamOnder = Math.max(drawYmin + 0 *cExtraAxisMarge + gtip.font.getSize(), Math.min(drawYmax - cExtraAxisMarge, hoogte - by - cExtraAxisMarge) );
 			g.drawString(gtip.grafiekXAsNaam, xAsNaamLinks, xAsNaamOnder);
-			gtip.xAsNaamActivator.setBounds(xAsNaamLinks-cSelectMarge, xAsNaamOnder+cSelectMarge, woordBreedteX+cSelectMarge, gtip.font.getSize()-cSelectMarge);
+			gtip.xAsNaamActivator.setBounds(xAsNaamLinks-cSelectMarge, xAsNaamOnder-gtip.font.getSize()-cSelectMarge, woordBreedteX+2*cSelectMarge, gtip.font.getSize()+2*cSelectMarge);
+			gtip.xAsNaamTF.setLocation(drawXmax-gtip.xAsNaamTF.getWidth()-cExtraAxisMarge, xAsNaamOnder-gtip.font.getSize());
 
 			int woordBreedteY = fm.stringWidth(gtip.grafiekYAsNaam);
 			int yAsNaamLinks = Math.max( drawXmin+ 1 * cExtraAxisMarge, Math.min(drawXmax - woordBreedteY - 1 * cExtraAxisMarge, bx+ 1 * cExtraAxisMarge + cAxesThickness) );
 			int yAsNaamOnder = drawYmin + gtip.font.getSize() +3 * cExtraAxisMarge;
 			g.drawString(gtip.grafiekYAsNaam, yAsNaamLinks, yAsNaamOnder);
-			gtip.yAsNaamActivator.setBounds(yAsNaamLinks-cSelectMarge, yAsNaamOnder+cSelectMarge, woordBreedteY+2*cSelectMarge, gtip.font.getSize()+2*cSelectMarge);
-			System.out.println("YNaam Pos = [" + yAsNaamLinks + "," + yAsNaamOnder + "]");
-			System.out.println("YNaam Bounds = [" + (yAsNaamLinks-cSelectMarge) + "," + (yAsNaamOnder+cSelectMarge) + 
-					"," + (woordBreedteY+2*cSelectMarge) + "," + (gtip.font.getSize()+2*cSelectMarge) +
-					"]");
-
-//			gtip.yAsNaamActivator.setBounds(Math.max(18,bx+6), 0, woordBreedteY, 15);
-			gtip.xAsNaamTF.setLocation(breedte-85,Math.min(hoogte-17, hoogte-(by)-15));
-			gtip.yAsNaamTF.setLocation(Math.max(18,bx+6),0);
-			gtip.xAsNaamTF.getWidth();
-			
-//			xAsNaamRechts = xAsNaamLinks + woordBreedteX;
-//			xAsNaamBoven = xAsNaamOnder - cFontHeightItalic;
-
-//			yAsNaamRechts = yAsNaamLinks + woordBreedteY;
-//			yAsNaamBoven = yAsNaamOnder - cFontHeightItalic;
-
-			
+			gtip.yAsNaamActivator.setBounds(yAsNaamLinks-cSelectMarge, yAsNaamOnder-gtip.font.getSize()-cSelectMarge, woordBreedteY+2*cSelectMarge, gtip.font.getSize()+2*cSelectMarge);
+			gtip.yAsNaamTF.setLocation(Math.min(drawXmax-gtip.yAsNaamTF.getWidth()-cExtraAxisMarge, yAsNaamLinks), yAsNaamOnder-gtip.font.getSize());
 			
 		}	
 		
