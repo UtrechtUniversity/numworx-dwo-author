@@ -66,10 +66,10 @@ public class GraphToolInteractiePanel extends JPanel implements InteractiePanel,
 MouseListener, MouseMotionListener, CBookAware {
 	
 	/* contstants */
-	public static final String cFontString = "SansSerif";
-	public static final int cFontHeight = 10;
-	public static final int cFontStyle_Default = Font.PLAIN;
-
+	private static final String cFontString = "SansSerif";
+	private static final int cFontHeight = 10;
+	private static final int cFontStyle_Default = Font.PLAIN;
+	
 	int width = 300; // was 250
 	int height = 300;
 	int offset = 5;

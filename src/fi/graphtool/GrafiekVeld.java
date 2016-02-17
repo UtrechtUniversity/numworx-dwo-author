@@ -26,6 +26,7 @@ import java.util.Vector;
 
 
 
+
 //import javax.vecmath.Vector2d;
 import fi.beans.lineairealgebra.Vector2d;
 
@@ -38,7 +39,8 @@ class GrafiekVeld extends JComponent{
 	private final int cMaxPiLinesOnScreen = 8;
 
 	private final int cExtraAxisMarge = 3;
-//	private final int cAxesThickness = 1;
+	private final int cAxesThickness = 1;
+	private final int cSelectMarge = 5;
 //	private final int cPiFromAxis = 25;
 //	private final int cDashStep = 5;
 //	private final int cSliderBoxBorderMargin = 2;
@@ -342,12 +344,12 @@ class GrafiekVeld extends JComponent{
 		boolean drawXAxis = true;
 		boolean drawYAxis = true;
 		
-		if (by < drawYmin + gtip.cFontHeight + 2 * cExtraAxisMarge) {
-			drawYmax =  drawYmax - gtip.cFontHeight - 2 * cExtraAxisMarge; 
+		if (by < drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge) {
+			drawYmax =  drawYmax - gtip.font.getSize() - 2 * cExtraAxisMarge; 
 			drawXAxis = false;
 		}
 		if (by > hoogte) {
-			drawYmin = drawYmin + gtip.cFontHeight + 2 * cExtraAxisMarge;
+			drawYmin = drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge;
 			drawXAxis = false;
 		}
 		
@@ -441,23 +443,18 @@ class GrafiekVeld extends JComponent{
 				
 				int xLabel = (int)(gtip.beginx+i*ehxD-woordbreedte/2);
 //				int yLabel = Math.max(11, Math.min(hoogte-4, hoogte-by+11));
-				int yLabel = Math.max(gtip.cFontHeight+cExtraAxisMarge, Math.min(hoogte-cExtraAxisMarge, hoogte-by+cExtraAxisMarge+gtip.cFontHeight));
-				
-				System.out.println("xLabel =" + xLabel);
-				System.out.println("yLabel =" + yLabel);
+				int yLabel = Math.max(gtip.font.getSize()+cExtraAxisMarge, Math.min(hoogte-cExtraAxisMarge, hoogte-by+cExtraAxisMarge+gtip.font.getSize()));
 				
 				boolean schaalTekenen = (i%2 == 0 || gtip.xAsLog) && gtip.schaalZichtbaar && gtip.schaalX;
 				//witruimteX = yLabel==hoogte-1;
 				if(gtip.roosterZichtbaar && gtip.roosterX && (!gtip.xPositief || i > 0) && 
 						((bx+i*ehxD) >= drawXmin) &&  ((bx+i*ehxD) <= drawXmax)) {	
 					if(schaalTekenen ) {						
-						if (drawYmin < yLabel - gtip.cFontHeight)  { 
-							g.drawLine((int)(bx+i*ehxD), drawYmin, (int)(bx+i*ehxD), Math.min(yLabel - gtip.cFontHeight, drawYmax));
-							System.out.println("drawLine Y 1 [" + (int)(bx+i*ehxD) +","+drawYmin+"]->["+ (int)(bx+i*ehxD)+","+Math.min(yLabel - gtip.cFontHeight, drawYmax)+"]");
+						if (drawYmin < yLabel - gtip.font.getSize())  { 
+							g.drawLine((int)(bx+i*ehxD), drawYmin, (int)(bx+i*ehxD), Math.min(yLabel - gtip.font.getSize(), drawYmax));
 						}
 						if (drawYmax > yLabel + cExtraAxisMarge)  {	
 							g.drawLine((int)(bx+i*ehxD), yLabel + cExtraAxisMarge, (int)(bx+i*ehxD), drawYmax);
-							System.out.println("drawLine  Y 2 [" + (int)(bx+i*ehxD) +","+(yLabel+cExtraAxisMarge)+"]->["+ (int)(bx+i*ehxD)+","+drawYmax+"]");
 						}
 //						g.drawLine((int)(bx+i*ehxD), 0, (int)(bx+i*ehxD), Math.min(yLabel - 9, maxHoogteLijn));
 //						if(maxHoogteLijn > yLabel + 2) {
@@ -466,8 +463,6 @@ class GrafiekVeld extends JComponent{
 					} else {
 						if(i%2 == 0 || !gtip.roosterGrof || gtip.xAsLog) {
 //							g.drawLine((int)(bx+i*ehxD),0,(int)(bx+i*ehxD), maxHoogteLijn);
-							System.out.println("drawLine  Y 3 [" + (int)(bx+i*ehxD) +","+drawYmin+"]->["+ (int)(bx+i*ehxD)+","+drawYmax+"]");
-
 							g.drawLine((int)(bx+i*ehxD),drawYmin,(int)(bx+i*ehxD), drawYmax);
 						}
 					}
@@ -505,10 +500,8 @@ class GrafiekVeld extends JComponent{
 //				int xLabel = Math.min(breedte-3-woordbreedte,Math.max(maxWoordBreedteY-woordbreedte+4,bx-2-woordbreedte));
 //				int yLabel = (int)(gtip.veldh+5-(gtip.beginy+j*ehyD));
 				int xLabel = Math.min(breedte-cExtraAxisMarge-woordbreedte,Math.max(maxWoordBreedteY-woordbreedte+cExtraAxisMarge,bx-cExtraAxisMarge-woordbreedte));
-				int yLabel = (int)(hoogte-(by+j*ehyD)+(gtip.cFontHeight/2));
+				int yLabel = (int)(hoogte-(by+j*ehyD)+(gtip.font.getSize()/2));
 				
-				System.out.println("xLabel =" + xLabel);
-				System.out.println("yLabel =" + yLabel);
 				witruimteY = xLabel==maxWoordBreedteY-woordbreedte;
 				
 				int minimaalBegin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
@@ -524,17 +517,14 @@ class GrafiekVeld extends JComponent{
 //						g.drawLine(Math.max(minimaalBegin, xLabel + woordbreedte + 1), (int)(hoogte-(by+j*ehyD)), breedte, (int)(hoogte-(by+j*ehyD)));
 						if(xLabel - cExtraAxisMarge > drawXmin) {	
 							g.drawLine(drawXmin, (int)(hoogte-(by+j*ehyD)), Math.min(drawXmax, xLabel - cExtraAxisMarge), (int)(hoogte-(by+j*ehyD)));
-							System.out.println("drawLine X 1 [" + drawXmin +","+(int)(hoogte-(by+j*ehyD))+"]->["+ Math.min(drawXmax, xLabel - cExtraAxisMarge)+","+(int)(hoogte-(by+j*ehyD))+"]");
 						}
 						if ( (drawXmax > xLabel + woordbreedte + cExtraAxisMarge)  ) {	
 							g.drawLine(Math.max(drawXmin, xLabel + woordbreedte + cExtraAxisMarge), (int)(hoogte-(by+j*ehyD)), drawXmax, (int)(hoogte-(by+j*ehyD)));
-							System.out.println("drawLine X 2 [" + Math.max(drawXmin, xLabel + woordbreedte + cExtraAxisMarge) +","+(int)(hoogte-(by+j*ehyD))+"]->["+(int)(hoogte-(by+j*ehyD))+","+ drawXmax+"]");
 						}
 						
 					}
 					else if(j%2 == 0 || gtip.yAsLog || !gtip.roosterGrof) {
 						g.drawLine(drawXmin,(int)(hoogte-(by+j*ehyD)),drawXmax,(int)(hoogte-(by+j*ehyD)));
-						System.out.println("drawLine X 3 [" + drawXmin +","+(int)(hoogte-(by+j*ehyD))+"]->["+(int)(hoogte-(by+j*ehyD))+","+ drawXmax+"]");
 					}
 							
 				}
@@ -746,23 +736,44 @@ class GrafiekVeld extends JComponent{
 //					g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0),0,breedte,0);
 //				}
 //			}
-			g.setFont(new Font ("SansSerif",Font.ITALIC,10 ));
-			g.drawString("O",bx-11,hoogte-by+10);
+			g.setFont(new Font(gtip.font.getName(), Font.ITALIC, gtip.font.getSize()));
+			FontMetrics fm = g.getFontMetrics();
+			String oorsprongString = "O";
+			int woordbreedteOorsprong = fm.stringWidth(oorsprongString);
+			if ( (drawXAxis) && (drawYAxis) ) {
+				g.drawString(oorsprongString, bx-woordbreedteOorsprong-cExtraAxisMarge, hoogte-by+gtip.font.getSize());
+			}
 			
 			g.setColor(Color.black);
 
-			g.setFont(new Font(gtip.font.getName(), Font.ITALIC, gtip.font.getSize()));
-			FontMetrics fm = g.getFontMetrics();
-			int woordbreedte = fm.stringWidth(gtip.grafiekXAsNaam);
-			int formuleWoordbreedte = fm.stringWidth(gtip.grafiekYAsNaam);
-			g.drawString(gtip.grafiekXAsNaam, breedte-woordbreedte-5,Math.min(hoogte-17, hoogte-(by)-5));
-			g.drawString(gtip.grafiekYAsNaam, Math.max(18,bx+6), 9);
-			
-			gtip.xAsNaamActivator.setBounds(breedte-woordbreedte-5, Math.min(hoogte-17, hoogte-(by)-15), woordbreedte, 15);
-			gtip.yAsNaamActivator.setBounds(Math.max(18,bx+6), 0, formuleWoordbreedte, 15);
-			
+			int woordBreedteX = fm.stringWidth(gtip.grafiekXAsNaam);
+			int xAsNaamLinks = drawXmax - woordBreedteX - 3 * cExtraAxisMarge;
+			int xAsNaamOnder = Math.max(drawYmin + 0 *cExtraAxisMarge + gtip.font.getSize(), Math.min(drawYmax - cExtraAxisMarge, hoogte - by - cExtraAxisMarge) );
+			g.drawString(gtip.grafiekXAsNaam, xAsNaamLinks, xAsNaamOnder);
+			gtip.xAsNaamActivator.setBounds(xAsNaamLinks-cSelectMarge, xAsNaamOnder+cSelectMarge, woordBreedteX+cSelectMarge, gtip.font.getSize()-cSelectMarge);
+
+			int woordBreedteY = fm.stringWidth(gtip.grafiekYAsNaam);
+			int yAsNaamLinks = Math.max( drawXmin+ 1 * cExtraAxisMarge, Math.min(drawXmax - woordBreedteY - 1 * cExtraAxisMarge, bx+ 1 * cExtraAxisMarge + cAxesThickness) );
+			int yAsNaamOnder = drawYmin + gtip.font.getSize() +3 * cExtraAxisMarge;
+			g.drawString(gtip.grafiekYAsNaam, yAsNaamLinks, yAsNaamOnder);
+			gtip.yAsNaamActivator.setBounds(yAsNaamLinks-cSelectMarge, yAsNaamOnder+cSelectMarge, woordBreedteY+2*cSelectMarge, gtip.font.getSize()+2*cSelectMarge);
+			System.out.println("YNaam Pos = [" + yAsNaamLinks + "," + yAsNaamOnder + "]");
+			System.out.println("YNaam Bounds = [" + (yAsNaamLinks-cSelectMarge) + "," + (yAsNaamOnder+cSelectMarge) + 
+					"," + (woordBreedteY+2*cSelectMarge) + "," + (gtip.font.getSize()+2*cSelectMarge) +
+					"]");
+
+//			gtip.yAsNaamActivator.setBounds(Math.max(18,bx+6), 0, woordBreedteY, 15);
 			gtip.xAsNaamTF.setLocation(breedte-85,Math.min(hoogte-17, hoogte-(by)-15));
 			gtip.yAsNaamTF.setLocation(Math.max(18,bx+6),0);
+			gtip.xAsNaamTF.getWidth();
+			
+//			xAsNaamRechts = xAsNaamLinks + woordBreedteX;
+//			xAsNaamBoven = xAsNaamOnder - cFontHeightItalic;
+
+//			yAsNaamRechts = yAsNaamLinks + woordBreedteY;
+//			yAsNaamBoven = yAsNaamOnder - cFontHeightItalic;
+
+			
 			
 		}	
 		
