@@ -221,6 +221,11 @@ public class DescriptivesModel extends Observable implements
 		this.changed();
 	}
 	
+	public void outliersChanged()
+	{
+		this.changed();
+	}
+	
 	/**
 	 * Update the column index 
 	 * given that removedColumn has been removed.
@@ -343,7 +348,8 @@ public class DescriptivesModel extends Observable implements
 					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&& !this.getTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -477,7 +483,8 @@ public class DescriptivesModel extends Observable implements
 					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&&!this.getTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -562,7 +569,8 @@ public class DescriptivesModel extends Observable implements
 					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&& !this.getTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -648,7 +656,8 @@ public class DescriptivesModel extends Observable implements
 					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&&!this.getTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -740,7 +749,8 @@ public class DescriptivesModel extends Observable implements
 						valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 						splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
-						if (!valueString.equals(ColumnType.WILDCARD))
+						if (!valueString.equals(ColumnType.WILDCARD)
+							&& !this.getTableModel().isOutlier(i, columnIndex))
 						{
 							valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 							
@@ -819,7 +829,8 @@ public class DescriptivesModel extends Observable implements
 					valueString = (String) this.tableModel.getValueAt(i, columnIndex);
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&& !this.getTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
