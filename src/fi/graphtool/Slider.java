@@ -64,14 +64,14 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 		minimum = min;
 	}
 	
-	public void zetLengte(int aantalPix)
-	{	lengte = aantalPix;
+	public void zetLengte(int aantalPix) {	
+		lengte = aantalPix;
 		if(naam.length() > 0)
 		{	linksMarge = 15;
 			bovenMarge = 15;
 		}
 		setSize(lengte + 2 * linksMarge, bovenMarge + 8);
-		repaint();
+//			repaint();
 	}
 	
 	public void zetNaam(String naam)

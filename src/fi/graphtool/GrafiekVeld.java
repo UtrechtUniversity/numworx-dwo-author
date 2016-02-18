@@ -19,15 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-
-
-
-
-
-
-
-
-//import javax.vecmath.Vector2d;
 import fi.beans.lineairealgebra.Vector2d;
 
 import javax.swing.JComponent;
@@ -40,10 +31,12 @@ class GrafiekVeld extends JComponent{
 
 	private final int cExtraAxisMarge = 3;
 	private final int cAxesThickness = 1;
-	private final int cSelectMarge = 10;
-//	private final int cPiFromAxis = 25;
+	private final int cSelectMarge = 5;
+	private final int cSliderBoxBorderMargin = 2;
+	private final double cTraceAfronding = 1000;
+	//	private final int cPiFromAxis = 25;
 //	private final int cDashStep = 5;
-//	private final int cSliderBoxBorderMargin = 2;
+
 //	private final double cLineWidth = 0.5d;
 //	private final double cLineWidthLogLines = 0.25d;
 //	private final double cLineWidthAxes = 1.00d;	
@@ -759,7 +752,6 @@ class GrafiekVeld extends JComponent{
 			g.drawString(gtip.grafiekYAsNaam, yAsNaamLinks, yAsNaamOnder);
 			gtip.yAsNaamActivator.setBounds(yAsNaamLinks-cSelectMarge, yAsNaamOnder-gtip.font.getSize()-cSelectMarge, woordBreedteY+2*cSelectMarge, gtip.font.getSize()+2*cSelectMarge);
 			gtip.yAsNaamTF.setLocation(Math.min(drawXmax-gtip.yAsNaamTF.getWidth()-cExtraAxisMarge, yAsNaamLinks), yAsNaamOnder-gtip.font.getSize());
-			
 		}	
 		
 		if (gtip.tekenDocentFuncties != null && (gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJGRAFIEK
@@ -881,8 +873,11 @@ class GrafiekVeld extends JComponent{
 
 				    g.setColor(Color.black);
 					GeneralPath curve = new GeneralPath();
-					int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
-					int xMax = breedte;
+//					int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
+//					int xMax = breedte;
+					int xMin = drawXmin;
+					int xMax = drawXmax;
+					
 					if(gtip.domeinen != null && gtip.domeinen[j] != null) {	
 						if(!Double.isInfinite(gtip.domeinen[j][0])) {	
 //							int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.domeinen[j][0]):gtip.domeinen[j][0])
@@ -1052,27 +1047,28 @@ class GrafiekVeld extends JComponent{
 									&& dTraceX >= gtip.domeinen[j][0] && dTraceX <= gtip.domeinen[j][1]) {	
 // 								int tracey = (int)Math.round(hoogte -(gtip.beginy+gtip.eenheidy*dTraceY/gtip.schaalFactorY));
 								int tracey = (int) Math.round(valueYtoPixels(dTraceY));
-								g.fillOval(gtip.tracex-2,tracey-2,5,5);
-								g.drawLine(gtip.tracex,tracey,gtip.tracex,Math.min(hoogte-by, hoogte));
-								g.drawLine(gtip.tracex,tracey,Math.max(bx, 0),tracey);
-							
-								String xWaarde = gtip.dfTrace.format(dTraceX);
-// 								String yWaarde = gtip.dfTrace.format(gtip.yAsLog?Math.pow(10,dTraceY):dTraceY);
-								String yWaarde = gtip.dfTrace.format(dTraceY);
-								g.setFont(gtip.font);
-								gtip.fm = g.getFontMetrics();
-								int woordBreedteX = gtip.fm.stringWidth(xWaarde);
-								int woordHoogteX = gtip.fm.getAscent();
-								int woordBreedteY = gtip.fm.stringWidth(yWaarde);
-								int woordHoogteY = gtip.fm.getAscent();
-								g.setColor(new Color(255,255,200));
-								g.fillRect(gtip.tracex-woordBreedteX/2-2, Math.min(hoogte-by, hoogte-woordHoogteX-2), woordBreedteX+4, woordHoogteX+2);
-								g.fillRect(Math.max(0,bx-woordBreedteY-5), tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-								g.setColor(Color.black);
-								g.drawRect(gtip.tracex-woordBreedteX/2-2, Math.min(hoogte-by, hoogte-woordHoogteX-2), woordBreedteX+4, woordHoogteX+2);
-								g.drawRect(Math.max(0,bx-woordBreedteY-5), tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
-								g.drawString(xWaarde, gtip.tracex-woordBreedteX/2, Math.min(hoogte-by+woordHoogteX, hoogte-2));
-								g.drawString(yWaarde, Math.max(2,bx-woordBreedteY-3), tracey+woordHoogteY/2);
+								tekenTracer(g, hoogte, bx, by, gtip.tracex, tracey, dTraceX, dTraceY);
+//								g.fillOval(gtip.tracex-2,tracey-2,5,5);
+//								g.drawLine(gtip.tracex,tracey,gtip.tracex,Math.min(hoogte-by, hoogte));
+//								g.drawLine(gtip.tracex,tracey,Math.max(bx, 0),tracey);
+//							
+//								String xWaarde = gtip.dfTrace.format(dTraceX);
+//// 								String yWaarde = gtip.dfTrace.format(gtip.yAsLog?Math.pow(10,dTraceY):dTraceY);
+//								String yWaarde = gtip.dfTrace.format(dTraceY);
+//								g.setFont(gtip.font);
+//								gtip.fm = g.getFontMetrics();
+//								int woordBreedteX = gtip.fm.stringWidth(xWaarde);
+//								int woordHoogteX = gtip.fm.getAscent();
+//								int woordBreedteY = gtip.fm.stringWidth(yWaarde);
+//								int woordHoogteY = gtip.fm.getAscent();
+//								g.setColor(new Color(255,255,200));
+//								g.fillRect(gtip.tracex-woordBreedteX/2-2, Math.min(hoogte-by, hoogte-woordHoogteX-2), woordBreedteX+4, woordHoogteX+2);
+//								g.fillRect(Math.max(0,bx-woordBreedteY-5), tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+//								g.setColor(Color.black);
+//								g.drawRect(gtip.tracex-woordBreedteX/2-2, Math.min(hoogte-by, hoogte-woordHoogteX-2), woordBreedteX+4, woordHoogteX+2);
+//								g.drawRect(Math.max(0,bx-woordBreedteY-5), tracey-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+//								g.drawString(xWaarde, gtip.tracex-woordBreedteX/2, Math.min(hoogte-by+woordHoogteX, hoogte-2));
+//								g.drawString(yWaarde, Math.max(2,bx-woordBreedteY-3), tracey+woordHoogteY/2);
 							}
 						}
 					}
@@ -1097,10 +1093,15 @@ class GrafiekVeld extends JComponent{
 			// dan de punten en verbindingen van de actieve grafiek
 			tekenGraphPoints(gtip.getActiveIndex(), g, false, witruimteY, maxWoordBreedteY, bx, breedte, hoogte);
 		}
-		if(gtip.traceOptie)
-		{	int sliderLoc = Math.max(getY() - gtip.offset, getY() - gtip.offset + hoogte - by);
-			sliderLoc = Math.min(sliderLoc,  getY() + hoogte - gtip.offset);
-			gtip.slider.setLocation(0, sliderLoc);
+		if(gtip.traceOptie) {	
+//			int sliderLoc = Math.max(getY() - gtip.offset, getY() - gtip.offset + hoogte - by);
+//			sliderLoc = Math.min(sliderLoc,  getY() + hoogte - gtip.offset);
+//			gtip.slider.setLocation(0, sliderLoc);
+			int sliderLoc = (int) Math.min(getY()-gtip.offset +drawYmax, 
+					Math.max(getY()-gtip.offset +drawYmin, 
+							getY()-gtip.offset + hoogte-by) );
+			gtip.slider.setLocation(drawXmin, sliderLoc);
+			gtip.slider.zetLengte(drawXmax-drawXmin);
 		}
 //		tekenVeldFunctie(manScalingMultiplyX, manScalingMultiplyY);
 
@@ -1167,6 +1168,101 @@ class GrafiekVeld extends JComponent{
 	
 	public void tekenFunctie( )
 	{
+		
+	}
+	
+	public void tekenTracer( Graphics g, int hoogte, int bx, int by, int traceX, int traceY, double dTraceX, double dTraceY) {
+		
+		g.fillOval(gtip.tracex-2,traceY-2,5,5);
+		g.drawLine(gtip.tracex,traceY,gtip.tracex,Math.min(hoogte-by, hoogte));
+		g.drawLine(gtip.tracex,traceY,Math.max(bx, 0),traceY);
+	
+		String xWaarde = gtip.dfTrace.format(Math.round(cTraceAfronding*dTraceX)/cTraceAfronding);
+		String yWaarde = gtip.dfTrace.format(Math.round(cTraceAfronding*dTraceY)/cTraceAfronding);
+		g.setFont(gtip.font);
+		gtip.fm = g.getFontMetrics();
+		int woordBreedteX = gtip.fm.stringWidth(xWaarde);
+		int woordHoogteX = gtip.fm.getAscent();
+		int woordBreedteY = gtip.fm.stringWidth(yWaarde);
+		int woordHoogteY = gtip.fm.getAscent();
+		g.setColor(new Color(255,255,200));
+		g.fillRect(gtip.tracex-woordBreedteX/2-cSliderBoxBorderMargin, 
+				Math.min(hoogte-by, hoogte-woordHoogteX-cSliderBoxBorderMargin), 
+				woordBreedteX+2*cSliderBoxBorderMargin, woordHoogteX+cSliderBoxBorderMargin);
+		g.fillRect(Math.max(0,bx-woordBreedteY-5), traceY-woordHoogteY/2-cSliderBoxBorderMargin, 
+				woordBreedteY+2*cSliderBoxBorderMargin, woordHoogteY+2*cSliderBoxBorderMargin);
+		g.setColor(Color.black);
+		g.drawRect(gtip.tracex-woordBreedteX/2-cSliderBoxBorderMargin, Math.min(hoogte-by, hoogte-woordHoogteX-cSliderBoxBorderMargin), 
+				woordBreedteX+2*cSliderBoxBorderMargin, woordHoogteX+cSliderBoxBorderMargin);
+		g.drawRect(Math.max(0,bx-woordBreedteY-5), traceY-woordHoogteY/2-2, woordBreedteY+4, woordHoogteY+4);
+		g.drawString(xWaarde, gtip.tracex-woordBreedteX/2, Math.min(hoogte-by+woordHoogteX, hoogte-2));
+		g.drawString(yWaarde, Math.max(2,bx-woordBreedteY-3), traceY+woordHoogteY/2);
+		
+//		dTraceX = ;
+//		dTraceY = Math.round(100*dTraceY)/100.0;
+	
+////		int tracey = (int)Math.round(hoogte -(interactiePanel.beginy+interactiePanel.eenheidy*dTraceY/interactiePanel.schaalFactorY));
+//		int tracey;
+//		if (interactiePanel.manualScalingY) {
+//			tracey = (int)Math.round(hoogte -(interactiePanel.beginy+interactiePanel.eenheidy*dTraceY/interactiePanel.eenheidyValue));
+//		} else {
+//			tracey = (int)Math.round(hoogte -(interactiePanel.beginy+interactiePanel.eenheidy*dTraceY/interactiePanel.schaalFactorY));
+//		}
+//		
+//		String xWaarde = "" + dTraceX;
+//		String yWaarde = "" + (interactiePanel.yAsLog?Math.pow(10, dTraceY):dTraceY);
+//		
+//		TextMetrics tm = gIm.measureText(xWaarde);
+//		int woordBreedteX = (int) Math.round(tm.getWidth());
+//		tm = gIm.measureText(yWaarde);
+//		int woordBreedteY = (int) Math.round(tm.getWidth());
+//		
+//		if (tracey <= drawYmax && tracey >= drawYmin ) {
+//			gIm.beginPath();
+//			gIm.moveTo(Math.min(drawXmax, Math.max(tracex, drawXmin)), Math.min(drawYmax, Math.max(drawYmin, hoogte-by)));
+//			gIm.lineTo(Math.min(drawXmax, Math.max(tracex, drawXmin)),  Math.min(drawYmax, Math.max(drawYmin, tracey)));
+////			if (bx <= drawXmax && bx >= drawXmin ) {
+//				gIm.lineTo(Math.min(drawXmax, Math.max(bx, drawXmin)), Math.min(drawYmax, Math.max(drawYmin, tracey)));
+////			}
+//			gIm.stroke();
+//			gIm.beginPath();
+//			gIm.arc(tracex, tracey, 3, 0, 2* Math.PI);
+//			gIm.closePath();
+//			gIm.fill();
+//			gIm.stroke();
+//			
+//			/* Rectangle for Y Value */
+//			gIm.setFillStyle(geel);
+//			gIm.beginPath();
+//			gIm.rect(Math.max(drawXmin,bx-woordBreedteY-2*cSliderBoxBorderMargin), 
+//					tracey-cFontHeight/2-cSliderBoxBorderMargin, 
+//					woordBreedteY+2*cSliderBoxBorderMargin, cFontHeight+2*cSliderBoxBorderMargin);
+//			gIm.closePath();
+//			gIm.fill();
+//			gIm.stroke();
+//			gIm.setFillStyle(zwart);
+//			gIm.fillText(yWaarde, Math.max(drawXmin+cSliderBoxBorderMargin,
+//					bx-woordBreedteY-cSliderBoxBorderMargin), tracey+cFontHeight/2);
+//
+//		}
+//		
+//		gIm.setFillStyle(geel);
+//		gIm.setStrokeStyle(zwart);
+//		
+//		/* Rectangle for X Value */
+//		gIm.beginPath();
+//		gIm.rect(tracex-woordBreedteX/2-cSliderBoxBorderMargin, 
+//				Math.min(drawYmax, Math.max(drawYmin, hoogte-by)), 
+//				woordBreedteX+2*cSliderBoxBorderMargin, cFontHeight+cSliderBoxBorderMargin);
+//		gIm.closePath();
+//		gIm.fill();
+//		gIm.stroke();
+//		gIm.setFillStyle(zwart);
+//		gIm.fillText(xWaarde, tracex-woordBreedteX/2, 
+//				Math.min(drawYmax+cFontHeight, Math.max(drawYmin+cFontHeight, hoogte-by+cFontHeight))
+//				);
+
+
 		
 	}
 	
