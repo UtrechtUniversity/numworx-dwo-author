@@ -371,6 +371,11 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.changed();
 	}
 
+	public void outliersChanged()
+	{
+		this.changed();
+	}
+	
 	public void setNoSplitBins(int noBins)
 	{
 		this.splitOptions
