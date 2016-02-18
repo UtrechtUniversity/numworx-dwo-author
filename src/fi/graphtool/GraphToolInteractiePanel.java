@@ -5232,6 +5232,11 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 			beginx = beginx+dx;
 			beginy = beginy-dy;
+			
+			if (!manualScalingX && !manualScalingY) {
+				beginx = eenheidx*Math.round(beginx/eenheidx);
+				beginy = eenheidy*Math.round(beginy/eenheidy);
+			}
 
 			if(traceOptie && tracex!=-2) 
 			{	tracexD += beginx-beginxR;
@@ -5249,6 +5254,11 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 				beginx = beginx+dx;
 				beginy = beginy-dy;
+				
+				if (!manualScalingX && !manualScalingY) {
+					beginx = eenheidx*Math.round(beginx/eenheidx);
+					beginy = eenheidy*Math.round(beginy/eenheidy);
+				}
 				
 				if(traceOptie && tracex!=-2) 
 				{	tracexD += beginx-beginxR;
@@ -5312,6 +5322,11 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 					beginx = beginx+dx;
 					beginy = beginy-dy;
+					
+					if (!manualScalingX && !manualScalingY) {
+						beginx = eenheidx*Math.round(beginx/eenheidx);
+						beginy = eenheidy*Math.round(beginy/eenheidy);
+					}
 
 					if(traceOptie && tracex!=-2) 
 					{	tracexD += beginx-beginxR;
