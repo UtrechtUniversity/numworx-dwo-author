@@ -598,7 +598,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		ArrayList<StatistiekView> separateWindowViews = this.model.getSeparateWindowViews();
 
 		int amountOfTabs = views.size();
-		if (this.model.getData().isViewsAddable())
+		if (this.model.getStatTableModel().isViewsAddable())
 		{
 			amountOfTabs++;
 		}
@@ -609,7 +609,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			// System.out.println("no views added");
 			super.add(NO_VIEWS_LABEL);
 		}
-		else if (views.size() == 1 && !this.model.getData().isViewsAddable())
+		else if (views.size() == 1 && !this.model.getStatTableModel().isViewsAddable())
 		{
 			// System.out.println("one view added");
 			super.add(views.get(0).getComponent(), BorderLayout.CENTER);
@@ -619,7 +619,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			// System.out.println(">1 views added");
 			this.tabPane = new JTabbedPane();
 			this.tabPane.setFont(Statistiek.font);
-			if (this.model.getData().isViewsAddable())
+			if (this.model.getStatTableModel().isViewsAddable())
 			{
 				for (int i = 0; i < views.size(); i++)
 				{
@@ -637,7 +637,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				}
 			}
 
-			if (this.model.getData().isViewsAddable())
+			if (this.model.getStatTableModel().isViewsAddable())
 			{
 				this.tabPane.add(this.addViewTab, "+");
 			}
@@ -703,7 +703,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		// test syl: moet deze methode niet zonder actionListener op startVarBox?
 		
 		// Alleen updaten als er kolomnamen zijn 
-		if (this.model.getData().getColumnNames().size() > 0)
+		if (this.model.getStatTableModel().getColumnNames().size() > 0)
 		{
     		// Check the first item
 			String firstItem = Statistiek.rb.getString("chooseAVariableOption");
@@ -716,9 +716,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			String columnName;
     		// Check the variable names in model.getData()
 //			for (String varName : this.model.getData().getColumnNames())
-			for (int j = 0; j < this.model.getData().getColumnNames().size(); j++)
+			for (int j = 0; j < this.model.getStatTableModel().getColumnNames().size(); j++)
 			{
-				columnName = this.model.getData().getColumnNames().get(j);
+				columnName = this.model.getStatTableModel().getColumnNames().get(j);
 				exists = false;
 				for (int i = 0; i < this.startVarBox.getItemCount() && !exists; i++)
 				{
@@ -738,7 +738,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			for (int i = 1; i < this.startVarBox.getItemCount(); i++)
 			{
 				exists = false;
-				for (String varName : this.model.getData().getColumnNames())
+				for (String varName : this.model.getStatTableModel().getColumnNames())
 				{
 					if (varName.equals(this.startVarBox.getItemAt(i)))
 					{
@@ -764,7 +764,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		// test syl: moet deze methode niet zonder actionListener op startVar2Box?
 		
 		// Alleen updaten als er kolomnamen zijn 
-		if (this.model.getData().getColumnNames().size() > 0)
+		if (this.model.getStatTableModel().getColumnNames().size() > 0)
 		{
     		// Check the first item
 			String firstItem = Statistiek.rb.getString("chooseAVariableOption");
@@ -777,9 +777,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			String columnName;
     		// Check the variable names in model.getData()
 //			for (String varName : this.model.getData().getColumnNames())
-			for (int j = 0; j < this.model.getData().getColumnNames().size(); j++)
+			for (int j = 0; j < this.model.getStatTableModel().getColumnNames().size(); j++)
 			{
-				columnName = this.model.getData().getColumnNames().get(j);
+				columnName = this.model.getStatTableModel().getColumnNames().get(j);
 				exists = false;
 				for (int i = 0; i < this.startVar2Box.getItemCount() && !exists; i++)
 				{
@@ -799,7 +799,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			for (int i = 1; i < this.startVar2Box.getItemCount(); i++)
 			{
 				exists = false;
-				for (String varName : this.model.getData().getColumnNames())
+				for (String varName : this.model.getStatTableModel().getColumnNames())
 				{
 					if (varName.equals(this.startVar2Box.getItemAt(i)))
 					{
@@ -899,7 +899,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 				}
 			}
 			else if (arg0.getButton() == MouseEvent.BUTTON2
-				&& StatInteractiePanelView.this.model.getData()
+				&& StatInteractiePanelView.this.model.getStatTableModel()
 					.isViewsAddable()
 				&& tab >= 0
 				&& (tab < StatInteractiePanelView.this.tabPane.getTabCount() - 1))
@@ -912,7 +912,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 					((arg0.getButton() == MouseEvent.BUTTON3) 
 					// allow mac users to control-click to change the view name
 					|| ((arg0.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK))
-				&& StatInteractiePanelView.this.model.getData()
+				&& StatInteractiePanelView.this.model.getStatTableModel()
 					.isViewsEditable())
 			{
 				// set the selected tab
