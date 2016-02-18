@@ -1,6 +1,7 @@
 package fi.statistiek;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
+
 import javax.imageio.ImageIO;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -79,8 +81,31 @@ public class StatTable extends JPanel implements StatistiekView,
 
 	private JTable table;
 	private String viewName;
-	private JPopupMenu popup;
+	private JPopupMenu headerPopup;
+	/**
+	 * A popup with options for marking the cell and the row as outlier.
+	 */
+	private JPopupMenu outlierPopup;
+	/**
+	 * Item in the outlierPopup.
+	 */
+	private JMenuItem outlierCellItem;
+	/**
+	 * Item in the outlierPopup.
+	 */
+	private JMenuItem outlierRowItem;
+	/**
+	 * A popup with only the option for marking the row as outlier.
+	 * Used for right clicking the row numbers in the table.
+	 */
+	private JPopupMenu rowOutlierPopup;
+	/**
+	 * Item in the rowOutlierPopup.
+	 */
+	private JMenuItem rowOutlierRowItem;
 	private int popUpColumnIndex;
+	private int outlierColumnIndex;
+	private int outlierRowIndex;
 	private JTable rowTable;
 	private JScrollPane scrollPane;
 
@@ -131,27 +156,54 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.viewName = viewName;
 		this.setUp();
 	}
+	
+	/**
+	 * Update the outlier popup.
+	 */
+	private void updateOutlierPopup(int rowIndex, int columnIndex)
+	{
+		if (this.statTableModel.isOutlier(rowIndex, columnIndex))
+			this.outlierCellItem.setText(Statistiek.rb.getString("demarkOutlierCell"));
+		else
+			this.outlierCellItem.setText(Statistiek.rb.getString("markOutlierCell"));
+		
+		if (this.statTableModel.isOutlier(rowIndex))
+			this.outlierRowItem.setText(Statistiek.rb.getString("demarkOutlierRow"));
+		else
+			this.outlierRowItem.setText(Statistiek.rb.getString("markOutlierRow"));
+	}
 
 	/**
-	 * Update field popup. If the data is not editable, the options edit column and
+	 * Update the row outlier popup.
+	 */
+	private void updateRowOutlierPopup(int rowIndex)
+	{
+		if (this.statTableModel.isOutlier(rowIndex))
+			this.rowOutlierRowItem.setText(Statistiek.rb.getString("demarkOutlierRow"));
+		else
+			this.rowOutlierRowItem.setText(Statistiek.rb.getString("markOutlierRow"));
+	}
+
+	/**
+	 * Update the header popup. If the data is not editable, the options edit column and
 	 * delete column are not available.
 	 */
-	private void updatePopUp()
+	private void updateHeaderPopUp()
 	{
 		if (!this.statTableModel.isDataEditable())
 		{
-			if (this.popup.getSubElements().length == 4)
+			if (this.headerPopup.getSubElements().length == 4)
 			{
 				// remove options edit and delete
 				int indexEditItem = 1;
 				int indexDeleteItem = 2;
-				this.popup.remove(indexDeleteItem);
-				this.popup.remove(indexEditItem);
+				this.headerPopup.remove(indexDeleteItem);
+				this.headerPopup.remove(indexEditItem);
 			}
 		}
 		else
 		{
-			if (this.popup.getSubElements().length == 2)
+			if (this.headerPopup.getSubElements().length == 2)
 			{
 				// add menu items edit and delete
 				JMenuItem editItem = new JMenuItem(Statistiek.rb.getString("editcolumnItem"));
@@ -160,8 +212,8 @@ public class StatTable extends JPanel implements StatistiekView,
 				JMenuItem deleteItem = new JMenuItem(Statistiek.rb.getString("deletecolumnItem"));
 				deleteItem.setActionCommand("deleteItem");
 				deleteItem.addActionListener(this);
-				this.popup.add(editItem, 1);
-				this.popup.add(deleteItem, 2);
+				this.headerPopup.add(editItem, 1);
+				this.headerPopup.add(deleteItem, 2);
 			}
 		}
 	}
@@ -203,7 +255,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER,
 			this.rowTable.getTableHeader());
 
-		this.popup = new JPopupMenu();
+		this.headerPopup = new JPopupMenu();
 		JMenuItem sortItem = new JMenuItem(Statistiek.rb.getString("sortItem"));
 		sortItem.setActionCommand("sortItem");
 		sortItem.addActionListener(this);
@@ -220,16 +272,42 @@ public class StatTable extends JPanel implements StatistiekView,
 		columnInfoItem.setActionCommand("infocolumnItem");
 		columnInfoItem.addActionListener(this);
 		
-		this.popup.add(sortItem);
+		this.headerPopup.add(sortItem);
 		if (this.statTableModel.isDataEditable())
 		{
-			this.popup.add(editItem);
-			this.popup.add(deleteItem);
+			this.headerPopup.add(editItem);
+			this.headerPopup.add(deleteItem);
 		}
-		this.popup.add(columnInfoItem);
+		this.headerPopup.add(columnInfoItem);
 		
-		MouseListener popupListener = new PopupListener();
-		this.table.getTableHeader().addMouseListener(popupListener);
+		MouseListener headerPopupListener = new HeaderPopupListener();
+		this.table.getTableHeader().addMouseListener(headerPopupListener);
+		
+		// voor outliers
+		this.outlierPopup = new JPopupMenu();
+		this.outlierCellItem = new JMenuItem(Statistiek.rb.getString("markOutlierCell"));
+		this.outlierCellItem.setActionCommand("outlierCell");
+		this.outlierCellItem.addActionListener(this);
+		
+		this.outlierRowItem = new JMenuItem(Statistiek.rb.getString("markOutlierRow"));
+		this.outlierRowItem.setActionCommand("outlierRow");
+		this.outlierRowItem.addActionListener(this);
+		
+		this.outlierPopup.add(outlierCellItem);
+		this.outlierPopup.add(outlierRowItem);
+		
+		this.rowOutlierPopup = new JPopupMenu();
+		this.rowOutlierRowItem = new JMenuItem(Statistiek.rb.getString("markOutlierRow"));
+		this.rowOutlierRowItem.setActionCommand("outlierRow");
+		this.rowOutlierRowItem.addActionListener(this);
+		
+		this.rowOutlierPopup.add(rowOutlierRowItem);
+		
+		MouseListener outlierPopupListener = new OutlierPopupListener();
+		this.table.addMouseListener(outlierPopupListener);
+		// test outlier rechtermuisknopopties op rijnummers
+		MouseListener rowOutlierPopupListener = new RowOutlierPopupListener();
+		this.rowTable.addMouseListener(rowOutlierPopupListener);
 
 		super.add(this.scrollPane, BorderLayout.CENTER);
 		
@@ -307,7 +385,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		}
 	}
 
-	class PopupListener extends MouseAdapter
+	class HeaderPopupListener extends MouseAdapter
 	{
 		public void mousePressed(MouseEvent e)
 		{
@@ -324,10 +402,118 @@ public class StatTable extends JPanel implements StatistiekView,
 				// convert view index to model index
 				StatTable.this.popUpColumnIndex = StatTable.this.table
 					.convertColumnIndexToModel(column);
-				StatTable.this.popup.show(e.getComponent(), e.getX(), e.getY());
+				StatTable.this.headerPopup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
 	} // class PopupListener
+
+	/**
+	 * Class for handling right mouse click on a cell in the table.
+	 * @author borku102
+	 *
+	 */
+	class OutlierPopupListener extends MouseAdapter
+	{
+		public void mousePressed(MouseEvent e)
+		{
+		}
+
+		public void mouseReleased(MouseEvent e)
+		{
+			if (e.isPopupTrigger() 
+				|| e.getButton() == MouseEvent.BUTTON3 || e.isControlDown())  // voor mac
+			{
+				Point p = e.getPoint();
+				int column = StatTable.this.table.columnAtPoint(p);
+				int row = StatTable.this.table.rowAtPoint(p);
+
+				// convert view index to model index
+				StatTable.this.outlierColumnIndex = StatTable.this.table
+					.convertColumnIndexToModel(column);
+				StatTable.this.outlierRowIndex = StatTable.this.table
+					.convertRowIndexToModel(row);
+				
+				// Is dit de goede plek?
+				StatTable.this.updateOutlierPopup(row, column);
+				StatTable.this.outlierPopup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
+	} // class OutlierPopupListener
+	
+	/**
+	 * Class for handling right mouse click on a cell in the row number column in the table.
+	 * @author borku102
+	 *
+	 */
+	class RowOutlierPopupListener extends MouseAdapter
+	{
+		public void mousePressed(MouseEvent e)
+		{
+		}
+
+		public void mouseReleased(MouseEvent e)
+		{
+			if (e.isPopupTrigger() 
+				|| e.getButton() == MouseEvent.BUTTON3 || e.isControlDown())  // voor mac
+			{
+				Point p = e.getPoint();
+				int row = StatTable.this.table.rowAtPoint(p);
+
+				// convert view index to model index
+				StatTable.this.outlierRowIndex = StatTable.this.table
+					.convertRowIndexToModel(row);
+				
+				// Is dit de goede plek?
+				StatTable.this.updateRowOutlierPopup(row);
+				StatTable.this.rowOutlierPopup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
+	} // class PopupListener
+	
+	/**
+	 * Class to render outliers.
+	 * 
+	 * @author Sylvia van Borkulo
+	 *
+	 */
+	static class OutlierRenderer extends DefaultTableCellRenderer
+	{
+		Color backgroundColor = getBackground();
+		Color foregroundColor = getForeground();
+		Color selectedOutlierColor = ColorGenerator.getBackgroundSelectedTableOutlier();
+		Color outlierColor = ColorGenerator.getBackgroundTableOutlier();
+		Color outlierTextColor = ColorGenerator.getGreyLineColor();
+
+        @Override
+		public Component getTableCellRendererComponent(JTable table,
+			Object value, boolean isSelected, boolean hasFocus, int row,
+			int column)
+		{
+			Component c = super.getTableCellRendererComponent(table, value,
+				isSelected, hasFocus, row, column);
+			StatTableModel model = (StatTableModel) table.getModel();
+			if (model.isOutlier(row, column))
+			{
+				c.setForeground(outlierTextColor);
+
+				if (isSelected)
+					c.setBackground(selectedOutlierColor);
+				else
+					c.setBackground(outlierColor);
+			}
+			else
+			{
+				c.setForeground(foregroundColor);
+				
+				if (!isSelected)
+				{
+					c.setBackground(backgroundColor);
+				}
+			}
+			return c;
+		}
+
+	}// class OutlierRenderer
 	
 	/**
 	 * Class to render decimal format correctly depending on language settings.
@@ -338,6 +524,11 @@ public class StatTable extends JPanel implements StatistiekView,
 	static class DecimalRenderer extends DefaultTableCellRenderer
 	{
 		DecimalFormat df;
+		Color backgroundColor = getBackground();
+		Color foregroundColor = getForeground();
+		Color selectedOutlierColor = ColorGenerator.getBackgroundSelectedTableOutlier();
+		Color outlierColor = ColorGenerator.getBackgroundTableOutlier();
+		Color outlierTextColor = ColorGenerator.getGreyLineColor();
 
 		public DecimalRenderer()
 		{
@@ -358,6 +549,36 @@ public class StatTable extends JPanel implements StatistiekView,
 				df = Statistiek.getDecimalFormat(doubleValue);
 				setText((value == null) ? "" : df.format(doubleValue));
 			}
+		}
+		
+        @Override
+		public Component getTableCellRendererComponent(JTable table,
+			Object value, boolean isSelected, boolean hasFocus, int row,
+			int column)
+		{
+			Component c = super.getTableCellRendererComponent(table, value,
+				isSelected, hasFocus, row, column);
+			StatTableModel model = (StatTableModel) table.getModel();
+			if (model.isOutlier(row, column))
+			{
+				c.setForeground(outlierTextColor);
+
+				if (isSelected)
+					c.setBackground(selectedOutlierColor);
+				else
+					c.setBackground(outlierColor);
+			}
+			else
+			{
+				c.setForeground(foregroundColor);
+				
+				if (!isSelected)
+				{
+					c.setBackground(backgroundColor);
+				}
+			}
+			
+			return c;
 		}
 	} // class DecimalRenderer
 
@@ -434,7 +655,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		}
 
 		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
-		this.updatePopUp();
+		this.updateHeaderPopUp();
 	}
 
 	/**
@@ -444,9 +665,12 @@ public class StatTable extends JPanel implements StatistiekView,
 	{
 		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
 		
-		// loop over de columns
+		// loop over the columns
 		for (int i = 0; i < this.statTableModel.getColumnCount(); i++)
 		{
+			// set cell renderer for different background for outliers
+			
+			
 			ColumnType type = types.get(i);
 			if (type.getType().equals(AllowedTypes.ENUM))
 			{
@@ -457,6 +681,8 @@ public class StatTable extends JPanel implements StatistiekView,
 					box.addItem(s);
 				}
 				this.table.getColumnModel().getColumn(i)
+					.setCellRenderer(new OutlierRenderer());
+				this.table.getColumnModel().getColumn(i)
 					.setCellEditor(new DefaultCellEditor(box));
 			}
 			else if (type.getType().equals(AllowedTypes.DOUBLE))
@@ -466,56 +692,65 @@ public class StatTable extends JPanel implements StatistiekView,
 				this.table.getColumnModel().getColumn(i)
 					.setCellEditor(new DecimalEditor(new JTextField()));// welk jtextfield?
 			}
+			else
+			{
+				this.table.getColumnModel().getColumn(i)
+					.setCellRenderer(new OutlierRenderer());
+			}
 		}
 	}
 
-	/**
-	 * Change this view's model
-	 * 
-	 * @param model
-	 *            the new StatTableModel
-	 */
-	public void setModel(StatTableModel model)
-	{
-		this.statTableModel = model;
-		this.statTableModel.addTableModelListener(this);
-		this.statTableModel.addSelectionListener(this);
-		this.table = new JTable(this.statTableModel)
-		{
-			protected JTableHeader createDefaultTableHeader()
-			{
-				return new JTableHeader(columnModel)
-				{
-					public String getToolTipText(MouseEvent e)
-					{
-						String tip = null;
-						java.awt.Point p = e.getPoint();
-						int index = columnModel.getColumnIndexAtX(p.x);
-						int realIndex = columnModel.getColumn(index)
-							.getModelIndex();
-						return StatTable.this.statTableModel.getColumnTypes()
-							.get(realIndex).getUitleg();
-					}
-				};
-			}
-		};
-		this.table.getSelectionModel().addListSelectionListener(this);
-		this.rowTable.setModel(this.statTableModel);
-
-		this.scrollPane.setViewportView(this.table);
-
-		this.rowTable = new RowNumberTable(this.table);
-		this.scrollPane.setRowHeaderView(this.rowTable);
-		this.scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER,
-			this.rowTable.getTableHeader());
-
-		MouseListener popupListener = new PopupListener();
-		this.table.getTableHeader().addMouseListener(popupListener);
-
-		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
-
-		this.setCellRenderers();
-	}
+//	/**
+//	 * Change this view's model
+//	 * 
+//	 * @param model
+//	 *            the new StatTableModel
+//	 */
+//	public void setModel(StatTableModel model)
+//	{
+//		this.statTableModel = model;
+//		this.statTableModel.addTableModelListener(this);
+//		this.statTableModel.addSelectionListener(this);
+//		this.table = new JTable(this.statTableModel)
+//		{
+//			protected JTableHeader createDefaultTableHeader()
+//			{
+//				return new JTableHeader(columnModel)
+//				{
+//					public String getToolTipText(MouseEvent e)
+//					{
+//						String tip = null;
+//						java.awt.Point p = e.getPoint();
+//						int index = columnModel.getColumnIndexAtX(p.x);
+//						int realIndex = columnModel.getColumn(index)
+//							.getModelIndex();
+//						return StatTable.this.statTableModel.getColumnTypes()
+//							.get(realIndex).getUitleg();
+//					}
+//				};
+//			}
+//		};
+//		this.table.getSelectionModel().addListSelectionListener(this);
+//		this.rowTable.setModel(this.statTableModel);
+//
+//		this.scrollPane.setViewportView(this.table);
+//
+//		this.rowTable = new RowNumberTable(this.table);
+//		this.scrollPane.setRowHeaderView(this.rowTable);
+//		this.scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER,
+//			this.rowTable.getTableHeader());
+//
+//		MouseListener headerPopupListener = new HeaderPopupListener();
+//		this.table.getTableHeader().addMouseListener(headerPopupListener);
+//		
+//		// mouselistener for marking outliers
+//		MouseListener outlierPopupListener = new OutlierPopupListener();
+//		this.table.addMouseListener(outlierPopupListener);
+//
+//		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
+//
+//		this.setCellRenderers();
+//	}
 
 	/**
 	 * StatistiekView implementation
@@ -772,6 +1007,18 @@ public class StatTable extends JPanel implements StatistiekView,
 //					m.getName(), new ColumnType(m));
 //			}
 		}
+		else if (actionCommand.equals("outlierCell"))
+		{
+			boolean b = this.statTableModel.getCellOutlierList().get(outlierColumnIndex).get(outlierRowIndex);
+			this.statTableModel.markCellAsOutlier(this.outlierRowIndex, this.outlierColumnIndex, !b); // toggle the value
+			this.table.repaint(); // nodig anders wordt alleen het deel achter de outlierPopup rood getekend
+		}
+		else if (actionCommand.equals("outlierRow"))
+		{
+			boolean b = this.statTableModel.getRowOutlierList().get(outlierRowIndex);
+			this.statTableModel.markRowAsOutlier(this.outlierRowIndex, !b); // toggle the value
+			this.table.repaint(); // nodig anders wordt alleen het deel achter de outlierPopup rood getekend
+		}
 		else if (e.getSource() == this.resetButton)
 		{
 			if (this.statInteractiePanel != null)
@@ -785,6 +1032,7 @@ public class StatTable extends JPanel implements StatistiekView,
     			// clear selectionList and listeners
     			this.statTableModel.clearSelectionList();
     			this.statTableModel.clearListeners();
+    			this.statTableModel.clearOutlierLists();
     
     			// System.out.println("reset clicked! this.statInteractiePanel.getModel().getResetHashtable()="
     			// + resetHashtable);
@@ -1134,14 +1382,13 @@ public class StatTable extends JPanel implements StatistiekView,
 				newSelection.add(this.table.isRowSelected(row));
 				// System.out.println(this.table.isRowSelected(row));
 			}
-			System.out.println();
+//			System.out.println();
 			this.statTableModel.setSelectionList(newSelection);
 		}
 	}
 
 	public void selectionChanged()
 	{
-		// test syl
 		//System.out.println("selection Changed called");
 		ListSelectionModel selectionModel = this.table.getSelectionModel();
 		selectionModel.removeListSelectionListener(this);
@@ -1162,6 +1409,16 @@ public class StatTable extends JPanel implements StatistiekView,
 			}
 		}
 		selectionModel.addListSelectionListener(this);
+	}
+	
+	/**
+	 * Methode die hoort bij SelectionListener.
+	 * Outliers worden altijd door StatTable zelf gewijzigd
+	 * en dus is geen verdere actie vereist.
+	 */
+	public void outliersChanged()
+	{
+		//System.out.println("StatTable.outliersChanged()");
 	}
 
 	public String toString()
