@@ -232,7 +232,7 @@ public class StatModel extends Observable implements TableModelListener
 	 * 
 	 * @return the data in a StatTableModel
 	 */
-	public StatTableModel getData()
+	public StatTableModel getStatTableModel()
 	{
 		return this.data;
 	}
