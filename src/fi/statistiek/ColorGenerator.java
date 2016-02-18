@@ -26,6 +26,7 @@ public class ColorGenerator
 		new Color(166, 118, 29) // bruin
 	};
 	
+	private static final Color OUTLIER_COLOR = new Color(254, 179, 179);
 	private static final Color LIGHT_GREY = new Color(240, 240, 240);
 	private static final Color GREY = new Color(220, 220, 220);
 	public static final Color DEFAULT_VIEW_ELEMENT_COLOR = new Color(67,147,195); // blue
@@ -90,5 +91,27 @@ public class ColorGenerator
 	public static Color getDefaultViewElementColor()
 	{
 		return DEFAULT_VIEW_ELEMENT_COLOR;
+	}
+	
+	/**
+	 * Get the background color for outlier cells in the table.
+	 * 
+	 * @return
+	 */
+	public static Color getBackgroundTableOutlier()
+	{
+		return OUTLIER_COLOR;
+	}
+	
+	/**
+	 * Get the background color for selected outlier cells in the table.
+	 * @return
+	 */
+	public static Color getBackgroundSelectedTableOutlier()
+	{
+		double mixFactor = 0.5;
+		Color color = ColorPreviewer.mixColors(OUTLIER_COLOR, SELECTION_COLOR, mixFactor);
+		
+		return color;
 	}
 }
