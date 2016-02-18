@@ -123,9 +123,9 @@ public class StatEditPanelView extends JPanel implements Observer
 	 */
 	public void update(Observable arg0, Object arg1)
 	{
-		this.dataEditableBox.setSelected(this.model.getData().isDataEditable());
-		this.viewsEditableBox.setSelected(this.model.getData().isViewsEditable());
-		this.viewsAddableBox.setSelected(this.model.getData().isViewsAddable());
-		this.viewsAddableBox.setEnabled(this.model.getData().isViewsEditable());
+		this.dataEditableBox.setSelected(this.model.getStatTableModel().isDataEditable());
+		this.viewsEditableBox.setSelected(this.model.getStatTableModel().isViewsEditable());
+		this.viewsAddableBox.setSelected(this.model.getStatTableModel().isViewsAddable());
+		this.viewsAddableBox.setEnabled(this.model.getStatTableModel().isViewsEditable());
 	}
 }
