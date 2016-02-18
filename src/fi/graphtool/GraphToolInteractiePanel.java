@@ -64,7 +64,12 @@ import org.cbook.cbookif.CBookEventListener;
 
 public class GraphToolInteractiePanel extends JPanel implements InteractiePanel, ActionListener,
 MouseListener, MouseMotionListener, CBookAware {
-
+	
+	/* contstants */
+	private static final String cFontString = "SansSerif";
+	private static final int cFontHeight = 10;
+	private static final int cFontStyle_Default = Font.PLAIN;
+	
 	int width = 300; // was 250
 	int height = 300;
 	int offset = 5;
@@ -153,7 +158,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	RealPoint otherPoint = null;
 	
 	private DecimalFormatSymbols dfs;
-	Font font = new Font("SansSerif", Font.PLAIN, 10);
+	Font font = new Font(cFontString, cFontStyle_Default, cFontHeight);
 	FontMetrics fm;
 	DecimalFormat df;
 	DecimalFormat dfTrace;
@@ -5092,12 +5097,11 @@ MouseListener, MouseMotionListener, CBookAware {
 				int dy = e.getY() - startyv;
 				beginx = beginx+dx;
 				beginy = beginy-dy;
-				if(traceOptie && tracex!=-2) 
-				{	tracexD = tracexD+dx;
+				if(traceOptie && tracex!=-2) {	
+					tracexD = tracexD+dx;
 					tracex = tracex+dx;
-					slider.zetStand(tracex);
+//					slider.zetStand(tracex-gv.drawXmin);
 				}
-				
 				int b = beginwaarde;
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				selectnummer = selectnummer + b - beginwaarde;
@@ -5173,10 +5177,10 @@ MouseListener, MouseMotionListener, CBookAware {
 					beginy = beginy-dy;
 
 					
-					if(traceOptie && tracex!=-2) 
-					{	tracexD = tracexD+dx;
+					if(traceOptie && tracex!=-2)  {	
+						tracexD = tracexD+dx;
 						tracex = tracex+dx;
-						slider.zetStand(tracex);
+//						slider.zetStand(tracex-gv.drawXmin);
 					}
 					
 					int b = beginwaarde;
@@ -5200,7 +5204,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(traceOptie && tracex!=-2) 
 			{	tracexD = tracexD+dx;
 				tracex = tracex+dx;
-				slider.zetStand(tracex);
+//				slider.zetStand(tracex-gv.drawXmin);
 			}
 			
 			int b = beginwaarde;
@@ -5228,11 +5232,16 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 			beginx = beginx+dx;
 			beginy = beginy-dy;
+			
+			if (!manualScalingX && !manualScalingY) {
+				beginx = eenheidx*Math.round(beginx/eenheidx);
+				beginy = eenheidy*Math.round(beginy/eenheidy);
+			}
 
 			if(traceOptie && tracex!=-2) 
 			{	tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
-				slider.zetStand(tracex);
+//				slider.zetStand(tracex-gv.drawXmin);
 			}
 			
 			repaint();
@@ -5246,10 +5255,15 @@ MouseListener, MouseMotionListener, CBookAware {
 				beginx = beginx+dx;
 				beginy = beginy-dy;
 				
+				if (!manualScalingX && !manualScalingY) {
+					beginx = eenheidx*Math.round(beginx/eenheidx);
+					beginy = eenheidy*Math.round(beginy/eenheidy);
+				}
+				
 				if(traceOptie && tracex!=-2) 
 				{	tracexD += beginx-beginxR;
 					tracex += beginx-beginxR;
-					slider.zetStand(tracex);
+//					slider.zetStand(tracex-gv.drawXmin);
 				}
 								
 				repaint();
@@ -5308,11 +5322,16 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 					beginx = beginx+dx;
 					beginy = beginy-dy;
+					
+					if (!manualScalingX && !manualScalingY) {
+						beginx = eenheidx*Math.round(beginx/eenheidx);
+						beginy = eenheidy*Math.round(beginy/eenheidy);
+					}
 
 					if(traceOptie && tracex!=-2) 
 					{	tracexD += beginx-beginxR;
 						tracex += beginx-beginxR;
-						slider.zetStand(tracex);
+//						slider.zetStand(tracex-gv.drawXmin);
 					}
 					
 					repaint();
@@ -5499,9 +5518,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(e.getSource() == slider)
 		{ 	if(e.getActionCommand().equals("start")) 
 				tracing = true;
-			tracex = slider.geefStand();
+			tracex = slider.geefStand()+gv.drawXmin;
 			tracexD = tracex;
-			
 			repaint();
 			
 		}
