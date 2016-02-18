@@ -364,6 +364,11 @@ public class CrossTabulationTableModel extends Observable implements
 		this.changed();
 	}
 	
+	public void outliersChanged()
+	{
+		this.changed();
+	}
+	
 	/**
 	 * Update the column index 
 	 * given that removedColumn has been removed.
