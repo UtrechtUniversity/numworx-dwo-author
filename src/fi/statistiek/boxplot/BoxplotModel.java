@@ -7,9 +7,9 @@ import java.util.Observable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import fi.statistiek.SelectionListener;
 import fi.statistiek.SplitOptions;
 import fi.statistiek.StatTableModel;
-import fi.statistiek.Statistiek;
 import fi.statistiek.types.ColumnType;
 
 /**
@@ -18,7 +18,7 @@ import fi.statistiek.types.ColumnType;
  * @author Manu Drijvers
  * 
  */
-public class BoxplotModel extends Observable implements TableModelListener
+public class BoxplotModel extends Observable implements TableModelListener, SelectionListener
 {
 	private StatTableModel tableModel;
 
@@ -54,6 +54,7 @@ public class BoxplotModel extends Observable implements TableModelListener
 
 		this.tableModel = tableModel;
 		this.tableModel.addTableModelListener(this);
+		this.tableModel.addSelectionListener(this);
 
 		this.columnIndex = -1;
 		this.splitOptions = new SplitOptions();
@@ -278,7 +279,8 @@ public class BoxplotModel extends Observable implements TableModelListener
 			{
 				String valueString = (String) this.tableModel.getValueAt(i,
 					columnIndex);
-				if (!valueString.equals(ColumnType.WILDCARD))
+				if (!valueString.equals(ColumnType.WILDCARD)
+					&& !this.getTableModel().isOutlier(i, columnIndex))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
@@ -343,7 +345,9 @@ public class BoxplotModel extends Observable implements TableModelListener
 				String valueSplitString = (String) this.tableModel.getValueAt(
 					i, this.splitOptions.getColumnSplitIndex());
 				if (!valueSplitString.equals(ColumnType.WILDCARD)
-					&& !valueString.equals(ColumnType.WILDCARD))
+					&& !valueString.equals(ColumnType.WILDCARD)
+					&& !this.getTableModel().isOutlier(i, columnIndex)
+					&& !this.getTableModel().isOutlier(i, this.splitOptions.getColumnSplitIndex()))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
@@ -505,6 +509,20 @@ public class BoxplotModel extends Observable implements TableModelListener
 		SplitOptions splitOptions)
 	{
 		this.splitOptions = splitOptions;
+	}
+
+	@Override
+	public void selectionChanged()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void outliersChanged()
+	{
+		this.setPercentileValues();
+		this.changed();
 	}
 
 }
