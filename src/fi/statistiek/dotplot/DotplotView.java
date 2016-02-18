@@ -720,7 +720,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnSplitIndex());
-			if (s==null || s.equals(ColumnType.WILDCARD))
+			if (s == null || s.equals(ColumnType.WILDCARD))
 			{
 				// TODO wildcard kleur?
 				return Color.PINK;
@@ -769,7 +769,7 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String s = (String) this.model.getStatTableModel().getValueAt(
 				pointIndex, this.model.getColumnColorIndex());
-			if (s==null || s.equals(ColumnType.WILDCARD))
+			if (s == null || s.equals(ColumnType.WILDCARD))
 			{
 				// TODO wildcard kleur?
 				return Color.PINK;
@@ -832,7 +832,8 @@ public class DotplotView extends JPanel implements Observer
 	{
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnXIndex());
-		if (valueString==null || valueString.equals(ColumnType.WILDCARD))
+		if (valueString==null || valueString.equals(ColumnType.WILDCARD)
+			|| this.model.getStatTableModel().isOutlier(pointIndex, this.model.getColumnXIndex()))
 		{
 			return -1;
 		}
@@ -993,7 +994,8 @@ public class DotplotView extends JPanel implements Observer
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnYIndex());
 
-		if (valueString==null || valueString.equals(ColumnType.WILDCARD))
+		if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+			|| this.model.getStatTableModel().isOutlier(pointIndex, this.model.getColumnYIndex()))
 		{
 			return -1;
 		}
@@ -1761,7 +1763,8 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
+			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, column))
 			{
 				continue;
 			}
@@ -1811,7 +1814,8 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
+			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, column))
 			{
 				continue;
 			}
@@ -1864,7 +1868,8 @@ public class DotplotView extends JPanel implements Observer
 		{
 			String valueString = (String) this.model.getStatTableModel()
 				.getValueAt(i, column);
-			if (valueString==null || valueString.equals(ColumnType.WILDCARD))
+			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, column))
 			{
 				continue;
 			}
@@ -2046,7 +2051,11 @@ public class DotplotView extends JPanel implements Observer
 			String valueStringB = (String) this.model.getStatTableModel()
 				.getValueAt(i, indexColumnB);
 			
-			if (valueStringA==null || valueStringB==null || valueStringA.equals(ColumnType.WILDCARD) || valueStringB.equals(ColumnType.WILDCARD))
+			if (valueStringA == null || valueStringB == null 
+				|| valueStringA.equals(ColumnType.WILDCARD) 
+				|| valueStringB.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, indexColumnA)
+				|| this.model.getStatTableModel().isOutlier(i, indexColumnB))
 			{
 				continue;
 			}
@@ -2338,13 +2347,13 @@ public class DotplotView extends JPanel implements Observer
 		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			if (this.model.getStatTableModel()
-					.getValueAt(i, this.model.getColumnXIndex())==null
-				||	
-					this.model.getStatTableModel()
-				.getValueAt(i, this.model.getColumnXIndex())
-				.equals(ColumnType.WILDCARD))
+					.getValueAt(i, this.model.getColumnXIndex()) == null
+				|| this.model.getStatTableModel()
+					.getValueAt(i, this.model.getColumnXIndex())
+					.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, this.model.getColumnXIndex()))
 			{
-				// skip wildcard objects
+				// skip wildcard objects and outliers
 				splitClasses[i] = -1;
 				continue;
 			}
@@ -2525,12 +2534,13 @@ public class DotplotView extends JPanel implements Observer
 		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
 			if (this.model.getStatTableModel()
-					.getValueAt(i, this.model.getColumnYIndex())==null
-				||	this.model.getStatTableModel()
-				.getValueAt(i, this.model.getColumnYIndex())
-				.equals(ColumnType.WILDCARD))
+					.getValueAt(i, this.model.getColumnYIndex()) == null
+				|| this.model.getStatTableModel()
+					.getValueAt(i, this.model.getColumnYIndex())
+					.equals(ColumnType.WILDCARD)
+				|| this.model.getStatTableModel().isOutlier(i, this.model.getColumnYIndex()))
 			{
-				// skip wildcard cases
+				// skip wildcard cases and outliers
 				splitClasses[i] = -1;
 				continue;
 			}
@@ -2552,9 +2562,10 @@ public class DotplotView extends JPanel implements Observer
 			{
 				if (this.model.getStatTableModel()
 						.getValueAt(j, this.model.getColumnYIndex())!=null
-						&& !this.model.getStatTableModel()
-					.getValueAt(j, this.model.getColumnYIndex())
-					.equals(ColumnType.WILDCARD)
+					&& !this.model.getStatTableModel()
+						.getValueAt(j, this.model.getColumnYIndex())
+						.equals(ColumnType.WILDCARD)
+					&& !this.model.getStatTableModel().isOutlier(j, this.model.getColumnYIndex())
 					&& splitClasses[i] == splitClasses[j]
 					&& (Math.pow(coords[j][0] - x, 2) + Math.pow(coords[j][1]
 						- coords[i][1], 2)) < dotSizeSquared)
@@ -2983,12 +2994,14 @@ public class DotplotView extends JPanel implements Observer
 					int index = indexSortedOnSelected[i];
 
 					if (DotplotView.this.model
-						.getStatTableModel()
-						.getValueAt(index, DotplotView.this.model.getColumnXIndex())!=null
+							.getStatTableModel()
+							.getValueAt(index, DotplotView.this.model.getColumnXIndex())!=null
 						&& !DotplotView.this.model
-						.getStatTableModel()
-						.getValueAt(index, DotplotView.this.model.getColumnXIndex())
-						.equals(ColumnType.WILDCARD))
+							.getStatTableModel()
+							.getValueAt(index, DotplotView.this.model.getColumnXIndex())
+							.equals(ColumnType.WILDCARD)
+						&& !DotplotView.this.model
+							.getStatTableModel().isOutlier(index, DotplotView.this.model.getColumnXIndex()))
 					{
 						int splitClass = DotplotView.this.getSplitClass(index);
 						if (DotplotView.this.model.splitInSingleView())
@@ -3043,12 +3056,14 @@ public class DotplotView extends JPanel implements Observer
 					int index = indexSortedOnSelected[i];
 
 					if (DotplotView.this.model
-						.getStatTableModel()
-						.getValueAt(index, DotplotView.this.model.getColumnYIndex())!=null
+							.getStatTableModel()
+							.getValueAt(index, DotplotView.this.model.getColumnYIndex())!=null
 						&& !DotplotView.this.model
-						.getStatTableModel()
-						.getValueAt(index, DotplotView.this.model.getColumnYIndex())
-						.equals(ColumnType.WILDCARD))
+							.getStatTableModel()
+							.getValueAt(index, DotplotView.this.model.getColumnYIndex())
+							.equals(ColumnType.WILDCARD)
+						&& !DotplotView.this.model
+							.getStatTableModel().isOutlier(index, DotplotView.this.model.getColumnYIndex()))
 					{
 						int splitClass = DotplotView.this.getSplitClass(index);
 						if (DotplotView.this.model.splitInSingleView())
