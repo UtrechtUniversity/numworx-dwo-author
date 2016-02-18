@@ -5097,12 +5097,11 @@ MouseListener, MouseMotionListener, CBookAware {
 				int dy = e.getY() - startyv;
 				beginx = beginx+dx;
 				beginy = beginy-dy;
-				if(traceOptie && tracex!=-2) 
-				{	tracexD = tracexD+dx;
+				if(traceOptie && tracex!=-2) {	
+					tracexD = tracexD+dx;
 					tracex = tracex+dx;
-					slider.zetStand(tracex);
+//					slider.zetStand(tracex-gv.drawXmin);
 				}
-				
 				int b = beginwaarde;
 				beginwaarde = 1-(int)Math.round(beginx/eenheidx);
 				selectnummer = selectnummer + b - beginwaarde;
@@ -5178,10 +5177,10 @@ MouseListener, MouseMotionListener, CBookAware {
 					beginy = beginy-dy;
 
 					
-					if(traceOptie && tracex!=-2) 
-					{	tracexD = tracexD+dx;
+					if(traceOptie && tracex!=-2)  {	
+						tracexD = tracexD+dx;
 						tracex = tracex+dx;
-						slider.zetStand(tracex);
+//						slider.zetStand(tracex-gv.drawXmin);
 					}
 					
 					int b = beginwaarde;
@@ -5205,7 +5204,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(traceOptie && tracex!=-2) 
 			{	tracexD = tracexD+dx;
 				tracex = tracex+dx;
-				slider.zetStand(tracex);
+//				slider.zetStand(tracex-gv.drawXmin);
 			}
 			
 			int b = beginwaarde;
@@ -5237,7 +5236,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			if(traceOptie && tracex!=-2) 
 			{	tracexD += beginx-beginxR;
 				tracex += beginx-beginxR;
-				slider.zetStand(tracex);
+//				slider.zetStand(tracex-gv.drawXmin);
 			}
 			
 			repaint();
@@ -5254,7 +5253,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				if(traceOptie && tracex!=-2) 
 				{	tracexD += beginx-beginxR;
 					tracex += beginx-beginxR;
-					slider.zetStand(tracex);
+//					slider.zetStand(tracex-gv.drawXmin);
 				}
 								
 				repaint();
@@ -5317,7 +5316,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					if(traceOptie && tracex!=-2) 
 					{	tracexD += beginx-beginxR;
 						tracex += beginx-beginxR;
-						slider.zetStand(tracex);
+//						slider.zetStand(tracex-gv.drawXmin);
 					}
 					
 					repaint();
@@ -5504,9 +5503,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(e.getSource() == slider)
 		{ 	if(e.getActionCommand().equals("start")) 
 				tracing = true;
-			tracex = slider.geefStand();
+			tracex = slider.geefStand()+gv.drawXmin;
 			tracexD = tracex;
-			
 			repaint();
 			
 		}

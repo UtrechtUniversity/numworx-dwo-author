@@ -155,11 +155,10 @@ public class Slider extends JComponent implements MouseListener, MouseMotionList
 	{	return stand;
 	}
 	
-	public void zetStand(int std)
-	{	if(std>lengte)stand = lengte;
+	public void zetStand(int std) {	
+		if(std>lengte)stand = lengte;
 		else if(std<minimum)stand = minimum;
 		else stand = std;
-		repaint();
 	}
 	
 	public void mousePressed(MouseEvent e)
