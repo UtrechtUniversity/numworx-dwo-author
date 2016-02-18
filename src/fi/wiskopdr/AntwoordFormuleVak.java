@@ -153,6 +153,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	private String logIDLabel;
 	
 	private boolean[][] logObjectives;
+	private boolean[][] possibleMisconceptions;
+	private boolean[][] measuredMisconceptions;
 	
 	private double eqTestValueMin = 0;
 	private double eqTestValueMax = 5;
@@ -417,6 +419,19 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	     setLayer((Component)gebruikersSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
 	     //zetOpRoot(gebruikersSubstitutiesVak);
 	     
+	     if(WiskOpdr.misconceptions != null && WiskOpdr.misconceptions.length>0)
+	     {	 possibleMisconceptions = new boolean[WiskOpdr.misconceptions.length][];
+	     	 measuredMisconceptions = new boolean[WiskOpdr.misconceptions.length][];
+		     for(int i=0 ; i<WiskOpdr.misconceptions.length ; i++)
+		     {	 possibleMisconceptions[i] = new boolean[WiskOpdr.misconceptions[i].length];
+		     	 measuredMisconceptions[i] = new boolean[WiskOpdr.misconceptions[i].length];
+		    	 for(int j=0 ; j<WiskOpdr.misconceptions[i].length ; j++)
+			     {  possibleMisconceptions[i][j] = false;
+			     	measuredMisconceptions[i][j] = false;
+			     }
+		     }
+	     }
+	    	
 	     
 	}
 	
@@ -636,6 +651,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		int feedbackHeight = 20;
 		String vormString = "$f@";
 		int goedHalfFout = 0;
+		boolean[][] logMisconceptions;
+		
 		
 		
 		if(h!=null) 
@@ -655,6 +672,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			if(h.containsKey("feedbackHeight")) feedbackHeight = ((Integer)h.get("feedbackHeight")).intValue();
 			if(h.containsKey("vormString")) vormString = (String)h.get("vormString");
 			if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
+			if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][])h.get("logMisconceptions");
 			
 		}	
 		exactP = exact;
@@ -897,6 +915,22 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
         //this.gekozenAntwoordString = antwoordString;
         //this.gekozenStartString = startString;
         this.answerModels = answerModels;
+        
+        if(answerModels!=null)
+        {
+        	boolean[][] logMisconceptions = null;
+        	for(int i=1 ; i<answerModels.length ; i++)
+        	{	if(answerModels[i].containsKey("logMisconceptions"))
+        		{	logMisconceptions = (boolean[][])answerModels[i].get("logMisconceptions");
+        			for( int j=0 ; j<logMisconceptions.length ; j++)
+        			{	for( int k=0 ; k<logMisconceptions[i].length ; k++)
+            			{	possibleMisconceptions[j][k] = possibleMisconceptions[j][k] || logMisconceptions[j][k];
+            			}
+        			}
+        		}
+        	}
+        }
+        
         this.hasFeedback = hasFeedback;
         this.feedbackSize = feedbackSize;
         this.hasSubKnop = hasSubKnop;
@@ -2086,6 +2120,18 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 					else if(getParent()==null && feedbackTekst.getParent()!=null)
 					{	produceAction("feedbackWeg");
 					}
+					if(answerModels!=null)
+			        {
+			        	boolean[][] logMisconceptions = null;
+			        	if(answerModels[h].containsKey("logMisconceptions"))
+			        	{	logMisconceptions = (boolean[][])answerModels[h].get("logMisconceptions");
+			        		for( int j=0 ; j<logMisconceptions.length ; j++)
+			        		{	for( int k=0 ; k<logMisconceptions[j].length ; k++)
+			            		{	measuredMisconceptions[j][k] = measuredMisconceptions[j][k] || logMisconceptions[j][k];
+			            		}
+			        		}
+			        	}
+			        }
 					break;
 				}
 			}
@@ -2150,6 +2196,14 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 					scoreObjectives[i][j] = score;
 			}
 		return scoreObjectives;
+	}
+	
+	public boolean[][] getMeasuredMisconceptions()
+	{	return measuredMisconceptions;
+	}
+	
+	public boolean[][] getPossibleMisconceptions()
+	{	return possibleMisconceptions;
 	}
 	
 	public int getScoreMax()

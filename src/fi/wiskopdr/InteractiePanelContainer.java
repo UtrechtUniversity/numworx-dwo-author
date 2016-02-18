@@ -185,6 +185,14 @@ public class InteractiePanelContainer extends JPanel implements ActionListener, 
 	{	return null;
 	}
 	
+	public boolean[][] getMeasuredMisconceptions()
+	{	return null;
+	}
+	
+	public boolean[][] getPossibleMisconceptions()
+	{	return null;
+	}
+	
 	public int getScoreMax()
 	{	if(interactiePanel!=null)
 			return interactiePanel.getScoreMax();

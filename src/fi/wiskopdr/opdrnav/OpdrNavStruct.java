@@ -77,8 +77,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private int[][] scores;
 	private boolean[][] isCorrect;
 	private int[][][][] scoresObjectives;
+	private int[][][][] possibleMisconceptions;
+	private int[][][][] measuredMisconceptions;
 	private String[][] objectives;
 	private String[] categorieString;
+	private String[][] misconceptions;
+	private String[] mccCategorieString;
+	
 	private String[][] times; // FIXME op 2 plekken krijgt times[i][j] een
 								// nieuwe waarde
 								// uitzoeken wanneer dat niet moet.
@@ -265,6 +270,18 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		times = new String[aantalActiviteiten][maxAantalOpdrachten];
 		isCorrect = new boolean[aantalActiviteiten][maxAantalOpdrachten];
 		scoresMax = new int[aantalActiviteiten][maxAantalOpdrachten];
+		if (objectives != null)
+		{
+			scoresObjectives = new int[aantalActiviteiten][maxAantalOpdrachten][objectives.length][];
+			scoresMaxObjectives = new int[aantalActiviteiten][maxAantalOpdrachten][objectives.length][];
+			for (int k = 0; k < aantalActiviteiten; k++)
+				for (int j = 0; j < maxAantalOpdrachten; j++)
+					for (int i = 0; i < objectives.length; i++)
+					{
+						scoresObjectives[k][j][i] = new int[objectives[i].length];
+						scoresMaxObjectives[k][j][i] = new int[objectives[i].length];
+					}
+		}
 		if (objectives != null)
 		{
 			scoresObjectives = new int[aantalActiviteiten][maxAantalOpdrachten][objectives.length][];
@@ -954,6 +971,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		boolean hasMisconceptions = false;
+		String[][] misconceptions = null;
+		String[] mccCategorieString = null;
 		
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -1047,6 +1067,17 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 		if (h != null && h.containsKey("categorieString"))
 			categorieString = (String[]) h.get("categorieString");
+		
+		if (h != null && h.containsKey("hasMisconceptions"))
+			hasObjectives = ((Boolean) h.get("hasMisconceptions")).booleanValue();
+		if (h != null && h.containsKey("misconceptions"))
+			try	{	
+				misconceptions = (String[][]) h.get("misconceptions");
+			} catch(Exception ex){
+				
+			}
+		if (h != null && h.containsKey("mccCategorieString"))
+			mccCategorieString = (String[]) h.get("mccCategorieString");
 
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -1067,6 +1098,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		// if(hasObjectives)
 		WiskOpdr.setObjectives(objectives);
 		WiskOpdr.setCategories(categorieString);
+		
+		// if(hasMisconceptions)
+		WiskOpdr.setMisconceptions(misconceptions);
+		WiskOpdr.setCategories(mccCategorieString);
 
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);
@@ -1104,6 +1139,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.eerderGeenCorr = eerderGeenCorr;
 		this.objectives = objectives;
 		this.categorieString = categorieString;
+		this.misconceptions = misconceptions;
+		this.mccCategorieString = mccCategorieString;
 
 		Expressie.zetHoekGraden(hoekGraden);
 		zetMarges(margeLinks, margeRechts, margeBoven, margeOnder);
@@ -1771,6 +1808,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
 		if (objectives != null)
 			scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
+		if (misconceptions != null)
+		{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+			measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+		}
 
 		// FIXME verzoek sylvia: geen update als ..... HIERO
 		if (!zelftoetsNagekeken && !locked) // oftewel geen correctie meer
@@ -2238,6 +2279,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		if (objectives != null)
 			scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
+		if (misconceptions != null)
+		{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+			measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+		}
 		// FIXME op verzoek sylvia HIERO
 		// if (correctie nog mogelijk)
 		boolean locked = afdekPanel != null && afdekPanel.isVisible();
@@ -2537,6 +2582,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				scores[activiteitNr][j] = score;
 				if (objectives != null)
 					scoresObjectives[activiteitNr][j] = opdrContainer.getScoreObjectives();
+				if (misconceptions != null)
+				{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+					measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+				}
 				boolean correct = opdrContainer.isCorrect();
 				isCorrect[activiteitNr][j] = correct;
 
@@ -2695,6 +2744,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
 				if (objectives != null)
 					scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
+				if (misconceptions != null)
+				{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+					measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+				}
 				isCorrect[activiteitNr][opdrachtNr] = opdrContainer.isCorrect();
 				stelNavigatieIn(activiteitNr, opdrachtNr);
 				gaNaarVolgendeOpdracht(activiteitNr, opdrachtNr);
@@ -2709,6 +2762,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
 				if (objectives != null)
 					scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
+				if (misconceptions != null)
+				{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+					measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+				}
 				isCorrect[activiteitNr][opdrachtNr] = opdrContainer.isCorrect();
 				bepaalVorigeOpdracht(activiteitNr, opdrachtNr);
 			}
@@ -2743,6 +2800,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scores[activiteitNr][opdrachtNr] = score;
 			if (objectives != null)
 				scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
+			if (misconceptions != null)
+			{	possibleMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getPossibleMisconceptions();
+				measuredMisconceptions[activiteitNr][opdrachtNr] = opdrContainer.getMeasuredMisconceptions();
+			}
 			isCorrect[activiteitNr][opdrachtNr] = correct;
 
 			if (e.getActionCommand().equals("checked") && fout && mode == OEFENEN_STRAFPUNTEN)

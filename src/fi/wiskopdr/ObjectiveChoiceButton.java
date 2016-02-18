@@ -28,18 +28,19 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
 	private JButton okButton; 
 	private JButton cancelButton;
 	
-	JPanel objectivesPanel = new JPanel();
-	JPanel bottomPanel = new JPanel();
-	JScrollPane scrollPane;
+	private JPanel objectivesPanel = new JPanel();
+	private JPanel bottomPanel = new JPanel();
+	private JScrollPane scrollPane;
+	private String labelString;
 	
 	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString)
 	{	
 		this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString);
 	}
 	
-	public ObjectiveChoiceButton(String label, String[][] objectives, String[] categorieString)
-	{	
-		super(label);
+	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString)
+	{	super(labelString);
+		this.labelString = labelString;
 		this.objectives = objectives;
 		this.categorieString = categorieString;
 		addActionListener(this);
@@ -76,7 +77,7 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
         boxh.add(Box.createHorizontalStrut(10));
         
        
-        JLabel label = new JLabel(WiskOpdr.rb.getString("OPT_objectives"));
+        JLabel label = new JLabel(labelString);
         boxh.add(label);
         
         boxv.add(boxh);

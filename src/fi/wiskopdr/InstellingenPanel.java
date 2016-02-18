@@ -872,6 +872,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	WiskOpdr.setObjectives(objectivesButton.getObjectives());
 			WiskOpdr.setCategories(objectivesButton.getCategories());
 		}
+		if(misconceptionsCB.isSelected())
+		{	WiskOpdr.setMisconceptions(misconceptionsButton.getObjectives());
+			WiskOpdr.setMccCategories(misconceptionsButton.getCategories());
+		}
 		
 		dialog.setVisible(false);
 	}

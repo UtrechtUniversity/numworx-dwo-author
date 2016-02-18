@@ -88,6 +88,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	private JTextField logIDLabelField;
 	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
+	private ObjectiveChoiceButton logMisconceptionsButton;
 		
 	private JTextField aantalDecRmField;
 	
@@ -259,6 +260,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
+        logMisconceptionsButton = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
+        logMisconceptionsButton.setVisible(false);
+        logMisconceptionsButton.setBounds(350,350,120,20);
+        if(WiskOpdr.misconceptions!=null)add(logMisconceptionsButton);
+       
         aantalDecRmField = makeTextField(670,135,100,20,"10",false);
         		
 		gelijkwaardigPV = makeTextField(460,410,30,20,"10",true);
@@ -373,6 +379,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		int feedbackHeight = 20;
 		String vormString = "$f@";
 		int goedHalfFout = 2;
+		boolean[][] logMisconceptions = null;
 		
 		antwoordString = antwoordvak.geefFormuleVak().toString();
 		gelijkwaardig = this.gelijkwaardig;
@@ -400,6 +407,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         }
 		goedHalfFout = goedFoutIP.geefKeuze()-1;
 		
+		logMisconceptions = logMisconceptionsButton.getChoices();
+		
 		h.put("antwoordString",antwoordString);
 		h.put("gelijkwaardig",new Boolean(gelijkwaardig));
 		h.put("herleiding",new Boolean(herleiding));
@@ -412,6 +421,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		h.put("feedbackHeight",new Integer(feedbackHeight));
 		h.put("vormString",vormString);
 		h.put("goedHalfFout",new Integer(goedHalfFout));
+		if(logMisconceptions!=null)
+			h.put("logMisconceptions",logMisconceptions);
 		return h;
 	}
 	
@@ -428,6 +439,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         int feedbackHeight = 0;
 		String vormString = "$f@";
 		int goedHalfFout = 2;
+		boolean[][] logMisconceptions = null;
 		
 		if(h!=null) 
 		{	if(h.containsKey("antwoordString")) antwoordString = (String)h.get("antwoordString");
@@ -443,6 +455,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			if(h.containsKey("feedbackHeight")) feedbackHeight = ((Integer)h.get("feedbackHeight")).intValue();
             if(h.containsKey("vormString")) vormString = (String)h.get("vormString");
 			if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
+			if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][])h.get("logMisconceptions");
 			
 		}
 		this.herleiding = herleiding;
@@ -491,6 +504,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		goedFoutIP.setItem(goedHalfFout);
 		
+		logMisconceptionsButton.setChoices(logMisconceptions);
+		
 		
 	}
 	
@@ -501,6 +516,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	private void setAnswerModel()
 	{	if(answerModels==null)return;
+		logMisconceptionsButton.setVisible(answerModelNr>0);
 		setAnswerModel(answerModels[answerModelNr]);	
 	}
 	
@@ -704,8 +720,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            //logObjectivesButton.setVisible(hasObjectives);
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
-	            logObjectivesButton.setChoices(logObjectives);
 	            
+	            logObjectivesButton.setChoices(logObjectives);
+	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmField.setText(""+aantalDecRm);
 				
@@ -1416,6 +1433,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	public void setFeedbackOption(boolean b)
 	{
 		hasFeedback = b;
+		if(!b) logMisconceptionsButton.setVisible(false);
 		tabbladTab.setVisible(b);
 		feedbackEditor.setVisible(b);
 		feedbackSizeCB.setVisible(b);

@@ -884,6 +884,54 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		}
 		return scoreObjectives;
 	}
+	
+	public int[][] getPossibleMisconceptions()
+	{
+		if (WiskOpdr.misconceptions == null)
+			return null;
+		int[][] totalPossibleMisconceptions = new int[WiskOpdr.misconceptions.length][];
+		for (int i = 0; i < WiskOpdr.misconceptions.length; i++)
+			totalPossibleMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		for (int i = 0; i < aantalInteractiePanelCs; i++)
+		{
+			if (interactiePanelCs[i] != null && (i != 0 || hasAntwoordVak))
+			{
+				boolean[][] possibleMisconceptions = interactiePanelCs[i].getPossibleMisconceptions();
+				for (int j = 0; possibleMisconceptions != null && j < WiskOpdr.misconceptions.length && j < possibleMisconceptions.length; j++)
+				{
+					for (int k = 0; possibleMisconceptions[j] != null && k < WiskOpdr.misconceptions[j].length && k < possibleMisconceptions[j].length; k++)
+						try{	totalPossibleMisconceptions[j][k] += possibleMisconceptions[j][k] ? 1 : 0;
+						}
+						catch(Exception e){}
+				}
+			}
+		}
+		return totalPossibleMisconceptions;
+	}
+	
+	public int[][] getMeasuredMisconceptions()
+	{
+		if (WiskOpdr.misconceptions == null)
+			return null;
+		int[][] totalMeasuredMisconceptions = new int[WiskOpdr.misconceptions.length][];
+		for (int i = 0; i < WiskOpdr.misconceptions.length; i++)
+			totalMeasuredMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		for (int i = 0; i < aantalInteractiePanelCs; i++)
+		{
+			if (interactiePanelCs[i] != null && (i != 0 || hasAntwoordVak))
+			{
+				boolean[][] measuredMisconceptions = interactiePanelCs[i].getMeasuredMisconceptions();
+				for (int j = 0; measuredMisconceptions != null && j < WiskOpdr.misconceptions.length && j < measuredMisconceptions.length; j++)
+				{
+					for (int k = 0; measuredMisconceptions[j] != null && k < WiskOpdr.misconceptions[j].length && k < measuredMisconceptions[j].length; k++)
+						try{	totalMeasuredMisconceptions[j][k] += measuredMisconceptions[j][k] ? 1 : 0;
+						}
+						catch(Exception e){}
+				}
+			}
+		}
+		return totalMeasuredMisconceptions;
+	}
 
 	public int getScoreMax()
 	{

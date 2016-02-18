@@ -118,8 +118,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static boolean formTimes = true;
 	public static boolean fToets = true;
 	public static boolean launchDataChanged = false;
+	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
+	public static String[][] misconceptions = null;
+	public static String[] mccCategorieString = null;
 	
 	private static URL defaultCodeBase; // allow code injection?
 	private static boolean COMPLETED = false;
@@ -299,6 +302,17 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	public static void setCategories(String[] categorieString) {
 		WiskOpdr.categorieString = categorieString;
+	}
+	
+	/**
+	 * Zet de misconceptions waarmee de items (feedback-tabbladen van antwoordvakken) gelabeld kunnen worden.
+	 */
+	public static void setMisconceptions(String[][] misconceptions) {
+		WiskOpdr.misconceptions = misconceptions;
+	}
+	
+	public static void setMccCategories(String[] mccCategorieString) {
+		WiskOpdr.mccCategorieString = mccCategorieString;
 	}
 	
 	/**

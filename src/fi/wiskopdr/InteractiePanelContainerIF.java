@@ -39,6 +39,10 @@ public interface InteractiePanelContainerIF
 	
 	public int[][] getScoreMaxObjectives();
 	
+	public boolean[][] getMeasuredMisconceptions();
+	
+	public boolean[][] getPossibleMisconceptions();
+	
 	public boolean isCorrect();
 	
 	public boolean isFout();
