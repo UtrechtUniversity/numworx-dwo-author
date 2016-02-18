@@ -80,29 +80,29 @@ public class StatEditPanelController extends JPanel implements
 		// check the amount of cells in each row
 		for (String s : rowStrings)
 		{
-			if (s.split("\t").length != this.model.getData().getColumnCount())
+			if (s.split("\t").length != this.model.getStatTableModel().getColumnCount())
 			{
 				// row has incorrect amount of cells
 				return;
 			}
 		}
 
-		int currentRow = this.model.getData().getRowCount();
+		int currentRow = this.model.getStatTableModel().getRowCount();
 		int currentColumn;
 		for (String s : rowStrings)
 		{
-			this.model.getData().addRowWithoutEvent();
+			this.model.getStatTableModel().addRowWithoutEvent();
 			currentColumn = 0;
 			for (String cellString : s.split("\t"))
 			{
-				this.model.getData().setValueAtWithoutEvent(cellString,
+				this.model.getStatTableModel().setValueAtWithoutEvent(cellString,
 					currentRow, currentColumn);
 				currentColumn++;
 			}
 			currentRow++;
 		}
 
-		this.model.getData().fireTableModelEvent();
+		this.model.getStatTableModel().fireTableModelEvent();
 	}
 
 	/**
@@ -151,22 +151,60 @@ public class StatEditPanelController extends JPanel implements
 
 		if (b.containsKey("tableModel"))
 		{
-			this.model.getData().setState((Hashtable) b.get("tableModel"));
+			this.model.getStatTableModel().setState((Hashtable) b.get("tableModel"));
 		}
 		if (b.containsKey("selectionList"))
 		{
-			this.model.getData().setSelectionList(
+			this.model.getStatTableModel().setSelectionList(
 				(ArrayList<Boolean>) b.get("selectionList"));
 		}
 		else
 		{
 			ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-				this.model.getData().getRowCount());
-			for (int i = 0; i < this.model.getData().getRowCount(); i++)
+				this.model.getStatTableModel().getRowCount());
+			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 			{
 				selectionList.add(false);
 			}
-			this.model.getData().setSelectionList(selectionList);
+			this.model.getStatTableModel().setSelectionList(selectionList);
+		}
+
+		if (b.containsKey("rowOutlierList"))
+		{
+			this.model.getStatTableModel().setRowOutlierList(
+				(ArrayList<Boolean>) b.get("rowOutlierList"));
+		}
+		else
+		{
+			ArrayList<Boolean> rowOutlierList = new ArrayList<Boolean>(
+				this.model.getStatTableModel().getRowCount());
+			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
+			{
+				rowOutlierList.add(false);
+			}
+			this.model.getStatTableModel().setRowOutlierList(rowOutlierList);
+		}
+
+		if (b.containsKey("cellOutlierList"))
+		{
+			this.model.getStatTableModel().setCellOutlierList(
+				(ArrayList<ArrayList<Boolean>>) b.get("cellOutlierList"));
+		}
+		else
+		{
+			ArrayList<ArrayList<Boolean>> cellOutlierList = new ArrayList<ArrayList<Boolean>>(
+				this.model.getStatTableModel().getColumnCount());
+			for (int i = 0; i < this.model.getStatTableModel().getColumnCount(); i++)
+			{
+				ArrayList list = new ArrayList<Boolean>(this.model.getStatTableModel().getRowCount());
+				for (int j = 0; j < this.model.getStatTableModel().getRowCount(); j++)
+				{
+					list.add(false);
+				}
+				
+				cellOutlierList.add(list);
+			}
+			this.model.getStatTableModel().setCellOutlierList(cellOutlierList);
 		}
 
 		if (b.containsKey("statistiekViewTypes")
@@ -180,7 +218,7 @@ public class StatEditPanelController extends JPanel implements
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
 				StatistiekView statistiekView = Statistiek.createView(
-					statistiekViewTypes[i], "", this.model.getData(), 0, 0, null);
+					statistiekViewTypes[i], "", this.model.getStatTableModel(), 0, 0, null);
 				if (statistiekView != null)
 				{
 					statistiekView.setState(statistiekViewStates[i]);
@@ -205,8 +243,10 @@ public class StatEditPanelController extends JPanel implements
 	{
 		System.out.println("EditPanel.getEditState()");
 		Hashtable h = new Hashtable();
-		h.put("tableModel", this.model.getData().getState());
-		h.put("selectionList", this.model.getData().getSelectionList());
+		h.put("tableModel", this.model.getStatTableModel().getState());
+		h.put("selectionList", this.model.getStatTableModel().getSelectionList());
+		h.put("rowOutlierList", this.model.getStatTableModel().getRowOutlierList());
+		h.put("cellOutlierList", this.model.getStatTableModel().getCellOutlierList());
 
 		int noViews = this.model.getViews().size();
 		String[] statistiekViewTypes = new String[noViews];
@@ -282,7 +322,7 @@ public class StatEditPanelController extends JPanel implements
 		if (e.getActionCommand().equals("dataEditableBox"))
 		{
 			int selectedView = this.view.getInteractiePanelSelectedView();
-			this.model.getData().setDataEditable(
+			this.model.getStatTableModel().setDataEditable(
 				this.view.isDataEditableBoxSelected());
 
 			this.view.setInteractiePanelSelectedView(selectedView);
@@ -290,13 +330,13 @@ public class StatEditPanelController extends JPanel implements
 		else if (e.getActionCommand().equals("viewsEditableBox"))
 		{
 			int selectedView = this.view.getInteractiePanelSelectedView();
-			this.model.getData().setViewsEditable(
+			this.model.getStatTableModel().setViewsEditable(
 				this.view.isViewsEditableBoxSelected());
 
-			if (!this.model.getData().isViewsEditable())
+			if (!this.model.getStatTableModel().isViewsEditable())
 			{
 				// addable without editable is useless, so disable addable
-				this.model.getData().setViewsAddable(false);
+				this.model.getStatTableModel().setViewsAddable(false);
 			}
 
 			this.view.setInteractiePanelSelectedView(selectedView);
@@ -304,7 +344,7 @@ public class StatEditPanelController extends JPanel implements
 		else if (e.getActionCommand().equals("viewsAddableBox"))
 		{
 			int selectedView = this.view.getInteractiePanelSelectedView();
-			this.model.getData().setViewsAddable(
+			this.model.getStatTableModel().setViewsAddable(
 				this.view.isViewsAddableBoxSelected());
 			this.view.setInteractiePanelSelectedView(selectedView);
 		}
