@@ -246,6 +246,7 @@ public class BoxplotView extends JPanel implements Observer
 				if (!this.model.getTableModel().isColumnIndexValid(
 					this.model.getColumnSplitIndex()))
 				{
+					// geen split
 
 					if (this.model.isVerticalBoxplots())
 					{
@@ -262,7 +263,7 @@ public class BoxplotView extends JPanel implements Observer
 							this.model.getDataMinValue(),
 							this.model.getDataMaxValue(),
 							this.model.isVerticalBoxplots());
-						//System.out.println(v);
+
 						boxplotsPanel.add(v);
 
 						JPanel eastPanel = new JPanel()
@@ -328,10 +329,10 @@ public class BoxplotView extends JPanel implements Observer
 					}
 				}
 				else
-				{
-					//System.out.println("columns valid");
+				{ 
+					// er is een split
+					
 					int splitClasses = this.model.getSplitClasses();
-					//System.out.println("Splitclasses: " + splitClasses);
 
 					if (this.model.isVerticalBoxplots())
 					{
@@ -357,7 +358,7 @@ public class BoxplotView extends JPanel implements Observer
 								this.model.getDataMinValue(),
 								this.model.getDataMaxValue(),
 								this.model.isVerticalBoxplots());
-							//System.out.println(v);
+
 							boxplotsPanel.add(v);
 
 						}
