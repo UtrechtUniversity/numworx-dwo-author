@@ -278,7 +278,7 @@ public class DescriptivesView extends JPanel implements Observer
 		for (int i = 0; i < numberOfSplits; i++)
 		{
 			// number of cases, missing excluded (missing is wildcard '*')
-			this.numberOfCases[0][i] = this.getNumberOfCases(0,i);
+			this.numberOfCases[0][i] = this.getNumberOfCases(0, i);
 
 			if (this.hasSelection())
 				this.numberOfCases[1][i] = this.getNumberOfCases(1, i);
@@ -311,7 +311,8 @@ public class DescriptivesView extends JPanel implements Observer
 	}
 
 	/**
-	 * Get the number of cases for the given splitClass. 
+	 * Get the number of cases for the given splitClass,
+	 * excluding wildcards and outliers. 
 	 * 
 	 * @param selection
 	 * 		If selection is 0, the number of cases for the splitClass is returned.
@@ -575,14 +576,17 @@ public class DescriptivesView extends JPanel implements Observer
 		int integerPlaces, decimalPlaces;
 		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
 		{
-			numberString = String.valueOf(this.model.getTableModel().getValueAt(i, columnIndex));
-			integerPlaces = numberString.indexOf('.');
-			if (integerPlaces > -1)
+			if (!this.model.getTableModel().isOutlier(i, columnIndex))
 			{
-				decimalPlaces = numberString.length() - integerPlaces - 1;
-				if (decimalPlaces > max)
+				numberString = String.valueOf(this.model.getTableModel().getValueAt(i, columnIndex));
+				integerPlaces = numberString.indexOf('.');
+				if (integerPlaces > -1)
 				{
-					max = decimalPlaces;
+					decimalPlaces = numberString.length() - integerPlaces - 1;
+					if (decimalPlaces > max)
+					{
+						max = decimalPlaces;
+					}
 				}
 			}
 		}
