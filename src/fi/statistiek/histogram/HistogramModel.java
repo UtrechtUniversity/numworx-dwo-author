@@ -819,6 +819,11 @@ public class HistogramModel extends Observable implements TableModelListener,
 		this.changed();
 	}
 
+	public void outliersChanged()
+	{
+		this.changed();
+	}
+
 	/**
 	 * @param splitInSingleView
 	 *            the splitInSingleView to set
