@@ -37,8 +37,8 @@ class GrafiekVeld extends JComponent{
 	private final int cTracePointOffset = 2;
 	private final double cTraceAfronding = 1000;
 	private final Color cTraceBoxColor = new Color(255,255,200);
-	//	private final int cPiFromAxis = 25;
-//	private final int cDashStep = 5;
+	private final int cPiFromAxis = 25;
+	private final int cDashStep = 5;
 
 //	private final double cLineWidth = 0.5d;
 //	private final double cLineWidthLogLines = 0.25d;
@@ -245,16 +245,18 @@ class GrafiekVeld extends JComponent{
 	}
 	
 	private void tekenStroomlijn() {}
+	
+	private void drawPiLine(Graphics2D g, int hoogte, int xPos, int by) {		
+		
+		int dashPos = drawYmin;
+		while (dashPos < drawYmax) {
+			if(dashPos < hoogte - by || !gtip.yPositief) {	
+				g.drawLine(xPos, dashPos, xPos, Math.min(dashPos + cDashStep, drawYmax));
+			}
+			dashPos += 2 * cDashStep;
+		}	
+	}
 
-/* EXAMPLE TODO	
-	void arrowhead(vec A, vec B, vec& v1, vec& v2) {
-	    float h = 10*sqrtf(3), w = 10;
-	    vec U = (B - A)/(B - A).length();
-	    vec V = vec(-U.y, U.x);
-	    v1 = B - h*U + w*V;
-	    v2 = B - h*U - w*V;
-	}	
-*/
 	
 	public void	paintComponent(Graphics gr) {	
 		Graphics2D g = (Graphics2D) gr;
@@ -531,14 +533,16 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 		
-		if (gtip.piLijnenZichtbaar)
-		{	
-			
-			double rangeX = pixelsXtoValue(breedte)-pixelsXtoValue(0);
-			int piMultiplier = 1;
-			while ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
-				piMultiplier++;
+		if (gtip.piLijnenZichtbaar) {	
+			double rangeX = pixelsXtoValue(drawXmax)-pixelsXtoValue(drawXmin);
+			long piMultiplier = 1;
+			if ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
+				piMultiplier = (long) Math.ceil(rangeX/((cMaxPiLinesOnScreen)*Math.PI));
 			}
+
+//			while ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
+//				piMultiplier++;
+//			}
 			
 			double scalingDivider = 0;
 			if (gtip.manualScalingX ) {
@@ -547,128 +551,115 @@ class GrafiekVeld extends JComponent{
 			else {
 				scalingDivider = gtip.schaalFactorX;				
 			}				
- 
-			int dashStep = 5;
-			int dashes = hoogte / dashStep;
-			
+
+			int piTextX = 0;
+			int piTextY = Math.min( Math.max(drawYmin+cExtraAxisMarge+gtip.font.getSize(), drawYmax - cExtraAxisMarge), 
+									Math.max(drawYmin+cExtraAxisMarge+gtip.font.getSize(), hoogte - by + cPiFromAxis)  );
+
 			g.setColor(gtip.piColor);
 			// 0 is in beeld
-			if ((bx > 0) && (bx < breedte)) {	// Linkerkant
+			if ((bx > drawXmin) && (bx < drawXmax)) {	// Linkerkant
 				int maxLCnt = (int) Math.round(gtip.beginx / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider) );
-				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++)
-				{	//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
+				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++) {	
+					//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx - (lCnt * piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
+					piTextX = piX - cExtraAxisMarge;
+	
+					if ((piX > bx || !gtip.xPositief && piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						
-					if ((piX > bx || !gtip.xPositief && piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
 						g.setColor(Color.black);
 //						double aantalPi = lCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *lCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("-" + "\u03C0", piX-3, hoogte - by + 20);
-						else
-						{	if(aantalPiInt == aantalPi)
-								g.drawString("-" + aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+							g.drawString("-" + "\u03C0", piTextX, piTextY);
+						else {	
+							if(aantalPiInt == aantalPi)
+								g.drawString("-" + aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 				int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
 				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++) { // Rechterkant	
 					int piX = (int) Math.round(gtip.beginx + rCnt * (piMultiplier *  Math.PI * gtip.eenheidxD / scalingDivider) );
-					if ((piX > bx || !gtip.xPositief && piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > bx || !gtip.xPositief && piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						g.setColor(Color.black);
 // 						double aantalPi = rCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *rCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString(aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString(Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 				
 			}	
 			// 0 is links
-			else if (bx <= 0)
-			{	int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++)
-				{	//int piX = (int) Math.round(beginx + rCnt * Math.PI * eenheidxD / schaalFactorX);
+			else if (bx <= drawXmin) {	
+				int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
+				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++) {	
+					//int piX = (int) Math.round(beginx + rCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx + rCnt * (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-					if ((piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
+
 						g.setColor(Color.black);
 //						double aantalPi = rCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *rCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString(aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString(Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 			}		
 			// 0 is rechts
-			else if (bx >= breedte && !gtip.xPositief) {	
+			else if (bx >= drawXmax && !gtip.xPositief) {	
 				int maxLCnt = (int) Math.round( gtip.beginx / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
 				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++) {	
 					//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx - lCnt * (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-					if ((piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						g.setColor(Color.black);
 //						double aantalPi = lCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *lCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("-" + "\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("-" + "\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString("-" + aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
