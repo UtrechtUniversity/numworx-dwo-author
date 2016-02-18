@@ -331,8 +331,12 @@ public class FrequencyTableModel extends Observable implements
 
 	public void selectionChanged()
 	{
-		this.setChanged();
-		this.notifyObservers();
+		this.changed();
+	}
+	
+	public void outliersChanged()
+	{
+		this.changed();
 	}
 	
 	/**
