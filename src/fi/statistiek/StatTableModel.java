@@ -32,22 +32,46 @@ import fi.statistiek.types.ColumnType;
  */
 public class StatTableModel implements TableModel
 {
+	private static final int WILDCARD = -2;
+
 	private int rowCount;
 	private int columnCount;
 	private ArrayList<ColumnType> columnClass;
 	private ArrayList<String> columnNames;
 	private ArrayList<ArrayList<Object>> values; // ArrayList van ArrayLists
 
-	// these hashtables contain the frequency of every string of a column to
-	// efficiently know the used strings in a column at all times
+	/**
+	 *  These hashtables contain the frequency of every string of a column to
+	 *  efficiently know the used strings in a column at all times.
+	 */
 	private ArrayList<Hashtable<String, Integer>> stringFrequencies;
 
-	// this arraylist contains all used strings in a column for each column
+	/**
+	 *  This arraylist contains all used strings in a column for each column.
+	 */
 	private ArrayList<ArrayList<String>> stringOptions;
 
+	/**
+	 * Array of booleans indicating which rows are selected.
+	 */
 	private ArrayList<Boolean> selectionList;
+	
+	/**
+	 * Array of booleans indicating which rows are marked as outliers.
+	 */
+	private ArrayList<Boolean> rowOutlierList;
+	
+	/**
+	 *  This arraylist contains an array of booleans indicating which values are marked as outlier in a column for each column.
+	 */
+	private ArrayList<ArrayList<Boolean>> cellOutlierList;
+
 	private ArrayList<TableModelListener> listeners;
 
+	/**
+	 * Selection listeners are triggered when there are changes in 
+	 * the selection or in the marked outliers.
+	 */
 	private ArrayList<SelectionListener> selectionListeners;
 
 	private boolean viewsEditable;
@@ -66,6 +90,8 @@ public class StatTableModel implements TableModel
 		this.values = new ArrayList<ArrayList<Object>>();
 		this.listeners = new ArrayList<TableModelListener>();
 		this.selectionList = new ArrayList<Boolean>();
+		this.rowOutlierList = new ArrayList<Boolean>();
+		this.cellOutlierList = new ArrayList<ArrayList<Boolean>>();
 
 		this.selectionListeners = new ArrayList<SelectionListener>();
 
@@ -223,11 +249,17 @@ public class StatTableModel implements TableModel
 
 	private void fireSelectionChanged()
 	{
-		// System.out.println("Firing changed update");
 		for (SelectionListener sl : this.selectionListeners)
 		{
-			// System.out.println("fire");
 			sl.selectionChanged();
+		}
+	}
+
+	private void fireOutliersChanged()
+	{
+		for (SelectionListener sl : this.selectionListeners)
+		{
+			sl.outliersChanged();
 		}
 	}
 
@@ -431,7 +463,7 @@ public class StatTableModel implements TableModel
 		}
 		if (ColumnType.WILDCARD.equals(value))
 		{
-			return -2;
+			return StatTableModel.WILDCARD;
 		}
 		if (binBoundaries == null)
 		{
@@ -707,6 +739,10 @@ public class StatTableModel implements TableModel
 		}
 		this.values.add(nieuw);
 		this.selectionList.add(false);
+		
+		// update row outlier list
+		this.rowOutlierList.add(false);
+
 		this.rowCount++;
 
 		for (int i = 0; i < this.columnCount; i++)
@@ -715,6 +751,9 @@ public class StatTableModel implements TableModel
 			{
 				this.increaseKeyHashtable(ColumnType.WILDCARD, i);
 			}
+			
+			// update cell outlier list
+			this.cellOutlierList.get(i).add(false);
 		}
 
 	}
@@ -726,6 +765,10 @@ public class StatTableModel implements TableModel
 	{
 		this.values.add((objects));
 		this.selectionList.add(false);
+		
+		// update row outlier list
+		this.rowOutlierList.add(false);
+		
 		this.rowCount++;
 		
 		// test syl
@@ -738,8 +781,10 @@ public class StatTableModel implements TableModel
 			{
 				this.increaseKeyHashtable(objects.get(i).toString(), i);
 			}
+			
+			// update cell outlier list
+			this.cellOutlierList.get(i).add(false);
 		}
-
 	}
 
 	/**
@@ -752,7 +797,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Add a column
+	 * Add a column.
 	 * 
 	 * @param columnName
 	 *            this column's name
@@ -761,21 +806,31 @@ public class StatTableModel implements TableModel
 	 */
 	public synchronized void addColumn(String columnName, ColumnType columnType)
 	{
-		this.columnClass.add(columnType);
-		this.columnNames.add(columnName);
-
-		for (int i = 0; i < this.rowCount; i++)
-		{
-			this.values.get(i).add(ColumnType.WILDCARD);
-		}
-		this.columnCount++;
-
-//		System.out.println("StatTableModel.addColumn(" 
-//			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
-//			+ this.buildColumnStringOptions(this.columnCount - 1) 
-//			+ "); stringFrequencies = " + stringFrequencies);
-		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
-		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
+//		this.columnClass.add(columnType);
+//		this.columnNames.add(columnName);
+//
+//		for (int i = 0; i < this.rowCount; i++)
+//		{
+//			this.values.get(i).add(ColumnType.WILDCARD);
+//		}
+//		this.columnCount++;
+//
+////		System.out.println("StatTableModel.addColumn(" 
+////			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
+////			+ this.buildColumnStringOptions(this.columnCount - 1) 
+////			+ "); stringFrequencies = " + stringFrequencies);
+//		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
+//		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
+//		
+//		// update cell outlier list; add an arraylist for the new column
+//		ArrayList<Boolean> newArray = new ArrayList<Boolean>(this.rowCount);
+//		for (int i = 0; i < this.rowCount; i++)
+//		{
+//			newArray.add(false);
+//		}
+//		this.cellOutlierList.add(newArray);
+		
+		this.addColumnWithoutEvent(columnName, columnType);
 
 		this.fireEvent(new TableModelEvent(this));
 		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
@@ -801,12 +856,20 @@ public class StatTableModel implements TableModel
 		}
 		this.columnCount++;
 
-//		System.out.println("StatTableModel.addColumn(" 
-//			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
-//			+ this.buildColumnStringOptions(this.columnCount - 1) 
-//			+ "); stringFrequencies = " + stringFrequencies);
 		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
 		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
+		
+		// update cell outlier list; add an arraylist for the new column
+		ArrayList<Boolean> newArray = new ArrayList<Boolean>(this.rowCount);
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (this.isOutlier(i))
+				newArray.add(true);
+			else
+				newArray.add(false);
+		}
+		
+		this.cellOutlierList.add(newArray);
 	}
 
 	/**
@@ -955,7 +1018,8 @@ public class StatTableModel implements TableModel
 	{
 		int count = this.rowCount;
 		for (int i = count-1 ; i >-1; i--)
-		{	removeRow(i);
+		{
+			removeRow(i);
 		}
 	}
 
@@ -981,8 +1045,25 @@ public class StatTableModel implements TableModel
 
 			this.values.remove(row);
 			this.selectionList.remove(row);
+			this.removeRowFromOutlierLists(row);
 			this.rowCount--;
 			this.fireEvent(new TableModelEvent(this));
+		}
+	}
+
+	/**
+	 * Remove the row with the given index from the row outlier
+	 * and the cell outlier lists.
+	 * 
+	 * @param index
+	 */
+	private void removeRowFromOutlierLists(int index)
+	{
+		this.rowOutlierList.remove(index);
+		
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			this.cellOutlierList.get(i).remove(index);
 		}
 	}
 
@@ -1008,6 +1089,7 @@ public class StatTableModel implements TableModel
 
 			this.values.remove(row);
 			this.selectionList.remove(row);
+			this.removeRowFromOutlierLists(row);
 			this.rowCount--;
 		}
 	}
@@ -1191,6 +1273,8 @@ public class StatTableModel implements TableModel
 			}
 			this.columnCount--;
 			
+			this.cellOutlierList.remove(column);
+			
 			// Als je een kolom verwijdert, heeft dit mogelijk invloed op de bestaande 
 			// views. Als column < columnindex van view dan 
 			// columnindex - 1 voor ViewModel van alle views!
@@ -1225,6 +1309,8 @@ public class StatTableModel implements TableModel
 				row.remove(column);
 			}
 			this.columnCount--;
+			
+			this.cellOutlierList.remove(column);
 		}
 	}
 
@@ -1266,7 +1352,7 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
-	 * Switch two rows
+	 * Switch two rows in values, selectionlist, and outlier lists.
 	 */
 	private void switchRows(int rowA, int rowB)
 	{
@@ -1277,6 +1363,20 @@ public class StatTableModel implements TableModel
 		boolean tempSelection = this.selectionList.get(rowA);
 		this.selectionList.set(rowA, this.selectionList.get(rowB));
 		this.selectionList.set(rowB, tempSelection);
+		
+		boolean tempRowOutlier = this.rowOutlierList.get(rowA);
+		this.rowOutlierList.set(rowA, this.rowOutlierList.get(rowB));
+		this.rowOutlierList.set(rowB, tempRowOutlier);
+		
+		boolean tempCellOutlier;
+		ArrayList<Boolean> list;
+		for (int i = 0; i < this.cellOutlierList.size(); i++)
+		{
+			list = this.cellOutlierList.get(i);
+			tempCellOutlier = list.get(rowA);
+			list.set(rowA, list.get(rowB));
+			list.set(rowB, tempCellOutlier);
+		}
 	}
 
 	/**
@@ -1424,7 +1524,8 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (o!=null && !o.equals(ColumnType.WILDCARD))
+				if (o != null && !o.equals(ColumnType.WILDCARD)
+					&& !this.isOutlier(i, columnIndex))
 				{
 					Double d = Double.parseDouble((String) o);
 					if (d < min)
@@ -1476,7 +1577,8 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i))
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (o!=null && !o.equals(ColumnType.WILDCARD))
+					if (o != null && !o.equals(ColumnType.WILDCARD)
+						&& !this.isOutlier(i, columnIndex))
 					{
 						Double d = Double.parseDouble((String) o);
 						if (d < min)
@@ -1521,7 +1623,8 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (o!=null && !o.equals(ColumnType.WILDCARD))
+				if (o != null && !o.equals(ColumnType.WILDCARD)
+					&& !this.isOutlier(i, columnIndex))
 				{
 					Double d = Double.parseDouble((String) o);
 					if (d > max)
@@ -1574,7 +1677,8 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i)) // only process the selected items
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (o!=null && !o.equals(ColumnType.WILDCARD))
+					if (o != null && !o.equals(ColumnType.WILDCARD)
+						&& !this.isOutlier(i, columnIndex))
 					{
 						Double d = Double.parseDouble((String) o);
 						if (d > max)
@@ -1619,7 +1723,8 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (o!=null && !o.equals(ColumnType.WILDCARD))
+			if (o != null && !o.equals(ColumnType.WILDCARD)
+				&& !this.isOutlier(i, columnIndex))
 			{
 				Double d = Double.parseDouble((String) o);
 				sum += d;
@@ -1660,7 +1765,8 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i))
 				{
 					Object o = this.getValueAt(i, columnIndex);
-					if (o!=null && !o.equals(ColumnType.WILDCARD))
+					if (o != null && !o.equals(ColumnType.WILDCARD)
+						&& !this.isOutlier(i, columnIndex))
 					{
 						Double d = Double.parseDouble((String) o);
 						sum += d;
@@ -1700,7 +1806,8 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (o!=null && !o.equals(ColumnType.WILDCARD))
+			if (o != null && !o.equals(ColumnType.WILDCARD)
+				&& !this.isOutlier(i, columnIndex))
 			{
 				Double d = Double.parseDouble((String) o);
 				sum += Math.pow(d - mean, 2);
@@ -1739,7 +1846,8 @@ public class StatTableModel implements TableModel
 			if (this.selectionList.get(i))
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (o!=null && !o.equals(ColumnType.WILDCARD))
+				if (o != null && !o.equals(ColumnType.WILDCARD)
+					&& !this.isOutlier(i, columnIndex))
 				{
 					Double d = Double.parseDouble((String) o);
 					sum += Math.pow(d - mean, 2);
@@ -1754,7 +1862,7 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the median value of column columnIndex, excluding missing values.
+	 * Get the median value of column columnIndex, excluding missing values and outliers.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1776,7 +1884,8 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.getRowCount(); i++)
 		{
 			String valueString = (String) this.getValueAt(i, columnIndex);
-			if (!valueString.equals(ColumnType.WILDCARD))
+			if (!valueString.equals(ColumnType.WILDCARD)
+				&& !this.isOutlier(i, columnIndex))
 			{
 				// get the value
 				Double d = Double.parseDouble(valueString);
@@ -1817,7 +1926,8 @@ public class StatTableModel implements TableModel
 	}	
 
 	/**
-	 * Get the median value of column columnIndex of the current selection, excluding missing values.
+	 * Get the median value of column columnIndex of the current selection, excluding missing values
+	 * and outliers.
 	 * 
 	 * @param columnIndex
 	 *            The column index
@@ -1841,7 +1951,8 @@ public class StatTableModel implements TableModel
 			if (this.selectionList.get(i))
 			{
 				String valueString = (String) this.getValueAt(i, columnIndex);
-				if (!valueString.equals(ColumnType.WILDCARD))
+				if (!valueString.equals(ColumnType.WILDCARD)
+					&& !this.isOutlier(i, columnIndex))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
@@ -1900,7 +2011,8 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.rowCount; i++)
 			{
 				String valueString = (String) this.getValueAt(i, columnIndex);
-				if (!valueString.equals(ColumnType.WILDCARD))
+				if (!valueString.equals(ColumnType.WILDCARD)
+					&& !this.isOutlier(i, columnIndex))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
@@ -1993,7 +2105,8 @@ public class StatTableModel implements TableModel
 				if (this.selectionList.get(i))
 				{
 					String valueString = (String) this.getValueAt(i, columnIndex);
-					if (!valueString.equals(ColumnType.WILDCARD))
+					if (!valueString.equals(ColumnType.WILDCARD)
+						&& !this.isOutlier(i, columnIndex))
 					{
 						// get the value
 						Double d = Double.parseDouble(valueString);
@@ -2234,6 +2347,15 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
+	 * Clear outlier lists.
+	 */
+	public void clearOutlierLists()
+	{
+		this.rowOutlierList = new ArrayList<Boolean>();
+		this.cellOutlierList = new ArrayList<ArrayList<Boolean>>();
+	}
+
+	/**
 	 * Clear listeners.
 	 */
 	public void clearListeners()
@@ -2267,14 +2389,46 @@ public class StatTableModel implements TableModel
 		this.fireSelectionChanged();
 	}
 
+	public synchronized void setRowOutlierList(ArrayList<Boolean> list)
+	{
+		this.rowOutlierList = list;
+		this.fireSelectionChanged();
+	}
+
+	public synchronized void setCellOutlierList(ArrayList<ArrayList<Boolean>> list)
+	{
+		this.cellOutlierList = list;
+		this.fireSelectionChanged();
+	}
+
 	public ArrayList<Boolean> getSelectionList()
 	{
 		return this.selectionList;
 	}
 	
 	/**
+	 * Get the array of booleans indicating which row is marked as an outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Boolean> getRowOutlierList()
+	{
+		return this.rowOutlierList;
+	}
+	
+	/**
+	 * Get the array of arrays booleans indicating which cell value is marked as an outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ArrayList<Boolean>> getCellOutlierList()
+	{
+		return this.cellOutlierList;
+	}
+	
+	/**
 	 * Find the frequency of every bin, and the amount of selected objects in
-	 * this bin Only use for columns of type integer or double
+	 * this bin. Only use for columns of type integer or double.
 	 * 
 	 * @return array of frequencies, with index 2*i the frequency of bin i, and
 	 *         2*i + 1 the amount of selected items in this bin.
@@ -2300,7 +2454,9 @@ public class StatTableModel implements TableModel
 			for (int i = 0; i < this.getRowCount(); i++)
 			{
 				Object o = this.getValueAt(i, columnIndex);
-				if (o!=null && !ColumnType.WILDCARD.equals(o))
+				if (o != null 
+					&& !ColumnType.WILDCARD.equals(o)
+					&& !isOutlier(i, columnIndex)) // check for outliers
 				{
 					Double d = Double.parseDouble((String) o);
 					int bin = -1;
@@ -2371,25 +2527,28 @@ public class StatTableModel implements TableModel
 				// test syl: loop 1 en 2 zijn traag bij grote aantallen...
 				//System.out.println("StatTableModel.enumClassFrequency(): 1e loop, i = " + i);
 				
-				int split = this.classifyObject(i, splitOptions);
-				if (split > -1)
+				if (!this.isOutlier(i, columnIndex))
 				{
-					StatTableModel.increaseKeyHashMap(
-						(String) this.getValueAt(i, columnIndex),
-						frequencyTable[split]);
-					if (this.isRowSelected(i))
+					int split = this.classifyObject(i, splitOptions);
+					if (split > -1)
 					{
 						StatTableModel.increaseKeyHashMap(
 							(String) this.getValueAt(i, columnIndex),
-							frequencySelectionTable[split]);
+							frequencyTable[split]);
+						if (this.isRowSelected(i))
+						{
+							StatTableModel.increaseKeyHashMap(
+								(String) this.getValueAt(i, columnIndex),
+								frequencySelectionTable[split]);
+						}
 					}
+					else if (split == -1)
+					{
+						System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
+						return null;
+					}
+					// split == -2 is a wildcard
 				}
-				else if (split == -1)
-				{
-					System.out.println("StatTableModel.enumClassFrequency() returns null. Objects cannot be classified");
-					return null;
-				}
-				// split == -2 is a wildcard
 			}
 
 			// create FrequencyTuple array from hashtable
@@ -2786,5 +2945,77 @@ public class StatTableModel implements TableModel
 		}
 		
 		return isEmpty;
+	}
+	
+	/**
+	 * Returns whether or not the cell with the given row and column index is marked as
+	 * an outlier.
+	 * 
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @return
+	 */
+	public boolean isOutlier(int rowIndex, int columnIndex)
+	{
+		boolean b = false;
+		
+		if (this.cellOutlierList.size() > 0)
+			b = this.cellOutlierList.get(columnIndex).get(rowIndex);
+		
+		return b;
+	}
+
+	/**
+	 * Returns whether or not the row with the given index is marked as
+	 * an outlier.
+	 * 
+	 * @param rowIndex
+	 * @return
+	 */
+	public boolean isOutlier(int rowIndex)
+	{
+		boolean b = this.rowOutlierList.get(rowIndex);
+		
+		return b;
+	}
+
+	/**
+	 * Mark the value in the cell with the given column and row index as an outlier.
+	 * 
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @param b
+	 */
+	public void markCellAsOutlier(int rowIndex, int columnIndex, boolean b)
+	{
+		this.cellOutlierList.get(columnIndex).set(rowIndex, b);
+		
+		// Als een rij een cell bevat die geen outlier is, 
+		// dan is de rij als geheel ook niet meer gemarkeerd als outlier 
+		if (b == false)
+		{
+			this.rowOutlierList.set(rowIndex, false);
+		}
+		
+		this.fireOutliersChanged();
+	}
+
+	/**
+	 * Mark the row with the given index as an outlier.
+	 * 
+	 * @param rowIndex
+	 * @param b
+	 */
+	public void markRowAsOutlier(int rowIndex, boolean b)
+	{
+		this.rowOutlierList.set(rowIndex, b);
+
+		// also update the cell outlier list
+		for (int i = 0; i < this.getColumnCount(); i++)
+		{
+			this.cellOutlierList.get(i).set(rowIndex, b);
+		}
+		
+		this.fireOutliersChanged();
 	}
 }
