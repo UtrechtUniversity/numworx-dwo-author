@@ -44,6 +44,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "totaal" , "Totaal: "},
 				{ "voortgang" , "Voortgang: "},
 				{ "deelscores", "Deelscores"},
+				{ "misconceptions", "Misconcepties"},
 				{ "optiesButtonLabel" , "Opties" },
 				{ "standaardActiviteitNaam" , "Niveau" },
 				{ "standaardOpdrachtNaam" , "Opdracht" },
@@ -59,6 +60,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Plak (invoegen)"},
 				{ "insertCopyMenuItem" ,  "Kopie (invoegen)"},
 				{ "deelscoresKnopLabel", "Deelscores"},
+				{ "misconceptionsKnopLabel", "Misconcepties"},
 				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },

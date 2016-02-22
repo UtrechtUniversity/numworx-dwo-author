@@ -1949,15 +1949,25 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else return null;
 	}
 	
-	public boolean[][] getMeasuredMisconceptions()
+	//dit liever met een extra interface methode van InteractiePanel
+	public int[][] getMeasuredMisconceptions()
 	{	if(interactiePanel!=null && interactiePanel instanceof AntwoordFormuleVak)
 			return ((AntwoordFormuleVak)interactiePanel).getMeasuredMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordFormuleVak)
+			return ((SimpelAntwoordFormuleVak)interactiePanel).getMeasuredMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel)
+			return ((TekstVakPanel)interactiePanel).getMeasuredMisconceptions();
 		return null;
 	}
 	
-	public boolean[][] getPossibleMisconceptions()
+	//dit liever met een extra interface methode van InteractiePanel
+	public int[][] getPossibleMisconceptions()
 	{	if(interactiePanel!=null && interactiePanel instanceof AntwoordFormuleVak)
 			return ((AntwoordFormuleVak)interactiePanel).getPossibleMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordFormuleVak)
+			return ((SimpelAntwoordFormuleVak)interactiePanel).getPossibleMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel)
+			return ((TekstVakPanel)interactiePanel).getPossibleMisconceptions();
 		return null;
 	}
 	

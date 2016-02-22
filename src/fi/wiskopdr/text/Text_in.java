@@ -53,6 +53,8 @@ public class Text_in extends java.util.ListResourceBundle
 				{ "cutPageMenuItem" ,  "cut"},
 				{ "pastePageMenuItem" ,  "paste"},
 				{ "insertCopyMenuItem" ,  "copy (insert)"},
+				{ "deelscoresKnopLabel", "Partial scores"},
+				{ "misconceptionsKnopLabel", "Misconceptions"},
 								
 				{ "choiceOefenen" , "Latihan" },
 				{ "choiceOefenenEindloos" , "Latihan Tiada Henti" },

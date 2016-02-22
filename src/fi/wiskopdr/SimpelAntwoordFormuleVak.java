@@ -626,6 +626,14 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	{	return antwoordFormuleVak.getScoreObjectives();
 	}
 	
+	public int[][] getMeasuredMisconceptions()
+	{	return antwoordFormuleVak.getMeasuredMisconceptions();
+	}
+	
+	public int[][] getPossibleMisconceptions()
+	{	return antwoordFormuleVak.getPossibleMisconceptions();
+	}
+	
 	public int getScoreMax() 
 	{	return antwoordFormuleVak.getScoreMax();
 	}	

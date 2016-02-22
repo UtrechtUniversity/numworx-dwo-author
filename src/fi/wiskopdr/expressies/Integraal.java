@@ -25,11 +25,13 @@ public class Integraal extends Expressie
 	}
 	
 	public double geefWaarde(double subst)
-	{	return Math.log(kind1.geefWaarde(subst))/Math.log(kind2.geefWaarde(subst));
+	{	//return Math.log(kind1.geefWaarde(subst))/Math.log(kind2.geefWaarde(subst));
+		return Double.NaN;
 	}
 	
 	public double geefWaarde(double[] subst, String[] vars)
-	{	return Math.log(kind1.geefWaarde(subst,vars))/Math.log(kind2.geefWaarde(subst,vars));
+	{	//return Math.log(kind1.geefWaarde(subst,vars))/Math.log(kind2.geefWaarde(subst,vars));
+		return Double.NaN;
 	}
 	
 	public Expressie substitueer(double subst, String var)

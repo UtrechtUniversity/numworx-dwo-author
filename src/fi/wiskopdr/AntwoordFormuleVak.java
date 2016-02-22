@@ -153,8 +153,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	private String logIDLabel;
 	
 	private boolean[][] logObjectives;
-	private boolean[][] possibleMisconceptions;
-	private boolean[][] measuredMisconceptions;
+	private int[][] possibleMisconceptions;
+	private int[][] measuredMisconceptions;
 	
 	private double eqTestValueMin = 0;
 	private double eqTestValueMax = 5;
@@ -420,14 +420,14 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	     //zetOpRoot(gebruikersSubstitutiesVak);
 	     
 	     if(WiskOpdr.misconceptions != null && WiskOpdr.misconceptions.length>0)
-	     {	 possibleMisconceptions = new boolean[WiskOpdr.misconceptions.length][];
-	     	 measuredMisconceptions = new boolean[WiskOpdr.misconceptions.length][];
+	     {	 possibleMisconceptions = new int[WiskOpdr.misconceptions.length][];
+	     	 measuredMisconceptions = new int[WiskOpdr.misconceptions.length][];
 		     for(int i=0 ; i<WiskOpdr.misconceptions.length ; i++)
-		     {	 possibleMisconceptions[i] = new boolean[WiskOpdr.misconceptions[i].length];
-		     	 measuredMisconceptions[i] = new boolean[WiskOpdr.misconceptions[i].length];
+		     {	 possibleMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		     	 measuredMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
 		    	 for(int j=0 ; j<WiskOpdr.misconceptions[i].length ; j++)
-			     {  possibleMisconceptions[i][j] = false;
-			     	measuredMisconceptions[i][j] = false;
+			     {  possibleMisconceptions[i][j] = 0;
+			     	measuredMisconceptions[i][j] = 0;
 			     }
 		     }
 	     }
@@ -919,12 +919,14 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
         if(answerModels!=null)
         {
         	boolean[][] logMisconceptions = null;
-        	for(int i=1 ; i<answerModels.length ; i++)
+        	for(int i=0 ; i<answerModels.length ; i++)
         	{	if(answerModels[i].containsKey("logMisconceptions"))
         		{	logMisconceptions = (boolean[][])answerModels[i].get("logMisconceptions");
-        			for( int j=0 ; j<logMisconceptions.length ; j++)
-        			{	for( int k=0 ; k<logMisconceptions[i].length ; k++)
-            			{	possibleMisconceptions[j][k] = possibleMisconceptions[j][k] || logMisconceptions[j][k];
+        			for( int j=0 ; j<logMisconceptions.length && j<possibleMisconceptions.length ; j++)
+        			{	for( int k=0 ; k<logMisconceptions[j].length && k<possibleMisconceptions[j].length; k++)
+            			{	
+        				if(logMisconceptions[j][k])
+        					possibleMisconceptions[j][k] = 1;
             			}
         			}
         		}
@@ -2125,9 +2127,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			        	boolean[][] logMisconceptions = null;
 			        	if(answerModels[h].containsKey("logMisconceptions"))
 			        	{	logMisconceptions = (boolean[][])answerModels[h].get("logMisconceptions");
-			        		for( int j=0 ; j<logMisconceptions.length ; j++)
-			        		{	for( int k=0 ; k<logMisconceptions[j].length ; k++)
-			            		{	measuredMisconceptions[j][k] = measuredMisconceptions[j][k] || logMisconceptions[j][k];
+			        		for( int j=0 ; j<logMisconceptions.length && j<measuredMisconceptions.length ; j++)
+			        		{	for( int k=0 ; k<logMisconceptions[j].length && k<measuredMisconceptions[j].length; k++)
+			            		{	if(logMisconceptions[j][k])
+			        				measuredMisconceptions[j][k] = 1;
 			            		}
 			        		}
 			        	}
@@ -2198,11 +2201,11 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		return scoreObjectives;
 	}
 	
-	public boolean[][] getMeasuredMisconceptions()
+	public int[][] getMeasuredMisconceptions()
 	{	return measuredMisconceptions;
 	}
 	
-	public boolean[][] getPossibleMisconceptions()
+	public int[][] getPossibleMisconceptions()
 	{	return possibleMisconceptions;
 	}
 	

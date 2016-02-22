@@ -150,6 +150,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private DialogFacade scoresObjectivesDialog;
 	private ScoresObjectivesPanel scoresObjectivesPanel;
 	
+	private JButton viewMisconceptionsKnop;
+	private DialogFacade viewMisconceptionsDialog;
+	private ScoresObjectivesPanel viewMisconceptionsPanel;
+	
 	//private JButton condVolgendeKnop; // , condVorigeKnop;
 	private String[] urls = null;
 	private int[] grensScores = null;
@@ -282,16 +286,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 						scoresMaxObjectives[k][j][i] = new int[objectives[i].length];
 					}
 		}
-		if (objectives != null)
+		if (misconceptions != null)
 		{
-			scoresObjectives = new int[aantalActiviteiten][maxAantalOpdrachten][objectives.length][];
-			scoresMaxObjectives = new int[aantalActiviteiten][maxAantalOpdrachten][objectives.length][];
+			possibleMisconceptions = new int[aantalActiviteiten][maxAantalOpdrachten][misconceptions.length][];
+			measuredMisconceptions = new int[aantalActiviteiten][maxAantalOpdrachten][misconceptions.length][];
 			for (int k = 0; k < aantalActiviteiten; k++)
 				for (int j = 0; j < maxAantalOpdrachten; j++)
-					for (int i = 0; i < objectives.length; i++)
+					for (int i = 0; i < misconceptions.length; i++)
 					{
-						scoresObjectives[k][j][i] = new int[objectives[i].length];
-						scoresMaxObjectives[k][j][i] = new int[objectives[i].length];
+						possibleMisconceptions[k][j][i] = new int[misconceptions[i].length];
+						measuredMisconceptions[k][j][i] = new int[misconceptions[i].length];
 					}
 		}
 
@@ -375,6 +379,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		else
 			objectivesAanwezig = false;
 		scoresObjectivesKnop.setVisible(objectivesAanwezig);
+		viewMisconceptionsKnop.setVisible(misconceptions != null);
+		
 		
 		zetMode(mode);
 
@@ -674,6 +680,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		scoresObjectivesKnop.setVisible(false);
 		add(scoresObjectivesKnop, 0);
 		scoresObjectivesKnop.addActionListener(this);
+		
+		viewMisconceptionsKnop = new JButton(WiskOpdr.rb.getString("misconceptionsKnopLabel"));
+		viewMisconceptionsKnop.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		viewMisconceptionsKnop.setVisible(false);
+		add(viewMisconceptionsKnop, 0);
+		viewMisconceptionsKnop.addActionListener(this);
 
 		if (timer)
 		{
@@ -720,7 +732,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrachtLabel.setBounds(orPosX - (orSize * 2 + 15), orPosY + 2, orSize * 2 + 15, orSize);
 		scoreLabel.setBounds(orPosX - (orSize * 2 + 15), orPosY + orSize + 2, orSize * 2 + 15, orSize);
 		scoresObjectivesKnop.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 110 + activiteitScoreLabels[0].getWidth(), orPosY + orSize + 4, 2 * orSize + 50, orSize - 5);
-		
+		viewMisconceptionsKnop.setBounds(orPosX + aantalOpdrMax * orSize + 4 * orSize + 170 + activiteitScoreLabels[0].getWidth(), orPosY + orSize + 4, 2 * orSize + 50, orSize - 5);
 		
 		
 		if (afdekPanel != null)
@@ -920,6 +932,36 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
         	scoresObjectivesPanel.setBounds(0, 0, 1200, 700);
         scoresObjectivesDialog.getContentPane().add(scoresObjectivesPanel);
         scoresObjectivesDialog.setSize(scoresObjectivesPanel.getSize());
+    }
+	
+	/**
+	 * Maakt panel met misconcepties zichtbaar mbv een popup-venster
+	 */
+	public void zetViewMisconceptionsPanel() {
+        int aantalDiagrammen = misconceptions.length;
+        	
+        /*for(int k = 0; k < misconceptions.length; k++)
+        {	int somObjective = 0;
+        	for(int i = 0; i < scoresMaxObjectives.length; i++)
+        		for(int j = 0; j < scoresMaxObjectives[i].length; j++)
+        		{	try{
+        			for(int l = 0; l < scoresMaxObjectives[i][j][k].length; l++)
+        				somObjective += scoresMaxObjectives[i][j][k][l];
+        			}
+        			catch(Exception e){somObjective = 0;
+        			}
+        		}
+        	if(somObjective > 0) aantalDiagrammen++;
+        }*/
+		
+		viewMisconceptionsDialog = DialogFacade.newInstance(this,WiskOpdr.rb.getString("misconceptions"), true);
+		viewMisconceptionsPanel = new ScoresObjectivesPanel(getMisconceptionsForDiagram());
+        if(aantalDiagrammen < 4)
+        	viewMisconceptionsPanel.setBounds(0, 0, 400 * aantalDiagrammen, 350);
+        else 
+        	viewMisconceptionsPanel.setBounds(0, 0, 1200, 700);
+        viewMisconceptionsDialog.getContentPane().add(viewMisconceptionsPanel);
+        viewMisconceptionsDialog.setSize(viewMisconceptionsPanel.getSize());
     }
 
 	/**
@@ -1295,6 +1337,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int aantalSessies = 0;
 		int[][][][] scoresObjectives = null;
 		int[][][][] scoresMaxObjectives = null;
+		int[][][][] possibleMisconceptions = null;
+		int[][][][] measuredMisconceptions = null;
 		boolean[][] bezocht = null;
 		
 		Object shareState = h.get(ShareAction.SHARE_MAP);
@@ -1340,6 +1384,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresObjectives = (int[][][][]) h.get("scoresObjectives");
 		if (h.containsKey("scoresMaxObjectives"))
 			scoresMaxObjectives = (int[][][][]) h.get("scoresMaxObjectives");
+		if (h.containsKey("possibleMisconceptions"))
+			possibleMisconceptions = (int[][][][]) h.get("possibleMisconceptions");
+		if (h.containsKey("measuredMisconceptions"))
+			measuredMisconceptions = (int[][][][]) h.get("measuredMisconceptions");
 		if (h.containsKey("bezocht"))
 			try{	
 				bezocht = toBooleanArrayArray( h.get("bezocht") );
@@ -1391,6 +1439,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			this.scoresObjectives = scoresObjectives;
 			this.scoresMaxObjectives = scoresMaxObjectives;
 		}
+		if (possibleMisconceptions != null)
+		{
+			this.possibleMisconceptions = possibleMisconceptions;
+			this.measuredMisconceptions = measuredMisconceptions;
+		}
 		int sumScoresMaxObjectives = 0;
 		try
 		{
@@ -1409,6 +1462,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		else
 			objectivesAanwezig = false;
 		scoresObjectivesKnop.setVisible(objectivesAanwezig);
+		
+		viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 
 		boolean allCorrect = true;
 		
@@ -1482,6 +1537,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		if (mode == 3)
 		{	scoresObjectivesKnop.setVisible(false);
+			viewMisconceptionsKnop.setVisible(false);
 			for (int i = 0; i < aantalActiviteiten; i++)
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
@@ -1496,6 +1552,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		if (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked))
 		{	scoresObjectivesKnop.setVisible(objectivesAanwezig);
+			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
+		
 			for (int i = 0; i < aantalActiviteiten; i++)
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
@@ -1548,8 +1606,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.zelftoetsNagekeken = zelftoetsNagekeken;
 		
 		nakijkKnop.setEnabled(lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr));
-		scoresObjectivesKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) || 
-				(mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
+		scoresObjectivesKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
+				|| (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
+		viewMisconceptionsKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
+				|| (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
+		
 		vorigeKnop.setVisible(vorigeKnopZichtbaar || !bolletjesZichtbaar && (zelftoetsNagekeken||toetsLocked));
 	
 		if(eerderGeenCorr)
@@ -1767,6 +1828,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int[][][][] scoresObjectives = null;
 		int[][][][] scoresMaxObjectives = null;
 		Hashtable scoresPerObjective = null;
+		int[][][][] possibleMisconceptions = null;
+		int[][][][] measuredMisconceptions = null;
 		boolean[][] bezocht = null;
 
 		//aantalActiviteiten = this.aantalActiviteiten;
@@ -1787,6 +1850,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		aantalSessies = this.aantalSessies;
 		scoresMaxObjectives = this.scoresMaxObjectives;
 		scoresObjectives = this.scoresObjectives;
+		possibleMisconceptions = this.possibleMisconceptions;
+		measuredMisconceptions = this.measuredMisconceptions;
 		bezocht = this.bezocht;
 
 		double[][] scorePercObjectives = getScoresObjectives();
@@ -1863,6 +1928,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			h.put("scoresObjectives", scoresObjectives);
 			h.put("scoresMaxObjectives", scoresMaxObjectives);
 			h.put("scoresPerObjective", scoresPerObjective);
+		}
+		if (misconceptions != null)
+		{
+			h.put("possibleMisconceptions", possibleMisconceptions);
+			h.put("measuredMisconceptions", measuredMisconceptions);
 		}
 		if (bezocht != null)
 			h.put("bezocht", bezocht);
@@ -2003,6 +2073,62 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		h.put("totaalScoreObjectives", totaalScoreObjectives);
 		h.put("totaalMaxObjectives", totaalMaxObjectives);
 		h.put("categorieString", categorieString);
+
+		return h;
+	}
+	
+	/**
+	 * Verzamelt de maximale scores per leerdoel, de gerealiseerde scores per
+	 * leerdoel en de leerdoelen zelf en geeft deze terug tbv het diagram.
+	 */
+	public Hashtable getMisconceptionsForDiagram()
+	{
+		Hashtable h = new Hashtable();
+		if (misconceptions == null)
+			return h;
+		
+		int[][] totaalMeasuredMisconceptions = null;
+		int[][] totaalPossibleMisconceptions = null;
+		//double[][] scoresPercObjectives = null;
+
+		totaalMeasuredMisconceptions = new int[misconceptions.length][];
+		totaalPossibleMisconceptions = new int[misconceptions.length][];
+		//scoresPercObjectives = new double[objectives.length][];
+
+		for (int i = 0; i < misconceptions.length; i++)
+		{
+			totaalMeasuredMisconceptions[i] = new int[misconceptions[i].length];
+			totaalPossibleMisconceptions[i] = new int[misconceptions[i].length];
+			//scoresPercObjectives[i] = new double[objectives[i].length];
+		}
+
+		for (int i = 0; i < aantalActiviteiten; i++)
+		{ //String scoreString = scores[i].getText();
+			//int score = Integer.parseInt(scoreString.substring(7));
+			//totaalScore += score;
+			for (int j = 0; j < aantalOpdrachten[i]; j++)
+			{	if(measuredMisconceptions[i][j] != null)
+					for (int k = 0; k < misconceptions.length && k < measuredMisconceptions[i][j].length; k++)
+					{	if (measuredMisconceptions[i][j][k] != null)
+							for (int l = 0; l < misconceptions[k].length && l < measuredMisconceptions[i][j][k].length; l++)
+								totaalMeasuredMisconceptions[k][l] += measuredMisconceptions[i][j][k][l];
+					}	
+			}
+
+			for (int j = 0; j < aantalOpdrachten[i]; j++)
+			{	if(possibleMisconceptions[i][j] != null)
+					for (int k = 0; k < misconceptions.length && k < possibleMisconceptions[i][j].length; k++)
+					{	if (possibleMisconceptions[i][j][k] != null)
+							for (int l = 0; l < misconceptions[k].length && l < possibleMisconceptions[i][j][k].length; l++)
+								totaalPossibleMisconceptions[k][l] += possibleMisconceptions[i][j][k][l];
+					}	
+			}
+		}
+
+		h.put("objectives", misconceptions);
+		h.put("totaalScoreObjectives", totaalMeasuredMisconceptions);
+		h.put("totaalMaxObjectives", totaalPossibleMisconceptions);
+		h.put("categorieString", mccCategorieString);
 
 		return h;
 	}
@@ -2162,13 +2288,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		{
 			nakijkKnop.setVisible(true);
 			scoresObjectivesKnop.setVisible(objectivesAanwezig);
+			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 			if (aantalOpdrachten[activiteitNr] == 1)
 			{	nakijkKnop.setEnabled(true);
 				scoresObjectivesKnop.setEnabled(true);
+				viewMisconceptionsKnop.setEnabled(true);
 			}
 			else
 			{	nakijkKnop.setEnabled(lessonMode.equals("review"));
 				scoresObjectivesKnop.setEnabled(lessonMode.equals("review"));
+				viewMisconceptionsKnop.setEnabled(lessonMode.equals("review"));
 			}
 			klaarKnop.setVisible(false);
 			itemOpnieuwKnop.setVisible(false);
@@ -2181,6 +2310,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (mode == EINDTOETS)
 		{
 			scoresObjectivesKnop.setVisible(false);
+			viewMisconceptionsKnop.setVisible(false);
 			String s = "UG_STUDENT";
 			if (api != null)
 				s = api.LMSGetValue("USER_GROUP");
@@ -2188,6 +2318,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				nakijkKnop.setVisible(true);
 				scoresObjectivesKnop.setVisible(objectivesAanwezig);
+				viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 			}
 			klaarKnop.setVisible(false);
 //			if ("review".equals(lessonMode) && lockToetsCB != null)
@@ -2225,6 +2356,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (b && mode == EINDTOETS)
 		{	nakijkKnop.setVisible(true);
 			scoresObjectivesKnop.setVisible(objectivesAanwezig);
+			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 		}
 	}
 
@@ -2338,6 +2470,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				opnieuwKnop.setVisible(true);
 			nakijkKnop.setEnabled(true);
 			scoresObjectivesKnop.setEnabled(true);
+			viewMisconceptionsKnop.setEnabled(true);
 			if (zelftoetsNagekeken)
 				nakijkKnop.setEnabled(lessonMode.equals("review") || !zelftoetsGeenCorr);
 		}
@@ -2561,6 +2694,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		{
 			zetScoresObjectivesPanel();
 			scoresObjectivesDialog.setVisible(true);
+		}
+		if (e.getSource() == viewMisconceptionsKnop)
+		{
+			zetViewMisconceptionsPanel();
+			viewMisconceptionsDialog.setVisible(true);
 		}
 		if (e.getSource() == nakijkKnop)
 		{

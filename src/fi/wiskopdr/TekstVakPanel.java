@@ -1922,6 +1922,48 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		return scoreObjectives;
 	}
+	
+	public int[][] getMeasuredMisconceptions()
+	{	
+		if (WiskOpdr.misconceptions == null)
+			return null;
+		int[][] logMisconceptions = new int[WiskOpdr.misconceptions.length][];
+		for (int i = 0; i < WiskOpdr.misconceptions.length; i++)
+			logMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		Vector v = geefInteractiePanels();
+		for (int i = 0; i < v.size(); i++)
+		{
+			InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+			int[][] logMisc = ipc.getMeasuredMisconceptions();
+			for (int j = 0; logMisc != null && j < WiskOpdr.misconceptions.length && j < logMisc.length; j++)
+				for (int k = 0; logMisc[j] != null && k < WiskOpdr.misconceptions[j].length && k < logMisc[j].length; k++)
+				{
+					logMisconceptions[j][k] += logMisc[j][k];
+				}
+		}
+		return logMisconceptions;
+	}
+	
+	public int[][] getPossibleMisconceptions()
+	{	
+		if (WiskOpdr.misconceptions == null)
+			return null;
+		int[][] logMisconceptions = new int[WiskOpdr.misconceptions.length][];
+		for (int i = 0; i < WiskOpdr.misconceptions.length; i++)
+			logMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		Vector v = geefInteractiePanels();
+		for (int i = 0; i < v.size(); i++)
+		{
+			InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+			int[][] logMisc = ipc.getPossibleMisconceptions();
+			for (int j = 0; logMisc != null && j < WiskOpdr.misconceptions.length && j < logMisc.length; j++)
+				for (int k = 0; logMisc[j] != null && k < WiskOpdr.misconceptions[j].length && k < logMisc[j].length; k++)
+				{
+					logMisconceptions[j][k] += logMisc[j][k];
+				}
+		}
+		return logMisconceptions;
+	}
 
 	public int getScoreMax()
 	{

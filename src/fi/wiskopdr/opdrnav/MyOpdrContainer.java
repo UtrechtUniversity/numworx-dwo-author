@@ -896,11 +896,11 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		{
 			if (interactiePanelCs[i] != null && (i != 0 || hasAntwoordVak))
 			{
-				boolean[][] possibleMisconceptions = interactiePanelCs[i].getPossibleMisconceptions();
+				int[][] possibleMisconceptions = interactiePanelCs[i].getPossibleMisconceptions();
 				for (int j = 0; possibleMisconceptions != null && j < WiskOpdr.misconceptions.length && j < possibleMisconceptions.length; j++)
 				{
 					for (int k = 0; possibleMisconceptions[j] != null && k < WiskOpdr.misconceptions[j].length && k < possibleMisconceptions[j].length; k++)
-						try{	totalPossibleMisconceptions[j][k] += possibleMisconceptions[j][k] ? 1 : 0;
+						try{	totalPossibleMisconceptions[j][k] += possibleMisconceptions[j][k];
 						}
 						catch(Exception e){}
 				}
@@ -920,11 +920,11 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		{
 			if (interactiePanelCs[i] != null && (i != 0 || hasAntwoordVak))
 			{
-				boolean[][] measuredMisconceptions = interactiePanelCs[i].getMeasuredMisconceptions();
+				int[][] measuredMisconceptions = interactiePanelCs[i].getMeasuredMisconceptions();
 				for (int j = 0; measuredMisconceptions != null && j < WiskOpdr.misconceptions.length && j < measuredMisconceptions.length; j++)
 				{
 					for (int k = 0; measuredMisconceptions[j] != null && k < WiskOpdr.misconceptions[j].length && k < measuredMisconceptions[j].length; k++)
-						try{	totalMeasuredMisconceptions[j][k] += measuredMisconceptions[j][k] ? 1 : 0;
+						try{	totalMeasuredMisconceptions[j][k] += measuredMisconceptions[j][k];
 						}
 						catch(Exception e){}
 				}

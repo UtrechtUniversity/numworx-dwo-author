@@ -516,7 +516,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	private void setAnswerModel()
 	{	if(answerModels==null)return;
-		logMisconceptionsButton.setVisible(answerModelNr>0);
+		logMisconceptionsButton.setVisible(answerModelNr>-1);
 		setAnswerModel(answerModels[answerModelNr]);	
 	}
 	

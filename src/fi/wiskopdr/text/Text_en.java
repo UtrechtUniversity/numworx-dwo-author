@@ -60,6 +60,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Paste (insert)"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
+				{ "misconceptionsKnopLabel", "Misconceptions"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },

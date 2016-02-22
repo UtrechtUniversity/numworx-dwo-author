@@ -57,6 +57,8 @@ public class Text_jp extends java.util.ListResourceBundle
 				{ "cutPageMenuItem" ,  "カット"},
 				{ "pastePageMenuItem" ,  "ペースト（挿入します）"},
 				{ "insertCopyMenuItem" ,  "コピー（挿入します）"},
+				{ "deelscoresKnopLabel", "Partial scores"},
+				{ "misconceptionsKnopLabel", "Misconceptions"},
 								
 				{ "choiceOefenen" , "練習" },
 				{ "choiceOefenenEindloos" , "繰り返し練習します。" },

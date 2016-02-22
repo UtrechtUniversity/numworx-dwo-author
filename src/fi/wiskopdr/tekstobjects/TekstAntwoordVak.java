@@ -172,11 +172,11 @@ public class TekstAntwoordVak extends TekstDeelVak implements ActionListener, In
 	{	return null;
 	}
 	
-	public boolean[][] getMeasuredMisconceptions()
+	public int[][] getMeasuredMisconceptions()
 	{	return null;
 	}
 	
-	public boolean[][] getPossibleMisconceptions()
+	public int[][] getPossibleMisconceptions()
 	{	return null;
 	}
 

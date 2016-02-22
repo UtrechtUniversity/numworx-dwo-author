@@ -185,11 +185,11 @@ public class InteractiePanelContainer extends JPanel implements ActionListener, 
 	{	return null;
 	}
 	
-	public boolean[][] getMeasuredMisconceptions()
+	public int[][] getMeasuredMisconceptions()
 	{	return null;
 	}
 	
-	public boolean[][] getPossibleMisconceptions()
+	public int[][] getPossibleMisconceptions()
 	{	return null;
 	}
 	
