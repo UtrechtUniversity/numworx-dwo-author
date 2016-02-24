@@ -1690,14 +1690,23 @@ class GrafiekVeld extends JComponent{
 		int maxWoordBreedteY = 0;
 		boolean witruimteY = false;
 		
-		for(int j=0 ; j<gtip.ongelijkheden.length ; j++)
-		{	if(gtip.ongelijkheden[j]!=null && gtip.isY[j])
-			{	GeneralPath curve = new GeneralPath();
-				int xMin = Math.max(witruimteY?maxWoordBreedteY:-1, gtip.xPositief?bx:-1);
-				int xMax = breedte +1;
-				double horizontaleGrens = -1;
-				if(!gtip.isGroterGelijk[j])
-					horizontaleGrens = gtip.yPositief?(hoogte - gtip.beginy):getHeight()+1;
+		for(int j=0 ; j<gtip.ongelijkheden.length ; j++) {	
+			if(gtip.ongelijkheden[j]!=null && gtip.isY[j]) {
+				GeneralPath curve = new GeneralPath();
+//				int xMin = Math.max(witruimteY?maxWoordBreedteY:-1, gtip.xPositief?bx:-1);
+//				int xMax = breedte +1;
+				int xMin = drawXmin;
+				int xMax = drawXmax;
+
+//				double horizontaleGrens = -1;
+//				if(!gtip.isGroterGelijk[j])
+//					horizontaleGrens = gtip.yPositief?(hoogte - gtip.beginy):getHeight()+1;
+				
+				double horizontaleGrens = drawYmin;
+				if(!gtip.isGroterGelijk[j]) {
+					horizontaleGrens = drawYmax;
+				}
+
 				
 				for(int i=xMin; i<xMax ; i++)
 				{	double ii = i;
@@ -1718,6 +1727,9 @@ class GrafiekVeld extends JComponent{
 						if(dy0<-1000)dy0 = -1000;
 						if(dy1>1000)dy1 = 1000;
 						if(dy1<-1000)dy1 = -1000;
+						
+						dy0 = Math.min(drawYmax, Math.max(drawYmin, dy0));
+						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1));
 						
 						if(curve.getCurrentPoint()==null)
 						{	
@@ -1754,17 +1766,23 @@ class GrafiekVeld extends JComponent{
 				}
 				areas[j] = new Area(curve);
 			}
-			if(gtip.ongelijkheden[j] != null && !gtip.isY[j])
-			{	double grens = gtip.ongelijkheden[j].geefWaarde();
+			if(gtip.ongelijkheden[j] != null && !gtip.isY[j]) {	
+				double grens = gtip.ongelijkheden[j].geefWaarde();
 // 				int pixelGrens = (int)((gtip.xAsLog?Math.log10(grens):grens)*gtip.eenheidxD/gtip.schaalFactorX + gtip.beginx);
 				int pixelGrens = (int) Math.round(valueXtoPixels(grens));
+				pixelGrens = Math.min(drawXmax, Math.max(drawXmin, pixelGrens));
 
-				if(gtip.isGroterGelijk[j])
-				{	Rectangle rechthoek = new Rectangle(pixelGrens, - 1, getWidth() - pixelGrens + 1, getHeight() + 2);
+
+				if(gtip.isGroterGelijk[j]) {	
+//					Rectangle rechthoek = new Rectangle(pixelGrens, - 1, getWidth() - pixelGrens + 1, getHeight() + 2);
+					Rectangle rechthoek = new Rectangle(pixelGrens, drawYmin, drawXmax - pixelGrens, drawYmax - drawYmin);
+
 					areas[j] = new Area(rechthoek);
 				}
-				else
-				{	Rectangle rechthoek = new Rectangle(-1, -1, pixelGrens + 1, getHeight() + 2);
+				else {
+//					Rectangle rechthoek = new Rectangle(-1, -1, pixelGrens + 1, getHeight() + 2);
+					Rectangle rechthoek = new Rectangle(drawXmin, drawYmin, pixelGrens - drawXmin, drawYmax - drawYmin);
+
 					areas[j] = new Area(rechthoek);
 				}
 			}
@@ -1924,10 +1942,12 @@ class GrafiekVeld extends JComponent{
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
 				GeneralPath curve = new GeneralPath();
-				curve.moveTo(xWaardePixels,  0);
-				curve.lineTo(xWaardePixels, gtip.yPositief?(getHeight() - gtip.beginy):getHeight());
-				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-				g.setStroke(new BasicStroke(1.2f));
+//				curve.moveTo(xWaardePixels,  0);
+//				curve.lineTo(xWaardePixels, gtip.yPositief?(getHeight() - gtip.beginy):getHeight());
+				curve.moveTo(xWaardePixels,  drawYmin);
+				curve.lineTo(xWaardePixels, drawYmax);
+				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+				g.setStroke(cFunctieStroke);
 				g.setColor(gtip.getTekenColor(j));
 				g.draw(curve);
 			}
