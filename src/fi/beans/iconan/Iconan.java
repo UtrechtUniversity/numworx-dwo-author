@@ -238,7 +238,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		String su = (String) namemap.get(selected + "/u");
 		if(su != null)
 		{
-			String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.NIEUW), JOptionPane.QUESTION_MESSAGE, null, null, su);
+			String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.WIJZIG), JOptionPane.QUESTION_MESSAGE, null, null, su);
 			if(filename != null)				// "URL van plaatje"
 			{
 				last = filename;
@@ -807,10 +807,11 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		newBtn.setText(rb.getString(Text.FILE));
 		urlBtn.setText(rb.getString(Text.URL));
 		newPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.NIEUW)));
+		editPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.EDIT)));
 		cancelBtn.setText(rb.getString(Text.ANNULEER));
 		title = rb.getString(Text.TITEL);
 		rmBtn.setText(rb.getString(Text.REMOVE));
-		
+		chngBtn.setText(rb.getString(Text.WIJZIG));
 	}
 
 	/**

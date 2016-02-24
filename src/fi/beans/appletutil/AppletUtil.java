@@ -11,6 +11,8 @@ import java.applet.*;
 import java.awt.*;
 import java.io.*;
 
+import javax.swing.JComponent;
+
 /**
 * Standaard Fi Utilities voor applets.
 * Gebruik voor resourceBundles, Images en AudioClips
@@ -38,6 +40,7 @@ public class AppletUtil
 	} catch(SecurityException ex) {}
 	
 	applet.setLocale(locale);
+	JComponent.setDefaultLocale(locale);
     }
     
     /**
