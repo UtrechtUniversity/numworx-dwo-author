@@ -15,6 +15,7 @@ public class Text_nl extends ListResourceBundle {
 			{ Text.FILE , "bestand" },
 			{ Text.URL , "URL" },
 			{ Text.EDIT, "edit" },
-			{ Text.WIJZIG, "wijzig" }
+			{ Text.WIJZIG, "wijzig" },
+			{ Text.EDIT_URL, "URL van plaatje" }
      };
 }

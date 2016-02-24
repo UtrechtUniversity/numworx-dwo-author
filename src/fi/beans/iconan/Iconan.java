@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -167,6 +168,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			if(null != selected)
 				try {
 					edit(selected);
+					int index = list.getSelectedIndex();
+					dataModel.setElementAt(selected, index);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -235,8 +238,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		String su = (String) namemap.get(selected + "/u");
 		if(su != null)
 		{
-			String filename = (String) JOptionPane.showInputDialog(this, "URL van plaatje", Text.NIEUW, JOptionPane.QUESTION_MESSAGE, null, null, su);
-			if(filename != null)
+			String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.NIEUW), JOptionPane.QUESTION_MESSAGE, null, null, su);
+			if(filename != null)				// "URL van plaatje"
 			{
 				last = filename;
 				URL u = new URL(getCodeBase(), filename);
@@ -407,6 +410,40 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 
 	static final private String redirect = "/servlet/fi.servlet.imageredirector.ImageRedirector?url=";
+
+
+	/**
+	 * Fixing JDK bug. No redirects allowed in Toolkit.getImage(URL).
+	 * @param url
+	 * @return same url
+	 */
+	private static URL getFinalURL(URL url) {
+		if(url.getProtocol().startsWith("http"))
+	    try {
+			HttpURLConnection con = (HttpURLConnection) (url).openConnection();
+			con.setInstanceFollowRedirects(false);
+			con.connect();
+			InputStream is = con.getInputStream();
+			int responseCode = con.getResponseCode();
+// 301, 302, 303?, 307?
+			if (responseCode == HttpURLConnection.HTTP_MOVED_PERM 
+					|| responseCode == HttpURLConnection.HTTP_MOVED_TEMP
+// newer codes:
+					|| responseCode == 303 || responseCode == 307
+					) {
+			    String location = con.getHeaderField("Location");
+			    is.close();
+				URL redirectUrl = new URL(url, location);
+			    return getFinalURL(redirectUrl);
+			}
+			is.close();
+		} catch (Exception e) {
+			java.util.logging.Logger.getLogger("fi.beans.iconan.Iconan").severe("getFinalURL " + url + ":" + e);
+		}
+	    return url;
+	}
+	
+	
 	/**
 	 * Met imageredirector als fallback.
 	 * @param url
@@ -415,6 +452,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 */
 	private Image getImage0(URL url) throws MalformedURLException {
 		try {
+			url = getFinalURL(url);
 			//if(true)throw new SecurityException();
 			return getToolkit().getImage(url);
 		} catch(RuntimeException e)
@@ -837,7 +875,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	private String newURLImage() throws IOException {
 		if(last == null)
 			last = getCodeBase().toString();
-		String filename = (String) JOptionPane.showInputDialog(this, "Geef URL van plaatje", Text.NIEUW, JOptionPane.QUESTION_MESSAGE, null, null, last);
+		String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.NIEUW), JOptionPane.QUESTION_MESSAGE, null, null, last);
 		if(filename == null)
 			return null;
 		last = filename;

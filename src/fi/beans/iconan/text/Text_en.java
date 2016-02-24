@@ -15,6 +15,7 @@ public class Text_en extends ListResourceBundle {
 			{ Text.FILE , "file" },
 			{ Text.URL , "URL" },
 			{ Text.EDIT , "edit"},
-			{ Text.WIJZIG, "change"}
+			{ Text.WIJZIG, "change"}, 
+			{ Text.EDIT_URL, "URL of picture" },
      };
 }

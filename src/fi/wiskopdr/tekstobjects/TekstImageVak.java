@@ -94,14 +94,23 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 			g.drawRect(0,0,size.width-1,size.height-1);
 		} 
 		else if (selected  && editMode)
-		{	g.drawImage(image, 0, 0, size.width, size.height, this);
+		{	drawImage(g, size);
 			g.setColor(new Color(0,0,0,128));
 			g.fillRect(0,0,size.width-1,size.height-1);
 		}
 		
 		
 		else {
+			drawImage(g, size);
+		}
+	}
+
+	private void drawImage(Graphics g, Dimension size) {
+		try {
 			g.drawImage(image, 0, 0, size.width, size.height, this);
+		} catch (Exception e) {
+			// SecurityException mostly.
+			java.util.logging.Logger.getLogger(getClass().getName()).severe("drawImage " + e);
 		}
 	}
 	
