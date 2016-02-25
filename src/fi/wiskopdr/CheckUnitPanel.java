@@ -84,6 +84,9 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 	private String logID;
 	
 	private boolean[][] logObjectives;
+	private boolean[][][] logMisconceptions;
+	private int[][] possibleMisconceptions;
+	private int[][] measuredMisconceptions;
 	
 	private boolean check;
 	private boolean teltMee;
@@ -131,6 +134,19 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		foutIC.setVisible(false);
 		add(foutIC);
 		
+		if(WiskOpdr.misconceptions != null && WiskOpdr.misconceptions.length>0)
+	     {	 possibleMisconceptions = new int[WiskOpdr.misconceptions.length][];
+	     	 measuredMisconceptions = new int[WiskOpdr.misconceptions.length][];
+		     for(int i=0 ; i<WiskOpdr.misconceptions.length ; i++)
+		     {	 possibleMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		     	 measuredMisconceptions[i] = new int[WiskOpdr.misconceptions[i].length];
+		    	 for(int j=0 ; j<WiskOpdr.misconceptions[i].length ; j++)
+			     {  possibleMisconceptions[i][j] = 0;
+			     	measuredMisconceptions[i][j] = 0;
+			     }
+		     }
+	     }
+		
 		
 	}
 	
@@ -171,6 +187,7 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		String[] formuleStrings = null;
 		boolean[][] logObjectives = null;
 		String knopImageString = "";
+		boolean[][][] logMisconceptions = null;
        
         if(h.containsKey("juisteSelecties")) juisteSelecties = (boolean[])h.get("juisteSelecties");
         if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
@@ -183,6 +200,7 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		if(h.containsKey("checkFormule")) checkFormule = ((Boolean)h.get("checkFormule")).booleanValue();
 		if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
 		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
+		if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])h.get("logMisconceptions");
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 		for(int i=0 ; formuleStrings!=null && i<formuleStrings.length ; i++)
@@ -206,7 +224,19 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         this.checkFormule = checkFormule;
         this.formuleStrings = formuleStrings;
         this.logObjectives = logObjectives;
-       
+        this.logMisconceptions = logMisconceptions;
+        
+        if(possibleMisconceptions != null && logMisconceptions!=null)
+        {
+        	for(int i=0 ; i<logMisconceptions.length ; i++)
+        	{	for( int j=0 ; logMisconceptions[i]!=null && j<logMisconceptions[i].length && j<possibleMisconceptions.length ; j++)
+        		{	for( int k=0 ; k<logMisconceptions[i][j].length && k<possibleMisconceptions[j].length; k++)
+            		{	if(logMisconceptions[i][j][k])
+	        				possibleMisconceptions[j][k] = 1;
+            		}
+        		}
+        	}
+        }
         
         ipList = new InteractiePanel[juisteSelecties.length];
         for(int i=0 ; i<ipList.length ; i++)
@@ -451,6 +481,14 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		return scoreObjectives;
 	}
 	
+	public int[][] getMeasuredMisconceptions()
+	{	return measuredMisconceptions;
+	}
+	
+	public int[][] getPossibleMisconceptions()
+	{	return possibleMisconceptions;
+	}
+	
 	public int getScoreMax()
 	{	if(!teltMee) return 0;
 	    return scoreMax;
@@ -560,7 +598,16 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
         {   ipList = new InteractiePanel[juisteSelecties.length];
 	        for(int i=0 ; i<ipList.length ; i++)
 	        {   ipList[i] = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanel(i+1);
-	            juist = juist && ((TekstVakPanel)ipList[i]).isIpSelected() == juisteSelecties[i];
+	        	boolean selectieJuist = ((TekstVakPanel)ipList[i]).isIpSelected() == juisteSelecties[i];
+	            juist = juist && selectieJuist;
+	            if(measuredMisconceptions!=null && logMisconceptions!=null && ((TekstVakPanel)ipList[i]).isIpSelected())
+	            {	for( int j=0 ; logMisconceptions[i]!=null && j<logMisconceptions[i].length && j<measuredMisconceptions.length ; j++)
+	        		{	for( int k=0 ; logMisconceptions[i][j]!=null && k<logMisconceptions[i][j].length && k<measuredMisconceptions[j].length; k++)
+	            		{	if(logMisconceptions[i][j][k])
+	        					measuredMisconceptions[j][k] = 1;
+	            		}
+	        		}
+	            }
 	            ingevuld = ingevuld || ((TekstVakPanel)ipList[i]).isIpSelected();
 	        }
         }

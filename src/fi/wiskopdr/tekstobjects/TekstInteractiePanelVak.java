@@ -1955,6 +1955,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return ((AntwoordFormuleVak)interactiePanel).getMeasuredMisconceptions();
 		if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordFormuleVak)
 			return ((SimpelAntwoordFormuleVak)interactiePanel).getMeasuredMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof CheckUnitPanel)
+			return ((CheckUnitPanel)interactiePanel).getMeasuredMisconceptions();
 		if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel)
 			return ((TekstVakPanel)interactiePanel).getMeasuredMisconceptions();
 		return null;
@@ -1966,6 +1968,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return ((AntwoordFormuleVak)interactiePanel).getPossibleMisconceptions();
 		if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordFormuleVak)
 			return ((SimpelAntwoordFormuleVak)interactiePanel).getPossibleMisconceptions();
+		if(interactiePanel!=null && interactiePanel instanceof CheckUnitPanel)
+			return ((CheckUnitPanel)interactiePanel).getPossibleMisconceptions();
 		if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel)
 			return ((TekstVakPanel)interactiePanel).getPossibleMisconceptions();
 		return null;
