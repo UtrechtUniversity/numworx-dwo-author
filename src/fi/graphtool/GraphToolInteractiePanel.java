@@ -1514,9 +1514,10 @@ MouseListener, MouseMotionListener, CBookAware {
 		return points;
 	}
 	
-	public void addInsert(RealPoint newRP, boolean docent)
-	{	if((xPositief && newRP.getX() < 0) || (yPositief && newRP.getY() < 0))
+	public void addInsert(RealPoint newRP, boolean docent) {	
+		if (!gv.valuePointWithinBounds(newRP.getX(), newRP.getY())) {
 			return;
+		}
 				
 		int pIndex = -1;
 		boolean firstFound = false;
@@ -5518,7 +5519,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(e.getSource() == slider)
 		{ 	if(e.getActionCommand().equals("start")) 
 				tracing = true;
-			tracex = slider.geefStand()+gv.drawXmin;
+			tracex = slider.geefStand()+gv.geefBoundMinX();
 			tracexD = tracex;
 			repaint();
 			

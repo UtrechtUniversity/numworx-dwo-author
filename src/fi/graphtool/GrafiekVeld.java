@@ -49,10 +49,9 @@ class GrafiekVeld extends JComponent{
 //	private final double cLineWidthLogLines = 0.25d;
 //	private final double cLineWidthAxes = 1.00d;	
 	
-	int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
+	private int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
 	                        // range is used
-	int drawYmin, drawYmax;
-	
+	private int drawYmin, drawYmax;
 	
 		
 	private final GraphToolInteractiePanel gtip;
@@ -62,6 +61,20 @@ class GrafiekVeld extends JComponent{
 		gtip = graphToolInteractiePanel;
 		super.setBounds(x,y,b,h);
 	}
+	
+	public int geefBoundMinX() {
+		return drawXmin;
+	}
+	
+	public boolean valuePointWithinBounds(double x, double y) {
+		return pixelsPointWithinBounds(valueXtoPixels(x), valueYtoPixels(y));
+	}
+	
+	public boolean pixelsPointWithinBounds(double x, double y) {
+		return  ( (Math.round(x) >= drawXmin) && (Math.round(x) <= drawXmax) &&
+				  (Math.round(y) >= drawYmin) && (Math.round(y) <= drawYmax) );
+	}
+
 	
 	public boolean activateXAsNaam(int x, int y)
 	{	return gtip.xAsNaamActivator.contains(x,y);
@@ -239,9 +252,9 @@ class GrafiekVeld extends JComponent{
 		
 		if ( ((int) vectorStartScherm.getX()!= (int) vectorEindScherm.getX()) || ((int) vectorStartScherm.getY()!= (int)vectorEindScherm.getY()) ) { 
 			// alleen tekenen wanneer er lengte is
-			g.drawLine((int) vectorStartScherm.getX(), (int) vectorStartScherm.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+			drawLineWithinVisibleBounds(g, (int) vectorStartScherm.getX(), (int) vectorStartScherm.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
 			
-			if (tekenPijlpunt) {
+			if ((tekenPijlpunt) && pixelsPointWithinBounds(vectorEindScherm.getX(), vectorEindScherm.getY())){
 				tekenPijlpunt(g, vectorStartScherm, vectorEindScherm);
 			}
 		}
@@ -916,6 +929,8 @@ class GrafiekVeld extends JComponent{
 			}
 
 			g.setColor(Color.gray);
+			g.setStroke(cFunctieStroke);
+
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
 			for(int i=imin ; i<imax ; i++) { // x-as aflopen
