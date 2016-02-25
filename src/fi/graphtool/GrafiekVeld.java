@@ -992,8 +992,8 @@ class GrafiekVeld extends JComponent{
 		int woordHoogteY = gtip.fm.getAscent();		
 	
 		if (traceY <= drawYmax && traceY >= drawYmin ) {
-			g.drawLine(gtip.tracex,traceY,gtip.tracex,Math.min(hoogte-by, drawYmax));
-			g.drawLine(gtip.tracex,traceY,Math.max(bx, drawXmin),traceY);
+			g.drawLine(gtip.tracex,traceY,gtip.tracex,Math.max(drawYmin, Math.min(hoogte-by, drawYmax)));
+			g.drawLine(gtip.tracex,traceY,Math.min(drawXmax, Math.max(bx, drawXmin)),traceY);
 			g.fillOval(traceX-cTracePointOffset, traceY-cTracePointOffset, cTracePointSize,cTracePointSize);
 			
 			/* Rectangle for Y Value */
