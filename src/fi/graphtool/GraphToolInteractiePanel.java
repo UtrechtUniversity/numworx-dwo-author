@@ -361,7 +361,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		zoomInTabel = true;
 		
 		zoomOptie = true; 
-		traceOptie = true; 
+		traceOptie = GraphToolInteractieEditPanel.cDefault_TraceOption; 
 		dragOptie = true; 
 		
 		formuleComponentAan = true;
@@ -1514,9 +1514,10 @@ MouseListener, MouseMotionListener, CBookAware {
 		return points;
 	}
 	
-	public void addInsert(RealPoint newRP, boolean docent)
-	{	if((xPositief && newRP.getX() < 0) || (yPositief && newRP.getY() < 0))
+	public void addInsert(RealPoint newRP, boolean docent) {	
+		if (!gv.valuePointWithinBounds(newRP.getX(), newRP.getY())) {
 			return;
+		}
 				
 		int pIndex = -1;
 		boolean firstFound = false;
@@ -1781,7 +1782,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		//boolean schaalY = true;
 		//boolean piLijnenZichtbaar = false; 
 		//boolean zoomOptie = true; 
-		//boolean traceOptie = true; 
+		//boolean traceOptie =  GraphToolInteractieEditPanel.cDefault_TraceOption; ; 
 		//boolean dragOptie = true; 
 		//boolean zoomInTabel = true;
 		//boolean tabelAlsTekenTool = false; 
@@ -2326,7 +2327,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean schaalY = true;
 		boolean piLijnenZichtbaar = false; 
 		boolean zoomOptie = true; 
-		boolean traceOptie = true; 
+		boolean traceOptie =  GraphToolInteractieEditPanel.cDefault_TraceOption;  
 		boolean dragOptie = true; 
 		
 		boolean zoomInTabel = true;
@@ -2726,7 +2727,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean schaalY = true;
 		boolean piLijnenZichtbaar = false; 
 		boolean zoomOptie = true; 
-		boolean traceOptie = true; 
+		boolean traceOptie = GraphToolInteractieEditPanel.cDefault_TraceOption; 
 		boolean dragOptie = true; 
 		boolean zoomInTabel = true;
 		boolean tabelAlsTekenTool = false; 
@@ -3403,7 +3404,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		boolean schaalY = true;
 		boolean piLijnenZichtbaar = false; 
 		boolean zoomOptie = true; 
-		boolean traceOptie = true; 
+		boolean traceOptie = GraphToolInteractieEditPanel.cDefault_TraceOption; 
 		boolean dragOptie = true; 
 		boolean zoomInTabel = true;
 		boolean tabelAlsTekenTool = false; 
@@ -5518,7 +5519,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		if(e.getSource() == slider)
 		{ 	if(e.getActionCommand().equals("start")) 
 				tracing = true;
-			tracex = slider.geefStand()+gv.drawXmin;
+			tracex = slider.geefStand()+gv.geefBoundMinX();
 			tracexD = tracex;
 			repaint();
 			

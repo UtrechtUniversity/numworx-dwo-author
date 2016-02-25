@@ -40,7 +40,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
-	private static final boolean cDefault_TraceOption = false;
+	public static final boolean cDefault_TraceOption = false;
 	
 	private int defaultWidth = 800; 
 	private int defaultIpHeight = 300;
@@ -1694,6 +1694,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 
 			}
 			else {
+				dragOptie = dragOptieCB.isSelected();
 				interactiePanel.zetDragOptie(dragOptie);
 				interactiePanel.zetZoomEnabled(zoomOptie);
 			}
@@ -1754,9 +1755,11 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		{	traceOptie = traceOptieCB.isSelected();
 			interactiePanel.zetTraceOptie(traceOptie);
 		}
-		if(e.getSource().equals(dragOptieCB))
-		{	dragOptie = dragOptieCB.isSelected();
-			interactiePanel.zetDragOptie(dragOptie);
+		if(e.getSource().equals(dragOptieCB)) {	
+			if ( (!manualScalingX) && (!manualScalingY) ) {
+				dragOptie = dragOptieCB.isSelected();
+				interactiePanel.zetDragOptie(dragOptie);
+			}
 		}
 		if(e.getSource().equals(zoomInTabelCB))
 		{	zoomInTabel = zoomInTabelCB.isSelected();

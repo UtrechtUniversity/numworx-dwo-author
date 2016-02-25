@@ -37,17 +37,21 @@ class GrafiekVeld extends JComponent{
 	private final int cTracePointOffset = 2;
 	private final double cTraceAfronding = 1000;
 	private final Color cTraceBoxColor = new Color(255,255,200);
-	//	private final int cPiFromAxis = 25;
-//	private final int cDashStep = 5;
+	private final int cPiFromAxis = 25;
+	private final Stroke cFunctieStroke= new BasicStroke(1.2f);
+	private final int cDashStep = 5;
+	
+	private final Color cRoosterKleurLogLijnen = new Color(240, 240, 240);
+	private final Color cRoosterKleurBasisLijnen = new Color(210, 210, 210);
+
 
 //	private final double cLineWidth = 0.5d;
 //	private final double cLineWidthLogLines = 0.25d;
 //	private final double cLineWidthAxes = 1.00d;	
 	
-	int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
+	private int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
 	                        // range is used
-	int drawYmin, drawYmax;
-	
+	private int drawYmin, drawYmax;
 	
 		
 	private final GraphToolInteractiePanel gtip;
@@ -57,6 +61,20 @@ class GrafiekVeld extends JComponent{
 		gtip = graphToolInteractiePanel;
 		super.setBounds(x,y,b,h);
 	}
+	
+	public int geefBoundMinX() {
+		return drawXmin;
+	}
+	
+	public boolean valuePointWithinBounds(double x, double y) {
+		return pixelsPointWithinBounds(valueXtoPixels(x), valueYtoPixels(y));
+	}
+	
+	public boolean pixelsPointWithinBounds(double x, double y) {
+		return  ( (Math.round(x) >= drawXmin) && (Math.round(x) <= drawXmax) &&
+				  (Math.round(y) >= drawYmin) && (Math.round(y) <= drawYmax) );
+	}
+
 	
 	public boolean activateXAsNaam(int x, int y)
 	{	return gtip.xAsNaamActivator.contains(x,y);
@@ -234,9 +252,9 @@ class GrafiekVeld extends JComponent{
 		
 		if ( ((int) vectorStartScherm.getX()!= (int) vectorEindScherm.getX()) || ((int) vectorStartScherm.getY()!= (int)vectorEindScherm.getY()) ) { 
 			// alleen tekenen wanneer er lengte is
-			g.drawLine((int) vectorStartScherm.getX(), (int) vectorStartScherm.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
+			drawLineWithinVisibleBounds(g, (int) vectorStartScherm.getX(), (int) vectorStartScherm.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
 			
-			if (tekenPijlpunt) {
+			if ((tekenPijlpunt) && pixelsPointWithinBounds(vectorEindScherm.getX(), vectorEindScherm.getY())){
 				tekenPijlpunt(g, vectorStartScherm, vectorEindScherm);
 			}
 		}
@@ -245,16 +263,18 @@ class GrafiekVeld extends JComponent{
 	}
 	
 	private void tekenStroomlijn() {}
+	
+	private void drawPiLine(Graphics2D g, int hoogte, int xPos, int by) {		
+		
+		int dashPos = drawYmin;
+		while (dashPos < drawYmax) {
+			if(dashPos < hoogte - by || !gtip.yPositief) {	
+				g.drawLine(xPos, dashPos, xPos, Math.min(dashPos + cDashStep, drawYmax));
+			}
+			dashPos += 2 * cDashStep;
+		}	
+	}
 
-/* EXAMPLE TODO	
-	void arrowhead(vec A, vec B, vec& v1, vec& v2) {
-	    float h = 10*sqrtf(3), w = 10;
-	    vec U = (B - A)/(B - A).length();
-	    vec V = vec(-U.y, U.x);
-	    v1 = B - h*U + w*V;
-	    v2 = B - h*U - w*V;
-	}	
-*/
 	
 	public void	paintComponent(Graphics gr) {	
 		Graphics2D g = (Graphics2D) gr;
@@ -340,13 +360,17 @@ class GrafiekVeld extends JComponent{
 		boolean drawXAxis = true;
 		boolean drawYAxis = true;
 		
-		if (by < drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge) {
+		if (gtip.schaalX && (by < drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge)) {
 			drawYmax =  drawYmax - gtip.font.getSize() - 2 * cExtraAxisMarge; 
 			drawXAxis = false;
 		}
-		if (by > hoogte) {
+		if (gtip.schaalX && (by > hoogte) ) {
 			drawYmin = drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge;
 			drawXAxis = false;
+		}
+		
+		if (gtip.yPositief) {
+			drawYmax =  Math.max(drawYmin, Math.min(drawYmax, hoogte-by));
 		}
 		
 		int maxWoordBreedteY = 0;
@@ -354,7 +378,6 @@ class GrafiekVeld extends JComponent{
 		boolean witruimteX = by <= 12;
 		boolean witruimteY = false;
 		int maxHoogteLijn = hoogte-Math.max(witruimteX?maxWoordHoogteX:0,(gtip.yPositief?by:0));
-				
 
 		int imin = -(int)Math.round(gtip.beginx/ehx); 
 		int imax = 1+breedte/ehx-(int)Math.round(gtip.beginx/ehx);
@@ -381,12 +404,12 @@ class GrafiekVeld extends JComponent{
 				}
 			}
 			
-			if (bx < drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge) {
+			if (gtip.schaalY && (bx < drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge) ) {
 				drawXmin = drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge;
 				drawYAxis = false;
 			}
 			
-			if (bx > breedte) {
+			if (gtip.schaalY && (bx > breedte) ) {
 				drawXmax = drawXmax - maxWoordBreedteY - 2 * cExtraAxisMarge; 
 				drawYAxis = false;
 			}
@@ -396,25 +419,37 @@ class GrafiekVeld extends JComponent{
 
 			witruimteY = maxWoordBreedteY >= bx - 2;
 			//log-roosterlijnen tekenen (iets lichter dan gewone roosterlijnen):
-			g.setColor(new Color(240, 240, 240));
-			if(gtip.roosterX)
-				for(int i = imin+1; i < imax; i++)
-					if((!gtip.xPositief || i > 0) && gtip.xAsLog && !gtip.roosterGrof)
-						for(int k = 1; k < 10; k++)
-							g.drawLine((int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD), 0, 
-									(int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD), maxHoogteLijn);
+			g.setColor(cRoosterKleurLogLijnen);
 			
-			if(gtip.roosterY)   
-				for(int j = jmin; j < jmax; j++)
-					if((!gtip.yPositief || j > 0) && gtip.yAsLog && !gtip.roosterGrof)
-						for(int k = 1; k < 10; k++)
-							g.drawLine(Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0), (int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD)), breedte, 
-									(int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD)));
+			if (gtip.roosterX) {	
+				for(int i = imin-1; i < imax+1; i++) {
+					if((!gtip.xPositief || i > 0) && gtip.xAsLog && !gtip.roosterGrof) {	
+						for(int k = 1; k < 10; k++) {	
+							int logLineXPos = (int) (bx + i*gtip.eenheidxD + Math.log10(k)*gtip.eenheidxD);
+							if ( (logLineXPos >= drawXmin) && (logLineXPos <= drawXmax) ) {
+								g.drawLine(logLineXPos, drawYmin, logLineXPos, drawYmax);
+							}
+						}
+					}
+				}
+			}
+			
+			if(gtip.roosterY) {	
+				for(int j = jmin-1; j < jmax+1; j++) {	
+					if((!gtip.yPositief || j > 0) && gtip.yAsLog && !gtip.roosterGrof) {	
+						for(int k = 1; k < 10; k++) {	
+							int logLineYPos =  (int) (hoogte - (by + j*gtip.eenheidyD + Math.log10(k)*gtip.eenheidyD));
+							if ( (logLineYPos >= drawYmin) && (logLineYPos <= drawYmax) ) {
+								g.drawLine(drawXmin, logLineYPos, drawXmax, logLineYPos);
+							}
+						}
+					}
+				}
+			}
 			
 			//gewone roosterlijnen tekenen:
-			Color lijnenKleur = new Color(210, 210, 210);
-			g.setColor(new Color(210, 210, 210));
-
+			Color lijnenKleur = cRoosterKleurBasisLijnen;
+			g.setColor(lijnenKleur);
 							
 			for(int i=imin ; i<imax ; i++) {	// X-axis
 				
@@ -531,14 +566,16 @@ class GrafiekVeld extends JComponent{
 			}
 		}
 		
-		if (gtip.piLijnenZichtbaar)
-		{	
-			
-			double rangeX = pixelsXtoValue(breedte)-pixelsXtoValue(0);
-			int piMultiplier = 1;
-			while ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
-				piMultiplier++;
+		if (gtip.piLijnenZichtbaar) {	
+			double rangeX = pixelsXtoValue(drawXmax)-pixelsXtoValue(drawXmin);
+			long piMultiplier = 1;
+			if ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
+				piMultiplier = (long) Math.ceil(rangeX/((cMaxPiLinesOnScreen)*Math.PI));
 			}
+
+//			while ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
+//				piMultiplier++;
+//			}
 			
 			double scalingDivider = 0;
 			if (gtip.manualScalingX ) {
@@ -547,128 +584,115 @@ class GrafiekVeld extends JComponent{
 			else {
 				scalingDivider = gtip.schaalFactorX;				
 			}				
- 
-			int dashStep = 5;
-			int dashes = hoogte / dashStep;
-			
+
+			int piTextX = 0;
+			int piTextY = Math.min( Math.max(drawYmin+cExtraAxisMarge+gtip.font.getSize(), drawYmax - cExtraAxisMarge), 
+									Math.max(drawYmin+cExtraAxisMarge+gtip.font.getSize(), hoogte - by + cPiFromAxis)  );
+
 			g.setColor(gtip.piColor);
 			// 0 is in beeld
-			if ((bx > 0) && (bx < breedte)) {	// Linkerkant
+			if ((bx > drawXmin) && (bx < drawXmax)) {	// Linkerkant
 				int maxLCnt = (int) Math.round(gtip.beginx / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider) );
-				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++)
-				{	//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
+				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++) {	
+					//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx - (lCnt * piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
+					piTextX = piX - cExtraAxisMarge;
+	
+					if ((piX > bx || !gtip.xPositief && piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						
-					if ((piX > bx || !gtip.xPositief && piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
 						g.setColor(Color.black);
 //						double aantalPi = lCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *lCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("-" + "\u03C0", piX-3, hoogte - by + 20);
-						else
-						{	if(aantalPiInt == aantalPi)
-								g.drawString("-" + aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+							g.drawString("-" + "\u03C0", piTextX, piTextY);
+						else {	
+							if(aantalPiInt == aantalPi)
+								g.drawString("-" + aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 				int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
 				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++) { // Rechterkant	
 					int piX = (int) Math.round(gtip.beginx + rCnt * (piMultiplier *  Math.PI * gtip.eenheidxD / scalingDivider) );
-					if ((piX > bx || !gtip.xPositief && piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > bx || !gtip.xPositief && piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						g.setColor(Color.black);
 // 						double aantalPi = rCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *rCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString(aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString(Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 				
 			}	
 			// 0 is links
-			else if (bx <= 0)
-			{	int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++)
-				{	//int piX = (int) Math.round(beginx + rCnt * Math.PI * eenheidxD / schaalFactorX);
+			else if (bx <= drawXmin) {	
+				int maxRCnt = (int) Math.round((breedte - gtip.beginx) / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
+				for (int rCnt = 1; rCnt <= maxRCnt; rCnt++) {	
+					//int piX = (int) Math.round(beginx + rCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx + rCnt * (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-					if ((piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}	
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
+
 						g.setColor(Color.black);
 //						double aantalPi = rCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *rCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString(aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString(Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString(Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
 						
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
 			}		
 			// 0 is rechts
-			else if (bx >= breedte && !gtip.xPositief) {	
+			else if (bx >= drawXmax && !gtip.xPositief) {	
 				int maxLCnt = (int) Math.round( gtip.beginx / (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
 				for (int lCnt = 1; lCnt <= maxLCnt; lCnt++) {	
 					//int piX = (int) Math.round(beginx - lCnt * Math.PI * eenheidxD / schaalFactorX);
 					int piX = (int) Math.round(gtip.beginx - lCnt * (piMultiplier * Math.PI * gtip.eenheidxD / scalingDivider));
-					if ((piX > 0) && (piX < breedte))
-					{	for (int dCnt = 0; dCnt < dashes; dCnt++)
-						{	if ((dCnt % 2) == 0)
-								if(dCnt * dashStep + dashStep < hoogte - by || !gtip.yPositief)
-									g.drawLine(piX, dCnt * dashStep, piX, dCnt * dashStep + dashStep);
-						}
+					piTextX = piX - cExtraAxisMarge;
+					if ((piX > drawXmin) && (piX < drawXmax)) {	
+						drawPiLine(g, hoogte, piX, by);	
 						g.setColor(Color.black);
 //						double aantalPi = lCnt * gtip.schaalFactorX;
 						double aantalPi = piMultiplier *lCnt;
 						int aantalPiInt = (int) aantalPi;
 						if(aantalPi == 0);
 						else if(aantalPi == 1)
-							g.drawString("-" + "\u03C0", piX-3, hoogte - by + 20);
+							g.drawString("-" + "\u03C0", piTextX, piTextY);
 						else
 						{	if(aantalPiInt == aantalPi)
-								g.drawString("-" + aantalPiInt + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + aantalPiInt + "\u03C0", piTextX, piTextY);
 							else
-								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piX - 3, hoogte - by + 20);
+								g.drawString("-" + Double.toString(aantalPi) + "\u03C0", piTextX, piTextY);
 						}
-						g.drawLine(piX,hoogte-by-2,piX,hoogte-by+2);
 						g.setColor(gtip.piColor);
 					}
 				}
@@ -754,104 +778,13 @@ class GrafiekVeld extends JComponent{
 		}	
 		
 		if (gtip.tekenDocentFuncties != null && (gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJGRAFIEK
-				|| gtip.typeOpdracht == GraphToolInteractiePanel.TEKENPUNTENBIJFORMULE && gtip.score > 0 && (gtip.mode == 0 || gtip.mode == 1 || gtip.nagekeken)))
-		{	
+				|| gtip.typeOpdracht == GraphToolInteractiePanel.TEKENPUNTENBIJFORMULE && gtip.score > 0 && (gtip.mode == 0 || gtip.mode == 1 || gtip.nagekeken))) {	
 
-			for(int j = 0; j < gtip.tekenDocentFuncties.length; j++)
-			{	if(gtip.tekenDocentFuncties[j] != null)
-				{	g.setColor(gtip.docentColor);
-					GeneralPath curve = new GeneralPath();
-					int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
-					int xMax = breedte;
-					if(gtip.docentDomeinen != null && gtip.docentDomeinen[j] != null) {	
-						if(!Double.isInfinite(gtip.docentDomeinen[j][0])) {	
-// 						int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.docentDomeinen[j][0]):gtip.docentDomeinen[j][0])
-// 							/gtip.schaalFactorX + gtip.beginx);	
-							int xMin2 = (int) Math.round(valueXtoPixels(gtip.docentDomeinen[j][0]));
-							xMin = Math.max(xMin, xMin2);
-						}
-						if(!Double.isInfinite(gtip.docentDomeinen[j][1])) {	
-//							int xMax2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.docentDomeinen[j][1]):gtip.docentDomeinen[j][1])
-// 							/gtip.schaalFactorX + gtip.beginx);
-							int xMax2 = (int) Math.round(valueXtoPixels(gtip.docentDomeinen[j][1]));
-							xMax = Math.min(xMax, xMax2);
-						}
-					}
-					for(int i=xMin ; i<xMax ; i++) {	
-						double ii = i;
-// 						double d0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-// 							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
-// 						double d1 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
-// 							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();//dd0.doubleValue();
-						double d0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii), gtip.xAsNaam)).geefWaarde();
-						double d1 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii), gtip.xAsNaam)).geefWaarde();
-						double d0waarde = d0;
-						double d1waarde = d1;
-						if(Double.isNaN(d1waarde) && !Double.isNaN(d0))
-						{	double newD1waarde = d0;
-							for(int k = 1; k < 20; k++) {	
-								double kd = k;
-// 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
-//									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();
-								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii+kd/20), gtip.xAsNaam)).geefWaarde();
-								if(Double.isNaN(dt0))
-								{	break;
-								}
-								else
-									newD1waarde = dt0;
-							}
-							d1waarde = newD1waarde;
-						}
-						if(Double.isNaN(d0) && !Double.isNaN(d1))
-						{	double newD0waarde = d1;
-							for(int k = 19; k > 0; k--) {	
-								double kd = k;
-// 								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
-//									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.xAsNaam)).geefWaarde();
-								double dt0 = (gtip.tekenDocentFuncties[j].substitueer(pixelsXtoValue(ii+kd/20), gtip.xAsNaam)).geefWaarde();
-								if(Double.isNaN(dt0))
-								{	break;
-								}
-								else
-									newD0waarde = dt0;
-							}
-							d0waarde = newD0waarde;
-						}
-					
-						if(!(Double.isNaN(d0) && Double.isNaN(d1)) && (!gtip.yPositief || d0 >= 0 || d1 >= 0))
-						{	int x0 = i;
-							int x1 = i+1;
-// 							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
-//							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1waarde):d1waarde)/gtip.schaalFactorY);
-							double dy0 = valueYtoPixels(d0waarde);
-							double dy1 = valueYtoPixels(d1waarde);
-							if(dy0>1000)dy0 = 1000;
-							if(dy0<-1000)dy0 = -1000;
-							if(dy1>1000)dy1 = 1000;
-							if(dy1<-1000)dy1 = -1000;
-							if(curve.getCurrentPoint()==null && (!gtip.yPositief || d0>=0))curve.moveTo((float)x0, (float)dy0);
-							else if(curve.getCurrentPoint() == null) 
-								curve.moveTo((float)x0, hoogte - gtip.beginy);
-							if(!gtip.yPositief || d1>=0) curve.lineTo((float)x1, (float)dy1);
-							else
-								curve.lineTo((float)x1, hoogte - gtip.beginy); 
-						}
-						else if(curve.getCurrentPoint()!=null)
-						{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-							g.setStroke(new BasicStroke(1.2f));
-							g.draw(curve);
-							curve = new GeneralPath();
-						}
-						if(Double.isNaN(d1) || gtip.yPositief && d1<0)
-						{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-							g.setStroke(new BasicStroke(1.2f));
-							if(curve.getCurrentPoint()!=null) g.draw(curve);
-							curve = new GeneralPath();
-						}
-					}
-					g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-					g.setStroke(new BasicStroke(1.2f));
-					g.draw(curve);
+			for(int j = 0; j < gtip.tekenDocentFuncties.length; j++) {	
+				if(gtip.tekenDocentFuncties[j] != null) {	
+				
+					tekenFunctie(g, hoogte, gtip.tekenDocentFuncties[j], gtip.docentDomeinen[j], gtip.docentColor);
+				
 				}
 			}
 		}
@@ -866,31 +799,9 @@ class GrafiekVeld extends JComponent{
 
 		if(!((gtip.mode == 2 || gtip.mode == 3) && !gtip.nagekeken && 
 				(gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJGRAFIEK || gtip.typeOpdracht == GraphToolInteractiePanel.VINDFORMULEBIJPUNTEN)))
-			for(int j=0 ; j<gtip.functies.length ; j++)
-			{	if(gtip.functies[j]!=null && gtip.yAsNaam.equals(gtip.grafiekYAsNaam))
-				{	
-
-				    g.setColor(Color.black);
-					GeneralPath curve = new GeneralPath();
-//					int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
-//					int xMax = breedte;
-					int xMin = drawXmin;
-					int xMax = drawXmax;
+			for(int j=0 ; j<gtip.functies.length ; j++) {	
+				if(gtip.functies[j]!=null && gtip.yAsNaam.equals(gtip.grafiekYAsNaam)) {	
 					
-					if(gtip.domeinen != null && gtip.domeinen[j] != null) {	
-						if(!Double.isInfinite(gtip.domeinen[j][0])) {	
-//							int xMin2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.domeinen[j][0]):gtip.domeinen[j][0])
-// 								/gtip.schaalFactorX + gtip.beginx);	
-							int xMin2 = (int) Math.round(valueXtoPixels(gtip.domeinen[j][0]));
-							xMin = Math.max(xMin, xMin2);
-						}
-						if(!Double.isInfinite(gtip.domeinen[j][1])) {	
-//							int xMax2 = (int) Math.round(gtip.eenheidxD*(gtip.xAsLog?Math.log10(gtip.domeinen[j][1]):gtip.domeinen[j][1])
-// 								/gtip.schaalFactorX + gtip.beginx);	
-							int xMax2 = (int) Math.round(valueXtoPixels(gtip.domeinen[j][1]));
-							xMax = Math.min(xMax, xMax2);
-						}
-					}
 					//hier: waardes schuifparameters invullen! Even een nieuwe expressie maken en die verder gebruiken voor paint.
 					Expressie ingevuldeExpressie = gtip.functies[j];
 					if(gtip.schuifParameters != null)
@@ -899,80 +810,15 @@ class GrafiekVeld extends JComponent{
 							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 						}
 					}
-					for(int i=xMin; i<xMax ; i++)
-					{	double ii = i;
-// 						double d0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-//								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
-//						double d1 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
-//								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
-
-						double d0 = (ingevuldeExpressie.substitueer(pixelsXtoValue(i), gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
-						double d1 = (ingevuldeExpressie.substitueer(pixelsXtoValue(i+1), gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
-						double d0waarde = d0;
-						double d1waarde = d1;
-						if(Double.isNaN(d1) && !Double.isNaN(d0))
-						{	double newD1waarde = d0;
-							for(int k = 1; k < 20; k++)
-							{	double kd = k;
-// 								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
-//									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();
-								double dt0 = (ingevuldeExpressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
-								if(Double.isNaN(dt0))
-								{	break;
-								}
-								else
-									newD1waarde = dt0;
-							}
-							d1waarde = newD1waarde;
-						}
-						if(Double.isNaN(d0) && !Double.isNaN(d1))
-						{	double newD0waarde = d1;
-							for(int k = 19; k > 0; k--)
-							{	double kd = k;
-// 								double dt0 = (ingevuldeExpressie.substitueer(gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)
-//									/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+kd/20)/gtip.eenheidxD, gtip.grafiekXAsNaam)).geefWaarde();
-								double dt0 = (ingevuldeExpressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
-								if(Double.isNaN(dt0))
-								{	break;
-								}
-								else
-									newD0waarde = dt0;
-							}
-							d0waarde = newD0waarde;
-						}
-						if(!(Double.isNaN(d0) && Double.isNaN(d1)) && (!gtip.yPositief || d0 >= 0 || d1 >= 0))
-						{	int x0 = i;
-							int x1 = i+1;
-// 							double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0waarde):d0waarde)/gtip.schaalFactorY);
-//							double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1waarde):d1waarde)/gtip.schaalFactorY);
-							double dy0 = valueYtoPixels(d0waarde);
-							double dy1 = valueYtoPixels(d1waarde);
-							if(dy0>1000)dy0 = 1000;
-							if(dy0<-1000)dy0 = -1000;
-							if(dy1>1000)dy1 = 1000;
-							if(dy1<-1000)dy1 = -1000;
-							
-							if(curve.getCurrentPoint()==null && (!gtip.yPositief || d0>=0))curve.moveTo((float)x0, (float)dy0);
-							else if(curve.getCurrentPoint() == null) 
-								curve.moveTo((float)x0, hoogte - gtip.beginy);
-							if(!gtip.yPositief || d1>=0) curve.lineTo((float)x1, (float)dy1);
-							else
-								curve.lineTo((float)x1, hoogte - gtip.beginy);
-						}
-						if(Double.isNaN(d1) || gtip.yPositief && d1<0)
-						{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-							if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
-							else g.setColor(gtip.getTekenColor(0));
-							g.setStroke(new BasicStroke(1.2f));
-							if(curve.getCurrentPoint()!=null) g.draw(curve);
-							curve = new GeneralPath();
-						}
+					
+					Color tekenkleur;
+					if (gtip.grafiekKleuren) { 
+						tekenkleur = gtip.getTekenColor(j);
+					} else {
+						tekenkleur = gtip.getTekenColor(0);
 					}
-					g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-					if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
-					else g.setColor(gtip.getTekenColor(0));
-					g.setStroke(new BasicStroke(1.2f));
-					g.draw(curve);
+					
+					tekenFunctie(g, hoogte, ingevuldeExpressie, gtip.domeinen[j], tekenkleur);
 	
 					if(gtip.traceOptie)	{	
 						g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
@@ -1083,6 +929,8 @@ class GrafiekVeld extends JComponent{
 			}
 
 			g.setColor(Color.gray);
+			g.setStroke(cFunctieStroke);
+
 			// roosterpunten aflopen
 			FieldData fieldData = new FieldData(imin, imax, jmin, jmax);
 			for(int i=imin ; i<imax ; i++) { // x-as aflopen
@@ -1131,11 +979,6 @@ class GrafiekVeld extends JComponent{
 
 	}
 	
-	public void tekenFunctie( )
-	{
-		
-	}
-	
 	public void tekenTracer( Graphics g, int hoogte, int bx, int by, int traceX, int traceY, double dTraceX, double dTraceY) {
 		
 	
@@ -1149,8 +992,8 @@ class GrafiekVeld extends JComponent{
 		int woordHoogteY = gtip.fm.getAscent();		
 	
 		if (traceY <= drawYmax && traceY >= drawYmin ) {
-			g.drawLine(gtip.tracex,traceY,gtip.tracex,Math.min(hoogte-by, drawYmax));
-			g.drawLine(gtip.tracex,traceY,Math.max(bx, drawXmin),traceY);
+			g.drawLine(gtip.tracex,traceY,gtip.tracex,Math.max(drawYmin, Math.min(hoogte-by, drawYmax)));
+			g.drawLine(gtip.tracex,traceY,Math.min(drawXmax, Math.max(bx, drawXmin)),traceY);
 			g.fillOval(traceX-cTracePointOffset, traceY-cTracePointOffset, cTracePointSize,cTracePointSize);
 			
 			/* Rectangle for Y Value */
@@ -1193,24 +1036,30 @@ class GrafiekVeld extends JComponent{
 		for (int pCnt = 0; pCnt < indexPoints.size(); pCnt++)
 		{	RealPoint rp = (RealPoint) indexPoints.elementAt(pCnt);
 			Point pix = gtip.realPointToPixels(rp);
-			if(index == gtip.getActiveIndex() && !docent && pix != null)// && tekenComponent.getCursorMode() != tekenComponent.NOCUR)
-				g.fillOval(pix.x - GraphToolInteractiePanel.PRAD - 2, pix.y - GraphToolInteractiePanel.PRAD - 2,
+			if ( (pix!= null) && 
+				 (pix.x  >= drawXmin) && (pix.x <= drawXmax) && 
+				 (pix.y  >= drawYmin) && (pix.y <= drawYmax) ) { 
+				if(index == gtip.getActiveIndex() && !docent) { // && tekenComponent.getCursorMode() != tekenComponent.NOCUR) 
+					g.fillOval(pix.x - GraphToolInteractiePanel.PRAD - 2, pix.y - GraphToolInteractiePanel.PRAD - 2,
 						   2 * GraphToolInteractiePanel.PRAD + 3, 2 * GraphToolInteractiePanel.PRAD + 3);
-			else if (pix != null)
-				g.fillOval(pix.x - GraphToolInteractiePanel.PRAD, pix.y - GraphToolInteractiePanel.PRAD,
-						   2 * GraphToolInteractiePanel.PRAD +1, 2 * GraphToolInteractiePanel.PRAD + 1);
+				} else { 
+					g.fillOval(pix.x - GraphToolInteractiePanel.PRAD, pix.y - GraphToolInteractiePanel.PRAD,
+								   2 * GraphToolInteractiePanel.PRAD +1, 2 * GraphToolInteractiePanel.PRAD + 1);
+				}
+			}
 		}
 		// verbinden met lijnen
-		if (gtip.tekenComponent.getConnectMode() == TekenComponent.LINES && indexPoints.size() > 1)
-		{	RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.LINES && indexPoints.size() > 1) {	
+			RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
 			Point pix0 = gtip.realPointToPixels(rp0);
 			RealPoint rp1 = null;
 			Point pix1 = null;
-			for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++)
-			{	rp1 = (RealPoint) indexPoints.elementAt(pCnt);
+			for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++) {	
+				rp1 = (RealPoint) indexPoints.elementAt(pCnt);
 				pix1 = gtip.realPointToPixels(rp1);
-				if(pix0 != null && pix1 != null)
-					g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+				if(pix0 != null && pix1 != null) {
+					drawLineWithinVisibleBounds(g, pix0.x,  pix0.y, pix1.x,  pix1.y );
+				}
 				rp0 = rp1;
 				pix0 = pix1;
 			}
@@ -1222,474 +1071,455 @@ class GrafiekVeld extends JComponent{
 			Point pix0 = gtip.realPointToPixels(rp0);
 			Point pix1 = gtip.realPointToPixels(rp1);
 			if(pix0 != null && pix1 != null)
-				g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+				drawLineWithinVisibleBounds(g, pix0.x, pix0.y, pix1.x, pix1.y);
 		}    
-		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2)
-		{	Graphics2D g2D = (Graphics2D) g;
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2) {	
+			Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			boolean puntenVerwijderd = false;
-			if(!gtip.xAsLog && !gtip.yAsLog)
-			{	indexPoints = sorteerNaarX(indexPoints);
-				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
-				{	for(int i = indexPoints.size() - 2; i > 0; i--)
-						indexPoints.removeElementAt(i);
-					puntenVerwijderd = true;
-				}
-				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
-				{	int midden = indexPoints.size()/2;
+			if(!gtip.xAsLog && !gtip.yAsLog) {	
+				indexPoints = sorteerNaarX(indexPoints);
+				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
 					for(int i = indexPoints.size() - 2; i > 0; i--)
-						if(i != midden)
-						{	indexPoints.removeElementAt(i);
+						indexPoints.removeElementAt(i);
+				}
+				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
+					int midden = indexPoints.size()/2;
+					for(int i = indexPoints.size() - 2; i > 0; i--)
+						if(i != midden) {	
+							indexPoints.removeElementAt(i);
 						}
-					puntenVerwijderd = true;
 				}
 			}
 			
-			if(puntenVerwijderd)
-			{	GeneralPath curve = new GeneralPath();
-				double[] weights = berekenGewichten(indexPoints);
-				RealPoint beginPunt = (RealPoint) indexPoints.elementAt(0);
-				Point beginPuntPix = gtip.realPointToPixels(beginPunt);
-				RealPoint eindPunt = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
-				Point eindPuntPix = gtip.realPointToPixels(eindPunt);
-				if(beginPuntPix != null && eindPuntPix != null)
-				{	for(int i=Math.max(0, beginPuntPix.x); i < Math.min(breedte, eindPuntPix.x) ; i++) {	
-						double ii = i;
-// 						double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-//							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, weights);
-//						double d1 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
-//								/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, weights);
-						double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
-						double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
-						int x0 = i;
-						int x1 = i+1;
-// 						double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
-//						double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/htip.schaalFactorY);
-						double dy0 = valueYtoPixels(d0);
-						double dy1 = valueYtoPixels(d1);
-						if(dy0>1000)dy0 = 1000;
-						if(dy0<-1000)dy0 = -1000;
-						if(dy1>1000)dy1 = 1000;
-						if(dy1<-1000)dy1 = -1000;
+			GeneralPath curve = new GeneralPath();
+			double[] weights = berekenGewichten(indexPoints);
+			RealPoint beginPunt = (RealPoint) indexPoints.elementAt(0);
+			Point beginPuntPix = gtip.realPointToPixels(beginPunt);
+			beginPuntPix.x = Math.max(beginPuntPix.x, drawXmin);
+			
+			RealPoint eindPunt = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
+			Point eindPuntPix = gtip.realPointToPixels(eindPunt);
+			eindPuntPix.x = Math.min(eindPuntPix.x, drawXmax);
+			
+			if(beginPuntPix != null && eindPuntPix != null) {	
+				for(int i=beginPuntPix.x; i < eindPuntPix.x; i++) {	
+					
+					double ii = i;
+					double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
+					double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
+					
+					int x0 = i;
+					int x1 = i+1;
+					double dy0 = valueYtoPixels(d0);
+					double dy1 = valueYtoPixels(d1);
+					
+					if(dy0>1000)dy0 = 1000;
+					if(dy0<-1000)dy0 = -1000;
+					if(dy1>1000)dy1 = 1000;
+					if(dy1<-1000)dy1 = -1000;
+
+					if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+						// at least one of two values are within Ymindraw and drawYmax
+
+						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
 						
-						if(curve.getCurrentPoint()==null)
-						{	curve.moveTo((float)x0, (float)dy0);
+						if(curve.getCurrentPoint()==null) {	
+							curve.moveTo((float)x0, (float)dy0);
 						}
-						if(!gtip.yPositief || d1>0) 
-						{	curve.lineTo((float)x1, (float)dy1);						
+												
+						if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+							curve.moveTo((float)x0, (float)drawYmin);
+						}
+					
+						if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+							curve.moveTo((float)x0, (float)drawYmax);
+						}
+
+						if(!gtip.yPositief || d1>0) {	
+							curve.lineTo((float)x1, (float)dy1);						
 						}
 					}
 				}
-				g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-				g2D.setStroke(new BasicStroke(1.2f));
-				g2D.draw(curve);
 			}
-			else
-			{	
-				// het punt voor het startpunt p0, if any
-				RealPoint p00 = null;
-				// startpunt p0
-				RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
-				RealPoint p0 = gtip.realPointToRealPixels(rp0);
-				// eindpunt p1
-				RealPoint rp1 = null;
-				RealPoint p1 = null;
-				// het punt na het eindpunt p1, if any
-				RealPoint rp11 = null;
-				RealPoint p11 = null;
-		
-				double intervalFrac = 3;				
-		
-				for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++)
-				{	// vind eindpunt
-					rp1 = (RealPoint) indexPoints.elementAt(pCnt);
-					p1 = gtip.realPointToRealPixels(rp1);
-					// kijk of p0-p1 in pixels vertikaal is, teken lijn
-					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
-					{	Point pix0 = gtip.realPointToPixels(rp0);
-						Point pix1 = gtip.realPointToPixels(rp1);
-						if(pix0 != null && pix1 != null)
-							g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
-					}
-					else
-					{	// vind het punt na p1, if any
-						if (pCnt < (indexPoints.size() - 1))
-						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
-							p11 = gtip.realPointToRealPixels(rp11);
-						}
-						// vind nu de controle-punten tussen p0 en p1
-						// controlepunt 0
-						RealPoint c0 = null;
-						// p0 is het eerste punt, p1 is het tweede punt
-						if (p00 == null)
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(
-								p1.getX() - p0.getX(), p1.getY() - p0.getY());
-							RealPoint unitSlope0 =	slp0p1.standarize();
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope0.getX();
-							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-								unitSlope0.getY() * newLength);
-							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-						}
-						else
-						{	// vector p00 -> p0
-							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
-							// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-	//eerst middelen, dan standariseren of omgekeerd?																
-							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
-								(slp00p0.getY() + slp0p1.getY()) / 2);	
-							RealPoint unitSlope0 =	meanSlope0.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope0.getX();
-							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-								unitSlope0.getY() * newLength);
-							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-						}
-	
-						// controlepunt 1
-						RealPoint c1 = null;
-						// p1 is het laatste punt
-						if (p11 == null)
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-							RealPoint unitSlope1 =	slp0p1.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope1.getX();
-							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
-								- unitSlope1.getY() * newLength);
-							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-						}
-						else
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-							// vector p1 -> p11	
-							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
-	//eerst middelen, dan standariseren of omgekeerd?																
-							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
-								(slp0p1.getY() + slp1p11.getY()) / 2);
-							RealPoint unitSlope1 =	meanSlope1.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope1.getX();
-							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
-								- unitSlope1.getY() * newLength);
-							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-						}
-				
-						if(index == gtip.getActiveIndex())
-							g2D.setStroke(new BasicStroke(0.7f));
-						CubicCurve2D bezier = new CubicCurve2D.Double();
-						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
-									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
-						g2D.draw(bezier);			    
-					} // else niet vertikaal
-					p00 = p0;
-					p0 = p1;
-				}
-			}
+			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+			g2D.setStroke(new BasicStroke(1.2f));
+			g2D.draw(curve);
+			
+//			else :: OLD Code :: Drawing the curve using cubic curves (not possible anymore because not the whole screen is used anymore)
+//			{	
+//				// het punt voor het startpunt p0, if any
+//				RealPoint p00 = null;
+//				// startpunt p0
+//				RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
+//				RealPoint p0 = gtip.realPointToRealPixels(rp0);
+//				// eindpunt p1
+//				RealPoint rp1 = null;
+//				RealPoint p1 = null;
+//				// het punt na het eindpunt p1, if any
+//				RealPoint rp11 = null;
+//				RealPoint p11 = null;
+//		
+//				double intervalFrac = 3;				
+//		
+//				for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++)
+//				{	// vind eindpunt
+//					rp1 = (RealPoint) indexPoints.elementAt(pCnt);
+//					p1 = gtip.realPointToRealPixels(rp1);
+//					// kijk of p0-p1 in pixels vertikaal is, teken lijn
+//					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
+//					{	Point pix0 = gtip.realPointToPixels(rp0);
+//						Point pix1 = gtip.realPointToPixels(rp1);
+//						if(pix0 != null && pix1 != null)
+//							g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+//					}
+//					else
+//					{	// vind het punt na p1, if any
+//						if (pCnt < (indexPoints.size() - 1))
+//						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
+//							p11 = gtip.realPointToRealPixels(rp11);
+//						}
+//						// vind nu de controle-punten tussen p0 en p1
+//						// controlepunt 0
+//						RealPoint c0 = null;
+//						// p0 is het eerste punt, p1 is het tweede punt
+//						if (p00 == null)
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(
+//								p1.getX() - p0.getX(), p1.getY() - p0.getY());
+//							RealPoint unitSlope0 =	slp0p1.standarize();
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope0.getX();
+//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+//								unitSlope0.getY() * newLength);
+//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+//						}
+//						else
+//						{	// vector p00 -> p0
+//							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
+//							// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//	//eerst middelen, dan standariseren of omgekeerd?																
+//							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
+//								(slp00p0.getY() + slp0p1.getY()) / 2);	
+//							RealPoint unitSlope0 =	meanSlope0.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope0.getX();
+//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+//								unitSlope0.getY() * newLength);
+//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+//						}
+//	
+//						// controlepunt 1
+//						RealPoint c1 = null;
+//						// p1 is het laatste punt
+//						if (p11 == null)
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//							RealPoint unitSlope1 =	slp0p1.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope1.getX();
+//							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
+//								- unitSlope1.getY() * newLength);
+//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+//						}
+//						else
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//							// vector p1 -> p11	
+//							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
+//	//eerst middelen, dan standariseren of omgekeerd?																
+//							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
+//								(slp0p1.getY() + slp1p11.getY()) / 2);
+//							RealPoint unitSlope1 =	meanSlope1.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope1.getX();
+//							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
+//								- unitSlope1.getY() * newLength);
+//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+//						}
+//				
+//						if(index == gtip.getActiveIndex())
+//							g2D.setStroke(new BasicStroke(0.7f));
+//						CubicCurve2D bezier = new CubicCurve2D.Double();
+//						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
+//									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
+//						g2D.draw(bezier);			    
+//					} // else niet vertikaal
+//					p00 = p0;
+//					p0 = p1;
+//				}
+//			}
 		}
 		
-		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() == 2)
-		{	
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() == 2) {	
 			RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
 			RealPoint rp1 = (RealPoint) indexPoints.elementAt(1);
 			
-			double helling = ((gtip.yAsLog?Math.log10(rp1.getY()):rp1.getY()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/
-					((gtip.xAsLog?Math.log10(rp1.getX()):rp1.getX()) - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()));
-// 			double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
-			double linkerGrens;
-
-			if (gtip.manualScalingX) {
-				linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 				
+			double helling; // calulate Y slope
+			if (valueXtoPixels(rp1.getX()) != valueXtoPixels(rp0.getX())) {
+				helling = (valueYtoPixels(rp1.getY()) - valueYtoPixels(rp0.getY())) / (valueXtoPixels(rp1.getX()) - valueXtoPixels(rp0.getX()));
+			} else { 
+				return;
 			}
-			else {
-				linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 								
-			}
-
-			double xLinks = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens; 
-			double yLinks = gtip.yAsLog?Math.pow(10, helling * (linkerGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY())):
-				(helling * (linkerGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()));
-			if(yLinks < 0 && gtip.yPositief)
-			{	yLinks = 0;
-				xLinks = gtip.xAsLog?Math.pow(10, (helling * (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/helling): 
-					(helling * (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/helling;
-			}
+			double x0Pix = 0; // extrapolate line to the left
+			double y0Pix = valueYtoPixels(rp0.getY()) + helling * (x0Pix - valueXtoPixels(rp0.getX()));
 			
-			double ii2 = breedte;
-// 		double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD; 
-			double rechterGrens;
-			if (gtip.manualScalingX) {
-				rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;
-			}
-			else {
-				rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
-			}
-			double xRechts = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
-			double yRechts = gtip.yAsLog?Math.pow(10, helling * (rechterGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY())):
-				(helling * (rechterGrens - (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX())) + (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY())); 
-			if(yRechts < 0 && gtip.yPositief)
-			{	yRechts = 0;
-				xRechts = gtip.xAsLog?Math.pow(10, (helling * (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/helling): 
-					(helling * (gtip.xAsLog?Math.log10(rp0.getX()):rp0.getX()) - (gtip.yAsLog?Math.log10(rp0.getY()):rp0.getY()))/helling;
-			}
+			double x1Pix = breedte; //extrapolate line to the right
+			double y1Pix = valueYtoPixels(rp1.getY()) + helling * (x1Pix - valueXtoPixels(rp1.getX()));
 			
-			RealPoint linkerPunt = new RealPoint(xLinks, yLinks);
-			RealPoint rechterPunt = new RealPoint(xRechts, yRechts);
-			
-			Point pix0 = gtip.realPointToPixels(linkerPunt);
-			Point pix1 = gtip.realPointToPixels(rechterPunt);
-			if(pix0 != null && pix1 != null)
-				g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+			drawLineWithinVisibleBounds(g, (int) x0Pix, (int) y0Pix, (int) x1Pix, (int) y1Pix);		
 			
 		}
 		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() > 2)
 		{	Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			boolean puntenVerwijderd = false;
 			if(!gtip.xAsLog && !gtip.yAsLog)
 			{	indexPoints = sorteerNaarX(indexPoints);
-				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
-				{	for(int i = indexPoints.size() - 2; i > 0; i--)
-						indexPoints.removeElementAt(i);
-					puntenVerwijderd = true;
-				}
-				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
-				{	int midden = indexPoints.size()/2;
+				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
 					for(int i = indexPoints.size() - 2; i > 0; i--)
-						if(i != midden)
-						{	indexPoints.removeElementAt(i);
+						indexPoints.removeElementAt(i);
+				}
+				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
+					int midden = indexPoints.size()/2;
+					for(int i = indexPoints.size() - 2; i > 0; i--)
+						if(i != midden) {	
+							indexPoints.removeElementAt(i);
 						}
-					puntenVerwijderd = true;
 				}
 			}
 			
-			if(puntenVerwijderd) {	
-				
-				GeneralPath curve = new GeneralPath();
-				double[] weights = berekenGewichten(indexPoints);
-				for(int i=Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0) ; i<breedte ; i++)
-				{	double ii = i;
-// 				double d0 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-//						/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD, weights);
-//					double d1 = berekenLagrangeY(indexPoints, gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)
-//							/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*(ii+1)/gtip.eenheidxD, weights);
-					double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
-					double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
+			GeneralPath curve = new GeneralPath();
+			double[] weights = berekenGewichten(indexPoints);
+			for(int i=drawXmin ; i<drawXmax ; i++) {	
+				double ii = i;
+				double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
+				double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
 
-					int x0 = i;
-					int x1 = i+1;
+				int x0 = i;
+				int x1 = i+1;
 					
-//					double dy0 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d0):d0)/gtip.schaalFactorY);
-//					double dy1 = hoogte -(gtip.beginy+gtip.eenheidyD*(gtip.yAsLog?Math.log10(d1):d1)/gtip.schaalFactorY);
-					double dy0 = valueYtoPixels(d0);
-					double dy1 = valueYtoPixels(d1);
+				double dy0 = valueYtoPixels(d0);
+				double dy1 = valueYtoPixels(d1);
 
-					if(dy0>1000)dy0 = 1000;
-					if(dy0<-1000)dy0 = -1000;
-					if(dy1>1000)dy1 = 1000;
-					if(dy1<-1000)dy1 = -1000;
+				if(dy0>1000)dy0 = 1000;
+				if(dy0<-1000)dy0 = -1000;
+				if(dy1>1000)dy1 = 1000;
+				if(dy1<-1000)dy1 = -1000;
 					
-					if(curve.getCurrentPoint()==null && (!gtip.yPositief || d0>=0))
-					{	curve.moveTo((float)x0, (float)dy0);
+				if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+					// at least one of two values are within Ymindraw and drawYmax
+
+					dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+					
+					if(curve.getCurrentPoint()==null) {	
+							curve.moveTo((float)x0, (float)dy0);
 					}
-					else if(curve.getCurrentPoint() == null && d1>=0)
-						curve.moveTo((float)x1,  (float)dy1);
-					if(!gtip.yPositief || d1>=0) 
-					{	curve.lineTo((float)x1, (float)dy1);						
+											
+					if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+						curve.moveTo((float)x0, (float)drawYmin);
+					}
+				
+					if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+						curve.moveTo((float)x0, (float)drawYmax);
+					}
+
+					if(!gtip.yPositief || d1>0) {	
+						curve.lineTo((float)x1, (float)dy1);						
 					}
 				}
-				g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-				g2D.setStroke(new BasicStroke(1.2f));
-				g2D.draw(curve);
+
 			}
-			else
-			{	
-				// het punt voor het startpunt p0, if any
-				RealPoint p00 = null; 
-				
-				RealPoint hp0 = (RealPoint) indexPoints.elementAt(0);
-				RealPoint hp1 = (RealPoint) indexPoints.elementAt(1);
-				RealPoint hp2 = (RealPoint) indexPoints.elementAt(2);
-				
-				//double helling 01 = (hp1.y - hp0.y)/(hp1.x - hp0.x);
-				//double helling12 = (hp2.y - hp1.y)/(hp2.x - hp1.x);
-				double helling01 = ((gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/
-						((gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()) - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()));
-				double helling12 = ((gtip.yAsLog?Math.log10(hp2.getY()):hp2.getY()) - (gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()))/
-						((gtip.xAsLog?Math.log10(hp2.getX()):hp2.getX()) - (gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()));
-				
-				//hier aanpassen voor andere "extrapolatieregel", en iets verderop.
-				double helling0 = - helling12/3 + 4 * helling01/3;
-				
-				
-				//double ii = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
-				//double x0 = gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-				//		/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD;
-// 				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
-				double linkerGrens;
-				if (gtip.manualScalingX) {
-					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 
-				}
-				else {
-					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 
-				}
-
-				double x0 = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens;
-				double y0 = gtip.yAsLog?Math.pow(10, helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY())):
-					(helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()));
-				if(y0 < 0 && gtip.yPositief)
-				{
-					y0 = 0;
-					x0 = gtip.xAsLog?Math.pow(10, (helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0): 
-						(helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0;
-				}
-				
-				// startpunt p0
-				//RealPoint rp0 = new RealPoint(this.graphToolInteractiePanel.beginx, helling0*(this.graphToolInteractiePanel.beginx - hp0.x) + hp0.y);
-				RealPoint rp0 = new RealPoint(x0, y0);
-				//RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
-				RealPoint p0 = gtip.realPointToRealPixels(rp0);
-				
-				RealPoint hpLaatst0 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
-				RealPoint hpLaatst1 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 2);
-				RealPoint hpLaatst2 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 3);
-				double helling10 = ((gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()) - (gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()))/
-						((gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX())); 
-				double helling21 = ((gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()) - (gtip.yAsLog?Math.log10(hpLaatst2.getY()):hpLaatst2.getY()))/
-						((gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX()) - (gtip.xAsLog?Math.log10(hpLaatst2.getX()):hpLaatst2.getX()));
-				
-				//hier aanpassen voor andere "extrapolatieregel", en een stukje terug.
-				double hellingLaatst = - helling21/3 + 4 * helling10/3;
-				
-				
-				double ii2 = breedte;
-// 				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
-				double rechterGrens;
-				if (gtip.manualScalingX) {
-					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
-				}
-				else {
-					rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
-				}					
-
-				double xLaatst = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
-				double yLaatst = gtip.yAsLog?Math.pow(10, hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())):
-					(hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())); 
-				if(yLaatst < 0 && gtip.yPositief)
-				{	yLaatst = 0;
-					xLaatst = gtip.xAsLog?Math.pow(10, (hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst): 
-						(hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst;
-					
-				}
-				
-				RealPoint eindPunt = new RealPoint(xLaatst, yLaatst);
-				//RealPoint eindPunt = gtip.realPointToRealPixels(realEindPunt);
-				// eindpunt p1
-				RealPoint rp1 = null;
-				RealPoint p1 = null;
-				// het punt na het eindpunt p1, if any
-				RealPoint rp11 = null;
-				RealPoint p11 = null;
-		
-				double intervalFrac = 3;				
-		
-				for (int pCnt = 0; pCnt < indexPoints.size() + 1; pCnt++) //deze teller al bij 0 laten beginnen. En bij indexPoints.size() + 1 laten eindigen.
-				{	// vind eindpunt
-					if(pCnt < indexPoints.size())
-						rp1 = (RealPoint) indexPoints.elementAt(pCnt);
-					else
-						rp1 = eindPunt;
-					p1 = gtip.realPointToRealPixels(rp1);
-					// kijk of p0-p1 in pixels vertikaal is, teken lijn
-					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
-					{	Point pix0 = gtip.realPointToPixels(rp0);
-						Point pix1 = gtip.realPointToPixels(rp1);
-						g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
-					}
-					else
-					{	// vind het punt na p1, if any
-						if (pCnt < (indexPoints.size() - 1)) 
-						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
-							p11 = gtip.realPointToRealPixels(rp11);
-						}
-						else if (pCnt == indexPoints.size() - 1)
-						{	rp11 = eindPunt;
-							p11 = gtip.realPointToRealPixels(rp11);
-						}
-						// vind nu de controle-punten tussen p0 en p1
-						// controlepunt 0
-						RealPoint c0 = null;
-						// p0 is het eerste punt, p1 is het tweede punt
-						if (p00 == null)
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(
-								p1.getX() - p0.getX(), p1.getY() - p0.getY());
-							RealPoint unitSlope0 =	slp0p1.standarize();
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope0.getX();
-							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-								unitSlope0.getY() * newLength);
-							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-						}
-						else
-						{	// vector p00 -> p0
-							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
-							// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-	//eerst middelen, dan standariseren of omgekeerd?																
-							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
-								(slp00p0.getY() + slp0p1.getY()) / 2);	
-							RealPoint unitSlope0 =	meanSlope0.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope0.getX();
-							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-								unitSlope0.getY() * newLength);
-							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-						}
-	
-						// controlepunt 1
-						RealPoint c1 = null;
-						// p1 is het laatste punt
-						if (p11 == null)
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-							RealPoint unitSlope1 =	slp0p1.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope1.getX();
-							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
-								- unitSlope1.getY() * newLength);
-							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-						}
-						else
-						{	// vector p0 -> p1
-							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-							// vector p1 -> p11	
-							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
-	//eerst middelen, dan standariseren of omgekeerd?																
-							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
-								(slp0p1.getY() + slp1p11.getY()) / 2);
-							RealPoint unitSlope1 =	meanSlope1.standarize();	
-							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-							double newLength = xLength / unitSlope1.getX();
-							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
-								- unitSlope1.getY() * newLength);
-							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-						}
-				
-						if(index == gtip.getActiveIndex())
-							g2D.setStroke(new BasicStroke(0.7f));
-						CubicCurve2D bezier = new CubicCurve2D.Double();
-						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
-									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
-						g2D.draw(bezier);			    
-					} // else niet vertikaal
-					p00 = p0;
-					p0 = p1;
-				} 
-			}
+			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+			g2D.setStroke(new BasicStroke(1.2f));
+			g2D.draw(curve);
+			
+//			else :: OLD Code :: Drawing the curve using cubic curves (not possible anymore because not the whole screen is used anymore)
+//			{	
+//				// het punt voor het startpunt p0, if any
+//				RealPoint p00 = null; 
+//				
+//				RealPoint hp0 = (RealPoint) indexPoints.elementAt(0);
+//				RealPoint hp1 = (RealPoint) indexPoints.elementAt(1);
+//				RealPoint hp2 = (RealPoint) indexPoints.elementAt(2);
+//				
+//				//double helling 01 = (hp1.y - hp0.y)/(hp1.x - hp0.x);
+//				//double helling12 = (hp2.y - hp1.y)/(hp2.x - hp1.x);
+//				double helling01 = ((gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/
+//						((gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()) - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()));
+//				double helling12 = ((gtip.yAsLog?Math.log10(hp2.getY()):hp2.getY()) - (gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()))/
+//						((gtip.xAsLog?Math.log10(hp2.getX()):hp2.getX()) - (gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()));
+//				
+//				//hier aanpassen voor andere "extrapolatieregel", en iets verderop.
+//				double helling0 = - helling12/3 + 4 * helling01/3;
+//				
+//				
+//				//double ii = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
+//				//double x0 = gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+//				//		/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD;
+//// 				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
+//				double linkerGrens;
+//				if (gtip.manualScalingX) {
+//					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 
+//				}
+//				else {
+//					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 
+//				}
+//
+//				double x0 = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens;
+//				double y0 = gtip.yAsLog?Math.pow(10, helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY())):
+//					(helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()));
+//				if(y0 < 0 && gtip.yPositief)
+//				{
+//					y0 = 0;
+//					x0 = gtip.xAsLog?Math.pow(10, (helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0): 
+//						(helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0;
+//				}
+//				
+//				// startpunt p0
+//				//RealPoint rp0 = new RealPoint(this.graphToolInteractiePanel.beginx, helling0*(this.graphToolInteractiePanel.beginx - hp0.x) + hp0.y);
+//				RealPoint rp0 = new RealPoint(x0, y0);
+//				//RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
+//				RealPoint p0 = gtip.realPointToRealPixels(rp0);
+//				
+//				RealPoint hpLaatst0 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
+//				RealPoint hpLaatst1 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 2);
+//				RealPoint hpLaatst2 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 3);
+//				double helling10 = ((gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()) - (gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()))/
+//						((gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX())); 
+//				double helling21 = ((gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()) - (gtip.yAsLog?Math.log10(hpLaatst2.getY()):hpLaatst2.getY()))/
+//						((gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX()) - (gtip.xAsLog?Math.log10(hpLaatst2.getX()):hpLaatst2.getX()));
+//				
+//				//hier aanpassen voor andere "extrapolatieregel", en een stukje terug.
+//				double hellingLaatst = - helling21/3 + 4 * helling10/3;
+//				
+//				
+//				double ii2 = breedte;
+//// 				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
+//				double rechterGrens;
+//				if (gtip.manualScalingX) {
+//					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
+//				}
+//				else {
+//					rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
+//				}					
+//
+//				double xLaatst = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
+//				double yLaatst = gtip.yAsLog?Math.pow(10, hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())):
+//					(hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())); 
+//				if(yLaatst < 0 && gtip.yPositief)
+//				{	yLaatst = 0;
+//					xLaatst = gtip.xAsLog?Math.pow(10, (hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst): 
+//						(hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst;
+//					
+//				}
+//				
+//				RealPoint eindPunt = new RealPoint(xLaatst, yLaatst);
+//				//RealPoint eindPunt = gtip.realPointToRealPixels(realEindPunt);
+//				// eindpunt p1
+//				RealPoint rp1 = null;
+//				RealPoint p1 = null;
+//				// het punt na het eindpunt p1, if any
+//				RealPoint rp11 = null;
+//				RealPoint p11 = null;
+//		
+//				double intervalFrac = 3;				
+//		
+//				for (int pCnt = 0; pCnt < indexPoints.size() + 1; pCnt++) //deze teller al bij 0 laten beginnen. En bij indexPoints.size() + 1 laten eindigen.
+//				{	// vind eindpunt
+//					if(pCnt < indexPoints.size())
+//						rp1 = (RealPoint) indexPoints.elementAt(pCnt);
+//					else
+//						rp1 = eindPunt;
+//					p1 = gtip.realPointToRealPixels(rp1);
+//					// kijk of p0-p1 in pixels vertikaal is, teken lijn
+//					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
+//					{	Point pix0 = gtip.realPointToPixels(rp0);
+//						Point pix1 = gtip.realPointToPixels(rp1);
+//						g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+//					}
+//					else
+//					{	// vind het punt na p1, if any
+//						if (pCnt < (indexPoints.size() - 1)) 
+//						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
+//							p11 = gtip.realPointToRealPixels(rp11);
+//						}
+//						else if (pCnt == indexPoints.size() - 1)
+//						{	rp11 = eindPunt;
+//							p11 = gtip.realPointToRealPixels(rp11);
+//						}
+//						// vind nu de controle-punten tussen p0 en p1
+//						// controlepunt 0
+//						RealPoint c0 = null;
+//						// p0 is het eerste punt, p1 is het tweede punt
+//						if (p00 == null)
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(
+//								p1.getX() - p0.getX(), p1.getY() - p0.getY());
+//							RealPoint unitSlope0 =	slp0p1.standarize();
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope0.getX();
+//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+//								unitSlope0.getY() * newLength);
+//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+//						}
+//						else
+//						{	// vector p00 -> p0
+//							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
+//							// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//	//eerst middelen, dan standariseren of omgekeerd?																
+//							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
+//								(slp00p0.getY() + slp0p1.getY()) / 2);	
+//							RealPoint unitSlope0 =	meanSlope0.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope0.getX();
+//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+//								unitSlope0.getY() * newLength);
+//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+//						}
+//	
+//						// controlepunt 1
+//						RealPoint c1 = null;
+//						// p1 is het laatste punt
+//						if (p11 == null)
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//							RealPoint unitSlope1 =	slp0p1.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope1.getX();
+//							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
+//								- unitSlope1.getY() * newLength);
+//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+//						}
+//						else
+//						{	// vector p0 -> p1
+//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+//							// vector p1 -> p11	
+//							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
+//	//eerst middelen, dan standariseren of omgekeerd?																
+//							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
+//								(slp0p1.getY() + slp1p11.getY()) / 2);
+//							RealPoint unitSlope1 =	meanSlope1.standarize();	
+//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+//							double newLength = xLength / unitSlope1.getX();
+//							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
+//								- unitSlope1.getY() * newLength);
+//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+//						}
+//				
+//						if(index == gtip.getActiveIndex())
+//							g2D.setStroke(new BasicStroke(0.7f));
+//						CubicCurve2D bezier = new CubicCurve2D.Double();
+//						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
+//									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
+//						g2D.draw(bezier);	
+//					} // else niet vertikaal
+//					p00 = p0;
+//					p0 = p1;
+//				} 
+//			}
 		}
 	}
 	public double[] berekenGewichten(Vector points)
@@ -1704,6 +1534,31 @@ class GrafiekVeld extends JComponent{
 				}
 		}		
 		return weights;
+	}
+	
+	private void drawLineWithinVisibleBounds(Graphics g, int x0Pix, int y0Pix, int x1Pix, int y1Pix ) {
+		
+		/* Determine slopes along X and Y */
+		double hellingX = ((double) x1Pix - (double) x0Pix) / ((double) y1Pix - (double) y0Pix);
+		double hellingY = ((double) y1Pix - (double) y0Pix) / ((double) x1Pix - (double) x0Pix);
+		
+		/* Cut of first point along X-axis */
+		double x0a = Math.max(drawXmin, Math.min(drawXmax, x0Pix));
+		double y0a = (double) y0Pix + (x0a-(double) x0Pix) * hellingY;
+		
+		/* Cut of second point along X-axis */
+		double x1a = Math.max(drawXmin, Math.min(drawXmax, x1Pix));
+		double y1a = (double) y1Pix + (x1a-(double) x1Pix) * hellingY;
+		
+		/* Cut of first point along Y-axis */
+		double y0b = Math.max(drawYmin, Math.min(drawYmax, y0a));
+		double x0b = x0a + (y0b-y0a) * hellingX;
+		
+		/* Cut of second point along Y-axis */
+		double y1b = Math.max(drawYmin, Math.min(drawYmax, y1a));
+		double x1b = x1a + (y1b-y1a) * hellingX;
+		
+		g.drawLine((int) x0b, (int) y0b, (int) x1b, (int) y1b);		
 	}
 	
 	public double berekenLagrangeY(Vector points, double x, double[] weights)
@@ -1862,14 +1717,23 @@ class GrafiekVeld extends JComponent{
 		int maxWoordBreedteY = 0;
 		boolean witruimteY = false;
 		
-		for(int j=0 ; j<gtip.ongelijkheden.length ; j++)
-		{	if(gtip.ongelijkheden[j]!=null && gtip.isY[j])
-			{	GeneralPath curve = new GeneralPath();
-				int xMin = Math.max(witruimteY?maxWoordBreedteY:-1, gtip.xPositief?bx:-1);
-				int xMax = breedte +1;
-				double horizontaleGrens = -1;
-				if(!gtip.isGroterGelijk[j])
-					horizontaleGrens = gtip.yPositief?(hoogte - gtip.beginy):getHeight()+1;
+		for(int j=0 ; j<gtip.ongelijkheden.length ; j++) {	
+			if(gtip.ongelijkheden[j]!=null && gtip.isY[j]) {
+				GeneralPath curve = new GeneralPath();
+//				int xMin = Math.max(witruimteY?maxWoordBreedteY:-1, gtip.xPositief?bx:-1);
+//				int xMax = breedte +1;
+				int xMin = drawXmin;
+				int xMax = drawXmax;
+
+//				double horizontaleGrens = -1;
+//				if(!gtip.isGroterGelijk[j])
+//					horizontaleGrens = gtip.yPositief?(hoogte - gtip.beginy):getHeight()+1;
+				
+				double horizontaleGrens = drawYmin;
+				if(!gtip.isGroterGelijk[j]) {
+					horizontaleGrens = drawYmax;
+				}
+
 				
 				for(int i=xMin; i<xMax ; i++)
 				{	double ii = i;
@@ -1890,6 +1754,9 @@ class GrafiekVeld extends JComponent{
 						if(dy0<-1000)dy0 = -1000;
 						if(dy1>1000)dy1 = 1000;
 						if(dy1<-1000)dy1 = -1000;
+						
+						dy0 = Math.min(drawYmax, Math.max(drawYmin, dy0));
+						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1));
 						
 						if(curve.getCurrentPoint()==null)
 						{	
@@ -1926,17 +1793,23 @@ class GrafiekVeld extends JComponent{
 				}
 				areas[j] = new Area(curve);
 			}
-			if(gtip.ongelijkheden[j] != null && !gtip.isY[j])
-			{	double grens = gtip.ongelijkheden[j].geefWaarde();
+			if(gtip.ongelijkheden[j] != null && !gtip.isY[j]) {	
+				double grens = gtip.ongelijkheden[j].geefWaarde();
 // 				int pixelGrens = (int)((gtip.xAsLog?Math.log10(grens):grens)*gtip.eenheidxD/gtip.schaalFactorX + gtip.beginx);
 				int pixelGrens = (int) Math.round(valueXtoPixels(grens));
+				pixelGrens = Math.min(drawXmax, Math.max(drawXmin, pixelGrens));
 
-				if(gtip.isGroterGelijk[j])
-				{	Rectangle rechthoek = new Rectangle(pixelGrens, - 1, getWidth() - pixelGrens + 1, getHeight() + 2);
+
+				if(gtip.isGroterGelijk[j]) {	
+//					Rectangle rechthoek = new Rectangle(pixelGrens, - 1, getWidth() - pixelGrens + 1, getHeight() + 2);
+					Rectangle rechthoek = new Rectangle(pixelGrens, drawYmin, drawXmax - pixelGrens, drawYmax - drawYmin);
+
 					areas[j] = new Area(rechthoek);
 				}
-				else
-				{	Rectangle rechthoek = new Rectangle(-1, -1, pixelGrens + 1, getHeight() + 2);
+				else {
+//					Rectangle rechthoek = new Rectangle(-1, -1, pixelGrens + 1, getHeight() + 2);
+					Rectangle rechthoek = new Rectangle(drawXmin, drawYmin, pixelGrens - drawXmin, drawYmax - drawYmin);
+
 					areas[j] = new Area(rechthoek);
 				}
 			}
@@ -2096,15 +1969,132 @@ class GrafiekVeld extends JComponent{
 				double xWaardePixels = valueXtoPixels(xWaarde);
 
 				GeneralPath curve = new GeneralPath();
-				curve.moveTo(xWaardePixels,  0);
-				curve.lineTo(xWaardePixels, gtip.yPositief?(getHeight() - gtip.beginy):getHeight());
-				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-				g.setStroke(new BasicStroke(1.2f));
+//				curve.moveTo(xWaardePixels,  0);
+//				curve.lineTo(xWaardePixels, gtip.yPositief?(getHeight() - gtip.beginy):getHeight());
+				curve.moveTo(xWaardePixels,  drawYmin);
+				curve.lineTo(xWaardePixels, drawYmax);
+				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+				g.setStroke(cFunctieStroke);
 				g.setColor(gtip.getTekenColor(j));
 				g.draw(curve);
 			}
 		}
 	}
+	
+	public void tekenFunctie(Graphics2D g, int hoogte, Expressie expressie, double[] domein, Color tekenkleur) {
+		
+	    g.setColor(tekenkleur);
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		g.setStroke(cFunctieStroke);
+
+		GeneralPath curve = new GeneralPath();
+//		int xMin = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
+//		int xMax = breedte;
+		int xMin = drawXmin;
+		int xMax = drawXmax;
+		
+		if (domein != null) {	
+			if(!Double.isInfinite(domein[0])) {	
+				int xMin2 = (int) Math.round(valueXtoPixels(domein[0]));
+				xMin = Math.max(xMin, xMin2);
+			}
+			if(!Double.isInfinite(domein[1])) {	
+				int xMax2 = (int) Math.round(valueXtoPixels(domein[1]));
+				xMax = Math.min(xMax, xMax2);
+			}
+		}
+		
+		for(int i=xMin; i<xMax ; i++) {	
+			double ii = i;
+
+			double d0 = (expressie.substitueer(pixelsXtoValue(i), gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
+			double d1 = (expressie.substitueer(pixelsXtoValue(i+1), gtip.grafiekXAsNaam)).geefWaarde();//dd0.doubleValue();
+			double d0waarde = d0;
+			double d1waarde = d1;
+			if(Double.isNaN(d1) && !Double.isNaN(d0)) {	
+				double newD1waarde = d0;
+				for(int k = 1; k < 20; k++) {	
+					double kd = k;
+					double dt0 = (expressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
+					if(Double.isNaN(dt0)) {	
+						break;
+					}
+					else { 
+						newD1waarde = dt0;
+					}
+				}
+				d1waarde = newD1waarde;
+			}
+
+			if(Double.isNaN(d0) && !Double.isNaN(d1)) {	
+				double newD0waarde = d1;
+				for(int k = 19; k > 0; k--) {	
+					double kd = k;
+					double dt0 = (expressie.substitueer(pixelsXtoValue(ii+kd/20), gtip.grafiekXAsNaam)).geefWaarde();
+					if(Double.isNaN(dt0)) {	
+						break;
+					}
+					else {
+						newD0waarde = dt0;
+					}
+				}
+				d0waarde = newD0waarde;
+			}
+			if(!(Double.isNaN(d0) && Double.isNaN(d1)) && (!gtip.yPositief || d0 >= 0 || d1 >= 0)) {	
+				int x0 = i;
+				int x1 = i+1;
+				
+				double dy0 = valueYtoPixels(d0waarde);
+				double dy1 = valueYtoPixels(d1waarde);
+				if(dy0>1000)dy0 = 1000;
+				if(dy0<-1000)dy0 = -1000;
+				if(dy1>1000)dy1 = 1000;
+				if(dy1<-1000)dy1 = -1000;				
+
+				if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+					// at least one of two values are within Ymindraw and drawYmax
+
+					dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+				
+					// Make sure our curve starts with a move
+					if(curve.getCurrentPoint()==null && (!gtip.yPositief || d0>=0)) { 
+						curve.moveTo((float)x0, (float)dy0);
+					} else { 
+						if(curve.getCurrentPoint() == null) {
+							curve.moveTo((float)x0, hoogte - gtip.beginy);
+						}
+					}
+				
+					if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+						curve.moveTo((float)x0, (float)drawYmin);
+					}
+				
+					if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+						curve.moveTo((float)x0, (float)drawYmax);
+					}
+
+					if(!gtip.yPositief || d1>=0) { 
+						curve.lineTo((float)x1, (float)dy1);
+					} else {
+						curve.lineTo((float)x1, hoogte - gtip.beginy);
+					}
+				
+				}
+				
+			}
+			if(Double.isNaN(d1) || gtip.yPositief && d1<0) {
+				if(curve.getCurrentPoint()!=null) { 
+					g.draw(curve);
+				}
+				curve = new GeneralPath();
+			}
+		}
+		if(curve.getCurrentPoint()!=null) { 
+			g.draw(curve);
+		}
+		
+	}
+
 	
 	public void tekenParametrisaties(Graphics gr)
 	{	Graphics2D g = (Graphics2D) gr;
