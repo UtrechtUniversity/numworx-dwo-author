@@ -40,7 +40,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
-	private static final boolean cDefault_TraceOption = false;
+	public static final boolean cDefault_TraceOption = false;
 	
 	private int defaultWidth = 800; 
 	private int defaultIpHeight = 300;
