@@ -360,11 +360,11 @@ class GrafiekVeld extends JComponent{
 		boolean drawXAxis = true;
 		boolean drawYAxis = true;
 		
-		if (by < drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge) {
+		if (gtip.schaalX && (by < drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge)) {
 			drawYmax =  drawYmax - gtip.font.getSize() - 2 * cExtraAxisMarge; 
 			drawXAxis = false;
 		}
-		if (by > hoogte) {
+		if (gtip.schaalX && (by > hoogte) ) {
 			drawYmin = drawYmin + gtip.font.getSize() + 2 * cExtraAxisMarge;
 			drawXAxis = false;
 		}
@@ -404,12 +404,12 @@ class GrafiekVeld extends JComponent{
 				}
 			}
 			
-			if (bx < drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge) {
+			if (gtip.schaalY && (bx < drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge) ) {
 				drawXmin = drawXmin + maxWoordBreedteY + 2 * cExtraAxisMarge;
 				drawYAxis = false;
 			}
 			
-			if (bx > breedte) {
+			if (gtip.schaalY && (bx > breedte) ) {
 				drawXmax = drawXmax - maxWoordBreedteY - 2 * cExtraAxisMarge; 
 				drawYAxis = false;
 			}
