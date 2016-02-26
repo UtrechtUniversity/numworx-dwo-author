@@ -33,7 +33,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	private FontMetrics fm;
 	
 	private boolean selectable = true;
-	private boolean editable = true;
+	protected boolean editable = true;
 	protected  boolean selected = false;
 		
 	private int caretPos;

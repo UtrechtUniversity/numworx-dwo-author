@@ -138,7 +138,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 		randVarLabel = makeLabel(scheidingX + 5, 5, 765 - scheidingX, 20, WiskOpdr.rb.getString("randVarLabel"), true);
 
-		randomVarEditor = new TekstEditor(true, false, true);
+		randomVarEditor = new TekstEditor(true, false, true, new TekstVak());
 		randomVarEditor.setHeader(true);
 		randomVarEditor.setBounds(scheidingX + 5, 25, 765 - scheidingX, 100);
 		randomVarEditor.setResizable(true);

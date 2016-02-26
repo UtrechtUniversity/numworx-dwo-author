@@ -18,6 +18,9 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	private JCheckBox balkZichtbaarCB, rekenToolCB, grafToolCB, formuleKnopCB, formuleToolPopupCB, buttonCB, boxMetRandCB;
 	private JLabel varNaamLabel;
 	
+	private JCheckBox logCB;
+	private JTextField logIDField;
+	
 	private boolean balkZichtbaar, rekenTool, grafTool, formuleKnop, formuleToolPopup, buttonOptie, boxMetRand;
 	
 	private Tablet tablet;
@@ -55,7 +58,18 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		remove(formuleToolPopupCB);
 		remove(buttonCB);
 		
+		logCB = new JCheckBox(WiskOpdr.rb.getString("logCBLabel"));
+        logCB.setBounds(450,5,70,20);
+        logCB.addActionListener(this);
+        logCB.setOpaque(false);
+		add(logCB);
 		
+		logIDField = new JTextField("0");
+		logIDField.setBounds(520,5,60,20);
+		logIDField.addActionListener(this);
+		logIDField.setVisible(false);
+		add(logIDField);
+
 		
 	}
 	
@@ -80,6 +94,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean formuleToolPopup = true;
 		boolean buttonOptie = false;
 		boolean boxMetRand = true;
+		boolean logOption;
+		String  logID;
 		
 		balkZichtbaar = this.balkZichtbaar;
 		rekenTool = this.rekenTool;
@@ -89,6 +105,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		buttonOptie = this.buttonOptie;
 		
 		boxMetRand = boxMetRandCB.isSelected();
+		logOption = logCB.isSelected();
+		logID = logIDField.getText();
 		
 		Hashtable h = tekstEditor.getEditState();
 		
@@ -99,6 +117,13 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		h.put("formuleToolPopup", new Boolean(formuleToolPopup));
 		h.put("buttonOptie", new Boolean(buttonOptie));
 		h.put("boxMetRand", new Boolean(boxMetRand));
+		if(logOption) {
+			h.put("logOption", Boolean.TRUE);
+		} else {
+			h.remove("logOption");
+		}
+		h.put("logID", logID);
+		
 		
 		return h;
 	}
@@ -112,6 +137,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean formuleToolPopup = true;
 		boolean buttonOptie = false;
 		boolean boxMetRand = true;
+		boolean logOption = false;
+		String logID = "";
 				
 		if(h.containsKey("balkZichtbaar")) balkZichtbaar = ((Boolean)h.get("balkZichtbaar")).booleanValue();
 		if(h.containsKey("rekenTool")) rekenTool = ((Boolean)h.get("rekenTool")).booleanValue();
@@ -120,6 +147,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		if(h.containsKey("formuleToolPopup")) formuleToolPopup = ((Boolean)h.get("formuleToolPopup")).booleanValue();
 		if(h.containsKey("buttonOptie")) buttonOptie = ((Boolean)h.get("buttonOptie")).booleanValue();
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
+		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
+		if(h.containsKey("logID")) logID = (String)h.get("logID");
 		
 		this.balkZichtbaar = balkZichtbaar;
 		this.rekenTool = rekenTool;
@@ -136,6 +165,12 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		formuleToolPopupCB.setSelected(formuleToolPopup);
 		buttonCB.setSelected(buttonOptie);
 		boxMetRandCB.setSelected(boxMetRand);
+		
+        logCB.setSelected(logOption);
+        logIDField.setVisible(logOption);
+        //logObjectivesButton.setVisible(logOption);
+        logIDField.setText(logID);
+
 		
 		//grafiekPanel.zetFormulesZichtbaar(formulesZichtbaar);
 		//grafiekPanel.zetTraceOptie(traceOptie);
@@ -194,7 +229,11 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		{	buttonOptie = buttonCB.isSelected();
 			
 		}
-		
+		else if(e.getSource()==logCB)
+	    {   logIDField.setVisible(logCB.isSelected());
+	    	//logObjectivesButton.setVisible(logCB.isSelected());
+	    }
+
 	}
 	public void zetTabletUser(FormuleVakHouder formuleVakHouder)
 	{	if(tablet==null) return;

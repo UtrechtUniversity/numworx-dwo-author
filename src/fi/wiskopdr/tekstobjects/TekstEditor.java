@@ -3,6 +3,7 @@ package fi.wiskopdr.tekstobjects;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,6 +28,8 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class TekstEditor extends JLayeredPane implements TabletOwner, InteractiePanel, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder, CBookAware
 {	
+	private static final Integer _0 = Integer.valueOf(0);
+
 	private boolean resized;
 	
 	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
@@ -73,10 +76,48 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private boolean editable = true;
 	
+	private boolean logOption;
+	private String logID;
+	private Vector<String> attempts = new Vector<String>();
+
+	
     public TekstEditor()
-	{	this(true,true, true);
+	{	this(true,true, true, new TekstVak());
 	} 
 
+	static final String LOGGING = "logOption";
+    static class LoggingTekstVak extends TekstVak {
+
+		private void fireLogging() {
+    		if(editable)
+    			produceAction(LOGGING);
+    	}
+
+		/* (non-Javadoc)
+		 * @see fi.wiskopdr.tekstobjects.TekstVak#keyTyped(java.awt.event.KeyEvent)
+		 */
+		@Override
+		public void keyTyped(KeyEvent e) {
+			super.keyTyped(e);
+			if ( e.getKeyChar() == KeyEvent.VK_ENTER)
+				fireLogging();
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			super.focusLost(e);
+			fireLogging();
+		}
+    
+    	
+    	
+    
+    }
+    
+    
+    
+    
+    
     public TekstEditor(boolean scrollbar, boolean form)
 	{	this(scrollbar, form, new TekstVak());
 	}
@@ -101,7 +142,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     }
 	public TekstEditor(boolean scrollbar, boolean form, boolean beperkt)
 	{
-		this(scrollbar,form, beperkt,new TekstVak());
+		this(scrollbar,form, beperkt,new LoggingTekstVak());
 	}
 	
 	public TekstEditor(boolean scrollbar, boolean form, TekstVak tekstVak)
@@ -698,6 +739,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			}
 			else if(e.getActionCommand().equals("resize"))
 			{	setNewScrollSize();
+			} else if (LOGGING.equals(e.getActionCommand()))
+			{
+				setAttempt();
 			}
 		}
 		else if(e.getSource()==plaatjeKnop)
@@ -800,7 +844,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		boolean formuleToolPopup = true;
 		Hashtable[] interactiePanelLaunchData = null;
 		boolean boxMetRand = true;
-		
+		boolean logOption = false;
+		String logID = "";
 				
 		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
 		if(h.containsKey("balkZichtbaar")) balkZichtbaar = ((Boolean)h.get("balkZichtbaar")).booleanValue();
@@ -811,9 +856,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = (Hashtable[])h.get("interactiePanelLaunchData");
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
 		
+		if (h.containsKey("logOption"))
+			logOption = ((Boolean) h.get("logOption")).booleanValue();
+		if (h.containsKey("logID"))
+			logID = (String) h.get("logID");
 		
 		this.rekenTool = rekenTool;
 		this.grafTool = grafTool;
+		this.logID = logID;
+		this.logOption = logOption;
 		
 		try         
         {   tekst = FormuleParser.randomizeTekstVakString(tekst, randomVars, randomValues);
@@ -857,6 +908,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void setState(Hashtable h)
 	{
 		String tekst = "";
@@ -868,7 +920,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = OpdrNavStruct.toHashtableArray(h.get("interactiePanelLaunchData"));
 		if(h.containsKey("interactiePanelStates")) interactiePanelStates = OpdrNavStruct.toHashtableArray(h.get("interactiePanelStates"));
 		if(h.containsKey("editable")) editable = ((Boolean)h.get("editable")).booleanValue();
-		
+		if(h.containsKey("attempts")) attempts = OpdrNavStruct.toVector( h.get("attempts") );
 		
 		//if(antwoordVak.getText()==null || antwoordVak.getText().trim().equals("")) 
 		zetTekst(tekst);
@@ -911,10 +963,57 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
 		h.put("editable", new Boolean(editable));
 		
+		if (logOption)
+		{
+			Hashtable logMap = new Hashtable();
+			setAttempt();
+			String logString = getAttempt();
+			
+			logMap.put("logAnswer", logString);
+			logMap.put("logScore", _0);
+			logMap.put("logMaxScore", _0);
+			logMap.put("logErrorCount", _0);
+			logMap.put("logAttemptsCount", attempts.size());
+			logMap.put("logAttempts", attempts);
+			h.put("attempts", attempts);
+			WiskOpdr.setLog(logID, logMap);
+		}
+
 			
 		return h;
 	}
+
+	/**
+	 * bouw de "attempt" string.
+	 * Eén regel, geen puntkomma; 
+	 * @return string
+	 */
+	private String getAttempt() {
+		String attempt =  getCompleteText();
+		attempt = attempt.replace('\n', ' ');
+		attempt = attempt.replace(";",".,");
+		return attempt.trim();
+	}
 		
+	private void setAttempt() {
+		if (logOption) {
+		String current = getAttempt();
+		String last = "";
+		if( attempts.size() > 0) {
+			last = attempts.lastElement();
+			int i = last.indexOf(';');
+			if(i >= 2) last = last.substring(0, i-2);
+		}
+		if( ! last.equals( current))
+		{
+			attempts.add(
+				current + "  ;  " + new Date()
+			);
+		}}
+	}
+	
+	
+	
 	public void setEditState(Hashtable h)
 	{
 		String tekst = "";
