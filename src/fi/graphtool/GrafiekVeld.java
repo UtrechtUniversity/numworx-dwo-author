@@ -567,16 +567,12 @@ class GrafiekVeld extends JComponent{
 		}
 		
 		if (gtip.piLijnenZichtbaar) {	
-			double rangeX = pixelsXtoValue(drawXmax)-pixelsXtoValue(drawXmin);
+			double rangeX = pixelsXtoValue(breedte)-pixelsXtoValue(0);
 			long piMultiplier = 1;
 			if ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
 				piMultiplier = (long) Math.ceil(rangeX/((cMaxPiLinesOnScreen)*Math.PI));
 			}
 
-//			while ( rangeX/(Math.PI*piMultiplier)>(double) cMaxPiLinesOnScreen) {
-//				piMultiplier++;
-//			}
-			
 			double scalingDivider = 0;
 			if (gtip.manualScalingX ) {
 				scalingDivider = gtip.eenheidxValue;
