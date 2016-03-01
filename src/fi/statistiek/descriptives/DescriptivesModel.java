@@ -136,7 +136,7 @@ public class DescriptivesModel extends Observable implements
 	/**
 	 * @return the data table
 	 */
-	public StatTableModel getTableModel()
+	public StatTableModel getStatTableModel()
 	{
 		return this.tableModel;
 	}
@@ -349,7 +349,7 @@ public class DescriptivesModel extends Observable implements
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
 					if (!valueString.equals(ColumnType.WILDCARD)
-						&& !this.getTableModel().isOutlier(i, columnIndex))
+						&& !this.getStatTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -484,7 +484,7 @@ public class DescriptivesModel extends Observable implements
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
 					if (!valueString.equals(ColumnType.WILDCARD)
-						&&!this.getTableModel().isOutlier(i, columnIndex))
+						&&!this.getStatTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -533,7 +533,7 @@ public class DescriptivesModel extends Observable implements
 	 */
 	public String getColumnMax(int columnIndex, int splitClass, boolean forSelection)
 	{
-		double max;
+//		double max;
 		String maxString = null;
 
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
@@ -570,7 +570,7 @@ public class DescriptivesModel extends Observable implements
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
 					if (!valueString.equals(ColumnType.WILDCARD)
-						&& !this.getTableModel().isOutlier(i, columnIndex))
+						&& !this.getStatTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -619,7 +619,7 @@ public class DescriptivesModel extends Observable implements
 	 */
 	public String getColumnMean(int columnIndex, int splitClass, boolean forSelection)
 	{
-		double mean;
+//		double mean;
 		String meanString = null;
 
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
@@ -657,7 +657,7 @@ public class DescriptivesModel extends Observable implements
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 	
 					if (!valueString.equals(ColumnType.WILDCARD)
-						&&!this.getTableModel().isOutlier(i, columnIndex))
+						&&!this.getStatTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
@@ -703,7 +703,7 @@ public class DescriptivesModel extends Observable implements
 		String sdString = null;
 		String notAvailable = Statistiek.rb.getString("notAvailable");
 
-		double sd;
+//		double sd;
 		AllowedTypes type = this.tableModel.getColumnTypes().get(columnIndex).getType();
 		int splitColumnIndex = this.splitOptions.getColumnSplitIndex();
 		
@@ -750,7 +750,7 @@ public class DescriptivesModel extends Observable implements
 						splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
 						if (!valueString.equals(ColumnType.WILDCARD)
-							&& !this.getTableModel().isOutlier(i, columnIndex))
+							&& !this.getStatTableModel().isOutlier(i, columnIndex))
 						{
 							valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 							
@@ -830,7 +830,7 @@ public class DescriptivesModel extends Observable implements
 					splitValueString = (String) this.tableModel.getValueAt(i, splitColumnIndex);
 		
 					if (!valueString.equals(ColumnType.WILDCARD)
-						&& !this.getTableModel().isOutlier(i, columnIndex))
+						&& !this.getStatTableModel().isOutlier(i, columnIndex))
 					{
 						valueInSplit = this.isValueInSplit(splitValueString, splitType, splitClass);
 						
