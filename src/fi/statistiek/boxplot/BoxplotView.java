@@ -207,7 +207,7 @@ public class BoxplotView extends JPanel implements Observer
 		// check for empty data set
 		if (this.model.getDataMinValue() != null)
 		{
-			this.dialogButton.setVisible(this.model.getTableModel()
+			this.dialogButton.setVisible(this.model.getStatTableModel()
 				.isViewsEditable());
 
 			userOptionsPanel.update();
@@ -240,10 +240,10 @@ public class BoxplotView extends JPanel implements Observer
 
 			this.mainPanel.removeAll();
 			this.mainPanel.setBackground(Color.WHITE);
-			if (this.model.getTableModel().isColumnIndexValid(
+			if (this.model.getStatTableModel().isColumnIndexValid(
 				this.model.getColumnIndex()))
 			{ // &&this.model.getTableModel().isColumnIndexValid(this.model.getColumnSplitIndex())
-				if (!this.model.getTableModel().isColumnIndexValid(
+				if (!this.model.getStatTableModel().isColumnIndexValid(
 					this.model.getColumnSplitIndex()))
 				{
 					// geen split
@@ -280,7 +280,7 @@ public class BoxplotView extends JPanel implements Observer
 							this.model.getDataMinValue(),
 							this.model.getDataMaxValue(),
 							this.model.isVerticalBoxplots(), this, this.model
-								.getTableModel().getColumnName(
+								.getStatTableModel().getColumnName(
 									this.model.getColumnIndex()));
 						this.mainPanel.add(this.dependentAxis,
 							BorderLayout.WEST);
@@ -319,7 +319,7 @@ public class BoxplotView extends JPanel implements Observer
 							this.model.getDataMinValue(),
 							this.model.getDataMaxValue(),
 							this.model.isVerticalBoxplots(), this, this.model
-								.getTableModel().getColumnName(
+								.getStatTableModel().getColumnName(
 									this.model.getColumnIndex()));
 						centerPanel.add(this.dependentAxis, BorderLayout.SOUTH);
 						centerPanel.setBackground(Color.WHITE);
@@ -343,7 +343,7 @@ public class BoxplotView extends JPanel implements Observer
 							this.model.getDataMinValue(),
 							this.model.getDataMaxValue(),
 							this.model.isVerticalBoxplots(), this, this.model
-								.getTableModel().getColumnName(
+								.getStatTableModel().getColumnName(
 									this.model.getColumnIndex()));
 						this.mainPanel.add(this.dependentAxis,
 							BorderLayout.WEST);
@@ -376,7 +376,7 @@ public class BoxplotView extends JPanel implements Observer
 						this.mainPanel.add(boxplotsPanel, BorderLayout.CENTER);
 						this.independentAxis = new BoxplotIndependentAxis(
 							this.model, this, this.model.isVerticalBoxplots(),
-							this.model.getTableModel().getColumnName(
+							this.model.getStatTableModel().getColumnName(
 								this.model.getColumnSplitIndex()));
 						// independentAxis.setSize(independentAxis.getPreferredSize());
 						this.mainPanel.add(this.independentAxis,
@@ -395,7 +395,7 @@ public class BoxplotView extends JPanel implements Observer
 							this.model.getDataMinValue(),
 							this.model.getDataMaxValue(),
 							this.model.isVerticalBoxplots(), this, this.model
-								.getTableModel().getColumnName(
+								.getStatTableModel().getColumnName(
 									this.model.getColumnIndex()));
 						centerPanel.add(this.dependentAxis, BorderLayout.SOUTH);
 						for (int i = splitClasses - 1; i >= 0; i--)
@@ -427,7 +427,7 @@ public class BoxplotView extends JPanel implements Observer
 						this.mainPanel.add(centerPanel, BorderLayout.CENTER);
 						this.independentAxis = new BoxplotIndependentAxis(
 							this.model, this, this.model.isVerticalBoxplots(),
-							this.model.getTableModel().getColumnName(
+							this.model.getStatTableModel().getColumnName(
 								this.model.getColumnSplitIndex()));
 						this.mainPanel.add(this.independentAxis,
 							BorderLayout.WEST);
