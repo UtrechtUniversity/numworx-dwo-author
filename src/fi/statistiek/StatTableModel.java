@@ -33,6 +33,7 @@ import fi.statistiek.types.ColumnType;
 public class StatTableModel implements TableModel
 {
 	private static final int WILDCARD = -2;
+	private static final int OUTLIER = -3;
 
 	private int rowCount;
 	private int columnCount;
@@ -304,7 +305,8 @@ public class StatTableModel implements TableModel
 		for (int i = 0; i < this.rowCount; i++)
 		{
 			Object o = this.getValueAt(i, columnIndex);
-			if (o!=null && !o.equals(ColumnType.WILDCARD))
+			if (o!=null && !o.equals(ColumnType.WILDCARD)
+				&& !this.isOutlier(i, columnIndex))
 			{
 				count++;
 			}
@@ -434,9 +436,16 @@ public class StatTableModel implements TableModel
 		}
 		else
 		{
-			return this.classifyObject(
-				(String) this.getValueAt(rowIndex, columnIndex), columnIndex,
-				binBoundaries);
+			if (this.isOutlier(rowIndex, columnIndex))
+			{
+				return StatTableModel.OUTLIER;
+			}
+			else
+			{
+				return this.classifyObject(
+					(String) this.getValueAt(rowIndex, columnIndex), columnIndex,
+					binBoundaries);
+			}
 		}
 	}
 
@@ -499,8 +508,6 @@ public class StatTableModel implements TableModel
 		}
 		else if (type.equals(AllowedTypes.ENUM))
 		{
-//			int ret = 0;
-			// test syl
 			int ret = -1;
 			for (String option : cType.getEnumOptions())
 			{
@@ -1075,8 +1082,6 @@ public class StatTableModel implements TableModel
 	 */
 	public synchronized void removeRowWithoutEvent(int row)
 	{
-//		System.out.println("StatTableModel.removeRowWithoutEvent(row=" + row + "), this.hashCode()=" + this.hashCode());
-
 		if (row >= 0)
 		{
 			for (int i = 0; i < this.columnCount; i++)
@@ -1973,8 +1978,6 @@ public class StatTableModel implements TableModel
 			index = (size/2) - 1;
 			// mediaan is het gemiddelde van de twee waarden in het midden
 			median = (data.get(index) + data.get(index + 1))/2;
-//			System.out.println("StatTableModel.getColumnMedian(): even, median=" 
-//				+ median);
 		}
 		else
 		{
@@ -1982,8 +1985,6 @@ public class StatTableModel implements TableModel
 			index = (int) ((size + 1)/2) - 1;
 			// mediaan is de middelste waarde
 			median = data.get(index);
-//			System.out.println("StatTableModel.getColumnMedian(): odd, median=" 
-//				+ median);
 		}
 
 		return median;
@@ -2959,8 +2960,15 @@ public class StatTableModel implements TableModel
 	{
 		boolean b = false;
 		
-		if (this.cellOutlierList.size() > 0)
-			b = this.cellOutlierList.get(columnIndex).get(rowIndex);
+		try
+		{
+			if ((this.cellOutlierList.size() > 0) && (this.cellOutlierList.get(0).size() > 0))
+				b = this.cellOutlierList.get(columnIndex).get(rowIndex);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Outlierlist is out of sync.");
+		}
 		
 		return b;
 	}
