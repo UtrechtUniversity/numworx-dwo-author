@@ -1757,7 +1757,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 
 //System.out.println("state != null");
 
-			kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+			setKPanelText();
 			
 			/*cpfiw*/			
 		} else if(h.containsKey("stateNew")) { // JSONArray from NabouwenAanzichtenGWT
@@ -1788,7 +1788,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 				kr.zetVulkleur("zwart"); 
 			}
 			
-			kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+			setKPanelText();
 			
 		}
 		
@@ -2068,6 +2068,8 @@ newViewer = false;
 			}
 		}
 		
+		if(aantalBlokjes) setKPanelText(); // Ook in zetOpdracht: toon aantal blokjes
+		
 		String docentState = null;
 		
 		if (h.containsKey("docentState")) 
@@ -2170,7 +2172,7 @@ newViewer = false;
 		{	v.tekenOpnieuw();
 		}
 		
-		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+		setKPanelText();
 		ingevuld = kr.geefAantalK() != 0;
 /*		
 		if (aanzichten)
@@ -2198,6 +2200,13 @@ newViewer = false;
 // restore (1)		
 		cbookEventHandler.fire("text.buildingProgram",map1);
 	}
+
+	/**
+	 * 
+	 */
+	private void setKPanelText() {
+		kPanel.aantalKLabel.setText(kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+	}
 	
 	
 	public boolean isBouwen()
@@ -2213,7 +2222,7 @@ newViewer = false;
 		v.zetKubusRooster(kr);
 		vp.zetKubusRooster(kr);
 		kPanel.volLeegKnop.setText(NabouwenAanzichten.rb.getString("volLeegKnopLabel1"));
-		kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
+		setKPanelText();
 		zetVeranderd();
 		na.setValue(kr.maxAantal);
 	}
@@ -2881,7 +2890,7 @@ newViewer = false;
 				v.zetKubusRooster(kr);
 				vp.zetKubusRooster(kr);
 				na.setValue(kr.maxAantal);
-				kPanel.aantalKLabel.setText("" + kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));	
+				setKPanelText();	
 			}
 			
 		}
