@@ -196,20 +196,20 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 //		System.out.println("DescriptivesView.update(): splitIndex = " + this.model.getSplitOptions().getColumnSplitIndex());
 		
-		this.dialogButton.setVisible(this.model.getTableModel()
+		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
 	
 		this.mainPanel.removeAll();
 		if (this.model.columnIndexValid())
 		{
-			ColumnType cTypeColumnIndex = this.model.getTableModel().getColumnTypes()
+			ColumnType cTypeColumnIndex = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			this.typeColumnIndex = cTypeColumnIndex.getType();
 			
 			ColumnType cTypeSplit;
 			if (this.model.getColumnSplitIndex() > -1)
 			{
-				cTypeSplit = this.model.getTableModel().getColumnTypes()
+				cTypeSplit = this.model.getStatTableModel().getColumnTypes()
 					.get(this.model.getColumnSplitIndex());
 				typeSplitVar = cTypeSplit.getType();
 
@@ -259,7 +259,7 @@ public class DescriptivesView extends JPanel implements Observer
 	 */
 	private void setData()
 	{
-		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+		int numberOfSplits = DescriptivesView.this.model.getStatTableModel()
 			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 		
 		int columnIndex = this.model.getColumnIndex(); // this.varBoxSelectedIndex() is nog niet geupdate!
@@ -394,7 +394,7 @@ public class DescriptivesView extends JPanel implements Observer
 	 */
 	private void setDataLabels()
 	{
-		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+		int numberOfSplits = DescriptivesView.this.model.getStatTableModel()
 			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 
 		if (this.hasSelection())
@@ -574,11 +574,11 @@ public class DescriptivesView extends JPanel implements Observer
 		String numberString;
 		int max = 0;
 		int integerPlaces, decimalPlaces;
-		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
-			if (!this.model.getTableModel().isOutlier(i, columnIndex))
+			if (!this.model.getStatTableModel().isOutlier(i, columnIndex))
 			{
-				numberString = String.valueOf(this.model.getTableModel().getValueAt(i, columnIndex));
+				numberString = String.valueOf(this.model.getStatTableModel().getValueAt(i, columnIndex));
 				integerPlaces = numberString.indexOf('.');
 				if (integerPlaces > -1)
 				{
@@ -625,7 +625,7 @@ public class DescriptivesView extends JPanel implements Observer
 	 */
 	private void makeDescritivesTable()
 	{
-		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+		int numberOfSplits = DescriptivesView.this.model.getStatTableModel()
 			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 
 		for (int i = 0; i < numberOfSplits; i++)
@@ -657,9 +657,9 @@ public class DescriptivesView extends JPanel implements Observer
 		
 		if (this.hasSplit())
 		{
-			String splitColumnName = this.model.getTableModel().getColumnName(this.model.getColumnSplitIndex());
+			String splitColumnName = this.model.getStatTableModel().getColumnName(this.model.getColumnSplitIndex());
 			splitClassString = splitColumnName + ": "
-				+ this.model.getSplitOptions().getSplitClassLabel(splitClass, this.model.getTableModel()); // e.g., "geslacht: m"
+				+ this.model.getSplitOptions().getSplitClassLabel(splitClass, this.model.getStatTableModel()); // e.g., "geslacht: m"
 		}
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -674,7 +674,7 @@ public class DescriptivesView extends JPanel implements Observer
 		// add the selected variable name to the first column
 		String label = "";
 		if (selection == 0)
-			label = this.model.getTableModel().getColumnName(this.model.getColumnIndex());
+			label = this.model.getStatTableModel().getColumnName(this.model.getColumnIndex());
 		else
 			label = Statistiek.rb.getString("selection");
 		JLabel columnIndexName = new JLabel(label);
@@ -882,7 +882,7 @@ public class DescriptivesView extends JPanel implements Observer
 
 	private boolean lastRowInView(int splitClass)
 	{
-		int numberOfSplits = DescriptivesView.this.model.getTableModel()
+		int numberOfSplits = DescriptivesView.this.model.getStatTableModel()
 			.numberOfSplitVarClasses(DescriptivesView.this.model.getSplitOptions());
 		
 		return (splitClass == numberOfSplits - 1);
@@ -902,7 +902,7 @@ public class DescriptivesView extends JPanel implements Observer
 	{
 		boolean hasSelection = false;
 		
-		ArrayList<Boolean> list = this.model.getTableModel().getSelectionList();
+		ArrayList<Boolean> list = this.model.getStatTableModel().getSelectionList();
 		
 		for (int i = 0; i < list.size(); i++)
 		{
