@@ -305,7 +305,7 @@ public class StatTable extends JPanel implements StatistiekView,
 		
 		MouseListener outlierPopupListener = new OutlierPopupListener();
 		this.table.addMouseListener(outlierPopupListener);
-		// test outlier rechtermuisknopopties op rijnummers
+		// outlier rechtermuisknopopties op rijnummers
 		MouseListener rowOutlierPopupListener = new RowOutlierPopupListener();
 		this.rowTable.addMouseListener(rowOutlierPopupListener);
 
