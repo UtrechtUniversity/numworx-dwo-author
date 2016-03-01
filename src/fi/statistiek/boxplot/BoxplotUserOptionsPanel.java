@@ -533,7 +533,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 	{
 		this.varBox.removeActionListener(this.controller);
 		this.varBox.removeAllItems();
-		for (String varName : this.model.getTableModel().getColumnNames())
+		for (String varName : this.model.getStatTableModel().getColumnNames())
 		{
 //			System.out.println("BoxplotUserOptionsPanel.update(): varBox.addItem("
 //				+ varName + ")");
@@ -553,10 +553,10 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		this.splitVarBox.removeActionListener(this.controller);
 		this.splitVarBox.removeAllItems();
 		this.splitVarBox.addItem(Statistiek.rb.getString("chooseItem"));
-		for (int column = 0; column < this.model.getTableModel()
+		for (int column = 0; column < this.model.getStatTableModel()
 			.getColumnCount(); column++)
 		{
-			splitVarBox.addItem(this.model.getTableModel()
+			splitVarBox.addItem(this.model.getStatTableModel()
 				.getColumnName(column));
 		}
 		this.splitVarBox.setSelectedIndex(this.model.getSplitOptions()
@@ -575,7 +575,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 
 		if (this.model.getSplitOptions().getColumnSplitIndex() > -1)
 		{
-			ColumnType cSplitType = this.model.getTableModel().getColumnTypes()
+			ColumnType cSplitType = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex());
 			AllowedTypes splitType = cSplitType.getType();
 			if (splitType.equals(AllowedTypes.DOUBLE)
@@ -599,12 +599,12 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 				this.splitBoundariesArea.setText(sb.toString());
 				this.splitNoObjectsLabel.setText(Statistiek.rb
 					.getString("numberLabel")
-					+ this.model.getTableModel().getRowCount());
+					+ this.model.getStatTableModel().getRowCount());
 				String splitMinValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
+					this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()));
 				this.splitMinValueLabel.setText(Statistiek.rb.getString("minLabel") + splitMinValue);
 				String splitMaxValue = Statistiek.getStringValue(
-					this.model.getTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
+					this.model.getStatTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()));
 				this.splitMaxValueLabel.setText(Statistiek.rb.getString("maxLabel") + splitMaxValue);
 				this.splitBinsBox.getParent().setVisible(true);
 				this.splitBinsLabel.getParent().setVisible(true);
