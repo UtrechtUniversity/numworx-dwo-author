@@ -178,12 +178,11 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		    if(logMisconceptionsButtons[i]==null)
 		    {
 		    	logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-		        logMisconceptionsButtons[i].setVisible(WiskOpdr.misconceptions!=null);
 		        logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
 		        if(WiskOpdr.misconceptions!=null)add(logMisconceptionsButtons[i]);
 		    }
-		    
-		}	
+		}
+		enableMisconceptions();
 		repaint();
 	}
 	
@@ -204,6 +203,20 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		}	
 		aantalSelectables = 0;
 		repaint();
+	}
+	
+	private void enableMisconceptions()
+	{
+		for(int i=0 ; i<aantalSelectables ; i++)
+		{
+			boolean visible = WiskOpdr.misconceptions!=null 
+					&& !checkFormuleCB.isSelected()
+					&& !multiSelectionsCB.isSelected()
+					&& checkCB.isSelected();
+		   	if(logMisconceptionsButtons[i]!=null)
+		   		logMisconceptionsButtons[i].setVisible(visible);
+		   
+		}	
 	}
 	
 	public void setEditState(Hashtable h)
@@ -255,12 +268,12 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
             
             if(logMisconceptions!=null)
             {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-			    logMisconceptionsButtons[i].setVisible(WiskOpdr.misconceptions!=null);
 			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
 			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
 			    add(logMisconceptionsButtons[i]);
 		    }
 		}
+	    enableMisconceptions();
 	    
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
@@ -411,7 +424,11 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
 		else if(e.getSource()==checkFormuleCB)
-	    {   formuleEditor.setVisible(checkFormuleCB.isSelected());   
+	    {   formuleEditor.setVisible(checkFormuleCB.isSelected()); 
+	    	enableMisconceptions();
+	    }
+		else if(e.getSource()==multiSelectionsCB)
+	    {   enableMisconceptions();
 	    }
 		else if(e.getSource()==knopImageButton)
 	    {   editImage();

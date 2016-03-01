@@ -1424,11 +1424,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			launchData.put("crossWidgetId", crossWidgetId);
 		if(!connections.isEmpty())
 			launchData.put("connections", connections);
-		else 
+		else if(launchData!=null)
 			launchData.remove("connections");
 		if(subscriptions != null && !subscriptions.isEmpty())
 			launchData.put("subscriptions", subscriptions);
-		else 
+		else if(launchData!=null)
 			launchData.remove("subscriptions");
 
 		return launchData;
