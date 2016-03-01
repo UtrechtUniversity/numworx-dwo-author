@@ -413,7 +413,6 @@ public class CrossTabulationTableModel extends Observable implements
 	 */
 	private void changed()
 	{
-		// System.out.println("HistogramModel.changed()");
 		this.setChanged();
 		this.notifyObservers();
 	}
