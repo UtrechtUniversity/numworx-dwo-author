@@ -141,7 +141,7 @@ public class BoxplotDependentAxis extends JPanel
 				String pString;
 				String type;
 				int columnIndex = boxplotView.getModel().getColumnIndex();
-				type = boxplotView.getModel().getTableModel().getColumnTypes().get(columnIndex).toString();
+				type = boxplotView.getModel().getStatTableModel().getColumnTypes().get(columnIndex).toString();
 				
 //				System.out.println("BoxplotDependentAxis.paintComponent(): columnIndex = " + columnIndex 
 //					+ ", type = " + type + ", AllowedTypes.INTEGER.toString()=" + AllowedTypes.INTEGER.toString());
@@ -186,7 +186,7 @@ public class BoxplotDependentAxis extends JPanel
 				String pString;
 				String type;
 				int columnIndex = boxplotView.getModel().getColumnIndex();
-				type = boxplotView.getModel().getTableModel().getColumnTypes().get(columnIndex).toString();
+				type = boxplotView.getModel().getStatTableModel().getColumnTypes().get(columnIndex).toString();
 				
 //				System.out.println("BoxplotDependentAxis.paintComponent(): columnIndex = " + columnIndex 
 //					+ ", type = " + type);
