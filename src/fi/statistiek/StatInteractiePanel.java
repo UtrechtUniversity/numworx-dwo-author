@@ -649,30 +649,39 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 	public void acceptCBookEvent(CBookEvent event)
 	{
 		String command = event.getCommand();
+		
 		if (command.startsWith("text.csv"))
 		{
 			Map map = (Map) event.getParameters();
+			
 			if (map != null)
 			{
 				Hashtable h = this.getState();
 				h.remove("selectionList");
+				h.remove("rowOutlierList");
+				h.remove("cellOutlierList");
+				
 				Hashtable tableModel = (Hashtable) h.get("tableModel");
 				int columnCount = ((Integer) tableModel.get("columnCount")).intValue();
 				boolean dataFitting = true;
 				String dataString = (String) map.get("content");
-				
-				if("".equals(dataString))
-				{	model.removeData();
+
+				if ("".equals(dataString))
+				{
+					model.removeData();
 					return;
 				}
+
+				model.getStatTableModel().clearOutlierLists();
 				
 				String[] regels = dataString.split("\n");
 				ArrayList<ArrayList<Object>> values = new ArrayList<ArrayList<Object>>();
 				for (int i = 0; i < regels.length && !"".equals(dataString); i++)
 				{
 					String[] waarden = regels[i].split(";");
-					//System.out.println("Waardenlengte"+waarden.length);
-					if (waarden.length != columnCount && !"".equals(dataString))
+					// System.out.println("Waardenlengte"+waarden.length);
+					if ((waarden.length != columnCount) 
+						&& !"".equals(dataString))
 					{
 						JOptionPane.showMessageDialog(this,
 							"Data not fitting in number of columns");
@@ -681,15 +690,20 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 					}
 					values.add(new ArrayList<Object>());
 					for (int j = 0; j < waarden.length; j++)
-					{	//System.out.println("Waarden"+j+waarden[j]);
-						if(!"".equals(waarden[j].trim()))
+					{ // System.out.println("Waarden"+j+waarden[j]);
+						if (!"".equals(waarden[j].trim()))
+						{
 							values.get(i).add(waarden[j]);
+						}
 					}
 				}
 				if (dataFitting)
 				{
 					tableModel.put("rowCount", new Integer(regels.length));
-					if(regels.length>0)tableModel.put("values", values);
+					if (regels.length > 0)
+					{
+						tableModel.put("values", values);
+					}
 					h.put("tableModel", tableModel);
 					this.setState(h);
 				}
@@ -716,8 +730,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 	}
 
 	@Override
-	public String[] getAcceptedCmds() {
-		String[] commands = {"text.csv"};
+	public String[] getAcceptedCmds()
+	{
+		String[] commands =
+			{ "text.csv" };
 		return commands;
 	}
 
