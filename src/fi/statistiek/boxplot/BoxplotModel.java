@@ -162,7 +162,7 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 	 * 
 	 * @return the tablemodel
 	 */
-	public StatTableModel getTableModel()
+	public StatTableModel getStatTableModel()
 	{
 		return this.tableModel;
 	}
@@ -256,7 +256,7 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 	 */
 	public void setPercentileValues()
 	{
-		if (!(this.getTableModel().isColumnIndexValid(this.columnIndex)))
+		if (!(this.getStatTableModel().isColumnIndexValid(this.columnIndex)))
 		{
 			return;
 		}
@@ -270,7 +270,7 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 			return;
 		}
 
-		if (!this.getTableModel().isColumnIndexValid(
+		if (!this.getStatTableModel().isColumnIndexValid(
 			this.splitOptions.getColumnSplitIndex()))
 		{
 			ArrayList<Double> data = new ArrayList<Double>();
@@ -280,7 +280,7 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 				String valueString = (String) this.tableModel.getValueAt(i,
 					columnIndex);
 				if (!valueString.equals(ColumnType.WILDCARD)
-					&& !this.getTableModel().isOutlier(i, columnIndex))
+					&& !this.getStatTableModel().isOutlier(i, columnIndex))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
@@ -346,8 +346,8 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 					i, this.splitOptions.getColumnSplitIndex());
 				if (!valueSplitString.equals(ColumnType.WILDCARD)
 					&& !valueString.equals(ColumnType.WILDCARD)
-					&& !this.getTableModel().isOutlier(i, columnIndex)
-					&& !this.getTableModel().isOutlier(i, this.splitOptions.getColumnSplitIndex()))
+					&& !this.getStatTableModel().isOutlier(i, columnIndex)
+					&& !this.getStatTableModel().isOutlier(i, this.splitOptions.getColumnSplitIndex()))
 				{
 					// get the value
 					Double d = Double.parseDouble(valueString);
