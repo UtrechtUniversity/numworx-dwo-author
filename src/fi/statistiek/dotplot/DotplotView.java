@@ -832,7 +832,8 @@ public class DotplotView extends JPanel implements Observer
 	{
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnXIndex());
-		if (valueString==null || valueString.equals(ColumnType.WILDCARD)
+		if (valueString==null 
+			|| valueString.equals(ColumnType.WILDCARD)
 			|| this.model.getStatTableModel().isOutlier(pointIndex, this.model.getColumnXIndex()))
 		{
 			return -1;
@@ -994,7 +995,8 @@ public class DotplotView extends JPanel implements Observer
 		String valueString = (String) this.model.getStatTableModel().getValueAt(
 			pointIndex, this.model.getColumnYIndex());
 
-		if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+		if (valueString == null 
+			|| valueString.equals(ColumnType.WILDCARD)
 			|| this.model.getStatTableModel().isOutlier(pointIndex, this.model.getColumnYIndex()))
 		{
 			return -1;
@@ -1740,56 +1742,56 @@ public class DotplotView extends JPanel implements Observer
 		}
 	}
 
-	/**
-	 * Get the mean value of a column. In case of an Enum type column, it find
-	 * the average index in the enum options In case of a String type column, it
-	 * finds the average index in the options list
-	 * 
-	 * @param column
-	 *            The index of the column
-	 * @param options
-	 *            All possible unique elements of this column, only necessary
-	 *            for string columns
-	 * @return The mean value of the column
-	 */
-	private double getColumnMean(int column, ArrayList<String> options)
-	{
-		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
-			.get(column);
-		AllowedTypes type = columnType.getType();
-		int count = 0;
-		double sum = 0;
-		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-		{
-			String valueString = (String) this.model.getStatTableModel()
-				.getValueAt(i, column);
-			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
-				|| this.model.getStatTableModel().isOutlier(i, column))
-			{
-				continue;
-			}
-			else
-			{
-				count++;
-
-				if (type.equals(AllowedTypes.DOUBLE)
-					|| type.equals(AllowedTypes.INTEGER))
-				{
-					sum += Double.parseDouble(valueString);
-				}
-				else if (type.equals(AllowedTypes.ENUM))
-				{
-					sum += columnType.indexOfStringInEnum(valueString);
-				}
-				else
-				{
-					sum += options.indexOf(valueString);
-				}
-			}
-		}
-
-		return sum / (double) count;
-	}
+//	/**
+//	 * Get the mean value of a column. In case of an Enum type column, it returns
+//	 * the average index in the enum options. In case of a String type column, it
+//	 * returns the average index in the options list.
+//	 * 
+//	 * @param column
+//	 *            The index of the column
+//	 * @param options
+//	 *            All possible unique elements of this column, only necessary
+//	 *            for string columns
+//	 * @return The mean value of the column
+//	 */
+//	private double getColumnMean(int column, ArrayList<String> options)
+//	{
+//		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
+//			.get(column);
+//		AllowedTypes type = columnType.getType();
+//		int count = 0;
+//		double sum = 0;
+//		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
+//		{
+//			String valueString = (String) this.model.getStatTableModel()
+//				.getValueAt(i, column);
+//			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+//				|| this.model.getStatTableModel().isOutlier(i, column))
+//			{
+//				continue;
+//			}
+//			else
+//			{
+//				count++;
+//
+//				if (type.equals(AllowedTypes.DOUBLE)
+//					|| type.equals(AllowedTypes.INTEGER))
+//				{
+//					sum += Double.parseDouble(valueString);
+//				}
+//				else if (type.equals(AllowedTypes.ENUM))
+//				{
+//					sum += columnType.indexOfStringInEnum(valueString);
+//				}
+//				else
+//				{
+//					sum += options.indexOf(valueString);
+//				}
+//			}
+//		}
+//
+//		return sum / (double) count;
+//	}
 
 	/**
 	 * Get the sum value of a column. In case of an Enum type column, it returns
@@ -1808,7 +1810,7 @@ public class DotplotView extends JPanel implements Observer
 		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
 			.get(column);
 		AllowedTypes type = columnType.getType();
-		int count = 0;
+//		int count = 0;
 		double sum = 0;
 		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 		{
@@ -1821,7 +1823,7 @@ public class DotplotView extends JPanel implements Observer
 			}
 			else
 			{
-				count++;
+//				count++;
 
 				if (type.equals(AllowedTypes.DOUBLE)
 					|| type.equals(AllowedTypes.INTEGER))
@@ -1842,70 +1844,34 @@ public class DotplotView extends JPanel implements Observer
 		return sum;
 	}
 
-	/**
-	 * Finds a column's standard deviation. In case of an Enum type column, this
-	 * uses the index in the enumoptions instead of the enum value. In case of a
-	 * String type column, this uses the index in the options arraylist instead
-	 * of the string value.
-	 * 
-	 * @param column
-	 *            The index of the column
-	 * @param mean
-	 *            The mean value of this column
-	 * @param options
-	 *            All possible unique elements of this column, only necessary
-	 *            for string columns
-	 * @return
-	 */
-	private double getStdDev(int column, double mean, ArrayList<String> options)
-	{
-		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
-			.get(column);
-		AllowedTypes type = columnType.getType();
-		int count = 0;
-		double sum = 0;
-		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-		{
-			String valueString = (String) this.model.getStatTableModel()
-				.getValueAt(i, column);
-			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
-				|| this.model.getStatTableModel().isOutlier(i, column))
-			{
-				continue;
-			}
-			else
-			{
-				count++;
-
-				if (type.equals(AllowedTypes.DOUBLE)
-					|| type.equals(AllowedTypes.INTEGER))
-				{
-					sum += Math.pow(Double.parseDouble(valueString) - mean, 2);
-				}
-				else if (type.equals(AllowedTypes.ENUM))
-				{
-					sum += Math.pow(columnType.indexOfStringInEnum(valueString)
-						- mean, 2);
-				}
-				else
-				{
-					sum += Math.pow(options.indexOf(valueString) - mean, 2);
-				}
-			}
-		}
-		
-		// test syl: algorithm (John Cook, see http://www.johndcook.com/standard_deviation.html)
-		// does not seem to be correct now...
-//		double oldMean = 0;
-//		double newMean = 0;
-//		double oldS = 0;
-//		double newS = 0;
-//		double value;
-//		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+//	/**
+//	 * Finds a column's standard deviation. In case of an Enum type column, this
+//	 * uses the index in the enumoptions instead of the enum value. In case of a
+//	 * String type column, this uses the index in the options arraylist instead
+//	 * of the string value.
+//	 * 
+//	 * @param column
+//	 *            The index of the column
+//	 * @param mean
+//	 *            The mean value of this column
+//	 * @param options
+//	 *            All possible unique elements of this column, only necessary
+//	 *            for string columns
+//	 * @return
+//	 */
+//	private double getStdDev(int column, double mean, ArrayList<String> options)
+//	{
+//		ColumnType columnType = this.model.getStatTableModel().getColumnTypes()
+//			.get(column);
+//		AllowedTypes type = columnType.getType();
+//		int count = 0;
+//		double sum = 0;
+//		for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
 //		{
-//			String valueString = (String) this.model.getTableModel()
+//			String valueString = (String) this.model.getStatTableModel()
 //				.getValueAt(i, column);
-//			if (valueString.equals(ColumnType.WILDCARD))
+//			if (valueString == null || valueString.equals(ColumnType.WILDCARD)
+//				|| this.model.getStatTableModel().isOutlier(i, column))
 //			{
 //				continue;
 //			}
@@ -1916,41 +1882,77 @@ public class DotplotView extends JPanel implements Observer
 //				if (type.equals(AllowedTypes.DOUBLE)
 //					|| type.equals(AllowedTypes.INTEGER))
 //				{
-//					value = Double.parseDouble(valueString);
+//					sum += Math.pow(Double.parseDouble(valueString) - mean, 2);
 //				}
 //				else if (type.equals(AllowedTypes.ENUM))
 //				{
-//					value = columnType.indexOfStringInEnum(valueString);
+//					sum += Math.pow(columnType.indexOfStringInEnum(valueString)
+//						- mean, 2);
 //				}
 //				else
 //				{
-//					value = options.indexOf(valueString);
+//					sum += Math.pow(options.indexOf(valueString) - mean, 2);
 //				}
 //			}
-//			
-//			if (count ==1)
-//			{
-//				oldMean = value;
-//				newMean = value;
-//				oldS = 0.0;
-//			}
-//			else
-//			{
-//				newMean = oldMean + (value - oldMean)/count;
-//				newS = oldS + (value - oldMean) * (value - newMean);
-//			}
-//		} // new algorith
+//		}
 //		
-//		double variance;
-//		if (count > 1)
-//			variance = newS/(count - 1);
-//		else
-//			variance = 0;
-//		double stdDev = Math.sqrt(variance);
-//		return stdDev; // new algorithm's return value
-
-		return Math.sqrt(sum / (double) count);
-	}
+//		// test syl: algorithm (John Cook, see http://www.johndcook.com/standard_deviation.html)
+//		// does not seem to be correct now...
+////		double oldMean = 0;
+////		double newMean = 0;
+////		double oldS = 0;
+////		double newS = 0;
+////		double value;
+////		for (int i = 0; i < this.model.getTableModel().getRowCount(); i++)
+////		{
+////			String valueString = (String) this.model.getTableModel()
+////				.getValueAt(i, column);
+////			if (valueString.equals(ColumnType.WILDCARD))
+////			{
+////				continue;
+////			}
+////			else
+////			{
+////				count++;
+////
+////				if (type.equals(AllowedTypes.DOUBLE)
+////					|| type.equals(AllowedTypes.INTEGER))
+////				{
+////					value = Double.parseDouble(valueString);
+////				}
+////				else if (type.equals(AllowedTypes.ENUM))
+////				{
+////					value = columnType.indexOfStringInEnum(valueString);
+////				}
+////				else
+////				{
+////					value = options.indexOf(valueString);
+////				}
+////			}
+////			
+////			if (count ==1)
+////			{
+////				oldMean = value;
+////				newMean = value;
+////				oldS = 0.0;
+////			}
+////			else
+////			{
+////				newMean = oldMean + (value - oldMean)/count;
+////				newS = oldS + (value - oldMean) * (value - newMean);
+////			}
+////		} // new algorith
+////		
+////		double variance;
+////		if (count > 1)
+////			variance = newS/(count - 1);
+////		else
+////			variance = 0;
+////		double stdDev = Math.sqrt(variance);
+////		return stdDev; // new algorithm's return value
+//
+//		return Math.sqrt(sum / (double) count);
+//	}
 
 	/**
 	 * Get the covariance between two columns.
@@ -2353,7 +2355,7 @@ public class DotplotView extends JPanel implements Observer
 					.equals(ColumnType.WILDCARD)
 				|| this.model.getStatTableModel().isOutlier(i, this.model.getColumnXIndex()))
 			{
-				// skip wildcard objects and outliers
+				// skip wildcards and outliers
 				splitClasses[i] = -1;
 				continue;
 			}
@@ -2540,7 +2542,7 @@ public class DotplotView extends JPanel implements Observer
 					.equals(ColumnType.WILDCARD)
 				|| this.model.getStatTableModel().isOutlier(i, this.model.getColumnYIndex()))
 			{
-				// skip wildcard cases and outliers
+				// skip wildcards and outliers
 				splitClasses[i] = -1;
 				continue;
 			}
@@ -2561,7 +2563,7 @@ public class DotplotView extends JPanel implements Observer
 			for (int j = 0; j < i; j++)
 			{
 				if (this.model.getStatTableModel()
-						.getValueAt(j, this.model.getColumnYIndex())!=null
+						.getValueAt(j, this.model.getColumnYIndex()) != null
 					&& !this.model.getStatTableModel()
 						.getValueAt(j, this.model.getColumnYIndex())
 						.equals(ColumnType.WILDCARD)
@@ -2995,7 +2997,7 @@ public class DotplotView extends JPanel implements Observer
 
 					if (DotplotView.this.model
 							.getStatTableModel()
-							.getValueAt(index, DotplotView.this.model.getColumnXIndex())!=null
+							.getValueAt(index, DotplotView.this.model.getColumnXIndex()) != null
 						&& !DotplotView.this.model
 							.getStatTableModel()
 							.getValueAt(index, DotplotView.this.model.getColumnXIndex())
@@ -3057,7 +3059,7 @@ public class DotplotView extends JPanel implements Observer
 
 					if (DotplotView.this.model
 							.getStatTableModel()
-							.getValueAt(index, DotplotView.this.model.getColumnYIndex())!=null
+							.getValueAt(index, DotplotView.this.model.getColumnYIndex()) != null
 						&& !DotplotView.this.model
 							.getStatTableModel()
 							.getValueAt(index, DotplotView.this.model.getColumnYIndex())
