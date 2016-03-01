@@ -56,7 +56,7 @@ public class DescriptivesController implements StatistiekView,
 		if (index > -1)
 		{
 			this.setSplitType(this.model
-				.getTableModel()
+				.getStatTableModel()
 				.getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType(), 5);//index);
@@ -74,17 +74,17 @@ public class DescriptivesController implements StatistiekView,
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
 			boundaries = Statistiek.appropriateBoundaries(
-				this.model.getTableModel().getColumnMin(
+				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				noBins);
 			
 			// test syl: niet fraai; opnieuw boundaries berekenen met de hierboven berekende binwidth
 			// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
-			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getTableModel().getColumnMin(
+			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()), 
 					boundaries.get(1) - boundaries.get(0), boundaries.get(0));
 
@@ -120,7 +120,7 @@ public class DescriptivesController implements StatistiekView,
 				if (this.view.getSplitVarBoxSelectedIndex() > 0)
 				{
 					this.setSplitType(this.model
-						.getTableModel()
+						.getStatTableModel()
 						.getColumnTypes()
 						.get(this.model.getSplitOptions().getColumnSplitIndex())
 						.getType());
@@ -129,7 +129,7 @@ public class DescriptivesController implements StatistiekView,
 		}
 		else if (action.equals("splitNoBinsBox"))
 		{
-			this.setSplitType(this.model.getTableModel().getColumnTypes()
+			this.setSplitType(this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getSplitOptions().getColumnSplitIndex())
 				.getType());
 		}
@@ -163,9 +163,9 @@ public class DescriptivesController implements StatistiekView,
 	{
 		ArrayList<Double> boundaries = new ArrayList<Double>();
 
-		double min = this.model.getTableModel().getColumnMin(
+		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
-		double max = this.model.getTableModel().getColumnMax(
+		double max = this.model.getStatTableModel().getColumnMax(
 			this.model.getSplitOptions().getColumnSplitIndex());
 		
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -194,9 +194,9 @@ public class DescriptivesController implements StatistiekView,
 		{
 			ArrayList<Double> boundaries = new ArrayList<Double>();
 			boundaries = Statistiek.appropriateBoundaries(
-				this.model.getTableModel().getColumnMin(
+				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getTableModel().getColumnMax(
+				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()),
 				this.view.getSplitBinsBoxSelectedInt());
 
