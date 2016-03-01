@@ -481,8 +481,6 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					aantalPerColumnBin[i] = aantalPerColumnBin[i]
 						+ frequencies_number[i][j * 2];
 				}
-//				System.out.println("... aantalPerColumnBin[" + i + "] = "
-//				+ aantalPerColumnBin[i]);
 			}
 			else if (frequencies_enum != null) // enum variable
 			{
@@ -493,8 +491,6 @@ public class CrossTabulationTableView extends JPanel implements Observer
 						aantalPerColumnBin[i] = aantalPerColumnBin[i]
 							+ frequencies_enum[i][j].frequency;
 					}
-//					System.out.println("... aantalPerColumnBin[" + i + "] = "
-//					+ aantalPerColumnBin[i]);
 				}
 			}
 			aantalTotaal = aantalTotaal + aantalPerColumnBin[i];
@@ -524,8 +520,6 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					}
 				}
 			}
-//				System.out.println("... aantalPerBin[" + j + "] = " +
-//					aantalPerBin[j]);
 		}
 
 		setDataLabels();
@@ -687,7 +681,6 @@ public class CrossTabulationTableView extends JPanel implements Observer
 						// set total for the end of the columns
 						waardeString = this.getWaardeString(aantalPerColumnBin[i_x], divisors[i_x][y-1]);
 						data[i_x][y-1] = new JLabel(waardeString + "%");
-//						data[i_x][y-1] = new JLabel(((double) aantalPerColumnBin[i_x]/divisors[i_x][y-1])*100 + "%");
 						data[i_x][y-1].setFont(Statistiek.font);
 					}
 					
@@ -696,13 +689,11 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					{
 						waardeString = this.getWaardeString(aantalPerRowBin[i_y], divisors[x-1][i_y]);
 						data[x-1][i_y] = new JLabel(waardeString + "%");
-//						data[x-1][i_y] = new JLabel(((double) aantalPerRowBin[i_y]/divisors[x-1][i_y])*100 + "%");
 						data[x-1][i_y].setFont(Statistiek.font);
 					}		
 					
 					waardeString = this.getWaardeString(aantalTotaal, divisors[x-1][y-1]);
 					data[x-1][y-1] = new JLabel(waardeString + "%");
-//					data[x-1][y-1] = new JLabel(((double) aantalTotaal/divisors[x-1][y-1])*100 + "%");
 					data[x-1][y-1].setFont(Statistiek.font);
 				} // type number
 				else if (!typeRows.isNumber() && frequencies_enum != null) // type enum or string
@@ -719,14 +710,12 @@ public class CrossTabulationTableView extends JPanel implements Observer
 							{
 								waardeString = this.getWaardeString(frequencies_enum[i_x][i_y].frequency, divisors[i_x][i_y]);
 								data[i_x][i_y] = new JLabel(waardeString + "%");
-//								data[i_x][i_y] = new JLabel(((double) frequencies_enum[i_x][i_y].frequency/divisors[i_x][i_y])*100 + "%");
 								data[i_x][i_y].setFont(Statistiek.font);
 							}
 							
 							// set total for the end of the columns
 							waardeString = this.getWaardeString(aantalPerColumnBin[i_x], divisors[i_x][y - 1]);
 							data[i_x][y-1] = new JLabel(waardeString + "%");
-//							data[i_x][y-1] = new JLabel(((double) aantalPerColumnBin[i_x]/divisors[i_x][y - 1])*100 + "%");
 							data[i_x][y-1].setFont(Statistiek.font);
 						}
 					}
@@ -736,13 +725,11 @@ public class CrossTabulationTableView extends JPanel implements Observer
 					{
 						waardeString = this.getWaardeString(aantalPerRowBin[i_y], divisors[x-1][i_y]);
 						data[x-1][i_y] = new JLabel(waardeString + "%");
-//						data[x-1][i_y] = new JLabel(((double) aantalPerRowBin[i_y]/divisors[x-1][i_y])*100 + "%");
 						data[x-1][i_y].setFont(Statistiek.font);
 					}		
 					
 					waardeString = this.getWaardeString(aantalTotaal, divisors[x-1][y-1]);
 					data[x-1][y-1] = new JLabel(waardeString + "%");
-//					data[x-1][y-1] = new JLabel(((double) aantalTotaal/divisors[x-1][y-1])*100 + "%");
 					data[x-1][y-1].setFont(Statistiek.font);					
 				}
 			} // percentage
