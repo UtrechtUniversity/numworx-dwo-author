@@ -60,7 +60,7 @@ public class BoxplotIndependentAxis extends JPanel
 
 	private void setType()
 	{
-		cType = this.model.getTableModel().getColumnTypes()
+		cType = this.model.getStatTableModel().getColumnTypes()
 			.get(this.model.getColumnSplitIndex());
 		type = cType.getType();
 	}
@@ -98,7 +98,7 @@ public class BoxplotIndependentAxis extends JPanel
 		}
 		else
 		{
-			for (String s : this.model.getTableModel().getStringOptions(
+			for (String s : this.model.getStatTableModel().getStringOptions(
 				this.model.getColumnSplitIndex()))
 			{
 				if (fm.stringWidth(s) > maxStringLength)
@@ -156,7 +156,7 @@ public class BoxplotIndependentAxis extends JPanel
 	{
 		g.clearRect(0, 0, super.getWidth(), super.getHeight());
 
-		if (!this.model.getTableModel().isColumnIndexValid(
+		if (!this.model.getStatTableModel().isColumnIndexValid(
 			this.model.getColumnSplitIndex()))
 		{
 			return;
@@ -224,7 +224,7 @@ public class BoxplotIndependentAxis extends JPanel
 					}
 					else
 					{
-						s = this.model.getTableModel()
+						s = this.model.getStatTableModel()
 							.getStringOptions(this.model.getColumnSplitIndex())
 							.get(i);
 					}
@@ -278,7 +278,7 @@ public class BoxplotIndependentAxis extends JPanel
 					}
 					else
 					{
-						s = this.model.getTableModel()
+						s = this.model.getStatTableModel()
 							.getStringOptions(this.model.getColumnSplitIndex())
 							.get(i);
 					}
