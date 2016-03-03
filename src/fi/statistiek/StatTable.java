@@ -479,10 +479,8 @@ public class StatTable extends JPanel implements StatistiekView,
 	static class OutlierRenderer extends DefaultTableCellRenderer
 	{
 		Color backgroundColor = getBackground();
-		Color foregroundColor = getForeground();
 		Color selectedOutlierColor = ColorGenerator.getBackgroundSelectedTableOutlier();
 		Color outlierColor = ColorGenerator.getBackgroundTableOutlier();
-		Color outlierTextColor = ColorGenerator.getGreyLineColor();
 
         @Override
 		public Component getTableCellRendererComponent(JTable table,
@@ -494,8 +492,6 @@ public class StatTable extends JPanel implements StatistiekView,
 			StatTableModel model = (StatTableModel) table.getModel();
 			if (model.isOutlier(row, column))
 			{
-				c.setForeground(outlierTextColor);
-
 				if (isSelected)
 					c.setBackground(selectedOutlierColor);
 				else
@@ -503,8 +499,6 @@ public class StatTable extends JPanel implements StatistiekView,
 			}
 			else
 			{
-				c.setForeground(foregroundColor);
-				
 				if (!isSelected)
 				{
 					c.setBackground(backgroundColor);
@@ -525,10 +519,8 @@ public class StatTable extends JPanel implements StatistiekView,
 	{
 		DecimalFormat df;
 		Color backgroundColor = getBackground();
-		Color foregroundColor = getForeground();
 		Color selectedOutlierColor = ColorGenerator.getBackgroundSelectedTableOutlier();
 		Color outlierColor = ColorGenerator.getBackgroundTableOutlier();
-		Color outlierTextColor = ColorGenerator.getGreyLineColor();
 
 		public DecimalRenderer()
 		{
@@ -561,8 +553,6 @@ public class StatTable extends JPanel implements StatistiekView,
 			StatTableModel model = (StatTableModel) table.getModel();
 			if (model.isOutlier(row, column))
 			{
-				c.setForeground(outlierTextColor);
-
 				if (isSelected)
 					c.setBackground(selectedOutlierColor);
 				else
@@ -570,8 +560,6 @@ public class StatTable extends JPanel implements StatistiekView,
 			}
 			else
 			{
-				c.setForeground(foregroundColor);
-				
 				if (!isSelected)
 				{
 					c.setBackground(backgroundColor);
