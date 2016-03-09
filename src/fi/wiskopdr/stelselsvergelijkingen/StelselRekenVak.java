@@ -80,6 +80,8 @@ public class StelselRekenVak extends JPanel  {
 	JPanel contentPanel;
 	JPanel headerPanel;
 	
+	Component ic;
+	
 	public StelselRekenVak(StelselAntwoordVak antwoordVak)
 	{
 		setLayout(null);
@@ -249,6 +251,12 @@ public class StelselRekenVak extends JPanel  {
 	{
 		this.varNamen = varNamen;
 		hoofdEditor.zetVarNamen(varNamen);
+	}
+	
+	public void zetIC(Component ic)
+	{
+		this.ic = ic;
+		contentPanel.add(ic, 0);
 	}
 	
 	public Hashtable getState()

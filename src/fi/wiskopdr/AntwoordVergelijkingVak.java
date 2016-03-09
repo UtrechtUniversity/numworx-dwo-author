@@ -124,7 +124,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private int formuleVakX = 30;
 	private int formuleVakY = 10;
 
-	private int stapH = 25;
+	// even op protected ipv private zetten om te proberen:
+	protected int stapH = 25;
 	private int imageCompX = 5;
 	private Font formuleVakFont = (!WiskOpdr.formTimes || WiskOpdr.mac) ? WiskOpdr.formuleFont0Mac : WiskOpdr.formuleFont0; 
 	

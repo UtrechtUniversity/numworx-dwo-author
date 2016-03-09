@@ -23,6 +23,7 @@ import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Vergelijking;
+import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -106,7 +107,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 			{
 				rekenVak.setBounds(1, 0, b-2, h - hoogteOplossingen - 5);
 				oplossingenRegel.setBounds(0, h-hoogteOplossingen, b, hoogteOplossingen);
-				oplossingenLabel.setBounds(5, 2, 110, 20);
+				oplossingenLabel.setBounds(5, 2, 150, 40); //150 was 110, 40 was 20
 				oplossingenVak.setBounds(oplossingenLabel.getWidth() + 10, 0, getWidth() - oplossingenLabel.getWidth() - 12, 24);
 			}
 			else
@@ -284,7 +285,15 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 			else
 				variabelenString = variabelenString.substring(2, variabelenString.length() -1);
 			varNamen = StringUtils.split(variabelenString, ",");
-		
+			//variabelen omzetten naar nette varnamen (met name belangrijk voor variabelen met subscripts)
+			for(int i = 0; i < varNamen.length; i++)
+			{
+				FormuleEditor hulpVak = new FormuleEditor(false);
+				hulpVak.formuleVak.vulVak("$f" + varNamen[i] + "@");
+				varNamen[i] = hulpVak.formuleVak.geefExpressie().geefVarNaam();
+				
+			}
+			
 			//splitsen in verschillende oplossingen. Eerst $f en @ weghalen.
 			antwoordString = antwoordString.substring(2, antwoordString.length() - 1);
 			antwoordString = StringUtils.replaceStr(antwoordString, "),(", "):(");
@@ -309,8 +318,8 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 			oplossingenVak.zetJuisteOplossingen(oplossingen);
 			//Font f = oplossingenLabel.getFont();
 			//FontMetrics fm = new FontMetrics(f){};
-			oplossingenLabel.setText(WiskOpdr.rb.getString("oplossingenLabel") + " (" + variabelenString + ")");
-			//TODO: zorgen dat je hier ook formules in kunt vullen, bijvoorbeeld voor variabelen met subscript (x_1, x_2). 
+			
+			oplossingenLabel.setText(WiskOpdr.rb.getString("oplossingenLabel") + " $f(" + variabelenString + ")@");
 			//oplossingenLabel.setSize(fm.stringWidth(oplossingenLabel.getText()), 20);
 			
 		}

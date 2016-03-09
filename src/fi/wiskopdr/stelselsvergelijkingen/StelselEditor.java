@@ -81,6 +81,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		zetCheck(true);//TODO: dit afhankelijk maken van of check is aangevinkt in editPanel.
 		heeftFocus = true;
 		this.hoofdPanel = hoofdPanel;
+		stapH = 15;
 		hoogte = hoofdPanel.getHeight();
 		
 	}
@@ -94,6 +95,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		zetStandaardOpties();
 		zetCheck(parent.getCheck());
 		hoofdPanel = parent.geefHoofdPanel();
+		stapH = 15;
 		hoogte = 40;
 		//oplossingenGevonden en oplossingen instellen. 
 	}
@@ -160,10 +162,9 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		hoogte = bepaalHoogte();
 		Component huidigIC = getHuidigIC();
 		remove(huidigIC);
-		hoofdPanel.contentPanel.add(huidigIC, 0);
-		huidigIC.setLocation(this.getX() + 5, this.getY() + hoogte - 20);
+		hoofdPanel.zetIC(huidigIC);//.contentPanel.add(huidigIC, 0);
+		huidigIC.setLocation(this.getX() + 5, this.getY() + hoogte - 30); //TODO: stapH was '20', kijken hoe het uitkomt..
 		//getHuidigIC().setVisible(false);
-		
 		
 		//hoogte = 100;
 		
@@ -889,12 +890,12 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		{	kinderen[i].setLocation(x, y);
 			kinderen[i].scrollRectToVisible(new Rectangle(0, 0, 1, 1));
 			if(kinderen[i].getHuidigIC() != null && kinderen[i].getHuidigIC().getParent().equals(hoofdPanel.contentPanel))
-				kinderen[i].getHuidigIC().setLocation(x + 5, y + hoogte - 20);
+				kinderen[i].getHuidigIC().setLocation(x + 5, y + hoogte - 20); //TODO: wat te doen met deze 20? stapH?
 			hulpEditor.vulVak("$f" + geefLaatsteFormuleVak().geefVergelijking().geefVergelijking(i));
 			pijlen[i].zetBeginX(breedteVergelijkingen + hulpEditor.geefFormuleVak().getWidth() / 2);
 			breedteVergelijkingen += hulpEditor.geefFormuleVak().getWidth() + 20;//20 correctie voor woordje 'of'.
 			pijlen[i].zetEindX(x + kinderen[i].getWidth()/3);
-			pijlen[i].setLocation(Math.min(pijlen[i].xBegin, pijlen[i].xEind), y - 15);
+			pijlen[i].setLocation(Math.min(pijlen[i].xBegin, pijlen[i].xEind), y - 30);
 			if(kinderen[i].heeftKinderen())
 				kinderen[i].setLocations();
 			x += kinderen[i].getWidth();
@@ -1115,7 +1116,13 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	public void maakStap()
 	{
-		splitsOfMaakStap();
+		if(heeftFocus)
+			splitsOfMaakStap();
+		else
+		{
+				StelselEditor editorMetFocus = vindKindMetFocus();
+				editorMetFocus.splitsOfMaakStap();
+		}
 	}
 	
 	public int bepaalHoogte()
@@ -1131,24 +1138,48 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		if(heeftFocus)
 		{
 			if(this.getStapNr() > 0)
-				super.stapTerug();
-			else
-			{	if(isHoofdEditor())
-				{
-					//eerste regel leegmaken?
-				}
-				else
+			{	super.stapTerug();
+				return;
+			}
+			//nu: stapNr = 0, dus in eerste regel van de huidige editor. Deze regel leegmaken.
+			if(getHuidigIC() != null)
+				remove(getHuidigIC());
+			formuleVak.vulVak("$f@");
+			if(this.getStapNr() == 0 && !isHoofdEditor())
+			{
+				//focus in meest linker kolom
+				if(parent.kinderen[0].heeftFocus)
 				{
 					for(int i = 0; i < parent.kinderen.length; i++)
-					{	hoofdPanel.remove(parent.kinderen[i]);
-						hoofdPanel.remove(parent.pijlen[i]);
+					{	hoofdPanel.contentPanel.remove(parent.kinderen[i]); 
+						hoofdPanel.contentPanel.remove(parent.pijlen[i]);
 					}
+					Component huidigIC = parent.getHuidigIC();
+					hoofdPanel.contentPanel.remove(huidigIC);
 					parent.kinderen = null;
 					parent.pijlen = null;
 					parent.hoogte = parent.bepaalHoogte();
 					hoofdPanel.plaatsEditors();
 					parent.requestFocus();
 				}
+				else
+				{
+					for(int i = 1; i < parent.kinderen.length; i++)
+					{
+						if(parent.kinderen[i].heeftFocus)
+						{
+							//1. maak regel leeg (voor als er wat staat)
+							//dus super.stapTerug mag/moet eigenlijk altijd gebeuren en moet het dan ook goed doen als de cursor in de eerste regel staat.
+							
+							//2. ga naar vorige kind.
+							parent.kinderen[i-1].requestFocus();
+							
+							
+							break;
+						}
+					}
+				}
+				
 			}
 		}
 		else
@@ -1211,9 +1242,23 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		}
 		else
 		{
+			if(e.getActionCommand().equals("focus"))
+			{
+				if(isHoofdEditor())
+					this.formuleVak = geefLaatsteFormuleVak();
+				else
+					hoofdPanel.geefHoofdEditor().formuleVak = this.formuleVak;
+				this.formuleVak.setEditable(true);
+				hoofdPanel.geefHoofdEditor().zetFocusFalse();
+				heeftFocus = true;
+			}
 			if(e.getActionCommand().equals("formChanged"))
 			{	feedbackButton.setVisible(false);
 				hoofdPanel.contentPanel.remove(getFeedbackComponent());
+				if(hoofdPanel.ic != null)
+				{	hoofdPanel.contentPanel.remove(hoofdPanel.ic);
+				}
+				hoofdPanel.repaint();
 			}
 			super.actionPerformed(e);
 		}

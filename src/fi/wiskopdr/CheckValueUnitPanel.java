@@ -496,8 +496,6 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
         			
         			String[][] tekenParen = {{"<","<"},{"<","\u2264"},{"\u2264","<"},{"\u2264","\u2264"},{">",">"},{"\u2265",">"},{">","\u2265"},{"\u2265","\u2265"}};
         			
-        			
-        			System.out.println(""+v[h].toString());
         			boolean[] stappenJuist = new boolean[v[h].geefAantal()];
         			for(int k=0 ; k<stappenJuist.length ; k++)
         			{
@@ -629,7 +627,6 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
         if(e.getSource()==checkButton)
         {   kijkNa();
         
- System.out.println("kijk na checkvalueUnit en ingevuld is " + Boolean.toString(ingevuld));       
         	if((mode==0 || mode==1) && ingevuld)produceAction("checked");
         	if(fout) errorCount++;
         	attemptsCount++;
