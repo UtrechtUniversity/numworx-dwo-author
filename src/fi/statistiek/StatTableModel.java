@@ -17,6 +17,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import fi.statistiek.boxplot.BoxplotModel;
+import fi.statistiek.crosstabulationtable.CrossTabulationTableModel;
+import fi.statistiek.descriptives.DescriptivesModel;
 import fi.statistiek.dotplot.DotplotModel;
 import fi.statistiek.frequencytable.FrequencyTableModel;
 import fi.statistiek.histogram.HistogramModel;
@@ -1270,6 +1272,7 @@ public class StatTableModel implements TableModel
 		{
 			this.columnNames.remove(column);
 			this.columnClass.remove(column);
+			this.stringOptions.remove(column);
 			this.stringFrequencies.remove(column);
 			
 			for (ArrayList<Object> row : this.values)
@@ -1344,6 +1347,14 @@ public class StatTableModel implements TableModel
 			else if (t.getClass() == FrequencyTableModel.class)
 			{
 				((FrequencyTableModel) t).updateColumnIndex(removedIndex);
+			}
+			else if (t.getClass() == DescriptivesModel.class)
+			{
+				((DescriptivesModel) t).updateColumnIndex(removedIndex);
+			}
+			else if (t.getClass() == CrossTabulationTableModel.class)
+			{
+				((CrossTabulationTableModel) t).updateColumnIndex(removedIndex);
 			}
 		}
 	}
