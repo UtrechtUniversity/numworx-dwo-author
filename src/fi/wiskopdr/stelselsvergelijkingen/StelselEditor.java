@@ -65,6 +65,8 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 	
 	private boolean correct = false;
 	private boolean fout = false;
+	private int score = 0;
+	private int scoreMax = 0; 
 	
 	private boolean heeftFocus = false;
 	
@@ -78,12 +80,10 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		super();
 		setHeader(false);
 		zetStandaardOpties();
-		zetCheck(true);//TODO: dit afhankelijk maken van of check is aangevinkt in editPanel.
 		heeftFocus = true;
 		this.hoofdPanel = hoofdPanel;
 		stapH = 15;
 		hoogte = hoofdPanel.getHeight();
-		
 	}
 	
 	public StelselEditor(StelselEditor parent)
@@ -97,6 +97,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		hoofdPanel = parent.geefHoofdPanel();
 		stapH = 15;
 		hoogte = 40;
+		scoreMax = parent.scoreMax;
 		//oplossingenGevonden en oplossingen instellen. 
 	}
 	
@@ -114,6 +115,11 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		feedbackButton.setSize(15, 15);
 		feedbackButton.setVisible(false);
 		add(feedbackButton);
+	}
+	
+	public void zetScoreMax(int scoreMax)
+	{
+		this.scoreMax = scoreMax;
 	}
 	
 	public void zetVarNamen(String[] varNamen)
@@ -254,13 +260,30 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //		{	formuleVakInhouden = new String[1];
 //				formuleVakInhouden[0] = "$f@";
 //		}
+		Vector<boolean[][]> eindOplExactVector = geefEindOplExactEditorEnKinderen();
+		Vector<boolean[][]> eindOplGevondenVector = geefEindOplGevondenEditorEnKinderen();
+		Vector<boolean[][]> eindOplStelselVector = geefEindOplStelselEditorEnKinderen();
+		boolean[][][] eindOplossingExactGevondenArrays = new boolean[eindOplExactVector.size()][][];
+		boolean[][][] eindOplossingGevondenArrays = new boolean[eindOplGevondenVector.size()][][];
+		boolean[][][] eindOplossingStelselGevondenArrays = new boolean[eindOplStelselVector.size()][][];
+		for(int i = 0; i < eindOplExactVector.size(); i++)
+		{
+			eindOplossingExactGevondenArrays[i] = eindOplExactVector.get(i);
+			eindOplossingGevondenArrays[i] = eindOplGevondenVector.get(i);
+			eindOplossingStelselGevondenArrays[i] = eindOplStelselVector.get(i);
+		}
+		
 		
 		Hashtable h = new Hashtable();
 		h.put("aantalKinderen", aantalKinderen);
 		h.put("stapNrs", stapNrs);
 		h.put("formuleVakInhouden", formuleVakInhouden);
+		h.put("eindOplossingExactGevondenArrays", eindOplossingExactGevondenArrays);
+		h.put("eindOplossingGevondenArrays", eindOplossingGevondenArrays);
+		h.put("eindOplossingStelselGevondenArrays", eindOplossingStelselGevondenArrays);
 		h.put("ingevuld", new Boolean(ingevuld));
 		h.put("nagekeken", new Boolean(nagekeken));
+		
 		
 		return h;
 	}
@@ -270,6 +293,9 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		int[] aantalKinderen = null;
 		int[] stapNrs = null;
 		String[] formuleVakInhouden = null;
+		boolean[][][] eindOplossingExactGevondenArrays = null;
+		boolean[][][] eindOplossingGevondenArrays = null;
+		boolean[][][] eindOplossingStelselGevondenArrays = null;
 		boolean ingevuld = false;
 		boolean nagekeken = false;
 		if(h.containsKey("aantalKinderen"))
@@ -278,6 +304,12 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			stapNrs = OpdrNavStruct.toIntArray(h.get("stapNrs"));
 		if(h.containsKey("formuleVakInhouden"))
 			formuleVakInhouden = OpdrNavStruct.toStringArray(h.get("formuleVakInhouden"));
+		if(h.containsKey("eindOplossingExactGevondenArrays"))
+			eindOplossingExactGevondenArrays = (boolean[][][]) h.get("eindOplossingExactGevondenArrays");
+		if(h.containsKey("eindOplossingGevondenArrays"))
+			eindOplossingGevondenArrays = (boolean[][][]) h.get("eindOplossingGevondenArrays");
+		if(h.containsKey("eindOplossingStelselGevondenArrays"))
+			eindOplossingStelselGevondenArrays = (boolean[][][]) h.get("eindOplossingStelselGevondenArrays");
 		if(h.containsKey("ingevuld"))
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
 		if(h.containsKey("nagekeken"))
@@ -286,10 +318,12 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		this.ingevuld = ingevuld;
 		this.nagekeken = nagekeken;
 		
-		setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, 0, 0);
+		setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, eindOplossingExactGevondenArrays, 
+				eindOplossingGevondenArrays, eindOplossingStelselGevondenArrays, 0, 0);
 	}
 	
-	public int[] setStateEditorEnKinderen(int[] aantalKinderen, int[] stapNrs, String[] formuleVakInhouden, int formuleTeller, int editorTeller)
+	public int[] setStateEditorEnKinderen(int[] aantalKinderen, int[] stapNrs, String[] formuleVakInhouden, 
+			boolean[][][] exactArrays, boolean[][][] oplossingArrays, boolean[][][] stelselArrays, int formuleTeller, int editorTeller)
 	{
 		//eerst: setState van deze editor. Hashtable met geschikte info maken en super.setState aanroepen;
 		Hashtable h = new Hashtable();
@@ -297,6 +331,10 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		String[] formuleVakInhoudenEditor = new String[stapNr + 1];
 		for(int i = 0; i < stapNr + 1; i++)
 			formuleVakInhoudenEditor[i] = formuleVakInhouden[formuleTeller + i];
+		eindOplossingExactGevonden = exactArrays[editorTeller];
+		eindOplossingGevonden = oplossingArrays[editorTeller];
+		eindOplossingStelselGevonden = stelselArrays[editorTeller];
+		
 		//kijken of hier nog meer in moet, zoals ingevuld en nagekeken. Dan misschien toch beter h doorgeven.
 		String antwoordString = formuleVakInhoudenEditor[formuleVakInhoudenEditor.length - 1];
 		ingevuld = !antwoordString.equals("$f@");
@@ -314,7 +352,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		{
 			for(int i = 0; i < kinderen.length; i++)
 			{
-				int[] tellers = kinderen[i].setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, formuleTeller, editorTeller);
+				int[] tellers = kinderen[i].setStateEditorEnKinderen(aantalKinderen, stapNrs, formuleVakInhouden, exactArrays, oplossingArrays, stelselArrays, formuleTeller, editorTeller);
 				formuleTeller = tellers[0];
 				editorTeller = tellers[1];
 			}
@@ -323,25 +361,6 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		tellers[0] = formuleTeller;
 		tellers[1] = editorTeller;
 		return tellers;
-	}
-	
-	public boolean[] geefTakEindes()
-	{
-		Vector<Boolean> v = new Vector<Boolean>();
-		v.add(kinderen != null);
-		if(kinderen != null)
-		{
-			for(int i = 0; i < kinderen.length; i++)
-			{
-				boolean[] v2 = kinderen[i].geefTakEindes();
-				for(int j = 0; j < v2.length; j++)
-					v.add(v2[j]);
-			}
-		}
-		boolean[] b = new boolean[v.size()];
-		for(int i = 0; i < v.size(); i++)
-			b[i] = v.get(i);
-		return b;
 	}
 	
 	public int[] geefAantalKinderen()
@@ -406,6 +425,54 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			if(stapNr > 0 && (formuleVakken[stapNr] == null || formuleVakken[stapNr].toString().equals("$f@")))
 				stapNr--;
 			v.add(stapNr);
+		}
+		return v;
+	}
+	
+	public Vector<boolean[][]> geefEindOplExactEditorEnKinderen()
+	{
+		Vector<boolean[][]> v = new Vector<boolean[][]>();
+		v.add(eindOplossingExactGevonden);
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				Vector<boolean[][]> v2 = kinderen[i].geefEindOplExactEditorEnKinderen();
+				for(int j = 0; j < v2.size(); j++)
+					v.add(v2.get(j));
+			}
+		}
+		return v;
+	}
+	
+	public Vector<boolean[][]> geefEindOplGevondenEditorEnKinderen()
+	{
+		Vector<boolean[][]> v = new Vector<boolean[][]>();
+		v.add(eindOplossingGevonden);
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				Vector<boolean[][]> v2 = kinderen[i].geefEindOplGevondenEditorEnKinderen();
+				for(int j = 0; j < v2.size(); j++)
+					v.add(v2.get(j));
+			}
+		}
+		return v;
+	}
+	
+	public Vector<boolean[][]> geefEindOplStelselEditorEnKinderen()
+	{
+		Vector<boolean[][]> v = new Vector<boolean[][]>();
+		v.add(eindOplossingStelselGevonden);
+		if(kinderen != null)
+		{
+			for(int i = 0; i < kinderen.length; i++)
+			{
+				Vector<boolean[][]> v2 = kinderen[i].geefEindOplStelselEditorEnKinderen();
+				for(int j = 0; j < v2.size(); j++)
+					v.add(v2.get(j));
+			}
 		}
 		return v;
 	}
@@ -602,7 +669,9 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 								if(hoofdPanel.geefAntwoordVak().oplossingenRegelZichtbaar)
 									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21a", show);// "Je hebt alle oplossingen gevonden, vul ze onderaan in."
 								else
+								{	score = scoreMax;
 									zetCorrectFoutStap(stapNr, true, false, false, "feedbackTekst21b", show);// "Je hebt alle oplossingen gevonden."
+								}
 								geefFocusDoor();
 							}
 							else
@@ -666,6 +735,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 //							else
 //							{
 								correct = true;
+								score = scoreMax;
 								if(hoofdPanel.geefHoofdEditor().zijnEditorOfKinderenCorrect())
 								{	//TODO: feedback maken voor als oplossingenvak niet aanwezig is.
 									if(hoofdPanel.geefAntwoordVak().oplossingenRegelZichtbaar)
@@ -852,6 +922,8 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		this.correct = correct;
 		this.fout = fout;
 		super.zetCorrectFoutStap(stapNr, correct, fout, stapOk, feedbackKey, show);
+		if(show)
+			hoofdPanel.antwoordVak.produceAction("changed");
 	}
 	
 	public void splitsOfMaakStap()
@@ -1078,6 +1150,23 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		return true;
 	}
 	
+	public int getScoreEditorOfKinderen()
+	{
+		if(kinderen == null)
+			return score;
+		else
+		{
+			for (int i = 0; i < kinderen.length; i++)
+			{
+				if(kinderen[i].getScoreEditorOfKinderen() > 0)
+					return kinderen[i].getScoreEditorOfKinderen();
+			}
+		}
+		return 0;
+	}
+	
+	
+	
 //	public void setNewScrollSize()
 //	{
 //		super.setNewScrollSize();
@@ -1168,13 +1257,7 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 					{
 						if(parent.kinderen[i].heeftFocus)
 						{
-							//1. maak regel leeg (voor als er wat staat)
-							//dus super.stapTerug mag/moet eigenlijk altijd gebeuren en moet het dan ook goed doen als de cursor in de eerste regel staat.
-							
-							//2. ga naar vorige kind.
 							parent.kinderen[i-1].requestFocus();
-							
-							
 							break;
 						}
 					}
@@ -1212,6 +1295,12 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 			for(int i = 0; i < kinderen.length; i++)
 				kinderen[i].zetFocusFalse();
 		}
+	}
+	
+	public void zetFocusOplossingenRegel()
+	{
+		zetFocusFalse();
+		formuleVak = hoofdPanel.geefAntwoordVak().oplossingenVak.geefFormuleVak();
 	}
 	
 	public void addFeedbackComponent()

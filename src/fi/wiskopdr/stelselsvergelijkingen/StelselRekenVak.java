@@ -68,6 +68,9 @@ public class StelselRekenVak extends JPanel  {
 	String[] varNamen = {"n", "p"};
 	Expressie[][] oplossingen = {{new BasisExpressie(0), new BasisExpressie(2)}};
 	
+	private boolean check;
+	private boolean teltMee;
+	
 	private String[] randomVars;
 	private Hashtable randomValues;
 	
@@ -222,10 +225,12 @@ public class StelselRekenVak extends JPanel  {
 		//this.variabelenString = variabelenString;
 		//this.answerModels = answerModels;
 		//this.hasFeedback = hasFeedback;
-		//this.check = check;
-		//this.teltMee = teltMee;
+		this.check = check;
+		this.teltMee = teltMee;
 		this.randomVars = randomVars;
 		this.randomValues = randomValues;
+		hoofdEditor.zetScoreMax(scoreMax);
+		hoofdEditor.zetCheck(check);
 		//this.formuleToolBijFocus = formuleToolBijFocus;
 		//this.logOption = logOption;
 		//this.logID = logID;
@@ -318,13 +323,24 @@ public class StelselRekenVak extends JPanel  {
 		return hoofdEditor;
 	}
 	
+	public int getScore()
+	{
+		if (!teltMee)
+			return 0;
+		return hoofdEditor.getScoreEditorOfKinderen();
+	}
+	
 	public boolean isCorrect()
 	{
+		if(!teltMee)
+			return true;
 		return hoofdEditor.zijnEditorOfKinderenCorrect();
 	}
 	
 	public boolean isFout()
 	{
+		if(!teltMee)
+			return false;
 		//TODO: invullen.
 		return false;
 	}

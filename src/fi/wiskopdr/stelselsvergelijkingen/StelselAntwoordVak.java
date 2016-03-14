@@ -94,12 +94,14 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		
 		oplossingenVak = new StelselOplossingenVak(this);
 		oplossingenRegel.add(oplossingenVak);
-		oplossingenVak.setBounds(getWidth() - 200, 1, 198, 24);
+		oplossingenVak.setBounds(getWidth() - 200, 1, 198, 25);
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{
 		int hoogteOplossingen = 25;
+		if(oplossingenRegelZichtbaar)
+			hoogteOplossingen = oplossingenVak.geefFormuleVak().getHeight() + 6;
 		
 		if(rekenVakZichtbaar)
 		{	super.setBounds(x,y,b,h);
@@ -107,8 +109,9 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 			{
 				rekenVak.setBounds(1, 0, b-2, h - hoogteOplossingen - 5);
 				oplossingenRegel.setBounds(0, h-hoogteOplossingen, b, hoogteOplossingen);
-				oplossingenLabel.setBounds(5, 2, 150, 40); //150 was 110, 40 was 20
-				oplossingenVak.setBounds(oplossingenLabel.getWidth() + 10, 0, getWidth() - oplossingenLabel.getWidth() - 12, 24);
+				//TODO: breedte tekst op label uitvogelen en gebruiken hieronder (ipv 150)
+				oplossingenLabel.setBounds(5, 2, 150, hoogteOplossingen); //150 was 110, 40 was 20
+				oplossingenVak.setBounds(oplossingenLabel.getWidth() + 10, 0, getWidth() - oplossingenLabel.getWidth() - 12, hoogteOplossingen);
 			}
 			else
 			{
@@ -125,6 +128,10 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		
 	}
 
+	public void resize()
+	{
+		setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	}
 	
 	
 	@Override
@@ -425,8 +432,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		if(oplossingenRegelZichtbaar)
 			return oplossingenVak.getScore();
 		else
-			return rekenVak.geefHoofdEditor().getScore();
-		//TODO: dit laatste is waarschijnlijk nog niet handig. Naar kijken voor als oplossingenregel niet zichtbaar.
+			return rekenVak.getScore();
 	}
 
 	@Override
@@ -445,7 +451,8 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 		if(oplossingenRegelZichtbaar)
 			return oplossingenVak.isCorrect();
 		else
-			return rekenVak.isCorrect();
+		{	return rekenVak.isCorrect();
+		}
 	}
 
 	@Override

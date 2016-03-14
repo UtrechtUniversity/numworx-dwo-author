@@ -94,6 +94,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "grafiekToolKnopLabel" , "Graph tool" },
 				{ "vergelijkingCBLabel" , "Equation" },
 				{ "eindOplossingCBLabel" , "Answer needed" },
+				{ "onafhankelijkCBLabel", "Independent"},
 				{ "checkCBLabel" , "Checkable" },
 				{ "teltMeeCBLabel" , "Include in grading" },
 				{ "logCBLabel" , "logID" },
@@ -214,7 +215,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"boxMetRand" , "Box"},
 				{"keuzeVakKiesLabel" , "Choose"},
 				{"verzamelDoelCBLabel" , "Target object as collection area"},
-                
+				{"oplossingenRegelZichtbaar", "Solution bar visible"},
+				{"rekenVakZichtbaar", "Equation box visible"},
 				
 				{"vormCBLabel" , "Form"},
 				{"formuleToolCBLabel" , "Formula input editor"},

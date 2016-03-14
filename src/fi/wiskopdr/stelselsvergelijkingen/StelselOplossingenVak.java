@@ -353,7 +353,6 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		this.attempts = attempts;
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
-		System.out.println("oplossingenvak setState: antwoord = " + antwoord);
 		formuleVak.vulVak(antwoord);
 		
 		if (ingevuld && (mode == 0 || nagekeken))
@@ -957,6 +956,15 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 				parent.produceAction("feedbackWeg");
 			}
 			zetGoedFout(GEEN);
+		}
+		else if(e.getSource() == formuleVak && e.getActionCommand().equals("zetMaat"))
+			parent.resize();
+		else if(e.getSource() == formuleVak && e.getActionCommand().equals("focus"))
+		{
+			if(parent.rekenVakZichtbaar)
+			{
+				parent.rekenVak.geefHoofdEditor().zetFocusOplossingenRegel();
+			}
 		}
 		else if (e.getSource() == feedbackButton)
 		{
