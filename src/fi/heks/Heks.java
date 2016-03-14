@@ -67,7 +67,7 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		} catch (NumberFormatException e) {
 			bladNummer = 1;
 		}
-		//bladNummer = 13;
+		bladNummer = 21;
 
 		if (bladNummer == 1)
 			tp = new TafereelPanel2(5, 5, 790, 565, this);
@@ -123,6 +123,7 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		double sx = ((1.0 * getSize().width) / tp.getSize().width);
 		double sy = ((1.0 * getSize().height) / tp.getSize().height);
 		double schaal = Math.min(sx, sy) * 0.95;
+		// let op schaalt nu hard op 0,8
 		tp.schaal(0.80);
 		int x = (int) ((sx - schaal) * tp.getSize().width / 2);
 		int y = (int) ((sy - schaal) * tp.getSize().height / 2);
