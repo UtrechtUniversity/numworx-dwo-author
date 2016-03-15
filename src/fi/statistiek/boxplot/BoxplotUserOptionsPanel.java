@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -34,6 +35,11 @@ import fi.statistiek.types.ColumnType;
 public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private BoxplotView view;
 	private BoxplotController controller;
 	private BoxplotModel model;
@@ -49,6 +55,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 
 	// display settings
 	private JLabel absRelLabel;
+	private JCheckBox tukeyBox;
 	private JRadioButton verticalBoxesRadioItem;
 	private JRadioButton horizontalBoxesRadioItem;
 	private JSeparator separator2;
@@ -144,6 +151,13 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		// display settings
 		this.absRelLabel = new JLabel(Statistiek.rb.getString("absRelLabel"));
 		this.absRelLabel.setFont(Statistiek.font);
+
+		this.tukeyBox = new JCheckBox(
+			Statistiek.rb.getString("tukeyCheckbox"), true);
+		this.tukeyBox.setFont(Statistiek.font);
+		this.tukeyBox.setOpaque(false);
+		this.tukeyBox.setActionCommand("tukeyBox");
+		this.tukeyBox.addActionListener(this.controller);
 
 		this.verticalBoxesRadioItem = new JRadioButton(
 			Statistiek.rb.getString("verticalboxplotsRadio"));
@@ -325,16 +339,20 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		hb1.add(Box.createHorizontalGlue());
 
 		hb2 = Box.createHorizontalBox();
-		hb2.add(horizontalBoxesRadioItem);
+		hb2.add(tukeyBox);
 		hb2.add(Box.createHorizontalGlue());
 
 		hb3 = Box.createHorizontalBox();
-		hb3.add(verticalBoxesRadioItem);
+		hb3.add(horizontalBoxesRadioItem);
 		hb3.add(Box.createHorizontalGlue());
 
 		hb4 = Box.createHorizontalBox();
-		hb4.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		hb4.add(separator2);
+		hb4.add(verticalBoxesRadioItem);
+		hb4.add(Box.createHorizontalGlue());
+
+		hb5 = Box.createHorizontalBox();
+		hb5.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		hb5.add(separator2);
 
 		vb3 = Box.createVerticalBox();
 		vb3.setBorder(BorderFactory.createTitledBorder(border,
@@ -343,6 +361,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 		vb3.add(hb2);
 		vb3.add(hb3);
 		vb3.add(hb4);
+		vb3.add(hb5);
 		vb3.add(Box.createVerticalGlue());
 
 		// splitOptions
@@ -470,6 +489,11 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 	public String getColumnBoxSelectedString()
 	{
 		return (String) this.varBox.getSelectedItem();
+	}
+
+	public boolean isTukeyBoxSelected()
+	{
+		return (this.tukeyBox != null && this.tukeyBox.isSelected());
 	}
 
 	public boolean isVerticalBoxesButtonSelected()
@@ -625,6 +649,8 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 				setSplitEnumClasses(true);
 			}
 		}
+
+		this.tukeyBox.setSelected(this.model.isTukeyBox());
 
 		if (this.model.isVerticalBoxplots())
 		{
