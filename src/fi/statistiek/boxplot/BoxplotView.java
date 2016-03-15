@@ -45,42 +45,6 @@ public class BoxplotView extends JPanel implements Observer
 		this.model.addObserver(this);
 		this.controller = controller;
 
-		/*
-		 * this.userOptionsPanel = new JPanel(new GridLayout(2,3));
-		 * this.userOptionsPanel1 = new JPanel();
-		 * 
-		 * this.columnLabel = new
-		 * JLabel(Statistiek.rb.getString("variableLabel"));
-		 * this.userOptionsPanel.add(this.columnLabel);
-		 * 
-		 * this.splitButton = new
-		 * JButton(Statistiek.rb.getString("splitdataButton"));
-		 * this.splitButton.setActionCommand("splitButton");
-		 * this.splitButton.addActionListener(this.controller);
-		 * this.userOptionsPanel.add(this.splitButton);
-		 * 
-		 * this.verticalBoxesButton = new
-		 * JRadioButton(Statistiek.rb.getString("verticalboxplotsRadio"));
-		 * this.verticalBoxesButton.setActionCommand("verticalBoxesButton");
-		 * this.verticalBoxesButton.addActionListener(this.controller);
-		 * this.userOptionsPanel.add(this.verticalBoxesButton);
-		 * 
-		 * this.columnBox = new JComboBox();
-		 * this.columnBox.setActionCommand("columnBox");
-		 * this.columnBox.addActionListener(controller);
-		 * this.userOptionsPanel.add(this.columnBox);
-		 * 
-		 * this.userOptionsPanel.add(new JLabel());
-		 * 
-		 * this.horizontalBoxesButton = new
-		 * JRadioButton(Statistiek.rb.getString("horizontalboxplotsRadio"));
-		 * this.horizontalBoxesButton.setActionCommand("horizontalBoxesButton");
-		 * this.horizontalBoxesButton.addActionListener(this.controller);
-		 * this.userOptionsPanel.add(this.horizontalBoxesButton); ButtonGroup
-		 * group = new ButtonGroup(); group.add(horizontalBoxesButton);
-		 * group.add(verticalBoxesButton);
-		 */
-
 		userOptionsPanel = new BoxplotUserOptionsPanel(this, controller, model);
 		dialogButton = userOptionsPanel.getDialogButton();
 		super.add(dialogButton, BorderLayout.SOUTH);
@@ -99,6 +63,11 @@ public class BoxplotView extends JPanel implements Observer
 	public String getColumnBoxSelectedString()
 	{
 		return (String) this.userOptionsPanel.getColumnBoxSelectedString();
+	}
+
+	public boolean isTukeyBoxSelected()
+	{
+		return this.userOptionsPanel.isTukeyBoxSelected();
 	}
 
 	public boolean isVerticalBoxesButtonSelected()
@@ -202,70 +171,64 @@ public class BoxplotView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
-//		System.out.println("BoxplotView.update()");
-
+		// nodig?
+		model.setPercentileValues();
+		
 		// check for empty data set
-		if (this.model.getDataMinValue() != null)
+		if (!this.model.isEmptyBoxplot())
 		{
 			this.dialogButton.setVisible(this.model.getStatTableModel()
 				.isViewsEditable());
 
 			userOptionsPanel.update();
 
-			/*
-			 * this.verticalBoxesButton.setSelected(this.model.isVerticalBoxplots
-			 * ());
-			 * this.horizontalBoxesButton.setSelected(!this.model.isVerticalBoxplots
-			 * ());
-			 * 
-			 * this.columnBox.removeActionListener(this.controller);
-			 * this.columnBox.removeAllItems();
-			 * 
-			 * for(int column = 0; column <
-			 * this.model.getTableModel().getColumnCount(); column++) {
-			 * if(this.model
-			 * .getTableModel().getColumnTypes().get(column).getType
-			 * ().isNumber()) {
-			 * this.columnBox.addItem(this.model.getTableModel()
-			 * .getColumnNames().get(column)); } }
-			 * if(this.model.getTableModel().
-			 * isColumnIndexValid(this.model.getColumnIndex())) {
-			 * this.columnBox.
-			 * setSelectedItem(this.model.getTableModel().getColumnNames
-			 * ().get(this.model.getColumnIndex())); } else { //set no item
-			 * selected this.columnBox.setSelectedIndex(-1); }
-			 * this.columnBox.addActionListener(this.controller);
-			 * //this.columnSplitBox.addActionListener(this.controller);
-			 */
-
 			this.mainPanel.removeAll();
 			this.mainPanel.setBackground(Color.WHITE);
 			if (this.model.getStatTableModel().isColumnIndexValid(
 				this.model.getColumnIndex()))
-			{ // &&this.model.getTableModel().isColumnIndexValid(this.model.getColumnSplitIndex())
+			{
 				if (!this.model.getStatTableModel().isColumnIndexValid(
 					this.model.getColumnSplitIndex()))
 				{
 					// geen split
 
+					SingleBoxplotView v = new SingleBoxplotView(
+						this.model.isTukeyBox() ? this.model.getOutlierStrongMinValue(0) : null,
+						this.model.isTukeyBox() ? this.model.getOutlierWeakMinValue(0) : null,
+						this.model.getOutlierMinValue(0),
+						this.model.getMinValue(0),
+						this.model.getLowerQuartile(0),
+						this.model.getMedian(0),
+						this.model.getUpperQuartile(0),
+						this.model.getMaxValue(0),
+						this.model.getOutlierMaxValue(0),
+						this.model.isTukeyBox() ? this.model.getOutlierWeakMaxValue(0) : null,
+						this.model.isTukeyBox() ? this.model.getOutlierStrongMaxValue(0) : null,
+						this.model.getDataMinValue(),
+						this.model.getDataMaxValue(),
+						this.model.isVerticalBoxplots(),
+						this.model.isTukeyBox(),
+						this.model.isEmptyBoxplot());
+					
+					if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot())
+					{
+						v.initializeOutlierHighlightValues();
+					}
+
+					JPanel boxplotsPanel = new JPanel(new GridLayout(1, 1));
+					boxplotsPanel.setBackground(Color.WHITE);
+					this.mainPanel.setLayout(new BorderLayout());
+					boxplotsPanel.add(v);
+
+					this.dependentAxis = new BoxplotDependentAxis(
+						this.model.getDataMinValue(),
+						this.model.getDataMaxValue(),
+						this.model.isVerticalBoxplots(), this, this.model
+							.getStatTableModel().getColumnName(
+								this.model.getColumnIndex()));
+
 					if (this.model.isVerticalBoxplots())
 					{
-						JPanel boxplotsPanel = new JPanel(new GridLayout(1, 1));
-						boxplotsPanel.setBackground(Color.WHITE);
-						this.mainPanel.setLayout(new BorderLayout());
-
-						SingleBoxplotView v = new SingleBoxplotView(
-							this.model.getMinValue(0),
-							this.model.getLowerQuartile(0),
-							this.model.getMedian(0),
-							this.model.getUpperQuartile(0),
-							this.model.getMaxValue(0),
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots());
-
-						boxplotsPanel.add(v);
-
 						JPanel eastPanel = new JPanel()
 						{
 							public Dimension getPreferredSize()
@@ -276,34 +239,16 @@ public class BoxplotView extends JPanel implements Observer
 						};
 						eastPanel.setBackground(Color.WHITE);
 						this.mainPanel.add(eastPanel, BorderLayout.EAST);
-						this.dependentAxis = new BoxplotDependentAxis(
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots(), this, this.model
-								.getStatTableModel().getColumnName(
-									this.model.getColumnIndex()));
 						this.mainPanel.add(this.dependentAxis,
 							BorderLayout.WEST);
 
 						this.mainPanel.add(boxplotsPanel, BorderLayout.CENTER);
 						this.mainPanel.setBounds(this.mainPanel.getBounds());
-					}
+					} // vertical boxplot
 					else
 					{
-						JPanel boxplotsPanel = new JPanel(new GridLayout(1, 1));
-						boxplotsPanel.setBackground(Color.WHITE);
-						this.mainPanel.setLayout(new BorderLayout());
-						SingleBoxplotView v = new SingleBoxplotView(
-							this.model.getMinValue(0),
-							this.model.getLowerQuartile(0),
-							this.model.getMedian(0),
-							this.model.getUpperQuartile(0),
-							this.model.getMaxValue(0),
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots());
-						//System.out.println(v);
-						boxplotsPanel.add(v);
+						// horizontal boxplot
+						
 						JPanel centerPanel = new JPanel(new BorderLayout());
 						JPanel northPanel = new JPanel()
 						{
@@ -315,12 +260,6 @@ public class BoxplotView extends JPanel implements Observer
 						};
 						northPanel.setBackground(Color.WHITE);
 						centerPanel.add(northPanel, BorderLayout.NORTH);
-						this.dependentAxis = new BoxplotDependentAxis(
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots(), this, this.model
-								.getStatTableModel().getColumnName(
-									this.model.getColumnIndex()));
 						centerPanel.add(this.dependentAxis, BorderLayout.SOUTH);
 						centerPanel.setBackground(Color.WHITE);
 						centerPanel.add(boxplotsPanel, BorderLayout.CENTER);
@@ -332,32 +271,52 @@ public class BoxplotView extends JPanel implements Observer
 				{ 
 					// er is een split
 					
-					int splitClasses = this.model.getSplitClasses();
+					int splitClasses = this.model.getNumberOfSplitClasses();
+
+					this.dependentAxis = new BoxplotDependentAxis(
+						this.model.getDataMinValue(),
+						this.model.getDataMaxValue(),
+						this.model.isVerticalBoxplots(), this, this.model
+							.getStatTableModel().getColumnName(
+								this.model.getColumnIndex()));
+
+					this.independentAxis = new BoxplotIndependentAxis(
+						this.model, this, this.model.isVerticalBoxplots(),
+						this.model.getStatTableModel().getColumnName(
+							this.model.getColumnSplitIndex()));
 
 					if (this.model.isVerticalBoxplots())
 					{
 						JPanel boxplotsPanel = new JPanel(new GridLayout(1,
 							splitClasses));
 						boxplotsPanel.setBackground(Color.WHITE);
-						this.dependentAxis = new BoxplotDependentAxis(
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots(), this, this.model
-								.getStatTableModel().getColumnName(
-									this.model.getColumnIndex()));
 						this.mainPanel.add(this.dependentAxis,
 							BorderLayout.WEST);
+						
 						for (int i = 0; i < splitClasses; i++)
 						{
 							SingleBoxplotView v = new SingleBoxplotView(
+								this.model.isTukeyBox() ? this.model.getOutlierStrongMinValue(i) : null,
+								this.model.isTukeyBox() ? this.model.getOutlierWeakMinValue(i) : null,
+								this.model.getOutlierMinValue(i),
 								this.model.getMinValue(i),
 								this.model.getLowerQuartile(i),
 								this.model.getMedian(i),
 								this.model.getUpperQuartile(i),
 								this.model.getMaxValue(i),
+								this.model.getOutlierMaxValue(i),
+								this.model.isTukeyBox() ? this.model.getOutlierWeakMaxValue(i) : null,
+								this.model.isTukeyBox() ? this.model.getOutlierStrongMaxValue(i) : null,
 								this.model.getDataMinValue(),
 								this.model.getDataMaxValue(),
-								this.model.isVerticalBoxplots());
+								this.model.isVerticalBoxplots(),
+								this.model.isTukeyBox(),
+								this.model.isEmptyBoxplot());
+							
+							if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot())
+							{
+								v.initializeOutlierHighlightValues();
+							}
 
 							boxplotsPanel.add(v);
 
@@ -374,42 +333,46 @@ public class BoxplotView extends JPanel implements Observer
 						this.mainPanel.add(eastPanel, BorderLayout.EAST);
 
 						this.mainPanel.add(boxplotsPanel, BorderLayout.CENTER);
-						this.independentAxis = new BoxplotIndependentAxis(
-							this.model, this, this.model.isVerticalBoxplots(),
-							this.model.getStatTableModel().getColumnName(
-								this.model.getColumnSplitIndex()));
-						// independentAxis.setSize(independentAxis.getPreferredSize());
 						this.mainPanel.add(this.independentAxis,
 							BorderLayout.SOUTH);
 						this.mainPanel.setBounds(this.mainPanel.getBounds());
-					}
+					} // vertical boxplot
 					else
 					{
+						// horizontal boxplot
+						
 						JPanel boxplotsPanel = new JPanel(new GridLayout(
 							splitClasses, 1));
 						boxplotsPanel.setBackground(Color.WHITE);
 						this.mainPanel.setLayout(new BorderLayout());
 						JPanel centerPanel = new JPanel(new BorderLayout());
-
-						this.dependentAxis = new BoxplotDependentAxis(
-							this.model.getDataMinValue(),
-							this.model.getDataMaxValue(),
-							this.model.isVerticalBoxplots(), this, this.model
-								.getStatTableModel().getColumnName(
-									this.model.getColumnIndex()));
 						centerPanel.add(this.dependentAxis, BorderLayout.SOUTH);
+						
 						for (int i = splitClasses - 1; i >= 0; i--)
 						{
 							SingleBoxplotView v = new SingleBoxplotView(
+								this.model.isTukeyBox() ? this.model.getOutlierStrongMinValue(i) : null,
+								this.model.isTukeyBox() ? this.model.getOutlierWeakMinValue(i) : null,
+								this.model.getOutlierMinValue(i),
 								this.model.getMinValue(i),
 								this.model.getLowerQuartile(i),
 								this.model.getMedian(i),
 								this.model.getUpperQuartile(i),
 								this.model.getMaxValue(i),
+								this.model.getOutlierMaxValue(i),
+								this.model.isTukeyBox() ? this.model.getOutlierWeakMaxValue(i) : null,
+								this.model.isTukeyBox() ? this.model.getOutlierStrongMaxValue(i) : null,
 								this.model.getDataMinValue(),
 								this.model.getDataMaxValue(),
-								this.model.isVerticalBoxplots());
-							//System.out.println(v);
+								this.model.isVerticalBoxplots(),
+								this.model.isTukeyBox(),
+								this.model.isEmptyBoxplot());
+							
+							if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot())
+							{
+								v.initializeOutlierHighlightValues();
+							}
+
 							boxplotsPanel.add(v);
 						}
 						JPanel northPanel = new JPanel()
@@ -425,20 +388,23 @@ public class BoxplotView extends JPanel implements Observer
 
 						centerPanel.add(boxplotsPanel, BorderLayout.CENTER);
 						this.mainPanel.add(centerPanel, BorderLayout.CENTER);
-						this.independentAxis = new BoxplotIndependentAxis(
-							this.model, this, this.model.isVerticalBoxplots(),
-							this.model.getStatTableModel().getColumnName(
-								this.model.getColumnSplitIndex()));
 						this.mainPanel.add(this.independentAxis,
 							BorderLayout.WEST);
 						this.mainPanel.setBounds(this.mainPanel.getBounds());
-					}
-				}
+					} // horizontal boxplot
+					
+				} // er is een split
+				
+			} // column index valid
+			else
+			{
+				// column index is not valid, so nothing to draw
+				this.mainPanel.removeAll();
 			}
 
 			// Wijzigingen van BoxplotUserOptionsPanel zichtbaar maken in BoxplotView
 			this.mainPanel.revalidate();
-
+			
 			this.repaint();
 		} // non empty dataset
 		else
