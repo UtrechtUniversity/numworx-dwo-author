@@ -110,8 +110,8 @@ public class BoxplotIndependentAxis extends JPanel
 		if (this.verticalBoxplots)
 		{
 			boxWidth = (double) (this.boxplotView.getWidth()
-				- this.boxplotView.getDependentAxisWidth() - BoxplotView.KEEP_CLEAR_WIDTH)
-				/ (double) this.model.getSplitClasses();
+				- this.boxplotView.getDependentAxisWidth() 
+				- BoxplotView.KEEP_CLEAR_WIDTH) / (double) this.model.getNumberOfSplitClasses();
 			normalFit = maxStringLength <= boxWidth;
 
 			if (normalFit)
@@ -138,9 +138,8 @@ public class BoxplotIndependentAxis extends JPanel
 		else
 		{
 			this.boxWidth = (double) (super.getHeight()
-				- BoxplotView.KEEP_CLEAR_WIDTH - boxplotView
-					.getDependentAxisHeight())
-				/ (double) this.model.getSplitClasses();
+				- BoxplotView.KEEP_CLEAR_WIDTH 
+				- boxplotView.getDependentAxisHeight()) / (double) this.model.getNumberOfSplitClasses();
 			Dimension newPrefSize = new Dimension(maxStringLength
 				+ fm.getHeight() + 5, 0);
 			if (!super.getPreferredSize().equals(newPrefSize))
@@ -184,7 +183,7 @@ public class BoxplotIndependentAxis extends JPanel
 			String s;
 			if (type.isNumber())
 			{
-				for (int i = 0; i <= this.model.getSplitClasses(); i++)
+				for (int i = 0; i <= this.model.getNumberOfSplitClasses(); i++)
 				{
 					int x1 = (int) Math.round((double) i * boxWidth)
 						+ this.boxplotView.getDependentAxisWidth();
@@ -211,7 +210,7 @@ public class BoxplotIndependentAxis extends JPanel
 			} // number type 
 			else
 			{
-				for (int i = 0; i < this.model.getSplitClasses(); i++)
+				for (int i = 0; i < this.model.getNumberOfSplitClasses(); i++)
 				{
 					int x1 = (int) Math.round((i + 0.5) * boxWidth)
 						+ this.boxplotView.getDependentAxisWidth();
@@ -255,7 +254,7 @@ public class BoxplotIndependentAxis extends JPanel
 
 			if (this.type.isNumber())
 			{
-				for (int i = 0; i <= this.model.getSplitClasses(); i++)
+				for (int i = 0; i <= this.model.getNumberOfSplitClasses(); i++)
 				{
 					String s = Statistiek.getStringValue(this.model.getSplitOptions()
 						.getBinBoundaries().get(i));
@@ -270,7 +269,7 @@ public class BoxplotIndependentAxis extends JPanel
 			else
 			{ // non number
 				String s;
-				for (int i = 0; i < this.model.getSplitClasses(); i++)
+				for (int i = 0; i < this.model.getNumberOfSplitClasses(); i++)
 				{
 					if (type.equals(AllowedTypes.ENUM))
 					{
