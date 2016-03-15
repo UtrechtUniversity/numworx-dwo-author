@@ -27,15 +27,61 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 	// private ArrayList<Double> splitBinBoundaries;
 	private SplitOptions splitOptions;
 
+	/**
+	 * An arraylist with for each split the value below which a
+	 * value is a strong outlier in the Tukey boxplot, i.e.,  
+	 * more than 3 * IQR below Q1.
+	 */
+	private ArrayList<Double> outlierStrongMinValues;
+	/**
+	 * An arraylist with for each split the value below which a
+	 * value is a weak outlier in the Tukey boxplot, i.e., 
+	 * between 1.5 * IQR and 3 * IQR below Q1.
+	 */
+	private ArrayList<Double> outlierWeakMinValues;
+	/**
+	 * An arraylist with an array of outlier values on the
+	 * lower side of the Tukey boxplot for each split class.
+	 */
+	private ArrayList<ArrayList<Double>> outlierMinValues;
+	/**
+	 * An array of the minimum values for each split class.
+	 * For a Tukey boxplot it is the minimum non-outlier value. 
+	 */
 	private ArrayList<Double> minValues;
 	private ArrayList<Double> lowerQuartiles;
 	private ArrayList<Double> medians;
 	private ArrayList<Double> upperQuartiles;
+	/**
+	 * An array of the maximum values for each split class.
+	 * For a Tukey boxplot it is the maximum non-outlier value. 
+	 */
 	private ArrayList<Double> maxValues;
+	/**
+	 * An arraylist with an array of outlier values on the
+	 * upper side of the Tukey boxplot for each split class.
+	 */
+	private ArrayList<ArrayList<Double>> outlierMaxValues;
+	/**
+	 * An arraylist with for each split the value above which a
+	 * value is a weak outlier in the Tukey boxplot, i.e., 
+	 * between 1.5 * IQR and 3 * IQR above Q3.
+	 */
+	private ArrayList<Double> outlierWeakMaxValues;
+	/**
+	 * An arraylist with for each split the value above which a
+	 * value is a strong outlier in the Tukey boxplot, i.e.,  
+	 * more than 3 * IQR above Q3.
+	 */
+	private ArrayList<Double> outlierStrongMaxValues;
 
 	private Double dataMinValue;
 	private Double dataMaxValue;
 
+	/**
+	 * Boolean that indicates whether a Tukey boxplot is displayed.
+	 */
+	private boolean isTukeyBox;
 	private boolean verticalBoxplots;
 
 	private String viewName;
@@ -59,9 +105,25 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 		this.columnIndex = -1;
 		this.splitOptions = new SplitOptions();
 
+		this.isTukeyBox = true;
 		this.verticalBoxplots = false;
 	}
 
+	/**
+	 * Returns whether the boxplot is empty with respect to the boxplot for the selected variable.
+	 * 
+	 * @return
+	 */
+	public boolean isEmptyBoxplot()
+	{
+		return (this.getDataMinValue() == null);
+	}
+
+	public Boolean isTukeyBox()
+	{
+		return this.isTukeyBox;
+	}
+	
 	/**
 	 * @return true if using verticalboxplots, false if using horizontal
 	 *         boxplots
@@ -69,6 +131,48 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 	public boolean isVerticalBoxplots()
 	{
 		return verticalBoxplots;
+	}
+
+	/**
+	 * Returns whether the Tukey boxplot has lower outliers (strong or weak).
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public boolean hasLowerOutliers(int splitClass)
+	{
+		boolean b = false;
+		
+		if (this.isTukeyBox() && this.outlierMinValues.get(splitClass) != null && this.outlierMinValues.get(splitClass).size() > 0)
+		{
+			b = true;
+		}
+		
+		return b;
+	}
+	
+	/**
+	 * Returns whether the Tukey boxplot has upper outliers (strong or weak).
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public boolean hasUpperOutliers(int splitClass)
+	{
+		boolean b = false;
+		
+		if (this.isTukeyBox() && this.outlierMaxValues.get(splitClass) != null && this.outlierMaxValues.get(splitClass).size() > 0)
+		{
+			b = true;
+		}
+		
+		return b;
+	}
+	
+	void setIsTukeyBox(boolean b)
+	{
+		this.isTukeyBox = b;
+		this.changed();
 	}
 
 	/**
@@ -185,8 +289,6 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 	 */
 	public void setColumnIndex(int columnIndex)
 	{
-//		System.out.println("BoxplotModel.setColumnIndex(): Setting column from " + this.columnIndex + " to "
-//			+ columnIndex);
 		this.columnIndex = columnIndex;
 		this.setPercentileValues();
 		this.changed();
@@ -226,6 +328,158 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 		return minValues.get(bin);
 	}
 
+	/**
+	 * Get the array of the values determining a strong outlier 
+	 * on the lower side for all split classes, i.e., strong outliers
+	 * on the lower side are smaller than this value.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierStrongMinValues()
+	{
+		return this.outlierStrongMinValues;
+	}
+
+	/**
+	 * Get the value determining a strong outlier 
+	 * on the lower side for the given split class, i.e., strong outliers
+	 * on the lower side are smaller than this value.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public Double getOutlierStrongMinValue(int splitClass)
+	{
+		return this.outlierStrongMinValues.get(splitClass);
+	}
+
+	/**
+	 * Get the array of the values determining a weak outlier 
+	 * on the lower side for all split classes, i.e., weak outliers
+	 * are lower than this value and higher than the value that determines
+	 * a strong outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierWeakMinValues()
+	{
+		return this.outlierWeakMinValues;
+	}
+
+	/**
+	 * Get the value determining a weak outlier 
+	 * on the lower side for the given split class, i.e., weak outliers
+	 * are lower than this value and higher than the value that determines
+	 * a strong outlier.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public Double getOutlierWeakMinValue(int splitClass)
+	{
+		return this.outlierWeakMinValues.get(splitClass);
+	}
+
+	/**
+	 * Get the array of the values determining a weak outlier 
+	 * on the upper side for all split classes, i.e., weak outliers
+	 * are larger than this value and lower than the value that determines
+	 * a strong outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierWeakMaxValues()
+	{
+		return this.outlierWeakMaxValues;
+	}
+
+	/**
+	 * Get the value determining a weak outlier 
+	 * on the upper side for the given split class, i.e., weak outliers
+	 * are larger than this value and lower than the value that determines
+	 * a strong outlier.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public Double getOutlierWeakMaxValue(int splitClass)
+	{
+		return this.outlierWeakMaxValues.get(splitClass);
+	}
+
+	/**
+	 * Get the array of the values determining a strong outlier 
+	 * on the upper side for all split classes, i.e., strong outliers
+	 * on the upper side are larger than this value.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierStrongMaxValues()
+	{
+		return this.outlierStrongMaxValues;
+	}
+
+	/**
+	 * Get the value determining a strong outlier 
+	 * on the upper side for the given split class, i.e., strong outliers
+	 * on the upper side are larger than this value.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public Double getOutlierStrongMaxValue(int splitClass)
+	{
+		return this.outlierStrongMaxValues.get(splitClass);
+	}
+
+	/**
+	 * Get the array of outlier values on the lower side for all split classes.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ArrayList<Double>> getOutlierMinValues()
+	{
+		return this.outlierMinValues;
+	}
+
+	/**
+	 * Get the array of outlier values on the lower side for the given split classes.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierMinValue(int splitClass)
+	{
+		if (this.outlierMinValues != null && this.outlierMinValues.size() > 0)
+			return this.outlierMinValues.get(splitClass);
+		else
+			return null;
+	}
+
+	/**
+	 * Get the array of outlier values on the upper side for all split classes.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ArrayList<Double>> getOutlierMaxValues()
+	{
+		return this.outlierMaxValues;
+	}
+
+	/**
+	 * Get the array of outlier values on the upper side for the given split classes.
+	 * 
+	 * @param splitClass
+	 * @return
+	 */
+	public ArrayList<Double> getOutlierMaxValue(int splitClass)
+	{
+		if (this.outlierMaxValues != null && this.outlierMaxValues.size() > 0)
+			return this.outlierMaxValues.get(splitClass);
+		else
+			return null;
+	}
+
 	public Double getLowerQuartile(int bin)
 	{
 		return lowerQuartiles.get(bin);
@@ -246,13 +500,14 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 		return maxValues.get(bin);
 	}
 
-	public int getSplitClasses()
+	public int getNumberOfSplitClasses()
 	{
 		return this.tableModel.numberOfSplitVarClasses(this.splitOptions);
 	}
 
 	/**
-	 * Calculates the percentile values
+	 * Calculates the percentile values, and the outliers. 
+	 * If there is a split, there is an array of values for each split.
 	 */
 	public void setPercentileValues()
 	{
@@ -270,9 +525,24 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 			return;
 		}
 
+		// initialize
+		this.outlierStrongMinValues = new ArrayList<Double>();
+		this.outlierWeakMinValues = new ArrayList<Double>();
+		this.outlierMinValues = new ArrayList<ArrayList<Double>>();
+		this.minValues = new ArrayList<Double>();
+		this.lowerQuartiles = new ArrayList<Double>();
+		this.medians = new ArrayList<Double>();
+		this.upperQuartiles = new ArrayList<Double>();
+		this.maxValues = new ArrayList<Double>();
+		this.outlierMaxValues = new ArrayList<ArrayList<Double>>();
+		this.outlierWeakMaxValues = new ArrayList<Double>();
+		this.outlierStrongMaxValues = new ArrayList<Double>();
+
 		if (!this.getStatTableModel().isColumnIndexValid(
 			this.splitOptions.getColumnSplitIndex()))
 		{
+			// no split
+			
 			ArrayList<Double> data = new ArrayList<Double>();
 
 			for (int i = 0; i < this.tableModel.getRowCount(); i++)
@@ -290,25 +560,24 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 				}
 			}
 
-			this.minValues = new ArrayList<Double>();
-			this.lowerQuartiles = new ArrayList<Double>();
-			this.medians = new ArrayList<Double>();
-			this.upperQuartiles = new ArrayList<Double>();
-			this.maxValues = new ArrayList<Double>();
-
 			Collections.sort(data);
 			int size = data.size();
 			if (size == 0)
 			{
+				this.outlierStrongMinValues.add(null);
+				this.outlierWeakMinValues.add(null);
+				this.outlierMinValues.add(null);
 				this.minValues.add(null);
 				this.lowerQuartiles.add(null);
 				this.medians.add(null);
 				this.upperQuartiles.add(null);
 				this.maxValues.add(null);
+				this.outlierMaxValues.add(null);
+				this.outlierWeakMaxValues.add(null);
+				this.outlierStrongMaxValues.add(null);
 			}
 			else
 			{
-				this.minValues.add(data.get(0));
 				ArrayList<Double> lowerDataHalf = new ArrayList<Double>(data.subList(0, (int) Math.ceil(0.5 * size)));
 				this.lowerQuartiles
 					.add(this.determineMedian(lowerDataHalf));
@@ -323,17 +592,51 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 				ArrayList<Double> upperDataHalf = new ArrayList<Double>(data.subList(fromIndex, size));
 				this.upperQuartiles
 					.add(this.determineMedian(upperDataHalf));
-				this.maxValues.add(data.get(size - 1));
+				
+				// Voor tukey boxplot andere waarden bij de uiteinden, afhankelijk van lowerQuartile en upperQuartile
+				Double minValue;
+				Double maxValue;
+				if (this.isTukeyBox())
+				{
+					// determine the inter quartile range Q3 - Q1
+					Double q1 = lowerQuartiles.get(0);
+					Double q3 = upperQuartiles.get(0);
+					double iQR = q3 - q1;
+					Double tukeyMinValue = q1 - 1.5 * iQR;
+					Double tukeyMaxValue = q3 + 1.5 * iQR;
+					this.outlierWeakMinValues.add(tukeyMinValue);
+					this.outlierStrongMinValues.add(q1 - 3 * iQR);
+					this.outlierWeakMaxValues.add(tukeyMaxValue);
+					this.outlierStrongMaxValues.add(q3 + 3 * iQR);
+
+					minValue = this.getObservedTukeyMinValue(tukeyMinValue, data);
+					maxValue = this.getObservedTukeyMaxValue(tukeyMaxValue, data);
+					
+					this.setOutlierValuesNoSplit(data);
+				}
+				else
+				{
+					minValue = data.get(0);
+					maxValue = data.get(size - 1);
+				}
+				
+				this.minValues.add(minValue);
+				this.maxValues.add(maxValue);
+
 			}
-			this.dataMinValue = this.getMinValue(0);
-			this.dataMaxValue = this.getMaxValue(0);
-		}
+
+			this.dataMinValue = data.get(0);
+			this.dataMaxValue = data.get(size - 1);
+			
+		} // no split
 		else
 		{
-			int splitClasses = this.getSplitClasses();
+			// there is a split
+			
+			int numberOfSplitClasses = this.getNumberOfSplitClasses();
 
 			ArrayList<ArrayList<Double>> sortedData = new ArrayList<ArrayList<Double>>();
-			for (int i = 0; i < splitClasses; i++)
+			for (int i = 0; i < numberOfSplitClasses; i++)
 			{
 				sortedData.add(new ArrayList<Double>());
 			}
@@ -357,31 +660,32 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 						this.splitOptions.getBinBoundaries());
 					// add the value to a list based on the splitclass
 					if (index > -1)
+					{
 						sortedData.get(index).add(d);
+					}
 				}
 			}
 
-			this.minValues = new ArrayList<Double>();
-			this.lowerQuartiles = new ArrayList<Double>();
-			this.medians = new ArrayList<Double>();
-			this.upperQuartiles = new ArrayList<Double>();
-			this.maxValues = new ArrayList<Double>();
-
-			for (int i = 0; i < splitClasses; i++)
+			boolean initialized = false;
+			
+			for (int i = 0; i < numberOfSplitClasses; i++)
 			{
 				Collections.sort(sortedData.get(i));
 				int size = sortedData.get(i).size();
 				if (size == 0)
 				{
+					this.outlierStrongMinValues.add(null);
+					this.outlierWeakMinValues.add(null);
 					this.minValues.add(null);
 					this.lowerQuartiles.add(null);
 					this.medians.add(null);
 					this.upperQuartiles.add(null);
 					this.maxValues.add(null);
+					this.outlierWeakMaxValues.add(null);
+					this.outlierStrongMaxValues.add(null);
 				}
 				else
 				{
-					this.minValues.add(sortedData.get(i).get(0));
 					this.lowerQuartiles.add(sortedData.get(i).get(
 						(int) Math.ceil(0.25 * size) - 1));
 					
@@ -389,30 +693,174 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 					
 					this.upperQuartiles.add(sortedData.get(i).get(
 						(int) Math.ceil(0.75 * size) - 1));
-					this.maxValues.add(sortedData.get(i).get(size - 1));
+					
+					// Voor tukey boxplot andere waarden bij de uiteinden, afhankelijk van lowerQuartile en upperQuartile
+					Double minValue;
+					Double maxValue;
+					if (this.isTukeyBox())
+					{
+						// determine the inter quartile range Q3 - Q1
+						Double q1 = lowerQuartiles.get(i);
+						Double q3 = upperQuartiles.get(i);
+						double iQR = q3 - q1;
+						Double tukeyMinValue = q1 - 1.5 * iQR;
+						Double tukeyMaxValue = q3 + 1.5 * iQR;
+						this.outlierWeakMinValues.add(tukeyMinValue);
+						this.outlierStrongMinValues.add(q1 - 3 * iQR);
+						this.outlierWeakMaxValues.add(tukeyMaxValue);
+						this.outlierStrongMaxValues.add(q3 + 3 * iQR);
+						
+						minValue = this.getObservedTukeyMinValue(tukeyMinValue, sortedData.get(i));
+						maxValue = this.getObservedTukeyMaxValue(tukeyMaxValue, sortedData.get(i));
+					}
+					else
+					{
+						minValue = sortedData.get(i).get(0);
+						maxValue = sortedData.get(i).get(size - 1);
+					}
+					this.minValues.add(minValue);
+					this.maxValues.add(maxValue);					
 				}
+				
+				if (!initialized && (size > 0))
+				{
+					// initial values
+					this.dataMinValue = sortedData.get(i).get(0);
+					this.dataMaxValue = sortedData.get(i).get(size - 1);
+					
+					initialized = true;
+				}
+				else if (size > 0)
+				{
+					if (this.dataMinValue > sortedData.get(i).get(0))
+					{
+						this.dataMinValue = sortedData.get(i).get(0);
+					}
+					if (this.dataMaxValue < sortedData.get(i).get(size - 1))
+					{
+						this.dataMaxValue = sortedData.get(i).get(size - 1);
+					}
+				}
+				
+			} // for loop over split classes
+
+			if (this.isTukeyBox())
+			{
+				this.setOutlierValuesForEachSplit(sortedData);
 			}
 
-			if (splitClasses > 0)
-			{
-				this.dataMinValue = this.getMinValue(0);
-				this.dataMaxValue = this.getMaxValue(0);
+		} // there is a split
+	}
+	
+	/**
+	 * Set the outlier values based on the values for weak and strong outliers
+	 * as set in the fields, for the given sorted data for each split.
+	 * 
+	 * @param sortedData
+	 */
+	private void setOutlierValuesForEachSplit(ArrayList<ArrayList<Double>> sortedData)
+	{
+		ArrayList<Double> minList = new ArrayList<Double>();
+		ArrayList<Double> maxList = new ArrayList<Double>();
+		ArrayList<Double> splitData;
 
-				for (int i = 1; i < splitClasses; i++)
+		for (int splitClass = 0; splitClass < sortedData.size(); splitClass++)
+		{
+			splitData = sortedData.get(splitClass);
+			minList = new ArrayList<Double>();
+			maxList = new ArrayList<Double>();
+			
+			for (int i = 0; i < splitData.size(); i++)
+			{
+				if (splitData.get(i) < this.outlierWeakMinValues.get(splitClass))
 				{
-					if (this.getMinValue(i) != null
-						&& (this.dataMinValue == null || this.getMinValue(i) < this.dataMinValue))
-					{
-						this.dataMinValue = this.getMinValue(i);
-					}
-					if (this.getMaxValue(i) != null
-						&& (this.dataMaxValue == null || this.getMaxValue(i) > this.dataMaxValue))
-					{
-						this.dataMaxValue = this.getMaxValue(i);
-					}
+					minList.add(splitData.get(i));
 				}
+				else if (splitData.get(i) > this.outlierWeakMaxValues.get(splitClass))
+				{
+					maxList.add(splitData.get(i));
+				}
+			}
+			
+			this.outlierMinValues.add(minList);
+			this.outlierMaxValues.add(maxList);
+
+		}
+	}
+
+	/**
+	 * Set the outlier values based on the values for weak and strong outliers
+	 * as set in the fields, for the given sorted data. There is no split.
+	 * 
+	 * @param sortedData
+	 */
+	private void setOutlierValuesNoSplit(ArrayList<Double> sortedData)
+	{
+		ArrayList<Double> minList = new ArrayList<Double>();
+		ArrayList<Double> maxList = new ArrayList<Double>();
+		
+		for (int i = 0; i < sortedData.size(); i++)
+		{
+			if (sortedData.get(i) < this.outlierWeakMinValues.get(0))
+			{
+				minList.add(sortedData.get(i));
+			}
+			else if (sortedData.get(i) > this.outlierWeakMaxValues.get(0))
+			{
+				maxList.add(sortedData.get(i));
 			}
 		}
+		
+		this.outlierMinValues.add(minList);
+		this.outlierMaxValues.add(maxList);
+	}
+
+	/**
+	 * Get the first observed value greater than or equal to the given value.
+	 * 
+	 * @param value
+	 * @param observedValues
+	 * @return
+	 */
+	private Double getObservedTukeyMinValue(Double value, ArrayList<Double> observedValues)
+	{
+		Double observedMinValue = null;
+		
+		for (int i = 0; i < observedValues.size(); i++)
+		{
+			if (value <= observedValues.get(i))
+			{
+				// the first observed value greater than value has been found
+				observedMinValue = observedValues.get(i);
+				break;
+			}
+		}
+		
+		return observedMinValue;
+	}
+	
+	/**
+	 * Get the first observed value smaller than or equal to the given value.
+	 * 
+	 * @param value
+	 * @param observedValues
+	 * @return
+	 */
+	private Double getObservedTukeyMaxValue(Double value, ArrayList<Double> observedValues)
+	{
+		Double observedMaxValue = null;
+		
+		for (int i = observedValues.size() - 1; i > 0 ; i--)
+		{
+			if (value >= observedValues.get(i))
+			{
+				// the first observed value greater than value has been found
+				observedMaxValue = observedValues.get(i);
+				break;
+			}
+		}
+		
+		return observedMaxValue;
 	}
 	
 	/**
