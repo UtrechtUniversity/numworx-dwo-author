@@ -59,6 +59,10 @@ public class BoxplotController implements StatistiekView, ActionListener
 				this.view.repaint();
 			}
 		}
+		else if (actionCommand.equals("tukeyBox"))
+		{
+			model.setIsTukeyBox(view.isTukeyBoxSelected());
+		}
 		else if (actionCommand.equals("horizontalboxplotsRadio")
 			|| actionCommand.equals("verticalboxplotsRadio"))
 		{
@@ -221,6 +225,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 		h.put("columnSplitIndex", this.model.getColumnSplitIndex());
 		h.put("name", this.model.getViewName());
 		h.put("splitBoundaries", this.model.getSplitBinBoundaries());
+		h.put("tukeyBox", this.model.isTukeyBox());
 		h.put("verticalBoxplots", this.model.isVerticalBoxplots());
 
 		return h;
@@ -245,6 +250,14 @@ public class BoxplotController implements StatistiekView, ActionListener
 		{
 			this.model.setSplitBinBoundaries((ArrayList<Double>) h
 				.get("splitBoundaries"));
+		}
+		if (h.containsKey("tukeyBox"))
+		{
+			this.model.setIsTukeyBox((Boolean) h.get("tukeyBox"));
+		}
+		else
+		{
+			this.model.setIsTukeyBox(false); // oude boxplots default geen Tukey
 		}
 		if (h.containsKey("verticalBoxplots"))
 		{
