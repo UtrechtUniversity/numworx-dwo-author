@@ -103,8 +103,8 @@ public class DescriptivesModelTest
 	@Test
 	public void testGetBinBoundaries()
 	{
-		double min = this.model.getTableModel().getColumnMin(1); // columnIndex = 1 (gewicht)
-		double max = this.model.getTableModel().getColumnMax(1); // columnIndex = 1 (gewicht)
+		double min = this.model.getStatTableModel().getColumnMin(1); // columnIndex = 1 (gewicht)
+		double max = this.model.getStatTableModel().getColumnMax(1); // columnIndex = 1 (gewicht)
 		ArrayList<Double> expected = new ArrayList(Arrays.asList(min, max + 10)); // verschil in tientallen, dus 1 tiental meer voor bovengrens
 		ArrayList<Double> actual = this.model.getBinBoundaries();
 		assertArrayEquals("", expected.toArray(), actual.toArray());
@@ -300,8 +300,8 @@ public class DescriptivesModelTest
 		for (int splitClass = 0; splitClass < numberOfSplitClasses; splitClass++)
 		{
 			assertEquals("", 
-				expected.getSplitClassLabel(splitClass, this.model.getTableModel()), 
-				actual.getSplitClassLabel(splitClass, this.model.getTableModel()));
+				expected.getSplitClassLabel(splitClass, this.model.getStatTableModel()), 
+				actual.getSplitClassLabel(splitClass, this.model.getStatTableModel()));
 		}
 	}
 
