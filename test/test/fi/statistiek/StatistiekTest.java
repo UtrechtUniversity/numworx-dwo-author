@@ -437,18 +437,18 @@ public class StatistiekTest
 			+ ", actual " + actual.toArray(), actual, expected);
 	}
 
-	@Test
-	public void testAppropriateBoundariesFromBinSettingsBinWidthTooLarge()
-	{
-		double min = 0;
-		double max = 10;
-		double binWidth = 25;
-		double minBoundary = 0;
-		
-		ArrayList<Double> expected = null;
-		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
-		assertEquals(expected, actual);
-	}
+//	@Test
+//	public void testAppropriateBoundariesFromBinSettingsBinWidthTooLarge()
+//	{
+//		double min = 0;
+//		double max = 10;
+//		double binWidth = 25;
+//		double minBoundary = 0;
+//		
+//		ArrayList<Double> expected = null;
+//		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
+//		assertEquals(expected, actual);
+//	}
 
 	@Test
 	public void testAppropriateBoundariesFromBinSettingsBinWidthNegative()
@@ -476,18 +476,18 @@ public class StatistiekTest
 		assertEquals(expected, actual);
 	}
 
-	@Test
-	public void testAppropriateBoundariesFromBinSettingsMinBoundaryTooSmall()
-	{
-		double min = 0;
-		double max = 10;
-		double binWidth = 1;
-		double minBoundary = -7;
-		
-		ArrayList<Double> expected = null;
-		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
-		assertEquals(expected, actual);
-	}
+//	@Test
+//	public void testAppropriateBoundariesFromBinSettingsMinBoundaryTooSmall()
+//	{
+//		double min = 0;
+//		double max = 10;
+//		double binWidth = 1;
+//		double minBoundary = -7;
+//		
+//		ArrayList<Double> expected = null;
+//		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
+//		assertEquals(expected, actual);
+//	}
 
 	@Test
 	public void testAppropriateBoundariesFromBinSettingsMinBoundaryTooLarge()
