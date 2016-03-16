@@ -105,7 +105,7 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 		this.columnIndex = -1;
 		this.splitOptions = new SplitOptions();
 
-		this.isTukeyBox = true;
+		this.isTukeyBox = false;
 		this.verticalBoxplots = false;
 	}
 
