@@ -1,6 +1,7 @@
 package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -320,6 +321,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			{
 				if (b)
 					tekstVakken[i][j].setBorder(new DashedBorder(Color.gray, 2, 2));
+				if (!b)
+					tekstVakken[i][j].setBorder(BorderFactory.createEmptyBorder());
 				tekstVakken[i][j].setEditable(b);
 			}
 		}
@@ -3742,7 +3745,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{	visible = true;
 			setVisible(visible);
 		}
-		else if(command.startsWith("index"))
+		else if(command.startsWith("int.index"))
 		{	int index = 0;
 			index = (Integer)event.getParameter(command);
 			if (random && index < aantalRandom);
@@ -3770,9 +3773,25 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				}
 			}
 		}
-		
-		
-		
+		else if(command.startsWith("text.content"))
+		{ 
+			Map map = (Map)event.getParameters();
+			if(map!=null)
+			{	String contentString = ((String)map.get("content"));
+				if(contentString.startsWith("VH4sIAAAAAAAAA"))
+					contentString = "$"+contentString+"@";
+				tekstVakken[0][0].insert(contentString);
+				Vector v = geefInteractiePanels();
+				for(int i=0 ; i<v.size() ; i++)
+				{
+					InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+					if (ipc instanceof TekstInteractiePanelVak)
+					{	((TekstInteractiePanelVak) ipc).setEditModeAll(false);
+					}
+				}
+				zetOpdracht(getEditState(),null,null);
+			}
+		}
 	}
 
 	@Override
@@ -3798,8 +3817,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] sendCommands = {"index",
-				"action.setVisible"};
+		String[] sendCommands = {"int.index",
+				"action.setVisible",
+				"text.content"};
 		return sendCommands;
 	}
 

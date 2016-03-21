@@ -2021,6 +2021,12 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		else removeSoft(feedbackTekst);
 		Expressie antwoord = formuleVak.geefExpressie(functieMVDefSet);
 		
+		boolean exactOnaf = false;
+		String[] exactOnafStrings = {"+-","--","*-","/-","(0-"};
+		for(int i=0 ; i<exactOnafStrings.length ; i++)
+		{	exactOnaf = exactOnaf || formuleVak.toString().contains(exactOnafStrings[i]);
+		}
+		
 		Expressie antwoordNonSub = antwoord;
 		
 		updateGebruikersSubstituties();
@@ -2159,7 +2165,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				
 				if(Algebra.isBreukPlusGetal(juisteAntwoorden[i]))isExact = AntwoordChecker.checkExactBreukPlusGetal(formuleVak.toString(),juisteAntwoorden[i]);
 				else if(hasSubKnopExtra)isExact = AntwoordChecker.checkExact(antwoordNonSub,juisteAntwoorden[i]);
-				else isExact = AntwoordChecker.checkExact(antwoord,juisteAntwoorden[i]);
+				else isExact = !exactOnaf && AntwoordChecker.checkExact(antwoord,juisteAntwoorden[i]);
 				
 				if(isExact)break;
 			}

@@ -49,6 +49,7 @@ import org.json.simple.JSONArray;
 
 
 
+
 //import fi.vangen.Vangen;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
@@ -800,8 +801,27 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public void setEditMode(boolean b)
 	{	editMode = b;
 		if(!editMode && afdekPanel!=null) remove(afdekPanel);
+		if(!editMode && resizePanel!=null) remove(resizePanel);
         //if(b)setBackground(Color.lightGray);
 		
+	}
+	
+	public void setEditModeAll(boolean b)
+	{	editMode = b;
+		if(!editMode && afdekPanel!=null) remove(afdekPanel);
+		if(!editMode && resizePanel!=null) remove(resizePanel);
+       
+		InteractiePanel ip = getInteractiePanel();
+		if (ip instanceof TekstVakPanel)
+		{	((TekstVakPanel)ip).setEditable(false);
+			Vector v = ((TekstVakPanel)ip).geefInteractiePanels();
+			for(int i=0 ; i<v.size() ; i++)
+			{	InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+				if (ipc instanceof TekstInteractiePanelVak)
+				{	((TekstInteractiePanelVak) ipc).setEditModeAll(false);
+				}
+			}
+		}
 	}
 	
 	public void setStudentEditor(boolean b)

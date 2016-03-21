@@ -719,7 +719,7 @@ public class Text_nl extends java.util.ListResourceBundle
 					
 				
 				{"CBA_input", "invoer"},
-				{"CBA_index", "keuze" },
+				{"CBA_int.index", "keuze" },
 				{"CBA_balansvergelijking", "balansvergelijking"},
 				{"CBA_zetOplossing", "zet oplossing" },
 				{"CBA_maakStap", "maak stap" },
@@ -731,6 +731,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_double.xcoordinate", "x-coordinaat"},
 				{"CBA_double.ycoordinate", "y-coordinaat"},
 				{"CBA_text", "tekst"},
+				{"CBA_text.choice", "keuze"},
+				{"CBA_text.feedback", "feedback"},
+				{"CBA_text.content", "inhoud"},
 				{"CBA_action.setNotEditable", "Actie: zet tekstinvoer uit"},
 				{"CBA_action.unfold", "Actie: uitklappen"},
 				{"CBA_action.correct", "Actie: correct antwoord"},

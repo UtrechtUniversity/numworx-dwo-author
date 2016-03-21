@@ -8,7 +8,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -844,6 +846,16 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			cbookEventHandler.fire("index", (new Integer(antwoordKV.getSelectedIndex())).toString());
 			if(antwoordKV.getSelectedIndex() != 0) 
 				cbookEventHandler.fire(Constants.USER_INPUT, antwoordKV.getSelectedItem().toString());
+			
+			if (hasFeedback)
+			{
+				Hashtable answerModel = answerModels[antwoordKV.getSelectedIndex()-1];
+				String feedbackText = (String)answerModel.get("feedback");
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("content", feedbackText);
+				cbookEventHandler.fire("text.feedback",map);
+			}
+			
 
 		}
 		else if (e.getSource() == feedbackButton)
@@ -910,7 +922,9 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 		@Override
 		public String[] getSendCmds() {
-			String[] commands = {"index",
+			String[] commands = {"int.index",
+					"text.feedback",
+					"text.choice",
 					"action.correct",
 					"action.false"};
 			return commands;

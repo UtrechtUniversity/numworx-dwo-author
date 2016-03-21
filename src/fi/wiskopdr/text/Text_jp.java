@@ -672,7 +672,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				
 				// crossswidget commands
 				{"CBA_input", "入力"},
-				{"CBA_index", "選択" },
+				{"CBA_int.index", "選択" },
 				{"CBA_balansvergelijking", "等式"},
 				{"CBA_zetOplossing", "解をセットします。" },
 				{"CBA_maakStap", "段階を踏む" },
@@ -681,8 +681,14 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"CBA_expression", "式"},
 				{"CBA_equation", "方程式"},
 				{"CBA_text", "text"},
+				{"CBA_text.choice", "choice"},
+				{"CBA_text.feedback", "feedback"},
+				{"CBA_text.content", "content"},
 				{"CBA_action.setNotEditable", "Action: set not editable"},
 				{"CBA_action.unfold", "Action: unfold"},
+				{"CBA_action.correct", "Action: correct answer"},
+				{"CBA_action.false", "Action: incorrect antwoord"},
+				{"CBA_action.setVisible", "Action: set visible"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},

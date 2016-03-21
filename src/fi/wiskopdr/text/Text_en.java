@@ -688,7 +688,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				// crossswidget commands
 				{"CBA_input", "input"},
-				{"CBA_index", "choice" },
+				{"CBA_int.index", "choice" },
 				{"CBA_balansvergelijking", "balance equation"},
 				{"CBA_zetOplossing", "set solution" },
 				{"CBA_maakStap", "make step" },
@@ -698,6 +698,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_expression", "expression"},
 				{"CBA_equation", "equation"},
 				{"CBA_text", "text"},
+				{"CBA_text.choice", "choice"},
+				{"CBA_text.feedback", "feedback"},
+				{"CBA_text.content", "content"},
 				{"CBA_action.setNotEditable", "Action: set not editable"},
 				{"CBA_action.unfold", "Action: unfold"},
 				{"CBA_action.correct", "Action: correct answer"},
