@@ -90,6 +90,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	private boolean checkExternal = false;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	private boolean verbergFeedback = false;
 
 	/*private static String[] imageNames = 
 	{	"goedkrul.gif",
@@ -788,7 +789,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 				if (gelijkwaardig || h == aantalAnswerModels - 1)
 				{
-					if (!feedback.trim().equals(""))
+					if (!feedback.trim().equals("") && !verbergFeedback)
 					{
 						setFeedback(feedback, true);
 						feedbackButton.setVisible(true);
@@ -854,6 +855,8 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("content", feedbackText);
 				cbookEventHandler.fire("text.feedback",map);
+				if(verbergFeedback)
+					antwoordKV.setSelectedIndex(0);
 			}
 			
 
@@ -911,7 +914,8 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	    @Override
 		public void addCBookEventListener(CBookEventListener listener, String command) {
 			cbookEventHandler.addCBookEventListener(listener, command);
-			
+			if(cbookEventHandler.hasListeners("text.feedback")) // Alleen als er 'text' messages kunnen worden ontvangen)
+					verbergFeedback = true;
 		}
 
 		@Override

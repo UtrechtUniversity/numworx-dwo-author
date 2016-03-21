@@ -219,6 +219,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
+	private boolean isStappenVak = false;
+	private int stapNr = 0;
+	private String[] stappen = null;
+	
 	public TekstVakPanel()
 	{
 		this(1, 1);
@@ -1081,6 +1085,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 		if(inklapbaar)
 		{	initieerKlapUitButton(ingeklapt);
+			zetMaat();
+		}
+		
+		Map subscr = ((TekstInteractiePanelVak) getParent()).getSubscriptions();
+		if(subscr!=null && subscr.containsKey("text.content"))
+		{	stappen = new String[aantalRijen];
 			zetMaat();
 		}
 		
@@ -1994,6 +2004,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean nagekeken = false;
 		boolean popupUsed = false;
 		boolean ingeklapt = true;
+		String[] stappen = null;
+		stapNr = 0;
 
 		if (h.containsKey("interactiePanelStates"))
 			interactiePanelStates = OpdrNavStruct.toHashtableArray(h.get("interactiePanelStates"));
@@ -2009,7 +2021,28 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			popupUsed = ((Boolean) h.get("popupUsed")).booleanValue();
 		if (h.containsKey("ingeklapt"))
 			ingeklapt = ((Boolean) h.get("ingeklapt")).booleanValue();
-
+		if (h.containsKey("stappen"))
+			stappen = (String[])h.get("stappen");
+		if (h.containsKey("stapNr"))
+			stapNr = ((Number) h.get("stapNr")).intValue();
+		
+		if(stappen!=null)
+		{
+			for(int i=0 ; i<stapNr ; i++)
+			{	tekstVakken[i][aantalKolommen-1].insert(stappen[i]);
+			}
+			
+			Vector v = geefInteractiePanels();
+			for(int i=0 ; i<v.size() ; i++)
+			{
+				InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+				if (ipc instanceof TekstInteractiePanelVak)
+				{	((TekstInteractiePanelVak) ipc).setEditModeAll(false);
+				}
+			}
+			zetOpdracht(getEditState(),null,null);
+		}
+		
 		Vector v = geefInteractiePanels();
 		for (int i = 0; i < v.size(); i++)
 		{
@@ -2025,6 +2058,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.locationY = locationY;
 		this.selected = selected;
 		this.popupUsed = popupUsed;
+		this.stappen = stappen;
+		this.stapNr = stapNr;
 		
 
 		if (aftrekPopup && popupUsed)
@@ -2096,6 +2131,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("nagekeken", new Boolean(nagekeken));
 		h.put("popupUsed", new Boolean(popupUsed));
 		h.put("ingeklapt", new Boolean(ingeklapt));
+		if(stappen!=null)
+		{	h.put("stappen", stappen);
+			h.put("stapNr", new Integer(stapNr));
+		}
 
 		return h;
 	}
@@ -2698,6 +2737,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{	initieerKlapUitButton(ingeklapt);
 			zetMaat();
 		}
+		
+		if(getParent() instanceof TekstInteractiePanelVak)
+		{	Map subscr = ((TekstInteractiePanelVak) getParent()).getSubscriptions();
+			if(subscr!=null && subscr.containsKey("text.content"))
+			{	stappen = new String[aantalRijen];
+				zetMaat();
+			}
+		}
 	}
 
 	//public boolean contains(int x, int y)
@@ -3008,7 +3055,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			double hoogteCum = 0;
 			double breedteCum = 0;
 			for (int i = 0; i < aantalRijen; i++)
-			{	if(i==0 || !(inklapbaar && ingeklapt))
+			{	
+				if(stappen!=null && (i>stapNr-1 || stapNr==0))
+					break;
+				if(i==0 || !(inklapbaar && ingeklapt))
 					hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
 			}
 			hoogteCum -= cellSpaceRow;
@@ -3775,24 +3825,62 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		else if(command.startsWith("text.content"))
 		{ 
+			isStappenVak = true;
+			if(stappen ==null)
+				stappen = new String[aantalRijen];
 			Map map = (Map)event.getParameters();
 			if(map!=null)
 			{	String contentString = ((String)map.get("content"));
 				if(contentString.startsWith("VH4sIAAAAAAAAA"))
-					contentString = "$"+contentString+"@";
-				tekstVakken[0][0].insert(contentString);
+				{	contentString = "$"+contentString+"@";
+				}
+				else if(contentString.startsWith("back"))
+				{	tekstVakken[stapNr-1][aantalKolommen-1].zetTekst("");
+					stapNr--;
+					zetMaat();
+					return;
+				}
+				stappen[stapNr] = contentString;
+				stapNr++;
+				
+				/*Vector w = geefInteractiePanels();
+				Hashtable[] interactiePanelStates = new Hashtable[w.size()];
+				for (int i = 0; i < w.size(); i++)
+				{	interactiePanelStates[i] = ((InteractiePanelContainerIF) w.elementAt(i)).getState();
+				}*/
+				
+				tekstVakken[stapNr-1][aantalKolommen-1].insert(contentString);
+				
+				Vector vStapNr = tekstVakken[stapNr-1][aantalKolommen-1].geefInteractiePanels();
+				if(vStapNr.size()>0)
+				{	InteractiePanelContainerIF ipcNew = (InteractiePanelContainerIF)vStapNr.elementAt(0);
+					ipcNew.zetOpdracht(ipcNew.getEditState(),null,null);
+					ipcNew.addActionListener(this);
+				}
+				
+				
 				Vector v = geefInteractiePanels();
-				for(int i=0 ; i<v.size() ; i++)
+				for(int i=stapNr-2 ; i>-1 && i<v.size() ; i++)
 				{
 					InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
 					if (ipc instanceof TekstInteractiePanelVak)
 					{	((TekstInteractiePanelVak) ipc).setEditModeAll(false);
 					}
 				}
-				zetOpdracht(getEditState(),null,null);
+				
+				
+				//zetOpdracht(getEditState(),null,null);
+				
+				/*for (int i = 0; i < w.size(); i++)
+				{	 ((InteractiePanelContainerIF) w.elementAt(i)).setState(interactiePanelStates[i]);
+				}
+				*/
+				
 			}
 		}
 	}
+	
+	
 
 	@Override
 	public void addCBookEventListener(CBookEventListener listener, String command) {
