@@ -1192,4 +1192,14 @@ public class SingleBoxplotView extends JPanel implements MouseMotionListener
 			this.setArrayListValue(this.highlightOutlierMaxValues, i, false);
 		}
 	}
+	
+	/**
+	 * Returns whether the single boxplot is drawable.
+	 * 
+	 * @return
+	 */
+	public boolean isDrawable()
+	{
+		return this.drawable;
+	}
 }
