@@ -60,7 +60,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Plak (invoegen)"},
 				{ "insertCopyMenuItem" ,  "Kopie (invoegen)"},
 				{ "deelscoresKnopLabel", "Deelscores"},
-				{ "misconceptionsKnopLabel", "Misconcepties"},
+				{ "misconceptionsKnopLabel", "Analyse"},
 				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },

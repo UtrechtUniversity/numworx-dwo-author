@@ -1088,10 +1088,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			zetMaat();
 		}
 		
-		Map subscr = ((TekstInteractiePanelVak) getParent()).getSubscriptions();
-		if(subscr!=null && subscr.containsKey("text.content"))
-		{	stappen = new String[aantalRijen];
-			zetMaat();
+		if(getParent() instanceof TekstInteractiePanelVak)
+		{	Map subscr = ((TekstInteractiePanelVak) getParent()).getSubscriptions();
+			if(subscr!=null && subscr.containsKey("text.content"))
+			{	stappen = new String[aantalRijen];
+				zetMaat();
+			}
 		}
 		
 		this.randomVars = randomVars;
