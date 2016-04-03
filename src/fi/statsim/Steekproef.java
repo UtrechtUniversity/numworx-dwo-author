@@ -211,6 +211,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	    pane1.setSize(200,235);
 	    
 	    steekproefResultaat = new double[1000];
+	    
+	    updateGraph();
 	}
 	
 	public void setZichtbaar() {
@@ -234,6 +236,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 				pane1.setVisible(false);
 			}
 		}		
+		updateGraph();
 	}
 	
 	public void setSize(int width, int height) {
@@ -267,8 +270,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	
 	public void updateGraph() {
 		muLabel1.setText(""+Double.parseDouble(muText.getText()));
-		sigmaLabel1.setText(""+Double.parseDouble(sigmaText.getText())*-2);
-		sigmaLabel2.setText(""+Double.parseDouble(sigmaText.getText())*2);
+		sigmaLabel1.setText(""+(Double.parseDouble(sigmaText.getText())*-2+Double.parseDouble(muText.getText())));
+		sigmaLabel2.setText(""+(Double.parseDouble(sigmaText.getText())*2+Double.parseDouble(muText.getText())));
 	}
 
 	public void getSample() {
@@ -313,6 +316,9 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			table1.setValueAt(sigmaResultaat,experiment,2);
 			
 			experiment++;
+			doeSteekproef.setEnabled(true);
+			doeSteekproef100Keer.setEnabled(true);
+			
 		}
 	
 	public void fireCBook() {
@@ -332,6 +338,11 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource()==doeSteekproef) {
+			doeSteekproef.setEnabled(false);
+			doeSteekproef100Keer.setEnabled(false);
+			muText.setEnabled(false);
+			sigmaText.setEnabled(false);
+			
 			wisResultaten.setEnabled(true);
 			getSample();
 			
@@ -339,6 +350,11 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 
 		}
 		if (e.getSource()==doeSteekproef100Keer) {
+			doeSteekproef.setEnabled(false);
+			doeSteekproef100Keer.setEnabled(false);
+			muText.setEnabled(false);
+			sigmaText.setEnabled(false);
+
 			wisResultaten.setEnabled(true);
 			for (int i=0;i<100;i++) {
 				getSample();
@@ -346,6 +362,11 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			fireCBook();
 		}
 		if (e.getSource()==wisResultaten) {
+			doeSteekproef.setEnabled(true);
+			doeSteekproef100Keer.setEnabled(true);
+			muText.setEnabled(true);
+			sigmaText.setEnabled(true);
+
 			wisResultaten.setEnabled(false);
 			experiment=0;
 			for (int i=0;i<1000;i++) {
