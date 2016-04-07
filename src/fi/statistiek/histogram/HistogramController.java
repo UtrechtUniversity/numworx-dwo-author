@@ -620,6 +620,11 @@ public class HistogramController implements StatistiekView, ActionListener,
 			this.model.setOptimizeScaleWithoutEvent(((Boolean) h.get("optimizeScale"))
 				.booleanValue());
 		}
+		if (h.containsKey("binWidth")) // bin width nodig voor berekenen maxonscale
+		{
+			this.model.setBinWidth(((Double) h.get("binWidth"))
+				.doubleValue());
+		}
 		if (h.containsKey("minOnScale"))
 		{
 			this.model.setMinOnScaleWithoutEvent(((Double) h.get("minOnScale"))
@@ -628,11 +633,6 @@ public class HistogramController implements StatistiekView, ActionListener,
 		if (h.containsKey("maxOnScale"))
 		{
 			this.model.setMaxOnScaleWithoutEvent(((Double) h.get("maxOnScale"))
-				.doubleValue());
-		}
-		if (h.containsKey("binWidth"))
-		{
-			this.model.setBinWidth(((Double) h.get("binWidth"))
 				.doubleValue());
 		}
 	}
