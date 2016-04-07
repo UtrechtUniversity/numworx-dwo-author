@@ -311,10 +311,10 @@ public class HistogramModel extends Observable implements TableModelListener,
 			double newMax = this.minOnScale;
 			for (int i = 1; max > newMax; i++)
 			{
-				newMax = newMax + getBinWidth();
+				newMax = Statistiek.round(newMax + getBinWidth(), 8);
 			}
 			
-			this.maxOnScale = Statistiek.round(newMax, 8);//Statistiek.parseDouble(Statistiek.df8.format(newMax));
+			this.maxOnScale = newMax;
 			
 			this.changed();
 		}
@@ -339,7 +339,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 			
 			for (int i = 1; max > newMax; i++)
 			{
-				newMax = newMax + getBinWidth();
+				newMax = Statistiek.round(newMax + getBinWidth(), 8);
 			}
 			
 			this.maxOnScale = newMax;
@@ -406,7 +406,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		else if ((this.binBoundaries != null)
 			&& this.getNoBins() > 0)
 		{
-			width = this.binBoundaries.get(1) - this.binBoundaries.get(0);
+			width = Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), 8);
 		}
 		
 		return width;
