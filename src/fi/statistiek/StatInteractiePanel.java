@@ -324,8 +324,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		if (b.containsKey("selectedView"))
 		{
 			int index = ((Integer) b.get("selectedView")).intValue();
-			System.out.println("StatInteractiePanel.setState(): selectedView in hashtable = "
-				+ index);
+//			System.out.println("StatInteractiePanel.setState(): selectedView in hashtable = "
+//				+ index);
 			this.view.processSelectedTab(index);
 		}
 	}
