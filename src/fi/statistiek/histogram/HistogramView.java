@@ -2101,12 +2101,13 @@ public class HistogramView extends JPanel implements Observer
 			
 			if (maxOnScale <= max)
 			{
-				maxOnScale = max + 1; // bins do not include the upper boundary, so max + 1
+				maxOnScale = max + binWidth; // bins do not include the upper boundary, so max + binWidth
 			}
 			
 			for (int i = 0; binValue < maxOnScale; i++)
 			{
 				binValue = startValue + i * binWidth;
+				binValue = Statistiek.round(binValue, 8);
 				bins.add(binValue);
 			}
 		}
