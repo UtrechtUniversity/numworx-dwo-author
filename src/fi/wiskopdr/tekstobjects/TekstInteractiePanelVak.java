@@ -840,6 +840,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		
 	//}
 	
+	public int getAsHoogte()
+	{
+		if(interactiePanel != null && interactiePanel instanceof SymboolPanel)
+				return ((SymboolPanel) interactiePanel).geefAsHoogte();
+		else
+			return ashoogte;
+	}
+	
 	public InteractiePanel getInteractiePanel()
 	{	return interactiePanel;
 		
@@ -2140,7 +2148,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             else if(!popup && interactiePanel instanceof CheckUnitPanel)ashoogte = ((CheckUnitPanel)interactiePanel).geefAsHoogte();
             else if(!popup && interactiePanel instanceof CheckSleepUnitPanel)ashoogte = ((CheckSleepUnitPanel)interactiePanel).geefAsHoogte();
             else if(!popup && interactiePanel instanceof CheckButtonPanel)ashoogte = ((CheckButtonPanel)interactiePanel).geefAsHoogte();
-            
+            else if(!popup && interactiePanel instanceof SymboolPanel) ashoogte = ((SymboolPanel) interactiePanel).geefAsHoogte();
             else ashoogte = 15;
 		}
 		

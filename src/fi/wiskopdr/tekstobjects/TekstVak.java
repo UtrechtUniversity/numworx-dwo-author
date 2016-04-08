@@ -8,6 +8,7 @@ import java.awt.datatransfer.*;
 
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.symbolen.SymboolPanel;
 import fi.wiskopdr.*;
 import fi.beans.wiskopdrbeans.*;
 
@@ -626,6 +627,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    fm = getFontMetrics(getFont());
 		int regelafstand = fm.getAscent()+fm.getDescent()+interlinie;
 		
+		//Symbolen die hoogte vullen de juiste maat geven
+		for(int i = 0; i < tekst.geefAantalFormules(); i++)
+		{
+			TekstDeelVak tdv = tekst.geefDeelVak(i);
+			if(tdv instanceof TekstInteractiePanelVak  
+					&& ((TekstInteractiePanelVak)tdv).getInteractiePanel() instanceof SymboolPanel)
+			{	SymboolPanel symbool = ((SymboolPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel());
+				symbool.resize();
+			}
+		}
+		
 		int hoogteRegels = 0;
         for(int i=0 ; i<aantalRegels; i++)
         {   int corr = 0;
@@ -685,8 +697,30 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 					&& ((TekstVakPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel()).vulHoogteMogelijk())
 			{	return ((TekstVakPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel()).geefOpgevuldeHoogte();
 			}
+			else if(tdv instanceof TekstInteractiePanelVak 
+					&& ((TekstInteractiePanelVak)tdv).getInteractiePanel() instanceof SymboolPanel
+					&& ((SymboolPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel()).isVulHoogte())
+			{
+				return ((SymboolPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel()).getHeight();
+			}
+					
 		}
 		return 0;
+	}
+	
+	public boolean bevatVulHoogteSymbool()
+	{
+		for(int i = 0; i < tekst.geefAantalFormules(); i++)
+		{
+			TekstDeelVak tdv = tekst.geefDeelVak(i);
+			if(tdv instanceof TekstInteractiePanelVak
+					&& ((TekstInteractiePanelVak)tdv).getInteractiePanel() instanceof SymboolPanel
+					&& ((SymboolPanel)((TekstInteractiePanelVak)tdv).getInteractiePanel()).isVulHoogte())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean corrigeerOpvulHoogte()

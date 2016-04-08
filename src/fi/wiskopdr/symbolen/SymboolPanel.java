@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstRegel;
 import fi.wiskopdr.tekstobjects.TekstVak;
@@ -18,6 +19,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 	boolean vulHoogte, vulBreedte;
 	//int hoogte, breedte;
 	int richting = 0;
+	int ashoogte = 15;
 	
 	public SymboolPanel()
 	{
@@ -86,6 +88,16 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		vulHoogte = vulH;
 	}
 	
+	public boolean isVulHoogte()
+	{
+		return vulHoogte;
+	}
+	
+	public int geefAsHoogte()
+	{
+		return ashoogte;
+	}
+	
 	public void zetVulBreedte(boolean vulB)
 	{
 		vulBreedte = vulB;
@@ -116,6 +128,7 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 	{
 		this.setBounds(0, 0, this.getWidth(), h);
 		symbool.setBounds(0, 0, this.getWidth(), h);
+		getParent().setBounds(0, 0, this.getWidth(), h);
 	}
 
 	@Override
@@ -153,39 +166,46 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		symbool.zetKleur(new Color(kleurR, kleurG, kleurB));
 		this.vulHoogte = vulHoogte;
 		if(this.vulHoogte)
-			zetHoogte(bepaalVulHoogte());
+		{	resize();
+		
+		}
 		
 	}
 	
-	public int bepaalVulHoogte()
+//	public int bepaalVulHoogte()
+//	{
+//		int hoogte = this.getHeight();
+//		if(getParent() instanceof TekstInteractiePanelVak)
+//		{	TekstInteractiePanelVak parent = (TekstInteractiePanelVak) getParent();
+//			if(parent.getParent() instanceof TekstRegel)
+//			{	TekstRegel regelParent = (TekstRegel) parent.getParent();
+//				TekstVak vak = regelParent.getTekstVak();
+//				hoogte = vak.getHeight() - 2 * vak.geefMargeBoven();
+//				//for(int i = 0; i < vak.)
+//				//hoogte = regelParent.getTekstVak().geefOpgevuldeHoogte();
+//			}
+//		}
+//		return hoogte;
+//	}
+	
+	public void resize()
 	{
-		int hoogte = this.getHeight();
+		if(!vulHoogte)
+			return;
+		int hoogte = 0;
 		if(getParent() instanceof TekstInteractiePanelVak)
 		{	TekstInteractiePanelVak parent = (TekstInteractiePanelVak) getParent();
 			if(parent.getParent() instanceof TekstRegel)
 			{	TekstRegel regelParent = (TekstRegel) parent.getParent();
-				TekstVak vak = (TekstVak) regelParent.getTekstVak();
-				
-				hoogte = vak.getHeight();
-				//for(int i = 0; i < vak.)
-				//hoogte = regelParent.getTekstVak().geefOpgevuldeHoogte();
+				TekstVak vak = regelParent.getTekstVak();
+				hoogte = vak.getHeight() - 2 * vak.geefMargeBoven();
+				ashoogte = vak.getAsHoogte(); 
+				zetHoogte(hoogte);
+				regelParent.resize();
 			}
 		}
-		return hoogte;
 	}
 	
-	public void resize()
-	{
-		int hoogte = this.getHeight();
-		System.out.println("resize symboolpanel: hoogte: " + hoogte);
-		if(vulHoogte)
-			hoogte = bepaalVulHoogte();
-		System.out.println("nieuwe hoogte: " + hoogte);
-		zetHoogte(hoogte);
-		//setSize(this.getWidth(), hoogte);
-		//repaint();
-	}
-
 	@Override
 	public void setState(Hashtable b) {
 		
@@ -242,6 +262,8 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 
 	@Override
 	public void zetMaat() {
+		resize();
+		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 	}
 
 	@Override

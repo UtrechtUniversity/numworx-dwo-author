@@ -3029,7 +3029,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int j = 0; j < aantalKolommen; j++)
 			{
 				tekstVakken[i][j].resize();
-				ashoogte[i] = Math.max(tekstVakken[i][j].getAsHoogte(), ashoogte[i]);
+				if(!tekstVakken[i][j].bevatVulHoogteSymbool())
+					ashoogte[i] = Math.max(tekstVakken[i][j].getAsHoogte(), ashoogte[i]);
 			}
 		}
 		if (pasAanH || pasAanB)
@@ -3037,18 +3038,21 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int i = 0; i < aantalRijen; i++)
 			{	tekstVakken[i][0].resize();
 
-				int hoogte = Math.max(0, tekstVakken[i][0].getSize().height) - tekstVakken[i][0].geefOpgevuldeHoogte();
+				int hoogte = Math.max(0, tekstVakken[i][0].getSize().height - tekstVakken[i][0].geefOpgevuldeHoogte());
 				for (int j = 0; j < aantalKolommen; j++)
 				{	tekstVakken[i][j].resize();
 					breedte[j] = Math.max(breedte[j], tekstVakken[i][j].getSize().width);
-					ashoogte[i] = Math.max(tekstVakken[i][j].getAsHoogte(), ashoogte[i]);
+					if(!tekstVakken[i][j].bevatVulHoogteSymbool())
+						ashoogte[i] = Math.max(tekstVakken[i][j].getAsHoogte(), ashoogte[i]);
 				}
 
 				for (int j = 0; j < aantalKolommen; j++)
 				{	if (pasAanB)
 						breedtes[j] = Math.max(10, breedte[j]);
 					if (pasAanH)
-						hoogte = Math.max(hoogte, tekstVakken[i][j].getSize().height - tekstVakken[i][j].geefOpgevuldeHoogte() - tekstVakken[i][j].getAsHoogte() + ashoogte[i]);// - tekstVakken[i][j].geefOpgevuldeHoogte()
+					{	if(!tekstVakken[i][j].bevatVulHoogteSymbool())
+							hoogte = Math.max(hoogte, tekstVakken[i][j].getSize().height - tekstVakken[i][j].geefOpgevuldeHoogte() - tekstVakken[i][j].getAsHoogte() + ashoogte[i]);// - tekstVakken[i][j].geefOpgevuldeHoogte()
+					}
 				}
 				if (pasAanH)
 					hoogtes[i] = hoogte;
@@ -3143,10 +3147,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 	}
 	
-	public boolean vulRestHoogteActief()
-	{
-		return vulHoogte;
-	}
+	//niet gebruikt en dubbel met vulHoogteMogelijk().
+//	public boolean vulRestHoogteActief()
+//	{
+//		return vulHoogte;
+//	}
 
 	public boolean isPopup()
 	{
