@@ -210,7 +210,9 @@ public class BoxplotView extends JPanel implements Observer
 						this.model.isTukeyBox(),
 						this.model.isEmptyBoxplot());
 					
-					if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot() && v.isDrawable())
+					if (this.model.isTukeyBox() 
+						&& !this.getModel().isEmptyBoxplot() 
+						&& v.isDrawable())
 					{
 						v.initializeOutlierHighlightValues();
 					}
@@ -313,7 +315,9 @@ public class BoxplotView extends JPanel implements Observer
 								this.model.isTukeyBox(),
 								this.model.isEmptyBoxplot());
 							
-							if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot())
+							if (this.model.isTukeyBox() 
+								&& !this.getModel().isEmptyBoxplot()
+								&& v.isDrawable())
 							{
 								v.initializeOutlierHighlightValues();
 							}
@@ -368,7 +372,9 @@ public class BoxplotView extends JPanel implements Observer
 								this.model.isTukeyBox(),
 								this.model.isEmptyBoxplot());
 							
-							if (this.model.isTukeyBox() && !this.getModel().isEmptyBoxplot())
+							if (this.model.isTukeyBox() 
+								&& !this.getModel().isEmptyBoxplot()
+								&& v.isDrawable())
 							{
 								v.initializeOutlierHighlightValues();
 							}
