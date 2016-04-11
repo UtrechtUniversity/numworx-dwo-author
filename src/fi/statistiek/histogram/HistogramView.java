@@ -2002,8 +2002,10 @@ public class HistogramView extends JPanel implements Observer
 										
 					int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
 					if (isWorkableInterval(i))
+					{
 						g.drawString(s_labelUnderBin, x - offset_labelUnderBin - 7, y
 							+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset + (int) this.horizontalBarWidth/2);
+					}
 				}
 				else
 				{
@@ -2018,8 +2020,10 @@ public class HistogramView extends JPanel implements Observer
 				// put label between bins
 				int offset = fm.stringWidth(s);
 				if (isWorkableInterval(i))
+				{
 					g.drawString(s, x - offset - 7, 
 						y + (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+				}
 			}
 		}
 	}
