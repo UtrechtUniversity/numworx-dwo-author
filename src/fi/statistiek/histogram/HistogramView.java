@@ -1542,7 +1542,7 @@ public class HistogramView extends JPanel implements Observer
 			}
 			else
 			{
-				this.xAxisOffset = longest + 15 + fm.getHeight();
+				this.xAxisOffset = longest + 12 + fm.getHeight();
 			}
 		} // vertical bars
 		else // horizontal bars
@@ -2001,8 +2001,9 @@ public class HistogramView extends JPanel implements Observer
 					}
 										
 					int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
-					g.drawString(s_labelUnderBin, x - offset_labelUnderBin - 7, y
-						+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset + (int) this.horizontalBarWidth/2);
+					if (isWorkableInterval(i))
+						g.drawString(s_labelUnderBin, x - offset_labelUnderBin - 7, y
+							+ (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset + (int) this.horizontalBarWidth/2);
 				}
 				else
 				{
@@ -2016,8 +2017,9 @@ public class HistogramView extends JPanel implements Observer
 				g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
 				// put label between bins
 				int offset = fm.stringWidth(s);
-				g.drawString(s, x - offset - 7, 
-					y + (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
+				if (isWorkableInterval(i))
+					g.drawString(s, x - offset - 7, 
+						y + (int) (fm.getHeight() / 2.0) - 2 + ySplitOffset);
 			}
 		}
 	}
@@ -2132,7 +2134,14 @@ public class HistogramView extends JPanel implements Observer
 	{
 		return this.userOptionsPanel.getMaxOnScale();
 	}
-	
+
+	/**
+	 * Retourneert of het waardelabel aan de as van het interval met index i
+	 * getekend moet worden. Hoe smaller de staafbreedte, hoe meer waarden worden weggelaten. 
+	 *   
+	 * @param i
+	 * @return
+	 */
 	private boolean isWorkableInterval(int i)
 	{
 		double width = verticalBarWidth+1;
@@ -2207,8 +2216,8 @@ public class HistogramView extends JPanel implements Observer
 						int x2 = (int) (this.yAxisOffset + (i + 1) + (i + 1)
 							* this.verticalBarWidth);
 						int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin) / 2;
-						if(isWorkableInterval(i))
-						g.drawString(s_labelUnderBin, ((x + x2)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
+						if (isWorkableInterval(i))
+							g.drawString(s_labelUnderBin, ((x + x2)/2) - offset_labelUnderBin, y + 20 + ySplitOffset);
 					}
 					else
 					{
@@ -2223,10 +2232,10 @@ public class HistogramView extends JPanel implements Observer
 					// draw marker
 					g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 					// put label between bins
-					if(isWorkableInterval(i))
+					if (isWorkableInterval(i))
 						g.drawString(s, x - offset, y + 20 + ySplitOffset);
 				}
-			}
+			} // for loop over bins
 		} // normal fit
 		else
 		{
@@ -2263,7 +2272,7 @@ public class HistogramView extends JPanel implements Observer
 						int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
 						int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
 						int heightRotatedLabel = (int) (offset_labelUnderBin * -Math.sin(theta));
-						if(isWorkableInterval(i))
+						if (isWorkableInterval(i))
 							g.drawString(s_labelUnderBin, 
 								(int) (x + 5 + (this.verticalBarWidth/2) - widthRotatedLabel), 
 								y + 7 + heightRotatedLabel + 5 + ySplitOffset);
@@ -2274,8 +2283,8 @@ public class HistogramView extends JPanel implements Observer
 					// put label between bins
 					int offset_labelBetweenBins = fm.stringWidth(s);
 					int widthRotatedLabel = (int) (offset_labelBetweenBins * Math.cos(theta));
-					if(isWorkableInterval(i))
-					g.drawString(s, x + 5 - widthRotatedLabel, y + 7 + offset + ySplitOffset);
+					if (isWorkableInterval(i))
+						g.drawString(s, x + 5 - widthRotatedLabel, y + 7 + offset + ySplitOffset);
 				}
 			}
 		} // non-normal fit
