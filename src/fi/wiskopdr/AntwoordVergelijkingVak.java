@@ -2762,6 +2762,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			return false;
 		return fout;
 	}
+	
+	public int getErrorCount()
+	{	return errorCount;
+	}
 
 	public void maakStap()
 	{

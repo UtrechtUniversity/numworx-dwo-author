@@ -564,6 +564,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
     	kijkNa(true);
     	if(correct)cbookEventHandler.fire("action.correct");
     	if(fout)cbookEventHandler.fire("action.false");
+    	if(fout && errorCount>0)cbookEventHandler.fire("action.false_2");
     }
     
     public void kijkNa(boolean show)
@@ -847,7 +848,8 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	@Override
 	public String[] getSendCmds() {
 		String[] commands = {"action.correct",
-				"action.false"};
+				"action.false",
+				"action.false_2"};
 		return commands;
 	}
 

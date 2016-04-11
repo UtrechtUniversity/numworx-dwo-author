@@ -456,7 +456,8 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 			}
 			
 			if(antwoordFormuleVak.isCorrect())cbookEventHandler.fire("action.correct");
-			if(antwoordFormuleVak.isFout())cbookEventHandler.fire("action.false");
+			if(antwoordFormuleVak.isFout())cbookEventHandler.fire("action.false"); 
+			if(antwoordFormuleVak.isFout() && antwoordFormuleVak.getErrorCount()>1)cbookEventHandler.fire("action.false_2");
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
 		{	if(formuleToolBijFocus)zetTabletUser();
@@ -888,7 +889,8 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				"expression", 
 				POPCORN_FORMULA,
 				"action.correct",
-				"action.false"};
+				"action.false",
+				"action.false_2"};
 		return s;
 	}
 

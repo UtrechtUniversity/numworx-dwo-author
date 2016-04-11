@@ -2234,6 +2234,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		return fout;
 	}
 	
+	public int getErrorCount()
+	{	return errorCount;
+	}
+	
 	public boolean hasCheck()
     {   return check;
     }

@@ -430,6 +430,7 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 			
 			if(antwoordVergelijkingVak.isCorrect())cbookEventHandler.fire("action.correct");
 			if(antwoordVergelijkingVak.isFout())cbookEventHandler.fire("action.false");
+			if(antwoordVergelijkingVak.isFout() && antwoordVergelijkingVak.getErrorCount()>1)cbookEventHandler.fire("action.false_2");
 			
 			//((FormuleVak)formuleComponent).setEditable(true);
 		}
@@ -710,7 +711,8 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	public String[] getSendCmds() {
 		String[] s = {				
 				"action.correct",
-				"action.false"};
+				"action.false",
+				"action.false_2"};
 		return s;
 	}
 

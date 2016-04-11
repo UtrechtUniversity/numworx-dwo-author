@@ -675,7 +675,8 @@ public class Text_es extends java.util.ListResourceBundle
 				{"CBA_action.setNotEditable", "Action: set not editable"},
 				{"CBA_action.unfold", "Action: unfold"},
 				{"CBA_action.correct", "Action: correct answer"},
-				{"CBA_action.false", "Action: incorrect antwoord"},
+				{"CBA_action.false", "Action: incorrect answer"},
+				{"CBA_action.false_2", "Actie: 2x incorrect answer"},
 				{"CBA_action.setVisible", "Action: set visible"},
 				
 				{"oplossingenLabel", "Solutions"},
