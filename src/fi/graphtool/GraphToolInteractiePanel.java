@@ -1514,8 +1514,8 @@ MouseListener, MouseMotionListener, CBookAware {
 		return points;
 	}
 	
-	public void addInsert(RealPoint newRP, boolean docent) {	
-		if (!gv.valuePointWithinBounds(newRP.getX(), newRP.getY())) {
+	public void addInsert(RealPoint newRP, boolean docent, boolean checkBounds) {
+		if ( (checkBounds) && (!gv.valuePointWithinBounds(newRP.getX(), newRP.getY())) ) {
 			return;
 		}
 				
@@ -3321,7 +3321,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				removePoint(rp.getTabelIndex(), rp.getIndex(), true);
 				rp.setY(docentFuncties[0].geefWaarde(rp.getX()));
 				rp.setyString(Double.toString(rp.getY()));
-				addInsert(rp, true);
+				addInsert(rp, true, false);
 			}
 				
 		tekenComponent.setState(h);
@@ -4983,7 +4983,7 @@ MouseListener, MouseMotionListener, CBookAware {
 							new Point(freePixX, pressedY));
 						newPoint.setIndex(getActiveIndex());
 						newPoint.setTabelIndex(geefEersteVrijeVak(false));
-						addInsert(newPoint, false);
+						addInsert(newPoint, false, true);
 						if(tabelAlsTekenTool)
 							tabelComponent.vernieuwFirstIndexVisible(newPoint.getTabelIndex(), getActiveIndex());
 						repaint();
@@ -5132,7 +5132,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					dragPoint.setxString(Double.toString(dragPoint.getX()));
 					dragPoint.setyString(Double.toString(dragPoint.getY()));
 					removePoint(dragPoint.getTabelIndex(), dragPoint.getIndex(), false);
-					addInsert(dragPoint, false);
+					addInsert(dragPoint, false, true);
 					
 					
 					repaint();
@@ -5163,7 +5163,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					dragPoint.setxString(Double.toString(dragPoint.getX()));
 					dragPoint.setyString(Double.toString(dragPoint.getY()));
 					removePoint(dragPoint.getTabelIndex(), dragPoint.getIndex(), false);
-					addInsert(dragPoint, false);					
+					addInsert(dragPoint, false, true);					
 					
 					repaint();
 					
@@ -5285,7 +5285,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					dragPoint.setY(temp.getY());
 					dragPoint.setxString(Double.toString(dragPoint.getX()));
 					dragPoint.setyString(Double.toString(dragPoint.getY()));
-					addInsert(dragPoint, false);
+					addInsert(dragPoint, false, true);
 				
 					dragPoint = null;
 					
@@ -5309,7 +5309,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					dragPoint.setY(temp.getY());	
 					dragPoint.setxString(Double.toString(dragPoint.getX()));
 					dragPoint.setyString(Double.toString(dragPoint.getY()));
-					addInsert(dragPoint, false);							
+					addInsert(dragPoint, false, true);							
 					
 					dragPoint = null;
 					
