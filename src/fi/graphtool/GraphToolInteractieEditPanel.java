@@ -1928,7 +1928,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 						interactiePanel.removePoint(rp.getTabelIndex(), rp.getIndex(), true);
 						rp.setY(0);
 						rp.setyString("0");
-						interactiePanel.addInsert(rp, true);
+						interactiePanel.addInsert(rp, true, false);
 					}
 				}
 				else
@@ -1939,7 +1939,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 						interactiePanel.removePoint(rp.getTabelIndex(), rp.getIndex(), true);
 						rp.setY(docentFuncties[0].geefWaarde(rp.getX()));
 						rp.setyString(Double.toString(rp.getY()));
-						interactiePanel.addInsert(rp, true);
+						interactiePanel.addInsert(rp, true, false);
 					}
 
 				}
@@ -2006,23 +2006,24 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 				if (!docentFunctieStrings[0].equals("$f@"))
 				{	docentFuncties[0] = FormuleParser.geefExpressie(docentFunctieStrings[0]);
 				}
-				if (docentFuncties[0] == null)
-				{	for (int rCnt = 0; rCnt < interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).size(); rCnt++)
+				if (docentFuncties[0] == null) {	
+					for (int rCnt = 0; rCnt < interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).size(); rCnt++)
 					{
 						RealPoint rp = (RealPoint) interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).elementAt(rCnt);
 						interactiePanel.removePoint(rp.getTabelIndex(), rp.getIndex(), true);
 						rp.setY(0);
 						rp.setyString("0");
-						interactiePanel.addInsert(rp, true);
+						interactiePanel.addInsert(rp, true, false);
 					}
 				}
-				else
-				{	for (int rCnt = 0; rCnt < interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).size(); rCnt++)
-					{	RealPoint rp = (RealPoint) interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).elementAt(rCnt);
+				else {
+					for (int rCnt = 0; rCnt < interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).size(); rCnt++) {	
+						RealPoint rp = (RealPoint) interactiePanel.getPoints(interactiePanel.getActiveIndex(), true).elementAt(rCnt);
+
 						interactiePanel.removePoint(rp.getTabelIndex(), rp.getIndex(), true);
 						rp.setY(docentFuncties[0].geefWaarde(rp.getX()));
 						rp.setyString(Double.toString(rp.getY()));
-						interactiePanel.addInsert(rp, true);
+						interactiePanel.addInsert(rp, true, false);
 					}
 				}
 				docentTabelComponent.zetTabelPunten(interactiePanel.getPoints(interactiePanel.getActiveIndex(), true), false);

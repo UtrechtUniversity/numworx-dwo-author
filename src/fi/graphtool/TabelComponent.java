@@ -995,7 +995,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 			if (tpIndex >= 0)
 			{	interactiePanel.removePoint(vakIndex, interactiePanel.getActiveIndex(), docent);
 			}
-			interactiePanel.addInsert(rp, docent);
+			interactiePanel.addInsert(rp, docent, false);
 		}// update interactiePanel
 		
 		produceAction("points changed");
@@ -1068,7 +1068,7 @@ public class TabelComponent extends JPanel implements ActionListener, MouseListe
 			if (tpIndex >= 0)
 			{	interactiePanel.removePoint(vakIndex, interactiePanel.getActiveIndex(), docent);
 			}
-			interactiePanel.addInsert(rp, docent);
+			interactiePanel.addInsert(rp, docent, false);
 		}
 		produceAction("points changed");
 		
