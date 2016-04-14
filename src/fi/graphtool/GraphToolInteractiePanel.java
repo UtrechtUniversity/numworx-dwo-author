@@ -69,6 +69,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	private static final String cFontString = "SansSerif";
 	private static final int cFontHeight = 10;
 	private static final int cFontStyle_Default = Font.PLAIN;
+	final static int cPointRadius = 3;
 	
 	int width = 300; // was 250
 	int height = 300;
@@ -175,7 +176,6 @@ MouseListener, MouseMotionListener, CBookAware {
 	private Color[] colors, gewoneKleuren;
 	private Color[] opdrachtKleuren;
 	//private static Color[] 
-	static int PRAD = 2;
 	
 	boolean tracing = false;
 	Slider slider;
@@ -4937,7 +4937,7 @@ MouseListener, MouseMotionListener, CBookAware {
 							int dis = (int) Math.round(
 								Math.sqrt((rpPix.x - pressedX) * (rpPix.x - pressedX) +
 										  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
-							if (dis <= PRAD + 2)
+							if (dis <= cPointRadius + 1)
 							{	drp = rp;
 							}
 						}
@@ -4962,7 +4962,7 @@ MouseListener, MouseMotionListener, CBookAware {
 							int dis = (int) Math.round(
 								Math.sqrt((rpPix.x - pressedX) * (rpPix.x - pressedX) +
 										  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
-							if (dis <= PRAD + 2)
+							if (dis <= cPointRadius + 1)
 							{	dragPoint = rp;
 							}
 						}
@@ -5002,7 +5002,7 @@ MouseListener, MouseMotionListener, CBookAware {
 						int dis = (int) Math.round(
 							Math.sqrt((rpPix.x - pressedX) * (rpPix.x - pressedX) +
 									  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
-						if (dis <= PRAD + 2)
+						if (dis <= cPointRadius + 1)
 						{	drp = rp;
 						}
 						
@@ -5028,7 +5028,7 @@ MouseListener, MouseMotionListener, CBookAware {
 						int dis = (int) Math.round(
 							Math.sqrt((rpPix.x - pressedX) * (rpPix.x - pressedX) +
 									  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
-						if (dis <= PRAD + 2)
+						if (dis <= cPointRadius + 1)
 						{	if(typeOpdracht > GEENOPDRACHT)
 							{	setColor(activeIndex - 1, opdrachtKleuren[activeIndex - 1], false);
 							}
@@ -5048,7 +5048,7 @@ MouseListener, MouseMotionListener, CBookAware {
 								int dis = (int) Math.round(
 									Math.sqrt((rpPix.x - pressedX) * (rpPix.x - pressedX) +
 											  (rpPix.y - pressedY) * (rpPix.y - pressedY)));
-								if (dis <= PRAD + 2)
+								if (dis <= cPointRadius + 1)
 								{	otherPoint = rp;
 								}
 						
@@ -5360,7 +5360,7 @@ MouseListener, MouseMotionListener, CBookAware {
 						int dis = (int) Math.round(
 							Math.sqrt((rpPix.x - movedX) * (rpPix.x - movedX) +
 									  (rpPix.y - movedY) * (rpPix.y - movedY)));
-						if (dis <= PRAD + 2)
+						if (dis <= cPointRadius + 1)
 						{	drp = rp;
 						}						
 					}

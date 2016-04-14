@@ -827,7 +827,9 @@ class GrafiekVeld extends JComponent{
 // 							int y = (int)Math.round(gtip.yAsLog?Math.log10(hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY)):
 //								hoogte -(gtip.beginy+gtip.eenheidy*d0/gtip.schaalFactorY));
 							int y = (int) Math.round(valueYtoPixels(d0));
-							g.fillOval(x-2,y-2,5,5);
+							g.fillOval(x - GraphToolInteractiePanel.cPointRadius ,y - GraphToolInteractiePanel.cPointRadius,
+									2 * GraphToolInteractiePanel.cPointRadius, 2 * GraphToolInteractiePanel.cPointRadius);
+
 							g.setStroke(new BasicStroke(1.0f));
 							g.drawLine(x,y,x,Math.min(hoogte-by, hoogte));
 							g.drawLine(x,y,Math.max(0,bx),y);
@@ -1025,13 +1027,8 @@ class GrafiekVeld extends JComponent{
 			if ( (pix!= null) && 
 				 (pix.x  >= drawXmin) && (pix.x <= drawXmax) && 
 				 (pix.y  >= drawYmin) && (pix.y <= drawYmax) ) { 
-				if(index == gtip.getActiveIndex() && !docent) { // && tekenComponent.getCursorMode() != tekenComponent.NOCUR) 
-					g.fillOval(pix.x - GraphToolInteractiePanel.PRAD - 2, pix.y - GraphToolInteractiePanel.PRAD - 2,
-						   2 * GraphToolInteractiePanel.PRAD + 3, 2 * GraphToolInteractiePanel.PRAD + 3);
-				} else { 
-					g.fillOval(pix.x - GraphToolInteractiePanel.PRAD, pix.y - GraphToolInteractiePanel.PRAD,
-								   2 * GraphToolInteractiePanel.PRAD +1, 2 * GraphToolInteractiePanel.PRAD + 1);
-				}
+				g.fillOval(pix.x - GraphToolInteractiePanel.cPointRadius , pix.y - GraphToolInteractiePanel.cPointRadius,
+						2 * GraphToolInteractiePanel.cPointRadius, 2 * GraphToolInteractiePanel.cPointRadius);
 			}
 		}
 		// verbinden met lijnen
@@ -2257,10 +2254,9 @@ class GrafiekVeld extends JComponent{
 				double xPix = valueXtoPixels(currentX);
 				double yPix = valueYtoPixels(currentX);							
 				
-				if(!Double.isNaN(currentX) && !Double.isNaN(currentY))
-				{
-					g.fillOval((int) xPix-2,(int) yPix-2,5,5);
-					
+				if(!Double.isNaN(currentX) && !Double.isNaN(currentY)) {
+					g.fillOval((int) xPix - GraphToolInteractiePanel.cPointRadius ,(int) yPix - GraphToolInteractiePanel.cPointRadius,
+							2 * GraphToolInteractiePanel.cPointRadius, 2 * GraphToolInteractiePanel.cPointRadius);
 				}
 				
 			
