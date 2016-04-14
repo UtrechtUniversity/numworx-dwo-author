@@ -174,11 +174,12 @@ public class BoxplotView extends JPanel implements Observer
 		// nodig?
 		model.setPercentileValues();
 		
+		this.dialogButton.setVisible(this.model.getStatTableModel()
+			.isViewsEditable());
+
 		// check for empty data set
 		if (!this.model.isEmptyBoxplot())
 		{
-			this.dialogButton.setVisible(this.model.getStatTableModel()
-				.isViewsEditable());
 
 			userOptionsPanel.update();
 
