@@ -50,7 +50,7 @@ class GrafiekVeld extends JComponent{
 //	private final double cLineWidthAxes = 1.00d;	
 	
 	private int drawXmin, drawXmax; // minimum & maximum positions of the screens drawing range (when an axis is not visible not the complete
-	                        // range is used
+	                        		// range is used
 	private int drawYmin, drawYmax;
 	
 		
@@ -213,16 +213,6 @@ class GrafiekVeld extends JComponent{
 		g.drawLine((int) v2.getX(), (int) v2.getY(), (int) vectorEindScherm.getX(), (int) vectorEindScherm.getY());
 
 	}
-	
-	/* EXAMPLE TODO	
-	void arrowhead(vec A, vec B, vec& v1, vec& v2) {
-	    float h = 10*sqrtf(3), w = 10;
-	    vec U = (B - A)/(B - A).length();
-	    vec V = vec(-U.y, U.x);
-	    v1 = B - h*U + w*V;
-	    v2 = B - h*U - w*V;
-	}	
-*/
 	
 	private Point2D.Double tekenVector(Graphics2D g, Point2D.Double vectorStartScherm, Expressie xAsExpressie, Expressie yAsExpressie,boolean tekenPijlpunt) {
 		double vectorStartXWaarde = pixelsXtoValue(vectorStartScherm.getX()); 
@@ -1535,8 +1525,18 @@ class GrafiekVeld extends JComponent{
 	private void drawLineWithinVisibleBounds(Graphics g, int x0Pix, int y0Pix, int x1Pix, int y1Pix ) {
 		
 		/* Determine slopes along X and Y */
-		double hellingX = ((double) x1Pix - (double) x0Pix) / ((double) y1Pix - (double) y0Pix);
-		double hellingY = ((double) y1Pix - (double) y0Pix) / ((double) x1Pix - (double) x0Pix);
+		double hellingX;
+		if (y1Pix != y0Pix) {
+			hellingX = ((double) x1Pix - (double) x0Pix) / ((double) y1Pix - (double) y0Pix);
+		} else {
+			hellingX = 0;
+		}
+		double hellingY;
+		if (x1Pix != x0Pix) {
+			hellingY = ((double) y1Pix - (double) y0Pix) / ((double) x1Pix - (double) x0Pix);
+		} else {
+			hellingY = 0;
+		}
 		
 		/* Cut of first point along X-axis */
 		double x0a = Math.max(drawXmin, Math.min(drawXmax, x0Pix));
