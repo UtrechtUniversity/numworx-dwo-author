@@ -3063,7 +3063,13 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int i = 0; i < aantalRijen; i++)
 			{	
 				if(stappen!=null && (i>stapNr-1 || stapNr==0))
+				{	hoogteCum = (hoogteCum==0 && editable) ? 10 : hoogteCum;
 					break;
+				}
+				if(!visible && !editable)
+				{	break;
+				}
+				
 				if(i==0 || !(inklapbaar && ingeklapt))
 					hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
 			}
@@ -3801,6 +3807,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if(command.startsWith("action.setVisible"))
 		{	visible = true;
 			setVisible(visible);
+			zetMaat();
 		}
 		else if(command.startsWith("int.index"))
 		{	int index = 0;
