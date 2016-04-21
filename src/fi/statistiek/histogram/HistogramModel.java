@@ -308,13 +308,20 @@ public class HistogramModel extends Observable implements TableModelListener,
 		if ((this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
 			|| (max >= maxBinValue)) && (max != this.maxOnScale)) // TODO doubles vergelijken met marge
 		{
-			double newMax = this.minOnScale;
-			for (int i = 1; max > newMax; i++)
+			if (getBinWidth() == 0)
 			{
-				newMax = Statistiek.round(newMax + getBinWidth(), 8);
+				this.maxOnScale = max;
 			}
-			
-			this.maxOnScale = newMax;
+			else
+			{
+				double newMax = this.minOnScale;
+				for (int i = 1; max > newMax; i++)
+				{
+					newMax = Statistiek.round(newMax + getBinWidth(), 8);
+				}
+				
+				this.maxOnScale = newMax;
+			}
 			
 			this.changed();
 		}
