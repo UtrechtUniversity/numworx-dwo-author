@@ -228,20 +228,28 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else if (ac.equals("binWidth"))
 		{
-			this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
-			
-			// column index bin settings
-			updateBoundariesFromBinSettings();
-
-			double maxBinValue = this.model.getMaxBinBoundaryValue();
-			
-			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			if (this.view.getBinWidth() == 0)
 			{
-				this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+				// reset to the latest value
+				this.model.setBinWidth(this.model.getBinWidth());
 			}
 			else
 			{
-				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
+				
+				// column index bin settings
+				updateBoundariesFromBinSettings();
+	
+				double maxBinValue = this.model.getMaxBinBoundaryValue();
+				
+				if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+				{
+					this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+				}
+				else
+				{
+					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				}
 			}
 		}
 		else if (ac.equals("axisBox"))
@@ -617,7 +625,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("optimizeScale"))
 		{
-			this.model.setOptimizeScaleWithoutEvent(((Boolean) h.get("optimizeScale"))
+			this.model.setOptimizeScale(((Boolean) h.get("optimizeScale"))
 				.booleanValue());
 		}
 		if (h.containsKey("binWidth")) // bin width nodig voor berekenen maxonscale
@@ -627,12 +635,12 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("minOnScale"))
 		{
-			this.model.setMinOnScaleWithoutEvent(((Double) h.get("minOnScale"))
+			this.model.setMinOnScale(((Double) h.get("minOnScale"))
 				.doubleValue());
 		}
 		if (h.containsKey("maxOnScale"))
 		{
-			this.model.setMaxOnScaleWithoutEvent(((Double) h.get("maxOnScale"))
+			this.model.setMaxOnScale(((Double) h.get("maxOnScale"))
 				.doubleValue());
 		}
 	}
@@ -682,20 +690,28 @@ public class HistogramController implements StatistiekView, ActionListener,
 		{
 //			System.out.println("HistogramController.focusLost(): binWidth");
 
-			this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
-			
-			// column index bin settings
-			updateBoundariesFromBinSettings();
-
-			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
-			double maxBinValue = this.view.getMaxBinOnScale();
-			if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			if (this.view.getBinWidth() == 0)
 			{
-				this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+				// reset to the latest value
+				this.model.setBinWidth(this.model.getBinWidth());
 			}
 			else
 			{
-				this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				this.model.setBinWidthWithoutEvent(this.view.getBinWidth());
+			
+				// column index bin settings
+				updateBoundariesFromBinSettings();
+	
+				// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
+				double maxBinValue = this.view.getMaxBinOnScale();
+				if (this.view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+				{
+					this.view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+				}
+				else
+				{
+					this.model.setMaxOnScale(this.view.getUserOptionsPanel().getMaxOnScale());
+				}
 			}
 		}
 		else if (e.getSource().equals(this.view.getUserOptionsPanel().getMaxOnScaleField()))
