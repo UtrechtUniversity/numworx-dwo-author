@@ -2057,7 +2057,7 @@ public class HistogramView extends JPanel implements Observer
 		}
 		else
 		{
-			bins = this.getBinsfromBinsSettings();
+			bins = this.getBinsFromBinsSettings();
 		}
 		
 		return bins;
@@ -2068,7 +2068,7 @@ public class HistogramView extends JPanel implements Observer
 	 * 
 	 * @return
 	 */
-	private ArrayList<Double> getBinsfromBinsSettings()
+	private ArrayList<Double> getBinsFromBinsSettings()
 	{
 		ArrayList<Double> bins = new ArrayList<Double>();
 		double maxOnScale = model.getMaxOnScale();
@@ -2079,16 +2079,19 @@ public class HistogramView extends JPanel implements Observer
 			// use the settings without check for valid values
 			double minOnScale = model.getMinOnScale();
 			double binValue = minOnScale;
-			for (int i = 0; binValue < maxOnScale; i++) // TODO vergelijk doubles met marge
-			{
-				binValue = minOnScale + i * binWidth;
-				binValue = Statistiek.round(binValue, 8);//Statistiek.parseDouble(Statistiek.df8.format(binValue)); // beetje omslachtig via string...
-				bins.add(binValue);
-			}
-			if (minOnScale == maxOnScale)
+			if ((minOnScale == maxOnScale) || (binWidth == 0))
 			{
 				bins.add(minOnScale);
 				bins.add(maxOnScale);
+			}
+			else
+			{
+				for (int i = 0; binValue < maxOnScale; i++) // TODO vergelijk doubles met marge
+				{
+					binValue = minOnScale + i * binWidth;
+					binValue = Statistiek.round(binValue, 8);//Statistiek.parseDouble(Statistiek.df8.format(binValue)); // beetje omslachtig via string...
+					bins.add(binValue);
+				}
 			}
 		}
 		else
@@ -2110,11 +2113,19 @@ public class HistogramView extends JPanel implements Observer
 				maxOnScale = max + binWidth; // bins do not include the upper boundary, so max + binWidth
 			}
 			
-			for (int i = 0; binValue < maxOnScale; i++)
+			if ((startValue == maxOnScale) || (binWidth == 0))
 			{
-				binValue = startValue + i * binWidth;
-				binValue = Statistiek.round(binValue, 8);
-				bins.add(binValue);
+				bins.add(startValue);
+				bins.add(maxOnScale);
+			}
+			else
+			{
+				for (int i = 0; binValue < maxOnScale; i++)
+				{
+					binValue = startValue + i * binWidth;
+					binValue = Statistiek.round(binValue, 8);
+					bins.add(binValue);
+				}
 			}
 		}
 
@@ -2128,7 +2139,7 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private int getNumberOfBinsfromBinsSettings()
 	{
-		ArrayList<Double> binBoundaries = getBinsfromBinsSettings();
+		ArrayList<Double> binBoundaries = getBinsFromBinsSettings();
 		int number = binBoundaries.size() - 1;
 
 		return number;
