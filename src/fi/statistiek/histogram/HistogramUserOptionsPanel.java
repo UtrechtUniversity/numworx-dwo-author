@@ -1224,10 +1224,13 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				this.minBoundaryField.setText(
-					Statistiek.getStringValue(this.view.getBinsOnScale().get(0)));
-				int last = this.view.getBinsOnScale().size() - 1;
-				this.maxOnScaleField.setText(Statistiek.getStringValue(this.view.getBinsOnScale().get(last)));
+				if(this.view.getBinsOnScale().size()>0) // Deze check toegevoegd ivm vastloper
+				{	
+					this.minBoundaryField.setText(
+						Statistiek.getStringValue(this.view.getBinsOnScale().get(0)));
+					int last = this.view.getBinsOnScale().size() - 1;
+					this.maxOnScaleField.setText(Statistiek.getStringValue(this.view.getBinsOnScale().get(last)));
+				}
 				// set the bin width based on the bin boundaries
 				String binWidth;
 				if (this.model.isOptimizeScale())
