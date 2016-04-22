@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 
 import fi.heks.Heks;
 
-public class ScLabel extends JPanel implements ScObject {
+public class ScLabel extends JPanel implements ScObject 
+{
 	public static int CENTER = 0;
 	public static int RECHTS = 2;
 	public static int LINKS = 1;
@@ -20,6 +21,8 @@ public class ScLabel extends JPanel implements ScObject {
 	public double schaal;
 	public double relx, rely, relb, relh;
 	public boolean resized;
+	
+	boolean textRtoL = false;
 
 	public ScLabel(int x, int y, int b, int h, String str) {
 		opschrift = str;
@@ -33,7 +36,9 @@ public class ScLabel extends JPanel implements ScObject {
 		uitlijning = CENTER;
 		
 		setOpaque(false);
-		boolean textRtoL = !ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
+		//boolean textRtoL = false;
+		if (Heks.rb.getLocale().getLanguage().equals("nl"))
+			textRtoL = true; //!ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
 
 	}
 
@@ -91,9 +96,10 @@ public class ScLabel extends JPanel implements ScObject {
 		setBounds(x, y, b, h);
 	}
 
-	public void lijnUit(int soort) {
+	public void lijnUit(int soort) 
+	{
 		uitlijning = soort;
-		boolean textRtoL = !ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
+		//boolean textRtoL = !ComponentOrientation.getOrientation(Heks.language).isLeftToRight();
 		if(textRtoL && uitlijning==2) uitlijning = 1;
 		if(textRtoL && uitlijning==1) uitlijning = 2;
 		

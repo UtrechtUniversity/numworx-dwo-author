@@ -8,7 +8,8 @@ import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
 
-public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
+public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener 
+{
 	private AppletUtil au;
 	private ScLWButton opdrachtKnop, werkKnop;
 	private ScLabel titelLabel, maalLabel, opdrachtTitel;
@@ -30,18 +31,22 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 
 		Image heksnieuw = au.getImage("resources/heksnieuw.jpg");
 		Image opnieuwknop = null;
-		if (Heks.rb.getLocale().getLanguage().equals("nl")) {
+		if (Heks.rb.getLocale().getLanguage().equals("nl")) 
+		{
 			opnieuwknop = au.getImage("resources/opnieuwknop.gif");
-		} else {
+		} 
+		else 
+		{
 			opnieuwknop = au.getImage("resources/againKnop.gif");
 		}
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(heksnieuw, 0);
 		tr.addImage(opnieuwknop, 0);
-		try {
+		try 
+		{
 			tr.waitForAll();
-		} catch (Exception e) {
-		}
+		} 
+		catch (Exception e) {}
 
 		ImageComponent heksNieuw = new ImageComponent(heksnieuw);
 		heksNieuw.setLocation(5, 0);
@@ -70,20 +75,21 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 		uitleg.lijnUit(ScLabel.LINKS);
 		// add(uitleg);
 
-		oefenTafereelPanel = new OefenTafereelPanelEmmer_WN(150, -25, b - 200, h - 5, applet);
+		oefenTafereelPanel = new OefenTafereelPanelEmmer_WN(190, -25, b - 200, h - 5, applet);
 		oefenTafereelPanel.addActionListener(this);
 		add(oefenTafereelPanel);
 
-		emmer = new EmmerPanel(150, 10, 110, 125, applet);
+		//emmer = new EmmerPanel(60, 10, 110, 125, au);
+		emmer = new EmmerPanel(60, 10, 100, 115, au);
 		emmer.zetInstelbaar(false);
 		add(emmer, 0);
 		emmer.setVisible(false);
 
-		maalLabel = new ScLabel(100, 60, 50, 50, "X");
+		maalLabel = new ScLabel(30, 58, 35, 35, "X");
 		add(maalLabel);
 		maalLabel.setVisible(false);
 
-		emmerTeller = new GetalComponent(50, 60, 50, 50);
+		emmerTeller = new GetalComponent(-10, 55, 55, 40);
 		emmerTeller.zetWaarde(0);
 		add(emmerTeller);
 		emmerTeller.setVisible(false);
@@ -112,7 +118,7 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 		// add(werkKnop);
 
 		opnieuwKnop = new ImageButton(opnieuwknop);
-		opnieuwKnop.setBounds(20, 300, 150, 24);
+		opnieuwKnop.setBounds(20, 300, 100, 24);
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop, 0);
 
@@ -157,8 +163,10 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 		oefenTafereelPanel.stop();
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == opdrachtKnop) {
+	public void actionPerformed(ActionEvent e) 
+	{
+		if (e.getSource() == opdrachtKnop) 
+		{
 			oefenTafereelPanel.zetOpnieuw();
 			oefenTafereelPanel.zetActief(false);
 			emmer.zetInhoud(0);
@@ -173,7 +181,9 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 			textArea.setVisible(true);
 			opdrachtTitel.setVisible(true);
 			werkKnop.setVisible(true);
-		} else if (e.getSource() == werkKnop) {
+		} 
+		else if (e.getSource() == werkKnop) 
+		{
 			opdrachtKnop.setVisible(true);
 			oefenTafereelPanel.zetActief(true);
 
@@ -181,7 +191,9 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 			textArea.setVisible(false);
 			opdrachtTitel.setVisible(false);
 			werkKnop.setVisible(false);
-		} else if (e.getSource() == opnieuwKnop) {
+		} 
+		else if (e.getSource() == opnieuwKnop) 
+		{
 			if (opdracht.isVisible())
 				return;
 			oefenTafereelPanel.zetOpnieuw();
@@ -191,7 +203,10 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 			emmerTeller.setVisible(false);
 			maalLabel.setVisible(false);
 			// opnieuwKnop.setVisible(false);
-		} else if (e.getSource() == oefenTafereelPanel) {
+			
+		} 
+		else if (e.getSource() == oefenTafereelPanel) 
+		{
 			if (opdracht.isVisible())
 				return;
 			opnieuwKnop.setVisible(true);
@@ -201,7 +216,9 @@ public class TafereelPanelEmmer_WN extends ScPanel implements ActionListener {
 				emmer.setVisible(true);
 				emmerTeller.setVisible(true);
 				maalLabel.setVisible(true);
-			} else if (e.getActionCommand().equals("eruit")) {
+			} 
+			else if (e.getActionCommand().equals("eruit")) 
+			{
 				emmerTeller.verlaag();
 				emmer.zetInhoud(oefenTafereelPanel.geefEmmerInhoud());
 				emmer.setVisible(true);

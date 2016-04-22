@@ -6,9 +6,12 @@ import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
 import java.applet.*;
 
-public class ZinkAnimatie extends ScContainer implements Runnable {
-	private Applet eigenaar;
-	private AppletUtil au;
+public class ZinkAnimatie extends ScContainer implements Runnable 
+{
+	//private Applet eigenaar;
+	//private AppletUtil au;
+	Object owner;
+		
 	private Tekening plusBlokje, minBlokje, blokje;
 	private int blx, bly;
 	private Thread zinkAnimatie;
@@ -19,21 +22,25 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 	private int aantalBellen;
 	private boolean bellenAan;
 
-	public ZinkAnimatie(int x, int y, int b, int h, Applet hk) {
+	public ZinkAnimatie(int x, int y, int b, int h, Object owner) 
+	{
 		super(x, y, b, h);
-		eigenaar = hk;
-		au = new AppletUtil(eigenaar);
+		//eigenaar = hk;
+		//au = new AppletUtil(eigenaar);
+		this.owner = owner;
+		
 
-		plusBlokje = new Tekening(0, 200, 60 * h / 200, 60 * h / 200, au, "blokjePlus.gif");
+		plusBlokje = new Tekening(0, 200, 60 * h / 200, 60 * h / 200, owner, "blokjePlus.gif");
 		add(plusBlokje);
 
-		minBlokje = new Tekening(0, 200, 60 * h / 200, 60 * h / 200, au, "blokjeMin.gif");
+		minBlokje = new Tekening(0, 200, 60 * h / 200, 60 * h / 200, owner, "blokjeMin.gif");
 		add(minBlokje);
 		aantalBellen = 50;
 		belx = new int[aantalBellen];
 		bely = new int[aantalBellen];
 		beld = new double[aantalBellen];
-		for (int i = 0; i < aantalBellen; i++) {
+		for (int i = 0; i < aantalBellen; i++) 
+		{
 			belx[i] = (int) (schaal * (10 + (relb - 20) * Math.random()));
 			bely[i] = (int) (schaal * (20 + (relh - 20) * Math.random()));
 			beld[i] = schaal * 2;
@@ -43,16 +50,19 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 		// bellenAnimatie.start();
 	}
 
-	public void start() {
+	public void start() 
+	{
 		bellenAan = true;
 		startBellen();
 	}
 
-	public void stop() {
+	public void stop() 
+	{
 		bellenAan = false;
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g) 
+	{
 		super.paint(g);
 		g.setColor(new Color(255, 0, 255));
 		for (int i = 0; i < aantalBellen; i++) {
@@ -60,11 +70,13 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 		}
 	}
 
-	public void zetBellenAan(boolean b) {
+	public void zetBellenAan(boolean b) 
+	{
 		bellenAan = b;
 	}
 
-	public void run() {
+	public void run() 
+	{
 		int breedte = getSize().width;
 		int hoogte = getSize().height;
 		while (bly < hoogte) {
@@ -81,15 +93,18 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 		klaar = true;
 	}
 
-	public void pauze(int millisec) {
-		try {
-			Thread.sleep(millisec);
-		} catch (InterruptedException e) // geen ;
+	public void pauze(int millisec) 
+	{
+		try 
 		{
-		}
+			Thread.sleep(millisec);
+		} 
+		catch (InterruptedException e) // geen ;
+		{}
 	}
 
-	public void start(boolean plus, int startx) {
+	public void start(boolean plus, int startx) 
+	{
 		if (startx < 0)
 			blx = 0;
 		else if (startx > getSize().width - plusBlokje.getSize().width)
@@ -97,30 +112,39 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 		else
 			blx = startx;
 		bly = 0;
-		if (plus) {
+		if (plus) 
+		{
 			blokje = plusBlokje;
 			minBlokje.setLocation(0, 200);
-		} else {
+		} 
+		else 
+		{
 			blokje = minBlokje;
 			plusBlokje.setLocation(0, 200);
 		}
 		blokje.setLocation(blx, bly);
-		if (klaar) {
+		if (klaar) 
+		{
 			klaar = false;
 			zinkAnimatie = new Thread(this);
 			zinkAnimatie.start();
 		}
 	}
 
-	public void startBellen() {
+	public void startBellen() 
+	{
 		bellenAnimatie = new BellenDraad();
 		bellenAnimatie.start();
 	}
 
-	class BellenDraad extends Thread {
-		public void run() {
-			while (bellenAan) {
-				for (int i = 0; i < aantalBellen; i++) {
+	class BellenDraad extends Thread 
+	{
+		public void run() 
+		{
+			while (bellenAan) 
+			{
+				for (int i = 0; i < aantalBellen; i++) 
+				{
 					bely[i] -= 2;
 					beld[i] += 0.1;
 					if (bely[i] < 0) {
@@ -129,11 +153,11 @@ public class ZinkAnimatie extends ScContainer implements Runnable {
 						beld[i] = 2;
 					}
 				}
-				try {
+				try 
+				{
 					Thread.sleep(10);
 				} catch (InterruptedException e) // geen ;
-				{
-				}
+				{}
 				;
 				repaint();
 			}

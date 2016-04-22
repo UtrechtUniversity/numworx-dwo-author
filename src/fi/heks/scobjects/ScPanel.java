@@ -2,8 +2,10 @@ package fi.heks.scobjects;
 
 import java.awt.*;
 import java.util.*;
+import javax.swing.*;
 
-public class ScPanel extends Panel implements ScObject {
+public class ScPanel extends JPanel implements ScObject 
+{
 	private Image bufferimage;
 	private Graphics gIm;
 
@@ -12,12 +14,14 @@ public class ScPanel extends Panel implements ScObject {
 	public boolean resized;
 	private boolean vastePlaats;
 
-	public ScPanel() {
+	public ScPanel() 
+	{
 		setLayout(null);
 		schaal = 1;
 	}
 
-	public ScPanel(int x, int y, int b, int h) {
+	public ScPanel(int x, int y, int b, int h) 
+	{
 		setLayout(null);
 		schaal = 1;
 		relx = x;
@@ -27,26 +31,33 @@ public class ScPanel extends Panel implements ScObject {
 		setBounds(x, y, b, h);
 	}
 
-	public void setState(Hashtable h) {
+	public void setState(Hashtable h) 
+	{
 	}
 
-	public Hashtable getState() {
+	public Hashtable getState() 
+	{
 		return null;
 	}
 
-	public double getScore() {
+	public double getScore() 
+	{
 		return 0;
 	}
 
-	public void start() {
+	public void start() 
+	{
 	}
 
-	public void stop() {
+	public void stop() 
+	{
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g) 
+	{
 		Dimension dd = getSize();
-		if (bufferimage == null || resized) {
+		if (bufferimage == null || resized) 
+		{
 			if (resized && gIm != null)
 				gIm.dispose();
 			bufferimage = createImage(dd.width, dd.height);
@@ -54,6 +65,7 @@ public class ScPanel extends Panel implements ScObject {
 			resized = false;
 		}
 		gIm.setColor(getBackground());
+//System.out.println("ScPanel bg = " + getBackground().toString());		
 		gIm.fillRect(0, 0, dd.width, dd.height);
 		super.paint(gIm);
 		g.drawImage(bufferimage, 0, 0, null);
@@ -66,15 +78,18 @@ public class ScPanel extends Panel implements ScObject {
 		// g.drawImage(bufferimage, 0, 0, null);
 	}
 
-	public void setResized(boolean b) {
+	public void setResized(boolean b) 
+	{
 		resized = b;
 	}
 
-	public void zetVastePlaats(boolean b) {
+	public void zetVastePlaats(boolean b) 
+	{
 		vastePlaats = b;
 	}
 
-	public void schaal(double s) {
+	public void schaal(double s) 
+	{
 		schaal = s;
 		int x = (int) (schaal * relx);
 		int y = (int) (schaal * rely);
@@ -87,12 +102,15 @@ public class ScPanel extends Panel implements ScObject {
 		resized = true;
 
 		int n = getComponentCount();
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) 
+		{
 			Component c = getComponent(i);
 			ScObject scc = null;
-			try {
+			try 
+			{
 				scc = (ScObject) c;
-			} catch (ClassCastException ce) {
+			} catch (ClassCastException ce) 
+			{
 			}
 			if (scc != null)
 				scc.schaal(schaal);

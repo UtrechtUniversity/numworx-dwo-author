@@ -84,6 +84,15 @@ public class Text_nl extends java.util.ListResourceBundle {
 			{ "koudeBlokjesLabel", " koude/blokjes" }, { "int0Label", "nul" }, { "int1Label", "een" }, { "int2Label", "twee" }, { "int3Label", "drie" },
 			{ "int4Label", "vier" }, { "int5Label", "vijf" }, { "int6Label", "zes" }, { "int7Label", "zeven" }, { "int8Label", "acht" },
 			{ "int9Label", "negen" }, { "foutFeedbackMaal", "FOUT. Denk aan de toverdrank en probeer opnieuw." },
+			
+			{ "pagina21", "blokjes erin" },
+			{ "pagina22", "blokjes erin/eruit" },
+			{ "pagina23", "emmers erin/eruit" },
+			{ "pagina24", "hulppagina" },
+			{ "keuzeerineruit", "keuze erin/eruit" },
+			{ "alleenerin", "alleen erin" },
+			{ "alleeneruit", "alleen eruit" },
+			
 
 	};
 }

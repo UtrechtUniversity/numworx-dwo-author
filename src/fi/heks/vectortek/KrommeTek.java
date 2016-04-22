@@ -4,8 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.util.*;
 
-public class KrommeTek extends TekenObjectTek {
+public class KrommeTek extends TekenObjectTek 
+{
 	int aantalBPunten;
 	int aantalTPunten;
 	Point[] basispunten;
@@ -13,8 +15,10 @@ public class KrommeTek extends TekenObjectTek {
 	Color lijnkleur;
 	double[] exactePuntenX, exactePuntenY;
 
-	public KrommeTek(DataInputStream inv) {
-		try {
+	public KrommeTek(DataInputStream inv) 
+	{
+		try 
+		{
 			int r = inv.readByte() + 128;
 			int g = inv.readByte() + 128;
 			int b = inv.readByte() + 128;
@@ -27,13 +31,30 @@ public class KrommeTek extends TekenObjectTek {
 				int y = inv.readByte() * 2 + 254;
 				basispunten[j] = new Point(x, y);
 			}
-		} catch (IOException io) {
+		} 
+		catch (IOException io) 
+		{
 		}
 		tekenpunten = buig(basispunten);
 		aantalTPunten = tekenpunten.length;
 
 	}
 
+	public Hashtable<String,Object> getState()
+	{
+		Hashtable<String,Object> h = new Hashtable<String,Object>(); 
+		h.put("soort", "Kromme");
+		h.put("lijnkleur", new String("rgb(" + lijnkleur.getRed()+ "," + lijnkleur.getGreen() + "," + lijnkleur.getBlue() + ")"));
+		int[] puntenX = new int[aantalBPunten];
+		int[] puntenY = new int[aantalBPunten];
+		for (int i = 0; i < aantalBPunten; i++)
+		{	puntenX[i] = basispunten[i].x;
+			puntenY[i] = basispunten[i].y;
+		}
+		h.put("puntenx", puntenX);
+		h.put("punteny", puntenY);
+		return h;
+	}
 	public void paint(Graphics gr) {
 		Graphics g = (Graphics2D) gr;
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -72,7 +93,8 @@ public class KrommeTek extends TekenObjectTek {
 
 	}
 
-	public Point[] buig(Point[] pnt) {
+	public Point[] buig(Point[] pnt) 
+	{
 
 		int aantalP = pnt.length;
 		int aantalPW;
@@ -206,7 +228,8 @@ public class KrommeTek extends TekenObjectTek {
 		return pNieuw;
 	}
 
-	public void verplaats(int dx, int dy) {
+	public void verplaats(int dx, int dy) 
+	{
 		for (int j = 0; j < aantalBPunten; j++) {
 			basispunten[j].x += dx;
 			basispunten[j].y += dy;
@@ -220,7 +243,8 @@ public class KrommeTek extends TekenObjectTek {
 
 	}
 
-	public void draai(double dh) {
+	public void draai(double dh) 
+	{
 		if (exactePuntenX == null) {
 			exactePuntenX = new double[aantalBPunten];
 			exactePuntenY = new double[aantalBPunten];

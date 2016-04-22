@@ -8,16 +8,19 @@ import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
 
-public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener, MouseMotionListener, ActionListener {
-	private AppletUtil au;
+public class Pagina23OefenPanel extends ScPanel implements MouseListener, MouseMotionListener, ActionListener 
+{
+	//private AppletUtil au;
+	HeksInteractiePanel heip;
+	
 	private ActionListener actionListener;
 	private AchtergrondContainer achtergrond;
 
 	private Tekening blokjePlus, blokjeMin, blokjeSleep, blokjeSleepMin;
-	private Emmer emmerbinnen, emmerbuiten, emmerSleep;
+	Emmer emmerbinnen, emmerbuiten, emmerSleep;
 	private Tekening pot, potinhoud, erinpijl, eruitpijl, vloer;
-	private ZinkAnimatieEmmer za;
-	private GetalComponent tc;
+	ZinkAnimatieEmmer za;
+	GetalComponent tc;
 	private ScPanel sleeppanel;
 	private Polygon[] p;
 	// private AudioClip plons, bubbel;
@@ -28,18 +31,23 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 	private boolean plusEruit, minEruit, pasEruit;
 	private boolean[] kleurBlokjes = { true, false, true, true, true, true, false, false, false, false, true };
 
-	private boolean erinMogelijk, eruitMogelijk;
+	boolean erinMogelijk, eruitMogelijk;
 	private int aantalKerenGebruikt;
-	private int emmerInhoud;
+	int emmerInhoud;
 
 	private boolean actief = true;
+	
+	boolean alleenErin = false;
+	boolean alleenEruit = false;
 
-	public OefenTafereelPanelEmmer_WN(int x, int y, int b, int h, Applet applet) {
+	public Pagina23OefenPanel(int x, int y, int b, int h, HeksInteractiePanel heip) 
+	{
 		super(x, y, b, h);
+		this.heip = heip;
 		// setBackground(new Color(255,255,220));
-		setBackground(getBackground());
+		setBackground(heip.bgColor);
 
-		au = new AppletUtil(applet);
+		//au = new AppletUtil(applet);
 		// plons = au.getAudioClip("resources/watersplash.au");
 		// bubbel = au.getAudioClip("resources/bubble.au");
 
@@ -58,55 +66,57 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 		// actief = false;
 		aantalKerenGebruikt = 0;
 
-		Color color_01 = new Color(240, 240, 240);
-		String kleurcode = applet.getParameter("color_01");
-		if (kleurcode != null)
-			color_01 = new Color(Integer.parseInt(kleurcode.substring(1), 16));
+		//Color color_01 = new Color(240, 240, 240);
+		//String kleurcode = applet.getParameter("color_01");
+		//if (kleurcode != null)
+		//	color_01 = new Color(Integer.parseInt(kleurcode.substring(1), 16));
 
 		sleeppanel = new ScPanel(0, 0, b, h - 5);
-		sleeppanel.setBackground(color_01);
+		sleeppanel.setBackground(Color.white);
 		sleeppanel.addMouseListener(this);
 		sleeppanel.addMouseMotionListener(this);
 		achtergrond = new AchtergrondContainer(0, 0, b, h - 5);
-
-		pot = new Tekening(20, 200, 480, 390, au, "potnieuw.gif");
+		
+		pot = new Tekening(20, 200, 480, 390, heip, "potnieuw.gif");
 		achtergrond.add(pot);
 
-		erinpijl = new Tekening(20, 20, 250, 180, au, "gebogenpijl.gif");
+		erinpijl = new Tekening(20, 20, 250, 180, heip, "gebogenpijl.gif");
 		erinpijl.setVisible(false);
-		//sleeppanel.add(erinpijl);
+		// sleeppanel.add(erinpijl);
 
-		eruitpijl = new Tekening(260, 40, 250, 160, au, "gebogenpijl.gif");
+		eruitpijl = new Tekening(260, 40, 250, 160, heip, "gebogenpijl.gif");
 		eruitpijl.setVisible(false);
 		//sleeppanel.add(eruitpijl);
-		
-		//HIER!
-		potinhoud = new Tekening(22, 240, 475, 335, au, "inhoudnieuw.gif");
+
+		potinhoud = new Tekening(22, 240, 475, 335, heip, "inhoudnieuw.gif");
 		sleeppanel.add(potinhoud, 0);
-		za = new ZinkAnimatieEmmer(110, 290, 210, 200, au);
+
+		za = new ZinkAnimatieEmmer(110, 290, 210, 200, heip);
 		// za.zetBellenAan(false);
 		sleeppanel.add(za, 0);
-
-		emmerbinnen = new Emmer(120, 320, 140, 155, au);
-		//emmerbinnen = new Emmer(120, 25, 140, 155, au); // doet het wel!
-		emmerbinnen.addActionListener(this);
-		sleeppanel.add(emmerbinnen,0);
 		
-		emmerbuiten = new Emmer(400, 25, 140, 155, au);
+		emmerbinnen = new Emmer(120, 320, 140, 155, heip);
+emmerbinnen.naam = "binnen";		
+		emmerbinnen.addActionListener(this);
+		sleeppanel.add(emmerbinnen, 0);
+
+		emmerbuiten = new Emmer(400, 25, 140, 155, heip);
+emmerbuiten.naam = "buiten";		
 		emmerbuiten.addActionListener(this);
 		sleeppanel.add(emmerbuiten);
 
-		emmerSleep = new Emmer(-150, -150, 140, 155, au);
+		emmerSleep = new Emmer(-150, -150, 140, 155, heip);
+emmerSleep.naam = "sleep";		
 		sleeppanel.add(emmerSleep, 0);
 
-		//za = new ZinkAnimatieEmmer(110, 290, 210, 200, au);
+		//za = new ZinkAnimatieEmmer(110, 290, 210, 200, heip);
 		// za.zetBellenAan(false);
 		//sleeppanel.add(za, 0);
 
-		//potinhoud = new Tekening(22, 240, 475, 335, au, "inhoudnieuw.gif");
+		//potinhoud = new Tekening(22, 240, 475, 335, heip, "inhoudnieuw.gif");
 		//sleeppanel.add(potinhoud, 0);
 
-		vloer = new Tekening(-10, 430, 530, 175, au, "vloer.gif");
+		vloer = new Tekening(-10, 430, 530, 175, heip, "vloer.gif");
 		achtergrond.add(vloer);
 
 		tc = new GetalComponent(450, 300, 150, 60);
@@ -136,15 +146,30 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 
 	public void zetOpnieuw() 
 	{
+//System.out.println("p23oefen zetOpnieuw");
+//System.out.println("alleenErin " + alleenErin);
+//System.out.println("alleenEruit " + alleenEruit);
+
 		za.stop();
-		emmerbuiten.setVisible(true);
-		emmerbinnen.setVisible(true);
+		if (alleenEruit)
+		{	emmerbinnen.setVisible(true);
+			emmerbuiten.setVisible(false);
+		}
+		else if (alleenErin)
+		{	emmerbuiten.setVisible(true);
+			emmerbinnen.setVisible(false);
+		}	
+		else
+		{
+			emmerbuiten.setVisible(true);
+			emmerbinnen.setVisible(true);
+		}
 		emmerbuiten.zetBegin();
 		emmerbinnen.zetBegin();
 		erinMogelijk = false;
 		eruitMogelijk = false;
-		//eruitpijl.setVisible(false);
-		//erinpijl.setVisible(false);
+		eruitpijl.setVisible(false);
+		erinpijl.setVisible(false);
 		tc.zetWaarde(0);
 		// za.start();
 	}
@@ -161,9 +186,12 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 	{
 		instelbaar = b;
 		tc.zetInstelbaar(b);
-		if (b) {
+		if (b) 
+		{
 			tc.addActionListener(this);
-		} else {
+		} 
+		else 
+		{
 			tc.removeActionListener(this);
 		}
 	}
@@ -196,7 +224,8 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 		return aantalKerenGebruikt;
 	}
 
-	public int geefTemp() {
+	public int geefTemp() 
+	{
 		return tc.geefWaarde();
 	}
 
@@ -213,7 +242,11 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 	public void mousePressed(MouseEvent e) 
 	{
 		if (!actief)
-			return;
+		{	return;
+		}
+		
+//System.out.println("p23oefen mousePressed");
+
 		laatstex = e.getX();
 		laatstey = e.getY();
 		// if(instelbaar)tc.zetInstelbaar(false);
@@ -225,21 +258,24 @@ public class OefenTafereelPanelEmmer_WN extends ScPanel implements MouseListener
 
 		if (emmerbuiten.raakt(e.getX(), e.getY()) && erinMogelijk) 
 		{
-System.out.println("ebuiten mp");			
 			emmerSleep.setLocation((int) (schaal * 400), (int) (schaal * 25));
+
+//System.out.println("emmerbuiten.raakt");			
 		}
 
 		if (emmerbinnen.raakt(e.getX(), e.getY()) && eruitMogelijk) 
 		{
-System.out.println("ebinnen mp");			
 			emmerSleep.setLocation((int) (schaal * 120), (int) (schaal * 320));
 			plusEruit = true;
+			
+//System.out.println("emmerbinnen.raakt");			
 		}
 
 		if (emmerSleep.raakt(e.getX(), e.getY())) 
 		{
-System.out.println("esleep mp");			
 			raakSleep = true;
+			
+//System.out.println("emmersleep.raakt");			
 		}
 
 		// int x = e.getX()-potinhoud.getLocation().x;
@@ -274,10 +310,8 @@ System.out.println("esleep mp");
 			Polygon p = ((VulKrommeTek) (pot.to[2])).buigPolygon;
 			int lx = pot.getLocation().x;
 			int ly = pot.getLocation().y;
-			for (int i = 0; i < p.npoints; i++) 
-			{
-				if (emmerSleep.raakt(p.xpoints[i] + lx, p.ypoints[i] + ly)) 
-				{
+			for (int i = 0; i < p.npoints; i++) {
+				if (emmerSleep.raakt(p.xpoints[i] + lx, p.ypoints[i] + ly)) {
 					emmerSleep.setLocation(emmerSleep.getLocation().x - dx, emmerSleep.getLocation().y - dy);
 					raakSleep = false;
 				}
@@ -292,7 +326,8 @@ System.out.println("esleep mp");
 
 		if (!plusEruit && emmerSleep.getLocation().x + emmerSleep.getSize().width < za.getLocation().x + za.getSize().width
 				&& emmerSleep.getLocation().x > za.getLocation().x && emmerSleep.getLocation().y > za.getLocation().y
-				&& emmerSleep.getLocation().y + emmerSleep.getSize().height < za.getLocation().y + za.getSize().height) { // plons.play();
+				&& emmerSleep.getLocation().y + emmerSleep.getSize().height < za.getLocation().y + za.getSize().height) 
+		{ // plons.play();
 			za.start(true, emmerSleep.getLocation().x - za.getLocation().x);
 			tc.verhoog(emmerInhoud);
 			if (actionListener != null) {
@@ -312,8 +347,7 @@ System.out.println("esleep mp");
 			pasEruit = true;
 			// bubbel.play();
 			tc.verlaag(emmerInhoud);
-			if (actionListener != null) 
-			{
+			if (actionListener != null) {
 				actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "eruit"));
 			}
 		}
@@ -330,8 +364,7 @@ System.out.println("esleep mp");
 
 		if (!plusEruit && emmerSleep.getLocation().x + emmerSleep.getSize().width < pot.getLocation().x + pot.getSize().width
 				&& emmerSleep.getLocation().x > pot.getLocation().x
-				&& emmerSleep.getLocation().y + emmerSleep.getSize().height < za.getLocation().y + za.getSize().height) 
-		{
+				&& emmerSleep.getLocation().y + emmerSleep.getSize().height < za.getLocation().y + za.getSize().height) {
 			int x = emmerSleep.getLocation().x;
 			// if(!erinMogelijk)
 			emmerSleep.setLocation(-150, -150);
@@ -340,12 +373,11 @@ System.out.println("esleep mp");
 			// plons.play();
 			za.start(true, x - za.getLocation().x);
 			tc.verhoog(emmerInhoud);
-			if (actionListener != null) {
+			if (actionListener != null) 
+			{
 				actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "erin"));
 			}
-		} 
-		else 
-		{ // if(!erinMogelijk)
+		} else { // if(!erinMogelijk)
 			emmerSleep.setLocation(-150, -150);
 			// else
 			// emmerSleep.setLocation((int)(emmerbuiten.getLocation().x),(int)(emmerbuiten.getLocation().y));
@@ -377,7 +409,6 @@ System.out.println("esleep mp");
 	{
 		if (e.getSource() == emmerbuiten) 
 		{
-//System.out.println("OTPE aP emmerbuiten");			
 			zetErinMogelijk();
 			emmerInhoud = emmerbuiten.geefInhoud();
 			emmerbinnen.setVisible(false);
@@ -388,14 +419,12 @@ System.out.println("esleep mp");
 		} 
 		else if (e.getSource() == emmerbinnen) 
 		{
-//System.out.println("OTPE aP emmerbinnen");			
 			zetEruitMogelijk();
 			emmerInhoud = emmerbinnen.geefInhoud();
 			emmerbuiten.setVisible(false);
 			emmerSleep.zetInhoud(emmerInhoud);
 			za.zetInhoud(emmerInhoud);
 			za.start();
-
 		}
 		if (actionListener != null) 
 		{

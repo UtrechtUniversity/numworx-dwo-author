@@ -1,8 +1,10 @@
 package fi.heks.scobjects;
 
 import java.awt.*;
+import javax.swing.*;
 
-public class ScTextArea extends TextArea implements ScObject {
+public class ScTextArea extends TextArea implements ScObject 
+{
 	public double schaal;
 	public double relx, rely, relb, relh;
 	public boolean resized;

@@ -3,16 +3,19 @@ package fi.heks;
 import java.awt.*;
 import fi.heks.scobjects.*;
 
-public class Thermometer extends ScComponent {
+public class Thermometer extends ScComponent 
+{
 	private int temp;
 
-	public Thermometer(int x, int y, int b, int h) {
+	public Thermometer(int x, int y, int b, int h) 
+	{
 		super(x, y, b, h);
 		// setBackground(Color.white);
 		temp = 0;
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g) 
+	{
 		double schaal = 1.0 * getSize().height / 300;
 		Font f = new Font("SansSerif", Font.PLAIN, (int) (schaal * 12));
 		g.setColor(Color.black);
@@ -42,7 +45,8 @@ public class Thermometer extends ScComponent {
 		g.drawLine((int) (schaal * 34), (int) (schaal * 5), (int) (schaal * 34), (int) (schaal * 280));
 
 		g.setColor(Color.black);
-		for (int i = -20; i < 21; i++) {
+		for (int i = -20; i < 21; i++) 
+		{
 			if (i % 5 == 0)
 				g.drawLine((int) (schaal * 22), (int) (schaal * (110 + 5 * i)), (int) (schaal * 34), (int) (schaal * (110 + 5 * i)));
 			else
@@ -50,32 +54,38 @@ public class Thermometer extends ScComponent {
 
 		}
 
-		for (int i = -20; i < 21; i += 5) {
-			String s = Integer.toString(i) + "�";
+		for (int i = -20; i < 21; i += 5) 
+		{
+			String s = Integer.toString(i) + "\u00B0"; //"�";
 			int sw = fm.stringWidth(s);
 			int sh = fm.getHeight();
-			g.drawString(Integer.toString(i) + "�", (int) (schaal * (19 - sw)), (int) (schaal * (110 - 5 * i + sh / 2)));
+			g.drawString(Integer.toString(i) + "\u00B0", //"�", 
+					(int) (schaal * (19 - sw)), (int) (schaal * (110 - 5 * i + sh / 2)));
 		}
 
 		// g.drawString(Integer.toString(temp)+"�",0,getSize().height);
 	}
 
-	public int geefTemp() {
+	public int geefTemp() 
+	{
 		return temp;
 
 	}
 
-	public void zetTemp(int t) {
+	public void zetTemp(int t) 
+	{
 		temp = t;
 		repaint();
 	}
 
-	public void tempPlus() {
+	public void tempPlus() 
+	{
 		temp++;
 		repaint();
 	}
 
-	public void tempMin() {
+	public void tempMin() 
+	{
 		temp--;
 		repaint();
 	}

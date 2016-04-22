@@ -6,9 +6,12 @@ import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
 import java.applet.*;
 
-public class ZinkAnimatieEmmer extends ScContainer implements Runnable {
-	private Applet eigenaar;
-	private AppletUtil au;
+public class ZinkAnimatieEmmer extends ScContainer implements Runnable 
+{
+	//private Applet eigenaar;
+	//private AppletUtil au;
+	Object owner; 
+	
 	private Emmer emmer;
 	private int blx, bly;
 	private Thread zinkAnimatie;
@@ -19,12 +22,14 @@ public class ZinkAnimatieEmmer extends ScContainer implements Runnable {
 	private int aantalBellen;
 	private boolean bellenAan;
 
-	public ZinkAnimatieEmmer(int x, int y, int b, int h, Applet hk) {
+	public ZinkAnimatieEmmer(int x, int y, int b, int h, Object owner) 
+	{
 		super(x, y, b, h);
-		eigenaar = hk;
-		au = new AppletUtil(eigenaar);
+		this.owner = owner;
+		//eigenaar = hk;
+		//au = new AppletUtil(eigenaar);
 
-		emmer = new Emmer(0, 200, 110 * h / 200, 125 * h / 200, eigenaar);
+		emmer = new Emmer(0, 200, 110 * h / 200, 125 * h / 200, owner);
 		emmer.zetInstelbaar(false);
 		add(emmer);
 
@@ -42,28 +47,34 @@ public class ZinkAnimatieEmmer extends ScContainer implements Runnable {
 		// bellenAnimatie.start();
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g) 
+	{
 		super.paint(g);
 		g.setColor(new Color(255, 0, 255));
-		for (int i = 0; i < aantalBellen; i++) {
+		for (int i = 0; i < aantalBellen; i++) 
+		{
 			g.drawOval(belx[i], bely[i], (int) beld[i], (int) beld[i]);
 		}
 	}
 
-	public void start() {
+	public void start() 
+	{
 		bellenAan = true;
 		startBellen();
 	}
 
-	public void stop() {
+	public void stop() 
+	{
 		bellenAan = false;
 	}
 
-	public void zetInhoud(int aantal) {
+	public void zetInhoud(int aantal) 
+	{
 		emmer.zetInhoud(aantal);
 	}
 
-	public void zetBellenAan(boolean b) {
+	public void zetBellenAan(boolean b) 
+	{
 		bellenAan = b;
 	}
 
@@ -108,7 +119,8 @@ public class ZinkAnimatieEmmer extends ScContainer implements Runnable {
 		}
 	}
 
-	public void startBellen() {
+	public void startBellen() 
+	{
 		bellenAnimatie = new BellenDraad();
 		bellenAnimatie.start();
 	}

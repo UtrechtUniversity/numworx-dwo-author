@@ -79,6 +79,16 @@ public class Text_en extends java.util.ListResourceBundle {
 			{ "koudeBlokjesLabel", " cold/blocks" }, { "int1Label", "zero" }, { "int1Label", "one" }, { "int2Label", "two" }, { "int3Label", "three" },
 			{ "int4Label", "four" }, { "int5Label", "five" }, { "int6Label", "six" }, { "int7Label", "seven" }, { "int8Label", "eight" },
 			{ "int9Label", "nine" }, { "foutFeedbackMaal", "Incorrect. Think of the magic potion and try again." },
+			
+			{ "pagina21", "adding blocks" },
+			{ "pagina22", "adding/removing blocks" },
+			{ "pagina23", "adding/removing buckets" },
+			{ "pagina24", "help page" },
+			{ "keuzeerineruit", "choice add/remove" },
+			{ "alleenerin", "add only" },
+			{ "alleeneruit", "remove only" },
+
+
 
 	};
 }

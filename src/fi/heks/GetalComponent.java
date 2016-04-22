@@ -5,13 +5,15 @@ import java.awt.event.*;
 
 import fi.heks.scobjects.*;
 
-public class GetalComponent extends ScContainer implements ActionListener, FocusListener, MouseListener {
+public class GetalComponent extends ScContainer implements ActionListener, FocusListener, MouseListener 
+{
 	private int waarde;
 	private ScTextField beginWaardeTf;
 	private boolean isTemp, instelbaar, bekend, leeg;
 	private ActionListener actionListener;
 
-	public GetalComponent(int x, int y, int b, int h) {
+	public GetalComponent(int x, int y, int b, int h) 
+	{
 		super(x, y, b, h);
 		waarde = 0;
 		bekend = true;
@@ -27,7 +29,8 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		add(beginWaardeTf);
 	}
 
-	public void paint(Graphics gr) {
+	public void paint(Graphics gr) 
+	{
 		Graphics g = (Graphics2D) gr;
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -35,16 +38,19 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		g.setColor(getForeground());
 		g.setFont(f);
 		String s;
-		if (bekend) {
+		if (bekend) 
+		{
 			if (isTemp)
 				s = Integer.toString(waarde) + "\u2103";
 			else
 				s = Integer.toString(waarde);
-		} else {
+		} 
+		else 
+		{
 			if (leeg)
 				s = "";
 			else if (isTemp)
-				s = "...�C";
+				s = "...\u00B0C";
 			else
 				s = "...";
 		}
@@ -54,19 +60,23 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		super.paint(g);
 	}
 
-	public int geefWaarde() {
+	public int geefWaarde() 
+	{
 		String s = beginWaardeTf.getText();
 		int w;
-		try {
+		try 
+		{
 			w = Integer.parseInt(s);
 			zetBekend(true);
 			zetWaarde(w);
-		} catch (NumberFormatException ex) {
-		}
+		} 
+		catch (NumberFormatException ex) 
+		{}
 		return waarde;
 	}
 
-	public void zetWaarde(int t) {
+	public void zetWaarde(int t) 
+	{
 		zetBekend(true);
 		waarde = t;
 		beginWaardeTf.setText(Integer.toString(waarde));
@@ -97,15 +107,19 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		return instelbaar;
 	}
 
-	public void zetInstelbaar(boolean b) {
+	public void zetInstelbaar(boolean b) 
+	{
 		if (b && !instelbaar)
 			addMouseListener(this);
 		else if (!b && instelbaar)
-			removeMouseListener(this);
+		{	removeMouseListener(this);
+System.out.println("mouseListener remove");		
+		}
 		instelbaar = b;
 	}
 
-	public void verhoog() {
+	public void verhoog() 
+	{
 		waarde++;
 		beginWaardeTf.setText(Integer.toString(waarde));
 		repaint();
@@ -129,16 +143,21 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		repaint();
 	}
 
-	public void addActionListener(ActionListener listener) {
+	public void addActionListener(ActionListener listener) 
+	{
 		actionListener = AWTEventMulticaster.add(actionListener, listener);
 	}
 
-	public void removeActionListener(ActionListener listener) {
+	public void removeActionListener(ActionListener listener) 
+	{
 		actionListener = AWTEventMulticaster.remove(actionListener, listener);
 	}
 
-	public void vulIn() {
-		if (instelbaar) {
+	public void vulIn() 
+	{
+//System.out.println("gc vulIn inst " + instelbaar);		
+		if (instelbaar) 
+		{
 			beginWaardeTf.schaal(schaal);
 			// add(beginWaardeTf);
 			beginWaardeTf.setVisible(true);
@@ -146,21 +165,24 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 			beginWaardeTf.selectAll();
 			beginWaardeTf.requestFocus();
 		}
-
+//System.out.println("gc vulIn Tf " + beginWaardeTf.isVisible());
 	}
 
-	public void mouseClicked(MouseEvent e) {
-		;
-	}
+	
+	public void mouseClicked(MouseEvent e) 
+	{;}
 
-	public void mousePressed(MouseEvent e) {
-		if (actionListener != null) {
+	public void mousePressed(MouseEvent e) 
+	{
+//System.out.println("gc mP");		
+		if (actionListener != null) 
+		{
 			actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "vulin"));
 		}
 	}
 
-	public void mouseReleased(MouseEvent e) {
-		vulIn();
+	public void mouseReleased(MouseEvent e) 
+	{	vulIn();
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -171,14 +193,17 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		;
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
 		String s = beginWaardeTf.getText();
 		int w;
-		try {
+		try 
+		{
 			w = Integer.parseInt(s);
 			zetBekend(true);
 			zetWaarde(w);
-		} catch (NumberFormatException ex) {
+		} catch (NumberFormatException ex) 
+		{
 			beginWaardeTf.setText("");
 			zetBekend(false);
 			waarde = -999;
@@ -188,13 +213,15 @@ public class GetalComponent extends ScContainer implements ActionListener, Focus
 		// remove(beginWaardeTf);
 		beginWaardeTf.setVisible(false);
 		repaint();
-		if (actionListener != null) {
+		if (actionListener != null) 
+		{
 			actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "action"));
 		}
 		this.requestFocus();
 	}
 
-	public void focusLost(FocusEvent e) {
+	public void focusLost(FocusEvent e) 
+	{
 		String s = beginWaardeTf.getText();
 		int w;
 		try {

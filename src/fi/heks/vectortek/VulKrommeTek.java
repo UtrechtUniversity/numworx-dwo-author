@@ -4,8 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.*;
+import java.util.Hashtable;
 
-public class VulKrommeTek extends TekenObjectTek {
+public class VulKrommeTek extends TekenObjectTek 
+{
 	Polygon basisPolygon;
 	public Polygon buigPolygon;
 	Color vulkleur;
@@ -13,7 +15,8 @@ public class VulKrommeTek extends TekenObjectTek {
 	boolean isOmlijnd, isGevuld;
 	double[] exactePuntenX, exactePuntenY;
 
-	public VulKrommeTek(DataInputStream inv) {
+	public VulKrommeTek(DataInputStream inv) 
+	{
 		isGevuld = false;
 		isOmlijnd = false;
 		basisPolygon = new Polygon();
@@ -40,9 +43,25 @@ public class VulKrommeTek extends TekenObjectTek {
 				int y = inv.readByte() * 2 + 254;
 				basisPolygon.addPoint(x, y);
 			}
-		} catch (IOException io) {
+		} 
+		catch (IOException io) 
+		{
 		}
 		buigPolygon = buig(basisPolygon);
+	}
+
+	public Hashtable<String,Object> getState()
+	{
+		Hashtable<String,Object> h = new Hashtable<String,Object>();
+		h.put("soort", "Veelhoek");
+		h.put("lijnkleur", new String("rgb(" + lijnkleur.getRed()+ "," + lijnkleur.getGreen() + "," + lijnkleur.getBlue() + ")"));
+		h.put("vulkleur", new String("rgb(" + vulkleur.getRed()+ "," + vulkleur.getGreen() + "," + vulkleur.getBlue() + ")"));
+		h.put("omlijnd", new Boolean(isOmlijnd));
+		h.put("gevuld", new Boolean(isGevuld));
+		h.put("puntenx", basisPolygon.xpoints);
+		h.put("punteny", basisPolygon.ypoints);
+		
+		return h;
 	}
 
 	public void paint(Graphics gr) {

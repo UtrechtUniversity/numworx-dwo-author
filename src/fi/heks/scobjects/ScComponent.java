@@ -1,13 +1,16 @@
 package fi.heks.scobjects;
 
 import java.awt.*;
+import javax.swing.*;
 
-public class ScComponent extends Component implements ScObject {
+public class ScComponent extends JComponent implements ScObject 
+{
 	public double schaal;
 	public double relx, rely, relb, relh;
 	public boolean resized;
 
-	public ScComponent(int x, int y, int b, int h) {
+	public ScComponent(int x, int y, int b, int h) 
+	{
 		schaal = 1;
 		relx = x;
 		rely = y;
@@ -16,11 +19,13 @@ public class ScComponent extends Component implements ScObject {
 		setBounds(x, y, b, h);
 	}
 
-	public void setResized(boolean b) {
+	public void setResized(boolean b) 
+	{
 		resized = b;
 	}
 
-	public void schaal(double s) {
+	public void schaal(double s) 
+	{
 		schaal = s;
 		int x = (int) (schaal * relx);
 		int y = (int) (schaal * rely);

@@ -1,18 +1,22 @@
 package fi.heks.scobjects;
 
 import java.awt.*;
+import javax.swing.*;
 
-public class ScContainer extends Container implements ScObject {
+public class ScContainer extends Container implements ScObject 
+{
 	public double schaal;
 	public double relx, rely, relb, relh;
 	public boolean resized;
 
-	public ScContainer() {
+	public ScContainer() 
+	{
 		setLayout(null);
 		schaal = 1;
 	}
 
-	public ScContainer(int x, int y, int b, int h) {
+	public ScContainer(int x, int y, int b, int h) 
+	{
 		setLayout(null);
 		schaal = 1;
 		relx = x;
@@ -21,12 +25,14 @@ public class ScContainer extends Container implements ScObject {
 		relh = h;
 		setBounds(x, y, b, h);
 	}
-
-	public void setResized(boolean b) {
+	
+	public void setResized(boolean b) 
+	{
 		resized = b;
 	}
 
-	public void schaal(double s) {
+	public void schaal(double s) 
+	{
 		schaal = s;
 		int x = (int) (schaal * relx);
 		int y = (int) (schaal * rely);
@@ -36,12 +42,16 @@ public class ScContainer extends Container implements ScObject {
 		resized = true;
 
 		int n = getComponentCount();
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) 
+		{
 			Component c = getComponent(i);
 			ScObject scc = null;
-			try {
+			try 
+			{
 				scc = (ScObject) c;
-			} catch (ClassCastException ce) {
+			} 
+			catch (ClassCastException ce) 
+			{
 			}
 			if (scc != null)
 				scc.schaal(schaal);

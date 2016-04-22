@@ -10,12 +10,23 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import fi.beans.copyright.*;
 
-public class Heks extends Applet implements ScormAppletIF, ComponentListener {
+import javax.swing.*;
+
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+
+public class Heks extends JApplet implements WiskOpdrApplet, ScormAppletIF, ComponentListener 
+{
+	
+	// taal
+	protected static String langArg;
+
 	public double schaal;
 	private ScPanel tp;
 	static int bladNummer;
 
-	protected static ResourceBundle rb;
+	public static ResourceBundle rb;
 	public static Locale language;
 
 	private SCORM12APIInterface api;
@@ -23,7 +34,8 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 
 	private Hashtable defaultParamValues;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		int width = 800;
 		int height = 475;
 		ScormMainFrame mf = new ScormMainFrame(new Heks(), width, height);
@@ -31,7 +43,24 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		mf.show();
 	}
 
-	public void init() {
+	public Heks()
+	{	
+		langArg = "nl";
+		Locale language = new Locale (langArg, "");
+		rb = ResourceBundle.getBundle("fi.heks.text.Text", language);	
+	}
+	
+	public Heks(Locale language)
+	{	
+		
+//System.out.println("Heks(Locale)");		
+
+		langArg = language.getLanguage();
+		rb = ResourceBundle.getBundle("fi.heks.text.Text", language);	
+	}
+
+	public void init() 
+	{
 		String variantString = super.getParameter("variant");
 		int variant = 1;
 		if (variantString != null)
@@ -39,10 +68,12 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 
 		defaultParamValues = makeDefaultParamValues(variant);
 
-		try {
+		try 
+		{
 			api = Scorm.findAPI(this);
-		} catch (Exception e) {
-		}
+		} 
+		catch (Exception e) 
+		{}
 
 		setLayout(null);
 		// addComponentListener(this);
@@ -62,12 +93,15 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		rb = ResourceBundle.getBundle("fi.heks.text.Text", language);
 
 		String bladNummerString = getParameter("blad");
-		try {
+		try 
+		{
 			bladNummer = Integer.parseInt(bladNummerString);
-		} catch (NumberFormatException e) {
+		} 
+		catch (NumberFormatException e) 
+		{
 			bladNummer = 1;
 		}
-		bladNummer = 21;
+		//bladNummer = 21;
 
 		if (bladNummer == 1)
 			tp = new TafereelPanel2(5, 5, 790, 565, this);
@@ -136,9 +170,12 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		Image mwlogo = au.getImage("resources/MW_logo.gif");
 		MediaTracker tr = new MediaTracker(this);
 		tr.addImage(mwlogo, 0);
-		try {
+		try 
+		{
 			tr.waitForAll();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 		}
 
 		ImageComponent MWLogo = new ImageComponent(mwlogo);
@@ -147,27 +184,33 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		if (bladNummer < 20)
 			add(MWLogo, 0);
 
-		FIButton fiButton = new FIButton("De Heks", new String[] { "", "versie-info: 20060131", "auteur: Peter Boon ea.", "programmeur: Peter Boon",
-				"copyright: Wolters Noordhof", ""
-
-		});
+		FIButton fiButton = new FIButton("De Heks", 
+				                         new String[] { "", 
+				                                        "versie-info: 20060131", 
+				                                        "auteur: Peter Boon ea.", 
+				                                        "programmeur: Peter Boon",
+				                                        "copyright: Wolters Noordhof", 
+				                                        ""});
 		fiButton.setBounds(2, 2, 20, 30);
 		// tp.add(fiButton);
 
 	}
 
-	public Hashtable getDefaultParamValues(int variant) {
+	public Hashtable getDefaultParamValues(int variant) 
+	{
 		return makeDefaultParamValues(variant);
 	}
 
-	public String getParameter(String name) {
+	public String getParameter(String name) 
+	{
 		String value = super.getParameter(name);
 		if (value == null)
 			value = (String) defaultParamValues.get(name);
 		return value;
 	}
 
-	private Hashtable makeDefaultParamValues(int variant) {
+	private Hashtable makeDefaultParamValues(int variant) 
+	{
 		Hashtable h = new Hashtable();
 		h.put("language", "nl");
 		h.put("bgcolor", "#FFFFFF");
@@ -177,10 +220,18 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		return h;
 	}
 
-	public void start() {
+	
+	public InteractiePanel getInteractiePanel()
+	{	
+		return new HeksInteractiePanel();
+	}
+
+	public void start() 
+	{
 		tp.start();
 		sessionStartTime = System.currentTimeMillis();
-		if (api != null) {
+		if (api != null) 
+		{
 			String s = api.LMSGetValue("cmi.suspend_data");
 			if (s != null && !s.equals(""))
 				setState(s);
@@ -192,15 +243,18 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 
 	}
 
-	public void stopSco() {
-		if (api != null) {
+	public void stopSco() 
+	{
+		if (api != null) 
+		{
 			stop();
 			api = null;
 		}
 
 	}
 
-	public void stop() {
+	public void stop() 
+	{
 		tp.stop();
 		if (api != null) {
 			String s = getState();
@@ -213,11 +267,13 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		}
 	}
 
-	public double getScore() {
+	public double getScore() 
+	{
 		return tp.getScore();
 	}
 
-	public String getSessionTime() {
+	public String getSessionTime() 
+	{
 		long sessionTime = System.currentTimeMillis() - sessionStartTime;
 		String s = "";
 		int hours = (int) sessionTime / 3600000;
@@ -237,23 +293,28 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		return s;
 	}
 
-	public void setState(String s) {
+	public void setState(String s) 
+	{
 		Object o = StringCodeObject.decodeStringToObject(s);
 		if (o == null)
 			return;
 		Hashtable h = (Hashtable) o;
 
-		try {
+		try 
+		{
 
 			Hashtable tpState = (Hashtable) h.get("tpState");
 			tp.setState(tpState);
-		} catch (Exception ex) {
+		} 
+		catch (Exception ex) 
+		{
 			System.out.println("setStateFout");
 		}
 
 	}
 
-	public String getState() {
+	public String getState() 
+	{
 		Hashtable tpState = null;
 
 		tpState = tp.getState();
@@ -267,7 +328,8 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 
 	}
 
-	public boolean hasEditMode() {
+	public boolean hasEditMode() 
+	{
 		return false;
 	}
 
@@ -275,11 +337,13 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 		return null;
 	}
 
-	public Parameter[] getEditableParameters() {
+	public Parameter[] getEditableParameters() 
+	{
 		return null;
 	}
 
-	public Parameter[] getAllParameters() {
+	public Parameter[] getAllParameters() 
+	{
 		Parameter[] parameters = new Parameter[4];
 		DataType type = null;
 		Parameter param = null;
@@ -307,7 +371,8 @@ public class Heks extends Applet implements ScormAppletIF, ComponentListener {
 
 	}
 
-	public void componentResized(ComponentEvent e) {
+	public void componentResized(ComponentEvent e) 
+	{
 		double sx = (1.0 * getSize().width - 10) / tp.getSize().width;
 		double sy = (1.0 * getSize().height - 10) / tp.getSize().height;
 		schaal = Math.min(sx, sy);

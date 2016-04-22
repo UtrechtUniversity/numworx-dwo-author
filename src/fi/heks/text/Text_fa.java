@@ -77,6 +77,12 @@ public class Text_fa extends java.util.ListResourceBundle {
 			{ "koudeBlokjesLabel", " سرد/بلوکهاي" }, { "int1Label", "صفر" }, { "int1Label", "يک" }, { "int2Label", "دو" }, { "int3Label", "سه" },
 			{ "int4Label", "چهار" }, { "int5Label", "پنج" }, { "int6Label", "شش" }, { "int7Label", "هفت" }, { "int8Label", "هشت" }, { "int9Label", "نه" },
 			{ "foutFeedbackMaal", "نادرست است. نگاه کنيد و دوباره سعي کنيد" },
+			
+			{ "pagina21", "adding blocks" },
+			{ "pagina22", "adding/removing blocks" },
+			{ "pagina23", "adding/removing buckets" },
+			{ "pagina24", "help page" },
+
 
 	};
 }
