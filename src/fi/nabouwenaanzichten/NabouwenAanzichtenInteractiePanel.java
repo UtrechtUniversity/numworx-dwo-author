@@ -268,13 +268,13 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if ((x == getLocation().x) && (y == getLocation().y) &&
 			(b == getSize().width) && (h == getSize().height))
 		{	
-System.out.println("naip setBounds return");			
+//System.out.println("naip setBounds return");			
 			return;
 		}	
 		
 		if (noSetBounds)
 		{	noSetBounds = false;	
-System.out.println("naip noSetBounds");			
+//System.out.println("naip noSetBounds");			
 			return;
 		}
 		
@@ -403,7 +403,7 @@ System.out.println("kijkNa setVis false");
 			
 		}
 */		
-System.out.println("setBounds naip b = " + b + " h = " + h);
+//System.out.println("setBounds naip b = " + b + " h = " + h);
 
 //System.out.println("final vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
 //System.out.println("final vpZijde = " + v.getSize().width);
@@ -1723,7 +1723,8 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	
 	public void setState(Hashtable h)
 	{	
-		
+//System.out.println("naip setState");
+
 		double beginHoekX = 30;
 		double beginHoekY = -30;
 		if (h.containsKey("beginHoekX"))
@@ -1823,7 +1824,7 @@ System.out.println("setBounds naip b = " + b + " h = " + h);
 	public void zetOpdracht(Hashtable h , String[] variables, Hashtable values)
 	{
 		
-//System.out.println("zetOpdracht begin");	
+//System.out.println("naip zetOpdracht begin");	
 //if (v!= null)
 //System.out.println("vw = " + v.getSize().width);	
 		
@@ -2068,7 +2069,11 @@ newViewer = false;
 			}
 		}
 		
-		if(aantalBlokjes) setKPanelText(); // Ook in zetOpdracht: toon aantal blokjes
+//System.out.println("zetOpdracht aantalBlokjes " + aantalBlokjes);
+//System.out.println("zetOpdracht aantal = " + kr.geefAantalK());
+
+		if (aantalBlokjes) 
+			setKPanelText(); // Ook in zetOpdracht: toon aantal blokjes
 		
 		String docentState = null;
 		
@@ -2204,7 +2209,8 @@ newViewer = false;
 	/**
 	 * 
 	 */
-	private void setKPanelText() {
+	private void setKPanelText() 
+	{
 		kPanel.aantalKLabel.setText(kr.geefAantalK() + " " + NabouwenAanzichten.rb.getString("blokjesTekst"));
 	}
 	
