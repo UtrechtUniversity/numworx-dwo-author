@@ -100,7 +100,7 @@ public class Pagina21Panel extends ScPanel implements MouseListener, MouseMotion
 		achtergrond = new AchtergrondContainer(0, 0, b - 320, h - 5);
 
 		opnieuwKnop = new ImageButton(opnieuwknop);
-		opnieuwKnop.setBounds(20, 300, 95, 35);
+		opnieuwKnop.setBounds(20, 600, 95, 35);
 		opnieuwKnop.addActionListener(this);
 		add(opnieuwKnop);
 

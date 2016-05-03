@@ -27,7 +27,7 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 							                               ActionListener
 									
 {
-	protected static Color bgColor = new Color(238, 238, 238);
+	protected static Color bgColor = new Color(255, 255, 255);
 	
 	
 	//JPanel paginaHolder;
@@ -88,7 +88,7 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 			System.out.println("Error reading opnieuwknop.gif.");
 		}
 
-		java.net.URL opnieuwENURL = Heks.class.getResource("resources/againknop.gif");
+		java.net.URL opnieuwENURL = Heks.class.getResource("resources/againKnop.gif");
 		if (opnieuwENURL != null) 
 		{
 			opnieuwENIcon = new ImageIcon(opnieuwENURL);
@@ -359,7 +359,25 @@ System.out.println("heip set bounds " + b + " " + h);
 			double schaal = Math.min(sx, sy)* 0.95;
 
 			currentPagina.schaal(schaal);
-		
+			ImageButton opnieuwKnop = null; 
+			if (paginaNummer == 1)
+			{	Pagina21Panel pagina = (Pagina21Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.eindPot.getLocation().y + 100);
+			
+			}
+			else if (paginaNummer == 2)
+			{	Pagina22Panel pagina = (Pagina22Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.eindPot.getLocation().y + 100);
+			}
+			if (paginaNummer == 3)
+			{	Pagina23Panel pagina = (Pagina23Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.emmer.getLocation().y + 100);
+			}
+	
+			
 			add(currentPagina);
 //System.out.println("currentPagina created w = " + currentPagina.getSize().width + " h = " + currentPagina.getSize().height);	
 //System.out.println("sx = " + UF.format(sx,2) + " sy = " + UF.format(sy,2) + " s = " + UF.format(schaal,2));
@@ -374,6 +392,22 @@ System.out.println("heip set bounds " + b + " " + h);
 			double schaal = Math.min(sx, sy)* 0.95;
 
 			currentPagina.schaal(schaal);
+			ImageButton opnieuwKnop = null; 
+			if (paginaNummer == 1)
+			{	Pagina21Panel pagina = (Pagina21Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.eindPot.getLocation().y + 100);
+			}
+			else if (paginaNummer == 2)
+			{	Pagina22Panel pagina = (Pagina22Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.eindPot.getLocation().y + 100);
+			}
+			if (paginaNummer == 3)
+			{	Pagina23Panel pagina = (Pagina23Panel) currentPagina;
+				opnieuwKnop = pagina.opnieuwKnop;
+				opnieuwKnop.setLocation(opnieuwKnop.getLocation().x, pagina.emmer.getLocation().y + 100);
+			}
 
 //System.out.println("currentPagina scaled w = " + currentPagina.getSize().width + " h = " + currentPagina.getSize().height);
 //System.out.println("sx = " + UF.format(sx,2) + " sy = " + UF.format(sy,2) + " s = " + UF.format(schaal,2));

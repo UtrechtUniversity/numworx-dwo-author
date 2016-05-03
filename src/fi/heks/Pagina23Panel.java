@@ -17,7 +17,7 @@ public class Pagina23Panel extends ScPanel implements ActionListener
 	private ScLabel titelLabel, maalLabel, opdrachtTitel;
 	//private OefenTafereelPanelEmmer_WN oefenTafereelPanel;
 	private Pagina23OefenPanel oefenTafereelPanel;
-	private EmmerPanel emmer;
+	EmmerPanel emmer;
 	private GetalComponent emmerTeller;
 	private ScTekstContainer uitleg, opdracht;
 	ScTextArea textArea;

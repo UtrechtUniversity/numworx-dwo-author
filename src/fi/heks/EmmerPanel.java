@@ -24,7 +24,8 @@ public class EmmerPanel extends ScPanel implements ActionListener// ,
 	{
 		super(x, y, b, h);
 		this.owner = owner;
-		
+	
+		setBackground(Color.white);
 		//eigenaar = applet;
 		//au = new AppletUtil(eigenaar);
 
