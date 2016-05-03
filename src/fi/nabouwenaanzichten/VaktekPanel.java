@@ -162,6 +162,8 @@ class VaktekPanel extends JPanel //Container
 		vr = new VaktekRooster();
 		add(vr);
 
+		zetKlikAan(false);
+		
 		repaint();
 	}
 
@@ -213,6 +215,8 @@ class VaktekPanel extends JPanel //Container
 		
 		vr = new VaktekRooster();
 		add(vr);
+		
+		zetKlikAan(false);
 		
 		repaint();
 		
@@ -270,6 +274,8 @@ class VaktekPanel extends JPanel //Container
 
 		vr = new VaktekRooster();
 		//add(vr);
+
+		zetKlikAan(false);
 		
 		repaint();
 

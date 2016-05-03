@@ -708,8 +708,10 @@ public class Viewer3d extends JComponent
     		lastBuildCommand = "";
     }
     
-    public void muisDrukActie(MouseEvent e){
-        if(removing) return;
+    public void muisDrukActie(MouseEvent e)
+    {
+        if(removing) 
+        	return;
         removing = true;
         if(cubeRemoveThread!=null)
         {   cubeRemoveThread.maakDood();
@@ -721,6 +723,7 @@ public class Viewer3d extends JComponent
         
     }
     public void muisKlikActie(){}
+    
     public void muisLosActie(MouseEvent e)
     {   removing = false;
         if(!removed && (klikAan && (mb.geefDrukx()-mb.geefX())*(mb.geefDrukx()-mb.geefX()) + (mb.geefDruky()-mb.geefY())*(mb.geefDruky()-mb.geefY()) < 16) )

@@ -2110,7 +2110,9 @@ newViewer = false;
 		for (int i = 0; i < aantalKR; i++)
 	    {	booleanKRs[i] = kr.geefBooleanRooster(); //later uitbreiden naar meer kubusroosters
 	    }
-	
+
+//System.out.println("getState " + kr.geefAantalK());
+
 	    String state = StringCodeObject.encodeObjectToString(booleanKRs);
 	    Hashtable h = new Hashtable();
 	    h.put("state", state);
