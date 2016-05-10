@@ -346,7 +346,7 @@ public class StatistiekTest
 			9.7, 9.75, 9.8, 9.85, 9.9, 9.95, 10.0, 10.05, 10.1, 10.15, 10.2, 10.25, 10.3));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
-			+ ", actual " + actual.toArray(), actual, expected);
+			+ ", actual " + actual.toArray(), expected, actual);
 	}
 
 	/**
@@ -364,10 +364,10 @@ public class StatistiekTest
 		double minBoundary = -3.0;
 		
 		ArrayList<Double> expected = new ArrayList(Arrays.asList(
-			-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0));
+			-3.0, -2.0, -1.0, 0.0, 1.0, 2.0));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
-			+ ", actual " + actual.toArray(), actual, expected);
+			+ ", actual " + actual.toArray(), expected, actual);
 	}
 
 	/**
@@ -387,7 +387,7 @@ public class StatistiekTest
 		ArrayList<Double> expected = new ArrayList(Arrays.asList(16.0, 17.0));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
-			+ ", actual " + actual.toArray(), actual, expected);
+			+ ", actual " + actual.toArray(), expected, actual);
 	}
 
 	@Test
@@ -401,7 +401,7 @@ public class StatistiekTest
 		ArrayList<Double> expected = new ArrayList(Arrays.asList(0.0, 3.0, 6.0, 9.0, 12.0));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
-			+ ", actual " + actual.toArray(), actual, expected);
+			+ ", actual " + actual.toArray(), expected, actual);
 	}
 
 	@Test
@@ -431,10 +431,10 @@ public class StatistiekTest
 			4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 
 			6.0, 6.2, 6.4, 6.6, 6.8, 7.0, 7.2, 7.4, 7.6, 7.8, 
 			8.0, 8.2, 8.4, 8.6, 8.8, 9.0, 9.2, 9.4, 9.6, 9.8, 
-			10.0, 10.2, 10.4, 10.6, 10.8, 11.0));
+			10.0, 10.2));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 		assertEquals("Expected " + expected.toArray()
-			+ ", actual " + actual.toArray(), actual, expected);
+			+ ", actual " + actual.toArray(), expected, actual);
 	}
 
 //	@Test
