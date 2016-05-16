@@ -296,8 +296,10 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"OPT_zelftoetsGeenCorr" , "خود آزمون غیر اصلاح شونده"},
 				{"OPT_significantie" , "گزینه بررسی اعداد ویژه"},
 				{"OPT_objectives" , "Objectives"},
+				{"OPT_misconceptions" , "Misconceptions"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},

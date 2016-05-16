@@ -305,8 +305,10 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Καμία διόρθωση σε προηγούμενες σελίδες"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Στόχοι"},
+				{"OPT_misconceptions" , "Misconceptions"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "Στόχος"},
 				{"OBJ_categorie", "Κατηγορία"},

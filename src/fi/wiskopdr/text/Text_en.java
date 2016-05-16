@@ -329,6 +329,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_misconceptions" , "Misconceptions"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},

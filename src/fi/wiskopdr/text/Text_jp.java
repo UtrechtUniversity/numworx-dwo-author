@@ -320,6 +320,8 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OPT_objectives" , "目標"}, 
 				{"OPT_fontOvererving" , "フォントをそのままにしたテキストボックス "},
 				{"OPT_fontOverervingForm" , "フォントをそのままにした公式ボックス  "}, 
+				{"OPT_misconceptions" , "Misconceptions"},
+				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "目標"}, 
 				{"OBJ_categorie", "カテゴリー"}, 

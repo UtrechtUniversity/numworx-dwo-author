@@ -50,6 +50,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox misconceptionsCB;
 	private JCheckBox fontOverervingCB;
 	private JCheckBox fontOverervingFormCB;
+	private JCheckBox scoresZichtbaarCB;
+	
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
 	
@@ -374,6 +376,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//Nakijk-opties
 		Box boxv4 = Box.createVerticalBox();
 		nakijkenLabel = maakLabel(WiskOpdr.rb.getString("OPT_nakijkenLabel"), boxv4);
+		scoresZichtbaarCB = maakCheckBox(WiskOpdr.rb.getString("OPT_scoreZichtbaar"), boxv4, true);//"formules in Times Roman"
 		opnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_opnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		itemOpnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_itemOpnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		checkPerOpdrachtCB = maakCheckBox(WiskOpdr.rb.getString("OPT_checkPerOpdracht"), boxv4, false);//"Check-knop per opdracht"
@@ -441,6 +444,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createHorizontalStrut(70));
 		boxv4.add(boxh);
 		boxv4.add(Box.createVerticalStrut(70));
+		
+		
 		
 		//MainPanel en BottomPanel in elkaar zetten
 		mainPanel.add(boxv1);
@@ -537,6 +542,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
+		boolean scoresZichtbaar = true;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -593,6 +599,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		misconceptions = misconceptionsButton.getObjectives();
 		categorieString = objectivesButton.getCategories();
 		mccCategorieString = misconceptionsButton.getCategories();
+		scoresZichtbaar = scoresZichtbaarCB.isSelected();
 		
 		Hashtable h = new Hashtable();
 		
@@ -650,6 +657,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	h.put("misconceptions", misconceptions);
 			h.put("mccCategorieString", mccCategorieString);
 		}
+		h.put("scoresZichtbaar", new Boolean(scoresZichtbaar));
 		
 		return h;
 	}
@@ -703,6 +711,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
+		boolean scoresZichtbaar = true;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -759,6 +768,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 			}
 		if(h.containsKey("mccCategorieString")) mccCategorieString = (String[])h.get("mccCategorieString");
+		if(h.containsKey("scoresZichtbaar")) scoresZichtbaar = ((Boolean)h.get("scoresZichtbaar")).booleanValue();
 		
 		fontSizeTF.setText(""+fontSize);
 		navigatieSizeTF.setText(""+navigatieSize);
@@ -820,6 +830,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	misconceptionsButton.setObjectives(misconceptions);
 			misconceptionsButton.setCategories(mccCategorieString);
 		}
+		scoresZichtbaarCB.setSelected(scoresZichtbaar);
 	}
 	
 	public void cancel()
@@ -876,6 +887,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	WiskOpdr.setMisconceptions(misconceptionsButton.getObjectives());
 			WiskOpdr.setMccCategories(misconceptionsButton.getCategories());
 		}
+		//opdrNavStruct.zetScoresZichtbaar(scoresZichtbaarCB.isSelected());
 		
 		dialog.setVisible(false);
 	}

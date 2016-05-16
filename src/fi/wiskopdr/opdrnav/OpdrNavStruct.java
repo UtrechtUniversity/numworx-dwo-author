@@ -195,6 +195,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private boolean eerderGeenCorr = false;
 	private boolean zelftoetsNagekeken = false;
 	private int condPerc = 100;
+	private boolean scoresZichtbaar = true;
 	
 //	private JCheckBox lockToetsCB;
 	private JLabel lockToetsLabel;
@@ -390,6 +391,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrContainer.zetMode(2);
 		zetGekoppeldeOpdrachten(gekoppeldeOpdrachten);
 		
+		or[activiteitNr].setScoresVisible(scoresZichtbaar);
+		activiteitScoreLabels[0].setVisible(scoresZichtbaar);
 		
 		if(condNav && volgendeKnopZichtbaar)
 			if((allesCorrectNodig || condNavPerc) && !or[activiteitNr].geefNoScore(opdrachtNr + 1))
@@ -406,7 +409,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 				else
 				{	volgendeKnop.setVisible(false);
-					eindeKnop.setVisible(volgendeKnopZichtbaar);
+					//eindeKnop.setVisible(volgendeKnopZichtbaar);
 					eindeKnop.setEnabled(true);
 				}
 			}
@@ -956,6 +959,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		viewMisconceptionsDialog = DialogFacade.newInstance(this,WiskOpdr.rb.getString("misconceptions"), true);
 		viewMisconceptionsPanel = new ScoresObjectivesPanel(getMisconceptionsForDiagram());
+		viewMisconceptionsPanel.zetKleurNeutraal();
         if(aantalDiagrammen < 4)
         	viewMisconceptionsPanel.setBounds(0, 0, 400 * aantalDiagrammen, 350);
         else 
@@ -1016,6 +1020,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
+		boolean scoresZichtbaar = true;
 		
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -1120,6 +1125,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 		if (h != null && h.containsKey("mccCategorieString"))
 			mccCategorieString = (String[]) h.get("mccCategorieString");
+		if (h != null && h.containsKey("scoresZichtbaar"))
+			scoresZichtbaar = ((Boolean) h.get("scoresZichtbaar")).booleanValue();
 
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -1183,6 +1190,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.categorieString = categorieString;
 		this.misconceptions = misconceptions;
 		this.mccCategorieString = mccCategorieString;
+		this.scoresZichtbaar = scoresZichtbaar;
 
 		Expressie.zetHoekGraden(hoekGraden);
 		zetMarges(margeLinks, margeRechts, margeBoven, margeOnder);
@@ -1193,6 +1201,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			setCondNavVoorwaarden(condNavVoorwaarden, navVoorwaarden);
 		}
 		setAbcDeelOpdr(abcDeelOpdr);
+		zetScoresZichtbaar(scoresZichtbaar);
 		 
 
 	}
@@ -2582,7 +2591,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			volgendeKnop.setEnabled(false);
 			if(!"GR".equals(WiskOpdr.deployVariant) && !"MW".equals(WiskOpdr.deployVariant))
 			{	volgendeKnop.setVisible(false);
-				eindeKnop.setVisible(volgendeKnopZichtbaar);
+				//eindeKnop.setVisible(volgendeKnopZichtbaar);
 				eindeKnop.setEnabled(true);
 			}
 		}
@@ -2594,7 +2603,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				volgendeKnop.setEnabled(false);
 			else
 			{	volgendeKnop.setVisible(false);
-				eindeKnop.setVisible(volgendeKnopZichtbaar);
+				//eindeKnop.setVisible(volgendeKnopZichtbaar);
 			}
 			for(int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
 				or[actNr].setEnabled(false, i + 1);
@@ -2795,6 +2804,20 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				if(voortgang)
 					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + 0 + "%");
 			}
+			
+			if (mode == ZELFTOETS)
+			{
+				if (aantalOpdrachten[activiteitNr] == 1)
+				{	nakijkKnop.setEnabled(true);
+					scoresObjectivesKnop.setEnabled(true);
+					viewMisconceptionsKnop.setEnabled(true);
+				}
+				else
+				{	nakijkKnop.setEnabled(lessonMode.equals("review"));
+					scoresObjectivesKnop.setEnabled(lessonMode.equals("review"));
+					viewMisconceptionsKnop.setEnabled(lessonMode.equals("review"));
+				}
+			}
 
 			for (int j = 0; j < aantalOpdrachten[activiteitNr]; j++)
 			{	// nergens voor nodig lijkt me:
@@ -2807,6 +2830,15 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 						for (int l = 0; l < objectives[k].length; l++)
 						{
 							scoresObjectives[activiteitNr][j][k][l] = 0;
+						}
+				}
+				if (misconceptions != null)
+				{
+					for (int k = 0; k < misconceptions.length; k++)
+						for (int l = 0; l < misconceptions[k].length; l++)
+						{
+							possibleMisconceptions[activiteitNr][j][k][l] = 0;
+							measuredMisconceptions[activiteitNr][j][k][l] = 0;
 						}
 				}
 				isCorrect[activiteitNr][j] = false;
@@ -2855,6 +2887,15 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					for (int l = 0; l < objectives[k].length; l++)
 					{
 						scoresObjectives[activiteitNr][opdrachtNr][k][l] = 0;
+					}
+			}
+			if (misconceptions != null)
+			{
+				for (int k = 0; k < misconceptions.length; k++)
+					for (int l = 0; l < misconceptions[k].length; l++)
+					{
+						possibleMisconceptions[activiteitNr][opdrachtNr][k][l] = 0;
+						measuredMisconceptions[activiteitNr][opdrachtNr][k][l] = 0;
 					}
 			}
 			isCorrect[activiteitNr][opdrachtNr] = false;
@@ -3203,6 +3244,19 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		{
 			or[i].zetLetters(abcDeelOpdr);
 		}
+	}
+	
+	/**
+	 * Zet instelling: a,b,c als label voor bolletjes ipv 1,2,3
+	 */
+	public void zetScoresZichtbaar(boolean scoresZichtbaar)
+	{
+		this.scoresZichtbaar = scoresZichtbaar;
+		//for (int i = 0; i < aantalActiviteiten; i++)
+		//{
+		//	or[i].setScoresVisible(scoresZichtbaar);
+		//}
+		//activiteitScoreLabels[0].setVisible(scoresZichtbaar);
 	}
 
 	/**

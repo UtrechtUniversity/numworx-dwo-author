@@ -304,8 +304,10 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Keine Korrektur vorhergehender Seiten"},
 				{"OPT_significantie" , "Option für signifikatene Stellen"},
 				{"OPT_objectives" , "Ziele"},
+				{"OPT_misconceptions" , "Misconceptions"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "Lernziel"},
 				{"OBJ_categorie", "Kategorie"},

@@ -104,6 +104,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	private int attemptsCount;
 	private Vector attempts;
 	
+	private boolean editable = true;
+	
 	static boolean fontOvererving;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
@@ -404,6 +406,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		Vector attempts = new Vector();
 		int attemptsCount = 0;
 		int errorCount = 0;
+		boolean editable = true;
 
 		if (h.containsKey("ingevuld"))
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
@@ -417,13 +420,27 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			attemptsCount = ((Number) h.get("attemptsCount")).intValue();
 		if (h.containsKey("errorCount"))
 			errorCount = ((Number) h.get("errorCount")).intValue();
+		if(h.containsKey("editable")) 
+			editable = ((Boolean)h.get("editable")).booleanValue();
 
 		this.ingevuld = ingevuld;
 		this.nagekeken = nagekeken;
 		this.attempts = attempts;
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
+		this.editable = editable;
 
+		antwoordTF.setEditable(editable);
+		formuleVak.setEditable(editable);
+		if(editable)
+		{	antwoordTF.setForeground(Color.black);
+			formuleVak.setFGColor(Color.black);
+		}
+		else
+		{	antwoordTF.setForeground(Color.gray);
+			formuleVak.setFGColor(Color.gray);
+		}
+		
 		if (formuleMode)
 			formuleVak.vulVak(antwoord);
 		else
@@ -458,6 +475,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		Vector attempts = new Vector();
 		int attemptsCount = 0;
 		int errorCount = 0;
+		boolean editable = true;
 
 		kijkNa(false);
 
@@ -470,6 +488,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		attempts = this.attempts;
 		attemptsCount = this.attemptsCount;
 		errorCount = this.errorCount;
+		editable = this.editable;
 
 		if (logOption)
 		{
@@ -498,6 +517,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		h.put("attempts", attempts);
 		h.put("attemptsCount", new Integer(attemptsCount));
 		h.put("errorCount", new Integer(errorCount));
+		h.put("editable", new Boolean(editable));
 
 		return h;
 	}
@@ -977,7 +997,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	{
 		formuleVak.requestFocus();
 		formuleVak.zetOpEind();
-		if (formuleToolBijFocus)
+		if (formuleToolBijFocus && editable)
 			activateTablet();
 	}
 
@@ -1093,6 +1113,19 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 				
 			}
 		}
+		else if(command.startsWith("action.setNotEditable"))
+		{	editable = false;
+			antwoordTF.setEditable(editable);
+			formuleVak.setEditable(editable);
+			if(editable)
+			{	antwoordTF.setForeground(Color.black);
+				formuleVak.setFGColor(Color.black);
+			}
+			else
+			{	antwoordTF.setForeground(Color.gray);
+				formuleVak.setFGColor(Color.gray);
+			}
+		}
 	}
 
 	@Override
@@ -1118,7 +1151,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"text"};
+		String[] commands = {"text",
+				"action.setNotEditable"};
 		return commands;
 	}
 	

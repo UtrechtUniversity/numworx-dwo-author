@@ -342,6 +342,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_misconceptions" , "Misconcepties"},
 				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
 				{"OPT_fontOverervingForm" , "Font-overerving formulevakken"},
+				{"OPT_scoreZichtbaar" , "Scores zichtbaar voor leerling"},
 				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},

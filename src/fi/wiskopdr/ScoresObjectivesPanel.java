@@ -13,6 +13,7 @@ public class ScoresObjectivesPanel extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 2942694616353969444L;
+	private boolean kleurNeutraal;
 
 	public static void main(String[] args ) {
 		
@@ -253,6 +254,11 @@ public class ScoresObjectivesPanel extends JPanel
 		return hoogte;
 	}
 	
+	public void zetKleurNeutraal()
+	{
+		kleurNeutraal = true;
+	}
+	
 	public void zetKleuren()
 	{	kleurRij = new Color[objectivesForDiagram.length][];
 		for(int j = 0; j < objectivesForDiagram.length; j++)
@@ -284,7 +290,10 @@ public class ScoresObjectivesPanel extends JPanel
 		zetKleuren();
 		for(int j = 0; j < objectivesForDiagram.length; j++)
 		{	arc = new Arc2D.Double(mpX[j] - straalRij[j][0], mpY[j] - straalRij[j][0], 2 * straalRij[j][0], 2 * straalRij[j][0], 90, (int) - hoekGraden[j][0],Arc2D.PIE);
-			g2.setColor(kleurRij[j][0]);
+			if(!kleurNeutraal)
+				g2.setColor(kleurRij[j][0]);
+			else
+				g2.setColor(new Color(202,222,255));
 			g2.fill(arc);
 			g2.setColor(Color.BLACK);
 			g2.draw(arc);
@@ -292,7 +301,10 @@ public class ScoresObjectivesPanel extends JPanel
 			for(int i = 1; i < objectivesForDiagram[j].length; i++)
 			{
 				arc = new Arc2D.Double(mpX[j] - straalRij[j][i], mpY[j] - straalRij[j][i], 2 * straalRij[j][i], 2 * straalRij[j][i], 90 - cumHoekGraden[j][i-1], (int) - hoekGraden[j][i], Arc2D.PIE);
-				g2.setColor(kleurRij[j][i]);
+				if(!kleurNeutraal)
+					g2.setColor(kleurRij[j][i]);
+				else
+					g2.setColor(new Color(202,222,255));
 				g2.fill(arc);
 				g2.setColor(Color.BLACK);
 				g2.draw(arc);

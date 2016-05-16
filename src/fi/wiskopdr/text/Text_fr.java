@@ -303,6 +303,11 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"OPT_eerderGeenCorr" , "Pas de correction pages précédentes"},
                                 {"OPT_significantie" , "Option nombres significatifs"},
                                 {"OPT_objectives" , "Objectifs"},
+                                {"OPT_misconceptions" , "Misconceptions"},
+                				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
+                				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
+                				{"OPT_scoreZichtbaar" , "Scores visible for student"},
+                				
                                 {"OBJ_leerdoel", "Objectif"},
                                 {"OBJ_categorie", "Catégorie"},
                                 {"OBJ_categorieBox", "Objectifs dans différentes catégories"},
