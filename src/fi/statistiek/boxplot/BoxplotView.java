@@ -183,7 +183,10 @@ public class BoxplotView extends JPanel implements Observer
 
 			userOptionsPanel.update();
 
-			this.mainPanel.removeAll();
+			this.mainPanel.setVisible(false);
+			this.mainPanel.removeAll(); // this can be very slow if there are many children
+			this.mainPanel.setVisible(true);
+
 			this.mainPanel.setBackground(Color.WHITE);
 			if (this.model.getStatTableModel().isColumnIndexValid(
 				this.model.getColumnIndex()))
