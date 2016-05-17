@@ -3110,8 +3110,6 @@ public class HistogramView extends JPanel implements Observer
 		super.setBounds(x, y, w, h);
 
 		this.setMainPanelSize();
-		
-		this.scrollPane.setViewportView(mainPanel);// syl: dit stond uitgecommentarieerd
 	}
 
 	// Implements Observer
@@ -3136,6 +3134,7 @@ public class HistogramView extends JPanel implements Observer
 		if (this.updateColorLegend() || true)
 		{
 			this.setMainPanelSize();
+			this.scrollPane.setViewportView(mainPanel);
 		}
 
 		// Revalidate the mainPanel to reset the scrollbar
