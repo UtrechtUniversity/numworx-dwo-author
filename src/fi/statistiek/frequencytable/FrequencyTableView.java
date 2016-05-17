@@ -274,7 +274,9 @@ public class FrequencyTableView extends JPanel implements Observer
 			this.dialogButton.setVisible(this.model.getStatTableModel()
 				.isViewsEditable());
 			
-			this.mainPanel.removeAll();
+			this.mainPanel.setVisible(false);
+			this.mainPanel.removeAll(); // this can be very slow if there are many children
+			this.mainPanel.setVisible(true);
 			
 			// initialize table height
 			this.tableHeight = 0;
@@ -455,6 +457,7 @@ public class FrequencyTableView extends JPanel implements Observer
 	
 			// set mainPanel size op het eind zodat splitClassPanels bestaan
 			this.setMainPanelSize();
+			this.scrollPane.setViewportView(mainPanel);
 	
 			this.mainPanel.revalidate();
 
@@ -923,17 +926,6 @@ public class FrequencyTableView extends JPanel implements Observer
 		super.setBounds(x, y, w, h);
 
 		this.setMainPanelSize();
-		
-		this.scrollPane.setViewportView(mainPanel);
-
-		// System.out.println("HistogramView.setBounds(): Size histogram: " +
-		// this.getBounds().toString()
-		// + ", scrollbarVisible=" +
-		// scrollPane.getVerticalScrollBar().isVisible());
-		
-//		 System.out.println("HistogramView.setBounds(): scrollPane w="
-//			 + scrollPane.getWidth()
-//			 + ", h=" + scrollPane.getHeight());
 	}
 
 	public void setModel(FrequencyTableModel model)
