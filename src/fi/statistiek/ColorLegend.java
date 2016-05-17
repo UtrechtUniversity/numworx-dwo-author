@@ -65,7 +65,9 @@ public class ColorLegend extends JPanel {
 	public void setColors(ArrayList<String> splitStrings, ArrayList<Color> splitColors) {
 		this.splitStrings = splitStrings;
 		this.splitColors = splitColors;
-		this.labelsPanel.removeAll();
+		this.labelsPanel.setVisible(false);
+		this.labelsPanel.removeAll(); // this can be very slow if there are many children
+		this.labelsPanel.setVisible(true);
 		this.makeJLabels();
 		this.updatePreferredSize();
 		this.placeComponents();
