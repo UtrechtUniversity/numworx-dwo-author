@@ -199,7 +199,10 @@ public class DescriptivesView extends JPanel implements Observer
 		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
 	
-		this.mainPanel.removeAll();
+		this.mainPanel.setVisible(false);
+		this.mainPanel.removeAll(); // this can be very slow if there are many children
+		this.mainPanel.setVisible(true);
+		
 		if (this.model.columnIndexValid())
 		{
 			ColumnType cTypeColumnIndex = this.model.getStatTableModel().getColumnTypes()
