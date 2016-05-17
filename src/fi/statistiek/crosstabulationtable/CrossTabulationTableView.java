@@ -302,11 +302,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		this.mainPanel.setVisible(false);
 		this.mainPanel.removeAll(); // this can be very slow if there are many children
 		this.mainPanel.setVisible(true);
+
 		if (this.model.columnIndexValid())
 		{
-//			GridBagLayout layout = new GridBagLayout();
-//			GridBagConstraints c = new GridBagConstraints();
-
 			ColumnType cTypeRows = this.model.getStatTableModel().getColumnTypes()
 				.get(this.model.getColumnIndex());
 			typeRows = cTypeRows.getType();
