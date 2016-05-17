@@ -585,14 +585,9 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	public void update(Observable arg0, Object arg1)
 	{
 		//System.out.println("StatInteractiePanelView.update()");
-		super.removeAll();
-
-		// test syl; hoe krijg ik de button op het goede panel?
-		// wat doet al het layout-werk in de constructor??
-		// if(this.model.getData().isDataEditable())
-		// {
-		// super.add(resetButton, BorderLayout.NORTH);
-		// }
+		super.setVisible(false);
+		super.removeAll(); // this can be very slow if there are many children
+		super.setVisible(true);
 
 		ArrayList<StatistiekView> views = this.model.getMainWindowViews();
 		ArrayList<StatistiekView> separateWindowViews = this.model.getSeparateWindowViews();
@@ -647,7 +642,6 @@ public class StatInteractiePanelView extends JPanel implements Observer
 			// test syl: ook mouseMotion t.b.v. mouseDragged()
 			this.tabPane.addMouseMotionListener(listener);
 			super.add(this.tabPane, BorderLayout.CENTER);
-
 		}
 
 		// remove dialogs that are no longer needed
