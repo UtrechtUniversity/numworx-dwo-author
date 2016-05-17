@@ -296,17 +296,6 @@ public class DotplotView extends JPanel implements Observer
 		super.setBounds(x, y, w, h);
 
 		this.setMainPanelSize();
-		
-		this.scrollPane.setViewportView(mainPanel);
-
-		// System.out.println("DotplotView.setBounds(): Size histogram: " +
-		// this.getBounds().toString()
-		// + ", scrollbarVisible=" +
-		// scrollPane.getVerticalScrollBar().isVisible());
-		
-//		 System.out.println("DotplotView.setBounds(): scrollPane w="
-//			 + scrollPane.getWidth()
-//			 + ", h=" + scrollPane.getHeight());
 	}
 
 	private void setMainPanelSize()
@@ -408,22 +397,15 @@ public class DotplotView extends JPanel implements Observer
 		// updateColorLegend() retourneert boolean, maar voert ook update uit
 		this.updateColorLegend();
 		this.setMainPanelSize();
+		this.scrollPane.setViewportView(mainPanel);
 
 		userOptionsPanel.update();
 		
 		updateOffsets();
 		
-		// test syl: onderstaande zorgt voor opblazen window bij wijziging in edit mode
-//		if (SwingUtilities.getWindowAncestor(this.scrollPane) != null)
-//			SwingUtilities.getWindowAncestor(this.scrollPane).pack();
-
 		this.mainPanel.revalidate();
 
 		this.repaint();
-		
-//		System.out.println("DotplotView.update() mainPanel.bg RGB = " 
-//			+ this.mainPanel.getBackground().getRed() + ", " + this.mainPanel.getBackground().getGreen()
-//			+ ", " + this.mainPanel.getBackground().getBlue());
 	}
 
 	/**
