@@ -241,7 +241,7 @@ public class StatEditPanelController extends JPanel implements
 	 */
 	public Hashtable getEditState()
 	{
-		System.out.println("EditPanel.getEditState()");
+		System.out.println("StatEditPanelController.getEditState()");
 		Hashtable h = new Hashtable();
 		h.put("tableModel", this.model.getStatTableModel().getState());
 		h.put("selectionList", this.model.getStatTableModel().getSelectionList());
