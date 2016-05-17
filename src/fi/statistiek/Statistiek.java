@@ -479,8 +479,7 @@ public class Statistiek implements WiskOpdrApplet
 		else
 		{
 			// check if parameters binWidth and minBoundary are valid
-			if (((binWidth <= 0) 
-				|| (binWidth < (max - min)/100)) 
+			if ((binWidth <= 0) 
 				&& (max != min)) // if max = min binwidth is not restricted
 				return null;
 			
