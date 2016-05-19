@@ -2401,9 +2401,57 @@ public class StatTableModel implements TableModel
 		this.fireSelectionChanged();
 	}
 
+	/**
+	 * Set the selection list from an array of indices of the selected rows.
+	 * 
+	 * @param selectionIndices
+	 */
+	public synchronized void setSelectionIndices(ArrayList<Integer> selectionIndices)
+	{
+		// reset the list
+		this.selectionList = new ArrayList<Boolean>();
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			this.selectionList.add(false);
+		}
+		
+		// and set the selected rows
+		for (int j = 0; j < selectionIndices.size(); j++)
+		{
+			this.selectionList.set(selectionIndices.get(j), true);
+		}
+		
+		this.fireSelectionChanged();
+	}
+
 	public synchronized void setRowOutlierList(ArrayList<Boolean> list)
 	{
 		this.rowOutlierList = list;
+		this.fireSelectionChanged();
+	}
+
+	/**
+	 * Set the row outlier list from an array of indices of the outlier rows.
+	 * 
+	 * @param outlierIndices
+	 */
+	public synchronized void setRowOutlierIndices(ArrayList<Integer> outlierIndices)
+	{
+		// reset the list
+		this.rowOutlierList = new ArrayList<Boolean>();
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			this.rowOutlierList.add(false);
+		}
+		
+		// and set the outlier rows
+		for (int j = 0; j < outlierIndices.size(); j++)
+		{
+			this.rowOutlierList.set(outlierIndices.get(j), true);
+		}
+		
 		this.fireSelectionChanged();
 	}
 
@@ -2413,9 +2461,63 @@ public class StatTableModel implements TableModel
 		this.fireSelectionChanged();
 	}
 
+	/**
+	 * Set the cell outlier list from an array of pairs of indices (row, column) of the outlier cells.
+	 * 
+	 * @param outlierIndices
+	 */
+	public synchronized void setCellOutlierIndices(ArrayList<ArrayList<Integer>> outlierIndices)
+	{
+		// reset the list
+		this.cellOutlierList = new ArrayList<ArrayList<Boolean>>();
+		
+		for (int i = 0; i < this.columnCount; i++)
+		{
+			// update cell outlier list; add an arraylist for the new column
+			ArrayList<Boolean> newArray = new ArrayList<Boolean>(this.rowCount);
+			for (int j = 0; j < this.rowCount; j++)
+			{
+				newArray.add(false);
+			}
+			
+			this.cellOutlierList.add(newArray);
+		}
+		
+		// and set the outlier cells
+		for (int j = 0; j < outlierIndices.size(); j++)
+		{
+			int rowIndex = outlierIndices.get(j).get(0);
+			int columnIndex = outlierIndices.get(j).get(1);
+			
+			this.cellOutlierList.get(columnIndex).set(rowIndex, true);
+		}
+		
+		this.fireSelectionChanged();
+	}
+
 	public ArrayList<Boolean> getSelectionList()
 	{
 		return this.selectionList;
+	}
+	
+	/**
+	 * Get the array of indices indicating which row is selected.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getSelectionIndices()
+	{
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (this.selectionList.get(i))
+			{
+				indices.add(i);
+			}
+		}
+		
+		return indices;
 	}
 	
 	/**
@@ -2429,6 +2531,26 @@ public class StatTableModel implements TableModel
 	}
 	
 	/**
+	 * Get the array of indices indicating which row is marked as an outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getRowOutlierIndices()
+	{
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		
+		for (int i = 0; i < this.rowCount; i++)
+		{
+			if (this.rowOutlierList.get(i))
+			{
+				indices.add(i);
+			}
+		}
+		
+		return indices;
+	}
+	
+	/**
 	 * Get the array of arrays booleans indicating which cell value is marked as an outlier.
 	 * 
 	 * @return
@@ -2436,6 +2558,29 @@ public class StatTableModel implements TableModel
 	public ArrayList<ArrayList<Boolean>> getCellOutlierList()
 	{
 		return this.cellOutlierList;
+	}
+	
+	/**
+	 * Get the array of pairs of indices (row, column) indicating which cell is marked as an outlier.
+	 * 
+	 * @return
+	 */
+	public ArrayList<ArrayList<Integer>> getCellOutlierIndices()
+	{
+		ArrayList<ArrayList<Integer>> indices = new ArrayList<ArrayList<Integer>>();
+		
+		for (int column = 0; column < columnCount; column++)
+		{
+			for (int row = 0; row < this.rowCount; row++)
+			{
+				if (this.cellOutlierList.get(column).get(row))
+				{
+					indices.add(new ArrayList<Integer>(Arrays.asList(row, column)));
+				}
+			}
+		}
+		
+		return indices;
 	}
 	
 	/**
