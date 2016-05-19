@@ -110,58 +110,52 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		}
 
 		ArrayList<Boolean> selectionList;
-		if (b.containsKey("selectionList"))
+		if (b.containsKey("selectionList")) // de oude manier
 		{
 			selectionList = (ArrayList<Boolean>) b.get("selectionList");
 			this.model.getStatTableModel().setSelectionList(selectionList);
 		}
+		else if (b.containsKey("selectionIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setSelectionIndices(
+				(ArrayList<Integer>) b.get("selectionIndices"));
+		}
 		else
 		{
-			selectionList = new ArrayList<Boolean>(this.model.getStatTableModel().getRowCount());
-			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-			{
-				selectionList.add(false);
-			}
-			this.model.getStatTableModel().setSelectionList(selectionList);
+			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
-		if (b.containsKey("rowOutlierList"))
+		if (b.containsKey("rowOutlierList")) // de oude manier
 		{
 			this.model.getStatTableModel().setRowOutlierList(
 				(ArrayList<Boolean>) b.get("rowOutlierList"));
 		}
+		else if (b.containsKey("rowOutlierIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setRowOutlierIndices(
+				(ArrayList<Integer>) b.get("rowOutlierIndices"));
+		}
 		else
 		{
-			ArrayList<Boolean> rowOutlierList = new ArrayList<Boolean>(
-				this.model.getStatTableModel().getRowCount());
-			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-			{
-				rowOutlierList.add(false);
-			}
-			this.model.getStatTableModel().setRowOutlierList(rowOutlierList);
+			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
-		if (b.containsKey("cellOutlierList"))
+		if (b.containsKey("cellOutlierList")) // de oude manier
 		{
 			this.model.getStatTableModel().setCellOutlierList(
 				(ArrayList<ArrayList<Boolean>>) b.get("cellOutlierList"));
 		}
+		else if (b.containsKey("cellOutlierIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setCellOutlierIndices(
+				(ArrayList<ArrayList<Integer>>) b.get("cellOutlierIndices"));
+		}
 		else
 		{
-			ArrayList<ArrayList<Boolean>> cellOutlierList = new ArrayList<ArrayList<Boolean>>(
-				this.model.getStatTableModel().getColumnCount());
-			
-			for (int i = 0; i < this.model.getStatTableModel().getColumnCount(); i++)
-			{
-				ArrayList list = new ArrayList<Boolean>(this.model.getStatTableModel().getRowCount());
-				for (int j = 0; j < this.model.getStatTableModel().getRowCount(); j++)
-				{
-					list.add(false);
-				}
-				
-				cellOutlierList.add(list);
-			}
-			this.model.getStatTableModel().setCellOutlierList(cellOutlierList);
+			ArrayList<ArrayList<Integer>> indicesList = new ArrayList<ArrayList<Integer>>();
+			this.model.getStatTableModel().setCellOutlierIndices(indicesList);
 		}
 
 		if (b.containsKey("statistiekViewTypes")
@@ -210,9 +204,9 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 		h.put("tableModel", this.model.getStatTableModel().getState());
 
-		h.put("selectionList", this.model.getStatTableModel().getSelectionList());
-		h.put("rowOutlierList", this.model.getStatTableModel().getRowOutlierList());
-		h.put("cellOutlierList", this.model.getStatTableModel().getCellOutlierList());
+		h.put("selectionIndices", this.model.getStatTableModel().getSelectionIndices());
+		h.put("rowOutlierIndices", this.model.getStatTableModel().getRowOutlierIndices());
+		h.put("cellOutlierIndices", this.model.getStatTableModel().getCellOutlierIndices());
 
 		// statistiekViewTypes and statistiekViewStates should always be added to the state
 		int noViews = this.model.getViews().size();
@@ -247,58 +241,51 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 			this.model.getStatTableModel().setState((Hashtable) b.get("tableModel"));
 			// this.view.setModel(this.model);
 		}
-		if (b.containsKey("selectionList"))
+		if (b.containsKey("selectionList")) // de oude manier
 		{
 			this.model.getStatTableModel().setSelectionList((ArrayList<Boolean>) b.get("selectionList"));
 		}
+		else if (b.containsKey("selectionIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setSelectionIndices(
+				(ArrayList<Integer>) b.get("selectionIndices"));
+		}
 		else
 		{
-			ArrayList<Boolean> selectionList = new ArrayList<Boolean>(
-				this.model.getStatTableModel().getRowCount());
-			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-			{
-				selectionList.add(false);
-			}
-			this.model.getStatTableModel().setSelectionList(selectionList);
+			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
-		if (b.containsKey("rowOutlierList"))
+		if (b.containsKey("rowOutlierList")) // if old version set the rowOutlierList the old fashion way
 		{
 			this.model.getStatTableModel().setRowOutlierList(
 				(ArrayList<Boolean>) b.get("rowOutlierList"));
 		}
+		else if (b.containsKey("rowOutlierIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setRowOutlierIndices(
+				(ArrayList<Integer>) b.get("rowOutlierIndices"));
+		}
 		else
 		{
-			ArrayList<Boolean> rowOutlierList = new ArrayList<Boolean>(
-				this.model.getStatTableModel().getRowCount());
-			for (int i = 0; i < this.model.getStatTableModel().getRowCount(); i++)
-			{
-				rowOutlierList.add(false);
-			}
-			this.model.getStatTableModel().setRowOutlierList(rowOutlierList);
+			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
-		if (b.containsKey("cellOutlierList"))
+		if (b.containsKey("cellOutlierList")) // de oude manier
 		{
 			this.model.getStatTableModel().setCellOutlierList(
 				(ArrayList<ArrayList<Boolean>>) b.get("cellOutlierList"));
 		}
+		else if (b.containsKey("cellOutlierIndices")) // de nieuwe manier
+		{
+			this.model.getStatTableModel().setCellOutlierIndices(
+				(ArrayList<ArrayList<Integer>>) b.get("cellOutlierIndices"));
+		}
 		else
 		{
-			ArrayList<ArrayList<Boolean>> cellOutlierList = new ArrayList<ArrayList<Boolean>>(
-				this.model.getStatTableModel().getColumnCount());
-			
-			for (int i = 0; i < this.model.getStatTableModel().getColumnCount(); i++)
-			{
-				ArrayList list = new ArrayList<Boolean>(this.model.getStatTableModel().getRowCount());
-				for (int j = 0; j < this.model.getStatTableModel().getRowCount(); j++)
-				{
-					list.add(false);
-				}
-				
-				cellOutlierList.add(list);
-			}
-			this.model.getStatTableModel().setCellOutlierList(cellOutlierList);
+			ArrayList<ArrayList<Integer>> indicesList = new ArrayList<ArrayList<Integer>>();
+			this.model.getStatTableModel().setCellOutlierIndices(indicesList);
 		}
 
 		if (b.containsKey("statistiekViewTypes")
@@ -332,9 +319,7 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 	public Hashtable getEditState()
 	{
-		//System.out.println("StatInteractiePanel.getEditState()");
 		return this.getState();
-		//return null;
 	}
 
 	public void setEditState(Hashtable b)
@@ -398,7 +383,6 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 	public boolean isFout()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -414,8 +398,6 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 	public void stop()
 	{
-		// System.out.println("StatInteractiePanel.stop()");
-
 		// close all dialogs
 		ArrayList<Boolean> viewInOwnWindow = new ArrayList<Boolean>();
 		for (int i = 0; i < this.model.getViewInOwnWindow().size(); i++)
