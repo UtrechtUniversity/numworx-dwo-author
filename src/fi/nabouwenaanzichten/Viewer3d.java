@@ -17,7 +17,7 @@ public class Viewer3d extends JComponent
     private Image im ;
     public Graphics gIm ;
     public Matrix3D mat;  
-    private boolean pen, vul,leeg, schaduw, grZichtbaar;
+    boolean pen, vul,leeg, schaduw, grZichtbaar;
     private int lnummer;
     private Color penkleur,
     			  vulkleur,
@@ -31,7 +31,7 @@ public class Viewer3d extends JComponent
     Klikvlak[] kv;
     int aantalKv;
     KubusRooster kr;
-    private double k, xhoek,yhoek, beginx, beginy;
+    double k, xhoek,yhoek, beginx, beginy;
     private int[] sorteerRij;
     private CubeRemoveThread cubeRemoveThread;
     private boolean removed = false;
@@ -268,7 +268,9 @@ public class Viewer3d extends JComponent
             }
         }
         if (bool)
-        {	zetBeginHoeken(90,0);
+        {	
+//System.out.println("zetGR2");        	
+        	zetBeginHoeken(90,0);
         	zetAfstand(1000000000);
         	zetMuisAan(false);
         	zetSchaduw(false);
@@ -461,7 +463,10 @@ public class Viewer3d extends JComponent
         tekenOpImage(true);
         Graphics g = getGraphics();
         if (g != null)
-        	g.drawImage(im, 0, 0, null); 
+        {	g.drawImage(im, 0, 0, null);
+        }
+        else
+//System.out.println("viewer tekenOpniew() g = null");        	
         bezigMetTekenen = false;
     }
   

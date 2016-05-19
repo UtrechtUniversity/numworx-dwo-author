@@ -278,6 +278,8 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 			return;
 		}
 		
+//System.out.println("naip setBounds");		
+
 		if (v != null)
 		{	remove(v);
 		}
@@ -356,14 +358,22 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 
 //System.out.println("pb vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
 //System.out.println("pb vpZijde = " + v.getSize().width);
+
 		
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
+		
+//System.out.println("setBounds bamh " + bovenAanzichtMetHoogtes);
+		
 		zetMaakAanzicht(maakAanzicht);
 
+//System.out.println("setBounds ma " + maakAanzicht);		
 //System.out.println("bah vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
 //System.out.println("bah vpZijde = " + v.getSize().width);
 		
 		zetBlokkenBouwsel(blokkenBouwsel);
+		
+//System.out.println("setBounds bb " + blokkenBouwsel);
+
 		zetSilhouet(silhouet);
 		zetDrieAanzichten(drieAanzichten);
 		zetVoorZijAanzicht(voorZijAanzicht);
@@ -862,7 +872,9 @@ System.out.println("kijkNa setVis false");
 
 		}
 		else
-			v.zetHoogtes();
+		{	v.zetHoogtes();
+		
+		}
 		v.tekenOpnieuw();
 	}
 	
@@ -944,8 +956,11 @@ System.out.println("kijkNa setVis false");
 		v.zetMaakAanzicht(maakAanzicht);
 		docentV.zetMaakAanzicht(maakAanzicht);
 		
-		if (!maakAanzicht)
-		{	v.zetSchaduw(true);
+		if (!maakAanzicht && !bovenAanzichtMetHoogtes)
+		{	
+//System.out.println("!ma && !bamh");
+
+			v.zetSchaduw(true);
 			
 			if ((Math.abs(beginHoekX - 90) < NZERO) && (Math.abs(beginHoekY) < NZERO))
 				zetBeginHoeken(30, -30);
@@ -965,7 +980,11 @@ System.out.println("kijkNa setVis false");
 
 		}
 		else
-		if(bovenAanzichtMetHoogtes)	v.zetHoogtes();
+			if (bovenAanzichtMetHoogtes)
+			{	v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+			
+			}
 		
 		v.tekenOpnieuw();
 	}
@@ -1092,8 +1111,17 @@ System.out.println("kijkNa setVis false");
 			rechtsAanzicht = false;
 		}
 		else
-		{	
+		{
+			if (bovenAanzichtMetHoogtes)
+			{	v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+				v.zetHoogtes();
+			}
 			
+//System.out.println("zetBlokkenBouwsel else");
+			v.tekenOpnieuw();
+//System.out.println("v xhoek = " + v.getXHoek());
+//System.out.println("v yhoek = " + v.getYHoek());
+//System.out.println("v schaduw = " + v.schaduw);
 		}
 		
 	}
@@ -2297,6 +2325,9 @@ newViewer = false;
 	
 	public void setEditState(Hashtable h)
 	{	
+		
+//System.out.println("naip setEditState");
+
 		boolean rotatieVast = false;
 		if (h.containsKey("rotatieVast"))
 			rotatieVast = ((Boolean) h.get("rotatieVast")).booleanValue();
@@ -2351,16 +2382,22 @@ newViewer = true;
 		if (h.containsKey("bovenAanzichtMetHoogtes"))
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
+		
+//System.out.println("bovenAanzichtMetHoogtes " + bovenAanzichtMetHoogtes);		
 
 		boolean maakAanzicht = false;
 		if (h.containsKey("maakAanzicht"))
 			maakAanzicht = ((Boolean) h.get("maakAanzicht")).booleanValue();
 		zetMaakAanzicht(maakAanzicht);
 		
+//System.out.println("maakAanzicht " + maakAanzicht);		
+		
 		boolean blokkenBouwsel = true;
 		if (h.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) h.get("blokkenBouwsel")).booleanValue();
 		zetBlokkenBouwsel(blokkenBouwsel);
+		
+//System.out.println("blokkenBouwsel " + blokkenBouwsel);		
 		
 		boolean silhouet = false;
 		if (h.containsKey("silhouet"))
@@ -2515,6 +2552,10 @@ newViewer = false;
 			}
 			
 		}
+		
+		
+		if (aantalBlokjes) 
+			setKPanelText(); // Ook in zetOpdracht: toon aantal blokjes
 		
 		String docentState = null;
 		

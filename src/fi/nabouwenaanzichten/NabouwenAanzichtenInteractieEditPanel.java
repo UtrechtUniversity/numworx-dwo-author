@@ -804,8 +804,8 @@ System.out.println("naiep setBounds return");
 */
 		super.setBounds(x, y, naipBreedte + editWidth, Math.max(naipHoogte, editHeight));
 		
-		System.out.println("naiep setBounds " + x + " " + y + " " + (naipBreedte + editWidth) + " " + 
-							Math.max(naipHoogte, editHeight));
+//System.out.println("naiep setBounds " + x + " " + y + " " + (naipBreedte + editWidth) + " " + 
+//					Math.max(naipHoogte, editHeight));
 		
 		if (naip != null)
 		{	naip.noSetBounds = false;
@@ -829,7 +829,7 @@ System.out.println("naiep setBounds return");
 		//naip.setBounds(naip.getLocation().x, naip.getLocation().y, Math.max(0, b), naip.getSize().height);
 		plaatsComponenten();
 		
-System.out.println("zetBreedte naiep " + b);		
+//System.out.println("zetBreedte naiep " + b);		
 	}
 	
 	public void zetHoogte(int h)
@@ -840,7 +840,7 @@ System.out.println("zetBreedte naiep " + b);
 		//naip.kijkNaActiefKlein = true;
 		//naip.setBounds(naip.getLocation().x, naip.getLocation().y, naip.getSize().width, h);
 		
-System.out.println("zetHoogte naiep " + h);		
+//System.out.println("zetHoogte naiep " + h);		
 	}
 
 	public void wis()
@@ -898,7 +898,8 @@ System.out.println("zetHoogte naiep " + h);
 		}
 		else if (e.getSource() == plattegrondBox)
 		{	boolean selected = plattegrondBox.isSelected();
-			if (selected) {
+			if (selected) 
+			{
 				maakAanzichtBox.setSelected(false);
 				naip.zetMaakAanzicht(false);
 			}
