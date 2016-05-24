@@ -1056,184 +1056,268 @@ class GrafiekVeld extends JComponent{
 			if(pix0 != null && pix1 != null)
 				drawLineWithinVisibleBounds(g, pix0.x, pix0.y, pix1.x, pix1.y);
 		}    
-		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2) {	
-			Graphics2D g2D = (Graphics2D) g;
+		
+//		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2) {	
+//			Graphics2D g2D = (Graphics2D) g;
+//			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//			
+//			if(!gtip.xAsLog && !gtip.yAsLog) {	
+//				indexPoints = sorteerNaarX(indexPoints);
+//				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
+//					for(int i = indexPoints.size() - 2; i > 0; i--)
+//						indexPoints.removeElementAt(i);
+//				}
+//				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
+//					int midden = indexPoints.size()/2;
+//					for(int i = indexPoints.size() - 2; i > 0; i--)
+//						if(i != midden) {	
+//							indexPoints.removeElementAt(i);
+//						}
+//				}
+//			}
+//			
+//			GeneralPath curve = new GeneralPath();
+//			double[] weights = berekenGewichten(indexPoints);
+//			RealPoint beginPunt = (RealPoint) indexPoints.elementAt(0);
+//			Point beginPuntPix = gtip.realPointToPixels(beginPunt);
+//			beginPuntPix.x = Math.max(beginPuntPix.x, drawXmin);
+//			
+//			RealPoint eindPunt = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
+//			Point eindPuntPix = gtip.realPointToPixels(eindPunt);
+//			eindPuntPix.x = Math.min(eindPuntPix.x, drawXmax);
+//			
+//			if(beginPuntPix != null && eindPuntPix != null) {	
+//				for(int i=beginPuntPix.x; i < eindPuntPix.x; i++) {	
+//					
+//					double ii = i;
+//					double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
+//					double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
+//					
+//					int x0 = i;
+//					int x1 = i+1;
+//					double dy0 = valueYtoPixels(d0);
+//					double dy1 = valueYtoPixels(d1);
+//					
+//					if(dy0>1000)dy0 = 1000;
+//					if(dy0<-1000)dy0 = -1000;
+//					if(dy1>1000)dy1 = 1000;
+//					if(dy1<-1000)dy1 = -1000;
+//
+//					if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+//						// at least one of two values are within Ymindraw and drawYmax
+//
+//						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+//						
+//						if(curve.getCurrentPoint()==null) {	
+//							curve.moveTo((float)x0, (float)dy0);
+//						}
+//												
+//						if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+//							curve.moveTo((float)x0, (float)drawYmin);
+//						}
+//					
+//						if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+//							curve.moveTo((float)x0, (float)drawYmax);
+//						}
+//
+//						if(!gtip.yPositief || d1>0) {	
+//							curve.lineTo((float)x1, (float)dy1);						
+//						}
+//					}
+//				}
+//			}
+//			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+//			g2D.setStroke(new BasicStroke(1.2f));
+//			g2D.draw(curve);
+//		}
+		
+		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE && indexPoints.size() > 2)
+		{	Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			if(!gtip.xAsLog && !gtip.yAsLog) {	
-				indexPoints = sorteerNaarX(indexPoints);
-				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
-					for(int i = indexPoints.size() - 2; i > 0; i--)
+			boolean puntenVerwijderd = false;
+			if(!gtip.xAsLog && !gtip.yAsLog)
+			{	indexPoints = sorteerNaarX(indexPoints);
+				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
+				{	for(int i = indexPoints.size() - 2; i > 0; i--)
 						indexPoints.removeElementAt(i);
+					puntenVerwijderd = true;
 				}
-				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
-					int midden = indexPoints.size()/2;
+				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
+				{	int midden = indexPoints.size()/2;
 					for(int i = indexPoints.size() - 2; i > 0; i--)
-						if(i != midden) {	
-							indexPoints.removeElementAt(i);
+						if(i != midden)
+						{	indexPoints.removeElementAt(i);
 						}
+					puntenVerwijderd = true;
 				}
 			}
 			
-			GeneralPath curve = new GeneralPath();
-			double[] weights = berekenGewichten(indexPoints);
-			RealPoint beginPunt = (RealPoint) indexPoints.elementAt(0);
-			Point beginPuntPix = gtip.realPointToPixels(beginPunt);
-			beginPuntPix.x = Math.max(beginPuntPix.x, drawXmin);
-			
-			RealPoint eindPunt = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
-			Point eindPuntPix = gtip.realPointToPixels(eindPunt);
-			eindPuntPix.x = Math.min(eindPuntPix.x, drawXmax);
-			
-			if(beginPuntPix != null && eindPuntPix != null) {	
-				for(int i=beginPuntPix.x; i < eindPuntPix.x; i++) {	
-					
-					double ii = i;
-					double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
-					double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
-					
-					int x0 = i;
-					int x1 = i+1;
-					double dy0 = valueYtoPixels(d0);
-					double dy1 = valueYtoPixels(d1);
-					
-					if(dy0>1000)dy0 = 1000;
-					if(dy0<-1000)dy0 = -1000;
-					if(dy1>1000)dy1 = 1000;
-					if(dy1<-1000)dy1 = -1000;
-
-					if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
-						// at least one of two values are within Ymindraw and drawYmax
-
-						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+			if(puntenVerwijderd) {	
+				GeneralPath curve = new GeneralPath();
+				double[] weights = berekenGewichten(indexPoints);
+				RealPoint beginPunt = (RealPoint) indexPoints.elementAt(0);
+				Point beginPuntPix = gtip.realPointToPixels(beginPunt);
+				beginPuntPix.x = Math.max(beginPuntPix.x, drawXmin);
+				
+				RealPoint eindPunt = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
+				Point eindPuntPix = gtip.realPointToPixels(eindPunt);
+				eindPuntPix.x = Math.min(eindPuntPix.x, drawXmax);
+				
+				if(beginPuntPix != null && eindPuntPix != null) {	
+					for(int i=beginPuntPix.x; i < eindPuntPix.x; i++) {	
 						
-						if(curve.getCurrentPoint()==null) {	
-							curve.moveTo((float)x0, (float)dy0);
-						}
-												
-						if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
-							curve.moveTo((float)x0, (float)drawYmin);
-						}
-					
-						if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
-							curve.moveTo((float)x0, (float)drawYmax);
-						}
-
-						if(!gtip.yPositief || d1>0) {	
-							curve.lineTo((float)x1, (float)dy1);						
+						double ii = i;
+						double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
+						double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
+						
+						int x0 = i;
+						int x1 = i+1;
+						double dy0 = valueYtoPixels(d0);
+						double dy1 = valueYtoPixels(d1);
+						
+						if(dy0>1000)dy0 = 1000;
+						if(dy0<-1000)dy0 = -1000;
+						if(dy1>1000)dy1 = 1000;
+						if(dy1<-1000)dy1 = -1000;
+	
+						if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+							// at least one of two values are within Ymindraw and drawYmax
+	
+							dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+							
+							if(curve.getCurrentPoint()==null) {	
+								curve.moveTo((float)x0, (float)dy0);
+							}
+													
+							if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+								curve.moveTo((float)x0, (float)drawYmin);
+							}
+						
+							if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+								curve.moveTo((float)x0, (float)drawYmax);
+							}
+	
+							if(!gtip.yPositief || d1>0) {	
+								curve.lineTo((float)x1, (float)dy1);						
+							}
 						}
 					}
 				}
+				g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+				g2D.setStroke(new BasicStroke(1.2f));
+				g2D.draw(curve);
+
 			}
-			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-			g2D.setStroke(new BasicStroke(1.2f));
-			g2D.draw(curve);
-			
-//			else :: OLD Code :: Drawing the curve using cubic curves (not possible anymore because not the whole screen is used anymore)
-//			{	
-//				// het punt voor het startpunt p0, if any
-//				RealPoint p00 = null;
-//				// startpunt p0
-//				RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
-//				RealPoint p0 = gtip.realPointToRealPixels(rp0);
-//				// eindpunt p1
-//				RealPoint rp1 = null;
-//				RealPoint p1 = null;
-//				// het punt na het eindpunt p1, if any
-//				RealPoint rp11 = null;
-//				RealPoint p11 = null;
-//		
-//				double intervalFrac = 3;				
-//		
-//				for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++)
-//				{	// vind eindpunt
-//					rp1 = (RealPoint) indexPoints.elementAt(pCnt);
-//					p1 = gtip.realPointToRealPixels(rp1);
-//					// kijk of p0-p1 in pixels vertikaal is, teken lijn
-//					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
-//					{	Point pix0 = gtip.realPointToPixels(rp0);
-//						Point pix1 = gtip.realPointToPixels(rp1);
-//						if(pix0 != null && pix1 != null)
-//							g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
-//					}
-//					else
-//					{	// vind het punt na p1, if any
-//						if (pCnt < (indexPoints.size() - 1))
-//						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
-//							p11 = gtip.realPointToRealPixels(rp11);
-//						}
-//						// vind nu de controle-punten tussen p0 en p1
-//						// controlepunt 0
-//						RealPoint c0 = null;
-//						// p0 is het eerste punt, p1 is het tweede punt
-//						if (p00 == null)
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(
-//								p1.getX() - p0.getX(), p1.getY() - p0.getY());
-//							RealPoint unitSlope0 =	slp0p1.standarize();
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope0.getX();
-//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-//								unitSlope0.getY() * newLength);
-//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-//						}
-//						else
-//						{	// vector p00 -> p0
-//							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
-//							// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//	//eerst middelen, dan standariseren of omgekeerd?																
-//							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
-//								(slp00p0.getY() + slp0p1.getY()) / 2);	
-//							RealPoint unitSlope0 =	meanSlope0.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope0.getX();
-//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-//								unitSlope0.getY() * newLength);
-//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-//						}
-//	
-//						// controlepunt 1
-//						RealPoint c1 = null;
-//						// p1 is het laatste punt
-//						if (p11 == null)
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//							RealPoint unitSlope1 =	slp0p1.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope1.getX();
-//							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
-//								- unitSlope1.getY() * newLength);
-//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-//						}
-//						else
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//							// vector p1 -> p11	
-//							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
-//	//eerst middelen, dan standariseren of omgekeerd?																
-//							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
-//								(slp0p1.getY() + slp1p11.getY()) / 2);
-//							RealPoint unitSlope1 =	meanSlope1.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope1.getX();
-//							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
-//								- unitSlope1.getY() * newLength);
-//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-//						}
-//				
-//						if(index == gtip.getActiveIndex())
-//							g2D.setStroke(new BasicStroke(0.7f));
-//						CubicCurve2D bezier = new CubicCurve2D.Double();
-//						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
-//									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
-//						g2D.draw(bezier);			    
-//					} // else niet vertikaal
-//					p00 = p0;
-//					p0 = p1;
-//				}
-//			}
+			else
+			{	
+				// het punt voor het startpunt p0, if any
+				RealPoint p00 = null;
+				// startpunt p0
+				RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
+				RealPoint p0 = gtip.realPointToRealPixels(rp0);
+				// eindpunt p1
+				RealPoint rp1 = null;
+				RealPoint p1 = null;
+				// het punt na het eindpunt p1, if any
+				RealPoint rp11 = null;
+				RealPoint p11 = null;
+		
+				double intervalFrac = 3;				
+		
+				for (int pCnt = 1; pCnt < indexPoints.size(); pCnt++)
+				{	// vind eindpunt
+					rp1 = (RealPoint) indexPoints.elementAt(pCnt);
+					p1 = gtip.realPointToRealPixels(rp1);
+					// kijk of p0-p1 in pixels vertikaal is, teken lijn
+					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
+					{	Point pix0 = gtip.realPointToPixels(rp0);
+						Point pix1 = gtip.realPointToPixels(rp1);
+						if(pix0 != null && pix1 != null)
+							g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+					}
+					else
+					{	// vind het punt na p1, if any
+						if (pCnt < (indexPoints.size() - 1))
+						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
+							p11 = gtip.realPointToRealPixels(rp11);
+						}
+						// vind nu de controle-punten tussen p0 en p1
+						// controlepunt 0
+						RealPoint c0 = null;
+						// p0 is het eerste punt, p1 is het tweede punt
+						if (p00 == null)
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(
+								p1.getX() - p0.getX(), p1.getY() - p0.getY());
+							RealPoint unitSlope0 =	slp0p1.standarize();
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope0.getX();
+							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+								unitSlope0.getY() * newLength);
+							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+						}
+						else
+						{	// vector p00 -> p0
+							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
+							// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+	//eerst middelen, dan standariseren of omgekeerd?																
+							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
+								(slp00p0.getY() + slp0p1.getY()) / 2);	
+							RealPoint unitSlope0 =	meanSlope0.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope0.getX();
+							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+								unitSlope0.getY() * newLength);
+							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+						}
+	
+						// controlepunt 1
+						RealPoint c1 = null;
+						// p1 is het laatste punt
+						if (p11 == null)
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+							RealPoint unitSlope1 =	slp0p1.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope1.getX();
+							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
+								- unitSlope1.getY() * newLength);
+							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+						}
+						else
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+							// vector p1 -> p11	
+							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
+	//eerst middelen, dan standariseren of omgekeerd?																
+							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
+								(slp0p1.getY() + slp1p11.getY()) / 2);
+							RealPoint unitSlope1 =	meanSlope1.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope1.getX();
+							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
+								- unitSlope1.getY() * newLength);
+							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+						}
+				
+						if(index == gtip.getActiveIndex())
+							g2D.setStroke(new BasicStroke(0.7f));
+						
+						CubicCurve2D bezier = new CubicCurve2D.Double();
+						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
+									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
+						g2D.setClip(drawXmin, drawYmin, drawXmax-drawXmin, drawYmax-drawYmin); // set clipping window
+						g2D.draw(bezier);			    
+						g2D.setClip(null); // remove clipping window
+					} // else niet vertikaal
+					p00 = p0;
+					p0 = p1;
+				}
+			}
 		}
+
 		
 		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() == 2) {	
 			RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
@@ -1254,257 +1338,268 @@ class GrafiekVeld extends JComponent{
 			drawLineWithinVisibleBounds(g, (int) x0Pix, (int) y0Pix, (int) x1Pix, (int) y1Pix);		
 			
 		}
+
 		if (gtip.tekenComponent.getConnectMode() == TekenComponent.CURVE_EXTRA && indexPoints.size() > 2)
 		{	Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
+			boolean puntenVerwijderd = false;
 			if(!gtip.xAsLog && !gtip.yAsLog)
 			{	indexPoints = sorteerNaarX(indexPoints);
-				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
-					for(int i = indexPoints.size() - 2; i > 0; i--)
+				if(berekenLijn(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
+				{	for(int i = indexPoints.size() - 2; i > 0; i--)
 						indexPoints.removeElementAt(i);
+					puntenVerwijderd = true;
 				}
-				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid)) {	
-					int midden = indexPoints.size()/2;
+				else if(indexPoints.size() > 3 && berekenParabool(indexPoints, gtip.tekenGrafiekNauwkeurigheid))
+				{	int midden = indexPoints.size()/2;
 					for(int i = indexPoints.size() - 2; i > 0; i--)
-						if(i != midden) {	
-							indexPoints.removeElementAt(i);
+						if(i != midden)
+						{	indexPoints.removeElementAt(i);
 						}
+					puntenVerwijderd = true;
 				}
 			}
 			
-			GeneralPath curve = new GeneralPath();
-			double[] weights = berekenGewichten(indexPoints);
-			for(int i=drawXmin ; i<drawXmax ; i++) {	
-				double ii = i;
-				double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
-				double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
-
-				int x0 = i;
-				int x1 = i+1;
-					
-				double dy0 = valueYtoPixels(d0);
-				double dy1 = valueYtoPixels(d1);
-
-				if(dy0>1000)dy0 = 1000;
-				if(dy0<-1000)dy0 = -1000;
-				if(dy1>1000)dy1 = 1000;
-				if(dy1<-1000)dy1 = -1000;
-					
-				if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
-					// at least one of two values are within Ymindraw and drawYmax
-
-					dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
-					
-					if(curve.getCurrentPoint()==null) {	
-							curve.moveTo((float)x0, (float)dy0);
-					}
-											
-					if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
-						curve.moveTo((float)x0, (float)drawYmin);
-					}
+			if(puntenVerwijderd) {	
 				
-					if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
-						curve.moveTo((float)x0, (float)drawYmax);
+				GeneralPath curve = new GeneralPath();
+				double[] weights = berekenGewichten(indexPoints);
+				for(int i=drawXmin ; i<drawXmax ; i++) {	
+					double ii = i;
+					double d0 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii), weights);
+					double d1 = berekenLagrangeY(indexPoints, pixelsXtoValue(ii+1), weights);
+	
+					int x0 = i;
+					int x1 = i+1;
+						
+					double dy0 = valueYtoPixels(d0);
+					double dy1 = valueYtoPixels(d1);
+	
+					if(dy0>1000)dy0 = 1000;
+					if(dy0<-1000)dy0 = -1000;
+					if(dy1>1000)dy1 = 1000;
+					if(dy1<-1000)dy1 = -1000;
+						
+					if ( !((dy0 < drawYmin) && (dy1 < drawYmin)) && !((dy0 > drawYmax) && (dy1 > drawYmax)) ) {
+						// at least one of two values are within Ymindraw and drawYmax
+	
+						dy1 = Math.min(drawYmax, Math.max(drawYmin, dy1)); // cap dy1 at drawMin & max
+						
+						if(curve.getCurrentPoint()==null) {	
+								curve.moveTo((float)x0, (float)dy0);
+						}
+												
+						if (dy0<drawYmin) { // move accross empty space, caused by non-visibility
+							curve.moveTo((float)x0, (float)drawYmin);
+						}
+					
+						if (dy0>drawYmax) { // move accross empty space, caused by non-visibility
+							curve.moveTo((float)x0, (float)drawYmax);
+						}
+	
+						if(!gtip.yPositief || d1>0) {	
+							curve.lineTo((float)x1, (float)dy1);						
+						}
 					}
-
-					if(!gtip.yPositief || d1>0) {	
-						curve.lineTo((float)x1, (float)dy1);						
-					}
+	
+				}
+				g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+				g2D.setStroke(new BasicStroke(1.2f));
+				g2D.draw(curve);
+				
+			}
+			else
+			{	
+				// het punt voor het startpunt p0, if any
+				RealPoint p00 = null; 
+				
+				RealPoint hp0 = (RealPoint) indexPoints.elementAt(0);
+				RealPoint hp1 = (RealPoint) indexPoints.elementAt(1);
+				RealPoint hp2 = (RealPoint) indexPoints.elementAt(2);
+				
+				//double helling 01 = (hp1.y - hp0.y)/(hp1.x - hp0.x);
+				//double helling12 = (hp2.y - hp1.y)/(hp2.x - hp1.x);
+				double helling01 = ((gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/
+						((gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()) - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()));
+				double helling12 = ((gtip.yAsLog?Math.log10(hp2.getY()):hp2.getY()) - (gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()))/
+						((gtip.xAsLog?Math.log10(hp2.getX()):hp2.getX()) - (gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()));
+				
+				//hier aanpassen voor andere "extrapolatieregel", en iets verderop.
+				double helling0 = - helling12/3 + 4 * helling01/3;
+				
+				
+				//double ii = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
+				//double x0 = gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
+				//		/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD;
+// 				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
+				double linkerGrens;
+				if (gtip.manualScalingX) {
+					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 
+				}
+				else {
+					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 
 				}
 
+				double x0 = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens;
+				double y0 = gtip.yAsLog?Math.pow(10, helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY())):
+					(helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()));
+				if(y0 < 0 && gtip.yPositief)
+				{
+					y0 = 0;
+					x0 = gtip.xAsLog?Math.pow(10, (helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0): 
+						(helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0;
+				}
+				
+				// startpunt p0
+				//RealPoint rp0 = new RealPoint(this.graphToolInteractiePanel.beginx, helling0*(this.graphToolInteractiePanel.beginx - hp0.x) + hp0.y);
+				RealPoint rp0 = new RealPoint(x0, y0);
+				//RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
+				RealPoint p0 = gtip.realPointToRealPixels(rp0);
+				
+				RealPoint hpLaatst0 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
+				RealPoint hpLaatst1 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 2);
+				RealPoint hpLaatst2 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 3);
+				double helling10 = ((gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()) - (gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()))/
+						((gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX())); 
+				double helling21 = ((gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()) - (gtip.yAsLog?Math.log10(hpLaatst2.getY()):hpLaatst2.getY()))/
+						((gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX()) - (gtip.xAsLog?Math.log10(hpLaatst2.getX()):hpLaatst2.getX()));
+				
+				//hier aanpassen voor andere "extrapolatieregel", en een stukje terug.
+				double hellingLaatst = - helling21/3 + 4 * helling10/3;
+				
+				
+				double ii2 = breedte;
+// 				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
+				double rechterGrens;
+				if (gtip.manualScalingX) {
+					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
+				}
+				else {
+					rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
+				}					
+
+				double xLaatst = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
+				double yLaatst = gtip.yAsLog?Math.pow(10, hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())):
+					(hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())); 
+				if(yLaatst < 0 && gtip.yPositief)
+				{	yLaatst = 0;
+					xLaatst = gtip.xAsLog?Math.pow(10, (hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst): 
+						(hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst;
+					
+				}
+				
+				RealPoint eindPunt = new RealPoint(xLaatst, yLaatst);
+				//RealPoint eindPunt = gtip.realPointToRealPixels(realEindPunt);
+				// eindpunt p1
+				RealPoint rp1 = null;
+				RealPoint p1 = null;
+				// het punt na het eindpunt p1, if any
+				RealPoint rp11 = null;
+				RealPoint p11 = null;
+		
+				double intervalFrac = 3;				
+		
+				for (int pCnt = 0; pCnt < indexPoints.size() + 1; pCnt++) //deze teller al bij 0 laten beginnen. En bij indexPoints.size() + 1 laten eindigen.
+				{	// vind eindpunt
+					if(pCnt < indexPoints.size())
+						rp1 = (RealPoint) indexPoints.elementAt(pCnt);
+					else
+						rp1 = eindPunt;
+					p1 = gtip.realPointToRealPixels(rp1);
+					// kijk of p0-p1 in pixels vertikaal is, teken lijn
+					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
+					{	Point pix0 = gtip.realPointToPixels(rp0);
+						Point pix1 = gtip.realPointToPixels(rp1);
+						g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
+					}
+					else
+					{	// vind het punt na p1, if any
+						if (pCnt < (indexPoints.size() - 1)) 
+						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
+							p11 = gtip.realPointToRealPixels(rp11);
+						}
+						else if (pCnt == indexPoints.size() - 1)
+						{	rp11 = eindPunt;
+							p11 = gtip.realPointToRealPixels(rp11);
+						}
+						// vind nu de controle-punten tussen p0 en p1
+						// controlepunt 0
+						RealPoint c0 = null;
+						// p0 is het eerste punt, p1 is het tweede punt
+						if (p00 == null)
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(
+								p1.getX() - p0.getX(), p1.getY() - p0.getY());
+							RealPoint unitSlope0 =	slp0p1.standarize();
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope0.getX();
+							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+								unitSlope0.getY() * newLength);
+							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+						}
+						else
+						{	// vector p00 -> p0
+							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
+							// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+	//eerst middelen, dan standariseren of omgekeerd?																
+							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
+								(slp00p0.getY() + slp0p1.getY()) / 2);	
+							RealPoint unitSlope0 =	meanSlope0.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope0.getX();
+							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
+								unitSlope0.getY() * newLength);
+							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
+						}
+	
+						// controlepunt 1
+						RealPoint c1 = null;
+						// p1 is het laatste punt
+						if (p11 == null)
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+							RealPoint unitSlope1 =	slp0p1.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope1.getX();
+							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
+								- unitSlope1.getY() * newLength);
+							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+						}
+						else
+						{	// vector p0 -> p1
+							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
+							// vector p1 -> p11	
+							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
+	//eerst middelen, dan standariseren of omgekeerd?																
+							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
+								(slp0p1.getY() + slp1p11.getY()) / 2);
+							RealPoint unitSlope1 =	meanSlope1.standarize();	
+							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
+							double newLength = xLength / unitSlope1.getX();
+							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
+								- unitSlope1.getY() * newLength);
+							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
+						}
+				
+						if(index == gtip.getActiveIndex())
+							g2D.setStroke(new BasicStroke(0.7f));
+						CubicCurve2D bezier = new CubicCurve2D.Double();
+						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
+									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
+						g2D.setClip(drawXmin, drawYmin, drawXmax-drawXmin, drawYmax-drawYmin); // set clipping window
+						g2D.draw(bezier);			    
+						g2D.setClip(null); // remove clipping window
+					} // else niet vertikaal
+					p00 = p0;
+					p0 = p1;
+				} 
 			}
-			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
-			g2D.setStroke(new BasicStroke(1.2f));
-			g2D.draw(curve);
-			
-//			else :: OLD Code :: Drawing the curve using cubic curves (not possible anymore because not the whole screen is used anymore)
-//			{	
-//				// het punt voor het startpunt p0, if any
-//				RealPoint p00 = null; 
-//				
-//				RealPoint hp0 = (RealPoint) indexPoints.elementAt(0);
-//				RealPoint hp1 = (RealPoint) indexPoints.elementAt(1);
-//				RealPoint hp2 = (RealPoint) indexPoints.elementAt(2);
-//				
-//				//double helling 01 = (hp1.y - hp0.y)/(hp1.x - hp0.x);
-//				//double helling12 = (hp2.y - hp1.y)/(hp2.x - hp1.x);
-//				double helling01 = ((gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/
-//						((gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()) - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()));
-//				double helling12 = ((gtip.yAsLog?Math.log10(hp2.getY()):hp2.getY()) - (gtip.yAsLog?Math.log10(hp1.getY()):hp1.getY()))/
-//						((gtip.xAsLog?Math.log10(hp2.getX()):hp2.getX()) - (gtip.xAsLog?Math.log10(hp1.getX()):hp1.getX()));
-//				
-//				//hier aanpassen voor andere "extrapolatieregel", en iets verderop.
-//				double helling0 = - helling12/3 + 4 * helling01/3;
-//				
-//				
-//				//double ii = Math.max(witruimteY?maxWoordBreedteY:0, gtip.xPositief?bx:0);
-//				//double x0 = gtip.xAsLog?Math.pow(10,gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii
-//				//		/gtip.eenheidxD):gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii/gtip.eenheidxD;
-//// 				double linkerGrens = gtip.xPositief?0:(gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD);
-//				double linkerGrens;
-//				if (gtip.manualScalingX) {
-//					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD); 
-//				}
-//				else {
-//					linkerGrens = gtip.xPositief?0:((-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD); 
-//				}
-//
-//				double x0 = gtip.xAsLog?Math.pow(10, linkerGrens):linkerGrens;
-//				double y0 = gtip.yAsLog?Math.pow(10, helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY())):
-//					(helling0 * (linkerGrens - (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX())) + (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()));
-//				if(y0 < 0 && gtip.yPositief)
-//				{
-//					y0 = 0;
-//					x0 = gtip.xAsLog?Math.pow(10, (helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0): 
-//						(helling0 * (gtip.xAsLog?Math.log10(hp0.getX()):hp0.getX()) - (gtip.yAsLog?Math.log10(hp0.getY()):hp0.getY()))/helling0;
-//				}
-//				
-//				// startpunt p0
-//				//RealPoint rp0 = new RealPoint(this.graphToolInteractiePanel.beginx, helling0*(this.graphToolInteractiePanel.beginx - hp0.x) + hp0.y);
-//				RealPoint rp0 = new RealPoint(x0, y0);
-//				//RealPoint rp0 = (RealPoint) indexPoints.elementAt(0);
-//				RealPoint p0 = gtip.realPointToRealPixels(rp0);
-//				
-//				RealPoint hpLaatst0 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 1);
-//				RealPoint hpLaatst1 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 2);
-//				RealPoint hpLaatst2 = (RealPoint) indexPoints.elementAt(indexPoints.size() - 3);
-//				double helling10 = ((gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()) - (gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()))/
-//						((gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX())); 
-//				double helling21 = ((gtip.yAsLog?Math.log10(hpLaatst1.getY()):hpLaatst1.getY()) - (gtip.yAsLog?Math.log10(hpLaatst2.getY()):hpLaatst2.getY()))/
-//						((gtip.xAsLog?Math.log10(hpLaatst1.getX()):hpLaatst1.getX()) - (gtip.xAsLog?Math.log10(hpLaatst2.getX()):hpLaatst2.getX()));
-//				
-//				//hier aanpassen voor andere "extrapolatieregel", en een stukje terug.
-//				double hellingLaatst = - helling21/3 + 4 * helling10/3;
-//				
-//				
-//				double ii2 = breedte;
-//// 				double rechterGrens = gtip.schaalFactorX*(-gtip.beginx)/gtip.eenheidxD + gtip.schaalFactorX*ii2/gtip.eenheidxD;
-//				double rechterGrens;
-//				if (gtip.manualScalingX) {
-//					rechterGrens = (-gtip.beginx)*gtip.eenheidxValue/gtip.eenheidxD + ii2*gtip.eenheidxValue/gtip.eenheidxD;					
-//				}
-//				else {
-//					rechterGrens = (-gtip.beginx)*gtip.schaalFactorX/gtip.eenheidxD + ii2*gtip.schaalFactorX/gtip.eenheidxD;
-//				}					
-//
-//				double xLaatst = gtip.xAsLog?Math.pow(10,rechterGrens):rechterGrens;
-//				double yLaatst = gtip.yAsLog?Math.pow(10, hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())):
-//					(hellingLaatst * (rechterGrens - (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX())) + (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY())); 
-//				if(yLaatst < 0 && gtip.yPositief)
-//				{	yLaatst = 0;
-//					xLaatst = gtip.xAsLog?Math.pow(10, (hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst): 
-//						(hellingLaatst * (gtip.xAsLog?Math.log10(hpLaatst0.getX()):hpLaatst0.getX()) - (gtip.yAsLog?Math.log10(hpLaatst0.getY()):hpLaatst0.getY()))/hellingLaatst;
-//					
-//				}
-//				
-//				RealPoint eindPunt = new RealPoint(xLaatst, yLaatst);
-//				//RealPoint eindPunt = gtip.realPointToRealPixels(realEindPunt);
-//				// eindpunt p1
-//				RealPoint rp1 = null;
-//				RealPoint p1 = null;
-//				// het punt na het eindpunt p1, if any
-//				RealPoint rp11 = null;
-//				RealPoint p11 = null;
-//		
-//				double intervalFrac = 3;				
-//		
-//				for (int pCnt = 0; pCnt < indexPoints.size() + 1; pCnt++) //deze teller al bij 0 laten beginnen. En bij indexPoints.size() + 1 laten eindigen.
-//				{	// vind eindpunt
-//					if(pCnt < indexPoints.size())
-//						rp1 = (RealPoint) indexPoints.elementAt(pCnt);
-//					else
-//						rp1 = eindPunt;
-//					p1 = gtip.realPointToRealPixels(rp1);
-//					// kijk of p0-p1 in pixels vertikaal is, teken lijn
-//					if (Math.abs(p0.getX() - p1.getX()) < RealPoint.NZERO)
-//					{	Point pix0 = gtip.realPointToPixels(rp0);
-//						Point pix1 = gtip.realPointToPixels(rp1);
-//						g.drawLine(pix0.x, pix0.y, pix1.x, pix1.y);
-//					}
-//					else
-//					{	// vind het punt na p1, if any
-//						if (pCnt < (indexPoints.size() - 1)) 
-//						{	rp11 = (RealPoint) indexPoints.elementAt(pCnt + 1);
-//							p11 = gtip.realPointToRealPixels(rp11);
-//						}
-//						else if (pCnt == indexPoints.size() - 1)
-//						{	rp11 = eindPunt;
-//							p11 = gtip.realPointToRealPixels(rp11);
-//						}
-//						// vind nu de controle-punten tussen p0 en p1
-//						// controlepunt 0
-//						RealPoint c0 = null;
-//						// p0 is het eerste punt, p1 is het tweede punt
-//						if (p00 == null)
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(
-//								p1.getX() - p0.getX(), p1.getY() - p0.getY());
-//							RealPoint unitSlope0 =	slp0p1.standarize();
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope0.getX();
-//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-//								unitSlope0.getY() * newLength);
-//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-//						}
-//						else
-//						{	// vector p00 -> p0
-//							RealPoint slp00p0 = new RealPoint(p0.getX() - p00.getX(), p0.getY() - p00.getY());
-//							// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//	//eerst middelen, dan standariseren of omgekeerd?																
-//							RealPoint meanSlope0 = new RealPoint((slp00p0.getX() + slp0p1.getX()) / 2,
-//								(slp00p0.getY() + slp0p1.getY()) / 2);	
-//							RealPoint unitSlope0 =	meanSlope0.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope0.getX();
-//							RealPoint dir0 = new RealPoint(unitSlope0.getX() * newLength,
-//								unitSlope0.getY() * newLength);
-//							c0 = new RealPoint(p0.getX() + dir0.getX(), p0.getY() + dir0.getY());		
-//						}
-//	
-//						// controlepunt 1
-//						RealPoint c1 = null;
-//						// p1 is het laatste punt
-//						if (p11 == null)
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//							RealPoint unitSlope1 =	slp0p1.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope1.getX();
-//							RealPoint dir1 = new RealPoint(	- unitSlope1.getX() * newLength,
-//								- unitSlope1.getY() * newLength);
-//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-//						}
-//						else
-//						{	// vector p0 -> p1
-//							RealPoint slp0p1 = new RealPoint(p1.getX() - p0.getX(), p1.getY() - p0.getY());	
-//							// vector p1 -> p11	
-//							RealPoint slp1p11 = new RealPoint(p11.getX() - p1.getX(), p11.getY() - p1.getY());	
-//	//eerst middelen, dan standariseren of omgekeerd?																
-//							RealPoint meanSlope1 = new RealPoint((slp0p1.getX() + slp1p11.getX()) / 2,
-//								(slp0p1.getY() + slp1p11.getY()) / 2);
-//							RealPoint unitSlope1 =	meanSlope1.standarize();	
-//							double xLength = (p1.getX() - p0.getX()) / intervalFrac;
-//							double newLength = xLength / unitSlope1.getX();
-//							RealPoint dir1 = new RealPoint(- unitSlope1.getX() * newLength,
-//								- unitSlope1.getY() * newLength);
-//							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
-//						}
-//				
-//						if(index == gtip.getActiveIndex())
-//							g2D.setStroke(new BasicStroke(0.7f));
-//						CubicCurve2D bezier = new CubicCurve2D.Double();
-//						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
-//									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
-//						g2D.draw(bezier);	
-//					} // else niet vertikaal
-//					p00 = p0;
-//					p0 = p1;
-//				} 
-//			}
 		}
+		
 	}
+	
 	public double[] berekenGewichten(Vector points)
 	{	double[] weights = new double[points.size()];
 		for(int i = 0; i < points.size(); i++)
