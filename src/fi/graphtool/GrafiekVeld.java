@@ -1302,8 +1302,8 @@ class GrafiekVeld extends JComponent{
 							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
 						}
 				
-						if(index == gtip.getActiveIndex())
-							g2D.setStroke(new BasicStroke(0.7f));
+//						if(index == gtip.getActiveIndex())
+//							g2D.setStroke(new BasicStroke(0.7f));
 						
 						CubicCurve2D bezier = new CubicCurve2D.Double();
 						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
@@ -1583,8 +1583,8 @@ class GrafiekVeld extends JComponent{
 							c1 = new RealPoint(p1.getX() + dir1.getX(), p1.getY() + dir1.getY());		
 						}
 				
-						if(index == gtip.getActiveIndex())
-							g2D.setStroke(new BasicStroke(0.7f));
+//						if(index == gtip.getActiveIndex())
+//							g2D.setStroke(new BasicStroke(0.7f));
 						CubicCurve2D bezier = new CubicCurve2D.Double();
 						bezier.setCurve(p0.getX(), p0.getY(), c0.getX(), c0.getY(),
 									    c1.getX(), c1.getY(), p1.getX(), p1.getY());
