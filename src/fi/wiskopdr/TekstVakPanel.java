@@ -2167,7 +2167,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{
 			((InteractiePanelContainerIF) v.elementAt(i)).kijkNa();
 		}
-
 	}
 
 	public void kijkNaKlaarKnop()
