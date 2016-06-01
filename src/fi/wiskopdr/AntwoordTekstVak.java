@@ -62,6 +62,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	static int HALF = 2;
 	static int GEEN = 3;
 	
+	private boolean changed = false;
+
 	private JTextField antwoordTF;
 
 	private String antwoordString;
@@ -763,9 +765,12 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	public void kijkNa()
 	{
 		kijkNa(true);
-		if(correct)cbookEventHandler.fire("action.correct");
-    	if(fout)cbookEventHandler.fire("action.false");
-    	if(fout && errorCount>0)cbookEventHandler.fire("action.false_2");
+		if (correct)
+			cbookEventHandler.fire("action.correct");
+    	if (fout)
+    		cbookEventHandler.fire("action.false");
+    	if (fout && errorCount > 1)
+    		cbookEventHandler.fire("action.false_2");
 	}
 
 	public void kijkNa(boolean show)
@@ -806,6 +811,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 				score = puntenFeedback;
 				correct = false;
 				fout = true;
+				verhoogErrorCount();
 			}
 		}
 		else
@@ -825,6 +831,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 				correct = false;
 				fout = true;
 				score = 0;
+				verhoogErrorCount();
 			}
 		}
 
@@ -837,6 +844,13 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		kijkNa();
 	}
 
+	public void verhoogErrorCount()
+	{
+		if(changed)
+			errorCount++;
+		changed = false;
+	}
+	
 	public void setFeedback(String tekst, boolean closeable)
 	{
 		feedbackTekst.setText("");
@@ -1027,9 +1041,10 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		{
 			if (mode == 0 || mode == 1)
 			{
+				changed = true;
 				kijkNa();
-				if (fout)
-					errorCount++;
+//				if (fout) // errorcount wordt gezet in kijkNa(); daar wil je cbookEventHandler.fire("action.false") e.d. obv errorcount afvuren
+//					errorCount++;
 				attemptsCount++;
 				setAttempt();
 				zetNagekeken(true);
@@ -1056,6 +1071,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 				produceAction("feedbackWeg");
 			}
 			zetGoedFout(GEEN);
+			changed = true;
 		}
 		else if (e.getSource() == feedbackButton)
 		{
