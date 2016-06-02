@@ -9,7 +9,7 @@ public class Thermometer extends ScComponent
 
 	public Thermometer(int x, int y, int b, int h) 
 	{
-		super(x, y, b, h);
+		super(x, y, b+25, h);
 		// setBackground(Color.white);
 		temp = 0;
 	}
@@ -22,35 +22,38 @@ public class Thermometer extends ScComponent
 		FontMetrics fm = g.getFontMetrics();
 		g.setFont(f);
 
+//g.setColor(Color.green);
+//g.drawRect(0,0,getSize().width-1,getSize().height-1);
+		
 		g.setColor(Color.red);
-		g.fillOval((int) (schaal * 20), (int) (schaal * 280), (int) (schaal * 19), (int) (schaal * 19));
+		g.fillOval((int) (schaal * 25), (int) (schaal * 280), (int) (schaal * 19), (int) (schaal * 19));
 		g.setColor(Color.black);
 		g.setColor(Color.white);
-		g.fillOval((int) (schaal * 25), 0, (int) (schaal * 9), (int) (schaal * 9));
+		g.fillOval((int) (schaal * 30), 0, (int) (schaal * 9), (int) (schaal * 9));
 
 		g.setColor(Color.black);
-		g.drawOval((int) (schaal * 20), (int) (schaal * 280), (int) (schaal * 19), (int) (schaal * 19));
-		g.drawOval((int) (schaal * 25), 0, (int) (schaal * 9), (int) (schaal * 9));
+		g.drawOval((int) (schaal * 25), (int) (schaal * 280), (int) (schaal * 19), (int) (schaal * 19));
+		g.drawOval((int) (schaal * 30), 0, (int) (schaal * 9), (int) (schaal * 9));
 
 		g.setColor(Color.white);
-		g.fillRect((int) (schaal * 25), (int) (schaal * 5), (int) (schaal * 10), (int) (schaal * 275));
+		g.fillRect((int) (schaal * 30), (int) (schaal * 5), (int) (schaal * 10), (int) (schaal * 275));
 
 		int h = 190 + 5 * temp;
 
 		g.setColor(Color.red);
-		g.fillRect((int) (schaal * 26), (int) (schaal * (300 - h)), (int) (schaal * 9), (int) (schaal * (h - 15)));
+		g.fillRect((int) (schaal * 31), (int) (schaal * (300 - h)), (int) (schaal * 9), (int) (schaal * (h - 15)));
 
 		g.setColor(Color.black);
-		g.drawLine((int) (schaal * 25), (int) (schaal * 5), (int) (schaal * 25), (int) (schaal * 280));
-		g.drawLine((int) (schaal * 34), (int) (schaal * 5), (int) (schaal * 34), (int) (schaal * 280));
+		g.drawLine((int) (schaal * 30), (int) (schaal * 5), (int) (schaal * 30), (int) (schaal * 280));
+		g.drawLine((int) (schaal * 39), (int) (schaal * 5), (int) (schaal * 39), (int) (schaal * 280));
 
 		g.setColor(Color.black);
 		for (int i = -20; i < 21; i++) 
 		{
 			if (i % 5 == 0)
-				g.drawLine((int) (schaal * 22), (int) (schaal * (110 + 5 * i)), (int) (schaal * 34), (int) (schaal * (110 + 5 * i)));
+				g.drawLine((int) (schaal * 27), (int) (schaal * (110 + 5 * i)), (int) (schaal * 39), (int) (schaal * (110 + 5 * i)));
 			else
-				g.drawLine((int) (schaal * 25), (int) (schaal * (110 + 5 * i)), (int) (schaal * 34), (int) (schaal * (110 + 5 * i)));
+				g.drawLine((int) (schaal * 30), (int) (schaal * (110 + 5 * i)), (int) (schaal * 39), (int) (schaal * (110 + 5 * i)));
 
 		}
 
@@ -60,7 +63,7 @@ public class Thermometer extends ScComponent
 			int sw = fm.stringWidth(s);
 			int sh = fm.getHeight();
 			g.drawString(Integer.toString(i) + "\u00B0", //"�", 
-					(int) (schaal * (19 - sw)), (int) (schaal * (110 - 5 * i + sh / 2)));
+					(int) (schaal * (24 - sw)), (int) (schaal * (110 - 5 * i + sh / 2)));
 		}
 
 		// g.drawString(Integer.toString(temp)+"�",0,getSize().height);
