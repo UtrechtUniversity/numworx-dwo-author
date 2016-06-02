@@ -34,7 +34,7 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener {
 		titelLabel = new ScLabel(10, 20, 290, 40, "Emmers met blokjes");
 		// add(titelLabel);
 
-		uitleg = new ScTekstContainer(5, 10, 400, 20, 9, Heks.rb.getString("TafereelPanelEmmerUitleg"));
+		uitleg = new ScTekstContainer(-35, 10, 400, 20, 14, Heks.rb.getString("TafereelPanelEmmerUitleg"));
 
 		// "Met een emmer kun je meer blokjes /tegelijk in de ketel doen of
 		// eruit halen./ /
@@ -45,7 +45,7 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener {
 		// blokjes in. Haal een aantal emmers uit de ketel en kijk wat er
 		// gebeurt.
 
-		uitleg.lijnUit(ScLabel.LINKS);
+		//uitleg.lijnUit(ScLabel.LINKS);
 		add(uitleg);
 
 		oefenTafereelPanel = new OefenTafereelPanelEmmer(300, 0, b - 300, h - 5, applet);
