@@ -80,22 +80,22 @@ public class OefenTafereelPanelEmmer extends ScPanel implements MouseListener, M
 		eruitpijl.setVisible(false);
 		sleeppanel.add(eruitpijl);
 
-		za = new ZinkAnimatieEmmer(110, 240, 210, 200, applet);
+		za = new ZinkAnimatieEmmer(110, 240, 210, 200, au);
 		// za.zetBellenAan(false);
 		sleeppanel.add(za, 0);
 
 		potinhoud = new Tekening(40, 210, 350, 300, au, "inhoudnieuw.gif");
 		sleeppanel.add(potinhoud, 0);
 
-		emmerbinnen = new Emmer(120, 300, 110, 125, applet);
+		emmerbinnen = new Emmer(120, 300, 110, 125, au);
 		emmerbinnen.addActionListener(this);
 		sleeppanel.add(emmerbinnen, 0);
 
-		emmerbuiten = new Emmer(360, 15, 110, 125, applet);
+		emmerbuiten = new Emmer(360, 15, 110, 125, au);
 		emmerbuiten.addActionListener(this);
 		sleeppanel.add(emmerbuiten);
 
-		emmerSleep = new Emmer(-150, -150, 110, 125, applet);
+		emmerSleep = new Emmer(-150, -150, 110, 125, au);
 		sleeppanel.add(emmerSleep, 0);
 
 		vloer = new Tekening(0, 365, 430, 160, au, "vloer.gif");

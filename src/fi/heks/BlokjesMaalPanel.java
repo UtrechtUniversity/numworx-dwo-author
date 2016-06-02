@@ -8,7 +8,8 @@ import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
 import fi.heks.vectortek.*;
 
-public class BlokjesMaalPanel extends ScPanel implements ActionListener {
+public class BlokjesMaalPanel extends ScPanel implements ActionListener 
+{
 	AppletUtil au;
 
 	Tekening potErin, potEruit, beginPot, eindPot, pijl, schrijfheks;
@@ -30,7 +31,8 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener {
 			Heks.rb.getString("int8Label"), Heks.rb.getString("int9Label") };
 	Emmer emmer;
 
-	public BlokjesMaalPanel(int x, int y, int b, int h, Applet applet) {
+	public BlokjesMaalPanel(int x, int y, int b, int h, Applet applet) 
+	{
 		super(x, y, b, h);
 		// setBackground(new Color(255,255,220));
 		setBackground(getBackground());
@@ -85,7 +87,7 @@ public class BlokjesMaalPanel extends ScPanel implements ActionListener {
 		uitkomst.addActionListener(this);
 		tabelContainer.add(uitkomst);
 
-		emmer = new Emmer(250, 70, 60, 50, applet);
+		emmer = new Emmer(250, 70, 60, 50, au);
 		emmer.zetInstelbaar(false);
 		tabelContainer.add(emmer);
 

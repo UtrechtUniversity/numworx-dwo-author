@@ -22,6 +22,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 import fi.heks.scobjects.*;
+import fi.heks.vectortek.*;
 
 public class HeksInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
 							                               ActionListener
@@ -58,6 +59,23 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 	// opties Pagina 3 (23)
 	boolean alleenErin = false;
 	boolean alleenEruit = false;
+	
+	Tekening blokjePlus;
+	Hashtable<String,Object> blokjePlusHash;
+	Tekening blokjeMin;
+	Hashtable<String,Object> blokjeMinHash;
+	Tekening beginPot;
+	Hashtable<String,Object> beginEindPotHash;
+	Tekening potErin;
+	Hashtable<String,Object> potErinHash;
+	Tekening potEruit;
+	Hashtable<String,Object> potEruitHash;
+	Tekening vloer;
+	Hashtable<String,Object> vloerHash;
+	Tekening potinhoud;
+	Hashtable<String,Object> potinhoudHash;
+	Tekening pot;
+	Hashtable<String,Object> potHash;
 		
 	public HeksInteractiePanel()
 	{
@@ -101,6 +119,23 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 		opnieuwNLImage = opnieuwNLIcon.getImage();
 		opnieuwENImage = opnieuwENIcon.getImage();
 
+		blokjePlus = new Tekening(350, 80, 65, 65, this, "blokjePlus.gif");
+		blokjePlusHash = blokjePlus.getState();
+		blokjeMin = new Tekening(350, 150, 65, 65, this, "blokjeMin.gif");
+		blokjeMinHash = blokjeMin.getState();
+		beginPot = new Tekening(35, 85, 90, 65, this, "potzwart.gif");
+		beginEindPotHash = beginPot.getState();
+		potErin = new Tekening(30, 170, 100, 90, this, "potErin.gif");
+		potErinHash = potErin.getState();
+		potEruit = new Tekening(30, 260, 100, 90, this, "potEruit.gif");
+		potEruitHash = potEruit.getState();
+		
+		vloer = new Tekening(-10, 450, 430, 175, this, "vloer.gif");
+		vloerHash = vloer.getState();
+		potinhoud = new Tekening(20, 305, 375, 300, this, "inhoudnieuw.gif");
+		potinhoudHash = potinhoud.getState();
+		pot = new Tekening(20, 280, 380, 330, this, "potnieuw.gif");
+		potHash = pot.getState();
 		
 	}
 
@@ -292,6 +327,18 @@ System.out.println("heip getEditState");
 		h.put("paginanummer", new Integer(paginaNummer));
 		h.put("alleenerin", new Boolean(alleenErin));
 		h.put("alleeneruit", new Boolean(alleenEruit));
+		
+		h.put("blokjeplushash", blokjePlusHash);
+//if(blokjePlusHash != null)
+//System.out.println("blokjePlusHash != null");	
+		h.put("blokjeminhash", blokjeMinHash);
+		h.put("begineindpothash", beginEindPotHash);
+		h.put("poterinhash", potErinHash);
+		h.put("poteruithash", potEruitHash);
+		
+		h.put("vloerhash", vloerHash);
+		h.put("potinhoudhash", potinhoudHash);
+		h.put("pothash", potHash);
 		
 		return h;
 	}

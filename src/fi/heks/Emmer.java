@@ -37,7 +37,7 @@ public class Emmer extends ScContainer implements ActionListener// ,
 		add(etiket, 0);
 
 		emmertekening = new Tekening(0, 0, b, h, owner, "emmer.gif");
-//System.out.println("emmertek " + emmertekening.aantalTekenObj);		
+System.out.println("emmertek " + emmertekening.aantalTekenObj);		
 		zetBegin();
 		add(emmertekening);
 
@@ -85,6 +85,8 @@ public class Emmer extends ScContainer implements ActionListener// ,
 		{
 			for (int i = 6; i < 10; i++) 
 			{
+if (emmertekening == null)
+System.out.println("emmertek = null");	
 				emmertekening.to[i].zetVulkleur(null);
 				emmertekening.to[i].zetLijnkleur(null);
 			}

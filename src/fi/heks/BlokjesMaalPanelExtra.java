@@ -92,7 +92,7 @@ public class BlokjesMaalPanelExtra extends ScPanel implements ActionListener {
 		uitkomst.addActionListener(this);
 		tabelContainer.add(uitkomst);
 
-		emmer = new Emmer(250, 70, 60, 50, applet);
+		emmer = new Emmer(250, 70, 60, 50, au);
 		emmer.zetInstelbaar(false);
 		tabelContainer.add(emmer);
 

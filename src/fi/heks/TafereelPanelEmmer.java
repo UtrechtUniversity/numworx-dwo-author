@@ -52,7 +52,7 @@ public class TafereelPanelEmmer extends ScPanel implements ActionListener {
 		oefenTafereelPanel.addActionListener(this);
 		add(oefenTafereelPanel, 0);
 
-		emmer = new Emmer(150, 250, 110, 125, applet);
+		emmer = new Emmer(150, 250, 110, 125, au);
 		emmer.zetInstelbaar(false);
 		add(emmer);
 		emmer.setVisible(false);
