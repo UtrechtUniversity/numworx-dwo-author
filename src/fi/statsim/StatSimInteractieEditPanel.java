@@ -18,7 +18,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JPanel optionsPanel;
 	
 	private int defaultWidth = 790;
-	private int defaultHeight = 450;
+	private int defaultHeight = 500;
 	private int defaultIpWidth = 500;
 	private int defaultOpWidth = 200;
 
@@ -42,6 +42,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox binomTrekkingRoosterCheckBox;
 	private JCheckBox steekproefLinkerTabelCheckBox;
 	private JCheckBox steekproefRechterTabelCheckBox;
+	private JCheckBox steekproefInstellingenCheckBox;
+	private JCheckBox scheveVerdelingCheckBox;
 	private JRadioButton kansButton;
 	private JRadioButton populatieProportieButton;
 	
@@ -206,6 +208,20 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		steekproefRechterTabelCheckBox.setSelected(true);
 		optionsPanel.add(steekproefRechterTabelCheckBox);
 		
+		steekproefInstellingenCheckBox = new JCheckBox(StatSim.rb.getString("steekproefInstellingenZichtbaar"));
+		steekproefInstellingenCheckBox.setLocation(30,450);
+		steekproefInstellingenCheckBox.setSize(200,20);
+		steekproefInstellingenCheckBox.addActionListener(this);
+		steekproefInstellingenCheckBox.setSelected(true);
+		optionsPanel.add(steekproefInstellingenCheckBox);
+		
+		scheveVerdelingCheckBox = new JCheckBox(StatSim.rb.getString("scheveVerdeling"));
+		scheveVerdelingCheckBox.setLocation(30,470);
+		scheveVerdelingCheckBox.setSize(200,20);
+		scheveVerdelingCheckBox.addActionListener(this);
+		scheveVerdelingCheckBox.setSelected(false);
+		optionsPanel.add(scheveVerdelingCheckBox);
+		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
 		buttonGroup1.add(dobbelstenenRadio);
@@ -241,6 +257,9 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("steekproefRadio", new Boolean(steekproefRadio.isSelected()));
 		h.put("steekproefLinkerTabel", new Boolean(steekproefLinkerTabelCheckBox.isSelected()));
 		h.put("steekproefRechterTabel", new Boolean(steekproefRechterTabelCheckBox.isSelected()));
+		h.put("steekproefInstellingenZichtbaar", new Boolean(steekproefInstellingenCheckBox.isSelected()));
+		h.put("scheveVerdeling", new Boolean(scheveVerdelingCheckBox.isSelected()));
+
 		return h;
 	}
 	
@@ -365,6 +384,16 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			if(h.containsKey("steekproefRechterTabel")) steekproefRechterTabel = ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
 			steekproefRechterTabelCheckBox.setSelected(steekproefRechterTabel);
 			interactiePanel.steekproef.showRechterTabel=steekproefRechterTabel;
+			
+			Boolean steekproefInstellingenZichtbaar=true;
+			if(h.containsKey("steekproefInstellingenZichtbaar")) steekproefInstellingenZichtbaar = ((Boolean)h.get("steekproefInstellingenZichtbaar")).booleanValue();
+			steekproefInstellingenCheckBox.setSelected(steekproefInstellingenZichtbaar);
+			interactiePanel.steekproef.showInstellingen = steekproefInstellingenZichtbaar;
+			
+			Boolean scheveVerdeling=true;
+			if(h.containsKey("scheveVerdeling")) scheveVerdeling = ((Boolean)h.get("scheveVerdeling")).booleanValue();
+			scheveVerdelingCheckBox.setSelected(scheveVerdeling);
+			interactiePanel.steekproef.scheveVerdeling = scheveVerdeling;
 		
 			interactiePanel.binomTrekking.setZichtbaar();		
 
@@ -502,6 +531,14 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		   }
 		   if (e.getSource()==steekproefRechterTabelCheckBox) {
 			   interactiePanel.steekproef.showRechterTabel=steekproefRechterTabelCheckBox.isSelected();
+			   interactiePanel.steekproef.setZichtbaar();
+		   }
+		   if (e.getSource()==steekproefInstellingenCheckBox) {
+			   interactiePanel.steekproef.showInstellingen=steekproefInstellingenCheckBox.isSelected();
+			   interactiePanel.steekproef.setZichtbaar();
+		   }
+		   if (e.getSource()==scheveVerdelingCheckBox) {
+			   interactiePanel.steekproef.scheveVerdeling=scheveVerdelingCheckBox.isSelected();
 			   interactiePanel.steekproef.setZichtbaar();
 		   }
 	}

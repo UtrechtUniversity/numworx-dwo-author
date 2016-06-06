@@ -538,6 +538,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 
 		if(h.containsKey("steekproefLinkerTabel")) steekproef.showLinkerTabel= ((Boolean)h.get("steekproefLinkerTabel")).booleanValue();
 		if(h.containsKey("steekproefRechterTabel")) steekproef.showRechterTabel= ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
+		if(h.containsKey("steekproefInstellingenZichtbaar")) steekproef.showInstellingen= ((Boolean)h.get("steekproefInstellingenZichtbaar")).booleanValue();
+		if(h.containsKey("scheveVerdeling")) steekproef.scheveVerdeling= ((Boolean)h.get("scheveVerdeling")).booleanValue();
+		
 		steekproef.setZichtbaar();
 		
 		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
@@ -605,6 +608,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		
 		if(h.containsKey("steekproefLinkerTabel")) steekproef.showLinkerTabel= ((Boolean)h.get("steekproefLinkerTabel")).booleanValue();
 		if(h.containsKey("steekproefRechterTabel")) steekproef.showRechterTabel= ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
+		if(h.containsKey("steekproefInstellingenZichtbaar")) steekproef.showInstellingen= ((Boolean)h.get("steekproefInstellingenZichtbaar")).booleanValue();
+		if(h.containsKey("scheveVerdeling")) steekproef.scheveVerdeling= ((Boolean)h.get("scheveVerdeling")).booleanValue();
+		
 		steekproef.setZichtbaar();
 		
 		Boolean eenMuntTweeMunt=true;

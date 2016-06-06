@@ -35,7 +35,9 @@ import fi.beans.wiskopdrbeans.CBookAware;
 
 public class Steekproef extends JPanel implements ActionListener, FocusListener, Runnable {
 	
-	JPanel panel1;
+	JPanel panel1, panel2;
+	JPanel panelImage;
+	JPanel panelImageLognorm;
 	Border border1;
 	JLabel muLabel;
 	JTextField muText;
@@ -66,104 +68,133 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	
 	boolean showLinkerTabel=true;
 	boolean showRechterTabel=true;
+	boolean showInstellingen=true;
+	boolean scheveVerdeling = false;
 	
 	public Steekproef (StatSimInteractiePanel ssip) {
 		setLayout(null);
 		this.setBackground(Color.white);
 		this.ssip=ssip;
 		
+		panel1 = new JPanel();
+		panel1.setLayout(null);
+		panel1.setSize(420,130);
+		panel1.setOpaque(false);
+		
+		panel2 = new JPanel();
+		panel2.setLayout(null);
+		panel2.setBounds(0,130, 420,275);
+		panel2.setOpaque(false);
+		
 
         URL imageURL = StatSimInteractiePanel.class.getResource("resources/gaussian.gif");
+        URL imageURLLognorm = StatSimInteractiePanel.class.getResource("resources/scheveVerdeling.png");
         ImageIcon image = new ImageIcon(imageURL);
+        ImageIcon imageLognorm = new ImageIcon(imageURLLognorm);
+        
 		JLabel labelImage = new JLabel("", image, JLabel.CENTER);
-		JPanel panelImage = new JPanel(new BorderLayout());
+		JLabel labelImageLognorm = new JLabel("", imageLognorm, JLabel.CENTER);
+		
+		panelImage = new JPanel(new BorderLayout());
 		panelImage.add( labelImage, BorderLayout.CENTER );
 		
-		this.add(panelImage);
+		panelImageLognorm = new JPanel(new BorderLayout());
+		panelImageLognorm.setOpaque(false);
+		panelImageLognorm.setVisible(false);
+		panelImageLognorm.add( labelImageLognorm, BorderLayout.CENTER );				
+		
 		panelImage.setLocation(85,0);
 		panelImage.setSize(297,104);
 		
+		panelImageLognorm.setLocation(45,0);
+		panelImageLognorm.setSize(307,144);
+		
+		panel1.add(panelImage);	
+		panel1.add(panelImageLognorm);	
 		
 		muLabel=new JLabel("\u03BC =");
 		muLabel.setSize(100,20);
 		muLabel.setLocation(5,30);
 		muLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(muLabel);
+		panel1.add(muLabel);
 		
 		muText=new JTextField("0");
 		muText.setSize(50,20);
 		muText.setLocation(35,30);
 		muText.addActionListener(this);
 		muText.addFocusListener(this);
-		this.add(muText);
+		panel1.add(muText);
 		
 		sigmaLabel=new JLabel("\u03C3 =");
 		sigmaLabel.setSize(100,20);
 		sigmaLabel.setLocation(5,60);
 		sigmaLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(sigmaLabel);
+		panel1.add(sigmaLabel);
 				
 		sigmaText=new JTextField("1");
 		sigmaText.setSize(50,20);
 		sigmaText.setLocation(35,60);
 		sigmaText.addActionListener(this);
 		sigmaText.addFocusListener(this);
-		this.add(sigmaText);
+		panel1.add(sigmaText);
 
 
 		muLabel1=new JLabel("0");
 		muLabel1.setSize(100,20);
 		muLabel1.setLocation(238,105);
 		muLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(muLabel1);
+		panel1.add(muLabel1);
 		
 		sigmaLabel1=new JLabel("-2");
 		sigmaLabel1.setSize(100,20);
 		sigmaLabel1.setLocation(129,105);
 		sigmaLabel1.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(sigmaLabel1);
+		panel1.add(sigmaLabel1);
 		
 		sigmaLabel2=new JLabel("2");
 		sigmaLabel2.setSize(100,20);
 		sigmaLabel2.setLocation(338,105);
 		sigmaLabel2.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(sigmaLabel2);
+		panel1.add(sigmaLabel2);
+		
+		this.add(panel1);
 		
 		steekproefGrootteLabel=new JLabel(StatSim.rb.getString("sampleSize"));
 		steekproefGrootteLabel.setSize(110,20);
-		steekproefGrootteLabel.setLocation(0,140);
+		steekproefGrootteLabel.setLocation(0,10);
 		steekproefGrootteLabel.setFont(new Font("SansSerif", Font.PLAIN, 12) );
-		this.add(steekproefGrootteLabel);
+		panel2.add(steekproefGrootteLabel);
 		
 		steekproefGrootteText=new JTextField("10");
 		steekproefGrootteText.setSize(50,20);
-		steekproefGrootteText.setLocation(110,140);
+		steekproefGrootteText.setLocation(110,10);
 		steekproefGrootteText.addActionListener(this);
 		steekproefGrootteText.addFocusListener(this);
-		this.add(steekproefGrootteText);
+		panel2.add(steekproefGrootteText);
 		
 		doeSteekproef=new JButton(StatSim.rb.getString("getSample"));
 		doeSteekproef.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    doeSteekproef.setSize(100,20);
-	    doeSteekproef.setLocation(170,140);
+	    doeSteekproef.setLocation(170,10);
 	    doeSteekproef.addActionListener(this);
-	    this.add(doeSteekproef);
+	    panel2.add(doeSteekproef);
 
 		doeSteekproef100Keer=new JButton(StatSim.rb.getString("getSample100Times"));
 		doeSteekproef100Keer.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 	    doeSteekproef100Keer.setSize(130,20);
-	    doeSteekproef100Keer.setLocation(280,140);
+	    doeSteekproef100Keer.setLocation(280,10);
 	    doeSteekproef100Keer.addActionListener(this);
-	    this.add(doeSteekproef100Keer);
+	    panel2.add(doeSteekproef100Keer);
 	    
 		wisResultaten=new JButton(StatSim.rb.getString("erase"));
 		wisResultaten.setFont(new Font("SansSerif", Font.PLAIN, 12) );
 		wisResultaten.setSize(160,20);
-		wisResultaten.setLocation(0,this.getHeight()-30);
+		wisResultaten.setLocation(0,panel2.getHeight()-30);
 		wisResultaten.addActionListener(this);
 		wisResultaten.setEnabled(false);
-	    this.add(wisResultaten);
+		panel2.add(wisResultaten);
 	    
+		this.add(panel2);
 	    
 	    //col[0]=StatSim.rb.getString("exp");
 	    col[1]=StatSim.rb.getString("value");
@@ -185,8 +216,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	    //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	    pane = new JScrollPane(table);
 	   
-	    add(pane);
-	    pane.setLocation(0,170);
+	    panel2.add(pane);
+	    pane.setLocation(0,40);
 	    pane.setSize(200,235);
 	    
 	    model1 = new DefaultTableModel(col1,1000); 
@@ -206,8 +237,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	    //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	    pane1 = new JScrollPane(table1);
 	   
-	    add(pane1);
-	    pane1.setLocation(210,170);
+	    panel2.add(pane1);
+	    pane1.setLocation(210,40);
 	    pane1.setSize(200,235);
 	    
 	    steekproefResultaat = new double[1000];
@@ -221,7 +252,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			wisResultaten.setLocation(0,this.getHeight()-30);
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
-				pane1.setLocation(210,170);
+				pane1.setLocation(210,40);
 			} else {
 				pane1.setVisible(false);
 			}
@@ -229,13 +260,43 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			pane.setVisible(false);
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
-				pane1.setLocation(0,170);
+				pane1.setLocation(0,40);
 				wisResultaten.setLocation(0,this.getHeight()-30);
 			} else {
-				wisResultaten.setLocation(0,170);
+				wisResultaten.setLocation(0,40);
 				pane1.setVisible(false);
 			}
-		}		
+		}	
+		
+		panel1.setVisible(showInstellingen);
+		panel2.setLocation(0, showInstellingen ? 130 : 0);
+		
+		if(scheveVerdeling)
+		{
+			panelImage.setVisible(false);
+			panelImageLognorm.setVisible(true);
+			muLabel.setVisible(false);
+			muText.setVisible(false);
+			sigmaLabel.setVisible(false);
+			sigmaText.setVisible(false);
+			muLabel1.setVisible(false);
+			sigmaLabel1.setVisible(false);
+			sigmaLabel2.setVisible(false);
+		}
+		else
+		{
+			panelImageLognorm.setVisible(false);
+			panelImage.setVisible(true);
+			muLabel.setVisible(true);
+			muText.setVisible(true);
+			sigmaLabel.setVisible(true);
+			sigmaText.setVisible(true);
+			muLabel1.setVisible(true);
+			sigmaLabel1.setVisible(true);
+			sigmaLabel2.setVisible(true);
+		}
+		panel1.repaint();
+		
 		updateGraph();
 	}
 	
@@ -245,7 +306,9 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		table.setSize(200,this.getHeight()-210);
 		pane1.setSize(200,this.getHeight()-210);
 		table1.setSize(200,this.getHeight()-210);
-		
+		panel1.setSize(width,130);
+		panel2.setSize(width,getHeight()-130);
+				
 		setZichtbaar();
 	}
 	
@@ -288,6 +351,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			
 			for (int i=0;i<steekproefGrootte;i++) {
 				double r = generator.nextGaussian();
+				if(scheveVerdeling)
+					r=Math.pow(1.7,r);
 				r=r*Double.parseDouble(sigmaText.getText())+Double.parseDouble(muText.getText());
 				
 				steekproefResultaat[i]=r;

@@ -62,6 +62,8 @@ public class Text_en extends java.util.ListResourceBundle
             {   "value", "Value" },
             {   "leftTable", "Left table" },
             {   "rightTable", "Right table" },
+            {   "steekproefInstellingenZichtbaar", "Settings visible"},
+            {   "scheveVerdeling", "Example skewed distribution"},
             {   "populationProportion", "Population proportion" },
         //    {   "sampleSize", "Sample size" }
         //	{	"button1Label" , "text1_en" },
