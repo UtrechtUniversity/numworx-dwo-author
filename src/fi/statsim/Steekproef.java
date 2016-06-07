@@ -249,7 +249,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 	public void setZichtbaar() {
 		if (showLinkerTabel==true) {
 			pane.setVisible(true);
-			wisResultaten.setLocation(0,this.getHeight()-30);
+			wisResultaten.setLocation(0,panel2.getHeight()-30);
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
 				pane1.setLocation(210,40);
@@ -261,7 +261,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 			if (showRechterTabel==true) {
 				pane1.setVisible(true);
 				pane1.setLocation(0,40);
-				wisResultaten.setLocation(0,this.getHeight()-30);
+				wisResultaten.setLocation(0,panel2.getHeight()-30);
 			} else {
 				wisResultaten.setLocation(0,40);
 				pane1.setVisible(false);
@@ -308,7 +308,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		table1.setSize(200,this.getHeight()-210);
 		panel1.setSize(width,130);
 		panel2.setSize(width,getHeight()-130);
-				
+		wisResultaten.setLocation(0,panel2.getHeight()-30);	
 		setZichtbaar();
 	}
 	
