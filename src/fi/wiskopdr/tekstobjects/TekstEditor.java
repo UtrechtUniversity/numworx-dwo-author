@@ -1007,7 +1007,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if( ! last.equals( current))
 		{
 			attempts.add(
-				current + "  ;  " + new Date()
+				current + "  ;    ;    ;  " + new Date()
 			);
 		}}
 	}

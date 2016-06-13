@@ -559,13 +559,13 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 		String s = antwoord;
 		s = s + "   ;   ";
-		s = s + new Date().toString();
-		s = s + "   ;   ";
-		s = s + "Regelnummer = " + 0;
-		s = s + "   ;   ";
 		s = s + goedFout;
 		s = s + "   ;   ";
 		s = s + "score = " + score;
+		s = s + "   ;   ";
+		s = s + new Date().toString();
+		s = s + "   ;   ";
+		s = s + "Regelnummer = " + 0;
 		s = s + "   ;   ";
 		s = s + fbTekst;
 

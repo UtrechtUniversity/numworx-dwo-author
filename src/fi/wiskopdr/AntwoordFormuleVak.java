@@ -1404,15 +1404,15 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		
 		String s = formule;
 		s = s + "   ;   ";
-		s = s + new Date().toString();
-		s = s + "   ;   ";
-		if(start) s = s + "Regelnummer = " + 0;
-		else s = s + "Regelnummer = " + stapNr;
-		s = s + "   ;   ";
 		if(start) s = s + "start";
 		else s = s + goedFout;
 		s = s + "   ;   ";
 		s = s + "score = " + score;
+		s = s + "   ;   ";
+		s = s + new Date().toString();
+		s = s + "   ;   ";
+		if(start) s = s + "Regelnummer = " + 0;
+		else s = s + "Regelnummer = " + stapNr;
 		s = s + "   ;   ";
 		s = s + fbTekst;
 		

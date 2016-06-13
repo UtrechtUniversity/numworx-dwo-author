@@ -581,13 +581,6 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		fbTekst = fbTekst.replace('\n', ' ');
 		String s = formule;
 		s = s + "   ;   ";
-		s = s + new Date().toString();
-		s = s + "   ;   ";
-		if (start)
-			s = s + "Regelnummer = " + 0;
-		else
-			s = s + "Regelnummer = " + stapNr;
-		s = s + "   ;   ";
 		if (start)
 			s = s + "start";
 		else
@@ -595,7 +588,14 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		s = s + "   ;   ";
 		s = s + "score = " + score;
 		s = s + "   ;   ";
-
+		s = s + new Date().toString();
+		s = s + "   ;   ";
+		if (start)
+			s = s + "Regelnummer = " + 0;
+		else
+			s = s + "Regelnummer = " + stapNr;
+		s = s + "   ;   ";
+		
 		s = s + fbTekst;
 
 		log.addElement(s);
