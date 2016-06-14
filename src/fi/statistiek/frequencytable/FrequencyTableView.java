@@ -742,10 +742,23 @@ public class FrequencyTableView extends JPanel implements Observer
 			if (type.isNumber())
 			{
 				freq = frequencies[bin * 2];
-				JLabel label = new JLabel(
-					Statistiek.getStringValue(this.model.getBinBoundaries().get(bin))
-					+ " -< "
-					+ Statistiek.getStringValue(this.model.getBinBoundaries().get(bin + 1)));
+				
+				
+				String text;
+				if (type.equals(AllowedTypes.INTEGER)
+					&& (this.model.getBinBoundaries().get(1) - this.model.getBinBoundaries().get(0)) == 1)
+				{
+					// bin width is 1
+					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin)); // getStringValue will give an integer value without decimals
+				}
+				else
+				{
+					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin))
+						+ " -< "
+						+ Statistiek.getStringValue(this.model.getBinBoundaries().get(bin + 1));
+				}
+				JLabel label = new JLabel(text);
+
 				label.setFont(Statistiek.font);
 				label.setBorder(BorderFactory.createCompoundBorder(matteBorder, paddingBorder));
 				c.gridx = 0;
@@ -1064,7 +1077,7 @@ public class FrequencyTableView extends JPanel implements Observer
 			}
 
 			int bins = FrequencyTableView.this.model.getStatTableModel()
-				.splitVarClasses(FrequencyTableView.this.model.getColumnIndex(),
+				.numberOfBins(FrequencyTableView.this.model.getColumnIndex(),
 					FrequencyTableView.this.model.getBinBoundaries());
 			int row = rowNumber % bins;
 			int splitClass = rowNumber / bins;
