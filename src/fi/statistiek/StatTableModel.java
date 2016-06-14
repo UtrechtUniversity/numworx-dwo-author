@@ -358,7 +358,7 @@ public class StatTableModel implements TableModel
 		{
 			return 1;
 		}
-		return this.splitVarClasses(splitOptions.getColumnSplitIndex(),
+		return this.numberOfBins(splitOptions.getColumnSplitIndex(),
 			splitOptions.getBinBoundaries());
 	}
 
@@ -367,7 +367,7 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @return the amount of classes in which the split variable splits the data
 	 */
-	public int splitVarClasses(int columnIndex, ArrayList<Double> binBoundaries)
+	public int numberOfBins(int columnIndex, ArrayList<Double> binBoundaries)
 	{
 		if (!this.isColumnIndexValid(columnIndex))
 		{
