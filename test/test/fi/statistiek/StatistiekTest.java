@@ -490,16 +490,19 @@ public class StatistiekTest
 //	}
 
 	@Test
-	public void testAppropriateBoundariesFromBinSettingsMinBoundaryTooLarge()
+	public void testAppropriateBoundariesFromBinSettingsMinBoundaryLargerThanMin()
 	{
 		double min = 0;
 		double max = 10;
 		double binWidth = 1;
 		double minBoundary = 1;
 		
-		ArrayList<Double> expected = null;
+		ArrayList<Double> expected = new ArrayList(Arrays.asList(
+			1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0));
 		ArrayList<Double> actual = Statistiek.appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
-		assertEquals(expected, actual);
+		assertEquals("Expected " + expected.toArray()
+			+ ", actual " + actual.toArray(), expected, actual);
+
 	}
 	
 	@Test
