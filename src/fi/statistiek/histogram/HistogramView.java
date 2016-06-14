@@ -3859,13 +3859,11 @@ public class HistogramView extends JPanel implements Observer
 			}
 
 			int bins = HistogramView.this.model.getStatTableModel()
-				.splitVarClasses(HistogramView.this.model.getColumnIndex(),
+				.numberOfBins(HistogramView.this.model.getColumnIndex(),
 					HistogramView.this.model.getBinBoundaries());
 			int bin = bar % bins;
 			int splitClass = bar / bins;
 
-//			System.out.println("HistogramView.BarClickListener.barClicked(): bin " + bin + " clicked");
-//			System.out.println("HistogramView.BarClickListener.barClicked(): splitClass " + splitClass + " clicked");
 			ColumnType cType = HistogramView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(HistogramView.this.model.getColumnIndex());
