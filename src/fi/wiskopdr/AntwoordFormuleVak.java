@@ -1707,6 +1707,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		kijkNa(stapNr, true);
 		if(correct)cbookEventHandler.fire("action.correct");
 		if(fout)cbookEventHandler.fire("action.false");
+		if(fout && getErrorCount()>1)cbookEventHandler.fire("action.false_2");
+		
 	}
 	public void kijkNa(int stapNr, boolean show)
 	{	if(stapNr==-2)
@@ -2986,7 +2988,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	@Override
 	public String[] getSendCmds() {
 		String[] commands = {"action.correct",
-				"action.false"};
+				"action.false",
+				"action.false_2"};
 		return commands;
 	}
 

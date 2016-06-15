@@ -2088,6 +2088,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		kijkNa(stapNr, true);
 		if(correct)cbookEventHandler.fire("action.correct");
 		if(fout)cbookEventHandler.fire("action.false");
+		if(fout && getErrorCount()>1)cbookEventHandler.fire("action.false_2");
 	}
 
 	public void kijkNa(int stapNr, boolean show)
@@ -3950,7 +3951,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				"double.solution",
 				"equation",
 				"action.correct",
-				"action.false"};
+				"action.false",
+				"action.false_2"};
 		return commands;
 	}
 
