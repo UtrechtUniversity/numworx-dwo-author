@@ -10,9 +10,13 @@ public class PlusMinKnop extends JPanel implements MouseListener
 	private Polygon pijlPlus, pijlMin;
 	private boolean ingedrukt = false;
 	private boolean plus;
+	private boolean enabled;
+	private Color buttonColorEnabled = new Color(60,60,60);
+	private Color buttonColorDisabled = new Color(150,150,150);
 	private LoopDraad loopDraad;
 	public static int VERTIKAAL = 0;
 	public static int HORIZONTAAL = 1;
+	
 	
 	
 	public PlusMinKnop(int x, int y, int b, int h,int soort)
@@ -53,6 +57,13 @@ public class PlusMinKnop extends JPanel implements MouseListener
 		}
 		
 	}
+	
+	public void setEnabled(boolean b)
+	{
+		enabled = b;
+		
+		
+	}
 	public void paintComponent(Graphics g)
 	{	/*g.setColor(new Color(212,208,200));
 		g.fillRect(0,0,getSize().height,getSize().height);
@@ -68,7 +79,8 @@ public class PlusMinKnop extends JPanel implements MouseListener
 		g.drawLine(getSize().width - getSize().height,getSize().height-1,getSize().width - 1,getSize().height-1);
 		g.drawLine(getSize().width - getSize().height,getSize().height-2,getSize().width - 1,getSize().height-2);
 		*/
-		g.setColor(new Color(60,60,60));
+		Color buttonColor = enabled ? buttonColorEnabled : buttonColorDisabled;
+		g.setColor(buttonColor);
 		g.fillPolygon(pijlPlus);
 		g.drawPolygon(pijlPlus);
 		g.fillPolygon(pijlMin);
@@ -76,7 +88,9 @@ public class PlusMinKnop extends JPanel implements MouseListener
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	ingedrukt = true;
+	{	if(!enabled)
+			return;
+		ingedrukt = true;
 		if(pijlPlus.contains(e.getX(),e.getY()))
 		{	plus = true;
 			produceAction("plus");

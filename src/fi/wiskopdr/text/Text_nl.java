@@ -467,6 +467,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_logIDLabelLabel" , "label"},
                 {"TVEP_puntenaftrek", "Puntenaftrek"},
                 {"TVEP_visible", "Zichtbaar"},
+                {"TVEP_styles", "Stijlen"},
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},

@@ -71,7 +71,9 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class TekstVakPanel extends RoundedPanel implements TabletOwner, InteractiePanel, ActionListener, MouseListener, MouseMotionListener, CBookAware
 {
-
+	public static Map<String,Map> styles;
+	
+	
 	/**
 	 * @param manager
 	 */
