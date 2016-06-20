@@ -71,7 +71,7 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class TekstVakPanel extends RoundedPanel implements TabletOwner, InteractiePanel, ActionListener, MouseListener, MouseMotionListener, CBookAware
 {
-	public static Map<String,Map> styles;
+	public static Map<String,Map> styles = new Hashtable<String,Map>();
 	
 	
 	/**
@@ -92,6 +92,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private TekstVak tekstVak;
 	private Font font = WiskOpdr.tekstFont;//new Font("SansSerif",Font.PLAIN,12);
 
+	private String styleString = null;
 	private boolean randZichtbaar = false;
 	private boolean bgColorZichtbaar = false;
 	private Color bgColor = new Color(255, 255, 180);
@@ -621,6 +622,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{
+		String styleString = null;
 		String tekst = "";
 		String[][] teksten = null;
 		double[] breedtes = null;
@@ -692,6 +694,61 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 
+		Hashtable style = null;
+		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
+		if(styleString!=null)
+			if(TekstVakPanel.styles.containsKey(styleString)) 
+				style = (Hashtable)TekstVakPanel.styles.get(styleString);
+			
+		if(style!=null)	
+		{	if(style.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)style.get("randZichtbaar")).booleanValue();
+			if(style.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)style.get("bgColorZichtbaar")).booleanValue();
+				if(bgColorZichtbaar) bgColor = new Color(255,255,180);
+			if(style.containsKey("bgColor")) bgColor = (Color)style.get("bgColor");
+			if(style.containsKey("fgColor")) fgColor = (Color)style.get("fgColor");
+			if(style.containsKey("randColor")) randColor = (Color)style.get("randColor");
+			if(style.containsKey("tableBorders")) tableBorders = ((Boolean)style.get("tableBorders")).booleanValue();
+			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
+			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
+		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
+				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+			if(style.containsKey("font")) font = (Font)style.get("font");
+			if(style.containsKey("hoek")) hoek = ((Integer)style.get("hoek")).intValue();
+			if(style.containsKey("centerH")) centerH = ((Boolean)style.get("centerH")).booleanValue();
+			if(style.containsKey("centerV")) centerV = ((Boolean)style.get("centerV")).booleanValue();
+			if(style.containsKey("pasAanH")) pasAanH = ((Boolean)style.get("pasAanH")).booleanValue();
+			if(style.containsKey("pasAanB")) pasAanB = ((Boolean)style.get("pasAanB")).booleanValue();
+			if(style.containsKey("interlinie")) interlinie = ((Integer)style.get("interlinie")).intValue();
+			if(style.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)style.get("cellSpaceColumn")).intValue();
+			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
+			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
+		}
+		else
+		{
+			if(h.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)h.get("randZichtbaar")).booleanValue();
+			if(h.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)h.get("bgColorZichtbaar")).booleanValue();
+				if(bgColorZichtbaar) bgColor = new Color(255,255,180);
+			if(h.containsKey("bgColor")) bgColor = (Color)h.get("bgColor");
+			if(h.containsKey("fgColor")) fgColor = (Color)h.get("fgColor");
+			if(h.containsKey("randColor")) randColor = (Color)h.get("randColor");
+			if(h.containsKey("tableBorders")) tableBorders = ((Boolean)h.get("tableBorders")).booleanValue();
+			if(h.containsKey("cellMarge")) cellMarge = ((Integer)h.get("cellMarge")).intValue();
+			if(h.containsKey("bovenMarge")) bovenMarge = ((Integer)h.get("bovenMarge")).intValue();
+	        if(h.containsKey("ronding")) ronding = ((Integer)h.get("ronding")).intValue();
+				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+			if(h.containsKey("font")) font = (Font)h.get("font");
+			if(h.containsKey("hoek")) hoek = ((Integer)h.get("hoek")).intValue();
+			if(h.containsKey("centerH")) centerH = ((Boolean)h.get("centerH")).booleanValue();
+			if(h.containsKey("centerV")) centerV = ((Boolean)h.get("centerV")).booleanValue();
+			if(h.containsKey("pasAanH")) pasAanH = ((Boolean)h.get("pasAanH")).booleanValue();
+			if(h.containsKey("pasAanB")) pasAanB = ((Boolean)h.get("pasAanB")).booleanValue();
+			if(h.containsKey("interlinie")) interlinie = ((Integer)h.get("interlinie")).intValue();
+			if(h.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)h.get("cellSpaceColumn")).intValue();
+			if(h.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)h.get("cellSpaceRow")).intValue();
+			if(h.containsKey("randDikte")) randDikte = ((Integer)h.get("randDikte")).intValue();
+		}
+		
+		
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
 		if (h.containsKey("teksten"))
@@ -700,12 +757,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			breedtes = (double[]) h.get("breedtes");
 		if (h.containsKey("hoogtes"))
 			hoogtes = (double[]) h.get("hoogtes");
-		if (h.containsKey("randZichtbaar"))
-			randZichtbaar = ((Boolean) h.get("randZichtbaar")).booleanValue();
-		if (h.containsKey("bgColorZichtbaar"))
-			bgColorZichtbaar = ((Boolean) h.get("bgColorZichtbaar")).booleanValue();
-		if (h.containsKey("anderFont"))
-			anderFont = ((Boolean) h.get("anderFont")).booleanValue();
 		if (h.containsKey("zwevend"))
 			zwevend = ((Boolean) h.get("zwevend")).booleanValue();
 		if (h.containsKey("locationX"))
@@ -714,36 +765,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			locationY = ((Integer) h.get("locationY")).intValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
-		if (h.containsKey("tableBorders"))
-			tableBorders = ((Boolean) h.get("tableBorders")).booleanValue();
-		if (h.containsKey("cellMarge"))
-			cellMarge = ((Integer) h.get("cellMarge")).intValue();
-		if (h.containsKey("bovenMarge"))
-			bovenMarge = ((Integer) h.get("bovenMarge")).intValue();
-		if (h.containsKey("ronding"))
-			ronding = ((Integer) h.get("ronding")).intValue();
-		if (anderFont)
-			font = new Font("SansSerif", Font.BOLD, 14);
-		if (h.containsKey("font"))
-			font = (Font) h.get("font");
-		if (bgColorZichtbaar)
-			bgColor = new Color(255, 255, 180);
-		if (h.containsKey("bgColor"))
-			bgColor = (Color) h.get("bgColor");
-		if (h.containsKey("fgColor"))
-			fgColor = (Color) h.get("fgColor");
-		if (h.containsKey("randColor"))
-			randColor = (Color) h.get("randColor");
-		if (h.containsKey("hoek"))
-			hoek = ((Integer) h.get("hoek")).intValue();
-		if (h.containsKey("centerH"))
-			centerH = ((Boolean) h.get("centerH")).booleanValue();
-		if (h.containsKey("centerV"))
-			centerV = ((Boolean) h.get("centerV")).booleanValue();
-		if (h.containsKey("pasAanH"))
-			pasAanH = ((Boolean) h.get("pasAanH")).booleanValue();
-		if (h.containsKey("pasAanB"))
-			pasAanB = ((Boolean) h.get("pasAanB")).booleanValue();
 		if (h.containsKey("selectable"))
 			selectable = ((Boolean) h.get("selectable")).booleanValue();
 		if (h.containsKey("colorSelection"))
@@ -1571,6 +1592,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public Hashtable getEditState()
 	{
+		String styleString = null;
 		//String tekst = "";
 		String[][] teksten = null;
 		double[] breedtes = null;
@@ -1647,6 +1669,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 
+		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
 		bgColorZichtbaar = this.bgColorZichtbaar;
 		zwevend = this.zwevend;
@@ -1749,33 +1772,42 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		breedtes = this.breedtes;
 		hoogtes = this.hoogtes;
 
+		if(styleString!=null)
+			h.put("styleString", styleString);
+		
+		{
+			h.put("randZichtbaar", new Boolean(randZichtbaar));
+			h.put("bgColorZichtbaar", new Boolean(bgColorZichtbaar));
+			if(bgColor!=null)h.put("bgColor", bgColor);
+			h.put("fgColor", fgColor);
+			h.put("randColor", randColor);
+			h.put("anderFont", new Boolean(anderFont));
+			h.put("font", font);
+			h.put("tableBorders", new Boolean(tableBorders));
+			h.put("cellMarge",new Integer(cellMarge));
+			h.put("bovenMarge",new Integer(bovenMarge));
+			h.put("ronding",new Integer(ronding));
+			h.put("hoek",new Integer(hoek));
+			h.put("centerH", new Boolean(centerH));
+			h.put("centerV", new Boolean(centerV));
+			h.put("pasAanH", new Boolean(pasAanH));
+			h.put("pasAanB", new Boolean(pasAanB));
+			h.put("interlinie",new Integer(interlinie));
+			h.put("cellSpaceColumn",new Integer(cellSpaceColumn));
+			h.put("cellSpaceRow",new Integer(cellSpaceRow));
+			h.put("randDikte",new Integer(randDikte));
+		}
+		
 		h.put("teksten", teksten);
 		h.put("breedtes", breedtes);
 		h.put("hoogtes", hoogtes);
-		h.put("randZichtbaar", new Boolean(randZichtbaar));
-		h.put("bgColorZichtbaar", new Boolean(bgColorZichtbaar));
 		h.put("zwevend", new Boolean(zwevend));
 		h.put("locationX", new Integer(locationX));
 		h.put("locationY", new Integer(locationY));
-		h.put("anderFont", new Boolean(anderFont));
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
 		h.put("scoreMax", new Integer(scoreMax));
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
-		h.put("tableBorders", new Boolean(tableBorders));
-		h.put("cellMarge", new Integer(cellMarge));
-		h.put("bovenMarge", new Integer(bovenMarge));
-		h.put("ronding", new Integer(ronding));
-		h.put("font", font);
-		if (bgColor != null)
-			h.put("bgColor", bgColor);
-		h.put("fgColor", fgColor);
-		h.put("randColor", randColor);
-		h.put("hoek", new Integer(hoek));
-		h.put("centerH", new Boolean(centerH));
-		h.put("centerV", new Boolean(centerV));
-		h.put("pasAanH", new Boolean(pasAanH));
-		h.put("pasAanB", new Boolean(pasAanB));
 		h.put("selectable", new Boolean(selectable));
 		h.put("colorSelection", new Boolean(colorSelection));
 		h.put("sleepbaar", new Boolean(sleepbaar));
@@ -2317,6 +2349,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void setEditState(Hashtable h)
 	{
+		String styleString = null;
+		
 		String tekst = "";
 		String[][] teksten = null;
 		double[] breedtes = null;
@@ -2392,6 +2426,60 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 
+		Hashtable style = null;
+		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
+		if(styleString!=null)
+			if(TekstVakPanel.styles.containsKey(styleString)) 
+				style = (Hashtable)TekstVakPanel.styles.get(styleString);
+			
+		if(style!=null)	
+		{	if(style.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)style.get("randZichtbaar")).booleanValue();
+			if(style.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)style.get("bgColorZichtbaar")).booleanValue();
+				if(bgColorZichtbaar) bgColor = new Color(255,255,180);
+			if(style.containsKey("bgColor")) bgColor = (Color)style.get("bgColor");
+			if(style.containsKey("fgColor")) fgColor = (Color)style.get("fgColor");
+			if(style.containsKey("randColor")) randColor = (Color)style.get("randColor");
+			if(style.containsKey("tableBorders")) tableBorders = ((Boolean)style.get("tableBorders")).booleanValue();
+			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
+			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
+		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
+				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+			if(style.containsKey("font")) font = (Font)style.get("font");
+			if(style.containsKey("hoek")) hoek = ((Integer)style.get("hoek")).intValue();
+			if(style.containsKey("centerH")) centerH = ((Boolean)style.get("centerH")).booleanValue();
+			if(style.containsKey("centerV")) centerV = ((Boolean)style.get("centerV")).booleanValue();
+			if(style.containsKey("pasAanH")) pasAanH = ((Boolean)style.get("pasAanH")).booleanValue();
+			if(style.containsKey("pasAanB")) pasAanB = ((Boolean)style.get("pasAanB")).booleanValue();
+			if(style.containsKey("interlinie")) interlinie = ((Integer)style.get("interlinie")).intValue();
+			if(style.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)style.get("cellSpaceColumn")).intValue();
+			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
+			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
+		}
+		else
+		{
+			if(h.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)h.get("randZichtbaar")).booleanValue();
+			if(h.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)h.get("bgColorZichtbaar")).booleanValue();
+				if(bgColorZichtbaar) bgColor = new Color(255,255,180);
+			if(h.containsKey("bgColor")) bgColor = (Color)h.get("bgColor");
+			if(h.containsKey("fgColor")) fgColor = (Color)h.get("fgColor");
+			if(h.containsKey("randColor")) randColor = (Color)h.get("randColor");
+			if(h.containsKey("tableBorders")) tableBorders = ((Boolean)h.get("tableBorders")).booleanValue();
+			if(h.containsKey("cellMarge")) cellMarge = ((Integer)h.get("cellMarge")).intValue();
+			if(h.containsKey("bovenMarge")) bovenMarge = ((Integer)h.get("bovenMarge")).intValue();
+	        if(h.containsKey("ronding")) ronding = ((Integer)h.get("ronding")).intValue();
+				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+			if(h.containsKey("font")) font = (Font)h.get("font");
+			if(h.containsKey("hoek")) hoek = ((Integer)h.get("hoek")).intValue();
+			if(h.containsKey("centerH")) centerH = ((Boolean)h.get("centerH")).booleanValue();
+			if(h.containsKey("centerV")) centerV = ((Boolean)h.get("centerV")).booleanValue();
+			if(h.containsKey("pasAanH")) pasAanH = ((Boolean)h.get("pasAanH")).booleanValue();
+			if(h.containsKey("pasAanB")) pasAanB = ((Boolean)h.get("pasAanB")).booleanValue();
+			if(h.containsKey("interlinie")) interlinie = ((Integer)h.get("interlinie")).intValue();
+			if(h.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)h.get("cellSpaceColumn")).intValue();
+			if(h.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)h.get("cellSpaceRow")).intValue();
+			if(h.containsKey("randDikte")) randDikte = ((Integer)h.get("randDikte")).intValue();
+		}
+		
 		if (h.containsKey("tekst"))
 			tekst = (String) h.get("tekst");
 		if (h.containsKey("teksten"))
@@ -2400,12 +2488,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			breedtes = (double[]) h.get("breedtes");
 		if (h.containsKey("hoogtes"))
 			hoogtes = (double[]) h.get("hoogtes");
-		if (h.containsKey("randZichtbaar"))
-			randZichtbaar = ((Boolean) h.get("randZichtbaar")).booleanValue();
-		if (h.containsKey("bgColorZichtbaar"))
-			bgColorZichtbaar = ((Boolean) h.get("bgColorZichtbaar")).booleanValue();
-		if (h.containsKey("anderFont"))
-			anderFont = ((Boolean) h.get("anderFont")).booleanValue();
 		if (h.containsKey("zwevend"))
 			zwevend = ((Boolean) h.get("zwevend")).booleanValue();
 		if (h.containsKey("locationX"))
@@ -2414,36 +2496,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			locationY = ((Integer) h.get("locationY")).intValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
-		if (h.containsKey("tableBorders"))
-			tableBorders = ((Boolean) h.get("tableBorders")).booleanValue();
-		if (h.containsKey("cellMarge"))
-			cellMarge = ((Integer) h.get("cellMarge")).intValue();
-		if (h.containsKey("bovenMarge"))
-			bovenMarge = ((Integer) h.get("bovenMarge")).intValue();
-		if (h.containsKey("ronding"))
-			ronding = ((Integer) h.get("ronding")).intValue();
-		if (anderFont)
-			font = new Font("SansSerif", Font.BOLD, 14);
-		if (h.containsKey("font"))
-			font = (Font) h.get("font");
-		if (bgColorZichtbaar)
-			bgColor = new Color(255, 255, 180);
-		if (h.containsKey("bgColor"))
-			bgColor = (Color) h.get("bgColor");
-		if (h.containsKey("fgColor"))
-			fgColor = (Color) h.get("fgColor");
-		if (h.containsKey("randColor"))
-			randColor = (Color) h.get("randColor");
-		if (h.containsKey("hoek"))
-			hoek = ((Integer) h.get("hoek")).intValue();
-		if (h.containsKey("centerH"))
-			centerH = ((Boolean) h.get("centerH")).booleanValue();
-		if (h.containsKey("centerV"))
-			centerV = ((Boolean) h.get("centerV")).booleanValue();
-		if (h.containsKey("pasAanH"))
-			pasAanH = ((Boolean) h.get("pasAanH")).booleanValue();
-		if (h.containsKey("pasAanB"))
-			pasAanB = ((Boolean) h.get("pasAanB")).booleanValue();
 		if (h.containsKey("selectable"))
 			selectable = ((Boolean) h.get("selectable")).booleanValue();
 		if (h.containsKey("colorSelection"))
@@ -2458,14 +2510,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			checkExpressieString = (String) h.get("checkExpressieString");
 		if (h.containsKey("ipId"))
 			ipId = ((Integer) h.get("ipId")).intValue();
-		if (h.containsKey("interlinie"))
-			interlinie = ((Integer) h.get("interlinie")).intValue();
-		if (h.containsKey("cellSpaceColumn"))
-			cellSpaceColumn = ((Integer) h.get("cellSpaceColumn")).intValue();
-		if (h.containsKey("cellSpaceRow"))
-			cellSpaceRow = ((Integer) h.get("cellSpaceRow")).intValue();
-		if (h.containsKey("randDikte"))
-			randDikte = ((Integer) h.get("randDikte")).intValue();
 		if (h.containsKey("zichtbaarNaNakijken"))
 			zichtbaarNaNakijken = ((Boolean) h.get("zichtbaarNaNakijken")).booleanValue();
 		if (h.containsKey("balansVergCom"))
@@ -2537,7 +2581,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         if (h.containsKey("visible"))
         	visible = ((Boolean) h.get("visible")).booleanValue();
         
-       	this.randZichtbaar = randZichtbaar;
+       	this.styleString = styleString;
+        this.randZichtbaar = randZichtbaar;
 		this.bgColorZichtbaar = bgColorZichtbaar;
 		this.anderFont = anderFont;
 		if (!this.zwevend && zwevend && locationX == 0 && locationY == 0)

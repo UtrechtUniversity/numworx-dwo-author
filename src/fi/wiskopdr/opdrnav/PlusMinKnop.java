@@ -10,7 +10,7 @@ public class PlusMinKnop extends JPanel implements MouseListener
 	private Polygon pijlPlus, pijlMin;
 	private boolean ingedrukt = false;
 	private boolean plus;
-	private boolean enabled;
+	private boolean enabled = true;
 	private Color buttonColorEnabled = new Color(60,60,60);
 	private Color buttonColorDisabled = new Color(150,150,150);
 	private LoopDraad loopDraad;
