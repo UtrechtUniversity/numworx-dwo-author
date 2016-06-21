@@ -81,11 +81,12 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		panel1.setSize(420,130);
 		panel1.setOpaque(false);
 		
+		
 		panel2 = new JPanel();
 		panel2.setLayout(null);
 		panel2.setBounds(0,130, 420,275);
 		panel2.setOpaque(false);
-		
+			
 
         URL imageURL = StatSimInteractiePanel.class.getResource("resources/gaussian.gif");
         URL imageURLLognorm = StatSimInteractiePanel.class.getResource("resources/scheveVerdeling.png");
@@ -97,6 +98,8 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		
 		panelImage = new JPanel(new BorderLayout());
 		panelImage.add( labelImage, BorderLayout.CENTER );
+		panelImage.setOpaque(true);
+		panelImage.setBackground(Color.red);
 		
 		panelImageLognorm = new JPanel(new BorderLayout());
 		panelImageLognorm.setOpaque(false);
@@ -307,7 +310,7 @@ public class Steekproef extends JPanel implements ActionListener, FocusListener,
 		pane1.setSize(200,this.getHeight()-210);
 		table1.setSize(200,this.getHeight()-210);
 		panel1.setSize(width,130);
-		panel2.setSize(width,getHeight()-130);
+		panel2.setSize(width,getHeight()- (showInstellingen ? 130 : 0));
 		wisResultaten.setLocation(0,panel2.getHeight()-30);	
 		setZichtbaar();
 	}
