@@ -390,7 +390,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			steekproefInstellingenCheckBox.setSelected(steekproefInstellingenZichtbaar);
 			interactiePanel.steekproef.showInstellingen = steekproefInstellingenZichtbaar;
 			
-			Boolean scheveVerdeling=true;
+			Boolean scheveVerdeling=false;
 			if(h.containsKey("scheveVerdeling")) scheveVerdeling = ((Boolean)h.get("scheveVerdeling")).booleanValue();
 			scheveVerdelingCheckBox.setSelected(scheveVerdeling);
 			interactiePanel.steekproef.scheveVerdeling = scheveVerdeling;
