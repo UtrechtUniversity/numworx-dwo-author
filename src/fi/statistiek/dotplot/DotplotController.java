@@ -48,6 +48,19 @@ public class DotplotController implements StatistiekView, ActionListener,
 		model.initializeMaxXOnScale();
 		
 		this.view = new DotplotView(this.model, this);
+		
+		try
+		{
+			// voor standalone
+			this.model.setMinXOnScale(this.view.getMinXOnScale());
+			this.model.setMaxXOnScale(this.view.getMaxXOnScale());
+		}
+		catch (NumberFormatException e) 
+		{
+			// Bij create view vanuit zet opdracht wordt eerst een histogram-view met columnIndex 0 gemaakt
+			// dan is er nog geen minBoundary en maxBinOnScale
+		}
+
 		this.view.update(null, null);
 	}
 
@@ -70,6 +83,19 @@ public class DotplotController implements StatistiekView, ActionListener,
 		model.initializeMaxXOnScale();
 		
 		this.view = new DotplotView(this.model, this);
+		
+		try
+		{
+			// voor standalone
+			this.model.setMinXOnScale(this.view.getMinXOnScale());
+			this.model.setMaxXOnScale(this.view.getMaxXOnScale());
+		}
+		catch (NumberFormatException e) 
+		{
+			// Bij create view vanuit zet opdracht wordt eerst een histogram-view met columnIndex 0 gemaakt
+			// dan is er nog geen minBoundary en maxBinOnScale
+		}
+
 		this.view.update(null, null);
 	}
 
@@ -98,35 +124,13 @@ public class DotplotController implements StatistiekView, ActionListener,
 				this.model.setShowCorrelation(false);
 			}
 		}
-		// else if(actionCommand.equals("varSplitBox")) {
-		// this.model.setColumnSplitIndex(this.view.getVarSplitBoxSelected());
-		// }
 		else if (actionCommand.equals("showCorrelationBox"))
 		{
 			this.model.setShowCorrelation(this.view
 				.getShowCorrelationBoxSelected());
 		}
-		/*
-		 * else if(actionCommand.equals("splitButton")) { Container c =
-		 * Statistiek.getTopLevelAcestor(this.view);
-		 * 
-		 * SplitOptionsDialog dialog = null; if(c instanceof Dialog) { dialog =
-		 * new SplitOptionsDialog((Dialog)c, this.model.getSplitOptions(),
-		 * this.model.getTableModel()); } else if(c instanceof Frame) { dialog =
-		 * new SplitOptionsDialog((Frame)c, this.model.getSplitOptions(),
-		 * this.model.getTableModel()); }
-		 * 
-		 * dialog.setVisible(true); if(dialog.isDonePressed()) {
-		 * this.model.setSplitOptions(dialog.getSplitOptions()); }
-		 * 
-		 * this.view.update(null, null); }
-		 */
-		// else if(actionCommand.equals("splitBinsBox")) {
-		// this.model.setNoSplitBins(this.view.getSplitBinsBoxSelectedInt());
-		// }
 		else if (actionCommand.equals("splitVarBox"))
 		{
-			//System.out.println("DotplotController.actionPerformed(): splitVarBox!");
 			if (this.view.getSplitVarBoxSelectedIndex() - 1 != this.model
 				.getSplitOptions().getColumnSplitIndex())
 			{
@@ -151,11 +155,11 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		else if (actionCommand.equals("splitMinBoundary"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitMinBoundaryChanged();
 		}
 		else if (actionCommand.equals("splitBinWidth"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitBinWidthChanged();
 		}
 		else if (actionCommand.equals("splitSingleView"))
 		{
@@ -167,16 +171,139 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 	}
 
-	private void updateSplitBoundaries()
+	/**
+	 * Process actions when minimum value on the scale has been changed.
+	 */
+	void processMinXOnScaleChanged()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
-		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
+		if (model.getStatTableModel().isEmptyColumn(model.getColumnXIndex()))
 		{
-			boundaries.add(new Double(view.getSplitMinBoundary() + i
-				* view.getSplitBinWidth()));
+			// min > max is niet toegestaan
+			if (view.getMinXOnScale() > view.getMaxXOnScale())
+			{
+				// reset to latest value
+				view.getUserOptionsPanel().setMinXOnScale(model.getMinXOnScale());
+			}
+			else
+			{
+				model.setMinXOnScale(view.getMinXOnScale());
+			}
+		} // empty column
+		else
+		{ 
+			// data in column
+			double minColumnXValue = model.getStatTableModel().getColumnMin(model.getColumnXIndex());
+			// alleen check of data binnen grenzen als optimize scale
+			if (model.isOptimizeScaleX())
+			{
+				if (view.getMinXOnScale() > minColumnXValue)
+				{
+					// invalid input
+					
+					if (model.getMinXOnScale() > minColumnXValue)
+					{
+						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
+						model.setMinXOnScale(minColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						view.getUserOptionsPanel().setMinXOnScale(model.getMinXOnScale());
+					}
+				}
+				else
+				{
+					model.setMinXOnScale(view.getMinXOnScale());
+				}
+			}
+			else
+			{
+				model.setMinXOnScale(view.getMinXOnScale());
+			}
+		} // data in column
+	}
+	
+	/**
+	 * Process actions when maximum value on the scale has been changed.
+	 */
+	void processMaxXOnScaleChanged()
+	{
+		if (model.getStatTableModel().isEmptyColumn(model.getColumnXIndex()))
+		{
+			// max < min is niet toegestaan
+			if (view.getMaxXOnScale() < view.getMinXOnScale())
+			{
+				// reset to latest value
+				view.getUserOptionsPanel().setMaxXOnScale(model.getMaxXOnScale());
+			}
+			else
+			{
+				model.setMaxXOnScale(view.getMaxXOnScale());
+			}
+		} // empty column
+		else
+		{ // data in column
+			double maxColumnXValue = model.getStatTableModel().getColumnMax(model.getColumnXIndex());
+			
+			// alleen check of data binnen grenzen als optimize scale
+			if (model.isOptimizeScaleX())
+			{
+				if (view.getMaxXOnScale() < maxColumnXValue)
+				{
+					if (model.getMaxXOnScale() < maxColumnXValue)
+					{
+						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
+						model.setMaxXOnScale(maxColumnXValue);
+					}
+					else
+					{
+						// reset to latest value
+						view.getUserOptionsPanel().setMaxXOnScale(model.getMaxXOnScale());
+					}
+				}
+				else
+				{
+					model.setMaxXOnScale(view.getMaxXOnScale());
+				}
+			}
+			else
+			{
+				model.setMaxXOnScale(view.getMaxXOnScale());
+			}
+		} // data in column
+	}
+
+	public void processSplitMinBoundaryChanged()
+	{
+		double splitMinBoundary = view.getUserOptionsPanel().getSplitMinBoundary(); // the user entered value
+		double splitMinData = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (splitMinBoundary <= splitMinData)
+		{
+			// update split index bin settings
+			this.updateSplitBoundariesFromBinSettings();
 		}
-		this.model.setSplitBoundaries(boundaries);
-		this.view.setModel(this.model);
+		else
+		{
+			// reset to latest value
+			double resetSplitMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetSplitMin = splitMinData;
+			}
+			
+			view.getUserOptionsPanel().setSplitMinBoundary(resetSplitMin);
+		}
+	}
+
+	public void processSplitBinWidthChanged()
+	{
+		// update split index bin settings
+		this.updateSplitBoundariesFromBinSettings();
 	}
 
 	private void setSplitType(AllowedTypes type)
