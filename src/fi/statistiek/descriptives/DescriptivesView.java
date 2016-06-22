@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
@@ -967,7 +968,12 @@ public class DescriptivesView extends JPanel implements Observer
 
 	public double getSplitMinBoundary()
 	{
-		return userOptionsPanel.getSplitminBoundary();
+		return userOptionsPanel.getSplitMinBoundary();
+	}
+
+	public JTextField getSplitMinBoundaryField()
+	{
+		return this.userOptionsPanel.getSplitMinBoundaryField();
 	}
 
 	/**
@@ -984,6 +990,11 @@ public class DescriptivesView extends JPanel implements Observer
 		return userOptionsPanel.getSplitBinWidth();
 	}
 
+	public JTextField getSplitBinWidthField()
+	{
+		return this.userOptionsPanel.getSplitBinWidthField();
+	}
+
 	public void setSplitBinWidth(double d)
 	{
 		this.userOptionsPanel.setSplitBinWidth(d);
@@ -995,5 +1006,10 @@ public class DescriptivesView extends JPanel implements Observer
 	public void setSplitBinWidth()
 	{
 		this.userOptionsPanel.setSplitBinWidth();
+	}
+
+	public DescriptivesUserOptionsPanel getUserOptionsPanel()
+	{
+		return userOptionsPanel;
 	}
 }
