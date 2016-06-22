@@ -50,9 +50,6 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		String action = arg0.getActionCommand();
 		
-//		System.out.println("FrequencyTableController.actionPerformed(): action = "
-//			+ action);
-
 		if (action.equals("columnIndexBox"))
 		{
 			this.model.initNoBins(5);
@@ -62,35 +59,18 @@ public class FrequencyTableController implements StatistiekView,
 		{
 			this.model.setShowPercentage(this.view.isShowPercBoxSelected());
 		}
-//		else if (action.equals("showFreqBox"))
-//		{
-//			this.model.setShowFreq(this.view.isShowFreqBoxSelected());
-//		}
 		else if (action.equals("showCumulativeBox"))
 		{
 			this.model.setShowCumulative(this.view
 				.isShowCumulativeBoxSelected());
 		}
-//		else if (action.equals("noBinsField"))
-//		{
-//			String s = this.view.getNoBinsFieldText();
-//			try
-//			{
-//				int i = Integer.parseInt(s);
-//				this.model.setNoBins(i);
-//			}
-//			catch (NumberFormatException e)
-//			{
-//				this.view.update(null, null);
-//			}
-//		}
 		else if (action.equals("minBoundary"))
 		{
-			updateBoundariesFromBinSettings();
+			processMinBoundaryChanged();
 		}
 		else if (action.equals("binWidth"))
 		{
-			updateBoundariesFromBinSettings();
+			processBinWidthChanged();
 		}
 		else if (action.equals("splitBinsBox"))
 		{
@@ -100,24 +80,78 @@ public class FrequencyTableController implements StatistiekView,
 		}
 		else if (action.equals("splitMinBoundary"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitMinBoundaryChanged();
 		}
 		else if (action.equals("splitBinWidth"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitBinWidthChanged();
 		}
 	}
 
-	private void updateSplitBoundaries()
+	private void processMinBoundaryChanged()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
-		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
+		double minBoundary = view.getUserOptionsPanel().getMinBoundary(); // the user entered value
+		double minData = this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex());
+		
+		if (minBoundary <= minData)
 		{
-			boundaries.add(new Double(view.getSplitMinBoundary() + i
-				* view.getSplitBinWidth()));
+			// update bin settings
+			this.updateBoundariesFromBinSettings();
 		}
-		this.model.setSplitBoundaries(boundaries);
-		this.view.setModel(this.model);
+		else
+		{
+			// reset to latest value
+			double resetMin;
+			if (model.getBinBoundaries() != null && model.getBinBoundaries().size() > 0)
+			{
+				resetMin = model.getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetMin = minData;
+			}
+			
+			view.getUserOptionsPanel().setMinBoundary(resetMin);
+		}
+	}
+
+	public void processBinWidthChanged()
+	{
+		// update bin settings
+		this.updateBoundariesFromBinSettings();
+	}
+
+	public void processSplitBinWidthChanged()
+	{
+		// update split index bin settings
+		this.updateSplitBoundariesFromBinSettings();
+	}
+
+	void processSplitMinBoundaryChanged()
+	{
+		double splitMinBoundary = view.getUserOptionsPanel().getSplitMinBoundary(); // the user entered value
+		double splitMinData = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (splitMinBoundary <= splitMinData)
+		{
+			// update split index bin settings
+			this.updateSplitBoundariesFromBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetSplitMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetSplitMin = splitMinData;
+			}
+			
+			view.getUserOptionsPanel().setSplitMinBoundary(resetSplitMin);
+		}
 	}
 
 	/*
@@ -254,22 +288,22 @@ public class FrequencyTableController implements StatistiekView,
 	{
 		//System.out.println("FrequencyTableController.focusLost()");
 		
-//		if (arg0.getSource() == this.view.getNoBinsField())
-//		{
-//			System.out.println("focusLost van nobinsField");
-//			String s = this.view.getNoBinsFieldText();
-//			try
-//			{
-//				int i = Integer.parseInt(s);
-//				this.model.setNoBins(i);
-//			}
-//			catch (NumberFormatException e)
-//			{
-//				this.view.update(null, null);
-//			}
-//		}
-
-		updateBoundariesFromBinSettings();
+		if (arg0.getSource() == this.view.getMinBoundaryField())
+		{
+			processMinBoundaryChanged();
+		}
+		else if (arg0.getSource() == this.view.getBinWidthField())
+		{
+			processBinWidthChanged();
+		}
+		else if (arg0.getSource() == this.view.getSplitMinBoundaryField())
+		{
+			processSplitMinBoundaryChanged();
+		}
+		else if (arg0.getSource() == this.view.getSplitBinWidthField())
+		{
+			processSplitBinWidthChanged();
+		}
 	}
 
 	/*
