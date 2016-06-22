@@ -120,13 +120,45 @@ public class BoxplotController implements StatistiekView, ActionListener
 		}
 		else if (actionCommand.equals("splitMinBoundary"))
 		{
-			updateSplitBoundariesFromBinSettings();;
+			processSplitMinBoundaryChanged();
 		}
 		else if (actionCommand.equals("splitBinWidth"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitBinWidthChanged();
 		}
 
+	}
+
+	void processSplitMinBoundaryChanged()
+	{
+		double splitMinBoundary = view.getUserOptionsPanel().getSplitMinBoundary(); // the user entered value
+		double splitMinData = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (splitMinBoundary <= splitMinData)
+		{
+			// update split index bin settings
+			updateSplitBoundariesFromBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetSplitMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetSplitMin = splitMinData;
+			}
+			
+			view.getUserOptionsPanel().setSplitMinBoundary(resetSplitMin);
+		}
+	}
+
+	void processSplitBinWidthChanged()
+	{
+		updateSplitBoundariesFromBinSettings();
 	}
 
 	private void setSplitType(AllowedTypes type)
