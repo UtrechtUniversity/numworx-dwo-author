@@ -249,7 +249,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				BoxplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				BoxplotUserOptionsPanel.this.controller.processSplitMinBoundaryChanged();
 			}
 			
 			@Override
@@ -273,7 +273,7 @@ public class BoxplotUserOptionsPanel extends JPanel implements ActionListener
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				BoxplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				BoxplotUserOptionsPanel.this.controller.processSplitBinWidthChanged();;
 			}
 			
 			@Override
