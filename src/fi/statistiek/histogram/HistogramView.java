@@ -228,6 +228,15 @@ public class HistogramView extends JPanel implements Observer
 		this.userOptionsPanel.setMinBoundary(d);
 	}
 
+	/**
+	 * Set max boundary with value d
+	 * @param d
+	 */
+	public void setMaxBoundary(double d)
+	{
+		this.userOptionsPanel.setMaxOnScale(d);
+	}
+
 	public double getSplitMinBoundary()
 	{
 		return userOptionsPanel.getSplitMinBoundary();
@@ -338,23 +347,24 @@ public class HistogramView extends JPanel implements Observer
 	}
 
 	/**
-	 * Get the location of the dot for given dot number and height
+	 * Get the location of the point representing the upper middle of the bar
+	 * for given bar number and height.
 	 * 
-	 * @param dotHeight
-	 *            The height of the dot
-	 * @param dotNumber
-	 *            The number of the dot
-	 * @return the point where given dot would be painted
+	 * @param barHeight
+	 *            The height of the bar
+	 * @param barNumber
+	 *            The number of the bar
+	 * @return the point where given bar would be painted
 	 */
-	private Point dotLocation(int dotHeight, int dotNumber)
+	private Point barLocation(int barHeight, int barNumber)
 	{
 		if (this.model.hasVerticalBars())
 		{
-			int x1 = this.yAxisOffset + dotNumber + 1
-				+ (int) (dotNumber * this.verticalBarWidth);
-			int x2 = this.yAxisOffset + dotNumber + 1
-				+ (int) ((dotNumber + 1) * this.verticalBarWidth);
-			int y = this.barAreaHeight() - dotHeight;
+			int x1 = this.yAxisOffset + barNumber + 1
+				+ (int) (barNumber * this.verticalBarWidth);
+			int x2 = this.yAxisOffset + barNumber + 1
+				+ (int) ((barNumber + 1) * this.verticalBarWidth);
+			int y = this.barAreaHeight() - barHeight;
 			int xPoint;
 			if (this.model.isFrequencyPolygonCumulativeMode())
 			{
@@ -369,11 +379,11 @@ public class HistogramView extends JPanel implements Observer
 		}
 		else
 		{
-			int y1 = dotNumber + 1
-				+ (int) ((dotNumber + 0.5) * this.horizontalBarWidth);
-			int y2 = dotNumber + 1
-				+ (int) ((dotNumber + 1.5) * this.horizontalBarWidth);
-			int xPoint = this.yAxisOffset + dotHeight;
+			int y1 = barNumber + 1
+				+ (int) ((barNumber + 0.5) * this.horizontalBarWidth);
+			int y2 = barNumber + 1
+				+ (int) ((barNumber + 1.5) * this.horizontalBarWidth);
+			int xPoint = this.yAxisOffset + barHeight;
 			int yPoint;
 			if (this.model.isFrequencyPolygonCumulativeMode())
 			{
@@ -448,7 +458,7 @@ public class HistogramView extends JPanel implements Observer
 		if (this.model.isFrequencyPolygonMode())
 		{
 			g.setColor(c);
-			Point p = this.dotLocation(barLength, barNumber);
+			Point p = this.barLocation(barLength, barNumber);
 			int size = 4;
 			
 			if ((highlightedBar == barNumber) && (highlightInSplit == splitClass))
@@ -467,7 +477,7 @@ public class HistogramView extends JPanel implements Observer
 			g.fillOval(p.x - size, p.y - size + ySplitOffset, 2 * size,
 				2 * size);
 			
-			// Add 'dot' to barRectangles 
+			// Add bar to barRectangles 
 			this.barRectangles.add(new Rectangle(
 				p.x - size, p.y - size + ySplitOffset, 2 * size,
 				2 * size));
@@ -475,7 +485,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.isFrequencyPolygonCumulativeMode()
 				&& this.lastPolygonPoint == null)
 			{
-				this.lastPolygonPoint = this.dotLocation(0, -1);
+				this.lastPolygonPoint = this.barLocation(0, -1);
 			}
 			if (this.lastPolygonPoint != null)
 			{
@@ -863,10 +873,10 @@ public class HistogramView extends JPanel implements Observer
 		Color color)
 	{
 		g.setColor(color);
-		Point p1 = this.dotLocation(prevStackHeight, dotNumber - 1);
-		Point p2 = this.dotLocation(prevDotHeight, dotNumber - 1);
-		Point p3 = this.dotLocation(dotHeight, dotNumber);
-		Point p4 = this.dotLocation(stackHeight, dotNumber);
+		Point p1 = this.barLocation(prevStackHeight, dotNumber - 1);
+		Point p2 = this.barLocation(prevDotHeight, dotNumber - 1);
+		Point p3 = this.barLocation(dotHeight, dotNumber);
+		Point p4 = this.barLocation(stackHeight, dotNumber);
 		int[] xPoints =
 			{ p1.x, p2.x, p3.x, p4.x };
 		int[] yPoints =
@@ -2065,6 +2075,7 @@ public class HistogramView extends JPanel implements Observer
 
 	/**
 	 * Get the bin boundaries based on the settings in the user options panel.
+	 * If scale is not optimized, the settings may result in bins that exclude some of the data.
 	 * 
 	 * @return
 	 */
@@ -2077,8 +2088,9 @@ public class HistogramView extends JPanel implements Observer
 		if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnIndex()))
 		{
 			// use the settings without check for valid values
-			double minOnScale = model.getMinOnScale();
+			double minOnScale = this.getMinBoundary();//model.getMinOnScale(); // voor lege kolom is minOnScale mogelijk op 0 gezet
 			double binValue = minOnScale;
+			
 			if ((minOnScale == maxOnScale) || (binWidth == 0))
 			{
 				bins.add(minOnScale);
@@ -2086,12 +2098,18 @@ public class HistogramView extends JPanel implements Observer
 			}
 			else
 			{
-				for (int i = 0; binValue < maxOnScale; i++) // TODO vergelijk doubles met marge
+				for (int i = 0; binValue < maxOnScale; i++)
 				{
 					binValue = minOnScale + i * binWidth;
-					binValue = Statistiek.round(binValue, 8);//Statistiek.parseDouble(Statistiek.df8.format(binValue)); // beetje omslachtig via string...
+					binValue = Statistiek.round(binValue, 8);
 					bins.add(binValue);
 				}
+			}
+			
+			if (bins.isEmpty())
+			{
+				bins.add(0.0);
+				bins.add(0.0);
 			}
 		}
 		else
@@ -2099,20 +2117,8 @@ public class HistogramView extends JPanel implements Observer
 			// use the settings, check for valid values
 			double binValue;
 			double startValue = model.getMinOnScale();
-			double min = this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex());
-			double max = this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex());
-			
-			if (startValue > min)
-			{
-				startValue = min;
-			}
 			binValue = startValue;
-			
-			if (maxOnScale <= max)
-			{
-				maxOnScale = max + binWidth; // bins do not include the upper boundary, so max + binWidth
-			}
-			
+
 			if ((startValue == maxOnScale) || (binWidth == 0))
 			{
 				bins.add(startValue);
@@ -2236,10 +2242,7 @@ public class HistogramView extends JPanel implements Observer
 					}
 					else
 					{
-						if (!type.equals(AllowedTypes.INTEGER) || ((int) model.getBinWidth()) != 1)
-							// draw last marker
-							// test syl: kan dit weg? Markers worden altijd al getekend...?
-							g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
+						g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 					}
 				}
 				else
@@ -3126,7 +3129,9 @@ public class HistogramView extends JPanel implements Observer
 		}
 		
 		if (this.model.columnSplitIndexValid() && this.model.getSplitOptions().getBinBoundaries() != null)
+		{
 			this.recalculateSplitBinBoundaries(this.model.getSplitOptions().getColumnSplitIndex());
+		}
 		
 		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
@@ -3214,9 +3219,9 @@ public class HistogramView extends JPanel implements Observer
     				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
     					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
     					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()), 
-    					this.getBinWidth(), this.getMinBoundary()); // met invoervelden
+    					this.getBinWidth(), this.getMinBoundary()); // met invoervelden // hier is min 160!
     				
-    				if (binBoundaries == null) // ongeldige waarden in invoervelden
+    				if ((binBoundaries == null) || binBoundaries.size() == 0) // ongeldige waarden in invoervelden
     				{
         				binBoundaries = Statistiek.appropriateBoundaries(
     						this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
@@ -3242,15 +3247,18 @@ public class HistogramView extends JPanel implements Observer
     					this.model.setBinBoundariesWithoutEvent(binBoundaries);
     					this.model.setNoBinsWithoutEvent(binBoundaries.size() - 1);
     					
-    					// update minOnScale and maxOnScale if necessary
-    					if (this.model.getMinOnScale() > binBoundaries.get(0))
+    					// if optimize scale update minOnScale and maxOnScale if necessary
+    					if (this.model.isOptimizeScale())
     					{
-    						this.model.setMinOnScale(binBoundaries.get(0));
-    					}
-    					int last = binBoundaries.size() - 1;
-    					if (this.model.getMaxOnScale() <= binBoundaries.get(last))
-    					{
-    						this.model.setMaxOnScale(binBoundaries.get(last));
+	    					if (this.model.getMinOnScale() > binBoundaries.get(0))
+	    					{
+	    						this.model.setMinOnScale(binBoundaries.get(0));
+	    					}
+	    					int last = binBoundaries.size() - 1;
+	    					if (this.model.getMaxOnScale() <= binBoundaries.get(last))
+	    					{
+	    						this.model.setMaxOnScale(binBoundaries.get(last));
+	    					}
     					}
     				}
 				} // type is number
@@ -3365,9 +3373,19 @@ public class HistogramView extends JPanel implements Observer
 			{
 				if (type.isNumber())
 				{
-					int[][] frequencies = HistogramView.this.model
-						.numberClassFrequency();
-					HistogramView.this.paintNumberClass(g2D, frequencies, 0);
+					int[][] frequencies;
+					if (model.isOptimizeScale())
+					{
+						frequencies = HistogramView.this.model.numberClassFrequency();
+					}
+					else
+					{
+						frequencies = HistogramView.this.model.numberClassFrequencyFromScaleSettings();
+					}
+					if (frequencies != null)
+					{
+						HistogramView.this.paintNumberClass(g2D, frequencies, 0);
+					}
 				}
 				else
 				{
@@ -3375,7 +3393,7 @@ public class HistogramView extends JPanel implements Observer
 						.enumClassFrequency();
 					HistogramView.this.paintEnumClass(g2D, frequencies, 0);
 				}
-			}
+			} // (split in) single view
 			else
 			{
 				// call the right paint method
@@ -3393,8 +3411,17 @@ public class HistogramView extends JPanel implements Observer
 				}
 				else
 				{
-					int[][] frequencies = HistogramView.this.model
-						.numberClassFrequency();
+					int[][] frequencies;
+					
+					if (model.isOptimizeScale())
+					{
+						frequencies = HistogramView.this.model.numberClassFrequency();
+					}
+					else
+					{
+						frequencies = HistogramView.this.model.numberClassFrequencyFromScaleSettings();
+					}
+
 					for (int splitClass = 0; splitClass < numberOfSplitClasses; splitClass++)
 					{
 						HistogramView.this.lastPolygonPoint = null;
@@ -3443,8 +3470,16 @@ public class HistogramView extends JPanel implements Observer
 			Point p = me.getPoint();
 			FrequencyTuple[][] frequencies_enum = HistogramView.this.model
 				.enumClassFrequency();
-			int[][] frequencies_number = HistogramView.this.model
-				.numberClassFrequency();
+			int[][] frequencies_number;
+			if (model.isOptimizeScale())
+			{
+				frequencies_number = HistogramView.this.model.numberClassFrequency();
+			}
+			else
+			{
+				frequencies_number = HistogramView.this.model.numberClassFrequencyFromScaleSettings();
+			}
+
 			boolean isPercentage = HistogramView.this.model.getPercentage();
 			int[] aantalPerSplit = null;
 			int[] aantalPerBin = null;
@@ -3463,7 +3498,16 @@ public class HistogramView extends JPanel implements Observer
 				.numberOfSplitVarClasses(HistogramView.this.model.getSplitOptions());
 
 			if (frequencies_number != null)
-				noBins = HistogramView.this.model.getNoBins();
+			{
+				if (model.isOptimizeScale())
+				{
+					noBins = HistogramView.this.model.getNoBins();
+				}
+				else
+				{
+					noBins = getNumberOfBinsfromBinsSettings();
+				}
+			}
 			else if (frequencies_enum != null)
 				noBins = frequencies_enum[0].length;
 
@@ -3858,11 +3902,19 @@ public class HistogramView extends JPanel implements Observer
 				return;
 			}
 
-			int bins = HistogramView.this.model.getStatTableModel()
-				.numberOfBins(HistogramView.this.model.getColumnIndex(),
-					HistogramView.this.model.getBinBoundaries());
-			int bin = bar % bins;
-			int splitClass = bar / bins;
+			int noBins;
+			
+			if (model.isOptimizeScale())
+			{
+				noBins = HistogramView.this.model.getNoBins();
+			}
+			else
+			{
+				noBins = getNumberOfBinsfromBinsSettings();
+			}
+			
+			int bin = bar % noBins;
+			int splitClass = bar / noBins;
 
 			ColumnType cType = HistogramView.this.model.getStatTableModel()
 				.getColumnTypes()
