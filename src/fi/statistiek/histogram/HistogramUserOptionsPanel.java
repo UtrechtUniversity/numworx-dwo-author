@@ -468,7 +468,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				HistogramUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				HistogramUserOptionsPanel.this.controller.processSplitMinBoundaryChanged();
 			}
 			
 			@Override
@@ -492,7 +492,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				HistogramUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				HistogramUserOptionsPanel.this.controller.processSplitBinWidthChanged();
 			}
 			
 			@Override
@@ -1224,12 +1224,21 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 			if (type.equals(AllowedTypes.DOUBLE)
 				|| type.equals(AllowedTypes.INTEGER))
 			{
-				if(this.view.getBinsOnScale().size()>0) // Deze check toegevoegd ivm vastloper
+				if (this.view.getBinsOnScale().size() > 0) // Deze check toegevoegd ivm vastloper
 				{	
-					this.minBoundaryField.setText(
-						Statistiek.getStringValue(this.view.getBinsOnScale().get(0)));
+					String min;
+					if (this.model.isOptimizeScale())
+					{
+						min = Statistiek.getStringValue(this.view.getBinsOnScale().get(0));
+					}
+					else
+					{
+						min = Statistiek.getStringValue(this.model.getMinOnScale());
+					}				
+
+					this.minBoundaryField.setText(min);
 					int last = this.view.getBinsOnScale().size() - 1;
-					this.maxOnScaleField.setText(Statistiek.getStringValue(this.view.getBinsOnScale().get(last)));
+					this.maxOnScaleField.setText(Statistiek.getStringValue(this.model.getMaxOnScale()));
 				}
 				// set the bin width based on the bin boundaries
 				String binWidth;
