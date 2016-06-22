@@ -210,9 +210,16 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public double getMaxBinBoundaryValue()
 	{
+		Double max = null;
+		
 		int lastBinNumber = this.getNoBins();
 
-		return this.getBinBoundaries().get(lastBinNumber);
+		if (this.getBinBoundaries() != null)
+		{
+			max = this.getBinBoundaries().get(lastBinNumber); 
+		}
+		
+		return max;
 	}
 
 	public boolean isFrequencyPolygonMode()
@@ -265,11 +272,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setMinOnScale(double min)
 	{
-		double minColumnValue = this.getStatTableModel().getColumnMin(
-			this.getColumnIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
-			|| ((min <= minColumnValue) && (min != this.minOnScale)))
+		if (min != this.minOnScale)
 		{
 			this.minOnScale = min;
 			this.changed();
@@ -284,11 +287,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setMinOnScaleWithoutEvent(double min)
 	{
-		double minColumnValue = this.getStatTableModel().getColumnMin(
-			this.getColumnIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
-			|| ((min <= minColumnValue) && (min != this.minOnScale)))
+		if (min != this.minOnScale)
 		{
 			this.minOnScale = min;
 		}
@@ -303,10 +302,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setMaxOnScale(double max)
 	{
-		double maxBinValue = this.getMaxBinBoundaryValue();
-
-		if ((this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
-			|| (max >= maxBinValue)) && (max != this.maxOnScale)) // TODO doubles vergelijken met marge
+		if (max != this.maxOnScale)
 		{
 			if (getBinWidth() == 0)
 			{
@@ -337,10 +333,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public void setMaxOnScaleWithoutEvent(double max)
 	{
-		double maxBinValue = this.getMaxBinBoundaryValue();
-
-		if ((this.getStatTableModel().isEmptyColumn(this.getColumnIndex())
-			|| (max >= maxBinValue)) && (max != this.maxOnScale))
+		if (max != this.maxOnScale)
 		{
 			double newMax = this.minOnScale;
 			
@@ -895,7 +888,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 * 
 	 * @return
 	 */
-	private double getMinBinBoundaryValue()
+	double getMinBinBoundaryValue()
 	{
 		double value = 0;
 		
@@ -1016,4 +1009,30 @@ public class HistogramModel extends Observable implements TableModelListener,
 			this.labelUnderBin = false;
 		}
 	}
+	
+	/**
+	 * Find the frequency of every bin based on min and max on scale, and the amount of selected objects in
+	 * this bin. Only use for columns of type integer or double. This method is used
+	 * when the scale is not optimized and the bins may not include all data.
+	 * 
+	 * @return array of frequencies, with index 2*i the frequency of bin i, and
+	 *         2*i + 1 the amount of selected items in this bin.
+	 */
+	public int[][] numberClassFrequencyFromScaleSettings()
+	{
+		ArrayList<Double> bins;
+		
+		if (this.statTableModel.isEmptyColumn(columnIndex))
+		{
+			bins = Statistiek.getBinBoundariesFromScaleSettings(this.getMinOnScale(), this.getMaxOnScale(), getBinWidth());
+		}
+		else
+		{
+			bins = Statistiek.getBinBoundariesFromScaleSettings(this.binBoundaries, this.getMinOnScale(), this.getMaxOnScale());
+		}
+		
+		// gaat dit goed?
+		return this.statTableModel.numberClassFrequency(bins, this.columnIndex, this.splitOptions);
+	}
+
 }
