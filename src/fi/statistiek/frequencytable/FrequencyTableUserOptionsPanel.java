@@ -284,7 +284,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				FrequencyTableUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				FrequencyTableUserOptionsPanel.this.controller.processSplitMinBoundaryChanged();
 			}
 			
 			@Override
@@ -308,7 +308,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				FrequencyTableUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				FrequencyTableUserOptionsPanel.this.controller.processSplitBinWidthChanged();
 			}
 			
 			@Override
@@ -1040,6 +1040,26 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 	public int getSplitBinsBoxSelectedInt()
 	{
 		return ((Integer) this.splitBinsBox.getSelectedItem()).intValue();
+	}
+
+	public JTextField getMinBoundaryField()
+	{
+		return minBoundaryField;
+	}
+
+	public JTextField getBinWidthField()
+	{
+		return binWidthField;
+	}
+
+	public JTextField getSplitMinBoundaryField()
+	{
+		return splitMinBoundaryField;
+	}
+
+	public JTextField getSplitBinWidthField()
+	{
+		return splitBinWidthField;
 	}
 
 }
