@@ -424,4 +424,9 @@ public class BoxplotView extends JPanel implements Observer
 			userOptionsPanel.update();			
 		}
 	}
+
+	public BoxplotUserOptionsPanel getUserOptionsPanel()
+	{
+		return userOptionsPanel;
+	}
 }
