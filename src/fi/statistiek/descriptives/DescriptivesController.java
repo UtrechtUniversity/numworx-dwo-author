@@ -135,25 +135,58 @@ public class DescriptivesController implements StatistiekView,
 		}
 		else if (action.equals("splitMinBoundary"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitMinBoundaryChanged();
 		}
 		else if (action.equals("splitBinWidth"))
 		{
-			updateSplitBoundariesFromBinSettings();
+			processSplitBinWidthChanged();
 		}
 	}
 
-	private void updateSplitBoundaries()
+	public void processSplitMinBoundaryChanged()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
-		for (int i = 0; i <= this.view.getSplitVarBoxSelectedIndex(); i++)
+		double splitMinBoundary = view.getUserOptionsPanel().getSplitMinBoundary(); // the user entered value
+		double splitMinData = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (splitMinBoundary <= splitMinData)
 		{
-			boundaries.add(new Double(view.getSplitMinBoundary() + i
-				* view.getSplitBinWidth()));
+			// update split index bin settings
+			this.updateSplitBoundariesFromBinSettings();
 		}
-		this.model.setSplitBoundaries(boundaries);
-		this.view.setModel(this.model);
+		else
+		{
+			// reset to latest value
+			double resetSplitMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetSplitMin = splitMinData;
+			}
+			
+			view.getUserOptionsPanel().setSplitMinBoundary(resetSplitMin);
+		}
 	}
+
+	public void processSplitBinWidthChanged()
+	{
+		// update split index bin settings
+		this.updateSplitBoundariesFromBinSettings();
+	}
+
+//	private void updateSplitBoundaries()
+//	{
+//		ArrayList<Double> boundaries = new ArrayList<Double>();
+//		for (int i = 0; i <= this.view.getSplitVarBoxSelectedIndex(); i++)
+//		{
+//			boundaries.add(new Double(view.getSplitMinBoundary() + i
+//				* view.getSplitBinWidth()));
+//		}
+//		this.model.setSplitBoundaries(boundaries);
+//		this.view.setModel(this.model);
+//	}
 
 	/*
 	 * Update the split bin boundaries using the settings for the minimum boundary
@@ -282,9 +315,13 @@ public class DescriptivesController implements StatistiekView,
 
 	public void focusLost(FocusEvent e)
 	{
-//		System.out.println("DescriptivesController.focusLost(): e.getSource()="
-//			+ e.getSource());
-
-		updateSplitBoundariesFromBinSettings();
+		if (e.getSource() == this.view.getSplitMinBoundaryField())
+		{
+			processSplitMinBoundaryChanged();
+		}
+		else if (e.getSource() == this.view.getSplitBinWidthField())
+		{
+			processSplitBinWidthChanged();
+		}
 	}
 }
