@@ -1383,4 +1383,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			CrossTabulationTableView.this.mainPanel.revalidate();
 		}
 	}
+
+	public CrossTabulationTableUserOptionsPanel getUserOptionsPanel()
+	{
+		return userOptionsPanel;
+	}
 }
