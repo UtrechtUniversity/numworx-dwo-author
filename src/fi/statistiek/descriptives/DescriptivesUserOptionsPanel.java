@@ -587,7 +587,7 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 		}
 	}
 
-	public double getSplitminBoundary()
+	public double getSplitMinBoundary()
 	{
 		String s = this.splitMinBoundaryField.getText();
 		s = s.replace(',', '.');
@@ -683,4 +683,15 @@ public class DescriptivesUserOptionsPanel extends JPanel implements
 			startDraad.start();
 		}
 	}
+
+	public JTextField getSplitMinBoundaryField()
+	{
+		return splitMinBoundaryField;
+	}
+	
+	public JTextField getSplitBinWidthField()
+	{
+		return splitBinWidthField;
+	}
+
 }
