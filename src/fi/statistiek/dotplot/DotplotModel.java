@@ -486,11 +486,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 */
 	public void setMinXOnScale(double min)
 	{
-		double minColumnValue = this.getStatTableModel().getColumnMin(
-			this.getColumnXIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
-			|| ((min <= minColumnValue) && (min != this.minXOnScale)))
+		if (min != this.minXOnScale)
 		{
 			this.minXOnScale = min;
 			this.changed();
@@ -505,11 +501,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 */
 	public void setMinXOnScaleWithoutEvent(double min)
 	{
-		double minColumnValue = this.getStatTableModel().getColumnMin(
-			this.getColumnXIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
-			|| ((min <= minColumnValue) && (min != this.minXOnScale)))
+		if (min != this.minXOnScale)
 		{
 			this.minXOnScale = min;
 		}
@@ -557,11 +549,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 */
 	public void setMaxXOnScale(double max)
 	{
-		double maxColumnValue = this.getStatTableModel().getColumnMax(
-			this.getColumnXIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
-			|| ((max >= maxColumnValue) && (max != this.maxXOnScale)))
+		if (max != this.maxXOnScale)
 		{
 			this.maxXOnScale = max;
 			this.changed();
@@ -576,11 +564,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 	 */
 	public void setMaxXOnScaleWithoutEvent(double max)
 	{
-		double maxColumnValue = this.getStatTableModel().getColumnMax(
-			this.getColumnXIndex());
-
-		if (this.getStatTableModel().isEmptyColumn(this.getColumnXIndex())
-			|| ((max >= maxColumnValue) && (max != this.maxXOnScale)))
+		if (max != this.maxXOnScale)
 		{
 			this.maxXOnScale = max;
 		}
