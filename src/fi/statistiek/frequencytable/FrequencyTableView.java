@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
@@ -1156,5 +1157,30 @@ public class FrequencyTableView extends JPanel implements Observer
 			
 			FrequencyTableView.this.mainPanel.revalidate();
 		}
+	}
+
+	public FrequencyTableUserOptionsPanel getUserOptionsPanel()
+	{
+		return userOptionsPanel;
+	}
+
+	public JTextField getMinBoundaryField()
+	{
+		return userOptionsPanel.getMinBoundaryField();
+	}
+
+	public JTextField getBinWidthField()
+	{
+		return userOptionsPanel.getBinWidthField();
+	}
+
+	public JTextField getSplitMinBoundaryField()
+	{
+		return userOptionsPanel.getSplitMinBoundaryField();
+	}
+
+	public JTextField getSplitBinWidthField()
+	{
+		return userOptionsPanel.getSplitBinWidthField();
 	}
 }
