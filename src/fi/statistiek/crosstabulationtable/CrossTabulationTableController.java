@@ -118,20 +118,85 @@ public class CrossTabulationTableController implements StatistiekView,
 		}
 		else if (action.equals("minBoundaryRows"))
 		{
-			updateBoundariesFromRowsBinSettings();
+			processMinBoundaryRowsChanged();
 		}
 		else if (action.equals("binWidthRows"))
 		{
-			updateBoundariesFromRowsBinSettings();
+			processBinWidthRowsChanged();
 		}
 		else if (action.equals("minBoundaryColumns"))
 		{
-			updateBoundariesFromColumnsBinSettings();
+			processMinBoundaryColumnsChanged();
 		}
 		else if (action.equals("binWidthColumns"))
 		{
-			updateBoundariesFromColumnsBinSettings();
+			processBinWidthColumnsChanged();
 		}
+	}
+
+	public void processMinBoundaryRowsChanged()
+	{
+		double minBoundaryRows = view.getUserOptionsPanel().getMinBoundaryRows(); // the user entered value
+		double minDataRows = this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex());
+		
+		if (minBoundaryRows <= minDataRows)
+		{
+			// update the rows' bin settings
+			this.updateBoundariesFromRowsBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetMin;
+			if (model.getBinBoundaries() != null && model.getBinBoundaries().size() > 0)
+			{
+				resetMin = model.getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetMin = minDataRows;
+			}
+			
+			view.getUserOptionsPanel().setMinBoundaryRows(resetMin);
+		}
+	}
+
+	public void processBinWidthRowsChanged()
+	{
+		this.updateBoundariesFromRowsBinSettings();
+	}
+
+	public void processMinBoundaryColumnsChanged()
+	{
+		double minBoundaryColumns = view.getUserOptionsPanel().getMinBoundaryColumns(); // the user entered value
+		double minDataColumns = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (minBoundaryColumns <= minDataColumns)
+		{
+			// update the columns' bin settings
+			this.updateBoundariesFromColumnsBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetMin = model.getSplitOptions().getBinBoundaries().get(0);
+			}
+			else
+			{
+				resetMin = minDataColumns;
+			}
+			
+			view.getUserOptionsPanel().setMinBoundaryColumns(resetMin);
+		}
+
+	}
+
+	public void processBinWidthColumnsChanged()
+	{
+		this.updateBoundariesFromColumnsBinSettings();
 	}
 
 	public void setUp(Frame owner)
@@ -242,17 +307,21 @@ public class CrossTabulationTableController implements StatistiekView,
 
 	public void focusLost(FocusEvent arg0)
 	{
-		// source is one of the rows variable bin settings
-		if ((arg0.getSource() == this.view.getBinWidthRowsField())
-			|| (arg0.getSource() == this.view.getMinBoundaryRowsField()))
+		if (arg0.getSource() == this.view.getBinWidthRowsField())
 		{
-			updateBoundariesFromRowsBinSettings();
+			processBinWidthRowsChanged();
 		}
-		// source is one of the columns variable bin settings
-		else if ((arg0.getSource() == this.view.getBinWidthColumnsField())
-			|| (arg0.getSource() == this.view.getMinBoundaryColumnsField()))
+		else if (arg0.getSource() == this.view.getMinBoundaryRowsField())
 		{
-			updateBoundariesFromColumnsBinSettings();
+			processMinBoundaryRowsChanged();
+		}
+		else if (arg0.getSource() == this.view.getBinWidthColumnsField())
+		{
+			processBinWidthColumnsChanged();
+		}
+		else if (arg0.getSource() == this.view.getMinBoundaryColumnsField())
+		{
+			processMinBoundaryColumnsChanged();
 		}
 	}
 
