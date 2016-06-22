@@ -405,7 +405,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener, F
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				DotplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				DotplotUserOptionsPanel.this.controller.processSplitMinBoundaryChanged();
 			}
 			
 			@Override
@@ -429,7 +429,7 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener, F
 			@Override
 			public void focusLost(FocusEvent e)
 			{
-				DotplotUserOptionsPanel.this.controller.updateSplitBoundariesFromBinSettings();
+				DotplotUserOptionsPanel.this.controller.processSplitBinWidthChanged();
 			}
 			
 			@Override
@@ -1347,84 +1347,18 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener, F
 		}
 		else if (e.getSource() == optimizeScaleXBox)
 		{
-			this.model.setOptimizeScaleX(this.isOptimizeScaleX());
+			model.setOptimizeScaleX(isOptimizeScaleX());
+			view.recalculateScaleXSettings();
+
 			resize(vb0);
 		}
 		else if (e.getSource().equals(this.minXOnScaleField))
 		{
-			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
-			{
-				// min > max is niet toegestaan
-				if (this.getMinXOnScale() > this.getMaxXOnScale())
-				{
-					// reset to latest value
-					this.setMinXOnScale(this.model.getMinXOnScale());
-				}
-				else
-				{
-					this.model.setMinXOnScale(this.getMinXOnScale());
-				}
-			} // empty column
-			else
-			{ // data in column
-				double minColumnXValue = this.model.getStatTableModel().getColumnMin(this.model.getColumnXIndex());
-				if (this.getMinXOnScale() > minColumnXValue)
-				{
-					// invalid input
-					
-					if (this.model.getMinXOnScale() > minColumnXValue)
-					{
-						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
-						this.model.setMinXOnScale(minColumnXValue);
-					}
-					else
-					{
-						// reset to latest value
-						this.setMinXOnScale(this.model.getMinXOnScale());
-					}
-				}
-				else
-				{
-					this.model.setMinXOnScale(this.getMinXOnScale());
-				}
-			} // data in column
+			controller.processMinXOnScaleChanged();
 		}
 		else if (e.getSource().equals(this.maxXOnScaleField))
 		{
-			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
-			{
-				// max < min is niet toegestaan
-				if (this.getMaxXOnScale() < this.getMinXOnScale())
-				{
-					// reset to latest value
-					this.setMaxXOnScale(this.model.getMaxXOnScale());
-				}
-				else
-				{
-					this.model.setMaxXOnScale(this.getMaxXOnScale());
-				}
-			} // empty column
-			else
-			{ // data in column
-				double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
-				if (this.getMaxXOnScale() < maxColumnXValue)
-				{
-					if (this.model.getMaxXOnScale() < maxColumnXValue)
-					{
-						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
-						this.model.setMaxXOnScale(maxColumnXValue);
-					}
-					else
-					{
-						// reset to latest value
-						this.setMaxXOnScale(this.model.getMaxXOnScale());
-					}
-				}
-				else
-				{
-					this.model.setMaxXOnScale(this.getMaxXOnScale());
-				}
-			} // data in column
+			controller.processMaxXOnScaleChanged();
 		}
 		else if (e.getSource() == okButton)
 		{
@@ -1471,79 +1405,11 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener, F
 	{
 		if (e.getSource().equals(this.minXOnScaleField))
 		{
-			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
-			{
-				// min > max is niet toegestaan
-				if (this.getMinXOnScale() > this.getMaxXOnScale())
-				{
-					// reset to latest value
-					this.setMinXOnScale(this.model.getMinXOnScale());
-				}
-				else
-				{
-					this.model.setMinXOnScale(this.getMinXOnScale());
-				}
-			} // empty column
-			else
-			{ // data in column
-				double minColumnXValue = this.model.getStatTableModel().getColumnMin(this.model.getColumnXIndex());
-				if (this.getMinXOnScale() > minColumnXValue)
-				{
-					// invalid input
-					
-					if (this.model.getMinXOnScale() > minColumnXValue)
-					{
-						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
-						this.model.setMinXOnScale(minColumnXValue);
-					}
-					else
-					{
-						// reset to latest value
-						this.setMinXOnScale(this.model.getMinXOnScale());
-					}
-				}
-				else
-				{
-					this.model.setMinXOnScale(this.getMinXOnScale());
-				}
-			} // data in column
+			controller.processMinXOnScaleChanged();
 		}
 		else if (e.getSource().equals(this.maxXOnScaleField))
 		{
-			if (this.model.getStatTableModel().isEmptyColumn(this.model.getColumnXIndex()))
-			{
-				// max < min is niet toegestaan
-				if (this.getMaxXOnScale() < this.getMinXOnScale())
-				{
-					// reset to latest value
-					this.setMaxXOnScale(this.model.getMaxXOnScale());
-				}
-				else
-				{
-					this.model.setMaxXOnScale(this.getMaxXOnScale());
-				}
-			} // empty column
-			else
-			{ // data in column
-				double maxColumnXValue = this.model.getStatTableModel().getColumnMax(this.model.getColumnXIndex());
-				if (this.getMaxXOnScale() < maxColumnXValue)
-				{
-					if (this.model.getMaxXOnScale() < maxColumnXValue)
-					{
-						// the model's max is not correct, data may have been changed and the model's max on scale needs to be reset
-						this.model.setMaxXOnScale(maxColumnXValue);
-					}
-					else
-					{
-						// reset to latest value
-						this.setMaxXOnScale(this.model.getMaxXOnScale());
-					}
-				}
-				else
-				{
-					this.model.setMaxXOnScale(this.getMaxXOnScale());
-				}
-			} // data in column
+			controller.processMaxXOnScaleChanged();
 		}
 	}
 	
