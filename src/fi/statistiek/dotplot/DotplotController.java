@@ -181,8 +181,9 @@ public class DotplotController implements StatistiekView, ActionListener,
 			// min > max is niet toegestaan
 			if (view.getMinXOnScale() > view.getMaxXOnScale())
 			{
-				// reset to latest value
-				view.getUserOptionsPanel().setMinXOnScale(model.getMinXOnScale());
+				// set both min and max to the same value
+				model.setMinXOnScaleWithoutEvent(view.getMinXOnScale());
+				model.setMaxXOnScale(view.getMinXOnScale());
 			}
 			else
 			{
@@ -233,8 +234,9 @@ public class DotplotController implements StatistiekView, ActionListener,
 			// max < min is niet toegestaan
 			if (view.getMaxXOnScale() < view.getMinXOnScale())
 			{
-				// reset to latest value
-				view.getUserOptionsPanel().setMaxXOnScale(model.getMaxXOnScale());
+				// set both min and max to the same value
+				model.setMaxXOnScaleWithoutEvent(view.getMaxXOnScale());
+				model.setMinXOnScale(view.getMaxXOnScale());
 			}
 			else
 			{
