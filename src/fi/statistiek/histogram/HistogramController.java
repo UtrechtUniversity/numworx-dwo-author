@@ -672,67 +672,86 @@ public class HistogramController implements StatistiekView, ActionListener,
 		double minOnScale = view.getUserOptionsPanel().getMinBoundary();
 		double maxOnScale = view.getUserOptionsPanel().getMaxOnScale();
 
-		// max < min is niet toegestaan
-		if (minOnScale > maxOnScale)
+		if (model.getStatTableModel().isEmptyColumn(model.getColumnIndex()))
 		{
-			// reset to latest value
-			view.getUserOptionsPanel().setMinBoundary(model.getMinOnScale());
-		}
-		else
-		{
-			double dataMin = model.getStatTableModel().getColumnMin(model.getColumnIndex());
-
-			// alleen check of data binnen grenzen als optimize scale
-			if (model.isOptimizeScale())
+			if (minOnScale > maxOnScale)
 			{
-				if (minOnScale > dataMin) // the new user entered min value is not correct
-				{
-					if (model.getMinOnScale() > dataMin) // the model's min value is not correct
-					{
-						// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
-						model.setMinOnScale(dataMin);
-						view.getUserOptionsPanel().setMinBoundary(dataMin);
-					}
-					else
-					{
-						// reset to latest value
-						view.getUserOptionsPanel().setMinBoundary(model.getMinOnScale());
-					}
-				}
-				else
-				{
-					// everything is fine, set the value
-					model.setMinOnScale(minOnScale);
-					view.getUserOptionsPanel().setMinBoundary(minOnScale);
-				}
+				model.setMinOnScale(minOnScale);
+				view.getUserOptionsPanel().setMinBoundary(minOnScale);
+				model.setMaxOnScale(minOnScale);
+				view.getUserOptionsPanel().setMaxOnScale(minOnScale);
 			}
 			else
 			{
 				model.setMinOnScale(minOnScale);
 				view.getUserOptionsPanel().setMinBoundary(minOnScale);
 			}
+		} // empty column
+		else
+		{ // data in column
 			
-			// update column index bin settings
-			updateBoundariesFromBinSettings();
-
-			// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
-			double maxBinValue = view.getMaxBinOnScale();
-			if (view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+			// max < min is niet toegestaan
+			if (minOnScale > maxOnScale)
 			{
-				view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
-				model.setMaxOnScale(maxBinValue);
+				// reset to latest value
+				view.getUserOptionsPanel().setMinBoundary(model.getMinOnScale());
 			}
 			else
 			{
-				// kom je hier ooit...?
-				model.setMaxOnScale(view.getUserOptionsPanel().getMaxOnScale());
+				double dataMin = model.getStatTableModel().getColumnMin(model.getColumnIndex());
+	
+				// alleen check of data binnen grenzen als optimize scale
+				if (model.isOptimizeScale())
+				{
+					if (minOnScale > dataMin) // the new user entered min value is not correct
+					{
+						if (model.getMinOnScale() > dataMin) // the model's min value is not correct
+						{
+							// the model's min is not correct, data may have been changed and the model's min on scale needs to be reset
+							model.setMinOnScale(dataMin);
+							view.getUserOptionsPanel().setMinBoundary(dataMin);
+						}
+						else
+						{
+							// reset to latest value
+							view.getUserOptionsPanel().setMinBoundary(model.getMinOnScale());
+						}
+					}
+					else
+					{
+						// everything is fine, set the value
+						model.setMinOnScale(minOnScale);
+						view.getUserOptionsPanel().setMinBoundary(minOnScale);
+					}
+				}
+				else
+				{
+					model.setMinOnScale(minOnScale);
+					view.getUserOptionsPanel().setMinBoundary(minOnScale);
+				}
+				
+				// update column index bin settings
+				updateBoundariesFromBinSettings();
+	
+				// zorg dat maximumwaarde overeenkomt met de hoogste bin waarde op de schaal
+				double maxBinValue = view.getMaxBinOnScale();
+				if (view.getUserOptionsPanel().getMaxOnScale() < maxBinValue)
+				{
+					view.getUserOptionsPanel().setMaxOnScale(maxBinValue);
+					model.setMaxOnScale(maxBinValue);
+				}
+				else
+				{
+					// kom je hier ooit...?
+					model.setMaxOnScale(view.getUserOptionsPanel().getMaxOnScale());
+				}
+	
+				if (model.getBinWidth() == 0)
+				{
+					model.setBinWidth(maxOnScale - model.getMinOnScale());
+				}
 			}
-
-			if (model.getBinWidth() == 0)
-			{
-				model.setBinWidth(maxOnScale - model.getMinOnScale());
-			}
-		}
+		} // data in column
 	}
 
 	/**
@@ -747,7 +766,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		else
 		{
-			model.setBinWidth(view.getBinWidth());
+			model.setBinWidthWithoutEvent(view.getBinWidth());
 			
 			// column index bin settings
 			updateBoundariesFromBinSettings();
