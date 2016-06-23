@@ -576,7 +576,12 @@ public class Statistiek implements WiskOpdrApplet
 		{
 			Double smallest = determineNewSmallestBinBoundary(binBoundaries, minOnScale);
 			Double largest = determineNewLargestBinBoundary(binBoundaries, maxOnScale);
-			Double binWidth = binBoundaries.get(1) - binBoundaries.get(0);
+			
+			int bin0Decimals = Statistiek.getNumberOfDecimals(binBoundaries.get(0).toString());
+			int bin1Decimals = Statistiek.getNumberOfDecimals(binBoundaries.get(1).toString());
+			int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+
+			Double binWidth = Statistiek.round(binBoundaries.get(1) - binBoundaries.get(0), maxNumberOfDecimals);
 			
 			if (binWidth == 0)
 			{
@@ -591,11 +596,14 @@ public class Statistiek implements WiskOpdrApplet
 			else
 			{
 				Double binValue = smallest;
+				int binValueDecimals = Statistiek.getNumberOfDecimals(binValue.toString());
+				maxNumberOfDecimals = Math.max(maxNumberOfDecimals, binValueDecimals);
+
 				bins.add(binValue); // add the first value
 
 				while (binValue < largest)
 				{
-					binValue = binValue + binWidth;
+					binValue = Statistiek.round(binValue + binWidth, maxNumberOfDecimals);
 					bins.add(binValue);
 				}
 			}
