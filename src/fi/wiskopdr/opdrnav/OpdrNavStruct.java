@@ -61,6 +61,7 @@ import fi.wiskopdr.tekstobjects.Link;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class OpdrNavStruct extends JLayeredPane implements MouseListener, ActionListener, TabletOwner
 {
@@ -222,6 +223,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 */
 	public OpdrNavStruct(WiskOpdr applet, MyOpdrContainer opdrContainer, int x, int y, int b, int h, SCORM12APIInterface api, Hashtable launchData)
 	{
+		TekstVak.ID=0;
+		TekstVak.TELLER=0;
+		
 		if(applet != null) applet.ons = this; // FIXME static reference mogelijk naar 'this' 
 		setLayout(null);
 		setBounds(x, y, b, h);
@@ -2371,6 +2375,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 	public void start()
 	{
+		TekstVak.ID=0;
+		TekstVak.TELLER=0;
+		
 		if (timer)
 		{
 			timerPanel.zetTijdMax(timeLimit);
@@ -2399,6 +2406,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 */
 	public synchronized void kiesOpdracht(int actNr, int opdrNr)
 	{
+		TekstVak.ID=0;
+		TekstVak.TELLER=0;
 		try{
 		if(bezocht!=null && opdrNr > 0 && opdrNr < bezocht[actNr].length)
 			bezocht[actNr][opdrNr] = true;

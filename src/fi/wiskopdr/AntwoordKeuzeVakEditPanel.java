@@ -263,12 +263,14 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		}
 		this.puntenFeedback = puntenFeedback;
 		antwoordvak.zetTekst(antwoordString);
+		antwoordvak.layoutTekst();
 			
 		
 		feedbackPV.setVisible(hasFeedback);
 		feedbackPV.setText(""+puntenFeedback);
 		
 		feedbackTekst.zetTekst(feedback);
+		feedbackTekst.layoutTekst();
 		feedbackTekst.repaint();
 		
 		goedFoutIP.setItem(goedHalfFout);
@@ -331,6 +333,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			    	
 			    	keuzeVelden[i] = new TekstEditor();
 			        keuzeVelden[i].zetTekst(keuzeMogelijkheden[i]);
+			        keuzeVelden[i].layoutTekst();
 			        keuzeVelden[i].setBounds(30,80+i*85,170,80);
 			        add(keuzeVelden[i],0);
 			    }
@@ -360,6 +363,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				}
 				
 				antwoordvak.zetTekst(antwoordString);
+				antwoordvak.layoutTekst();
 				maxScorePV.setText(""+scoreMax);
 				
 				checkCB.setSelected(check);

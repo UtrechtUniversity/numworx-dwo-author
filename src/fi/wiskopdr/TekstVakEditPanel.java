@@ -621,7 +621,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//kiesStyleChoice.addItem("Style 1");
 		kiesStyleChoice.addActionListener(this);
 		kiesStyleChoice.setBounds(10,4,190,20);
-		//kiesStyleChoice.setVisible(false);
+		kiesStyleChoice.setVisible(false);
 		layoutOptionsPanel.add(kiesStyleChoice);
 		
 		styleManager = new StyleManager(this, kiesStyleChoice);
@@ -644,6 +644,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setMargin(new Insets(0, 0, 0, 0));
 		editStylesButton.addActionListener(this);
 		editStylesButton.setFont(ifFont);
+		editStylesButton.setVisible(false);
 		layoutOptionsPanel.add(editStylesButton);
 		
 	}
@@ -1563,10 +1564,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				sleepbaar = false;
 				sleepdoel = false;
 			}
+			
 			//checkExpressieFormuleVak.setEnabled(selectable || sleepbaar);
 			//selectieWaardeLabel.setEnabled(selectable || sleepbaar);
 			
 			tekstVakPanel.setEditState(getEditState());
+			
 		}
 		if(e.getSource().equals(anderFontCB))
 		{	anderFont = anderFontCB.isSelected();

@@ -232,12 +232,13 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		}
 		this.puntenFeedback = puntenFeedback;
 		antwoordvak.zetTekst(antwoordString);
-			
+		antwoordvak.layoutTekst();
 		
 		feedbackPV.setVisible(hasFeedback);
 		feedbackPV.setText(""+puntenFeedback);
 		
 		feedbackTekst.zetTekst(feedback);
+		feedbackTekst.layoutTekst();
 		feedbackTekst.repaint();
 		
 		goedFoutIP.setItem(goedHalfFout);
@@ -313,6 +314,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		}
 		
 		antwoordvak.zetTekst(antwoordString);
+		antwoordvak.layoutTekst();
 		scoreMaxPV.setText(""+scoreMax);
 		
 		setFeedbackOption(hasFeedback);

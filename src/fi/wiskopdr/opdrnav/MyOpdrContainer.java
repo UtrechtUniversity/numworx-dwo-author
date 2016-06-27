@@ -413,7 +413,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 			tekst = "???";
 		}
 		tekstArea.setText(tekst);
-		tekstArea.layoutTekst();
+		//tekstArea.layoutTekst();
 		tekstArea.resize();
 
 		try
@@ -425,7 +425,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 			tekst2 = "???";
 		}
 		tekstArea2.setText(tekst2);
-		tekstArea2.layoutTekst();
+		//tekstArea2.layoutTekst();
 		tekstArea2.resize();
 
 		if (tekst2 == null || tekst2.trim().equals(""))
@@ -490,8 +490,8 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 
 		}
 
-		tekstArea.layoutTekst();
-		tekstArea2.layoutTekst();
+		//tekstArea.layoutTekst();
+		//tekstArea2.layoutTekst();
 
 		tekstArea.setVisible(true);
 		if (!tekst2.trim().equals(""))
@@ -680,7 +680,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 			tekst = "???";
 		}
 		tekstArea.setText(tekst);
-		tekstArea.layoutTekst();
+		//tekstArea.layoutTekst();
 		tekstArea.resize();
 
 		try
@@ -693,7 +693,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 			tekst2 = "???";
 		}
 		tekstArea2.setText(tekst2);
-		tekstArea2.layoutTekst();
+		//tekstArea2.layoutTekst();
 		tekstArea2.resize();
 
 		if (tekst2 == null || tekst2.trim().equals(""))
@@ -799,8 +799,8 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 					interactiePanelCs[i].setState(interactiePanelStates[i]);
 			}
 		}
-		tekstArea.layoutTekst();
-		tekstArea2.layoutTekst();
+		//tekstArea.layoutTekst();
+		//tekstArea2.layoutTekst();
 
 		this.RandomVarNamen = RandomVarNamen;
 		this.RandomVarWaarden = RandomVarWaarden;

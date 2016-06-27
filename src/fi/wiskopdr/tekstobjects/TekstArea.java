@@ -57,6 +57,7 @@ public class TekstArea extends JPanel implements ActionListener
 	}
 	public void setText(String s)
 	{	tekstVak.zetTekst(s);
+		tekstVak.layoutTekst();
 		tekstVak.setEditable(editable);
 	    tekstVak.setSelectable(selectable);
 	    if(tipButton!=null)
@@ -64,6 +65,7 @@ public class TekstArea extends JPanel implements ActionListener
 	    	hasButton = false;
 	    	tipButton = null;
 	    }
+	    
 	}
 	
 	public String getText()

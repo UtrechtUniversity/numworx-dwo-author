@@ -63,9 +63,16 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	private CrossWidgetViewPanel crossWidgetView;
 	private boolean crossWidgetViewActief;
 	
+	public static int TELLER;
+	public static int ID;
+	int id;
+	
 	
 	public TekstVak()
-	{	setLayout(null);
+	{	ID++;
+		if(id==0)id=ID;
+		
+		setLayout(null);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
@@ -144,6 +151,11 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		{
 			components[i].setForeground(c);
 		}
+		
+		//for(int i=0 ; i<aantalRegels; i++)
+		//{	regels[i].setForeground(c);
+		//}
+		//repaint();
 	}
 	
 	public Font getFont()
@@ -164,7 +176,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		{	((InteractiePanelContainerIF)v.elementAt(i)).destroy();
 		}
 		tekst = new TekstBuffer(this,s);
-		vulVak(tekst.toString());
+		//vulVak(tekst.toString());
 	}
 	
 	public void zetTekst(String s, boolean setEditState)
@@ -180,7 +192,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		}
 	    tekst = new TekstBuffer(this,"");
 	    tekst = new TekstBuffer(this,s, setEditState);
-		vulVak(tekst.toString());
+		//vulVak(tekst.toString());
 	}
 	
 	public FormuleVak geefFormuleVak()
@@ -257,7 +269,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	}
 	
 	public void vulVak(String s)
-	{	//s = s+' ';
+	{	
+		//System.out.println(""+TELLER+" vulVak "+id);
+		TELLER++;
+		//s = s+' ';
 		for(int i=0 ; i<getComponentCount() ; i++)
 		{	Component c = getComponent(i);
 			if(c instanceof TekstInteractiePanelVak) 
@@ -475,6 +490,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		{	teller += regels[i].getComponentCount();
 		}
 		zetTekst(tekst.insertAndComplete(caretPos,s), true);
+		layoutTekst();
 		int tellerNieuw = 0;
 		for(int i=0 ; i<aantalRegels; i++)
 		{	tellerNieuw += regels[i].getComponentCount();

@@ -508,6 +508,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         feedbackPV.setText(""+puntenFeedback);
         
         feedbackEditor.zetTekst(feedback);
+        feedbackEditor.layoutTekst();
         feedbackEditor.setEnlargedWidth(feedbackWidth);
 		feedbackEditor.setEnlargedHeight(feedbackHeight);
 		if(feedbackEditorPopupFrame!=null)

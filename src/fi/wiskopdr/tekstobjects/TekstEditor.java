@@ -873,6 +873,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         {   tekst = "???";
         }
 		zetTekst(tekst);
+		layoutTekst();
 		zetBalkZichtbaar(balkZichtbaar);
 		zetRekenTool(rekenTool);
 		zetGrafTool(grafTool);
@@ -924,6 +925,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		//if(antwoordVak.getText()==null || antwoordVak.getText().trim().equals("")) 
 		zetTekst(tekst);
+		layoutTekst();
 		Vector v = geefInteractiePanels();
 	    for(int i=0 ; i<v.size() ; i++)
 	    {  	InteractiePanelContainerIF ipc = ((InteractiePanelContainerIF)v.elementAt(i));

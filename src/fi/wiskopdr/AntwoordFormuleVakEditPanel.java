@@ -492,6 +492,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackPV.setText(""+puntenFeedback);
 		
 		feedbackEditor.zetTekst(feedback);
+		feedbackEditor.layoutTekst();
 		feedbackEditor.setEnlargedWidth(feedbackWidth);
 		feedbackEditor.setEnlargedHeight(feedbackHeight);
 		if(feedbackEditorPopupFrame!=null)

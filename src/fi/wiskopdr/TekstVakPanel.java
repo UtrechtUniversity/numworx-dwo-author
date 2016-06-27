@@ -475,7 +475,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				tekstVakken[i][j].setFont(font);
 			}
 		}
-		layoutTekst();
+		//layoutTekst();
 	}
 
 	public TekstVak geefTekstVak(int rij, int kolom)
@@ -711,7 +711,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
 			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
 		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
-				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+		    if (h.containsKey("anderFont"))
+				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
+				
+		    	if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(style.containsKey("font")) font = (Font)style.get("font");
 			if(style.containsKey("hoek")) hoek = ((Integer)style.get("hoek")).intValue();
 			if(style.containsKey("centerH")) centerH = ((Boolean)style.get("centerH")).booleanValue();
@@ -735,7 +738,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(h.containsKey("cellMarge")) cellMarge = ((Integer)h.get("cellMarge")).intValue();
 			if(h.containsKey("bovenMarge")) bovenMarge = ((Integer)h.get("bovenMarge")).intValue();
 	        if(h.containsKey("ronding")) ronding = ((Integer)h.get("ronding")).intValue();
-				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
+	        if (h.containsKey("anderFont"))
+				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
+				
+	        	if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(h.containsKey("font")) font = (Font)h.get("font");
 			if(h.containsKey("hoek")) hoek = ((Integer)h.get("hoek")).intValue();
 			if(h.containsKey("centerH")) centerH = ((Boolean)h.get("centerH")).booleanValue();
@@ -779,14 +785,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			checkExpressieString = (String) h.get("checkExpressieString");
 		if (h.containsKey("ipId"))
 			ipId = ((Integer) h.get("ipId")).intValue();
-		if (h.containsKey("interlinie"))
+		/*if (h.containsKey("interlinie"))
 			interlinie = ((Integer) h.get("interlinie")).intValue();
 		if (h.containsKey("cellSpaceColumn"))
 			cellSpaceColumn = ((Integer) h.get("cellSpaceColumn")).intValue();
 		if (h.containsKey("cellSpaceRow"))
 			cellSpaceRow = ((Integer) h.get("cellSpaceRow")).intValue();
 		if (h.containsKey("randDikte"))
-			randDikte = ((Integer) h.get("randDikte")).intValue();
+			randDikte = ((Integer) h.get("randDikte")).intValue();*/
 		if (h.containsKey("zichtbaarNaNakijken"))
 			zichtbaarNaNakijken = ((Boolean) h.get("zichtbaarNaNakijken")).booleanValue();
 		if (h.containsKey("balansVergCom"))
@@ -1078,18 +1084,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 		setForeground(fgColor);
 		
-		Font f = new Font(font.getName(), font.getStyle(), font.getSize());
 		
-		if (anderFont)
-		{	setFont(f);
-			setForeground(fgColor);
-		}
-		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
-		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
-			Color fgColorOvererving = ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground();
-			setFont(geerftFont);
-			setForeground(fgColorOvererving);
-		}
 
 		Vector v = geefInteractiePanels();
 		for (int i = 0; i < v.size(); i++)
@@ -1097,8 +1092,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			((InteractiePanelContainerIF) v.elementAt(i)).zetOpdracht(interactiePanelLaunchData[i], randomVars, randomValues);
 			((InteractiePanelContainerIF) v.elementAt(i)).addActionListener(this);
 		}
-
 		layoutTekst();
+		
 		if (selectable || isLink)
 			zetKlikPanel(true);
 
@@ -1122,6 +1117,20 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.randomVars = randomVars;
 		this.randomValues = randomValues;
 		
+		Font f = new Font(font.getName(), font.getStyle(), font.getSize());
+		
+		if (anderFont)
+		{	setFont(f);
+			setForeground(fgColor);
+			layoutTekst();
+		}
+		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			Color fgColorOvererving = ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground();
+			setFont(geerftFont);
+			setForeground(fgColorOvererving);
+			layoutTekst();
+		}
 		setVisible(visible);
 	}
 	
@@ -2443,6 +2452,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
 			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
 		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
+		    if (h.containsKey("anderFont"))
+				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
 				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(style.containsKey("font")) font = (Font)style.get("font");
 			if(style.containsKey("hoek")) hoek = ((Integer)style.get("hoek")).intValue();
@@ -2467,6 +2478,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(h.containsKey("cellMarge")) cellMarge = ((Integer)h.get("cellMarge")).intValue();
 			if(h.containsKey("bovenMarge")) bovenMarge = ((Integer)h.get("bovenMarge")).intValue();
 	        if(h.containsKey("ronding")) ronding = ((Integer)h.get("ronding")).intValue();
+	        if (h.containsKey("anderFont"))
+				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
 				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(h.containsKey("font")) font = (Font)h.get("font");
 			if(h.containsKey("hoek")) hoek = ((Integer)h.get("hoek")).intValue();
@@ -2590,7 +2603,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			//locationY=10;
 		}
 
-		this.zwevend = zwevend;
+		
 		this.locationX = locationX;
 		this.locationY = locationY;
 
@@ -2746,17 +2759,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 		setForeground(fgColor);
 
-		Font ff = new Font(font.getName(), font.getStyle(), font.getSize());
-		if (anderFont)
-		{	setFont(ff);
-			setForeground(fgColor);
-		}
-		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
-		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
-			Color fgColorOvererving = getParent() instanceof TekstInteractiePanelVak ? ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground() : fgColor;
-			setFont(geerftFont);
-			setForeground(fgColorOvererving);
-		}
+		
 		//if(anderFont) setFont(font);
 		
 		
@@ -2769,13 +2772,18 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 
 		layoutTekst();
-		try
-		{
-			((TekstInteractiePanelVak) getParent()).getTekstVak().layoutTekst();
+		
+		if(this.zwevend != zwevend)
+		{	this.zwevend = zwevend;
+			try
+			{
+				((TekstInteractiePanelVak) getParent()).getTekstVak().layoutTekst();
+			}
+			catch (Exception e)
+			{
+			}
 		}
-		catch (Exception e)
-		{
-		}
+		
 		
 		//if(inklapbaar)
 		//{	initieerKlapUitButton(ingeklapt);
@@ -2793,6 +2801,21 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				zetMaat();
 			}
 		}
+		
+		Font ff = new Font(font.getName(), font.getStyle(), font.getSize());
+		if (anderFont)
+		{	setFont(ff);
+			setForeground(fgColor);
+			layoutTekst();
+		}
+		else if(fontOvererving && getParent() instanceof TekstInteractiePanelVak)
+		{	Font geerftFont = ((TekstInteractiePanelVak)getParent()).getTekstVak().getFont();
+			Color fgColorOvererving = getParent() instanceof TekstInteractiePanelVak ? ((TekstInteractiePanelVak)getParent()).getTekstVak().getForeground() : fgColor;
+			setFont(geerftFont);
+			setForeground(fgColorOvererving);
+			layoutTekst();
+		}
+		
 	}
 
 	//public boolean contains(int x, int y)
@@ -2803,6 +2826,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void layoutTekst()
 	{
+		//System.out.println("layoutTekst() ");
+		
 		for (int i = 0; i < aantalRijen; i++)
 		{
 			for (int j = 0; j < aantalKolommen; j++)
@@ -3462,7 +3487,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	}
 
 	public void klapUitAction()
-	{
+	{ System.out.println("uitklapaction");
 		if(!(getParent() instanceof TekstInteractiePanelVak))
 		{
 			if(ingeklapt)
