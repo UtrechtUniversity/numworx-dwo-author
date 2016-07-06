@@ -743,6 +743,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.false", "Actie: fout antwoord"},
 				{"CBA_action.false_2", "Actie: 2x fout antwoord"},
 				{"CBA_action.setVisible", "Actie: maak zichtbaar"},
+				{"CBA_action.setNotVisible", "Actie: maak onzichtbaar"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},

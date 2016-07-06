@@ -2049,6 +2049,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean nagekeken = false;
 		boolean popupUsed = false;
 		boolean ingeklapt = true;
+		boolean visible = true;
 		String[] stappen = null;
 		stapNr = 0;
 
@@ -2066,6 +2067,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			popupUsed = ((Boolean) h.get("popupUsed")).booleanValue();
 		if (h.containsKey("ingeklapt"))
 			ingeklapt = ((Boolean) h.get("ingeklapt")).booleanValue();
+		if (h.containsKey("visible"))
+			visible = ((Boolean) h.get("visible")).booleanValue();
 		if (h.containsKey("stappen"))
 			stappen = (String[])h.get("stappen");
 		if (h.containsKey("stapNr"))
@@ -2105,6 +2108,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.popupUsed = popupUsed;
 		this.stappen = stappen;
 		this.stapNr = stapNr;
+		this.visible = visible;
 		
 
 		if (aftrekPopup && popupUsed)
@@ -2138,6 +2142,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean nagekeken = false;
 		boolean popupUsed = false;
 		boolean ingeklapt = true;
+		boolean visible = true;
 
 		Vector v = geefInteractiePanels();
 		interactiePanelStates = new Hashtable[v.size()];
@@ -2151,6 +2156,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		nagekeken = this.nagekeken;
 		popupUsed = this.popupUsed;
 		ingeklapt = this.ingeklapt;
+		visible = this.visible;
 
 		if (logOption) {
 
@@ -2176,6 +2182,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("nagekeken", new Boolean(nagekeken));
 		h.put("popupUsed", new Boolean(popupUsed));
 		h.put("ingeklapt", new Boolean(ingeklapt));
+		h.put("visible", new Boolean(visible));
 		if(stappen!=null)
 		{	h.put("stappen", stappen);
 			h.put("stapNr", new Integer(stapNr));
@@ -3880,6 +3887,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setVisible(visible);
 			zetMaat();
 		}
+		else if(command.startsWith("action.setNotVisible"))
+		{	visible = false;
+			setVisible(visible);
+			zetMaat();
+		}
 		else if(command.startsWith("int.index"))
 		{	int index = 0;
 			index = (Integer)event.getParameter(command);
@@ -3992,6 +4004,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public String[] getAcceptedCmds() {
 		String[] sendCommands = {"int.index",
 				"action.setVisible",
+				"action.setNotVisible",
 				"text.content"};
 		return sendCommands;
 	}

@@ -691,6 +691,7 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"CBA_action.false", "Action: incorrect antwoord"},
 				{"CBA_action.false_2", "Actie: 2x incorrect answer"},
 				{"CBA_action.setVisible", "Action: set visible"},
+				{"CBA_action.setNotVisible", "Action: set not visible"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},
