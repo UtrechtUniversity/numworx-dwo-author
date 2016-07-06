@@ -479,7 +479,7 @@ System.out.println("p22 setState");
 		{
 			int x = blokjeSleep.getLocation().x;
 			blokjeSleep.setLocation((int) (blokjePlus.getLocation().x), (int) (blokjePlus.getLocation().y));
-			// plons.play();
+
 			za.start(true, x - za.getLocation().x);
 			tc.verhoog();
 			tm.tempPlus();
@@ -500,9 +500,9 @@ System.out.println("p22 setState");
 		{
 			int x = blokjeSleepMin.getLocation().x;
 			blokjeSleepMin.setLocation((int) (blokjeMin.getLocation().x), (int) (blokjeMin.getLocation().y));
-			// plons.play();
-			za.start(false, x - za.getLocation().x);
 
+			za.start(false, x - za.getLocation().x);
+			
 			tc.verlaag();
 			tm.tempMin();
 			eindTemp.verlaag();

@@ -53,7 +53,7 @@ public class VulKrommeTek extends TekenObjectTek
 	public Hashtable<String,Object> getState()
 	{
 		Hashtable<String,Object> h = new Hashtable<String,Object>();
-		h.put("soort", "Veelhoek");
+		h.put("soort", "VulKromme");
 		h.put("lijnkleur", new String("rgb(" + lijnkleur.getRed()+ "," + lijnkleur.getGreen() + "," + lijnkleur.getBlue() + ")"));
 		h.put("vulkleur", new String("rgb(" + vulkleur.getRed()+ "," + vulkleur.getGreen() + "," + vulkleur.getBlue() + ")"));
 		h.put("omlijnd", new Boolean(isOmlijnd));

@@ -62,20 +62,39 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 	
 	Tekening blokjePlus;
 	Hashtable<String,Object> blokjePlusHash;
+	Tekening blokjePlus24;
+	Hashtable<String,Object> blokjePlus24Hash;
 	Tekening blokjeMin;
 	Hashtable<String,Object> blokjeMinHash;
+	Tekening blokjeMin24;
+	Hashtable<String,Object> blokjeMin24Hash;
 	Tekening beginPot;
 	Hashtable<String,Object> beginEindPotHash;
 	Tekening potErin;
 	Hashtable<String,Object> potErinHash;
 	Tekening potEruit;
 	Hashtable<String,Object> potEruitHash;
+	Tekening emmer;
+	Hashtable<String,Object> emmerHash;
+	Tekening emmerKlein;
+	Hashtable<String,Object> emmerKleinHash;
 	Tekening vloer;
 	Hashtable<String,Object> vloerHash;
+	Tekening vloer23;
+	Hashtable<String,Object> vloer23Hash;
 	Tekening potinhoud;
 	Hashtable<String,Object> potinhoudHash;
+	Tekening potinhoud23;
+	Hashtable<String,Object> potinhoud23Hash;
+	Tekening potinhoud24;
+	Hashtable<String,Object> potinhoud24Hash;
 	Tekening pot;
 	Hashtable<String,Object> potHash;
+	Tekening pot23;
+	Hashtable<String,Object> pot23Hash;
+	Tekening pot24;
+	Hashtable<String,Object> pot24Hash;
+
 		
 	public HeksInteractiePanel()
 	{
@@ -121,21 +140,38 @@ public class HeksInteractiePanel extends JPanel implements InteractiePanel, Inte
 
 		blokjePlus = new Tekening(350, 80, 65, 65, this, "blokjePlus.gif");
 		blokjePlusHash = blokjePlus.getState();
+		blokjePlus24 = new Tekening(300, 30, 40, 40, this, "blokjePlus.gif");
+		blokjePlus24Hash = blokjePlus24.getState();
 		blokjeMin = new Tekening(350, 150, 65, 65, this, "blokjeMin.gif");
 		blokjeMinHash = blokjeMin.getState();
+		blokjeMin24 = new Tekening(300, 80, 40, 40, this, "blokjeMin.gif");
+		blokjeMin24Hash = blokjeMin24.getState();
 		beginPot = new Tekening(35, 85, 90, 65, this, "potzwart.gif");
 		beginEindPotHash = beginPot.getState();
 		potErin = new Tekening(30, 170, 100, 90, this, "potErin.gif");
 		potErinHash = potErin.getState();
 		potEruit = new Tekening(30, 260, 100, 90, this, "potEruit.gif");
 		potEruitHash = potEruit.getState();
-		
+		emmer = new Tekening(400, 25, 140, 155, this, "emmer.gif");
+		emmerHash = emmer.getState();
+		emmerKlein = new Tekening(0, 0, 90, 105, this, "emmer.gif");
+		emmerKleinHash = emmerKlein.getState();
 		vloer = new Tekening(-10, 450, 430, 175, this, "vloer.gif");
 		vloerHash = vloer.getState();
+		vloer23 = new Tekening(-10, 430, 530, 175, this, "vloer.gif");
+		vloer23Hash = vloer23.getState();
 		potinhoud = new Tekening(20, 305, 375, 300, this, "inhoudnieuw.gif");
 		potinhoudHash = potinhoud.getState();
+		potinhoud23 = new Tekening(22, 240, 475, 335, this, "inhoudnieuw.gif");
+		potinhoud23Hash = potinhoud23.getState();
+		potinhoud24 = new Tekening(50, 60, 215, 155, this, "inhoudnieuw.gif");
+		potinhoud24Hash = potinhoud24.getState();
 		pot = new Tekening(20, 280, 380, 330, this, "potnieuw.gif");
 		potHash = pot.getState();
+		pot23 = new Tekening(20, 200, 480, 390, this, "potnieuw.gif");
+		pot23Hash = pot23.getState();
+		pot24 = new Tekening(50, 40, 220, 180, this, "potnieuw.gif");
+		pot24Hash = pot24.getState();
 		
 	}
 
@@ -329,16 +365,23 @@ System.out.println("heip getEditState");
 		h.put("alleeneruit", new Boolean(alleenEruit));
 		
 		h.put("blokjeplushash", blokjePlusHash);
-//if(blokjePlusHash != null)
-//System.out.println("blokjePlusHash != null");	
+		h.put("blokjeplus24hash", blokjePlus24Hash);
 		h.put("blokjeminhash", blokjeMinHash);
+		h.put("blokjemin24hash", blokjeMin24Hash);
 		h.put("begineindpothash", beginEindPotHash);
 		h.put("poterinhash", potErinHash);
 		h.put("poteruithash", potEruitHash);
+		h.put("emmerhash", emmerHash);
+		h.put("emmerkleinhash", emmerKleinHash);
 		
 		h.put("vloerhash", vloerHash);
+		h.put("vloer23hash", vloer23Hash);
 		h.put("potinhoudhash", potinhoudHash);
+		h.put("potinhoud23hash", potinhoud23Hash);
+		h.put("potinhoud24hash", potinhoud24Hash);
 		h.put("pothash", potHash);
+		h.put("pot23hash", pot23Hash);
+		h.put("pot24hash", pot24Hash);
 		
 		return h;
 	}
