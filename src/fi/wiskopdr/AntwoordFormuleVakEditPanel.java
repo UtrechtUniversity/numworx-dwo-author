@@ -217,7 +217,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackEditor.setBackground(new Color(255,255,200));
 		add(feedbackEditor,0);
 		
-		feedbackSizeCB = makeCheckBox(80,352,180,20,WiskOpdr.rb.getString("feedbackSizeCBLabel"),false,true);
+		feedbackSizeCB = makeCheckBox(80,330,180,20,WiskOpdr.rb.getString("feedbackSizeCBLabel"),false,true);
 		
 		vormEditor = new FormuleEditor(true);
         vormEditor.setResizable(true);
