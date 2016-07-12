@@ -1154,7 +1154,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		// if(hasMisconceptions)
 		WiskOpdr.setMisconceptions(misconceptions);
-		WiskOpdr.setCategories(mccCategorieString);
+		WiskOpdr.setMccCategories(mccCategorieString);
 
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);

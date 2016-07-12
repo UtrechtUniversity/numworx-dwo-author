@@ -10,6 +10,7 @@ Class-Path: nabouwenaanzichten.jar
  algebrapijlenopdr.jar 
  flowdiagrams.jar 
  balansfruitapplet.jar 
+ graphtool.jar 
  doorziendwo.jar 
  verknippen.jar 
  vangen.jar 

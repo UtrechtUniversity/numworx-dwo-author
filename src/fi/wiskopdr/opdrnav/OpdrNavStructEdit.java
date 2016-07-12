@@ -359,6 +359,16 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		if (h != null && h.containsKey("categorieString"))
 			categorieString = (String[]) h.get("categorieString");
 
+		if (h != null && h.containsKey("hasMisconceptions"))
+			hasObjectives = ((Boolean) h.get("hasMisconceptions")).booleanValue();
+		if (h != null && h.containsKey("misconceptions"))
+			try	{	
+				misconceptions = (String[][]) h.get("misconceptions");
+			} catch(Exception ex){
+				
+			}
+		if (h != null && h.containsKey("mccCategorieString"))
+			mccCategorieString = (String[]) h.get("mccCategorieString");
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
 		setFont(WiskOpdr.tekstFont);
@@ -367,8 +377,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		WiskOpdr.setCategories(categorieString);
 		
 		WiskOpdr.setMisconceptions(misconceptions);
-		WiskOpdr.setCategories(mccCategorieString);
-
+		WiskOpdr.setMccCategories(mccCategorieString);
+		
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);
 		FormuleParser.zetDiffOperatoren(diffOperatoren);

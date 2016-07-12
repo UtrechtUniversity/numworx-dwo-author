@@ -490,7 +490,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 
 		}
 
-		//tekstArea.layoutTekst();
+		tekstArea.layoutTekst();
 		//tekstArea2.layoutTekst();
 
 		tekstArea.setVisible(true);
@@ -799,7 +799,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 					interactiePanelCs[i].setState(interactiePanelStates[i]);
 			}
 		}
-		//tekstArea.layoutTekst();
+		tekstArea.layoutTekst();
 		//tekstArea2.layoutTekst();
 
 		this.RandomVarNamen = RandomVarNamen;
