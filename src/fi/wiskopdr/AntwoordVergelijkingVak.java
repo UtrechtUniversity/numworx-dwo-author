@@ -2350,7 +2350,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		String op = pijlVakken[stapNr - 1].geefOperator();
 		pijlVakken[stapNr - 1].formuleVak.setEditable(false);
 		Expressie en = pijlVakken[stapNr - 1].formuleVak.geefExpressie();
-		if (op.equals("implicatie") || en == null)
+		if (op.equals("implicatie") ||op.equals("abc") || en == null)
 			return isGelijkwaardig;
 		VergelijkingMeerv verg = formuleVakken[stapNr - 1].geefVergelijking();
 
