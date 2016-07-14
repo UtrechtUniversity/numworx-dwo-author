@@ -2326,8 +2326,8 @@ class GrafiekVeld extends JComponent{
 						else if(!Double.isNaN(dx1) && !Double.isNaN(dy1))
 							curve.lineTo(gtip.beginx, hoogte - gtip.beginy);
 					}
-					if(Double.isNaN(x1)  || gtip.xPositief && x1 < 0 || Double.isNaN(y1) || gtip.yPositief && y1 < 0)
-					{	g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
+					if(Double.isNaN(x1)  || gtip.xPositief && x1 < 0 || Double.isNaN(y1) || gtip.yPositief && y1 < 0) {	
+						g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_PURE);
 						if(gtip.grafiekKleuren)g.setColor(gtip.getTekenColor(j));
 						else g.setColor(gtip.getTekenColor(0));
 						g.setStroke(new BasicStroke(1.2f));
