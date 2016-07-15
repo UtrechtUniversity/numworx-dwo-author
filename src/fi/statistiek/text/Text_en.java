@@ -73,6 +73,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "addcolumnButton", "Add a column" },
 				{ "deleteselectedrowsButton", "Delete selected rows" },
 				{ "pasteclipboardButton", "Paste from clipboard" },
+				{ "copyclipboardButton", "Copy" },
+
 				{ "resetButton", "Reset" },
 				{ "importButton", "Open file" },
 				{ "error", "Error" },

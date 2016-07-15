@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -54,6 +55,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+
+import org.cbook.cbookif.CBookEventHandler;
 
 import fi.statistiek.addcolumndialog.AddColumnDialogController;
 import fi.statistiek.addcolumndialog.AddColumnDialogModel;
@@ -112,13 +115,13 @@ public class StatTable extends JPanel implements StatistiekView,
 	private JPanel editDataPanel;
 	private JButton addRowButton;
 	private JButton addColumnButton;
-	private JButton pasteButton;
+	private JButton pasteButton, copyButton;
 	private JButton deleteRowsButton;
 	private JButton resetButton;
 	// test syl
 	private JButton importButton;
 	private JFileChooser fileChooser;
-
+	private CBookEventHandler handler;
 	/**
 	 * Constructor without viewname
 	 * 
@@ -357,6 +360,12 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.resetButton.setToolTipText(Statistiek.rb.getString("resetButton"));
 		this.resetButton.addActionListener(this);
 		this.editDataPanel.add(this.resetButton);
+		
+		this.copyButton = new JButton(Statistiek.rb.getString("copyclipboardButton"));
+		this.copyButton.setToolTipText(Statistiek.rb.getString("copyclipboardButton"));
+		this.copyButton.addActionListener(this);
+		this.editDataPanel.add(this.copyButton);
+		
 		
 		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
 
@@ -867,6 +876,65 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.statTableModel.fireTableModelEvent();
 	}
 
+	private void copyClipboardData() {
+		int rows = statTableModel.getRowCount();
+		int cols = statTableModel.getColumnCount();
+		StringBuilder sb = new StringBuilder();
+// separators: ; en lf
+		final char eol = '\n';
+		final char eod = ';'; // XXX SPECIFICATIE
+		for(int i = 0; i < rows; i++) {
+			char sep = eol;
+			for(int j = 0; j < cols; j++) {
+				sb.append(sep);
+				sb.append(statTableModel.getValueAt(i, j));
+				sep = eod;
+			}		
+		}
+		{
+			sb.append(eol);
+			final String data = sb.substring(1);
+System.err.println(sb);
+            Clipboard clipboard = null;
+			try {
+				clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+				Transferable transferable = new Transferable() {
+	
+					@Override
+					public DataFlavor[] getTransferDataFlavors() {
+						return new DataFlavor[] { DataFlavor.stringFlavor };
+					}
+	
+					@Override
+					public boolean isDataFlavorSupported(DataFlavor flavor) {
+						return DataFlavor.stringFlavor .equals (flavor);
+					}
+	
+					@Override
+					public Object getTransferData(DataFlavor flavor)
+							throws UnsupportedFlavorException, IOException {
+						return data;
+					}};
+				ClipboardOwner clipboardowner = new ClipboardOwner() {
+	
+					@Override
+					public void lostOwnership(Clipboard clipboard,
+							Transferable contents) {
+					}};
+				clipboard.setContents(transferable, clipboardowner);
+			} catch (Exception se) {
+			}
+ 			
+			statInteractiePanel.fire("text.csv", "content", data);
+			
+		}
+		
+		
+	}
+	
+	
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		String actionCommand = e.getActionCommand();
@@ -920,6 +988,10 @@ public class StatTable extends JPanel implements StatistiekView,
 		else if (e.getSource() == this.pasteButton)
 		{
 			this.pasteClipboardData();
+		}
+		else if (e.getSource() == this.copyButton)
+		{
+			this.copyClipboardData();
 		}
 		else if (actionCommand.equals("sortItem"))
 		{

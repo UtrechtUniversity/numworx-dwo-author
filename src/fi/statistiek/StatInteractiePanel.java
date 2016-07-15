@@ -726,4 +726,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 			return cmd;
 		return localizedCmd;
 	}
+
+	public void fire(String command, String key, Object value) {
+		cbookEventHandler.fire(command, key, value);
+	}
 }
