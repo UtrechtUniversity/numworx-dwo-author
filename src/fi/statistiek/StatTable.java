@@ -342,6 +342,11 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.deleteRowsButton.setToolTipText(Statistiek.rb.getString("deleteselectedrowsButton"));
 		this.deleteRowsButton.addActionListener(this);
 		this.editDataPanel.add(this.deleteRowsButton);
+
+		this.copyButton = new JButton(Statistiek.rb.getString("copyclipboardButton"));
+		this.copyButton.setToolTipText(Statistiek.rb.getString("copyclipboardButton"));
+		this.copyButton.addActionListener(this);
+		this.editDataPanel.add(this.copyButton);
 		
 		this.pasteButton = new JButton(Statistiek.rb.getString("pasteclipboardButton"));
 		this.pasteButton.setToolTipText(Statistiek.rb.getString("pasteclipboardButton"));
@@ -361,10 +366,6 @@ public class StatTable extends JPanel implements StatistiekView,
 		this.resetButton.addActionListener(this);
 		this.editDataPanel.add(this.resetButton);
 		
-		this.copyButton = new JButton(Statistiek.rb.getString("copyclipboardButton"));
-		this.copyButton.setToolTipText(Statistiek.rb.getString("copyclipboardButton"));
-		this.copyButton.addActionListener(this);
-		this.editDataPanel.add(this.copyButton);
 		
 		
 		this.editDataPanel.setVisible(this.statTableModel.isDataEditable());
@@ -926,11 +927,10 @@ System.err.println(sb);
 			} catch (Exception se) {
 			}
  			
-			statInteractiePanel.fire("text.csv", "content", data);
+			if(statInteractiePanel != null)
+				statInteractiePanel.fire("text.csv", "content", data);
 			
 		}
-		
-		
 	}
 	
 	
