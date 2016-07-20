@@ -414,6 +414,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    	produceAction("resize");
 	    }
 	    //setCaret(caretPos);
+	    setEditable(editable); // Keep editable flag in regels[]
 	    if(widthResizable)zetMaat();
 	}
 	
