@@ -867,7 +867,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		Expressie[][] oplossingen = bepaalOplossingen(formuleVak.toString());
 		if(oplossingen == null)
 			return false;
-		boolean[] oplossingenCorrect = new boolean[oplossingen.length];
+		boolean[] oplossingenCorrect = new boolean[juisteOplossingen.length];
 		for(int i = 0; i < oplossingenCorrect.length; i++)
 			oplossingenCorrect[i] = false;
 		for(int i = 0; i < oplossingen.length; i++)
