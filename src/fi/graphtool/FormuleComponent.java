@@ -807,6 +807,13 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		parseFormule("$f@", 0, setState);
 	}
 	
+	public void updateFormulas() {
+		for (int i=0; i<aantalRegels; i++ ) {
+			parseFormule(i, false);
+		}
+	}
+
+	
 	public void parseFormule(int regelnummer, boolean setState)
 	{	//System.out.println("parseFormule(" + regelnummer + ", " + Boolean.toString(setState));
 		if(regelnummer >= formuleVakken.length)

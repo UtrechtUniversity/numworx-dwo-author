@@ -2239,7 +2239,10 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 	public Hashtable getState() {	
 			
-		if(!("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))) kijkNa(false);
+		if(!("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))) {
+			formuleComponent.updateFormulas();
+			kijkNa(false);
+		}
 		
 		double beginxDocent = 1;
 		double beginyDocent = 1;
@@ -3972,8 +3975,10 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 
 	public void stop() {
-		if(mode != 1)
+		if(mode != 1) {
+			formuleComponent.updateFormulas();
 			kijkNa();
+		}
 	}
 
 	public void start() {
