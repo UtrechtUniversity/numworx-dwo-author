@@ -1,5 +1,6 @@
 package fi.wiskopdr.tekstobjects;
 
+import fi.wiskopdr.SimpleSwingBrowser;
 import fi.wiskopdr.WiskOpdr;
 import netscape.javascript.JSObject;
 
@@ -82,8 +83,16 @@ public class Link
         args[4] = "yes";
         String result = null;
 		if(wiskOpdr.getJSObject()!=null) result = (String)((JSObject) wiskOpdr.getJSObject()).call("NewPopUp", args);
-        //popUpVisible = true;
-		//if(wiskOpdr.getJSObject()!=null) result = (String)((JSObject)wiskOpdr.getJSObject()).call("FocusPopUp",args);
+		else
+		{
+			SimpleSwingBrowser browser = new SimpleSwingBrowser();
+			browser.setSize(width, height);
+			browser.setAdressFieldVisible(false);
+			browser.setStatusBarVisible(false);
+			browser.setVisible(true);
+			browser.loadURL(url);
+			
+		}
 		
 	}
 	

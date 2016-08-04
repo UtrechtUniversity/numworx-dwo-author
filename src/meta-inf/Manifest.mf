@@ -8,20 +8,42 @@ Application-Library-Allowable-Codebase: *
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.toegang.nu *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost 59.64.59.60 *.camedu.org.cn dme.mathhouse.org
 Class-Path: nabouwenaanzichten.jar 
  algebrapijlenopdr.jar 
+ algebraexpressies.jar 
+ heks.jar 
+ waarmakersdwo.jar 
+ verknippen.jar 
+ spot_problems_dwo.jar 
  flowdiagrams.jar 
+ javalogoweb.jar 
+ blokkenprogramma.jar 
+ grafiek3dtest.jar 
+ sliderwidget.jar 
+ draaibank.jar 
+ formstruct.jar 
+ kladje.jar 
  balansfruitapplet.jar 
  graphtool.jar 
  doorziendwo.jar 
  verknippen.jar 
  vangen.jar 
  geomalgebra.jar 
+ geogebra.jar 
+ geogebra_main.jar 
+ geogebra_gui.jar 
+ geogebra_properties.jar 
+ geogebra_export.jar 
+ geogebra_cas.jar 
+ geogebra_algos.jar 
+ geogebra_javascript.jar 
+ jlm_greek.jar 
+ jlm_cyrillic.jar 
+ jlatexmath.jar 
  geogebra3.jar 
  geogebra3_main.jar 
  geogebra3_gui.jar 
  geogebra3_cas.jar 
  geogebra3_properties.jar 
  geogebra3_export.jar 
- geogebra_cas.jar 
  geomalgebra1d.jar 
  normaleverdeling.jar 
  binomverdeling.jar 
@@ -33,5 +55,6 @@ Class-Path: nabouwenaanzichten.jar
  kansbomen.jar 
  calculatordwo.jar 
  statistiek.jar 
+ statsim.jar 
  oppervlaktealgebra.jar 
  stroomdiagrammen.jar 
