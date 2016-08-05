@@ -58,3 +58,6 @@ Class-Path: nabouwenaanzichten.jar
  statsim.jar 
  oppervlaktealgebra.jar 
  stroomdiagrammen.jar 
+ vergroten.jar 
+ figuursnijden.jar 
+ omtrekapplet.jar 
