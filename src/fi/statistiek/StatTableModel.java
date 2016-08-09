@@ -1028,8 +1028,11 @@ public class StatTableModel implements TableModel
 		int count = this.rowCount;
 		for (int i = count-1 ; i >-1; i--)
 		{
-			removeRow(i);
+			removeRowWithoutEvent(i);
 		}
+		
+		// only one event at the end
+		this.fireEvent(new TableModelEvent(this));
 	}
 
 	/**
