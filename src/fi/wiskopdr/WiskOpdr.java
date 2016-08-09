@@ -48,6 +48,7 @@ import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormEditComponentIF;
 import fi.beans.scorm.WNScormAPI;
 import fi.beans.wnwidgets.NWButtonUI;
+import fi.dwo.dwojapplet.domain.DWO;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
 import fi.wiskopdr.expressies.Functie;
@@ -145,7 +146,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static final String CAS_IDEAS = "ideas", CAS_LOCAL = "local";
 	public static String doCAS;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		
 		int width = 800;
 		int height = 600;
 		ScormEditMainFrame mf = new ScormEditMainFrame(new WiskOpdr(), width, height);

@@ -37,7 +37,11 @@ public class MainFrame extends Frame   implements WindowListener, AppletStub, Ap
     
     // AppletStub methodes
     public boolean isActive(){return true;}
-    public URL getDocumentBase(){return null;}
+    public URL getDocumentBase(){try {
+		return new File(".").toURL();
+	} catch (MalformedURLException e) {
+		return null;
+	}}
 	public URL getCodeBase(){return null;}
 	public String getParameter(String name){return null;}
     public void appletResize( int width, int height ){}
