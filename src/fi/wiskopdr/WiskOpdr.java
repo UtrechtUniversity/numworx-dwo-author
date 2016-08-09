@@ -48,7 +48,6 @@ import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormEditComponentIF;
 import fi.beans.scorm.WNScormAPI;
 import fi.beans.wnwidgets.NWButtonUI;
-import fi.dwo.dwojapplet.domain.DWO;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
 import fi.wiskopdr.expressies.Functie;
