@@ -18,6 +18,7 @@ import java.net.URL;
  
 import static javafx.concurrent.Worker.State.FAILED;
   
+@SuppressWarnings("restriction")
 public class SimpleSwingBrowser extends JFrame {
  
     private final JFXPanel jfxPanel = new JFXPanel();

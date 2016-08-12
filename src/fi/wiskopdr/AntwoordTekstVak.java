@@ -8,9 +8,12 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -24,6 +27,7 @@ import javax.swing.JTextField;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
+import org.cbook.cbookif.Constants;
 
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -42,7 +46,7 @@ import fi.wiskopdr.tekstobjects.TekstArea;
 import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
-public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
+public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware, FocusListener
 {
 	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 
@@ -143,6 +147,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		antwoordTF.setBorder(BorderFactory.createLineBorder(new Color(153, 153, 153)));
 		antwoordTF.setBounds(0, 0, 80, 21);
 		antwoordTF.addActionListener(this);
+		antwoordTF.addFocusListener(this);
 		if ("GR".equals(WiskOpdr.deployVariant))
 			antwoordTF.setBackground(new Color(230, 230, 230));
 		//add(antwoordTF);
@@ -443,13 +448,17 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			formuleVak.setFGColor(Color.gray);
 		}
 		
+		zetTekst(antwoord);
+
+		if (ingevuld && (mode == 0 || nagekeken))
+			kijkNa();
+	}
+
+	private void zetTekst(String antwoord) {
 		if (formuleMode)
 			formuleVak.vulVak(antwoord);
 		else
 			antwoordTF.setText(antwoord);
-
-		if (ingevuld && (mode == 0 || nagekeken))
-			kijkNa();
 	}
 
 	public void setEditState(Hashtable h)
@@ -729,7 +738,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	}
 
 	public void start()
-	{
+	{		
 	}
 
 	public void destroy()
@@ -1039,6 +1048,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	{
 		if (e.getSource() == antwoordTF)
 		{
+			if(cbookEventHandler.hasListeners("text"))
+				fire(antwoordTF.getText());
 			if (mode == 0 || mode == 1)
 			{
 				changed = true;
@@ -1055,6 +1066,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		}
 		else if (e.getSource() == formuleVak && e.getActionCommand().equals("ingevuld"))
 		{
+			if(cbookEventHandler.hasListeners("text"))
+				fire(formuleVak.toString());
 			if (mode == 0 || mode == 1)
 			{
 				kijkNa();
@@ -1094,6 +1107,18 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 	}
 
+	/**
+	 * fire a "text" 
+	 * @param text
+	 */
+	private void fire(String text) {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("content", text);
+		if(logID != null)
+			parameters.put(Constants.LOG_ID, logID);
+		cbookEventHandler.fire("text", parameters);
+	}
+
 	//ActionProducer
 	private ActionListener actionListener = null;
 
@@ -1116,17 +1141,17 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	}
 	//
 
-	// CrossWidget Communivcation doet nog niets
+	// CrossWidget Communication doet nog niets
 	@Override
 	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
 		if(command.startsWith("text"))
 		{
-			Map map = (Map)event.getParameters();
+			Map<String, ?> map = event.getParameters();
 			if(map!=null)
-			{	
-				
-				
+			{		
+				String textString = (String)map.get("content");
+				zetTekst(textString);
 			}
 		}
 		else if(command.startsWith("action.setNotEditable"))
@@ -1147,13 +1172,11 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	@Override
 	public void addCBookEventListener(CBookEventListener listener, String command) {
 		cbookEventHandler.addCBookEventListener(listener, command);
-		
 	}
 
 	@Override
 	public void removeCBookEventListener(CBookEventListener listener,String command) {
 		cbookEventHandler.removeCBookEventListener(listener, command);
-		
 	}
 
 	@Override
@@ -1178,5 +1201,18 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		if(localizedCmd==null)
 			return cmd;
 		return localizedCmd;
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (cbookEventHandler.hasListeners("text"))
+		if(e.getSource() == antwoordTF) {
+			fire(antwoordTF.getText());
+		}
+		
 	}
 }
