@@ -1112,7 +1112,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	 * @param text
 	 */
 	private void fire(String text) {
-		Map<String, String> parameters = new HashMap<>();
+		Map<String, String> parameters = new HashMap<String,String>();
 		parameters.put("content", text);
 		if(logID != null)
 			parameters.put(Constants.LOG_ID, logID);
