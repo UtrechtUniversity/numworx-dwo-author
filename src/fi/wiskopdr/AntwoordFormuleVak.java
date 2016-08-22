@@ -916,17 +916,20 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
         //this.gekozenStartString = startString;
         this.answerModels = answerModels;
         
-        if(answerModels!=null)
+        if (answerModels!=null)
         {
         	boolean[][] logMisconceptions = null;
-        	for(int i=0 ; i<answerModels.length ; i++)
-        	{	if(answerModels[i].containsKey("logMisconceptions"))
-        		{	logMisconceptions = (boolean[][])answerModels[i].get("logMisconceptions");
-        			for( int j=0 ; j<logMisconceptions.length && j<possibleMisconceptions.length ; j++)
-        			{	for( int k=0 ; k<logMisconceptions[j].length && k<possibleMisconceptions[j].length; k++)
+        	for (int i = 0; i < answerModels.length; i++)
+        	{	
+        		if (answerModels[i] != null && answerModels[i].containsKey("logMisconceptions"))
+        		{	
+        			logMisconceptions = (boolean[][])answerModels[i].get("logMisconceptions");
+        			for (int j = 0; j < logMisconceptions.length && j < possibleMisconceptions.length; j++)
+        			{	
+        				for (int k = 0; k < logMisconceptions[j].length && k < possibleMisconceptions[j].length; k++)
             			{	
-        				if(logMisconceptions[j][k])
-        					possibleMisconceptions[j][k] = 1;
+        					if (logMisconceptions[j][k])
+        						possibleMisconceptions[j][k] = 1;
             			}
         			}
         		}
