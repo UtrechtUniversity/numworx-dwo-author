@@ -110,6 +110,7 @@ public class Vermenigvuldiging extends Expressie
 		if(v2.size()>0) g2 = ((Expressie)v2.elementAt(0));
 		if(g2 instanceof BasisExpressie && !Double.isNaN(g2.geefWaarde()) 	&& !(g2 instanceof PI) 	&& !(g2 instanceof E)
 		   || g2 instanceof Macht && !Double.isNaN(g2.kind1.geefWaarde()) 
+		   || g2 instanceof Faculteit
 		   || Algebra.isBreukPlusGetal(g2)
 		   || FormuleParser.isWoordFormule()
 		   || FormuleParser.isTweeHoofdletterVariabele())
