@@ -80,7 +80,7 @@ public class SimpleSwingBrowser extends JFrame {
         getContentPane().add(panel);
         
         setPreferredSize(new Dimension(1024, 600));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
 
     }
