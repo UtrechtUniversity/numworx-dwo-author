@@ -695,11 +695,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean visible = true;
 
 		Hashtable style = null;
-		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
-		if(styleString!=null)
-			if(TekstVakPanel.styles.containsKey(styleString)) 
+		if(h.containsKey("styleString")) 
+			styleString = (String)h.get("styleString");
+		if(TekstVakPanel.styles!=null && styleString!=null)
+		{	if(TekstVakPanel.styles.containsKey(styleString)) 
 				style = (Hashtable)TekstVakPanel.styles.get(styleString);
-			
+		}	
 		if(style!=null)	
 		{	if(style.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)style.get("randZichtbaar")).booleanValue();
 			if(style.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)style.get("bgColorZichtbaar")).booleanValue();
@@ -2444,10 +2445,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
-		if(styleString!=null)
-			if(TekstVakPanel.styles.containsKey(styleString)) 
+		if(TekstVakPanel.styles!=null && styleString!=null)
+		{	if(TekstVakPanel.styles.containsKey(styleString)) 
 				style = (Hashtable)TekstVakPanel.styles.get(styleString);
-			
+		}	
 		if(style!=null)	
 		{	if(style.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)style.get("randZichtbaar")).booleanValue();
 			if(style.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)style.get("bgColorZichtbaar")).booleanValue();

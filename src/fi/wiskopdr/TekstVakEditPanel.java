@@ -136,6 +136,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private StyleManager styleManager;
 	private JLabel styleSettingsLabel;
 	private JButton editStylesButton;
+	private DialogFacade styleEditorPopupFrame;
+	private Hashtable noStyleEditState = null;
+	private Hashtable currentStyleEditState = null;
+	private JLabel stylesLabel;
 	
 	
 	
@@ -174,7 +178,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JCheckBox checkUitklapVakCB;
 	
 	private JPanel optionsPanel;
-	private JPanel layoutOptionsPanel, interactionOptionsPanel; 
+	private JPanel layoutOptionsPanel, layoutOptionsContainer, interactionOptionsPanel; 
 	private JTabbedPane tabbedPane;
 	
 	private int defaultWidth = 1000;
@@ -236,11 +240,19 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tabbedPane.setOpaque(false);
 		optionsPanel.add(tabbedPane);
 		
+		layoutOptionsContainer = new JPanel();
+		layoutOptionsContainer.setLayout(null);
+		layoutOptionsContainer.setBackground(new Color(240,240,240));
+		layoutOptionsContainer.setPreferredSize(new Dimension(defaultOpWidth, defaultOpHeight - 30));
+		
 		layoutOptionsPanel = new JPanel();
 		layoutOptionsPanel.setLayout(null);
 		layoutOptionsPanel.setBackground(new Color(240,240,240));		
-		layoutOptionsPanel.setPreferredSize(new Dimension(defaultOpWidth, defaultOpHeight - 30));
-		tabbedPane.add(WiskOpdr.rb.getString("TVEP_layoutLabel"), layoutOptionsPanel);
+		layoutOptionsPanel.setBounds(0,0,defaultOpWidth, defaultOpHeight - 30);
+		//layoutOptionsPanel.setLocation(0,0);
+		
+		layoutOptionsContainer.add(layoutOptionsPanel);
+		tabbedPane.add(WiskOpdr.rb.getString("TVEP_layoutLabel"), layoutOptionsContainer);
 		
 		interactionOptionsPanel = new JPanel();
 		interactionOptionsPanel.setLayout(null);	
@@ -615,13 +627,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		kiesStyleChoice = new JComboBox();
 		kiesStyleChoice.setFont(ifFont);
 		kiesStyleChoice.addItem("No style");
-		for (String key : TekstVakPanel.styles.keySet()) 
-		{	kiesStyleChoice.addItem(key);
-		}
+		if(TekstVakPanel.styles != null)
+			for (String key : TekstVakPanel.styles.keySet()) 
+			{	kiesStyleChoice.addItem(key);
+			}
 		//kiesStyleChoice.addItem("Style 1");
 		kiesStyleChoice.addActionListener(this);
-		kiesStyleChoice.setBounds(10,4,190,20);
-		kiesStyleChoice.setVisible(false);
+		kiesStyleChoice.setBounds(50,4,150,20);
+		kiesStyleChoice.setVisible(true);
 		layoutOptionsPanel.add(kiesStyleChoice);
 		
 		styleManager = new StyleManager(this, kiesStyleChoice);
@@ -639,14 +652,52 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		styleSettingsLabel.setVisible(false);
 		layoutOptionsPanel.add(styleSettingsLabel);
 		
+		stylesLabel = new JLabel("Styles:");
+		stylesLabel.setBounds(0,2,50,25);
+		stylesLabel.setFont(titelFont);
+		//stylesLabel.setVisible(false);
+		layoutOptionsPanel.add(stylesLabel);
+		
 		editStylesButton = new JButton("edit");
 		editStylesButton.setBounds(210,4,50,20);
 		editStylesButton.setMargin(new Insets(0, 0, 0, 0));
 		editStylesButton.addActionListener(this);
 		editStylesButton.setFont(ifFont);
-		editStylesButton.setVisible(false);
+		editStylesButton.setVisible(true);
 		layoutOptionsPanel.add(editStylesButton);
 		
+	}
+	
+	public void maakStyleEditorPopupFrame()
+	{	
+		styleEditorPopupFrame = DialogFacade.newInstance(this, "", false);
+		
+		
+		styleEditorPopupFrame.getContentPane().setLayout(null);
+		styleEditorPopupFrame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e)
+			{   styleManager.setVisible(false);
+		    	kiesStyleChoice.setBounds(10,4,190,20);
+				layoutOptionsPanel.add(kiesStyleChoice);
+				editStylesButton.setVisible(true);
+				styleSettingsLabel.setVisible(false);
+				setStyleManageMode(false);
+				{	styleEditorPopupFrame.setVisible(false);
+					layoutOptionsContainer.add(layoutOptionsPanel);
+					styleEditorPopupFrame.dispose();
+				}
+				revalidate();
+			}
+		});
+		/*styleEditorPopupFrame.addComponentListener(new ComponentAdapter(){
+			public void componentResized(ComponentEvent e)
+			{   int x = 0;
+				int y = 0;
+				int b = startEditorPopupFrame.getSize().width - startEditorPopupFrame.getInsets().left - startEditorPopupFrame.getInsets().right;
+				int h = startEditorPopupFrame.getSize().height - startEditorPopupFrame.getInsets().top - startEditorPopupFrame.getInsets().bottom;
+				startEditor.setBounds(x,y,b,h);
+			}
+		});*/
 	}
 	
 	private JCheckBox maakCheckBox(String s, int x, int y, int b, int h, boolean selected, JPanel parent)
@@ -662,9 +713,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		return checkbox;
 	}
 	
-	public void setTableMode(boolean b)
-	{	tableMode = b;
-	}
+	//public void setTableMode(boolean b)
+	//{	tableMode = b;
+	//}
 	
 	public Vector geefInteractiePanels()
 	{	Vector v = null; 
@@ -821,6 +872,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		if(styleString!=null)
 			h.put("styleString", styleString);
+		else
+			h.remove("styleString");
 		
 		{
 			h.put("randZichtbaar", new Boolean(randZichtbaar));
@@ -897,10 +950,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String styleString = null;
 		if(kiesStyleChoice.getSelectedIndex()>0)
 			styleString = (String)kiesStyleChoice.getSelectedItem();
-		if(styleString!=null)
-			if(TekstVakPanel.styles.containsKey(styleString));
+		if(TekstVakPanel.styles!=null && styleString!=null)
+		{	if(TekstVakPanel.styles.containsKey(styleString))
 				style = (Hashtable)TekstVakPanel.styles.get(styleString);
-			
+		}	
 		if(style!=null)	
 		{	if(style.containsKey("randZichtbaar")) randZichtbaar = ((Boolean)style.get("randZichtbaar")).booleanValue();
 			if(style.containsKey("bgColorZichtbaar")) bgColorZichtbaar = ((Boolean)style.get("bgColorZichtbaar")).booleanValue();
@@ -1016,7 +1069,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
-		if(styleString!=null)
+		if(styleString!=null && TekstVakPanel.styles!=null)
 			if(TekstVakPanel.styles.containsKey(styleString)) 
 				style = (Hashtable)TekstVakPanel.styles.get(styleString);
 			
@@ -1160,8 +1213,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
 			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
-		
-		if(styleString!=null && TekstVakPanel.styles.containsKey(styleString))
+		if(styleString!=null && TekstVakPanel.styles !=null && TekstVakPanel.styles.containsKey(styleString))
 			kiesStyleChoice.setSelectedItem(styleString);
 		
 		randZichtbaarCB.setSelected(randZichtbaar);
@@ -1907,17 +1959,47 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	//styles = stylesCB.isSelected();
 			//kiesStyleChoice.setSelectedIndex(0);
 			//kiesStyleChoice.setVisible(stylesCB.isSelected()); 
+	    	if(kiesStyleChoice.getSelectedIndex()==0)
+	    		noStyleEditState = getEditState();
+	    	else
+	    		currentStyleEditState = getEditState(); 
 			styleManager.setVisible(true);
 			styleSettingsLabel.setVisible(true);
 			setStyleManageMode(true);
 			//addStyleButton.setVisible(stylesCB.isSelected());
 			editStylesButton.setVisible(false);
+			
+				//if(e.getActionCommand().equals("vergroot"))
+				{	if(styleEditorPopupFrame==null)	maakStyleEditorPopupFrame();
+					Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+					int x = layoutOptionsPanel.getLocationOnScreen().x + Math.min(-50,screenSize.width - (getLocationOnScreen().x + defaultOpWidth));
+					int y = layoutOptionsPanel.getLocationOnScreen().y + Math.min(30,screenSize.height - (getLocationOnScreen().y + defaultOpHeight));
+					styleEditorPopupFrame.setVisible(true);
+					//startLabel.setVisible(false);
+					styleEditorPopupFrame.getContentPane().add(layoutOptionsPanel);
+					styleEditorPopupFrame.pack();
+					styleEditorPopupFrame.setSize(defaultOpWidth, defaultOpHeight);
+					styleEditorPopupFrame.setLocation(x,y);
+					
+				}
+				/*if(e.getActionCommand().equals("verklein"))
+				{	startEditorPopupFrame.setVisible(false);
+					startLabel.setVisible(true);
+					startEditor.setBounds(5,50,470,105);
+			        startLabel.setBounds(5,30,770,20);
+					add(startEditor);
+					startEditorPopupFrame.dispose();
+				}*/
+				revalidate();
+	            //repaint();
+			
 			repaint();
 		}
 	   
 	    if(e.getSource().equals(kiesStyleChoice))
 		{	if(kiesStyleChoice.getSelectedIndex()==0)
 			{	enableStyleSettings(true);
+				tekstVakPanel.setEditState(getEditState());
 			}
 			else
 			{	
@@ -1928,13 +2010,27 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			
 	    	repaint();
 		}
-	    if(e.getSource().equals(styleManager))
+	    if(e.getSource().equals(styleManager)) //close
 		{	styleManager.setVisible(false);
-	    	kiesStyleChoice.setBounds(10,4,190,20);
+			if(kiesStyleChoice.getSelectedIndex()==0 && noStyleEditState!=null)
+			{	if(noStyleEditState!=null)
+					setEditState(noStyleEditState);
+			}
+			else if(!styleManager.styleIsSaved() && currentStyleEditState!=null)
+			{	setEditState(currentStyleEditState);
+			}
+			
+	    	kiesStyleChoice.setBounds(50,4,150,20);
 			layoutOptionsPanel.add(kiesStyleChoice);
 			editStylesButton.setVisible(true);
 			styleSettingsLabel.setVisible(false);
 			setStyleManageMode(false);
+			{	styleEditorPopupFrame.setVisible(false);
+				layoutOptionsContainer.add(layoutOptionsPanel);
+				styleEditorPopupFrame.dispose();
+			}
+			revalidate();
+			tekstVakPanel.setEditState(getEditState());
 		}
 
 	}
@@ -2014,8 +2110,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	}
 	
 	private void removeStyleAction()
-	{
-		TekstVakPanel.styles.remove((String)kiesStyleChoice.getSelectedItem());
+	{	if(TekstVakPanel.styles !=null)
+			TekstVakPanel.styles.remove((String)kiesStyleChoice.getSelectedItem());
 		kiesStyleChoice.setSelectedIndex(0);
 	}
 	

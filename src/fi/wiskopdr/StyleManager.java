@@ -31,6 +31,8 @@ public class StyleManager extends JPanel implements ActionListener {
 	private Font ifFont = new Font("SansSerif",Font.PLAIN,12);
 	private Font titelFont = new Font("SansSerif", Font.BOLD, 14);
 	
+	private boolean styleSaved = false;
+	
 	public StyleManager(TekstVakEditPanel tvep, JComboBox styleChoice){
 		this.tvep = tvep;
 		this.styleChoice = styleChoice;
@@ -107,12 +109,21 @@ public class StyleManager extends JPanel implements ActionListener {
 				saveStyleButton.setEnabled(styleChoice.getSelectedIndex()>0);
 				styleChoice.setBounds(10,35,250,20);
 				add(styleChoice);
+				styleSaved = false;
 			}
+		}
+		
+		public boolean styleIsSaved()
+		{
+			return styleSaved;
 		}
 		
 		private void saveStyleAction() {
 			Hashtable h = tvep.getStyleSettings();
+			if(TekstVakPanel.styles==null)
+				TekstVakPanel.styles = new Hashtable();
 			TekstVakPanel.styles.put((String)styleChoice.getSelectedItem(),h);
+			styleSaved = true;
 		}
 		
 		private void removeStyleAction() {

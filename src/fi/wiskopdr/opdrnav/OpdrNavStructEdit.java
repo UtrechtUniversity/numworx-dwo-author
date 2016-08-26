@@ -322,6 +322,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
+		Hashtable styles = null;
 
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -369,6 +370,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			}
 		if (h != null && h.containsKey("mccCategorieString"))
 			mccCategorieString = (String[]) h.get("mccCategorieString");
+		if (h != null && h.containsKey("TekstVakPanelStyles"))
+			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
 		setFont(WiskOpdr.tekstFont);
@@ -378,6 +382,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
 		WiskOpdr.setMisconceptions(misconceptions);
 		WiskOpdr.setMccCategories(mccCategorieString);
+		
+		if(styles != null)
+			TekstVakPanel.styles = styles;
 		
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);
@@ -470,6 +477,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opnieuwMogelijk = this.opnieuwMogelijk;
 		gekoppeldeOpdrachten = this.gekoppeldeOpdrachten;
 		instellingen = instellingenPanel.geefInstellingen();
+		instellingen.put("TekstVakPanelStyles", TekstVakPanel.styles);
 
 		Hashtable h = new Hashtable();
 		h.put("aantalActiviteiten", new String("" + aantalActiviteiten));
