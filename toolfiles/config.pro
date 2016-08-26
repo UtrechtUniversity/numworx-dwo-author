@@ -1,7 +1,7 @@
 -injars ..\output\classes
 -outjars ..\output\jar\balansfruitapplet.jar
 
--libraryjars <java.home>/lib/rt.jar
+-libraryjars C:\Program Files\Java\jre7\lib\rt.jar
 -libraryjars ..\lib\mayscript.jar
 
 -target 1.6
