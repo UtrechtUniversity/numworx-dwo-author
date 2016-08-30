@@ -4,12 +4,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+import javafx.embed.swing.JFXPanel;
+
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
+import fi.wiskopdr.SimpleSwingBrowser;
 import fi.wiskopdr.WiskOpdr;
 
 public class TekstLinkVak extends TekstDeelVak implements ActionListener
@@ -162,6 +166,24 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 			super.setOpaque(true);
 			super.setBackground(Color.LIGHT_GRAY);
 			linkRegel.setLocation(1,1);
+// embedded browser!			
+			remove(linkRegel);
+			final Link link = linkRegel.getLink();
+			final SimpleSwingBrowser ssb = new SimpleSwingBrowser();
+			JFXPanel panel = ssb.getBrowserPanel();
+			//Container panel = ssb.getContentPane();
+			add(panel);
+			panel.invalidate();
+			panel.setBounds(0, 0, width, height); // o i d
+			panel.setPreferredSize(getSize());
+			panel.validate(); panel.doLayout();
+			SwingUtilities.invokeLater(
+			new Runnable() {
+				public void run() {
+					ssb.loadURL(link.getUrlString()[0]);
+				}
+			});
+			
 			/*remove(linkRegel);
 			/*remove(linkRegel);
 			add(js);
