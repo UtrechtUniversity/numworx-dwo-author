@@ -185,7 +185,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int defaultIpHeight = 450;
 	private int defaultIpWidth = 680; //hier stond 270
 	private int defaultOpWidth = 280;
-	private int defaultOpHeight= 580;
+	private int defaultOpHeight= 610;
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
@@ -284,7 +284,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
 		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
-		//stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 200,4,70,20, styles, layoutOptionsPanel);
+		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, styles, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
@@ -634,7 +634,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//kiesStyleChoice.addItem("Style 1");
 		kiesStyleChoice.addActionListener(this);
 		kiesStyleChoice.setBounds(50,4,150,20);
-		kiesStyleChoice.setVisible(true);
+		kiesStyleChoice.setVisible(false);
 		layoutOptionsPanel.add(kiesStyleChoice);
 		
 		styleManager = new StyleManager(this, kiesStyleChoice);
@@ -655,7 +655,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		stylesLabel = new JLabel("Styles:");
 		stylesLabel.setBounds(0,2,50,25);
 		stylesLabel.setFont(titelFont);
-		//stylesLabel.setVisible(false);
+		stylesLabel.setVisible(false);
 		layoutOptionsPanel.add(stylesLabel);
 		
 		editStylesButton = new JButton("edit");
@@ -663,7 +663,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setMargin(new Insets(0, 0, 0, 0));
 		editStylesButton.addActionListener(this);
 		editStylesButton.setFont(ifFont);
-		editStylesButton.setVisible(true);
+		editStylesButton.setVisible(false);
 		layoutOptionsPanel.add(editStylesButton);
 		
 	}
@@ -677,7 +677,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		styleEditorPopupFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e)
 			{   styleManager.setVisible(false);
-		    	kiesStyleChoice.setBounds(10,4,190,20);
+		    	kiesStyleChoice.setBounds(50,4,150,20);
 				layoutOptionsPanel.add(kiesStyleChoice);
 				editStylesButton.setVisible(true);
 				styleSettingsLabel.setVisible(false);
@@ -1955,6 +1955,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			repaint();
 		}
 	    
+	    if(e.getSource().equals(stylesCB))
+		{	editStylesButton.setVisible(stylesCB.isSelected());
+			kiesStyleChoice.setVisible(stylesCB.isSelected());
+			stylesLabel.setVisible(stylesCB.isSelected());
+			repaint();
+		}
+	    
 	    if(e.getSource().equals(editStylesButton))
 		{	//styles = stylesCB.isSelected();
 			//kiesStyleChoice.setSelectedIndex(0);
@@ -2128,6 +2135,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB.setVisible(!b);
 		inklapbaarCB.setVisible(!b);
 		visibleCB.setVisible(!b);
+		stylesCB.setVisible(!b);
 		
 		knopImageButton1.setVisible(!b && inklapbaarCB.isSelected());
 		knopImageButton2.setVisible(!b && inklapbaarCB.isSelected());

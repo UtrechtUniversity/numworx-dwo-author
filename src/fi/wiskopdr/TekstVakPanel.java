@@ -712,8 +712,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
 			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
 		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
-		    if (h.containsKey("anderFont"))
-				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
+		    if (style.containsKey("anderFont"))
+				anderFont = ((Boolean) style.get("anderFont")).booleanValue();
 				
 		    	if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(style.containsKey("font")) font = (Font)style.get("font");
@@ -2460,8 +2460,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellMarge")) cellMarge = ((Integer)style.get("cellMarge")).intValue();
 			if(style.containsKey("bovenMarge")) bovenMarge = ((Integer)style.get("bovenMarge")).intValue();
 		    if(style.containsKey("ronding")) ronding = ((Integer)style.get("ronding")).intValue();
-		    if (h.containsKey("anderFont"))
-				anderFont = ((Boolean) h.get("anderFont")).booleanValue();
+		    if (style.containsKey("anderFont"))
+				anderFont = ((Boolean) style.get("anderFont")).booleanValue();
 				if(anderFont) font = new Font("SansSerif", Font.BOLD, 14);
 			if(style.containsKey("font")) font = (Font)style.get("font");
 			if(style.containsKey("hoek")) hoek = ((Integer)style.get("hoek")).intValue();
