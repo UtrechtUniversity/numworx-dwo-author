@@ -1403,10 +1403,12 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @param columnIndex
 	 *            the index of the column to sort by
+	 * @param order
+	 *            the order for sorting, ASCENDING or DESCENDING
 	 */
-	public void sort(int columnIndex)
+	public void sort(int columnIndex, int order)
 	{
-		this.quickSort(columnIndex, 0, this.rowCount - 1);
+		this.quickSort(columnIndex, 0, this.rowCount - 1, order);
 		this.fireEvent(new TableModelEvent(this));
 	}
 
@@ -1419,14 +1421,16 @@ public class StatTableModel implements TableModel
 	 *            start index of the subarray to sort
 	 * @param r
 	 *            end index of the subarray to sort
+	 * @param order
+	 *            the order for sorting, ASCENDING or DESCENDING
 	 */
-	private void quickSort(int columnIndex, int p, int r)
+	private void quickSort(int columnIndex, int p, int r, int order)
 	{
 		if (p < r)
 		{
-			int q = this.partition(columnIndex, p, r);
-			this.quickSort(columnIndex, p, q - 1);
-			this.quickSort(columnIndex, q + 1, r);
+			int q = this.partition(columnIndex, p, r, order);
+			this.quickSort(columnIndex, p, q - 1, order);
+			this.quickSort(columnIndex, q + 1, r, order);
 		}
 	}
 
@@ -1439,9 +1443,11 @@ public class StatTableModel implements TableModel
 	 *            start index of the subarray to sort
 	 * @param r
 	 *            end index of the subarray to sort
+	 * @param order
+	 *            the order for sorting, ASCENDING or DESCENDING
 	 * @return index of the pivot used
 	 */
-	private int partition(int columnIndex, int p, int r)
+	private int partition(int columnIndex, int p, int r, int order)
 	{
 		ColumnType cType = this.columnClass.get(columnIndex);
 
@@ -1455,11 +1461,23 @@ public class StatTableModel implements TableModel
 		int i = p - 1;
 		for (int j = p; j < r; j++)
 		{
-			if (cType.compare(
-				this.values.get(j).get(columnIndex), x.get(columnIndex)) <= 0)
+			if (order == Statistiek.ASCENDING)
 			{
-				i++;
-				this.switchRows(i, j);
+				if (cType.compare(
+					this.values.get(j).get(columnIndex), x.get(columnIndex)) <= 0)
+				{
+					i++;
+					this.switchRows(i, j);
+				}
+			}
+			else // descending
+			{
+				if (cType.compare(
+					this.values.get(j).get(columnIndex), x.get(columnIndex)) >= 0)
+				{
+					i++;
+					this.switchRows(i, j);
+				}
 			}
 		}
 
