@@ -259,9 +259,13 @@ public class StatTable extends JPanel implements StatistiekView,
 			this.rowTable.getTableHeader());
 
 		this.headerPopup = new JPopupMenu();
-		JMenuItem sortItem = new JMenuItem(Statistiek.rb.getString("sortItem"));
-		sortItem.setActionCommand("sortItem");
-		sortItem.addActionListener(this);
+		JMenuItem sortAscendingItem = new JMenuItem(Statistiek.rb.getString("sortAscendingItem"));
+		sortAscendingItem.setActionCommand("sortAscendingItem");
+		sortAscendingItem.addActionListener(this);
+		
+		JMenuItem sortDescendingItem = new JMenuItem(Statistiek.rb.getString("sortDescendingItem"));
+		sortDescendingItem.setActionCommand("sortDescendingItem");
+		sortDescendingItem.addActionListener(this);
 		
 		JMenuItem editItem = new JMenuItem(Statistiek.rb.getString("editcolumnItem"));
 		editItem.setActionCommand("editItem");
@@ -275,7 +279,8 @@ public class StatTable extends JPanel implements StatistiekView,
 		columnInfoItem.setActionCommand("infocolumnItem");
 		columnInfoItem.addActionListener(this);
 		
-		this.headerPopup.add(sortItem);
+		this.headerPopup.add(sortAscendingItem);
+		this.headerPopup.add(sortDescendingItem);
 		if (this.statTableModel.isDataEditable())
 		{
 			this.headerPopup.add(editItem);
@@ -993,9 +998,13 @@ System.err.println(sb);
 		{
 			this.copyClipboardData();
 		}
-		else if (actionCommand.equals("sortItem"))
+		else if (actionCommand.equals("sortAscendingItem"))
 		{
-			this.statTableModel.sort(this.popUpColumnIndex);
+			this.statTableModel.sort(this.popUpColumnIndex, Statistiek.ASCENDING);
+		}
+		else if (actionCommand.equals("sortDescendingItem"))
+		{
+			this.statTableModel.sort(this.popUpColumnIndex, Statistiek.DESCENDING);
 		}
 		else if (actionCommand.equals("deleteItem"))
 		{
