@@ -36,6 +36,8 @@ import fi.statistiek.histogram.HistogramController;
  */
 public class Statistiek implements WiskOpdrApplet
 {
+	public static final int ASCENDING = 0;
+	public static final int DESCENDING = 1;
 	public static ResourceBundle rb;
 	public static Font font = new Font("SansSerif", Font.PLAIN, 12);
 	public static Font font_bold = new Font("SansSerif", Font.BOLD, 12);
