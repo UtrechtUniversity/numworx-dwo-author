@@ -20,7 +20,10 @@ import static javafx.concurrent.Worker.State.FAILED;
   
 //@SuppressWarnings("restriction")
 public class SimpleSwingBrowser extends JFrame {
- 
+    static {
+    	Platform.setImplicitExit(false);
+    }
+
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
  
