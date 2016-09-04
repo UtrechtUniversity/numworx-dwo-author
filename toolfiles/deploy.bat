@@ -1,1 +1,3 @@
-:: deploy via DWO
+call proguard
+call sign
+::call export-jar

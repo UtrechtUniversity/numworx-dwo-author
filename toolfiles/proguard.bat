@@ -1,2 +1,2 @@
-::java -jar ..\..\..\tools\proguard.jar @config.pro
-obfuscate via DWO
+..\..\..\tools\proguard5.2.1\bin\proguard.bat @config.pro
+ 
