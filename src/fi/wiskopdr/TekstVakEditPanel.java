@@ -214,6 +214,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		tekstVakPanel.addActionListener(tekstEditor);
 		
+		boolean manageStyles = TekstVakPanel.styles!=null;
 		
 		
 		randZichtbaar = false;
@@ -284,7 +285,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
 		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
-		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, styles, layoutOptionsPanel);
+		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
@@ -634,7 +635,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//kiesStyleChoice.addItem("Style 1");
 		kiesStyleChoice.addActionListener(this);
 		kiesStyleChoice.setBounds(50,4,150,20);
-		kiesStyleChoice.setVisible(false);
+		kiesStyleChoice.setVisible(manageStyles);
 		layoutOptionsPanel.add(kiesStyleChoice);
 		
 		styleManager = new StyleManager(this, kiesStyleChoice);
@@ -655,7 +656,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		stylesLabel = new JLabel("Styles:");
 		stylesLabel.setBounds(0,2,50,25);
 		stylesLabel.setFont(titelFont);
-		stylesLabel.setVisible(false);
+		stylesLabel.setVisible(manageStyles);
 		layoutOptionsPanel.add(stylesLabel);
 		
 		editStylesButton = new JButton("edit");
@@ -663,7 +664,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setMargin(new Insets(0, 0, 0, 0));
 		editStylesButton.addActionListener(this);
 		editStylesButton.setFont(ifFont);
-		editStylesButton.setVisible(false);
+		editStylesButton.setVisible(manageStyles);
 		layoutOptionsPanel.add(editStylesButton);
 		
 	}
