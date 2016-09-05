@@ -47,6 +47,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
+	private JCheckBox pilotObjectivesCB;
 	private JCheckBox misconceptionsCB;
 	private JCheckBox fontOverervingCB;
 	private JCheckBox fontOverervingFormCB;
@@ -420,10 +421,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxh.add(Box.createGlue());
 		
+		pilotObjectivesCB = new JCheckBox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
+		pilotObjectivesCB.setVisible(false);
+		pilotObjectivesCB.addActionListener(this);
+		pilotObjectivesCB.setOpaque(false);
+		pilotObjectivesCB.setFont(font);
+		pilotObjectivesCB.setSelected(false);
+		boxh.add(pilotObjectivesCB);
+		boxh.add(Box.createHorizontalStrut(20));
+		
 		objectivesButton = new ObjectiveSettingsButton();
 		objectivesButton.setVisible(false);
 		boxh.add(objectivesButton);
-		boxh.add(Box.createHorizontalStrut(70));
+		boxh.add(Box.createHorizontalStrut(10));
 		boxv4.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
@@ -539,6 +549,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		boolean pilotObjectives = false;
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
@@ -596,6 +607,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		hasObjectives = objectivesCB.isSelected();
 		hasMisconceptions = misconceptionsCB.isSelected();
 		objectives = objectivesButton.getObjectives();
+		pilotObjectives = pilotObjectivesCB.isSelected();
 		misconceptions = misconceptionsButton.getObjectives();
 		categorieString = objectivesButton.getCategories();
 		mccCategorieString = misconceptionsButton.getCategories();
@@ -651,6 +663,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(hasObjectives && objectives!=null)
 		{	h.put("objectives", objectives);
 			h.put("categorieString", categorieString);
+			h.put("pilotObjectives", new Boolean(pilotObjectives));
 		}
 		h.put("hasMisconceptions", new Boolean(hasMisconceptions));
 		if(hasMisconceptions && misconceptions!=null)
@@ -708,6 +721,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		boolean pilotObjectives = false;
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
@@ -760,6 +774,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 			}
 		if(h.containsKey("categorieString")) categorieString = (String[])h.get("categorieString");
+		if(h.containsKey("pilotObjectives")) pilotObjectives = ((Boolean)h.get("pilotObjectives")).booleanValue();
 		if(h.containsKey("hasMisconceptions")) hasMisconceptions = ((Boolean)h.get("hasMisconceptions")).booleanValue();
 		if(h.containsKey("misconceptions")) 
 			try	{	
@@ -820,9 +835,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		significantieCB.setSelected(significantie);
 		objectivesCB.setSelected(hasObjectives);
 		objectivesButton.setVisible(hasObjectives);
+		pilotObjectivesCB.setVisible(hasObjectives);
 		if(hasObjectives)
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
+			pilotObjectivesCB.setSelected(pilotObjectives);
 		}
 		misconceptionsCB.setSelected(hasMisconceptions);
 		misconceptionsButton.setVisible(hasMisconceptions);
@@ -929,6 +946,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(e.getSource()==objectivesCB)
 		{
 			objectivesButton.setVisible(objectivesCB.isSelected());
+			pilotObjectivesCB.setVisible(objectivesCB.isSelected());
 		}
 		if(e.getSource()==misconceptionsCB)
 		{

@@ -339,6 +339,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
+				{"OPT_pilotObjectives", "Pilot"},
 				{"OPT_misconceptions" , "Misconcepties"},
 				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
 				{"OPT_fontOverervingForm" , "Font-overerving formulevakken"},
