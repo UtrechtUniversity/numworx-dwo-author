@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class LWMMouseHandler extends Container 
+public class LWMMouseHandler extends javax.swing.JComponent 
 							 implements MouseListener, MouseMotionListener
 {
 	Vector listeningTo = new Vector();

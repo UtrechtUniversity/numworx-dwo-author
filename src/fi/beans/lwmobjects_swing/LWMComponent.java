@@ -24,7 +24,7 @@ import javax.swing.*;
  * @version 1, 20 september 2000 fully documented
  */
 
-public abstract class LWMComponent extends Container
+public abstract class LWMComponent extends javax.swing.JComponent
 	//implements MouseListener, MouseMotionListener
 {	
 // ----------- Constants ----------
