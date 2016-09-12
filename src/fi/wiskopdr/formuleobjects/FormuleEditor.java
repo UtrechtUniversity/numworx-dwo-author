@@ -719,11 +719,20 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		}
 	}
 	
+	/**
+	 * Retourneert true als het huidige window het hoogste niveau van de popup is.
+	 * Ter info: als je op de meer-knop klikt van een graphtool in een popup, is isPopup() false, omdat
+	 * de meer-knop op een child-panel staat van de popup-graphtool...
+	 * 
+	 * @return
+	 */
 	public boolean isPopup()
-	{	if(getParent()!=null 
+	{
+		if(getParent()!=null 
 			&& getParent().getParent()!=null 
 			&& getParent().getParent().getParent()!=null 
-			&& getParent().getParent().getParent().getParent() instanceof JDialog) 
+			&& getParent().getParent().getParent().getParent() instanceof JDialog)
+
 		return true;
 		return false;
 	}
