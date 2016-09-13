@@ -117,6 +117,9 @@ public class DialogFacade {
 		result = new DialogFacade();
 		Component window = WiskOpdr.getWindowForComponent(src);
 		
+		// gebruik een tablet owning layered pane t.b.v. tonen popup tablet (keyboard) in popup
+		TabletOwningLayeredPane layeredPane = new TabletOwningLayeredPane(src);
+		
 		JDialog dialog;
 		if(window instanceof Frame) {
 			dialog = new JDialog( (Frame) window, title, modal);
@@ -125,6 +128,9 @@ public class DialogFacade {
 		else 
 			dialog = new JDialog((Frame) null, title, modal); // SwingUtilities.getSharedOwnerFrame()
 
+		// gebruik een tablet owning layered pane t.b.v. tonen popup tablet (keyboard) in popup
+		dialog.setLayeredPane(layeredPane);
+		
 		result.dialog = dialog;
 		result.window = dialog;
 		result.rootPane = dialog;
