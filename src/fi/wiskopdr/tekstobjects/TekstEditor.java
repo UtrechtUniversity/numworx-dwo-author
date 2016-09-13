@@ -1185,39 +1185,26 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	}
 	
 	public void addTablet(FormuleVakHouder formuleVakHouder, int xx, int yy)
-	{	if(!isPopup())
-		{	Container parent = getParent();
-			int x = xx + getLocation().x;
-			int y = yy + getLocation().y;
-			int h = parent.getSize().height;
-			for(int i=0 ; parent!=null && i<40 ; i++)
-			{	if(parent instanceof TabletOwner) 
-				{	((TabletOwner)parent).addTablet(formuleVakHouder, x, y);
-					break;
-				}
-				else 
-				{
-					x += parent.getLocation().x;
-					y += parent.getLocation().y;
-					parent = parent.getParent();
-					if(parent==null)return;
-				}
+	{
+		Container parent = getParent();
+		int x = xx + getLocation().x;
+		int y = yy + getLocation().y;
+		int h = parent.getSize().height;
+		for (int i = 0; parent != null && i < 40; i++)
+		{
+			if (parent instanceof TabletOwner)
+			{
+				((TabletOwner) parent).addTablet(formuleVakHouder, x, y);
+				break;
+			} else
+			{
+				x += parent.getLocation().x;
+				y += parent.getLocation().y;
+				parent = parent.getParent();
+				if (parent == null)
+					return;
 			}
-			return;
 		}
-		if(tablet==null) 
-		{	tablet = new Tablet(formuleVakHouder);
-		}
-		if(!tabletAdded)
-		{	this.setLayer(tablet, JLayeredPane.PALETTE_LAYER.intValue());
-			super.add(tablet,0);
-			
-			//add(tablet,0);
-			tablet.setLocation(xx,yy);
-			tabletAdded = true;
-            repaint();
-		}
-		tablet.zetFormuleVakHouder(formuleVakHouder);
 	}
 	
 	public void removeTablet()
