@@ -785,42 +785,27 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	}
 	
 	public void addTablet(FormuleVakHouder formuleVakHouder, int xx, int yy)
-	{	if(!isPopup())
-		{	Container parent = getParent();
-			int x = xx + parent.getLocation().x;
-			int y = yy + parent.getLocation().y;
-			int h = parent.getSize().height;
-			for(int i=0 ; parent!=null && i<40 ; i++)
-			{	if(parent instanceof TabletOwner) 
-				{	((TabletOwner)parent).addTablet(formuleVakHouder, x, y);
-					break;
-				}
-				else 
-				{	parent = parent.getParent();
-					if(parent==null)return;
-					x += parent.getLocation().x;
-					y += parent.getLocation().y;
-				}
+	{	
+		Container parent = getParent();
+		int x = xx + parent.getLocation().x;
+		int y = yy + parent.getLocation().y;
+		int h = parent.getSize().height;
+		for (int i = 0 ;parent != null && i < 40; i++)
+		{	
+			if (parent instanceof TabletOwner) 
+			{	
+				((TabletOwner) parent).addTablet(formuleVakHouder, x, y);
+				break;
 			}
-			return;
+			else 
+			{	
+				parent = parent.getParent();
+				if (parent == null)
+					return;
+				x += parent.getLocation().x;
+				y += parent.getLocation().y;
+			}
 		}
-		if(tablet==null) 
-		{	tablet = new Tablet(formuleVakHouder);
-		}
-		if(!tabletAdded)
-		{	this.setLayer(tablet, JLayeredPane.PALETTE_LAYER.intValue());
-			super.add(tablet,0);
-			
-			//add(tablet,0);
-			int tb = tablet.getWidth();
-			int th = tablet.getHeight();
-			xx = Math.min(xx, getWidth()-tb);
-			yy = Math.min(yy, getHeight()-th);
-			tablet.setLocation(xx,yy);
-			tabletAdded = true;
-            repaint();
-		}
-		tablet.zetFormuleVakHouder(formuleVakHouder);
 	}
 	
 	public void removeTablet()
