@@ -5,7 +5,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -48,7 +52,28 @@ import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware, FocusListener
 {
-	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
+	public class HintTextField extends JTextField {
+	    public HintTextField(String hint) {
+	        _hint = hint;
+	    }
+	    @Override
+	    public void paint(Graphics g) {
+	        super.paint(g);
+	        if (getText().length() == 0) {
+	            int h = getHeight();
+	            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	            Insets ins = getInsets();
+	            FontMetrics fm = g.getFontMetrics();
+	            int c0 = getBackground().getRGB();
+	            int c1 = getForeground().getRGB();
+	            int m = 0xfefefefe;
+	            int c2 = ((c0 & m) >>> 1) + ((c1 & m) >>> 1);
+	            g.setColor(new Color(c2, true));
+	            g.drawString(_hint, ins.left, h / 2 + fm.getAscent() / 2 - 2);
+	        }
+	    }
+	    private String _hint;
+	}	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 
 	private int mode;
 
@@ -68,7 +93,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	
 	private boolean changed = false;
 
-	private JTextField antwoordTF;
+	private HintTextField antwoordTF;
 
 	private String antwoordString;
 	private String[] juisteAntwoorden;
@@ -143,7 +168,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 
 		attempts = new Vector();
 
-		antwoordTF = new JTextField();
+		antwoordTF = new HintTextField("");
 		antwoordTF.setBorder(BorderFactory.createLineBorder(new Color(153, 153, 153)));
 		antwoordTF.setBounds(0, 0, 80, 21);
 		antwoordTF.addActionListener(this);
@@ -318,6 +343,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		if (!boxMetRand){
 			antwoordTF.setBorder(BorderFactory.createEmptyBorder());
 			antwoordTF.setOpaque(false);
+			antwoordTF._hint = "...";
 		}
 
 		if (formuleMode)
