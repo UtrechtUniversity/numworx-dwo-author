@@ -229,6 +229,7 @@ public class FormuleParser_ap
 				else if(s.charAt(i)==operatoren[j] && niv==0)
 				{	Expressie e1 = parse(s.substring(0,i));
 					Expressie e2 = parse(s.substring(i+1));
+					if(e1 == null || e2 == null) return null; // Parse error, fatal!!!
 					if(j==0)return new Optelling(e1,e2);
 					else if(j==1)return new Aftrekking(e1,e2);
 					else if(j==2)return new Vermenigvuldiging(e1,e2);
@@ -242,6 +243,7 @@ public class FormuleParser_ap
 		//is het een wortel
 		if(s.substring(0,4).equals("sqrt"))
 		{	Expressie e = parse(s.substring(4,s.length()));
+			if(e == null) return null;
 			return new Wortel(e);
 		}
 		/*
