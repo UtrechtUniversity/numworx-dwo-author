@@ -59,20 +59,28 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	    @Override
 	    public void paint(Graphics g) {
 	        super.paint(g);
-	        if (getText().length() == 0) {
+	        if (getText().length() == 0 && !_hint.isEmpty()) {
 	            int h = getHeight();
 	            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	            Insets ins = getInsets();
 	            FontMetrics fm = g.getFontMetrics();
-	            int c0 = getBackground().getRGB();
-	            int c1 = getForeground().getRGB();
-	            int m = 0xfefefefe;
-	            int c2 = ((c0 & m) >>> 1) + ((c1 & m) >>> 1);
-	            g.setColor(new Color(c2, true));
+	            g.setColor(getHintColor());
 	            g.drawString(_hint, ins.left, h / 2 + fm.getAscent() / 2 - 2);
 	        }
 	    }
+	    
+		private Color getHintColor() {
+			if(this.hintColor != null)
+				return this.hintColor;
+			int c0 = getBackground().getRGB();
+			int c1 = getForeground().getRGB();
+			int m = 0xfefefefe;
+			int c2 = ((c0 & m) >>> 1) + ((c1 & m) >>> 1);
+			return new Color(c2, true);
+		}
+		
 	    private String _hint;
+	    private Color  hintColor;
 	}	//static Image GOEDKRUL,FOUTKRUIS, HALFKRUL;
 
 	private int mode;
@@ -141,6 +149,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	private JButton sendCommandButton;
+
+	private boolean boxMetRand = true;
 	
 	public static void zetFontOverervingForm(boolean b)
 	{	fontOvererving = b;
@@ -260,7 +270,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			g.setColor(Color.gray);
 			if ("GR".equals(WiskOpdr.deployVariant))
 				g.setColor(new Color(153, 153, 153));
-			g.drawRect(1, 2, getSize().width - 2, getSize().height - 4);
+			if(boxMetRand)
+				g.drawRect(1, 2, getSize().width - 2, getSize().height - 4);
 		}
 		else
 			super.paintComponent(g);
@@ -337,6 +348,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 		this.logOption = logOption;
 		this.logID = logID;
 		this.logObjectives = logObjectives;
+		this.boxMetRand  = boxMetRand;
 
 		if (formuleVak != null)
 			formuleVak.zetStippels(!boxMetRand);
