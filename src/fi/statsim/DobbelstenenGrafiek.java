@@ -30,6 +30,8 @@ public class DobbelstenenGrafiek extends JPanel{
 				a=1;
 		} else {
 			a=dobbelstenen.maxCount/2;
+			if (a==0)
+				a=1;
 		}
 		int b=0;
 		int c=0;
