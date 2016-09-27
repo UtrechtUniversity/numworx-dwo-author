@@ -1,49 +1,69 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.util.*;
-import java.awt.*;
+import java.awt.AWTEventMulticaster;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Constructor;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Locale;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.cbook.cbookif.CBookWidgetIF;
 
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 //import fi.nabouwenaanzichten.NabouwenAanzichten;
 import fi.wiskopdr.AntwoordFormuleVak;
+import fi.wiskopdr.AntwoordFormuleVakEditPanel;
+import fi.wiskopdr.AntwoordKeuzeVak;
+import fi.wiskopdr.AntwoordTekstVak;
 import fi.wiskopdr.AntwoordVergelijkingVak;
+import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
 import fi.wiskopdr.CheckButtonPanel;
+import fi.wiskopdr.CheckSleepUnitPanel;
+import fi.wiskopdr.CheckUnitPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
+import fi.wiskopdr.Geogebra3Panel;
+import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
+import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
+import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.TekstVakEditPanel;
-import fi.wiskopdr.AntwoordFormuleVakEditPanel;
-import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
-import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.TekstVakPanel;
-import fi.wiskopdr.GeogebraPanel;
-import fi.wiskopdr.Geogebra3Panel;
-import fi.wiskopdr.CheckUnitPanel;
-import fi.wiskopdr.CheckSleepUnitPanel;
-import fi.wiskopdr.AntwoordTekstVak;
-import fi.wiskopdr.AntwoordKeuzeVak;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.cbook.CBookInteractieEditPanel;
 import fi.wiskopdr.cbook.CBookWrap;
 import fi.wiskopdr.cbook.Service;
@@ -111,13 +131,17 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	initEditInteractiePanelDialog(setNr, launchData, manager);
     }
     
-    public EditInteractiePanelDialog(Dialog owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
-    	super(owner, windowTitle, modal);
-    	initEditInteractiePanelDialog(setNr, launchData, manager);
-    }
+//    public EditInteractiePanelDialog(Dialog owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
+//    	super(owner, windowTitle, modal);
+//    	initEditInteractiePanelDialog(setNr, launchData, manager);
+//    }
 
     void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
-        getContentPane().setLayout(new BorderLayout());
+    	Container content = getContentPane();
+    	setLayeredPane(new TabletOwningLayeredPane());
+    	setContentPane(content);
+    	
+        content.setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
         
         JPanel bottomPanel = new JPanel();

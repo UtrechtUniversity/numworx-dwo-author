@@ -3,9 +3,11 @@ package fi.wiskopdr;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -16,12 +18,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.RootPaneContainer;
-import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-
-import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 public class DialogFacade {
 
@@ -118,18 +116,18 @@ public class DialogFacade {
 		Component window = WiskOpdr.getWindowForComponent(src);
 		
 		// gebruik een tablet owning layered pane t.b.v. tonen popup tablet (keyboard) in popup
-		TabletOwningLayeredPane layeredPane = new TabletOwningLayeredPane(src);
+		JLayeredPane layeredPane = new TabletOwningLayeredPane(src);
 		
 		JDialog dialog;
-		if(window instanceof Frame) {
-			dialog = new JDialog( (Frame) window, title, modal);
-		} else if (window instanceof Dialog )
-			dialog = new JDialog( (Dialog) window, title, modal);
-		else 
-			dialog = new JDialog((Frame) null, title, modal); // SwingUtilities.getSharedOwnerFrame()
 
-		// gebruik een tablet owning layered pane t.b.v. tonen popup tablet (keyboard) in popup
+		if (window instanceof Window) {
+			dialog = new JDialog( (Window) window, title, modal ? Dialog.DEFAULT_MODALITY_TYPE : ModalityType.MODELESS);
+		} else
+			dialog = new JDialog((Frame) null, title, modal); // SwingUtilities.getSharedOwnerFrame()
+		
+		Container content = dialog.getContentPane(); // adopteer verweesde contentpane
 		dialog.setLayeredPane(layeredPane);
+		dialog.setContentPane(content);
 		
 		result.dialog = dialog;
 		result.window = dialog;
