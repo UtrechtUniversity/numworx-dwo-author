@@ -23,7 +23,6 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 	Steekproef steekproef;
 	ExtraPanel extraPanel;
 	
-	
 	boolean muntenRadioBool=false;
 	boolean dobbelstenenRadioBool=false;
 	boolean binomTrekkingRadioBool=false;
@@ -556,6 +555,10 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
 		extraPanel.setVisible(extraRadioBool);
 		
+		Integer extraPanelNr=0;
+		if(h.containsKey("extraPanelNr")) extraPanelNr= ((Integer)h.get("extraPanelNr")).intValue();
+		extraPanel.setPanelNr(extraPanelNr);
+		
 		Boolean eenMuntTweeMunt=true;	
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
 		munten.eenMuntRadio.setSelected(eenMuntTweeMunt);
@@ -624,6 +627,11 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		
 		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
 		extraPanel.setVisible(extraRadioBool);
+		
+		Integer extraPanelNr=0;
+		if(h.containsKey("extraPanelNr")) extraPanelNr= ((Integer)h.get("extraPanelNr")).intValue();
+		extraPanel.setPanelNr(extraPanelNr);
+		
 		
 		Boolean eenMuntTweeMunt=true;
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();

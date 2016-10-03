@@ -236,7 +236,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		extraChoicesCombo.setBounds(30,510,150,20);
 		extraChoicesCombo.addActionListener(this);
 		extraChoicesCombo.addItem("Choose");
-		extraChoicesCombo.addItem("Munten Flattland");
+		extraChoicesCombo.addItem("Munten Extra");
+		extraChoicesCombo.addItem("Dobbelstenen Extra");
 		optionsPanel.add(extraChoicesCombo);
 		
 		ButtonGroup buttonGroup1=new ButtonGroup();
@@ -278,6 +279,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("steekproefInstellingenZichtbaar", new Boolean(steekproefInstellingenCheckBox.isSelected()));
 		h.put("scheveVerdeling", new Boolean(scheveVerdelingCheckBox.isSelected()));
 		h.put("extraRadio", new Boolean(extraRadio.isSelected()));
+		h.put("extraPanelNr", new Integer(extraChoicesCombo.getSelectedIndex()));
 
 		return h;
 	}
@@ -420,6 +422,11 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
 		extraRadio.setSelected(extraRadioBool);
 		interactiePanel.extraPanel.setVisible(extraRadioBool);
+		
+		Integer extraPanelNr=0;
+		if(h.containsKey("extraPanelNr")) extraPanelNr= ((Integer)h.get("extraPanelNr")).intValue();
+		extraChoicesCombo.setSelectedIndex(extraPanelNr);
+		interactiePanel.extraPanel.setPanelNr(extraPanelNr);
 	}
 	
 	public void setBounds(int x, int y, int b, int h) {
