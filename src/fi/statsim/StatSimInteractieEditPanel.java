@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -18,7 +19,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JPanel optionsPanel;
 	
 	private int defaultWidth = 790;
-	private int defaultHeight = 500;
+	private int defaultHeight = 530;
 	private int defaultIpWidth = 500;
 	private int defaultOpWidth = 200;
 
@@ -26,6 +27,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JRadioButton muntenRadio;
 	private JRadioButton binomTrekkingRadio;
 	private JRadioButton steekproefRadio;
+	private JRadioButton extraRadio;
 	private JCheckBox muntenInstellingenCheckBox;
 	private JCheckBox muntenResultatenCheckBox;
 	private JCheckBox muntenGrafiekCheckBox;
@@ -46,6 +48,8 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 	private JCheckBox scheveVerdelingCheckBox;
 	private JRadioButton kansButton;
 	private JRadioButton populatieProportieButton;
+	
+	private JComboBox extraChoicesCombo;
 	
 	public StatSimInteractieEditPanel() {
 		setLayout(null);
@@ -193,7 +197,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		steekproefRadio.setSize(200,20);
 		steekproefRadio.addActionListener(this);
 		optionsPanel.add(steekproefRadio);
-
+		
 		steekproefLinkerTabelCheckBox = new JCheckBox(StatSim.rb.getString("leftTable"));
 		steekproefLinkerTabelCheckBox.setLocation(30,410);
 		steekproefLinkerTabelCheckBox.setSize(200,20);
@@ -222,11 +226,25 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		scheveVerdelingCheckBox.setSelected(false);
 		optionsPanel.add(scheveVerdelingCheckBox);
 		
+		extraRadio=new JRadioButton(StatSim.rb.getString("extraLabel"));
+		extraRadio.setLocation(10,490);
+		extraRadio.setSize(200,20);
+		extraRadio.addActionListener(this);
+		optionsPanel.add(extraRadio);
+
+		extraChoicesCombo = new JComboBox();
+		extraChoicesCombo.setBounds(30,510,150,20);
+		extraChoicesCombo.addActionListener(this);
+		extraChoicesCombo.addItem("Choose");
+		extraChoicesCombo.addItem("Munten Flattland");
+		optionsPanel.add(extraChoicesCombo);
+		
 		ButtonGroup buttonGroup1=new ButtonGroup();
 		buttonGroup1.add(muntenRadio);
 		buttonGroup1.add(dobbelstenenRadio);
 		buttonGroup1.add(binomTrekkingRadio);
 		buttonGroup1.add(steekproefRadio);
+		buttonGroup1.add(extraRadio);
 		
 		ButtonGroup buttonGroup2=new ButtonGroup();
 		buttonGroup2.add(kansButton);
@@ -259,6 +277,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		h.put("steekproefRechterTabel", new Boolean(steekproefRechterTabelCheckBox.isSelected()));
 		h.put("steekproefInstellingenZichtbaar", new Boolean(steekproefInstellingenCheckBox.isSelected()));
 		h.put("scheveVerdeling", new Boolean(scheveVerdelingCheckBox.isSelected()));
+		h.put("extraRadio", new Boolean(extraRadio.isSelected()));
 
 		return h;
 	}
@@ -397,7 +416,10 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		
 			interactiePanel.binomTrekking.setZichtbaar();		
 
-		
+		Boolean extraRadioBool=false;
+		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
+		extraRadio.setSelected(extraRadioBool);
+		interactiePanel.extraPanel.setVisible(extraRadioBool);
 	}
 	
 	public void setBounds(int x, int y, int b, int h) {
@@ -440,6 +462,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(false);
 			   interactiePanel.steekproef.setVisible(false);
+			   interactiePanel.extraPanel.setVisible(false);
 		   }
 		   if (e.getSource()==muntenInstellingenCheckBox) {
 			   interactiePanel.munten.showInstellingen=muntenInstellingenCheckBox.isSelected();
@@ -466,6 +489,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(true);
 			   interactiePanel.binomTrekking.setVisible(false);
 			   interactiePanel.steekproef.setVisible(false);
+			   interactiePanel.extraPanel.setVisible(false);
 		   }
 		   if (e.getSource()==dobbelstenenInstellingenCheckBox) {
 			   interactiePanel.dobbelstenen.showInstellingen=dobbelstenenInstellingenCheckBox.isSelected();
@@ -488,6 +512,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(true);
 			   interactiePanel.steekproef.setVisible(false);
+			   interactiePanel.extraPanel.setVisible(false);
 		   }
 		   if (e.getSource()==kansButton) {
 			   interactiePanel.binomTrekking.showKans=kansButton.isSelected();
@@ -524,6 +549,7 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 			   interactiePanel.dobbelstenen.setVisible(false);
 			   interactiePanel.binomTrekking.setVisible(false);
 			   interactiePanel.steekproef.setVisible(true);
+			   interactiePanel.extraPanel.setVisible(false);
 		   }
 		   if (e.getSource()==steekproefLinkerTabelCheckBox) {
 			   interactiePanel.steekproef.showLinkerTabel=steekproefLinkerTabelCheckBox.isSelected();
@@ -540,6 +566,17 @@ public class StatSimInteractieEditPanel extends JPanel implements InteractieEdit
 		   if (e.getSource()==scheveVerdelingCheckBox) {
 			   interactiePanel.steekproef.scheveVerdeling=scheveVerdelingCheckBox.isSelected();
 			   interactiePanel.steekproef.setZichtbaar();
+		   }
+		   if (e.getSource()==extraRadio) {
+			   interactiePanel.munten.setVisible(false);
+			   interactiePanel.dobbelstenen.setVisible(false);
+			   interactiePanel.binomTrekking.setVisible(false);
+			   interactiePanel.steekproef.setVisible(false);
+			   interactiePanel.extraPanel.setVisible(true);
+		   }
+		   if (e.getSource()==extraChoicesCombo) {
+			   interactiePanel.extraPanel.setPanelNr(extraChoicesCombo.getSelectedIndex());
+			   interactiePanel.extraPanel.setZichtbaar();
 		   }
 	}
 

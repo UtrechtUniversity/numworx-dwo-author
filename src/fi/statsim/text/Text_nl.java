@@ -65,6 +65,7 @@ public class Text_nl extends java.util.ListResourceBundle
             {   "steekproefInstellingenZichtbaar", "Instellingen zichtbaar"},
             {   "scheveVerdeling", "Voorbeeld scheve verdeling"},
             {   "populationProportion", "Populatieproportie" },
+            {   "extraLabel", "Extra" },
             //{   "sampleSize", "Steekproeflengte" }
             //	{	"button1Label" , "text1_nl" },
 		//	{ 	"button2Label" , "text2_nl" },

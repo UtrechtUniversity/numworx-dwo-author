@@ -21,12 +21,14 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 	Dobbelstenen dobbelstenen;
 	BinomTrekking binomTrekking;
 	Steekproef steekproef;
+	ExtraPanel extraPanel;
 	
 	
 	boolean muntenRadioBool=false;
 	boolean dobbelstenenRadioBool=false;
 	boolean binomTrekkingRadioBool=false;
 	boolean steekproefRadioBool=false;
+	boolean extraRadioBool=false;
 	        
     private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
@@ -55,6 +57,12 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		steekproef.setLocation(0,0);
 		add(steekproef);
 		steekproef.setVisible(false);
+		
+		extraPanel = new ExtraPanel(this);
+		extraPanel.setLocation(0,0);
+		//extraPanel.setSize(this.getWidth(),this.getHeight());
+		add(extraPanel);
+		extraPanel.setVisible(false);
 		
 	}
 	
@@ -168,6 +176,7 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		dobbelstenen.setSize(this.getWidth(),this.getHeight());
 		binomTrekking.setSize(this.getWidth(),this.getHeight());
 		steekproef.setSize(this.getWidth(),this.getHeight());
+		extraPanel.setSize(this.getWidth(),this.getHeight());
 	}
 	
 	public void setState(Hashtable h) {
@@ -536,16 +545,16 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("binomTrekkingRooster")) binomTrekking.showRooster= ((Boolean)h.get("binomTrekkingRooster")).booleanValue();
 		binomTrekking.setZichtbaar();
 
+		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
+		steekproef.setVisible(steekproefRadioBool);
 		if(h.containsKey("steekproefLinkerTabel")) steekproef.showLinkerTabel= ((Boolean)h.get("steekproefLinkerTabel")).booleanValue();
 		if(h.containsKey("steekproefRechterTabel")) steekproef.showRechterTabel= ((Boolean)h.get("steekproefRechterTabel")).booleanValue();
 		if(h.containsKey("steekproefInstellingenZichtbaar")) steekproef.showInstellingen= ((Boolean)h.get("steekproefInstellingenZichtbaar")).booleanValue();
 		if(h.containsKey("scheveVerdeling")) steekproef.scheveVerdeling= ((Boolean)h.get("scheveVerdeling")).booleanValue();
-		
 		steekproef.setZichtbaar();
 		
-		if(h.containsKey("steekproefRadio")) steekproefRadioBool= ((Boolean)h.get("steekproefRadio")).booleanValue();
-		steekproef.setVisible(steekproefRadioBool);
-		
+		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
+		extraPanel.setVisible(extraRadioBool);
 		
 		Boolean eenMuntTweeMunt=true;	
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
@@ -612,6 +621,9 @@ public class StatSimInteractiePanel extends JPanel implements InteractiePanel, C
 		if(h.containsKey("scheveVerdeling")) steekproef.scheveVerdeling= ((Boolean)h.get("scheveVerdeling")).booleanValue();
 		
 		steekproef.setZichtbaar();
+		
+		if(h.containsKey("extraRadio")) extraRadioBool= ((Boolean)h.get("extraRadio")).booleanValue();
+		extraPanel.setVisible(extraRadioBool);
 		
 		Boolean eenMuntTweeMunt=true;
 		if(h.containsKey("eenMuntTweeMunt")) eenMuntTweeMunt= ((Boolean)h.get("eenMuntTweeMunt")).booleanValue();
