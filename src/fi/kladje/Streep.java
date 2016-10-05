@@ -25,6 +25,8 @@ public class Streep
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
+	boolean deletable = true;
+	
 	public Streep(Color c, ArrayList<DoublePoint> punten)
 	{	kleur = c;
 		puntenXD = new double[punten.size()];
@@ -847,6 +849,7 @@ class Lijn
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
+	boolean deletable = true;
 	
 	public Lijn(Color c, int fromX, int fromY, int toX, int toY)
 	{
@@ -1474,6 +1477,8 @@ class Rechthoek
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
+	boolean deletable = true;
+	
 	public Rechthoek(Color c, int x, int y, int w, int h)
 	{
 		kleur = c;
@@ -2049,6 +2054,8 @@ class Ellips
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
 	
+	boolean deletable = true;
+	
 	public Ellips(Color c, int x, int y, int w, int h)
 	{
 		kleur = c;
@@ -2606,6 +2613,8 @@ class TekstElement
 	Polygon topRightHandle, bottomRightHandle, topLeftHandle, bottomLeftHandle;
 	Rectangle topRightRect, bottomRightRect, topLeftRect, bottomLeftRect;
 	Rectangle rotateEastHandle, rotateWestHandle;
+	
+	boolean deletable = true;
 	
 	public TekstElement(Color c, String t, int x, int y)
 	{

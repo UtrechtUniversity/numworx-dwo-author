@@ -538,7 +538,7 @@ System.out.println("klip " + getBackground().toString());
 				kladjeVeld.setState(stateVector);
 		}
 */
-		kladjeVeld.setState(b);
+		kladjeVeld.setState(b,true);
 		
 	}
 	
@@ -558,7 +558,7 @@ System.out.println("klip " + getBackground().toString());
 				kladjeVeld.setState(stateVector);
 		}	
 */
-		kladjeVeld.setState(b);
+		kladjeVeld.setState(b,false);
 	}
 	
 	public void setEditState(Hashtable b)
@@ -621,7 +621,7 @@ System.out.println("klip " + getBackground().toString());
 				kladjeVeld.setState(stateVector);
 		}	
 */
-		kladjeVeld.setState(b);
+		kladjeVeld.setState(b,false);
 
 	}
 	

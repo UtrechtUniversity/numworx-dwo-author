@@ -972,7 +972,7 @@ System.out.println(Color.orange.toString());
 		
 		Hashtable gegevens = (Hashtable) o;
 		
-		kladjeVeld.setState(gegevens);
+		kladjeVeld.setState(gegevens,true);
 		
 	}
 
