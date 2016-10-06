@@ -45,7 +45,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	
 	private JLabel aantalKeerGooienLabel;
 	private JTextField aantalKeerGooienTextField;
-	private int aantalKeerGooien;
+	private int aantalKeerGooien = 10;
 	private int aantalKeerGooienCumulatief;
 	
 	private JButton gooienButton;
@@ -56,6 +56,20 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	
 	private Font labelFont = new Font("SansSerif", Font.PLAIN, 12);
 	
+	private JPanel dsOperationPanel;
+	private JPanel dsInstellingenPanel;
+	private Color panelColor = new Color(220,220,220);
+	
+	private JRadioButton somOgenRadioButton;
+	private JRadioButton verschilOgenRadioButton;
+	
+	private JLabel ogenLabel;
+	private JTextField[] ogenTextFields;
+	private int[] aantalOgen;
+	
+	private Slider speedSlider;
+	private int speed = 100;
+	
 	StatSimInteractiePanel ssip;
 	
 	public ExtraPanel2(StatSimInteractiePanel ssip) {
@@ -65,10 +79,23 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		setOpaque(true);
 		setBackground(Color.white);
 		
+		dsOperationPanel = new JPanel();
+		dsOperationPanel.setBounds(0,0,500,40);
+		dsOperationPanel.setLayout(null);
+		dsOperationPanel.setOpaque(true);
+		dsOperationPanel.setBackground(panelColor);
+		dsOperationPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		add(dsOperationPanel);
+		
+		speedSlider = new Slider(100, 50);
+		speedSlider.setBounds(375,29,110,10);
+		speedSlider.addActionListener(this);
+		dsOperationPanel.add(speedSlider);
+		
 		aantalDSLabel = new JLabel("Aantal dobbelstenen =");
 		aantalDSLabel.setFont(labelFont);
-		aantalDSLabel.setBounds(10,10,130,20);
-		add(aantalDSLabel);
+		aantalDSLabel.setBounds(10,10,140,20);
+		dsOperationPanel.add(aantalDSLabel);
 		
 		aantalDS = 2;
 		aantalDSTextField = new JTextField(""+aantalDS);
@@ -88,8 +115,8 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	    			aantalDS = 1;
 	    			aantalDSTextField.setText(""+aantalDS);
 	    		}
-	    		if(aantalDS>4) {
-	    			aantalDS = 4;
+	    		if(aantalDS>3) {
+	    			aantalDS = 3;
 	    			aantalDSTextField.setText(""+aantalDS);
 	    		}
 	    		grafiek.zetAantalDS(aantalDS);
@@ -98,15 +125,17 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	    			resultaatDSCumulatief[i] = 0;
 	    		}
 	    		aantalKeerGooienCumulatief = 0;
+	    		
+	    		resetSomVerschilButtons();
 			}
 		});
-		aantalDSTextField.setBounds(140,10,40,20);
-		add(aantalDSTextField);
+		aantalDSTextField.setBounds(150,10,40,20);
+		dsOperationPanel.add(aantalDSTextField);
 		
 		aantalKeerGooienLabel = new JLabel("Aantal keer gooien =");
 		aantalKeerGooienLabel.setFont(labelFont);
 		aantalKeerGooienLabel.setBounds(200,10,130,20);
-		add(aantalKeerGooienLabel);
+		dsOperationPanel.add(aantalKeerGooienLabel);
 		
 		aantalKeerGooien = 10;
 		aantalKeerGooienTextField = new JTextField(""+aantalKeerGooien);
@@ -136,24 +165,26 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	    			resultaatDSCumulatief[i] = 0;
 	    		}
 	    		aantalKeerGooienCumulatief = 0;
+	    		
+	    		
 			}
 		});
 		aantalKeerGooienTextField.setBounds(320,10,40,20);
-		add(aantalKeerGooienTextField);
+		dsOperationPanel.add(aantalKeerGooienTextField);
 		
 		gooienButton = new JButton ("gooien");
 		gooienButton.setMargin(new Insets(4, 0, 4, 0));
 		gooienButton.setFont(labelFont);
 		gooienButton.addActionListener(this);
-		gooienButton.setBounds(380,10,80,20);	
-		add(gooienButton);
+		gooienButton.setBounds(380,10,100,19);	
+		dsOperationPanel.add(gooienButton);
 		
 		opnieuwButton = new JButton ("opnieuw");
 		opnieuwButton.setMargin(new Insets(4, 0, 4, 0));
 		opnieuwButton.setFont(labelFont);
 		opnieuwButton.addActionListener(this);
-		opnieuwButton.setBounds(480,10,80,20);	
-		add(opnieuwButton);
+		opnieuwButton.setBounds(500,10,80,20);	
+		dsOperationPanel.add(opnieuwButton);
 		
 		grafiek = new DSFrequentieGrafiek();
 		grafiek.setBounds(10,60,240,280);
@@ -165,8 +196,88 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		grafiekCumulatief.zetYtekst("Totaal aantal keren gegooid");
 		add(grafiekCumulatief);
 		
+		dsInstellingenPanel = new JPanel();
+		dsInstellingenPanel.setBounds(0,280,500,40);
+		dsInstellingenPanel.setLayout(null);
+		dsInstellingenPanel.setOpaque(true);
+		dsInstellingenPanel.setBackground(panelColor);
+		dsInstellingenPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		add(dsInstellingenPanel);
+		
+		somOgenRadioButton = new JRadioButton("Totaal-getal");
+		somOgenRadioButton.setOpaque(false);
+		somOgenRadioButton.setFont(labelFont);
+		somOgenRadioButton.addActionListener(this);
+		somOgenRadioButton.setBounds(10,10,120,20);
+		somOgenRadioButton.setSelected(true);
+		dsInstellingenPanel.add(somOgenRadioButton);
+		
+		verschilOgenRadioButton = new JRadioButton("Verschil-getal");
+		verschilOgenRadioButton.setOpaque(false);
+		verschilOgenRadioButton.setFont(labelFont);
+		verschilOgenRadioButton.addActionListener(this);
+		verschilOgenRadioButton.setBounds(130,10,120,20);
+		dsInstellingenPanel.add(verschilOgenRadioButton);
+		
+		ButtonGroup buttonGroup=new ButtonGroup();
+		buttonGroup.add(somOgenRadioButton);
+		buttonGroup.add(verschilOgenRadioButton);
+		
+		ogenLabel = new JLabel("dobbelsteen");
+		ogenLabel.setFont(labelFont);
+		ogenLabel.setBounds(260,10,80,20);
+		dsInstellingenPanel.add(ogenLabel);
+		
+		ogenTextFields = new JTextField[6];
+		aantalOgen = new int[6];
+		for(int i=0 ; i<6 ;i++) {
+			aantalOgen[i] = i+1;
+			ogenTextFields[i] = new JTextField(""+aantalOgen[i]);
+			ogenTextFields[i].addActionListener(this);
+			ogenTextFields[i].setBounds(340+i*40,10,40,20);
+			final int teller = i;
+			ogenTextFields[i].addKeyListener(new KeyAdapter()
+			{	public void keyReleased(KeyEvent e)	{	
+					try {
+						String text = ogenTextFields[teller].getText();
+						aantalOgen[teller] = Integer.parseInt(text);
+		    		}
+		    		catch(Exception ex) {
+		    			ogenTextFields[teller].setText(""+aantalOgen[teller]);
+		    		}
+		    		if(aantalOgen[teller]<1) {
+		    			aantalOgen[teller] = 1;
+		    			ogenTextFields[teller].setText(""+aantalOgen[teller]);
+		    		}
+		    		if(aantalOgen[teller]>6) {
+		    			aantalOgen[teller] = 6;
+		    			ogenTextFields[teller].setText(""+aantalOgen[teller]);
+		    		}
+		    		
+		    		for(int i=0 ; i<19 ; i++) {
+		    			resultaatDSCumulatief[i] = 0;
+		    		}
+		    		aantalKeerGooienCumulatief = 0;
+				}
+			});
+			dsInstellingenPanel.add(ogenTextFields[i]);
+		}
+		
 		resultaatDS = new int[19];
 		resultaatDSCumulatief = new int[19];
+	}
+	
+	public void wisResultaten() {
+		for(int i=0 ; i<19 ; i++) {
+			resultaatDS[i] = 0;
+		}
+		aantalGegooid = 0;
+		for(int i=0 ; i<19 ; i++) {
+			resultaatDSCumulatief[i] = 0;
+		}
+		aantalKeerGooienCumulatief = 0;
+		grafiek.zetGegooid(resultaatDS);
+		grafiekCumulatief.zetGegooid(resultaatDSCumulatief);
 	}
 	
 	public void setPanelNr(int nr) {
@@ -182,9 +293,17 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		super.setSize(width, height);
 		
 		int grafiekWidth = (width-30)/2;
-		if(grafiek!=null)grafiek.setBounds(10,60,grafiekWidth,height-60);
-		if(grafiekCumulatief!=null)grafiekCumulatief.setBounds(grafiekWidth+20,60,grafiekWidth,height-60);
-		repaint();
+		if(grafiek!=null)grafiek.setBounds(10,70,grafiekWidth,height-110);
+		if(grafiekCumulatief!=null)grafiekCumulatief.setBounds(grafiekWidth+20,70,grafiekWidth,height-110);
+		if(dsOperationPanel!=null)dsOperationPanel.setBounds(0,0,width,40);
+		if(dsInstellingenPanel!=null)dsInstellingenPanel.setBounds(0,height-40,width,40);
+		if(gooienButton!=null)gooienButton.setBounds(width-220,10,100,19);
+		if(speedSlider!=null)speedSlider.setBounds(width-225,29,110,10);
+		if(opnieuwButton!=null)opnieuwButton.setBounds(width-100,10,80,20);
+		if(ogenLabel!=null)ogenLabel.setBounds(width-340,10,80,20);
+		for(int i=0 ; i<6 ;i++) {
+			if(ogenTextFields!=null)ogenTextFields[i].setBounds(width-260+i*40,10,40,20);
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -194,32 +313,22 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	public void doeStap() {
 		Random generator = new Random();
 		
-		
 		int ogen = 0;
 		for(int i=0 ; i<aantalDS ; i++) {
 			double r = generator.nextDouble();
-			if(r<1.0/6) {
-				ogen+=1;
-			}
-			else if(r<2.0/6) {
-				ogen+=2;
-			}
-			else if(r<3.0/6) {
-				ogen+=3;
-			}
-			else if(r<4.0/6) {
-				ogen+=4;
-			}
-			else if(r<5.0/6) {
-				ogen+=5;
-			}
-			else {
-				ogen+=6;
+			boolean trekAf = (aantalDS==2 && verschilOgenRadioButton.isSelected() && i==0);
+			
+			for(int j=0 ; j<6 ; j++) {
+				if(r<1.0*(j+1)/6) {
+					ogen+=aantalOgen[j];
+					if(trekAf)
+						ogen-=2*aantalOgen[j];
+					break;
+				}
 			}
 		}
-		//System.out.println("Ogen:"+ogen);
+		ogen = Math.abs(ogen);
 		resultaatDS[ogen]++;
-		//System.out.println("OgenRij:"+resultaatDS.toString());
 		resultaatDSCumulatief[ogen]++;
 		aantalGegooid++;
 		grafiek.zetGegooid(resultaatDS);
@@ -230,7 +339,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
     public void run()
 	{ 	while (animatie!=null && aantalGegooid<aantalKeerGooien && !stopAnimatie) {
 			this.doeStap();
-			try{ Thread.sleep(200); } catch (Exception e) {}
+			try{ Thread.sleep(speed); } catch (Exception e) {}
 		}
 		gooienButton.setEnabled(true);
 		aantalDSTextField.setEnabled(true);
@@ -256,9 +365,8 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		}
 		grafiek.zetAantalDS(aantalDS);
 		grafiekCumulatief.zetAantalDS(aantalDS);
-		for(int i=0 ; i<19 ; i++) {
-			resultaatDSCumulatief[i] = 0;
-		}
+		wisResultaten();
+		resetSomVerschilButtons();
     }
     
     private void procesAantalGooienField() {
@@ -280,10 +388,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		}
 		grafiek.zetAantalKeerGooien(aantalKeerGooien);
 		grafiekCumulatief.zetAantalKeerGooien(aantalKeerGooien);
-		for(int i=0 ; i<19 ; i++) {
-			resultaatDSCumulatief[i] = 0;
-		}
-		aantalKeerGooienCumulatief = 0;
+		wisResultaten();
     }
  
     public void actionPerformed(ActionEvent e) {
@@ -303,16 +408,15 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
     		animatie=new Thread(this);
   		   	animatie.start(); 
     	}
+    	if(e.getSource()==speedSlider) {
+    		speed = 201-2*speedSlider.geefStand();
+    	}
     	if(e.getSource()==opnieuwButton) {
     		stopAnimatie = true;
     		for(int i=0 ; i<19 ; i++) {
     			resultaatDS[i] = 0;
     		}
-    		for(int i=0 ; i<19 ; i++) {
-    			resultaatDSCumulatief[i] = 0;
-    		}
-    		
-    		aantalKeerGooienCumulatief = 0;
+    		wisResultaten();
     		aantalGegooid = 0;
     		
     		grafiek.zetAantalKeerGooien(aantalKeerGooien);
@@ -323,6 +427,20 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
     	}
     	if(e.getSource()==aantalKeerGooienTextField) {
     		procesAantalGooienField();
+    	}
+    	if(e.getSource()==somOgenRadioButton) {
+    		//if(somOgenRadioButton.isSelected())
+    		//	return;
+    		grafiek.zetSomVerschil(1);
+    		grafiekCumulatief.zetSomVerschil(1);
+    		wisResultaten();
+    	}
+    	if(e.getSource()==verschilOgenRadioButton) {
+    		//if(verschilOgenRadioButton.isSelected())
+    		//	return;
+    		grafiek.zetSomVerschil(0);
+    		grafiekCumulatief.zetSomVerschil(0);
+    		wisResultaten();
     	}
     }
 
@@ -341,6 +459,14 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
     		procesAantalGooienField();
     	}
 		
+	}
+
+	private void resetSomVerschilButtons() {
+		grafiek.zetSomVerschil(aantalDS!=2 ? 1 : 0);
+		grafiekCumulatief.zetSomVerschil(aantalDS!=2 ? 1 : 0);
+		somOgenRadioButton.setSelected(aantalDS!=2 ? true : false);
+		verschilOgenRadioButton.setVisible(aantalDS==2 ? true : false);
+		somOgenRadioButton.setVisible(aantalDS!=1 ? true : false);
 	}
 	  
 }

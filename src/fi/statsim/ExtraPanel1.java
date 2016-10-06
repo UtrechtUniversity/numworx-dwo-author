@@ -39,6 +39,9 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 	private int[] resultaatMunt;
 	private int[] resultaatMuntCumulatief;
 	
+	private JPanel muntenOperationPanel;
+	private Color panelColor = new Color(220,220,220);
+	
 	private JLabel aantalMuntenLabel;
 	private JTextField aantalMuntenTextField;
 	private int aantalMunten;
@@ -56,6 +59,9 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 	
 	private Font labelFont = new Font("SansSerif", Font.PLAIN, 12);
 	
+	private Slider speedSlider;
+	private int speed = 100;
+	
 	StatSimInteractiePanel ssip;
 	
 	public ExtraPanel1(StatSimInteractiePanel ssip) {
@@ -65,10 +71,23 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		setOpaque(true);
 		setBackground(Color.white);
 		
+		muntenOperationPanel = new JPanel();
+		muntenOperationPanel.setBounds(0,0,500,40);
+		muntenOperationPanel.setLayout(null);
+		muntenOperationPanel.setOpaque(true);
+		muntenOperationPanel.setBackground(panelColor);
+		muntenOperationPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		add(muntenOperationPanel);
+		
+		speedSlider = new Slider(100, 50);
+		speedSlider.setBounds(375,29,110,10);
+		speedSlider.addActionListener(this);
+		muntenOperationPanel.add(speedSlider);
+				
 		aantalMuntenLabel = new JLabel("Aantal munten =");
 		aantalMuntenLabel.setFont(labelFont);
 		aantalMuntenLabel.setBounds(10,10,100,20);
-		add(aantalMuntenLabel);
+		muntenOperationPanel.add(aantalMuntenLabel);
 		
 		aantalMunten = 2;
 		aantalMuntenTextField = new JTextField(""+aantalMunten);
@@ -103,12 +122,12 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 			}
 		});
 		aantalMuntenTextField.setBounds(110,10,40,20);
-		add(aantalMuntenTextField);
+		muntenOperationPanel.add(aantalMuntenTextField);
 		
 		aantalKeerGooienLabel = new JLabel("Aantal keer gooien =");
 		aantalKeerGooienLabel.setFont(labelFont);
 		aantalKeerGooienLabel.setBounds(180,10,130,20);
-		add(aantalKeerGooienLabel);
+		muntenOperationPanel.add(aantalKeerGooienLabel);
 		
 		aantalKeerGooien = 10;
 		aantalKeerGooienTextField = new JTextField(""+aantalKeerGooien);
@@ -143,21 +162,21 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 			}
 		});
 		aantalKeerGooienTextField.setBounds(300,10,40,20);
-		add(aantalKeerGooienTextField);
+		muntenOperationPanel.add(aantalKeerGooienTextField);
 		
 		gooienButton = new JButton ("gooien");
 		gooienButton.setMargin(new Insets(4, 0, 4, 0));
 		gooienButton.setFont(labelFont);
 		gooienButton.addActionListener(this);
-		gooienButton.setBounds(380,10,80,20);	
-		add(gooienButton);
+		gooienButton.setBounds(380,10,100,19);	
+		muntenOperationPanel.add(gooienButton);
 		
 		opnieuwButton = new JButton ("opnieuw");
 		opnieuwButton.setMargin(new Insets(4, 0, 4, 0));
 		opnieuwButton.setFont(labelFont);
 		opnieuwButton.addActionListener(this);
-		opnieuwButton.setBounds(480,10,80,20);	
-		add(opnieuwButton);
+		opnieuwButton.setBounds(500,10,80,20);	
+		muntenOperationPanel.add(opnieuwButton);
 		
 		grafiek = new MuntenFrequentieGrafiek();
 		grafiek.setBounds(10,60,240,280);
@@ -186,8 +205,12 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		super.setSize(width, height);
 		
 		int grafiekWidth = (width-30)/2;
-		if(grafiek!=null)grafiek.setBounds(10,60,grafiekWidth,height-60);
-		if(grafiekCumulatief!=null)grafiekCumulatief.setBounds(grafiekWidth+20,60,grafiekWidth,height-60);
+		if(muntenOperationPanel!=null)muntenOperationPanel.setBounds(0,0,width,40);
+		if(grafiek!=null)grafiek.setBounds(10,70,grafiekWidth,height-70);
+		if(grafiekCumulatief!=null)grafiekCumulatief.setBounds(grafiekWidth+20,70,grafiekWidth,height-70);
+		if(gooienButton!=null)gooienButton.setBounds(width-220,10,100,19);
+		if(speedSlider!=null)speedSlider.setBounds(width-225,29,110,10);
+		if(opnieuwButton!=null)opnieuwButton.setBounds(width-100,10,80,20);
 		repaint();
 	}
 	
@@ -217,7 +240,7 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
     public void run()
 	{ 	while (animatie!=null && aantalGegooid<aantalKeerGooien && !stopAnimatie) {
 			this.doeStap();
-			try{ Thread.sleep(200); } catch (Exception e) {}
+			try{ Thread.sleep(speed); } catch (Exception e) {}
 		}
 		gooienButton.setEnabled(true);
 		aantalMuntenTextField.setEnabled(true);
@@ -298,6 +321,9 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
     		stopAnimatie = false;
     		animatie=new Thread(this);
   		   	animatie.start(); 
+    	}
+    	if(e.getSource()==speedSlider) {
+    		speed = 201-2*speedSlider.geefStand();
     	}
     	if(e.getSource()==opnieuwButton) {
     		stopAnimatie = true;

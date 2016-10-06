@@ -1,5 +1,6 @@
 package fi.statsim;
 
+import java.awt.AWTEventMulticaster;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -8,6 +9,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -16,15 +19,21 @@ import javax.swing.JPanel;
 
 public class DSFrequentieGrafiek extends JPanel {
 
+	public static int VERSCHIL = 0;
+	public static int SOM = 1;
+	
+	private int somVerschilMode = 1;
+			
 	private int aantalDS = 2;
 	private int aantalKeerGooien = 10;
 	private int[] aantalDSGegooid;
 	
-	private int bottomHeight = 60;
+	private int bottomHeight = 40;
 	private int leftMargin = 35;
 	private int staafBreedte = 16;
 	private int staafTussenruimte = 8;
 	private int maxGraphHeight = 100;
+	
 	
 	private String yTekst = "";
 	
@@ -66,7 +75,7 @@ public class DSFrequentieGrafiek extends JPanel {
 	}
 	
 	public void zetGegooid(int[] aantalDSGegooid)	{
-		for(int i=aantalDS ; i<aantalDS*6+1 ; i++) {
+		for(int i=0 ; i<aantalDS*6+1 ; i++) {
 			this.aantalDSGegooid[i] = aantalDSGegooid[i];
 		}
 		repaint();
@@ -79,8 +88,17 @@ public class DSFrequentieGrafiek extends JPanel {
 		
 	}
 	
+	public void zetSomVerschil (int mode) {
+		if(aantalDS==2 && mode==0)
+			somVerschilMode = 0;
+		else
+			somVerschilMode = 1;
+		reset();
+	}
+	
 	public void zetAantalKeerGooien(int aantalKeerGooien) {
 		this.aantalKeerGooien = aantalKeerGooien;
+		
 		reset();
 	}
 	
@@ -94,7 +112,7 @@ public class DSFrequentieGrafiek extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setFont(labelFont);
 		FontMetrics fm = g2.getFontMetrics();
-		String topLabel = ""+aantalKeerGooien/(aantalDS);
+		String topLabel = ""+aantalKeerGooien;//(aantalDS);//correctie op schaal voor beter ruimtegebruik grafiek
 		String nulLabel = "0";
 		int topLabelWidth = fm.stringWidth(topLabel);
 		int nulLabelWidth = fm.stringWidth(nulLabel);
@@ -108,35 +126,49 @@ public class DSFrequentieGrafiek extends JPanel {
 		g2.setFont(labelKleinFont);
 		fm = g2.getFontMetrics();
 		maxGraphHeight = getHeight()-bottomHeight;
-		for(int i=aantalDS ; i<aantalDS*6+1 ;i++) {
-			int barHeight = aantalDSGegooid[i]*maxGraphHeight/(aantalKeerGooien/(aantalDS));
-			int rectx = leftMargin+staafTussenruimte+(staafBreedte+staafTussenruimte)*(i-aantalDS);
-			int recty = getHeight()-bottomHeight-barHeight;
-			
-			Rectangle2D rect = new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight);
-			g2.setPaint(Color.ORANGE);
-		    g2.fill(rect);	
-		    g2.setPaint(Color.BLACK);
-			g2.draw(new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight));
-			
-			String ogenLabel = ""+i;
-			int ogenLabelWidth = fm.stringWidth(ogenLabel);
-			g2.drawString(""+i, rectx+(staafBreedte-ogenLabelWidth)/2, getHeight()-bottomHeight+fm.getAscent()+2);
-			
-			/*for(int j=0 ; j<aantalDS ;j++) {	
-				String label = (i<=j ? "Kop" : "Munt");
-				String en = "en";
-				int labelWidth = fm.stringWidth(label);
-				int enWidth = fm.stringWidth(en);
-				int x = rectx + (staafBreedte-labelWidth)/2;
-				int y = getHeight() - bottomHeight + fm.getAscent()*((aantalDS==2 ? 2 :1)*j+1);
-				int xen = rectx + (staafBreedte-enWidth)/2;
-				int yen = getHeight() - bottomHeight + fm.getAscent()*(2*j+2);
-				g2.drawString(label, x, y+2);
-				if(i==1 && aantalDS==2 && j<aantalDS-1)
-					g2.drawString(en, xen, yen+2);
-			}*/
-		}
+		if(aantalDS==2 && somVerschilMode==0)
+			for(int i=0 ; i<13 ;i++) {
+				int barHeight = aantalDSGegooid[i]*maxGraphHeight/(aantalKeerGooien);///(aantalDS)); //correctie op schaal voor beter ruimtegebruik grafiek
+				int rectx = leftMargin+staafTussenruimte+(staafBreedte+staafTussenruimte)*(i);
+				int recty = getHeight()-bottomHeight-barHeight;
+				
+				Rectangle2D rect = new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight);
+				g2.setPaint(Color.ORANGE);
+			    g2.fill(rect);	
+			    g2.setPaint(Color.BLACK);
+				g2.draw(new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight));
+				
+				String ogenLabel = ""+i;
+				int ogenLabelWidth = fm.stringWidth(ogenLabel);
+				g2.drawString(""+i, rectx+(staafBreedte-ogenLabelWidth)/2, getHeight()-bottomHeight+fm.getAscent()+2);
+				
+				String barHeightString = ""+aantalDSGegooid[i];
+				int barHeightStringWidth = fm.stringWidth(barHeightString);
+				if(aantalDSGegooid[i]>0)
+					g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
+			}
+		else
+			for(int i=aantalDS ; i<aantalDS*6+1 ;i++) {
+				//if(aantalDS==0) aantalDS++; // waarom nodig?
+				int barHeight = aantalDSGegooid[i]*maxGraphHeight/(aantalKeerGooien);///(aantalDS));//correctie op schaal voor beter ruimtegebruik grafiek
+				int rectx = leftMargin+staafTussenruimte+(staafBreedte+staafTussenruimte)*(i-aantalDS);
+				int recty = getHeight()-bottomHeight-barHeight;
+				
+				Rectangle2D rect = new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight);
+				g2.setPaint(Color.ORANGE);
+			    g2.fill(rect);	
+			    g2.setPaint(Color.BLACK);
+				g2.draw(new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight));
+				
+				String ogenLabel = ""+i;
+				int ogenLabelWidth = fm.stringWidth(ogenLabel);
+				g2.drawString(""+i, rectx+(staafBreedte-ogenLabelWidth)/2, getHeight()-bottomHeight+fm.getAscent()+2);
+				
+				String barHeightString = ""+aantalDSGegooid[i];
+				int barHeightStringWidth = fm.stringWidth(barHeightString);
+				if(aantalDSGegooid[i]>0)
+					g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
+			}
 		
 		g2.setFont(labelFont);
 		fm = g2.getFontMetrics();
@@ -153,4 +185,21 @@ public class DSFrequentieGrafiek extends JPanel {
 		g2.draw(new Line2D.Double( (getHeight()+bottomHeight+labelYasWidth)/2,leftMargin-15,(getHeight()+bottomHeight+labelYasWidth)/2-6,leftMargin-15-4));
 		
 	}
+	
+	// ActionProducer
+			private ActionListener actionListener = null;
+
+			public void addActionListener(ActionListener l)	{
+				actionListener = AWTEventMulticaster.add(actionListener, l);
+			}
+
+			public void removeActionListener(ActionListener l)	{
+				actionListener = AWTEventMulticaster.remove(actionListener, l);
+			}
+
+			public void produceAction(String command) {
+				if (actionListener != null)	{
+					actionListener.actionPerformed(new ActionEvent(this, 0, command));
+				}
+			}
 }
