@@ -163,7 +163,7 @@ class GrafiekVeld extends JComponent{
         pixelsY = getSize().height - (gtip.beginy + valY*gtip.eenheidyD/scalingDivider);
 		return pixelsY; 
 	}
-	
+		
 	private void calculateStream(Point2D.Double pStartScherm, int xIndex, int yIndex, FieldData fieldData, Expressie xAsExpressie, Expressie yAsExpressie) {
 		final double cSampleDist = 0.25; // in pixels
 		final int cMaxIter = 200;
@@ -1712,29 +1712,44 @@ class GrafiekVeld extends JComponent{
 		return gesorteerd;
 	}
 	
-	public boolean berekenLijn(Vector points, int nauwkeurigheid)
-	{	
-		double nauwkeurigDoubleX = gtip.schaalFactorX * nauwkeurigheid / gtip.eenheidxD;
-		double nauwkeurigDoubleY = gtip.schaalFactorY * nauwkeurigheid / gtip.eenheidyD;
+	public boolean berekenLijn(Vector points, int nauwkeurigheid) {
+	//  let op: niet ontworpen voor, noch getest in, Logaritmische schaal! (omdat dat op het moment van schrijven niet aan de orde was) 
+		
+		final double cAxisCompensationFactor = 2.0; // Assen-compensensatie factor is nodig omdat het standaard assenstelsel 
+													// gedefineerd is met een echte waarde van 2
+													// verdeeld over 16 pixels, dit wordt als eenheid betiteld maar in feite 
+		                                            // gaat het over een "tweeheid", zonder compensatiefactor zou de nauwkeurigheid,
+		                                            // welke is gedefineerd in pixels, verkeerd worden geinterpreteerd.
+													// Omdat manualScaling ook gebaseerd is op het grove rooster geldt hiervoor hetzelfde
 		
 		RealPoint rpMin = (RealPoint) points.elementAt(0);
 		RealPoint rpMax = (RealPoint) points.elementAt(points.size() - 1);
-		double a = ((gtip.yAsLog?Math.log10(rpMax.getY()):rpMax.getY()) - (gtip.yAsLog?Math.log10(rpMin.getY()):rpMin.getY()))
-				/((gtip.xAsLog?Math.log10(rpMax.getX()):rpMax.getX()) - (gtip.xAsLog?Math.log10(rpMin.getX()):rpMin.getX()));
-		double b = (gtip.yAsLog?Math.log10(rpMax.getY()):rpMax.getY() - a*(gtip.xAsLog?Math.log10(rpMax.getX()):rpMax.getX()));
-		boolean lijn = true;
 		
-		for(int i = 1; i < points.size() - 1 && lijn; i++)
-		{	RealPoint rpi = (RealPoint) points.elementAt(i);
-			double xs = (a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + (gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - a*b)/(a*a + 1);
-			double ys = (a*a*(gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) + a*(gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) + b)/(a*a + 1);
-//				double afstand = ((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs)*((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) + 
-//						((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys)*((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys);
-			boolean afstandxKleinGenoeg = Math.abs((gtip.xAsLog?Math.log10(rpi.getX()):rpi.getX()) - xs) <= nauwkeurigDoubleX;
-			boolean afstandyKleinGenoeg = Math.abs((gtip.yAsLog?Math.log10(rpi.getY()):rpi.getY()) - ys) <= nauwkeurigDoubleY; 
-			//afstand = Math.sqrt(afstand);
-			if(!(afstandxKleinGenoeg && afstandyKleinGenoeg))
-				lijn = false;
+		// calculate line: y = ax + b as defined bij first and last point of the pointlist
+		double a = (rpMax.getY() - rpMin.getY()) / (rpMax.getX() - rpMin.getX() );
+		double b = (rpMax.getY() - a * rpMax.getX() );
+		
+		boolean lijn = true;		
+		for(int i = 1; i < points.size() - 1 && lijn; i++) {	
+			RealPoint rpi = (RealPoint) points.elementAt(i);
+			
+			// rn = (real value of) closest point to rpi on line y = ax +b
+			double rnX = (a*(rpi.getY()) + (rpi.getX()) - a*b) / (a*a + 1);
+			double rnY = (a*a*(rpi.getY()) + a*(rpi.getX()) + b) / (a*a + 1);
+//			double rDistance = Math.sqrt( Math.pow( (rpi.getX() - xs), 2) + Math.pow( rpi.getY() - ys, 2) );
+			
+			// calulate screen values of rn & rpi
+			double snX = valueXtoPixels(rnX);
+			double snY = valueYtoPixels(rnY);
+			double spiX = valueXtoPixels(rpi.getX());
+			double spiY = valueYtoPixels(rpi.getY());
+			
+			// calculate screen-distance from rpi to line
+			double sDistance = Math.sqrt( Math.pow( (spiX - snX), 2) + Math.pow( spiY - snY, 2) );
+			sDistance /=  cAxisCompensationFactor ; // zie definitie cAxisCompensationFactor
+
+			// compare screen distance to screen 
+			lijn = (sDistance <= nauwkeurigheid);
 		}
 		return lijn;
 	}	
