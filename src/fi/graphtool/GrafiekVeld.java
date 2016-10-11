@@ -1736,7 +1736,6 @@ class GrafiekVeld extends JComponent{
 			// rn = (real value of) closest point to rpi on line y = ax +b
 			double rnX = (a*(rpi.getY()) + (rpi.getX()) - a*b) / (a*a + 1);
 			double rnY = (a*a*(rpi.getY()) + a*(rpi.getX()) + b) / (a*a + 1);
-//			double rDistance = Math.sqrt( Math.pow( (rpi.getX() - xs), 2) + Math.pow( rpi.getY() - ys, 2) );
 			
 			// calulate screen values of rn & rpi
 			double snX = valueXtoPixels(rnX);
