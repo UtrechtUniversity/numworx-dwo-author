@@ -1737,7 +1737,7 @@ class GrafiekVeld extends JComponent{
 			double rnX = (a*(rpi.getY()) + (rpi.getX()) - a*b) / (a*a + 1);
 			double rnY = (a*a*(rpi.getY()) + a*(rpi.getX()) + b) / (a*a + 1);
 			
-			// calulate screen values of rn & rpi
+			// calulate screen values of rn & rpi 
 			double snX = valueXtoPixels(rnX);
 			double snY = valueYtoPixels(rnY);
 			double spiX = valueXtoPixels(rpi.getX());
