@@ -1263,6 +1263,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			{	
 				String textString = (String)map.get("content");
 				zetTekst(textString);
+				layoutTekst();
 			}
 		}
 		else if(command.startsWith("action.setNotEditable"))

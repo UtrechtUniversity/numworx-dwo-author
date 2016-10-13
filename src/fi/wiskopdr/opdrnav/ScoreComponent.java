@@ -10,6 +10,7 @@ public class ScoreComponent extends JComponent
 {	
 	private int score = 0;
 	private int size = 12;
+	private boolean correctieView;
 	
 	public ScoreComponent(int size)
 	{	this.size = size;
@@ -22,6 +23,17 @@ public class ScoreComponent extends JComponent
 	    }
 	    else */
 		g=gr;
+	
+		if(correctieView) {
+			Polygon p = new Polygon();
+			p.addPoint(0, getHeight());
+			p.addPoint(getWidth(), 0);
+			p.addPoint(getWidth(), getHeight());
+	
+			g.setColor(new Color(255,150,0,128));
+			g.fillPolygon(p);
+		}
+		
 		g.setColor(Color.black);
 		
 		Font f = new Font("SansSerif", Font.PLAIN,(size-1)/2);
@@ -33,6 +45,11 @@ public class ScoreComponent extends JComponent
 	
 	public void zetScore(int sc)
 	{	score = sc;
+		repaint();
+	}
+	
+	public void zetCorrectieView(boolean b)
+	{	correctieView = b;
 		repaint();
 	}
 	

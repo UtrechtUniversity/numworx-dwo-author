@@ -141,7 +141,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private boolean loaded;
 	private boolean toetsLocked;
 	private boolean review;
-	private LessonMode lessonMode;
+	private LessonMode lessonMode = LESSON_MODE_review; //DEBUG;
 	public static final String CAS_IDEAS = "ideas", CAS_LOCAL = "local";
 	public static String doCAS;
 

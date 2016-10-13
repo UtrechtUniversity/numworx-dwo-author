@@ -115,6 +115,10 @@ public class OpdrachtNrRij extends JPanel implements ActionListener
 	{	scores[nr].zetScore(score);
 		repaint();
 	}
+	public void zetCorrectieView(int nr, boolean b)
+	{	scores[nr].zetCorrectieView(b);
+		repaint();
+	}
 	public int geefScore(int nr)
 	{	return scores[nr].geefScore();
 	}

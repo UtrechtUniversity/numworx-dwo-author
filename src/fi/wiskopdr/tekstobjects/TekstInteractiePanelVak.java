@@ -82,6 +82,7 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.AntwoordFormuleVak;
 //import fi.wiskopdr.AntwoordVakEditPanel;
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.ReviewInteractiePanel;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakPanel;
@@ -238,6 +239,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private JPanel callOutPosPanel;
 	private boolean popup;
 	private int soortInteractiePanel;
+	
+	private boolean reviewMode = true;
+	private ReviewInteractiePanel reviewInteractiePanel;
+	private Hashtable reviewInteractieData = new Hashtable();
+	private int reviewScoreCorrectie;
 	
 	private boolean sleepModus;
 	private boolean resizeModus;
@@ -796,6 +802,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(!(interactiePanel instanceof TekstVakPanel) && editMode && !popup)
         {	if(afdekPanel!=null)afdekPanel.setSize(b,h);
         }
+		if(!(interactiePanel instanceof TekstVakPanel) && reviewMode && !popup)
+        {	if(reviewInteractiePanel!=null)reviewInteractiePanel.setSize(b,h);
+        }
 		if(resizePanel!=null)resizePanel.setBounds(b-6,h-6,6,6);
 		if(interactiePanel!=null && !popup)((Component)interactiePanel).setSize(b,h);
 	}
@@ -806,6 +815,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(!editMode && resizePanel!=null) remove(resizePanel);
         //if(b)setBackground(Color.lightGray);
 		
+	}
+	public void setReviewMode(boolean b)
+	{	reviewMode = b;
+		if(!reviewMode && reviewInteractiePanel!=null) remove(reviewInteractiePanel);
 	}
 	
 	public void setEditModeAll(boolean b)
@@ -1849,6 +1862,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(afdekPanel!=null) remove(afdekPanel);
         setEditMode(false);
         
+        
+        
         setStudentEditor(studentEditor);
         
         
@@ -1876,7 +1891,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 		zetMaat();
 		
-		
+		//setReviewMode(WiskOpdr.applet.reviewMode());
+		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
+	        if(reviewInteractiePanel==null) 
+	        {	reviewInteractiePanel = new ReviewInteractiePanel(getScoreMax());
+	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
+	        	reviewInteractiePanel.setLayout(null);
+	        	reviewInteractiePanel.setOpaque(true);
+	        	reviewInteractiePanel.addMouseListener(this);
+	        	reviewInteractiePanel.addMouseMotionListener(this);
+	        	add(reviewInteractiePanel,0);
+	        }
+		}
 	}
 	
 	public Vector geefInteractiePanels()
@@ -1920,7 +1946,21 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		
 		}
 		
-	}
+		if(h!=null && h.containsKey("reviewInteractieData")) {
+			reviewInteractieData = (Hashtable)h.get("reviewInteractieData");
+			if(reviewInteractieData.containsKey("reviewScoreCorrectie"))
+				reviewScoreCorrectie = ((Integer)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
+		}
+		
+		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
+			if(interactiePanel!=null)
+				interactiePanel.kijkNa();
+			reviewInteractiePanel.setScore(getScore());
+			reviewInteractiePanel.setScoreCorrectie(reviewScoreCorrectie);
+			reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
+			add(reviewInteractiePanel,0);
+		}
+    }
 	
 	
 	public Hashtable getState()
@@ -1929,8 +1969,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	}
 	
 	private Hashtable getState_int()
-	{		
-		if(interactiePanel!=null)return interactiePanel.getState();
+	{	
+		Hashtable h = null;
+		if(interactiePanel!=null) {
+			h = interactiePanel.getState();
+			
+			if(reviewInteractiePanel!=null) {
+				reviewScoreCorrectie = reviewInteractiePanel.getScoreCorrectie();
+				reviewInteractieData.put("reviewScoreCorrectie", new Integer(reviewScoreCorrectie));
+				h.put("reviewInteractieData", reviewInteractieData);
+			}
+			return h;
+		}
 		else return null;
 	}
 	
@@ -2175,6 +2225,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public boolean zetFocus()
 	{
+//		if(reviewMode) {
+//			reviewPanel.requestFocus();
+//			return(false);
+//		}
+			
+		
 		if(interactiePanel instanceof SimpelAntwoordFormuleVak) 
 		{	((SimpelAntwoordFormuleVak)interactiePanel).geefFormuleVak().requestFocus();
 			return true;
@@ -2361,6 +2417,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		
+		
 	}
 	
 	/*public void paintComponent(Graphics g)
@@ -2446,6 +2503,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					
 				}
 			}
+		
+			
 			
 		}
 		else  if(e.getSource()==afdekPanel && e.isShiftDown() && getBasisTekstVak().crossWidgetViewActief())
@@ -2463,6 +2522,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				
 			}
 		}
+		
 	}
 /**
  * Laat het editInteractionPanel zien 
@@ -2586,6 +2646,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				return;
 			}
 		}
+		
 	}
 
 	private void doConnect() {

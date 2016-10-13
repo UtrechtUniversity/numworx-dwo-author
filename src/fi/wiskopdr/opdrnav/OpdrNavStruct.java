@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -76,6 +77,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private String[][] opdrachten;
 	private Hashtable[][] states;
 	private int[][] scores;
+	private int[][] scoreCorrecties;
 	private boolean[][] isCorrect;
 	private int[][][][] scoresObjectives;
 	private int[][][][] possibleMisconceptions;
@@ -276,6 +278,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrachten = new String[aantalActiviteiten][maxAantalOpdrachten];
 		states = new Hashtable[aantalActiviteiten][maxAantalOpdrachten];
 		scores = new int[aantalActiviteiten][maxAantalOpdrachten];
+		scoreCorrecties = new int[aantalActiviteiten][maxAantalOpdrachten];
 		times = new String[aantalActiviteiten][maxAantalOpdrachten];
 		isCorrect = new boolean[aantalActiviteiten][maxAantalOpdrachten];
 		scoresMax = new int[aantalActiviteiten][maxAantalOpdrachten];
@@ -2431,6 +2434,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrContainer.sessionStop();
 		states[activiteitNr][opdrachtNr] = opdrContainer.getState();
 		scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
+		scoreCorrecties[activiteitNr][opdrachtNr] = getScoreCorrectie(states[activiteitNr][opdrachtNr]);
+		System.out.println("scoreCorrecties["+opdrachtNr+"] = "+scoreCorrecties[activiteitNr][opdrachtNr]);
 		
 		if (objectives != null)
 			scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
@@ -3295,6 +3300,33 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	public MyOpdrContainer getOpdrEditContainer()
 	{
 		return opdrContainer;
+	}
+	
+	private int getScoreCorrectie (Hashtable state) {
+		int scoreCorrectie = 0;
+		Hashtable[] interactiePanelStates = null;
+		Enumeration en = state.keys();
+		while (en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			if(key.equals("interactiePanelStates")) {
+				interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+				for(int i=0 ; i<interactiePanelStates.length ; i++) {
+					if(interactiePanelStates[i]!=null) {
+						Enumeration eni = interactiePanelStates[i].keys();
+						while (eni.hasMoreElements()) {
+							String keyi = (String)eni.nextElement();
+							if(keyi.equals("reviewInteractieData")) { 
+								Hashtable reviewInteractieData = (Hashtable)interactiePanelStates[i].get("reviewInteractieData");
+								int reviewScoreCorrectie = ((Integer)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
+								scoreCorrectie += reviewScoreCorrectie;
+							}
+						}
+						scoreCorrectie += getScoreCorrectie(interactiePanelStates[i]);
+					}
+				}
+			}
+		}
+		return scoreCorrectie;
 	}
 
 	public static Vector toVector(Object object)
