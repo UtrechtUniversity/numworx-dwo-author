@@ -29,7 +29,7 @@ public class DSFrequentieGrafiek extends JPanel {
 	private int[] aantalDSGegooid;
 	
 	private int bottomHeight = 40;
-	private int leftMargin = 35;
+	private int leftMargin = 45;
 	private int staafBreedte = 16;
 	private int staafTussenruimte = 8;
 	private int maxGraphHeight = 100;
@@ -144,8 +144,8 @@ public class DSFrequentieGrafiek extends JPanel {
 				
 				String barHeightString = ""+aantalDSGegooid[i];
 				int barHeightStringWidth = fm.stringWidth(barHeightString);
-				if(aantalDSGegooid[i]>0)
-					g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
+				//if(aantalDSGegooid[i]>0)
+				//	g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
 			}
 		else
 			for(int i=aantalDS ; i<aantalDS*6+1 ;i++) {
@@ -166,8 +166,8 @@ public class DSFrequentieGrafiek extends JPanel {
 				
 				String barHeightString = ""+aantalDSGegooid[i];
 				int barHeightStringWidth = fm.stringWidth(barHeightString);
-				if(aantalDSGegooid[i]>0)
-					g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
+				//if(aantalDSGegooid[i]>0)
+				//	g2.drawString(barHeightString, rectx+(staafBreedte-barHeightStringWidth)/2, getHeight()-bottomHeight-barHeight-3);
 			}
 		
 		g2.setFont(labelFont);

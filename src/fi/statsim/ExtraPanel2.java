@@ -92,7 +92,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		speedSlider.addActionListener(this);
 		dsOperationPanel.add(speedSlider);
 		
-		aantalDSLabel = new JLabel("Aantal dobbelstenen =");
+		aantalDSLabel = new JLabel(StatSim.rb.getString("extraAantalDobbelstenenLabel"));
 		aantalDSLabel.setFont(labelFont);
 		aantalDSLabel.setBounds(10,10,140,20);
 		dsOperationPanel.add(aantalDSLabel);
@@ -132,7 +132,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		aantalDSTextField.setBounds(150,10,40,20);
 		dsOperationPanel.add(aantalDSTextField);
 		
-		aantalKeerGooienLabel = new JLabel("Aantal keer gooien =");
+		aantalKeerGooienLabel = new JLabel(StatSim.rb.getString("extraAantalKeerGooienLabel"));
 		aantalKeerGooienLabel.setFont(labelFont);
 		aantalKeerGooienLabel.setBounds(200,10,130,20);
 		dsOperationPanel.add(aantalKeerGooienLabel);
@@ -172,14 +172,14 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		aantalKeerGooienTextField.setBounds(320,10,40,20);
 		dsOperationPanel.add(aantalKeerGooienTextField);
 		
-		gooienButton = new JButton ("gooien");
+		gooienButton = new JButton (StatSim.rb.getString("extraGooienLabel"));
 		gooienButton.setMargin(new Insets(4, 0, 4, 0));
 		gooienButton.setFont(labelFont);
 		gooienButton.addActionListener(this);
 		gooienButton.setBounds(380,10,100,19);	
 		dsOperationPanel.add(gooienButton);
 		
-		opnieuwButton = new JButton ("opnieuw");
+		opnieuwButton = new JButton (StatSim.rb.getString("extraOpnieuwLabel"));
 		opnieuwButton.setMargin(new Insets(4, 0, 4, 0));
 		opnieuwButton.setFont(labelFont);
 		opnieuwButton.addActionListener(this);
@@ -188,12 +188,12 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		
 		grafiek = new DSFrequentieGrafiek();
 		grafiek.setBounds(10,60,240,280);
-		grafiek.zetYtekst("Aantal keren gegooid");
+		grafiek.zetYtekst(StatSim.rb.getString("extraAantalKerenGegooidLabel"));
 		add(grafiek);
 		
 		grafiekCumulatief = new DSFrequentieGrafiek();
 		grafiekCumulatief.setBounds(250,60,240,280);
-		grafiekCumulatief.zetYtekst("Totaal aantal keren gegooid");
+		grafiekCumulatief.zetYtekst(StatSim.rb.getString("extraTotaalGegooidLabel"));
 		add(grafiekCumulatief);
 		
 		dsInstellingenPanel = new JPanel();
@@ -204,7 +204,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		dsInstellingenPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		add(dsInstellingenPanel);
 		
-		somOgenRadioButton = new JRadioButton("Totaal-getal");
+		somOgenRadioButton = new JRadioButton(StatSim.rb.getString("extraTotaalGetalLabel"));
 		somOgenRadioButton.setOpaque(false);
 		somOgenRadioButton.setFont(labelFont);
 		somOgenRadioButton.addActionListener(this);
@@ -212,7 +212,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		somOgenRadioButton.setSelected(true);
 		dsInstellingenPanel.add(somOgenRadioButton);
 		
-		verschilOgenRadioButton = new JRadioButton("Verschil-getal");
+		verschilOgenRadioButton = new JRadioButton(StatSim.rb.getString("extraVerschilGetalLabel"));
 		verschilOgenRadioButton.setOpaque(false);
 		verschilOgenRadioButton.setFont(labelFont);
 		verschilOgenRadioButton.addActionListener(this);
@@ -223,7 +223,7 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 		buttonGroup.add(somOgenRadioButton);
 		buttonGroup.add(verschilOgenRadioButton);
 		
-		ogenLabel = new JLabel("dobbelsteen");
+		ogenLabel = new JLabel(StatSim.rb.getString("extraDobbelsteenLabel"));
 		ogenLabel.setFont(labelFont);
 		ogenLabel.setBounds(260,10,80,20);
 		dsInstellingenPanel.add(ogenLabel);
@@ -462,9 +462,12 @@ public class ExtraPanel2 extends JPanel implements ActionListener, FocusListener
 	}
 
 	private void resetSomVerschilButtons() {
-		grafiek.zetSomVerschil(aantalDS!=2 ? 1 : 0);
-		grafiekCumulatief.zetSomVerschil(aantalDS!=2 ? 1 : 0);
-		somOgenRadioButton.setSelected(aantalDS!=2 ? true : false);
+		
+		if(aantalDS!=2) {
+			somOgenRadioButton.setSelected(true);
+			grafiek.zetSomVerschil(1);
+			grafiekCumulatief.zetSomVerschil(1);
+		}
 		verschilOgenRadioButton.setVisible(aantalDS==2 ? true : false);
 		somOgenRadioButton.setVisible(aantalDS!=1 ? true : false);
 	}

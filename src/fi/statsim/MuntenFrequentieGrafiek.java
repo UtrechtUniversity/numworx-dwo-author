@@ -117,8 +117,8 @@ public class MuntenFrequentieGrafiek extends JPanel {
 			g2.draw(new Rectangle2D.Double(rectx,recty,staafBreedte,barHeight));
 			
 			for(int j=0 ; j<aantalMunten ;j++) {	
-				String label = (i<=j ? "Kop" : "Munt");
-				String en = "en";
+				String label = (i<=j ? StatSim.rb.getString("extraHead") : StatSim.rb.getString("extraTail"));
+				String en = StatSim.rb.getString("extraEn");
 				int labelWidth = fm.stringWidth(label);
 				int enWidth = fm.stringWidth(en);
 				int x = rectx + (staafBreedte-labelWidth)/2;

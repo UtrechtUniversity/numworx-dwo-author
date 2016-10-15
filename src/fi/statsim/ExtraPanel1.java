@@ -84,7 +84,7 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		speedSlider.addActionListener(this);
 		muntenOperationPanel.add(speedSlider);
 				
-		aantalMuntenLabel = new JLabel("Aantal munten =");
+		aantalMuntenLabel = new JLabel(StatSim.rb.getString("extraAantalMuntenLabel"));
 		aantalMuntenLabel.setFont(labelFont);
 		aantalMuntenLabel.setBounds(10,10,100,20);
 		muntenOperationPanel.add(aantalMuntenLabel);
@@ -124,7 +124,7 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		aantalMuntenTextField.setBounds(110,10,40,20);
 		muntenOperationPanel.add(aantalMuntenTextField);
 		
-		aantalKeerGooienLabel = new JLabel("Aantal keer gooien =");
+		aantalKeerGooienLabel = new JLabel(StatSim.rb.getString("extraAantalKeerGooienLabel"));
 		aantalKeerGooienLabel.setFont(labelFont);
 		aantalKeerGooienLabel.setBounds(180,10,130,20);
 		muntenOperationPanel.add(aantalKeerGooienLabel);
@@ -164,14 +164,14 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		aantalKeerGooienTextField.setBounds(300,10,40,20);
 		muntenOperationPanel.add(aantalKeerGooienTextField);
 		
-		gooienButton = new JButton ("gooien");
+		gooienButton = new JButton (StatSim.rb.getString("extraGooienLabel"));
 		gooienButton.setMargin(new Insets(4, 0, 4, 0));
 		gooienButton.setFont(labelFont);
 		gooienButton.addActionListener(this);
 		gooienButton.setBounds(380,10,100,19);	
 		muntenOperationPanel.add(gooienButton);
 		
-		opnieuwButton = new JButton ("opnieuw");
+		opnieuwButton = new JButton (StatSim.rb.getString("extraOpnieuwLabel"));
 		opnieuwButton.setMargin(new Insets(4, 0, 4, 0));
 		opnieuwButton.setFont(labelFont);
 		opnieuwButton.addActionListener(this);
@@ -180,12 +180,12 @@ public class ExtraPanel1 extends JPanel implements ActionListener, FocusListener
 		
 		grafiek = new MuntenFrequentieGrafiek();
 		grafiek.setBounds(10,60,240,280);
-		grafiek.zetYtekst("Aantal keren gegooid");
+		grafiek.zetYtekst(StatSim.rb.getString("extraAantalKerenGegooidLabel"));
 		add(grafiek);
 		
 		grafiekCumulatief = new MuntenFrequentieGrafiek();
 		grafiekCumulatief.setBounds(250,60,240,280);
-		grafiekCumulatief.zetYtekst("Totaal aantal keren gegooid");
+		grafiekCumulatief.zetYtekst(StatSim.rb.getString("extraTotaalGegooidLabel"));
 		add(grafiekCumulatief);
 		
 		resultaatMunt = new int[5];
