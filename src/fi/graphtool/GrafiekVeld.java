@@ -554,6 +554,11 @@ class GrafiekVeld extends JComponent{
 					g.setColor(lijnenKleur);
 				}
 			}
+		} else {
+			// !(roosterZichtbaar || SchaalZichtbaar)
+			if (gtip.xPositief) { // Zet negatieve X-as uit indien nodig
+				drawXmin =  Math.min(drawXmax, Math.max(drawXmin, bx));
+			}
 		}
 		
 		if (gtip.piLijnenZichtbaar) {	
