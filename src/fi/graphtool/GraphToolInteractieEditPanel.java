@@ -1756,10 +1756,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			interactiePanel.zetTraceOptie(traceOptie);
 		}
 		if(e.getSource().equals(dragOptieCB)) {	
-			if ( (!manualScalingX) && (!manualScalingY) ) {
-				dragOptie = dragOptieCB.isSelected();
-				interactiePanel.zetDragOptie(dragOptie);
-			}
+			dragOptie = dragOptieCB.isSelected();
+			interactiePanel.zetDragOptie(dragOptie);
 		}
 		if(e.getSource().equals(zoomInTabelCB))
 		{	zoomInTabel = zoomInTabelCB.isSelected();
