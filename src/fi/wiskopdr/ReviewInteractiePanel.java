@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
+
 public class ReviewInteractiePanel extends JPanel implements ActionListener, MouseListener, WindowListener, KeyListener {
 
 	private DialogFacade frame;
@@ -47,11 +49,13 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	private JLabel scoreStringLabel;
 	private JTextField scoreCorrectieTF;
 	
-	
+	TekstInteractiePanelVak tipv;
 	private Polygon p;
 	
-	public ReviewInteractiePanel(int scoreMax) {
-		this.scoreMax = scoreMax;
+	public ReviewInteractiePanel(TekstInteractiePanelVak tipv) {
+		this.tipv = tipv;
+		
+		this.scoreMax = tipv.getScoreMax();
 		correctieColor = geenCorrectieKleur;
 		
 		
@@ -189,6 +193,7 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(okButton)) {   
 			updateScoreCorrectie();
+			tipv.reviewUpdate();
 			closeFrame();
         }
 		else if(e.getSource().equals(cancelButton)) {   

@@ -36,6 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
+import org.json.simple.JSONValue;
+
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.wnwidgets.NWButtonUI;
@@ -1960,6 +1962,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		Hashtable shareState = ShareAction.getSharedState();
 		if (shareState != null)
 			h.put(ShareAction.SHARE_MAP, shareState);
+		
+		Hashtable stateReview = getReviewStateHashtable(h);
+		
+		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
+		System.out.println("Hashtable :" + JSONValue.toJSONString(stateReview));
+		mergeReviewStateHashtable(h,stateReview);
+		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
+		
 		return h;
 	}
 
@@ -2434,8 +2444,6 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrContainer.sessionStop();
 		states[activiteitNr][opdrachtNr] = opdrContainer.getState();
 		scores[activiteitNr][opdrachtNr] = opdrContainer.getScore();
-		scoreCorrecties[activiteitNr][opdrachtNr] = getScoreCorrectie(states[activiteitNr][opdrachtNr]);
-		System.out.println("scoreCorrecties["+opdrachtNr+"] = "+scoreCorrecties[activiteitNr][opdrachtNr]);
 		
 		if (objectives != null)
 			scoresObjectives[activiteitNr][opdrachtNr] = opdrContainer.getScoreObjectives();
@@ -2988,6 +2996,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		else if (e.getSource() == opdrContainer)
 		{
+			if (e.getActionCommand().equals("review"))
+			{
+				states[activiteitNr][opdrachtNr] = opdrContainer.getState();
+				scoreCorrecties[activiteitNr][opdrachtNr] = getScoreCorrectiePage(states[activiteitNr][opdrachtNr]);
+				or[activiteitNr].zetScore(opdrachtNr+1, scores[activiteitNr][opdrachtNr] + scoreCorrecties[activiteitNr][opdrachtNr]);
+				or[activiteitNr].zetCorrectieView(opdrachtNr+1, scoreCorrecties[activiteitNr][opdrachtNr]!=0);
+				System.out.println("scoreCorrecties["+opdrachtNr+"] = "+scoreCorrecties[activiteitNr][opdrachtNr]);
+				return;
+			}
+			
 			if (!(e.getActionCommand().equals("checked") || e.getActionCommand().equals("changed")))
 				return;
 			
@@ -3302,7 +3320,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return opdrContainer;
 	}
 	
-	private int getScoreCorrectie (Hashtable state) {
+	private int getScoreCorrectiePage (Hashtable state) {
 		int scoreCorrectie = 0;
 		Hashtable[] interactiePanelStates = null;
 		Enumeration en = state.keys();
@@ -3321,12 +3339,81 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 								scoreCorrectie += reviewScoreCorrectie;
 							}
 						}
-						scoreCorrectie += getScoreCorrectie(interactiePanelStates[i]);
+						scoreCorrectie += getScoreCorrectiePage(interactiePanelStates[i]);
 					}
 				}
 			}
 		}
 		return scoreCorrectie;
+	}
+	
+	private Hashtable getReviewStateHashtable (Hashtable state) {
+		Hashtable[][] opdrContStates;
+		Hashtable[][] opdrContStatesNew;
+		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
+		opdrContStatesNew = new Hashtable[1][opdrContStates[0].length];
+		for(int i=0 ; i<opdrContStatesNew[0].length ; i++) {
+			opdrContStatesNew[0][i] = getReviewStateRecursief(opdrContStates[0][i]);
+		}
+		Hashtable stateNew = new Hashtable();
+		stateNew.put("opdrContStates", opdrContStatesNew);
+		return stateNew;
+	}
+	
+	private Hashtable getReviewStateRecursief (Hashtable state) {
+		Hashtable reviewState = new Hashtable();
+		Hashtable[] interactiePanelStates = null;
+		Hashtable[] interactiePanelStatesNew = null;
+		
+		if(state.containsKey("interactiePanelStates")) {
+			interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+			interactiePanelStatesNew = new Hashtable[interactiePanelStates.length];
+			for(int i=0 ; i<interactiePanelStates.length ; i++) {
+				interactiePanelStatesNew[i] = new Hashtable();
+				if(interactiePanelStates[i]!=null) {
+					interactiePanelStatesNew[i] = getReviewStateRecursief(interactiePanelStates[i]);
+				}
+			}
+			reviewState.put("interactiePanelStates", interactiePanelStatesNew);
+		}
+		if(state.containsKey("reviewInteractieData")) {
+			Hashtable reviewInteractieData = (Hashtable)state.get("reviewInteractieData");
+			reviewState.put("reviewInteractieData", reviewInteractieData);
+		}
+		return reviewState;
+	}
+	
+	private void mergeReviewStateHashtable (Hashtable state, Hashtable reviewState) {
+		Hashtable[][] opdrContStates;
+		Hashtable[][] opdrContReviewStates;
+		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
+		opdrContReviewStates = (Hashtable[][])(state.get("opdrContStates"));
+		
+		Hashtable[] interactiePanelStates = null;
+		Hashtable[] interactiePanelReviewStates = null;
+		
+		for(int i=0 ; i<opdrContStates[0].length ; i++) {
+			if(opdrContStates[0][i]!=null)
+				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
+		}
+	}
+	
+	private void mergeReviewStateRecursief (Hashtable state, Hashtable reviewState) {
+		if(reviewState.containsKey("reviewInteractieData")) {
+			Hashtable reviewInteractieData = (Hashtable)reviewState.get("reviewInteractieData");
+			state.put("reviewInteractieData", reviewInteractieData);
+		}
+		
+		if(reviewState.containsKey("interactiePanelStates")) {
+			Hashtable[] interactiePanelReviewStates = (Hashtable[])reviewState.get("interactiePanelStates");
+			Hashtable[] interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+			
+			for(int i=0 ; i<interactiePanelReviewStates.length ; i++) {
+				if(interactiePanelStates[i]!=null) {
+					mergeReviewStateRecursief(interactiePanelStates[i],interactiePanelReviewStates[i]);
+				}
+			}
+		}
 	}
 
 	public static Vector toVector(Object object)

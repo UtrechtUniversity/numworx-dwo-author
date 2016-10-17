@@ -816,6 +816,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         //if(b)setBackground(Color.lightGray);
 		
 	}
+	
+	public void reviewUpdate()
+	{	produceAction("review");
+	}
+	
 	public void setReviewMode(boolean b)
 	{	reviewMode = b;
 		if(!reviewMode && reviewInteractiePanel!=null) remove(reviewInteractiePanel);
@@ -1894,7 +1899,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		//setReviewMode(WiskOpdr.applet.reviewMode());
 		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
 	        if(reviewInteractiePanel==null) 
-	        {	reviewInteractiePanel = new ReviewInteractiePanel(getScoreMax());
+	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
 	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
 	        	reviewInteractiePanel.setLayout(null);
 	        	reviewInteractiePanel.setOpaque(true);
@@ -2700,9 +2705,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				return;
 			}
 		}
-		
-		
-		
 	}
 	
 	//ActionProducer
