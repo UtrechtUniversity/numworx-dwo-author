@@ -70,19 +70,19 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		theBoldFM = getFontMetrics(theBoldFont);
 		
 		rodeFiguurInput = vip.rodeFiguurString;
-		rodeFiguurPanel = new FiguurInputPanel(10, 10, 360, 69, true);
+		rodeFiguurPanel = new FiguurInputPanel(10, editHeight - 79, 360, 69, true);
 		rodeFiguurPanel.viep = this;
 		rodeFiguurPanel.zetFiguurString(rodeFiguurInput);
 		rodeFiguurPanel.setVisible(false);
-		//add(rodeFiguurPanel, 0);
+		add(rodeFiguurPanel, 0);
 		rodeFiguurPanel.closeButton.addActionListener(new CloseFiguurInputAL(true));
 		
 		grijzeFiguurInput = vip.grijzeFiguurString;
-		grijzeFiguurPanel = new FiguurInputPanel(10, 10, 360, 69, false);
+		grijzeFiguurPanel = new FiguurInputPanel(10, editHeight - 79, 360, 69, false);
 		grijzeFiguurPanel.viep = this;		
 		grijzeFiguurPanel.zetFiguurString(grijzeFiguurInput);
 		grijzeFiguurPanel.setVisible(false);
-		//add(grijzeFiguurPanel, 0);
+		add(grijzeFiguurPanel, 0);
 		grijzeFiguurPanel.closeButton.addActionListener(new CloseFiguurInputAL(false));
 		
 		
@@ -99,21 +99,21 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		taakNummerLabel.setBounds(currentX + offset, currentY + 3, width, theFM.getHeight());
 		add(taakNummerLabel);
 
-		//currentY += height; // + offset;
+		currentY += height; // + offset;
 		
 		taakNummerCombo = new JComboBox();
 		taakNummerCombo.setFont(theFont);
 		taakNummerCombo.setBackground(Color.white);
 		width = theFM.stringWidth("XXXXXXXXX");
-		taakNummerCombo.addItem("0");
-		taakNummerCombo.addItem("1");
-		taakNummerCombo.addItem("2");
-		taakNummerCombo.addItem("3");
-		taakNummerCombo.addItem("4");
+		taakNummerCombo.addItem("vrij knippen");
+		taakNummerCombo.addItem("rechthoek maken (nagekeken)");
+		taakNummerCombo.addItem("oppervlaktes met labels 1");
+		taakNummerCombo.addItem("oppervlaktes met labels 2");
+		taakNummerCombo.addItem("oppervlaktes vergelijken");
 		taakNummerCombo.setSelectedIndex(1);
-		taakNummerCombo.setBounds(//currentX + 2 * offset, currentY, width, height);
-				taakNummerLabel.getLocation().x + taakNummerLabel.getSize().width + offset,
-				currentY, width, height);
+		taakNummerCombo.setBounds(currentX, currentY, editWidth - 16, height);
+//				taakNummerLabel.getLocation().x + taakNummerLabel.getSize().width + offset,
+				//currentY, width, height);
 		add(taakNummerCombo);
 		taakNummerCombo.addActionListener(this);
 
@@ -337,8 +337,7 @@ public class VerknippenInteractieEditPanel extends JPanel implements InteractieE
 		{	
 			taakNummerLabel.setLocation(vip.getSize().width + 2 * offset, taakNummerLabel.getLocation().y);
 
-			taakNummerCombo.setLocation(taakNummerLabel.getLocation().x + taakNummerLabel.getSize().width + offset, 
-									    taakNummerCombo.getLocation().y);
+			taakNummerCombo.setLocation(vip.getSize().width + 2 * offset, taakNummerCombo.getLocation().y);
 
 //			taakNummerVeld.setLocation(taakNummerLabel.getLocation().x + taakNummerLabel.getSize().width + offset, 
 //			   taakNummerVeld.getLocation().y);
@@ -565,7 +564,10 @@ System.out.println("aLD found");
 			if (b.containsKey("oppervlakteRood"))
 				oppervlakteRood = ((Integer) b.get("oppervlakteRood")).intValue();
 			if (b.containsKey("grijzeFiguurInput"))
-				grijzeFiguurInput = (String) b.get("grijzeFiguurInput");
+			{	String grijzeFiguurInputT = (String) b.get("grijzeFiguurInput");
+				if (!grijzeFiguurInputT.equals(""))
+					grijzeFiguurInput = grijzeFiguurInputT;
+			}
 			if (b.containsKey("oppervlakteGrijs"))
 				oppervlakteGrijs = ((Integer) b.get("oppervlakteGrijs")).intValue();
 			if (b.containsKey("scoreMax"))
@@ -590,7 +592,7 @@ System.out.println("aLD found");
 		this.rodeFiguurInput = rodeFiguurInput;
 		rodeFiguurPanel.zetFiguurString(rodeFiguurInput);
 		
-//System.out.println("set rfi = " + rodeFiguurInput);		
+System.out.println("set gfi = " + grijzeFiguurInput);		
 		
 		this.oppervlakteRood = oppervlakteRood; 
 		oppervlakteRoodVeld.setText("" + oppervlakteRood);
@@ -617,6 +619,17 @@ System.out.println("aLD found");
 			oppervlakteGrijsLabel.setEnabled(false);
 			oppervlakteGrijsVeld.setEnabled(false);
 			grijzeFiguurPanel.setVisible(false);
+			
+			if (taakNummer == 1)
+			{	scoreMaxLabel.setEnabled(true);
+				scoreMaxVeld.setEnabled(true);
+			}
+			else
+			{
+				scoreMaxLabel.setEnabled(false);
+				scoreMaxVeld.setEnabled(false);
+			}
+
 		}
 		else if ((taakNummer == 2) || (taakNummer == 3))
 		{
@@ -626,6 +639,10 @@ System.out.println("aLD found");
 			oppervlakteGrijsLabel.setEnabled(false);
 			oppervlakteGrijsVeld.setEnabled(false);
 			grijzeFiguurPanel.setVisible(false);
+			
+			scoreMaxLabel.setEnabled(false);
+			scoreMaxVeld.setEnabled(false);
+
 		}
 		else
 		{	oppervlakteRoodLabel.setEnabled(true);
@@ -633,8 +650,13 @@ System.out.println("aLD found");
 			maakGrijzeFiguurButton.setEnabled(true);
 			oppervlakteGrijsLabel.setEnabled(true);
 			oppervlakteGrijsVeld.setEnabled(true);
+			
+			scoreMaxLabel.setEnabled(false);
+			scoreMaxVeld.setEnabled(false);
+
 		}
 		
+/*		
 		boolean toonRodeFiguurInput = false;
 		if (b.containsKey("toonRodeFiguurInput"))
 			toonRodeFiguurInput = ((Boolean) b.get("toonRodeFiguurInput")).booleanValue();
@@ -643,7 +665,7 @@ System.out.println("aLD found");
 			toonGrijzeFiguurInput = ((Boolean) b.get("toonGrijzeFiguurInput")).booleanValue();
 		rodeFiguurPanel.setVisible(toonRodeFiguurInput);
 		grijzeFiguurPanel.setVisible(toonGrijzeFiguurInput);
-		
+*/		
 		
 		// HIER !!
 		vip.setEditState(b);		
@@ -656,8 +678,8 @@ System.out.println("viep getEditState");
 
 		Hashtable h = vip.getEditState(); 
 		
-		h.put("toonRodeFiguurInput", new Boolean(rodeFiguurPanel.isVisible()));
-		h.put("toonGrijzeFiguurInput", new Boolean(grijzeFiguurPanel.isVisible()));
+//		h.put("toonRodeFiguurInput", new Boolean(rodeFiguurPanel.isVisible()));
+//		h.put("toonGrijzeFiguurInput", new Boolean(grijzeFiguurPanel.isVisible()));
 
 		h.put("rodeFiguurInput", rodeFiguurInput);
 		h.put("grijzeFiguurInput", grijzeFiguurInput);
@@ -692,8 +714,9 @@ System.out.println("viep getEditState");
 	
 		if (vip != null)
 		{	vip.setBounds(0, 0, vipBreedte, vipHoogte);
-			vip.drawingPanel2.add(rodeFiguurPanel, 0);
-			vip.drawingPanel2.add(grijzeFiguurPanel, 0);
+			//vip.drawingPanel2.add(rodeFiguurPanel, 0);
+			//vip.drawingPanel2.add(grijzeFiguurPanel, 0);
+			vip.zetBalkOnderaan(vip.balkOnderaan);
 		}
 		
 		plaatsComponenten();
@@ -745,6 +768,16 @@ System.out.println("viep getEditState");
 				oppervlakteGrijsLabel.setEnabled(false);
 				oppervlakteGrijsVeld.setEnabled(false);
 				grijzeFiguurPanel.setVisible(false);
+				
+				if (taakNummer == 1)
+				{	scoreMaxLabel.setEnabled(true);
+					scoreMaxVeld.setEnabled(true);
+				}
+				else
+				{
+					scoreMaxLabel.setEnabled(false);
+					scoreMaxVeld.setEnabled(false);
+				}
 			}
 			else if ((taakNummer == 2) || (taakNummer == 3))
 			{
@@ -754,6 +787,9 @@ System.out.println("viep getEditState");
 				oppervlakteGrijsLabel.setEnabled(false);
 				oppervlakteGrijsVeld.setEnabled(false);
 				grijzeFiguurPanel.setVisible(false);
+				
+				scoreMaxLabel.setEnabled(false);
+				scoreMaxVeld.setEnabled(false);
 			}
 			else
 			{	oppervlakteRoodLabel.setEnabled(true);
@@ -761,6 +797,9 @@ System.out.println("viep getEditState");
 				maakGrijzeFiguurButton.setEnabled(true);
 				oppervlakteGrijsLabel.setEnabled(true);
 				oppervlakteGrijsVeld.setEnabled(true);
+				
+				scoreMaxLabel.setEnabled(false);
+				scoreMaxVeld.setEnabled(false);
 			}
 			
 		}

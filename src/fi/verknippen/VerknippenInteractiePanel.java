@@ -314,6 +314,7 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 		setSize(getSize().width, getSize().height);
 		if (balkOnderaan)
 		{	bottomPanel2.setVisible(true);
+			bottomPanel2.setLocation(0, getSize().height - bottomHeight);
 			bottomPanel2.setSize(getSize().width, bottomHeight);
 			drawingPanel2.setSize(getSize().width, getSize().height - bottomHeight);
 			zetGridSize(gridSize);
@@ -324,7 +325,8 @@ public class VerknippenInteractiePanel extends JPanel implements InteractiePanel
 			drawingPanel2.setSize(getSize().width, getSize().height);
 			zetGridSize(gridSize);
 		}
-		
+	
+		repaint();
 	}
 	
 	public void zetResetButton(boolean b)
