@@ -1967,7 +1967,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
 		System.out.println("Hashtable :" + JSONValue.toJSONString(stateReview));
-		mergeReviewStateHashtable(h,stateReview);
+		mergeReviewStateHashtable(h,stateReview, false);
 		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
 		
 		return h;
@@ -3387,31 +3387,34 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return reviewState;
 	}
 	
-	public void mergeReviewStateHashtable (Hashtable state, Hashtable reviewState) {
+	public void mergeReviewStateHashtable (Hashtable state, Hashtable reviewState, boolean json) {
 		if(reviewState==null || reviewState.isEmpty())
 			return;
 		Hashtable[][] opdrContStates;
 		Hashtable[][] opdrContReviewStates;
 		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
-		opdrContReviewStates = (Hashtable[][])(state.get("opdrContStates"));
+		opdrContReviewStates = toHashtableArrayArray(reviewState.get("opdrContStates"));
 		
 		Hashtable[] interactiePanelStates = null;
 		Hashtable[] interactiePanelReviewStates = null;
 		
 		for(int i=0 ; i<opdrContStates[0].length ; i++) {
 			if(opdrContStates[0][i]!=null)
+			{
+				// PATCH HERE
 				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
+			}
 		}
 	}
 	
 	private void mergeReviewStateRecursief (Hashtable state, Hashtable reviewState) {
 		if(reviewState.containsKey("reviewInteractieData")) {
-			Hashtable reviewInteractieData = (Hashtable)reviewState.get("reviewInteractieData");
+			Hashtable reviewInteractieData = toHashtable(reviewState.get("reviewInteractieData"));
 			state.put("reviewInteractieData", reviewInteractieData);
 		}
 		
 		if(reviewState.containsKey("interactiePanelStates")) {
-			Hashtable[] interactiePanelReviewStates = (Hashtable[])reviewState.get("interactiePanelStates");
+			Hashtable[] interactiePanelReviewStates = toHashtableArray(reviewState.get("interactiePanelStates"));
 			Hashtable[] interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
 			
 			for(int i=0 ; i<interactiePanelReviewStates.length ; i++) {

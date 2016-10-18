@@ -1036,8 +1036,21 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			suspendData = new Hashtable(h);
 
 			ons.zetToetsLocked(toetsLocked);
+
+		if(review || toetsLocked) {
+			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
+			Object reviewStateObject = JSONValue.parse(reviewStateString);
+			Hashtable reviewState = new Hashtable();
+			Map reviewStateMap = null;
+			if (reviewStateObject instanceof Map)
+				reviewState.putAll((Map) reviewStateObject);
+			ons.mergeReviewStateHashtable(onsState, reviewState, true);
+			ons.setState(onsState);
+		}
+		else {
 			ons.setJSONState(onsState);
-			if (review)
+		}
+		if (review)
 				ons.toonAantalSessies();
 		}
 	}
@@ -1081,7 +1094,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			Map reviewStateMap = null;
 			if (reviewStateObject instanceof Map)
 				reviewState.putAll((Map) reviewStateObject);
-			ons.mergeReviewStateHashtable(onsState, reviewState);
+			ons.mergeReviewStateHashtable(onsState, reviewState, false);
 		}
 		
 		ons.setState(onsState);
