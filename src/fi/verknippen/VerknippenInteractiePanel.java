@@ -692,6 +692,8 @@ System.out.println("aLD found");
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
 		
+		this.scoreMax = scoreMax;
+		
 		kijkNaActief = balkOnderaan || (taakNummer == 1);
 		
 		if (b.containsKey("appletEditState"))
@@ -1117,6 +1119,8 @@ System.out.println("aLD found");
 		zetOppervlakteRood(oppervlakteRood);
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
+		
+		this.scoreMax = scoreMax;
 		
 		kijkNaActief = balkOnderaan || (taakNummer == 1);
 
