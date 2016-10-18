@@ -638,7 +638,6 @@ System.out.println("aLD found");
 			if (!error)
 				scoreMax = scMax;
 			
-
 		}
 		else
 		{
@@ -690,6 +689,8 @@ System.out.println("aLD found");
 		zetOppervlakteRood(oppervlakteRood);
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
+		
+		kijkNaActief = balkOnderaan || (taakNummer == 1);
 		
 		if (b.containsKey("appletEditState"))
 		{
@@ -1114,6 +1115,8 @@ System.out.println("aLD found");
 		zetOppervlakteRood(oppervlakteRood);
 		zetGrijzeFiguur(grijzeFiguurString);
 		zetOppervlakteGrijs(oppervlakteGrijs);
+		
+		kijkNaActief = balkOnderaan || (taakNummer == 1);
 
 //HIER state
 		if (b.containsKey("appletEditState"))
