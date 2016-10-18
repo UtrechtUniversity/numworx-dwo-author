@@ -64,6 +64,7 @@ import fi.wiskopdr.tekstobjects.TekstImageVak;
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF {
 	
 	private static final String CMI_CORE_LESSON_LOCATION = "cmi.core.lesson_location";
+	private static final String CMI_COMMENTS_FROM_LMS_0_COMMENT = "cmi.comments_from_lms.0.comment";
 	private static final String CMI_CORE_LESSON_MODE = "cmi.core.lesson_mode";
 	private static final String CMI_CORE_LESSON_STATUS = "cmi.core.lesson_status";
 	private static final String CMI_CORE_SCORE_RAW = "cmi.core.score.raw";
@@ -930,7 +931,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 							api.LMSSetValue("cmi.completion_status", "completed");
 						else if(Boolean.FALSE.equals(o))
 							api.LMSSetValue("cmi.completion_status",  "incomplete");
-							
+						
+						Hashtable reviewState = ons.getReviewStateHashtable();
+						String reviewStateString = JSONValue.toJSONString(reviewState);
+						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
+						
 						return;
 					}
 					if (lessonMode ==LESSON_MODE_normal && toetsLocked) { // && ons.getMode()==3
@@ -1068,6 +1073,17 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		toetsLocked |= "completed".equals(api.LMSGetValue("cmi.completion_status"));
 
 		ons.zetToetsLocked(toetsLocked);
+		
+		if(review || toetsLocked) {
+			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
+			Object reviewStateObject = JSONValue.parse(reviewStateString);
+			Hashtable reviewState = new Hashtable();
+			Map reviewStateMap = null;
+			if (reviewStateObject instanceof Map)
+				reviewState.putAll((Map) reviewStateObject);
+			ons.mergeReviewStateHashtable(onsState, reviewState);
+		}
+		
 		ons.setState(onsState);
 
 		if (review) {

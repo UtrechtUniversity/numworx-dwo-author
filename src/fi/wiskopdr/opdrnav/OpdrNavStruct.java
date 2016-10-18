@@ -3347,7 +3347,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return scoreCorrectie;
 	}
 	
-	private Hashtable getReviewStateHashtable (Hashtable state) {
+	public Hashtable getReviewStateHashtable () {
+		return getReviewStateHashtable (getState());
+	}
+	
+	public Hashtable getReviewStateHashtable (Hashtable state) {
 		Hashtable[][] opdrContStates;
 		Hashtable[][] opdrContStatesNew;
 		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
@@ -3383,7 +3387,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return reviewState;
 	}
 	
-	private void mergeReviewStateHashtable (Hashtable state, Hashtable reviewState) {
+	public void mergeReviewStateHashtable (Hashtable state, Hashtable reviewState) {
+		if(reviewState==null || reviewState.isEmpty())
+			return;
 		Hashtable[][] opdrContStates;
 		Hashtable[][] opdrContReviewStates;
 		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));

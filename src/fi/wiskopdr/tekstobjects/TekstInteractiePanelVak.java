@@ -240,7 +240,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private boolean popup;
 	private int soortInteractiePanel;
 	
-	private boolean reviewMode = true;
+	private boolean reviewMode = false;
 	private ReviewInteractiePanel reviewInteractiePanel;
 	private Hashtable reviewInteractieData = new Hashtable();
 	private int reviewScoreCorrectie;
@@ -1896,7 +1896,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 		zetMaat();
 		
-		//setReviewMode(WiskOpdr.applet.reviewMode());
+		setReviewMode(WiskOpdr.applet.reviewMode());
 		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
 	        if(reviewInteractiePanel==null) 
 	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
