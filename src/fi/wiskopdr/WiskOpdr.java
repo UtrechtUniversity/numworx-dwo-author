@@ -704,6 +704,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public boolean reviewMode() {
 		return api != null && lessonMode == LESSON_MODE_review;
 	}
+	
+	public boolean toetsLockedMode() {
+		return toetsLocked;
+	}
 
 	/**
 	 * Inladen van de basis plaatjes
@@ -888,6 +892,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public void stop() {
 		if (api != null && loaded) {
+			
+			System.out.println("opgestuurde reviewStateString :" + "dummy");
+			
 					ons.stop();
 			//Thread stopDraad = new Thread() {
 			//	public void run() {
@@ -915,6 +922,15 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 					}
 					api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd!
 					if (review) {
+						Hashtable reviewState = ons.getReviewStateHashtable();
+						String reviewStateString = JSONValue.toJSONString(reviewState);
+						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
+						
+						System.out.println("score wordt opgestuurd: " + d);
+						api.LMSSetValue("cmi.completion_status",  "incomplete");
+						api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
+						api.LMSSetValue("cmi.completion_status", "completed");
+						
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
 							return;
@@ -932,9 +948,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						else if(Boolean.FALSE.equals(o))
 							api.LMSSetValue("cmi.completion_status",  "incomplete");
 						
-						Hashtable reviewState = ons.getReviewStateHashtable();
-						String reviewStateString = JSONValue.toJSONString(reviewState);
-						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
+						
 						
 						return;
 					}
@@ -942,7 +956,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						return;
 					}
 					
-					System.out.println("score wordt opgestuurd: " + d);
+					
 					api.LMSSetValue(CMI_CORE_SESSION_TIME, t);
 					api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
 					api.LMSSetValue(CMI_CORE_SCORE_MAX, "100");
@@ -1089,6 +1103,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
+			System.out.println("opgehaalde reviewStateString :" + reviewStateString);
 			Object reviewStateObject = JSONValue.parse(reviewStateString);
 			Hashtable reviewState = new Hashtable();
 			Map reviewStateMap = null;

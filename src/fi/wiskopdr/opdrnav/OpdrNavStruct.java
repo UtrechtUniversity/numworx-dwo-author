@@ -1501,6 +1501,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				this.opdrachtNr = j;
 				Hashtable[] opdrachtStates = opdrContStates[i];
 				states[i][j] = j < opdrachtStates.length ? opdrachtStates[j] : null; // NPE
+				scoreCorrecties[i][j] = getScoreCorrectiePage(states[i][j]);
 
 // XXX LET OP de html5 suspend_data heeft een kunstmatige tekstvak, de applet variant niet.
 // dat betekent dat de interactiePanelStates één nivo dieper zit.
@@ -1532,7 +1533,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
 					allCorrect = allCorrect && getBoolean(orGoedFout, i, j);
-					or[i].zetScore(j + 1, getInt(orScores,i,j));
+					or[i].zetScore(j + 1, getInt(orScores,i,j) + getInt(scoreCorrecties,i,j));
+					or[i].zetCorrectieView(j+1, scoreCorrecties[i][j]!=0);
 				}
 				totaal += getInt(orScores,i,j);
 			}
@@ -1582,7 +1584,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
-					or[i].zetScore(j + 1, getInt(orScores,i,j));
+					//or[i].zetScore(j + 1, getInt(orScores,i,j));
+					or[i].zetScore(j + 1, getInt(orScores,i,j) + getInt(scoreCorrecties,i,j));
+					or[i].zetCorrectieView(j+1, scoreCorrecties[i][j]!=0);
 				}
 			}
 		}
@@ -1963,13 +1967,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (shareState != null)
 			h.put(ShareAction.SHARE_MAP, shareState);
 		
-		Hashtable stateReview = getReviewStateHashtable(h);
+		//Hashtable stateReview = getReviewStateHashtable(h);
 		
-		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
-		System.out.println("Hashtable :" + JSONValue.toJSONString(stateReview));
-		mergeReviewStateHashtable(h,stateReview, false);
-		System.out.println("Hashtable :" + JSONValue.toJSONString(h));
-		
+		//System.out.println("Hashtable :" + JSONValue.toJSONString(h));
+		//System.out.println("Hashtable :" + JSONValue.toJSONString(stateReview));
+		//mergeReviewStateHashtable(h,stateReview, false);
+		//System.out.println("Hashtable :" + JSONValue.toJSONString(h));
+		//
 		return h;
 	}
 
@@ -2016,7 +2020,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
-					totaalScore += scores[i][j];
+					totaalScore += scores[i][j] + scoreCorrecties[i][j];
 				}
 			}
 			else
@@ -3322,6 +3326,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	
 	private int getScoreCorrectiePage (Hashtable state) {
 		int scoreCorrectie = 0;
+		if(state==null) 
+			return 0;
 		Hashtable[] interactiePanelStates = null;
 		Enumeration en = state.keys();
 		while (en.hasMoreElements()) {
@@ -3335,7 +3341,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 							String keyi = (String)eni.nextElement();
 							if(keyi.equals("reviewInteractieData")) { 
 								Hashtable reviewInteractieData = (Hashtable)interactiePanelStates[i].get("reviewInteractieData");
-								int reviewScoreCorrectie = ((Integer)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
+								int reviewScoreCorrectie = ((Number)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
 								scoreCorrectie += reviewScoreCorrectie;
 							}
 						}
@@ -3357,7 +3363,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
 		opdrContStatesNew = new Hashtable[1][opdrContStates[0].length];
 		for(int i=0 ; i<opdrContStatesNew[0].length ; i++) {
-			opdrContStatesNew[0][i] = getReviewStateRecursief(opdrContStates[0][i]);
+			if(opdrContStates[0][i]!=null)
+				opdrContStatesNew[0][i] = getReviewStateRecursief(opdrContStates[0][i]);
 		}
 		Hashtable stateNew = new Hashtable();
 		stateNew.put("opdrContStates", opdrContStatesNew);

@@ -1954,7 +1954,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(h!=null && h.containsKey("reviewInteractieData")) {
 			reviewInteractieData = (Hashtable)h.get("reviewInteractieData");
 			if(reviewInteractieData.containsKey("reviewScoreCorrectie"))
-				reviewScoreCorrectie = ((Integer)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
+				reviewScoreCorrectie = ((Number)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
 		}
 		
 		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
