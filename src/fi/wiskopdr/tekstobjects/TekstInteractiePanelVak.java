@@ -1896,7 +1896,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 		zetMaat();
 		
-		setReviewMode(WiskOpdr.applet.reviewMode());
+		setReviewMode(WiskOpdr.applet.reviewMode() || WiskOpdr.applet.toetsLockedMode());
 		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
 	        if(reviewInteractiePanel==null) 
 	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
@@ -1905,6 +1905,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        	reviewInteractiePanel.setOpaque(true);
 	        	reviewInteractiePanel.addMouseListener(this);
 	        	reviewInteractiePanel.addMouseMotionListener(this);
+	        	reviewInteractiePanel.setEditable(WiskOpdr.applet.reviewMode());
 	        	add(reviewInteractiePanel,0);
 	        }
 		}

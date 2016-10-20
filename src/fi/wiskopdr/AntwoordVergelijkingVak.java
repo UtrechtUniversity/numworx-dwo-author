@@ -1951,6 +1951,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				else if (!hasStartString && stapNr > 0)
 					stapTerug();
 			}
+			int voortgangsScore = 0;
 			for (int i = start; i < stapNr + 1; i++)
 			{
 				formuleVak = formuleVakken[i];
@@ -1964,7 +1965,9 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				}
 				else
 					kijkNa(i);
+				voortgangsScore = Math.max(voortgangsScore,score);
 			}
+			score = voortgangsScore;
 			if (ingevuld)
 				produceAction("changed");
 		}

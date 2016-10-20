@@ -76,6 +76,7 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 		scoreLabel = new JLabel("score:");
 		scoreStringLabel = new JLabel(""+score);
 		scoreCorrectieLabel = new JLabel("correctie score:");
+		
 		scoreCorrectieTF = new JTextField(""+scoreCorrectie);
 		scoreCorrectieTF.addKeyListener(this);
 	    
@@ -109,6 +110,10 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	    boxv.add(boxh);
 	    
 	    reviewPanel.add(boxv);
+	}
+	
+	public void setEditable(boolean b) {
+		scoreCorrectieTF.setEditable(b);
 	}
 	 
 	public void setScore(int score) {

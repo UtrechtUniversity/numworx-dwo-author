@@ -2755,9 +2755,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					opdrContainer.zetOpdracht(opdrachten[activiteitNr][j]);
 				opdrContainer.kijkNa();
 				opdrContainer.zetNagekeken(true);
+				int score = opdrContainer.getScore();//verplaatst
+				scores[activiteitNr][j] = score;//verplaatst
 				states[activiteitNr][j] = opdrContainer.getState();
-				int score = opdrContainer.getScore();
-				scores[activiteitNr][j] = score;
+				//verplaatst (stonden hier, hopelijk geen probleem)
 				if (objectives != null)
 					scoresObjectives[activiteitNr][j] = opdrContainer.getScoreObjectives();
 				if (misconceptions != null)

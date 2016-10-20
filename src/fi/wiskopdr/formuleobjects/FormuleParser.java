@@ -905,7 +905,7 @@ public class FormuleParser
 			if(isDifferentiaal)	
 			{
 				Expressie e1 = parse(s.substring(2, s.length()));
-				System.out.println("geeft differentiaal met kind " + e1.toString());
+				//System.out.println("geeft differentiaal met kind " + e1.toString());
 				return new Differentiaal(e1);
 			}
 			
@@ -1089,7 +1089,7 @@ public class FormuleParser
 			return null;
 		}
 		
-		
+		//System.out.println("expressieString: "+s);
 		
 		if(s.length()>6 && s.substring(0,6).equals("arcsin") && s.charAt(6) != '(')
 		{	Expressie e = parse(s.substring(6));
@@ -1133,7 +1133,12 @@ public class FormuleParser
 			return new Log(e);
 		}
 		
-		if(s.length()>2 && s.substring(0,2).equals("ln") && s.charAt(2) != '(')
+		boolean lnMetAbs = false;
+		if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+		{	lnMetAbs=true;
+		}
+		
+		if(s.length()>2 && s.substring(0,2).equals("ln") && s.charAt(2) != '(' && !lnMetAbs)
 		{	Expressie e = parse(s.substring(2));
 			if(e==null)return null;
 			return new Ln(e);
@@ -1288,16 +1293,16 @@ public class FormuleParser
 	        String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
 	        for(int i = 0 ; i<functieNamen.length ; i++)
 	        {	String functieNaam = functieNamen[i];
-	        System.out.println("parseString:"+s);
-	        System.out.println("functieNaam:"+functieNaam);
-	        System.out.println("fit:"+(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='('));
+	        //System.out.println("parseString:"+s);
+	        //System.out.println("functieNaam:"+functieNaam);
+	        //System.out.println("fit:"+(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='('));
 	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
 	    		{	//Expressie e = parse(s.substring(functieNaam.length(),s.length()));
 	        		int aantalVar = FunctieMV.getFunctieMVDefSet().geefFunctieMVVariabele(functieNaam).length;
 	        		String string = s.substring(functieNaam.length()+1,s.length()-1);
-	        		System.out.println("splitString:"+string);
+	        		//System.out.println("splitString:"+string);
 	        		Expressie[] expressies = splitExpressieParameters(string,'_',aantalVar);
-	        		System.out.println("parseFunctie:"+expressies.toString());
+	        		//System.out.println("parseFunctie:"+expressies.toString());
 	    			boolean parseOK = true;
 	    			for(int j=0 ; j<expressies.length ; j++)
 	    				parseOK = parseOK && expressies[j] !=null;
@@ -1502,7 +1507,14 @@ public class FormuleParser
 		{	Expressie e = parse(s.substring(2,s.length()));
 			if(e==null)return null;
 			return new Ln(e);
-		}/**/
+		}
+		
+		else if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+		{	Expressie e = parse(s.substring(2,s.length()));
+			if(e==null)return null;
+			return new Ln(e);
+		}
+		/**/
 		
 		else if(s.length()>3 && s.substring(0,3).equals("abs"))
 		{	Expressie e = parse(s.substring(3,s.length()));

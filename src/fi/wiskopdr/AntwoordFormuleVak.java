@@ -1678,6 +1678,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				else if(!startString && stapNr>0)stapTerug();
 				nagekeken = nk;
 			}
+			int voortgangsScore = 0;
 			for(int i=start ; i<stapNr+1 ; i++)
 			{	formuleVak = formuleVakken[i];
 				checkAntwoord();
@@ -1685,8 +1686,15 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				{	checkStap(i-1, formuleVakken[i-1], formuleVakken[i]);
 					if(i==stapNr)kijkNa(i);
 				}
-				else if(stapNr==0)kijkNa(i);
+				else if(stapNr==0)
+					kijkNa(i);
+				if(hasFeedback)
+					voortgangsScore = Math.max(voortgangsScore,puntenFeedback);
+				System.out.println("voortgangsScore: "+voortgangsScore);
 			}
+			if(hasFeedback)
+				score = voortgangsScore;
+			System.out.println("Score: "+score);
 			if(ingevuld)produceAction("changed");
 		}		
 	}
@@ -2192,6 +2200,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			return Math.max(0, score - ideasPuntenAftrek);
 		if(mode==1)
 			return Math.max(0, score-errorCount*2);
+		System.out.println("Score bij getScore: "+score);
 	    return score;
 	}
 	
