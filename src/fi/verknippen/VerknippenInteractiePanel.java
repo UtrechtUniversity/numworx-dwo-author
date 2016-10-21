@@ -695,6 +695,13 @@ System.out.println("aLD found");
 		this.scoreMax = scoreMax;
 		
 		kijkNaActief = balkOnderaan || (taakNummer == 1);
+		if (!balkOnderaan && taakNummer != 1)
+			scoreMax = 0;
+			
+		this.scoreMax = scoreMax;	
+		
+System.out.println("zetOpdracht kijkNaActief = " + kijkNaActief);
+System.out.println("zetOpdracht scoreMax = " + scoreMax);
 		
 		if (b.containsKey("appletEditState"))
 		{
