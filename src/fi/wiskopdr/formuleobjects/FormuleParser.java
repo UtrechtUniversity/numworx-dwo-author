@@ -1133,12 +1133,12 @@ public class FormuleParser
 			return new Log(e);
 		}
 		
-		boolean lnMetAbs = false;
-		if(s.length()>5 && s.substring(0,5).equals("lnabs"))
-		{	lnMetAbs=true;
-		}
+		//boolean lnMetAbs = false;
+		//if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+		//{	lnMetAbs=true;
+		//}
 		
-		if(s.length()>2 && s.substring(0,2).equals("ln") && s.charAt(2) != '(' && !lnMetAbs)
+		if(s.length()>2 && s.substring(0,2).equals("ln") && s.charAt(2) != '(' )//&& !lnMetAbs)
 		{	Expressie e = parse(s.substring(2));
 			if(e==null)return null;
 			return new Ln(e);
@@ -1509,11 +1509,11 @@ public class FormuleParser
 			return new Ln(e);
 		}
 		
-		else if(s.length()>5 && s.substring(0,5).equals("lnabs"))
-		{	Expressie e = parse(s.substring(2,s.length()));
-			if(e==null)return null;
-			return new Ln(e);
-		}
+		//else if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+		//{	Expressie e = parse(s.substring(2,s.length()));
+		//	if(e==null)return null;
+		//	return new Ln(e);
+		//}
 		/**/
 		
 		else if(s.length()>3 && s.substring(0,3).equals("abs"))

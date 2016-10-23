@@ -1690,11 +1690,11 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 					kijkNa(i);
 				if(hasFeedback)
 					voortgangsScore = Math.max(voortgangsScore,puntenFeedback);
-				System.out.println("voortgangsScore: "+voortgangsScore);
+				//System.out.println("voortgangsScore: "+voortgangsScore);
 			}
 			if(hasFeedback)
 				score = voortgangsScore;
-			System.out.println("Score: "+score);
+			//System.out.println("Score: "+score);
 			if(ingevuld)produceAction("changed");
 		}		
 	}

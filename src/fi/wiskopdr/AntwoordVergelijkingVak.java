@@ -1965,9 +1965,11 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				}
 				else
 					kijkNa(i);
-				voortgangsScore = Math.max(voortgangsScore,score);
+				if(hasFeedback)
+					voortgangsScore = Math.max(voortgangsScore,score);
 			}
-			score = voortgangsScore;
+			if(hasFeedback)
+				score = voortgangsScore;
 			if (ingevuld)
 				produceAction("changed");
 		}
