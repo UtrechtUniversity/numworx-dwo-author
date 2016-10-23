@@ -926,10 +926,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						String reviewStateString = JSONValue.toJSONString(reviewState);
 						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
 						
-						System.out.println("score wordt opgestuurd: " + d);
-						api.LMSSetValue("cmi.completion_status",  "incomplete");
-						api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
-						api.LMSSetValue("cmi.completion_status", "completed");
+						//DIT HIERONDER WERKT NOG NIET. HOE VANUIT REVIEW MODE DE GECORRIGEERDE SCORE WEGSCHRIJVEN
+						//System.out.println("score wordt opgestuurd: " + d);
+						//api.LMSSetValue("cmi.completion_status",  "incomplete");
+						//api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
+						//api.LMSSetValue("cmi.completion_status", "completed");
 						
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
