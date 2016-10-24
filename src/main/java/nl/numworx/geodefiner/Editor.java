@@ -2,13 +2,18 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
 public class Editor extends JPanel implements CBookWidgetEditIF {
@@ -16,7 +21,7 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 	private Instance instance;
 	private DefinitionPanel definition;
 	private CommandPanel command;
-	Editor() {
+	Editor(CBookContext context) {
 		super(new BorderLayout());
 		setSize(600,400);
 		setPreferredSize(getSize());
@@ -26,8 +31,7 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 		instance.setSize(instanceSize);
 		flow.add(instance);
 		add(flow, BorderLayout.CENTER);
-		definition = new DefinitionPanel();
-		definition.viewer = instance.getViewer();
+		definition = new DefinitionPanel(instance.getDefinitions());
 		add(definition, BorderLayout.EAST);
 		command = new CommandPanel();
 		command.addPropertyChangeListener("command", definition);
@@ -49,7 +53,15 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 	}
 
 	public Map<String, ?> getLaunchData() {
-		Map<String,?> launchdata = new TreeMap<String,Object>();
+		Map<String,Object> launchdata = new TreeMap<String,Object>();
+		List<String> strings = new ArrayList<String>();
+		Definitions defs = instance.getDefinitions();
+		Enumeration<CELL> e= defs.elements();
+		while (e.hasMoreElements()) {
+			CELL cell = e.nextElement();
+			strings.add(cell.text);
+		}
+		launchdata.put("definitions", strings);
 		return launchdata;
 	}
 
@@ -67,25 +79,31 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 
 	public void setInstanceHeight(int h) {
 		instanceSize.height = h;
+		instance.setSize(instanceSize);
+		instance.setPreferredSize(instanceSize);
+		instance.invalidate();
 	}
 
 	public void setInstanceWidth(int w) {
 		instanceSize.width = w;
+		instance.setSize(instanceSize);
+		instance.setPreferredSize(instanceSize);
+		instance.invalidate();
 	}
 
-	public void setLaunchData(Map<String, ?> arg0) {
-
+	public void setLaunchData(Map<String, ?> launchdata) {
+		instance.init();
+		instance.setLaunchData(launchdata, Collections.EMPTY_MAP);
 	}
 
 	public void start() {
-		instance.setLaunchData(getLaunchData(), Collections.EMPTY_MAP);
-		instance.init();
+		instance.start();
+		
 		instance.repaint();
 	}
 
 	public void stop() {
-		instance.destroy();
-		definition.model.clear();
+		instance.stop();
 	}
 
 }

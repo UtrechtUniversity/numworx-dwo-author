@@ -13,7 +13,7 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 public class GeoDefiner implements  CBookWidgetIF {
 
 	public CBookWidgetEditIF getEditor(CBookContext context) {
-		Editor editor = new Editor();
+		Editor editor = new Editor(context);
 		return editor;
 	}
 
@@ -29,4 +29,7 @@ public class GeoDefiner implements  CBookWidgetIF {
 		return instance;
 	}
 
+	public String toString() {
+		return "GeoDefiner";
+	}
 }
