@@ -2755,5 +2755,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		
 	}
+
+	public boolean isPopup() {
+		return popup;
+	}
+
+	public void setPopup(boolean popup) {
+		this.popup = popup;
+	}
 }
 

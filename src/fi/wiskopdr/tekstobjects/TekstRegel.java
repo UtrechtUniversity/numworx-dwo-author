@@ -139,8 +139,9 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	
 	public void paint(Graphics gr)
 	{	
-		Graphics g ;
+		Graphics g  = gr;
 	    //if(WiskOpdr.deployVariant!=null && WiskOpdr.deployVariant.equals("GR"))
+		if( gr instanceof Graphics2D)
 	    {   g = (Graphics2D)gr;
 		    String jVersion =  System.getProperty("java.specification.version");
 	    	if(!(jVersion.equals("1.3") || jVersion.equals("1.4") || jVersion.equals("1.5")))

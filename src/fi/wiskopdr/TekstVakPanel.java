@@ -3996,4 +3996,13 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		return locString;
 	}
 
+	public void prepareForPrint() {
+		// TODO iets met zwevend
+		visible = true;
+		setVisible(visible);
+		if(isInklapbaar() && ingeklapt)
+			klapUitAction();
+		zetMaat();	
+	}
+
 }

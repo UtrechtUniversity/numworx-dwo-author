@@ -1,25 +1,59 @@
 package fi.wiskopdr;
 
 import java.applet.*;
-import java.awt.*;
+//import java.awt.*;
 import java.io.*;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.event.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.dwomaccess.JSONEncoder;
 import fi.beans.mainframe.*;
 import fi.beans.scorm.*;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 import java.util.zip.*;
+
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.StreamPrintService;
+import javax.print.StreamPrintServiceFactory;
+import javax.print.attribute.AttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.Destination;
+import javax.print.attribute.standard.PrinterName;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.w3c.dom.DocumentFragment;
 
 public class ScormEditMainFrame extends MainFrame implements ActionListener
 {
 	private static final String SAVE_AS_FACET = "opslaan als FACET Item (CI)";
-ScormEditComponentIF scormEditComponent;
+	ScormEditComponentIF scormEditComponent;
 	FileDialog openDial, saveDial;
 	String titel;
+	private int opdr;
+	private int act;
 	
 	public ScormEditMainFrame(Applet applet,int width, int height )
 	{	super( applet, width, height );
@@ -61,7 +95,7 @@ ScormEditComponentIF scormEditComponent;
 
 		mi = new MenuItem("print");
 		mi.addActionListener(this);
-		//bestandMenu.add(mi);
+		bestandMenu.add(mi);
 	}
 	
 	public void setScormEditComponent(ScormEditComponentIF scormEditComponent)
@@ -147,15 +181,27 @@ ScormEditComponentIF scormEditComponent;
 	}
 
 	public void print()
-	{	try
-		{	PrintJob pjob = getToolkit().getPrintJob(this, "Printing Test", null);
-			
-			if(pjob != null)
-			{	Graphics pg = pjob.getGraphics();
-				if(pg != null)
-				{	//eigenaar.print(pg);
-					pg.dispose();
-				}
+	{	
+		if (WiskOpdr.applet.ons == null) return;
+		opdr = WiskOpdr.applet.ons.geefOpdrachtNr();
+		act = WiskOpdr.applet.ons.geefActiviteitNr();
+		try
+		{
+			PrinterJob job;
+			job = PrinterJob.getPrinterJob();
+			PageFormat format = job.defaultPage();
+			boolean doPrint = true;
+			job.setPrintable(WiskOpdr.applet, format );
+			doPrint = job.printDialog();
+			if (doPrint) {
+			    try {
+			        job.print();
+			    } catch (PrinterException e) {
+			        // The job did not successfully
+			        // complete
+			    	e.printStackTrace();
+			    }
+			    WiskOpdr.applet.ons.kiesOpdracht(opdr, act);
 			}
 		}
 		catch(SecurityException e)

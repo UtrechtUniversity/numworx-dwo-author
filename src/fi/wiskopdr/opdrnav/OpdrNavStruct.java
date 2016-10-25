@@ -74,7 +74,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	public static int ZELFTOETS = 2;
 	public static int EINDTOETS = 3;
 
-	private MyOpdrContainer opdrContainer;
+	public MyOpdrContainer opdrContainer;
 
 	private String[][] opdrachten;
 	private Hashtable[][] states;
@@ -449,6 +449,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return null;
 	}
 
+	public String getOpdrachtText() {
+		if (pagina)
+			return (WiskOpdr.rb.getString("paginaLabel"));
+		else
+			return (WiskOpdr.rb.getString("opdrachtLabel"));
+	}
+	
 	/**
 	 * Gebruikersinterface wordt hier gemaakt
 	 */
@@ -543,11 +550,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.setLayer(opnieuwPanel, JLayeredPane.POPUP_LAYER.intValue());
 		add(opnieuwPanel, 0);
 
-		opdrachtLabel = new JLabel(WiskOpdr.rb.getString("opdrachtLabel"));
-		if (pagina)
-			opdrachtLabel.setText(WiskOpdr.rb.getString("paginaLabel"));
-		else
-			opdrachtLabel.setText(WiskOpdr.rb.getString("opdrachtLabel"));
+		opdrachtLabel = new JLabel(getOpdrachtText());
 		opdrachtLabel.setFont(new Font("SansSerif", Font.PLAIN, navigatieSize));
 		opdrachtLabel.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
 		if (!"GR".equals(WiskOpdr.deployVariant) && !WiskOpdr.zoefi)

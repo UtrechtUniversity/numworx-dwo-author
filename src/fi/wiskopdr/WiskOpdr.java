@@ -4,8 +4,11 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
@@ -13,10 +16,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -24,8 +31,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.swing.Box;
 import javax.swing.JApplet;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LookAndFeel;
@@ -61,7 +70,7 @@ import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.LinkRegel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 
-public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF {
+public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
 	private static final String CMI_CORE_LESSON_LOCATION = "cmi.core.lesson_location";
 	private static final String CMI_COMMENTS_FROM_LMS_0_COMMENT = "cmi.comments_from_lms.0.comment";
@@ -129,7 +138,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private static boolean COMPLETED = false;
 	public static String defaultEditModeState = null;
 			
-	private SCORM12APIInterface api;
+	SCORM12APIInterface api;
 	private Object window; // No reference to JSObject (ClassNotFoundException)
 	private long sessionStartTime;
 	private ScormEditComponentIF scormEditComponent;
@@ -1493,4 +1502,73 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return OpdrNavStructEdit.getInstance().geefOpdrachtNr();
 	}
 
+	@Override
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+			throws PrinterException {
+		String[] score = ons.getScores();
+		int opgave = pageIndex;						// FIXME 1-to-1 pageindex en opgave
+		String naam;
+		String id = getLearner_id();
+		String name = getLearnerName();
+		String klas = "";
+		if(api != null) {
+			klas = api.LMSGetValue("dme.team");
+		}
+		naam = id + " - " + name + "; " + klas;
+		if(opgave < ons.geefAantalOpdrachten(0)) {
+			if(opgave != ons.geefOpdrachtNr()) ons.kiesOpdracht(0, opgave);
+			// put 0, 0 at start of printable image
+			Graphics2D g2d = (Graphics2D)graphics;
+		    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+		    Box header = Box.createVerticalBox();
+		    JLabel line = new JLabel(naam);
+		    header.add(line);
+// TODO I18N
+		    header.add( line = new JLabel(ons.getOpdrachtText() +
+		    		" "+ (1+opgave) + ". " + rb.getString("score") + score[opgave]));
+		    header.add( line = new JLabel(new Date().toLocaleString()));
+		    header.setSize(header.getPreferredSize());
+		    header.doLayout();
+		    header.print(g2d);
+		    g2d.translate(0, header.getHeight());
+		    
+		    ons.opdrContainer.prepareForPrint();
+			JComponent component = ons.opdrContainer.getContentPane();
+			JComponent popups    = ons.opdrContainer.popups;
+			if(popups.getComponentCount() > 0) {
+				Dimension size = component.getSize();
+				component.setPreferredSize(size);
+				component.setMaximumSize(size);
+				component.setMinimumSize(size);
+				popups.setSize(component.getWidth(), Short.MAX_VALUE);
+				popups.doLayout();
+				int h = 0;
+				// trim
+				for(int i = 0; i < popups.getComponentCount(); i++ )
+				{
+					Component p = popups.getComponent(i);
+					int y = p.getHeight() + p.getY();
+					h = Math.max(y,h);
+				}
+				popups.setSize(size.width, h);
+				Box box = Box.createVerticalBox();
+				
+				box.add(component);
+				box.add(popups);
+				box.setSize(size.width, h + size.height);
+				box.doLayout();
+				component = box;
+			}
+		    double width = component.getWidth();
+		    double pageWidth = pageFormat.getImageableWidth();
+		    double sx = pageWidth/width; sx = Math.min(1, sx);
+		    double height = component.getHeight();
+		    double pageHeight = pageFormat.getImageableHeight();
+		    //sx = Math.min(sx, pageHeight/height);
+			g2d.scale(sx, sx);
+			component.print(graphics);
+			return PAGE_EXISTS;
+		}
+		return NO_SUCH_PAGE;
+	}
 }

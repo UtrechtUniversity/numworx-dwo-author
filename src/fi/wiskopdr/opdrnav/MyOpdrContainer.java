@@ -5,24 +5,31 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.cbook.cbookif.CBookEvent;
+
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.SessionTime;
+import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.wiskopdr.InteractiePanelContainer;
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -88,7 +95,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 	private Font font = WiskOpdr.tekstFont;
 	private JPanel scrollPaneBasisPanel;
 	private JScrollPane scrollPane;
-	private JPanel contentPane;
+	public JPanel contentPane;
 	private int controlPanelHeight;
 	private XWidgetManager manager;
 
@@ -1175,5 +1182,51 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 	public JPanel getContentPane()
 	{
 		return contentPane;
+	}
+	
+	
+	public JPanel popups = new JPanel(new FlowLayout(FlowLayout.LEADING));
+	public void prepareForPrint() {
+		popups.removeAll();
+		popups.setOpaque(false);
+		Vector outer = geefInteractiePanels();
+		while( !outer.isEmpty() ) {
+			Iterator iterator = outer.iterator();	
+		for (outer = new Vector(); iterator.hasNext();) {
+			InteractiePanelContainerIF object = (InteractiePanelContainerIF) iterator.next();
+			if(object instanceof TekstInteractiePanelVak)
+			{
+				
+				TekstInteractiePanelVak vak = (TekstInteractiePanelVak) object;
+				boolean popup = vak.isPopup();
+				InteractiePanel panel = vak.getInteractiePanel();
+				if(popup) {
+					JComponent component = new JPanel(new BorderLayout());
+					Component c = (Component)panel;
+					Dimension size = c.getSize();
+					c.setPreferredSize(size);
+					component.add(c, BorderLayout.CENTER);
+					component.setBorder(BorderFactory.createTitledBorder("Popup"));
+					component.setSize(component.getPreferredSize());
+					component.setPreferredSize(component.getSize());
+					component.doLayout();
+					popups.add(component);
+				}
+				makeVisible(outer,panel);
+			} else {
+				Vector inner = object.geefInteractiePanels();
+				for (Iterator iterator2 = inner.iterator(); iterator2.hasNext();) {
+					InteractiePanel panel = (InteractiePanel) iterator2.next();
+					makeVisible(outer, panel);
+			}}
+		}}
+	}
+
+	public void makeVisible(Vector outer, InteractiePanel panel) {
+		if(panel instanceof TekstVakPanel) {
+			TekstVakPanel vak = (TekstVakPanel) panel;
+			vak.prepareForPrint();
+			outer.addAll(vak.geefInteractiePanels());
+		}
 	}
 }

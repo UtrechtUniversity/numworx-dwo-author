@@ -2,7 +2,9 @@ package fi.wiskopdr;
 
 import java.awt.*;
 
-public class ImageComponent extends Component
+import javax.swing.JComponent;
+
+public class ImageComponent extends JComponent
 {
 	private Image image, imageKlein;
 	private boolean klein;

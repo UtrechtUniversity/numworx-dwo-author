@@ -66,9 +66,11 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 	}
 	
 	public void paintComponent(Graphics gr)
-	{	Graphics2D g;
+	{	Graphics g;
         //if(WiskOpdr.deployVariant!=null && WiskOpdr.deployVariant.equals("GR"))
-        {     g = (Graphics2D)gr;
+		g = gr;
+		if(g instanceof Graphics2D)
+        {
               ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         //else 
