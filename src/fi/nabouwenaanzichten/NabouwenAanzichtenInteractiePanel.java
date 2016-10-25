@@ -2003,6 +2003,8 @@ newViewer = false;
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		this.scoreMax = scoreMax;
 		
+		if (!kijkNaActief)
+			this.scoreMax = 0;
 		
 		//zetKijkNaActief(kijkNaActief);
 		this.kijkNaActief = kijkNaActief;

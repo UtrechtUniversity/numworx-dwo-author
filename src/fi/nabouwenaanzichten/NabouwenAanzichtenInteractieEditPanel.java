@@ -1339,7 +1339,7 @@ System.out.println("naiep setBounds return");
 			
 				int mScore = (int) userInput;
 
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{
 					naip.zetMaxScore(mScore);
 				}
@@ -1425,7 +1425,7 @@ System.out.println("naiep setBounds return");
 			
 				int mScore = (int) userInput;
 
-				if ((mScore >= 1) && (mScore <= 1500))
+				if ((mScore >= 0) && (mScore <= 1500))
 				{
 					naip.zetMaxScore(mScore);
 				}
