@@ -1344,7 +1344,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 */
 	public void setState(Hashtable h) { setState(h,false); }
 	
-	private void setState(Hashtable h, boolean patch)
+	public void setState(Hashtable h, boolean patch)
 	{
 		//int aantalActiviteiten = this.aantalActiviteiten;
 		int activiteitNr = 0;
@@ -1504,7 +1504,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				this.opdrachtNr = j;
 				Hashtable[] opdrachtStates = opdrContStates[i];
 				states[i][j] = j < opdrachtStates.length ? opdrachtStates[j] : null; // NPE
-				scoreCorrecties[i][j] = getScoreCorrectiePage(states[i][j]);
+				
 
 // XXX LET OP de html5 suspend_data heeft een kunstmatige tekstvak, de applet variant niet.
 // dat betekent dat de interactiePanelStates één nivo dieper zit.
@@ -1526,6 +1526,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 						//states[i][j] = null;
 					}
 				}
+				
+				scoreCorrecties[i][j] = getScoreCorrectiePage(states[i][j]);
 
 				if (orTimes != null)
 					times[i][j] = orTimes[i][j];
@@ -1816,7 +1818,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return null;
 	}
 
-	static Hashtable toHashtable(Object object)
+	public static Hashtable toHashtable(Object object)
 	{
 		if (object == null || object instanceof Hashtable)
 			return (Hashtable) object;
@@ -3337,16 +3339,17 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		while (en.hasMoreElements()) {
 			String key = (String)en.nextElement();
 			if(key.equals("interactiePanelStates")) {
-				interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+				interactiePanelStates = toHashtableArray(state.get("interactiePanelStates"));
 				for(int i=0 ; i<interactiePanelStates.length ; i++) {
 					if(interactiePanelStates[i]!=null) {
 						Enumeration eni = interactiePanelStates[i].keys();
 						while (eni.hasMoreElements()) {
 							String keyi = (String)eni.nextElement();
 							if(keyi.equals("reviewInteractieData")) { 
-								Hashtable reviewInteractieData = (Hashtable)interactiePanelStates[i].get("reviewInteractieData");
+								Hashtable reviewInteractieData = toHashtable(interactiePanelStates[i].get("reviewInteractieData"));
 								int reviewScoreCorrectie = ((Number)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
 								scoreCorrectie += reviewScoreCorrectie;
+								
 							}
 						}
 						scoreCorrectie += getScoreCorrectiePage(interactiePanelStates[i]);
@@ -3354,6 +3357,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 			}
 		}
+		System.out.println("scoreCorrectie: "+ scoreCorrectie );
 		return scoreCorrectie;
 	}
 	
@@ -3364,7 +3368,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	public Hashtable getReviewStateHashtable (Hashtable state) {
 		Hashtable[][] opdrContStates;
 		Hashtable[][] opdrContStatesNew;
-		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
+		opdrContStates = toHashtableArrayArray(state.get("opdrContStates"));
 		opdrContStatesNew = new Hashtable[1][opdrContStates[0].length];
 		for(int i=0 ; i<opdrContStatesNew[0].length ; i++) {
 			if(opdrContStates[0][i]!=null)
@@ -3372,6 +3376,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		Hashtable stateNew = new Hashtable();
 		stateNew.put("opdrContStates", opdrContStatesNew);
+		System.out.println("sReviewStateHashtable: "+ JSONValue.toJSONString(stateNew) );
 		return stateNew;
 	}
 	
@@ -3381,7 +3386,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		Hashtable[] interactiePanelStatesNew = null;
 		
 		if(state.containsKey("interactiePanelStates")) {
-			interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+			interactiePanelStates = toHashtableArray(state.get("interactiePanelStates"));
 			interactiePanelStatesNew = new Hashtable[interactiePanelStates.length];
 			for(int i=0 ; i<interactiePanelStates.length ; i++) {
 				interactiePanelStatesNew[i] = new Hashtable();
@@ -3392,7 +3397,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			reviewState.put("interactiePanelStates", interactiePanelStatesNew);
 		}
 		if(state.containsKey("reviewInteractieData")) {
-			Hashtable reviewInteractieData = (Hashtable)state.get("reviewInteractieData");
+			Hashtable reviewInteractieData = toHashtable(state.get("reviewInteractieData"));
 			reviewState.put("reviewInteractieData", reviewInteractieData);
 		}
 		return reviewState;
@@ -3403,7 +3408,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			return;
 		Hashtable[][] opdrContStates;
 		Hashtable[][] opdrContReviewStates;
-		opdrContStates = (Hashtable[][])(state.get("opdrContStates"));
+		opdrContStates = toHashtableArrayArray(state.get("opdrContStates"));
 		opdrContReviewStates = toHashtableArrayArray(reviewState.get("opdrContStates"));
 		
 		Hashtable[] interactiePanelStates = null;
@@ -3413,6 +3418,25 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			if(opdrContStates[0][i]!=null)
 			{
 				// PATCH HERE
+				if(json && opdrContStates[0][i] != null)
+				{
+					Object object = opdrContStates[0][i].get("interactiePanelStates");
+					List l = (List) object;
+					if(l.size() > 5)
+					{ 	
+						object = l.get(5);
+						Map m = (Map) object;
+						object = m.get("interactiePanelStates");
+						l = (List) object;
+						for(int x=0; x<5; x++) l.add(0, null);
+						opdrContStates[0][i].put("interactiePanelStates", object);
+					} else {
+						//states[i][j].remove("interactiePanelStates");
+						//states[i][j] = null;
+					}
+				}
+				
+				
 				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
 			}
 		}
@@ -3426,7 +3450,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		if(reviewState.containsKey("interactiePanelStates")) {
 			Hashtable[] interactiePanelReviewStates = toHashtableArray(reviewState.get("interactiePanelStates"));
-			Hashtable[] interactiePanelStates = (Hashtable[])state.get("interactiePanelStates");
+			Hashtable[] interactiePanelStates = toHashtableArray(state.get("interactiePanelStates"));
 			
 			for(int i=0 ; i<interactiePanelReviewStates.length ; i++) {
 				if(interactiePanelStates[i]!=null) {

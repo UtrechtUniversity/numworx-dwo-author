@@ -1953,7 +1953,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		
 		if(h!=null && h.containsKey("reviewInteractieData")) {
-			reviewInteractieData = (Hashtable)h.get("reviewInteractieData");
+			reviewInteractieData = OpdrNavStruct.toHashtable(h.get("reviewInteractieData"));
 			if(reviewInteractieData.containsKey("reviewScoreCorrectie"))
 				reviewScoreCorrectie = ((Number)reviewInteractieData.get("reviewScoreCorrectie")).intValue();
 		}
@@ -2127,6 +2127,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     public void closePopup()
     {   if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel) 
 		{	((TekstVakPanel)interactiePanel).closePopup();
+		}
+	    if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordFormuleVak) 
+		{	((SimpelAntwoordFormuleVak)interactiePanel).closeUitwerkingPopup();
+		}
+	    if(interactiePanel!=null && interactiePanel instanceof SimpelAntwoordVergelijkingVak) 
+		{	((SimpelAntwoordVergelijkingVak)interactiePanel).closeUitwerkingPopup();
 		}
     	if(popupFrame != null)
     	{   popupFrame.setVisible(false);

@@ -178,6 +178,15 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	    
 	}
 	
+	public void closeUitwerkingPopup()
+	{	if(popupFrame!=null)
+		{	popupFrame.setVisible(false);
+			closePopup();
+			//antwoordFormuleVak.stop();
+			popupFrame.dispose();
+		}
+	}
+	
 	public void closePopup()
 	{	antwoordFormuleVak.stapLeegTerug();
 		formuleComponent = antwoordFormuleVak.getComponentSimpel();

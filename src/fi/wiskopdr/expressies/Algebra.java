@@ -3117,6 +3117,7 @@ public class Algebra
 		{	PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
 			if(p1==null)return null;
+			if(p2==null)return null;
 			p1 = vereenvoudigBreuk(p1);
 			p2 = vereenvoudigBreuk(p2);
 			if(p2.x==0 || p2.x==1 && p2.y==1)return null;

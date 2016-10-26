@@ -933,6 +933,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 					if (review) {
 						Hashtable reviewState = ons.getReviewStateHashtable();
 						String reviewStateString = JSONValue.toJSONString(reviewState);
+						System.out.println("weggeschreven reviewStateString: "+ reviewStateString);
 						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
 						
 						//DIT HIERONDER WERKT NOG NIET. HOE VANUIT REVIEW MODE DE GECORRIGEERDE SCORE WEGSCHRIJVEN
@@ -1063,13 +1064,17 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
+			System.out.println("reviewStateString: "+ reviewStateString);
 			Object reviewStateObject = JSONValue.parse(reviewStateString);
 			Hashtable reviewState = new Hashtable();
 			Map reviewStateMap = null;
 			if (reviewStateObject instanceof Map)
 				reviewState.putAll((Map) reviewStateObject);
+			
+			System.out.println("startReviewStateHashtable: "+ JSONValue.toJSONString(reviewState) );
+			
 			ons.mergeReviewStateHashtable(onsState, reviewState, true);
-			ons.setState(onsState);
+			ons.setState(onsState,false);
 		}
 		else {
 			ons.setJSONState(onsState);
@@ -1120,9 +1125,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			if (reviewStateObject instanceof Map)
 				reviewState.putAll((Map) reviewStateObject);
 			ons.mergeReviewStateHashtable(onsState, reviewState, false);
+			ons.setState(onsState,false);
 		}
-		
-		ons.setState(onsState);
+		else
+			ons.setState(onsState);
 
 		if (review) {
 			ons.toonAantalSessies();

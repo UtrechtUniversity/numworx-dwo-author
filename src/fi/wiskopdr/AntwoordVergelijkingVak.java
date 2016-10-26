@@ -3877,6 +3877,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			Vergelijking balansVerg = null;
 			if(huidigeVergelijking!=null)
 			{	balansVerg =  huidigeVergelijking.geefVergelijking(0);
+				System.out.println("balancevergelijking: "+balansVerg.toString());
 				Expressie exp1 = Algebra.herleid(balansVerg.geefExpLinks());
 				Expressie exp2 = Algebra.herleid(balansVerg.geefExpRechts());
 				String sx1 = exp1.toString().charAt(0)=='x' ? "1" : "";

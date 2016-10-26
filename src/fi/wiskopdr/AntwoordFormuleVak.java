@@ -2200,7 +2200,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			return Math.max(0, score - ideasPuntenAftrek);
 		if(mode==1)
 			return Math.max(0, score-errorCount*2);
-		System.out.println("Score bij getScore: "+score);
+		//System.out.println("Score bij getScore: "+score);
 	    return score;
 	}
 	

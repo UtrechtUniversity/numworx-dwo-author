@@ -153,6 +153,13 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	    
 	}
 	
+	public void closeUitwerkingPopup()
+	{	if(popupFrame!=null)
+		{	popupFrame.setVisible(false);
+			closePopup();
+			popupFrame.dispose();
+		}
+	}
 	public void closePopup()
 	{	antwoordVergelijkingVak.stapLeegTerug();
 		formuleComponent = antwoordVergelijkingVak.getComponentSimpel();
