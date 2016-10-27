@@ -18,14 +18,13 @@ import javax.swing.JPanel;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.expr.Coord;
+import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.openmath.Expression;
-import fi.euclides.openmath.ParseException;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.util.DefaultAdapter;
@@ -43,10 +42,19 @@ import org.cbook.cbookif.SuccessStatus;
 
 class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListener {
 
+	private static final long serialVersionUID = 1L;
+
 	private final class InstanceViewer extends AWTViewer implements Observer, NameMapper {
 		@Override
 		public void paint() {
 			repaint();
+		}
+
+		@Override
+		public void paint(Graphics g2) {
+			g2.setColor(Color.WHITE);
+			g2.fillRect(0, 0, width, height);
+			super.paint(g2);
 		}
 
 		@Override
@@ -110,6 +118,11 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		public NameMapper getMapper() {
 			return this;
 		}
+
+		InstanceViewer() {
+			super();
+			getModel().addObserver(this);
+		}
 		
 	}
 
@@ -132,9 +145,9 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		return viewer;
 	}
 
-	private Map<String, ? extends Object> launchData = Collections.EMPTY_MAP;
+	private Map<String, ? extends Object> launchData = Collections.emptyMap();
 
-	private Map<String, ?> state = Collections.EMPTY_MAP;
+	private Map<String, ?> state = Collections.emptyMap();
 
 	private Map<String, Number> random = Collections.emptyMap();
 	
@@ -167,7 +180,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 	}
 
 	public Map<String, ?> getState() {
-		return new Hashtable<String,Object>();
+		return new Hashtable<String,Object>(state);
 	}
 
 	public SuccessStatus getSuccessStatus() {
@@ -213,8 +226,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 	}
 
 	public void reset() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void setAssessmentMode(AssessmentMode mode) {
@@ -237,9 +249,10 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 			OMObject object;
 			try {
 				String toParse = randomize(this.random, text);
-				object = Expression.parse(toParse);
+				//object = Expression.parse(toParse);
+				object = new FormuleParser(text.substring(2)).parse();
 				definitions.define(text, object);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				break;
 			}
 		}
@@ -247,7 +260,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 
 	private String randomize(Map<String, Number> random, String text) {
 		for(Map.Entry<String, Number> entry: random.entrySet()) {
-			String key = "##" + entry.getKey() + "##";
+			String key = "#" + entry.getKey() + "#";
 			text = text.replaceAll(key, entry.getValue().toString());
 		}
 		return text;

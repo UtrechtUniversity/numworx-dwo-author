@@ -6,12 +6,15 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
@@ -35,7 +38,34 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 
 class DefinitionPanel extends JPanel implements PropertyChangeListener {
 
-	JList<CELL> list;
+	Box list;
+	
+	class ListUpdater implements ListDataListener {
+
+		public void intervalAdded(ListDataEvent e) {
+			int i0 = e.getIndex0();
+			CELL cell = model.elementAt(i0);
+			list.add( new CellItem(cell));
+			DefinitionPanel.this.validate();
+		}
+
+		public void intervalRemoved(ListDataEvent e) {
+			int i0 = e.getIndex0();
+			int i1 = e.getIndex1();
+			while( i1 >= i0 )
+				list.remove(i1--);
+		}
+
+		public void contentsChanged(ListDataEvent e) {
+			int i0 = e.getIndex0();
+			CellItem item = (CellItem) list.getComponent(i0);
+			item.refresh();
+		}
+		
+	}
+	
+	ListUpdater updater = new ListUpdater();
+	
 	Definitions model;
 	
 	DefinitionPanel(Definitions model) {
@@ -43,7 +73,8 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		this.model = model;
 		setPreferredSize(new Dimension(200,400));
 		setBackground(Color.white);
-		list = new JList<CELL>(model);
+		list = Box.createVerticalBox();
+		model.addListDataListener(updater);
 		add(new JScrollPane(list), BorderLayout.CENTER);
 		add(new JLabel("Elementen"), BorderLayout.NORTH);
 	}

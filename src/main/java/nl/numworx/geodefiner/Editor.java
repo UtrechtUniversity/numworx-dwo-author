@@ -2,6 +2,9 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -10,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
@@ -21,9 +26,12 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 	private Instance instance;
 	private DefinitionPanel definition;
 	private CommandPanel command;
+	private CBookContext context;
+
 	Editor(CBookContext context) {
 		super(new BorderLayout());
-		setSize(600,400);
+		this.context = context;
+		setSize(700,500);
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
 		instance = new Instance();
@@ -93,17 +101,41 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 
 	public void setLaunchData(Map<String, ?> launchdata) {
 		instance.init();
-		instance.setLaunchData(launchdata, Collections.EMPTY_MAP);
+		Map randomvars = (Map) context.getProperty("randomVars");
+		instance.setLaunchData(launchdata, randomvars);
 	}
 
 	public void start() {
 		instance.start();
 		
 		instance.repaint();
+//		command.editor.requestFocus();
+//		boolean x = command.editor.requestDefaultFocus();
+//		command.editor.addKeyListener(new KeyAdapter() {
+//
+//			@Override
+//			public void keyTyped(KeyEvent e) {
+//				// TODO Auto-generated method stub
+//				super.keyTyped(e);
+//			}
+//			
+//		});
+//		System.out.println(x);
+		createKeybindings();
+		
 	}
 
 	public void stop() {
 		instance.stop();
 	}
-
+	
+	private void createKeybindings() {
+		getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+		    getActionMap().put("Enter", new AbstractAction() {
+		        public void actionPerformed(ActionEvent ae) {
+		            //do something on enter pressed
+		        	System.out.println("hiero!");
+		        }
+		    });
+		}
 }

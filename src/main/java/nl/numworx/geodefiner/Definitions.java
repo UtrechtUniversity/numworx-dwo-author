@@ -21,6 +21,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.Lambda;
 import fi.euclides.openmath.LocusModelF;
+import fi.euclides.openmath.OMConstants;
 import fi.euclides.openmath.Popcorn;
 
 /** FIXME split in a observable and a ListModel
@@ -55,6 +56,7 @@ public class Definitions extends DefaultListModel<CELL> {
 			{
 				OMVariable var = (OMVariable) oma.getElementAt(1);
 // No reassignments, or delete?
+// in geogebra reassignments
 				Destroyable fs = viewer.getMapper().fromString(var.getName());
 				if (fs != null) {
 					fs.destroy(); 
@@ -109,7 +111,7 @@ public class Definitions extends DefaultListModel<CELL> {
 // $t := text("text", $P)
 				if(TEXT.isSame(f)) {
 					Punt  p = (Punt) depend[1];
-					Label t = (Label) depend[0]; // "text", ["x=",$x]
+					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
 					t.setP(p);
 					viewer.getModel().add(t);
 					addElement(new CELL(text, t));
@@ -122,8 +124,7 @@ public class Definitions extends DefaultListModel<CELL> {
 					addElement(new CELL(text, t3));
 					viewer.getMapper().rename(t3, var.getName());
 					return;				
-				}
-				
+				}		
 // $c := curve( $f, $f )
 // $w := 1+2
 				}
@@ -132,7 +133,7 @@ public class Definitions extends DefaultListModel<CELL> {
 				{
 					Label l = new Label();l.setString(text);
 					l.setVisible(false);	
-					Destroyable f = Expression.interpret(oma.getElementAt(2), l, viewer.getMapper());
+					Destroyable f = Expression.interpret(oma, l, viewer.getMapper());
 					viewer.getModel().add(f);
 					viewer.getMapper().rename(f, var.getName());
 // display function
@@ -145,6 +146,9 @@ public class Definitions extends DefaultListModel<CELL> {
 					addElement(new CELL(text, f));
 					return;
 				}
+			} else if ( first.isSame(Popcorn.RELATION1_EQ)) {
+// $x = 1;
+// $y = $x + 1;
 			}
 		}
 	}
