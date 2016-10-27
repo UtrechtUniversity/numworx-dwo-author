@@ -83,6 +83,10 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	    
 	}
 	
+	public boolean contains(int x, int y) {
+		return p.contains(x,y);
+	}
+	
 	public void makeGUI(){
 		
 			 

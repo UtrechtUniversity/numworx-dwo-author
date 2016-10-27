@@ -140,9 +140,8 @@ public class FormuleButton extends JButton implements MouseListener
  	public void removeActionListener(ActionListener l)
  	{	actionListener = AWTEventMulticaster.remove(actionListener, l);
  	}
-  
-	
-	public void zetActief(boolean b)
+ 	
+ 	public void zetActief(boolean b)
 	{	actief = b;
 		repaint();
 	}

@@ -425,6 +425,76 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		return log;
 	}
+	/**
+	 * Hiermee haalt de DWO de paginaCorrectiescores uit de reviewdata. 
+	 * wordt ook aangeroepen door getScoreMapList(...)
+	 */
+	public static String[] geefPaginaScores(String suspendData, String reviewStateString) {
+		Map h = toSuspendData(suspendData);
+		if(h == null) return null;
+		
+		int[][] scores = null;
+		int[] scoreCorrecties = geefPaginaCorrectieScores(reviewStateString);
+		
+		boolean[][] bezocht = null;
+		if (h.containsKey("onsState")) {
+			Map onsState = (Map) h.get("onsState");
+			if (onsState.containsKey("orScores"))
+				scores = OpdrNavStruct.toIntArrayArray(onsState.get("orScores"));
+			bezocht = OpdrNavStruct.toBooleanArrayArray(onsState.get("bezocht"));
+		}
+		if (scores == null || scores.length == 0 || scores[0].length == 0)
+			return null;
+		String[] log = new String[scores[0].length];
+		for (int i = 0; i < scores[0].length; i++) {
+			if(bezocht == null || bezocht[0][i])
+				log[i] = Integer.toString( scores[0][i] + getInt(scoreCorrecties,i) );
+		}
+		return log;
+	}
+	
+	private static int getInt(int[] array, int i) {
+		if(array==null) return 0;
+		if(i >= array.length) return 0;
+		return array[i];
+	}
+	
+	public static int[] geefPaginaCorrectieScores(String reviewStateString) {
+		Map reviewState = toReviewState(reviewStateString);
+		if(reviewState == null) return null;
+		
+		int[] correctieScores = null;
+		if (reviewState.containsKey("opdrContStates")) {
+			Hashtable[][] opdrContReviewStates = OpdrNavStruct.toHashtableArrayArray(reviewState.get("opdrContStates"));
+			correctieScores = new int[opdrContReviewStates[0].length];
+			for(int i=0 ; i<opdrContReviewStates[0].length ; i++) {
+				if(opdrContReviewStates[0][i]!=null)
+					correctieScores[i] = OpdrNavStruct.getScoreCorrectiePage(opdrContReviewStates[0][i]);
+			}
+		}
+		return correctieScores;
+	}
+	
+	public static String[] geefPaginaIsCorrected(String reviewStateString) {
+		Map reviewState = toReviewState(reviewStateString);
+		if(reviewState == null) return null;
+		
+		boolean[] isCorrected = null;
+		String[] isCorrectedString = null;
+		if (reviewState.containsKey("opdrContStates")) {
+			Hashtable[][] opdrContReviewStates = OpdrNavStruct.toHashtableArrayArray(reviewState.get("opdrContStates"));
+			isCorrected = new boolean[opdrContReviewStates[0].length];
+			isCorrectedString = new String[opdrContReviewStates[0].length];
+			for(int i=0 ; i<opdrContReviewStates[0].length ; i++) {
+				if(opdrContReviewStates[0][i]!=null) {
+					int correctie = OpdrNavStruct.getScoreCorrectiePage(opdrContReviewStates[0][i]);
+					isCorrected[i] = (correctie != 0);
+					isCorrectedString[i] = Boolean.toString(isCorrected[i]);
+				}
+			}
+		}
+		return isCorrectedString;
+	}
 
 	private static Map toSuspendData(String suspendData) {
 		Object o;
@@ -433,6 +503,15 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		else
 			o = StringCodeObject.decodeStringToObject(suspendData);
 		return (Map) o;
+	}
+	
+	private static Hashtable toReviewState(String reviewStateString) {
+		Object reviewStateObject = JSONValue.parse(reviewStateString);
+		Hashtable reviewState = new Hashtable();
+		Map reviewStateMap = null;
+		if (reviewStateObject instanceof Map)
+			reviewState.putAll((Map) reviewStateObject);
+		return reviewState;
 	}
 
 	/**
@@ -935,12 +1014,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						String reviewStateString = JSONValue.toJSONString(reviewState);
 						System.out.println("weggeschreven reviewStateString: "+ reviewStateString);
 						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
-						
-						//DIT HIERONDER WERKT NOG NIET. HOE VANUIT REVIEW MODE DE GECORRIGEERDE SCORE WEGSCHRIJVEN
-						//System.out.println("score wordt opgestuurd: " + d);
-						//api.LMSSetValue("cmi.completion_status",  "incomplete");
-						//api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
-						//api.LMSSetValue("cmi.completion_status", "completed");
+						api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
 						
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
@@ -1064,17 +1138,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
-			System.out.println("reviewStateString: "+ reviewStateString);
-			Object reviewStateObject = JSONValue.parse(reviewStateString);
-			Hashtable reviewState = new Hashtable();
-			Map reviewStateMap = null;
-			if (reviewStateObject instanceof Map)
-				reviewState.putAll((Map) reviewStateObject);
+			Hashtable reviewState = toReviewState(reviewStateString);
+			
+			System.out.println("Hashtable 1state :" + JSONValue.toJSONString(onsState));
+			System.out.println("Hashtable 1reviewstate:" + JSONValue.toJSONString(reviewState));
 			
 			System.out.println("startReviewStateHashtable: "+ JSONValue.toJSONString(reviewState) );
 			
-			ons.mergeReviewStateHashtable(onsState, reviewState, true);
-			ons.setState(onsState,false);
+			//ons.mergeReviewStateHashtable(onsState, reviewState, true);
+			//ons.setJSONState(onsState, reviewState);
+			ons.setState(onsState, true);
 		}
 		else {
 			ons.setJSONState(onsState);
@@ -1119,11 +1192,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			System.out.println("opgehaalde reviewStateString :" + reviewStateString);
-			Object reviewStateObject = JSONValue.parse(reviewStateString);
-			Hashtable reviewState = new Hashtable();
-			Map reviewStateMap = null;
-			if (reviewStateObject instanceof Map)
-				reviewState.putAll((Map) reviewStateObject);
+			Hashtable reviewState = toReviewState(reviewStateString);
+			
+			System.out.println("Hashtable 1state :" + JSONValue.toJSONString(onsState));
+			System.out.println("Hashtable 1reviewstate:" + JSONValue.toJSONString(reviewState));
+			
 			ons.mergeReviewStateHashtable(onsState, reviewState, false);
 			ons.setState(onsState,false);
 		}
@@ -1199,22 +1272,31 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public List getScoreMapList(SCORM12APIInterface api) {
 		String launchData = api.LMSGetValue(CMI_LAUNCH_DATA);
 		String suspendData = api.LMSGetValue(CMI_SUSPEND_DATA);
-
-		String[] scoresMax, scoresRaw, sessions;
+		String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
+		
+		String[] scoresMax, scoresRaw, sessions, isCorrected;
 		scoresMax = geefPaginaScoresMax(launchData);
 		boolean cijfersOfLetters = isCijfersOfLetters(launchData);
 		if (scoresMax == null)
 			return Collections.EMPTY_LIST;
-		scoresRaw = geefPaginaScores(suspendData);
+		scoresRaw = geefPaginaScores(suspendData, reviewStateString);
 		sessions = geefPaginaTijden(suspendData);
+		isCorrected =  geefPaginaIsCorrected(reviewStateString);
 		List list = new ArrayList(scoresMax.length);
 		for (int i = 0; i < scoresMax.length; i++) {
 			HashMap map = new HashMap();
 			map.put(PartialScoreIF.SCORE_MAX, scoresMax[i]);
+			
 			if (scoresRaw != null && scoresRaw.length > i && scoresRaw[i] != null)
 				map.put(PartialScoreIF.SCORE_RAW, scoresRaw[i]);
 			else
 				map.put(PartialScoreIF.SCORE_RAW, "");
+			
+			if (isCorrected != null && isCorrected.length > i && isCorrected[i] != null)
+				map.put("isCorrected", isCorrected[i]);
+			else
+				map.put("isCorrected", "");
+			
 			map.put(PartialScoreIF.LOCATION, String.valueOf(i)); // tellen vanaf 1?
 
 			if(cijfersOfLetters)
