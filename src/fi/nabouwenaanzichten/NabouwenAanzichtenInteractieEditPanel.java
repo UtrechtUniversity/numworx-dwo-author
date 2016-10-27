@@ -915,7 +915,9 @@ System.out.println("naiep setBounds return");
 				
 				pijlButton.setEnabled(true);
 				balkButton.setEnabled(true);
-				geenButton.setEnabled(true);				
+				geenButton.setEnabled(true);
+				
+				bouwselButton.setSelected(true);
 				
 				bouwselButton.setEnabled(false);
 				silhouetButton.setEnabled(false);
@@ -993,6 +995,8 @@ System.out.println("naiep setBounds return");
 				pijlButton.setEnabled(true);
 				balkButton.setEnabled(true);
 				geenButton.setEnabled(true);				
+				
+				bouwselButton.setSelected(true);
 				
 				bouwselButton.setEnabled(false);
 				silhouetButton.setEnabled(false);
