@@ -404,7 +404,11 @@ public class Facet3D implements Serializable
                  drawPolygon(g, p, visFromD);
              else  
              {   if (numPoints < 3) 
-            	 	g.drawLine(p.xpoints[0], p.ypoints[0], p.xpoints[1], p.ypoints[1]);
+                 {	
+            	 	if (numPoints > 1)
+            	 		g.drawLine(p.xpoints[0], p.ypoints[0], p.xpoints[1], p.ypoints[1]);
+                 
+                 }
             	 else
             		 g.drawPolygon(p);
              

@@ -4099,6 +4099,9 @@ System.out.println("g3dc setEditState");
 	
 	public Hashtable getState()
 	{
+		
+System.out.println("g3dc getState");
+
 		Hashtable h = functieEditor.getState();
 		
 		// state
@@ -4151,8 +4154,14 @@ System.out.println("g3dc setEditState");
 		h.put("centraleProjC", new Boolean(centraleProjC));
 		
 		h.put("graphColor", graphColor);
+		String graphColorString = "rgb("+graphColor.getRed()+","+graphColor.getGreen()+","+graphColor.getBlue()+")";
+		h.put("graphColorString", graphColorString);
 		h.put("surfaceColor", surfaceColor);
-		
+		String surfaceColorString = "rgb("+surfaceColor.getRed()+","+surfaceColor.getGreen()+","+surfaceColor.getBlue()+")";
+		h.put("surfaceColorString", surfaceColorString);
+
+System.out.println("gCS = " + graphColorString);
+
 		return h;
 	}
 	
@@ -4224,7 +4233,14 @@ System.out.println("g3dc getEditState");
 		h.put("centraleProjC", new Boolean(centraleProjC));
 		
 		h.put("graphColor", graphColor);
+		String graphColorString = "rgb("+graphColor.getRed()+","+graphColor.getGreen()+","+graphColor.getBlue()+")";
+		h.put("graphColorString", graphColorString);
 		h.put("surfaceColor", surfaceColor);
+		String surfaceColorString = "rgb("+surfaceColor.getRed()+","+surfaceColor.getGreen()+","+surfaceColor.getBlue()+")";
+		h.put("surfaceColorString", surfaceColorString);
+		
+		
+System.out.println("gCS = " + graphColorString);
 		
 		return h;
 	}
