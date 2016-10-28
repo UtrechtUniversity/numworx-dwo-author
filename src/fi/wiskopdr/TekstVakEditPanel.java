@@ -13,6 +13,8 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.json.simple.JSONValue;
+
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
@@ -54,6 +56,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JTextField cellSpaceColumnTF;
 	private JTextField cellSpaceRowTF;
 	private JTextField randDikteTF;
+	
+	private JTextField JSONTextField;
 	
 	private boolean randZichtbaar, bgColorZichtbaar, zwevend, anderFont, buttonOptie, tableBorders;
 	
@@ -667,6 +671,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setVisible(manageStyles);
 		layoutOptionsPanel.add(editStylesButton);
 		
+		JSONTextField = new JTextField();
+		JSONTextField.setBounds(10,500,240,20);
+		interactionOptionsPanel.add(JSONTextField);
 	}
 	
 	public void maakStyleEditorPopupFrame()
@@ -723,6 +730,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(tableMode) v = tekstVakPanel.geefInteractiePanels();
 		else v = tekstEditor.geefInteractiePanels();
 		return v;
+	}
+	
+	public void setJSONState(Hashtable h) {
+		JSONTextField.setText(JSONValue.toJSONString(h));
 	}
 	
 	public Hashtable getEditState()
@@ -1006,6 +1017,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	}
 	public void setEditState(Hashtable h)
 	{
+		setJSONState(h);
+		
 		String styleString = null;
 		
 		String[][] teksten = null;

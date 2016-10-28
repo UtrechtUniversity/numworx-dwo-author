@@ -1339,14 +1339,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	
 	
 	public void setJSONState(Hashtable onsState, Hashtable reviewState) {
-		if(reviewState==null)
-			setState(onsState, true);
+		if(reviewState==null || reviewState.isEmpty())
+			setState(onsState);
 		else {
-			Hashtable mergedTable = mergeReviewStateHashtable(onsState, reviewState, false);
+			Hashtable mergedTable = mergeReviewStateHashtable(onsState, reviewState);
 			if(mergedTable!=null)
-				setState(mergedTable, false);
+				setState(mergedTable);
 			else
-				setState(onsState, true);
+				setState(onsState);
 		}
 	}
 	
@@ -3026,7 +3026,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				scoreCorrecties[activiteitNr][opdrachtNr] = getScoreCorrectiePage(states[activiteitNr][opdrachtNr]);
 				or[activiteitNr].zetScore(opdrachtNr+1, scores[activiteitNr][opdrachtNr] + scoreCorrecties[activiteitNr][opdrachtNr]);
 				or[activiteitNr].zetCorrectieView(opdrachtNr+1, scoreCorrecties[activiteitNr][opdrachtNr]!=0);
-				System.out.println("scoreCorrecties["+opdrachtNr+"] = "+scoreCorrecties[activiteitNr][opdrachtNr]);
+				//System.out.println("scoreCorrecties["+opdrachtNr+"] = "+scoreCorrecties[activiteitNr][opdrachtNr]);
 				return;
 			}
 			
@@ -3371,7 +3371,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 			}
 		}
-		System.out.println("scoreCorrectie: "+ scoreCorrectie );
+		//System.out.println("scoreCorrectie: "+ scoreCorrectie );
 		return scoreCorrectie;
 	}
 	
@@ -3417,7 +3417,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return reviewState;
 	}
 	
-	public Hashtable mergeReviewStateHashtable (Hashtable state, Hashtable reviewState, boolean json) {
+	public Hashtable mergeReviewStateHashtable (Hashtable state, Hashtable reviewState) {
 		if(reviewState==null || reviewState.isEmpty())
 			return null;
 		Hashtable[][] opdrContStates;
@@ -3426,36 +3426,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrContStates = toHashtableArrayArray(state.get("opdrContStates"));
 		opdrContReviewStates = toHashtableArrayArray(reviewState.get("opdrContStates"));
 		
-		System.out.println("Hashtable state :" + JSONValue.toJSONString(opdrContStates));
-		System.out.println("Hashtable reviewstate:" + JSONValue.toJSONString(opdrContReviewStates));
-		
-		//Hashtable[] interactiePanelStates = null;
-		//Hashtable[] interactiePanelReviewStates = null;
-		
 		for(int i=0 ; i<opdrContStates[0].length ; i++) {
-			if(opdrContStates[0][i]!=null)
-			{
-				// PATCH HERE
-				if(json && opdrContStates[0][i] != null)
-				{
-					Object object = opdrContStates[0][i].get("interactiePanelStates");
-					List l = (List) object;
-					if(l.size() > 5)
-					{ 	
-						object = l.get(5);
-						Map m = (Map) object;
-						object = m.get("interactiePanelStates");
-						l = (List) object;
-						for(int x=0; x<5; x++) l.add(0, null);
-						opdrContStates[0][i].put("interactiePanelStates", object);
-					} else {
-						//states[i][j].remove("interactiePanelStates");
-						//states[i][j] = null;
-					}
-				}
-				System.out.println("Hashtable state :" + JSONValue.toJSONString(opdrContStates[0][i]));
-				System.out.println("Hashtable reviewstate:" + JSONValue.toJSONString(opdrContReviewStates[0][i]));
-				
+			if(opdrContStates[0][i]!=null) {
 				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
 			}
 		}

@@ -1140,14 +1140,37 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			Hashtable reviewState = toReviewState(reviewStateString);
 			
-			System.out.println("Hashtable 1state :" + JSONValue.toJSONString(onsState));
-			System.out.println("Hashtable 1reviewstate:" + JSONValue.toJSONString(reviewState));
+			System.out.println("Hashtable state :" + JSONValue.toJSONString(onsState));
+			System.out.println("Hashtable reviewstate:" + JSONValue.toJSONString(reviewState));
 			
-			System.out.println("startReviewStateHashtable: "+ JSONValue.toJSONString(reviewState) );
+			//PATCH
+			Hashtable[][] opdrContStates;
+			opdrContStates = OpdrNavStruct.toHashtableArrayArray(onsState.get("opdrContStates"));
+			for(int i=0 ; i<opdrContStates[0].length ; i++) {
+				if(opdrContStates[0][i]!=null) {
+					Object object = opdrContStates[0][i].get("interactiePanelStates");
+					List l = (List) object;
+					if(l.size() > 5)
+					{ 	
+						object = l.get(5);
+						Map m = (Map) object;
+						object = m.get("interactiePanelStates");
+						l = (List) object;
+						for(int x=0; x<5; x++) l.add(0, null);
+						opdrContStates[0][i].put("interactiePanelStates", object);
+					}
+					
+				}
+			}
+			onsState.put("opdrContStates", opdrContStates);
+			//
 			
-			//ons.mergeReviewStateHashtable(onsState, reviewState, true);
+			System.out.println("Hashtable patched state:" + JSONValue.toJSONString(onsState));
+			ons.mergeReviewStateHashtable(onsState, reviewState);
+			System.out.println("Hashtable review state:" + JSONValue.toJSONString(reviewState));
+			ons.setState(onsState,false);
 			//ons.setJSONState(onsState, reviewState);
-			ons.setState(onsState, true);
+			//ons.setState(onsState, false);
 		}
 		else {
 			ons.setJSONState(onsState);
@@ -1197,7 +1220,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			System.out.println("Hashtable 1state :" + JSONValue.toJSONString(onsState));
 			System.out.println("Hashtable 1reviewstate:" + JSONValue.toJSONString(reviewState));
 			
-			ons.mergeReviewStateHashtable(onsState, reviewState, false);
+			ons.mergeReviewStateHashtable(onsState, reviewState);
 			ons.setState(onsState,false);
 		}
 		else
