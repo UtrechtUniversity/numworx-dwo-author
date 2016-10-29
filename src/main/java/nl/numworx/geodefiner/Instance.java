@@ -53,7 +53,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		@Override
 		public void paint(Graphics g2) {
 			g2.setColor(Color.WHITE);
-			g2.fillRect(0, 0, width, height);
+			g2.fillRect(0, 0, getWidth(), getHeight());
 			super.paint(g2);
 		}
 
@@ -258,7 +258,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		}
 	}
 
-	private String randomize(Map<String, Number> random, String text) {
+	static String randomize(Map<String, Number> random, String text) {
 		for(Map.Entry<String, Number> entry: random.entrySet()) {
 			String key = "#" + entry.getKey() + "#";
 			text = text.replaceAll(key, entry.getValue().toString());

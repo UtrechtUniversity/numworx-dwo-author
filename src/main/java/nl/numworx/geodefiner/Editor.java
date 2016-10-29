@@ -42,6 +42,10 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 		definition = new DefinitionPanel(instance.getDefinitions());
 		add(definition, BorderLayout.EAST);
 		command = new CommandPanel();
+// inject
+		command.random = (Map<String, Number>) context.getProperty("randomVars");
+		command.instance = instance;
+
 		command.addPropertyChangeListener("command", definition);
 		add(command, BorderLayout.SOUTH);
 	}
@@ -90,6 +94,7 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 		instance.setSize(instanceSize);
 		instance.setPreferredSize(instanceSize);
 		instance.invalidate();
+		instance.getParent().validate();
 	}
 
 	public void setInstanceWidth(int w) {
@@ -106,21 +111,8 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 	}
 
 	public void start() {
-		instance.start();
-		
+		instance.start();		
 		instance.repaint();
-//		command.editor.requestFocus();
-//		boolean x = command.editor.requestDefaultFocus();
-//		command.editor.addKeyListener(new KeyAdapter() {
-//
-//			@Override
-//			public void keyTyped(KeyEvent e) {
-//				// TODO Auto-generated method stub
-//				super.keyTyped(e);
-//			}
-//			
-//		});
-//		System.out.println(x);
 		createKeybindings();
 		
 	}
@@ -134,7 +126,7 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 		    getActionMap().put("Enter", new AbstractAction() {
 		        public void actionPerformed(ActionEvent ae) {
 		            //do something on enter pressed
-		        	System.out.println("hiero!");
+		        	//System.out.println("hiero!");
 		        }
 		    });
 		}

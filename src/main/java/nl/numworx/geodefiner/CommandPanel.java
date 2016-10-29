@@ -3,6 +3,7 @@ package nl.numworx.geodefiner;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -26,6 +27,11 @@ class CommandPanel extends JPanel implements ActionListener {
 				produceAction(e.getActionCommand());
 		} 
 	};
+	
+	//@Inject
+	Map<String, Number> random = Collections.emptyMap();
+	//@Inject
+	Instance instance;
 
 	static {
 		Popcorn.map = new SwingSymbols();
@@ -60,17 +66,12 @@ class CommandPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	private String randomize(Map<String, Number> random, String text) {
-		for(Map.Entry<String, Number> entry: random.entrySet()) {
-			String key = "#" + entry.getKey() + "#";
-			text = text.replaceAll(key, entry.getValue().toString());
-		}
-		return text;
-	}
-
 	
 	private String randomize(String input) {
-		return input;
+		if(random != null)
+			return instance.randomize(random, input);
+		else 
+			return input;
 	}
 	
 }

@@ -98,24 +98,24 @@ public class Definitions extends DefaultListModel<CELL> {
 				if (ARC.isSame(f)) {
 					Destroyable l = viewer.getModel().buildBoog(depend);
 					addElement(new CELL(text, l));
-					viewer.getMapper().rename(l, var.getName());
 					return;
 				}				
 // $l := circle($P, $Q)
 				if (CIRCLE.isSame(f)) {
 					Destroyable l = viewer.getModel().buildCirkel(depend);
-					addElement(new CELL(text, l));
 					viewer.getMapper().rename(l, var.getName());
+					addElement(new CELL(text, l));
 					return;
 				}
 // $t := text("text", $P)
 				if(TEXT.isSame(f)) {
 					Punt  p = (Punt) depend[1];
 					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
+					if(t.getIndex() > 0) return; // FIXME
 					t.setP(p);
+					viewer.getMapper().rename(t, var.getName());
 					viewer.getModel().add(t);
 					addElement(new CELL(text, t));
-					viewer.getMapper().rename(t, var.getName());
 					return;
 				}
 // $l := polygon($P, ...)
@@ -134,8 +134,8 @@ public class Definitions extends DefaultListModel<CELL> {
 					Label l = new Label();l.setString(text);
 					l.setVisible(false);	
 					Destroyable f = Expression.interpret(oma, l, viewer.getMapper());
-					viewer.getModel().add(f);
 					viewer.getMapper().rename(f, var.getName());
+					viewer.getModel().add(f);
 // display function
 					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.INSTANCE.getSubKey()))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer.getMapper());
