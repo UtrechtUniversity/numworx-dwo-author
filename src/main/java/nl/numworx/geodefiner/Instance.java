@@ -27,9 +27,12 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
+import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
+import nl.numworx.geodefiner.ui.UIModel;
+import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -123,7 +126,22 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 			super();
 			getModel().addObserver(this);
 		}
-		
+
+		@Override
+		public void selectColor(Destroyable object) {
+			if(tracking || trail)
+				return;
+			Adapter a = object.getAdapter();
+			Color c = a.adapt(Color.class);
+			if (c != null) {
+				if (getModel().getSelect().contains(object))
+					g.setColor(c.brighter());				
+				else
+					g.setColor(c);
+				return;
+			}
+			super.selectColor(object);
+		}
 	}
 
 	private CBookEventHandler handler = new CBookEventHandler(this);
@@ -238,6 +256,23 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		this.launchData = launchData;
 		this.random = random;		
 		createDefinitions();
+		installConfiguration();
+	}
+
+	private void installConfiguration() {
+		Map<String, Map<String,Object>> configuration = (Map<String, Map<String, Object>>) this.launchData.get("configuration");
+		if(configuration != null) {
+			for( Map.Entry<String, Map<String,Object>> entry : configuration.entrySet()) {
+				String name = entry.getKey();
+				Destroyable d = getViewer().getMapper().fromString(name);
+				UIModel<?> model = new UIModelFactory().build(d);
+				model.fromMap(entry.getValue());
+				model.install();
+				CELL cell = d.getAdapter().adapt(CELL.class);
+				cell.config = model;
+				definitions.update(cell);
+			}
+		}
 	}
 
 	private void createDefinitions() {

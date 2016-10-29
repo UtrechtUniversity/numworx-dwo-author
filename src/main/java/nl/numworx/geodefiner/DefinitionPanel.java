@@ -16,6 +16,7 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
@@ -39,13 +40,14 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 class DefinitionPanel extends JPanel implements PropertyChangeListener {
 
 	Box list;
+	AbstractViewer viewer;
 	
 	class ListUpdater implements ListDataListener {
 
 		public void intervalAdded(ListDataEvent e) {
 			int i0 = e.getIndex0();
 			CELL cell = model.elementAt(i0);
-			list.add( new CellItem(cell));
+			list.add( new CellItem(cell,viewer));
 			DefinitionPanel.this.validate();
 		}
 
@@ -68,9 +70,10 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	
 	Definitions model;
 	
-	DefinitionPanel(Definitions model) {
+	DefinitionPanel(Definitions model, AbstractViewer viewer) {
 		super(new BorderLayout());
 		this.model = model;
+		this.viewer = viewer;
 		setPreferredSize(new Dimension(200,400));
 		setBackground(Color.white);
 		list = Box.createVerticalBox();

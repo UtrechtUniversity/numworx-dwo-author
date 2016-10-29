@@ -21,6 +21,8 @@ import javax.swing.KeyStroke;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
+import fi.euclides.model.AbstractViewer;
+
 public class Editor extends JPanel implements CBookWidgetEditIF {
 
 	private Instance instance;
@@ -39,7 +41,7 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 		instance.setSize(instanceSize);
 		flow.add(instance);
 		add(flow, BorderLayout.CENTER);
-		definition = new DefinitionPanel(instance.getDefinitions());
+		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
 		add(definition, BorderLayout.EAST);
 		command = new CommandPanel();
 // inject
@@ -67,13 +69,19 @@ public class Editor extends JPanel implements CBookWidgetEditIF {
 	public Map<String, ?> getLaunchData() {
 		Map<String,Object> launchdata = new TreeMap<String,Object>();
 		List<String> strings = new ArrayList<String>();
+		Map<String,Object> configuration = new TreeMap<String,Object>();
 		Definitions defs = instance.getDefinitions();
+		AbstractViewer viewer = instance.getViewer();
 		Enumeration<CELL> e= defs.elements();
 		while (e.hasMoreElements()) {
 			CELL cell = e.nextElement();
 			strings.add(cell.text);
+			if (cell.config != null) {
+				configuration.put(viewer.toString(cell.item), cell.config.toMap());
+			}
 		}
 		launchdata.put("definitions", strings);
+		launchdata.put("configuration", configuration);
 		return launchdata;
 	}
 

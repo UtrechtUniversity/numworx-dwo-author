@@ -140,6 +140,7 @@ public class Definitions extends DefaultListModel<CELL> {
 					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.INSTANCE.getSubKey()))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer.getMapper());
 					     Locus locus = new Locus(lm);
+					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
 					     viewer.getModel().add(locus);
 					     f = locus;
 					}
@@ -158,6 +159,11 @@ public class Definitions extends DefaultListModel<CELL> {
 			if( getElementAt(i).item == fs)
 			{ 	remove(i); break;
 			}
+	}
+
+	public void update(CELL cell) {
+		int i  = indexOf(cell);
+		fireContentsChanged(this, i, i);
 	}
 	
 
