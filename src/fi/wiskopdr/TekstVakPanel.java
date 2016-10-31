@@ -44,6 +44,7 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
+import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -3909,6 +3910,13 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			{	String contentString = ((String)map.get("content"));
 				if(contentString.startsWith("VH4sIAAAAAAAAA"))
 				{	contentString = "$"+contentString+"@";
+				}
+				if(contentString.startsWith("{"))
+				{	//JSON
+					Hashtable h = WiskOpdr.toHashtable(contentString);
+					System.out.println("contentString: "+contentString);
+					contentString = StringCodeObject.encodeObjectToString(h);
+					contentString = "$V"+contentString+"@";
 				}
 				else if(contentString.startsWith("back"))
 				{	tekstVakken[stapNr-1][aantalKolommen-1].zetTekst("");

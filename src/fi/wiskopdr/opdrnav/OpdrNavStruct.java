@@ -3427,7 +3427,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrContReviewStates = toHashtableArrayArray(reviewState.get("opdrContStates"));
 		
 		for(int i=0 ; i<opdrContStates[0].length ; i++) {
-			if(opdrContStates[0][i]!=null) {
+			if(opdrContStates[0][i]!=null && opdrContReviewStates[0][i]!=null) {
 				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
 			}
 		}

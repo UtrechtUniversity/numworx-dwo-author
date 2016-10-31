@@ -1375,6 +1375,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		if (h.containsKey("ideasPuntenAftrek"))
 			ideasPuntenAftrek = ((Number) h.get("ideasPuntenAftrek")).intValue();
 
+		 //patch voor reviewMode eindtoets html5
+  		if(mode==3 && uitw==true && stapNr>0 && formuleVakInhouden[stapNr].equals("$f@")) {
+  			stapNr--;
+  			
+  		}
+  		
 		this.stapNr = stapNr;
 		formuleVakken = new FormuleVak[100];
 		int y = formuleVakY;

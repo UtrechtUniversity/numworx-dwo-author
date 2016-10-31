@@ -460,7 +460,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	
 	public static int[] geefPaginaCorrectieScores(String reviewStateString) {
-		Map reviewState = toReviewState(reviewStateString);
+		Map reviewState = toHashtable(reviewStateString);
 		if(reviewState == null) return null;
 		
 		int[] correctieScores = null;
@@ -476,7 +476,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	
 	public static String[] geefPaginaIsCorrected(String reviewStateString) {
-		Map reviewState = toReviewState(reviewStateString);
+		Map reviewState = toHashtable(reviewStateString);
 		if(reviewState == null) return null;
 		
 		boolean[] isCorrected = null;
@@ -505,15 +505,24 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return (Map) o;
 	}
 	
-	private static Hashtable toReviewState(String reviewStateString) {
+	/*private static Hashtable toReviewState(String reviewStateString) {
 		Object reviewStateObject = JSONValue.parse(reviewStateString);
 		Hashtable reviewState = new Hashtable();
 		Map reviewStateMap = null;
 		if (reviewStateObject instanceof Map)
 			reviewState.putAll((Map) reviewStateObject);
 		return reviewState;
-	}
+	}*/
 
+	public static Hashtable toHashtable(String JSONString) {
+		Object object = JSONValue.parse(JSONString);
+		Hashtable h = new Hashtable();
+		Map map = null;
+		if (object instanceof Map)
+			h.putAll((Map) object);
+		return h;
+	}
+	
 	/**
 	 * Hiermee worden de paginatijden uit de suspenddata gehaald. 
 	 * (hoe lang een leerling op een pagina bezig is)
@@ -1138,7 +1147,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
-			Hashtable reviewState = toReviewState(reviewStateString);
+			Hashtable reviewState = toHashtable(reviewStateString);
 			
 			System.out.println("Hashtable state :" + JSONValue.toJSONString(onsState));
 			System.out.println("Hashtable reviewstate:" + JSONValue.toJSONString(reviewState));
@@ -1167,6 +1176,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			
 			System.out.println("Hashtable patched state:" + JSONValue.toJSONString(onsState));
 			ons.mergeReviewStateHashtable(onsState, reviewState);
+			System.out.println("Hashtable merged state:" + JSONValue.toJSONString(onsState));
 			System.out.println("Hashtable review state:" + JSONValue.toJSONString(reviewState));
 			ons.setState(onsState,false);
 			//ons.setJSONState(onsState, reviewState);
@@ -1215,7 +1225,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		if(review || toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			System.out.println("opgehaalde reviewStateString :" + reviewStateString);
-			Hashtable reviewState = toReviewState(reviewStateString);
+			Hashtable reviewState = toHashtable(reviewStateString);
 			
 			System.out.println("Hashtable 1state :" + JSONValue.toJSONString(onsState));
 			System.out.println("Hashtable 1reviewstate:" + JSONValue.toJSONString(reviewState));

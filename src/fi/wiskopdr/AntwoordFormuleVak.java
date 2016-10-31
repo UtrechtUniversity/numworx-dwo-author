@@ -2384,13 +2384,19 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	    if(h.containsKey("gebruikersSubStrings"))gebruikersSubStrings = OpdrNavStruct.toStringArray(h.get("gebruikersSubStrings"));
 	    if(h.containsKey("ideasPuntenAftrek")) ideasPuntenAftrek = ((Number)h.get("ideasPuntenAftrek")).intValue();
 	    
-	    
+	    //patch voor reviewMode eindtoets html5
+	  		if(mode==3 && uitw==true && stapNr>0 && formuleVakInhouden[stapNr].equals("$f@")) {
+	  			stapNr--;
+	  			formuleVakInhouden[stapNr] = formuleVakString;
+	  		}
+	  		
 		if(ingevuld && formuleVakString.length()>2 )vulVak(formuleVakString) ;
 		//zetJuisteAntwoord(gekozenAntwoordString);
 		//FormuleParser p = new FormuleParser();
 		//if(!substitutieString.equals(""))substitutie = p.parse(p.schoon(p.formuleString(substitutieString)));
 		if(!substitutieString.equals(""))substitutie = FormuleParser.geefExpressie(substitutieString,functieMVDefSet);
-			
+		
+		
 		
 		this.stapNr = stapNr;
 		

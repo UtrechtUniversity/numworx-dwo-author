@@ -2178,7 +2178,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			if(o==null)return;
 			launchData = (Hashtable)o;
 			setEditState(launchData);
-			if(!editMode || studentEditor)remove(afdekPanel);
+			if(!editMode || studentEditor)
+				if(afdekPanel!=null)
+					remove(afdekPanel);
 		}
 		
 	}
