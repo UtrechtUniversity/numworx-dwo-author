@@ -42,7 +42,7 @@ public class StringCodeObject
 	
 	public static Object decodeStringToObject(String s)
 	{	Object o = null;
-		if(s != null)
+		if(s != null && s.length()>0)
 		try
 		{	ByteArrayInputStream bais = new ByteArrayInputStream(s.getBytes("ASCII"));
 			Base64InputStream b64is = new Base64InputStream(bais);
@@ -50,8 +50,10 @@ public class StringCodeObject
 			ObjectInputStream invoer = new ObjectInputStream(zis);
 			o = invoer.readObject();
 		}
+		catch(EOFException eof) {} // EOF is not severe
 		catch(Exception io)
-		{	System.err.println(io);
+		{	
+			System.err.println(io);
 		}
 		return o;
 	}
