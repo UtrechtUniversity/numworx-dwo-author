@@ -373,7 +373,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 		int sumScoresMaxObjectives = 0;
 		try
-		{
+		{   if(scoresMaxObjectives != null)
 			for (int i = 0; i < scoresMaxObjectives.length; i++)
 				for (int j = 0; j < scoresMaxObjectives[i].length; j++)
 					for (int k = 0; k < scoresMaxObjectives[i][j].length; k++)
@@ -1486,7 +1486,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		int sumScoresMaxObjectives = 0;
 		try
-		{
+		{   if (scoresMaxObjectives != null)
 			for (int i = 0; i < scoresMaxObjectives.length; i++)
 				for (int j = 0; j < scoresMaxObjectives[i].length; j++)
 					for (int k = 0; k < scoresMaxObjectives[i][j].length; k++)
