@@ -84,6 +84,7 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	}
 	
 	public boolean contains(int x, int y) {
+		if(p == null) return false;
 		return p.contains(x,y);
 	}
 	
@@ -174,8 +175,9 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
    		g.setColor(new Color(255,255,255));
    		g.drawString("v", getWidth()-8, getHeight()-2);
    	}
+
 	public boolean hitButton(int x, int y) {
-		boolean hit = p.contains(x,y);
+		boolean hit = contains(x,y);
 		return hit;
 	}
 	
