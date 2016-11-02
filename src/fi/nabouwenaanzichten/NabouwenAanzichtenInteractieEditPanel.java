@@ -630,22 +630,6 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			maakAanzicht = ((Boolean) b.get("maakAanzicht")).booleanValue();
 		maakAanzichtBox.setSelected(maakAanzicht);
 		
-		if (plattegrondBox.isSelected())
-		{
-			rotatieVastBox.setEnabled(false);
-			perspectiefBox.setEnabled(false);
-			
-			bouwselButton.setEnabled(false);
-			silhouetButton.setEnabled(false);
-			drieButton.setEnabled(false);
-			voorZijButton.setEnabled(false);
-			bovenButton.setEnabled(false);
-			voorButton.setEnabled(false);
-			rechtsButton.setEnabled(false);
-			
-			roosterTextField.setEnabled(false);
-		}
-			
 		boolean blokkenBouwsel = true;
 		if (b.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) b.get("blokkenBouwsel")).booleanValue();
@@ -680,6 +664,26 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		if (b.containsKey("rechtsAanzicht"))
 			rechtsAanzicht = ((Boolean) b.get("rechtsAanzicht")).booleanValue();
 		rechtsButton.setSelected(rechtsAanzicht);
+
+		
+		if (plattegrondBox.isSelected() || maakAanzichtBox.isSelected())
+		{
+			rotatieVastBox.setEnabled(false);
+			perspectiefBox.setEnabled(false);
+			
+			bouwselButton.setSelected(true);
+			
+			bouwselButton.setEnabled(false);
+			silhouetButton.setEnabled(false);
+			drieButton.setEnabled(false);
+			voorZijButton.setEnabled(false);
+			bovenButton.setEnabled(false);
+			voorButton.setEnabled(false);
+			rechtsButton.setEnabled(false);
+			
+			roosterTextField.setEnabled(false);
+		}
+		
 		
 		int roosterGrootte = 4;
 		if (b.containsKey("roosterGrootte"))

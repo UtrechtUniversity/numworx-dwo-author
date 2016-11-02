@@ -861,14 +861,14 @@ System.out.println("kijkNa setVis false");
 			zetPerspectief(perspectief);
 			zetRotatieVast(rotatieVast);
 			newViewer = true;
-			zetBlokkenBouwsel(blokkenBouwsel);
+			zetBlokkenBouwsel(true); //blokkenBouwsel);
 			newViewer = false; 
-			zetSilhouet(silhouet);
-			zetDrieAanzichten(drieAanzichten);
-			zetVoorZijAanzicht(voorZijAanzicht);
-			zetBovenAanzicht(bovenAanzicht);
-			zetVoorAanzicht(voorAanzicht);
-			zetRechtsAanzicht(rechtsAanzicht);
+			zetSilhouet(false); //silhouet);
+			zetDrieAanzichten(false); //drieAanzichten);
+			zetVoorZijAanzicht(false); //voorZijAanzicht);
+			zetBovenAanzicht(false); //bovenAanzicht);
+			zetVoorAanzicht(false); //voorAanzicht);
+			zetRechtsAanzicht(false); //rechtsAanzicht);
 
 		}
 		else
@@ -969,14 +969,14 @@ System.out.println("kijkNa setVis false");
 			zetPerspectief(perspectief);
 			zetRotatieVast(rotatieVast);
 			newViewer = true;
-			zetBlokkenBouwsel(blokkenBouwsel);
+			zetBlokkenBouwsel(true); //blokkenBouwsel);
 			newViewer = false; 
-			zetSilhouet(silhouet);
-			zetDrieAanzichten(drieAanzichten);
-			zetVoorZijAanzicht(voorZijAanzicht);
-			zetBovenAanzicht(bovenAanzicht);
-			zetVoorAanzicht(voorAanzicht);
-			zetRechtsAanzicht(rechtsAanzicht);
+			zetSilhouet(false); //silhouet);
+			zetDrieAanzichten(false); //drieAanzichten);
+			zetVoorZijAanzicht(false); //voorZijAanzicht);
+			zetBovenAanzicht(false); //bovenAanzicht);
+			zetVoorAanzicht(false); //voorAanzicht);
+			zetRechtsAanzicht(false); //rechtsAanzicht);
 
 		}
 		else
