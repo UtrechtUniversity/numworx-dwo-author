@@ -233,6 +233,25 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	{	fontOvererving = b;
 	}
 
+	
+	// verwijder het "log" knopje tijdens het printen.
+	@Override
+	public void print(Graphics g) {
+		boolean vis = false;
+		if(logKnop != null && logKnop.isVisible()) {
+			logKnop.setVisible(false);
+			vis = true;
+			basisPanel.doLayout();
+		}
+		super.print(g);
+		if(logKnop != null && vis) {
+			logKnop.setVisible(true);
+			basisPanel.doLayout(); // restore layout
+		}
+	}
+
+
+
 	public AntwoordVergelijkingVak() {
 		super(true);
 		remove(formuleVak);
@@ -527,6 +546,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		setLayer((Component) gebruikersSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
 	}
 
+	
+	
 	public void setLog() {
 		setLog(false);
 	}

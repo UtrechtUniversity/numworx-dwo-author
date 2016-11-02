@@ -176,6 +176,11 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
    		g.drawString("v", getWidth()-8, getHeight()-2);
    	}
 
+	public void printComponent(Graphics g) {
+		if(false) // NIET PRINTEN
+			super.printComponent(g);
+	}
+	
 	public boolean hitButton(int x, int y) {
 		boolean hit = contains(x,y);
 		return hit;

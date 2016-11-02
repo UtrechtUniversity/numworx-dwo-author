@@ -1322,6 +1322,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				states[i][j] = null;
 				or[i].zetGemaakt(j + 1, false);
 				or[i].zetScore(j + 1, 0);
+				or[i].zetCorrectieView(j+1, false);
 			}
 			activiteitScoreLabels[i].setText(WiskOpdr.rb.getString("score") + totaal);
 			if (aantalActiviteiten == 1)
