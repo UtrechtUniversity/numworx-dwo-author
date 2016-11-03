@@ -9,6 +9,7 @@ import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
@@ -23,18 +24,22 @@ import fi.euclides.openmath.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.openmath.Popcorn;
+import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 
 /** FIXME split in a observable and a ListModel
  * 
  * @author wim
  *
  */
-public class Definitions extends DefaultListModel<CELL> {
+@SuppressWarnings("serial")
+public class Definitions extends DefaultListModel<CELL> implements Observer {
 
-	private AbstractViewer viewer;
+	final private Tracker viewer;
 
-	public Definitions(AbstractViewer viewer) {
+	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
+		expression = new Expression(viewer);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -44,7 +49,14 @@ public class Definitions extends DefaultListModel<CELL> {
 	static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
 	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
+	private final Expression expression;
 		
+	@Override
+	public void addElement(CELL element) {
+		element.item.addObserver(this);
+		super.addElement(element);
+	}
+
 	public void define(String text,OMObject object) {
 
 // Interpreter of GeoDefiner statements		
@@ -67,15 +79,12 @@ public class Definitions extends DefaultListModel<CELL> {
 				{ 	oma = (OMApplication) oma.getElementAt(2);
 					OMObject f = oma.firstElement();
 					Destroyable[] depend = new Destroyable[oma.getLength()-1];
-					Expression.copy(oma, viewer.getMapper(), depend);
+					expression.copy(oma, viewer.getMapper(), depend);
 				if(POINT.isSame(f)) {
 // $P := point(1,2)
 					Label ix = (Label) depend[0]; // toNumber(object)
 					Label iy = (Label) depend[1];
-					Numbers x = ix.value;
-					Numbers y = iy.value;
-					Coordinaten p = viewer.getModel().buildCoordinaten(x, y);
-					p.setCx(ix); p.setCy(iy);
+					Coordinaten p = viewer.getModel().buildCoordinaten(ix, iy);
 					viewer.getMapper().rename(p, var.getName());
 					addElement(new CELL(text, p));
 					return;
@@ -97,6 +106,7 @@ public class Definitions extends DefaultListModel<CELL> {
 // $l := arc($P, ... )
 				if (ARC.isSame(f)) {
 					Destroyable l = viewer.getModel().buildBoog(depend);
+					viewer.getMapper().rename(l, var.getName());
 					addElement(new CELL(text, l));
 					return;
 				}				
@@ -133,12 +143,12 @@ public class Definitions extends DefaultListModel<CELL> {
 				{
 					Label l = new Label();l.setString(text);
 					l.setVisible(false);	
-					Destroyable f = Expression.interpret(oma, l, viewer.getMapper());
+					Destroyable f = expression.interpret(oma, l, viewer.getMapper());
 					viewer.getMapper().rename(f, var.getName());
 					viewer.getModel().add(f);
 // display function
 					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.INSTANCE.getSubKey()))
-					{    LocusModel lm = new LocusModelF((Label)f, viewer.getMapper());
+					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
 					     viewer.getModel().add(locus);
@@ -154,7 +164,7 @@ public class Definitions extends DefaultListModel<CELL> {
 		}
 	}
 
-	private void destroy(Destroyable fs) {
+	private void destroy(Object fs) {
 		for(int i = 0; i < size(); i++ )
 			if( getElementAt(i).item == fs)
 			{ 	remove(i); break;
@@ -163,7 +173,15 @@ public class Definitions extends DefaultListModel<CELL> {
 
 	public void update(CELL cell) {
 		int i  = indexOf(cell);
-		fireContentsChanged(this, i, i);
+		if(i >= 0)
+			fireContentsChanged(this, i, i);
+	}
+
+	public void update(Observable observable, Object arg) {
+		if(arg == Destroyable.DESTROY) {
+			observable.deleteObserver(this);
+			destroy(observable);
+		}	
 	}
 	
 

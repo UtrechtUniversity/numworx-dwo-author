@@ -4,12 +4,12 @@ import nl.numworx.geodefiner.ui.UIModel;
 import fi.euclides.model.Destroyable;
 import fi.euclides.util.DefaultAdapter;
 
-class CELL {
-	final String text;
-	final Destroyable item;
-	UIModel<?> config;
+public class CELL {
+	public final String text;
+	public final Destroyable item;
+	public UIModel<?> config;
 	
-	CELL(String text, Destroyable item) {
+	public CELL(String text, Destroyable item) {
 		super();
 		this.text = text;
 		this.item = item;

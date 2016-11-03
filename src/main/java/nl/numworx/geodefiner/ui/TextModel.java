@@ -1,0 +1,49 @@
+package nl.numworx.geodefiner.ui;
+
+import java.util.Map;
+
+import fi.euclides.model.Label;
+import fi.euclides.util.DefaultAdapter;
+
+public class TextModel extends ColorModel<Label> {
+	Align align = Align.BASE;
+
+	@Override
+	public void install(Label item) {
+		DefaultAdapter.getDefault(item).put(align);
+		super.install(item);
+	}
+
+	@Override
+	public UIModel<Label> init(Label item) {
+		align = item.adapt(Align.class);
+		if(align == null) align= Align.BASE;
+		return super.init(item);
+	}
+
+	@Override
+	public Map<String, Object> toMap() {
+		Map<String, Object> map = super.toMap();
+		map.put("align", align.name());
+		return map;
+	}
+
+	@Override
+	public void fromMap(Map<String, Object> map) {
+		try {
+			align = Align.valueOf(String.valueOf(map.get("align")));
+		} catch (Exception e) {
+			align = Align.BASE;
+		}
+		super.fromMap(map);
+	}
+
+	@Override
+	public UIEditor editor() {
+		return new TextPane(this);
+	}
+	
+	public String sample() {
+		return item.getString();
+	}
+}

@@ -21,6 +21,7 @@ import nl.numworx.geodefiner.ui.UIModelFactory;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -29,6 +30,7 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
+import fi.euclides.swing.AWTViewer;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
 @SuppressWarnings("serial")
@@ -41,10 +43,19 @@ public class CellItem extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			UIEditor editor = getEditor();
-			int ok = JOptionPane.showConfirmDialog(CellItem.this, editor, viewer.toString(cell.item), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-			if(ok == JOptionPane.OK_OPTION) {
+			Object defaultOption = "Bewaar";
+			Object[] options = { defaultOption, "Verwijderen", "Annuleren" };
+			Icon icon = iconOf(getCell().item);
+			int ok = 
+					canDelete ?
+							JOptionPane.showOptionDialog(CellItem.this, editor, viewer.toString(getCell().item), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, defaultOption)
+					:		JOptionPane.showConfirmDialog(CellItem.this, editor, viewer.toString(getCell().item), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
+					
+			if(ok == JOptionPane.YES_OPTION) {
 				editor.commit();
 				viewer.paint();
+			} else if ( ok == JOptionPane.NO_OPTION) {
+				getCell().item.destroy();
 			}
 		}
 
@@ -63,7 +74,7 @@ public class CellItem extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			boolean visible = radio.isSelected();
 			getCellConfig().setVisible(visible);
-			cell.item.setVisible(visible); // immediate mode.
+			getCell().item.setVisible(visible); // immediate mode.
 		}
 	}
 	
@@ -74,15 +85,22 @@ public class CellItem extends JPanel {
 		return size;
 	}
 
-	CELL cell;
+	public Icon iconOf(Destroyable item) {
+		// TODO zie fi.euclides.swing.ListRenderer
+		return null;
+	}
+
+	private CELL cell;
 	JRadioButton radio;
 	JButton potlood;
 	JComponent center;
+	boolean canDelete;
 
-	CellItem(CELL cell, AbstractViewer viewer) {
+	public CellItem(CELL cell, AbstractViewer viewer) {
 		super(new BorderLayout());
+		canDelete = true;
 		setBackground(Color.WHITE);
-		this.cell = cell;
+		this.setCell(cell);
 		this.viewer = viewer;
 		potlood = new JButton( new EditAction(editImage));
 		add(potlood, BorderLayout.LINE_END);
@@ -92,6 +110,11 @@ public class CellItem extends JPanel {
 		add(radio, BorderLayout.LINE_START);
 		add( center = createCenter(cell), BorderLayout.CENTER);
 		
+	}
+
+	public CellItem(CELL o, AWTViewer viewer2, boolean b) {
+		this(o, viewer2);
+		canDelete = b;
 	}
 
 	private JComponent createCenter(CELL cell) {
@@ -105,17 +128,25 @@ public class CellItem extends JPanel {
 	}
 
 	public void refresh() {
-		radio.setSelected(cell.item.isVisible());
+		radio.setSelected(getCell().item.isVisible());
 		remove(center);
-		add ( center = createCenter(cell), BorderLayout.CENTER);
+		add ( center = createCenter(getCell()), BorderLayout.CENTER);
 	}
 
 	private UIModel<?> getCellConfig() {
-		if(cell.config == null) 
+		if(getCell().config == null) 
 		{
-			cell.config = new UIModelFactory().build(cell.item);
+			getCell().config = new UIModelFactory().build(getCell().item);
 		}
-		return cell.config;
+		return getCell().config;
+	}
+
+	public CELL getCell() {
+		return cell;
+	}
+
+	public void setCell(CELL cell) {
+		this.cell = cell;
 	}
 	
 	

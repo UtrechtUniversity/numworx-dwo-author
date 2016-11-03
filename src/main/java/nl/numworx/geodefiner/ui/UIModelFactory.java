@@ -39,7 +39,8 @@ public class UIModelFactory implements Visitor {
 	}
 
 	public void visitLabel(Label label) {
-		model = new ColorModel<Label>().init(label);
+		//model = new ColorModel<Label>().init(label);
+		model = new TextModel().init(label);
 	}
 
 	public void visitTriangle(Triangle t) {

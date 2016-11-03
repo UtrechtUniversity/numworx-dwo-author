@@ -56,6 +56,8 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 			int i1 = e.getIndex1();
 			while( i1 >= i0 )
 				list.remove(i1--);
+			DefinitionPanel.this.validate();
+			DefinitionPanel.this.repaint();
 		}
 
 		public void contentsChanged(ListDataEvent e) {
@@ -79,7 +81,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		list = Box.createVerticalBox();
 		model.addListDataListener(updater);
 		add(new JScrollPane(list), BorderLayout.CENTER);
-		add(new JLabel("Elementen"), BorderLayout.NORTH);
+		//add(new JLabel("Elementen"), BorderLayout.NORTH);
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
