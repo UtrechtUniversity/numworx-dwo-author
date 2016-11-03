@@ -1775,6 +1775,16 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		System.out.println("PInvoer: " + this.pInvoer.getInput());
 		this.pInvoer.haalPuntNulWeg();
 		
+		if(this.MInvoer.isRandomInput()) {
+			this.M = (int) BVInteractiePanel.substitueerRandom((double)this.M, this.MInvoer.getInput(), randomVars, randomValues);
+			this.MInvoer.setInput(Integer.toString(this.M));
+		}
+		
+		if(this.populatieInvoer.isRandomInput()) {
+			this.populatie = (int) BVInteractiePanel.substitueerRandom((double)this.populatie, this.populatieInvoer.getInput(), randomVars, randomValues);
+			this.populatieInvoer.setInput(Integer.toString(this.populatie));
+		}
+
 		
 		//zet nakijkopties
 		if(b.containsKey("kijkNa")) {			
