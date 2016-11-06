@@ -9,5 +9,11 @@
   	<module>../euclides-core</module>
   	<module>../euclides-expr</module>
   	<module>../euclides-util</module>
+  	<module>../euclides-gwt</module>
   </modules>
+  <properties>
+  	<euclidesVersion>${project.version}</euclidesVersion>
+  	<maven.compiler.source>1.7</maven.compiler.source>
+  	<maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
 </project>
