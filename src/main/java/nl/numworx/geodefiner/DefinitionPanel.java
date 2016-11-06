@@ -30,6 +30,7 @@ import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.util.DefaultAdapter;
+import nl.numworx.geodefiner.common.CELL;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMInteger;

@@ -1,8 +1,10 @@
 package nl.numworx.geodefiner;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Stroke;
 import java.io.DataInput;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +31,6 @@ import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
-import fi.euclides.model.math.NumberCodec;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.Memento;
 import fi.euclides.proof.LabelDelegate;
@@ -38,9 +39,11 @@ import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
-import nl.numworx.geodefiner.ui.Align;
-import nl.numworx.geodefiner.ui.Grid;
-import nl.numworx.geodefiner.ui.UIModel;
+import nl.numworx.geodefiner.common.Align;
+import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.Grid;
+import nl.numworx.geodefiner.ui.UIEditor;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 
@@ -55,8 +58,10 @@ import org.cbook.cbookif.SuccessStatus;
 class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListener {
 
 	private static final long serialVersionUID = 1L;
+	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
 	private final class InstanceViewer extends AWTViewer implements Observer, NameMapper {
+
 		@Override
 		public void paint() {
 			repaint();
@@ -141,6 +146,10 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 			if(tracking || trail)
 				return;
 			Adapter a = object.getAdapter();
+			Stroke stroke = a.adapt(Stroke.class);
+			if(stroke == null) stroke = DEFAULT_STROKE;
+			g.setStroke(stroke);
+
 			Color c = a.adapt(Color.class);
 			if (c != null) {
 				if (getModel().getSelect().contains(object))
@@ -333,7 +342,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 			for( Map.Entry<String, Map<String,Object>> entry : configuration.entrySet()) {
 				String name = entry.getKey();
 				Destroyable d = getViewer().getMapper().fromString(name);
-				UIModel<?> model = new UIModelFactory().build(d);
+				UIModel<?, UIEditor> model = new UIModelFactory().build(d);
 				model.fromMap(entry.getValue());
 				model.install();
 				CELL cell = d.adapt(CELL.class);

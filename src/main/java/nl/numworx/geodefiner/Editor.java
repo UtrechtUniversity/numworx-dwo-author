@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
+import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.ui.Axes;
 
 import org.cbook.cbookif.CBookContext;

@@ -1,16 +1,13 @@
 package nl.numworx.geodefiner;
 
-import java.beans.PropertyChangeEvent;
-import java.util.Vector;
-
 import javax.swing.DefaultListModel;
 
+import nl.numworx.geodefiner.common.CELL;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
-import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
@@ -18,7 +15,6 @@ import fi.euclides.model.Locus;
 import fi.euclides.model.Locus.LocusModel;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Triangle;
-import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.Lambda;
 import fi.euclides.openmath.LocusModelF;
@@ -157,7 +153,7 @@ public class Definitions extends DefaultListModel<CELL> implements Observer {
 					addElement(new CELL(text, f));
 					return;
 				}
-			} else if ( first.isSame(Popcorn.RELATION1_EQ)) {
+			} else if ( first.isSame(OMConstants.RELATION1_EQ)) {
 // $x = 1;
 // $y = $x + 1;
 			}

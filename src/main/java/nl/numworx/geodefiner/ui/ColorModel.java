@@ -4,13 +4,14 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.PointModel.Type;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
 
-public class ColorModel<T extends Destroyable> implements UIModel<T> {
+public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	T item;
 	Color color = Color.black;
@@ -29,7 +30,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T> {
 		install(item);
 	}
 
-	public UIModel<T> init(T item) {
+	public UIModel<T, UIEditor> init(T item) {
 		this.item = item;
 		this.color = item.getAdapter().adapt(Color.class);
 		if(color == null) color = Color.black;

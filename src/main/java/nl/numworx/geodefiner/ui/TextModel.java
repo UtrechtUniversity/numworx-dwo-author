@@ -2,6 +2,8 @@ package nl.numworx.geodefiner.ui;
 
 import java.util.Map;
 
+import nl.numworx.geodefiner.common.Align;
+import nl.numworx.geodefiner.common.UIModel;
 import fi.euclides.model.Label;
 import fi.euclides.util.DefaultAdapter;
 
@@ -15,7 +17,7 @@ public class TextModel extends ColorModel<Label> {
 	}
 
 	@Override
-	public UIModel<Label> init(Label item) {
+	public UIModel<Label, UIEditor> init(Label item) {
 		align = item.adapt(Align.class);
 		if(align == null) align= Align.BASE;
 		return super.init(item);

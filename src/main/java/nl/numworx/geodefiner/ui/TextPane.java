@@ -2,7 +2,6 @@ package nl.numworx.geodefiner.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.ItemSelectable;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -10,6 +9,8 @@ import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import nl.numworx.geodefiner.common.Align;
 
 public class TextPane extends ColorPane<TextModel> implements Icon, ItemListener {
 

@@ -31,5 +31,10 @@
   		<artifactId>euclides-expr</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>nl.numworx.geodefiner</groupId>
+  		<artifactId>geodefiner-common</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

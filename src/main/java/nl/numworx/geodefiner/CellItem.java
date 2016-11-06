@@ -16,7 +16,8 @@ import javax.swing.JRadioButton;
 
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.UIEditor;
-import nl.numworx.geodefiner.ui.UIModel;
+import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
@@ -133,12 +134,12 @@ public class CellItem extends JPanel {
 		add ( center = createCenter(getCell()), BorderLayout.CENTER);
 	}
 
-	private UIModel<?> getCellConfig() {
+	private UIModel<?, UIEditor> getCellConfig() {
 		if(getCell().config == null) 
 		{
 			getCell().config = new UIModelFactory().build(getCell().item);
 		}
-		return getCell().config;
+		return (UIModel<?, UIEditor>) getCell().config;
 	}
 
 	public CELL getCell() {

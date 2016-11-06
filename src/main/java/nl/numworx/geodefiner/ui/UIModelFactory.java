@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.ui;
 
+import nl.numworx.geodefiner.common.UIModel;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
@@ -14,9 +15,9 @@ import fi.euclides.model.Visitor;
 
 public class UIModelFactory implements Visitor {
 
-	private UIModel<?> model;
+	private UIModel<?, UIEditor> model;
 
-	public UIModel<?> build(Destroyable d) {
+	public UIModel<?, UIEditor> build(Destroyable d) {
 		model = null;
 		d.visit(this);
 		return model;

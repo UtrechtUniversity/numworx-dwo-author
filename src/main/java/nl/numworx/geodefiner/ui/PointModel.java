@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.numworx.geodefiner.common.UIModel;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
 
-public class PointModel extends ColorModel<Punt> implements UIModel<Punt> {
+public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEditor> {
 	enum Type { DISK }
 	
 	int   size = 5;
@@ -42,7 +43,7 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt> {
 		return new PointPane(this);
 	}
 
-	public UIModel<Punt> init(Punt item) {
+	public UIModel<Punt, UIEditor> init(Punt item) {
 		this.rigid = !item.isFree();
 		return super.init(item);
 	}

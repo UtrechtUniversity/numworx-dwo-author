@@ -13,8 +13,8 @@ import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import nl.numworx.geodefiner.CELL;
 import nl.numworx.geodefiner.CellItem;
+import nl.numworx.geodefiner.common.CELL;
 import fi.euclides.model.Destroyable;
 import fi.euclides.swing.AWTViewer;
 
