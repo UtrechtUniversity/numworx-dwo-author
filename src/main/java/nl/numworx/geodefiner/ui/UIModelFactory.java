@@ -13,7 +13,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 
-public class UIModelFactory implements Visitor {
+public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory implements Visitor {
 
 	private UIModel<?, UIEditor> model;
 

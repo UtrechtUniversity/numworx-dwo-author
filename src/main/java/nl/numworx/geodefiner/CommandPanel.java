@@ -31,7 +31,7 @@ class CommandPanel extends JPanel implements ActionListener {
 	//@Inject
 	Map<String, Number> random = Collections.emptyMap();
 	//@Inject
-	Instance instance;
+	nl.numworx.geodefiner.common.Instance instance;
 
 	static {
 		Popcorn.map = new SwingSymbols();

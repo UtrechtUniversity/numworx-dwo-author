@@ -1,6 +1,18 @@
 package nl.numworx.geodefiner;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.EventListener;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
 import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import nl.numworx.geodefiner.common.CELL;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
@@ -29,142 +41,13 @@ import fi.euclides.util.Observer;
  *
  */
 @SuppressWarnings("serial")
-public class Definitions extends DefaultListModel<CELL> implements Observer {
+public class Definitions extends nl.numworx.geodefiner.common.Definitions implements Observer, ListModel<CELL> {
 
-	final private Tracker viewer;
+    protected EventListenerList listenerList = new EventListenerList();
 
+	
 	public Definitions(Tracker viewer) {
-		this.viewer = viewer;
-		expression = new Expression(viewer);
-	}
-	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
-	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
-	static final OMSymbol CIRCLE = new OMSymbol("geodefiner", "circle");
-	static final OMSymbol ARC    = new OMSymbol("geodefiner", "arc");
-	static final OMSymbol SEGMENT = new OMSymbol("geodefiner", "segment");
-	static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
-	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
-	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
-	private final Expression expression;
-		
-	@Override
-	public void addElement(CELL element) {
-		element.item.addObserver(this);
-		super.addElement(element);
-	}
-
-	public void define(String text,OMObject object) {
-
-// Interpreter of GeoDefiner statements		
-			
-		if(object instanceof OMApplication) {
-			OMApplication oma = (OMApplication) object;
-			OMObject first = oma.firstElement();
-			if( first.isSame(Popcorn.PROG1_ASSIGN))
-			{
-				OMVariable var = (OMVariable) oma.getElementAt(1);
-// No reassignments, or delete?
-// in geogebra reassignments
-				Destroyable fs = viewer.getMapper().fromString(var.getName());
-				if (fs != null) {
-					fs.destroy(); 
-					destroy(fs);
-				}
-				
-				if (oma.getElementAt(2) instanceof OMApplication)
-				{ 	oma = (OMApplication) oma.getElementAt(2);
-					OMObject f = oma.firstElement();
-					Destroyable[] depend = new Destroyable[oma.getLength()-1];
-					expression.copy(oma, viewer.getMapper(), depend);
-				if(POINT.isSame(f)) {
-// $P := point(1,2)
-					Label ix = (Label) depend[0]; // toNumber(object)
-					Label iy = (Label) depend[1];
-					Coordinaten p = viewer.getModel().buildCoordinaten(ix, iy);
-					viewer.getMapper().rename(p, var.getName());
-					addElement(new CELL(text, p));
-					return;
-				}
-// $l := line($P, $Q)
-				if (LINE.isSame(f)) {
-					Destroyable l = viewer.getModel().buildLijn(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l));
-					return;
-				}
-// $l := segment($P, $Q)
-				if (SEGMENT.isSame(f)) {
-					Destroyable l = viewer.getModel().buildSegment(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l));
-					return;
-				}
-// $l := arc($P, ... )
-				if (ARC.isSame(f)) {
-					Destroyable l = viewer.getModel().buildBoog(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l));
-					return;
-				}				
-// $l := circle($P, $Q)
-				if (CIRCLE.isSame(f)) {
-					Destroyable l = viewer.getModel().buildCirkel(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l));
-					return;
-				}
-// $t := text("text", $P)
-				if(TEXT.isSame(f)) {
-					Punt  p = (Punt) depend[1];
-					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
-					if(t.getIndex() > 0) return; // FIXME
-					t.setP(p);
-					viewer.getMapper().rename(t, var.getName());
-					viewer.getModel().add(t);
-					addElement(new CELL(text, t));
-					return;
-				}
-// $l := polygon($P, ...)
-				if (POLYGON.isSame(f)) {
-					Triangle t3 = viewer.getModel().buildTriangle(depend);
-					addElement(new CELL(text, t3));
-					viewer.getMapper().rename(t3, var.getName());
-					return;				
-				}		
-// $c := curve( $f, $f )
-// $w := 1+2
-				}
-// $f := lambda[[$x] ->	$f($x) ]
-// $a := 1
-				{
-					Label l = new Label();l.setString(text);
-					l.setVisible(false);	
-					Destroyable f = expression.interpret(oma, l, viewer.getMapper());
-					viewer.getMapper().rename(f, var.getName());
-					viewer.getModel().add(f);
-// display function
-					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.INSTANCE.getSubKey()))
-					{    LocusModel lm = new LocusModelF((Label)f, viewer);
-					     Locus locus = new Locus(lm);
-					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
-					     viewer.getModel().add(locus);
-					     f = locus;
-					}
-					addElement(new CELL(text, f));
-					return;
-				}
-			} else if ( first.isSame(OMConstants.RELATION1_EQ)) {
-// $x = 1;
-// $y = $x + 1;
-			}
-		}
-	}
-
-	private void destroy(Object fs) {
-		for(int i = 0; i < size(); i++ )
-			if( getElementAt(i).item == fs)
-			{ 	remove(i); break;
-			}
+		super(viewer);
 	}
 
 	public void update(CELL cell) {
@@ -173,12 +56,184 @@ public class Definitions extends DefaultListModel<CELL> implements Observer {
 			fireContentsChanged(this, i, i);
 	}
 
-	public void update(Observable observable, Object arg) {
-		if(arg == Destroyable.DESTROY) {
-			observable.deleteObserver(this);
-			destroy(observable);
-		}	
-	}
+// additions and removals of CELLs: fire events	
 	
+	@Override
+	public void addElement(CELL element) {
+		int s = getSize();
+		super.addElement(element);
+		fireIntervalAdded(this, s, s);
+	}
+
+	@Override
+	public void clear() {
+		int s = getSize()-1;
+		super.clear();
+		if(s >= 0)
+			fireIntervalRemoved(this, 0, s);
+	}
+
+	Iterator<CELL> elements() {
+		return delegate.iterator();
+	}
+
+	public void remove(int index) {
+		super.remove(index);
+		fireIntervalRemoved(this, index, index);
+	}
+
+	public void addListDataListener(ListDataListener l) {
+        listenerList.add(ListDataListener.class, l);
+	}
+
+	public void removeListDataListener(ListDataListener l) {
+        listenerList.remove(ListDataListener.class, l);
+	}
+
+    /**
+     * Returns an array of all the list data listeners
+     * registered on this <code>AbstractListModel</code>.
+     *
+     * @return all of this model's <code>ListDataListener</code>s,
+     *         or an empty array if no list data listeners
+     *         are currently registered
+     *
+     * @see #addListDataListener
+     * @see #removeListDataListener
+     *
+     * @since 1.4
+     */
+    public ListDataListener[] getListDataListeners() {
+        return listenerList.getListeners(ListDataListener.class);
+    }
+
+
+    /**
+     * <code>AbstractListModel</code> subclasses must call this method
+     * <b>after</b>
+     * one or more elements of the list change.  The changed elements
+     * are specified by the closed interval index0, index1 -- the endpoints
+     * are included.  Note that
+     * index0 need not be less than or equal to index1.
+     *
+     * @param source the <code>ListModel</code> that changed, typically "this"
+     * @param index0 one end of the new interval
+     * @param index1 the other end of the new interval
+     * @see EventListenerList
+     * @see DefaultListModel
+     */
+    protected void fireContentsChanged(Object source, int index0, int index1)
+    {
+        Object[] listeners = listenerList.getListenerList();
+        ListDataEvent e = null;
+
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ListDataListener.class) {
+                if (e == null) {
+                    e = new ListDataEvent(source, ListDataEvent.CONTENTS_CHANGED, index0, index1);
+                }
+                ((ListDataListener)listeners[i+1]).contentsChanged(e);
+            }
+        }
+    }
+
+    /**
+     * <code>AbstractListModel</code> subclasses must call this method
+     * <b>after</b>
+     * one or more elements are added to the model.  The new elements
+     * are specified by a closed interval index0, index1 -- the enpoints
+     * are included.  Note that
+     * index0 need not be less than or equal to index1.
+     *
+     * @param source the <code>ListModel</code> that changed, typically "this"
+     * @param index0 one end of the new interval
+     * @param index1 the other end of the new interval
+     * @see EventListenerList
+     * @see DefaultListModel
+     */
+    protected void fireIntervalAdded(Object source, int index0, int index1)
+    {
+        Object[] listeners = listenerList.getListenerList();
+        ListDataEvent e = null;
+
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ListDataListener.class) {
+                if (e == null) {
+                    e = new ListDataEvent(source, ListDataEvent.INTERVAL_ADDED, index0, index1);
+                }
+                ((ListDataListener)listeners[i+1]).intervalAdded(e);
+            }
+        }
+    }
+
+    /**
+     * <code>AbstractListModel</code> subclasses must call this method
+     * <b>after</b> one or more elements are removed from the model.
+     * <code>index0</code> and <code>index1</code> are the end points
+     * of the interval that's been removed.  Note that <code>index0</code>
+     * need not be less than or equal to <code>index1</code>.
+     *
+     * @param source the <code>ListModel</code> that changed, typically "this"
+     * @param index0 one end of the removed interval,
+     *               including <code>index0</code>
+     * @param index1 the other end of the removed interval,
+     *               including <code>index1</code>
+     * @see EventListenerList
+     * @see DefaultListModel
+     */
+    protected void fireIntervalRemoved(Object source, int index0, int index1)
+    {
+        Object[] listeners = listenerList.getListenerList();
+        ListDataEvent e = null;
+
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == ListDataListener.class) {
+                if (e == null) {
+                    e = new ListDataEvent(source, ListDataEvent.INTERVAL_REMOVED, index0, index1);
+                }
+                ((ListDataListener)listeners[i+1]).intervalRemoved(e);
+            }
+        }
+    }
+
+    /**
+     * Returns an array of all the objects currently registered as
+     * <code><em>Foo</em>Listener</code>s
+     * upon this model.
+     * <code><em>Foo</em>Listener</code>s
+     * are registered using the <code>add<em>Foo</em>Listener</code> method.
+     * <p>
+     * You can specify the <code>listenerType</code> argument
+     * with a class literal, such as <code><em>Foo</em>Listener.class</code>.
+     * For example, you can query a list model
+     * <code>m</code>
+     * for its list data listeners
+     * with the following code:
+     *
+     * <pre>ListDataListener[] ldls = (ListDataListener[])(m.getListeners(ListDataListener.class));</pre>
+     *
+     * If no such listeners exist,
+     * this method returns an empty array.
+     *
+     * @param listenerType  the type of listeners requested;
+     *          this parameter should specify an interface
+     *          that descends from <code>java.util.EventListener</code>
+     * @return an array of all objects registered as
+     *          <code><em>Foo</em>Listener</code>s
+     *          on this model,
+     *          or an empty array if no such
+     *          listeners have been added
+     * @exception ClassCastException if <code>listenerType</code> doesn't
+     *          specify a class or interface that implements
+     *          <code>java.util.EventListener</code>
+     *
+     * @see #getListDataListeners
+     *
+     * @since 1.3
+     */
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
+        return listenerList.getListeners(listenerType);
+    }
+
 
 }

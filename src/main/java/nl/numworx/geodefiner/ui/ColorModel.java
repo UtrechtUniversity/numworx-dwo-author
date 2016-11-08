@@ -6,6 +6,7 @@ import java.util.Map;
 
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.PointModel.Type;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
@@ -45,9 +46,9 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		return map;
 	}
 
-	public void fromMap(Map<String, Object> map) {
-		color = new Color( ((Number) map.get("color")).intValue(), true);
-		visible = !Boolean.FALSE.equals( map.get("visible"));
+	public void fromMap(ObjectMap map) {
+		color = new Color( map.getInt("color"), true);
+		visible = map.getBoolean("visible", true);
 	}
 
 	public UIEditor editor() {

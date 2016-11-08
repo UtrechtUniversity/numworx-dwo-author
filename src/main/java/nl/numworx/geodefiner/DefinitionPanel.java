@@ -47,7 +47,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 
 		public void intervalAdded(ListDataEvent e) {
 			int i0 = e.getIndex0();
-			CELL cell = model.elementAt(i0);
+			CELL cell = model.getElementAt(i0);
 			list.add( new CellItem(cell,viewer));
 			DefinitionPanel.this.validate();
 		}

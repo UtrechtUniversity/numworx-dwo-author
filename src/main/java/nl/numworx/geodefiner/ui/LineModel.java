@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.swing.JLabel;
 
 import nl.numworx.geodefiner.common.UIModel;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
 import fi.euclides.util.DefaultAdapter;
@@ -27,14 +28,14 @@ public class LineModel extends ColorModel<Destroyable> {
 		return map;
 	}
 
-	public void fromMap(Map<String, Object> map) {
+	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
 		try {
-			width = ((Number) map.get("width")).floatValue();
+			width = (float) map.getDouble("width");
 		} catch (Exception e) {
 		}
 		try {
-			type  = LineType.valueOf((String)map.get("type"));
+			type  = LineType.valueOf(map.getString("type"));
 		} catch (Exception e) {
 		}
 	}

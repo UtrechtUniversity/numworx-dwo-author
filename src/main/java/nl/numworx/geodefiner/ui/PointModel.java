@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.numworx.geodefiner.common.UIModel;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
@@ -32,11 +33,11 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 		return map;
 	}
 	
-	public void fromMap(Map<String, Object> map) {
+	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
-		size  = ((Number) map.get("size")).intValue();
-		type  = Type.valueOf((String) map.get("type"));
-		rigid   = !Boolean.FALSE.equals( map.get("rigid"));
+		size  = map.getInt("size");
+		type  = Type.valueOf( map.getString("type"));
+		rigid = map.getBoolean("rigid", true);
 	}
 	
 	public UIEditor editor() {

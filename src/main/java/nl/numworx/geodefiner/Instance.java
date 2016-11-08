@@ -6,12 +6,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Stroke;
 import java.io.DataInput;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.WeakHashMap;
@@ -24,13 +21,13 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.expr.Coord;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
-import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.Memento;
 import fi.euclides.proof.LabelDelegate;
@@ -46,6 +43,7 @@ import nl.numworx.geodefiner.ui.UIEditor;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
@@ -55,22 +53,30 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
 
 
-class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListener {
+class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
 
 	private static final long serialVersionUID = 1L;
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
+	private final JPanel content = new JPanel() {
+		@Override
+		protected void paintComponent(Graphics g) {
+			getViewer().paint(g);
+		}
+	};
+	
+	
 	private final class InstanceViewer extends AWTViewer implements Observer, NameMapper {
 
 		@Override
 		public void paint() {
-			repaint();
+			content.repaint();
 		}
 
 		@Override
 		public void paint(Graphics g2) {
 			g2.setColor(Color.WHITE);
-			g2.fillRect(0, 0, getWidth(), getHeight());
+			g2.fillRect(0, 0, content.getWidth(), content.getHeight());
 			super.paint(g2);
 		}
 
@@ -181,43 +187,34 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 			}
 			drawString(string, x, y);
 		}
-	
-	
-	
-	
 	}
 
 	private CBookEventHandler handler = new CBookEventHandler(this);
 	
-	private final AWTViewer viewer = new InstanceViewer();
-	private final SelectHandler selector = new SelectHandler();
-	private final Definitions definitions = new Definitions(viewer);
-
+	{
+		viewer = new InstanceViewer();
+		definitions = new Definitions(viewer);
+		uiModelFactory = new UIModelFactory();
+	}
+	
 	Definitions getDefinitions() {
-		return definitions;
+		return (Definitions) definitions;
 	}
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		viewer.paint(g);
+	public InstanceViewer getViewer() {
+		return (InstanceViewer) viewer;
 	}
-
-	public AWTViewer getViewer() {
-		return viewer;
-	}
-
-	private Map<String, ? extends Object> launchData = Collections.emptyMap();
 
 	private Map<String, ?> state = Collections.emptyMap();
 
 	private Map<String, Number> random = Collections.emptyMap();
 	
 	public Instance() {
-		setBackground(Color.white);
-		setBorder(BorderFactory.createEtchedBorder());
+		content.setBackground(Color.white);
+		content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
-		addMouseListener(viewer);
-		addMouseMotionListener(viewer);
+		content.addMouseListener(getViewer());
+		content.addMouseMotionListener(getViewer());
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, String command) {
@@ -225,7 +222,7 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 	}
 
 	public JComponent asComponent() {
-		return this;
+		return content;
 	}
 
 	public CBookEventListener asEventListener() {
@@ -236,30 +233,11 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		getViewer().getModel().destroy();
 	}
 
-	public int getScore() {
-		return 0;
+	
+	public Map<String,?> getState() {
+		return getState(new Hashtable<String, Object>());
 	}
-
-	public Map<String, ?> getState() {
-		Map<String, Object> map = new Hashtable<String,Object>(state);
-		Map<String, List<Number>> positions = new Hashtable<String, List<Number>>();
-		Vector<Punt> punten = viewer.getModel().getPunten();
-		for (Iterator<Punt> iterator = punten.iterator(); iterator.hasNext();) {
-			Punt punt = iterator.next();
-			if(punt.adapt(FreePoint.class) != null) {
-				try {
-					NumberIO io = new NumberIO();
-					punt.getX().writeNumber(io);
-					punt.getY().writeNumber(io);
-					positions.put(viewer.toString(punt), io.toList());
-				} catch (IOException e) {
-				}
-			}
-		}
-		map.put("positions", positions);
-		return map;
-	}
-
+	
 	public SuccessStatus getSuccessStatus() {
 		return SuccessStatus.PASSED;
 	}
@@ -269,18 +247,18 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 		Model model = createModel();
 		viewer.setModel(model);
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
-		new Coord(Coord.xKey).setTracker(viewer);
-		new Coord(Coord.yKey).setTracker(viewer);
-		viewer.height = getHeight();
-		viewer.width = getWidth();
+//		new Coord(Coord.xKey).setTracker(viewer);
+//		new Coord(Coord.yKey).setTracker(viewer);
+		getViewer().height = content.getHeight();
+		getViewer().width = content.getWidth();
 		selector.command();
 		definitions.clear();
 	}
 
 	private Model createModel() {
 		Model m = new Model();
-		int mx = getWidth()/2;
-		int my = getHeight()/2;
+		int mx = content.getWidth()/2;
+		int my = content.getHeight()/2;
 		Punt O = m.buildPunt(Numbers.createInteger(mx), Numbers.createInteger(my));
 		DefaultAdapter.getDefault(O).put("O");
 		Punt U = new HorizontalPunt(Numbers.createInteger(mx+50), O.getX(), O);
@@ -315,99 +293,13 @@ class Instance extends JPanel implements CBookWidgetInstanceIF, CBookEventListen
 
 	}
 
-	public void setLaunchData(Map<String, ? extends Object> launchData, Map<String, Number> random) {
-		this.launchData = launchData;
-		this.random = random;		
-		createDefinitions();
-		installAxes();
-		installConfiguration();
-		installPositions();
-	}
 
-	private void installPositions() {
-		setPositions(launchData.get("positions"));
-	}
-
-	private void installConfiguration() {
-		Map<String, Map<String,Object>> configuration = (Map<String, Map<String, Object>>) this.launchData.get("configuration");
-		install(configuration);
-	}
-	private void installAxes() {
-		Map<String, Map<String,Object>> configuration = (Map<String, Map<String, Object>>) this.launchData.get("axes");
-		install(configuration);
-	}
-
-	private void install(Map<String, Map<String, Object>> configuration) {
-		if(configuration != null) {
-			for( Map.Entry<String, Map<String,Object>> entry : configuration.entrySet()) {
-				String name = entry.getKey();
-				Destroyable d = getViewer().getMapper().fromString(name);
-				UIModel<?, UIEditor> model = new UIModelFactory().build(d);
-				model.fromMap(entry.getValue());
-				model.install();
-				CELL cell = d.adapt(CELL.class);
-				if(cell == null) {
-					cell = new CELL("$f@",d);
-					DefaultAdapter.getDefault(d).put(cell);
-				}
-				cell.config = model;
-				definitions.update(cell);
-			}
-		}
-	}
-	
-	private void createDefinitions() {
-		@SuppressWarnings("unchecked")
-		List<String> strings = (List<String>) this.launchData.get("definitions");
-		if(strings != null)
-		for (Iterator<String> iterator = strings.iterator(); iterator.hasNext();) {
-			String text = iterator.next();
-			OMObject object;
-			try {
-				String toParse = randomize(this.random, text);
-				object = new FormuleParser(text.substring(2)).parse();
-				definitions.define(text, object);
-			} catch (Throwable e) {
-				break;
-			}
-		}
-	}
-
-	static String randomize(Map<String, Number> random, String text) {
-		for(Map.Entry<String, Number> entry: random.entrySet()) {
-			String key = "#" + entry.getKey() + "#";
-			text = text.replaceAll(key, entry.getValue().toString());
-		}
-		return text;
-	}
 
 	public void setState(Map<String, ?> state) {
 		this.state = state;
 		setPositions(state.get("positions"));
 	}
 
-	void setPositions(Object object) {
-		if(object instanceof Map) {
-			Map<String,List<Number>> positions = (Map<String, List<Number>>) object;
-			List<Punt> punten = viewer.getModel().getPunten();
-			for (Iterator<Punt> iterator = punten.iterator(); iterator.hasNext();) {
-				Punt punt = iterator.next();
-				String name = viewer.toString(punt);
-				FreePoint fp = punt.adapt(FreePoint.class);
-				if(positions.containsKey(name) && fp != null) {
-					try {
-						List<Number> n = positions.get(name);
-						DataInput in = new NumberIO(n);
-						Numbers x = Memento.readNumber(in);
-						Numbers y = Memento.readNumber(in);
-						fp.setXY(x, y);
-					} catch (IOException e) {
-						// should not happen!
-					}
-				}
-			}
-		}
-	}
 
 	public void start() {
 		viewer.paint();

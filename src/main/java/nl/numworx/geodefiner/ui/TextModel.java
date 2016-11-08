@@ -4,6 +4,7 @@ import java.util.Map;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Label;
 import fi.euclides.util.DefaultAdapter;
 
@@ -31,9 +32,9 @@ public class TextModel extends ColorModel<Label> {
 	}
 
 	@Override
-	public void fromMap(Map<String, Object> map) {
+	public void fromMap(ObjectMap map) {
 		try {
-			align = Align.valueOf(String.valueOf(map.get("align")));
+			align = Align.valueOf(map.getString("align"));
 		} catch (Exception e) {
 			align = Align.BASE;
 		}

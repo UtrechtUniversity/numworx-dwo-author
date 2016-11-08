@@ -52,9 +52,9 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
 		instance = new Instance();
-		instance.setPreferredSize(instanceSize);
-		instance.setSize(instanceSize);
-		flow.add(instance);
+		instance.asComponent().setPreferredSize(instanceSize);
+		instance.asComponent().setSize(instanceSize);
+		flow.add(instance.asComponent());
 		content.add(flow, BorderLayout.CENTER);
 		tabs = new JTabbedPane();
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
@@ -94,9 +94,9 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 		Map<String,Object> configuration = new TreeMap<String,Object>();
 		Definitions defs = instance.getDefinitions();
 		AbstractViewer viewer = instance.getViewer();
-		Enumeration<CELL> e= defs.elements();
-		while (e.hasMoreElements()) {
-			CELL cell = e.nextElement();
+		Iterator<CELL> e= defs.elements();
+		while (e.hasNext()) {
+			CELL cell = e.next();
 			strings.add(cell.text);
 			if (cell.config != null) {
 				configuration.put(viewer.toString(cell.item), cell.config.toMap());
@@ -123,17 +123,19 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 
 	public void setInstanceHeight(int h) {
 		instanceSize.height = h;
-		instance.setSize(instanceSize);
-		instance.setPreferredSize(instanceSize);
-		instance.invalidate();
-		instance.getParent().validate();
+		JComponent c = instance.asComponent();
+		c.setSize(instanceSize);
+		c.setPreferredSize(instanceSize);
+		c.invalidate();
+		c.getParent().validate();
 	}
 
 	public void setInstanceWidth(int w) {
 		instanceSize.width = w;
-		instance.setSize(instanceSize);
-		instance.setPreferredSize(instanceSize);
-		instance.invalidate();
+		JComponent c = instance.asComponent();
+		c.setSize(instanceSize);
+		c.setPreferredSize(instanceSize);
+		c.invalidate();
 	}
 
 	public void setLaunchData(Map<String, ?> launchdata) {
@@ -144,7 +146,7 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 
 	public void start() {
 		instance.start();		
-		instance.repaint();
+		instance.asComponent().repaint();
 		createKeybindings();
 		axes.init();
 	}
