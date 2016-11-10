@@ -29,10 +29,6 @@ public class Grid extends fi.euclides.model.Locus {
 	}
 
 	@Override
-	public void destroy() {
-	}
-
-	@Override
 	public Destroyable[] getDepend() {
 		return Label.EMPTY;
 	}

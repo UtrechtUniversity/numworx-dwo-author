@@ -159,6 +159,8 @@ public abstract class Instance {
 	}
 
 	protected Model createModel(Model m, int width, int height) {
+		m.getSelect().addAll(m.getPunten());
+		m.getSelect().addAll(m.getLijnen());
 		m.destroy();
 		int mx = width/2;
 		int my = height/2;

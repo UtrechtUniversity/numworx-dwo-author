@@ -14,6 +14,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
 import fi.euclides.model.Locus.LocusModel;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Triangle;
 import fi.euclides.openmath.Expression;
@@ -21,6 +22,7 @@ import fi.euclides.openmath.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.openmath.Popcorn;
+import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -38,6 +40,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
 		expression = new Expression(viewer);
+		new Interval().setTracker(viewer);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -47,6 +50,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
 	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
+	static final OMSymbol INTERVAL = new OMSymbol("interval1","interval");
 	private final Expression expression;
 		
 	public void addElement(CELL element) {
@@ -81,7 +85,15 @@ public class Definitions implements Observer /*, ListModel*/ {
 // $P := point(1,2)
 					Label ix = (Label) depend[0]; // toNumber(object)
 					Label iy = (Label) depend[1];
-					Coordinaten p = viewer.getModel().buildCoordinaten(ix, iy);
+					Punt p = viewer.getModel().buildCoordinaten(ix, iy);
+					if(depend.length == 3 && depend[2] instanceof OpObject) {
+// $P := point(1, 2, $lijn)
+						Destroyable on = depend[2];
+						OpObject op = (OpObject) on;
+						p.destroy();
+						p = op.pointOn(p.getX(), p.getY());
+						viewer.getModel().add(p);
+					}
 					viewer.getMapper().rename(p, var.getName());
 					addElement(new CELL(text, p));
 					return;
@@ -131,7 +143,17 @@ public class Definitions implements Observer /*, ListModel*/ {
 					addElement(new CELL(text, t3));
 					viewer.getMapper().rename(t3, var.getName());
 					return;				
-				}		
+				}
+// $l := interval1.interval($a,$b)
+				if (INTERVAL.isSame(f)) {
+					LabelDelegate ld = viewer.getRegistered("..");
+					Label l = ld.define(depend);
+					l.setX(50); l.setY(50); // place at random
+					viewer.getMapper().rename(l, var.getName());
+					viewer.getModel().add(l);
+					addElement(new CELL(text, l));
+					return;
+				}
 // $c := curve( $f, $f )
 // $w := 1+2
 				}
