@@ -162,9 +162,28 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.selectColor(object);
 		}
 
+		private void visitInterval(Label label) {
+		
+			double x = label.getXd();
+			double y = label.getYd();
+			double v = label.value.doubleValue();
+			double min = ((Label)label.getDepend()[0]).value.doubleValue();
+			double max = ((Label)label.getDepend()[1]).value.doubleValue();
+			double x1 = x - ( v - min ) / (max - min) * 100;
+			double x2 = x + ( max - v ) / (max - min) * 100;
+			drawLine(x1, y, x2, y);
+			fillCircle(x-2.5, y-2.5, 5);
+			
+		}
+		
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
+			
+			if ("..".equals(label.getSubKey()))
+				visitInterval(label);
+			
+			
 			String string = label.getString();
 			FontMetrics fm = g.getFontMetrics();
 			double x = label.getXd();
