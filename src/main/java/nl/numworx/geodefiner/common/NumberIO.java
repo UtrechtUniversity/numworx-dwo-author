@@ -1,17 +1,14 @@
 package nl.numworx.geodefiner.common;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.model.math.NumberCodec;
 import fi.euclides.model.math.Numbers;
 
-public class NumberIO implements DataInput,  NumberCodec {
+public class NumberIO implements NumberCodec {
 
 	private List<Object> output;
 	ObjectList input;
@@ -30,88 +27,39 @@ public class NumberIO implements DataInput,  NumberCodec {
 		this.input = list;
 	}
 
-	public void readFully(byte[] b) throws IOException {
-		readFully(b, 0, b.length);
-	}
-
-	public void readFully(byte[] b, int off, int len) throws IOException {
-		len += off;
-		for (int i = off; i < len; i++) {
-			b[i] = readByte();
-		}
-	}
-
-	public int skipBytes(int n) throws IOException {
-		while(n-->0) i++;
-		return 0;
-	}
-
-	public boolean readBoolean() throws IOException {
+	private boolean readBoolean() throws IOException {
 		return input.getBoolean(i++);
 	}
 
-	public byte readByte() throws IOException {
+	private byte readByte() throws IOException {
 		return (byte) input.getInt(i++);
 	}
 
-	public int readUnsignedByte() throws IOException {
-		return readInt() & 0xFF;
-	}
-
-	public short readShort() throws IOException {
-		return (short) readInt();
-	}
-
-	public int readUnsignedShort() throws IOException {
-		return readInt() & 0xFFFF;
-	}
-
-	public char readChar() throws IOException {
-		return (char) readUnsignedShort();
-	}
-
-	public int readInt() throws IOException {
+	private int readInt() throws IOException {
 		return input.getInt(i++);
 	}
 
-	public long readLong() throws IOException {
-		return readInt();
+	private double readDouble() throws IOException {
+		return input.getDouble(i++);
 	}
 
-	public float readFloat() throws IOException {
-		return (float) readDouble();
+	private String readUTF() throws IOException {
+		return input.getString(i++);
 	}
-
-	public double readDouble() throws IOException {
-		//return input.getDouble(i++);
-		return readInt(); // FIXME!!!
-	}
-
-	public String readLine() throws IOException {
-		return null;
-	}
-
-	public String readUTF() throws IOException {
-		return null;
-	}
-
 
 	public void writeDouble(Numbers numbers) throws IOException {
 		output.add(FP);output.add(numbers.doubleValue());
 	}
 
-
 	public void writeRational(long a, long b) throws IOException {
-		// FIXME |a| and |b| < MAX_INTEGER!!!!
-		output.add(RAT);output.add(a); output.add(b);
+		writeRational(Long.toString(a),Long.toString(b));
 	}
-
 
 	public void writeRational(String a, String b) throws IOException {
-		output.add(FP);
-		output.add( Double.parseDouble(a)/Double.parseDouble(b));
+		output.add(RAT);
+		output.add(a);
+		output.add(b);
 	}
-
 
 	public void writeInteger(int i) throws IOException {
 		output.add(INT);output.add(i);
@@ -132,6 +80,24 @@ public class NumberIO implements DataInput,  NumberCodec {
 
 	public void writeZero() throws IOException {
 		output.add(NUL);
+	}
+
+	public Numbers readNumber() throws IOException {
+		byte f = readByte();
+		switch(f) {
+		case NUL: return Numbers.ZERO;
+		case INT: return Numbers.createInteger(readInt());
+		case RAT: return Numbers.div(Numbers.valueOf(readUTF()), Numbers.valueOf(readUTF()));
+		case FP:  return Numbers.createDouble(readDouble());
+		case HILBERT: 
+			Numbers base = readNumber();
+			boolean neg = readBoolean();
+			Numbers sqrt = Numbers.sqrt(readNumber());
+			if(neg)
+				return Numbers.sub(base, sqrt);
+			return Numbers.add(base, sqrt);
+		default: throw new IOException("Illegal Number");
+		}
 	}
 
 }
