@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Vector;
 import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
@@ -23,12 +22,9 @@ import fi.euclides.expr.Coord;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
-import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
-import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.Memento;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
@@ -38,12 +34,11 @@ import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.CELL;
-import nl.numworx.geodefiner.common.Grid;
 import nl.numworx.geodefiner.ui.UIEditor;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
-import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
@@ -53,7 +48,7 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
 
 
-class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
+public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
 
 	private static final long serialVersionUID = 1L;
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
@@ -205,8 +200,6 @@ class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWid
 		return (InstanceViewer) viewer;
 	}
 
-	private Map<String, ?> state = Collections.emptyMap();
-
 	private Map<String, Number> random = Collections.emptyMap();
 	
 	public Instance() {
@@ -244,8 +237,7 @@ class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWid
 
 	// Assume getSize() is okay.
 	public void init() {
-		Model model = createModel();
-		viewer.setModel(model);
+		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
 //		new Coord(Coord.xKey).setTracker(viewer);
 //		new Coord(Coord.yKey).setTracker(viewer);
@@ -253,31 +245,6 @@ class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWid
 		getViewer().width = content.getWidth();
 		selector.command();
 		definitions.clear();
-	}
-
-	private Model createModel() {
-		Model m = new Model();
-		int mx = content.getWidth()/2;
-		int my = content.getHeight()/2;
-		Punt O = m.buildPunt(Numbers.createInteger(mx), Numbers.createInteger(my));
-		DefaultAdapter.getDefault(O).put("O");
-		Punt U = new HorizontalPunt(Numbers.createInteger(mx+50), O.getX(), O);
-		DefaultAdapter.getDefault(U).put("U");
-		m.add(U);
-		Vector<Destroyable> select = m.getSelect();
-		select.add(U);
-		select.add(O);
-		Lijn xas = m.buildLijn();
-		DefaultAdapter.getDefault(xas).put("x");
-		select.add(O);
-		select.add(xas);
-		Lijn yas = m.buildLoodlijn();
-		DefaultAdapter.getDefault(yas).put("y");
-		
-		Grid grid = new Grid(getViewer());
-		DefaultAdapter.getDefault(grid).put("$#@");
-		m.add(grid);
-		return m;
 	}
 
 	public void removeCBookEventListener(CBookEventListener listener, String command) {
@@ -293,12 +260,6 @@ class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWid
 
 	}
 
-
-
-	public void setState(Map<String, ?> state) {
-		this.state = state;
-		setPositions(state.get("positions"));
-	}
 
 
 	public void start() {

@@ -29,11 +29,12 @@ import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
 import fi.euclides.model.AbstractViewer;
+import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 
-public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOwner {
+public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner {
 
 	private Instance instance;
 	private DefinitionPanel definition;
@@ -73,9 +74,7 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 	}
 
 	private Dimension instanceSize = new Dimension(200,200);
-	private Tablet tablet;
-	private FormuleVakHouder tabletUser;
-
+	
 	public JComponent asComponent() {
 		return this;
 	}
@@ -164,37 +163,6 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 		        }
 		    });
 		}
-
-	public void zetTabletUser(FormuleVakHouder formuleVakHouder)
-	{	if(tablet==null) return;
-		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
-	}
-	
-	public void zetTablet(FormuleVakHouder formuleVakHouder, int x, int y)
-	{	if(tablet==null) 
-		{	tablet = new Tablet(formuleVakHouder);
-			tablet.setLocation(x,y);
-			add(tablet,JLayeredPane.PALETTE_LAYER);
-		}
-		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
-	}
-	
-	public void addTablet(FormuleVakHouder formuleVakHouder, int x, int y)
-	{	if(tablet==null) 
-		{	tablet = new Tablet(formuleVakHouder);
-		}
-		if(tablet.getParent() == null)
-		{	add(tablet,0);
-			tablet.setLocation(x,y);
-			remove(content);
-			//resize();
-            repaint();
-		}
-		setLayer(tablet, PALETTE_LAYER.intValue());
-		tablet.zetFormuleVakHouder(formuleVakHouder);
-	}
 	
 	@Override
 	public void paint(Graphics g) {
@@ -202,13 +170,5 @@ public class Editor extends JLayeredPane implements CBookWidgetEditIF , TabletOw
 		super.paint(g);
 	}
 
-	public void removeTablet()
-	{	if(tablet==null)return;
-        remove(tablet);
-        repaint();
-	}
 	
-	public Tablet getTablet()
-	{	return tablet;
-	}
 }
