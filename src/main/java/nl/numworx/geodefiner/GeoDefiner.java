@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner;
 
 import java.net.URL;
+import java.util.Locale;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -10,8 +11,14 @@ import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 
+import fi.euclides.swing.DoubleFormat;
+
 public class GeoDefiner implements  CBookWidgetIF {
 
+	static {
+		DoubleFormat.setLocale(Locale.getDefault());
+	}
+		
 	public CBookWidgetEditIF getEditor(CBookContext context) {
 		Editor editor = new Editor(context);
 		return editor;

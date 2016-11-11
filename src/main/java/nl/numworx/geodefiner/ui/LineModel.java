@@ -23,7 +23,7 @@ public class LineModel extends ColorModel<Destroyable> {
 
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = super.toMap();
-		map.put("width", width);
+		map.put("width", Double.valueOf(width)); // float not supported?
 		map.put("type", type.name());
 		return map;
 	}
@@ -32,11 +32,14 @@ public class LineModel extends ColorModel<Destroyable> {
 		super.fromMap(map);
 		try {
 			width = (float) map.getDouble("width");
+			if(Float.isNaN(width)) width = 1.0f;
 		} catch (Exception e) {
+			width = 1.0f;
 		}
 		try {
 			type  = LineType.valueOf(map.getString("type"));
 		} catch (Exception e) {
+			type = LineType.SOLID;
 		}
 	}
 

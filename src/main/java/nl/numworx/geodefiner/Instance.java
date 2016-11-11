@@ -4,8 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.Stroke;
-import java.io.DataInput;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -16,29 +17,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import fi.euclides.event.NameMapper;
-import fi.euclides.event.SelectHandler;
-import fi.euclides.expr.Coord;
-import fi.euclides.formuleobjects.FormuleParser;
-import fi.euclides.model.AbstractViewer;
-import fi.euclides.model.Destroyable;
-import fi.euclides.model.Label;
-import fi.euclides.model.Model;
-import fi.euclides.model.Punt;
-import fi.euclides.persist.Memento;
-import fi.euclides.proof.LabelDelegate;
-import fi.euclides.swing.AWTViewer;
-import fi.euclides.util.Adapter;
-import fi.euclides.util.DefaultAdapter;
-import fi.euclides.util.Observable;
-import fi.euclides.util.Observer;
 import nl.numworx.geodefiner.common.Align;
-import nl.numworx.geodefiner.common.CELL;
-import nl.numworx.geodefiner.ui.UIEditor;
-import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
-import nl.tue.win.riaca.openmath.lang.OMObject;
-import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
@@ -46,6 +26,19 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.SuccessStatus;
+
+import fi.euclides.event.NameMapper;
+import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
+import fi.euclides.model.Model;
+import fi.euclides.model.Punt;
+import fi.euclides.proof.LabelDelegate;
+import fi.euclides.swing.AWTViewer;
+import fi.euclides.swing.HitTester2;
+import fi.euclides.util.Adapter;
+import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
@@ -140,6 +133,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		InstanceViewer() {
 			super();
 			getModel().addObserver(this);
+			hitTester = (new HitTester2(content.getFontMetrics(content.getFont())));
+			
 		}
 
 		@Override
@@ -161,44 +156,30 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 			super.selectColor(object);
 		}
-
-		private void visitInterval(Label label) {
-		
-			double x = label.getXd();
-			double y = label.getYd();
-			double v = label.value.doubleValue();
-			double min = ((Label)label.getDepend()[0]).value.doubleValue();
-			double max = ((Label)label.getDepend()[1]).value.doubleValue();
-			double x1 = x - ( v - min ) / (max - min) * 100;
-			double x2 = x + ( max - v ) / (max - min) * 100;
-			drawLine(x1, y, x2, y);
-			fillCircle(x-2.5, y-2.5, 5);
-			
-		}
 		
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
-			
-			if ("..".equals(label.getSubKey()))
-				visitInterval(label);
-			
-			
+						
 			String string = label.getString();
 			FontMetrics fm = g.getFontMetrics();
 			double x = label.getXd();
 			double y = label.getYd();
 			Align align = label.adapt(Align.class);
+			int stringWidth = fm.stringWidth(string);
 			if(align != null) {
 				switch(align) {
-				case LEFT: x -= fm.stringWidth(string)+4; 
+				case LEFT: x -= stringWidth+4; 
 				case RIGHT: x+=2;	
 					y += fm.getAscent()/2; break;
-				case TOP: x -= fm.stringWidth(string)/2; y -= fm.getDescent(); break;
-				case BOTTOM: x -= fm.stringWidth(string)/2; y += fm.getAscent(); break;
+				case TOP: x -= stringWidth/2; y -= fm.getDescent(); break;
+				case BOTTOM: x -= stringWidth/2; y += fm.getAscent(); break;
 				case BASE: 
 				}
 			}
+			Rectangle2D.Double rect = 
+					new Rectangle2D.Double(x, y - fm.getAscent(), stringWidth, fm.getHeight());
+			DefaultAdapter.getDefault(label).put(Shape.class, rect);
 			drawString(string, x, y);
 		}
 	}
