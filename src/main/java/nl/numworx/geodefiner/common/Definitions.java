@@ -11,12 +11,17 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
 import fi.euclides.model.Locus.LocusModel;
+import fi.euclides.model.Model;
 import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntOp;
+import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.Lambda;
 import fi.euclides.openmath.LocusModelF;
@@ -148,9 +153,21 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if (INTERVAL.isSame(f)) {
 					LabelDelegate ld = viewer.getRegistered("..");
 					Label l = ld.define(depend);
-					l.setX(50); l.setY(50); // place at random
+					Model m = viewer.getModel();
+// place at random
+					Punt x1 = m.buildPunt(Numbers.createInteger(25), Numbers.createInteger(50));
+					Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
+					x1.setVisible(false);
+					x2.setVisible(false);
+					m.add(x2);
+					Segment s = m.buildSegment(new Punt[] { x1, x2 } );
+					PuntOp x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
+					x3.setFree(true);
+					m.add(x3);
+					x3.addObserver(l);
+					l.setP(x3);
 					viewer.getMapper().rename(l, var.getName());
-					viewer.getModel().add(l);
+					m.add(l);
 					addElement(new CELL(text, l));
 					return;
 				}
