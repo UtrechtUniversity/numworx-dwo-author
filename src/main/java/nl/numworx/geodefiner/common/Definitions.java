@@ -165,6 +165,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 					x3.setFree(true);
 					m.add(x3);
 					x3.addObserver(l);
+					x1.addObserver(l);
+					x2.addObserver(l);
 					l.setP(x3);
 					viewer.getMapper().rename(l, var.getName());
 					m.add(l);

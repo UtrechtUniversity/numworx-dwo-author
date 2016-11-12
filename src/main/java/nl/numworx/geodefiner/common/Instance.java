@@ -50,15 +50,18 @@ public abstract class Instance {
 	}
 
 	private void installPositions() {
+		if(launchData.containsKey("positions"));
 		setPositions(launchData.getObjectMap("positions"));
 	}
 
 	private void installConfiguration() {
+		if (!this.launchData.containsKey("configuration")) return;
 		ObjectMap configuration = this.launchData.getObjectMap("configuration");
 		install(configuration);
 	}
 
 	private void installAxes() {
+		if (!this.launchData.containsKey("axes")) return;
 		ObjectMap configuration =  this.launchData.getObjectMap("axes");
 		install(configuration);
 	}
@@ -83,7 +86,7 @@ public abstract class Instance {
 	}
 	
 	private void createDefinitions() {
-		@SuppressWarnings("unchecked")
+		if(!this.launchData.containsKey("definitions")) return;
 		List<String> strings = this.launchData.getStringList("definitions");
 		if(strings != null)
 		for (Iterator<String> iterator = strings.iterator(); iterator.hasNext();) {
