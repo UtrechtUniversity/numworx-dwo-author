@@ -9,6 +9,7 @@
   		<groupId>org.c-book</groupId>
   		<artifactId>cbookif</artifactId>
   		<version>1.0.2</version>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>org.c-book</groupId>
@@ -37,11 +38,44 @@
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.google.gwt</groupId>
-  		<artifactId>gwt-user</artifactId>
-  		<version>2.6.0</version>
-  		<scope>provided</scope>
-  		<optional>true</optional>
+  		<groupId>fi.wiskopdr</groupId>
+  		<artifactId>wiskopdr</artifactId>
+  		<version>0.0.0</version>
+  		<scope>system</scope>
+  		<systemPath>${wiskopdr.dir}/wiskopdr.jar</systemPath>
   	</dependency>
   </dependencies>
+  <build>
+  	<plugins>
+  	  <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.3</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+          		<Export-Package>nl.numworx.geodefiner</Export-Package>
+          	    <Import-Package>!com.google.*,!com.googlecode.*,*</Import-Package>
+          	    <Private-Package>
+          	    	fi.euclides.*, 
+          	    	nl.numworx.geodefiner.*,
+ 					nl.tue.win.riaca.openmath.lang,
+ 					nl.uu.fi.dwo.interaction.*
+          	    </Private-Package>
+          	    <Main-class>nl.numworx.geodefiner.GeoDefiner</Main-class>
+<!--  				<Embed-Dependency>*;scope=compile|runtime;type=!pom;inline=true</Embed-Dependency> -->
+<!-- 				<Embed-Dependency>euclides-*;inline=true</Embed-Dependency> -->
+<!-- 				<Embed-Dependency>geodefiner-common;inline=true</Embed-Dependency> -->
+<!-- 				<Embed-Dependency>interaction;inline=true</Embed-Dependency> -->
+<!-- 				<Embed-Dependency>om-lib;inline=true</Embed-Dependency> -->
+<!-- 				<Embed-Transitive>false</Embed-Transitive> -->
+          </instructions>
+        </configuration>
+      </plugin>	
+  	</plugins>  
+  </build>
+  <packaging>bundle</packaging>
+  <properties>
+  	<wiskopdr.dir>/Users/wim/Documents/workspace-luna/WiskOpdr/output/jar</wiskopdr.dir>
+  </properties>
 </project>

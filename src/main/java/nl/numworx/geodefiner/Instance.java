@@ -51,6 +51,14 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		protected void paintComponent(Graphics g) {
 			getViewer().paint(g);
 		}
+
+		@Override
+		public void setBounds(int x, int y, int width, int height) {
+			super.setBounds(x, y, width, height);
+			getViewer().height = height;
+			getViewer().width = width;
+		}
+		
 	};
 	
 	
@@ -239,8 +247,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void init() {
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
-//		new Coord(Coord.xKey).setTracker(viewer);
-//		new Coord(Coord.yKey).setTracker(viewer);
 		getViewer().height = content.getHeight();
 		getViewer().width = content.getWidth();
 		selector.command();

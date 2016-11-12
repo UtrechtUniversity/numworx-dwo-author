@@ -45,7 +45,6 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private JTabbedPane tabs;
 	
 	Editor(CBookContext context) {
-		super();
 		content = new JPanel(new BorderLayout());
 		this.context = context;
 		content.setBounds(0,0,700,500);setSize(content.getSize());
@@ -71,6 +70,13 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		add(content, JLayeredPane.DEFAULT_LAYER);
 		axes = new Axes(instance.getViewer());
 		tabs.addTab("Axes", null, axes, null);
+	}
+
+	@Override
+	public void setBounds(int x, int y, int width, int height) {
+		super.setBounds(x, y, width, height);
+		content.setBounds(0,0,width, height); // contentlayer follows size
+		content.invalidate(); 
 	}
 
 	private Dimension instanceSize = new Dimension(200,200);
@@ -141,6 +147,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		instance.init();
 		Map randomvars = (Map) context.getProperty("randomVars");
 		instance.setLaunchData(launchdata, randomvars);
+		axes.init();
 	}
 
 	public void start() {
