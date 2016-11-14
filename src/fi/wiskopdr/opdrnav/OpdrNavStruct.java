@@ -1422,13 +1422,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (h.containsKey("aantalSessies"))
 			aantalSessies = ((Number) h.get("aantalSessies")).intValue();
 		if (h.containsKey("scoresObjectives"))
-			scoresObjectives = (int[][][][]) h.get("scoresObjectives");
+			scoresObjectives = toIntArrayArrayArrayArray( h.get("scoresObjectives") );
 		if (h.containsKey("scoresMaxObjectives"))
-			scoresMaxObjectives = (int[][][][]) h.get("scoresMaxObjectives");
+			scoresMaxObjectives = toIntArrayArrayArrayArray( h.get("scoresMaxObjectives"));
 		if (h.containsKey("possibleMisconceptions"))
-			possibleMisconceptions = (int[][][][]) h.get("possibleMisconceptions");
+			possibleMisconceptions = toIntArrayArrayArrayArray( h.get("possibleMisconceptions"));
 		if (h.containsKey("measuredMisconceptions"))
-			measuredMisconceptions = (int[][][][]) h.get("measuredMisconceptions");
+			measuredMisconceptions = toIntArrayArrayArrayArray( h.get("measuredMisconceptions"));
 		if (h.containsKey("bezocht"))
 			try{	
 				bezocht = toBooleanArrayArray( h.get("bezocht") );
@@ -1478,7 +1478,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (scoresObjectives != null)
 		{
 			this.scoresObjectives = scoresObjectives;
-			this.scoresMaxObjectives = scoresMaxObjectives;
+			if(scoresMaxObjectives != null)
+				this.scoresMaxObjectives = scoresMaxObjectives;
+			else
+				scoresMaxObjectives = this.scoresMaxObjectives;
 		}
 		if (possibleMisconceptions != null)
 		{
@@ -1677,6 +1680,32 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 
+	}
+
+	private int[][][][] toIntArrayArrayArrayArray(Object object) {
+		if(object instanceof int[][][][])
+			return (int[][][][]) object;
+		if(object instanceof Collection) {
+			Collection<?> list = (Collection<?>) object;
+			int[][][][] result = new int[list.size()][][][];
+			int i = 0;
+			for(Object item: list) result[i++] = toIntArrayArrayArray(item);
+			return result;
+		}
+		return null;
+	}
+
+	private int[][][] toIntArrayArrayArray(Object object) {
+		if(object instanceof int[][][])
+			return (int[][][]) object;
+		if(object instanceof Collection) {
+			Collection<?> list = (Collection<?>) object;
+			int[][][] result = new int[list.size()][][];
+			int i = 0;
+			for(Object item: list) result[i++] = toIntArrayArray(item);
+			return result;
+		}
+		return null;
 	}
 
 	/**
