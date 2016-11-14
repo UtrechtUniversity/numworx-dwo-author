@@ -1535,8 +1535,6 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		setBounds(getLocation().x, getLocation().y, b + defaultOpWidth + 10, Math.max(defaultIpHeight, defaultOpHeight));		
 		optionsPanel.setBounds(defaultIpWidth + 10, 20, defaultOpWidth, defaultOpHeight);
 		
-		System.out.println("zetBreedte manualScaling=" + manualScaling);
-
 		if (manualScaling) {
 			interactiePanel.zetAssenDefinitie(asDefXMin, asDefXMax, asDefXStap, asDefYMin, asDefYMax, asDefYStap);
 		}

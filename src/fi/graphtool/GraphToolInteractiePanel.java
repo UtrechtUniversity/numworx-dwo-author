@@ -3317,6 +3317,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		//zetDocentDomeinen(docentDomeinen)		
 		zetDocentDomeinen(docentDomeinStrings);
 		zetFormuleEditorOpties(null, true);
+		zetVeldEditorOpties(null, true);
 		zetTypeOpdracht(typeOpdracht, true);
 		if(typeOpdracht == VINDFORMULEBIJPUNTEN && randomVars != null)
 			for (int pCnt = 0; pCnt < docentGraphPoints.size(); pCnt++)
@@ -3887,6 +3888,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		zetDocentDomeinen(docentDomeinStrings);
 		zetFormuleEditorOpties(null, true);
 		zetTypeOpdracht(typeOpdracht, true);
+		zetVeldEditorOpties(null, true);
 		
 		tekenComponent.setState(h);
 		formuleComponent.setState(h, null, null, false);
