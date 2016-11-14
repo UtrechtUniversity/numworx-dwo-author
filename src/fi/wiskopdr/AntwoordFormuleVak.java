@@ -2387,7 +2387,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	    //patch voor reviewMode eindtoets html5
 	  		if(mode==3 && uitw==true && stapNr>0 && formuleVakInhouden[stapNr].equals("$f@")) {
 	  			stapNr--;
-	  			formuleVakInhouden[stapNr] = formuleVakString;
+	  			//formuleVakInhouden[stapNr] = formuleVakString;
 	  		}
 	  		
 		if(ingevuld && formuleVakString.length()>2 )vulVak(formuleVakString) ;

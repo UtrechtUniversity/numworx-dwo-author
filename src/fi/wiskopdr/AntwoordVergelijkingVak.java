@@ -1399,7 +1399,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		 //patch voor reviewMode eindtoets html5
   		if(mode==3 && uitw==true && stapNr>0 && formuleVakInhouden[stapNr].equals("$f@")) {
   			stapNr--;
-  			
+  			//formuleVakInhouden[stapNr] = formuleVakString;
   		}
   		
 		this.stapNr = stapNr;
