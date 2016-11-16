@@ -1,5 +1,9 @@
 package fi.wiskopdr.text;
 
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.ShareAction;
 
@@ -784,7 +788,20 @@ public class Text_nl extends java.util.ListResourceBundle
 				// shareAction
 				{ ShareAction.SHARE_KEY, "gedeelde sleutel"},
 				{ ShareAction.SHARE_MAP, "Gecombineerde componenten" },
-
+// tablet opties
+				{ "Tablet keyboard", "Tablet keyboard" },
+				{ "Onderbouw-keyboard", "Onderbouw-keyboard" },
+				{ "Algebra-keyboard", "Algebra-keyboard" },
+				{ "Gonio-keyboard", "Gonio-keyboard" },
+				{ "Statistiek-keyboard", "Statistiek-keyboard" },
+				{ "Meetkunde-keyboard", "Meetkunde-keyboard" },
+				{ "Tablet handschriftset", "Tablet handschriftset" },
+				{ "Basis", "Basis" },
+				{ "Uitgebreid", "Uitgebreid" },
+		
+				
+				
+				
 		};
 }
 

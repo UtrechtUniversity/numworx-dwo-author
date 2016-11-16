@@ -152,33 +152,33 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//diffOperatorenCB.setVisible(false);
 		
 		Box boxh = Box.createHorizontalBox();
-		keyboardLabel = new JLabel("Tablet keyboard"+" ");
+		keyboardLabel = new JLabel(WiskOpdr.rb.getString("Tablet keyboard")+" ");
 		keyboardLabel.setFont(font);
 		boxh.add(keyboardLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
 		keyboardCombobox = new JComboBox();
 		keyboardCombobox.setFont(font);
-		keyboardCombobox.addItem("Onderbouw-keyboard");
-		keyboardCombobox.addItem("Algebra-keyboard");
-		keyboardCombobox.addItem("Gonio-keyboard");
-		keyboardCombobox.addItem("Statistiek-keyboard");
-		keyboardCombobox.addItem("Meetkunde-keyboard");
+		keyboardCombobox.addItem(WiskOpdr.rb.getString("Onderbouw-keyboard"));
+		keyboardCombobox.addItem(WiskOpdr.rb.getString("Algebra-keyboard"));
+		keyboardCombobox.addItem(WiskOpdr.rb.getString("Gonio-keyboard"));
+		keyboardCombobox.addItem(WiskOpdr.rb.getString("Statistiek-keyboard"));
+		keyboardCombobox.addItem(WiskOpdr.rb.getString("Meetkunde-keyboard"));
 		boxh.add(keyboardCombobox);
 		boxh.add(Box.createHorizontalStrut(80));
 		boxv1.add(boxh);
 		boxv1.add(Box.createVerticalStrut(5));
 		
 		boxh = Box.createHorizontalBox();
-		writeMathLabel = new JLabel("Tablet handschriftset"+" ");
+		writeMathLabel = new JLabel(WiskOpdr.rb.getString("Tablet handschriftset")+" ");
 		writeMathLabel.setFont(font);
 		boxh.add(writeMathLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
 		writeMathCombobox = new JComboBox();
 		writeMathCombobox.setFont(font);
-		writeMathCombobox.addItem("Basis");
-		writeMathCombobox.addItem("Uitgebreid");
+		writeMathCombobox.addItem(WiskOpdr.rb.getString("Basis"));
+		writeMathCombobox.addItem(WiskOpdr.rb.getString("Uitgebreid"));
 		boxh.add(writeMathCombobox);
 		boxh.add(Box.createHorizontalStrut(80));
 		boxv1.add(boxh);
