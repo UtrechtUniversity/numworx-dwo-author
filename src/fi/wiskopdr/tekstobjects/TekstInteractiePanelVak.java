@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -66,6 +67,7 @@ import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
+import fi.beans.loader.Loader;
 //import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -1920,20 +1922,40 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		return v;
 	}
 	
+	// Synchronized map, maybe WeakHashMap?
+	public final static Map<String, Class<WiskOpdrApplet>> classMap = new Hashtable<String,Class<WiskOpdrApplet>>();
+
+	@SuppressWarnings("unchecked")
 	private InteractiePanel maakInteractiePanel(String name, Locale language)
 	{
 		try
-		{	Class c = Class.forName(name);
-	    	Constructor cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
-	    	Object o = cc.newInstance(new Object[] { language } );
-	    	return ((WiskOpdrApplet)o).getInteractiePanel();
+		{	Class<WiskOpdrApplet> c = classMap.get(name);
+			if( c == null)
+			{	
+				c = (Class<WiskOpdrApplet>) Loader.create(jarOf(name), getClass().getClassLoader()).loadClass(name);
+				classMap.put(name, c);
+			}
+			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
+	    	WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
+	    	return o.getInteractiePanel();
 		}
 		catch(Exception e)
 		{	//System.out.println("kijk"+e.toString());
 			return null;
 		}
 	}
-	
+
+	private static Properties jarOfMap = new Properties();
+// Dit moet uit een resource komen
+	static {
+		jarOfMap.setProperty("nl.numworx.geodefiner.GeoDefiner", "geodefiner.jar");
+		jarOfMap.setProperty("fi.algebrapijlenopdr.AlgebraPijlenOpdr", "algebrapijlenopdr.jar");
+	}
+		
+	public static String jarOf(String name) {
+		return jarOfMap.getProperty(name);
+	}
+
 	public void setState(Hashtable h)
 	{
 		h = ShareAction.unwrapState(launchData, h);

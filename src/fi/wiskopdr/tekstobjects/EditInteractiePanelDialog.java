@@ -41,6 +41,7 @@ import org.cbook.cbookif.CBookWidgetIF;
 
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
+import fi.beans.loader.Loader;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 //import fi.nabouwenaanzichten.NabouwenAanzichten;
@@ -599,17 +600,20 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	
     }
     
-    private InteractieEditPanel maakInteractieEditPanel(String name, Locale language)
+    @SuppressWarnings("unchecked")
+	private InteractieEditPanel maakInteractieEditPanel(String name, Locale language)
 	{
 		try
 		{	
-			
-			{
-			Class c = Class.forName(name);
-	    	Constructor cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
-	    	Object o = cc.newInstance(new Object[] { language } );
-			return (((WiskOpdrApplet)o).getInteractiePanel()).getEditPanel();
+			Class<WiskOpdrApplet> c = TekstInteractiePanelVak.classMap.get(name);
+			if( c == null)
+			{	
+				c = (Class<WiskOpdrApplet>) Loader.create(TekstInteractiePanelVak.jarOf(name), getClass().getClassLoader()).loadClass(name);
+				TekstInteractiePanelVak.classMap.put(name, c);
 			}
+			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
+		    WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
+			return o.getInteractiePanel().getEditPanel();
 		}
 		catch(Exception e)
 		{	e.printStackTrace(System.out);
