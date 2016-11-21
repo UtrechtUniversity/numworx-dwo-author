@@ -3,6 +3,9 @@ package nl.numworx.geodefiner;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -43,12 +46,36 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	Box list;
 	AbstractViewer viewer;
 	
+	class Click extends MouseAdapter {
+		private CellItem cellItem;
+		
+		Click(CellItem cellItem) {
+			this.cellItem = cellItem;
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			String text = cellItem.getCell().text;
+			DefinitionPanel.this.firePropertyChange("command", null, text);
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+//			mouseClicked(e);
+		}
+		
+	}
+		
 	class ListUpdater implements ListDataListener {
 
 		public void intervalAdded(ListDataEvent e) {
 			int i0 = e.getIndex0();
 			CELL cell = model.getElementAt(i0);
-			list.add( new CellItem(cell,viewer));
+			CellItem cellItem = new CellItem(cell,viewer, i0);
+			cellItem.addPropertyChangeListener("item", DefinitionPanel.this);
+// where to start?
+			cellItem.center.formuleVak.geefKind1().addMouseListener(new Click(cellItem));
+			list.add( cellItem);
 			DefinitionPanel.this.validate();
 		}
 
@@ -65,6 +92,8 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 			int i0 = e.getIndex0();
 			CellItem item = (CellItem) list.getComponent(i0);
 			item.refresh();
+			item.center.formuleVak.geefKind1().addMouseListener(new Click(item));
+
 		}
 		
 	}
@@ -75,6 +104,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	
 	DefinitionPanel(Definitions model, AbstractViewer viewer) {
 		super(new BorderLayout());
+		setName("Objects");
 		this.model = model;
 		this.viewer = viewer;
 		setPreferredSize(new Dimension(200,400));
@@ -86,6 +116,14 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
+		String name = evt.getPropertyName();
+		if("item".equals(name)) {
+			CellItem source = (CellItem) evt.getSource();
+			model.remove(source.index);
+			return;
+		}
+		
+		
 		String text = (String) evt.getOldValue();
 		OMObject object = (OMObject) evt.getNewValue();
 		model.define(text, object);

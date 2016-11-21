@@ -38,6 +38,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 
 	private Instance instance;
 	private DefinitionPanel definition;
+	private RandomPanel random;
+	private CheckDWOPanel checkDWO;
+	private CheckObjectsPanel checkObjects;
 	private CommandPanel command;
 	private CBookContext context;
 	private JPanel content;
@@ -47,7 +50,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	Editor(CBookContext context) {
 		content = new JPanel(new BorderLayout());
 		this.context = context;
-		content.setBounds(0,0,700,500);setSize(content.getSize());
+		content.setBounds(0,0,800,600);setSize(content.getSize());
 		content.setPreferredSize(getSize());
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
@@ -58,14 +61,22 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		content.add(flow, BorderLayout.CENTER);
 		tabs = new JTabbedPane();
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
-		tabs.addTab("Objects", null, definition, null);
+		checkDWO = new CheckDWOPanel();
+		checkObjects = new CheckObjectsPanel();
+		random = new RandomPanel();
+		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
+		tabs.addTab(checkDWO.getName(), null, checkDWO, checkDWO.getToolTipText());
+		tabs.addTab(checkObjects.getName(), null, checkObjects, checkObjects.getToolTipText());
+		tabs.addTab(random.getName(), null, random, random.getToolTipText());
+
 		content.add(tabs, BorderLayout.EAST);
 		command = new CommandPanel();
 // inject
-		command.random = (Map<String, Number>) context.getProperty("randomVars");
+		command.random = random.getRandomVars();
 		command.instance = instance;
 
 		command.addPropertyChangeListener("command", definition);
+		definition.addPropertyChangeListener("command", command);
 		content.add(command, BorderLayout.SOUTH);
 		add(content, JLayeredPane.DEFAULT_LAYER);
 		axes = new Axes(instance.getViewer());
@@ -111,6 +122,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("configuration", configuration);
 		launchdata.put("axes", axes.toMap());
 		launchdata.put("positions", instance.getState().get("positions"));
+		launchdata.put("random", random.getText());
 		return launchdata;
 	}
 
@@ -145,7 +157,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 
 	public void setLaunchData(Map<String, ?> launchdata) {
 		instance.init();
-		Map randomvars = (Map) context.getProperty("randomVars");
+		random.setText((String)launchdata.get("random"));
+		Map randomvars = random.getRandomVars();
 		instance.setLaunchData(launchdata, randomvars);
 		axes.init();
 	}

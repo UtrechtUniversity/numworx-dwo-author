@@ -14,7 +14,10 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.DoubleFormat;
+import fi.euclides.swing.SwingSymbols;
+import fi.wiskopdr.WiskOpdr;
 
 public class GeoDefiner extends JApplet implements  CBookWidgetIF, WiskOpdrApplet {
 
@@ -22,6 +25,11 @@ public class GeoDefiner extends JApplet implements  CBookWidgetIF, WiskOpdrApple
 
 	static {
 		DoubleFormat.setLocale(Locale.getDefault());
+		Popcorn.map = new SwingSymbols();
+// FIXME Alleen met cbookeditor, verplaatsen naar Main en applet.Main
+		if(WiskOpdr.applet == null)
+			WiskOpdr.applet = new WiskOpdr();
+
 	}
 		
 	public static void main(String[] args) {

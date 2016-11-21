@@ -11,20 +11,20 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import nl.numworx.geodefiner.common.PointType;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
-import nl.numworx.geodefiner.ui.PointModel.Type;
 
 @SuppressWarnings("serial")
 public class PointPane extends ColorPane<PointModel> {
 
-	private JComboBox<PointModel.Type> type;
+	private JComboBox<PointType> type;
 	private JFormattedTextField sizeField;
 	private JCheckBox  rigid;
 	
 	PointPane(PointModel model) {
 		super(model);
-		type = new JComboBox<PointModel.Type>(Type.values());
+		type = new JComboBox<PointType>(PointType.values());
 		type.setSelectedItem(model.type);
 		JPanel panel = new JPanel();
 		sizeField = new JFormattedTextField(Integer.valueOf(model.size));
@@ -42,7 +42,7 @@ public class PointPane extends ColorPane<PointModel> {
 		}
 
 	public void commit() {
-		model.type = (Type) type.getSelectedItem();
+		model.type = (PointType) type.getSelectedItem();
 		model.rigid = rigid.isSelected();
 
 		try {

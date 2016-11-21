@@ -3,6 +3,8 @@ package nl.numworx.geodefiner;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Map;
 
@@ -10,15 +12,16 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.SwingSymbols;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
-class CommandPanel extends JPanel implements ActionListener {
+class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener {
 	
-	FormuleEditor editor = new FormuleEditor(false) {
+	private FormuleEditor editor = new FormuleEditor(false) {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -31,14 +34,9 @@ class CommandPanel extends JPanel implements ActionListener {
 	//@Inject
 	Map<String, Number> random = Collections.emptyMap();
 	//@Inject
-	nl.numworx.geodefiner.common.Instance instance;
+	nl.numworx.geodefiner.Instance instance;
 
-	static {
-		Popcorn.map = new SwingSymbols();
-		WiskOpdr.applet = new WiskOpdr();
-	}
-	
-	
+
 	CommandPanel() {
 		super(new BorderLayout());
 		add(Box.createVerticalStrut(90), BorderLayout.WEST);
@@ -59,9 +57,9 @@ class CommandPanel extends JPanel implements ActionListener {
 				editor.formuleVak.vulVak("$f@");
 				
 			} catch (fi.euclides.formuleobjects.ParseException e1) {
-				e1.printStackTrace();
+				Tracker t = instance.getViewer();
+				t.setStatus(e1.getLocalizedMessage());
 			}
-			
 			return;
 		}
 	}
@@ -72,6 +70,13 @@ class CommandPanel extends JPanel implements ActionListener {
 			return instance.randomize(random, input);
 		else 
 			return input;
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if("command".equals(evt.getPropertyName())) {
+			String cmd = (String) evt.getNewValue();
+			editor.formuleVak.vulVak(cmd);
+		}
 	}
 	
 }

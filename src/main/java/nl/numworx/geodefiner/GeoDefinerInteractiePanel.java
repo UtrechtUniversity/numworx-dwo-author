@@ -2,21 +2,32 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookContext;
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.SuccessStatus;
 
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.euclides.event.NameMapper;
+import fi.euclides.model.AbstractViewer;
+import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
+import fi.euclides.model.Model;
+import fi.euclides.proof.LabelValue;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class GeoDefinerInteractiePanel extends JPanel implements
-		InteractiePanel, CBookContext {
+		InteractiePanel, CBookContext, CBookAware {
 
 	private static final long serialVersionUID = -4868744357817393056L;
 
@@ -126,6 +137,47 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 
 	public Object getProperty(String key) {
 		return null;
+	}
+
+	public void acceptCBookEvent(CBookEvent ev) {
+		instance.acceptCBookEvent(ev);
+	}
+
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		instance.addCBookEventListener(listener, command);
+	}
+
+	public String[] getAcceptedCmds() {
+		List<String> cmds;
+		cmds = new ArrayList<String>();
+		AbstractViewer v = instance.getViewer();
+		Model m = v.getModel();
+		NameMapper mapper = v.getMapper();
+		for(Destroyable item : m.getLijnen()) {
+			if(item instanceof Label) {
+				Label label = (Label) item;
+				boolean isValue = label.getRegistered() instanceof LabelValue;
+				String naam = mapper.toString(label);
+				if(isValue) 
+				{
+					cmds.add("double." + naam);
+				}
+			}
+		}
+		return cmds.toArray(new String[cmds.size()]);
+	}
+
+	public String getLocalizedCmd(String cmd) {
+		return cmd;
+	}
+
+	public String[] getSendCmds() {
+		return getAcceptedCmds();
+	}
+
+	public void removeCBookEventListener(CBookEventListener arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

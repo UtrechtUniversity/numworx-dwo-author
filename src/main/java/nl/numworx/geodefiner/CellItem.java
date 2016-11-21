@@ -40,6 +40,14 @@ public class CellItem extends JPanel {
 	private ImageIcon editImage = new ImageIcon(getClass().getResource("resources/edit.gif"));
 	private AbstractViewer viewer;
 	
+	class DeleteAction extends AbstractAction {
+		DeleteAction() { super("X"); } // icoon 
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}
+	
+	
 	class EditAction extends AbstractAction {
 
 		public void actionPerformed(ActionEvent e) {
@@ -56,6 +64,8 @@ public class CellItem extends JPanel {
 				editor.commit();
 				viewer.paint();
 			} else if ( ok == JOptionPane.NO_OPTION) {
+				CellItem.this.
+				firePropertyChange("item", getCell().item, null);
 				getCell().item.destroy();
 			}
 		}
@@ -94,12 +104,14 @@ public class CellItem extends JPanel {
 	private CELL cell;
 	JRadioButton radio;
 	JButton potlood;
-	JComponent center;
+	FormuleVak center;
 	boolean canDelete;
+	int index;
 
-	public CellItem(CELL cell, AbstractViewer viewer) {
+	public CellItem(CELL cell, AbstractViewer viewer, int i0) {
 		super(new BorderLayout());
 		canDelete = true;
+		index = i0;
 		setBackground(Color.WHITE);
 		this.setCell(cell);
 		this.viewer = viewer;
@@ -114,22 +126,37 @@ public class CellItem extends JPanel {
 	}
 
 	public CellItem(CELL o, AWTViewer viewer2, boolean b) {
-		this(o, viewer2);
+		this(o, viewer2, -1);
 		canDelete = b;
 	}
 
-	private JComponent createCenter(CELL cell) {
+	private FormuleVak createCenter(CELL cell) {
 // FormuleVak		
+		Color foreground = Color.black;
+		if(cell.item == null)
+			foreground = Color.lightGray;
+		
 		//return new JLabel(cell.toString());
 		FormuleVak fv = new FormuleVak();
+		fv.setFGColor(foreground);
 		fv.vulVak(cell.text);
 		fv.setEditable(false);
 		fv.zetMaat();
+		fv.setPreferredSize(fv.getSize());
 		return fv;
 	}
 
 	public void refresh() {
-		radio.setSelected(getCell().item.isVisible());
+		if(getCell().item == null) {
+			radio.setSelected(false);
+			radio.setEnabled(false);
+			potlood.setAction(new DeleteAction());
+		} else {
+			if(!radio.isEnabled())
+				potlood.setAction(new EditAction(editImage));
+			radio.setEnabled(true);
+			radio.setSelected(getCell().item.isVisible());
+		}
 		remove(center);
 		add ( center = createCenter(getCell()), BorderLayout.CENTER);
 	}

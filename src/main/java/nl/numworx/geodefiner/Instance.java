@@ -2,6 +2,7 @@ package nl.numworx.geodefiner;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Shape;
@@ -32,6 +33,8 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.Const;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.HitTester2;
@@ -39,6 +42,7 @@ import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
+import fi.wiskopdr.formuleobjects.FormuleVak;
 
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
@@ -165,11 +169,50 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.selectColor(object);
 		}
 		
+		private void formuleLabel(Label label) {
+			FormuleVak fv = new FormuleVak();
+			String string = "$f" + label.getString() + "@";
+			fv.vulVak(string);
+			fv.setEditable(false);
+			fv.zetMaat();
+			Dimension s = fv.getSize();
+			int as = fv.ashoogte;
+			int x = (int) label.getXd();
+			int y = (int) label.getYd();
+			Align align = label.adapt(Align.class);
+			if(align == null) align = Align.BASE;
+			switch(align) {
+			case LEFT:  x -= s.width; 
+			case RIGHT: y -= s.height/2; break;
+			case TOP: y -= s.height;
+			case BOTTOM :	x -= s.width/2; break;
+			case BASE:  y -= as;
+			}
+			Graphics fvg = g.create();
+			fvg.translate(x, y);
+			fvg.clipRect(0, 0, s.width, s.height);
+			fv.setLocation(10000, 10000);
+			content.add(fv);
+			fv.print(fvg);
+			content.remove(fv);
+			fvg.dispose();
+
+			Rectangle2D.Double rect = 
+					new Rectangle2D.Double(x, y, s.getWidth(), s.getHeight());
+			DefaultAdapter.getDefault(label).put(Shape.class, rect);
+		}
+		
+		
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
-						
 			String string = label.getString();
+				
+			if(string.contains("$")) {
+				formuleLabel(label);
+				return;
+			}
+			
 			FontMetrics fm = g.getFontMetrics();
 			double x = label.getXd();
 			double y = label.getYd();
@@ -218,8 +261,25 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		content.addMouseMotionListener(getViewer());
 	}
 
-	public void addCBookEventListener(CBookEventListener listener, String command) {
+	public void addCBookEventListener(CBookEventListener listener, final String command) {
 		handler.addCBookEventListener(listener, command);
+		// command is double.NAAM
+		if(command != null && command.startsWith("double.")) {
+			int dot = command.indexOf('.');
+			String name = command.substring(dot+1);
+			Destroyable f = viewer.getMapper().fromString(name);
+			if(f == null) {
+				System.err.println("addCBookEventListener " + command + " not found");
+				return; 
+			}
+			final Label label = (Label) f;
+			f.addObserver(new Observer() {
+
+				public void update(Observable observable, Object arg) {
+					if(arg == null)
+						handler.fire(command, "value", label.value.doubleValue());
+				}});
+		}
 	}
 
 	public JComponent asComponent() {
@@ -262,24 +322,32 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void setAssessmentMode(AssessmentMode mode) {
-		// TODO Auto-generated method stub
 
 	}
-
-
 
 	public void start() {
 		viewer.paint();
 	}
 
 	public void stop() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void acceptCBookEvent(CBookEvent ev) {
-		// TODO Auto-generated method stub
-		
+		if(ev.getCommand().startsWith("double.")) {
+			int dot = ev.getCommand().indexOf('.');
+			String name = ev.getCommand().substring(dot+1);
+			Number number = (Number)ev.getParameter("value");
+			if(number == null) {
+				number = Double.valueOf(ev.getMessage());
+			}
+			Label label = (Label) getViewer().getMapper().fromString(name);
+			if(label.getSubKey() == Const.TYPE) { 
+				label.setValue(Numbers.createDouble(number.doubleValue()));
+				label.setString(Numbers.toString(label.value));
+				label.notifyObservers();
+			}
+		}
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nl.numworx.geodefiner.common.UIModel;
-import nl.numworx.geodefiner.ui.PointModel.Type;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;

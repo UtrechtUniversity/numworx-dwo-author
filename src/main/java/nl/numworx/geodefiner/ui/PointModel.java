@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Punt;
@@ -11,10 +12,8 @@ import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
 
 public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEditor> {
-	enum Type { DISK }
-	
 	int   size = 5;
-	Type  type = Type.DISK;
+	PointType  type = PointType.DISK;
 	boolean rigid = true;
 
 	public void install(Punt item) {
@@ -36,7 +35,7 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
 		size  = map.getInt("size");
-		type  = Type.valueOf( map.getString("type"));
+		type  = PointType.valueOf( map.getString("type"));
 		rigid = map.getBoolean("rigid", true);
 	}
 	

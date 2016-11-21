@@ -1,12 +1,7 @@
 package nl.numworx.geodefiner;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.Iterator;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
@@ -15,24 +10,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import nl.numworx.geodefiner.common.CELL;
-import nl.tue.win.riaca.openmath.lang.OMApplication;
-import nl.tue.win.riaca.openmath.lang.OMObject;
-import nl.tue.win.riaca.openmath.lang.OMSymbol;
-import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
-import fi.euclides.model.Coordinaten;
-import fi.euclides.model.Destroyable;
-import fi.euclides.model.Label;
-import fi.euclides.model.Locus;
-import fi.euclides.model.Locus.LocusModel;
-import fi.euclides.model.Punt;
-import fi.euclides.model.Triangle;
-import fi.euclides.openmath.Expression;
-import fi.euclides.openmath.Lambda;
-import fi.euclides.openmath.LocusModelF;
-import fi.euclides.openmath.OMConstants;
-import fi.euclides.openmath.Popcorn;
-import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
 /** FIXME split in a observable and a ListModel

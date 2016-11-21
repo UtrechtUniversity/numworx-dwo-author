@@ -7,8 +7,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import nl.numworx.geodefiner.ui.PointModel.Type;
-
 public class LinePane extends ColorPane<LineModel> {
 
 	JComboBox<LineType> type;

@@ -48,9 +48,9 @@ public class Axes extends JPanel implements ChangeListener {
 		h.add(o);
 		u = initItem(viewer.getModel().getU(), "$fU = point(0,1)@");
 		h.add(u);
-		x = initItem(viewer.getModel().getLijnen().firstElement(), "$fx = line(O,U)@");
+		x = initItem(viewer.getModel().getLijnen().firstElement(), "$fy=0@");
 		h.add(x);
-		y = initItem(viewer.getModel().getLijnen().elementAt(1), "$fy = perpendicular(O,x)@");
+		y = initItem(viewer.getModel().getLijnen().elementAt(1), "$fx=0@");
 		h.add(y);
 		g  = initItem(viewer.getModel().getLijnen().elementAt(2), "$fgrid@");
 		h.add(g);
@@ -70,6 +70,7 @@ public class Axes extends JPanel implements ChangeListener {
 	
 	public Map<String,Object> toMap() {
 		TreeMap<String,Object> map = new TreeMap<String, Object>();
+		if(o == null) return map;
 		putMap(map, o.getCell());
 		putMap(map, u.getCell());
 		putMap(map, x.getCell());
