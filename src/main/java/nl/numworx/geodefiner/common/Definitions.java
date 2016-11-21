@@ -5,10 +5,13 @@ import java.util.Vector;
 
 import nl.numworx.geodefiner.common.CELL;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
+import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
@@ -23,11 +26,12 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
-import fi.euclides.openmath.Lambda;
+import fi.euclides.expr.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.openmath.Popcorn;
 import fi.euclides.proof.LabelDelegate;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -77,8 +81,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 // in geogebra reassignments
 				Destroyable fs = viewer.getMapper().fromString(var.getName());
 				if (fs != null) {
-					fs.destroy(); 
 					destroy(fs);
+					fs.destroy(); 
+				} else {
+					int cell = findCell(var.getName());
+					if(cell >= 0) {
+						remove(cell);
+					}
 				}
 				
 				if (oma.getElementAt(2) instanceof OMApplication)
@@ -136,6 +145,22 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Punt  p = (Punt) depend[1];
 					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
 					if(t.getIndex() > 0) return; // FIXME
+// "te{x}t" -> [ "te",x,"t" ]
+					if( "".equals(t.getSubKey())) {
+						String plain = t.getString();
+						if(plain.contains("{") && plain.contains("}"))
+						{
+							plain = plain.replace("{", "\",").replace("}",",\"");
+							FormuleParser parser = new FormuleParser("[\""+plain+"\"]");
+							try {
+								OMObject o = parser.bracket();
+								depend[0] = expression.interpret(o, t, viewer.getMapper());
+							} catch (ParseException e) {
+								// log.fine(e.toString())
+								;
+							}				
+						}
+					}
 					t.setP(p);
 					viewer.getMapper().rename(t, var.getName());
 					viewer.getModel().add(t);
@@ -161,7 +186,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					x2.setVisible(false);
 					m.add(x2);
 					Segment s = m.buildSegment(new Punt[] { x1, x2 } );
-					PuntOp x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
+					PuntOp<?> x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
 					x3.setFree(true);
 					m.add(x3);
 					x3.addObserver(l);
@@ -185,7 +210,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					viewer.getMapper().rename(f, var.getName());
 					viewer.getModel().add(f);
 // display function
-					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.INSTANCE.getSubKey()))
+					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.TYPE))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
@@ -198,8 +223,50 @@ public class Definitions implements Observer /*, ListModel*/ {
 			} else if ( first.isSame(OMConstants.RELATION1_EQ)) {
 // $x = 1;
 // $y = $x + 1;
+				OMObject arg = oma.getElementAt(1);
+				if(arg instanceof OMVariable) {
+					OMVariable var = (OMVariable) arg;
+					if("y".equals(var.getName())) {
+						Label fx = new Label();
+						fx.setString(text);
+						fx.setVisible(false);
+						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
+						lambda.addVariable(new OMVariable("x"));
+						fx.register(
+						viewer.getRegistered(Lambda.TYPE));
+						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
+						viewer.getModel().add(fx);
+						LocusModel lm = new LocusModelF(fx, viewer);
+					    Locus locus = new Locus(lm);
+					    viewer.getMapper().rename(locus, text);
+					    viewer.getModel().add(locus);
+						addElement(new CELL(text, locus));
+					} else if("x".equals(var.getName())) {
+						Label fy = new Label();
+						fy.setString(text);
+						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
+						lambda.addVariable(new OMVariable("y"));
+						fy.register(
+						viewer.getRegistered(Lambda.TYPE));
+						DefaultAdapter.getDefault(fy).put(OMObject.class, lambda);
+						viewer.getModel().add(fy);
+						LocusModel lm = new LocusModelXY(null, fy, null, viewer);
+					    Locus locus = new Locus(lm);
+					    viewer.getMapper().rename(locus, text);
+					    viewer.getModel().add(locus);
+						addElement(new CELL(text, locus));
+					}
+				}
 			}
 		}
+	}
+
+	private int findCell(String name) {
+		String text = "$f" + name + "=";
+		for(int i = 0; i < getSize(); i++ )
+			if( getElementAt(i).text.startsWith(text))
+			 	return i;	
+		return -1;
 	}
 
 	private void destroy(Object fs) {
@@ -209,6 +276,15 @@ public class Definitions implements Observer /*, ListModel*/ {
 			}
 	}
 
+	private void unlink(Observable fs) {
+		CELL cell = fs.adapt(CELL.class);
+		if(cell != null) {
+			cell.item = null;
+			cell.config = null;
+			update(cell);
+		}
+	}
+	
 	protected void remove(int i) {
 		delegate.remove(i);
 	}
@@ -216,7 +292,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY) {
 			observable.deleteObserver(this);
-			destroy(observable);
+			unlink(observable);
 		}	
 	}
 

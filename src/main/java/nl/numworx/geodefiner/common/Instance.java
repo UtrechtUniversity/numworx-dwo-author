@@ -14,6 +14,7 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMapImpl;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
@@ -94,7 +95,7 @@ public abstract class Instance {
 			OMObject object;
 			try {
 				String toParse = randomize(this.random, text);
-				object = new FormuleParser(text.substring(2)).parse();
+				object = new FormuleParser(toParse.substring(2)).parse();
 				definitions.define(text, object);
 			} catch (Throwable e) {
 				break;
@@ -105,7 +106,7 @@ public abstract class Instance {
 	public static String randomize(Map<String, Number> random, String text) {
 		for(Map.Entry<String, Number> entry: random.entrySet()) {
 			String key = "#" + entry.getKey() + "#";
-			text = text.replaceAll(key, entry.getValue().toString());
+			text = text.replaceAll(key, "(" + entry.getValue().toString() + ")");
 		}
 		return text;
 	}
