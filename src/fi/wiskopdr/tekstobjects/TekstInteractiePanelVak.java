@@ -378,14 +378,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
 		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
 		WiskOpdr.rb.getString("symboolIpLabel"),
-		"Heks"
+		"Heks",
+		"GeoDefiner"
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
 		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
-		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56},
+		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57},
 		{45},
 		{9, 55}, 
 		{10,39},
@@ -1898,19 +1899,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 		zetMaat();
 		
-		setReviewMode(WiskOpdr.applet.reviewMode() || WiskOpdr.applet.toetsLockedMode());
-		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
-	        if(reviewInteractiePanel==null) 
-	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
-	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
-	        	reviewInteractiePanel.setLayout(null);
-	        	reviewInteractiePanel.setOpaque(true);
-	        	reviewInteractiePanel.addMouseListener(this);
-	        	reviewInteractiePanel.addMouseMotionListener(this);
-	        	reviewInteractiePanel.setEditable(WiskOpdr.applet.reviewMode());
-	        	add(reviewInteractiePanel,0);
-	        }
-		}
+//		setReviewMode(WiskOpdr.applet.reviewMode() || WiskOpdr.applet.toetsLockedMode());
+//		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
+//	        if(reviewInteractiePanel==null) 
+//	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
+//	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
+//	        	reviewInteractiePanel.setLayout(null);
+//	        	reviewInteractiePanel.setOpaque(true);
+//	        	reviewInteractiePanel.addMouseListener(this);
+//	        	reviewInteractiePanel.addMouseMotionListener(this);
+//	        	reviewInteractiePanel.setEditable(WiskOpdr.applet.reviewMode());
+//	        	add(reviewInteractiePanel,0);
+//	        }
+//		}
 	}
 	
 	public Vector geefInteractiePanels()
@@ -1983,10 +1984,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
 			if(interactiePanel!=null)
 				interactiePanel.kijkNa();
-			reviewInteractiePanel.setScore(getScore());
-			reviewInteractiePanel.setScoreCorrectie(reviewScoreCorrectie);
-			reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
-			add(reviewInteractiePanel,0);
+			if(reviewInteractiePanel!=null) {
+				reviewInteractiePanel.setScore(getScore());
+				reviewInteractiePanel.setScoreCorrectie(reviewScoreCorrectie);
+				reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
+				add(reviewInteractiePanel,0);
+			}
 		}
     }
 	
