@@ -41,11 +41,11 @@
 			<groupId>fi.wiskopdr</groupId>
 			<artifactId>wiskopdr</artifactId>
 			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${wiskopdr.dir}/wiskopdr.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -60,7 +60,8 @@
 							fi.euclides.*,
 							nl.numworx.geodefiner.*,
 							nl.tue.win.riaca.openmath.lang,
-							nl.uu.fi.dwo.interaction.*,
+							nl.uu.fi.dwo.interaction.client,
+							nl.uu.fi.dwo.interaction.client.json,
 							com.google.gwt.json.client
 						</Private-Package>
 						<Main-class>nl.numworx.geodefiner.GeoDefiner</Main-class>
@@ -104,7 +105,6 @@
 	</build>
 	<packaging>bundle</packaging>
 	<properties>
-		<wiskopdr.dir>/Users/wim/Documents/workspace-luna/WiskOpdr/output/jar</wiskopdr.dir>
 		<jarsigner.skip>true</jarsigner.skip>
 	</properties>
 </project>
