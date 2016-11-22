@@ -199,13 +199,25 @@ public class Definitions implements Observer /*, ListModel*/ {
 					return;
 				}
 // $c := curve( $f, $f )
+				if(CURVE.isSame(f)) {
+					Label fx = (Label) depend[0];
+					Label fy = (Label) depend[1];
+					Label interval = depend.length > 2 ? (Label) depend[2]: null;				
+					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
+					Locus locus = new Locus(lm);
+					viewer.getMapper().rename(locus, var.getName());
+					viewer.getModel().add(locus);
+					addElement(new CELL(text, locus));
+					return;
+				}
 // $w := 1+2
 				}
 // $f := lambda[[$x] ->	$f($x) ]
 // $a := 1
 				{
 					Label l = new Label();l.setString(text);
-					l.setVisible(false);	
+					l.setVisible(false);
+					l.setX(20);l.setY(30);
 					Destroyable f = expression.interpret(oma, l, viewer.getMapper());
 					viewer.getMapper().rename(f, var.getName());
 					viewer.getModel().add(f);

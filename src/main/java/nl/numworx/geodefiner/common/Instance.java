@@ -103,7 +103,7 @@ public abstract class Instance {
 		}
 	}
 
-	public static String randomize(Map<String, Number> random, String text) {
+	public String randomize(Map<String, Number> random, String text) {
 		for(Map.Entry<String, Number> entry: random.entrySet()) {
 			String key = "#" + entry.getKey() + "#";
 			text = text.replaceAll(key, "(" + entry.getValue().toString() + ")");
