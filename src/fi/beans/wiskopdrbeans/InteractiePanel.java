@@ -67,7 +67,7 @@ public interface InteractiePanel
 	
 	public int getScoreMax();
 	
-// deze twee samen nemen in een enum SuccessStatus getSuccessStatus();	(SCORM 2004: PASSED, FAILED, UNKNWON)
+// deze twee samen nemen in een enum SuccessStatus getSuccessStatus();	(SCORM 2004: PASSED, FAILED, UNKNOWN)
 	public boolean isCorrect();	
 	public boolean isFout();
 	

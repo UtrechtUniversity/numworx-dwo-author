@@ -310,7 +310,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.sliderwidget.SliderWidget" , "[test] Slider" },
 		{ "fi.dataplot.DataPlot" , "[test] DataPlot" },
 		{ "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
-		{ "fi.heks.Heks" , "[test] Heks" }
+		{ "fi.heks.Heks" , "[test] Heks" },
+		{ "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
 	};
 	
 	
