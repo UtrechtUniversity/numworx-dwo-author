@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -35,6 +36,7 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
+import fi.euclides.proof.FlipFlop;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.HitTester2;
@@ -42,6 +44,7 @@ import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
+import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
 
@@ -202,12 +205,35 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			DefaultAdapter.getDefault(label).put(Shape.class, rect);
 		}
 		
+		private void visitCheckbox(Label label) {
+			JCheckBox checkbox = new JCheckBox(label.adapt(String.class));
+// TODO wat is het opschrift van de checkbox.
+// bijv.	checkbox.setText(label.getString());
+			int x = (int) label.getXd();
+			int y = (int) label.getYd();
+			checkbox.setSelected(label.getState() != Label.FALSE);
+			checkbox.setSize(checkbox.getPreferredSize());
+			Graphics g3 = g.create();
+			g3.translate(x, y);
+			g3.clipRect(0, 0, checkbox.getWidth(), checkbox.getHeight());
+			checkbox.print(g3);
+			checkbox.setLocation(x, y);
+			DefaultAdapter.getDefault(label).put(Shape.class, checkbox.getBounds());
+			g3.dispose();
+		}
+		
+		
 		
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
 			String string = label.getString();
-				
+			if(label.getRegistered() instanceof FlipFlop) {
+				visitCheckbox(label);
+				return;
+			}
+			
+			
 			if(string.contains("$")) {
 				formuleLabel(label);
 				return;
@@ -350,4 +376,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 	}
 
+	@Override
+	public String randomize(Map<String, Number> random, String text) {
+		Hashtable randomVarWaarden = new Hashtable(random);
+		String[] randomVarNamen = random.keySet().toArray(new String[random.size()]);
+		try {
+			return FormuleParser.randomizeString(text,randomVarNamen,randomVarWaarden);
+		} catch (Exception e) {
+		}
+		return super.randomize(random, text);
+	}
+
+	
+	
 }

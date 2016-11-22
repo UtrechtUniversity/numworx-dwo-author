@@ -41,6 +41,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private RandomPanel random;
 	private CheckDWOPanel checkDWO;
 	private CheckObjectsPanel checkObjects;
+	private ToolboxPanel toolbox;
 	private CommandPanel command;
 	private CBookContext context;
 	private JPanel content;
@@ -63,10 +64,12 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
 		checkDWO = new CheckDWOPanel();
 		checkObjects = new CheckObjectsPanel();
+		toolbox = new ToolboxPanel();
 		random = new RandomPanel();
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
 		tabs.addTab(checkDWO.getName(), null, checkDWO, checkDWO.getToolTipText());
 		tabs.addTab(checkObjects.getName(), null, checkObjects, checkObjects.getToolTipText());
+		tabs.addTab(toolbox.getName(), null, toolbox, toolbox.getToolTipText());
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
 		content.add(tabs, BorderLayout.EAST);
