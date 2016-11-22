@@ -47,6 +47,8 @@ public class Text_es extends java.util.ListResourceBundle
             { "blockNumbers3Text", "block numbers 3" },
             { "triaNumbers4Text", "triangular numbers 4" },
             
+            {"CBA_action.showAllPatterns", "Show all patterns"},
+            
             
 		};
 }

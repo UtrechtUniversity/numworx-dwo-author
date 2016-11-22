@@ -7,8 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import javax.swing.*;
 
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 // deze moet vanwege interface WiskOpdrApplet
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -17,8 +22,9 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 import fi.spot_problems_dwo.wiskopdr.AntwoordFormuleVak;
 
+
 public class SPInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
-							         ActionListener
+							         ActionListener, CBookAware
 									
 {
 	
@@ -58,6 +64,9 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	
 	
 	boolean noSetBounds = false;	
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
 	
 	public SPInteractiePanel()
 	{
@@ -516,5 +525,50 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 			
 			
 		}
+	}
+
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if(command.startsWith("action.showAllPatterns"))
+		{	drawCon.showAllPatterns();
+		}
+	}
+
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] sendCommands = {
+				"action.showAllPatterns"};
+		return sendCommands;
+	}
+
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String locString = Spot_Problems_dwo.rb.getString(CBA_PREFIX + cmd);
+		if(locString==null)
+			locString = cmd;
+		return locString;
 	}
 }
