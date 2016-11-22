@@ -288,13 +288,29 @@ if (k > 0)
 	
 	public boolean evalueer(double gevraagdX, double gevraagdY)	
 	{	double drx = geefDraaiX();
-		double dry =  geefDraaiY();
+		double dry = geefDraaiY();
 		double tol = 20;
+		
+		gevraagdX = putInRange(gevraagdX);
+		gevraagdY = putInRange(gevraagdY);
+		
+		drx = putInRange(drx);
+		dry = putInRange(dry);
 	
 		if ((Math.abs(gevraagdX - drx) < tol) && (Math.abs(gevraagdY - dry) < tol))
 			return true;
 		else
 			return false;
+	}
+	
+	public double putInRange(double hoek)
+	{
+		double inRange = hoek;
+		if (hoek < 0)
+			inRange = hoek + 360;
+		else if (hoek > 360)
+			inRange = hoek - 360;
+		return inRange;
 	}
 
 	public void setState(Hashtable h)
