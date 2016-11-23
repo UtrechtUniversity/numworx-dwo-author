@@ -4,6 +4,9 @@
 -outjars ../output/jar/graphtool.jar
 -injars ../../BalansFruitApplet/output/classes
 -outjars ../output/jar/balansfruitapplet.jar
+#-injars  ../../geodefiner/target/geodefiner.jar
+-injars ../lib/geodefiner.jar
+-outjars ../output/jar/geodefiner.jar
 
 
 -libraryjars <java.home>/lib/rt.jar
@@ -38,6 +41,7 @@
 -target 1.8
 -printmapping mapping.txt
 -forceprocessing
+-dontwarn
 
 -keep class fi.wiskopdr.text.* {
     <fields>;
@@ -96,6 +100,11 @@
 }
 
 -keep class fi.graphtool.GraphTool{
+    <fields>;
+    <methods>;
+}
+
+-keep class nl.numworx.geodefiner.GeoDefiner {
     <fields>;
     <methods>;
 }
