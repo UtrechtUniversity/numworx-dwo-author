@@ -48,6 +48,9 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 		if(e.getSource() == editor && "ingevuld".equals(e.getActionCommand()))
 		{
 			String string = editor.formuleVak.toString();
+			while(string.startsWith("$f "))
+				string = "$f" + string.substring(3);
+			
 			String substring = randomize(string.substring(2));
 			FormuleParser parser = new FormuleParser(substring);
 			OMObject object;
