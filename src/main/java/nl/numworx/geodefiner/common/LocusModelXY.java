@@ -1,7 +1,9 @@
 package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
@@ -15,33 +17,59 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Locus.LocusModel;
+import fi.euclides.model.math.Numbers;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
+import fi.euclides.model.Segment;
 import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.LocusModelF;
+import fi.euclides.proof.Const;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
 public class LocusModelXY extends Observable implements LocusModel, Observer, NameMapper {
 
+	private static final Label ZERO = new Label(); 
+	static { 
+		ZERO.value = Numbers.ZERO;
+		ZERO.setState(Label.EXACT);
+		ZERO.registered = new Const(); // geen tracker
+		ZERO.setString("0");
+	}
 	private NameMapper mapper;
 	private PuntenLijn xas;
 	private PuntOp<Lijn> source;
 	private Label y1, y2;
 	private Label x;
 	private Label fx,fy;
-	private List<Destroyable> output1, output2;
+	private Set<Destroyable> output = new HashSet<>();
 	private String FX, FY;
 	private Coordinaten dest;
+	private Label interval;
 
 	public LocusModelXY(Label fx, Label fy, Label interval, Tracker tracker) {
+		output.add(fx);
+		output.add(fy);
 		mapper = tracker.getMapper();
 		Punt O = mapper.getO();
 		Punt U = mapper.getU();
-		O.addObserver(this);
-		U.addObserver(this);
-		xas = new PuntenLijn(U,O);
+		if(interval != null) {
+			Destroyable[] depend = interval.getDepend();
+			output.add(interval);
+			this.interval = interval;
+			Label min = (Label) depend[0];
+			Label max = (Label) depend[1];
+			Coordinaten Pmax = new Coordinaten(max, ZERO, O, U);
+			Coordinaten Pmin = new Coordinaten(min, ZERO, O, U);
+			xas = new Segment(Pmin, Pmax);
+			output.add(Pmax);
+			output.add(Pmin);
+		} else {
+			output.add(O);
+			output.add(U);
+			xas = new PuntenLijn(U,O);
+		}
 		source = xas.pointOn(O.getX(), O.getY());
 		y1 = new Label();
 		y2 = new Label();
@@ -50,11 +78,10 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		depend[0] = source;
 		x = coordX.define(depend);
 		this.fx = fx;
-		this.output1 = LocusModelF.varsOf(fx);
-		for(Destroyable i: output1) i.addObserver(this);
+		this.output .addAll( LocusModelF.varsOf(fx) );
 		this.fy = fy;
-		this.output2 = LocusModelF.varsOf(fy);
-		for(Destroyable i: output2) i.addObserver(this);
+		this.output. addAll( LocusModelF.varsOf(fy));
+		for(Destroyable i: output) i.addObserver(this);
 		
 		FX = mapper.toString(fx);
 		FY = mapper.toString(fy);
@@ -84,7 +111,10 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 
 	@Override
 	public void destroy() {
-//TODO
+		for(Destroyable i: output) {
+			i.deleteObserver(this);
+		}
+		xas.destroy();
 	}
 
 	@Override
@@ -94,16 +124,12 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 
 	@Override
 	public Destroyable[] getDepend() {
-		return new Label[] { fx, fy };
+		return new Label[] { fx, fy , interval};
 	}
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		if(observable == xas.getP1() || observable == xas.getP2())
-		{
-			setChanged();
-		}
-		if(output1.contains(observable)||output2.contains(observable))
+		if (output.contains(observable))
 			setChanged();
 
 		notifyObservers(arg);

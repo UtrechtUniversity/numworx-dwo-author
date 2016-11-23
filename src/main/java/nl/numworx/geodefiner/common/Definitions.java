@@ -49,7 +49,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
 		expression = new Expression(viewer);
-		new Interval().setTracker(viewer);
+		Interval delegate = new Interval();
+		delegate.setTracker(viewer);
+		expression.put(INTERVAL, delegate);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -274,10 +276,15 @@ public class Definitions implements Observer /*, ListModel*/ {
 	}
 
 	private int findCell(String name) {
-		String text = "$f" + name + "=";
+		String text = "$f" + name ;
 		for(int i = 0; i < getSize(); i++ )
-			if( getElementAt(i).text.startsWith(text))
-			 	return i;	
+		{	
+			String t = getElementAt(i).text;
+			if( t.startsWith(text))
+			{	if(t.substring(text.length()).trim().startsWith("="))
+			 		return i;	
+			}
+		}
 		return -1;
 	}
 
