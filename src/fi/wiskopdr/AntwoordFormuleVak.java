@@ -67,8 +67,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	boolean nagekeken = false;
 	
 	private boolean isGelijkwaardig = false;
+	private boolean pastGelijkwaardig = false; // t.b.v. nakijken eerste stap 
 	private boolean isHerleid = false;
 	private boolean isExact = false;
+	private boolean pastExact = false; // t.b.v. nakijken eerste stap
 	private boolean isSignificant = false;
 	private int puntenGelijkwaardig = 10;
 	private int puntenHerleiding = 0;
@@ -1209,17 +1211,24 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	}
 	
 	private void zetGoedFoutStap(int uitslag, int pijlVakNr)
-	{	if(!check) return;
-		if(imageComponentenStap[pijlVakNr]!=null) remove(imageComponentenStap[pijlVakNr]);
-		if(uitslag==GOED)imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.GOEDKRUL);
-		else if(uitslag==FOUT) imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.FOUTKRUIS);
-		else if(uitslag==HALF) imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.HALFKRUL);
-		else if(uitslag==GEEN) imageComponentenStap[pijlVakNr] = new ImageComponent(null);
+	{
+		if (!check)
+			return;
+		if (imageComponentenStap[pijlVakNr] != null)
+			remove(imageComponentenStap[pijlVakNr]);
+		if (uitslag == GOED)
+			imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.GOEDKRUL);
+		else if (uitslag == FOUT)
+			imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.FOUTKRUIS);
+		else if (uitslag == HALF)
+			imageComponentenStap[pijlVakNr] = new ImageComponent(WiskOpdr.HALFKRUL);
+		else if (uitslag == GEEN)
+			imageComponentenStap[pijlVakNr] = new ImageComponent(null);
 		int x = pijlVakken[pijlVakNr].getLocation().x + 20;
-		int y = pijlVakken[pijlVakNr].getLocation().y + pijlVakken[pijlVakNr].getSize().height/2-15;
-		imageComponentenStap[pijlVakNr].setLocation(x,y);
+		int y = pijlVakken[pijlVakNr].getLocation().y + pijlVakken[pijlVakNr].getSize().height / 2 - 15;
+		imageComponentenStap[pijlVakNr].setLocation(x, y);
 		add(pijlVakken[pijlVakNr]);
-		add(imageComponentenStap[pijlVakNr],0);
+		add(imageComponentenStap[pijlVakNr], 0);
 	}
 	
 	public void zetJuisteAntwoord(String s)
@@ -1512,6 +1521,13 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				e1 = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
+		
+		// check of substitutie in het spel
+		if (substitutie != null)
+		{
+			e1 = e1.substitueer(substitutie, "u");
+		}
+
 		Expressie e2 = fv2.geefExpressie();
 		if(e2==null) 
 		{	String antwoordString = fv2.toString();
@@ -1522,6 +1538,13 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				e2 = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
+		
+		// check of substitutie in het spel
+		if (substitutie != null)
+		{
+			e2 = e2.substitueer(substitutie, "u");
+		}
+
 		if(e1==null || e2==null)
 		{	zetGoedFoutStap(FOUT,pijlVakNr);
 			return;
@@ -1665,38 +1688,59 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	}
 	
 	public void kijkNa()
-	{	if(mode==0 || mode==1)
-		{	kijkNa(-1);
-			if(ingevuld)produceAction("changed");
+	{
+		if (mode == 0 || mode == 1)
+		{
+			kijkNa(-1);
+			if (ingevuld)
+				produceAction("changed");
 		}
-		if(mode==2 || mode==3)
-		{	int start = 0;
-			if(startString) start = 1;
-			if(formuleVakken[stapNr]!=null && formuleVakken[stapNr].toString().equals("$f@"))
-			{	boolean nk = nagekeken;
-				if(stapNr>1)stapTerug();
-				else if(!startString && stapNr>0)stapTerug();
+		if (mode == 2 || mode == 3)
+		{
+			int start = 0;
+			if (startString)
+				start = 1;
+			if (formuleVakken[stapNr] != null && formuleVakken[stapNr].toString().equals("$f@"))
+			{
+				boolean nk = nagekeken;
+				if (stapNr > 1)
+					stapTerug();
+				else if (!startString && stapNr > 0)
+					stapTerug();
 				nagekeken = nk;
 			}
 			int voortgangsScore = 0;
-			for(int i=start ; i<stapNr+1 ; i++)
-			{	formuleVak = formuleVakken[i];
+			for (int i = start; i < stapNr + 1; i++)
+			{
+				formuleVak = formuleVakken[i];
 				checkAntwoord();
-				if(i>0)
-				{	checkStap(i-1, formuleVakken[i-1], formuleVakken[i]);
-					if(i==stapNr)kijkNa(i);
+				if (i > 0) // geeft een kruis als start = 1
+				{
+					if (start == 1 && i == start)
+					{
+						// bij startstring niet stap 1 met de startstring vergelijken, maar stap 1 evalueren
+						zetGoedFoutStap(isExact || isGelijkwaardig || pastExact || pastGelijkwaardig ? GOED : FOUT, i - 1); // GOED ook bij DOOR en HALFGOED
+					}
+					else
+					{
+						checkStap(i - 1, formuleVakken[i - 1], formuleVakken[i]);
+					}
+					
+					if (i == stapNr)
+						kijkNa(i);
 				}
-				else if(stapNr==0)
+				else if (stapNr == 0)
 					kijkNa(i);
-				if(hasFeedback)
-					voortgangsScore = Math.max(voortgangsScore,puntenFeedback);
-				//System.out.println("voortgangsScore: "+voortgangsScore);
+				if (hasFeedback)
+					voortgangsScore = Math.max(voortgangsScore, puntenFeedback);
+				// System.out.println("voortgangsScore: "+voortgangsScore);
 			}
-			if(hasFeedback)
+			if (hasFeedback)
 				score = voortgangsScore;
-			//System.out.println("Score: "+score);
-			if(ingevuld)produceAction("changed");
-		}		
+			// System.out.println("Score: "+score);
+			if (ingevuld)
+				produceAction("changed");
+		}
 	}
 	
 	public void kijkNaKlaarKnop()
@@ -2100,9 +2144,9 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		{	int aantalAnswerModels = answerModels.length;
 			for(int h=0 ; h< aantalAnswerModels; h++)
 			{	setAnswerModel(h);
-				boolean pastGelijkwaardig = false;
+				pastGelijkwaardig = false;
 				boolean pastHerleid = false;
-				boolean pastExact = false;
+				pastExact = false;
 				boolean pastSignificant = false;
 				
 				if(casCheck)
@@ -2451,16 +2495,28 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		
 		
 		pijlVakken = new PijlVak[100];
-		for(int i=0 ; i<stapNr; i++)
-		{	y = formuleVakken[i].getLocation().y + formuleVakken[i].getSize().height/2;
-			if(pijlVakOperatoren!=null && pijlVakOperatoren[i]!=null)pijlVakken[i] = new PijlVak(pijlVakOperatoren[i]);
-		   	else pijlVakken[i] = new PijlVak("gelijkwaardig");
-		   	if(pijlVakInhouden!=null && pijlVakInhouden[i]!=null)pijlVakken[i].zetExpressie(pijlVakInhouden[i]);	
-		   	pijlVakken[i].setLocation(getSize().width-pijlX,y);
-		   	if(pijlVakOperatoren!=null && pijlVakOperatoren[i]!=null && pijlVakOperatoren[i].equals("sub")) 
-		   	{	pijlVakken[i].setLocation(getSize().width-pijlX-30,y);
-		   		add(pijlVakken[i]);
-		   	}
+		for (int i = 0; i < stapNr; i++)
+		{
+			y = formuleVakken[i].getLocation().y + formuleVakken[i].getSize().height / 2;
+			if (pijlVakOperatoren != null && pijlVakOperatoren[i] != null)
+				pijlVakken[i] = new PijlVak(pijlVakOperatoren[i]);
+			else
+				pijlVakken[i] = new PijlVak("gelijkwaardig");
+			
+			// het prefixvak heeft niet de goede variabele bij een substitutie; de constructor van PijlVak doet default p bij substitutie
+			if (pijlVakOperatoren != null && pijlVakOperatoren[i] != null && pijlVakOperatoren[i].equals("sub"))
+			{
+				pijlVakken[i].setSubVar("u");
+			}
+			
+			if (pijlVakInhouden != null && pijlVakInhouden[i] != null)
+				pijlVakken[i].zetExpressie(pijlVakInhouden[i]);
+			pijlVakken[i].setLocation(getSize().width - pijlX, y);
+			if (pijlVakOperatoren != null && pijlVakOperatoren[i] != null && pijlVakOperatoren[i].equals("sub"))
+			{
+				pijlVakken[i].setLocation(getSize().width - pijlX - 30, y);
+				add(pijlVakken[i]);
+			}
 		}
 	    
 	    this.ingevuld = ingevuld;
