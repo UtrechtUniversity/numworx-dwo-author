@@ -1949,6 +1949,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		formuleVakSimpel = formuleVakken[0];
 	}
 
+	public void checkStap(int pijlVakNr, VergelijkingMeerv v1, VergelijkingMeerv v2)
+	{
+		boolean gelijkw = Algebra.zijnGelijkwaardigeVergelijkingen(v1, v2);
+		zetGoedFoutStap(gelijkw ? GOED : FOUT, pijlVakNr);
+	}
+	
 	public void checkStap(int pijlVakNr, FormuleVak fv1, FormuleVak fv2)
 	{
 		VergelijkingMeerv v1 = fv1.geefVergelijking();
@@ -1986,12 +1992,25 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				//if (stepsForLinKwad && pijl && start > 0)
 				if (stepsForLinKwad && start > 0)
 				{
-					checkStap(i - 1, formuleVakken[i - 1], formuleVakken[i]);
+					VergelijkingMeerv verg1 = formuleVakken[i - 1].geefVergelijking();
+					VergelijkingMeerv verg2 = formuleVakken[i].geefVergelijking();
+					
+					// check of er een substitutie in het spel is
+					if (substitutie != null) // er is een substitutie
+					{
+						verg1 = verg1.substitueer(substitutie, "p");
+						verg2 = verg2.substitueer(substitutie, "p");
+						
+					}
+
+					checkStap(i - 1, verg1, verg2);
+					
 					if (i == stapNr)
 						kijkNa(i);
 				}
 				else
 					kijkNa(i);
+				
 				if(hasFeedback)
 					voortgangsScore = Math.max(voortgangsScore,score);
 			}
