@@ -8,6 +8,7 @@ import fi.wiskopdr.expressies.repr.AbstractConverter;
 
 public class FunctieMV extends Expressie  
 {	
+	// Wat doet dit?
 	public static FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
 	
 	public Expressie[] kinderen;
