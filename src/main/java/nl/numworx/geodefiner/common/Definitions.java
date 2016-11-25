@@ -171,7 +171,14 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 // $l := polygon($P, ...)
 				if (POLYGON.isSame(f)) {
-					Triangle t3 = viewer.getModel().buildTriangle(depend);
+					Triangle t3;
+					if(depend.length > 3)
+					{
+						t3 = new Polygon(depend);
+						viewer.getModel().add(t3);
+					}
+					else
+						t3 = viewer.getModel().buildTriangle(depend);
 					addElement(new CELL(text, t3));
 					viewer.getMapper().rename(t3, var.getName());
 					return;				

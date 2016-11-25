@@ -72,6 +72,7 @@ public abstract class Instance {
 			for( String name : configuration.keySet()) {
 				ObjectMap value = configuration.getObjectMap(name);
 				Destroyable d = viewer.getMapper().fromString(name);
+				if(d == null) continue;
 				UIModel<?, ?> model = uiModelFactory.build(d);
 				model.fromMap(value);
 				model.install();
@@ -171,7 +172,7 @@ public abstract class Instance {
 		Punt O = m.buildPunt(Numbers.createInteger(mx), Numbers.createInteger(my));
 		DefaultAdapter.getDefault(O).put("O");
 		Punt U = new HorizontalPunt(Numbers.createInteger(mx+50), O.getX(), O);
-		DefaultAdapter.getDefault(U).put("U");
+		DefaultAdapter.getDefault(U).put("e");
 		m.add(U);
 		Vector<Destroyable> select = m.getSelect();
 		select.add(U);
