@@ -873,6 +873,8 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		for(int i = 0; i < oplossingen.length; i++)
 		{
 			Expressie[] leerlingOpl = oplossingen[i];
+			//mbv isOplossing houd je bij of deze leerlingOplossing inderdaad een oplossing is
+			boolean isOplossing = false;
 			for(int j = 0; j < juisteOplossingen.length; j++)
 			{
 				boolean gelijk = true;
@@ -885,10 +887,14 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 					}
 				}
 				if(gelijk)
-					oplossingenCorrect[j] = true;
+				{	oplossingenCorrect[j] = true;
+					isOplossing = true;
+				}
 			}
+			if(!isOplossing)
+				return false;
 		}
-		gelijkwaardig = true;
+		//controleren of alle oplossingen gevonden zijn. 
 		for(int i = 0; i < oplossingenCorrect.length; i++)
 		{	if(!oplossingenCorrect[i])
 			{	gelijkwaardig = false;
