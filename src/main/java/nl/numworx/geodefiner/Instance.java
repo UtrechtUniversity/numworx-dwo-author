@@ -71,6 +71,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	private final class InstanceViewer extends AWTViewer implements Observer, NameMapper {
 
+		private static final float DEFAULT_POINTSIZE = 5f;
+
 		@Override
 		public void paint() {
 			content.repaint();
@@ -99,7 +101,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void setStatus(String string) {
-			// aanwijzingen...
+			System.out.println(string);
 		}
 
 		private WeakHashMap<String, Destroyable> cache = new WeakHashMap<String,Destroyable>();
@@ -221,9 +223,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			DefaultAdapter.getDefault(label).put(Shape.class, checkbox.getBounds());
 			g3.dispose();
 		}
-		
-		
-		
+				
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
@@ -232,13 +232,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				visitCheckbox(label);
 				return;
 			}
-			
-			
 			if(string.contains("$")) {
 				formuleLabel(label);
 				return;
 			}
-			
 			FontMetrics fm = g.getFontMetrics();
 			double x = label.getXd();
 			double y = label.getYd();
@@ -259,6 +256,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			DefaultAdapter.getDefault(label).put(Shape.class, rect);
 			drawString(string, x, y);
 		}
+
+		@Override
+		public void visitPunt(Punt punt) {
+			Float ps = punt.adapt(Float.class);
+			if(ps != null) {
+				pointSize = ps.floatValue();
+			} else
+				pointSize = DEFAULT_POINTSIZE;
+			super.visitPunt(punt);
+		}
+
+	
 	}
 
 	private CBookEventHandler handler = new CBookEventHandler(this);

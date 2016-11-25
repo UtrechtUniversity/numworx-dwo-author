@@ -1,7 +1,5 @@
 package nl.numworx.geodefiner.ui;
 
-import java.awt.Color;
-import java.util.HashMap;
 import java.util.Map;
 
 import nl.numworx.geodefiner.common.PointType;
@@ -21,6 +19,9 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 			FreePoint r = (FreePoint) item;
 			r.setFree(!rigid);
 		}
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		adapter.put(Float.valueOf(size));
+		adapter.put(type);
 		super.install(item);
 	}
 
