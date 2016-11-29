@@ -11,7 +11,6 @@ import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
-
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -35,6 +34,10 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
     
     private JCheckBox[] selectableCheckboxes;
 	private TekstEditor[] keuzeVelden;
+	private int maxKeuzeVelden = 50;
+	private JPanel keuzeVeldenPanel;
+	private JScrollPane scrollPaneKeuzeVelden;
+	private JPanel basisKeuzeVeldenPanel;
 	
     private JLabel[] keuzeLabels;
 	
@@ -90,8 +93,25 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         aantalKeuzesTF.addFocusListener(this);
         add(aantalKeuzesTF);
         
+        basisKeuzeVeldenPanel = new JPanel();
+    	basisKeuzeVeldenPanel.setBounds(10,80,220,400);
+		basisKeuzeVeldenPanel.setLayout(new BorderLayout());
+    	add(basisKeuzeVeldenPanel);
+    	basisKeuzeVeldenPanel.setOpaque(false);
+        
+        keuzeVeldenPanel = new JPanel();
+		keuzeVeldenPanel.setLayout(null);
+		keuzeVeldenPanel.setBounds(0,0,190,100);
+    	keuzeVeldenPanel.setOpaque(false);
+    	
+    	scrollPaneKeuzeVelden = new JScrollPane(keuzeVeldenPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    	scrollPaneKeuzeVelden.setBorder(BorderFactory.createEmptyBorder());
+    	basisKeuzeVeldenPanel.add(scrollPaneKeuzeVelden);
+    	scrollPaneKeuzeVelden.setBackground(getBackground());
+    	
+        
         selectableCheckboxes = new JCheckBox[20];
-        keuzeVelden = new TekstEditor[20];
+        keuzeVelden = new TekstEditor[maxKeuzeVelden];
         keuzeLabels = new JLabel[20];
 		
 		
@@ -167,8 +187,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	
 	public void maakKeuzeVelden()
     {
-        for(int i=0 ; i<aantalKeuzes ; i++)
-        {
+       
             /*if(keuzeLabels[i]==null)
             {   keuzeLabels[i] = new JLabel("Nr "+(i+1));
                 keuzeLabels[i].setBounds(10,80+i*85,40,80);
@@ -180,13 +199,30 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
                 selectableCheckboxes[i].setBounds(10,80+i*85,20,80);
                 add(selectableCheckboxes[i],0);
             }*/
-            if(keuzeVelden[i]==null)
-            {   keuzeVelden[i] = new TekstEditor();
-            	
-                keuzeVelden[i].setBounds(30,80+i*85,190,80);
-                add(keuzeVelden[i],0);
+			keuzeVeldenPanel.setBounds(0,80,200,aantalKeuzes*85);
+			for(int i=0 ; i<aantalKeuzes ; i++)
+            {
+	        	if(keuzeVelden[i]==null)
+	            {   keuzeVelden[i] = new TekstEditor();
+	            	keuzeVelden[i].setBounds(10,i*85,190,80);
+	                keuzeVeldenPanel.add(keuzeVelden[i],0);
+	            }
             }
-        }   
+        	
+			keuzeVeldenPanel.setPreferredSize(new Dimension(200,aantalKeuzes*85));
+			keuzeVeldenPanel.scrollRectToVisible(new Rectangle(0,0, 10, 100));
+			keuzeVeldenPanel.revalidate();
+			keuzeVeldenPanel.doLayout();
+        	
+        	
+        	
+//            if(keuzeVelden[i]==null)
+//            {   keuzeVelden[i] = new TekstEditor();
+//            	
+//                keuzeVelden[i].setBounds(30,80+i*85,190,80);
+//                add(keuzeVelden[i],0);
+//            }
+//        }   
         repaint();
     }
 	
@@ -323,20 +359,22 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			    maxScorePV.setText(""+scoreMax);
 			     
 			    
-			    for(int i=0 ; i<aantalKeuzes ; i++)
-			    {   
-			    	/*selectableCheckboxes[i] = new JCheckBox();//("Nr "+(i+1));
-		            selectableCheckboxes[i].setOpaque(false);
-		            selectableCheckboxes[i].setBounds(10,80+i*85,20,80);
-		            add(selectableCheckboxes[i],0);*/
-		           
-			    	
-			    	keuzeVelden[i] = new TekstEditor();
-			        keuzeVelden[i].zetTekst(keuzeMogelijkheden[i]);
-			        keuzeVelden[i].layoutTekst();
-			        keuzeVelden[i].setBounds(30,80+i*85,170,80);
-			        add(keuzeVelden[i],0);
-			    }
+//			    for(int i=0 ; i<aantalKeuzes ; i++)
+//			    {   
+//			    	/*selectableCheckboxes[i] = new JCheckBox();//("Nr "+(i+1));
+//		            selectableCheckboxes[i].setOpaque(false);
+//		            selectableCheckboxes[i].setBounds(10,80+i*85,20,80);
+//		            add(selectableCheckboxes[i],0);*/
+//		           
+//			    	
+//			    	keuzeVelden[i] = new TekstEditor();
+//			        keuzeVelden[i].zetTekst(keuzeMogelijkheden[i]);
+//			        keuzeVelden[i].layoutTekst();
+//			        keuzeVelden[i].setBounds(30,80+i*85,170,80);
+//			        add(keuzeVelden[i],0);
+//			    }
+			    
+			    maakKeuzeVelden();
 				
 			    this.answerModels = new Hashtable[answerModels.length];
 				for(int i=0 ; i<answerModels.length ; i++)
