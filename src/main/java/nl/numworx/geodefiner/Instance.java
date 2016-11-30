@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
@@ -267,6 +269,31 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.visitPunt(punt);
 		}
 
+		final Color grayish = new Color(0.125f,0.125f,0.125f,0.125f);
+		final Color reddish = new Color(0.5f, 0, 0, 0.125f);
+
+		public void visitTriangle(Triangle t)
+		{
+			Color c = t.adapt(Color.class);
+			if(c != null) 
+				g.setColor(c);
+			else
+			if (getModel().getSelect().contains(t))
+				g.setColor(reddish);
+			else
+				g.setColor(grayish);
+			Punt[] depend = (Punt[]) t.getDepend();
+			int length = depend.length;
+			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, length);
+			path.moveTo(depend[length-1].getXd(), depend[length-1].getYd());
+			for (int i = 0; i < length; i++) {
+				Punt p = depend[i];
+				path.lineTo(p.getXd(), p.getYd());
+			}			
+			g.fill(path);
+			DefaultAdapter.getDefault(t).put(Shape.class, path);
+		}
+
 	
 	}
 
@@ -275,7 +302,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	{
 		viewer = new InstanceViewer();
 		definitions = new Definitions(viewer);
-		uiModelFactory = new UIModelFactory();
+		uiModelFactory = new UIModelFactory(viewer);
 	}
 	
 	Definitions getDefinitions() {

@@ -119,14 +119,22 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		String name = evt.getPropertyName();
 		if("item".equals(name)) {
 			CellItem source = (CellItem) evt.getSource();
-			model.remove(source.index);
+			remove(source);
 			return;
 		}
-		
-		
 		String text = (String) evt.getOldValue();
 		OMObject object = (OMObject) evt.getNewValue();
 		model.define(text, object);
+	}
+
+	void remove(CellItem source) {
+		CELL cell = source.getCell();
+		int size = model.getSize();
+		for (int i= 0; i < size; i++)
+			if (model.getElementAt(i) == cell) {
+				model.remove(i);
+				break;
+			}
 	}
 
 }

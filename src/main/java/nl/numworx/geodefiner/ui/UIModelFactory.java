@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.ui;
 
 import nl.numworx.geodefiner.common.UIModel;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
@@ -16,6 +17,10 @@ import fi.euclides.model.Visitor;
 public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory implements Visitor {
 
 	private UIModel<?, UIEditor> model;
+	private Tracker tracker;
+	public UIModelFactory(Tracker viewer) {
+		this.tracker = viewer;
+	}
 
 	public UIModel<?, UIEditor> build(Destroyable d) {
 		model = null;
@@ -24,7 +29,7 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 	
 	public void visitPunt(Punt p) {
-		model = new PointModel().init(p);
+		model = new PointModel().init(p).set(tracker);
 	}
 
 	public void visitLijn(Lijn l) {

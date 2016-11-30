@@ -126,6 +126,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("axes", axes.toMap());
 		launchdata.put("positions", instance.getState().get("positions"));
 		launchdata.put("random", random.getText());
+		launchdata.put("checkDWO", checkDWO.toMap());
 		return launchdata;
 	}
 
@@ -134,7 +135,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	}
 
 	public int getMaxScore() {
-		return 0;
+		return checkDWO.getMaxScore();
 	}
 
 	public String[] getSendCmds() {

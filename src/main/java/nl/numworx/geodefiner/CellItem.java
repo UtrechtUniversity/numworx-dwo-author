@@ -2,6 +2,7 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
@@ -38,12 +39,17 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 public class CellItem extends JPanel {
 	
 	private ImageIcon editImage = new ImageIcon(getClass().getResource("resources/edit.gif"));
+	private ImageIcon wisImage = new ImageIcon(getClass().getResource("resources/teken_wisknop.gif"));
 	private AbstractViewer viewer;
 	
 	class DeleteAction extends AbstractAction {
-		DeleteAction() { super("X"); } // icoon 
+		DeleteAction() { super(null, wisImage); } // icoon 
 		public void actionPerformed(ActionEvent e) {
-			
+// find model to remove
+			Container container = CellItem.this.getParent();
+			while (!(container instanceof DefinitionPanel)) container = container.getParent();
+			DefinitionPanel parent = (DefinitionPanel) container;
+			parent.remove(CellItem.this);
 		}
 	}
 	
@@ -106,12 +112,10 @@ public class CellItem extends JPanel {
 	JButton potlood;
 	FormuleVak center;
 	boolean canDelete;
-	int index;
 
 	public CellItem(CELL cell, AbstractViewer viewer, int i0) {
 		super(new BorderLayout());
 		canDelete = true;
-		index = i0;
 		setBackground(Color.WHITE);
 		this.setCell(cell);
 		this.viewer = viewer;
@@ -164,7 +168,7 @@ public class CellItem extends JPanel {
 	private UIModel<?, UIEditor> getCellConfig() {
 		if(getCell().config == null) 
 		{
-			getCell().config = new UIModelFactory().build(getCell().item);
+			getCell().config = new UIModelFactory(viewer).build(getCell().item);
 		}
 		return (UIModel<?, UIEditor>) getCell().config;
 	}
