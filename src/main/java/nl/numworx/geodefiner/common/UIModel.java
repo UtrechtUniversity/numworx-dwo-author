@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.common;
 import java.util.Map;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 
 public interface UIModel<T extends Destroyable, U> {
@@ -13,4 +14,5 @@ public interface UIModel<T extends Destroyable, U> {
 	void fromMap(ObjectMap value);
 	U editor();
 	void setVisible(boolean visible);
+	UIModel<T, U> set(Tracker tracker);
 }

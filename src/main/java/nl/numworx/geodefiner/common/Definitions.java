@@ -12,7 +12,6 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
-import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
@@ -25,7 +24,6 @@ import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.openmath.Expression;
 import fi.euclides.expr.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
@@ -40,9 +38,9 @@ import fi.euclides.util.Observer;
  * @author wim
  *
  */
-@SuppressWarnings("serial")
 public class Definitions implements Observer /*, ListModel*/ {
 
+	private static final OMSymbol ARITH1_ABS = OMConstants.ARITH1_ABS;
 	protected final List<CELL> delegate = new Vector<CELL>();
 	final private Tracker viewer;
 
@@ -52,6 +50,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 		Interval delegate = new Interval();
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);
+		Abs abs = new Abs();
+		abs.setTracker(viewer);
+		expression.put(ARITH1_ABS, abs);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");

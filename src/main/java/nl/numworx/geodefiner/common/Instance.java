@@ -21,12 +21,14 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
+import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.Memento;
+import fi.euclides.proof.FlipFlop;
 import fi.euclides.util.DefaultAdapter;
 
 public abstract class Instance {
@@ -36,7 +38,17 @@ public abstract class Instance {
 	protected Tracker viewer;
 	//protected int width, height;
 	
-	protected final SelectHandler selector = new SelectHandler();
+	protected final SelectHandler selector = new SelectHandler() {
+
+		@Override
+		public void visitLabel(Label l) {
+			if (click && testLabel && l.getRegistered() instanceof FlipFlop)  { 
+				flip(l);
+				return;
+			}
+			super.visitLabel(l);
+		}		
+	};
 	
 	protected ObjectMap launchData, state;
 	protected Map<String, Number> random;
@@ -48,6 +60,12 @@ public abstract class Instance {
 		installAxes();
 		installConfiguration();
 		installPositions();
+	}
+
+	void flip(Label l) {
+		boolean flip = l.getState() == Label.FALSE;
+		l.setValue(flip ? Numbers.ZERO:Numbers.ONE);
+		((FlipFlop) l.getRegistered()).test(l);
 	}
 
 	private void installPositions() {
