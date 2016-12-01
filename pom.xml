@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>org.c-book</groupId>
 			<artifactId>cbookeditor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1-20161201.100805-1</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
@@ -42,6 +42,11 @@
 			<artifactId>wiskopdr</artifactId>
 			<version>0.0.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.tue.win.riaca.openmath</groupId>
+			<artifactId>om-lib</artifactId>
+			<version>1.3.18a</version>
 		</dependency>
 	</dependencies>
 	<build>
