@@ -30,16 +30,16 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	private JLabel aantalKeuzesLabel;
     private JTextField aantalKeuzesTF;
     
-    private JTextField aantalSelectablesTF;
+    //private JTextField aantalSelectablesTF;
     
-    private JCheckBox[] selectableCheckboxes;
+    //private JCheckBox[] selectableCheckboxes;
 	private TekstEditor[] keuzeVelden;
 	private int maxKeuzeVelden = 50;
 	private JPanel keuzeVeldenPanel;
 	private JScrollPane scrollPaneKeuzeVelden;
 	private JPanel basisKeuzeVeldenPanel;
 	
-    private JLabel[] keuzeLabels;
+    //private JLabel[] keuzeLabels;
 	
 	
 	//private AntwoordEditPanel antwoordEditPanel;
@@ -94,7 +94,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         add(aantalKeuzesTF);
         
         basisKeuzeVeldenPanel = new JPanel();
-    	basisKeuzeVeldenPanel.setBounds(10,80,220,400);
+    	basisKeuzeVeldenPanel.setBounds(10,80,220,460);
 		basisKeuzeVeldenPanel.setLayout(new BorderLayout());
     	add(basisKeuzeVeldenPanel);
     	basisKeuzeVeldenPanel.setOpaque(false);
@@ -110,9 +110,9 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
     	scrollPaneKeuzeVelden.setBackground(getBackground());
     	
         
-        selectableCheckboxes = new JCheckBox[20];
+        //selectableCheckboxes = new JCheckBox[maxKeuzeVelden];
         keuzeVelden = new TekstEditor[maxKeuzeVelden];
-        keuzeLabels = new JLabel[20];
+        //keuzeLabels = new JLabel[maxKeuzeVelden];
 		
 		
 		antwoordLabel = makeLabel(250,160,520,20,WiskOpdr.rb.getString("antwoordLabel"),true);
