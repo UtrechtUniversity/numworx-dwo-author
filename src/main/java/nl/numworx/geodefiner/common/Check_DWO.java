@@ -11,12 +11,13 @@ import fi.euclides.model.Label;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class Check_DWO implements Observer {
+public class Check_DWO extends Observable implements Observer {
 
 	private Tracker tracker;
 	private int maxScore, score;
 	private boolean status;
 	private boolean check;
+	
 	public Check_DWO(Tracker tracker) {
 		this.tracker = tracker;
 		status = true;
@@ -26,6 +27,11 @@ public class Check_DWO implements Observer {
 	}
 
 	public void fromMap(ObjectMap map) {
+		if(map == null) {	
+			check = false;
+			maxScore = 0;
+			return;
+		}
 		check = map.getBoolean("check", false);
 		if(!check) {
 			maxScore = 0;
@@ -41,7 +47,10 @@ public class Check_DWO implements Observer {
 		} catch (ParseException e) {
 			logic = new OMSymbol("logic1", "true");
 		}
-		Destroyable target = expr.interpret(logic, new Label(), tracker.getMapper());
+		Label input = new Label();
+		input.setVisible(false);
+		input.setString(formule.substring(2));
+		Destroyable target = expr.interpret(logic, input, tracker.getMapper());
 		if(target instanceof Label)
 		{	update(target, null);
 			target.addObserver(this);
@@ -54,9 +63,30 @@ public class Check_DWO implements Observer {
 			observable.deleteObserver(this);
 		else if(arg == null) {
 			Label label = (Label)observable;
+			boolean oldStatus = status;
 			status = !check || label.isDefined() && label.getState() != Label.FALSE;
 			score = status ? maxScore : 0;
+			if(status != oldStatus) {
+				setChanged();
+				notifyObservers("changed");
+			}
 		}
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 }

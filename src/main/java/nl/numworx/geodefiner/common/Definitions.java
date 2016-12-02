@@ -40,9 +40,9 @@ import fi.euclides.util.Observer;
  */
 public class Definitions implements Observer /*, ListModel*/ {
 
-	private static final OMSymbol ARITH1_ABS = OMConstants.ARITH1_ABS;
 	protected final List<CELL> delegate = new Vector<CELL>();
 	final private Tracker viewer;
+	public int readonly = 4;
 
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
@@ -52,7 +52,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 		expression.put(INTERVAL, delegate);
 		Abs abs = new Abs();
 		abs.setTracker(viewer);
-		expression.put(ARITH1_ABS, abs);
+		expression.put(OMConstants.ARITH1_ABS, abs);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -84,6 +84,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 // in geogebra reassignments
 				Destroyable fs = viewer.getMapper().fromString(var.getName());
 				if (fs != null) {
+					if(fs.getIndex() <= readonly)
+						throw new RuntimeException("readonly");
 					destroy(fs);
 					fs.destroy(); 
 				} else {

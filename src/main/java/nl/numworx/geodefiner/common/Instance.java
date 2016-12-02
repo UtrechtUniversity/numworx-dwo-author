@@ -2,7 +2,6 @@ package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,11 +13,9 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
-import nl.uu.fi.dwo.interaction.client.json.ObjectMapImpl;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
-import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
@@ -27,11 +24,12 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.persist.Memento;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 
-public abstract class Instance {
+public abstract class Instance implements Observer {
 
 	protected UIModelFactory uiModelFactory;
 	protected Definitions definitions;
@@ -60,6 +58,18 @@ public abstract class Instance {
 		installAxes();
 		installConfiguration();
 		installPositions();
+		installCheckDWO();
+	}
+
+	protected boolean installCheckDWO() {
+		if(launchData.containsKey("checkDWO"))
+		{
+			checkDWO = new Check_DWO(viewer);
+			checkDWO.fromMap(launchData.getObjectMap("checkDWO"));
+			return true;
+		} else 
+			checkDWO = null;
+			return false;
 	}
 
 	void flip(Label l) {
@@ -69,8 +79,8 @@ public abstract class Instance {
 	}
 
 	private void installPositions() {
-		if(launchData.containsKey("positions"));
-		setPositions(launchData.getObjectMap("positions"));
+		if(launchData.containsKey("positions"))
+			setPositions(launchData.getObjectMap("positions"));
 	}
 
 	private void installConfiguration() {
@@ -154,7 +164,14 @@ public abstract class Instance {
 		}
 	}
 
-	int score;
+	protected int score;
+	protected Check_DWO checkDWO;
+	private Boolean status;
+
+	public Boolean getStatus() {
+		return status;
+	}
+
 	public int getScore() {
 		return score;
 	}
@@ -212,6 +229,13 @@ public abstract class Instance {
 		if(state == null) state = Collections.emptyMap();
 		this.state = JSONUtilities.wrapMap(state);
 		setPositions(this.state.getObjectMap("positions"));
+	}
+
+	public void update(Observable observable, Object arg) {
+		if("changed".equals(arg)) {
+			score = checkDWO.getScore(); // + checkObjects.getScore();
+			status = checkDWO.isStatus(); // && checkObjects.isStatus();
+		}
 	}
 
 }
