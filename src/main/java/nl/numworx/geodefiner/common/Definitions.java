@@ -77,7 +77,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 		if(object instanceof OMApplication) {
 			OMApplication oma = (OMApplication) object;
 			OMObject first = oma.firstElement();
-			if( first.isSame(Popcorn.PROG1_ASSIGN))
+			if( first.isSame(OMConstants.PROG1_ASSIGN))
 			{
 				OMVariable var = (OMVariable) oma.getElementAt(1);
 // No reassignments, or delete?
