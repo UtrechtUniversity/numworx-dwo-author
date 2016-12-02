@@ -4,8 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.util.Map;
 
-import javax.swing.JLabel;
-
+import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
