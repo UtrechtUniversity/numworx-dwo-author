@@ -25,11 +25,11 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	public UIModel<?, UIEditor> build(Destroyable d) {
 		model = null;
 		d.visit(this);
-		return model;
+		return model.set(tracker);
 	}
 	
 	public void visitPunt(Punt p) {
-		model = new PointModel().init(p).set(tracker);
+		model = new PointModel().init(p);
 	}
 
 	public void visitLijn(Lijn l) {

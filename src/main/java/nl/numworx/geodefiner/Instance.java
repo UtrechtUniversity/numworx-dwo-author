@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.common.Align;
+import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -28,6 +29,7 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
+import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.euclides.event.NameMapper;
@@ -52,7 +54,6 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
 
-	private static final long serialVersionUID = 1L;
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
 	private final JPanel content = new JPanel() {
@@ -362,7 +363,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 	
 	public SuccessStatus getSuccessStatus() {
-		return SuccessStatus.PASSED;
+		Boolean status = getStatus();
+		if(status == null) return SuccessStatus.UNKNOWN;
+		if(status)
+			return SuccessStatus.PASSED;
+		return SuccessStatus.FAILED;
 	}
 
 	// Assume getSize() is okay.
@@ -423,6 +428,28 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		return super.randomize(random, text);
 	}
 
+	@Override
+	protected boolean installCheckDWO() {
+		if  (super.installCheckDWO())
+		{
+			checkDWO.addObserver(this);
+			return true;
+		}
+		checkDWO = new Check_DWO(viewer);
+		return false;
+	}
+
+	@Override
+	public void update(Observable observable, Object arg) {
+		super.update(observable, arg);
+		if(Constants.CHANGED.equals(arg)) {
+			Map<String, ?> parameters = Collections.emptyMap();
+			handler.fire(Constants.CHANGED, parameters);
+		}
+	}
+	
+
+	
 	
 	
 }
