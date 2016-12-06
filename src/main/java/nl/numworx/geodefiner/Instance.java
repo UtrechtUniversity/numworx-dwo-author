@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Check_DWO;
+import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -72,9 +73,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	};
 	
 	
-	private final class InstanceViewer extends AWTViewer implements Observer, NameMapper {
+	private final class InstanceViewer extends AWTViewer implements Observer {
 
 		private static final float DEFAULT_POINTSIZE = 5f;
+
+		private NamingModel nameMapper;
 
 		@Override
 		public void paint() {
@@ -109,52 +112,16 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		private WeakHashMap<String, Destroyable> cache = new WeakHashMap<String,Destroyable>();
 		
-		public Destroyable fromString(String name) {
-			Destroyable item = cache.get(name);
-			if(item != null && toString(item).equals(name) && item.getIndex() > 0) return item; // cache hit		
-			
-			ArrayList<Destroyable> v = new ArrayList<Destroyable>(getModel().getPunten());
-			v.addAll(getModel().getLijnen());
-			for (Destroyable p : v) {
-				if (name .equals( toString(p)) ) {
-					cache.put(name, p);
-					return p;
-				}
-			}
-			return null;
-		}
-
-		public Punt getO() {
-			return getModel().getO();
-		}
-
-		public Punt getU() {
-			return getModel().getU();
-		}
-
-		public void rename(Destroyable p, String name) {
-			DefaultAdapter.getDefault(p).put(name);
-			cache.put(name,p);
-		}
-
-		@Override
-		public String toString(Destroyable d) {
-			String s = d.getAdapter().adapt(String.class);
-			if(s == null)
-				return getModel().toString(d);
-			return s;
-		}
-
 		@Override
 		public NameMapper getMapper() {
-			return this;
+			return nameMapper;
 		}
 
 		InstanceViewer() {
 			super();
 			getModel().addObserver(this);
 			hitTester = (new HitTester2(content.getFontMetrics(content.getFont())));
-			
+			nameMapper = new NamingModel(this, cache);
 		}
 
 		@Override
