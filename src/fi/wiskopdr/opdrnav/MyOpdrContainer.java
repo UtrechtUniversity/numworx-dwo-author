@@ -27,6 +27,7 @@ import org.cbook.cbookif.CBookEvent;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.SessionTime;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.wiskopdr.HasUitwerking;
 import fi.wiskopdr.InteractiePanelContainer;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
@@ -1212,21 +1213,25 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 					component.doLayout();
 					popups.add(component);
 				}
-				makeVisible(outer,panel);
+				makeVisible(outer,panel, popups);
 			} else {
 				Vector inner = object.geefInteractiePanels();
 				for (Iterator iterator2 = inner.iterator(); iterator2.hasNext();) {
 					InteractiePanel panel = (InteractiePanel) iterator2.next();
-					makeVisible(outer, panel);
+					makeVisible(outer, panel, popups);
 			}}
 		}}
 	}
 
-	public void makeVisible(Vector outer, InteractiePanel panel) {
+	public void makeVisible(Vector outer, InteractiePanel panel, JPanel popups) {
 		if(panel instanceof TekstVakPanel) {
 			TekstVakPanel vak = (TekstVakPanel) panel;
 			vak.prepareForPrint();
 			outer.addAll(vak.geefInteractiePanels());
+		} else if (panel instanceof HasUitwerking) {
+			HasUitwerking hut = (HasUitwerking) panel;
+			JComponent uitwerking = hut.prepareForPrint();
+			if(uitwerking != null) popups.add(uitwerking);
 		}
 	}
 }

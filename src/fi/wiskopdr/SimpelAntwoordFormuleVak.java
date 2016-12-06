@@ -42,7 +42,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
-public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
+public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware, HasUitwerking
 {
 	public static final String POPCORN_FORMULA = "popcorn.formula";
 	private AntwoordFormuleVak antwoordFormuleVak;
@@ -908,4 +908,24 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
 	}
 
+	/**
+	 * Bepaal of dit vak een uitwerking heeft en geef een kopie terug van de uitwerking.
+	 * Weet niet of het ook het origineel mag zijn.
+	 * @return null of popup met uitwerking
+	 */
+	
+	public JComponent prepareForPrint() {
+		if(vakUitwerking) {
+			JPanel uitwerking = new JPanel(false);
+			uitwerking.setOpaque(false);
+			uitwerking.add(antwoordFormuleVak);
+			antwoordFormuleVak.zetMaat();
+			uitwerking.setSize(antwoordFormuleVak.size());
+			return uitwerking;
+		}
+		return null;
+	}
+	
+	
+	
 }

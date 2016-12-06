@@ -32,7 +32,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware
+public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractiePanel, ActionListener, MouseListener, FormuleVakHouder, CBookAware, HasUitwerking
 {
 	private AntwoordVergelijkingVak antwoordVergelijkingVak;
 	private Component formuleComponent, scoreGoedComponent, scoreFoutComponent, scoreHalfComponent;
@@ -726,6 +726,18 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	@Override
 	public String getLocalizedCmd(String cmd) {
 		return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+	}
+
+	public JComponent prepareForPrint() {
+		if(vakUitwerking) {
+			JPanel uitwerking = new JPanel(false);
+			uitwerking.setOpaque(false);
+			uitwerking.add(antwoordVergelijkingVak);
+			antwoordVergelijkingVak.zetMaat();
+			uitwerking.setSize(antwoordVergelijkingVak.size());
+			return uitwerking;
+		}
+		return null;
 	}
 
 }
