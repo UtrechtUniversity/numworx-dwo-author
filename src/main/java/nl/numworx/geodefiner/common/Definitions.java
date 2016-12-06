@@ -196,6 +196,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
 					x1.setVisible(false);
 					x2.setVisible(false);
+					m.add(x1);
 					m.add(x2);
 					Segment s = m.buildSegment(new Punt[] { x1, x2 } );
 					PuntOp<?> x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
@@ -239,7 +240,20 @@ public class Definitions implements Observer /*, ListModel*/ {
 					     Locus locus = new Locus(lm);
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
 					     viewer.getModel().add(locus);
+					     final Destroyable destroyable = f;
+					     locus.addObserver(new Observer() {
+
+							@Override
+							public void update(Observable locus, Object arg1) {
+								if(arg1 == Destroyable.DESTROY)
+								{
+									locus.deleteObserver(this);
+									destroyable.destroy();
+								}
+								
+							}});
 					     f = locus;
+					     
 					}
 					addElement(new CELL(text, f));
 					return;

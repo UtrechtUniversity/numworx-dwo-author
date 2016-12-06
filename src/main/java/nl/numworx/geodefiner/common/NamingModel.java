@@ -56,7 +56,7 @@ public class NamingModel implements NameMapper {
 	public String toString(Destroyable d) {
 		String s = d.adapt(String.class);
 		if(s == null)
-			return getModel().toString(d);
+			return "%" + getModel().toString(d);
 		return s;
 	}
 
