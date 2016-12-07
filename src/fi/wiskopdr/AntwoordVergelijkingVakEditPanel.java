@@ -292,7 +292,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         logIDField = makeTextField(520,5,60,20,"0",false);
         uitwCB = makeCheckBox(600,65,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,true);
         casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("casAntwCBLabel")+" [test]",false,true);
-        boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+        boxMetRandCB = makeCheckBox(690,135,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
