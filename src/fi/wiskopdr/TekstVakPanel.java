@@ -3908,16 +3908,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			Map map = (Map)event.getParameters();
 			if(map!=null)
 			{	String contentString = ((String)map.get("content"));
-				if(contentString.startsWith("VH4sIAAAAAAAAA"))
+				if(contentString.startsWith("H4sIAAAAAAAAA"))
+				{	contentString = "$V"+contentString+"@";
+				}
+				else if(contentString.startsWith("VH4sIAAAAAAAAA"))
 				{	contentString = "$"+contentString+"@";
 				}
-				if(contentString.startsWith("{"))
-				{	//JSON
-					Hashtable h = WiskOpdr.toHashtable(contentString);
-					System.out.println("contentString: "+contentString);
-					contentString = StringCodeObject.encodeObjectToString(h);
-					contentString = "$V"+contentString+"@";
-				}
+				//if(contentString.startsWith("{"))
+				//{	//JSON
+				//	Hashtable h = WiskOpdr.toHashtable(contentString);
+				//	System.out.println("contentString: "+contentString);
+				//	contentString = StringCodeObject.encodeObjectToString(h);
+				//	contentString = "$V"+contentString+"@";
+				//}
 				else if(contentString.startsWith("back"))
 				{	tekstVakken[stapNr-1][aantalKolommen-1].zetTekst("");
 					stapNr--;
