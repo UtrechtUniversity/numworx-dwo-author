@@ -58,7 +58,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Paste (insert)"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
-				{ "misconceptionsKnopLabel", "Misconceptions"},
+				{ "misconceptionsKnopLabel", "Error analysis"},
 								
 				{ "choiceOefenen" , "Εξάσκηση" },
 				{ "choiceOefenenEindloos" , "Ατελείωτη εξάσκηση" },
@@ -305,7 +305,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Καμία διόρθωση σε προηγούμενες σελίδες"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Στόχοι"},
-				{"OPT_misconceptions" , "Misconceptions"},
+				{"OPT_misconceptions" , "Error analysis"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
@@ -315,6 +315,9 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "Στόχοι σε πολλαπλές κατηγορίες"},
 				{"OBJ_kolomMeerButton", "Προσθήκη στήλης"},
 				{"OBJ_kolomMinderButton", "Αφαίρεση στήλης"},
+				{"MCC_misconception", "Misconception"},
+				{"MCC_categorie", "Category"},
+				{"MCC_categorieBox", "Error analysis in multiple categories"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Μεταβλητές των συναρτήσεων"},

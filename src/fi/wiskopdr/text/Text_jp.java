@@ -58,7 +58,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "ペースト（挿入します）"},
 				{ "insertCopyMenuItem" ,  "コピー（挿入します）"},
 				{ "deelscoresKnopLabel", "Partial scores"},
-				{ "misconceptionsKnopLabel", "Misconceptions"},
+				{ "misconceptionsKnopLabel", "Error analysis"},
 								
 				{ "choiceOefenen" , "練習" },
 				{ "choiceOefenenEindloos" , "繰り返し練習します。" },
@@ -320,7 +320,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OPT_objectives" , "目標"}, 
 				{"OPT_fontOvererving" , "フォントをそのままにしたテキストボックス "},
 				{"OPT_fontOverervingForm" , "フォントをそのままにした公式ボックス  "}, 
-				{"OPT_misconceptions" , "Misconceptions"},
+				{"OPT_misconceptions" , "Error analysis"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				
 				{"OBJ_leerdoel", "目標"}, 
@@ -328,6 +328,9 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "さまざまなカテゴリーの目標"}, 
 				{"OBJ_kolomMeerButton", "列を追加します"}, 
 				{"OBJ_kolomMinderButton", "列を消去します"}, 
+				{"MCC_misconception", "Misconception"},
+				{"MCC_categorie", "Category"},
+				{"MCC_categorieBox", "Error analysis in multiple categories"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "関数の変化"}, 

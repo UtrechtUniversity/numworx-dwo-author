@@ -58,7 +58,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Paste (insert)"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
-				{ "misconceptionsKnopLabel", "Misconceptions"},
+				{ "misconceptionsKnopLabel", "Error analysis"},
 								
 				{ "choiceOefenen" , "Üben" },
 				{ "choiceOefenenEindloos" , "Endlos üben" },
@@ -304,7 +304,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Keine Korrektur vorhergehender Seiten"},
 				{"OPT_significantie" , "Option für signifikatene Stellen"},
 				{"OPT_objectives" , "Ziele"},
-				{"OPT_misconceptions" , "Misconceptions"},
+				{"OPT_misconceptions" , "Error analysis"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
@@ -314,6 +314,9 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "Ziele in mehreren Kategorien"},
 				{"OBJ_kolomMeerButton", "Spalte hinzufügen"},
 				{"OBJ_kolomMinderButton", "Spalte entfernen"},
+				{"MCC_misconception", "Misconception"},
+				{"MCC_categorie", "Category"},
+				{"MCC_categorieBox", "Error analysis in multiple categories"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Variablen der Funktion"},

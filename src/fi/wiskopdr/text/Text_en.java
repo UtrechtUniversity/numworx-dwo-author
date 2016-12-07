@@ -60,7 +60,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "pastePageMenuItem" ,  "Paste (insert)"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
-				{ "misconceptionsKnopLabel", "Misconceptions"},
+				{ "misconceptionsKnopLabel", "Error analysis"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },
@@ -326,7 +326,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "No correction previous pages"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Objectives"},
-				{"OPT_misconceptions" , "Misconceptions"},
+				{"OPT_misconceptions" , "Error analysis"},
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
@@ -338,7 +338,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OBJ_kolomMinderButton", "Remove column"},
 				{"MCC_misconception", "Misconception"},
 				{"MCC_categorie", "Category"},
-				{"MCC_categorieBox", "Misconceptions in multiple categories"},
+				{"MCC_categorieBox", "Error analysis in multiple categories"},
 				
 				//grafiekenEditPanel
 				{"GEP_varLabel" , "Variables of the function"},

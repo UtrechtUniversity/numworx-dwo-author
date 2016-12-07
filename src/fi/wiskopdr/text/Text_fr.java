@@ -59,7 +59,7 @@ public class Text_fr extends java.util.ListResourceBundle
                 				{ "pastePageMenuItem" ,  "Paste (insert)"},
                 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
                 				{ "deelscoresKnopLabel", "Partial scores"},
-                				{ "misconceptionsKnopLabel", "Misconceptions"},
+                				{ "misconceptionsKnopLabel", "Error analysis"},
                                                                 
                                 { "choiceOefenen" , "S'exercer" },
                                 { "choiceOefenenEindloos" , "S'exercer sans fin" },
@@ -303,7 +303,7 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"OPT_eerderGeenCorr" , "Pas de correction pages précédentes"},
                                 {"OPT_significantie" , "Option nombres significatifs"},
                                 {"OPT_objectives" , "Objectifs"},
-                                {"OPT_misconceptions" , "Misconceptions"},
+                                {"OPT_misconceptions" , "Error analysis"},
                 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
                 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
                 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
@@ -313,6 +313,9 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"OBJ_categorieBox", "Objectifs dans différentes catégories"},
                                 {"OBJ_kolomMeerButton", "Ajouter une colonne"},
                                 {"OBJ_kolomMinderButton", "Enlever une colonne"},
+                                {"MCC_misconception", "Misconception"},
+                				{"MCC_categorie", "Category"},
+                				{"MCC_categorieBox", "Error analysis in multiple categories"},
                                 
                                 //grafiekenEditPanel
                                 {"GEP_varLabel" , "Variables de la fonction"},

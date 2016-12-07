@@ -48,7 +48,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "totaal" , "Totaal: "},
 				{ "voortgang" , "Voortgang: "},
 				{ "deelscores", "Deelscores"},
-				{ "misconceptions", "Misconcepties"},
+				{ "misconceptions", "Foutenanalyse"},
 				{ "optiesButtonLabel" , "Opties" },
 				{ "standaardActiviteitNaam" , "Niveau" },
 				{ "standaardOpdrachtNaam" , "Opdracht" },
@@ -344,7 +344,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
 				{"OPT_pilotObjectives", "Pilot"},
-				{"OPT_misconceptions" , "Misconcepties"},
+				{"OPT_misconceptions" , "Foutenanalyse"},
 				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
 				{"OPT_fontOverervingForm" , "Font-overerving formulevakken"},
 				{"OPT_scoreZichtbaar" , "Scores zichtbaar voor leerling"},
@@ -354,9 +354,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OBJ_categorieBox", "Leerdoelen in meerdere categorieen"},
 				{"OBJ_kolomMeerButton", "Voeg kolom toe"},
 				{"OBJ_kolomMinderButton", "Verwijder kolom"},
-				{"MCC_misconception", "Misconceptie"},
+				{"MCC_misconception", "Foutenanalyse"},
 				{"MCC_categorie", "Vul naam in van categorie"},
-				{"MCC_categorieBox", "Misconcepties in meerdere categorieen"},
+				{"MCC_categorieBox", "Foutenanalyse in meerdere categorieen"},
 				
 				
 				//grafiekenEditPanel
