@@ -917,10 +917,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			startDraad.start();
 		}
 		if (!b && afdekPanel != null)
-		{
 			remove(afdekPanel);
-			afdekPanel.setVisible(false); // na de remove blijkt in getState() afdekPanel visible te zijn en daarmee wordt ten onrechte locked = true gezet 
-		}
 	}
 
 	/**
@@ -1924,7 +1921,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		scores = this.scores;
 		orTimes = new String[aantalActiviteiten][];
 		opdrContStates = new Hashtable[aantalActiviteiten][];
-		locked = afdekPanel != null && afdekPanel.isVisible();
+		locked = afdekPanel != null && afdekPanel.isShowing();
 		zelftoetsNagekeken = this.zelftoetsNagekeken;
 		aantalSessies = this.aantalSessies;
 		scoresMaxObjectives = this.scoresMaxObjectives;
@@ -2509,7 +2506,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		// FIXME op verzoek sylvia HIERO
 		// if (correctie nog mogelijk)
-		boolean locked = afdekPanel != null && afdekPanel.isVisible();
+		boolean locked = afdekPanel != null && afdekPanel.isShowing();
 		if (!zelftoetsNagekeken && !locked)
 			times[activiteitNr][opdrachtNr] = opdrContainer.getSessionTime();
 		isCorrect[activiteitNr][opdrachtNr] = opdrContainer.isCorrect();
@@ -2575,7 +2572,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
 		produceAction("select");
-		if (afdekPanel != null && afdekPanel.isVisible())
+		if (afdekPanel != null && afdekPanel.isShowing())
 			requestFocus();
 		
 		if(eerderGeenCorr)
@@ -2908,6 +2905,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				//opdrContainer.zetOpdracht(opdrachten[activiteitNr][j]);
 				states[activiteitNr][j] = null;
 				scores[activiteitNr][j] = 0;
+				
+				// reset bezocht
+				bezocht[activiteitNr][j] = false;
+				
 				if (objectives != null)
 				{
 					for (int k = 0; k < objectives.length; k++)
