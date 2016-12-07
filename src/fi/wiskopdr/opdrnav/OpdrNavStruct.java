@@ -917,7 +917,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			startDraad.start();
 		}
 		if (!b && afdekPanel != null)
+		{
 			remove(afdekPanel);
+			afdekPanel.setVisible(false); // na de remove blijkt in getState() afdekPanel visible te zijn en daarmee wordt ten onrechte locked = true gezet 
+		}
 	}
 
 	/**
