@@ -57,7 +57,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JTextField cellSpaceRowTF;
 	private JTextField randDikteTF;
 	
-	private JTextField JSONTextField;
+	//private JTextField JSONTextField;
 	
 	private boolean randZichtbaar, bgColorZichtbaar, zwevend, anderFont, buttonOptie, tableBorders;
 	
@@ -671,9 +671,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setVisible(manageStyles);
 		layoutOptionsPanel.add(editStylesButton);
 		
-		JSONTextField = new JTextField();
-		JSONTextField.setBounds(10,500,240,20);
-		interactionOptionsPanel.add(JSONTextField);
+		//JSONTextField = new JTextField();
+		//JSONTextField.setBounds(10,500,240,20);
+		//interactionOptionsPanel.add(JSONTextField);
 	}
 	
 	public void maakStyleEditorPopupFrame()
@@ -732,9 +732,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		return v;
 	}
 	
-	public void setJSONState(Hashtable h) {
-		JSONTextField.setText(JSONValue.toJSONString(h));
-	}
+	//public void setJSONState(Hashtable h) {
+	//	JSONTextField.setText(JSONValue.toJSONString(h));
+	//}
 	
 	public Hashtable getEditState()
 	{	
@@ -1017,7 +1017,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	}
 	public void setEditState(Hashtable h)
 	{
-		setJSONState(h);
+		//setJSONState(h);
 		
 		String styleString = null;
 		
