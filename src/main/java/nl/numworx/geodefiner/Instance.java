@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Check_DWO;
@@ -33,6 +35,8 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
+import fi.euclides.event.DescriptionBuilder;
+import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
@@ -57,6 +61,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
+	private HitTester tiptest;
 	private final JPanel content = new JPanel() {
 		@Override
 		protected void paintComponent(Graphics g) {
@@ -68,6 +73,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.setBounds(x, y, width, height);
 			getViewer().height = height;
 			getViewer().width = width;
+		}
+
+		@Override
+		public String getToolTipText(MouseEvent e) {
+			DescriptionBuilder builder = new DescriptionBuilder(viewer.getMapper());
+			tiptest.setVisitor(builder);
+			tiptest.setXY(e.getX()-getViewer().offX, e.getY()-getViewer().offY);
+			Model r = viewer.getModel();
+			r.visitPunten(tiptest);
+			r.visitLijnen(tiptest);
+			tiptest.done();
+			return builder.toString();
 		}
 		
 	};
@@ -271,6 +288,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		viewer = new InstanceViewer();
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
+		tiptest = viewer.getHitTester().copy();
 	}
 	
 	Definitions getDefinitions() {
@@ -289,6 +307,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
 		content.addMouseMotionListener(getViewer());
+		ToolTipManager.sharedInstance().registerComponent(content);
+
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {

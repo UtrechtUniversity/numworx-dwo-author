@@ -19,11 +19,15 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.ui.Axes;
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
@@ -59,8 +63,10 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		instance.asComponent().setPreferredSize(instanceSize);
 		instance.asComponent().setSize(instanceSize);
 		flow.add(instance.asComponent());
-		content.add(flow, BorderLayout.CENTER);
 		tabs = new JTabbedPane();
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
+		split.setDividerLocation(0.7);
+		content.add(split, BorderLayout.CENTER);
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
 		checkDWO = new CheckDWOPanel();
 		checkObjects = new CheckObjectsPanel();
@@ -72,7 +78,6 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		tabs.addTab(toolbox.getName(), null, toolbox, toolbox.getToolTipText());
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
-		content.add(tabs, BorderLayout.EAST);
 		command = new CommandPanel();
 // inject
 		command.random = random.getRandomVars();
@@ -165,6 +170,10 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		Map randomvars = random.getRandomVars();
 		instance.setLaunchData(launchdata, randomvars);
 		axes.init();
+// fill checkDWO for the editor		
+		ObjectMap map = JSONUtilities.wrapMap(launchdata);
+		if(map.containsKey("checkDWO"))
+				checkDWO.fromMap(map.getObjectMap("checkDWO"));
 	}
 
 	public void start() {

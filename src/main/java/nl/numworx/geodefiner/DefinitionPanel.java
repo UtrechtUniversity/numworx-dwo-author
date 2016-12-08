@@ -111,7 +111,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		setBackground(Color.white);
 		list = Box.createVerticalBox();
 		model.addListDataListener(updater);
-		add(new JScrollPane(list), BorderLayout.CENTER);
+		add(new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 		//add(new JLabel("Elementen"), BorderLayout.NORTH);
 	}
 
