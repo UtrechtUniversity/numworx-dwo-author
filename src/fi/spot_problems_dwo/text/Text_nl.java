@@ -47,7 +47,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "blockNumbers3Text",   "block-getallen 3" },
             { "triaNumbers4Text",   "driehoeks-getallen 4" },
             
-            {"CBA_action.ShowAllPatterns", "Toon alle patronen"},
+            {"CBA_action.showAllPatterns", "Toon alle patronen"},
            
             
 		};
