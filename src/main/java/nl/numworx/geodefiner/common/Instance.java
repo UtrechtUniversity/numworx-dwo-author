@@ -66,6 +66,7 @@ public abstract class Instance implements Observer {
 		{
 			checkDWO = new Check_DWO(viewer);
 			checkDWO.fromMap(launchData.getObjectMap("checkDWO"));
+			fetchScore();
 			return true;
 		} else 
 			checkDWO = null;
@@ -233,9 +234,13 @@ public abstract class Instance implements Observer {
 
 	public void update(Observable observable, Object arg) {
 		if("changed".equals(arg)) {
-			score = checkDWO.getScore(); // + checkObjects.getScore();
-			status = checkDWO.isStatus(); // && checkObjects.isStatus();
+			fetchScore();
 		}
+	}
+
+	protected void fetchScore() {
+		score = checkDWO.getScore(); // + checkObjects.getScore();
+		status = checkDWO.isStatus(); // && checkObjects.isStatus();
 	}
 
 }
