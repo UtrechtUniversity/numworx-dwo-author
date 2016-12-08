@@ -65,8 +65,11 @@ public class FunctieMV extends Expressie
 	
 	public double geefWaarde()
 	{	Expressie e = functieMVExpressie;
+		if(e==null)
+			return Double.NaN; // deze check zou niet nodig moeten zijn, maar is het wel...issue DWOWISK-6
 		for(int i=0 ; i<kinderen.length ; i++)
-		{	e = e.substitueer(kinderen[i].geefWaarde(),functieMVVariabelen[i]);
+		{	if(e!=null)
+				e = e.substitueer(kinderen[i].geefWaarde(),functieMVVariabelen[i]);
 		}
 		return e.geefWaarde();
 	}
