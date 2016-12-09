@@ -196,7 +196,6 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
 					x1.setVisible(false);
 					x2.setVisible(false);
-					m.add(x1);
 					m.add(x2);
 					Segment s = m.buildSegment(new Punt[] { x1, x2 } );
 					PuntOp<?> x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
