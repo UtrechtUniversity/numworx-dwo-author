@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
+import javax.swing.JComponent;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
@@ -14,18 +15,17 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-import fi.euclides.openmath.Popcorn;
+//import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.DoubleFormat;
-import fi.euclides.swing.SwingSymbols;
+//import fi.euclides.swing.SwingSymbols;
 import fi.wiskopdr.WiskOpdr;
 
-public class GeoDefiner extends JApplet implements  CBookWidgetIF, WiskOpdrApplet {
+public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet {
 
 	private static final long serialVersionUID = -8167425499542355350L;
 
 	static {
-		DoubleFormat.setLocale(Locale.getDefault());
-		Popcorn.map = new SwingSymbols();
+//		Popcorn.map = new SwingSymbols();
 // FIXME Alleen met cbookeditor, verplaatsen naar Main en applet.Main
 		if(WiskOpdr.applet == null)
 			WiskOpdr.applet = new WiskOpdr();
@@ -36,12 +36,13 @@ public class GeoDefiner extends JApplet implements  CBookWidgetIF, WiskOpdrApple
 		
 	}
 	
-	
-	public GeoDefiner() {		
+	public GeoDefiner() {
+		this(JComponent.getDefaultLocale());
 	}
 	
 	public GeoDefiner(Locale locale) {
 		DoubleFormat.setLocale(locale);
+		Messages.setLocale(locale);
 	}
 	
 	public CBookWidgetEditIF getEditor(CBookContext context) {

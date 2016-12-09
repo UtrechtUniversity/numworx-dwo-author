@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -33,7 +34,9 @@ public class CirclePane extends UIEditor {
 			visibilityEditor.formuleVak.vulVak(model.getVisibility());
 		visibilityEditor.setHeader(false);
 		visibilityEditor.setPreferredSize(new Dimension(240,40));
-// Wat nu: 
+// Wat nu:
+		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+		setLayout(layout);
 // TODO mooie layout, tabbladen?
 		add (visibilityEditor);
 		add (stroke);
