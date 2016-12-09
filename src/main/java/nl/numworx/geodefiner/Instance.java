@@ -5,9 +5,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ import org.cbook.cbookif.SuccessStatus;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
+import fi.euclides.model.Boog;
+import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
@@ -277,6 +281,44 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}			
 			g.fill(path);
 			DefaultAdapter.getDefault(t).put(Shape.class, path);
+		}
+
+		/* (non-Javadoc)
+		 * @see fi.euclides.model.AbstractViewer#visitCirkel(fi.euclides.model.Cirkel)
+		 */
+		@Override
+		public void visitCirkel(Cirkel c) {
+			Paint p = c.adapt(Paint.class);
+			if (p != null)
+			{	g.setPaint(p);
+				double d = c.getD();
+				fillCircle(c.getX(), c.getY(),d);
+			}
+			super.visitCirkel(c);
+		}
+
+		protected void fillArc(double x, double y, double w, double startAngle, double arcAngle) {
+			startAngle *= R_TO_D;
+			arcAngle *= R_TO_D;
+			Shape s = new Arc2D.Double(x, y, w, w, startAngle, arcAngle, Arc2D.PIE);
+			g.fill(s);
+		}
+
+		/* (non-Javadoc)
+		 * @see fi.euclides.model.AbstractViewer#visitBoog(fi.euclides.model.Boog)
+		 */
+		@Override
+		public void visitBoog(Boog b) {
+			Paint p = b.adapt(Paint.class);
+			if (p != null)
+			{	g.setPaint(p);
+				double r = b.getR();
+				double s = b.getStart();
+				double l = b.length();
+				Punt c = b.getCenter();
+				fillArc(c.getXd()-r, c.getYd()-r, r*2, s, l);
+			}
+			super.visitBoog(b);
 		}
 
 	

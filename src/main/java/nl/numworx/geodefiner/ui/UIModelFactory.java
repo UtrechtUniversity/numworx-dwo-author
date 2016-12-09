@@ -37,7 +37,7 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 
 	public void visitCirkel(Cirkel c) {
-		model = new ColorModel<Cirkel>().init(c);
+		model = new CircleModel().init(c);
 	}
 
 	public void visitSegment(Segment s) {
@@ -62,7 +62,7 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 
 	public void visitBoog(Boog b) {
-		model = new ColorModel<Boog>().init(b);
+		model = new CircleModel().init(b);
 	}
 
 }
