@@ -107,7 +107,7 @@ public abstract class Instance implements Observer {
 				model.install();
 				CELL cell = d.adapt(CELL.class);
 				if(cell == null) {
-					cell = new CELL("$f@",d);
+					cell = new CELL("$f@",d, name);
 					DefaultAdapter.getDefault(d).put(cell);
 				}
 				cell.config = model;
