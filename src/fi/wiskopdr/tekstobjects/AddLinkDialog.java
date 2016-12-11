@@ -29,7 +29,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     private Button okButton;
     private Button cancelButton;
     
-    //private Font font = new Font("SansSerif",Font.PLAIN,12);
+    private Font font = new Font("SansSerif",Font.PLAIN,12);
     
     boolean confirmed;
     
@@ -464,7 +464,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* schoolName label */
         l = new Label(WiskOpdr.rb.getString("LEP_linkTekst"));//"Tekst"
         l.setForeground(Color.black);
-        l.setFont(WiskOpdr.tekstFont);
+        l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
         l.setLocation(10, 30);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
@@ -480,7 +480,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* schoolName label */
         l = new Label(WiskOpdr.rb.getString("LEP_url"));//"URL"
         l.setForeground(Color.black);
-        l.setFont(WiskOpdr.tekstFont);
+        l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
         l.setLocation(10, 60);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
@@ -500,7 +500,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* schoolLogin label */
         l = new Label(WiskOpdr.rb.getString("LEP_vensterBreedte"));//"breedte van het window"
         l.setForeground(Color.black);
-        l.setFont(WiskOpdr.tekstFont);
+        l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
         l.setLocation(10, 90);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
@@ -516,7 +516,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* studentPasswd label */
         l = new Label(WiskOpdr.rb.getString("LEP_vensterHoogte"));//"Hoogte van het window"
         l.setForeground(Color.black);
-        l.setFont(WiskOpdr.tekstFont);
+        l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
         l.setLocation(10, 120);
         l.setSize(fm.stringWidth(l.getText()) + 10, fm.getHeight());
