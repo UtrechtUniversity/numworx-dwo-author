@@ -1900,19 +1900,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 		zetMaat();
 		
-//		setReviewMode(WiskOpdr.applet.reviewMode() || WiskOpdr.applet.toetsLockedMode());
-//		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
-//	        if(reviewInteractiePanel==null) 
-//	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
-//	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
-//	        	reviewInteractiePanel.setLayout(null);
-//	        	reviewInteractiePanel.setOpaque(true);
-//	        	reviewInteractiePanel.addMouseListener(this);
-//	        	reviewInteractiePanel.addMouseMotionListener(this);
-//	        	reviewInteractiePanel.setEditable(WiskOpdr.applet.reviewMode());
-//	        	add(reviewInteractiePanel,0);
-//	        }
-//		}
+		setReviewMode(WiskOpdr.applet.reviewMode() || WiskOpdr.applet.toetsLockedMode());
+		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
+	        if(reviewInteractiePanel==null) 
+	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
+	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
+	        	reviewInteractiePanel.setLayout(null);
+	        	reviewInteractiePanel.setOpaque(true);
+	        	reviewInteractiePanel.addMouseListener(this);
+	        	reviewInteractiePanel.addMouseMotionListener(this);
+	        	reviewInteractiePanel.setEditable(WiskOpdr.applet.reviewMode());
+	        	add(reviewInteractiePanel,0);
+	        }
+		}
 	}
 	
 	public Vector geefInteractiePanels()
@@ -2265,10 +2265,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public boolean zetFocus()
 	{
-//		if(reviewMode) {
-//			reviewPanel.requestFocus();
-//			return(false);
-//		}
+		//if(reviewMode) {
+		//	reviewPanel.requestFocus();
+		//	return(false);
+		//}
 			
 		
 		if(interactiePanel instanceof SimpelAntwoordFormuleVak) 

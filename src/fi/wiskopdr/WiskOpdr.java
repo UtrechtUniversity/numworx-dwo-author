@@ -1175,7 +1175,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			//
 			
 			//System.out.println("Hashtable patched state:" + JSONValue.toJSONString(onsState));
-			//ons.mergeReviewStateHashtable(onsState, reviewState);
+			ons.mergeReviewStateHashtable(onsState, reviewState);
 			//System.out.println("Hashtable merged state:" + JSONValue.toJSONString(onsState));
 			//System.out.println("Hashtable review state:" + JSONValue.toJSONString(reviewState));
 			ons.setState(onsState,false);
