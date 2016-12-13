@@ -3437,7 +3437,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			interactiePanelStates = toHashtableArray(state.get("interactiePanelStates"));
 			interactiePanelStatesNew = new Hashtable[interactiePanelStates.length];
 			for(int i=0 ; i<interactiePanelStates.length ; i++) {
-				interactiePanelStatesNew[i] = new Hashtable();
+				//interactiePanelStatesNew[i] = new Hashtable();
 				if(interactiePanelStates[i]!=null) {
 					interactiePanelStatesNew[i] = getReviewStateRecursief(interactiePanelStates[i]);
 				}
@@ -3465,6 +3465,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				mergeReviewStateRecursief(opdrContStates[0][i], opdrContReviewStates[0][i]);
 			}
 		}
+		state.put("opdrContStates", opdrContStates);
 		return state;
 	}
 	
@@ -3483,6 +3484,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					mergeReviewStateRecursief(interactiePanelStates[i],interactiePanelReviewStates[i]);
 				}
 			}
+			state.put("interactiePanelStates", interactiePanelStates);
 		}
 	}
 
