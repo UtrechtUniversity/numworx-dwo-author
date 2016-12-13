@@ -31,7 +31,7 @@ public class TegelsInteractieEditPanel extends JPanel implements InteractieEditP
 
 	protected TegelsInteractiePanel tip;
 
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	JCheckBox transVersionBox, demoVersionBox;
 	

@@ -24,7 +24,7 @@ public class TegelsInteractiePanel extends JPanel implements InteractiePanel, In
 	TegelsPanel tegelsPanel;
 	
 	int score = 0;
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	boolean noSetBounds = false;
 	
