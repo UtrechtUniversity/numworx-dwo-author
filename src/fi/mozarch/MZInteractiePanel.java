@@ -25,7 +25,7 @@ public class MZInteractiePanel extends JPanel implements InteractiePanel, Intera
 	
 	
 	int score = 0;
-	int scoreMax = 10;
+	int scoreMax = 0;
 
 	TekenPanel tekenPanel;
 	

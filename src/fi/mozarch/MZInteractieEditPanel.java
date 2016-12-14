@@ -31,7 +31,7 @@ public class MZInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	protected MZInteractiePanel mzip;
 
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	JCheckBox fractielenBox, startFiguurBox;
 	JLabel aantalHoekpuntenLabel, aantalPerZijdeLabel, fractielTypeLabel;
