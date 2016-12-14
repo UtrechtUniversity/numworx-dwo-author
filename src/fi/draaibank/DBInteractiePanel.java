@@ -22,7 +22,7 @@ public class DBInteractiePanel extends JPanel implements InteractiePanel, Intera
 	TekenPanel tekenPanel;
 	
 	int score = 0;
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	boolean noSetBounds = false;
 	

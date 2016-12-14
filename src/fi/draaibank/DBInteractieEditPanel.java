@@ -31,7 +31,7 @@ public class DBInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	protected DBInteractiePanel dbip;
 
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	JCheckBox demoVersionBox, zoomOptionBox;
 	
