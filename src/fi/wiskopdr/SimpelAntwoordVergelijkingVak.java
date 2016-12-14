@@ -17,6 +17,9 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
+import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.VergelijkingMeerv;
+import fi.wiskopdr.expressies.repr.PopcornConverter;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.FormuleElement;
@@ -435,14 +438,28 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 				
 			}
 			
-			if(antwoordVergelijkingVak.isCorrect())cbookEventHandler.fire("action.correct");
-			if(antwoordVergelijkingVak.isFout())cbookEventHandler.fire("action.false");
-			if(antwoordVergelijkingVak.isFout() && antwoordVergelijkingVak.getErrorCount()>1)cbookEventHandler.fire("action.false_2");
+			
+			
+			if(antwoordVergelijkingVak.isCorrect() && cbookEventHandler.hasListeners("action.correct"))
+				cbookEventHandler.fire("action.correct");
+			if(antwoordVergelijkingVak.isFout() && cbookEventHandler.hasListeners("action.false"))
+				cbookEventHandler.fire("action.false"); 
+			if(antwoordVergelijkingVak.isFout() && antwoordVergelijkingVak.getErrorCount()>1 && cbookEventHandler.hasListeners("action.false_2"))
+				cbookEventHandler.fire("action.false_2");
 			
 			//((FormuleVak)formuleComponent).setEditable(true);
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
 		{	zetTabletUser();
+		}
+		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
+		{	
+			if(cbookEventHandler.hasListeners("equation"))
+			{
+				VergelijkingMeerv verg = antwoordVergelijkingVak.formuleVak.geefVergelijking();
+				if(verg != null)
+					cbookEventHandler.fire("equation",formuleComponent.toString());
+			}			
 		}
 		else if(e.getSource()==feedbackButton)
 		{	Component c = antwoordVergelijkingVak.getFeedbackComponent();
@@ -493,6 +510,8 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 		{	closePopup();
 		
 		}
+	
+		
 	}
 		
 
@@ -690,7 +709,14 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 
 	@Override
 	public void acceptCBookEvent(CBookEvent event) {
-		// TODO Auto-generated method stub
+		String command = event.getCommand();
+		if(command.startsWith("equation"))
+		{
+	 		String formuleString = (String)event.getMessage();
+	 		if(formuleString.charAt(0)!='$') formuleString = "$f" + formuleString + "@";
+			((FormuleVak)formuleComponent).vulVak(formuleString);
+			System.out.println("formulestring"+formuleString);
+		}
 		
 	}
 
@@ -710,7 +736,7 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {};
+		String[] s = {"equation"};
 		return s;
 	}
 
@@ -719,7 +745,8 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 		String[] s = {				
 				"action.correct",
 				"action.false",
-				"action.false_2"};
+				"action.false_2",
+				"equation"};
 		return s;
 	}
 

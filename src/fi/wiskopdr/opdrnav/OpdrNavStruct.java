@@ -1546,6 +1546,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 				
 				scoreCorrecties[i][j] = getScoreCorrectiePage(states[i][j]);
+				
+				System.out.println("scoreCorrecties[0][7]: "+scoreCorrecties[0][7]);
 
 				if (orTimes != null)
 					times[i][j] = orTimes[i][j];
@@ -3484,7 +3486,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					mergeReviewStateRecursief(interactiePanelStates[i],interactiePanelReviewStates[i]);
 				}
 			}
-			state.put("interactiePanelStates", interactiePanelStates);
+			if(interactiePanelStates!=null)
+				state.put("interactiePanelStates", interactiePanelStates);
 		}
 	}
 

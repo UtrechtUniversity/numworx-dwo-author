@@ -464,9 +464,12 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				repaint();
 			}
 			
-			if(antwoordFormuleVak.isCorrect())cbookEventHandler.fire("action.correct");
-			if(antwoordFormuleVak.isFout())cbookEventHandler.fire("action.false"); 
-			if(antwoordFormuleVak.isFout() && antwoordFormuleVak.getErrorCount()>1)cbookEventHandler.fire("action.false_2");
+			if(antwoordFormuleVak.isCorrect() && cbookEventHandler.hasListeners("action.correct"))
+				cbookEventHandler.fire("action.correct");
+			if(antwoordFormuleVak.isFout() && cbookEventHandler.hasListeners("action.false"))
+				cbookEventHandler.fire("action.false"); 
+			if(antwoordFormuleVak.isFout() && antwoordFormuleVak.getErrorCount()>1 && cbookEventHandler.hasListeners("action.false_2"))
+				cbookEventHandler.fire("action.false_2");
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
 		{	if(formuleToolBijFocus)zetTabletUser();
@@ -474,10 +477,30 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
 		{	
 			String inputString = formuleComponent.toString();
-			inputString = inputString.substring(2,inputString.length()-1);
-			cbookEventHandler.fire("input",formuleComponent.toString());
-			cbookEventHandler.fire("expression",formuleComponent.toString());
-			
+			if(cbookEventHandler.hasListeners("input"))
+			{
+				inputString = inputString.substring(2,inputString.length()-1);
+				cbookEventHandler.fire("input",formuleComponent.toString());
+			}
+			if(cbookEventHandler.hasListeners("double"))
+			{
+				double d = Double.NaN;
+				try 
+				{	d = Double.parseDouble(inputString);
+				}
+				catch(NumberFormatException nfe)
+				{	d = Double.NaN;
+				}
+				if(!Double.isNaN(d))
+				{	cbookEventHandler.fire("double",inputString);
+				}
+			}
+			if(cbookEventHandler.hasListeners("expression"))
+			{
+				Expressie expr = antwoordFormuleVak.formuleVak.geefExpressie();
+				if(expr != null)
+					cbookEventHandler.fire("expression",formuleComponent.toString());
+			}			
 			if(cbookEventHandler.hasListeners(POPCORN_FORMULA))
 			{ 
 				Expressie expr = antwoordFormuleVak.formuleVak.geefExpressie();
@@ -489,16 +512,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 					cbookEventHandler.fire(POPCORN_FORMULA, "nums1.NaN");
 			}
 			
-			double d = Double.NaN;
-			try 
-			{	d = Double.parseDouble(inputString);
-			}
-			catch(NumberFormatException nfe)
-			{	d = Double.NaN;
-			}
-			if(!Double.isNaN(d))
-			{	cbookEventHandler.fire("double",inputString);
-			}
+			
 		}
 		else if(e.getSource()==feedbackButton)
 		{	Component c = antwoordFormuleVak.getFeedbackComponent();
@@ -886,14 +900,16 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT, "double", "expression"};
+		String[] s = {//org.cbook.cbookif.Constants.USER_INPUT, 
+				"double", 
+				"expression"};
 		return s;
 	}
 
 	@Override
 	public String[] getSendCmds() {
-		String[] s = {org.cbook.cbookif.Constants.USER_INPUT ,
-				"index", 
+		String[] s = {//org.cbook.cbookif.Constants.USER_INPUT ,
+				"integer", 
 				"double", 
 				"expression", 
 				POPCORN_FORMULA,

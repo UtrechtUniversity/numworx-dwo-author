@@ -2137,9 +2137,13 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	public void kijkNa(int stapNr)
 	{
 		kijkNa(stapNr, true);
-		if(correct)cbookEventHandler.fire("action.correct");
-		if(fout)cbookEventHandler.fire("action.false");
-		if(fout && getErrorCount()>1)cbookEventHandler.fire("action.false_2");
+		
+		if(correct && cbookEventHandler.hasListeners("action.correct"))
+			cbookEventHandler.fire("action.correct");
+		if(fout && cbookEventHandler.hasListeners("action.false"))
+			cbookEventHandler.fire("action.false");
+		if(fout && getErrorCount()>1 && cbookEventHandler.hasListeners("action.false_2"))
+			cbookEventHandler.fire("action.false_2");
 	}
 
 	public void kijkNa(int stapNr, boolean show)
@@ -3978,6 +3982,13 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		}
 		if(command.equals("maakStap"))
 		{	maakBalansStap();
+		}
+		if(command.startsWith("equation"))
+		{
+	 		String formuleString = (String)event.getMessage();
+	 		if(formuleString.charAt(0)!='$') formuleString = "$f" + formuleString + "@";
+			vulVak(formuleString);
+			
 		}
 		
 	}
