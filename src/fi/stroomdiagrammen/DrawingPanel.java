@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.swing.*;
 
+
+
 // class for main drawing area
 //public class DrawingPanel extends Container implements Runnable
 public class DrawingPanel extends JPanel implements Runnable
@@ -889,9 +891,6 @@ class VertexCopy implements Serializable
     boolean root;  
     boolean traceFrom; 
     String labelText;
-    //Vertex vertex;
-    //Vector inEdgeCopies = new Vector();
-    //Vector outEdgeCopies = new Vector();
     public VertexCopy(int co, int ln, int yl, Rational f, int d, boolean r,
                       String lText)
     {   code = co;
@@ -904,6 +903,7 @@ class VertexCopy implements Serializable
         labelText = lText;
     }
 }
+
 class Vertex extends JPanel //LWContainer
 {   // attributes
 
@@ -1478,7 +1478,8 @@ class Vertex extends JPanel //LWContainer
 }
 
 class EdgeCopy implements Serializable
-{   VertexCopy fromVertexCopy, toVertexCopy;
+{   
+	VertexCopy fromVertexCopy, toVertexCopy;
     Rational capacity;
     long lastTimeChanged;
     int mode;
@@ -2766,6 +2767,10 @@ class DiagramManager
             {   Vertex v = (Vertex) vertexLayers[i].elementAt(j);
                 v.setFlow(v.flow);
             }
+        for (int j = 0; j < edges.size(); j++)
+        {   Edge e = (Edge) edges.elementAt(j);
+            e.setMode(mode);
+        }
         if (remember)
             owner.addToHistory();
     }    
@@ -2815,6 +2820,9 @@ class DiagramManager
 //        insertVertex(owner.root, null);
         owner.layerDistance = owner.maxLayerDistance;
         owner.numLayers = 0;
+        
+        owner.vertexCode = 1;
+        
         if (newRoot)
         {   // clear history
             owner.history.removeAllElements();

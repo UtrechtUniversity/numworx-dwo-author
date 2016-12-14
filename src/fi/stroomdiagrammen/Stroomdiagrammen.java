@@ -70,6 +70,7 @@ public class Stroomdiagrammen extends JApplet implements ScormAppletIF, WiskOpdr
     
 	// a copy of the flowdiagram
 	DiagramCopy diagramCopy = null;
+	DiagramCopy origDiagramCopy = null;
 	Hashtable diagramState = null;
 
 	// menu-gebeuren

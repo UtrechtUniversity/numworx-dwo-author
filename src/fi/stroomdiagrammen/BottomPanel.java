@@ -192,9 +192,22 @@ JTextField test;
     class NewAL implements ActionListener
     {   public void actionPerformed(ActionEvent e)
         {   if (realDWO) 
-        		sdip.drawingPanel.diagramManager.clearDiagram(true);
+        	{	sdip.drawingPanel.diagramManager.clearDiagram(true);
+        		if (owner.origDiagramCopy != null)
+        		{	owner.diagramCopy = owner.origDiagramCopy;
+        			sdip.drawingPanel.initialize();
+        			
+        		}
+        	}
         	else
-        		owner.drawingPanel.diagramManager.clearDiagram(true);
+        	{	owner.drawingPanel.diagramManager.clearDiagram(true);
+    			if (owner.origDiagramCopy != null)
+    			{	owner.diagramCopy = owner.origDiagramCopy;
+    				owner.drawingPanel.initialize();
+    			
+    			}
+        	
+        	}
         }    
     }    
     // inner class for bubbleButton

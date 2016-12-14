@@ -42,7 +42,7 @@ public class SDInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 	boolean bronnenComboEnabled = true;
 	
-	int scoreMax = 10;
+	int scoreMax = 0;
 	
 	
 	public SDInteractieEditPanel(Stroomdiagrammen eigenaar)

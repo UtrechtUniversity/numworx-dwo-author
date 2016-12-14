@@ -3,6 +3,7 @@ package fi.stroomdiagrammen;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -313,12 +314,15 @@ System.out.println("sdip zetOpdracht");
 			{	
 				Object ob = StringCodeObject.decodeStringToObject(stateString);
 				eigenaar.diagramCopy = (DiagramCopy) ob;
+				eigenaar.origDiagramCopy = (DiagramCopy) ob;
 				
 	//System.out.println("string decoded");
 				drawingPanel.initialize();	
 			}
 			else 
-				eigenaar.diagramCopy = null;	
+			{	eigenaar.diagramCopy = null;
+				eigenaar.origDiagramCopy = null;
+			}
 			
 		}	
 		else
@@ -335,14 +339,20 @@ System.out.println("sdip zetOpdracht");
 			{	
 				Object ob = StringCodeObject.decodeStringToObject(stateString);
 				eigenaar.diagramCopy = (DiagramCopy) ob;
+				eigenaar.origDiagramCopy = (DiagramCopy) ob;
 				
 	//System.out.println("string decoded");
 				drawingPanel.initialize();	
 			}
 			else 
-				eigenaar.diagramCopy = null;	
+			{	eigenaar.diagramCopy = null;
+				eigenaar.origDiagramCopy = null;
+			}
 				
 		}
+		
+		drawingPanel.zetIsDemo(isDemo);
+			
 		
 	}
 	
@@ -403,6 +413,7 @@ System.out.println("sdip zetOpdracht");
 				
 		}
 
+		drawingPanel.zetIsDemo(isDemo);
 	}
 	
 	public void setEditState(Hashtable b)
@@ -535,12 +546,15 @@ System.out.println("sdip setEditState");
 			{	
 				Object ob = StringCodeObject.decodeStringToObject(stateString);
 				eigenaar.diagramCopy = (DiagramCopy) ob;
+				eigenaar.origDiagramCopy = null;
 				
 	//System.out.println("string decoded");
 				drawingPanel.initialize();	
 			}
 			else 
-				eigenaar.diagramCopy = null;	
+			{	eigenaar.diagramCopy = null;
+				eigenaar.origDiagramCopy = null;
+			}
 			
 
 		}
@@ -558,15 +572,18 @@ System.out.println("sdip setEditState");
 			{	
 				Object ob = StringCodeObject.decodeStringToObject(stateString);
 				eigenaar.diagramCopy = (DiagramCopy) ob;
-				
+				eigenaar.origDiagramCopy = null;
 	//System.out.println("string decoded");
 				drawingPanel.initialize();	
 			}
 			else 
-				eigenaar.diagramCopy = null;	
+			{	eigenaar.diagramCopy = null;
+				eigenaar.origDiagramCopy = null;
+			}
 				
 		}
 		
+		drawingPanel.zetIsDemo(isDemo);
 	}
 	
 	public Hashtable getState()
@@ -577,14 +594,19 @@ System.out.println("sdip setEditState");
 		DiagramCopy diagramCopy = drawingPanel.diagramManager.copyDiagram();		
 		
 		String stateString = "";
+		HashMap<String,Object> diagramCopyHM = new HashMap<String,Object>(); 
 		if (diagramCopy != null)
 		{	stateString = StringCodeObject.encodeObjectToString(diagramCopy);
 	    	
 System.out.println("diagramcopy encoded");	    	
 
+			diagramCopyHM = NoSer.diagramCopyToDiagramHashMap(diagramCopy);
+
 		}	
 		// stop de gecodeerde string in de hashtable
 		h.put("state", stateString);
+		
+		h.put("stategwt", diagramCopyHM);
 		
 		return h;
 		
@@ -610,14 +632,19 @@ System.out.println("diagramcopy encoded");
 		DiagramCopy diagramCopy = drawingPanel.diagramManager.copyDiagram();		
 		
 		String stateString = "";
+		HashMap<String,Object> diagramCopyHM = new HashMap<String,Object>();
 		if (diagramCopy != null)
 		{	stateString = StringCodeObject.encodeObjectToString(diagramCopy);
 	    	
 System.out.println("diagramcopy encoded");	    	
 
+			diagramCopyHM = NoSer.diagramCopyToDiagramHashMap(diagramCopy);
+
 		}	
 		// stop de gecodeerde string in de hashtable
 		h.put("state", stateString);
+		
+		h.put("stategwt", diagramCopyHM);
 		
 		return h;
 	}
@@ -665,6 +692,7 @@ System.out.println("diagramcopy encoded");
 
 	public void zetAantalBronnen(int num)
 	{	aantalBronnen = num;
+		eigenaar.numRoots = num;
 		if (drawingPanel.roots.size() < aantalBronnen)
 		{	int rootsWanted = aantalBronnen - drawingPanel.roots.size();
 			for (int rCnt = 0; rCnt < rootsWanted; rCnt++)
@@ -688,14 +716,16 @@ System.out.println("diagramcopy encoded");
 		
 //System.out.println("dp height before = " + drawingPanel.getSize().height);		
 		
-		menuBar.setVisible(!isDemo);
-		bottomPanel.setVisible(!isDemo);
+		//menuBar.setVisible(!isDemo);
+		//bottomPanel.setVisible(!isDemo);
 		
-		sdPanel.validate();
-		drawingPanel.defineSpaces(true);
-		drawingPanel.updateWork();
-		drawingPanel.repaint();
-	
+		//sdPanel.validate();
+		//drawingPanel.defineSpaces(true);
+		//drawingPanel.updateWork();
+		//drawingPanel.repaint();
+		
+		setBounds(0,0,getSize().width,getSize().height);
+		
 		drawingPanel.zetIsDemo(isDemo);
 //System.out.println("dp height after = " + drawingPanel.getSize().height);		
 		
@@ -844,7 +874,7 @@ System.out.println("diagramcopy encoded");
 
 			//sdPanel.validate();
 
-			if (toonBerekeningenMenu || toonStroombreedteMenu || toonOptiesMenu)
+			if (!isDemo && (toonBerekeningenMenu || toonStroombreedteMenu || toonOptiesMenu))
 				menuBar.setVisible(true);
 			else
 				menuBar.setVisible(false);
@@ -852,14 +882,23 @@ System.out.println("diagramcopy encoded");
 			if (menuBar.isVisible())
 				drawingPanel.setBounds(0, menuHeight, b, h - menuHeight - eigenaar.bottomHeight);
 			else
-				drawingPanel.setBounds(0, 0, b, h - eigenaar.bottomHeight);
+			{	if (!isDemo)
+					drawingPanel.setBounds(0, 0, b, h - eigenaar.bottomHeight);
+				else
+					drawingPanel.setBounds(0, 0, b, h);
+			}
 			
 			drawingPanel.defineSpaces(true);
 			drawingPanel.updateWork();
 			drawingPanel.repaint();
 			
-			bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
-			bottomPanel.initialize();
+			if (!isDemo)
+			{	bottomPanel.setBounds(0, h - eigenaar.bottomHeight, b, eigenaar.bottomHeight);
+				bottomPanel.initialize();
+				bottomPanel.setVisible(true);
+			}
+			else
+				bottomPanel.setVisible(false);
 //System.out.println("sdPanel sized");		
 		}
 		
