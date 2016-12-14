@@ -40,6 +40,7 @@
 
 -target 1.8
 -printmapping mapping.txt
+-optimizations !class/merging/*
 -forceprocessing
 -dontwarn
 
