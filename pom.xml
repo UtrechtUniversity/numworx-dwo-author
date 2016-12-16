@@ -10,6 +10,7 @@
   	<module>../euclides-expr</module>
   	<module>../euclides-util</module>
   	<module>../euclides-gwt</module>
+  	<module>euclides-resources</module>
   </modules>
   <properties>
   	<euclidesVersion>${project.version}</euclidesVersion>
