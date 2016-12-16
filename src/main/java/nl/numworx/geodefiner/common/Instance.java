@@ -44,6 +44,13 @@ public abstract class Instance implements Observer {
 				flip(l);
 				return;
 			}
+			if (click && testLabel && l.getRegistered() instanceof Interval) {
+				Animator anima = l.adapt(Animator.class);
+				if(anima != null) {
+					anima.command();
+					return;
+				}
+			}
 			super.visitLabel(l);
 		}		
 	};
@@ -185,12 +192,13 @@ public abstract class Instance implements Observer {
 		for (Iterator<Destroyable> iterator = punten.iterator(); iterator.hasNext();) {
 			Destroyable next = iterator.next();
 			FreePoint punt = next.adapt(FreePoint.class);
-			if(punt != null) {
+			String name = viewer.getMapper().toString(next);
+			if(punt != null && !name.startsWith("%")) {
 				try {
 					NumberIO io = new NumberIO();
 					punt.getX().writeNumber(io);
 					punt.getY().writeNumber(io);
-					positions.put(viewer.getMapper().toString(next), io.toList());
+					positions.put(name, io.toList());
 				} catch (IOException e) {
 				}
 			}

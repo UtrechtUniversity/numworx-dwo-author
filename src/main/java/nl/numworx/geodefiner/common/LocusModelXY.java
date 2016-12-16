@@ -44,7 +44,6 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 	private Label x;
 	private Label fx,fy;
 	private Set<Destroyable> output = new HashSet<>();
-	private String FX, FY;
 	private Coordinaten dest;
 	private Label interval;
 
@@ -82,18 +81,15 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		this.fy = fy;
 		this.output. addAll( LocusModelF.varsOf(fy));
 		for(Destroyable i: output) i.addObserver(this);
-		
-		FX = mapper.toString(fx);
-		FY = mapper.toString(fy);
 		OMVariable fvar, xvar;
 		xvar = new OMVariable("x");
-		fvar = new OMVariable(FX);
+		fvar = new OMVariable("%fx");
 		OMApplication oma = new OMApplication();
 		oma.addElement(fvar);oma.addElement(xvar);	
 		Expression expression = new Expression(tracker);
 		y1 = (Label) expression.interpret(oma, y1, this);
 		oma = new OMApplication();
-		fvar = new OMVariable(FY);
+		fvar = new OMVariable("%fy");
 		oma.addElement(fvar); oma.addElement(xvar);
 		y2 = (Label) expression.interpret(oma, y2, this);
 		dest = new Coordinaten(y1, y2, O, U);
@@ -137,6 +133,8 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 
 	@Override
 	public Destroyable fromString(String name) {
+		if( "%fx".equals(name)) return fx;
+		if( "%fy".equals(name)) return fy;
 		if ("x".equals(name))
 			return x;
 		return mapper.fromString(name);

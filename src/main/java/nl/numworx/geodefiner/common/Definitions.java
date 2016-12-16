@@ -206,6 +206,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 					x2.addObserver(l);
 					l.setP(x3);
 					viewer.getMapper().rename(l, var.getName());
+// FIXED NAMES
+					viewer.getMapper().rename(x1, var.getName() + "%min");
+					viewer.getMapper().rename(x2, var.getName() + "%max");
 					m.add(l);
 					addElement(new CELL(text, l, var));
 					return;
@@ -234,7 +237,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					viewer.getMapper().rename(f, var.getName());
 					viewer.getModel().add(f);
 // display function
-					if(f instanceof Label && ((Label) f).getSubKey().equals(Lambda.TYPE))
+					if(f instanceof Label && isYFX((Label) f))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
@@ -302,6 +305,21 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 			}
 		}
+	}
+
+	protected boolean isYFX(Label f) {
+		boolean typeOk = f.getSubKey().equals(Lambda.TYPE);
+		if(typeOk) {
+			OMObject obj = f.adapt(OMObject.class);
+			if (obj instanceof OMBinding) {
+				obj = ((OMBinding) obj).getBody();
+			}
+			if(obj instanceof OMApplication) {
+				obj = ((OMApplication) obj).firstElement();
+			}
+			// symbol, variable, float int.
+		}
+		return typeOk;
 	}
 
 	private int findCell(String name) {
