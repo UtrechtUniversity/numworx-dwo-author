@@ -9,6 +9,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Triangle;
 import fi.euclides.util.DefaultAdapter;
 
 public class CircleModel extends LineModel {
@@ -25,6 +26,10 @@ public class CircleModel extends LineModel {
 		return super.init(item);
 	}
 
+	public UIModel<Destroyable, UIEditor> init(Triangle item) {
+		return super.init(item);
+	}
+	
 	/* (non-Javadoc)
 	 * @see nl.numworx.geodefiner.ui.LineModel#toMap()
 	 */

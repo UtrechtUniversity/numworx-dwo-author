@@ -12,12 +12,12 @@ import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.common.Align;
 
-public class TextPane extends ColorPane<TextModel> implements Icon, ItemListener {
+public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon, ItemListener {
 
 	JComboBox<Align> alignBox;
 	JLabel sampleLabel;
 	JPanel preview = new JPanel();
-	public TextPane(TextModel model) {
+	public TextPane(T model) {
 		super(model);
 		alignBox = new JComboBox<Align>(Align.values());
 		alignBox.addItemListener(this);

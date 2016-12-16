@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -15,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -22,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.Align;
@@ -57,6 +60,7 @@ import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
@@ -93,6 +97,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		
 	};
 	
+	private JPanel panel = new JPanel(new BorderLayout());
 	
 	private final class InstanceViewer extends AWTViewer implements Observer {
 
@@ -342,15 +347,22 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	private Map<String, Number> random = Collections.emptyMap();
+
+	JToolBar toolbox;
 	
 	public Instance() {
+		
 		content.setBackground(Color.white);
 		content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
 		content.addMouseMotionListener(getViewer());
 		ToolTipManager.sharedInstance().registerComponent(content);
-
+		panel.add(content, BorderLayout.CENTER);
+		toolbox = new JToolBar();
+		toolbox.setFloatable(false);
+		toolbox.setVisible(false);
+		panel.add(toolbox, BorderLayout.NORTH);
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {
@@ -375,7 +387,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public JComponent asComponent() {
-		return content;
+		return panel;
 	}
 
 	public CBookEventListener asEventListener() {
@@ -450,9 +462,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public String randomize(Map<String, Number> random, String text) {
 		Hashtable randomVarWaarden = new Hashtable(random);
 		String[] randomVarNamen = random.keySet().toArray(new String[random.size()]);
+		Locale lcl = WiskOpdr.language;
 		try {
+			WiskOpdr.language = Locale.ROOT; // POSIX: decimal point
 			return FormuleParser.randomizeString(text,randomVarNamen,randomVarWaarden);
 		} catch (Exception e) {
+		} finally {
+			WiskOpdr.language = lcl;
 		}
 		return super.randomize(random, text);
 	}

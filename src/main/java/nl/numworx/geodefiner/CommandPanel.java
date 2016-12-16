@@ -60,8 +60,9 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 				editor.formuleVak.vulVak("$f@");
 				
 			} catch (fi.euclides.formuleobjects.ParseException e1) {
-				Tracker t = instance.getViewer();
-				t.setStatus(e1.getLocalizedMessage());
+//				Tracker t = instance.getViewer();
+//				t.setStatus(e1.getLocalizedMessage());
+				firePropertyChange("feedback", string, e1);
 			}
 			return;
 		}

@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.ui;
 
+import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.UIModel;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
@@ -46,11 +47,16 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 
 	public void visitLabel(Label label) {
 		//model = new ColorModel<Label>().init(label);
+		if(label.getRegistered() instanceof Interval) {
+			model = new IntervalModel().init(label);
+			return;
+		}
+
 		model = new TextModel().init(label);
 	}
 
 	public void visitTriangle(Triangle t) {
-		model = new ColorModel<Triangle>().init(t);
+		model = new CircleModel().init(t);
 	}
 
 	public void visitKegelsnede(Kegelsnede2 k) {

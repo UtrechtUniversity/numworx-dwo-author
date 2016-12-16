@@ -48,6 +48,12 @@
 			<artifactId>om-lib</artifactId>
 			<version>1.3.18a</version>
 		</dependency>
+		<dependency>
+			<groupId>fi.euclides</groupId>
+			<artifactId>euclides-resources</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>

@@ -1,12 +1,16 @@
 package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -32,13 +36,17 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
+import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.AbstractViewer;
 import fi.wiskopdr.TabletOwningLayeredPane;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
+import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 
-public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner {
+public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner, ActionListener, PropertyChangeListener {
 
 	private Instance instance;
 	private DefinitionPanel definition;
@@ -51,6 +59,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private JPanel content;
 	private Axes axes;
 	private JTabbedPane tabs;
+	private FeedbackTekstArea feedback;
 	
 	Editor(CBookContext context) {
 		content = new JPanel(new BorderLayout());
@@ -82,8 +91,11 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 // inject
 		command.random = random.getRandomVars();
 		command.instance = instance;
-
+		toolbox.viewer = instance.getViewer();
+		toolbox.setToolbox(instance.toolbox);
+// 
 		command.addPropertyChangeListener("command", definition);
+		command.addPropertyChangeListener("feedback", this);
 		definition.addPropertyChangeListener("command", command);
 		content.add(command, BorderLayout.SOUTH);
 		add(content, JLayeredPane.DEFAULT_LAYER);
@@ -132,6 +144,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("positions", instance.getState().get("positions"));
 		launchdata.put("random", random.getText());
 		launchdata.put("checkDWO", checkDWO.toMap());
+		launchdata.put("toolbox", toolbox.toList());
 		return launchdata;
 	}
 
@@ -174,6 +187,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		ObjectMap map = JSONUtilities.wrapMap(launchdata);
 		if(map.containsKey("checkDWO"))
 				checkDWO.fromMap(map.getObjectMap("checkDWO"));
+		if(map.containsKey("toolbox"))
+				toolbox.fromList(map.getObjectList("toolbox"));
 	}
 
 	public void start() {
@@ -203,5 +218,48 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		super.paint(g);
 	}
 
-	
+	void setFeedback(String tekst) {
+		if(feedback == null) {
+			feedback = new FeedbackTekstArea();
+			feedback.setSize(200,40);
+			if(true) {	
+				feedback.setBackground(new Color(255,255,200));
+				if("MW".equals(WiskOpdr.deployVariant))feedback.setBackground(new Color(250,255,220));
+				if("GR".equals(WiskOpdr.deployVariant))feedback.setBackground(new Color(255,255,255));
+				feedback.setBorders(true);
+			}
+			feedback.setCloseable(true);
+			feedback.addActionListener(this);
+			feedback.setVisible(false);
+			add(feedback, JLayeredPane.PALETTE_LAYER);
+			int x; int y;
+			x = command.getX() + 10;
+			y = command.getY() - 10;
+			feedback.setLocation(x, y);
+		}
+		feedback.setText(tekst);
+		feedback.setVisible(true);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == feedback) {
+			feedback.setVisible(false);
+			command.requestFocus();
+		}
+
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if("feedback".equals(evt.getPropertyName())) {
+			String command = evt.getOldValue().toString();
+			Object t = evt.getNewValue();
+			if(t instanceof ParseException) {
+				ParseException pe = (ParseException)t;
+				int position = pe.currentToken.beginColumn;
+				if(pe.currentToken == null) pe.currentToken = new Token(0, "start");
+				command += "\nSyntax fout na " + pe.currentToken + " (positie " + position + ")"; 
+			}
+			setFeedback(command);
+		}
+	}
 }
