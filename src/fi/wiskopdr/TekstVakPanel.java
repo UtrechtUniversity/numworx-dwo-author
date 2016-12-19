@@ -226,6 +226,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean isStappenVak = false;
 	private int stapNr = 0;
 	private String[] stappen = null;
+	private boolean ideasStatistiek = false;
 	
 	public TekstVakPanel()
 	{
@@ -694,6 +695,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
+		boolean ideasStatistiek = false;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -866,6 +868,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	logIDLabel = (String)h.get("logIDLabel");
         if(h.containsKey("visible")) 
         	visible = ((Boolean)h.get("visible")).booleanValue();
+        if(h.containsKey("ideasStatistiek"))
+        	ideasStatistiek = ((Boolean)h.get("ideasStatistiek")).booleanValue();
 
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -940,6 +944,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.logID = logID;
 	    this.logIDLabel = logIDLabel;
 	    this.visible = visible;
+	    this.ideasStatistiek = ideasStatistiek;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1679,6 +1684,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
+		boolean ideasStatistiek = false;
 
 		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
@@ -1745,6 +1751,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		logID = this.logID;
 		logIDLabel = this.logIDLabel;
 		visible = this.visible;
+		ideasStatistiek = this.ideasStatistiek;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -1874,6 +1881,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
 		h.put("visible", new Boolean(visible));
+		h.put("ideasStatistiek", new Boolean(ideasStatistiek));
 		
 		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
@@ -2443,6 +2451,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
+		boolean ideasStatistiek = false;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
@@ -2602,6 +2611,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	logIDLabel = (String)h.get("logIDLabel");
         if (h.containsKey("visible"))
         	visible = ((Boolean) h.get("visible")).booleanValue();
+        if (h.containsKey("ideasStatistiek"))
+        	ideasStatistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
@@ -2690,6 +2701,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.logID = logID;
 	    this.logIDLabel = logIDLabel;
 	    this.visible = visible;
+	    this.ideasStatistiek = ideasStatistiek;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();

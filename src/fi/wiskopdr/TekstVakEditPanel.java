@@ -199,6 +199,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean visible = true;
 	private JCheckBox visibleCB;
 	
+	private boolean ideasStatistiek = false;
+	private JCheckBox ideasCB;
+	
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
 		setLayout(null);
@@ -298,6 +301,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
 		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
 		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,225,20, visible, layoutOptionsPanel);
+		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
         
 		logIDField = new JTextField("0");
 		logIDField.setBounds(100,250,70,20);
@@ -806,6 +810,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
+		boolean ideasStatistiek = true;
 		
 		
 		
@@ -869,6 +874,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logID = logIDField.getText();
 		logIDLabel = logIDLabelField.getText();
 		visible = this.visible;
+		ideasStatistiek = this.ideasStatistiek;
 			
 		Hashtable h = null;
 		 
@@ -952,6 +958,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
 		h.put("visible", new Boolean(visible));
+		h.put("ideasStatistiek", new Boolean(ideasStatistiek));
 		
 		return h;
 	}
@@ -1074,6 +1081,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
+		boolean ideasStatistiek = false;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1173,6 +1181,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("logID")) logID = (String)h.get("logID");
         if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
         if(h.containsKey("visible")) visible = ((Boolean) h.get("visible")).booleanValue();
+        if(h.containsKey("ideasStatistiek")) ideasStatistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
 		
         System.out.println("logOption: "+logOption);
 
@@ -1223,6 +1232,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.isLink = isLink;
 		this.defaultBijNull = defaultBijNull;
 		this.visible = visible;
+		this.ideasStatistiek = ideasStatistiek;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -1321,6 +1331,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		sleepdoelCB.setEnabled(zwevend);
 		sleepHandleCB.setVisible(sleepbaar);
 		visibleCB.setSelected(visible);
+		ideasCB.setSelected(ideasStatistiek);
 		
 		if(teksten!=null)
 		{	aantalRijenTF.setText(Integer.toString(teksten.length));
@@ -1968,6 +1979,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	visible = visibleCB.isSelected();
 			repaint();
 		}
+	    if(e.getSource().equals(ideasCB))
+	    {
+	    	ideasStatistiek = ideasCB.isSelected();
+	    }
 	    
 	    if(e.getSource().equals(stylesCB))
 		{	editStylesButton.setVisible(stylesCB.isSelected());
