@@ -193,7 +193,7 @@ System.out.println("ingevuld " + ingevuld);
 		Hashtable h = algebraSchuifVeld.getState();
 		
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
-		h.put("scoreMax", new Integer(scoreMax));
+		//h.put("scoreMax", new Integer(scoreMax));
 		
 		return h;
 	}

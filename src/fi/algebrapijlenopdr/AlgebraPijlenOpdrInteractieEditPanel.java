@@ -454,8 +454,15 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel
 		if (beginExpressiePanel.getCorrectExpressieStrings().size() > 0)
 			beginExpressieString = (String) beginExpressiePanel.getCorrectExpressieStrings().elementAt(0);
 		h.put("beginExpressieString", beginExpressieString);
-		
-		h.put("scoreMax", new Integer(scoreMax));
+
+		boolean kijkNaActief = false;
+		if (h.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
+
+		if (kijkNaActief)
+			h.put("scoreMax", new Integer(scoreMax));
+		else 
+			h.put("scoreMax", new Integer(0));
 		
 		h.put("apoipBreedte", new Integer(apoipBreedte));
 		h.put("apoipHoogte", new Integer(apoipHoogte));
