@@ -678,15 +678,18 @@ System.out.println("viep getEditState");
 
 		Hashtable h = vip.getEditState(); 
 		
-//		h.put("toonRodeFiguurInput", new Boolean(rodeFiguurPanel.isVisible()));
-//		h.put("toonGrijzeFiguurInput", new Boolean(grijzeFiguurPanel.isVisible()));
-
 		h.put("rodeFiguurInput", rodeFiguurInput);
 		h.put("grijzeFiguurInput", grijzeFiguurInput);
 		
-//System.out.println("get rfi = " + rodeFiguurInput);
 
-		h.put("scoreMax", new Integer(scoreMax));
+		int taakNummer = 1;
+		if (h.containsKey("taakNummer"))
+			taakNummer = ((Integer) h.get("taakNummer")).intValue();
+		
+		if (taakNummer == 1)
+			h.put("scoreMax", new Integer(scoreMax));
+		else
+			h.put("scoreMax", new Integer(0));
 		
 		h.put("vipBreedte", new Integer(vipBreedte));
 		h.put("vipHoogte", new Integer(vipHoogte));

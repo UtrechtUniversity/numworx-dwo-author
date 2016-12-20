@@ -694,14 +694,14 @@ System.out.println("aLD found");
 		
 		this.scoreMax = scoreMax;
 		
-		kijkNaActief = balkOnderaan || (taakNummer == 1);
-		if (!balkOnderaan && taakNummer != 1)
-			scoreMax = 0;
+//		kijkNaActief = balkOnderaan || (taakNummer == 1);
+//		if (!balkOnderaan && taakNummer != 1)
+//			scoreMax = 0;
 			
-		this.scoreMax = scoreMax;	
+//		this.scoreMax = scoreMax;	
 		
-System.out.println("zetOpdracht kijkNaActief = " + kijkNaActief);
-System.out.println("zetOpdracht scoreMax = " + scoreMax);
+//System.out.println("zetOpdracht kijkNaActief = " + kijkNaActief);
+//System.out.println("zetOpdracht scoreMax = " + scoreMax);
 		
 		if (b.containsKey("appletEditState"))
 		{
@@ -1463,7 +1463,12 @@ System.out.println("vip getEditState");
 	}
 	
 	public int getScoreMax()
-	{	return scoreMax;
+	{	
+System.out.println("getScoreMax " + scoreMax);
+		if (kijkNaActief)
+			return scoreMax;
+		else
+			return 0;
 	}
 	
 	public boolean isCorrect()
