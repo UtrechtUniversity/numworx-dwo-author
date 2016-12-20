@@ -1051,41 +1051,15 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     {
     	
 //System.out.println("tviep getEditState");
-/*
-        Hashtable tvState = new Hashtable();
-        boolean viewerOnly = false; 
-        boolean moveable = true;
-        int basisFiguur = 1;
-        int aantalHulppunten = 0;
-        
-        tvState = tekenVeelvlak.getState();
-        viewerOnly = viewerOnlyCB.isSelected();
-        moveable = moveableCB.isSelected();
-        basisFiguur = tekenVeelvlak.geefBasisFiguur();
-        try
-        {
-        	aantalHulppunten = Integer.parseInt(hulppuntenTF.getText());
-        }
-        catch(Exception e)
-        {
-        	aantalHulppunten = 0;
-        }
-*/        
         Hashtable h = tvip.getEditState();
-/*        
-        h.put("tvState", tvState);
-        h.put("viewerOnly", new Boolean(viewerOnly));
-        h.put("moveable", new Boolean(moveable));
-        h.put("basisFiguur", new Integer(basisFiguur));
-        h.put("aantalHulppunten", new Integer(aantalHulppunten));
-*/        
-		h.put("tvipBreedte", new Integer(tvipBreedte));
+
+        h.put("tvipBreedte", new Integer(tvipBreedte));
 		h.put("tvipHoogte", new Integer(tvipHoogte));
-		
-		//if (vlakkenKleurenCB.isSelected())
-		h.put("scoreMax", new Integer(scoreMax));
-		//else
-		//	h.put("scoreMax", new Integer(0));
+
+		if (kijkDraaihoekNaCB.isSelected() || kijkVlakkenNaCB.isSelected())
+			h.put("scoreMax", new Integer(scoreMax));
+		else
+			h.put("scoreMax", new Integer(0));
         
 		return h;
     }
