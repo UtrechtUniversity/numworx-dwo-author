@@ -167,7 +167,7 @@ public class MPReduceParser implements MPReduceParserConstants {
 
   final public Object multExpr() throws ParseException {
  Object o, o2; Token tok;
-    o = powerExpr();
+    o = negExpr();
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -191,7 +191,7 @@ public class MPReduceParser implements MPReduceParserConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      o2 = powerExpr();
+      o2 = negExpr();
                 switch(tok.kind)
                 {
                   case MULTIPLY: o = new Vermenigvuldiging( (Expressie) o, (Expressie) o2); break;
@@ -204,7 +204,7 @@ public class MPReduceParser implements MPReduceParserConstants {
 
   final public Object powerExpr() throws ParseException {
  Object o,o2; String tok;
-    o = negExpr();
+    o = compExpr();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case POWER:
       jj_consume_token(POWER);
@@ -226,7 +226,7 @@ public class MPReduceParser implements MPReduceParserConstants {
     case MINUS:
       jj_consume_token(MINUS);
     tok = "-";
-      o = compExpr();
+      o = powerExpr();
         {if (true) return new Aftrekking(new BasisExpressie(0), (Expressie) o);}
       break;
     case LPAR:
@@ -257,7 +257,7 @@ public class MPReduceParser implements MPReduceParserConstants {
     case ARBCOMPLEX:
     case LIMIT:
     case ID:
-      o = compExpr();
+      o = powerExpr();
                 {if (true) return o;}
       break;
     default:

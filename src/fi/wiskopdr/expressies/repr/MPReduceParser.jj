@@ -180,7 +180,7 @@ Object intervalExpr() :
        
     }  )*
   {    return a;
-  }}Object multExpr() :{Object o, o2; Token tok;}{  o = powerExpr()  (    ( tok = < MULTIPLY >    | tok = < DIVIDE >    )    o2 = powerExpr()    {		switch(tok.kind)		{		  case MULTIPLY: o = new Vermenigvuldiging( (Expressie) o, (Expressie) o2); break;
+  }}Object multExpr() :{Object o, o2; Token tok;}{  o = negExpr()  (    ( tok = < MULTIPLY >    | tok = < DIVIDE >    )    o2 = negExpr()    {		switch(tok.kind)		{		  case MULTIPLY: o = new Vermenigvuldiging( (Expressie) o, (Expressie) o2); break;
 		  case DIVIDE  : o = new Deling( (Expressie) o, (Expressie) o2); break;
 		}
     }  )*
@@ -189,7 +189,7 @@ Object intervalExpr() :
     }
 Object powerExpr():
 {Object o,o2; String tok;}
-{  o = negExpr()
+{  o = compExpr()
   (
     
       < POWER >
@@ -208,8 +208,8 @@ Object powerExpr():
 
 Object negExpr() :{Object o; String tok;}{  (    < MINUS >  { tok = "-";  }
  )
-  o = compExpr()  {	return new Aftrekking(new BasisExpressie(0), (Expressie) o);
-  }| o = compExpr()
+  o = powerExpr()  {	return new Aftrekking(new BasisExpressie(0), (Expressie) o);
+  }| o = powerExpr()
 	{  		return o;
 	}}
 Object compExpr():{Object o, arg;
