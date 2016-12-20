@@ -152,8 +152,8 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 				kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 			//zetKijkNaActief(kijkNaActief);
 
-			if (h.containsKey("scoreMax"))
-				scoreMax = ((Integer) h.get("scoreMax")).intValue();
+			//if (h.containsKey("scoreMax"))
+			//	scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
 			algebraSchuifVeld.setEditModeState(h);
 			
