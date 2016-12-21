@@ -47,7 +47,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 	JLabel maxScoreLabel;	
 	JTextField maxScoreVeld;	
 
-	int scoreMax = 0;
+	int scoreMax = 10;
 	
 	ExpressiePanel antwoordFormulePanel;
 	JLabel doelFormuleLabel;
@@ -292,7 +292,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		boolean equivalent = true;
 		// antwoord ophalen
 		String antwoordFormuleString = "";
-		int scoreMax = 0;
+		int scoreMax = 10;
 	
 
 		if (b.containsKey("appletLaunchData"))
@@ -427,9 +427,16 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 //System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieString());
 		h.put("antwoordFormuleString", antwoordFormulePanel.getExpressieString());
 		h.put("antwoordFormuleStringCorrect", antwoordFormulePanel.getCorrectExpressieString());
+
+		boolean kijkNaActief = false;
+		if (h.containsKey("kijkNaActief"))
+			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		
-		h.put("scoreMax", new Integer(scoreMax));
-		
+		if (kijkNaActief)
+			h.put("scoreMax", new Integer(scoreMax));
+		else 
+			h.put("scoreMax", new Integer(0));
+			
 		h.put("gaipBreedte", new Integer(gaipBreedte));
 		h.put("gaipHoogte", new Integer(gaipHoogte));
 		
