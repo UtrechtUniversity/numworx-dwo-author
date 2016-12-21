@@ -358,9 +358,10 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			    aantalKeuzesTF.setText(""+aantalKeuzes);
 			    maxScorePV.setText(""+scoreMax);
 			     
+			    maakKeuzeVelden();
 			    
-//			    for(int i=0 ; i<aantalKeuzes ; i++)
-//			    {   
+			    for(int i=0 ; i<aantalKeuzes ; i++)
+			    {   
 //			    	/*selectableCheckboxes[i] = new JCheckBox();//("Nr "+(i+1));
 //		            selectableCheckboxes[i].setOpaque(false);
 //		            selectableCheckboxes[i].setBounds(10,80+i*85,20,80);
@@ -368,13 +369,13 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 //		           
 //			    	
 //			    	keuzeVelden[i] = new TekstEditor();
-//			        keuzeVelden[i].zetTekst(keuzeMogelijkheden[i]);
-//			        keuzeVelden[i].layoutTekst();
+			        keuzeVelden[i].zetTekst(keuzeMogelijkheden[i]);
+			        keuzeVelden[i].layoutTekst();
 //			        keuzeVelden[i].setBounds(30,80+i*85,170,80);
 //			        add(keuzeVelden[i],0);
-//			    }
+				}
 			    
-			    maakKeuzeVelden();
+			   
 				
 			    this.answerModels = new Hashtable[answerModels.length];
 				for(int i=0 ; i<answerModels.length ; i++)
