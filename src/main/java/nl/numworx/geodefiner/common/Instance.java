@@ -66,6 +66,10 @@ public abstract class Instance implements Observer {
 		installConfiguration();
 		installPositions();
 		installCheckDWO();
+		installToolbox();
+	}
+
+	protected void installToolbox() {
 	}
 
 	protected boolean installCheckDWO() {
