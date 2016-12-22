@@ -36,6 +36,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
+import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.AbstractViewer;
@@ -258,6 +259,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 				int position = pe.currentToken.beginColumn;
 				if(pe.currentToken == null) pe.currentToken = new Token(0, "start");
 				command += "\nSyntax fout na " + pe.currentToken + " (positie " + position + ")"; 
+			} else if (t instanceof InterpretException) {
+				InterpretException ie = (InterpretException) t;
+				command += "\n" + ie.getLocalizedMessage();
 			}
 			setFeedback(command);
 		}

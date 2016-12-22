@@ -413,6 +413,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	// Assume getSize() is okay.
 	public void init() {
+		panel.doLayout();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
 		getViewer().height = content.getHeight();

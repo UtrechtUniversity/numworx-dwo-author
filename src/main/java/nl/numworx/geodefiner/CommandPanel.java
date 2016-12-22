@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.event.Tracker;
+import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.SwingSymbols;
@@ -60,9 +61,9 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 				editor.formuleVak.vulVak("$f@");
 				
 			} catch (fi.euclides.formuleobjects.ParseException e1) {
-//				Tracker t = instance.getViewer();
-//				t.setStatus(e1.getLocalizedMessage());
 				firePropertyChange("feedback", string, e1);
+			} catch (fi.euclides.expr.InterpretException e2) {
+				firePropertyChange("feedback", string, e2);
 			}
 			return;
 		}
