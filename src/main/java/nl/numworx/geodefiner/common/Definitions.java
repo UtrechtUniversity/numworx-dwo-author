@@ -24,6 +24,7 @@ import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.expr.InterpretException;
 import fi.euclides.expr.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
@@ -234,6 +235,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 					l.setVisible(false);
 					l.setX(20);l.setY(30);
 					Destroyable f = expression.interpret(oma, l, viewer.getMapper());
+					if(f != l) {
+						throw new InterpretException("Exists:" + viewer.getMapper().toString(f));
+					}
 					viewer.getMapper().rename(f, var.getName());
 					viewer.getModel().add(f);
 // display function
@@ -287,20 +291,23 @@ public class Definitions implements Observer /*, ListModel*/ {
 						Label fx = new Label();
 						fx.setString("identity");
 						fx.register(viewer.getRegistered(Lambda.TYPE));
-						DefaultAdapter.getDefault(fx).put(OMObject.class, new OMSymbol("fns1", "identity"));
+						DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
 						viewer.getModel().add(fx);
 						Label fy = new Label();
 						fy.setString(text);
+						fy.setVisible(false);
 						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
 						lambda.addVariable(new OMVariable("y"));
 						fy.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fy).put(OMObject.class, lambda);
 						viewer.getModel().add(fy);
-						LocusModel lm = new LocusModelXY(fx, fy, null, viewer);
+						LocusModel lm = new LocusModelXY(fy, fx, null, viewer);
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
 					    viewer.getModel().add(locus);
 						addElement(new CELL(text, locus, text));
+					} else {
+						throw new InterpretException("syntax error");
 					}
 				}
 			}
