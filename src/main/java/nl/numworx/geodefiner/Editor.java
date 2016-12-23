@@ -79,7 +79,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		content.add(split, BorderLayout.CENTER);
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
 		checkDWO = new CheckDWOPanel();
-		checkObjects = new CheckObjectsPanel();
+		checkObjects = new CheckObjectsPanel(instance.getViewer());
 		toolbox = new ToolboxPanel();
 		random = new RandomPanel();
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
@@ -146,6 +146,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("random", random.getText());
 		launchdata.put("checkDWO", checkDWO.toMap());
 		launchdata.put("toolbox", toolbox.toList());
+		launchdata.put("checkObjects", checkObjects.toList());
 		return launchdata;
 	}
 
@@ -190,6 +191,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 				checkDWO.fromMap(map.getObjectMap("checkDWO"));
 		if(map.containsKey("toolbox"))
 				toolbox.fromList(map.getObjectList("toolbox"));
+		if(map.containsKey("checkObjects")) 
+				checkObjects.fromList(map.getObjectList("checkObjects"));
 	}
 
 	public void start() {
