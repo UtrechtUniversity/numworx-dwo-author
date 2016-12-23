@@ -1,9 +1,11 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Label;
 import fi.euclides.util.Observable;
@@ -61,6 +63,28 @@ public class CheckObjectList implements Observer {
 			
 		}
 	}
+	
+	public Vector toList() {
+		Vector result = new Vector(list.size());
+		Enumeration<CheckObject> e = list.elements();
+		while (e.hasMoreElements()) {
+			CheckObject checkObject = (CheckObject) e.nextElement();
+			result.add(checkObject.toMap());
+		}
+		return result;
+	}
+	
+	public void fromList(ObjectList list) {
+		clear();
+		int s = list.size();
+		for(int i = 0; i < s; i++) {
+			CheckObject co = new CheckObject();
+			co.fromMap(list.getObjectMap(i));
+			addElement(co);
+		}
+		
+	}
+	
 	
 	
 }
