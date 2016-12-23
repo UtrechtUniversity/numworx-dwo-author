@@ -268,14 +268,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		public void visitTriangle(Triangle t)
 		{
-			Color c = t.adapt(Color.class);
-			if(c != null) 
-				g.setColor(c);
-			else
-			if (getModel().getSelect().contains(t))
-				g.setColor(reddish);
-			else
-				g.setColor(grayish);
 			Punt[] depend = (Punt[]) t.getDepend();
 			int length = depend.length;
 			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, length);
@@ -284,7 +276,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				Punt p = depend[i];
 				path.lineTo(p.getXd(), p.getYd());
 			}			
-			g.fill(path);
+			Paint c = t.adapt(Paint.class);
+			if(c != null) {
+				g.setPaint(c);
+				g.fill(path);
+			}
+			selectColor(t);
+			g.draw(path);
 			DefaultAdapter.getDefault(t).put(Shape.class, path);
 		}
 
@@ -325,8 +323,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 			super.visitBoog(b);
 		}
-
-	
 	}
 
 	private CBookEventHandler handler = new CBookEventHandler(this);
