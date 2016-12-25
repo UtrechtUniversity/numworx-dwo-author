@@ -21,8 +21,10 @@ import fi.euclides.model.Model;
 import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
+import fi.euclides.model.PuntOp2;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.expr.Lambda;
@@ -78,6 +80,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 		if(object instanceof OMApplication) {
 			OMApplication oma = (OMApplication) object;
 			OMObject first = oma.firstElement();
+			Model model = viewer.getModel();
 			if( first.isSame(OMConstants.PROG1_ASSIGN))
 			{
 				OMVariable var = (OMVariable) oma.getElementAt(1);
@@ -102,46 +105,78 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Destroyable[] depend = new Destroyable[oma.getLength()-1];
 					expression.copy(oma, viewer.getMapper(), depend);
 				if(POINT.isSame(f)) {
-// $P := point(1,2)
-					Label ix = (Label) depend[0]; // toNumber(object)
-					Label iy = (Label) depend[1];
-					Punt p = viewer.getModel().buildCoordinaten(ix, iy);
-					if(depend.length == 3 && depend[2] instanceof OpObject) {
-// $P := point(1, 2, $lijn)
-						Destroyable on = depend[2];
-						OpObject op = (OpObject) on;
-						p.destroy();
-						p = op.pointOn(p.getX(), p.getY());
-						viewer.getModel().add(p);
+					Punt p;
+					if(depend.length != 3 && depend.length != 2) {
+						throw new InterpretException("point: 2 of 3 parameters");
 					}
+					Destroyable arg0 = depend[0];
+					Destroyable arg1 = depend[1];
+					if(arg0 instanceof Label && arg1 instanceof Label) {
+// $P := point(1,2)
+						Label ix = (Label) arg0; // toNumber(object)
+						Label iy = (Label) arg1;
+						p = model.buildCoordinaten(ix, iy);
+						if(depend.length == 3 && depend[2] instanceof OpObject) {
+// $P := point(1, 2, $lijn)
+							Destroyable on = depend[2];
+							OpObject op = (OpObject) on;
+							p.destroy();
+							p = op.pointOn(p.getX(), p.getY());
+							model.add(p);
+						}
+					} else {
+						model.getSelect().clear();
+						model.toggle(arg0);
+						model.toggle(arg1);
+						p = model.buildPunt(Numbers.ZERO, Numbers.ZERO);
+						model.getSelect().clear();
+						if ( p instanceof PuntOp2 && depend.length == 3)
+						{	PuntOp2 p2 = (PuntOp2)p;
+							Destroyable arg2 = depend[2];
+							if(arg2 instanceof Label) {
+								byte b = (byte) ((Label) arg2).value.doubleValue();
+								p2.setFuse(b);
+								p2.update(arg0, arg1);
+							}
+						}
+						if (p instanceof VrijPunt) { 
+							p.destroy();
+							p = null;
+						}
+						if(p == null) {
+							throw new InterpretException("wrong point");
+						}
+					}
+					
 					viewer.getMapper().rename(p, var.getName());
 					addElement(new CELL(text, p, var));
 					return;
 				}
 // $l := line($P, $Q)
 				if (LINE.isSame(f)) {
-					Destroyable l = viewer.getModel().buildLijn(depend);
+					Destroyable l = model.buildLijn(depend);
+					if(l == null) throw new InterpretException("line error");
 					viewer.getMapper().rename(l, var.getName());
 					addElement(new CELL(text, l, var));
 					return;
 				}
 // $l := segment($P, $Q)
 				if (SEGMENT.isSame(f)) {
-					Destroyable l = viewer.getModel().buildSegment(depend);
+					Destroyable l = model.buildSegment(depend);
 					viewer.getMapper().rename(l, var.getName());
 					addElement(new CELL(text, l, var));
 					return;
 				}
 // $l := arc($P, ... )
 				if (ARC.isSame(f)) {
-					Destroyable l = viewer.getModel().buildBoog(depend);
+					Destroyable l = model.buildBoog(depend);
 					viewer.getMapper().rename(l, var.getName());
 					addElement(new CELL(text, l, var));
 					return;
 				}				
 // $l := circle($P, $Q)
 				if (CIRCLE.isSame(f)) {
-					Destroyable l = viewer.getModel().buildCirkel(depend);
+					Destroyable l = model.buildCirkel(depend);
 					viewer.getMapper().rename(l, var.getName());
 					addElement(new CELL(text, l, var));
 					return;
@@ -169,7 +204,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					}
 					t.setP(p);
 					viewer.getMapper().rename(t, var.getName());
-					viewer.getModel().add(t);
+					model.add(t);
 					addElement(new CELL(text, t, var));
 					return;
 				}
@@ -179,10 +214,10 @@ public class Definitions implements Observer /*, ListModel*/ {
 					if(depend.length > 3)
 					{
 						t3 = new Polygon(depend);
-						viewer.getModel().add(t3);
+						model.add(t3);
 					}
 					else
-						t3 = viewer.getModel().buildTriangle(depend);
+						t3 = model.buildTriangle(depend);
 					addElement(new CELL(text, t3, var));
 					viewer.getMapper().rename(t3, var.getName());
 					return;				
@@ -191,7 +226,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if (INTERVAL.isSame(f)) {
 					LabelDelegate ld = viewer.getRegistered("..");
 					Label l = ld.define(depend);
-					Model m = viewer.getModel();
+					Model m = model;
 // place at random
 					Punt x1 = m.buildPunt(Numbers.createInteger(25), Numbers.createInteger(50));
 					Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
@@ -222,7 +257,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
 					Locus locus = new Locus(lm);
 					viewer.getMapper().rename(locus, var.getName());
-					viewer.getModel().add(locus);
+					model.add(locus);
 					addElement(new CELL(text, locus, var));
 					return;
 				}
@@ -239,13 +274,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 						throw new InterpretException("Exists:" + viewer.getMapper().toString(f));
 					}
 					viewer.getMapper().rename(f, var.getName());
-					viewer.getModel().add(f);
+					model.add(f);
 // display function
 					if(f instanceof Label && isYFX((Label) f))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
-					     viewer.getModel().add(locus);
+					     model.add(locus);
 					     final Destroyable destroyable = f;
 					     locus.addObserver(new Observer() {
 
@@ -281,18 +316,18 @@ public class Definitions implements Observer /*, ListModel*/ {
 						fx.register(
 						viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
-						viewer.getModel().add(fx);
+						model.add(fx);
 						LocusModel lm = new LocusModelF(fx, viewer);
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
-					    viewer.getModel().add(locus);
+					    model.add(locus);
 						addElement(new CELL(text, locus, text));
 					} else if("x".equals(var.getName())) {
 						Label fx = new Label();
 						fx.setString("identity");
 						fx.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
-						viewer.getModel().add(fx);
+						model.add(fx);
 						Label fy = new Label();
 						fy.setString(text);
 						fy.setVisible(false);
@@ -300,11 +335,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 						lambda.addVariable(new OMVariable("y"));
 						fy.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fy).put(OMObject.class, lambda);
-						viewer.getModel().add(fy);
+						model.add(fy);
 						LocusModel lm = new LocusModelXY(fy, fx, null, viewer);
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
-					    viewer.getModel().add(locus);
+					    model.add(locus);
 						addElement(new CELL(text, locus, text));
 					} else {
 						throw new InterpretException("syntax error");

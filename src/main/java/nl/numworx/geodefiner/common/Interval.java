@@ -14,6 +14,7 @@ import fi.euclides.util.Observer;
 public class Interval extends LabelValue {
 
 	private static final Destroyer DESTROYER = new Destroyer();
+	private static final StepValue NULL_STEP = new StepValue(Numbers.ZERO);
 
 	private static final class Destroyer implements Observer {
 		@Override
@@ -58,14 +59,13 @@ public class Interval extends LabelValue {
 	@Override
 	public void update(Observable observable, Object arg) {
 		Label l = (Label) observable;
-		
-		
-		
+		StepValue sv = l.adapt(StepValue.class);
+		if (sv == null) sv = NULL_STEP;
 		
 		Destroyable[] minmax = l.getDepend();
-		Numbers min = ((Label)minmax[0]).value;
-		Numbers max = ((Label)minmax[1]).value;
-		if(l.getP() instanceof PuntOp) {
+		Numbers min = ((Label)minmax[0]).value; min = sv.stepUp(min);
+		Numbers max = ((Label)minmax[1]).value; max = sv.stepDown(max);
+		if (l.getP() instanceof PuntOp) {
 			PuntOp<Lijn> pl = (PuntOp<Lijn>) l.getP();
 			Lijn lijn = pl.getOp();
 			Numbers x1 = lijn.getX1n(); Numbers dx = lijn.getDXn();
@@ -73,13 +73,11 @@ public class Interval extends LabelValue {
 			v = Numbers.div(v, dx);
 			v = Numbers.mul(v, Numbers.sub(max, min));
 			v = Numbers.add(v, min);
+			v = sv.step(v);
 			setStringValue(l, v);
 			
-		} else
-		
-		
-		if(l.value == null) {
-			setStringValue(l, Numbers.div(Numbers.add(max, min), Numbers.TWO));
+		} else if (l.value == null) {
+			setStringValue(l, sv.step(Numbers.div(Numbers.add(max, min), Numbers.TWO)));
 		} else if(min.doubleValue() > l.value.doubleValue()) {
 			setStringValue(l, min);
 		} else if(max.doubleValue() < l.value.doubleValue()) {
