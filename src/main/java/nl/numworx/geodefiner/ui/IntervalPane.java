@@ -20,9 +20,12 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		alignBox.setSelectedItem(model.align);
 		animateBox = new JComboBox<Animate>(Animate.values());
 		animateBox.setSelectedItem(model.animate);
-		intervalField = new JFormattedTextField(model.interval);
+		intervalField = new JFormattedTextField(model.interval/1000.0);
+		intervalField.setColumns(10);
 		lengthField = new JFormattedTextField(model.length);
+		lengthField.setColumns(10);
 		stepField = new JFormattedTextField(0.01); // sets DoubleFormat
+		stepField.setColumns(10);
 		stepField.setValue(model.step);
 		preview.add(alignBox);
 		preview.add(animateBox);
