@@ -270,12 +270,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		{
 			Punt[] depend = (Punt[]) t.getDepend();
 			int length = depend.length;
-			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, length);
-			path.moveTo(depend[length-1].getXd(), depend[length-1].getYd());
-			for (int i = 0; i < length; i++) {
+			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, length+1);
+			path.moveTo(depend[0].getXd(), depend[0].getYd());
+			for (int i = 1; i < length; i++) {
 				Punt p = depend[i];
 				path.lineTo(p.getXd(), p.getYd());
-			}			
+			}
+			path.closePath();
 			Paint c = t.adapt(Paint.class);
 			if(c != null) {
 				g.setPaint(c);

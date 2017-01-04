@@ -143,7 +143,10 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 	class FormuleCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
 		private FormuleEditor vak = new FormuleEditor(false) {
-
+			{
+				setHeader(false);
+			}
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				super.actionPerformed(e);
@@ -210,7 +213,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		checkObjects = new CheckObjectList(tracker);
 		CheckObject obj = new CheckObject();
 // Sample
-		obj.setFormule("$fcircle(A,5)");
+		obj.setFormule("$f@");
 		obj.setMaxScore(5);
 		checkObjects.addElement(obj);
 		model = new CheckObjectsModel();
@@ -239,10 +242,17 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ( "+".equals(e.getActionCommand())) {
-			model.addElement(new CheckObject());
+			CheckObject o = new CheckObject();
+			o.setMaxScore(5);
+			model.addElement(o);
 			return;
 		}
 		if ( "-".equals(e.getActionCommand())) {
+			if (table.isEditing()) {
+				TableCellEditor cellEditor = table.getCellEditor();
+				//if (cellEditor != null)
+				cellEditor.cancelCellEditing();
+			}
 			int[] rows = table.getSelectedRows();
 			Arrays.sort(rows);
 			for (int i = rows.length-1; i >=0; i--) {
