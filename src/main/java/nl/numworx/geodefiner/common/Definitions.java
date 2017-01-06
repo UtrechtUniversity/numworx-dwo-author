@@ -65,7 +65,10 @@ public class Definitions implements Observer /*, ListModel*/ {
 	static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
 	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
-	static final OMSymbol INTERVAL = new OMSymbol("interval1","interval");
+	static final OMSymbol INTERVAL = OMConstants.INTERVAL1_INTERVAL;
+	static final OMSymbol INT = new OMSymbol("calculus1", "int");
+	static final OMSymbol DEFINT = new OMSymbol("calculus1", "defint");
+	
 	private final Expression expression;
 		
 	public void addElement(CELL element) {
@@ -261,6 +264,39 @@ public class Definitions implements Observer /*, ListModel*/ {
 					addElement(new CELL(text, locus, var));
 					return;
 				}
+// $f := int(lambda[$x -> ... ])
+				if(INT.isSame(f)) {
+					Label fy = (Label) depend[0];
+					fy.setString(text); // FIXME Why?
+					Label fx = new Label();
+					fx.setString("identity");
+					fx.register(viewer.getRegistered(Lambda.TYPE));
+					DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
+					model.add(fx);
+					LocusModel lm = new LocusModelXY(fx, fy, null, viewer);
+				    Locus locus = new Integral(lm);
+				    viewer.getMapper().rename(locus, var.getName());
+				    model.add(locus);
+					addElement(new CELL(text, locus, var.getName()));
+					return;
+				}
+// $f := defint($a .. $b, lambda[$x -> ... ])
+				if(DEFINT.isSame(f)) {
+					Label fy = (Label) depend[1];
+					fy.setString(text);
+					Label interval = (Label) depend[0];
+					Label fx = new Label();
+					fx.setString("identity");
+					fx.register(viewer.getRegistered(Lambda.TYPE));
+					DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
+					model.add(fx);
+					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
+				    Locus locus = new Integral(lm);
+				    viewer.getMapper().rename(locus, var.getName());
+				    model.add(locus);
+					addElement(new CELL(text, locus, var.getName()));
+					return;
+				}
 // $w := 1+2
 				}
 // $f := lambda[[$x] ->	$f($x) ]
@@ -282,17 +318,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
 					     model.add(locus);
 					     final Destroyable destroyable = f;
-					     locus.addObserver(new Observer() {
-
-							@Override
-							public void update(Observable locus, Object arg1) {
-								if(arg1 == Destroyable.DESTROY)
-								{
-									locus.deleteObserver(this);
-									destroyable.destroy();
-								}
-								
-							}});
+					     locus.addObserver(new DestroyDependency(destroyable));
 					     f = locus;
 					     
 					}

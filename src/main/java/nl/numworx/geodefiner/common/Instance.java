@@ -219,11 +219,13 @@ public abstract class Instance implements Observer {
 			}
 		}
 		map.put("positions", positions);
-		map.put("model", getModelState());
+		List modelState = getModelState();
+		if(modelState != null) map.put("model", modelState);
 		return map;
 	}
 
 	List getModelState() {
+		if(resetItems == null) return null;
 		Memento m = new Memento(viewer);
 		m.prepare(resetItems);
 		try {

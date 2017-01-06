@@ -85,6 +85,11 @@ public class MementoTest {
 			return null;
 		}
 
+		@Override
+		public <T> T adapt(Class<T> cls) {
+			return null;
+		}
+
 	}
 
 	private MockTracker tracker;
