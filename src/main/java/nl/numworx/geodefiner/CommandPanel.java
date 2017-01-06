@@ -12,14 +12,10 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 
 import nl.tue.win.riaca.openmath.lang.OMObject;
-import fi.euclides.event.Tracker;
-import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.FormuleParser;
-import fi.euclides.openmath.Popcorn;
-import fi.euclides.swing.SwingSymbols;
-import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
+@SuppressWarnings("serial")
 class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener {
 	
 	private FormuleEditor editor = new FormuleEditor(false) {
@@ -40,7 +36,7 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 
 	CommandPanel() {
 		super(new BorderLayout());
-		add(Box.createVerticalStrut(90), BorderLayout.WEST);
+		add(Box.createVerticalStrut(120), BorderLayout.WEST);
 		add(editor, BorderLayout.CENTER);
 		editor.addActionListener(this);
 	}
@@ -64,6 +60,8 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 				firePropertyChange("feedback", string, e1);
 			} catch (fi.euclides.expr.InterpretException e2) {
 				firePropertyChange("feedback", string, e2);
+			} catch (fi.euclides.formuleobjects.TokenMgrError e3) { // Error?
+				firePropertyChange("feedback", string, e3);				
 			}
 			return;
 		}

@@ -11,6 +11,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Check_DWO;
+import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
@@ -47,8 +49,11 @@ import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.Locus;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Segment;
+import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
@@ -329,6 +334,62 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				fillArc(c.getXd()-r, c.getYd()-r, r*2, s, l);
 			}
 			super.visitBoog(b);
+		}
+
+		/* (non-Javadoc)
+		 * @see fi.euclides.model.AbstractViewer#visitLocus(fi.euclides.model.Locus)
+		 */
+		@Override
+		public void visitLocus(Locus l) {
+			if(l instanceof Integral) {
+				visitIntegral( (Integral) l);
+			} else
+			super.visitLocus(l);
+		}
+
+		private void visitIntegral(Integral l) {
+			selectColor(l);
+			final double y0 = getModel().getO().getYd();
+			final Area shape = new Area();
+			l.visitSegments(new SegmentVisitor() {
+
+				@Override
+				public void visitSegment(Segment s) {
+					double x1 = s.getX1();
+					double x2 = s.getX2();
+					double y1 = s.getY1();
+					double y2 = s.getY2();
+					Path2D.Double path = new Path2D.Double();
+					path.moveTo(x1, y0);
+					path.lineTo(x1, y1);
+					path.lineTo(x2, y2);
+					path.lineTo(x2, y0);
+					path.closePath();
+					Area area = new Area(path);
+					shape.add(area);
+				}
+
+				@Override
+				public Numbers clipTop() {
+					return Numbers.createDouble(Double.NEGATIVE_INFINITY);
+				}
+
+				@Override
+				public Numbers clipBottom() {
+					return Numbers.createDouble(Double.POSITIVE_INFINITY);
+				}
+
+				@Override
+				public Numbers clipLeft() {
+					return InstanceViewer.this.clipLeft();
+				}
+
+				@Override
+				public Numbers clipRight() {
+					return InstanceViewer.this.clipRight();
+				} });
+			g.fill(shape);
+			DefaultAdapter.getDefault(l).put(Shape.class, shape);
 		}
 	}
 
