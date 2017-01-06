@@ -7,8 +7,9 @@ import java.util.List;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.model.math.NumberCodec;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.persist.DataInput;
 
-public class NumberIO implements NumberCodec {
+public class NumberIO implements NumberCodec, DataInput {
 
 	private List<Object> output;
 	ObjectList input;
@@ -27,23 +28,23 @@ public class NumberIO implements NumberCodec {
 		this.input = list;
 	}
 
-	private boolean readBoolean() throws IOException {
+	public boolean readBoolean() throws IOException {
 		return input.getBoolean(i++);
 	}
 
-	private byte readByte() throws IOException {
-		return (byte) input.getInt(i++);
-	}
-
-	private int readInt() throws IOException {
+	public int readUnsignedByte() throws IOException {
 		return input.getInt(i++);
 	}
 
-	private double readDouble() throws IOException {
+	public int readInt() throws IOException {
+		return input.getInt(i++);
+	}
+
+	public double readDouble() throws IOException {
 		return input.getDouble(i++);
 	}
 
-	private String readUTF() throws IOException {
+	public String readUTF() throws IOException {
 		return input.getString(i++);
 	}
 
@@ -83,21 +84,12 @@ public class NumberIO implements NumberCodec {
 	}
 
 	public Numbers readNumber() throws IOException {
-		byte f = readByte();
-		switch(f) {
-		case NUL: return Numbers.ZERO;
-		case INT: return Numbers.createInteger(readInt());
-		case RAT: return Numbers.div(Numbers.valueOf(readUTF()), Numbers.valueOf(readUTF()));
-		case FP:  return Numbers.createDouble(readDouble());
-		case HILBERT: 
-			Numbers base = readNumber();
-			boolean neg = readBoolean();
-			Numbers sqrt = Numbers.sqrt(readNumber());
-			if(neg)
-				return Numbers.sub(base, sqrt);
-			return Numbers.add(base, sqrt);
-		default: throw new IOException("Illegal Number");
-		}
+		return Memento.readNumber(this);
+	}
+
+	@Override
+	public long readLong() throws IOException {
+		return Long.parseLong(readUTF());
 	}
 
 }

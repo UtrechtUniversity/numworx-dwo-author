@@ -1,3 +1,12 @@
 package nl.numworx.geodefiner.common;
 
-public enum PointType { DISK, CIRCLE }
+import fi.euclides.util.Messages;
+
+public enum PointType {
+	DISK, 
+	CIRCLE;
+
+	public String toString() {
+		return Messages.getString(name());
+	}
+}

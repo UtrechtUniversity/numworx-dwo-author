@@ -67,6 +67,17 @@ public abstract class Instance implements Observer {
 		installPositions();
 		installCheckDWO();
 		installToolbox();
+		installPrepare();
+	}
+
+	List<Destroyable> resetItems;
+	private void installPrepare() {
+		Model m = viewer.getModel();
+		int size = m.getPunten().size() + m.getLijnen().size();
+		resetItems = new ArrayList<Destroyable>(size);
+		resetItems.addAll(m.getPunten());
+		resetItems.addAll(m.getLijnen());
+		// no sort?
 	}
 
 	protected void installToolbox() {
@@ -208,8 +219,35 @@ public abstract class Instance implements Observer {
 			}
 		}
 		map.put("positions", positions);
+		map.put("model", getModelState());
 		return map;
 	}
+
+	List getModelState() {
+		Memento m = new Memento(viewer);
+		m.prepare(resetItems);
+		try {
+			m.writeModel(viewer.getModel());
+		} catch (IOException e) {
+			// TODO should not happen
+		}
+		
+		return m.toList();
+	}
+	
+	void setModelState(ObjectList list) {
+		if(list == null) 
+			return;
+		Memento m = new Memento(viewer);
+		m.prepare(resetItems);
+		try {
+			m.fromList(list);
+			m.readModel(viewer);
+		} catch (IOException e) {
+			// TODO should not happen
+		}
+	}
+	
 
 	protected Model createModel(Model m, int width, int height) {
 		m.getSelect().addAll(m.getPunten());
@@ -242,6 +280,7 @@ public abstract class Instance implements Observer {
 		if(state == null) state = Collections.emptyMap();
 		this.state = JSONUtilities.wrapMap(state);
 		setPositions(this.state.getObjectMap("positions"));
+		setModelState(this.state.getObjectList("model"));
 	}
 
 	public void update(Observable observable, Object arg) {

@@ -25,7 +25,7 @@ public class Grid extends fi.euclides.model.Locus {
 
 	@Override
 	public boolean isDefined() {
-		return true;
+		return false;
 	}
 
 	@Override
