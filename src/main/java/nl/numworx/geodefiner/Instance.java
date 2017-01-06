@@ -118,6 +118,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 
 		@Override
+		public void drawAxes() {
+			Destroyable grid = getModel().getLijnen().elementAt(2);
+			if(grid.isVisible()) grid.visit(this);
+		}
+
+		@Override
 		public void setModel(Model model) { // Never null!
 			Model old = getModel();
 			old.deleteObserver(this);
