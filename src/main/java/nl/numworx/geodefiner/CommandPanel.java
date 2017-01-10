@@ -82,4 +82,13 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 		}
 	}
 	
+	public String toString() {
+		return editor.formuleVak.toString();
+	}
+
+	public void fromString(String cmd) {
+		editor.formuleVak.vulVak(cmd);
+	}
+	
+	
 }

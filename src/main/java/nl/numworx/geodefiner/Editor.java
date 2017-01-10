@@ -149,6 +149,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("toolbox", toolbox.toList());
 		launchdata.put("checkObjects", checkObjects.toList());
 		launchdata.put("split", split.getDividerLocation());
+		launchdata.put("command", command.toString());
 		return launchdata;
 	}
 
@@ -197,6 +198,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 				checkObjects.fromList(map.getObjectList("checkObjects"));
 		if(map.containsKey("split"))
 			split.setDividerLocation(map.getInt("split"));
+		if(map.containsKey("command"))
+			command.fromString(map.getString("command"));
 	}
 
 	public void start() {
