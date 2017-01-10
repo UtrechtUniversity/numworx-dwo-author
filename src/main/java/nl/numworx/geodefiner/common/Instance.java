@@ -24,6 +24,7 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
@@ -275,6 +276,15 @@ public abstract class Instance implements Observer {
 		Grid grid = new Grid(viewer);
 		DefaultAdapter.getDefault(grid).put("$#@");
 		m.add(grid);
+		
+		Label i = new Label();
+	    i.setValue(Numbers.createComplex(Numbers.ZERO, Numbers.ONE));
+	    i.register(new Const());
+	    i.setString("i");
+	    i.setVisible(false);
+	    DefaultAdapter.getDefault(i).put("i");
+	    m.add(i);
+		
 		return m;
 	}
 

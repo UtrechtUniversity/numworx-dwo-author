@@ -26,6 +26,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.expr.DestroyDependency;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.expr.Lambda;
 import fi.euclides.openmath.LocusModelF;
