@@ -9,12 +9,12 @@ import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.common.LineType;
 
-public class LinePane extends ColorPane<LineModel> {
+public class LinePane<M extends LineModel> extends ColorPane<M> {
 
 	JComboBox<LineType> type;
 	JFormattedTextField widthField;
 	JLabel sample;
-	public LinePane(LineModel model) {
+	public LinePane(M model) {
 		super(model);
 		JPanel panel = new JPanel();
 		sample = new JLabel("⎯⎯⎯⎯⎯⎯⎯⎯⎯"); sample.setBackground(null);

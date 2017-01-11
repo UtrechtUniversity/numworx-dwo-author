@@ -48,9 +48,9 @@ public class Axes extends JPanel implements ChangeListener {
 		h.add(o);
 		u = initItem(viewer.getModel().getU(), "$fe = point(0,1)@", "e");
 		h.add(u);
-		x = initItem(viewer.getModel().getLijnen().firstElement(), "$fy=0@", "x");
+		x = initItem(viewer.getModel().getLijnen().firstElement(), "$fxas y=0@", "x");
 		h.add(x);
-		y = initItem(viewer.getModel().getLijnen().elementAt(1), "$fx=0@", "y");
+		y = initItem(viewer.getModel().getLijnen().elementAt(1), "$fyas x=0@", "y");
 		h.add(y);
 		g  = initItem(viewer.getModel().getLijnen().elementAt(2), "$fgrid@", "");
 		h.add(g);

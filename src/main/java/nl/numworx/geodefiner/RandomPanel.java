@@ -3,6 +3,8 @@ package nl.numworx.geodefiner;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,7 +15,7 @@ import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.tekstobjects.TekstEditor;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
-class RandomPanel extends JPanel implements ActionListener {
+class RandomPanel extends JPanel implements ActionListener, FocusListener {
 
 	private TekstEditor randomVarEditor;
 	private Map<String,Number> randomVars = new LinkedHashMap<String, Number>();
@@ -21,7 +23,9 @@ class RandomPanel extends JPanel implements ActionListener {
 	RandomPanel() {
 		super(null);
 		setName("Default Random Vars");
-		randomVarEditor = new TekstEditor(true, false, true, new TekstVak());
+		TekstVak tekstVak = new TekstVak();
+		tekstVak.addFocusListener(this);
+		randomVarEditor = new TekstEditor(true, false, true, tekstVak);
 		randomVarEditor.setHeader(true);
 		randomVarEditor.setBounds(0,0,200,200);
 		randomVarEditor.setResizable(true);
@@ -62,6 +66,15 @@ class RandomPanel extends JPanel implements ActionListener {
 	public void setVisible(boolean aFlag) {
 		if(!aFlag) getRandomVars(); // on hidden, update randomvars
 		super.setVisible(aFlag);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		getRandomVars();
 	}
 	
 	

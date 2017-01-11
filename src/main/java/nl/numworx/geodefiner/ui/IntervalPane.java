@@ -12,6 +12,7 @@ public class IntervalPane extends TextPane<IntervalModel> {
 	JFormattedTextField intervalField;
 	JFormattedTextField lengthField;
 	JFormattedTextField stepField;
+	JFormattedTextField widthField;
 	
 	public IntervalPane(IntervalModel model) {
 		super(model);
@@ -27,19 +28,25 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		stepField = new JFormattedTextField(0.01); // sets DoubleFormat
 		stepField.setColumns(10);
 		stepField.setValue(model.step);
+		widthField = new JFormattedTextField(1.0f);
+		widthField.setColumns(10);
+		widthField.setValue(model.width);
+		
 		preview.add(alignBox);
 		preview.add(animateBox);
 		preview.add(intervalField);
 		preview.add(lengthField);
 		preview.add(stepField);
+		preview.add(widthField);
 	}
 
 	@Override
 	public void commit() {
 		model.animate = (Animate) animateBox.getSelectedItem();
 		model.length = ((Number) lengthField.getValue()).doubleValue();
-		model.interval = ((Number) intervalField.getValue()).intValue();
+		model.interval = Math.round( ((Number) intervalField.getValue()).floatValue()*1000.0f);
 		model.step = (Double) stepField.getValue();
+		model.width = (Float) widthField.getValue();
 		super.commit();
 	}
 

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -70,9 +71,11 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
 		instance = new Instance();
-		instance.asComponent().setPreferredSize(instanceSize);
-		instance.asComponent().setSize(instanceSize);
-		flow.add(instance.asComponent());
+		JComponent component = instance.asComponent();
+		component.setPreferredSize(instanceSize);
+		component.setSize(instanceSize);
+		component.setBorder(BorderFactory.createEtchedBorder());
+		flow.add(component);
 		tabs = new JTabbedPane();
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
 		split.setDividerLocation(0.7);

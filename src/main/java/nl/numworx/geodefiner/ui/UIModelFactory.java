@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.ui;
 
+import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.UIModel;
 import fi.euclides.event.Tracker;
@@ -34,7 +35,11 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 
 	public void visitLijn(Lijn l) {
-		model = new LineModel().init(l);
+		String name = tracker.getMapper().toString(l);
+		if("x".equals(name) || "y".equals(name))
+			model = new AxesModel().init(l);
+		else
+			model = new LineModel().init(l);
 	}
 
 	public void visitCirkel(Cirkel c) {
@@ -42,7 +47,7 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 
 	public void visitSegment(Segment s) {
-		model = new LineModel().init(s);
+		model = new SegmentModel().init(s);
 	}
 
 	public void visitLabel(Label label) {
@@ -64,7 +69,10 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 
 	public void visitLocus(Locus l) {
-		model = new LineModel().init(l);
+		if (l instanceof Integral) {
+			model = new ColorModel<Locus>().init(l);
+		} else
+			model = new LineModel().init(l);
 	}
 
 	public void visitBoog(Boog b) {

@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Paint;
@@ -29,9 +30,13 @@ import javax.swing.JToolBar;
 import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.Align;
+import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.Integral;
+import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
+import nl.numworx.geodefiner.common.Tips;
+import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -126,6 +131,24 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void drawAxes() {
 			Destroyable grid = getModel().getLijnen().elementAt(2);
 			if(grid.isVisible()) grid.visit(this);
+			Destroyable x = getModel().getLijnen().firstElement();
+			CELL item = x.adapt(CELL.class);
+			AxesModel configX = (AxesModel) item.config;
+			if(configX.numbers && x.isVisible()) { drawXnumbers(); }
+			Destroyable y = getModel().getLijnen().firstElement();
+			item = y.adapt(CELL.class);
+			AxesModel configY = (AxesModel) item.config;
+			if(configY.numbers && y.isVisible()) { drawYnumbers(); }
+			
+		}
+
+		private void drawXnumbers() {
+			// TODO Auto-generated method stub
+			
+		}
+		private void drawYnumbers() {
+			// TODO Auto-generated method stub
+			
 		}
 
 		@Override
@@ -173,7 +196,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			Color c = a.adapt(Color.class);
 			if (c != null) {
 				if (getModel().getSelect().contains(object))
-					g.setColor(c.brighter());				
+					g.setColor(c.brighter());	// grijs wordt wit...			
 				else
 					g.setColor(c);
 				return;
@@ -181,6 +204,49 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.selectColor(object);
 		}
 		
+		
+		
+		
+		@Override
+		public void visitSegment(Segment s) {
+			s = drawTips(s);
+			super.visitSegment(s);
+		}
+
+		private Segment drawTips(Segment s) {
+			Tips tip = s.adapt(Tips.class);
+			if(tip == null) return s;
+			selectColor(s);
+			double dx = s.getDX();
+			double dy = s.getDY();
+			double len = Math.hypot(dx, dy);
+			Float width = s.adapt(Float.class);
+			double tiplen = 10;
+			if(width != null) tiplen *= width.doubleValue();
+			if(len < tiplen*3) tiplen = len/3;
+			dx *= tiplen / len; 
+			dy *= tiplen/len; 
+			switch(tip) {
+			case ATEND: tip(s.getP2(), -dx, -dy); break;
+			case ATSTARTEND: tip(s.getP2(),-(dx), -(dy));
+			case ATSTART: tip(s.getP1(), dx, dy);
+			case NOTIP: 
+			}
+			return s;
+		}
+
+		private void tip(Punt p1, double dx, double dy) {
+			Path2D.Double path = new Path2D.Double();
+			double x = p1.getXd();
+			double y = p1.getYd();
+			path.moveTo(x, y);
+			path.lineTo(x + dx + dy/2, y + dy -dx/2);
+			path.lineTo(x + dx - dy/2, y + dy +dx/2);
+			path.closePath();
+			g.fill(path);
+			
+		}
+
 		private void formuleLabel(Label label) {
 			FormuleVak fv = new FormuleVak();
 			String string = "$f" + label.getString() + "@";
@@ -234,6 +300,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
+			Font f = label.adapt(Font.class);
+			g.setFont(f);
 			String string = label.getString();
 			if(label.getRegistered() instanceof FlipFlop) {
 				visitCheckbox(label);
@@ -248,13 +316,22 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			double y = label.getYd();
 			Align align = label.adapt(Align.class);
 			int stringWidth = fm.stringWidth(string);
+			float extra = 0;
+// zet het label correct tov het puntje.
+			if(label.getRegistered() instanceof Interval) {
+				try {
+					extra = 2;
+					extra = label.getP().adapt(Float.class) / 2.0f; // NPE? 
+				} catch (Exception e) {
+				}
+			}
 			if(align != null) {
 				switch(align) {
 				case LEFT: x -= stringWidth+4; 
 				case RIGHT: x+=2;	
 					y += fm.getAscent()/2; break;
-				case TOP: x -= stringWidth/2; y -= fm.getDescent(); break;
-				case BOTTOM: x -= stringWidth/2; y += fm.getAscent(); break;
+				case TOP: x -= stringWidth/2; y -= fm.getDescent()+extra; break;
+				case BOTTOM: x -= stringWidth/2; y += fm.getAscent()+extra; break;
 				case BASE: 
 				}
 			}
@@ -417,7 +494,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public Instance() {
 		
 		content.setBackground(Color.white);
-		content.setBorder(BorderFactory.createEtchedBorder());
+		//content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
 		content.addMouseMotionListener(getViewer());
@@ -530,8 +607,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		Locale lcl = WiskOpdr.language;
 		try {
 			WiskOpdr.language = Locale.ROOT; // POSIX: decimal point
-			return FormuleParser.randomizeString(text,randomVarNamen,randomVarWaarden);
+			String randomizeString = FormuleParser.randomizeString(text,randomVarNamen,randomVarWaarden);
+			return randomizeString;
 		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			WiskOpdr.language = lcl;
 		}

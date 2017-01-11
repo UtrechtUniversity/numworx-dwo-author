@@ -1,5 +1,7 @@
 package nl.numworx.geodefiner.ui;
 
+import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.util.Map;
 
 import nl.numworx.geodefiner.common.Align;
@@ -8,6 +10,7 @@ import nl.numworx.geodefiner.common.Animator;
 import nl.numworx.geodefiner.common.StepValue;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -20,6 +23,7 @@ public class IntervalModel extends TextModel {
 	double length = 50;
 	int interval = 2000;
 	Double step;
+	Float  width;
 	
 	@Override
 	public void install(Label item) {
@@ -39,8 +43,16 @@ public class IntervalModel extends TextModel {
 			adapter.put(StepValue.class, new StepValue(Numbers.createDouble(step.doubleValue())));
 		
 		DefaultAdapter.getDefault(item.getP()).put(color);
-		DefaultAdapter.getDefault(item.getP().getDepend()[0]).put(color);
-		HorizontalPunt hp = (HorizontalPunt) ((Segment) item.getP().getDepend()[0]).getP2();
+		Destroyable segment = item.getP().getDepend()[0];
+		DefaultAdapter.getDefault(segment).put(color);
+		if(width != null) {
+			DefaultAdapter.getDefault(segment).put(Stroke.class, new BasicStroke(width.floatValue()));
+			DefaultAdapter.getDefault(item.getP()).put(Float.class, 5.0f * width.floatValue());
+		} else {
+			DefaultAdapter.getDefault(segment).put(Stroke.class, null);
+			DefaultAdapter.getDefault(item.getP()).put(Float.class, null);
+		}
+		HorizontalPunt hp = (HorizontalPunt) ((Segment) segment).getP2();
 		hp.setDistance(Numbers.createDouble(length));
 		super.install(item);
 	}
@@ -69,7 +81,8 @@ public class IntervalModel extends TextModel {
 		map.put("animate", animate.name());
 		map.put("interval", interval);
 		map.put("length", length);
-		if(step!=null) map.put("step", step); else map.remove("step"); 
+		if(step!=null) map.put("step", step); else map.remove("step");
+		if(width!= null) map.put("width", width.doubleValue());
 		return map;
 	}
 
@@ -91,6 +104,8 @@ public class IntervalModel extends TextModel {
 			step = map.getDouble("step");
 		else
 			step = null;
+		if (map.containsKey("width"))
+			width = new Float(map.getDouble("width"));
 		super.fromMap(map);
 	}
 

@@ -48,8 +48,8 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 			while(string.startsWith("$f "))
 				string = "$f" + string.substring(3);
 			
-			String substring = randomize(string.substring(2));
-			FormuleParser parser = new FormuleParser(substring);
+			String substring = randomize(string);
+			FormuleParser parser = new FormuleParser(substring.substring(2));
 			OMObject object;
 			try {
 				object = parser.parse();
@@ -57,11 +57,11 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 				editor.formuleVak.vulVak("$f@");
 				
 			} catch (fi.euclides.formuleobjects.ParseException e1) {
-				firePropertyChange("feedback", string, e1);
+				firePropertyChange("feedback", substring, e1);
 			} catch (fi.euclides.expr.InterpretException e2) {
-				firePropertyChange("feedback", string, e2);
+				firePropertyChange("feedback", substring, e2);
 			} catch (fi.euclides.formuleobjects.TokenMgrError e3) { // Error?
-				firePropertyChange("feedback", string, e3);				
+				firePropertyChange("feedback", substring, e3);				
 			}
 			return;
 		}
