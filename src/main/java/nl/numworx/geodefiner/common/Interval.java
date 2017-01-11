@@ -76,7 +76,7 @@ public class Interval extends LabelValue {
 			v = sv.step(v);
 			setStringValue(l, v);
 			
-		} else if (l.value == null) {
+		} else if (l.value == null || Double.isNaN(l.value.doubleValue())) {
 			setStringValue(l, sv.step(Numbers.div(Numbers.add(max, min), Numbers.TWO)));
 		} else if(min.doubleValue() > l.value.doubleValue()) {
 			setStringValue(l, min);

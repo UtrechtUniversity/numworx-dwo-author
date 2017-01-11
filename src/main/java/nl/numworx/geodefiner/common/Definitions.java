@@ -206,7 +206,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 							}				
 						}
 					}
-					t.setP(p);
+					t.setP(new Volgpunt(p));
 					viewer.getMapper().rename(t, var.getName());
 					model.add(t);
 					addElement(new CELL(text, t, var));
@@ -350,7 +350,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					    model.add(locus);
 						addElement(new CELL(text, locus, text));
 					} else if("x".equals(var.getName())) {
-						Label fx = new Label();
+						Label fx = new Label();fx.setVisible(false);
 						fx.setString("identity");
 						fx.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
