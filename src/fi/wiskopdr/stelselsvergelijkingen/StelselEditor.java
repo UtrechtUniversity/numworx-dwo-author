@@ -961,7 +961,8 @@ public class StelselEditor extends AntwoordVergelijkingVak {
 		for(int i = 0; i < kinderen.length; i++)
 		{	kinderen[i].setLocation(x, y);
 			kinderen[i].scrollRectToVisible(new Rectangle(0, 0, 1, 1));
-			if(kinderen[i].getHuidigIC() != null && kinderen[i].getHuidigIC().getParent().equals(hoofdPanel.contentPanel))
+			if(kinderen[i].getHuidigIC() != null && kinderen[i].getHuidigIC().getParent() != null &&
+					kinderen[i].getHuidigIC().getParent().equals(hoofdPanel.contentPanel))
 				kinderen[i].getHuidigIC().setLocation(x + 5, y + hoogte - 20); //TODO: wat te doen met deze 20? stapH?
 			hulpEditor.vulVak("$f" + geefLaatsteFormuleVak().geefVergelijking().geefVergelijking(i));
 			pijlen[i].zetBeginX(breedteVergelijkingen + hulpEditor.geefFormuleVak().getWidth() / 2);
