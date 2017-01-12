@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
@@ -145,7 +146,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 			double resetSplitMin;
 			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
 			{
-				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
@@ -165,7 +166,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -182,7 +183,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 
 	private void updateSplitBoundaries()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
 		{
 			boundaries.add(new Double(view.getSplitminBoundary() + i
@@ -198,7 +199,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 	 */
 	public void updateSplitBoundariesFromBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
@@ -219,9 +220,9 @@ public class BoxplotController implements StatistiekView, ActionListener
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
 			this.view.setSplitBinWidth();
-			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0).doubleValue());
 		}
 	}
 
@@ -265,14 +266,16 @@ public class BoxplotController implements StatistiekView, ActionListener
 
 	public void setState(Object state)
 	{
-		Hashtable<String, Object> h = (Hashtable<String, Object>) state;
+		//Hashtable<String, Object> h = (Hashtable<String, Object>) state;
+		Map h = (Map) state;
+		
 		if (h.containsKey("columnIndex"))
 		{
-			this.model.setColumnIndex((Integer) h.get("columnIndex"));
+			this.model.setColumnIndex(((Number) h.get("columnIndex")).intValue());
 		}
 		if (h.containsKey("columnSplitIndex"))
 		{
-			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
 		}
 		if (h.containsKey("name"))
 		{
@@ -280,8 +283,7 @@ public class BoxplotController implements StatistiekView, ActionListener
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBinBoundaries((ArrayList<Double>) h
-				.get("splitBoundaries"));
+			this.model.setSplitBinBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
 		}
 		if (h.containsKey("tukeyBox"))
 		{
