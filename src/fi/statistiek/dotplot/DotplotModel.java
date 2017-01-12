@@ -83,7 +83,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.splitOptions = new SplitOptions();
 		this.splitOptions.setColumnSplitIndex(-1);
 
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		// by default 2 split bins
 		boundaries.add(0.0);
 		boundaries.add(50.0);
@@ -356,7 +356,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 		this.changed();
 	}
 
-	public ArrayList<Double> getSplitBinBoundaries()
+	public ArrayList<Number> getSplitBinBoundaries()
 	{
 		return this.splitOptions.getBinBoundaries();
 	}
@@ -430,7 +430,7 @@ public class DotplotModel extends Observable implements TableModelListener,
 		return this.scatterplotMode;
 	}
 	
-	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
