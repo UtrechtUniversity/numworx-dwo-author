@@ -27,7 +27,7 @@ public class FrequencyTableModel extends Observable implements
 	private boolean showFreqCumulative;
 
 	private int noBins;
-	private ArrayList<Double> binBoundaries;
+	private ArrayList<Number> binBoundaries;
 	
 	private SplitOptions splitOptions;
 
@@ -56,7 +56,7 @@ public class FrequencyTableModel extends Observable implements
 		// initialize number of bins with an invalid value
 		this.noBins = -1;
 		this.columnIndex = -1;
-		this.binBoundaries = new ArrayList<Double>();
+		this.binBoundaries = new ArrayList<Number>();
 		this.binBoundaries.add(new Double(-100));
 		this.binBoundaries.add(new Double(100));
 
@@ -67,12 +67,12 @@ public class FrequencyTableModel extends Observable implements
 	/**
 	 * Set the bin boundaries
 	 * 
-	 * @param bins
+	 * @param boundaries
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundaries(ArrayList<Double> bins)
+	public void setBinBoundaries(ArrayList<Number> boundaries)
 	{
-		this.binBoundaries = bins;
+		this.binBoundaries = boundaries;
 		
 		// Make a deep copy, not only copy the reference, since this will cause strange behavior
 		// dit lijkt toch niet nodig
@@ -158,7 +158,7 @@ public class FrequencyTableModel extends Observable implements
 	 * 
 	 * @return The bin boundaries
 	 */
-	public ArrayList<Double> getBinBoundaries()
+	public ArrayList<Number> getBinBoundaries()
 	{
 		return this.binBoundaries;
 	}
@@ -245,10 +245,12 @@ public class FrequencyTableModel extends Observable implements
 				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
 				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
 
-				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
+				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
+					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex), 
 					// door afronding kan de aftreksom heel veel decimalen hebben
-					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
+					Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), maxNumberOfDecimals), 
+					this.binBoundaries.get(0).doubleValue());
 				this.noBins = this.binBoundaries.size() - 1;
 			}
 
@@ -288,7 +290,7 @@ public class FrequencyTableModel extends Observable implements
 		int i = 0;
 		
 		while (i < this.binBoundaries.size()
-			&& d >= this.binBoundaries.get(i))
+			&& d >= this.binBoundaries.get(i).doubleValue())
 		{
 			i++;
 		}
@@ -397,7 +399,7 @@ public class FrequencyTableModel extends Observable implements
 		}
 	}
 
-	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
