@@ -8,6 +8,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
@@ -72,7 +73,7 @@ public class DescriptivesController implements StatistiekView,
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -82,11 +83,11 @@ public class DescriptivesController implements StatistiekView,
 			
 			// test syl: niet fraai; opnieuw boundaries berekenen met de hierboven berekende binwidth
 			// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
-			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getStatTableModel().getColumnMin(
-					this.model.getSplitOptions().getColumnSplitIndex()),
-				this.model.getStatTableModel().getColumnMax(
-					this.model.getSplitOptions().getColumnSplitIndex()), 
-					boundaries.get(1) - boundaries.get(0), boundaries.get(0));
+			boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+				this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getStatTableModel().getColumnMax(this.model.getSplitOptions().getColumnSplitIndex()), 
+				boundaries.get(1).doubleValue() - boundaries.get(0).doubleValue(), 
+				boundaries.get(0).doubleValue());
 
 			this.model.setSplitBoundaries(boundaries);
 			this.model.setSplitOptions(this.model.getSplitOptions());
@@ -159,7 +160,7 @@ public class DescriptivesController implements StatistiekView,
 			double resetSplitMin;
 			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
 			{
-				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
@@ -194,7 +195,7 @@ public class DescriptivesController implements StatistiekView,
 	 */
 	private void updateSplitBoundariesFromBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
@@ -215,9 +216,9 @@ public class DescriptivesController implements StatistiekView,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
 			this.view.setSplitBinWidth();
-			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0).doubleValue());
 		}
 	}
 	
@@ -225,7 +226,7 @@ public class DescriptivesController implements StatistiekView,
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -277,7 +278,7 @@ public class DescriptivesController implements StatistiekView,
 
 	public void setState(Object state)
 	{
-		Hashtable h = (Hashtable) state;
+		Map h = (Map) state;
 		
 		if (h.containsKey("viewName"))
 		{
@@ -285,16 +286,15 @@ public class DescriptivesController implements StatistiekView,
 		}
 		if (h.containsKey("columnIndex"))
 		{
-			this.model.setColumnIndex((Integer) h.get("columnIndex"));
+			this.model.setColumnIndex(((Number) h.get("columnIndex")).intValue());
 		}
 		if (h.containsKey("columnSplitIndex"))
 		{
-			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBoundaries((ArrayList<Double>) h
-				.get("splitBoundaries"));
+			this.model.setSplitBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
 		}
 	}
 
