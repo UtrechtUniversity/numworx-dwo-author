@@ -1049,17 +1049,17 @@ public class DotplotUserOptionsPanel extends JPanel implements ActionListener, F
 				|| splitType.equals(AllowedTypes.INTEGER))
 			{
 				this.splitMinBoundaryField.setText(
-					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
+					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0).doubleValue()));
 				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitBinBoundaries()));
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < this.model.getSplitOptions()
 					.getBinBoundaries().size() - 1; i++)
 				{
 					sb.append(
-						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)));
+						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i).doubleValue()));
 					sb.append(" -< ");
 					sb.append(
-						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1)));
+						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1).doubleValue()));
 					sb.append("\n");
 				}
 				this.splitBoundariesArea.setText(sb.toString());
