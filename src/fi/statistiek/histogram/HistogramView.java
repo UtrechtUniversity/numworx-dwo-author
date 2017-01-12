@@ -1483,7 +1483,7 @@ public class HistogramView extends JPanel implements Observer
 		}
 		
 		// bepaal de bins
-		ArrayList<Double> binsOnScale = this.getBinsOnScale();
+		ArrayList<Number> binsOnScale = this.getBinsOnScale();
 
 		if (this.model.hasVerticalBars())
 		{
@@ -1503,7 +1503,7 @@ public class HistogramView extends JPanel implements Observer
 				
 				for (int i = 0; i < binsOnScale.size(); i++)
 				{
-					String s = Statistiek.getStringValue(binsOnScale.get(i));
+					String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 					if (i < binsOnScale.size() - 1)
 					{
 						String s_labelUnderBin;
@@ -1515,7 +1515,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-								Statistiek.getStringValue(binsOnScale.get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 						}
 						
 						width = fm.stringWidth(s_labelUnderBin) + marge;
@@ -1532,9 +1532,9 @@ public class HistogramView extends JPanel implements Observer
 			} // label under bin
 			else // label between bins
 			{
-				for (Double d : binsOnScale)
+				for (Number d : binsOnScale)
 				{
-					width = fm.stringWidth(Statistiek.getStringValue(d));
+					width = fm.stringWidth(Statistiek.getStringValue(d.doubleValue()));
 					if (width > this.verticalBarWidth)
 					{
 						normalFit = false;
@@ -1570,7 +1570,7 @@ public class HistogramView extends JPanel implements Observer
 				
 				for (int i = 0; i < binsOnScale.size(); i++)
 				{
-					String s = Statistiek.getStringValue(binsOnScale.get(i));
+					String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 					if (i < binsOnScale.size() - 1)
 					{
 						String s_labelUnderBin;
@@ -1582,7 +1582,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
     						s_labelUnderBin = s + "-<" +
-								Statistiek.getStringValue(binsOnScale.get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 						}
 						
 						width = fm.stringWidth(s_labelUnderBin);
@@ -1596,7 +1596,7 @@ public class HistogramView extends JPanel implements Observer
 			else // labels between bins
 			{
 				// find longest binboundary label
-				for (Double d : binsOnScale)
+				for (Number d : binsOnScale)
 				{
 					width = fm.stringWidth(d.toString());
 					if (width > longest)
@@ -1974,7 +1974,7 @@ public class HistogramView extends JPanel implements Observer
 	 * @param binsOnScale
 	 */
 	private void paintHorizontalBinBoundaryLabels(Graphics2D g,
-		FontMetrics fm, int ySplitOffset, AllowedTypes type, ArrayList<Double> binsOnScale)
+		FontMetrics fm, int ySplitOffset, AllowedTypes type, ArrayList<Number> binsOnScale)
 	{
 		// paint bin boundaries
 		for (int i = 0; i < binsOnScale.size(); i++)
@@ -1982,7 +1982,7 @@ public class HistogramView extends JPanel implements Observer
 			int y = (int) (i + (i + 0.5) * this.horizontalBarWidth);
 			int x = this.yAxisOffset;
 			// Get the string value (integer or double)
-			String s = Statistiek.getStringValue(binsOnScale.get(i));
+			String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 			
 			if (this.model.getLabelUnderBin())
 			{
@@ -2005,7 +2005,7 @@ public class HistogramView extends JPanel implements Observer
 					else
 					{
 						s_labelUnderBin = s + "-<" +
-							Statistiek.getStringValue(binsOnScale.get(i + 1));
+							Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 						// draw marker
 						g.drawLine(x - 7, y + ySplitOffset, x - 2, y + ySplitOffset);
 					}
@@ -2046,8 +2046,8 @@ public class HistogramView extends JPanel implements Observer
 	{
 		double max;
 		
-		ArrayList<Double> binsOnScale = getBinsOnScale();
-		max = binsOnScale.get(binsOnScale.size() - 1);
+		ArrayList<Number> binsOnScale = getBinsOnScale();
+		max = binsOnScale.get(binsOnScale.size() - 1).doubleValue();
 		
 		return max;
 	}
@@ -2057,13 +2057,13 @@ public class HistogramView extends JPanel implements Observer
 	 * 
 	 * @return
 	 */
-	ArrayList<Double> getBinsOnScale()
+	ArrayList<Number> getBinsOnScale()
 	{
-		ArrayList<Double> bins;
+		ArrayList<Number> bins;
 		
 		if (model.isOptimizeScale())
 		{
-			bins = new ArrayList<Double>(model.getBinBoundaries());
+			bins = new ArrayList<Number>(model.getBinBoundaries());
 		}
 		else
 		{
@@ -2079,9 +2079,9 @@ public class HistogramView extends JPanel implements Observer
 	 * 
 	 * @return
 	 */
-	private ArrayList<Double> getBinsFromBinsSettings()
+	private ArrayList<Number> getBinsFromBinsSettings()
 	{
-		ArrayList<Double> bins = new ArrayList<Double>();
+		ArrayList<Number> bins = new ArrayList<Number>();
 		double maxOnScale = model.getMaxOnScale();
 		double binWidth = model.getBinWidth();
 		
@@ -2145,7 +2145,7 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private int getNumberOfBinsfromBinsSettings()
 	{
-		ArrayList<Double> binBoundaries = getBinsFromBinsSettings();
+		ArrayList<Number> binBoundaries = getBinsFromBinsSettings();
 		int number = binBoundaries.size() - 1;
 
 		return number;
@@ -2199,7 +2199,7 @@ public class HistogramView extends JPanel implements Observer
 	 */
 	private void paintVerticalBinBoundaryLabels(Graphics2D g,
 		boolean normalFit, FontMetrics fm, double theta, Font rotateFont,
-		int ySplitOffset, AllowedTypes type, ArrayList<Double> binsOnScale)
+		int ySplitOffset, AllowedTypes type, ArrayList<Number> binsOnScale)
 	{
 		if (normalFit)
 		{
@@ -2210,7 +2210,7 @@ public class HistogramView extends JPanel implements Observer
 				int x = (int) (this.yAxisOffset + i + i * this.verticalBarWidth);
 				
 				// Get the string value (integer or double)
-				String s = Statistiek.getStringValue(binsOnScale.get(i));
+				String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 
 				int offset = fm.stringWidth(s) / 2;
 				if (this.model.getLabelUnderBin())
@@ -2229,7 +2229,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
 							s_labelUnderBin = s + "-<" +
-								Statistiek.getStringValue(binsOnScale.get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 							// draw marker
 							g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 						}
@@ -2268,7 +2268,7 @@ public class HistogramView extends JPanel implements Observer
 				g.drawLine(x, y + ySplitOffset, x, y + 5 + ySplitOffset);
 				
 				// Get the string value (integer or double)
-				String s = Statistiek.getStringValue(binsOnScale.get(i));
+				String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 				int offset = fm.stringWidth(s);
 				
 				if (this.model.getLabelUnderBin())
@@ -2285,7 +2285,7 @@ public class HistogramView extends JPanel implements Observer
 						else
 						{
 							s_labelUnderBin = s + "-<" +
-								Statistiek.getStringValue(binsOnScale.get(i + 1));
+								Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 						}
 						int offset_labelUnderBin = fm.stringWidth(s_labelUnderBin);
 						int widthRotatedLabel = (int) (offset_labelUnderBin * Math.cos(theta));
@@ -2312,14 +2312,14 @@ public class HistogramView extends JPanel implements Observer
 	{
 		boolean normalFit = true;
 		
-		ArrayList<Double> binsOnScale = this.getBinsOnScale();
+		ArrayList<Number> binsOnScale = this.getBinsOnScale();
 
 		if (this.model.getLabelUnderBin())
 		{
 			int marge = 5;
 			for (int i = 0; i < binsOnScale.size(); i++)
 			{
-				String s = Statistiek.getStringValue(binsOnScale.get(i));
+				String s = Statistiek.getStringValue(binsOnScale.get(i).doubleValue());
 				if (i < binsOnScale.size() - 1)
 				{
 					String s_labelUnderBin;
@@ -2331,7 +2331,7 @@ public class HistogramView extends JPanel implements Observer
 					else
 					{
 						s_labelUnderBin = s + "-<" +
-							Statistiek.getStringValue(binsOnScale.get(i + 1));
+							Statistiek.getStringValue(binsOnScale.get(i + 1).doubleValue());
 					}
 					
 					if (fm.stringWidth(s_labelUnderBin) + marge > getMultipliedBarwidth())//this.verticalBarWidth)
@@ -2344,7 +2344,7 @@ public class HistogramView extends JPanel implements Observer
 		}
 		else // label between bins
 		{
-			for (Double d : binsOnScale)
+			for (Number d : binsOnScale)
 			{
 				if (fm.stringWidth(d.toString()) > getMultipliedBarwidth())//this.verticalBarWidth)
 				{
@@ -3213,7 +3213,7 @@ public class HistogramView extends JPanel implements Observer
 			if (this.model.columnIndexValid())
 			{
 				ArrayList<ColumnType> list = this.model.getStatTableModel().getColumnTypes();
-				ArrayList<Double> binBoundaries = null;
+				ArrayList<Number> binBoundaries = null;
 				if (list.get(this.model.getColumnIndex()).getType().isNumber())
 				{
     				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
@@ -3235,7 +3235,7 @@ public class HistogramView extends JPanel implements Observer
         				binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
         					this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex()),
         					this.model.getStatTableModel().getColumnMax(this.model.getColumnIndex()), 
-        					Statistiek.round(binBoundaries.get(1) - binBoundaries.get(0), maxNumberOfDecimals), binBoundaries.get(0));
+        					Statistiek.round(binBoundaries.get(1).doubleValue() - binBoundaries.get(0).doubleValue(), maxNumberOfDecimals), binBoundaries.get(0).doubleValue());
     				}
     				
     				if (binBoundaries == null)
@@ -3250,14 +3250,14 @@ public class HistogramView extends JPanel implements Observer
     					// if optimize scale update minOnScale and maxOnScale if necessary
     					if (this.model.isOptimizeScale())
     					{
-	    					if (this.model.getMinOnScale() > binBoundaries.get(0))
+	    					if (this.model.getMinOnScale() > binBoundaries.get(0).doubleValue())
 	    					{
-	    						this.model.setMinOnScale(binBoundaries.get(0));
+	    						this.model.setMinOnScale(binBoundaries.get(0).doubleValue());
 	    					}
 	    					int last = binBoundaries.size() - 1;
-	    					if (this.model.getMaxOnScale() <= binBoundaries.get(last))
+	    					if (this.model.getMaxOnScale() <= binBoundaries.get(last).doubleValue())
 	    					{
-	    						this.model.setMaxOnScale(binBoundaries.get(last));
+	    						this.model.setMaxOnScale(binBoundaries.get(last).doubleValue());
 	    					}
     					}
     				}
@@ -3294,7 +3294,7 @@ public class HistogramView extends JPanel implements Observer
 		AllowedTypes splitType = this.model.getStatTableModel().getColumnTypes().get(columnSplitIndex).getType();
 		if (splitType.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 
 			boundaries = Statistiek.appropriateBoundariesFromBinSettings(
 				this.model.getStatTableModel().getColumnMin(
