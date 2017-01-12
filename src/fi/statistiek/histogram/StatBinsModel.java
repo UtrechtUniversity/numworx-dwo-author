@@ -10,5 +10,5 @@ public interface StatBinsModel
 
 	public int getColumnIndex();
 
-	public ArrayList<Double> getBinBoundaries();
+	public ArrayList<Number> getBinBoundaries();
 }
