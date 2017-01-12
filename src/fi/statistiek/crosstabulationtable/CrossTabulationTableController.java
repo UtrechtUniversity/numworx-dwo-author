@@ -8,6 +8,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
@@ -74,7 +75,7 @@ public class CrossTabulationTableController implements StatistiekView,
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -93,7 +94,7 @@ public class CrossTabulationTableController implements StatistiekView,
 				this.model.getStatTableModel().getColumnMax(
 					this.model.getSplitOptions().getColumnSplitIndex()), 
 					// door afronding kan de aftreksom heel veel decimalen hebben
-					Statistiek.round(boundaries.get(1) - boundaries.get(0), maxNumberOfDecimals), boundaries.get(0));
+					Statistiek.round(boundaries.get(1).doubleValue() - boundaries.get(0).doubleValue(), maxNumberOfDecimals), boundaries.get(0).doubleValue());
 
 			this.model.setSplitBoundaries(boundaries);
 			this.model.setSplitOptions(this.model.getSplitOptions());
@@ -150,7 +151,7 @@ public class CrossTabulationTableController implements StatistiekView,
 			double resetMin;
 			if (model.getBinBoundaries() != null && model.getBinBoundaries().size() > 0)
 			{
-				resetMin = model.getBinBoundaries().get(0);
+				resetMin = model.getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
@@ -182,7 +183,7 @@ public class CrossTabulationTableController implements StatistiekView,
 			double resetMin;
 			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
 			{
-				resetMin = model.getSplitOptions().getBinBoundaries().get(0);
+				resetMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
@@ -242,7 +243,8 @@ public class CrossTabulationTableController implements StatistiekView,
 
 	public void setState(Object state)
 	{
-		Hashtable h = (Hashtable) state;
+		//Hashtable h = (Hashtable) state;
+		Map h = (Map) state;
 		
 		// deep copy waarschijnlijk niet nodig...
 		//Hashtable h = Copy.deepCopy((Hashtable) state);
@@ -256,21 +258,19 @@ public class CrossTabulationTableController implements StatistiekView,
 			// Let op: setColumnIndex() zet ook de binBoundaries
 			// Dat wordt hieronder goed gemaakt als de binBoundaries
 			// uit de hashtable worden gezet.
-			this.model.setColumnIndex((Integer) h.get("columnIndex"));
+			this.model.setColumnIndex(((Number) h.get("columnIndex")).intValue());
 		}
 		if (h.containsKey("binBoundaries"))
 		{
-			this.model.setBinBoundaries((ArrayList<Double>) h
-				.get("binBoundaries"));
+			this.model.setBinBoundaries((ArrayList<Number>) h.get("binBoundaries"));
 		}
 		if (h.containsKey("columnSplitIndex"))
 		{
-			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBoundaries((ArrayList<Double>) h
-				.get("splitBoundaries"));
+			this.model.setSplitBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
 		}
 		if (h.containsKey("showPercentage"))
 		{
@@ -333,7 +333,7 @@ public class CrossTabulationTableController implements StatistiekView,
 	 */
 	private void updateBoundariesFromRowsBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnIndex());
@@ -354,9 +354,9 @@ public class CrossTabulationTableController implements StatistiekView,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getBinBoundaries(); 
 			this.view.setBinWidthRows();
-			this.view.setMinBoundaryRows(oldBoundaries.get(0));
+			this.view.setMinBoundaryRows(oldBoundaries.get(0).doubleValue());
 		}
 	}
 	
@@ -368,7 +368,7 @@ public class CrossTabulationTableController implements StatistiekView,
 	 */
 	private void updateBoundariesFromColumnsBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnSplitIndex());
@@ -389,9 +389,9 @@ public class CrossTabulationTableController implements StatistiekView,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
 			this.view.setBinWidthColumns();
-			this.view.setMinBoundaryColumns(oldBoundaries.get(0));
+			this.view.setMinBoundaryColumns(oldBoundaries.get(0).doubleValue());
 		}
 	}
 }
