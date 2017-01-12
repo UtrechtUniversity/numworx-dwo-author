@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
@@ -291,7 +292,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 			double resetSplitMin;
 			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
 			{
-				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
@@ -312,7 +313,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -394,32 +395,27 @@ public class DotplotController implements StatistiekView, ActionListener,
 
 	public void setState(Object state)
 	{
-		Hashtable h = (Hashtable) state;
+		Map h = (Map) state;
+		
 		if (h.containsKey("showCorrelation"))
 		{
-			this.model.setShowCorrelation(((Boolean) h.get("showCorrelation"))
-				.booleanValue());
+			this.model.setShowCorrelation(((Boolean) h.get("showCorrelation")).booleanValue());
 		}
 		if (h.containsKey("useColorScale"))
 		{
-			this.model.setUseColorScale(((Boolean) h.get("useColorScale"))
-				.booleanValue());
+			this.model.setUseColorScale(((Boolean) h.get("useColorScale")).booleanValue());
 		}
 		if (h.containsKey("columnColorIndex"))
 		{
-			this.model
-				.setColumnColorIndex(((Integer) h.get("columnColorIndex"))
-					.intValue());
+			this.model.setColumnColorIndex(((Number) h.get("columnColorIndex")).intValue());
 		}
 		if (h.containsKey("columnXIndex"))
 		{
-			this.model.setColumnXIndex(((Integer) h.get("columnXIndex"))
-				.intValue());
+			this.model.setColumnXIndex(((Number) h.get("columnXIndex")).intValue());
 		}
 		if (h.containsKey("columnYIndex"))
 		{
-			this.model.setColumnYIndex(((Integer) h.get("columnYIndex"))
-				.intValue());
+			this.model.setColumnYIndex(((Number) h.get("columnYIndex")).intValue());
 		}
 		if (h.containsKey("colorA"))
 		{
@@ -435,17 +431,15 @@ public class DotplotController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("columnSplitIndex"))
 		{
-			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
 		}
 		if (h.containsKey("splitInSingleView"))
 		{
-			this.model.setSplitInSingleView(((Boolean) h
-				.get("splitInSingleView")).booleanValue());
+			this.model.setSplitInSingleView(((Boolean) h.get("splitInSingleView")).booleanValue());
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBoundaries((ArrayList<Double>) h
-				.get("splitBoundaries"));
+			this.model.setSplitBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
 		}
 		
 		if (h.containsKey("optimizeScaleX"))
@@ -456,8 +450,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		
 		if (h.containsKey("minXOnScale"))
 		{
-			this.model.setMinXOnScaleWithoutEvent(((Double) h.get("minXOnScale"))
-				.doubleValue());
+			this.model.setMinXOnScaleWithoutEvent(((Number) h.get("minXOnScale")).doubleValue());
 		}
 		else
 		{
@@ -468,8 +461,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 		
 		if (h.containsKey("maxXOnScale"))
 		{
-			this.model.setMaxXOnScale(((Double) h.get("maxXOnScale"))
-				.doubleValue());
+			this.model.setMaxXOnScale(((Number) h.get("maxXOnScale")).doubleValue());
 		}
 		else
 		{
@@ -495,7 +487,7 @@ public class DotplotController implements StatistiekView, ActionListener,
 	 */
 	public void updateSplitBoundariesFromBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
@@ -516,9 +508,9 @@ public class DotplotController implements StatistiekView, ActionListener,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
 			this.view.setSplitBinWidth();
-			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0).doubleValue());
 		}
 	}
 	
