@@ -269,14 +269,14 @@ public class Statistiek implements WiskOpdrApplet
 	 *            The desired number of bins
 	 * @return ArrayList containing appropriate bin boundaries
 	 */
-	public static ArrayList<Double> appropriateBoundaries(double min,
+	public static ArrayList<Number> appropriateBoundaries(double min,
 		double max, int noBins)
 	{
-		ArrayList<Double> boundaries;
+		ArrayList<Number> boundaries;
 		
 		if ((min == 0) && (max == 0))
 		{
-			boundaries = new ArrayList<Double>();
+			boundaries = new ArrayList<Number>();
 			boundaries.add(0.0);
 			boundaries.add(0.0);
 		}
@@ -298,13 +298,13 @@ public class Statistiek implements WiskOpdrApplet
 				min = min * (Math.pow(10, numberOfDecimals)); 
 				max = max * (Math.pow(10, numberOfDecimals));
 				
-				ArrayList<Double> binBoundaries = appropriateBoundaries(min, max, noBins);
+				ArrayList<Number> binBoundaries = appropriateBoundaries(min, max, noBins);
 				// divide each bin boundary by Math.pow(10, numberOfDecimals)
 				for (int i = 0; i < binBoundaries.size(); i++)
 				{
 					// divide the bin boundary by Math.pow(10, numberOfDecimals)
 					// and round to the correct number of decimals (because of possible rounding errors)
-					double newValue = round(binBoundaries.get(i) / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
+					double newValue = round(binBoundaries.get(i).doubleValue() / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
 					binBoundaries.set(i, newValue);
 				}
 				return binBoundaries; 
@@ -364,7 +364,7 @@ public class Statistiek implements WiskOpdrApplet
 			}
 			
 			// build arraylist
-			boundaries = new ArrayList<Double>();
+			boundaries = new ArrayList<Number>();
 			// correct afronden op basis van decimalen in start en binWidth
 			String startString = String.valueOf(start);
 			int decimalPlacesStart = Statistiek.getNumberOfDecimals(startString);//startString.length() - startString.indexOf('.') - 1;
@@ -467,14 +467,14 @@ public class Statistiek implements WiskOpdrApplet
 	 * boundaries cannot be calculated from the given parameters, null is
 	 * returned.
 	 */
-	public static ArrayList<Double> appropriateBoundariesFromBinSettings(
+	public static ArrayList<Number> appropriateBoundariesFromBinSettings(
 		double min, double max, double binWidth, double minBoundary)
 	{
-		ArrayList<Double> boundaries;
+		ArrayList<Number> boundaries;
 		
 		if ((min == 0) && (max == 0))
 		{
-			boundaries = new ArrayList<Double>();
+			boundaries = new ArrayList<Number>();
 			boundaries.add(0.0);
 			boundaries.add(0.0);
 		}
@@ -504,7 +504,7 @@ public class Statistiek implements WiskOpdrApplet
 				binWidth = binWidth * (Math.pow(10, numberOfDecimals));
 				minBoundary = minBoundary * (Math.pow(10, numberOfDecimals));
 				
-				ArrayList<Double> binBoundaries = appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
+				ArrayList<Number> binBoundaries = appropriateBoundariesFromBinSettings(min, max, binWidth, minBoundary);
 				
 				if (binBoundaries != null)
 				{
@@ -513,7 +513,7 @@ public class Statistiek implements WiskOpdrApplet
 					{
 						// divide the bin boundary by Math.pow(10, numberOfDecimals)
 						// and round to the correct number of decimals (because of possible rounding errors)
-						double newValue = round(binBoundaries.get(i) / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
+						double newValue = round(binBoundaries.get(i).doubleValue() / (Math.pow(10, numberOfDecimals)), numberOfDecimals);
 						binBoundaries.set(i, newValue);
 					}
 				}
@@ -537,7 +537,7 @@ public class Statistiek implements WiskOpdrApplet
 			}
 	
 			// build arraylist
-			boundaries = new ArrayList<Double>();
+			boundaries = new ArrayList<Number>();
 			// correct afronden op basis van decimalen in start en binWidth
 			String startString = String.valueOf(start);
 			int decimalPlacesStart = Statistiek.getNumberOfDecimals(startString);//startString.length() - startString.indexOf('.') - 1;
@@ -569,10 +569,10 @@ public class Statistiek implements WiskOpdrApplet
 	 * @param maxOnScale
 	 * @return
 	 */
-	public static ArrayList<Double> getBinBoundariesFromScaleSettings(
-		ArrayList<Double> binBoundaries, double minOnScale, double maxOnScale)
+	public static ArrayList<Number> getBinBoundariesFromScaleSettings(
+		ArrayList<Number> binBoundaries, double minOnScale, double maxOnScale)
 	{
-		ArrayList<Double> bins = new ArrayList<Double>();
+		ArrayList<Number> bins = new ArrayList<Number>();
 
 		if (binBoundaries != null && binBoundaries.size() > 1) // valid bin boundaries
 		{
@@ -583,7 +583,7 @@ public class Statistiek implements WiskOpdrApplet
 			int bin1Decimals = Statistiek.getNumberOfDecimals(binBoundaries.get(1).toString());
 			int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
 
-			Double binWidth = Statistiek.round(binBoundaries.get(1) - binBoundaries.get(0), maxNumberOfDecimals);
+			Double binWidth = Statistiek.round(binBoundaries.get(1).doubleValue() - binBoundaries.get(0).doubleValue(), maxNumberOfDecimals);
 			
 			if (binWidth == 0)
 			{
@@ -626,14 +626,14 @@ public class Statistiek implements WiskOpdrApplet
 	 * @return
 	 */
 	private static Double determineNewSmallestBinBoundary(
-		ArrayList<Double> binBoundaries, double minOnScale)
+		ArrayList<Number> binBoundaries, double minOnScale)
 	{
 		Double newSmallestBin = null;
 		
 		if (binBoundaries != null && binBoundaries.size() > 1) // valid bin boundaries
 		{
-			newSmallestBin = binBoundaries.get(0);
-			Double binWidth = binBoundaries.get(1) - binBoundaries.get(0); // first bin value
+			newSmallestBin = binBoundaries.get(0).doubleValue();
+			Double binWidth = binBoundaries.get(1).doubleValue() - binBoundaries.get(0).doubleValue(); // first bin value
 			
 			if (binWidth == 0)
 			{
@@ -641,7 +641,7 @@ public class Statistiek implements WiskOpdrApplet
 			}
 			else
 			{
-				if (minOnScale <= binBoundaries.get(0))
+				if (minOnScale <= binBoundaries.get(0).doubleValue())
 				{
 					// loop until bin value is found smaller than minOnScale
 					while (minOnScale < newSmallestBin)
@@ -673,14 +673,14 @@ public class Statistiek implements WiskOpdrApplet
 	 * @return
 	 */
 	private static Double determineNewLargestBinBoundary(
-		ArrayList<Double> binBoundaries, double maxOnScale)
+		ArrayList<Number> binBoundaries, double maxOnScale)
 	{
 		Double newLargestBin = null;
 		
 		if (binBoundaries != null && binBoundaries.size() > 1) // valid bin boundaries
 		{
-			newLargestBin = binBoundaries.get(binBoundaries.size() - 1); // last bin value
-			Double binWidth = binBoundaries.get(1) - binBoundaries.get(0);
+			newLargestBin = binBoundaries.get(binBoundaries.size() - 1).doubleValue(); // last bin value
+			Double binWidth = binBoundaries.get(1).doubleValue() - binBoundaries.get(0).doubleValue();
 			
 			if (binWidth == 0)
 			{
@@ -688,7 +688,7 @@ public class Statistiek implements WiskOpdrApplet
 			}
 			else
 			{
-				if (maxOnScale >= binBoundaries.get(binBoundaries.size() - 1))
+				if (maxOnScale >= binBoundaries.get(binBoundaries.size() - 1).doubleValue())
 				{
 					// loop until bin value is found larger than maxOnScale
 					while (maxOnScale > newLargestBin)
@@ -718,10 +718,10 @@ public class Statistiek implements WiskOpdrApplet
 	 * @param binWidth
 	 * @return
 	 */
-	public static ArrayList<Double> getBinBoundariesFromScaleSettings(
+	public static ArrayList<Number> getBinBoundariesFromScaleSettings(
 		double minimum, double maximum, double binWidth)
 	{
-		ArrayList<Double> bins = new ArrayList<Double>();
+		ArrayList<Number> bins = new ArrayList<Number>();
 
 		if (binWidth == 0)
 		{
@@ -948,20 +948,20 @@ public class Statistiek implements WiskOpdrApplet
 	 * decimals of d will be the maximum number of decimals
 	 * among the values in bins.
 	 * 
-	 * @param bins An arraylist of bin boundaries
+	 * @param arrayList An arraylist of bin boundaries
 	 * @return The string value of the bin width
 	 */
-	public static String getFormattedBinWidth(ArrayList<Double> bins)
+	public static String getFormattedBinWidth(ArrayList<Number> arrayList)
 	{
 		String formattedValueString;
 		int maxNumberOfDecimals = 0;
 		String binValueString;
 		
-		Double d = bins.get(1) - bins.get(0);
+		Double d = arrayList.get(1).doubleValue() - arrayList.get(0).doubleValue();
 		
-		for (int i = 0; i < bins.size(); i++)
+		for (int i = 0; i < arrayList.size(); i++)
 		{
-			binValueString = String.valueOf(bins.get(i));
+			binValueString = String.valueOf(arrayList.get(i));
 			int numberOfDecimals = Statistiek.getNumberOfDecimals(binValueString);//binValueString.length() - binValueString.indexOf('.') - 1;
 			
 			if (numberOfDecimals > maxNumberOfDecimals)
