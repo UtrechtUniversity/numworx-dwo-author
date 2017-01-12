@@ -11,7 +11,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -118,11 +120,11 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("selectionIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setSelectionIndices(
-				(ArrayList<Integer>) b.get("selectionIndices"));
+				(ArrayList<Number>) b.get("selectionIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			ArrayList<Number> indicesList = new ArrayList<Number>();
 			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
@@ -134,11 +136,11 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("rowOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setRowOutlierIndices(
-				(ArrayList<Integer>) b.get("rowOutlierIndices"));
+				(ArrayList<Number>) b.get("rowOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			ArrayList<Number> indicesList = new ArrayList<Number>();
 			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
@@ -150,11 +152,11 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("cellOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setCellOutlierIndices(
-				(ArrayList<ArrayList<Integer>>) b.get("cellOutlierIndices"));
+				(ArrayList<ArrayList<Number>>) b.get("cellOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<ArrayList<Integer>> indicesList = new ArrayList<ArrayList<Integer>>();
+			ArrayList<ArrayList<Number>> indicesList = new ArrayList<ArrayList<Number>>();
 			this.model.getStatTableModel().setCellOutlierIndices(indicesList);
 		}
 
@@ -232,13 +234,14 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 	public void setState(Hashtable hashtable)
 	{
-		Hashtable b = deepCopy(hashtable);
+		//Hashtable b = deepCopy(hashtable);
+		Map b = (Map) hashtable;
 		
 		this.model.removeViewsWithoutEvent();
 
 		if (b.containsKey("tableModel"))
 		{
-			this.model.getStatTableModel().setState((Hashtable) b.get("tableModel"));
+			this.model.getStatTableModel().setState(new Hashtable((Map) b.get("tableModel")));
 			// this.view.setModel(this.model);
 		}
 		if (b.containsKey("selectionList")) // de oude manier
@@ -248,12 +251,12 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("selectionIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setSelectionIndices(
-				(ArrayList<Integer>) b.get("selectionIndices"));
+				(ArrayList<Number>) b.get("selectionIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
-			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
+			ArrayList<Number> indicesList = new ArrayList<Number>();
+			this.model.getStatTableModel().setSelectionIndices(indicesList); // was setRowOutlierIndices
 		}
 
 		if (b.containsKey("rowOutlierList")) // if old version set the rowOutlierList the old fashion way
@@ -264,11 +267,11 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("rowOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setRowOutlierIndices(
-				(ArrayList<Integer>) b.get("rowOutlierIndices"));
+				(ArrayList<Number>) b.get("rowOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			List<Number> indicesList = Collections.emptyList();
 			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
@@ -280,19 +283,19 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		else if (b.containsKey("cellOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setCellOutlierIndices(
-				(ArrayList<ArrayList<Integer>>) b.get("cellOutlierIndices"));
+				(ArrayList<ArrayList<Number>>) b.get("cellOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<ArrayList<Integer>> indicesList = new ArrayList<ArrayList<Integer>>();
+			ArrayList<ArrayList<Number>> indicesList = new ArrayList<ArrayList<Number>>();
 			this.model.getStatTableModel().setCellOutlierIndices(indicesList);
 		}
 
 		if (b.containsKey("statistiekViewTypes")
 			&& b.containsKey("statistiekViewStates"))
 		{
-			String[] statistiekViewTypes = (String[]) b.get("statistiekViewTypes");
-			Object[] statistiekViewStates = (Object[]) b.get("statistiekViewStates");
+			String[] statistiekViewTypes = toStringArray(b.get("statistiekViewTypes"));
+			Object[] statistiekViewStates = toObjectArray(b.get("statistiekViewStates"));
 
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
@@ -310,13 +313,37 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 
 		if (b.containsKey("selectedView"))
 		{
-			int index = ((Integer) b.get("selectedView")).intValue();
+			int index = ((Number) b.get("selectedView")).intValue();
 //			System.out.println("StatInteractiePanel.setState(): selectedView in hashtable = "
 //				+ index);
 			this.view.processSelectedTab(index);
 		}
 	}
 
+	public static String[] toStringArray(Object object)
+	{
+		if (object == null || object instanceof String[])
+			return (String[]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			return (String[]) list.toArray(new String[list.size()]);
+		}
+		return null;
+	}
+
+	public static Object[] toObjectArray(Object object)
+	{
+		if (object == null || object instanceof Object[])
+			return (Object[]) object;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			return list.toArray();
+		}
+		return null;
+	}
+	
 	public Hashtable getEditState()
 	{
 		return this.getState();
