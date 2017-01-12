@@ -584,7 +584,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				|| type.equals(AllowedTypes.INTEGER))
 			{
 				this.minBoundaryRowsField.setText(
-					Statistiek.getStringValue(this.model.getBinBoundaries().get(0)));
+					Statistiek.getStringValue(this.model.getBinBoundaries().get(0).doubleValue()));
 				// set the row bin width based on the row's bin boundaries
 				this.binWidthRowsField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				this.noObjectsRowsLabel.setText(Statistiek.rb
@@ -621,7 +621,7 @@ public class CrossTabulationTableUserOptionsPanel extends JPanel implements
 				|| type.equals(AllowedTypes.INTEGER))
 			{
 				this.minBoundaryColumnsField.setText(
-					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
+					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0).doubleValue()));
 				// set the column bin width based on the column's bin boundaries
 				this.binWidthColumnsField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
 				this.noObjectsColumnsLabel.setText(Statistiek.rb
