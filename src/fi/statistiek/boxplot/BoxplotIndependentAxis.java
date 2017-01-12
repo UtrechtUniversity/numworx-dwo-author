@@ -77,9 +77,9 @@ public class BoxplotIndependentAxis extends JPanel
 
 		if (type.isNumber())
 		{
-			for (Double d : this.model.getSplitBinBoundaries())
+			for (Number d : this.model.getSplitBinBoundaries())
 			{
-				int width = fm.stringWidth(Statistiek.getStringValue(d));
+				int width = fm.stringWidth(Statistiek.getStringValue(d.doubleValue()));
 				if (width > maxStringLength)
 				{
 					maxStringLength = width;
@@ -192,7 +192,7 @@ public class BoxplotIndependentAxis extends JPanel
 					g.drawLine(x1, 0, x1, 4);
 
 					// draw text
-					s = Statistiek.getStringValue(this.model.getSplitBinBoundaries().get(i));
+					s = Statistiek.getStringValue(this.model.getSplitBinBoundaries().get(i).doubleValue());
 					
 					if (normalFit)
 					{
@@ -257,7 +257,7 @@ public class BoxplotIndependentAxis extends JPanel
 				for (int i = 0; i <= this.model.getNumberOfSplitClasses(); i++)
 				{
 					String s = Statistiek.getStringValue(this.model.getSplitOptions()
-						.getBinBoundaries().get(i));
+						.getBinBoundaries().get(i).doubleValue());
 					int y = super.getHeight()
 						- (boxplotView.getDependentAxisHeight() + (int) Math
 							.round(i * this.boxWidth));
