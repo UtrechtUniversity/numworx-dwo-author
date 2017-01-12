@@ -3226,8 +3226,7 @@ public class DotplotView extends JPanel implements Observer
 			ColumnType cType = DotplotView.this.model.getStatTableModel()
 				.getColumnTypes()
 				.get(DotplotView.this.model.getColumnSplitIndex());
-			ArrayList<Double> boundaries = DotplotView.this.model
-				.getSplitBinBoundaries();
+			ArrayList<Number> boundaries = DotplotView.this.model.getSplitBinBoundaries();
 			String s;
 			for (int i = 0; i < DotplotView.this.splitClasses; i++)
 			{
