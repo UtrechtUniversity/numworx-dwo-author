@@ -36,7 +36,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 * to be used with cross-widget communication.
 	 */
 	private Double binWidth;
-	private ArrayList<Double> binBoundaries;
+	private ArrayList<Number> binBoundaries;
 
 	private SplitOptions splitOptions;
 
@@ -100,7 +100,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		// set initial values
 		this.noBins = 10;
 		this.columnIndex = -1;
-		this.binBoundaries = new ArrayList<Double>();
+		this.binBoundaries = new ArrayList<Number>();
 		this.binBoundaries.add(new Double(0));
 		this.binBoundaries.add(new Double(0));
 		this.percentage = false;
@@ -154,16 +154,16 @@ public class HistogramModel extends Observable implements TableModelListener,
 	/**
 	 * Set the bin boundaries
 	 * 
-	 * @param bins
+	 * @param boundaries
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundaries(ArrayList<Double> bins)
+	public void setBinBoundaries(ArrayList<Number> boundaries)
 	{
 		// Make a deep copy, not only copy the reference, since this will cause strange behavior
-		ArrayList<Double> copy = new ArrayList<Double>(bins.size());
-		for (Double d: bins)
+		ArrayList<Number> copy = new ArrayList<Number>(boundaries.size());
+		for (Number d: boundaries)
 		{
-			copy.add(new Double(d));
+			copy.add(new Double(d.doubleValue()));
 		}
 		
 		this.binBoundaries = copy; 
@@ -176,16 +176,16 @@ public class HistogramModel extends Observable implements TableModelListener,
 	/**
 	 * Set the bin boundaries without triggering an event.
 	 * 
-	 * @param bins
+	 * @param binBoundaries
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundariesWithoutEvent(ArrayList<Double> bins)
+	public void setBinBoundariesWithoutEvent(ArrayList<Number> binBoundaries)
 	{
 		// Make a deep copy, not only copy the reference, since this will cause strange behavior
-		ArrayList<Double> copy = new ArrayList<Double>(bins.size());
-		for (Double d: bins)
+		ArrayList<Number> copy = new ArrayList<Number>(binBoundaries.size());
+		for (Number d: binBoundaries)
 		{
-			copy.add(new Double(d));
+			copy.add(new Double(d.doubleValue()));
 		}
 		
 		this.binBoundaries = copy; 
@@ -198,7 +198,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 * 
 	 * @return The bin boundaries
 	 */
-	public ArrayList<Double> getBinBoundaries()
+	public ArrayList<Number> getBinBoundaries()
 	{
 		return this.binBoundaries;
 	}
@@ -216,7 +216,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 
 		if (this.getBinBoundaries() != null)
 		{
-			max = this.getBinBoundaries().get(lastBinNumber); 
+			max = this.getBinBoundaries().get(lastBinNumber).doubleValue(); 
 		}
 		
 		return max;
@@ -406,7 +406,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		else if ((this.binBoundaries != null)
 			&& this.getNoBins() > 0)
 		{
-			width = Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), 8);
+			width = Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), 8);
 		}
 		
 		return width;
@@ -524,7 +524,7 @@ public class HistogramModel extends Observable implements TableModelListener,
     				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.statTableModel.getColumnMin(this.columnIndex),
     					this.statTableModel.getColumnMax(this.columnIndex), 
     					// door afronding kan de aftreksom heel veel decimalen hebben
-    					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
+    					Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), maxNumberOfDecimals), this.binBoundaries.get(0).doubleValue());
     				
     				this.noBins = this.binBoundaries.size() - 1;
 				}
@@ -594,7 +594,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 * 
 	 * @param boundaries
 	 */
-	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
@@ -605,7 +605,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 * 
 	 * @param boundaries
 	 */
-	public void setSplitBoundariesWithoutEvent(ArrayList<Double> boundaries)
+	public void setSplitBoundariesWithoutEvent(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 	}
@@ -662,7 +662,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	{
 		int bin = -1;
 		while (bin < this.binBoundaries.size() - 1
-			&& d >= this.binBoundaries.get(bin + 1)) // syl: >=, want de grens hoort bij de volgende klasse
+			&& d >= this.binBoundaries.get(bin + 1).doubleValue()) // syl: >=, want de grens hoort bij de volgende klasse
 		{
 			bin++;
 		}
@@ -894,7 +894,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 		
 		if (this.getBinBoundaries() != null)
 		{
-			value = this.getBinBoundaries().get(0);
+			value = this.getBinBoundaries().get(0).doubleValue();
 		}
 		
 		return value;
@@ -1020,7 +1020,7 @@ public class HistogramModel extends Observable implements TableModelListener,
 	 */
 	public int[][] numberClassFrequencyFromScaleSettings()
 	{
-		ArrayList<Double> bins;
+		ArrayList<Number> bins;
 		
 		if (this.statTableModel.isEmptyColumn(columnIndex))
 		{
