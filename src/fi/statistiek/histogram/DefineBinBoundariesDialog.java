@@ -59,8 +59,8 @@ public class DefineBinBoundariesDialog extends JDialog implements ActionListener
 		
 		if(this.model.getBinBoundaries().size() > 1) {
 			this.noBins = this.model.getBinBoundaries().size()-1;
-			this.minBoundary = this.model.getBinBoundaries().get(0);
-			this.binWidth = this.model.getBinBoundaries().get(1) - this.model.getBinBoundaries().get(0); //this assumes equally sized bins 
+			this.minBoundary = this.model.getBinBoundaries().get(0).doubleValue();
+			this.binWidth = this.model.getBinBoundaries().get(1).doubleValue() - this.model.getBinBoundaries().get(0).doubleValue(); //this assumes equally sized bins 
 		}
 		else {
 			this.noBins = 4;
@@ -84,8 +84,8 @@ public class DefineBinBoundariesDialog extends JDialog implements ActionListener
 
 		if(this.model.getBinBoundaries().size() > 1) {
 			this.noBins = this.model.getBinBoundaries().size()-1;
-			this.minBoundary = this.model.getBinBoundaries().get(0);
-			this.binWidth = this.model.getBinBoundaries().get(1) - this.model.getBinBoundaries().get(0); //this assumes equally sized bins 
+			this.minBoundary = this.model.getBinBoundaries().get(0).doubleValue();
+			this.binWidth = this.model.getBinBoundaries().get(1).doubleValue() - this.model.getBinBoundaries().get(0).doubleValue(); //this assumes equally sized bins 
 		}
 		else {
 			this.noBins = 4;
@@ -258,8 +258,8 @@ public class DefineBinBoundariesDialog extends JDialog implements ActionListener
 	 * Get the user defined boundaries in an ArrayList
 	 * @return an ArrayList containing the user defined bin boundaries
 	 */
-	public ArrayList<Double> getBoundaries() {
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+	public ArrayList<Number> getBoundaries() {
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		for(int i = 0; i <= this.noBins; i++) {
 			boundaries.add(new Double(this.minBoundary + i * this.binWidth));
 		}
