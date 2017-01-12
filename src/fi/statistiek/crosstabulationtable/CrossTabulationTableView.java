@@ -539,9 +539,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 		{
 			for (int i = 0; i < binLabelsRows.length; i++)
 			{
-				String text = Statistiek.getStringValue(this.model.getBinBoundaries().get(i)) 
+				String text = Statistiek.getStringValue(this.model.getBinBoundaries().get(i).doubleValue()) 
 					+ "-<" 
-					+ Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1));
+					+ Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1).doubleValue());
 				binLabelsRows[i] = new JLabel(text);
 				binLabelsRows[i].setFont(Statistiek.font);
 			}
@@ -568,9 +568,9 @@ public class CrossTabulationTableView extends JPanel implements Observer
 			{
 				for (int i = 0; i < binLabelsColumns.length; i++)
 				{
-					String text = Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)) 
+					String text = Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i).doubleValue()) 
 						+ "-<" 
-						+ Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1));
+						+ Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1).doubleValue());
 					binLabelsColumns[i] = new JLabel(text);
 					binLabelsColumns[i].setFont(Statistiek.font);
 				}
