@@ -114,15 +114,15 @@ public class SplitOptionsDialog extends JDialog implements ActionListener, Focus
 	 */
 	private void setSplitType(AllowedTypes type) {
 		if(type.isNumber()) {
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 					this.model.getColumnMin(this.splitOptions.getColumnSplitIndex()),
 					this.model.getColumnMax(this.splitOptions.getColumnSplitIndex()),
 					this.binBoundariesPanel.noBins);
 			
 			this.splitOptions.setBinBoundaries(boundaries);
-			this.binBoundariesPanel.minBoundary = boundaries.get(0);
-			this.binBoundariesPanel.binWidth = boundaries.get(1) - boundaries.get(0); //this assumes equally sized bins 
+			this.binBoundariesPanel.minBoundary = boundaries.get(0).doubleValue();
+			this.binBoundariesPanel.binWidth = boundaries.get(1).doubleValue() - boundaries.get(0).doubleValue(); //this assumes equally sized bins 
 
 			super.remove(this.enumPanel);
 			super.remove(this.stringPanel);
@@ -308,8 +308,9 @@ public class SplitOptionsDialog extends JDialog implements ActionListener, Focus
 		private void update() {
 			if(SplitOptionsDialog.this.model.isColumnIndexValid(SplitOptionsDialog.this.splitOptions.getColumnSplitIndex())) {
 				this.noBins = SplitOptionsDialog.this.splitOptions.getBinBoundaries().size()-1;
-				this.minBoundary = SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(0);
-				this.binWidth = SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(1) - SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(0); //this assumes equally sized bins 
+				this.minBoundary = SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(0).doubleValue();
+				this.binWidth = SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(1).doubleValue()
+					- SplitOptionsDialog.this.splitOptions.getBinBoundaries().get(0).doubleValue(); //this assumes equally sized bins 
 				this.minValueLabel.setText(Statistiek.rb.getString("minLabel") + SplitOptionsDialog.this.model.getColumnMin(SplitOptionsDialog.this.splitOptions.getColumnSplitIndex()));
 				this.maxValueLabel.setText(Statistiek.rb.getString("maxLabel") + SplitOptionsDialog.this.model.getColumnMax(SplitOptionsDialog.this.splitOptions.getColumnSplitIndex()));
 				
@@ -361,7 +362,7 @@ public class SplitOptionsDialog extends JDialog implements ActionListener, Focus
 		 * Update the bin boundaries from the user input
 		 */
 		private void updateBinBoundaries() {
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			for(int i = 0; i <= this.noBins; i++) {
 				boundaries.add((i * this.binWidth) + this.minBoundary);
 			}
