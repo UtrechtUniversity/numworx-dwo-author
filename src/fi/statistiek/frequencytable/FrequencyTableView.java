@@ -747,16 +747,16 @@ public class FrequencyTableView extends JPanel implements Observer
 				
 				String text;
 				if (type.equals(AllowedTypes.INTEGER)
-					&& (this.model.getBinBoundaries().get(1) - this.model.getBinBoundaries().get(0)) == 1)
+					&& (this.model.getBinBoundaries().get(1).doubleValue() - this.model.getBinBoundaries().get(0).doubleValue()) == 1)
 				{
 					// bin width is 1
-					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin)); // getStringValue will give an integer value without decimals
+					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin).doubleValue()); // getStringValue will give an integer value without decimals
 				}
 				else
 				{
-					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin))
+					text = Statistiek.getStringValue(this.model.getBinBoundaries().get(bin).doubleValue())
 						+ " -< "
-						+ Statistiek.getStringValue(this.model.getBinBoundaries().get(bin + 1));
+						+ Statistiek.getStringValue(this.model.getBinBoundaries().get(bin + 1).doubleValue());
 				}
 				JLabel label = new JLabel(text);
 
