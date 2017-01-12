@@ -1166,7 +1166,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     				|| splitType.equals(AllowedTypes.INTEGER))
     			{
     				this.splitMinBoundaryField.setText(
-    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
+    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0).doubleValue()));
     				// set the split bin width based on the split bin boundaries
     				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				
@@ -1175,10 +1175,10 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
     					.getBinBoundaries().size() - 1; i++)
     				{
     					sb.append(Statistiek.getStringValue(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i)));
+    						.getBinBoundaries().get(i).doubleValue()));
     					sb.append(" -< ");
     					sb.append(Statistiek.getStringValue(this.model.getSplitOptions()
-    						.getBinBoundaries().get(i + 1)));
+    						.getBinBoundaries().get(i + 1).doubleValue()));
     					sb.append("\n");
     				}
     				this.splitBoundariesArea.setText(sb.toString());
@@ -1229,7 +1229,7 @@ public class HistogramUserOptionsPanel extends JPanel implements ActionListener
 					String min;
 					if (this.model.isOptimizeScale())
 					{
-						min = Statistiek.getStringValue(this.view.getBinsOnScale().get(0));
+						min = Statistiek.getStringValue(this.view.getBinsOnScale().get(0).doubleValue());
 					}
 					else
 					{
