@@ -33,7 +33,7 @@ public class CrossTabulationTableModel extends Observable implements
 	private boolean showPercentage_columnTotal;
 
 	private int noBins;
-	private ArrayList<Double> binBoundaries;
+	private ArrayList<Number> binBoundaries;
 	
 	private SplitOptions splitOptions;
 
@@ -61,7 +61,7 @@ public class CrossTabulationTableModel extends Observable implements
 		// set initial values
 		this.noBins = 10;
 		this.columnIndex = -1;
-		this.binBoundaries = new ArrayList<Double>();
+		this.binBoundaries = new ArrayList<Number>();
 		this.binBoundaries.add(new Double(-100));
 		this.binBoundaries.add(new Double(100));
 
@@ -77,7 +77,7 @@ public class CrossTabulationTableModel extends Observable implements
 	 * @param bins
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundaries(ArrayList<Double> bins)
+	public void setBinBoundaries(ArrayList<Number> bins)
 	{
 		this.binBoundaries = bins;
 		
@@ -101,7 +101,7 @@ public class CrossTabulationTableModel extends Observable implements
 	 * @param bins
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundariesWithoutEvent(ArrayList<Double> bins)
+	public void setBinBoundariesWithoutEvent(ArrayList<Number> bins)
 	{
 		this.binBoundaries = bins;
 		this.noBins = this.binBoundaries.size() - 1;
@@ -164,7 +164,7 @@ public class CrossTabulationTableModel extends Observable implements
 	 * 
 	 * @return The bin boundaries
 	 */
-	public ArrayList<Double> getBinBoundaries()
+	public ArrayList<Number> getBinBoundaries()
 	{
 		return this.binBoundaries;
 	}
@@ -247,10 +247,12 @@ public class CrossTabulationTableModel extends Observable implements
 				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
 				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
 				
-				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
+				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(
+					this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex), 
 					// door afronding kan de aftreksom heel veel decimalen hebben
-					Statistiek.round(this.binBoundaries.get(1) - this.binBoundaries.get(0), maxNumberOfDecimals), this.binBoundaries.get(0));
+					Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), maxNumberOfDecimals), 
+					this.binBoundaries.get(0).doubleValue());
 			}
 			this.changed();
 		}
@@ -282,7 +284,7 @@ public class CrossTabulationTableModel extends Observable implements
 				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
 				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.tableModel.getColumnMin(this.columnIndex),
 					this.tableModel.getColumnMax(this.columnIndex), 
-					this.binBoundaries.get(1) - this.binBoundaries.get(0), this.binBoundaries.get(0));
+					this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), this.binBoundaries.get(0).doubleValue());
 			}
 		}
 	}
@@ -319,7 +321,7 @@ public class CrossTabulationTableModel extends Observable implements
 		int i = 0;
 		
 		while (i < this.binBoundaries.size()
-			&& d >= this.binBoundaries.get(i))
+			&& d >= this.binBoundaries.get(i).doubleValue())
 		{
 			i++;
 		}
@@ -448,7 +450,7 @@ public class CrossTabulationTableModel extends Observable implements
 		return this.splitOptions.getColumnSplitIndex();
 	}
 
-	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
@@ -458,7 +460,7 @@ public class CrossTabulationTableModel extends Observable implements
 	 * Set the split boundaries without firing the changed() event.
 	 * @param boundaries
 	 */
-	public void setSplitBoundariesWithoutEvent(ArrayList<Double> boundaries)
+	public void setSplitBoundariesWithoutEvent(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
@@ -469,7 +471,7 @@ public class CrossTabulationTableModel extends Observable implements
 		// index old row variable
 		int indexRow_old = this.getColumnIndex();
 		// bins of the old row variable
-		ArrayList<Double> binBoundariesRow_old = getBinBoundaries();
+		ArrayList<Number> binBoundariesRow_old = getBinBoundaries();
 
 		// index old column variable
 		int indexColumn_old = this.getColumnSplitIndex();
@@ -493,9 +495,9 @@ public class CrossTabulationTableModel extends Observable implements
 	 * 
 	 * @param type
 	 */
-	private ArrayList<Double> getBoundaries(double min, double max, double binWidth, double minBoundary)
+	private ArrayList<Number> getBoundaries(double min, double max, double binWidth, double minBoundary)
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 
 		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
 			min, max, binWidth, minBoundary);
