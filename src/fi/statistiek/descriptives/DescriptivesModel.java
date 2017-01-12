@@ -32,7 +32,7 @@ public class DescriptivesModel extends Observable implements
 	 * Bin boundaries (by default one bin)
 	 * in order to be able to get the frequencies.
 	 */
-	private ArrayList<Double> binBoundaries;
+	private ArrayList<Number> binBoundaries;
 	private int noBins;
 	
 	private SplitOptions splitOptions;
@@ -61,7 +61,7 @@ public class DescriptivesModel extends Observable implements
 		// set initial values
 		this.columnIndex = -1;
 		this.noBins = 1;
-		this.binBoundaries = new ArrayList<Double>();
+		this.binBoundaries = new ArrayList<Number>();
 		this.binBoundaries.add(new Double(-100)); // why??
 		this.binBoundaries.add(new Double(100)); // why??
 	}
@@ -71,7 +71,7 @@ public class DescriptivesModel extends Observable implements
 	 * 
 	 * @return The bin boundaries
 	 */
-	public ArrayList<Double> getBinBoundaries()
+	public ArrayList<Number> getBinBoundaries()
 	{
 		return this.binBoundaries;
 	}
@@ -82,7 +82,7 @@ public class DescriptivesModel extends Observable implements
 	 * @param bins
 	 *            The new bin boundaries
 	 */
-	public void setBinBoundaries(ArrayList<Double> bins)
+	public void setBinBoundaries(ArrayList<Number> bins)
 	{
 		this.binBoundaries = bins;
 		
@@ -294,7 +294,7 @@ public class DescriptivesModel extends Observable implements
 		return this.splitOptions.getColumnSplitIndex();
 	}
 
-	public void setSplitBoundaries(ArrayList<Double> boundaries)
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
 	{
 		this.splitOptions.setBinBoundaries(boundaries);
 		this.changed();
@@ -403,8 +403,8 @@ public class DescriptivesModel extends Observable implements
 		if (splitType.isNumber())
 		{
 			// determine the split bin values
-			Double splitClassMinValue = this.splitOptions.getBinBoundaries().get(splitClass); 
-			Double splitClassMaxValue = this.splitOptions.getBinBoundaries().get(splitClass + 1);
+			Double splitClassMinValue = this.splitOptions.getBinBoundaries().get(splitClass).doubleValue(); 
+			Double splitClassMaxValue = this.splitOptions.getBinBoundaries().get(splitClass + 1).doubleValue();
 			if (!splitValueString.equals(ColumnType.WILDCARD))
 			{
 				// get the value of the split column
