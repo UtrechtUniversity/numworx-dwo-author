@@ -1,6 +1,5 @@
 package fi.statistiek.histogram;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -15,29 +14,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
-import fi.statistiek.SplitOptionsDialog;
 import fi.statistiek.StatTableModel;
 import fi.statistiek.Statistiek;
 import fi.statistiek.StatistiekView;
 import fi.statistiek.types.AllowedTypes;
-import fi.statistiek.types.ColumnType;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  * MVC Controller for StatistiekView Histogram
@@ -301,7 +285,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 	 */
 	private void updateBoundariesFromBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getColumnIndex());
@@ -324,9 +308,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getBinBoundaries(); 
 			this.view.setBinWidth();
-			this.view.setMinBoundary(oldBoundaries.get(0));
+			this.view.setMinBoundary(oldBoundaries.get(0).doubleValue());
 		}
 	}
 	
@@ -336,7 +320,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 	 */
 	public void updateSplitBoundariesFromBinSettings()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 
 		double min = this.model.getStatTableModel().getColumnMin(
 			this.model.getSplitOptions().getColumnSplitIndex());
@@ -358,9 +342,9 @@ public class HistogramController implements StatistiekView, ActionListener,
 		else
 		{
 			// reset to old values
-			ArrayList<Double> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
 			this.view.setSplitBinWidth();
-			this.view.setSplitMinBoundary(oldBoundaries.get(0));
+			this.view.setSplitMinBoundary(oldBoundaries.get(0).doubleValue());
 		}
 	}
 	
@@ -369,7 +353,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 	 */
 	private void updateBoundaries()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		for (int i = 0; i <= this.model.getNoBins(); i++)
 		{
 			boundaries.add(new Double(view.getMinBoundary() + i
@@ -381,7 +365,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 	private void updateSplitBoundaries()
 	{
-		ArrayList<Double> boundaries = new ArrayList<Double>();
+		ArrayList<Number> boundaries = new ArrayList<Number>();
 		for (int i = 0; i <= this.view.getSplitBinsBoxSelectedInt(); i++)
 		{
 			boundaries.add(new Double(view.getSplitMinBoundary() + i
@@ -395,7 +379,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 	{
 		if (type.isNumber())
 		{
-			ArrayList<Double> boundaries = new ArrayList<Double>();
+			ArrayList<Number> boundaries = new ArrayList<Number>();
 			boundaries = Statistiek.appropriateBoundaries(
 				this.model.getStatTableModel().getColumnMin(
 					this.model.getSplitOptions().getColumnSplitIndex()),
@@ -479,30 +463,27 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 	public void setState(Object state)
 	{
-		if (!(state instanceof Hashtable))
+		if (!(state instanceof Map))
 		{
 			return;
 		}
 
-		Hashtable h = deepCopy((Hashtable) state);
+		Map h = (Map) state;
 
 		if (h.containsKey("columnIndex"))
 		{
 			// Let op: setColumnIndex() zet ook de binBoundaries
 			// Dat wordt hieronder goed gemaakt als de binBoundaries
 			// uit de hashtable worden gezet.
-			this.model.setColumnIndex(((Integer) h.get("columnIndex"))
-				.intValue());
+			this.model.setColumnIndex(((Number) h.get("columnIndex")).intValue());
 		}
 		if (h.containsKey("binBoundaries"))
 		{
-			this.model.setBinBoundaries((ArrayList<Double>) h
-				.get("binBoundaries"));
+			this.model.setBinBoundaries((ArrayList<Number>) h.get("binBoundaries"));
 		}
 		if (h.containsKey("percentage"))
 		{
-			this.model.setPercentage(((Boolean) h.get("percentage"))
-				.booleanValue());
+			this.model.setPercentage(((Boolean) h.get("percentage")).booleanValue());
 		}
 		if (h.containsKey("percentage_splitTotal"))
 		{
@@ -544,12 +525,11 @@ public class HistogramController implements StatistiekView, ActionListener,
 
 		if (h.containsKey("columnSplitIndex"))
 		{
-			this.model.setColumnSplitIndex((Integer) h.get("columnSplitIndex"));
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
 		}
 		if (h.containsKey("splitBoundaries"))
 		{
-			this.model.setSplitBoundaries((ArrayList<Double>) h
-				.get("splitBoundaries"));
+			this.model.setSplitBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
 		}
 		if (h.containsKey("splitInSingleView"))
 		{
@@ -568,18 +548,15 @@ public class HistogramController implements StatistiekView, ActionListener,
 		}
 		if (h.containsKey("binWidth")) // bin width nodig voor berekenen maxonscale
 		{
-			this.model.setBinWidth(((Double) h.get("binWidth"))
-				.doubleValue());
+			this.model.setBinWidth(((Number) h.get("binWidth")).doubleValue());
 		}
 		if (h.containsKey("minOnScale"))
 		{
-			this.model.setMinOnScale(((Double) h.get("minOnScale"))
-				.doubleValue());
+			this.model.setMinOnScale(((Number) h.get("minOnScale")).doubleValue());
 		}
 		if (h.containsKey("maxOnScale"))
 		{
-			this.model.setMaxOnScale(((Double) h.get("maxOnScale"))
-				.doubleValue());
+			this.model.setMaxOnScale(((Number) h.get("maxOnScale")).doubleValue());
 		}
 	}
 
@@ -802,7 +779,7 @@ public class HistogramController implements StatistiekView, ActionListener,
 			double resetSplitMin;
 			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
 			{
-				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0);
+				resetSplitMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
 			}
 			else
 			{
