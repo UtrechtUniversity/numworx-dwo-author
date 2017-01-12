@@ -14,7 +14,7 @@ import fi.statistiek.types.ColumnType;
 public class SplitOptions
 {
 	private int columnSplitIndex;
-	private ArrayList<Double> binBoundaries;
+	private ArrayList<Number> binBoundaries;
 
 	/**
 	 * Constructor
@@ -22,7 +22,7 @@ public class SplitOptions
 	public SplitOptions()
 	{
 		this.columnSplitIndex = -1;
-		this.binBoundaries = new ArrayList<Double>();
+		this.binBoundaries = new ArrayList<Number>();
 		this.binBoundaries.add(0.0);
 		this.binBoundaries.add(50.0);
 		this.binBoundaries.add(100.0);
@@ -38,14 +38,14 @@ public class SplitOptions
 		this.columnSplitIndex = columnSplitIndex;
 	}
 
-	public ArrayList<Double> getBinBoundaries()
+	public ArrayList<Number> getBinBoundaries()
 	{
 		return binBoundaries;
 	}
 
-	public void setBinBoundaries(ArrayList<Double> binBoundaries)
+	public void setBinBoundaries(ArrayList<Number> boundaries)
 	{
-		this.binBoundaries = binBoundaries;
+		this.binBoundaries = boundaries;
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class SplitOptions
 		if (splitCType.getType().isNumber())
 		{
 			// use getStringValue() to show the correct decimal separator
-			String binValue1 = Statistiek.getStringValue(this.binBoundaries.get(splitClass));
-			String binValue2 = Statistiek.getStringValue(this.binBoundaries.get(splitClass + 1));
+			String binValue1 = Statistiek.getStringValue(this.binBoundaries.get(splitClass).doubleValue());
+			String binValue2 = Statistiek.getStringValue(this.binBoundaries.get(splitClass + 1).doubleValue());
 			label = binValue1 + " -< " + binValue2;
 		}
 		else if (splitCType.getType().equals(AllowedTypes.ENUM))
@@ -87,10 +87,10 @@ public class SplitOptions
 	{
 		SplitOptions clone = new SplitOptions();
 		clone.setColumnSplitIndex(this.columnSplitIndex);
-		ArrayList<Double> cloneBoundaries = new ArrayList<Double>();
-		for (Double d : this.binBoundaries)
+		ArrayList<Number> cloneBoundaries = new ArrayList<Number>();
+		for (Number d : this.binBoundaries)
 		{
-			cloneBoundaries.add(new Double(d));
+			cloneBoundaries.add(new Double(d.doubleValue()));
 		}
 		clone.setBinBoundaries(cloneBoundaries);
 		return clone;
