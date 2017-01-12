@@ -601,15 +601,15 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
 				|| type.equals(AllowedTypes.INTEGER))
 			{
 				this.minBoundaryField.setText(
-					Statistiek.getStringValue(this.model.getBinBoundaries().get(0)));
+					Statistiek.getStringValue(this.model.getBinBoundaries().get(0).doubleValue()));
 				// set the bin width based on the bin boundaries
 				this.binWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getBinBoundaries()));
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < this.model.getNoBins(); i++)
 				{
-					sb.append(Statistiek.getStringValue(this.model.getBinBoundaries().get(i)));
+					sb.append(Statistiek.getStringValue(this.model.getBinBoundaries().get(i).doubleValue()));
 					sb.append(" -< ");
-					sb.append(Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1)));
+					sb.append(Statistiek.getStringValue(this.model.getBinBoundaries().get(i + 1).doubleValue()));
 					sb.append("\n");
 				}
 
@@ -730,7 +730,7 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
     				|| splitType.equals(AllowedTypes.INTEGER))
     			{
     				this.splitMinBoundaryField.setText(
-    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0)));
+    					Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(0).doubleValue()));
     				// set the split bin width based on the split bin boundaries
     				this.splitBinWidthField.setText(Statistiek.getFormattedBinWidth(this.model.getSplitOptions().getBinBoundaries()));
     				StringBuilder sb = new StringBuilder();
@@ -738,10 +738,10 @@ public class FrequencyTableUserOptionsPanel extends JPanel implements
     					.getBinBoundaries().size() - 1; i++)
     				{
     					sb.append(
-    						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i)));
+    						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i).doubleValue()));
     					sb.append(" -< ");
     					sb.append(
-    						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1)));
+    						Statistiek.getStringValue(this.model.getSplitOptions().getBinBoundaries().get(i + 1).doubleValue()));
     					sb.append("\n");
     				}
     				this.splitBoundariesArea.setText(sb.toString());
