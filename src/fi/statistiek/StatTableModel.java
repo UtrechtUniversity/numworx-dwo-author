@@ -169,11 +169,11 @@ public class StatTableModel implements TableModel
 		
 		if (h.containsKey("rowCount"))
 		{
-			this.rowCount = ((Integer) h.get("rowCount")).intValue();
+			this.rowCount = ((Number) h.get("rowCount")).intValue();
 		}
 		if (h.containsKey("columnCount"))
 		{
-			this.columnCount = ((Integer) h.get("columnCount")).intValue();
+			this.columnCount = ((Number) h.get("columnCount")).intValue();
 		}
 		if (h.containsKey("columnNames"))
 		{
@@ -367,7 +367,7 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @return the amount of classes in which the split variable splits the data
 	 */
-	public int numberOfBins(int columnIndex, ArrayList<Double> binBoundaries)
+	public int numberOfBins(int columnIndex, ArrayList<Number> binBoundaries)
 	{
 		if (!this.isColumnIndexValid(columnIndex))
 		{
@@ -430,7 +430,7 @@ public class StatTableModel implements TableModel
 	 * @return the split class in which the object at rowIndex is
 	 */
 	public int classifyObject(int rowIndex, int columnIndex,
-		ArrayList<Double> binBoundaries)
+		ArrayList<Number> binBoundaries)
 	{
 		if (!this.isColumnIndexValid(columnIndex))
 		{
@@ -466,7 +466,7 @@ public class StatTableModel implements TableModel
 	 * Returns -2 is the value is a wildcard ('*').
 	 */
 	public int classifyObject(String value, int columnIndex,
-		ArrayList<Double> binBoundaries)
+		ArrayList<Number> binBoundaries)
 	{
 		if (!this.isColumnIndexValid(columnIndex))
 		{
@@ -488,7 +488,7 @@ public class StatTableModel implements TableModel
 			double d = Double.parseDouble(value);
 			int bin = -1;
 			while (((bin + 1) < binBoundaries.size())
-				&& d >= binBoundaries.get(bin + 1))
+				&& d >= binBoundaries.get(bin + 1).doubleValue())
 			{
 				bin++;
 			}
@@ -497,7 +497,7 @@ public class StatTableModel implements TableModel
 			{
 				System.out.println("StatTableModel.classifyObject(value=" + d + ", columnIndex = " 
 					+ columnIndex + ") geeft -1\n\tBoundaries: ");
-				for (Double a : binBoundaries)
+				for (Number a : binBoundaries)
 				{
 					System.out.println("\t" + a);
 				}
@@ -2425,9 +2425,9 @@ public class StatTableModel implements TableModel
 	/**
 	 * Set the selection list from an array of indices of the selected rows.
 	 * 
-	 * @param selectionIndices
+	 * @param indicesList
 	 */
-	public synchronized void setSelectionIndices(ArrayList<Integer> selectionIndices)
+	public synchronized void setSelectionIndices(ArrayList<Number> indicesList)
 	{
 		// reset the list
 		this.selectionList = new ArrayList<Boolean>();
@@ -2438,9 +2438,9 @@ public class StatTableModel implements TableModel
 		}
 		
 		// and set the selected rows
-		for (int j = 0; j < selectionIndices.size(); j++)
+		for (int j = 0; j < indicesList.size(); j++)
 		{
-			this.selectionList.set(selectionIndices.get(j), true);
+			this.selectionList.set(indicesList.get(j).intValue(), true);
 		}
 		
 		this.fireSelectionChanged();
@@ -2457,7 +2457,7 @@ public class StatTableModel implements TableModel
 	 * 
 	 * @param outlierIndices
 	 */
-	public synchronized void setRowOutlierIndices(ArrayList<Integer> outlierIndices)
+	public synchronized void setRowOutlierIndices(List<Number> outlierIndices)
 	{
 		// reset the list
 		this.rowOutlierList = new ArrayList<Boolean>();
@@ -2470,7 +2470,7 @@ public class StatTableModel implements TableModel
 		// and set the outlier rows
 		for (int j = 0; j < outlierIndices.size(); j++)
 		{
-			this.rowOutlierList.set(outlierIndices.get(j), true);
+			this.rowOutlierList.set(outlierIndices.get(j).intValue(), true);
 		}
 		
 		this.fireSelectionChanged();
@@ -2485,9 +2485,9 @@ public class StatTableModel implements TableModel
 	/**
 	 * Set the cell outlier list from an array of pairs of indices (row, column) of the outlier cells.
 	 * 
-	 * @param outlierIndices
+	 * @param indicesList
 	 */
-	public synchronized void setCellOutlierIndices(ArrayList<ArrayList<Integer>> outlierIndices)
+	public synchronized void setCellOutlierIndices(ArrayList<ArrayList<Number>> indicesList)
 	{
 		// reset the list
 		this.cellOutlierList = new ArrayList<ArrayList<Boolean>>();
@@ -2505,10 +2505,10 @@ public class StatTableModel implements TableModel
 		}
 		
 		// and set the outlier cells
-		for (int j = 0; j < outlierIndices.size(); j++)
+		for (int j = 0; j < indicesList.size(); j++)
 		{
-			int rowIndex = outlierIndices.get(j).get(0);
-			int columnIndex = outlierIndices.get(j).get(1);
+			int rowIndex = indicesList.get(j).get(0).intValue();
+			int columnIndex = indicesList.get(j).get(1).intValue();
 			
 			this.cellOutlierList.get(columnIndex).set(rowIndex, true);
 		}
@@ -2611,7 +2611,7 @@ public class StatTableModel implements TableModel
 	 * @return array of frequencies, with index 2*i the frequency of bin i, and
 	 *         2*i + 1 the amount of selected items in this bin.
 	 */
-	public int[][] numberClassFrequency(ArrayList<Double> binBoundaries,
+	public int[][] numberClassFrequency(ArrayList<Number> binBoundaries,
 		int columnIndex, SplitOptions splitOptions)
 	{
 		// check if the column type is a number
@@ -2639,7 +2639,7 @@ public class StatTableModel implements TableModel
 					Double d = Double.parseDouble((String) o);
 					int bin = -1;
 					while (bin < binBoundaries.size() - 1
-						&& d >= binBoundaries.get(bin + 1))
+						&& d >= binBoundaries.get(bin + 1).doubleValue())
 					{
 						bin++;
 					}
