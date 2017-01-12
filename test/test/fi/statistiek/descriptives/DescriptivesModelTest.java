@@ -105,8 +105,8 @@ public class DescriptivesModelTest
 	{
 		double min = this.model.getStatTableModel().getColumnMin(1); // columnIndex = 1 (gewicht)
 		double max = this.model.getStatTableModel().getColumnMax(1); // columnIndex = 1 (gewicht)
-		ArrayList<Double> expected = new ArrayList(Arrays.asList(min, max + 10)); // verschil in tientallen, dus 1 tiental meer voor bovengrens
-		ArrayList<Double> actual = this.model.getBinBoundaries();
+		ArrayList<Number> expected = new ArrayList(Arrays.asList(min, max + 10)); // verschil in tientallen, dus 1 tiental meer voor bovengrens
+		ArrayList<Number> actual = this.model.getBinBoundaries();
 		assertArrayEquals("", expected.toArray(), actual.toArray());
 	}
 
