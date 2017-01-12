@@ -162,11 +162,11 @@ public class StatEditPanelController extends JPanel implements
 		else if (b.containsKey("selectionIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setSelectionIndices(
-				(ArrayList<Integer>) b.get("selectionIndices"));
+				(ArrayList<Number>) b.get("selectionIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			ArrayList<Number> indicesList = new ArrayList<Number>();
 			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
@@ -178,11 +178,11 @@ public class StatEditPanelController extends JPanel implements
 		else if (b.containsKey("rowOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setRowOutlierIndices(
-				(ArrayList<Integer>) b.get("rowOutlierIndices"));
+				(ArrayList<Number>) b.get("rowOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<Integer> indicesList = new ArrayList<Integer>();
+			ArrayList<Number> indicesList = new ArrayList<Number>();
 			this.model.getStatTableModel().setRowOutlierIndices(indicesList);
 		}
 
@@ -194,21 +194,19 @@ public class StatEditPanelController extends JPanel implements
 		else if (b.containsKey("cellOutlierIndices")) // de nieuwe manier
 		{
 			this.model.getStatTableModel().setCellOutlierIndices(
-				(ArrayList<ArrayList<Integer>>) b.get("cellOutlierIndices"));
+				(ArrayList<ArrayList<Number>>) b.get("cellOutlierIndices"));
 		}
 		else
 		{
-			ArrayList<ArrayList<Integer>> indicesList = new ArrayList<ArrayList<Integer>>();
+			ArrayList<ArrayList<Number>> indicesList = new ArrayList<ArrayList<Number>>();
 			this.model.getStatTableModel().setCellOutlierIndices(indicesList);
 		}
 
 		if (b.containsKey("statistiekViewTypes")
 			&& b.containsKey("statistiekViewStates"))
 		{
-			String[] statistiekViewTypes = (String[]) b
-				.get("statistiekViewTypes");
-			Object[] statistiekViewStates = (Object[]) b
-				.get("statistiekViewStates");
+			String[] statistiekViewTypes = (String[]) b.get("statistiekViewTypes");
+			Object[] statistiekViewStates = (Object[]) b.get("statistiekViewStates");
 
 			for (int i = 0; i < statistiekViewTypes.length; i++)
 			{
@@ -224,8 +222,7 @@ public class StatEditPanelController extends JPanel implements
 
 		if (b.containsKey("selectedView"))
 		{
-			this.view.setInteractiePanelSelectedView(((Integer) b
-				.get("selectedView")).intValue());
+			this.view.setInteractiePanelSelectedView(((Integer) b.get("selectedView")).intValue());
 		}
 	}
 
@@ -236,7 +233,8 @@ public class StatEditPanelController extends JPanel implements
 	 */
 	public Hashtable getEditState()
 	{
-		System.out.println("StatEditPanelController.getEditState()");
+		//System.out.println("StatEditPanelController.getEditState()");
+		
 		Hashtable h = new Hashtable();
 		h.put("tableModel", this.model.getStatTableModel().getState());
 		h.put("selectionIndices", this.model.getStatTableModel().getSelectionIndices());
