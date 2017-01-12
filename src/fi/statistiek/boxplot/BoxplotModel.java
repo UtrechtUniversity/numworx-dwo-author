@@ -311,14 +311,14 @@ public class BoxplotModel extends Observable implements TableModelListener, Sele
 		this.changed();
 	}
 
-	public ArrayList<Double> getSplitBinBoundaries()
+	public ArrayList<Number> getSplitBinBoundaries()
 	{
 		return this.splitOptions.getBinBoundaries();
 	}
 
-	public void setSplitBinBoundaries(ArrayList<Double> splitBoundaries)
+	public void setSplitBinBoundaries(ArrayList<Number> boundaries)
 	{
-		this.splitOptions.setBinBoundaries(splitBoundaries);
+		this.splitOptions.setBinBoundaries(boundaries);
 		this.setPercentileValues();
 		this.changed();
 	}
