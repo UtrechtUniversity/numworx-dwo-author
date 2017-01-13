@@ -16,18 +16,29 @@ import fi.euclides.util.DefaultAdapter;
 public class TextModel extends ColorModel<Label> {
 	Align align = Align.BASE;
 	Font  font  = fi.wiskopdr.WiskOpdr.formuleFont0; // bijvoorbeeld.
+	private float dx,dy;
 
 	@Override
 	public void install(Label item) {
 		DefaultAdapter.getDefault(item).put(align);
 		DefaultAdapter.getDefault(item).put(Font.class, font);
+		Punt p = item.getP();
+		if(p instanceof Volgpunt) {
+			((Volgpunt) p).setDxy(Numbers.createDouble(dx), Numbers.createDouble(dy));
+		}
 		super.install(item);
 	}
 
 	@Override
 	public UIModel<Label, UIEditor> init(Label item) {
-		align = item.adapt(Align.class);
+		if(item != null) align = item.adapt(Align.class);
 		if(align == null) align= Align.BASE;
+		
+		if(item == null && this.item != null && this.item.getP() instanceof Volgpunt)
+		{	Volgpunt p = (Volgpunt) this.item.getP();
+			dx = (float) p.getDx().doubleValue();
+			dy = (float) p.getDy().doubleValue();
+		}
 		return super.init(item);
 	}
 
@@ -36,10 +47,13 @@ public class TextModel extends ColorModel<Label> {
 		Map<String, Object> map = super.toMap();
 		map.put("align", align.name());
 		map.put("font", Collections.singletonMap("size", font.getSize()));
-		Punt p = item.getP();
+		Punt p = item != null ? item.getP() : null;
 		if(p instanceof Volgpunt) {
 			map.put("dx", ((Volgpunt) p).getDx().doubleValue());
 			map.put("dy", ((Volgpunt) p).getDy().doubleValue());
+		} else if (item == null) {
+			if(dx != 0f) map.put("dx", dx);
+			if(dy != 0f) map.put("dy", dy);
 		}
 		return map;
 	}
@@ -56,19 +70,12 @@ public class TextModel extends ColorModel<Label> {
 			float size = fontmap.getInt("size");
 			font = font.deriveFont(size);
 		}
-		if(item.getP() instanceof Volgpunt) {
-		Numbers dx = Numbers.ZERO;
 		if(map.containsKey("dx")) {
-			dx = Numbers.createDouble(map.getDouble("dx"));
+			dx = (float)map.getDouble("dx");
 		}
-		Numbers dy = Numbers.ZERO;
 		if(map.containsKey("dy")) {
-			dy = Numbers.createDouble(map.getDouble("dy"));
+			dy = (float)map.getDouble("dy");
 		}
-			((Volgpunt)item.getP()).setDxy(dx, dy);
-		}
-		
-		
 		super.fromMap(map);
 	}
 

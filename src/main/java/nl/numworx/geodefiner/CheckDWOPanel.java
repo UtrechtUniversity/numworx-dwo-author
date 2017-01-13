@@ -4,24 +4,32 @@ import java.awt.Dimension;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
-class CheckDWOPanel extends JPanel {
+class CheckDWOPanel extends JPanel implements ChangeListener {
 
 	private static final Integer DEFAULT_SCORE = Integer.valueOf(10);
 	private JFormattedTextField score;
 	private JCheckBox checkDWO;
 	private FormuleEditor formule;
+	
+	JButton checkBtn;
+	JComponent validator = this;
 
 	CheckDWOPanel() {
 		super();
 		setName("CheckDWO");
 		checkDWO = new JCheckBox("check");
+		checkDWO.addChangeListener(this);
 		score = new JFormattedTextField(DEFAULT_SCORE);
 		formule = new FormuleEditor(false);
 		formule.setHeader(false);
@@ -54,6 +62,16 @@ class CheckDWOPanel extends JPanel {
 			score.setValue(DEFAULT_SCORE);
 		checkDWO.setSelected(map.getBoolean("check", false));
 		formule.formuleVak.vulVak(map.getString("formule"));
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(checkBtn != null) {
+			checkBtn.setVisible(checkDWO.isSelected());
+			checkBtn.invalidate();
+			validator.validate();
+		}
+		
 	}
 	
 }

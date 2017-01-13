@@ -119,10 +119,12 @@ public class CellItem extends JPanel {
 		setBackground(Color.WHITE);
 		this.setCell(cell);
 		this.viewer = viewer;
-		potlood = new JButton( new EditAction(editImage));
+		boolean valid = cell.item != null;
+		potlood = new JButton( valid ? new EditAction(editImage): new DeleteAction());
 		add(potlood, BorderLayout.LINE_END);
 		radio = new JRadioButton();
-		radio.setSelected(cell.item.isVisible());
+		radio.setEnabled(valid);
+		radio.setSelected(valid && cell.item.isVisible());
 		radio.setAction(new VisibleAction());
 		add(radio, BorderLayout.LINE_START);
 		add( center = createCenter(cell), BorderLayout.CENTER);

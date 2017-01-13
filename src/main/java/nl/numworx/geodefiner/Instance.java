@@ -3,18 +3,22 @@ package nl.numworx.geodefiner;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -22,7 +26,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -53,7 +62,9 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
+import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
@@ -77,6 +88,52 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
 
+	public class KijkNaAction extends AbstractAction implements Icon, Observer {
+
+		ImageIcon goed, half, fout;
+		
+		public KijkNaAction() {
+			super(Messages.getString("kijkNa"));
+			putValue(LARGE_ICON_KEY, this);
+			fout = new ImageIcon(getClass().getResource("resources/foutkruis.gif"));
+			half = new ImageIcon(getClass().getResource("resources/goedkrulhalf.gif"));
+			goed = new ImageIcon(getClass().getResource("resources/goedkrul.gif"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			fetchScore();
+			Boolean status = getStatus();
+			if(status == null) putValue(LARGE_ICON_KEY, half);
+			else if(status.booleanValue())
+				putValue(LARGE_ICON_KEY, goed);
+			else putValue(LARGE_ICON_KEY, fout);
+			handler.fire(Constants.CHANGED); // Score changed
+		}
+
+
+		@Override
+		public void paintIcon(Component c, Graphics g, int x, int y) {
+		}
+
+		@Override
+		public int getIconWidth() {
+			return goed.getIconWidth();
+		}
+
+		@Override
+		public int getIconHeight() {
+			return goed.getIconHeight();
+		}
+
+
+		@Override
+		public void update(Observable observable, Object arg) {
+			putValue(LARGE_ICON_KEY, this);
+		}
+
+	}
+
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
 	private HitTester tiptest;
@@ -95,7 +152,63 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public String getToolTipText(MouseEvent e) {
-			DescriptionBuilder builder = new DescriptionBuilder(viewer.getMapper());
+			DescriptionBuilder builder = new DescriptionBuilder(viewer.getMapper()) {
+
+				@Override
+				public void visitTriangle(Triangle t) {
+					visitDestroyable(t);
+				}
+
+				private void visitDestroyable(Destroyable k) {
+					String name = toString(k);
+					if(name.startsWith("%")) return;
+					if(!string.isEmpty()) string += ", ";
+					string += name;
+				}
+
+				@Override
+				public void visitKegelsnede(Kegelsnede2 k) {
+					visitDestroyable(k);
+				}
+
+				@Override
+				public void visitLocus(Locus locus) {
+					visitDestroyable(locus);
+				}
+
+				@Override
+				public void visitBoog(Boog b) {
+					visitDestroyable(b);
+				}
+
+				@Override
+				public void visitCirkel(Cirkel c) {
+					visitDestroyable(c);
+				}
+
+				@Override
+				public void visitLabel(Label label) {
+					visitDestroyable(label);
+				}
+
+				@Override
+				public void visitLijn(Lijn l) {
+					visitDestroyable(l);
+				}
+
+				@Override
+				public void visitPunt(Punt p) {
+					visitDestroyable(p);
+				}
+
+				@Override
+				public void visitSegment(Segment s) {
+					visitDestroyable(s);
+				}
+				
+				
+				
+			};
 			tiptest.setVisitor(builder);
 			tiptest.setXY(e.getX()-getViewer().offX, e.getY()-getViewer().offY);
 			Model r = viewer.getModel();
@@ -108,6 +221,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	};
 	
 	private JPanel panel = new JPanel(new BorderLayout());
+	JPanel south = new JPanel();
+	JButton checkBtn = new JButton();
 	
 	private final class InstanceViewer extends AWTViewer implements Observer {
 
@@ -133,22 +248,58 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			if(grid.isVisible()) grid.visit(this);
 			Destroyable x = getModel().getLijnen().firstElement();
 			CELL item = x.adapt(CELL.class);
-			AxesModel configX = (AxesModel) item.config;
-			if(configX.numbers && x.isVisible()) { drawXnumbers(); }
+			if (item != null) {
+				AxesModel configX = (AxesModel) item.config;
+				if(configX != null && configX.numbers && x.isVisible()) { drawXnumbers(); }
+			}
 			Destroyable y = getModel().getLijnen().firstElement();
 			item = y.adapt(CELL.class);
-			AxesModel configY = (AxesModel) item.config;
-			if(configY.numbers && y.isVisible()) { drawYnumbers(); }
-			
+			if (item != null) {
+				AxesModel configY = (AxesModel) item.config;
+				if(configY != null && configY.numbers && y.isVisible()) { drawYnumbers(); }
+			}
 		}
 
 		private void drawXnumbers() {
-			// TODO Auto-generated method stub
-			
+			double left = clipLeft().doubleValue();
+			double right = clipRight().doubleValue();
+			double x = getModel().getO().getXd();
+			double y = getModel().getO().getYd();
+			y += g.getFontMetrics().getAscent();
+			double dx = getModel().getU().getXd() - x;
+			if(dx <= 1) return;
+			int i = 0, s = 1;
+			while(dx < 20) { dx += dx; s+=s; if(dx >= 20) break; dx = 2.5*dx; s += s+s/2; if(dx >= 20) break; dx += dx; s += s; }
+			left -= dx;
+			for(double xr = x ; xr < right; xr += dx, i+=s) {
+				drawString(String.valueOf(i), xr, y);
+			}
+			i = -s;
+			for(double xr = x-dx ; xr > left; xr -= dx, i-=s) {
+				drawString(String.valueOf(i), xr, y);
+			}
 		}
 		private void drawYnumbers() {
-			// TODO Auto-generated method stub
-			
+			double bottom = clipBottom().doubleValue();
+			double top = clipTop().doubleValue();
+			double x = getModel().getO().getXd();
+			double y = getModel().getO().getYd();
+			double dy = getModel().getU().getXd() - x;
+			if (dy <= 1) return;
+			int i = 0, s = 1;
+			while(dy < 20) { dy += dy; s+=s; if(dy >= 20) break; dy = 2.5*dy; s += s+s/2; if(dy >= 20) break; dy += dy; s += s; }
+			for(double yr = y ; yr > top; yr -= dy, i+=s) {
+				String v = String.valueOf(i);
+				int w = g.getFontMetrics().stringWidth(v);
+				drawString(v, x-w, yr);
+			}
+			i = -s;
+			bottom += dy;
+			for(double yr = y+dy ; yr < bottom; yr += dy, i-=s) {
+				String v = String.valueOf(i);
+				int w = g.getFontMetrics().stringWidth(v);
+				drawString(v, x-w, yr);
+			}
 		}
 
 		@Override
@@ -504,6 +655,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		toolbox.setFloatable(false);
 		toolbox.setVisible(false);
 		panel.add(toolbox, BorderLayout.NORTH);
+		checkBtn.setVisible(false);
+		south.add(checkBtn);
+		panel.add(south, BorderLayout.SOUTH);
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {
@@ -552,8 +706,15 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		return SuccessStatus.FAILED;
 	}
 
+	@Override
+	public void setLaunchData(Map<String, ? extends Object> launchData,
+			Map<String, Number> random) {		
+		super.setLaunchData(launchData, random);
+	}
+
 	// Assume getSize() is okay.
 	public void init() {
+		checkBtn.setVisible(false);checkBtn.invalidate();
 		panel.doLayout();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
@@ -621,10 +782,16 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	protected boolean installCheckDWO() {
 		if  (super.installCheckDWO())
 		{
-			checkDWO.addObserver(this);
+			KijkNaAction action = new KijkNaAction();
+			checkBtn.setAction(action);
+			checkBtn.setVisible(true);
+			checkDWO.addObserver(action);
+			checkBtn.invalidate();
+			panel.validate();
 			return true;
 		}
-		checkDWO = new Check_DWO(viewer);
+		checkDWO = new Check_DWO(viewer); // dummy
+		panel.validate();
 		return false;
 	}
 

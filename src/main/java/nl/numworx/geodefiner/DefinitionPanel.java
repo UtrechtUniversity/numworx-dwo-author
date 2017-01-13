@@ -77,6 +77,9 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	ListUpdater updater = new ListUpdater();
 	
 	Definitions model;
+	Randomizer randomizer = new Randomizer() {
+		public String randomize(String input) { return input; }
+	};
 	
 	DefinitionPanel(Definitions model, AbstractViewer viewer) {
 		super(new BorderLayout());
@@ -100,6 +103,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		String text = (String) evt.getOldValue();
 		OMObject object = (OMObject) evt.getNewValue();
 		model.define(text, object);
+		model.redefine(randomizer);
 	}
 
 	void remove(CellItem source) {

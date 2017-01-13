@@ -62,9 +62,11 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	public UIModel<T, UIEditor> init(T item) {
 		this.item = item;
-		this.color = item.getAdapter().adapt(Color.class);
+		if(item != null) {
+			color = item.getAdapter().adapt(Color.class);
+			visible = item.isVisible();
+		}
 		if(color == null) color = Color.black;
-		this.visible = item.isVisible();
 		return this;
 	}
 

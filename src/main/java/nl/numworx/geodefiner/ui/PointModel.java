@@ -45,7 +45,7 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 	}
 
 	public UIModel<Punt, UIEditor> init(Punt item) {
-		this.rigid = !item.isFree();
+		if (item != null) this.rigid = !item.isFree();
 		return super.init(item);
 	}
 

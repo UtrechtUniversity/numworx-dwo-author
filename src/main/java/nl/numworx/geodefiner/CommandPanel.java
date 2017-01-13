@@ -16,7 +16,7 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 @SuppressWarnings("serial")
-class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener {
+class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener, Randomizer {
 	
 	private FormuleEditor editor = new FormuleEditor(false) {
 
@@ -68,7 +68,7 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 	}
 
 	
-	private String randomize(String input) {
+	public String randomize(String input) {
 		if(random != null)
 			return instance.randomize(random, input);
 		else 

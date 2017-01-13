@@ -1,11 +1,14 @@
 package nl.numworx.geodefiner;
 
+import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -13,6 +16,7 @@ import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
+import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -31,20 +35,39 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 
 	private static final long serialVersionUID = -4868744357817393056L;
 
+	private  final CBookEvent CHECK = new CBookEvent(this, Constants.CHECK);
+
 	private Instance instance;
 
+	private class CBookActionListener implements CBookEventListener {
+
+		private ActionListener al;
+		private ActionEvent event = new ActionEvent(GeoDefinerInteractiePanel.this, ActionEvent.ACTION_PERFORMED, "changed");
+		@Override
+		public void acceptCBookEvent(CBookEvent arg0) {
+			if(al != null) {
+				al.actionPerformed(event);
+			}
+		}
+	}
+	
 	private Hashtable launchData;
 	
 	GeoDefinerInteractiePanel() {
 		super(new BorderLayout());
 		instance = new Instance();
 		add(instance.asComponent(), BorderLayout.CENTER);
+		all = new CBookActionListener();
+		instance.addCBookEventListener(all, Constants.CHECKED); // ons kent ons
 	}
 
 	public void zetOpdracht(Hashtable b, String[] randomVars,
 			Hashtable randomValues) {
+		launchData = b;
 		instance.init();
-		instance.setLaunchData(b, randomValues);
+		Map randomvars = launchRandomVars();
+		randomvars.putAll(randomValues);
+		instance.setLaunchData(b, randomvars);
 	}
 
 	public void setState(Hashtable b) {
@@ -54,7 +77,16 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	public void setEditState(Hashtable b) {
 		instance.init();
 		this.launchData = b;
-		instance.setLaunchData(b, Collections.EMPTY_MAP);
+		Map randomvars = launchRandomVars();
+		instance.setLaunchData(b, randomvars);
+	}
+
+	private Map launchRandomVars() {
+		// TODO zonder panel.
+				RandomPanel randompanel = new RandomPanel();
+				randompanel.setText((String)launchData.get("random"));
+				Map randomvars = randompanel.getRandomVars();
+		return randomvars;
 	}
 
 	public Hashtable getState() {
@@ -90,7 +122,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public int getScoreMax() {
-		return 0;
+		return instance.getMaxScore();
 	}
 
 	public boolean isCorrect() {
@@ -126,13 +158,17 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public void kijkNa() {
-
+		instance.acceptCBookEvent(CHECK);
 	}
 
 	public void kijkNa(int stapNr) {
+		kijkNa();
 	}
 
-	public void addActionListener(ActionListener al) {
+	private CBookActionListener all;
+
+	public synchronized void addActionListener(ActionListener al) {
+		all.al = AWTEventMulticaster.add(al, all.al);
 	}
 
 	public Object getProperty(String key) {
