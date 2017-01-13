@@ -16,6 +16,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
@@ -30,7 +31,7 @@ import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public abstract class Instance implements Observer {
+public abstract class Instance /*implements Observer*/ {
 
 	protected UIModelFactory uiModelFactory;
 	protected Definitions definitions;
@@ -90,7 +91,7 @@ public abstract class Instance implements Observer {
 			checkDWO = new Check_DWO(viewer);
 			checkDWO.fromMap(launchData.getObjectMap("checkDWO"));
 			fetchScore();
-			return true;
+			return checkDWO.isCheck();
 		} else 
 			checkDWO = null;
 			return false;
@@ -151,6 +152,7 @@ public abstract class Instance implements Observer {
 				object = new FormuleParser(toParse.substring(2)).parse();
 				definitions.define(text, object);
 			} catch (Throwable e) {
+				e.printStackTrace();
 				break;
 			}
 		}
@@ -208,6 +210,9 @@ public abstract class Instance implements Observer {
 		for (Iterator<Destroyable> iterator = punten.iterator(); iterator.hasNext();) {
 			Destroyable next = iterator.next();
 			FreePoint punt = next.adapt(FreePoint.class);
+// a rigid coordinate, no saving.
+			if(punt != null && !punt.isFree() && next instanceof Coordinaten)
+				punt = null;
 			String name = viewer.getMapper().toString(next);
 			if(punt != null && !name.startsWith("%")) {
 				try {
@@ -305,5 +310,8 @@ public abstract class Instance implements Observer {
 		score = checkDWO.getScore(); // + checkObjects.getScore();
 		status = checkDWO.isStatus(); // && checkObjects.isStatus();
 	}
-
+	public int getMaxScore() {
+		return checkDWO.getMaxScore();
+	}
+	
 }

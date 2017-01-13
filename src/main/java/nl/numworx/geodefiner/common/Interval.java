@@ -17,6 +17,7 @@ public class Interval extends LabelValue {
 	private static final StepValue NULL_STEP = new StepValue(Numbers.ZERO);
 
 	private static final class Destroyer implements Observer {
+		@SuppressWarnings("unchecked")
 		@Override
 		public void update(Observable observable, Object arg) {
 			Label l = (Label) observable;
@@ -28,6 +29,10 @@ public class Interval extends LabelValue {
 				lijn.getP1().destroy();
 				lijn.getP2().destroy();
 				return;
+			}
+			if(Label.VISIBLE.equals(arg)) {
+				l.getP().setVisible(l.isVisible());
+				((PuntOp<Segment>) l.getP()).getOp().setVisible(l.isVisible());
 			}
 		}
 	}

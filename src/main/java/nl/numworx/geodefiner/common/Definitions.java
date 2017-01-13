@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.common;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import nl.numworx.geodefiner.common.CELL;
@@ -9,6 +10,8 @@ import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
@@ -73,10 +76,15 @@ public class Definitions implements Observer /*, ListModel*/ {
 	private final Expression expression;
 		
 	public void addElement(CELL element) {
-		element.item.addObserver(this);
+		if(element.item != null)
+			element.item.addObserver(this);
 		delegate.add(element);
 	}
 
+	private void installConfig(CELL cell, Map<String, ?> config) {
+		installConfig(cell, config, cell.var);
+	}
+	
 	public void define(String text,OMObject object) {
 
 // Interpreter of GeoDefiner statements		
@@ -85,20 +93,27 @@ public class Definitions implements Observer /*, ListModel*/ {
 			OMApplication oma = (OMApplication) object;
 			OMObject first = oma.firstElement();
 			Model model = viewer.getModel();
+			Map<String,?> config = null;
 			if( first.isSame(OMConstants.PROG1_ASSIGN))
 			{
 				OMVariable var = (OMVariable) oma.getElementAt(1);
 // No reassignments, or delete?
 // in geogebra reassignments
+				int cell = findCell(var.getName());
 				Destroyable fs = viewer.getMapper().fromString(var.getName());
 				if (fs != null) {
 					if(fs.getIndex() <= readonly)
 						throw new RuntimeException("readonly");
+					if(cell >= 0) {
+						UIModel<?, ?> cellConfig = getElementAt(cell).config;
+						if(cellConfig != null) config = cellConfig.toMap();
+					}
 					destroy(fs, var.getName());
 					fs.destroy(); 
 				} else {
-					int cell = findCell(var.getName());
 					if(cell >= 0) {
+						UIModel<?, ?> cellConfig = getElementAt(cell).config;
+						if(cellConfig != null) config = cellConfig.toMap();
 						remove(cell);
 					}
 				}
@@ -152,37 +167,35 @@ public class Definitions implements Observer /*, ListModel*/ {
 						}
 					}
 					
-					viewer.getMapper().rename(p, var.getName());
-					addElement(new CELL(text, p, var));
+					installConfig(new CELL(text, p, var), config);
 					return;
 				}
 // $l := line($P, $Q)
 				if (LINE.isSame(f)) {
 					Destroyable l = model.buildLijn(depend);
 					if(l == null) throw new InterpretException("line error");
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l, var));
+					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $l := segment($P, $Q)
 				if (SEGMENT.isSame(f)) {
 					Destroyable l = model.buildSegment(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l, var));
+					if(l == null) throw new InterpretException("segment error");
+					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $l := arc($P, ... )
 				if (ARC.isSame(f)) {
 					Destroyable l = model.buildBoog(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l, var));
+					if(l == null) throw new InterpretException("arc error");
+					installConfig(new CELL(text, l, var), config);
 					return;
 				}				
 // $l := circle($P, $Q)
 				if (CIRCLE.isSame(f)) {
 					Destroyable l = model.buildCirkel(depend);
-					viewer.getMapper().rename(l, var.getName());
-					addElement(new CELL(text, l, var));
+					if(l == null) throw new InterpretException("circle error");
+					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $t := text("text", $P)
@@ -207,9 +220,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 						}
 					}
 					t.setP(new Volgpunt(p));
-					viewer.getMapper().rename(t, var.getName());
 					model.add(t);
-					addElement(new CELL(text, t, var));
+					installConfig(new CELL(text, t, var), config);
 					return;
 				}
 // $l := polygon($P, ...)
@@ -222,8 +234,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					}
 					else
 						t3 = model.buildTriangle(depend);
-					addElement(new CELL(text, t3, var));
-					viewer.getMapper().rename(t3, var.getName());
+					installConfig(new CELL(text, t3, var), config);
 					return;				
 				}
 // $l := interval1.interval($a,$b)
@@ -245,12 +256,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 					x1.addObserver(l);
 					x2.addObserver(l);
 					l.setP(x3);
-					viewer.getMapper().rename(l, var.getName());
 // FIXED NAMES
 					viewer.getMapper().rename(x1, var.getName() + "%min");
 					viewer.getMapper().rename(x2, var.getName() + "%max");
 					m.add(l);
-					addElement(new CELL(text, l, var));
+					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $c := curve( $f, $f )
@@ -260,9 +270,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Label interval = depend.length > 2 ? (Label) depend[2]: null;				
 					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
 					Locus locus = new Locus(lm);
-					viewer.getMapper().rename(locus, var.getName());
 					model.add(locus);
-					addElement(new CELL(text, locus, var));
+					installConfig(new CELL(text, locus, var), config);
 					return;
 				}
 // $f := int(lambda[$x -> ... ])
@@ -276,9 +285,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 					model.add(fx);
 					LocusModel lm = new LocusModelXY(fx, fy, null, viewer);
 				    Locus locus = new Integral(lm);
-				    viewer.getMapper().rename(locus, var.getName());
 				    model.add(locus);
-					addElement(new CELL(text, locus, var.getName()));
+					installConfig(new CELL(text, locus, var), config);
 					return;
 				}
 // $f := defint($a .. $b, lambda[$x -> ... ])
@@ -293,9 +301,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 					model.add(fx);
 					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
 				    Locus locus = new Integral(lm);
-				    viewer.getMapper().rename(locus, var.getName());
 				    model.add(locus);
-					addElement(new CELL(text, locus, var.getName()));
+					installConfig(new CELL(text, locus, var), config);
 					return;
 				}
 // $w := 1+2
@@ -316,20 +323,25 @@ public class Definitions implements Observer /*, ListModel*/ {
 					if(f instanceof Label && isYFX((Label) f))
 					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
-					     viewer.getMapper().rename(locus, "y="+var.getName()+"(x)");
+					     String name = "y="+var.getName()+"(x)";
+						viewer.getMapper().rename(locus, name);
 					     model.add(locus);
 					     final Destroyable destroyable = f;
 					     locus.addObserver(new DestroyDependency(destroyable));
 					     f = locus;
-					     
-					}
-					addElement(new CELL(text, f, var));
+					     CELL c = new CELL(text, f, var);
+					     installConfig(c, config, name);
+					} else
+						installConfig(new CELL(text, f, var), config);
 					return;
 				}
 			} else if ( first.isSame(OMConstants.RELATION1_EQ)) {
 				int found = findCell(text);
-				if(found >= 0) return; // duplicate
-// $x = 1;
+				if(found >= 0) {
+					// ????? assert(getElementAt(found).item != null)
+					return; // duplicate				
+				}
+					// $x = 1;
 // $y = $x + 1;
 				OMObject arg = oma.getElementAt(1);
 				if(arg instanceof OMVariable) {
@@ -348,7 +360,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
 					    model.add(locus);
-						addElement(new CELL(text, locus, text));
+						installConfig(new CELL(text, locus, text), config);
 					} else if("x".equals(var.getName())) {
 						Label fx = new Label();fx.setVisible(false);
 						fx.setString("identity");
@@ -367,13 +379,19 @@ public class Definitions implements Observer /*, ListModel*/ {
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
 					    model.add(locus);
-						addElement(new CELL(text, locus, text));
+						installConfig(new CELL(text, locus, text), config);
 					} else {
 						throw new InterpretException("syntax error");
 					}
 				}
 			}
 		}
+	}
+
+	protected void installConfig(CELL c, Map<String, ?> config, String name) {
+		Destroyable p = c.item;
+		viewer.getMapper().rename(p, name);
+		addElement(c);
 	}
 
 	protected boolean isYFX(Label f) {
@@ -417,7 +435,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 		CELL cell = fs.adapt(CELL.class);
 		if(cell != null) {
 			cell.item = null;
-			cell.config = null;
+			if(cell.config != null) {
+				cell.config.init(null);
+			}
 			update(cell);
 		}
 	}

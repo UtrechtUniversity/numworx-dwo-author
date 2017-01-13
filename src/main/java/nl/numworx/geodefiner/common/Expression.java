@@ -11,6 +11,12 @@ public class Expression extends fi.euclides.openmath.Expression {
 		LabelDelegate value = new HoekHandler();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.angle", value);
+		value = new Phi();
+		value.setTracker(tracker);
+		symbolmap.put("geodefiner.phi", value);
+		value = new Rnd();
+		value.setTracker(tracker);
+		symbolmap.put("geodefiner.rnd", value);
 	}
 
 }

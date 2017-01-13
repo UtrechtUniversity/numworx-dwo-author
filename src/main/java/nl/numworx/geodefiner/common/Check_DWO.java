@@ -8,6 +8,7 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -18,6 +19,10 @@ public class Check_DWO extends Observable implements Observer {
 	private boolean status;
 	private boolean check;
 	
+	public boolean isCheck() {
+		return check;
+	}
+
 	public Check_DWO(Tracker tracker) {
 		this.tracker = tracker;
 		status = true;
@@ -64,7 +69,7 @@ public class Check_DWO extends Observable implements Observer {
 		else if(arg == null) {
 			Label label = (Label)observable;
 			boolean oldStatus = status;
-			status = !check || label.isDefined() && label.getState() != Label.FALSE;
+			status = !check || label.isDefined() && label.value == Numbers.ZERO;
 			score = status ? maxScore : 0;
 			if(status != oldStatus) {
 				setChanged();
@@ -88,5 +93,10 @@ public class Check_DWO extends Observable implements Observer {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
+	public int getMaxScore() {
+		return maxScore;
+	}
+
 
 }
