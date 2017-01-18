@@ -242,7 +242,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			if(filename != null)				// "URL van plaatje"
 			{
 				last = filename;
-				URL u = new URL(getCodeBase(), filename);
+				URL u = new URL(getCDN(), filename);
 		// with imageredirector
 				URLConnection uc = openConnection(u);
 				String type = uc.getContentType();
@@ -385,7 +385,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		if(data.length==0 && namemap.containsKey(name + "/u"))
 		{
 			try {
-				URL url = new URL(getCodeBase(), namemap.get(name + "/u").toString());
+				URL url = new URL(getCDN(), namemap.get(name + "/u").toString());
 				result = getImage(url);
 			} catch (MalformedURLException e) {
 				return null;
@@ -875,12 +875,12 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	private String last;
 	private String newURLImage() throws IOException {
 		if(last == null)
-			last = getCodeBase().toString();
+			last = getCDN().toString();
 		String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.NIEUW), JOptionPane.QUESTION_MESSAGE, null, null, last);
 		if(filename == null)
 			return null;
 		last = filename;
-		URL u = new URL(getCodeBase(), filename); // FIXME ook hier fallback
+		URL u = new URL(getCDN(), filename); // FIXME ook hier fallback
 // with imageredirector
 		URLConnection uc = openConnection(u);
 		String type = uc.getContentType();
@@ -906,7 +906,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 
 
 	private String getURI(URL u) {
-		URL cb = getCodeBase();
+		URL cb = getCDN();
 		if(cb.getHost() .equals (u.getHost()) && cb.getPort() == u.getPort())
 			return u.getFile();
 		else
@@ -928,23 +928,22 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		}
 	}
 	
-	
+	private URL getCDN() { try {
+		return new URL("http://cdn.dwo.nl/");
+	} catch (MalformedURLException e) {
+		return null; // Should not happen!
+	} }
+
 	private URL getCodeBase() {
 		
-		try {
-			Applet applet = getApplet(component);
-			if(applet != null)
-			{
-				URL u = applet.getCodeBase();
-				if(u != null && u.getProtocol().startsWith("http"))
-					return u;
-			}
-			return new URL("http://www.fisme.science.uu.nl/");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+		Applet applet = getApplet(component);
+		if(applet != null)
+		{
+			URL u = applet.getCodeBase();
+			if(u != null && u.getProtocol().startsWith("http"))
+				return u;
 		}
+		return getCDN();
 	}
 	
 	private URL getDocumentBase() {
