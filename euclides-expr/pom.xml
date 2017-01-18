@@ -5,7 +5,7 @@
 		<groupId>fi.euclides</groupId>
 		<artifactId>euclides-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../euclides-parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>euclides-expr</artifactId>
 	<name>Expressions for Euclides</name>

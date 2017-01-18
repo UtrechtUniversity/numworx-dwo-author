@@ -7,10 +7,10 @@
 	<packaging>pom</packaging>
 	<name>Euclides Multi module</name>
 	<modules>
-		<module>../euclides-core</module>
-		<module>../euclides-expr</module>
-		<module>../euclides-util</module>
-		<module>../euclides-gwt</module>
+		<module>euclides-core</module>
+		<module>euclides-expr</module>
+		<module>euclides-util</module>
+		<module>euclides-gwt</module>
 		<module>euclides-resources</module>
 	</modules>
 	<properties>

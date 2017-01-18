@@ -5,7 +5,7 @@
 	<name>Euclides Util for GWT</name>
 	<parent>
 		<artifactId>euclides-parent</artifactId>
-		<relativePath>../euclides-parent</relativePath>
+		<relativePath>..</relativePath>
 		<groupId>fi.euclides</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
