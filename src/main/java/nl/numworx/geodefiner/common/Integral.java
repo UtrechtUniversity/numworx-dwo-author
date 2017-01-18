@@ -10,7 +10,7 @@ public class Integral extends Locus {
 	public static double LT = Double.NEGATIVE_INFINITY;
 	public static double GT = Double.POSITIVE_INFINITY;
 	
-	final double base;
+	final public double base;
 	
 	public Integral() {
 		base = 0;
