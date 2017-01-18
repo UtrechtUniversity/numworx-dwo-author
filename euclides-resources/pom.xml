@@ -4,6 +4,7 @@
     <groupId>fi.euclides</groupId>
     <artifactId>euclides-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>euclides-resources</artifactId>
   <name>Resources of Euclides</name>
