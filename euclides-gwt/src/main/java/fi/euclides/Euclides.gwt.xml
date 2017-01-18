@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <inherits name="nl.tue.win.riaca.openmath.OpenMath" />
+  <inherits name="gwt.Geom" />
+
+  <source path='model'/>
+  <source path='util'/>
+  <source path='proof'/>
+  <source path='event'/>
+  <source path='persist'/>
+  <source path='gwt' />
+  <!-- fi.euclides.Expr -->
+  <source path="expr" />
+  <source path="formuleobjects" />
+  <source path="openmath" />
+</module>
