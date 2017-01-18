@@ -18,7 +18,7 @@ implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 	//private final GWTEuclides gwtEuclides;
 
 	/**
-	 * @param gwtEuclides
+	 * @param viewer Widget
 	 */
 	public GWTMouseHandler(ViewerWidget viewer) {
 		this.viewer = viewer;

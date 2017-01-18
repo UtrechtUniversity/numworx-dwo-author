@@ -24,7 +24,6 @@ public class Arrays {
      *
      * @param a the array whose content-based hash code to compute
      * @return a content-based hash code for <tt>a</tt>
-     * @see #deepHashCode(Object[])
      * @since 1.5
      */
     public static int hashCode(Observable a[]) {

@@ -205,7 +205,6 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	protected abstract void drawString(String string, double x, double y);
 	
 	/**
-	 * @param g
 	 * @param object
 	 */
 	public void selectColor(Destroyable object) {
@@ -293,8 +292,6 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 
 	/** Deze paint() is absoluut essentieel voor een SPV M700 telefoon.
 	 * Anders een {@link java.lang.Error} bij {@link #setLabels(boolean)}.
-	 * 
-	 * @see euclides.event.Tracker#paint()
 	 */
 	abstract public void paint();
 	

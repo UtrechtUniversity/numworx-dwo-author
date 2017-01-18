@@ -22,7 +22,7 @@ public class LijnLijnTest extends LabelTester {
 	}
 
 	/**
-	 * @return
+	 * @return P or L
 	 */
 	public String getSubKey() {
 		return this.pl?PARALLEL:PERPENDICULAR;
@@ -47,9 +47,9 @@ public class LijnLijnTest extends LabelTester {
 	}
 
 	/**
-	 * @param l1
-	 * @param l2
-	 * @return
+	 * @param l1 lijn
+	 * @param l2 lijn
+	 * @return 0 if parallel/perpendicular
 	 */
 	private Numbers bracket(Lijn l1, Lijn l2) {
 		Numbers x1 = l1.getDXn();
@@ -66,8 +66,8 @@ public class LijnLijnTest extends LabelTester {
 	}
 
 	/**
-	 * @param l
-	 * @return
+	 * @param l label
+	 * @return bool
 	 */
 	protected boolean test(Label l) {
 		Numbers d;
@@ -77,7 +77,7 @@ public class LijnLijnTest extends LabelTester {
 	}
 
 	/**
-	 * @return
+	 * @return array
 	 */
 	public Destroyable[] createDepend() {
 		return new Lijn[2];

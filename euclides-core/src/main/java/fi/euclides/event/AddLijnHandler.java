@@ -30,7 +30,6 @@ public class AddLijnHandler extends EventHandler {
 	}
 
 	/**
-	 * @param string
 	 * @param s
 	 * @deprecated gebruik {@link #AddLijnHandler(char)}
 	 */
@@ -100,9 +99,6 @@ public class AddLijnHandler extends EventHandler {
 		testLijn = false;
 	}
 
-	/**
-	 * @param string
-	 */
 	public AddLijnHandler() {
 		super(Messages.getString("AddLijnHandler.0")); //$NON-NLS-1$
 		this.testPunt = true;

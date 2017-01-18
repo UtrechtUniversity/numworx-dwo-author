@@ -15,7 +15,7 @@ public class Queue<T> extends LinkedList<T> {
 
 	/**
 	 * @since J2ME
-	 * @param o
+	 * @param o the element to add
 	 */
 	public void addElement(T o) {
 		add(o);

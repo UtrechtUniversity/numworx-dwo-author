@@ -136,9 +136,8 @@ public abstract class Numbers {
 
 	/**
 	 * Net echt OO, maar is het in overeenkomst met readNumber.
-	 * @param memento
+	 * @param memento NumberCodec
 	 * @throws IOException
-	 * @see Memento#readNumber(DataInputStream)
 	 */
 	
 	public void writeNumber(NumberCodec memento) throws IOException {

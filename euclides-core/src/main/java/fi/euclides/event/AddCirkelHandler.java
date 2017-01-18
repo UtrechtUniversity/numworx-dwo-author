@@ -63,9 +63,6 @@ public class AddCirkelHandler extends EventHandler {
 		}
 	}
 
-	/**
-	 * @param string
-	 */
 	public AddCirkelHandler() {
 		super(Messages.getString("AddCirkelHandler.0")); //$NON-NLS-1$
 		this.testPunt = true;
