@@ -105,6 +105,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     private JCheckBox logCB;
 	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
     
     private double eqTestValueMin = 0;
@@ -267,6 +269,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         puntenLabel = makeLabel(460,385,40,20,WiskOpdr.rb.getString("puntenLabel"),true);
         checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
         checkTotaalLabel.setForeground(Color.red);
+        logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
         
         gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
         gelijkwaardigCB.addMouseListener(this);
@@ -280,19 +283,20 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         subKnopCB = makeCheckBox(690,115,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
         subKnopExtraCB = makeCheckBox(690,135,100,20,WiskOpdr.rb.getString("subKnopExtraCBLabel"),false,false);
         eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
-        tipsCB = makeCheckBox(690,40,280,20,"Ideas [test]",false,true);
+        tipsCB = makeCheckBox(690,45,280,20,"Ideas [test]",false,true);
 		formuleToolBijFocusCB = makeCheckBox(600,40,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,true);
 		pijlCB = makeCheckBox(500,95,130,20,WiskOpdr.rb.getString("pijlCBLabel"),true,true);
-		linStrategieVersieCB = makeCheckBox(500,40,190,15,WiskOpdr.rb.getString("strategieVersieLabel"),false,true);
-		linOefenVersieCB = makeCheckBox(500,55,190,15,WiskOpdr.rb.getString("oefenVersieLabel"),false,true);
-		bordjesMethodeCB = makeCheckBox(500,70,190,15,WiskOpdr.rb.getString("bordjesVersieLabel"),false,true);
+		linStrategieVersieCB = makeCheckBox(500,45,190,15,WiskOpdr.rb.getString("strategieVersieLabel"),false,true);//hier
+		linOefenVersieCB = makeCheckBox(500,60,190,15,WiskOpdr.rb.getString("oefenVersieLabel"),false,true);
+		bordjesMethodeCB = makeCheckBox(500,75,190,15,WiskOpdr.rb.getString("bordjesVersieLabel"),false,true);
 		checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
+        logIDLabelField = makeTextField(520,25,60,20,"",false);
         uitwCB = makeCheckBox(600,65,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,true);
         casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("casAntwCBLabel")+" [test]",false,true);
-        boxMetRandCB = makeCheckBox(690,135,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+        boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
@@ -301,7 +305,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
         ideasButton = new IdeasInstellingenButton();
         ideasButton.setFont(font);
-        ideasButton.setBounds(695,65,80,20);
+        ideasButton.setBounds(695,70,80,20);
         ideasButton.setVisible(false);
         add(ideasButton);
         
@@ -603,6 +607,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 boolean teltMee = true;
                 boolean logOption = false;
 				String logID = "";
+				String logIDLabel = "";
 				boolean[][] logObjectives = null;
                 boolean tipOpBalk = true;
                 boolean hulpOpBalk = false;
@@ -669,6 +674,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 
                 if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
                 if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
+                if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 				if(interactiePanelLaunchState.containsKey("eqTestValueMin")) eqTestValueMin = ((Double)interactiePanelLaunchState.get("eqTestValueMin")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
@@ -764,8 +770,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 
                 logCB.setSelected(logOption);
                 logIDField.setVisible(logOption);
+                logIDLabelField.setVisible(logOption);
+	            logIDLabelLabel.setVisible(logOption);
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
+	            logIDLabelField.setText(logIDLabel);
 	            logObjectivesButton.setChoices(logObjectives);
                 
                 uitwCB.setSelected(uitw);
@@ -870,6 +879,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             boolean teltMee = true;
             boolean logOption = false;
 			String logID = "";
+			String logIDLabel = "";
 			boolean[][] logObjectives = null;
             double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
@@ -987,6 +997,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             teltMee = teltMeeCB.isSelected();
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
+			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
 			
 			uitw = uitwCB.isSelected();
@@ -1047,7 +1058,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             interactiePanelLaunchState.put("check",new Boolean(check));
             interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
             interactiePanelLaunchState.put("logOption",new Boolean(logOption));
-			interactiePanelLaunchState.put("logID",logID);     
+			interactiePanelLaunchState.put("logID",logID); 
+			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
 			interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
@@ -1503,7 +1515,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         }
         
         else if(e.getSource()==logCB)
-	    {   logIDField.setVisible(logCB.isSelected());   
+	    {   logIDField.setVisible(logCB.isSelected()); 
+	    	logIDLabelField.setVisible(logCB.isSelected());
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
         else if(e.getSource()==uitwCB)

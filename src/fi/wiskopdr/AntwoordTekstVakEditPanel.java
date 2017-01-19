@@ -11,7 +11,6 @@ import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
-
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -63,6 +62,8 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
 	
 	private JCheckBox boxMetRandCB;
@@ -151,6 +152,10 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		logIDField.addActionListener(this);
 		logIDField.setVisible(false);
 		add(logIDField);
+		
+		logIDLabelField = makeTextField(520,25,60,20,"",false);
+        logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
+        
 		
 		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
@@ -271,6 +276,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		boolean teltMee = true;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 		boolean formuleMode = false;
 		boolean formuleToolBijFocus = false;
 		boolean boxMetRand = true;
@@ -288,6 +294,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
+		if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 		if(interactiePanelLaunchState.containsKey("formuleMode")) formuleMode = ((Boolean)interactiePanelLaunchState.get("formuleMode")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
@@ -325,8 +332,11 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         teltMeeCB.setSelected(teltMee);
         logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
+        logIDLabelField.setVisible(logOption);
+        logIDLabelLabel.setVisible(logOption);
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
+        logIDLabelField.setText(logIDLabel);
         logObjectivesButton.setChoices(logObjectives);
        
         formuleModeCB.setSelected(formuleMode);
@@ -350,6 +360,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		boolean teltMee = true;
 		boolean logOption = false;
 		String logID = "";
+		String logIDLabel = "";
 		boolean[][] logObjectives = null;
 		
 		boolean formuleMode = false;
@@ -369,6 +380,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		teltMee = teltMeeCB.isSelected();
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
+		logIDLabel = logIDLabelField.getText();
 		logObjectives = logObjectivesButton.getChoices();
 		formuleMode = formuleModeCB.isSelected();
 		formuleToolBijFocus = formuleToolBijFocusCB.isSelected();
@@ -392,6 +404,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
 		interactiePanelLaunchState.put("logOption",new Boolean(logOption));
 		interactiePanelLaunchState.put("logID",logID);
+		interactiePanelLaunchState.put("logIDLabel",logIDLabel);
 		interactiePanelLaunchState.put("formuleMode",new Boolean(formuleMode));
 		interactiePanelLaunchState.put("formuleToolBijFocus",new Boolean(formuleToolBijFocus));
 		interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
@@ -511,6 +524,8 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		}
 		else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());
+	    	logIDLabelField.setVisible(logCB.isSelected());	
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
 		

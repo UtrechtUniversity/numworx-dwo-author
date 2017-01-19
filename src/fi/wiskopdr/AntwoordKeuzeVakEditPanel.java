@@ -44,9 +44,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	
 	//private AntwoordEditPanel antwoordEditPanel;
 	private TekstEditor feedbackTekst;
-	
-	
-	
+		
 	private JCheckBox feedbackCB;
 	private boolean hasFeedback;
 	private OpdrachtNrRij tabbladTab;
@@ -70,6 +68,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	private JCheckBox teltMeeCB;
 	private JCheckBox logCB;
 	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
 	
 	private JCheckBox checkExternalCB;
@@ -129,7 +129,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
-        
+        logIDLabelField = makeTextField(520,25,60,20,"",false);
+        logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
         checkExternalCB = makeCheckBox(250,120,200,20,WiskOpdr.rb.getString("checkExternalCBLabel"),false,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
@@ -337,6 +338,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				boolean teltMee = true;
 				boolean logOption = false;
 				String logID = "";
+				String logIDLabel = "";
 				boolean[][] logObjectives = null;
 				boolean checkExternal = false;
 				
@@ -351,6 +353,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
+				if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
 				if(interactiePanelLaunchState.containsKey("checkExternal")) checkExternal = ((Boolean)interactiePanelLaunchState.get("checkExternal")).booleanValue();
 				
@@ -410,8 +413,11 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
                 logCB.setSelected(logOption);
                     
                 logIDField.setVisible(logOption);
+                logIDLabelField.setVisible(logOption);
+	            logIDLabelLabel.setVisible(logOption);
                 //logObjectivesButton.setVisible(logOption);
                 logIDField.setText(logID);
+                logIDLabelField.setText(logIDLabel);
                 logObjectivesButton.setChoices(logObjectives);
                 
 				setFeedbackOption(hasFeedback);
@@ -438,6 +444,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			boolean teltMee = true;
 			boolean logOption = false;
 			String logID = "";
+			String logIDLabel = "";
 			boolean[][] logObjectives = null;
 			boolean checkExternal = false;
 			
@@ -458,6 +465,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			teltMee = teltMeeCB.isSelected();
 			logOption = logCB.isSelected();
 			logID = logIDField.getText();	
+			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
 			
 			if(logObjectives!=null)
@@ -481,6 +489,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
 			interactiePanelLaunchState.put("logOption",new Boolean(logOption));
 			interactiePanelLaunchState.put("logID",logID);
+			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
@@ -613,7 +622,9 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			
 		}
 		else if(e.getSource()==logCB)
-	    {   logIDField.setVisible(logCB.isSelected());   
+	    {   logIDField.setVisible(logCB.isSelected());
+	    	logIDLabelField.setVisible(logCB.isSelected());	
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
 		
