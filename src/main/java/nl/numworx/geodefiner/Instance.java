@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -18,6 +19,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.ToolTipManager;
@@ -90,11 +93,11 @@ import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
 
-public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener {
+public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener {
 
 	public class KijkNaAction extends AbstractAction implements Icon, Observer {
 
-		ImageIcon goed, half, fout;
+		ImageIcon goed, half, fout, current;
 		
 		public KijkNaAction() {
 			super(Messages.getString("kijkNa"));
@@ -108,16 +111,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void actionPerformed(ActionEvent e) {
 			fetchScore();
 			Boolean status = getStatus();
-			if(status == null) putValue(LARGE_ICON_KEY, half);
+			if(status == null) putValue(LARGE_ICON_KEY, current = half);
 			else if(status.booleanValue())
-				putValue(LARGE_ICON_KEY, goed);
-			else putValue(LARGE_ICON_KEY, fout);
+				putValue(LARGE_ICON_KEY, current = goed);
+			else putValue(LARGE_ICON_KEY, current = fout);
 			handler.fire(Constants.CHANGED); // Score changed
 		}
 
 
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
+			if(current != null) current.paintIcon(c, g, x, y);
 		}
 
 		@Override
@@ -133,6 +137,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void update(Observable observable, Object arg) {
+			current = null;
 			putValue(LARGE_ICON_KEY, this);
 		}
 
@@ -225,8 +230,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	};
 	
 	private JPanel panel = new JPanel(new BorderLayout());
-	JPanel south = new JPanel();
+	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
 	JButton checkBtn = new JButton();
+	JLabel  checkLabel = new JLabel();
 
 	private final class InstanceViewer extends AWTViewer implements Observer {
 
@@ -664,7 +670,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		toolbox.setVisible(false);
 		panel.add(toolbox, BorderLayout.NORTH);
 		checkBtn.setVisible(false);
+		checkLabel.setVisible(false);
 		south.add(checkBtn);
+		south.add(checkLabel);
 		south.setOpaque(false);
 		panel.add(south, BorderLayout.SOUTH);
 	}
@@ -724,6 +732,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	// Assume getSize() is okay.
 	public void init() {
 		checkBtn.setVisible(false);checkBtn.invalidate();
+		checkLabel.setVisible(false);checkLabel.invalidate();
 		panel.doLayout();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
@@ -813,8 +822,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if  (super.installCheckDWO())
 		{
 			KijkNaAction action = new KijkNaAction();
-			checkBtn.setAction(action);
+			checkBtn.setText(action.getValue(action.NAME).toString());
+			checkBtn.addActionListener(action);
 			checkBtn.setVisible(true);
+			action.addPropertyChangeListener(this);
+			checkLabel.setIcon(action);
+			checkLabel.setVisible(true);
 			checkDWO.addObserver(action);
 			checkBtn.invalidate();
 			panel.validate();
@@ -833,9 +846,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			handler.fire(Constants.CHANGED, parameters);
 		}
 	}
-	
 
-	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(Action.LARGE_ICON_KEY.equals(evt.getPropertyName())) checkLabel.repaint();
+	}	
 	
 	
 }
