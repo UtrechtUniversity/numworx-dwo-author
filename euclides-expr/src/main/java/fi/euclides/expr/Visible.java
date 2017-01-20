@@ -25,9 +25,10 @@ public class Visible extends LabelTester {
 		boolean visible = v.getState() != Label.FALSE;
 		l.getDepend()[0].setVisible(visible);
 		Numbers value = visible ? Numbers.ZERO : Numbers.ONE;
-		l.setValue(value);
-		l.setState(visible ? Label.EXACT : Label.FALSE);
-		l.notifyObservers();
+//		l.setValue(value);
+//		l.setState(visible ? Label.EXACT : Label.FALSE);
+//		l.notifyObservers();
+		setState(l, value, 0.0);
 		return true;
 	}
 
