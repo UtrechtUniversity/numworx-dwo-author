@@ -64,6 +64,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	public void zetOpdracht(Hashtable b, String[] randomVars,
 			Hashtable randomValues) {
 		launchData = b;
+		doLayout(); // Assume size is valid.
 		instance.init();
 		Map randomvars = launchRandomVars();
 		randomvars.putAll(randomValues);
