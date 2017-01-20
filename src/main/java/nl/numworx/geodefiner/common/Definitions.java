@@ -304,7 +304,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 				    model.add(locus);
 					installConfig(new CELL(text, locus, var), config);
 					return;
-				}
+				} 
+				destroy(depend);
 // $w := 1+2
 				}
 // $f := lambda[[$x] ->	$f($x) ]
@@ -386,6 +387,14 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 			}
 		}
+	}
+
+	private void destroy(Destroyable[] depend) {
+		for (int i = 0; i < depend.length; i++) {
+			Destroyable destroyable = depend[i];
+			destroyable.destroy();
+		}
+		
 	}
 
 	protected void installConfig(CELL c, Map<String, ?> config, String name) {
