@@ -24,8 +24,12 @@ public abstract class Destroyable extends Observable implements Observer {
 		Destroyable[] dd = getDepend();
 		for (int i = 0; i < dd.length; i++) {
 			Destroyable d = dd[i];
+			dd[i] = null;
 			if(d != null)
+			{
 				d.deleteObserver(this);
+				if(d.getIndex() == 0) d.destroy(); // destroy anonymous dependencies
+			}
 		}
 		setChanged();
 		notifyObservers(DESTROY);
