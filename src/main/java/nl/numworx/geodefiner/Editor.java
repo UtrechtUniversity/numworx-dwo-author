@@ -70,6 +70,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		content.setPreferredSize(getSize());
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
+		flow.setBackground(new Color(250,250,255));
 		instance = new Instance();
 		JComponent component = instance.asComponent();
 		component.setPreferredSize(instanceSize);
@@ -209,7 +210,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	}
 
 	public void start() {
-		instance.start();		
+		//instance.start();		
 		instance.asComponent().repaint();
 		createKeybindings();
 		axes.init();

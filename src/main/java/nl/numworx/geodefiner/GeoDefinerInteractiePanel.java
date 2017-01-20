@@ -55,6 +55,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	
 	GeoDefinerInteractiePanel() {
 		super(new BorderLayout());
+		setOpaque(false);
 		instance = new Instance();
 		add(instance.asComponent(), BorderLayout.CENTER);
 		all = new CBookActionListener();

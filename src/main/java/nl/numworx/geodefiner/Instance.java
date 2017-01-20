@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -45,6 +46,7 @@ import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.Tips;
+import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
@@ -68,9 +70,11 @@ import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
@@ -223,7 +227,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	private JPanel panel = new JPanel(new BorderLayout());
 	JPanel south = new JPanel();
 	JButton checkBtn = new JButton();
-	
+
 	private final class InstanceViewer extends AWTViewer implements Observer {
 
 		private static final float DEFAULT_POINTSIZE = 5f;
@@ -237,8 +241,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void paint(Graphics g2) {
-			g2.setColor(Color.WHITE);
-			g2.fillRect(0, 0, content.getWidth(), content.getHeight());
+			if(content.isOpaque()) {
+				g2.setColor(content.getBackground());
+				g2.fillRect(0, 0, content.getWidth(), content.getHeight());
+			}
 			super.paint(g2);
 		}
 
@@ -644,7 +650,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	public Instance() {
 		
-		content.setBackground(Color.white);
+		//content.setBackground(Color.white);
+		content.setOpaque(false);
+		panel.setOpaque(false);
 		//content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
@@ -657,6 +665,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		panel.add(toolbox, BorderLayout.NORTH);
 		checkBtn.setVisible(false);
 		south.add(checkBtn);
+		south.setOpaque(false);
 		panel.add(south, BorderLayout.SOUTH);
 	}
 
@@ -737,6 +746,27 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void start() {
+		Model m = viewer.getModel();
+		List<Destroyable> list = new ArrayList<Destroyable>(m.getPunten());
+		list.addAll(m.getLijnen());
+		for (Destroyable destroyable : list) {
+			if(destroyable instanceof Label) {
+				Label label = (Label) destroyable;
+				Punt fp = label.getP();
+				if(fp instanceof Volgpunt) {
+					((Volgpunt)fp).setFree(false);
+				}
+				if (label.getRegistered() instanceof Interval) {
+					Segment s = ((PuntOp<Segment>) fp).getOp();
+					s.getP1().adapt(FreePoint.class).setFree(false);
+					s.getP2().adapt(FreePoint.class).setFree(false);
+				}
+				if(fp.getIndex() == 0 && fp.adapt(FreePoint.class) != null) {
+					fp.adapt(FreePoint.class).setFree(false);
+				}
+			}
+		}
+		
 		viewer.paint();
 	}
 
