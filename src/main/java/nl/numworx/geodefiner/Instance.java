@@ -197,7 +197,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 				@Override
 				public void visitLabel(Label label) {
-					visitDestroyable(label);
+					//visitDestroyable(label);
 				}
 
 				@Override
@@ -258,13 +258,26 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void drawAxes() {
 			Destroyable grid = getModel().getLijnen().elementAt(2);
 			if(grid.isVisible()) grid.visit(this);
-			Destroyable x = getModel().getLijnen().firstElement();
+// draw grid
+			Lijn x = (Lijn) getModel().getLijnen().firstElement();
+			if(grid.isVisible() && !x.isVisible() && x.isDefined()) {
+				// draw x in grid mode
+				ll.setLijn(x);
+				drawLine(ll.getX1(), ll.getY1() , ll.getX2(), ll.getY2());		
+			}
+			Lijn y = (Lijn) getModel().getLijnen().firstElement();
+			if(grid.isVisible() && !y.isVisible() && y.isDefined()) {
+				// draw x in grid mode
+				ll.setLijn(y);
+				drawLine(ll.getX1(), ll.getY1() , ll.getX2(), ll.getY2());		
+			}
+
 			CELL item = x.adapt(CELL.class);
+			g.setColor(Color.BLACK);
 			if (item != null) {
 				AxesModel configX = (AxesModel) item.config;
 				if(configX != null && configX.numbers && x.isVisible()) { drawXnumbers(); }
 			}
-			Destroyable y = getModel().getLijnen().firstElement();
 			item = y.adapt(CELL.class);
 			if (item != null) {
 				AxesModel configY = (AxesModel) item.config;
@@ -384,7 +397,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			double dy = s.getDY();
 			double len = Math.hypot(dx, dy);
 			Float width = s.adapt(Float.class);
-			double tiplen = 10;
+			double tiplen = 5;
 			if(width != null) tiplen *= width.doubleValue();
 			if(len < tiplen*3) tiplen = len/3;
 			dx *= tiplen / len; 
