@@ -11,6 +11,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -265,7 +266,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				ll.setLijn(x);
 				drawLine(ll.getX1(), ll.getY1() , ll.getX2(), ll.getY2());		
 			}
-			Lijn y = (Lijn) getModel().getLijnen().firstElement();
+			Lijn y = (Lijn) getModel().getLijnen().elementAt(1);
 			if(grid.isVisible() && !y.isVisible() && y.isDefined()) {
 				// draw x in grid mode
 				ll.setLijn(y);
@@ -273,38 +274,74 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 
 			CELL item = x.adapt(CELL.class);
+			boolean bx = false, by = false;
 			g.setColor(Color.BLACK);
 			if (item != null) {
 				AxesModel configX = (AxesModel) item.config;
-				if(configX != null && configX.numbers && x.isVisible()) { drawXnumbers(); }
+				bx = configX != null && configX.numbers && x.isVisible();
+				if(bx) { drawXnumbers(); }
 			}
 			item = y.adapt(CELL.class);
 			if (item != null) {
 				AxesModel configY = (AxesModel) item.config;
-				if(configY != null && configY.numbers && y.isVisible()) { drawYnumbers(); }
+				by = configY != null && configY.numbers && y.isVisible();
+				if(by) { drawYnumbers(); }
 			}
+			if (bx || by) drawO();
+		}
+
+		private void drawO() {
+			FontMetrics fm = g.getFontMetrics();
+			double x, y;
+			x = getModel().getO().getXd();
+			y = getModel().getO().getYd();
+			String O = "0";
+			x -= fm.stringWidth(O)+1;
+			y += fm.getAscent();
+			drawString(O, x, y);	
 		}
 
 		private void drawXnumbers() {
+			Rectangle r = new Rectangle();
 			double left = clipLeft().doubleValue();
 			double right = clipRight().doubleValue();
 			double x = getModel().getO().getXd();
 			double y = getModel().getO().getYd();
-			y += g.getFontMetrics().getAscent();
+			FontMetrics fm = g.getFontMetrics();
+			y += fm.getAscent();
 			double dx = getModel().getU().getXd() - x;
 			if(dx <= 1) return;
 			int i = 0, s = 1;
 			while(dx < 20) { dx += dx; s+=s; if(dx >= 20) break; dx = 2.5*dx; s += s+s/2; if(dx >= 20) break; dx += dx; s += s; }
-			left -= dx;
-			for(double xr = x ; xr < right; xr += dx, i+=s) {
-				drawString(String.valueOf(i), xr, y);
+			left -= dx;i=s;
+			for(double xr = x+dx ; xr < right; xr += dx, i+=s) {
+				String value = String.valueOf(i);
+				int w = fm.stringWidth(value);
+				r.width = w+2;
+				r.height = fm.getAscent()+2;
+				r.x = (int) xr-1-r.width/2;
+				r.y = ((int)y)-r.height+1;
+				g.setColor(content.getBackground());
+				g.fill(r);
+				g.setColor(Color.black);
+				g.drawString(value, r.x+1, (int)y);
 			}
 			i = -s;
 			for(double xr = x-dx ; xr > left; xr -= dx, i-=s) {
-				drawString(String.valueOf(i), xr, y);
+				String value = String.valueOf(i);
+				int w = fm.stringWidth(value);
+				r.width = w+2;
+				r.height = fm.getAscent()+2;
+				r.x = (int) xr-1-r.width/2;
+				r.y = ((int)y)-r.height+1;
+				g.setColor(content.getBackground());
+				g.fill(r);
+				g.setColor(Color.black);
+				g.drawString(value, r.x+1, (int)y);
 			}
 		}
 		private void drawYnumbers() {
+			Rectangle r = new Rectangle();
 			double bottom = clipBottom().doubleValue();
 			double top = clipTop().doubleValue();
 			double x = getModel().getO().getXd();
@@ -313,17 +350,33 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			if (dy <= 1) return;
 			int i = 0, s = 1;
 			while(dy < 20) { dy += dy; s+=s; if(dy >= 20) break; dy = 2.5*dy; s += s+s/2; if(dy >= 20) break; dy += dy; s += s; }
-			for(double yr = y ; yr > top; yr -= dy, i+=s) {
-				String v = String.valueOf(i);
-				int w = g.getFontMetrics().stringWidth(v);
-				drawString(v, x-w, yr);
+			FontMetrics fm = g.getFontMetrics();
+			i=s;
+			for(double yr = y+fm.getAscent()/2 -dy ; yr > top; yr -= dy, i+=s) {
+				String value = String.valueOf(i);
+				int w = fm.stringWidth(value);
+				r.width = w+2;
+				r.height = fm.getAscent()+2;
+				r.x = (int) x-1-r.width;
+				r.y = ((int)yr)-r.height+1;
+				g.setColor(content.getBackground());
+				g.fill(r);
+				g.setColor(Color.black);
+				g.drawString(value, r.x+1, (int)yr);
 			}
 			i = -s;
 			bottom += dy;
-			for(double yr = y+dy ; yr < bottom; yr += dy, i-=s) {
-				String v = String.valueOf(i);
-				int w = g.getFontMetrics().stringWidth(v);
-				drawString(v, x-w, yr);
+			for(double yr = y+dy+fm.getAscent()/2 ; yr < bottom; yr += dy, i-=s) {
+				String value = String.valueOf(i);
+				int w = fm.stringWidth(value);
+				r.width = w+2;
+				r.height = fm.getAscent()+2;
+				r.x = (int) x-1-r.width;
+				r.y = ((int)yr)-r.height+1;
+				g.setColor(content.getBackground());
+				g.fill(r);
+				g.setColor(Color.black);
+				g.drawString(value, r.x+1, (int)yr);
 			}
 		}
 
@@ -670,8 +723,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public Instance() {
 		
 		//content.setBackground(Color.white);
-		content.setOpaque(false);
-		panel.setOpaque(false);
+		content.setOpaque(false);content.setBackground(null);
+		panel.setOpaque(false);panel.setBackground(null);
 		//content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
@@ -837,7 +890,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			KijkNaAction action = new KijkNaAction();
 			checkBtn.setText(action.getValue(action.NAME).toString());
 			checkBtn.addActionListener(action);
-			checkBtn.setVisible(true);
+			checkBtn.setVisible(!checkDWO.isExtern());
 			action.addPropertyChangeListener(this);
 			checkLabel.setIcon(action);
 			checkLabel.setVisible(true);

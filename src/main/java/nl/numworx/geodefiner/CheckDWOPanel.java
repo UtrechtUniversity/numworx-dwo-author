@@ -19,7 +19,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 
 	private static final Integer DEFAULT_SCORE = Integer.valueOf(10);
 	private JFormattedTextField score;
-	private JCheckBox checkDWO;
+	private JCheckBox checkDWO, extern;
 	private FormuleEditor formule;
 	
 	JButton checkBtn;
@@ -28,14 +28,17 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 	CheckDWOPanel() {
 		super();
 		setName("CheckDWO");
-		checkDWO = new JCheckBox("check");
+		checkDWO = new JCheckBox(Messages.getString("check"));
+		extern = new JCheckBox(Messages.getString("extern"));
 		checkDWO.addChangeListener(this);
+		extern.addChangeListener(this);
 		score = new JFormattedTextField(DEFAULT_SCORE);
 		formule = new FormuleEditor(false);
 		formule.setHeader(false);
 		formule.setPreferredSize(new Dimension(200,50));
 		
 		add(checkDWO);
+		add(extern);
 		add(score);
 		add(formule);
 	}
@@ -52,6 +55,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 		result.put("check", checkDWO.isSelected());
 		result.put("score", score.getValue());
 		result.put("formule", formule.formuleVak.toString());
+		result.put("extern", extern.isSelected());
 		return result;
 	}
 	
@@ -61,16 +65,19 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 		else
 			score.setValue(DEFAULT_SCORE);
 		checkDWO.setSelected(map.getBoolean("check", false));
+		extern.setSelected(map.getBoolean("extern",false));
 		formule.formuleVak.vulVak(map.getString("formule"));
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if(checkBtn != null) {
-			checkBtn.setVisible(checkDWO.isSelected());
+			checkBtn.setVisible(checkDWO.isSelected() && !extern.isSelected());
 			checkBtn.invalidate();
 			validator.validate();
 		}
+// okay?
+		extern.setEnabled(checkDWO.isSelected());
 		
 	}
 	
