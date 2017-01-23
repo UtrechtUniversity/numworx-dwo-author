@@ -17,7 +17,8 @@ public class Check_DWO extends Observable implements Observer {
 	private Tracker tracker;
 	private int maxScore, score;
 	private boolean status;
-	private boolean check;
+	private boolean check, extern;
+	
 	
 	public boolean isCheck() {
 		return check;
@@ -42,6 +43,7 @@ public class Check_DWO extends Observable implements Observer {
 			maxScore = 0;
 			return;
 		}
+		extern = map.getBoolean("extern", false);
 		String formule = map.getString("formule");
 		maxScore = map.getInt("score");
 		score = 0;
@@ -55,7 +57,13 @@ public class Check_DWO extends Observable implements Observer {
 		Label input = new Label();
 		input.setVisible(false);
 		input.setString(formule.substring(2));
-		Destroyable target = expr.interpret(logic, input, tracker.getMapper());
+		Destroyable target;
+		try {
+			target = expr.interpret(logic, input, tracker.getMapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			target = null;
+		}
 		if(target instanceof Label)
 		{	update(target, null);
 			target.addObserver(this);
@@ -66,7 +74,7 @@ public class Check_DWO extends Observable implements Observer {
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY)
 			observable.deleteObserver(this);
-		else if(arg == null) {
+		else if(arg == null||"STATUS".equals(arg)) {
 			Label label = (Label)observable;
 			boolean oldStatus = status;
 			status = !check || label.isDefined() && label.value == Numbers.ZERO;
@@ -96,6 +104,14 @@ public class Check_DWO extends Observable implements Observer {
 
 	public int getMaxScore() {
 		return maxScore;
+	}
+
+	public boolean isExtern() {
+		return extern;
+	}
+
+	public void setExtern(boolean extern) {
+		this.extern = extern;
 	}
 
 
