@@ -17,7 +17,7 @@ public class IntervalPane extends TextPane<IntervalModel> {
 	public IntervalPane(IntervalModel model) {
 		super(model);
 		preview.removeAll();
-		alignBox = new JComboBox<Align>(new Align[] { Align.TOP, Align.BOTTOM });
+		alignBox = new JComboBox<Align>(new Align[] { Align.TOP, Align.BOTTOM, Align.NONE });
 		alignBox.setSelectedItem(model.align);
 		animateBox = new JComboBox<Animate>(Animate.values());
 		animateBox.setSelectedItem(model.animate);

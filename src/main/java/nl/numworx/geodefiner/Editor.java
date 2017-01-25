@@ -48,6 +48,22 @@ import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 
+/*
+// objectives:
+111	            logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+112	        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+113	        if(logObjectivesButton.isVisible())
+114	                top.add(logObjectivesButton);
+115	 
+seteditstate
+              boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(CBookInteractiePanel.LOG_OBJECTIVES));
+140	        logObjectivesButton.setChoices(logObjectives);
+geteditstate
+              if(logObjectivesButton.isVisible())
+161	                {
+162	                        launchData.put(CBookInteractiePanel.LOG_OBJECTIVES, logObjectivesButton.getChoices());
+163	                }
+*/
 public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner, ActionListener, PropertyChangeListener {
 
 	private Instance instance;

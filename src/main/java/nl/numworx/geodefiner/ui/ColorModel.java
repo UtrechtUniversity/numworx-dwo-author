@@ -27,7 +27,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	Color color = Color.black;
 	boolean visible;
 	Label visibility = new Label();
-	private Tracker tracker;
+	Tracker tracker;
 	
 	public  void setVisible(boolean visible) {
 		this.visible = visible;

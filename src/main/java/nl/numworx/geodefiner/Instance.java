@@ -85,6 +85,7 @@ import fi.euclides.proof.FlipFlop;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.HitTester2;
+import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
@@ -235,15 +236,54 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	JButton checkBtn = new JButton();
 	JLabel  checkLabel = new JLabel();
 
-	private final class InstanceViewer extends AWTViewer implements Observer {
+	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
+		private final int SNAP = 3;
+
+		public boolean isGravity() {
+			return gravity;
+		}
+		
+		public void translate(MouseEvent ev) {
+			if (gravity) {
+				int ox = (int) viewer.getModel().getO().getXd();
+				int dx = (int) viewer.getModel().getU().getXd() - ox;
+				//System.out.print(ev.getX() + " " + ox + " " + dx);
+				int x = (ev.getX()-ox) % dx;
+				if ( x < 0 ) x += dx;
+				if ( x*2 > dx) x -= dx;
+				//System.out.println(" " + x);
+				if(x > SNAP || x < -SNAP) x = 0;
+
+				int oy = (int) viewer.getModel().getO().getYd();
+				int dy = dx;
+				//System.out.print(ev.getX() + " " + ox + " " + dx);
+				int y = (ev.getY()-oy) % dy;
+				if ( y < 0 ) y += dy;
+				if ( y*2 > dy) y -= dy;
+				//System.out.println(" " + x);
+				if(y > SNAP || y < -SNAP) y = 0;
+				ev.translatePoint(-x, -y);
+			}
+		}
+		
+	}
+	
+	final class InstanceViewer extends AWTViewer implements Observer {
 
 		private static final float DEFAULT_POINTSIZE = 5f;
 
 		private NamingModel nameMapper;
+		private Snapper snapper = new Snapper();
 
 		@Override
 		public void paint() {
 			content.repaint();
+		}
+
+		@Override
+		public <T> T adapt(Class<T> cls) {
+			if(cls == Snapper.class) return (T) snapper;
+			return super.adapt(cls);
 		}
 
 		@Override
@@ -275,7 +315,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 			CELL item = x.adapt(CELL.class);
 			boolean bx = false, by = false;
-			g.setColor(Color.BLACK);
 			if (item != null) {
 				AxesModel configX = (AxesModel) item.config;
 				bx = configX != null && configX.numbers && x.isVisible();
@@ -298,6 +337,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			String O = "0";
 			x -= fm.stringWidth(O)+1;
 			y += fm.getAscent();
+			g.setColor(Color.BLACK);
 			drawString(O, x, y);	
 		}
 
@@ -340,6 +380,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				g.drawString(value, r.x+1, (int)y);
 			}
 		}
+
 		private void drawYnumbers() {
 			Rectangle r = new Rectangle();
 			double bottom = clipBottom().doubleValue();
@@ -414,6 +455,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 
 		@Override
+		public void mouseReleased(MouseEvent e) {
+			snapper.translate(e);
+			super.mouseReleased(e);
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			snapper.translate(e);
+			super.mouseDragged(e);
+		}
+
+		@Override
 		public void selectColor(Destroyable object) {
 			if(tracking || trail)
 				return;
@@ -478,6 +531,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		private void formuleLabel(Label label) {
 			FormuleVak fv = new FormuleVak();
+			fv.setFont(g.getFont());
 			String string = "$f" + label.getString() + "@";
 			fv.vulVak(string);
 			fv.setEditable(false);
@@ -493,6 +547,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			case RIGHT: y -= s.height/2; break;
 			case TOP: y -= s.height;
 			case BOTTOM :	x -= s.width/2; break;
+			case NONE:
 			case BASE:  y -= as;
 			}
 			Graphics fvg = g.create();
@@ -549,6 +604,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 // zet het label correct tov het puntje.
 			if(label.getRegistered() instanceof Interval) {
 				try {
+					if(Align.NONE == align) return;
 					extra = 2;
 					extra = label.getP().adapt(Float.class) / 2.0f; // NPE? 
 				} catch (Exception e) {
@@ -561,12 +617,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 					y += fm.getAscent()/2; break;
 				case TOP: x -= stringWidth/2; y -= fm.getDescent()+extra; break;
 				case BOTTOM: x -= stringWidth/2; y += fm.getAscent()+extra; break;
-				case BASE: 
+				case BASE:
+				case NONE: 
 				}
 			}
 			Rectangle2D.Double rect = 
 					new Rectangle2D.Double(x, y - fm.getAscent(), stringWidth, fm.getHeight());
-			DefaultAdapter.getDefault(label).put(Shape.class, rect);
+			DefaultAdapter.getDefault((Adaptee) label).put(Shape.class, rect);
 			drawString(string, x, y);
 		}
 
@@ -719,6 +776,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	private Map<String, Number> random = Collections.emptyMap();
 
 	JToolBar toolbox;
+
+	private KijkNaAction action;
+
+	private AssessmentMode mode;
 	
 	public Instance() {
 		
@@ -817,7 +878,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void setAssessmentMode(AssessmentMode mode) {
-
+		this.mode = mode;
+		if(mode == AssessmentMode.ZELFTOETS) checkBtn.setVisible(false);
 	}
 
 	public void start() {
@@ -850,6 +912,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void acceptCBookEvent(CBookEvent ev) {
+		if(Constants.CHECK.equals(ev.getCommand()) && action != null)
+		{
+			action.actionPerformed(null); 
+			return;
+		}
+		
 		if(ev.getCommand().startsWith("double.")) {
 			int dot = ev.getCommand().indexOf('.');
 			String name = ev.getCommand().substring(dot+1);
@@ -887,7 +955,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	protected boolean installCheckDWO() {
 		if  (super.installCheckDWO())
 		{
-			KijkNaAction action = new KijkNaAction();
+			action = new KijkNaAction();
 			checkBtn.setText(action.getValue(action.NAME).toString());
 			checkBtn.addActionListener(action);
 			checkBtn.setVisible(!checkDWO.isExtern());

@@ -28,6 +28,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.proof.LabelValue;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class GeoDefinerInteractiePanel extends JPanel implements
@@ -52,6 +53,8 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 	
 	private Hashtable launchData;
+
+	private boolean[][] logObjectives;
 	
 	GeoDefinerInteractiePanel() {
 		super(new BorderLayout());
@@ -61,10 +64,12 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		all = new CBookActionListener();
 		instance.addCBookEventListener(all, Constants.CHECKED); // ons kent ons
 	}
-
+	
+	static String LOG_OBJECTIVES = "logObjectives";
 	public void zetOpdracht(Hashtable b, String[] randomVars,
 			Hashtable randomValues) {
 		launchData = b;
+		this.logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(LOG_OBJECTIVES));
 		doLayout(); // Assume size is valid.
 		instance.init();
 		Map randomvars = launchRandomVars();
@@ -120,7 +125,18 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public int[][] getScoreObjectives() {
-		return null;
+		if (logObjectives == null)
+			return null;
+		int score = getScore();
+		int[][] scoreObjectives = new int[logObjectives.length][];
+		for (int i = 0; i < logObjectives.length; i++) {
+			scoreObjectives[i] = new int[logObjectives[i].length];
+			for (int j = 0; j < logObjectives[i].length; j++) {
+				if (logObjectives[i][j])
+					scoreObjectives[i][j] = score;
+			}
+		}
+		return scoreObjectives;
 	}
 
 	public int getScoreMax() {
@@ -140,7 +156,8 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public void zetNagekeken(boolean b) {
-		
+        CBookEvent ev = new CBookEvent(this, Constants.CHECK, Collections.singletonMap(Constants.CHECKED, Boolean.valueOf(b)));
+        instance.acceptCBookEvent(ev);
 	}
 
 	public void stop() {
