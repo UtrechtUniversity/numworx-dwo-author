@@ -8,11 +8,13 @@ import fi.euclides.util.Observable;
 public class Punt2 extends PuntOp<Lijn> {
 
 	public Punt2() {
+		setFree(false);
 	}
 
 	public Punt2(Lijn l)
 	{
 		super(l);
+		setFree(false);
 		setOp(l);
 		setVisible(false);
 	}

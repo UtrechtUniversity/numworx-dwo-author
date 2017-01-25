@@ -10,21 +10,20 @@ import fi.euclides.model.math.Numbers;
 public class FocusPunt extends PuntOp<Kegelsnede2> implements OpObject<Kegelsnede2>, PointOnAlgorithm<Kegelsnede2> {
 
 	public static final String TYPE = "F";
-	
-//	public Kegelsnede2 getConic() {
-//		return getOp();
-//	}
-	
+		
 	public FocusPunt() {
+		setFree(false);
 	}
 
 	public FocusPunt(Kegelsnede2 o) {
 		super(Numbers.ZERO, Numbers.ZERO, o);
+		setFree(false);
 		setOb(this);
 		recalc(Numbers.ZERO, Numbers.ZERO);
 	}
 	public FocusPunt(Kegelsnede2 o, FocusPunt other) {
 		super(Numbers.ZERO, Numbers.ZERO, o, other);
+		setFree(false);
 	}
 
 	public String key() {

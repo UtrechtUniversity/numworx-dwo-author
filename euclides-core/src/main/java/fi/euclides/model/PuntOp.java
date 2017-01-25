@@ -12,7 +12,7 @@ public class PuntOp<T extends Destroyable> extends Punt implements Observer, Fre
 
 	protected T op;
 	protected PointOnAlgorithm<T> pon;
-	private boolean free;
+	private boolean free = true;
 
 	public String key()
 	{
