@@ -17,6 +17,10 @@ public class Expression extends fi.euclides.openmath.Expression {
 		value = new Rnd();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.rnd", value);
+		value = new Equals();
+		value.setTracker(tracker);
+		symbolmap.put("geodefiner.equals", value);
+		symbolmap.put("relation1.approx", value);
 	}
 
 }

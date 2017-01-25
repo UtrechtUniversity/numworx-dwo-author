@@ -36,6 +36,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected UIModelFactory uiModelFactory;
 	protected Definitions definitions;
 	protected Tracker viewer;
+	protected boolean nagekeken;
 	//protected int width, height;
 	
 	protected final SelectHandler selector = new SelectHandler() {
@@ -227,6 +228,7 @@ public abstract class Instance /*implements Observer*/ {
 		map.put("positions", positions);
 		List modelState = getModelState();
 		if(modelState != null) map.put("model", modelState);
+		if(nagekeken) map.put("nagekeken", Boolean.TRUE);
 		return map;
 	}
 
@@ -298,6 +300,7 @@ public abstract class Instance /*implements Observer*/ {
 		this.state = JSONUtilities.wrapMap(state);
 		setPositions(this.state.getObjectMap("positions"));
 		setModelState(this.state.getObjectList("model"));
+		nagekeken = this.state.getBoolean("nagekeken", false);
 	}
 
 	public void update(Observable observable, Object arg) {
