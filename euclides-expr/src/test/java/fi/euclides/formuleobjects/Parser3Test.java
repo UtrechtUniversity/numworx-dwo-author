@@ -40,7 +40,17 @@ public class Parser3Test {
 		OMApplication oma = (OMApplication) o;
 		assertTrue(oma.firstElement().isSame(new OMSymbol("logic1", "or")));
 		System.out.println(o);
-
+	}
+	
+	@Test
+	public void testapprox() throws ParseException {
+		FormuleParser p = new FormuleParser("a \u2248 b");
+		OMObject o = p.logic();
+		assertNotNull(o);
+		assertTrue(o instanceof OMApplication);
+		OMApplication oma = (OMApplication) o;
+		assertTrue(oma.firstElement().isSame(new OMSymbol("relation1", "approx")));
+		System.out.println("a \u2248 b" + " : " + o);
 	}
 
 }

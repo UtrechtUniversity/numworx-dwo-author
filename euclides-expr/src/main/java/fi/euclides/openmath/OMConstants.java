@@ -14,6 +14,7 @@ public interface OMConstants {
 	OMSymbol LENGTH = new OMSymbol("plangeo7", "length");
 	OMSymbol ARE_ON_LINE = new OMSymbol("plangeo1", "are_on_line");
 	OMSymbol RELATION1_EQ = new OMSymbol("relation1", "eq");
+	OMSymbol RELATION1_APPROX = new OMSymbol("relation1", "approx");
 	OMSymbol RELATION1_NEQ = new OMSymbol("relation1", "neq");
 	OMSymbol RELATION1_LT = new OMSymbol("relation1", "lt");
 	OMSymbol RELATION1_LEQ = new OMSymbol("relation1", "leq");

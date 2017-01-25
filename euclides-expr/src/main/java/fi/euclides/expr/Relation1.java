@@ -44,10 +44,10 @@ public class Relation1 extends LabelTester {
 
 		sign = 1 << (sign+1);
 		if((bits & sign) != 0)
-			l.setValue(Numbers.ZERO); // true
+			value=(Numbers.ZERO); // true
 		else
-			l.setValue(Numbers.ONE);  // false
-		return setState(l, l.value, 0.0);
+			value=(Numbers.ONE);  // false
+		return setState(l, value, 0.0);
 	}
 
 }

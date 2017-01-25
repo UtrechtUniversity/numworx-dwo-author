@@ -95,7 +95,7 @@ public class FormuleParser implements OMConstants{
     switch(ch) {
       case '<' : return RELATION1_LT;
       case '>' : return RELATION1_GT;
-      //case '\u2248': return RELATION1_APPROX;
+      case '\u2248': return RELATION1_APPROX;
       case '\u2264': return RELATION1_LEQ;
       case '\u2265': return RELATION1_GEQ;
       case '\u2260': return RELATION1_NEQ;
@@ -145,7 +145,7 @@ TOKEN : /* VAKKEN */
 }
 TOKEN:
 {
-  < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle"
+  < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals"
                  | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd" ) >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln" | "log" ) >
 | < MAP : "map" >
