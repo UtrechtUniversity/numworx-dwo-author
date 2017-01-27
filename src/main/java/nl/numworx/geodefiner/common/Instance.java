@@ -23,13 +23,14 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntOp;
+import fi.euclides.model.Segment;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
-import fi.euclides.util.Observer;
 
 public abstract class Instance /*implements Observer*/ {
 
@@ -315,6 +316,32 @@ public abstract class Instance /*implements Observer*/ {
 	}
 	public int getMaxScore() {
 		return checkDWO.getMaxScore();
+	}
+
+	public void start() {
+		Model m = viewer.getModel();
+		List<Destroyable> list = new ArrayList<Destroyable>(m.getPunten());
+		list.addAll(m.getLijnen());
+		for (Destroyable destroyable : list) {
+			if(destroyable instanceof Label) {
+				Label label = (Label) destroyable;
+				Punt fp = label.getP();
+				if(fp instanceof Volgpunt) {
+					((Volgpunt)fp).setFree(false);
+				}
+				if (label.getRegistered() instanceof Interval) {
+					@SuppressWarnings("unchecked")
+					Segment s = ((PuntOp<Segment>) fp).getOp();
+					s.getP1().adapt(FreePoint.class).setFree(false);
+					s.getP2().adapt(FreePoint.class).setFree(false);
+				}
+				if(fp.getIndex() == 0 && fp.adapt(FreePoint.class) != null) {
+					fp.adapt(FreePoint.class).setFree(false);
+				}
+			}
+		}
+		
+		viewer.paint();
 	}
 	
 }
