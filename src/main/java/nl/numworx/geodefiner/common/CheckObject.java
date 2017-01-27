@@ -1,11 +1,11 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
-import fi.euclides.util.Hashtable;
 
 public class CheckObject {
 	int maxScore;
@@ -49,8 +49,8 @@ public class CheckObject {
 			setFormule("");
 	}
 	
-	public Hashtable toMap() {
-		Hashtable map = new Hashtable();
+	public Map toMap() {
+		HashMap map = new HashMap();
 		if(maxScore > 0)
 			map.put("score", maxScore);
 		if(!formule.isEmpty())
