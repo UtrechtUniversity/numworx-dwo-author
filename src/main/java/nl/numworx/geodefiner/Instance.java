@@ -22,10 +22,8 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -50,7 +48,6 @@ import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.Tips;
-import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
@@ -74,11 +71,9 @@ import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
-import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
@@ -880,31 +875,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void setAssessmentMode(AssessmentMode mode) {
 		this.mode = mode;
 		if(mode == AssessmentMode.ZELFTOETS) checkBtn.setVisible(false);
-	}
-
-	public void start() {
-		Model m = viewer.getModel();
-		List<Destroyable> list = new ArrayList<Destroyable>(m.getPunten());
-		list.addAll(m.getLijnen());
-		for (Destroyable destroyable : list) {
-			if(destroyable instanceof Label) {
-				Label label = (Label) destroyable;
-				Punt fp = label.getP();
-				if(fp instanceof Volgpunt) {
-					((Volgpunt)fp).setFree(false);
-				}
-				if (label.getRegistered() instanceof Interval) {
-					Segment s = ((PuntOp<Segment>) fp).getOp();
-					s.getP1().adapt(FreePoint.class).setFree(false);
-					s.getP2().adapt(FreePoint.class).setFree(false);
-				}
-				if(fp.getIndex() == 0 && fp.adapt(FreePoint.class) != null) {
-					fp.adapt(FreePoint.class).setFree(false);
-				}
-			}
-		}
-		
-		viewer.paint();
 	}
 
 	public void stop() {
