@@ -107,12 +107,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			fetchScore();
+			nagekeken = true;
+			feedback();
+			handler.fire(Constants.CHANGED); // Score changed
+		}
+
+		void feedback() {
 			Boolean status = getStatus();
 			if(status == null) putValue(LARGE_ICON_KEY, current = half);
 			else if(status.booleanValue())
 				putValue(LARGE_ICON_KEY, current = goed);
 			else putValue(LARGE_ICON_KEY, current = fout);
-			handler.fire(Constants.CHANGED); // Score changed
 		}
 
 
@@ -228,7 +233,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	private JPanel panel = new JPanel(new BorderLayout());
 	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
-	JButton checkBtn = new JButton();
+	JButton checkBtn = new JButton(Messages.getString("check"));
 	JLabel  checkLabel = new JLabel();
 
 	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
@@ -834,6 +839,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	
 	public Map<String,?> getState() {
+		if(mode == AssessmentMode.EINDTOETS) fetchScore(); // no feedback!
 		return getState(new Hashtable<String, Object>());
 	}
 	
@@ -874,11 +880,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	public void setAssessmentMode(AssessmentMode mode) {
 		this.mode = mode;
-		if(mode == AssessmentMode.ZELFTOETS) checkBtn.setVisible(false);
+		if(mode == AssessmentMode.ZELFTOETS||mode == AssessmentMode.EINDTOETS) checkBtn.setVisible(false);
 	}
 
 	public void stop() {
 
+	}
+
+	@Override
+	public void setState(Map<String, ?> state) {
+		super.setState(state);
+		if(nagekeken && action != null)
+			action.feedback();
 	}
 
 	public void acceptCBookEvent(CBookEvent ev) {
@@ -934,6 +947,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			checkLabel.setVisible(true);
 			checkDWO.addObserver(action);
 			checkBtn.invalidate();
+			checkLabel.invalidate();
 			panel.validate();
 			return true;
 		}

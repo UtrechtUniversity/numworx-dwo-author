@@ -13,6 +13,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.wiskopdr.ObjectiveChoiceButton;
+import fi.wiskopdr.ObjectiveSettingsButton;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 class CheckDWOPanel extends JPanel implements ChangeListener {
@@ -24,6 +27,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 	
 	JButton checkBtn;
 	JComponent validator = this;
+	ObjectiveChoiceButton objBtn;
 
 	CheckDWOPanel() {
 		super();
@@ -36,11 +40,13 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 		formule = new FormuleEditor(false);
 		formule.setHeader(false);
 		formule.setPreferredSize(new Dimension(200,50));
-		
+		if(WiskOpdr.objectives!=null)
+			objBtn = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
 		add(checkDWO);
 		add(extern);
 		add(score);
 		add(formule);
+		if(objBtn != null) add(objBtn);
 	}
 	
 	int getMaxScore() {
@@ -50,6 +56,19 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 			return 0;
 	}
 	
+	
+	
+	public void setChoices(boolean[][] choices) {
+		if(objBtn != null)
+			objBtn.setChoices(choices);
+	}
+
+	public boolean[][] getChoices() {
+		if(objBtn != null)
+			return objBtn.getChoices();
+		return null;
+	}
+
 	Map<String,Object> toMap() {
 		Map<String,Object> result = new TreeMap<String,Object>();
 		result.put("check", checkDWO.isSelected());
