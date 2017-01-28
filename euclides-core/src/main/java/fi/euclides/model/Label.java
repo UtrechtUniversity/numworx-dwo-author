@@ -185,7 +185,7 @@ public class Label extends Destroyable implements Observer {
 		} else if(arg != VISIBLE){
 			setDefined(defined());
 			registered.update(this, arg);
-			setChanged();
+			//setChanged();
 			notifyObservers(arg);
 		}
 	}

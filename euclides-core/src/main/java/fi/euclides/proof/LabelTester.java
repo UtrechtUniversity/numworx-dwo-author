@@ -42,7 +42,7 @@ public abstract class LabelTester extends LabelDelegate {
 			if(arg == Model.DELAY)
 			{	
 				if(l.isDefined() && l.getState() <= Label.EXACT && !test(l)) ;//destroy(l); // FIXME GEODEFINER/EUCLIDES 
-			} else if(arg != Destroyable.DESTROY && arg != Destroyable.VISIBLE && !"STATE".equals(arg))
+			} else if(arg != Destroyable.DESTROY && arg != Destroyable.VISIBLE /*&& !Label.STATE.equals(arg)*/)
 			{
 				if(l.isDefined())
 				{	
