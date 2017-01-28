@@ -74,10 +74,10 @@ public class Check_DWO extends Observable implements Observer {
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY)
 			observable.deleteObserver(this);
-		else if(arg == null||"STATUS".equals(arg)) {
+		else if(arg == null||Label.STATE.equals(arg)) {
 			Label label = (Label)observable;
 			boolean oldStatus = status;
-			status = !check || label.isDefined() && label.value == Numbers.ZERO;
+			status = !check || label.isDefined() && label.getState() != Label.FALSE;
 			score = status ? maxScore : 0;
 			if(status != oldStatus) {
 				setChanged();

@@ -98,7 +98,7 @@ class Equals extends LabelTester {
 		Destroyable a = depend[0];
 		Destroyable b = depend[1];
 		EqualsVisitor eq = new EqualsVisitor(b);
-		a.visit(eq);
+		if(a != null) a.visit(eq);
 		Numbers test = eq.test;
 		setState(l, test, marge);
 		return true;

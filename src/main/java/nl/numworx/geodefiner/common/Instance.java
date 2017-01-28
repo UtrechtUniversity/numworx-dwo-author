@@ -302,6 +302,9 @@ public abstract class Instance /*implements Observer*/ {
 		setPositions(this.state.getObjectMap("positions"));
 		setModelState(this.state.getObjectList("model"));
 		nagekeken = this.state.getBoolean("nagekeken", false);
+		if(nagekeken) {
+			fetchScore();
+		}
 	}
 
 	public void update(Observable observable, Object arg) {
