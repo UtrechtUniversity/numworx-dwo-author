@@ -4,6 +4,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Observable;
 
 
 final public class If extends Som {
@@ -35,6 +36,15 @@ final public class If extends Som {
 		l.setState(copy.getState());
 		l.setString(copy.getString());
 		l.setValue(copy.value);
+	}
+
+	@Override
+	public void update(Observable observable, Object arg) {
+		if(Label.STATE.equals(arg)) {
+			Label l = (Label)observable;
+			recalc(l, (Label[]) l.getDepend());
+		}
+		super.update(observable, arg);
 	}
 
 }
