@@ -280,4 +280,16 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		rr.setClip(0, 0, width, height);
 	}
 
+	@Override
+	public void moveAway(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moveBack() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

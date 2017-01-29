@@ -42,6 +42,7 @@ implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 		if(event.getNativeButton() == NativeEvent.BUTTON_LEFT)
 		{
 			mouseDown = false;
+			viewer.moveBack();
 			viewer.processMouseUp(x,y);
 		}
 	}
@@ -49,7 +50,9 @@ implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 		int x = event.getX();
 		int y = event.getY();
 		if(mouseDown && event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+		{	viewer.moveAway(x, y);
 			viewer.processMouseDrag(x,y);
 		}
+	}
 	
 }

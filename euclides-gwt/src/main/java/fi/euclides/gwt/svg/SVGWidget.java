@@ -37,7 +37,9 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	protected OMSVGDocument doc;
 	private int width;
 	private int height;
+	private int offX,offY;
 	private OMSVGGElement g;
+	private OMSVGCircleElement pointer;
 
 	public SVGWidget(int width, int height) {
 		this();
@@ -50,7 +52,9 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		image.setSvgElement(doc.createSVGSVGElement());		
 		g = doc.createSVGGElement();
 		defs = doc.createSVGDefsElement();
+		pointer = doc.createSVGCircleElement(-2, -2, 1.5f);
 		getSvgElement().appendChild(defs);
+		getSvgElement().appendChild(pointer);
 		getSvgElement().appendChild(g);
 		boolean hastouch = TouchStartEvent.isSupported();
 		if(hastouch) {
@@ -72,7 +76,16 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		this.height = height;
 		getSvgElement().setViewBox(0, 0, width, height);
 		image.setPixelSize(width, height);
-		
+		setPointer(width/2, height/2);
+		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "red");
+
+	}
+	
+	
+	
+	private void setPointer(float x, float y) {
+		pointer.getCx().getBaseVal().setValue(x);
+		pointer.getCy().getBaseVal().setValue(y);
 	}
 	
 	protected String color = "black";
@@ -209,9 +222,9 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 
 		@Override
 		public void paint() {
-			OMNodeList<OMNode> list = g.getChildNodes();
+			OMNodeList<OMNode> list = getBody().getChildNodes();
 			for(int i = 0; i < list.getLength(); ) {
-				g.removeChild(list.getItem(i));
+				getBody().removeChild(list.getItem(0));
 			}
 
 			ll.setClip(clipLeft(), clipTop(), clipRight(), clipBottom());
@@ -253,9 +266,29 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void processMouseDown(int x, int y) {
+		setPointer(x,y);
 		handler.pointerPressed(x, y);
 		moved = false;
 		paint();
+	}
+
+	public void moveAway(int x, int y) {
+		setPointer(x,y);
+		if(offY != 0|| offX != 0) return;
+		offY = 20;
+		setViewBox();
+		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "black");
+		 
+	}
+	
+	public void moveBack() {
+		offY = 0; offX = 0;
+		setViewBox();
+		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "none");
+	}
+
+	private void setViewBox() {
+		getSvgElement().setViewBox(offX, offY, width, height);
 	}
 
 	@Override

@@ -15,4 +15,7 @@ public interface ViewerWidget extends IsWidget {
 	void processMouseDrag(int x, int y);
 	
 	void init(int w, int h);
+	
+	void moveAway(int x, int y);
+	void moveBack();
 }
