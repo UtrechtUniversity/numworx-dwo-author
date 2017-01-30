@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.NameMapper;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.math.Numbers;
@@ -288,6 +289,12 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void moveBack() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMapper(NameMapper mapper) {
 		// TODO Auto-generated method stub
 		
 	}

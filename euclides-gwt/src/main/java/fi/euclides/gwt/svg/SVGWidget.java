@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Widget;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.NameMapper;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTTouchHandler;
 import fi.euclides.gwt.ViewerWidget;
@@ -74,11 +75,8 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	public void init(int width, int height) {
 		this.width = width;
 		this.height = height;
-		getSvgElement().setViewBox(0, 0, width, height);
+		moveBack();
 		image.setPixelSize(width, height);
-		setPointer(width/2, height/2);
-		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "red");
-
 	}
 	
 	
@@ -274,9 +272,9 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	public void moveAway(int x, int y) {
 		setPointer(x,y);
 		if(offY != 0|| offX != 0) return;
-		offY = 20;
+		offY = 20; // patent Uli
 		setViewBox();
-		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "black");
+		pointer.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "black"); // COLOR of POINTER
 		 
 	}
 	
@@ -303,5 +301,11 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		handler.pointerDragged(x, y);
 		moved = true;
 		paint();
+	}
+
+	@Override
+	public void setMapper(NameMapper mapper) {
+		// TODO Auto-generated method stub
+		
 	}
 }
