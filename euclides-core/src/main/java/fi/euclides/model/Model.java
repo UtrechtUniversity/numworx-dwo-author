@@ -29,25 +29,36 @@ public class Model extends Observable implements Observer, NameMapper {
 	private Vector<Punt> punten = new Vector<Punt>();
 	private Vector<Destroyable> select = new Vector<Destroyable>();
 	
-	private Hashtable trail = new Hashtable();
-	private Vector<Pair> delay = new Vector<Pair>();
+	private Hashtable<Destroyable, Vector<Destroyable>> trail = new Hashtable<Destroyable, Vector<Destroyable>>();
+	private Vector<Pair<Observable, Observer>> delay = new Vector<Pair<Observable, Observer>>();
 	
 	public synchronized void executeDelay() {
-		if(delay.isEmpty())
-			return;
-		Pair p[] = new Pair[delay.size()];
-		delay.copyInto(p);
-		delay.removeAllElements();
-		for (int i = 0; i < p.length; i++) {
-			Observable observable = (Observable) p[i].getA();
-			Observer   observer   = (Observer) p[i].getB();
-			observer.update(observable, DELAY);
+		while (!delay.isEmpty()) {
+			@SuppressWarnings({ "unchecked" })
+			Pair<Observable, Observer> p[] = new Pair[delay.size()];
+			delay.copyInto(p);
+			delay.removeAllElements();
+			for (int i = 0; i < p.length; i++) {
+				Observable observable = p[i].getA();
+				Observer   observer   = p[i].getB();
+				observer.update(observable, DELAY);
+			}
 		}
 	}
 	
 	public synchronized void addDelay(Observable a, Observer b)
 	{
-		Pair p = new Pair(a,b);
+		Pair<Observable, Observer> p = new Pair<Observable, Observer>(a,b)
+				{
+					@Override
+					public boolean equals(Object other) {
+						if(other == this) return true;
+						if(other == null) return false;
+						if(getClass() != other.getClass()) return false;
+						Pair<?,?> pair = (Pair<?,?>) other;
+						return getA() == pair.getA() && getB() == pair.getB();
+					}
+				};
 		if(!delay.contains(p))
 				delay.addElement(p);
 	}
@@ -344,7 +355,7 @@ public class Model extends Observable implements Observer, NameMapper {
 			if(arg == DELAY) {
 				Destroyable p = (Destroyable)observable;
 				if(p.isDefined())
-					((Vector) trail.get(p)).addElement(p.trail());
+					trail.get(p).addElement(p.trail());
 			} else
 				addDelay(observable, this);
 		}
@@ -749,10 +760,11 @@ public class Model extends Observable implements Observer, NameMapper {
 	public void visitTrail(Visitor v) {
 		if(trail.isEmpty())
 			return;
-		Enumeration e, e1;
+		Enumeration<Vector<Destroyable>> e;
+		Enumeration<Destroyable> e1;
 		e = trail.elements();
 		while (e.hasMoreElements()) {
-			Vector vector = (Vector) e.nextElement();
+			Vector<Destroyable> vector = e.nextElement();
 			e1 = vector.elements();
 			while (e1.hasMoreElements()) {
 				Destroyable object = (Destroyable) e1.nextElement();

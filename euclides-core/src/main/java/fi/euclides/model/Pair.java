@@ -1,7 +1,8 @@
 package fi.euclides.model;
 
-public class Pair {
-	private Object a, b;
+public class Pair<A, B> {
+	private A a;
+	private B b;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -24,7 +25,7 @@ public class Pair {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Pair other = (Pair) obj;
+		final Pair<?,?> other = (Pair<?,?>) obj;
 		if (a == null) {
 			if (other.a != null)
 				return false;
@@ -42,7 +43,7 @@ public class Pair {
 	 * @param a
 	 * @param b
 	 */
-	public Pair(Object a, Object b) {
+	public Pair(A a, B b) {
 		this.a = a;
 		this.b = b;
 	}
@@ -50,14 +51,14 @@ public class Pair {
 	/**
 	 * @return the a
 	 */
-	public Object getA() {
+	public A getA() {
 		return a;
 	}
 
 	/**
 	 * @return the b
 	 */
-	public Object getB() {
+	public B getB() {
 		return b;
 	}
 	
