@@ -343,6 +343,13 @@ public class Model extends Observable implements Observer, NameMapper {
 		setIndex( Math.max(pi, li));
 	}
 	
+	public void destroyAll() { 
+		clearSelection();
+		while(!lijnen.isEmpty()) { lijnen.lastElement().destroy(); }
+		while(!punten.isEmpty()) { punten.lastElement().destroy(); }
+		setIndex(0);
+	}
+	
 	public void update(Observable observable, Object arg) {
 		if (arg == Destroyable.DESTROY)
 		{

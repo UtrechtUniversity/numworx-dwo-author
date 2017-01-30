@@ -138,7 +138,7 @@ public class Memento implements Codec , NumberCodec {
 		int index;
 		if(p == null)
 			writeUTF(NULL);
-		else if ((index = writeObjects.indexOf(p)) >= 0)
+		else if ((index = indexOfIsIs(p)) >= 0)
 		{
 			writeUTF(REF);
 			writeInt(index);
@@ -150,6 +150,18 @@ public class Memento implements Codec , NumberCodec {
 			writeObjects.addElement(p);
 		}
 
+	}
+
+/**
+ * indexOf op basis van ==.
+ * @param p value
+ * @return index
+ */
+	private int indexOfIsIs(Destroyable p) {
+		for(int i = 0; i < writeObjects.size(); i++) {
+			if ( p == writeObjects.elementAt(i)) return i;
+		}
+		return -1;
 	}
 
 	public void writeNumber(Numbers v) throws IOException {
@@ -244,12 +256,12 @@ public class Memento implements Codec , NumberCodec {
 		if( !version.startsWith("EUCLIDES MODEL V"))
 			throw new IOException("Version conflict: " + version);
 		model = tracker.getModel();
-		model.destroy();
+		model.destroyAll();
 		model.read(this);
 		model.setIndex(maxIndex);
-		Vector invisible = readVector();
+		Vector<Destroyable> invisible = readVector();
 		for(int i = 0; i < invisible.size(); i++)
-			((Destroyable) invisible.elementAt(i)).setVisible(false);
+			(invisible.elementAt(i)).setVisible(false);
 		return model;
 	}
 
