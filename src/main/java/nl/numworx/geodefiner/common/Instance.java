@@ -262,9 +262,7 @@ public abstract class Instance /*implements Observer*/ {
 	
 
 	protected Model createModel(Model m, int width, int height) {
-		m.getSelect().addAll(m.getPunten());
-		m.getSelect().addAll(m.getLijnen());
-		m.destroy();
+		m.destroyAll();
 		int mx = width/2;
 		int my = height/2;
 		Punt O = m.buildPunt(Numbers.createInteger(mx), Numbers.createInteger(my));

@@ -12,6 +12,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.DataInput;
@@ -110,6 +111,19 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 	@Override
 	public void writeBoolean(boolean b) throws IOException {
 		list.add(b);
+	}
+
+	@Override
+	public Model readModel(Tracker tracker) throws IOException {
+		final Model m = tracker.getModel();
+		m.getPunten().clear();
+		m.getLijnen().clear();
+		super.readModel(tracker);
+		int f = m.getIndex(); // bepaal hoogste index;
+		if (!m.getLijnen().isEmpty()) f = Math.max(f, m.getLijnen().lastElement().getIndex());
+		if (!m.getPunten().isEmpty()) f = Math.max(f, m.getPunten().lastElement().getIndex());
+		m.setIndex(f);
+		return m;
 	}
 
 }
