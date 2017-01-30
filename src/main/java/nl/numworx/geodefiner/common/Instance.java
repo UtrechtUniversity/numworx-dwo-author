@@ -85,6 +85,7 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	protected void installToolbox() {
+		
 	}
 
 	protected boolean installCheckDWO() {
