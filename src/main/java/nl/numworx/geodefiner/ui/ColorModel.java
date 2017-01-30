@@ -31,7 +31,6 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	
 	public  void setVisible(boolean visible) {
 		this.visible = visible;
-		visibility.setString("$f" + Boolean.toString(visible) + "@");
 	}
 
 	public void install(T item) {
@@ -40,13 +39,14 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		item.setVisible(visible);
 		if (visibility.getString() != null && tracker != null) {
 			try {
-				OMObject o = new FormuleParser(visibility.getString().substring(2)).logic();
+				final String formula = visibility.getString().substring(2);
+				visibility.destroy();
+				OMObject o = new FormuleParser(formula).logic();
 				OMApplication oma = new OMApplication();
 				oma.addElement(EUCLIDES_VISIBLE);
 				oma.addElement(new OMVariable(tracker.getMapper().toString(item)));
 				oma.addElement(o);
 				Expression expr = new Expression(tracker);
-				visibility.destroy();
 				Destroyable v = expr.interpret(oma, visibility, tracker.getMapper());
 				v.setVisible(false);
 				tracker.getModel().add(v);
@@ -74,7 +74,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("color", color.getRGB());
 		map.put("visible", visible);
-		if(getVisibility() != null && !getVisibility().equals("$f"+Boolean.toString(visible)+"@"))
+		if(getVisibility() != null && !getVisibility().isEmpty())
 		{
 			map.put("visibility", getVisibility());
 		}

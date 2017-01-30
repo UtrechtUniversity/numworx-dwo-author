@@ -530,6 +530,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 
 		private void formuleLabel(Label label) {
+			Align align = label.adapt(Align.class);
+			if(align == null) align = Align.BASE;
+			else if(align == Align.NONE) return;
 			FormuleVak fv = new FormuleVak();
 			fv.setFont(g.getFont());
 			String string = "$f" + label.getString() + "@";
@@ -540,8 +543,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			int as = fv.ashoogte;
 			int x = (int) label.getXd();
 			int y = (int) label.getYd();
-			Align align = label.adapt(Align.class);
-			if(align == null) align = Align.BASE;
 			switch(align) {
 			case LEFT:  x -= s.width; 
 			case RIGHT: y -= s.height/2; break;
@@ -591,7 +592,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				visitCheckbox(label);
 				return;
 			}
-			if(string.contains("$")) {
+			if(string.contains("$")||true) {
 				formuleLabel(label);
 				return;
 			}
