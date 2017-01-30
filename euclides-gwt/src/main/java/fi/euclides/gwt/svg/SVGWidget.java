@@ -266,7 +266,6 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void processMouseDown(int x, int y) {
-		setPointer(x,y);
 		handler.pointerPressed(x, y);
 		moved = false;
 		paint();
