@@ -109,7 +109,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			fetchScore();
 			nagekeken = true;
 			feedback();
-			handler.fire(Constants.CHANGED); // Score changed
+			handler.fire(Constants.CHECKED); // Score changed
 		}
 
 		void feedback() {
@@ -969,6 +969,19 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(Action.LARGE_ICON_KEY.equals(evt.getPropertyName())) checkLabel.repaint();
+	}
+
+	@Override
+	public void start() {
+		startToolbox();
+		super.start();
+	}
+
+	private void startToolbox() {
+		ToolboxPanel p = new ToolboxPanel();
+		p.viewer = getViewer();
+		p.setToolbox(toolbox);
+		p.fromList(launchData.getObjectList("toolbox"));
 	}	
 	
 	

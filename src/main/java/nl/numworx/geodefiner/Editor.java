@@ -70,6 +70,15 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private DefinitionPanel definition;
 	private RandomPanel random;
 	private CheckDWOPanel checkDWO;
+	
+	void setChoices(boolean[][] choices) {
+		checkDWO.setChoices(choices);
+	}
+
+	boolean[][] getChoices() {
+		return checkDWO.getChoices();
+	}
+
 	private CheckObjectsPanel checkObjects;
 	private ToolboxPanel toolbox;
 	private CommandPanel command;
