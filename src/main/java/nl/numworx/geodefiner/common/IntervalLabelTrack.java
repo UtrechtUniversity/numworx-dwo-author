@@ -26,7 +26,7 @@ class IntervalLabelTrack extends Track {
 		Numbers dx = Numbers.sub(x, p.getX());
 		Numbers dy = Numbers.sub(y, p.getY());
 		Numbers newX = Numbers.add(dx, l.getX());
-		
+// HIER SNAPPEN.....		
 		
 		l.moveTo(newX, Numbers.add(dy, l.getY()));
 		super.setXY(x,y);
