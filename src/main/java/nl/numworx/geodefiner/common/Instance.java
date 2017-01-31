@@ -302,6 +302,7 @@ public abstract class Instance /*implements Observer*/ {
 		setModelState(this.state.getObjectList("model"));
 		nagekeken = this.state.getBoolean("nagekeken", false);
 		if(nagekeken) {
+			viewer.getModel().executeDelay(); // essentieel.
 			fetchScore();
 		}
 	}
