@@ -5,7 +5,7 @@ import fi.euclides.model.math.Numbers;
 
 public class Track {
 
-	Punt p;
+	protected Punt p;
 		
 	public Track(Numbers d, Numbers e) 
 	{
