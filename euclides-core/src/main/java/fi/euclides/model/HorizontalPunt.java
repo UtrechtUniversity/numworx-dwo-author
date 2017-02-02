@@ -100,4 +100,8 @@ public class HorizontalPunt extends Punt implements FreePoint {
 		super.moveTo(x, y);
 	}
 
+	public Numbers getDistance() {
+		return distance;
+	}
+
 }

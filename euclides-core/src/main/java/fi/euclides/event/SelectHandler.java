@@ -96,8 +96,8 @@ public class SelectHandler extends EventHandler {
 	}
 	
 	protected boolean click;
-	private Numbers lastx;
-	private Numbers lasty;
+	protected Numbers lastx;
+	protected Numbers lasty;
 
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerClicked(double, double)
