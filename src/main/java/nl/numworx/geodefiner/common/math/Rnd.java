@@ -1,4 +1,4 @@
-package nl.numworx.geodefiner.common;
+package nl.numworx.geodefiner.common.math;
 
 
 import fi.euclides.expr.Som;

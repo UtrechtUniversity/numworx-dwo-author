@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -57,9 +58,6 @@ public class Definitions implements Observer /*, ListModel*/ {
 		Interval delegate = new Interval();
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);
-		Abs abs = new Abs();
-		abs.setTracker(viewer);
-		expression.put(OMConstants.ARITH1_ABS, abs);
 	}
 	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -278,12 +276,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if(INT.isSame(f)) {
 					Label fy = (Label) depend[0];
 					fy.setString(text); // FIXME Why?
-					Label fx = new Label();
-					fx.setString("identity");
-					fx.register(viewer.getRegistered(Lambda.TYPE));
-					DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
-					model.add(fx);
-					LocusModel lm = new LocusModelXY(fx, fy, null, viewer);
+					LocusModel lm = new LocusModelF(fy, viewer);
 				    Locus locus = new Integral(lm);
 				    model.add(locus);
 					installConfig(new CELL(text, locus, var), config);
@@ -297,8 +290,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Label fx = new Label();
 					fx.setString("identity");
 					fx.register(viewer.getRegistered(Lambda.TYPE));
+					fx.setVisible(false);
 					DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
-					model.add(fx);
+					model.add(fx);// Why?
 					LocusModel lm = new LocusModelXY(fx, fy, interval, viewer);
 				    Locus locus = new Integral(lm);
 				    model.add(locus);

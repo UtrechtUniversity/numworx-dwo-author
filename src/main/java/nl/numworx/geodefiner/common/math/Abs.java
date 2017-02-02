@@ -1,4 +1,4 @@
-package nl.numworx.geodefiner.common;
+package nl.numworx.geodefiner.common.math;
 
 import fi.euclides.event.Tracker;
 import fi.euclides.expr.Transc1;

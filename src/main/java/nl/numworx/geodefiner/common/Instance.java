@@ -55,8 +55,22 @@ public abstract class Instance /*implements Observer*/ {
 					return;
 				}
 			}
+			if (!click && getTrack() == null && l.adapt(StepValue.class) != null) {
+				setTrack(new IntervalLabelTrack(l, lastx, lasty));
+				return;
+			}
 			super.visitLabel(l);
-		}		
+		}
+
+		@Override
+		public void visitPunt(Punt p) {
+			if (!click && getTrack() == null && p.adapt(Label.class) != null) {
+				setTrack(new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
+				return;
+			}
+			super.visitPunt(p);
+		}
+		
 	};
 	
 	protected ObjectMap launchData, state;
@@ -228,8 +242,11 @@ public abstract class Instance /*implements Observer*/ {
 			}
 		}
 		map.put("positions", positions);
-		List modelState = getModelState();
-		if(modelState != null) map.put("model", modelState);
+		ObjectList toolbox = launchData.getObjectList("toolbox");
+		if(toolbox != null && toolbox.size() > 0) {
+			List modelState = getModelState();
+			if(modelState != null) map.put("model", modelState);
+		}
 		if(nagekeken) map.put("nagekeken", Boolean.TRUE);
 		return map;
 	}
@@ -247,8 +264,8 @@ public abstract class Instance /*implements Observer*/ {
 		return m.toList();
 	}
 	
-	void setModelState(ObjectList list) {
-		if(list == null) 
+	void setModelState(ObjectList list, ObjectList toolbox) {
+		if(list == null && (toolbox == null || toolbox.size() == 0) ) 
 			return;
 		Memento m = new Memento(viewer);
 		m.prepare(resetItems);
@@ -299,7 +316,7 @@ public abstract class Instance /*implements Observer*/ {
 		if(state == null) state = Collections.emptyMap();
 		this.state = JSONUtilities.wrapMap(state);
 		setPositions(this.state.getObjectMap("positions"));
-		setModelState(this.state.getObjectList("model"));
+		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
 		nagekeken = this.state.getBoolean("nagekeken", false);
 		if(nagekeken) {
 			viewer.getModel().executeDelay(); // essentieel.

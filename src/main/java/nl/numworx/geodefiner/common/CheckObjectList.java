@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Label;

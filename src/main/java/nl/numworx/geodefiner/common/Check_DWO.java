@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common;
 
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
