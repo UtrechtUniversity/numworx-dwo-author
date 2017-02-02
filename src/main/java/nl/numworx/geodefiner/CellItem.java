@@ -153,8 +153,8 @@ public class CellItem extends JPanel {
 		fv.vulVak(cell.text);
 		fv.setEditable(false);
 		fv.zetMaat();
-		//fv.setPreferredSize(fv.getSize());
 		fv.setMinimumSize(new Dimension(2, fv.getHeight()));
+		fv.setPreferredSize(new Dimension(40, fv.getHeight()));
 		return fv;
 	}
 

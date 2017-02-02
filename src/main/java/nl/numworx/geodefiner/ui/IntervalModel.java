@@ -37,20 +37,27 @@ public class IntervalModel extends TextModel {
 			adapter.put(instance);
 			instance.install(item);
 		}
+		DefaultAdapter adapterP = DefaultAdapter.getDefault(item.getP());
 		if (step == null || step.doubleValue() == 0.0)
+		{
 			adapter.put(StepValue.class, null);
+			adapterP.put(Label.class, null);
+		}
 		else
-			adapter.put(StepValue.class, new StepValue(Numbers.createDouble(step.doubleValue())));
+		{	Label min = (Label) item.getDepend()[0];
+			adapter.put(StepValue.class, new StepValue(Numbers.createDouble(step.doubleValue()),min));
+			adapterP.put(Label.class, item);
+		}
 		
-		DefaultAdapter.getDefault(item.getP()).put(color);
+		adapterP.put(color);
 		Destroyable segment = item.getP().getDepend()[0];
 		DefaultAdapter.getDefault(segment).put(color);
 		if(width != null) {
 			DefaultAdapter.getDefault(segment).put(Stroke.class, new BasicStroke(width.floatValue()));
-			DefaultAdapter.getDefault(item.getP()).put(Float.class, 5.0f * width.floatValue());
+			adapterP.put(Float.class, 5.0f * width.floatValue());
 		} else {
 			DefaultAdapter.getDefault(segment).put(Stroke.class, null);
-			DefaultAdapter.getDefault(item.getP()).put(Float.class, null);
+			adapterP.put(Float.class, null);
 		}
 		HorizontalPunt hp = (HorizontalPunt) ((Segment) segment).getP2();
 		hp.setDistance(Numbers.createDouble(length));
