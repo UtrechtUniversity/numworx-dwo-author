@@ -16,6 +16,12 @@ public class Transc1 extends Som {
 	public static final Transc1 COS = new Transc1("cos");
 	public static final Transc1 SIN = new Transc1("sin");
 	public static final Transc1 TAN = new Transc1("tan");
+	public static final Transc1 ARCCOS = new Transc1("arccos");
+	public static final Transc1 ARCSIN = new Transc1("arcsin");
+	public static final Transc1 ARCTAN = new Transc1("arctan");
+	public static final Transc1 CSC = new Transc1("csc");
+	public static final Transc1 SEC = new Transc1("sec");
+	public static final Transc1 COT = new Transc1("cot");
 	public static final Transc1 EXP = new Transc1("exp");
 	public static final Transc1 LN = new Transc1("ln");
 	public static final Transc1 ABS = new Transc1("abs"); // Arith1!
@@ -23,6 +29,34 @@ public class Transc1 extends Som {
 	public static final Transc1 REAL = new Transc1("real");
 	public static final Transc1 IMAG = new Transc1("imaginary");
 	public static final Transc1 ARGUMENT = new Transc1("argument");
+	public static final Transc1 LOG = new Transc1("log") {
+
+		@Override
+		public String getSymbolicValue(Label l) {
+			Destroyable[] depend = l.getDepend();
+			return  string + "("+ s(depend[0]) + "," + s(depend[1])  + ")";
+		}
+
+		@Override
+		public Destroyable[] createDepend() {
+			return new Label[2];
+		}
+
+		@Override
+		Numbers eval(Label[] ll) {
+			Numbers base; 
+			Numbers exp; 
+			if(ll[1] == null) { // een argument is base 10
+				base = Numbers.createInteger(10);
+				exp  = ll[0].value;
+			} else { // twee argumenten
+				base = ll[0].value;
+				exp = ll[1].value;
+			}
+			return Numbers.createDouble(Math.log(exp.doubleValue()) / Math.log(base.doubleValue()));
+		}
+		
+	};
 	
 	public String getSymbolicValue(Label l) {
 		return  string + "("+ s(l.getDepend()[0])  + ")";
@@ -41,10 +75,22 @@ public class Transc1 extends Som {
 			return Numbers.createDouble(Math.sin(v.doubleValue()));
 		if(this == TAN)
 			return Numbers.createDouble(Math.tan(v.doubleValue()));
+		if(this == ARCCOS)
+			return Numbers.createDouble(Math.acos(v.doubleValue()));
+		if(this == ARCSIN)
+			return Numbers.createDouble(Math.asin(v.doubleValue()));
+		if(this == ARCTAN)
+			return Numbers.createDouble(Math.tan(v.doubleValue()));
 		if(this == EXP)
 			return Numbers.createDouble(Math.exp(v.doubleValue()));
 		if(this == LN)
 			return Numbers.createDouble(Math.log(v.doubleValue()));
+		if(this == COT)
+			return Numbers.createDouble(1.0/Math.tan(v.doubleValue()));
+		if(this == CSC)
+			return Numbers.createDouble(1.0/Math.sin(v.doubleValue()));
+		if(this == SEC)
+			return Numbers.createDouble(1.0/Math.cos(v.doubleValue()));		
 		if(this == ABS)
 			return Numbers.abs(v);
 		if(this == CONJ)

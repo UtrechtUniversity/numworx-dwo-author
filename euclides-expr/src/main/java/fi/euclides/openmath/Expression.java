@@ -97,6 +97,15 @@ public class Expression implements OMConstants {
 		symbolmap.put(Expression.nm(TRANSC1_EXP), Transc1.EXP);
 		symbolmap.put(Expression.nm(TRANSC1_LN),  Transc1.LN);
 		symbolmap.put(Expression.nm(TRANSC1_COS), Transc1.COS);
+
+		symbolmap.put("transc1.arcsin", Transc1.ARCSIN);
+		symbolmap.put("transc1.arctan", Transc1.ARCTAN);
+		symbolmap.put("transc1.log",  Transc1.LOG);
+		symbolmap.put("transc1.arccos", Transc1.ARCCOS);
+		symbolmap.put("transc1.cot", Transc1.COT);
+		symbolmap.put("transc1.csc", Transc1.CSC);
+		symbolmap.put("transc1.sec", Transc1.SEC);
+		
 		symbolmap.put("arith1.abs", Transc1.ABS);
 		symbolmap.put("complex1.conjugate", Transc1.CONJ);
 		symbolmap.put("complex1.argument" , Transc1.ARGUMENT);

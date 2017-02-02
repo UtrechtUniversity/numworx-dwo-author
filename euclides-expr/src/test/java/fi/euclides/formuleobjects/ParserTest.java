@@ -1,6 +1,9 @@
 package fi.euclides.formuleobjects;
 
+import fi.wiskopdr.expressies.BasisExpressie;
+import fi.wiskopdr.expressies.Bin;
 import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.expressies.NdeLog;
 import fi.wiskopdr.formuleobjects.AbsVak;
 import fi.wiskopdr.formuleobjects.AftrekVak;
 import fi.wiskopdr.formuleobjects.BinVak;
@@ -17,6 +20,8 @@ import fi.wiskopdr.formuleobjects.PrimitieveVak;
 import fi.wiskopdr.formuleobjects.RegelVak;
 import fi.wiskopdr.formuleobjects.SigmaVak;
 import fi.wiskopdr.formuleobjects.WortelVak;
+import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMInteger;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import junit.framework.TestCase;
 
@@ -64,8 +69,34 @@ public class ParserTest extends TestCase {
 		fe.vulVak("1$nx@");parse(fe);
 		fe = (new IntegraalVak(vak));
 		fe.vulVak("1$n2$k3$lx@@@");parse(fe);
-
 	}
+	
+	public void testNdeLog() throws Exception {
+		Expressie e2 = new BasisExpressie(2);
+		Expressie e1 = new BasisExpressie(1);
+		NdeLog ndelog = new NdeLog(e1, e2);
+		double waarde = ndelog.geefWaarde();
+		System.out.println(ndelog + " = " + waarde);
+		assertEquals(0, waarde, 0.0001);
+		FormuleParser p = new FormuleParser(ndelog.toString());
+		OMObject result = p.sum();
+		OMInteger twee = (OMInteger) ((OMApplication) result).getElementAt(1);
+		assertEquals("2", twee.getInteger());
+	}
+	public void testBin() throws Exception {
+		Expressie e2 = new BasisExpressie(4);
+		Expressie e1 = new BasisExpressie(5);
+		Bin bin = new Bin(e1, e2);
+		double waarde = bin.geefWaarde();
+		System.out.println(bin + " = " + waarde);
+		assertEquals(5, waarde, 0.0001);
+		FormuleParser p = new FormuleParser(bin.toString());
+		OMObject result = p.sum();
+		System.out.println(result);
+		OMInteger twee = (OMInteger) ((OMApplication) result).getElementAt(1);
+		assertEquals("5", twee.getInteger());
+	}
+	
 	
 	public void testMacht() throws Exception {
 		
@@ -146,12 +177,36 @@ public class ParserTest extends TestCase {
 		 p = new FormuleParser("5a");
 		 result = p.sum();
 		assertNotNull(result);
+		assertEquals("OMA", result.getType());
+		System.out.println(result);
+		p = new FormuleParser("5e");
+		result = p.sum();
+		assertNotNull(result);
+		assertEquals("OMA", result.getType());
 		System.out.println(result);			
+		 p = new FormuleParser("5\u03c0");
+		 result = p.sum();
+		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
+		 p = new FormuleParser("x$h3+2@");
+		 result = p.sum();
+		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
 	}
 	
 	public void testSigmaVak() throws Exception { 
 		RegelVak fe = (new SigmaVak(vak));
 		fe.vulVak("1$ni$ka$lb@@@");parse(fe);
-
+	}
+	
+	public void testFac() throws Exception {
+		FormuleParser p = new FormuleParser("5!");
+		OMObject result = p.sum();
+		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
+		
 	}
 }

@@ -147,7 +147,7 @@ TOKEN:
 {
   < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals"
                  | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd" ) >
-| < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln" | "log" ) >
+| < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < MAP : "map" >
 | < ARGUMENT: "argument" >
 }
@@ -333,7 +333,7 @@ OMObject power() :
 
 void invisible() :
 {}
-{  < X > | < Y > | < "(" > | < VARIABLE >
+{  < X > | < Y > | < "(" > | < VARIABLE > | < PI > | < E > | < HAAKJES >
 }
 
 void noterm() :
