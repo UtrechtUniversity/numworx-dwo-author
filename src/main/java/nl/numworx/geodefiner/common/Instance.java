@@ -242,10 +242,13 @@ public abstract class Instance /*implements Observer*/ {
 			}
 		}
 		map.put("positions", positions);
+		if(launchData != null) {
+		
 		ObjectList toolbox = launchData.getObjectList("toolbox");
 		if(toolbox != null && toolbox.size() > 0) {
 			List modelState = getModelState();
 			if(modelState != null) map.put("model", modelState);
+		}
 		}
 		if(nagekeken) map.put("nagekeken", Boolean.TRUE);
 		return map;
@@ -340,6 +343,8 @@ public abstract class Instance /*implements Observer*/ {
 
 	public void start() {
 		Model m = viewer.getModel();
+		m.getO().adapt(FreePoint.class).setFree(false);
+		m.getU().adapt(FreePoint.class).setFree(false);
 		List<Destroyable> list = new ArrayList<Destroyable>(m.getPunten());
 		list.addAll(m.getLijnen());
 		for (Destroyable destroyable : list) {
