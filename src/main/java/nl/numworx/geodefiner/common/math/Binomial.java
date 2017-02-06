@@ -4,6 +4,7 @@ import fi.euclides.expr.Som;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
+import fi.wiskopdr.expressies.Bin;
 
 public class Binomial extends Som {
 
@@ -21,21 +22,9 @@ public class Binomial extends Som {
 	protected void recalc(Label l, Label[] labels) {
 		int a = (int)Math.round(labels[0].value.doubleValue());
 		int b = (int)Math.round(labels[1].value.doubleValue());
-		Numbers value = Numbers.createDouble(binom(a,b));
+		Numbers value = Numbers.createDouble(Bin.binom(a,b));
 		setStringValue(l, value);
 	}
 
-	public static double binom(int n, int k)
-	{	if(n<k)return 0;
-		double[] b = new double[n+1];
-		b[0] = 1;
-		for(int i=1 ; i<n+1 ; i++)
-		{	b[i] = 1;
-			for(int j=i-1 ; j>0 ; j--)
-			{	b[j] += b[j-1];
-			}
-		}
-		return b[k];
-	}
 
 }
