@@ -104,7 +104,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		flow.add(component);
 		tabs = new JTabbedPane();
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
-		split.setDividerLocation(0.7);
+		//split.setDividerLocation(0.7);
 		content.add(split, BorderLayout.CENTER);
 		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
 		checkDWO = new CheckDWOPanel();
@@ -180,7 +180,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("checkDWO", checkDWO.toMap());
 		launchdata.put("toolbox", toolbox.toList());
 		launchdata.put("checkObjects", checkObjects.toList());
-		launchdata.put("split", split.getDividerLocation());
+		int div = split.getDividerLocation();
+		if(div>0)launchdata.put("split", div);
 		launchdata.put("command", command.toString());
 		return launchdata;
 	}
@@ -230,12 +231,12 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 				checkObjects.fromList(map.getObjectList("checkObjects"));
 		if(map.containsKey("split"))
 			split.setDividerLocation(map.getInt("split"));
+		else split.setDividerLocation((int)(0.7*getWidth())); // default waarde
 		if(map.containsKey("command"))
 			command.fromString(map.getString("command"));
 	}
 
 	public void start() {
-		//instance.start();		
 		instance.asComponent().repaint();
 		createKeybindings();
 		axes.init();

@@ -2,17 +2,22 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.TransferHandler;
 
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
@@ -118,6 +123,7 @@ public class CellItem extends JPanel {
 
 	public CellItem(CELL cell, AbstractViewer viewer, int i0) {
 		super(new BorderLayout());
+		setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
 		canDelete = true;
 		setBackground(Color.WHITE);
 		this.setCell(cell);
@@ -133,9 +139,40 @@ public class CellItem extends JPanel {
 		if(cell.item != null) cell.item.addObserver(a);
 		add(radio, BorderLayout.LINE_START);
 		add( center = createCenter(cell), BorderLayout.CENTER);
-		
+		TransferHandler newHandler = new TransferHandler("pos");
+		this.setTransferHandler(newHandler);
+		addMouseListener(new MouseAdapter(){
+			            public void mousePressed(MouseEvent e){
+			                CellItem  button = (CellItem)e.getSource();
+			                TransferHandler handle = button.getTransferHandler();
+			                handle.exportAsDrag(button, e, TransferHandler.COPY);
+			            }
+			        });
 	}
 
+	public String getPos() {
+		return cell.var;
+	}
+	
+	public void setPos(String var) {
+		System.out.println("setPos " + var);
+		if(var.equals(cell.var)) return;
+		Container parent = getParent();
+		int cnt = parent.getComponentCount();
+		int s = cnt, d = 0;
+		Component c = null;
+		for(int i = 0; i < cnt; i++) {
+			CellItem item = (CellItem) parent.getComponent(i);
+			if(item == this) s = i;
+			if(item.cell.var.equals(var)) { c = item; d = i; }
+		}
+		parent.remove(d);
+		parent.add(c, s);
+		parent.invalidate();
+		parent.validate();
+		parent.repaint();
+	}
+	
 	public CellItem(CELL o, AWTViewer viewer2, boolean b) {
 		this(o, viewer2, -1);
 		canDelete = b;

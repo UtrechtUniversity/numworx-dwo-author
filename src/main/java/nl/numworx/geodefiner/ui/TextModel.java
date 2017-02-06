@@ -17,11 +17,14 @@ public class TextModel extends ColorModel<Label> {
 	Align align = Align.BASE;
 	Font  font  = fi.wiskopdr.WiskOpdr.formuleFont0; // bijvoorbeeld.
 	private float dx,dy;
+	Boolean alwaysF;
 
 	@Override
 	public void install(Label item) {
-		DefaultAdapter.getDefault(item).put(align);
-		DefaultAdapter.getDefault(item).put(Font.class, font);
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		adapter.put(align);
+		adapter.put(Font.class, font);
+		adapter.put(Boolean.class, alwaysF);
 		Punt p = item.getP();
 		if(p instanceof Volgpunt) {
 			((Volgpunt) p).setDxy(Numbers.createDouble(dx), Numbers.createDouble(dy));
@@ -33,7 +36,7 @@ public class TextModel extends ColorModel<Label> {
 	public UIModel<Label, UIEditor> init(Label item) {
 		if(item != null) align = item.adapt(Align.class);
 		if(align == null) align= Align.BASE;
-		
+		if(item != null) alwaysF = item.adapt(Boolean.class);
 		if(item == null && this.item != null && this.item.getP() instanceof Volgpunt)
 		{	Volgpunt p = (Volgpunt) this.item.getP();
 			dx = (float) p.getDx().doubleValue();

@@ -592,7 +592,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				visitCheckbox(label);
 				return;
 			}
-			if(string.contains("$")||true) {
+			if(string.contains("$") || Boolean.TRUE.equals(label.adapt(Boolean.class))) {
 				formuleLabel(label);
 				return;
 			}
@@ -862,6 +862,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void init() {
 		checkBtn.setVisible(false);checkBtn.invalidate();
 		checkLabel.setVisible(false);checkLabel.invalidate();
+		toolbox.setVisible(false);
 		panel.doLayout();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
@@ -977,7 +978,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		super.start();
 	}
 
-	private void startToolbox() {
+	void startToolbox() {
 		ToolboxPanel p = new ToolboxPanel();
 		p.viewer = getViewer();
 		p.setToolbox(toolbox);

@@ -86,6 +86,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		this.launchData = b;
 		Map randomvars = launchRandomVars();
 		instance.setLaunchData(b, randomvars);
+		instance.startToolbox();
 	}
 
 	private Map launchRandomVars() {

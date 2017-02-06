@@ -11,6 +11,7 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -24,6 +25,8 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 	JLabel sampleLabel;
 	JPanel preview = new JPanel();
 	JFormattedTextField fontSize;
+	JCheckBox alwaysF;
+	
 	public TextPane(T model) {
 		super(model);
 		alignBox = new JComboBox<Align>(Align.values());
@@ -48,6 +51,9 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			
 		});
 		preview.add(fontSize);
+		alwaysF = new JCheckBox("altijd formule");
+		alwaysF.setSelected(Boolean.TRUE.equals(model.alwaysF));
+		preview.add(alwaysF);
 		chooser.setPreviewPanel(preview);
 	}
 	@Override
@@ -55,6 +61,7 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		model.align = alignBox.getItemAt(alignBox.getSelectedIndex());
 		float size = ((Number) fontSize.getValue()).floatValue();
 		model.font = model.font.deriveFont(size);
+		model.alwaysF = Boolean.valueOf(alwaysF.isSelected());
 		super.commit();
 	}
 	public void paintIcon(Component c, Graphics g, int x, int y) {
