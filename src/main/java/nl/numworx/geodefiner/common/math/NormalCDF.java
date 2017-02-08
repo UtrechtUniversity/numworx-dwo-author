@@ -6,13 +6,13 @@ import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.wiskopdr.expressies.StatUtil;
 
-public class NormalCDF extends Som {
+class NormalCDF extends Som {
 
-	public double phi(double z)
+	double phi(double z)
 	{	return (1 + StatUtil.erf(z / Math.sqrt(2))) / 2;
 	}
 
-	public double geefWaarde(double grensLinks, double grensRechts, double mu, double sigma)
+	double geefWaarde(double grensLinks, double grensRechts, double mu, double sigma)
 	{	
 		double waarde = Double.NaN;
 		if(Double.isNaN(grensLinks) || Double.isNaN(grensRechts) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
@@ -39,11 +39,7 @@ public class NormalCDF extends Som {
 		return label.value.doubleValue();
 	}
 
-	@Override
-	public String getSymbolicValue(Label l) {
-		// TODO Auto-generated method stub
-		return super.getSymbolicValue(l);
+	NormalCDF() {
+		super("normalCDF");
 	}
-
-	
 }

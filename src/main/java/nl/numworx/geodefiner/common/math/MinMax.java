@@ -5,7 +5,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 
-public class MinMax extends Som {
+class MinMax extends Som {
 
 	final int een;
 	
@@ -14,14 +14,9 @@ public class MinMax extends Som {
 		this.een = een;
 	}
 
-	public static final MinMax MAX = new MinMax(1);
-	public static final MinMax MIN = new MinMax(-1);
+	static final MinMax MAX = new MinMax(1);
+	static final MinMax MIN = new MinMax(-1);
 	
-	@Override
-	public Destroyable[] createDepend() {
-		return new Label[2];
-	}
-
 	@Override
 	protected void recalc(Label l, Label[] labels) {
 		Numbers waarde = labels[0].value;

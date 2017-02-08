@@ -6,15 +6,19 @@ import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.wiskopdr.expressies.StatUtil;
 
-public class InvNorm extends Som {
+class InvNorm extends Som {
 
-	public double phiInv(double p)
+	InvNorm() {
+		super("invNorm");
+	}
+
+	double phiInv(double p)
 	{	return StatUtil.getInvCDF(p, true);
 	}
 	
-	public double geefWaarde(double kans, double mu, double sigma)
+	private double geefWaarde(double kans, double mu, double sigma)
 	{	
-		double waarde = Double.NaN;
+		double waarde;
 		if(Double.isNaN(kans) || Double.isNaN(mu) || Double.isNaN(sigma))waarde = Double.NaN;
 		else waarde = mu + sigma * phiInv(kans);			
 		return waarde;

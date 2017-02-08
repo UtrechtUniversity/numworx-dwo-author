@@ -5,9 +5,9 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 
-public class Faculteit extends Som {
+class Faculteit extends Som {
 
-	public Faculteit() {
+	Faculteit() {
 		super("!");
 	}
 

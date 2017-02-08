@@ -7,6 +7,10 @@ import fi.euclides.model.math.Numbers;
 
 public class AantalSign extends Som {
 
+	AantalSign() {
+		super("aantalSign");
+	}
+
 	@Override
 	public Destroyable[] createDepend() {
 		return new Label[1];
@@ -28,7 +32,6 @@ public class AantalSign extends Som {
 		while(test.length()>1 && test.startsWith("0")) test = test.substring(1);
 		while(test.length()>1 && test.endsWith("0")) test = test.substring(0, test.length()-1);
 		return (test.length());
-
 	}
 
 }
