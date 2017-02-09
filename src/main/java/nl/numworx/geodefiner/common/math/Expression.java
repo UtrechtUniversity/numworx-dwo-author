@@ -25,6 +25,19 @@ public class Expression extends fi.euclides.openmath.Expression {
 		Abs abs = new Abs();
 		abs.setTracker(tracker);
 		put(OMConstants.ARITH1_ABS, abs);
+		Faculteit fac = new Faculteit();
+		fac.setTracker(tracker);
+		symbolmap.put("integer1.factorial", fac);
+		Sigma sigma = new Sigma();
+		sigma.setTracker(tracker);
+		symbolmap.put("arith1.sum", sigma);
+		Prv prv = new Prv();
+		prv.setTracker(tracker);
+		symbolmap.put("wiskopdr.prv", prv);
+		MinMax m = MinMax.MAX(); m.setTracker(tracker);symbolmap.put("minmax1.max", m);
+		 m = MinMax.MIN(); m.setTracker(tracker);symbolmap.put("minmax1.min", m);
+		
+		
 	}
 
 }

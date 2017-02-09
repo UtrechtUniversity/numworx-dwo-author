@@ -14,8 +14,8 @@ class MinMax extends Som {
 		this.een = een;
 	}
 
-	static final MinMax MAX = new MinMax(1);
-	static final MinMax MIN = new MinMax(-1);
+	static final MinMax MAX() {return  new MinMax(1);};
+	static final MinMax MIN() {return  new MinMax(-1);};
 	
 	@Override
 	protected void recalc(Label l, Label[] labels) {

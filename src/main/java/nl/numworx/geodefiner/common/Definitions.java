@@ -305,7 +305,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 // $f := lambda[[$x] ->	$f($x) ]
 // $a := 1
 				{
-					Label l = new Label();l.setString(text);
+					Label l = new Label();l.setString(text.substring(2));
 					l.setVisible(false);
 					l.setX(20);l.setY(30);
 					Destroyable f = expression.interpret(oma, l, viewer.getMapper());

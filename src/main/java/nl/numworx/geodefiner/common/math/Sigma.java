@@ -4,16 +4,15 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.proof.LabelValue;
 
-public class Prv extends LabelValue {
+public class Sigma extends LabelValue {
 
-	Prv() {
-		super("prv");
+	public Sigma() {
+		super("Σ");
 	}
 
 	@Override
 	public String getSymbolicValue(Label l) {
-		Destroyable[] depend = l.getDepend();
-		return "prv(" + s(depend[0]) +"," + s(depend[1]) + ")";
+		return string;
 	}
 
 	@Override
