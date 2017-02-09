@@ -17,6 +17,7 @@ import fi.wiskopdr.formuleobjects.NdeLogVak;
 import fi.wiskopdr.formuleobjects.NdeWortelVak;
 import fi.wiskopdr.formuleobjects.PowerVak;
 import fi.wiskopdr.formuleobjects.PrimitieveVak;
+import fi.wiskopdr.formuleobjects.PrvVak;
 import fi.wiskopdr.formuleobjects.RegelVak;
 import fi.wiskopdr.formuleobjects.SigmaVak;
 import fi.wiskopdr.formuleobjects.WortelVak;
@@ -199,6 +200,10 @@ public class ParserTest extends TestCase {
 	public void testSigmaVak() throws Exception { 
 		RegelVak fe = (new SigmaVak(vak));
 		fe.vulVak("1$ni$ka$lb@@@");parse(fe);
+	}
+	public void testPrvVak() throws Exception { 
+		RegelVak fe = (new PrvVak(vak));
+		fe.vulVak("x$n0$k10$lx@@@");parse(fe);
 	}
 	
 	public void testFac() throws Exception {

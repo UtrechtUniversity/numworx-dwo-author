@@ -22,7 +22,8 @@ public class FormuleParser implements OMConstants{
 	private static OMSymbol CALCULUS1_INT = new OMSymbol("calculus1", "int");
 	private static OMSymbol CALCULUS1_DEFINT = new OMSymbol("calculus1", "defint");
 	private static OMSymbol ARITH1_SUM = new OMSymbol("arith1", "sum");
-  
+    private static OMSymbol WISKOPDR_PRV = new OMSymbol("wiskopdr", "prv");
+    
   private static OMApplication binop(OMObject symbol, OMObject a, OMObject b)
   {
 	OMApplication result = new OMApplication();
@@ -90,6 +91,12 @@ public class FormuleParser implements OMConstants{
     return arglist;
   }
 
+  private static OMApplication minmax(Token f, OMApplication arglist) {
+	OMSymbol s = new OMSymbol("minmax1", f.toString());
+	arglist.setElementAt(s, 0);
+    return arglist;
+  }
+
   public OMSymbol relation(Token tok) {
     char ch = tok.toString().charAt(0);
     switch(ch) {
@@ -99,6 +106,8 @@ public class FormuleParser implements OMConstants{
       case '\u2264': return RELATION1_LEQ;
       case '\u2265': return RELATION1_GEQ;
       case '\u2260': return RELATION1_NEQ;
+      case '\u22A5': return PERPENDICULAR;
+      case '\u2225': return PARALLEL;
     }      
     return RELATION1_EQ;
 }
@@ -142,6 +151,7 @@ TOKEN : /* VAKKEN */
 | < ARROW : ( "->" | "→" ) >
 | < INT : "$P" >
 | < DEFINT: "$i" >
+| < PRV : "$q" >
 }
 TOKEN:
 {
@@ -150,6 +160,7 @@ TOKEN:
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < MAP : "map" >
 | < ARGUMENT: "argument" >
+| < MINMAX: ( "max" | "min" ) >
 }
 
 TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
@@ -169,7 +180,7 @@ TOKEN:
 
 | < VARIABLE : < LETTER > (< DIGIT >|< LETTER >| "'" )* >
 | < EQ : "=" >
-| < RELATION : ("\u2248"|">"|"<"|"\u2264"|"\u2265"|"\u2260") >	}
+| < RELATION : ("\u2248"|">"|"<"|"\u2264"|"\u2265"|"\u2260"|"\u22A5"|"\u2225") >	}
 SKIP: /* Strings */
 {
   "\"" : WithinString
@@ -418,7 +429,13 @@ OMApplication bracket() :
 {
   return binop(ARITH1_SUM, binop(INTERVAL1_INTERVAL, expr, expr2), lambda(tok, expr3));
 }
+| < PRV > expr3 = sum() < N > expr = sum() < K > expr2 = sum() < L >  (tok=< VARIABLE >|tok=< X >|tok=< Y >) <AT ><AT ><AT ><AT >
+{
+  return binop(WISKOPDR_PRV, binop(INTERVAL1_INTERVAL, expr, expr2), lambda(tok, expr3));
+}
+
 | tok = < GEODEFINER > oma = arglist() {  return geodefiner(tok, oma); }
+| tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
 | < ARGUMENT > expr = sum() {  return binop(COMPLEX1_ARGUMENT, expr, null); }
 | tok = < STRING >
 	{

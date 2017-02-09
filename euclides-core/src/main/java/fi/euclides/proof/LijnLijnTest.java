@@ -85,23 +85,22 @@ public class LijnLijnTest extends LabelTester {
 
 	public boolean define(Label l) {
 		boolean result = test(l);
-		if(result)
-		{
-			Lijn[] ll = (Lijn[]) l.getDepend();
-			final Lijn l1 = ll[0];
-			final Lijn l2 = ll[1];
-			DComparator.sort(ll);
+		Lijn[] ll = (Lijn[]) l.getDepend();
+		DComparator.sort(ll);
+		final Lijn l1 = ll[0];
+		final Lijn l2 = ll[1];
+		if (result) {
 			if(pl)
 			{
 				if(ParallelLijn.isParallel(l1, l2))
 					l.setState(Label.CONFIGURATION);
 			} else if (LoodLijn.isLoodRecht(l1,l2))
 				l.setState(Label.CONFIGURATION);
-			l.register(this);
-			l.setString(s(ll[0]) + string + s(ll[1]));
-			l.setX((l1.getX1()+l2.getX2())/2);
-			l.setY((l1.getY1()+l2.getY2())/2);
 		}
+		l.register(this);
+		l.setString(s(ll[0]) + string + s(ll[1]));
+		l.setX((l1.getX1()+l2.getX2())/2);
+		l.setY((l1.getY1()+l2.getY2())/2);
 		return result;
 	}
 

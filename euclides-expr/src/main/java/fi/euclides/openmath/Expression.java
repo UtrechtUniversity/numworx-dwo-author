@@ -32,6 +32,7 @@ import fi.euclides.proof.AfstandHandler;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.proof.LabelDelegate;
+import fi.euclides.proof.LijnLijnTest;
 import fi.euclides.proof.MidpointTester;
 import fi.euclides.proof.OppHandler;
 import fi.euclides.util.DComparator;
@@ -129,6 +130,11 @@ public class Expression implements OMConstants {
 			delegate.setTracker(tracker);
 		CONST.setTracker(tracker);
 		LAMBDA.setTracker(tracker);
+		
+		LijnLijnTest P = new LijnLijnTest(" \u2225 ", true);P.setTracker(tracker);
+		LijnLijnTest L = new LijnLijnTest(" \u22A5 ", false);L.setTracker(tracker);
+		symbolmap.put(nm(PARALLEL), P);
+		symbolmap.put(nm(PERPENDICULAR), L);
 	}
 
 	@Deprecated
