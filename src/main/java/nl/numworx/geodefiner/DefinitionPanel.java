@@ -7,10 +7,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -18,6 +21,7 @@ import nl.numworx.geodefiner.common.CELL;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.model.AbstractViewer;
 
+@SuppressWarnings("serial")
 class DefinitionPanel extends JPanel implements PropertyChangeListener {
 
 	Box list;
@@ -40,6 +44,14 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		public void mouseReleased(MouseEvent e) {
 //			mouseClicked(e);
 		}
+
+//		@Override
+//		public void mouseDragged(MouseEvent e) {
+//            CellItem  button = cellItem;
+//            MouseEvent ce = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+//            TransferHandler handle = button.getTransferHandler();
+//            handle.exportAsDrag(button, ce, TransferHandler.COPY);
+//		}
 		
 	}
 		
@@ -116,4 +128,13 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 			}
 	}
 
+	List<String> toList() {
+		int size = getComponentCount();
+		ArrayList<String> list = new ArrayList<String>(size);
+		for(int i = 0;i < size; i++) {
+			CellItem item = (CellItem) getComponent(i);
+			list.add(item.cell.var);
+		}
+		return list;
+	}
 }

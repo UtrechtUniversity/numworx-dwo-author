@@ -115,7 +115,7 @@ public class CellItem extends JPanel {
 		return null;
 	}
 
-	private CELL cell;
+	CELL cell;
 	JRadioButton radio;
 	JButton potlood;
 	FormuleVak center;
