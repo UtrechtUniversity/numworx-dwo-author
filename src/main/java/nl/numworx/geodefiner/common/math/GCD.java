@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.common.math;
 
 import fi.euclides.expr.Som;
+import fi.euclides.math.IntegerFactory;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 
@@ -11,24 +12,25 @@ class GCD extends Som {
 		super("gcd");
 	}
 
-	private double geefWaarde(Numbers kind1, Numbers kind2)
+	private Numbers geefWaarde(Numbers kind1, Numbers kind2)
 	{	
-		long m  = Math.round(kind1.doubleValue());
-		long n  = Math.round(kind2.doubleValue());
-		double waarde;
-		if(Double.isNaN(kind1.doubleValue()) || Double.isNaN(kind2.doubleValue())) waarde = Double.NaN;
-		else waarde = getGCD(m,n);			
+		if( kind1.isNaN() || kind2.isNaN()) return Numbers.NaN;
+		
+		long m  = Numbers.round(kind1).longValue();
+		long n  = Numbers.round(kind2).longValue();
+		
+		Numbers waarde = Numbers.createRational(getGCD(m,n),1);			
 		return waarde;
 	}
 
-	private static double getGCD(long m, long n) {
-		return new fi.wiskopdr.expressies.GCD(null, null).getGCD(m, n);
+	private static long getGCD(long m, long n) {
+		return IntegerFactory.getGCD(m, n);
 	}
 
 	@Override
 	protected void recalc(Label l, Label[] labels) {
-		double waarde = geefWaarde(labels[0].value, labels[1].value);
-		setStringValue(l, Numbers.createDouble(waarde));
+		Numbers waarde = geefWaarde(labels[0].value, labels[1].value);
+		setStringValue(l, waarde);
 	}
 
 }

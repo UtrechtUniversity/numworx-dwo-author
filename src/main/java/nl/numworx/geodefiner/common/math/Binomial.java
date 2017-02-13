@@ -20,8 +20,8 @@ public class Binomial extends Som {
 
 	@Override
 	protected void recalc(Label l, Label[] labels) {
-		int a = (int)Math.round(labels[0].value.doubleValue());
-		int b = (int)Math.round(labels[1].value.doubleValue());
+		int a = (int)Numbers.round(labels[0].value).longValue();
+		int b = (int)Numbers.round(labels[1].value).longValue();
 		Numbers value = Numbers.createDouble(Bin.binom(a,b));
 		setStringValue(l, value);
 	}

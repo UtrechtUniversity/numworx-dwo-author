@@ -24,7 +24,7 @@ class Faculteit extends Som {
 	@Override
 	protected void recalc(Label l, Label[] labels) {
 		Numbers value = labels[0].value;
-		long w = Math.round(value.doubleValue());
+		long w = Numbers.round(value).longValue();
 		if(w >= 0 && w < 100) {
 			double antw = 1;
 			for(long i=w ; i>0 ; i--) antw = antw*i;

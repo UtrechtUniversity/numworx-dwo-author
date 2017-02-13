@@ -14,13 +14,16 @@ public class BinomCDF extends Som {
 
 	private double geefWaarde(Numbers kind1, Numbers kind2, Numbers kind3)
 	{	
-		double n = kind1.doubleValue();
+		if ( kind1.isNaN() || kind2.isNaN() || kind3.isNaN())
+			return Double.NaN;
+		
+		
+		long n = Numbers.round(kind1).longValue();
 		double p = kind2.doubleValue();
 		double k = kind3.doubleValue();
-		double waarde = Double.NaN;
-		if(Double.isNaN(n) || Double.isNaN(p) || Double.isNaN(k)) return Double.NaN;
+		double waarde;
 		waarde = 0;
-		int round = (int) Math.round(n);
+		int round = (int) (n);
 		for( int i=0 ; i<k+1 ; i++)
 		{	
 			double nBovenK = Bin.binom(round, i);

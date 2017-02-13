@@ -14,12 +14,14 @@ public class BinomPDF extends Som {
 
 	public double geefWaarde(Numbers kind1, Numbers kind2, Numbers kind3)
 	{	
-		double n = kind1.doubleValue();
+		if ( kind1.isNaN() || kind2.isNaN() || kind3.isNaN())
+			return Double.NaN;
+		
+		long n = Numbers.round(kind1).longValue();
 		double p = kind2.doubleValue();
-		double k = kind3.doubleValue();
-		double waarde = Double.NaN;
-		if(Double.isNaN(n) || Double.isNaN(p) || Double.isNaN(k)) return Double.NaN;
-		double nBovenK = Bin.binom((int)Math.round(n),(int)Math.round(k));
+		long k = Numbers.round(kind3).longValue();
+		double waarde;
+		double nBovenK = Bin.binom((int)(n),(int)(k));
 		double kans = Math.pow(p, k) * Math.pow(1-p, n-k);
 		waarde = nBovenK*kans;
 		return waarde;

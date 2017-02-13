@@ -12,7 +12,7 @@ class InvNorm extends Som {
 		super("invNorm");
 	}
 
-	double phiInv(double p)
+	static double phiInv(double p)
 	{	return StatUtil.getInvCDF(p, true);
 	}
 	

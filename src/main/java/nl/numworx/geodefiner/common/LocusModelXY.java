@@ -1,7 +1,9 @@
 package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +45,7 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 	private Label y1, y2;
 	private Label x;
 	private Label fx,fy;
-	private Set<Destroyable> output = new HashSet<>();
+	private Set<Destroyable> output = Collections.newSetFromMap(new IdentityHashMap());
 	private Coordinaten dest;
 	private Label interval;
 
@@ -86,7 +88,9 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		fvar = new OMVariable("%fx");
 		OMApplication oma = new OMApplication();
 		oma.addElement(fvar);oma.addElement(xvar);	
-		Expression expression = new Expression(tracker);
+		Expression expression = tracker.adapt(Expression.class);
+		if(expression == null)
+			expression = new Expression(tracker);
 		y1 = (Label) expression.interpret(oma, y1, this);
 		oma = new OMApplication();
 		fvar = new OMVariable("%fy");
@@ -158,7 +162,6 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 
 	@Override
 	public void rename(Destroyable p, String name) {
-		// TODO Auto-generated method stub		
 	}
 
 }

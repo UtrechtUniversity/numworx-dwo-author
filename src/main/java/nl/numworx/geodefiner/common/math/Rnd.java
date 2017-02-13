@@ -20,7 +20,7 @@ public class Rnd extends Som {
 	@Override
 	protected void recalc(Label l, Label[] labels) {
 		double x = labels[0].value.doubleValue();
-		int y = (int) Math.round(labels[1].value.doubleValue());
+		int y = (int) Numbers.round(labels[1].value).longValue();
 		x = roundToSignificantFigures(x, Math.abs(y));
 		Numbers n = Numbers.createDouble(x);
 		if(l.isDefined())
