@@ -47,8 +47,8 @@ public class Transc1 extends Som {
 			Numbers base; 
 			Numbers exp; 
 			if(ll[1] == null) { // een argument is base 10
-				base = Numbers.createInteger(10);
 				exp  = ll[0].value;
+				return Numbers.createDouble(Math.log10(exp.doubleValue()));
 			} else { // twee argumenten
 				base = ll[0].value;
 				exp = ll[1].value;

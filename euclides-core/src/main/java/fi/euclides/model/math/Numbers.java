@@ -10,6 +10,8 @@ public abstract class Numbers {
 	public static  Numbers ONE = factory.getOne();
 	public static  Numbers TWO = factory.getTwo();
 	public static  Numbers PI = factory.getPi();
+	public static  Numbers NaN = new FloatingPoint(Double.NaN);
+
 	public static void setFactory(ExactFactory factory)
 	{
 		Numbers.factory = factory;
@@ -260,6 +262,14 @@ public abstract class Numbers {
 
 	protected Numbers ceiling() {
 		return createDouble(Math.ceil(doubleValue()));
+	}
+
+	public long longValue() {
+		return (long) doubleValue();
+	}
+
+	public boolean isNaN() {
+		return Double.isNaN(doubleValue());
 	}
 	
 }

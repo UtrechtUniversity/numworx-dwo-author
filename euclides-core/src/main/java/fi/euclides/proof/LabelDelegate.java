@@ -39,7 +39,7 @@ public abstract class LabelDelegate extends EventHandler implements Observer {
 	}
 
 	public boolean equals(Label label, Label other) {
-		if(label.getSubKey() != other.getSubKey())
+		if(label.getSubKey() != other.getSubKey() || label.getIndex() != other.getIndex())
 			return false;
 		Destroyable[] ld = label.getDepend();
 		Destroyable[] od = other.getDepend();
