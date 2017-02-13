@@ -72,6 +72,7 @@ import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
+	private static final String CMI_COMPLETION_STATUS = "cmi.completion_status";
 	private static final String CMI_CORE_LESSON_LOCATION = "cmi.core.lesson_location";
 	private static final String CMI_COMMENTS_FROM_LMS_0_COMMENT = "cmi.comments_from_lms.0.comment";
 	private static final String CMI_CORE_LESSON_MODE = "cmi.core.lesson_mode";
@@ -1022,11 +1023,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						Hashtable reviewState = ons.getReviewStateHashtable();
 						String reviewStateString = JSONValue.toJSONString(reviewState);
 						System.out.println("weggeschreven reviewStateString: "+ reviewStateString);
-						String old = api.LMSGetValue("cmi.completion_status");
-						if("completed" .equals(old) ) api.LMSSetValue("cmi.completion_status", "review"); // ontzegel voor review FIXME security hack
+						String old = api.LMSGetValue(CMI_COMPLETION_STATUS);
+						if("completed" .equals(old) ) api.LMSSetValue(CMI_COMPLETION_STATUS, "review"); // ontzegel voor review FIXME security hack
 						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
 						api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
-						api.LMSSetValue("cmi.completion_status", old);
+						api.LMSSetValue(CMI_COMPLETION_STATUS, old);
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
 							return;
@@ -1040,9 +1041,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						//api.LMSSetValue(CMI_SUSPEND_DATA, suspendDataString);
 						Object o = reviewData.get("toetsLocked");
 						if( Boolean.TRUE.equals(o))
-							api.LMSSetValue("cmi.completion_status", "completed");
+							api.LMSSetValue(CMI_COMPLETION_STATUS, "completed");
 						else if(Boolean.FALSE.equals(o))
-							api.LMSSetValue("cmi.completion_status",  "incomplete");
+							api.LMSSetValue(CMI_COMPLETION_STATUS,  "incomplete");
 						
 						
 						
@@ -1139,7 +1140,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			if (value != null)
 				reviewData.putAll((Map) value);
 			toetsLocked = Boolean.TRUE.equals(reviewData.get("toetsLocked"));
-			toetsLocked |= "completed".equals(api.LMSGetValue("cmi.completion_status"));
+			toetsLocked |= "completed".equals(api.LMSGetValue(CMI_COMPLETION_STATUS));
 
 			WiskOpdr.log = log;
 			WiskOpdr.reviewData = reviewData;
@@ -1147,7 +1148,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 			ons.zetToetsLocked(toetsLocked);
 
-		if(review || toetsLocked) {
+		if(/*review ||*/ toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			Hashtable reviewState = toHashtable(reviewStateString);
 			
@@ -1220,11 +1221,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			toetsLocked = ((Boolean) reviewData.get("toetsLocked")).booleanValue();
 		else
 			toetsLocked = false;
-		toetsLocked |= "completed".equals(api.LMSGetValue("cmi.completion_status"));
+		toetsLocked |= "completed".equals(api.LMSGetValue(CMI_COMPLETION_STATUS));
 
 		ons.zetToetsLocked(toetsLocked);
 		
-		if(review || toetsLocked) {
+		if(/*review ||*/ toetsLocked) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			//System.out.println("opgehaalde reviewStateString :" + reviewStateString);
 			Hashtable reviewState = toHashtable(reviewStateString);
@@ -1307,8 +1308,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public List getScoreMapList(SCORM12APIInterface api) {
 		String launchData = api.LMSGetValue(CMI_LAUNCH_DATA);
 		String suspendData = api.LMSGetValue(CMI_SUSPEND_DATA);
-		String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
-		
+		String completed = api.LMSGetValue(CMI_COMPLETION_STATUS);
+		String reviewStateString = 
+				LESSON_STATUS_completed .equals(completed)
+				? api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT)
+			    : "";
 		String[] scoresMax, scoresRaw, sessions, isCorrected;
 		scoresMax = geefPaginaScoresMax(launchData);
 		boolean cijfersOfLetters = isCijfersOfLetters(launchData);
