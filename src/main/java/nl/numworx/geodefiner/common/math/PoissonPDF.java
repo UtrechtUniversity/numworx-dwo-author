@@ -28,7 +28,7 @@ class PoissonPDF extends Som {
 	}
 
 	PoissonPDF() {
-		super("poissonPDF");
+		super("poissonpdf");
 	}
 
 }

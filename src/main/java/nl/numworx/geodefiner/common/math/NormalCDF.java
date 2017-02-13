@@ -40,6 +40,6 @@ class NormalCDF extends Som {
 	}
 
 	NormalCDF() {
-		super("normalCDF");
+		super("normalcdf");
 	}
 }

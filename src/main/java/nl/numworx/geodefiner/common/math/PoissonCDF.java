@@ -31,7 +31,7 @@ class PoissonCDF extends Som {
 	}
 
 	PoissonCDF() {
-		super("poissonCDF");
+		super("poissoncdf");
 	}
 
 }

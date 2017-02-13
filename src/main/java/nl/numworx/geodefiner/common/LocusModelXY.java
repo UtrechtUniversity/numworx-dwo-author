@@ -45,7 +45,7 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 	private Label y1, y2;
 	private Label x;
 	private Label fx,fy;
-	private Set<Destroyable> output = Collections.newSetFromMap(new IdentityHashMap());
+	private Set<Destroyable> output = Collections.newSetFromMap(new IdentityHashMap<Destroyable, Boolean>());
 	private Coordinaten dest;
 	private Label interval;
 
@@ -90,7 +90,7 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		oma.addElement(fvar);oma.addElement(xvar);	
 		Expression expression = tracker.adapt(Expression.class);
 		if(expression == null)
-			expression = new Expression(tracker);
+			expression = new nl.numworx.geodefiner.common.math.Expression(tracker);
 		y1 = (Label) expression.interpret(oma, y1, this);
 		oma = new OMApplication();
 		fvar = new OMVariable("%fy");

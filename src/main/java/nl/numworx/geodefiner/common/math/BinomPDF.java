@@ -9,7 +9,7 @@ import fi.wiskopdr.expressies.Bin;
 public class BinomPDF extends Som {
 	
 	BinomPDF() {
-		super("binomPDF");
+		super("binompdf");
 	}
 
 	public double geefWaarde(Numbers kind1, Numbers kind2, Numbers kind3)

@@ -1,6 +1,5 @@
 package nl.numworx.geodefiner.common;
 
-import nl.numworx.geodefiner.common.math.Expression;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
@@ -9,7 +8,7 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
-import fi.euclides.model.math.Numbers;
+import fi.euclides.openmath.Expression;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -48,7 +47,8 @@ public class Check_DWO extends Observable implements Observer {
 		String formule = map.getString("formule");
 		maxScore = map.getInt("score");
 		score = 0;
-		Expression expr = new Expression(tracker);
+		Expression expr = tracker.adapt(Expression.class);
+		if(expr == null) expr = new nl.numworx.geodefiner.common.math.Expression(tracker);
 		OMObject logic;
 		try {
 			logic = new FormuleParser(formule.substring(2)).logic();

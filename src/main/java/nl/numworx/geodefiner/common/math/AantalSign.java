@@ -8,7 +8,7 @@ import fi.euclides.model.math.Numbers;
 public class AantalSign extends Som {
 
 	AantalSign() {
-		super("aantalSign");
+		super("sgf");
 	}
 
 	@Override

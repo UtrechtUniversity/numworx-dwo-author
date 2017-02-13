@@ -9,7 +9,7 @@ import fi.wiskopdr.expressies.Bin;
 public class BinomCDF extends Som {
 
 	BinomCDF() {
-		super("binomCDF");
+		super("binomcdf");
 	}
 
 	private double geefWaarde(Numbers kind1, Numbers kind2, Numbers kind3)

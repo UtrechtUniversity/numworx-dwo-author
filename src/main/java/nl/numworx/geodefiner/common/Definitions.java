@@ -54,7 +54,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
-		expression = new Expression(viewer);
+		expression = viewer.adapt(fi.euclides.openmath.Expression.class);
+		if(expression == null) expression = new Expression(viewer);
 		Interval delegate = new Interval();
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);
@@ -71,7 +72,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	static final OMSymbol INT = new OMSymbol("calculus1", "int");
 	static final OMSymbol DEFINT = new OMSymbol("calculus1", "defint");
 	
-	private final Expression expression;
+	private fi.euclides.openmath.Expression expression;
 		
 	public void addElement(CELL element) {
 		if(element.item != null)

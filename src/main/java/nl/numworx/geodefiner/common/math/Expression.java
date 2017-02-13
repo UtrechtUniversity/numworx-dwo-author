@@ -24,9 +24,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		value = new Phi();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.phi", value);
-		value = new Rnd();
-		value.setTracker(tracker);
-		symbolmap.put("geodefiner.rnd", value);
+		install(new Rnd(), tracker);
 		value = new Equals();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.equals", value);
@@ -47,6 +45,23 @@ public class Expression extends fi.euclides.openmath.Expression {
 		 m = MinMax.MIN(); m.setTracker(tracker);symbolmap.put("minmax1.min", m);
 		toc = new ToComplex();
 		toc.setTracker(tracker);
+		Binomial bin = new Binomial(); bin.setTracker(tracker);
+		symbolmap.put("combinat1.binomial", bin);
+		install(new BinomCDF(), tracker);
+		install(new BinomPDF(), tracker);
+		install(new InvNorm(), tracker);
+		install(new NormalCDF(), tracker);
+		install(new PoissonCDF(), tracker);
+		install(new PoissonPDF(), tracker);
+		install(new AantalSign(), tracker);
+		GCD gcd = new GCD(); gcd.setTracker(tracker);
+		symbolmap.put("arith1.gcd", gcd);
+		
+	}
+
+	private void install(LabelValue value, Tracker tracker) {
+		value.setTracker(tracker);
+		symbolmap.put("geodefiner."+value.getSubKey(), value);		
 	}
 
 	LabelValue toc;
