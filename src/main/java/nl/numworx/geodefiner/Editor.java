@@ -40,6 +40,7 @@ import org.cbook.cbookif.CBookWidgetEditIF;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.AbstractViewer;
 import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.WiskOpdr;
@@ -305,6 +306,10 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			} else if (t instanceof InterpretException) {
 				InterpretException ie = (InterpretException) t;
 				command += "\n" + ie.getLocalizedMessage();
+			} else if (t instanceof TokenMgrError) {
+				TokenMgrError tme = (TokenMgrError) t;
+				command += "\n" + tme.getLocalizedMessage();
+				
 			}
 			setFeedback(command);
 		}

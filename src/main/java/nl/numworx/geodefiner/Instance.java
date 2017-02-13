@@ -75,6 +75,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.openmath.Expression;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.proof.LabelDelegate;
@@ -274,6 +275,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		private NamingModel nameMapper;
 		private Snapper snapper = new Snapper();
+		Expression expression; 
 
 		@Override
 		public void paint() {
@@ -283,6 +285,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public <T> T adapt(Class<T> cls) {
 			if(cls == Snapper.class) return (T) snapper;
+			if(cls == Expression.class) return (T) expression;
 			return super.adapt(cls);
 		}
 
@@ -761,6 +764,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	{
 		viewer = new InstanceViewer();
+		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression(viewer); // Inject!!! 
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
 		tiptest = viewer.getHitTester().copy();
