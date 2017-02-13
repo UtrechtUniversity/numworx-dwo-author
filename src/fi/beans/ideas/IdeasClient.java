@@ -41,10 +41,10 @@ public class IdeasClient extends AbstractIdeas {
 	IdeasRPCIF stub;
 
 		public static final String STUBS[] = {
-			"/servlet/fi.servlet.ideas.IdeasServlet",
-			"/servlet/IdeasDwoServlet",
-			"/servlet/IdeasDwoTestServlet",
-			"/servlet/IdeasServlet"
+			"/ideas/IdeasServlet",
+			"/ideas/IdeasDwoServlet",
+			"/ideas/IdeasDwoTestServlet",
+			"/ideas/IdeasServlet"
 		};
 	
 		public static final int DEFAULT = 0; // is 2 op www/www-dev is 1 op dwo.fi.uu.nl
@@ -93,7 +93,7 @@ public class IdeasClient extends AbstractIdeas {
 		private URL fix(URL codeBase) {
 			if(codeBase == null || !codeBase.getProtocol().startsWith("http"))
 				try {
-					codeBase = new URL("http://ws.fisme.science.uu.nl/javaclasses/");
+					codeBase = new URL("http://app.dwo.nl/");
 				} catch (MalformedURLException e) {
 				}
 			return codeBase;
