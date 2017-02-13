@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Action;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.AddCirkelHandler;
 import fi.euclides.event.AddLijnHandler;
@@ -140,7 +142,7 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	}
 	
 	void fromList(ObjectList list) {
-		int size = list.size();
+		int size = list == null ? 0 : list.size();
 		hold = true; // on hold
 		try {
 		int last = 0;
