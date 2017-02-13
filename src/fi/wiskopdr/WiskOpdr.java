@@ -1121,6 +1121,14 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private boolean doJSON = false;
 
 	public void setJSONState(String s) {
+		try {
+			setJSONState(s, true);
+		} catch(Exception e) {
+			setJSONState(s, false);
+		}
+	}
+	
+	private void setJSONState(String s, boolean allow) {
 
 		Object o;
 		o = JSONValue.parse(s);
@@ -1148,7 +1156,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 			ons.zetToetsLocked(toetsLocked);
 
-		if(/*review ||*/ toetsLocked) {
+		if(/*review ||*/ toetsLocked && allow) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			Hashtable reviewState = toHashtable(reviewStateString);
 			
@@ -1196,7 +1204,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	/**
 	 * De status van het applet wordt gezet met behulp de suspenddata.
 	 */
+	
 	public void setState(String s) {
+		try {
+			setState(s, true);
+		} catch(Exception e) {
+			setState(s, false);
+		}
+	}
+	
+	private void setState(String s, boolean allow) {
 		Object o = StringCodeObject.decodeStringToObject(s);
 		if (o == null)
 			return;
@@ -1225,7 +1242,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		ons.zetToetsLocked(toetsLocked);
 		
-		if(/*review ||*/ toetsLocked) {
+		if(/*review ||*/ toetsLocked && allow) {
 			String reviewStateString = api.LMSGetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT);
 			//System.out.println("opgehaalde reviewStateString :" + reviewStateString);
 			Hashtable reviewState = toHashtable(reviewStateString);
