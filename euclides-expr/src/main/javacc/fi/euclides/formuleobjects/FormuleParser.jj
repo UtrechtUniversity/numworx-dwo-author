@@ -96,6 +96,11 @@ public class FormuleParser implements OMConstants{
 	arglist.setElementAt(s, 0);
     return arglist;
   }
+  private static OMApplication arith(Token f, OMApplication arglist) {
+	OMSymbol s = new OMSymbol("arith1", f.toString());
+	arglist.setElementAt(s, 0);
+    return arglist;
+  }
 
   public OMSymbol relation(Token tok) {
     char ch = tok.toString().charAt(0);
@@ -156,11 +161,13 @@ TOKEN : /* VAKKEN */
 TOKEN:
 {
   < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals"
-                 | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd" ) >
+                 | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"
+                 | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf") >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < MAP : "map" >
 | < ARGUMENT: "argument" >
 | < MINMAX: ( "max" | "min" ) >
+| < ARITH: ("gcd"|"abs") >
 }
 
 TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
@@ -436,6 +443,7 @@ OMApplication bracket() :
 
 | tok = < GEODEFINER > oma = arglist() {  return geodefiner(tok, oma); }
 | tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
+| tok = < ARITH > oma = arglist() {  return arith(tok, oma); }
 | < ARGUMENT > expr = sum() {  return binop(COMPLEX1_ARGUMENT, expr, null); }
 | tok = < STRING >
 	{

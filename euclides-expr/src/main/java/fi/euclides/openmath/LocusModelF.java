@@ -116,7 +116,10 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 		fvar = new OMVariable(F);
 		OMApplication oma = new OMApplication();
 		oma.addElement(fvar);oma.addElement(xvar);	
-		y = (Label) new Expression(tracker).interpret(oma, y, this);
+		Expression expression = tracker.adapt(Expression.class);
+		if(expression == null) 
+			expression = new Expression(tracker);
+		y = (Label) expression.interpret(oma, y, this);
 		dest = new Coordinaten(x, y, O, U);
 	}
 
