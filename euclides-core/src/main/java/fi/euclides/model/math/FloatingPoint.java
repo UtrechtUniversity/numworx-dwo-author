@@ -65,7 +65,9 @@ public class FloatingPoint extends Numbers {
 	}
 	
 	Numbers sqrt() {
-		return createDouble(Math.sqrt(value));
+		if(value >= 0)
+			return createDouble(Math.sqrt(value));
+		return new Complex(this, Numbers.ZERO).sqrt();
 	}
 	
 }

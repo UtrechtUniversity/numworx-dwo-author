@@ -39,7 +39,7 @@ public class Complex extends Numbers {
 		return 0;
 	}
 
-	Complex(Numbers re, Numbers im) {
+	public Complex(Numbers re, Numbers im) {
 		this.re = re;
 		this.im = im;
 	}
