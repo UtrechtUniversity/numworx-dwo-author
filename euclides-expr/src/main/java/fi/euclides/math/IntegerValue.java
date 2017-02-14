@@ -2,6 +2,7 @@ package fi.euclides.math;
 
 import java.io.IOException;
 
+import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.NumberCodec;
 import fi.euclides.model.math.Numbers;
@@ -17,7 +18,7 @@ public class IntegerValue extends Exact {
 	@Override
 	protected Numbers sqrt() {
 		if(value == 1 || value == 0) return this;
-		if(value < 0) return Numbers.createDouble(Double.NaN);
+		if(value < 0) return Numbers.sqrt(new Complex(this, Numbers.ZERO));
 		double sqrt = Math.sqrt(value);
 		if (sqrt == Math.ceil(sqrt))
 			return new IntegerValue( (int) sqrt);

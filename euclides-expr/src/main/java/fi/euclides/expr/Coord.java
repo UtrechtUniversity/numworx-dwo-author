@@ -7,6 +7,7 @@ import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Segment;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.Observable;
@@ -46,7 +47,9 @@ public class Coord extends LabelValue {
 // patch voor geodefiner, als een coordinaat free is, dan is die niet at (cx,cy)
 		if(d instanceof Coordinaten && !((Coordinaten) d).isFree()) {
 			Coordinaten punt = (Coordinaten) d;
-			Numbers value = xKey == string ? punt.getCx() : punt.getCy();
+			Numbers value = xKey == string ? 
+				  Numbers.sub(Numbers.real(punt.getCx()), Numbers.imag(punt.getCy()))
+				: Numbers.add(Numbers.real(punt.getCy()), Numbers.imag(punt.getCx()));
 			setStringValue(l,value);
 		} else
 		if(d instanceof Punt)
@@ -54,7 +57,13 @@ public class Coord extends LabelValue {
 			Punt punt = (Punt) d;
 			Numbers div = getValue(punt, (Punt)ll[1], (Punt)ll[2]);
 			setStringValue(l,div);
-		} else {
+		} 
+//		else if (d instanceof Segment)
+//		{   Segment s = (Segment)d;
+//			Numbers value =  string == xKey ? s.getDXn() : s.getDYn();
+//			setStringValue(l,value);
+//		}
+		else {
 			Numbers v = ((Label)d).value;
 			Numbers value = string == xKey ? Numbers.real(v) : Numbers.imag(v);
 			setStringValue(l,value);

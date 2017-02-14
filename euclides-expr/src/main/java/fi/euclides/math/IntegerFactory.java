@@ -7,6 +7,8 @@ import fi.euclides.model.math.Numbers;
 
 public class IntegerFactory implements ExactFactory {
 
+	public static final ExactFactory INSTANCE = new IntegerFactory();
+	
 	final IntegerValue ZERO = new IntegerValue(0);
 	final IntegerValue ONE = new IntegerValue(1);
 	final IntegerValue TWO = new IntegerValue(2);
@@ -124,7 +126,10 @@ public class IntegerFactory implements ExactFactory {
 
 	@Override
 	public Numbers valueOf(String string) {
-		return DefaultFactory.INSTANCE.valueOf(string);
+		if(string.contains("."))
+			return DefaultFactory.INSTANCE.valueOf(string);
+		long l = Long.parseLong(string);
+		return createRational(l, 1L);
 	}
 
 	@Override

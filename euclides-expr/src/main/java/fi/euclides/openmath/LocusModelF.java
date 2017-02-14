@@ -24,6 +24,7 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.VrijPunt;
+import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.expr.Coord;
@@ -120,7 +121,18 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 		if(expression == null) 
 			expression = new Expression(tracker);
 		y = (Label) expression.interpret(oma, y, this);
-		dest = new Coordinaten(x, y, O, U);
+		dest = new Coordinaten(x, y, O, U) {
+
+			@Override
+			public Numbers getCy() {
+				if(super.getCy() instanceof Complex) return Numbers.NaN;
+				return super.getCy();
+			}
+
+			@Override
+			public boolean isDefined() {
+				return super.isDefined() && !getCy().isNaN();
+			} };
 	}
 
 	public Punt getDest() {
