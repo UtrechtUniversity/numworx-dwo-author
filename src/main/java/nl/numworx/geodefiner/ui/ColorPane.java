@@ -5,19 +5,20 @@ import java.awt.Dimension;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 
+import nl.numworx.geodefiner.ui.color.ColorChooser;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 
 	T model;
-	JColorChooser  chooser;
+	ColorChooser  chooser;
 	FormuleEditor  visibilityEditor;
 
 	public ColorPane(T model) {
 		visibilityEditor = new FormuleEditor(false);
 		this.model = model;
-		chooser = new JColorChooser(model.color);
-		chooser.setPreviewPanel(new JPanel());
+		chooser = new ColorChooser(model.color);
+		//chooser.setPreviewPanel(new JPanel());
 		add(chooser);
 		add(visibilityEditor);
 		if(model.getVisibility() != null)

@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.ui.color;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -27,9 +28,15 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 	JSlider slider;
 	JComponent sample;
 	
+	public ColorChooser(java.awt.Color color) {
+		this();
+		setValue(color.getRGB());
+	}
+	
+	
 	public ColorChooser() {
 		super(null);
-		BoxLayout hlayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
+		BoxLayout hlayout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(hlayout);
 		prefab = new JComboBox<Object>(Color.values());
 		prefab.setEditable(true);
@@ -69,9 +76,10 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 		slider.addChangeListener(this);
 		board.addActionListener(this);
 		prefab.addActionListener(this);
-// layout		
-		add(board);
-		add(Box.createHorizontalStrut(10));
+// layout
+		Box hh = Box.createHorizontalBox();
+		hh.add(board);
+		hh.add(Box.createHorizontalStrut(10));
 		Box v = Box.createVerticalBox();
 		Box h = Box.createHorizontalBox();
 		h.add(prefab); v.add(h); h.add(Box.createHorizontalStrut(20));
@@ -79,7 +87,10 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 		v.add(sample);
 		v.add(Box.createVerticalGlue());
 		v.add(slider);
-		add(v);
+		hh.add(v);
+		add(hh);
+		previewPanel = new JPanel();
+		add(previewPanel);
 	}
 	
 	
@@ -120,13 +131,18 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 	public int getValue() {
 		return value;
 	}
+	public java.awt.Color getColor() {
+		return new java.awt.Color(value, true);
+	}
 	
 	private void setValue0(int v) {
 		int frac = 255 * slider.getValue() / 100;
 		v = (frac << 24)|(v&0xFFFFFF);
-		sample.setForeground(new java.awt.Color(v, true));
-		sample.repaint();
 		value = v;
+		sample.setForeground(new java.awt.Color(v, true));
+		previewPanel.setForeground(sample.getForeground());
+		sample.repaint();
+		previewPanel.repaint();
 	}
 
 	public static void main(String[] args) {
@@ -144,6 +160,18 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		setValue0(value);
+	}
+
+	private JComponent previewPanel;
+	public JComponent getPreviewPanel() {
+		return previewPanel;
+	}
+
+
+	public void setPreviewPanel(JComponent panel) {
+		if(panel == null) panel = new JPanel();
+		remove(previewPanel);
+		add(previewPanel = panel);
 	}
 
 }
