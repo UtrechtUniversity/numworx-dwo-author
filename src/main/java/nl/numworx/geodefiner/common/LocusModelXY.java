@@ -2,9 +2,7 @@ package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Set;
 
 import nl.tue.win.riaca.openmath.lang.OMApplication;
@@ -19,6 +17,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Locus.LocusModel;
+import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
@@ -96,7 +95,23 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		fvar = new OMVariable("%fy");
 		oma.addElement(fvar); oma.addElement(xvar);
 		y2 = (Label) expression.interpret(oma, y2, this);
-		dest = new Coordinaten(y1, y2, O, U);
+		dest = new Coordinaten(y1, y2, O, U){
+			@Override
+			public Numbers getCy() {
+				if(super.getCy() instanceof Complex) return Numbers.NaN;
+				return super.getCy();
+			}
+
+			@Override
+			public Numbers getCx() {
+				if (super.getCx() instanceof Complex) return Numbers.NaN;
+				return super.getCx();
+			}
+
+			@Override
+			public boolean isDefined() {
+				return super.isDefined() && !getCy().isNaN() &&!getCx().isNaN();
+			} };
 	}
 
 	@Override
