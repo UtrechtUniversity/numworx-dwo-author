@@ -56,8 +56,9 @@ public class Coordinaten extends Punt implements Observer, FreePoint {
 		Numbers vx = Numbers.sub(u.getY(), o.getY());
 		Numbers uy = Numbers.neg(vx);
 		Numbers vy = ux;
-		Numbers cx = this.cx.value;
-		Numbers cy = this.cy.value;
+// this.cx,this.cy COMPLEX	
+		Numbers cx = Numbers.sub(Numbers.real(this.cx.value), Numbers.imag(this.cy.value));
+		Numbers cy = Numbers.add(Numbers.real(this.cy.value), Numbers.imag(this.cx.value));
 		Numbers x = Numbers.add(Numbers.mul(cx, ux), Numbers.mul(cy, vx));
 		Numbers y = Numbers.add(Numbers.mul(cx, uy), Numbers.mul(cy, vy));
 		
