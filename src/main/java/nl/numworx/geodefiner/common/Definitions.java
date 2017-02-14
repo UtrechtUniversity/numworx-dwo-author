@@ -124,11 +124,18 @@ public class Definitions implements Observer /*, ListModel*/ {
 					expression.copy(oma, viewer.getMapper(), depend);
 				if(POINT.isSame(f)) {
 					Punt p;
-					if(depend.length != 3 && depend.length != 2) {
-						throw new InterpretException("point: 2 of 3 parameters");
+					if(depend.length != 3 && depend.length != 2 && depend.length != 1) {
+						throw new InterpretException("point: 1, 2 of 3 parameters");
 					}
 					Destroyable arg0 = depend[0];
-					Destroyable arg1 = depend[1];
+					Destroyable arg1;
+					if(depend.length == 1) {
+						LabelDelegate d = viewer.getRegistered("1");
+						Label l = d.define(Label.EMPTY);
+						l.setValue(Numbers.ZERO);l.setString("0");
+						arg1 = l;
+					} else 
+						arg1 = depend[1];
 					if(arg0 instanceof Label && arg1 instanceof Label) {
 // $P := point(1,2)
 						Label ix = (Label) arg0; // toNumber(object)
