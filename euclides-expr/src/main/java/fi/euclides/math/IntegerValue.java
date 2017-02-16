@@ -18,7 +18,7 @@ public class IntegerValue extends Exact {
 	@Override
 	protected Numbers sqrt() {
 		if(value == 1 || value == 0) return this;
-		if(value < 0) return Numbers.sqrt(new Complex(this, Numbers.ZERO));
+		if(value < 0) return createComplex(ZERO, sqrt(neg()));
 		double sqrt = Math.sqrt(value);
 		if (sqrt == Math.ceil(sqrt))
 			return new IntegerValue( (int) sqrt);

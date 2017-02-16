@@ -134,7 +134,9 @@ public abstract class Numbers {
 		return a.sqrt();
 	}
 	
-	abstract Numbers sqrt();
+	protected Numbers sqrt() { 
+		return Numbers.NaN;
+	}
 
 	/**
 	 * Net echt OO, maar is het in overeenkomst met readNumber.

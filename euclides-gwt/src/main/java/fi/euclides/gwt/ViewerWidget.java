@@ -21,4 +21,17 @@ public interface ViewerWidget extends IsWidget {
 	void moveBack();
 
 	void setMapper(NameMapper mapper);
+
+	void drawLine(double x1, double y1, double x2, double y2);
+	void setColor(int c);
+
+	String TEXT_BOTTOM = "text-after-edge";
+	String TEXT_TOP = "text-before-edge";
+	String TEXT_CENTRAL = "central";
+	String TEXT_START = "start";
+	String TEXT_MIDDLE = "middle";
+	String TEXT_END = "end";
+	void drawString(String string, double x, double y, String textEnd,
+			String textTop, String background);
+
 }

@@ -47,7 +47,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		return 0 <= x && x <= width && 0 <= y && y <= height;
 	}
 
-	private Canvas canvas;
+	protected Canvas canvas;
 	private Label status;
 	protected Context2d context;
 	private int height = 400;
@@ -66,6 +66,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 
 	public SpeelVeld(int width, int height) {
+		this.width = width;
+		this.height = height;
 		canvas = Canvas.createIfSupported();
 		canvas.setPixelSize(width,height);
 	    canvas.setCoordinateSpaceWidth(width);
@@ -97,7 +99,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	
 	@Override
-	protected void drawLine(double x1, double y1, double x2, double y2) {
+	public void drawLine(double x1, double y1, double x2, double y2) {
 		context.beginPath();
 		context.moveTo(x1, y1);
 		context.lineTo(x2, y2);
@@ -156,7 +158,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 
 	@Override
-	protected void setColor(int n) {
+	public void setColor(int n) {
 		CssColor color = colors[n];
 		context.setFillStyle(color);
 		context.setStrokeStyle(color);
@@ -274,6 +276,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void init(int w, int h) {
+		width = w;
+		height = h;
 		canvas.setPixelSize(width,height);
 	    canvas.setCoordinateSpaceWidth(width);
 	    canvas.setCoordinateSpaceHeight(height);
@@ -298,5 +302,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		// TODO Auto-generated method stub
 		
 	}
-
+	public void drawString(String value, double x, double y,
+			String h, String v, String bg) {
+		drawString(value, x, y);
+	}
 }

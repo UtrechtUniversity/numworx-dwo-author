@@ -13,4 +13,5 @@
   <source path="expr" />
   <source path="formuleobjects" />
   <source path="openmath" />
+  <source path="math" />
 </module>

@@ -10,6 +10,8 @@ import org.vectomatic.dom.svg.OMSVGLength;
 import org.vectomatic.dom.svg.OMSVGLineElement;
 import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPathSegList;
+import org.vectomatic.dom.svg.OMSVGRect;
+import org.vectomatic.dom.svg.OMSVGRectElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.OMSVGStyle;
 import org.vectomatic.dom.svg.OMSVGTextElement;
@@ -114,7 +116,7 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		}
 
 		@Override
-		protected void drawLine(double x1, double y1, double x2, double y2) {
+		public void drawLine(double x1, double y1, double x2, double y2) {
 			OMSVGLineElement line = doc.createSVGLineElement((float)x1, (float)y1, (float)x2, (float)y2);
 			line.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, color);
 			getBody().appendChild(line);
@@ -143,7 +145,7 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		}
 
 		@Override
-		protected void setColor(int c) {
+		public void setColor(int c) {
 			switch(c) {
 			case magenta: color = "magenta"; break;
 			default:
@@ -308,4 +310,20 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void drawString(String value, double x, double y,
+			String h, String v, String bg) {
+		drawString(value, x, y);
+		OMSVGTextElement text = (OMSVGTextElement) getBody().getLastChild();
+		OMSVGStyle style = text.getStyle();
+		if(h != null) style.setSVGProperty(SVGConstants.CSS_TEXT_ANCHOR_PROPERTY, h);
+		if(v != null) style.setSVGProperty(SVGConstants.CSS_DOMINANT_BASELINE_PROPERTY, v);
+		if(bg != null) { // TODO randje?
+			OMSVGRect bbox = text.getBBox();
+			OMSVGRectElement rect = doc.createSVGRectElement(bbox);
+			rect.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, bg);
+			getBody().insertBefore(rect, text);
+		}
+	}
+
 }

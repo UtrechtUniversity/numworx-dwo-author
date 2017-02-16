@@ -14,7 +14,8 @@ public class Complex extends Numbers {
 		return "(" + toString(re) + "|" + toString(im) + ")";
 	}
 
-	Numbers sqrt() {
+	@Override
+	protected Numbers sqrt() {
 		int s = signum(im);
 		if( s == 0)
 		{
@@ -39,7 +40,7 @@ public class Complex extends Numbers {
 		return 0;
 	}
 
-	public Complex(Numbers re, Numbers im) {
+	Complex(Numbers re, Numbers im) {
 		this.re = re;
 		this.im = im;
 	}

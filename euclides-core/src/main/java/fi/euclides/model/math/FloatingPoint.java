@@ -64,10 +64,10 @@ public class FloatingPoint extends Numbers {
 		return value<0.0?-1:value>0.0?+1:0;
 	}
 	
-	Numbers sqrt() {
+	protected Numbers sqrt() {
 		if(value >= 0)
 			return createDouble(Math.sqrt(value));
-		return new Complex(this, Numbers.ZERO).sqrt();
+		return createComplex(ZERO,sqrt(neg()));
 	}
 	
 }
