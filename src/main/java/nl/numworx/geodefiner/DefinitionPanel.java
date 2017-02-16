@@ -2,6 +2,7 @@ package nl.numworx.geodefiner;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -69,19 +70,29 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		}
 
 		public void intervalRemoved(ListDataEvent e) {
-			int i0 = e.getIndex0();
-			int i1 = e.getIndex1();
-			while( i1 >= i0 )
-				list.remove(i1--);
+			Component[] cs = list.getComponents();
+			for (Component component : cs) {
+				CellItem item = (CellItem) component;
+				if (model.indexOf(item.cell) < 0) {
+					list.remove(item);
+				}
+			}
 			DefinitionPanel.this.validate();
 			DefinitionPanel.this.repaint();
 		}
 
 		public void contentsChanged(ListDataEvent e) {
 			int i0 = e.getIndex0();
-			CellItem item = (CellItem) list.getComponent(i0);
-			item.refresh();
-			item.center.formuleVak.geefKind1().addMouseListener(new Click(item));
+			CELL c = model.getElementAt(i0);
+			Component[] cs = list.getComponents();
+			for (Component component : cs) {
+				CellItem item = (CellItem) component;
+				if(c == item.cell) {
+					item.refresh();
+					item.center.formuleVak.geefKind1().addMouseListener(new Click(item));					
+					break;
+				}
+			}
 		}
 		
 	}
@@ -129,12 +140,31 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 	}
 
 	List<String> toList() {
-		int size = getComponentCount();
-		ArrayList<String> list = new ArrayList<String>(size);
+		int size = list.getComponentCount();
+		ArrayList<String> stringList = new ArrayList<String>(size);
 		for(int i = 0;i < size; i++) {
-			CellItem item = (CellItem) getComponent(i);
-			list.add(item.cell.var);
+			CellItem item = (CellItem) list.getComponent(i);
+			stringList.add(item.cell.var);
 		}
-		return list;
+		return stringList;
+	}
+
+	public void fromList(List<String> stringList) {
+		int pos = 0;
+		int size = list.getComponentCount();
+		for(String var: stringList) {
+			for (int i = pos; i < size; i++) {
+				CellItem item = (CellItem) list.getComponent(i);
+				if(var.equals(item.cell.var)) {
+					if(i != pos) {
+						list.remove(item);
+						list.add(item, pos);
+					}
+					pos++;
+					break;
+				}
+			}
+		}
+		repaint();
 	}
 }

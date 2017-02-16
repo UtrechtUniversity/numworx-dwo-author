@@ -174,6 +174,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			}
 		}
 		launchdata.put("definitions", strings);
+		launchdata.put("order", definition.toList());
 		launchdata.put("configuration", configuration);
 		launchdata.put("axes", axes.toMap());
 		launchdata.put("positions", instance.getState().get("positions"));
@@ -235,6 +236,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		else split.setDividerLocation((int)(0.7*getWidth())); // default waarde
 		if(map.containsKey("command"))
 			command.fromString(map.getString("command"));
+		if(map.containsKey("order"))
+			definition.fromList(map.getStringList("order"));
 	}
 
 	public void start() {
