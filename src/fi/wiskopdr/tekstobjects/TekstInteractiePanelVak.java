@@ -95,7 +95,7 @@ import fi.wiskopdr.CheckSleepUnitPanel;
 import fi.wiskopdr.AntwoordTekstVak;
 import fi.wiskopdr.AntwoordKeuzeVak;
 import fi.wiskopdr.GetallenlijnSprongPanel;
-//import fi.nabouwenaanzichten.NabouwenAanzichten;
+//import fi.javalogoweb3d.JavaLogoWeb3d;
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 //import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
 
@@ -312,6 +312,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
 		{ "fi.heks.Heks" , "[test] Heks" },
 		{ "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
+		{ "fi.javalogoweb3d.JavaLogoWeb3b" , "[test] JavaLogoWeb3d" },
 	};
 	
 	
@@ -380,14 +381,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
 		WiskOpdr.rb.getString("symboolIpLabel"),
 		"Heks",
-		"GeoDefiner"
+		"GeoDefiner",
+		"JavaLogoWeb3d"
 	};
 	
 	
 	public static int[][] interactiePanelSets =
 	{
 		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
-		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57},
+		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58},
 		{45},
 		{9, 55}, 
 		{10,39},

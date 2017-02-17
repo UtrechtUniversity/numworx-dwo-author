@@ -421,6 +421,8 @@ public class FormuleParser
 		s = vervangFunctieScheidingstekens(s,"poissoncdf");
 		s = vervangFunctieScheidingstekens(s,"poissonpdf");
 		s = vervangFunctieScheidingstekens(s,"gcd");
+		s = vervangFunctieScheidingstekens(s,"min");
+		s = vervangFunctieScheidingstekens(s,"max");
 		
 		String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
         for(int i = 0 ; i<functieNamen.length ; i++)
