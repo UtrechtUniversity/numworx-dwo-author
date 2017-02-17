@@ -312,7 +312,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
 		{ "fi.heks.Heks" , "[test] Heks" },
 		{ "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
-		{ "fi.javalogoweb3d.JavaLogoWeb3b" , "[test] JavaLogoWeb3d" },
+		{ "fi.javalogoweb3d.JavaLogoWeb3d" , "[test] JavaLogoWeb3d" },
 	};
 	
 	
