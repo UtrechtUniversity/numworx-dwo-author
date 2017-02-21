@@ -301,6 +301,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{"OPT_allesCorrect", "Nächste Seite nur wenn alles richtig (grün)"},
 				{"OPT_deelOpdr" , "Teile a,b,c usw."},
 				{"OPT_zelftoetsGeenCorr" , "Bei Überprüfung keine Korrektur zeigen"},
+				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_eerderGeenCorr" , "Keine Korrektur vorhergehender Seiten"},
 				{"OPT_significantie" , "Option für signifikatene Stellen"},
 				{"OPT_objectives" , "Ziele"},

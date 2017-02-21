@@ -294,6 +294,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"OPT_conditionalPercLabel" , "Perc."},
 				{"OPT_deelOpdr" , "شماره گزینه ها: a,b,c و غیره"},
 				{"OPT_zelftoetsGeenCorr" , "خود آزمون غیر اصلاح شونده"},
+				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_significantie" , "گزینه بررسی اعداد ویژه"},
 				{"OPT_objectives" , "Objectives"},
 				{"OPT_misconceptions" , "Error analysis"},

@@ -301,6 +301,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{"OPT_deelOpdr" , "número de ítems a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "Test personalizado sin correcciones"},
 				{"OPT_eerderGeenCorr" , "Páginas previas sin corrección"},
+				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_significantie" , "Comprobar la opción número significativo"},
 				{"OPT_objectives" , "Objetivos"},
 				{"OPT_misconceptions" , "Error analysis"},

@@ -340,6 +340,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_allesCorrect", "Pas door als alles correct (groen)"},
 				{"OPT_deelOpdr" , "Deelopdrachten a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "Geen correctiemogelijkheid zelftoets"},
+				{"OPT_zelftoetsCorrAftrek" , "puntenaftrek bij correctie zelftoets"},
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},

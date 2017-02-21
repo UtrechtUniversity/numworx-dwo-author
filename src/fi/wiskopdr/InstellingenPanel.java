@@ -44,6 +44,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox allesCorrectCB;
 	private JCheckBox abcDeelOpdrCB;
 	private JCheckBox zelftoetsGeenCorrCB;
+	private JCheckBox aftrekCorrectieZelftoetsCB;
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
@@ -64,6 +65,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	
 	private int condPerc = 100;
 	private JTextField condPercTF;
+	
+	private int aftrekCorrectieZelftoets = 5;
+	private JTextField aftrekCorrectieZelftoetsTF;
 	
 	public VoorwaardelijkeNavigatieButton condButton;
 	
@@ -382,6 +386,18 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		itemOpnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_itemOpnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		checkPerOpdrachtCB = maakCheckBox(WiskOpdr.rb.getString("OPT_checkPerOpdracht"), boxv4, false);//"Check-knop per opdracht"
 		zelftoetsGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeenCorr"), boxv4, false);//"F-toetsen gebruiken of niet"
+		
+		boxh = Box.createHorizontalBox();
+		aftrekCorrectieZelftoetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsCorrAftrek"), boxh, true);
+		aftrekCorrectieZelftoetsCB.addActionListener(this);
+		boxh.add(Box.createHorizontalStrut(10));
+		aftrekCorrectieZelftoetsTF = new JTextField(""+aftrekCorrectieZelftoets);
+		aftrekCorrectieZelftoetsTF.setPreferredSize(new Dimension(50,24));
+		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,24));
+		boxh.add(aftrekCorrectieZelftoetsTF);
+		
+		boxv4.add(boxh);
+		
 		eerderGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_eerderGeenCorr"), boxv4, false);
 		
 		boxh = Box.createHorizontalBox();
@@ -554,6 +570,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
+		int aftrekCorrectieZelftoets = 5;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -613,6 +630,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mccCategorieString = misconceptionsButton.getCategories();
 		scoresZichtbaar = scoresZichtbaarCB.isSelected();
 		
+		try{aftrekCorrectieZelftoets = Integer.parseInt(aftrekCorrectieZelftoetsTF.getText());
+		}
+		catch(Exception e){aftrekCorrectieZelftoets = 0;}
+		 
+		
 		Hashtable h = new Hashtable();
 		
 		h.put("fontSize", new Integer(fontSize));
@@ -671,6 +693,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			h.put("mccCategorieString", mccCategorieString);
 		}
 		h.put("scoresZichtbaar", new Boolean(scoresZichtbaar));
+		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
 		
 		return h;
 	}
@@ -726,6 +749,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
+		int aftrekCorrectieZelftoets = 5;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -764,6 +788,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("allesCorrectNodig")) allesCorrectNodig = ((Boolean)h.get("allesCorrectNodig")).booleanValue();
 		if(h.containsKey("abcDeelOpdr")) abcDeelOpdr = ((Boolean)h.get("abcDeelOpdr")).booleanValue();
 		if(h.containsKey("zelftoetsGeenCorr")) zelftoetsGeenCorr = ((Boolean)h.get("zelftoetsGeenCorr")).booleanValue();
+		if(h.containsKey("aftrekCorrectieZelftoets")) aftrekCorrectieZelftoets = ((Integer)h.get("aftrekCorrectieZelftoets")).intValue();
 		if(h.containsKey("eerderGeenCorr")) eerderGeenCorr = ((Boolean)h.get("eerderGeenCorr")).booleanValue();
 		if(h.containsKey("significantie")) significantie = ((Boolean)h.get("significantie")).booleanValue();
 		if(h.containsKey("hasObjectives")) hasObjectives = ((Boolean)h.get("hasObjectives")).booleanValue();
@@ -831,6 +856,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		abcDeelOpdrCB.setSelected(abcDeelOpdr);
 		condPercTF.setText(""+condPerc);
 		zelftoetsGeenCorrCB.setSelected(zelftoetsGeenCorr);
+		aftrekCorrectieZelftoetsTF.setText(""+aftrekCorrectieZelftoets);
+		if(aftrekCorrectieZelftoets==0) {
+			//aftrekCorrectieZelftoetsTF.setVisible(false);
+			aftrekCorrectieZelftoetsCB.setSelected(false);
+		}
 		eerderGeenCorrCB.setSelected(eerderGeenCorr);
 		significantieCB.setSelected(significantie);
 		objectivesCB.setSelected(hasObjectives);
@@ -951,6 +981,16 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(e.getSource()==misconceptionsCB)
 		{
 			misconceptionsButton.setVisible(misconceptionsCB.isSelected());
+		}
+		if(e.getSource()==aftrekCorrectieZelftoetsCB)
+		{
+			boolean b = aftrekCorrectieZelftoetsCB.isSelected();
+			//aftrekCorrectieZelftoetsTF.setVisible(b);
+			if(!b) {
+				aftrekCorrectieZelftoets = 0;
+				aftrekCorrectieZelftoetsTF.setText(""+aftrekCorrectieZelftoets);
+			}
+			
 		}
 
 

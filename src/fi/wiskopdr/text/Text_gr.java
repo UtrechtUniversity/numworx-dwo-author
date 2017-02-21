@@ -303,6 +303,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"OPT_deelOpdr" , "Item numbers a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "No correction self test"},
 				{"OPT_eerderGeenCorr" , "Καμία διόρθωση σε προηγούμενες σελίδες"},
+				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_significantie" , "Check option significant numbers"},
 				{"OPT_objectives" , "Στόχοι"},
 				{"OPT_misconceptions" , "Error analysis"},

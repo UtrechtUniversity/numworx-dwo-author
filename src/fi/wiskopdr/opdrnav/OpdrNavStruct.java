@@ -1024,6 +1024,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int[] grensScores = null;
 		boolean abcDeelOpdr = false;
 		boolean zelftoetsGeenCorr = false;
+		int aftrekCorrectieZelftoets = 5;
 		boolean eerderGeenCorr = false;
 		boolean significantie = false;
 		boolean hasObjectives = false;
@@ -1113,6 +1114,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			grensScores = (int[]) h.get("grensScores");
 		if (h != null && h.containsKey("zelftoetsGeenCorr"))
 			zelftoetsGeenCorr = ((Boolean) h.get("zelftoetsGeenCorr")).booleanValue();
+		if (h != null && h.containsKey("aftrekCorrectieZelftoets"))
+			aftrekCorrectieZelftoets = ((Integer) h.get("aftrekCorrectieZelftoets")).intValue();
 		if (h != null && h.containsKey("eerderGeenCorr"))
 			eerderGeenCorr = ((Boolean) h.get("eerderGeenCorr")).booleanValue();
 		if (h != null && h.containsKey("significantie"))
@@ -1208,6 +1211,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.misconceptions = misconceptions;
 		this.mccCategorieString = mccCategorieString;
 		this.scoresZichtbaar = scoresZichtbaar;
+		this.nakijkStraf = aftrekCorrectieZelftoets;
 
 		Expressie.zetHoekGraden(hoekGraden);
 		zetMarges(margeLinks, margeRechts, margeBoven, margeOnder);
