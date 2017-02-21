@@ -761,7 +761,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				enlarged = true;
 			}
 		}
-		else if(e.getSource()==sendCommandButton)
+		else if(e.getSource()==sendCommandButton && cbookEventHandler.hasListeners("text"))
 		{
 			String text = getText();
 			Map<String,Object> map = new HashMap<String,Object>();

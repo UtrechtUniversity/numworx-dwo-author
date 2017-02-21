@@ -812,11 +812,11 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	public void kijkNa()
 	{
 		kijkNa(true);
-		if (correct)
+		if (correct && cbookEventHandler.hasListeners("action.correct"))
 			cbookEventHandler.fire("action.correct");
-    	if (fout)
+    	if (fout && cbookEventHandler.hasListeners("action.false"))
     		cbookEventHandler.fire("action.false");
-    	if (fout && errorCount > 1)
+    	if (fout && errorCount > 1 && cbookEventHandler.hasListeners("action.false_2"))
     		cbookEventHandler.fire("action.false_2");
 	}
 
@@ -1150,6 +1150,7 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 	 * @param text
 	 */
 	private void fire(String text) {
+		
 		Map<String, String> parameters = new HashMap<String,String>();
 		parameters.put("content", text);
 		if(logID != null)

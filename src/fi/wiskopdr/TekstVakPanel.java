@@ -2325,15 +2325,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		locationX = x;
 		locationY = y;
 		
-		Map<String,Object> mapx = new HashMap<String,Object>();
-		mapx.put("name", "xcoordinate");
-		mapx.put("value", locationX);
-		cbookEventHandler.fire("double.xcoordinate",mapx);
+		if(cbookEventHandler.hasListeners("double.xcoordinate"))
+		{	Map<String,Object> mapx = new HashMap<String,Object>();
+			mapx.put("name", "xcoordinate");
+			mapx.put("value", locationX);
+			cbookEventHandler.fire("double.xcoordinate",mapx);
+		}
 		
-		Map<String,Object> mapy = new HashMap<String,Object>();
-		mapy.put("name", "(double)xcoordinate");
-		mapy.put("value", locationY);
-		cbookEventHandler.fire("double.ycoordinate",mapy);
+		if(cbookEventHandler.hasListeners("double.ycoordinate"))
+		{	Map<String,Object> mapy = new HashMap<String,Object>();
+			mapy.put("name", "(double)xcoordinate");
+			mapy.put("value", locationY);
+			cbookEventHandler.fire("double.ycoordinate",mapy);
+		}
 	}
 
 	public void setStartSleep(int x, int y)
@@ -3542,7 +3546,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			
 			klapUitButton.setSelected(true);
 			produceAction("tvpKlapUit");
-			cbookEventHandler.fire("action.unfold");
+			if(cbookEventHandler.hasListeners("action.unfold"))
+				cbookEventHandler.fire("action.unfold");
 			//klapUitButton.setBackground(Color.white);
 		}
 		else

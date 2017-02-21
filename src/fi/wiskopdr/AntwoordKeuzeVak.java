@@ -659,9 +659,12 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	public void kijkNa()
 	{
 		kijkNa(true);
-		if(correct)cbookEventHandler.fire("action.correct");
-    	if(fout)cbookEventHandler.fire("action.false");
-    	if(fout && errorCount>0)cbookEventHandler.fire("action.false_2");
+		if(correct && cbookEventHandler.hasListeners("action.correct"))
+			cbookEventHandler.fire("action.correct");
+    	if(fout && cbookEventHandler.hasListeners("action.false"))
+    		cbookEventHandler.fire("action.false");
+    	if(fout && errorCount>0 && cbookEventHandler.hasListeners("action.false_2"))
+    			cbookEventHandler.fire("action.false_2");
 	}
 
 	public void kijkNa(boolean show)
@@ -845,11 +848,12 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			// TODO  if checkExternal, dan werkt dit nog niet goed met attempts en errors
 			
 			//cbookEventHandler.fire("index", "index", new Integer(antwoordKV.getSelectedIndex()));
-			cbookEventHandler.fire("index", (new Integer(antwoordKV.getSelectedIndex())).toString());
-			if(antwoordKV.getSelectedIndex() != 0) 
+			if(cbookEventHandler.hasListeners("index"))
+				cbookEventHandler.fire("index", (new Integer(antwoordKV.getSelectedIndex())).toString());
+			if(antwoordKV.getSelectedIndex() != 0 && cbookEventHandler.hasListeners("Constants.USER_INPUT")) 
 				cbookEventHandler.fire(Constants.USER_INPUT, antwoordKV.getSelectedItem().toString());
 			
-			if (hasFeedback)
+			if (hasFeedback && cbookEventHandler.hasListeners("text.feedback"))
 			{
 				Hashtable answerModel = answerModels[antwoordKV.getSelectedIndex()-1];
 				String feedbackText = (String)answerModel.get("feedback");

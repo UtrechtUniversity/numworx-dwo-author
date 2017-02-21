@@ -434,9 +434,12 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
     public void kijkNa()
     {
     	kijkNa(true);
-    	if(correct)cbookEventHandler.fire("action.correct");
-    	if(fout)cbookEventHandler.fire("action.false");
-    	if(fout && errorCount>0)cbookEventHandler.fire("action.false_2");
+    	if(correct && cbookEventHandler.hasListeners("action.correct"))
+    		cbookEventHandler.fire("action.correct");
+    	if(fout && cbookEventHandler.hasListeners("action.false"))
+    		cbookEventHandler.fire("action.false");
+    	if(fout && errorCount>0 && cbookEventHandler.hasListeners("action.false_2"))
+    		cbookEventHandler.fire("action.false_2");
     }
     
     public void kijkNa(boolean show)

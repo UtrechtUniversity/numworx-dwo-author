@@ -3925,7 +3925,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		if(command.equals("balansvergelijking"))
 		{	
 			Vergelijking balansVerg = null;
-			if(huidigeVergelijking!=null)
+			if(huidigeVergelijking!=null  && cbookEventHandler.hasListeners("balansvergelijking"))
 			{	balansVerg =  huidigeVergelijking.geefVergelijking(0);
 				System.out.println("balancevergelijking: "+balansVerg.toString());
 				Expressie exp1 = Algebra.herleid(balansVerg.geefExpLinks());
@@ -3937,7 +3937,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			}
 		
 		}
-		if(command.equals("equation"))
+		if(command.equals("equation") && cbookEventHandler.hasListeners("equation"))
 		{	
 			Vergelijking balansVerg = null;
 			if(huidigeVergelijking!=null)
@@ -3946,7 +3946,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			}
 		
 		}
-		if(command.equals("zetOplossing"))
+		if(command.equals("zetOplossing") && cbookEventHandler.hasListeners("zetOplossing"))
 		{	
 			Vergelijking balansVerg = geefInitBalansVergelijking();
     		if(balansVerg==null) return;
@@ -3955,7 +3955,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
     			cbookEventHandler.fire(command,command,new Double(-coeff[0]/coeff[1]));
 		
 		}
-		if(command.equals("double.solution"))
+		if(command.equals("double.solution") && cbookEventHandler.hasListeners("double.solution"))
 		{	
 			Vergelijking balansVerg = geefInitBalansVergelijking();
     		if(balansVerg==null) return;
