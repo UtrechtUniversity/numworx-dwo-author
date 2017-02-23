@@ -2,6 +2,8 @@ package fi.euclides.gwt.canvas;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
+import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Label;
@@ -131,7 +133,6 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 			context.fill();
 		}		
 		context.beginPath();
-		k = k/2;
 		context.arc(x+k, y+k, k, -start, -(start+length), length>0);
 		context.stroke();
 	}
@@ -317,6 +318,17 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 	public void drawString(String value, double x, double y,
 			String h, String v, String bg) {
+		TextAlign halign = TextAlign.START;
+		if (ViewerWidget.TEXT_MIDDLE.equals(h)) halign = TextAlign.CENTER;
+		else if (ViewerWidget.TEXT_END.equals(h)) halign = TextAlign.END;
+		context.setTextAlign(halign);
+		TextBaseline valign = TextBaseline.ALPHABETIC;
+		if (ViewerWidget.TEXT_TOP.equals(v)) valign = TextBaseline.TOP;
+		else if(ViewerWidget.TEXT_BOTTOM.equals(v)) valign = TextBaseline.BOTTOM;
+		else if(ViewerWidget.TEXT_CENTRAL.equals(v)) valign = TextBaseline.MIDDLE;
+		context.setTextBaseline(valign);
+		
 		drawString(value, x, y);
+		
 	}
 }
