@@ -3565,6 +3565,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			//klapUitButton.setText("\u25b8");
 			klapUitButton.setBackground(Color.white);
 			produceAction("tvpKlapIn");
+			if(cbookEventHandler.hasListeners("action.fold"))
+				cbookEventHandler.fire("action.fold");
 			//klapUitButton.setSelected(false);
 			
 			
@@ -3919,6 +3921,20 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setVisible(visible);
 			zetMaat();
 		}
+		else if(command.startsWith("action.fold") && !ingeklapt)
+		{	klapUitAction();
+			setPopupUsed(true);
+			produceAction("resize");
+			klapUitButton.setSelected(false);
+		}
+		else if(command.startsWith("action.unfold") && ingeklapt)
+		{	klapUitAction();
+			setPopupUsed(true);
+			produceAction("resize");
+			//klapUitButton.setSelected(false);
+		}
+		
+		
 		else if(command.startsWith("int.index"))
 		{	int index = 0;
 			index = (Integer)event.getParameter(command);
@@ -4033,7 +4049,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String[] sendCommands = {
 				"double.xcoordinate", 
 				"double.ycoordinate",
-				"action.unfold"};
+				"action.unfold",
+				"action.fold"};
 		return sendCommands;
 	}
 
@@ -4042,6 +4059,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String[] sendCommands = {"int.index",
 				"action.setVisible",
 				"action.setNotVisible",
+				"action.unfold",
+				"action.fold",
 				"text.content"};
 		return sendCommands;
 	}
