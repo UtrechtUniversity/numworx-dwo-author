@@ -498,6 +498,53 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.visitSegment(s);
 		}
 
+		class ShortSegment extends Segment {
+			double dx, dy;
+			Segment org;
+			Tips tip;
+			@Override
+			public double getX1() {
+				double x1 = org.getX1();
+				if (tip != Tips.ATEND) x1 += dx;
+				return x1;
+			}
+			@Override
+			public double getX2() {
+				double x2 = org.getX2();
+				if (tip != Tips.ATSTART) x2 -= dx;
+				return x2;
+			}
+			@Override
+			public double getY1() {
+				double y1 = org.getY1();
+				if (tip != Tips.ATEND) y1 += dy;
+				return y1;
+			}
+			@Override
+			public double getY2() {
+				double y2 = org.getY2();
+				if (tip != Tips.ATSTART) y2 -= dy;
+				return y2;
+			}
+			@Override
+			public <T> T adapt(Class<T> clz) {
+				return org.adapt(clz);
+			}
+			
+			public Adapter getAdapter() {
+				return org.getAdapter();
+			}
+			
+			ShortSegment(Segment org, double dx, double dy, Tips tip) {
+				this.org = org;
+				this.dx = dx;
+				this.dy = dy;
+				this.tip = tip;
+			}
+		}
+		
+		
+		
 		private Segment drawTips(Segment s) {
 			Tips tip = s.adapt(Tips.class);
 			if(tip == null) return s;
@@ -514,10 +561,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			switch(tip) {
 			case ATEND: tip(s.getP2(), -dx, -dy); break;
 			case ATSTARTEND: tip(s.getP2(),-(dx), -(dy));
-			case ATSTART: tip(s.getP1(), dx, dy);
-			case NOTIP: 
+			case ATSTART: tip(s.getP1(), dx, dy); break;
+			case NOTIP: return s;
 			}
-			return s;
+			return new ShortSegment(s, dx, dy, tip);
 		}
 
 		private void tip(Punt p1, double dx, double dy) {
