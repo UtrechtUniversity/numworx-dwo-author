@@ -41,13 +41,13 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		};
 	
 	
-	
 	@Override
 	public boolean contains(double x, double y) {
 		return 0 <= x && x <= width && 0 <= y && y <= height;
 	}
 
 	protected Canvas canvas;
+	protected String fill;
 	private Label status;
 	protected Context2d context;
 	private int height = 400;
@@ -111,12 +111,25 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		context.beginPath();
 		k = k/2;
 		context.arc(i+k, j+k, k, 0, 7);
+		if(fill != null && !"none".equals(fill)) {
+			context.setFillStyle(fill);
+			context.fill();
+		}
 		context.stroke();
 	}
 	
 	@Override
 	protected void drawArc(double x, double y, double k, double start,
 			double length) {
+		k = k/2;
+		if(fill != null && !"none".equals(fill)) {
+			context.beginPath();
+			context.moveTo(x+k, y+k);
+			context.arc(x+k, y+k, k, -start, -(start+length), length>0);
+			context.closePath();
+			context.setFillStyle(fill);
+			context.fill();
+		}		
 		context.beginPath();
 		k = k/2;
 		context.arc(x+k, y+k, k, -start, -(start+length), length>0);
