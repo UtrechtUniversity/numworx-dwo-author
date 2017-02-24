@@ -1,11 +1,13 @@
 package nl.numworx.geodefiner.ui;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
+import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.common.LineType;
 
@@ -16,16 +18,22 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 	JLabel sample;
 	public LinePane(M model) {
 		super(model);
-		JPanel panel = new JPanel();
-		sample = new JLabel("⎯⎯⎯⎯⎯⎯⎯⎯⎯"); sample.setBackground(null);
+		Box panel; 
+		panel = Box.createHorizontalBox();
+		sample = new JLabel("lijntype"); 
 		type   = new JComboBox<LineType>(LineType.values());
 		type.setSelectedItem(model.type);
-		widthField = new JFormattedTextField(model.width);
-		panel.add(sample);
-		panel.add(type);
-		panel.add(widthField);
-		chooser.setPreviewPanel(panel);
-
+		NumberFormat format = NumberFormat.getInstance(Locale.US);
+		widthField = new JFormattedTextField(format);
+		widthField.setValue(model.width);
+		widthField.setColumns(5);
+		widthField.setMaximumSize(widthField.getPreferredSize());
+		panel.add(sample); panel.add(type);panel.add(Box.createGlue());
+		add(panel);
+		panel = Box.createHorizontalBox();
+		panel.add(new JLabel("lijndikte"));panel.add(widthField);panel.add(new JLabel("px"));
+		panel.add(Box.createGlue());
+		add(panel);
 	}
 	public void commit() {
 		model.type = (LineType) type.getSelectedItem();

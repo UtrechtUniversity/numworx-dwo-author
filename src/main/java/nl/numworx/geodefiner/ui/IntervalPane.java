@@ -1,7 +1,14 @@
 package nl.numworx.geodefiner.ui;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import javax.swing.Box;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Animate;
@@ -16,28 +23,42 @@ public class IntervalPane extends TextPane<IntervalModel> {
 	
 	public IntervalPane(IntervalModel model) {
 		super(model);
+		remove(alwaysF.getParent());
+		
 		preview.removeAll();
-		alignBox = new JComboBox<Align>(new Align[] { Align.TOP, Align.BOTTOM, Align.NONE });
+		ComboBoxModel<Align> boxmodel = new DefaultComboBoxModel<>(new Align[] { Align.TOP, Align.BOTTOM, Align.NONE} );
+		alignBox.setModel(boxmodel);
 		alignBox.setSelectedItem(model.align);
 		animateBox = new JComboBox<Animate>(Animate.values());
 		animateBox.setSelectedItem(model.animate);
-		intervalField = new JFormattedTextField(model.interval/1000.0);
-		intervalField.setColumns(10);
-		lengthField = new JFormattedTextField(model.length);
-		lengthField.setColumns(10);
-		stepField = new JFormattedTextField(0.01); // sets DoubleFormat
+		intervalField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		intervalField.setValue(model.interval/1000.0);
+		intervalField.setColumns(5);
+		intervalField.setMaximumSize(intervalField.getPreferredSize());
+		lengthField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		lengthField.setValue(model.length);
+		lengthField.setColumns(5);
+		lengthField.setMaximumSize(lengthField.getPreferredSize());
+		stepField = new JFormattedTextField(NumberFormat.getInstance(Locale.US)); // sets DoubleFormat
 		stepField.setColumns(10);
 		stepField.setValue(model.step);
-		widthField = new JFormattedTextField(1.0f);
-		widthField.setColumns(10);
-		widthField.setValue(model.width);
-		
-		preview.add(alignBox);
-		preview.add(animateBox);
-		preview.add(intervalField);
-		preview.add(lengthField);
-		preview.add(stepField);
-		preview.add(widthField);
+		stepField.setMaximumSize(stepField.getPreferredSize());
+		widthField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		widthField.setColumns(5);
+		widthField.setValue(model.width+0.0);
+		widthField.setMaximumSize(widthField.getPreferredSize());
+		Box hbox;
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("stapgrootte")); hbox.add(stepField);hbox.add(Box.createGlue()); add(hbox);
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("lengte"));hbox.add(lengthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("dikte"));hbox.add(widthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
+
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("animatietype"));hbox.add(animateBox);hbox.add(Box.createGlue()); add(hbox); 
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("interval"));hbox.add(intervalField);hbox.add(new JLabel("s"));hbox.add(Box.createGlue()); add(hbox); 
 	}
 
 	@Override
@@ -46,7 +67,7 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		model.length = ((Number) lengthField.getValue()).doubleValue();
 		model.interval = Math.round( ((Number) intervalField.getValue()).floatValue()*1000.0f);
 		model.step = (Double) stepField.getValue();
-		model.width = (Float) widthField.getValue();
+		model.width = ((Number) widthField.getValue()).floatValue();
 		super.commit();
 	}
 

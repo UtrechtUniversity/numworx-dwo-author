@@ -47,6 +47,7 @@ import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
+import nl.numworx.geodefiner.common.ShortSegment;
 import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
@@ -234,7 +235,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	private JPanel panel = new JPanel(new BorderLayout());
 	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
-	JButton checkBtn = new JButton(Messages.getString("check"));
+	JButton checkBtn = new JButton(Messages.getString("kijkNa"));
 	JLabel  checkLabel = new JLabel();
 
 	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
@@ -268,7 +269,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 		
 	}
-	
+
 	final class InstanceViewer extends AWTViewer implements Observer {
 
 		private static final float DEFAULT_POINTSIZE = 5f;
@@ -498,51 +499,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.visitSegment(s);
 		}
 
-		class ShortSegment extends Segment {
-			double dx, dy;
-			Segment org;
-			Tips tip;
-			@Override
-			public double getX1() {
-				double x1 = org.getX1();
-				if (tip != Tips.ATEND) x1 += dx;
-				return x1;
-			}
-			@Override
-			public double getX2() {
-				double x2 = org.getX2();
-				if (tip != Tips.ATSTART) x2 -= dx;
-				return x2;
-			}
-			@Override
-			public double getY1() {
-				double y1 = org.getY1();
-				if (tip != Tips.ATEND) y1 += dy;
-				return y1;
-			}
-			@Override
-			public double getY2() {
-				double y2 = org.getY2();
-				if (tip != Tips.ATSTART) y2 -= dy;
-				return y2;
-			}
-			@Override
-			public <T> T adapt(Class<T> clz) {
-				return org.adapt(clz);
-			}
-			
-			public Adapter getAdapter() {
-				return org.getAdapter();
-			}
-			
-			ShortSegment(Segment org, double dx, double dy, Tips tip) {
-				this.org = org;
-				this.dx = dx;
-				this.dy = dy;
-				this.tip = tip;
-			}
-		}
-		
 		
 		
 		private Segment drawTips(Segment s) {
@@ -585,6 +541,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			else if(align == Align.NONE) return;
 			FormuleVak fv = new FormuleVak();
 			fv.setFont(g.getFont());
+			fv.setFGColor(g.getColor());
 			String string = "$f" + label.getString() + "@";
 			fv.vulVak(string);
 			fv.setEditable(false);
@@ -992,7 +949,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if  (super.installCheckDWO())
 		{
 			action = new KijkNaAction();
-			checkBtn.setText(action.getValue(action.NAME).toString());
 			checkBtn.addActionListener(action);
 			checkBtn.setVisible(!checkDWO.isExtern());
 			action.addPropertyChangeListener(this);

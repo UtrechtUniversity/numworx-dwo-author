@@ -1,9 +1,12 @@
 package nl.numworx.geodefiner.ui;
 
 import java.awt.Font;
+import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -26,19 +29,25 @@ public class PointPane extends ColorPane<PointModel> {
 		super(model);
 		type = new JComboBox<PointType>(PointType.values());
 		type.setSelectedItem(model.type);
-		JPanel panel = new JPanel();
-		sizeField = new JFormattedTextField(Integer.valueOf(model.size));
-		rigid = new JCheckBox("rigid");
+		NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
+		sizeField = new JFormattedTextField(format);
+		sizeField.setValue(Integer.valueOf(model.size));
+		sizeField.setColumns(5);
+		sizeField.setMaximumSize(sizeField.getPreferredSize());
+		rigid = new JCheckBox("stijf");
 		rigid.setEnabled(model.item instanceof FreePoint);
 		rigid.setSelected(model.rigid);			
-		add(chooser);
-		panel.add( new JLabel("•"));
-		panel.add( new JLabel("markertype" )); panel.add(type);
-		panel.add( new JLabel("size")); panel.add(sizeField);
-		panel.add( rigid );
+		Box panel = Box.createHorizontalBox();
+		panel.add( new JLabel("Grootte")); panel.add(sizeField);panel.add(new JLabel("px"));panel.add(Box.createGlue());
+		add(Box.createVerticalStrut(10));
+		add(panel);
+		panel = Box.createHorizontalBox();
+		panel.add(new JLabel("Bewegelijkheid")); panel.add(rigid); panel.add(Box.createGlue());
+		add(Box.createVerticalStrut(10));
+		add(panel );
+
 		panel.validate();
 		panel.setSize(panel.getPreferredSize());
-		chooser.setPreviewPanel(panel); // disable preview panel
 		}
 
 	public void commit() {

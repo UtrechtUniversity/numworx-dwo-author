@@ -50,6 +50,8 @@ public class TextModel extends ColorModel<Label> {
 		Map<String, Object> map = super.toMap();
 		map.put("align", align.name());
 		map.put("font", Collections.singletonMap("size", font.getSize()));
+		if(Boolean.TRUE.equals(alwaysF))
+			map.put("alwaysF", Boolean.TRUE);
 		Punt p = item != null ? item.getP() : null;
 		if(p instanceof Volgpunt) {
 			map.put("dx", ((Volgpunt) p).getDx().doubleValue());
@@ -79,6 +81,7 @@ public class TextModel extends ColorModel<Label> {
 		if(map.containsKey("dy")) {
 			dy = (float)map.getDouble("dy");
 		}
+		alwaysF = Boolean.valueOf(map.getBoolean("alwaysF", false));
 		super.fromMap(map);
 	}
 

@@ -4,10 +4,13 @@ import java.awt.Dimension;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -30,23 +33,32 @@ class CheckDWOPanel extends JPanel implements ChangeListener {
 	ObjectiveChoiceButton objBtn;
 
 	CheckDWOPanel() {
-		super();
+		super(null);
+		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+		setLayout(layout);
 		setName("CheckDWO");
 		checkDWO = new JCheckBox(Messages.getString("check"));
 		extern = new JCheckBox(Messages.getString("extern"));
 		checkDWO.addChangeListener(this);
 		extern.addChangeListener(this);
 		score = new JFormattedTextField(DEFAULT_SCORE);
+		score.setColumns(5);
+		score.setMaximumSize(score.getPreferredSize());
 		formule = new FormuleEditor(false);
 		formule.setHeader(false);
 		formule.setPreferredSize(new Dimension(200,50));
+		formule.setMaximumSize(new Dimension(Short.MAX_VALUE, 50));
 		if(WiskOpdr.objectives!=null)
 			objBtn = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
 		add(checkDWO);
 		add(extern);
-		add(score);
+		Box hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel(Messages.getString("score"))); hbox.add(score);
+		add(hbox);
+		add(new JLabel("CheckDWO = "));
 		add(formule);
 		if(objBtn != null) add(objBtn);
+		add(Box.createGlue());
 	}
 	
 	int getMaxScore() {

@@ -1,6 +1,8 @@
 package nl.numworx.geodefiner.ui;
 
+import javax.swing.Box;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 
 public class AxesPane extends LinePane<AxesModel> {
 
@@ -8,9 +10,13 @@ public class AxesPane extends LinePane<AxesModel> {
 	
 	public AxesPane(AxesModel model) {
 		super(model);
-		numbers = new JCheckBox("numbers");
+		Box hbox = Box.createHorizontalBox();
+		numbers = new JCheckBox("getallen");
 		numbers.setSelected(model.numbers);
-		chooser.getPreviewPanel().add(numbers);
+		hbox.add(new JLabel("bij de as"));
+		hbox.add(numbers);
+		hbox.add(Box.createGlue());
+		add(hbox);
 	}
 
 	@Override

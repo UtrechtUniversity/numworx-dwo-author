@@ -8,8 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.AffineTransform;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -37,10 +40,10 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		sampleLabel.setFont(model.font);
 		alignBox.setSelectedItem(model.align);
 		preview.add(sampleLabel);
-		preview.add(alignBox);
-		fontSize = new JFormattedTextField(model.font.getSize2D());
-		fontSize.setBorder(BorderFactory.createTitledBorder("size"));
-		fontSize.setColumns(10);
+		fontSize = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		fontSize.setValue(model.font.getSize2D()+0.0);
+		fontSize.setColumns(5);
+		fontSize.setMaximumSize(fontSize.getPreferredSize());
 		fontSize.addActionListener(new ActionListener() {
 
 			@Override
@@ -50,11 +53,26 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			}
 			
 		});
-		preview.add(fontSize);
 		alwaysF = new JCheckBox("altijd formule");
 		alwaysF.setSelected(Boolean.TRUE.equals(model.alwaysF));
-		preview.add(alwaysF);
 		chooser.setPreviewPanel(preview);
+		add(Box.createVerticalStrut(10));
+		Box hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("Uitlijning"));
+		hbox.add(alignBox);
+		hbox.add(Box.createGlue());
+		add(hbox);
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("Textgrootte"));
+		hbox.add(fontSize);
+		hbox.add(new JLabel("px"));
+		hbox.add(Box.createGlue());
+		add(hbox);
+		hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("Formule?"));
+		hbox.add(alwaysF);
+		hbox.add(Box.createGlue());
+		add(hbox);
 	}
 	@Override
 	public void commit() {

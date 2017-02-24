@@ -1,6 +1,8 @@
 package nl.numworx.geodefiner.ui;
 
+import javax.swing.Box;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 
 import fi.euclides.util.Messages;
 
@@ -12,7 +14,11 @@ public class GridPane extends LinePane<GridModel> {
 		super(model);
 		gravity = new JCheckBox(Messages.getString("gravity"));
 		gravity.setSelected(model.gravity);
-		chooser.getPreviewPanel().add(gravity);
+		Box hbox = Box.createHorizontalBox();
+		hbox.add(new JLabel("Op het rooster"));
+		hbox.add(gravity);
+		hbox.add(Box.createGlue());
+		add(hbox);
 	}
 
 	@Override
