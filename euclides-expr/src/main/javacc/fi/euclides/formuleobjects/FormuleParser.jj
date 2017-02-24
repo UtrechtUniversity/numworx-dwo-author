@@ -12,7 +12,6 @@ import java.util.*;
 
 public class FormuleParser implements OMConstants{
 	private static OMSymbol COMPLEX_CONJUGATE = new OMSymbol("complex1","conjugate" );
-	private static OMSymbol COMPLEX1_ARGUMENT = new OMSymbol("complex1","argument" );
 	private static OMSymbol COMBINAT1_BINOMIAL = new OMSymbol("combinat1", "binomial" );
 	private static OMSymbol TRANSC1_LOG = new OMSymbol("transc1", "log" ); // base, arg
 	//private static OMSymbol INVISIBLE_TIMES = new OMSymbol("invisible", "times" );
@@ -91,6 +90,11 @@ public class FormuleParser implements OMConstants{
     return arglist;
   }
 
+  private static OMApplication complex(Token f, OMObject expr) {
+    OMSymbol s = new OMSymbol("complex1", f.toString());
+    return binop(s, expr, null);
+  }
+
   private static OMApplication minmax(Token f, OMApplication arglist) {
 	OMSymbol s = new OMSymbol("minmax1", f.toString());
 	arglist.setElementAt(s, 0);
@@ -165,7 +169,7 @@ TOKEN:
                  | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf") >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < MAP : "map" >
-| < ARGUMENT: "argument" >
+| < COMPLEX : ("argument"|"real"|"imaginary") >
 | < MINMAX: ( "max" | "min" ) >
 | < ARITH: ("gcd"|"abs") >
 }
@@ -444,7 +448,7 @@ OMApplication bracket() :
 | tok = < GEODEFINER > oma = arglist() {  return geodefiner(tok, oma); }
 | tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
 | tok = < ARITH > oma = arglist() {  return arith(tok, oma); }
-| < ARGUMENT > expr = sum() {  return binop(COMPLEX1_ARGUMENT, expr, null); }
+| tok = < COMPLEX > expr = sum() {  return complex(tok, expr); }
 | tok = < STRING >
 	{
 	  	String s = tok.toString();
