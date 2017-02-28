@@ -3270,7 +3270,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	}
 	
 	public void corrigeerRestHoogte()
-	{	if(vulHoogte)
+	{	if(vulHoogte && getParent() instanceof TekstDeelVak)
 		{	//int restHoogte =((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte() - ((TekstDeelVak) getParent()).getTekstVak().geefOpgevuldeHoogte();// Math.max(((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte(), -geefRestHoogte());
 			int restHoogte =((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte();
 			setSize(getSize().width, Math.max(0, getSize().height + restHoogte));
