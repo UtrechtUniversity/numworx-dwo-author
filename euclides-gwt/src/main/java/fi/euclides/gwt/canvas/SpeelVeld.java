@@ -158,17 +158,19 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void paint() {
+		context.save();
+		context.clearRect(0, 0, width, height);
+		context.translate(-offX, -offY);
 		context.beginPath();
 		context.rect(0, 0, width, height);
 		context.closePath();
 		context.clip();
-		context.setFillStyle(white);
-		context.fillRect(0, 0, width, height);
 		context.setFillStyle(black);
 		context.setStrokeStyle(black);
 		this.update();
 		if(mouse != null) mouse.paint();
 		if(extra != null) extra.paint();
+		context.restore();
 	}
 
 	@Override
@@ -187,25 +189,27 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	class Pointer {
 		int x,y;
-		int w1 = 40, w2 = 3;
+//		int w1 = 40, w2 = 3;
+		double w1 = 1.5;
 		Pointer(int x,int y) { drag(x,y); }
 		void drag(int x, int y) {this.x = x; this.y = y; }
 		void paint() { 
+			
 			context.save();
 			setColor(POINTER_COLOR);
 			drawCircle(x-w1, y-w1, w1*2);
-			setColor(WHITE);
-			fillCircle(0,0,w1*2);
-			setColor(POINTER_COLOR);
-			drawCircle(w1,w1,1);
-			drawLine(0, w1, w1*2, w1);
-			drawLine(w1,0,w1,w1*2);
-			context.beginPath();
-			context.arc(w1, w1, w1, 0, 7);
-			context.stroke();
-			context.clip();
-			context.translate(-x+w1, -y+w1);
-			update();
+//			setColor(WHITE);
+//			fillCircle(0,0,w1*2);
+//			setColor(POINTER_COLOR);
+//			drawCircle(w1,w1,1);
+//			drawLine(0, w1, w1*2, w1);
+//			drawLine(w1,0,w1,w1*2);
+//			context.beginPath();
+//			context.arc(w1, w1, w1, 0, 7);
+//			context.stroke();
+//			context.clip();
+//			context.translate(-x+w1, -y+w1);
+//			update();
 			context.restore();
 		}
 	}
@@ -220,11 +224,11 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	EventHandler handler;
 	private boolean moved;
 	private AbstractViewer extra;
+	private double offX, offY;
 	
 	public void processMouseDown(int x, int y) {
 		handler.pointerPressed(x, y);
 		moved = false;
-		mouse = new Pointer(x,y);
 		paint();
 	}
 
@@ -236,7 +240,6 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	public void processMouseDrag(int x, int y) {
 		moved=true;
 		handler.pointerDragged(x, y);
-		mouse.drag(x, y);
 		paint();
 	}
 
@@ -244,7 +247,6 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		if (!moved)
 			handler.pointerClicked(x, y);
 		handler.pointerReleased(x, y);
-		mouse = null;
 		paint();
 	}
 
@@ -301,14 +303,18 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void moveAway(int x, int y) {
-		// TODO Auto-generated method stub
-		
+		if(mouse == null) {
+			mouse = new Pointer(x,y);
+			offY = 20; // Ulli patent
+		} else {
+			mouse.drag(x,y);
+		}
 	}
 
 	@Override
 	public void moveBack() {
-		// TODO Auto-generated method stub
-		
+		mouse = null;
+		offX = 0; offY = 0;
 	}
 
 	@Override
