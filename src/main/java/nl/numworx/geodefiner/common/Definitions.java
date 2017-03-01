@@ -327,7 +327,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					{    LocusModel lm = new LocusModelF((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     String name = "y="+var.getName()+"(x)";
-						viewer.getMapper().rename(locus, name);
+						 viewer.getMapper().rename(locus, name);
 					     model.add(locus);
 					     final Destroyable destroyable = f;
 					     locus.addObserver(new DestroyDependency(destroyable));
@@ -381,6 +381,63 @@ public class Definitions implements Observer /*, ListModel*/ {
 						LocusModel lm = new LocusModelXY(fy, fx, null, viewer);
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
+					    model.add(locus);
+						installConfig(new CELL(text, locus, text), config);
+					} else {
+						throw new InterpretException("syntax error");
+					}
+				}
+			} else if (first.isSame(OMConstants.RELATION1_GEQ)||first.isSame(OMConstants.RELATION1_GT))
+			{
+				int found = findCell(text);
+				if(found >= 0) {
+					// ????? assert(getElementAt(found).item != null)
+					return; // duplicate				
+				}
+					// $x = 1;
+// $y > $x + 1;
+				OMObject arg = oma.getElementAt(1);
+				if(arg instanceof OMVariable) {
+					OMVariable var = (OMVariable) arg;
+					if("y".equals(var.getName())) {
+						Label fx = new Label();
+						fx.setString(text);
+						fx.setVisible(false);
+						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
+						lambda.addVariable(new OMVariable("x"));
+						fx.register(viewer.getRegistered(Lambda.TYPE));
+						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
+						LocusModel lm = new LocusModelF(fx, viewer);
+					    Locus locus = new Integral(lm, Integral.GT);
+					    viewer.getMapper().rename(locus, text);
+					    model.add(locus);
+						installConfig(new CELL(text, locus, text), config);
+					} else {
+						throw new InterpretException("syntax error");
+					}
+				}
+			} else if (first.isSame(OMConstants.RELATION1_LEQ)||first.isSame(OMConstants.RELATION1_LT))
+			{
+				int found = findCell(text);
+				if(found >= 0) {
+					// ????? assert(getElementAt(found).item != null)
+					return; // duplicate				
+				}
+					// $x = 1;
+// $y > $x + 1;
+				OMObject arg = oma.getElementAt(1);
+				if(arg instanceof OMVariable) {
+					OMVariable var = (OMVariable) arg;
+					if("y".equals(var.getName())) {
+						Label fx = new Label();
+						fx.setString(text);
+						fx.setVisible(false);
+						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
+						lambda.addVariable(new OMVariable("x"));
+						fx.register(viewer.getRegistered(Lambda.TYPE));
+						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
+						LocusModel lm = new LocusModelF(fx, viewer);
+					    Locus locus = new Integral(lm, Integral.LT);
 					    model.add(locus);
 						installConfig(new CELL(text, locus, text), config);
 					} else {
