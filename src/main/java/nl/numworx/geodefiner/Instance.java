@@ -266,6 +266,21 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				if(y > SNAP || y < -SNAP) y = 0;
 				ev.translatePoint(-x, -y);
 			}
+// Keep mouse inside panel
+			{
+				int x = ev.getX();
+				if (x < 0) ev.translatePoint(-x, 0);
+				else if (x > getViewer().width) {
+					ev.translatePoint(getViewer().width-x, 0);
+				}
+			}
+			{
+				int y = ev.getY();
+				if (y < 0) ev.translatePoint(0, -y);
+				else if (y > getViewer().height) {
+					ev.translatePoint(0, getViewer().height-y);
+				}
+			}
 		}
 		
 	}
@@ -580,6 +595,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			int y = (int) label.getYd();
 			checkbox.setSelected(label.getState() != Label.FALSE);
 			checkbox.setSize(checkbox.getPreferredSize());
+			checkbox.setForeground(g.getColor());
 			Graphics g3 = g.create();
 			g3.translate(x, y);
 			g3.clipRect(0, 0, checkbox.getWidth(), checkbox.getHeight());
@@ -720,7 +736,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		private void visitIntegral(Integral l) {
 			selectColor(l);
-			final double y0 = getModel().getO().getYd();
+			double y00 = getModel().getO().getYd();
+			if(l.base == Integral.GT)
+				y00 = 0;
+			else if (l.base == Integral.LT) {
+				y00 = height;
+			}
+			final double y0 = y00;
 			final Area shape = new Area();
 			l.visitSegments(new SegmentVisitor() {
 
@@ -799,7 +821,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		selector.setTracker(viewer);
 		content.addMouseListener(getViewer());
 		content.addMouseMotionListener(getViewer());
-		ToolTipManager.sharedInstance().registerComponent(content);
 		panel.add(content, BorderLayout.CENTER);
 		toolbox = new JToolBar();
 		toolbox.setFloatable(false);
@@ -991,6 +1012,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		p.setToolbox(toolbox);
 		p.fromList(launchData.getObjectList("toolbox"));
 	}	
-	
+
+	void installToolTip() {
+		ToolTipManager.sharedInstance().registerComponent(content);
+	}
 	
 }

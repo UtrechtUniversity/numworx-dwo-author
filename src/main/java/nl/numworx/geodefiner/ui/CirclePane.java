@@ -30,7 +30,7 @@ public class CirclePane extends UIEditor {
 		type = new JComboBox<LineType>(LineType.values());
 		type.setSelectedItem(model.type);
 		widthField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
-		widthField.setValue(model.width);
+		widthField.setValue(Double.valueOf(model.width));
 		widthField.setColumns(5);
 		widthField.setMaximumSize(widthField.getPreferredSize());
 		stroke = new ColorChooser(model.color);

@@ -98,6 +98,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		JPanel flow = new JPanel(false);
 		flow.setBackground(new Color(250,250,255));
 		instance = new Instance();
+		instance.installToolTip();
 		JComponent component = instance.asComponent();
 		component.setPreferredSize(instanceSize);
 		component.setSize(instanceSize);
