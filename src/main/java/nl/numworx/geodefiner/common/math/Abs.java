@@ -12,7 +12,7 @@ import fi.euclides.util.Observable;
 class Abs extends LabelValue {
 
 	AfstandHandler afstand = new AfstandHandler("||");
-	Transc1 abs = Transc1.ABS;
+	LabelValue abs = Transc1.ABS;
 
 	Abs() {
 		super("||");
