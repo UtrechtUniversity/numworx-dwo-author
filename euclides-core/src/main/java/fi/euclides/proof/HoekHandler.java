@@ -129,7 +129,7 @@ public class HoekHandler extends LabelValue implements Observer {
 			result += Math.PI*2.0;
 		l.value = Numbers.createDouble(result);
 		
-		return JMath.round(result * 180.0 / Math.PI)%mod + "°";
+		return hoekAsString(l.value); //JMath.round(result * 180.0 / Math.PI)%mod + "°";
 	}
 	
 	String getString(Lijn l1, Lijn l2, Label l)

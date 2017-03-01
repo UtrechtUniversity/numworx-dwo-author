@@ -4,6 +4,7 @@ package fi.euclides.proof;
 
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public abstract class LabelValue extends  LabelDelegate  {
@@ -26,6 +27,12 @@ public abstract class LabelValue extends  LabelDelegate  {
 		else
 			l.setString("");
 		l.setValue(n);
+	}
+
+	protected String hoekAsString(Numbers value) {
+		if(true)
+			return Numbers.toString(value);
+		return JMath.round(value.doubleValue() * 180.0 / Math.PI)%360 + "°";
 	}
 
 }
