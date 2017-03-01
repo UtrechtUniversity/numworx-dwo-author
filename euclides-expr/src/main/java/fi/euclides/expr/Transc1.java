@@ -3,8 +3,8 @@ package fi.euclides.expr;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DefaultAdapter;
-import fi.euclides.util.JMath;
 
 public class Transc1 extends Som {
 
@@ -13,23 +13,23 @@ public class Transc1 extends Som {
 	}
 
 	// TODO ARC- varianten, -H varianten, SCS, COT, SEC varianten.
-	public static final Transc1 COS = new Transc1("cos");
-	public static final Transc1 SIN = new Transc1("sin");
-	public static final Transc1 TAN = new Transc1("tan");
-	public static final Transc1 ARCCOS = new Transc1("arccos");
-	public static final Transc1 ARCSIN = new Transc1("arcsin");
-	public static final Transc1 ARCTAN = new Transc1("arctan");
-	public static final Transc1 CSC = new Transc1("csc");
-	public static final Transc1 SEC = new Transc1("sec");
-	public static final Transc1 COT = new Transc1("cot");
-	public static final Transc1 EXP = new Transc1("exp");
-	public static final Transc1 LN = new Transc1("ln");
-	public static final Transc1 ABS = new Transc1("abs"); // Arith1!
-	public static final Transc1 CONJ = new Transc1("conjugate"); // complex1
-	public static final Transc1 REAL = new Transc1("real");
-	public static final Transc1 IMAG = new Transc1("imaginary");
-	public static final Transc1 ARGUMENT = new Transc1("argument");
-	public static final Transc1 LOG = new Transc1("log") {
+	public static final LabelValue COS = new Transc1("cos");
+	public static final LabelValue SIN = new Transc1("sin");
+	public static final LabelValue TAN = new Transc1("tan");
+	public static final LabelValue ARCCOS = new Transc1("arccos");
+	public static final LabelValue ARCSIN = new Transc1("arcsin");
+	public static final LabelValue ARCTAN = new Transc1("arctan");
+	public static final LabelValue CSC = new Transc1("csc");
+	public static final LabelValue SEC = new Transc1("sec");
+	public static final LabelValue COT = new Transc1("cot");
+	public static final LabelValue EXP = new Transc1("exp");
+	public static final LabelValue LN = new Transc1("ln");
+	public static final LabelValue ABS = new Transc1("abs"); // Arith1!
+	public static final LabelValue CONJ = new Transc1("conjugate"); // complex1
+	public static final LabelValue REAL = new Transc1("real");
+	public static final LabelValue IMAG = new Transc1("imaginary");
+	public static final LabelValue ARGUMENT = new Transc1("argument");
+	public static final LabelValue LOG = new Transc1("log") {
 
 		@Override
 		public String getSymbolicValue(Label l) {
@@ -80,7 +80,7 @@ public class Transc1 extends Som {
 		if(this == ARCSIN)
 			return Numbers.createDouble(Math.asin(v.doubleValue()));
 		if(this == ARCTAN)
-			return Numbers.createDouble(Math.tan(v.doubleValue()));
+			return Numbers.createDouble(Math.atan(v.doubleValue()));
 		if(this == EXP)
 			return Numbers.createDouble(Math.exp(v.doubleValue()));
 		if(this == LN)
@@ -134,7 +134,7 @@ public class Transc1 extends Som {
 			Numbers c = ll[0].value;
 			DefaultAdapter.getDefault(l).put( new Numbers[] { Numbers.real(c), Numbers.imag(c) });
 			l.setState(Label.HOEK);
-			l.setString(JMath.round(value.doubleValue() * 180.0 / Math.PI)%360 + "°");
+			l.setString(hoekAsString(value));
 		} else
 			l.setString(Numbers.toString(value));	
 		l.setValue(value);

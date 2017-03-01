@@ -114,7 +114,7 @@ public class Som extends LabelValue {
 		value = Numbers.createDouble(result);
 
 		l.setState(Label.HOEK);
-		l.setString(JMath.round(result * 180.0 / Math.PI)%360 + "°");
+		l.setString(hoekAsString(value));
 		l.setValue(value);
 	}
 
