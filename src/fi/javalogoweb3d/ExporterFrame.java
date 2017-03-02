@@ -9,23 +9,23 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class ImporterFrame extends JPanel //JFrame 
+public class ExporterFrame extends JPanel //JFrame 
 						   implements ActionListener
 {
 	private JavaLogoSchuifVeld veld;
 	
 	private JTextArea codearea;
-	private JButton importbutton;
-	private JButton cancelbutton;
+	private JButton closebutton;
+	//private JButton cancelbutton;
 		
-	public ImporterFrame(String title, JavaLogoSchuifVeld sv) //throws HeadlessException
+	public ExporterFrame(String code, JavaLogoSchuifVeld sv) //throws HeadlessException
 	{
 //		super(title);
 		veld = sv;
-// toegevoegd		
+//toegevoegd		
 		setLayout(new BorderLayout());
 		
-		codearea = new JTextArea(16, 48);
+		codearea = new JTextArea(code, 16, 48);
 		codearea.setMargin(new Insets(3,5,3,5));
 		codearea.setFont(JavaLogoWeb3d.defaultfont);
 		JScrollPane scroller = new JScrollPane(codearea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -33,40 +33,41 @@ public class ImporterFrame extends JPanel //JFrame
 		
 		JPanel bottom = new JPanel();
 		add(bottom, BorderLayout.SOUTH);
-		importbutton = new JButton(JavaLogoWeb3d.rb.getString("importeerLabel"));
-		importbutton.addActionListener(this);
-		bottom.add(importbutton);
-		cancelbutton = new JButton(JavaLogoWeb3d.rb.getString("annuleerLabel"));
-		cancelbutton.addActionListener(this);
-		bottom.add(cancelbutton);
+		closebutton = new JButton(JavaLogoWeb3d.rb.getString("sluitLabel"));
+		closebutton.addActionListener(this);
+		bottom.add(closebutton);
+		//cancelbutton = new JButton("Annuleer");
+		//cancelbutton.addActionListener(this);
+		//bottom.add(cancelbutton);
 		
-		JLabel toelichting = new JLabel("Plak of type de code van het algoritme:");
+		JLabel toelichting = new JLabel("Code van het algoritme:");
 		toelichting.setFont(JavaLogoWeb3d.boldfont);
 		add(toelichting, BorderLayout.NORTH);
 		
 		codearea.requestFocus();
 		
-// na setBounds elders		
+//na setBounds elders		
 		//validate();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent ae)
 	{
-		if (ae.getSource() == importbutton )
-		{
-			veld.importeer(codearea.getText());
-//			dispose();
-			setVisible(false);
-			veld.remove(this);
-			veld.imf  = null;
-		} else
+		if (ae.getSource() == closebutton )
 		{
 //			dispose();
 			setVisible(false);
 			veld.remove(this);
-			veld.imf  = null;
+			veld.exf  = null;
 		}
+		
+//		else
+//		{
+//			dispose();
+//			setVisible(false);
+//			veld.remove(this);
+//			veld.imf  = null;
+//		}
 		
 	}
 

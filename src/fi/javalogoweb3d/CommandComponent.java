@@ -274,6 +274,7 @@ public abstract class CommandComponent extends JPanel
 	@Override
 	public void paintComponent(Graphics g)
 	{
+//System.out.println("font = " + g.getFont().toString());		
 		paintBackground(g);
 		paintCommand(g);
 	}

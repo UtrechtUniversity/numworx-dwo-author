@@ -42,6 +42,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "importButtonLabel" , "Import code" },
 				{ "exportButtonLabel" , "Export code" },
 				{ "importCodeLabel" , "Importeer code" },
+				{ "importeerLabel" , "Importeer" },
+				{ "annuleerLabel" , "Annuleer" },
+				{ "sluitLabel" , "Sluit" },
 				
 				{ "beginKnopLabel" , "begin" },
 				{ "stapKnopLabel" , "stap" },
@@ -55,7 +58,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "showVarLabel" , "Toon Vars" },
                 
 				{ "transparantLabel" , "transparant" },
-				{ "wireFrameLabel" , "draadfiguur" },
+				{ "draadFiguurLabel" , "draadfiguur" },
                 
 				{ "alsLabel" , "Als" },
 				{ "andersLabel" , "Anders" },
@@ -64,6 +67,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "variabelenLabel" , "Variabelen:" },
 				
 				{ "uitvoerVeldCBLabel" , "Uitvoerpanel" },
+				{ "transparantCBLabel" , "Transparantoptie" },
+				{ "draadFiguurCBLabel" , "Draadfiguuroptie" },
 				{ "programmaVeldCBLabel" , "Programmapanel" },
 				{ "deeltakenCBLabel" , "Deeltaken" },
 				{ "whileLoopCBLabel" , "While loop" },

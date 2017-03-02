@@ -128,6 +128,9 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	private CommandComponent[] deeltaakCC;
 	
 	private Hashtable<String, Double> inputVars = new Hashtable<String, Double>();
+	
+	ImporterFrame imf;
+	ExporterFrame exf;
 		
 	public JavaLogoSchuifVeld(int x, int y, int b, int h, TekenApplet3D tb)
 	{	
@@ -393,7 +396,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	{	int yLocation = ccy;
 		
 		if (vooruitCC.isVisible())
-			yLocation += 150;
+			yLocation += 190;
 //even niet		
 //		printCC.setLocation(printCC.getX(), yLocation);
 //		printlCC.setLocation(printlCC.getX(), yLocation);
@@ -403,23 +406,23 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 //		else
 //			yLocation += 10;
 		
-//later		
-//		varCC.setLocation(varCC.getX(), yLocation);
-//		yLocation += 40;
-//		herhaalCC.setLocation(herhaalCC.getX(), yLocation);
-//		yLocation += 40;
-//		whileCC.setLocation(whileCC.getX(), yLocation);
-//		if(whileCC.isVisible())
-//			yLocation += 40;
-//		keuzeCC.setLocation(keuzeCC.getX(), yLocation);
-//		if (keuzeCC.isVisible())
-//			yLocation += 50;
-//		else
-//			yLocation += 10;
-//		for(int i=0 ; i<5 ; i++)
-//		{	deeltaakCC[i].setLocation(ccx,yLocation);
-//			yLocation +=30;
-//		}
+		
+		varCC.setLocation(varCC.getX(), yLocation);
+		yLocation += 40;
+		herhaalCC.setLocation(herhaalCC.getX(), yLocation);
+		yLocation += 40;
+		whileCC.setLocation(whileCC.getX(), yLocation);
+		if(whileCC.isVisible())
+			yLocation += 40;
+		keuzeCC.setLocation(keuzeCC.getX(), yLocation);
+		if (keuzeCC.isVisible())
+			yLocation += 50;
+		else
+			yLocation += 10;
+		for(int i=0 ; i<5 ; i++)
+		{	deeltaakCC[i].setLocation(ccx,yLocation);
+			yLocation +=30;
+		}
 	}
 
 	public void verwijder(CommandComponent cc)
@@ -502,6 +505,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	
 	void exportFrame(String contents) 
 	{
+/*		
 		final TextArea area = new TextArea(contents, 0, 0, TextArea.SCROLLBARS_NONE);
 		Frame f = new Frame("Code van het algoritme");
 		f.setLayout(new BorderLayout());
@@ -520,6 +524,23 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		f.pack();
 		f.setVisible(true);
 		f.toFront();
+*/
+		
+		if (exf != null)
+		{	return;
+		}
+
+		if (imf != null)
+		{	remove(imf);
+			imf = null;
+		}
+
+		exf = new ExporterFrame(contents, this);
+		exf.setBounds(0,0, ppw, getSize().height);
+		add(exf, 0);
+		exf.validate();
+		repaint();
+
 	}
 	
 	private void clearProgram()
@@ -553,6 +574,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	
 	void importFrame() 
 	{
+/*		
 		try
 		{
 			ImporterFrame imf = new ImporterFrame("Importeer code", this);
@@ -564,6 +586,23 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		{ 
 			System.out.println("Mis!  "+e.getMessage());
 		}
+*/		
+		
+		if (imf != null)
+		{	return;
+		}
+
+		if (exf != null)
+		{	remove(exf);
+			exf = null;
+		}
+
+		imf = new ImporterFrame("Importeer code", this);
+		imf.setBounds(0,0, ppw, getSize().height);
+		add(imf, 0);
+		imf.validate();
+		repaint();
+
 	}
 
 	public String getCode()
@@ -618,6 +657,10 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		stapCC.setVisible(b);
 		linksCC.setVisible(b);
 		rechtsCC.setVisible(b);
+		stapzCC.setVisible(b);
+		stap3dCC.setVisible(b);
+		xDraaiCC.setVisible(b);
+		yDraaiCC.setVisible(b);
 		penAanCC.setVisible(b);
 		penUitCC.setVisible(b);
 		vulAanCC.setVisible(b);

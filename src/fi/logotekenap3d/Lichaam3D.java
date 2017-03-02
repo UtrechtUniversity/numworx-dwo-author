@@ -50,7 +50,7 @@ public class Lichaam3D
 	
 	public void voegLijnToe(Punt3D p1, Punt3D p2, Color lijnkl, Color vulkl)
 	{
-System.out.println("voegLijnToe");
+//System.out.println("voegLijnToe");
 		
 		double pf1 = (1000-p1.z)/1000;
 		double pf2 = (1000-p2.z)/1000;
@@ -82,7 +82,7 @@ System.out.println("voegLijnToe");
 	public void voegCursorToe(Punt3D[] cursorPunten, Color lijnkl, Color vulkl)
 	{
 		
-System.out.println("voegCursorToe");
+//System.out.println("voegCursorToe");
 
 		double[] pf = new double[cursorPunten.length];
 		double[] cxd = new double[cursorPunten.length];

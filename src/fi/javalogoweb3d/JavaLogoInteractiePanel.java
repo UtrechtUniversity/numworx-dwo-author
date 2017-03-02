@@ -37,6 +37,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private JavaLogoSchuifVeld javaLogoSchuifVeld;
 	//private Uitvoerblad uitvoerblad;
 	private TekenApplet3D uitvoerblad;
+	int ubb, ubh;
 	public TraceBeheerder trb;
 	
 	private JButton runButton;
@@ -44,7 +45,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private JButton importButton;
 	
 	private JCheckBox transparantBox;
-	private JCheckBox wireFrameBox;
+	private JCheckBox draadFiguurBox;
 		
 	private int scheidingX = 615;
 	private boolean draggingScheidingX;
@@ -52,6 +53,8 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private int dragStartY;
 	
 	private boolean uitvoerVeldZichtbaar = true;
+	private boolean transparantOptie = true;
+	private boolean draadFiguurOptie = true;
 	private boolean programmaVeldZichtbaar = true;
 	private boolean deeltakenZichtbaar = true;
 	private boolean whileLoopZichtbaar = true;
@@ -69,7 +72,6 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		//uitvoerblad = new Tekenblad3D(this);
 		uitvoerblad = new TekenApplet3D(this);
 		add(uitvoerblad);
 		
@@ -101,10 +103,10 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		transparantBox.setOpaque(false);
 		transparantBox.addActionListener(this);
 		
-		wireFrameBox = new JCheckBox(JavaLogoWeb3d.rb.getString("wireFrameLabel"));
-		wireFrameBox.setFont(JavaLogoWeb3d.defaultfont);
-		wireFrameBox.setOpaque(false);
-		wireFrameBox.addActionListener(this);
+		draadFiguurBox = new JCheckBox(JavaLogoWeb3d.rb.getString("draadFiguurLabel"));
+		draadFiguurBox.setFont(JavaLogoWeb3d.defaultfont);
+		draadFiguurBox.setOpaque(false);
+		draadFiguurBox.addActionListener(this);
 	}
 	
 	private void layoutGui()
@@ -146,14 +148,21 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		layoutGui();
 		int ubx = programmaVeldZichtbaar ? scheidingX+5 : 5;
 		int uby = 5;
-		int ubb = getWidth()-(programmaVeldZichtbaar ? scheidingX+10 : 10);
-		int ubh = programmaVeldZichtbaar ? getHeight()-77 : getHeight()-10;
+		ubb = getWidth()-(programmaVeldZichtbaar ? scheidingX+10 : 10);
+		ubh = programmaVeldZichtbaar ? getHeight()-77 : getHeight()-10;
 		
+System.out.println("sb b = " + b);
+System.out.println("ubb = " + ubb);
+if (ubb < 0)
+ubb = 50;
+
 		uitvoerblad.setBounds(ubx, uby, ubb, ubh);
 		uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 50);
 						
 		if (javaLogoSchuifVeld == null) 
 		{	
+			
+System.out.println("sb jls == null");			
 			javaLogoSchuifVeld = new JavaLogoSchuifVeld(6, 6, (uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 11), getHeight()-79, uitvoerblad);
 			javaLogoSchuifVeld.setBackground(Color.white);
 			javaLogoSchuifVeld.zetGesloten(true);
@@ -166,21 +175,118 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 			add(trb);
 			
 			transparantBox.setBounds(5, ubh-50, 120, 23);
-			wireFrameBox.setBounds(5, ubh-25, 120, 23);
+			draadFiguurBox.setBounds(5, ubh-25, 120, 23);
 			uitvoerblad.add(transparantBox);
-			uitvoerblad.add(wireFrameBox);
+			uitvoerblad.add(draadFiguurBox);
+			//uitvoerblad.repaint();
+			//uitvoerblad.tb.repaint();
+			//uitvoerblad.tb.paint(uitvoerblad.tb.getGraphics());
 		}
 		else
 		{	
+System.out.println("sb jls != null");			
 			int jsb = uitvoerVeldZichtbaar ? scheidingX-6 : getWidth() - 11;
 			int jsh = getHeight()-79;
 			javaLogoSchuifVeld.setSize(jsb, jsh);
 			trb.setBounds(codeIOZichtbaar ? 265 : 115, getHeight()-64, 340, 58);
-			uitvoerblad.repaint();
-			uitvoerblad.paintDrawing(trb.isTraceAan());
+			
+			if (transparantOptie && draadFiguurOptie)
+			{	uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 50);
+				transparantBox.setBounds(5, ubh-50, 120, 23);
+				draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			}	
+			else if (transparantOptie && !draadFiguurOptie)
+			{	uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+				transparantBox.setBounds(5, ubh-25, 120, 23);
+			}
+			else if (!transparantOptie && draadFiguurOptie)
+			{	uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+				draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			}
+			else if (!transparantOptie && !draadFiguurOptie)
+			{	uitvoerblad.tb.setBounds(0, 0, ubb, ubh);
+			}	
+			//uitvoerblad.repaint();
+			//uitvoerblad.tb.repaint();
+			
+			if (uitvoerblad.tb.getgIm() != null)
+			{	
+System.out.println("getgIm not null");
+				uitvoerblad.tb.im = null;
+				uitvoerblad.tb.repaint();
+				
+				//uitvoerblad.paintDrawing(trb.isTraceAan());
+			
+			}
 		}
 	}
 	
+	public void zetTransparantOptie(boolean b)
+	{
+		transparantOptie = b;
+		if (transparantOptie && draadFiguurOptie)
+		{	transparantBox.setVisible(true);
+			draadFiguurBox.setVisible(true);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 50);
+			transparantBox.setBounds(5, ubh-50, 120, 23);
+			draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (transparantOptie && !draadFiguurOptie)
+		{	transparantBox.setVisible(true);
+			draadFiguurBox.setVisible(false);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+			transparantBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (!transparantOptie && draadFiguurOptie)
+		{	transparantBox.setVisible(false);
+			draadFiguurBox.setVisible(true);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+			draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (!transparantOptie && !draadFiguurOptie)
+		{	transparantBox.setVisible(false);
+			draadFiguurBox.setVisible(false);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh);
+		}
+		
+	}
+
+	public void zetDraadFiguurOptie(boolean b)
+	{
+		draadFiguurOptie = b;
+		if (transparantOptie && draadFiguurOptie)
+		{	transparantBox.setVisible(true);
+			draadFiguurBox.setVisible(true);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 50);
+			transparantBox.setBounds(5, ubh-50, 120, 23);
+			draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (transparantOptie && !draadFiguurOptie)
+		{	transparantBox.setVisible(true);
+			draadFiguurBox.setVisible(false);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+			transparantBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (!transparantOptie && draadFiguurOptie)
+		{	transparantBox.setVisible(false);
+			draadFiguurBox.setVisible(true);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh - 25);
+			draadFiguurBox.setBounds(5, ubh-25, 120, 23);
+			
+		}
+		else if (!transparantOptie && !draadFiguurOptie)
+		{	transparantBox.setVisible(false);
+			draadFiguurBox.setVisible(false);
+			uitvoerblad.tb.setBounds(0, 0, ubb, ubh);
+		}
+
+	}
+
 	public void actionPerformed(ActionEvent e)
 	{	
 		if(e.getSource()==runButton)
@@ -207,18 +313,24 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		{
 			uitvoerblad.zetTransparant(transparantBox.isSelected());
 		}
-		else if (e.getSource() == wireFrameBox)
+		else if (e.getSource() == draadFiguurBox)
 		{
-			uitvoerblad.zetWireFrame(wireFrameBox.isSelected());
+			uitvoerblad.zetWireFrame(draadFiguurBox.isSelected());
 		}
 
 	}
 	
 	
 	@Override
-	public void zetOpdracht(Hashtable h, String[] randomVars,Hashtable randomValues) {
+	public void zetOpdracht(Hashtable h, String[] randomVars,Hashtable randomValues) 
+	{
+		
+System.out.println("jlip zetOpdracht");
+
 		Hashtable state = null;
 		boolean uitvoerVeldZichtbaar = true;
+		boolean transparantOptie = true;
+		boolean draadFiguurOptie = true;
 		boolean programmaVeldZichtbaar = true;
 		boolean deeltakenZichtbaar = true;
 		boolean whileLoopZichtbaar = true;
@@ -230,6 +342,8 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		
 		if(h.containsKey("state")) state = (Hashtable) h.get("state");
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
+		if(h.containsKey("transparantOptie")) transparantOptie = ((Boolean)h.get("transparantOptie"));
+		if(h.containsKey("draadFiguurOptie")) draadFiguurOptie = ((Boolean)h.get("draadFiguurOptie"));
 		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
 		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
 		if(h.containsKey("whileLoopZichtbaar")) whileLoopZichtbaar = ((Boolean)h.get("whileLoopZichtbaar"));
@@ -240,6 +354,8 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
 				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
+		zetTransparantOptie(transparantOptie);
+		zetDraadFiguurOptie(draadFiguurOptie);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
 		zetDeeltaken(deeltakenZichtbaar);
 		zetWhileLoopZichtbaar(whileLoopZichtbaar);
@@ -270,15 +386,22 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	}
 	
 	@Override
-	public void setEditState(Hashtable h) {
+	public void setEditState(Hashtable h) 
+	{
+System.out.println("jlip setEditState");
+
 		Hashtable state = null;
 		Hashtable antwoordModel = null;
 		boolean uitvoerVeldZichtbaar = false;
+		boolean transparantOptie = true;
+		boolean draadFiguurOptie = true;
 		boolean programmaVeldZichtbaar = false;
 		int scoreMax = 0;
 		
 		if(h.containsKey("state")) state = (Hashtable) h.get("state");
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
+		if(h.containsKey("transparantOptie")) transparantOptie = ((Boolean)h.get("transparantOptie"));
+		if(h.containsKey("draadFiguurOptie")) draadFiguurOptie = ((Boolean)h.get("draadFiguurOptie"));
 		if(h.containsKey("programmaVeldZichtbaar")) programmaVeldZichtbaar = ((Boolean)h.get("programmaVeldZichtbaar"));
 		if(h.containsKey("deeltakenZichtbaar"))	deeltakenZichtbaar = ((Boolean)h.get("deeltakenZichtbaar"));
 		if(h.containsKey("whileLoopZichtbaar")) whileLoopZichtbaar = ((Boolean)h.get("whileLoopZichtbaar"));
@@ -289,6 +412,8 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
 				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
+		zetTransparantOptie(transparantOptie);
+		zetDraadFiguurOptie(draadFiguurOptie);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
 		zetDeeltaken(deeltakenZichtbaar);
 		zetWhileLoopZichtbaar(whileLoopZichtbaar);

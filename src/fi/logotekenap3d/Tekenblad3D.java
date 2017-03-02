@@ -11,7 +11,7 @@ public class Tekenblad3D extends JPanel //Canvas
 	private int breedte,hoogte;
 	private Punt3D beginpunt,eindpunt,startpunt;
   	public Lichaam3D l;
-  	private Image im ;
+  	public Image im ;
   	private Graphics gIm ;
 	public Matrix3D mat;  
 	private TekenApplet3D eigenaar;
@@ -35,7 +35,7 @@ public class Tekenblad3D extends JPanel //Canvas
 
 	public Tekenblad3D(TekenApplet3D ap)
 	{	
-		setLayout(null);
+		//setLayout(null);
 		achtergrondkleur = Color.white;
 		l = new Lichaam3D();
 		eigenaar = ap;
@@ -43,6 +43,10 @@ public class Tekenblad3D extends JPanel //Canvas
 		
 	}
 	
+	public Graphics getgIm()
+	{
+		return gIm;
+	}
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad: om de image te initialiseren en
 	//op het scherm te zetten. "paint()" wordt alleen bij de eerste keer tekenen gebruikt, daarna 
@@ -50,20 +54,29 @@ public class Tekenblad3D extends JPanel //Canvas
 	//van de image, metbehulp van het door de leerlingen geimplementeerde "tekenprogramma()",
 	//en wordt zowel door "paint()" als door "tekenOpImage()" gebruikt
 	//-------------------------------------------------------------------------------------------  	
-	public void paint(Graphics g)
+	public void paintComponent(Graphics g)
   	{ 	
 		
-System.out.println("tb paint");
+//System.out.println("tb paintComponent");
+
+		//gIm = getGraphics();
+		
+//if (gIm == null)
+//System.out.println("paint gIm == null");	
+		
 
 		bezigMetTekenen = true;
 		if (im == null)
-		{	breedte = getSize().width;
+		{	
+			breedte = getSize().width;
 			hoogte = getSize().height;	
 			double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
 			mat.initialiseer(0,0,0,startschaal);	
 			startpunt = new Punt3D(breedte/2,hoogte/2,0);
 			l.maakNulpunt(breedte/2,hoogte/2,0);
 			im = createImage(breedte,hoogte);
+//if (im == null)
+//System.out.println("paint gIm == null");	
   			gIm = im.getGraphics();
   			//initializeDrawing(eigenaar.eigenaar.trb.isTraceAan());
 			tekenOpImage(eigenaar.eigenaar.trb.isTraceAan());
@@ -123,12 +136,6 @@ System.out.println("tb initializeDrawing");
 		cursorPunten[2] = p;
 		p = mat.geefVolgendPunt(beginpunt,0,-15,0);
 		cursorPunten[3] = p;
-				
-//System.out.println("bp = " + beginpunt.toString());
-//System.out.println("cp0 = " + cursorPunten[0].toString());
-//System.out.println("cp1 = " + cursorPunten[1].toString());
-//System.out.println("cp2 = " + cursorPunten[2].toString());
-//System.out.println("cp3 = " + cursorPunten[3].toString());
 
 		l.voegCursorToe(cursorPunten, Color.black, Color.yellow);
 	}
@@ -140,11 +147,17 @@ System.out.println("tb initializeDrawing");
 	 */
 	public void paintDrawing(boolean cursor)
 	{	
-System.out.println("tb paintDrawing " + cursor);
+//System.out.println("tb paintDrawing " + cursor);
 
 		cursorAan = cursor;
 		//initializeDrawing(cursor);
+		//gIm = getGraphics();
+		
+//if (gIm == null)
+//System.out.println("gIm == null");	
+		
 		tekenOpImage(cursor);
+		
 		Graphics g = getGraphics();
 		if(g!=null)
 			g.drawImage(im, 0, 0, null);
@@ -153,12 +166,16 @@ System.out.println("tb paintDrawing " + cursor);
   	public void tekenOpImage(boolean cursor)
   	{ 	
   		
-System.out.println("tb tekenOpImage " + cursor);
+//System.out.println("tb tekenOpImage " + cursor);
 
+		startpunt = new Punt3D(breedte/2,hoogte/2,0);
 
   		beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
 		mat.initialiseer();
+//if (gIm == null)
+//System.out.println("toi gIm == null");	
+		
 	  	gIm.setColor(achtergrondkleur);
 		gIm.fillRect(0, 0, breedte, hoogte);
     	gIm.setColor(Color.gray);
@@ -177,7 +194,7 @@ System.out.println("tb tekenOpImage " + cursor);
     	//eigenaar.tekenprogramma();
 		l.sorteer();
 
-System.out.println("polyg = " + l.aantalPolygonen);
+//System.out.println("polyg = " + l.aantalPolygonen);
 
 		for (int i = 0; i < l.aantalPolygonen; i++)
 		{
