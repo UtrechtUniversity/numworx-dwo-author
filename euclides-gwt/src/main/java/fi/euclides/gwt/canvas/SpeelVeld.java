@@ -333,7 +333,27 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		else if(ViewerWidget.TEXT_BOTTOM.equals(v)) valign = TextBaseline.BOTTOM;
 		else if(ViewerWidget.TEXT_CENTRAL.equals(v)) valign = TextBaseline.MIDDLE;
 		context.setTextBaseline(valign);
-		
+		if(bg != null && !"none".equals(bg))
+		{	context.save();
+			context.setFillStyle(bg);
+			double w = context.measureText(value).getWidth();
+			double s = 12;
+			double rx = x;
+			double ry = y;
+			switch(halign) {
+			case END: rx -= w; break;
+			case CENTER: rx -= w/2; break;
+			default:
+			}
+			switch(valign) {
+			case ALPHABETIC: ry -= s* 0.75;  break; // schatting
+			case BOTTOM: ry -= s; break;
+			case MIDDLE: ry -= s/2;break;
+			default:
+			}
+			context.fillRect(rx, ry, w, s);
+			context.restore();
+		}
 		drawString(value, x, y);
 		
 	}

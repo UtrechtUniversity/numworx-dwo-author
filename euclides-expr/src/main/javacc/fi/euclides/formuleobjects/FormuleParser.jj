@@ -178,8 +178,8 @@ TOKEN:
 | < RATIONAL : (< CONSTANT >)? < BREUK > <CONSTANT > < N > < CONSTANT > < AT > < AT >>
 | < FLOAT : < CONSTANT > (".") < CONSTANT > >
 | < BOOL : ("true" | "false" ) >
-| < OR : ( "or" | "\u2228" ) >
-| < AND : ( "and" | "\u2227" ) >
+| < OR : ( "or" | "\u2228" | "|"  ) >
+| < AND : ( "and" | "\u2227"| "&" ) >
 | < NOT : ( "not" | "\u00AC" ) >
 | <  X : "x" >
 | <  E : "e" >
