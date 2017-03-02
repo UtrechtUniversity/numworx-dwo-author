@@ -44,7 +44,6 @@ Class-Path: nabouwenaanzichten.jar
  geogebra3_cas.jar 
  geogebra3_properties.jar 
  geogebra3_export.jar 
- geodefiner.jar 
  geomalgebra1d.jar 
  normaleverdeling.jar 
  binomverdeling.jar 
