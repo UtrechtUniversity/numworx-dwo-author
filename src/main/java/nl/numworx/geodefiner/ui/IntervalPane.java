@@ -67,7 +67,9 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		model.length = ((Number) lengthField.getValue()).doubleValue();
 		model.interval = Math.round( ((Number) intervalField.getValue()).floatValue()*1000.0f);
 		model.step = (Double) stepField.getValue();
-		model.width = ((Number) widthField.getValue()).floatValue();
+		Number number = (Number) widthField.getValue();
+		if (number != null) model.width = number.floatValue();
+		else model.width = null;
 		super.commit();
 	}
 
