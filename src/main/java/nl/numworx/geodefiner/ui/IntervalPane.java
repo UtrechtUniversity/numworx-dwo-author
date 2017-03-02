@@ -45,7 +45,7 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		stepField.setMaximumSize(stepField.getPreferredSize());
 		widthField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
 		widthField.setColumns(5);
-		widthField.setValue(model.width+0.0);
+		if(model.width != null) widthField.setValue(model.width+0.0);
 		widthField.setMaximumSize(widthField.getPreferredSize());
 		Box hbox;
 		hbox = Box.createHorizontalBox();

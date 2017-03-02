@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -21,13 +23,15 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import fi.euclides.event.Tracker;
+import fi.euclides.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import nl.numworx.geodefiner.common.CheckObject;
 import nl.numworx.geodefiner.common.CheckObjectList;
+import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
-public class CheckObjectsPanel extends JPanel implements ActionListener {
+public class CheckObjectsPanel extends JPanel implements ActionListener, Randomizer {
 
 	JButton plus, min;
 	JTable  table;
@@ -50,7 +54,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			switch(columnIndex) {
-			case 0: return "Object " + (rowIndex + 1);
+			case 0: return "Object_" + (rowIndex + 1);
 			case 1: return checkObjects.getElementAt(rowIndex).getFormule();
 			case 2: return checkObjects.getElementAt(rowIndex).getMaxScore();
 			}
@@ -190,8 +194,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() .equals( "ingevuld")) {
-				value = vak.formuleVak.toString();
-				fireEditingStopped();
+				stopCellEditing();
 			}
 		}
 
@@ -201,11 +204,29 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		@Override
 		public boolean stopCellEditing() {
 			value = vak.formuleVak.toString();
+			if("$f@".equals(value))
+				return super.stopCellEditing();
+			String string = value;
+			try {
+				string = randomizer.randomize(string);
+				FormuleParser fp = new FormuleParser(string.substring(2));
+				OMObject expr = fp.expr();
+				assert expr != null;
+			} catch(Exception e) {
+				Logger.getLogger(getClass().getName()).log(Level.WARNING, "stopCellEditing", e);
+				firePropertyChange("feedback", string, e);
+				return false;
+			}
 			return super.stopCellEditing();
 		}
-
 	}
 	
+	Randomizer randomizer = this;
+	
+	@Override
+	public String randomize(String input) {
+		return input;
+	}
 	
 	CheckObjectsPanel(Tracker tracker) {
 		super(new BorderLayout());

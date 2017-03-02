@@ -124,6 +124,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		command.random = random.getRandomVars();
 		command.instance = instance;
 		definition.randomizer = command;
+		checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();
 		toolbox.setToolbox(instance.toolbox);
 		checkDWO.checkBtn = instance.checkBtn;
@@ -131,6 +132,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 // 
 		command.addPropertyChangeListener("command", definition);
 		command.addPropertyChangeListener("feedback", this);
+		checkObjects.addPropertyChangeListener("feedback", this);
 		definition.addPropertyChangeListener("command", command);
 		content.add(command, BorderLayout.SOUTH);
 		add(content, JLayeredPane.DEFAULT_LAYER);
@@ -216,6 +218,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		c.setSize(instanceSize);
 		c.setPreferredSize(instanceSize);
 		c.invalidate();
+		c.getParent().validate();
 	}
 
 	public void setLaunchData(Map<String, ?> launchdata) {

@@ -13,6 +13,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
@@ -53,6 +54,8 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 				tracker.getModel().add(v);
 			
 			} catch (Exception e) {
+			} catch (TokenMgrError tme) {
+				tme.printStackTrace();
 			}
 		}
 	}
