@@ -319,9 +319,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void setMapper(NameMapper mapper) {
-		// TODO Auto-generated method stub
-		
 	}
+
 	public void drawString(String value, double x, double y,
 			String h, String v, String bg) {
 		TextAlign halign = TextAlign.START;
