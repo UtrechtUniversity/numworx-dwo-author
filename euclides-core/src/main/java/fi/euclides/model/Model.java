@@ -2,6 +2,7 @@ package fi.euclides.model;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import fi.euclides.util.Hashtable;
 
@@ -343,7 +344,8 @@ public class Model extends Observable implements Observer, NameMapper {
 		setIndex( Math.max(pi, li));
 	}
 	
-	public void destroyAll() { 
+	public void destroyAll() {
+		delay.clear();
 		clearSelection();
 		while(!lijnen.isEmpty()) { lijnen.lastElement().destroy(); }
 		while(!punten.isEmpty()) { punten.lastElement().destroy(); }
@@ -353,6 +355,15 @@ public class Model extends Observable implements Observer, NameMapper {
 	public void update(Observable observable, Object arg) {
 		if (arg == Destroyable.DESTROY)
 		{
+// destroy observables in the delay list
+			synchronized(delay) {
+			if (!delay.isEmpty()) {
+				Iterator<Pair<Observable, Observer>> iter = delay.iterator();
+				while (iter.hasNext()) {
+					Pair<Observable, Observer> pair = (Pair<Observable, Observer>) iter
+							.next();
+					if(pair.getA() == observable) iter.remove();
+			}}}
 			select.removeElement(observable);
 			punten.removeElement(observable);
 			lijnen.removeElement(observable);
