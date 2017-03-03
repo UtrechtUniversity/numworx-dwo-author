@@ -337,6 +337,7 @@ OMObject power() :
  |  < SUBX > { a = binop(EUCLIDES_X, a, null); }
  |  < SUBY > { a = binop(EUCLIDES_Y, a, null); }
  |  < SUB > b = sum() < AT > {  a = binop(LIST2_LIST_SELECTOR, a, b); }
+ |  < "_" > b = element() {  a = binop(LIST2_LIST_SELECTOR, a, b); }
  |  < FAC > {  a = binop(INTEGER1_FACTORIAL, a, null); }
    
        
