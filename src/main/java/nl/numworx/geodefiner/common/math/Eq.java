@@ -5,23 +5,21 @@ import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelTester;
 
-class Equals extends LabelTester {
+public class Eq extends LabelTester {
 
-	public Equals() {
-		super("\u2248");
+	public Eq() {
+		super("=");
 	}
 
 	@Override
 	public Destroyable[] createDepend() {
-		return new Destroyable[3];
+		return new Destroyable[2];
 	}
 
 	@Override
 	protected boolean test(Label l) {
 		Destroyable[] depend = l.getDepend();
-		double marge = 0.001;
-		if(depend.length > 2 && depend[2] instanceof Label) 
-			marge = ((Label)depend[2]).value.doubleValue();
+		double marge = 0.0000000000000001;
 		Destroyable a = depend[0];
 		Destroyable b = depend[1];
 		EqualsVisitor eq = new EqualsVisitor(b, getTracker());

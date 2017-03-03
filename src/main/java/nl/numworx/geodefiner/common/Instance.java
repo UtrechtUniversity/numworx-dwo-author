@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -34,6 +36,7 @@ import fi.euclides.util.Observable;
 
 public abstract class Instance /*implements Observer*/ {
 
+	protected Logger logger = Logger.getLogger(getClass().getName());
 	protected UIModelFactory uiModelFactory;
 	protected Definitions definitions;
 	protected Tracker viewer;
@@ -89,7 +92,7 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	List<Destroyable> resetItems;
-	private void installPrepare() {
+	public void installPrepare() {
 		Model m = viewer.getModel();
 		int size = m.getPunten().size() + m.getLijnen().size();
 		resetItems = new ArrayList<Destroyable>(size);
@@ -169,8 +172,8 @@ public abstract class Instance /*implements Observer*/ {
 				object = new FormuleParser(toParse.substring(2)).parse();
 				definitions.define(text, object);
 			} catch (Throwable e) {
-				e.printStackTrace();
-				break;
+				logger.log(Level.WARNING, "define " + text , e);
+				//break;
 			}
 		}
 	}

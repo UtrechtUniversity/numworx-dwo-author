@@ -29,6 +29,9 @@ public class Expression extends fi.euclides.openmath.Expression {
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.equals", value);
 		symbolmap.put("relation1.approx", value);
+		value = new Eq();
+		value.setTracker(tracker);
+		symbolmap.put("relation1.eq", value);
 		Abs abs = new Abs();
 		abs.setTracker(tracker);
 		put(OMConstants.ARITH1_ABS, abs);

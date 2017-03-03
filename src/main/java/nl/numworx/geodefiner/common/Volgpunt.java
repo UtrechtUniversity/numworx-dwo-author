@@ -10,17 +10,23 @@ import fi.euclides.util.Observer;
 public class Volgpunt extends Punt implements FreePoint, Observer {
 
 	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		super.destroy();
+	}
+
+	@Override
 	public void update(Observable observable, Object arg) {
 		if(arg == DESTROY) {
 			destroy();
 			
 		}
-		if(observable == p[0]) {
+		if(observable == p[0] && observable != null) {
 			setXY(Numbers.add(p[0].getX(), dx), Numbers.add(p[0].getY(), dy));
 		}
 	}
 
-	private Punt[] p = new Punt[1];
+	private final Punt[] p = new Punt[1];
 	private boolean free = true;
 	private Numbers dx = Numbers.ZERO;
 	private Numbers dy = Numbers.ZERO;
@@ -63,12 +69,12 @@ public class Volgpunt extends Punt implements FreePoint, Observer {
 
 	@Override
 	public boolean isDefined() {
-		return p[0].isDefined();
+		return p[0] != null && p[0].isDefined();
 	}
 
 	@Override
 	public void moveTo(Numbers x, Numbers y) {
-		if(isFree()) {
+		if(isFree() && p[0] != null) {
 			dx = Numbers.sub(x, p[0].getX());
 			dy = Numbers.sub(y, p[0].getY());
 			super.moveTo(x, y);

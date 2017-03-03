@@ -16,6 +16,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
@@ -222,10 +223,12 @@ public class Definitions implements Observer /*, ListModel*/ {
 							} catch (ParseException e) {
 								// log.fine(e.toString())
 								;
-							}				
+							} catch (TokenMgrError tme) {							
+							}
 						}
 					}
 					t.setP(new Volgpunt(p));
+					
 					model.add(t);
 					installConfig(new CELL(text, t, var), config);
 					return;
