@@ -14,13 +14,14 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
 
 public class IntervalModel extends TextModel {
 	Animate animate = Animate.NONE;
-	double length = 50;
+	double length = 50, x, y;
 	int interval = 2000;
 	Double step;
 	Float  width;
@@ -60,6 +61,8 @@ public class IntervalModel extends TextModel {
 			adapterP.put(Float.class, null);
 		}
 		HorizontalPunt hp = (HorizontalPunt) ((Segment) segment).getP2();
+		Punt h0 = ((Segment) segment).getP1();
+		h0.setXY(x, y);
 		hp.setDistance(Numbers.createDouble(length));
 		super.install(item);
 	}
@@ -80,6 +83,8 @@ public class IntervalModel extends TextModel {
 		
 		Segment s = (Segment) item.getP().getDepend()[0];
 		length = s.getDX();
+		x = s.getX1(); 
+		y = s.getY1();
 		return super.init(item);
 	}
 
@@ -91,6 +96,16 @@ public class IntervalModel extends TextModel {
 		map.put("length", length);
 		if(step!=null) map.put("step", step); else map.remove("step");
 		if(width!= null) map.put("width", width.doubleValue());
+		if(item != null) {
+			Segment s = (Segment) item.getP().getDepend()[0];
+			map.put("x", s.getX1());
+			map.put("y", s.getY1());
+		} else {
+			if (x != 0) map.put("x", x);
+			if (y != 0) map.put("y", y);
+		}
+		
+		
 		return map;
 	}
 
@@ -114,6 +129,12 @@ public class IntervalModel extends TextModel {
 			step = null;
 		if (map.containsKey("width"))
 			width = new Float(map.getDouble("width"));
+		if(map.containsKey("x")) {
+			x = map.getDouble("x");
+		} else x = 0;
+		if(map.containsKey("y")) {
+			y = map.getDouble("y");
+		} else y = 0;
 		super.fromMap(map);
 	}
 

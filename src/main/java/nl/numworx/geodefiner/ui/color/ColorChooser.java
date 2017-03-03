@@ -27,6 +27,7 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 	ColorBoard board;
 	JSlider slider;
 	JComponent sample;
+	RecentColors recent;
 	
 	public ColorChooser(java.awt.Color color) {
 		this();
@@ -72,10 +73,12 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 		sample.setMaximumSize(sample.getPreferredSize());
 		sample.setSize(sample.getPreferredSize());
 		sample.setBorder(BorderFactory.createEtchedBorder());
+		recent = new RecentColors();
 // events
 		slider.addChangeListener(this);
 		board.addActionListener(this);
 		prefab.addActionListener(this);
+		recent.addActionListener(this);
 // layout
 		Box hh = Box.createHorizontalBox();
 		hh.add(board);
@@ -88,6 +91,7 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 		v.add(Box.createVerticalGlue());
 		v.add(slider);
 		hh.add(v);
+		hh.add(recent);
 		add(hh);
 		previewPanel = new JPanel();
 		add(previewPanel);
@@ -104,8 +108,14 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 			} else if(item instanceof String) {
 				int v = Integer.parseInt(item.toString().substring(1), 16);
 				setValue0(v);
+				recent.insertColor(v);
 			}
 		} else if (e.getSource() == board) {
+			prefab.setSelectedItem(e.getActionCommand());
+			int v = Integer.parseInt(e.getActionCommand().substring(1), 16);
+			setValue0(v);
+			recent.insertColor(v);
+		} else if (e.getSource() == recent) {
 			prefab.setSelectedItem(e.getActionCommand());
 			int v = Integer.parseInt(e.getActionCommand().substring(1), 16);
 			setValue0(v);			

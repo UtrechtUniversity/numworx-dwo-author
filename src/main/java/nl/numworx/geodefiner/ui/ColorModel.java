@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -40,7 +41,10 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		item.setVisible(visible);
 		if (visibility.getString() != null && tracker != null) {
 			try {
-				final String formula = visibility.getString().substring(2);
+				String formula = visibility.getString();
+				Randomizer r = tracker.adapt(Randomizer.class);
+				if(r != null) formula = r.randomize(formula);
+				formula = formula.substring(2);
 				visibility.destroy();
 				OMObject o = new FormuleParser(formula).logic();
 				OMApplication oma = new OMApplication();

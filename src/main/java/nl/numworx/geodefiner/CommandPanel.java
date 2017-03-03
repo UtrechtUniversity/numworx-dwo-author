@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleEditor;

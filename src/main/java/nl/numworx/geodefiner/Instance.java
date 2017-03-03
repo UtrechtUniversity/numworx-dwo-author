@@ -47,6 +47,7 @@ import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.ShortSegment;
 import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.ui.AxesModel;
@@ -92,7 +93,7 @@ import fi.wiskopdr.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
 
-public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener {
+public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener, Randomizer {
 
 	public class KijkNaAction extends AbstractAction implements Icon, Observer {
 
@@ -302,6 +303,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public <T> T adapt(Class<T> cls) {
 			if(cls == Snapper.class) return (T) snapper;
 			if(cls == Expression.class) return (T) expression;
+			if(cls == Randomizer.class) return (T) randomizer;
 			return super.adapt(cls);
 		}
 
@@ -805,6 +807,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	private Map<String, Number> random = Collections.emptyMap();
+	Randomizer randomizer = this;
 
 	JToolBar toolbox;
 
@@ -1016,5 +1019,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	void installToolTip() {
 		ToolTipManager.sharedInstance().registerComponent(content);
 	}
+
+	@Override
+	public String randomize(String input) {
+		return randomize(random, input);
+	}
+
 	
 }

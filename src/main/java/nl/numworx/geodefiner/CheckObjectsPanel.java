@@ -28,6 +28,7 @@ import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import nl.numworx.geodefiner.common.CheckObject;
 import nl.numworx.geodefiner.common.CheckObjectList;
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 

@@ -19,6 +19,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.model.AbstractViewer;
 

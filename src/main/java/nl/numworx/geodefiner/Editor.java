@@ -124,6 +124,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		command.random = random.getRandomVars();
 		command.instance = instance;
 		definition.randomizer = command;
+		instance.randomizer = command;
 		checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();
 		toolbox.setToolbox(instance.toolbox);
@@ -180,6 +181,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("order", definition.toList());
 		launchdata.put("configuration", configuration);
 		launchdata.put("axes", axes.toMap());
+		instance.installPrepare(); // voor instance.getstate().get("model")
 		launchdata.put("positions", instance.getState().get("positions"));
 		launchdata.put("random", random.getText());
 		launchdata.put("checkDWO", checkDWO.toMap());
