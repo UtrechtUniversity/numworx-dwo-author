@@ -272,7 +272,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		super.paint(g);
 	}
 
-	void setFeedback(String tekst) {
+	void setFeedback(String tekst, Object object) {
 		if(feedback == null) {
 			feedback = new FeedbackTekstArea();
 			feedback.setSize(200,40);
@@ -286,11 +286,13 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			feedback.addActionListener(this);
 			feedback.setVisible(false);
 			add(feedback, JLayeredPane.PALETTE_LAYER);
-			int x; int y;
-			x = command.getX() + 10;
-			y = command.getY() - 10;
-			feedback.setLocation(x, y);
 		}
+		int x; int y;
+		Component f = command;
+		if (object instanceof Component) f = (Component) object;
+		x = f.getLocationOnScreen().x + 10 - content.getLocationOnScreen().x;
+		y = f.getLocationOnScreen().y - 10 - content.getLocationOnScreen().y;
+		feedback.setLocation(x, y);
 		feedback.setText(tekst);
 		feedback.setVisible(true);
 	}
@@ -320,7 +322,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 				command += "\n" + tme.getLocalizedMessage();
 				
 			}
-			setFeedback(command);
+			setFeedback(command, evt.getSource());
 		}
 	}
 }

@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.List;
@@ -212,10 +214,10 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 				string = randomizer.randomize(string);
 				FormuleParser fp = new FormuleParser(string.substring(2));
 				OMObject expr = fp.expr();
-				assert expr != null;
-			} catch(Exception e) {
+				assert expr != null; // assertionError
+			} catch(Throwable e) {
 				Logger.getLogger(getClass().getName()).log(Level.WARNING, "stopCellEditing", e);
-				firePropertyChange("feedback", string, e);
+				firePropertyChange(new PropertyChangeEvent(vak, "feedback", string, e));
 				return false;
 			}
 			return super.stopCellEditing();
@@ -229,6 +231,13 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 		return input;
 	}
 	
+	public void firePropertyChange(PropertyChangeEvent e) {
+		for (PropertyChangeListener l : getPropertyChangeListeners(e.getPropertyName())) {
+			l.propertyChange(e);
+		}
+		
+	}
+
 	CheckObjectsPanel(Tracker tracker) {
 		super(new BorderLayout());
 		setName("CheckObjects");

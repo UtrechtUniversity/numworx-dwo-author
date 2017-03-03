@@ -241,6 +241,7 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 				define(cell.text, object);
 			} catch (ParseException pe) {
 			} catch (Exception e) {
+				e.printStackTrace();
 				addElement(cell);
 			} catch (TokenMgrError te) {				
 			}

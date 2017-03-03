@@ -69,7 +69,10 @@ public class IntervalModel extends TextModel {
 
 	@Override
 	public UIModel<Label, UIEditor> init(Label item) {
-		if(item == null) return this; // skip iff null
+		if(item == null) {
+			this.item = null;
+			return this; // skip iff null
+		}
 		Animator animator = item.adapt(Animator.class);
 		if(animator != null) {
 			animate = animator.animate;
