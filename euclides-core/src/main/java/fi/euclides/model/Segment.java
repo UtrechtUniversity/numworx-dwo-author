@@ -119,6 +119,7 @@ public class Segment extends PuntenLijn {
 	/* (non-Javadoc)
 	 * @see fi.euclides.model.Lijn#contains(fi.euclides.model.Punt)
 	 */
+	final static private double EPS = 0.00001; // rekenfouten
 	public boolean contains(Punt p) {
 		double x = p.getXd();
 		double y = p.getYd();
@@ -128,13 +129,13 @@ public class Segment extends PuntenLijn {
 		double y2 = getY2();
 		boolean result;
 		if(x1<x2)
-			result = x1<=x && x<=x2;
+			result = x1-EPS<=x && x<=x2+EPS;
 		else 
-			result = x2<=x && x<=x1;
+			result = x2-EPS<=x && x<=x1+EPS;
 		if(y1<y2)
-			result &= y1<=y && y<=y2;
+			result &= y1-EPS<=y && y<=y2+EPS;
 		else
-			result &= y2<=y && y<=y1;
+			result &= y2-EPS<=y && y<=y1+EPS;
 		
 		return result;
 	}

@@ -65,6 +65,8 @@ public class FloatingPoint extends Numbers {
 	}
 	
 	protected Numbers sqrt() {
+		if(Double.isNaN(value))
+			return this;
 		if(value >= 0)
 			return createDouble(Math.sqrt(value));
 		return createComplex(ZERO,sqrt(neg()));

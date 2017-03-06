@@ -10,5 +10,5 @@ public interface FreePoint extends Adaptee {
 	Numbers getX();
 	Numbers getY();
 	void setXY(Numbers x, Numbers y);
-	
+	void moveTo(Numbers x, Numbers y);
 }
