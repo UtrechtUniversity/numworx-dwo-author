@@ -201,7 +201,14 @@ public abstract class Instance /*implements Observer*/ {
 						NumberIO in = new NumberIO(n);
 						Numbers x = in.readNumber();
 						Numbers y = in.readNumber();
-						fp.setXY(x, y);
+						boolean b = fp.isFree();
+						try {
+							fp.setFree(true); // temporary movable
+							fp.moveTo(x, y);
+						} finally {
+							fp.setFree(b);
+						}
+						
 					} catch (IOException e) {
 						// should not happen!
 					}

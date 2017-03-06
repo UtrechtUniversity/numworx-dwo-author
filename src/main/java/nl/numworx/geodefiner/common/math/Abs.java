@@ -35,6 +35,8 @@ class Abs extends LabelValue {
 	public boolean define(Label l) {
 		if(l.getDepend()[0] instanceof Label) {
 			l.setDepend(new Label[] { (Label) l.getDepend()[0] });
+			getTracker().getModel().getO().deleteObserver(l); // not dependent on U or O
+			getTracker().getModel().getU().deleteObserver(l);
 			l.register(abs);
 			return abs.define(l);
 		} else if (l.getDepend()[0] instanceof Punt) {
