@@ -155,16 +155,6 @@ public class ColorChooser extends JPanel implements ActionListener, ChangeListen
 		previewPanel.repaint();
 	}
 
-	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		ColorChooser b = new ColorChooser();
-		f.setDefaultCloseOperation(f.EXIT_ON_CLOSE);
-		f.setContentPane(b);
-		f.pack();
-		f.show();
-		b.setValue(0xC0FF00FF);
-	}
-
 	int value;
 
 	@Override
