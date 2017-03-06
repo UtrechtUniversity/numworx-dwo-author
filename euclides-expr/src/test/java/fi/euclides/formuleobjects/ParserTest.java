@@ -13,6 +13,7 @@ import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.HaakjesVak;
 import fi.wiskopdr.formuleobjects.IntegraalVak;
+import fi.wiskopdr.formuleobjects.LimietVak;
 import fi.wiskopdr.formuleobjects.NdeLogVak;
 import fi.wiskopdr.formuleobjects.NdeWortelVak;
 import fi.wiskopdr.formuleobjects.PowerVak;
@@ -24,6 +25,7 @@ import fi.wiskopdr.formuleobjects.WortelVak;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMInteger;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMString;
 import junit.framework.TestCase;
 
 public class ParserTest extends TestCase {
@@ -212,6 +214,26 @@ public class ParserTest extends TestCase {
 		assertNotNull(result);
 		System.out.println(result);
 		assertEquals("OMA", result.getType());
+	}
+	
+	public void testLim() throws Exception {
+		RegelVak fe = new LimietVak(vak);
+		fe.vulVak("x+1$nx$k0$l0@@@");
+		parse(fe);
+	}
+	
+	public void testIndex() throws Exception {
+		FormuleParser p = new FormuleParser("a_i=b_i@");
+		OMObject result = p.parse();
+		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
+	}
+	
+	public void testCopy() throws Exception {
+		OMString str = new OMString("copy");
+		Object copy = str.copy();
+		assertNotNull(copy);
 		
 	}
 }

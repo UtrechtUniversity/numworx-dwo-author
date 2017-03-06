@@ -125,6 +125,36 @@ public class FormuleParser implements OMConstants{
 	public FormuleParser(String in) {
 	  this(new StringStream(in));
     }
+
+/*
+	String toDirection(String n) {
+		if("<OMI>0</OMI>".equals(n))
+			return "<OMS cd='limit1' name='both_sides' />";
+		if("<OMI>1</OMI>".equals(n))
+			return "<OMS cd='limit1' name='above'/>";
+		if("<OMI>2</OMI>".equals(n))
+			return "<OMS cd='limit1' name='below'/>";
+		return "<OMS cd='limit1' name='null' />";
+	}
+
+*/
+	OMSymbol toDirection(Token t) {
+	  String n = t.toString();
+	  if("0".equals(n)) return new OMSymbol("limit1", "both_sides");
+	  if("1".equals(n)) return new OMSymbol("limit1", "above");
+	  if("2".equals(n)) return new OMSymbol("limit1", "below");
+	  return new OMSymbol("limit1", "null");
+    }
+
+    OMApplication limit(OMObject expr, Token x, OMObject limit, Token t) {
+		OMApplication oma = new OMApplication();
+		oma.addElement(new OMSymbol("limit1", "limit"));
+		oma.addElement(limit);
+		oma.addElement(toDirection(t));
+		oma.addElement(lambda(x, expr));
+		return oma;
+	}
+
   
 }  
 PARSER_END(FormuleParser)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":") >
@@ -161,6 +191,7 @@ TOKEN : /* VAKKEN */
 | < INT : "$P" >
 | < DEFINT: "$i" >
 | < PRV : "$q" >
+| < LIM : "$T" >
 }
 TOKEN:
 {
@@ -220,8 +251,10 @@ OMObject assign() :
 { Token var, x; OMObject expr; }
 {
   var = < VARIABLE >
-  ( "(" x = < X >")" <  EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  ( "(" (x=< X >|x=<Y>|x=<VARIABLE>) ")" <  EQ > expr = expr() { return assign(var, lambda(x, expr)); }
   | < EQ > expr = expr() { return assign(var, expr); }
+  | "_" x = < VARIABLE > < EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  | < SUB > x = < VARIABLE > < AT >< EQ > expr = expr() { return assign(var, lambda(x, expr)); }
   )
 |  LOOKAHEAD ( (<X>|<Y>) < RELATION >)
    expr = halflogic() {  return expr; }
@@ -232,8 +265,8 @@ OMObject assign() :
 OMObject expr() :
 { Token x; OMObject e; }
 {
- LOOKAHEAD( (<X>|<Y>) < ARROW > )
- (x=<X>|x=<Y>) < ARROW > e = or() { return lambda(x, e); }
+ LOOKAHEAD( (<X>|<Y>|<VARIABLE>) < ARROW > )
+ (x=<X>|x=<Y>|x=<VARIABLE>) < ARROW > e = or() { return lambda(x, e); }
 | e = logic() {  return e; }
 }
 
@@ -472,4 +505,7 @@ OMApplication bracket() :
 | < MAP > "(" expr = sum() < KOMMA > expr2 = sum() ")" {
        return binop(LIST1_MAP, expr, expr2);
     }
+| < LIM > expr = sum() < N > (tok=< X >) < K > expr2=sum() < L > breuk = < CONSTANT > <AT><AT><AT><AT> {
+	return limit(expr, tok, expr2, breuk);
+}
 }
