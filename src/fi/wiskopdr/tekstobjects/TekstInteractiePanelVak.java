@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
+import nl.numworx.geodefiner.GeoDefinerInteractiePanel;
+
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
@@ -36,6 +38,7 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.JSONArray;
+
 
 
 
@@ -2062,6 +2065,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			|| interactiePanel instanceof AntwoordKeuzeVak
 			|| interactiePanel instanceof CheckValueUnitPanel
 			|| interactiePanel instanceof CBookInteractiePanel
+			|| interactiePanel instanceof GeoDefinerInteractiePanel
 			))
 			return interactiePanel.getScoreObjectives();
 		else return null;
