@@ -430,6 +430,24 @@ OMApplication arglist() :
   < APPLY > ( expr = element() { list.addElement(expr); return list; })
 }
 
+void lookforhaakjes() :
+{ }
+{ "("
+| < HAAKJES >
+}  
+  
+OMApplication transarglist() :
+{
+  OMApplication list = new OMApplication(); list.addElement(null);
+  OMObject expr;
+}
+{
+  LOOKAHEAD( lookforhaakjes() )
+  expr = element() {  list.addElement(expr); return list; }
+|
+  expr = term() {  list.addElement(expr); return list;}
+}
+
 OMApplication bracket() :
 { OMObject expr; OMApplication list = new OMApplication(); list.addElement(LIST1_LIST); }
 {
@@ -482,7 +500,7 @@ OMApplication bracket() :
 | tok = < GEODEFINER > oma = arglist() {  return geodefiner(tok, oma); }
 | tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
 | tok = < ARITH > oma = arglist() {  return arith(tok, oma); }
-| tok = < COMPLEX > expr = sum() {  return complex(tok, expr); }
+| tok = < COMPLEX > expr = element() {  return complex(tok, expr); }
 | tok = < STRING >
 	{
 	  	String s = tok.toString();
@@ -496,13 +514,15 @@ OMApplication bracket() :
 	tok = < TRANSC > { return transc(tok); }
 | tok = < TRANSC >
 	(   < MACHT > expr2 = sum() < AT > )?
-	expr = sum() {  expr = binop(transc(tok), expr, null);
+	oma = transarglist() {  oma.setElementAt(transc(tok),0); expr = oma;
 		if(expr2 != null)
 			expr = binop(ARITH1_POWER, expr, expr2);
 	    return expr;
 
 	}
-| < MAP > "(" expr = sum() < KOMMA > expr2 = sum() ")" {
+| < MAP > ( "(" expr = sum() < KOMMA > expr2 = sum() ")" |
+			< HAAKJES > expr = sum() < KOMMA > expr2=sum() < AT > )
+{
        return binop(LIST1_MAP, expr, expr2);
     }
 | < LIM > expr = sum() < N > (tok=< X >) < K > expr2=sum() < L > breuk = < CONSTANT > <AT><AT><AT><AT> {
