@@ -33,25 +33,25 @@ import fi.euclides.util.Observer;
 
 public class LocusModelF extends Observable implements LocusModel, Observer, NameMapper {
 
-	private Coordinaten dest;
-	private PuntOp<Lijn> source;
-	private NameMapper mapper;
-	private Label x,y,f;
-	private PuntenLijn xas;
+	protected Coordinaten dest;
+	protected PuntOp<Lijn> source;
+	protected NameMapper mapper;
+	protected Label x,y,f;
+	protected PuntenLijn xas;
 	private String F;
-	private List<Destroyable> output;
+	protected List<Destroyable> output;
 	
-	public LocusModelF() {
-		Punt O = new VrijPunt(Numbers.ZERO, Numbers.ZERO);
-		Punt U = new VrijPunt(Numbers.ONE, Numbers.ZERO);
-		xas = new PuntenLijn(U,O);
-		source = xas.pointOn(Numbers.ZERO, Numbers.ZERO);
-		source.addObserver(this);
-		dest = new Coordinaten();
-		x = new Label();
-		x.setValue(Numbers.ZERO);
-		y = new Label();
-	}
+//	public LocusModelF() {
+//		Punt O = new VrijPunt(Numbers.ZERO, Numbers.ZERO);
+//		Punt U = new VrijPunt(Numbers.ONE, Numbers.ZERO);
+//		xas = new PuntenLijn(U,O);
+//		source = xas.pointOn(Numbers.ZERO, Numbers.ZERO);
+//		source.addObserver(this);
+//		dest = new Coordinaten();
+//		x = new Label();
+//		x.setValue(Numbers.ZERO);
+//		y = new Label();
+//	}
 	
 	
 	public static List<Destroyable> varsOf(Label f) {
@@ -63,7 +63,7 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 		return Collections.EMPTY_LIST;
 	}
 	
-	private static List<Destroyable> varsOf(Object obj, NameMapper mapper, Set<String> bindvars, ArrayList<Destroyable> output) {
+	protected static List<Destroyable> varsOf(Object obj, NameMapper mapper, Set<String> bindvars, ArrayList<Destroyable> output) {
 		if(obj instanceof OMVariable) {
 			String name = ((OMVariable) obj).getName();
 			if(bindvars.contains(name))return output;
@@ -97,17 +97,29 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 
 	public LocusModelF(Label f, Tracker tracker) {
 		mapper = tracker.getMapper();
-		Punt O = mapper.getO();
-		Punt U = mapper.getU();
-		O.addObserver(this);
-		U.addObserver(this);
-		xas = new PuntenLijn(U,O);
-		source = xas.pointOn(O.getX(), O.getY());
-		y = new Label();
-		LabelDelegate coordX = tracker.getRegistered(Coord.xKey);
-		Destroyable depend[] = coordX.createDepend();
-		depend[0] = source;
-		x = coordX.define(depend);
+		createX(tracker);
+		createY(f, tracker);
+		createDest();
+	}
+
+
+	protected void createDest() {
+		dest = new Coordinaten(x, y, mapper.getO(), mapper.getU()) {
+
+			@Override
+			public Numbers getCy() {
+				if(super.getCy() instanceof Complex) return Numbers.NaN;
+				return super.getCy();
+			}
+
+			@Override
+			public boolean isDefined() {
+				return super.isDefined() && !getCy().isNaN();
+			} };
+	}
+
+
+	protected void createY(Label f, Tracker tracker) {
 		this.f = f;
 		this.output = varsOf(f);
 		for(Destroyable i: output) i.addObserver(this);
@@ -120,19 +132,23 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 		Expression expression = tracker.adapt(Expression.class);
 		if(expression == null) 
 			expression = new Expression(tracker);
+		y = new Label();
 		y = (Label) expression.interpret(oma, y, this);
-		dest = new Coordinaten(x, y, O, U) {
+	}
 
-			@Override
-			public Numbers getCy() {
-				if(super.getCy() instanceof Complex) return Numbers.NaN;
-				return super.getCy();
-			}
 
-			@Override
-			public boolean isDefined() {
-				return super.isDefined() && !getCy().isNaN();
-			} };
+	protected void createX(Tracker tracker) {
+		Punt O = mapper.getO();
+		Punt U = mapper.getU();
+		O.addObserver(this);
+		U.addObserver(this);
+		xas = new PuntenLijn(U,O);
+		source = xas.pointOn(O.getX(), O.getY());
+		y = new Label();
+		LabelDelegate coordX = tracker.getRegistered(Coord.xKey);
+		Destroyable depend[] = coordX.createDepend();
+		depend[0] = source;
+		x = coordX.define(depend);
 	}
 
 	public Punt getDest() {

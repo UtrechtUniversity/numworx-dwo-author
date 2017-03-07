@@ -45,25 +45,6 @@ public abstract class LabelDelegate extends EventHandler implements Observer {
 		Destroyable[] od = other.getDepend();
 		return Arrays.equals(ld, od);
 	}
-
-	
-	
-//	@Deprecated
-//	public static LabelDelegate getRegistered(String subkey)
-//	{
-//		return (LabelDelegate)LabelDelegate.map.get(subkey);
-//	}
-
-//	@Deprecated
-//	public static void register(String string, LabelDelegate o) {
-//		LabelDelegate.map.put(string, o);	
-//	}
-
-//	@Deprecated
-//	public static void register(LabelDelegate o) {
-//		register(o.getSubKey(), o);
-//	}
-//	
 	
 	/**
 	 * FIXME singleton antipattern
