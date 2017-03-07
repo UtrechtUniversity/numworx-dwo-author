@@ -80,7 +80,7 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	
 	void createActions() {
 		actions.clear();
-		actions.add(new XXXAction(Messages.getString("Euclides.35"), "/move.png", new SelectHandler(), viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
 		actions.add(new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer));
@@ -117,6 +117,7 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	}
 
 	boolean hold = false;
+	SelectHandler selector = new SelectHandler();
 	public void itemStateChanged(ItemEvent e) {
 		if(!hold)
 			insertActions();

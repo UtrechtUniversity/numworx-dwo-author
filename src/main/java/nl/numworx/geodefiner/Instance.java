@@ -1012,6 +1012,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	void startToolbox() {
 		ToolboxPanel p = new ToolboxPanel();
 		p.viewer = getViewer();
+		p.selector = selector;
 		p.setToolbox(toolbox);
 		p.fromList(launchData.getObjectList("toolbox"));
 	}	

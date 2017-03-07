@@ -130,11 +130,13 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		toolbox.setToolbox(instance.toolbox);
 		checkDWO.checkBtn = instance.checkBtn;
 		checkDWO.validator = component;
+		checkDWO.setTracker(instance.getViewer());
 // 
 		command.addPropertyChangeListener("command", definition);
 		command.addPropertyChangeListener("feedback", this);
 		checkObjects.addPropertyChangeListener("feedback", this);
 		definition.addPropertyChangeListener("command", command);
+		checkDWO.addPropertyChangeListener("feedback", this);
 		content.add(command, BorderLayout.SOUTH);
 		add(content, JLayeredPane.DEFAULT_LAYER);
 		axes = new Axes(instance.getViewer());
