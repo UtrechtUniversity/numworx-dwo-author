@@ -11,8 +11,6 @@ import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
-import nl.uu.fi.dwo.interaction.client.JSONUtilities;
-import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
@@ -34,9 +32,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.expr.DestroyDependency;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.expr.Lambda;
-import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
-import fi.euclides.openmath.Popcorn;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
@@ -287,7 +283,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if(INT.isSame(f)) {
 					Label fy = (Label) depend[0];
 					fy.setString(text); // FIXME Why?
-					LocusModel lm = new LocusModelF(fy, viewer);
+					LocusModel lm = new LocusModelFX(fy, viewer);
 				    Locus locus = new Integral(lm);
 				    model.add(locus);
 					installConfig(new CELL(text, locus, var), config);
@@ -327,7 +323,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					model.add(f);
 // display function
 					if(f instanceof Label && isYFX((Label) f))
-					{    LocusModel lm = new LocusModelF((Label)f, viewer);
+					{    LocusModel lm = new LocusModelFX((Label)f, viewer);
 					     Locus locus = new Locus(lm);
 					     String name = "y="+var.getName()+"(x)";
 						 viewer.getMapper().rename(locus, name);
@@ -362,7 +358,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
 						model.add(fx);
-						LocusModel lm = new LocusModelF(fx, viewer);
+						LocusModel lm = new LocusModelFX(fx, viewer);
 					    Locus locus = new Locus(lm);
 					    viewer.getMapper().rename(locus, text);
 					    model.add(locus);
@@ -410,7 +406,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						lambda.addVariable(new OMVariable("x"));
 						fx.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
-						LocusModel lm = new LocusModelF(fx, viewer);
+						LocusModel lm = new LocusModelFX(fx, viewer);
 					    Locus locus = new Integral(lm, Integral.GT);
 					    viewer.getMapper().rename(locus, text);
 					    model.add(locus);
@@ -439,7 +435,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						lambda.addVariable(new OMVariable("x"));
 						fx.register(viewer.getRegistered(Lambda.TYPE));
 						DefaultAdapter.getDefault(fx).put(OMObject.class, lambda);
-						LocusModel lm = new LocusModelF(fx, viewer);
+						LocusModel lm = new LocusModelFX(fx, viewer);
 					    Locus locus = new Integral(lm, Integral.LT);
 					    model.add(locus);
 						installConfig(new CELL(text, locus, text), config);
