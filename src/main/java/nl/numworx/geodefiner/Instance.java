@@ -64,6 +64,7 @@ import org.cbook.cbookif.SuccessStatus;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
+import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
@@ -304,6 +305,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			if(cls == Snapper.class) return (T) snapper;
 			if(cls == Expression.class) return (T) expression;
 			if(cls == Randomizer.class) return (T) randomizer;
+			if(cls == AbstractViewer.class) return (T) this;
 			return super.adapt(cls);
 		}
 
