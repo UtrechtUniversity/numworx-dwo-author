@@ -110,7 +110,7 @@ public class LocusModelFX extends LocusModelF {
 		this.tracker = tracker.adapt(AbstractViewer.class);
 		Punt O = mapper.getO();
 		Punt U = mapper.getU();
-		O.addObserver(this);
+		//O.addObserver(this); changes in O propagates to U
 		U.addObserver(this);
 		xas = new HSegment();
 		source = xas.pointOn(Numbers.ZERO, Numbers.ONE);
