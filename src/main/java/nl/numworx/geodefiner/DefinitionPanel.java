@@ -145,7 +145,8 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		ArrayList<String> stringList = new ArrayList<String>(size);
 		for(int i = 0;i < size; i++) {
 			CellItem item = (CellItem) list.getComponent(i);
-			stringList.add(item.cell.var);
+			if(item.cell.item != null)
+				stringList.add(item.cell.var);
 		}
 		return stringList;
 	}

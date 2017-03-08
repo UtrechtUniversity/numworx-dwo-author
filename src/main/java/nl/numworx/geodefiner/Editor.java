@@ -174,6 +174,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		Iterator<CELL> e= defs.elements();
 		while (e.hasNext()) {
 			CELL cell = e.next();
+			if(cell.item == null) // Komt voor?
+				continue;
 			strings.add(cell.text);
 			if (cell.config != null) {
 				configuration.put(viewer.toString(cell.item), cell.config.toMap());

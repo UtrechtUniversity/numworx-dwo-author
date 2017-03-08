@@ -82,6 +82,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public void setEditState(Hashtable b) {
+		doLayout(); // Assume size is valid.
 		instance.init();
 		this.launchData = b;
 		Map randomvars = launchRandomVars();
