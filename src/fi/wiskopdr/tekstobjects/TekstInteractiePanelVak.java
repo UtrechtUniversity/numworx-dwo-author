@@ -2065,7 +2065,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			|| interactiePanel instanceof AntwoordKeuzeVak
 			|| interactiePanel instanceof CheckValueUnitPanel
 			|| interactiePanel instanceof CBookInteractiePanel
-			|| interactiePanel instanceof GeoDefinerInteractiePanel
+// FIXME use interface			|| interactiePanel instanceof GeoDefinerInteractiePanel
 			))
 			return interactiePanel.getScoreObjectives();
 		else return null;
