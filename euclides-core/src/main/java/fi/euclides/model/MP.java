@@ -152,6 +152,10 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 						splitSegment(v, org, copy(start), next, copy(stop), 0);
 					}
 				}
+			} else 
+			if (p.isDefined()||start.isDefined())
+			{
+				splitSegment(v, org, copy(start), next, copy(stop), 0);
 			}
 			copyTo(p, start);
 			org = next;

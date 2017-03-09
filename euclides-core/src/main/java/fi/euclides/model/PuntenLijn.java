@@ -83,7 +83,7 @@ public class PuntenLijn extends Lijn {
 	 * @param p2
 	 */
 	public PuntenLijn(Punt p1, Punt p2) {
-		if(p1.getIndex()<p2.getIndex())
+		if(p1.getIndex()<=p2.getIndex())
 		{ setP1(p1);
 		  setP2(p2);
 		} else {
