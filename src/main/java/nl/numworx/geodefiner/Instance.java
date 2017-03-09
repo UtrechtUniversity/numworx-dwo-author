@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
@@ -72,6 +73,7 @@ import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
+import fi.euclides.model.MP;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
@@ -288,6 +290,51 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	final class InstanceViewer extends AWTViewer implements Observer {
+
+		class PathVisitor implements SegmentVisitor {
+			
+			GeneralPath path = new GeneralPath();
+			double x = Double.NEGATIVE_INFINITY;
+			double y = Double.NEGATIVE_INFINITY;
+			
+			@Override
+			public void visitSegment(Segment s) {
+				double x1, y1;
+				x1 = s.getX1();
+				y1 = s.getY1();
+				if(x1 != x || y1 != y)
+					path.moveTo(x1, y1);
+				x = s.getX2();
+				y = s.getY2();
+				path.lineTo(x, y);
+			}
+
+			@Override
+			public Numbers clipTop() {
+				return InstanceViewer.this.clipTop();
+			}
+
+			@Override
+			public Numbers clipBottom() {
+				return InstanceViewer.this.clipBottom();
+			}
+
+			@Override
+			public Numbers clipLeft() {
+				return InstanceViewer.this.clipLeft();
+			}
+
+			@Override
+			public Numbers clipRight() {
+				return InstanceViewer.this.clipRight();
+			}
+
+			public void destroy() {
+				if(path != null)
+					g.draw(path);
+				path = null;
+			}
+		}
 
 		private static final float DEFAULT_POINTSIZE = 5f;
 
@@ -727,6 +774,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			super.visitBoog(b);
 		}
 
+		public void visitMP(MP l) {
+			selectColor(l);
+			trail = true;
+			PathVisitor v = new PathVisitor();
+			l.visitSegments(v);
+			v.destroy();
+			trail = false;
+		}
+
+		
+		
 		/* (non-Javadoc)
 		 * @see fi.euclides.model.AbstractViewer#visitLocus(fi.euclides.model.Locus)
 		 */
