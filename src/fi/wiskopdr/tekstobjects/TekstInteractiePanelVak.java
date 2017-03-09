@@ -27,8 +27,6 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
-import nl.numworx.geodefiner.GeoDefinerInteractiePanel;
-
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
