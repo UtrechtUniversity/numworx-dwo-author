@@ -639,7 +639,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 		
 		private void visitCheckbox(Label label) {
-			JCheckBox checkbox = new JCheckBox(label.adapt(String.class));
+			JCheckBox checkbox = new JCheckBox(getMapper().toString(label));
+			if(Align.NONE == label.adapt(Align.class))
+				checkbox.setText("");
 // TODO wat is het opschrift van de checkbox.
 // bijv.	checkbox.setText(label.getString());
 			int x = (int) label.getXd();
