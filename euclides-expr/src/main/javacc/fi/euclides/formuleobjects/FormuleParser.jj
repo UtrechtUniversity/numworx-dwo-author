@@ -16,8 +16,8 @@ public class FormuleParser implements OMConstants{
 	private static OMSymbol TRANSC1_LOG = new OMSymbol("transc1", "log" ); // base, arg
 	//private static OMSymbol INVISIBLE_TIMES = new OMSymbol("invisible", "times" );
 	private static OMSymbol INTEGER1_FACTORIAL = new OMSymbol("integer1", "factorial");
-	private static OMSymbol LIST2_LIST_SELECTOR = new OMSymbol("list2", "list_selector" );
-	private static OMSymbol LIST1_LIST = new OMSymbol("list1", "list");
+	//private static OMSymbol LIST2_LIST_SELECTOR = new OMSymbol("list2", "list_selector" );
+	//private static OMSymbol LIST1_LIST = new OMSymbol("list1", "list");
 	private static OMSymbol CALCULUS1_INT = new OMSymbol("calculus1", "int");
 	private static OMSymbol CALCULUS1_DEFINT = new OMSymbol("calculus1", "defint");
 	private static OMSymbol ARITH1_SUM = new OMSymbol("arith1", "sum");

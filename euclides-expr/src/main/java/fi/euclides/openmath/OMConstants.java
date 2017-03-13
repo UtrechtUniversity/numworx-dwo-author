@@ -75,7 +75,7 @@ public interface OMConstants {
 	  OMSymbol LIST1_LIST = new OMSymbol("list1", "list");
 	  OMSymbol LIST1_MAP  = new OMSymbol("list1", "map");
 	  OMSymbol LIST1_SUCHTHAT = new OMSymbol("list1", "suchthat");
-	  OMSymbol LIST2_SELECTOR = new OMSymbol("list2", "selector");
+	  OMSymbol LIST2_LIST_SELECTOR = new OMSymbol("list2", "list_selector");
 	  OMSymbol LIST2_SIZE = new OMSymbol("list2", "size");
 
 }
