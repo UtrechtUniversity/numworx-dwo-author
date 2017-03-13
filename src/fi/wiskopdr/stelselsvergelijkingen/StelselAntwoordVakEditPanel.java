@@ -232,7 +232,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         rekenVakZichtbaarCB = makeCheckBox(500,80,200,20,WiskOpdr.rb.getString("rekenVakZichtbaar"), true, true);
         oplossingenRegelZichtbaarCB = makeCheckBox(500,100,200,20,WiskOpdr.rb.getString("oplossingenRegelZichtbaar"), true, true);
-        formuleToolBijFocusCB = makeCheckBox(500,120,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"), true, true);
+        formuleToolBijFocusCB = makeCheckBox(500,120,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"), false, true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
