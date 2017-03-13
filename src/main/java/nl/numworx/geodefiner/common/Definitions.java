@@ -203,7 +203,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 // $t := text("text", $P)
 				if(TEXT.isSame(f)) {
-					Punt  p = (Punt) depend[1];
+					Destroyable dp = depend[1];
+					if(dp instanceof Label) {
+						dp = ((Label)dp).getP();
+					}
+					Punt  p = (Punt) dp;
 					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
 					if(t.getIndex() > 0) return; // FIXME
 // "te{x}t" -> [ "te",x,"t" ]
