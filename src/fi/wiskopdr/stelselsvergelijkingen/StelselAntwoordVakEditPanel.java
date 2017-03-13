@@ -27,7 +27,8 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
     //private JLabel antwoordLabel, startLabel, feedbackLabel;
     private JLabel antwoordLabel, variabelenLabel, feedbackLabel;
     private JCheckBox  gelijkwaardigCB, exactCB, onafhankelijkCB, stappenCB, eindOplossingCB;//vormCB, 
-    private JCheckBox  significantCB;
+    private JCheckBox formuleToolBijFocusCB;
+	private JCheckBox  significantCB;
     private JCheckBox oplossingenRegelZichtbaarCB, rekenVakZichtbaarCB;
     private JLabel scoringLabel, puntenLabel, checkTotaalLabel;
     private JTextField gelijkwaardigPV, onafhankelijkPV, exactPV, significantPV, eindOplossingPV, feedbackPV;
@@ -229,8 +230,9 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         logIDField = makeTextField(520,5,60,20,"0",false);
        // casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("casAntwCBLabel")+" [test]",false,true);
         boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
-        rekenVakZichtbaarCB = makeCheckBox(500,85,200,20,WiskOpdr.rb.getString("rekenVakZichtbaar"), true, true);
+        rekenVakZichtbaarCB = makeCheckBox(500,80,200,20,WiskOpdr.rb.getString("rekenVakZichtbaar"), true, true);
         oplossingenRegelZichtbaarCB = makeCheckBox(500,100,200,20,WiskOpdr.rb.getString("oplossingenRegelZichtbaar"), true, true);
+        formuleToolBijFocusCB = makeCheckBox(500,120,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"), true, true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
@@ -434,6 +436,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 				boolean boxMetRand = true;
 				boolean rekenVakZichtbaar = true;
 				boolean oplossingenRegelZichtbaar = true;
+				boolean formuleToolBijFocus = true;
 				
                 if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
                 if(interactiePanelLaunchState.containsKey("variabelenString")) variabelenString = (String)interactiePanelLaunchState.get("variabelenString");
@@ -464,6 +467,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
 				if(interactiePanelLaunchState.containsKey("rekenVakZichtbaar")) rekenVakZichtbaar = ((Boolean)interactiePanelLaunchState.get("rekenVakZichtbaar")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("oplossingenRegelZichtbaar")) oplossingenRegelZichtbaar = ((Boolean)interactiePanelLaunchState.get("oplossingenRegelZichtbaar")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
 				
                 this.exact = exact;
                 this.significant = significant;
@@ -523,6 +527,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
                 boxMetRandCB.setSelected(boxMetRand);
                 rekenVakZichtbaarCB.setSelected(rekenVakZichtbaar);
                 oplossingenRegelZichtbaarCB.setSelected(oplossingenRegelZichtbaar);
+                formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
 	            //startLabel.setVisible(uitw);
 				//startEditor.setVisible(uitw);
                 
@@ -588,6 +593,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			boolean boxMetRand = true;
 			boolean rekenVakZichtbaar = true;
 			boolean oplossingenRegelZichtbaar = true;
+			boolean formuleToolBijFocus = true;
 			
             getAnswerModel();
             answerModels = this.answerModels;
@@ -672,7 +678,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			boxMetRand = boxMetRandCB.isSelected();
 			rekenVakZichtbaar = rekenVakZichtbaarCB.isSelected();
 			oplossingenRegelZichtbaar = oplossingenRegelZichtbaarCB.isSelected();
-			
+			formuleToolBijFocus = formuleToolBijFocusCB.isSelected();
 			
 			if(!teltMee)scoreMax = 0;
 			
@@ -717,10 +723,12 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
 			interactiePanelLaunchState.put("rekenVakZichtbaar", new Boolean(rekenVakZichtbaar));
 			interactiePanelLaunchState.put("oplossingenRegelZichtbaar", new Boolean(oplossingenRegelZichtbaar));
+			interactiePanelLaunchState.put("formuleToolBijFocus", new Boolean(formuleToolBijFocus));
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
 	        }
+			
 			
         return interactiePanelLaunchState;
     }

@@ -213,7 +213,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		int scoreMax = 10;
 		boolean check = true;
 		boolean teltMee = true;
-		boolean formuleToolBijFocus = false;
+		boolean formuleToolBijFocus = true;
 		boolean logOption = false;
 		String logID = "";
 		boolean boxMetRand = true;
