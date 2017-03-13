@@ -1,8 +1,30 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTEventMulticaster;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
@@ -10,9 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,85 +42,65 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 
-import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
-import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
-import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.CBookWidgetIF;
-import org.cbook.cbookif.CBookWidgetInstanceIF;
-import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.JSONArray;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//import fi.vangen.Vangen;
-//import fi.mozarch.MozArch;
-import fi.wiskopdr.cbook.CBookInteractiePanel;
-import fi.wiskopdr.cbook.Service;
-import fi.wiskopdr.cbook.WidgetBridge;
-import fi.wiskopdr.formuleobjects.*;
-import fi.wiskopdr.opdrnav.OpdrNavStruct;
-import fi.wiskopdr.opdrnav.XWidgetManager;
-import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
-import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
-import fi.wiskopdr.symbolen.SymboolPanel;
-import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
-//import fi.wiskopdr.tekstobjects.*;
-import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
 import fi.beans.loader.Loader;
-//import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.wiskopdrbeans.CBookAware;
+import fi.beans.wiskopdrbeans.HasObjectives;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+import fi.wiskopdr.AntwoordFormuleVak;
+import fi.wiskopdr.AntwoordKeuzeVak;
+import fi.wiskopdr.AntwoordTekstVak;
+import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.CheckButtonPanel;
+import fi.wiskopdr.CheckSleepUnitPanel;
+import fi.wiskopdr.CheckUnitPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
 import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.Geogebra3Panel;
+import fi.wiskopdr.GeogebraPanel;
+import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
-//import fi.wiskopdr.GrafiekTekenPanel;
 import fi.wiskopdr.ImageComponent;
-import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.AntwoordFormuleVak;
-//import fi.wiskopdr.AntwoordVakEditPanel;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.ReviewInteractiePanel;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakPanel;
-import fi.wiskopdr.GeogebraPanel;
-import fi.wiskopdr.Geogebra3Panel;
-import fi.wiskopdr.CheckUnitPanel;
-import fi.wiskopdr.CheckSleepUnitPanel;
-import fi.wiskopdr.AntwoordTekstVak;
-import fi.wiskopdr.AntwoordKeuzeVak;
-import fi.wiskopdr.GetallenlijnSprongPanel;
-//import fi.javalogoweb3d.JavaLogoWeb3d;
-//import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
-//import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.cbook.CBookInteractiePanel;
+import fi.wiskopdr.cbook.Service;
+import fi.wiskopdr.cbook.WidgetBridge;
+import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.wiskopdr.formuleobjects.FormuleElement;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
+import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
+import fi.wiskopdr.symbolen.SymboolPanel;
 
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
 {
@@ -2062,7 +2064,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			|| interactiePanel instanceof AntwoordTekstVak
 			|| interactiePanel instanceof AntwoordKeuzeVak
 			|| interactiePanel instanceof CheckValueUnitPanel
-			|| interactiePanel instanceof CBookInteractiePanel
+			|| interactiePanel instanceof HasObjectives
 // FIXME use interface			|| interactiePanel instanceof GeoDefinerInteractiePanel
 			))
 			return interactiePanel.getScoreObjectives();

@@ -32,6 +32,7 @@ import org.cbook.cbookif.LessonMode;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.beans.wiskopdrbeans.CBookAware;
+import fi.beans.wiskopdrbeans.HasObjectives;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
@@ -45,7 +46,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
  * @author velth101
  *
  */
-public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware, ResourceManagerClient {
+public class CBookInteractiePanel extends JPanel implements InteractiePanel, CBookContext, CBookAware, ResourceManagerClient, HasObjectives {
 	
 	private final Logger LOGGER = Logger.getLogger(getClass().getName());
 	private CBookWidgetInstanceIF instance;
