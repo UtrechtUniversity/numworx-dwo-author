@@ -13,21 +13,28 @@ import javax.swing.JFrame;
 
 public class ColorBoard extends JComponent implements MouseListener {
 
-	final static int SIZE = 6;
-	private java.awt.Color[][] colors = new java.awt.Color[SIZE][SIZE];
+	final static int XSIZE = 8, YSIZE=5;
+	private java.awt.Color[][] colors = new java.awt.Color[XSIZE][YSIZE];
 	
 	ActionListener al;
+
+	static int[][][] rgbCode = 
+	{{{0,0,0},{153,51,0},{51,51,0},{0,51,0},{0,51,102},{0,0,128},{51,51,153},{51,51,51}},
+	 {{128,0,0},{255,102,0},{128,128,0},{0,128,0},{0,128,128},{0,0,255},{102,102,153},{128,128,128}},
+	 {{255,0,0},{255,153,0},{153,204,0},{51,153,102},{51,204,204},{51,102,255},{128,0,128},{150,150,150}},
+	 {{255,0,255},{255,204,0},{255,255,0},{0,255,0},{0,255,255},{0,204,255},{153,51,102},{192,192,192}},
+	 {{255,153,204},{255,204,153},{255,255,153},{204,255,204},{204,255,255},{153,204,255},{204,153,255},{255,255,255}},
+	};
 	
 	public ColorBoard() {		
-		for(int x = 0; x < SIZE ; x++) {
-			for(int y = 0; y < SIZE; y++) {
-				int t = y * SIZE + x;
-				int c = t * 0xFFFFFF / (SIZE*SIZE-1);
-				colors[x][y] = new java.awt.Color(c);
+		for(int x = 0; x < XSIZE ; x++) {
+			for(int y = 0; y < YSIZE; y++) {
+				int rgb[] = rgbCode[y][x];
+				colors[x][y] = new java.awt.Color(rgb[0], rgb[1], rgb[2]);
 			}
 		}
-		setPreferredSize(new Dimension(SIZE*20, SIZE*20));
-		setMinimumSize(new Dimension(SIZE*3, SIZE*3));
+		setPreferredSize(new Dimension(XSIZE*20, YSIZE*20));
+		setMinimumSize(new Dimension(XSIZE*3, YSIZE*3));
 		addMouseListener(this);
 	}
 	
@@ -66,8 +73,8 @@ public class ColorBoard extends JComponent implements MouseListener {
 	private int posToColor(int x, int y) {
 		int w = getWidth();
 		int h = getHeight();
-		x = x * SIZE / w;x = Math.min(SIZE-1, x);
-		y = y * SIZE / h;y = Math.min(SIZE-1, y);
+		x = x * XSIZE / w;x = Math.min(XSIZE-1, x);
+		y = y * YSIZE / h;y = Math.min(YSIZE-1, y);
 		return colors[x][y].getRGB()&0xFFFFFF;
 	}
 	@Override
@@ -81,13 +88,13 @@ public class ColorBoard extends JComponent implements MouseListener {
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		int w = getWidth()/SIZE;
-		int h = getHeight()/SIZE;
+		int w = getWidth()/XSIZE;
+		int h = getHeight()/YSIZE;
 		Rectangle r = new Rectangle();
 		r.width = w;
 		r.height = h;
-		for (int x = 0; x < SIZE; x++) {
-			for (int y = 0; y < SIZE; y++) {
+		for (int x = 0; x < XSIZE; x++) {
+			for (int y = 0; y < YSIZE; y++) {
 				g.setColor(colors[x][y]);
 				r.x = x * w;
 				r.y = y * h;
