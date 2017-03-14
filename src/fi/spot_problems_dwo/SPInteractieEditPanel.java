@@ -42,6 +42,8 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 	JLabel scoreMaxLabel;
 	JTextField scoreMaxVeld;
 	
+	JCheckBox antwoordVakBox;
+	
 	boolean noSetBounds = false;	
 
 	protected SPInteractiePanel spip;
@@ -54,6 +56,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		setLayout(null);
 		spip = new SPInteractiePanel();
 		add(spip);
+		spip.setBackground(getBackground());
 		
 		theFont = new Font("Dialog", Font.PLAIN, 12);
 		theFM = getFontMetrics(theFont);
@@ -177,7 +180,18 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		scoreMaxVeld.addKeyListener(new InputKL2(scoreMaxVeld));
 		scoreMaxVeld.addActionListener(new TextAL2(scoreMaxVeld));
 		scoreMaxVeld.addFocusListener(new TextFL2(scoreMaxVeld));
+
+		currentY += height + offset;
 		
+		antwoordVakBox = new JCheckBox(Spot_Problems_dwo.rb.getString("antwoordVakTekst"), true);
+		antwoordVakBox.setFont(theFont);
+		antwoordVakBox.setBackground(Color.white);
+		antwoordVakBox.setBounds(currentX, currentY, editWidth - 3 * offset, 3 * theFM.getHeight() / 2);
+		add(antwoordVakBox);
+		antwoordVakBox.addActionListener(this);
+		
+		currentY += height + offset;
+
 		componentsCreated = true;
 
 		
@@ -193,6 +207,7 @@ public class SPInteractieEditPanel extends JPanel implements InteractieEditPanel
 		scoreMaxLabel.setLocation(spip.getSize().width + 2 * offset, scoreMaxLabel.getLocation().y);
 		scoreMaxVeld.setLocation(spip.getSize().width + 3 * offset, scoreMaxVeld.getLocation().y);
 		
+		antwoordVakBox.setLocation(spip.getSize().width + 2 * offset, antwoordVakBox.getLocation().y);
 	}
 	
 	public void zetLevel(int level)
@@ -254,6 +269,11 @@ System.out.println("spiep setEditState");
 		// HIER
 		spip.zetLevel(level);
 		
+		boolean antwoordVakZichtbaar = true;
+		if (b.containsKey("antwoordVakZichtbaar"))
+			antwoordVakZichtbaar = ((Boolean) b.get("antwoordVakZichtbaar")).booleanValue();
+		antwoordVakBox.setSelected(antwoordVakZichtbaar);
+
 		boolean kijkNaActief = true;
 		if (b.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
@@ -377,6 +397,12 @@ System.out.println("spiep getEditState");
 		{	spip.zetKijkNaActief(kijkNaBox.isSelected());
 			scoreMaxLabel.setEnabled(kijkNaBox.isSelected());
 			scoreMaxVeld.setEnabled(kijkNaBox.isSelected());
+			
+		}
+		else if (e.getSource() == antwoordVakBox)
+		{	spip.zetAntwoordVak(antwoordVakBox.isSelected());
+			//scoreMaxLabel.setEnabled(kijkNaBox.isSelected());
+			//scoreMaxVeld.setEnabled(kijkNaBox.isSelected());
 			
 		}
 		

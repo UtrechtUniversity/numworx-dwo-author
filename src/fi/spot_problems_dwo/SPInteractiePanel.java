@@ -39,6 +39,7 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	AntwoordFormuleVak antwoordVak;
 	int antwoordVakBreedte = 380;
 	int antwoordVakHoogte = 100;
+	int aVHoogte = 100;
 	
 	String[][] antwoorden = 
 	{
@@ -61,6 +62,7 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean kijkNaActief = true;
 	int score = 0;
 	int scoreMax = 10;
+	boolean antwoordVakZichtbaar = true;
 	
 	
 	boolean noSetBounds = false;	
@@ -138,6 +140,11 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 //System.out.println("antwoord = " + antwoorden[level - 1][level2Keuze - 1]);
 //else if (level == 1)		
 //System.out.println("antwoord = " + antwoorden[level - 1][level3Keuze - 1]);
+		
+		boolean antwoordVakZichtbaar = true;
+		if (b.containsKey("antwoordVakZichtbaar"))
+			antwoordVakZichtbaar = ((Boolean) b.get("antwoordVakZichtbaar")).booleanValue();
+		zetAntwoordVak(antwoordVakZichtbaar);
 
 		boolean kijkNaActief = true;
 		if (b.containsKey("kijkNaActief"))
@@ -209,6 +216,11 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		// HIER
 		zetLevel(level);
 
+		boolean antwoordVakZichtbaar = true;
+		if (b.containsKey("antwoordVakZichtbaar"))
+			antwoordVakZichtbaar = ((Boolean) b.get("antwoordVakZichtbaar")).booleanValue();
+		zetAntwoordVak(antwoordVakZichtbaar);
+
 		boolean kijkNaActief = true;
 		if (b.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
@@ -255,7 +267,7 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		h.put("level3Keuze", new Integer(level3Keuze));
 		
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
-//		h.put("scoreMax", new Integer(scoreMax));
+		h.put("antwoordVakZichtbaar", new Boolean(antwoordVakZichtbaar));
 		
 		// state
 		h.put("antwoord", antwoordVak.geefAntwoord());
@@ -318,6 +330,16 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		
 	}
 	
+	public void zetAntwoordVak(boolean b)
+	{
+		antwoordVakZichtbaar = b;
+		if (b)
+			aVHoogte = antwoordVakHoogte;
+		else
+			aVHoogte = 0;
+		setBounds(getLocation().x,getLocation().y,getSize().width,getSize().height);
+	}
+	
 	public InteractieEditPanel getEditPanel()
 	{
 		return new SPInteractieEditPanel();
@@ -325,9 +347,9 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		
 	public void setBounds(int x, int y, int b, int h)
 	{
-		if ((getLocation().x == x) && (getLocation().y == y) &&
-			(getSize().width == b) && (getSize().height == h))
-			return;
+		//if ((getLocation().x == x) && (getLocation().y == y) &&
+		//	(getSize().width == b) && (getSize().height == h))
+		//	return;
 		
 //System.out.println("spip set bounds " + b + " " + h);
 		
@@ -340,71 +362,60 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 		if (scrollPane == null)
 		{  	
 			drawCon = new DrawingContainer(this);
-			drawCon.setSize(528, 320);
-			drawCon.setPreferredSize(new Dimension(528, 320));
+			drawCon.setSize(530, 320);
+			drawCon.setPreferredSize(new Dimension(530, 320));
 			drawCon.initialize();
 		
 			scrollPane = new JScrollPane(drawCon);
-    		scrollPane.setBounds(0, 0, b, h - antwoordVakHoogte - 10);
+    		scrollPane.setBounds(0, 0, b, h - aVHoogte - 10);
     		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-    		scrollPane.setPreferredSize(new Dimension(b, h - antwoordVakHoogte - 10));
+    		scrollPane.setPreferredSize(new Dimension(b, h - aVHoogte - 10));
     		add(scrollPane);
     		
-			//dummyPanel = new JPanel();
-			//dummyPanel.setLayout(null);
-   			//dummyPanel.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
-   		
     		if (antwoordVak != null)
     			remove(antwoordVak);
     		
-    		antwoordVak = new AntwoordFormuleVak();
-    		antwoordVak.zetPlaatjes2(goedKrul, foutKruis, halfKrul);
-    		antwoordVak.zetScrollOptie(false);
-    		antwoordVak.zetStappen(false);
-    		antwoordVak.zetJuisteAntwoord("$f" + Spot_Problems_dwo.rb.getString("aantalTekst") + "=" + antwoorden[0][0] + "@");
+    		if (antwoordVakZichtbaar)
+    		{
+    			antwoordVak = new AntwoordFormuleVak();
+    			antwoordVak.zetPlaatjes2(goedKrul, foutKruis, halfKrul);
+    			antwoordVak.zetScrollOptie(false);
+    			antwoordVak.zetStappen(false);
+    			antwoordVak.zetJuisteAntwoord("$f" + Spot_Problems_dwo.rb.getString("aantalTekst") + "=" + antwoorden[0][0] + "@");
     		
-    		if (b > antwoordVakBreedte)
-    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 10, 
-    					              antwoordVakBreedte, antwoordVakHoogte);
-    		else
-    			antwoordVak.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
+    			if (b > antwoordVakBreedte)
+    				antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 10, 
+    						antwoordVakBreedte, antwoordVakHoogte);
+    			else
+    				antwoordVak.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
 
-/*    		
-    		if (b > antwoordVakBreedte)
-    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, 0, 
-    					              antwoordVakBreedte, antwoordVakHoogte);
-    		else
-    			antwoordVak.setBounds(0, 0, b, antwoordVakHoogte);
-*/    		
-    		antwoordVak.addActionListener(this);
+    			antwoordVak.addActionListener(this);
 
-    		//dummyPanel.add(antwoordVak);
-    		add(antwoordVak);
-    		
-    		//add(dummyPanel);
-
+    			add(antwoordVak);
+    		}	
+   			
 //System.out.println("created");			
 		}
 		else
 		{	
-   			//dummyPanel.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
-
+//			int aVHoogte = antwoordVakHoogte;
+//			if (!antwoordVakZichtbaar)	
+//				aVHoogte = 0;
+//			antwoordVak.setVisible(antwoordVakZichtbaar);
+			
+			if (antwoordVak != null )
+				antwoordVak.setVisible(antwoordVakZichtbaar);
+			
     		scrollPane.setSize(b, h - antwoordVakHoogte - 1);
     		scrollPane.setPreferredSize(new Dimension(b, h - antwoordVakHoogte - 1));
-    		
-    		if (b > antwoordVakBreedte)
-    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 1, 
-    					              antwoordVakBreedte, antwoordVakHoogte);
-    		else
-    			antwoordVak.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
-/*
-    		if (b > antwoordVakBreedte)
-    			antwoordVak.setBounds((b - antwoordVakBreedte) / 2, 0, 
-    					              antwoordVakBreedte, antwoordVakHoogte);
-    		else
-    			antwoordVak.setBounds(0, 0, b, antwoordVakHoogte);
-*/    		
-//System.out.println("sized");		
+
+    		if (antwoordVak != null && antwoordVakZichtbaar)
+    		{	if (b > antwoordVakBreedte)
+    				antwoordVak.setBounds((b - antwoordVakBreedte) / 2, scrollPane.getSize().height + 1, 
+    						               antwoordVakBreedte, antwoordVakHoogte);
+    			else
+    				antwoordVak.setBounds(0, scrollPane.getSize().height + 1, b, antwoordVakHoogte);
+    		}
 		}
 		
 	}

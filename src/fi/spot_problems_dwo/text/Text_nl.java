@@ -9,6 +9,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "scoreMaxTekst" , "Maximum score" },
             { "niveauTekst" , "Niveau" },
             { "kijkNaActiefTekst" , "Kijk na actief"},
+            { "antwoordVakTekst" , "AntwoordVak"},
             
             { "vNumbersText",    "V-getallen" },
             { "wNumbersText",    "W-getallen" },
