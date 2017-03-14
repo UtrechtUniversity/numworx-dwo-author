@@ -465,7 +465,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_knopLinks" , "Knop links"},
                 {"TVEP_knopRechts" , "Knop rechts"},
                 {"TVEP_knopAchterTekst" , "Knop achter tekst"},
-                {"TVEP_knopIsRegel1" , "Knop is regel 1"},
+                {"TVEP_knopIsRegel1" , "Knop weg"},
                 {"TVEP_uitwerkingenPopup" , "Uitwerking"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Linkobject"},

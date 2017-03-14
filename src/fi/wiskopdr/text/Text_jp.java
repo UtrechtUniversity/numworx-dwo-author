@@ -440,7 +440,7 @@ public class Text_jp extends java.util.ListResourceBundle
                 {"TVEP_knopLinks" , "Button left"},
                 {"TVEP_knopRechts" , "Button right"},
                 {"TVEP_knopAchterTekst" , "Button behind text"},
-                {"TVEP_knopIsRegel1" , "Button is first row"},
+                {"TVEP_knopIsRegel1" , "Button invisible"},
                 {"TVEP_uitwerkingenPopup" , "段階"},
                 {"TVEP_random" , "ランダム"},
                 {"TVEP_linkObject" , "目的を結びつけます"},

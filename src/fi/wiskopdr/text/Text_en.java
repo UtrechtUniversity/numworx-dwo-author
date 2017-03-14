@@ -448,7 +448,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_knopLinks" , "Button left"},
                 {"TVEP_knopRechts" , "Button right"},
                 {"TVEP_knopAchterTekst" , "Button behind text"},
-                {"TVEP_knopIsRegel1" , "Button is first row"},
+                {"TVEP_knopIsRegel1" , "Button invisible"},
                 {"TVEP_uitwerkingenPopup" , "Steps"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Link object"},

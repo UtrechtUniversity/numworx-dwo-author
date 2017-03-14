@@ -391,6 +391,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void setIpSelected(boolean b)
 	{
+		if(b==selected)
+			return;
 		selected = b;
 		if (selected)
 		{

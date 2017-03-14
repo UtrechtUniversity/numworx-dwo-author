@@ -866,7 +866,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public Hashtable makeDefaultParamValues(int variant) {
 		Hashtable h = new Hashtable();
-		h.put("language", "en");
+		h.put("language", "nl");
 		h.put("bgcolor", "#FFFFFF");
 
 		Hashtable defaultEditModeLaunchData = new Hashtable();
