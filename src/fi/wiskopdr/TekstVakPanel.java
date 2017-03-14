@@ -100,6 +100,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private Color oldbgColor = new Color(255, 255, 180);
 	private Color fgColor = new Color(0, 0, 0);
 	private Color randColor = Color.gray;
+	//private Color selectieColor = Color.white;
 	private boolean anderFont = false;
 	private boolean zwevend = false;
 	private boolean tableBorders = false;
@@ -136,7 +137,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean editable;
 	private boolean selectable = false;
 	private boolean colorSelection = false;
-	private Color selectionColor = new Color(255, 128, 0, 128);
+	private Color selectieColor = new Color(255, 128, 0, 128);
 	private boolean sleepbaar = false;
 	private boolean sleepdoel = false;
 	private boolean sleepHandle = false;
@@ -394,14 +395,17 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (selected)
 		{
 			if (colorSelection)
-				setBorder(selectionColor, 400);
+				setBorder(selectieColor, 400);
 			else
 				setBorder(Color.gray, 5);
+			if(cbookEventHandler.hasListeners("action.select"))
+				cbookEventHandler.fire("action.select");
 		}
 		else
 		{
 			setBorder(randColor, randZichtbaar? randDikte : 0);
-
+			if(cbookEventHandler.hasListeners("action.deselect"))
+				cbookEventHandler.fire("action.deselect");
 		}
 		repaint();
 	}
@@ -644,12 +648,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
+		Color selectieColor = Color.white;
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;
 		boolean pasAanH = false;
 		boolean pasAanB = false;
 		boolean selectable = false;
+		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
 		boolean sleepdoel = false;
@@ -777,8 +783,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
 		if (h.containsKey("selectable"))
 			selectable = ((Boolean) h.get("selectable")).booleanValue();
+		if (h.containsKey("selected"))
+			selected = ((Boolean) h.get("selected")).booleanValue();
 		if (h.containsKey("colorSelection"))
 			colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+		if (h.containsKey("selectieColor"))
+			selectieColor = (Color)h.get("selectieColor");
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))
@@ -905,12 +915,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.bgColor = bgColor;
 		this.fgColor = fgColor;
 		this.randColor = randColor;
+		this.selectieColor = selectieColor;
 		this.hoek = hoek;
 		this.centerV = centerV;
 		this.centerH = centerH;
 		this.pasAanH = pasAanH;
 		this.pasAanB = pasAanB;
 		this.selectable = selectable;
+		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
 		this.sleepdoel = sleepdoel;
@@ -1117,6 +1129,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 		if (selectable || isLink)
 			zetKlikPanel(true);
+		
+		if (selected)//setBorder(Color.gray,5);
+		{
+			if (colorSelection)
+				setBorder(selectieColor, 400);
+			else
+				setBorder(Color.gray, 5);
+		}
 
 		if (balansVergCom)
 			new BalansVergCom(this);
@@ -1648,12 +1668,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
+		Color selectieColor = new Color(255, 128, 0, 128);;
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;
 		boolean pasAanH = false;
 		boolean pasAanB = false;
 		boolean selectable = false;
+		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
 		boolean sleepdoel = false;
@@ -1713,12 +1735,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		bgColor = this.bgColor;
 		fgColor = this.fgColor;
 		randColor = this.randColor;
+		selectieColor = this.selectieColor;
 		hoek = this.hoek;
 		centerH = this.centerH;
 		centerV = this.centerV;
 		pasAanH = this.pasAanH;
 		pasAanB = this.pasAanB;
 		selectable = this.selectable;
+		selected = this.selected;
 		colorSelection = this.colorSelection;
 		sleepbaar = this.sleepbaar;
 		sleepdoel = this.sleepdoel;
@@ -1842,7 +1866,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
 		h.put("selectable", new Boolean(selectable));
+		h.put("selected", new Boolean(selected));
 		h.put("colorSelection", new Boolean(colorSelection));
+		h.put("selectieColor", selectieColor);
 		h.put("sleepbaar", new Boolean(sleepbaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
@@ -2142,7 +2168,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (selected)//setBorder(Color.gray,5);
 		{
 			if (colorSelection)
-				setBorder(selectionColor, 400);
+				setBorder(selectieColor, 400);
 			else
 				setBorder(Color.gray, 5);
 		}
@@ -2419,12 +2445,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
+		Color selectieColor = Color.white;
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;
 		boolean pasAanH = false;
 		boolean pasAanB = false;
 		boolean selectable = false;
+		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
 		boolean sleepdoel = false;
@@ -2548,8 +2576,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
 		if (h.containsKey("selectable"))
 			selectable = ((Boolean) h.get("selectable")).booleanValue();
+		if (h.containsKey("selected"))
+			selected = ((Boolean) h.get("selected")).booleanValue();
 		if (h.containsKey("colorSelection"))
 			colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+		if (h.containsKey("selectieColor"))
+			selectieColor = (Color)h.get("selectieColor");
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))
@@ -2635,6 +2667,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
+        this.selectieColor = selectieColor;
 		this.bgColorZichtbaar = bgColorZichtbaar;
 		this.anderFont = anderFont;
 		if (!this.zwevend && zwevend && locationX == 0 && locationY == 0)
@@ -2656,6 +2689,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.pasAanH = pasAanH;
 		this.pasAanB = pasAanB;
 		this.selectable = selectable;
+		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
 		this.sleepdoel = sleepdoel;
@@ -2843,6 +2877,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		//if(inklapbaar)
 		//{	initieerKlapUitButton(ingeklapt);
 		//}
+		
+		if (selected)//setBorder(Color.gray,5);
+		{
+			if (colorSelection)
+				setBorder(selectieColor, 400);
+			else
+				setBorder(Color.gray, 5);
+		}
 		
 		if(inklapbaar)
 		{	initieerKlapUitButton(ingeklapt);
@@ -3500,8 +3542,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			klapUitButton.setLocation(1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
 		else if(inklapKnopPos==1) 
 			klapUitButton.setLocation(getWidth()-klapUitButton.getWidth()-cellMarge-1, (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
-		else 
+		else if(inklapKnopPos==2)
 			klapUitButton.setLocation(tekstVakken[0][0].getContentBreedte(), (tekstVakken[0][0].getHeight()-klapUitButton.getHeight())/2);
+		else 
+			klapUitButton.setVisible(false);
 	}
 	
 	private void updateUitklapHoogtes()
@@ -3749,15 +3793,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if (selected)
 			{
 				if (colorSelection)
-					setBorder(selectionColor, 400);
+					setBorder(selectieColor, 400);
 				else
 					setBorder(Color.gray, 5);
 				produceAction("select");
+				if(cbookEventHandler.hasListeners("action.select"))
+					cbookEventHandler.fire("action.select");
 			}
 			else
 			{ //setBorder(Color.gray,randZichtbaar?1:0);
 				setBorder(randColor, randZichtbaar ? randDikte : 0);
 				produceAction("deselect");
+				if(cbookEventHandler.hasListeners("action.deselect"))
+					cbookEventHandler.fire("action.deselect");
 			}
 			repaint();
 
@@ -3921,6 +3969,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setVisible(visible);
 			zetMaat();
 		}
+		else if(command.startsWith("action.select"))
+		{	setIpSelected(true);
+		}
+		else if(command.startsWith("action.deselect"))
+		{	setIpSelected(false);
+		}
 		else if(command.startsWith("action.fold") && !ingeklapt)
 		{	klapUitAction();
 			setPopupUsed(true);
@@ -4050,7 +4104,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				"double.xcoordinate", 
 				"double.ycoordinate",
 				"action.unfold",
-				"action.fold"};
+				"action.fold",
+				"action.select",
+				"action.deselect"};
 		return sendCommands;
 	}
 
@@ -4061,6 +4117,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				"action.setNotVisible",
 				"action.unfold",
 				"action.fold",
+				"action.select",
+				"action.deselect",
 				"text.content"};
 		return sendCommands;
 	}

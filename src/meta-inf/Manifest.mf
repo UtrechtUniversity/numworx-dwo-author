@@ -15,6 +15,7 @@ Class-Path: nabouwenaanzichten.jar
  spot_problems_dwo.jar 
  flowdiagrams.jar 
  javalogoweb.jar 
+ javalogoweb3d.jar 
  blokkenprogramma.jar 
  grafiek3dtest.jar 
  sliderwidget.jar 

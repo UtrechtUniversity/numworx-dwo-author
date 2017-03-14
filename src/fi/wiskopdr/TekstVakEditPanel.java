@@ -84,12 +84,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int interlinie;
 	private int randDikte=1;
 		
-	private JButton fontButton, randColorButton,  bgColorButton, fgColorButton, linkButton;
+	private JButton fontButton, randColorButton,  bgColorButton, fgColorButton, selectieColorButton, linkButton;
 	private Color randColor = Color.gray;
+	private Color selectieColor = Color.white;
 	private Color bgColor = new Color(255,255,180);
 	private Color fgColor = new Color(0,0,0);
 	
 	private JCheckBox selectableCB;
+	private JCheckBox selectedCB;
 	private JCheckBox colorSelectionCB;
 	private JCheckBox sleepbaarCB;
 	private JCheckBox sleepdoelCB;
@@ -98,6 +100,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel selectieWaardeLabel;
 	private JTextField scoreMaxTF;
 	private boolean selectable;
+	private boolean selected;
 	private boolean colorSelection;
 	private boolean sleepbaar;
 	private boolean sleepdoel;
@@ -145,7 +148,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private Hashtable currentStyleEditState = null;
 	private JLabel stylesLabel;
 	
-	
+	private JCheckBox templateModeCB;
 	
 	String[][][] randomteksten = null;
 	Hashtable[][] randomIpLaunchdata = null;
@@ -178,7 +181,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private String knopImageString2 = "";
 	private Image knopImage1;
 	private Image knopImage2;
-	private JRadioButton posBeginRB, posEindRB, posNaTekstRB;
+	private JRadioButton posBeginRB, posEindRB, posNaTekstRB, knopIsRegel1RB;
 	private JCheckBox checkUitklapVakCB;
 	
 	private JPanel optionsPanel;
@@ -283,8 +286,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		centerVCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_centreerVert"), 10,200,160,20, centerV, layoutOptionsPanel);
 		pasAanHCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanH"), 10,225,120,20, pasAanH, layoutOptionsPanel);
 		pasAanBCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_pasAanB"), 150,225,120,20, pasAanB, layoutOptionsPanel);
-		selectableCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieObject"), 10,70,150,20, selectable, interactionOptionsPanel);
-		colorSelectionCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieKleur"), 160,70,100,20, selectable, interactionOptionsPanel);
+		selectableCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieObject"), 10,70,140,20, selectable, interactionOptionsPanel);
+		colorSelectionCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieKleur"), 150,70,20,20, selectable, interactionOptionsPanel);
+		selectedCB = maakCheckBox("", 250,70,20,20, selected, interactionOptionsPanel);
 		sleepbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepObject"), 10,95,140,20, sleepbaar, interactionOptionsPanel);
 		sleepdoelCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepDoel"), 10,120,160,20, sleepdoel, interactionOptionsPanel);
 		linkCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_linkObject"), 10,145,140,20, isLink, interactionOptionsPanel);
@@ -328,6 +332,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		sleepHandleCB.setVisible(false);
 		colorSelectionCB.setVisible(false);
+		selectedCB.setVisible(false);
 		checkUitklapVakCB.setVisible(false);
 		sleepbaarCB.setEnabled(false);
 		sleepdoelCB.setEnabled(false);
@@ -527,6 +532,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		fgColorButton.setVisible(false);
 		layoutOptionsPanel.add(fgColorButton);
 		
+		selectieColorButton = new JButton(WiskOpdr.rb.getString("TVEP_selectieKleurKnopLabel"));
+		selectieColorButton.addActionListener(this);
+		selectieColorButton.setFont(ifFont);
+		selectieColorButton.setBounds(170,70,60,20);
+		selectieColorButton.setMargin(new Insets(4,5,4,5));
+		selectieColorButton.setVisible(false);
+		interactionOptionsPanel.add(selectieColorButton);
+		
 		linkButton = new JButton(WiskOpdr.rb.getString("TVEP_editLink"));
 		linkButton.addActionListener(this);
 		linkButton.setFont(ifFont);
@@ -607,14 +620,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		layoutOptionsPanel.add(knopImageButton2);
 		
 		posBeginRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopLinks"));
-		posBeginRB.setBounds(20,440,200,20);
+		posBeginRB.setBounds(20,440,90,20);
 		posBeginRB.addActionListener(this);
 		posBeginRB.setFont(ifFont);
 		posBeginRB.setVisible(false);
 		layoutOptionsPanel.add(posBeginRB);
 		
 		posEindRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopRechts"));
-		posEindRB.setBounds(20,460,200,20);
+		posEindRB.setBounds(20,460,160,20);
 		posEindRB.addActionListener(this);
 		posEindRB.setFont(ifFont);
 		posEindRB.setSelected(true);
@@ -622,16 +635,25 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		layoutOptionsPanel.add(posEindRB);
 		
 		posNaTekstRB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopAchterTekst"));
-		posNaTekstRB.setBounds(20,480,200,20);
+		posNaTekstRB.setBounds(20,480,160,20);
 		posNaTekstRB.addActionListener(this);
 		posNaTekstRB.setFont(ifFont);
 		posNaTekstRB.setVisible(false);
 		layoutOptionsPanel.add(posNaTekstRB);
 		
+		
+		knopIsRegel1RB = new JRadioButton(WiskOpdr.rb.getString("TVEP_knopIsRegel1"));
+		knopIsRegel1RB.setBounds(110,440,160,20);
+		knopIsRegel1RB.addActionListener(this);
+		knopIsRegel1RB.setFont(ifFont);
+		knopIsRegel1RB.setVisible(false);
+		layoutOptionsPanel.add(knopIsRegel1RB);
+		
 		ButtonGroup buttonGroup = new ButtonGroup();
 		buttonGroup.add(posBeginRB);
 		buttonGroup.add(posEindRB);
 		buttonGroup.add(posNaTekstRB);
+		buttonGroup.add(knopIsRegel1RB);
 		
 		kiesStyleChoice = new JComboBox();
 		kiesStyleChoice.setFont(ifFont);
@@ -751,6 +773,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Color bgColor = new Color(255,255,180);
 		Color fgColor = new Color(0,0,0);
 		Color randColor = Color.gray;
+		Color selectieColor = Color.white;
 		boolean zwevend = true;
 		boolean anderFont = false;
 		boolean formuleToolPopup = true;
@@ -767,6 +790,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean pasAanH = false;
 		boolean pasAanB = false;
 		boolean selectable = false;
+		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
 		boolean sleepdoel = false;
@@ -818,13 +842,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.hoek = Integer.parseInt(hoekTF.getText());
 		this.ipId = Integer.parseInt(interactiePanelIdTF.getText());
 		
-		inklapKnopPos = posEindRB.isSelected() ? 1 : (posNaTekstRB.isSelected() ? 2 : 0);
+		inklapKnopPos = posEindRB.isSelected() ? 1 : (posNaTekstRB.isSelected() ? 2 : (knopIsRegel1RB.isSelected() ? 3 : 0));
 		
 		randZichtbaar = this.randZichtbaar;
 		bgColorZichtbaar = this.bgColorZichtbaar;
 		bgColor = this.bgColor;
 		fgColor = this.fgColor;
 		randColor = this.randColor;
+		selectieColor = this.selectieColor;
 		zwevend = this.zwevend;
 		anderFont = this.anderFont;
 		buttonOptie = this.buttonOptie;
@@ -838,6 +863,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		pasAanH = this.pasAanH;
 		pasAanB = this.pasAanB;
 		selectable = this.selectable;
+		selected = this.selected;
 		colorSelection = this.colorSelection;
 		sleepbaar = this.sleepbaar;
 		sleepdoel = this.sleepdoel;
@@ -920,7 +946,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(breedtes!=null)h.put("breedtes", breedtes);
 		if(hoogtes!=null)h.put("hoogtes", hoogtes);
 		h.put("selectable", new Boolean(selectable));
+		h.put("selected", new Boolean(selected));
 		h.put("colorSelection", new Boolean(colorSelection));
+		h.put("selectieColor", selectieColor);
 		h.put("sleepbaar", new Boolean(sleepbaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
@@ -1034,6 +1062,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
+		Color selectieColor = Color.white;
 		boolean zwevend = true;
 		boolean anderFont = false;
 		boolean buttonOptie = false;
@@ -1048,6 +1077,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean pasAanH = false;
 		boolean pasAanB = false;
 		boolean selectable = false;
+		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
 		boolean sleepdoel = false;
@@ -1148,7 +1178,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("anderFont")) anderFont = ((Boolean)h.get("anderFont")).booleanValue();
 		if(h.containsKey("buttonOptie")) buttonOptie = ((Boolean)h.get("buttonOptie")).booleanValue();
 		if(h.containsKey("selectable")) selectable = ((Boolean)h.get("selectable")).booleanValue();
+		if(h.containsKey("selected")) selected = ((Boolean)h.get("selected")).booleanValue();
 		if(h.containsKey("colorSelection")) colorSelection = ((Boolean)h.get("colorSelection")).booleanValue();
+		if(h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		if(h.containsKey("sleepbaar")) sleepbaar = ((Boolean)h.get("sleepbaar")).booleanValue();
 		if(h.containsKey("sleepdoel")) sleepdoel = ((Boolean)h.get("sleepdoel")).booleanValue();
 		if(h.containsKey("sleepHandle")) sleepHandle = ((Boolean)h.get("sleepHandle")).booleanValue();
@@ -1191,6 +1223,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.bgColor = bgColor;
 		this.fgColor = fgColor;
 		this.randColor = randColor;
+		this.selectieColor = selectieColor;
 		this.zwevend = zwevend;
 		this.anderFont = anderFont;
 		this.buttonOptie = buttonOptie;
@@ -1206,6 +1239,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.pasAanH = pasAanH;
 		this.pasAanB = pasAanB;
 		this.selectable = selectable;
+		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
 		this.sleepdoel = sleepdoel;
@@ -1255,8 +1289,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		pasAanHCB.setSelected(pasAanH);
 		pasAanBCB.setSelected(pasAanB);
 		selectableCB.setSelected(selectable);
+		selectedCB.setVisible(selectable);
+		selectedCB.setSelected(selected);
 		colorSelectionCB.setVisible(selectable);
 		colorSelectionCB.setSelected(colorSelection);
+		selectieColorButton.setVisible(selectable);
 		sleepbaarCB.setSelected(sleepbaar);
 		sleepdoelCB.setSelected(sleepdoel);
 		sleepHandleCB.setSelected(sleepHandle);
@@ -1275,6 +1312,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		posEindRB.setVisible(inklapbaar);
 		posNaTekstRB.setSelected(inklapKnopPos==2);
 		posNaTekstRB.setVisible(inklapbaar);
+		knopIsRegel1RB.setSelected(inklapKnopPos==3);
+		knopIsRegel1RB.setVisible(inklapbaar);
 		knopImageButton1.setVisible(inklapbaar);
 		knopImageButton2.setVisible(inklapbaar);
 		checkUitklapVakCB.setVisible(inklapbaar);
@@ -1695,6 +1734,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(selectableCB))
 		{	selectable = selectableCB.isSelected();
 			colorSelectionCB.setVisible(selectable);
+			selectedCB.setVisible(selectable);
+			if(!selectable)selectedCB.setSelected(false);
+			selectieColorButton.setVisible(selectable);
 			tekstVakPanel.setEditState(getEditState());
 			if(!zwevend || selectable) 
 			{	sleepbaarCB.setSelected(false);
@@ -1706,6 +1748,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(colorSelectionCB))
 		{	colorSelection = colorSelectionCB.isSelected();
+			tekstVakPanel.setEditState(getEditState());
+		}
+		if(e.getSource().equals(selectedCB))
+		{	selected = selectedCB.isSelected();
+			tekstVakPanel.setEditState(getEditState());
 		}
 		if(e.getSource().equals(sleepbaarCB))
 		{	sleepbaar = sleepbaarCB.isSelected();
@@ -1714,6 +1761,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(sleepbaar)
 			{	selectableCB.setSelected(false);
 				colorSelectionCB.setVisible(false);
+				selectieColorButton.setVisible(false);
 				sleepdoelCB.setSelected(false);
 				selectable = false; 
 				sleepdoel = false; 
@@ -1772,11 +1820,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			posBeginRB.setVisible(inklapbaar);
 			posEindRB.setVisible(inklapbaar);
 			posNaTekstRB.setVisible(inklapbaar);
+			knopIsRegel1RB.setVisible(inklapbaar);
 			checkUitklapVakCB.setVisible(inklapbaar);
 			
 			repaint();
 		}
-		if(e.getSource().equals(posBeginRB) || e.getSource().equals(posEindRB) || e.getSource().equals(posNaTekstRB))
+		if(e.getSource().equals(posBeginRB) || e.getSource().equals(posEindRB) || e.getSource().equals(posNaTekstRB) || e.getSource().equals(knopIsRegel1RB))
 		{	tekstVakPanel.setEditState(getEditState());
 		}
 		if(e.getSource().equals(checkUitklapVakCB))
@@ -1893,6 +1942,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(fgColorButton))
 		{	fgColor = JColorChooser.showDialog(this, "Kies kleur", fgColor);
 			if(fgColor==null) fgColor = Color.black;
+			tekstVakPanel.setEditState(getEditState());
+		}
+		
+		if(e.getSource().equals(selectieColorButton))
+		{	selectieColor = JColorChooser.showDialog(this, "Kies kleur", selectieColor);
+			if(selectieColor==null) selectieColor = Color.white;
 			tekstVakPanel.setEditState(getEditState());
 		}
 		if(e.getSource().equals(randColorButton))
@@ -2171,6 +2226,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		posBeginRB.setVisible(!b && inklapbaarCB.isSelected());
 		posEindRB.setVisible(!b && inklapbaarCB.isSelected());
 		posNaTekstRB.setVisible(!b && inklapbaarCB.isSelected());
+		knopIsRegel1RB.setVisible(!b && inklapbaarCB.isSelected());
 		checkUitklapVakCB.setVisible(!b && inklapbaarCB.isSelected());
 	}
 	void enableStyleSettings(boolean b)
