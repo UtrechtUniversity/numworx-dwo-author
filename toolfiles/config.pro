@@ -105,7 +105,11 @@
     <methods>;
 }
 
--keep class nl.numworx.geodefiner.GeoDefiner {
+-keep class nl.numworx.geodefiner.** {
+    <fields>;
+    <methods>;
+}
+-keep class fi.euclides.** {
     <fields>;
     <methods>;
 }
