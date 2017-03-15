@@ -629,8 +629,8 @@ System.out.println("jlip setEditState");
 	{	programmaVeldZichtbaar = b;
 		javaLogoSchuifVeld.setVisible(b);
 		runButton.setVisible(b);
-		exportButton.setVisible(b);
-		importButton.setVisible(b);
+		exportButton.setVisible(b && codeIOZichtbaar);
+		importButton.setVisible(b && codeIOZichtbaar);
 		trb.setVisible(b);
 	}
 	
@@ -661,13 +661,13 @@ System.out.println("jlip setEditState");
 	
 	public void zetTraceZichtbaar(boolean b)
 	{	traceZichtbaar = b;
-		trb.setVisible(b);
+		trb.setVisible(b && programmaVeldZichtbaar);
 	}
 	
 	public void zetCodeIOZichtbaar(boolean b)
 	{	codeIOZichtbaar = b;
-		exportButton.setVisible(b);
-		importButton.setVisible(b);
+		exportButton.setVisible(b && programmaVeldZichtbaar);
+		importButton.setVisible(b && programmaVeldZichtbaar);
 		if(b)
 		{	runButton.setLocation(155,runButton.getY());
 			trb.setLocation(265,trb.getY());
