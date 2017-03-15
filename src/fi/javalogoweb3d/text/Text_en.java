@@ -46,6 +46,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "importeerLabel" , "Import code" },
 				{ "annuleerLabel" , "Cancel" },
 				{ "sluitLabel" , "Close" },
+				{ "plakLabel" , "Paste or type the code of the algorithm:" },
 				
 				{ "beginKnopLabel" , "start" },
 				{ "stapKnopLabel" , "step" },

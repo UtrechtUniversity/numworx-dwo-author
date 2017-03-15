@@ -40,7 +40,7 @@ public class ImporterFrame extends JPanel //JFrame
 		cancelbutton.addActionListener(this);
 		bottom.add(cancelbutton);
 		
-		JLabel toelichting = new JLabel("Plak of type de code van het algoritme:");
+		JLabel toelichting = new JLabel(JavaLogoWeb3d.rb.getString("plakLabel"));
 		toelichting.setFont(JavaLogoWeb3d.boldfont);
 		add(toelichting, BorderLayout.NORTH);
 		

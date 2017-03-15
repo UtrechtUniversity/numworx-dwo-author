@@ -212,8 +212,6 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		yDraaiCC = new YDraaiCComponent(ccx2,ccy+(rijNum-1)*30,ccsw,ccsh, this);
 		add(yDraaiCC,0);
 		
-		
-			
 		// tekenen
 		rijNum = 5;
 		// links

@@ -45,6 +45,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "importeerLabel" , "Importeer" },
 				{ "annuleerLabel" , "Annuleer" },
 				{ "sluitLabel" , "Sluit" },
+				{ "plakLabel" , "Plak of type de code van het algoritme:" },
 				
 				{ "beginKnopLabel" , "begin" },
 				{ "stapKnopLabel" , "stap" },
