@@ -2024,7 +2024,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void paint(Graphics g)
 	{	
-		
 		super.paint(g);
 		if(selected && editMode) 
 		{	g.setColor(new Color(0,0,0,128));
@@ -2250,7 +2249,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             else if(!popup && interactiePanel instanceof SymboolPanel) ashoogte = ((SymboolPanel) interactiePanel).geefAsHoogte();
             else ashoogte = 15;
 		}
-		
+	
 		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
 		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
 		//if(getParent()!=null && getParent().getParent()instanceof TekstVak)((TekstVak)getParent().getParent()).layoutTekst();

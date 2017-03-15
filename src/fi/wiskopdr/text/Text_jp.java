@@ -449,6 +449,8 @@ public class Text_jp extends java.util.ListResourceBundle
                 {"TVEP_checkUitklapVak" , "調べます"},
                 {"TVEP_logIDLabelLabel" , "ラベル"},
                 {"TVEP_visible", "Visible"},
+                {"TVEP_styles", "Styles"},
+                {"TVEP_templateMode", "Template mode"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "オプションを保存します"},

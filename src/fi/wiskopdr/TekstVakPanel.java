@@ -3288,14 +3288,16 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		//else if(heightResizable)setSize(getSize().width,tekstVakken[0][0].getSize().height);
 
 		//if(!ingeklapt)
-			updateUitklapHoogtes();
+		updateUitklapHoogtes();
+		
+			
 		if (getParent() != null && getParent() instanceof TekstDeelVak)
 		{	((TekstDeelVak) getParent()).zetMaat();
-
 		}
 		else
 			setSize(getSize().width, getSize().height);
 
+		
 	}
 	
 	public boolean vulHoogteMogelijk()

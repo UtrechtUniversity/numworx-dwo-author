@@ -434,6 +434,8 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
                 {"TVEP_visible", "Visible"},
+                {"TVEP_styles", "Styles"},
+                {"TVEP_templateMode", "Template mode"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Opción guardar"},

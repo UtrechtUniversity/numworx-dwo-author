@@ -459,7 +459,8 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_puntenaftrek" , "Deduction of points"},
                 {"TVEP_visible", "Visible"},
                 {"TVEP_styles", "Styles"},
-				
+                {"TVEP_templateMode", "Template mode"},
+                				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},
 				{"GEP_alsTool" , "As tool"},

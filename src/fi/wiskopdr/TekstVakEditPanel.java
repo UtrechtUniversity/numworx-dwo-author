@@ -149,6 +149,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel stylesLabel;
 	
 	private JCheckBox templateModeCB;
+	private boolean templateMode;
 	
 	String[][][] randomteksten = null;
 	Hashtable[][] randomIpLaunchdata = null;
@@ -297,6 +298,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
 		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
 		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
+		templateModeCB= maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,585,150,20, templateMode, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
