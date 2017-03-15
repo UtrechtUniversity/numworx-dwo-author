@@ -173,8 +173,10 @@ System.out.println("tb initializeDrawing");
   		beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
 		mat.initialiseer();
-//if (gIm == null)
-//System.out.println("toi gIm == null");	
+if (gIm == null)
+{System.out.println("toi gIm == null");
+return;
+}
 		
 	  	gIm.setColor(achtergrondkleur);
 		gIm.fillRect(0, 0, breedte, hoogte);

@@ -623,6 +623,7 @@ System.out.println("jlip setEditState");
 	public void zetUitvoerVeldZichtbaar(boolean b)
 	{	uitvoerVeldZichtbaar = b;
 		uitvoerblad.setVisible(b);
+		uitvoerblad.repaint();
 	}
 	
 	public void zetProgrammaVeldZichtbaar(boolean b)
