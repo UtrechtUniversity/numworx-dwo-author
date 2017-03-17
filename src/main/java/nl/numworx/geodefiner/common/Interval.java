@@ -8,6 +8,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelValue;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -58,6 +59,7 @@ public class Interval extends LabelValue {
 	public Label define(Destroyable[] depend) {
 		Label label = super.define(depend);
 		label.addObserver(DESTROYER);
+		DefaultAdapter.getDefault(label).put(Align.TOP);
 		return label;
 	}
 

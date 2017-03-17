@@ -210,6 +210,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 					Punt  p = (Punt) dp;
 					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
 					if(t.getIndex() > 0) return; // FIXME
+// t = text("label", label) en dan destroy label
+					if(dp != depend[1])
+					{
+						depend[1].addObserver(new DestroyDependency(t));
+					}
+					
+					
 // "te{x}t" -> [ "te",x,"t" ]
 					if( "".equals(t.getSubKey())) {
 						String plain = t.getString();
@@ -345,9 +352,14 @@ public class Definitions implements Observer /*, ListModel*/ {
 				int found = findCell(text);
 				if(found >= 0) {
 					// ????? assert(getElementAt(found).item != null)
-					return; // duplicate				
+					CELL cell = getElementAt(found);
+					if(cell.item != null) 
+						return; // duplicate, and life
+					if(cell.config != null) config = cell.config.toMap();
+					remove(found);
+					//return; 				
 				}
-					// $x = 1;
+// $x = 1;
 // $y = $x + 1;
 				OMObject arg = oma.getElementAt(1);
 				if(arg instanceof OMVariable) {
@@ -394,10 +406,12 @@ public class Definitions implements Observer /*, ListModel*/ {
 			{
 				int found = findCell(text);
 				if(found >= 0) {
-					// ????? assert(getElementAt(found).item != null)
-					return; // duplicate				
+					CELL cell = getElementAt(found);
+					if(cell.item != null) 
+						return; // duplicate, and life
+					if(cell.config != null) config = cell.config.toMap();
+					remove(found);
 				}
-					// $x = 1;
 // $y > $x + 1;
 				OMObject arg = oma.getElementAt(1);
 				if(arg instanceof OMVariable) {
@@ -423,11 +437,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 			{
 				int found = findCell(text);
 				if(found >= 0) {
-					// ????? assert(getElementAt(found).item != null)
-					return; // duplicate				
+					CELL cell = getElementAt(found);
+					if(cell.item != null) 
+						return; // duplicate, and life
+					if(cell.config != null) config = cell.config.toMap();
+					remove(found);
 				}
-					// $x = 1;
-// $y > $x + 1;
+// $y < $x + 1;
 				OMObject arg = oma.getElementAt(1);
 				if(arg instanceof OMVariable) {
 					OMVariable var = (OMVariable) arg;
