@@ -143,7 +143,10 @@ public class IntervalModel extends TextModel {
 
 	@Override
 	public UIEditor editor() {
-		length = ((Segment) item.getP().getDepend()[0]).getDX();
+		Segment segment = (Segment) item.getP().getDepend()[0];
+		length = segment.getDX();
+		x = segment.getX1();
+		y = segment.getY1();
 		return new IntervalPane(this);
 	}
 
