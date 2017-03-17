@@ -218,7 +218,7 @@ TOKEN:
 | < PI : ( "\u03C0"| "pi" ) >
 | < IF : "if" >
 | < INFINITY : "\u221e" >
-| < #LETTER : ( [ "a" - "w" ] | "z" | [ "A" - "Z" ] | [ "α" -"ω" ] ) >
+| < #LETTER : ( [ "a" - "w" ] | "z"|"x"|"y"| [ "A" - "Z" ] | [ "α" -"ω" ] ) >
 
 | < VARIABLE : < LETTER > (< DIGIT >|< LETTER >| "'" )* >
 | < EQ : "=" >

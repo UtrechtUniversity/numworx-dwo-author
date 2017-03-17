@@ -304,8 +304,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	@Override
 	public void moveAway(int x, int y) {
 		if(mouse == null) {
-			mouse = new Pointer(x,y);
-			offY = 20; // Ulli patent
+			//mouse = new Pointer(x,y);
+			//offY = 20; // Ulli patent
 		} else {
 			mouse.drag(x,y);
 		}
