@@ -148,8 +148,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private Hashtable currentStyleEditState = null;
 	private JLabel stylesLabel;
 	
-	private JCheckBox templateModeCB;
-	private boolean templateMode;
+	private JCheckBox templateModeEditCB;
+	private JCheckBox templateModeFillCB;
+	private boolean templateModeEdit;
+	private boolean templateModeFill;
 	
 	String[][][] randomteksten = null;
 	Hashtable[][] randomIpLaunchdata = null;
@@ -193,7 +195,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int defaultIpHeight = 450;
 	private int defaultIpWidth = 680; //hier stond 270
 	private int defaultOpWidth = 280;
-	private int defaultOpHeight= 610;
+	private int defaultOpHeight= 680;
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
@@ -298,7 +300,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
 		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
 		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
-		templateModeCB= maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,585,150,20, templateMode, layoutOptionsPanel);
+		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
+		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
@@ -837,8 +840,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = true;
-		
-		
+		boolean templateModeEdit = false;
+		boolean templateModeFill = false;
+				
 		
 		this.ronding = Integer.parseInt(rondingTF.getText());
 		this.hoek = Integer.parseInt(hoekTF.getText());
@@ -903,6 +907,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logIDLabel = logIDLabelField.getText();
 		visible = this.visible;
 		ideasStatistiek = this.ideasStatistiek;
+		templateModeEdit = this.templateModeEdit;
+		templateModeFill = this.templateModeFill;
 			
 		Hashtable h = null;
 		 
@@ -989,6 +995,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("logIDLabel",logIDLabel);
 		h.put("visible", new Boolean(visible));
 		h.put("ideasStatistiek", new Boolean(ideasStatistiek));
+		h.put("templateModeEdit", new Boolean(templateModeEdit));
+		h.put("templateModeFill", new Boolean(templateModeFill));
 		
 		return h;
 	}
@@ -1114,6 +1122,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = false;
+		boolean templateModeEdit = false;
+		boolean templateModeFill = false;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1216,6 +1226,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
         if(h.containsKey("visible")) visible = ((Boolean) h.get("visible")).booleanValue();
         if(h.containsKey("ideasStatistiek")) ideasStatistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
+        if(h.containsKey("templateModeEdit")) templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
+        if(h.containsKey("templateModeFill")) templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
 		
         System.out.println("logOption: "+logOption);
 
@@ -1269,6 +1281,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.defaultBijNull = defaultBijNull;
 		this.visible = visible;
 		this.ideasStatistiek = ideasStatistiek;
+		this.templateModeEdit = templateModeEdit;
+		this.templateModeFill = templateModeFill;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -1413,7 +1427,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	else {
     		knopImageButton2.setCode("\u25be");
     	}
+    	templateModeEditCB.setSelected(templateModeEdit);
+    	templateModeFillCB.setSelected(templateModeFill);
 	}
+	
 	
 	
 	
@@ -2123,6 +2140,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				styleEditorPopupFrame.dispose();
 			}
 			revalidate();
+			tekstVakPanel.setEditState(getEditState());
+		}
+	    if(e.getSource().equals(templateModeEditCB))
+		{	templateModeEdit = templateModeEditCB.isSelected();
+			tekstVakPanel.setEditState(getEditState());
+		}
+	    if(e.getSource().equals(templateModeFillCB))
+		{	templateModeFill = templateModeFillCB.isSelected();
 			tekstVakPanel.setEditState(getEditState());
 		}
 

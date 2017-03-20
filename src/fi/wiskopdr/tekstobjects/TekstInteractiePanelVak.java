@@ -1385,6 +1385,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     			resizePanel.setOpaque(true);
     			resizePanel.setBackground(Color.black);
     			add(resizePanel,0);
+    			
+    			boolean templateEdit = ((TekstVakPanel)interactiePanel).templateModeEdit;
+    			afdekPanel.setVisible(!templateEdit);
+    			resizePanel.setVisible(!templateEdit);
+    			
     		}
     		/*
     		if(	callOutPosPanel==null) 

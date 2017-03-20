@@ -1096,7 +1096,11 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		}
 	}
 	public void mousePressed(MouseEvent e)
-	{	int x = e.getX();
+	{	
+		boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+		if(!templateEditable)
+			return;
+		int x = e.getX();
 		int y = e.getY();
 		
 		for(int i=0 ; i<aantalRegels; i++)
@@ -1169,8 +1173,9 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
 	}
 	public void keyPressed(KeyEvent e)
-	{   if (editable)
-        {   keyStrokeUpdated = false;
+	{   boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill);
+		if (editable && templateEditable)
+		{   keyStrokeUpdated = false;
 			kc = e.getKeyCode();
             if (isControlDown(e) && kc == KeyEvent.VK_V)
             {	deleteSelection();
@@ -1313,7 +1318,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     }
     public void keyTyped(KeyEvent e)
     {	int kt = e.getKeyChar();
-    	if (editable)
+    	boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill);
+    	if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)
             {	if(tekst.charAt(caretPos)==' ')tekst.replace(caretPos,'\n');
             	else if(caretPos>0 && tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');

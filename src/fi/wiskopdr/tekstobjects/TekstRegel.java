@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleRegel;
@@ -633,7 +634,8 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	}*/
 	
 	public void mousePressed(MouseEvent e)
-	{	if(selectable)
+	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+		if(selectable && templateEditable)
 		{	tekstVak.zetTekstFocus();
 			startx = e.getX();
 			//System.out.println("startx"+startx);
@@ -648,7 +650,8 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(selectable)
+	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+		if(selectable && templateEditable)
 		{	/*if(e.getX()<0 || e.getX()>getSize().width || e.getY()<0 || e.getY()>getSize().height)
 			{	terug = false;
 				
